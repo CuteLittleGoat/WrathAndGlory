@@ -3,20 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nawigator repozytoriów</title>
+  <title>WH40k Data-Slate – skróty</title>
   <style>
     :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --accent: #a855f7;
-      --accent-2: #22d3ee;
-      --text: #e5e7eb;
-      --muted: #9ca3af;
-      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-      --radius: 16px;
+      --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
+             radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
+             #031605;
+      --panel: #000;
+      --border: #16c60c;
+      --text: #9cf09c;
+      --accent: #16c60c;
+      --accent-dark: #0d7a07;
+      --glow: 0 0 25px rgba(22, 198, 12, 0.45);
+      --radius: 10px;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+      font-family: "Consolas", "Fira Code", "Source Code Pro", monospace;
+    }
 
     body {
       margin: 0;
@@ -24,156 +29,84 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at 25% 20%, rgba(168, 85, 247, 0.15), transparent 35%),
-                  radial-gradient(circle at 80% 0%, rgba(34, 211, 238, 0.18), transparent 45%),
-                  var(--bg);
+      padding: 24px;
+      background: var(--bg);
       color: var(--text);
-      padding: 32px;
     }
 
-    .card {
-      width: min(960px, 100%);
+    main {
+      width: min(860px, 100%);
       background: var(--panel);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      border: 2px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 32px;
+      box-shadow: var(--glow);
+      padding: 24px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 18px;
     }
 
     h1 {
-      margin: 0 0 8px;
-      font-size: clamp(26px, 4vw, 34px);
-      letter-spacing: 0.01em;
-    }
-
-    p.lead {
-      margin: 0 0 24px;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
-      margin-top: 8px;
-    }
-
-    .panel {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: var(--radius);
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: transform 150ms ease, border-color 150ms ease;
-    }
-
-    .panel:hover {
-      transform: translateY(-2px);
-      border-color: rgba(255, 255, 255, 0.16);
-    }
-
-    .panel h2 {
       margin: 0;
-      font-size: 18px;
+      font-size: clamp(22px, 4vw, 32px);
+      color: var(--text);
+      letter-spacing: 0.03em;
     }
 
-    .panel p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .actions {
-      margin-top: auto;
+    .links {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
       gap: 10px;
     }
 
     .btn {
       appearance: none;
-      border: none;
-      border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 15px;
-      font-weight: 600;
-      color: #0b0f1a;
-      cursor: pointer;
-      text-decoration: none;
-      transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      box-shadow: 0 10px 24px rgba(34, 211, 238, 0.2);
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .btn:hover { transform: translateY(-1px); }
-    .btn:active { transform: translateY(0); opacity: 0.92; }
-
-    .hint {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .hint code {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 8px;
-      padding: 2px 6px;
+      border: 2px solid var(--border);
+      background: rgba(22, 198, 12, 0.08);
       color: var(--text);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 15px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
     }
 
-    footer {
-      margin-top: 20px;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(22, 198, 12, 0.3);
+      background: rgba(22, 198, 12, 0.14);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      background: rgba(22, 198, 12, 0.22);
+    }
+
+    p {
+      margin: 0;
+      color: var(--text);
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
-  <main class="card">
-    <h1>Wybierz repozytorium</h1>
-    <p class="lead">Szybkie przełączanie pomiędzy powiązanymi projektami. Poniższe odnośniki kierują bezpośrednio do właściwych plików startowych.</p>
+  <main>
+    <header>
+      <h1>WH40k Data-Slate</h1>
+      <div class="links">
+        <a class="btn" href="https://cutelittlegoat.github.io/Repozytorium/" target="_blank" rel="noopener noreferrer">Repozytorium</a>
+        <a class="btn" href="https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html" target="_blank" rel="noopener noreferrer">Infoczytnik</a>
+      </div>
+    </header>
 
-    <section class="grid">
-      <article class="panel">
-        <h2>Wrath &amp; Glory</h2>
-        <p>Główne repozytorium z materiałami do systemu Wrath &amp; Glory.</p>
-        <div class="actions">
-          <a class="btn" href="https://github.com/CuteLittleGoat/WrathAndGlory" target="_blank" rel="noopener noreferrer">Otwórz repozytorium</a>
-        </div>
-      </article>
-
-      <article class="panel">
-        <h2>WH40k Data Slate</h2>
-        <p>Aplikacja z dwoma plikami wejściowymi – <strong>GM</strong> do wysyłania wiadomości i <strong>Infoczytnik</strong> do ich odbioru.</p>
-        <div class="actions">
-          <a class="btn" href="https://github.com/CuteLittleGoat/wh40k-data-slate/blob/main/Infoczytnik.html" target="_blank" rel="noopener noreferrer">Otwórz Infoczytnik</a>
-        </div>
-      </article>
-
-      <article class="panel">
-        <h2>Repozytorium</h2>
-        <p>Rozbudowana aplikacja – domyślnie otwierana jest podstawowa wersja bez panelu administratora.</p>
-        <div class="actions">
-          <a class="btn" href="https://github.com/CuteLittleGoat/Repozytorium/blob/main/index.html" target="_blank" rel="noopener noreferrer">Uruchom wersję podstawową</a>
-          <span class="hint">Aby otworzyć panel importu XLSX, dopisz odpowiedni parametr w pasku adresu (np. <code>?admin=1</code>).</span>
-        </div>
-      </article>
-    </section>
-
-    <footer>
-      Linki otwierają nowe karty, aby nie przerwać pracy w pozostałych projektach.
-    </footer>
+    <p>W celu otworzenia panelu importu XLSX do pasku adresu dopisz parametr <strong>admin=1</strong>.</p>
   </main>
 </body>
 </html>
