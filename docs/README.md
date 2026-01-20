@@ -1,8 +1,9 @@
 # Wrath & Glory / Kozi przybornik
 
-Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Po uruchomieniu wyświetla logo oraz trzy przyciski prowadzące do zewnętrznych aplikacji.
+Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Po uruchomieniu wyświetla logo oraz cztery przyciski prowadzące do zewnętrznych aplikacji.
 
 ## Dostępne narzędzia
+- **Generator NPC**: https://cutelittlegoat.github.io/GeneratorNPC/index.html
 - **Repozytorium**: https://cutelittlegoat.github.io/Repozytorium/
   - Aby wejść do panelu admina, dopisz parametr `index.html?admin=1` do adresu.
 - **Infoczytnik**: https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html
