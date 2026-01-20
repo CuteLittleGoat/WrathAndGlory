@@ -6,7 +6,7 @@ Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnoś
 ## Struktura plików
 - `index.html` – jedyny plik aplikacji zawierający strukturę strony i pełną stylizację wbudowaną w `<style>`.
 - `wrath-glory-logo-warhammer.png` – logo wyświetlane w nagłówku strony.
-- `docs/README.md` – instrukcja użytkownika i informacji o aktualizacji aplikacji.
+- `docs/README.md` – instrukcja użytkownika i informacje o aktualizacji aplikacji (PL/EN).
 - `docs/Documentation.md` – niniejszy dokument z opisem kodu.
 
 ## Szczegółowy opis `index.html`
@@ -70,7 +70,7 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
   - `display: flex`, `flex-direction: column` układa przycisk i notatkę pionowo.
   - `gap: 8px` zachowuje dystans między przyciskiem a notatką.
 - `.stack.right`
-  - `align-items: stretch` rozciąga elementy w osi poprzecznej.
+  - `align-items: stretch` rozciąga elementy w osi poprzecznej (użyte tylko dla przycisku Infoczytnik).
 
 #### 2.6 Przyciski (`.btn`)
 - Elementy `<a>` stylizowane jako przyciski:
@@ -96,6 +96,7 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 
 #### 2.7 Notatka pod Repozytorium (`.note`)
 - Tekst pomocniczy z instrukcją dodania parametru `index.html?admin=1`.
+- Dokładna treść akapitu: `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr jest w `<strong>`).
 - `margin: 0` usuwa domyślny margines akapitu.
 - `color: var(--text)` utrzymuje spójny kolor.
 - `font-size: 13px`.
@@ -105,8 +106,8 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 ### 3. Zawartość (`<body>`)
 Struktura dokumentu składa się z:
 - `<main>` – główny panel.
-- `<img class="logo">` – logo z atrybutem `alt="Logo Wrath & Glory"`.
-- `<div class="actions">` – sekcja przycisków w kolejności od lewej:
+- `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"`.
+- `<div class="actions">` – siatka przycisków w kolejności od lewej:
   1. **Generator NPC** – link do `https://cutelittlegoat.github.io/GeneratorNPC/index.html`.
   2. **Repozytorium** – link do `https://cutelittlegoat.github.io/Repozytorium/` z notką o parametrze admina umieszczoną bezpośrednio pod przyciskiem.
   3. **Infoczytnik** – link do `https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html`.
