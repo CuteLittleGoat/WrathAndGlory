@@ -22,59 +22,102 @@ Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnoś
 Cała stylizacja jest osadzona w `index.html` i nie korzysta z zewnętrznych plików CSS.
 
 #### 2.1 Zmienne CSS (`:root`)
-Zmienne definiują motyw „zielonego terminala”:
-- `--bg` – wielowarstwowe tło (gradienty radialne + kolor bazowy `#031605`).
-- `--panel` – kolor tła panelu głównego (`#000`).
-- `--border` – kolor ramki panelu i przycisków (`#16c60c`).
-- `--text` – kolor tekstu (`#9cf09c`).
-- `--accent`, `--accent-dark` – barwy akcentu wykorzystywane w efektach.
-- `--glow` – cień panelu (zielona poświata).
-- `--radius` – zaokrąglenie rogów panelu.
+Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z dokładnymi wartościami:
+- `--bg` – tło o trzech warstwach, zdefiniowane jako:
+  1. `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%)`
+  2. `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%)`
+  3. kolor bazowy `#031605`
+- `--panel` – kolor tła panelu głównego: `#000`.
+- `--border` – kolor ramki panelu i przycisków: `#16c60c`.
+- `--text` – kolor tekstu: `#9cf09c`.
+- `--accent` – akcent zielony: `#16c60c`.
+- `--accent-dark` – ciemny akcent: `#0d7a07`.
+- `--glow` – cień panelu: `0 0 25px rgba(22, 198, 12, 0.45)`.
+- `--radius` – zaokrąglenie rogów panelu: `10px`.
 
 #### 2.2 Styl ogólny (`*`)
-- Ustawia `box-sizing: border-box` dla przewidywalnych rozmiarów.
-- Wymusza krój pisma monospace (`Consolas`, `Fira Code`, `Source Code Pro`).
+- `box-sizing: border-box` gwarantuje, że padding i border są wliczane w szerokość.
+- Fonty są wymuszone w kolejności fallback: `"Consolas"`, `"Fira Code"`, `"Source Code Pro"`, `monospace`. Dzięki temu cały interfejs ma jednolity krój monospace.
 
 #### 2.3 Układ strony (`body`, `main`)
-- `body` – pełna wysokość widoku, wycentrowanie zawartości w pionie i poziomie, tło z `--bg`, marginesy wyzerowane.
-- `main` – centralny panel:
-  - maksymalna szerokość `min(860px, 100%)`,
-  - czarne tło (`--panel`), zielona ramka (`--border`), poświata (`--glow`),
-  - elastyczny układ kolumny z odstępami (`gap: 22px`).
+- `body`
+  - `margin: 0` i `min-height: 100vh` wypełniają ekran.
+  - `display: flex`, `align-items: center`, `justify-content: center` centralizują panel.
+  - `padding: 24px` zapewnia margines od krawędzi okna.
+  - `background: var(--bg)` ustawia wielowarstwowy gradient.
+  - `color: var(--text)` ustawia kolor tekstu domyślnie.
+- `main` (panel)
+  - szerokość: `width: min(860px, 100%)`.
+  - tło: `background: var(--panel)` (czarne).
+  - obramowanie: `border: 2px solid var(--border)`.
+  - zaokrąglenie: `border-radius: var(--radius)` (10px).
+  - poświata: `box-shadow: var(--glow)` (0 0 25px z alfą 0.45).
+  - padding: `32px 32px 28px` (góra, prawa/lewa, dół).
+  - układ: `display: flex`, `flex-direction: column`, `align-items: center`, `gap: 22px`.
 
 #### 2.4 Logo (`.logo`)
-- Skaluje obraz w zakresie `220px–320px` z zachowaniem proporcji (`max-width` + `width: 100%`).
+- `max-width: clamp(220px, 40vw, 320px)` ustawia zakres wielkości 220–320px, zależnie od szerokości viewportu.
+- `width: 100%` pozwala logo wypełnić dostępną szerokość w limicie clamp.
+- `display: block` usuwa domyślne odstępy inline.
 
 #### 2.5 Sekcja akcji (`.actions`, `.stack`, `.stack.right`)
-- `.actions` – siatka przycisków z automatycznym dopasowaniem liczby kolumn (`grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`).
-- `.stack` – pionowe ułożenie elementów (przycisk + notka).
-- `.stack.right` – rozszerza elementy na pełną szerokość w kolumnie.
+- `.actions`
+  - `width: 100%` rozciąga siatkę na szerokość panelu.
+  - `display: grid` z `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))` tworzy elastyczne kolumny o minimalnej szerokości 220px.
+  - `gap: 18px 20px` oznacza 18px w pionie i 20px w poziomie.
+  - `align-items: start` zapewnia wyrównanie do góry w każdej kolumnie.
+- `.stack`
+  - `display: flex`, `flex-direction: column` układa przycisk i notatkę pionowo.
+  - `gap: 8px` zachowuje dystans między przyciskiem a notatką.
+- `.stack.right`
+  - `align-items: stretch` rozciąga elementy w osi poprzecznej.
 
 #### 2.6 Przyciski (`.btn`)
-- Stylizowane linki `<a>` jako przyciski:
-  - obramowanie i tło w odcieniach zieleni,
-  - `text-decoration: none` oraz `font-weight: 600` dla czytelności,
-  - efekty `:hover` (lekka animacja w górę, poświata, jaśniejsze tło) i `:active`.
+- Elementy `<a>` stylizowane jako przyciski:
+  - `appearance: none`.
+  - `border: 2px solid var(--border)` = 2px zielonej ramki (#16c60c).
+  - `background: rgba(22, 198, 12, 0.08)` – półprzezroczyste tło.
+  - `color: var(--text)` – tekst w odcieniu #9cf09c.
+  - `padding: 10px 14px` (góra/dół 10px, lewo/prawo 14px).
+  - `border-radius: 6px`.
+  - `font-size: 15px`.
+  - `font-weight: 600`.
+  - `text-decoration: none`.
+  - `text-align: center`.
+  - `display: block` i `width: 100%` zapewniają pełną szerokość w kolumnie.
+  - `transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease`.
+- Stan `:hover`
+  - `transform: translateY(-1px)` – delikatne uniesienie.
+  - `box-shadow: 0 0 18px rgba(22, 198, 12, 0.3)` – poświata.
+  - `background: rgba(22, 198, 12, 0.14)` – jaśniejsze tło.
+- Stan `:active`
+  - `transform: translateY(0)`.
+  - `background: rgba(22, 198, 12, 0.22)` – najjaśniejsza wersja tła.
 
 #### 2.7 Notatka pod Repozytorium (`.note`)
-- Mały tekst pomocniczy z instrukcją dodania parametru `index.html?admin=1`.
-- Ustawione `font-size: 13px`, `line-height: 1.35` i `word-break: break-word` dla poprawnego łamania.
+- Tekst pomocniczy z instrukcją dodania parametru `index.html?admin=1`.
+- `margin: 0` usuwa domyślny margines akapitu.
+- `color: var(--text)` utrzymuje spójny kolor.
+- `font-size: 13px`.
+- `line-height: 1.35`.
+- `word-break: break-word` pozwala łamać dłuższe ciągi (np. URL).
 
 ### 3. Zawartość (`<body>`)
 Struktura dokumentu składa się z:
 - `<main>` – główny panel.
 - `<img class="logo">` – logo z atrybutem `alt="Logo Wrath & Glory"`.
-- `<div class="actions">` – sekcja przycisków:
-  1. **Repozytorium** – link do `https://cutelittlegoat.github.io/Repozytorium/` z notką o parametrze admina.
-  2. **Infoczytnik** – link do `https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html`.
-  3. **Kalkulator** – link do `https://cutelittlegoat.github.io/Kalkulator/index.html`.
+- `<div class="actions">` – sekcja przycisków w kolejności od lewej:
+  1. **Generator NPC** – link do `https://cutelittlegoat.github.io/GeneratorNPC/index.html`.
+  2. **Repozytorium** – link do `https://cutelittlegoat.github.io/Repozytorium/` z notką o parametrze admina umieszczoną bezpośrednio pod przyciskiem.
+  3. **Infoczytnik** – link do `https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html`.
+  4. **Kalkulator** – link do `https://cutelittlegoat.github.io/Kalkulator/index.html`.
 
 Każdy przycisk otwiera się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
 ## Aktualizacja treści
 - **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `index.html`.
 - **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Repozytorium.
-- **Zmiana stylu**: edytuj sekcję `<style>` w `index.html`.
+- **Zmiana stylu**: edytuj sekcję `<style>` w `index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
 - **Zmiana logo**: podmień plik `wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
 
 ## Uruchamianie lokalne
