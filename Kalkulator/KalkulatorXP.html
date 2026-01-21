@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kalkulator XP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="kalkulatorxp.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="sigil">⟦⟧</div>
+        <div>
+          <div class="title">Kalkulator XP</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn secondary" id="btnReset" title="Ustaw wszystkie pola na 0">Resetuj wartości</button>
+      </div>
+    </header>
+
+    <main class="main calculator">
+      <aside class="panel">
+        <div class="panelHeader">
+          <span class="caret">▸</span><span class="panelTitle">INSTRUKCJE</span>
+        </div>
+        <div class="panelBody">
+          <div class="hint">
+            <div>▸ Wprowadź aktualną i docelową wartość dla każdej pozycji.</div>
+            <div>▸ Suma XP aktualizuje się automatycznie przy zmianach.</div>
+            <div>▸ Przycisk <b>Resetuj wartości</b> czyści wszystkie pola.</div>
+          </div>
+          <div class="totalBox">
+            <div class="metricLabel">Całkowity koszt XP</div>
+            <div class="metricValue" id="totalXp">0</div>
+          </div>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <nav class="tabs"><div class="tab active">Obliczenia XP</div></nav>
+        <div class="tableWrap">
+          <div class="tableFrame">
+            <div class="tableViewport">
+              <div class="calcGrid">
+                <section class="calcCard">
+                  <header class="cardHeader">Atrybuty</header>
+                  <table class="dataTable" id="attributesTable">
+                    <thead>
+                      <tr>
+                        <th>Aktualna wartość</th>
+                        <th>Docelowa wartość</th>
+                        <th>Koszt XP</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="12" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="12" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="12" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="12" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="12" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="12" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="12" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="12" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+
+                <section class="calcCard">
+                  <header class="cardHeader">Umiejętności</header>
+                  <table class="dataTable" id="skillsTable">
+                    <thead>
+                      <tr>
+                        <th>Aktualna wartość</th>
+                        <th>Docelowa wartość</th>
+                        <th>Koszt XP</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="8" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="8" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="8" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="8" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="8" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="8" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                      <tr>
+                        <td><input type="number" class="input current" min="0" max="8" step="1" value="0"></td>
+                        <td><input type="number" class="input target" min="0" max="8" step="1" value="0"></td>
+                        <td class="cost num">0</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </section>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const attributeCosts = {
+      0: 0, 1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
+    };
+    const skillCosts = {
+      0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
+    };
+
+    function clampValue(value, min, max) {
+      let parsed = parseInt(value, 10);
+      if (isNaN(parsed)) parsed = min;
+      return Math.min(Math.max(parsed, min), max);
+    }
+
+    function calculateRowCost(current, target, costs) {
+      if (target <= current) return 0;
+      return (costs[target] || 0) - (costs[current] || 0);
+    }
+
+    function recalcTable(tableId, costs, min, max) {
+      let subtotal = 0;
+      document.querySelectorAll(`#${tableId} tbody tr`).forEach(row => {
+        const currentInput = row.querySelector('.current');
+        const targetInput = row.querySelector('.target');
+
+        const currentVal = clampValue(currentInput.value, min, max);
+        const targetVal = clampValue(targetInput.value, min, max);
+
+        currentInput.value = currentVal;
+        targetInput.value = targetVal;
+
+        const rowCost = calculateRowCost(currentVal, targetVal, costs);
+        row.querySelector('.cost').textContent = rowCost;
+        subtotal += rowCost;
+      });
+      return subtotal;
+    }
+
+    function recalcAll() {
+      const attrCost = recalcTable('attributesTable', attributeCosts, 0, 12);
+      const skillCost = recalcTable('skillsTable', skillCosts, 0, 8);
+      document.getElementById('totalXp').textContent = attrCost + skillCost;
+    }
+
+    document.querySelectorAll('#attributesTable input, #skillsTable input').forEach(input => {
+      input.addEventListener('input', recalcAll);
+      input.addEventListener('change', recalcAll);
+    });
+
+    document.getElementById('btnReset').addEventListener('click', () => {
+      document.querySelectorAll('#attributesTable input, #skillsTable input').forEach(input => {
+        input.value = 0;
+      });
+      recalcAll();
+    });
+
+    recalcAll();
+  </script>
+</body>
+</html>

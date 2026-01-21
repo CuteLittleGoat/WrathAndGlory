@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kozie liczydła</title>
+  <style>
+    :root {
+      --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
+             radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
+             #031605;
+      --panel: #000;
+      --border: #16c60c;
+      --text: #9cf09c;
+      --accent: #16c60c;
+      --accent-dark: #0d7a07;
+      --glow: 0 0 25px rgba(22, 198, 12, 0.45);
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Consolas", "Fira Code", "Source Code Pro", monospace;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      width: min(860px, 100%);
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--glow);
+      padding: 32px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .logo {
+      max-width: clamp(220px, 40vw, 320px);
+      width: 100%;
+      display: block;
+    }
+
+    .actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px 20px;
+      align-items: start;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stack.right {
+      align-items: stretch;
+    }
+
+    .btn {
+      appearance: none;
+      border: 2px solid var(--border);
+      background: rgba(22, 198, 12, 0.08);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 15px;
+      text-decoration: none;
+      font-weight: 600;
+      text-align: center;
+      display: block;
+      width: 100%;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(22, 198, 12, 0.3);
+      background: rgba(22, 198, 12, 0.14);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      background: rgba(22, 198, 12, 0.22);
+    }
+
+    .note {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <img class="logo" src="Skull.png" alt="Logo Kozi przybornik">
+
+    <div class="actions">
+      <div class="stack">
+        <a class="btn" href="KalkulatorXP.html">Kalkulator XP</a>
+      </div>
+      <div class="stack right">
+        <a class="btn" href="TworzeniePostaci.html">Tworzenie Postaci</a>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

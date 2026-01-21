@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Wrath & Glory</title>
+  <style>
+    /* Ogólne style strony / General page styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f7f7f7;
+    }
+    /* Stylizacja głównego kontenera / Styling of the main container */
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      position: relative; /* Dla pozycjonowania przełącznika języka i stopki / For positioning the language switcher and footer */
+    }
+    /* Styl nagłówków sekcji / Section headers styling */
+    h2 {
+      margin-top: 30px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 5px;
+    }
+    /* Styl etykiet pól formularza / Styling of form field labels */
+    label {
+      font-weight: bold;
+    }
+    /* Styl pól wejściowych liczbowych i tekstowych / Styling of numeric and text input fields */
+    input[type="number"],
+    input[type="text"] {
+      width: 80px;
+      padding: 4px;
+      margin: 2px;
+      text-align: center;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+    /* Oznaczenie pól z nieprawidłowymi wartościami / Marking fields with invalid values */
+    input[type="number"]:invalid,
+    input[type="text"]:invalid {
+      border-color: red;
+    }
+    /* Styl tabeli / Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+    /* Styl komórek tabeli / Table cell styling */
+    th, td {
+      border: 1px solid #ddd;
+      padding: 6px;
+      text-align: center;
+    }
+    /* Styl nagłówków tabeli / Table header styling */
+    th {
+      background: #eee;
+    }
+    /* Styl sekcji XP / XP section styling */
+    .xp-section {
+      margin-bottom: 10px;
+    }
+    /* Styl komunikatów o błędach / Error message styling */
+    .error-message {
+      color: red;
+      min-height: 20px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    /* Szary kolor dla atrybutów powyżej 8 / Grey color for attributes above 8 */
+    input.attribute-high {
+      background-color: #ccc !important;
+    }
+    /* Stylizacja pól talentów / Styling for talent fields */
+    textarea.talent-name {
+      width: 160px;
+      height: 40px;
+      font-size: 16px;
+      padding: 8px;
+      margin: 2px;
+      text-align: center;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      resize: none;
+      overflow: hidden;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+    /* Styl stopki / Footer styling */
+    .footer {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      font-size: 12px;
+      font-style: italic;
+    }
+    /* Responsywność dla mniejszych ekranów / Responsiveness for smaller screens */
+    @media (max-width: 600px) {
+      input[type="number"],
+      input[type="text"] {
+        width: 60px;
+      }
+      textarea.talent-name {
+        width: 120px;
+        height: 30px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Główny kontener strony / Main page container -->
+  <div class="container">
+    <!-- Przełącznik języka w prawym górnym rogu / Language switcher in the top right corner -->
+    <div style="position: absolute; top: 10px; right: 10px;">
+      <select id="languageSelect">
+        <option value="pl">Polski</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+
+    <!-- Sekcja XP / XP Section -->
+    <div class="xp-section">
+      <label id="xpPoolLabel">Pula XP do wydania:</label>
+      <input type="number" id="xpPool" value="100" min="0">
+      <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">100</strong></span>
+    </div>
+    
+    <!-- Obszar komunikatów o błędach / Error message area -->
+    <div class="error-message" id="errorMessage"> </div>
+    
+    <!-- Sekcja Atrybutów / Attributes Section -->
+    <h2 id="attributesHeader">Atrybuty</h2>
+    <table class="attributes-table">
+      <tr>
+        <th id="attrLabel1">S</th>
+        <th id="attrLabel2">Wt</th>
+        <th id="attrLabel3">Zr</th>
+        <th id="attrLabel4">I</th>
+        <th id="attrLabel5">SW</th>
+        <th id="attrLabel6">Int</th>
+        <th id="attrLabel7">Ogd</th>
+      </tr>
+      <tr>
+        <td><input type="number" id="attr_S" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Wt" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Zr" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_I" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_SW" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Int" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Ogd" value="1" min="1" max="12"></td>
+      </tr>
+    </table>
+    
+    <!-- Sekcja Umiejętności / Skills Section -->
+    <h2 id="skillsHeader">Umiejętności</h2>
+    <table class="skills-table">
+      <tr>
+        <th id="skillHeader1">Umiejętność</th>
+        <th id="skillHeader2">Wartość</th>
+        <th id="skillHeader3">Umiejętność</th>
+        <th id="skillHeader4">Wartość</th>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row1">Analiza (Int)</td>
+        <td><input type="number" id="skill_Column1Row1" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row1">Perswazja (Ogd)</td>
+        <td><input type="number" id="skill_Column2Row1" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row2">Atletyka (S)</td>
+        <td><input type="number" id="skill_Column1Row2" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row2">Pilotaż (Zr)</td>
+        <td><input type="number" id="skill_Column2Row2" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row3">Czujność (Int)</td>
+        <td><input type="number" id="skill_Column1Row3" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row3">Przebiegłość (Ogd)</td>
+        <td><input type="number" id="skill_Column2Row3" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row4">Dowodzenie (SW)</td>
+        <td><input type="number" id="skill_Column1Row4" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row4">Przetrwanie (SW)</td>
+        <td><input type="number" id="skill_Column2Row4" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row5">Intuicja (Ogd)</td>
+        <td><input type="number" id="skill_Column1Row5" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row5">Ukrywanie się (Zr)</td>
+        <td><input type="number" id="skill_Column2Row5" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row6">Korzystanie z technologii (Int)</td>
+        <td><input type="number" id="skill_Column1Row6" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row6">Umiejętności strzeleckie (Zr)</td>
+        <td><input type="number" id="skill_Column2Row6" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row7">Medycyna (Int)</td>
+        <td><input type="number" id="skill_Column1Row7" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row7">Walka wręcz (I)</td>
+        <td><input type="number" id="skill_Column2Row7" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row8">Mistrzostwo psioniczne (SW)</td>
+        <td><input type="number" id="skill_Column1Row8" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row8">Wiedza ogólna (Int)</td>
+        <td><input type="number" id="skill_Column2Row8" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row9">Oszukiwanie (Ogd)</td>
+        <td><input type="number" id="skill_Column1Row9" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row9">Zastraszanie (SW)</td>
+        <td><input type="number" id="skill_Column2Row9" value="0" min="0" max="8"></td>
+      </tr>
+    </table>
+    
+    <!-- Sekcja Talentów / Talents Section -->
+    <h2 id="talentsHeader">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2>
+    <table class="talents-table">
+      <tr>
+        <th id="talentHeader1">Nazwa</th>
+        <th id="talentHeader2">Koszt</th>
+        <th id="talentHeader3">Nazwa</th>
+        <th id="talentHeader4">Koszt</th>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_1" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_1" value="0" min="0"></td>
+        <td><textarea id="talent_name_2" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_2" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_3" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_3" value="0" min="0"></td>
+        <td><textarea id="talent_name_4" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_4" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_5" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_5" value="0" min="0"></td>
+        <td><textarea id="talent_name_6" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_6" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_7" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_7" value="0" min="0"></td>
+        <td><textarea id="talent_name_8" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_8" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_9" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_9" value="0" min="0"></td>
+        <td><textarea id="talent_name_10" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_10" value="0" min="0"></td>
+      </tr>
+    </table>
+
+    <!-- Stopka / Footer -->
+    <div class="footer" id="footerText">Wykonane przez Spaczoną Inteligencję</div>
+  </div>
+  
+  <!-- Sekcja JavaScript / JavaScript Section -->
+  <script>
+    /* Inicjalizacja po załadowaniu strony / Initialization after page load */
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- Obiekt tłumaczeń dla obsługi wielu języków / Translation object for multi-language support ---
+      const translations = {
+        pl: {
+          labels: {
+            xpPool: 'Pula XP do wydania:',
+            remainingXP: 'Pozostało:',
+            attributesHeader: 'Atrybuty',
+            skillsHeader: 'Umiejętności',
+            talentsHeader: 'Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne',
+            skillsTableHeaders: ['Umiejętność', 'Wartość', 'Umiejętność', 'Wartość'],
+            talentsTableHeaders: ['Nazwa', 'Koszt', 'Nazwa', 'Koszt'],
+            footerText: 'Wykonane przez Spaczoną Inteligencję'
+          },
+          attributes: ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd'],
+          skillsColumn1: [
+            'Analiza (Int)', 'Atletyka (S)', 'Czujność (Int)', 'Dowodzenie (SW)', 'Intuicja (Ogd)',
+            'Korzystanie z technologii (Int)', 'Medycyna (Int)', 'Mistrzostwo psioniczne (SW)', 'Oszukiwanie (Ogd)'
+          ],
+          skillsColumn2: [
+            'Perswazja (Ogd)', 'Pilotaż (Zr)', 'Przebiegłość (Ogd)', 'Przetrwanie (SW)', 'Ukrywanie się (Zr)',
+            'Umiejętności strzeleckie (Zr)', 'Walka wręcz (I)', 'Wiedza ogólna (Int)', 'Zastraszanie (SW)'
+          ],
+          errors: {
+            tooMuchXP: 'Przekroczono dostępną pulę XP!',
+            treeOfLearning: 'Niezgodność z zasadą Drzewa Nauki (str. 25)',
+            languageChangeWarning: 'Zmiana języka spowoduje zresetowanie wszystkich danych. Czy na pewno chcesz kontynuować?'
+          }
+        },
+        en: {
+          labels: {
+            xpPool: 'XP Pool:',
+            remainingXP: 'Remaining XP:',
+            attributesHeader: 'Attributes',
+            skillsHeader: 'Skills',
+            talentsHeader: 'Talents, Faith, Psionic Powers, Archetypes, Ascension Packages, and Others',
+            skillsTableHeaders: ['Skill', 'Value', 'Skill', 'Value'],
+            talentsTableHeaders: ['Name', 'Cost', 'Name', 'Cost'],
+            footerText: 'Made by Abominable Intelligence'
+          },
+          attributes: ['S', 'T', 'A', 'I', 'Will', 'Int', 'Fell'],
+          skillsColumn1: [
+            'Athletics (S)', 'Awareness (Int)', 'Ballistic Skill (A)', 'Cunning (Fel)', 'Deception (Fel)',
+            'Insight (Fel)', 'Intimidation (Will)', 'Investigation (Int)', 'Leadership (Will)'
+          ],
+          skillsColumn2: [
+            'Medicae (Int)', 'Persuasion (Fel)', 'Pilot (A)', 'Psychic Mastery (Will)', 'Scholar (Int)',
+            'Stealth (A)', 'Survival (Will)', 'Tech (Int)', 'Weapon Skill (I)'
+          ],
+          errors: {
+            tooMuchXP: 'Too much XP spent!',
+            treeOfLearning: '"Tree of Learning" rule broken (page 26)', // Poprawiono na (page 26)
+            languageChangeWarning: 'Changing the language will reset all data. Are you sure you want to continue?'
+          }
+        }
+      };
+
+      // --- Domyślny język (polski) / Default language (Polish) ---
+      let currentLanguage = 'pl';
+
+      // --- Koszty atrybutów i umiejętności / Attribute and skill costs ---
+      const attributeCosts = {
+        1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
+      };
+      const skillCosts = {
+        0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
+      };
+
+      // --- Funkcja aktualizująca teksty w wybranym języku / Function to update texts in the selected language ---
+      function updateLanguage(lang) {
+        currentLanguage = lang;
+        const t = translations[lang];
+        document.getElementById('xpPoolLabel').innerText = t.labels.xpPool;
+        document.getElementById('xpRemainingLabel').innerHTML = `${t.labels.remainingXP} <strong id="xpRemaining">100</strong>`;
+        document.getElementById('attributesHeader').innerText = t.labels.attributesHeader;
+        document.getElementById('skillsHeader').innerText = t.labels.skillsHeader;
+        document.getElementById('talentsHeader').innerText = t.labels.talentsHeader;
+        document.getElementById('skillHeader1').innerText = t.labels.skillsTableHeaders[0];
+        document.getElementById('skillHeader2').innerText = t.labels.skillsTableHeaders[1];
+        document.getElementById('skillHeader3').innerText = t.labels.skillsTableHeaders[2];
+        document.getElementById('skillHeader4').innerText = t.labels.skillsTableHeaders[3];
+        document.getElementById('talentHeader1').innerText = t.labels.talentsTableHeaders[0];
+        document.getElementById('talentHeader2').innerText = t.labels.talentsTableHeaders[1];
+        document.getElementById('talentHeader3').innerText = t.labels.talentsTableHeaders[2];
+        document.getElementById('talentHeader4').innerText = t.labels.talentsTableHeaders[3];
+        document.getElementById('footerText').innerText = t.labels.footerText;
+
+        // Aktualizacja etykiet atrybutów / Update attribute labels
+        for (let i = 1; i <= 7; i++) {
+          document.getElementById(`attrLabel${i}`).innerText = t.attributes[i - 1];
+        }
+
+        // Aktualizacja etykiet umiejętności w kolumnie 1 / Update skill labels in column 1
+        for (let i = 1; i <= 9; i++) {
+          document.getElementById(`skillLabelColumn1Row${i}`).innerText = t.skillsColumn1[i - 1];
+        }
+
+        // Aktualizacja etykiet umiejętności w kolumnie 2 / Update skill labels in column 2
+        for (let i = 1; i <= 9; i++) {
+          document.getElementById(`skillLabelColumn2Row${i}`).innerText = t.skillsColumn2[i - 1];
+        }
+      }
+
+      // --- Funkcja resetująca wszystkie pola do wartości domyślnych / Function to reset all fields to default values ---
+      function resetAll() {
+        document.getElementById('xpPool').value = 100;
+        ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd'].forEach(id => {
+          document.getElementById(`attr_${id}`).value = 1;
+        });
+        for (let i = 1; i <= 9; i++) {
+          document.getElementById(`skill_Column1Row${i}`).value = 0;
+          document.getElementById(`skill_Column2Row${i}`).value = 0;
+        }
+        for (let i = 1; i <= 10; i++) {
+          document.getElementById(`talent_name_${i}`).value = '';
+          document.getElementById(`talent_cost_${i}`).value = 0;
+        }
+        recalcXP();
+      }
+
+      // --- Funkcja przeliczająca zużycie XP / Function to recalculate XP usage ---
+      function recalcXP() {
+        let xpPool = parseInt(document.getElementById('xpPool').value) || 0;
+        let totalAttrCost = 0;
+        const attrIds = ['attr_S', 'attr_Wt', 'attr_Zr', 'attr_I', 'attr_SW', 'attr_Int', 'attr_Ogd'];
+        attrIds.forEach(id => {
+          let inp = document.getElementById(id);
+          let val = parseInt(inp.value) || 1;
+          if (val < 1) val = 1;
+          if (val > 12) val = 12;
+          inp.value = val;
+          totalAttrCost += attributeCosts[val];
+          inp.classList.toggle('attribute-high', val > 8);
+        });
+
+        let totalSkillCost = 0;
+        const skillIds = [];
+        for (let i = 1; i <= 9; i++) {
+          skillIds.push(`skill_Column1Row${i}`);
+          skillIds.push(`skill_Column2Row${i}`);
+        }
+        skillIds.forEach(id => {
+          let inp = document.getElementById(id);
+          let val = parseInt(inp.value) || 0;
+          if (val < 0) val = 0;
+          if (val > 8) val = 8;
+          inp.value = val;
+          totalSkillCost += skillCosts[val];
+        });
+
+        let totalTalentCost = 0;
+        for (let i = 1; i <= 10; i++) {
+          let inp = document.getElementById(`talent_cost_${i}`);
+          let val = parseInt(inp.value) || 0;
+          if (val < 0) val = 0;
+          inp.value = val;
+          totalTalentCost += val;
+        }
+
+        let xpSpent = totalAttrCost + totalSkillCost + totalTalentCost;
+        let xpRemaining = xpPool - xpSpent;
+        document.getElementById('xpRemaining').innerText = xpRemaining;
+
+        // Sprawdzenie przekroczenia puli XP / Check for exceeding XP pool
+        if (xpRemaining < 0) {
+          displayError(translations[currentLanguage].errors.tooMuchXP);
+        } else {
+          // Jeśli XP jest w normie, sprawdzamy "Drzewo Nauki" / If XP is fine, check "Tree of Learning"
+          checkSkillTree();
+        }
+      }
+
+      // --- Funkcja wyświetlająca komunikaty o błędach / Function to display error messages ---
+      function displayError(msg) {
+        document.getElementById('errorMessage').innerText = msg;
+      }
+
+      // --- Funkcja sprawdzająca zasadę "Drzewa Nauki" / Function to check the "Tree of Learning" rule ---
+      function checkSkillTree() {
+        const skillIds = [];
+        for (let i = 1; i <= 9; i++) {
+          skillIds.push(`skill_Column1Row${i}`);
+          skillIds.push(`skill_Column2Row${i}`);
+        }
+
+        // Liczenie aktywnych umiejętności / Counting active skills
+        let totalActiveSkills = 0;
+        skillIds.forEach(id => {
+          let val = parseInt(document.getElementById(id).value) || 0;
+          if (val > 0) totalActiveSkills++;
+        });
+
+        // Sprawdzanie zasady "Drzewa Nauki" / Checking the "Tree of Learning" rule
+        let valid = true;
+        for (let id of skillIds) {
+          let level = parseInt(document.getElementById(id).value) || 0;
+          if (level > 1 && totalActiveSkills < level) {
+            valid = false;
+            break;
+          }
+        }
+
+        // Jeśli XP jest w normie, pokazujemy błąd "Drzewa Nauki" tylko jeśli zasada nie jest spełniona
+        // If XP is fine, show "Tree of Learning" error only if the rule is broken
+        let xpRemaining = parseInt(document.getElementById('xpRemaining').innerText) || 0;
+        if (xpRemaining >= 0) {
+          if (!valid) {
+            displayError(translations[currentLanguage].errors.treeOfLearning);
+          } else {
+            displayError(""); // Kasowanie komunikatu, jeśli wszystko jest poprawne / Clear message if everything is correct
+          }
+        }
+      }
+
+      // --- Funkcja ustawiająca domyślne wartości po utracie fokusu / Function to set default values on blur ---
+      function attachDefaultOnBlur(selector, defaultValue) {
+        document.querySelectorAll(selector).forEach(inp => {
+          inp.addEventListener('blur', () => {
+            if (!inp.value || isNaN(inp.value)) {
+              inp.value = defaultValue;
+              recalcXP();
+            }
+          });
+        });
+      }
+
+      // --- Funkcja dostosowująca rozmiar czcionki w polach talentów / Function to adjust font size in talent fields ---
+      function adjustTalentFontSize(el) {
+        el.style.fontSize = '16px';
+        let fontSize = 16;
+        while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > 10) {
+          fontSize -= 1;
+          el.style.fontSize = `${fontSize}px`;
+        }
+      }
+
+      // --- Logika przełącznika języka z ostrzeżeniem / Language switcher logic with warning ---
+      document.getElementById('languageSelect').addEventListener('change', function(e) {
+        const newLang = e.target.value;
+        const confirmed = confirm(translations[currentLanguage].errors.languageChangeWarning);
+        if (confirmed) {
+          updateLanguage(newLang);
+          resetAll();
+        } else {
+          e.target.value = currentLanguage; // Powrót do poprzedniego języka / Revert to previous language
+        }
+      });
+
+      // --- Podpinanie zdarzeń do pól wejściowych / Attaching events to input fields ---
+      document.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('input', recalcXP);
+        inp.addEventListener('change', recalcXP);
+      });
+
+      // --- Podpinanie zdarzeń do pól tekstowych talentów / Attaching events to talent text fields ---
+      document.querySelectorAll('textarea.talent-name').forEach(ta => {
+        ta.addEventListener('input', () => adjustTalentFontSize(ta));
+      });
+
+      // --- Inicjalizacja domyślnych wartości / Initialization of default values ---
+      attachDefaultOnBlur('#xpPool', 100);
+      attachDefaultOnBlur("input[id^='attr_']", 1);
+      attachDefaultOnBlur("input[id^='skill_Column']", 0);
+      attachDefaultOnBlur("input[id^='talent_cost_']", 0);
+
+      // --- Inicjalna konfiguracja / Initial setup ---
+      updateLanguage(currentLanguage);
+      recalcXP();
+    });
+  </script>
+</body>
+</html>

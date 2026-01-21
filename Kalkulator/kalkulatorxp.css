@@ -1,0 +1,203 @@
+:root{
+  --bg:#050607;
+  --panel:#070A0B;
+  --panel2:#0A0F0E;
+  --text:#6FE38C;
+  --text2:#4FB070;
+  --muted:#2F6F4A;
+  --code:#CFF5DC;
+  --red:#d74b4b;
+
+  --b:rgba(111,227,140,.22);
+  --b2:rgba(111,227,140,.12);
+  --div:rgba(111,227,140,.10);
+
+  --hbg:rgba(111,227,140,.06);
+  --zebra:rgba(111,227,140,.03);
+  --hover:rgba(111,227,140,.05);
+
+  --glow:0 0 6px rgba(111,227,140,.18);
+  --glowH:0 0 10px rgba(111,227,140,.25);
+
+  --header-row-height:36px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Share Tech Mono", Calibri, monospace;
+  line-height:1.45;
+  letter-spacing:.03em;
+}
+
+.app{min-height:100%; display:flex; flex-direction:column}
+.topbar{
+  padding:14px 16px;
+  border-bottom:1px solid var(--div);
+  background:linear-gradient(180deg, rgba(111,227,140,.04), transparent);
+  display:flex; gap:12px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+}
+.brand{display:flex; gap:12px; align-items:center}
+.sigil{
+  width:44px; height:44px; display:grid; place-items:center;
+  border:1px solid var(--b);
+  background:rgba(111,227,140,.04);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.08);
+}
+.title{
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  font-weight:600;
+  text-shadow:var(--glowH);
+}
+.actions{display:flex; gap:10px; flex-wrap:wrap}
+.btn{
+  border-radius:4px;
+  padding:10px 12px;
+  border:1px solid var(--b);
+  cursor:pointer;
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-weight:600;
+  font-size:12px;
+  background:rgba(111,227,140,.08);
+  color:var(--text);
+}
+.btn.primary{
+  background:var(--text);
+  color:var(--bg);
+  border-color:rgba(111,227,140,.35);
+}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.btn.secondary:hover{background:rgba(111,227,140,.12)}
+.btn.primary:hover{filter:brightness(1.08)}
+
+.main{flex:1; display:grid; grid-template-columns:360px 1fr; gap:12px; padding:12px}
+.panel{
+  border:1px solid var(--b);
+  background:var(--panel);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.08);
+  border-radius:4px;
+  overflow:hidden;
+}
+.panelHeader{
+  padding:10px 12px;
+  background:rgba(111,227,140,.04);
+  border-bottom:1px solid var(--div);
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  display:flex; gap:10px; align-items:center;
+}
+.panelBody{padding:12px}
+.caret{color:rgba(111,227,140,.65)}
+.panelTitle{color:var(--code)}
+.hint{margin-top:4px; color:var(--text2); font-size:12px}
+.muted{color:var(--muted)}
+
+.totalBox{
+  margin-top:14px;
+  padding:12px;
+  border:1px solid var(--b);
+  background:rgba(111,227,140,.04);
+  border-radius:6px;
+  box-shadow:var(--glow);
+}
+.metricLabel{letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:var(--code)}
+.metricValue{font-family:"Orbitron"; font-size:28px; margin-top:6px; color:var(--text)}
+
+.workspace{
+  border:1px solid var(--b);
+  background:var(--panel);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.08);
+  border-radius:4px;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.tabs{
+  display:flex; gap:6px; flex-wrap:wrap;
+  padding:10px 10px;
+  border-bottom:1px solid var(--div);
+  background:rgba(111,227,140,.03);
+}
+.tab{
+  padding:8px 10px;
+  border:1px solid var(--b2);
+  background:rgba(111,227,140,.05);
+  color:var(--text);
+  border-radius:4px;
+  font-size:12px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+}
+.tab.active{
+  background:rgba(111,227,140,.10);
+  border-color:var(--b);
+  box-shadow:0 0 0 2px rgba(111,227,140,.10);
+}
+
+.tableWrap{flex:1; display:flex; flex-direction:column; position:relative; background:linear-gradient(180deg, rgba(111,227,140,.03), transparent)}
+.tableFrame{
+  flex:1;
+  border-top:1px solid var(--div);
+  border-bottom:1px solid var(--div);
+  background:var(--panel);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.06);
+  border-radius:6px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.tableViewport{flex:1; overflow:auto; scrollbar-width:thin; padding:12px}
+.calcGrid{display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:12px}
+.calcCard{border:1px solid var(--b); background:var(--panel2); border-radius:6px; box-shadow:var(--glow); overflow:hidden}
+.cardHeader{
+  padding:10px 12px;
+  border-bottom:1px solid var(--div);
+  font-family:"Orbitron";
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--code);
+}
+
+.dataTable{width:100%; border-collapse:collapse; font-size:13px; border:1px solid var(--div); box-shadow:var(--glow)}
+.dataTable thead th{
+  background:linear-gradient(180deg, rgba(111,227,140,.08), rgba(111,227,140,.03));
+  color:var(--code);
+  padding:10px 9px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--div);
+}
+.dataTable tbody tr:nth-child(even){background:var(--zebra)}
+.dataTable tbody tr:hover{background:var(--hover)}
+.dataTable th,
+.dataTable td{
+  vertical-align:top;
+  padding:8px 9px;
+  border-bottom:1px solid var(--div);
+  text-align:center;
+}
+.dataTable td.num{text-align:right; color:var(--code)}
+
+.input{
+  width:100%;
+  padding:10px 10px;
+  border-radius:4px;
+  border:1px solid var(--b);
+  background:var(--bg);
+  color:var(--text);
+  outline:none;
+  text-align:center;
+}
+.input:focus{box-shadow:0 0 0 3px rgba(111,227,140,.18)}
+
+@media (max-width: 980px){
+  .main{grid-template-columns:1fr}
+}
