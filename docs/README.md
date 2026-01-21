@@ -13,6 +13,7 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 - **Infoczytnik**:
   - Odczyt wiadomości: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (szykowanie wiadomości): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
+  - Menu główne z opcją debugowania: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
 - **Kalkulator**:
   - Menu główne: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
