@@ -1,0 +1,118 @@
+# Linki i odwołania do lokalizacji
+
+## Cel pliku
+Ten dokument zbiera **wszystkie odwołania do lokalizacji** (wewnątrz repozytorium i na zewnątrz), które pojawiają się w kodzie oraz w dokumentacji. Ułatwia to migrację repozytorium na nową ścieżkę GitHub Pages.
+
+**Stan na dziś:**
+- W kodzie aplikacji **nie ma** twardo zakodowanych adresów w stylu `cutelittlegoat.github.io/...`.
+- Wszystkie odwołania do plików wewnątrz repo są **względne** (relative paths), więc po przeniesieniu do `cutelittlegoat.github.io/WrathAndGlory/Kalkulator/` będą działały bez zmian, o ile zachowasz tę samą strukturę katalogów.
+
+---
+
+## 1. Odwołania w kodzie aplikacji (runtime)
+
+### 1.1. `index.html`
+- **Logo**: `src="Skull.png"` → plik graficzny w katalogu głównym repo.
+- **Nawigacja**:
+  - `href="KalkulatorXP.html"` → przejście do kalkulatora XP.
+  - `href="TworzeniePostaci.html"` → przejście do arkusza tworzenia postaci.
+
+**Implikacja przy migracji:**
+- Wszystkie ścieżki są względne, więc działają tak długo, jak `index.html`, `Skull.png` oraz pliki HTML pozostaną w tym samym katalogu.
+
+### 1.2. `KalkulatorXP.html`
+- **Google Fonts (zewnętrzne)**:
+  - `https://fonts.googleapis.com` (preconnect + arkusz fontów)
+  - `https://fonts.gstatic.com` (preconnect; serwer plików fontów)
+- **CSS lokalny**: `href="kalkulatorxp.css"` → główny arkusz stylów.
+
+**Implikacja przy migracji:**
+- Google Fonts pozostają bez zmian (zewnętrzne URL).
+- `kalkulatorxp.css` musi znajdować się w tym samym katalogu co `KalkulatorXP.html`.
+
+### 1.3. `TworzeniePostaci.html`
+- **Google Fonts (zewnętrzne)**:
+  - `https://fonts.googleapis.com` (preconnect + arkusz fontów)
+  - `https://fonts.gstatic.com` (preconnect; serwer plików fontów)
+- **CSS lokalny**: `href="kalkulatorxp.css"` → współdzielony arkusz stylów.
+- **Instrukcja PDF (lokalna, dynamiczna)**:
+  - `const manualPath = \`HowToUse/${currentLanguage}.pdf\``
+  - `window.open(manualPath, '_blank', 'noopener')`
+
+**Implikacja przy migracji:**
+- `HowToUse/` musi pozostać na tym samym poziomie katalogów, co `TworzeniePostaci.html`.
+- Pliki `HowToUse/pl.pdf` i `HowToUse/en.pdf` muszą zachować nazwy.
+
+### 1.4. `style.css`
+- **Google Fonts (zewnętrzne)**:
+  - `@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');`
+
+**Implikacja przy migracji:**
+- `style.css` korzysta z zewnętrznego zasobu Google Fonts. URL pozostaje bez zmian.
+- Sam `style.css` nie jest używany przez aktualne HTML, ale jeśli wróci do użycia – musi być w repo i mieć dostęp do internetu.
+
+### 1.5. `kalkulatorxp.css`
+- **Brak odwołań do zewnętrznych zasobów.**
+- Wspólny arkusz stylów lokalny.
+
+### 1.6. `Old/Kalkulator_Org.html`
+- **Brak odwołań do zewnętrznych URL oraz plików repo.**
+- Plik jest archiwalny (referencja historyczna).
+
+---
+
+## 2. Odwołania w dokumentacji
+
+### 2.1. `docs/README.md`
+- Wskazuje lokalne pliki HTML i CSS:
+  - `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`, `kalkulatorxp.css`.
+- Wskazuje PDF-y instrukcji:
+  - `HowToUse/pl.pdf`, `HowToUse/en.pdf`.
+
+### 2.2. `docs/Documentation.md`
+- Wymienia lokalne pliki aplikacji:
+  - `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`, `kalkulatorxp.css`, `Skull.png`.
+- Opisuje dynamiczne otwieranie:
+  - `HowToUse/${currentLanguage}.pdf`.
+
+**Implikacja przy migracji:**
+- Dokumentacja nie zawiera twardo zakodowanych URL GitHub Pages, więc nie wymaga aktualizacji ścieżek sieciowych.
+
+---
+
+## 3. Co trzeba zmienić po przeniesieniu repo do `WrathAndGlory/Kalkulator/`
+
+### 3.1. Kod aplikacji
+**Nie wymaga zmian**, jeśli:
+- Zachowasz identyczną strukturę plików w katalogu `Kalkulator/`.
+- Nie dodasz absolutnych ścieżek w stylu `/Kalkulator/...` lub `cutelittlegoat.github.io/...`.
+
+### 3.2. Gdybyś użył twardych URL w przyszłości
+Jeśli pojawią się absolutne odwołania, muszą zostać zaktualizowane:
+- **Stare (przed zmianą):**
+  - `https://cutelittlegoat.github.io/Kalkulator/...`
+- **Nowe (po zmianie):**
+  - `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/...`
+
+### 3.3. Sprawdzenie po migracji (checklista)
+1. Otwórz `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
+2. Sprawdź, czy logo `Skull.png` ładuje się poprawnie.
+3. Wejdź w **Kalkulator XP** i **Tworzenie Postaci** – oba linki muszą działać.
+4. W **Tworzenie Postaci** kliknij **Instrukcja / Manual**:
+   - `HowToUse/pl.pdf` i `HowToUse/en.pdf` muszą się otworzyć w nowej karcie.
+5. Upewnij się, że fonty z Google Fonts się ładują (styl nagłówków i tekstów).
+
+---
+
+## 4. Podsumowanie kluczowych lokalizacji
+
+| Plik | Typ odwołania | Lokalizacja | Uwagi |
+|------|---------------|------------|-------|
+| `index.html` | obraz | `Skull.png` | lokalny plik w repo |
+| `index.html` | linki | `KalkulatorXP.html`, `TworzeniePostaci.html` | nawigacja do narzędzi |
+| `KalkulatorXP.html` | CSS | `kalkulatorxp.css` | lokalny arkusz stylów |
+| `KalkulatorXP.html` | fonty | `fonts.googleapis.com`, `fonts.gstatic.com` | zewnętrzne zasoby |
+| `TworzeniePostaci.html` | CSS | `kalkulatorxp.css` | lokalny arkusz stylów |
+| `TworzeniePostaci.html` | PDF | `HowToUse/${currentLanguage}.pdf` | lokalny plik, otwierany w nowej karcie |
+| `TworzeniePostaci.html` | fonty | `fonts.googleapis.com`, `fonts.gstatic.com` | zewnętrzne zasoby |
+| `style.css` | fonty | `fonts.googleapis.com` | zewnętrzne zasoby (plik obecnie nieużywany) |
