@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-    const INF_VERSION = "2025-12-13-6"; // <- zmieniaj przy aktualizacjach
+    const INF_VERSION = "2025-12-13-8"; // <- zmieniaj przy aktualizacjach
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -228,6 +228,53 @@
     max-width:560px;
     background:rgba(0,0,0,.35);
   }
+  .debugPanel{
+    position:fixed;
+    right:12px;
+    bottom:12px;
+    width:min(420px, 92vw);
+    max-height:60vh;
+    overflow:auto;
+    background:rgba(0,0,0,.88);
+    border:1px solid rgba(0,255,102,.45);
+    border-radius:12px;
+    padding:12px 12px 10px;
+    font-family:Consolas, "Courier New", monospace;
+    font-size:12px;
+    color:#b6ffb6;
+    box-shadow:0 12px 30px rgba(0,0,0,.45);
+    z-index:9998;
+    display:none;
+  }
+  .debugPanel.active{display:block;}
+  .debugPanel h2{
+    margin:0 0 6px 0;
+    font-size:12px;
+    color:#8aff8a;
+    letter-spacing:.4px;
+    text-transform:uppercase;
+  }
+  .debugRow{margin-bottom:6px; line-height:1.35;}
+  .debugRow strong{color:#e0ffe0;}
+  .debugPayload{
+    white-space:pre-wrap;
+    word-break:break-word;
+    margin:6px 0;
+    padding:8px;
+    border-radius:8px;
+    background:rgba(0,255,102,.08);
+    border:1px solid rgba(0,255,102,.2);
+  }
+  .debugPanel button{
+    width:100%;
+    background:rgba(0,255,102,.12);
+    border:1px solid rgba(0,255,102,.4);
+    border-radius:8px;
+    color:#b6ffb6;
+    padding:6px 8px;
+    font-family:inherit;
+    cursor:pointer;
+  }
 </style>
 </head>
 
@@ -241,6 +288,17 @@
       </div>
       <div style="margin-top:10px; font-size:12px; opacity:.6;">(Kliknij gdziekolwiek)</div>
     </div>
+  </div>
+
+  <div class="debugPanel" id="debugPanel" aria-live="polite">
+    <h2>Debug Infoczytnika</h2>
+    <div class="debugRow"><strong>Wersja:</strong> <span id="debugVersion">-</span></div>
+    <div class="debugRow"><strong>Firebase:</strong> <span id="debugFirebase">-</span></div>
+    <div class="debugRow"><strong>Audio:</strong> <span id="debugAudio">-</span></div>
+    <div class="debugRow"><strong>Ostatnia aktualizacja:</strong> <span id="debugUpdated">-</span></div>
+    <div class="debugRow"><strong>Ostatni błąd:</strong> <span id="debugError">-</span></div>
+    <div class="debugPayload" id="debugPayload">Brak danych.</div>
+    <button type="button" id="debugCopy">Skopiuj ostatni payload</button>
   </div>
 
   <div class="wrap">
@@ -295,16 +353,89 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
   import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
+  const urlParams = new URLSearchParams(window.location.search);
+  const DEBUG_MODE = ["1", "true", "yes"].includes((urlParams.get("debug") || "").toLowerCase());
+  const DEBUG_LOGS = ["1", "true", "yes"].includes((urlParams.get("logs") || "").toLowerCase());
+  const MOCK_AUDIO = ["1", "true", "yes"].includes((urlParams.get("mockAudio") || "").toLowerCase());
+
   const firebaseConfig = window.firebaseConfig;
   if(!firebaseConfig){
     console.error("Brak window.firebaseConfig — sprawdź config/firebase-config.js");
     // Nie blokujemy UI — tylko wyświetli się layout bez aktualizacji.
   }
 
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
+  function logDebug(...args){
+    if(DEBUG_LOGS){
+      console.log("[Infoczytnik]", ...args);
+    }
+  }
 
-  const ASSET_VERSION = window.__dsVersion || "2025-12-13-5";
+  const debugState = {
+    enabled: DEBUG_MODE,
+    logs: DEBUG_LOGS,
+    mockAudio: MOCK_AUDIO,
+    lastPayload: null,
+    lastError: null,
+    lastUpdated: null,
+  };
+
+  const el = {
+    panel: document.getElementById("panel"),
+    layoutImg: document.getElementById("layoutImg"),
+    screen: document.getElementById("screen"),
+    prefixLine: document.getElementById("prefixLine"),
+    suffixLine: document.getElementById("suffixLine"),
+    msg: document.getElementById("msg"),
+    logo: document.getElementById("logo"),
+    debugPanel: document.getElementById("debugPanel"),
+    debugVersion: document.getElementById("debugVersion"),
+    debugFirebase: document.getElementById("debugFirebase"),
+    debugAudio: document.getElementById("debugAudio"),
+    debugUpdated: document.getElementById("debugUpdated"),
+    debugError: document.getElementById("debugError"),
+    debugPayload: document.getElementById("debugPayload"),
+    debugCopy: document.getElementById("debugCopy"),
+  };
+
+  let app = null;
+  let db = null;
+  if(firebaseConfig){
+    app = initializeApp(firebaseConfig);
+    db = getFirestore(app);
+  }
+
+  const originalPlayUrlOnce = window.__dsPlayUrlOnce;
+  window.__dsPlayUrlOnce = async function(url){
+    if(debugState.mockAudio){
+      logDebug("mockAudio -> pomijam odtwarzanie", url);
+      updateDebugPanel();
+      return;
+    }
+    return originalPlayUrlOnce ? originalPlayUrlOnce(url) : undefined;
+  };
+
+  if(el.debugCopy){
+    el.debugCopy.addEventListener("click", async () => {
+      if(!debugState.lastPayload) return;
+      const text = JSON.stringify(debugState.lastPayload, null, 2);
+      try{
+        await navigator.clipboard.writeText(text);
+        el.debugCopy.textContent = "Skopiowano payload ✅";
+      }catch(e){
+        el.debugCopy.textContent = "Nie udało się skopiować";
+      }
+      setTimeout(() => { el.debugCopy.textContent = "Skopiuj ostatni payload"; }, 1500);
+    });
+  }
+
+  window.addEventListener("error", (event) => {
+    captureError(event?.error || event?.message || "Błąd JS", "window.onerror");
+  });
+  window.addEventListener("unhandledrejection", (event) => {
+    captureError(event?.reason || "Unhandled rejection", "Promise");
+  });
+
+  const ASSET_VERSION = window.__dsVersion || "2025-12-13-8";
 
   const DEFAULT_PING_URL = `assets/audio/global/Ping.mp3?v=${ASSET_VERSION}`;
   const DEFAULT_MSG_URL  = `assets/audio/global/Message.mp3?v=${ASSET_VERSION}`;
@@ -378,15 +509,9 @@
     mechanicus:  `assets/logos/mechanicus/Mechanicus.png?v=${ASSET_VERSION}`
   };
 
-  const el = {
-    panel: document.getElementById("panel"),
-    layoutImg: document.getElementById("layoutImg"),
-    screen: document.getElementById("screen"),
-    prefixLine: document.getElementById("prefixLine"),
-    suffixLine: document.getElementById("suffixLine"),
-    msg: document.getElementById("msg"),
-    logo: document.getElementById("logo"),
-  };
+  if(DEBUG_MODE){
+    updateDebugPanel();
+  }
 
   function fitPanel(ar){
     const vw = window.innerWidth, vh = window.innerHeight;
@@ -468,6 +593,37 @@
     if(d.suffixColor)    document.documentElement.style.setProperty("--suffix-color", String(d.suffixColor));
   }
 
+  function formatTimestamp(value){
+    if(!value) return "-";
+    const date = (value instanceof Date) ? value : new Date(value);
+    if(Number.isNaN(date.getTime())) return String(value);
+    return date.toLocaleString("pl-PL");
+  }
+
+  function updateDebugPanel(){
+    if(!debugState.enabled || !el.debugPanel) return;
+    el.debugPanel.classList.add("active");
+    el.debugVersion.textContent = window.__dsVersion || "-";
+    el.debugFirebase.textContent = firebaseConfig?.projectId
+      ? `projectId: ${firebaseConfig.projectId}`
+      : "brak konfiguracji";
+    const audioLabel = debugState.mockAudio ? "mockAudio=1 (wyciszone)"
+      : (window.__dsAudioArmed ? "odblokowane" : "zablokowane");
+    el.debugAudio.textContent = audioLabel;
+    el.debugUpdated.textContent = debugState.lastUpdated ? formatTimestamp(debugState.lastUpdated) : "-";
+    el.debugError.textContent = debugState.lastError ? String(debugState.lastError.message || debugState.lastError) : "-";
+    el.debugPayload.textContent = debugState.lastPayload
+      ? JSON.stringify(debugState.lastPayload, null, 2)
+      : "Brak danych.";
+  }
+
+  function captureError(error, label){
+    const prefix = label ? `${label}: ` : "";
+    debugState.lastError = prefix + (error?.message || error);
+    logDebug("Błąd:", error);
+    updateDebugPanel();
+  }
+
   function showMessage(prefix, text, suffix){
     el.prefixLine.textContent = prefix || "";
     el.msg.textContent = text || "";
@@ -482,63 +638,81 @@
   }
 
   window.addEventListener("resize", () => fitPanel(currentAr));
+  if(DEBUG_MODE){
+    ["pointerdown", "keydown", "touchstart", "click"].forEach((evt) => {
+      window.addEventListener(evt, () => updateDebugPanel(), { passive:true });
+    });
+  }
 
-  const currentRef = doc(db, "dataslate", "current");
+  if(!db){
+    captureError("Brak konfiguracji Firebase — brak połączenia z Firestore.", "Firebase");
+  }
+
+  const currentRef = db ? doc(db, "dataslate", "current") : null;
   let lastNonce = null;
 
-  onSnapshot(currentRef, (snap)=>{
-    if(!snap.exists()) return;
-    const d = snap.data() || {};
+  if(currentRef){
+    onSnapshot(currentRef, (snap)=>{
+      if(!snap.exists()) return;
+      const d = snap.data() || {};
 
-    if(d.nonce && d.nonce === lastNonce) return;
-    lastNonce = d.nonce || null;
+      if(d.nonce && d.nonce === lastNonce) return;
+      lastNonce = d.nonce || null;
 
-    const faction = d.faction || "mechanicus";
-    const color   = d.color || d.fontColor || "#00ff66";
-    const showLogo = d.showLogo !== false;
-    const flicker = d.flicker !== false;
+      debugState.lastPayload = d;
+      debugState.lastUpdated = new Date();
+      logDebug("Snapshot:", d);
+      updateDebugPanel();
 
-    applyLayout(faction, color, showLogo);
-    setFlickerState(flicker);
-    applyTextStyleFromDoc(d);
+      const faction = d.faction || "mechanicus";
+      const color   = d.color || d.fontColor || "#00ff66";
+      const showLogo = d.showLogo !== false;
+      const flicker = d.flicker !== false;
 
-    if(d.type === "clear"){
-      clearMessageKeepLayout();
-      return;
-    }
+      applyLayout(faction, color, showLogo);
+      setFlickerState(flicker);
+      applyTextStyleFromDoc(d);
 
-    if(d.type === "ping"){
-      const pingUrl = d.pingUrl ? String(d.pingUrl) : DEFAULT_PING_URL;
-      window.__dsPlayUrlOnce(pingUrl);
-      return;
-    }
-
-    if(d.type === "message"){
-      const text = d.text ?? "";
-
-      let prefix = d.prefix ?? d.prefixText ?? "";
-      let suffix = d.suffix ?? d.suffixText ?? "";
-
-      if(!prefix && (d.prefixIndex || d.prefixIdx)){
-        prefix = getFillerText(faction, d.prefixIndex || d.prefixIdx, "prefix");
-      }
-      if(!suffix && (d.suffixIndex || d.suffixIdx)){
-        suffix = getFillerText(faction, d.suffixIndex || d.suffixIdx, "suffix");
-      }
-
-      if(!prefix && (text || "").trim()) prefix = getFillerText(faction, 1, "prefix");
-      if(!suffix && (text || "").trim()) suffix = getFillerText(faction, 1, "suffix");
-
-      if((text || "").trim().length === 0){
+      if(d.type === "clear"){
         clearMessageKeepLayout();
-      }else{
-        showMessage(prefix, text, suffix);
+        return;
       }
 
-      const msgUrl = (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : DEFAULT_MSG_URL;
-      window.__dsPlayUrlOnce(msgUrl);
-    }
-  });
+      if(d.type === "ping"){
+        const pingUrl = d.pingUrl ? String(d.pingUrl) : DEFAULT_PING_URL;
+        window.__dsPlayUrlOnce(pingUrl);
+        return;
+      }
+
+      if(d.type === "message"){
+        const text = d.text ?? "";
+
+        let prefix = d.prefix ?? d.prefixText ?? "";
+        let suffix = d.suffix ?? d.suffixText ?? "";
+
+        if(!prefix && (d.prefixIndex || d.prefixIdx)){
+          prefix = getFillerText(faction, d.prefixIndex || d.prefixIdx, "prefix");
+        }
+        if(!suffix && (d.suffixIndex || d.suffixIdx)){
+          suffix = getFillerText(faction, d.suffixIndex || d.suffixIdx, "suffix");
+        }
+
+        if(!prefix && (text || "").trim()) prefix = getFillerText(faction, 1, "prefix");
+        if(!suffix && (text || "").trim()) suffix = getFillerText(faction, 1, "suffix");
+
+        if((text || "").trim().length === 0){
+          clearMessageKeepLayout();
+        }else{
+          showMessage(prefix, text, suffix);
+        }
+
+        const msgUrl = (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : DEFAULT_MSG_URL;
+        window.__dsPlayUrlOnce(msgUrl);
+      }
+    }, (error) => {
+      captureError(error, "Firestore");
+    });
+  }
 
   // Start
   applyLayout("mechanicus", "#00ff66");
