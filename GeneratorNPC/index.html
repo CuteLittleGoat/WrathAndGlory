@@ -774,6 +774,44 @@
         return name;
       };
 
+      const compareStrings = (left, right, { descending = false } = {}) => {
+        const normalizedLeft = normalizeText(left);
+        const normalizedRight = normalizeText(right);
+        const result = normalizedLeft.localeCompare(normalizedRight, "pl", { sensitivity: "base" });
+        return descending ? -result : result;
+      };
+
+      const getSortableType = (record) =>
+        normalizeText(getRecordValueByLabels(record, ["Typ", "Type", "type"]));
+
+      const sortRecords = (records, compare) =>
+        records
+          .map((record, index) => ({ record, index }))
+          .sort((a, b) => {
+            const result = compare(a, b);
+            if (result !== 0) {
+              return result;
+            }
+            return a.index - b.index;
+          })
+          .map((entry) => entry.record);
+
+      const sortByName = (records) =>
+        sortRecords(records, (a, b) =>
+          compareStrings(getRecordName(a.record, a.index), getRecordName(b.record, b.index))
+        );
+
+      const sortByTypeThenName = (records, { typeDescending = false } = {}) =>
+        sortRecords(records, (a, b) => {
+          const typeCompare = compareStrings(getSortableType(a.record), getSortableType(b.record), {
+            descending: typeDescending,
+          });
+          if (typeCompare !== 0) {
+            return typeCompare;
+          }
+          return compareStrings(getRecordName(a.record, a.index), getRecordName(b.record, b.index));
+        });
+
       const findRecordKey = (record, label) => {
         if (!record) {
           return null;
@@ -1844,14 +1882,16 @@
           const data = await response.json();
           state.data = data;
           state.traits = buildTraitsMap(data);
-          state.bestiary = getCollection(data, ["besti", "bestiariusz"]);
-          state.armor = getCollection(data, ["pancerz", "armor"]);
-          state.weapons = getCollection(data, ["broń", "bron", "weapon"]);
-          state.augmentations = getCollection(data, ["augument", "augment", "modyfikac"]);
-          state.equipment = getCollection(data, ["ekwipunek", "equipment"]);
-          state.talents = getCollection(data, ["talent"]);
-          state.psionics = getCollection(data, ["psion", "psionik"]);
-          state.prayers = getCollection(data, ["modlitw", "prayer"]);
+          state.bestiary = sortByName(getCollection(data, ["besti", "bestiariusz"]));
+          state.armor = sortByTypeThenName(getCollection(data, ["pancerz", "armor"]));
+          state.weapons = sortByTypeThenName(getCollection(data, ["broń", "bron", "weapon"]));
+          state.augmentations = sortByTypeThenName(getCollection(data, ["augument", "augment", "modyfikac"]));
+          state.equipment = sortByTypeThenName(getCollection(data, ["ekwipunek", "equipment"]));
+          state.talents = sortByName(getCollection(data, ["talent"]));
+          state.psionics = sortByTypeThenName(getCollection(data, ["psion", "psionik"]), {
+            typeDescending: true,
+          });
+          state.prayers = sortByName(getCollection(data, ["modlitw", "prayer"]));
           setSelectOptions(bestiarySelect, state.bestiary, "Wybierz nazwę...");
           setSelectOptions(armorSelect, state.armor, "Wybierz pancerze...", {
             disableOption: isArmorBlocked,
