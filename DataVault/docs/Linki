@@ -1,0 +1,121 @@
+# Linki i lokalizacje w projekcie Administratum Data Vault
+
+Poniżej znajduje się **kompletna lista wszystkich miejsc w kodzie i dokumentacji**, które odnoszą się do jakiejkolwiek lokalizacji (URL, ścieżka pliku, nazwa pliku). Dla każdego wpisu wyjaśniam **co robi** oraz **co trzeba zmienić** po przeniesieniu repozytorium z:
+`cutelittlegoat.github.io/Repozytorium/` → `cutelittlegoat.github.io/WrathAndGlory/DataVault/`.
+
+> **Ważne:** w kodzie aplikacji **nie ma** twardo zakodowanych adresów typu `cutelittlegoat.github.io/...`. Wszystkie odwołania do zasobów aplikacji są **względne** (np. `data.json`, `style.css`). To oznacza, że po zmianie ścieżki GitHub Pages aplikacja nadal zadziała, o ile pliki będą w nowej lokalizacji i zachowają te same nazwy.
+
+---
+
+## 1) Zewnętrzne URL-e (CDN, fonty)
+
+### 1.1 Google Fonts (Orbitron + Share Tech Mono)
+- **Plik:** `index.html`
+- **Lokalizacje:**
+  - `https://fonts.googleapis.com` (preconnect)
+  - `https://fonts.gstatic.com` (preconnect)
+  - `https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600&family=Share+Tech+Mono&display=swap`
+- **Co robi:** ładuje fonty używane w UI (`Orbitron` i `Share Tech Mono`).
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie. To niezależne od ścieżki GitHub Pages.
+- **Opcjonalna zmiana:** jeśli chcesz hostować fonty lokalnie, pobierz je i podmień `href` na lokalny plik CSS z fontami.
+
+### 1.2 SheetJS (XLSX) z CDN
+- **Pliki:** `index.html`, `app.js`
+- **Lokalizacje:**
+  - `https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js` (w HTML)
+  - `https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js` (fallback w JS)
+- **Co robi:** pozwala w trybie admina wczytać `Repozytorium.xlsx` i wygenerować `data.json` bez backendu.
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie.
+- **Opcjonalna zmiana:** jeśli chcesz być w 100% offline, pobierz bibliotekę XLSX i hostuj ją lokalnie, aktualizując `src` w `index.html` oraz URL w `ensureSheetJS()`.
+
+---
+
+## 2) Wewnętrzne zasoby aplikacji (pliki w repozytorium)
+
+### 2.1 `style.css`
+- **Plik:** `index.html` (`<link rel="stylesheet" href="style.css"/>`)
+- **Co robi:** ładuje wszystkie style UI.
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie, to ścieżka względna.
+
+### 2.2 `app.js`
+- **Plik:** `index.html` (`<script src="app.js"></script>`)
+- **Co robi:** ładuje logikę aplikacji.
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie, to ścieżka względna.
+
+### 2.3 `data.json`
+- **Plik:** `app.js` (`fetch("data.json", {cache:"no-store"})`)
+- **Co robi:** główne źródło danych dla UI.
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie, o ile `data.json` nadal leży w głównym katalogu aplikacji.
+- **Jeśli zmienisz nazwę pliku lub folder:** musisz zaktualizować ścieżkę w `app.js`.
+
+### 2.4 `Repozytorium.xlsx`
+- **Pliki:** `index.html`, `app.js`, `build_json.py`
+- **Lokalizacje:**
+  - `index.html` (instrukcja tekstowa dla użytkownika)
+  - `app.js` (`fetch("Repozytorium.xlsx", {cache:"no-store"})`)
+  - `build_json.py` (domyślna nazwa pliku wejściowego)
+- **Co robi:** źródło danych do wygenerowania `data.json` (tryb admina oraz CLI).
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie, jeśli nazwa pliku pozostaje bez zmian.
+- **Jeśli chcesz zmienić nazwę XLSX (np. na `DataVault.xlsx`):**
+  1. Podmień nazwę w `app.js` (fetch) i w tekście UI w `index.html`.
+  2. Zmień domyślną nazwę w `build_json.py`.
+  3. Zaktualizuj dokumentację (`docs/README.md`, `docs/Documentation.md`).
+
+---
+
+## 3) Lokacje w dokumentacji (URL-e i ścieżki z instrukcji)
+
+### 3.1 Lokalne uruchomienie (`localhost`)
+- **Plik:** `docs/README.md`
+- **Lokalizacje:**
+  - `http://localhost:8000`
+  - `http://localhost:8000/?admin=1`
+- **Co robi:** instrukcje uruchomienia lokalnego i wejścia w tryb admina.
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie, to niezależne od GitHub Pages.
+
+### 3.2 Ścieżki plików w instrukcjach
+- **Plik:** `docs/README.md`
+- **Lokalizacje:** `Repozytorium.xlsx`, `data.json`, `build_json.py` (w instrukcjach CLI)
+- **Co robi:** opisuje proces generowania danych i aktualizacji.
+- **Czy trzeba zmieniać po przeniesieniu repo?** Tylko jeśli zmieniasz nazwy plików (np. `Repozytorium.xlsx`).
+
+---
+
+## 4) URI w kodzie parsującym XLSX (nie są to linki sieciowe)
+
+- **Plik:** `build_json.py`
+- **Lokalizacje:**
+  - `http://schemas.openxmlformats.org/spreadsheetml/2006/main`
+  - `http://schemas.openxmlformats.org/package/2006/relationships`
+  - `http://schemas.openxmlformats.org/officeDocument/2006/relationships`
+- **Co robi:** są to URI przestrzeni nazw XML używane w XLSX. **Nie są pobierane przez sieć** — służą tylko do parsowania plików XML wewnątrz `.xlsx`.
+- **Czy trzeba zmieniać po przeniesieniu repo?** Nie.
+
+---
+
+## 5) Co trzeba zmienić po przeniesieniu repozytorium na
+`cutelittlegoat.github.io/WrathAndGlory/DataVault/`
+
+### 5.1 Kod aplikacji
+- **Brak zmian wymaganych**, ponieważ wszystkie odwołania do zasobów aplikacji są względne (`data.json`, `style.css`, `app.js`, `Repozytorium.xlsx`).
+
+### 5.2 Dokumentacja / inne repozytoria
+- Jeśli w innych repo lub README zewnętrznym masz **twarde linki** do `cutelittlegoat.github.io/Repozytorium/`, musisz je zaktualizować na:
+  - `cutelittlegoat.github.io/WrathAndGlory/DataVault/`.
+- W tym repo **nie znaleziono** takich twardych linków.
+
+### 5.3 Jeśli zmieniasz nazwy plików (opcjonalnie)
+- Zmiana `Repozytorium.xlsx` → np. `DataVault.xlsx` wymaga:
+  - aktualizacji `fetch()` w `app.js`,
+  - zmiany tekstu informacyjnego w `index.html`,
+  - zmiany domyślnego inputu w `build_json.py`,
+  - aktualizacji instrukcji w `docs/README.md` i opisów w `docs/Documentation.md`.
+
+---
+
+## 6) Szybka checklista po migracji
+
+1. Sprawdź, czy nowy URL działa: `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/`.
+2. Upewnij się, że w katalogu głównym są: `index.html`, `app.js`, `style.css`, `data.json`, `Repozytorium.xlsx`.
+3. Wejdź w tryb admina: `?admin=1` i przetestuj aktualizację danych.
+4. Jeśli coś nie działa — sprawdź konsolę devtools, czy `fetch("data.json")` i `fetch("Repozytorium.xlsx")` zwracają 200.
