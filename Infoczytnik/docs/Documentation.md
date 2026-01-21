@@ -9,7 +9,7 @@
 - **Firestore:** kolekcja `dataslate`, dokument `current`.
   - `type` określa akcję: `message`, `ping`, `clear`.
   - Dokument zawiera kompletny stan wizualny (frakcja, kolory, rozmiary, indeksy fillerów, logo, flicker) oraz treść.
-- **Cache-busting:** Infoczytnik automatycznie dodaje parametr `?v=<INF_VERSION>` do URL-a i wymusza przeładowanie, aby urządzenia nie trzymały starej wersji.
+- **Cache-busting:** GM i Infoczytnik automatycznie dodają parametr `?v=<INF_VERSION>` do URL-a i wymuszają przeładowanie, aby urządzenia nie trzymały starej wersji.
 
 ## 2. Struktura repozytorium (pliki i katalogi)
 - `index.html` — strona startowa z linkami do GM i Infoczytnika.
@@ -78,11 +78,19 @@ window.firebaseConfig = {
 - Dwa główne linki:
   - `Otwórz GM` → `GM.html`
   - `Otwórz Infoczytnik` → `Infoczytnik.html`
-- Dodatkowe linki „debug” przekazują parametry query (`debug`, `logs`, `mockWs`, `mockAudio`), ale w aktualnym kodzie **nie są obsługiwane** — parametry nie zmieniają działania.
+- Dodatkowe linki „debug” przekazują parametry query (`debug`, `logs`, `mockWs`, `mockAudio`), które uruchamiają panele debug i tryby diagnostyczne w GM/Infoczytniku.
+  - Warianty „debug live” używają tylko `debug=1&logs=1`.
+  - Warianty „debug mock” dodają `mockWs=1` (GM) lub `mockAudio=1` (Infoczytnik).
 - Krótki komunikat o odblokowaniu dźwięku oraz przykładowy adres hostingu:
   - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`.
 
 ## 6. `GM.html` — panel MG
+### 6.0. Auto-cache-busting (INF_VERSION)
+- Skrypt w `<head>` ustawia:
+  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-7`).
+  - `window.__dsVersion = INF_VERSION`.
+- Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
+
 ### 6.1. Layout i HTML
 - Strona składa się z kontenera `.wrap` z pojedynczą kartą `.card`.
 - Dwie kolumny (`.row` + `.col`):
@@ -100,6 +108,7 @@ window.firebaseConfig = {
   - `div#livePreview` — podgląd linii prefix/wiadomość/suffix.
   - `textarea#message` — treść wiadomości.
   - Przyciski: `#sendBtn`, `#pingBtn`, `#clearBtn`, `#clearTextBtn`.
+  - `div#debugPanel` z polami `#debugMode`, `#debugFirebase`, `#debugPayload` — panel diagnostyczny (widoczny tylko w trybie debug).
 
 ### 6.2. Style CSS (dokładne wartości)
 - Tło strony: `background: linear-gradient(180deg,#070707,#0f0f0f)`.
@@ -109,6 +118,7 @@ window.firebaseConfig = {
 - Przyciski: `border-radius: 12px`, tło `#1d1d1d`, warianty `primary` i `warn` jako gradienty.
 - Live preview: `.livePreviewBox` z `background: rgba(0,0,0,.35)`, `border: 1px solid rgba(255,255,255,.08)`, `min-height: 140px`.
 - Sekcja losowości fillerów: `.fillerBox` z `background: #0f0f0f`, `border: 1px solid #2a2a2a`, `border-radius: 10px`.
+- Panel debug: `.debugPanel` z `border: 1px dashed rgba(255,210,122,.35)`, `background: rgba(0,0,0,.35)`, `font-family: Consolas`, domyślnie `display: none` (pokazywany przy parametrach debug).
 
 ### 6.3. Słowniki i mapy
 - `FONT_STACK` mapuje frakcję do fontu:
@@ -127,6 +137,12 @@ window.firebaseConfig = {
   - `firebase.initializeApp(firebaseConfig)`
   - `firebase.firestore()`
   - `currentRef = db.collection("dataslate").doc("current")`
+- **Tryby debug:**
+  - Parametry `debug`, `logs`, `mockWs` są odczytywane z `URLSearchParams`.
+  - `debugState` przechowuje flagi oraz ostatni payload.
+  - `logDebug(...)` loguje do konsoli tylko przy `logs=1`.
+  - `updateDebugPanel()` pokazuje panel debug i renderuje ostatni payload.
+  - `mockWs=1` pomija inicjalizację Firestore i zapisuje payload tylko w panelu debug (timestamp to ISO string).
 - **Walidacja/utility:**
   - `setStatus(t)` — wpisuje komunikat statusu w `#status`.
   - `normalizePx(n, min, max, fallback)` — clamp rozmiaru fontu.
@@ -158,10 +174,17 @@ window.firebaseConfig = {
 - `#fontColor`, `#msgFontSize`, `#psColorText`, `#psFontSize` → `updateLivePreview()` na `input/change`.
 - Start: `setStatus("gotowe")` i `computePreview()`.
 
+### 6.6. Debug i tryb mock (GM)
+- Parametry URL:
+  - `debug=1` — pokazuje panel debug z ostatnim payloadem.
+  - `logs=1` — loguje payloady do konsoli.
+  - `mockWs=1` — wyłącza zapis do Firestore i zapisuje payload tylko lokalnie.
+- Panel debug (`.debugPanel`) pokazuje tryb, info o Firebase i ostatni payload.
+
 ## 7. `Infoczytnik.html` — ekran graczy
 ### 7.1. Auto-cache-busting (INF_VERSION)
 - Skrypt w `<head>` ustawia:
-  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-6`).
+  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-7`).
   - `window.__dsVersion = INF_VERSION`.
 - Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
 
@@ -200,15 +223,21 @@ window.firebaseConfig = {
 
 **Overlay audio:**
 - `.unlock`: pełnoekranowy overlay z tłem `rgba(0,0,0,.88)`, tekst center, `z-index: 9999`.
+- **Panel debug:**
+  - `.debugPanel`: `position: fixed`, `right: 12px`, `bottom: 12px`, `background: rgba(0,0,0,.88)`, `border: 1px solid rgba(0,255,102,.45)`, `font-family: Consolas`, domyślnie `display: none`.
+  - `.debugPanel.active` → `display: block`.
+  - `.debugPayload` to blok z `white-space: pre-wrap`, tłem `rgba(0,255,102,.08)` i obramowaniem.
+  - Pola w panelu: `#debugVersion`, `#debugFirebase`, `#debugAudio`, `#debugUpdated`, `#debugError`, `#debugPayload`, przycisk `#debugCopy`.
 
 ### 7.3. Audio unlock
 - Overlay `#unlock` blokuje dźwięk, dopóki użytkownik nie wykona interakcji.
 - Zdarzenia odblokowujące: `click`, `touchstart`, `pointerdown`, `keydown`.
 - IIFE `setupAudioUnlock()` ustawia `window.__dsAudioArmed = false`, usuwa overlay po pierwszej interakcji i wystawia funkcję:
   - `window.__dsPlayUrlOnce(url)` — odtwarza dźwięk **tylko** gdy `window.__dsAudioArmed === true`.
+- Parametr `mockAudio=1` (URL) powoduje, że `__dsPlayUrlOnce` tylko loguje próbę odtworzenia i **nie** uruchamia audio.
 
 ### 7.4. Mapy i stałe
-- `ASSET_VERSION = window.__dsVersion || "2025-12-13-5"`.
+- `ASSET_VERSION = window.__dsVersion || "2025-12-13-7"`.
 - `DEFAULT_PING_URL = assets/audio/global/Ping.mp3?v=${ASSET_VERSION}`
 - `DEFAULT_MSG_URL = assets/audio/global/Message.mp3?v=${ASSET_VERSION}`
 
@@ -241,6 +270,10 @@ window.firebaseConfig = {
   3. Aktualizuje insets i aspect ratio zależnie od frakcji.
   4. Wyświetla logo (jeśli istnieje i `showLogo` nie jest false).
 - `applyTextStyleFromDoc(d)` — ustawia CSS variables `--msg-font-size`, `--prefix-font-size`, `--suffix-font-size`, `--prefix-color`, `--suffix-color`.
+- `formatTimestamp(value)` — formatuje datę do czytelnego tekstu (locale `pl-PL`).
+- `logDebug(...)` — loguje do konsoli tylko przy `logs=1`.
+- `updateDebugPanel()` — aktualizuje overlay debug (wersja, Firebase, audio, payload, błędy).
+- `captureError(error, label)` — zapisuje błąd do stanu debug i odświeża panel.
 - `showMessage(prefix, text, suffix)` — wypełnia linie i resetuje scroll.
 - `clearMessageKeepLayout()` — czyści treść bez zmiany layoutu.
 - `window.addEventListener("resize", ...)` — przy zmianie rozmiaru okna uruchamia `fitPanel(currentAr)`.
@@ -257,6 +290,16 @@ window.firebaseConfig = {
 - Najpierw używane są `prefix`/`suffix` (lub `prefixText`/`suffixText`).
 - Jeśli ich brak, ale są indeksy `prefixIndex`/`suffixIndex`, pobierany jest odpowiedni filler.
 - Jeśli nadal brak, a treść nie jest pusta — fallback na indeks 1.
+
+### 7.7. Debug i diagnostyka (Infoczytnik)
+- Parametry URL:
+  - `debug=1` — pokazuje overlay debug.
+  - `logs=1` — włącza logi `console.log`.
+  - `mockAudio=1` — wycisza audio i tylko loguje odtwarzanie.
+- Overlay debug zawiera: wersję (`INF_VERSION`), status Firebase, stan audio, czas ostatniej aktualizacji, ostatni błąd oraz ostatni payload.
+- Globalne nasłuchiwanie błędów:
+  - `window.addEventListener("error", ...)`
+  - `window.addEventListener("unhandledrejection", ...)`
 
 ## 8. Payload Firestore (`dataslate/current`)
 | Pole | Typ | Opis |
