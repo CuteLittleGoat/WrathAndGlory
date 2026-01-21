@@ -21,7 +21,7 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 
 ## 3. Dane wejściowe i źródło
 **Źródło danych:**
-- `DATA_URL = "https://cutelittlegoat.github.io/Repozytorium/data.json"`.
+- `DATA_URL = "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json"`.
 
 **Wczytywanie danych:**
 - Dane są pobierane przez `fetch` z `cache: "no-store"`.

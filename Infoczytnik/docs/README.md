@@ -19,6 +19,8 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 6. Otwórz:
    - `GM.html` (panel MG)
    - `Infoczytnik.html` (ekran graczy)
+7. (Opcjonalnie) Przykładowy adres hostingu po migracji:
+   - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 
 ### Używanie
 #### 1) Przygotowanie
@@ -77,6 +79,8 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 6. Open:
    - `GM.html` (GM panel)
    - `Infoczytnik.html` (player screen)
+7. (Optional) Example hosted URL after migration:
+   - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 
 ### Usage
 #### 1) Setup

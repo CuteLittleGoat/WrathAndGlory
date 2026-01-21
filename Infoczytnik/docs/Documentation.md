@@ -79,7 +79,8 @@ window.firebaseConfig = {
   - `Otwórz GM` → `GM.html`
   - `Otwórz Infoczytnik` → `Infoczytnik.html`
 - Dodatkowe linki „debug” przekazują parametry query (`debug`, `logs`, `mockWs`, `mockAudio`), ale w aktualnym kodzie **nie są obsługiwane** — parametry nie zmieniają działania.
-- Krótki komunikat o odblokowaniu dźwięku i przykładowy adres hostingu.
+- Krótki komunikat o odblokowaniu dźwięku oraz przykładowy adres hostingu:
+  - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`.
 
 ## 6. `GM.html` — panel MG
 ### 6.1. Layout i HTML
