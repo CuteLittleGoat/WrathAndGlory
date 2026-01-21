@@ -63,19 +63,20 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 - **NPC Generator**: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
 - **DataVault**: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
   - To access the admin panel, append `index.html?admin=1` to the URL.
-- **Infoczytnik**:
+- **DataSlate**:
   - Message reader: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (message prep): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
+  - Main menu with debug option: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
 - **Calculator**:
   - Main menu: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - XP calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 
 ### Module README links
-- NPC Generator: ../GeneratorNPC/docs/README.md
-- DataVault: ../DataVault/docs/README.md
-- Infoczytnik: ../Infoczytnik/docs/README.md
-- Calculator: ../Kalkulator/docs/README.md
+- NPC Generator: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
+- DataVault: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/docs/README.md
+- DataSlate: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/docs/README.md
+- Calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/docs/README.md
 
 ### How to use
 1. Open the landing page in your browser.
