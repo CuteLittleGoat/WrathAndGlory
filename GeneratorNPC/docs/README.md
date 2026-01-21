@@ -13,7 +13,7 @@
 4. (Opcjonalnie) Wpisz własne notatki w polu „Uwagi do rekordu”.
 5. W sekcji „Moduły aktywne” zdecyduj, które moduły mają być widoczne:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
-6. W każdej aktywnej karcie wybierz pozycje z listy (możesz zaznaczyć wiele pozycji). 
+6. W każdej aktywnej karcie wybierz pozycje z listy (możesz zaznaczyć wiele pozycji).
    - Dodatkowe przełączniki pozwalają dołączyć opisy cech lub pełne opisy modułów.
 7. Kliknij „Generuj kartę”, aby otworzyć kartę do druku w nowej karcie przeglądarki.
 8. Kliknij „Reset”, aby wyczyścić wybory i przywrócić domyślne ustawienia.
@@ -21,6 +21,7 @@
 ### Podpowiedzi
 - Klikaj w tagi cech, aby zobaczyć opis cechy w panelu popover.
 - W tabelach długie komórki można rozwijać kliknięciem (pojawia się wskazówka „kliknij, aby rozwinąć”).
+- Listy wyboru są sortowane (np. Bestiariusz i Talenty alfabetycznie, a Broń/Pancerz/Augumentacje/Ekwipunek/Psionika po typie i nazwie).
 
 ---
 
@@ -45,3 +46,4 @@
 ### Tips
 - Click trait tags to see their description in the popover panel.
 - In tables, long cells can be expanded by clicking them (a “click to expand” hint is shown).
+- Selection lists are sorted (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
