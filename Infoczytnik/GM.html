@@ -4,6 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>WH40k Data-Slate — GM</title>
+  <script>
+    (function autoCacheBust(){
+      const INF_VERSION = "2025-12-13-9"; // <- zmieniaj przy aktualizacjach
+      window.__dsVersion = INF_VERSION;
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("v") !== INF_VERSION) {
+        url.searchParams.set("v", INF_VERSION);
+        window.location.replace(url.toString());
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&display=swap" rel="stylesheet">
@@ -91,6 +102,28 @@
     .livePreviewBox .line{display:block;}
     .livePreviewBox .prefix,.livePreviewBox .suffix{opacity:.9;}
     .livePreviewBox .message{line-height:1.35;}
+
+    .debugPanel{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px dashed rgba(255,210,122,.35);
+      background:rgba(0,0,0,.35);
+      font-family:Consolas,"Courier New",monospace;
+      font-size:12px;
+      color:#e5d5b3;
+      display:none;
+    }
+    .debugPanel.active{display:block;}
+    .debugPanel pre{
+      margin:8px 0 0 0;
+      padding:8px;
+      border-radius:8px;
+      background:rgba(0,0,0,.45);
+      border:1px solid rgba(255,210,122,.2);
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
   </style>
 </head>
 <body>
@@ -225,6 +258,12 @@
       </div>
 
       <div class="small">Status: <span class="status" id="status">…</span></div>
+      <div class="debugPanel" id="debugPanel">
+        <div><strong>Debug:</strong> <span id="debugMode">-</span></div>
+        <div><strong>Firebase:</strong> <span id="debugFirebase">-</span></div>
+        <div><strong>Ostatni payload:</strong></div>
+        <pre id="debugPayload">Brak danych.</pre>
+      </div>
     </div>
   </div>
 
@@ -236,16 +275,25 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
 
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const DEBUG_MODE = ["1", "true", "yes"].includes((urlParams.get("debug") || "").toLowerCase());
+    const DEBUG_LOGS = ["1", "true", "yes"].includes((urlParams.get("logs") || "").toLowerCase());
+    const MOCK_WS = ["1", "true", "yes"].includes((urlParams.get("mockWs") || "").toLowerCase());
+
     // --- Konfiguracja Firebase z config/firebase-config.js ---
     const firebaseConfig = window.firebaseConfig;
-    if(!firebaseConfig){
+    if(!firebaseConfig && !MOCK_WS){
       alert("Brak window.firebaseConfig. Sprawdź plik config/firebase-config.js");
       throw new Error("Missing window.firebaseConfig");
     }
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const currentRef = db.collection("dataslate").doc("current");
+    let db = null;
+    let currentRef = null;
+    if(!MOCK_WS){
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.firestore();
+      currentRef = db.collection("dataslate").doc("current");
+    }
 
     const el = {
       faction: document.getElementById("faction"),
@@ -283,6 +331,10 @@
       livePreviewPrefix: document.getElementById("livePreviewPrefix"),
       livePreviewMsg: document.getElementById("livePreviewMsg"),
       livePreviewSuffix: document.getElementById("livePreviewSuffix"),
+      debugPanel: document.getElementById("debugPanel"),
+      debugMode: document.getElementById("debugMode"),
+      debugFirebase: document.getElementById("debugFirebase"),
+      debugPayload: document.getElementById("debugPayload"),
 
       // chips
       chips: Array.from(document.querySelectorAll(".chip")),
@@ -318,7 +370,38 @@
                       suffixes:["++ GLORY TO CHAOS ++","++ DARK GODS SMILE ++","++ THE EYE OPENS ++","++ ASCEND AND BURN ++","++ ALL HAIL THE DARK GODS ++","++ REALSPACE BLEEDS ++","++ STARS ARE WRONG ++","++ VOID WITHIN ++","++ ETERNAL CHANGE ++"]},
     };
 
-    function setStatus(t){ el.status.textContent = t; }
+    const debugState = {
+      enabled: DEBUG_MODE || MOCK_WS,
+      logs: DEBUG_LOGS,
+      mockWs: MOCK_WS,
+      lastPayload: null,
+    };
+
+    function logDebug(...args){
+      if(debugState.logs){
+        console.log("[GM]", ...args);
+      }
+    }
+
+    function updateDebugPanel(){
+      if(!debugState.enabled || !el.debugPanel) return;
+      el.debugPanel.classList.add("active");
+      const modes = [];
+      if(DEBUG_MODE) modes.push("debug=1");
+      if(DEBUG_LOGS) modes.push("logs=1");
+      if(MOCK_WS) modes.push("mockWs=1");
+      el.debugMode.textContent = modes.length ? modes.join(", ") : "-";
+      el.debugFirebase.textContent = MOCK_WS
+        ? "mockWs=1 (bez zapisu)"
+        : (firebaseConfig?.projectId ? `projectId: ${firebaseConfig.projectId}` : "brak konfiguracji");
+      el.debugPayload.textContent = debugState.lastPayload
+        ? JSON.stringify(debugState.lastPayload, null, 2)
+        : "Brak danych.";
+    }
+
+    function setStatus(t){
+      el.status.textContent = t;
+    }
     function clampIndex(n, max){ const x=Number(n); if(!Number.isFinite(x)) return 1; return Math.min(max, Math.max(1, Math.floor(x))); }
     function rand1to(max){ return Math.floor(Math.random()*max)+1; }
     function nonce(){ return String(Date.now()) + "-" + String(Math.random()).slice(2); }
@@ -391,35 +474,48 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
+      const payload = {
+        type: isClear ? "clear" : "message",
+        faction: el.faction.value,
+
+        // treść wiadomości
+        color: el.fontColor.value || "#00ff66",
+        fontColor: el.fontColor.value || "#00ff66",
+        msgFontSize: msgFontPx + "px",
+
+        // prefix/suffix styl
+        prefixColor: getPrefixSuffixColor(),
+        suffixColor: getPrefixSuffixColor(),
+        prefixFontSize: psFontPx + "px",
+        suffixFontSize: psFontPx + "px",
+
+        // fillery
+        prefixIndex, suffixIndex,
+        showLogo: !!el.showLogo.checked,
+        flicker: !!el.flicker.checked,
+
+        // tekst
+        text: isClear ? "" : (el.message.value || ""),
+
+        nonce: nonce(),
+        ts: MOCK_WS ? new Date().toISOString() : firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      if(debugState.mockWs){
+        debugState.lastPayload = payload;
+        logDebug("mockWs payload (send):", payload);
+        updateDebugPanel();
+        setStatus(isClear ? "mock: wyczyszczono" : "mock: wysłano");
+        computePreview();
+        return;
+      }
+
       setStatus("wysyłam…");
       try{
-        await currentRef.set({
-          type: isClear ? "clear" : "message",
-          faction: el.faction.value,
-
-          // treść wiadomości
-          color: el.fontColor.value || "#00ff66",
-          fontColor: el.fontColor.value || "#00ff66",
-          msgFontSize: msgFontPx + "px",
-
-          // prefix/suffix styl
-          prefixColor: getPrefixSuffixColor(),
-          suffixColor: getPrefixSuffixColor(),
-          prefixFontSize: psFontPx + "px",
-          suffixFontSize: psFontPx + "px",
-
-          // fillery
-          prefixIndex, suffixIndex,
-          showLogo: !!el.showLogo.checked,
-          flicker: !!el.flicker.checked,
-
-          // tekst
-          text: isClear ? "" : (el.message.value || ""),
-
-          nonce: nonce(),
-          ts: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge:false });
-
+        await currentRef.set(payload, { merge:false });
+        debugState.lastPayload = payload;
+        logDebug("payload wysłany:", payload);
+        updateDebugPanel();
         setStatus(isClear ? "wyczyszczono" : "wysłano");
       }catch(e){
         console.error(e);
@@ -433,27 +529,39 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
+      const payload = {
+        type:"ping",
+        faction: el.faction.value,
+
+        // zostawiamy styl w docu, żeby nie “gubić” ustawień
+        color: el.fontColor.value || "#00ff66",
+        fontColor: el.fontColor.value || "#00ff66",
+        msgFontSize: msgFontPx + "px",
+        prefixColor: getPrefixSuffixColor(),
+        suffixColor: getPrefixSuffixColor(),
+        prefixFontSize: psFontPx + "px",
+        suffixFontSize: psFontPx + "px",
+        showLogo: !!el.showLogo.checked,
+        flicker: !!el.flicker.checked,
+
+        nonce: nonce(),
+        ts: MOCK_WS ? new Date().toISOString() : firebase.firestore.FieldValue.serverTimestamp()
+      };
+
+      if(debugState.mockWs){
+        debugState.lastPayload = payload;
+        logDebug("mockWs payload (ping):", payload);
+        updateDebugPanel();
+        setStatus("mock: ping wysłany");
+        return;
+      }
+
       setStatus("ping…");
       try{
-        await currentRef.set({
-          type:"ping",
-          faction: el.faction.value,
-
-          // zostawiamy styl w docu, żeby nie “gubić” ustawień
-          color: el.fontColor.value || "#00ff66",
-          fontColor: el.fontColor.value || "#00ff66",
-          msgFontSize: msgFontPx + "px",
-          prefixColor: getPrefixSuffixColor(),
-          suffixColor: getPrefixSuffixColor(),
-          prefixFontSize: psFontPx + "px",
-          suffixFontSize: psFontPx + "px",
-          showLogo: !!el.showLogo.checked,
-          flicker: !!el.flicker.checked,
-
-          nonce: nonce(),
-          ts: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge:true });
-
+        await currentRef.set(payload, { merge:true });
+        debugState.lastPayload = payload;
+        logDebug("payload ping:", payload);
+        updateDebugPanel();
         setStatus("ping wysłany");
       }catch(e){
         console.error(e);
@@ -512,6 +620,7 @@
       el.psFontSize.addEventListener(evt, updateLivePreview);
     });
 
+    updateDebugPanel();
     setStatus("gotowe");
     computePreview();
   </script>

@@ -5,8 +5,10 @@ Poniżej znajduje się kompletna lista **wszystkich miejsc w kodzie**, które od
 ## 1. Linki do stron w repo (nawigacja w `index.html`)
 - `./GM.html` — przycisk **Otwórz GM** na stronie startowej. To względna ścieżka do panelu MG.
 - `./Infoczytnik.html` — przycisk **Otwórz Infoczytnik** na stronie startowej.
-- `./GM.html?debug=1&logs=1&mockWs=1` — wariant debug panelu MG (parametry obecnie nie są obsługiwane w kodzie).
-- `./Infoczytnik.html?debug=1&logs=1&mockAudio=1` — wariant debug Infoczytnika (parametry obecnie nie są obsługiwane).
+- `./GM.html?debug=1&logs=1` — wariant debug live panelu MG (logi + panel debug z realnym Firestore).
+- `./Infoczytnik.html?debug=1&logs=1` — wariant debug live Infoczytnika (logi + panel debug z realnymi snapshotami).
+- `./GM.html?debug=1&logs=1&mockWs=1` — wariant debug panelu MG: pokazuje panel debug, włącza logi i uruchamia tryb „mock” bez zapisu do Firestore.
+- `./Infoczytnik.html?debug=1&logs=1&mockAudio=1` — wariant debug Infoczytnika: pokazuje panel debug, włącza logi i wycisza audio (mock).
 
 **Co zmienić po przeniesieniu?**
 - Nic, jeśli pliki `GM.html` i `Infoczytnik.html` pozostaną w tym samym folderze co `index.html`.
