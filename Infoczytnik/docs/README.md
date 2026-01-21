@@ -47,7 +47,6 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 - **GM (mock):** `GM.html?debug=1&logs=1&mockWs=1` pokazuje panel debug, loguje payloady i nie zapisuje do Firestore.
 - **Infoczytnik (live):** `Infoczytnik.html?debug=1&logs=1` pokazuje panel debug i loguje snapshoty.
 - **Infoczytnik (mock):** `Infoczytnik.html?debug=1&logs=1&mockAudio=1` pokazuje panel debug, loguje snapshoty i wycisza audio.
-- Jeśli po wejściu widzisz tylko czarny ekran, uruchom wariant debug i sprawdź panel debug oraz konsolę.
 
 ### Aktualizacja aplikacji
 #### Aktualizacja assetów (tła, logotypy, audio)
@@ -114,7 +113,6 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 - **GM (mock):** `GM.html?debug=1&logs=1&mockWs=1` shows the debug panel, logs payloads, and skips Firestore writes.
 - **Infoczytnik (live):** `Infoczytnik.html?debug=1&logs=1` shows the debug panel and logs snapshots.
 - **Infoczytnik (mock):** `Infoczytnik.html?debug=1&logs=1&mockAudio=1` shows the debug panel, logs snapshots, and mutes audio.
-- If you only see a black screen, open the debug variant and check the debug panel and console.
 
 ### Updating the app
 #### Updating assets (backgrounds, logos, audio)

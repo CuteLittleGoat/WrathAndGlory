@@ -87,7 +87,7 @@ window.firebaseConfig = {
 ## 6. `GM.html` — panel MG
 ### 6.0. Auto-cache-busting (INF_VERSION)
 - Skrypt w `<head>` ustawia:
-  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-8`).
+  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-7`).
   - `window.__dsVersion = INF_VERSION`.
 - Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
 
@@ -184,7 +184,7 @@ window.firebaseConfig = {
 ## 7. `Infoczytnik.html` — ekran graczy
 ### 7.1. Auto-cache-busting (INF_VERSION)
 - Skrypt w `<head>` ustawia:
-  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-8`).
+  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-7`).
   - `window.__dsVersion = INF_VERSION`.
 - Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
 
@@ -237,7 +237,7 @@ window.firebaseConfig = {
 - Parametr `mockAudio=1` (URL) powoduje, że `__dsPlayUrlOnce` tylko loguje próbę odtworzenia i **nie** uruchamia audio.
 
 ### 7.4. Mapy i stałe
-- `ASSET_VERSION = window.__dsVersion || "2025-12-13-8"`.
+- `ASSET_VERSION = window.__dsVersion || "2025-12-13-7"`.
 - `DEFAULT_PING_URL = assets/audio/global/Ping.mp3?v=${ASSET_VERSION}`
 - `DEFAULT_MSG_URL = assets/audio/global/Message.mp3?v=${ASSET_VERSION}`
 

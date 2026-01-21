@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-    const INF_VERSION = "2025-12-13-8"; // <- zmieniaj przy aktualizacjach
+    const INF_VERSION = "2025-12-13-7"; // <- zmieniaj przy aktualizacjach
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -379,24 +379,6 @@
     lastUpdated: null,
   };
 
-  const el = {
-    panel: document.getElementById("panel"),
-    layoutImg: document.getElementById("layoutImg"),
-    screen: document.getElementById("screen"),
-    prefixLine: document.getElementById("prefixLine"),
-    suffixLine: document.getElementById("suffixLine"),
-    msg: document.getElementById("msg"),
-    logo: document.getElementById("logo"),
-    debugPanel: document.getElementById("debugPanel"),
-    debugVersion: document.getElementById("debugVersion"),
-    debugFirebase: document.getElementById("debugFirebase"),
-    debugAudio: document.getElementById("debugAudio"),
-    debugUpdated: document.getElementById("debugUpdated"),
-    debugError: document.getElementById("debugError"),
-    debugPayload: document.getElementById("debugPayload"),
-    debugCopy: document.getElementById("debugCopy"),
-  };
-
   let app = null;
   let db = null;
   if(firebaseConfig){
@@ -435,7 +417,7 @@
     captureError(event?.reason || "Unhandled rejection", "Promise");
   });
 
-  const ASSET_VERSION = window.__dsVersion || "2025-12-13-8";
+  const ASSET_VERSION = window.__dsVersion || "2025-12-13-7";
 
   const DEFAULT_PING_URL = `assets/audio/global/Ping.mp3?v=${ASSET_VERSION}`;
   const DEFAULT_MSG_URL  = `assets/audio/global/Message.mp3?v=${ASSET_VERSION}`;
@@ -507,6 +489,24 @@
   const FACTION_LOGO = {
     inquisition: `assets/logos/inquisition/Inquisition.png?v=${ASSET_VERSION}`,
     mechanicus:  `assets/logos/mechanicus/Mechanicus.png?v=${ASSET_VERSION}`
+  };
+
+  const el = {
+    panel: document.getElementById("panel"),
+    layoutImg: document.getElementById("layoutImg"),
+    screen: document.getElementById("screen"),
+    prefixLine: document.getElementById("prefixLine"),
+    suffixLine: document.getElementById("suffixLine"),
+    msg: document.getElementById("msg"),
+    logo: document.getElementById("logo"),
+    debugPanel: document.getElementById("debugPanel"),
+    debugVersion: document.getElementById("debugVersion"),
+    debugFirebase: document.getElementById("debugFirebase"),
+    debugAudio: document.getElementById("debugAudio"),
+    debugUpdated: document.getElementById("debugUpdated"),
+    debugError: document.getElementById("debugError"),
+    debugPayload: document.getElementById("debugPayload"),
+    debugCopy: document.getElementById("debugCopy"),
   };
 
   if(DEBUG_MODE){
