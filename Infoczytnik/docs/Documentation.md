@@ -187,6 +187,7 @@ window.firebaseConfig = {
   - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-7`).
   - `window.__dsVersion = INF_VERSION`.
 - Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
+- Dodatkowy skrypt fallback po 1.5 s ustawia domyślny layout oraz rozmiar panelu, jeśli moduł Firebase nie zdąży wystartować (np. brak sieci).
 
 ### 7.2. CSS (dokładne wartości i zależności)
 **Zmienne bazowe (`:root`):**
@@ -257,6 +258,7 @@ window.firebaseConfig = {
 
 ### 7.5. Funkcje renderujące i pomocnicze
 - `autoCacheBust()` (IIFE w `<head>`) — dodaje `?v=<INF_VERSION>` do URL, jeśli brakuje/inna wartość.
+- `fallbackLayout()` (IIFE) — po 1.5 s ustawia domyślny layout i rozmiar panelu, jeśli `layoutImg` nie ma ustawionego `src`.
 - `setupAudioUnlock()` (IIFE) — patrz sekcja 7.3.
 - `armAudio()` — wewnętrzna funkcja `setupAudioUnlock()` odblokowująca audio i ukrywająca overlay.
 - `fitPanel(ar)` — dopasowuje `.panel` do okna, zachowując aspect ratio.

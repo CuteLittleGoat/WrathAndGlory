@@ -349,6 +349,30 @@
     })();
   </script>
 
+  <script>
+    (function fallbackLayout(){
+      const FALLBACK_TIMEOUT_MS = 1500;
+      function applyFallback(){
+        const panel = document.getElementById("panel");
+        const layoutImg = document.getElementById("layoutImg");
+        if(!panel || !layoutImg) return;
+        if(layoutImg.getAttribute("src")) return;
+        const version = window.__dsVersion || "2025-12-13-9";
+        layoutImg.src = `assets/layouts/mechanicus/DataSlate_04.png?v=${version}`;
+        panel.style.width = window.innerWidth + "px";
+        panel.style.height = window.innerHeight + "px";
+        document.documentElement.style.setProperty("--screen-top", "14%");
+        document.documentElement.style.setProperty("--screen-right", "14%");
+        document.documentElement.style.setProperty("--screen-bottom", "22%");
+        document.documentElement.style.setProperty("--screen-left", "18%");
+      }
+      window.addEventListener("load", () => {
+        setTimeout(applyFallback, FALLBACK_TIMEOUT_MS);
+      });
+      window.addEventListener("resize", applyFallback);
+    })();
+  </script>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
   import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
@@ -591,6 +615,37 @@
     if(d.suffixFontSize) document.documentElement.style.setProperty("--suffix-font-size", String(d.suffixFontSize));
     if(d.prefixColor)    document.documentElement.style.setProperty("--prefix-color", String(d.prefixColor));
     if(d.suffixColor)    document.documentElement.style.setProperty("--suffix-color", String(d.suffixColor));
+  }
+
+  function formatTimestamp(value){
+    if(!value) return "-";
+    const date = (value instanceof Date) ? value : new Date(value);
+    if(Number.isNaN(date.getTime())) return String(value);
+    return date.toLocaleString("pl-PL");
+  }
+
+  function updateDebugPanel(){
+    if(!debugState.enabled || !el.debugPanel) return;
+    el.debugPanel.classList.add("active");
+    el.debugVersion.textContent = window.__dsVersion || "-";
+    el.debugFirebase.textContent = firebaseConfig?.projectId
+      ? `projectId: ${firebaseConfig.projectId}`
+      : "brak konfiguracji";
+    const audioLabel = debugState.mockAudio ? "mockAudio=1 (wyciszone)"
+      : (window.__dsAudioArmed ? "odblokowane" : "zablokowane");
+    el.debugAudio.textContent = audioLabel;
+    el.debugUpdated.textContent = debugState.lastUpdated ? formatTimestamp(debugState.lastUpdated) : "-";
+    el.debugError.textContent = debugState.lastError ? String(debugState.lastError.message || debugState.lastError) : "-";
+    el.debugPayload.textContent = debugState.lastPayload
+      ? JSON.stringify(debugState.lastPayload, null, 2)
+      : "Brak danych.";
+  }
+
+  function captureError(error, label){
+    const prefix = label ? `${label}: ` : "";
+    debugState.lastError = prefix + (error?.message || error);
+    logDebug("Błąd:", error);
+    updateDebugPanel();
   }
 
   function formatTimestamp(value){
