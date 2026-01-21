@@ -53,6 +53,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. Pierwszy j
 1. Zaktualizuj pliki `index.html`, `app.js`, `style.css` oraz ewentualnie `build_json.py`.
 2. Wgraj nowe wersje na hosting statyczny (GitHub Pages, serwer WWW itp.).
 3. W razie potrzeby wyczyść cache przeglądarki (aplikacja ładuje `data.json` z `cache: "no-store"`, ale pliki statyczne mogą być cache’owane przez CDN/hosting).
+4. Funkcje aktualizacji danych w `app.js` są zdefiniowane jednokrotnie — nie ma już zdublowanej logiki.
 
 ### Skróty funkcji w interfejsie
 - Kliknięcie nagłówka kolumny: sortowanie rosnąco/malejąco/reset.
@@ -115,6 +116,7 @@ Below are two equivalent ways to update the data. The first is recommended for n
 1. Update `index.html`, `app.js`, `style.css`, and optionally `build_json.py`.
 2. Upload the new versions to your static hosting (GitHub Pages, web server, etc.).
 3. If needed, clear browser cache (the app fetches `data.json` with `cache: "no-store"`, but static files may still be cached by CDN/hosting).
+4. The data update functions in `app.js` are defined once (no duplicated logic).
 
 ### UI shortcuts
 - Click a column header: sort ascending/descending/reset.

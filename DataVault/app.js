@@ -401,45 +401,6 @@ function loadXlsxFromRepo(){
   });
 }
 
-function downloadDataJson(data){
-  const jsonText = JSON.stringify(data, null, 2);
-  const blob = new Blob([jsonText], {type:"application/json"});
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "data.json";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
-}
-
-function loadXlsxFromRepo(){
-  ensureSheetJS(async ()=>{
-    try{
-      setStatus("Pobieranie Repozytorium.xlsx...");
-      const res = await fetch("Repozytorium.xlsx", {cache:"no-store"});
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const buf = await res.arrayBuffer();
-      const wb = XLSX.read(buf, {type:"array"});
-      const sheets = {};
-      for (const name of wb.SheetNames){
-        const ws = wb.Sheets[name];
-        const rows = XLSX.utils.sheet_to_json(ws, {defval:"", raw:false});
-        sheets[name] = rows;
-      }
-      const data = buildDataJsonFromSheets(sheets);
-      downloadDataJson(data);
-      DB = normaliseDB(data);
-      initUI();
-      setStatus("OK — zaktualizowano dane i wygenerowano data.json");
-    }catch(e){
-      setStatus("Błąd aktualizacji danych");
-      logLine("BŁĄD: "+e.message, true);
-    }
-  });
-}
-
 function normaliseDB(data){
   const sheetsIn = data.sheets || data;
   const sheets = {};

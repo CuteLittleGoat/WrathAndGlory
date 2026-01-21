@@ -314,13 +314,11 @@ Mapowanie na `getElementById`:
 
 ### 7.4 `downloadDataJson(data)`
 - Generuje blob i wymusza pobranie `data.json`.
-- Funkcja jest zdefiniowana **dwukrotnie** w `app.js` (druga definicja nadpisuje pierwszą, treść jest identyczna).
 
 ### 7.5 `loadXlsxFromRepo()`
 - Pobiera `Repozytorium.xlsx` z `cache:"no-store"`.
 - Czyta arkusze (`XLSX.utils.sheet_to_json` z `defval:""`).
 - Buduje `data.json` i inicjalizuje UI.
-- Podobnie jak `downloadDataJson`, ta funkcja występuje w `app.js` **dwukrotnie** i druga definicja nadpisuje pierwszą (identyczna logika).
 
 ### 7.6 `normaliseDB(data)`
 - Ignoruje arkusze zaczynające się od `_`.
