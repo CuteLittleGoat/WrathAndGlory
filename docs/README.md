@@ -19,10 +19,10 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
   - Kalkulator XP: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 
 ### Instrukcje modułów (README)
-- Generator NPC: ../GeneratorNPC/docs/README.md
-- DataVault: ../DataVault/docs/README.md
-- Infoczytnik: ../Infoczytnik/docs/README.md
-- Kalkulator: ../Kalkulator/docs/README.md
+- Generator NPC: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
+- DataVault: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/docs/README.md
+- Infoczytnik: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/docs/README.md
+- Kalkulator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/docs/README.md
 
 ### Jak używać
 1. Otwórz stronę startową w przeglądarce.
