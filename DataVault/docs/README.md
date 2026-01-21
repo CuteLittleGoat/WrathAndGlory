@@ -8,6 +8,7 @@ Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikac
 
 ### Opis
 Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne.
+Dokumentacja wyglądu i zasad formatowania jest w `docs/StylLayoutu.md`.
 
 ### Uruchomienie aplikacji
 1. Umieść pliki projektu na hostingu statycznym **lub** uruchom lokalny serwer HTTP:
@@ -52,6 +53,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. Pierwszy j
 1. Zaktualizuj pliki `index.html`, `app.js`, `style.css` oraz ewentualnie `build_json.py`.
 2. Wgraj nowe wersje na hosting statyczny (GitHub Pages, serwer WWW itp.).
 3. W razie potrzeby wyczyść cache przeglądarki (aplikacja ładuje `data.json` z `cache: "no-store"`, ale pliki statyczne mogą być cache’owane przez CDN/hosting).
+4. Funkcje aktualizacji danych w `app.js` są zdefiniowane jednokrotnie — nie ma już zdublowanej logiki.
 
 ### Skróty funkcji w interfejsie
 - Kliknięcie nagłówka kolumny: sortowanie rosnąco/malejąco/reset.
@@ -69,6 +71,7 @@ To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla 
 
 ### Overview
 A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files.
+Visual/layout rules and formatting details are documented in `docs/StylLayoutu.md`.
 
 ### Running the app
 1. Host the project files on any static hosting **or** run a local HTTP server:
@@ -113,6 +116,7 @@ Below are two equivalent ways to update the data. The first is recommended for n
 1. Update `index.html`, `app.js`, `style.css`, and optionally `build_json.py`.
 2. Upload the new versions to your static hosting (GitHub Pages, web server, etc.).
 3. If needed, clear browser cache (the app fetches `data.json` with `cache: "no-store"`, but static files may still be cached by CDN/hosting).
+4. The data update functions in `app.js` are defined once (no duplicated logic).
 
 ### UI shortcuts
 - Click a column header: sort ascending/descending/reset.

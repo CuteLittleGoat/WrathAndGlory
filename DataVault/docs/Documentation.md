@@ -12,6 +12,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `data.json` — produkcyjne źródło danych.
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`.
 - `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce).
+- `docs/StylLayoutu.md` — osobny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
 
 ---
 
@@ -313,13 +314,11 @@ Mapowanie na `getElementById`:
 
 ### 7.4 `downloadDataJson(data)`
 - Generuje blob i wymusza pobranie `data.json`.
-- Funkcja jest zdefiniowana **dwukrotnie** w `app.js` (druga definicja nadpisuje pierwszą, treść jest identyczna).
 
 ### 7.5 `loadXlsxFromRepo()`
 - Pobiera `Repozytorium.xlsx` z `cache:"no-store"`.
 - Czyta arkusze (`XLSX.utils.sheet_to_json` z `defval:""`).
 - Buduje `data.json` i inicjalizuje UI.
-- Podobnie jak `downloadDataJson`, ta funkcja występuje w `app.js` **dwukrotnie** i druga definicja nadpisuje pierwszą (identyczna logika).
 
 ### 7.6 `normaliseDB(data)`
 - Ignoruje arkusze zaczynające się od `_`.
