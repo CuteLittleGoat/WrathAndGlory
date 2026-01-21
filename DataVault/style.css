@@ -488,7 +488,7 @@ td.center{text-align:center}
 .inline-bold{font-weight:700}
 .inline-italic{font-style:italic}
 
-/* Filter menu (Excel-like) */
+/* Filter menu */
 .filterBtn{margin-left:6px; width:24px; height:24px; display:inline-grid; place-items:center;
   border:1px solid var(--b2); background:rgba(111,227,140,.04); color:var(--text); border-radius:6px; cursor:pointer}
 .filterBtn:hover{background:rgba(111,227,140,.08)}

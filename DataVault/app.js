@@ -75,6 +75,9 @@ function norm(s){
 function escapeHtml(s){
   return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
 }
+function stripMarkers(s){
+  return String(s ?? "").replace(/{{\/?(?:RED|B|I)}}/g, "");
+}
 function setStatus(msg){ console.info(msg); }
 function logLine(msg, isErr=false){
   const fn = isErr ? console.error : console.info;
@@ -541,7 +544,7 @@ function buildTableSkeleton(){
     btn.type = "button";
     btn.className = "filterBtn";
     btn.textContent = "▾";
-    btn.title = "Filtr listy (jak w Excelu)";
+    btn.title = "Filtr listy";
     btn.addEventListener("click", (ev)=>{ ev.preventDefault(); ev.stopPropagation(); openFilterMenu(col, btn); });
 
     row.appendChild(input);
@@ -632,13 +635,17 @@ function openFilterMenu(col, anchorBtn){
   menu.appendChild(list);
 
   const allVals = uniqueValuesForColumn(col);
+  const displayVals = allVals.map(v => stripMarkers(v));
   let visible = allVals;
+  let visibleDisplay = displayVals;
 
   const selected = view.filtersSet[col] ? new Set(view.filtersSet[col]) : new Set(allVals);
 
   function renderList(){
     list.innerHTML = "";
-    for (const v of visible){
+    for (let idx = 0; idx < visible.length; idx++){
+      const v = visible[idx];
+      const display = visibleDisplay[idx];
       const item = document.createElement("div");
       item.className = "fmItem";
       const cb = document.createElement("input");
@@ -649,7 +656,7 @@ function openFilterMenu(col, anchorBtn){
         applySetFilter();
       });
       const lab = document.createElement("label");
-      lab.appendChild(document.createTextNode(v));
+      lab.appendChild(document.createTextNode(display));
       item.appendChild(cb); item.appendChild(lab);
       list.appendChild(item);
     }
@@ -667,7 +674,20 @@ function openFilterMenu(col, anchorBtn){
 
   search.addEventListener("input", ()=>{
     const q = search.value.toLowerCase().trim();
-    visible = q ? allVals.filter(v => v.toLowerCase().includes(q)) : allVals;
+    if (!q){
+      visible = allVals;
+      visibleDisplay = displayVals;
+    } else {
+      visible = [];
+      visibleDisplay = [];
+      for (let i = 0; i < allVals.length; i++){
+        const display = displayVals[i];
+        if (display.toLowerCase().includes(q)){
+          visible.push(allVals[i]);
+          visibleDisplay.push(display);
+        }
+      }
+    }
     renderList();
   });
 

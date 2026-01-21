@@ -237,6 +237,7 @@ Mapowanie na `getElementById`:
 ### 4.4 Helpery tekstowe
 - `norm(s)` — normalizacja spacji i dwukropków.
 - `escapeHtml(s)` — encje HTML.
+- `stripMarkers(s)` — usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` z tekstu (używane w filtrze listowym).
 - `setStatus(msg)` i `logLine(msg, isErr)` — logi (console).
 - `canonKey(s)` — klucz kanoniczny: lowercase, normalizacja spacji, usuwa spację przed `(`.
 
@@ -345,6 +346,7 @@ Mapowanie na `getElementById`:
   - wiersz 1: nazwy kolumn + `sortMark`.
   - wiersz 2: `input` filtrów + przycisk `▾` (filtr listowy).
 - Dodaje kolumnę checkboxów `✓` na początku.
+- Tooltip przycisku filtru listowego to „Filtr listy”.
 
 ---
 
@@ -376,6 +378,7 @@ Mapowanie na `getElementById`:
   - Przyciski **Zaznacz wszystko** i **Wyczyść**.
   - Pozycjonuje menu obok przycisku `▾`.
   - Klik poza menu zamyka menu.
+- Etykiety w menu są wyświetlane bez markerów `{{RED}}`, `{{B}}`, `{{I}}`, ale filtrowanie działa na surowych wartościach (nie zmienia logiki danych).
 - `view.filtersSet[col] = null` oznacza brak filtra (wszystko zaznaczone).
 
 ### 10.4 `passesFilters(row, cols)`

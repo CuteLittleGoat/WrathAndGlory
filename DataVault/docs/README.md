@@ -61,6 +61,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. Pierwszy j
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
 - Długie komórki: kliknij, aby rozwinąć/zwinąć treść.
+- Lista wartości w filtrze listowym usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` wyłącznie w etykietach (bez wpływu na logikę filtrowania).
 
 ### Disclaimer
 To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla MG w systemie Wrath & Glory. Aplikacja jest udostępniana za darmo wyłącznie do prywatnego, niekomercyjnego użytku. Projekt nie jest licencjonowany, nie jest powiązany ani wspierany przez Games Workshop, Cubicle 7 Entertainment Ltd. ani Copernicus Corporation. Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games Workshop Limited; Wrath & Glory jest własnością odpowiednich właścicieli praw.
@@ -124,6 +125,7 @@ Below are two equivalent ways to update the data. The first is recommended for n
 - Select 2+ rows: record comparison view.
 - Click a trait tag (`Cechy`): description in the popover panel.
 - Long cells: click to expand/collapse content.
+- The list filter labels strip `{{RED}}`, `{{B}}`, `{{I}}` markers for display only (filter logic is unchanged).
 
 ### Disclaimer
 This tool is an unofficial fan project created to assist GMs in the Wrath & Glory system. The application is provided for free, private, non-commercial use only. The project is not licensed and is not affiliated with or endorsed by Games Workshop, Cubicle 7 Entertainment Ltd., or Copernicus Corporation. Warhammer 40,000 and related names and trademarks are owned by Games Workshop Limited; Wrath & Glory is owned by its respective rights holders.
