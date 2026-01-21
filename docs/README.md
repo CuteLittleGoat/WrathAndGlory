@@ -7,16 +7,27 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 ## Instrukcja obsługi (PL)
 
 ### Dostępne narzędzia
-- **Generator NPC**: https://cutelittlegoat.github.io/GeneratorNPC/index.html
-- **Repozytorium**: https://cutelittlegoat.github.io/Repozytorium/
+- **Generator NPC**: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
+- **DataVault**: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
   - Aby wejść do panelu admina, dopisz parametr `index.html?admin=1` do adresu.
-- **Infoczytnik**: https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html
-- **Kalkulator**: https://cutelittlegoat.github.io/Kalkulator/index.html
+- **Infoczytnik**:
+  - Odczyt wiadomości: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
+  - GM (szykowanie wiadomości): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
+- **Kalkulator**:
+  - Menu główne: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
+  - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
+  - Kalkulator XP: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
+
+### Instrukcje modułów (README)
+- Generator NPC: ../GeneratorNPC/docs/README.md
+- DataVault: ../DataVault/docs/README.md
+- Infoczytnik: ../Infoczytnik/docs/README.md
+- Kalkulator: ../Kalkulator/docs/README.md
 
 ### Jak używać
 1. Otwórz stronę startową w przeglądarce.
 2. Kliknij jeden z przycisków, aby przejść do wybranego narzędzia.
-3. Jeśli potrzebujesz panelu admina w Repozytorium, dopisz `index.html?admin=1` do adresu Repozytorium.
+3. Jeśli potrzebujesz panelu admina w DataVault, dopisz `index.html?admin=1` do adresu DataVault.
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -48,16 +59,27 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ## User guide (EN)
 
 ### Available tools
-- **NPC Generator**: https://cutelittlegoat.github.io/GeneratorNPC/index.html
-- **Repository**: https://cutelittlegoat.github.io/Repozytorium/
+- **NPC Generator**: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
+- **DataVault**: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
   - To access the admin panel, append `index.html?admin=1` to the URL.
-- **Infoczytnik**: https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html
-- **Calculator**: https://cutelittlegoat.github.io/Kalkulator/index.html
+- **Infoczytnik**:
+  - Message reader: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
+  - GM (message prep): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
+- **Calculator**:
+  - Main menu: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
+  - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
+  - XP calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
+
+### Module README links
+- NPC Generator: ../GeneratorNPC/docs/README.md
+- DataVault: ../DataVault/docs/README.md
+- Infoczytnik: ../Infoczytnik/docs/README.md
+- Calculator: ../Kalkulator/docs/README.md
 
 ### How to use
 1. Open the landing page in your browser.
 2. Click one of the buttons to open the selected tool.
-3. If you need the Repository admin panel, append `index.html?admin=1` to the Repository address.
+3. If you need the DataVault admin panel, append `index.html?admin=1` to the DataVault address.
 
 ### Running locally
 This is a static page with no backend. You can:
