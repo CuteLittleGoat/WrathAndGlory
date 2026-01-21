@@ -8,6 +8,7 @@ Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikac
 
 ### Opis
 Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne.
+Dokumentacja wyglądu i zasad formatowania jest w `docs/StylLayoutu.md`.
 
 ### Uruchomienie aplikacji
 1. Umieść pliki projektu na hostingu statycznym **lub** uruchom lokalny serwer HTTP:
@@ -69,6 +70,7 @@ To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla 
 
 ### Overview
 A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files.
+Visual/layout rules and formatting details are documented in `docs/StylLayoutu.md`.
 
 ### Running the app
 1. Host the project files on any static hosting **or** run a local HTTP server:
