@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Administratum Data Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="sigil">⟦⟧</div>
+        <div>
+          <div class="title">ADMINISTRATUM DATA VAULT</div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <div class="actionsGroup" id="updateDataGroup">
+          <button class="btn secondary" id="btnUpdateData">Aktualizuj dane</button>
+          <div class="actionsNote">
+            Plik <strong>Repozytorium.xlsx</strong> musi znajdować się w głównym folderze aplikacji
+            (<code>/Repozytorium.xlsx</code>), aby aktualizacja zadziałała.
+          </div>
+        </div>
+        <button class="btn secondary" id="btnReset" title="Wyczyść filtry, sortowanie i zaznaczenia">Reset widoku</button>
+        <button class="btn primary" id="btnCompare" disabled>Porównaj zaznaczone</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="panel">
+        <div class="panelHeader">
+          <span class="caret">▸</span><span class="panelTitle">FILTRY</span>
+        </div>
+        <div class="panelBody">
+          <label class="field">
+            <div class="fieldLabel">Szukaj (globalnie)</div>
+            <input id="globalSearch" class="input" placeholder="np. Pist, Brutalna, IMPERIUM, Zatrucie (5)..." />
+          </label>
+
+          <div class="hint">
+            <div>▸ Kliknij nagłówek, aby sortować (Shift = sort wielokolumnowy).</div>
+            <div>▸ Drugi wiersz nagłówka: filtry per kolumna (fragment / liczby).</div>
+            <div>▸ Zaznacz 2+ wiersze, aby porównać.</div>
+            <div class="muted">Jeśli tooltipy cech nie wyskakują na telefonie: stuknij w tag cechy.</div>
+          </div>
+        </div>
+
+      </aside>
+
+      <section class="workspace">
+        <nav class="tabs" id="tabs"></nav>
+        <div class="tableWrap" id="tableWrap">
+          <div class="emptyState">
+            <div class="emptyTitle">Brak danych</div>
+            <div class="emptyText">Brak danych do wyświetlenia. W trybie admina użyj <b>Aktualizuj dane</b>.</div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Tooltip / modal -->
+  <div id="popover" class="popover" aria-hidden="true">
+    <div class="popoverHeader">
+      <div id="popoverTitle" class="popoverTitle"></div>
+      <button id="popoverClose" class="iconBtn" aria-label="Zamknij">✕</button>
+    </div>
+    <div id="popoverBody" class="popoverBody"></div>
+  </div>
+
+  <div id="modal" class="modal" aria-hidden="true">
+    <div class="modalCard">
+      <div class="modalHeader">
+        <div class="modalTitle" id="modalTitle">Porównanie</div>
+        <button id="modalClose" class="iconBtn" aria-label="Zamknij">✕</button>
+      </div>
+      <div id="modalBody" class="modalBody"></div>
+    </div>
+  </div>
+
+  <div id="filterMenu" class="filterMenu" aria-hidden="true"></div>
+
+  <script src="app.js"></script>
+
+  <!-- XLSX opcjonalnie: jeśli nie chcesz CDN, używaj build_json.py -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.19.3/dist/xlsx.full.min.js"></script>
+</body>
+</html>

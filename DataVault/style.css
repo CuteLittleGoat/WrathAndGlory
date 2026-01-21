@@ -1,0 +1,520 @@
+/* Administratum Green — z fallbackiem na Calibri */
+:root{
+  --bg:#050607;
+  --panel:#070A0B;
+  --panel2:#0A0F0E;
+  --text:#6FE38C;
+  --text2:#4FB070;
+  --muted:#2F6F4A;
+  --code:#CFF5DC;
+  --red:#d74b4b;
+
+  --b:rgba(111,227,140,.22);
+  --b2:rgba(111,227,140,.12);
+  --div:rgba(111,227,140,.10);
+
+  --hbg:rgba(111,227,140,.06);
+  --zebra:rgba(111,227,140,.03);
+  --hover:rgba(111,227,140,.05);
+
+  --glow:0 0 6px rgba(111,227,140,.18);
+  --glowH:0 0 10px rgba(111,227,140,.25);
+
+  --header-row-height:36px;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:"Share Tech Mono", Calibri, monospace;
+  line-height:1.45;
+  letter-spacing:.03em;
+}
+code{color:var(--code)}
+.app{min-height:100%; display:flex; flex-direction:column}
+.topbar{
+  padding:14px 16px;
+  border-bottom:1px solid var(--div);
+  background:linear-gradient(180deg, rgba(111,227,140,.04), transparent);
+  display:flex; gap:12px; align-items:flex-start; justify-content:space-between; flex-wrap:wrap;
+}
+.brand{display:flex; gap:12px; align-items:center}
+.sigil{
+  width:44px; height:44px; display:grid; place-items:center;
+  border:1px solid var(--b);
+  background:rgba(111,227,140,.04);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.08);
+}
+.title{
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  font-weight:600;
+  text-shadow:var(--glowH);
+}
+.actions{display:flex; gap:10px; flex-wrap:wrap}
+.actionsGroup{display:flex; flex-direction:column; gap:6px; max-width:320px}
+.actionsNote{font-size:11px; color:var(--text2); letter-spacing:.02em; text-transform:none}
+.btn{
+  border-radius:4px;
+  padding:10px 12px;
+  border:1px solid var(--b);
+  cursor:pointer;
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.14em;
+  font-weight:600;
+  font-size:12px;
+  background:rgba(111,227,140,.08);
+  color:var(--text);
+}
+.btn.primary{
+  background:var(--text);
+  color:var(--bg);
+  border-color:rgba(111,227,140,.35);
+}
+.btn:disabled{opacity:.45; cursor:not-allowed}
+.btn.secondary:hover{background:rgba(111,227,140,.12)}
+.btn.primary:hover{filter:brightness(1.08)}
+.filebtn input{display:none}
+
+.main{flex:1; display:grid; grid-template-columns:360px 1fr; gap:12px; padding:12px}
+.panel{
+  border:1px solid var(--b);
+  background:var(--panel);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.08);
+  border-radius:4px;
+  overflow:hidden;
+}
+.panelHeader{
+  padding:10px 12px;
+  background:rgba(111,227,140,.04);
+  border-bottom:1px solid var(--div);
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.16em;
+  display:flex; gap:10px; align-items:center;
+}
+.panelBody{padding:12px}
+.caret{color:rgba(111,227,140,.65)}
+.panelTitle{color:var(--code)}
+.fieldLabel{font-size:12px; color:var(--text2); margin-bottom:6px; letter-spacing:.10em; text-transform:uppercase}
+.input{
+  width:100%;
+  padding:10px 10px;
+  border-radius:4px;
+  border:1px solid var(--b);
+  background:var(--bg);
+  color:var(--text);
+  outline:none;
+}
+.input:focus{box-shadow:0 0 0 3px rgba(111,227,140,.18)}
+.hint{margin-top:10px; color:var(--text2); font-size:12px}
+.muted{color:var(--muted); margin-top:8px}
+.workspace{
+  border:1px solid var(--b);
+  background:var(--panel);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.08);
+  border-radius:4px;
+  overflow:hidden;
+  display:flex; flex-direction:column;
+}
+.tabs{
+  display:flex; gap:6px; flex-wrap:wrap;
+  padding:10px 10px;
+  border-bottom:1px solid var(--div);
+  background:rgba(111,227,140,.03);
+}
+.tab{
+  padding:8px 10px;
+  border:1px solid var(--b2);
+  background:rgba(111,227,140,.05);
+  color:var(--text);
+  border-radius:4px;
+  cursor:pointer;
+  font-size:12px;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  font-family:"Orbitron","Share Tech Mono", Calibri, sans-serif;
+}
+.tab.active{
+  background:rgba(111,227,140,.10);
+  border-color:var(--b);
+  box-shadow:0 0 0 2px rgba(111,227,140,.10);
+}
+/* Nowy układ tabeli */
+.tableWrap{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+  background:linear-gradient(180deg, rgba(111,227,140,.03), transparent);
+}
+.tableFrame{
+  flex:1;
+  border-top:1px solid var(--div);
+  border-bottom:1px solid var(--div);
+  background:var(--panel);
+  box-shadow: inset 0 0 0 1px rgba(111,227,140,.06);
+  border-radius:6px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.tableViewport{
+  flex:1;
+  overflow:auto;
+  scrollbar-width:thin;
+  padding:4px;
+}
+.emptyState{padding:28px}
+.emptyTitle{font-family:"Orbitron"; letter-spacing:.16em; text-transform:uppercase; color:var(--code)}
+.emptyText{color:var(--text2); margin-top:10px}
+
+/* Nowy styl tabeli */
+.dataTable{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13px;
+  border:1px solid var(--div);
+  box-shadow:var(--glow);
+}
+.dataTable thead th{
+  position:sticky;
+  top:0;
+  background:linear-gradient(180deg, rgba(111,227,140,.08), rgba(111,227,140,.03));
+  color:var(--code);
+  padding:10px 9px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--div);
+}
+.dataTable thead tr:nth-child(2) th{
+  top:var(--header-row-height);
+  background:rgba(111,227,140,.05);
+}
+.dataTable tbody tr:nth-child(even){background:var(--zebra)}
+.dataTable tbody tr:hover{background:var(--hover)}
+.dataTable th,
+.dataTable td{
+  vertical-align:top;
+  padding:8px 9px;
+  border-bottom:1px solid var(--div);
+}
+.dataTable th{
+  text-align:left;
+  cursor:pointer;
+  user-select:none;
+  white-space:normal;
+}
+.dataTable .sortMark{color:rgba(207,245,220,.7)}
+th .filter{
+  width:100%;
+  margin-top:6px;
+  padding:6px 6px;
+  border-radius:4px;
+  border:1px solid var(--b2);
+  background:var(--bg);
+  color:var(--text);
+  font-size:12px;
+  outline:none;
+}
+td.num{text-align:right; color:var(--code)}
+td.center{text-align:center}
+.tag{
+  display:inline-block;
+  padding:3px 6px;
+  border:1px solid var(--b);
+  background:rgba(111,227,140,.06);
+  border-radius:4px;
+  font-size:11px;
+  letter-spacing:.10em;
+  text-transform:uppercase;
+  cursor:pointer;
+  margin:2px 4px 2px 0;
+}
+.tag:hover{background:rgba(111,227,140,.10)}
+/* Popover */
+.popover{
+  position:fixed;
+  right:16px;
+  bottom:16px;
+  width:min(520px, calc(100vw - 32px));
+  max-height:min(70vh, 520px);
+  display:none;
+  background:var(--panel2);
+  border:1px solid var(--b);
+  border-radius:4px;
+  box-shadow:0 0 16px rgba(111,227,140,.10);
+  overflow:hidden;
+  z-index:50;
+}
+.popover[aria-hidden="false"]{display:block}
+.popoverHeader{
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 12px;
+  border-bottom:1px solid var(--div);
+  background:rgba(111,227,140,.04);
+}
+.popoverTitle{
+  font-family:"Orbitron";
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--code);
+  font-size:12px;
+}
+.iconBtn{
+  border:1px solid var(--b2);
+  background:rgba(111,227,140,.06);
+  color:var(--text);
+  border-radius:4px;
+  padding:6px 8px;
+  cursor:pointer;
+}
+.popoverBody{padding:12px; color:rgba(207,245,220,.92); font-size:13px; overflow:auto; max-height:calc(70vh - 44px); white-space:pre-wrap}
+
+/* Modal */
+.modal{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; z-index:60; padding:16px}
+.modal[aria-hidden="false"]{display:grid; place-items:center}
+.modalCard{
+  width:min(980px, 100%);
+  max-height:calc(100vh - 32px);
+  background:var(--panel2);
+  border:1px solid var(--b);
+  border-radius:4px;
+  overflow:hidden;
+  box-shadow:0 0 16px rgba(111,227,140,.10);
+}
+.modalHeader{display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid var(--div); background:rgba(111,227,140,.04)}
+.modalTitle{font-family:"Orbitron"; letter-spacing:.14em; text-transform:uppercase; color:var(--code)}
+.modalBody{padding:12px; overflow:auto; max-height:calc(100vh - 120px)}
+.compareTable{width:100%; border-collapse:collapse}
+.compareTable th,.compareTable td{border-bottom:1px solid var(--div); padding:8px; vertical-align:top}
+.compareTable th{color:var(--code); background:rgba(111,227,140,.04)}
+.compareDiff{color:#E6B35C}
+
+/* Responsive */
+@media (max-width: 980px){
+  .main{grid-template-columns:1fr}
+}
+
+
+/* Column tweaks */
+/* Archetypy */
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Nazwa"]{min-width:28ch}
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Umiejętności"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Umiejętności"]{min-width:28ch}
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Atak"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Atak"]{min-width:50ch}
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Premie"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Premie"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Zdolności"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Zdolności"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Zdolności Hordy"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Zdolności Hordy"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Opcje Hordy"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Opcje Hordy"]{min-width:60ch}
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Frakcja"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Frakcja"]{min-width:24ch}
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Poziom"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Poziom"]{min-width:6ch; text-align:center}
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Podręcznik"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Podręcznik"]{min-width:14ch}
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Strona"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Strona"]{min-width:7ch; text-align:center}
+
+/* Cechy / Stany / Słowa kluczowe */
+.tableWrap table[data-sheet="Cechy"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Cechy"] td[data-col="Nazwa"],
+.tableWrap table[data-sheet="Stany"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Stany"] td[data-col="Nazwa"],
+.tableWrap table[data-sheet="Slowa_Kluczowe"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Slowa_Kluczowe"] td[data-col="Nazwa"]{min-width:26ch}
+.tableWrap table[data-sheet="Cechy"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Cechy"] td[data-col="Typ"],
+.tableWrap table[data-sheet="Stany"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Stany"] td[data-col="Typ"],
+.tableWrap table[data-sheet="Slowa_Kluczowe"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Slowa_Kluczowe"] td[data-col="Typ"]{min-width:14ch}
+.tableWrap table[data-sheet="Cechy"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Cechy"] td[data-col="Opis"],
+.tableWrap table[data-sheet="Stany"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Stany"] td[data-col="Opis"],
+.tableWrap table[data-sheet="Slowa_Kluczowe"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Slowa_Kluczowe"] td[data-col="Opis"]{min-width:56ch}
+
+/* Augumentacje / Ekwipunek */
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Nazwa"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Nazwa"]{min-width:28ch}
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Typ"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Typ"]{min-width:16ch}
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Dostępność"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Dostępność"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Dostępność"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Dostępność"]{min-width:14ch}
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Koszt"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Koszt"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Koszt"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Koszt"]{min-width:12ch}
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Koszt IM"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Koszt IM"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Koszt IM"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Koszt IM"]{min-width:12ch}
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Efekt"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Efekt"],
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Opis"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Opis"]{min-width:48ch}
+.tableWrap table[data-sheet="Augumentacje"] th[data-col="Słowa Kluczowe"],
+.tableWrap table[data-sheet="Augumentacje"] td[data-col="Słowa Kluczowe"],
+.tableWrap table[data-sheet="Ekwipunek"] th[data-col="Słowa Kluczowe"],
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Słowa Kluczowe"]{min-width:28ch}
+
+/* Psionika */
+.tableWrap table[data-sheet="Psionika"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Nazwa"]{min-width:26ch}
+.tableWrap table[data-sheet="Psionika"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Typ"]{min-width:18ch}
+.tableWrap table[data-sheet="Psionika"] th[data-col="ST"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="ST"],
+.tableWrap table[data-sheet="Psionika"] th[data-col="Koszt PD"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Koszt PD"]{min-width:9ch; text-align:center}
+.tableWrap table[data-sheet="Psionika"] th[data-col="Zasięg"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Zasięg"]{min-width:14ch}
+.tableWrap table[data-sheet="Psionika"] th[data-col="Aktywacja"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Aktywacja"],
+.tableWrap table[data-sheet="Psionika"] th[data-col="Czas Trwania"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Czas Trwania"]{min-width:20ch}
+.tableWrap table[data-sheet="Psionika"] th[data-col="Wiele Celów"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Wiele Celów"],
+.tableWrap table[data-sheet="Psionika"] th[data-col="Wzmocnienie"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Wzmocnienie"]{min-width:26ch}
+.tableWrap table[data-sheet="Psionika"] th[data-col="Słowa Kluczowe"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Słowa Kluczowe"]{min-width:26ch}
+.tableWrap table[data-sheet="Psionika"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Psionika"] td[data-col="Efekt"]{min-width:48ch}
+
+/* Modlitwy */
+.tableWrap table[data-sheet="Modlitwy"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Modlitwy"] td[data-col="Nazwa"]{min-width:28ch}
+.tableWrap table[data-sheet="Modlitwy"] th[data-col="Koszt PD"],
+.tableWrap table[data-sheet="Modlitwy"] td[data-col="Koszt PD"]{min-width:9ch; text-align:center}
+.tableWrap table[data-sheet="Modlitwy"] th[data-col="Wymagania"],
+.tableWrap table[data-sheet="Modlitwy"] td[data-col="Wymagania"]{min-width:26ch}
+.tableWrap table[data-sheet="Modlitwy"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Modlitwy"] td[data-col="Efekt"]{min-width:54ch}
+
+/* Talenty */
+.tableWrap table[data-sheet="Talenty"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Talenty"] td[data-col="Nazwa"]{min-width:28ch}
+.tableWrap table[data-sheet="Talenty"] th[data-col="Koszt PD"],
+.tableWrap table[data-sheet="Talenty"] td[data-col="Koszt PD"]{min-width:9ch; text-align:center}
+.tableWrap table[data-sheet="Talenty"] th[data-col="Wymagania"],
+.tableWrap table[data-sheet="Talenty"] td[data-col="Wymagania"]{min-width:32ch}
+.tableWrap table[data-sheet="Talenty"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Talenty"] td[data-col="Opis"]{min-width:36ch}
+.tableWrap table[data-sheet="Talenty"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Talenty"] td[data-col="Efekt"]{min-width:46ch}
+
+/* Bronie */
+.tableWrap table[data-sheet="Bronie"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Nazwa"]{min-width:30ch}
+.tableWrap table[data-sheet="Bronie"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Typ"],
+.tableWrap table[data-sheet="Bronie"] th[data-col="Rodzaj"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Rodzaj"]{min-width:16ch}
+.tableWrap table[data-sheet="Bronie"] th[data-col="DK"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="DK"],
+.tableWrap table[data-sheet="Bronie"] th[data-col="PP"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="PP"],
+.tableWrap table[data-sheet="Bronie"] th[data-col="Obrażenia"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Obrażenia"],
+.tableWrap table[data-sheet="Bronie"] th[data-col="Szybkostrzelność"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Szybkostrzelność"]{min-width:8ch}
+.tableWrap table[data-sheet="Bronie"] th[data-col="Podręcznik"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Podręcznik"],
+.tableWrap table[data-sheet="Bronie"] th[data-col="Strona"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Strona"]{min-width:8ch; text-align:center}
+.tableWrap table[data-sheet="Bronie"] th[data-col="Zasięg"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Zasięg"]{min-width:18ch; white-space:nowrap}
+.tableWrap table[data-sheet="Bronie"] th[data-col="Dostępność"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Dostępność"]{min-width:14ch}
+.tableWrap table[data-sheet="Bronie"] th[data-col="Koszt"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Koszt"],
+.tableWrap table[data-sheet="Bronie"] th[data-col="Koszt IM"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Koszt IM"]{min-width:12ch}
+.tableWrap table[data-sheet="Bronie"] th[data-col="Słowa Kluczowe"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Słowa Kluczowe"]{min-width:28ch}
+.tableWrap table[data-sheet="Bronie"] th[data-col="Cechy"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Cechy"]{min-width:32ch}
+
+/* Pancerze */
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Nazwa"]{min-width:30ch}
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Typ"],
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Podręcznik"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Podręcznik"]{min-width:14ch}
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Strona"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Strona"],
+.tableWrap table[data-sheet="Pancerze"] th[data-col="WP"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="WP"]{min-width:8ch; text-align:center}
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Dostępność"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Dostępność"]{min-width:14ch}
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Koszt"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Koszt"],
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Koszt IM"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Koszt IM"]{min-width:12ch}
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Słowa Kluczowe"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Słowa Kluczowe"]{min-width:26ch}
+.tableWrap table[data-sheet="Pancerze"] th[data-col="Cechy"],
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Cechy"]{min-width:32ch}
+.slash{color:var(--code)}
+.ref{color:var(--code); opacity:.9}
+.caretref{color:var(--code); opacity:.95}
+.inline-red{color:var(--red)}
+.keyword-red{color:var(--red)}
+.keyword-comma{color:var(--text)}
+.inline-bold{font-weight:700}
+.inline-italic{font-style:italic}
+
+/* Filter menu (Excel-like) */
+.filterBtn{margin-left:6px; width:24px; height:24px; display:inline-grid; place-items:center;
+  border:1px solid var(--b2); background:rgba(111,227,140,.04); color:var(--text); border-radius:6px; cursor:pointer}
+.filterBtn:hover{background:rgba(111,227,140,.08)}
+.filterMenu{position:fixed; z-index:40; min-width:240px; max-width:320px; max-height:360px; overflow:auto;
+  background:var(--panel); border:1px solid var(--b); border-radius:8px; box-shadow:0 0 16px rgba(111,227,140,.10);
+  padding:10px; display:none}
+.filterMenu[aria-hidden="false"]{display:block}
+.filterMenu .fmTitle{font-family:var(--head); letter-spacing:.12em; text-transform:uppercase; font-size:12px; color:var(--code); margin-bottom:8px}
+.filterMenu .fmSearch{width:100%; margin-bottom:8px}
+.filterMenu .fmActions{display:flex; gap:8px; margin-bottom:8px}
+.filterMenu .fmList{display:flex; flex-direction:column; gap:6px}
+.filterMenu .fmItem{display:flex; gap:8px; align-items:flex-start}
+.filterMenu .fmItem label{cursor:pointer}
+.celltext{
+  white-space:pre-wrap;
+  line-height:1.45;
+  word-break:normal;
+  overflow-wrap:normal;
+}
+.clampable{cursor:pointer}
+.clampHint{color:var(--text2)}
+.tableFilters{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  padding:6px 0 8px;
+}
+.tableFilters .filterRow{display:flex; gap:6px; align-items:center}
+.tableFilters .filterRow .input{padding:8px 8px}
