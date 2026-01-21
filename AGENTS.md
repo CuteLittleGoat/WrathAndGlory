@@ -1,6 +1,7 @@
-Repozytorium "WrathAndGlory" jest główną stroną dla użytkownika służącą do uruchamiania z poziomu przeglądarki dodatkowych modułów. Moduły te są w katalogach "DataVault", "GeneratorNPC", "Infoczytnik", "Kalkulator". 
+Repozytorium "WrathAndGlory" jest główną stroną dla użytkownika służącą do uruchamiania z poziomu przeglądarki dodatkowych modułów.
+Moduły te są w katalogach "DataVault", "GeneratorNPC", "Infoczytnik", "Kalkulator". Każdy moduł to inna aplikacja. Niektóre moduły korzystają z tych samych plików (np. DataVault i GeneratorNPC korzystają z tego samego data.json z tej samej lokalizacji). 
 
-1.2Po każdej zmianie kodu któregokolwiek z modułów zmodyfikuj pliki docs/Documentation.md oraz docs/README.md w odpowiednim folderze.
+1. Po każdej zmianie kodu któregokolwiek z modułów zmodyfikuj pliki docs/Documentation.md oraz docs/README.md w odpowiednim folderze.
 2. Plik README.md ma zawierać instrukcje obsługi dla użytkownika
 3. Plik README.md ma zawierać te same instrukcje w języku polskim i angielskim
 4. Plik Documentation.md ma zawierać dokładny opis kodu. Wszystkich funkcji, użytych styli, fontów, zasad działania poszczególnych elementów itp.
