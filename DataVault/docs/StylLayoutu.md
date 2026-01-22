@@ -6,13 +6,13 @@ Dokument opisuje **1:1 zasady stylu i formatowania** dla modułu DataVault: font
 
 ## 1) Fonty i typografia
 
-### 1.1 Fonty ładowane z Google Fonts
-- **Orbitron** (wagi 500 i 600) — używany w elementach nagłówkowych i przyciskach.
-- **Share Tech Mono** — font bazowy dla większości tekstów.
+### 1.1 Fonty lokalne (bez Google Fonts)
+- **Consolas**, **Fira Code**, **Source Code Pro** — stos bazowy dla całego UI.
 
 ### 1.2 Zasady użycia fontów
-- **Tekst bazowy (`body`)**: `"Share Tech Mono", Calibri, monospace`.
-- **Nagłówki i elementy akcentowane** (`.title`, `.panelHeader`, `.tab`, `.btn`, `.popoverTitle`, `.modalTitle`): `"Orbitron", "Share Tech Mono", Calibri, sans-serif`.
+- **Tekst bazowy (`body`)**: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
+- **Nagłówki i elementy akcentowane** (`.title`, `.panelHeader`, `.tab`, `.btn`, `.popoverTitle`, `.modalTitle`): ten sam stos co reszta UI (brak osobnego fontu).
+- **Zmienne**: `--head` w `:root` przechowuje ten sam stos i jest używany w tytułach menu filtrów.
 - **Wielkości tekstu**:
   - teksty w tabelach: `font-size: 13px` (`.dataTable`).
   - tagi cech: `font-size: 11px`.
@@ -25,24 +25,27 @@ Dokument opisuje **1:1 zasady stylu i formatowania** dla modułu DataVault: font
 
 ### 2.1 Zmienne CSS (źródło prawdy)
 Wszystkie kolory są definiowane w `:root` w `style.css`:
-- `--bg`: `#050607` (tło globalne).
-- `--panel`: `#070A0B` (tła paneli).
-- `--panel2`: `#0A0F0E` (tła modalu i popover).
-- `--text`: `#6FE38C` (kolor podstawowy tekstu).
-- `--text2`: `#4FB070` (tekst drugorzędny: hinty, opisy).
-- `--muted`: `#2F6F4A` (tekst przygaszony).
-- `--code`: `#CFF5DC` (wyróżnienia i „jaśniejsze” elementy).
+- `--bg`: `#031605` (kolor bazowy tła).
+- `--bg-grad`: radialne gradienty + `#031605` (tło `body`).
+- `--panel`: `#000` (tła paneli).
+- `--panel2`: `#000` (tła modalu i popover).
+- `--text`: `#9cf09c` (kolor podstawowy tekstu).
+- `--text2`: `#7ad87a` (tekst drugorzędny: hinty, opisy).
+- `--muted`: `#4a8b4a` (tekst przygaszony).
+- `--code`: `#c9f7c9` (wyróżnienia i „jaśniejsze” elementy).
 - `--red`: `#d74b4b` (kolor ostrzeżeń/akcentów na czerwono).
+- `--border`: `#16c60c` (ramki i akcenty).
+- `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
 
 ### 2.2 Obwódki, cienie i tła pomocnicze
-- `--b`: `rgba(111,227,140,.22)` — obwódki aktywne.
-- `--b2`: `rgba(111,227,140,.12)` — delikatne obwódki.
-- `--div`: `rgba(111,227,140,.10)` — linie podziału.
-- `--hbg`: `rgba(111,227,140,.06)` — tła nagłówków.
-- `--zebra`: `rgba(111,227,140,.03)` — naprzemienne wiersze.
-- `--hover`: `rgba(111,227,140,.05)` — hover w tabeli.
-- `--glow`: `0 0 6px rgba(111,227,140,.18)` — subtelny glow.
-- `--glowH`: `0 0 10px rgba(111,227,140,.25)` — mocniejszy glow.
+- `--b`: `rgba(22,198,12,.35)` — obwódki aktywne.
+- `--b2`: `rgba(22,198,12,.2)` — delikatne obwódki.
+- `--div`: `rgba(22,198,12,.18)` — linie podziału.
+- `--hbg`: `rgba(22,198,12,.06)` — tła nagłówków.
+- `--zebra`: `rgba(22,198,12,.04)` — naprzemienne wiersze.
+- `--hover`: `rgba(22,198,12,.08)` — hover w tabeli.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)` — mocniejszy glow.
+- `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)` — dodatkowy glow dla tytułów.
 
 ---
 

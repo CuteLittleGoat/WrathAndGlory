@@ -67,11 +67,12 @@ Każda karta posiada listę wielokrotnego wyboru (`<select multiple size="15">`)
 ---
 
 ## 5. Typografia i fonty
-- **Orbitron** (wagi 500 i 600) — nagłówki, przyciski, elementy akcentowe.
-- **Share Tech Mono** — podstawowy font interfejsu.
+- Aplikacja używa lokalnego stosu konsolowego:
+  - `Consolas`, `Fira Code`, `Source Code Pro`, `monospace`.
+- Font jest ustawiony globalnie na `*`, więc wszystkie elementy dziedziczą tę samą typografię.
 
 Ustawienia globalne:
-- `font-family: "Share Tech Mono", Calibri, monospace;`
+- `font-family: "Consolas", "Fira Code", "Source Code Pro", monospace;`
 - `line-height: 1.45;`
 - `letter-spacing: 0.03em;`
 
@@ -80,12 +81,32 @@ Ustawienia globalne:
 ## 6. Style i klasy CSS (pełny opis)
 
 ### 6.1. Zmienne CSS (`:root`)
-- Kolory tła i paneli: `--bg`, `--panel`, `--panel2`.
-- Tekst: `--text`, `--text2`, `--muted`, `--code`, `--red`.
-- Obramowania i akcenty: `--b`, `--b2`, `--div`.
-- Tła pomocnicze: `--hbg`, `--zebra`, `--hover`.
-- Cienie: `--glow`, `--glowH`.
-- `--header-row-height` — wysokość wiersza nagłówków tabel.
+- Kolory tła i paneli:
+  - `--bg: #031605`
+  - `--bg-grad`: radialne gradienty + `#031605`
+  - `--panel: #000`
+  - `--panel2: #000`
+- Tekst:
+  - `--text: #9cf09c`
+  - `--text2: #7ad87a`
+  - `--muted: #4a8b4a`
+  - `--code: #c9f7c9`
+  - `--red: #d74b4b`
+- Obramowania i akcenty:
+  - `--border: #16c60c`
+  - `--accent: #16c60c`
+  - `--accent-dark: #0d7a07`
+  - `--b: rgba(22,198,12,.35)`
+  - `--b2: rgba(22,198,12,.2)`
+  - `--div: rgba(22,198,12,.18)`
+- Tła pomocnicze:
+  - `--hbg: rgba(22,198,12,.06)`
+  - `--zebra: rgba(22,198,12,.04)`
+  - `--hover: rgba(22,198,12,.08)`
+- Cienie:
+  - `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
+  - `--glowH: 0 0 18px rgba(22, 198, 12, 0.35)`
+- `--header-row-height` — wysokość wiersza nagłówków tabel (36px).
 
 ### 6.2. Klasy layoutu
 - `.topbar`, `.layout`, `.sidebar`, `.workspace`, `.panel`, `.card`, `.card-header`.
@@ -102,7 +123,7 @@ Ustawienia globalne:
 
 ### 6.5. Tabele
 - `.data-table` — tabela z `border-collapse`, efektami hover i zebra.
-- `.data-table th` — sticky header, gradient tła, font Orbitron.
+- `.data-table th` — sticky header, gradient tła i uppercase, z tym samym fontem co reszta UI.
 - `min-col-*` — klasy wymuszające minimalne szerokości kolumn (definiowane per arkusz danych).
 
 ### 6.6. Tagowanie i formatowanie
