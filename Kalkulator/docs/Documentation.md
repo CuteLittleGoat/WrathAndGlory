@@ -87,6 +87,7 @@ W `:root` zdefiniowano:
 - **Buttony** (`.btn`, `.btn.primary`, `.btn.secondary`): uppercase, letter-spacing, zielone akcenty, efekty hover.
 - **Panele** (`.panel`, `.panelHeader`, `.panelBody`): obramowane sekcje z nagłówkiem i zawartością.
 - **Tabele** (`.dataTable`): zebra striping, hover, uppercase nagłówki, `box-shadow`.
+- **Komórki kosztu XP** (`.dataTable td.cost`): wartości wyrównane do środka w pionie i poziomie.
 - **Inputy** (`.input`): ciemne tło, jasny tekst, focus ring.
 - **Layout** (`.main`, `.workspace`, `.tableWrap`, `.calcGrid`): dwukolumnowy układ z responsywnością w `@media (max-width: 980px)`.
 

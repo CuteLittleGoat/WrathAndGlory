@@ -18,7 +18,7 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 1. W tabelach **Atrybuty** i **Umiejętności** wpisz wartości **aktualne** i **docelowe**.
    - Atrybuty mają zakres `0–12`.
    - Umiejętności mają zakres `0–8`.
-2. Koszt XP w każdym wierszu i suma **Całkowity koszt XP** uaktualniają się automatycznie po każdej zmianie.
+2. Koszt XP w każdym wierszu (wyrównany do środka komórki) oraz suma **Całkowity koszt XP** uaktualniają się automatycznie po każdej zmianie.
 3. Przycisk **Resetuj wartości** ustawia wszystkie pola na `0`.
 
 #### 2) Tworzenie Postaci
@@ -92,7 +92,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 1. In the **Attributes** and **Skills** tables, enter **current** and **target** values.
    - Attributes range from `0–12`.
    - Skills range from `0–8`.
-2. The XP cost in each row and the **Total XP cost** update automatically on every change.
+2. The XP cost in each row (centered within the cell) and the **Total XP cost** update automatically on every change.
 3. The **Reset values** button sets all fields to `0`.
 
 #### 2) Character Creation
