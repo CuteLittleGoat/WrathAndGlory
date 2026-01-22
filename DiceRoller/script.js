@@ -39,6 +39,11 @@ const createDieElement = (isFury) => {
   const die = document.createElement("div");
   die.className = `die ${isFury ? "red" : "white"} face-1`;
 
+  const question = document.createElement("span");
+  question.className = "die__question";
+  question.textContent = "?";
+  die.appendChild(question);
+
   for (let i = 1; i <= 7; i += 1) {
     const pip = document.createElement("span");
     pip.className = `pip pos-${i}`;
