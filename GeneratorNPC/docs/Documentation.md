@@ -122,7 +122,7 @@ Ustawienia globalne:
 - `select`, `input`, `textarea` — jednolite tła, obramowania, fokus (`box-shadow: var(--glow)`).
 - `.field`, `.field-label-row` — układ etykiet i kontroli.
 - `.checkbox`, `.checkbox-list`, `.checkbox-inline` — checkboxy modułów i ustawień szczegółów.
-- `.table-number-input` — wąskie pole `number` w tabeli bestiariusza (mniejszy padding i font).
+- `.table-number-input` — wąskie pole `number` w tabeli bestiariusza (mniejszy padding i font); wejście jest obcinane do 25 znaków.
 - `.editable-textarea` — pole edycji `Umiejętności` (ciemne tło, resize w pionie, focus z `--glow`).
 - `.skills-key-cell` — układ flex dla etykiety „Umiejętności” i przycisku **Edytuj/Zapisz**.
 - `.btn.btn-small` — kompaktowa wersja przycisku dla edycji w tabeli.
@@ -178,6 +178,7 @@ Ustawienia globalne:
 ### 8.1. Stałe i stan aplikacji
 - `DATA_URL` — URL z danymi JSON.
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
+- `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków).
 - `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
 - `state` — obiekt z danymi aplikacji i stanem UI:
   - `data`, `traits` (Map), `expandedCells` (Set), `selectedBestiaryIndex`,
@@ -243,7 +244,7 @@ Ustawienia globalne:
 - `createTag(traitName)` — tworzy element `.tag` dla cechy.
 - `renderTraitsCell(value, columnClass)` — renderuje komórkę cech jako zestaw tagów.
 - `createClampCell(sheetName, rowId, key, valueString, columnClass)` — tworzy komórkę z mechanizmem clamp.
-- `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP i zapisuje nadpisanie do `state.bestiaryOverrides`.
+- `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP, obcina wpis do 25 znaków i zapisuje nadpisanie do `state.bestiaryOverrides`.
 - `createSkillsRow(record, key, valueString)` — renderuje wiersz „Umiejętności” z przyciskiem **Edytuj/Zapisz** i `textarea`.
 - `renderOrderedTable({ tableBody, records, columns, sheetName })` — renderuje tabelę z określonymi kolumnami.
 - `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne.
