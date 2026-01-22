@@ -65,8 +65,8 @@ const translations = {
     messages: {
       success: "Success!",
       failure: "Failure!",
-      furyCritical: "Wrath Complication",
-      furyComplication: "Wrath Critical",
+      furyCritical: "Wrath Critical",
+      furyComplication: "Wrath Complication",
       possibleShift: "Possible Shift",
       totalPoints: "Total points",
       difficultyNumber: "Difficulty Number",
