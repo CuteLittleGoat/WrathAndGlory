@@ -13,7 +13,6 @@
   --red-die: #c01717;
   --red-pip: #ffffff;
   --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
-  --roll-duration: 1400ms;
 }
 
 * {
@@ -126,23 +125,11 @@ input[type="number"]:focus {
   gap: 20px;
 }
 
-.dice-stage {
-  border: 2px solid var(--accent-soft);
-  border-radius: 16px;
-  padding: 14px;
-  background: rgba(0, 0, 0, 0.35);
-  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.45);
-  perspective: 900px;
-  overflow: hidden;
-}
-
 .dice {
-  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  min-height: 120px;
-  align-content: flex-start;
+  min-height: 92px;
 }
 
 .die {
@@ -153,7 +140,6 @@ input[type="number"]:focus {
   display: grid;
   place-items: center;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2), 0 6px 14px rgba(0, 0, 0, 0.35);
-  transform-style: preserve-3d;
   transition: transform 0.3s ease;
 }
 
@@ -215,48 +201,16 @@ input[type="number"]:focus {
   opacity: 1;
 }
 
-.dice.is-rolling {
-  min-height: 190px;
+.die.rolling {
+  animation: roll 0.8s ease-in-out;
 }
 
-.die--rolling {
-  position: absolute;
-  top: 0;
-  left: 0;
-  animation: tumble var(--roll-duration) ease-in-out forwards;
-}
-
-@keyframes tumble {
-  0% {
-    transform: translate3d(var(--x-start), var(--y-start), 0)
-      rotateX(0deg)
-      rotateY(0deg)
-      rotateZ(0deg);
-  }
-  20% {
-    transform: translate3d(var(--x-mid), var(--y-mid), 60px)
-      rotateX(180deg)
-      rotateY(140deg)
-      rotateZ(90deg);
-  }
-  45% {
-    transform: translate3d(var(--x-bounce), var(--y-bounce), 0)
-      rotateX(320deg)
-      rotateY(240deg)
-      rotateZ(180deg);
-  }
-  70% {
-    transform: translate3d(var(--x-end), var(--y-end), 40px)
-      rotateX(520deg)
-      rotateY(360deg)
-      rotateZ(270deg);
-  }
-  100% {
-    transform: translate3d(var(--x-stop), var(--y-stop), 0)
-      rotateX(640deg)
-      rotateY(480deg)
-      rotateZ(360deg);
-  }
+@keyframes roll {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(90deg) scale(1.05); }
+  50% { transform: rotate(180deg) scale(0.95); }
+  75% { transform: rotate(270deg) scale(1.05); }
+  100% { transform: rotate(360deg) scale(1); }
 }
 
 .summary {

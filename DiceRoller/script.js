@@ -7,8 +7,7 @@ const summary = document.getElementById("summary");
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 99;
-const ROLL_DURATION = 1400;
-const ROLL_PADDING = 8;
+const ROLL_DURATION = 900;
 
 const clampValue = (value, min = MIN_VALUE, max = MAX_VALUE) => {
   if (Number.isNaN(value)) {
@@ -55,37 +54,6 @@ const setDieFace = (die, value) => {
 };
 
 const rollDie = () => Math.floor(Math.random() * 6) + 1;
-
-const getRandomBetween = (min, max) => Math.random() * (max - min) + min;
-
-const clampToBounds = (value, min, max) => Math.min(Math.max(value, min), max);
-
-const createBouncePath = (bounds, dieSize) => {
-  const maxX = Math.max(bounds.width - dieSize - ROLL_PADDING, 0);
-  const maxY = Math.max(bounds.height - dieSize - ROLL_PADDING, 0);
-
-  const start = {
-    x: getRandomBetween(ROLL_PADDING, maxX),
-    y: getRandomBetween(ROLL_PADDING, maxY),
-  };
-
-  const mid = {
-    x: clampToBounds(start.x + getRandomBetween(-maxX * 0.6, maxX * 0.6), 0, maxX),
-    y: clampToBounds(start.y + getRandomBetween(-maxY * 0.6, maxY * 0.6), 0, maxY),
-  };
-
-  const bounce = {
-    x: clampToBounds(mid.x + getRandomBetween(-maxX * 0.7, maxX * 0.7), 0, maxX),
-    y: clampToBounds(mid.y + getRandomBetween(-maxY * 0.7, maxY * 0.7), 0, maxY),
-  };
-
-  const end = {
-    x: clampToBounds(bounce.x + getRandomBetween(-maxX * 0.5, maxX * 0.5), 0, maxX),
-    y: clampToBounds(bounce.y + getRandomBetween(-maxY * 0.5, maxY * 0.5), 0, maxY),
-  };
-
-  return { start, mid, bounce, end };
-};
 
 const scoreValue = (value) => {
   if (value <= 3) {
@@ -141,13 +109,12 @@ const handleRoll = () => {
   const { pool, fury } = syncPoolAndFury();
 
   diceContainer.innerHTML = "";
-  diceContainer.classList.add("is-rolling");
   summary.innerHTML = "<p class=\"summary__placeholder\">Rzut w toku...</p>";
 
   const diceElements = [];
   for (let i = 0; i < pool; i += 1) {
     const die = createDieElement(i < fury);
-    die.classList.add("die--rolling");
+    die.classList.add("rolling");
     setDieFace(die, rollDie());
     diceElements.push(die);
     diceContainer.appendChild(die);
@@ -155,42 +122,11 @@ const handleRoll = () => {
 
   const results = diceElements.map(() => rollDie());
 
-  requestAnimationFrame(() => {
-    const bounds = diceContainer.getBoundingClientRect();
-    diceElements.forEach((die) => {
-      const dieBounds = die.getBoundingClientRect();
-      const dieSize = Math.max(dieBounds.width, dieBounds.height);
-      const path = createBouncePath(bounds, dieSize);
-
-      die.style.setProperty("--x-start", `${path.start.x}px`);
-      die.style.setProperty("--y-start", `${path.start.y}px`);
-      die.style.setProperty("--x-mid", `${path.mid.x}px`);
-      die.style.setProperty("--y-mid", `${path.mid.y}px`);
-      die.style.setProperty("--x-bounce", `${path.bounce.x}px`);
-      die.style.setProperty("--y-bounce", `${path.bounce.y}px`);
-      die.style.setProperty("--x-end", `${path.end.x}px`);
-      die.style.setProperty("--y-end", `${path.end.y}px`);
-      die.style.setProperty("--x-stop", `${path.end.x}px`);
-      die.style.setProperty("--y-stop", `${path.end.y}px`);
-    });
-  });
-
   setTimeout(() => {
     diceElements.forEach((die, index) => {
-      die.classList.remove("die--rolling");
-      die.style.removeProperty("--x-start");
-      die.style.removeProperty("--y-start");
-      die.style.removeProperty("--x-mid");
-      die.style.removeProperty("--y-mid");
-      die.style.removeProperty("--x-bounce");
-      die.style.removeProperty("--y-bounce");
-      die.style.removeProperty("--x-end");
-      die.style.removeProperty("--y-end");
-      die.style.removeProperty("--x-stop");
-      die.style.removeProperty("--y-stop");
+      die.classList.remove("rolling");
       setDieFace(die, results[index]);
     });
-    diceContainer.classList.remove("is-rolling");
 
     const totalPoints = results.reduce((sum, value) => sum + scoreValue(value), 0);
     const success = totalPoints >= difficulty;

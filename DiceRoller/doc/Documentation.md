@@ -30,8 +30,7 @@ Pola:
 - `<button class="roll" id="roll">` — uruchamia rzut kośćmi.
 
 ### Wyniki
-- `<div class="dice-stage">` — rama z perspektywą 3D, ogranicza obszar toczenia się kości.
-- `<div class="dice" id="dice">` — kontener na wygenerowane kości (tryb animacji i układ końcowy).
+- `<div class="dice" id="dice">` — kontener na wygenerowane kości.
 - `<div class="summary" id="summary">` — podsumowanie wyników.
 
 ## CSS (`style.css`)
@@ -42,7 +41,6 @@ Zdefiniowane w `:root`:
 - `--white-die`, `--white-pip` — barwy białej kości.
 - `--red-die`, `--red-pip` — barwy czerwonej kości.
 - `--shadow` — cień panelu.
-- `--roll-duration` — czas animacji rzutu.
 
 ### Typografia
 Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
@@ -63,11 +61,6 @@ Każda kość to `.die`:
 - cień wewnętrzny i zewnętrzny,
 - warianty kolorów: `.white` i `.red`.
 
-### Ramka i scena 3D
-- `.dice-stage` — żółta ramka z `border`, półprzezroczystym tłem i `perspective: 900px`.
-- `overflow: hidden` zapobiega „wypadaniu” kości poza ramkę.
-- `.dice` — pozycjonowanie `relative`, minimalna wysokość i układ `flex` do końcowego rozmieszczenia.
-
 ### Oczka (pips)
 - Każda kość ma 7 elementów `.pip` (pozycje `pos-1` do `pos-7`).
 - Domyślnie niewidoczne (`opacity: 0`).
@@ -79,13 +72,9 @@ Układ oczek:
 - `pos-4` — środek,
 - `pos-6` i `pos-7` — dolne rogi.
 
-### Animacja rzutu 3D
-- `.dice.is-rolling` zwiększa minimalną wysokość kontenera.
-- `.die--rolling` ustawia pozycję absolutną i uruchamia `@keyframes tumble`.
-- `@keyframes tumble` wykonuje translacje `translate3d(...)` oraz obroty `rotateX/rotateY/rotateZ`,
-  wykorzystując zmienne `--x-start`, `--y-start`, `--x-mid`, `--y-mid`, `--x-bounce`, `--y-bounce`,
-  `--x-end`, `--y-end`, `--x-stop`, `--y-stop`.
-- Czas animacji kontroluje `--roll-duration` (1.4s).
+### Animacja rzutu
+- `.die.rolling` uruchamia `@keyframes roll`.
+- Animacja obraca kość o 360° i delikatnie skaluje w czasie 0.8s.
 
 ### Responsywność
 Media query do 600px:
@@ -95,8 +84,7 @@ Media query do 600px:
 ## JavaScript (`script.js`)
 ### Stałe i elementy DOM
 - `MIN_VALUE = 1`, `MAX_VALUE = 99` — zakresy wejściowe.
-- `ROLL_DURATION = 1400` — czas animacji.
-- `ROLL_PADDING = 8` — margines bezpieczeństwa dla ruchu kości w ramce.
+- `ROLL_DURATION = 900` — czas animacji.
 - Referencje DOM: `difficultyInput`, `poolInput`, `furyInput`, `rollButton`, `diceContainer`, `summary`.
 
 ### Funkcje
@@ -124,35 +112,24 @@ Media query do 600px:
 6. **`rollDie()`**
    - Zwraca losową liczbę 1-6.
 
-7. **`getRandomBetween(min, max)`**
-   - Zwraca losową wartość z przedziału `min-max`.
-
-8. **`clampToBounds(value, min, max)`**
-   - Ogranicza wartość do zakresu (używane do obszaru ramki).
-
-9. **`createBouncePath(bounds, dieSize)`**
-   - Wyznacza zestaw punktów ruchu w obrębie ramki.
-   - Tworzy pozycje start, punkt pośredni, „odbicie” i pozycję końcową.
-
-10. **`scoreValue(value)`**
+7. **`scoreValue(value)`**
    - 1-3 → 0 punktów.
    - 4-5 → 1 punkt.
    - 6 → 2 punkty.
 
-11. **`buildSummary({ ... })`**
+8. **`buildSummary({ ... })`**
    - Buduje podsumowanie:
      - nagłówek Sukces/Porażka,
      - łączna liczba punktów,
      - komunikaty fury i przeniesienia,
      - lista wyników każdej kości.
 
-12. **`handleRoll()`**
+9. **`handleRoll()`**
    - Sanitizuje pola.
    - Czyści kontener kości.
    - Tworzy kości (`pool` sztuk), pierwsze `fury` są czerwone.
-   - Ustawia klasę `is-rolling` na kontenerze oraz `die--rolling` na każdej kości.
-   - W `requestAnimationFrame` oblicza ścieżkę w ramce i przypisuje zmienne CSS do animacji.
-   - Po `ROLL_DURATION` usuwa animację i przypisuje finalne wyniki.
+   - Ustawia animację `rolling`.
+   - Po `ROLL_DURATION` przypisuje finalne wyniki.
    - Liczy punkty, sukces i komunikaty.
    - Oblicza **Możliwe Przeniesienie**:
      - `totalSixes` = liczba szóstek,
@@ -171,7 +148,7 @@ Media query do 600px:
 
 ## Zasady działania aplikacji
 1. Użytkownik ustawia Stopień Trudności, Pulę Kości oraz Ilość Kości Furii.
-2. Kliknięcie „Rzuć kośćmi!” uruchamia animację 3D i odbicia w żółtej ramce.
+2. Kliknięcie „Rzuć kośćmi!” uruchamia animację.
 3. Wyniki kości są losowane (1-6).
 4. Punkty są liczone:
    - 1-3 → 0 punktów,
