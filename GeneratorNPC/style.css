@@ -1,37 +1,43 @@
 :root {
-  --bg: #050607;
-  --panel: #070a0b;
-  --panel2: #0a0f0e;
-  --text: #6fe38c;
-  --text2: #4fb070;
-  --muted: #2f6f4a;
-  --code: #cff5dc;
+  --bg: #031605;
+  --bg-grad: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
+    #031605;
+  --panel: #000;
+  --panel2: #000;
+  --text: #9cf09c;
+  --text2: #7ad87a;
+  --muted: #4a8b4a;
+  --code: #c9f7c9;
   --red: #d74b4b;
+  --border: #16c60c;
+  --accent: #16c60c;
+  --accent-dark: #0d7a07;
 
-  --b: rgba(111, 227, 140, 0.22);
-  --b2: rgba(111, 227, 140, 0.12);
-  --div: rgba(111, 227, 140, 0.1);
+  --b: rgba(22, 198, 12, 0.35);
+  --b2: rgba(22, 198, 12, 0.2);
+  --div: rgba(22, 198, 12, 0.18);
 
-  --hbg: rgba(111, 227, 140, 0.06);
-  --zebra: rgba(111, 227, 140, 0.03);
-  --hover: rgba(111, 227, 140, 0.05);
+  --hbg: rgba(22, 198, 12, 0.06);
+  --zebra: rgba(22, 198, 12, 0.04);
+  --hover: rgba(22, 198, 12, 0.08);
 
-  --glow: 0 0 6px rgba(111, 227, 140, 0.18);
-  --glowH: 0 0 10px rgba(111, 227, 140, 0.25);
+  --glow: 0 0 25px rgba(22, 198, 12, 0.45);
+  --glowH: 0 0 18px rgba(22, 198, 12, 0.35);
 
   --header-row-height: 36px;
 }
 
 * {
   box-sizing: border-box;
+  font-family: "Consolas", "Fira Code", "Source Code Pro", monospace;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--bg-grad);
   color: var(--text);
-  font-family: "Share Tech Mono", Calibri, monospace;
   line-height: 1.45;
   letter-spacing: 0.03em;
 }
@@ -80,7 +86,6 @@ a.link:hover {
 
 .brand h1 {
   margin: 0;
-  font-family: "Orbitron", "Share Tech Mono", Calibri, sans-serif;
   font-size: 1.4rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -103,12 +108,11 @@ a.link:hover {
   padding: 10px 12px;
   border: 1px solid var(--b);
   cursor: pointer;
-  font-family: "Orbitron", "Share Tech Mono", Calibri, sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.14em;
   font-weight: 600;
   font-size: 12px;
-  background: rgba(111, 227, 140, 0.08);
+  background: rgba(22, 198, 12, 0.08);
   color: var(--text);
   transition: all 0.2s ease;
 }
@@ -119,13 +123,13 @@ a.link:hover {
 }
 
 .btn.primary {
-  background: rgba(111, 227, 140, 0.14);
+  background: rgba(22, 198, 12, 0.14);
   border-color: var(--text);
   color: var(--code);
 }
 
 .btn.secondary {
-  background: rgba(111, 227, 140, 0.05);
+  background: rgba(22, 198, 12, 0.05);
   border-color: var(--b2);
   color: var(--text);
 }
@@ -154,9 +158,8 @@ a.link:hover {
 .panel h2 {
   margin: 0 0 12px;
   padding: 10px 12px;
-  background: rgba(111, 227, 140, 0.04);
+  background: rgba(22, 198, 12, 0.04);
   border-bottom: 1px solid var(--div);
-  font-family: "Orbitron", "Share Tech Mono", Calibri, sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.16em;
   display: flex;
@@ -244,7 +247,7 @@ textarea:focus {
   padding: 3px 10px;
   border-radius: 999px;
   font-size: 0.7rem;
-  background: rgba(111, 227, 140, 0.08);
+  background: rgba(22, 198, 12, 0.08);
   border: 1px solid var(--b);
   color: var(--code);
   text-transform: uppercase;
@@ -270,7 +273,6 @@ textarea:focus {
 
 .card h3 {
   margin: 0 0 12px;
-  font-family: "Orbitron", "Share Tech Mono", Calibri, sans-serif;
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.16em;
@@ -299,7 +301,7 @@ textarea:focus {
   padding: 12px 14px;
   border: 1px solid var(--div);
   border-radius: 6px;
-  background: rgba(111, 227, 140, 0.04);
+  background: rgba(22, 198, 12, 0.04);
 }
 
 .card-features h4 {
@@ -324,7 +326,7 @@ textarea:focus {
 .notice {
   padding: 12px 14px;
   border-left: 3px solid var(--text2);
-  background: rgba(111, 227, 140, 0.05);
+  background: rgba(22, 198, 12, 0.05);
   border-radius: 4px;
   color: var(--code);
 }
@@ -348,8 +350,7 @@ textarea:focus {
 .data-table th {
   position: sticky;
   top: 0;
-  background: linear-gradient(180deg, rgba(111, 227, 140, 0.08), rgba(111, 227, 140, 0.03));
-  font-family: "Orbitron", "Share Tech Mono", Calibri, sans-serif;
+  background: linear-gradient(180deg, rgba(22, 198, 12, 0.08), rgba(22, 198, 12, 0.03));
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.75rem;
@@ -706,7 +707,6 @@ textarea:focus {
 
 .popover h4 {
   margin: 0 0 8px;
-  font-family: "Orbitron", "Share Tech Mono", Calibri, sans-serif;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--code);

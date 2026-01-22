@@ -48,7 +48,8 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - Kontener: `#filterMenu` (JS tworzy zawartość przy otwarciu filtra listowego).
 
 ### 2.6 Skrypty i fonty
-- Fonty: Google Fonts — `Orbitron` i `Share Tech Mono`.
+- Fonty: lokalny stos konsolowy (bez Google Fonts):
+  - `Consolas`, `Fira Code`, `Source Code Pro`, `monospace`.
 - Script `app.js` wczytywany na końcu dokumentu.
 - Script CDN dla `xlsx.full.min.js` (`0.19.3`) jest dołączony w HTML.
   - Jeśli z jakiegoś powodu go brak, `app.js` doładowuje XLSX w wersji `0.18.5` (patrz `ensureSheetJS`).
@@ -58,21 +59,33 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 ## 3) CSS: typografia, kolory, layout, komponenty
 
 ### 3.1 Fonty
-- `body` używa: `"Share Tech Mono", Calibri, monospace`.
-- Nagłówki i przyciski: `"Orbitron", "Share Tech Mono", Calibri, sans-serif`.
+- Cały interfejs używa jednego stosu fontów (ustawionego globalnie na `*`):
+  - `"Consolas", "Fira Code", "Source Code Pro", monospace`.
+- Zmienna `--head` powiela ten sam stos i jest używana w tytułach menu filtrów.
 
 ### 3.2 Paleta kolorów (CSS variables)
-- `--bg`: `#050607`
-- `--panel`: `#070A0B`
-- `--panel2`: `#0A0F0E`
-- `--text`: `#6FE38C`
-- `--text2`: `#4FB070`
-- `--muted`: `#2F6F4A`
-- `--code`: `#CFF5DC`
+- `--bg`: `#031605`
+- `--bg-grad`: radialne gradienty + `#031605`
+- `--panel`: `#000`
+- `--panel2`: `#000`
+- `--text`: `#9cf09c`
+- `--text2`: `#7ad87a`
+- `--muted`: `#4a8b4a`
+- `--code`: `#c9f7c9`
 - `--red`: `#d74b4b`
+- `--border`: `#16c60c`
+- `--accent`: `#16c60c`
+- `--accent-dark`: `#0d7a07`
 
 Efekty i obwódki:
-- `--b`, `--b2`, `--div`, `--hbg`, `--zebra`, `--hover`, `--glow`, `--glowH`.
+-- `--b: rgba(22,198,12,.35)`
+-- `--b2: rgba(22,198,12,.2)`
+-- `--div: rgba(22,198,12,.18)`
+-- `--hbg: rgba(22,198,12,.06)`
+-- `--zebra: rgba(22,198,12,.04)`
+-- `--hover: rgba(22,198,12,.08)`
+-- `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
+-- `--glowH: 0 0 18px rgba(22, 198, 12, 0.35)`
 
 ### 3.3 Layout główny
 - `.app` — flex, min-height 100%.
@@ -86,7 +99,7 @@ Efekty i obwódki:
 
 ### 3.5 Zakładki
 - `.tabs` — flex z zawijaniem.
-- `.tab` — uppercase, `Orbitron`, aktywna z innym tłem i borderem.
+- `.tab` — uppercase i ten sam font co reszta UI, aktywna z innym tłem i borderem.
 
 ### 3.6 Tabela
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.

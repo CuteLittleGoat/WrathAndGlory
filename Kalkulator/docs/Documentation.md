@@ -12,10 +12,7 @@ Najważniejsze pliki:
 
 ## 2. Zależności zewnętrzne i assety
 ### 2.1. Fonty
-- `KalkulatorXP.html` i `TworzeniePostaci.html` ładują fonty z Google Fonts:
-  - **Orbitron** (nagłówki i tytuły, wagi 500–600).
-  - **Share Tech Mono** (tekst główny i pola formularzy).
-- `index.html` korzysta z lokalnych fallbacków (nie pobiera fontów z sieci):
+- Wszystkie strony (`index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`) korzystają z lokalnego stosu fontów, bez zewnętrznych CDN:
   - `Consolas`, `Fira Code`, `Source Code Pro`, `monospace`.
 
 ### 2.2. Obraz
@@ -58,31 +55,35 @@ Plik stosowany przez `KalkulatorXP.html` i częściowo przez `TworzeniePostaci.h
 ### 4.1. Paleta i zmienne CSS
 W `:root` zdefiniowano:
 - Tła i panele:
-  - `--bg: #050607`
-  - `--panel: #070A0B`
-  - `--panel2: #0A0F0E`
+  - `--bg: #031605`
+  - `--bg-grad`: radialne gradienty + `#031605`
+  - `--panel: #000`
+  - `--panel2: #000`
 - Kolory tekstu:
-  - `--text: #6FE38C`
-  - `--text2: #4FB070`
-  - `--muted: #2F6F4A`
-  - `--code: #CFF5DC`
+  - `--text: #9cf09c`
+  - `--text2: #7ad87a`
+  - `--muted: #4a8b4a`
+  - `--code: #c9f7c9`
   - `--red: #d74b4b`
 - Obramowania i podziały:
-  - `--b: rgba(111,227,140,.22)`
-  - `--b2: rgba(111,227,140,.12)`
-  - `--div: rgba(111,227,140,.10)`
+  - `--border: #16c60c`
+  - `--accent: #16c60c`
+  - `--accent-dark: #0d7a07`
+  - `--b: rgba(22,198,12,.35)`
+  - `--b2: rgba(22,198,12,.2)`
+  - `--div: rgba(22,198,12,.18)`
 - Tła pomocnicze:
-  - `--hbg: rgba(111,227,140,.06)`
-  - `--zebra: rgba(111,227,140,.03)`
-  - `--hover: rgba(111,227,140,.05)`
+  - `--hbg: rgba(22,198,12,.06)`
+  - `--zebra: rgba(22,198,12,.04)`
+  - `--hover: rgba(22,198,12,.08)`
 - Efekty:
-  - `--glow: 0 0 6px rgba(111,227,140,.18)`
-  - `--glowH: 0 0 10px rgba(111,227,140,.25)`
+  - `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
+  - `--glowH: 0 0 18px rgba(22, 198, 12, 0.35)`
 - Układ:
   - `--header-row-height: 36px`
 
 ### 4.2. Najważniejsze komponenty
-- **Topbar** (`.topbar`, `.brand`, `.sigil`, `.title`): pasek nagłówka z ikoną „⟦⟧”, gradientowym tłem i typografią Orbitron.
+- **Topbar** (`.topbar`, `.brand`, `.sigil`, `.title`): pasek nagłówka z ikoną „⟦⟧”, gradientowym tłem i konsolowym fontem.
 - **Buttony** (`.btn`, `.btn.primary`, `.btn.secondary`): uppercase, letter-spacing, zielone akcenty, efekty hover.
 - **Panele** (`.panel`, `.panelHeader`, `.panelBody`): obramowane sekcje z nagłówkiem i zawartością.
 - **Tabele** (`.dataTable`): zebra striping, hover, uppercase nagłówki, `box-shadow`.
@@ -152,10 +153,10 @@ const skillCosts = {
 
 ### 6.2. Style inline w pliku
 `TworzeniePostaci.html` rozszerza `kalkulatorxp.css`:
-- `body` – padding `24px 14px`, font `Share Tech Mono`, `letter-spacing: .04em`.
+- `body` – padding `24px 14px`, tło `var(--bg-grad)`, `letter-spacing: .04em` (font dziedziczony z CSS).
 - `.wrapper` – maksymalna szerokość `min(1100px, 96vw)`, obramowanie `1px solid var(--b)`, `box-shadow`.
 - `.language-switcher` – pozycjonowanie absolutne w prawym górnym rogu.
-- `.table` – obramowania, zebra, hover, `box-shadow: var(--glow)`.
+- `.table` – obramowania, zebra, hover, `box-shadow: var(--glow)`, nagłówki z gradientem `rgba(22,198,12,...)`.
 - `input`, `select`, `textarea` – spójne tło, `border: 1px solid var(--b)`, focus ring.
 - `.footer` – subtelny tekst w stopce, `letter-spacing: .08em`.
 
@@ -239,9 +240,7 @@ const skillCosts = {
 1. Utwórz cztery pliki: `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`, `kalkulatorxp.css`.
 2. Skopiuj wszystkie zmienne CSS i style z `kalkulatorxp.css` oraz inline z `index.html` i `TworzeniePostaci.html`.
 3. Dodaj logo `Skull.png` i folder `HowToUse` z plikami `pl.pdf` i `en.pdf`.
-4. Upewnij się, że w `KalkulatorXP.html` i `TworzeniePostaci.html` znajdują się:
-   - linki do Google Fonts (Orbitron + Share Tech Mono),
-   - link do `kalkulatorxp.css`.
+4. Upewnij się, że w `KalkulatorXP.html` i `TworzeniePostaci.html` znajduje się link do `kalkulatorxp.css` (fonty są lokalne, bez Google Fonts).
 5. Skopiuj identyczne struktury tabel, identyfikatory (`id`) i klasy CSS.
 6. Upewnij się, że skrypty JS działają na tych samych `id` i klasach (`.current`, `.target`, `#totalXp`, `#xpPool`, `#xpRemaining`, itd.).
 7. Zachowaj zakresy `min/max` i wartości domyślne w polach formularzy.

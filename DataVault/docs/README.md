@@ -7,7 +7,7 @@ Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikac
 ## 🇵🇱 Instrukcja (PL)
 
 ### Opis
-Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne.
+Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne. Interfejs korzysta z zielonego motywu i fontu zgodnego z `Main/index.html`.
 Dokumentacja wyglądu i zasad formatowania jest w `docs/StylLayoutu.md`.
 
 ### Uruchomienie aplikacji
@@ -71,7 +71,7 @@ To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla 
 ## 🇬🇧 Instructions (EN)
 
 ### Overview
-A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files.
+A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files. The UI uses the green theme and font stack aligned with `Main/index.html`.
 Visual/layout rules and formatting details are documented in `docs/StylLayoutu.md`.
 
 ### Running the app
