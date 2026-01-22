@@ -21,6 +21,9 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
    - `Infoczytnik.html` (ekran graczy)
 7. (Opcjonalnie) Przykładowy adres hostingu po migracji:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
+8. (Opcjonalnie) Na stronie startowej `index.html` są przyciski testowe:
+   - `GM (test)` → `GM_test.html`
+   - `Infoczytnik (test)` → `GM_test.html`
 
 ### Używanie
 #### 1) Przygotowanie
@@ -50,6 +53,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
    - Audio globalne: `assets/audio/global/Ping.mp3`, `assets/audio/global/Message.mp3`
 2. Zmień wersję cache w `Infoczytnik.html`:
    - `INF_VERSION` (górny skrypt) oraz `ASSET_VERSION` (skrypt modułowy). W praktyce jest to ta sama wartość (`window.__dsVersion`).
+   - Format wersji: `YYYY-MM-DD_HH-mm-ss` (np. `2026-01-22_07-18-48`).
 3. Odśwież przeglądarkę na urządzeniach graczy. Infoczytnik wymusza cache-busting parametrem `?v=<INF_VERSION>`.
 
 #### Aktualizacja konfiguracji Firebase
@@ -81,6 +85,9 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
    - `Infoczytnik.html` (player screen)
 7. (Optional) Example hosted URL after migration:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
+8. (Optional) On the `index.html` landing page, there are test buttons:
+   - `GM (test)` → `GM_test.html`
+   - `Infoczytnik (test)` → `GM_test.html`
 
 ### Usage
 #### 1) Setup
@@ -110,6 +117,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
    - Global audio: `assets/audio/global/Ping.mp3`, `assets/audio/global/Message.mp3`
 2. Bump cache version in `Infoczytnik.html`:
    - `INF_VERSION` (top script) and `ASSET_VERSION` (module script). In practice these are the same value (`window.__dsVersion`).
+   - Version format: `YYYY-MM-DD_HH-mm-ss` (e.g. `2026-01-22_07-18-48`).
 3. Refresh player devices. Infoczytnik forces cache-busting with the `?v=<INF_VERSION>` parameter.
 
 #### Updating Firebase configuration

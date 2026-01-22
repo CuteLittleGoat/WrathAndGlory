@@ -78,7 +78,9 @@ window.firebaseConfig = {
 - Dwa główne linki:
   - `Otwórz GM` → `GM.html`
   - `Otwórz Infoczytnik` → `Infoczytnik.html`
-- Dodatkowe linki „debug” przekazują parametry query (`debug`, `logs`, `mockWs`, `mockAudio`), ale w aktualnym kodzie **nie są obsługiwane** — parametry nie zmieniają działania.
+- Dodatkowe linki testowe:
+  - `GM (test)` → `GM_test.html`
+  - `Infoczytnik (test)` → `GM_test.html`
 - Krótki komunikat o odblokowaniu dźwięku oraz przykładowy adres hostingu:
   - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`.
 
@@ -161,7 +163,7 @@ window.firebaseConfig = {
 ## 7. `Infoczytnik.html` — ekran graczy
 ### 7.1. Auto-cache-busting (INF_VERSION)
 - Skrypt w `<head>` ustawia:
-  - `const INF_VERSION = "YYYY-MM-DD-N"` (aktualna wersja: `2025-12-13-6`).
+  - `const INF_VERSION = "YYYY-MM-DD_HH-mm-ss"` (aktualna wersja: `2026-01-22_07-18-48`).
   - `window.__dsVersion = INF_VERSION`.
 - Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
 
@@ -208,7 +210,7 @@ window.firebaseConfig = {
   - `window.__dsPlayUrlOnce(url)` — odtwarza dźwięk **tylko** gdy `window.__dsAudioArmed === true`.
 
 ### 7.4. Mapy i stałe
-- `ASSET_VERSION = window.__dsVersion || "2025-12-13-5"`.
+- `ASSET_VERSION = window.__dsVersion || "2026-01-22_07-18-48"`.
 - `DEFAULT_PING_URL = assets/audio/global/Ping.mp3?v=${ASSET_VERSION}`
 - `DEFAULT_MSG_URL = assets/audio/global/Message.mp3?v=${ASSET_VERSION}`
 
