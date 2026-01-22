@@ -1,4 +1,4 @@
-1. Po każdej zmianie w module Infoczytnik zaktualizuj wersję poprzez podniesienie `INF_VERSION` w plikach Infoczytnik oraz GM
+1. Po każdej zmianie w pliku "GM_test.html" i/lub "Infoczytnik_test.html" zaktualizuj wersję poprzez podniesienie `INF_VERSION` w plikach Infoczytnik_test oraz GM_test
 2. Zawsze jest wymagany test sprawdzający
 3. Nigdy nie modyfikuj plików "GM.html" oraz "Infoczytnik.html"
 4. Wszystkie zmiany rób na plikach "GM_test.html" oraz "Infoczytnik_test.html"
