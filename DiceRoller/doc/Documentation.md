@@ -57,7 +57,7 @@ Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
 ### Układ
 - `.app` — panel o szerokości `min(860px, 100%)`, z obramowaniem `2px`, poświatą `--glow`, paddingiem `32px 32px 28px`, ułożony kolumnowo i wyśrodkowany (`align-items: center`).
 - `.app__header` — tekst nagłówka wyśrodkowany.
-- `.panel` — grid na pola i przycisk (`repeat(auto-fit, minmax(220px, 1fr))`) na pełną szerokość panelu (`width: 100%`).
+- `.panel` — grid na pola i przycisk (`repeat(auto-fit, minmax(220px, 1fr))`) na pełną szerokość panelu (`width: 100%`), z `align-items: start`, aby wszystkie pola startowały na tej samej wysokości mimo podpowiedzi.
 - `.results` — kolumny na kości i podsumowanie na pełną szerokość panelu.
 
 ### Podsumowanie
