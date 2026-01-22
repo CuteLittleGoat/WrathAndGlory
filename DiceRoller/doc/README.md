@@ -11,10 +11,10 @@
    - czarny znak zapytania na białych kościach.
 7. Po animacji zobaczysz:
    - wynik każdej kości,
-   - łączną liczbę punktów,
    - informację **Sukces!** lub **Porażka!**,
-   - ewentualny komunikat **Komplikacja Furii 🙁** (jeśli na czerwonej kości wypadła 1),
-   - ewentualny komunikat **Krytyczna Furia 🙂** (jeśli wszystkie czerwone kości wyrzuciły 6),
+   - bezpośrednio pod nią ewentualny komunikat **Komplikacja Furii 🙁** (jeśli na czerwonej kości wypadła 1),
+   - bezpośrednio pod nią ewentualny komunikat **Krytyczna Furia 🙂** (jeśli wszystkie czerwone kości wyrzuciły 6),
+   - łączną liczbę punktów,
    - informację **Możliwe Przeniesienie: X** (liczba nadmiarowych szóstek do przeniesienia).
 
 ## User guide (EN)
@@ -28,8 +28,8 @@
    - black question mark on white dice.
 7. After the animation you will see:
    - each die result,
-   - total points,
    - **Sukces!** or **Porażka!** message,
-   - **Komplikacja Furii 🙁** (if any red die rolled 1),
-   - **Krytyczna Furia 🙂** (if all red dice rolled 6),
+   - directly below it **Komplikacja Furii 🙁** (if any red die rolled 1),
+   - directly below it **Krytyczna Furia 🙂** (if all red dice rolled 6),
+   - total points,
    - **Możliwe Przeniesienie: X** (how many extra sixes can be carried over).

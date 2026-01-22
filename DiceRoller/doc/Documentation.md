@@ -131,8 +131,9 @@ Media query do 600px:
 8. **`buildSummary({ ... })`**
    - Buduje podsumowanie:
      - nagłówek Sukces/Porażka,
+     - komunikaty fury bezpośrednio pod nagłówkiem,
      - łączna liczba punktów,
-     - komunikaty fury i przeniesienia,
+     - komunikat przeniesienia,
      - lista wyników każdej kości.
 
 9. **`handleRoll()`**
@@ -169,8 +170,8 @@ Media query do 600px:
    - wynik ≥ trudność → „Sukces!”,
    - wynik < trudność → „Porażka!”.
 6. Komunikaty furii:
-   - min. jedna 1 na czerwonych → „Komplikacja Furii 🙁”,
-   - wszystkie czerwone = 6 → „Krytyczna Furia 🙂”.
+   - min. jedna 1 na czerwonych → „Komplikacja Furii 🙁” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!”),
+   - wszystkie czerwone = 6 → „Krytyczna Furia 🙂” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!”).
 7. Przeniesienie:
    - jeśli po odjęciu 2 punktów za część szóstek wynik wciąż ≥ trudność, wyświetla się liczba możliwych przeniesień.
 
