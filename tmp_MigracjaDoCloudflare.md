@@ -48,7 +48,8 @@ Poniższa analiza zakłada migrację publicznie dostępnej strony głównej repo
 - Lista domen i subdomen do migracji.
 - Aktualne rekordy DNS (A/AAAA/CNAME/TXT/MX/SRV).
 - Informacja o origin (serwer hostingowy, IP, hosty, ścieżki).
-- Wykaz aplikacji/modułów: DataVault, GeneratorNPC, Infoczytnik, Kalkulator.
+- Wykaz aplikacji/modułów: Main, Audio, DataVault, DiceRoller, GeneratorNPC, Infoczytnik, Kalkulator.
+- Wskazanie współdzielonych zasobów między modułami (np. wspólny plik `data.json` używany przez DataVault i GeneratorNPC) oraz ich docelowych ścieżek na hostingu.
 
 ### 3.2. Wymagania funkcjonalne
 - Czy aplikacje są statyczne czy mają elementy dynamiczne.
@@ -138,14 +139,27 @@ W Infoczytniku dochodzą nowe pliki (layouty, dźwięki, obrazy):
 
 ---
 
-## 9. Rekomendacje końcowe
+## 9. Aktualizacja współdzielonych zasobów (np. `data.json`)
+
+### Scenariusz
+Wspólny plik danych używany przez więcej niż jeden moduł (np. DataVault i GeneratorNPC) został zaktualizowany:
+1. **Zaktualizowanie pliku w repozytorium** w jednej, stałej lokalizacji.
+2. **Deploy** (Pages lub origin).
+3. **Purge Cache** dla konkretnej ścieżki pliku (np. `/shared/data.json` lub innej faktycznej lokalizacji).
+4. **Testy regresji** w każdym module, który używa współdzielonego zasobu.
+
+Ryzyko: brak purge cache lub rozjazd ścieżek może powodować, że jeden moduł widzi nową wersję pliku, a inny starą.
+
+---
+
+## 10. Rekomendacje końcowe
 - **Dla statycznych modułów** Cloudflare Free jest wystarczające.
 - Dla rozbudowanej ochrony (WAF, logi, SLA) konieczny jest plan płatny.
 - Kluczowa jest **procedura purge cache** po każdym wdrożeniu.
 
 ---
 
-## 10. Checklisty operacyjne
+## 11. Checklisty operacyjne
 
 ### Przed migracją
 - [ ] Backup DNS
