@@ -12,7 +12,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `data.json` — produkcyjne źródło danych.
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`.
 - `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce).
-- `docs/StylLayoutu.md` — osobny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
+- `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
 
 ---
 
