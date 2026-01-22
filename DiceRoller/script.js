@@ -84,15 +84,15 @@ const buildSummary = ({
   heading.textContent = success ? "Sukces!" : "Porażka!";
   summary.appendChild(heading);
 
-  const points = document.createElement("p");
-  points.textContent = `Łączne punkty: ${totalPoints} (Stopień Trudności: ${difficulty})`;
-  summary.appendChild(points);
-
   if (furyMessage) {
     const fury = document.createElement("p");
     fury.textContent = furyMessage;
     summary.appendChild(fury);
   }
+
+  const points = document.createElement("p");
+  points.textContent = `Łączne punkty: ${totalPoints} (Stopień Trudności: ${difficulty})`;
+  summary.appendChild(points);
 
   if (transferable > 0) {
     const transfer = document.createElement("p");
