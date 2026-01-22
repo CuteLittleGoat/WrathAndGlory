@@ -429,6 +429,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Fokus inputów: `box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25)`.
 - Podsumowanie `.summary`: tło `rgba(22, 198, 12, 0.08)`, ramka `rgba(22, 198, 12, 0.4)`.
 - Hover/active przycisku: `rgba(22, 198, 12, 0.14)` / `rgba(22, 198, 12, 0.22)`.
+- Przełącznik języka (`.language-switcher select`): tło `var(--bg)` (`#031605` pod gradientami).
 
 ### 3) Layout i elementy UI
 - Aplikacja centrowana jak w Main (`body` flex + padding `24px`).

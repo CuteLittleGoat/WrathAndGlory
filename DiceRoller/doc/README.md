@@ -3,7 +3,7 @@
 ## Instrukcja obsługi (PL)
 1. Otwórz `DiceRoller/index.html` w przeglądarce.
 2. Interfejs korzysta z zielonego motywu terminalowego spójnego z główną stroną aplikacji.
-3. W prawym górnym rogu wybierz język (PL/EN). Zmiana języka resetuje wartości.
+3. W prawym górnym rogu wybierz język (PL/EN). Pole wyboru ma ciemne tło spójne z modułem Kalkulator, a zmiana języka resetuje wartości.
 4. Ustaw **Stopień Trudności** (1-99) — wymagana liczba punktów do sukcesu.
 5. Ustaw **Pulę Kości** (1-99) — liczbę kości do rzutu.
 6. Ustaw **Ilość Kości Furii** (1-99) — liczba czerwonych kości; nie może być większa niż Pula Kości.
@@ -22,7 +22,7 @@
 ## User guide (EN)
 1. Open `DiceRoller/index.html` in your browser.
 2. The interface uses the same green terminal theme as the main application page.
-3. Use the language switcher in the top right corner (PL/EN). Changing the language resets values.
+3. Use the language switcher in the top right corner (PL/EN). The select uses the same dark background as the Calculator module, and changing the language resets values.
 4. Set the **Difficulty Number** (1-99) — required points for success.
 5. Set the **Dice Pool** (1-99) — number of dice to roll.
 6. Set the **Number of Wrath Dice** (1-99) — number of red dice; it cannot exceed the Dice Pool.
