@@ -134,6 +134,12 @@ a.link:hover {
   color: var(--text);
 }
 
+.btn.btn-small {
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
 .layout {
   display: grid;
   grid-template-columns: 360px 1fr;
@@ -363,6 +369,38 @@ textarea:focus {
 
 .data-table tbody tr:hover {
   background: var(--hover);
+}
+
+.skills-key-cell {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.table-number-input {
+  width: 100%;
+  min-width: 6ch;
+  padding: 6px 8px;
+  font-size: 0.85rem;
+}
+
+.editable-textarea {
+  width: 100%;
+  min-height: 160px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid var(--b2);
+  background: var(--bg);
+  color: var(--text);
+  resize: vertical;
+  font-family: inherit;
+}
+
+.editable-textarea:focus {
+  outline: none;
+  border-color: var(--text);
+  box-shadow: var(--glow);
 }
 
 
