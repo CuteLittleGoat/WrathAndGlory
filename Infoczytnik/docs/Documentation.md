@@ -80,7 +80,7 @@ window.firebaseConfig = {
   - `Otwórz Infoczytnik` → `Infoczytnik.html`
 - Dodatkowe linki testowe:
   - `GM (test)` → `GM_test.html`
-  - `Infoczytnik (test)` → `GM_test.html`
+  - `Infoczytnik (test)` → `Infoczytnik_test.html`
 - Krótki komunikat o odblokowaniu dźwięku oraz przykładowy adres hostingu:
   - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`.
 
