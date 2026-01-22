@@ -13,7 +13,9 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 - **Infoczytnik**:
   - Odczyt wiadomości: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (szykowanie wiadomości): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
-  - Menu główne z opcją debugowania: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
+  - Menu główne (wybór wersji produkcyjnych i testowych): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
+    - GM (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM_test.html
+    - Infoczytnik (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik_test.html
 - **Kalkulator**:
   - Menu główne: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
@@ -66,7 +68,9 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 - **DataSlate**:
   - Message reader: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (message prep): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
-  - Main menu with debug option: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
+  - Main menu (choose production or test variants): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
+    - GM (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM_test.html
+    - DataSlate (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik_test.html
 - **Calculator**:
   - Main menu: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html

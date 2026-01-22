@@ -16,12 +16,13 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 5. Uruchom aplikację:
    - Lokalnie: `npx http-server .` lub dowolny prosty serwer HTTP.
    - Zdalnie: wrzuć repo do hostingu statycznego (np. GitHub Pages).
-6. Otwórz:
+6. Otwórz wersję produkcyjną:
    - `GM.html` (panel MG)
    - `Infoczytnik.html` (ekran graczy)
+   lub użyj `index.html`, aby wybrać wersję produkcyjną lub testową.
 7. (Opcjonalnie) Przykładowy adres hostingu po migracji:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
-8. (Opcjonalnie) Na stronie startowej `index.html` są przyciski testowe:
+8. (Opcjonalnie) Na stronie startowej `index.html` są przyciski do wersji testowych (do sprawdzania zmian):
    - `GM (test)` → `GM_test.html`
    - `Infoczytnik (test)` → `Infoczytnik_test.html`
 
@@ -53,14 +54,15 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
    - Audio globalne: `assets/audio/global/Ping.mp3`, `assets/audio/global/Message.mp3`
 2. Zmień wersję cache w `Infoczytnik.html`:
    - `INF_VERSION` (górny skrypt) oraz `ASSET_VERSION` (skrypt modułowy). W praktyce jest to ta sama wartość (`window.__dsVersion`).
-   - Format wersji: `YYYY-MM-DD_HH-mm-ss` (np. `2026-01-22_07-18-48`).
+   - Format wersji: `YYYY-MM-DD_HH-mm-ss` (zawsze zgodny z aktualną datą i godziną).
 3. Odśwież przeglądarkę na urządzeniach graczy. Infoczytnik wymusza cache-busting parametrem `?v=<INF_VERSION>`.
 
 #### Aktualizacja konfiguracji Firebase
 - Gdy zmienisz projekt Firebase, uaktualnij `config/firebase-config.js` (lub ponownie wygeneruj go z template).
 
 #### Aktualizacja logiki / layoutów
-- Po zmianach w `GM.html` lub `Infoczytnik.html` zawsze zwiększ `INF_VERSION`, aby urządzenia z cache pobrały świeżą wersję.
+- Zmiany wykonuj w `GM_test.html` i `Infoczytnik_test.html`, a po weryfikacji przenieś je ręcznie do wersji produkcyjnych.
+- Po zmianach zawsze zwiększ `INF_VERSION`, aby urządzenia z cache pobrały świeżą wersję.
 
 ### Disclaimer
 To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla MG w systemie Wrath & Glory. Aplikacja jest udostępniana za darmo wyłącznie do prywatnego, niekomercyjnego użytku. Projekt nie jest licencjonowany, nie jest powiązany ani wspierany przez Games Workshop, Cubicle 7 Entertainment Ltd. ani Copernicus Corporation.
@@ -80,14 +82,15 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 5. Run the app:
    - Locally: `npx http-server .` or any simple HTTP server.
    - Remote: deploy the repo to a static host (e.g. GitHub Pages).
-6. Open:
+6. Open the production version:
    - `GM.html` (GM panel)
    - `Infoczytnik.html` (player screen)
+   or use `index.html` to choose production or test variants.
 7. (Optional) Example hosted URL after migration:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
-8. (Optional) On the `index.html` landing page, there are test buttons:
+8. (Optional) On the `index.html` landing page, there are test buttons (for verifying changes):
    - `GM (test)` → `GM_test.html`
-   - `Infoczytnik (test)` → `GM_test.html`
+   - `Infoczytnik (test)` → `Infoczytnik_test.html`
 
 ### Usage
 #### 1) Setup
@@ -117,14 +120,15 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
    - Global audio: `assets/audio/global/Ping.mp3`, `assets/audio/global/Message.mp3`
 2. Bump cache version in `Infoczytnik.html`:
    - `INF_VERSION` (top script) and `ASSET_VERSION` (module script). In practice these are the same value (`window.__dsVersion`).
-   - Version format: `YYYY-MM-DD_HH-mm-ss` (e.g. `2026-01-22_07-18-48`).
+   - Version format: `YYYY-MM-DD_HH-mm-ss` (always aligned with the current date and time).
 3. Refresh player devices. Infoczytnik forces cache-busting with the `?v=<INF_VERSION>` parameter.
 
 #### Updating Firebase configuration
 - When switching Firebase projects, update `config/firebase-config.js` (or regenerate from the template).
 
 #### Updating logic / layouts
-- After changes in `GM.html` or `Infoczytnik.html`, always increment `INF_VERSION` so cached devices load the newest version.
+- Make changes in `GM_test.html` and `Infoczytnik_test.html`, then manually copy them into production once verified.
+- After changes, always increment `INF_VERSION` so cached devices load the newest version.
 
 ### Disclaimer
 This tool is an unofficial fan project created to help the GM in Wrath & Glory. The app is provided for private, non-commercial use only. It is not licensed, associated with, or endorsed by Games Workshop, Cubicle 7 Entertainment Ltd., or Copernicus Corporation.
