@@ -69,7 +69,7 @@ Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
 
 ### Przełącznik języka
 - `.language-switcher` — absolutnie pozycjonowany w prawym górnym rogu panelu (`top: 18px; right: 18px`).
-- `.language-switcher select` — stylowany jak pola formularza: zielone półprzezroczyste tło, obramowanie `2px`, zaokrąglenia `6px`.
+- `.language-switcher select` — tło w kolorze `--bg` (takie samo jak w module Kalkulator), obramowanie `2px`, zaokrąglenia `6px`, zielony tekst.
 - W responsywności do 600px przełącznik wraca do statycznego układu i wyrównuje się do prawej strony panelu (`align-self: flex-end`).
 
 ### Podsumowanie
