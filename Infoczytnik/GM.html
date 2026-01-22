@@ -4,6 +4,17 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>WH40k Data-Slate — GM</title>
+  <script>
+    (function autoCacheBust(){
+      const INF_VERSION = "2026-01-22_07-18-48"; // <- zmieniaj przy aktualizacjach
+      window.__dsVersion = INF_VERSION;
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("v") !== INF_VERSION) {
+        url.searchParams.set("v", INF_VERSION);
+        window.location.replace(url.toString());
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&display=swap" rel="stylesheet">
