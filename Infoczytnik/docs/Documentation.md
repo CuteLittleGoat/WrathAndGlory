@@ -3,18 +3,21 @@
 > Ten dokument opisuje **dokładny** wygląd i logikę aplikacji: strukturę HTML, style CSS, zasady działania, mapy zasobów, fonty, logikę Firestore oraz wszystkie kluczowe funkcje. Celem jest umożliwienie wiernego odtworzenia aplikacji 1:1.
 
 ## 1. Architektura i przepływ danych
-- **Model aplikacji:** dwie strony HTML działające równolegle.
+- **Model aplikacji:** dwie strony HTML działające równolegle, z osobnymi wariantami testowymi.
   - `GM.html` (panel MG) zapisuje stan do Firestore.
   - `Infoczytnik.html` (ekran graczy) subskrybuje dokument i renderuje widok.
+  - `GM_test.html` i `Infoczytnik_test.html` służą do testowania zmian przed ręcznym przeniesieniem do wersji produkcyjnych.
 - **Firestore:** kolekcja `dataslate`, dokument `current`.
   - `type` określa akcję: `message`, `ping`, `clear`.
   - Dokument zawiera kompletny stan wizualny (frakcja, kolory, rozmiary, indeksy fillerów, logo, flicker) oraz treść.
 - **Cache-busting:** Infoczytnik automatycznie dodaje parametr `?v=<INF_VERSION>` do URL-a i wymusza przeładowanie, aby urządzenia nie trzymały starej wersji.
 
 ## 2. Struktura repozytorium (pliki i katalogi)
-- `index.html` — strona startowa z linkami do GM i Infoczytnika.
+- `index.html` — strona startowa z linkami do wersji produkcyjnych i testowych.
 - `GM.html` — panel MG (UI + zapis do Firestore).
 - `Infoczytnik.html` — ekran graczy (UI + subskrypcja Firestore + audio).
+- `GM_test.html` — wersja testowa panelu MG (zmiany wprowadzane tylko tutaj).
+- `Infoczytnik_test.html` — wersja testowa ekranu graczy (zmiany wprowadzane tylko tutaj).
 - `config/`
   - `firebase-config.js` — faktyczna konfiguracja Firebase (globalna zmienna `window.firebaseConfig`).
   - `firebase-config.template.js` — szablon do wypełnienia własną konfiguracją.
@@ -74,11 +77,11 @@ window.firebaseConfig = {
 - Dokument tworzony przy pierwszym zapisie z panelu MG.
 
 ## 5. `index.html` — strona startowa
-**Cel:** szybki wybór trybu.
-- Dwa główne linki:
+**Cel:** szybki wybór wersji produkcyjnej lub testowej.
+- Linki produkcyjne:
   - `Otwórz GM` → `GM.html`
   - `Otwórz Infoczytnik` → `Infoczytnik.html`
-- Dodatkowe linki testowe:
+- Linki testowe (do sprawdzania nowych modyfikacji):
   - `GM (test)` → `GM_test.html`
   - `Infoczytnik (test)` → `Infoczytnik_test.html`
 - Krótki komunikat o odblokowaniu dźwięku oraz przykładowy adres hostingu:
@@ -163,7 +166,7 @@ window.firebaseConfig = {
 ## 7. `Infoczytnik.html` — ekran graczy
 ### 7.1. Auto-cache-busting (INF_VERSION)
 - Skrypt w `<head>` ustawia:
-  - `const INF_VERSION = "YYYY-MM-DD_HH-mm-ss"` (aktualna wersja: `2026-01-22_07-18-48`).
+  - `const INF_VERSION = "YYYY-MM-DD_HH-mm-ss"` (zawsze zgodne z aktualną datą i godziną, ustawiane osobno dla wersji produkcyjnych i testowych).
   - `window.__dsVersion = INF_VERSION`.
 - Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
 
