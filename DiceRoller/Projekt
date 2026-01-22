@@ -1,4 +1,4 @@
-Utworzyłem testowy moduł o nazwie "DiceRoller".
+Założenia modułu "DiceRoller":
 
 Ma on służyć do symulacji rzutu 6cio ścienną kością do gry.
 Ma mieć dwa pola do wpisania przez użytkownika:
