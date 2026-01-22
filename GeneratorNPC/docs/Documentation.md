@@ -50,6 +50,8 @@ Składa się z trzech sekcji:
 ### 4.3. Obszar roboczy (`.workspace`)
 Zawiera karty z tabelami danych:
 - **Podgląd bazowy Bestiariusza** (`#bestiary-table-body`).
+  - W wybranych wierszach (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) zamiast tekstu pojawiają się pola `number` z przyciskami góra–dół.
+  - Wiersz „Umiejętności” posiada przycisk **Edytuj** w kolumnie klucza, który przełącza komórkę na edycję w `textarea`.
 - **Wybór Broni** (`#weapon`, `#weapon-table-body`).
 - **Wybór Pancerzy** (`#armor`, `#armor-table-body`).
 - **Wybór Augumentacji** (`#augmentations`, `#augmentations-table-body`).
@@ -120,6 +122,10 @@ Ustawienia globalne:
 - `select`, `input`, `textarea` — jednolite tła, obramowania, fokus (`box-shadow: var(--glow)`).
 - `.field`, `.field-label-row` — układ etykiet i kontroli.
 - `.checkbox`, `.checkbox-list`, `.checkbox-inline` — checkboxy modułów i ustawień szczegółów.
+- `.table-number-input` — wąskie pole `number` w tabeli bestiariusza (mniejszy padding i font).
+- `.editable-textarea` — pole edycji `Umiejętności` (ciemne tło, resize w pionie, focus z `--glow`).
+- `.skills-key-cell` — układ flex dla etykiety „Umiejętności” i przycisku **Edytuj/Zapisz**.
+- `.btn.btn-small` — kompaktowa wersja przycisku dla edycji w tabeli.
 
 ### 6.5. Tabele
 - `.data-table` — tabela z `border-collapse`, efektami hover i zebra.
@@ -172,8 +178,14 @@ Ustawienia globalne:
 ### 8.1. Stałe i stan aplikacji
 - `DATA_URL` — URL z danymi JSON.
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
+- `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
 - `state` — obiekt z danymi aplikacji i stanem UI:
-  - `data`, `traits` (Map), `expandedCells` (Set), kolekcje: `bestiary`, `armor`, `weapons`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
+  - `data`, `traits` (Map), `expandedCells` (Set), `selectedBestiaryIndex`,
+  - `bestiaryOverrides` — obiekt nadpisań wprowadzonych przez użytkownika:
+    - `numeric` (Map) dla pól liczbowych,
+    - `skills` (string) dla „Umiejętności”,
+    - `skillsEditing` (boolean) przełączający tryb edycji,
+  - kolekcje: `bestiary`, `armor`, `weapons`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
 - `clampEvaluators` (WeakMap) — przechowuje funkcje obliczające clamp dla komórek.
 - `nameKeyCache` (WeakMap) — cache klucza nazwy rekordu.
 - `clampObserver` (ResizeObserver) — reaguje na zmianę rozmiaru komórek i przelicza clamp.
@@ -210,6 +222,11 @@ Ustawienia globalne:
 - `sortByTypeThenName(records, { typeDescending })` — sortuje po typie, a następnie po nazwie (opcjonalnie malejąco po typie).
 - `findRecordKey(record, label)` — znajduje klucz odpowiadający etykiecie (porównanie znormalizowane).
 - `getRecordValue(record, label)` — odczytuje wartość pola z rekordu.
+- `parseNumericValue(value, fallback)` — wyciąga liczbę z tekstu lub zwraca wartość domyślną.
+- `getBestiaryWpMinimum(record)` — wyznacza minimalną wartość pola „Odporność (w tym WP)” na podstawie WP (lub 1, gdy WP to `-`).
+- `getEditableNumericMinimum(label, record)` — zwraca minimum dla edytowalnego pola (1 lub wartość WP).
+- `getNumericOverride(label)` — pobiera nadpisaną wartość liczbową z `state.bestiaryOverrides`.
+- `resetBestiaryOverrides()` — czyści wszystkie nadpisania bestiariusza i wyłącza tryb edycji „Umiejętności”.
 
 ### 8.4. Specyfika pancerzy i cech
 - `getArmorWpValue(record)` — odczytuje wartość WP z rekordu pancerza.
@@ -226,8 +243,10 @@ Ustawienia globalne:
 - `createTag(traitName)` — tworzy element `.tag` dla cechy.
 - `renderTraitsCell(value, columnClass)` — renderuje komórkę cech jako zestaw tagów.
 - `createClampCell(sheetName, rowId, key, valueString, columnClass)` — tworzy komórkę z mechanizmem clamp.
+- `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP i zapisuje nadpisanie do `state.bestiaryOverrides`.
+- `createSkillsRow(record, key, valueString)` — renderuje wiersz „Umiejętności” z przyciskiem **Edytuj/Zapisz** i `textarea`.
 - `renderOrderedTable({ tableBody, records, columns, sheetName })` — renderuje tabelę z określonymi kolumnami.
-- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza.
+- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne.
 
 ### 8.6. Konfiguracje kolumn
 - `weaponColumns`, `armorColumns`, `augmentationsColumns`, `equipmentColumns`, `talentsColumns`, `psionicsColumns`, `prayersColumns` — listy nagłówków dla tabel modułów.
@@ -236,7 +255,7 @@ Ustawienia globalne:
 - `getSelectedIndices(select)` — zwraca indeksy zaznaczonych opcji.
 - `renderWeaponTable()`, `renderArmorTable()`, `renderAugmentationsTable()`, `renderEquipmentTable()`, `renderTalentsTable()`, `renderPsionicsTable()`, `renderPrayersTable()` — renderują odpowiednie tabele według aktualnego wyboru.
 - `setArmorSelectionEnabled(enabled)` — włącza/wyłącza select pancerzy.
-- `updateBestiarySelection()` — aktualizuje podgląd bestiariusza i stan pancerzy.
+- `updateBestiarySelection()` — aktualizuje podgląd bestiariusza i stan pancerzy, resetuje nadpisania przy zmianie rekordu.
 
 ### 8.8. Formatowanie sekcji na karcie
 - `splitEntries(raw)` — dzieli wpisy na sekcje wg heurystyki (np. `Nazwa — ...`, `Etykieta: ...`, `*[n]`, `[n]`).
@@ -259,7 +278,7 @@ Ustawienia globalne:
 - `extractWpFromResistance(value)` — wyciąga WP z pola „Odporność”.
 
 ### 8.11. Karta do druku
-- `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny).
+- `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”.
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
@@ -282,6 +301,7 @@ Ustawienia globalne:
 ## 10. Logika generowania karty do druku
 - Karta jest generowana w nowym oknie i posiada własny zestaw stylów inline.
 - W sekcji „Odporność” wartość WP jest opisywana etykietą „w tym Pancerz”.
+- Jeśli użytkownik zmodyfikuje statystyki lub „Umiejętności”, karta używa wartości z `bestiaryOverrides`; edytowana „Odporność (w tym WP)” jest bazą do przeliczeń z pancerzem.
 - Dla modułu psioniki możliwe jest normalizowanie kolumny „Wzmocnienie” do jednej linii.
 - Sekcje bez danych są pomijane.
 - Zastosowano naprzemienny „zebra striping” dla bloków z listami wpisów.

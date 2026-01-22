@@ -385,6 +385,12 @@
         data: null,
         traits: new Map(),
         expandedCells: new Set(),
+        selectedBestiaryIndex: null,
+        bestiaryOverrides: {
+          numeric: new Map(),
+          skills: null,
+          skillsEditing: false,
+        },
         bestiary: [],
         armor: [],
         weapons: [],
@@ -417,6 +423,28 @@
           .toLowerCase()
           .normalize("NFD")
           .replace(/\p{Diacritic}/gu, "");
+
+      const EDITABLE_STATS_KEYS = [
+        "S",
+        "Wt",
+        "Zr",
+        "I",
+        "SW",
+        "Int",
+        "Ogd",
+        "Odporność (w tym WP)",
+        "Obrona (w tym WP)",
+        "Obrona",
+        "Żywotność",
+        "Upór",
+        "Odwaga",
+        "Szybkość",
+      ];
+      const EDITABLE_SKILLS_KEY = normalizeKey("Umiejętności");
+      const EDITABLE_RESISTANCE_KEYS = new Set(
+        ["Odporność (w tym WP)", "Obrona (w tym WP)"].map((label) => normalizeKey(label))
+      );
+      const EDITABLE_NUMERIC_KEYS = new Set(EDITABLE_STATS_KEYS.map((label) => normalizeKey(label)));
 
       const escapeHtml = (value) =>
         String(value)
@@ -605,6 +633,15 @@
         return normalized && normalized !== "—" && normalized !== "-" && normalized !== "brak";
       };
 
+      const parseNumericValue = (value, fallback = 1) => {
+        const match = String(value ?? "").match(/-?\d+/);
+        if (!match) {
+          return fallback;
+        }
+        const numeric = Number(match[0]);
+        return Number.isFinite(numeric) ? numeric : fallback;
+      };
+
       const getRecordValueByLabels = (record, labels) => {
         for (const label of labels) {
           const value = getRecordValue(record, label);
@@ -613,6 +650,32 @@
           }
         }
         return null;
+      };
+
+      const getBestiaryWpMinimum = (record) => {
+        const wpText = normalizeText(getRecordValueByLabels(record, ["Wartość Pancerza", "WP"]));
+        if (wpText === "-") {
+          return 1;
+        }
+        const numeric = parseNumericValue(wpText, 1);
+        return Math.max(1, numeric);
+      };
+
+      const getEditableNumericMinimum = (label, record) => {
+        const normalizedLabel = normalizeKey(label);
+        if (EDITABLE_RESISTANCE_KEYS.has(normalizedLabel)) {
+          return getBestiaryWpMinimum(record);
+        }
+        return 1;
+      };
+
+      const getNumericOverride = (label) =>
+        state.bestiaryOverrides.numeric.get(normalizeKey(label));
+
+      const resetBestiaryOverrides = () => {
+        state.bestiaryOverrides.numeric.clear();
+        state.bestiaryOverrides.skills = null;
+        state.bestiaryOverrides.skillsEditing = false;
       };
 
       const extractRecords = (section) => {
@@ -1043,6 +1106,75 @@
         return cell;
       };
 
+      const createNumericInputCell = (record, key, valueString) => {
+        const cell = document.createElement("td");
+        cell.classList.add("celltext");
+        const input = document.createElement("input");
+        input.type = "number";
+        input.className = "input table-number-input";
+        const minValue = getEditableNumericMinimum(key, record);
+        input.min = String(minValue);
+        input.step = "1";
+        const overrideValue = getNumericOverride(key);
+        const initial = overrideValue ?? parseNumericValue(valueString, minValue);
+        const resolvedInitial = Math.max(minValue, Number.isFinite(initial) ? initial : minValue);
+        input.value = String(resolvedInitial);
+        const commitValue = () => {
+          const numeric = parseNumericValue(input.value, minValue);
+          const resolved = Math.max(minValue, numeric);
+          input.value = String(resolved);
+          state.bestiaryOverrides.numeric.set(normalizeKey(key), resolved);
+        };
+        input.addEventListener("input", () => {
+          const numeric = Number.parseInt(input.value, 10);
+          if (Number.isFinite(numeric)) {
+            state.bestiaryOverrides.numeric.set(normalizeKey(key), Math.max(minValue, numeric));
+          }
+        });
+        input.addEventListener("change", commitValue);
+        input.addEventListener("blur", commitValue);
+        cell.append(input);
+        return cell;
+      };
+
+      const createSkillsRow = (record, key, valueString) => {
+        const row = document.createElement("tr");
+        const keyCell = document.createElement("td");
+        keyCell.classList.add("skills-key-cell");
+        const label = document.createElement("span");
+        label.textContent = key;
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn secondary btn-small";
+        const isEditing = state.bestiaryOverrides.skillsEditing;
+        button.textContent = isEditing ? "Zapisz" : "Edytuj";
+        keyCell.append(label, button);
+        row.append(keyCell);
+
+        if (isEditing) {
+          const valueCell = document.createElement("td");
+          const textarea = document.createElement("textarea");
+          textarea.className = "editable-textarea";
+          const currentValue = state.bestiaryOverrides.skills ?? valueString;
+          textarea.value = currentValue === "—" ? "" : currentValue;
+          valueCell.append(textarea);
+          row.append(valueCell);
+          button.addEventListener("click", () => {
+            state.bestiaryOverrides.skills = textarea.value;
+            state.bestiaryOverrides.skillsEditing = false;
+            renderBestiaryTable(record);
+          });
+        } else {
+          const displayValue = state.bestiaryOverrides.skills ?? valueString;
+          row.append(createClampCell("Bestiariusz", key, key, displayValue));
+          button.addEventListener("click", () => {
+            state.bestiaryOverrides.skillsEditing = true;
+            renderBestiaryTable(record);
+          });
+        }
+        return row;
+      };
+
       const renderOrderedTable = ({
         tableBody,
         records,
@@ -1084,6 +1216,11 @@
         const entries = Object.entries(record);
         entries.forEach(([key, value]) => {
           const valueString = toDisplayString(value);
+          const normalizedKey = normalizeKey(key);
+          if (normalizedKey === EDITABLE_SKILLS_KEY) {
+            bestiaryTableBody.append(createSkillsRow(record, key, valueString));
+            return;
+          }
           const row = document.createElement("tr");
           const keyCell = document.createElement("td");
           keyCell.textContent = key;
@@ -1092,6 +1229,8 @@
           let valueCell;
           if (key.toLowerCase().includes("cechy")) {
             valueCell = renderTraitsCell(value);
+          } else if (EDITABLE_NUMERIC_KEYS.has(normalizedKey)) {
+            valueCell = createNumericInputCell(record, key, valueString);
           } else {
             valueCell = createClampCell("Bestiariusz", key, key, valueString);
           }
@@ -1231,9 +1370,15 @@
       const updateBestiarySelection = () => {
         const index = Number(bestiarySelect.value);
         if (Number.isNaN(index)) {
+          state.selectedBestiaryIndex = null;
+          resetBestiaryOverrides();
           renderBestiaryTable(null);
           setArmorSelectionEnabled(true);
           return;
+        }
+        if (state.selectedBestiaryIndex !== index) {
+          state.selectedBestiaryIndex = index;
+          resetBestiaryOverrides();
         }
         const record = state.bestiary[index];
         renderBestiaryTable(record);
@@ -1481,7 +1626,11 @@
         return Number(match[1]);
       };
 
-      const buildPrintableCardHTML = (record, notes, { weaponOverride, armorOverride, moduleEntries } = {}) => {
+      const buildPrintableCardHTML = (
+        record,
+        notes,
+        { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides } = {}
+      ) => {
         const name = toDisplayString(getRecordValue(record, "Nazwa"));
         const keywords = toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
         const threatRaw = toDisplayString(getRecordValue(record, "Zagrożenie"));
@@ -1492,19 +1641,30 @@
           threatLetters.push("");
         }
 
-        const stats = {
-          S: toDisplayString(getRecordValue(record, "S")),
-          Wt: toDisplayString(getRecordValue(record, "Wt")),
-          Zr: toDisplayString(getRecordValue(record, "Zr")),
-          I: toDisplayString(getRecordValue(record, "I")),
-          SW: toDisplayString(getRecordValue(record, "SW")),
-          Int: toDisplayString(getRecordValue(record, "Int")),
-          Ogd: toDisplayString(getRecordValueByLabels(record, ["Ogd", "Ocd"])),
+        const numericOverrides = bestiaryOverrides?.numeric ?? new Map();
+        const skillsOverride = bestiaryOverrides?.skills;
+        const getNumericOverrideValue = (label) => numericOverrides.get(normalizeKey(label));
+        const resolveNumericDisplay = (label, fallbackValue) => {
+          const override = getNumericOverrideValue(label);
+          return override != null ? String(override) : toDisplayString(fallbackValue);
         };
 
-        let resistance = toDisplayString(
-          getRecordValueByLabels(record, ["Odporność (w tym WP)", "Obrona (w tym WP)"])
-        );
+        const stats = {
+          S: resolveNumericDisplay("S", getRecordValue(record, "S")),
+          Wt: resolveNumericDisplay("Wt", getRecordValue(record, "Wt")),
+          Zr: resolveNumericDisplay("Zr", getRecordValue(record, "Zr")),
+          I: resolveNumericDisplay("I", getRecordValue(record, "I")),
+          SW: resolveNumericDisplay("SW", getRecordValue(record, "SW")),
+          Int: resolveNumericDisplay("Int", getRecordValue(record, "Int")),
+          Ogd: resolveNumericDisplay("Ogd", getRecordValueByLabels(record, ["Ogd", "Ocd"])),
+        };
+
+        const resistanceOverride =
+          getNumericOverrideValue("Odporność (w tym WP)") ?? getNumericOverrideValue("Obrona (w tym WP)");
+        let resistance =
+          resistanceOverride != null
+            ? String(resistanceOverride)
+            : toDisplayString(getRecordValueByLabels(record, ["Odporność (w tym WP)", "Obrona (w tym WP)"]));
         let wp = toDisplayString(getRecordValueByLabels(record, ["Wartość Pancerza", "WP"]));
         const baseResistance = parseStarNumber(resistance);
         const baseWp = parseStarNumber(wp);
@@ -1555,13 +1715,14 @@
           `
           : "";
 
-        const defense = toDisplayString(getRecordValue(record, "Obrona"));
-        const vitality = toDisplayString(getRecordValue(record, "Żywotność"));
+        const defense = resolveNumericDisplay("Obrona", getRecordValue(record, "Obrona"));
+        const vitality = resolveNumericDisplay("Żywotność", getRecordValue(record, "Żywotność"));
         const mental = toDisplayString(
           getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])
         );
 
-        const skills = toDisplayString(getRecordValue(record, "Umiejętności"));
+        const skills =
+          skillsOverride != null ? skillsOverride : toDisplayString(getRecordValue(record, "Umiejętności"));
         const bonuses = toDisplayString(getRecordValue(record, "Premie"));
         const abilities = toDisplayString(getRecordValue(record, "Zdolności"));
         let attacks = weaponOverride?.entries ?? toDisplayString(getRecordValue(record, "Atak"));
@@ -1571,9 +1732,9 @@
         const hordeAbilities = toDisplayString(getRecordValue(record, "Zdolności Hordy"));
         const hordeOptions = toDisplayString(getRecordValue(record, "Opcje Hordy"));
 
-        const grit = toDisplayString(getRecordValue(record, "Upór"));
-        const courage = toDisplayString(getRecordValue(record, "Odwaga"));
-        const speed = toDisplayString(getRecordValue(record, "Szybkość"));
+        const grit = resolveNumericDisplay("Upór", getRecordValue(record, "Upór"));
+        const courage = resolveNumericDisplay("Odwaga", getRecordValue(record, "Odwaga"));
+        const speed = resolveNumericDisplay("Szybkość", getRecordValue(record, "Szybkość"));
         const size = toDisplayString(getRecordValue(record, "Rozmiar"));
 
         const sections = [
@@ -1752,6 +1913,7 @@
         });
         resetButton.addEventListener("click", () => {
           bestiarySelect.selectedIndex = 0;
+          state.selectedBestiaryIndex = null;
           Array.from(armorSelect.options).forEach((option) => {
             option.selected = false;
           });
@@ -1777,6 +1939,7 @@
             toggle.checked = toggle.defaultChecked;
           });
           bestiaryNotes.value = "";
+          resetBestiaryOverrides();
           armorTraitDescriptionsToggle.checked = armorTraitDescriptionsToggle.defaultChecked;
           weaponTraitDescriptionsToggle.checked = weaponTraitDescriptionsToggle.defaultChecked;
           augmentationsFullDetailsToggle.checked = augmentationsFullDetailsToggle.defaultChecked;
@@ -1853,6 +2016,7 @@
             weaponOverride,
             armorOverride,
             moduleEntries,
+            bestiaryOverrides: state.bestiaryOverrides,
           });
         });
       };

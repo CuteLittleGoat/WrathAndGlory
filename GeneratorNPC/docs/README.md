@@ -11,12 +11,16 @@
 2. Poczekaj na wczytanie danych — status pojawi się w panelu „Źródło danych”.
 3. W panelu „Wybór bazowy” wybierz rekord z listy „Bestiariusz · Nazwa”.
 4. (Opcjonalnie) Wpisz własne notatki w polu „Uwagi do rekordu”.
-5. W sekcji „Moduły aktywne” zdecyduj, które moduły mają być widoczne:
+5. W tabeli „Podgląd bazowy” możesz korygować wartości liczbowe (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) za pomocą pól z przyciskami góra–dół.
+   - Minimalna wartość dla większości pól to 1.
+   - Dla pola „Odporność (w tym WP)” minimum zależy od „WP”; gdy „WP” ma wartość „-”, minimum to 1.
+6. Przy polu „Umiejętności” użyj przycisku „Edytuj”, aby włączyć edycję i zapisać własny opis.
+7. W sekcji „Moduły aktywne” zdecyduj, które moduły mają być widoczne:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
-6. W każdej aktywnej karcie wybierz pozycje z listy (możesz zaznaczyć wiele pozycji).
+8. W każdej aktywnej karcie wybierz pozycje z listy (możesz zaznaczyć wiele pozycji).
    - Dodatkowe przełączniki pozwalają dołączyć opisy cech lub pełne opisy modułów.
-7. Kliknij „Generuj kartę”, aby otworzyć kartę do druku w nowej karcie przeglądarki.
-8. Kliknij „Reset”, aby wyczyścić wybory i przywrócić domyślne ustawienia.
+9. Kliknij „Generuj kartę”, aby otworzyć kartę do druku w nowej karcie przeglądarki.
+10. Kliknij „Reset”, aby wyczyścić wybory i przywrócić domyślne ustawienia.
 
 ### Podpowiedzi
 - Klikaj w tagi cech, aby zobaczyć opis cechy w panelu popover.
@@ -37,12 +41,16 @@
 2. Wait for the data to load — the status appears in the “Źródło danych” panel.
 3. In “Wybór bazowy”, select an entry from “Bestiariusz · Nazwa”.
 4. (Optional) Enter your own notes in “Uwagi do rekordu”.
-5. In “Moduły aktywne”, decide which modules should be visible:
+5. In the “Podgląd bazowy” table, adjust numeric values (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) using the up/down number inputs.
+   - The minimum value for most fields is 1.
+   - For “Odporność (w tym WP)”, the minimum equals the “WP” value; if “WP” is “-”, the minimum is 1.
+6. Use the “Edytuj” button next to “Umiejętności” to enable editing and save your custom text.
+7. In “Moduły aktywne”, decide which modules should be visible:
    - Weapons, Armor, Augmentations, Equipment, Talents, Psionics, Prayers.
-6. In each active card, select items from the list (multi-select is supported).
+8. In each active card, select items from the list (multi-select is supported).
    - Additional toggles let you include trait descriptions or full module details.
-7. Click “Generuj kartę” to open a printable card in a new browser tab.
-8. Click “Reset” to clear selections and restore defaults.
+9. Click “Generuj kartę” to open a printable card in a new browser tab.
+10. Click “Reset” to clear selections and restore defaults.
 
 ### Tips
 - Click trait tags to see their description in the popover panel.
