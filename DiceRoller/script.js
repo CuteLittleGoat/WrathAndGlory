@@ -81,24 +81,32 @@ const buildSummary = ({
   summary.innerHTML = "";
 
   const heading = document.createElement("h2");
+  heading.classList.add("summary__headline");
   heading.textContent = success ? "Sukces!" : "Porażka!";
   summary.appendChild(heading);
 
   if (furyMessage) {
     const fury = document.createElement("p");
+    fury.classList.add("summary__headline", "summary__headline--secondary");
     fury.textContent = furyMessage;
     summary.appendChild(fury);
   }
 
-  const points = document.createElement("p");
-  points.textContent = `Łączne punkty: ${totalPoints} (Stopień Trudności: ${difficulty})`;
-  summary.appendChild(points);
-
   if (transferable > 0) {
     const transfer = document.createElement("p");
+    transfer.classList.add("summary__transfer");
     transfer.textContent = `Możliwe Przeniesienie: ${transferable}`;
     summary.appendChild(transfer);
+
+    const spacer = document.createElement("div");
+    spacer.classList.add("summary__spacer");
+    summary.appendChild(spacer);
   }
+
+  const points = document.createElement("p");
+  points.classList.add("summary__detail");
+  points.textContent = `Łączne punkty: ${totalPoints} (Stopień Trudności: ${difficulty})`;
+  summary.appendChild(points);
 
   const list = document.createElement("ul");
   results.forEach((value, index) => {
