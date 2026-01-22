@@ -128,6 +128,7 @@ Media query do 600px:
 - `ROLL_DURATION = 900` — czas animacji.
 - Referencje DOM: `difficultyInput`, `poolInput`, `furyInput`, `rollButton`, `diceContainer`, `summary`, elementy etykiet, podpowiedzi oraz `#languageSelect`.
 - `translations` — obiekt tłumaczeń dla PL/EN (teksty nagłówków, etykiet, przycisków i komunikatów wyników).
+- W wersji EN komunikaty furii to: `Wrath Complication` dla klucza `furyComplication` oraz `Wrath Critical` dla klucza `furyCritical`.
 - `currentLanguage` — aktualny kod języka (`pl` domyślnie).
 
 ### Funkcje

@@ -33,7 +33,7 @@
    - black question mark on white dice.
 9. After the animation you will see:
    - the **Success!** or **Failure!** headline,
-   - directly below it **Wrath Critical 🙁** or **Wrath Complication 🙂** in the same headline style,
+   - directly below it **Wrath Complication 🙁** or **Wrath Critical 🙂** in the same headline style,
    - the **Possible Shift: X** line,
    - a spacer, then the total points line styled like the dice results list,
    - each die result.
