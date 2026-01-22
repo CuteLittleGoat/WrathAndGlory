@@ -6,7 +6,7 @@
 3. W prawym górnym rogu wybierz język (PL/EN). Pole wyboru ma ciemne tło spójne z modułem Kalkulator, a zmiana języka resetuje wartości.
 4. Ustaw **Stopień Trudności** (1-99) — wymagana liczba punktów do sukcesu.
 5. Ustaw **Pulę Kości** (1-99) — liczbę kości do rzutu.
-6. Ustaw **Ilość Kości Furii** (1-99) — liczba czerwonych kości; nie może być większa niż Pula Kości.
+6. Ustaw **Ilość Kości Furii** (1-99) — liczba czerwonych kości (Wrath Die); nie może być większa niż Pula Kości.
    - Pola wejściowe są wyrównane do górnej krawędzi, aby wszystkie kontrolki miały równy start.
 7. Kliknij **Rzuć Kośćmi!**
 8. W trakcie animacji na kościach pojawia się obracający znak zapytania:
@@ -25,7 +25,7 @@
 3. Use the language switcher in the top right corner (PL/EN). The select uses the same dark background as the Calculator module, and changing the language resets values.
 4. Set the **Difficulty Number** (1-99) — required points for success.
 5. Set the **Dice Pool** (1-99) — number of dice to roll.
-6. Set the **Number of Wrath Dice** (1-99) — number of red dice; it cannot exceed the Dice Pool.
+6. Set the **Number of Wrath Dice** (1-99) — number of red dice (Wrath Die); it cannot exceed the Dice Pool.
    - The input fields are aligned to the top edge so every control starts at the same height.
 7. Click **Roll the dice!**
 8. During the animation a rotating question mark appears on the dice:
