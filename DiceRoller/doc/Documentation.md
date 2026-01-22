@@ -35,24 +35,37 @@ Pola:
 
 ## CSS (`style.css`)
 ### Zmienne CSS
-Zdefiniowane w `:root`:
-- `--bg` — tło z gradientami.
-- `--panel`, `--border`, `--text`, `--accent`, `--accent-soft`, `--muted` — kolory interfejsu.
-- `--white-die`, `--white-pip` — barwy białej kości.
-- `--red-die`, `--red-pip` — barwy czerwonej kości.
-- `--shadow` — cień panelu.
+Zdefiniowane w `:root` (motyw zielonego terminala spójny z główną stroną):
+- `--bg` — tło wielowarstwowe:
+  1. `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%)`
+  2. `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%)`
+  3. kolor bazowy `#031605`
+- `--panel` — tło panelu: `#000`.
+- `--border` — obramowanie: `#16c60c`.
+- `--text` — tekst: `#9cf09c`.
+- `--accent` — akcent: `#16c60c`.
+- `--accent-dark` — ciemny akcent: `#0d7a07`.
+- `--muted` — tekst pomocniczy: `rgba(156, 240, 156, 0.7)`.
+- `--glow` — poświata panelu: `0 0 25px rgba(22, 198, 12, 0.45)`.
+- `--radius` — zaokrąglenia: `10px`.
+- `--white-die`, `--white-pip` — barwy białej kości: `#f6f6f6` i `#111111`.
+- `--red-die`, `--red-pip` — barwy czerwonej kości: `#c01717` i `#ffffff`.
 
 ### Typografia
 Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
 
 ### Układ
-- `.app` — panel z obramowaniem, cieniem i odstępami.
-- `.panel` — grid na pola i przycisk (`repeat(auto-fit, minmax(220px, 1fr))`).
-- `.results` — kolumny na kości i podsumowanie.
+- `.app` — panel o szerokości `min(860px, 100%)`, z obramowaniem `2px`, poświatą `--glow`, paddingiem `32px 32px 28px`, ułożony kolumnowo i wyśrodkowany (`align-items: center`).
+- `.app__header` — tekst nagłówka wyśrodkowany.
+- `.panel` — grid na pola i przycisk (`repeat(auto-fit, minmax(220px, 1fr))`) na pełną szerokość panelu (`width: 100%`).
+- `.results` — kolumny na kości i podsumowanie na pełną szerokość panelu.
+
+### Podsumowanie
+- `.summary` — panel wyników z zielonym tłem (`rgba(22, 198, 12, 0.08)`), obramowaniem `2px` (`rgba(22, 198, 12, 0.4)`) i zaokrągleniem `10px`.
 
 ### Pola i przycisk
-- `input[type="number"]` — półprzezroczyste tło, złote obramowanie, fokus z poświatą.
-- `.roll` — przycisk z podkreślonym akcentem, efekt hover/active.
+- `input[type="number"]` — zielone półprzezroczyste tło (`rgba(22, 198, 12, 0.08)`), obramowanie `2px` w kolorze `--border`, fokus z poświatą `rgba(22, 198, 12, 0.25)` i jaśniejszym tłem.
+- `.roll` — przycisk w stylu głównej aplikacji: zielona ramka, delikatna poświata na hover (`0 0 18px rgba(22, 198, 12, 0.3)`), jaśniejsze tło w stanie active.
 
 ### Kości
 Każda kość to `.die`:
