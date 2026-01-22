@@ -62,6 +62,11 @@ Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
 
 ### Podsumowanie
 - `.summary` — panel wyników z zielonym tłem (`rgba(22, 198, 12, 0.08)`), obramowaniem `2px` (`rgba(22, 198, 12, 0.4)`) i zaokrągleniem `10px`.
+- `.summary__headline` — nagłówkowy styl dla „Sukces!/Porażka!” i komunikatów furii (uppercase, `font-size: 18px`, `letter-spacing: 0.05em`).
+- `.summary__headline--secondary` — odstęp nad komunikatem furii (`margin-top: 6px`).
+- `.summary__transfer` — standardowa linia z informacją o przeniesieniu (`font-size: 15px`).
+- `.summary__detail` — styl dla „Łączne punkty...” w kolorze `--muted` i rozmiarze `14px`, identyczny jak lista wyników.
+- `.summary__spacer` — pusty odstęp (`height: 12px`) między przeniesieniem a łącznymi punktami.
 
 ### Pola i przycisk
 - `input[type="number"]` — zielone półprzezroczyste tło (`rgba(22, 198, 12, 0.08)`), obramowanie `2px` w kolorze `--border`, fokus z poświatą `rgba(22, 198, 12, 0.25)` i jaśniejszym tłem.
@@ -143,10 +148,11 @@ Media query do 600px:
 
 8. **`buildSummary({ ... })`**
    - Buduje podsumowanie:
-     - nagłówek Sukces/Porażka,
-     - komunikaty fury bezpośrednio pod nagłówkiem,
-     - łączna liczba punktów,
-     - komunikat przeniesienia,
+     - nagłówek Sukces/Porażka z klasą `.summary__headline`,
+     - komunikat furii pod nagłówkiem (ten sam krój, klasa `.summary__headline--secondary`),
+     - linia „Możliwe Przeniesienie”,
+     - wizualny odstęp (`.summary__spacer`),
+     - „Łączne punkty...” stylowane jak lista wyników,
      - lista wyników każdej kości.
 
 9. **`handleRoll()`**
@@ -183,10 +189,11 @@ Media query do 600px:
    - wynik ≥ trudność → „Sukces!”,
    - wynik < trudność → „Porażka!”.
 6. Komunikaty furii:
-   - min. jedna 1 na czerwonych → „Komplikacja Furii 🙁” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!”),
-   - wszystkie czerwone = 6 → „Krytyczna Furia 🙂” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!”).
+   - min. jedna 1 na czerwonych → „Komplikacja Furii 🙁” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!” w tym samym kroju),
+   - wszystkie czerwone = 6 → „Krytyczna Furia 🙂” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!” w tym samym kroju).
 7. Przeniesienie:
    - jeśli po odjęciu 2 punktów za część szóstek wynik wciąż ≥ trudność, wyświetla się liczba możliwych przeniesień.
+8. Po przeniesieniu wstawiany jest odstęp, a „Łączne punkty...” pojawiają się w stylu listy wyników kości.
 
 ## Odwzorowanie 1:1
 Aby odtworzyć aplikację:

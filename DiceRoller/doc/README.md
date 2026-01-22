@@ -12,12 +12,11 @@
    - biały znak zapytania na czerwonych kościach,
    - czarny znak zapytania na białych kościach.
 8. Po animacji zobaczysz:
-   - wynik każdej kości,
    - informację **Sukces!** lub **Porażka!**,
-   - bezpośrednio pod nią ewentualny komunikat **Komplikacja Furii 🙁** (jeśli na czerwonej kości wypadła 1),
-   - bezpośrednio pod nią ewentualny komunikat **Krytyczna Furia 🙂** (jeśli wszystkie czerwone kości wyrzuciły 6),
-   - łączną liczbę punktów,
-   - informację **Możliwe Przeniesienie: X** (liczba nadmiarowych szóstek do przeniesienia).
+   - bezpośrednio pod nią ewentualny komunikat **Komplikacja Furii 🙁** lub **Krytyczna Furia 🙂** w tym samym kroju co nagłówek,
+   - komunikat **Możliwe Przeniesienie: X**,
+   - odstęp i dopiero łączną liczbę punktów w kroju takim jak lista wyników kości,
+   - wynik każdej kości.
 
 ## User guide (EN)
 1. Open `DiceRoller/index.html` in your browser.
@@ -31,9 +30,8 @@
    - white question mark on red dice,
    - black question mark on white dice.
 8. After the animation you will see:
-   - each die result,
-   - **Sukces!** or **Porażka!** message,
-   - directly below it **Komplikacja Furii 🙁** (if any red die rolled 1),
-   - directly below it **Krytyczna Furia 🙂** (if all red dice rolled 6),
-   - total points,
-   - **Możliwe Przeniesienie: X** (how many extra sixes can be carried over).
+   - the **Sukces!** or **Porażka!** headline,
+   - directly below it **Komplikacja Furii 🙁** or **Krytyczna Furia 🙂** in the same headline style,
+   - the **Możliwe Przeniesienie: X** line,
+   - a spacer, then the total points line styled like the dice results list,
+   - each die result.
