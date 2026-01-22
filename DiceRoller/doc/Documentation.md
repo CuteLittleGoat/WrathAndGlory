@@ -1,7 +1,7 @@
 # DiceRoller - Dokumentacja techniczna
 
 ## Cel modułu
-`DiceRoller` to niezależny moduł aplikacji Wrath & Glory do symulacji rzutów kośćmi sześciennymi. Pozwala na ustawienie stopnia trudności, puli kości oraz liczby kości furii, wykonuje animację rzutu, liczy punkty i wyświetla wynik wraz z dodatkowymi komunikatami (Komplikacja Furii, Krytyczna Furia, Możliwe Przeniesienie).
+`DiceRoller` to niezależny moduł aplikacji Wrath & Glory do symulacji rzutów kośćmi sześciennymi. Pozwala na ustawienie stopnia trudności, puli kości oraz liczby Kości Furii (Wrath Dice), wykonuje animację rzutu, liczy punkty i wyświetla wynik wraz z dodatkowymi komunikatami (Komplikacja Furii, Krytyczna Furia, Możliwe Przeniesienie).
 
 ## Struktura plików
 - `DiceRoller/index.html` — główny dokument HTML.
@@ -25,7 +25,7 @@ Każde pole ma:
 Pola:
 1. **Stopień Trudności** (`#difficulty`, etykieta `#difficultyLabel`).
 2. **Pula Kości** (`#pool`, etykieta `#poolLabel`).
-3. **Ilość Kości Furii** (`#fury`, etykieta `#furyLabel`) + podpowiedź `.field__hint` z id `#furyHint` o limicie.
+3. **Ilość Kości Furii** (`#wrath`, etykieta `#wrathLabel`) + podpowiedź `.field__hint` z id `#wrathHint` o limicie.
 
 ### Przełącznik języka
 - `<select id="languageSelect">` z opcjami `pl` i `en`.
@@ -74,8 +74,8 @@ Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
 
 ### Podsumowanie
 - `.summary` — panel wyników z zielonym tłem (`rgba(22, 198, 12, 0.08)`), obramowaniem `2px` (`rgba(22, 198, 12, 0.4)`) i zaokrągleniem `10px`.
-- `.summary__headline` — nagłówkowy styl dla „Sukces!/Porażka!” i komunikatów furii (uppercase, `font-size: 18px`, `letter-spacing: 0.05em`).
-- `.summary__headline--secondary` — odstęp nad komunikatem furii (`margin-top: 6px`).
+- `.summary__headline` — nagłówkowy styl dla „Sukces!/Porażka!” i komunikatów Kości Furii (uppercase, `font-size: 18px`, `letter-spacing: 0.05em`).
+- `.summary__headline--secondary` — odstęp nad komunikatem Kości Furii (`margin-top: 6px`).
 - `.summary__transfer` — standardowa linia z informacją o przeniesieniu (`font-size: 15px`).
 - `.summary__detail` — styl dla „Łączne punkty...” w kolorze `--muted` i rozmiarze `14px`, identyczny jak lista wyników.
 - `.summary__spacer` — pusty odstęp (`height: 12px`) między przeniesieniem a łącznymi punktami.
@@ -126,9 +126,9 @@ Media query do 600px:
 ### Stałe i elementy DOM
 - `MIN_VALUE = 1`, `MAX_VALUE = 99` — zakresy wejściowe.
 - `ROLL_DURATION = 900` — czas animacji.
-- Referencje DOM: `difficultyInput`, `poolInput`, `furyInput`, `rollButton`, `diceContainer`, `summary`, elementy etykiet, podpowiedzi oraz `#languageSelect`.
+- Referencje DOM: `difficultyInput`, `poolInput`, `wrathInput`, `rollButton`, `diceContainer`, `summary`, elementy etykiet, podpowiedzi oraz `#languageSelect`.
 - `translations` — obiekt tłumaczeń dla PL/EN (teksty nagłówków, etykiet, przycisków i komunikatów wyników).
-- W wersji EN komunikaty furii to: `Wrath Complication` dla klucza `furyComplication` oraz `Wrath Critical` dla klucza `furyCritical`.
+- W wersji EN komunikaty Kości Furii to: `Wrath Complication` dla klucza `wrathComplication` oraz `Wrath Critical` dla klucza `wrathCritical`.
 - `currentLanguage` — aktualny kod języka (`pl` domyślnie).
 
 ### Funkcje
@@ -141,11 +141,11 @@ Media query do 600px:
    - Zaciska do zakresu 1-99.
    - Nadpisuje `input.value` poprawioną wartością.
 
-3. **`syncPoolAndFury()`**
+3. **`syncPoolAndWrath()`**
    - Sanitizuje Pulę Kości i Kości Furii.
-   - Jeśli `fury > pool`, ustawia fury na wartość puli.
+   - Jeśli `wrath > pool`, ustawia `wrath` na wartość puli.
 
-4. **`createDieElement(isFury)`**
+4. **`createDieElement(isWrath)`**
    - Tworzy element `.die` z centralnym znakiem zapytania `.die__question` i 7 oczkami.
    - Dodaje klasę `red` lub `white`.
 
@@ -164,7 +164,7 @@ Media query do 600px:
 8. **`buildSummary({ ... })`**
    - Buduje podsumowanie:
      - nagłówek Sukces/Porażka z klasą `.summary__headline` w zależności od języka,
-     - komunikat furii pod nagłówkiem (ten sam krój, klasa `.summary__headline--secondary`),
+     - komunikat Kości Furii pod nagłówkiem (ten sam krój, klasa `.summary__headline--secondary`),
      - linia „Możliwe Przeniesienie/Possible Shift”,
      - wizualny odstęp (`.summary__spacer`),
      - „Łączne punkty/Total points...” stylowane jak lista wyników,
@@ -173,7 +173,7 @@ Media query do 600px:
 9. **`handleRoll()`**
    - Sanitizuje pola.
    - Czyści kontener kości.
-   - Tworzy kości (`pool` sztuk), pierwsze `fury` są czerwone.
+   - Tworzy kości (`pool` sztuk), pierwsze `wrath` są czerwone.
    - Ustawia animację `rolling`.
    - Po `ROLL_DURATION` przypisuje finalne wyniki.
    - Liczy punkty, sukces i komunikaty.
@@ -191,7 +191,7 @@ Media query do 600px:
    - Podmienia teksty w UI na podstawie `translations`.
    - Resetuje stan aplikacji (pola i wynik).
 
-### Logika furii
+### Logika Kości Furii (Wrath Dice)
 - Komplikacja Furii: **przynajmniej jedna 1** na czerwonych kościach.
 - Krytyczna Furia: **wszystkie czerwone kości = 6**.
 - Jeśli brak czerwonych kości, komunikat się nie pojawia.
@@ -214,7 +214,7 @@ Media query do 600px:
 6. Porównanie z Stopniem Trudności:
    - wynik ≥ trudność → „Sukces!”,
    - wynik < trudność → „Porażka!”.
-7. Komunikaty furii:
+7. Komunikaty Kości Furii:
    - min. jedna 1 na czerwonych → „Komplikacja Furii 🙁” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!” w tym samym kroju),
    - wszystkie czerwone = 6 → „Krytyczna Furia 🙂” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!” w tym samym kroju).
 8. Przeniesienie:
@@ -226,6 +226,6 @@ Aby odtworzyć aplikację:
 1. Skopiuj strukturę `index.html` z identycznymi klasami i identyfikatorami.
 2. Zastosuj `style.css` z podanymi zmiennymi kolorów, układem panelu i animacją.
 3. W `script.js` zachowaj logikę walidacji (1-99), rozdział kości na czerwone/białe oraz algorytmy punktacji i przeniesienia.
-4. Zachowaj kolejność kości: **najpierw czerwone**, potem białe — to determinuje przypisanie wyników furii.
+4. Zachowaj kolejność kości: **najpierw czerwone**, potem białe — to determinuje przypisanie wyników Kości Furii.
 5. Użyj tych samych komunikatów tekstowych, aby zachować spójność z wymaganiami.
 6. Odwzoruj przełącznik języka (`#languageSelect`) wraz z obiektem `translations`, funkcjami `updateLanguage()` i `resetState()` oraz resetem danych po zmianie języka.
