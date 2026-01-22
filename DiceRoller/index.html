@@ -8,32 +8,38 @@
 </head>
 <body>
   <main class="app">
+    <div class="language-switcher">
+      <select id="languageSelect" aria-label="Wersja językowa">
+        <option value="pl">Polski</option>
+        <option value="en">English</option>
+      </select>
+    </div>
     <header class="app__header">
       <h1>DiceRoller</h1>
-      <p class="app__subtitle">Symulacja rzutów kośćmi dla Wrath &amp; Glory</p>
+      <p class="app__subtitle" id="subtitle">Symulacja rzutów kośćmi dla Wrath &amp; Glory</p>
     </header>
 
     <section class="panel">
       <div class="field">
-        <label for="difficulty">Stopień Trudności</label>
+        <label for="difficulty" id="difficultyLabel">Stopień Trudności</label>
         <input id="difficulty" type="number" min="1" max="99" value="1" step="1">
       </div>
       <div class="field">
-        <label for="pool">Pula Kości</label>
+        <label for="pool" id="poolLabel">Pula Kości</label>
         <input id="pool" type="number" min="1" max="99" value="1" step="1">
       </div>
       <div class="field">
-        <label for="fury">Ilość Kości Furii</label>
+        <label for="fury" id="furyLabel">Ilość Kości Furii</label>
         <input id="fury" type="number" min="1" max="99" value="1" step="1">
-        <span class="field__hint">Nie większa niż Pula Kości.</span>
+        <span class="field__hint" id="furyHint">Nie większa niż Pula Kości.</span>
       </div>
-      <button class="roll" id="roll">Rzuć kośćmi!</button>
+      <button class="roll" id="roll">Rzuć Kośćmi!</button>
     </section>
 
     <section class="results">
       <div class="dice" id="dice"></div>
       <div class="summary" id="summary">
-        <p class="summary__placeholder">Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.</p>
+        <p class="summary__placeholder" id="summaryPlaceholder">Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.</p>
       </div>
     </section>
   </main>

@@ -11,6 +11,7 @@
 ## HTML (`index.html`)
 ### Główne sekcje
 - `<main class="app">` — główny kontener aplikacji.
+- `<div class="language-switcher">` — przełącznik języka (select PL/EN) osadzony w prawym górnym rogu panelu.
 - `<header class="app__header">` — nagłówek z tytułem i podtytułem.
 - `<section class="panel">` — panel sterowania z polami wejściowymi i przyciskiem.
 - `<section class="results">` — obszar wyświetlający kości oraz podsumowanie.
@@ -22,9 +23,14 @@ Każde pole ma:
 - obsługę natywnych strzałek góra/dół (spinner) przeglądarki.
 
 Pola:
-1. **Stopień Trudności** (`#difficulty`).
-2. **Pula Kości** (`#pool`).
-3. **Ilość Kości Furii** (`#fury`) + podpowiedź `.field__hint` o limicie.
+1. **Stopień Trudności** (`#difficulty`, etykieta `#difficultyLabel`).
+2. **Pula Kości** (`#pool`, etykieta `#poolLabel`).
+3. **Ilość Kości Furii** (`#fury`, etykieta `#furyLabel`) + podpowiedź `.field__hint` z id `#furyHint` o limicie.
+
+### Przełącznik języka
+- `<select id="languageSelect">` z opcjami `pl` i `en`.
+- Podmienia wszystkie kluczowe teksty w UI (nagłówek, etykiety, podpowiedź, przycisk, komunikaty wyników).
+- Zmiana języka resetuje pola oraz wynik bez komunikatu ostrzegawczego.
 
 ### Przycisk
 - `<button class="roll" id="roll">` — uruchamia rzut kośćmi.
@@ -56,9 +62,15 @@ Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
 
 ### Układ
 - `.app` — panel o szerokości `min(860px, 100%)`, z obramowaniem `2px`, poświatą `--glow`, paddingiem `32px 32px 28px`, ułożony kolumnowo i wyśrodkowany (`align-items: center`).
+- `.app` ma `position: relative`, aby umożliwić absolutne pozycjonowanie przełącznika języka.
 - `.app__header` — tekst nagłówka wyśrodkowany.
 - `.panel` — grid na pola i przycisk (`repeat(auto-fit, minmax(220px, 1fr))`) na pełną szerokość panelu (`width: 100%`), z `align-items: start`, aby wszystkie pola startowały na tej samej wysokości mimo podpowiedzi.
 - `.results` — kolumny na kości i podsumowanie na pełną szerokość panelu.
+
+### Przełącznik języka
+- `.language-switcher` — absolutnie pozycjonowany w prawym górnym rogu panelu (`top: 18px; right: 18px`).
+- `.language-switcher select` — stylowany jak pola formularza: zielone półprzezroczyste tło, obramowanie `2px`, zaokrąglenia `6px`.
+- W responsywności do 600px przełącznik wraca do statycznego układu i wyrównuje się do prawej strony panelu (`align-self: flex-end`).
 
 ### Podsumowanie
 - `.summary` — panel wyników z zielonym tłem (`rgba(22, 198, 12, 0.08)`), obramowaniem `2px` (`rgba(22, 198, 12, 0.4)`) i zaokrągleniem `10px`.
@@ -114,7 +126,9 @@ Media query do 600px:
 ### Stałe i elementy DOM
 - `MIN_VALUE = 1`, `MAX_VALUE = 99` — zakresy wejściowe.
 - `ROLL_DURATION = 900` — czas animacji.
-- Referencje DOM: `difficultyInput`, `poolInput`, `furyInput`, `rollButton`, `diceContainer`, `summary`.
+- Referencje DOM: `difficultyInput`, `poolInput`, `furyInput`, `rollButton`, `diceContainer`, `summary`, elementy etykiet, podpowiedzi oraz `#languageSelect`.
+- `translations` — obiekt tłumaczeń dla PL/EN (teksty nagłówków, etykiet, przycisków i komunikatów wyników).
+- `currentLanguage` — aktualny kod języka (`pl` domyślnie).
 
 ### Funkcje
 1. **`clampValue(value, min, max)`**
@@ -148,12 +162,12 @@ Media query do 600px:
 
 8. **`buildSummary({ ... })`**
    - Buduje podsumowanie:
-     - nagłówek Sukces/Porażka z klasą `.summary__headline`,
+     - nagłówek Sukces/Porażka z klasą `.summary__headline` w zależności od języka,
      - komunikat furii pod nagłówkiem (ten sam krój, klasa `.summary__headline--secondary`),
-     - linia „Możliwe Przeniesienie”,
+     - linia „Możliwe Przeniesienie/Possible Shift”,
      - wizualny odstęp (`.summary__spacer`),
-     - „Łączne punkty...” stylowane jak lista wyników,
-     - lista wyników każdej kości.
+     - „Łączne punkty/Total points...” stylowane jak lista wyników,
+     - lista wyników każdej kości („Kość/Die”, „punkty/points”).
 
 9. **`handleRoll()`**
    - Sanitizuje pola.
@@ -167,6 +181,15 @@ Media query do 600px:
      - `margin = totalPoints - difficulty`,
      - `transferable = min(totalSixes, floor(margin/2))`.
 
+10. **`resetState()`**
+   - Przywraca wartości wejściowe do `1`.
+   - Czyści kości i ustawia placeholder podsumowania w bieżącym języku.
+
+11. **`updateLanguage(lang)`**
+   - Ustawia `currentLanguage` i aktualizuje `document.documentElement.lang`.
+   - Podmienia teksty w UI na podstawie `translations`.
+   - Resetuje stan aplikacji (pola i wynik).
+
 ### Logika furii
 - Komplikacja Furii: **przynajmniej jedna 1** na czerwonych kościach.
 - Krytyczna Furia: **wszystkie czerwone kości = 6**.
@@ -176,24 +199,26 @@ Media query do 600px:
 - Nasłuchiwanie `change` i `blur` na inputach.
 - Każda zmiana zaciska wartości do 1-99.
 - `Ilość Kości Furii` nigdy nie przekroczy `Pula Kości`.
+- Zmiana języka w `#languageSelect` resetuje pola i podsumowanie bez ostrzeżenia.
 
 ## Zasady działania aplikacji
 1. Użytkownik ustawia Stopień Trudności, Pulę Kości oraz Ilość Kości Furii.
-2. Kliknięcie „Rzuć kośćmi!” uruchamia animację.
-3. Wyniki kości są losowane (1-6).
-4. Punkty są liczone:
+2. Opcjonalnie wybiera język w prawym górnym rogu (PL/EN); aplikacja resetuje wartości.
+3. Kliknięcie „Rzuć Kośćmi!/Roll the dice!” uruchamia animację.
+4. Wyniki kości są losowane (1-6).
+5. Punkty są liczone:
    - 1-3 → 0 punktów,
    - 4-5 → 1 punkt,
    - 6 → 2 punkty.
-5. Porównanie z Stopniem Trudności:
+6. Porównanie z Stopniem Trudności:
    - wynik ≥ trudność → „Sukces!”,
    - wynik < trudność → „Porażka!”.
-6. Komunikaty furii:
+7. Komunikaty furii:
    - min. jedna 1 na czerwonych → „Komplikacja Furii 🙁” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!” w tym samym kroju),
    - wszystkie czerwone = 6 → „Krytyczna Furia 🙂” (wyświetlane bezpośrednio pod „Sukces!”/„Porażka!” w tym samym kroju).
-7. Przeniesienie:
+8. Przeniesienie:
    - jeśli po odjęciu 2 punktów za część szóstek wynik wciąż ≥ trudność, wyświetla się liczba możliwych przeniesień.
-8. Po przeniesieniu wstawiany jest odstęp, a „Łączne punkty...” pojawiają się w stylu listy wyników kości.
+9. Po przeniesieniu wstawiany jest odstęp, a „Łączne punkty...” pojawiają się w stylu listy wyników kości.
 
 ## Odwzorowanie 1:1
 Aby odtworzyć aplikację:
@@ -202,3 +227,4 @@ Aby odtworzyć aplikację:
 3. W `script.js` zachowaj logikę walidacji (1-99), rozdział kości na czerwone/białe oraz algorytmy punktacji i przeniesienia.
 4. Zachowaj kolejność kości: **najpierw czerwone**, potem białe — to determinuje przypisanie wyników furii.
 5. Użyj tych samych komunikatów tekstowych, aby zachować spójność z wymaganiami.
+6. Odwzoruj przełącznik języka (`#languageSelect`) wraz z obiektem `translations`, funkcjami `updateLanguage()` i `resetState()` oraz resetem danych po zmianie języka.

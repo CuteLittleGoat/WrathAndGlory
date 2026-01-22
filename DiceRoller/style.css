@@ -43,6 +43,29 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 22px;
+  position: relative;
+}
+
+.language-switcher {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+}
+
+.language-switcher select {
+  background: rgba(22, 198, 12, 0.08);
+  color: var(--text);
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.language-switcher select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25);
 }
 
 .app__header h1 {
@@ -300,6 +323,11 @@ input[type="number"]:focus {
 }
 
 @media (max-width: 600px) {
+  .language-switcher {
+    position: static;
+    align-self: flex-end;
+  }
+
   .die {
     width: 58px;
     height: 58px;
