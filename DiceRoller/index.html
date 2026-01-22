@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiceRoller - Wrath & Glory</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="app__header">
+      <h1>DiceRoller</h1>
+      <p class="app__subtitle">Symulacja rzutów kośćmi dla Wrath &amp; Glory</p>
+    </header>
+
+    <section class="panel">
+      <div class="field">
+        <label for="difficulty">Stopień Trudności</label>
+        <input id="difficulty" type="number" min="1" max="99" value="1" step="1">
+      </div>
+      <div class="field">
+        <label for="pool">Pula Kości</label>
+        <input id="pool" type="number" min="1" max="99" value="1" step="1">
+      </div>
+      <div class="field">
+        <label for="fury">Ilość Kości Furii</label>
+        <input id="fury" type="number" min="1" max="99" value="1" step="1">
+        <span class="field__hint">Nie większa niż Pula Kości.</span>
+      </div>
+      <button class="roll" id="roll">Rzuć kośćmi!</button>
+    </section>
+
+    <section class="results">
+      <div class="dice" id="dice"></div>
+      <div class="summary" id="summary">
+        <p class="summary__placeholder">Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
