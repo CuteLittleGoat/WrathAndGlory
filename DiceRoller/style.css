@@ -1,18 +1,19 @@
 :root {
-  --bg: radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.08), transparent 30%),
-    radial-gradient(circle at 80% 15%, rgba(255, 0, 0, 0.12), transparent 25%),
-    #0b0b0b;
-  --panel: rgba(0, 0, 0, 0.75);
-  --border: #f0d37a;
-  --text: #f6f0e4;
-  --accent: #c01717;
-  --accent-soft: #f0d37a;
-  --muted: #c4b8a0;
+  --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
+    #031605;
+  --panel: #000;
+  --border: #16c60c;
+  --text: #9cf09c;
+  --accent: #16c60c;
+  --accent-dark: #0d7a07;
+  --muted: rgba(156, 240, 156, 0.7);
+  --glow: 0 0 25px rgba(22, 198, 12, 0.45);
+  --radius: 10px;
   --white-die: #f6f6f6;
   --white-pip: #111111;
   --red-die: #c01717;
   --red-pip: #ffffff;
-  --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
 }
 
 * {
@@ -28,19 +29,20 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 20px;
+  padding: 24px;
 }
 
 .app {
-  width: min(920px, 100%);
+  width: min(860px, 100%);
   background: var(--panel);
   border: 2px solid var(--border);
-  border-radius: 14px;
-  padding: 28px 32px 36px;
-  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  padding: 32px 32px 28px;
+  box-shadow: var(--glow);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: center;
+  gap: 22px;
 }
 
 .app__header h1 {
@@ -48,6 +50,10 @@ body {
   font-size: 30px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+}
+
+.app__header {
+  text-align: center;
 }
 
 .app__subtitle {
@@ -61,6 +67,7 @@ body {
   gap: 18px;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   align-items: end;
+  width: 100%;
 }
 
 .field {
@@ -77,19 +84,21 @@ label {
 }
 
 input[type="number"] {
-  background: rgba(0, 0, 0, 0.55);
+  background: rgba(22, 198, 12, 0.08);
   color: var(--text);
-  border: 1px solid rgba(240, 211, 122, 0.45);
-  border-radius: 8px;
-  padding: 10px 12px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
   font-size: 16px;
   width: 100%;
+  transition: box-shadow 120ms ease, background 120ms ease, border-color 120ms ease;
 }
 
 input[type="number"]:focus {
   outline: none;
-  border-color: var(--accent-soft);
-  box-shadow: 0 0 0 2px rgba(240, 211, 122, 0.25);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25);
+  background: rgba(22, 198, 12, 0.14);
 }
 
 .field__hint {
@@ -98,31 +107,35 @@ input[type="number"]:focus {
 }
 
 .roll {
-  padding: 12px 16px;
-  border-radius: 10px;
-  border: 2px solid var(--accent-soft);
-  background: rgba(192, 23, 23, 0.2);
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 2px solid var(--border);
+  background: rgba(22, 198, 12, 0.08);
   color: var(--text);
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 15px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+  width: 100%;
 }
 
 .roll:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px rgba(192, 23, 23, 0.35);
+  box-shadow: 0 0 18px rgba(22, 198, 12, 0.3);
+  background: rgba(22, 198, 12, 0.14);
 }
 
 .roll:active {
   transform: translateY(0);
+  background: rgba(22, 198, 12, 0.22);
 }
 
 .results {
   display: grid;
   gap: 20px;
+  width: 100%;
 }
 
 .dice {
@@ -238,10 +251,11 @@ input[type="number"]:focus {
 }
 
 .summary {
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(240, 211, 122, 0.35);
-  border-radius: 12px;
+  background: rgba(22, 198, 12, 0.08);
+  border: 2px solid rgba(22, 198, 12, 0.4);
+  border-radius: 10px;
   padding: 16px 18px;
+  width: 100%;
 }
 
 .summary__placeholder {
