@@ -23,7 +23,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 8. (Opcjonalnie) Na stronie startowej `index.html` są przyciski testowe:
    - `GM (test)` → `GM_test.html`
-   - `Infoczytnik (test)` → `GM_test.html`
+   - `Infoczytnik (test)` → `Infoczytnik_test.html`
 
 ### Używanie
 #### 1) Przygotowanie
