@@ -1,5 +1,7 @@
-Repozytorium "WrathAndGlory" jest główną stroną dla użytkownika służącą do uruchamiania z poziomu przeglądarki dodatkowych modułów.
-Moduły te są w katalogach "DataVault", "GeneratorNPC", "Infoczytnik", "Kalkulator", "DiceRoller", "Audio". Każdy moduł to inna aplikacja. Niektóre moduły korzystają z tych samych plików (np. DataVault i GeneratorNPC korzystają z tego samego data.json z tej samej lokalizacji).
+Repozytorium "WrathAndGlory" jest zbiorem modułów (aplikacji).
+Każdy moduł jest w osobnym folderze.
+Moduł "Main" zawiera stronę główną służącą do uruchamiania kolejnych modułów.
+Niektóre moduły korzystają z tych samych plików (np. DataVault i GeneratorNPC korzystają z tego samego data.json z tej samej lokalizacji).
 Ilość modułów może się zmieniać.
 
 1. Po każdej zmianie kodu któregokolwiek z modułów zmodyfikuj pliki docs/Documentation.md oraz docs/README.md w odpowiednim folderze
