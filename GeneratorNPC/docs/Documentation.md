@@ -90,9 +90,9 @@ Ustawienia globalne:
   - `--panel2: #000`
 - Tekst:
   - `--text: #9cf09c`
-  - `--text2: #7ad87a`
+  - `--text2: #4FAF4F`
   - `--muted: #4a8b4a`
-  - `--code: #c9f7c9`
+  - `--code: #D2FAD2`
   - `--red: #d74b4b`
 - Obramowania i akcenty:
   - `--border: #16c60c`

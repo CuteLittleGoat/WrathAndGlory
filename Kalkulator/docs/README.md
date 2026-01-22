@@ -49,7 +49,7 @@ Aplikacja jest statyczna – „aktualizacja” oznacza podmianę plików lub r�
   - `kalkulatorxp.css` odpowiada za styl `KalkulatorXP.html` i większość stylu `TworzeniePostaci.html`.
   - `TworzeniePostaci.html` ma dodatkowe style inline w sekcji `<style>`.
   - `index.html` ma własny CSS w sekcji `<style>`.
-  - Motyw wizualny jest zgodny z `Main/index.html` (zielony kolor, glow, font z konsolowego stosu).
+  - Motyw wizualny jest zgodny z `Main/index.html` (zielony kolor, glow, font z konsolowego stosu), z tekstem pomocniczym `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
 
 ### Struktura katalogów
 ```
@@ -123,7 +123,7 @@ The app is static — “updating” means replacing files or editing the HTML/C
   - `kalkulatorxp.css` styles `KalkulatorXP.html` and most of `TworzeniePostaci.html`.
   - `TworzeniePostaci.html` includes extra inline styles in its `<style>` section.
   - `index.html` has its own CSS in a `<style>` block.
-  - The visual theme matches `Main/index.html` (green glow, console-style font stack).
+  - The visual theme matches `Main/index.html` (green glow, console-style font stack), with secondary text at `#4FAF4F` and brighter highlights at `#D2FAD2`.
 
 ### Directory structure
 ```

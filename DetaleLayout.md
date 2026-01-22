@@ -72,9 +72,9 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `--panel`: `#000` (tła paneli).
 - `--panel2`: `#000` (tła modalu i popover).
 - `--text`: `#9cf09c` (kolor podstawowy tekstu).
-- `--text2`: `#7ad87a` (tekst drugorzędny: hinty, opisy).
+- `--text2`: `#4FAF4F` (tekst drugorzędny: hinty, opisy).
 - `--muted`: `#4a8b4a` (tekst przygaszony).
-- `--code`: `#c9f7c9` (wyróżnienia i „jaśniejsze” elementy).
+- `--code`: `#D2FAD2` (wyróżnienia i „jaśniejsze” elementy).
 - `--red`: `#d74b4b` (kolor ostrzeżeń/akcentów na czerwono).
 - `--border`: `#16c60c` (ramki i akcenty).
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
@@ -280,9 +280,9 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
   - `#031605`
 - `--panel`, `--panel2`: `#000`.
 - `--text`: `#9cf09c`.
-- `--text2`: `#7ad87a`.
+- `--text2`: `#4FAF4F`.
 - `--muted`: `#4a8b4a`.
-- `--code`: `#c9f7c9`.
+- `--code`: `#D2FAD2`.
 - `--red`: `#d74b4b`.
 - `--border`: `#16c60c`.
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
@@ -355,9 +355,9 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - `#031605`
 - `--panel`, `--panel2`: `#000`.
 - `--text`: `#9cf09c`.
-- `--text2`: `#7ad87a`.
+- `--text2`: `#4FAF4F`.
 - `--muted`: `#4a8b4a`.
-- `--code`: `#c9f7c9`.
+- `--code`: `#D2FAD2`.
 - `--red`: `#d74b4b`.
 - `--border`: `#16c60c`.
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
