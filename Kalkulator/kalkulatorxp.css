@@ -188,6 +188,10 @@ body{
   text-align:center;
 }
 .dataTable td.num{text-align:right; color:var(--code)}
+.dataTable td.cost{
+  text-align:center;
+  vertical-align:middle;
+}
 
 .input{
   width:100%;
