@@ -4,10 +4,79 @@ const furyInput = document.getElementById("fury");
 const rollButton = document.getElementById("roll");
 const diceContainer = document.getElementById("dice");
 const summary = document.getElementById("summary");
+const subtitle = document.getElementById("subtitle");
+const difficultyLabel = document.getElementById("difficultyLabel");
+const poolLabel = document.getElementById("poolLabel");
+const furyLabel = document.getElementById("furyLabel");
+const furyHint = document.getElementById("furyHint");
+const languageSelect = document.getElementById("languageSelect");
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 99;
 const ROLL_DURATION = 900;
+
+const translations = {
+  pl: {
+    subtitle: "Symulacja rzutów kośćmi dla Wrath & Glory",
+    labels: {
+      difficulty: "Stopień Trudności",
+      pool: "Pula Kości",
+      fury: "Ilość Kości Furii",
+    },
+    hints: {
+      furyLimit: "Nie większa niż Pula Kości.",
+    },
+    buttons: {
+      roll: "Rzuć Kośćmi!",
+    },
+    placeholders: {
+      idle: "Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.",
+      rolling: "Rzut w toku...",
+    },
+    messages: {
+      success: "Sukces!",
+      failure: "Porażka!",
+      furyCritical: "Krytyczna Furia",
+      furyComplication: "Komplikacja Furii",
+      possibleShift: "Możliwe Przeniesienie",
+      totalPoints: "Łączne punkty",
+      difficultyNumber: "Stopień Trudności",
+      dieLabel: "Kość",
+      pointsLabel: "punkty",
+    },
+  },
+  en: {
+    subtitle: "Dice Roll Simulation for Wrath & Glory",
+    labels: {
+      difficulty: "Difficulty Number",
+      pool: "Dice Pool",
+      fury: "Number of Wrath Dice",
+    },
+    hints: {
+      furyLimit: "No greater than the Dice Pool.",
+    },
+    buttons: {
+      roll: "Roll the dice!",
+    },
+    placeholders: {
+      idle: "Enter your parameters and roll the dice to see the result.",
+      rolling: "Rolling the dice...",
+    },
+    messages: {
+      success: "Success!",
+      failure: "Failure!",
+      furyCritical: "Wrath Complication",
+      furyComplication: "Wrath Critical",
+      possibleShift: "Possible Shift",
+      totalPoints: "Total points",
+      difficultyNumber: "Difficulty Number",
+      dieLabel: "Die",
+      pointsLabel: "points",
+    },
+  },
+};
+
+let currentLanguage = "pl";
 
 const clampValue = (value, min = MIN_VALUE, max = MAX_VALUE) => {
   if (Number.isNaN(value)) {
@@ -78,11 +147,12 @@ const buildSummary = ({
   transferable,
   results,
 }) => {
+  const t = translations[currentLanguage].messages;
   summary.innerHTML = "";
 
   const heading = document.createElement("h2");
   heading.classList.add("summary__headline");
-  heading.textContent = success ? "Sukces!" : "Porażka!";
+  heading.textContent = success ? t.success : t.failure;
   summary.appendChild(heading);
 
   if (furyMessage) {
@@ -95,7 +165,7 @@ const buildSummary = ({
   if (transferable > 0) {
     const transfer = document.createElement("p");
     transfer.classList.add("summary__transfer");
-    transfer.textContent = `Możliwe Przeniesienie: ${transferable}`;
+    transfer.textContent = `${t.possibleShift}: ${transferable}`;
     summary.appendChild(transfer);
 
     const spacer = document.createElement("div");
@@ -105,24 +175,47 @@ const buildSummary = ({
 
   const points = document.createElement("p");
   points.classList.add("summary__detail");
-  points.textContent = `Łączne punkty: ${totalPoints} (Stopień Trudności: ${difficulty})`;
+  points.textContent = `${t.totalPoints}: ${totalPoints} (${t.difficultyNumber}: ${difficulty})`;
   summary.appendChild(points);
 
   const list = document.createElement("ul");
   results.forEach((value, index) => {
     const item = document.createElement("li");
-    item.textContent = `Kość ${index + 1}: ${value} (punkty ${scoreValue(value)})`;
+    item.textContent = `${t.dieLabel} ${index + 1}: ${value} (${t.pointsLabel} ${scoreValue(value)})`;
     list.appendChild(item);
   });
   summary.appendChild(list);
 };
 
+const resetState = () => {
+  difficultyInput.value = MIN_VALUE;
+  poolInput.value = MIN_VALUE;
+  furyInput.value = MIN_VALUE;
+  diceContainer.innerHTML = "";
+  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].placeholders.idle}</p>`;
+};
+
+const updateLanguage = (lang) => {
+  currentLanguage = lang;
+  const t = translations[lang];
+  document.documentElement.lang = lang;
+  languageSelect.value = lang;
+  subtitle.textContent = t.subtitle;
+  difficultyLabel.textContent = t.labels.difficulty;
+  poolLabel.textContent = t.labels.pool;
+  furyLabel.textContent = t.labels.fury;
+  furyHint.textContent = t.hints.furyLimit;
+  rollButton.textContent = t.buttons.roll;
+  resetState();
+};
+
 const handleRoll = () => {
   const difficulty = sanitizeField(difficultyInput);
   const { pool, fury } = syncPoolAndFury();
+  const t = translations[currentLanguage].messages;
 
   diceContainer.innerHTML = "";
-  summary.innerHTML = "<p class=\"summary__placeholder\">Rzut w toku...</p>";
+  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].placeholders.rolling}</p>`;
 
   const diceElements = [];
   for (let i = 0; i < pool; i += 1) {
@@ -148,9 +241,9 @@ const handleRoll = () => {
     let furyMessage = "";
     if (furyResults.length > 0) {
       if (furyResults.every((value) => value === 6)) {
-        furyMessage = "Krytyczna Furia 🙂";
+        furyMessage = `${t.furyCritical} 🙂`;
       } else if (furyResults.some((value) => value === 1)) {
-        furyMessage = "Komplikacja Furii 🙁";
+        furyMessage = `${t.furyComplication} 🙁`;
       }
     }
 
@@ -188,3 +281,9 @@ const handleRoll = () => {
 });
 
 rollButton.addEventListener("click", handleRoll);
+
+languageSelect.addEventListener("change", (event) => {
+  updateLanguage(event.target.value);
+});
+
+updateLanguage(currentLanguage);
