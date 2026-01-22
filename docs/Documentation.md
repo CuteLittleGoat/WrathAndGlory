@@ -94,9 +94,11 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
   - `transform: translateY(0)`.
   - `background: rgba(22, 198, 12, 0.22)` – najjaśniejsza wersja tła.
 
-#### 2.7 Notatka pod Repozytorium (`.note`)
-- Tekst pomocniczy z instrukcją dodania parametru `index.html?admin=1`.
-- Dokładna treść akapitu: `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr jest w `<strong>`).
+#### 2.7 Notatki pomocnicze (`.note`)
+- Teksty pomocnicze umieszczane pod wybranymi przyciskami.
+- Pod **Skarbcem Danych** znajduje się instrukcja dodania parametru `index.html?admin=1`.
+  - Dokładna treść: `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr jest w `<strong>`).
+- Pod **Audio** znajduje się informacja `Wersja testowa!`.
 - `margin: 0` usuwa domyślny margines akapitu.
 - `color: var(--text)` utrzymuje spójny kolor.
 - `font-size: 13px`.
@@ -108,16 +110,18 @@ Struktura dokumentu składa się z:
 - `<main>` – główny panel.
 - `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"`.
 - `<div class="actions">` – siatka przycisków w kolejności od lewej:
-  1. **Generator NPC** – link do `https://cutelittlegoat.github.io/GeneratorNPC/index.html`.
-  2. **Repozytorium** – link do `https://cutelittlegoat.github.io/Repozytorium/` z notką o parametrze admina umieszczoną bezpośrednio pod przyciskiem.
-  3. **Infoczytnik** – link do `https://cutelittlegoat.github.io/wh40k-data-slate/Infoczytnik.html`.
-  4. **Kalkulator** – link do `https://cutelittlegoat.github.io/Kalkulator/index.html`.
+  1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/`.
+  2. **Skarbiec Danych** – link do `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/` z notką o parametrze admina umieszczoną bezpośrednio pod przyciskiem.
+  3. **Infoczytnik** – link do `Infoczytnik/Infoczytnik.html` (ścieżka lokalna w repozytorium).
+  4. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
+  5. **Rzut kośćmi** – link do `DiceRoller/index.html` (ścieżka lokalna w repozytorium).
+  6. **Audio** – link do `Audio/index.html` z notką `Wersja testowa!`.
 
 Każdy przycisk otwiera się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
 ## Aktualizacja treści
 - **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `index.html`.
-- **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Repozytorium.
+- **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Skarbiec Danych.
 - **Zmiana stylu**: edytuj sekcję `<style>` w `index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
 - **Zmiana logo**: podmień plik `wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
 
