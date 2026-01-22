@@ -1,6 +1,6 @@
 # Wrath & Glory / Kozi przybornik
 
-Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Po uruchomieniu wyświetla logo oraz cztery przyciski prowadzące do zewnętrznych aplikacji.
+Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Po uruchomieniu wyświetla logo oraz sześć przycisków prowadzących do zewnętrznych aplikacji.
 
 ---
 
@@ -20,12 +20,16 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
   - Menu główne: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - Kalkulator XP: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
+- **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
+- **Audio** (wersja testowa): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
 
 ### Instrukcje modułów (README)
 - Generator NPC: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
 - DataVault: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/docs/README.md
 - Infoczytnik: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/docs/README.md
 - Kalkulator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/docs/README.md
+- DiceRoller: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/docs/README.md
+- Audio: https://cutelittlegoat.github.io/WrathAndGlory/Audio/docs/README.md
 
 ### Jak używać
 1. Otwórz stronę startową w przeglądarce.
@@ -75,12 +79,16 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
   - Main menu: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - XP calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
+- **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
+- **Audio** (test version): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
 
 ### Module README links
 - NPC Generator: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
 - DataVault: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/docs/README.md
 - DataSlate: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/docs/README.md
 - Calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/docs/README.md
+- DiceRoller: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/docs/README.md
+- Audio: https://cutelittlegoat.github.io/WrathAndGlory/Audio/docs/README.md
 
 ### How to use
 1. Open the landing page in your browser.
