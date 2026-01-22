@@ -4,12 +4,12 @@
 Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnośnikami do zewnętrznych narzędzi Wrath & Glory. Nie ma tu JavaScriptu, backendu ani dodatkowych zależności — całość to HTML + CSS.
 
 ## Struktura plików
-- `index.html` – jedyny plik aplikacji zawierający strukturę strony i pełną stylizację wbudowaną w `<style>`.
-- `wrath-glory-logo-warhammer.png` – logo wyświetlane w nagłówku strony.
-- `docs/README.md` – instrukcja użytkownika i informacje o aktualizacji aplikacji (PL/EN).
-- `docs/Documentation.md` – niniejszy dokument z opisem kodu.
+- `Main/index.html` – jedyny plik aplikacji zawierający strukturę strony i pełną stylizację wbudowaną w `<style>`.
+- `Main/wrath-glory-logo-warhammer.png` – logo wyświetlane w nagłówku strony.
+- `Main/docs/README.md` – instrukcja użytkownika i informacje o aktualizacji aplikacji (PL/EN).
+- `Main/docs/Documentation.md` – niniejszy dokument z opisem kodu.
 
-## Szczegółowy opis `index.html`
+## Szczegółowy opis `Main/index.html`
 
 ### 1. Deklaracje dokumentu i nagłówek
 - `<!DOCTYPE html>` – deklaruje HTML5.
@@ -19,7 +19,7 @@ Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnoś
 - `<title>Kozi przybornik</title>` – tytuł karty przeglądarki.
 
 ### 2. Stylizacja (sekcja `<style>`)
-Cała stylizacja jest osadzona w `index.html` i nie korzysta z zewnętrznych plików CSS.
+Cała stylizacja jest osadzona w `Main/index.html` i nie korzysta z zewnętrznych plików CSS.
 
 #### 2.1 Zmienne CSS (`:root`)
 Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z dokładnymi wartościami:
@@ -108,22 +108,22 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 ### 3. Zawartość (`<body>`)
 Struktura dokumentu składa się z:
 - `<main>` – główny panel.
-- `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"`.
+- `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"` (plik znajduje się w `Main/` obok `index.html`).
 - `<div class="actions">` – siatka przycisków w kolejności od lewej:
   1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/`.
   2. **Skarbiec Danych** – link do `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/` z notką o parametrze admina umieszczoną bezpośrednio pod przyciskiem.
-  3. **Infoczytnik** – link do `Infoczytnik/Infoczytnik.html` (ścieżka lokalna w repozytorium).
+  3. **Infoczytnik** – link do `../Infoczytnik/Infoczytnik.html` (ścieżka lokalna w repozytorium).
   4. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
-  5. **Rzut kośćmi** – link do `DiceRoller/index.html` (ścieżka lokalna w repozytorium).
-  6. **Audio** – link do `Audio/index.html` z notką `Wersja testowa!`.
+  5. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
+  6. **Audio** – link do `../Audio/index.html` z notką `Wersja testowa!`.
 
-Każdy przycisk otwiera się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
+Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
 ## Aktualizacja treści
-- **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `index.html`.
+- **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html`.
 - **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Skarbiec Danych.
-- **Zmiana stylu**: edytuj sekcję `<style>` w `index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
-- **Zmiana logo**: podmień plik `wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
+- **Zmiana stylu**: edytuj sekcję `<style>` w `Main/index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
+- **Zmiana logo**: podmień plik `Main/wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
 
 ## Uruchamianie lokalne
 Strona jest statyczna i działa bez serwera, ale dla testów można uruchomić lokalny serwer:
@@ -132,4 +132,4 @@ Strona jest statyczna i działa bez serwera, ale dla testów można uruchomić l
 python -m http.server 8000
 ```
 
-Następnie otwórz `http://localhost:8000/index.html`.
+Następnie otwórz `http://localhost:8000/Main/index.html`.
