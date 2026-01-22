@@ -143,6 +143,22 @@ input[type="number"]:focus {
   transition: transform 0.3s ease;
 }
 
+.die__question {
+  font-size: 32px;
+  font-weight: 700;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 1;
+}
+
+.die.white .die__question {
+  color: var(--white-pip);
+}
+
+.die.red .die__question {
+  color: var(--red-pip);
+}
+
 .die.white {
   background: var(--white-die);
   border: 2px solid #1c1c1c;
@@ -203,6 +219,14 @@ input[type="number"]:focus {
 
 .die.rolling {
   animation: roll 0.8s ease-in-out;
+}
+
+.die.rolling .pip {
+  opacity: 0;
+}
+
+.die.rolling .die__question {
+  opacity: 1;
 }
 
 @keyframes roll {

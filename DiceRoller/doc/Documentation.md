@@ -61,6 +61,14 @@ Każda kość to `.die`:
 - cień wewnętrzny i zewnętrzny,
 - warianty kolorów: `.white` i `.red`.
 
+### Znak zapytania (animacja)
+- Każda kość zawiera element `.die__question` z tekstem `?`.
+- Domyślnie ukryty (`opacity: 0`), widoczny tylko podczas animacji rzutu.
+- Kolor jest zależny od typu kości:
+  - biała kość → czarny znak zapytania (`--white-pip`),
+  - czerwona kość → biały znak zapytania (`--red-pip`).
+- Element jest osadzony w środku kości i obraca się razem z nią dzięki animacji `.die.rolling`.
+
 ### Oczka (pips)
 - Każda kość ma 7 elementów `.pip` (pozycje `pos-1` do `pos-7`).
 - Domyślnie niewidoczne (`opacity: 0`).
@@ -75,6 +83,9 @@ Układ oczek:
 ### Animacja rzutu
 - `.die.rolling` uruchamia `@keyframes roll`.
 - Animacja obraca kość o 360° i delikatnie skaluje w czasie 0.8s.
+- Podczas animacji:
+  - oczka są ukryte (`.die.rolling .pip { opacity: 0; }`),
+  - znak zapytania jest widoczny (`.die.rolling .die__question { opacity: 1; }`).
 
 ### Responsywność
 Media query do 600px:
@@ -102,7 +113,7 @@ Media query do 600px:
    - Jeśli `fury > pool`, ustawia fury na wartość puli.
 
 4. **`createDieElement(isFury)`**
-   - Tworzy element `.die` z 7 oczkami.
+   - Tworzy element `.die` z centralnym znakiem zapytania `.die__question` i 7 oczkami.
    - Dodaje klasę `red` lub `white`.
 
 5. **`setDieFace(die, value)`**

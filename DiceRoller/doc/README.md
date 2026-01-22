@@ -6,7 +6,10 @@
 3. Ustaw **Pulę Kości** (1-99) — liczbę kości do rzutu.
 4. Ustaw **Ilość Kości Furii** (1-99) — liczba czerwonych kości; nie może być większa niż Pula Kości.
 5. Kliknij **Rzuć kośćmi!**
-6. Po animacji zobaczysz:
+6. W trakcie animacji na kościach pojawia się obracający znak zapytania:
+   - biały znak zapytania na czerwonych kościach,
+   - czarny znak zapytania na białych kościach.
+7. Po animacji zobaczysz:
    - wynik każdej kości,
    - łączną liczbę punktów,
    - informację **Sukces!** lub **Porażka!**,
@@ -20,7 +23,10 @@
 3. Set the **Dice Pool** (1-99) — number of dice to roll.
 4. Set the **Fury Dice** (1-99) — number of red dice; it cannot exceed the Dice Pool.
 5. Click **Rzuć kośćmi!**
-6. After the animation you will see:
+6. During the animation a rotating question mark appears on the dice:
+   - white question mark on red dice,
+   - black question mark on white dice.
+7. After the animation you will see:
    - each die result,
    - total points,
    - **Sukces!** or **Porażka!** message,
