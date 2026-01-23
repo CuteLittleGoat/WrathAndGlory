@@ -384,7 +384,7 @@
       </div>
     </section>
 
-    <section class="user-view user-only">
+    <section class="user-view">
       <div class="user-layout">
         <div class="panel">
           <div id="userMainView" class="user-panel is-visible"></div>
@@ -469,11 +469,7 @@
       document.body.classList.toggle("admin-mode", ADMIN_MODE);
       document.body.classList.toggle("user-mode", !ADMIN_MODE);
       const adminOnly = Array.from(document.querySelectorAll(".admin-only"));
-      const userOnly = Array.from(document.querySelectorAll(".user-only"));
-
-      if (ADMIN_MODE) {
-        userOnly.forEach((el) => el.remove());
-      } else {
+      if (!ADMIN_MODE) {
         adminOnly.forEach((el) => el.remove());
       }
 
