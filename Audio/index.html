@@ -100,6 +100,12 @@
       box-shadow: var(--shadow);
     }
 
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
     .toolbar .left,
     .toolbar .right {
       display: flex;
@@ -278,6 +284,46 @@
       padding: 20px 0;
     }
 
+    .user-view {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .view-toggle {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .view-toggle .btn.is-active {
+      background: rgba(22, 198, 12, 0.25);
+      border-color: var(--accent-strong);
+      color: #d2ffd2;
+      box-shadow: 0 0 16px rgba(22, 198, 12, 0.3);
+    }
+
+    .user-panel {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .user-panel.is-visible {
+      display: flex;
+    }
+
+    .user-list-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .user-list-tabs .btn {
+      font-size: 12px;
+      padding: 6px 10px;
+    }
+
     .legend {
       font-size: 12px;
       color: var(--muted);
@@ -293,16 +339,16 @@
 <body>
   <div class="page">
     <header>
-      <h1>Audio — panel dźwięków</h1>
-      <p>Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.</p>
-      <div class="status-bar">
+      <h1 id="headerTitle">Audio — panel dźwięków</h1>
+      <p id="headerSubtitle">Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.</p>
+      <div class="status-bar admin-only">
         <span class="status-pill" id="manifestStatus">Manifest: brak danych</span>
         <span class="status-pill" id="firebaseStatus">Firebase: oczekiwanie</span>
         <span class="status-pill" id="favoritesStatus">Ulubione: 0 list</span>
       </div>
     </header>
 
-    <section class="toolbar">
+    <section class="toolbar admin-only">
       <div class="left">
         <input class="search-input" id="searchInput" type="search" placeholder="Szukaj sampla..." />
         <button class="btn" id="reloadManifest">Wczytaj manifest</button>
@@ -313,17 +359,35 @@
       </div>
     </section>
 
-    <section class="layout">
+    <section class="layout admin-only">
       <div class="panel">
         <h2>Lista sampli</h2>
         <p class="legend">Źródło danych: AudioManifest.xlsx (kolumny NazwaSampla, NazwaPliku, LinkDoFolderu).</p>
         <div id="samplesGrid" class="samples-grid"></div>
       </div>
 
-      <aside class="panel">
-        <h2>Ulubione</h2>
-        <div class="favorites-panel" id="favoritesPanel"></div>
-      </aside>
+      <div class="side-stack">
+        <aside class="panel">
+          <h2>Ulubione</h2>
+          <div class="favorites-panel" id="favoritesPanel"></div>
+        </aside>
+        <aside class="panel">
+          <h2>Główny widok</h2>
+          <p class="legend">Lista dźwięków wyświetlana użytkownikom w głównym widoku.</p>
+          <div class="favorites-panel" id="mainViewPanel"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="user-view user-only">
+      <div class="panel">
+        <div class="view-toggle" role="tablist">
+          <button class="btn is-active" id="showMainView" data-view="main" type="button">Główny widok</button>
+          <button class="btn" id="showFavoritesView" data-view="favorites" type="button">Ulubione</button>
+        </div>
+        <div id="userMainView" class="user-panel is-visible"></div>
+        <div id="userFavoritesView" class="user-panel"></div>
+      </div>
     </section>
   </div>
 
@@ -346,19 +410,31 @@
     const favoritesStatus = document.getElementById("favoritesStatus");
     const samplesGrid = document.getElementById("samplesGrid");
     const favoritesPanel = document.getElementById("favoritesPanel");
+    const mainViewPanel = document.getElementById("mainViewPanel");
     const searchInput = document.getElementById("searchInput");
     const reloadManifest = document.getElementById("reloadManifest");
     const addListButton = document.getElementById("addList");
     const refreshFavoritesButton = document.getElementById("refreshFavorites");
+    const headerTitle = document.getElementById("headerTitle");
+    const headerSubtitle = document.getElementById("headerSubtitle");
+    const userMainView = document.getElementById("userMainView");
+    const userFavoritesView = document.getElementById("userFavoritesView");
+    const showMainViewButton = document.getElementById("showMainView");
+    const showFavoritesViewButton = document.getElementById("showFavoritesView");
+
+    const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 
     const state = {
       items: [],
       itemsById: new Map(),
       favorites: { lists: [] },
+      mainView: { itemIds: [] },
       firestore: null,
       favoritesDoc: null,
       usingFirestore: false,
-      manifestReady: false
+      manifestReady: false,
+      userView: "main",
+      activeFavoritesListId: null
     };
 
     const audioPlayer = new Audio();
@@ -383,6 +459,20 @@
       return `${folder}/${file}`;
     };
 
+    const setModeVisibility = () => {
+      document.body.classList.toggle("admin-mode", ADMIN_MODE);
+      document.querySelectorAll(".admin-only").forEach((el) => {
+        el.hidden = !ADMIN_MODE;
+      });
+      document.querySelectorAll(".user-only").forEach((el) => {
+        el.hidden = ADMIN_MODE;
+      });
+      headerTitle.textContent = ADMIN_MODE ? "Audio — panel dźwięków" : "Audio — odtwarzacz";
+      headerSubtitle.textContent = ADMIN_MODE
+        ? "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase."
+        : "Odtwarzaj dźwięki z głównego widoku lub z list ulubionych.";
+    };
+
     const updateStatus = () => {
       manifestStatus.textContent = state.manifestReady
         ? `Manifest: ${state.items.length} pozycji`
@@ -393,19 +483,20 @@
       favoritesStatus.textContent = `Ulubione: ${state.favorites.lists.length} list`;
     };
 
-    const saveFavorites = async () => {
+    const saveSettings = async () => {
+      const payload = {
+        favorites: state.favorites,
+        mainView: state.mainView,
+        updatedAt: serverTimestamp()
+      };
       if (state.usingFirestore && state.favoritesDoc) {
-        await setDoc(
-          state.favoritesDoc,
-          {
-            ...state.favorites,
-            updatedAt: serverTimestamp()
-          },
-          { merge: true }
-        );
+        await setDoc(state.favoritesDoc, payload, { merge: true });
         return;
       }
-      localStorage.setItem("audio.favorites", JSON.stringify(state.favorites));
+      localStorage.setItem("audio.settings", JSON.stringify({
+        favorites: state.favorites,
+        mainView: state.mainView
+      }));
     };
 
     const defaultFavorites = () => ({
@@ -416,6 +507,10 @@
           itemIds: []
         }
       ]
+    });
+
+    const defaultMainView = () => ({
+      itemIds: []
     });
 
     const normalizeFavorites = (raw) => {
@@ -431,24 +526,57 @@
       };
     };
 
-    const loadFavoritesLocal = () => {
-      const stored = localStorage.getItem("audio.favorites");
+    const normalizeMainView = (raw) => ({
+      itemIds: Array.isArray(raw?.itemIds) ? raw.itemIds.filter(Boolean) : []
+    });
+
+    const normalizeSettings = (raw) => {
+      if (!raw) {
+        return { favorites: defaultFavorites(), mainView: defaultMainView() };
+      }
+      const favoritesSource = raw.favorites || (raw.lists ? raw : null);
+      return {
+        favorites: normalizeFavorites(favoritesSource),
+        mainView: normalizeMainView(raw.mainView)
+      };
+    };
+
+    const loadSettingsLocal = () => {
+      const stored = localStorage.getItem("audio.settings");
       if (!stored) {
-        state.favorites = defaultFavorites();
-        return;
+        const legacy = localStorage.getItem("audio.favorites");
+        if (!legacy) {
+          state.favorites = defaultFavorites();
+          state.mainView = defaultMainView();
+          return;
+        }
+        try {
+          const legacyFavorites = normalizeFavorites(JSON.parse(legacy));
+          state.favorites = legacyFavorites;
+          state.mainView = defaultMainView();
+          return;
+        } catch (error) {
+          state.favorites = defaultFavorites();
+          state.mainView = defaultMainView();
+          return;
+        }
       }
       try {
-        state.favorites = normalizeFavorites(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        const settings = normalizeSettings(parsed);
+        state.favorites = settings.favorites;
+        state.mainView = settings.mainView;
       } catch (error) {
         state.favorites = defaultFavorites();
+        state.mainView = defaultMainView();
       }
     };
 
     const initFirebase = () => {
       if (!window.firebaseConfig || !window.firebaseConfig.apiKey) {
         firebaseStatus.textContent = "Firebase: brak konfiguracji";
-        loadFavoritesLocal();
-        updateStatus();
+        loadSettingsLocal();
+        renderAllViews();
         return;
       }
       const app = initializeApp(window.firebaseConfig);
@@ -459,15 +587,17 @@
 
       onSnapshot(state.favoritesDoc, (snapshot) => {
         if (!snapshot.exists()) {
-          state.favorites = defaultFavorites();
-          saveFavorites().catch(console.error);
-          renderFavorites();
-          updateStatus();
+          const defaults = normalizeSettings(null);
+          state.favorites = defaults.favorites;
+          state.mainView = defaults.mainView;
+          saveSettings().catch(console.error);
+          renderAllViews();
           return;
         }
-        state.favorites = normalizeFavorites(snapshot.data());
-        renderFavorites();
-        updateStatus();
+        const settings = normalizeSettings(snapshot.data());
+        state.favorites = settings.favorites;
+        state.mainView = settings.mainView;
+        renderAllViews();
       });
     };
 
@@ -487,6 +617,9 @@
     };
 
     const renderSamples = () => {
+      if (!ADMIN_MODE) {
+        return;
+      }
       const filter = searchInput.value.trim().toLowerCase();
       const visibleItems = state.items.filter((item) =>
         item.label.toLowerCase().includes(filter)
@@ -509,6 +642,7 @@
               <div class="sample-meta">${item.filename || "Brak nazwy pliku"}</div>
               <div class="sample-actions">
                 <button class="btn" data-action="play">Odtwórz</button>
+                <button class="btn" data-action="add-main">Dodaj do głównego widoku</button>
                 <select class="fav-select">
                   ${optionsHtml}
                 </select>
@@ -521,6 +655,9 @@
     };
 
     const renderFavorites = () => {
+      if (!ADMIN_MODE) {
+        return;
+      }
       if (!state.favorites.lists.length) {
         favoritesPanel.innerHTML = "<div class=\"empty-state\">Brak list ulubionych.</div>";
         return;
@@ -568,6 +705,132 @@
       renderSamples();
     };
 
+    const renderMainViewAdmin = () => {
+      if (!ADMIN_MODE) {
+        return;
+      }
+      if (!state.mainView.itemIds.length) {
+        mainViewPanel.innerHTML = "<div class=\"empty-state\">Brak dźwięków w głównym widoku.</div>";
+        return;
+      }
+      mainViewPanel.innerHTML = state.mainView.itemIds
+        .map((itemId, index) => {
+          const item = state.itemsById.get(itemId);
+          return `
+            <div class="fav-item" data-item-id="${itemId}">
+              <div class="fav-item-title">${item ? item.label : "(brak w manifeście)"}</div>
+              <div class="sample-meta">${item?.filename || "Brak nazwy pliku"}</div>
+              <div class="fav-item-actions">
+                <button class="btn" data-action="main-play">Odtwórz</button>
+                <button class="btn" data-action="main-up" ${index === 0 ? "disabled" : ""}>▲</button>
+                <button class="btn" data-action="main-down" ${index === state.mainView.itemIds.length - 1 ? "disabled" : ""}>▼</button>
+                <button class="btn btn-danger" data-action="main-remove">Usuń</button>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    };
+
+    const renderUserMainView = () => {
+      if (ADMIN_MODE) {
+        return;
+      }
+      if (!state.mainView.itemIds.length) {
+        userMainView.innerHTML = "<div class=\"empty-state\">Brak dźwięków w głównym widoku.</div>";
+        return;
+      }
+      userMainView.innerHTML = `
+        <div class="samples-grid">
+          ${
+            state.mainView.itemIds
+              .map((itemId) => {
+                const item = state.itemsById.get(itemId);
+                return `
+                  <div class="sample-card" data-id="${itemId}">
+                    <div class="sample-title">${item ? item.label : "(brak w manifeście)"}</div>
+                    <div class="sample-actions">
+                      <button class="btn" data-action="play">Odtwórz</button>
+                    </div>
+                  </div>
+                `;
+              })
+              .join("")
+          }
+        </div>
+      `;
+    };
+
+    const renderUserFavorites = () => {
+      if (ADMIN_MODE) {
+        return;
+      }
+      if (!state.favorites.lists.length) {
+        userFavoritesView.innerHTML = "<div class=\"empty-state\">Brak list ulubionych.</div>";
+        return;
+      }
+      if (!state.activeFavoritesListId) {
+        state.activeFavoritesListId = state.favorites.lists[0].id;
+      }
+      const activeList = state.favorites.lists.find((list) => list.id === state.activeFavoritesListId)
+        || state.favorites.lists[0];
+      state.activeFavoritesListId = activeList.id;
+
+      const listButtons = state.favorites.lists
+        .map(
+          (list) =>
+            `<button class="btn ${list.id === activeList.id ? "is-active" : ""}" data-action="user-list" data-list-id="${list.id}">${list.name}</button>`
+        )
+        .join("");
+
+      const itemsHtml = activeList.itemIds.length
+        ? activeList.itemIds
+            .map((itemId) => {
+              const item = state.itemsById.get(itemId);
+              return `
+                <div class="sample-card" data-id="${itemId}">
+                  <div class="sample-title">${item ? item.label : "(brak w manifeście)"}</div>
+                  <div class="sample-actions">
+                    <button class="btn" data-action="play">Odtwórz</button>
+                  </div>
+                </div>
+              `;
+            })
+            .join("")
+        : "<div class=\"empty-state\">Lista jest pusta.</div>";
+
+      userFavoritesView.innerHTML = `
+        <div class="user-list-tabs">${listButtons}</div>
+        <div class="samples-grid">${itemsHtml}</div>
+      `;
+    };
+
+    const renderAllViews = () => {
+      updateStatus();
+      renderSamples();
+      renderFavorites();
+      renderMainViewAdmin();
+      renderUserMainView();
+      renderUserFavorites();
+      syncUserViewButtons();
+    };
+
+    const syncUserViewButtons = () => {
+      if (ADMIN_MODE) {
+        return;
+      }
+      const showMain = state.userView === "main";
+      userMainView.classList.toggle("is-visible", showMain);
+      userFavoritesView.classList.toggle("is-visible", !showMain);
+      showMainViewButton.classList.toggle("is-active", showMain);
+      showFavoritesViewButton.classList.toggle("is-active", !showMain);
+    };
+
+    const setUserView = (view) => {
+      state.userView = view;
+      syncUserViewButtons();
+    };
+
     const addFavoriteList = async () => {
       const name = prompt("Nazwa nowej listy ulubionych:", "Nowa lista");
       if (!name) {
@@ -578,9 +841,8 @@
         name: name.trim(),
         itemIds: []
       });
-      await saveFavorites();
-      renderFavorites();
-      updateStatus();
+      await saveSettings();
+      renderAllViews();
     };
 
     const addItemToFavorites = async (listId, itemId) => {
@@ -590,9 +852,8 @@
       }
       if (!list.itemIds.includes(itemId)) {
         list.itemIds.push(itemId);
-        await saveFavorites();
-        renderFavorites();
-        updateStatus();
+        await saveSettings();
+        renderAllViews();
       }
     };
 
@@ -607,8 +868,8 @@
       }
       const [removed] = state.favorites.lists.splice(index, 1);
       state.favorites.lists.splice(targetIndex, 0, removed);
-      await saveFavorites();
-      renderFavorites();
+      await saveSettings();
+      renderAllViews();
     };
 
     const renameList = async (listId) => {
@@ -621,8 +882,8 @@
         return;
       }
       list.name = name.trim();
-      await saveFavorites();
-      renderFavorites();
+      await saveSettings();
+      renderAllViews();
     };
 
     const removeList = async (listId) => {
@@ -633,9 +894,11 @@
       if (!state.favorites.lists.length) {
         state.favorites = defaultFavorites();
       }
-      await saveFavorites();
-      renderFavorites();
-      updateStatus();
+      if (state.activeFavoritesListId === listId) {
+        state.activeFavoritesListId = state.favorites.lists[0]?.id || null;
+      }
+      await saveSettings();
+      renderAllViews();
     };
 
     const moveItem = async (listId, itemId, direction) => {
@@ -650,8 +913,8 @@
       }
       const [removed] = list.itemIds.splice(index, 1);
       list.itemIds.splice(target, 0, removed);
-      await saveFavorites();
-      renderFavorites();
+      await saveSettings();
+      renderAllViews();
     };
 
     const removeItem = async (listId, itemId) => {
@@ -660,8 +923,34 @@
         return;
       }
       list.itemIds = list.itemIds.filter((id) => id !== itemId);
-      await saveFavorites();
-      renderFavorites();
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const addItemToMainView = async (itemId) => {
+      if (!state.mainView.itemIds.includes(itemId)) {
+        state.mainView.itemIds.push(itemId);
+        await saveSettings();
+        renderAllViews();
+      }
+    };
+
+    const moveMainViewItem = async (itemId, direction) => {
+      const index = state.mainView.itemIds.indexOf(itemId);
+      const target = index + direction;
+      if (index < 0 || target < 0 || target >= state.mainView.itemIds.length) {
+        return;
+      }
+      const [removed] = state.mainView.itemIds.splice(index, 1);
+      state.mainView.itemIds.splice(target, 0, removed);
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const removeMainViewItem = async (itemId) => {
+      state.mainView.itemIds = state.mainView.itemIds.filter((id) => id !== itemId);
+      await saveSettings();
+      renderAllViews();
     };
 
     const parseManifest = async () => {
@@ -700,9 +989,7 @@
       state.items = items.sort((a, b) => a.label.localeCompare(b.label));
       state.itemsById = new Map(state.items.map((item) => [item.id, item]));
       state.manifestReady = true;
-      updateStatus();
-      renderSamples();
-      renderFavorites();
+      renderAllViews();
     };
 
     samplesGrid.addEventListener("click", (event) => {
@@ -721,6 +1008,9 @@
       if (button.dataset.action === "add-favorite") {
         const select = card.querySelector(".fav-select");
         addItemToFavorites(select.value, itemId);
+      }
+      if (button.dataset.action === "add-main") {
+        addItemToMainView(itemId);
       }
     });
 
@@ -775,6 +1065,65 @@
       }
     });
 
+    mainViewPanel.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) {
+        return;
+      }
+      const itemEl = event.target.closest(".fav-item");
+      if (!itemEl) {
+        return;
+      }
+      const itemId = itemEl.dataset.itemId;
+      switch (button.dataset.action) {
+        case "main-play":
+          playSample(itemId);
+          break;
+        case "main-up":
+          moveMainViewItem(itemId, -1);
+          break;
+        case "main-down":
+          moveMainViewItem(itemId, 1);
+          break;
+        case "main-remove":
+          removeMainViewItem(itemId);
+          break;
+        default:
+          break;
+      }
+    });
+
+    userMainView.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button || button.dataset.action !== "play") {
+        return;
+      }
+      const card = event.target.closest(".sample-card");
+      if (!card) {
+        return;
+      }
+      playSample(card.dataset.id);
+    });
+
+    userFavoritesView.addEventListener("click", (event) => {
+      const listButton = event.target.closest("button[data-action=\"user-list\"]");
+      if (listButton) {
+        state.activeFavoritesListId = listButton.dataset.listId;
+        renderUserFavorites();
+        syncUserViewButtons();
+        return;
+      }
+      const playButton = event.target.closest("button[data-action=\"play\"]");
+      if (!playButton) {
+        return;
+      }
+      const card = event.target.closest(".sample-card");
+      if (!card) {
+        return;
+      }
+      playSample(card.dataset.id);
+    });
+
     searchInput.addEventListener("input", renderSamples);
     reloadManifest.addEventListener("click", () => {
       parseManifest().catch((error) => {
@@ -785,14 +1134,17 @@
     addListButton.addEventListener("click", addFavoriteList);
     refreshFavoritesButton.addEventListener("click", () => {
       if (!state.usingFirestore) {
-        loadFavoritesLocal();
-        renderFavorites();
-        updateStatus();
+        loadSettingsLocal();
+        renderAllViews();
       }
     });
 
-    loadFavoritesLocal();
-    renderFavorites();
+    showMainViewButton.addEventListener("click", () => setUserView("main"));
+    showFavoritesViewButton.addEventListener("click", () => setUserView("favorites"));
+
+    setModeVisibility();
+    loadSettingsLocal();
+    renderAllViews();
     initFirebase();
     parseManifest().catch((error) => {
       manifestStatus.textContent = "Manifest: błąd wczytywania";
