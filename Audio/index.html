@@ -290,13 +290,25 @@
       gap: 16px;
     }
 
-    .view-toggle {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
+    .user-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(240px, 0.7fr);
+      gap: 22px;
     }
 
-    .view-toggle .btn.is-active {
+    .user-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .user-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .user-nav .btn.is-active {
       background: rgba(22, 198, 12, 0.25);
       border-color: var(--accent-strong);
       color: #d2ffd2;
@@ -313,17 +325,6 @@
       display: flex;
     }
 
-    .user-list-tabs {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .user-list-tabs .btn {
-      font-size: 12px;
-      padding: 6px 10px;
-    }
-
     .legend {
       font-size: 12px;
       color: var(--muted);
@@ -331,6 +332,10 @@
 
     @media (max-width: 980px) {
       .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .user-layout {
         grid-template-columns: 1fr;
       }
     }
@@ -380,13 +385,15 @@
     </section>
 
     <section class="user-view user-only">
-      <div class="panel">
-        <div class="view-toggle" role="tablist">
-          <button class="btn is-active" id="showMainView" data-view="main" type="button">Główny widok</button>
-          <button class="btn" id="showFavoritesView" data-view="favorites" type="button">Ulubione</button>
+      <div class="user-layout">
+        <div class="panel">
+          <div id="userMainView" class="user-panel is-visible"></div>
+          <div id="userFavoritesView" class="user-panel"></div>
         </div>
-        <div id="userMainView" class="user-panel is-visible"></div>
-        <div id="userFavoritesView" class="user-panel"></div>
+        <aside class="panel">
+          <h2>Nawigacja</h2>
+          <div class="user-nav" id="userNav"></div>
+        </aside>
       </div>
     </section>
   </div>
@@ -419,8 +426,7 @@
     const headerSubtitle = document.getElementById("headerSubtitle");
     const userMainView = document.getElementById("userMainView");
     const userFavoritesView = document.getElementById("userFavoritesView");
-    const showMainViewButton = document.getElementById("showMainView");
-    const showFavoritesViewButton = document.getElementById("showFavoritesView");
+    const userNav = document.getElementById("userNav");
 
     const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 
@@ -467,10 +473,10 @@
       document.querySelectorAll(".user-only").forEach((el) => {
         el.hidden = ADMIN_MODE;
       });
-      headerTitle.textContent = ADMIN_MODE ? "Audio — panel dźwięków" : "Audio — odtwarzacz";
+      headerTitle.textContent = ADMIN_MODE ? "Audio — panel dźwięków" : "Audio — panel użytkownika";
       headerSubtitle.textContent = ADMIN_MODE
         ? "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase."
-        : "Odtwarzaj dźwięki z głównego widoku lub z list ulubionych.";
+        : "Wybierz widok z panelu bocznego, aby odtwarzać przygotowane dźwięki.";
     };
 
     const updateStatus = () => {
@@ -737,7 +743,7 @@
         return;
       }
       if (!state.mainView.itemIds.length) {
-        userMainView.innerHTML = "<div class=\"empty-state\">Brak dźwięków w głównym widoku.</div>";
+        userMainView.innerHTML = "<div class=\"samples-grid\"></div>";
         return;
       }
       userMainView.innerHTML = `
@@ -766,7 +772,7 @@
         return;
       }
       if (!state.favorites.lists.length) {
-        userFavoritesView.innerHTML = "<div class=\"empty-state\">Brak list ulubionych.</div>";
+        userFavoritesView.innerHTML = "<div class=\"samples-grid\"></div>";
         return;
       }
       if (!state.activeFavoritesListId) {
@@ -775,13 +781,6 @@
       const activeList = state.favorites.lists.find((list) => list.id === state.activeFavoritesListId)
         || state.favorites.lists[0];
       state.activeFavoritesListId = activeList.id;
-
-      const listButtons = state.favorites.lists
-        .map(
-          (list) =>
-            `<button class="btn ${list.id === activeList.id ? "is-active" : ""}" data-action="user-list" data-list-id="${list.id}">${list.name}</button>`
-        )
-        .join("");
 
       const itemsHtml = activeList.itemIds.length
         ? activeList.itemIds
@@ -797,11 +796,37 @@
               `;
             })
             .join("")
-        : "<div class=\"empty-state\">Lista jest pusta.</div>";
+        : "";
 
       userFavoritesView.innerHTML = `
-        <div class="user-list-tabs">${listButtons}</div>
         <div class="samples-grid">${itemsHtml}</div>
+      `;
+    };
+
+    const renderUserNavigation = () => {
+      if (ADMIN_MODE) {
+        return;
+      }
+      const mainButton = `
+        <button class="btn ${state.userView === "main" ? "is-active" : ""}" data-action="user-main">
+          Widok główny
+        </button>
+      `;
+      const favoritesButtons = state.favorites.lists.length
+        ? state.favorites.lists
+            .map(
+              (list) =>
+                `<button class="btn ${list.id === state.activeFavoritesListId && state.userView === "favorites" ? "is-active" : ""}" data-action="user-list" data-list-id="${list.id}">${list.name}</button>`
+            )
+            .join("")
+        : "<div class=\"legend\">Brak list ulubionych.</div>";
+
+      userNav.innerHTML = `
+        <div class="user-nav-group">${mainButton}</div>
+        <div class="user-nav-group">
+          <div class="legend">Listy ulubionych</div>
+          ${favoritesButtons}
+        </div>
       `;
     };
 
@@ -812,6 +837,7 @@
       renderMainViewAdmin();
       renderUserMainView();
       renderUserFavorites();
+      renderUserNavigation();
       syncUserViewButtons();
     };
 
@@ -822,8 +848,13 @@
       const showMain = state.userView === "main";
       userMainView.classList.toggle("is-visible", showMain);
       userFavoritesView.classList.toggle("is-visible", !showMain);
-      showMainViewButton.classList.toggle("is-active", showMain);
-      showFavoritesViewButton.classList.toggle("is-active", !showMain);
+      userNav.querySelectorAll("button[data-action=\"user-main\"]").forEach((button) => {
+        button.classList.toggle("is-active", showMain);
+      });
+      userNav.querySelectorAll("button[data-action=\"user-list\"]").forEach((button) => {
+        const isActiveList = button.dataset.listId === state.activeFavoritesListId;
+        button.classList.toggle("is-active", !showMain && isActiveList);
+      });
     };
 
     const setUserView = (view) => {
@@ -1106,13 +1137,6 @@
     });
 
     userFavoritesView.addEventListener("click", (event) => {
-      const listButton = event.target.closest("button[data-action=\"user-list\"]");
-      if (listButton) {
-        state.activeFavoritesListId = listButton.dataset.listId;
-        renderUserFavorites();
-        syncUserViewButtons();
-        return;
-      }
       const playButton = event.target.closest("button[data-action=\"play\"]");
       if (!playButton) {
         return;
@@ -1139,8 +1163,21 @@
       }
     });
 
-    showMainViewButton.addEventListener("click", () => setUserView("main"));
-    showFavoritesViewButton.addEventListener("click", () => setUserView("favorites"));
+    userNav.addEventListener("click", (event) => {
+      const mainButton = event.target.closest("button[data-action=\"user-main\"]");
+      if (mainButton) {
+        setUserView("main");
+        renderUserNavigation();
+        return;
+      }
+      const listButton = event.target.closest("button[data-action=\"user-list\"]");
+      if (listButton) {
+        state.activeFavoritesListId = listButton.dataset.listId;
+        setUserView("favorites");
+        renderUserFavorites();
+        renderUserNavigation();
+      }
+    });
 
     setModeVisibility();
     loadSettingsLocal();

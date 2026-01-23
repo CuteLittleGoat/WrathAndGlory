@@ -4,7 +4,7 @@
 
 ## 1. Architektura i przepływ danych
 - **Model aplikacji:** pojedyncza strona `Audio/index.html` z dwoma trybami:
-  - **Widok użytkownika** (domyślny) — wyświetla tylko „Główny widok” i listy „Ulubione”.
+  - **Widok użytkownika** (domyślny) — pokazuje panel odtwarzania oraz boczną nawigację między „Widokiem głównym” i listami „Ulubione”.
   - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”.
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
 - **Ustawienia:** ulubione i „Główny widok” są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
@@ -68,8 +68,9 @@ window.firebaseConfig = {
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
   4. **Widok użytkownika** `.user-view` (tylko user):
-     - przyciski przełączania `Główny widok` / `Ulubione`,
-     - kontenery `#userMainView` i `#userFavoritesView` z kartami tylko do odtwarzania.
+     - układ `.user-layout` w dwóch kolumnach,
+     - lewy panel z kontenerami `#userMainView` i `#userFavoritesView`,
+     - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych).
 
 ## 6. Style CSS (dokładne wartości)
 **Zmienne w `:root`:**
@@ -97,10 +98,11 @@ window.firebaseConfig = {
 - `.fav-list`: `border: 1px solid rgba(22, 198, 12, 0.5)`, tło `#031206`.
 - Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
 - `.user-view`: kolumna usera, `display: flex`, `flex-direction: column`, `gap: 16px`.
-- `.view-toggle`: przyciski przełączania widoku, `gap: 10px`.
-- `.view-toggle .btn.is-active`: wzmocniony stan aktywny (zielone tło i glow).
+- `.user-layout`: siatka 2-kolumnowa (`minmax(0, 1.7fr)` + `minmax(240px, 0.7fr)`).
+- `.user-nav`: panel boczny w widoku użytkownika, układ kolumnowy z `gap: 12px`.
+- `.user-nav-group`: grupowanie przycisków nawigacji, `flex-direction: column`, `gap: 8px`.
+- `.user-nav .btn.is-active`: wzmocniony stan aktywny (zielone tło i glow).
 - `.user-panel`: kontener list w widoku użytkownika, domyślnie `display: none`; klasa `.is-visible` ustawia `display: flex`.
-- `.user-list-tabs`: przyciski przełączania list ulubionych w user view.
 - Responsywność: poniżej `980px` układ przechodzi do jednej kolumny.
 
 ## 7. Mapowanie danych z `AudioManifest.xlsx`
@@ -139,10 +141,11 @@ window.firebaseConfig = {
 - `renderSamples()` — rysuje siatkę sampli (tylko admin) z przyciskami dodawania do ulubionych i głównego widoku.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (play + reorder + remove).
-- `renderUserMainView()` — rysuje „Główny widok” użytkownika (same przyciski odtwarzania).
-- `renderUserFavorites()` — rysuje listy ulubionych użytkownika (przełączanie list + play).
+- `renderUserMainView()` — rysuje „Widok główny” użytkownika (same przyciski odtwarzania).
+- `renderUserFavorites()` — rysuje listę ulubionych użytkownika dla aktualnie wybranej listy.
+- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych.
 - `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu.
-- `syncUserViewButtons()` — przełącza widoczne panele w user view.
+- `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji.
 
 ### 8.5. Akcje użytkownika
 - `playSample(itemId)` — odtwarza dźwięk z `fullUrl`.
@@ -159,6 +162,7 @@ window.firebaseConfig = {
 - `parseManifest()` — wczytuje i mapuje `AudioManifest.xlsx`.
 - `setModeVisibility()` — ukrywa/pokazuje elementy `.admin-only` i `.user-only` oraz ustawia opis nagłówka.
 - `setUserView(view)` — przełącza widok w user mode (główny vs ulubione).
+- **Nawigacja usera**: kliknięcia w panelu `#userNav` przełączają `state.userView` oraz aktywną listę ulubionych.
 
 ## 9. Struktura danych Firestore (`audio/favorites`)
 ```json
@@ -186,7 +190,7 @@ window.firebaseConfig = {
 4. Załaduj stronę `Audio/index.html` na serwerze statycznym.
 5. Wejdź na `Audio/index.html?admin=1` i potwierdź, że manifest ładuje się poprawnie (status „Manifest: X pozycji”).
 6. Dodaj kilka sampli do „Głównego widoku” i do list ulubionych — sprawdź zapis w Firestore.
-7. Wejdź na `Audio/index.html` (bez parametru) i zweryfikuj, że użytkownik widzi tylko „Główny widok” i „Ulubione”.
+7. Wejdź na `Audio/index.html` (bez parametru) i zweryfikuj, że użytkownik widzi panel odtwarzania z boczną nawigacją „Widok główny” + listy „Ulubione”.
 
 ## 11. Troubleshooting
 - **Manifest nie wczytuje się:** sprawdź nazwę pliku (`AudioManifest.xlsx`) i dostępność z serwera statycznego.
