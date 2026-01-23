@@ -5,7 +5,7 @@
 ## 1. Architektura i przepływ danych
 - **Model aplikacji:** pojedyncza strona `Audio/index.html` z dwoma trybami:
   - **Widok użytkownika** (domyślny) — pokazuje panel odtwarzania oraz boczną nawigację między „Widokiem głównym” i listami „Ulubione”.
-  - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera widok użytkownika jako podgląd.
+  - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera w pełni działający podgląd widoku użytkownika (dane i nawigacja są identyczne jak u użytkownika).
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
 - **Ustawienia:** ulubione i „Główny widok” są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
 - **Odtwarzanie:** pojedynczy obiekt `Audio()` używany wielokrotnie do odtwarzania sampli.
@@ -142,11 +142,11 @@ window.firebaseConfig = {
 - `renderSamples()` — rysuje siatkę sampli (tylko admin) z przyciskami dodawania do ulubionych i głównego widoku.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (play + reorder + remove).
-- `renderUserMainView()` — rysuje „Widok główny” użytkownika (same przyciski odtwarzania).
-- `renderUserFavorites()` — rysuje listę ulubionych użytkownika dla aktualnie wybranej listy.
-- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych.
+- `renderUserMainView()` — rysuje „Widok główny” użytkownika (same przyciski odtwarzania) zarówno w trybie użytkownika, jak i w podglądzie admina.
+- `renderUserFavorites()` — rysuje listę ulubionych użytkownika dla aktualnie wybranej listy w obu trybach.
+- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
 - `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu.
-- `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji.
+- `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
 
 ### 8.5. Akcje użytkownika
 - `playSample(itemId)` — odtwarza dźwięk z `fullUrl`.
