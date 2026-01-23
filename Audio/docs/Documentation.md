@@ -1,81 +1,177 @@
 # Dokumentacja modułu Audio
 
 ## Przegląd
-Moduł **Audio** to statyczna strona HTML pełniąca rolę placeholdera. Wyświetla komunikat „Strona w budowie” oraz krótką informację, że moduł jest w przygotowaniu. Styl graficzny jest identyczny z główną stroną projektu (zielony „terminalowy” motyw). Brak JavaScriptu oraz backendu.
+Moduł **Audio** jest w przygotowaniu. Aktualnie działa jako statyczna strona informacyjna, ale docelowo będzie odtwarzać dźwięki na podstawie arkusza `AudioManifest.xlsx` oraz umożliwiać tworzenie grup i list „Ulubionych” bezpośrednio w interfejsie. Projekt zachowuje terminalowy, zielony styl wspólny dla pozostałych modułów.
 
-## Struktura plików
-- `Audio/index.html` – pojedynczy plik HTML z osadzonym CSS i treścią komunikatu.
-- `Audio/docs/README.md` – instrukcja użytkownika (PL/EN).
-- `Audio/docs/Documentation.md` – niniejszy opis kodu.
+## Struktura plików (obecnie)
+- `Audio/index.html` – aktualna strona informacyjna (placeholder).
+- `Audio/AudioManifest.xlsx` – arkusz źródłowy z listą dźwięków (kolumny: NazwaSampla, NazwaPliku, LinkDoFolderu).
+- `Audio/docs/README.md` – instrukcja użytkownika (PL/EN) z planowanymi funkcjami.
+- `Audio/docs/Documentation.md` – niniejszy opis.
 
-## Szczegółowy opis `Audio/index.html`
+## Planowana struktura plików (docelowo)
+- `Audio/audiodata.json` – wygenerowany plik JSON z danymi audio z arkusza (`AudioManifest.xlsx`).
+- `Audio/tools/convert-audio-manifest.*` – skrypt konwersji (np. Node/Python), który czyta arkusz i generuje `audiodata.json`.
+- `Audio/assets/` – opcjonalny katalog na ikony i grafiki interfejsu.
 
-### 1. Deklaracje dokumentu i `<head>`
-- `<!DOCTYPE html>` – deklaracja HTML5.
-- `<html lang="pl">` – język dokumentu ustawiony na polski.
-- `<meta charset="UTF-8">` – kodowanie UTF‑8.
-- `<meta name="viewport" content="width=device-width, initial-scale=1.0">` – poprawne skalowanie na urządzeniach mobilnych.
-- `<title>Audio | Kozi przybornik</title>` – tytuł karty przeglądarki.
+> **Uwaga:** Nazwa pliku JSON jest **audiodata.json**, aby nie kolidować z `data.json` z modułu DataVault.
 
-### 2. Stylizacja (sekcja `<style>`)
-Cały CSS jest wbudowany w dokument. Styl został skopiowany z głównej dokumentacji projektu, aby zachować spójny wygląd.
+## Mechanizm danych — szczegółowy plan
 
-#### 2.1 Zmienne CSS (`:root`)
-Motyw „zielonego terminala” opisany jest przez zestaw zmiennych:
-- `--bg` – tło składające się z trzech warstw:
-  1. `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%)`
-  2. `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%)`
-  3. kolor bazowy `#031605`
-- `--panel` – kolor tła panelu: `#000`.
-- `--border` – kolor ramki panelu: `#16c60c`.
-- `--text` – kolor tekstu: `#9cf09c`.
-- `--accent` – akcent zielony: `#16c60c`.
-- `--accent-dark` – ciemniejszy akcent: `#0d7a07`.
-- `--glow` – poświata panelu: `0 0 25px rgba(22, 198, 12, 0.45)`.
-- `--radius` – zaokrąglenie panelu: `10px`.
+### 1. Format wejściowy (Excel)
+Arkusz `AudioManifest.xlsx` ma trzy kolumny:
+- **NazwaSampla** – tekst widoczny na przycisku.
+- **NazwaPliku** – nazwa pliku audio.
+- **LinkDoFolderu** – ścieżka URL do katalogu z plikiem audio.
 
-#### 2.2 Ustawienia globalne (`*`)
-- `box-sizing: border-box` – padding i border są wliczane w szerokość/ wysokość.
-- `font-family` – wymuszone fonty monospace w kolejności: "Consolas", "Fira Code", "Source Code Pro", `monospace`.
+### 2. Format wyjściowy (JSON)
+Przykładowa struktura planowanego `audiodata.json`:
+```json
+{
+  "version": "1.0",
+  "generatedAt": "2024-01-01T12:00:00Z",
+  "items": [
+    {
+      "id": "lasgun-shoot",
+      "label": "Lasgun Shoot",
+      "filename": "lasgun_shoot.wav",
+      "folderUrl": "https://example.com/audio/lasguns"
+    }
+  ]
+}
+```
+- `id` – stabilny identyfikator (slug z `NazwaSampla`).
+- `label` – tekst przycisku.
+- `filename` – nazwa pliku audio.
+- `folderUrl` – URL do folderu.
 
-#### 2.3 Układ strony (`body`, `main`)
-- `body`
-  - `margin: 0` – usuwa domyślny margines.
-  - `min-height: 100vh` – pełna wysokość okna.
-  - `display: flex`, `align-items: center`, `justify-content: center` – centrowanie panelu.
-  - `padding: 24px` – margines od krawędzi okna.
-  - `background: var(--bg)` – gradientowe tło.
-  - `color: var(--text)` – domyślny kolor tekstu.
-- `main`
-  - `width: min(860px, 100%)` – maksymalnie 860px, zawsze dopasowane do ekranu.
-  - `background: var(--panel)` – czarne tło panelu.
-  - `border: 2px solid var(--border)` – zielona ramka.
-  - `border-radius: var(--radius)` – zaokrąglenie rogów.
-  - `box-shadow: var(--glow)` – zielona poświata.
-  - `padding: 32px 32px 28px` – odstępy wewnętrzne.
-  - `display: flex`, `flex-direction: column`, `align-items: center`, `gap: 22px` – pionowy układ treści.
+### 3. Budowanie linku do pliku
+W aplikacji link do pliku audio powstaje przez:
+```
+fullUrl = folderUrl + "/" + filename
+```
+W przypadku duplikatów lub braków w danych należy wyświetlić czytelny komunikat błędu w panelu diagnostycznym.
 
-#### 2.4 Typografia nagłówka i podtytułu
-- `.title`
-  - `margin: 0` – brak marginesów.
-  - `font-size: clamp(22px, 3vw, 28px)` – płynny rozmiar zależny od szerokości okna.
-  - `text-transform: uppercase` – tekst wielkimi literami.
-  - `letter-spacing: 0.08em` – rozstrzelenie liter.
-- `.subtitle`
-  - `margin: 0` – brak marginesów.
-  - `font-size: 15px` – stały rozmiar tekstu.
-  - `color: var(--text)` – kolor zgodny z motywem.
-  - `opacity: 0.9` – lekkie przygaszenie dla hierarchii wizualnej.
+### 4. Zasady mapowania
+- Każdy wiersz arkusza staje się jednym wpisem w `items`.
+- `NazwaSampla` jest unikatowa w obrębie aplikacji (jeśli nie, aplikacja zgłasza konflikt).
+- `NazwaPliku` musi zawierać rozszerzenie (np. `.wav`, `.mp3`).
 
-### 3. Zawartość (`<body>`)
-Struktura dokumentu jest minimalna i składa się z jednego panelu:
-- `<main>` – główny panel z zieloną ramką.
-- `<h1 class="title">` – tekst „Strona w budowie”.
-- `<p class="subtitle">` – komunikat „Moduł Audio jest w przygotowaniu.”
+## Planowana logika front-end (szczegółowy opis funkcji)
 
-## Modyfikacje
-- **Zmiana treści komunikatu**: edytuj teksty w `<h1 class="title">` i `<p class="subtitle">`.
-- **Zmiana stylu**: edytuj wartości w sekcji `<style>` zgodnie z opisem powyżej.
+### 1. Inicjalizacja aplikacji
+- Po załadowaniu strony aplikacja pobiera `audiodata.json`.
+- Dane są sortowane alfabetycznie po `label`.
+- Tworzona jest mapa `samplesById` i `samplesByLabel`.
+
+### 2. Główne funkcje (proponowane nazwy)
+- `loadAudioData()`
+  - Pobiera `audiodata.json`.
+  - Waliduje strukturę i zwraca listę elementów.
+- `buildAudioUrl(item)`
+  - Zwraca pełny URL: `item.folderUrl + "/" + item.filename`.
+- `renderSampleButton(item)`
+  - Tworzy przycisk z etykietą `item.label`.
+  - Obsługuje kliknięcie (odtwarzanie).
+- `playSample(item)`
+  - Tworzy/ponownie wykorzystuje obiekt `Audio`.
+  - Odtwarza dźwięk, zatrzymując poprzedni jeśli potrzeba.
+- `renderGroups()`
+  - Rysuje listę grup i przypisanych dźwięków.
+- `renderFavorites()`
+  - Rysuje listy „Ulubionych” wraz z przyciskami.
+
+### 3. Obsługa grup
+Grupy są zarządzane w UI i zapisywane w konfiguracji użytkownika:
+- `groups` – tablica obiektów:
+  ```json
+  {
+    "id": "group-1",
+    "name": "Odgłosy broni",
+    "itemIds": ["lasgun-shoot", "bolter-shot"],
+    "visible": true
+  }
+  ```
+- Edycja grup:
+  - Tworzenie nowej grupy.
+  - Zmiana nazwy.
+  - Dodawanie/wyjmowanie elementów.
+  - Usuwanie grupy.
+  - Zmiana widoczności (checkboxy).
+
+### 4. Obsługa „Ulubionych”
+„Ulubione” to lista list (multi-favorites):
+```json
+{
+  "favoritesLists": [
+    {
+      "id": "fav-1",
+      "name": "Combat",
+      "itemIds": ["lasgun-shoot", "grenade-explosion"]
+    }
+  ]
+}
+```
+- Możliwości:
+  - Dodawanie pojedynczego elementu lub całej grupy.
+  - Zmiana kolejności elementów (drag & drop lub przyciski góra/dół).
+  - Zmiana nazwy listy.
+  - Zmiana kolejności list.
+  - Usuwanie list z potwierdzeniem.
+
+### 5. Zapisywanie ustawień (synchronizacja między urządzeniami)
+Wymagane jest przenoszenie konfiguracji między urządzeniami, więc zapis lokalny jest niewystarczający jako jedyne rozwiązanie. Planowane są warianty:
+- **Firebase na osobnym koncie/projekcie**:
+  - Przechowywanie konfiguracji użytkownika w Firestore/Realtime DB.
+  - Proste logowanie (np. email+hasło lub link magiczny).
+  - Integracja musi być izolowana i nie może blokować działania **Infoczytnika**.
+- **Zewnętrzny plik konfiguracyjny** `audio-settings.json`:
+  - Użytkownik wskazuje źródło (np. WebDAV, Google Drive, OneDrive, prywatne API).
+  - Moduł odczytuje i zapisuje konfigurację w tym pliku.
+- **Eksport/import** pliku JSON:
+  - Ręczne przenoszenie konfiguracji między urządzeniami jako plan awaryjny.
+
+Docelowy wybór rozwiązania będzie ustalony na etapie implementacji, przy zachowaniu kompatybilności z modułem **Infoczytnik**.
+
+## Planowany układ interfejsu (layout)
+
+### 1. Główne sekcje
+- **Nagłówek**: tytuł modułu, krótki opis, wskaźnik liczby sampli.
+- **Panel sterowania**:
+  - pole wyszukiwania,
+  - filtry,
+  - przyciski „Dodaj grupę”, „Dodaj do ulubionych”.
+- **Lista grup**:
+  - po lewej stronie, z checkboxami widoczności.
+- **Siatka/przyciskowa lista dźwięków**:
+  - w centrum, duża liczba przycisków (przyjazna na 100+ elementów).
+- **Panel „Ulubione”**:
+  - po prawej stronie, osobny blok.
+
+### 2. Nawigacja i ergonomia
+- Przy dużej liczbie elementów włączona paginacja lub wirtualizacja listy.
+- Szybkie filtrowanie przez pole wyszukiwania (np. `NazwaSampla`).
+- Wyraźny stan odtwarzania (np. podświetlenie aktywnego przycisku).
+
+### 3. Spójność wizualna
+- Zachowany terminalowy styl:
+  - kolory: `#16c60c`, `#0d7a07`, `#9cf09c`, `#031605`,
+  - fonty monospace: "Consolas", "Fira Code", "Source Code Pro".
+- Panel i przyciski o krawędziach z delikatnym glow.
+
+## Aktualny stan kodu (`Audio/index.html`)
+Plik `index.html` pozostaje placeholderem:
+- Wyświetla tytuł „Strona w budowie”.
+- Zawiera tylko statyczny HTML i CSS.
+- Nie ma jeszcze JavaScriptu ani obsługi danych.
+
+## Plan modyfikacji (kroki wdrożenia)
+1. Dodać skrypt konwersji `AudioManifest.xlsx` → `audiodata.json`.
+2. Zaimplementować loader `audiodata.json` w `Audio/index.html`.
+3. Zbudować strukturę UI (nagłówek, listy, panel grup, ulubione).
+4. Dodać obsługę odtwarzania dźwięku.
+5. Dodać panel grupowania i zapisywanie konfiguracji.
+6. Dodać panel „Ulubione” z pełną edycją list.
 
 ## Uruchamianie lokalne
 Strona jest statyczna. Możesz ją otworzyć bez serwera lub uruchomić lokalny serwer:
