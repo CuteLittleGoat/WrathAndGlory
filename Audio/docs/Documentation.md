@@ -67,7 +67,7 @@ window.firebaseConfig = {
      - Prawa kolumna `.side-stack`: 
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
-  4. **Widok użytkownika** `.user-view` (tylko user):
+  4. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
      - układ `.user-layout` w dwóch kolumnach,
      - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (jedyny obszar z przyciskami odtwarzania),
      - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
