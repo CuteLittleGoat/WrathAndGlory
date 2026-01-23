@@ -472,17 +472,9 @@
       const userOnly = Array.from(document.querySelectorAll(".user-only"));
 
       if (ADMIN_MODE) {
-        adminOnly.forEach((el) => {
-          el.hidden = false;
-        });
-        userOnly.forEach((el) => {
-          el.hidden = false;
-        });
+        userOnly.forEach((el) => el.remove());
       } else {
         adminOnly.forEach((el) => el.remove());
-        userOnly.forEach((el) => {
-          el.hidden = false;
-        });
       }
 
       if (headerTitle && headerSubtitle) {

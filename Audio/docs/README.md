@@ -20,8 +20,8 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 5. Uruchom stronę `Audio/index.html` na serwerze statycznym.
 
 ### Tryby działania
-- **Widok użytkownika** (domyślny): widoczne są tylko dwa panele — siatka odtwarzania dźwięków z „Głównego widoku”/„Ulubionych” oraz panel nawigacji list. Wszystkie elementy administracyjne są usuwane z DOM.
-- **Widok admina**: pełna konfiguracja (wczytywanie manifestu, zarządzanie listami, układ „Głównego widoku”) oraz podgląd panelu użytkownika na dole strony.
+- **Widok użytkownika** (domyślny): widoczne są tylko dwa panele — siatka odtwarzania dźwięków z „Głównego widoku”/„Ulubionych” oraz panel nawigacji list.
+- **Widok admina**: pełna konfiguracja (wczytywanie manifestu, zarządzanie listami, układ „Głównego widoku”).
 
 ### Jak korzystać (użytkownik)
 1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
@@ -68,8 +68,8 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 5. Serve and open `Audio/index.html` from a static server.
 
 ### Modes
-- **User view** (default): only two panels are visible — the playback grid (Main View/Favorites) and the navigation panel. All admin elements are removed from the DOM.
-- **Admin view**: full configuration (manifest reload, list management, Main View order) plus the user panel preview at the bottom of the page.
+- **User view** (default): only two panels are visible — the playback grid (Main View/Favorites) and the navigation panel.
+- **Admin view**: full configuration (manifest reload, list management, Main View order).
 
 ### How to use (user)
 1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
