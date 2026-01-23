@@ -20,11 +20,11 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 5. Uruchom stronę `Audio/index.html` na serwerze statycznym.
 
 ### Tryby działania
-- **Widok użytkownika** (domyślny): odtwarzanie dźwięków z „Głównego widoku” oraz przełączanie list w panelu bocznym.
+- **Widok użytkownika** (domyślny): widoczne są tylko dwa panele — siatka odtwarzania dźwięków z „Głównego widoku”/„Ulubionych” oraz panel nawigacji list. Wszystkie elementy administracyjne są usuwane z DOM.
 - **Widok admina**: pełna konfiguracja (wczytywanie manifestu, zarządzanie listami, układ „Głównego widoku”).
 
 ### Jak korzystać (użytkownik)
-1. Otwórz `Audio/index.html` (bez parametru `?admin=1`).
+1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
 2. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
 3. Kliknij **Odtwórz** przy wybranym dźwięku (jeśli są już skonfigurowane).
 
@@ -68,11 +68,11 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 5. Serve and open `Audio/index.html` from a static server.
 
 ### Modes
-- **User view** (default): play sounds from the Main View and switch lists in the side panel.
+- **User view** (default): only two panels are visible — the playback grid (Main View/Favorites) and the navigation panel. All admin elements are removed from the DOM.
 - **Admin view**: full configuration (manifest reload, list management, Main View order).
 
 ### How to use (user)
-1. Open `Audio/index.html` (without `?admin=1`).
+1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
 2. In the side panel select **Main view** or one of the Favorites lists.
 3. Click **Odtwórz** on a sound to play it (once configured).
 
