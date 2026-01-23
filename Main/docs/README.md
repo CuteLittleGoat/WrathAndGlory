@@ -21,7 +21,8 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - Kalkulator XP: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
-- **Audio** (wersja testowa): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+- **Audio** (strona w budowie): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+  - Aby wejść do panelu admina, dopisz parametr `index.html?admin=1` do adresu.
 
 ### Instrukcje modułów (README)
 - Generator NPC: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
@@ -34,7 +35,7 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 ### Jak używać
 1. Otwórz stronę startową `Main/index.html` w przeglądarce.
 2. Kliknij jeden z przycisków, aby przejść do wybranego narzędzia.
-3. Jeśli potrzebujesz panelu admina w DataVault, dopisz `index.html?admin=1` do adresu DataVault.
+3. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu.
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -82,7 +83,8 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - XP calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
-- **Audio** (test version): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+- **Audio** (under construction): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+  - To access the admin panel, append `index.html?admin=1` to the URL.
 
 ### Module README links
 - NPC Generator: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
@@ -95,7 +97,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ### How to use
 1. Open the landing page at `Main/index.html` in your browser.
 2. Click one of the buttons to open the selected tool.
-3. If you need the DataVault admin panel, append `index.html?admin=1` to the DataVault address.
+3. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address.
 
 ### Running locally
 This is a static page with no backend. You can:
