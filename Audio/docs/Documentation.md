@@ -60,7 +60,7 @@ window.firebaseConfig = {
 
 ## 5. `index.html` — layout i HTML
 - Główny kontener `.page` zawiera:
-  1. **Nagłówek** `header` z tytułem, opisem i paskiem statusów (statusy są tylko w trybie admina).
+  1. **Nagłówek** `header` z tytułem, opisem i paskiem statusów (cały nagłówek jest widoczny tylko w trybie admina).
   2. **Toolbar** `.toolbar` (tylko admin): wyszukiwarka, przycisk wczytywania manifestu, przyciski zarządzania listami.
   3. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
      - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do „Ulubionych” i do „Głównego widoku”.
@@ -69,8 +69,9 @@ window.firebaseConfig = {
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
   4. **Widok użytkownika** `.user-view` (tylko user):
      - układ `.user-layout` w dwóch kolumnach,
-     - lewy panel z kontenerami `#userMainView` i `#userFavoritesView`,
-     - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych).
+     - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (jedyny obszar z przyciskami odtwarzania),
+     - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
+     - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
 
 ## 6. Style CSS (dokładne wartości)
 **Zmienne w `:root`:**
@@ -160,7 +161,7 @@ window.firebaseConfig = {
 - `moveMainViewItem(itemId, direction)` — przesuwa element w głównym widoku.
 - `removeMainViewItem(itemId)` — usuwa element z głównego widoku.
 - `parseManifest()` — wczytuje i mapuje `AudioManifest.xlsx`.
-- `setModeVisibility()` — ukrywa/pokazuje elementy `.admin-only` i `.user-only` oraz ustawia opis nagłówka.
+- `setModeVisibility()` — ukrywa/pokazuje elementy `.admin-only` i `.user-only` (w tym nagłówek admina) oraz ustawia opis nagłówka.
 - `setUserView(view)` — przełącza widok w user mode (główny vs ulubione).
 - **Nawigacja usera**: kliknięcia w panelu `#userNav` przełączają `state.userView` oraz aktywną listę ulubionych.
 
