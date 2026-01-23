@@ -82,7 +82,7 @@ W przypadku duplikatów lub braków w danych należy wyświetlić czytelny komun
   - Rysuje listy „Ulubionych” wraz z przyciskami.
 
 ### 3. Obsługa grup
-Grupy są zarządzane w UI i zapisywane w konfiguracji użytkownika:
+Grupy są zarządzane w UI i zapisywane lokalnie:
 - `groups` – tablica obiektów:
   ```json
   {
@@ -119,19 +119,13 @@ Grupy są zarządzane w UI i zapisywane w konfiguracji użytkownika:
   - Zmiana kolejności list.
   - Usuwanie list z potwierdzeniem.
 
-### 5. Zapisywanie ustawień (synchronizacja między urządzeniami)
-Wymagane jest przenoszenie konfiguracji między urządzeniami, więc zapis lokalny jest niewystarczający jako jedyne rozwiązanie. Planowane są warianty:
-- **Firebase na osobnym koncie/projekcie**:
-  - Przechowywanie konfiguracji użytkownika w Firestore/Realtime DB.
-  - Proste logowanie (np. email+hasło lub link magiczny).
-  - Integracja musi być izolowana i nie może blokować działania **Infoczytnika**.
-- **Zewnętrzny plik konfiguracyjny** `audio-settings.json`:
-  - Użytkownik wskazuje źródło (np. WebDAV, Google Drive, OneDrive, prywatne API).
-  - Moduł odczytuje i zapisuje konfigurację w tym pliku.
-- **Eksport/import** pliku JSON:
-  - Ręczne przenoszenie konfiguracji między urządzeniami jako plan awaryjny.
-
-Docelowy wybór rozwiązania będzie ustalony na etapie implementacji, przy zachowaniu kompatybilności z modułem **Infoczytnik**.
+### 5. Zapisywanie ustawień
+- Domyślnie **localStorage** lub **IndexedDB**.
+- Klucze przykładowe:
+  - `audio.groups`
+  - `audio.favorites`
+- Dane są niezależne od modułu **Infoczytnik** (brak konfliktu).
+- Firebase jest **opcjonalne** i nie jest wymagane. Jeśli byłoby użyte, musi być w osobnym projekcie/namespace i nie może blokować działania Infoczytnika.
 
 ## Planowany układ interfejsu (layout)
 

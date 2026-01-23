@@ -37,13 +37,8 @@ Moduł **Audio** jest w przygotowaniu. Poniżej znajduje się planowana obsługa
   - zmieniać kolejność list „Ulubionych”,
   - usuwać listy „Ulubionych” (z potwierdzeniem).
 
-### Zapisywanie konfiguracji (synchronizacja między urządzeniami)
-Domyślne zapisywanie lokalne nie spełnia wymagania synchronizacji. Planowane są warianty zapisu zewnętrznego:
-- **Firebase na osobnym koncie/projekcie** (oddzielny od Infoczytnika) — przechowywanie konfiguracji użytkownika w Firestore/Realtime DB z prostym logowaniem. Najwyższy priorytet pozostaje po stronie Infoczytnika, więc integracja będzie izolowana i nie może blokować jego działania.
-- **Zewnętrzny plik konfiguracyjny** (np. `audio-settings.json`) w chmurze użytkownika: WebDAV, Google Drive, OneDrive lub prywatne API. Użytkownik wskazuje adres pliku, a moduł zapisuje/odczytuje konfigurację.
-- **Eksport/import** konfiguracji do pliku JSON — ręczne przenoszenie pomiędzy urządzeniami (awaryjnie lub dodatkowo).
-
-Wariant docelowy zostanie wybrany na etapie implementacji, przy zachowaniu pełnej zgodności z działaniem modułu **Infoczytnik**.
+### Zapisywanie konfiguracji
+- Konfiguracja grup i „Ulubionych” będzie zapisywana lokalnie w przeglądarce (localStorage/IndexedDB), aby nie kolidować z modułem **Infoczytnik**.
 
 ---
 
@@ -82,10 +77,5 @@ The **Audio** module is under construction. Below is the planned usage and behav
   - reorder Favorites lists,
   - delete Favorites lists (with confirmation).
 
-### Saving configuration (cross-device sync)
-Local-only storage does not meet the sync requirement. Planned external options:
-- **Firebase in a separate account/project** (isolated from Infoczytnik) — store user configuration in Firestore/Realtime DB with basic authentication. Infoczytnik remains the top priority; this integration must be isolated and must not block it.
-- **External config file** (e.g., `audio-settings.json`) stored in the user’s cloud: WebDAV, Google Drive, OneDrive, or a private API. The user provides the file URL and the module reads/writes settings.
-- **Export/import** configuration as a JSON file — manual transfer between devices (fallback or supplemental option).
-
-The final option will be chosen during implementation while preserving full compatibility with the **Infoczytnik** module.
+### Saving configuration
+- Group and Favorites configuration will be stored locally in the browser (localStorage/IndexedDB) to avoid conflicts with the **Infoczytnik** module.
