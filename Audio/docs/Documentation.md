@@ -5,7 +5,7 @@
 ## 1. Architektura i przepływ danych
 - **Model aplikacji:** pojedyncza strona `Audio/index.html` z dwoma trybami:
   - **Widok użytkownika** (domyślny) — pokazuje panel odtwarzania oraz boczną nawigację między „Widokiem głównym” i listami „Ulubione”.
-  - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”.
+  - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera widok użytkownika jako podgląd.
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
 - **Ustawienia:** ulubione i „Główny widok” są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
 - **Odtwarzanie:** pojedynczy obiekt `Audio()` używany wielokrotnie do odtwarzania sampli.
@@ -161,7 +161,7 @@ window.firebaseConfig = {
 - `moveMainViewItem(itemId, direction)` — przesuwa element w głównym widoku.
 - `removeMainViewItem(itemId)` — usuwa element z głównego widoku.
 - `parseManifest()` — wczytuje i mapuje `AudioManifest.xlsx`.
-- `setModeVisibility()` — ukrywa/pokazuje elementy `.admin-only` i `.user-only` (w tym nagłówek admina) oraz ustawia opis nagłówka.
+- `setModeVisibility()` — ukrywa/pokazuje elementy `.admin-only` (w tym nagłówek admina) oraz ustawia opis nagłówka; widok użytkownika jest zawsze obecny, a w adminie działa jako podgląd.
 - `setUserView(view)` — przełącza widok w user mode (główny vs ulubione).
 - **Nawigacja usera**: kliknięcia w panelu `#userNav` przełączają `state.userView` oraz aktywną listę ulubionych.
 
