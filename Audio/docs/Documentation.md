@@ -1,177 +1,162 @@
-# Dokumentacja modułu Audio
+# Dokumentacja techniczna modułu Audio (opis 1:1)
 
-## Przegląd
-Moduł **Audio** jest w przygotowaniu. Aktualnie działa jako statyczna strona informacyjna, ale docelowo będzie odtwarzać dźwięki na podstawie arkusza `AudioManifest.xlsx` oraz umożliwiać tworzenie grup i list „Ulubionych” bezpośrednio w interfejsie. Projekt zachowuje terminalowy, zielony styl wspólny dla pozostałych modułów.
+> Ten dokument opisuje **dokładny** wygląd i logikę modułu Audio: strukturę HTML, style CSS, zasady działania, mapowanie danych z `AudioManifest.xlsx`, integrację Firebase oraz wszystkie kluczowe funkcje. Celem jest umożliwienie wiernego odtworzenia aplikacji 1:1.
 
-## Struktura plików (obecnie)
-- `Audio/index.html` – aktualna strona informacyjna (placeholder).
-- `Audio/AudioManifest.xlsx` – arkusz źródłowy z listą dźwięków (kolumny: NazwaSampla, NazwaPliku, LinkDoFolderu).
-- `Audio/docs/README.md` – instrukcja użytkownika (PL/EN) z planowanymi funkcjami.
-- `Audio/docs/Documentation.md` – niniejszy opis.
+## 1. Architektura i przepływ danych
+- **Model aplikacji:** pojedyncza strona `Audio/index.html` działająca jako panel dźwięków.
+- **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
+- **Ulubione:** przechowywane w Firestore (Firebase) w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage`.
+- **Odtwarzanie:** pojedynczy obiekt `Audio()` używany wielokrotnie do odtwarzania sampli.
 
-## Planowana struktura plików (docelowo)
-- `Audio/audiodata.json` – wygenerowany plik JSON z danymi audio z arkusza (`AudioManifest.xlsx`).
-- `Audio/tools/convert-audio-manifest.*` – skrypt konwersji (np. Node/Python), który czyta arkusz i generuje `audiodata.json`.
-- `Audio/assets/` – opcjonalny katalog na ikony i grafiki interfejsu.
+## 2. Struktura repozytorium (pliki i katalogi)
+- `Audio/index.html` — główny panel (HTML + CSS + JS).
+- `Audio/AudioManifest.xlsx` — źródłowy manifest sampli (kolumny: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`).
+- `Audio/config/firebase-config.js` — konfiguracja Firebase (globalna zmienna `window.firebaseConfig`).
+- `Audio/config/firebase-config.template.js` — szablon konfiguracji.
+- `Audio/docs/README.md` — instrukcja użytkownika.
+- `Audio/docs/Documentation.md` — ten dokument.
 
-> **Uwaga:** Nazwa pliku JSON jest **audiodata.json**, aby nie kolidować z `data.json` z modułu DataVault.
+## 3. Zasoby zewnętrzne
+### 3.1. Google Fonts
+- `Fira Code` (wagi 400, 600) z:
+```
+https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap
+```
 
-## Mechanizm danych — szczegółowy plan
+### 3.2. XLSX (SheetJS)
+- Biblioteka do parsowania plików `.xlsx`:
+```
+https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js
+```
 
-### 1. Format wejściowy (Excel)
-Arkusz `AudioManifest.xlsx` ma trzy kolumny:
-- **NazwaSampla** – tekst widoczny na przycisku.
-- **NazwaPliku** – nazwa pliku audio.
-- **LinkDoFolderu** – ścieżka URL do katalogu z plikiem audio.
+### 3.3. Firebase SDK
+- Modułowe SDK Firebase v12.6.0:
+  - `https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js`
+  - `https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js`
 
-### 2. Format wyjściowy (JSON)
-Przykładowa struktura planowanego `audiodata.json`:
+## 4. Konfiguracja Firebase
+### 4.1. Plik `config/firebase-config.js`
+- Plik musi ustawiać `window.firebaseConfig` (bez eksportów ES).
+- Format:
+```js
+window.firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};
+```
+
+**Ważne:** Firebase dla modułu **Audio** musi być założone na **oddzielnym koncie Google** niż Firebase używany w module **Infoczytnik**. Dzięki temu unikasz konfliktów projektów, reguł i namespace'ów między modułami.
+
+### 4.2. Firestore
+- Kolekcja: `audio`
+- Dokument: `favorites`
+- Dokument tworzony automatycznie, jeśli nie istnieje.
+
+## 5. `index.html` — layout i HTML
+- Główny kontener `.page` zawiera:
+  1. **Nagłówek** `header` z tytułem, opisem i paskiem statusów.
+  2. **Toolbar** `.toolbar` z wyszukiwarką, przyciskami wczytywania manifestu oraz zarządzania listami.
+  3. **Layout** `.layout` w dwóch kolumnach:
+     - Lewy panel: lista sampli (`.samples-grid`).
+     - Prawy panel: listy „Ulubione” (`#favoritesPanel`).
+
+## 6. Style CSS (dokładne wartości)
+**Zmienne w `:root`:**
+- `--bg`: radialne gradienty + `#031605` (tło).
+- `--panel`: `#000`.
+- `--panel-alt`: `#041b08`.
+- `--border`: `#16c60c`.
+- `--text`: `#9cf09c`.
+- `--accent`: `#16c60c`.
+- `--accent-dark`: `#0d7a07`.
+- `--accent-strong`: `#1ee616`.
+- `--muted`: `rgba(156, 240, 156, 0.7)`.
+- `--danger`: `#ff5f5f`.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
+- `--radius`: `12px`.
+- `--shadow`: `0 8px 24px rgba(0, 0, 0, 0.45)`.
+- `--font`: `"Fira Code", "Consolas", "Source Code Pro", monospace`.
+
+**Kluczowe elementy:**
+- `header`: ramka `2px solid --border`, `box-shadow: --glow`.
+- `.toolbar`: `border: 1px solid rgba(22, 198, 12, 0.7)`, `box-shadow: --shadow`.
+- `.samples-grid`: `grid-template-columns: repeat(auto-fill, minmax(210px, 1fr))`.
+- `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
+- `.fav-list`: `border: 1px solid rgba(22, 198, 12, 0.5)`, tło `#031206`.
+- Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
+- Responsywność: poniżej `980px` układ przechodzi do jednej kolumny.
+
+## 7. Mapowanie danych z `AudioManifest.xlsx`
+- Plik jest wczytywany przez `fetch` i parsowany przez `XLSX.read`.
+- Pierwszy arkusz jest konwertowany przez `XLSX.utils.sheet_to_json`.
+- Wymagane kolumny:
+  - `NazwaSampla` → `label`.
+  - `NazwaPliku` → `filename`.
+  - `LinkDoFolderu` → `folderUrl`.
+- **ID sampla**: tworzony przez `slugify` (lowercase + zamiana znaków nie-alfanumerycznych na `-`).
+- **Pełny URL**: `folderUrl + "/" + filename` (bez podwójnych `/`).
+
+## 8. Logika JS (wszystkie funkcje)
+### 8.1. Utility
+- `slugify(value, index)` — tworzy stabilny identyfikator z nazwy.
+- `normalizeUrl(folderUrl, filename)` — składa pełny URL do pliku audio.
+- `updateStatus()` — aktualizuje paski statusów (manifest, firebase, liczba list).
+
+### 8.2. Ulubione (zapisy i normalizacja)
+- `saveFavorites()` — zapisuje stan do Firestore lub `localStorage` (`audio.favorites`).
+- `defaultFavorites()` — tworzy domyślną listę „Ulubione”.
+- `normalizeFavorites(raw)` — normalizuje strukturę list z Firestore.
+- `loadFavoritesLocal()` — wczytuje lokalny zapis (fallback).
+
+### 8.3. Firebase
+- `initFirebase()`:
+  1. Sprawdza `window.firebaseConfig`.
+  2. Inicjalizuje aplikację i Firestore.
+  3. Ustawia referencję `doc(db, "audio", "favorites")`.
+  4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym.
+
+### 8.4. Renderowanie
+- `renderSamples()` — rysuje siatkę sampli i selektor list ulubionych.
+- `renderFavorites()` — rysuje listy „Ulubione” wraz z kontrolkami (rename, remove, move).
+
+### 8.5. Akcje użytkownika
+- `playSample(itemId)` — odtwarza dźwięk z `fullUrl`.
+- `addFavoriteList()` — tworzy nową listę.
+- `addItemToFavorites(listId, itemId)` — dodaje sample do listy.
+- `moveList(listId, direction)` — przesuwa listę w górę/dół.
+- `renameList(listId)` — zmienia nazwę listy.
+- `removeList(listId)` — usuwa listę (z potwierdzeniem).
+- `moveItem(listId, itemId, direction)` — przesuwa element w obrębie listy.
+- `removeItem(listId, itemId)` — usuwa element z listy.
+- `parseManifest()` — wczytuje i mapuje `AudioManifest.xlsx`.
+
+## 9. Struktura danych Firestore (`audio/favorites`)
 ```json
 {
-  "version": "1.0",
-  "generatedAt": "2024-01-01T12:00:00Z",
-  "items": [
+  "lists": [
     {
-      "id": "lasgun-shoot",
-      "label": "Lasgun Shoot",
-      "filename": "lasgun_shoot.wav",
-      "folderUrl": "https://example.com/audio/lasguns"
+      "id": "uuid",
+      "name": "Ulubione",
+      "itemIds": ["sample-1", "sample-2"]
     }
-  ]
+  ],
+  "updatedAt": "serverTimestamp"
 }
 ```
-- `id` – stabilny identyfikator (slug z `NazwaSampla`).
-- `label` – tekst przycisku.
-- `filename` – nazwa pliku audio.
-- `folderUrl` – URL do folderu.
 
-### 3. Budowanie linku do pliku
-W aplikacji link do pliku audio powstaje przez:
-```
-fullUrl = folderUrl + "/" + filename
-```
-W przypadku duplikatów lub braków w danych należy wyświetlić czytelny komunikat błędu w panelu diagnostycznym.
+## 10. Checklist odtworzenia 1:1
+1. Skopiuj strukturę plików z katalogu `Audio/`.
+2. Dodaj `config/firebase-config.js` z własnymi danymi.
+3. Wgraj `AudioManifest.xlsx` z kolumnami `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`.
+4. Załaduj stronę `Audio/index.html` na serwerze statycznym.
+5. Potwierdź, że manifest ładuje się poprawnie (status „Manifest: X pozycji”).
+6. Sprawdź działanie odtwarzania i zapis ulubionych w Firestore.
 
-### 4. Zasady mapowania
-- Każdy wiersz arkusza staje się jednym wpisem w `items`.
-- `NazwaSampla` jest unikatowa w obrębie aplikacji (jeśli nie, aplikacja zgłasza konflikt).
-- `NazwaPliku` musi zawierać rozszerzenie (np. `.wav`, `.mp3`).
-
-## Planowana logika front-end (szczegółowy opis funkcji)
-
-### 1. Inicjalizacja aplikacji
-- Po załadowaniu strony aplikacja pobiera `audiodata.json`.
-- Dane są sortowane alfabetycznie po `label`.
-- Tworzona jest mapa `samplesById` i `samplesByLabel`.
-
-### 2. Główne funkcje (proponowane nazwy)
-- `loadAudioData()`
-  - Pobiera `audiodata.json`.
-  - Waliduje strukturę i zwraca listę elementów.
-- `buildAudioUrl(item)`
-  - Zwraca pełny URL: `item.folderUrl + "/" + item.filename`.
-- `renderSampleButton(item)`
-  - Tworzy przycisk z etykietą `item.label`.
-  - Obsługuje kliknięcie (odtwarzanie).
-- `playSample(item)`
-  - Tworzy/ponownie wykorzystuje obiekt `Audio`.
-  - Odtwarza dźwięk, zatrzymując poprzedni jeśli potrzeba.
-- `renderGroups()`
-  - Rysuje listę grup i przypisanych dźwięków.
-- `renderFavorites()`
-  - Rysuje listy „Ulubionych” wraz z przyciskami.
-
-### 3. Obsługa grup
-Grupy są zarządzane w UI i zapisywane lokalnie:
-- `groups` – tablica obiektów:
-  ```json
-  {
-    "id": "group-1",
-    "name": "Odgłosy broni",
-    "itemIds": ["lasgun-shoot", "bolter-shot"],
-    "visible": true
-  }
-  ```
-- Edycja grup:
-  - Tworzenie nowej grupy.
-  - Zmiana nazwy.
-  - Dodawanie/wyjmowanie elementów.
-  - Usuwanie grupy.
-  - Zmiana widoczności (checkboxy).
-
-### 4. Obsługa „Ulubionych”
-„Ulubione” to lista list (multi-favorites):
-```json
-{
-  "favoritesLists": [
-    {
-      "id": "fav-1",
-      "name": "Combat",
-      "itemIds": ["lasgun-shoot", "grenade-explosion"]
-    }
-  ]
-}
-```
-- Możliwości:
-  - Dodawanie pojedynczego elementu lub całej grupy.
-  - Zmiana kolejności elementów (drag & drop lub przyciski góra/dół).
-  - Zmiana nazwy listy.
-  - Zmiana kolejności list.
-  - Usuwanie list z potwierdzeniem.
-
-### 5. Zapisywanie ustawień
-- Domyślnie **localStorage** lub **IndexedDB**.
-- Klucze przykładowe:
-  - `audio.groups`
-  - `audio.favorites`
-- Dane są niezależne od modułu **Infoczytnik** (brak konfliktu).
-- Firebase jest **opcjonalne** i nie jest wymagane. Jeśli byłoby użyte, musi być w osobnym projekcie/namespace i nie może blokować działania Infoczytnika.
-
-## Planowany układ interfejsu (layout)
-
-### 1. Główne sekcje
-- **Nagłówek**: tytuł modułu, krótki opis, wskaźnik liczby sampli.
-- **Panel sterowania**:
-  - pole wyszukiwania,
-  - filtry,
-  - przyciski „Dodaj grupę”, „Dodaj do ulubionych”.
-- **Lista grup**:
-  - po lewej stronie, z checkboxami widoczności.
-- **Siatka/przyciskowa lista dźwięków**:
-  - w centrum, duża liczba przycisków (przyjazna na 100+ elementów).
-- **Panel „Ulubione”**:
-  - po prawej stronie, osobny blok.
-
-### 2. Nawigacja i ergonomia
-- Przy dużej liczbie elementów włączona paginacja lub wirtualizacja listy.
-- Szybkie filtrowanie przez pole wyszukiwania (np. `NazwaSampla`).
-- Wyraźny stan odtwarzania (np. podświetlenie aktywnego przycisku).
-
-### 3. Spójność wizualna
-- Zachowany terminalowy styl:
-  - kolory: `#16c60c`, `#0d7a07`, `#9cf09c`, `#031605`,
-  - fonty monospace: "Consolas", "Fira Code", "Source Code Pro".
-- Panel i przyciski o krawędziach z delikatnym glow.
-
-## Aktualny stan kodu (`Audio/index.html`)
-Plik `index.html` pozostaje placeholderem:
-- Wyświetla tytuł „Strona w budowie”.
-- Zawiera tylko statyczny HTML i CSS.
-- Nie ma jeszcze JavaScriptu ani obsługi danych.
-
-## Plan modyfikacji (kroki wdrożenia)
-1. Dodać skrypt konwersji `AudioManifest.xlsx` → `audiodata.json`.
-2. Zaimplementować loader `audiodata.json` w `Audio/index.html`.
-3. Zbudować strukturę UI (nagłówek, listy, panel grup, ulubione).
-4. Dodać obsługę odtwarzania dźwięku.
-5. Dodać panel grupowania i zapisywanie konfiguracji.
-6. Dodać panel „Ulubione” z pełną edycją list.
-
-## Uruchamianie lokalne
-Strona jest statyczna. Możesz ją otworzyć bez serwera lub uruchomić lokalny serwer:
-
-```bash
-python -m http.server 8000
-```
-
-Następnie otwórz `http://localhost:8000/Audio/index.html`.
+## 11. Troubleshooting
+- **Manifest nie wczytuje się:** sprawdź nazwę pliku (`AudioManifest.xlsx`) i dostępność z serwera statycznego.
+- **Brak połączenia z Firebase:** sprawdź `config/firebase-config.js` i reguły Firestore.
+- **Brak dźwięku:** zweryfikuj poprawność `LinkDoFolderu` i `NazwaPliku` w manifestie.
