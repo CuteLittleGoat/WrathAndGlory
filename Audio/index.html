@@ -467,16 +467,22 @@
 
     const setModeVisibility = () => {
       document.body.classList.toggle("admin-mode", ADMIN_MODE);
-      document.querySelectorAll(".admin-only").forEach((el) => {
-        el.hidden = !ADMIN_MODE;
-      });
-      document.querySelectorAll(".user-only").forEach((el) => {
-        el.hidden = ADMIN_MODE;
-      });
-      headerTitle.textContent = ADMIN_MODE ? "Audio — panel dźwięków" : "Audio — panel użytkownika";
-      headerSubtitle.textContent = ADMIN_MODE
-        ? "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase."
-        : "Wybierz widok z panelu bocznego, aby odtwarzać przygotowane dźwięki.";
+      document.body.classList.toggle("user-mode", !ADMIN_MODE);
+      const adminOnly = Array.from(document.querySelectorAll(".admin-only"));
+      const userOnly = Array.from(document.querySelectorAll(".user-only"));
+
+      if (ADMIN_MODE) {
+        userOnly.forEach((el) => el.remove());
+      } else {
+        adminOnly.forEach((el) => el.remove());
+      }
+
+      if (headerTitle && headerSubtitle) {
+        headerTitle.textContent = ADMIN_MODE ? "Audio — panel dźwięków" : "Audio — panel użytkownika";
+        headerSubtitle.textContent = ADMIN_MODE
+          ? "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase."
+          : "Wybierz widok z panelu bocznego, aby odtwarzać przygotowane dźwięki.";
+      }
     };
 
     const updateStatus = () => {
