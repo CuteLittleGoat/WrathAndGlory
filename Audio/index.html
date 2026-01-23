@@ -741,9 +741,6 @@
     };
 
     const renderUserMainView = () => {
-      if (ADMIN_MODE) {
-        return;
-      }
       if (!state.mainView.itemIds.length) {
         userMainView.innerHTML = "<div class=\"samples-grid\"></div>";
         return;
@@ -770,9 +767,6 @@
     };
 
     const renderUserFavorites = () => {
-      if (ADMIN_MODE) {
-        return;
-      }
       if (!state.favorites.lists.length) {
         userFavoritesView.innerHTML = "<div class=\"samples-grid\"></div>";
         return;
@@ -806,9 +800,6 @@
     };
 
     const renderUserNavigation = () => {
-      if (ADMIN_MODE) {
-        return;
-      }
       const mainButton = `
         <button class="btn ${state.userView === "main" ? "is-active" : ""}" data-action="user-main">
           Widok główny
@@ -844,9 +835,6 @@
     };
 
     const syncUserViewButtons = () => {
-      if (ADMIN_MODE) {
-        return;
-      }
       const showMain = state.userView === "main";
       userMainView.classList.toggle("is-visible", showMain);
       userFavoritesView.classList.toggle("is-visible", !showMain);
