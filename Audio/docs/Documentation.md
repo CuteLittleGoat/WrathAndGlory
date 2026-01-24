@@ -64,12 +64,13 @@ window.firebaseConfig = {
   2. **Toolbar** `.toolbar` (tylko admin): przycisk wczytywania manifestu oraz przyciski zarządzania listami.
   3. **Belka filtrów tagów** `.tag-filter-bar` (tylko admin):
      - nagłówek z przyciskiem **Ukryj/Pokaż panel**,
-     - pole „Szukaj tagu...”,
+     - pole „Szukaj tagu...” oraz przycisk **Filtruj ▾**,
      - drzewo checkboxów generowane z tagów folderów,
+     - wyskakujące okienko filtra listowego z wyszukiwarką tagów, checkboxami oraz akcjami „Zaznacz wszystko” / „Odznacz wszystko”,
      - filtrowanie wpływa wyłącznie na listę sampli w panelu admina (nie zmienia głównego widoku ani ulubionych).
   4. **Toolbar z wyszukiwarką sampli** `.toolbar` (tylko admin): pole „Szukaj sampla...”, umieszczone **pod** panelami tagów.
   5. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
-     - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do „Ulubionych” i do „Głównego widoku”.
+     - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
        - Każda karta sampla pokazuje: nazwę sampla, `tag2` (drugi poziom folderu) oraz nazwę pliku.
      - Prawa kolumna `.side-stack`: 
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
@@ -104,9 +105,12 @@ window.firebaseConfig = {
 - `.tag-filter-bar`: tło `--panel`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `padding: 14px 16px`, `box-shadow: --shadow`.
 - `.tag-filter-header`: układ nagłówka filtrów (flex, space-between).
 - `.tag-filter-controls`: pole wyszukiwania tagów, układ flex z odstępami.
+- `.tag-filter-menu`: popup filtra listowego (`position: fixed`, `width: min(320px, 90vw)`, `border-radius: 10px`, `box-shadow: --shadow`).
+- `.tag-menu-list`: scrollowana lista checkboxów tagów (`max-height: 280px`).
 - `.tag-filter-bar.is-collapsed .tag-filter-body`: ukrywa panel checkboxów tagów (`display: none`).
 - `.tag-tree`: kolumnowe drzewko checkboxów, `gap: 6px`.
 - `.tag-children.is-hidden`: ukrywanie podfolderów po odznaczeniu rodzica (`display: none`).
+- `.group-count`: kolor `var(--danger)` dla liczby zgrupowanych plików audio.
 - `.side-stack`: prawa kolumna w adminie, `display: flex`, `flex-direction: column`, `gap: 22px`.
 - `.samples-grid`: `grid-template-columns: repeat(auto-fill, minmax(210px, 1fr))`.
 - `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
@@ -133,7 +137,7 @@ window.firebaseConfig = {
 - **Grupowanie nazw z cyfrą (tylko w obrębie jednego `folderUrl`):**
   - Jeśli nazwy różnią się **numerem na końcu** (`Assault Weapon1`, `Assault Weapon2`, `Rats 1`, `Rats 2`), tworzone jest **jedno** zgrupowanie.
   - Jeśli numer występuje **w środku** nazwy (`Blaster 1 Burst`, `Blaster 2 Burst`), numer jest usuwany z etykiety i powstaje przycisk `Blaster Burst (2)`.
-  - Etykieta grupy zawiera liczebność w nawiasie, np. `Assault Weapon (4)`.
+  - Etykieta grupy zawiera liczebność w nawiasie (np. `Assault Weapon (4)`), a sama liczba jest renderowana na czerwono (`.group-count`).
   - Kliknięcie przycisku losuje dźwięk z listy `variants`.
   - Dla zgrupowanych pozycji przy nazwie pliku pojawia się sufiks `(+N)` informujący o liczbie wariantów.
 - **Tagi folderów:** z `folderUrl` wyciągane są segmenty ścieżki, z których tworzone są tagi hierarchiczne. Segment `AudioRPG` jest pomijany jako folder bazowy. Z pozostałych segmentów usuwane są fragmenty: `SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`. Segmenty są dekodowane z `%20` na spacje, a końcowe spacje usuwane. Drugi tag z hierarchii (`tag2`) jest wyświetlany w panelu admina i w widoku użytkownika pod nazwą sampla.
@@ -146,10 +150,16 @@ window.firebaseConfig = {
 - `cleanTagSegment(segment)` — dekoduje `%20` na spacje, usuwa fragmenty ignorowane (`SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`) i normalizuje spacje.
 - `extractTags(folderUrl)` — zwraca tablicę tagów na podstawie segmentów ścieżki `folderUrl`.
 - `getGroupingBaseLabel(label)` — usuwa numery (na końcu lub jako osobny token w środku) w celu wyznaczenia bazowej etykiety grupowania.
+- `formatSampleLabel(item)` — zwraca HTML etykiety z czerwonym licznikiem wariantów.
 - `buildTagTree(items)` — buduje drzewo tagów (hierarchia) z listy sampli.
+- `flattenTagTree(nodes, depth)` — spłaszcza drzewo tagów do listy z poziomem zagnieżdżenia.
 - `ensureTagSelection(nodes)` — inicjalizuje mapę zaznaczeń tagów domyślnie na `true`.
+- `setAllTagSelection(value)` — masowo zaznacza/odznacza wszystkie tagi.
 - `updateStatus()` — aktualizuje paski statusów (manifest, firebase, liczba list).
 - `updateTagPanelVisibility()` — przełącza ukrycie/odkrycie panelu checkboxów tagów bez zmiany ich zaznaczeń.
+- `renderTagMenu()` — renderuje okienko filtra listowego tagów z wyszukiwarką i checkboxami.
+- `positionTagMenu()` — pozycjonuje popup filtra listowego przy przycisku.
+- `openTagMenu()` / `closeTagMenu()` — otwiera i zamyka popup filtra tagów.
 
 ### 8.2. Ustawienia (ulubione + główny widok)
 - `saveSettings()` — zapisuje `favorites` i `mainView` do Firestore lub `localStorage` (`audio.settings`).
@@ -168,8 +178,8 @@ window.firebaseConfig = {
   4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym.
 
 ### 8.4. Renderowanie
-- `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin) i uwzględnia filtr tekstowy z pola „Szukaj tagu...”.
-- `renderSamples()` — rysuje siatkę sampli (tylko admin) z przyciskami dodawania do ulubionych i głównego widoku; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
+- `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
+- `renderSamples()` — rysuje siatkę sampli (tylko admin) z selektorem listy (domyślnie „Widok Główny”) i przyciskiem dodania; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (play + reorder + remove).
 - `renderUserMainView()` — rysuje „Widok główny” użytkownika (przycisk odtwarzania + tag pod nazwą sampla) zarówno w trybie użytkownika, jak i w podglądzie admina.
@@ -184,8 +194,9 @@ window.firebaseConfig = {
 - `stopPlayback(button)` — zatrzymuje aktywny dźwięk dla przycisku i przywraca etykietę **Odtwórz**.
 - `togglePlayback(itemId, button)` — przełącza odtwarzanie/stop dla pojedynczego przycisku.
 - Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę sampli.
-- Wpisywanie w `#tagSearchInput` filtruje widoczne tagi bez zmiany ich zaznaczeń.
+- Pole `#tagSearchInput` otwiera popup filtra listowego, a wyszukiwanie odbywa się w okienku `#tagMenuSearchInput`.
 - Kliknięcie `#toggleTagPanel` ukrywa lub odsłania cały panel checkboxów tagów bez resetowania stanu zaznaczeń.
+- Popup filtra tagów zawiera checkboxy oraz przyciski **Zaznacz wszystko** / **Odznacz wszystko**; zmiany odświeżają drzewko i listę sampli.
 - `addFavoriteList()` — tworzy nową listę.
 - `addItemToFavorites(listId, itemId)` — dodaje sample do listy.
 - `moveList(listId, direction)` — przesuwa listę w górę/dół.
@@ -193,7 +204,8 @@ window.firebaseConfig = {
 - `removeList(listId)` — usuwa listę (z potwierdzeniem).
 - `moveItem(listId, itemId, direction)` — przesuwa element w obrębie listy.
 - `removeItem(listId, itemId)` — usuwa element z listy.
-- `addItemToMainView(itemId)` — dodaje sample do „Głównego widoku”.
+- `addItemToMainView(itemId)` — dodaje sample do „Głównego widoku” (wybierane w selektorze jako „Widok Główny”).
+- Kliknięcie **Dodaj do listy** sprawdza wartość selektora: jeśli to `main`, element trafia do „Głównego widoku”; w przeciwnym razie trafia do wskazanej listy ulubionych.
 - `moveMainViewItem(itemId, direction)` — przesuwa element w głównym widoku.
 - `removeMainViewItem(itemId)` — usuwa element z głównego widoku.
 - `parseManifest()` — wczytuje i mapuje `AudioManifest.xlsx`.

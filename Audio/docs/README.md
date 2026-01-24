@@ -34,13 +34,14 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 1. Otwórz `Audio/index.html?admin=1`.
 2. Kliknij **Wczytaj manifest**, aby załadować listę sampli.
 3. Użyj belki **Filtry tagów** do zawężenia listy sampli (wpływa tylko na panel admina).
-4. (Opcjonalnie) skorzystaj z pola **Szukaj tagu...** oraz przycisku **Ukryj/Pokaż panel**, aby wygodnie zarządzać listą checkboxów.
+4. (Opcjonalnie) skorzystaj z pola **Szukaj tagu...** oraz przycisku **Filtruj ▾** — otworzy się okienko z wyszukiwarką tagów, checkboxami oraz opcjami zaznacz/odznacz wszystko.
 5. Wyszukuj sample w polu „Szukaj sampla...” (pole znajduje się pod panelami tagów).
 6. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
-7. Dodaj sample do „Głównego widoku” przyciskiem **Dodaj do głównego widoku** i ustaw kolejność w panelu „Główny widok”.
-8. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
-9. W karcie sampla wybierz listę z selektora i kliknij **Dodaj do listy**.
-10. W panelu „Ulubione” możesz:
+7. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
+8. W karcie sampla wybierz z listy **Widok Główny** lub konkretną listę ulubionych i kliknij **Dodaj do listy**:
+   - **Widok Główny** dodaje sample do panelu „Główny widok”.
+   - Wybrana lista ulubionych dodaje sample do tej listy.
+9. W panelu „Ulubione” możesz:
    - zmieniać kolejność list,
    - zmieniać nazwę listy,
    - usuwać listę,
@@ -93,13 +94,14 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 1. Open `Audio/index.html?admin=1`.
 2. Click **Wczytaj manifest** to load samples.
 3. Use the **Filtry tagów** bar to filter the admin sample list (does not affect user panels).
-4. (Optional) use the **Szukaj tagu...** field and the **Ukryj/Pokaż panel** button to manage the checkbox list.
+4. (Optional) use the **Szukaj tagu...** field and the **Filtruj ▾** button — it opens a popup with tag search, checkboxes, and select/deselect all options.
 5. Search samples in the “Szukaj sampla...” field (now located below the tag panel).
 6. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
-7. Add samples to the Main View using **Dodaj do głównego widoku** and reorder them in the “Główny widok” panel.
-8. Click **Nowa lista ulubionych** to create a list.
-9. In a sample card select a list and click **Dodaj do listy**.
-10. In the Favorites panel you can:
+7. Click **Nowa lista ulubionych** to create a list.
+8. In a sample card choose **Widok Główny** or a specific favorites list, then click **Dodaj do listy**:
+   - **Widok Główny** adds the sample to the Main View panel.
+   - A favorites list adds the sample to that list.
+9. In the Favorites panel you can:
    - reorder lists,
    - rename lists,
    - delete lists,

@@ -124,6 +124,10 @@
       gap: 10px;
     }
 
+    .tag-filter-body {
+      position: relative;
+    }
+
     .tag-filter-bar.is-collapsed .tag-filter-body {
       display: none;
     }
@@ -169,6 +173,54 @@
 
     .tag-children.is-hidden {
       display: none;
+    }
+
+    .tag-filter-menu {
+      position: fixed;
+      z-index: 30;
+      width: min(320px, 90vw);
+      background: var(--panel);
+      border: 1px solid rgba(22, 198, 12, 0.8);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tag-filter-menu.is-visible {
+      display: flex;
+    }
+
+    .tag-filter-menu .menu-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag-menu-list {
+      max-height: 280px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .tag-menu-item label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-menu-label {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .group-count {
+      color: var(--danger);
     }
 
     .side-stack {
@@ -445,8 +497,17 @@
       <div class="tag-filter-body">
         <div class="tag-filter-controls">
           <input class="search-input" id="tagSearchInput" type="search" placeholder="Szukaj tagu..." />
+          <button class="btn" id="tagFilterMenuButton">Filtruj ▾</button>
         </div>
         <div id="tagFilter" class="tag-tree"></div>
+        <div class="tag-filter-menu" id="tagFilterMenu" aria-hidden="true">
+          <input class="search-input" id="tagMenuSearchInput" type="search" placeholder="Szukaj tagu..." />
+          <div class="menu-actions">
+            <button class="btn" id="tagMenuSelectAll">Zaznacz wszystko</button>
+            <button class="btn" id="tagMenuClearAll">Odznacz wszystko</button>
+          </div>
+          <div class="tag-menu-list" id="tagMenuList"></div>
+        </div>
       </div>
     </section>
 
@@ -523,6 +584,12 @@
     const tagSearchInput = document.getElementById("tagSearchInput");
     const tagFilterBar = document.getElementById("tagFilterBar");
     const toggleTagPanel = document.getElementById("toggleTagPanel");
+    const tagFilterMenuButton = document.getElementById("tagFilterMenuButton");
+    const tagFilterMenu = document.getElementById("tagFilterMenu");
+    const tagMenuSearchInput = document.getElementById("tagMenuSearchInput");
+    const tagMenuList = document.getElementById("tagMenuList");
+    const tagMenuSelectAll = document.getElementById("tagMenuSelectAll");
+    const tagMenuClearAll = document.getElementById("tagMenuClearAll");
 
     const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 
@@ -539,8 +606,9 @@
       activeFavoritesListId: null,
       tagTree: [],
       tagSelection: new Map(),
-      tagSearchTerm: "",
-      tagPanelVisible: true
+      tagPanelVisible: true,
+      tagMenuOpen: false,
+      tagMenuSearchTerm: ""
     };
 
     const activePlayers = new Map();
@@ -626,6 +694,16 @@
       return { baseLabel: changed ? withoutNumbers : trimmed, changed };
     };
 
+    const formatSampleLabel = (item) => {
+      if (!item) {
+        return "";
+      }
+      if (item.groupCount && item.groupCount > 1) {
+        return `${item.label} <span class="group-count">(${item.groupCount})</span>`;
+      }
+      return item.label;
+    };
+
     const buildTagTree = (items) => {
       const root = { name: "root", path: "", children: new Map() };
       items.forEach((item) => {
@@ -647,6 +725,24 @@
           }))
           .sort((a, b) => a.name.localeCompare(b.name));
       return toArray(root);
+    };
+
+    const flattenTagTree = (nodes, depth = 0) => {
+      const flattened = [];
+      nodes.forEach((node) => {
+        flattened.push({ ...node, depth });
+        if (node.children?.length) {
+          flattened.push(...flattenTagTree(node.children, depth + 1));
+        }
+      });
+      return flattened;
+    };
+
+    const setAllTagSelection = (value) => {
+      const allNodes = flattenTagTree(state.tagTree);
+      allNodes.forEach((node) => {
+        state.tagSelection.set(node.path, value);
+      });
     };
 
     const ensureTagSelection = (nodes) => {
@@ -688,34 +784,9 @@
       if (!ADMIN_MODE || !tagFilter) {
         return;
       }
-      const searchTerm = state.tagSearchTerm.trim().toLowerCase();
-
-      const filterTagNodes = (nodes) => {
-        if (!searchTerm) {
-          return nodes;
-        }
-        const filtered = [];
-        nodes.forEach((node) => {
-          const childMatches = filterTagNodes(node.children);
-          const matchesSelf = node.name.toLowerCase().includes(searchTerm);
-          if (matchesSelf || childMatches.length) {
-            filtered.push({
-              ...node,
-              children: childMatches
-            });
-          }
-        });
-        return filtered;
-      };
 
       if (!state.tagTree.length) {
         tagFilter.innerHTML = "<div class=\"empty-state\">Brak tagów do filtrowania.</div>";
-        return;
-      }
-
-      const visibleTree = filterTagNodes(state.tagTree);
-      if (!visibleTree.length) {
-        tagFilter.innerHTML = "<div class=\"empty-state\">Brak wyników dla podanego filtra tagów.</div>";
         return;
       }
 
@@ -735,7 +806,7 @@
         `;
       };
 
-      tagFilter.innerHTML = visibleTree.map(renderNode).join("");
+      tagFilter.innerHTML = state.tagTree.map(renderNode).join("");
     };
 
     const updateTagPanelVisibility = () => {
@@ -744,6 +815,84 @@
       }
       tagFilterBar.classList.toggle("is-collapsed", !state.tagPanelVisible);
       toggleTagPanel.textContent = state.tagPanelVisible ? "Ukryj panel" : "Pokaż panel";
+    };
+
+    const renderTagMenu = () => {
+      if (!ADMIN_MODE || !tagFilterMenu || !tagMenuList) {
+        return;
+      }
+      const searchTerm = state.tagMenuSearchTerm.trim().toLowerCase();
+      const flattened = flattenTagTree(state.tagTree);
+      const visibleNodes = searchTerm
+        ? flattened.filter((node) => node.name.toLowerCase().includes(searchTerm) || node.path.toLowerCase().includes(searchTerm))
+        : flattened;
+
+      if (!visibleNodes.length) {
+        tagMenuList.innerHTML = "<div class=\"empty-state\">Brak wyników dla podanego filtra tagów.</div>";
+        return;
+      }
+
+      tagMenuList.innerHTML = visibleNodes
+        .map((node) => {
+          const checked = state.tagSelection.get(node.path) !== false;
+          const padding = node.depth * 12;
+          return `
+            <div class="tag-menu-item" data-tag-path="${node.path}">
+              <label>
+                <input type="checkbox" data-action="menu-toggle" data-tag-path="${node.path}" ${checked ? "checked" : ""} />
+                <span class="tag-menu-label" style="padding-left: ${padding}px;">${node.name}</span>
+              </label>
+            </div>
+          `;
+        })
+        .join("");
+    };
+
+    const positionTagMenu = () => {
+      if (!tagFilterMenu || !tagFilterMenuButton) {
+        return;
+      }
+      const rect = tagFilterMenuButton.getBoundingClientRect();
+      const menuRect = tagFilterMenu.getBoundingClientRect();
+      const padding = 12;
+      let left = rect.left;
+      if (left + menuRect.width > window.innerWidth - padding) {
+        left = Math.max(padding, window.innerWidth - menuRect.width - padding);
+      }
+      let top = rect.bottom + 6;
+      if (top + menuRect.height > window.innerHeight - padding) {
+        top = Math.max(padding, rect.top - menuRect.height - 6);
+      }
+      tagFilterMenu.style.left = `${Math.round(left)}px`;
+      tagFilterMenu.style.top = `${Math.round(top)}px`;
+    };
+
+    const openTagMenu = () => {
+      if (!tagFilterMenu) {
+        return;
+      }
+      state.tagMenuOpen = true;
+      tagFilterMenu.classList.add("is-visible");
+      tagFilterMenu.setAttribute("aria-hidden", "false");
+      if (tagMenuSearchInput) {
+        tagMenuSearchInput.value = state.tagMenuSearchTerm;
+        tagMenuSearchInput.focus();
+        tagMenuSearchInput.select();
+      }
+      if (tagSearchInput) {
+        tagSearchInput.value = state.tagMenuSearchTerm;
+      }
+      renderTagMenu();
+      positionTagMenu();
+    };
+
+    const closeTagMenu = () => {
+      if (!tagFilterMenu) {
+        return;
+      }
+      state.tagMenuOpen = false;
+      tagFilterMenu.classList.remove("is-visible");
+      tagFilterMenu.setAttribute("aria-hidden", "true");
     };
 
     const pickRandomVariant = (item) => {
@@ -935,19 +1084,22 @@
       const optionsHtml = state.favorites.lists
         .map((list) => `<option value="${list.id}">${list.name}</option>`)
         .join("");
+      const selectOptions = `
+        <option value="main">Widok Główny</option>
+        ${optionsHtml}
+      `;
 
       samplesGrid.innerHTML = visibleItems
         .map(
           (item) => `
             <div class="sample-card" data-id="${item.id}">
-              <div class="sample-title">${item.label}</div>
+              <div class="sample-title">${formatSampleLabel(item)}</div>
               <div class="sample-meta">${item.tag2 || "Brak tagu 2"}</div>
               <div class="sample-meta">${item.filename || "Brak nazwy pliku"}</div>
               <div class="sample-actions">
                 <button class="btn" data-action="play">Odtwórz</button>
-                <button class="btn" data-action="add-main">Dodaj do głównego widoku</button>
                 <select class="fav-select">
-                  ${optionsHtml}
+                  ${selectOptions}
                 </select>
                 <button class="btn" data-action="add-favorite">Dodaj do listy</button>
               </div>
@@ -987,7 +1139,7 @@
                           const item = state.itemsById.get(itemId);
                           return `
                             <div class="fav-item" data-item-id="${itemId}">
-                              <div class="fav-item-title">${item ? item.label : "(brak w manifeście)"}</div>
+                              <div class="fav-item-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
                               <div class="fav-item-actions">
                                 <button class="btn" data-action="fav-play">Odtwórz</button>
                                 <button class="btn" data-action="fav-up" ${itemIndex === 0 ? "disabled" : ""}>▲</button>
@@ -1021,7 +1173,7 @@
           const item = state.itemsById.get(itemId);
           return `
             <div class="fav-item" data-item-id="${itemId}">
-              <div class="fav-item-title">${item ? item.label : "(brak w manifeście)"}</div>
+              <div class="fav-item-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
               <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
               <div class="sample-meta">${item?.filename || "Brak nazwy pliku"}</div>
               <div class="fav-item-actions">
@@ -1049,7 +1201,7 @@
                 const item = state.itemsById.get(itemId);
                 return `
                   <div class="sample-card" data-id="${itemId}">
-                    <div class="sample-title">${item ? item.label : "(brak w manifeście)"}</div>
+                    <div class="sample-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
                     <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
                     <div class="sample-actions">
                       <button class="btn" data-action="play">Odtwórz</button>
@@ -1081,7 +1233,7 @@
               const item = state.itemsById.get(itemId);
               return `
                 <div class="sample-card" data-id="${itemId}">
-                  <div class="sample-title">${item ? item.label : "(brak w manifeście)"}</div>
+                  <div class="sample-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
                   <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
                   <div class="sample-actions">
                     <button class="btn" data-action="play">Odtwórz</button>
@@ -1132,6 +1284,10 @@
       renderUserFavorites();
       renderUserNavigation();
       syncUserViewButtons();
+      if (state.tagMenuOpen) {
+        renderTagMenu();
+        positionTagMenu();
+      }
     };
 
     const syncUserViewButtons = () => {
@@ -1335,7 +1491,8 @@
           seen.add(id);
           groupMap.set(groupKey, {
             id,
-            label: shouldGroup ? `${entry.baseLabel} (${groupSize})` : entry.label,
+            label: shouldGroup ? entry.baseLabel : entry.label,
+            groupCount: shouldGroup ? groupSize : 0,
             filename: entry.filename,
             folderUrl: entry.folderUrl,
             tags,
@@ -1383,10 +1540,11 @@
       }
       if (button.dataset.action === "add-favorite") {
         const select = card.querySelector(".fav-select");
-        addItemToFavorites(select.value, itemId);
-      }
-      if (button.dataset.action === "add-main") {
-        addItemToMainView(itemId);
+        if (select.value === "main") {
+          addItemToMainView(itemId);
+        } else {
+          addItemToFavorites(select.value, itemId);
+        }
       }
     });
 
@@ -1533,14 +1691,23 @@
         const path = checkbox.dataset.tagPath;
         state.tagSelection.set(path, checkbox.checked);
         renderTagFilter();
+        if (state.tagMenuOpen) {
+          renderTagMenu();
+        }
         renderSamples();
       });
     }
 
     if (tagSearchInput) {
+      tagSearchInput.addEventListener("focus", () => {
+        openTagMenu();
+      });
       tagSearchInput.addEventListener("input", (event) => {
-        state.tagSearchTerm = event.target.value;
-        renderTagFilter();
+        state.tagMenuSearchTerm = event.target.value;
+        if (tagMenuSearchInput) {
+          tagMenuSearchInput.value = state.tagMenuSearchTerm;
+        }
+        renderTagMenu();
       });
     }
 
@@ -1550,6 +1717,87 @@
         updateTagPanelVisibility();
       });
     }
+
+    if (tagFilterMenuButton) {
+      tagFilterMenuButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (state.tagMenuOpen) {
+          closeTagMenu();
+        } else {
+          openTagMenu();
+        }
+      });
+    }
+
+    if (tagMenuSearchInput) {
+      tagMenuSearchInput.addEventListener("input", (event) => {
+        state.tagMenuSearchTerm = event.target.value;
+        if (tagSearchInput) {
+          tagSearchInput.value = state.tagMenuSearchTerm;
+        }
+        renderTagMenu();
+      });
+    }
+
+    if (tagMenuList) {
+      tagMenuList.addEventListener("change", (event) => {
+        const checkbox = event.target.closest("input[data-action=\"menu-toggle\"]");
+        if (!checkbox) {
+          return;
+        }
+        const path = checkbox.dataset.tagPath;
+        state.tagSelection.set(path, checkbox.checked);
+        renderTagFilter();
+        renderTagMenu();
+        renderSamples();
+      });
+    }
+
+    if (tagMenuSelectAll) {
+      tagMenuSelectAll.addEventListener("click", () => {
+        setAllTagSelection(true);
+        renderTagFilter();
+        renderTagMenu();
+        renderSamples();
+      });
+    }
+
+    if (tagMenuClearAll) {
+      tagMenuClearAll.addEventListener("click", () => {
+        setAllTagSelection(false);
+        renderTagFilter();
+        renderTagMenu();
+        renderSamples();
+      });
+    }
+
+    document.addEventListener("click", (event) => {
+      if (!state.tagMenuOpen) {
+        return;
+      }
+      if (tagFilterMenu?.contains(event.target)) {
+        return;
+      }
+      if (tagFilterMenuButton?.contains(event.target)) {
+        return;
+      }
+      if (tagSearchInput?.contains(event.target)) {
+        return;
+      }
+      closeTagMenu();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && state.tagMenuOpen) {
+        closeTagMenu();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (state.tagMenuOpen) {
+        positionTagMenu();
+      }
+    });
 
     setModeVisibility();
     loadSettingsLocal();
