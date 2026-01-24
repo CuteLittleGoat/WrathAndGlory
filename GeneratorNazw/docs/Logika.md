@@ -147,4 +147,459 @@ Funkcja sanitizująca wynik końcowy. Usuwa:
 - podwójne spacje,
 - zbędne spacje na początku/końcu.
 
+  ## 11) Zawartość tablic
+  /* ============================================================
+   WH40K Name Generator – KLOCKI (wszystkie użyte listy)
+   Skopiuj cały blok do pliku tekstowego / blocks.txt / blocks.js
+   ============================================================ */
+
+/* ----------------------------
+   IMPERIUM – LUDZIE
+   ---------------------------- */
+
+// Klasa Wyższa – pierwsze człony imion
+const HUMAN_UPPER_GIVEN_A = [
+  "Aure","Cassi","Seve","Octa","Vale","Lucia","Domi","Hadri","Marce","Serap",
+  "Calpi","Veri","Honori","Isol","Adeli","Celesti","Corvi","Gide","Malach","Eras"
+];
+
+// Klasa Wyższa – drugie człony imion
+const HUMAN_UPPER_GIVEN_B = [
+  "lian","anus","rin","tian","ria","nius","dric","nora","lius","phine",
+  "purnia","tus","oria","dine","line","stine","nus","eon","chai","mus"
+];
+
+// Klasa Wyższa – rdzenie nazwisk
+const HUMAN_UPPER_SURROOT = [
+  "Vorn","Kessel","Varro","Stroud","Cald","Ferr","Thane","Roth","Serr","Malk",
+  "Cairn","Bex","Ulric","Kov","Garr","Vayne","Hale","Mord","Sable","Praxis"
+];
+
+// Klasa Wyższa – sufiksy nazwisk
+const HUMAN_UPPER_SURSUF = [
+  "ius","ian","ov","ski","son","hart","wick","ford","croft","borne",
+  "vale","lock","ward","more","ley","mere","holt","grim","en","an"
+];
+
+// Klasa Niższa – imiona (baza)
+const HUMAN_LOWER_GIVEN_A = [
+  "Jax","Kade","Rook","Venn","Orlo","Sly","Brann","Kerr","Mako","Stenn",
+  "Rafe","Holt","Cutter","Nox","Tarn","Vik","Rex","Dane","Skell","Kellan"
+];
+
+// Klasa Niższa – dopiski do imion
+const HUMAN_LOWER_GIVEN_B = [
+  "","","","","","","","","","","-7","-9","-13","-21","","","","","",""
+];
+
+// Klasa Niższa – rdzenie nazwisk/ksyw
+const HUMAN_LOWER_SURROOT = [
+  "Brask","Krail","Drax","Kane","Voss","Kerr","Tarn","Grit","Sump","Ragg",
+  "Kord","Nail","Scrap","Murk","Gash","Stitch","Rivet","Grim","Smog","Cinder"
+];
+
+// Klasa Niższa – sufiksy nazwisk/ksyw
+const HUMAN_LOWER_SURSUF = [
+  "","","","","","","-V","-X","-IX","","son","en","er","","lock","","ward","","",""
+];
+
+
+/* ----------------------------
+   ASTARTES
+   ---------------------------- */
+
+// Astartes – pierwsze człony imion
+const ASTARTES_PRE = [
+  "Var","Cat","Sev","Tib","Aq","Dru","Hel","Gal","Mor","Val",
+  "Ren","Kas","Bor","Cor","Sar","Luc","Mar","Darn","Rhen","Acast"
+];
+
+// Astartes – środkowe człony imion
+const ASTARTES_MID = [
+  "ia","o","e","u","a","i","ae","io","or","ar",
+  "en","an","us","on","ir","al","ur","is","um","el"
+];
+
+// Astartes – końcówki imion
+const ASTARTES_END = [
+  "nus","rius","dor","lius","tus","ran","mir","kon","dax","vorn",
+  "cai","drak","grimm","noct","sable","thrax","ferr","uln","kast","vor"
+];
+
+// Astartes – pierwszy człon nazwiska bojowego
+const ASTARTES_COGN_A = [
+  "Iron","Black","Storm","Void","Ash","Blood","Stone","Dawn","Grim","Star",
+  "Night","Oath","Steel","Frost","Raven","Wolf","Spear","Hammer","Shield","Gale"
+];
+
+// Astartes – drugi człon nazwiska bojowego
+const ASTARTES_COGN_B = [
+  "hand","blade","born","guard","reaver","ward","heart","fist","howl","strike",
+  "mantle","watch","crown","hunt","march","breaker","caller","sunder","mark","claw"
+];
+
+
+/* ----------------------------
+   ADEPTUS MECHANICUS
+   ---------------------------- */
+
+// Mechanicus – pierwsze człony techno-imion
+const MECH_PRE = [
+  "Ferr","Cogn","Omni","Mach","Volt","Syn","Noos","Logi","Cyt","Prax",
+  "Aug","Data","Rho","Sigma","Kappa","Delta","Theta","Gamma","Proto","Hex"
+];
+
+// Mechanicus – środkowe człony techno-imion
+const MECH_MID = [
+  "um","itor","on","ex","aris","eon","aph","or","axis","al",
+  "ion","atus","et","icus","om","orithm","plex","metry","gnosis","forge"
+];
+
+// Mechanicus – końcówki techno-imion
+const MECH_SUF = [
+  "ix","or","a","us","is","um","eta","-9","-11","-17",
+  "-23","-41","-77","-101","Prime","Secundus","Tertius","IV","VII"
+];
+
+// Mechanicus – prefiksy tagów/oznaczeń
+const MECH_TAG = [
+  "M-","KX-","VX-","RX-","TX-","Sigma-","Omni-","Noos-","Data-","Hex-"
+];
+
+// Skitarii – typy jednostek (użyte w generatorze Skitarii)
+const SKITARII_UNITS = [
+  "Ranger","Vanguard","Infiltrator","Ruststalker","Skitarii Alpha"
+];
+
+
+/* ----------------------------
+   AELDARI
+   ---------------------------- */
+
+// Craftworld – pierwsze sylaby
+const AELDARI_CRAFT_PRE = [
+  "Ae","Ara","Eli","Ili","Lia","Mae","Sha","Yv","Fae","Dyr",
+  "Kae","Nai","Syr","Thal","Vael","Cyr","Idr","Ky","Lath","Nu"
+];
+
+// Craftworld – środkowe sylaby
+const AELDARI_CRAFT_MID = [
+  "ra","li","th","sha","ly","na","re","v","ss","dr",
+  "ae","io","yr","el","an","en","or","ith","sa","qu"
+];
+
+// Craftworld – końcówki
+const AELDARI_CRAFT_END = [
+  "ion","iel","ar","eth","ael","yra","wyn","ith","as","oriel",
+  "essar","mir","niel","thir","vian","rael"
+];
+
+// Drukhari – pierwsze sylaby
+const AELDARI_DRUKH_PRE = [
+  "As","Dra","Mal","Vex","Xae","Zy","Kha","Naz","Bel","Ara",
+  "Cru","Sha","Thra","Lel","Draz"
+];
+
+// Drukhari – środkowe sylaby
+const AELDARI_DRUKH_MID = [
+  "ru","za","x","th","sh","el","ae","i","o","y",
+  "rr","kk","zz","v","dr","kr","n"
+];
+
+// Drukhari – końcówki
+const AELDARI_DRUKH_END = [
+  "bael","keth","ax","esh","ar","yx","vrax","ith","zhar","saar",
+  "malys","hesp","vecth","drah","scar"
+];
+
+// Harlequins – pierwsze sylaby
+const AELDARI_HARL_PRE = [
+  "Ky","Mo","D'ye","Idra","Ase","Lye","Va","Sae","Thae","Yl",
+  "Fae","Cael","Nu","Ere","Lle"
+];
+
+// Harlequins – środkowe sylaby
+const AELDARI_HARL_MID = [
+  "la","ra","e","i","o","ae","ss","th","lith","mir",
+  "rael","quor","hynn","sael","vyr"
+];
+
+// Harlequins – końcówki
+const AELDARI_HARL_END = [
+  "nil","ley","song","spear","blade","shade","wyn","light","mask","dance","whisper","gleam"
+];
+
+
+/* ----------------------------
+   NECRONI
+   ---------------------------- */
+
+// Necroni – pierwsze sylaby
+const NECRON_PRE = [
+  "An","Imo","Tra","Ori","Sza","Kam","Zah","Nek","Pha","Khep",
+  "Men","Set","Nih","Meph","Nov","Sek","Cair","Shrou","Scy"
+];
+
+// Necroni – środkowe sylaby
+const NECRON_MID = [
+  "ka","tekh","ryn","ra","to","ki","sa","rekh","ph","men",
+  "oth","ekh","zar","t","khet","mose","sek","sha","cyr"
+];
+
+// Necroni – końcówki
+const NECRON_END = [
+  "ekh","otekh","ryn","kar","takh","rekh","khet","zar","sakh","thor",
+  "mose","seth","nih","meph","nov"
+];
+
+
+/* ----------------------------
+   ORKOWIE
+   ---------------------------- */
+
+// Orkowie – pierwsze sylaby
+const ORK_PRE = [
+  "Ghaz","Snag","Naz","Waz","Grog","Skab","Ugr","Dreg","Ruk","Mog",
+  "Zog","Klaw","Rippa","Grim","Badr","Skull","Krump","Gitz"
+];
+
+// Orkowie – środkowe sylaby
+const ORK_MID = [
+  "g","k","z","kr","rag","sm","dakk","sn","gutz","ur",
+  "teef","gob","sk","bash","chop","lug","stomp"
+];
+
+// Orkowie – końcówki
+const ORK_END = [
+  "gull","rod","dreg","dakka","teef","smek","krumpa","skull","nob","boss",
+  "grot","lugga","stompa","choppa","gitz","snagga"
+];
+
+
+/* ----------------------------
+   CHAOS (tylko imiona)
+   ---------------------------- */
+
+// Chaos Undivided – pre
+const CHAOS_UNDIV_PRE = [
+  "Ab","Mor","Vek","Zar","Bel","Aza","Xar","Dae","Mal","Kor",
+  "Nex","Var","Tor","Kha","Ul"
+];
+// Chaos Undivided – mid
+const CHAOS_UNDIV_MID = [
+  "ra","zu","no","the","sse","ur","i","o","ae","yx",
+  "zz","th","vor","kar","el"
+];
+// Chaos Undivided – end
+const CHAOS_UNDIV_END = [
+  "gon","rax","mord","thar","loth","zeth","vyr","esh","akor","ion",
+  "azar","ith","ul","tor","vex"
+];
+
+// Khorne – pre
+const CHAOS_KHORNE_PRE = [
+  "Kh","Kar","Gor","Rag","Skar","Bra","Khor","Vra","Ghar","Ruk",
+  "Dra","Kha","Zar","Kor","Gr"
+];
+// Khorne – mid
+const CHAOS_KHORNE_MID = [
+  "a","o","u","ra","ga","kha","gru","zor","rak","th",
+  "zz","ur","akh","orr","rag"
+];
+// Khorne – end
+const CHAOS_KHORNE_END = [
+  "thar","gor","krag","zakh","gorn","rakk","skar","drox","khul","mord",
+  "rax","zarr","vorn","gash","rend"
+];
+
+// Nurgle – pre
+const CHAOS_NURGLE_PRE = [
+  "Nur","Mog","Pox","Rot","Glo","Bub","Muc","Fet","Gur","Slud",
+  "Mor","Plag","Sour","Vile","Mold"
+];
+// Nurgle – mid
+const CHAOS_NURGLE_MID = [
+  "a","o","u","ru","lo","mu","gu","zz","dr","th",
+  "ag","ur","og","il","en"
+];
+// Nurgle – end
+const CHAOS_NURGLE_END = [
+  "mire","rot","pox","gore","slime","mold","blight","filth","drip","reap",
+  "gasp","gul","mur","bog","ooze"
+];
+
+// Tzeentch – pre
+const CHAOS_TZEENT_PRE = [
+  "Tze","Ahr","Kai","Zyn","Xai","Vex","Syr","Aza","Cyr","The",
+  "My","Ori","Zae","Quo","Ixi"
+];
+// Tzeentch – mid
+const CHAOS_TZEENT_MID = [
+  "ae","io","y","ra","ze","th","ss","qu","vyr","el",
+  "an","en","or","ith","sa"
+];
+// Tzeentch – end
+const CHAOS_TZEENT_END = [
+  "ith","or","ael","vyr","zeph","quor","hynn","sael","myr","niel",
+  "thir","vian","rael","xyr","loth"
+];
+
+// Slaanesh – pre
+const CHAOS_SLAAN_PRE = [
+  "Sla","Luc","Vel","Ser","Xan","Sha","Eli","Vyr","Cael","Nai",
+  "Zel","Ase","Lye","Fae","Rha"
+];
+// Slaanesh – mid
+const CHAOS_SLAAN_MID = [
+  "ae","ia","io","y","la","ra","ve","se","th","ss",
+  "el","an","en","or","ith"
+];
+// Slaanesh – end
+const CHAOS_SLAAN_END = [
+  "ar","ath","iel","yra","essa","ion","uar","elis","oriel","yss",
+  "vane","lure","kiss","rath","veil"
+];
+
+
+/* ----------------------------
+   ADEPTA SORORITAS (tylko imię+nazwisko)
+   ---------------------------- */
+
+// Sororitas – pierwsze człony imion
+const SORORITAS_GIVEN_A = [
+  "Aure","Celes","Serap","Ver","Isol","Honori","Adeli","Miri","Domiti","Lucia",
+  "Sabin","Calpurn","Marci","Hel","Cass","Valer","Octav","Sever","Livi","Lethe"
+];
+
+// Sororitas – końcówki imion
+const SORORITAS_GIVEN_B = [
+  "a","ine","ina","ella","oria","ia","ette","ana","ene","ara",
+  "ina","ine","ia","a","e","ia","ina","ine","ia","a"
+];
+
+// Sororitas – rdzenie nazwisk
+const SORORITAS_SURROOT = [
+  "Vorn","Kessel","Varro","Stroud","Cald","Ferr","Thane","Roth","Serr","Malk",
+  "Cairn","Bex","Ulric","Kov","Garr","Vayne","Hale","Mord","Sable","Praxis"
+];
+
+// Sororitas – końcówki nazwisk
+const SORORITAS_SURSUF = [
+  "ia","ine","ara","ette","elle","is","a","e","ia","ine",
+  "ara","ette","elle","is","a","e","ia","ine","ara","is"
+];
+
+
+/* ----------------------------
+   MASZYNY BOJOWE (Imperium)
+   ---------------------------- */
+
+// Czołgi – baza
+const WAR_TANKS = [
+  "Leman Russ","Baneblade","Chimera","Hellhound","Basilisk","Manticore","Rogal Dorn"
+];
+
+// Tytany – klasy
+const WAR_TITANS = [
+  "Warhound","Reaver","Warlord","Warbringer","Warmaster","Imperator"
+];
+
+// Rycerze – wzorce
+const WAR_KNIGHTS = [
+  "Paladin","Errant","Warden","Crusader","Gallant","Preceptor","Castellan","Valiant"
+];
+
+// Lotnictwo – baza
+const WAR_AIR = [
+  "Valkyrie","Vendetta","Vulture","Thunderbolt","Lightning"
+];
+
+// Maszyny – drugi człon (PL)
+const WAR_NOUNS_PL = [
+  "Triumf","Pokuta","Wyrok","Odsiecz","Błyskawica","Zemsta","Nieugiętość","Cisza","Przysięga","Pochodnia",
+  "Żelazo","Grom","Litania","Żar","Świt","Zmierzch","Krucjata","Męstwo","Zaciętość","Czujność"
+];
+
+
+/* ----------------------------
+   OKRĘTY GWIEZDNE
+   ---------------------------- */
+
+// Imperium – człony A
+const SHIP_IMPERIAL_A = [
+  "Gloria","Vigil","Penance","Resolve","Judgement","Redemption","Dominion","Absolution","Fidelity","Tenacity",
+  "Sanction","Triumph","Concord","Aegis","Providence"
+];
+
+// Imperium – człony B
+const SHIP_IMPERIAL_B = [
+  "Terrae","Imperatoris","Throni","Martyrum","Noctis","Astrae","Ultimae","Veritatis","Custodiae","Sanguinis",
+  "Lux","Mortis","Bellum","Canticum","Vindex"
+];
+
+// Chaos – człony A
+const SHIP_CHAOS_A = [
+  "Bane","Ruin","Blight","Malice","Damnation","Rapture","Desecration","Ravage","Torment","Abyss",
+  "Fury","Heresy","Night","Ash","Sorrow"
+];
+
+// Chaos – człony B
+const SHIP_CHAOS_B = [
+  "Oath","Crown","Dagger","Pyre","Gauntlet","Whisper","Howl","Shard","Spear","Covenant",
+  "Grimoire","Requiem","Hunger","Gash","Void"
+];
+
+// Aeldari/Drukhari – człony A
+const SHIP_ELDAR_A = [
+  "Asuryan","Khaine","Isha","Lileath","Kurnous","Morai","Cegorach","Ulth","Alai","Biel",
+  "Saim","Iyand","Webway","Moon","Star"
+];
+
+// Aeldari/Drukhari – człony B
+const SHIP_ELDAR_B = [
+  "Whisper","Gleam","Dawn","Mist","Song","Spear","Shade","Gale","Dream","Thread",
+  "Mirror","Blade","Echo","Runes","Silence"
+];
+
+// Orkowie – człony A
+const SHIP_ORK_A = [
+  "Da","Big","Red","Mean","Loud","Krumpin","Smashin","Burnin","Lootin","Stompy",
+  "Killin","Ragin","Gorky","Morky","Nasty"
+];
+
+// Orkowie – człony B
+const SHIP_ORK_B = [
+  "Kroozer","Hulk","Killship","Ramskiff","Dakka-Boat","Smasha","Choppa-Barge","Stompa-Ark","Boom-Tub","Rok-Boat","Scrap-Barge"
+];
+
+// Necroni – człony A (zaszyte w generatorze okrętów)
+const SHIP_NECRON_A = [
+  "Obelisk","Tomb","Cairn","Monolith","Crypt","Eon","Void","Silence","Sarcophagus","World"
+];
+
+// Necroni – człony B (zaszyte w generatorze okrętów)
+const SHIP_NECRON_B = [
+  "Engine","Harvester","Ark","Spire","Reaper","Anvil","Gate","Crown","Spear","Protocol"
+];
+
+// Astartes – człony A (zaszyte w generatorze okrętów)
+const SHIP_ASTARTES_A = [
+  "Pride","Oath","Glory","Vigil","Wrath","Aegis","Resolve","Triumph","Judgement","Requital"
+];
+
+// Astartes – człony B (zaszyte w generatorze okrętów)
+const SHIP_ASTARTES_B = [
+  "Fenris","Noctis","Dorn","Aquila","Terra","Sanguis","Vigilus","Helion","Calth","Pharos"
+];
+
+// Mechanicus – człony A (zaszyte w generatorze okrętów)
+const SHIP_MECHANICUS_A = [
+  "Omnissiah","Ferrum","Cognitio","Machina","Noosphere","Volt","Praxium","Logis","Data","Hex"
+];
+
+// Mechanicus – człony B (zaszyte w generatorze okrętów)
+const SHIP_MECHANICUS_B = [
+  "Speranza","Protocol","Canticle","Litany","Axiom","Schema","Index","Reliquary","Vector","Dominion"
+];
+
 **Zasada:** wywołuj po każdej generacji, aby nie wracały niepożądane dopiski.
