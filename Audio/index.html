@@ -4,68 +4,1911 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Audio | Kozi przybornik</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
              radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
              #031605;
       --panel: #000;
+      --panel-alt: #041b08;
       --border: #16c60c;
       --text: #9cf09c;
       --accent: #16c60c;
       --accent-dark: #0d7a07;
+      --accent-strong: #1ee616;
+      --muted: rgba(156, 240, 156, 0.7);
+      --danger: #ff5f5f;
       --glow: 0 0 25px rgba(22, 198, 12, 0.45);
-      --radius: 10px;
+      --radius: 12px;
+      --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+      --font: "Fira Code", "Consolas", "Source Code Pro", monospace;
     }
 
     * {
       box-sizing: border-box;
-      font-family: "Consolas", "Fira Code", "Source Code Pro", monospace;
     }
 
     body {
       margin: 0;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
       background: var(--bg);
       color: var(--text);
+      font-family: var(--font);
     }
 
-    main {
-      width: min(860px, 100%);
-      background: var(--panel);
-      border: 2px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--glow);
-      padding: 32px 32px 28px;
+    .page {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 28px 28px 40px;
       display: flex;
       flex-direction: column;
-      align-items: center;
       gap: 22px;
     }
 
-    .title {
+    header {
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      box-shadow: var(--glow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    header h1 {
       margin: 0;
-      font-size: clamp(22px, 3vw, 28px);
+      font-size: clamp(22px, 3vw, 30px);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    header p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .status-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .status-pill {
+      padding: 6px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: rgba(22, 198, 12, 0.08);
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--panel);
+      border: 1px solid rgba(22, 198, 12, 0.7);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .tag-filter-bar {
+      background: var(--panel);
+      border: 1px solid rgba(22, 198, 12, 0.6);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tag-filter-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tag-filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag-filter-body {
+      position: relative;
+    }
+
+    .tag-filter-bar.is-collapsed .tag-filter-body {
+      display: none;
+    }
+
+    .tag-filter-bar h2 {
+      margin: 0;
+      font-size: 15px;
       text-transform: uppercase;
       letter-spacing: 0.08em;
     }
 
-    .subtitle {
-      margin: 0;
-      font-size: 15px;
+    .tag-tree {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .tag-node {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tag-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-label input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .tag-children {
+      margin-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tag-children.is-hidden {
+      display: none;
+    }
+
+    .tag-filter-menu {
+      position: fixed;
+      z-index: 30;
+      width: min(320px, 90vw);
+      background: var(--panel);
+      border: 1px solid rgba(22, 198, 12, 0.8);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tag-filter-menu.is-visible {
+      display: flex;
+    }
+
+    .tag-filter-menu .menu-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag-menu-list {
+      max-height: 280px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .tag-menu-item label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-menu-label {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .group-count {
+      color: var(--danger);
+    }
+
+    .side-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .toolbar .left,
+    .toolbar .right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      background: #031806;
+      border: 1px solid var(--border);
       color: var(--text);
-      opacity: 0.9;
+      padding: 8px 12px;
+      border-radius: 8px;
+      min-width: 220px;
+      font-family: var(--font);
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: #031806;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: var(--font);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: rgba(22, 198, 12, 0.15);
+      box-shadow: 0 0 12px rgba(22, 198, 12, 0.25);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-danger {
+      border-color: var(--danger);
+      color: #ffd6d6;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.7fr);
+      gap: 22px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid rgba(22, 198, 12, 0.6);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      min-height: 420px;
+    }
+
+    .panel h2 {
+      margin: 0 0 14px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .samples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .sample-card {
+      background: var(--panel-alt);
+      border: 1px solid rgba(22, 198, 12, 0.4);
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-height: 150px;
+    }
+
+    .sample-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .sample-meta {
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-all;
+    }
+
+    .sample-trigger {
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .sample-card.is-playing .sample-trigger,
+    .fav-item.is-playing .sample-trigger {
+      color: var(--danger);
+    }
+
+    .sample-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: auto;
+    }
+
+    .sample-actions select {
+      background: #031806;
+      border: 1px solid rgba(22, 198, 12, 0.6);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-family: var(--font);
+      font-size: 12px;
+    }
+
+    .favorites-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .fav-list {
+      border: 1px solid rgba(22, 198, 12, 0.5);
+      border-radius: 10px;
+      padding: 12px;
+      background: #031206;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .fav-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .fav-header h3 {
+      margin: 0;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .fav-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .fav-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px;
+      border: 1px dashed rgba(22, 198, 12, 0.4);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .fav-item-title {
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .fav-item-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .volume-slider {
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    .empty-state {
+      text-align: center;
+      font-size: 13px;
+      color: var(--muted);
+      padding: 20px 0;
+    }
+
+    .user-view {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .user-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(240px, 0.7fr);
+      gap: 22px;
+    }
+
+    .user-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .user-nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .user-nav .btn.is-active {
+      background: rgba(22, 198, 12, 0.25);
+      border-color: var(--accent-strong);
+      color: #d2ffd2;
+      box-shadow: 0 0 16px rgba(22, 198, 12, 0.3);
+    }
+
+    .user-panel {
+      display: none;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .user-panel.is-visible {
+      display: flex;
+    }
+
+    .legend {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 980px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      .user-layout {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <main>
-    <h1 class="title">Strona w budowie</h1>
-    <p class="subtitle">Moduł Audio jest w przygotowaniu.</p>
-  </main>
+  <div class="page">
+    <header class="admin-only">
+      <h1 id="headerTitle">Audio — panel dźwięków</h1>
+      <p id="headerSubtitle">Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.</p>
+      <div class="status-bar admin-only">
+        <span class="status-pill" id="manifestStatus">Manifest: brak danych</span>
+        <span class="status-pill" id="firebaseStatus">Firebase: oczekiwanie</span>
+        <span class="status-pill" id="favoritesStatus">Ulubione: 0 list</span>
+      </div>
+    </header>
+
+    <section class="toolbar admin-only">
+      <div class="left">
+        <button class="btn" id="reloadManifest">Wczytaj manifest</button>
+      </div>
+      <div class="right">
+        <button class="btn" id="addList">Nowa lista ulubionych</button>
+        <button class="btn" id="refreshFavorites">Odśwież ulubione</button>
+      </div>
+    </section>
+
+    <section class="tag-filter-bar admin-only" id="tagFilterBar">
+      <div class="tag-filter-header">
+        <div>
+          <h2>Filtry tagów</h2>
+          <p class="legend">Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.</p>
+        </div>
+        <button class="btn" id="toggleTagPanel">Ukryj panel</button>
+      </div>
+      <div class="tag-filter-body">
+        <div class="tag-filter-controls">
+          <input class="search-input" id="tagSearchInput" type="search" placeholder="Szukaj tagu..." />
+          <button class="btn" id="tagFilterMenuButton">Filtruj ▾</button>
+        </div>
+        <div id="tagFilter" class="tag-tree"></div>
+        <div class="tag-filter-menu" id="tagFilterMenu" aria-hidden="true">
+          <input class="search-input" id="tagMenuSearchInput" type="search" placeholder="Szukaj tagu..." />
+          <div class="menu-actions">
+            <button class="btn" id="tagMenuSelectAll">Zaznacz wszystko</button>
+            <button class="btn" id="tagMenuClearAll">Odznacz wszystko</button>
+          </div>
+          <div class="tag-menu-list" id="tagMenuList"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="toolbar admin-only">
+      <div class="left">
+        <input class="search-input" id="searchInput" type="search" placeholder="Szukaj sampla..." />
+      </div>
+    </section>
+
+    <section class="layout admin-only">
+      <div class="panel">
+        <h2>Lista sampli</h2>
+        <p class="legend">Źródło danych: AudioManifest.xlsx (kolumny NazwaSampla, NazwaPliku, LinkDoFolderu).</p>
+        <div id="samplesGrid" class="samples-grid"></div>
+      </div>
+
+      <div class="side-stack">
+        <aside class="panel">
+          <h2>Ulubione</h2>
+          <div class="favorites-panel" id="favoritesPanel"></div>
+        </aside>
+        <aside class="panel">
+          <h2>Główny widok</h2>
+          <p class="legend">Lista dźwięków wyświetlana użytkownikom w głównym widoku.</p>
+          <div class="favorites-panel" id="mainViewPanel"></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="user-view">
+      <div class="user-layout">
+        <div class="panel">
+          <div id="userMainView" class="user-panel is-visible"></div>
+          <div id="userFavoritesView" class="user-panel"></div>
+        </div>
+        <aside class="panel">
+          <h2>Nawigacja</h2>
+          <div class="user-nav" id="userNav"></div>
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="config/firebase-config.js"></script>
+  <script type="module">
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      setDoc,
+      onSnapshot,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+    const manifestStatus = document.getElementById("manifestStatus");
+    const firebaseStatus = document.getElementById("firebaseStatus");
+    const favoritesStatus = document.getElementById("favoritesStatus");
+    const samplesGrid = document.getElementById("samplesGrid");
+    const favoritesPanel = document.getElementById("favoritesPanel");
+    const mainViewPanel = document.getElementById("mainViewPanel");
+    const searchInput = document.getElementById("searchInput");
+    const reloadManifest = document.getElementById("reloadManifest");
+    const addListButton = document.getElementById("addList");
+    const refreshFavoritesButton = document.getElementById("refreshFavorites");
+    const headerTitle = document.getElementById("headerTitle");
+    const headerSubtitle = document.getElementById("headerSubtitle");
+    const userMainView = document.getElementById("userMainView");
+    const userFavoritesView = document.getElementById("userFavoritesView");
+    const userNav = document.getElementById("userNav");
+    const tagFilter = document.getElementById("tagFilter");
+    const tagSearchInput = document.getElementById("tagSearchInput");
+    const tagFilterBar = document.getElementById("tagFilterBar");
+    const toggleTagPanel = document.getElementById("toggleTagPanel");
+    const tagFilterMenuButton = document.getElementById("tagFilterMenuButton");
+    const tagFilterMenu = document.getElementById("tagFilterMenu");
+    const tagMenuSearchInput = document.getElementById("tagMenuSearchInput");
+    const tagMenuList = document.getElementById("tagMenuList");
+    const tagMenuSelectAll = document.getElementById("tagMenuSelectAll");
+    const tagMenuClearAll = document.getElementById("tagMenuClearAll");
+
+    const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
+
+    const state = {
+      items: [],
+      itemsById: new Map(),
+      favorites: { lists: [] },
+      mainView: { itemIds: [] },
+      firestore: null,
+      favoritesDoc: null,
+      usingFirestore: false,
+      manifestReady: false,
+      userView: "main",
+      activeFavoritesListId: null,
+      tagTree: [],
+      tagSelection: new Map(),
+      tagPanelVisible: true,
+      tagMenuOpen: false,
+      tagMenuSearchTerm: ""
+    };
+
+    const activePlayers = new Map();
+    let audioContext = null;
+
+    const DEFAULT_LIST_NAME = "Ulubione";
+    const TAG_IGNORE_FRAGMENTS = [
+      "SoundPad",
+      "SoundPad Patreon Version",
+      "_Siege_SoundPad",
+      "Patreon"
+    ];
+    const TAG_IGNORE_SEGMENTS = ["AudioRPG"];
+
+    const slugify = (value, index) => {
+      const base = value
+        .toLowerCase()
+        .trim()
+        .replace(/[^\p{L}\p{N}]+/gu, "-")
+        .replace(/^-|-$/g, "");
+      return base || `sample-${index}`;
+    };
+
+    const normalizeUrl = (folderUrl, filename) => {
+      const folder = String(folderUrl || "").trim().replace(/\/+$/, "");
+      const file = String(filename || "").trim().replace(/^\/+/, "");
+      if (!folder || !file) {
+        return "";
+      }
+      return `${folder}/${file}`;
+    };
+
+    const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const cleanTagSegment = (segment) => {
+      let cleaned = String(segment || "");
+      try {
+        cleaned = decodeURIComponent(cleaned);
+      } catch (error) {
+        cleaned = String(segment || "");
+      }
+      cleaned = cleaned.trim();
+      TAG_IGNORE_FRAGMENTS.forEach((fragment) => {
+        const regex = new RegExp(escapeRegExp(fragment), "gi");
+        cleaned = cleaned.replace(regex, "");
+      });
+      cleaned = cleaned.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+      return cleaned;
+    };
+
+    const extractTags = (folderUrl) => {
+      let path = String(folderUrl || "").trim().replace(/\\/g, "/");
+      if (!path) {
+        return [];
+      }
+      try {
+        if (path.includes("://")) {
+          path = new URL(path).pathname;
+        }
+      } catch (error) {
+        path = String(folderUrl || "").trim().replace(/\\/g, "/");
+      }
+      const segments = path
+        .split("/")
+        .filter(Boolean)
+        .filter((segment) => !TAG_IGNORE_SEGMENTS.includes(segment));
+      return segments
+        .map(cleanTagSegment)
+        .filter(Boolean);
+    };
+
+    const getGroupingBaseLabel = (label) => {
+      const trimmed = String(label || "").trim();
+      if (!trimmed) {
+        return { baseLabel: "", changed: false };
+      }
+      const suffixMatch = trimmed.match(/^(.*?)(?:\s*(\d+))$/);
+      if (suffixMatch && suffixMatch[1].trim()) {
+        const base = suffixMatch[1].trim();
+        return { baseLabel: base, changed: base !== trimmed };
+      }
+      const withoutNumbers = trimmed.replace(/\b\d+\b/g, " ").replace(/\s+/g, " ").trim();
+      const changed = Boolean(withoutNumbers) && withoutNumbers !== trimmed && /\d/.test(trimmed);
+      return { baseLabel: changed ? withoutNumbers : trimmed, changed };
+    };
+
+    const formatSampleLabel = (item) => {
+      if (!item) {
+        return "";
+      }
+      if (item.groupCount && item.groupCount > 1) {
+        return `${item.label} <span class="group-count">(${item.groupCount})</span>`;
+      }
+      return item.label;
+    };
+
+    const buildTagTree = (items) => {
+      const root = { name: "root", path: "", children: new Map() };
+      items.forEach((item) => {
+        let current = root;
+        item.tags.forEach((tag, index) => {
+          const path = item.tags.slice(0, index + 1).join(" / ");
+          if (!current.children.has(tag)) {
+            current.children.set(tag, { name: tag, path, children: new Map() });
+          }
+          current = current.children.get(tag);
+        });
+      });
+      const toArray = (node) =>
+        Array.from(node.children.values())
+          .map((child) => ({
+            name: child.name,
+            path: child.path,
+            children: toArray(child)
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      return toArray(root);
+    };
+
+    const flattenTagTree = (nodes, depth = 0) => {
+      const flattened = [];
+      nodes.forEach((node) => {
+        flattened.push({ ...node, depth });
+        if (node.children?.length) {
+          flattened.push(...flattenTagTree(node.children, depth + 1));
+        }
+      });
+      return flattened;
+    };
+
+    const setAllTagSelection = (value) => {
+      const allNodes = flattenTagTree(state.tagTree);
+      allNodes.forEach((node) => {
+        state.tagSelection.set(node.path, value);
+      });
+    };
+
+    const ensureTagSelection = (nodes) => {
+      nodes.forEach((node) => {
+        if (!state.tagSelection.has(node.path)) {
+          state.tagSelection.set(node.path, true);
+        }
+        ensureTagSelection(node.children);
+      });
+    };
+
+    const setModeVisibility = () => {
+      document.body.classList.toggle("admin-mode", ADMIN_MODE);
+      document.body.classList.toggle("user-mode", !ADMIN_MODE);
+      const adminOnly = Array.from(document.querySelectorAll(".admin-only"));
+      if (!ADMIN_MODE) {
+        adminOnly.forEach((el) => el.remove());
+      }
+
+      if (headerTitle && headerSubtitle) {
+        headerTitle.textContent = ADMIN_MODE ? "Audio — panel dźwięków" : "Audio — panel użytkownika";
+        headerSubtitle.textContent = ADMIN_MODE
+          ? "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase."
+          : "Wybierz widok z panelu bocznego, aby odtwarzać przygotowane dźwięki.";
+      }
+    };
+
+    const updateStatus = () => {
+      manifestStatus.textContent = state.manifestReady
+        ? `Manifest: ${state.items.length} pozycji`
+        : "Manifest: brak danych";
+      firebaseStatus.textContent = state.usingFirestore
+        ? "Firebase: połączono"
+        : "Firebase: lokalne ustawienia";
+      favoritesStatus.textContent = `Ulubione: ${state.favorites.lists.length} list`;
+    };
+
+    const renderTagFilter = () => {
+      if (!ADMIN_MODE || !tagFilter) {
+        return;
+      }
+
+      if (!state.tagTree.length) {
+        tagFilter.innerHTML = "<div class=\"empty-state\">Brak tagów do filtrowania.</div>";
+        return;
+      }
+
+      const renderNode = (node) => {
+        const checked = state.tagSelection.get(node.path) !== false;
+        const childrenHtml = node.children.map(renderNode).join("");
+        return `
+          <div class="tag-node" data-tag-path="${node.path}">
+            <label class="tag-label">
+              <input type="checkbox" data-action="toggle-tag" data-tag-path="${node.path}" ${checked ? "checked" : ""} />
+              <span>${node.name}</span>
+            </label>
+            <div class="tag-children ${checked ? "" : "is-hidden"}">
+              ${childrenHtml}
+            </div>
+          </div>
+        `;
+      };
+
+      tagFilter.innerHTML = state.tagTree.map(renderNode).join("");
+    };
+
+    const updateTagPanelVisibility = () => {
+      if (!tagFilterBar || !toggleTagPanel) {
+        return;
+      }
+      tagFilterBar.classList.toggle("is-collapsed", !state.tagPanelVisible);
+      toggleTagPanel.textContent = state.tagPanelVisible ? "Ukryj panel" : "Pokaż panel";
+    };
+
+    const renderTagMenu = () => {
+      if (!ADMIN_MODE || !tagFilterMenu || !tagMenuList) {
+        return;
+      }
+      const searchTerm = state.tagMenuSearchTerm.trim().toLowerCase();
+      const flattened = flattenTagTree(state.tagTree);
+      const visibleNodes = searchTerm
+        ? flattened.filter((node) => node.name.toLowerCase().includes(searchTerm) || node.path.toLowerCase().includes(searchTerm))
+        : flattened;
+
+      if (!visibleNodes.length) {
+        tagMenuList.innerHTML = "<div class=\"empty-state\">Brak wyników dla podanego filtra tagów.</div>";
+        return;
+      }
+
+      tagMenuList.innerHTML = visibleNodes
+        .map((node) => {
+          const checked = state.tagSelection.get(node.path) !== false;
+          const padding = node.depth * 12;
+          return `
+            <div class="tag-menu-item" data-tag-path="${node.path}">
+              <label>
+                <input type="checkbox" data-action="menu-toggle" data-tag-path="${node.path}" ${checked ? "checked" : ""} />
+                <span class="tag-menu-label" style="padding-left: ${padding}px;">${node.name}</span>
+              </label>
+            </div>
+          `;
+        })
+        .join("");
+    };
+
+    const positionTagMenu = () => {
+      if (!tagFilterMenu || !tagFilterMenuButton) {
+        return;
+      }
+      const rect = tagFilterMenuButton.getBoundingClientRect();
+      const menuRect = tagFilterMenu.getBoundingClientRect();
+      const padding = 12;
+      let left = rect.left;
+      if (left + menuRect.width > window.innerWidth - padding) {
+        left = Math.max(padding, window.innerWidth - menuRect.width - padding);
+      }
+      let top = rect.bottom + 6;
+      if (top + menuRect.height > window.innerHeight - padding) {
+        top = Math.max(padding, rect.top - menuRect.height - 6);
+      }
+      tagFilterMenu.style.left = `${Math.round(left)}px`;
+      tagFilterMenu.style.top = `${Math.round(top)}px`;
+    };
+
+    const openTagMenu = () => {
+      if (!tagFilterMenu) {
+        return;
+      }
+      state.tagMenuOpen = true;
+      tagFilterMenu.classList.add("is-visible");
+      tagFilterMenu.setAttribute("aria-hidden", "false");
+      if (tagMenuSearchInput) {
+        tagMenuSearchInput.value = state.tagMenuSearchTerm;
+        tagMenuSearchInput.focus();
+        tagMenuSearchInput.select();
+      }
+      if (tagSearchInput) {
+        tagSearchInput.value = state.tagMenuSearchTerm;
+      }
+      renderTagMenu();
+      positionTagMenu();
+    };
+
+    const closeTagMenu = () => {
+      if (!tagFilterMenu) {
+        return;
+      }
+      state.tagMenuOpen = false;
+      tagFilterMenu.classList.remove("is-visible");
+      tagFilterMenu.setAttribute("aria-hidden", "true");
+    };
+
+    const pickRandomVariant = (item) => {
+      if (!item?.variants?.length) {
+        return "";
+      }
+      const index = Math.floor(Math.random() * item.variants.length);
+      return item.variants[index]?.fullUrl || "";
+    };
+
+    const getAudioContext = () => {
+      if (audioContext) {
+        return audioContext;
+      }
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) {
+        return null;
+      }
+      audioContext = new AudioCtx();
+      return audioContext;
+    };
+
+    const getPlaybackVolumeValue = (playbackRoot) => {
+      if (!playbackRoot) {
+        return 0;
+      }
+      const slider = playbackRoot.querySelector("input[data-role=\"volume\"]");
+      if (!slider) {
+        return 0;
+      }
+      const value = Number(slider.value);
+      return Number.isNaN(value) ? 0 : value;
+    };
+
+    const volumeToGain = (value) => (Math.max(-100, Math.min(100, value)) + 100) / 100;
+
+    const updatePlaybackLabel = (playbackRoot, isPlaying) => {
+      if (!playbackRoot || playbackRoot.tagName !== "BUTTON") {
+        return;
+      }
+      playbackRoot.dataset.playing = isPlaying ? "true" : "false";
+      playbackRoot.textContent = isPlaying ? "Zatrzymaj" : "Odtwórz";
+    };
+
+    const applyPlayerVolume = (player, value) => {
+      if (!player) {
+        return;
+      }
+      const gain = volumeToGain(value);
+      if (player.gainNode) {
+        player.gainNode.gain.value = gain;
+        return;
+      }
+      player.audio.volume = Math.max(0, Math.min(1, gain));
+    };
+
+    const stopPlayback = (playbackRoot) => {
+      const entry = activePlayers.get(playbackRoot);
+      if (!entry) {
+        return;
+      }
+      entry.audio.pause();
+      entry.audio.currentTime = 0;
+      activePlayers.delete(playbackRoot);
+      updatePlaybackLabel(playbackRoot, false);
+      playbackRoot.classList.remove("is-playing");
+    };
+
+    const startPlayback = (item, playbackRoot) => {
+      const fullUrl = pickRandomVariant(item);
+      if (!fullUrl) {
+        alert("Brak linku do pliku audio w manifestie.");
+        return;
+      }
+      const audio = new Audio(fullUrl);
+      const context = getAudioContext();
+      let gainNode = null;
+      if (context) {
+        if (context.state === "suspended") {
+          context.resume().catch(() => {});
+        }
+        const source = context.createMediaElementSource(audio);
+        gainNode = context.createGain();
+        source.connect(gainNode);
+        gainNode.connect(context.destination);
+      }
+      const volumeValue = getPlaybackVolumeValue(playbackRoot);
+      const player = { audio, gainNode };
+      applyPlayerVolume(player, volumeValue);
+      activePlayers.set(playbackRoot, player);
+      updatePlaybackLabel(playbackRoot, true);
+      playbackRoot.classList.add("is-playing");
+      audio.addEventListener("ended", () => stopPlayback(playbackRoot));
+      audio.addEventListener("error", () => {
+        alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+        stopPlayback(playbackRoot);
+      });
+      audio.play().catch(() => {
+        alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+        stopPlayback(playbackRoot);
+      });
+    };
+
+    const togglePlayback = (itemId, playbackRoot) => {
+      const item = state.itemsById.get(itemId);
+      if (!item || !playbackRoot) {
+        return;
+      }
+      if (activePlayers.has(playbackRoot)) {
+        stopPlayback(playbackRoot);
+        return;
+      }
+      startPlayback(item, playbackRoot);
+    };
+
+    const saveSettings = async () => {
+      const payload = {
+        favorites: state.favorites,
+        mainView: state.mainView,
+        updatedAt: serverTimestamp()
+      };
+      if (state.usingFirestore && state.favoritesDoc) {
+        await setDoc(state.favoritesDoc, payload, { merge: true });
+        return;
+      }
+      localStorage.setItem("audio.settings", JSON.stringify({
+        favorites: state.favorites,
+        mainView: state.mainView
+      }));
+    };
+
+    const defaultFavorites = () => ({
+      lists: [
+        {
+          id: crypto.randomUUID(),
+          name: DEFAULT_LIST_NAME,
+          itemIds: []
+        }
+      ]
+    });
+
+    const defaultMainView = () => ({
+      itemIds: []
+    });
+
+    const normalizeFavorites = (raw) => {
+      if (!raw || !Array.isArray(raw.lists)) {
+        return defaultFavorites();
+      }
+      return {
+        lists: raw.lists.map((list) => ({
+          id: list.id || crypto.randomUUID(),
+          name: list.name || DEFAULT_LIST_NAME,
+          itemIds: Array.isArray(list.itemIds) ? list.itemIds : []
+        }))
+      };
+    };
+
+    const normalizeMainView = (raw) => ({
+      itemIds: Array.isArray(raw?.itemIds) ? raw.itemIds.filter(Boolean) : []
+    });
+
+    const normalizeSettings = (raw) => {
+      if (!raw) {
+        return { favorites: defaultFavorites(), mainView: defaultMainView() };
+      }
+      const favoritesSource = raw.favorites || (raw.lists ? raw : null);
+      return {
+        favorites: normalizeFavorites(favoritesSource),
+        mainView: normalizeMainView(raw.mainView)
+      };
+    };
+
+    const loadSettingsLocal = () => {
+      const stored = localStorage.getItem("audio.settings");
+      if (!stored) {
+        const legacy = localStorage.getItem("audio.favorites");
+        if (!legacy) {
+          state.favorites = defaultFavorites();
+          state.mainView = defaultMainView();
+          return;
+        }
+        try {
+          const legacyFavorites = normalizeFavorites(JSON.parse(legacy));
+          state.favorites = legacyFavorites;
+          state.mainView = defaultMainView();
+          return;
+        } catch (error) {
+          state.favorites = defaultFavorites();
+          state.mainView = defaultMainView();
+          return;
+        }
+      }
+      try {
+        const parsed = JSON.parse(stored);
+        const settings = normalizeSettings(parsed);
+        state.favorites = settings.favorites;
+        state.mainView = settings.mainView;
+      } catch (error) {
+        state.favorites = defaultFavorites();
+        state.mainView = defaultMainView();
+      }
+    };
+
+    const initFirebase = () => {
+      if (!window.firebaseConfig || !window.firebaseConfig.apiKey) {
+        firebaseStatus.textContent = "Firebase: brak konfiguracji";
+        loadSettingsLocal();
+        renderAllViews();
+        return;
+      }
+      const app = initializeApp(window.firebaseConfig);
+      const db = getFirestore(app);
+      state.firestore = db;
+      state.favoritesDoc = doc(db, "audio", "favorites");
+      state.usingFirestore = true;
+
+      onSnapshot(state.favoritesDoc, (snapshot) => {
+        if (!snapshot.exists()) {
+          const defaults = normalizeSettings(null);
+          state.favorites = defaults.favorites;
+          state.mainView = defaults.mainView;
+          saveSettings().catch(console.error);
+          renderAllViews();
+          return;
+        }
+        const settings = normalizeSettings(snapshot.data());
+        state.favorites = settings.favorites;
+        state.mainView = settings.mainView;
+        renderAllViews();
+      });
+    };
+
+    const renderSamples = () => {
+      if (!ADMIN_MODE) {
+        return;
+      }
+      const filter = searchInput.value.trim().toLowerCase();
+      const visibleItems = state.items.filter((item) =>
+        item.label.toLowerCase().includes(filter)
+        && item.tagPaths.every((path) => state.tagSelection.get(path) !== false)
+      );
+
+      if (!visibleItems.length) {
+        samplesGrid.innerHTML = "<div class=\"empty-state\">Brak wyników dla podanego filtra.</div>";
+        return;
+      }
+
+      const optionsHtml = state.favorites.lists
+        .map((list) => `<option value="${list.id}">${list.name}</option>`)
+        .join("");
+      const selectOptions = `
+        <option value="main">Widok Główny</option>
+        ${optionsHtml}
+      `;
+
+      samplesGrid.innerHTML = visibleItems
+        .map(
+          (item) => `
+            <div class="sample-card" data-id="${item.id}">
+              <div class="sample-title">${formatSampleLabel(item)}</div>
+              <div class="sample-meta">${item.tag2 || "Brak tagu 2"}</div>
+              <div class="sample-meta">${item.filename || "Brak nazwy pliku"}</div>
+              <div class="sample-actions">
+                <button class="btn" data-action="play">Odtwórz</button>
+                <select class="fav-select">
+                  ${selectOptions}
+                </select>
+                <button class="btn" data-action="add-favorite">Dodaj do listy</button>
+              </div>
+            </div>
+          `
+        )
+        .join("");
+    };
+
+    const renderFavorites = () => {
+      if (!ADMIN_MODE) {
+        return;
+      }
+      if (!state.favorites.lists.length) {
+        favoritesPanel.innerHTML = "<div class=\"empty-state\">Brak list ulubionych.</div>";
+        return;
+      }
+
+      favoritesPanel.innerHTML = state.favorites.lists
+        .map(
+          (list, index) => `
+            <div class="fav-list" data-list-id="${list.id}">
+              <div class="fav-header">
+                <h3>${list.name}</h3>
+                <div class="fav-actions">
+                  <button class="btn" data-action="list-up" ${index === 0 ? "disabled" : ""}>▲</button>
+                  <button class="btn" data-action="list-down" ${index === state.favorites.lists.length - 1 ? "disabled" : ""}>▼</button>
+                  <button class="btn" data-action="list-rename">Zmień nazwę</button>
+                  <button class="btn btn-danger" data-action="list-remove">Usuń</button>
+                </div>
+              </div>
+              <div class="fav-items">
+                ${
+                  list.itemIds.length
+                    ? list.itemIds
+                        .map((itemId, itemIndex) => {
+                          const item = state.itemsById.get(itemId);
+                          return `
+                            <div class="fav-item" data-item-id="${itemId}">
+                              <div class="fav-item-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+                              <div class="fav-item-actions">
+                                <button class="btn" data-action="fav-play">Odtwórz</button>
+                                <button class="btn" data-action="fav-up" ${itemIndex === 0 ? "disabled" : ""}>▲</button>
+                                <button class="btn" data-action="fav-down" ${itemIndex === list.itemIds.length - 1 ? "disabled" : ""}>▼</button>
+                                <button class="btn btn-danger" data-action="fav-remove">Usuń</button>
+                              </div>
+                            </div>
+                          `;
+                        })
+                        .join("")
+                    : "<div class=\"empty-state\">Lista jest pusta.</div>"
+                }
+              </div>
+            </div>
+          `
+        )
+        .join("");
+      renderSamples();
+    };
+
+    const renderMainViewAdmin = () => {
+      if (!ADMIN_MODE) {
+        return;
+      }
+      if (!state.mainView.itemIds.length) {
+        mainViewPanel.innerHTML = "<div class=\"empty-state\">Brak dźwięków w głównym widoku.</div>";
+        return;
+      }
+      mainViewPanel.innerHTML = state.mainView.itemIds
+        .map((itemId, index) => {
+          const item = state.itemsById.get(itemId);
+          return `
+            <div class="fav-item" data-item-id="${itemId}" data-playback-root="true">
+              <div class="fav-item-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+              <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
+              <div class="sample-meta">${item?.filename || "Brak nazwy pliku"}</div>
+              <div class="fav-item-actions">
+                <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+                <button class="btn" data-action="main-up" ${index === 0 ? "disabled" : ""}>▲</button>
+                <button class="btn" data-action="main-down" ${index === state.mainView.itemIds.length - 1 ? "disabled" : ""}>▼</button>
+                <button class="btn btn-danger" data-action="main-remove">Usuń</button>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    };
+
+    const renderUserMainView = () => {
+      if (!state.mainView.itemIds.length) {
+        userMainView.innerHTML = "<div class=\"samples-grid\"></div>";
+        return;
+      }
+      userMainView.innerHTML = `
+        <div class="samples-grid">
+          ${
+            state.mainView.itemIds
+              .map((itemId) => {
+                const item = state.itemsById.get(itemId);
+                return `
+                  <div class="sample-card" data-id="${itemId}" data-playback-root="true">
+                    <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+                    <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
+                    <div class="sample-actions">
+                      <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+                    </div>
+                  </div>
+                `;
+              })
+              .join("")
+          }
+        </div>
+      `;
+    };
+
+    const renderUserFavorites = () => {
+      if (!state.favorites.lists.length) {
+        userFavoritesView.innerHTML = "<div class=\"samples-grid\"></div>";
+        return;
+      }
+      if (!state.activeFavoritesListId) {
+        state.activeFavoritesListId = state.favorites.lists[0].id;
+      }
+      const activeList = state.favorites.lists.find((list) => list.id === state.activeFavoritesListId)
+        || state.favorites.lists[0];
+      state.activeFavoritesListId = activeList.id;
+
+      const itemsHtml = activeList.itemIds.length
+        ? activeList.itemIds
+            .map((itemId) => {
+              const item = state.itemsById.get(itemId);
+              return `
+                <div class="sample-card" data-id="${itemId}" data-playback-root="true">
+                  <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+                  <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
+                  <div class="sample-actions">
+                    <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+                  </div>
+                </div>
+              `;
+            })
+            .join("")
+        : "";
+
+      userFavoritesView.innerHTML = `
+        <div class="samples-grid">${itemsHtml}</div>
+      `;
+    };
+
+    const renderUserNavigation = () => {
+      const mainButton = `
+        <button class="btn ${state.userView === "main" ? "is-active" : ""}" data-action="user-main">
+          Widok główny
+        </button>
+      `;
+      const favoritesButtons = state.favorites.lists.length
+        ? state.favorites.lists
+            .map(
+              (list) =>
+                `<button class="btn ${list.id === state.activeFavoritesListId && state.userView === "favorites" ? "is-active" : ""}" data-action="user-list" data-list-id="${list.id}">${list.name}</button>`
+            )
+            .join("")
+        : "<div class=\"legend\">Brak list ulubionych.</div>";
+
+      userNav.innerHTML = `
+        <div class="user-nav-group">${mainButton}</div>
+        <div class="user-nav-group">
+          <div class="legend">Listy ulubionych</div>
+          ${favoritesButtons}
+        </div>
+      `;
+    };
+
+    const renderAllViews = () => {
+      updateStatus();
+      renderTagFilter();
+      updateTagPanelVisibility();
+      renderSamples();
+      renderFavorites();
+      renderMainViewAdmin();
+      renderUserMainView();
+      renderUserFavorites();
+      renderUserNavigation();
+      syncUserViewButtons();
+      if (state.tagMenuOpen) {
+        renderTagMenu();
+        positionTagMenu();
+      }
+    };
+
+    const syncUserViewButtons = () => {
+      const showMain = state.userView === "main";
+      userMainView.classList.toggle("is-visible", showMain);
+      userFavoritesView.classList.toggle("is-visible", !showMain);
+      userNav.querySelectorAll("button[data-action=\"user-main\"]").forEach((button) => {
+        button.classList.toggle("is-active", showMain);
+      });
+      userNav.querySelectorAll("button[data-action=\"user-list\"]").forEach((button) => {
+        const isActiveList = button.dataset.listId === state.activeFavoritesListId;
+        button.classList.toggle("is-active", !showMain && isActiveList);
+      });
+    };
+
+    const setUserView = (view) => {
+      state.userView = view;
+      syncUserViewButtons();
+    };
+
+    const addFavoriteList = async () => {
+      const name = prompt("Nazwa nowej listy ulubionych:", "Nowa lista");
+      if (!name) {
+        return;
+      }
+      state.favorites.lists.push({
+        id: crypto.randomUUID(),
+        name: name.trim(),
+        itemIds: []
+      });
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const addItemToFavorites = async (listId, itemId) => {
+      const list = state.favorites.lists.find((entry) => entry.id === listId);
+      if (!list) {
+        return;
+      }
+      if (!list.itemIds.includes(itemId)) {
+        list.itemIds.push(itemId);
+        await saveSettings();
+        renderAllViews();
+      }
+    };
+
+    const moveList = async (listId, direction) => {
+      const index = state.favorites.lists.findIndex((entry) => entry.id === listId);
+      if (index < 0) {
+        return;
+      }
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= state.favorites.lists.length) {
+        return;
+      }
+      const [removed] = state.favorites.lists.splice(index, 1);
+      state.favorites.lists.splice(targetIndex, 0, removed);
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const renameList = async (listId) => {
+      const list = state.favorites.lists.find((entry) => entry.id === listId);
+      if (!list) {
+        return;
+      }
+      const name = prompt("Nowa nazwa listy:", list.name);
+      if (!name) {
+        return;
+      }
+      list.name = name.trim();
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const removeList = async (listId) => {
+      if (!confirm("Czy na pewno usunąć listę?")) {
+        return;
+      }
+      state.favorites.lists = state.favorites.lists.filter((entry) => entry.id !== listId);
+      if (!state.favorites.lists.length) {
+        state.favorites = defaultFavorites();
+      }
+      if (state.activeFavoritesListId === listId) {
+        state.activeFavoritesListId = state.favorites.lists[0]?.id || null;
+      }
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const moveItem = async (listId, itemId, direction) => {
+      const list = state.favorites.lists.find((entry) => entry.id === listId);
+      if (!list) {
+        return;
+      }
+      const index = list.itemIds.indexOf(itemId);
+      const target = index + direction;
+      if (index < 0 || target < 0 || target >= list.itemIds.length) {
+        return;
+      }
+      const [removed] = list.itemIds.splice(index, 1);
+      list.itemIds.splice(target, 0, removed);
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const removeItem = async (listId, itemId) => {
+      const list = state.favorites.lists.find((entry) => entry.id === listId);
+      if (!list) {
+        return;
+      }
+      list.itemIds = list.itemIds.filter((id) => id !== itemId);
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const addItemToMainView = async (itemId) => {
+      if (!state.mainView.itemIds.includes(itemId)) {
+        state.mainView.itemIds.push(itemId);
+        await saveSettings();
+        renderAllViews();
+      }
+    };
+
+    const moveMainViewItem = async (itemId, direction) => {
+      const index = state.mainView.itemIds.indexOf(itemId);
+      const target = index + direction;
+      if (index < 0 || target < 0 || target >= state.mainView.itemIds.length) {
+        return;
+      }
+      const [removed] = state.mainView.itemIds.splice(index, 1);
+      state.mainView.itemIds.splice(target, 0, removed);
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const removeMainViewItem = async (itemId) => {
+      state.mainView.itemIds = state.mainView.itemIds.filter((id) => id !== itemId);
+      await saveSettings();
+      renderAllViews();
+    };
+
+    const parseManifest = async () => {
+      manifestStatus.textContent = "Manifest: wczytywanie...";
+      const response = await fetch("AudioManifest.xlsx", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("Nie udało się pobrać manifestu.");
+      }
+      const data = await response.arrayBuffer();
+      const workbook = XLSX.read(data, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+
+      if (!rows.length) {
+        throw new Error("Manifest nie zawiera danych.");
+      }
+
+      const entries = [];
+      const groupedCounts = new Map();
+      rows.forEach((row, index) => {
+        const label = String(row.NazwaSampla || "").trim();
+        const filename = String(row.NazwaPliku || "").trim();
+        const folderUrl = String(row.LinkDoFolderu || "").trim();
+        if (!label) {
+          return;
+        }
+        const grouping = getGroupingBaseLabel(label);
+        const baseLabel = grouping.baseLabel || label;
+        const isGroupCandidate = grouping.changed;
+        const fullUrl = normalizeUrl(folderUrl, filename);
+        entries.push({
+          label,
+          baseLabel,
+          isGroupCandidate,
+          filename,
+          folderUrl,
+          fullUrl,
+          rowIndex: index + 1
+        });
+        if (isGroupCandidate) {
+          const key = `${folderUrl}||${baseLabel}`;
+          groupedCounts.set(key, (groupedCounts.get(key) || 0) + 1);
+        }
+      });
+
+      const groupMap = new Map();
+      const seen = new Set();
+      entries.forEach((entry) => {
+        const groupKeyBase = `${entry.folderUrl}||${entry.baseLabel}`;
+        const groupSize = groupedCounts.get(groupKeyBase) || 0;
+        const shouldGroup = entry.isGroupCandidate && groupSize > 1;
+        const groupKey = shouldGroup ? groupKeyBase : `${entry.folderUrl}||${entry.label}||${entry.filename}||${entry.rowIndex}`;
+        if (!groupMap.has(groupKey)) {
+          const tags = extractTags(entry.folderUrl);
+          const tag2 = tags[1] || "";
+          const tagPaths = tags.map((_, index) => tags.slice(0, index + 1).join(" / "));
+          let id = slugify(shouldGroup ? entry.baseLabel : entry.label, entry.rowIndex);
+          if (seen.has(id)) {
+            id = `${id}-${entry.rowIndex}`;
+          }
+          seen.add(id);
+          groupMap.set(groupKey, {
+            id,
+            label: shouldGroup ? entry.baseLabel : entry.label,
+            groupCount: shouldGroup ? groupSize : 0,
+            filename: entry.filename,
+            folderUrl: entry.folderUrl,
+            tags,
+            tag2,
+            tagPaths,
+            variants: []
+          });
+        }
+        const group = groupMap.get(groupKey);
+        group.variants.push({
+          filename: entry.filename,
+          fullUrl: entry.fullUrl
+        });
+      });
+
+      const items = Array.from(groupMap.values()).map((item) => {
+        if (item.variants.length > 1) {
+          const suffix = item.variants.length - 1;
+          const first = item.variants[0]?.filename || "";
+          item.filename = suffix > 0 ? `${first} (+${suffix})` : first;
+        }
+        return item;
+      });
+
+      state.items = items.sort((a, b) => a.label.localeCompare(b.label));
+      state.itemsById = new Map(state.items.map((item) => [item.id, item]));
+      state.manifestReady = true;
+      state.tagTree = buildTagTree(state.items);
+      ensureTagSelection(state.tagTree);
+      renderAllViews();
+    };
+
+    samplesGrid.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) {
+        return;
+      }
+      const card = event.target.closest(".sample-card");
+      if (!card) {
+        return;
+      }
+      const itemId = card.dataset.id;
+      if (button.dataset.action === "play") {
+        togglePlayback(itemId, button);
+      }
+      if (button.dataset.action === "add-favorite") {
+        const select = card.querySelector(".fav-select");
+        if (select.value === "main") {
+          addItemToMainView(itemId);
+        } else {
+          addItemToFavorites(select.value, itemId);
+        }
+      }
+    });
+
+    favoritesPanel.addEventListener("click", (event) => {
+      const button = event.target.closest("button");
+      if (!button) {
+        return;
+      }
+      const listEl = event.target.closest(".fav-list");
+      if (!listEl) {
+        return;
+      }
+      const listId = listEl.dataset.listId;
+      const itemEl = event.target.closest(".fav-item");
+      const itemId = itemEl ? itemEl.dataset.itemId : null;
+
+      switch (button.dataset.action) {
+        case "list-up":
+          moveList(listId, -1);
+          break;
+        case "list-down":
+          moveList(listId, 1);
+          break;
+        case "list-rename":
+          renameList(listId);
+          break;
+        case "list-remove":
+          removeList(listId);
+          break;
+        case "fav-play":
+          if (itemId) {
+            togglePlayback(itemId, button);
+          }
+          break;
+        case "fav-up":
+          if (itemId) {
+            moveItem(listId, itemId, -1);
+          }
+          break;
+        case "fav-down":
+          if (itemId) {
+            moveItem(listId, itemId, 1);
+          }
+          break;
+        case "fav-remove":
+          if (itemId) {
+            removeItem(listId, itemId);
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
+    mainViewPanel.addEventListener("click", (event) => {
+      const trigger = event.target.closest(".sample-trigger");
+      if (trigger && mainViewPanel.contains(trigger)) {
+        const playbackRoot = trigger.closest("[data-playback-root]");
+        if (playbackRoot) {
+          const itemId = playbackRoot.dataset.itemId || playbackRoot.dataset.id;
+          togglePlayback(itemId, playbackRoot);
+        }
+        return;
+      }
+      const button = event.target.closest("button");
+      if (!button) {
+        return;
+      }
+      const itemEl = event.target.closest(".fav-item");
+      if (!itemEl) {
+        return;
+      }
+      const itemId = itemEl.dataset.itemId;
+      switch (button.dataset.action) {
+        case "main-up":
+          moveMainViewItem(itemId, -1);
+          break;
+        case "main-down":
+          moveMainViewItem(itemId, 1);
+          break;
+        case "main-remove":
+          removeMainViewItem(itemId);
+          break;
+        default:
+          break;
+      }
+    });
+
+    userMainView.addEventListener("click", (event) => {
+      const trigger = event.target.closest(".sample-trigger");
+      if (!trigger || !userMainView.contains(trigger)) {
+        return;
+      }
+      const card = trigger.closest("[data-playback-root]");
+      if (!card) {
+        return;
+      }
+      togglePlayback(card.dataset.id, card);
+    });
+
+    const handleVolumeInput = (event) => {
+      const slider = event.target.closest("input[data-role=\"volume\"]");
+      if (!slider) {
+        return;
+      }
+      const playbackRoot = slider.closest("[data-playback-root]");
+      if (!playbackRoot) {
+        return;
+      }
+      const player = activePlayers.get(playbackRoot);
+      if (player) {
+        applyPlayerVolume(player, Number(slider.value));
+      }
+    };
+
+    userFavoritesView.addEventListener("click", (event) => {
+      const trigger = event.target.closest(".sample-trigger");
+      if (!trigger || !userFavoritesView.contains(trigger)) {
+        return;
+      }
+      const card = trigger.closest("[data-playback-root]");
+      if (!card) {
+        return;
+      }
+      togglePlayback(card.dataset.id, card);
+    });
+
+    userMainView.addEventListener("input", handleVolumeInput);
+    userFavoritesView.addEventListener("input", handleVolumeInput);
+    mainViewPanel.addEventListener("input", handleVolumeInput);
+
+    searchInput.addEventListener("input", renderSamples);
+    reloadManifest.addEventListener("click", () => {
+      parseManifest().catch((error) => {
+        alert(error.message);
+        manifestStatus.textContent = "Manifest: błąd wczytywania";
+      });
+    });
+    addListButton.addEventListener("click", addFavoriteList);
+    refreshFavoritesButton.addEventListener("click", () => {
+      if (!state.usingFirestore) {
+        loadSettingsLocal();
+        renderAllViews();
+      }
+    });
+
+    userNav.addEventListener("click", (event) => {
+      const mainButton = event.target.closest("button[data-action=\"user-main\"]");
+      if (mainButton) {
+        setUserView("main");
+        renderUserNavigation();
+        return;
+      }
+      const listButton = event.target.closest("button[data-action=\"user-list\"]");
+      if (listButton) {
+        state.activeFavoritesListId = listButton.dataset.listId;
+        setUserView("favorites");
+        renderUserFavorites();
+        renderUserNavigation();
+      }
+    });
+
+    if (tagFilter) {
+      tagFilter.addEventListener("change", (event) => {
+        const checkbox = event.target.closest("input[data-action=\"toggle-tag\"]");
+        if (!checkbox) {
+          return;
+        }
+        const path = checkbox.dataset.tagPath;
+        state.tagSelection.set(path, checkbox.checked);
+        renderTagFilter();
+        if (state.tagMenuOpen) {
+          renderTagMenu();
+        }
+        renderSamples();
+      });
+    }
+
+    if (tagSearchInput) {
+      tagSearchInput.addEventListener("focus", () => {
+        openTagMenu();
+      });
+      tagSearchInput.addEventListener("input", (event) => {
+        state.tagMenuSearchTerm = event.target.value;
+        if (tagMenuSearchInput) {
+          tagMenuSearchInput.value = state.tagMenuSearchTerm;
+        }
+        renderTagMenu();
+      });
+    }
+
+    if (toggleTagPanel) {
+      toggleTagPanel.addEventListener("click", () => {
+        state.tagPanelVisible = !state.tagPanelVisible;
+        updateTagPanelVisibility();
+      });
+    }
+
+    if (tagFilterMenuButton) {
+      tagFilterMenuButton.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (state.tagMenuOpen) {
+          closeTagMenu();
+        } else {
+          openTagMenu();
+        }
+      });
+    }
+
+    if (tagMenuSearchInput) {
+      tagMenuSearchInput.addEventListener("input", (event) => {
+        state.tagMenuSearchTerm = event.target.value;
+        if (tagSearchInput) {
+          tagSearchInput.value = state.tagMenuSearchTerm;
+        }
+        renderTagMenu();
+      });
+    }
+
+    if (tagMenuList) {
+      tagMenuList.addEventListener("change", (event) => {
+        const checkbox = event.target.closest("input[data-action=\"menu-toggle\"]");
+        if (!checkbox) {
+          return;
+        }
+        const path = checkbox.dataset.tagPath;
+        state.tagSelection.set(path, checkbox.checked);
+        renderTagFilter();
+        renderTagMenu();
+        renderSamples();
+      });
+    }
+
+    if (tagMenuSelectAll) {
+      tagMenuSelectAll.addEventListener("click", () => {
+        setAllTagSelection(true);
+        renderTagFilter();
+        renderTagMenu();
+        renderSamples();
+      });
+    }
+
+    if (tagMenuClearAll) {
+      tagMenuClearAll.addEventListener("click", () => {
+        setAllTagSelection(false);
+        renderTagFilter();
+        renderTagMenu();
+        renderSamples();
+      });
+    }
+
+    document.addEventListener("click", (event) => {
+      if (!state.tagMenuOpen) {
+        return;
+      }
+      if (tagFilterMenu?.contains(event.target)) {
+        return;
+      }
+      if (tagFilterMenuButton?.contains(event.target)) {
+        return;
+      }
+      if (tagSearchInput?.contains(event.target)) {
+        return;
+      }
+      closeTagMenu();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && state.tagMenuOpen) {
+        closeTagMenu();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      if (state.tagMenuOpen) {
+        positionTagMenu();
+      }
+    });
+
+    setModeVisibility();
+    loadSettingsLocal();
+    renderAllViews();
+    initFirebase();
+    parseManifest().catch((error) => {
+      manifestStatus.textContent = "Manifest: błąd wczytywania";
+      console.error(error);
+    });
+    updateStatus();
+  </script>
 </body>
 </html>

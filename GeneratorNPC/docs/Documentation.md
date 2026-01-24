@@ -244,7 +244,7 @@ Ustawienia globalne:
 - `createTag(traitName)` — tworzy element `.tag` dla cechy.
 - `renderTraitsCell(value, columnClass)` — renderuje komórkę cech jako zestaw tagów.
 - `createClampCell(sheetName, rowId, key, valueString, columnClass)` — tworzy komórkę z mechanizmem clamp.
-- `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP, obcina wpis do 25 znaków (przy edycji i zapisie) i zapisuje nadpisanie do `state.bestiaryOverrides`.
+- `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP, obcina wpis do 25 znaków i zapisuje nadpisanie do `state.bestiaryOverrides`.
 - `createSkillsRow(record, key, valueString)` — renderuje wiersz „Umiejętności” z przyciskiem **Edytuj/Zapisz** i `textarea`.
 - `renderOrderedTable({ tableBody, records, columns, sheetName })` — renderuje tabelę z określonymi kolumnami.
 - `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne.

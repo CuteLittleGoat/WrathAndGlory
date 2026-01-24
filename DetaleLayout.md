@@ -429,6 +429,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Fokus inputów: `box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25)`.
 - Podsumowanie `.summary`: tło `rgba(22, 198, 12, 0.08)`, ramka `rgba(22, 198, 12, 0.4)`.
 - Hover/active przycisku: `rgba(22, 198, 12, 0.14)` / `rgba(22, 198, 12, 0.22)`.
+- Przełącznik języka (`.language-switcher select`): tło `var(--bg)` (`#031605` pod gradientami).
 
 ### 3) Layout i elementy UI
 - Aplikacja centrowana jak w Main (`body` flex + padding `24px`).
@@ -463,17 +464,22 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - `--border`: `#16c60c`.
 - `--text`: `#9cf09c`.
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
+- `--danger`: `#ff5f5f` (czerwony akcent).
 - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
 - `--radius`: `10px`.
 
 ### 3) Layout i elementy UI
 - Układ karty identyczny jak Main (`width: min(860px, 100%)`, centrowanie, box-shadow `--glow`).
+- Karty sampli w widoku użytkownika i w panelu „Główny widok” admina:
+  - nazwa i tag mają klasę `.sample-trigger` (kursor `pointer`),
+  - aktywne odtwarzanie dodaje `.is-playing`, co barwi `.sample-trigger` na `--danger`,
+  - suwak głośności to `.volume-slider` (`width: 100%`, `accent-color: --accent`).
 
 ### 4) Zwijanie/rozwijanie > 9 linii
 - Brak clampowania treści w module Audio.
 
 ### 5) Wyjątki i formatowanie specjalne
-- Brak.
+- `.group-count`: czerwony licznik w nawiasie dla zgrupowanych plików audio (`color: var(--danger)`).
 
 ---
 
