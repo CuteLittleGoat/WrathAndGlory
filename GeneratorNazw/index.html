@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WH40K – Generator nazw</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="topbar">
+        <h1>WH40K – Generator nazw</h1>
+        <p class="subtitle">Proceduralny generator nazw dla postaci, pojazdów i statków (bez tytułów).</p>
+      </header>
+
+      <section class="panel">
+        <div class="grid">
+          <div class="field">
+            <label for="cat">Kategoria</label>
+            <select id="cat"></select>
+          </div>
+          <div class="field">
+            <label for="opt">Opcja</label>
+            <select id="opt"></select>
+          </div>
+          <div class="field">
+            <label for="seed">Seed (opcjonalnie – dla powtarzalności)</label>
+            <input id="seed" placeholder="np. sesja-2026-01-24" />
+          </div>
+          <div class="field">
+            <label for="count">Ile</label>
+            <input id="count" type="number" min="1" max="20" value="10" />
+          </div>
+        </div>
+
+        <div class="row">
+          <button class="btn" id="gen" type="button">Generuj</button>
+          <button class="btn" id="copy" type="button">Kopiuj wynik</button>
+          <span class="pill" id="modePill">Losowo: TAK</span>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="panel output">
+          <div class="results" id="res">Wybierz kategorię i kliknij „Generuj”.</div>
+        </div>
+
+        <p class="hint">
+          Seed = te same ustawienia → te same wyniki. Brak seeda = prawdziwie losowe.
+        </p>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
