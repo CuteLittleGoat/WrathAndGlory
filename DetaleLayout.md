@@ -464,6 +464,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - `--border`: `#16c60c`.
 - `--text`: `#9cf09c`.
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
+- `--danger`: `#ff5f5f` (czerwony akcent).
 - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
 - `--radius`: `10px`.
 
@@ -474,7 +475,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Brak clampowania treści w module Audio.
 
 ### 5) Wyjątki i formatowanie specjalne
-- Brak.
+- `.group-count`: czerwony licznik w nawiasie dla zgrupowanych plików audio (`color: var(--danger)`).
 
 ---
 
