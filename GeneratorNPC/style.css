@@ -379,7 +379,8 @@ textarea:focus {
 }
 
 .table-number-input {
-  width: 100%;
+  width: 25ch;
+  max-width: 25ch;
   min-width: 6ch;
   padding: 6px 8px;
   font-size: 0.85rem;

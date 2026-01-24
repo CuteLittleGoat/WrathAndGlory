@@ -1120,20 +1120,23 @@
         const overrideValue = getNumericOverride(key);
         const initial = overrideValue ?? parseNumericValue(valueString, minValue);
         const resolvedInitial = Math.max(minValue, Number.isFinite(initial) ? initial : minValue);
-        input.value = String(resolvedInitial);
-        const commitValue = () => {
+        const clampInputLength = () => {
           if (input.value.length > MAX_NUMERIC_INPUT_LENGTH) {
             input.value = input.value.slice(0, MAX_NUMERIC_INPUT_LENGTH);
           }
+        };
+        input.value = String(resolvedInitial);
+        clampInputLength();
+        const commitValue = () => {
+          clampInputLength();
           const numeric = parseNumericValue(input.value, minValue);
           const resolved = Math.max(minValue, numeric);
           input.value = String(resolved);
+          clampInputLength();
           state.bestiaryOverrides.numeric.set(normalizeKey(key), resolved);
         };
         input.addEventListener("input", () => {
-          if (input.value.length > MAX_NUMERIC_INPUT_LENGTH) {
-            input.value = input.value.slice(0, MAX_NUMERIC_INPUT_LENGTH);
-          }
+          clampInputLength();
           const numeric = Number.parseInt(input.value, 10);
           if (Number.isFinite(numeric)) {
             state.bestiaryOverrides.numeric.set(normalizeKey(key), Math.max(minValue, numeric));
