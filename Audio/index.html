@@ -100,6 +100,60 @@
       box-shadow: var(--shadow);
     }
 
+    .tag-filter-bar {
+      background: var(--panel);
+      border: 1px solid rgba(22, 198, 12, 0.6);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .tag-filter-bar h2 {
+      margin: 0;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .tag-tree {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .tag-node {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tag-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tag-label input {
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+
+    .tag-children {
+      margin-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tag-children.is-hidden {
+      display: none;
+    }
+
     .side-stack {
       display: flex;
       flex-direction: column;
@@ -364,6 +418,12 @@
       </div>
     </section>
 
+    <section class="tag-filter-bar admin-only">
+      <h2>Filtry tagów</h2>
+      <p class="legend">Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.</p>
+      <div id="tagFilter" class="tag-tree"></div>
+    </section>
+
     <section class="layout admin-only">
       <div class="panel">
         <h2>Lista sampli</h2>
@@ -427,6 +487,7 @@
     const userMainView = document.getElementById("userMainView");
     const userFavoritesView = document.getElementById("userFavoritesView");
     const userNav = document.getElementById("userNav");
+    const tagFilter = document.getElementById("tagFilter");
 
     const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 
@@ -440,12 +501,21 @@
       usingFirestore: false,
       manifestReady: false,
       userView: "main",
-      activeFavoritesListId: null
+      activeFavoritesListId: null,
+      tagTree: [],
+      tagSelection: new Map()
     };
 
-    const audioPlayer = new Audio();
+    const activePlayers = new Map();
 
     const DEFAULT_LIST_NAME = "Ulubione";
+    const TAG_IGNORE_FRAGMENTS = [
+      "SoundPad",
+      "SoundPad Patreon Version",
+      "_Siege_SoundPad",
+      "Patreon"
+    ];
+    const TAG_IGNORE_SEGMENTS = ["AudioRPG"];
 
     const slugify = (value, index) => {
       const base = value
@@ -463,6 +533,71 @@
         return "";
       }
       return `${folder}/${file}`;
+    };
+
+    const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+    const cleanTagSegment = (segment) => {
+      let cleaned = segment.trim();
+      TAG_IGNORE_FRAGMENTS.forEach((fragment) => {
+        const regex = new RegExp(escapeRegExp(fragment), "gi");
+        cleaned = cleaned.replace(regex, "");
+      });
+      cleaned = cleaned.replace(/[_-]+/g, " ").replace(/\s+/g, " ").trim();
+      return cleaned;
+    };
+
+    const extractTags = (folderUrl) => {
+      let path = String(folderUrl || "").trim().replace(/\\/g, "/");
+      if (!path) {
+        return [];
+      }
+      try {
+        if (path.includes("://")) {
+          path = new URL(path).pathname;
+        }
+      } catch (error) {
+        path = String(folderUrl || "").trim().replace(/\\/g, "/");
+      }
+      const segments = path
+        .split("/")
+        .filter(Boolean)
+        .filter((segment) => !TAG_IGNORE_SEGMENTS.includes(segment));
+      return segments
+        .map(cleanTagSegment)
+        .filter(Boolean);
+    };
+
+    const buildTagTree = (items) => {
+      const root = { name: "root", path: "", children: new Map() };
+      items.forEach((item) => {
+        let current = root;
+        item.tags.forEach((tag, index) => {
+          const path = item.tags.slice(0, index + 1).join(" / ");
+          if (!current.children.has(tag)) {
+            current.children.set(tag, { name: tag, path, children: new Map() });
+          }
+          current = current.children.get(tag);
+        });
+      });
+      const toArray = (node) =>
+        Array.from(node.children.values())
+          .map((child) => ({
+            name: child.name,
+            path: child.path,
+            children: toArray(child)
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name));
+      return toArray(root);
+    };
+
+    const ensureTagSelection = (nodes) => {
+      nodes.forEach((node) => {
+        if (!state.tagSelection.has(node.path)) {
+          state.tagSelection.set(node.path, true);
+        }
+        ensureTagSelection(node.children);
+      });
     };
 
     const setModeVisibility = () => {
@@ -489,6 +624,87 @@
         ? "Firebase: połączono"
         : "Firebase: lokalne ustawienia";
       favoritesStatus.textContent = `Ulubione: ${state.favorites.lists.length} list`;
+    };
+
+    const renderTagFilter = () => {
+      if (!ADMIN_MODE || !tagFilter) {
+        return;
+      }
+      if (!state.tagTree.length) {
+        tagFilter.innerHTML = "<div class=\"empty-state\">Brak tagów do filtrowania.</div>";
+        return;
+      }
+
+      const renderNode = (node) => {
+        const checked = state.tagSelection.get(node.path) !== false;
+        const childrenHtml = node.children.map(renderNode).join("");
+        return `
+          <div class="tag-node" data-tag-path="${node.path}">
+            <label class="tag-label">
+              <input type="checkbox" data-action="toggle-tag" data-tag-path="${node.path}" ${checked ? "checked" : ""} />
+              <span>${node.name}</span>
+            </label>
+            <div class="tag-children ${checked ? "" : "is-hidden"}">
+              ${childrenHtml}
+            </div>
+          </div>
+        `;
+      };
+
+      tagFilter.innerHTML = state.tagTree.map(renderNode).join("");
+    };
+
+    const pickRandomVariant = (item) => {
+      if (!item?.variants?.length) {
+        return "";
+      }
+      const index = Math.floor(Math.random() * item.variants.length);
+      return item.variants[index]?.fullUrl || "";
+    };
+
+    const stopPlayback = (button) => {
+      const entry = activePlayers.get(button);
+      if (!entry) {
+        return;
+      }
+      entry.audio.pause();
+      entry.audio.currentTime = 0;
+      activePlayers.delete(button);
+      button.dataset.playing = "false";
+      button.textContent = "Odtwórz";
+    };
+
+    const startPlayback = (item, button) => {
+      const fullUrl = pickRandomVariant(item);
+      if (!fullUrl) {
+        alert("Brak linku do pliku audio w manifestie.");
+        return;
+      }
+      const audio = new Audio(fullUrl);
+      activePlayers.set(button, { audio });
+      button.dataset.playing = "true";
+      button.textContent = "Zatrzymaj";
+      audio.addEventListener("ended", () => stopPlayback(button));
+      audio.addEventListener("error", () => {
+        alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+        stopPlayback(button);
+      });
+      audio.play().catch(() => {
+        alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+        stopPlayback(button);
+      });
+    };
+
+    const togglePlayback = (itemId, button) => {
+      const item = state.itemsById.get(itemId);
+      if (!item || !button) {
+        return;
+      }
+      if (activePlayers.has(button)) {
+        stopPlayback(button);
+        return;
+      }
+      startPlayback(item, button);
     };
 
     const saveSettings = async () => {
@@ -609,21 +825,6 @@
       });
     };
 
-    const playSample = (itemId) => {
-      const item = state.itemsById.get(itemId);
-      if (!item) {
-        return;
-      }
-      if (!item.fullUrl) {
-        alert("Brak linku do pliku audio w manifestie.");
-        return;
-      }
-      audioPlayer.src = item.fullUrl;
-      audioPlayer.play().catch(() => {
-        alert("Nie można odtworzyć dźwięku. Sprawdź link.");
-      });
-    };
-
     const renderSamples = () => {
       if (!ADMIN_MODE) {
         return;
@@ -631,6 +832,7 @@
       const filter = searchInput.value.trim().toLowerCase();
       const visibleItems = state.items.filter((item) =>
         item.label.toLowerCase().includes(filter)
+        && item.tagPaths.every((path) => state.tagSelection.get(path) !== false)
       );
 
       if (!visibleItems.length) {
@@ -647,6 +849,7 @@
           (item) => `
             <div class="sample-card" data-id="${item.id}">
               <div class="sample-title">${item.label}</div>
+              <div class="sample-meta">${item.tag2 || "Brak tagu 2"}</div>
               <div class="sample-meta">${item.filename || "Brak nazwy pliku"}</div>
               <div class="sample-actions">
                 <button class="btn" data-action="play">Odtwórz</button>
@@ -727,6 +930,7 @@
           return `
             <div class="fav-item" data-item-id="${itemId}">
               <div class="fav-item-title">${item ? item.label : "(brak w manifeście)"}</div>
+              <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
               <div class="sample-meta">${item?.filename || "Brak nazwy pliku"}</div>
               <div class="fav-item-actions">
                 <button class="btn" data-action="main-play">Odtwórz</button>
@@ -825,6 +1029,7 @@
 
     const renderAllViews = () => {
       updateStatus();
+      renderTagFilter();
       renderSamples();
       renderFavorites();
       renderMainViewAdmin();
@@ -989,8 +1194,8 @@
         throw new Error("Manifest nie zawiera danych.");
       }
 
-      const items = [];
-      const seen = new Set();
+      const entries = [];
+      const groupedCounts = new Map();
       rows.forEach((row, index) => {
         const label = String(row.NazwaSampla || "").trim();
         const filename = String(row.NazwaPliku || "").trim();
@@ -998,18 +1203,72 @@
         if (!label) {
           return;
         }
-        let id = slugify(label, index + 1);
-        if (seen.has(id)) {
-          id = `${id}-${index + 1}`;
-        }
-        seen.add(id);
+        const match = label.match(/^(.*?)(?:\s+(\d+))$/);
+        const baseLabel = match ? match[1].trim() : label;
+        const hasNumberSuffix = Boolean(match);
         const fullUrl = normalizeUrl(folderUrl, filename);
-        items.push({ id, label, filename, folderUrl, fullUrl });
+        entries.push({
+          label,
+          baseLabel,
+          hasNumberSuffix,
+          filename,
+          folderUrl,
+          fullUrl,
+          rowIndex: index + 1
+        });
+        if (hasNumberSuffix) {
+          const key = `${folderUrl}||${baseLabel}`;
+          groupedCounts.set(key, (groupedCounts.get(key) || 0) + 1);
+        }
+      });
+
+      const groupMap = new Map();
+      const seen = new Set();
+      entries.forEach((entry) => {
+        const groupKeyBase = `${entry.folderUrl}||${entry.baseLabel}`;
+        const shouldGroup = entry.hasNumberSuffix && (groupedCounts.get(groupKeyBase) || 0) > 1;
+        const groupKey = shouldGroup ? groupKeyBase : `${entry.folderUrl}||${entry.label}||${entry.filename}||${entry.rowIndex}`;
+        if (!groupMap.has(groupKey)) {
+          const tags = extractTags(entry.folderUrl);
+          const tag2 = tags[1] || "";
+          const tagPaths = tags.map((_, index) => tags.slice(0, index + 1).join(" / "));
+          let id = slugify(shouldGroup ? entry.baseLabel : entry.label, entry.rowIndex);
+          if (seen.has(id)) {
+            id = `${id}-${entry.rowIndex}`;
+          }
+          seen.add(id);
+          groupMap.set(groupKey, {
+            id,
+            label: shouldGroup ? entry.baseLabel : entry.label,
+            filename: entry.filename,
+            folderUrl: entry.folderUrl,
+            tags,
+            tag2,
+            tagPaths,
+            variants: []
+          });
+        }
+        const group = groupMap.get(groupKey);
+        group.variants.push({
+          filename: entry.filename,
+          fullUrl: entry.fullUrl
+        });
+      });
+
+      const items = Array.from(groupMap.values()).map((item) => {
+        if (item.variants.length > 1) {
+          const suffix = item.variants.length - 1;
+          const first = item.variants[0]?.filename || "";
+          item.filename = suffix > 0 ? `${first} (+${suffix})` : first;
+        }
+        return item;
       });
 
       state.items = items.sort((a, b) => a.label.localeCompare(b.label));
       state.itemsById = new Map(state.items.map((item) => [item.id, item]));
       state.manifestReady = true;
+      state.tagTree = buildTagTree(state.items);
+      ensureTagSelection(state.tagTree);
       renderAllViews();
     };
 
@@ -1024,7 +1283,7 @@
       }
       const itemId = card.dataset.id;
       if (button.dataset.action === "play") {
-        playSample(itemId);
+        togglePlayback(itemId, button);
       }
       if (button.dataset.action === "add-favorite") {
         const select = card.querySelector(".fav-select");
@@ -1063,7 +1322,7 @@
           break;
         case "fav-play":
           if (itemId) {
-            playSample(itemId);
+            togglePlayback(itemId, button);
           }
           break;
         case "fav-up":
@@ -1098,7 +1357,7 @@
       const itemId = itemEl.dataset.itemId;
       switch (button.dataset.action) {
         case "main-play":
-          playSample(itemId);
+          togglePlayback(itemId, button);
           break;
         case "main-up":
           moveMainViewItem(itemId, -1);
@@ -1123,7 +1382,7 @@
       if (!card) {
         return;
       }
-      playSample(card.dataset.id);
+      togglePlayback(card.dataset.id, button);
     });
 
     userFavoritesView.addEventListener("click", (event) => {
@@ -1135,7 +1394,7 @@
       if (!card) {
         return;
       }
-      playSample(card.dataset.id);
+      togglePlayback(card.dataset.id, playButton);
     });
 
     searchInput.addEventListener("input", renderSamples);
@@ -1168,6 +1427,19 @@
         renderUserNavigation();
       }
     });
+
+    if (tagFilter) {
+      tagFilter.addEventListener("change", (event) => {
+        const checkbox = event.target.closest("input[data-action=\"toggle-tag\"]");
+        if (!checkbox) {
+          return;
+        }
+        const path = checkbox.dataset.tagPath;
+        state.tagSelection.set(path, checkbox.checked);
+        renderTagFilter();
+        renderSamples();
+      });
+    }
 
     setModeVisibility();
     loadSettingsLocal();
