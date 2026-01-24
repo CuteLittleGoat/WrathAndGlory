@@ -26,9 +26,9 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 ### Jak korzystać (użytkownik)
 1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
 2. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
-3. Kliknij **Odtwórz** przy wybranym dźwięku (jeśli są już skonfigurowane).
-4. Pod nazwą sampla zobaczysz tag folderu (ułatwia orientację).
-5. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj** — możesz zatrzymać dźwięk lub odtworzyć kilka jednocześnie.
+3. Kliknij nazwę sampla lub tag pod nazwą, aby włączyć/wyłączyć dźwięk (możesz odtwarzać kilka jednocześnie).
+4. Pod nazwą sampla zobaczysz tag folderu (ułatwia orientację) — podczas odtwarzania nazwa i tag świecą na czerwono.
+5. Użyj suwaka głośności na karcie sampla: środek to standard (0%), lewo to wyciszenie (-100%), prawo to wzmocnienie (+100%).
 
 ### Jak korzystać (administrator)
 1. Otwórz `Audio/index.html?admin=1`.
@@ -47,6 +47,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
    - usuwać listę,
    - przesuwać i usuwać elementy w liście,
    - odtwarzać zapisane sample.
+10. W panelu „Główny widok” (na dole admina) kliknij nazwę sampla lub tag, aby odsłuchać dźwięk; głośność ustawiasz suwakiem na karcie.
 
 ### Dane wejściowe (AudioManifest.xlsx)
 - Kolumny:
@@ -86,9 +87,9 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 ### How to use (user)
 1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
 2. In the side panel select **Main view** or one of the Favorites lists.
-3. Click **Odtwórz** on a sound to play it (once configured).
-4. The folder tag is displayed under each sample name to help with orientation.
-5. While playing, the button changes to **Zatrzymaj** — you can stop it or play multiple sounds at once.
+3. Click the sample name or the tag under it to toggle playback (multiple sounds can play simultaneously).
+4. The folder tag is shown under each sample name for orientation — while playing, both the name and tag turn red.
+5. Use the volume slider on the card: center is normal (0%), left mutes (-100%), right boosts (+100%).
 
 ### How to use (admin)
 1. Open `Audio/index.html?admin=1`.
@@ -107,6 +108,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
    - delete lists,
    - reorder/remove items in a list,
    - play saved samples.
+10. In the Main View panel (bottom of admin), click the sample name or tag to play/stop it and use the slider on the card to adjust volume.
 
 ### Input data (AudioManifest.xlsx)
 - Columns:

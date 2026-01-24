@@ -326,6 +326,16 @@
       word-break: break-all;
     }
 
+    .sample-trigger {
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .sample-card.is-playing .sample-trigger,
+    .fav-item.is-playing .sample-trigger {
+      color: var(--danger);
+    }
+
     .sample-actions {
       display: flex;
       flex-direction: column;
@@ -398,6 +408,11 @@
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
+    }
+
+    .volume-slider {
+      width: 100%;
+      accent-color: var(--accent);
     }
 
     .empty-state {
@@ -612,6 +627,7 @@
     };
 
     const activePlayers = new Map();
+    let audioContext = null;
 
     const DEFAULT_LIST_NAME = "Ulubione";
     const TAG_IGNORE_FRAGMENTS = [
@@ -903,49 +919,109 @@
       return item.variants[index]?.fullUrl || "";
     };
 
-    const stopPlayback = (button) => {
-      const entry = activePlayers.get(button);
+    const getAudioContext = () => {
+      if (audioContext) {
+        return audioContext;
+      }
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) {
+        return null;
+      }
+      audioContext = new AudioCtx();
+      return audioContext;
+    };
+
+    const getPlaybackVolumeValue = (playbackRoot) => {
+      if (!playbackRoot) {
+        return 0;
+      }
+      const slider = playbackRoot.querySelector("input[data-role=\"volume\"]");
+      if (!slider) {
+        return 0;
+      }
+      const value = Number(slider.value);
+      return Number.isNaN(value) ? 0 : value;
+    };
+
+    const volumeToGain = (value) => (Math.max(-100, Math.min(100, value)) + 100) / 100;
+
+    const updatePlaybackLabel = (playbackRoot, isPlaying) => {
+      if (!playbackRoot || playbackRoot.tagName !== "BUTTON") {
+        return;
+      }
+      playbackRoot.dataset.playing = isPlaying ? "true" : "false";
+      playbackRoot.textContent = isPlaying ? "Zatrzymaj" : "Odtwórz";
+    };
+
+    const applyPlayerVolume = (player, value) => {
+      if (!player) {
+        return;
+      }
+      const gain = volumeToGain(value);
+      if (player.gainNode) {
+        player.gainNode.gain.value = gain;
+        return;
+      }
+      player.audio.volume = Math.max(0, Math.min(1, gain));
+    };
+
+    const stopPlayback = (playbackRoot) => {
+      const entry = activePlayers.get(playbackRoot);
       if (!entry) {
         return;
       }
       entry.audio.pause();
       entry.audio.currentTime = 0;
-      activePlayers.delete(button);
-      button.dataset.playing = "false";
-      button.textContent = "Odtwórz";
+      activePlayers.delete(playbackRoot);
+      updatePlaybackLabel(playbackRoot, false);
+      playbackRoot.classList.remove("is-playing");
     };
 
-    const startPlayback = (item, button) => {
+    const startPlayback = (item, playbackRoot) => {
       const fullUrl = pickRandomVariant(item);
       if (!fullUrl) {
         alert("Brak linku do pliku audio w manifestie.");
         return;
       }
       const audio = new Audio(fullUrl);
-      activePlayers.set(button, { audio });
-      button.dataset.playing = "true";
-      button.textContent = "Zatrzymaj";
-      audio.addEventListener("ended", () => stopPlayback(button));
+      const context = getAudioContext();
+      let gainNode = null;
+      if (context) {
+        if (context.state === "suspended") {
+          context.resume().catch(() => {});
+        }
+        const source = context.createMediaElementSource(audio);
+        gainNode = context.createGain();
+        source.connect(gainNode);
+        gainNode.connect(context.destination);
+      }
+      const volumeValue = getPlaybackVolumeValue(playbackRoot);
+      const player = { audio, gainNode };
+      applyPlayerVolume(player, volumeValue);
+      activePlayers.set(playbackRoot, player);
+      updatePlaybackLabel(playbackRoot, true);
+      playbackRoot.classList.add("is-playing");
+      audio.addEventListener("ended", () => stopPlayback(playbackRoot));
       audio.addEventListener("error", () => {
         alert("Nie można odtworzyć dźwięku. Sprawdź link.");
-        stopPlayback(button);
+        stopPlayback(playbackRoot);
       });
       audio.play().catch(() => {
         alert("Nie można odtworzyć dźwięku. Sprawdź link.");
-        stopPlayback(button);
+        stopPlayback(playbackRoot);
       });
     };
 
-    const togglePlayback = (itemId, button) => {
+    const togglePlayback = (itemId, playbackRoot) => {
       const item = state.itemsById.get(itemId);
-      if (!item || !button) {
+      if (!item || !playbackRoot) {
         return;
       }
-      if (activePlayers.has(button)) {
-        stopPlayback(button);
+      if (activePlayers.has(playbackRoot)) {
+        stopPlayback(playbackRoot);
         return;
       }
-      startPlayback(item, button);
+      startPlayback(item, playbackRoot);
     };
 
     const saveSettings = async () => {
@@ -1172,12 +1248,12 @@
         .map((itemId, index) => {
           const item = state.itemsById.get(itemId);
           return `
-            <div class="fav-item" data-item-id="${itemId}">
-              <div class="fav-item-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
-              <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
+            <div class="fav-item" data-item-id="${itemId}" data-playback-root="true">
+              <div class="fav-item-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+              <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
               <div class="sample-meta">${item?.filename || "Brak nazwy pliku"}</div>
               <div class="fav-item-actions">
-                <button class="btn" data-action="main-play">Odtwórz</button>
+                <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
                 <button class="btn" data-action="main-up" ${index === 0 ? "disabled" : ""}>▲</button>
                 <button class="btn" data-action="main-down" ${index === state.mainView.itemIds.length - 1 ? "disabled" : ""}>▼</button>
                 <button class="btn btn-danger" data-action="main-remove">Usuń</button>
@@ -1200,11 +1276,11 @@
               .map((itemId) => {
                 const item = state.itemsById.get(itemId);
                 return `
-                  <div class="sample-card" data-id="${itemId}">
-                    <div class="sample-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
-                    <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
+                  <div class="sample-card" data-id="${itemId}" data-playback-root="true">
+                    <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+                    <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
                     <div class="sample-actions">
-                      <button class="btn" data-action="play">Odtwórz</button>
+                      <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
                     </div>
                   </div>
                 `;
@@ -1232,11 +1308,11 @@
             .map((itemId) => {
               const item = state.itemsById.get(itemId);
               return `
-                <div class="sample-card" data-id="${itemId}">
-                  <div class="sample-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
-                  <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
+                <div class="sample-card" data-id="${itemId}" data-playback-root="true">
+                  <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+                  <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
                   <div class="sample-actions">
-                    <button class="btn" data-action="play">Odtwórz</button>
+                    <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
                   </div>
                 </div>
               `;
@@ -1600,6 +1676,15 @@
     });
 
     mainViewPanel.addEventListener("click", (event) => {
+      const trigger = event.target.closest(".sample-trigger");
+      if (trigger && mainViewPanel.contains(trigger)) {
+        const playbackRoot = trigger.closest("[data-playback-root]");
+        if (playbackRoot) {
+          const itemId = playbackRoot.dataset.itemId || playbackRoot.dataset.id;
+          togglePlayback(itemId, playbackRoot);
+        }
+        return;
+      }
       const button = event.target.closest("button");
       if (!button) {
         return;
@@ -1610,9 +1695,6 @@
       }
       const itemId = itemEl.dataset.itemId;
       switch (button.dataset.action) {
-        case "main-play":
-          togglePlayback(itemId, button);
-          break;
         case "main-up":
           moveMainViewItem(itemId, -1);
           break;
@@ -1628,28 +1710,47 @@
     });
 
     userMainView.addEventListener("click", (event) => {
-      const button = event.target.closest("button");
-      if (!button || button.dataset.action !== "play") {
+      const trigger = event.target.closest(".sample-trigger");
+      if (!trigger || !userMainView.contains(trigger)) {
         return;
       }
-      const card = event.target.closest(".sample-card");
+      const card = trigger.closest("[data-playback-root]");
       if (!card) {
         return;
       }
-      togglePlayback(card.dataset.id, button);
+      togglePlayback(card.dataset.id, card);
     });
 
-    userFavoritesView.addEventListener("click", (event) => {
-      const playButton = event.target.closest("button[data-action=\"play\"]");
-      if (!playButton) {
+    const handleVolumeInput = (event) => {
+      const slider = event.target.closest("input[data-role=\"volume\"]");
+      if (!slider) {
         return;
       }
-      const card = event.target.closest(".sample-card");
+      const playbackRoot = slider.closest("[data-playback-root]");
+      if (!playbackRoot) {
+        return;
+      }
+      const player = activePlayers.get(playbackRoot);
+      if (player) {
+        applyPlayerVolume(player, Number(slider.value));
+      }
+    };
+
+    userFavoritesView.addEventListener("click", (event) => {
+      const trigger = event.target.closest(".sample-trigger");
+      if (!trigger || !userFavoritesView.contains(trigger)) {
+        return;
+      }
+      const card = trigger.closest("[data-playback-root]");
       if (!card) {
         return;
       }
-      togglePlayback(card.dataset.id, playButton);
+      togglePlayback(card.dataset.id, card);
     });
+
+    userMainView.addEventListener("input", handleVolumeInput);
+    userFavoritesView.addEventListener("input", handleVolumeInput);
+    mainViewPanel.addEventListener("input", handleVolumeInput);
 
     searchInput.addEventListener("input", renderSamples);
     reloadManifest.addEventListener("click", () => {
