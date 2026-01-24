@@ -27,18 +27,20 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
 2. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
 3. Kliknij **Odtwórz** przy wybranym dźwięku (jeśli są już skonfigurowane).
-4. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj** — możesz zatrzymać dźwięk lub odtworzyć kilka jednocześnie.
+4. Pod nazwą sampla zobaczysz tag folderu (ułatwia orientację).
+5. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj** — możesz zatrzymać dźwięk lub odtworzyć kilka jednocześnie.
 
 ### Jak korzystać (administrator)
 1. Otwórz `Audio/index.html?admin=1`.
 2. Kliknij **Wczytaj manifest**, aby załadować listę sampli.
-3. Wyszukuj sample w polu „Szukaj sampla...”.
-4. Użyj belki **Filtry tagów** do zawężenia listy sampli (wpływa tylko na panel admina).
-5. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
-6. Dodaj sample do „Głównego widoku” przyciskiem **Dodaj do głównego widoku** i ustaw kolejność w panelu „Główny widok”.
-7. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
-8. W karcie sampla wybierz listę z selektora i kliknij **Dodaj do listy**.
-9. W panelu „Ulubione” możesz:
+3. Użyj belki **Filtry tagów** do zawężenia listy sampli (wpływa tylko na panel admina).
+4. (Opcjonalnie) skorzystaj z pola **Szukaj tagu...** oraz przycisku **Ukryj/Pokaż panel**, aby wygodnie zarządzać listą checkboxów.
+5. Wyszukuj sample w polu „Szukaj sampla...” (pole znajduje się pod panelami tagów).
+6. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
+7. Dodaj sample do „Głównego widoku” przyciskiem **Dodaj do głównego widoku** i ustaw kolejność w panelu „Główny widok”.
+8. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
+9. W karcie sampla wybierz listę z selektora i kliknij **Dodaj do listy**.
+10. W panelu „Ulubione” możesz:
    - zmieniać kolejność list,
    - zmieniać nazwę listy,
    - usuwać listę,
@@ -50,9 +52,14 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
   - **NazwaSampla** – nazwa przycisku w UI.
   - **NazwaPliku** – nazwa pliku audio.
   - **LinkDoFolderu** – URL do folderu z plikami.
+- Dodatkowe kolumny (np. z kolorami) są ignorowane.
 - Link do pliku jest budowany jako: `LinkDoFolderu + "/" + NazwaPliku`.
-- Jeżeli w obrębie jednego folderu występują pozycje typu `Damage 1`, `Damage 2`, `Damage 3`, to UI pokazuje **jeden** przycisk `Damage`, który losuje plik z grupy.
-- Tagi do filtrowania są tworzone z folderów ścieżki `LinkDoFolderu` z pominięciem fragmentów: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**.
+- Grupowanie odbywa się **wyłącznie w obrębie jednego folderu**:
+  - Jeżeli nazwy różnią się **samą cyfrą** na końcu (`Assault Weapon1`, `Assault Weapon2` lub `Rats 1`, `Rats 2`), UI pokazuje **jeden** przycisk `Assault Weapon (2)` / `Rats (2)`.
+  - Jeżeli cyfra występuje **w środku** (`Blaster 1 Burst`, `Blaster 2 Burst`), UI tworzy przycisk `Blaster Burst (2)`.
+  - Kliknięcie zgrupowanego przycisku losuje dźwięk z grupy.
+  - W nazwie pliku pojawia się dodatkowy sufiks `(+N)` z liczbą wariantów.
+- Tagi do filtrowania są tworzone z folderów ścieżki `LinkDoFolderu` z pominięciem fragmentów: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**. Znaki `%20` są zamieniane na spacje, a końcowe spacje usuwane.
 
 ---
 
@@ -79,18 +86,20 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
 2. In the side panel select **Main view** or one of the Favorites lists.
 3. Click **Odtwórz** on a sound to play it (once configured).
-4. While playing, the button changes to **Zatrzymaj** — you can stop it or play multiple sounds at once.
+4. The folder tag is displayed under each sample name to help with orientation.
+5. While playing, the button changes to **Zatrzymaj** — you can stop it or play multiple sounds at once.
 
 ### How to use (admin)
 1. Open `Audio/index.html?admin=1`.
 2. Click **Wczytaj manifest** to load samples.
-3. Search samples in the “Szukaj sampla...” field.
-4. Use the **Filtry tagów** bar to filter the admin sample list (does not affect user panels).
-5. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
-6. Add samples to the Main View using **Dodaj do głównego widoku** and reorder them in the “Główny widok” panel.
-7. Click **Nowa lista ulubionych** to create a list.
-8. In a sample card select a list and click **Dodaj do listy**.
-9. In the Favorites panel you can:
+3. Use the **Filtry tagów** bar to filter the admin sample list (does not affect user panels).
+4. (Optional) use the **Szukaj tagu...** field and the **Ukryj/Pokaż panel** button to manage the checkbox list.
+5. Search samples in the “Szukaj sampla...” field (now located below the tag panel).
+6. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
+7. Add samples to the Main View using **Dodaj do głównego widoku** and reorder them in the “Główny widok” panel.
+8. Click **Nowa lista ulubionych** to create a list.
+9. In a sample card select a list and click **Dodaj do listy**.
+10. In the Favorites panel you can:
    - reorder lists,
    - rename lists,
    - delete lists,
@@ -102,6 +111,11 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
   - **NazwaSampla** – UI button label.
   - **NazwaPliku** – audio filename.
   - **LinkDoFolderu** – URL of the folder with files.
+- Extra columns (including color hints) are ignored.
 - The file URL is built as: `LinkDoFolderu + "/" + NazwaPliku`.
-- If a single folder contains names like `Damage 1`, `Damage 2`, `Damage 3`, the UI shows **one** `Damage` button that plays a random file from the group.
-- Filter tags are generated from the folder path in `LinkDoFolderu`, ignoring fragments: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**.
+- Grouping happens **only within a single folder**:
+  - If names differ only by a **number suffix** (`Assault Weapon1`, `Assault Weapon2` or `Rats 1`, `Rats 2`), the UI shows a single `Assault Weapon (2)` / `Rats (2)` button.
+  - If the number appears **in the middle** (`Blaster 1 Burst`, `Blaster 2 Burst`), the UI shows `Blaster Burst (2)`.
+  - Clicking a grouped button plays a random variant.
+  - The filename line shows a `(+N)` suffix for grouped variants.
+- Filter tags are generated from the folder path in `LinkDoFolderu`, ignoring fragments: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**. `%20` is converted to spaces and trailing spaces are removed.

@@ -111,6 +111,23 @@
       gap: 10px;
     }
 
+    .tag-filter-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .tag-filter-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .tag-filter-bar.is-collapsed .tag-filter-body {
+      display: none;
+    }
+
     .tag-filter-bar h2 {
       margin: 0;
       font-size: 15px;
@@ -409,7 +426,6 @@
 
     <section class="toolbar admin-only">
       <div class="left">
-        <input class="search-input" id="searchInput" type="search" placeholder="Szukaj sampla..." />
         <button class="btn" id="reloadManifest">Wczytaj manifest</button>
       </div>
       <div class="right">
@@ -418,10 +434,26 @@
       </div>
     </section>
 
-    <section class="tag-filter-bar admin-only">
-      <h2>Filtry tagów</h2>
-      <p class="legend">Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.</p>
-      <div id="tagFilter" class="tag-tree"></div>
+    <section class="tag-filter-bar admin-only" id="tagFilterBar">
+      <div class="tag-filter-header">
+        <div>
+          <h2>Filtry tagów</h2>
+          <p class="legend">Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.</p>
+        </div>
+        <button class="btn" id="toggleTagPanel">Ukryj panel</button>
+      </div>
+      <div class="tag-filter-body">
+        <div class="tag-filter-controls">
+          <input class="search-input" id="tagSearchInput" type="search" placeholder="Szukaj tagu..." />
+        </div>
+        <div id="tagFilter" class="tag-tree"></div>
+      </div>
+    </section>
+
+    <section class="toolbar admin-only">
+      <div class="left">
+        <input class="search-input" id="searchInput" type="search" placeholder="Szukaj sampla..." />
+      </div>
     </section>
 
     <section class="layout admin-only">
@@ -488,6 +520,9 @@
     const userFavoritesView = document.getElementById("userFavoritesView");
     const userNav = document.getElementById("userNav");
     const tagFilter = document.getElementById("tagFilter");
+    const tagSearchInput = document.getElementById("tagSearchInput");
+    const tagFilterBar = document.getElementById("tagFilterBar");
+    const toggleTagPanel = document.getElementById("toggleTagPanel");
 
     const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 
@@ -503,7 +538,9 @@
       userView: "main",
       activeFavoritesListId: null,
       tagTree: [],
-      tagSelection: new Map()
+      tagSelection: new Map(),
+      tagSearchTerm: "",
+      tagPanelVisible: true
     };
 
     const activePlayers = new Map();
@@ -538,7 +575,13 @@
     const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
     const cleanTagSegment = (segment) => {
-      let cleaned = segment.trim();
+      let cleaned = String(segment || "");
+      try {
+        cleaned = decodeURIComponent(cleaned);
+      } catch (error) {
+        cleaned = String(segment || "");
+      }
+      cleaned = cleaned.trim();
       TAG_IGNORE_FRAGMENTS.forEach((fragment) => {
         const regex = new RegExp(escapeRegExp(fragment), "gi");
         cleaned = cleaned.replace(regex, "");
@@ -566,6 +609,21 @@
       return segments
         .map(cleanTagSegment)
         .filter(Boolean);
+    };
+
+    const getGroupingBaseLabel = (label) => {
+      const trimmed = String(label || "").trim();
+      if (!trimmed) {
+        return { baseLabel: "", changed: false };
+      }
+      const suffixMatch = trimmed.match(/^(.*?)(?:\s*(\d+))$/);
+      if (suffixMatch && suffixMatch[1].trim()) {
+        const base = suffixMatch[1].trim();
+        return { baseLabel: base, changed: base !== trimmed };
+      }
+      const withoutNumbers = trimmed.replace(/\b\d+\b/g, " ").replace(/\s+/g, " ").trim();
+      const changed = Boolean(withoutNumbers) && withoutNumbers !== trimmed && /\d/.test(trimmed);
+      return { baseLabel: changed ? withoutNumbers : trimmed, changed };
     };
 
     const buildTagTree = (items) => {
@@ -630,8 +688,34 @@
       if (!ADMIN_MODE || !tagFilter) {
         return;
       }
+      const searchTerm = state.tagSearchTerm.trim().toLowerCase();
+
+      const filterTagNodes = (nodes) => {
+        if (!searchTerm) {
+          return nodes;
+        }
+        const filtered = [];
+        nodes.forEach((node) => {
+          const childMatches = filterTagNodes(node.children);
+          const matchesSelf = node.name.toLowerCase().includes(searchTerm);
+          if (matchesSelf || childMatches.length) {
+            filtered.push({
+              ...node,
+              children: childMatches
+            });
+          }
+        });
+        return filtered;
+      };
+
       if (!state.tagTree.length) {
         tagFilter.innerHTML = "<div class=\"empty-state\">Brak tagów do filtrowania.</div>";
+        return;
+      }
+
+      const visibleTree = filterTagNodes(state.tagTree);
+      if (!visibleTree.length) {
+        tagFilter.innerHTML = "<div class=\"empty-state\">Brak wyników dla podanego filtra tagów.</div>";
         return;
       }
 
@@ -651,7 +735,15 @@
         `;
       };
 
-      tagFilter.innerHTML = state.tagTree.map(renderNode).join("");
+      tagFilter.innerHTML = visibleTree.map(renderNode).join("");
+    };
+
+    const updateTagPanelVisibility = () => {
+      if (!tagFilterBar || !toggleTagPanel) {
+        return;
+      }
+      tagFilterBar.classList.toggle("is-collapsed", !state.tagPanelVisible);
+      toggleTagPanel.textContent = state.tagPanelVisible ? "Ukryj panel" : "Pokaż panel";
     };
 
     const pickRandomVariant = (item) => {
@@ -958,6 +1050,7 @@
                 return `
                   <div class="sample-card" data-id="${itemId}">
                     <div class="sample-title">${item ? item.label : "(brak w manifeście)"}</div>
+                    <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
                     <div class="sample-actions">
                       <button class="btn" data-action="play">Odtwórz</button>
                     </div>
@@ -989,6 +1082,7 @@
               return `
                 <div class="sample-card" data-id="${itemId}">
                   <div class="sample-title">${item ? item.label : "(brak w manifeście)"}</div>
+                  <div class="sample-meta">${item?.tag2 || "Brak tagu 2"}</div>
                   <div class="sample-actions">
                     <button class="btn" data-action="play">Odtwórz</button>
                   </div>
@@ -1030,6 +1124,7 @@
     const renderAllViews = () => {
       updateStatus();
       renderTagFilter();
+      updateTagPanelVisibility();
       renderSamples();
       renderFavorites();
       renderMainViewAdmin();
@@ -1203,20 +1298,20 @@
         if (!label) {
           return;
         }
-        const match = label.match(/^(.*?)(?:\s+(\d+))$/);
-        const baseLabel = match ? match[1].trim() : label;
-        const hasNumberSuffix = Boolean(match);
+        const grouping = getGroupingBaseLabel(label);
+        const baseLabel = grouping.baseLabel || label;
+        const isGroupCandidate = grouping.changed;
         const fullUrl = normalizeUrl(folderUrl, filename);
         entries.push({
           label,
           baseLabel,
-          hasNumberSuffix,
+          isGroupCandidate,
           filename,
           folderUrl,
           fullUrl,
           rowIndex: index + 1
         });
-        if (hasNumberSuffix) {
+        if (isGroupCandidate) {
           const key = `${folderUrl}||${baseLabel}`;
           groupedCounts.set(key, (groupedCounts.get(key) || 0) + 1);
         }
@@ -1226,7 +1321,8 @@
       const seen = new Set();
       entries.forEach((entry) => {
         const groupKeyBase = `${entry.folderUrl}||${entry.baseLabel}`;
-        const shouldGroup = entry.hasNumberSuffix && (groupedCounts.get(groupKeyBase) || 0) > 1;
+        const groupSize = groupedCounts.get(groupKeyBase) || 0;
+        const shouldGroup = entry.isGroupCandidate && groupSize > 1;
         const groupKey = shouldGroup ? groupKeyBase : `${entry.folderUrl}||${entry.label}||${entry.filename}||${entry.rowIndex}`;
         if (!groupMap.has(groupKey)) {
           const tags = extractTags(entry.folderUrl);
@@ -1239,7 +1335,7 @@
           seen.add(id);
           groupMap.set(groupKey, {
             id,
-            label: shouldGroup ? entry.baseLabel : entry.label,
+            label: shouldGroup ? `${entry.baseLabel} (${groupSize})` : entry.label,
             filename: entry.filename,
             folderUrl: entry.folderUrl,
             tags,
@@ -1438,6 +1534,20 @@
         state.tagSelection.set(path, checkbox.checked);
         renderTagFilter();
         renderSamples();
+      });
+    }
+
+    if (tagSearchInput) {
+      tagSearchInput.addEventListener("input", (event) => {
+        state.tagSearchTerm = event.target.value;
+        renderTagFilter();
+      });
+    }
+
+    if (toggleTagPanel) {
+      toggleTagPanel.addEventListener("click", () => {
+        state.tagPanelVisible = !state.tagPanelVisible;
+        updateTagPanelVisibility();
       });
     }
 
