@@ -51,6 +51,7 @@ Składa się z trzech sekcji:
 Zawiera karty z tabelami danych:
 - **Podgląd bazowy Bestiariusza** (`#bestiary-table-body`).
   - W wybranych wierszach (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) zamiast tekstu pojawiają się pola `number` z przyciskami góra–dół.
+  - Pola liczbowe są ograniczone do 25 znaków — nadmiar jest automatycznie obcinany również przy wstępnym ustawieniu wartości.
   - Wiersz „Umiejętności” posiada przycisk **Edytuj** w kolumnie klucza, który przełącza komórkę na edycję w `textarea`.
 - **Wybór Broni** (`#weapon`, `#weapon-table-body`).
 - **Wybór Pancerzy** (`#armor`, `#armor-table-body`).
@@ -178,7 +179,7 @@ Ustawienia globalne:
 ### 8.1. Stałe i stan aplikacji
 - `DATA_URL` — URL z danymi JSON.
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
-- `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków).
+- `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków przy inicjalizacji, wpisywaniu i zapisie).
 - `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
 - `state` — obiekt z danymi aplikacji i stanem UI:
   - `data`, `traits` (Map), `expandedCells` (Set), `selectedBestiaryIndex`,
