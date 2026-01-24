@@ -470,6 +470,10 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 
 ### 3) Layout i elementy UI
 - Układ karty identyczny jak Main (`width: min(860px, 100%)`, centrowanie, box-shadow `--glow`).
+- Karty sampli w widoku użytkownika i w panelu „Główny widok” admina:
+  - nazwa i tag mają klasę `.sample-trigger` (kursor `pointer`),
+  - aktywne odtwarzanie dodaje `.is-playing`, co barwi `.sample-trigger` na `--danger`,
+  - suwak głośności to `.volume-slider` (`width: 100%`, `accent-color: --accent`).
 
 ### 4) Zwijanie/rozwijanie > 9 linii
 - Brak clampowania treści w module Audio.

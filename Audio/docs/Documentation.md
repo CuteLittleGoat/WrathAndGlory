@@ -8,7 +8,7 @@
   - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera w pełni działający podgląd widoku użytkownika (dane i nawigacja są identyczne jak u użytkownika).
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
 - **Ustawienia:** ulubione i „Główny widok” są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
-- **Odtwarzanie:** każdy kliknięty przycisk dostaje własny obiekt `Audio()`, dzięki czemu możliwe jest równoległe odtwarzanie wielu dźwięków oraz przełączanie **Odtwórz/Zatrzymaj**.
+- **Odtwarzanie:** kliknięcie nazwy sampla lub taga (druga linia pod nazwą) uruchamia/wyłącza dźwięk dla danej karty; równoległe odtwarzanie wielu sampli jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%).
 
 ## 2. Struktura repozytorium (pliki i katalogi)
 - `Audio/index.html` — główny panel (HTML + CSS + JS).
@@ -77,8 +77,8 @@ window.firebaseConfig = {
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
   6. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
      - układ `.user-layout` w dwóch kolumnach,
-     - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (jedyny obszar z przyciskami odtwarzania),
-     - każda karta w widoku użytkownika pokazuje nazwę sampla i `tag2` (bez nazwy pliku),
+     - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (klikana nazwa/tags sterują odtwarzaniem, bez przycisku),
+     - każda karta w widoku użytkownika pokazuje nazwę sampla i `tag2` (bez nazwy pliku) oraz suwak głośności,
      - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
      - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
 
@@ -116,6 +116,9 @@ window.firebaseConfig = {
 - `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
 - `.fav-list`: `border: 1px solid rgba(22, 198, 12, 0.5)`, tło `#031206`.
 - Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
+- `.sample-trigger`: elementy klikalne (nazwa sampla oraz tag), `cursor: pointer` i łagodne przejście koloru.
+- `.sample-card.is-playing .sample-trigger` oraz `.fav-item.is-playing .sample-trigger`: aktywne odtwarzanie podświetla nazwę i tag na `--danger`.
+- `.volume-slider`: suwak głośności (`input[type="range"]`) o szerokości 100% i `accent-color: --accent`.
 - `.user-view`: kolumna usera, `display: flex`, `flex-direction: column`, `gap: 16px`.
 - `.user-layout`: siatka 2-kolumnowa (`minmax(0, 1.7fr)` + `minmax(240px, 0.7fr)`).
 - `.user-nav`: panel boczny w widoku użytkownika, układ kolumnowy z `gap: 12px`.
@@ -181,18 +184,21 @@ window.firebaseConfig = {
 - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
 - `renderSamples()` — rysuje siatkę sampli (tylko admin) z selektorem listy (domyślnie „Widok Główny”) i przyciskiem dodania; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
-- `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (play + reorder + remove).
-- `renderUserMainView()` — rysuje „Widok główny” użytkownika (przycisk odtwarzania + tag pod nazwą sampla) zarówno w trybie użytkownika, jak i w podglądzie admina.
-- `renderUserFavorites()` — rysuje listę ulubionych użytkownika (również z tagiem pod nazwą sampla) dla aktualnie wybranej listy w obu trybach.
+- `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
+- `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.
+- `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag + suwak głośności) dla aktualnie wybranej listy w obu trybach.
 - `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
 - `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu, w tym widoczność panelu tagów.
 - `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
 
 ### 8.5. Akcje użytkownika
 - `pickRandomVariant(item)` — losuje plik z `variants` dla zgrupowanych sampli.
-- `startPlayback(item, button)` — tworzy nowe `Audio()` i ustawia przycisk na **Zatrzymaj**.
-- `stopPlayback(button)` — zatrzymuje aktywny dźwięk dla przycisku i przywraca etykietę **Odtwórz**.
-- `togglePlayback(itemId, button)` — przełącza odtwarzanie/stop dla pojedynczego przycisku.
+- `getAudioContext()` — inicjalizuje `AudioContext` (jeśli dostępny), aby obsłużyć wzmocnienie głośności powyżej 100%.
+- `volumeToGain(value)` — mapuje zakres `-100..100` na gain `0..2`.
+- `startPlayback(item, playbackRoot)` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`.
+- `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing` i resetuje etykietę (jeśli to przycisk).
+- `togglePlayback(itemId, playbackRoot)` — przełącza odtwarzanie/stop dla wskazanego elementu sterującego.
+- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego sampla po zmianie suwaka.
 - Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę sampli.
 - Pole `#tagSearchInput` otwiera popup filtra listowego, a wyszukiwanie odbywa się w okienku `#tagMenuSearchInput`.
 - Kliknięcie `#toggleTagPanel` ukrywa lub odsłania cały panel checkboxów tagów bez resetowania stanu zaznaczeń.
