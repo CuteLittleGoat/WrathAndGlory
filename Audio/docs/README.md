@@ -27,16 +27,18 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
 2. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
 3. Kliknij **Odtwórz** przy wybranym dźwięku (jeśli są już skonfigurowane).
+4. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj** — możesz zatrzymać dźwięk lub odtworzyć kilka jednocześnie.
 
 ### Jak korzystać (administrator)
 1. Otwórz `Audio/index.html?admin=1`.
 2. Kliknij **Wczytaj manifest**, aby załadować listę sampli.
 3. Wyszukuj sample w polu „Szukaj sampla...”.
-4. Kliknij **Odtwórz**, aby odsłuchać dźwięk.
-5. Dodaj sample do „Głównego widoku” przyciskiem **Dodaj do głównego widoku** i ustaw kolejność w panelu „Główny widok”.
-6. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
-7. W karcie sampla wybierz listę z selektora i kliknij **Dodaj do listy**.
-8. W panelu „Ulubione” możesz:
+4. Użyj belki **Filtry tagów** do zawężenia listy sampli (wpływa tylko na panel admina).
+5. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
+6. Dodaj sample do „Głównego widoku” przyciskiem **Dodaj do głównego widoku** i ustaw kolejność w panelu „Główny widok”.
+7. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
+8. W karcie sampla wybierz listę z selektora i kliknij **Dodaj do listy**.
+9. W panelu „Ulubione” możesz:
    - zmieniać kolejność list,
    - zmieniać nazwę listy,
    - usuwać listę,
@@ -49,6 +51,8 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
   - **NazwaPliku** – nazwa pliku audio.
   - **LinkDoFolderu** – URL do folderu z plikami.
 - Link do pliku jest budowany jako: `LinkDoFolderu + "/" + NazwaPliku`.
+- Jeżeli w obrębie jednego folderu występują pozycje typu `Damage 1`, `Damage 2`, `Damage 3`, to UI pokazuje **jeden** przycisk `Damage`, który losuje plik z grupy.
+- Tagi do filtrowania są tworzone z folderów ścieżki `LinkDoFolderu` z pominięciem fragmentów: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**.
 
 ---
 
@@ -75,16 +79,18 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
 2. In the side panel select **Main view** or one of the Favorites lists.
 3. Click **Odtwórz** on a sound to play it (once configured).
+4. While playing, the button changes to **Zatrzymaj** — you can stop it or play multiple sounds at once.
 
 ### How to use (admin)
 1. Open `Audio/index.html?admin=1`.
 2. Click **Wczytaj manifest** to load samples.
 3. Search samples in the “Szukaj sampla...” field.
-4. Click **Odtwórz** to preview a sound.
-5. Add samples to the Main View using **Dodaj do głównego widoku** and reorder them in the “Główny widok” panel.
-6. Click **Nowa lista ulubionych** to create a list.
-7. In a sample card select a list and click **Dodaj do listy**.
-8. In the Favorites panel you can:
+4. Use the **Filtry tagów** bar to filter the admin sample list (does not affect user panels).
+5. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
+6. Add samples to the Main View using **Dodaj do głównego widoku** and reorder them in the “Główny widok” panel.
+7. Click **Nowa lista ulubionych** to create a list.
+8. In a sample card select a list and click **Dodaj do listy**.
+9. In the Favorites panel you can:
    - reorder lists,
    - rename lists,
    - delete lists,
@@ -97,3 +103,5 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
   - **NazwaPliku** – audio filename.
   - **LinkDoFolderu** – URL of the folder with files.
 - The file URL is built as: `LinkDoFolderu + "/" + NazwaPliku`.
+- If a single folder contains names like `Damage 1`, `Damage 2`, `Damage 3`, the UI shows **one** `Damage` button that plays a random file from the group.
+- Filter tags are generated from the folder path in `LinkDoFolderu`, ignoring fragments: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**.

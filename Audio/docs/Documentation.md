@@ -8,7 +8,7 @@
   - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera w pełni działający podgląd widoku użytkownika (dane i nawigacja są identyczne jak u użytkownika).
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
 - **Ustawienia:** ulubione i „Główny widok” są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
-- **Odtwarzanie:** pojedynczy obiekt `Audio()` używany wielokrotnie do odtwarzania sampli.
+- **Odtwarzanie:** każdy kliknięty przycisk dostaje własny obiekt `Audio()`, dzięki czemu możliwe jest równoległe odtwarzanie wielu dźwięków oraz przełączanie **Odtwórz/Zatrzymaj**.
 
 ## 2. Struktura repozytorium (pliki i katalogi)
 - `Audio/index.html` — główny panel (HTML + CSS + JS).
@@ -62,12 +62,14 @@ window.firebaseConfig = {
 - Główny kontener `.page` zawiera:
   1. **Nagłówek** `header` z tytułem, opisem i paskiem statusów (cały nagłówek jest widoczny tylko w trybie admina).
   2. **Toolbar** `.toolbar` (tylko admin): wyszukiwarka, przycisk wczytywania manifestu, przyciski zarządzania listami.
-  3. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
+  3. **Belka filtrów tagów** `.tag-filter-bar` (tylko admin): drzewo checkboxów generowane z tagów folderów; filtrowanie wpływa wyłącznie na listę sampli w panelu admina (nie zmienia głównego widoku ani ulubionych).
+  4. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
      - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do „Ulubionych” i do „Głównego widoku”.
+       - Każda karta sampla pokazuje: nazwę sampla, `tag2` (drugi poziom folderu) oraz nazwę pliku.
      - Prawa kolumna `.side-stack`: 
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
-  4. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
+  5. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
      - układ `.user-layout` w dwóch kolumnach,
      - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (jedyny obszar z przyciskami odtwarzania),
      - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
@@ -93,6 +95,9 @@ window.firebaseConfig = {
 **Kluczowe elementy:**
 - `header`: ramka `2px solid --border`, `box-shadow: --glow`.
 - `.toolbar`: `border: 1px solid rgba(22, 198, 12, 0.7)`, `box-shadow: --shadow`.
+- `.tag-filter-bar`: tło `--panel`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `padding: 14px 16px`, `box-shadow: --shadow`.
+- `.tag-tree`: kolumnowe drzewko checkboxów, `gap: 6px`.
+- `.tag-children.is-hidden`: ukrywanie podfolderów po odznaczeniu rodzica (`display: none`).
 - `.side-stack`: prawa kolumna w adminie, `display: flex`, `flex-direction: column`, `gap: 22px`.
 - `.samples-grid`: `grid-template-columns: repeat(auto-fill, minmax(210px, 1fr))`.
 - `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
@@ -115,11 +120,18 @@ window.firebaseConfig = {
   - `LinkDoFolderu` → `folderUrl`.
 - **ID sampla**: tworzony przez `slugify` (lowercase + zamiana znaków nie-alfanumerycznych na `-`).
 - **Pełny URL**: `folderUrl + "/" + filename` (bez podwójnych `/`).
+- **Grupowanie nazw z cyfrą:** jeżeli w obrębie tego samego `folderUrl` występują wpisy typu `Damage 1`, `Damage 2`, itd., tworzony jest **jeden** element `Damage` z listą wariantów (`variants`). Kliknięcie przycisku losuje dźwięk z tej listy.
+- **Tagi folderów:** z `folderUrl` wyciągane są segmenty ścieżki, z których tworzone są tagi hierarchiczne. Segment `AudioRPG` jest pomijany jako folder bazowy. Z pozostałych segmentów usuwane są fragmenty: `SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`. Drugi tag z hierarchii (`tag2`) jest wyświetlany w panelu admina między nazwą sampla i nazwą pliku.
 
 ## 8. Logika JS (wszystkie funkcje)
 ### 8.1. Utility
 - `slugify(value, index)` — tworzy stabilny identyfikator z nazwy.
 - `normalizeUrl(folderUrl, filename)` — składa pełny URL do pliku audio.
+- `escapeRegExp(value)` — ucieka znaki specjalne do użycia w RegExp.
+- `cleanTagSegment(segment)` — usuwa z segmentu folderu fragmenty ignorowane (`SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`) i normalizuje spacje.
+- `extractTags(folderUrl)` — zwraca tablicę tagów na podstawie segmentów ścieżki `folderUrl`.
+- `buildTagTree(items)` — buduje drzewo tagów (hierarchia) z listy sampli.
+- `ensureTagSelection(nodes)` — inicjalizuje mapę zaznaczeń tagów domyślnie na `true`.
 - `updateStatus()` — aktualizuje paski statusów (manifest, firebase, liczba list).
 
 ### 8.2. Ustawienia (ulubione + główny widok)
@@ -139,7 +151,8 @@ window.firebaseConfig = {
   4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym.
 
 ### 8.4. Renderowanie
-- `renderSamples()` — rysuje siatkę sampli (tylko admin) z przyciskami dodawania do ulubionych i głównego widoku.
+- `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
+- `renderSamples()` — rysuje siatkę sampli (tylko admin) z przyciskami dodawania do ulubionych i głównego widoku; lista jest filtrowana przez wyszukiwarkę **oraz** aktywne tagi.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (play + reorder + remove).
 - `renderUserMainView()` — rysuje „Widok główny” użytkownika (same przyciski odtwarzania) zarówno w trybie użytkownika, jak i w podglądzie admina.
@@ -149,7 +162,11 @@ window.firebaseConfig = {
 - `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
 
 ### 8.5. Akcje użytkownika
-- `playSample(itemId)` — odtwarza dźwięk z `fullUrl`.
+- `pickRandomVariant(item)` — losuje plik z `variants` dla zgrupowanych sampli.
+- `startPlayback(item, button)` — tworzy nowe `Audio()` i ustawia przycisk na **Zatrzymaj**.
+- `stopPlayback(button)` — zatrzymuje aktywny dźwięk dla przycisku i przywraca etykietę **Odtwórz**.
+- `togglePlayback(itemId, button)` — przełącza odtwarzanie/stop dla pojedynczego przycisku.
+- Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę sampli.
 - `addFavoriteList()` — tworzy nową listę.
 - `addItemToFavorites(listId, itemId)` — dodaje sample do listy.
 - `moveList(listId, direction)` — przesuwa listę w górę/dół.
