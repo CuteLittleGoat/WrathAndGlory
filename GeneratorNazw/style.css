@@ -71,7 +71,6 @@ label {
   color: var(--muted);
 }
 
-select,
 input,
 button {
   width: 100%;
@@ -82,6 +81,22 @@ button {
   padding: 10px 12px;
   font-size: 14px;
   outline: none;
+}
+
+select {
+  width: 100%;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 14px;
+  outline: none;
+}
+
+select option {
+  background: var(--panel);
+  color: var(--text);
 }
 
 select:focus,
