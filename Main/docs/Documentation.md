@@ -98,8 +98,7 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 - Teksty pomocnicze umieszczane pod wybranymi przyciskami.
 - Pod **Skarbcem Danych** znajduje się instrukcja dodania parametru `index.html?admin=1`.
   - Dokładna treść: `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr jest w `<strong>`).
-- Pod **Audio** znajdują się dwie linie notatki:
-  - `Strona w budowie`
+- Pod **Audio** znajduje się notatka z instrukcją dodania parametru admina:
   - `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr w `<strong>`).
 - `margin: 0` usuwa domyślny margines akapitu.
 - `color: var(--text)` utrzymuje spójny kolor.
@@ -117,7 +116,7 @@ Struktura dokumentu składa się z:
   3. **Infoczytnik** – link do `../Infoczytnik/Infoczytnik.html` (ścieżka lokalna w repozytorium).
   4. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
   5. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
-  6. **Audio** – link do `../Audio/index.html` z notkami `Strona w budowie` oraz instrukcją dodania parametru admina `index.html?admin=1`.
+  6. **Audio** – link do `../Audio/index.html` z instrukcją dodania parametru admina `index.html?admin=1`.
 
 Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 

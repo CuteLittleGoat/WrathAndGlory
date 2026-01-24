@@ -21,7 +21,7 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - Kalkulator XP: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
-- **Audio** (strona w budowie): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+- **Audio**: https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
   - Aby wejść do panelu admina, dopisz parametr `index.html?admin=1` do adresu.
 
 ### Instrukcje modułów (README)
@@ -83,7 +83,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - XP calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
-- **Audio** (under construction): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+- **Audio**: https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
   - To access the admin panel, append `index.html?admin=1` to the URL.
 
 ### Module README links
