@@ -20,7 +20,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 6. Otwórz wersję produkcyjną:
    - `GM.html` (panel MG)
    - `Infoczytnik.html` (ekran graczy)
-   lub użyj `index.html`, aby wybrać wersję produkcyjną lub testową.
+   lub użyj `index.html`, aby wybrać wersję produkcyjną lub testową (strona startowa ma zielony motyw i wyraźny podział na sekcje).
 7. (Opcjonalnie) Przykładowy adres hostingu po migracji:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 8. (Opcjonalnie) Na stronie startowej `index.html` są przyciski do wersji testowych (do sprawdzania zmian):
@@ -87,7 +87,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 6. Open the production version:
    - `GM.html` (GM panel)
    - `Infoczytnik.html` (player screen)
-   or use `index.html` to choose production or test variants.
+   or use `index.html` to choose production or test variants (the landing page uses the same green UI theme and clear sections).
 7. (Optional) Example hosted URL after migration:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 8. (Optional) On the `index.html` landing page, there are test buttons (for verifying changes):

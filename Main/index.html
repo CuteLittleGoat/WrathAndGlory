@@ -112,27 +112,41 @@
     <img class="logo" src="wrath-glory-logo-warhammer.png" alt="Logo Wrath &amp; Glory">
 
     <div class="actions">
-        <div class="stack">
-          <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/" target="_blank" rel="noopener noreferrer">Generator NPC</a>
-        </div>
-        <div class="stack">
-          <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/" target="_blank" rel="noopener noreferrer">Skarbiec Danych</a>
-          <p class="note">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
-        </div>
-        <div class="stack right">
-          <a class="btn" href="../Infoczytnik/Infoczytnik.html">Infoczytnik</a>
-        </div>
-        <div class="stack">
-          <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/" target="_blank" rel="noopener noreferrer">Kalkulator</a>
-        </div>
-        <div class="stack">
-          <a class="btn" href="../DiceRoller/index.html">Rzut kośćmi</a>
-        </div>
-        <div class="stack">
-          <a class="btn" href="../Audio/index.html">Audio</a>
-          <p class="note">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
-        </div>
+      <div class="stack" data-admin-only="true">
+        <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/" target="_blank" rel="noopener noreferrer">Generator NPC</a>
+      </div>
+      <div class="stack">
+        <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/" target="_blank" rel="noopener noreferrer">Skarbiec Danych</a>
+        <p class="note" data-admin-only="true">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
+      </div>
+      <div class="stack right">
+        <a class="btn" data-infoczytnik-link href="../Infoczytnik/Infoczytnik.html">Infoczytnik</a>
+      </div>
+      <div class="stack">
+        <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/" target="_blank" rel="noopener noreferrer">Kalkulator</a>
+      </div>
+      <div class="stack">
+        <a class="btn" href="../DiceRoller/index.html">Rzut kośćmi</a>
+      </div>
+      <div class="stack" data-admin-only="true">
+        <a class="btn" href="../Audio/index.html">Audio</a>
+        <p class="note">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
+      </div>
     </div>
   </main>
+  <script>
+    const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
+    const adminOnlyElements = document.querySelectorAll('[data-admin-only="true"]');
+    if (!isAdmin) {
+      adminOnlyElements.forEach((element) => element.remove());
+    }
+
+    const infoczytnikLink = document.querySelector("[data-infoczytnik-link]");
+    if (infoczytnikLink) {
+      infoczytnikLink.href = isAdmin
+        ? "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html"
+        : "../Infoczytnik/Infoczytnik.html";
+    }
+  </script>
 </body>
 </html>

@@ -78,15 +78,71 @@ window.firebaseConfig = {
 - Dokument tworzony przy pierwszym zapisie z panelu MG.
 
 ## 5. `index.html` — strona startowa
-**Cel:** szybki wybór wersji produkcyjnej lub testowej.
-- Linki produkcyjne:
-  - `Otwórz GM` → `GM.html`
-  - `Otwórz Infoczytnik` → `Infoczytnik.html`
-- Linki testowe (do sprawdzania nowych modyfikacji):
-  - `GM (test)` → `GM_test.html`
-  - `Infoczytnik (test)` → `Infoczytnik_test.html`
-- Krótki komunikat o odblokowaniu dźwięku oraz przykładowy adres hostingu:
-  - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`.
+**Cel:** szybki wybór wersji produkcyjnej lub testowej w stylistyce spójnej z resztą aplikacji.
+
+### 5.1. Struktura HTML
+- `main` zawiera:
+  - `header` z tytułem `WH40k Data-Slate` i krótkim opisem.
+  - `.sections` z dwiema kartami:
+    - **Wersje produkcyjne**: `Otwórz GM` → `GM.html`, `Otwórz Infoczytnik` → `Infoczytnik.html`.
+    - **Wersje testowe**: `GM (test)` → `GM_test.html`, `Infoczytnik (test)` → `Infoczytnik_test.html`.
+  - Dwie notatki `.note` na końcu:
+    - informacja o odblokowaniu audio,
+    - adres hostingu `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`.
+
+### 5.2. CSS (pełne wartości)
+**Zmienne (`:root`):**
+- `--bg`: radialne gradienty + `#031605`:
+  - `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%)`
+  - `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%)`
+  - `#031605`
+- `--panel: #000`
+- `--border: #16c60c`
+- `--text: #9cf09c`
+- `--accent: #16c60c`
+- `--accent-dark: #0d7a07`
+- `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
+- `--radius: 12px`
+
+**Globalne zasady:**
+- `*` wymusza fonty `"Consolas", "Fira Code", "Source Code Pro", monospace` i `box-sizing: border-box`.
+- `body`:
+  - `min-height: 100vh`, `display: flex`, `align-items: center`, `justify-content: center`,
+  - `padding: 24px`,
+  - tło `var(--bg)`, kolor `var(--text)`.
+- `main`:
+  - `width: min(880px, 100%)`,
+  - `background: var(--panel)`,
+  - `border: 2px solid var(--border)`,
+  - `border-radius: var(--radius)`,
+  - `box-shadow: var(--glow)`,
+  - `padding: 32px`, `gap: 20px`.
+
+**Nagłówek:**
+- `header h1`: uppercase, `letter-spacing: 0.08em`, `font-size: clamp(22px, 3vw, 30px)`.
+- `header p`: `font-size: 14px`, kolor `rgba(156, 240, 156, 0.75)`.
+
+**Sekcje i przyciski:**
+- `.sections`: grid z odstępem `20px`.
+- `.section`:
+  - `border: 1px solid rgba(22, 198, 12, 0.45)`,
+  - `border-radius: 10px`,
+  - `padding: 16px`,
+  - `background: rgba(22, 198, 12, 0.04)`.
+- `.section h2`: uppercase, `letter-spacing: 0.08em`, `font-size: 15px`.
+- `.row`: grid `repeat(auto-fit, minmax(200px, 1fr))`, odstępy `12px 14px`.
+- `.btn`:
+  - `border: 2px solid var(--border)`,
+  - tło `rgba(22, 198, 12, 0.08)`,
+  - `border-radius: 8px`,
+  - `font-size: 15px`, `font-weight: 600`,
+  - `min-height: 46px`,
+  - hover: `transform: translateY(-1px)`, `box-shadow: 0 0 18px rgba(22, 198, 12, 0.3)`, `background: rgba(22, 198, 12, 0.14)`,
+  - active: `background: rgba(22, 198, 12, 0.22)`.
+
+**Notatki:**
+- `.note`: `font-size: 13px`, `line-height: 1.4`, kolor `rgba(156, 240, 156, 0.75)`.
+- `code` w notatkach ma kolor `#b6ffb6`.
 
 ## 6. `GM.html` — panel MG
 ### 6.1. Layout i HTML
