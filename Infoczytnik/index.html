@@ -5,29 +5,167 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>WH40k Data-Slate</title>
   <style>
-    body{margin:0;background:#000;color:#0f0;font-family:Consolas,monospace;padding:22px}
-    a{color:#8aff8a;text-decoration:none}
-    a:hover{text-decoration:underline}
-    .box{max-width:820px;border:1px solid rgba(0,255,0,.25);border-radius:14px;padding:16px;background:rgba(0,255,0,.04)}
-    .row{display:grid;gap:12px 14px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:12px;align-items:stretch}
-    .btn{display:flex;align-items:center;justify-content:center;padding:12px 14px;border:1px solid rgba(0,255,0,.35);border-radius:12px;background:rgba(0,0,0,.35);text-align:center}
-    .muted{opacity:.75;font-size:13px;margin-top:10px;line-height:1.35}
-    code{color:#b6ffb6}
+    :root {
+      --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
+             radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
+             #031605;
+      --panel: #000;
+      --border: #16c60c;
+      --text: #9cf09c;
+      --accent: #16c60c;
+      --accent-dark: #0d7a07;
+      --glow: 0 0 25px rgba(22, 198, 12, 0.45);
+      --radius: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: "Consolas", "Fira Code", "Source Code Pro", monospace;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    main {
+      width: min(880px, 100%);
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--glow);
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: clamp(22px, 3vw, 30px);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 14px;
+      color: rgba(156, 240, 156, 0.75);
+    }
+
+    .sections {
+      display: grid;
+      gap: 20px;
+    }
+
+    .section {
+      border: 1px solid rgba(22, 198, 12, 0.45);
+      border-radius: 10px;
+      padding: 16px;
+      background: rgba(22, 198, 12, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section h2 {
+      margin: 0;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .row {
+      display: grid;
+      gap: 12px 14px;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      align-items: stretch;
+    }
+
+    .btn {
+      appearance: none;
+      border: 2px solid var(--border);
+      background: rgba(22, 198, 12, 0.08);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(22, 198, 12, 0.3);
+      background: rgba(22, 198, 12, 0.14);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      background: rgba(22, 198, 12, 0.22);
+    }
+
+    .note {
+      margin: 0;
+      font-size: 13px;
+      line-height: 1.4;
+      color: rgba(156, 240, 156, 0.75);
+    }
+
+    .note code {
+      color: #b6ffb6;
+    }
   </style>
 </head>
 <body>
-  <div class="box">
-    <h1>WH40k Data-Slate</h1>
-    <div class="row">
-      <a class="btn" href="./GM.html">Otwórz GM</a>
-      <a class="btn" href="./Infoczytnik.html">Otwórz Infoczytnik</a>
-      <a class="btn" href="./GM_test.html">GM (test)</a>
-      <a class="btn" href="./Infoczytnik_test.html">Infoczytnik (test)</a>
+  <main>
+    <header>
+      <h1>WH40k Data-Slate</h1>
+      <p>Wybierz wersję produkcyjną lub testową panelu GM i Infoczytnika.</p>
+    </header>
+
+    <div class="sections">
+      <section class="section">
+        <h2>Wersje produkcyjne</h2>
+        <div class="row">
+          <a class="btn" href="./GM.html">Otwórz GM</a>
+          <a class="btn" href="./Infoczytnik.html">Otwórz Infoczytnik</a>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2>Wersje testowe</h2>
+        <div class="row">
+          <a class="btn" href="./GM_test.html">GM (test)</a>
+          <a class="btn" href="./Infoczytnik_test.html">Infoczytnik (test)</a>
+        </div>
+      </section>
     </div>
-    <div class="muted">
-      Audio: w Infoczytniku kliknij raz ekran, żeby odblokować dźwięk (wymóg przeglądarki).<br>
+
+    <p class="note">
+      Audio: w Infoczytniku kliknij raz ekran, żeby odblokować dźwięk (wymóg przeglądarki).
+    </p>
+    <p class="note">
       Adres strony: <code>https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/</code>
-    </div>
-  </div>
+    </p>
+  </main>
 </body>
 </html>

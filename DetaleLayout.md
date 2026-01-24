@@ -485,9 +485,10 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 
 ## Moduł — Infoczytnik
 
-Moduł składa się z dwóch stron:
+Moduł składa się z dwóch stron oraz strony startowej:
 - **Infoczytnik.html** — ekran graczy (Data-Slate),
-- **GM.html** — panel prowadzącego.
+- **GM.html** — panel prowadzącego,
+- **index.html** — menu wyboru wersji (produkcyjnych i testowych), spójne stylistycznie z modułem Main.
 
 ### 1) Fonty i typografia
 #### 1.1 Fonty zewnętrzne (Google Fonts)
@@ -513,6 +514,7 @@ Załadowane fonty (używane zależnie od frakcji):
   - `--suffix-font-size: clamp(12px, 2.0vw, 16px)`.
   - `--filler-gap: clamp(12px, 2vw, 18px)`.
 - `GM.html`: UI panelowy, nagłówki `font-size: 20px`, labelki `font-size: 13px`, podglądy `font-size: 12–16px`.
+- `index.html`: stos monospace `"Consolas", "Fira Code", "Source Code Pro", monospace` ustawiony globalnie w `*`.
 
 ### 2) Kolory, tła, ramki, cienie
 #### 2.1 Infoczytnik.html (ekran graczy)
@@ -537,6 +539,19 @@ Załadowane fonty (używane zależnie od frakcji):
   - `#1d1d1d` (przyciski), `#777` (miniLabel), `rgba(0,0,0,.18/.25/.35)` (panele i podglądy).
   - Kolory szybkich chipów i pickerów: `#00ff66`, `#ff3333`, `#d4af37`, `#ffffff`.
 
+#### 2.3 index.html (menu wyboru wersji)
+- Paleta zgodna z modułem Main:
+  - `--bg`: radialne gradienty + `#031605`.
+  - `--panel`: `#000`.
+  - `--border`: `#16c60c`.
+  - `--text`: `#9cf09c`.
+  - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
+  - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
+  - `--radius`: `12px`.
+- Notatki i opisy:
+  - teksty pomocnicze: `rgba(156, 240, 156, 0.75)`,
+  - kod w notatkach: `#b6ffb6`.
+
 ### 3) Layout i elementy UI
 - Ekran graczy:
   - `layout-img` to **PNG** z `assets/layouts/<frakcja>/`.
@@ -545,6 +560,11 @@ Załadowane fonty (używane zależnie od frakcji):
 - Panel GM:
   - `.wrap` max `980px`, karta `.card` z cieniem `0 10px 30px rgba(0,0,0,.35)`.
   - Układ kolumn przez `.row` i `.col` (flex + wrap).
+- `index.html`:
+  - `body` centrowany flexem, padding `24px`.
+  - `main` o szerokości `min(880px, 100%)`, z ramką `2px` i cieniem `--glow`.
+  - Sekcje `.section` z delikatnym tłem `rgba(22, 198, 12, 0.04)` i obwódką `rgba(22, 198, 12, 0.45)`.
+  - Przyciski `.btn` dziedziczą neonowy styl (border `2px`, tła z `rgba(22, 198, 12, 0.08/0.14/0.22)`).
 
 ### 4) Zwijanie/rozwijanie > 9 linii
 - Brak clampowania treści w Infoczytniku.
