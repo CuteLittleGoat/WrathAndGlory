@@ -1,10 +1,10 @@
 # Dokumentacja
 
 ## Przegląd projektu
-Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnośnikami do zewnętrznych narzędzi Wrath & Glory. Nie ma tu JavaScriptu, backendu ani dodatkowych zależności — całość to HTML + CSS.
+Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnośnikami do zewnętrznych narzędzi Wrath & Glory. Strona zawiera osadzone CSS oraz krótki skrypt JavaScript przełączający widok użytkownika/admina — bez backendu i bez zewnętrznych zależności.
 
 ## Struktura plików
-- `Main/index.html` – jedyny plik aplikacji zawierający strukturę strony i pełną stylizację wbudowaną w `<style>`.
+- `Main/index.html` – jedyny plik aplikacji zawierający strukturę strony, stylizację w `<style>` oraz skrypt przełączający widok admina.
 - `Main/wrath-glory-logo-warhammer.png` – logo wyświetlane w nagłówku strony.
 - `Main/docs/README.md` – instrukcja użytkownika i informacje o aktualizacji aplikacji (PL/EN).
 - `Main/docs/Documentation.md` – niniejszy dokument z opisem kodu.
@@ -96,10 +96,9 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 
 #### 2.7 Notatki pomocnicze (`.note`)
 - Teksty pomocnicze umieszczane pod wybranymi przyciskami.
-- Pod **Skarbcem Danych** znajduje się instrukcja dodania parametru `index.html?admin=1`.
+- Pod **Skarbcem Danych** znajduje się instrukcja dodania parametru `index.html?admin=1`, ale jest widoczna tylko w trybie admina (element ma `data-admin-only="true"`).
   - Dokładna treść: `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr jest w `<strong>`).
-- Pod **Audio** znajduje się notatka z instrukcją dodania parametru admina:
-  - `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr w `<strong>`).
+- Pod **Audio** znajduje się analogiczna notatka, również widoczna tylko w trybie admina.
 - `margin: 0` usuwa domyślny margines akapitu.
 - `color: var(--text)` utrzymuje spójny kolor.
 - `font-size: 13px`.
@@ -111,18 +110,26 @@ Struktura dokumentu składa się z:
 - `<main>` – główny panel.
 - `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"` (plik znajduje się w `Main/` obok `index.html`).
 - `<div class="actions">` – siatka przycisków w kolejności od lewej:
-  1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/`.
-  2. **Skarbiec Danych** – link do `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/` z notką o parametrze admina umieszczoną bezpośrednio pod przyciskiem.
-  3. **Infoczytnik** – link do `../Infoczytnik/Infoczytnik.html` (ścieżka lokalna w repozytorium).
+  1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
+  2. **Skarbiec Danych** – link do `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/` z notką o parametrze admina, widoczną wyłącznie w trybie admina.
+  3. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
   4. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
   5. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
-  6. **Audio** – link do `../Audio/index.html` z instrukcją dodania parametru admina `index.html?admin=1`.
+  6. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
 
 Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
+### 4. Logika widoków (skrypt JavaScript)
+Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie parametru URL:
+- `isAdmin` to wynik `new URLSearchParams(window.location.search).get("admin") === "1"`.
+- Jeśli `isAdmin` jest fałszem, wszystkie elementy z `data-admin-only="true"` są usuwane z DOM (np. Generator NPC, Audio, notatki admina).
+- Link **Infoczytnik** (`[data-infoczytnik-link]`) jest ustawiany dynamicznie:
+  - tryb użytkownika → `../Infoczytnik/Infoczytnik.html`,
+  - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
+
 ## Aktualizacja treści
 - **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html`.
-- **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Skarbiec Danych.
+- **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Skarbiec Danych lub Audio (elementy z `data-admin-only="true"`).
 - **Zmiana stylu**: edytuj sekcję `<style>` w `Main/index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
 - **Zmiana logo**: podmień plik `Main/wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
 

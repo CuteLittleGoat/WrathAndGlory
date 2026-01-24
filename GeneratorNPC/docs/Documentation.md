@@ -51,7 +51,7 @@ Składa się z trzech sekcji:
 Zawiera karty z tabelami danych:
 - **Podgląd bazowy Bestiariusza** (`#bestiary-table-body`).
   - W wybranych wierszach (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) zamiast tekstu pojawiają się pola `number` z przyciskami góra–dół.
-  - Pola liczbowe są ograniczone do 25 znaków — nadmiar jest automatycznie obcinany również przy wstępnym ustawieniu wartości; szerokość pól to 25 znaków.
+  - Pola liczbowe są ograniczone do 25 znaków — nadmiar jest automatycznie obcinany również przy wstępnym ustawieniu wartości.
   - Wiersz „Umiejętności” posiada przycisk **Edytuj** w kolumnie klucza, który przełącza komórkę na edycję w `textarea`.
 - **Wybór Broni** (`#weapon`, `#weapon-table-body`).
 - **Wybór Pancerzy** (`#armor`, `#armor-table-body`).

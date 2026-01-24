@@ -1,19 +1,19 @@
 # Wrath & Glory / Kozi przybornik
 
-Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Po uruchomieniu wyświetla logo oraz sześć przycisków prowadzących do zewnętrznych aplikacji.
+Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Domyślnie działa w trybie użytkownika (4 przyciski), a tryb admina uruchamia się parametrem `?admin=1` i odsłania wszystkie narzędzia oraz notatki.
 
 ---
 
 ## Instrukcja obsługi (PL)
 
 ### Dostępne narzędzia
-- **Generator NPC**: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
+- **Generator NPC** (widok admina): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
 - **DataVault**: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
-  - Aby wejść do panelu admina, dopisz parametr `index.html?admin=1` do adresu.
+  - Notatka o adminie wyświetla się tylko w widoku admina strony głównej.
 - **Infoczytnik**:
-  - Odczyt wiadomości: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
+  - Odczyt wiadomości (widok użytkownika): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (szykowanie wiadomości): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
-  - Menu główne (wybór wersji produkcyjnych i testowych): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
+  - Menu główne (widok admina na stronie startowej): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
     - GM (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM_test.html
     - Infoczytnik (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik_test.html
 - **Kalkulator**:
@@ -21,8 +21,8 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - Kalkulator XP: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
-- **Audio**: https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
-  - Aby wejść do panelu admina, dopisz parametr `index.html?admin=1` do adresu.
+- **Audio** (widok admina): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+  - Notatka o adminie wyświetla się tylko w widoku admina strony głównej.
 
 ### Instrukcje modułów (README)
 - Generator NPC: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
@@ -34,8 +34,9 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 
 ### Jak używać
 1. Otwórz stronę startową `Main/index.html` w przeglądarce.
-2. Kliknij jeden z przycisków, aby przejść do wybranego narzędzia.
-3. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu.
+2. Domyślnie zobaczysz widok użytkownika z czterema przyciskami (Skarbiec Danych, Infoczytnik, Kalkulator, Rzut kośćmi).
+3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski oraz notatki o panelach admina.
+4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu.
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -69,13 +70,13 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ## User guide (EN)
 
 ### Available tools
-- **NPC Generator**: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
+- **NPC Generator** (admin view): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
 - **DataVault**: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
-  - To access the admin panel, append `index.html?admin=1` to the URL.
+  - The admin note is shown only in the main page admin view.
 - **DataSlate**:
-  - Message reader: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
+  - Message reader (user view): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (message prep): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
-  - Main menu (choose production or test variants): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
+  - Main menu (admin view on the landing page): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
     - GM (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM_test.html
     - DataSlate (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik_test.html
 - **Calculator**:
@@ -83,8 +84,8 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - XP calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
-- **Audio**: https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
-  - To access the admin panel, append `index.html?admin=1` to the URL.
+- **Audio** (admin view): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
+  - The admin note is shown only in the main page admin view.
 
 ### Module README links
 - NPC Generator: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
@@ -96,8 +97,9 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 
 ### How to use
 1. Open the landing page at `Main/index.html` in your browser.
-2. Click one of the buttons to open the selected tool.
-3. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address.
+2. By default you will see the user view with four buttons (DataVault, DataSlate, Calculator, DiceRoller).
+3. To enable admin view, add the `?admin=1` parameter. All buttons and admin notes become visible.
+4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address.
 
 ### Running locally
 This is a static page with no backend. You can:
