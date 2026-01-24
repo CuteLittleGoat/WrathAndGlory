@@ -1,0 +1,3 @@
+!Moduł w budowie!
+
+1. Nie aktualizuj dokumentacji i plików Readme nigdzie w strukturze.
