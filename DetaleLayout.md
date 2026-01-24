@@ -49,6 +49,53 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 
 ---
 
+## Moduł — GeneratorNazw
+
+### 1) Fonty i typografia
+#### 1.1 Fonty lokalne (bez Google Fonts)
+- Stos bazowy dla całego UI: **"Consolas", "Fira Code", "Source Code Pro", monospace** (ustawiony globalnie na `*`).
+
+#### 1.2 Zasady użycia fontów
+- Ten sam stos w całym module (brak innych fontów).
+- Etykiety (`label`) mają `font-size: 12px`.
+- Treść wyników (`.results`) ma `font-size: 15px`, `line-height: 1.55`.
+
+### 2) Kolory, tła, ramki, cienie
+#### 2.1 Zmienne CSS (źródło prawdy)
+- `--bg`: `#031605`.
+- `--bg-grad`: radialne gradienty + `#031605`.
+- `--panel`: `#000`.
+- `--panel-soft`: `rgba(22, 198, 12, 0.06)`.
+- `--text`: `#9cf09c`.
+- `--muted`: `#4a8b4a`.
+- `--border`: `#16c60c`.
+- `--accent`: `#16c60c`.
+- `--accent-dark`: `#0d7a07`.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
+- `--divider`: `rgba(22, 198, 12, 0.18)`.
+
+#### 2.2 Kolory elementów UI
+- `input` i `button`: tło `--panel-soft`, obwódka `1px solid --border`.
+- `select`: tło **ciemne** `--panel` (celowo, by pasowało do przełącznika językowego z modułu Kalkulator).
+- `select option`: tło `--panel`, kolor `--text`.
+- Focus ring: `box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.2)`.
+
+### 3) Layout i elementy UI
+- `body`: tło `--bg-grad`, kolor tekstu `--text`.
+- `.wrap`: `width: min(1100px, 100%)`, `padding: 28px 20px 40px`.
+- `.panel`: czarne tło `--panel`, ramka `2px solid --border`, `border-radius: 12px`, `box-shadow: --glow`.
+- `.grid`: 4‑kolumnowy układ (`1.2fr 1fr 1fr 140px`), przy wąskim ekranie jedna kolumna.
+- `.btn`: `max-width: 220px`, tło `rgba(22, 198, 12, 0.08)`, hover/active z mocniejszym tłem i cieniem.
+- `.pill`: tło `rgba(0, 0, 0, 0.35)`, obwódka `--border`, `border-radius: 999px`.
+
+### 4) Zwijanie/rozwijanie > 9 linii
+- Brak funkcjonalności clamp w module GeneratorNazw.
+
+### 5) Wyjątki i formatowanie specjalne
+- Wyniki są prezentowane jako lista wierszy z prefiksem `•`, renderowane w `.results` z `white-space: pre-wrap`.
+
+---
+
 ## Moduł — DataVault
 
 ### 1) Fonty i typografia
