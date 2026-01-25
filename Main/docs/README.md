@@ -9,7 +9,9 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 ### Dostępne narzędzia
 - **Generator NPC** (widok admina): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
 - **Generator nazw** (widok admina): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNazw/index.html
-- **DataVault**: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
+- **DataVault**:
+  - Widok użytkownika: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
+  - Widok admina (z przycisku w adminie lub bezpośrednio): https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1
   - Notatka o adminie wyświetla się tylko w widoku admina strony głównej.
 - **Infoczytnik**:
   - Odczyt wiadomości (widok użytkownika): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
@@ -38,7 +40,7 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 1. Otwórz stronę startową `Main/index.html` w przeglądarce.
 2. Domyślnie zobaczysz widok użytkownika z czterema przyciskami (Skarbiec Danych, Infoczytnik, Kalkulator, Rzut kośćmi).
 3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski (m.in. Generator NPC, Generator nazw, Audio) oraz notatki o panelach admina.
-4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu.
+4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -74,7 +76,9 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ### Available tools
 - **NPC Generator** (admin view): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
 - **Name Generator** (admin view): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNazw/index.html
-- **DataVault**: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
+- **DataVault**:
+  - User view: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html
+  - Admin view (from the admin button or directly): https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1
   - The admin note is shown only in the main page admin view.
 - **DataSlate**:
   - Message reader (user view): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
@@ -103,7 +107,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 1. Open the landing page at `Main/index.html` in your browser.
 2. By default you will see the user view with four buttons (DataVault, DataSlate, Calculator, DiceRoller).
 3. To enable admin view, add the `?admin=1` parameter. All buttons (including NPC Generator, Name Generator, Audio) and admin notes become visible.
-4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address.
+4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
 
 ### Running locally
 This is a static page with no backend. You can:

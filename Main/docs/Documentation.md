@@ -112,7 +112,7 @@ Struktura dokumentu składa się z:
 - `<div class="actions">` – siatka przycisków w kolejności od lewej:
   1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
   2. **Generator nazw** – link do `../GeneratorNazw/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
-  3. **Skarbiec Danych** – link do `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/` z notką o parametrze admina, widoczną wyłącznie w trybie admina.
+  3. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
   4. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
   5. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
   6. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
@@ -127,6 +127,9 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
 - Link **Infoczytnik** (`[data-infoczytnik-link]`) jest ustawiany dynamicznie:
   - tryb użytkownika → `../Infoczytnik/Infoczytnik.html`,
   - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
+- Link **Skarbiec Danych** (`[data-datavault-link]`) jest ustawiany dynamicznie:
+  - tryb użytkownika → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`,
+  - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`.
 
 ## Aktualizacja treści
 - **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html`.
