@@ -162,3 +162,53 @@ W każdym wariancie:
 ## Weryfikacja online (polecenia)
 - `curl -L https://www.cloudflare.com/products/cloudflare-access/ | head -n 5`
 - `curl -L https://www.hetzner.com/storage/storage-box | head -n 5`
+
+---
+
+## Aktualizacja analizy (stan po wdrożeniu Cloudflare R2 + Worker)
+
+### Czy obecne rozwiązanie spełnia cel „hasło raz, potem odtwarzanie bez przeszkód”?
+**Częściowo – tak, ale z ważnym zastrzeżeniem dotyczącym cookies i domen.**
+
+Na poziomie zabezpieczenia plików:
+- Worker działa jako „bramka” i **bez ważnej sesji nie zwraca plików**.
+- Same pliki w R2 pozostają prywatne, więc **nie da się ich pobrać po samym URL**.
+- To oznacza, że **osoba postronna znająca kod aplikacji lub URL** nie pobierze plików bez ważnego cookie sesji.
+
+Na poziomie wygody użytkownika:
+- Po zalogowaniu sesja jest utrzymywana przez cookie, więc **kolejne odtwarzania w tej samej domenie** nie wymagają ponownego wpisywania hasła.
+
+### Główne ryzyko UX: third‑party cookies (GitHub Pages vs workers.dev)
+Aplikacja działa na GitHub Pages, a audio jest serwowane z `workers.dev`. W wielu przeglądarkach cookie sesji z domeny workera może zostać potraktowane jako **third‑party cookie** i zostać zablokowane.
+
+Skutek:
+- logowanie się udaje,
+- ale odtwarzanie w aplikacji dalej przekierowuje na `/login`.
+
+To nie jest luka bezpieczeństwa – to **ograniczenie przeglądarki**, które może utrudniać wygodne korzystanie z audio bez ponownego logowania.
+
+### Czy da się osiągnąć zamierzony efekt na bazie tego, co już jest?
+**Tak, są trzy realne ścieżki, zależnie od kompromisu UX ↔ domena:**
+
+1) **Najprostsza (może działać):**
+   - Dodanie w aplikacji przycisku „Zaloguj do audio” otwierającego `/login` w nowej karcie.
+   - W części przeglądarek cookie zostanie zaakceptowane i audio zacznie grać bez dalszych promptów.
+
+2) **Pewna bez domeny (gorszy UX):**
+   - Odtwarzanie plików w nowej karcie na `workers.dev`.
+   - Cookies są first‑party → sesja działa stabilnie.
+   - Minusem jest odtwarzanie poza aplikacją.
+
+3) **Docelowa (najlepszy UX):**
+   - Własna domena (np. `app.twojadomena.pl` i `audio.twojadomena.pl`).
+   - Wtedy cookies są mniej problematyczne, a sesja działa spójnie w całej aplikacji.
+
+### Wniosek końcowy (bez zmian w kodzie modułu Audio)
+- **Zabezpieczenie dostępu jest skuteczne**: osoba bez hasła i bez sesji nie pobierze plików, nawet znając URL i kod aplikacji.
+- **Jednorazowe logowanie jest możliwe**, ale stabilność zależy od polityki cookies w przeglądarce.
+- Dla pełnego, bezproblemowego UX potrzebna będzie **własna domena** lub kompromis w postaci odtwarzania w domenie workera.
+
+### Rekomendowane kolejne kroki
+1. Upewnić się, że wszystkie audio trafiają do R2 w docelowej strukturze ścieżek.
+2. Dodać w aplikacji przycisk „Zaloguj do audio” (wariant 1) lub otwieranie plików w `workers.dev` (wariant 2).
+3. Rozważyć własną domenę jako docelowe rozwiązanie (wariant 3).
