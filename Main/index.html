@@ -119,7 +119,7 @@
         <a class="btn" href="../GeneratorNazw/index.html">Generator Nazw</a>
       </div>
       <div class="stack">
-        <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/" target="_blank" rel="noopener noreferrer">Skarbiec Danych</a>
+        <a class="btn" data-datavault-link href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html" target="_blank" rel="noopener noreferrer">Skarbiec Danych</a>
         <p class="note" data-admin-only="true">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
       </div>
       <div class="stack right">
@@ -149,6 +149,13 @@
       infoczytnikLink.href = isAdmin
         ? "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html"
         : "../Infoczytnik/Infoczytnik.html";
+    }
+
+    const dataVaultLink = document.querySelector("[data-datavault-link]");
+    if (dataVaultLink) {
+      dataVaultLink.href = isAdmin
+        ? "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1"
+        : "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html";
     }
   </script>
 </body>
