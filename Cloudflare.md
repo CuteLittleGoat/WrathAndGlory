@@ -1,295 +1,181 @@
-Dokumentacja: Prywatne audio na Cloudflare R2 + Worker (hasło + sesja)
-Cel
+# Prywatne audio na Cloudflare R2 + Worker (hasło + sesja)
 
-Chcę hostować pliki audio w Cloudflare R2 bez publicznego dostępu i udostępniać je tylko po jednorazowym logowaniu hasłem.
-Po poprawnym zalogowaniu użytkownik ma móc odtwarzać wiele plików bez ponownego wpisywania hasła przez określony czas (sesja).
+## Cel
+Chcę hostować pliki audio w Cloudflare R2 bez publicznego dostępu i udostępniać je tylko po **jednorazowym logowaniu hasłem**. Po poprawnym logowaniu użytkownik ma móc odtwarzać wiele plików **bez ponownego wpisywania hasła** przez określony czas (sesja).
 
-Rozwiązanie działa tak:
+## Skrót architektury
+- **R2 (bucket: `audiorpg`)** – przechowuje pliki (prywatny bucket).
+- **Cloudflare Worker (`audiorpg`)** – „bramka” autoryzacji i proxy do R2.
+- **Sesja (cookie)** – po zalogowaniu użytkownik dostaje cookie i może odtwarzać pliki bez ponownego wpisywania hasła.
 
-Pliki są przechowywane w R2 w buckecie audiorpg.
+Adres Workera:
+`https://audiorpg.tarczynski-pawel.workers.dev/`
 
-Publicznie widoczny jest tylko Cloudflare Worker o nazwie audiorpg, dostępny pod adresem:
-https://audiorpg.tarczynski-pawel.workers.dev/
+Najważniejsze ścieżki:
+- Logowanie: `/login`
+- Pliki audio (proxy): `/a/<KLUCZ>`
+- Wylogowanie: `/logout`
 
-Worker jest “bramką”: wymusza logowanie i dopiero potem pobiera pliki z R2 i zwraca je przeglądarce.
+---
 
-Bez zalogowania nie da się pobrać pliku z adresu /a/... (zostanie przekierowanie do /login).
+## A. Co już zostało zrobione (stan obecny)
 
-A. Co zostało zrobione (stan obecny)
-1) Utworzony bucket R2
+### 1) Utworzony bucket R2
+- **Bucket:** `audiorpg`
+- Bucket jest prywatny (domyślne ustawienie R2).
+- Do bucketa wrzucono testowy plik:
+  - **Key:** `test/test.txt`
 
-Bucket: audiorpg
+### 2) Utworzony Cloudflare Worker
+- **Worker:** `audiorpg`
+- **Adres:** `https://audiorpg.tarczynski-pawel.workers.dev/`
 
-Bucket jest prywatny (domyślne ustawienie R2).
-
-Do bucketa został wrzucony testowy plik o kluczu (ścieżce w R2):
-test/test.txt
-
-2) Utworzony Cloudflare Worker
-
-Worker: audiorpg
-
-Adres workera:
-https://audiorpg.tarczynski-pawel.workers.dev/
-
-3) Podpięcie R2 do Workera (binding)
-
+### 3) Podpięcie R2 do Workera (binding)
 W ustawieniach Workera dodano R2 binding:
+- **Variable name:** `AUDIO_BUCKET`
+- **Bucket:** `audiorpg`
 
-Variable name: AUDIO_BUCKET
+Dzięki temu kod Workera ma dostęp do R2 jako `env.AUDIO_BUCKET`.
 
-Bucket: audiorpg
+### 4) Dodanie sekretów (Secrets)
+W ustawieniach Workera dodano 2 sekrety:
+- **`AUDIO_PASSWORD`** – hasło wpisywane przez użytkownika na `/login`.
+- **`SESSION_SECRET`** – losowy klucz do podpisywania sesji (tokenów).
 
-To sprawia, że kod Workera ma dostęp do plików w R2 pod nazwą env.AUDIO_BUCKET.
+### 5) Wgranie kodu Workera
+Kod Workera:
+- udostępnia formularz logowania pod `/login`,
+- po poprawnym haśle ustawia cookie sesyjne,
+- serwuje pliki z R2 spod `/a/<klucz>`.
 
-4) Dodanie sekretów (Secrets)
-
-W ustawieniach Workera dodano 2 sekrety (Type = Secret):
-
-AUDIO_PASSWORD
-
-To jest hasło, które użytkownik wpisuje na stronie /login.
-
-SESSION_SECRET
-
-To jest długi losowy klucz do podpisywania sesji (tokenów).
-
-To NIE jest hasło dla użytkownika. Użytkownik tego nie zna.
-
-5) Wgranie kodu Workera
-
-Do Workera został wgrany kod, który:
-
-udostępnia stronę logowania pod: /login
-
-po wpisaniu hasła ustawia cookie sesyjne i pozwala wejść na zasoby /a/...
-
-serwuje pliki z R2 spod ścieżki: /a/<klucz-obiektu-w-R2>
-
-6) Test działania
-
+### 6) Test działania
 Test przebiegł poprawnie:
+- `/login` → formularz hasła,
+- po logowaniu → przekierowanie,
+- `/a/test/test.txt` → zwraca zawartość pliku.
 
-Wejście na /login wyświetliło formularz hasła.
+Wniosek: **logowanie i sesja działają, a Worker poprawnie proxy’uje obiekty z R2.**
 
-Po wpisaniu poprawnego hasła nastąpiło przejście na stronę główną.
+---
 
-Wejście na:
-https://audiorpg.tarczynski-pawel.workers.dev/a/test/test.txt
-zwróciło zawartość pliku.
+## B. Jak wygląda URL do pliku (ważne do AudioManifest.xlsx)
+Pliki w R2 są identyfikowane przez **key** (ścieżkę), np.:
+- `test/test.txt`
+- `GrimdarkAudio/Ambience/intro.mp3`
 
-To potwierdza, że:
-
-logowanie działa,
-
-sesja działa,
-
-Worker potrafi pobierać obiekty z R2 i zwracać je po autoryzacji.
-
-B. Jak działa URL do pliku (najważniejsze do AudioManifest.xlsx)
-
-Pliki są w R2 identyfikowane przez klucz (key), np.:
-
-test/test.txt
-
-GrimdarkAudio/Ambience/intro.mp3 (przykład)
-
-Worker udostępnia je przez:
-
+Worker udostępnia je jako:
+```
 https://audiorpg.tarczynski-pawel.workers.dev/a/<KLUCZ>
+```
+Przykład:
+- **key:** `test/test.txt`
+- **URL:** `.../a/test/test.txt`
 
-Czyli dla obiektu:
+---
 
-key = test/test.txt
-adres jest:
+## C. Jak działa logowanie i ochrona
+1. Użytkownik wchodzi na `/a/...`.
+2. Jeśli **brak ważnej sesji** → przekierowanie na `/login`.
+3. Użytkownik wpisuje hasło:
+   - jeśli jest poprawne → Worker tworzy token sesji **ważny 24h**, zapisuje cookie `AUDSESS`, przekierowuje użytkownika na `/`.
+4. Przez czas ważności cookie użytkownik może odtwarzać wszystkie pliki **bez ponownego hasła**.
 
-/a/test/test.txt
+---
 
-C. Jak działa logowanie i ochrona (mechanizm)
+## D. Wgrywanie właściwych plików audio
+1. Wejdź w Cloudflare → R2 → bucket `audiorpg` → **Objects**.
+2. Wgraj pliki w strukturze folderów, którą chcesz mieć w linkach.
 
-Użytkownik wchodzi na dowolny plik:
-
-/a/...
-
-Jeśli nie ma ważnej sesji:
-
-Worker robi przekierowanie (302) do:
-
-/login
-
-Użytkownik wpisuje hasło na /login.
-
-Jeśli hasło zgadza się z AUDIO_PASSWORD, Worker:
-
-tworzy token sesji ważny 24h
-
-zapisuje go w przeglądarce jako cookie AUDSESS
-
-przekierowuje użytkownika na /
-
-Od tego momentu, dopóki cookie jest ważne:
-
-każde wejście na /a/... działa bez pytania o hasło.
-
-D. Co zrobić teraz, żeby wrzucić wszystkie pliki audio
-
-Wejdź w Cloudflare → R2 → bucket audiorpg → Objects.
-
-Wgraj pliki audio do struktury folderów, którą chcesz mieć w linkach.
-Najważniejsze: klucze w R2 = ścieżki w URL.
+**Klucze w R2 = ścieżki w URL.**
 
 Przykład:
+- R2 key: `audio/ambience/hall.mp3`
+- URL: `https://audiorpg.tarczynski-pawel.workers.dev/a/audio/ambience/hall.mp3`
 
-W R2 wgrywam plik z kluczem: audio/ambience/hall.mp3
+> Uwaga: „foldery” w R2 są logiczne (to część nazwy obiektu). Trzymaj spójną strukturę, żeby potem łatwo podmieniać base URL w manifestach.
 
-Otworzę go jako:
-https://audiorpg.tarczynski-pawel.workers.dev/a/audio/ambience/hall.mp3
+---
 
-Uwaga: “foldery” w R2 są logiczne (to część nazwy obiektu). Trzymaj spójne nazwy, bo potem łatwo podmieniasz base URL w manifestach.
+## E. Jak sprawić, żeby aplikacja na GitHub Pages działała „jak chcesz”
 
-E. Najważniejsza część: jak sprawić, żeby aplikacja na GitHubie działała “jak chcesz”
-E1) Co jest “oczekiwanym zachowaniem”
+### E1) Oczekiwane zachowanie
+Aplikacja na GitHub Pages:
+- wymusza logowanie **raz**,
+- po zalogowaniu odtwarza audio normalnie,
+- linki do audio są chronione hasłem.
 
-Chcę, żeby:
+### E2) Problem, który musisz znać (third‑party cookies)
+Aplikacja działa na **innej domenie** (GitHub Pages), a audio na **workers.dev**.
+To oznacza, że cookie sesji może być traktowane jako **third‑party cookie** i **blokowane** (szczególnie Safari i część ustawień Chrome/Edge).
 
-Aplikacja na GitHub Pages (np. https://…github.io/...) próbując odtwarzać dźwięk:
+Objawy:
+- logowanie działa, ale audio z aplikacji **nie gra**,
+- zamiast pliku widzisz przekierowanie na `/login`,
+- w konsoli są komunikaty o blokowaniu cookies / CORS / przekierowaniach.
 
-wymusiła logowanie (raz)
+### E3) 3 warianty rozwiązania (wybierz jeden)
 
-po zalogowaniu audio odtwarzało się normalnie
+#### Wariant 1 — Najprostszy (czasem działa)
+Dodaj w aplikacji przycisk:
+**„Zaloguj do audio” → `.../login`**
 
-Linki do audio mają być chronione hasłem.
+Użytkownik:
+1. loguje się w nowej karcie (first‑party dla workera),
+2. wraca do aplikacji i odtwarza audio.
 
-E2) Problem, który MUSISZ znać (cookies / third-party)
+Jeśli wciąż nie działa → przejdź do wariantu 2 lub 3.
 
-Twoja aplikacja jest na innej domenie (GitHub Pages), a audio jest na domenie workera (workers.dev).
+#### Wariant 2 — Pewny bez domeny (ale gorszy UX)
+Odtwarzaj audio **bezpośrednio w domenie workera**:
+- aplikacja otwiera nową kartę z `.../a/<key>`
+- sesja jest first‑party → działa pewnie
 
-To oznacza, że:
+Minus: odtwarzanie odbywa się poza aplikacją (osobna karta).
 
-cookie sesyjne ustawione przez Workera może być traktowane jako third-party cookie, kiedy audio jest ładowane w tle z GitHub Pages.
+#### Wariant 3 — Docelowy (najlepszy UX)
+Użyj **własnej domeny**:
+- `app.twojadomena.pl` → aplikacja
+- `audio.twojadomena.pl` → worker
 
-część przeglądarek (szczególnie mobilnych / Safari, czasem Chrome z ustawieniami prywatności) może takie cookies blokować.
+Wtedy cookies i sesje działają pewniej.
+Możesz też użyć Cloudflare Access zamiast własnego hasła.
 
-Objawy blokady cookies:
+---
 
-Ty się logujesz na /login, ale w aplikacji na GitHubie audio dalej “nie gra” albo dostaje przekierowanie na /login zamiast pliku.
+## F. Wymagania techniczne dla `<audio>`
+Jeśli aplikacja używa `<audio src="...">`, to:
+- Worker musi zwracać poprawne nagłówki (robi to),
+- **Range requests** muszą działać (kod je obsługuje),
+- przeglądarka musi mieć dostęp do cookie sesji (kluczowy problem przy GitHub Pages).
 
-W konsoli przeglądarki mogą być komunikaty o blokowaniu cookies / CORS / przekierowaniach.
+---
 
-E3) Jak uzyskać działanie “pytaj o hasło i potem gra” – 3 warianty (wybierz jeden)
-Wariant 1 (NAJPROSTSZY, najpewniejszy bez domeny): otwieranie logowania w nowej karcie i potem odtwarzanie
+## G. Checklist testowy
+1. Otwórz w incognito:
+   - `https://audiorpg.tarczynski-pawel.workers.dev/login`
+2. Zaloguj się.
+3. W tej samej karcie otwórz:
+   - `https://audiorpg.tarczynski-pawel.workers.dev/a/test/test.txt`
+4. Przejdź do aplikacji na GitHub Pages i spróbuj odtworzyć plik audio.
+5. Jeśli nie działa – przeglądarka blokuje cookie → wybierz wariant 2 lub 3.
 
-To jest “minimalna zmiana” i często wystarcza w Chrome/Edge.
+---
 
-W aplikacji na GitHubie dodaj przycisk/link:
-“Zaloguj do audio” → prowadzi do:
-https://audiorpg.tarczynski-pawel.workers.dev/login
+## H. Najważniejsze praktyczne zalecenie na teraz
+Dodaj w aplikacji widoczny przycisk:
+**„Zaloguj do audio” → `/login`**
 
-Użytkownik klika i loguje się w otwartej karcie (to jest first-party dla workera).
-
-Następnie wraca do aplikacji i uruchamia audio.
-
-Jeśli przeglądarka nie blokuje cookie w tym scenariuszu, audio zacznie działać.
-
-Jeśli nadal nie działa → to znaczy, że przeglądarka blokuje third-party cookies w odtwarzaniu z innej domeny. Wtedy przejdź do Wariantu 2 albo 3.
-
-Wariant 2 (PEWNY, bez domeny, ale wymaga zmiany w aplikacji): otwarzanie audio przez przekierowanie użytkownika na workers.dev
-
-Jeśli chcesz mieć 100% pewności bez własnej domeny, musisz sprawić, by użytkownik korzystał z audio “w tej samej domenie” co worker.
-
-Sposób:
-
-zamiast odtwarzać audio jako zasób z GitHub Pages,
-
-otwierasz odtwarzanie na workers.dev (np. nowa karta z playerem albo dedykowana strona workera).
-
-Najprostsze:
-
-Użytkownik loguje się na /login (workers.dev).
-
-Twoja aplikacja na GitHubie przy kliknięciu “Odtwórz” otwiera nową kartę:
-https://audiorpg.tarczynski-pawel.workers.dev/a/<key>
-
-Plik audio otwiera się bez hasła (sesja jest first-party).
-
-Minus: odtwarzanie jest “poza” Twoją aplikacją (oddzielna karta).
-
-Wariant 3 (DOCZELOWY, najlepszy UX): własna domena i wszystko pod jedną domeną
-
-To jest najlepsze rozwiązanie długoterminowo:
-
-przenosisz aplikację na app.twojadomena.pl
-
-audio na audio.twojadomena.pl
-
-wtedy cookies/sesje działają dużo pewniej
-
-można też użyć Cloudflare Access zamiast własnego hasła
-
-To jednak wymaga posiadania domeny (płatnej).
-
-F. Co MUSI być spełnione, żeby audio odtwarzało się w tagu <audio>
-
-Jeśli Twoja aplikacja używa HTML <audio src="...">, to:
-
-Worker musi zwracać poprawne nagłówki (robi to),
-
-Range requests muszą działać (kod je obsługuje),
-
-przeglądarka musi mieć dostęp do cookie sesji (tu jest kluczowy problem z GitHub Pages).
-
-W przypadku problemów:
-
-testuj najpierw ręcznie w tej samej domenie:
-workers.dev/login → potem workers.dev/a/...
-
-dopiero potem testuj z GitHub Pages.
-
-G. Checklist: jak sprawdzić, czy “aplikacja na GitHubie” będzie działać
-
-Otwórz w incognito:
-https://audiorpg.tarczynski-pawel.workers.dev/login
-
-Zaloguj się.
-
-W tej samej karcie otwórz:
-https://audiorpg.tarczynski-pawel.workers.dev/a/test/test.txt
-→ ma działać.
-
-Teraz przejdź do Twojej aplikacji na GitHub Pages.
-
-Spróbuj odtworzyć plik audio z linku do workera:
-https://audiorpg.tarczynski-pawel.workers.dev/a/...
-
-Jeśli aplikacja nie odtwarza i przerzuca na /login lub dostajesz błędy:
-
-oznacza to blokadę cookies / politykę przeglądarki
-
-przejdź na Wariant 2 albo docelowo Wariant 3.
-
-H. Najważniejsze praktyczne zalecenie na teraz
-
-Żeby to działało bez frustracji:
-
-Dodaj w aplikacji na GitHubie widoczny przycisk:
-“Zaloguj do audio” → /login
-
-Zawsze najpierw kliknij ten przycisk przed odpaleniem audio.
-
+Najpierw loguj się w workerze, **dopiero potem odtwarzaj dźwięki**.
 Jeśli na części urządzeń nadal nie działa:
+- odtwarzaj audio bezpośrednio z `workers.dev` (wariant 2) albo
+- przejdź na własną domenę (wariant 3).
 
-wtedy audio trzeba odtwarzać bezpośrednio pod workers.dev (Wariant 2) albo przejść na własną domenę (Wariant 3).
+---
 
-Dane techniczne projektu (Twoje konkretne)
-
-R2 bucket: audiorpg
-
-Worker: audiorpg
-
-Worker URL: https://audiorpg.tarczynski-pawel.workers.dev/
-
-Logowanie: /login
-
-Pliki (proxy): /a/<key>
-
-Wylogowanie: /logout
+## Dane techniczne (Twoje konkretne)
+- **R2 bucket:** `audiorpg`
+- **Worker:** `audiorpg`
+- **Worker URL:** `https://audiorpg.tarczynski-pawel.workers.dev/`
+- **Logowanie:** `/login`
+- **Pliki (proxy):** `/a/<key>`
+- **Wylogowanie:** `/logout`
