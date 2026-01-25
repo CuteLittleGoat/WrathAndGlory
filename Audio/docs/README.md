@@ -11,6 +11,9 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 - Firebase dla **Audio** musi być na **oddzielnym koncie Google** niż Firebase dla modułu **Infoczytnik** (unika to konfliktów projektów i reguł).
 - Serwer statyczny (np. GitHub Pages, Firebase Hosting, lokalny serwer HTTP), aby poprawnie pobierać plik `AudioManifest.xlsx`.
 - Dostęp do internetu (Firebase SDK + XLSX CDN).
+- Jeśli audio jest chronione przez Cloudflare Worker z sesją cookie, Worker musi:
+  - ustawiać cookie z `SameSite=None; Secure`,
+  - zwracać CORS z `Access-Control-Allow-Origin` wskazującym domenę aplikacji oraz `Access-Control-Allow-Credentials: true`.
 
 ### Instalacja i uruchomienie
 1. Skopiuj `config/firebase-config.template.js` do `config/firebase-config.js`.
@@ -25,10 +28,11 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 
 ### Jak korzystać (użytkownik)
 1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
-2. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
-3. Kliknij nazwę sampla lub tag pod nazwą, aby włączyć/wyłączyć dźwięk (możesz odtwarzać kilka jednocześnie).
-4. Pod nazwą sampla zobaczysz tag folderu (ułatwia orientację) — podczas odtwarzania nazwa i tag świecą na czerwono.
-5. Użyj suwaka głośności na karcie sampla: środek to standard (0%), lewo to wyciszenie (-100%), prawo to wzmocnienie (+100%).
+2. Jeśli audio jest chronione hasłem przez Cloudflare Worker, kliknij **Zaloguj do audio** w panelu nawigacji (otwiera nową kartę) i zaloguj się.
+3. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
+4. Kliknij nazwę sampla lub tag pod nazwą, aby włączyć/wyłączyć dźwięk (możesz odtwarzać kilka jednocześnie).
+5. Pod nazwą sampla zobaczysz tag folderu (ułatwia orientację) — podczas odtwarzania nazwa i tag świecą na czerwono.
+6. Użyj suwaka głośności na karcie sampla: środek to standard (0%), lewo to wyciszenie (-100%), prawo to wzmocnienie (+100%).
 
 ### Jak korzystać (administrator)
 1. Otwórz `Audio/index.html?admin=1`.
@@ -72,6 +76,9 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 - The **Audio** Firebase must be on a **separate Google account** than the Firebase used for **Infoczytnik** (prevents project/rules conflicts).
 - A static web server (e.g. GitHub Pages, Firebase Hosting, local HTTP server) so `AudioManifest.xlsx` can be fetched.
 - Internet access (Firebase SDK + XLSX CDN).
+- If audio is protected by a Cloudflare Worker with a session cookie, the Worker must:
+  - set the cookie with `SameSite=None; Secure`,
+  - return CORS headers with `Access-Control-Allow-Origin` pointing to the app domain and `Access-Control-Allow-Credentials: true`.
 
 ### Installation & Launch
 1. Copy `config/firebase-config.template.js` to `config/firebase-config.js`.
@@ -86,10 +93,11 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 
 ### How to use (user)
 1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
-2. In the side panel select **Main view** or one of the Favorites lists.
-3. Click the sample name or the tag under it to toggle playback (multiple sounds can play simultaneously).
-4. The folder tag is shown under each sample name for orientation — while playing, both the name and tag turn red.
-5. Use the volume slider on the card: center is normal (0%), left mutes (-100%), right boosts (+100%).
+2. If audio is protected by the Cloudflare Worker, click **Zaloguj do audio** in the navigation panel (opens a new tab) and sign in.
+3. In the side panel select **Main view** or one of the Favorites lists.
+4. Click the sample name or the tag under it to toggle playback (multiple sounds can play simultaneously).
+5. The folder tag is shown under each sample name for orientation — while playing, both the name and tag turn red.
+6. Use the volume slider on the card: center is normal (0%), left mutes (-100%), right boosts (+100%).
 
 ### How to use (admin)
 1. Open `Audio/index.html?admin=1`.

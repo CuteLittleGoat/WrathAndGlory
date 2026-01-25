@@ -79,7 +79,10 @@ window.firebaseConfig = {
      - układ `.user-layout` w dwóch kolumnach,
      - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (klikana nazwa/tags sterują odtwarzaniem, bez przycisku),
      - każda karta w widoku użytkownika pokazuje nazwę sampla i `tag2` (bez nazwy pliku) oraz suwak głośności,
-     - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
+     - prawy panel z nawigacją `#userNav`:
+       - grupa „Dostęp do audio” z przyciskiem **Zaloguj do audio** prowadzącym do Cloudflare Workera (otwiera nową kartę),
+       - przycisk „Widok główny”,
+       - lista ulubionych,
      - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
 
 ## 6. Style CSS (dokładne wartości)
@@ -187,7 +190,7 @@ window.firebaseConfig = {
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
 - `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.
 - `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag + suwak głośności) dla aktualnie wybranej listy w obu trybach.
-- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
+- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Zaloguj do audio” (link do Cloudflare Workera), przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
 - `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu, w tym widoczność panelu tagów.
 - `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
 
@@ -195,7 +198,7 @@ window.firebaseConfig = {
 - `pickRandomVariant(item)` — losuje plik z `variants` dla zgrupowanych sampli.
 - `getAudioContext()` — inicjalizuje `AudioContext` (jeśli dostępny), aby obsłużyć wzmocnienie głośności powyżej 100%.
 - `volumeToGain(value)` — mapuje zakres `-100..100` na gain `0..2`.
-- `startPlayback(item, playbackRoot)` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`.
+- `startPlayback(item, playbackRoot)` — tworzy nowe `Audio()`, ustawia `crossOrigin="use-credentials"` przed przypisaniem `src`, podpina `GainNode`, ustawia głośność wg suwaka i dodaje klasę `.is-playing`. Wymaga, aby serwer audio zwracał `Access-Control-Allow-Origin` (na domenę aplikacji) oraz `Access-Control-Allow-Credentials: true`, a cookie sesji miało `SameSite=None; Secure`.
 - `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing` i resetuje etykietę (jeśli to przycisk).
 - `togglePlayback(itemId, playbackRoot)` — przełącza odtwarzanie/stop dla wskazanego elementu sterującego.
 - `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego sampla po zmianie suwaka.
@@ -251,3 +254,13 @@ window.firebaseConfig = {
 - **Manifest nie wczytuje się:** sprawdź nazwę pliku (`AudioManifest.xlsx`) i dostępność z serwera statycznego.
 - **Brak połączenia z Firebase:** sprawdź `config/firebase-config.js` i reguły Firestore.
 - **Brak dźwięku:** zweryfikuj poprawność `LinkDoFolderu` i `NazwaPliku` w manifestie.
+- **Brak dźwięku z Cloudflare Workera:** sprawdź czy cookie ma `SameSite=None; Secure` oraz czy Worker zwraca `Access-Control-Allow-Origin` (domena aplikacji) i `Access-Control-Allow-Credentials: true`.
+
+## 12. Rollback zmiany „Zaloguj do audio” (wariant 1)
+Jeżeli chcesz wycofać całą zmianę (login + credentialed audio), wykonaj poniższe kroki w `Audio/index.html`:
+1. Usuń stałą `AUDIO_LOGIN_URL` — linia **610**.
+2. Usuń blok HTML w `renderUserNavigation()` opisujący grupę „Dostęp do audio” — linie **1346–1357**.
+3. Usuń linie **987–989** (`new Audio()`, `crossOrigin`, `src`) i przywróć pojedynczą linię:
+   - `const audio = new Audio(fullUrl);`
+
+Po usunięciu tych linii nawigacja użytkownika wróci do wersji bez przycisku logowania, a odtwarzanie będzie działać bez wymuszenia `crossOrigin="use-credentials"`.
