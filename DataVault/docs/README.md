@@ -24,10 +24,12 @@ Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny ka
 - **Tryb gracza (domyślny)**
   - Automatycznie wczytuje `data.json`.
   - Ukrywa przycisk administracyjny do aktualizacji danych.
+  - Ukrywa zakładkę **Bestiariusz** (dostępna tylko dla admina).
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
   - Dostępny jest przycisk **Aktualizuj dane**, który pobiera `Repozytorium.xlsx` z katalogu głównego.
   - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
+  - Zakładka **Bestiariusz** jest widoczna wyłącznie w tym trybie.
 
 ### Aktualizacja danych z `Repozytorium.xlsx`
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. Pierwszy jest rekomendowany dla osób nietechnicznych, drugi pozwala wykonać ten sam proces z linii poleceń.
@@ -88,10 +90,12 @@ Visual/layout rules and formatting details are documented in `DetaleLayout.md` (
 - **Player mode (default)**
   - Automatically loads `data.json`.
   - Hides the admin-only data update button.
+  - Hides the **Bestiariusz** tab (admin-only).
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
   - The **Aktualizuj dane** button appears and fetches `Repozytorium.xlsx` from the repository root.
   - The XLSX is parsed in the browser (SheetJS via CDN) and a new `data.json` is generated for download.
+  - The **Bestiariusz** tab is visible only in this mode.
 
 ### Updating data from `Repozytorium.xlsx`
 Below are two equivalent ways to update the data. The first is recommended for non-technical users; the second performs the same operation via CLI.

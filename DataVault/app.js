@@ -434,8 +434,10 @@ function initUI(){
   // Tabs
   els.tabs.innerHTML = "";
   const available = Object.keys(DB.sheets);
+  const visibleSheets = ADMIN_MODE ? available : available.filter(name => name !== "Bestiariusz");
   const order = SHEETS_ORDER.filter(x => available.includes(x)).concat(available.filter(x => !SHEETS_ORDER.includes(x)).sort());
-  for (const name of order){
+  const visibleOrder = order.filter(name => visibleSheets.includes(name));
+  for (const name of visibleOrder){
     const b = document.createElement("button");
     b.className = "tab";
     b.textContent = name.toUpperCase();
@@ -443,7 +445,7 @@ function initUI(){
     els.tabs.appendChild(b);
   }
   // select first
-  selectSheet(order[0] || available[0]);
+  selectSheet(visibleOrder[0] || visibleSheets[0]);
 
   // Actions / admin visibility
   if (!ADMIN_MODE){

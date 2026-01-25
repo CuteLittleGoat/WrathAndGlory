@@ -347,6 +347,7 @@ Mapowanie na `getElementById`:
 - Czyści `#tabs` i tworzy przyciski `.tab` wg `SHEETS_ORDER`.
 - Ustawia aktywną pierwszą zakładkę.
 - Ukrywa `#updateDataGroup`, gdy nie `ADMIN_MODE`.
+- W trybie gracza usuwa z listy zakładek arkusz `Bestiariusz`, więc jest on widoczny tylko dla admina.
 
 ### 8.2 `selectSheet(name)`
 - Ustawia `currentSheet`.
