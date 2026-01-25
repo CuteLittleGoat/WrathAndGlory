@@ -79,7 +79,10 @@ window.firebaseConfig = {
      - układ `.user-layout` w dwóch kolumnach,
      - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (klikana nazwa/tags sterują odtwarzaniem, bez przycisku),
      - każda karta w widoku użytkownika pokazuje nazwę sampla i `tag2` (bez nazwy pliku) oraz suwak głośności,
-     - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
+     - prawy panel z nawigacją `#userNav`:
+       - grupa „Dostęp do audio” z przyciskiem **Zaloguj do audio** prowadzącym do Cloudflare Workera (otwiera nową kartę),
+       - przycisk „Widok główny”,
+       - lista ulubionych,
      - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
 
 ## 6. Style CSS (dokładne wartości)
@@ -187,7 +190,7 @@ window.firebaseConfig = {
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
 - `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.
 - `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag + suwak głośności) dla aktualnie wybranej listy w obu trybach.
-- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
+- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Zaloguj do audio” (link do Cloudflare Workera), przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
 - `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu, w tym widoczność panelu tagów.
 - `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
 
@@ -251,3 +254,10 @@ window.firebaseConfig = {
 - **Manifest nie wczytuje się:** sprawdź nazwę pliku (`AudioManifest.xlsx`) i dostępność z serwera statycznego.
 - **Brak połączenia z Firebase:** sprawdź `config/firebase-config.js` i reguły Firestore.
 - **Brak dźwięku:** zweryfikuj poprawność `LinkDoFolderu` i `NazwaPliku` w manifestie.
+
+## 12. Rollback zmiany „Zaloguj do audio” (wariant 1)
+Jeżeli chcesz wycofać przycisk logowania do Cloudflare Workera, usuń poniższe linie w `Audio/index.html`:
+1. Stałą `AUDIO_LOGIN_URL` — linia **610**.
+2. Blok HTML w `renderUserNavigation()` opisujący grupę „Dostęp do audio” — linie **1344–1355**.
+
+Po usunięciu tych linii nawigacja użytkownika wróci do wersji bez przycisku logowania.

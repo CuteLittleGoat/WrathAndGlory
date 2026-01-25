@@ -607,6 +607,7 @@
     const tagMenuClearAll = document.getElementById("tagMenuClearAll");
 
     const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
+    const AUDIO_LOGIN_URL = "https://audiorpg.tarczynski-pawel.workers.dev/login";
 
     const state = {
       items: [],
@@ -1341,6 +1342,11 @@
         : "<div class=\"legend\">Brak list ulubionych.</div>";
 
       userNav.innerHTML = `
+        <div class="user-nav-group">
+          <div class="legend">Dostęp do audio</div>
+          <a class="btn" href="${AUDIO_LOGIN_URL}" target="_blank" rel="noopener">Zaloguj do audio</a>
+          <div class="legend">Logowanie otwiera się w nowej karcie.</div>
+        </div>
         <div class="user-nav-group">${mainButton}</div>
         <div class="user-nav-group">
           <div class="legend">Listy ulubionych</div>
