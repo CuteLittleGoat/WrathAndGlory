@@ -29,7 +29,7 @@
 - W tabelach długie komórki można rozwijać kliknięciem (pojawia się wskazówka „kliknij, aby rozwinąć”).
 - Listy wyboru są sortowane (np. Bestiariusz i Talenty alfabetycznie, a Broń/Pancerz/Augumentacje/Ekwipunek/Psionika po typie i nazwie).
 - Interfejs używa zielonego, konsolowego motywu spójnego z `Main/index.html`, z kolorem tekstu pomocniczego `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
-- Na wygenerowanej karcie pomiędzy sekcjami „Odporność” a „Umiejętności” znajduje się blok pól w formie małych kwadratów, które odzwierciedlają wartości „Żywotność” i „Odporność psych.”; jeśli „Odporność psych.” ma wartość „-”, wyświetla się tylko etykieta „T” bez dodatkowych kwadratów. Prawa krawędź etykiet „Ż” i „T” jest pogrubiona, a linia oddzielająca te etykiety ma pogrubiony obrys.
+- Na wygenerowanej karcie pomiędzy sekcjami „Odporność” a „Umiejętności” znajduje się blok pól w formie małych kwadratów, które odzwierciedlają wartości „Żywotność” i „Odporność psych.”; jeśli „Odporność psych.” ma wartość „-”, wyświetla się tylko etykieta „T” bez dodatkowych kwadratów. Linie wokół etykiet i kwadratów mają standardową grubość.
 
 ---
 
@@ -62,4 +62,4 @@
 - In tables, long cells can be expanded by clicking them (a “click to expand” hint is shown).
 - Selection lists are sorted (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
 - The interface uses the same green, console-style theme as `Main/index.html`, with secondary text set to `#4FAF4F` and brighter highlights at `#D2FAD2`.
-- On the generated card, between the “Odporność” and “Umiejętności” sections, there is a block of small squares that reflects the “Żywotność” and “Odporność psych.” values; when “Odporność psych.” is “-”, only the “T” label is shown without additional squares. The right edge of the “Ż” and “T” labels is bold, and the separator between those labels uses a thicker stroke.
+- On the generated card, between the “Odporność” and “Umiejętności” sections, there is a block of small squares that reflects the “Żywotność” and “Odporność psych.” values; when “Odporność psych.” is “-”, only the “T” label is shown without additional squares. The borders around the labels and squares use a standard line weight.
