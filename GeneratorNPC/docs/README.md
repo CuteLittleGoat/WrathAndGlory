@@ -4,7 +4,7 @@
 
 ### Wymagania
 - Przeglądarka z obsługą JavaScript (np. Chrome, Firefox, Edge).
-- Dostęp do internetu, aby pobrać dane z `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+- Dostęp do danych z modułu DataVault: lokalnie z `DataVault/data.json` (zalecane) lub awaryjnie z `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
 
 ### Jak korzystać z aplikacji
 1. Otwórz plik `index.html` w przeglądarce.
@@ -37,7 +37,7 @@
 
 ### Requirements
 - A JavaScript-enabled browser (e.g., Chrome, Firefox, Edge).
-- Internet access to load data from `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+- Access to the DataVault data file: locally via `DataVault/data.json` (recommended) or as a fallback via `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
 
 ### How to use the application
 1. Open `index.html` in your browser.
