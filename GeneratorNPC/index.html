@@ -436,6 +436,7 @@
         "Odporność (w tym WP)",
         "Obrona (w tym WP)",
         "Obrona",
+        "Odporność Psychiczna",
         "Żywotność",
         "Upór",
         "Odwaga",
@@ -1728,7 +1729,8 @@
 
         const defense = resolveNumericDisplay("Obrona", getRecordValue(record, "Obrona"));
         const vitality = resolveNumericDisplay("Żywotność", getRecordValue(record, "Żywotność"));
-        const mental = toDisplayString(
+        const mental = resolveNumericDisplay(
+          "Odporność Psychiczna",
           getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])
         );
 

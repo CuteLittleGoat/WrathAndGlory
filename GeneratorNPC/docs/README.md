@@ -11,7 +11,7 @@
 2. Poczekaj na wczytanie danych — status pojawi się w panelu „Źródło danych”.
 3. W panelu „Wybór bazowy” wybierz rekord z listy „Bestiariusz · Nazwa”.
 4. (Opcjonalnie) Wpisz własne notatki w polu „Uwagi do rekordu”.
-5. W tabeli „Podgląd bazowy” możesz korygować wartości liczbowe (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) za pomocą pól z przyciskami góra–dół.
+5. W tabeli „Podgląd bazowy” możesz korygować wartości liczbowe (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Odporność Psychiczna, Żywotność, Upór, Odwaga, Szybkość) za pomocą pól z przyciskami góra–dół.
    - Minimalna wartość dla większości pól to 1.
    - Dla pola „Odporność (w tym WP)” minimum zależy od „WP”; gdy „WP” ma wartość „-”, minimum to 1.
    - Każde pole liczbowe przyjmuje maksymalnie 25 znaków (dłuższe wpisy są automatycznie ucinane także przy wstępnym wypełnieniu), a szerokość pola jest wizualnie ograniczona do 25 znaków.
@@ -42,7 +42,7 @@
 2. Wait for the data to load — the status appears in the “Źródło danych” panel.
 3. In “Wybór bazowy”, select an entry from “Bestiariusz · Nazwa”.
 4. (Optional) Enter your own notes in “Uwagi do rekordu”.
-5. In the “Podgląd bazowy” table, adjust numeric values (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) using the up/down number inputs.
+5. In the “Podgląd bazowy” table, adjust numeric values (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Odporność Psychiczna, Żywotność, Upór, Odwaga, Szybkość) using the up/down number inputs.
    - The minimum value for most fields is 1.
    - For “Odporność (w tym WP)”, the minimum equals the “WP” value; if “WP” is “-”, the minimum is 1.
    - Each numeric field accepts up to 25 characters (longer input is automatically truncated, including on initial fill), and the input width is visually capped to 25 characters.
