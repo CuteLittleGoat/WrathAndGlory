@@ -14,6 +14,7 @@
 5. W tabeli „Podgląd bazowy” możesz korygować wartości liczbowe (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Odporność Psychiczna, Żywotność, Upór, Odwaga, Szybkość) za pomocą pól z przyciskami góra–dół.
    - Minimalna wartość dla większości pól to 1.
    - Dla pola „Odporność (w tym WP)” minimum zależy od „WP”; gdy „WP” ma wartość „-”, minimum to 1.
+   - Gdy „Odporność Psychiczna” w rekordzie ma wartość „-”, pole nie jest edytowalne i pozostaje „-”.
    - Każde pole liczbowe przyjmuje maksymalnie 25 znaków (dłuższe wpisy są automatycznie ucinane także przy wstępnym wypełnieniu), a szerokość pola jest wizualnie ograniczona do 25 znaków.
 6. Przy polu „Umiejętności” użyj przycisku „Edytuj”, aby włączyć edycję i zapisać własny opis.
 7. W sekcji „Moduły aktywne” zdecyduj, które moduły mają być widoczne:
@@ -28,7 +29,7 @@
 - W tabelach długie komórki można rozwijać kliknięciem (pojawia się wskazówka „kliknij, aby rozwinąć”).
 - Listy wyboru są sortowane (np. Bestiariusz i Talenty alfabetycznie, a Broń/Pancerz/Augumentacje/Ekwipunek/Psionika po typie i nazwie).
 - Interfejs używa zielonego, konsolowego motywu spójnego z `Main/index.html`, z kolorem tekstu pomocniczego `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
-- Na wygenerowanej karcie pomiędzy sekcjami „Odporność” a „Umiejętności” znajduje się blok pól w formie małych kwadratów, które odzwierciedlają wartości „Żywotność” i „Odporność psych.”.
+- Na wygenerowanej karcie pomiędzy sekcjami „Odporność” a „Umiejętności” znajduje się blok pól w formie małych kwadratów, które odzwierciedlają wartości „Żywotność” i „Odporność psych.”; jeśli „Odporność psych.” ma wartość „-”, wyświetla się tylko etykieta „T” bez dodatkowych kwadratów.
 
 ---
 
@@ -46,6 +47,7 @@
 5. In the “Podgląd bazowy” table, adjust numeric values (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Odporność Psychiczna, Żywotność, Upór, Odwaga, Szybkość) using the up/down number inputs.
    - The minimum value for most fields is 1.
    - For “Odporność (w tym WP)”, the minimum equals the “WP” value; if “WP” is “-”, the minimum is 1.
+   - When “Odporność Psychiczna” is “-” in the record, the field is not editable and stays “-”.
    - Each numeric field accepts up to 25 characters (longer input is automatically truncated, including on initial fill), and the input width is visually capped to 25 characters.
 6. Use the “Edytuj” button next to “Umiejętności” to enable editing and save your custom text.
 7. In “Moduły aktywne”, decide which modules should be visible:
@@ -60,4 +62,4 @@
 - In tables, long cells can be expanded by clicking them (a “click to expand” hint is shown).
 - Selection lists are sorted (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
 - The interface uses the same green, console-style theme as `Main/index.html`, with secondary text set to `#4FAF4F` and brighter highlights at `#D2FAD2`.
-- On the generated card, between the “Odporność” and “Umiejętności” sections, there is a block of small squares that reflects the “Żywotność” and “Odporność psych.” values.
+- On the generated card, between the “Odporność” and “Umiejętności” sections, there is a block of small squares that reflects the “Żywotność” and “Odporność psych.” values; when “Odporność psych.” is “-”, only the “T” label is shown without additional squares.

@@ -52,6 +52,7 @@ Zawiera karty z tabelami danych:
 - **Podgląd bazowy Bestiariusza** (`#bestiary-table-body`).
   - W wybranych wierszach (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Odporność Psychiczna, Żywotność, Upór, Odwaga, Szybkość) zamiast tekstu pojawiają się pola `number` z przyciskami góra–dół.
   - Pola liczbowe są ograniczone do 25 znaków — nadmiar jest automatycznie obcinany również przy wstępnym ustawieniu wartości — oraz mają wizualny limit szerokości 25ch.
+  - Jeśli „Odporność Psychiczna” w rekordzie ma wartość „-”, wiersz pozostaje statyczny (brak pola liczbowego), aby nie dopuścić do edycji tej wartości.
   - Wiersz „Umiejętności” posiada przycisk **Edytuj** w kolumnie klucza, który przełącza komórkę na edycję w `textarea`.
 - **Wybór Broni** (`#weapon`, `#weapon-table-body`).
 - **Wybór Pancerzy** (`#armor`, `#armor-table-body`).
@@ -181,6 +182,7 @@ Ustawienia globalne:
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
 - `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków przy inicjalizacji, wpisywaniu i zapisie).
 - `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”), w tym „Odporność Psychiczna” jako pole liczbowe.
+- `MENTAL_RESISTANCE_KEY` — znormalizowany klucz „Odporność Psychiczna”, używany do rozpoznawania wyjątku edycji tego pola.
 - `state` — obiekt z danymi aplikacji i stanem UI:
   - `data`, `traits` (Map), `expandedCells` (Set), `selectedBestiaryIndex`,
   - `bestiaryOverrides` — obiekt nadpisań wprowadzonych przez użytkownika:
@@ -234,6 +236,8 @@ Ustawienia globalne:
 - `getArmorWpValue(record)` — odczytuje wartość WP z rekordu pancerza.
 - `isArmorBlocked(record)` — blokuje pancerze z WP „-”.
 - `isBestiaryArmorBlocked(record)` — sprawdza, czy bestiariusz ma blokującą wartość WP.
+- `getBestiaryMentalValue(record)` — pobiera wartość „Odporność Psychiczna” (z wariantem małych liter).
+- `isBestiaryMentalBlocked(record)` — sprawdza, czy „Odporność Psychiczna” ma wartość „-” i blokuje jej edycję.
 - `buildTraitsMap(data)` — buduje Mapę cech z `_meta.traits`.
 - `resolveTraitDescription(traitName)` — zwraca opis cechy z mapy (lub komunikat o braku opisu).
 
@@ -248,7 +252,7 @@ Ustawienia globalne:
 - `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP, obcina wpis do 25 znaków i zapisuje nadpisanie do `state.bestiaryOverrides`.
 - `createSkillsRow(record, key, valueString)` — renderuje wiersz „Umiejętności” z przyciskiem **Edytuj/Zapisz** i `textarea`.
 - `renderOrderedTable({ tableBody, records, columns, sheetName })` — renderuje tabelę z określonymi kolumnami.
-- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne.
+- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne; wyjątek stanowi „Odporność Psychiczna” z wartością „-”, która pozostaje statyczna.
 
 ### 8.6. Konfiguracje kolumn
 - `weaponColumns`, `armorColumns`, `augmentationsColumns`, `equipmentColumns`, `talentsColumns`, `psionicsColumns`, `prayersColumns` — listy nagłówków dla tabel modułów.
@@ -283,6 +287,7 @@ Ustawienia globalne:
 - `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”.
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
   - Między sekcją „Odporność” a „Umiejętności” renderuje blok kwadratów (paski) dla „Żywotność” i „Odporność Psychiczna”. Liczba kwadratów jest wyliczana z wartości liczbowych (nadpisanych lub bazowych) i generowana jako siatka z automatycznym zawijaniem.
+  - Jeżeli „Odporność Psychiczna” w bestiariuszu ma wartość „-”, wiersz „T” nie generuje żadnych kwadratów (pozostaje sama etykieta).
   - Wewnątrz `buildPrintableCardHTML` znajdują się pomocnicze generatory:
     - `buildTrackSquares(count)` — tworzy listę kwadratów na podstawie liczby (ujemne i nienumeryczne wartości są traktowane jako 0).
     - `buildTrackRow(label, count, rowClass)` — buduje wiersz śledzenia (etykieta + siatka kwadratów) dla „Ż” i „T”.
