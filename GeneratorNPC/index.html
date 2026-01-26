@@ -23,10 +23,8 @@
           <h2>Źródło danych</h2>
           <p class="text-muted">
             Dane są pobierane z pliku
-            <a class="link" href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json">
-              cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json
-            </a>
-            , bez modyfikacji źródła.
+            <a class="link" id="data-source-link" href="../DataVault/data.json">DataVault/data.json</a>,
+            bez modyfikacji źródła (lokalnie lub z GitHub Pages jako awaryjne źródło).
           </p>
           <p class="text-muted" id="data-status" aria-live="polite">Ładowanie danych...</p>
         </section>
@@ -343,7 +341,42 @@
     </aside>
 
     <script>
-      const DATA_URL = "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json";
+      const buildDataSources = () => {
+        const sources = [];
+        const addSource = (label, url) => {
+          if (!url || sources.some((source) => source.url === url)) {
+            return;
+          }
+          sources.push({ label, url });
+        };
+
+        addSource(
+          "DataVault/data.json",
+          new URL("../DataVault/data.json", window.location.href).toString()
+        );
+
+        const isFileOrigin = window.location.protocol === "file:";
+        if (!isFileOrigin) {
+          const pathParts = window.location.pathname.split("/").filter(Boolean);
+          const repoIndex = pathParts.findIndex((part) => part.toLowerCase() === "wrathandglory");
+          if (repoIndex !== -1) {
+            const repoRoot = `/${pathParts.slice(0, repoIndex + 1).join("/")}/`;
+            addSource("Repo root/DataVault/data.json", `${window.location.origin}${repoRoot}DataVault/data.json`);
+          }
+        }
+
+        addSource(
+          "cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json",
+          "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json"
+        );
+        addSource(
+          "raw.githubusercontent.com/cutelittlegoat/WrathAndGlory/main/DataVault/data.json",
+          "https://raw.githubusercontent.com/cutelittlegoat/WrathAndGlory/main/DataVault/data.json"
+        );
+        return sources;
+      };
+
+      const DATA_SOURCES = buildDataSources();
 
       const bestiarySelect = document.querySelector("#bestiary");
       const armorSelect = document.querySelector("#armor");
@@ -362,6 +395,7 @@
       const psionicsTableBody = document.querySelector("#psionics-table-body");
       const prayersTableBody = document.querySelector("#prayers-table-body");
       const dataStatus = document.querySelector("#data-status");
+      const dataSourceLink = document.querySelector("#data-source-link");
       const bestiaryNotes = document.querySelector("#bestiary-notes");
       const generateButton = document.querySelector("#generate-card");
       const resetButton = document.querySelector("#reset-page");
@@ -2140,11 +2174,24 @@
         psionicsSelect.disabled = true;
         prayersSelect.disabled = true;
         try {
-          const response = await fetch(DATA_URL, { cache: "no-store" });
-          if (!response.ok) {
-            throw new Error(`Błąd pobierania: ${response.status}`);
+          let data = null;
+          let usedSource = null;
+          for (const source of DATA_SOURCES) {
+            try {
+              const response = await fetch(source.url, { cache: "no-store" });
+              if (!response.ok) {
+                throw new Error(`Błąd pobierania: ${response.status}`);
+              }
+              data = await response.json();
+              usedSource = source;
+              break;
+            } catch (error) {
+              continue;
+            }
           }
-          const data = await response.json();
+          if (!data) {
+            throw new Error("Brak dostępnego źródła danych.");
+          }
           state.data = data;
           state.traits = buildTraitsMap(data);
           state.bestiary = sortByName(getCollection(data, ["besti", "bestiariusz"]));
@@ -2168,8 +2215,13 @@
           setSelectOptions(talentsSelect, state.talents, "Wybierz talenty...");
           setSelectOptions(psionicsSelect, state.psionics, "Wybierz psionikę...");
           setSelectOptions(prayersSelect, state.prayers, "Wybierz modlitwy...");
+          const sourceLabel = usedSource?.label || "nieznane źródło";
+          if (dataSourceLink && usedSource?.url) {
+            dataSourceLink.href = usedSource.url;
+            dataSourceLink.textContent = sourceLabel;
+          }
           setStatus(
-            `Załadowano: Bestiariusz (${state.bestiary.length}), Pancerze (${state.armor.length}), Bronie (${state.weapons.length}), Augumentacje (${state.augmentations.length}), Ekwipunek (${state.equipment.length}), Talenty (${state.talents.length}), Psionika (${state.psionics.length}), Modlitwy (${state.prayers.length}).`
+            `Załadowano z ${sourceLabel}. Bestiariusz (${state.bestiary.length}), Pancerze (${state.armor.length}), Bronie (${state.weapons.length}), Augumentacje (${state.augmentations.length}), Ekwipunek (${state.equipment.length}), Talenty (${state.talents.length}), Psionika (${state.psionics.length}), Modlitwy (${state.prayers.length}).`
           );
           renderBestiaryTable(null);
           renderArmorTable();
@@ -2216,6 +2268,9 @@
 
       attachListeners();
       updateModuleVisibility();
+      if (dataSourceLink && DATA_SOURCES.length) {
+        dataSourceLink.href = DATA_SOURCES[0].url;
+      }
       loadData();
     </script>
   </body>
