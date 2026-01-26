@@ -350,7 +350,10 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - Nagłówki i belki: `#2c2c2c` (tło), `#fff` (tekst).
 - Linie/ramki: `#111`.
 - Pasy wierszy: `#f1f1f1` (nagłówki), `#e9e9e9` (naprzemienne wpisy), `#d0d0d0` (separatory wpisów).
-- Sekcja kwadratów „Ż”/„T” używa standardowych obramowań `1px` bez pogrubionych separatorów.
+- Sekcja kwadratów „Ż”/„T”:
+  - tło siatki jest przezroczyste (bez czarnego wypełnienia po prawej stronie),
+  - każde pole ma obramowanie `1px solid #111`,
+  - pola „T” mają wypełnienie `#e9e9e9`, pola „Ż” pozostają białe (`#fff`).
 
 ### 3) Wyjątki formatowania i specjalne reguły tekstu
 - **Markery inline** w danych:
