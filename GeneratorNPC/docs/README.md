@@ -30,6 +30,7 @@
 - Listy wyboru są sortowane (np. Bestiariusz i Talenty alfabetycznie, a Broń/Pancerz/Augumentacje/Ekwipunek/Psionika po typie i nazwie).
 - Na wygenerowanej karcie pojawia się sekcja kwadratów „Ż” i „T”, która wizualizuje wartości „Żywotność” i „Odporność psych.” (liczba pól aktualizuje się na podstawie edycji w tabeli; przy wartości „-” dla odporności psychicznej widoczna jest wyłącznie etykieta „T”).
 - Interfejs używa zielonego, konsolowego motywu spójnego z `Main/index.html`, z kolorem tekstu pomocniczego `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
+- Jeśli po zmianach karta do druku lub dane przestały się ładować, upewnij się, że w `buildPrintableCardHTML` zamykający tag skryptu jest zapisany jako `<\\/script>` — zapobiega to przerwaniu głównego skryptu na stronie.
 
 ---
 
@@ -63,3 +64,4 @@
 - Selection lists are sorted (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
 - The printed card includes “Ż” and “T” square trackers that visualize “Żywotność” and “Odporność psych.” (the number of squares reflects table edits; when mental resistance is “-”, only the “T” label is shown).
 - The interface uses the same green, console-style theme as `Main/index.html`, with secondary text set to `#4FAF4F` and brighter highlights at `#D2FAD2`.
+- If the printable card or data loading breaks after edits, confirm that the closing script tag inside `buildPrintableCardHTML` is written as `<\\/script>` to avoid terminating the main page script.

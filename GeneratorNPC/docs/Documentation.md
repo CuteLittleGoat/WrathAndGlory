@@ -164,6 +164,10 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `.tracker-label` — etykieta „Ż”/„T” z pogrubieniem, umieszczona w kolumnie 1 i rozciągana na `grid-row: span var(--tracker-rows)`.
 - `.tracker-grid--mental` — wariant z szarym wypełnieniem pól (`--tracker-fill: #e9e9e9`).
 
+**Bezpieczne wstawienie skryptu w karcie do druku:**
+- W `buildPrintableCardHTML` zamykający tag skryptu jest zapisany jako `<\\/script>` w łańcuchu HTML.
+- Dzięki temu parser HTML nie kończy głównego skryptu w `index.html` podczas ładowania strony (unikamy przerwania wykonywania i błędu ładowania danych), a wygenerowana karta nadal zawiera poprawny blok skryptu po otwarciu w nowym oknie.
+
 ---
 
 ## 7. Zasady formatowania treści danych
