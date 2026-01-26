@@ -1872,8 +1872,8 @@
                 .triple .cell:last-child, .quad .cell:last-child { border-right: none; }
                 .triple.labels .cell, .quad.labels .cell { font-weight: 700; background: #f1f1f1; }
                 .tracker-section { padding: 6px 8px; border-bottom: 1px solid #111; display: grid; gap: 6px; }
-                .tracker-grid { --tracker-size: 18px; --tracker-gap: 1px; --tracker-columns: 10; --tracker-rows: 1; display: grid; grid-template-columns: repeat(var(--tracker-columns), var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); background: #111; padding: var(--tracker-gap); justify-content: start; width: 100%; }
-                .tracker-cell { background: var(--tracker-fill, #fff); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
+                .tracker-grid { --tracker-size: 18px; --tracker-gap: 1px; --tracker-columns: 10; --tracker-rows: 1; display: grid; grid-template-columns: repeat(var(--tracker-columns), var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); background: transparent; padding: 0; justify-content: start; width: 100%; }
+                .tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
                 .tracker-label { font-weight: 700; grid-column: 1; grid-row: span var(--tracker-rows); }
                 .tracker-grid--mental { --tracker-fill: #e9e9e9; }
                 .resistance-wp { font-weight: 700; }
@@ -1954,18 +1954,20 @@
                     const size = parseFloat(style.getPropertyValue("--tracker-size")) || 18;
                     const gap = parseFloat(style.getPropertyValue("--tracker-gap")) || 1;
                     const count = Number(grid.dataset.count || 0);
-                    const available = grid.clientWidth - gap * 2;
-                    const rawColumns = Math.floor((available + gap) / (size + gap));
-                    const minColumns = count > 0 ? 2 : 1;
-                    const columns = Math.max(minColumns, rawColumns);
+                    const available = grid.clientWidth;
+                    const labelSlot = size + gap;
+                    const squaresAvailable = Math.max(available - labelSlot, size);
+                    const squaresPerRow = Math.max(1, Math.floor((squaresAvailable + gap) / (size + gap)));
+                    const columns = squaresPerRow + 1;
                     grid.style.setProperty("--tracker-columns", columns);
-                    const slotsPerRow = Math.max(columns - 1, 1);
-                    const rows = count > 0 ? Math.ceil(count / slotsPerRow) : 1;
+                    const rows = count > 0 ? Math.ceil(count / squaresPerRow) : 1;
                     grid.style.setProperty("--tracker-rows", rows);
                   });
                 };
                 window.addEventListener("load", updateTrackerLayout);
                 window.addEventListener("resize", updateTrackerLayout);
+                const trackerObserver = new ResizeObserver(updateTrackerLayout);
+                document.querySelectorAll(".tracker-grid").forEach((grid) => trackerObserver.observe(grid));
               <\\/script>
             </body>
           </html>
