@@ -21,10 +21,13 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 
 ## 3. Dane wejściowe i źródło
 **Źródło danych:**
-- `DATA_URL = "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json"`.
+- `DATA_SOURCES` — lista źródeł danych w kolejności priorytetu:
+  - lokalne `DataVault/data.json` (względna ścieżka wyliczana względem `GeneratorNPC/index.html`),
+  - awaryjne `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
 
 **Wczytywanie danych:**
-- Dane są pobierane przez `fetch` z `cache: "no-store"`.
+- Dane są pobierane przez `fetch` z `cache: "no-store"` i próbą kolejnych źródeł aż do skutku.
+- Po znalezieniu działającego źródła wyświetlany jest komunikat „Załadowano z ...”.
 - Po wczytaniu dane są analizowane i rozdzielane na kolekcje: bestiariusz, pancerze, bronie, augumentacje, ekwipunek, talenty, psionika, modlitwy.
 - Kolekcje są sortowane przed zasileniem list wyboru: bestiariusz, talenty i modlitwy alfabetycznie po nazwie; broń, pancerze, augumentacje, ekwipunek po typie i nazwie; psionika po typie malejąco i nazwie.
 
@@ -178,7 +181,7 @@ Ustawienia globalne:
 ## 8. Logika aplikacji (pełny opis funkcji)
 
 ### 8.1. Stałe i stan aplikacji
-- `DATA_URL` — URL z danymi JSON.
+- `DATA_SOURCES` — lista źródeł JSON (lokalne `DataVault/data.json` + awaryjne GitHub Pages).
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
 - `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków przy inicjalizacji, wpisywaniu i zapisie).
 - `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”), w tym „Odporność Psychiczna” jako pole liczbowe.
