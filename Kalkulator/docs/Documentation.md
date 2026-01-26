@@ -235,10 +235,7 @@ const skillCosts = {
 - Atrybuty = 1, umiejętności = 0, talenty = 0.
 - `updateLanguage()` + `recalcXP()` uruchamiane po `DOMContentLoaded`.
 
-## 7. `style.css` – plik nieużywany
-`style.css` to starszy arkusz stylów niewykorzystywany przez obecne pliki HTML. Może służyć jako referencja historyczna.
-
-## 8. Jak odtworzyć aplikację 1:1 (checklista)
+## 7. Jak odtworzyć aplikację 1:1 (checklista)
 1. Utwórz cztery pliki: `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`, `kalkulatorxp.css`.
 2. Skopiuj wszystkie zmienne CSS i style z `kalkulatorxp.css` oraz inline z `index.html` i `TworzeniePostaci.html`.
 3. Dodaj logo `Skull.png` i folder `HowToUse` z plikami `pl.pdf` i `en.pdf`.
@@ -252,7 +249,7 @@ const skillCosts = {
    - poprawne błędy (pula XP / Drzewo Nauki),
    - działanie przełącznika języka i manuala.
 
-## 9. Struktura katalogów (referencja)
+## 8. Struktura katalogów (referencja)
 ```
 .
 ├── docs/
@@ -267,6 +264,5 @@ const skillCosts = {
 ├── index.html
 ├── KalkulatorXP.html
 ├── TworzeniePostaci.html
-├── kalkulatorxp.css
-└── style.css
+└── kalkulatorxp.css
 ```
