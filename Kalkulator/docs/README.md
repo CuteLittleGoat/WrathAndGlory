@@ -67,8 +67,7 @@ Aplikacja jest statyczna – „aktualizacja” oznacza podmianę plików lub r�
 ├── index.html               # strona startowa ze stylami inline
 ├── KalkulatorXP.html        # kalkulator wydatków XP
 ├── TworzeniePostaci.html    # arkusz tworzenia postaci
-├── kalkulatorxp.css         # główny arkusz stylów dla obu narzędzi
-└── style.css                # starszy arkusz stylów (nieużywany)
+└── kalkulatorxp.css         # główny arkusz stylów dla obu narzędzi
 ```
 
 ### Disclaimer
@@ -142,8 +141,7 @@ The app is static — “updating” means replacing files or editing the HTML/C
 ├── index.html               # landing page with inline styles
 ├── KalkulatorXP.html        # XP spending calculator
 ├── TworzeniePostaci.html    # character creation sheet
-├── kalkulatorxp.css         # main stylesheet shared by both tools
-└── style.css                # legacy stylesheet (unused)
+└── kalkulatorxp.css         # main stylesheet shared by both tools
 ```
 
 ### Disclaimer

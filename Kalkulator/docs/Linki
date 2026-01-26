@@ -43,19 +43,11 @@ Ten dokument zbiera **wszystkie odwołania do lokalizacji** (wewnątrz repozytor
 - `HowToUse/` musi pozostać na tym samym poziomie katalogów, co `TworzeniePostaci.html`.
 - Pliki `HowToUse/pl.pdf` i `HowToUse/en.pdf` muszą zachować nazwy.
 
-### 1.4. `style.css`
-- **Google Fonts (zewnętrzne)**:
-  - `@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600&display=swap');`
-
-**Implikacja przy migracji:**
-- `style.css` korzysta z zewnętrznego zasobu Google Fonts. URL pozostaje bez zmian.
-- Sam `style.css` nie jest używany przez aktualne HTML, ale jeśli wróci do użycia – musi być w repo i mieć dostęp do internetu.
-
-### 1.5. `kalkulatorxp.css`
+### 1.4. `kalkulatorxp.css`
 - **Brak odwołań do zewnętrznych zasobów.**
 - Wspólny arkusz stylów lokalny.
 
-### 1.6. `Old/Kalkulator_Org.html`
+### 1.5. `Old/Kalkulator_Org.html`
 - **Brak odwołań do zewnętrznych URL oraz plików repo.**
 - Plik jest archiwalny (referencja historyczna).
 
@@ -115,4 +107,3 @@ Jeśli pojawią się absolutne odwołania, muszą zostać zaktualizowane:
 | `TworzeniePostaci.html` | CSS | `kalkulatorxp.css` | lokalny arkusz stylów |
 | `TworzeniePostaci.html` | PDF | `HowToUse/${currentLanguage}.pdf` | lokalny plik, otwierany w nowej karcie |
 | `TworzeniePostaci.html` | fonty | `fonts.googleapis.com`, `fonts.gstatic.com` | zewnętrzne zasoby |
-| `style.css` | fonty | `fonts.googleapis.com` | zewnętrzne zasoby (plik obecnie nieużywany) |
