@@ -295,7 +295,8 @@ Ustawienia globalne:
     - `:root { --track-square-size: 18px; }` — rozmiar jednego kwadratu.
     - `.track-section` — oddziela blok od reszty karty linią dolną.
     - `.track-row` — dwukolumnowa siatka (etykieta + kwadraty), w której wysokość etykiety rozciąga się do wysokości zawiniętych kwadratów.
-    - `.track-label` — pogrubiona litera („Ż”/„T”), obramowanie z prawej i od dołu, wyrównanie do środka.
+    - `.track-label` — pogrubiona litera („Ż”/„T”), wyrównanie do środka, pogrubione obramowanie z prawej strony (2 px) i standardowe obramowanie dolne (1 px).
+    - `.track-row--vitality .track-label` — dolna krawędź etykiety „Ż” jest pogrubiona (2 px), aby podkreślić separator między „Ż” i „T”.
     - `.track-squares` — siatka `repeat(auto-fit, minmax(var(--track-square-size), var(--track-square-size)))` z automatycznym zawijaniem.
     - `.track-square` — kwadrat z obramowaniem (z prawej i od dołu).
     - `.track-row--mental` — lekko szare tło (`#e9e9e9`) dla wiersza „T”, zgodne z innymi jasnymi polami karty.
