@@ -282,6 +282,18 @@ Ustawienia globalne:
 ### 8.11. Karta do druku
 - `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”.
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
+  - Między sekcją „Odporność” a „Umiejętności” renderuje blok kwadratów (paski) dla „Żywotność” i „Odporność Psychiczna”. Liczba kwadratów jest wyliczana z wartości liczbowych (nadpisanych lub bazowych) i generowana jako siatka z automatycznym zawijaniem.
+  - Wewnątrz `buildPrintableCardHTML` znajdują się pomocnicze generatory:
+    - `buildTrackSquares(count)` — tworzy listę kwadratów na podstawie liczby (ujemne i nienumeryczne wartości są traktowane jako 0).
+    - `buildTrackRow(label, count, rowClass)` — buduje wiersz śledzenia (etykieta + siatka kwadratów) dla „Ż” i „T”.
+  - Style bloków śledzenia na karcie do druku:
+    - `:root { --track-square-size: 18px; }` — rozmiar jednego kwadratu.
+    - `.track-section` — oddziela blok od reszty karty linią dolną.
+    - `.track-row` — dwukolumnowa siatka (etykieta + kwadraty), w której wysokość etykiety rozciąga się do wysokości zawiniętych kwadratów.
+    - `.track-label` — pogrubiona litera („Ż”/„T”), obramowanie z prawej i od dołu, wyrównanie do środka.
+    - `.track-squares` — siatka `repeat(auto-fit, minmax(var(--track-square-size), var(--track-square-size)))` z automatycznym zawijaniem.
+    - `.track-square` — kwadrat z obramowaniem (z prawej i od dołu).
+    - `.track-row--mental` — lekko szare tło (`#e9e9e9`) dla wiersza „T”, zgodne z innymi jasnymi polami karty.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
 ### 8.12. Eventy i inicjalizacja
