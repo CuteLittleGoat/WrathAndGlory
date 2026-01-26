@@ -1733,6 +1733,8 @@
           "Odporność Psychiczna",
           getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])
         );
+        const vitalityValue = parseNumericValue(vitality, 0);
+        const mentalValue = parseNumericValue(mental, 0);
 
         const skills =
           skillsOverride != null ? skillsOverride : toDisplayString(getRecordValue(record, "Umiejętności"));
@@ -1788,6 +1790,22 @@
             <div class="section-body">${escapeHtml(notesValue)}</div>
           `
           : "";
+        const buildTrackSquares = (count) => {
+          const safeCount = Number.isFinite(count) && count > 0 ? Math.floor(count) : 0;
+          return Array.from({ length: safeCount }, () => `<span class="track-square"></span>`).join("");
+        };
+        const buildTrackRow = (label, count, rowClass) => `
+          <div class="track-row ${rowClass}">
+            <div class="track-label"><strong>${escapeHtml(label)}</strong></div>
+            <div class="track-squares">${buildTrackSquares(count)}</div>
+          </div>
+        `;
+        const trackHTML = `
+          <div class="track-section">
+            ${buildTrackRow("Ż", vitalityValue, "track-row--vitality")}
+            ${buildTrackRow("T", mentalValue, "track-row--mental")}
+          </div>
+        `;
 
         return `
           <!doctype html>
@@ -1825,6 +1843,13 @@
                 .triple .cell, .quad .cell { padding: 6px; text-align: center; border-right: 1px solid #111; }
                 .triple .cell:last-child, .quad .cell:last-child { border-right: none; }
                 .triple.labels .cell, .quad.labels .cell { font-weight: 700; background: #f1f1f1; }
+                .track-section { border-bottom: 1px solid #111; }
+                .track-row { display: grid; grid-template-columns: var(--track-square-size) 1fr; align-items: stretch; }
+                .track-row + .track-row { border-top: 1px solid #111; }
+                .track-label { display: flex; align-items: center; justify-content: center; border-right: 1px solid #111; border-bottom: 1px solid #111; }
+                .track-squares { display: grid; grid-template-columns: repeat(auto-fit, minmax(var(--track-square-size), var(--track-square-size))); grid-auto-rows: var(--track-square-size); }
+                .track-square { border-right: 1px solid #111; border-bottom: 1px solid #111; width: var(--track-square-size); height: var(--track-square-size); }
+                .track-row--mental .track-square, .track-row--mental .track-label { background: #e9e9e9; }
                 .resistance-wp { font-weight: 700; }
                 .armor-traits { text-align: left; }
                 .armor-traits-desc { text-align: left; }
@@ -1834,6 +1859,7 @@
                 .ref { color: #111; text-decoration: underline; }
                 .caretref { color: #111; }
                 .slash { color: #111; }
+                :root { --track-square-size: 18px; }
                 @media print { body { margin: 0; } .card { margin: 0 auto; } }
               </style>
             </head>
@@ -1880,6 +1906,7 @@
                   <div class="cell">${escapeHtml(vitality)}</div>
                   <div class="cell">${escapeHtml(mental)}</div>
                 </div>
+                ${trackHTML}
                 ${sectionHTML}
                 <div class="quad labels">
                   <div class="cell">Upór</div>
