@@ -1,0 +1,117 @@
+# Linki i odwołania do lokalizacji (Generator NPC)
+
+Poniżej znajduje się pełna lista miejsc w kodzie i dokumentacji, które odwołują się do lokalizacji (wewnątrz repozytorium lub zewnętrznych źródeł). Każdy punkt opisuje **co robi odwołanie** oraz **co trzeba zmienić** po przeniesieniu repozytorium do:
+
+`cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/`
+
+oraz po przeniesieniu repozytorium z danymi do:
+
+`cutelittlegoat.github.io/WrathAndGlory/DataVault/`
+
+---
+
+## 1. Zewnętrzne zasoby (Google Fonts)
+
+### 1.1. Preconnect do Google Fonts
+- **Plik:** `index.html`
+- **Lokalizacja:**
+  - `<link rel="preconnect" href="https://fonts.googleapis.com" />`
+  - `<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />`
+- **Co robi:**
+  - Przygotowuje połączenie z domenami Google Fonts, aby fonty ładowały się szybciej.
+- **Co zmienić po przeniesieniu repo:**
+  - **Nic** — to są zewnętrzne zasoby i nie zależą od lokalizacji repo.
+
+### 1.2. CSS Google Fonts
+- **Plik:** `index.html`
+- **Lokalizacja:**
+  - `https://fonts.googleapis.com/css2?family=Orbitron:wght@500;600&family=Share+Tech+Mono&display=swap`
+- **Co robi:**
+  - Pobiera arkusz CSS z definicjami fontów **Orbitron** i **Share Tech Mono**.
+- **Co zmienić po przeniesieniu repo:**
+  - **Nic** — nadal działa jako zewnętrzny zasób.
+
+---
+
+## 2. Zasoby wewnątrz repo (Generator NPC)
+
+### 2.1. Arkusz stylów aplikacji
+- **Plik:** `index.html`
+- **Lokalizacja:**
+  - `<link rel="stylesheet" href="style.css" />`
+- **Co robi:**
+  - Ładuje lokalny arkusz `style.css` z katalogu głównego repozytorium.
+- **Co zmienić po przeniesieniu repo:**
+  - **Nic** — ścieżka jest relatywna i zadziała niezależnie od folderu GitHub Pages.
+
+---
+
+## 3. Źródło danych (Repozytorium z danymi)
+
+### 3.1. Link w panelu „Źródło danych”
+- **Plik:** `index.html`
+- **Lokalizacja:**
+  - Link oraz tekst: `https://cutelittlegoat.github.io/Repozytorium/data.json`
+- **Co robi:**
+  - Pokazuje użytkownikowi źródło danych oraz pozwala je otworzyć w nowej karcie.
+- **Co zmienić po przeniesieniu repo danych:**
+  - Zamienić na: `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+
+### 3.2. Stała `DATA_URL`
+- **Plik:** `index.html`
+- **Lokalizacja:**
+  - `const DATA_URL = "https://cutelittlegoat.github.io/Repozytorium/data.json";`
+- **Co robi:**
+  - Jest to adres pobierania danych JSON przez `fetch`.
+- **Co zmienić po przeniesieniu repo danych:**
+  - Zamienić na: `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+
+---
+
+## 4. Odwołania w dokumentacji
+
+### 4.1. Instrukcja obsługi
+- **Plik:** `docs/README.md`
+- **Lokalizacja:**
+  - Sekcje PL/EN → wymagania: `https://cutelittlegoat.github.io/Repozytorium/data.json`
+- **Co robi:**
+  - Informuje użytkownika o źródle danych.
+- **Co zmienić po przeniesieniu repo danych:**
+  - Zamienić na: `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+
+### 4.2. Dokumentacja techniczna
+- **Plik:** `docs/Documentation.md`
+- **Lokalizacja:**
+  - Sekcja „Dane wejściowe i źródło”: `DATA_URL = "https://cutelittlegoat.github.io/Repozytorium/data.json"`.
+- **Co robi:**
+  - Dokumentuje źródło danych wykorzystywane przez aplikację.
+- **Co zmienić po przeniesieniu repo danych:**
+  - Zamienić na: `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+
+---
+
+## 5. Podsumowanie zmian wymaganych po przenosinach
+
+### 5.1. Generator NPC (repo z aplikacją)
+- **Nowy adres GitHub Pages:**
+  - `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/`
+- **Co trzeba zmienić w kodzie:**
+  - **Nic** w samym HTML/CSS — wszystkie ścieżki są względne.
+
+### 5.2. DataVault (repo z danymi)
+- **Nowy adres GitHub Pages:**
+  - `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/`
+- **Co trzeba zmienić w kodzie i dokumentacji:**
+  - Zaktualizować wszystkie wystąpienia `https://cutelittlegoat.github.io/Repozytorium/data.json` na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json` w:
+    - `index.html` (link w panelu danych + stała `DATA_URL`).
+    - `docs/README.md` (sekcje PL i EN).
+    - `docs/Documentation.md` (sekcja źródła danych).
+
+---
+
+## 6. Checklist po przeniesieniu
+1. **Przenieś repo aplikacji** do `WrathAndGlory/GeneratorNPC`.
+2. **Przenieś repo danych** do `WrathAndGlory/DataVault`.
+3. **Zmień URL w kodzie i dokumentacji** (patrz sekcja 5.2).
+4. **Sprawdź w przeglądarce** czy `index.html` poprawnie ładuje dane JSON.
+5. **Zweryfikuj link w panelu „Źródło danych”** oraz poprawność renderowanych tabel.
