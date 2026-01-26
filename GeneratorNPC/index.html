@@ -341,42 +341,16 @@
     </aside>
 
     <script>
-      const buildDataSources = () => {
-        const sources = [];
-        const addSource = (label, url) => {
-          if (!url || sources.some((source) => source.url === url)) {
-            return;
-          }
-          sources.push({ label, url });
-        };
-
-        addSource(
-          "DataVault/data.json",
-          new URL("../DataVault/data.json", window.location.href).toString()
-        );
-
-        const isFileOrigin = window.location.protocol === "file:";
-        if (!isFileOrigin) {
-          const pathParts = window.location.pathname.split("/").filter(Boolean);
-          const repoIndex = pathParts.findIndex((part) => part.toLowerCase() === "wrathandglory");
-          if (repoIndex !== -1) {
-            const repoRoot = `/${pathParts.slice(0, repoIndex + 1).join("/")}/`;
-            addSource("Repo root/DataVault/data.json", `${window.location.origin}${repoRoot}DataVault/data.json`);
-          }
-        }
-
-        addSource(
-          "cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json",
-          "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json"
-        );
-        addSource(
-          "raw.githubusercontent.com/cutelittlegoat/WrathAndGlory/main/DataVault/data.json",
-          "https://raw.githubusercontent.com/cutelittlegoat/WrathAndGlory/main/DataVault/data.json"
-        );
-        return sources;
-      };
-
-      const DATA_SOURCES = buildDataSources();
+      const DATA_SOURCES = [
+        {
+          label: "DataVault/data.json",
+          url: new URL("../DataVault/data.json", window.location.href).toString(),
+        },
+        {
+          label: "cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json",
+          url: "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json",
+        },
+      ];
 
       const bestiarySelect = document.querySelector("#bestiary");
       const armorSelect = document.querySelector("#armor");
@@ -2216,10 +2190,6 @@
           setSelectOptions(psionicsSelect, state.psionics, "Wybierz psionikę...");
           setSelectOptions(prayersSelect, state.prayers, "Wybierz modlitwy...");
           const sourceLabel = usedSource?.label || "nieznane źródło";
-          if (dataSourceLink && usedSource?.url) {
-            dataSourceLink.href = usedSource.url;
-            dataSourceLink.textContent = sourceLabel;
-          }
           setStatus(
             `Załadowano z ${sourceLabel}. Bestiariusz (${state.bestiary.length}), Pancerze (${state.armor.length}), Bronie (${state.weapons.length}), Augumentacje (${state.augmentations.length}), Ekwipunek (${state.equipment.length}), Talenty (${state.talents.length}), Psionika (${state.psionics.length}), Modlitwy (${state.prayers.length}).`
           );
@@ -2268,7 +2238,7 @@
 
       attachListeners();
       updateModuleVisibility();
-      if (dataSourceLink && DATA_SOURCES.length) {
+      if (dataSourceLink) {
         dataSourceLink.href = DATA_SOURCES[0].url;
       }
       loadData();
