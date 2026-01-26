@@ -154,15 +154,20 @@ Ustawienia globalne:
 ### 6.10. Karta do druku — trackery „Ż/T”
 Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `.tracker-section` — kontener z paddingiem `6px 8px`, układ `grid` i `gap: 6px`, zakończony dolną ramką `1px solid #111`.
-- `.tracker-grid` — siatka kwadratów:
+- `.tracker-row` — pojedynczy wiersz trackera z dwoma kolumnami (etykieta + siatka pól):
   - zmienne `--tracker-size: 18px`, `--tracker-gap: 1px`, `--tracker-columns`, `--tracker-rows`,
+  - `display: grid`, `grid-template-columns: var(--tracker-size) 1fr`,
+  - `column-gap: 1px`, etykieta i pola są niezależnymi elementami.
+- `.tracker-squares` — siatka pustych kwadratów:
   - `display: grid`, `grid-template-columns: repeat(var(--tracker-columns), var(--tracker-size))`,
   - `grid-auto-rows: var(--tracker-size)`,
-  - brak tła (przezroczyste), brak paddingu; siatka nie generuje ciemnego „paska” po prawej stronie,
-  - `gap: 1px` zachowuje odstępy między polami, a każde pole ma własną ramkę.
+  - `gap: 1px`, siatka rozciąga się na całą szerokość karty (bez sztucznego limitu liczby kolumn).
 - `.tracker-cell` — pojedynczy kwadrat (tło `#fff`, obramowanie `1px solid #111`, wyśrodkowany tekst).
-- `.tracker-label` — etykieta „Ż”/„T” z pogrubieniem, umieszczona w kolumnie 1 i rozciągana na `grid-row: span var(--tracker-rows)` (prostokąt o wysokości liczby wierszy).
-- `.tracker-grid--mental` — wariant z szarym wypełnieniem pól (`--tracker-fill: #e9e9e9`).
+- `.tracker-label` — etykieta „Ż”/„T”:
+  - ma stałą szerokość `var(--tracker-size)`,
+  - wysokość jest liczona jako `--tracker-rows` × `--tracker-size` z uwzględnieniem odstępów (`--tracker-gap`),
+  - dzięki temu pozostaje kwadratem przy jednej linii, a przy większej liczbie wierszy staje się prostokątem 1×N.
+- `.tracker-row--mental` — wariant z szarym wypełnieniem pól (`--tracker-fill: #e9e9e9`).
 
 **Bezpieczne wstawienie skryptu w karcie do druku:**
 - W `buildPrintableCardHTML` zamykający tag skryptu jest zapisany jako `<\\/script>` w łańcuchu HTML.
