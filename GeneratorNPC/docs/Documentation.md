@@ -286,7 +286,7 @@ Ustawienia globalne:
 ### 8.11. Karta do druku
 - `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”.
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
-  - Między sekcją „Odporność” a „Umiejętności” renderuje blok kwadratów (paski) dla „Żywotność” i „Odporność Psychiczna”. Liczba kwadratów jest wyliczana z wartości liczbowych (nadpisanych lub bazowych) i generowana jako siatka z automatycznym zawijaniem.
+  - Między sekcją „Odporność” a „Umiejętności” renderuje blok kwadratów (paski) dla „Żywotność” i „Odporność Psychiczna”. Liczba kwadratów jest wyliczana z wartości liczbowych (nadpisanych lub bazowych).
   - Jeżeli „Odporność Psychiczna” w bestiariuszu ma wartość „-”, wiersz „T” nie generuje żadnych kwadratów (pozostaje sama etykieta).
   - Wewnątrz `buildPrintableCardHTML` znajdują się pomocnicze generatory:
     - `buildTrackSquares(count, { addTopFrom })` — tworzy listę kwadratów na podstawie liczby (ujemne i nienumeryczne wartości są traktowane jako 0); opcja `addTopFrom` dodaje klasę górnej krawędzi dla indeksów od wskazanego progu.

@@ -1941,6 +1941,54 @@
                 </div>
                 ${notesHTML}
               </div>
+              <script>
+                (() => {
+                  const section = document.querySelector(".track-section");
+                  if (!section) return;
+                  const vitalityCount = Number(section.dataset.vitalityCount) || 0;
+                  const mentalCount = Number(section.dataset.mentalCount) || 0;
+                  const rootStyles = getComputedStyle(document.documentElement);
+                  const squareSize = Number.parseFloat(
+                    rootStyles.getPropertyValue("--track-square-size")
+                  ) || 18;
+                  const sectionWidth = section.getBoundingClientRect().width || 0;
+                  const availableWidth = Math.max(0, sectionWidth - squareSize);
+                  const columns = Math.max(1, Math.floor(availableWidth / squareSize));
+
+                  const table = document.createElement("table");
+                  table.className = "track-table";
+                  const tbody = document.createElement("tbody");
+
+                  const appendRows = (label, count, cellClass) => {
+                    const safeCount = Number.isFinite(count) && count > 0 ? Math.floor(count) : 0;
+                    const rows = Math.max(1, Math.ceil(safeCount / columns));
+                    for (let rowIndex = 0; rowIndex < rows; rowIndex += 1) {
+                      const tr = document.createElement("tr");
+                      if (rowIndex === 0) {
+                        const labelCell = document.createElement("td");
+                        labelCell.className = `track-label ${cellClass}`.trim();
+                        labelCell.rowSpan = rows;
+                        labelCell.textContent = label;
+                        tr.appendChild(labelCell);
+                      }
+                      const startIndex = rowIndex * columns;
+                      const endIndex = Math.min(startIndex + columns, safeCount);
+                      for (let index = startIndex; index < endIndex; index += 1) {
+                        const cell = document.createElement("td");
+                        cell.className = `track-square ${cellClass}`.trim();
+                        tr.appendChild(cell);
+                      }
+                      tbody.appendChild(tr);
+                    }
+                  };
+
+                  appendRows("Ż", vitalityCount, "track-cell--vitality");
+                  appendRows("T", mentalCount, "track-cell--mental");
+
+                  table.appendChild(tbody);
+                  section.replaceChildren(table);
+                })();
+              </script>
             </body>
           </html>
         `;
