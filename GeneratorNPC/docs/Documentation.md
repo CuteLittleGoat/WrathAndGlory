@@ -155,23 +155,18 @@ Ustawienia globalne:
 Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `.tracker-section` — kontener z paddingiem `6px 8px`, układ `grid` i `gap: 6px`, zakończony dolną ramką `1px solid #111`.
 - `.tracker-row` — pojedynczy wiersz trackera z dwoma kolumnami (etykieta + siatka pól):
-  - zmienne `--tracker-size: 18px`, `--tracker-gap: 1px`, `--tracker-columns`, `--tracker-rows`,
+  - zmienne `--tracker-size: 18px`, `--tracker-gap: 1px`,
   - `display: grid`, `grid-template-columns: var(--tracker-size) 1fr`,
   - `column-gap: 1px`, etykieta i pola są niezależnymi elementami.
 - `.tracker-squares` — siatka pustych kwadratów:
-  - `display: grid`, `grid-template-columns: repeat(var(--tracker-columns), var(--tracker-size))`,
+  - `display: grid`, `grid-template-columns: repeat(auto-fit, var(--tracker-size))`,
   - `grid-auto-rows: var(--tracker-size)`,
   - `gap: 1px`, siatka rozciąga się na całą szerokość karty (bez sztucznego limitu liczby kolumn).
 - `.tracker-cell` — pojedynczy kwadrat (tło `#fff`, obramowanie `1px solid #111`, wyśrodkowany tekst).
 - `.tracker-label` — etykieta „Ż”/„T”:
   - ma stałą szerokość `var(--tracker-size)`,
-  - wysokość jest liczona jako `--tracker-rows` × `--tracker-size` z uwzględnieniem odstępów (`--tracker-gap`),
-  - dzięki temu pozostaje kwadratem przy jednej linii, a przy większej liczbie wierszy staje się prostokątem 1×N.
+  - wysokość to `var(--tracker-size)`, czyli pojedynczy kwadrat niezależny od liczby linii.
 - `.tracker-row--mental` — wariant z szarym wypełnieniem pól (`--tracker-fill: #e9e9e9`).
-
-**Bezpieczne wstawienie skryptu w karcie do druku:**
-- W `buildPrintableCardHTML` zamykający tag skryptu jest zapisany jako `<\\/script>` w łańcuchu HTML.
-- Dzięki temu parser HTML nie kończy głównego skryptu w `index.html` podczas ładowania strony (unikamy przerwania wykonywania i błędu ładowania danych), a wygenerowana karta nadal zawiera poprawny blok skryptu po otwarciu w nowym oknie.
 
 ---
 
@@ -308,7 +303,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”.
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T”**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
 - Trackery „Ż/T” są generowane dynamicznie: osobne siatki z etykietami „Ż” i „T” oraz pustymi kwadratami. Liczba kwadratów wynika z „Żywotność” i „Odporność Psychiczna”, a gdy „Odporność Psychiczna” ma wartość `-`, renderowana jest tylko etykieta „T”.
-  - Układ trackerów używa inline CSS z przezroczystym tłem i ramkami pól (brak ciemnego wypełnienia po prawej stronie) oraz krótkiego skryptu, który oblicza liczbę pól w wierszu na podstawie dostępnej szerokości. Etykieta „Ż/T” automatycznie rozciąga się na tyle wierszy, ile wynika z podziału pól.
+  - Układ trackerów używa inline CSS z przezroczystym tłem i ramkami pól (brak ciemnego wypełnienia po prawej stronie), a liczba pól w wierszu jest obliczana przez `grid-template-columns: repeat(auto-fit, ...)`.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
 ### 8.12. Eventy i inicjalizacja
@@ -331,7 +326,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - Karta jest generowana w nowym oknie i posiada własny zestaw stylów inline.
 - W sekcji „Odporność” wartość WP jest opisywana etykietą „w tym Pancerz”.
 - Jeśli użytkownik zmodyfikuje statystyki lub „Umiejętności”, karta używa wartości z `bestiaryOverrides`; edytowana „Odporność (w tym WP)” jest bazą do przeliczeń z pancerzem, a „Odporność Psychiczna” jest przenoszona bezpośrednio na kartę.
-- Trackery „Ż/T” obliczają liczbę kwadratów na podstawie wartości liczbowych; pozycja etykiety „Ż”/„T” automatycznie rozciąga się na tyle wierszy, ile wymaga zawinięcie pól (układ aktualizuje się na `load`, `resize` oraz przez `ResizeObserver` w oknie karty).
+- Trackery „Ż/T” obliczają liczbę kwadratów na podstawie wartości liczbowych; etykiety „Ż/T” to niezależne pojedyncze kwadraty, a siatka pól skaluje się do szerokości wiersza dzięki `auto-fit`.
 - Dla modułu psioniki możliwe jest normalizowanie kolumny „Wzmocnienie” do jednej linii.
 - Sekcje bez danych są pomijane.
 - Zastosowano naprzemienny „zebra striping” dla bloków z listami wpisów.
