@@ -50,7 +50,8 @@ Składa się z trzech sekcji:
 ### 4.3. Obszar roboczy (`.workspace`)
 Zawiera karty z tabelami danych:
 - **Podgląd bazowy Bestiariusza** (`#bestiary-table-body`).
-  - W wybranych wierszach (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Upór, Odwaga, Szybkość) zamiast tekstu pojawiają się pola `number` z przyciskami góra–dół.
+  - W wybranych wierszach (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) zamiast tekstu pojawiają się pola `number` z przyciskami góra–dół.
+  - Pole „Odporność Psychiczna” jest blokowane dla rekordów z wartością `-` (brak edycji).
   - Pola liczbowe są ograniczone do 25 znaków — nadmiar jest automatycznie obcinany również przy wstępnym ustawieniu wartości — oraz mają wizualny limit szerokości 25ch.
   - Wiersz „Umiejętności” posiada przycisk **Edytuj** w kolumnie klucza, który przełącza komórkę na edycję w `textarea`.
 - **Wybór Broni** (`#weapon`, `#weapon-table-body`).
@@ -180,7 +181,7 @@ Ustawienia globalne:
 - `DATA_URL` — URL z danymi JSON.
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
 - `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków przy inicjalizacji, wpisywaniu i zapisie).
-- `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
+- `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_MENTAL_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
 - `state` — obiekt z danymi aplikacji i stanem UI:
   - `data`, `traits` (Map), `expandedCells` (Set), `selectedBestiaryIndex`,
   - `bestiaryOverrides` — obiekt nadpisań wprowadzonych przez użytkownika:
@@ -234,6 +235,7 @@ Ustawienia globalne:
 - `getArmorWpValue(record)` — odczytuje wartość WP z rekordu pancerza.
 - `isArmorBlocked(record)` — blokuje pancerze z WP „-”.
 - `isBestiaryArmorBlocked(record)` — sprawdza, czy bestiariusz ma blokującą wartość WP.
+- `isBestiaryMentalResistanceBlocked(record)` — blokuje edycję „Odporność Psychiczna”, gdy pole ma wartość `-`.
 - `buildTraitsMap(data)` — buduje Mapę cech z `_meta.traits`.
 - `resolveTraitDescription(traitName)` — zwraca opis cechy z mapy (lub komunikat o braku opisu).
 
@@ -248,7 +250,7 @@ Ustawienia globalne:
 - `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP, obcina wpis do 25 znaków i zapisuje nadpisanie do `state.bestiaryOverrides`.
 - `createSkillsRow(record, key, valueString)` — renderuje wiersz „Umiejętności” z przyciskiem **Edytuj/Zapisz** i `textarea`.
 - `renderOrderedTable({ tableBody, records, columns, sheetName })` — renderuje tabelę z określonymi kolumnami.
-- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne.
+- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne (z blokadą „Odporność Psychiczna” przy wartości `-`).
 
 ### 8.6. Konfiguracje kolumn
 - `weaponColumns`, `armorColumns`, `augmentationsColumns`, `equipmentColumns`, `talentsColumns`, `psionicsColumns`, `prayersColumns` — listy nagłówków dla tabel modułów.
@@ -303,7 +305,7 @@ Ustawienia globalne:
 ## 10. Logika generowania karty do druku
 - Karta jest generowana w nowym oknie i posiada własny zestaw stylów inline.
 - W sekcji „Odporność” wartość WP jest opisywana etykietą „w tym Pancerz”.
-- Jeśli użytkownik zmodyfikuje statystyki lub „Umiejętności”, karta używa wartości z `bestiaryOverrides`; edytowana „Odporność (w tym WP)” jest bazą do przeliczeń z pancerzem.
+- Jeśli użytkownik zmodyfikuje statystyki lub „Umiejętności”, karta używa wartości z `bestiaryOverrides`; edytowana „Odporność (w tym WP)” jest bazą do przeliczeń z pancerzem, a „Odporność Psychiczna” jest przenoszona bezpośrednio na kartę.
 - Dla modułu psioniki możliwe jest normalizowanie kolumny „Wzmocnienie” do jednej linii.
 - Sekcje bez danych są pomijane.
 - Zastosowano naprzemienny „zebra striping” dla bloków z listami wpisów.

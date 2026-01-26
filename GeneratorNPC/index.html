@@ -437,6 +437,7 @@
         "Obrona (w tym WP)",
         "Obrona",
         "Żywotność",
+        "Odporność Psychiczna",
         "Upór",
         "Odwaga",
         "Szybkość",
@@ -444,6 +445,9 @@
       const EDITABLE_SKILLS_KEY = normalizeKey("Umiejętności");
       const EDITABLE_RESISTANCE_KEYS = new Set(
         ["Odporność (w tym WP)", "Obrona (w tym WP)"].map((label) => normalizeKey(label))
+      );
+      const EDITABLE_MENTAL_RESISTANCE_KEYS = new Set(
+        ["Odporność Psychiczna", "Odporność psychiczna"].map((label) => normalizeKey(label))
       );
       const EDITABLE_NUMERIC_KEYS = new Set(EDITABLE_STATS_KEYS.map((label) => normalizeKey(label)));
 
@@ -896,6 +900,11 @@
       const isBestiaryArmorBlocked = (record) =>
         normalizeText(getRecordValueByLabels(record, ["Wartość Pancerza", "WP"])) === "-";
 
+      const isBestiaryMentalResistanceBlocked = (record) =>
+        normalizeText(
+          getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])
+        ) === "-";
+
       const buildTraitsMap = (data) => {
         const traits = data?._meta?.traits;
         const map = new Map();
@@ -1241,7 +1250,11 @@
           if (key.toLowerCase().includes("cechy")) {
             valueCell = renderTraitsCell(value);
           } else if (EDITABLE_NUMERIC_KEYS.has(normalizedKey)) {
-            valueCell = createNumericInputCell(record, key, valueString);
+            if (EDITABLE_MENTAL_RESISTANCE_KEYS.has(normalizedKey) && isBestiaryMentalResistanceBlocked(record)) {
+              valueCell = createClampCell("Bestiariusz", key, key, valueString);
+            } else {
+              valueCell = createNumericInputCell(record, key, valueString);
+            }
           } else {
             valueCell = createClampCell("Bestiariusz", key, key, valueString);
           }
@@ -1728,9 +1741,13 @@
 
         const defense = resolveNumericDisplay("Obrona", getRecordValue(record, "Obrona"));
         const vitality = resolveNumericDisplay("Żywotność", getRecordValue(record, "Żywotność"));
-        const mental = toDisplayString(
-          getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])
-        );
+        const mentalOverride = getNumericOverrideValue("Odporność Psychiczna");
+        const mental =
+          mentalOverride != null
+            ? String(mentalOverride)
+            : toDisplayString(
+                getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])
+              );
 
         const skills =
           skillsOverride != null ? skillsOverride : toDisplayString(getRecordValue(record, "Umiejętności"));
