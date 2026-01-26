@@ -12,7 +12,7 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 ---
 
 ## 2. Struktura projektu
-- `index.html` — główny dokument HTML, zawiera szkielet UI oraz cały skrypt JS.
+- `index.html` — główny dokument HTML (tytuł karty: `Generator NPC`), zawiera szkielet UI oraz cały skrypt JS.
 - `style.css` — komplet stylów interfejsu (layout, typografia, tabele, popover, układ responsywny).
 - `docs/Documentation.md` — niniejsza dokumentacja techniczna.
 - `docs/README.md` — instrukcja obsługi dla użytkownika (PL/EN).

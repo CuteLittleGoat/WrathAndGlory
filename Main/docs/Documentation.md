@@ -16,7 +16,7 @@ Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnoś
 - `<html lang="pl">` – język dokumentu ustawiony na polski.
 - `<meta charset="UTF-8">` – kodowanie znaków UTF‑8.
 - `<meta name="viewport" content="width=device-width, initial-scale=1.0">` – poprawne skalowanie na urządzeniach mobilnych.
-- `<title>Kozi przybornik</title>` – tytuł karty przeglądarki.
+- `<title>Kozi Przybornik</title>` – tytuł karty przeglądarki.
 
 ### 2. Stylizacja (sekcja `<style>`)
 Cała stylizacja jest osadzona w `Main/index.html` i nie korzysta z zewnętrznych plików CSS.

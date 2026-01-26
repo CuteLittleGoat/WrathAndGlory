@@ -18,6 +18,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 3. Upewnij się, że Firestore ma włączone reguły zapisu/odczytu dla dokumentu `audio/favorites` (zawiera ustawienia ulubionych i głównego widoku).
 4. Upewnij się, że plik `AudioManifest.xlsx` znajduje się w katalogu `Audio/`.
 5. Uruchom stronę `Audio/index.html` na serwerze statycznym.
+6. Tytuł karty przeglądarki powinien brzmieć: **Kozie Audio**.
 
 ### Tryby działania
 - **Widok użytkownika** (domyślny): widoczne są tylko dwa panele — siatka odtwarzania dźwięków z „Głównego widoku”/„Ulubionych” oraz panel nawigacji list.
@@ -79,6 +80,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 3. Ensure Firestore rules allow read/write on `audio/favorites` (stores favorites and main view settings).
 4. Make sure `AudioManifest.xlsx` is located in the `Audio/` folder.
 5. Serve and open `Audio/index.html` from a static server.
+6. The browser tab title should read: **Kozie Audio**.
 
 ### Modes
 - **User view** (default): only two panels are visible — the playback grid (Main View/Favorites) and the navigation panel.

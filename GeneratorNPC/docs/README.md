@@ -5,6 +5,7 @@
 ### Wymagania
 - Przeglądarka z obsługą JavaScript (np. Chrome, Firefox, Edge).
 - Dostęp do internetu, aby pobrać dane z `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+Tytuł karty przeglądarki: **Generator NPC**.
 
 ### Jak korzystać z aplikacji
 1. Otwórz plik `index.html` w przeglądarce.
@@ -38,6 +39,7 @@
 ### Requirements
 - A JavaScript-enabled browser (e.g., Chrome, Firefox, Edge).
 - Internet access to load data from `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
+Browser tab title: **Generator NPC**.
 
 ### How to use the application
 1. Open `index.html` in your browser.

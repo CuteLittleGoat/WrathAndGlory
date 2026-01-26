@@ -5,6 +5,7 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 ---
 
 ## Instrukcja obsługi (PL)
+Tytuł karty przeglądarki: **Kozi Przybornik**.
 
 ### Dostępne narzędzia
 - **Generator NPC** (widok admina): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
@@ -72,6 +73,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ---
 
 ## User guide (EN)
+Browser tab title: **Kozi Przybornik**.
 
 ### Available tools
 - **NPC Generator** (admin view): https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/index.html
