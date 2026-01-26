@@ -300,7 +300,6 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T”**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
   - Trackery „Ż/T” są generowane dynamicznie: osobne siatki z etykietami „Ż” i „T” oraz pustymi kwadratami. Liczba kwadratów wynika z „Żywotność” i „Odporność Psychiczna”, a gdy „Odporność Psychiczna” ma wartość `-`, renderowana jest tylko etykieta „T”.
   - Układ trackerów używa inline CSS (siatka z tłem będącym „ramką” 1px oraz `gap: 1px`) oraz krótkiego skryptu, który oblicza liczbę kolumn i wysokość etykiety (span wierszy) na podstawie dostępnej szerokości.
-  - Wygenerowany HTML zawiera skrypt, którego znacznik zamknięcia jest zapisywany jako `<\\/script>`, aby nie przerwać głównego skryptu w `index.html`.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
 ### 8.12. Eventy i inicjalizacja
