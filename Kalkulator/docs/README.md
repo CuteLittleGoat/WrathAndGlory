@@ -5,6 +5,7 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 ## 🇵🇱 Instrukcja (PL)
 ### Szybki start
 1. Otwórz plik `index.html` w przeglądarce (dwuklik lub przeciągnięcie pliku do okna przeglądarki).
+   - Tytuł karty przeglądarki na stronie startowej: **Kozie Liczydła**.
 2. Na ekranie startowym wybierz narzędzie:
    - **Kalkulator XP** (`KalkulatorXP.html`) – liczy koszt rozwoju atrybutów i umiejętności.
    - **Tworzenie Postaci** (`TworzeniePostaci.html`) – arkusz budowania postaci z pulą XP, kontrolą limitów i tabelami.
@@ -79,6 +80,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ## 🇬🇧 Manual (EN)
 ### Quick start
 1. Open `index.html` in a browser (double-click or drag-and-drop into the browser window).
+   - Browser tab title on the start page: **Kozie Liczydła**.
 2. On the start screen choose a tool:
    - **XP Calculator** (`KalkulatorXP.html`) – calculates the XP cost for attributes and skills.
    - **Character Creation** (`TworzeniePostaci.html`) – a character sheet with an XP pool, limit checks, and tables.

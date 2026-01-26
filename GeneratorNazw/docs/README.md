@@ -4,6 +4,7 @@
 
 ### Cel modułu
 Generator Nazw służy do szybkiego tworzenia nazw postaci, pojazdów i okrętów w klimacie WH40K.
+Tytuł karty przeglądarki: **Generator Nazw**.
 
 ### Jak używać
 1. **Wybierz kategorię** w polu „Kategoria”.
@@ -23,6 +24,7 @@ Generator Nazw służy do szybkiego tworzenia nazw postaci, pojazdów i okrętó
 
 ### Module purpose
 Generator Nazw is a quick name generator for WH40K‑style characters, vehicles, and ships.
+Browser tab title: **Generator Nazw**.
 
 ### How to use
 1. **Choose a category** in the “Kategoria” dropdown.

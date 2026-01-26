@@ -11,6 +11,7 @@ Celem jest umożliwienie odtworzenia modułu 1:1 bez dostępu do kodu.
 - `style.css` — pełny wygląd (kolory, fonty, layout, stany interakcji).
 - `script.js` — logika losowania, RNG, generatory nazw, obsługa UI.
 - `docs/Logika.md` — opis segmentów słowotwórczych i reguł składania nazw.
+- `Szablon.html` — plik usunięty jako nieużywany (nie występuje już w module).
 
 ---
 
@@ -18,7 +19,7 @@ Celem jest umożliwienie odtworzenia modułu 1:1 bez dostępu do kodu.
 
 ### 2.1 `<head>`
 - `charset="utf-8"` i `viewport` z `width=device-width, initial-scale=1`.
-- `<title>` pozostaje ustawiony na `WH40K – Generator nazw` (tytuł karty przeglądarki).
+- `<title>` ustawiony na `Generator Nazw` (tytuł karty przeglądarki).
 - Dołączony arkusz `style.css`.
 
 ### 2.2 `<body>` i główny układ
@@ -210,4 +211,3 @@ Każda funkcja generatora:
 - Maksymalna liczba wyników: **20**.
 - Seed jest dowolnym tekstem — stabilizuje RNG.
 - Generator nie dodaje tytułów, honorificów ani sufiksów poza listami segmentów.
-

@@ -27,6 +27,7 @@ Najważniejsze pliki:
 - Dwa linki (`.btn`) prowadzą do:
   - `KalkulatorXP.html`
   - `TworzeniePostaci.html`
+- `<title>` ustawiony na `Kozie Liczydła` (tytuł karty przeglądarki).
 
 ### 3.2. Style (inline)
 `index.html` ma wbudowany CSS w `<style>`:
