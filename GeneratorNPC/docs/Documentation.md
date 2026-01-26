@@ -151,6 +151,19 @@ Ustawienia globalne:
 ### 6.9. Responsywność
 - `@media (max-width: 1000px)` — przełącza layout na jednokolumnowy.
 
+### 6.10. Karta do druku — trackery „Ż/T”
+Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
+- `.tracker-section` — kontener z paddingiem `6px 8px`, układ `grid` i `gap: 6px`, zakończony dolną ramką `1px solid #111`.
+- `.tracker-grid` — siatka kwadratów:
+  - zmienne `--tracker-size: 18px`, `--tracker-gap: 1px`, `--tracker-columns`, `--tracker-rows`,
+  - `display: grid`, `grid-template-columns: repeat(var(--tracker-columns), var(--tracker-size))`,
+  - `grid-auto-rows: var(--tracker-size)`,
+  - tło `#111` z `padding: 1px`, które pełni rolę jednolitej ramki 1px między polami (bez podwójnych linii),
+  - `width: 100%`, `justify-content: start`.
+- `.tracker-cell` — pojedynczy kwadrat (tło `#fff`, wyśrodkowany tekst).
+- `.tracker-label` — etykieta „Ż”/„T” z pogrubieniem, umieszczona w kolumnie 1 i rozciągana na `grid-row: span var(--tracker-rows)`.
+- `.tracker-grid--mental` — wariant z szarym wypełnieniem pól (`--tracker-fill: #e9e9e9`).
+
 ---
 
 ## 7. Zasady formatowania treści danych
@@ -280,10 +293,13 @@ Ustawienia globalne:
 - `formatNumericWithStar(numeric, hasStar, fallbackText)` — buduje wartość z gwiazdką.
 - `parseStarNumber(value)` — parsuje liczbę i informację o gwiazdce.
 - `extractWpFromResistance(value)` — wyciąga WP z pola „Odporność”.
+- `resolveTrackerCount(value)` — wewnętrzna funkcja karty do druku zamienia wartość „Żywotność” lub „Odporność Psychiczna” na liczbę kwadratów (ignoruje brak liczby i ujemne wartości).
 
 ### 8.11. Karta do druku
 - `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”.
-  - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
+  - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T”**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
+  - Trackery „Ż/T” są generowane dynamicznie: osobne siatki z etykietami „Ż” i „T” oraz pustymi kwadratami. Liczba kwadratów wynika z „Żywotność” i „Odporność Psychiczna”, a gdy „Odporność Psychiczna” ma wartość `-`, renderowana jest tylko etykieta „T”.
+  - Układ trackerów używa inline CSS (siatka z tłem będącym „ramką” 1px oraz `gap: 1px`) oraz krótkiego skryptu, który oblicza liczbę kolumn i wysokość etykiety (span wierszy) na podstawie dostępnej szerokości.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
 ### 8.12. Eventy i inicjalizacja
@@ -306,6 +322,7 @@ Ustawienia globalne:
 - Karta jest generowana w nowym oknie i posiada własny zestaw stylów inline.
 - W sekcji „Odporność” wartość WP jest opisywana etykietą „w tym Pancerz”.
 - Jeśli użytkownik zmodyfikuje statystyki lub „Umiejętności”, karta używa wartości z `bestiaryOverrides`; edytowana „Odporność (w tym WP)” jest bazą do przeliczeń z pancerzem, a „Odporność Psychiczna” jest przenoszona bezpośrednio na kartę.
+- Trackery „Ż/T” obliczają liczbę kwadratów na podstawie wartości liczbowych; pozycja etykiety „Ż”/„T” automatycznie rozciąga się na tyle wierszy, ile wymaga zawinięcie pól (układ aktualizuje się na `load` i `resize` w oknie karty).
 - Dla modułu psioniki możliwe jest normalizowanie kolumny „Wzmocnienie” do jednej linii.
 - Sekcje bez danych są pomijane.
 - Zastosowano naprzemienny „zebra striping” dla bloków z listami wpisów.
