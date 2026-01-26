@@ -288,18 +288,19 @@ Ustawienia globalne:
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
   - Między sekcją „Odporność” a „Umiejętności” renderuje blok kwadratów (paski) dla „Żywotność” i „Odporność Psychiczna”. Liczba kwadratów jest wyliczana z wartości liczbowych (nadpisanych lub bazowych).
   - Jeżeli „Odporność Psychiczna” w bestiariuszu ma wartość „-”, wiersz „T” nie generuje żadnych kwadratów (pozostaje sama etykieta).
-  - Wewnątrz `buildPrintableCardHTML` blok śledzenia jest generowany jako pusty `<div class="track-section">` z atrybutami `data-vitality-count` i `data-mental-count`, a właściwa siatka jest budowana przez skrypt w dokumencie wydruku:
-    - Skrypt oblicza szerokość sekcji, wyznacza liczbę kolumn (`columns`) na podstawie `--track-square-size` i dostępnej przestrzeni.
-    - Następnie tworzy tabelę `.track-table` z `border-collapse: collapse`, aby nie było podwójnych ramek na styku sąsiednich komórek.
-    - Dla każdej sekcji („Ż”, „T”) tworzy odpowiednią liczbę wierszy (`rows = ceil(count / columns)`), a komórka etykiety otrzymuje `rowSpan = rows`, dzięki czemu zachowuje wysokość równą liczbie linii kwadratów.
+  - Wewnątrz `buildPrintableCardHTML` znajdują się pomocnicze generatory:
+    - `buildTrackSquares(count, { addTopFrom })` — tworzy listę kwadratów na podstawie liczby (ujemne i nienumeryczne wartości są traktowane jako 0); opcja `addTopFrom` dodaje klasę górnej krawędzi dla indeksów od wskazanego progu.
+    - `buildTrackRow(label, count, rowClass, options)` — buduje wiersz śledzenia (etykieta + siatka kwadratów) dla „Ż” i „T”, przekazując opcje do generatora kwadratów.
   - Style bloków śledzenia na karcie do druku:
     - `:root { --track-square-size: 18px; }` — rozmiar jednego kwadratu.
     - `.track-section` — oddziela blok od reszty karty linią dolną.
-    - `.track-table` — tabela z `border-collapse: collapse` i szerokością dopasowaną do liczby pól (`width: max-content`).
-    - `.track-table td` — pojedyncza ramka 1 px dla każdej komórki (brak pogrubień na styku).
-    - `.track-label` — komórka etykiety „Ż”/„T” o stałym rozmiarze `--track-square-size`, rozciągana pionowo przez `rowSpan` (zachowuje wygląd „scalonej komórki”).
-    - `.track-square` — pojedyncze pole kwadratu o stałym rozmiarze.
-    - `.track-cell--mental` — lekko szare tło (`#e9e9e9`) dla wiersza „T”, zgodne z innymi jasnymi polami karty.
+    - `.track-row` — dwukolumnowa siatka (etykieta + kwadraty), w której wysokość etykiety jest równa `--track-square-size`, a kwadraty układają się w siatkę z automatycznym zawijaniem.
+  - `.track-label` — litera („Ż”/„T”) wyśrodkowana w polu, standardowe obramowanie 1 px z prawej strony i na dole oraz jawnie ustawiona wysokość `height: var(--track-square-size)` dla zachowania identycznych rozmiarów pól.
+  - `.track-row--vitality .track-label` — dolna krawędź etykiety „Ż” ma standardową grubość 1 px (bez pogrubienia).
+    - `.track-squares` — siatka `repeat(auto-fit, minmax(var(--track-square-size), var(--track-square-size)))` z automatycznym zawijaniem.
+    - `.track-square` — kwadrat z obramowaniem (z prawej i od dołu).
+    - `.track-square--top` — dodatkowa górna krawędź tylko dla kwadratów w wierszu „T”, które nie mają nad sobą kwadratu „Ż” (eliminuje podwójne linie przy pokrywających się kolumnach).
+    - `.track-row--mental` — lekko szare tło (`#e9e9e9`) dla wiersza „T”, zgodne z innymi jasnymi polami karty.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
 ### 8.12. Eventy i inicjalizacja
