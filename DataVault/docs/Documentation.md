@@ -140,11 +140,15 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Archetypy**
   - `Nazwa`: 28ch
-  - `Frakcja`: 24ch
+  - `Frakcja`: 16ch
   - `Poziom`: 6ch (wycentrowane)
   - `Podręcznik`: 14ch
   - `Strona`: 7ch (wycentrowane)
-  - Pozostałe kolumny (`Koszt XP`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`) nie mają dedykowanych `min-width` — szerokość wynika z auto-layout tabeli.
+  - `Atrybuty Archetypu`: 28ch
+  - `Umiejętności Archetypu`: 28ch
+  - `Zdolność Archetypu`: 46ch
+  - `Ekwipunek`: 36ch
+  - Pozostałe kolumny (`Koszt XP`, `Słowa Kluczowe`, `Inne`) nie mają dedykowanych `min-width` — szerokość wynika z auto-layout tabeli.
 
 - **Bestiariusz**
   - `Umiejętności`: 28ch
