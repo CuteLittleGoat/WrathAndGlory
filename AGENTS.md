@@ -10,7 +10,3 @@ Ilość modułów może się zmieniać.
 4. Plik Documentation.md ma zawierać dokładny opis kodu. Wszystkich funkcji, użytych styli, fontów, zasad działania poszczególnych elementów itp.
 5. Plik Documentation.md ma służyć do tego, żeby inny użytkownik tylko czytając dokumentację mógł odtworzyć aplikację 1:1
 6. Jeżeli zmiana dotyczy fontu, kolorów itp. to należy też zaktualizować plik DetaleLayout.md w głównym folderze
-7. Po każdej zmianie kodu należy w głównej ścieżce utworzyć plik "Test_Checklist.md"
-8. Plik Test_Checklist.md ma zawierać informacje dla użytkownika co należy sprawdzić, żeby zatwierdzić ostatnio wprowadzoną zmianę. Jeżeli zmiana kodu mogła wpłynąć na jakąś funkcjonalność (nawet pośrednio) to należy w tej instrukcji zapisać, że użytkownik ma to sprawdzić
-9. Przy okazji każdej zmiany cała zawartość pliku Test_Checklist.md ma być kasowana i pisana od nowa uwzględniając tylko najnowszą zmianę kodu któregkolwiek z modułów
-10. Jeżeli zmiana nie dotyczy funkcjonalności a tylko analizy to nic nie należy zmianiać w pliku Test_Checklist.md
