@@ -18,7 +18,7 @@ const SHEETS_ORDER = [
 
 const SHEET_COLUMN_ORDER = {
   "Bestiariusz":["Nazwa","Zagrożenie","Słowa Kluczowe","S","Wt","Zr","I","SW","Int","Ogd","Odporność (w tym WP)","Wartość Pancerza","Obrona","Żywotność","Odporność Psychiczna","Umiejętności","Premie","Zdolności","Atak","Zdolności Hordy","Opcje Hordy","Upór","Odwaga","Szybkość","Rozmiar","Podręcznik","Strona"],
-  "Archetypy":["Poziom","Frakcja","Nazwa","Podręcznik","Strona"],
+  "Archetypy":["Poziom","Frakcja","Nazwa","Koszt XP","Słowa Kluczowe","Atrybuty Archetypu","Umiejętności Archetypu","Zdolność Archetypu","Ekwipunek","Inne","Podręcznik","Strona"],
   "Cechy":["Typ","Nazwa","Opis"],
   "Stany":["Typ","Nazwa","Opis"],
   "Slowa_Kluczowe":["Typ","Nazwa","Opis"],
@@ -71,6 +71,13 @@ const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 /* ---------- Utilities ---------- */
 function norm(s){
   return String(s ?? "").replace(/\s+/g, " ").trim().replace(" :", ":").replace(": ",": ");
+}
+
+function getDefaultSort(sheet){
+  if (sheet === "Archetypy"){
+    return {col: "Poziom", dir: "asc", secondary: {col: "Frakcja", dir: "asc"}};
+  }
+  return null;
 }
 function escapeHtml(s){
   return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
@@ -467,7 +474,7 @@ function buildTableSkeleton(){...}
 
 function selectSheet(name){
   currentSheet = name;
-  view.sort = null;
+  view.sort = getDefaultSort(name);
   view.filtersText = {};
   view.filtersSet = {};
   view.selected.clear();
@@ -580,6 +587,9 @@ function toggleSort(col){
     view.sort.dir = "desc";
   } else {
     view.sort = null; // third click clears
+  }
+  if (view.sort){
+    view.sort.secondary = null;
   }
   updateSortMarks();
   renderBody();
@@ -734,6 +744,13 @@ function numVal(x){
   return m ? Number(m[0]) : NaN;
 }
 
+function compareByColumn(a, b, col){
+  const an = !Number.isNaN(numVal(a));
+  const bn = !Number.isNaN(numVal(b));
+  if (an && bn) return numVal(a) - numVal(b);
+  return String(a ?? "").localeCompare(String(b ?? ""), "pl", {numeric:true, sensitivity:"base"});
+}
+
 function passesFilters(row, cols){
   // global
   const g = (view.global || "").toLowerCase().trim();
@@ -759,15 +776,17 @@ function passesFilters(row, cols){
 
 function sortRows(rows){
   if (!view.sort) return rows;
-  const {col, dir} = view.sort;
+  const {col, dir, secondary} = view.sort;
   const out = [...rows];
   out.sort((ra, rb)=>{
     const a = ra[col], b = rb[col];
-    const an = !Number.isNaN(numVal(a));
-    const bn = !Number.isNaN(numVal(b));
-    let cmp = 0;
-    if (an && bn) cmp = numVal(a) - numVal(b);
-    else cmp = String(a ?? "").localeCompare(String(b ?? ""), "pl", {numeric:true, sensitivity:"base"});
+    let cmp = compareByColumn(a, b, col);
+    if (cmp === 0 && secondary?.col){
+      const av = ra[secondary.col];
+      const bv = rb[secondary.col];
+      cmp = compareByColumn(av, bv, secondary.col);
+      if (secondary.dir === "desc") cmp = -cmp;
+    }
     return dir === "asc" ? cmp : -cmp;
   });
   return out;

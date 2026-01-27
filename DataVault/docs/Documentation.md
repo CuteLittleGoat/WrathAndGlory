@@ -144,6 +144,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Poziom`: 6ch (wycentrowane)
   - `Podręcznik`: 14ch
   - `Strona`: 7ch (wycentrowane)
+  - Pozostałe kolumny (`Koszt XP`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`) nie mają dedykowanych `min-width` — szerokość wynika z auto-layout tabeli.
 
 - **Bestiariusz**
   - `Umiejętności`: 28ch
@@ -227,6 +228,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 ### 4.1 Stałe
 - `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Archetypy...).
 - `SHEET_COLUMN_ORDER` — preferowana kolejność kolumn per arkusz.
+  - Dla `Archetypy` kolejność to: `Poziom`, `Frakcja`, `Nazwa`, `Koszt XP`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`, `Podręcznik`, `Strona`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Slowa_Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
@@ -240,7 +242,7 @@ Mapowanie na `getElementById`:
 - `filterMenu`.
 
 ### 4.3 Stan `view`
-- `sort` — `{col, dir}` lub `null`.
+- `sort` — `{col, dir, secondary?}` lub `null`, gdzie `secondary` to opcjonalny drugi klucz sortowania.
 - `global` — tekst globalnego filtra.
 - `filtersText` — per kolumna tekstowy filtr (substring).
 - `filtersSet` — per kolumna Set wartości z menu listowego lub `null`.
@@ -351,7 +353,7 @@ Mapowanie na `getElementById`:
 
 ### 8.2 `selectSheet(name)`
 - Ustawia `currentSheet`.
-- Resetuje sortowanie i filtry.
+- Resetuje sortowanie i filtry; dla `Archetypy` ustawia domyślny sort `Poziom` (rosnąco) + `Frakcja` (alfabetycznie).
 - Czyści zaznaczenia porównywarki.
 - Buduje tabelę i renderuje wiersze.
 
@@ -366,9 +368,10 @@ Mapowanie na `getElementById`:
 
 ## 9) JS: sortowanie
 
-- `toggleSort(col)` — 3-stany: `asc` → `desc` → `null`.
-- `updateSortMarks()` — aktualizuje `▲`/`▼` w nagłówku.
+- `toggleSort(col)` — 3-stany: `asc` → `desc` → `null` i czyści ewentualny sort wtórny.
+- `updateSortMarks()` — aktualizuje `▲`/`▼` w nagłówku (tylko dla sortu głównego).
 - `sortRows(rows)`:
+  - sortuje po `view.sort.col`, a gdy wartości są równe i istnieje `secondary`, stosuje drugi klucz sortowania,
   - jeśli obie wartości są liczbami (`numVal()`), sortuje numerycznie,
   - w innym przypadku `localeCompare("pl", numeric: true)`.
 
