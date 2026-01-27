@@ -309,6 +309,14 @@ td.center{text-align:center}
 /* Archetypy */
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Nazwa"]{min-width:28ch}
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Atrybuty Archetypu"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Atrybuty Archetypu"],
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Umiejętności Archetypu"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Umiejętności Archetypu"]{min-width:28ch}
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Zdolność Archetypu"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Zdolność Archetypu"]{min-width:46ch}
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Ekwipunek"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Ekwipunek"]{min-width:36ch}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Umiejętności"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Umiejętności"]{min-width:28ch}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Atak"],
@@ -322,7 +330,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Opcje Hordy"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Opcje Hordy"]{min-width:60ch}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Frakcja"],
-.tableWrap table[data-sheet="Archetypy"] td[data-col="Frakcja"]{min-width:24ch}
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Frakcja"]{min-width:16ch}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Poziom"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Poziom"]{min-width:6ch; text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Podręcznik"],

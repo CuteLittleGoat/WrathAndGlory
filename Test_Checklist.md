@@ -1,11 +1,9 @@
 # Test Checklist
 
-## Archetypy (DataVault)
-- Otwórz moduł DataVault i przejdź do zakładki **Archetypy**.
-- Sprawdź, że widoczne są nowe kolumny: **Koszt XP**, **Słowa Kluczowe**, **Atrybuty Archetypu**, **Umiejętności Archetypu**, **Zdolność Archetypu**, **Ekwipunek**, **Inne** (kolejność jak w wymaganiach).
-- Zweryfikuj domyślne sortowanie: najpierw **Poziom** rosnąco, a następnie **Frakcja** alfabetycznie (np. Lexmechanik nad Śledczy w tej samej frakcji).
-- Potwierdź, że stylowanie jest zgodne z innymi zakładkami:
-  - wartości w kolumnie **Słowa Kluczowe** są czerwone poza przecinkami,
-  - tekst oznaczony na czerwono w XLSX jest czerwony w tabeli,
-  - wpisy dłuższe niż 9 linii są domyślnie zwijane i rozwijają się po kliknięciu,
-  - odnośniki w nawiasach z „str.” są jaśniejsze.
+## DataVault — Archetypy column widths
+- Otwórz moduł **DataVault** i przejdź do zakładki **Archetypy**.
+- Sprawdź, że kolumny **Atrybuty Archetypu** oraz **Umiejętności Archetypu** mają szerokość pozwalającą na ~28 znaków (min-width 28ch).
+- Zweryfikuj, że kolumna **Zdolność Archetypu** ma taką samą szerokość jak kolumna **Efekt** w zakładce **Talenty**.
+- Zweryfikuj, że kolumna **Ekwipunek** ma taką samą szerokość jak kolumna **Opis** w zakładce **Talenty**.
+- Sprawdź, że kolumna **Frakcja** ma taką samą szerokość jak kolumna **Typ** w zakładce **Ekwipunek**.
+- Sprawdź, że kolumna **Nazwa** ma taką samą szerokość jak kolumna **Nazwa** w zakładce **Ekwipunek**.
