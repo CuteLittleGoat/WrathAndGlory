@@ -49,7 +49,7 @@ const els = {
   filterMenu: document.getElementById("filterMenu"),
 };
 
-const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
+const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
 const KEYWORD_SHEET_ALL_RED = "Slowa_Kluczowe";
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
