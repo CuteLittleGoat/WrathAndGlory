@@ -7,7 +7,7 @@ Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikac
 ## 🇵🇱 Instrukcja (PL)
 
 ### Opis
-Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne. Interfejs korzysta z zielonego motywu i fontu zgodnego z `Main/index.html`, z wyróżnieniem tekstu pomocniczego (`#4FAF4F`) i jaśniejszego tekstu referencji (`#D2FAD2`). Zakładka **Archetypy** zawiera m.in. kolumny kosztu XP, słów kluczowych, atrybutów, umiejętności, zdolności, ekwipunku i dodatkowych informacji; kolumny **Atrybuty Archetypu** i **Umiejętności Archetypu** mają po 28ch, **Zdolność Archetypu** 46ch, a **Ekwipunek** 36ch.
+Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne. Interfejs korzysta z zielonego motywu i fontu zgodnego z `Main/index.html`, z wyróżnieniem tekstu pomocniczego (`#4FAF4F`) i jaśniejszego tekstu referencji (`#D2FAD2`). Zakładka **Archetypy** zawiera m.in. kolumny kosztu XP, słów kluczowych, atrybutów, umiejętności, zdolności, ekwipunku i dodatkowych informacji; kolumny **Atrybuty Archetypu** i **Umiejętności Archetypu** mają po 28ch, a **Zdolność Archetypu** i **Ekwipunek** po 46ch.
 Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny katalog repozytorium).
 
 ### Uruchomienie aplikacji
@@ -74,7 +74,7 @@ To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla 
 ## 🇬🇧 Instructions (EN)
 
 ### Overview
-A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files. The UI uses the green theme and font stack aligned with `Main/index.html`, with secondary text highlights (`#4FAF4F`) and brighter reference text (`#D2FAD2`). The **Archetypy** tab includes columns for XP cost, keywords, archetype attributes, skills, abilities, equipment, and extra notes; **Atrybuty Archetypu** and **Umiejętności Archetypu** are 28ch wide, **Zdolność Archetypu** is 46ch, and **Ekwipunek** is 36ch.
+A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files. The UI uses the green theme and font stack aligned with `Main/index.html`, with secondary text highlights (`#4FAF4F`) and brighter reference text (`#D2FAD2`). The **Archetypy** tab includes columns for XP cost, keywords, archetype attributes, skills, abilities, equipment, and extra notes; **Atrybuty Archetypu** and **Umiejętności Archetypu** are 28ch wide, while **Zdolność Archetypu** and **Ekwipunek** are 46ch each.
 Visual/layout rules and formatting details are documented in `DetaleLayout.md` (repository root).
 
 ### Running the app
