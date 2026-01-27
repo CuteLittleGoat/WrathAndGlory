@@ -138,92 +138,113 @@ Efekty i obwódki:
 ### 3.13 Szerokości kolumn (min-width)
 Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
+- **Bestiariusz**
+  - `Nazwa`: 26ch
+  - `Zagrożenie`: 4ch
+  - `Słowa Kluczowe`: 28ch
+  - `S`, `Wt`, `Zr`, `I`, `SW`, `Int`, `Ogd`: 3ch
+  - `Odporność (w tym WP)`: 3ch
+  - `Wartość Pancerza`: 3ch
+  - `Obrona`: 3ch
+  - `Żywotność`: 3ch
+  - `Odporność Psychiczna`: 3ch
+  - `Umiejętności`: 28ch
+  - `Premie`: 60ch
+  - `Zdolności`: 60ch
+  - `Atak`: 50ch
+  - `Zdolności Hordy`: 60ch
+  - `Opcje Hordy`: 60ch
+  - `Upór`: 3ch
+  - `Odwaga`: 3ch
+  - `Szybkość`: 3ch
+  - `Rozmiar`: 7ch
+  - `Podręcznik`: 17ch
+  - `Strona`: 6ch
+
 - **Archetypy**
-  - `Nazwa`: 28ch
-  - `Frakcja`: 16ch
-  - `Poziom`: 6ch (wycentrowane)
-  - `Podręcznik`: 14ch
-  - `Strona`: 7ch (wycentrowane)
+  - `Poziom`: 2ch
+  - `Frakcja`: 26ch
+  - `Nazwa`: 26ch
+  - `Koszt XP`: 4ch
+  - `Słowa Kluczowe`: 28ch
   - `Atrybuty Archetypu`: 28ch
   - `Umiejętności Archetypu`: 28ch
   - `Zdolność Archetypu`: 46ch
-  - `Ekwipunek`: 36ch
-  - Pozostałe kolumny (`Koszt XP`, `Słowa Kluczowe`, `Inne`) nie mają dedykowanych `min-width` — szerokość wynika z auto-layout tabeli.
-
-- **Bestiariusz**
-  - `Umiejętności`: 28ch
-  - `Atak`: 50ch
-  - `Premie`, `Zdolności`, `Zdolności Hordy`, `Opcje Hordy`: 60ch
+  - `Ekwipunek`: 46ch
+  - `Inne`: 10ch
+  - `Podręcznik`: 17ch
+  - `Strona`: 6ch
 
 - **Cechy / Stany / Slowa_Kluczowe**
-  - `Nazwa`: 26ch
   - `Typ`: 14ch
+  - `Nazwa`: 26ch
   - `Opis`: 56ch
 
-- **Augumentacje / Ekwipunek**
-  - `Nazwa`: 28ch
-  - `Typ`: 16ch
-  - `Dostępność`: 14ch
-  - `Koszt`: 12ch
-  - `Koszt IM`: 12ch
-  - `Efekt`: 48ch
-  - `Opis`: 48ch
-  - `Słowa Kluczowe`: 28ch
-
-- **Psionika**
+- **Talenty**
   - `Nazwa`: 26ch
-  - `Typ`: 18ch
-  - `ST`: 9ch (wycentrowane)
-  - `Koszt PD`: 9ch (wycentrowane)
-  - `Zasięg`: 14ch
-  - `Aktywacja`: 20ch
-  - `Czas Trwania`: 20ch
-  - `Wiele Celów`: 26ch
-  - `Wzmocnienie`: 26ch
-  - `Słowa Kluczowe`: 26ch
-  - `Efekt`: 48ch
+  - `Koszt PD`: 4ch
+  - `Wymagania`: 26ch
+  - `Opis`: 26ch
+  - `Efekt`: 56ch
 
 - **Modlitwy**
-  - `Nazwa`: 28ch
-  - `Koszt PD`: 9ch (wycentrowane)
+  - `Nazwa`: 26ch
+  - `Koszt PD`: 4ch
   - `Wymagania`: 26ch
-  - `Efekt`: 54ch
+  - `Efekt`: 56ch
 
-- **Talenty**
-  - `Nazwa`: 28ch
-  - `Koszt PD`: 9ch (wycentrowane)
-  - `Wymagania`: 32ch
-  - `Opis`: 36ch
-  - `Efekt`: 46ch
-
-- **Bronie**
-  - `Nazwa`: 30ch
-  - `Typ`: 16ch
-  - `Rodzaj`: 16ch
-  - `DK`: 8ch
-  - `PP`: 8ch
-  - `Obrażenia`: 8ch
-  - `Szybkostrzelność`: 8ch
-  - `Podręcznik`: 8ch
-  - `Strona`: 8ch (wycentrowane)
-  - `Zasięg`: 18ch (brak zawijania)
-  - `Dostępność`: 14ch
-  - `Koszt`: 12ch
-  - `Koszt IM`: 12ch
+- **Psionika**
+  - `Typ`: 14ch
+  - `Nazwa`: 26ch
+  - `Koszt PD`: 4ch
+  - `ST`: 10ch
+  - `Aktywacja`: 10ch
+  - `Czas Trwania`: 15ch
+  - `Zasięg`: 8ch
+  - `Wiele Celów`: 4ch
   - `Słowa Kluczowe`: 28ch
-  - `Cechy`: 32ch
+  - `Efekt`: 56ch
+  - `Opis`: 26ch
+  - `Wzmocnienie`: 26ch
+
+- **Augumentacje / Ekwipunek**
+  - `Typ`: 14ch
+  - `Nazwa`: 26ch
+  - `Opis`: 56ch
+  - `Efekt`: 26ch
+  - `Koszt`: 3ch
+  - `Dostępność`: 3ch
+  - `Słowa Kluczowe`: 28ch
+  - `Koszt IM`: 8ch
 
 - **Pancerze**
-  - `Nazwa`: 30ch
   - `Typ`: 14ch
-  - `Podręcznik`: 14ch
-  - `Strona`: 8ch (wycentrowane)
-  - `WP`: 8ch (wycentrowane)
-  - `Dostępność`: 14ch
-  - `Koszt`: 12ch
-  - `Koszt IM`: 12ch
-  - `Słowa Kluczowe`: 26ch
+  - `Nazwa`: 26ch
+  - `WP`: 4ch
   - `Cechy`: 32ch
+  - `Koszt`: 4ch
+  - `Dostępność`: 4ch
+  - `Słowa Kluczowe`: 28ch
+  - `Koszt IM`: 8ch
+  - `Podręcznik`: 17ch
+  - `Strona`: 6ch
+
+- **Bronie**
+  - `Rodzaj`: 14ch
+  - `Typ`: 14ch
+  - `Nazwa`: 26ch
+  - `Obrażenia`: 8ch
+  - `DK`: 8ch
+  - `PP`: 8ch
+  - `Zasięg`: 18ch (brak zawijania)
+  - `Szybkostrzelność`: 8ch
+  - `Cechy`: 32ch
+  - `Koszt`: 4ch
+  - `Dostępność`: 4ch
+  - `Słowa Kluczowe`: 28ch
+  - `Koszt IM`: 8ch
+  - `Podręcznik`: 17ch
+  - `Strona`: 6ch
 
 ---
 
