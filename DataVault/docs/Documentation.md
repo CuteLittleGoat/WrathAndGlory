@@ -229,7 +229,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 - `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Archetypy...).
 - `SHEET_COLUMN_ORDER` — preferowana kolejność kolumn per arkusz.
   - Dla `Archetypy` kolejność to: `Poziom`, `Frakcja`, `Nazwa`, `Koszt XP`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`, `Podręcznik`, `Strona`.
-- `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy), w tym `Archetypy`.
+- `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Slowa_Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
