@@ -47,9 +47,9 @@ Repozytorium to **zestaw niezależnych modułów** opartych o statyczne HTML/CSS
 Poniżej jest plan w **dwóch wariantach**: PWA (najprostsze) lub natywny wrapper (pewność blokady pionu + więcej kontroli).
 
 ### 4.1. Krok 0 — Ustal cele i zakres
-1. Zdecyduj, czy aplikacja **ma działać offline** czy online.
-2. Określ, czy **wszystkie moduły** muszą być dostępne w Androidzie, czy tylko Infoczytnik.
-3. Ustal, czy orientacja pionowa ma być **sztywno wymuszona zawsze** (rekomendowany wrapper).
+1. **Tryb działania**: aplikacja ma działać **online**.
+2. **Zakres modułów**: **wszystkie moduły** mają być dostępne.
+3. **Orientacja**: pion ma być **wymuszony na stałe tylko w module Infoczytnik/Infoczytnik.html**, pozostałe moduły mogą się obracać zgodnie z orientacją ekranu.
 
 ### 4.2. Wariant A — PWA (szybka instalacja z przeglądarki)
 1. Dodaj `manifest.json` w folderze modułu (np. Infoczytnik) i ustaw `"display": "standalone"` oraz `"orientation": "portrait"`.
@@ -75,6 +75,11 @@ Poniżej jest plan w **dwóch wariantach**: PWA (najprostsze) lub natywny wrappe
 1. **Firebase**: Infoczytnik i Audio korzystają z Firestore z CDN i `config/firebase-config.js` — musisz zachować dostęp do internetu albo przenieść te importy do lokalnych plików (offline). (Źródło: `Infoczytnik/Infoczytnik_test.html`, `Audio/index.html`.)
 2. **XLSX z CDN**: DataVault i Audio ładują bibliotekę z `cdn.jsdelivr.net` — jeśli offline, musisz ją spakować lokalnie. (Źródło: `DataVault/index.html`, `DataVault/app.js`, `Audio/index.html`.)
 3. **Dane**: GeneratorNPC pobiera `data.json` z GH Pages — jeśli offline, musisz podmienić URL na lokalny plik lub spakować dane w aplikacji. (Źródło: `GeneratorNPC/index.html`.)
+4. **Pliki na GitHub (online-only)**: Możesz trzymać pliki takie jak `AudioManifest.xlsx`, `Repozytorium.xlsx` czy `data.json` na GitHubie i odwoływać się do nich w aplikacji **online**, ale:
+   - Używaj **GitHub Pages** (statyczny hosting) lub innego hostingu HTTP, a nie bezpośredniego „blob” w repo. Najbezpieczniejsze są adresy typu `https://<user>.github.io/<repo>/<path>`.
+   - Jeśli używasz `raw.githubusercontent.com`, sprawdź **CORS** i poprawne nagłówki MIME — dla plików CSV/XLSX i JSON działa to zwykle, ale może zależeć od przeglądarki/WebView.
+   - W WebView/PWA nadal obowiązują ograniczenia CORS, więc najlepiej trzymać dane w tej samej domenie co aplikacja (GH Pages) albo skonfigurować poprawne nagłówki po stronie hosta.
+   - Dla `Repozytorium.xlsx` (wczytywanego przez DataVault) oznacza to, że „Aktualizuj dane” musi pobierać plik po HTTP/HTTPS, a nie z lokalnej ścieżki.
 
 **B. Obsługa plików lokalnych (Repozytorium.xlsx)**
 1. DataVault wymaga `Repozytorium.xlsx` w głównym folderze aplikacji dla „Aktualizuj dane” — na Androidzie trzeba jasno zdefiniować, gdzie użytkownik ma ten plik zapisać lub jak go wczytać. (Źródło: `DataVault/index.html`, `DataVault/app.js`.)
@@ -89,6 +94,27 @@ Poniżej jest plan w **dwóch wariantach**: PWA (najprostsze) lub natywny wrappe
 - **Lepsza kontrola środowiska**: stałe ustawienia WebView, brak zależności od przeglądarek.
 - **Możliwość pełnego offline** (po spakowaniu danych i bibliotek w aplikacji).
 - **Dostęp do funkcji Android** (np. pliki lokalne, powiadomienia), jeśli będzie potrzebny w przyszłości.
+
+## 5.1. Dodatkowa analiza — powiadomienia dla Infoczytnika (GM → użytkownik)
+
+Założenie: gdy na innym urządzeniu uruchamiasz panel GM i przygotowujesz wiadomość, użytkownik ma dostać powiadomienie systemowe, nawet jeśli w tym momencie ma otwarty inny moduł. Po kliknięciu powiadomienia aplikacja ma przejść do Infoczytnika.
+
+**Czy to możliwe? Tak, ale wymaga infrastruktury push.** W praktyce są dwie główne ścieżki:
+
+1. **Firebase Cloud Messaging (FCM)** — rekomendowane, bo projekt już używa Firebase:
+   - **GM panel**: po zapisaniu wiadomości w Firestore wysyła trigger do backendu (Cloud Functions/Server), który wykonuje push przez FCM do konkretnego urządzenia lub grupy.
+   - **Aplikacja Android (WebView/Capacitor)**: rejestruje token FCM i zapisuje go w Firestore (np. per użytkownik lub per sesja).
+   - **Powiadomienie**: systemowe push pojawia się niezależnie od tego, który moduł jest otwarty.
+   - **Kliknięcie w powiadomienie**: może otworzyć aplikację i przekierować do `Infoczytnik/Infoczytnik.html` (np. deep link `app://infoczytnik` albo URL w WebView + parametr `?open=infoczytnik`).
+
+2. **Service Worker + Web Push (PWA)**:
+   - Działa w trybie PWA, ale na Androidzie wciąż potrzebujesz **push provider** (np. FCM pod spodem w Chrome).
+   - W praktyce podobny flow: GM zapisuje wiadomość → backend wysyła Web Push → Service Worker wyświetla powiadomienie → kliknięcie przekierowuje do Infoczytnika.
+
+**Wniosek praktyczny**:
+- Jeśli chcesz niezawodnych powiadomień, **potrzebujesz backendu** (np. Firebase Cloud Functions), bo samo zapisanie danych w Firestore nie generuje push do urządzenia.
+- Najprościej jest związać powiadomienia z **Firebase Cloud Messaging**, bo Firebase już istnieje w projekcie.
+- W Android wrapperze da się ustawić, aby kliknięcie powiadomienia otwierało dokładnie moduł Infoczytnik.
 
 ## 6. Wady i potencjalne problemy
 
