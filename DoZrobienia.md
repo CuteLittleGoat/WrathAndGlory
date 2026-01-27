@@ -2,3 +2,4 @@
 2. Dodać detale dotyczące archetypów (xp, atrybuty, umiejętności, zdolność archetypu)
 3. Dodać do AGENTS.md wymagania dot checklisty do sprawdzenia po update 
 4. zablokować wyświetlanie infoczytnika w pozycji pionowej 
+5. w infoczytniku dodać więcej linii prefixu i suffix
