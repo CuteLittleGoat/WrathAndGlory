@@ -342,7 +342,41 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Odwaga"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Odwaga"],
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Szybkość"],
-.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Szybkość"]{min-width:3ch; text-align:center}
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Szybkość"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Rozmiar"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Rozmiar"]{text-align:center}
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="S"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="S"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Wt"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Wt"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Zr"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Zr"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="I"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="I"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="SW"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="SW"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Int"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Int"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Ogd"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Ogd"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Odporność (w tym WP)"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Odporność (w tym WP)"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Wartość Pancerza"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Wartość Pancerza"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Obrona"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Obrona"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Żywotność"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Żywotność"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Odporność Psychiczna"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Odporność Psychiczna"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Upór"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Upór"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Odwaga"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Odwaga"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Szybkość"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Szybkość"],
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Rozmiar"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Rozmiar"]{min-width:3ch; text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Umiejętności"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Umiejętności"]{min-width:28ch}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Premie"],
@@ -370,7 +404,9 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Nazwa"]{min-width:26ch}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Koszt XP"],
-.tableWrap table[data-sheet="Archetypy"] td[data-col="Koszt XP"]{min-width:4ch; text-align:center}
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Koszt XP"],
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Koszt PD"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Koszt PD"]{min-width:4ch; text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Słowa Kluczowe"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Słowa Kluczowe"],
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Atrybuty Archetypu"],
@@ -440,7 +476,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Augumentacje"] th[data-col="Koszt IM"],
 .tableWrap table[data-sheet="Augumentacje"] td[data-col="Koszt IM"],
 .tableWrap table[data-sheet="Ekwipunek"] th[data-col="Koszt IM"],
-.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Koszt IM"]{min-width:8ch}
+.tableWrap table[data-sheet="Ekwipunek"] td[data-col="Koszt IM"]{min-width:8ch; text-align:center}
 
 /* Psionika */
 .tableWrap table[data-sheet="Psionika"] th[data-col="Typ"],
@@ -456,7 +492,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Psionika"] th[data-col="Czas Trwania"],
 .tableWrap table[data-sheet="Psionika"] td[data-col="Czas Trwania"]{min-width:15ch}
 .tableWrap table[data-sheet="Psionika"] th[data-col="Zasięg"],
-.tableWrap table[data-sheet="Psionika"] td[data-col="Zasięg"]{min-width:8ch}
+.tableWrap table[data-sheet="Psionika"] td[data-col="Zasięg"]{min-width:8ch; text-align:center}
 .tableWrap table[data-sheet="Psionika"] th[data-col="Wiele Celów"],
 .tableWrap table[data-sheet="Psionika"] td[data-col="Wiele Celów"]{min-width:4ch; text-align:center}
 .tableWrap table[data-sheet="Psionika"] th[data-col="Słowa Kluczowe"],
@@ -502,15 +538,15 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="PP"],
 .tableWrap table[data-sheet="Bronie"] td[data-col="PP"],
 .tableWrap table[data-sheet="Bronie"] th[data-col="Obrażenia"],
-.tableWrap table[data-sheet="Bronie"] td[data-col="Obrażenia"],
+.tableWrap table[data-sheet="Bronie"] td[data-col="Obrażenia"]{text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Szybkostrzelność"],
-.tableWrap table[data-sheet="Bronie"] td[data-col="Szybkostrzelność"]{min-width:8ch}
+.tableWrap table[data-sheet="Bronie"] td[data-col="Szybkostrzelność"]{min-width:8ch; text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Podręcznik"],
 .tableWrap table[data-sheet="Bronie"] td[data-col="Podręcznik"]{min-width:17ch}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Strona"],
 .tableWrap table[data-sheet="Bronie"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Zasięg"],
-.tableWrap table[data-sheet="Bronie"] td[data-col="Zasięg"]{min-width:18ch; white-space:nowrap}
+.tableWrap table[data-sheet="Bronie"] td[data-col="Zasięg"]{min-width:18ch; white-space:nowrap; text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Dostępność"],
 .tableWrap table[data-sheet="Bronie"] td[data-col="Dostępność"]{min-width:4ch; text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Koszt"],
@@ -538,7 +574,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Pancerze"] th[data-col="Słowa Kluczowe"],
 .tableWrap table[data-sheet="Pancerze"] td[data-col="Słowa Kluczowe"]{min-width:28ch}
 .tableWrap table[data-sheet="Pancerze"] th[data-col="Koszt IM"],
-.tableWrap table[data-sheet="Pancerze"] td[data-col="Koszt IM"]{min-width:8ch}
+.tableWrap table[data-sheet="Pancerze"] td[data-col="Koszt IM"]{min-width:8ch; text-align:center}
 .tableWrap table[data-sheet="Pancerze"] th[data-col="Podręcznik"],
 .tableWrap table[data-sheet="Pancerze"] td[data-col="Podręcznik"]{min-width:17ch}
 .tableWrap table[data-sheet="Pancerze"] th[data-col="Strona"],

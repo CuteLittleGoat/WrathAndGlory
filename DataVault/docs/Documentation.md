@@ -233,9 +233,9 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Rodzaj`: 14ch
   - `Typ`: 14ch
   - `Nazwa`: 26ch
-  - `Obrażenia`: 8ch
-  - `DK`: 8ch
-  - `PP`: 8ch
+  - `Obrażenia`: auto (bez min-width)
+  - `DK`: auto (bez min-width)
+  - `PP`: auto (bez min-width)
   - `Zasięg`: 18ch (brak zawijania)
   - `Szybkostrzelność`: 8ch
   - `Cechy`: 32ch
@@ -247,6 +247,21 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Strona`: 6ch
 
 ---
+
+### 3.14 Wyrównanie treści w kolumnach
+W `style.css` część kolumn z wartościami liczbowymi jest **wyrównana do środka** (`text-align: center`) zarówno w nagłówkach, jak i komórkach:
+
+- **Bestiariusz**: `Zagrożenie`, `S`, `Wt`, `Zr`, `I`, `SW`, `Int`, `Ogd`, `Odporność (w tym WP)`, `Wartość Pancerza`, `Obrona`, `Żywotność`, `Odporność Psychiczna`, `Upór`, `Odwaga`, `Szybkość`, `Rozmiar`, `Strona`.
+- **Archetypy**: `Poziom`, `Koszt PD`, `Strona`.
+- **Talenty**: `Koszt PD`.
+- **Modlitwy**: `Koszt PD`.
+- **Psionika**: `Koszt PD`, `ST`, `Zasięg`, `Wiele Celów`.
+- **Augumentacje**: `Koszt`, `Dostępność`, `Koszt IM`.
+- **Ekwipunek**: `Koszt`, `Dostępność`, `Koszt IM`.
+- **Pancerze**: `WP`, `Koszt`, `Dostępność`, `Koszt IM`, `Strona`.
+- **Bronie**: `Obrażenia`, `DK`, `PP`, `Zasięg`, `Szybkostrzelność`, `Koszt`, `Dostępność`, `Koszt IM`, `Strona`.
+
+Dodatkowo kolumna `Zasięg` w **Broniach** ma `white-space: nowrap`, aby nie łamać zapisu z ukośnikami.
 
 ## 4) JS: stałe, stan aplikacji i helpery
 
