@@ -1,6 +1,6 @@
 # Wrath & Glory / Kozi przybornik
 
-Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Domyślnie działa w trybie użytkownika (5 przycisków), a tryb admina uruchamia się parametrem `?admin=1` i odsłania wszystkie narzędzia oraz notatki.
+Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Domyślnie działa w trybie użytkownika (6 przycisków), a tryb admina uruchamia się parametrem `?admin=1` i odsłania wszystkie narzędzia oraz notatki.
 
 ---
 
@@ -15,6 +15,7 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
   - Widok admina (z przycisku w adminie lub bezpośrednio): https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1
   - Notatka o adminie wyświetla się tylko w widoku admina strony głównej.
 - **Mapa** (widok użytkownika i admina): https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke
+- **Obrazki** (widok użytkownika i admina): https://discord.com/channels/820916809946628096/1434928498476191834
 - **Infoczytnik**:
   - Odczyt wiadomości (widok użytkownika): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (szykowanie wiadomości): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
@@ -40,7 +41,7 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 
 ### Jak używać
 1. Otwórz stronę startową `Main/index.html` w przeglądarce.
-2. Domyślnie zobaczysz widok użytkownika z pięcioma przyciskami (Skarbiec Danych, Mapa, Infoczytnik, Kalkulator, Rzut kośćmi).
+2. Domyślnie zobaczysz widok użytkownika z sześcioma przyciskami (Skarbiec Danych, Mapa, Obrazki, Infoczytnik, Kalkulator, Rzut kośćmi).
 3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski (m.in. Generator NPC, Generator nazw, Audio) oraz notatki o panelach admina.
 4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
 
@@ -48,6 +49,11 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 Link do mapy jest zaszyty bezpośrednio w `Main/index.html` w sekcji `<div class="actions">` jako przycisk:
 `<a class="btn" href="https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke" ...>Mapa</a>`.
 Jeśli adres mapy się zmieni, zaktualizuj atrybut `href` dokładnie w tym miejscu.
+
+### Gdzie zmienić link do obrazków
+Link do obrazków jest zaszyty bezpośrednio w `Main/index.html` w sekcji `<div class="actions">` jako przycisk:
+`<a class="btn" href="https://discord.com/channels/820916809946628096/1434928498476191834" ...>Obrazki</a>`.
+Jeśli adres kanału się zmieni, zaktualizuj atrybut `href` dokładnie w tym miejscu.
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -89,6 +95,7 @@ Browser tab title: **Kozi Przybornik**.
   - Admin view (from the admin button or directly): https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1
   - The admin note is shown only in the main page admin view.
 - **Map** (user + admin view): https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke
+- **Images** (user + admin view): https://discord.com/channels/820916809946628096/1434928498476191834
 - **DataSlate**:
   - Message reader (user view): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
   - GM (message prep): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM.html
@@ -114,7 +121,7 @@ Browser tab title: **Kozi Przybornik**.
 
 ### How to use
 1. Open the landing page at `Main/index.html` in your browser.
-2. By default you will see the user view with five buttons (DataVault, Map, DataSlate, Calculator, DiceRoller).
+2. By default you will see the user view with six buttons (DataVault, Map, Images, DataSlate, Calculator, DiceRoller).
 3. To enable admin view, add the `?admin=1` parameter. All buttons (including NPC Generator, Name Generator, Audio) and admin notes become visible.
 4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
 
@@ -122,6 +129,11 @@ Browser tab title: **Kozi Przybornik**.
 The map URL is hard-coded in `Main/index.html` inside the `<div class="actions">` section as:
 `<a class="btn" href="https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke" ...>Mapa</a>`.
 If the map address changes, update the `href` attribute exactly there.
+
+### Where to update the images link
+The images URL is hard-coded in `Main/index.html` inside the `<div class="actions">` section as:
+`<a class="btn" href="https://discord.com/channels/820916809946628096/1434928498476191834" ...>Obrazki</a>`.
+If the channel address changes, update the `href` attribute exactly there.
 
 ### Running locally
 This is a static page with no backend. You can:
