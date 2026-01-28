@@ -1,147 +1,108 @@
-# Migracja aplikacji WrathAndGlory na Android — analiza i plan działań
+# Migracja aplikacji WrathAndGlory na Android — analiza po wyborze wariantu B (natywny wrapper)
 
-## 1. Kontekst i wymaganie krytyczne (Infoczytnik_Pion)
+## 1. Założenia i decyzja projektowa
 
-Plik `Infoczytnik_Pion.md` wskazuje, że **w webowej wersji nie da się twardo wymusić orientacji pionowej**, a trwałe wymuszenie jest możliwe tylko w PWA po instalacji lub w natywnej aplikacji Android (WebView/Capacitor/Cordova z `android:screenOrientation="portrait"`). To jest kluczowy wymóg dla Infoczytnika. Wymuszenie pionu musi więc zostać rozwiązane przez **PWA** albo **natywny wrapper** z blokadą orientacji w AndroidManifest. (Źródło: `Infoczytnik_Pion.md`.)
+- Wybrany wariant: **natywny wrapper (WebView / Capacitor / Cordova)**.
+- Aplikacja działa **wyłącznie online** — wszystkie pliki i dane są ładowane z hostingu (np. GitHub Pages / raw.githubusercontent.com), a aplikacja odwołuje się do nich przez HTTP/HTTPS.
+- Kluczowe wymaganie: **moduł Infoczytnik (plik `Infoczytnik.html`) ma być blokowany w orientacji pionowej**, natomiast **pozostałe moduły mają działać w orientacji poziomej**.
 
-## 2. Stan obecny aplikacji (architektura i moduły)
+## 2. Wnioski z ponownej analizy architektury
 
-Repozytorium to **zestaw niezależnych modułów** opartych o statyczne HTML/CSS/JS, bez typowego build pipeline. Poniżej krótki opis każdego modułu i jego zależności technicznych:
+Repozytorium to zestaw niezależnych modułów HTML/CSS/JS bez klasycznego build pipeline. Każdy moduł działa jako samodzielna strona, a komunikacja zewnętrzna odbywa się przez:
 
-### 2.1. Main (moduł startowy)
-- `Main/index.html` to launcher z przyciskami do uruchamiania modułów oraz prostą logiką „admin=1” do pokazywania części linków. (Źródło: `Main/index.html`.)
+- **HTTP/HTTPS** (pobieranie plików i danych z GitHuba),
+- **CDN** (np. biblioteki typu XLSX),
+- **Firebase (Firestore)** w niektórych modułach (Infoczytnik, Audio).
 
-### 2.2. DataVault
-- `DataVault/index.html` to panel z filtrami, porównywaniem rekordów i przyciskiem aktualizacji danych. (Źródło: `DataVault/index.html`.)
-- `DataVault/app.js` ładuje dane z `data.json` (fetch), a w trybie admina potrafi pobrać `Repozytorium.xlsx` i wygenerować nowy `data.json`. Wykorzystuje też bibliotekę XLSX z CDN. (Źródła: `DataVault/app.js`, `DataVault/index.html`.)
+Wariant B jest właściwy, ponieważ:
 
-### 2.3. GeneratorNPC
-- `GeneratorNPC/index.html` pobiera dane z `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json` i na ich podstawie generuje kartę NPC. (Źródło: `GeneratorNPC/index.html`.)
+- pozwala na **stałą kontrolę orientacji ekranu**,
+- daje możliwość **precyzyjnej konfiguracji WebView** (JavaScript, cache, polityki sieciowe),
+- nie wymaga przebudowy kodu HTML/JS, tylko odpowiedniego sposobu hostowania.
 
-### 2.4. GeneratorNazw
-- `GeneratorNazw/script.js` korzysta z `crypto.getRandomValues` do losowości oraz z seedowanego RNG dla powtarzalnych wyników. (Źródło: `GeneratorNazw/script.js`.)
+## 3. Czy możliwe jest zablokowanie pionu tylko dla Infoczytnika?
 
-### 2.5. DiceRoller
-- `DiceRoller/index.html` + `DiceRoller/script.js` to lokalna logika rzutów kośćmi, bez zewnętrznych danych. (Źródła: `DiceRoller/index.html`, `DiceRoller/script.js`.)
+**Tak, jest to możliwe w wariancie natywnym.** Istnieją dwa praktyczne podejścia:
 
-### 2.6. Kalkulator
-- `Kalkulator/index.html` to launcher do dwóch narzędzi: `KalkulatorXP.html` i `TworzeniePostaci.html`. (Źródło: `Kalkulator/index.html`.)
-- `Kalkulator/KalkulatorXP.html` zawiera wbudowany JS do liczenia XP na podstawie pól tabeli. (Źródło: `Kalkulator/KalkulatorXP.html`.)
-- `Kalkulator/TworzeniePostaci.html` to rozbudowany arkusz tworzenia postaci z JS (walidacja + obliczenia). (Źródło: `Kalkulator/TworzeniePostaci.html`.)
+### 3.1. Rozdzielenie na dwa Activity (najprostsze i najstabilniejsze)
 
-### 2.7. Infoczytnik
-- `Infoczytnik/Infoczytnik_test.html` korzysta z **Firebase Firestore** (importy z `firebase-app` i `firebase-firestore` przez CDN) oraz z własnego configu `config/firebase-config.js`. (Źródło: `Infoczytnik/Infoczytnik_test.html`.)
-- Infoczytnik ładuje **asset-y lokalne** (obrazy layoutów i audio) oraz ma mechanizm **odblokowania audio** (wymagany gest użytkownika w przeglądarce). (Źródło: `Infoczytnik/Infoczytnik_test.html`.)
+1. **Activity A (Infoczytnik):**
+   - `android:screenOrientation="portrait"`
+   - WebView ładuje wyłącznie `Infoczytnik/Infoczytnik.html`.
 
-### 2.8. Audio
-- `Audio/index.html` używa **Firebase Firestore**, biblioteki XLSX z CDN i własnego `config/firebase-config.js`, do obsługi manifestów audio i list ulubionych. (Źródło: `Audio/index.html`.)
+2. **Activity B (pozostałe moduły):**
+   - `android:screenOrientation="sensorLandscape"` lub `landscape`
+   - WebView ładuje moduł `Main` i pozostałe podstrony.
 
-## 3. Wnioski dla migracji na Android
+3. W aplikacji przewiduje się **przejście do osobnego Activity** tylko wtedy, gdy użytkownik uruchamia Infoczytnik. Można to zrobić:
+   - poprzez dedykowany przycisk w natywnej warstwie (np. przycisk w toolbarze Android),
+   - lub przez przechwycenie URL (np. kiedy WebView próbuje otworzyć `Infoczytnik/Infoczytnik.html`, aplikacja przełącza się na Activity A).
 
-1. **Architektura jest w pełni webowa** — wszystkie moduły są statyczne i nie wymagają backendu (poza usługami zewnętrznymi jak Firebase czy pliki na GH Pages). To sprzyja migracji przez PWA lub wrapper WebView.
-2. **Zewnętrzne zależności** (Firebase, XLSX, Google Fonts, dane z GH Pages) oznaczają, że bez dostępu do internetu część funkcji może nie działać. Jeśli aplikacja ma działać offline, trzeba te zależności spakować lokalnie.
-3. **Wymuszenie pionu** (Infoczytnik) jest zgodne z kierunkiem migracji do Androida — web nie wystarczy. (Źródło: `Infoczytnik_Pion.md`.)
+**Zalety:** stabilna orientacja, brak ryzyka „mieszania” ustawień.
+**Wady:** potrzebne jest przekierowanie między Activity.
 
-## 4. Migracja na Android — krok po kroku (dla początkującego, z użyciem ChatGPT)
+### 3.2. Jeden Activity + dynamiczna zmiana orientacji
 
-Poniżej jest plan w **dwóch wariantach**: PWA (najprostsze) lub natywny wrapper (pewność blokady pionu + więcej kontroli).
+Możliwe jest także sterowanie orientacją w **jednym Activity**, ale wymaga to integracji między kodem HTML/JS a natywną warstwą:
 
-### 4.1. Krok 0 — Ustal cele i zakres
-1. **Tryb działania**: aplikacja ma działać **online**.
-2. **Zakres modułów**: **wszystkie moduły** mają być dostępne.
-3. **Orientacja**: pion ma być **wymuszony na stałe tylko w module Infoczytnik/Infoczytnik.html**, pozostałe moduły mogą się obracać zgodnie z orientacją ekranu.
+- **Capacitor / Cordova:** dostępne są pluginy do blokowania orientacji (`screen-orientation`), które można wywołać z JS podczas wejścia do Infoczytnika i odblokować przy wyjściu.
+- **Czysty WebView:** można dodać **JavaScript Interface**, który wywoła `setRequestedOrientation()` w Androidzie.
 
-### 4.2. Wariant A — PWA (szybka instalacja z przeglądarki)
-1. Dodaj `manifest.json` w folderze modułu (np. Infoczytnik) i ustaw `"display": "standalone"` oraz `"orientation": "portrait"`.
-2. Dodaj `<link rel="manifest" href="manifest.json">` w `<head>`.
-3. (Opcjonalnie) Dodaj Service Worker do cache’owania zasobów offline.
-4. Przetestuj instalację PWA na Androidzie (Chrome → „Dodaj do ekranu głównego”).
-5. Zweryfikuj, czy po instalacji orientacja jest zablokowana w pionie (Infoczytnik).
+**Zalety:** jedna aktywność i prostszy routing.
+**Wady:** większa złożoność integracji, trzeba pilnować odblokowania orientacji przy opuszczaniu Infoczytnika.
 
-### 4.3. Wariant B — Natywny wrapper (WebView / Capacitor / Cordova)
-1. Zainstaluj Android Studio.
-2. Utwórz nowy projekt (np. „Empty Activity”).
-3. Dodaj `WebView` i włącz JS (`webSettings.javaScriptEnabled = true`).
-4. Zdecyduj, czy ładować aplikację:
-   - z internetu (np. GH Pages),
-   - czy z lokalnych plików (wtedy trzeba spakować całą aplikację w `assets/`).
-5. W `AndroidManifest.xml` ustaw `android:screenOrientation="portrait"` dla aktywności (wymuszenie pionu).
-6. Dodaj `uses-permission android:name="android.permission.INTERNET"`.
-7. Zbuduj APK i przetestuj na telefonie.
+### 3.3. Wniosek praktyczny
 
-### 4.4. Dodatkowe kroki (niezbędne niezależnie od wariantu)
+Najbezpieczniejszym i najmniej podatnym na błędy rozwiązaniem jest **rozdzielenie na dwa Activity**. Pozwala to wymusić pion na Infoczytniku i poziom na pozostałych modułach w sposób stabilny oraz przewidywalny.
 
-**A. Zależności i pliki zewnętrzne**
-1. **Firebase**: Infoczytnik i Audio korzystają z Firestore z CDN i `config/firebase-config.js` — musisz zachować dostęp do internetu albo przenieść te importy do lokalnych plików (offline). (Źródło: `Infoczytnik/Infoczytnik_test.html`, `Audio/index.html`.)
-2. **XLSX z CDN**: DataVault i Audio ładują bibliotekę z `cdn.jsdelivr.net` — jeśli offline, musisz ją spakować lokalnie. (Źródło: `DataVault/index.html`, `DataVault/app.js`, `Audio/index.html`.)
-3. **Dane**: GeneratorNPC pobiera `data.json` z GH Pages — jeśli offline, musisz podmienić URL na lokalny plik lub spakować dane w aplikacji. (Źródło: `GeneratorNPC/index.html`.)
-4. **Pliki na GitHub (online-only)**: Możesz trzymać pliki takie jak `AudioManifest.xlsx`, `Repozytorium.xlsx` czy `data.json` na GitHubie i odwoływać się do nich w aplikacji **online**, ale:
-   - Używaj **GitHub Pages** (statyczny hosting) lub innego hostingu HTTP, a nie bezpośredniego „blob” w repo. Najbezpieczniejsze są adresy typu `https://<user>.github.io/<repo>/<path>`.
-   - Jeśli używasz `raw.githubusercontent.com`, sprawdź **CORS** i poprawne nagłówki MIME — dla plików CSV/XLSX i JSON działa to zwykle, ale może zależeć od przeglądarki/WebView.
-   - W WebView/PWA nadal obowiązują ograniczenia CORS, więc najlepiej trzymać dane w tej samej domenie co aplikacja (GH Pages) albo skonfigurować poprawne nagłówki po stronie hosta.
-   - Dla `Repozytorium.xlsx` (wczytywanego przez DataVault) oznacza to, że „Aktualizuj dane” musi pobierać plik po HTTP/HTTPS, a nie z lokalnej ścieżki.
+## 4. Wariant B — plan wdrożenia krok po kroku (online)
 
-**B. Obsługa plików lokalnych (Repozytorium.xlsx)**
-1. DataVault wymaga `Repozytorium.xlsx` w głównym folderze aplikacji dla „Aktualizuj dane” — na Androidzie trzeba jasno zdefiniować, gdzie użytkownik ma ten plik zapisać lub jak go wczytać. (Źródło: `DataVault/index.html`, `DataVault/app.js`.)
-2. W wrapperze WebView najbezpieczniej użyć systemowego wyboru pliku (input type="file") lub osobnego ekranu do importu.
+### 4.1. Przygotowanie hostingu
 
-**C. Audio i gest użytkownika**
-1. Infoczytnik ma mechanizm „kliknij raz, aby odblokować dźwięk” — w aplikacji mobilnej podobne ograniczenia nadal obowiązują (WebView). (Źródło: `Infoczytnik/Infoczytnik_test.html`.)
+1. Wybierz hosting HTTP/HTTPS:
+   - **GitHub Pages** dla statycznych plików (rekomendowane),
+   - lub `raw.githubusercontent.com`, jeśli chcesz bezpośrednio ładować surowe pliki.
+2. Upewnij się, że wszystkie moduły i zasoby są dostępne po URL.
+3. Sprawdź, czy domena hosta obsługuje CORS dla potrzebnych zasobów.
 
-## 5. Korzyści migracji
+### 4.2. Budowa aplikacji Android (WebView)
 
-- **Wymuszenie orientacji pionowej** dla Infoczytnika (wymóg kluczowy). (Źródło: `Infoczytnik_Pion.md`.)
-- **Lepsza kontrola środowiska**: stałe ustawienia WebView, brak zależności od przeglądarek.
-- **Możliwość pełnego offline** (po spakowaniu danych i bibliotek w aplikacji).
-- **Dostęp do funkcji Android** (np. pliki lokalne, powiadomienia), jeśli będzie potrzebny w przyszłości.
+1. Stwórz projekt Android (Android Studio → Empty Activity).
+2. Dodaj WebView i włącz:
+   - JavaScript,
+   - dostęp do internetu (`android.permission.INTERNET`).
+3. Podłącz WebView do hostowanych plików (np. `https://<user>.github.io/<repo>/Main/index.html`).
 
-## 5.1. Dodatkowa analiza — powiadomienia dla Infoczytnika (GM → użytkownik)
+### 4.3. Implementacja orientacji
 
-Założenie: gdy na innym urządzeniu uruchamiasz panel GM i przygotowujesz wiadomość, użytkownik ma dostać powiadomienie systemowe, nawet jeśli w tym momencie ma otwarty inny moduł. Po kliknięciu powiadomienia aplikacja ma przejść do Infoczytnika.
+**Wariant rekomendowany: dwa Activity**
 
-**Czy to możliwe? Tak, ale wymaga infrastruktury push.** W praktyce są dwie główne ścieżki:
+- **MainActivity (poziom):**
+  - `android:screenOrientation="sensorLandscape"`
+  - ładuje `Main/index.html` i pozwala na uruchamianie modułów.
 
-1. **Firebase Cloud Messaging (FCM)** — rekomendowane, bo projekt już używa Firebase:
-   - **GM panel**: po zapisaniu wiadomości w Firestore wysyła trigger do backendu (Cloud Functions/Server), który wykonuje push przez FCM do konkretnego urządzenia lub grupy.
-   - **Aplikacja Android (WebView/Capacitor)**: rejestruje token FCM i zapisuje go w Firestore (np. per użytkownik lub per sesja).
-   - **Powiadomienie**: systemowe push pojawia się niezależnie od tego, który moduł jest otwarty.
-   - **Kliknięcie w powiadomienie**: może otworzyć aplikację i przekierować do `Infoczytnik/Infoczytnik.html` (np. deep link `app://infoczytnik` albo URL w WebView + parametr `?open=infoczytnik`).
+- **InfoczytnikActivity (pion):**
+  - `android:screenOrientation="portrait"`
+  - ładuje `Infoczytnik/Infoczytnik.html`.
 
-2. **Service Worker + Web Push (PWA)**:
-   - Działa w trybie PWA, ale na Androidzie wciąż potrzebujesz **push provider** (np. FCM pod spodem w Chrome).
-   - W praktyce podobny flow: GM zapisuje wiadomość → backend wysyła Web Push → Service Worker wyświetla powiadomienie → kliknięcie przekierowuje do Infoczytnika.
+Aplikacja powinna przechwycić żądanie otwarcia Infoczytnika i uruchomić InfoczytnikActivity zamiast otwierać stronę w głównym WebView.
 
-**Wniosek praktyczny**:
-- Jeśli chcesz niezawodnych powiadomień, **potrzebujesz backendu** (np. Firebase Cloud Functions), bo samo zapisanie danych w Firestore nie generuje push do urządzenia.
-- Najprościej jest związać powiadomienia z **Firebase Cloud Messaging**, bo Firebase już istnieje w projekcie.
-- W Android wrapperze da się ustawić, aby kliknięcie powiadomienia otwierało dokładnie moduł Infoczytnik.
+### 4.4. Komunikacja i routing
 
-## 6. Wady i potencjalne problemy
+- **Najprostszy routing:** przechwycenie URL w `shouldOverrideUrlLoading()` i uruchomienie odpowiedniego Activity.
+- **Alternatywa:** przycisk natywny w aplikacji uruchamiający Infoczytnik bezpośrednio.
 
-- **Utrzymanie dwóch światów**: web + Android (build, wersje APK, testy, aktualizacje).
-- **Zależności zewnętrzne**: Firebase, XLSX i dane z GH Pages wymagają internetu — bez migracji do offline będą ograniczenia funkcjonalne.
-- **Cache i aktualizacje**: w PWA i WebView trzeba pilnować wersjonowania plików, inaczej użytkownik może mieć „starą wersję”.
-- **Pliki lokalne**: DataVault zakłada dostęp do `Repozytorium.xlsx` w ścieżce root — w Androidzie to nie zadziała 1:1 bez dodatkowego UI do importu.
+## 5. Kluczowe ograniczenia i ryzyka online
 
-## 7. Ryzyka i problemy po migracji (eksploatacja)
+1. **Dostęp do sieci jest wymagany stale.** Brak internetu = brak danych i brak ładowania modułów.
+2. **Zależności CDN (np. XLSX, Firebase)** muszą być dostępne publicznie. W przypadku blokad sieciowych aplikacja może utracić funkcje.
+3. **CORS i MIME typy**: ładowanie JSON/XLSX z GitHuba wymaga prawidłowych nagłówków odpowiedzi.
+4. **Cache WebView**: aktualizacje modułów w hostingu mogą wymagać wymuszenia odświeżenia lub wersjonowania URL (np. `?v=2`).
 
-1. **Aktualizacje danych (DataVault)**
-   - W webie łatwo podmienić `data.json`, w APK wymaga to aktualizacji aplikacji lub systemu pobierania danych z sieci.
-2. **Firebase i bezpieczeństwo**
-   - Firebase config jest publiczny (tak działa web), ale trzeba pilnować reguł dostępu w Firestore.
-3. **Wielkość aplikacji**
-   - Jeśli spakujesz wszystkie assety, obrazy i audio offline, rozmiar APK może być bardzo duży.
-4. **Zachowanie audio**
-   - Autoplay w WebView nadal wymaga interakcji użytkownika, więc ekran „odblokowania audio” musi pozostać.
+## 6. Rekomendacja końcowa
 
-## 8. Rekomendacja praktyczna
+- **Wariant B (natywny wrapper) jest właściwy i wystarczający.**
+- **Blokada pionu tylko dla Infoczytnika jest możliwa** i najlepiej zrealizować ją przez dwa Activity z różnymi ustawieniami orientacji.
+- Pozostałe moduły mogą działać w stałym układzie poziomym bez konfliktu z Infoczytnikiem.
 
-- Jeśli **najważniejsze** jest tylko wymuszenie pionu w Infoczytniku → **PWA** może być najszybszym krokiem.
-- Jeśli chcesz **pełną kontrolę** i 100% pewności → **wrapper Android (WebView/Capacitor)** jest bardziej odpowiedni.
-- Dla stabilnej pracy offline: trzeba przenieść zewnętrzne zależności (XLSX, Firebase, data.json) do pakietu aplikacji lub zapewnić mechanizm synchronizacji.
-
----
-
-## Podsumowanie
-
-Migracja do Androida jest technicznie możliwa, ponieważ wszystkie moduły działają jako statyczne strony. Największe wyzwania to: orientacja pionowa (rozwiązywana przez PWA lub WebView), zależności zewnętrzne (Firebase/XLSX) oraz obsługa danych i plików lokalnych (data.json / Repozytorium.xlsx). Najbezpieczniejszym podejściem jest wrapper z WebView i kontrolą orientacji + stopniowe przenoszenie zależności do lokalnych zasobów.
+Dokument zakłada, że aplikacja działa online i nie obejmuje scenariuszy offline ani innych wariantów migracji.
