@@ -25,6 +25,10 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - Kalkulator XP: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
+- **Mapa**:
+  - Widok użytkownika i admina: przycisk **Mapa** otwiera link do mapy w nowej karcie.
+  - Widok admina: przycisk **Link do mapy** (oraz **Owlbear Rodeo**) pokazuje pole do wpisania adresu mapy.
+  - Domyślny adres mapy: `https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke`.
 - **Audio** (widok admina): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
   - Notatka o adminie wyświetla się tylko w widoku admina strony głównej.
 
@@ -39,9 +43,10 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 
 ### Jak używać
 1. Otwórz stronę startową `Main/index.html` w przeglądarce.
-2. Domyślnie zobaczysz widok użytkownika z czterema przyciskami (Skarbiec Danych, Infoczytnik, Kalkulator, Rzut kośćmi).
-3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski (m.in. Generator NPC, Generator nazw, Audio) oraz notatki o panelach admina.
-4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
+2. Domyślnie zobaczysz widok użytkownika z przyciskami m.in. Skarbiec Danych, Infoczytnik, Kalkulator, Rzut kośćmi oraz **Mapa**.
+3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski (m.in. Generator NPC, Generator nazw, Audio) oraz notatki o panelach admina. Dodatkowo zobaczysz przyciski **Owlbear Rodeo** i **Link do mapy**, które odsłaniają pole do wpisania adresu mapy.
+4. Kliknij **Mapa**, aby otworzyć stronę mapy w nowej karcie. W widoku admina możesz zmienić adres, klikając **Owlbear Rodeo** lub **Link do mapy** i wpisując nowy URL.
+5. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -93,6 +98,10 @@ Browser tab title: **Kozi Przybornik**.
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
   - XP calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/KalkulatorXP.html
 - **DiceRoller**: https://cutelittlegoat.github.io/WrathAndGlory/DiceRoller/index.html
+- **Map**:
+  - User and admin view: the **Mapa** button opens the map link in a new tab.
+  - Admin view: the **Link do mapy** (and **Owlbear Rodeo**) buttons reveal the input field for the map URL.
+  - Default map URL: `https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke`.
 - **Audio** (admin view): https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html
   - The admin note is shown only in the main page admin view.
 
@@ -107,9 +116,10 @@ Browser tab title: **Kozi Przybornik**.
 
 ### How to use
 1. Open the landing page at `Main/index.html` in your browser.
-2. By default you will see the user view with four buttons (DataVault, DataSlate, Calculator, DiceRoller).
-3. To enable admin view, add the `?admin=1` parameter. All buttons (including NPC Generator, Name Generator, Audio) and admin notes become visible.
-4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
+2. By default you will see the user view with buttons such as DataVault, DataSlate, Calculator, DiceRoller, and **Mapa**.
+3. To enable admin view, add the `?admin=1` parameter. All buttons (including NPC Generator, Name Generator, Audio) and admin notes become visible. You will also see **Owlbear Rodeo** and **Link do mapy**, which reveal the map URL input field.
+4. Click **Mapa** to open the current map URL in a new tab. In admin view, click **Owlbear Rodeo** or **Link do mapy** to change the URL.
+5. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
 
 ### Running locally
 This is a static page with no backend. You can:

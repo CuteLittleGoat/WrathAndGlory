@@ -85,6 +85,7 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
   - `text-decoration: none`.
   - `text-align: center`.
   - `display: block` i `width: 100%` zapewniają pełną szerokość w kolumnie.
+  - `cursor: pointer` daje wskaźnik przycisku także dla elementów `<button>`.
   - `transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease`.
 - Stan `:hover`
   - `transform: translateY(-1px)` – delikatne uniesienie.
@@ -105,6 +106,26 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 - `line-height: 1.35`.
 - `word-break: break-word` pozwala łamać dłuższe ciągi (np. URL).
 
+#### 2.8 Konfiguracja mapy (`.map-config`, `.map-label`, `.map-input`)
+- `.map-config` to kontener wyświetlany po kliknięciu przycisku administracyjnego — domyślnie ukryty (`hidden`).
+  - `display: flex`, `flex-direction: column`, `gap: 6px` porządkują zawartość pionowo.
+  - `padding: 10px 12px` zapewnia odstępy wewnętrzne.
+  - `border: 2px dashed var(--border)` daje przerywaną ramkę w kolorze #16c60c.
+  - `border-radius: 6px`.
+  - `background: rgba(22, 198, 12, 0.06)` lekko podświetla panel.
+- `.map-label`
+  - `font-size: 12px`, `text-transform: uppercase`, `letter-spacing: 0.04em` tworzą „terminalową” etykietę.
+  - `color: var(--text)` utrzymuje spójny kolor.
+- `.map-input`
+  - `width: 100%`.
+  - `border: 2px solid var(--border)`.
+  - `background: rgba(0, 0, 0, 0.65)` – ciemne pole tekstowe.
+  - `color: var(--text)`.
+  - `padding: 8px 10px`.
+  - `border-radius: 6px`.
+  - `font-size: 14px`.
+  - `font-family: inherit` – ten sam monospace co reszta UI.
+
 ### 3. Zawartość (`<body>`)
 Struktura dokumentu składa się z:
 - `<main>` – główny panel.
@@ -116,7 +137,11 @@ Struktura dokumentu składa się z:
   4. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
   5. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
   6. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
-  7. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
+  7. **Mapa** – przycisk otwierający nową kartę z adresem mapy zapisanym w polu tekstowym (domyślnie `https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke`).
+     - **Owlbear Rodeo** – przycisk admina odsłaniający pole edycji linku.
+     - **Link do mapy** – drugi przycisk admina, również odsłaniający pole edycji linku.
+     - Pole edycji linku znajduje się bezpośrednio pod przyciskiem **Link do mapy**, wewnątrz kontenera `.map-config`.
+  8. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
 
 Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
@@ -130,6 +155,11 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
 - Link **Skarbiec Danych** (`[data-datavault-link]`) jest ustawiany dynamicznie:
   - tryb użytkownika → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`,
   - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`.
+- Konfiguracja mapy:
+  - Stała `defaultMapUrl` przechowuje domyślny adres `https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke`.
+  - Pole `[data-map-link-input]` jest wypełniane tym adresem po załadowaniu strony.
+  - Przyciski `[data-map-toggle]` (Owlbear Rodeo i Link do mapy, widoczne tylko w trybie admina) przełączają widoczność kontenera `[data-map-config]` i automatycznie ustawiają fokus oraz zaznaczenie tekstu w polu URL.
+  - Przycisk **Mapa** (`[data-map-open]`) otwiera nową kartę (`window.open`) z adresem wpisanym w polu tekstowym (lub z wartością domyślną, jeśli pole jest puste). Dodatkowo zerowane jest `opener`, aby zwiększyć bezpieczeństwo.
 
 ## Aktualizacja treści
 - **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html`.

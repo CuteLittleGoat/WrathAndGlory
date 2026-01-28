@@ -84,6 +84,7 @@
       text-align: center;
       display: block;
       width: 100%;
+      cursor: pointer;
       transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
     }
 
@@ -104,6 +105,34 @@
       font-size: 13px;
       line-height: 1.35;
       word-break: break-word;
+    }
+
+    .map-config {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 10px 12px;
+      border: 2px dashed var(--border);
+      border-radius: 6px;
+      background: rgba(22, 198, 12, 0.06);
+    }
+
+    .map-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+
+    .map-input {
+      width: 100%;
+      border: 2px solid var(--border);
+      background: rgba(0, 0, 0, 0.65);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
     }
   </style>
 </head>
@@ -131,6 +160,15 @@
       <div class="stack">
         <a class="btn" href="../DiceRoller/index.html">Rzut kośćmi</a>
       </div>
+      <div class="stack">
+        <button class="btn" type="button" data-map-open>Mapa</button>
+        <button class="btn" type="button" data-admin-only="true" data-map-toggle>Owlbear Rodeo</button>
+        <button class="btn" type="button" data-admin-only="true" data-map-toggle>Link do mapy</button>
+        <div class="map-config" data-map-config hidden>
+          <label class="map-label" for="map-link-input">Adres mapy</label>
+          <input class="map-input" id="map-link-input" data-map-link-input type="url" value="">
+        </div>
+      </div>
       <div class="stack" data-admin-only="true">
         <a class="btn" href="../Audio/index.html">Audio</a>
         <p class="note">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
@@ -156,6 +194,40 @@
       dataVaultLink.href = isAdmin
         ? "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1"
         : "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html";
+    }
+
+    const defaultMapUrl = "https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke";
+    const mapConfig = document.querySelector("[data-map-config]");
+    const mapLinkInput = document.querySelector("[data-map-link-input]");
+    if (mapLinkInput) {
+      mapLinkInput.value = defaultMapUrl;
+    }
+
+    const toggleMapConfig = () => {
+      if (!mapConfig) {
+        return;
+      }
+      mapConfig.hidden = !mapConfig.hidden;
+      if (!mapConfig.hidden && mapLinkInput) {
+        mapLinkInput.focus();
+        mapLinkInput.select();
+      }
+    };
+
+    const mapToggleButtons = document.querySelectorAll("[data-map-toggle]");
+    mapToggleButtons.forEach((button) => {
+      button.addEventListener("click", toggleMapConfig);
+    });
+
+    const mapOpenButton = document.querySelector("[data-map-open]");
+    if (mapOpenButton) {
+      mapOpenButton.addEventListener("click", () => {
+        const mapUrl = mapLinkInput?.value.trim() || defaultMapUrl;
+        const newWindow = window.open(mapUrl, "_blank", "noopener");
+        if (newWindow) {
+          newWindow.opener = null;
+        }
+      });
     }
   </script>
 </body>
