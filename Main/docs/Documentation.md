@@ -113,10 +113,11 @@ Struktura dokumentu składa się z:
   1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
   2. **Generator nazw** – link do `../GeneratorNazw/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
   3. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
-  4. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
-  5. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
-  6. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
-  7. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
+  4. **Mapa** – link statyczny do `https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke`. To jedyne miejsce w kodzie, gdzie jest zaszyty adres mapy; aktualizuj atrybut `href` w przycisku `Mapa`, jeśli URL ulegnie zmianie.
+  5. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
+  6. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
+  7. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
+  8. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
 
 Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
@@ -133,6 +134,7 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
 
 ## Aktualizacja treści
 - **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html`.
+- **Zmiana linku mapy**: adres mapy jest zaszyty bezpośrednio w przycisku `Mapa` w sekcji `<div class="actions">` w `Main/index.html` jako `href="https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke"`. Zmień ten atrybut, gdy URL mapy się zaktualizuje.
 - **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Skarbiec Danych lub Audio (elementy z `data-admin-only="true"`).
 - **Zmiana stylu**: edytuj sekcję `<style>` w `Main/index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
 - **Zmiana logo**: podmień plik `Main/wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
