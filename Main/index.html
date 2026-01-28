@@ -84,6 +84,7 @@
       text-align: center;
       display: block;
       width: 100%;
+      cursor: pointer;
       transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
     }
 
@@ -105,9 +106,31 @@
       line-height: 1.35;
       word-break: break-word;
     }
+
+    .map-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .map-field label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text);
+    }
+
+    .map-field input {
+      border: 1px solid var(--border);
+      background: rgba(22, 198, 12, 0.05);
+      color: var(--text);
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+    }
   </style>
 </head>
-<body>
+<body data-map-url="https://www.google.com/maps">
   <main>
     <img class="logo" src="wrath-glory-logo-warhammer.png" alt="Logo Wrath &amp; Glory">
 
@@ -124,6 +147,23 @@
       </div>
       <div class="stack right">
         <a class="btn" data-infoczytnik-link href="../Infoczytnik/Infoczytnik.html">Infoczytnik</a>
+      </div>
+      <div class="stack">
+        <button class="btn" type="button" data-map-open>Mapa</button>
+        <div class="stack" data-admin-only="true">
+          <button class="btn" type="button" data-map-link>Link do mapy</button>
+          <div class="map-field" data-map-field hidden>
+            <label for="map-url-input">Adres mapy</label>
+            <input
+              id="map-url-input"
+              type="url"
+              inputmode="url"
+              placeholder="https://..."
+              value="https://www.google.com/maps"
+              aria-label="Adres mapy"
+            />
+          </div>
+        </div>
       </div>
       <div class="stack">
         <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/" target="_blank" rel="noopener noreferrer">Kalkulator</a>
@@ -156,6 +196,48 @@
       dataVaultLink.href = isAdmin
         ? "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1"
         : "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html";
+    }
+
+    const mapOpenButton = document.querySelector("[data-map-open]");
+    const mapLinkButton = document.querySelector("[data-map-link]");
+    const mapField = document.querySelector("[data-map-field]");
+    const mapInput = document.querySelector("#map-url-input");
+
+    const updateMapUrl = (value) => {
+      const trimmedValue = value.trim();
+      document.body.dataset.mapUrl = trimmedValue;
+      if (mapInput) {
+        mapInput.value = trimmedValue;
+        mapInput.setAttribute("value", trimmedValue);
+      }
+    };
+
+    if (mapInput) {
+      updateMapUrl(mapInput.value);
+      mapInput.addEventListener("input", (event) => {
+        updateMapUrl(event.target.value);
+      });
+    }
+
+    if (mapLinkButton && mapField) {
+      mapLinkButton.addEventListener("click", () => {
+        mapField.hidden = false;
+        if (mapInput) {
+          mapInput.focus();
+          mapInput.select();
+        }
+      });
+    }
+
+    if (mapOpenButton) {
+      mapOpenButton.addEventListener("click", () => {
+        const mapUrl = document.body.dataset.mapUrl;
+        if (!mapUrl) {
+          alert("Najpierw dodaj link do mapy w trybie admina.");
+          return;
+        }
+        window.open(mapUrl, "_blank", "noopener,noreferrer");
+      });
     }
   </script>
 </body>
