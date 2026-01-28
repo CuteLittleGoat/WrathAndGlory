@@ -1,166 +1,141 @@
-# Migracja aplikacji WrathAndGlory na Android — praktyczny poradnik (wariant B: natywny wrapper WebView)
+# Migracja aplikacji WrathAndGlory na Android (WebView + powiadomienia PUSH)
 
-Poniżej znajdziesz przeredagowaną instrukcję w formie odpowiedzi na konkretne pytania. Tekst jest napisany dla osoby początkującej — krok po kroku, z wyjaśnieniem „co i gdzie kliknąć”.
-
----
-
-## 1. Co należy zrobić, krok‑po‑kroku, żeby utworzyć taką aplikację?
-
-Poniższa instrukcja zakłada, że aplikacja działa **online** (pliki są hostowane w internecie), a aplikacja Android to **WebView** z dwoma ekranami (dwie aktywności):
-- **Infoczytnik** w pionie,
-- reszta modułów w poziomie.
-
-### Krok A — przygotuj hosting plików
-1. **Zdecyduj, gdzie będą pliki aplikacji:**
-   - Najprościej: **GitHub Pages**.
-2. **Utwórz repozytorium na GitHubie** (jeśli jeszcze go nie masz):
-   - Wejdź na https://github.com → „New repository”.
-3. **Wgraj pliki aplikacji do repozytorium** (np. cały folder projektu).
-4. **Włącz GitHub Pages:**
-   - Wejdź w repozytorium → **Settings** → **Pages**.
-   - W sekcji „Build and deployment” wybierz **Branch: main** (lub master) i **/root**.
-   - Zapisz. Po chwili pojawi się link do strony, np. `https://twoj-login.github.io/twoj-repo/`.
-5. **Sprawdź w przeglądarce, czy działa strona główna:**
-   - Otwórz `https://twoj-login.github.io/twoj-repo/Main/index.html`.
-   - Jeśli widzisz stronę główną modułu, hosting jest poprawny.
-
-### Krok B — zainstaluj Android Studio
-1. Wejdź na stronę https://developer.android.com/studio.
-2. Kliknij **Download Android Studio** i zainstaluj program.
-3. Uruchom Android Studio po instalacji.
-
-### Krok C — stwórz projekt aplikacji
-1. W Android Studio kliknij **New Project**.
-2. Wybierz **Empty Activity** → **Next**.
-3. Ustaw dane projektu:
-   - **Name:** np. `WrathAndGlory`
-   - **Package name:** np. `com.twojlogin.wrathandglory`
-   - **Save location:** dowolny folder na komputerze
-   - **Language:** **Kotlin**
-   - **Minimum SDK:** np. **API 24 (Android 7.0)**
-4. Kliknij **Finish** i poczekaj aż projekt się utworzy.
-
-### Krok D — dodaj WebView do aplikacji
-1. W lewym panelu otwórz plik:
-   - `app > res > layout > activity_main.xml`
-2. Zastąp jego zawartość prostym WebView:
-   ```xml
-   <WebView
-       android:id="@+id/webView"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent" />
-   ```
-3. W pliku `MainActivity.kt`:
-   - Włącz JavaScript w WebView.
-   - Załaduj stronę główną modułu, np.:
-     `https://twoj-login.github.io/twoj-repo/Main/index.html`
-
-### Krok E — dodaj drugą aktywność dla Infoczytnika
-1. Kliknij prawym na folder `app > java > (twoj pakiet)`.
-2. Wybierz **New > Activity > Empty Activity**.
-3. Nazwij ją np. `InfoczytnikActivity`.
-4. W pliku layout dla tej aktywności dodaj WebView analogicznie.
-5. W kodzie tej aktywności ustaw adres:
-   `https://twoj-login.github.io/twoj-repo/Infoczytnik/Infoczytnik.html`
-
-### Krok F — ustaw orientację ekranu
-1. Otwórz plik `AndroidManifest.xml`.
-2. Dla `MainActivity` ustaw poziom:
-   ```xml
-   android:screenOrientation="sensorLandscape"
-   ```
-3. Dla `InfoczytnikActivity` ustaw pion:
-   ```xml
-   android:screenOrientation="portrait"
-   ```
-
-### Krok G — przełączanie między aktywnościami
-Masz dwie opcje:
-- **Opcja 1:** Przycisk w aplikacji (natywny). Dodajesz np. przycisk w Android Studio, który uruchamia `InfoczytnikActivity`.
-- **Opcja 2:** Przechwycenie linku w WebView — kiedy użytkownik kliknie link do Infoczytnika, aplikacja otwiera drugą aktywność.
-
-### Krok H — zbuduj i przetestuj
-1. Podłącz telefon przez USB lub uruchom emulator.
-2. Kliknij zielony **Run** (►).
-3. Aplikacja powinna się uruchomić i wczytać stronę z internetu.
+Ten dokument zawiera:
+- pełny zestaw **plików Android (Kotlin)** do skopiowania do Android Studio,
+- **prawdziwe linki** do wszystkich plików z repozytorium i do hostowanych modułów,
+- ustawienia: **tryb użytkownika (bez widoku GM)**, orientacje ekranu,
+- wymuszenie, aby przycisk **Mapa** otwierał przeglądarkę systemową,
+- analizę połączenia z Firebase w module **Infoczytnik** i instrukcję uruchomienia **PUSH**.
 
 ---
 
-## 2. Czy mogę mieć kopię aplikacji w wersji online i w pliku GM.html przygotować wiadomość, która zostanie wyświetlona w zainstalowanej aplikacji u użytkownika na innym urządzeniu?
+## 1. Linki do plików i modułów (GitHub + GitHub Pages)
 
-**Tak, to możliwe.** Jeśli aplikacja w telefonie ładuje pliki z internetu, to:
-- możesz mieć **wersję online** (np. GitHub Pages),
-- a w pliku **GM.html** umieścić treść, która będzie widoczna u wszystkich użytkowników, gdy aplikacja pobierze aktualny plik z hostingu.
+### 1.1. Moduły uruchamiane w aplikacji (GitHub Pages)
+- **Main (start aplikacji):** https://cutelittlegoat.github.io/WrathAndGlory/Main/index.html
+- **Infoczytnik (widok użytkownika):** https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik.html
 
-W praktyce działa to tak, że aplikacja **zawsze wyświetla to, co jest w plikach na serwerze**. Jeśli zmienisz `GM.html` na hostingu, użytkownik zobaczy nową treść po odświeżeniu lub ponownym uruchomieniu aplikacji.
+### 1.2. Pliki Android (Kotlin) — do skopiowania do Android Studio
+Poniższe pliki są gotowym szablonem projektu Android (`MigracjaAndroid/AndroidApp`).
 
----
+| Plik | Link |
+| --- | --- |
+| `MigracjaAndroid/AndroidApp/settings.gradle` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/settings.gradle |
+| `MigracjaAndroid/AndroidApp/build.gradle` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/build.gradle |
+| `MigracjaAndroid/AndroidApp/gradle.properties` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/gradle.properties |
+| `MigracjaAndroid/AndroidApp/app/build.gradle` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/build.gradle |
+| `MigracjaAndroid/AndroidApp/app/proguard-rules.pro` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/proguard-rules.pro |
+| `MigracjaAndroid/AndroidApp/app/google-services.json` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/google-services.json |
+| `MigracjaAndroid/AndroidApp/app/src/main/AndroidManifest.xml` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/AndroidManifest.xml |
+| `MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/MainActivity.kt` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/MainActivity.kt |
+| `MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/InfoczytnikActivity.kt` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/InfoczytnikActivity.kt |
+| `MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/WebViewConfig.kt` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/WebViewConfig.kt |
+| `MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/WgWebViewClient.kt` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/WgWebViewClient.kt |
+| `MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/NotificationHelper.kt` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/NotificationHelper.kt |
+| `MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/WgFirebaseMessagingService.kt` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/java/com/cutelittlegoat/wrathandglory/WgFirebaseMessagingService.kt |
+| `MigracjaAndroid/AndroidApp/app/src/main/res/layout/activity_main.xml` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/res/layout/activity_main.xml |
+| `MigracjaAndroid/AndroidApp/app/src/main/res/layout/activity_infoczytnik.xml` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/res/layout/activity_infoczytnik.xml |
+| `MigracjaAndroid/AndroidApp/app/src/main/res/values/strings.xml` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/res/values/strings.xml |
+| `MigracjaAndroid/AndroidApp/app/src/main/res/values/colors.xml` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/res/values/colors.xml |
+| `MigracjaAndroid/AndroidApp/app/src/main/res/values/themes.xml` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/res/values/themes.xml |
+| `MigracjaAndroid/AndroidApp/app/src/main/res/drawable/ic_notification.xml` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/AndroidApp/app/src/main/res/drawable/ic_notification.xml |
 
-## 3. Czy mogę wyświetlać powiadomienia o nadejściu nowej wiadomości na urządzeniu użytkownika?
-
-**Tak, ale wymaga to dodatkowego systemu powiadomień.** Same pliki HTML i WebView nie potrafią samodzielnie wysłać „push” na telefon. Potrzebujesz:
-
-1. **Usługi powiadomień push**, np. Firebase Cloud Messaging (FCM).
-2. **Natywnego kodu Android**, który:
-   - rejestruje urządzenie w FCM,
-   - odbiera powiadomienie,
-   - wyświetla je użytkownikowi.
-3. **Serwera lub panelu**, z którego wyślesz powiadomienie.
-
-Podsumowanie: **technicznie jest to możliwe**, ale wymaga dodatkowej konfiguracji i nie jest częścią samego HTML/WebView.
-
----
-
-## 4. Czy wymagane pliki mogą być utworzone w folderze „MigracjaAndroid” czy lokalizacja plików jest sztywno narzucona (np. folder główny)?
-
-**W przypadku hostingu online lokalizacja plików nie jest „sztywno narzucona”.** Możesz trzymać pliki w dowolnych folderach, **pod warunkiem że adresy URL w aplikacji wskazują właściwe ścieżki**.
-
-Przykład:
-- Jeśli plik jest pod `https://twoj-login.github.io/twoj-repo/MigracjaAndroid/GM.html`, to w aplikacji musisz podać dokładnie taki URL.
-
-Najważniejsze: **struktura folderów musi się zgadzać z URL‑ami, które wpisujesz w WebView.**
-
----
-
-## 5. Jak przygotować ikonę dla aplikacji? Jakie są wymagania?
-
-Najprościej użyć narzędzia w Android Studio:
-
-1. Kliknij prawym na `app` → **New** → **Image Asset**.
-2. Wybierz:
-   - **Icon Type:** Launcher Icons (Adaptive and Legacy)
-   - **Source Asset:** wybierz plik PNG/SVG (najlepiej prosty, wyraźny znak).
-3. Android Studio samo wygeneruje komplet ikon w różnych rozmiarach.
-
-**Wymagania praktyczne:**
-- Grafika powinna być **prosta, czytelna w małym rozmiarze**.
-- Najlepiej kwadratowa (np. 512×512 px), bez drobnych szczegółów.
-- Android sam tworzy różne rozmiary, więc nie musisz ręcznie przygotowywać wielu plików.
+### 1.3. Pliki do funkcji PUSH (Firebase Functions)
+| Plik | Link |
+| --- | --- |
+| `MigracjaAndroid/FirebaseFunctions/index.js` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/FirebaseFunctions/index.js |
+| `MigracjaAndroid/FirebaseFunctions/package.json` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/FirebaseFunctions/package.json |
+| `MigracjaAndroid/FirebaseFunctions/firebase.json` | https://github.com/cutelittlegoat/WrathAndGlory/blob/main/MigracjaAndroid/FirebaseFunctions/firebase.json |
 
 ---
 
-## 6. Jak wygląda późniejsza aktualizacja aplikacji? Załóżmy, że dodaję nowy moduł — trzeba przebudowywać całą aplikację?
+## 2. Gotowy szablon Android — co robi i dlaczego spełnia wymagania
 
-**Zależy od tego, czy nowy moduł wymaga zmian w samym Androidzie.**
+### 2.1. Widok użytkownika (bez admina)
+Aplikacja ładuje tylko widok użytkownika:
+- **Start:** `Main/index.html`
+- **Infoczytnik:** `Infoczytnik/Infoczytnik.html`
 
-- Jeśli dodajesz nowy moduł jako **kolejny folder HTML** na hostingu i linkujesz do niego z poziomu `Main/index.html`, to:
-  - **Nie trzeba przebudowywać aplikacji Android.**
-  - Wystarczy zaktualizować pliki na serwerze.
+W kodzie Android **blokuję wszystkie wejścia do `GM.html` i `GM_test.html`**, więc użytkownik nie zobaczy panelu GM nawet jeśli zna adres. To zapewnia wymagany **widok użytkownika, nie admina**.
 
-- Jeśli nowy moduł wymaga **nowej natywnej funkcji** (np. osobny ekran z inną orientacją, dostęp do GPS, push, itp.), to:
-  - **Trzeba zmienić i przebudować aplikację Android.**
+### 2.2. Orientacje ekranu
+- `MainActivity` → **poziomo** (`sensorLandscape`)
+- `InfoczytnikActivity` → **pionowo** (`portrait`)
 
----
+To dokładnie spełnia wymóg: Infoczytnik w pionie, reszta modułów w poziomie.
 
-## 7. Jak wygląda późniejsza aktualizacja aplikacji? Załóżmy, że aktualizuję pliki `data.json` albo `AudioManifest.xlsx` — trzeba przebudowywać całą aplikację?
-
-**Nie.** Jeśli aplikacja ładuje te pliki z internetu (np. GitHub Pages), to:
-- wystarczy podmienić plik na serwerze,
-- aplikacja po odświeżeniu wczyta nową wersję.
-
-**Przebudowa aplikacji Android nie jest potrzebna**, ponieważ WebView i tak pobiera dane online.
+### 2.3. Przycisk „Mapa” otwiera przeglądarkę systemową
+W module `Main/index.html` przycisk **Mapa** prowadzi do zewnętrznego adresu (owlbear.rodeo). W aplikacji Android **wychwytuję wszystkie linki spoza `cutelittlegoat.github.io`** i otwieram je przez `Intent.ACTION_VIEW`, więc Mapa uruchomi się w zewnętrznej przeglądarce (Chrome, Firefox itd.).
 
 ---
 
-## Podsumowanie w jednym zdaniu
-Aplikację Android w wariancie WebView budujesz raz, a później większość zmian (nowe moduły, dane, treści) aktualizujesz przez zwykłą podmianę plików na hostingu — bez ponownej publikacji APK, o ile nie zmieniasz funkcji natywnych.
+## 3. Instrukcja użycia w Android Studio
+
+1. **Skopiuj cały folder** `MigracjaAndroid/AndroidApp` jako nowy projekt, np. do `C:\Projects\WrathAndGlory`.
+2. W Android Studio wybierz **Open** i wskaż ten folder.
+3. **Dodaj prawdziwy plik `google-services.json`**:
+   - W Firebase Console dodaj aplikację Android o pakiecie: `com.cutelittlegoat.wrathandglory`.
+   - Pobierz `google-services.json`.
+   - Podmień plik: `AndroidApp/app/google-services.json`.
+4. Kliknij **Sync Now** (Android Studio zaciągnie zależności).
+5. Uruchom aplikację (▶ Run).
+
+Efekt:
+- Start w `Main/index.html` (poziomo),
+- wejście w Infoczytnik w osobnej aktywności (pionowo),
+- link „Mapa” otwiera przeglądarkę,
+- powiadomienia PUSH obsługiwane przez Firebase Messaging (po konfiguracji w pkt 4).
+
+---
+
+## 4. Analiza modułu Infoczytnik i integracji Firebase (PUSH)
+
+### 4.1. Jak działa Infoczytnik teraz (HTML)
+W pliku `Infoczytnik.html` aplikacja:
+- ładuje globalny config Firebase z `config/firebase-config.js`,
+- podpina się do Firestore i nasłuchuje dokumentu `dataslate/current`,
+- po zmianie dokumentu aktualizuje treść ekranu i odtwarza dźwięk.  
+To jest **ciągłe nasłuchiwanie Firestore**, ale **bez PUSH** (WebView nie dostaje powiadomień w tle).
+
+### 4.2. Skąd bierze się wiadomość GM
+W panelu `GM.html` (i `GM_test.html`) wiadomość jest zapisywana do Firestore `dataslate/current` metodą `set(...)` i otrzymuje `nonce` oraz znacznik czasu. Ten sam dokument odczytuje Infoczytnik.
+
+**Wniosek:** logika wiadomości już działa przez Firestore, ale **PUSH musi wysyłać osobny backend**.
+
+---
+
+## 5. PUSH: co dodałem i jak uruchomić
+
+### 5.1. Android — odbieranie i wyświetlanie notyfikacji
+W szablonie Android dodałem:
+- `WgFirebaseMessagingService` — odbiera wiadomości FCM,
+- `NotificationHelper` — wyświetla notyfikację w formacie:
+  - **Title:** `++INCOMING TRANSMISSION++`
+  - **Body:** `++Blessed be the Omnissiah++`
+
+Urządzenie subskrybuje temat **`infoczytnik`**, więc wystarczy wysyłać powiadomienia do tego tematu.
+
+### 5.2. Backend — Firebase Function
+Dodałem funkcję `notifyOnDataslateMessage`, która:
+- reaguje na zapis `dataslate/current`,
+- jeśli `type === "message"`, wysyła FCM na temat `infoczytnik`.
+
+#### Uruchomienie (skrócona instrukcja):
+1. Zainstaluj Firebase CLI: `npm install -g firebase-tools`.
+2. Zaloguj się: `firebase login`.
+3. W folderze `MigracjaAndroid/FirebaseFunctions` uruchom:
+   - `npm install`
+   - `firebase deploy --only functions`
+
+Po wdrożeniu, **każde wysłanie wiadomości w GM** wygeneruje powiadomienie PUSH na Androidzie.
+
+---
+
+## 6. Podsumowanie decyzji projektowych
+
+- **Widok użytkownika:** tylko `Main` i `Infoczytnik`, blokada `GM.html`.
+- **Orientacja:** Main = poziom, Infoczytnik = pion.
+- **Mapa:** zawsze zewnętrzna przeglądarka.
+- **PUSH:** FCM + Firebase Function reagująca na `dataslate/current`.
+
+Jeśli będziesz chciał dostosować linki lub dodać kolejny moduł, wystarczy dodać go w `Main/index.html` (bez przebudowy aplikacji), o ile nie potrzebujesz nowej natywnej funkcji.
