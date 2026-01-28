@@ -1,0 +1,23 @@
+{
+  "project_info": {
+    "project_number": "PASTE_PROJECT_NUMBER",
+    "project_id": "PASTE_PROJECT_ID",
+    "storage_bucket": "PASTE_STORAGE_BUCKET"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "PASTE_MOBILESDK_APP_ID",
+        "android_client_info": {
+          "package_name": "com.cutelittlegoat.wrathandglory"
+        }
+      },
+      "api_key": [
+        {
+          "current_key": "PASTE_ANDROID_API_KEY"
+        }
+      ]
+    }
+  ],
+  "configuration_version": "1"
+}
