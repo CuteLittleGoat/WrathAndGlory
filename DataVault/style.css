@@ -424,6 +424,16 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Strona"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 
+/* Bonusy Frakcji */
+.tableWrap table[data-sheet="Bonusy_Frakcji"] th[data-col="Frakcja"],
+.tableWrap table[data-sheet="Bonusy_Frakcji"] td[data-col="Frakcja"]{min-width:26ch}
+.tableWrap table[data-sheet="Bonusy_Frakcji"] th[data-col="Premia 1"],
+.tableWrap table[data-sheet="Bonusy_Frakcji"] td[data-col="Premia 1"],
+.tableWrap table[data-sheet="Bonusy_Frakcji"] th[data-col="Premia 2"],
+.tableWrap table[data-sheet="Bonusy_Frakcji"] td[data-col="Premia 2"],
+.tableWrap table[data-sheet="Bonusy_Frakcji"] th[data-col="Premia 3"],
+.tableWrap table[data-sheet="Bonusy_Frakcji"] td[data-col="Premia 3"]{min-width:56ch}
+
 /* Cechy / Stany / Słowa kluczowe */
 .tableWrap table[data-sheet="Cechy"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Cechy"] td[data-col="Nazwa"],

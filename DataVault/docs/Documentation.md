@@ -175,6 +175,12 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Podręcznik`: 17ch
   - `Strona`: 6ch
 
+- **Bonusy_Frakcji**
+  - `Frakcja`: 26ch
+  - `Premia 1`: 56ch
+  - `Premia 2`: 56ch
+  - `Premia 3`: 56ch
+
 - **Cechy / Stany / Slowa_Kluczowe**
   - `Typ`: 14ch
   - `Nazwa`: 26ch
@@ -269,6 +275,7 @@ Dodatkowo kolumna `Zasięg` w **Broniach** ma `white-space: nowrap`, aby nie ła
 - `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Archetypy...).
 - `SHEET_COLUMN_ORDER` — preferowana kolejność kolumn per arkusz.
   - Dla `Archetypy` kolejność to: `Poziom`, `Frakcja`, `Nazwa`, `Koszt PD`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`, `Podręcznik`, `Strona`.
+  - Dla `Bonusy_Frakcji` kolejność to: `Frakcja`, `Premia 1`, `Premia 2`, `Premia 3`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Slowa_Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).

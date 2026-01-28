@@ -4,6 +4,7 @@
 const SHEETS_ORDER = [
   "Bestiariusz",
   "Archetypy",
+  "Bonusy_Frakcji",
   "Cechy",
   "Stany",
   "Slowa_Kluczowe",
@@ -19,6 +20,7 @@ const SHEETS_ORDER = [
 const SHEET_COLUMN_ORDER = {
   "Bestiariusz":["Nazwa","Zagrożenie","Słowa Kluczowe","S","Wt","Zr","I","SW","Int","Ogd","Odporność (w tym WP)","Wartość Pancerza","Obrona","Żywotność","Odporność Psychiczna","Umiejętności","Premie","Zdolności","Atak","Zdolności Hordy","Opcje Hordy","Upór","Odwaga","Szybkość","Rozmiar","Podręcznik","Strona"],
   "Archetypy":["Poziom","Frakcja","Nazwa","Koszt PD","Słowa Kluczowe","Atrybuty Archetypu","Umiejętności Archetypu","Zdolność Archetypu","Ekwipunek","Inne","Podręcznik","Strona"],
+  "Bonusy_Frakcji":["Frakcja","Premia 1","Premia 2","Premia 3"],
   "Cechy":["Typ","Nazwa","Opis"],
   "Stany":["Typ","Nazwa","Opis"],
   "Slowa_Kluczowe":["Typ","Nazwa","Opis"],
