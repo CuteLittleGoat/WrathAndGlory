@@ -102,6 +102,20 @@ W panelu `GM.html` (i `GM_test.html`) wiadomość jest zapisywana do Firestore `
 
 **Wniosek:** logika wiadomości już działa przez Firestore, ale **PUSH musi wysyłać osobny backend**.
 
+### 4.3. Wpływ zmian Firebase (PUSH/FCM) na wersję przeglądarkową
+Analiza modułu **Infoczytnik** pokazuje, że wersja web:
+- ładuje konfigurację z `config/firebase-config.js` jako `window.firebaseConfig`,
+- inicjalizuje Firebase Web SDK (moduły `firebase-app` + `firebase-firestore`),
+- **wyłącznie** nasłuchuje dokumentu `dataslate/current` przez `onSnapshot(...)`.  
+
+Zmiany opisane w sekcji PUSH (Firebase Functions + FCM dla Androida) **nie wpływają na działanie wersji przeglądarkowej**, ponieważ:
+- web nie korzysta z FCM ani Firebase Messaging w tle,
+- funkcja chmurowa tylko **dodatkowo** wysyła notyfikację FCM, nie zmienia sposobu zapisu do `dataslate/current`.  
+
+Wpływ na wersję przeglądarkową wystąpi **tylko wtedy**, gdy:
+- zmienisz projekt Firebase (wtedy trzeba zaktualizować `config/firebase-config.js`),
+- zaostrzysz reguły Firestore i zablokujesz odczyt/zapis `dataslate/current`.  
+
 ---
 
 ## 5. PUSH: co dodałem i jak uruchomić
