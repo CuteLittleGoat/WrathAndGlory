@@ -85,6 +85,7 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
   - `text-decoration: none`.
   - `text-align: center`.
   - `display: block` i `width: 100%` zapewniają pełną szerokość w kolumnie.
+  - `cursor: pointer` gwarantuje spójne zachowanie dla `<button>` oraz `<a>`.
   - `transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease`.
 - Stan `:hover`
   - `transform: translateY(-1px)` – delikatne uniesienie.
@@ -94,7 +95,20 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
   - `transform: translateY(0)`.
   - `background: rgba(22, 198, 12, 0.22)` – najjaśniejsza wersja tła.
 
-#### 2.7 Notatki pomocnicze (`.note`)
+#### 2.7 Pole linku mapy (`.map-field`)
+- Kontener `div.map-field` jest ukryty domyślnie (`hidden`) i pojawia się dopiero po kliknięciu przycisku **Link do mapy**.
+- `display: flex` oraz `flex-direction: column` układają etykietę i pole w pionie.
+- `gap: 6px` tworzy subtelny odstęp.
+- `label`
+  - `font-size: 12px` i `text-transform: uppercase` nadają techniczny charakter.
+  - `letter-spacing: 0.6px` zwiększa czytelność.
+- `input`
+  - `border: 1px solid var(--border)` zachowuje zielony obrys.
+  - `background: rgba(22, 198, 12, 0.05)` dopasowuje się do tła.
+  - `color: var(--text)` zachowuje zieloną typografię.
+  - `padding: 8px 10px`, `border-radius: 6px`, `font-size: 13px`.
+
+#### 2.8 Notatki pomocnicze (`.note`)
 - Teksty pomocnicze umieszczane pod wybranymi przyciskami.
 - Pod **Skarbcem Danych** znajduje się instrukcja dodania parametru `index.html?admin=1`, ale jest widoczna tylko w trybie admina (element ma `data-admin-only="true"`).
   - Dokładna treść: `aby wejść do panelu admina dopisz do adresu index.html?admin=1` (parametr jest w `<strong>`).
@@ -114,9 +128,10 @@ Struktura dokumentu składa się z:
   2. **Generator nazw** – link do `../GeneratorNazw/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
   3. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
   4. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
-  5. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
-  6. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
-  7. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
+  5. **Mapa** – przycisk (`data-map-open`), który otwiera nową kartę z adresem przechowywanym w `data-map-url` na `<body>`. W trybie admina pod przyciskiem widoczny jest blok z przyciskiem **Link do mapy** oraz polem wejściowym `#map-url-input` (ukrytym do czasu kliknięcia).
+  6. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
+  7. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
+  8. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
 
 Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
@@ -130,6 +145,11 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
 - Link **Skarbiec Danych** (`[data-datavault-link]`) jest ustawiany dynamicznie:
   - tryb użytkownika → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`,
   - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`.
+- Logika mapy:
+  - `<body>` przechowuje aktualny adres mapy w `data-map-url` (domyślnie `https://www.google.com/maps`).
+  - Funkcja `updateMapUrl` zapisuje adres w `data-map-url` oraz aktualizuje atrybut `value` w polu `#map-url-input`, aby adres był zapisany w kodzie HTML.
+  - Kliknięcie **Link do mapy** (przycisk `data-map-link`) odsłania ukryty kontener `data-map-field` i ustawia fokus na polu.
+  - Kliknięcie **Mapa** (`data-map-open`) otwiera nową kartę przez `window.open` z adresem z `data-map-url`. Jeśli adres jest pusty, wyświetlany jest alert informujący o konieczności ustawienia linku w trybie admina.
 
 ## Aktualizacja treści
 - **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html`.
