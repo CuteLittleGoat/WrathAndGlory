@@ -2477,7 +2477,93 @@
     "Bonusy_Frakcji": [
       {
         "Frakcja": "Adepta Sororitas",
-        "Premia 1": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna"
+        "Premia 1": "Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór",
+        "Premia 2": "Wpływ {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
+        "Premia 3": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna"
+      },
+      {
+        "Frakcja": "Adeptus Astra Telepathica",
+        "Premia 1": "Żywotność {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Upór",
+        "Premia 2": "Wpływ {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Upór",
+        "Premia 3": "Determinacja {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Upór"
+      },
+      {
+        "Frakcja": "Adeptus Mechanicus",
+        "Premia 1": "Odwaga {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
+        "Premia 2": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna",
+        "Premia 3": "Upór {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Majątek"
+      },
+      {
+        "Frakcja": "Adeptus Ministorum",
+        "Premia 1": "Upór {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja",
+        "Premia 2": "Wpływy {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Odwaga",
+        "Premia 3": "Determinacja lub Wpływ {{I}}lub{{/I}} Odporność psychiczna"
+      },
+      {
+        "Frakcja": "Astra Militarum",
+        "Premia 1": "Upór {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odwaga",
+        "Premia 2": "Odporność psychiczna {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Wpływ",
+        "Premia 3": "Determinacja {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Majątek"
+      },
+      {
+        "Frakcja": "Inkwizycja",
+        "Premia 1": "Majątek {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Żywotność",
+        "Premia 2": "Wpływy {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Odporność psychiczna",
+        "Premia 3": "Upór {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Odwaga"
+      },
+      {
+        "Frakcja": "Dynastie Wolnych Kupców",
+        "Premia 1": "Upór {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Determinacja",
+        "Premia 2": "Upór {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}}{{RED}} [DOWOLNE] {{/RED}}Słowo kluczowe",
+        "Premia 3": "Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór"
+      },
+      {
+        "Frakcja": "Szumowiny",
+        "Premia 1": "Determinacja {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Odwaga",
+        "Premia 2": "Wpływy {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Majątek",
+        "Premia 3": "Determinacja {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Odporność psychiczna"
+      },
+      {
+        "Frakcja": "Adeptus Astartes",
+        "Premia 1": "Żywotność {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja",
+        "Premia 2": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna",
+        "Premia 3": "Wpływy {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór"
+      },
+      {
+        "Frakcja": "Aeldari",
+        "Premia 1": "Determinacja {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Upór",
+        "Premia 2": "Upór {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Odwaga lub Wpływ",
+        "Premia 3": "-"
+      },
+      {
+        "Frakcja": "Ork",
+        "Premia 1": "Odporność psychiczna {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja",
+        "Premia 2": "Determinacja {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
+        "Premia 3": "Żywotność {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Determinacja"
+      },
+      {
+        "Frakcja": "Chaos",
+        "Premia 1": "Spaczenie {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Odporność psychiczna",
+        "Premia 2": "Wpływ {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Żywotność",
+        "Premia 3": "Determinacja {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Spaczenie"
+      },
+      {
+        "Frakcja": "Ogryn",
+        "Premia 1": "x",
+        "Premia 2": "x",
+        "Premia 3": "x"
+      },
+      {
+        "Frakcja": "Szczurak",
+        "Premia 1": "x",
+        "Premia 2": "x",
+        "Premia 3": "x"
+      },
+      {
+        "Frakcja": "Kroot",
+        "Premia 1": "x",
+        "Premia 2": "x",
+        "Premia 3": "x"
       }
     ],
     "Cechy": [
