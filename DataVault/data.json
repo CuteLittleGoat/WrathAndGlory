@@ -2474,6 +2474,12 @@
         "Strona": "116"
       }
     ],
+    "Bonusy_Frakcji": [
+      {
+        "Frakcja": "Adepta Sororitas",
+        "Premia 1": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna"
+      }
+    ],
     "Cechy": [
       {
         "Typ": "Cechy Broni",
