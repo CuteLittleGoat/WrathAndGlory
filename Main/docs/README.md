@@ -1,6 +1,6 @@
 # Wrath & Glory / Kozi przybornik
 
-Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Domyślnie działa w trybie użytkownika (4 przyciski), a tryb admina uruchamia się parametrem `?admin=1` i odsłania wszystkie narzędzia oraz notatki.
+Statyczna strona startowa (landing page) z linkami do narzędzi wspierających rozgrywki Wrath & Glory. Domyślnie działa w trybie użytkownika (5 przycisków), a tryb admina uruchamia się parametrem `?admin=1` i odsłania wszystkie narzędzia oraz notatki.
 
 ---
 
@@ -20,6 +20,9 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
   - Menu główne (widok admina na stronie startowej): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
     - GM (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM_test.html
     - Infoczytnik (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik_test.html
+- **Mapa** (widok użytkownika i admina):
+  - Otwiera nową kartę z adresem zapisanym w polu „Link do mapy”.
+  - Domyślny adres mapy można zmienić w trybie admina.
 - **Kalkulator**:
   - Menu główne: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Tworzenie postaci: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
@@ -39,9 +42,10 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 
 ### Jak używać
 1. Otwórz stronę startową `Main/index.html` w przeglądarce.
-2. Domyślnie zobaczysz widok użytkownika z czterema przyciskami (Skarbiec Danych, Infoczytnik, Kalkulator, Rzut kośćmi).
+2. Domyślnie zobaczysz widok użytkownika z pięcioma przyciskami (Skarbiec Danych, Infoczytnik, Mapa, Kalkulator, Rzut kośćmi).
 3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski (m.in. Generator NPC, Generator nazw, Audio) oraz notatki o panelach admina.
-4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
+4. W trybie admina możesz kliknąć **Link do mapy**, aby wyświetlić pole do wpisania adresu mapy. Wpisany adres zostanie zapamiętany i będzie używany przez przycisk **Mapa**.
+5. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -88,6 +92,9 @@ Browser tab title: **Kozi Przybornik**.
   - Main menu (admin view on the landing page): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html
     - GM (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/GM_test.html
     - DataSlate (test): https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/Infoczytnik_test.html
+- **Map** (user + admin view):
+  - Opens a new tab using the address stored in the “Map link” field.
+  - The default map address can be changed in admin view.
 - **Calculator**:
   - Main menu: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/index.html
   - Character creation: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html
@@ -107,9 +114,10 @@ Browser tab title: **Kozi Przybornik**.
 
 ### How to use
 1. Open the landing page at `Main/index.html` in your browser.
-2. By default you will see the user view with four buttons (DataVault, DataSlate, Calculator, DiceRoller).
+2. By default you will see the user view with five buttons (DataVault, DataSlate, Map, Calculator, DiceRoller).
 3. To enable admin view, add the `?admin=1` parameter. All buttons (including NPC Generator, Name Generator, Audio) and admin notes become visible.
-4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
+4. In admin view click **Map link** to reveal the text field and enter the map URL. The saved address will be used by the **Map** button.
+5. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
 
 ### Running locally
 This is a static page with no backend. You can:
