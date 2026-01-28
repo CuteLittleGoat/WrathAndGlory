@@ -1,108 +1,166 @@
-# Migracja aplikacji WrathAndGlory na Android — analiza po wyborze wariantu B (natywny wrapper)
+# Migracja aplikacji WrathAndGlory na Android — praktyczny poradnik (wariant B: natywny wrapper WebView)
 
-## 1. Założenia i decyzja projektowa
+Poniżej znajdziesz przeredagowaną instrukcję w formie odpowiedzi na konkretne pytania. Tekst jest napisany dla osoby początkującej — krok po kroku, z wyjaśnieniem „co i gdzie kliknąć”.
 
-- Wybrany wariant: **natywny wrapper (WebView / Capacitor / Cordova)**.
-- Aplikacja działa **wyłącznie online** — wszystkie pliki i dane są ładowane z hostingu (np. GitHub Pages / raw.githubusercontent.com), a aplikacja odwołuje się do nich przez HTTP/HTTPS.
-- Kluczowe wymaganie: **moduł Infoczytnik (plik `Infoczytnik.html`) ma być blokowany w orientacji pionowej**, natomiast **pozostałe moduły mają działać w orientacji poziomej**.
+---
 
-## 2. Wnioski z ponownej analizy architektury
+## 1. Co należy zrobić, krok‑po‑kroku, żeby utworzyć taką aplikację?
 
-Repozytorium to zestaw niezależnych modułów HTML/CSS/JS bez klasycznego build pipeline. Każdy moduł działa jako samodzielna strona, a komunikacja zewnętrzna odbywa się przez:
+Poniższa instrukcja zakłada, że aplikacja działa **online** (pliki są hostowane w internecie), a aplikacja Android to **WebView** z dwoma ekranami (dwie aktywności):
+- **Infoczytnik** w pionie,
+- reszta modułów w poziomie.
 
-- **HTTP/HTTPS** (pobieranie plików i danych z GitHuba),
-- **CDN** (np. biblioteki typu XLSX),
-- **Firebase (Firestore)** w niektórych modułach (Infoczytnik, Audio).
+### Krok A — przygotuj hosting plików
+1. **Zdecyduj, gdzie będą pliki aplikacji:**
+   - Najprościej: **GitHub Pages**.
+2. **Utwórz repozytorium na GitHubie** (jeśli jeszcze go nie masz):
+   - Wejdź na https://github.com → „New repository”.
+3. **Wgraj pliki aplikacji do repozytorium** (np. cały folder projektu).
+4. **Włącz GitHub Pages:**
+   - Wejdź w repozytorium → **Settings** → **Pages**.
+   - W sekcji „Build and deployment” wybierz **Branch: main** (lub master) i **/root**.
+   - Zapisz. Po chwili pojawi się link do strony, np. `https://twoj-login.github.io/twoj-repo/`.
+5. **Sprawdź w przeglądarce, czy działa strona główna:**
+   - Otwórz `https://twoj-login.github.io/twoj-repo/Main/index.html`.
+   - Jeśli widzisz stronę główną modułu, hosting jest poprawny.
 
-Wariant B jest właściwy, ponieważ:
+### Krok B — zainstaluj Android Studio
+1. Wejdź na stronę https://developer.android.com/studio.
+2. Kliknij **Download Android Studio** i zainstaluj program.
+3. Uruchom Android Studio po instalacji.
 
-- pozwala na **stałą kontrolę orientacji ekranu**,
-- daje możliwość **precyzyjnej konfiguracji WebView** (JavaScript, cache, polityki sieciowe),
-- nie wymaga przebudowy kodu HTML/JS, tylko odpowiedniego sposobu hostowania.
+### Krok C — stwórz projekt aplikacji
+1. W Android Studio kliknij **New Project**.
+2. Wybierz **Empty Activity** → **Next**.
+3. Ustaw dane projektu:
+   - **Name:** np. `WrathAndGlory`
+   - **Package name:** np. `com.twojlogin.wrathandglory`
+   - **Save location:** dowolny folder na komputerze
+   - **Language:** **Kotlin**
+   - **Minimum SDK:** np. **API 24 (Android 7.0)**
+4. Kliknij **Finish** i poczekaj aż projekt się utworzy.
 
-## 3. Czy możliwe jest zablokowanie pionu tylko dla Infoczytnika?
+### Krok D — dodaj WebView do aplikacji
+1. W lewym panelu otwórz plik:
+   - `app > res > layout > activity_main.xml`
+2. Zastąp jego zawartość prostym WebView:
+   ```xml
+   <WebView
+       android:id="@+id/webView"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent" />
+   ```
+3. W pliku `MainActivity.kt`:
+   - Włącz JavaScript w WebView.
+   - Załaduj stronę główną modułu, np.:
+     `https://twoj-login.github.io/twoj-repo/Main/index.html`
 
-**Tak, jest to możliwe w wariancie natywnym.** Istnieją dwa praktyczne podejścia:
+### Krok E — dodaj drugą aktywność dla Infoczytnika
+1. Kliknij prawym na folder `app > java > (twoj pakiet)`.
+2. Wybierz **New > Activity > Empty Activity**.
+3. Nazwij ją np. `InfoczytnikActivity`.
+4. W pliku layout dla tej aktywności dodaj WebView analogicznie.
+5. W kodzie tej aktywności ustaw adres:
+   `https://twoj-login.github.io/twoj-repo/Infoczytnik/Infoczytnik.html`
 
-### 3.1. Rozdzielenie na dwa Activity (najprostsze i najstabilniejsze)
+### Krok F — ustaw orientację ekranu
+1. Otwórz plik `AndroidManifest.xml`.
+2. Dla `MainActivity` ustaw poziom:
+   ```xml
+   android:screenOrientation="sensorLandscape"
+   ```
+3. Dla `InfoczytnikActivity` ustaw pion:
+   ```xml
+   android:screenOrientation="portrait"
+   ```
 
-1. **Activity A (Infoczytnik):**
-   - `android:screenOrientation="portrait"`
-   - WebView ładuje wyłącznie `Infoczytnik/Infoczytnik.html`.
+### Krok G — przełączanie między aktywnościami
+Masz dwie opcje:
+- **Opcja 1:** Przycisk w aplikacji (natywny). Dodajesz np. przycisk w Android Studio, który uruchamia `InfoczytnikActivity`.
+- **Opcja 2:** Przechwycenie linku w WebView — kiedy użytkownik kliknie link do Infoczytnika, aplikacja otwiera drugą aktywność.
 
-2. **Activity B (pozostałe moduły):**
-   - `android:screenOrientation="sensorLandscape"` lub `landscape`
-   - WebView ładuje moduł `Main` i pozostałe podstrony.
+### Krok H — zbuduj i przetestuj
+1. Podłącz telefon przez USB lub uruchom emulator.
+2. Kliknij zielony **Run** (►).
+3. Aplikacja powinna się uruchomić i wczytać stronę z internetu.
 
-3. W aplikacji przewiduje się **przejście do osobnego Activity** tylko wtedy, gdy użytkownik uruchamia Infoczytnik. Można to zrobić:
-   - poprzez dedykowany przycisk w natywnej warstwie (np. przycisk w toolbarze Android),
-   - lub przez przechwycenie URL (np. kiedy WebView próbuje otworzyć `Infoczytnik/Infoczytnik.html`, aplikacja przełącza się na Activity A).
+---
 
-**Zalety:** stabilna orientacja, brak ryzyka „mieszania” ustawień.
-**Wady:** potrzebne jest przekierowanie między Activity.
+## 2. Czy mogę mieć kopię aplikacji w wersji online i w pliku GM.html przygotować wiadomość, która zostanie wyświetlona w zainstalowanej aplikacji u użytkownika na innym urządzeniu?
 
-### 3.2. Jeden Activity + dynamiczna zmiana orientacji
+**Tak, to możliwe.** Jeśli aplikacja w telefonie ładuje pliki z internetu, to:
+- możesz mieć **wersję online** (np. GitHub Pages),
+- a w pliku **GM.html** umieścić treść, która będzie widoczna u wszystkich użytkowników, gdy aplikacja pobierze aktualny plik z hostingu.
 
-Możliwe jest także sterowanie orientacją w **jednym Activity**, ale wymaga to integracji między kodem HTML/JS a natywną warstwą:
+W praktyce działa to tak, że aplikacja **zawsze wyświetla to, co jest w plikach na serwerze**. Jeśli zmienisz `GM.html` na hostingu, użytkownik zobaczy nową treść po odświeżeniu lub ponownym uruchomieniu aplikacji.
 
-- **Capacitor / Cordova:** dostępne są pluginy do blokowania orientacji (`screen-orientation`), które można wywołać z JS podczas wejścia do Infoczytnika i odblokować przy wyjściu.
-- **Czysty WebView:** można dodać **JavaScript Interface**, który wywoła `setRequestedOrientation()` w Androidzie.
+---
 
-**Zalety:** jedna aktywność i prostszy routing.
-**Wady:** większa złożoność integracji, trzeba pilnować odblokowania orientacji przy opuszczaniu Infoczytnika.
+## 3. Czy mogę wyświetlać powiadomienia o nadejściu nowej wiadomości na urządzeniu użytkownika?
 
-### 3.3. Wniosek praktyczny
+**Tak, ale wymaga to dodatkowego systemu powiadomień.** Same pliki HTML i WebView nie potrafią samodzielnie wysłać „push” na telefon. Potrzebujesz:
 
-Najbezpieczniejszym i najmniej podatnym na błędy rozwiązaniem jest **rozdzielenie na dwa Activity**. Pozwala to wymusić pion na Infoczytniku i poziom na pozostałych modułach w sposób stabilny oraz przewidywalny.
+1. **Usługi powiadomień push**, np. Firebase Cloud Messaging (FCM).
+2. **Natywnego kodu Android**, który:
+   - rejestruje urządzenie w FCM,
+   - odbiera powiadomienie,
+   - wyświetla je użytkownikowi.
+3. **Serwera lub panelu**, z którego wyślesz powiadomienie.
 
-## 4. Wariant B — plan wdrożenia krok po kroku (online)
+Podsumowanie: **technicznie jest to możliwe**, ale wymaga dodatkowej konfiguracji i nie jest częścią samego HTML/WebView.
 
-### 4.1. Przygotowanie hostingu
+---
 
-1. Wybierz hosting HTTP/HTTPS:
-   - **GitHub Pages** dla statycznych plików (rekomendowane),
-   - lub `raw.githubusercontent.com`, jeśli chcesz bezpośrednio ładować surowe pliki.
-2. Upewnij się, że wszystkie moduły i zasoby są dostępne po URL.
-3. Sprawdź, czy domena hosta obsługuje CORS dla potrzebnych zasobów.
+## 4. Czy wymagane pliki mogą być utworzone w folderze „MigracjaAndroid” czy lokalizacja plików jest sztywno narzucona (np. folder główny)?
 
-### 4.2. Budowa aplikacji Android (WebView)
+**W przypadku hostingu online lokalizacja plików nie jest „sztywno narzucona”.** Możesz trzymać pliki w dowolnych folderach, **pod warunkiem że adresy URL w aplikacji wskazują właściwe ścieżki**.
 
-1. Stwórz projekt Android (Android Studio → Empty Activity).
-2. Dodaj WebView i włącz:
-   - JavaScript,
-   - dostęp do internetu (`android.permission.INTERNET`).
-3. Podłącz WebView do hostowanych plików (np. `https://<user>.github.io/<repo>/Main/index.html`).
+Przykład:
+- Jeśli plik jest pod `https://twoj-login.github.io/twoj-repo/MigracjaAndroid/GM.html`, to w aplikacji musisz podać dokładnie taki URL.
 
-### 4.3. Implementacja orientacji
+Najważniejsze: **struktura folderów musi się zgadzać z URL‑ami, które wpisujesz w WebView.**
 
-**Wariant rekomendowany: dwa Activity**
+---
 
-- **MainActivity (poziom):**
-  - `android:screenOrientation="sensorLandscape"`
-  - ładuje `Main/index.html` i pozwala na uruchamianie modułów.
+## 5. Jak przygotować ikonę dla aplikacji? Jakie są wymagania?
 
-- **InfoczytnikActivity (pion):**
-  - `android:screenOrientation="portrait"`
-  - ładuje `Infoczytnik/Infoczytnik.html`.
+Najprościej użyć narzędzia w Android Studio:
 
-Aplikacja powinna przechwycić żądanie otwarcia Infoczytnika i uruchomić InfoczytnikActivity zamiast otwierać stronę w głównym WebView.
+1. Kliknij prawym na `app` → **New** → **Image Asset**.
+2. Wybierz:
+   - **Icon Type:** Launcher Icons (Adaptive and Legacy)
+   - **Source Asset:** wybierz plik PNG/SVG (najlepiej prosty, wyraźny znak).
+3. Android Studio samo wygeneruje komplet ikon w różnych rozmiarach.
 
-### 4.4. Komunikacja i routing
+**Wymagania praktyczne:**
+- Grafika powinna być **prosta, czytelna w małym rozmiarze**.
+- Najlepiej kwadratowa (np. 512×512 px), bez drobnych szczegółów.
+- Android sam tworzy różne rozmiary, więc nie musisz ręcznie przygotowywać wielu plików.
 
-- **Najprostszy routing:** przechwycenie URL w `shouldOverrideUrlLoading()` i uruchomienie odpowiedniego Activity.
-- **Alternatywa:** przycisk natywny w aplikacji uruchamiający Infoczytnik bezpośrednio.
+---
 
-## 5. Kluczowe ograniczenia i ryzyka online
+## 6. Jak wygląda późniejsza aktualizacja aplikacji? Załóżmy, że dodaję nowy moduł — trzeba przebudowywać całą aplikację?
 
-1. **Dostęp do sieci jest wymagany stale.** Brak internetu = brak danych i brak ładowania modułów.
-2. **Zależności CDN (np. XLSX, Firebase)** muszą być dostępne publicznie. W przypadku blokad sieciowych aplikacja może utracić funkcje.
-3. **CORS i MIME typy**: ładowanie JSON/XLSX z GitHuba wymaga prawidłowych nagłówków odpowiedzi.
-4. **Cache WebView**: aktualizacje modułów w hostingu mogą wymagać wymuszenia odświeżenia lub wersjonowania URL (np. `?v=2`).
+**Zależy od tego, czy nowy moduł wymaga zmian w samym Androidzie.**
 
-## 6. Rekomendacja końcowa
+- Jeśli dodajesz nowy moduł jako **kolejny folder HTML** na hostingu i linkujesz do niego z poziomu `Main/index.html`, to:
+  - **Nie trzeba przebudowywać aplikacji Android.**
+  - Wystarczy zaktualizować pliki na serwerze.
 
-- **Wariant B (natywny wrapper) jest właściwy i wystarczający.**
-- **Blokada pionu tylko dla Infoczytnika jest możliwa** i najlepiej zrealizować ją przez dwa Activity z różnymi ustawieniami orientacji.
-- Pozostałe moduły mogą działać w stałym układzie poziomym bez konfliktu z Infoczytnikiem.
+- Jeśli nowy moduł wymaga **nowej natywnej funkcji** (np. osobny ekran z inną orientacją, dostęp do GPS, push, itp.), to:
+  - **Trzeba zmienić i przebudować aplikację Android.**
 
-Dokument zakłada, że aplikacja działa online i nie obejmuje scenariuszy offline ani innych wariantów migracji.
+---
+
+## 7. Jak wygląda późniejsza aktualizacja aplikacji? Załóżmy, że aktualizuję pliki `data.json` albo `AudioManifest.xlsx` — trzeba przebudowywać całą aplikację?
+
+**Nie.** Jeśli aplikacja ładuje te pliki z internetu (np. GitHub Pages), to:
+- wystarczy podmienić plik na serwerze,
+- aplikacja po odświeżeniu wczyta nową wersję.
+
+**Przebudowa aplikacji Android nie jest potrzebna**, ponieważ WebView i tak pobiera dane online.
+
+---
+
+## Podsumowanie w jednym zdaniu
+Aplikację Android w wariancie WebView budujesz raz, a później większość zmian (nowe moduły, dane, treści) aktualizujesz przez zwykłą podmianę plików na hostingu — bez ponownej publikacji APK, o ile nie zmieniasz funkcji natywnych.
