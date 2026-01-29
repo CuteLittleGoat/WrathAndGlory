@@ -164,6 +164,13 @@ code{color:var(--code)}
   letter-spacing:.12em;
   text-transform:uppercase;
 }
+.tab.tab--character{
+  color:var(--code);
+  opacity:.9;
+}
+.tab.tab--character.active{
+  color:var(--code);
+}
 .tab.active{
   background:rgba(22,198,12,.10);
   border-color:var(--b);

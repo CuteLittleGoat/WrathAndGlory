@@ -141,6 +141,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `rgba(207,245,220,.92)` — kolor treści `.popoverBody`.
 - `rgba(0,0,0,.55)` — tło overlay w modalach.
 - `#E6B35C` — kolor `.compareDiff` (wyróżnienia w porównaniach).
+- Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki.
 
 ### 3) Zasady formatowania tekstu i wyjątki
 #### 3.1 Zwykły tekst i łamanie linii
