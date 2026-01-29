@@ -7,7 +7,7 @@ Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikac
 ## 🇵🇱 Instrukcja (PL)
 
 ### Opis
-Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne. Interfejs korzysta z zielonego motywu i fontu zgodnego z `Main/index.html`, z wyróżnieniem tekstu pomocniczego (`#4FAF4F`) i jaśniejszego tekstu referencji (`#D2FAD2`). Zakładka **Bonusy_Frakcji** znajduje się między **Archetypy** a **Cechy** i ma kolumny **Frakcja** (26ch) oraz **Premia 1–3** (po 56ch). Zakładka **Archetypy** zawiera m.in. kolumny kosztu PD, słów kluczowych, atrybutów, umiejętności, zdolności, ekwipunku i dodatkowych informacji; kolumny **Atrybuty Archetypu** i **Umiejętności Archetypu** mają po 28ch, a **Zdolność Archetypu** i **Ekwipunek** po 46ch. Kolumny liczbowe (statystyki Bestiariusza, koszty, dostępność, parametry broni, ST i zasięgi) są wyrównane do środka; w **Broniach** kolumna `Zasięg` nie łamie wierszy.
+Statyczna aplikacja webowa do przeglądania danych z systemu Wrath & Glory w formie tabel. Działa w przeglądarce, nie wymaga backendu ani instalacji zależności — wystarczy hostować pliki statyczne. Interfejs korzysta z zielonego motywu i fontu zgodnego z `Main/index.html`, z wyróżnieniem tekstu pomocniczego (`#4FAF4F`) i jaśniejszego tekstu referencji (`#D2FAD2`). Zakładka **Bonusy_Frakcji** znajduje się między **Archetypy** a **Cechy** i ma kolumny **Frakcja** (26ch) oraz **Premia 1–3** (po 56ch). Zakładka **Tabela_Rozmiarow** (tylko admin) zawiera kolumny **Rozmiar**, **Przykłady**, **Modyfikator Testu Ataku** oraz **Zmiejszenie Poziomu Ukrycia**, z wyrównaniem wartości modyfikatorów do środka. Zakładka **Archetypy** zawiera m.in. kolumny kosztu PD, słów kluczowych, atrybutów, umiejętności, zdolności, ekwipunku i dodatkowych informacji; kolumny **Atrybuty Archetypu** i **Umiejętności Archetypu** mają po 28ch, a **Zdolność Archetypu** i **Ekwipunek** po 46ch. Kolumny liczbowe (statystyki Bestiariusza, koszty, dostępność, parametry broni, ST i zasięgi) są wyrównane do środka; w **Broniach** kolumna `Zasięg` nie łamie wierszy.
 Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny katalog repozytorium).
 
 ### Uruchomienie aplikacji
@@ -24,12 +24,12 @@ Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny ka
 - **Tryb gracza (domyślny)**
   - Automatycznie wczytuje `data.json`.
   - Ukrywa przycisk administracyjny do aktualizacji danych.
-  - Ukrywa zakładkę **Bestiariusz** (dostępna tylko dla admina).
+  - Ukrywa zakładki **Bestiariusz** oraz **Tabela_Rozmiarow** (dostępne tylko dla admina).
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
   - Dostępny jest przycisk **Aktualizuj dane**, który pobiera `Repozytorium.xlsx` z katalogu głównego.
   - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
-  - Zakładka **Bestiariusz** jest widoczna wyłącznie w tym trybie.
+  - Zakładki **Bestiariusz** i **Tabela_Rozmiarow** są widoczne wyłącznie w tym trybie.
 
 ### Aktualizacja danych z `Repozytorium.xlsx`
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. Pierwszy jest rekomendowany dla osób nietechnicznych, drugi pozwala wykonać ten sam proces z linii poleceń.
@@ -74,7 +74,7 @@ To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla 
 ## 🇬🇧 Instructions (EN)
 
 ### Overview
-A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files. The UI uses the green theme and font stack aligned with `Main/index.html`, with secondary text highlights (`#4FAF4F`) and brighter reference text (`#D2FAD2`). The **Bonusy_Frakcji** tab sits between **Archetypy** and **Cechy** and uses the **Frakcja** column (26ch) plus **Premia 1–3** (56ch each). The **Archetypy** tab includes columns for PD cost, keywords, archetype attributes, skills, abilities, equipment, and extra notes; **Atrybuty Archetypu** and **Umiejętności Archetypu** are 28ch wide, while **Zdolność Archetypu** and **Ekwipunek** are 46ch each. Numeric columns (Bestiary stats, costs, availability, weapon parameters, ST, and ranges) are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
+A static web application for browsing Wrath & Glory data in tables. It runs in the browser with no backend and no local dependencies — you only need to host the static files. The UI uses the green theme and font stack aligned with `Main/index.html`, with secondary text highlights (`#4FAF4F`) and brighter reference text (`#D2FAD2`). The **Bonusy_Frakcji** tab sits between **Archetypy** and **Cechy** and uses the **Frakcja** column (26ch) plus **Premia 1–3** (56ch each). The **Tabela_Rozmiarow** tab (admin only) includes **Rozmiar**, **Przykłady**, **Modyfikator Testu Ataku**, and **Zmiejszenie Poziomu Ukrycia**, with modifier columns center-aligned. The **Archetypy** tab includes columns for PD cost, keywords, archetype attributes, skills, abilities, equipment, and extra notes; **Atrybuty Archetypu** and **Umiejętności Archetypu** are 28ch wide, while **Zdolność Archetypu** and **Ekwipunek** are 46ch each. Numeric columns (Bestiary stats, costs, availability, weapon parameters, ST, and ranges) are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
 Visual/layout rules and formatting details are documented in `DetaleLayout.md` (repository root).
 
 ### Running the app
@@ -91,12 +91,12 @@ Visual/layout rules and formatting details are documented in `DetaleLayout.md` (
 - **Player mode (default)**
   - Automatically loads `data.json`.
   - Hides the admin-only data update button.
-  - Hides the **Bestiariusz** tab (admin-only).
+  - Hides the **Bestiariusz** and **Tabela_Rozmiarow** tabs (admin-only).
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
   - The **Aktualizuj dane** button appears and fetches `Repozytorium.xlsx` from the repository root.
   - The XLSX is parsed in the browser (SheetJS via CDN) and a new `data.json` is generated for download.
-  - The **Bestiariusz** tab is visible only in this mode.
+  - The **Bestiariusz** and **Tabela_Rozmiarow** tabs are visible only in this mode.
 
 ### Updating data from `Repozytorium.xlsx`
 Below are two equivalent ways to update the data. The first is recommended for non-technical users; the second performs the same operation via CLI.

@@ -161,6 +161,12 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Podręcznik`: 17ch
   - `Strona`: 6ch
 
+- **Tabela_Rozmiarow**
+  - `Rozmiar`: 14ch
+  - `Przykłady`: 56ch
+  - `Modyfikator Testu Ataku`: 20ch
+  - `Zmiejszenie Poziomu Ukrycia`: 22ch
+
 - **Archetypy**
   - `Poziom`: 2ch
   - `Frakcja`: 26ch
@@ -258,6 +264,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 W `style.css` część kolumn z wartościami liczbowymi jest **wyrównana do środka** (`text-align: center`) zarówno w nagłówkach, jak i komórkach:
 
 - **Bestiariusz**: `Zagrożenie`, `S`, `Wt`, `Zr`, `I`, `SW`, `Int`, `Ogd`, `Odporność (w tym WP)`, `Wartość Pancerza`, `Obrona`, `Żywotność`, `Odporność Psychiczna`, `Upór`, `Odwaga`, `Szybkość`, `Rozmiar`, `Strona`.
+- **Tabela_Rozmiarow**: `Modyfikator Testu Ataku`, `Zmiejszenie Poziomu Ukrycia`.
 - **Archetypy**: `Poziom`, `Koszt PD`, `Strona`.
 - **Talenty**: `Koszt PD`.
 - **Modlitwy**: `Koszt PD`.
@@ -272,12 +279,14 @@ Dodatkowo kolumna `Zasięg` w **Broniach** ma `white-space: nowrap`, aby nie ła
 ## 4) JS: stałe, stan aplikacji i helpery
 
 ### 4.1 Stałe
-- `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Archetypy...).
+- `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Tabela_Rozmiarow, Archetypy...).
 - `SHEET_COLUMN_ORDER` — preferowana kolejność kolumn per arkusz.
+  - Dla `Tabela_Rozmiarow` kolejność to: `Rozmiar`, `Przykłady`, `Modyfikator Testu Ataku`, `Zmiejszenie Poziomu Ukrycia`.
   - Dla `Archetypy` kolejność to: `Poziom`, `Frakcja`, `Nazwa`, `Koszt PD`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`, `Podręcznik`, `Strona`.
   - Dla `Bonusy_Frakcji` kolejność to: `Frakcja`, `Premia 1`, `Premia 2`, `Premia 3`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Slowa_Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
+- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz, Tabela_Rozmiarow).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
 
@@ -396,7 +405,7 @@ Mapowanie na `getElementById`:
 - Czyści `#tabs` i tworzy przyciski `.tab` wg `SHEETS_ORDER`.
 - Ustawia aktywną pierwszą zakładkę.
 - Ukrywa `#updateDataGroup`, gdy nie `ADMIN_MODE`.
-- W trybie gracza usuwa z listy zakładek arkusz `Bestiariusz`, więc jest on widoczny tylko dla admina.
+- W trybie gracza usuwa z listy zakładek arkusze `Bestiariusz` i `Tabela_Rozmiarow`, więc są widoczne tylko dla admina.
 
 ### 8.2 `selectSheet(name)`
 - Ustawia `currentSheet`.
