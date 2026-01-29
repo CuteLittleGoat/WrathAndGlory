@@ -163,9 +163,9 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Tabela_Rozmiarow**
   - `Rozmiar`: 8ch
-  - `Modyfikator Testu Ataku`: 46ch
-  - `Zmniejszenie Poziomu Ukrycia`: 46ch
-  - `Przykłady`: 82ch
+  - `Modyfikator Testu Ataku`: 25ch
+  - `Zmniejszenie Poziomu Ukrycia`: 25ch
+  - `Przykłady`: 85ch
 
 - **Archetypy**
   - `Poziom`: 2ch
@@ -275,6 +275,7 @@ W `style.css` część kolumn z wartościami liczbowymi jest **wyrównana do śr
 - **Bronie**: `Obrażenia`, `DK`, `PP`, `Zasięg`, `Szybkostrzelność`, `Koszt`, `Dostępność`, `Koszt IM`, `Strona`.
 
 Dodatkowo kolumna `Zasięg` w **Broniach** ma `white-space: nowrap`, aby nie łamać zapisu z ukośnikami.
+Kolumna `Przykłady` w **Tabela_Rozmiarow** ma jawne `text-align: left`.
 
 ## 4) JS: stałe, stan aplikacji i helpery
 
