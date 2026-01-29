@@ -3,17 +3,17 @@
 */
 const SHEETS_ORDER = [
   "Bestiariusz",
-  "Tabela_Rozmiarow",
+  "Tabela Rozmiarów",
   "Gatunki",
   "Archetypy",
-  "Bonusy_Frakcji",
-  "Slowa_Kluczowe_Frakcji",
-  "Implanty_Astartes",
-  "Sciezki_Asuryani",
-  "Mutacje_Krootow",
+  "Bonusy Frakcji",
+  "Słowa Kluczowe Frakcji",
+  "Implanty Astartes",
+  "Ścieżki Asuryani",
+  "Mutacje Krootów",
   "Cechy",
   "Stany",
-  "Slowa_Kluczowe",
+  "Słowa Kluczowe",
   "Talenty",
   "Modlitwy",
   "Psionika",
@@ -25,17 +25,17 @@ const SHEETS_ORDER = [
 
 const SHEET_COLUMN_ORDER = {
   "Bestiariusz":["Nazwa","Zagrożenie","Słowa Kluczowe","S","Wt","Zr","I","SW","Int","Ogd","Odporność (w tym WP)","Wartość Pancerza","Obrona","Żywotność","Odporność Psychiczna","Umiejętności","Premie","Zdolności","Atak","Zdolności Hordy","Opcje Hordy","Upór","Odwaga","Szybkość","Rozmiar","Podręcznik","Strona"],
-  "Tabela_Rozmiarow":["Rozmiar","Modyfikator Testu Ataku","Zmniejszenie Poziomu Ukrycia","Przykłady"],
-  "Gatunki":["Garunek","Koszt PD","Atrybuty","Umiejętności","Zdolności gatunkowe","Rozmiar","Szybkość"],
+  "Tabela Rozmiarów":["Rozmiar","Modyfikator Testu Ataku","Zmniejszenie Poziomu Ukrycia","Przykłady"],
+  "Gatunki":["Gatunek","Koszt PD","Atrybuty","Umiejętności","Zdolności gatunkowe","Rozmiar","Szybkość"],
   "Archetypy":["Poziom","Frakcja","Nazwa","Koszt PD","Słowa Kluczowe","Atrybuty Archetypu","Umiejętności Archetypu","Zdolność Archetypu","Ekwipunek","Inne","Podręcznik","Strona"],
-  "Bonusy_Frakcji":["Frakcja","Premia 1","Premia 2","Premia 3"],
-  "Slowa_Kluczowe_Frakcji":["Frakcja","Słowo Kluczowe","Efekt","Opis"],
-  "Implanty_Astartes":["Numer","Nazwa","Opis"],
-  "Sciezki_Asuryani":["Nazwa","Efekt","Opis"],
-  "Mutacje_Krootow":["Mutacja krootów","Pożarta ofiara","Efekt","Opis"],
+  "Bonusy Frakcji":["Frakcja","Premia 1","Premia 2","Premia 3"],
+  "Słowa Kluczowe Frakcji":["Frakcja","Słowo Kluczowe","Efekt","Opis"],
+  "Implanty Astartes":["Numer","Nazwa","Opis"],
+  "Ścieżki Asuryani":["Nazwa","Efekt","Opis"],
+  "Mutacje Krootów":["Mutacja krootów","Pożarta ofiara","Efekt","Opis"],
   "Cechy":["Typ","Nazwa","Opis"],
   "Stany":["Typ","Nazwa","Opis"],
-  "Slowa_Kluczowe":["Typ","Nazwa","Opis"],
+  "Słowa Kluczowe":["Typ","Nazwa","Opis"],
   "Ekwipunek":["Typ","Nazwa","Opis","Efekt","Koszt","Dostępność","Słowa Kluczowe","Koszt IM"],
   "Augumentacje":["Typ","Nazwa","Opis","Efekt","Koszt","Dostępność","Słowa Kluczowe","Koszt IM"],
   "Talenty":["Nazwa","Koszt PD","Wymagania","Opis","Efekt"],
@@ -65,16 +65,17 @@ const els = {
 };
 
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
-const KEYWORD_SHEET_ALL_RED = "Slowa_Kluczowe";
-const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Tabela_Rozmiarow"]);
+const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Tabela Rozmiarów"]);
 const CHARACTER_CREATION_SHEETS = new Set([
-  "Tabela_Rozmiarow",
+  "Tabela Rozmiarów",
   "Archetypy",
-  "Bonusy_Frakcji",
+  "Bonusy Frakcji",
   "Gatunki",
-  "Slowa_Kluczowe_Frakcji",
-  "Sciezki_Asuryani",
-  "Mutacje_Krootow",
+  "Słowa Kluczowe Frakcji",
+  "Implanty Astartes",
+  "Ścieżki Asuryani",
+  "Mutacje Krootów",
 ]);
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
@@ -932,7 +933,7 @@ function renderRow(r, cols){
 
       const isKeywordName = currentSheet === KEYWORD_SHEET_ALL_RED && col === "Nazwa";
       const isKeywordCommaNeutral = KEYWORD_SHEETS_COMMA_NEUTRAL.has(currentSheet) && col === "Słowa Kluczowe";
-      const isFactionKeyword = currentSheet === "Slowa_Kluczowe_Frakcji" && col === "Słowo Kluczowe";
+      const isFactionKeyword = currentSheet === "Słowa Kluczowe Frakcji" && col === "Słowo Kluczowe";
 
       const renderCell = () => {
         if (!isClampable){

@@ -2032,7 +2032,7 @@
         "Strona": "28"
       }
     ],
-    "Tabela_Rozmiarow": [
+    "Tabela Rozmiarów": [
       {
         "Rozmiar": "Malutki",
         "Modyfikator Testu Ataku": "+2 do Obrony",
@@ -2072,7 +2072,7 @@
     ],
     "Gatunki": [
       {
-        "Garunek": "Człowiek",
+        "Gatunek": "Człowiek",
         "Koszt PD": "0",
         "Atrybuty": "-",
         "Umiejętności": "-",
@@ -2081,7 +2081,7 @@
         "Zdolności gatunkowe": "-"
       },
       {
-        "Garunek": "Adeptus Astertes",
+        "Gatunek": "Adeptus Astertes",
         "Koszt PD": "160",
         "Atrybuty": "Inicjatywa 4\nInteligencja 3\nSiła 4\nSiła Woli 3\nWytrzymałość 4\nZręczność 4",
         "Umiejętności": "Atletyka 3\nCzujność 3\nUkrywanie się 3\nUmiejętności\nstrzeleckie 3\nWalka wręcz 3",
@@ -2090,7 +2090,7 @@
         "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu{{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz zachowywać wierzenia i tradycje swojego Zakonu. Odwaga  wzrasta o +1.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 19 implantów (str. 75), jeśli MG uzna to za możliwe."
       },
       {
-        "Garunek": "Primaris Astartes",
+        "Gatunek": "Primaris Astartes",
         "Koszt PD": "198",
         "Atrybuty": "Inicjatywa 4\nInteligencja 3\nSiła 5\nSiła Woli 3\nWytrzymałość 5\nZręczność 4",
         "Umiejętności": "Atletyka 3\nCzujność 3\nUkrywanie się 3\nUmiejętności\nstrzeleckie 4\nWalka wręcz 3",
@@ -2099,7 +2099,7 @@
         "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu (Primaris){{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz honorować wierzenia i tradycje swojego Zakonu. Odwaga wzrasta o +1. Jako Primaris ignorujesz nieczystości w genoziarnie Zakonu oraz otrzymujesz +3 Żywotności.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 22 implantów (str. 75), jeśli MG uzna to za możliwe."
       },
       {
-        "Garunek": "Aeldari",
+        "Gatunek": "Aeldari",
         "Koszt PD": "10",
         "Atrybuty": "Zręczność 3",
         "Umiejętności": "-",
@@ -2108,7 +2108,7 @@
         "Zdolności gatunkowe": "{{B}}Intensywne emocje{{/B}}\n+1 do ST Testów Odwagi. Jeśli nie uda ci się Test Siły Woli w scenie związanej z emocjami, MG dostaje +1 Zguby.\n\n{{B}}Psionik{{/B}}\nMożesz wybrać Słowo kluczowe {{RED}}PSIONIK{{/RED}}."
       },
       {
-        "Garunek": "Ork",
+        "Gatunek": "Ork",
         "Koszt PD": "20",
         "Atrybuty": "Siła 3\nWytrzymałość 3",
         "Umiejętności": "-",
@@ -2117,7 +2117,7 @@
         "Zdolności gatunkowe": "{{B}}Orczy{{/B}}\n+1 dodatkowa kość do Testów Zastraszania.\n\n{{B}}Większe jest lepsze{{/B}}\nObliczasz Wpływy przy użyciu Siły zamiast Ogłady."
       },
       {
-        "Garunek": "Ogryn",
+        "Gatunek": "Ogryn",
         "Koszt PD": "76",
         "Atrybuty": "Siła 5\nWytrzymałość 5",
         "Umiejętności": "Przetrwanie 2",
@@ -2126,7 +2126,7 @@
         "Zdolności gatunkowe": "{{B}}Lawina mięśni{{/B}}\nKiedy Szarżujesz, otrzymujesz +Ranga dodatkowych kości do Testu ataku wręcz.\n\n{{B}}Klaustrofobia{{/B}}\nZa każdym razem, kiedy wchodzisz do zamkniętej przestrzeni, musisz wykonać Test Strachu (standardowe ST równe 2). Ponadto, jesli wewnatrz zamknietej przestrzeni wyrzucisz Komplikacje, MG moze wydac 1 punkt Zguby, by zmusic cie do powtórzenia Testu Strachu.\n\n{{B}}Lojalny prostaczek{{/B}}\nKiedy sojusznik ze Słowem kluczowym {{RED}}IMPERIUM{{/RED}} wykonuje Test Dowodzenia (SW), którego obiektem jest Ogryn, otrzymuje dodatkowe kosci równe Randze Ogryna."
       },
       {
-        "Garunek": "Szczurak",
+        "Gatunek": "Szczurak",
         "Koszt PD": "30",
         "Atrybuty": "Ogłada 2\nZręczność 2",
         "Umiejętności": "Czujność 2\nOszukiwanie 2\nPrzebiegłość 1\nUkrywanie się 2\nUmiejętności strzeleckie 1",
@@ -2135,7 +2135,7 @@
         "Zdolności gatunkowe": "{{B}}Łasuch{{/B}}\n+Dwukrotność Rangi dodatkowych kości do wszystkich Testów kucharskich.\nPrzygotowane jedzenie moze byc uzyte podczas Przegrupowania, by usunac +Ranga Traum."
       },
       {
-        "Garunek": "Kroot",
+        "Gatunek": "Kroot",
         "Koszt PD": "22",
         "Atrybuty": "-",
         "Umiejętności": "Atletyka 1\nCzujność 1\nPrzetrwanie 2\nUkrywanie się 2\nWalka wręcz 2",
@@ -2832,7 +2832,7 @@
         "Strona": "19"
       }
     ],
-    "Bonusy_Frakcji": [
+    "Bonusy Frakcji": [
       {
         "Frakcja": "Adepta Sororitas",
         "Premia 1": "Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór",
@@ -2924,7 +2924,7 @@
         "Premia 3": "Upór {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Determinacja"
       }
     ],
-    "Slowa_Kluczowe_Frakcji": [
+    "Słowa Kluczowe Frakcji": [
       {
         "Frakcja": "Adepta Sororitas",
         "Słowo Kluczowe": "{{RED}}[ZAKON ŻEŃSKI]{{/RED}}",
@@ -3016,7 +3016,7 @@
         "Efekt": "-"
       }
     ],
-    "Implanty_Astartes": [
+    "Implanty Astartes": [
       {
         "Numer": "1",
         "Nazwa": "Drugie serce (Podtrzymywacz)",
@@ -3128,14 +3128,14 @@
         "Opis": ""
       }
     ],
-    "Sciezki_Asuryani": [
+    "Ścieżki Asuryani": [
       {
         "Nazwa": "Ścieżka przebudzenia",
         "Opis": "Poświęciłeś dużo czasu na praktykę analizowania otoczenia, skupiając uwagę na zewnątrz, by ukoić duszę.",
         "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Czujności (Int)."
       }
     ],
-    "Mutacje_Krootow": [
+    "Mutacje Krootów": [
       {
         "Mutacja krootów": "Ludojad",
         "Pożarta ofiara": "Ludzie",
@@ -3377,7 +3377,7 @@
         "Opis": "Wszystko wydaje się skomplikowane i trudne.\nZdezorientowane postaci otrzymują karę +1 do ST wszystkich Testów, choć kara może być większa, jeżeli źródeł Zdezorientowania jest więcej.\nStan ten utrzymuje się do końca następnej Tury postaci, jednak dodatkowe zasady mogą to zmienić."
       }
     ],
-    "Slowa_Kluczowe": [
+    "Słowa Kluczowe": [
       {
         "Typ": "Wyjątkowe",
         "Nazwa": "{{RED}}[DOWOLNE]{{/RED}}",
