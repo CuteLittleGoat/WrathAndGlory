@@ -123,10 +123,10 @@
         <p class="note" data-admin-only="true">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
       </div>
       <div class="stack">
-        <a class="btn" href="https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke" target="_blank" rel="noopener noreferrer">Mapa</a>
+        <a class="btn" data-map-link href="#" target="_blank" rel="noopener noreferrer">Mapa</a>
       </div>
       <div class="stack">
-        <a class="btn" href="https://discord.com/channels/820916809946628096/1434928498476191834" target="_blank" rel="noopener noreferrer">Obrazki</a>
+        <a class="btn" data-images-link href="#" target="_blank" rel="noopener noreferrer">Obrazki</a>
       </div>
       <div class="stack right">
         <a class="btn" data-infoczytnik-link href="../Infoczytnik/Infoczytnik.html">Infoczytnik</a>
@@ -163,6 +163,41 @@
         ? "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1"
         : "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html";
     }
+
+    const mapLink = document.querySelector("[data-map-link]");
+    const imagesLink = document.querySelector("[data-images-link]");
+    const linkConfigPath = "ZmienneHiperlacza.md";
+
+    const applyDynamicLinks = (links) => {
+      if (mapLink && links.mapa) {
+        mapLink.href = links.mapa;
+      }
+      if (imagesLink && links.obrazki) {
+        imagesLink.href = links.obrazki;
+      }
+    };
+
+    fetch(linkConfigPath)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(`Nie udało się pobrać ${linkConfigPath}`);
+        }
+        return response.text();
+      })
+      .then((text) => {
+        const links = {};
+        text.split(/\r?\n/).forEach((line) => {
+          const match = line.match(/^(Mapa|Obrazki)\s*:\s*(\S+)/);
+          if (match) {
+            const key = match[1].toLowerCase();
+            links[key] = match[2];
+          }
+        });
+        applyDynamicLinks(links);
+      })
+      .catch((error) => {
+        console.warn("Nie udało się wczytać zmiennych hiperłączy.", error);
+      });
   </script>
 </body>
 </html>

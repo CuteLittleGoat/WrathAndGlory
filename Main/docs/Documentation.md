@@ -5,6 +5,7 @@ Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnoś
 
 ## Struktura plików
 - `Main/index.html` – jedyny plik aplikacji zawierający strukturę strony, stylizację w `<style>` oraz skrypt przełączający widok admina.
+- `Main/ZmienneHiperlacza.md` – plik z dynamicznymi adresami dla przycisków Mapa i Obrazki w formacie `Nazwa: URL`.
 - `Main/wrath-glory-logo-warhammer.png` – logo wyświetlane w nagłówku strony.
 - `Main/docs/README.md` – instrukcja użytkownika i informacje o aktualizacji aplikacji (PL/EN).
 - `Main/docs/Documentation.md` – niniejszy dokument z opisem kodu.
@@ -113,8 +114,8 @@ Struktura dokumentu składa się z:
   1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
   2. **Generator nazw** – link do `../GeneratorNazw/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
   3. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
-  4. **Mapa** – link statyczny do `https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke`. To jedyne miejsce w kodzie, gdzie jest zaszyty adres mapy; aktualizuj atrybut `href` w przycisku `Mapa`, jeśli URL ulegnie zmianie.
-  5. **Obrazki** – link statyczny do `https://discord.com/channels/820916809946628096/1434928498476191834`. To jedyne miejsce w kodzie, gdzie jest zaszyty adres kanału; aktualizuj atrybut `href` w przycisku `Obrazki`, jeśli URL ulegnie zmianie.
+  4. **Mapa** – przycisk posiada atrybut `data-map-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
+  5. **Obrazki** – przycisk posiada atrybut `data-images-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
   6. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
   7. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
   8. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
@@ -132,11 +133,15 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
 - Link **Skarbiec Danych** (`[data-datavault-link]`) jest ustawiany dynamicznie:
   - tryb użytkownika → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`,
   - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`.
+- Linki **Mapa** i **Obrazki** są ustawiane po wczytaniu pliku `Main/ZmienneHiperlacza.md`:
+  - format pliku: każda linia w postaci `Mapa: URL` lub `Obrazki: URL`.
+  - skrypt pobiera plik `ZmienneHiperlacza.md`, parsuje linie przez wyrażenie regularne `^(Mapa|Obrazki)\s*:\s*(\S+)` i ustawia `href` w elementach z `data-map-link` i `data-images-link`.
+  - jeśli plik nie jest dostępny, skrypt loguje ostrzeżenie w konsoli i pozostawia domyślne `href="#"`.
 
 ## Aktualizacja treści
-- **Zmiana adresów URL**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html`.
-- **Zmiana linku mapy**: adres mapy jest zaszyty bezpośrednio w przycisku `Mapa` w sekcji `<div class="actions">` w `Main/index.html` jako `href="https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke"`. Zmień ten atrybut, gdy URL mapy się zaktualizuje.
-- **Zmiana linku obrazków**: adres kanału jest zaszyty bezpośrednio w przycisku `Obrazki` w sekcji `<div class="actions">` w `Main/index.html` jako `href="https://discord.com/channels/820916809946628096/1434928498476191834"`. Zmień ten atrybut, gdy URL kanału się zaktualizuje.
+- **Zmiana adresów URL innych przycisków**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html` (np. Generator NPC, Skarbiec Danych, Kalkulator).
+- **Zmiana linku mapy**: zaktualizuj wpis `Mapa: ...` w pliku `Main/ZmienneHiperlacza.md`.
+- **Zmiana linku obrazków**: zaktualizuj wpis `Obrazki: ...` w pliku `Main/ZmienneHiperlacza.md`.
 - **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Skarbiec Danych lub Audio (elementy z `data-admin-only="true"`).
 - **Zmiana stylu**: edytuj sekcję `<style>` w `Main/index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
 - **Zmiana logo**: podmień plik `Main/wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
