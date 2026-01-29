@@ -299,6 +299,7 @@ Poniżej pełna lista **1:1**.
 - **Siatka główna**: `main` jest gridem z kolumnami `360px` (panel filtrów) i `1fr` (workspace).
 - **Responsywność**: poniżej `980px` layout przechodzi na jedną kolumnę (panel nad tabelą).
 - **Sticky nagłówki**: nagłówki tabeli są sticky (`position: sticky`) z offsetem drugiego wiersza `top: var(--header-row-height)`.
+- **Checkbox w panelu filtrów**: `.checkboxRow` ma uppercase i kolor bazowy `--text2`, natomiast opis `.checkboxLabel` jest jaśniejszy (`color: var(--code)`, `opacity: .9`).
 
 ### 7) Stosowanie tych zasad w innych zakładkach
 Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następujące:
