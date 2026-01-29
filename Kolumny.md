@@ -3,178 +3,216 @@
 Poniżej znajduje się spis **wszystkich kolumn** wykorzystywanych w module DataVault, podzielony na zakładki. Wartości „auto” oznaczają brak ustawionego `min-width` w CSS (szerokość zależna od zawartości i dostępnego miejsca). Domyślnie tekst jest **wyrównany do lewej**, a zawartość łamie się zgodnie z `white-space: pre-wrap` w `.celltext`, o ile nie zaznaczono inaczej.
 
 ## Bestiariusz
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Zagrożenie — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Słowa Kluczowe — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- S — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Wt — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Zr — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- I — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- SW — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Int — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Ogd — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Odporność (w tym WP) — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Wartość Pancerza — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Obrona — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Żywotność — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Odporność Psychiczna — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Umiejętności — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Premie — min-width: 60ch; wyrównanie: lewo; łamanie: standard.
-- Zdolności — min-width: 60ch; wyrównanie: lewo; łamanie: standard.
-- Atak — min-width: 50ch; wyrównanie: lewo; łamanie: standard.
-- Zdolności Hordy — min-width: 60ch; wyrównanie: lewo; łamanie: standard.
-- Opcje Hordy — min-width: 60ch; wyrównanie: lewo; łamanie: standard.
-- Upór — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Odwaga — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Szybkość — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Rozmiar — min-width: 7ch; wyrównanie: środek; łamanie: standard.
-- Podręcznik — min-width: 17ch; wyrównanie: lewo; łamanie: standard.
-- Strona — min-width: 6ch; wyrównanie: środek; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa | 26ch | lewo | standard |
+| Zagrożenie | 4ch | środek | standard |
+| Słowa Kluczowe | 28ch | lewo | standard |
+| S | 3ch | środek | standard |
+| Wt | 3ch | środek | standard |
+| Zr | 3ch | środek | standard |
+| I | 3ch | środek | standard |
+| SW | 3ch | środek | standard |
+| Int | 3ch | środek | standard |
+| Ogd | 3ch | środek | standard |
+| Odporność (w tym WP) | 3ch | środek | standard |
+| Wartość Pancerza | 3ch | środek | standard |
+| Obrona | 3ch | środek | standard |
+| Żywotność | 3ch | środek | standard |
+| Odporność Psychiczna | 3ch | środek | standard |
+| Umiejętności | 28ch | lewo | standard |
+| Premie | 60ch | lewo | standard |
+| Zdolności | 60ch | lewo | standard |
+| Atak | 50ch | lewo | standard |
+| Zdolności Hordy | 60ch | lewo | standard |
+| Opcje Hordy | 60ch | lewo | standard |
+| Upór | 3ch | środek | standard |
+| Odwaga | 3ch | środek | standard |
+| Szybkość | 3ch | środek | standard |
+| Rozmiar | 7ch | środek | standard |
+| Podręcznik | 17ch | lewo | standard |
+| Strona | 6ch | środek | standard |
 
-## Tabela_Rozmiarow
-- Rozmiar — min-width: 8ch; wyrównanie: lewo; łamanie: standard.
-- Modyfikator Testu Ataku — min-width: 25ch; wyrównanie: środek; łamanie: standard.
-- Zmniejszenie Poziomu Ukrycia — min-width: 25ch; wyrównanie: środek; łamanie: standard.
-- Przykłady — min-width: 85ch; wyrównanie: lewo; łamanie: standard.
+## Tabela Rozmiarów
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Rozmiar | 8ch | lewo | standard |
+| Modyfikator Testu Ataku | 25ch | środek | standard |
+| Zmniejszenie Poziomu Ukrycia | 25ch | środek | standard |
+| Przykłady | 85ch | lewo | standard |
 
 ## Gatunki
-- Garunek — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Koszt PD — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Atrybuty — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Umiejętności — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Zdolności gatunkowe — min-width: 46ch; wyrównanie: lewo; łamanie: standard.
-- Rozmiar — min-width: 10ch; wyrównanie: środek; łamanie: standard.
-- Szybkość — min-width: 4ch; wyrównanie: środek; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Gatunek | 26ch | lewo | standard |
+| Koszt PD | 4ch | środek | standard |
+| Atrybuty | 26ch | lewo | standard |
+| Umiejętności | 26ch | lewo | standard |
+| Zdolności gatunkowe | 46ch | lewo | standard |
+| Rozmiar | 10ch | środek | standard |
+| Szybkość | 4ch | środek | standard |
 
 ## Archetypy
-- Poziom — min-width: 2ch; wyrównanie: środek; łamanie: standard.
-- Frakcja — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Koszt PD — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Słowa Kluczowe — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Atrybuty Archetypu — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Umiejętności Archetypu — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Zdolność Archetypu — min-width: 46ch; wyrównanie: lewo; łamanie: standard.
-- Ekwipunek — min-width: 46ch; wyrównanie: lewo; łamanie: standard.
-- Inne — min-width: 10ch; wyrównanie: lewo; łamanie: standard.
-- Podręcznik — min-width: 17ch; wyrównanie: lewo; łamanie: standard.
-- Strona — min-width: 6ch; wyrównanie: środek; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Poziom | 2ch | środek | standard |
+| Frakcja | 26ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Koszt PD | 4ch | środek | standard |
+| Słowa Kluczowe | 28ch | lewo | standard |
+| Atrybuty Archetypu | 28ch | lewo | standard |
+| Umiejętności Archetypu | 28ch | lewo | standard |
+| Zdolność Archetypu | 46ch | lewo | standard |
+| Ekwipunek | 46ch | lewo | standard |
+| Inne | 10ch | lewo | standard |
+| Podręcznik | 17ch | lewo | standard |
+| Strona | 6ch | środek | standard |
 
-## Bonusy_Frakcji
-- Frakcja — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Premia 1 — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
-- Premia 2 — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
-- Premia 3 — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+## Bonusy Frakcji
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Frakcja | 26ch | lewo | standard |
+| Premia 1 | 56ch | lewo | standard |
+| Premia 2 | 56ch | lewo | standard |
+| Premia 3 | 56ch | lewo | standard |
 
-## Slowa_Kluczowe_Frakcji
-- Frakcja — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Słowo Kluczowe — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 60ch; wyrównanie: lewo; łamanie: standard.
+## Słowa Kluczowe Frakcji
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Frakcja | 26ch | lewo | standard |
+| Słowo Kluczowe | 26ch | lewo | standard |
+| Efekt | 26ch | lewo | standard |
+| Opis | 60ch | lewo | standard |
 
-## Implanty_Astartes
-- Numer — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Nazwa — min-width: 30ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+## Implanty Astartes
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Numer | 4ch | środek | standard |
+| Nazwa | 30ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
 
-## Sciezki_Asuryani
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+## Ścieżki Asuryani
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa | 26ch | lewo | standard |
+| Efekt | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
 
-## Mutacje_Krootow
-- Mutacja krootów — min-width: 22ch; wyrównanie: lewo; łamanie: standard.
-- Pożarta ofiara — min-width: 22ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+## Mutacje Krootów
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Mutacja krootów | 22ch | lewo | standard |
+| Pożarta ofiara | 22ch | lewo | standard |
+| Efekt | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
 
 ## Cechy
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
 
 ## Stany
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
 
-## Slowa_Kluczowe
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+## Słowa Kluczowe
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
 
 ## Talenty
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Koszt PD — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Wymagania — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa | 26ch | lewo | standard |
+| Koszt PD | 4ch | środek | standard |
+| Wymagania | 26ch | lewo | standard |
+| Opis | 26ch | lewo | standard |
+| Efekt | 56ch | lewo | standard |
 
 ## Modlitwy
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Koszt PD — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Wymagania — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa | 26ch | lewo | standard |
+| Koszt PD | 4ch | środek | standard |
+| Wymagania | 26ch | lewo | standard |
+| Efekt | 56ch | lewo | standard |
 
 ## Psionika
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Koszt PD — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- ST — min-width: 10ch; wyrównanie: środek; łamanie: standard.
-- Aktywacja — min-width: 10ch; wyrównanie: lewo; łamanie: standard.
-- Czas Trwania — min-width: 15ch; wyrównanie: lewo; łamanie: standard.
-- Zasięg — min-width: 8ch; wyrównanie: środek; łamanie: standard.
-- Wiele Celów — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Słowa Kluczowe — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Wzmocnienie — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Koszt PD | 4ch | środek | standard |
+| ST | 10ch | środek | standard |
+| Aktywacja | 10ch | lewo | standard |
+| Czas Trwania | 15ch | lewo | standard |
+| Zasięg | 8ch | środek | standard |
+| Wiele Celów | 4ch | środek | standard |
+| Słowa Kluczowe | 28ch | lewo | standard |
+| Efekt | 56ch | lewo | standard |
+| Opis | 26ch | lewo | standard |
+| Wzmocnienie | 26ch | lewo | standard |
 
 ## Augumentacje
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Koszt — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Dostępność — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Słowa Kluczowe — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Koszt IM — min-width: 8ch; wyrównanie: środek; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
+| Efekt | 26ch | lewo | standard |
+| Koszt | 3ch | środek | standard |
+| Dostępność | 3ch | środek | standard |
+| Słowa Kluczowe | 28ch | lewo | standard |
+| Koszt IM | 8ch | środek | standard |
 
 ## Ekwipunek
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Opis — min-width: 56ch; wyrównanie: lewo; łamanie: standard.
-- Efekt — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Koszt — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Dostępność — min-width: 3ch; wyrównanie: środek; łamanie: standard.
-- Słowa Kluczowe — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Koszt IM — min-width: 8ch; wyrównanie: środek; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
+| Efekt | 26ch | lewo | standard |
+| Koszt | 3ch | środek | standard |
+| Dostępność | 3ch | środek | standard |
+| Słowa Kluczowe | 28ch | lewo | standard |
+| Koszt IM | 8ch | środek | standard |
 
 ## Pancerze
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- WP — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Cechy — min-width: 32ch; wyrównanie: lewo; łamanie: standard.
-- Koszt — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Dostępność — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Słowa Kluczowe — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Koszt IM — min-width: 8ch; wyrównanie: środek; łamanie: standard.
-- Podręcznik — min-width: 17ch; wyrównanie: lewo; łamanie: standard.
-- Strona — min-width: 6ch; wyrównanie: środek; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| WP | 4ch | środek | standard |
+| Cechy | 32ch | lewo | standard |
+| Koszt | 4ch | środek | standard |
+| Dostępność | 4ch | środek | standard |
+| Słowa Kluczowe | 28ch | lewo | standard |
+| Koszt IM | 8ch | środek | standard |
+| Podręcznik | 17ch | lewo | standard |
+| Strona | 6ch | środek | standard |
 
 ## Bronie
-- Rodzaj — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Typ — min-width: 14ch; wyrównanie: lewo; łamanie: standard.
-- Nazwa — min-width: 26ch; wyrównanie: lewo; łamanie: standard.
-- Obrażenia — min-width: auto; wyrównanie: środek; łamanie: standard.
-- DK — min-width: auto; wyrównanie: środek; łamanie: standard.
-- PP — min-width: auto; wyrównanie: środek; łamanie: standard.
-- Zasięg — min-width: 18ch; wyrównanie: środek; łamanie: **zakaz łamania linii** (`white-space: nowrap`).
-- Szybkostrzelność — min-width: 8ch; wyrównanie: środek; łamanie: standard.
-- Cechy — min-width: 32ch; wyrównanie: lewo; łamanie: standard.
-- Koszt — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Dostępność — min-width: 4ch; wyrównanie: środek; łamanie: standard.
-- Słowa Kluczowe — min-width: 28ch; wyrównanie: lewo; łamanie: standard.
-- Koszt IM — min-width: 8ch; wyrównanie: środek; łamanie: standard.
-- Podręcznik — min-width: 17ch; wyrównanie: lewo; łamanie: standard.
-- Strona — min-width: 6ch; wyrównanie: środek; łamanie: standard.
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Rodzaj | 14ch | lewo | standard |
+| Typ | 14ch | lewo | standard |
+| Nazwa | 26ch | lewo | standard |
+| Obrażenia | auto | środek | standard |
+| DK | auto | środek | standard |
+| PP | auto | środek | standard |
+| Zasięg | 18ch | środek | brak łamania (`white-space: nowrap`) |
+| Szybkostrzelność | 8ch | środek | standard |
+| Cechy | 32ch | lewo | standard |
+| Koszt | 4ch | środek | standard |
+| Dostępność | 4ch | środek | standard |
+| Słowa Kluczowe | 28ch | lewo | standard |
+| Koszt IM | 8ch | środek | standard |
+| Podręcznik | 17ch | lewo | standard |
+| Strona | 6ch | środek | standard |

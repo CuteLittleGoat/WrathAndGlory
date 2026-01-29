@@ -34,7 +34,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
 - Pole globalne: `#globalSearch` w `.panelBody`.
-- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie ukrywa zakładki: `Tabela Rozmiarów`, `Archetypy`, `Bonusy Frakcji`, `Gatunki`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów`.
+- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
 - W `.hint` jest statyczna lista wskazówek (tekst, nie logika), m.in. linia o „Shift = sort wielokolumnowy”, mimo że logika multi-sortu nie istnieje w JS.
 
 ### 2.3 Obszar tabeli
@@ -98,6 +98,7 @@ Efekty i obwódki:
 - `.btn` (podstawowy), `.btn.primary`, `.btn.secondary`.
 - `.input` — styl pól tekstowych (tło `--bg`, focus glow).
 - `.checkboxRow` — wiersz z checkboxem, uppercase, kolor `--text2`, `accent-color: var(--accent)`.
+- `.checkboxLabel` — jaśniejszy opis checkboxa, kolor `--code` z `opacity: .9` (taki sam ton jak referencje `str.`).
 
 ### 3.5 Zakładki
 - `.tabs` — flex z zawijaniem.
@@ -328,8 +329,8 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
   - Dla `Mutacje Krootów` kolejność to: `Mutacja krootów`, `Pożarta ofiara`, `Efekt`, `Opis`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
-- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz, Tabela Rozmiarów).
-- `CHARACTER_CREATION_SHEETS` — zestaw zakładek ukrywanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Archetypy`, `Bonusy Frakcji`, `Gatunki`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów`).
+- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz).
+- `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów`).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
 
@@ -348,7 +349,7 @@ Mapowanie na `getElementById`:
 - `filtersSet` — per kolumna Set wartości z menu listowego lub `null`.
 - `selected` — `Set` zaznaczonych `__id` (porównanie).
 - `expandedCells` — `Set` dla rozwiniętych komórek (key: `sheet|rowid|col`).
-- `hideCharacterTabs` — `true` gdy checkbox tworzenia postaci jest zaznaczony (ukrywa zestaw zakładek z `CHARACTER_CREATION_SHEETS`).
+- `showCharacterTabs` — `true` gdy checkbox tworzenia postaci jest zaznaczony (pokazuje zestaw zakładek z `CHARACTER_CREATION_SHEETS`).
 
 ### 4.4 Helpery tekstowe
 - `norm(s)` — normalizacja spacji i dwukropków.
@@ -455,8 +456,8 @@ Mapowanie na `getElementById`:
 - Czyści `#tabs` i tworzy przyciski `.tab` wg `SHEETS_ORDER`.
 - Ustawia aktywną pierwszą zakładkę (lub zachowuje obecną, jeśli wciąż jest widoczna).
 - Ukrywa `#updateDataGroup`, gdy nie `ADMIN_MODE`.
-- W trybie gracza usuwa z listy zakładek arkusze `Bestiariusz` i `Tabela Rozmiarów`, więc są widoczne tylko dla admina.
-- Gdy checkbox `#toggleCharacterTabs` jest zaznaczony, usuwa z listy zakładek elementy `CHARACTER_CREATION_SHEETS`.
+- W trybie gracza usuwa z listy zakładek arkusz `Bestiariusz`, więc jest widoczny tylko dla admina.
+- Gdy checkbox `#toggleCharacterTabs` jest niezaznaczony, usuwa z listy zakładek elementy `CHARACTER_CREATION_SHEETS` (zaznaczenie przywraca te zakładki).
 
 ### 8.2 `selectSheet(name)`
 - Ustawia `currentSheet`.

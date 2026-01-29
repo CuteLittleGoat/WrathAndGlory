@@ -127,6 +127,10 @@ code{color:var(--code)}
   text-transform:uppercase;
   color:var(--text2);
 }
+.checkboxRow .checkboxLabel{
+  color:var(--code);
+  opacity:.9;
+}
 .checkboxRow input{
   width:16px;
   height:16px;

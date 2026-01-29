@@ -66,12 +66,12 @@ const els = {
 
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
-const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Tabela Rozmiarów"]);
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz"]);
 const CHARACTER_CREATION_SHEETS = new Set([
   "Tabela Rozmiarów",
+  "Gatunki",
   "Archetypy",
   "Bonusy Frakcji",
-  "Gatunki",
   "Słowa Kluczowe Frakcji",
   "Implanty Astartes",
   "Ścieżki Asuryani",
@@ -88,7 +88,7 @@ const view = {
   filtersSet: {},          // col -> Set(selected values) OR null
   selected: new Set(),     // row.__id
   expandedCells: new Set(), // key sheet|rowid|col for clamp toggle
-  hideCharacterTabs: false
+  showCharacterTabs: false
 };
 
 const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (progressive rendering)
@@ -500,9 +500,9 @@ function initUI(){
   els.tabs.innerHTML = "";
   const available = Object.keys(DB.sheets);
   const baseVisible = ADMIN_MODE ? available : available.filter(name => !ADMIN_ONLY_SHEETS.has(name));
-  const visibleSheets = view.hideCharacterTabs
-    ? baseVisible.filter(name => !CHARACTER_CREATION_SHEETS.has(name))
-    : baseVisible;
+  const visibleSheets = view.showCharacterTabs
+    ? baseVisible
+    : baseVisible.filter(name => !CHARACTER_CREATION_SHEETS.has(name));
   const order = SHEETS_ORDER.filter(x => available.includes(x)).concat(available.filter(x => !SHEETS_ORDER.includes(x)).sort());
   const visibleOrder = order.filter(name => visibleSheets.includes(name));
   for (const name of visibleOrder){
@@ -1201,10 +1201,10 @@ els.global.addEventListener("keydown", (ev)=>ev.stopPropagation());
 
 if (els.toggleCharacterTabs){
   els.toggleCharacterTabs.addEventListener("change", ()=>{
-    view.hideCharacterTabs = els.toggleCharacterTabs.checked;
+    view.showCharacterTabs = els.toggleCharacterTabs.checked;
     initUI();
   });
-  view.hideCharacterTabs = els.toggleCharacterTabs.checked;
+  view.showCharacterTabs = els.toggleCharacterTabs.checked;
 }
 
 /* ---------- Loaders ---------- */
