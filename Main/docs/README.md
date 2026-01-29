@@ -46,14 +46,14 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
 
 ### Gdzie zmienić link do mapy
-Link do mapy jest zaszyty bezpośrednio w `Main/index.html` w sekcji `<div class="actions">` jako przycisk:
-`<a class="btn" href="https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke" ...>Mapa</a>`.
-Jeśli adres mapy się zmieni, zaktualizuj atrybut `href` dokładnie w tym miejscu.
+Link do mapy jest przechowywany w pliku `Main/ZmienneHiperlacza.md`. Wpis ma format:
+`Mapa: https://...`.
+Jeśli adres mapy się zmieni, podmień URL po dwukropku w tym pliku.
 
 ### Gdzie zmienić link do obrazków
-Link do obrazków jest zaszyty bezpośrednio w `Main/index.html` w sekcji `<div class="actions">` jako przycisk:
-`<a class="btn" href="https://discord.com/channels/820916809946628096/1434928498476191834" ...>Obrazki</a>`.
-Jeśli adres kanału się zmieni, zaktualizuj atrybut `href` dokładnie w tym miejscu.
+Link do obrazków jest przechowywany w pliku `Main/ZmienneHiperlacza.md`. Wpis ma format:
+`Obrazki: https://...`.
+Jeśli adres kanału się zmieni, podmień URL po dwukropku w tym pliku.
 
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
@@ -74,6 +74,7 @@ Aktualizacja polega na podmianie plików statycznych w miejscu hostingu (np. Git
 
 ### Pliki projektu
 - `Main/index.html` – główny plik strony z treścią i osadzonymi stylami.
+- `Main/ZmienneHiperlacza.md` – plik z linkami do Mapy i Obrazków w formacie `Nazwa: URL`.
 - `Main/wrath-glory-logo-warhammer.png` – logo wyświetlane na stronie.
 - `Main/docs/README.md` – niniejsza instrukcja obsługi (PL/EN).
 - `Main/docs/Documentation.md` – dokumentacja techniczna kodu.
@@ -126,14 +127,14 @@ Browser tab title: **Kozi Przybornik**.
 4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
 
 ### Where to update the map link
-The map URL is hard-coded in `Main/index.html` inside the `<div class="actions">` section as:
-`<a class="btn" href="https://www.owlbear.rodeo/room/Iv_SzpbfiqUY/The%20Mad%20Joke" ...>Mapa</a>`.
-If the map address changes, update the `href` attribute exactly there.
+The map URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
+`Mapa: https://...`.
+If the map address changes, replace the URL after the colon in that file.
 
 ### Where to update the images link
-The images URL is hard-coded in `Main/index.html` inside the `<div class="actions">` section as:
-`<a class="btn" href="https://discord.com/channels/820916809946628096/1434928498476191834" ...>Obrazki</a>`.
-If the channel address changes, update the `href` attribute exactly there.
+The images URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
+`Obrazki: https://...`.
+If the channel address changes, replace the URL after the colon in that file.
 
 ### Running locally
 This is a static page with no backend. You can:
@@ -154,6 +155,7 @@ Updating consists of replacing static files in your hosting (e.g. GitHub Pages):
 
 ### Project files
 - `Main/index.html` – main page file with content and embedded styles.
+- `Main/ZmienneHiperlacza.md` – link variables for Map and Images in `Label: URL` format.
 - `Main/wrath-glory-logo-warhammer.png` – logo displayed on the page.
 - `Main/docs/README.md` – this user guide (PL/EN).
 - `Main/docs/Documentation.md` – technical documentation.
