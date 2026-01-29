@@ -930,60 +930,20 @@ function renderRow(r, cols){
       const div = document.createElement("div");
       div.className = "celltext";
 
-      const linesCount = String(r[col] ?? "").split(/\r?\n/).length;
       const key = `${currentSheet}|${r.__id}|${col}`;
-      const isClampable = linesCount > 10;
 
       const isKeywordName = currentSheet === KEYWORD_SHEET_ALL_RED && col === "Nazwa";
       const isKeywordCommaNeutral = KEYWORD_SHEETS_COMMA_NEUTRAL.has(currentSheet) && col === "Słowa Kluczowe";
       const isFactionKeyword = currentSheet === "Słowa Kluczowe Frakcji" && col === "Słowo Kluczowe";
 
-      const renderCell = () => {
-        if (!isClampable){
-          if (isKeywordName){
-            div.innerHTML = formatKeywordHTML(r, col);
-          } else if (isFactionKeyword){
-            div.innerHTML = formatFactionKeywordHTML(r[col]);
-          } else if (isKeywordCommaNeutral){
-            div.innerHTML = formatKeywordHTML(r, col, {commasNeutral:true});
-          } else {
-            div.innerHTML = getFormattedCellHTML(r, col);
-          }
-          td.classList.remove("clampable");
-          td.removeAttribute("title");
-          return;
-        }
-
-        const expanded = view.expandedCells.has(key);
-        td.classList.add("clampable");
-        td.title = expanded ? "Kliknij aby zwinąć" : "Kliknij aby rozwinąć";
-        if (isKeywordName){
-          div.innerHTML = expanded
-            ? formatKeywordHTML(r, col, {appendHint:"Kliknij aby zwinąć"})
-            : formatKeywordHTML(r, col, {maxLines:9, appendHint:"Kliknij aby rozwinąć"});
-        } else if (isFactionKeyword){
-          div.innerHTML = expanded
-            ? formatFactionKeywordHTML(r[col], {appendHint:"Kliknij aby zwinąć"})
-            : formatFactionKeywordHTML(r[col], {maxLines:9, appendHint:"Kliknij aby rozwinąć"});
-        } else if (isKeywordCommaNeutral){
-          div.innerHTML = expanded
-            ? formatKeywordHTML(r, col, {commasNeutral:true, appendHint:"Kliknij aby zwinąć"})
-            : formatKeywordHTML(r, col, {commasNeutral:true, maxLines:9, appendHint:"Kliknij aby rozwinąć"});
-        } else {
-          div.innerHTML = expanded
-            ? formatTextHTML(r[col], {appendHint:"Kliknij aby zwinąć"})
-            : formatTextHTML(r[col], {maxLines:9, appendHint:"Kliknij aby rozwinąć"});
-        }
-      };
-
-      renderCell();
-
-      if (isClampable){
-        td.addEventListener("click", ()=>{
-          const expanded = view.expandedCells.has(key);
-          if (expanded) view.expandedCells.delete(key); else view.expandedCells.add(key);
-          renderCell();
-        });
+      if (isKeywordName){
+        div.innerHTML = formatKeywordHTML(r, col);
+      } else if (isFactionKeyword){
+        div.innerHTML = formatFactionKeywordHTML(r[col]);
+      } else if (isKeywordCommaNeutral){
+        div.innerHTML = formatKeywordHTML(r, col, {commasNeutral:true});
+      } else {
+        div.innerHTML = getFormattedCellHTML(r, col);
       }
 
       td.appendChild(div);

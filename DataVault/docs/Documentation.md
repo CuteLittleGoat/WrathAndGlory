@@ -523,20 +523,24 @@ Mapowanie na `getElementById`:
 - `Cechy` → `renderTraitsCell()` (tagi klikane).
 - `Zasięg` → `getFormattedCellHTML`.
 - `Słowa Kluczowe Frakcji` / `Słowo Kluczowe` → `formatFactionKeywordHTML` (czerwone słowa poza `-` i `lub`).
-- Inne kolumny → `formatTextHTML` (z odpowiednim clampem, opis poniżej).
+- Inne kolumny → `formatTextHTML`, a clamp działa dopiero po renderze na podstawie liczby *wizualnych* linii (opis poniżej).
 
 ### 11.3 Renderowanie tagów cech
 - `renderTraitsCell(v)` tworzy `.tag` dla każdej cechy (podział po `;`).
 - Kliknięcie tagu otwiera popover z opisem cechy.
 
 ### 11.4 Clamp (rozwijanie długich komórek)
-Mechanizm działa w dwóch etapach:
+Mechanizm clampu bazuje na liczbie *wizualnych* linii (z uwzględnieniem zawijania):
 
-1. **Wstępne wykrycie** — jeśli liczba linii (po `\n`) przekracza 10, komórka jest traktowana jako potencjalnie clampowalna.
-2. **Dokładny pomiar** — po renderze używany jest `ResizeObserver`:
-   - Oblicza rzeczywistą liczbę linii: `scrollHeight / lineHeight`.
-   - Jeśli > 9, komórka dostaje `clampable`, a zawartość jest ograniczona do `lineHeight * 9`.
-   - Dodawany jest `.clampHint` z tekstem „Kliknij aby rozwinąć/zwinąć”.
+1. Po renderze komórki `requestAnimationFrame` uruchamia pomiar wysokości (`scrollHeight / lineHeight`).
+2. Jeśli liczba linii > 9:
+   - `td` dostaje klasę `.clampable` i `title` („Kliknij aby rozwinąć/zwinąć”),
+   - `div.celltext` ma ustawione `max-height: lineHeight * 9` oraz `overflow: hidden`,
+   - do komórki dokładany jest element `.clampHint` z tekstem „Kliknij aby rozwinąć”.
+3. Kliknięcie komórki przełącza `view.expandedCells` i:
+   - usuwa `max-height/overflow` dla stanu rozwiniętego,
+   - przywraca clamp dla stanu zwiniętego,
+   - aktualizuje tekst hintu na „Kliknij aby zwinąć/rozwinąć”.
 
 **Stan rozwinięcia** jest przechowywany w `view.expandedCells`.
 
