@@ -509,6 +509,9 @@ function initUI(){
     const b = document.createElement("button");
     b.className = "tab";
     b.textContent = name.toUpperCase();
+    if (CHARACTER_CREATION_SHEETS.has(name)){
+      b.classList.add("tab--character");
+    }
     b.addEventListener("click", ()=>selectSheet(name));
     els.tabs.appendChild(b);
   }
