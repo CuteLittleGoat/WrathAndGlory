@@ -400,11 +400,11 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Rozmiar"],
 .tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Rozmiar"]{min-width:8ch}
 .tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Modyfikator Testu Ataku"],
-.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Modyfikator Testu Ataku"]{min-width:46ch; text-align:center}
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Modyfikator Testu Ataku"]{min-width:25ch; text-align:center}
 .tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Zmniejszenie Poziomu Ukrycia"],
-.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Zmniejszenie Poziomu Ukrycia"]{min-width:46ch; text-align:center}
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Zmniejszenie Poziomu Ukrycia"]{min-width:25ch; text-align:center}
 .tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Przykłady"],
-.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Przykłady"]{min-width:82ch}
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Przykłady"]{min-width:85ch; text-align:left}
 
 /* Archetypy */
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Poziom"],
