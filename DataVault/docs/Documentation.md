@@ -34,7 +34,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
 - Pole globalne: `#globalSearch` w `.panelBody`.
-- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie ukrywa zakładki: `Tabela_Rozmiarow`, `Archetypy`, `Bonusy_Frakcji`, `Gatunki`, `Slowa_Kluczowe_Frakcji`, `Sciezki_Asuryani`, `Mutacje_Krootow`.
+- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie ukrywa zakładki: `Tabela Rozmiarów`, `Archetypy`, `Bonusy Frakcji`, `Gatunki`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów`.
 - W `.hint` jest statyczna lista wskazówek (tekst, nie logika), m.in. linia o „Shift = sort wielokolumnowy”, mimo że logika multi-sortu nie istnieje w JS.
 
 ### 2.3 Obszar tabeli
@@ -163,7 +163,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Podręcznik`: 17ch
   - `Strona`: 6ch
 
-- **Tabela_Rozmiarow**
+- **Tabela Rozmiarów**
   - `Rozmiar`: 8ch
   - `Modyfikator Testu Ataku`: 25ch
   - `Zmniejszenie Poziomu Ukrycia`: 25ch
@@ -183,14 +183,14 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Podręcznik`: 17ch
   - `Strona`: 6ch
 
-- **Bonusy_Frakcji**
+- **Bonusy Frakcji**
   - `Frakcja`: 26ch
   - `Premia 1`: 56ch
   - `Premia 2`: 56ch
   - `Premia 3`: 56ch
 
 - **Gatunki**
-  - `Garunek`: 26ch
+  - `Gatunek`: 26ch
   - `Koszt PD`: 4ch
   - `Atrybuty`: 26ch
   - `Umiejętności`: 26ch
@@ -198,29 +198,29 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Rozmiar`: 10ch
   - `Szybkość`: 4ch
 
-- **Slowa_Kluczowe_Frakcji**
+- **Słowa Kluczowe Frakcji**
   - `Frakcja`: 26ch
   - `Słowo Kluczowe`: 26ch
   - `Efekt`: 26ch
   - `Opis`: 60ch
 
-- **Implanty_Astartes**
+- **Implanty Astartes**
   - `Numer`: 4ch
   - `Nazwa`: 30ch
   - `Opis`: 56ch
 
-- **Sciezki_Asuryani**
+- **Ścieżki Asuryani**
   - `Nazwa`: 26ch
   - `Efekt`: 26ch
   - `Opis`: 56ch
 
-- **Mutacje_Krootow**
+- **Mutacje Krootów**
   - `Mutacja krootów`: 22ch
   - `Pożarta ofiara`: 22ch
   - `Efekt`: 26ch
   - `Opis`: 56ch
 
-- **Cechy / Stany / Slowa_Kluczowe**
+- **Cechy / Stany / Słowa Kluczowe**
   - `Typ`: 14ch
   - `Nazwa`: 26ch
   - `Opis`: 56ch
@@ -297,7 +297,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 W `style.css` część kolumn z wartościami liczbowymi jest **wyrównana do środka** (`text-align: center`) zarówno w nagłówkach, jak i komórkach:
 
 - **Bestiariusz**: `Zagrożenie`, `S`, `Wt`, `Zr`, `I`, `SW`, `Int`, `Ogd`, `Odporność (w tym WP)`, `Wartość Pancerza`, `Obrona`, `Żywotność`, `Odporność Psychiczna`, `Upór`, `Odwaga`, `Szybkość`, `Rozmiar`, `Strona`.
-- **Tabela_Rozmiarow**: `Modyfikator Testu Ataku`, `Zmniejszenie Poziomu Ukrycia`.
+- **Tabela Rozmiarów**: `Modyfikator Testu Ataku`, `Zmniejszenie Poziomu Ukrycia`.
 - **Gatunki**: `Koszt PD`, `Rozmiar`, `Szybkość`.
 - **Archetypy**: `Poziom`, `Koszt PD`, `Strona`.
 - **Talenty**: `Koszt PD`.
@@ -305,31 +305,31 @@ W `style.css` część kolumn z wartościami liczbowymi jest **wyrównana do śr
 - **Psionika**: `Koszt PD`, `ST`, `Zasięg`, `Wiele Celów`.
 - **Augumentacje**: `Koszt`, `Dostępność`, `Koszt IM`.
 - **Ekwipunek**: `Koszt`, `Dostępność`, `Koszt IM`.
-- **Implanty_Astartes**: `Numer`.
+- **Implanty Astartes**: `Numer`.
 - **Pancerze**: `WP`, `Koszt`, `Dostępność`, `Koszt IM`, `Strona`.
 - **Bronie**: `Obrażenia`, `DK`, `PP`, `Zasięg`, `Szybkostrzelność`, `Koszt`, `Dostępność`, `Koszt IM`, `Strona`.
 
 Dodatkowo kolumna `Zasięg` w **Broniach** ma `white-space: nowrap`, aby nie łamać zapisu z ukośnikami.
-Kolumna `Przykłady` w **Tabela_Rozmiarow** ma jawne `text-align: left`.
+Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 
 ## 4) JS: stałe, stan aplikacji i helpery
 
 ### 4.1 Stałe
-- `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Tabela_Rozmiarow, Archetypy; Tabela_Rozmiarow jest zawsze między Bestiariusz a Archetypy).
-- `SHEETS_ORDER` — kolejność zakładek (m.in. Bestiariusz → Tabela_Rozmiarow → Gatunki → Archetypy → Bonusy_Frakcji → Slowa_Kluczowe_Frakcji → Implanty_Astartes → Sciezki_Asuryani → Mutacje_Krootow → Cechy).
+- `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Tabela Rozmiarów, Archetypy; Tabela Rozmiarów jest zawsze między Bestiariusz a Archetypy).
+- `SHEETS_ORDER` — kolejność zakładek (m.in. Bestiariusz → Tabela Rozmiarów → Gatunki → Archetypy → Bonusy Frakcji → Słowa Kluczowe Frakcji → Implanty Astartes → Ścieżki Asuryani → Mutacje Krootów → Cechy).
 - `SHEET_COLUMN_ORDER` — preferowana kolejność kolumn per arkusz.
-  - Dla `Tabela_Rozmiarow` kolejność to: `Rozmiar`, `Modyfikator Testu Ataku`, `Zmniejszenie Poziomu Ukrycia`, `Przykłady`.
-  - Dla `Gatunki` kolejność to: `Garunek`, `Koszt PD`, `Atrybuty`, `Umiejętności`, `Zdolności gatunkowe`, `Rozmiar`, `Szybkość`.
+  - Dla `Tabela Rozmiarów` kolejność to: `Rozmiar`, `Modyfikator Testu Ataku`, `Zmniejszenie Poziomu Ukrycia`, `Przykłady`.
+  - Dla `Gatunki` kolejność to: `Gatunek`, `Koszt PD`, `Atrybuty`, `Umiejętności`, `Zdolności gatunkowe`, `Rozmiar`, `Szybkość`.
   - Dla `Archetypy` kolejność to: `Poziom`, `Frakcja`, `Nazwa`, `Koszt PD`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`, `Podręcznik`, `Strona`.
-  - Dla `Bonusy_Frakcji` kolejność to: `Frakcja`, `Premia 1`, `Premia 2`, `Premia 3`.
-  - Dla `Slowa_Kluczowe_Frakcji` kolejność to: `Frakcja`, `Słowo Kluczowe`, `Efekt`, `Opis`.
-  - Dla `Implanty_Astartes` kolejność to: `Numer`, `Nazwa`, `Opis`.
-  - Dla `Sciezki_Asuryani` kolejność to: `Nazwa`, `Efekt`, `Opis`.
-  - Dla `Mutacje_Krootow` kolejność to: `Mutacja krootów`, `Pożarta ofiara`, `Efekt`, `Opis`.
+  - Dla `Bonusy Frakcji` kolejność to: `Frakcja`, `Premia 1`, `Premia 2`, `Premia 3`.
+  - Dla `Słowa Kluczowe Frakcji` kolejność to: `Frakcja`, `Słowo Kluczowe`, `Efekt`, `Opis`.
+  - Dla `Implanty Astartes` kolejność to: `Numer`, `Nazwa`, `Opis`.
+  - Dla `Ścieżki Asuryani` kolejność to: `Nazwa`, `Efekt`, `Opis`.
+  - Dla `Mutacje Krootów` kolejność to: `Mutacja krootów`, `Pożarta ofiara`, `Efekt`, `Opis`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
-- `KEYWORD_SHEET_ALL_RED` — arkusz `Slowa_Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
-- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz, Tabela_Rozmiarow).
-- `CHARACTER_CREATION_SHEETS` — zestaw zakładek ukrywanych przez checkbox tworzenia postaci (`Tabela_Rozmiarow`, `Archetypy`, `Bonusy_Frakcji`, `Gatunki`, `Slowa_Kluczowe_Frakcji`, `Sciezki_Asuryani`, `Mutacje_Krootow`).
+- `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
+- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz, Tabela Rozmiarów).
+- `CHARACTER_CREATION_SHEETS` — zestaw zakładek ukrywanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Archetypy`, `Bonusy Frakcji`, `Gatunki`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów`).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
 
@@ -384,7 +384,7 @@ Mapowanie na `getElementById`:
 - Pamięta cache w `row.__fmt` (per wariant).
 
 ### 5.5 `formatFactionKeywordHTML(raw, opts)`
-- Stosowana tylko dla arkusza `Slowa_Kluczowe_Frakcji` i kolumny `Słowo Kluczowe`.
+- Stosowana tylko dla arkusza `Słowa Kluczowe Frakcji` i kolumny `Słowo Kluczowe`.
 - Usuwa markery (`stripMarkers`) i koloruje na czerwono wszystko poza tokenami `-` i `lub`.
 - Obsługuje `maxLines` i `appendHint` analogicznie do `formatTextHTML`.
 
@@ -455,7 +455,7 @@ Mapowanie na `getElementById`:
 - Czyści `#tabs` i tworzy przyciski `.tab` wg `SHEETS_ORDER`.
 - Ustawia aktywną pierwszą zakładkę (lub zachowuje obecną, jeśli wciąż jest widoczna).
 - Ukrywa `#updateDataGroup`, gdy nie `ADMIN_MODE`.
-- W trybie gracza usuwa z listy zakładek arkusze `Bestiariusz` i `Tabela_Rozmiarow`, więc są widoczne tylko dla admina.
+- W trybie gracza usuwa z listy zakładek arkusze `Bestiariusz` i `Tabela Rozmiarów`, więc są widoczne tylko dla admina.
 - Gdy checkbox `#toggleCharacterTabs` jest zaznaczony, usuwa z listy zakładek elementy `CHARACTER_CREATION_SHEETS`.
 
 ### 8.2 `selectSheet(name)`
@@ -520,7 +520,7 @@ Mapowanie na `getElementById`:
 - Kolumna 0: checkbox (zaznaczenia do porównywania).
 - `Cechy` → `renderTraitsCell()` (tagi klikane).
 - `Zasięg` → `getFormattedCellHTML`.
-- `Slowa_Kluczowe_Frakcji` / `Słowo Kluczowe` → `formatFactionKeywordHTML` (czerwone słowa poza `-` i `lub`).
+- `Słowa Kluczowe Frakcji` / `Słowo Kluczowe` → `formatFactionKeywordHTML` (czerwone słowa poza `-` i `lub`).
 - Inne kolumny → `formatTextHTML` (z odpowiednim clampem, opis poniżej).
 
 ### 11.3 Renderowanie tagów cech
@@ -540,9 +540,9 @@ Mechanizm działa w dwóch etapach:
 
 ### 11.5 Komórki „Słowa Kluczowe”
 - Domyślnie czerwone (`.keyword-red`).
-- W arkuszu `Slowa_Kluczowe` kolumna `Nazwa` jest również czerwona.
+- W arkuszu `Słowa Kluczowe` kolumna `Nazwa` jest również czerwona.
 - W arkuszach `KEYWORD_SHEETS_COMMA_NEUTRAL` przecinki są neutralne (`.keyword-comma`).
-- W arkuszu `Slowa_Kluczowe_Frakcji` kolumna `Słowo Kluczowe` ma czerwony kolor dla wszystkich tokenów poza `-` i słowem `lub`.
+- W arkuszu `Słowa Kluczowe Frakcji` kolumna `Słowo Kluczowe` ma czerwony kolor dla wszystkich tokenów poza `-` i słowem `lub`.
 
 ---
 
