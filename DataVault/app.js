@@ -4,8 +4,13 @@
 const SHEETS_ORDER = [
   "Bestiariusz",
   "Tabela_Rozmiarow",
+  "Gatunki",
   "Archetypy",
   "Bonusy_Frakcji",
+  "Slowa_Kluczowe_Frakcji",
+  "Implanty_Astartes",
+  "Sciezki_Asuryani",
+  "Mutacje_Krootow",
   "Cechy",
   "Stany",
   "Slowa_Kluczowe",
@@ -21,8 +26,13 @@ const SHEETS_ORDER = [
 const SHEET_COLUMN_ORDER = {
   "Bestiariusz":["Nazwa","Zagrożenie","Słowa Kluczowe","S","Wt","Zr","I","SW","Int","Ogd","Odporność (w tym WP)","Wartość Pancerza","Obrona","Żywotność","Odporność Psychiczna","Umiejętności","Premie","Zdolności","Atak","Zdolności Hordy","Opcje Hordy","Upór","Odwaga","Szybkość","Rozmiar","Podręcznik","Strona"],
   "Tabela_Rozmiarow":["Rozmiar","Modyfikator Testu Ataku","Zmniejszenie Poziomu Ukrycia","Przykłady"],
+  "Gatunki":["Garunek","Koszt PD","Atrybuty","Umiejętności","Zdolności gatunkowe","Rozmiar","Szybkość"],
   "Archetypy":["Poziom","Frakcja","Nazwa","Koszt PD","Słowa Kluczowe","Atrybuty Archetypu","Umiejętności Archetypu","Zdolność Archetypu","Ekwipunek","Inne","Podręcznik","Strona"],
   "Bonusy_Frakcji":["Frakcja","Premia 1","Premia 2","Premia 3"],
+  "Slowa_Kluczowe_Frakcji":["Frakcja","Słowo Kluczowe","Efekt","Opis"],
+  "Implanty_Astartes":["Numer","Nazwa","Opis"],
+  "Sciezki_Asuryani":["Nazwa","Efekt","Opis"],
+  "Mutacje_Krootow":["Mutacja krootów","Pożarta ofiara","Efekt","Opis"],
   "Cechy":["Typ","Nazwa","Opis"],
   "Stany":["Typ","Nazwa","Opis"],
   "Slowa_Kluczowe":["Typ","Nazwa","Opis"],
@@ -51,11 +61,21 @@ const els = {
   modalBody: document.getElementById("modalBody"),
   modalClose: document.getElementById("modalClose"),
   filterMenu: document.getElementById("filterMenu"),
+  toggleCharacterTabs: document.getElementById("toggleCharacterTabs"),
 };
 
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
 const KEYWORD_SHEET_ALL_RED = "Slowa_Kluczowe";
 const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Tabela_Rozmiarow"]);
+const CHARACTER_CREATION_SHEETS = new Set([
+  "Tabela_Rozmiarow",
+  "Archetypy",
+  "Bonusy_Frakcji",
+  "Gatunki",
+  "Slowa_Kluczowe_Frakcji",
+  "Sciezki_Asuryani",
+  "Mutacje_Krootow",
+]);
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
@@ -66,7 +86,8 @@ const view = {
   filtersText: {},         // col -> contains text
   filtersSet: {},          // col -> Set(selected values) OR null
   selected: new Set(),     // row.__id
-  expandedCells: new Set() // key sheet|rowid|col for clamp toggle
+  expandedCells: new Set(), // key sheet|rowid|col for clamp toggle
+  hideCharacterTabs: false
 };
 
 const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (progressive rendering)
@@ -206,6 +227,37 @@ function formatTextHTML(raw, opts = {}){
     const inner = formatInlineHTML(text);
     return highlight ? `<span class="caretref">${inner}</span>` : inner;
   });
+  if (appendHint) htmlLines.push(`<span class="clampHint">${escapeHtml(appendHint)}</span>`);
+  return htmlLines.join("<br>");
+}
+
+function formatFactionKeywordHTML(raw, opts = {}){
+  const {maxLines = null, appendHint = null} = opts;
+  const s = stripMarkers(String(raw ?? ""));
+  const lines = s.split(/\r?\n/);
+  const picked = Number.isInteger(maxLines) ? lines.slice(0, maxLines) : lines;
+
+  const htmlLines = picked.map(line => {
+    if (!line) return "";
+    const re = /\b(lub)\b|-/gi;
+    let out = "";
+    let lastIndex = 0;
+    let m;
+    while ((m = re.exec(line))){
+      const before = line.slice(lastIndex, m.index);
+      if (before){
+        out += `<span class="keyword-red">${escapeHtml(before)}</span>`;
+      }
+      out += escapeHtml(m[0]);
+      lastIndex = m.index + m[0].length;
+    }
+    const rest = line.slice(lastIndex);
+    if (rest){
+      out += `<span class="keyword-red">${escapeHtml(rest)}</span>`;
+    }
+    return out;
+  });
+
   if (appendHint) htmlLines.push(`<span class="clampHint">${escapeHtml(appendHint)}</span>`);
   return htmlLines.join("<br>");
 }
@@ -446,7 +498,10 @@ function initUI(){
   // Tabs
   els.tabs.innerHTML = "";
   const available = Object.keys(DB.sheets);
-  const visibleSheets = ADMIN_MODE ? available : available.filter(name => !ADMIN_ONLY_SHEETS.has(name));
+  const baseVisible = ADMIN_MODE ? available : available.filter(name => !ADMIN_ONLY_SHEETS.has(name));
+  const visibleSheets = view.hideCharacterTabs
+    ? baseVisible.filter(name => !CHARACTER_CREATION_SHEETS.has(name))
+    : baseVisible;
   const order = SHEETS_ORDER.filter(x => available.includes(x)).concat(available.filter(x => !SHEETS_ORDER.includes(x)).sort());
   const visibleOrder = order.filter(name => visibleSheets.includes(name));
   for (const name of visibleOrder){
@@ -457,7 +512,8 @@ function initUI(){
     els.tabs.appendChild(b);
   }
   // select first
-  selectSheet(visibleOrder[0] || visibleSheets[0]);
+  const nextSheet = visibleOrder.includes(currentSheet) ? currentSheet : (visibleOrder[0] || visibleSheets[0]);
+  if (nextSheet) selectSheet(nextSheet);
 
   // Actions / admin visibility
   if (!ADMIN_MODE){
@@ -876,11 +932,14 @@ function renderRow(r, cols){
 
       const isKeywordName = currentSheet === KEYWORD_SHEET_ALL_RED && col === "Nazwa";
       const isKeywordCommaNeutral = KEYWORD_SHEETS_COMMA_NEUTRAL.has(currentSheet) && col === "Słowa Kluczowe";
+      const isFactionKeyword = currentSheet === "Slowa_Kluczowe_Frakcji" && col === "Słowo Kluczowe";
 
       const renderCell = () => {
         if (!isClampable){
           if (isKeywordName){
             div.innerHTML = formatKeywordHTML(r, col);
+          } else if (isFactionKeyword){
+            div.innerHTML = formatFactionKeywordHTML(r[col]);
           } else if (isKeywordCommaNeutral){
             div.innerHTML = formatKeywordHTML(r, col, {commasNeutral:true});
           } else {
@@ -898,6 +957,10 @@ function renderRow(r, cols){
           div.innerHTML = expanded
             ? formatKeywordHTML(r, col, {appendHint:"Kliknij aby zwinąć"})
             : formatKeywordHTML(r, col, {maxLines:9, appendHint:"Kliknij aby rozwinąć"});
+        } else if (isFactionKeyword){
+          div.innerHTML = expanded
+            ? formatFactionKeywordHTML(r[col], {appendHint:"Kliknij aby zwinąć"})
+            : formatFactionKeywordHTML(r[col], {maxLines:9, appendHint:"Kliknij aby rozwinąć"});
         } else if (isKeywordCommaNeutral){
           div.innerHTML = expanded
             ? formatKeywordHTML(r, col, {commasNeutral:true, appendHint:"Kliknij aby zwinąć"})
@@ -1134,6 +1197,14 @@ els.global.addEventListener("input", ()=>{
   renderBody();
 });
 els.global.addEventListener("keydown", (ev)=>ev.stopPropagation());
+
+if (els.toggleCharacterTabs){
+  els.toggleCharacterTabs.addEventListener("change", ()=>{
+    view.hideCharacterTabs = els.toggleCharacterTabs.checked;
+    initUI();
+  });
+  view.hideCharacterTabs = els.toggleCharacterTabs.checked;
+}
 
 /* ---------- Loaders ---------- */
 els.btnUpdateData.addEventListener("click", loadXlsxFromRepo);
