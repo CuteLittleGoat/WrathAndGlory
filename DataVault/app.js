@@ -3,6 +3,7 @@
 */
 const SHEETS_ORDER = [
   "Bestiariusz",
+  "Tabela_Rozmiarow",
   "Archetypy",
   "Bonusy_Frakcji",
   "Cechy",
@@ -19,6 +20,7 @@ const SHEETS_ORDER = [
 
 const SHEET_COLUMN_ORDER = {
   "Bestiariusz":["Nazwa","Zagrożenie","Słowa Kluczowe","S","Wt","Zr","I","SW","Int","Ogd","Odporność (w tym WP)","Wartość Pancerza","Obrona","Żywotność","Odporność Psychiczna","Umiejętności","Premie","Zdolności","Atak","Zdolności Hordy","Opcje Hordy","Upór","Odwaga","Szybkość","Rozmiar","Podręcznik","Strona"],
+  "Tabela_Rozmiarow":["Rozmiar","Przykłady","Modyfikator Testu Ataku","Zmiejszenie Poziomu Ukrycia"],
   "Archetypy":["Poziom","Frakcja","Nazwa","Koszt PD","Słowa Kluczowe","Atrybuty Archetypu","Umiejętności Archetypu","Zdolność Archetypu","Ekwipunek","Inne","Podręcznik","Strona"],
   "Bonusy_Frakcji":["Frakcja","Premia 1","Premia 2","Premia 3"],
   "Cechy":["Typ","Nazwa","Opis"],
@@ -53,6 +55,7 @@ const els = {
 
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
 const KEYWORD_SHEET_ALL_RED = "Slowa_Kluczowe";
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Tabela_Rozmiarow"]);
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
@@ -443,7 +446,7 @@ function initUI(){
   // Tabs
   els.tabs.innerHTML = "";
   const available = Object.keys(DB.sheets);
-  const visibleSheets = ADMIN_MODE ? available : available.filter(name => name !== "Bestiariusz");
+  const visibleSheets = ADMIN_MODE ? available : available.filter(name => !ADMIN_ONLY_SHEETS.has(name));
   const order = SHEETS_ORDER.filter(x => available.includes(x)).concat(available.filter(x => !SHEETS_ORDER.includes(x)).sort());
   const visibleOrder = order.filter(name => visibleSheets.includes(name));
   for (const name of visibleOrder){

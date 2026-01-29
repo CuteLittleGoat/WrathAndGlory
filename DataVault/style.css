@@ -396,6 +396,16 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Strona"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 
+/* Tabela Rozmiarow */
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Rozmiar"],
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Rozmiar"]{min-width:14ch}
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Przykłady"],
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Przykłady"]{min-width:56ch}
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Modyfikator Testu Ataku"],
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Modyfikator Testu Ataku"]{min-width:20ch; text-align:center}
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] th[data-col="Zmiejszenie Poziomu Ukrycia"],
+.tableWrap table[data-sheet="Tabela_Rozmiarow"] td[data-col="Zmiejszenie Poziomu Ukrycia"]{min-width:22ch; text-align:center}
+
 /* Archetypy */
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Poziom"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Poziom"]{min-width:2ch; text-align:center}

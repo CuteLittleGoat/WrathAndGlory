@@ -1759,7 +1759,7 @@
         "Odporność Psychiczna": "1",
         "Umiejętności": "Domyślna 1, Walka wręcz 1",
         "Premie": "-",
-        "Zdolności": "{{B}}INICJACJA: Przerażający{{/B}}\nKażdy, kto widzi to Zagrożenie, musi wykonać Test Strachu o ST 2.\n\n{{B}}ZGUBA: Nikczemna złośliwość{{/B}}\nZamiast wykonywać atak wręcz, MG może wydać punkt Zguby. Wybrany przeciwnik natychmiast staje się celem losowej Komplikacji bojowej (Wrath & Glory, str. 191).\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 1k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.",
+        "Zdolności": "{{B}}INICJACJA: Przerażający{{/B}}\nKażdy, kto widzi to Zagrożenie, musi wykonać Test Strachu o ST 2.\n\n{{B}}ZGUBA: Nikczemna złośliwość{{/B}}\nZamiast wykonywać atak wręcz, MG może wydać punkt Zguby. Wybrany przeciwnik natychmiast staje się celem losowej Komplikacji bojowej (str. 191).\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 1k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.",
         "Atak": "{{B}}Zakaźne ugryzienie{{/B}}: 4 + 1 DK / PP −1 / Wywołanie (Zatrucie 4)",
         "Zdolności Hordy": "{{B}}Banda{{/B}}: Ten profil odpowiada grupie 20 nurglingów, a nie pojedynczemu stworzeniu. Grupy nurglingów mogą łączyć się w Hordy na normalnych zasadach.",
         "Opcje Hordy": "-",
@@ -1798,6 +1798,276 @@
         "Rozmiar": "Ogromny",
         "Podręcznik": "Apoteoza Zarazy",
         "Strona": "21"
+      },
+      {
+        "Nazwa": "Hormagaunt",
+        "Zagrożenie": "TTTT",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
+        "S": "3",
+        "Wt": "3",
+        "Zr": "3",
+        "I": "4",
+        "SW": "3",
+        "Int": "1",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "6",
+        "Wartość Pancerza": "2",
+        "Obrona": "3",
+        "Żywotność": "5",
+        "Odporność Psychiczna": "4",
+        "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Ukrywanie się 4, Walka wręcz 5",
+        "Premie": "{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str.136).\n\n{{B}}Urodzony drapieżca{{/B}}: Utrata stwora synaptycznego nie redukuje Odporności psychicznej hormagaunta. Wciąż musi jednak wykonać rzut na tabelę Szoku synaptycznego (str. 21)",
+        "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od hormagaunta zostaje trafione atakiem. Hormagaunt staje się faktycznym celem tego ataku i natychmiast umiera.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Atak": "{{B}}Tnące pazury{{/B}}: 5 + 2 DK / PP −2 / Zasięg 1 / Przebijająca (2)",
+        "Zdolności Hordy": "{{B}}Nawałnica szponów{{/B}}: W Hordzie o liczebności 10 lub więcej hormagaunty przerzucają wszystkie wyniki 1 w Testach Walki wręcz (I) z wyjątkiem Komplikacji.",
+        "Opcje Hordy": "",
+        "Upór": "3",
+        "Odwaga": "2",
+        "Szybkość": "6",
+        "Rozmiar": "Średni",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "22"
+      },
+      {
+        "Nazwa": "Mina Zarodnikowa",
+        "Zagrożenie": "TTTT",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
+        "S": "1",
+        "Wt": "2",
+        "Zr": "4",
+        "I": "2",
+        "SW": "1",
+        "Int": "1",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "3",
+        "Wartość Pancerza": "-",
+        "Obrona": "1",
+        "Żywotność": "6",
+        "Odporność Psychiczna": "3",
+        "Umiejętności": "Domyślna 1, Czujność 7 (Pasywna 4)",
+        "Premie": "{{B}}Bezmyślny{{/B}}: Miny zarodnikowe są odporne na Strach i nie muszą wykonywać Testów Odwagi ani Uporu.",
+        "Zdolności": "{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 4k6.\n\n{{B}}ANIHILACJA: Detonacja{{/B}}\nMina zarodnikowa eksploduje jak w ataku Detonacja.",
+        "Atak": "{{B}}Detonacja{{/B}}: 10 + 4 DK / PP −1 / Zasięg – / Wybuchowa (6), Wywołanie (Zatrucie 4)\n{{B}}Uwaga{{/B}}: Atak zabija minę zarodnikową.",
+        "Zdolności Hordy": "",
+        "Opcje Hordy": "",
+        "Upór": "1",
+        "Odwaga": "0",
+        "Szybkość": "6",
+        "Rozmiar": "Mały",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "23"
+      },
+      {
+        "Nazwa": "Łupieżca",
+        "Zagrożenie": "NNEE",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
+        "S": "7",
+        "Wt": "4",
+        "Zr": "6",
+        "I": "7",
+        "SW": "3",
+        "Int": "3",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "10",
+        "Wartość Pancerza": "5",
+        "Obrona": "6",
+        "Żywotność": "7",
+        "Odporność Psychiczna": "6",
+        "Umiejętności": "Domyślna 5, Czujność 10 (Pasywna 5), Umiejętności strzeleckie 4, Walka wręcz 8",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str.136).",
+        "Zdolności": "{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 5k6",
+        "Atak": "{{B}}Tnące pazury{{/B}}: 10 + 2 DK / PP −1 / Zasięg 2 / Parująca, Przebijająca (1)",
+        "Zdolności Hordy": "",
+        "Opcje Hordy": "",
+        "Upór": "4",
+        "Odwaga": "3",
+        "Szybkość": "10",
+        "Rozmiar": "Duży",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "23"
+      },
+      {
+        "Nazwa": "Termagant",
+        "Zagrożenie": "TTTT",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
+        "S": "3",
+        "Wt": "3",
+        "Zr": "4",
+        "I": "3",
+        "SW": "3",
+        "Int": "1",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "4",
+        "Wartość Pancerza": "1",
+        "Obrona": "2",
+        "Żywotność": "5",
+        "Odporność Psychiczna": "4",
+        "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Ukrywanie się 4, Umiejętności strzeleckie 5, Walka wręcz 3",
+        "Premie": "-",
+        "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od termaganta zostaje trafione atakiem. Termagant staje się faktycznym celem tego ataku i natychmiast umiera.\n{{B}}\nDETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Atak": "{{B}}Pazury{{/B}}: 6 + 2 DK / Zasięg 1\n\n{{B}}Wydrążacz{{/B}}: 10 + 2 DK / Zasięg 6–12–18 / Szybkostrzelność 2 / Szturmowa, Maszynowa",
+        "Zdolności Hordy": "{{B}}Komplikacja{{/B}}: Odcięci od roju: Jeżeli Horda wyrzuci Komplikację, a w promieniu 20 metrów nie znajduje się żadne Zagrożenie ze Słowem kluczowym {{RED}}SYNAPSA,{{/RED}} zaczyna walczyć między sobą i otrzymuje 1k3 Traum za każdych dziesięciu jej członków.\n\n{{B}}Zorganizowane szeregi{{/B}}: Gdy Hordą dowodzi Zagrożenie ze Słowem kluczowym {{RED}}SYNAPSA,{{/RED}} każda jej broń, która nie ma Cechy Ciężka, zyskuje Cechę Maszynowa (2).",
+        "Opcje Hordy": "Za każdą dziesiątkę termagantów w Hordzie jeden z nich może zamienić wydrążacz na karabin kolcowy.\n\n{{B}}Karabin kolcowy{{/B}}: 8 + 4 DK / PP −2 / Zasięg 8–16–24 / Ciężka (4), Wywołanie ({{I}}Krwawienie{{/I}})",
+        "Upór": "3",
+        "Odwaga": "2",
+        "Szybkość": "6",
+        "Rozmiar": "Średni",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "24"
+      },
+      {
+        "Nazwa": "Zoantrop",
+        "Zagrożenie": "NNEE",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], PSIONIK, SYNAPSA, TYRANID{{/RED}}",
+        "S": "3",
+        "Wt": "3",
+        "Zr": "4",
+        "I": "6",
+        "SW": "8",
+        "Int": "6",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "12",
+        "Wartość Pancerza": "8",
+        "Obrona": "5",
+        "Żywotność": "5",
+        "Odporność Psychiczna": "4",
+        "Umiejętności": "Domyślna 4, Czujność 6 (Pasywna 3), Mistrzostwo psioniczne 8",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 2 punktów Zguby",
+        "Zdolności": "Zoantrop może spróbować zamanifestować dowolne z poniższych mocy psionicznych:\nNie dozwól wiedźmie, Porażenie, Przerażenie, Psioniczny wrzask, Wyczucie Osnowy, Zaciemnienie umysłu\n\n{{B}}ZGUBA: Umysł Roju{{/B}}\nWydaj 1 punkt Zguby. Zoantrop próbuje zamanifestować moc psioniczną albo nie dozwolić wiedźmie.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.\n\n{{B}}ANIHILACJA: Szok synaptyczny{{/B}}\nKażdy tyranid, który nie ma Słowa kluczowego {{RED}}SYNAPSA{{/RED}} i nie znajduje się w zasięgu innego Zagrożenia ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}}, redukuje swoją Odporność psychiczną o 1 i wykonuje rzut na tabelę Szoku synaptycznego (str. 21).",
+        "Atak": "{{B}}Przebijające szpony{{/B}}: 8 + 1 DK / PP 0 / Zasięg 1 / Przebijająca (1)",
+        "Zdolności Hordy": "",
+        "Opcje Hordy": "",
+        "Upór": "8",
+        "Odwaga": "7",
+        "Szybkość": "6",
+        "Rozmiar": "Średni",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "25"
+      },
+      {
+        "Nazwa": "Tyranidzki Wojownik",
+        "Zagrożenie": "NNEE",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], SYNAPSA, TYRANID{{/RED}}",
+        "S": "6",
+        "Wt": "5",
+        "Zr": "5",
+        "I": "5",
+        "SW": "4",
+        "Int": "4",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "11",
+        "Wartość Pancerza": "5",
+        "Obrona": "4",
+        "Żywotność": "8",
+        "Odporność Psychiczna": "7",
+        "Umiejętności": "Domyślna 5, Czujność 8 (Pasywna 4), Umiejętności strzeleckie 7, Walka wręcz 7",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str. 136).",
+        "Zdolności": "{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 5k6.\n\n{{B}}ANIHILACJA{{/B}}: Szok synaptyczny\nKażdy tyranid, który nie ma Słowa kluczowego {{RED}}SYNAPSA{{/RED}} i nie znajduje się w zasięgu innego Zagrożenia ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}}, redukuje swoją Odporność psychiczną o 1 i wykonuje rzut na tabelę Szoku synaptycznego (str. 21).",
+        "Atak": "{{B}}Tnące pazury{{/B}}: 10 + 2 DK / PP −1 / Zasięg 2 / Parująca, Przebijająca (1)\n\nJedno z poniższych:\n{{B}}Działo jadowe{{/B}}: 10 + 3 DK / PP −3 / Zasięg 12–24–36 / Szybkostrzelność 2 / Ciężka (7), Wywołanie ({{I}}Zatrucie 3{{/I}})\n{{B}}Pożeracz{{/B}}: 8 + 1 DK / PP 0 / Zasięg 6–12–18 / Szybkostrzelność 3 / Szturmowa, Maszynowa (2)",
+        "Zdolności Hordy": "",
+        "Opcje Hordy": "",
+        "Upór": "4",
+        "Odwaga": "3",
+        "Szybkość": "7",
+        "Rozmiar": "Duży",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "26"
+      },
+      {
+        "Nazwa": "Gargulec",
+        "Zagrożenie": "TTTT",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
+        "S": "3",
+        "Wt": "3",
+        "Zr": "4",
+        "I": "3",
+        "SW": "3",
+        "Int": "1",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "4",
+        "Wartość Pancerza": "1",
+        "Obrona": "2",
+        "Żywotność": "5",
+        "Odporność Psychiczna": "5",
+        "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Ukrywanie się 3, Umiejętności strzeleckie 5, Walka wręcz 4",
+        "Premie": "{{B}}Po oczach{{/B}}: Podczas walki wręcz gargulec redukuje karę do ST za celowanie w oczy o 2. Skuteczne ataki otrzymują Cechę Wywołanie ({{I}}Oślepienie{{/I}}).",
+        "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od gargulca zostaje trafione atakiem. Gargulec staje się faktycznym celem tego ataku i natychmiast umiera.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Atak": "{{B}}Oślepiający jad{{/B}}: 7 + 1 DK / Zasięg 2 / Raniąca\n\n{{B}}Wydrążacz{{/B}}: 10 + 2 DK / Zasięg 6–12–18 / Szybkostrzelność 2 / Szturmowa, Maszynowa",
+        "Zdolności Hordy": "{{B}}Instynkt chmary{{/B}}: Gdy Horda licząca 10 lub więcej osobników rozdziela ataki, każdy z nich otrzymuje +1 dodatkową kość.",
+        "Opcje Hordy": "Horda licząca 20 lub więcej gargulców może być dowodzona przez skrzydlatego tyranidzkiego wojownika (jest to wojownik o Szybkości 10 Lot).",
+        "Upór": "3",
+        "Odwaga": "2",
+        "Szybkość": "10 (lot)",
+        "Rozmiar": "Średni",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "27"
+      },
+      {
+        "Nazwa": "Karnifeks",
+        "Zagrożenie": "PPPP",
+        "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
+        "S": "10",
+        "Wt": "8",
+        "Zr": "5",
+        "I": "4",
+        "SW": "5",
+        "Int": "3",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "14",
+        "Wartość Pancerza": "5",
+        "Obrona": "3",
+        "Żywotność": "14",
+        "Odporność Psychiczna": "8",
+        "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Walka wręcz 5",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str. 136).",
+        "Zdolności": "{{B}}INICJACJA: Zwalający z nóg ryk{{/B}}\nWszyscy Bohaterowie, którzy usłyszą ryk, muszą zdać Test Wytrzymałości o ST 3 albo staną się Zdezorientowani na 1k3 Rundy.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 8k6.",
+        "Atak": "{{B}}Monstrualne tnące pazury{{/B}}: 15 + 4 DK / PP −2 / Zasięg 3 / Brutalna, Przebijająca (2)\n\nJedno z poniższych:\n{{B}}Drugorzędne monstrualne tnące pazury{{/B}}: 15 + 4 DK / PP −2 / Zasięg 3 / Brutalna, Przebijająca (2)\n{{B}}Działo jadowe{{/B}}: 10 + 3 DK / PP −3 / Zasięg 12–24–36 / Szybkostrzelność 2 / Ciężka (7), Wywołanie ({{I}}Zatrucie 3{{/I}})",
+        "Zdolności Hordy": "",
+        "Opcje Hordy": "",
+        "Upór": "5",
+        "Odwaga": "4",
+        "Szybkość": "6",
+        "Rozmiar": "Wielki",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "28"
+      }
+    ],
+    "Tabela_Rozmiarow": [
+      {
+        "Rozmiar": "Malutki",
+        "Przykłady": "Cherub, Serwoczaszka, Tyranidzki Rozrywacz",
+        "Modyfikator Testu Ataku": "+2 do Obrony",
+        "Zmiejszenie Poziomu Ukrycia": "+2 do ST Testu wykrycia"
+      },
+      {
+        "Rozmiar": "Mały",
+        "Przykłady": "Grot, Gyrinx, Sonda Bojowa, Szczurak",
+        "Modyfikator Testu Ataku": "+1 do Obrony",
+        "Zmiejszenie Poziomu Ukrycia": "+1 do ST Testu wykrycia"
+      },
+      {
+        "Rozmiar": "Średni",
+        "Przykłady": "Człowiek, Aeldari, Kosmiczny Marine, T’au",
+        "Modyfikator Testu Ataku": "-",
+        "Zmiejszenie Poziomu Ukrycia": "-"
+      },
+      {
+        "Rozmiar": "Duży",
+        "Przykłady": "Nekroński Niszczyciel, Ogryn, Terminator Kosmicznych Marines, Tyranidzki Wojownik",
+        "Modyfikator Testu Ataku": "+1 dodatkowa kość do puli Testu Trafienia",
+        "Zmiejszenie Poziomu Ukrycia": "+1 dodatkowa kość do puli Testu Wykrycia"
+      },
+      {
+        "Rozmiar": "Wielki",
+        "Przykłady": "Drednot, Tyran Roju, Władca upiorów",
+        "Modyfikator Testu Ataku": "+2 dodatkowa kość do puli Testu Trafienia",
+        "Zmiejszenie Poziomu Ukrycia": "+2 dodatkowa kość do puli Testu Wykrycia"
+      },
+      {
+        "Rozmiar": "Ogromny",
+        "Przykłady": "Baneblade, Land Raider, Większy Demon",
+        "Modyfikator Testu Ataku": "+3 dodatkowa kość do puli Testu Trafienia",
+        "Zmiejszenie Poziomu Ukrycia": "+3 dodatkowa kość do puli Testu Wykrycia"
       }
     ],
     "Archetypy": [
@@ -1909,7 +2179,7 @@
         "Umiejętności Archetypu": "Wiedza ogólna 2",
         "Zdolność Archetypu": "{{B}}Zapiski Administratum{{/B}}\nJesteś wyjątkowo uzdolniony w przebijaniu się przez kolosalną machinę, jaką jest biurokracja Imperium. Otrzymujesz +Ranga dodatkowych kości, kiedy wykonujesz Test umiejętności w celu pozyskania informacji z imperialnych źródeł, najczęściej w Testach Wpływu bądź Analizy (Int).",
         "Ekwipunek": "szaty Administratum, pistolet laserowy, nóż, autopióro, infoczytnik, trzy zwoje ze starożytnymi zapiskami.",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "95"
       },
@@ -1937,7 +2207,7 @@
         "Umiejętności Archetypu": "Przebiegłość 1",
         "Zdolność Archetypu": "{{B}}Złodziejaszek{{/B}}\nŻycie w ubóstwie sprawiło, że jesteś w stanie znaleźć zapasy nawet w najmniej sprzyjających okolicznościach i miejscu. Otrzymujesz +Ranga dodatkowych kości do Testów Przebiegłości (Ogd). Raz na sesję możesz wykonać Test Wpływu lub Przebiegłości, by zdobyć przedmiot, który jest liczony jako coś, co przygotowałeś z wyprzedzeniem.",
         "Ekwipunek": "nóż {{I}}lub{{/I}} miecz, śpiwór, manierka, symbol gangu i jedno do wyboru z: pistolet laserowy lub pistolet automatyczny lub pistolet wielkokalibrowy lub rewolwer.",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "96"
       },
@@ -1951,7 +2221,7 @@
         "Umiejętności Archetypu": "Umiejętności strzeleckie 2, Walka wręcz 2, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Czystość wiary{{/B}}\nTy i twoi sojusznicy w promieniu 15 metrów od ciebie otrzymujecie +Dwukrotność Rangi dodatkowych kości do Testów Spaczenia. Otrzymujesz +Dwukrotność Rangi dodatkowych kości do wszystkich Testów odparcia efektów mocy psionicznych.",
         "Ekwipunek": "pancerz wspomagany Sororitas, różaniec Eklezjarchatu, szaty Sororitas, zestaw piśmienniczy, kopia Reguły Sororitas i jedno do wyboru z: bolter lub pistolet boltowy i miecz łańcuchowy",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "99"
       },
@@ -1979,7 +2249,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujność 3, Ukrywanie się 3, Umiejętności strzeleckie 3, Walka wręcz 3",
         "Zdolność Archetypu": "{{B}}Przewaga terenowa{{/B}}\nOtrzymujesz +Ranga dodatkowych kości do Testów Ukrywania się (Zr), kiedy ukrywasz się za jakąś przeszkodą terenową.",
         "Ekwipunek": "pancerz zwiadowcy, nóż bojowy Astartes, trzy granaty odłamkowe, mikrokomunikator i jedno do wyboru z: bolter {{I}}lub{{/I}} pistolet boltowy i miecz łańcuchowy {{I}}lub{{/I}} strzelba Astartes {{I}}lub{{/I}} karabin wyborowy Astartes i peleryna maskująca",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "106"
       },
@@ -2021,7 +2291,7 @@
         "Umiejętności Archetypu": "Intuicja 2, Medycyna 3, Walka wrecz 2, Wiedza ogólna 4, Zastraszanie 2",
         "Zdolność Archetypu": "{{B}}Sad duchowy{{/B}}\nGdy wykonujesz Test wcelu odkrycia grzechów innej postaci (poprzez przymus, sledztwo czy instynkt), zyskujesz +Ranga dodatkowych kosci. Ponadto podczas Przegrupowania możesz usunac wszystkie Traumy jednej wierzacej w Imperialny Kult postaci.",
         "Ekwipunek": "Młot szokowy, narzedzia tortur, niezbednik misjonarza, pistolet laserowy, przenosna mównica, rosarius, szaty Ministorum, ksiegi Ministorum",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Osamotniony System",
         "Strona": "113"
       },
@@ -2035,7 +2305,7 @@
         "Umiejętności Archetypu": "Walka wręcz 2",
         "Zdolność Archetypu": "{{B}}To tylko draśnięcie{{/B}}\nPolegasz na szybkości i wypracowanym refleksie, by unikać ran i ciosów. Możesz używać Zręczności zamiast Wytrzymałości, kiedy wykonujesz rzut Determinacji przeciwko Obrażeniom z ataku. Możesz także wykonać rzut Determinacji przeciwko Ranom śmiertelnym. Nie możesz korzystać z tej zdolności jeśli jesteś w jakiś sposób unieruchomiony, na przykład będąc w Stanie {{I}}Unieruchomienie.{{/I}}",
         "Ekwipunek": "dwa ostrza energetyczne Kultu Śmierci, kombinezon, nóż, pistolet laserowy, trzy dawki stymu",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "102"
       },
@@ -2091,7 +2361,7 @@
         "Umiejętności Archetypu": "Czujność 1, Intuicja 2, Perswazja 2, Przebiegłość 1",
         "Zdolność Archetypu": "{{B}}Patent Kupiecki{{/B}}\nJesteś mistrzem w naginaniu sytuacji na własną korzyść. Otrzymujesz +Ranga dodatkowych kości do wszystkich Testów Perswazji (Ogd) i Testów Wpływu służących zdobywaniu przedmiotów i usług.",
         "Ekwipunek": "imperialna fregata. Wybierz też dwa dowolne przedmioty, każdy o Wartości twojego poziomu + 4 lub niższej i Dostępności Niespotykane lub wyższej oraz jedno z: płaszcz balistyczny {{I}}lub{{/I}} pancerz skorupowy lub lekki pancerz wspomagany",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Główny",
         "Strona": "104"
       },
@@ -2105,7 +2375,7 @@
         "Umiejętności Archetypu": "Korzystanie z technologii 3, Wiedza ogólna 3",
         "Zdolność Archetypu": "{{B}}Statystyczna pewność{{/B}}\nTwoja pomoc dostarcza sojusznikom dokładnej matematycznej analizy, co usuwa wszelkie watpliwosci i kaprysy losu. Jesli udzielasz sojusznikowi Pomocy, mozesz zmniejszyc wynikajaca z Pomocy pule dodatkowych kosci w liczbie maksymalnie twojej Rangi. Kazda usunieta kosc gwarantuje sojusznikowi pewną Ikonę w Tescie.",
         "Ekwipunek": "Auspex, autopióro, dowolne 2 augmentacje, infoczytnik, multinarzedzie, pistolet laserowy, poswiecony smar, symbole władzy ({{RED}}ADEPTUS MECHANICUS{{/RED}} i {{RED}}INKWIZYCJA{{/RED}}), szaty adepta (ubiór)",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Osamotniony System",
         "Strona": "117"
       },
@@ -2119,7 +2389,7 @@
         "Umiejętności Archetypu": "Intuicja 2, Korzystanie ztechnologii 1, Medycyna 3, Walka wrecz 1, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Wydobycie prawdy{{/B}}\nAby zasłuzyc na inkwizytorska rozetę, musisz najpierw doprowadzic do mistrzostwa umiejetnosc czytania grzesznych serc ludzi i xenos. Jesli odniesiesz sukces w Tescie majacym na celu wydobycie informacji od innej postaci, zyskujesz darmowe Przeniesienia w liczbie równej twojej Randze.",
         "Ekwipunek": "Bicz neuronowy, dreczyciel, symbol władzy, dowolne 3 elementy Ekwipunku o Słowie kluczowym {{RED}}IMPERIUM{{/RED}} o Powszechnej (0), Rzadkiej (1) {{I}}lub{{/I}} Niespotykanej (2) Dostepnosci",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Osamotniony System",
         "Strona": "118"
       },
@@ -2147,7 +2417,7 @@
         "Umiejętności Archetypu": "Przetrwanie 1",
         "Zdolność Archetypu": "{{B}}Mutant{{/B}}\nŻycie w okropnych warunkach odcisnęło na tobie piętno mutacji. Wybierz dwie Mutacje z listy Mutacji Wyrzutków ze (str. 287). Za każdym razem, kiedy twoja Ranga się zwiększa, możesz wybrać kolejną Mutację z listy.",
         "Ekwipunek": "pistolet laserowy lub pistolet automatyczny, nóż, śpiwór, manierka, podarte ubrania",
-        "Inne": "{{B}}WPŁYW{{/B}}: -1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: -1",
         "Podręcznik": "Główny",
         "Strona": "105"
       },
@@ -2161,7 +2431,7 @@
         "Umiejętności Archetypu": "Dowodzenie 4, Perswazja 3, Umiejetnosci strzeleckie 2, Walka wrecz 2, Wiedza ogólna 2, Zastraszanie 2",
         "Zdolność Archetypu": "{{B}}Litania uczynków{{/B}}\nKiedy niesiesz lub znajdujesz sie obok twego Simulacrum Imperialis, ty iwszyscy znajdujacy sie wzasiegu twojego głosu wierzacy wImperialne Credo sojusznicy zyskujecie premie +1 do Siły. Ponadto, wramach Akcji bojowej, mozesz osadzic Simulacrum na miejscu. Do twojej nastepnej tury ty iwszyscy wierzacy wImperialne Credo sojusznicy wpromieniu 5 metrów zyskujecie premie +Ranga do Determinacji.",
         "Ekwipunek": "Bolter, kopia {{I}}Reguły Sororitas{{/I}}, pancerz wspomagany Sororitas, pełne zapiski na temat swietej, pistolet boltowy, rózaniec Eklezjarchatu, Simulacrum Imperialis, 3 granaty odłamkowe, 3 granaty przeciwpancerne",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Osamotniony System",
         "Strona": "102"
       },
@@ -2175,7 +2445,7 @@
         "Umiejętności Archetypu": "Pilotaż 3, Umiejętności strzeleckie 3, Walka wrecz 3, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Anielska Obecność{{/B}}:\nTy i wszyscy wierzacy wImperialne Credo sojusznicy w promieniu 15 metrów zyskujecie premie +Ranga do Testów Odwagi. Ponadto, jesli wyrywasz sie ze Zwarcia przy pomocy plecaka odrzutowego, przeciwnikom nie przysługuje Atak okazjonalny.",
         "Ekwipunek": "Egzemplarz Reguły Sororitas, pancerz wwspomagany Sororitas, plecak odrzutowy wz. San Leor, rózaniec Eklezjarchatu, 3 granaty odłamkowe, 3 granaty przeciwpancerne, 2 pistolety boltowe {{I}}lub{{/I}} 2 pistolety Inferno {{I}}lub{{/I}} 2 ręczne miotacze ognia",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Osamotniony System",
         "Strona": "103"
       },
@@ -2189,7 +2459,7 @@
         "Umiejętności Archetypu": "Analiza 3, Dowodzenie 2, Perswazja 2, Umiejetnosci strzeleckie 2, Walka wrecz 2, Wiedza ogólna 4",
         "Zdolność Archetypu": "{{B}}Wybitna poliglotka{{/B}}\nJestes mistrzynia słowa pisanego imówionego, zapisujesz tez wypowiedzi towarzyszy iinteresujace odkrycia wcelu ich pózniejszego zbadania. Kiedy na głos przekazujesz słowa innej osoby (np. tłumaczac tekst xenos, rozprowadzajac rozkazy oficerów, powtarzajac inspirujaca przemowe innego bohatera czy cytujac swiete ksiegi), zyskujesz +Ranga dodatkowych kosci do dowolnego zwiazanego ztym Testu. Kary do ST podczas interakcji społecznej znieznanymi gatunkami lub kulturami sa dla ciebie zmniejszone opołowe.",
         "Ekwipunek": "Drzewce dialogistki, egzemplarz {{I}}Reguły Sororitas{{/I}}, liczne ksiazki na temat lingwistyki iImperialnego Credo, oriatius, pancerz wspomagany Sororitas, pistolet boltowy, rózaniec Eklezjarchatu",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Osamotniony System",
         "Strona": "101"
       },
@@ -2203,7 +2473,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujność 3, Dowodzenie 1, Przetrwanie 1, Ukrywanie się 3, Umiejętności strzeleckie 5, Walka wręcz 4, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Wszechstronność taktyczna{{/B}}\nSzkolenie przygotowało cię na każdą ewentualność. Kiedy uzyskasz Trafienie Krytyczne, możesz rzucić dwa razy, korzystając z Tabeli Trafień krytycznych, i wybrać jeden z wyników.",
         "Ekwipunek": "pancerz wspomagany wzór VII Aquila, bolter, pistolet boltowy, nóż bojowy Astartes, 3 granaty odłamkowe, 3 granaty przeciwpancerne",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Główny",
         "Strona": "113"
       },
@@ -2259,7 +2529,7 @@
         "Umiejętności Archetypu": "Korzystanie z technologii 3, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Rytuał naprawy{{/B}}\nOtrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Korzystania z technologii (Int) wykonywanych, by naprawić uszkodzone maszyny. Wszystkie wykonywane przez ciebie Testy Korzystania z technologii (Int) trwają o połowę krócej niż normalnie.",
         "Ekwipunek": "topór Omnisjasza, pistolet laserowy, jeden mechadendryt, dowolne dwa wszczepy, multinarzędzie, lekki pancerz wspomagany, pieczęć omnisjańska (symbol władzy)",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Główny",
         "Strona": "109"
       },
@@ -2273,7 +2543,7 @@
         "Umiejętności Archetypu": "Walka wręcz 3, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Pancerz wiary{{/B}}\nOtrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów ataków w zwarciu przeciwko celom posiadającym Słowo kluczowe {{RED}}CHAOS{{/RED}} lub {{RED}}HERETYK{{/RED}}. Twoja Odwaga zwiększa się o wartość Rangi.",
         "Ekwipunek": "miecz energetyczny, tarcza szturmowa, pancerz skorupowy, szaty Ministorum",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "110"
       },
@@ -2287,7 +2557,7 @@
         "Umiejętności Archetypu": "Mistrzostwo psioniczne 2",
         "Zdolność Archetypu": "{{B}}Runy bitewne{{/B}}\nOtrzymujesz Słowo kluczowe {{RED}}PSIONIK{{/RED}} i jesteś psionikiem. Znasz Uniwersalne zdolności psioniczne (str. 267), Moc psioniczną Porażenie, pojedynczą moc Run bitewnych, którą wybierzesz, a także możesz nauczyć się innych mocy psionicznych, zgodnie z zasadami z Rozdziału 11.",
         "Ekwipunek": "pancerz runiczny, wiedźmie ostrze, miotacz ostrzy, zestaw upiorytowych run, kamień duszy",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Główny",
         "Strona": "114"
       },
@@ -2315,7 +2585,7 @@
         "Umiejętności Archetypu": "Dowodzenie 2, Umiejętności strzeleckie 1, Walka wręcz 1, Zastraszanie 2",
         "Zdolność Archetypu": "{{B}}Trwożny szacunek{{/B}}\nTy i wszyscy sojusznicy w promieniu 15 metrów od ciebie, którzy cię widzą, możecie dodać +Dwukrotność Rangi dodatkowych kości do Testów Odwagi. Możesz dodać +Dwukrotność Rangi dodatkowych kości do każdego Testu Zastraszania (SW), wliczając Interakcje bojowe.",
         "Ekwipunek": "pistolet boltowy, miecz łańcuchowy, płaszcz balistyczny, kuchenny zestaw polowy Munitorum, koc, zestaw do higieny, {{I}}Kodeks żołnierski{{/I}}, 3 porcje racji żywnościowych",
-        "Inne": "{{B}}WPŁYW{{/B}}: +3",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +3",
         "Podręcznik": "Główny",
         "Strona": "111"
       },
@@ -2329,7 +2599,7 @@
         "Umiejętności Archetypu": "Zastraszanie 2",
         "Zdolność Archetypu": "{{B}}Zielona fala{{/B}}\nDowodzisz hordą chopaków (str. 354) równą trzykrotności twojej Rangi. Jeśli któryś z twoich chopaków zginie, może zostać zastąpiony nowym pomiędzy sesjami, zgodnie z decyzją Mistrza Gry.",
         "Ekwipunek": "cienszki pancerz, gnat samorupka, rembak samorupka",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Główny",
         "Strona": "115"
       },
@@ -2343,7 +2613,7 @@
         "Umiejętności Archetypu": "Analiza 2, Czujność 2, Przebiegłość 2",
         "Zdolność Archetypu": "{{B}}Cenna zdobycz{{/B}}\nOtrzymujesz +Ranga dodatkowych kości do Testów Przebiegłości (Ogd) oraz każdego Testu wykonywanego, by wytropić daną osobę.",
         "Ekwipunek": "płaszcz balistyczny, gogle termowizyjne, mapy Światów Centralnych, multinarzędzie, dowolna broń ze Słowem kluczowym {{RED}}PALNA{{/RED}}, dowolna broń biała o Dostępności Rzadka lub wyższej",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "112"
       },
@@ -2357,7 +2627,7 @@
         "Umiejętności Archetypu": "Dowodzenie 4, Umiejetnosci strzeleckie 3, Walka wrecz 3, Wiedza ogólna 4",
         "Zdolność Archetypu": "{{B}}Przykład dla prawych{{/B}}\nJestes zarazem inspirujacym dowódca wojskowym i zywym cudem. Zyskujesz +Ranga punktów Wiary (str. 142). Za kazdym razem, kiedy zadajesz Rane, mozesz wramach Akcji darmowej wydac 1 punkt Wiary, by zyskac 1 punkt Chwały.",
         "Ekwipunek": "Egzemplarz {{I}}Reguły Sororitas{{/I}}, pancerz wspomagany Sororitas, rosarius, rózaniec Eklezjarchatu, szata liturgiczna Sororitas Bolter wzór Potepiciel {{I}}lub{{/I}} bolter połaczony z miotaczem ognia jako bron sprzezona, karabin plazmowy {{I}}lub{{/I}} karabin termiczny Błogosławione ostrze {{I}}lub{{/I}} miecz łancuchowy, {{I}}lub{{/I}} patroszyciel, {{I}}lub{{/I}} miecz energetyczny Pistolet boltowy {{I}}lub{{/I}} pistolet Inferno, {{I}}lub{{/I}} pistolet plazmowy Zagiew swietego ognia lub berło wytłumiajace",
-        "Inne": "{{B}}WPŁYW{{/B}}: +3",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +3",
         "Podręcznik": "Osamotniony System",
         "Strona": "104"
       },
@@ -2371,7 +2641,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujność 3, Ukrywanie się 3, Umiejętności strzeleckie 6, Walka wręcz 3",
         "Zdolność Archetypu": "{{B}}Skupienie Intercessora{{/B}}\nOtrzymujesz +Dwukrotność Rangi dodatkowych kości do każdego Testu Umiejętności strzeleckich (Zr) wykonywanego z użyciem broni ze Słowem kluczowym {{RED}}PRIMARIS{{/RED}}.",
         "Ekwipunek": "pancerz wspomagany wzór X Tacticus, karabin boltowy, ciężki pistolet boltowy, nóż bojowy Astartes, 3 granaty odłamkowe, 3 granaty przeciwpancerne, autorelikwiarz balistyczny (wzór Absolutis)",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Główny",
         "Strona": "117"
       },
@@ -2385,7 +2655,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujnosc 3, Dowodzenie 3, Intuicja 3, Przetrwanie 1, Ukrywanie sie 3, Umiejetnosci strzeleckie 5, Walka wrecz 5, Wiedza ogólna 4",
         "Zdolność Archetypu": "{{B}}Tradycja Zakonu{{/B}}\nZyskujesz 1 punkt Wiary imozesz nabywac Talenty Wiary dostepne dla postaci ze Słowem kluczowym {{RED}}ADEPTUS MINISTORUM{{/RED}}. Wramach Akcji bojowej mozesz wydac 1 punkt Wiary, by do konca sceny sojusznik wzasiegu głosu zyskał twoje Słowo kluczowe {{RED}}[ZAKON]{{/RED}} ze wszystkimi korzysciami, wyłaczajac wyposazenie oraz premie płynace z Tradycji i genoziarna. Ponadto wszyscy sojusznicy posiadajacy twoje Słowo kluczowe {{RED}}[ZAKON]{{/RED}} wzasiegu 5 x Ranga metrów otrzymuja premie +Ranga do Testów Odwagi.",
         "Ekwipunek": "Crozius arcanum, hełm czaszkowy, pancerz wspomagany wzór VII, pistolet boltowy, rosarius, 3 granaty odłamkowe, 3 granaty przeciwpancerne",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Osamotniony System",
         "Strona": "106"
       },
@@ -2399,7 +2669,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujnosc 3, Dowodzenie 1, Medycyna 5, Przetrwanie 1, Ukrywanie sie 3, Umiejetnosci strzeleckie 5, Walka wrecz 5, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Pierwotna helisa{{/B}}\nTwój obowiazek wobec rannych towarzyszy ustepuje jedynie ostatniej posłudze udzielanej poległym. Jesli podczas leczenia Ran celu odniesiesz sukces w Tescie Medycyny (Int), leczony odzyskuje dodatkowa Zywotnosc równa twojej Randze.",
         "Ekwipunek": "Miecz łancuchowy, narthecium, pistolet boltowy, pancerz wspomagany wzór VII, 3 granaty odłamkowe, 3 granaty przeciwpancerne",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Osamotniony System",
         "Strona": "105"
       },
@@ -2413,7 +2683,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujnosc 3, Mistrzostwo psioniczne 4, Przetrwanie 1, Ukrywanie sie 3, Umiejetnosci strzeleckie 5, Walka wrecz 5, Wiedza ogólna 2",
         "Zdolność Archetypu": "{{B}}Kronikarz Zakonu{{/B}}\nOtrzymujesz Słowo kluczowe {{RED}}PSIONIK{{/RED}} i jestes psionikiem. Znasz Uniwersalne zdolnosci psioniczne (str.267), atakze moc psioniczna Porazenie. Masz dostep do dyscypliny Kronikarstwa iznasz jedna zjej mocy, wybrana przez ciebie. Mozesz wybrac jeszcze jedna dyscypline psioniczna i uczyc sie jej mocy zgodnie z zasadami opisanymi w Rozdziale 11 wPodreczniku głównym.",
         "Ekwipunek": "Kaptur psioniczny, kostur psioniczny, pancerz wspomagany wzór VII, pistolet boltowy, 3 granaty odłamkowe, 3 granaty przeciwpancerne",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Osamotniony System",
         "Strona": "107"
       },
@@ -2427,7 +2697,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujnosc 3, Ukrywanie sie 3, Umiejetnosci strzeleckie 4, Walka wrecz 4, Zastraszanie 3",
         "Zdolność Archetypu": "{{B}}Taktyka grozy{{/B}}\nKiedy twój Poziom ukrycia zostaje zmniejszony do 0 lub kiedy atakujesz Zagrozenie zzaskoczenia, możesz zazadac od wszystkich widzacych lub słyszacych cie wrogów Testu Grozy o ST równym twojej Randze + 1.",
         "Ekwipunek": "Ciezki pistolet boltowy, grawitochron, karabinek boltowy, nóz bojowy Astartes, pancerz wspomagany wzór X Phobos, 3 granaty odłamkowe, 3 granaty przeciwpancerne",
-        "Inne": "{{B}}WPŁYW{{/B}}: +1",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
         "Podręcznik": "Osamotniony System",
         "Strona": "108"
       },
@@ -2441,7 +2711,7 @@
         "Umiejętności Archetypu": "Atletyka 3, Czujność 3, Dowodzenie 3, Przetrwanie 1, Ukrywanie się 3, Umiejętności strzeleckie 5, Walka wręcz 5, Wiedza ogólna 1",
         "Zdolność Archetypu": "{{B}}Mistrz pola bitwy{{/B}}\nZwiększ Obrażenia każdej swojej broni o 1.",
         "Ekwipunek": "{{B}}Wyposażenie Terminatora{{/B}}:\nPancerz Terminatora, bolter podwójny, miecz energetyczny lub rękawica energetyczna, Crux Terminatus.\n\n{{B}}Wyposażenie Terminatora szturmowego{{/B}}:\nPancerz Terminatora, młot energetyczny i tarcza szturmowa lub dwa szpony energetyczne (S + 5/5/−1/–/Brutalna, Niewyważona (2)), lub broń sprzężona ze Słowem kluczowym {{RED}}ADEPTUS ASTARTES{{/RED}}, Crux Terminatus.\n\n{{B}}Wyposażenie drużyny wsparcia ogniowego{{/B}}:\nPancerz wspomagany wzór VII Aquila, pistolet boltowy, zmodyfikowany bolter (PP zwiększone o 1) lub ciężki miotacz ognia, lub bolter podwójny, lub ciężki bolter; 3 granaty odłamkowe, 3 granaty przeciwpancerne\n\n{{B}}Wyposażenie drużyny szturmowej{{/B}}:\nPancerz wspomagany wzór VII Aquila, dwie dowolne bronie ze Słowem kluczowym {{RED}}ADEPTUS ASTARTES{{/RED}}.",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Apoteoza Zarazy",
         "Strona": "25"
       },
@@ -2455,7 +2725,7 @@
         "Umiejętności Archetypu": "Korzystanie ztechnologii 5, Umiejetnosci strzeleckie 2, Walka wrecz 2, Wiedza ogólna 2",
         "Zdolność Archetypu": "{{B}}Władca Kultu Maszyny{{/B}}\nNie wiaza cie juz biologiczne ograniczenia ciała i automatycznie łaczysz sie z pobliska technologia. W ramach Akcji podstawowej mozesz Pomagac wszystkim sojusznikom wzasiegu 10 metrów, którzy\nmaja Słowo kluczowe {{RED}}ADEPTUS MECHANICUS{{/RED}} lub uzywaja ekwipunku zduchem maszyny (w tym broni palnej i zaawansowanej broni białej), dzieki czemu uzyskuja +Ranga dodatkowych kosci do swoich Testów.",
         "Ekwipunek": "Blaster volkitowy {{I}}lub{{/I}} promien dezintegracji, reczne działko obrotowe lub serpenta fosforowa, topór Omnisjasza. Jeden mechadendryt, lekki pancerz wspomagany, pole refrakcyjne, Dowolne 3 augmentacje, Multinarzedzie, Pieczec Omnisjasza (symbol władzy), Poswiecony smar",
-        "Inne": "{{B}}WPŁYW{{/B}}: +2",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +2",
         "Podręcznik": "Osamotniony System",
         "Strona": "112"
       },
@@ -2469,40 +2739,54 @@
         "Umiejętności Archetypu": "Zwiększ dwie wybrane Umiejętności do wartości 4",
         "Zdolność Archetypu": "{{B}}Nieograniczona władza{{/B}}\nPowierzono ci władzę absolutną, byś chronił Imperium. Otrzymujesz +Dwukrotność Rangi dodatkowych kości do każdego Testu umiejętności społecznych wykonywanego na postaci ze Słowem kluczowym {{RED}}IMPERIUM{{/RED}}.",
         "Ekwipunek": "inkwizytorska rozeta, dowolne dwie bronie o Wartości 7 lub mniejszej i Dostępności Wyjątkowa lub wyższej. Wybierz też jedno z: płaszcz balistyczny {{I}}lub{{/I}} pancerz skorupowy {{I}}lub{{/I}} pancerz wspomagany Ignatus {{I}}lub{{/I}} lekki pancerz wspomagany",
-        "Inne": "{{B}}WPŁYW{{/B}}: +4",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +4",
         "Podręcznik": "Główny",
         "Strona": "116"
+      },
+      {
+        "Poziom": "4",
+        "Frakcja": "Adeptus Astartes",
+        "Nazwa": "Czarna Tarcza Straży Śmierci",
+        "Koszt PD": "277",
+        "Słowa Kluczowe": "{{RED}}ADEPTUS ASTARTES, IMPERIUM, INKWIZYCJA, ORDO XENOS{{/RED}}",
+        "Atrybuty Archetypu": "Siła 4, Wytrzymałość 5, Zręczność 5, Inicjatywa 5, Siła Woli 4, Inteligencja 3",
+        "Umiejętności Archetypu": "Atletyka 3, Czujność 3, Dowodzenie 2, Ukrywanie się 3, Umiejętności strzeleckie 5, Walka wręcz 4, Wiedza ogólna 3",
+        "Zdolność Archetypu": "{{B}}Zgładzić obcych{{/B}}\nOtrzymujesz +Ranga dodatkowych kości do wszystkich Testów ataku przeciwko Zagrożeniom xenos.",
+        "Ekwipunek": "bolter, nóż bojowy Astartes, pancerz wspomagany wzór VII Aquila, pistolet boltowy, 3 granaty odłamkowe, 3 granaty przeciwpancerne",
+        "Inne": "{{B}}WPŁYWY{{/B}}: +1",
+        "Podręcznik": "Zniszczyć Rój",
+        "Strona": "19"
       }
     ],
     "Bonusy_Frakcji": [
       {
         "Frakcja": "Adepta Sororitas",
         "Premia 1": "Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór",
-        "Premia 2": "Wpływ {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
-        "Premia 3": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna"
+        "Premia 2": "Wpływy {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
+        "Premia 3": "Determinacja lub Wpływy lub Odporność psychiczna"
       },
       {
         "Frakcja": "Adeptus Astra Telepathica",
         "Premia 1": "Żywotność {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Upór",
-        "Premia 2": "Wpływ {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Upór",
+        "Premia 2": "Wpływy {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Upór",
         "Premia 3": "Determinacja {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Upór"
       },
       {
         "Frakcja": "Adeptus Mechanicus",
         "Premia 1": "Odwaga {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
-        "Premia 2": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna",
+        "Premia 2": "Determinacja {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Odporność psychiczna",
         "Premia 3": "Upór {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Majątek"
       },
       {
         "Frakcja": "Adeptus Ministorum",
         "Premia 1": "Upór {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja",
         "Premia 2": "Wpływy {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Odwaga",
-        "Premia 3": "Determinacja lub Wpływ {{I}}lub{{/I}} Odporność psychiczna"
+        "Premia 3": "Determinacja lub Wpływy lub Odporność psychiczna"
       },
       {
         "Frakcja": "Astra Militarum",
-        "Premia 1": "Upór {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odwaga",
-        "Premia 2": "Odporność psychiczna {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Wpływ",
+        "Premia 1": "Upór lub Wpływy lub Odwaga",
+        "Premia 2": "Odporność psychiczna {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Wpływy",
         "Premia 3": "Determinacja {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Majątek"
       },
       {
@@ -2514,7 +2798,7 @@
       {
         "Frakcja": "Dynastie Wolnych Kupców",
         "Premia 1": "Upór {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Determinacja",
-        "Premia 2": "Upór {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}}{{RED}} [DOWOLNE] {{/RED}}Słowo kluczowe",
+        "Premia 2": "Upór {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} [DOWOLNE] Słowo kluczowe",
         "Premia 3": "Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór"
       },
       {
@@ -2526,44 +2810,44 @@
       {
         "Frakcja": "Adeptus Astartes",
         "Premia 1": "Żywotność {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja",
-        "Premia 2": "Determinacja {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna",
+        "Premia 2": "Determinacja {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Odporność psychiczna",
         "Premia 3": "Wpływy {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór"
       },
       {
         "Frakcja": "Aeldari",
-        "Premia 1": "Determinacja {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Upór",
-        "Premia 2": "Upór {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Odwaga lub Wpływ",
+        "Premia 1": "Determinacja lub Odwaga lub Odporność psychiczna lub Majątek lub Wpływy lub Upór",
+        "Premia 2": "Upór {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Odwaga lub Wpływy",
         "Premia 3": "-"
       },
       {
         "Frakcja": "Ork",
         "Premia 1": "Odporność psychiczna {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Determinacja",
-        "Premia 2": "Determinacja {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
-        "Premia 3": "Żywotność {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływ {{I}}lub{{/I}} Determinacja"
+        "Premia 2": "Determinacja {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Upór",
+        "Premia 3": "Żywotność {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Determinacja"
       },
       {
         "Frakcja": "Chaos",
         "Premia 1": "Spaczenie {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Odporność psychiczna",
-        "Premia 2": "Wpływ {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Żywotność",
+        "Premia 2": "Wpływy {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Żywotność",
         "Premia 3": "Determinacja {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Spaczenie"
       },
       {
         "Frakcja": "Ogryn",
-        "Premia 1": "x",
-        "Premia 2": "x",
-        "Premia 3": "x"
+        "Premia 1": "Odporność psychiczna {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Odwaga",
+        "Premia 2": "Upór {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Wpływy",
+        "Premia 3": "Wpływy {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Upór"
       },
       {
         "Frakcja": "Szczurak",
-        "Premia 1": "x",
-        "Premia 2": "x",
-        "Premia 3": "x"
+        "Premia 1": "Odporność psychiczna {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Wpływy",
+        "Premia 2": "Majątek {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} Upór",
+        "Premia 3": "Determinacja {{I}}lub{{/I}} Upór {{I}}lub{{/I}} Odwaga"
       },
       {
         "Frakcja": "Kroot",
-        "Premia 1": "x",
-        "Premia 2": "x",
-        "Premia 3": "x"
+        "Premia 1": "Żywotność {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Majątek",
+        "Premia 2": "Determinacja {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Wpływy",
+        "Premia 3": "Upór {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Determinacja"
       }
     ],
     "Cechy": [
@@ -3275,6 +3559,16 @@
         "Typ": "Psionika",
         "Nazwa": "{{RED}}TELEPATIA{{/RED}}",
         "Opis": "Moce psioniczne umożliwiające psionikowi wejście do umysłu innej istoty."
+      },
+      {
+        "Typ": "Nawiasy",
+        "Nazwa": "{{RED}}[FLOTA-RÓJ]{{/RED}}",
+        "Opis": "Wszyscy tyranidzi są zarządzani przez Umysł Roju, ale jego odłamy, liczne nękające galaktykę floty‑roje, podążają zupełnie różnymi ścieżkami, zależnie od natury napotkanych wrogów."
+      },
+      {
+        "Typ": "Tyranid",
+        "Nazwa": "{{RED}}SYNAPSA{{/RED}}",
+        "Opis": "Więksi i inteligentniejsi tyranidzi pełnią funkcję psionicznych przekaźników, umacniając kontrolę Umysłu Roju nad rojami pomniejszych osobników. Tego rodzaju \"stwory synaptyczne\" mogą nadpisać instynkty swoich podwładnych, popychając roje do marszu wprost w objęcia śmierci tylko po to, by wyczerpać zapasy amunicji nieprzyjaciela, bronić większych tyranidów lub koordynować strategię na skalę globalną."
       }
     ],
     "Talenty": [
