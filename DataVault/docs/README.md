@@ -62,7 +62,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. Pierwszy j
 - Drugi wiersz nagłówka: filtr tekstowy oraz filtr listy (przycisk ▾).
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
-- Długie komórki: kliknij, aby rozwinąć/zwinąć treść.
+- Długie komórki: kliknij, aby rozwinąć/zwinąć treść (zwijanie działa po przekroczeniu 9 linii wizualnych, uwzględniając zawijanie wierszy).
 - Lista wartości w filtrze listowym usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` wyłącznie w etykietach (bez wpływu na logikę filtrowania).
 - Zakładka **Archetypy** ma domyślny sort: `Poziom` rosnąco, a następnie `Frakcja` alfabetycznie.
 - Checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” ukrywa/pokazuje zestaw zakładek tworzenia postaci.
@@ -130,7 +130,7 @@ Below are two equivalent ways to update the data. The first is recommended for n
 - Second header row: text filter + list filter (▾ button).
 - Select 2+ rows: record comparison view.
 - Click a trait tag (`Cechy`): description in the popover panel.
-- Long cells: click to expand/collapse content.
+- Long cells: click to expand/collapse content (cells are clamped after 9 visual lines, including wrapped lines).
 - The list filter labels strip `{{RED}}`, `{{B}}`, `{{I}}` markers for display only (filter logic is unchanged).
 - The **Archetypy** tab defaults to sorting by `Poziom` ascending, then `Frakcja` alphabetically.
 - The “Czy wyświetlić zakładki dotyczące tworzenia postaci?” checkbox hides/shows the character creation tabs set.
