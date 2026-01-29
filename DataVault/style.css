@@ -117,6 +117,22 @@ code{color:var(--code)}
   outline:none;
 }
 .input:focus{box-shadow:0 0 0 3px rgba(22,198,12,.18)}
+.checkboxRow{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:12px;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--text2);
+}
+.checkboxRow input{
+  width:16px;
+  height:16px;
+  accent-color:var(--accent);
+  cursor:pointer;
+}
 .hint{margin-top:10px; color:var(--text2); font-size:12px}
 .muted{color:var(--muted); margin-top:8px}
 .workspace{
@@ -443,6 +459,58 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bonusy_Frakcji"] td[data-col="Premia 2"],
 .tableWrap table[data-sheet="Bonusy_Frakcji"] th[data-col="Premia 3"],
 .tableWrap table[data-sheet="Bonusy_Frakcji"] td[data-col="Premia 3"]{min-width:56ch}
+
+/* Gatunki */
+.tableWrap table[data-sheet="Gatunki"] th[data-col="Garunek"],
+.tableWrap table[data-sheet="Gatunki"] td[data-col="Garunek"]{min-width:26ch}
+.tableWrap table[data-sheet="Gatunki"] th[data-col="Koszt PD"],
+.tableWrap table[data-sheet="Gatunki"] td[data-col="Koszt PD"]{min-width:4ch; text-align:center}
+.tableWrap table[data-sheet="Gatunki"] th[data-col="Atrybuty"],
+.tableWrap table[data-sheet="Gatunki"] td[data-col="Atrybuty"],
+.tableWrap table[data-sheet="Gatunki"] th[data-col="Umiejętności"],
+.tableWrap table[data-sheet="Gatunki"] td[data-col="Umiejętności"]{min-width:26ch}
+.tableWrap table[data-sheet="Gatunki"] th[data-col="Zdolności gatunkowe"],
+.tableWrap table[data-sheet="Gatunki"] td[data-col="Zdolności gatunkowe"]{min-width:46ch}
+.tableWrap table[data-sheet="Gatunki"] th[data-col="Rozmiar"],
+.tableWrap table[data-sheet="Gatunki"] td[data-col="Rozmiar"]{min-width:10ch; text-align:center}
+.tableWrap table[data-sheet="Gatunki"] th[data-col="Szybkość"],
+.tableWrap table[data-sheet="Gatunki"] td[data-col="Szybkość"]{min-width:4ch; text-align:center}
+
+/* Slowa Kluczowe Frakcji */
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] th[data-col="Frakcja"],
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] td[data-col="Frakcja"],
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] th[data-col="Słowo Kluczowe"],
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] td[data-col="Słowo Kluczowe"]{min-width:26ch}
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] td[data-col="Efekt"]{min-width:26ch}
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Slowa_Kluczowe_Frakcji"] td[data-col="Opis"]{min-width:60ch}
+
+/* Implanty Astartes */
+.tableWrap table[data-sheet="Implanty_Astartes"] th[data-col="Numer"],
+.tableWrap table[data-sheet="Implanty_Astartes"] td[data-col="Numer"]{min-width:4ch; text-align:center}
+.tableWrap table[data-sheet="Implanty_Astartes"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Implanty_Astartes"] td[data-col="Nazwa"]{min-width:30ch}
+.tableWrap table[data-sheet="Implanty_Astartes"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Implanty_Astartes"] td[data-col="Opis"]{min-width:56ch}
+
+/* Sciezki Asuryani */
+.tableWrap table[data-sheet="Sciezki_Asuryani"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Sciezki_Asuryani"] td[data-col="Nazwa"]{min-width:26ch}
+.tableWrap table[data-sheet="Sciezki_Asuryani"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Sciezki_Asuryani"] td[data-col="Efekt"]{min-width:26ch}
+.tableWrap table[data-sheet="Sciezki_Asuryani"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Sciezki_Asuryani"] td[data-col="Opis"]{min-width:56ch}
+
+/* Mutacje Krootow */
+.tableWrap table[data-sheet="Mutacje_Krootow"] th[data-col="Mutacja krootów"],
+.tableWrap table[data-sheet="Mutacje_Krootow"] td[data-col="Mutacja krootów"]{min-width:22ch}
+.tableWrap table[data-sheet="Mutacje_Krootow"] th[data-col="Pożarta ofiara"],
+.tableWrap table[data-sheet="Mutacje_Krootow"] td[data-col="Pożarta ofiara"]{min-width:22ch}
+.tableWrap table[data-sheet="Mutacje_Krootow"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Mutacje_Krootow"] td[data-col="Efekt"]{min-width:26ch}
+.tableWrap table[data-sheet="Mutacje_Krootow"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Mutacje_Krootow"] td[data-col="Opis"]{min-width:56ch}
 
 /* Cechy / Stany / Słowa kluczowe */
 .tableWrap table[data-sheet="Cechy"] th[data-col="Nazwa"],

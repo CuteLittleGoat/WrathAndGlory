@@ -2035,39 +2035,113 @@
     "Tabela_Rozmiarow": [
       {
         "Rozmiar": "Malutki",
-        "Przykłady": "Cherub, Serwoczaszka, Tyranidzki Rozrywacz",
         "Modyfikator Testu Ataku": "+2 do Obrony",
-        "Zmniejszenie Poziomu Ukrycia": "+2 do ST Testu wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+2 do ST Testu wykrycia",
+        "Przykłady": "Cherub, Serwoczaszka, Tyranidzki Rozrywacz"
       },
       {
         "Rozmiar": "Mały",
-        "Przykłady": "Grot, Gyrinx, Sonda Bojowa, Szczurak",
         "Modyfikator Testu Ataku": "+1 do Obrony",
-        "Zmniejszenie Poziomu Ukrycia": "+1 do ST Testu wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+1 do ST Testu wykrycia",
+        "Przykłady": "Grot, Gyrinx, Sonda Bojowa, Szczurak"
       },
       {
         "Rozmiar": "Średni",
-        "Przykłady": "Człowiek, Aeldari, Kosmiczny Marine, T’au",
         "Modyfikator Testu Ataku": "-",
-        "Zmniejszenie Poziomu Ukrycia": "-"
+        "Zmniejszenie Poziomu Ukrycia": "-",
+        "Przykłady": "Człowiek, Aeldari, Kosmiczny Marine, T’au"
       },
       {
         "Rozmiar": "Duży",
-        "Przykłady": "Nekroński Niszczyciel, Ogryn, Terminator Kosmicznych Marines, Tyranidzki Wojownik",
         "Modyfikator Testu Ataku": "+1 dodatkowa kość do puli Testu Trafienia",
-        "Zmniejszenie Poziomu Ukrycia": "+1 dodatkowa kość do puli Testu Wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+1 dodatkowa kość do puli Testu Wykrycia",
+        "Przykłady": "Nekroński Niszczyciel, Ogryn, Terminator Kosmicznych Marines, Tyranidzki Wojownik"
       },
       {
         "Rozmiar": "Wielki",
-        "Przykłady": "Drednot, Tyran Roju, Władca upiorów",
         "Modyfikator Testu Ataku": "+2 dodatkowa kość do puli Testu Trafienia",
-        "Zmniejszenie Poziomu Ukrycia": "+2 dodatkowa kość do puli Testu Wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+2 dodatkowa kość do puli Testu Wykrycia",
+        "Przykłady": "Drednot, Tyran Roju, Władca upiorów"
       },
       {
         "Rozmiar": "Ogromny",
-        "Przykłady": "Baneblade, Land Raider, Większy Demon",
         "Modyfikator Testu Ataku": "+3 dodatkowa kość do puli Testu Trafienia",
-        "Zmniejszenie Poziomu Ukrycia": "+3 dodatkowa kość do puli Testu Wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+3 dodatkowa kość do puli Testu Wykrycia",
+        "Przykłady": "Baneblade, Land Raider, Większy Demon"
+      }
+    ],
+    "Gatunki": [
+      {
+        "Garunek": "Człowiek",
+        "Koszt PD": "0",
+        "Atrybuty": "-",
+        "Umiejętności": "-",
+        "Szybkość": "6",
+        "Rozmiar": "Średni",
+        "Zdolności gatunkowe": "-"
+      },
+      {
+        "Garunek": "Adeptus Astertes",
+        "Koszt PD": "160",
+        "Atrybuty": "Inicjatywa 4\nInteligencja 3\nSiła 4\nSiła Woli 3\nWytrzymałość 4\nZręczność 4",
+        "Umiejętności": "Atletyka 3\nCzujność 3\nUkrywanie się 3\nUmiejętności\nstrzeleckie 3\nWalka wręcz 3",
+        "Szybkość": "7",
+        "Rozmiar": "Średni",
+        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu{{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz zachowywać wierzenia i tradycje swojego Zakonu. Odwaga  wzrasta o +1.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 19 implantów (str. 75), jeśli MG uzna to za możliwe."
+      },
+      {
+        "Garunek": "Primaris Astartes",
+        "Koszt PD": "198",
+        "Atrybuty": "Inicjatywa 4\nInteligencja 3\nSiła 5\nSiła Woli 3\nWytrzymałość 5\nZręczność 4",
+        "Umiejętności": "Atletyka 3\nCzujność 3\nUkrywanie się 3\nUmiejętności\nstrzeleckie 4\nWalka wręcz 3",
+        "Szybkość": "7",
+        "Rozmiar": "Średni",
+        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu (Primaris){{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz honorować wierzenia i tradycje swojego Zakonu. Odwaga wzrasta o +1. Jako Primaris ignorujesz nieczystości w genoziarnie Zakonu oraz otrzymujesz +3 Żywotności.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 22 implantów (str. 75), jeśli MG uzna to za możliwe."
+      },
+      {
+        "Garunek": "Aeldari",
+        "Koszt PD": "10",
+        "Atrybuty": "Zręczność 3",
+        "Umiejętności": "-",
+        "Szybkość": "8",
+        "Rozmiar": "Średni",
+        "Zdolności gatunkowe": "{{B}}Intensywne emocje{{/B}}\n+1 do ST Testów Odwagi. Jeśli nie uda ci się Test Siły Woli w scenie związanej z emocjami, MG dostaje +1 Zguby.\n\n{{B}}Psionik{{/B}}\nMożesz wybrać Słowo kluczowe {{RED}}PSIONIK{{/RED}}."
+      },
+      {
+        "Garunek": "Ork",
+        "Koszt PD": "20",
+        "Atrybuty": "Siła 3\nWytrzymałość 3",
+        "Umiejętności": "-",
+        "Szybkość": "6",
+        "Rozmiar": "Średni",
+        "Zdolności gatunkowe": "{{B}}Orczy{{/B}}\n+1 dodatkowa kość do Testów Zastraszania.\n\n{{B}}Większe jest lepsze{{/B}}\nObliczasz Wpływy przy użyciu Siły zamiast Ogłady."
+      },
+      {
+        "Garunek": "Ogryn",
+        "Koszt PD": "76",
+        "Atrybuty": "Siła 5\nWytrzymałość 5",
+        "Umiejętności": "Przetrwanie 2",
+        "Szybkość": "6",
+        "Rozmiar": "Duży",
+        "Zdolności gatunkowe": "{{B}}Lawina mięśni{{/B}}\nKiedy Szarżujesz, otrzymujesz +Ranga dodatkowych kości do Testu ataku wręcz.\n\n{{B}}Klaustrofobia{{/B}}\nZa każdym razem, kiedy wchodzisz do zamkniętej przestrzeni, musisz wykonać Test Strachu (standardowe ST równe 2). Ponadto, jesli wewnatrz zamknietej przestrzeni wyrzucisz Komplikacje, MG moze wydac 1 punkt Zguby, by zmusic cie do powtórzenia Testu Strachu.\n\n{{B}}Lojalny prostaczek{{/B}}\nKiedy sojusznik ze Słowem kluczowym {{RED}}IMPERIUM{{/RED}} wykonuje Test Dowodzenia (SW), którego obiektem jest Ogryn, otrzymuje dodatkowe kosci równe Randze Ogryna."
+      },
+      {
+        "Garunek": "Szczurak",
+        "Koszt PD": "30",
+        "Atrybuty": "Ogłada 2\nZręczność 2",
+        "Umiejętności": "Czujność 2\nOszukiwanie 2\nPrzebiegłość 1\nUkrywanie się 2\nUmiejętności strzeleckie 1",
+        "Szybkość": "5",
+        "Rozmiar": "Mały",
+        "Zdolności gatunkowe": "{{B}}Łasuch{{/B}}\n+Dwukrotność Rangi dodatkowych kości do wszystkich Testów kucharskich.\nPrzygotowane jedzenie moze byc uzyte podczas Przegrupowania, by usunac +Ranga Traum."
+      },
+      {
+        "Garunek": "Kroot",
+        "Koszt PD": "22",
+        "Atrybuty": "-",
+        "Umiejętności": "Atletyka 1\nCzujność 1\nPrzetrwanie 2\nUkrywanie się 2\nWalka wręcz 2",
+        "Szybkość": "7",
+        "Rozmiar": "Średni",
+        "Zdolności gatunkowe": "{{B}}Mutacje krootów{{/B}}\nMasz tyle Mutacji krootów, ile wynosi twój Poziom. Możesz uzyskać dodatkową Mutacje krootów (str. 91) w ­wyniku Wyniesienia."
       }
     ],
     "Archetypy": [
@@ -2848,6 +2922,225 @@
         "Premia 1": "Żywotność {{I}}lub{{/I}} Odporność psychiczna {{I}}lub{{/I}} Majątek",
         "Premia 2": "Determinacja {{I}}lub{{/I}} Odwaga {{I}}lub{{/I}} Wpływy",
         "Premia 3": "Upór {{I}}lub{{/I}} Żywotność {{I}}lub{{/I}} Determinacja"
+      }
+    ],
+    "Slowa_Kluczowe_Frakcji": [
+      {
+        "Frakcja": "Adepta Sororitas",
+        "Słowo Kluczowe": "{{RED}}[ZAKON ŻEŃSKI]{{/RED}}",
+        "Opis": "Kiedy wykonujesz akcję związaną z wybranym zakonem, MG może ci przyznać dodatkową kość.\n\n{{B}}Zakony Bojowe{{/B}}\nSiostry Bitwy są armią Eklezjarchii i dzielą się na kilka różnych zakonów, każdy z nich posiada własne tradycje i strategie. Zakon Naszej Umęczonej Pani udoskonalił stosowanie oczyszczającego ognia i chętnie używa go do trzebienia wrogów, natomiast Zakon Uświęconej Tarczy z Enoch woli przeprowadzać kontrataki i miażdżyć heretyków na swoich niezłomnych formacjach obronnych.\n\n{{B}}Zakony Dialogus{{/B}}\nLingwistki i uczone. Dialogistki badają i tłumaczą starożytne teksty, zarówno święte, jak i bluźniercze. Ekspertki w porozumiewaniu się – zapewniają, że modlitwy i rozkazy Sororitas są rozumiane oraz rozszyfrowują wiadomości w językach obcych.\n\n{{B}}Zakony Famulous{{/B}}\nUłatwiając dyplomatyczne przymierza pomiędzy imperialnymi szlachcicami, negocjatorki zapewniają, że koła feudalnego społeczeństwa toczą się na korzyść Imperatora. Działają jako szare eminencje, jednocześnie doradzając innym i rozwiązując heretyckie spiski na wysokim szczeblu.\n\n{{B}}Zakony Szpitalnicze{{/B}}\nZapewniają pomoc medyczną wszelkim siłom zbrojnym poza Adeptus Astartes. Szpitalniczki leczą ciała i dusze swych sprzymierzeńców.\n\n{{B}}Zakony Sabine{{/B}}\nWspółpracując z Missionarus Galaxia, misjonarki są w stanie przekształcić na wpół heretycki, prymitywny świat w populację śpiewającą hymny w imię Imperatora. Ich prorokinie przenikają do społeczeństwa i prywatnie nauczają świętych słów Imperatora, wywołując słuszne powstania przeciw dawnym porządkom i fałszywym bogom.\n\n{{B}}Zakony Pronatus{{/B}}\nObrończynie i ratowniczki najświętszych reliktów Imperium. Kustoszki zapewniają, że te uświęcone przedmioty nie wpadną w plugawe ręce wroga. Są znane z determinacji podczas krucjat prowadzonych w celu odzyskania starożytnego dziedzictwa.",
+        "Efekt": "Kiedy wykonujesz akcję związaną z wybranym zakonem, MG może ci przyznać dodatkową kość."
+      },
+      {
+        "Frakcja": "Adeptus Astra Telepathica",
+        "Słowo Kluczowe": "{{RED}}-{{/RED}}",
+        "Opis": "-",
+        "Efekt": "-"
+      },
+      {
+        "Frakcja": "Adeptus Mechanicus",
+        "Słowo Kluczowe": "{{RED}}[ŚWIAT-KUŹNIA]{{/RED}}",
+        "Opis": "Możesz zamienić Słowo kluczowe {{RED}}[ŚWIAT-KUŹNIA]{{/RED}} nazwą rodzinnej planety, miejscem, gdzie nauczono cię tajemnic Omnisjasza. Może to być Mars – kolebka Kultu Mechanicus, najświętsza ze sfer niebieskich – lub Metalica, planeta odarta z biologicznego życia, które niemal całkiem zastąpiono sterylnym metalem.",
+        "Efekt": "-"
+      },
+      {
+        "Frakcja": "Adeptus Ministorum",
+        "Słowo Kluczowe": "-",
+        "Opis": "-",
+        "Efekt": "-"
+      },
+      {
+        "Frakcja": "Astra Militarum",
+        "Słowo Kluczowe": "{{RED}}[REGIMENT]{{/RED}}",
+        "Opis": "{{B}}Stalowy Legion Armageddonu{{/B}}\nTo oddziały zmechanizowane, których pojazdy przystosowane są do ochrony przed toksyczną atmosferą ich świata macierzystego. Znani z przemysłowej wręcz wydajności gwardziści ze Stalowego Legionu do perfekcji opanowali doktrynę wojny mobilnej i wykorzystują ją do efektywnego wymanewrowania i oskrzydlenia wrogów – przede wszystkim znienawidzonych orków.\n\n{{B}}Cadiańskie Oddziały Szturmowe{{/B}}\nMimo tego, że ich rodzinny świat został zniszczony, to dopóki choć jeden z żołnierzy tego najsłynniejszego regimentu Astra Militarum stoi o własnych siłach ich woli nie da się złamać.\n\n{{B}}Catachańscy Wojownicy Dżungli{{/B}}\nWychowani w dzikich dżunglach wypełnionych potworną fauną żołnierze ze świata śmierci Catachan walczą o przeżycie od dnia narodzin.\n\n{{B}}Korpusy Śmierci z Krieg{{/B}}\nCała planeta pokutuje za niegdysiejszą rebelię. Radioaktywny świat śmierci Krieg produkuje szeregi wojowników zindoktrynowanych przez kazania o szczerym poświęceniu. Ich poważna natura, pragnienie męczeństwa i zakryte aparatami oddechowymi twarze budzą niepokój.\n\n{{B}}Gileadzcy Grabarze{{/B}}\nWyszkoleni do sprostania niewygodom walk w okopach, nawet zanim pojawiła się Wielka Wyrwa. Ocalali Gileadzcy Grabarze okopali się głęboko na nienaruszalnych pozycjach, aby przetrwać trzy lata demonicznych inwazji.\n\n{{B}}Tallarniańscy Jeźdźcy Pustyni{{/B}}\nMistrzowie mobilnej wojny, Tallarnianie, chełpią się reputacją stosowania taktyk podjazdowych i niebezpośrednich starć. Zdolni do utrzymania drobiazgowego porządku w formacjach pancernych uderzają szybko, po czym znikają w tumanach pustynnych burz.\n\n{{B}}Vallhallańscy Lodowi Wojownicy{{/B}}\nZajadli i uparci ponad wszelką wątpliwość, Vallhalanie nie ugną się w obliczu porażki. Kontynuują ponure natarcia i odnoszą sukcesy mimo przeciwności – nieraz ignorując ciężkie straty, jakie ponieśli.\n\n{{B}}Vostroyańscy Pierworodni{{/B}}\nKażdy pierworodny z Vostroyi jest oddawany Astra Militarum jako zadośćuczynienie za przeszłe grzechy planety. Każdy z nich poczytuje to jako honor, więc na ślepo wysyłają posiłki w próżnię mimo zagrożeń czyhających w Noctis Aeterna.",
+        "Efekt": "{{B}}Stalowy Legion Armageddonu{{/B}}\n+Ranga dodatkowych kości do wszystkich Testów naprawy pojazdów lub broni.\n\n{{B}}Cadiańskie Oddziały Szturmowe{{/B}}\n+Ranga dodatkowych kości do Testów Odwagi.\n\n{{B}}Catachańscy Wojownicy Dżungli{{/B}}\n+Ranga dodatkowych kości do wszystkich Testów Przetrwania (SW).\n\n{{B}}Korpusy Śmierci z Krieg{{/B}}\n+Ranga dodatkowych kości do Testów Zastraszania (SW).\n\n{{B}}Gileadzcy Grabarze{{/B}}\n+Ranga dodatkowych kości do Obrony, kiedy znajdujesz się za Osłoną.\n\n{{B}}Tallarniańscy Jeźdźcy Pustyni{{/B}}\n+Ranga dodatkowych kości do Testów Pilotażu (Zr).\n\n{{B}}Vallhallańscy Lodowi Wojownicy{{/B}}\n+Ranga dodatkowych kości do Testów Determinacji.\n\n{{B}}Vostroyańscy Pierworodni{{/B}}\n+Ranga do Testów Dowodzenia (SW)."
+      },
+      {
+        "Frakcja": "Inkwizycja",
+        "Słowo Kluczowe": "{{RED}}[ORDO]{{/RED}}",
+        "Opis": "{{B}}ORDO HERETICUS{{/B}}\n{{I}}Łowcy czarownic{{/I}}\nNajwiększe z Ordo, mające za zadanie polowanie na wewnętrznych wrogów: mutantów, rebeliantów, heretyków i psioników. Pilnują też innych imperialnych Adeptus, wykorzeniając dysydentów we wszystkich organizacjach. Ich najczęstszymi sprzymierzeńcami są Siostry Bitwy.\n\n{{B}}ORDO XENOS{{/B}}\n{{I}}Łowcy obcych{{/I}}\nWalcząc z różnorodnymi, plugawymi formami obcych na pograniczu galaktyki, Ordo Xenos wyszukuje i eliminuje nieludzkie zagrożenia, zanim będą w stanie zaszkodzić Imperium. Podczas operacji często widzi się ich wraz z Kosmicznymi Marines ze Straży Śmierci.\n\n{{B}}ORDO MALLEUS{{/B}}\n{{I}}Łowcy Demonów{{/I}}\nNajmniejsze ze wszystkich Ordo, zobowiązane do walki z demonami i spaczeniem Chaosu. Każda potyczka z wrogiem i każdy zdobyty przez nich skrawek wiedzy tajemnej degeneruje ich ciała i dusze. Kapitułą zbrojną Ordo Malleus są Szarzy Rycerze, wyruszający wraz z nimi na rzadkie i straszliwe krucjaty.\n\n{{B}}INNE ORDO{{/B}}\nInkwizytorzy różnią się wyglądem, zachowaniem i metodami podobnie jak światy Imperium, które pragną chronić.",
+        "Efekt": "{{B}}ORDO HERETICUS{{/B}}\n+2 dodatkowe kości do odpierania mocy psionicznych\n{{I}}lub{{/I}}\n+2 dodatkowe kości do Testów Spaczenia.\n\n{{B}}ORDO XENOS{{/B}}\nPłynnie posługujesz się jednym z języków obcych i otrzymujesz +2 dodatkowe kości do dowolnych Testów Analizy (Int) i Wiedzy ogólnej (Int) związanych ze znanymi xenos.\n\n{{B}}ORDO MALLEUS{{/B}}\n+3 Spaczenia i +1 Uporu.\n{{I}}lub{{/I}}\n+2 dodatkowe kości do dowolnych Testów Wiedzy ogólnej (Int) lub Analizy (Int) związanych z demonami i Osnową.\n\n{{B}}INNE ORDO{{/B}}\nWybierz jedną z następujących Umiejętności:\nIntuicja (Ogł), Korzystanie z technologii (Int), Mistrzostwo psioniczne (SW), Oszukiwanie (Ogł), Perswazja (Ogł), Przebiegłość (Ogł), Przetrwanie (SW), Ukrywanie się (Zr), Wiedza ogólna (Int), Zastraszanie (SW).\nOtrzymujesz +Ranga dodatkowych kości do Testów wybranej Umiejętności."
+      },
+      {
+        "Frakcja": "Dynastie Wolnych Kupców",
+        "Słowo Kluczowe": "-",
+        "Opis": "-",
+        "Efekt": "-"
+      },
+      {
+        "Frakcja": "Szumowiny",
+        "Słowo Kluczowe": "-",
+        "Opis": "-",
+        "Efekt": "-"
+      },
+      {
+        "Frakcja": "Adeptus Astartes",
+        "Słowo Kluczowe": "{{RED}}[ZAKON]{{/RED}}",
+        "Opis": "",
+        "Efekt": ""
+      },
+      {
+        "Frakcja": "Aeldari",
+        "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub{{/I}}{{RED}} [KOTERIA]{{/RED}}",
+        "Opis": "",
+        "Efekt": ""
+      },
+      {
+        "Frakcja": "Ork",
+        "Słowo Kluczowe": "{{RED}}[KLAN]{{/RED}}",
+        "Opis": "{{B}}Złe Ksienżyce{{/B}}\nIch zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.\n\n{{B}}Krwawe Topory{{/B}}\nUważani za „nieorczych” przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne „taktiki”, jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.\n\n{{B}}Śmiercioczaszki{{/B}}\nKnujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, „handlują” i modyfikują sprzęt częściej niż inne klany.\n\n{{B}}Złe Słońca{{/B}}\nIch obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.\n\n{{B}}Gupole{{/B}}\nMasywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.\n\n{{B}}Wężogryzy{{/B}}\nCelowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
+        "Efekt": "{{B}}Złe Ksienżyce{{/B}}\n+1 do Majątku na koniec każdej sesji.\n\n{{B}}Krwawe Topory{{/B}}\n+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr).\n\n{{B}}Śmiercioczaszki{{/B}}\n+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów.\n\n{{B}}Złe Słońca{{/B}}\nZyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością.\n\n{{B}}Gupole{{/B}}\n+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży (str. 188).\n\n{{B}}Wężogryzy{{/B}}\n+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
+      },
+      {
+        "Frakcja": "Chaos",
+        "Słowo Kluczowe": "{{RED}}[ZNAMIĘ CHAOSU]{{/RED}}",
+        "Opis": "Jeśli posiadasz Słowo kluczowe {{RED}}[ZNAMIĘ CHAOSU]{{/RED}}, możesz je zastąpić imieniem Boga Chaosu, którego zdecydowałeś się wyznawać. Jeśli czcisz moce Chaosu Niepodzielnego, nie musisz zamieniać tego Słowa kluczowego.",
+        "Efekt": "Postacie z tym Słowem kluczowym mogą nabyć Talent Znamię Chaosu (str. 141)."
+      },
+      {
+        "Frakcja": "Ogryn",
+        "Słowo Kluczowe": "-",
+        "Opis": "-",
+        "Efekt": "-"
+      },
+      {
+        "Frakcja": "Szczurak",
+        "Słowo Kluczowe": "-",
+        "Opis": "-",
+        "Efekt": "-"
+      },
+      {
+        "Frakcja": "Kroot",
+        "Słowo Kluczowe": "-",
+        "Opis": "-",
+        "Efekt": "-"
+      }
+    ],
+    "Implanty_Astartes": [
+      {
+        "Numer": "1",
+        "Nazwa": "Drugie serce (Podtrzymywacz)",
+        "Opis": "Poprawia przepływ krwi."
+      },
+      {
+        "Numer": "2",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "3",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "4",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "5",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "6",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "7",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "8",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "9",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "10",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "11",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "12",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "13",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "14",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "15",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "16",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "17",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "18",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "19",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "20 (tylko Primaris)",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "21 (tylko Primaris)",
+        "Nazwa": "",
+        "Opis": ""
+      },
+      {
+        "Numer": "22 (tylko Primaris)",
+        "Nazwa": "",
+        "Opis": ""
+      }
+    ],
+    "Sciezki_Asuryani": [
+      {
+        "Nazwa": "Ścieżka przebudzenia",
+        "Opis": "Poświęciłeś dużo czasu na praktykę analizowania otoczenia, skupiając uwagę na zewnątrz, by ukoić duszę.",
+        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Czujności (Int)."
+      }
+    ],
+    "Mutacje_Krootow": [
+      {
+        "Mutacja krootów": "Ludojad",
+        "Pożarta ofiara": "Ludzie",
+        "Opis": "Ludzie nie stanowia ewolucyjnie odżywczego posiłku dla krootów.",
+        "Efekt": "+1 do twojego najniższego Atrybutu (do wyboru, jeśli Atrybuty sa równe)."
       }
     ],
     "Cechy": [
