@@ -2037,37 +2037,37 @@
         "Rozmiar": "Malutki",
         "Przykłady": "Cherub, Serwoczaszka, Tyranidzki Rozrywacz",
         "Modyfikator Testu Ataku": "+2 do Obrony",
-        "Zmiejszenie Poziomu Ukrycia": "+2 do ST Testu wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+2 do ST Testu wykrycia"
       },
       {
         "Rozmiar": "Mały",
         "Przykłady": "Grot, Gyrinx, Sonda Bojowa, Szczurak",
         "Modyfikator Testu Ataku": "+1 do Obrony",
-        "Zmiejszenie Poziomu Ukrycia": "+1 do ST Testu wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+1 do ST Testu wykrycia"
       },
       {
         "Rozmiar": "Średni",
         "Przykłady": "Człowiek, Aeldari, Kosmiczny Marine, T’au",
         "Modyfikator Testu Ataku": "-",
-        "Zmiejszenie Poziomu Ukrycia": "-"
+        "Zmniejszenie Poziomu Ukrycia": "-"
       },
       {
         "Rozmiar": "Duży",
         "Przykłady": "Nekroński Niszczyciel, Ogryn, Terminator Kosmicznych Marines, Tyranidzki Wojownik",
         "Modyfikator Testu Ataku": "+1 dodatkowa kość do puli Testu Trafienia",
-        "Zmiejszenie Poziomu Ukrycia": "+1 dodatkowa kość do puli Testu Wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+1 dodatkowa kość do puli Testu Wykrycia"
       },
       {
         "Rozmiar": "Wielki",
         "Przykłady": "Drednot, Tyran Roju, Władca upiorów",
         "Modyfikator Testu Ataku": "+2 dodatkowa kość do puli Testu Trafienia",
-        "Zmiejszenie Poziomu Ukrycia": "+2 dodatkowa kość do puli Testu Wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+2 dodatkowa kość do puli Testu Wykrycia"
       },
       {
         "Rozmiar": "Ogromny",
         "Przykłady": "Baneblade, Land Raider, Większy Demon",
         "Modyfikator Testu Ataku": "+3 dodatkowa kość do puli Testu Trafienia",
-        "Zmiejszenie Poziomu Ukrycia": "+3 dodatkowa kość do puli Testu Wykrycia"
+        "Zmniejszenie Poziomu Ukrycia": "+3 dodatkowa kość do puli Testu Wykrycia"
       }
     ],
     "Archetypy": [
