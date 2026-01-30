@@ -28,7 +28,7 @@ Tytuł karty przeglądarki: **Generator NPC**.
 ### Podpowiedzi
 - Klikaj w tagi cech, aby zobaczyć opis cechy w panelu popover.
 - W tabelach długie komórki można rozwijać kliknięciem (pojawia się wskazówka „kliknij, aby rozwinąć”).
-- Listy wyboru są sortowane (np. Bestiariusz i Talenty alfabetycznie, a Broń/Pancerz/Augumentacje/Ekwipunek/Psionika po typie i nazwie).
+- Listy wyboru są sortowane domyślnie wg kolumny `LP` z danych (kolumna jest ukryta); przy braku `LP` zachowany jest porządek alfabetyczny lub typ → nazwa (np. Bestiariusz i Talenty alfabetycznie, a Broń/Pancerz/Augumentacje/Ekwipunek/Psionika po typie i nazwie).
 - Na wygenerowanej karcie pojawia się sekcja kwadratów „Ż” i „T”, która wizualizuje wartości „Żywotność” i „Odporność psych.” (liczba pól aktualizuje się na podstawie edycji w tabeli; przy wartości „-” dla odporności psychicznej widoczna jest wyłącznie etykieta „T”). Etykiety „Ż/T” są niezależnymi, jednopolowymi kwadratami, a liczba pól w wierszu skaluje się do szerokości całej karty (bez stałego limitu w linii).
 - Interfejs używa zielonego, konsolowego motywu spójnego z `Main/index.html`, z kolorem tekstu pomocniczego `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
 
@@ -62,6 +62,6 @@ Browser tab title: **Generator NPC**.
 ### Tips
 - Click trait tags to see their description in the popover panel.
 - In tables, long cells can be expanded by clicking them (a “click to expand” hint is shown).
-- Selection lists are sorted (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
+- Selection lists default to the hidden `LP` ordering from the data; when `LP` is missing, they fall back to alphabetical or type → name ordering (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
 - The printed card includes “Ż” and “T” square trackers that visualize “Żywotność” and “Odporność psych.” (the number of squares reflects table edits; when mental resistance is “-”, only the “T” label is shown). The “Ż/T” labels are independent one-square fields, and the squares per row scale with the full card width (no fixed per-line cap).
 - The interface uses the same green, console-style theme as `Main/index.html`, with secondary text set to `#4FAF4F` and brighter highlights at `#D2FAD2`.

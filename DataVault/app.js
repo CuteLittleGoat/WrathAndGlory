@@ -52,10 +52,26 @@ const view = {
 const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (progressive rendering)
 
 const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
+const HIDDEN_COLUMNS = new Set(["lp"]);
 
 /* ---------- Utilities ---------- */
 function norm(s){
   return String(s ?? "").replace(/\s+/g, " ").trim().replace(" :", ":").replace(": ",": ");
+}
+
+function isHiddenColumn(name){
+  return HIDDEN_COLUMNS.has(String(name ?? "").trim().toLowerCase());
+}
+
+function resolveLpKey(rows){
+  for (const row of rows || []){
+    for (const key of Object.keys(row || {})){
+      if (isHiddenColumn(key)){
+        return key;
+      }
+    }
+  }
+  return null;
 }
 
 function deriveColumnOrderFromHeader(header){
@@ -65,6 +81,7 @@ function deriveColumnOrderFromHeader(header){
   for (const raw of header || []){
     const col = norm(raw);
     if (!col) continue;
+    if (isHiddenColumn(col)) continue;
     if (/^Zasi[eę]g\s*\d+$/i.test(col)){
       if (!hasRange){
         order.push("Zasięg");
@@ -97,6 +114,7 @@ function getColumnOrder(rows, sheetName){
   for (const r of rows){
     for (const k of Object.keys(r)){
       if (k === "__id" || k.startsWith("__")) continue;
+      if (isHiddenColumn(k)) continue;
       set.add(k);
     }
   }
@@ -106,6 +124,7 @@ function getColumnOrder(rows, sheetName){
     : (rows[0] ? Object.keys(rows[0]).filter(k => k !== "__id" && !k.startsWith("__")) : []);
   const cols = [];
   for (const col of baseOrder){
+    if (isHiddenColumn(col)) continue;
     if (set.has(col)){
       cols.push(col);
       set.delete(col);
@@ -116,6 +135,10 @@ function getColumnOrder(rows, sheetName){
 }
 
 function getDefaultSort(sheet){
+  const lpKey = resolveLpKey(DB?.sheets?.[sheet]);
+  if (lpKey){
+    return {col: lpKey, dir: "asc"};
+  }
   if (sheet === "Archetypy"){
     return {col: "Poziom", dir: "asc", secondary: {col: "Frakcja", dir: "asc"}};
   }

@@ -360,9 +360,9 @@ Mapowanie na `getElementById`:
 
 ### 4.4 Helpery tekstowe
 - `norm(s)` — normalizacja spacji i dwukropków.
-- `deriveColumnOrderFromHeader(header)` — mapuje nagłówki z XLSX na kolejność kolumn w tabeli, z uwzględnieniem scalania `Cecha 1..N` → `Cechy` oraz `Zasięg 1..3` → `Zasięg`.
+- `deriveColumnOrderFromHeader(header)` — mapuje nagłówki z XLSX na kolejność kolumn w tabeli, z uwzględnieniem scalania `Cecha 1..N` → `Cechy` oraz `Zasięg 1..3` → `Zasięg` (pomija techniczne `LP`).
 - `getSheetOrder(available)` — bierze `_meta.sheetOrder` i filtruje do arkuszy dostępnych w danych (dokleja brakujące).
-- `getColumnOrder(rows, sheetName)` — bierze `_meta.columnOrder[sheetName]`, filtruje do kolumn obecnych w danych i dokleja brakujące alfabetycznie.
+- `getColumnOrder(rows, sheetName)` — bierze `_meta.columnOrder[sheetName]`, filtruje do kolumn obecnych w danych i dokleja brakujące alfabetycznie (kolumna `LP` jest pomijana, aby nie pojawiała się w UI).
 - `escapeHtml(s)` — encje HTML.
 - `stripMarkers(s)` — usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` z tekstu (używane w filtrze listowym).
 - `parseInlineSegments(raw)` — dzieli tekst na segmenty z aktywnymi stylami na podstawie markerów `{{RED}}`, `{{B}}`, `{{I}}` (zwraca tablicę `{text, styles}`).
@@ -479,7 +479,7 @@ Mapowanie na `getElementById`:
 
 ### 8.2 `selectSheet(name)`
 - Ustawia `currentSheet`.
-- Resetuje sortowanie i filtry; dla `Archetypy` ustawia domyślny sort `Poziom` (rosnąco) + `Frakcja` (alfabetycznie).
+- Resetuje sortowanie i filtry; jeśli w danych istnieje kolumna `LP`, ustawia domyślny sort po `LP` (rosnąco). Kolumna `LP` jest ukryta w tabeli i służy wyłącznie do domyślnego porządku.
 - Czyści zaznaczenia porównywarki.
 - Buduje tabelę i renderuje wiersze.
 
