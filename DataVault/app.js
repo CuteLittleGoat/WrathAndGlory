@@ -36,7 +36,7 @@ const SHEET_COLUMN_ORDER = {
   "Zakony Pierwszego Powołania":["Nazwa","Opis","Zaleta","Wada"],
   "Ścieżki Asuryani":["Nazwa","Efekt","Opis"],
   "Orcze Klany":["Nazwa","Opis","Efekt"],
-  "Mutacje Krootów":["Mutacja krootów","Pożarta ofiara","Efekt","Opis"],
+  "Mutacje Krootów":["Mutacja Krootów","Pożarta Ofiara","Efekt","Opis"],
   "Cechy":["Typ","Nazwa","Opis"],
   "Stany":["Typ","Nazwa","Opis"],
   "Słowa Kluczowe":["Typ","Nazwa","Opis"],

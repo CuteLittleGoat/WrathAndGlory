@@ -2166,7 +2166,7 @@
         "Koszt PD": "22",
         "Słowa Kluczowe": "{{RED}}IMPERIUM, ADEPTUS MECHANICUS, [SWIAT-KUZNIA]{{/RED}}",
         "Atrybuty Archetypu": "Inteligencja 2",
-        "Umiejętności Archetypu": "Korzystanie ztechnologii 3, Wiedza ogólna 2",
+        "Umiejętności Archetypu": "Korzystanie z technologii 3, Wiedza ogólna 2",
         "Zdolność Archetypu": "{{B}}Dostep administracyjny{{/B}}\nTwoim celem jest łaczenie sie zduchami maszyn, katalogowanie ich madrosci istawianie kolejnych kroków wWyprawie po Wiedze. Kiedy łaczysz sie zduchem maszyny wramach Testu, zyskujesz liczbe Ikon równa twojej Randze.",
         "Ekwipunek": "Dowolna Augmentacja, ulepszenie, infoczytnik, multinarzedzie, pistolet laserowy, poswiecony smar, szaty adepta (ubiór)",
         "Inne": "",
@@ -2872,7 +2872,7 @@
       {
         "Frakcja": "Dynastie Wolnych Kupców",
         "Premia 1": "Upór {{I}}lub{{/I}} Majątek {{I}}lub{{/I}} Determinacja",
-        "Premia 2": "Upór {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} [DOWOLNE] Słowo kluczowe",
+        "Premia 2": "Upór {{I}}lub{{/I}} Wpływy {{I}}lub{{/I}} {{RED}}[DOWOLNE]{{/RED}} Słowo kluczowe",
         "Premia 3": "Odwaga {{I}}lub{{/I}} Determinacja {{I}}lub{{/I}} Upór"
       },
       {

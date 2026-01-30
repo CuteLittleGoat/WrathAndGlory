@@ -167,8 +167,8 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Tabela Rozmiarów**
   - `Rozmiar`: 8ch
-  - `Modyfikator Testu Ataku`: 25ch
-  - `Zmniejszenie Poziomu Ukrycia`: 25ch
+  - `Modyfikator Testu Ataku`: 26ch
+  - `Zmniejszenie Poziomu Ukrycia`: 26ch
   - `Przykłady`: 85ch
 
 - **Archetypy**
@@ -177,8 +177,8 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Nazwa`: 26ch
   - `Koszt PD`: 4ch
   - `Słowa Kluczowe`: 28ch
-  - `Atrybuty Archetypu`: 28ch
-  - `Umiejętności Archetypu`: 28ch
+  - `Atrybuty Archetypu`: 26ch
+  - `Umiejętności Archetypu`: 26ch
   - `Zdolność Archetypu`: 46ch
   - `Ekwipunek`: 46ch
   - `Inne`: 10ch
@@ -202,20 +202,20 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Słowa Kluczowe Frakcji**
   - `Frakcja`: 26ch
-  - `Słowo Kluczowe`: 26ch
-  - `Efekt`: 26ch
-  - `Opis`: 60ch
+  - `Słowo Kluczowe`: 28ch
+  - `Efekt`: 56ch
+  - `Opis`: 26ch
 
 - **Implanty Astartes**
   - `Numer`: 4ch
-  - `Nazwa`: 30ch
-  - `Opis`: 56ch
+  - `Nazwa`: 26ch
+  - `Opis`: 26ch
 
 - **Zakony Pierwszego Powołania**
   - `Nazwa`: 26ch
   - `Opis`: 56ch
-  - `Zaleta`: 46ch
-  - `Wada`: 46ch
+  - `Zaleta`: 26ch
+  - `Wada`: 26ch
 
 - **Ścieżki Asuryani**
   - `Nazwa`: 26ch
@@ -228,8 +228,8 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Efekt`: 26ch
 
 - **Mutacje Krootów**
-  - `Mutacja krootów`: 22ch
-  - `Pożarta ofiara`: 22ch
+  - `Mutacja Krootów`: 26ch
+  - `Pożarta Ofiara`: 26ch
   - `Efekt`: 26ch
   - `Opis`: 56ch
 
@@ -338,7 +338,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
   - Dla `Słowa Kluczowe Frakcji` kolejność to: `Frakcja`, `Słowo Kluczowe`, `Efekt`, `Opis`.
   - Dla `Implanty Astartes` kolejność to: `Numer`, `Nazwa`, `Opis`.
   - Dla `Ścieżki Asuryani` kolejność to: `Nazwa`, `Efekt`, `Opis`.
-  - Dla `Mutacje Krootów` kolejność to: `Mutacja krootów`, `Pożarta ofiara`, `Efekt`, `Opis`.
+  - Dla `Mutacje Krootów` kolejność to: `Mutacja Krootów`, `Pożarta Ofiara`, `Efekt`, `Opis`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz).
