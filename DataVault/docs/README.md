@@ -38,6 +38,7 @@ Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny ka
 
 ### Aktualizacja danych z `Repozytorium.xlsx`
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. Pierwszy jest rekomendowany dla osób nietechnicznych, drugi pozwala wykonać ten sam proces z linii poleceń.
+W tej wersji repozytorium `data.json` został ponownie wygenerowany na podstawie aktualnego `Repozytorium.xlsx`, więc tabele w aplikacji odpowiadają najnowszemu arkuszowi.
 
 #### Metoda 1: aktualizacja przez panel administratora (rekomendowana)
 1. Podmień plik `Repozytorium.xlsx` w katalogu głównym aplikacji (na hostingu lub lokalnie).
@@ -111,6 +112,7 @@ Visual/layout rules and formatting details are documented in `DetaleLayout.md` (
 
 ### Updating data from `Repozytorium.xlsx`
 Below are two equivalent ways to update the data. The first is recommended for non-technical users; the second performs the same operation via CLI.
+In this repository snapshot, `data.json` has been regenerated from the latest `Repozytorium.xlsx`, so the tables reflect the newest spreadsheet content.
 
 #### Method 1: update via the admin panel (recommended)
 1. Replace `Repozytorium.xlsx` in the app root (hosting or local).
