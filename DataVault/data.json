@@ -2976,20 +2976,20 @@
       {
         "Frakcja": "Adeptus Astartes",
         "Słowo Kluczowe": "{{RED}}[ZAKON]{{/RED}}",
-        "Opis": "",
-        "Efekt": ""
+        "Opis": "Kosmiczni Marines są zorganizowani w Zakony, autonomiczne względem wszelkich pozostałych organizacji w Imperium. Każdy z nich liczy tysiąc Astartes, tak jak nakazuje Codex Astartes. Zakony najczęściej rekrutują nastolatków z jednej planety, przyjmują własne nakazy bractwa, kulturę oraz rytuały wywodzące się z tradycji, honorując najpotężniejszych bohaterów.\n\nGenoziarno Zakonów z Pierwszego Powołania zostało stworzone bezpośrednio z Prymarchów, nadając braciom bitewnym część ich niemal boskich darów. Astartes z tych Zakonów są szkoleni do prowadzenia wojny w określonym stylu Prymarchy, honorując genetycznego ojca każdym czynem. Dziewięć Zakonów Pierwszego Powołania, które pozostały lojalne Imperium, zostało opisane poniżej. Tysiąclecia honorowej służby to dumna i niezaprzeczalna spuścizna.",
+        "Efekt": "Twój Kosmiczny Marine może pochodzić z dowolnego Zakonu Pierwszego Powołania lojalistów. Wybierz jeden z Zakonów i zapisz wszelkie Cechy Zakonu na karcie postaci. Zamień Słowo kluczowe {{RED}}[ZAKON]{{/RED}} nazwą wybranego Zakonu. Czysta genealogia Primaris Astartes zapewnia, że genoziarno nie jest w żaden sposób uszkodzone. Jeśli grasz jednym z nich, wszelkie Cechy Zakonu z dopiskiem (GENOZIARNO) są ignorowane."
       },
       {
         "Frakcja": "Aeldari",
         "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub{{/I}}{{RED}} [KOTERIA]{{/RED}}",
-        "Opis": "",
-        "Efekt": ""
+        "Opis": "{{B}}Światostatki Aeldari{{/B}}\nŚwiatostatek to tytaniczny okręt kosmiczny o rozmiarach i populacji planety. Każdy z nich jest samowystarczalnym królestwem wykutym z żywego upiorytu i innych psionicznie aktywnych substancji, bezpiecznym schronieniem dla odłamu rozbitego imperium aeldari. Odcinając się od reszty galaktyki, Asuryani ze światostatków bronią swych unikalnych kultur i tradycji przed obcymi, ponieważ każdy z nich chroni Kręgu Wieczności zawierającego tysiące świadomych dusz martwych aeldari.\n\n{{B}}Koterie Aeldari{{/B}}\nKażdy korsarz aeldari należy do Koterii, gangu piratów prowadzonych przez księcia lub księżniczkę. Korsarze tworzą silne więzi w tych koalicjach mimo tego, że są one pełne rywalizacji i podstępów. Każda Koteria ma własne cele i przyciąga aeldari o podobnym nastawieniu. Koteria, do której należysz, mówi wiele o tobie, a jej reputacja może pomóc zawiązać szybkie przyjaźnie, jak również przysporzyć natychmiastowych wrogów.",
+        "Efekt": "{{B}}Światostatki Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[ŚWIATOSTATEK]{{/RED}} nazwą światostatku, z którego pochodzisz, w ten sposób określając wiele ze swoich przekonań i wyznawanych wartości. Możesz wybrać radykalnego Ulthwé, zależnego od proroctw Rady Proroków, albo też tradycjonalistę ze światostatku Ul-Khari, poturbowanego i unieruchomionego po katastrofie na lodowym świecie Trollius, uwięzionego w systemie Gilead przez intrygi Niszczycielskich Potęg.\n\n{{B}}Koterie Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[KOTERIA]{{/RED}} nazwą Koterii, do której należysz. Możesz wybrać, między innymi, dumnych Starożytnych Łupieżców prowadzonych przez księcia Yriela, który zajął tysiące wrogich okrętów lub tajemniczych Wojowników Zielonej Stali, którzy raz wspierają, a raz łupią Imperium w systemie Gilead."
       },
       {
         "Frakcja": "Ork",
         "Słowo Kluczowe": "{{RED}}[KLAN]{{/RED}}",
-        "Opis": "{{B}}Złe Ksienżyce{{/B}}\nIch zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.\n\n{{B}}Krwawe Topory{{/B}}\nUważani za „nieorczych” przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne „taktiki”, jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.\n\n{{B}}Śmiercioczaszki{{/B}}\nKnujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, „handlują” i modyfikują sprzęt częściej niż inne klany.\n\n{{B}}Złe Słońca{{/B}}\nIch obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.\n\n{{B}}Gupole{{/B}}\nMasywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.\n\n{{B}}Wężogryzy{{/B}}\nCelowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
-        "Efekt": "{{B}}Złe Ksienżyce{{/B}}\n+1 do Majątku na koniec każdej sesji.\n\n{{B}}Krwawe Topory{{/B}}\n+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr).\n\n{{B}}Śmiercioczaszki{{/B}}\n+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów.\n\n{{B}}Złe Słońca{{/B}}\nZyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością.\n\n{{B}}Gupole{{/B}}\n+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży (str. 188).\n\n{{B}}Wężogryzy{{/B}}\n+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
+        "Opis": "Orkowie mogliby być nazwani istotami społecznymi. Ich instynktowna psychologia nakazuje im zbierać się w wielkich watahach, aby uformować lepsze jednostki do walki (albo żeby bić się pomiędzy sobą). Te olbrzymie zgromadzenia są nazywane klanami; każdy ork należy do jakiegoś klanu, a każdy z nich ma własne metody wygrywania wojen.",
+        "Efekt": "Możesz zastąpić Słowo kluczowe {{RED}}[KLAN]{{/RED}} nazwą dowolnego klanu."
       },
       {
         "Frakcja": "Chaos",
@@ -3024,108 +3024,164 @@
       },
       {
         "Numer": "2",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Ossmodula (Żelazne serce)",
+        "Opis": "Scala żebra, by poprawić integralność strukturalną."
       },
       {
         "Numer": "3",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Biscopea (Kuźnia siły)",
+        "Opis": "Produkuje hormony zwiększające masę mięśniową."
       },
       {
         "Numer": "4",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Haemastamen (Organ krwiogenny)",
+        "Opis": "Poprawia efektywność krwi."
       },
       {
         "Numer": "5",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Organ Larramana (Uzdrowiciel)",
+        "Opis": "Pozwala na szybsze krzepnięcie krwi i formowanie tkanki bliznowatej."
       },
       {
         "Numer": "6",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Węzeł kataleptyczny (Bezsenny)",
+        "Opis": "Eliminuje potrzebę snu."
       },
       {
         "Numer": "7",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Preomnor (Neutralizator)",
+        "Opis": "Pozwala na konsumpcję trucizn bez konsekwencji."
       },
       {
         "Numer": "8",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Omophagea (Upamiętniacz)",
+        "Opis": "Przenosi wspomnienia ze spożytego mięsa."
       },
       {
         "Numer": "9",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Multipłuco (Pochłaniacz)",
+        "Opis": "Pozwala na oddychanie w trującej atmosferze i wodzie."
       },
       {
         "Numer": "10",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Occulobe (Oko zemsty)",
+        "Opis": "Poprawia wzrok, pozwalając na widzenie przy słabym oświetleniu."
       },
       {
         "Numer": "11",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Ucho Lymana (Strażnik)",
+        "Opis": "Poprawia słuch i równowagę."
       },
       {
         "Numer": "12",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Membrana Sus-an (Hibernator)",
+        "Opis": "Umożliwia dobrowolne wejście w stan hibernacji."
       },
       {
         "Numer": "13",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Melanchrom (Skórotarcza)",
+        "Opis": "Zapewnia odporność na promieniowanie."
       },
       {
         "Numer": "14",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Nerka oolityczna (Oczyszczacz)",
+        "Opis": "Oczyszcza krew z trucizn."
       },
       {
         "Numer": "15",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Neuroglottis (Pożeracz)",
+        "Opis": "Poprawia zmysły smaku i węchu."
       },
       {
         "Numer": "16",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Mucranoid (Tkacz)",
+        "Opis": "Chroni skórę przed ekstremalnymi temperaturami i próżnią."
       },
       {
         "Numer": "17",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Gruczoł Bletchera (Zatruta ślina)",
+        "Opis": "Pozwala na splunięcie zatrutą, żrącą śliną."
       },
       {
         "Numer": "18",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Progenoidy (Genoziarno)",
+        "Opis": "Daje podstawy dla nowego genoziarna."
       },
       {
         "Numer": "19",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Interfejs (Czarna Skorupa)",
+        "Opis": "Interfejs do pancerza wspomaganego."
       },
       {
         "Numer": "20 (tylko Primaris)",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Splot ścięgnowy (Wewnętrzna stal)",
+        "Opis": "Jeszcze bardziej zwiększa siłę fizyczną."
       },
       {
         "Numer": "21 (tylko Primaris)",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Powiększacz (Wzmacniacz)",
+        "Opis": "Zwiększa wzrost i efektywność implantów."
       },
       {
         "Numer": "22 (tylko Primaris)",
-        "Nazwa": "",
-        "Opis": ""
+        "Nazwa": "Piec Belisariusa (Pobudzacz)",
+        "Opis": "Pozwala na szybkie leczenie pod wpływem ekstremalnego stresu."
+      }
+    ],
+    "Zakony Pierwszego Powołania": [
+      {
+        "Nazwa": "Krwawe Anioły",
+        "Opis": "Zarówno szlachetne jak i zaciekłe w walce Krwawe Anioły są modelowym przykładem obrońców ludzkości. Każdy z nich ciągle opłakuje śmierć Prymarchy Sanguiniusa z rąk Arcyzdrajcy Horusa. Jego odejście okaleczyło dusze genetycznych synów. Na polu bitwy ten żal manifestuje się poprzez dziki szał i głód zemsty, czyniąc z nich straszliwych wojowników w zwarciu.",
+        "Zaleta": "{{B}}Dzikie echa{{/B}}\nKrwawe Anioły jako mistrzowie szturmu są prowadzone przez dzikie pragnienie pomszczenia Prymarchy.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku wręcz.",
+        "Wada": "{{B}}Czerwony głód (Genoziarno){{/B}}\nMroczna skaza Zakonu jest doskonale skrywaną tajemnicą – Krwawe Anioły są przepełnione destrukcyjną tęsknotą, szałem bitewnym i niemal nienasyconym głodem krwi.\n\nZa każdym razem, gdy walczysz w zawarciu i zobaczysz krew musisz wykonać Test Siły Woli o ST 3. Jeśli Test się nie powiedzie, wpadasz w Szał bojowy."
+      },
+      {
+        "Nazwa": "Mroczne Anioły",
+        "Opis": "Krzepcy i tajemniczy Mroczni Aniołowie są zobowiązani honorem do praktykowania tajnych rytuałów i tradycji. Znani ze zdeterminowanego uporu w obliczu przeciwności niejednokrotnie dowiedli swej prawej niezłomności. Pomimo reputacji rezygnują z chwały, zawsze zamykając się w sobie, aby chronić ponure sekrety przeszłej zdrady.",
+        "Zaleta": "{{B}}Ponura odwaga{{/B}}\nMroczne Anioły nie tchórzą. Są szkoleni do tworzenia nieprzebytej linii ognia.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku na odległość, kiedy wykonujesz manewr Celowanie (str. 189)",
+        "Wada": "{{B}}Bez przebaczenia (Tradycja){{/B}}\nTajemnica, która dręczy zamknięty w sobie Zakon, ma wpływ na każdą interakcję społeczną.\n\nOtrzymujesz karę +2 do ST wszystkich Testów społecznych wykonywanych przeciwko komukolwiek spoza Zakonu (oprócz Zastraszania)."
+      },
+      {
+        "Nazwa": "Imperialne Pięści",
+        "Opis": "Imperialne Pięści są bastionem lojalności i defensywnym przedmurzem Świętej Terry. Zawsze chętne i gotowe, by przetrzymać każdego wroga. Zakon ten jest pełen dumnych tradycjonalistów, wiernych Codex Astartes, z jednym, wyraźnym wyjątkiem – Imperialne Pięści są zawsze uparte – odmawiają odwrotu nawet w najgorszych sytuacjach.",
+        "Zaleta": "{{B}}Mistrzowie oblężenia{{/B}}\nDziedzicząc cierpliwą determinację ich Prymarchy, Rogala Dorna, każdy z Imperialnych Pięści jest ekspertem w zakresie oblężeń, wojny obronnej i strategii przeciw ufortyfikowanym wrogom.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku przeciw budynkowi, fortyfikacjom lub wrogowi w Osłonie.\nMożesz dodać +Ranga dodatkowych kości zawsze, kiedy wykonujesz Test związany z inżynierią architektoniczną.",
+        "Wada": "{{B}}Skaza genoziarna (Genoziarno){{/B}}\nMimo tego, że udowodniono jego odporność na mutacje i dewiacje, genoziarno Imperialnych Pięści blokuje rozwój dwóch implantów Kosmicznych Marines.\n\nBrakuje ci implantu 12: Membrany Sus-an oraz implantu 17: Gruczołu Bletchera."
+      },
+      {
+        "Nazwa": "Żelazne Dłonie",
+        "Opis": "Niezłomnych obrońców Imperium, Żelazne Dłonie, trawi religijny wręcz zapał, by zreplikować nieomylną doskonałość maszyny. Pragnąc poprawić swoje i tak już genetycznie ulepszone formy, każdy z Astartes Żelaznych Dłoni poddaje się wielokrotnym augmentacjom w podwójnym hołdzie dla Imperatora i Omnisjasza.",
+        "Zaleta": "{{B}}Synowie Manusa{{/B}}\nŻelazne Dłonie czerpią siłę i pewność z oczyszczania ciał ze słabości.\n\nWybierz jedną Augmentację Ulepszenie (str. 242).\nNie otrzymujesz kar z powodu bycia Rannym (str. 193).\nOtrzymujesz +1 dodatkową kość do Testów Siły Woli za każdą posiadaną augmentację.",
+        "Wada": "{{B}}Bezlitosna logika (Tradycja){{/B}}\nTłumienie wszelkich emocji, rozwijanie beznamiętnej logiki, drobiazgowość i apatyczna natura czynią z nich zimnych sprzymierzeńców dla wszystkich poza Adeptus Mechanicus.\n\nOtrzymujesz karę +2 do ST wszelkich Testów Ogłady wykonywanych przeciwko celowi, który nie ma Słów kluczowych {{RED}}ŻELAZNE DŁONIE{{/RED}} lub {{RED}}ADEPTUS MECHANICUS{{/RED}}."
+      },
+      {
+        "Nazwa": "Krucza Gwardia",
+        "Opis": "Skryty Zakon niosących zgubę Astartes. Krucza Gwardia kładzie nacisk na szybkie, ciche i zaskakujące uderzenia przeciw słabym punktom wroga, niszcząc go, nim zdąży zareagować. Wykorzystują osłonę ciemności oraz tajne manewry, a ich partyzanckie działania są zawsze przemyślane. Honorując Prymarchę, Corvusa Coraxa, Krucza Gwardia pozostaje opanowana i kontynuuje swe przygnebiające tradycje.",
+        "Zaleta": "{{B}}Mistrzowie cieni{{/B}}\nKrucza Gwardia praktykuje ciche i niewidzialne uderzenia bez względu na warunki czy posiadany sprzęt.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test Skradania się (Zr).\nBieg, użycie plecaka skokowego czy podobne okoliczności nie wpływają na twój Test Skradania się (Zr).",
+        "Wada": "{{B}}Mroczne dziedzictwo (Genoziarno){{/B}}\nMarines Kruczej Gwardii są bladzi jak duchy i mają mroczne, natarczywe spojrzenie. Ich genoziarno ma pewne drobne braki, które powodują, że ich wygląd jest niepokojący.\n\nBrakuje ci implantu 16: Mucranoid oraz implantu 17: Gruczołu Bletchera.\nOtrzymujesz karę +2 do ST każdego Testu Ogłady wykonywanego przeciwko celowi, który mógłby się przestraszyć twojego wyglądu."
+      },
+      {
+        "Nazwa": "Salamandry",
+        "Opis": "Zostali zrodzeni w ogniu, a gorejący płomień nadziei wypełnia duszę każdego Astartes z Zakonu Salamander. Ich indoktrynacja różni się od tej, której poddaje się większość Astartes, kładąc wielki nacisk na edukację pod kątem rzemieślnictwa, honoru i przede wszystkim ochrony obywateli Imperium. Podążając za tradycjami ustanowionymi przez Prymarchę Vulkana, każdy Kosmiczny Marine sam wykonuje własną broń i pancerz.",
+        "Zaleta": "{{B}}Prometejski kult{{/B}}\nWykute w ogniu Salamandry są mistrzami oczyszczającego ognia i ognistych broni.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku przy wykorzystaniu dowolnej broni posiadającej Słowa kluczowe {{RED}}OGNIOWA{{/RED}} lub {{RED}}TERMICZNA{{/RED}}.",
+        "Wada": "{{B}}Piekielne dziedzictwo (Genoziarno){{/B}}\nOczy Salamander płoną jak rozpalone do czerwoności kuźnie, a ich skóra jest czarna niczym węgiel. Ich dziwny wygląd jest spowodowany zarówno genoziarnem, jak i promieniowaniem występującym na ich rodzimym świecie, Nokturnie. Zakon zaszczepia w Astartes głęboki altruizm, a każdy z nich odczuwa ból poległych sprzymierzeńców.\n\nJeśli jakiś sprzymierzeniec w promieniu 30 metrów od ciebie zostanie zabity, MG otrzymuje +1 do Zguby.\nOtrzymujesz karę +2 do ST każdego Testu Ogłady wykonywanego przeciwko celowi, który mógłby się przestraszyć twojego wyglądu."
+      },
+      {
+        "Nazwa": "Kosmiczne Wilki",
+        "Opis": "Odważne i dzikie Kosmiczne Wilki praktykują śmiałe i zuchwałe tradycje wojowników z ich rodzimego świata – Fenrisa. Odziedziczywszy dziką charyzmę i agresywne nastawienie Prymarchy Lemana Russa, Zakon ten bardzo sobie ceni rytualne tradycje, polując na bitewną chwałę, by zbudować heroiczne dziedzictwo. Mimo że są całkowicie lojalni Imperium, jego konserwatywne nakazy nie są im w smak. Wolą pierwotne praktyki swego lodowego świata.",
+        "Zaleta": "{{B}}Dzicy łowcy{{/B}}\nWięź Zakonu z wilkami objawia się w ich ulepszonych zmysłach i niemal dzikim stylu walki uzupełnianym brutalną gracją.\n\nPosiadasz Talent Wyczulony Zmysł (str. 140) oraz Talent Oburęczność (str. 136).",
+        "Wada": "{{B}}Dzikość w sercu (Genoziarno){{/B}}\nUparte w dążeniu do chwały Kosmiczne Wilki nie cofną się w obliczu śmierci w chwalebnej walce wręcz.\n\nNie możesz wykonać manewru Odwrót (str. 188)"
+      },
+      {
+        "Nazwa": "Ultramarines",
+        "Opis": "Zdyscyplinowani i dumni. Odwaga Ultramarines została niejednokrotnie dowiedziona w ciągu całej niespokojnej historii Imperium. Roboute Guilliman, Prymarcha Ultramarines, był autorem Codex Astartes, a jego Zakon stanowi ucieleśnienie zasad prowadzenia wojny z taktyczną elastycznością i strategiczną wstrzemięźliwością.",
+        "Zaleta": "{{B}}Taktyczna uniwersalność{{/B}}\nBędąc przykładem stosowania Codex Astartes, Ultramarines prowadzą wojnę w niesamowicie elastyczny sposób, potrafiąc przekształcić dowolną sytuację na własną korzyść.\n\nW ramach jednego Testu możesz wykonać maksymalnie dwa Przeniesienia w celu uzyskania Chwały.",
+        "Wada": "{{B}}Duma Ultramaru (Tradycja){{/B}}\nImperium patrzy na Ultramarines jako na przykład cnót Astartes, a każdy z nich pragnie zasłużyć na tę reputację; są to obrońcy ludzkości o silnych ciałach i opanowanych umysłach, myślący trzeźwo i taktycznie.\n\nKażdą sesję zaczynasz z 1 punktem Furii zamiast 2."
+      },
+      {
+        "Nazwa": "Białe Szramy",
+        "Opis": "Białe Szramy są mistrzami błyskawicznych ataków. Mobilizują się z karkołomną szybkością, niosąc rychłą śmierć wrogom, nie zatrzymując się przy tym nawet na chwilę w pędzie do kolejnego szturmu. Mimo że każdy z tych Astartes jest pełen wewnętrznego pragnienia chwały i sprawiedliwości, jak również ma tendencję do szybkich i wściekłych szturmów, to nie są brutalami. Ich plany bitewne podjazdowych ataków są dokładnie opracowane, honorując mądrego Prymarchę Jaghataia Khana.",
+        "Zaleta": "{{B}}Błyskawiczny szturm{{/B}}\nBiałe Szramy swoje słynne zręczne natarcia wykonują przy użyciu szybkich motocykli szturmowych, osiągając przy tym w ataku prędkość, której nikt inny nie byłby w stanie okiełznać.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi za każdym razem, gdy wykonujesz Test Pilotażu (Zr).\nMożesz potroić swoją prędkość, kiedy wykonujesz Szarżę (str. 188).",
+        "Wada": "{{B}}Rytualna skaryfikacja (Tradycja){{/B}}\nNowo wprowadzeni do Zakonu znaczą twarze głębokimi nacięciami.\n\nOtrzymujesz karę +1 do ST każdego Testu Ogłady wykonywanego przeciwko celowi, który mógłby się przestraszyć twojego wyglądu."
       }
     ],
     "Ścieżki Asuryani": [
@@ -3133,14 +3189,141 @@
         "Nazwa": "Ścieżka przebudzenia",
         "Opis": "Poświęciłeś dużo czasu na praktykę analizowania otoczenia, skupiając uwagę na zewnątrz, by ukoić duszę.",
         "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Czujności (Int)."
+      },
+      {
+        "Nazwa": "Ścieżka artysty",
+        "Opis": "Podążając za estetycznymi doznaniami rzeźbiarza, malarza czy pisarza poświęciłeś życie na zgłębienie piękna kultury aeldari.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Wiedzy ogólnej (Int) odnoszących się do Słowa kluczowego {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "Nazwa": "Ścieżka pieśniarza upiorytu",
+        "Opis": "Dbasz o zagajniki upiorytu i uczyłeś się sztuki fizycznego kształtowania tej substancji w zaawansowaną technologię aeldari.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Korzystania z technologii (Int) dla celów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "Nazwa": "Ścieżka śniącego",
+        "Opis": "Wpadając w medytacyjny trans, często na wiele dni, spojrzałeś głęboko w siebie. Kontrolując własne sny, opierasz się Tej, Która Pragnie.",
+        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Spaczenia."
+      },
+      {
+        "Nazwa": "Ścieżka uzdrowiciela",
+        "Opis": "Poświęciłeś się medycznemu dobru innych aeldari, leczyłeś rannych i chorych, spędziłeś dekady, opiekując się innymi.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Medycyny (Int) dla celów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "Nazwa": "Ścieżka marynarza",
+        "Opis": "Poświęciłeś się swojemu statkowi kosmicznemu, nauczyłeś się żeglować po próżni z ekspercką precyzją i manewrowością, stając się jednością z pilotowaną jednostką.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Pilotażu (Zr) przy prowadzeniu pojazdów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "Nazwa": "Ścieżka żałobnika",
+        "Opis": "Straciłeś kogoś bliskiego i podążyłeś Ścieżką żalu. Opłakiwałeś jego upadek bez pogrążania się w ekstremalnych emocjach, które przyciągnęłyby Slaanesha.",
+        "Efekt": "Otrzymujesz +Ranga do Odporności psychicznej."
+      },
+      {
+        "Nazwa": "Ścieżka służby",
+        "Opis": "Aby pomóc całemu gatunkowi, poświęciłeś się służbie, odczytując potrzeby innych i ulepszając siebie poprzez empatię.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Intuicji (Ogd) dla celów posiadających Słowo kluczowe {{RED}}AELDARI{{/RED}}."
+      }
+    ],
+    "Orcze Klany": [
+      {
+        "Nazwa": "Złe Ksienżyce",
+        "Opis": "Ich zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.",
+        "Efekt": "+1 do Majątku na koniec każdej sesji."
+      },
+      {
+        "Nazwa": "Krwawe Topory",
+        "Opis": "Uważani za „nieorczych” przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne „taktiki”, jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
+        "Efekt": "+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr)."
+      },
+      {
+        "Nazwa": "Śmiercioczaszki",
+        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, „handlują” i modyfikują sprzęt częściej niż inne klany.",
+        "Efekt": "+Ranga dodatkowych kości do Testów\nKorzystania z technologii oraz Wpływów."
+      },
+      {
+        "Nazwa": "Złe Słońca",
+        "Opis": "Ich obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.",
+        "Efekt": "Zyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością."
+      },
+      {
+        "Nazwa": "Gupole",
+        "Opis": "Masywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.",
+        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży (str. 188)."
+      },
+      {
+        "Nazwa": "Wężogryzy",
+        "Opis": "Celowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
+        "Efekt": "+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
       }
     ],
     "Mutacje Krootów": [
       {
-        "Mutacja krootów": "Ludojad",
-        "Pożarta ofiara": "Ludzie",
+        "Mutacja Krootów": "Ludojad",
+        "Pożarta Ofiara": "Ludzie",
         "Opis": "Ludzie nie stanowia ewolucyjnie odżywczego posiłku dla krootów.",
         "Efekt": "+1 do twojego najniższego Atrybutu (do wyboru, jeśli Atrybuty sa równe)."
+      },
+      {
+        "Mutacja Krootów": "Pożeracz Astartes*",
+        "Pożarta Ofiara": "Astartes",
+        "Opis": "Astartes sa genetycznie ulepszeni i przewyzszaja zwykłych smiertelników niemal pod kazdym wzgledem. Ich wzmocnione DNA to prawdziwa uczta dla krootowej biologii.",
+        "Efekt": "+2 do dowolnego Atrybutu."
+      },
+      {
+        "Mutacja Krootów": "Pożeracz Aeldari",
+        "Pożarta Ofiara": "Aeldari",
+        "Opis": "Krootowie pozerajacy gibkich i psychicznie zestrojonych aeldari albo nabieraja ich nieziemskiej gracji i zwinnosci, albo hartują umysł.",
+        "Efekt": "+1 do Zrecznosci lub Siły Woli."
+      },
+      {
+        "Mutacja Krootów": "Pożeracz Orków",
+        "Pożarta Ofiara": "Orkowie",
+        "Opis": "Krootowie, którzy ucztuja na ciałach brutalnych orków, sa znacznie lepiej przystosowani do szalenczej walki, poniewaz staja sie silniejsi, twardsi i… bardziej zieloni.",
+        "Efekt": "+1 do Siły lub Wytrzymałosci."
+      },
+      {
+        "Mutacja Krootów": "Pancerna skóra",
+        "Pożarta Ofiara": "Dowolne stworzenie ogrubej skórze (jak np. ambull lub grox)",
+        "Opis": "Twoja skóra staje sie grubsza, bardziej szorstka i porasta ja coraz wiecej solidnych piór.",
+        "Efekt": "+Ranga do Podstawowej Odpornosci."
+      },
+      {
+        "Mutacja Krootów": "Bioluminescencja",
+        "Pożarta Ofiara": "Dowolna bioluminescencyjna istota",
+        "Opis": "Wydzielajace swiatło molekuły rozkwitaja w pokrywajacych twoje ciało piórach, dzieki czemu mozesz emitowac bioluminescencyjne swiatło na zyczenie.",
+        "Efekt": "Mozesz sprawic, zedowolna czesc twojego ciała zacznie lekko swiecic. Jezeli swieci całe ciało, to oswietla obszar w promieniu 10 metrów."
+      },
+      {
+        "Mutacja Krootów": "Kamuflaż",
+        "Pożarta Ofiara": "Dowolne stworzenie zdolne do naturalnej zmiany wyglądu",
+        "Opis": "Zyskujesz ograniczona kontrole nad pigmentacja skóry, dzieki czemu mozesz wizualnie wtapiac sie w otoczenie.",
+        "Efekt": "W ramach Akcji podstawowej mozesz zmienic wyglad swojej skóry na identycznych zasadach jak w przypadku peleryny maskujacej (str. 239)."
+      },
+      {
+        "Mutacja Krootów": "Opcjonalna dwunożność",
+        "Pożarta Ofiara": "Dowolne czworonożne stworzenie",
+        "Opis": "Twoje ciało wydłuża się i garbi, wiec w razie potrzeby mozesz uzywac nóg palcochoda i dłuzszych ramion do czworonoznego biegu.",
+        "Efekt": "Podczas Sprintu pokonujesz dwa razy wieksza odległosc niz zazwyczaj, a w Testach Atletyki (S) podczas skoków lub wspinaczki otrzymujesz +Dwukrotnosc Rangi dodatkowych kosci."
+      },
+      {
+        "Mutacja Krootów": "Nadwrażliwe pióra",
+        "Pożarta Ofiara": "Dowolne stworzenie ze wzmocnionymi zmysłami (jak ambulle czy szponiaste biesy)",
+        "Opis": "Wystajace z twojej głowy wrazliwe pióra staja sie jeszcze czulsze i zaczynaja wychwytywac ruch wokolicy poprzez subtelne wibracje i zawirowania powietrza.",
+        "Efekt": "Twoje pióra działaja jak auspex (str. 237) ozasiegu 30 metrów."
+      },
+      {
+        "Mutacja Krootów": "Skrzydła",
+        "Pożarta Ofiara": "Dowolne skrzydlate stworzenie (jak brzytwoskrzydły lub wywachy)",
+        "Opis": "Twoja budowa zmienia się w ciagu przepełnionych dreczacym bólem miesiecy, wracajac do pierwotnej sylwetki prastarego ludu krootorłów, az w koncu na twych plecach wyrasta para lekkich skórzastych skrzydeł.",
+        "Efekt": "Możesz latac z Szybkoscia 7."
+      },
+      {
+        "Mutacja Krootów": "Naturalna broń",
+        "Pożarta Ofiara": "Dowolne stworzenie o naturalnej broni (np. diabły z Catachanu lub szponiaste biesy)",
+        "Opis": "Twoje czteropalce dłonie wytwarzaja w pełni funkcjonalne pazury. W zaleznosci od natury twojego posiłku moga byc jadowite, twarde, zaostrzone lub wydłuzone na kształt ostrza.",
+        "Efekt": "Twoje Nieuzbrojone ataki zadaja Obrazenia równe\n(S) + 4 / +3 DK\ni maja jedną z ponizszych Cech:\nBrutalna\nParujaca\nPrzebijajaca (Ranga)\nWywołanie (Zatrucie (Ranga))"
       }
     ],
     "Cechy": [
@@ -9332,49 +9515,6 @@
         "Słowa Kluczowe": "{{RED}}ŁAŃCUCHOWA{{/RED}}, {{RED}}IMPERIUM{{/RED}}, {{RED}}ADEPTUS ASTARTES{{/RED}}",
         "Zasięg": "- / - / -",
         "Cechy": "Brutalna; Parująca"
-      }
-    ],
-    "Zakony Pierwszego Powołania": [
-      {
-        "Nazwa": "Krwawe Anioły",
-        "Opis": "Zarówno szlachetne jak i zaciekłe w walce Krwawe Anioły są modelowym przykładem obrońców ludzkości. Każdy z nich ciągle opłakuje śmierć Prymarchy Sanguiniusa z rąk Arcyzdrajcy Horusa. Jego odejście okaleczyło dusze genetycznych synów. Na polu bitwy ten żal manifestuje się poprzez dziki szał i głód zemsty, czyniąc z nich straszliwych wojowników w zwarciu.",
-        "Zaleta": "Dzikie echa\nKrwawe Anioły jako mistrzowie szturmu są prowadzone przez dzikie pragnienie pomszczenia Prymarchy.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku wręcz.",
-        "Wada": "Czerwony głód (Genoziarno)\nMroczna skaza Zakonu jest doskonale skrywaną tajemnicą – Krwawe Anioły są przepełnione destrukcyjną tęsknotą, szałem bitewnym i niemal nienasyconym głodem krwi.\n\nZa każdym razem, gdy walczysz w zawarciu i zobaczysz krew musisz wykonać Test Siły Woli o ST 3. Jeśli Test się nie powiedzie, wpadasz w Szał bojowy."
-      },
-      {
-        "Nazwa": "Mroczne Anioły"
-      }
-    ],
-    "Orcze Klany": [
-      {
-        "Nazwa": "Złe Ksienżyce",
-        "Opis": "Ich zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.",
-        "Efekt": "+1 do Majątku na koniec każdej sesji."
-      },
-      {
-        "Nazwa": "Krwawe Topory",
-        "Opis": "Uważani za „nieorczych” przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne „taktiki”, jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
-        "Efekt": "+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr)."
-      },
-      {
-        "Nazwa": "Śmiercioczaszki",
-        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, „handlują” i modyfikują sprzęt częściej niż inne klany.",
-        "Efekt": "+Ranga dodatkowych kości do Testów\nKorzystania z technologii oraz Wpływów."
-      },
-      {
-        "Nazwa": "Złe Słońca",
-        "Opis": "Ich obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.",
-        "Efekt": "Zyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością."
-      },
-      {
-        "Nazwa": "Gupole",
-        "Opis": "Masywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.",
-        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży (str. 188)."
-      },
-      {
-        "Nazwa": "Wężogryzy",
-        "Opis": "Celowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
-        "Efekt": "+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
       }
     ]
   },
