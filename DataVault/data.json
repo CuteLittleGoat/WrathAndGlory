@@ -9568,6 +9568,218 @@
       "Wycieńczenie": "Twoja postać zmęczyła się w wyniku walki, długotrwałego wysiłku lub jest już zwyczajnie wyczerpana psychicznie.\nW swojej turze może wykonywać podstawowy Ruch, Czołganie się, zwykłą Akcję bojową (bez opcji ataku, jak np. Celowanie czy Atak wielokrotny) lub Odwrót. Ponadto w tym stanie niemożliwe jest podjęcie Testu Determinacji. Każda Trauma wywołana u Wycieńczonej postaci jest natychmiast przekształcana w Ranę śmiertelną.\nNiektóre okoliczności mogą wywołać Wycieńczenie, które ponadto pojawia się automatycznie, gdy liczba Traum przewyższy Odporność psychiczną. Niektóre rodzaje broni, mocy psionicznych czy Akcji Zguby mogą wywołać Wycieńczenie niezależnie od liczby Traum.\nJeśli Wycieńczenie zostało wywołane w inny sposób niż przez przełamanie Odporności psychicznej, rodzaj źródła określa sposób usunięcia tego Stanu. W przeciwnym wypadku Wycieńczenie znika po wyleczeniu Traumy.",
       "Zatrucie": "Postać została zatruta jednym z niezliczonych patogenów, zaraz czy wirusów obecnych w galaktyce. Mogło się to zdarzyć w wyniku wstrzyknięcia neurotoksyn do organizmu, oblania kwasem obcych lub z powodu zarazy zesłanej przez Nurgle’a.\nWe wszystkich przypadkach postać zostanie Zatruta. Otrzymuje wtedy karę +2 do ST wszystkich wykonywanych Testów. Niektóre trucizny zadają dodatkowe obrażenia zależne od rodzaju substancji. Inne mogą dodatkowo wpłynąć na funkcje umysłowe czy ciało.\nZatrucie dobiega końca po wyleczeniu przez inną postać (udanym Testem Medycyny) lub jeśli Zatruta postać na początku swojej Tury uzyska sukces w Teście Wytrzymałości (o ST zależnym od rodzaju trucizny).",
       "Zdezorientowanie": "Wszystko wydaje się skomplikowane i trudne.\nZdezorientowane postaci otrzymują karę +1 do ST wszystkich Testów, choć kara może być większa, jeżeli źródeł Zdezorientowania jest więcej.\nStan ten utrzymuje się do końca następnej Tury postaci, jednak dodatkowe zasady mogą to zmienić."
+    },
+    "sheetOrder": [
+      "Bestiariusz",
+      "Tabela Rozmiarów",
+      "Gatunki",
+      "Archetypy",
+      "Bonusy Frakcji",
+      "Słowa Kluczowe Frakcji",
+      "Implanty Astartes",
+      "Zakony Pierwszego Powołania",
+      "Ścieżki Asuryani",
+      "Orcze Klany",
+      "Mutacje Krootów",
+      "Cechy",
+      "Stany",
+      "Słowa Kluczowe",
+      "Talenty",
+      "Modlitwy",
+      "Psionika",
+      "Augumentacje",
+      "Ekwipunek",
+      "Pancerze",
+      "Bronie"
+    ],
+    "columnOrder": {
+      "Bestiariusz": [
+        "Nazwa",
+        "Zagrożenie",
+        "Słowa Kluczowe",
+        "S",
+        "Wt",
+        "Zr",
+        "I",
+        "SW",
+        "Int",
+        "Ogd",
+        "Odporność (w tym WP)",
+        "Wartość Pancerza",
+        "Obrona",
+        "Żywotność",
+        "Odporność Psychiczna",
+        "Umiejętności",
+        "Premie",
+        "Zdolności",
+        "Atak",
+        "Zdolności Hordy",
+        "Opcje Hordy",
+        "Upór",
+        "Odwaga",
+        "Szybkość",
+        "Rozmiar",
+        "Podręcznik",
+        "Strona"
+      ],
+      "Tabela Rozmiarów": [
+        "Rozmiar",
+        "Modyfikator Testu Ataku",
+        "Zmniejszenie Poziomu Ukrycia",
+        "Przykłady"
+      ],
+      "Gatunki": [
+        "Gatunek",
+        "Koszt PD",
+        "Atrybuty",
+        "Umiejętności",
+        "Szybkość",
+        "Rozmiar",
+        "Zdolności gatunkowe"
+      ],
+      "Archetypy": [
+        "Poziom",
+        "Frakcja",
+        "Nazwa",
+        "Koszt PD",
+        "Słowa Kluczowe",
+        "Atrybuty Archetypu",
+        "Umiejętności Archetypu",
+        "Zdolność Archetypu",
+        "Ekwipunek",
+        "Inne",
+        "Podręcznik",
+        "Strona"
+      ],
+      "Bonusy Frakcji": [
+        "Frakcja",
+        "Premia 1",
+        "Premia 2",
+        "Premia 3"
+      ],
+      "Słowa Kluczowe Frakcji": [
+        "Frakcja",
+        "Słowo Kluczowe",
+        "Opis",
+        "Efekt"
+      ],
+      "Implanty Astartes": [
+        "Numer",
+        "Nazwa",
+        "Opis"
+      ],
+      "Zakony Pierwszego Powołania": [
+        "Nazwa",
+        "Opis",
+        "Zaleta",
+        "Wada"
+      ],
+      "Ścieżki Asuryani": [
+        "Nazwa",
+        "Opis",
+        "Efekt"
+      ],
+      "Orcze Klany": [
+        "Nazwa",
+        "Opis",
+        "Efekt"
+      ],
+      "Mutacje Krootów": [
+        "Mutacja Krootów",
+        "Pożarta Ofiara",
+        "Opis",
+        "Efekt"
+      ],
+      "Cechy": [
+        "Typ",
+        "Nazwa",
+        "Opis"
+      ],
+      "Stany": [
+        "Typ",
+        "Nazwa",
+        "Opis"
+      ],
+      "Słowa Kluczowe": [
+        "Typ",
+        "Nazwa",
+        "Opis"
+      ],
+      "Talenty": [
+        "Nazwa",
+        "Koszt PD",
+        "Wymagania",
+        "Opis",
+        "Efekt"
+      ],
+      "Modlitwy": [
+        "Nazwa",
+        "Koszt PD",
+        "Wymagania",
+        "Efekt"
+      ],
+      "Psionika": [
+        "Typ",
+        "Nazwa",
+        "Koszt PD",
+        "ST",
+        "Aktywacja",
+        "Czas Trwania",
+        "Zasięg",
+        "Wiele Celów",
+        "Słowa Kluczowe",
+        "Efekt",
+        "Wzmocnienie"
+      ],
+      "Augumentacje": [
+        "Typ",
+        "Nazwa",
+        "Opis",
+        "Efekt",
+        "Koszt",
+        "Dostępność",
+        "Słowa Kluczowe",
+        "Koszt IM"
+      ],
+      "Ekwipunek": [
+        "Typ",
+        "Nazwa",
+        "Opis",
+        "Efekt",
+        "Koszt",
+        "Dostępność",
+        "Słowa Kluczowe",
+        "Koszt IM"
+      ],
+      "Pancerze": [
+        "Typ",
+        "Nazwa",
+        "WP",
+        "Cechy",
+        "Podręcznik",
+        "Strona",
+        "Koszt",
+        "Dostępność",
+        "Koszt IM",
+        "Słowa Kluczowe"
+      ],
+      "Bronie": [
+        "Rodzaj",
+        "Typ",
+        "Nazwa",
+        "Obrażenia",
+        "DK",
+        "PP",
+        "Zasięg",
+        "Szybkostrzelność",
+        "Cechy",
+        "Podręcznik",
+        "Strona",
+        "Koszt",
+        "Dostępność",
+        "Koszt IM",
+        "Słowa Kluczowe"
+      ]
     }
   }
 }

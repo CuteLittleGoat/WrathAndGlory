@@ -9,7 +9,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypt `app.js` i style `style.css`.
 - `style.css` — pełne style (kolory, fonty, layout, tabela, popover, modal, menu filtrów listowych).
 - `app.js` — cała logika: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i admin-update.
-- `data.json` — produkcyjne źródło danych.
+- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`).
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`.
 - `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce).
 - `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
@@ -328,23 +328,13 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 ## 4) JS: stałe, stan aplikacji i helpery
 
 ### 4.1 Stałe
-- `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Tabela Rozmiarów, Archetypy; Tabela Rozmiarów jest zawsze między Bestiariusz a Archetypy).
-- `SHEETS_ORDER` — kolejność zakładek (m.in. Bestiariusz → Tabela Rozmiarów → Gatunki → Archetypy → Bonusy Frakcji → Słowa Kluczowe Frakcji → Implanty Astartes → Zakony Pierwszego Powołania → Ścieżki Asuryani → Orcze Klany → Mutacje Krootów → Cechy).
-- `SHEET_COLUMN_ORDER` — preferowana kolejność kolumn per arkusz.
-  - Dla `Tabela Rozmiarów` kolejność to: `Rozmiar`, `Modyfikator Testu Ataku`, `Zmniejszenie Poziomu Ukrycia`, `Przykłady`.
-  - Dla `Gatunki` kolejność to: `Gatunek`, `Koszt PD`, `Atrybuty`, `Umiejętności`, `Zdolności gatunkowe`, `Rozmiar`, `Szybkość`.
-  - Dla `Archetypy` kolejność to: `Poziom`, `Frakcja`, `Nazwa`, `Koszt PD`, `Słowa Kluczowe`, `Atrybuty Archetypu`, `Umiejętności Archetypu`, `Zdolność Archetypu`, `Ekwipunek`, `Inne`, `Podręcznik`, `Strona`.
-  - Dla `Bonusy Frakcji` kolejność to: `Frakcja`, `Premia 1`, `Premia 2`, `Premia 3`.
-  - Dla `Słowa Kluczowe Frakcji` kolejność to: `Frakcja`, `Słowo Kluczowe`, `Efekt`, `Opis`.
-  - Dla `Implanty Astartes` kolejność to: `Numer`, `Nazwa`, `Opis`.
-  - Dla `Ścieżki Asuryani` kolejność to: `Nazwa`, `Efekt`, `Opis`.
-  - Dla `Mutacje Krootów` kolejność to: `Mutacja Krootów`, `Pożarta Ofiara`, `Efekt`, `Opis`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
+- Kolejność zakładek i kolumn **nie jest hardcode** — pochodzi z `_meta.sheetOrder` i `_meta.columnOrder` w `data.json` (a w razie braku jest odzyskiwana z bieżącego układu danych).
 
 ### 4.2 Elementy DOM (`els`)
 Mapowanie na `getElementById`:
@@ -365,6 +355,9 @@ Mapowanie na `getElementById`:
 
 ### 4.4 Helpery tekstowe
 - `norm(s)` — normalizacja spacji i dwukropków.
+- `deriveColumnOrderFromHeader(header)` — mapuje nagłówki z XLSX na kolejność kolumn w tabeli, z uwzględnieniem scalania `Cecha 1..N` → `Cechy` oraz `Zasięg 1..3` → `Zasięg`.
+- `getSheetOrder(available)` — bierze `_meta.sheetOrder` i filtruje do arkuszy dostępnych w danych (dokleja brakujące).
+- `getColumnOrder(rows, sheetName)` — bierze `_meta.columnOrder[sheetName]`, filtruje do kolumn obecnych w danych i dokleja brakujące alfabetycznie.
 - `escapeHtml(s)` — encje HTML.
 - `stripMarkers(s)` — usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` z tekstu (używane w filtrze listowym).
 - `parseInlineSegments(raw)` — dzieli tekst na segmenty z aktywnymi stylami na podstawie markerów `{{RED}}`, `{{B}}`, `{{I}}` (zwraca tablicę `{text, styles}`).
@@ -431,8 +424,9 @@ Mapowanie na `getElementById`:
 
 ### 6.5 `inferColumns(rows, sheetName)`
 - Buduje listę kolumn z danych.
-- Najpierw preferuje `SHEET_COLUMN_ORDER` dla arkusza.
-- Resztę sortuje alfabetycznie (`pl`, `numeric: true`).
+- Najpierw korzysta z `_meta.columnOrder[sheetName]`, jeśli istnieje.
+- W przypadku braku metadanych używa kolejności kluczy z pierwszego wiersza.
+- Brakujące/nowe pola dopina alfabetycznie (`pl`, `numeric: true`).
 
 ---
 
@@ -447,6 +441,7 @@ Mapowanie na `getElementById`:
 - Generuje `_meta.traits` z arkusza `Cechy`.
 - Generuje `_meta.states` z arkusza `Stany`.
 - `Bronie` i `Pancerze` przechodzą transformacje (cechy, zasięg).
+- Dołącza `_meta.sheetOrder` i `_meta.columnOrder`, jeśli przekazano je z XLSX.
 
 ### 7.3 `ensureSheetJS(cb)`
 - Jeśli `window.XLSX` nie istnieje, doładowuje SheetJS z CDN (`0.18.5`).
@@ -457,19 +452,21 @@ Mapowanie na `getElementById`:
 ### 7.5 `loadXlsxFromRepo()`
 - Pobiera `Repozytorium.xlsx` z `cache:"no-store"`.
 - Czyta arkusze (`XLSX.utils.sheet_to_json` z `defval:""`).
-- Buduje `data.json` i inicjalizuje UI.
+- Pobiera pierwszy wiersz jako nagłówki i zapisuje ich kolejność (z uwzględnieniem scalania `Cecha 1..N` → `Cechy` i `Zasięg 1..3` → `Zasięg`).
+- Buduje `data.json` z `_meta.sheetOrder` i `_meta.columnOrder`, a następnie inicjalizuje UI.
 
 ### 7.6 `normaliseDB(data)`
 - Ignoruje arkusze zaczynające się od `_`.
 - Normalizuje rekordy, dodaje `__id`.
 - Buduje `traitIndex` i `stateIndex` (klucze kanoniczne).
+- Przenosi do `_meta` `sheetOrder` i `columnOrder` (z fallbackiem do kolejności w `data.json`).
 
 ---
 
 ## 8) JS: inicjalizacja UI
 
 ### 8.1 `initUI()`
-- Czyści `#tabs` i tworzy przyciski `.tab` wg `SHEETS_ORDER`.
+- Czyści `#tabs` i tworzy przyciski `.tab` wg `_meta.sheetOrder` (z fallbackiem do kolejności w `data.json`).
 - Ustawia aktywną pierwszą zakładkę (lub zachowuje obecną, jeśli wciąż jest widoczna).
 - Ukrywa `#updateDataGroup`, gdy nie `ADMIN_MODE`.
 - W trybie gracza usuwa z listy zakładek arkusz `Bestiariusz`, więc jest widoczny tylko dla admina.
@@ -644,7 +641,7 @@ Obsługuje trzy przypadki:
 
 ## 17) Uwagi o zgodności 1:1
 
-- Kolejność zakładek i kolumn jest kluczowa (`SHEETS_ORDER`, `SHEET_COLUMN_ORDER`).
+- Kolejność zakładek i kolumn jest kluczowa i pochodzi bezpośrednio z `_meta.sheetOrder` oraz `_meta.columnOrder` w `data.json` (aktualizowanych z `Repozytorium.xlsx`).
 - Każda interakcja w UI (filtry, sortowanie, porównanie, clamp) jest wykonywana w JS — bez zewnętrznych bibliotek UI.
 - Wszystkie style i efekty (glow, kolory, uppercase, letter-spacing) są definiowane w `style.css` i powinny być odtworzone dokładnie.
 - **Zakony Pierwszego Powołania**

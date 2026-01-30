@@ -8,6 +8,8 @@ CEL:
 - Buduje słowniki:
   - _meta.traits (Cechy.Nazwa -> Cechy.Opis)
   - _meta.states (Stany.Nazwa -> Stany.Opis / Opis jeśli istnieje)
+  - _meta.sheetOrder (kolejność arkuszy z XLSX)
+  - _meta.columnOrder (kolejność kolumn z nagłówków XLSX po scaleniu Cecha/Zasięg)
 
 Użycie:
   python build_json.py Repozytorium.xlsx data.json
@@ -22,6 +24,26 @@ from xml.etree import ElementTree as ET
 
 def norm(s) -> str:
   return re.sub(r"\s+", " ", str(s or "").strip())
+
+def derive_column_order(header):
+  order = []
+  has_range = False
+  has_traits = False
+  for col in header:
+    if not col:
+      continue
+    if re.match(r"^Zasi[eę]g\s*\d+$", col, re.IGNORECASE):
+      if not has_range:
+        order.append("Zasięg")
+        has_range = True
+      continue
+    if re.match(r"^Cecha\s*\d+$", col, re.IGNORECASE):
+      if not has_traits:
+        order.append("Cechy")
+        has_traits = True
+      continue
+    order.append(col)
+  return order
 
 
 def _is_red_color(node) -> bool:
@@ -225,6 +247,8 @@ def _load_rows_from_xml(z: ZipFile, path: str, shared_strings, styles):
 def load_xlsx_minimal(path: Path):
   """Minimal XLSX loader when openpyxl is unavailable (no external deps)."""
   sheets = {}
+  sheet_order = []
+  column_order = {}
   with ZipFile(path, "r") as z:
     shared_strings = _load_shared_strings(z)
     styles = _load_styles(z)
@@ -236,6 +260,7 @@ def load_xlsx_minimal(path: Path):
 
     for sheet in wb_root.findall("main:sheets/main:sheet", ns_main):
       name = sheet.attrib.get("name", "Sheet")
+      sheet_order.append(name)
       rid = sheet.attrib.get("{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id")
       target = rid_to_target.get(rid)
       if not target:
@@ -246,14 +271,15 @@ def load_xlsx_minimal(path: Path):
         sheets[name] = []
         continue
       header = [norm(h) for h in rows[0]]
+      column_order[name] = derive_column_order(header)
       sheets[name] = rows_to_records(header, rows[1:])
-  return sheets
+  return sheets, sheet_order, column_order
 
 def main():
   xlsx = Path(sys.argv[1]) if len(sys.argv)>1 else Path("Repozytorium.xlsx")
   out  = Path(sys.argv[2]) if len(sys.argv)>2 else Path("data.json")
 
-  raw_sheets = load_xlsx_minimal(xlsx)
+  raw_sheets, sheet_order, column_order = load_xlsx_minimal(xlsx)
 
   sheets = {}
   traits = {}
@@ -286,7 +312,15 @@ def main():
       recs = [merge_traits(r) for r in recs]
     sheets[name] = recs
 
-  data = {"sheets": sheets, "_meta": {"traits": traits, "states": states}}
+  data = {
+    "sheets": sheets,
+    "_meta": {
+      "traits": traits,
+      "states": states,
+      "sheetOrder": sheet_order,
+      "columnOrder": column_order,
+    }
+  }
   out.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
   print(f"OK: zapisano {out}")
 
