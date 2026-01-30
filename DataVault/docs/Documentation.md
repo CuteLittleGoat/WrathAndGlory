@@ -233,6 +233,11 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Efekt`: 26ch
   - `Opis`: 56ch
 
+## Uwaga: szerokości i kolejność kolumn (Ścieżki Asuryani / Orcze Klany)
+W CSS modułu DataVault dla tych zakładek ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.
+
+Kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`) i ma pierwszeństwo przed samą listą pól w wierszach. W aktualnym `data.json` kolejność dla **Ścieżek Asuryani** to `Nazwa → Opis → Efekt`, podczas gdy dokumentacja (i `Kolumny.md`) podaje `Nazwa → Efekt → Opis`. Jeśli kolejność ma być stała, należy pilnować jej w arkuszu źródłowym lub w `_meta.columnOrder`.
+
 - **Cechy / Stany / Słowa Kluczowe**
   - `Typ`: 14ch
   - `Nazwa`: 26ch
