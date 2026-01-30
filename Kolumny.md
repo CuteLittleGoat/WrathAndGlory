@@ -1,6 +1,6 @@
 # Kolumny — szerokości, wyrównania i łamanie linii
 
-Poniżej znajduje się spis **wszystkich kolumn** wykorzystywanych w module DataVault, podzielony na zakładki. Wartości „auto” oznaczają brak ustawionego `min-width` w CSS (szerokość zależna od zawartości i dostępnego miejsca). Domyślnie tekst jest **wyrównany do lewej**, a zawartość łamie się zgodnie z `white-space: pre-wrap` w `.celltext`, o ile nie zaznaczono inaczej.
+Poniżej znajduje się spis **wszystkich kolumn** wykorzystywanych w module DataVault, podzielony na zakładki. Kolejność kolumn jest zawsze pobierana z pierwszego wiersza arkusza w `Repozytorium.xlsx` (lub z wygenerowanego `data.json`) — to zestawienie odzwierciedla stan bieżącego pliku. W arkuszach zawierających kolumny `Cecha 1..N` oraz `Zasięg 1..3` aplikacja scala je odpowiednio do `Cechy` i `Zasięg` w miejscu pierwszego nagłówka. Wartości „auto” oznaczają brak ustawionego `min-width` w CSS (szerokość zależna od zawartości i dostępnego miejsca). Domyślnie tekst jest **wyrównany do lewej**, a zawartość łamie się zgodnie z `white-space: pre-wrap` w `.celltext`, o ile nie zaznaczono inaczej.
 
 ## Bestiariusz
 | Kolumna | Min-width | Wyrównanie | Łamanie |

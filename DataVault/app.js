@@ -1,54 +1,6 @@
 /* Administratum Data Vault — bez Tabulatora (zero zależności UI).
    Źródło danych: data.json (GitHub Pages) lub aktualizacja z Repozytorium.xlsx (admin).
 */
-const SHEETS_ORDER = [
-  "Bestiariusz",
-  "Tabela Rozmiarów",
-  "Gatunki",
-  "Archetypy",
-  "Bonusy Frakcji",
-  "Słowa Kluczowe Frakcji",
-  "Implanty Astartes",
-  "Zakony Pierwszego Powołania",
-  "Ścieżki Asuryani",
-  "Orcze Klany",
-  "Mutacje Krootów",
-  "Cechy",
-  "Stany",
-  "Słowa Kluczowe",
-  "Talenty",
-  "Modlitwy",
-  "Psionika",
-  "Augumentacje",
-  "Ekwipunek",
-  "Pancerze",
-  "Bronie",
-];
-
-const SHEET_COLUMN_ORDER = {
-  "Bestiariusz":["Nazwa","Zagrożenie","Słowa Kluczowe","S","Wt","Zr","I","SW","Int","Ogd","Odporność (w tym WP)","Wartość Pancerza","Obrona","Żywotność","Odporność Psychiczna","Umiejętności","Premie","Zdolności","Atak","Zdolności Hordy","Opcje Hordy","Upór","Odwaga","Szybkość","Rozmiar","Podręcznik","Strona"],
-  "Tabela Rozmiarów":["Rozmiar","Modyfikator Testu Ataku","Zmniejszenie Poziomu Ukrycia","Przykłady"],
-  "Gatunki":["Gatunek","Koszt PD","Atrybuty","Umiejętności","Zdolności gatunkowe","Rozmiar","Szybkość"],
-  "Archetypy":["Poziom","Frakcja","Nazwa","Koszt PD","Słowa Kluczowe","Atrybuty Archetypu","Umiejętności Archetypu","Zdolność Archetypu","Ekwipunek","Inne","Podręcznik","Strona"],
-  "Bonusy Frakcji":["Frakcja","Premia 1","Premia 2","Premia 3"],
-  "Słowa Kluczowe Frakcji":["Frakcja","Słowo Kluczowe","Efekt","Opis"],
-  "Implanty Astartes":["Numer","Nazwa","Opis"],
-  "Zakony Pierwszego Powołania":["Nazwa","Opis","Zaleta","Wada"],
-  "Ścieżki Asuryani":["Nazwa","Efekt","Opis"],
-  "Orcze Klany":["Nazwa","Opis","Efekt"],
-  "Mutacje Krootów":["Mutacja Krootów","Pożarta Ofiara","Efekt","Opis"],
-  "Cechy":["Typ","Nazwa","Opis"],
-  "Stany":["Typ","Nazwa","Opis"],
-  "Słowa Kluczowe":["Typ","Nazwa","Opis"],
-  "Ekwipunek":["Typ","Nazwa","Opis","Efekt","Koszt","Dostępność","Słowa Kluczowe","Koszt IM"],
-  "Augumentacje":["Typ","Nazwa","Opis","Efekt","Koszt","Dostępność","Słowa Kluczowe","Koszt IM"],
-  "Talenty":["Nazwa","Koszt PD","Wymagania","Opis","Efekt"],
-  "Psionika":["Typ","Nazwa","Koszt PD","ST","Aktywacja","Czas Trwania","Zasięg","Wiele Celów","Słowa Kluczowe","Efekt","Opis","Wzmocnienie"],
-  "Modlitwy":["Nazwa","Koszt PD","Wymagania","Efekt"],
-  "Bronie":["Rodzaj","Typ","Nazwa","Obrażenia","DK","PP","Zasięg","Szybkostrzelność","Cechy","Koszt","Dostępność","Słowa Kluczowe","Koszt IM","Podręcznik","Strona"],
-  "Pancerze":["Typ","Nazwa","WP","Cechy","Koszt","Dostępność","Słowa Kluczowe","Koszt IM","Podręcznik","Strona"],
-};
-
 const els = {
   tabs: document.getElementById("tabs"),
   wrap: document.getElementById("tableWrap"),
@@ -104,6 +56,63 @@ const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 /* ---------- Utilities ---------- */
 function norm(s){
   return String(s ?? "").replace(/\s+/g, " ").trim().replace(" :", ":").replace(": ",": ");
+}
+
+function deriveColumnOrderFromHeader(header){
+  const order = [];
+  let hasRange = false;
+  let hasTraits = false;
+  for (const raw of header || []){
+    const col = norm(raw);
+    if (!col) continue;
+    if (/^Zasi[eę]g\s*\d+$/i.test(col)){
+      if (!hasRange){
+        order.push("Zasięg");
+        hasRange = true;
+      }
+      continue;
+    }
+    if (/^Cecha\s*\d+$/i.test(col)){
+      if (!hasTraits){
+        order.push("Cechy");
+        hasTraits = true;
+      }
+      continue;
+    }
+    order.push(col);
+  }
+  return order;
+}
+
+function getSheetOrder(available){
+  const metaOrder = DB?._meta?.sheetOrder;
+  const base = Array.isArray(metaOrder) ? metaOrder : available;
+  const inOrder = base.filter(name => available.includes(name));
+  const rest = available.filter(name => !inOrder.includes(name));
+  return inOrder.concat(rest);
+}
+
+function getColumnOrder(rows, sheetName){
+  const set = new Set();
+  for (const r of rows){
+    for (const k of Object.keys(r)){
+      if (k === "__id" || k.startsWith("__")) continue;
+      set.add(k);
+    }
+  }
+  const metaOrder = DB?._meta?.columnOrder?.[sheetName];
+  const baseOrder = Array.isArray(metaOrder)
+    ? metaOrder
+    : (rows[0] ? Object.keys(rows[0]).filter(k => k !== "__id" && !k.startsWith("__")) : []);
+  const cols = [];
+  for (const col of baseOrder){
+    if (set.has(col)){
+      cols.push(col);
+      set.delete(col);
+    }
+  }
+  const rest = [...set].sort((a,b)=>a.localeCompare(b,"pl",{numeric:true,sensitivity:"base"}));
+  return cols.concat(rest);
 }
 
 function getDefaultSort(sheet){
@@ -382,21 +391,7 @@ function stripPrivateFields(row){
 }
 
 function inferColumns(rows, sheetName){
-  const set = new Set();
-  for (const r of rows){
-    for (const k of Object.keys(r)){
-      if (k === "__id" || k.startsWith("__")) continue;
-      set.add(k);
-    }
-  }
-  const explicit = SHEET_COLUMN_ORDER[sheetName];
-  const priority = explicit || ["Rodzaj","Typ","Nazwa","Poziom","Frakcja","Obrażenia","DK","PP","Zasięg","Szybkostrzelność","Cechy","Koszt","Dostępność","Koszt IM","Słowa Kluczowe","Podręcznik","Strona","Opis","Efekt"];
-  const cols = [];
-  for (const p of priority){
-    if (set.has(p)) cols.push(p), set.delete(p);
-  }
-  const rest = [...set].sort((a,b)=>a.localeCompare(b,"pl",{numeric:true,sensitivity:"base"}));
-  return cols.concat(rest);
+  return getColumnOrder(rows, sheetName);
 }
 
 /* ---------- Loading ---------- */
@@ -415,7 +410,8 @@ async function loadJsonFromRepo(){
   }
 }
 
-function buildDataJsonFromSheets(rawSheets){
+function buildDataJsonFromSheets(rawSheets, opts = {}){
+  const {sheetOrder = null, columnOrder = null} = opts;
   const sheets = {};
   const traits = {};
   const states = {};
@@ -449,7 +445,9 @@ function buildDataJsonFromSheets(rawSheets){
     sheets[name] = processed;
   }
 
-  return {sheets, _meta:{traits, states}};
+  const resolvedSheetOrder = Array.isArray(sheetOrder) ? sheetOrder : Object.keys(rawSheets);
+  const resolvedColumnOrder = columnOrder && typeof columnOrder === "object" ? columnOrder : {};
+  return {sheets, _meta:{traits, states, sheetOrder: resolvedSheetOrder, columnOrder: resolvedColumnOrder}};
 }
 
 function ensureSheetJS(cb){
@@ -483,12 +481,17 @@ function loadXlsxFromRepo(){
       const buf = await res.arrayBuffer();
       const wb = XLSX.read(buf, {type:"array"});
       const sheets = {};
+      const sheetOrder = wb.SheetNames.slice();
+      const columnOrder = {};
       for (const name of wb.SheetNames){
         const ws = wb.Sheets[name];
+        const headerRows = XLSX.utils.sheet_to_json(ws, {header:1, defval:"", raw:false});
+        const header = headerRows?.[0] ? headerRows[0].map(norm).filter(Boolean) : [];
+        columnOrder[name] = deriveColumnOrderFromHeader(header);
         const rows = XLSX.utils.sheet_to_json(ws, {defval:"", raw:false});
         sheets[name] = rows;
       }
-      const data = buildDataJsonFromSheets(sheets);
+      const data = buildDataJsonFromSheets(sheets, {sheetOrder, columnOrder});
       downloadDataJson(data);
       DB = normaliseDB(data);
       initUI();
@@ -511,6 +514,8 @@ function normaliseDB(data){
   const meta = data._meta || {};
   const traits = meta.traits || {};
   const states = meta.states || {};
+  const sheetOrder = Array.isArray(meta.sheetOrder) ? meta.sheetOrder : Object.keys(sheetsIn);
+  const columnOrder = meta.columnOrder && typeof meta.columnOrder === "object" ? meta.columnOrder : {};
   // build fast indexes (canonical keys)
   const traitIndex = {};
   for (const [k,v] of Object.entries(traits)){
@@ -522,7 +527,7 @@ function normaliseDB(data){
   for (const [k,v] of Object.entries(states)){
     stateIndex[canonKey(k)] = v;
   }
-  return {sheets, _meta:{traits, states, traitIndex, stateIndex}};
+  return {sheets, _meta:{traits, states, traitIndex, stateIndex, sheetOrder, columnOrder}};
 }
 
 /* ---------- UI init ---------- */
@@ -534,7 +539,7 @@ function initUI(){
   const visibleSheets = view.showCharacterTabs
     ? baseVisible
     : baseVisible.filter(name => !CHARACTER_CREATION_SHEETS.has(name));
-  const order = SHEETS_ORDER.filter(x => available.includes(x)).concat(available.filter(x => !SHEETS_ORDER.includes(x)).sort());
+  const order = getSheetOrder(available);
   const visibleOrder = order.filter(name => visibleSheets.includes(name));
   for (const name of visibleOrder){
     const b = document.createElement("button");
