@@ -427,9 +427,9 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Tabela Rozmiarów"] th[data-col="Rozmiar"],
 .tableWrap table[data-sheet="Tabela Rozmiarów"] td[data-col="Rozmiar"]{min-width:8ch}
 .tableWrap table[data-sheet="Tabela Rozmiarów"] th[data-col="Modyfikator Testu Ataku"],
-.tableWrap table[data-sheet="Tabela Rozmiarów"] td[data-col="Modyfikator Testu Ataku"]{min-width:25ch; text-align:center}
+.tableWrap table[data-sheet="Tabela Rozmiarów"] td[data-col="Modyfikator Testu Ataku"]{min-width:26ch; text-align:center}
 .tableWrap table[data-sheet="Tabela Rozmiarów"] th[data-col="Zmniejszenie Poziomu Ukrycia"],
-.tableWrap table[data-sheet="Tabela Rozmiarów"] td[data-col="Zmniejszenie Poziomu Ukrycia"]{min-width:25ch; text-align:center}
+.tableWrap table[data-sheet="Tabela Rozmiarów"] td[data-col="Zmniejszenie Poziomu Ukrycia"]{min-width:26ch; text-align:center}
 .tableWrap table[data-sheet="Tabela Rozmiarów"] th[data-col="Przykłady"],
 .tableWrap table[data-sheet="Tabela Rozmiarów"] td[data-col="Przykłady"]{min-width:85ch; text-align:left}
 
@@ -449,7 +449,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Atrybuty Archetypu"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Atrybuty Archetypu"],
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Umiejętności Archetypu"],
-.tableWrap table[data-sheet="Archetypy"] td[data-col="Umiejętności Archetypu"]{min-width:28ch}
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Umiejętności Archetypu"]{min-width:26ch}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Zdolność Archetypu"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Zdolność Archetypu"],
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Ekwipunek"],
@@ -491,28 +491,28 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] th[data-col="Frakcja"],
 .tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] td[data-col="Frakcja"],
 .tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] th[data-col="Słowo Kluczowe"],
-.tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] td[data-col="Słowo Kluczowe"]{min-width:26ch}
+.tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] td[data-col="Słowo Kluczowe"]{min-width:28ch}
 .tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] th[data-col="Efekt"],
-.tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] td[data-col="Efekt"]{min-width:26ch}
+.tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] td[data-col="Efekt"]{min-width:56ch}
 .tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] th[data-col="Opis"],
-.tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] td[data-col="Opis"]{min-width:60ch}
+.tableWrap table[data-sheet="Słowa Kluczowe Frakcji"] td[data-col="Opis"]{min-width:26ch}
 
 /* Implanty Astartes */
 .tableWrap table[data-sheet="Implanty Astartes"] th[data-col="Numer"],
 .tableWrap table[data-sheet="Implanty Astartes"] td[data-col="Numer"]{min-width:4ch; text-align:center}
 .tableWrap table[data-sheet="Implanty Astartes"] th[data-col="Nazwa"],
-.tableWrap table[data-sheet="Implanty Astartes"] td[data-col="Nazwa"]{min-width:30ch}
+.tableWrap table[data-sheet="Implanty Astartes"] td[data-col="Nazwa"]{min-width:26ch}
 .tableWrap table[data-sheet="Implanty Astartes"] th[data-col="Opis"],
-.tableWrap table[data-sheet="Implanty Astartes"] td[data-col="Opis"]{min-width:56ch}
+.tableWrap table[data-sheet="Implanty Astartes"] td[data-col="Opis"]{min-width:26ch}
 /* Zakony Pierwszego Powołania */
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Nazwa"]{min-width:26ch}
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Opis"],
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Opis"]{min-width:56ch}
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Zaleta"],
-.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Zaleta"]{min-width:46ch}
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Zaleta"]{min-width:26ch}
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Wada"],
-.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Wada"]{min-width:46ch}
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Wada"]{min-width:26ch}
 
 /* Sciezki Asuryani */
 .tableWrap table[data-sheet="Ścieżki Asuryani"] th[data-col="Nazwa"],
@@ -530,10 +530,10 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Orcze Klany"] td[data-col="Efekt"]{min-width:26ch}
 
 /* Mutacje Krootow */
-.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Mutacja krootów"],
-.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Mutacja krootów"]{min-width:22ch}
-.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Pożarta ofiara"],
-.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Pożarta ofiara"]{min-width:22ch}
+.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Mutacja Krootów"],
+.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Mutacja Krootów"]{min-width:26ch}
+.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Pożarta Ofiara"],
+.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Pożarta Ofiara"]{min-width:26ch}
 .tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Efekt"],
 .tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Efekt"]{min-width:26ch}
 .tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Opis"],
