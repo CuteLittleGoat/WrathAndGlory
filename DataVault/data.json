@@ -105,7 +105,7 @@
         "Żywotność": "9",
         "Odporność Psychiczna": "6",
         "Umiejętności": "Domyślna 7, Czujność 9 (Pasywna 5), Umiejętności strzeleckie 10, Walka wręcz 9",
-        "Premie": "{{B}}I nie poznają co to strach{{/B}}: Możesz przerzucić dowolną kość będącą porażką w Teście Odwagi.\n\n{{B}}Implanty Kosmicznego Marine{{/B}}: Otrzymujesz dodatkowe kości i opcje akcji gwarantowane przez Implanty Kosmicznego Marine (str. 75).\n\n{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 3 punktów Zguby.",
+        "Premie": "{{B}}I nie poznają co to strach{{/B}}: Możesz przerzucić dowolną kość będącą porażką w Teście Odwagi.\n\n{{B}}Implanty Kosmicznego Marine{{/B}}: Otrzymujesz dodatkowe kości i opcje akcji gwarantowane przez Implanty Kosmicznego Marine.\n\n{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 3 punktów Zguby.",
         "Zdolności": "{{B}}ZGUBA: Anioł śmierci{{/B}}\nWydaj 1 punkt Zguby, aby dodać Poziom do DK wszystkich ataków w tej rundzie.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 6k6.",
         "Atak": "{{B}}Bolter{{/B}}: 10 + 1 DK/ Zasięg 12–24–36/ Szybkostrzelność 2/ Brutalna, Maszynowa (2)\n\n{{B}}Nóż bojowy Astartes{{/B}}: 10 + 2 DK/ Zasięg 1/ Niezawodna",
         "Zdolności Hordy": "-",
@@ -396,8 +396,8 @@
         "Odporność Psychiczna": "7",
         "Umiejętności": "Domyślna 5, Czujność 6 (Pasywna 3), Mistrzostwo psioniczne 8",
         "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 2 punktów Zguby.\n\n{{B}}Dotknięty przez Osnowę{{/B}}: Za każdym razem, kiedy Dziki psionik wykonuje Test Mistrzostwa psionicznego (SW), otrzymuje dodatkowe Kości Furii w liczbie równej Poziomowi gry.",
-        "Zdolności": "{{B}}ZGUBA: Burza psioniczna{{/B}}\nWydaj 1 punkt Zguby. Dziki psionik próbuje zamanifestować moc psioniczną lub zdolność Nie dozwól wiedźmie (str. 268).\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
-        "Atak": "{{B}}Maleficarum{{/B}}: Dziki psionik próbuje zamanifestować moc psioniczną Porażenie lub z dycypliny Maleficarum (str. 280).\n\n{{B}}Pistolet laserowy{{/B}}: 7 + 1 DK/ Zasięg 6–12–18/ Szybkostrzelność 1/ Pistolet, Niezawodna",
+        "Zdolności": "{{B}}ZGUBA: Burza psioniczna{{/B}}\nWydaj 1 punkt Zguby. Dziki psionik próbuje zamanifestować moc psioniczną lub zdolność Nie dozwól wiedźmie [{{B}}Podręcznik Główny{{/B}} (str. 268)].\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Atak": "{{B}}Maleficarum{{/B}}: Dziki psionik próbuje zamanifestować moc psioniczną Porażenie [{{B}}Podręcznik Główny{{/B}} (str. 272)] lub z dycypliny Maleficarum [{{B}}Podręcznik Główny{{/B}} (str. 280)].\n\n{{B}}Pistolet laserowy{{/B}}: 7 + 1 DK/ Zasięg 6–12–18/ Szybkostrzelność 1/ Pistolet, Niezawodna",
         "Zdolności Hordy": "-",
         "Opcje Hordy": "-",
         "Upór": "5",
@@ -453,7 +453,7 @@
         "Żywotność": "10",
         "Odporność Psychiczna": "6",
         "Umiejętności": "Domyślna 5, Czujność 9 (Pasywna 5), Umiejętności strzeleckie 8, Walka wręcz 8",
-        "Premie": "{{B}}Architekt Zguby{{/B}}: MG otrzymuje 1 punkt Zguby na początku każdej Tury tego Zagrożenia.\n\n{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i posiada osobistą pulę 1 punktu Zguby.\n\n{{B}}Znamię Chaosu{{/B}}: To Zagrożenie posiada Znamię Chaosu (str. 141).\n\n{{B}}Implanty Kosmicznego Marine{{/B}}: Otrzymujesz dodatkowe kości i opcje akcji gwarantowane przez Implanty Kosmicznego Marine (str. 75).",
+        "Premie": "{{B}}Architekt Zguby{{/B}}: MG otrzymuje 1 punkt Zguby na początku każdej Tury tego Zagrożenia.\n\n{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i posiada osobistą pulę 1 punktu Zguby.\n\n{{B}}Znamię Chaosu{{/B}}: To Zagrożenie posiada Znamię Chaosu [{{B}}Podręcznik Główny{{/B}} (str. 141)].\n\n{{B}}Implanty Kosmicznego Marine{{/B}}: Otrzymujesz dodatkowe kości i opcje akcji gwarantowane przez Implanty Kosmicznego Marine (str. 75).",
         "Zdolności": "{{B}}ZGUBA: Weteran Długiej Wojny{{/B}}\nWydaj 1 punkt Zguby, aby dodać Poziom jako DK do wszystkich ataków wykonywanych przez to Zagrożenie do końca tej Rundy.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 6k6.",
         "Atak": "{{B}}Pistolet boltowy{{/B}}: 10 + 1 DK/ Zasięg 6–12–18/ Szybkostrzelność 1/ Brutalna, Pistolet\n\n{{B}}Miecz łańcuchowy{{/B}}: 13 + 4 DK/ Zasięg 1/ Brutalna, Parująca",
         "Zdolności Hordy": "-",
@@ -483,7 +483,7 @@
         "Odporność Psychiczna": "9",
         "Umiejętności": "Domyślna 5, Czujność 9 (Pasywna 5), Umiejętności strzeleckie 9, Walka wręcz 9",
         "Premie": "{{B}}Architekt Zguby{{/B}}: MG otrzymuje 1 punkt Zguby na początku każdej Tury tego Zagrożenia.\n\n{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i posiada osobistą pulę 4 punktów Zguby.\n\n{{B}}Wijące się macki{{/B}}: To Zagrożenie może wykonać Atak wielokrotny przeciwko wszystkim celom, z którymi jest w zwarciu, nie otrzymując kar do ST Testu ataku.",
-        "Zdolności": "{{B}}INICJACJA: Morze mutacji{{/B}}\nDemon przystosowuje ciało nosiciela do walki poprzez szereg błyskawicznych mutacji. Na początku każdej walki, w której udział bierze to Zagrożenie, dodaj mu Ciężką mutację. Możesz rzucić w tabeli Ciężkich Mutacji (str. 288), kiedy to Zagrożenie pojawi się w walce lub w ramach przygotowania przed sesją.\n\n{{B}}ZGUBA: Weteran Długiej Wojny{{/B}}\nWydaj 1 punkt Zguby, aby dodać Poziom jako DK do wszystkich ataków wykonywanych przez to Zagrożenie do końca tej Rundy.\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 9k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.\n\n{{B}}ANIHILACJA: Bolesne lekcje{{/B}}\nZ chwilą śmierci tego Zagrożenia MG otrzymuje 2 punkty Zguby.",
+        "Zdolności": "{{B}}INICJACJA: Morze mutacji{{/B}}\nDemon przystosowuje ciało nosiciela do walki poprzez szereg błyskawicznych mutacji. Na początku każdej walki, w której udział bierze to Zagrożenie, dodaj mu Ciężką mutację. Możesz rzucić w tabeli Ciężkich Mutacji [{{B}}Podręcznik Główny{{/B}} (str. 288)], kiedy to Zagrożenie pojawi się w walce lub w ramach przygotowania przed sesją.\n\n{{B}}ZGUBA: Weteran Długiej Wojny{{/B}}\nWydaj 1 punkt Zguby, aby dodać Poziom jako DK do wszystkich ataków wykonywanych przez to Zagrożenie do końca tej Rundy.\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 9k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.\n\n{{B}}ANIHILACJA: Bolesne lekcje{{/B}}\nZ chwilą śmierci tego Zagrożenia MG otrzymuje 2 punkty Zguby.",
         "Atak": "{{B}}Przerażające mutacje{{/B}}: 13 + 2 DK/ PP -2/ Zasięg 1",
         "Zdolności Hordy": "-",
         "Opcje Hordy": "-",
@@ -630,7 +630,7 @@
         "Premie": "-",
         "Zdolności": "{{B}}INICJACJA: Przerażająca forma{{/B}}\nKażdy, kto widzi to Zagrożenie, musi wykonać Test Strachu o ST 3.\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 3k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.\n\n{{B}}ANIHILACJA: Podział{{/B}}\nRóżowy strachulec zmienia się w dwa niebieskie strachulce.",
         "Atak": "{{B}}Iskrzące płomienie{{/B}}: 9 + 1 DK/ Zasięg 12–24–36/ Szybkostrzelność 1/ Szturmowa, Wywołanie (Podpalenie), Rozrzutowa\n\n{{B}}Magiczne szpony{{/B}}: 6 + 2 DK/ Zasięg 1",
-        "Zdolności Hordy": "{{B}}Pokaz mocy{{/B}}: W ramach swojej Akcji Horda strachulców może wspólnie zamanifestować moc psioniczną Porażenie. Wykonaj jeden Test Mistrzostwa psionicznego (SW) za Hordę. Moc zawsze manifestuje się na poziomie Transcendentnym.",
+        "Zdolności Hordy": "{{B}}Pokaz mocy{{/B}}: W ramach swojej Akcji Horda strachulców może wspólnie zamanifestować moc psioniczną Porażenie [{{B}}Podręcznik Główny{{/B}} (str. 272)]. Wykonaj jeden Test Mistrzostwa psionicznego (SW) za Hordę. Moc zawsze manifestuje się na poziomie Transcendentnym.",
         "Opcje Hordy": "-",
         "Upór": "4",
         "Odwaga": "3",
@@ -659,7 +659,7 @@
         "Premie": "-",
         "Zdolności": "{{B}}INICJACJA: Przerażająca forma{{/B}}\nKażdy, kto widzi to Zagrożenie, musi wykonać Test Strachu o ST 3.\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 3k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.\n\n{{B}}ANIHILACJA: Podział{{/B}}\nNiebieski strachulec zamienia się w dwa siarkowe strachulce.",
         "Atak": "Drapiące szpony: 5 + 2 DK/ Zasięg 1",
-        "Zdolności Hordy": "{{B}}Pokaz mocy{{/B}}: W ramach swojej Akcji Horda strachulców może wspólnie zamanifestować moc psioniczną Porażenie. Wykonaj jeden Test Mistrzostwa psionicznego (SW) za Hordę. Moc zawsze manifestuje się na poziomie Transcendentnym.",
+        "Zdolności Hordy": "{{B}}Pokaz mocy{{/B}}: W ramach swojej Akcji Horda strachulców może wspólnie zamanifestować moc psioniczną Porażenie [{{B}}Podręcznik Główny{{/B}} (str. 272)]. Wykonaj jeden Test Mistrzostwa psionicznego (SW) za Hordę. Moc zawsze manifestuje się na poziomie Transcendentnym.",
         "Opcje Hordy": "-",
         "Upór": "4",
         "Odwaga": "3",
@@ -688,7 +688,7 @@
         "Premie": "-",
         "Zdolności": "{{B}}INICJACJA: Przerażająca forma{{/B}}\nKażdy, kto widzi to Zagrożenie, musi wykonać Test Strachu o ST 3.\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 3k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.\n\n{{B}}ANIHILACJA: Podział{{/B}}\nRóżowy strachulec zmienia się w dwa niebieskie strachulce.",
         "Atak": "{{B}}Drapiące pazury{{/B}}: 4 + 1 DK/ Zasięg 1",
-        "Zdolności Hordy": "{{B}}Pokaz mocy{{/B}}: W ramach swojej Akcji Horda strachulców może wspólnie zamanifestować moc psioniczną Porażenie. Wykonaj jeden Test Mistrzostwa psionicznego (SW) za Hordę. Moc zawsze manifestuje się na poziomie Transcendentnym.",
+        "Zdolności Hordy": "{{B}}Pokaz mocy{{/B}}: W ramach swojej Akcji Horda strachulców może wspólnie zamanifestować moc psioniczną Porażenie [{{B}}Podręcznik Główny{{/B}} (str. 272)]. Wykonaj jeden Test Mistrzostwa psionicznego (SW) za Hordę. Moc zawsze manifestuje się na poziomie Transcendentnym.",
         "Opcje Hordy": "-",
         "Upór": "4",
         "Odwaga": "3",
@@ -1091,7 +1091,7 @@
         "Żywotność": "15",
         "Odporność Psychiczna": "-",
         "Umiejętności": "Domyślna 7, Czujność 8 (Pasywna 4), Umiejętności strzeleckie 8, Walka wręcz 8",
-        "Premie": "{{B}}Konstrukt upiorytowy{{/B}}: To Zagrożenie jest odporne na Stany Krwawienie, Wycieńczenie i Zatrucie, a także nie może się Dusić.\n\n{{B}}Upiorny wzrok{{/B}}: Wszelkie kary związane ze wzrokiem pochodzące z innego źródła niż Osnowa są przez to Zagrożenie ignorowane.\n\n{{B}}Wyczucie Osnowy{{/B}}: To Zagrożenie może automatycznie aktywować Wyczucie Osnowy (str. 267) w ramach Akcji darmowej.",
+        "Premie": "{{B}}Konstrukt upiorytowy{{/B}}: To Zagrożenie jest odporne na Stany Krwawienie, Wycieńczenie i Zatrucie, a także nie może się Dusić.\n\n{{B}}Upiorny wzrok{{/B}}: Wszelkie kary związane ze wzrokiem pochodzące z innego źródła niż Osnowa są przez to Zagrożenie ignorowane.\n\n{{B}}Wyczucie Osnowy{{/B}}: To Zagrożenie może automatycznie aktywować Wyczucie Osnowy [{{B}}Podręcznik Główny{{/B}} (str. 267)] w ramach Akcji darmowej.",
         "Zdolności": "{{B}}KOMPLIKACJA: Omamy Osnowy{{/B}}\nJeśli Upiorny strażnik w dowolnym Teście wyrzuci Komplikację, natychmiast staje się Oślepiony, gdyż Osnowa zasnuwa jego wzrok. Kara za Oślepienie jest doliczana do Testu, który wywołał ten Stan. Stan może zostać zniesiony jedynie udanym Testem Siły Woli o ST 8 wykonanym jako Akcja bojowa w Turze Upiornego strażnika lub udanym Testem Dowodzenia (SW) o ST 4 wykonanym przez psionika aeldari w promieniu 10 metrów od oślepionego konstruktu.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 10k6.",
         "Atak": "{{B}}Upiorne działo{{/B}}: 20 + 2 DK/ PP -4/ Zasięg 6–12–18/ Szybkostrzelność 1/ Szturmowa, Psioniczna, Ciężka (8), Spaczona broń\n\n{{B}}Upiorytowe pięści{{/B}}: 9 + 1 DK/ PP -1/ Zasięg 1",
         "Zdolności Hordy": "-",
@@ -1236,7 +1236,7 @@
         "Żywotność": "12",
         "Odporność Psychiczna": "7",
         "Umiejętności": "Domyślna 6, Atletyka 10, Czujność 8 (Pasywna 4), Ukrywanie się 10, Walka wręcz 10",
-        "Premie": "{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str. 136).",
+        "Premie": "{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].",
         "Zdolności": "{{B}}INICJACJA: Szybki i zabójczy{{/B}}\nZagrożenie Przejmuje inicjatywę bez konieczności wydawania punktu Zguby, po czym wykonuje Szarżę. Otrzymuje +1 dodatkową kość do Testu Ataku w ramach tej Szarży.\n{{B}}\nDETERMINACJA: Błyskawiczny refleks{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 6k6. To Zagrożenie może rzucać na Determinację przeciwko Ranom śmiertelnym.",
         "Atak": "{{B}}Przebijające szpony{{/B}}: 12 + 4 DK/ PP -2/ Zasięg 1/ Przebijająca (2)",
         "Zdolności Hordy": "{{B}}Nawałnica szponów{{/B}}: Jeśli wszystkie istoty w Hordzie genokradów atakują ten sam cel, otrzymują +2 dodatkowe kości do Testu ataku.",
@@ -1265,9 +1265,9 @@
         "Żywotność": "18",
         "Odporność Psychiczna": "-",
         "Umiejętności": "Domyślna 8, Atletyka 11, Czujność 10 (Pasywna 5), Mistrzostwo psioniczne 10, Ukrywanie się 10, Walka wręcz 12",
-        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i posiada osobistą pulę 4 punktów Zguby.\n\n{{B}}Żyjąca ikona{{/B}}: Każde Zagrożenie ze Słowem kluczowym KULT GENOKRADÓW w promieniu 10 metrów otrzymuje +2 dodatkowe kości do wszystkich Testów.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str. 136).",
-        "Zdolności": "{{B}}INICJACJA: Szybki i zabójczy{{/B}}\nZagrożenie Przejmuje inicjatywę bez konieczności wydawania punktu Zguby, po czym wykonuje Szarżę. Otrzymuje +1 dodatkową kość do Testu Ataku w ramach tej Szarży.\n\n{{B}}ZGUBA: Umysł miotu{{/B}}\nWydaj 1 punkt Zguby. Patriarcha genokradów może natychmiast spróbować zamanifestować moc psioniczną bądź zdolność Nie dozwól wiedźmie (str. 268).\n\n{{B}}DETERMINACJA: Błyskawiczny refleks{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 8k6. To Zagrożenie może rzucać na Determinację przeciwko Ranom śmiertelnym.",
-        "Atak": "Patriarcha genokradów może użyć Umysłu miotu i Przebijających szponów bez otrzymywania kary do ST Ataku wielokrotnego.\n\n{{B}}Umysł miotu{{/B}}: Patriarcha może spróbować zamanifestować jedną z poniższych mocy psionicznych:\nPorażenie (str. 272), Wyczucie Osnowy (str. 267), Nie dozwól wiedźmie (str. 268), Zniewolenie (str. 271), Zaciemnienie umysłu (str. 279), Psioniczny wrzask (str. 279), Przerażenie (str. 280).\n\n{{B}}Wielkie przebijające szpony{{/B}}: 15 + 4 DK/ PP -3/ Zasięg 1/ Przebijająca (3)",
+        "Premie": "Czempion: To Zagrożenie może używać Akcji Zguby i posiada osobistą pulę 4 punktów Zguby.\n\nŻyjąca ikona: Każde Zagrożenie ze Słowem kluczowym {{RED}}KULT GENOKRADÓW{{/RED}} w promieniu 10 metrów otrzymuje +2 dodatkowe kości do wszystkich Testów.\n\nDrugi atak: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].",
+        "Zdolności": "{{B}}INICJACJA: Szybki i zabójczy{{/B}}\nZagrożenie Przejmuje inicjatywę bez konieczności wydawania punktu Zguby, po czym wykonuje Szarżę. Otrzymuje +1 dodatkową kość do Testu Ataku w ramach tej Szarży.\n\n{{B}}ZGUBA: Umysł miotu{{/B}}\nWydaj 1 punkt Zguby. Patriarcha genokradów może natychmiast spróbować zamanifestować moc psioniczną bądź zdolność Nie dozwól wiedźmie [{{B}}Podręcznik Główny{{/B}} (str. 268)].\n\n{{B}}DETERMINACJA: Błyskawiczny refleks{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 8k6. To Zagrożenie może rzucać na Determinację przeciwko Ranom śmiertelnym.",
+        "Atak": "Patriarcha genokradów może użyć Umysłu miotu i Przebijających szponów bez otrzymywania kary do ST Ataku wielokrotnego.\n\n{{B}}Umysł miotu{{/B}}: Patriarcha może spróbować zamanifestować jedną z poniższych mocy psionicznych:\nPorażenie [{{B}}Podręcznik Główn{{/B}}y (str. 272)], Wyczucie Osnowy [{{B}}Podręcznik Główny{{/B}} (str. 267)], Nie dozwól wiedźmie [{{B}}Podręcznik Główny{{/B}} (str. 268)], Zniewolenie [{{B}}Podręcznik Główny{{/B}} (str. 271)], Zaciemnienie umysłu [{{B}}Podręcznik Główny{{/B}} (str. 279)], Psioniczny wrzask [{{B}}Podręcznik Główny{{/B}} (str. 279)], Przerażenie [{{B}}Podręcznik Główny{{/B}} (str. 280)].\n\n{{B}}Wielkie przebijające szpony{{/B}}: 15 + 4 DK/ PP -3/ Zasięg 1/ Przebijająca (3)",
         "Zdolności Hordy": "-",
         "Opcje Hordy": "-",
         "Upór": "8",
@@ -1294,8 +1294,8 @@
         "Żywotność": "8",
         "Odporność Psychiczna": "5",
         "Umiejętności": "Domyślna 6, Czujność 8 (Pasywna 4), Ukrywanie się 8, Walka wręcz 8",
-        "Premie": "{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str. 136).",
-        "Zdolności": "{{B}}REAKCJA: Niezachwiana lojalność{{/B}}\nMożesz użyć tej zdolności za każdym razem, kiedy Zagrożenie ze Słowami kluczowymi {{RED}}KULT GENOKRADÓW{{/RED}} i {{RED}}PSIONIK{{/RED}} w promieniu 6 metrów od hybrydy akolity zostanie zaatakowane. Hybryda ustawia się wtedy na drodze ataku, stając się nowym celem.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 6k6.",
+        "Premie": "{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].",
+        "Zdolności": "REAKCJA: Niezachwiana lojalność\nMożesz użyć tej zdolności za każdym razem, kiedy Zagrożenie ze Słowami kluczowymi {{RED}}KULT GENOKRADÓW{{/RED}} i {{RED}}PSIONIK{{/RED}} w promieniu 6 metrów od hybrydy akolity zostanie zaatakowane. Hybryda ustawia się wtedy na drodze ataku, stając się nowym celem.\n\nDETERMINACJA: Wydaj 1 punkt Zguby, aby rzucić 6k6.",
         "Atak": "{{B}}Karabin automatyczny{{/B}}: 7 + 1 DK/ Zasięg 12-24-36/ Szybkostrzelność 2/ Maszynowa (1)\n\n{{B}}Nóż kultysty{{/B}}: 6 + 2 DK/ Zasięg 1\n\n{{B}}Przebijające szpony{{/B}}: 12 + 4 DK/ PP -2/ Zasięg 1/ Przebijająca (2)",
         "Zdolności Hordy": "Umysł miotu: To Zagrożenie otrzymuje +3 dodatkowe kości do Testów Odwagi, dopóki pozostaje w promieniu 20 metrów od Zagrożenia ze Słowami kluczowymi {{RED}}KULT GENOKRADÓW{{/RED}} i {{RED}}PSIONIK{{/RED}}.",
         "Opcje Hordy": "-",
@@ -1352,9 +1352,9 @@
         "Żywotność": "10",
         "Odporność Psychiczna": "11",
         "Umiejętności": "Domyślna 6, Czujność 8 (Pasywna 4), Dowodzenie 10, Intuicja 8, Mistrzostwo psioniczne 10, Oszukiwanie 8, Perswazja 10",
-        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może wykonywać Akcje Zguby i posiada osobistą pulę 2 punktów Zguby.\n\n{{B}}Uchodzi za człowieka{{/B}}: Aby zorientować się, że magus nie jest człowiekiem, konieczny jest Test Czujności (Int) o ST 3.\n\n{{B}}Duchowy przywódca{{/B}}: Sojusznicze Zagrożenia ze Słowem kluczowym KULT GENOKRADÓW w promieniu 10 metrów od magusa otrzymują +4 dodatkowe kości do odpierania mocy psionicznych.",
-        "Zdolności": "{{B}}INICJACJA: Nowy członek kultu{{/B}}\nMagus kultu próbuje zamanifestować Opętanie (str. 281).\n\n{{B}}ZGUBA: Umysł miotu{{/B}}\nWydaj 1 punkt Zguby. Magus kultu może natychmiast spróbować zamanifestować moc psioniczną bądź zdolność Nie dozwól wiedźmie (str. 268).\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
-        "Atak": "{{B}}Umysł miotu{{/B}}: Magus może spróbować zamanifestować jedną z poniższych mocy psionicznych:\nPorażenie (str. 272), Wyczucie Osnowy (str. 267), Nie dozwól wiedźmie (str. 268), Zniewolenie (str. 271), Zaciemnienie umysłu (str. 279), Psioniczny wrzask (str. 279), Przerażenie (str. 280).\n\n{{B}}Pistolet automatyczny{{/B}}: 7 + 1 DK/ Zasięg 6–12–18/ Szybkostrzelność 2/ Pistolet\n\n{{B}}Kostur psioniczny{{/B}}: 12 + 2 DK/ PP -1/ Zasięg 2/ Brutalna, Psioniczna",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może wykonywać Akcje Zguby i posiada osobistą pulę 2 punktów Zguby.\n\n{{B}}Uchodzi za człowieka{{/B}}: Aby zorientować się, że magus nie jest człowiekiem, konieczny jest Test Czujności (Int) o ST 3.\n\n{{B}}Duchowy przywódca{{/B}}: Sojusznicze Zagrożenia ze Słowem kluczowym {{RED}}KULT GENOKRADÓW{{/RED}} w promieniu 10 metrów od magusa otrzymują +4 dodatkowe kości do odpierania mocy psionicznych.",
+        "Zdolności": "{{B}}INICJACJA: Nowy członek kultu{{/B}}\nMagus kultu próbuje zamanifestować Opętanie [{{B}}Podręcznik Główny{{/B}} (str. 281)].\n\n{{B}}ZGUBA: Umysł miotu{{/B}}\nWydaj 1 punkt Zguby. Magus kultu może natychmiast spróbować zamanifestować moc psioniczną bądź zdolność Nie dozwól wiedźmie [{{B}}Podręcznik Główny{{/B}} (str. 268)].\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Atak": "{{B}}Umysł miotu{{/B}}: Magus może spróbować zamanifestować jedną z poniższych mocy psionicznych:\nPorażenie [{{B}}Podręcznik Główny{{/B}} (str. 272)], Wyczucie Osnowy [{{B}}Podręcznik Główny{{/B}} (str. 267)], Nie dozwól wiedźmie [{{B}}Podręcznik Główny{{/B}} (str. 268)], Zniewolenie [{{B}}Podręcznik Główny{{/B}} (str. 271)], Zaciemnienie umysłu [{{B}}Podręcznik Główny{{/B}} (str. 279)], Psioniczny wrzask [{{B}}Podręcznik Główny{{/B}} (str. 279)], Przerażenie [{{B}}Podręcznik Główny{{/B}} (str. 280)].\n\n{{B}}Pistolet automatyczny{{/B}}: 7 + 1 DK/ Zasięg 6–12–18/ Szybkostrzelność 2/ Pistolet\n\n{{B}}Kostur psioniczny{{/B}}: 12 + 2 DK/ PP -1/ Zasięg 2/ Brutalna, Psioniczna",
         "Zdolności Hordy": "-",
         "Opcje Hordy": "-",
         "Upór": "8",
@@ -1759,7 +1759,7 @@
         "Odporność Psychiczna": "1",
         "Umiejętności": "Domyślna 1, Walka wręcz 1",
         "Premie": "-",
-        "Zdolności": "{{B}}INICJACJA: Przerażający{{/B}}\nKażdy, kto widzi to Zagrożenie, musi wykonać Test Strachu o ST 2.\n\n{{B}}ZGUBA: Nikczemna złośliwość{{/B}}\nZamiast wykonywać atak wręcz, MG może wydać punkt Zguby. Wybrany przeciwnik natychmiast staje się celem losowej Komplikacji bojowej (str. 191).\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 1k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.",
+        "Zdolności": "{{B}}INICJACJA: Przerażający{{/B}}\nKażdy, kto widzi to Zagrożenie, musi wykonać Test Strachu o ST 2.\n\n{{B}}ZGUBA: Nikczemna złośliwość{{/B}}\nZamiast wykonywać atak wręcz, MG może wydać punkt Zguby. Wybrany przeciwnik natychmiast staje się celem losowej Komplikacji bojowej [{{B}}Podręcznik Główny{{/B}} (str. 191)].\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 1k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.",
         "Atak": "{{B}}Zakaźne ugryzienie{{/B}}: 4 + 1 DK / PP −1 / Wywołanie (Zatrucie 4)",
         "Zdolności Hordy": "{{B}}Banda{{/B}}: Ten profil odpowiada grupie 20 nurglingów, a nie pojedynczemu stworzeniu. Grupy nurglingów mogą łączyć się w Hordy na normalnych zasadach.",
         "Opcje Hordy": "-",
@@ -1789,7 +1789,7 @@
         "Umiejętności": "Domyślna 8, Walka wręcz 10",
         "Premie": "{{B}}Architekt Zguby{{/B}}: MG otrzymuje 1 punkt Zguby na początku każdej Tury tego Zagrożenia.\n\n{{B}}Ukochany Nurgle’a{{/B}}: To Zagrożenie może używać Akcji Zguby i posiada osobistą pulę 5 punktów Zguby.",
         "Zdolności": "{{B}}INICJACJA: Żywa plaga{{/B}}\nKażdy, kto widzi Botuthraxa, musi wykonać Test Strachu o ST 5. Każda postać pozbawiona szczelnego pancerza lub kombinezonu musi zdać Test Odwagi o ST 7, w przeciwnym razie zostanie Zatruta (7).\n\n{{B}}Ohydny rozrost{{/B}}: Wydaj 2 punkty Zguby. Zagrożenie zyskuje 5 punktów Żywotności.\n\n{{B}}Fala plugastwa{{/B}}: Wydaj 1 punkt Zguby. Z trzewi demona tryska fala zgniłego mięsa, rozkładającej się materii i kwasu. Jest to atak zasięgowy o profilu: 12 + 2 DK, PP −2, Zasięg 16, Wybuchowa (4).\n\n{{B}}Miażdżąca masa{{/B}}: Wydaj 2 punkty Zguby. Demon rzuca się naprzód niczym gnijąca kula armatnia. Jego cel i wszyscy sojusznicy w promieniu 5 metrów zostają zgnieceni przez potworne cielsko demona. Wykonaj jeden rzut na atak i porównaj go z Obroną każdego Bohatera w polu rażenia.\n\n{{B}}ZGUBA: Nurglingi!{{/B}}\nWydaj 1 punkt Zguby. Horda 20 nurglingów wyłania się z trzewi demona i natychmiast podejmuje akcję.\n\n{{B}}DETERMINACJA: Demoniczna determinacja{{/B}}\nWydaj 1 punkt Zguby, aby rzucić 10k6. Demony mogą Testować Determinację przeciwko Ranom śmiertelnym. Wszystkie Rany zanegowane przez Determinację zostają zignorowane, a nie zmienione w Traumę.",
-        "Atak": "{{B}}Ostrze żółci{{/B}}: 16 + 4 DK, PP −3, Wywołanie (Zatrucie 5)\n\n{{B}}Chłoszczący język{{/B}}: 12 + 4 DK, PP −4, Wywołanie (Oszołomienie 4), (Zatrucie 5)\n\n{{B}}Żywa lawina{{/B}}: Zagrożenie upada na ofiarę, grzebiąc ją pod swoim opasłym cielskiem. 10 + 8 DK, PP –, Wywołanie (Powalenie)",
+        "Atak": "{{B}}Ostrze żółci{{/B}}: 16 + 4 DK, PP −3, Wywołanie ({{I}}Zatrucie 5{{/I}})\n\n{{B}}Chłoszczący język{{/B}}: 12 + 4 DK, PP −4, Wywołanie ({{I}}Oszołomienie 4{{/I}}), ({{I}}Zatrucie 5{{/I}})\n\n{{B}}Żywa lawina{{/B}}: Zagrożenie upada na ofiarę, grzebiąc ją pod swoim opasłym cielskiem. 10 + 8 DK, PP –, Wywołanie ({{I}}Powalenie{{/I}})",
         "Zdolności Hordy": "-",
         "Opcje Hordy": "-",
         "Upór": "5",
@@ -1816,7 +1816,7 @@
         "Żywotność": "5",
         "Odporność Psychiczna": "4",
         "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Ukrywanie się 4, Walka wręcz 5",
-        "Premie": "{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str.136).\n\n{{B}}Urodzony drapieżca{{/B}}: Utrata stwora synaptycznego nie redukuje Odporności psychicznej hormagaunta. Wciąż musi jednak wykonać rzut na tabelę Szoku synaptycznego (str. 21)",
+        "Premie": "{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].\n\n{{B}}Urodzony drapieżca{{/B}}: Utrata stwora synaptycznego nie redukuje Odporności psychicznej hormagaunta. Wciąż musi jednak wykonać rzut na tabelę Szoku synaptycznego [{{B}}Podręcznik Główny{{/B}} (str. 21)].",
         "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od hormagaunta zostaje trafione atakiem. Hormagaunt staje się faktycznym celem tego ataku i natychmiast umiera.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
         "Atak": "{{B}}Tnące pazury{{/B}}: 5 + 2 DK / PP −2 / Zasięg 1 / Przebijająca (2)",
         "Zdolności Hordy": "{{B}}Nawałnica szponów{{/B}}: W Hordzie o liczebności 10 lub więcej hormagaunty przerzucają wszystkie wyniki 1 w Testach Walki wręcz (I) z wyjątkiem Komplikacji.",
@@ -1874,7 +1874,7 @@
         "Żywotność": "7",
         "Odporność Psychiczna": "6",
         "Umiejętności": "Domyślna 5, Czujność 10 (Pasywna 5), Umiejętności strzeleckie 4, Walka wręcz 8",
-        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str.136).",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].",
         "Zdolności": "{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 5k6",
         "Atak": "{{B}}Tnące pazury{{/B}}: 10 + 2 DK / PP −1 / Zasięg 2 / Parująca, Przebijająca (1)",
         "Zdolności Hordy": "",
@@ -1904,9 +1904,9 @@
         "Odporność Psychiczna": "4",
         "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Ukrywanie się 4, Umiejętności strzeleckie 5, Walka wręcz 3",
         "Premie": "-",
-        "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od termaganta zostaje trafione atakiem. Termagant staje się faktycznym celem tego ataku i natychmiast umiera.\n{{B}}\nDETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od termaganta zostaje trafione atakiem. Termagant staje się faktycznym celem tego ataku i natychmiast umiera.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
         "Atak": "{{B}}Pazury{{/B}}: 6 + 2 DK / Zasięg 1\n\n{{B}}Wydrążacz{{/B}}: 10 + 2 DK / Zasięg 6–12–18 / Szybkostrzelność 2 / Szturmowa, Maszynowa",
-        "Zdolności Hordy": "{{B}}Komplikacja{{/B}}: Odcięci od roju: Jeżeli Horda wyrzuci Komplikację, a w promieniu 20 metrów nie znajduje się żadne Zagrożenie ze Słowem kluczowym {{RED}}SYNAPSA,{{/RED}} zaczyna walczyć między sobą i otrzymuje 1k3 Traum za każdych dziesięciu jej członków.\n\n{{B}}Zorganizowane szeregi{{/B}}: Gdy Hordą dowodzi Zagrożenie ze Słowem kluczowym {{RED}}SYNAPSA,{{/RED}} każda jej broń, która nie ma Cechy Ciężka, zyskuje Cechę Maszynowa (2).",
+        "Zdolności Hordy": "Komplikacja: Odcięci od roju: Jeżeli Horda wyrzuci Komplikację, a w promieniu 20 metrów nie znajduje się żadne Zagrożenie ze Słowem kluczowym SYNAPSA, zaczyna walczyć między sobą i otrzymuje 1k3 Traum za każdych dziesięciu jej członków.\n\nZorganizowane szeregi: Gdy Hordą dowodzi Zagrożenie ze Słowem kluczowym SYNAPSA, każda jej broń, która nie ma Cechy Ciężka, zyskuje Cechę Maszynowa (2).",
         "Opcje Hordy": "Za każdą dziesiątkę termagantów w Hordzie jeden z nich może zamienić wydrążacz na karabin kolcowy.\n\n{{B}}Karabin kolcowy{{/B}}: 8 + 4 DK / PP −2 / Zasięg 8–16–24 / Ciężka (4), Wywołanie ({{I}}Krwawienie{{/I}})",
         "Upór": "3",
         "Odwaga": "2",
@@ -1933,7 +1933,7 @@
         "Odporność Psychiczna": "4",
         "Umiejętności": "Domyślna 4, Czujność 6 (Pasywna 3), Mistrzostwo psioniczne 8",
         "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 2 punktów Zguby",
-        "Zdolności": "Zoantrop może spróbować zamanifestować dowolne z poniższych mocy psionicznych:\nNie dozwól wiedźmie, Porażenie, Przerażenie, Psioniczny wrzask, Wyczucie Osnowy, Zaciemnienie umysłu\n\n{{B}}ZGUBA: Umysł Roju{{/B}}\nWydaj 1 punkt Zguby. Zoantrop próbuje zamanifestować moc psioniczną albo nie dozwolić wiedźmie.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.\n\n{{B}}ANIHILACJA: Szok synaptyczny{{/B}}\nKażdy tyranid, który nie ma Słowa kluczowego {{RED}}SYNAPSA{{/RED}} i nie znajduje się w zasięgu innego Zagrożenia ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}}, redukuje swoją Odporność psychiczną o 1 i wykonuje rzut na tabelę Szoku synaptycznego (str. 21).",
+        "Zdolności": "Zoantrop może spróbować zamanifestować dowolne z poniższych mocy psionicznych:\nNie dozwól wiedźmie [{{B}}Podręcznik Główny{{/B}} (str. 268)], Porażenie [{{B}}Podręcznik Główny{{/B}} (str. 272)], Przerażenie [{{B}}Podręcznik Główny{{/B}} (str. 280)], Psioniczny wrzask [{{B}}Podręcznik Główny{{/B}} (str. 279)], Wyczucie Osnowy [{{B}}Podręcznik Główny{{/B}} (str. 267)], Zaciemnienie umysłu [{{B}}Podręcznik Główny{{/B}} (str. 279)]\n\n{{B}}ZGUBA: Umysł Roju{{/B}}\nWydaj 1 punkt Zguby. Zoantrop próbuje zamanifestować moc psioniczną albo nie dozwolić wiedźmie.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.\n\n{{B}}ANIHILACJA: Szok synaptyczny{{/B}}\nKażdy tyranid, który nie ma Słowa kluczowego SYNAPSA i nie znajduje się w zasięgu innego Zagrożenia ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}}, redukuje swoją Odporność psychiczną o 1 i wykonuje rzut na tabelę Szoku synaptycznego [{{B}}Zniszczyć Rój{{/B}} (str. 21)].",
         "Atak": "{{B}}Przebijające szpony{{/B}}: 8 + 1 DK / PP 0 / Zasięg 1 / Przebijająca (1)",
         "Zdolności Hordy": "",
         "Opcje Hordy": "",
@@ -1961,8 +1961,8 @@
         "Żywotność": "8",
         "Odporność Psychiczna": "7",
         "Umiejętności": "Domyślna 5, Czujność 8 (Pasywna 4), Umiejętności strzeleckie 7, Walka wręcz 7",
-        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str. 136).",
-        "Zdolności": "{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 5k6.\n\n{{B}}ANIHILACJA{{/B}}: Szok synaptyczny\nKażdy tyranid, który nie ma Słowa kluczowego {{RED}}SYNAPSA{{/RED}} i nie znajduje się w zasięgu innego Zagrożenia ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}}, redukuje swoją Odporność psychiczną o 1 i wykonuje rzut na tabelę Szoku synaptycznego (str. 21).",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].",
+        "Zdolności": "{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 5k6.\n\n{{B}}ANIHILACJA: Szok synaptyczny{{/B}}\nKażdy tyranid, który nie ma Słowa kluczowego {{RED}}SYNAPSA{{/RED}} i nie znajduje się w zasięgu innego Zagrożenia ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}}, redukuje swoją Odporność psychiczną o 1 i wykonuje rzut na tabelę Szoku synaptycznego [{{B}}Zniszczyć Rój{{/B}} (str. 21)].",
         "Atak": "{{B}}Tnące pazury{{/B}}: 10 + 2 DK / PP −1 / Zasięg 2 / Parująca, Przebijająca (1)\n\nJedno z poniższych:\n{{B}}Działo jadowe{{/B}}: 10 + 3 DK / PP −3 / Zasięg 12–24–36 / Szybkostrzelność 2 / Ciężka (7), Wywołanie ({{I}}Zatrucie 3{{/I}})\n{{B}}Pożeracz{{/B}}: 8 + 1 DK / PP 0 / Zasięg 6–12–18 / Szybkostrzelność 3 / Szturmowa, Maszynowa (2)",
         "Zdolności Hordy": "",
         "Opcje Hordy": "",
@@ -1991,7 +1991,7 @@
         "Odporność Psychiczna": "5",
         "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Ukrywanie się 3, Umiejętności strzeleckie 5, Walka wręcz 4",
         "Premie": "{{B}}Po oczach{{/B}}: Podczas walki wręcz gargulec redukuje karę do ST za celowanie w oczy o 2. Skuteczne ataki otrzymują Cechę Wywołanie ({{I}}Oślepienie{{/I}}).",
-        "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od gargulca zostaje trafione atakiem. Gargulec staje się faktycznym celem tego ataku i natychmiast umiera.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Zdolności": "{{B}}REAKCJA: Bronić przywódcy{{/B}}\nMożesz aktywować tę Zdolność za każdym razem, gdy Zagrożenie ze Słowami kluczowymi {{RED}}TYRANID{{/RED}} oraz {{RED}}SYNAPSA{{/RED}} w promieniu 5 metrów od gargulca zostaje trafione atakiem. Gargulec staje się faktycznym celem tego ataku i natychmiast umiera.\n\nDETERMINACJA: Wydaj 1 punkt Zguby, aby rzucić 3k6.",
         "Atak": "{{B}}Oślepiający jad{{/B}}: 7 + 1 DK / Zasięg 2 / Raniąca\n\n{{B}}Wydrążacz{{/B}}: 10 + 2 DK / Zasięg 6–12–18 / Szybkostrzelność 2 / Szturmowa, Maszynowa",
         "Zdolności Hordy": "{{B}}Instynkt chmary{{/B}}: Gdy Horda licząca 10 lub więcej osobników rozdziela ataki, każdy z nich otrzymuje +1 dodatkową kość.",
         "Opcje Hordy": "Horda licząca 20 lub więcej gargulców może być dowodzona przez skrzydlatego tyranidzkiego wojownika (jest to wojownik o Szybkości 10 Lot).",
@@ -2019,7 +2019,7 @@
         "Żywotność": "14",
         "Odporność Psychiczna": "8",
         "Umiejętności": "Domyślna 3, Atletyka 5, Czujność 4 (Pasywna 2), Walka wręcz 5",
-        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność (str. 136).",
+        "Premie": "{{B}}Czempion{{/B}}: To Zagrożenie może używać Akcji Zguby i ma osobistą pulę 1 punktu Zguby.\n\n{{B}}Drugi atak{{/B}}: To Zagrożenie redukuje karę do ST Ataku wielokrotnego o 2, tak jakby posiadało Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].",
         "Zdolności": "{{B}}INICJACJA: Zwalający z nóg ryk{{/B}}\nWszyscy Bohaterowie, którzy usłyszą ryk, muszą zdać Test Wytrzymałości o ST 3 albo staną się Zdezorientowani na 1k3 Rundy.\n\n{{B}}DETERMINACJA{{/B}}: Wydaj 1 punkt Zguby, aby rzucić 8k6.",
         "Atak": "{{B}}Monstrualne tnące pazury{{/B}}: 15 + 4 DK / PP −2 / Zasięg 3 / Brutalna, Przebijająca (2)\n\nJedno z poniższych:\n{{B}}Drugorzędne monstrualne tnące pazury{{/B}}: 15 + 4 DK / PP −2 / Zasięg 3 / Brutalna, Przebijająca (2)\n{{B}}Działo jadowe{{/B}}: 10 + 3 DK / PP −3 / Zasięg 12–24–36 / Szybkostrzelność 2 / Ciężka (7), Wywołanie ({{I}}Zatrucie 3{{/I}})",
         "Zdolności Hordy": "",
@@ -2087,7 +2087,7 @@
         "Umiejętności": "Atletyka 3\nCzujność 3\nUkrywanie się 3\nUmiejętności\nstrzeleckie 3\nWalka wręcz 3",
         "Szybkość": "7",
         "Rozmiar": "Średni",
-        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu{{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz zachowywać wierzenia i tradycje swojego Zakonu. Odwaga  wzrasta o +1.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 19 implantów (str. 75), jeśli MG uzna to za możliwe."
+        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu{{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz zachowywać wierzenia i tradycje swojego Zakonu. Odwaga  wzrasta o +1.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 19 implantów [{{B}}Podręcznik Główny{{/B}} (str. 75)], jeśli MG uzna to za możliwe."
       },
       {
         "Gatunek": "Primaris Astartes",
@@ -2096,7 +2096,7 @@
         "Umiejętności": "Atletyka 3\nCzujność 3\nUkrywanie się 3\nUmiejętności\nstrzeleckie 4\nWalka wręcz 3",
         "Szybkość": "7",
         "Rozmiar": "Średni",
-        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu (Primaris){{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz honorować wierzenia i tradycje swojego Zakonu. Odwaga wzrasta o +1. Jako Primaris ignorujesz nieczystości w genoziarnie Zakonu oraz otrzymujesz +3 Żywotności.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 22 implantów (str. 75), jeśli MG uzna to za możliwe."
+        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu (Primaris){{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz honorować wierzenia i tradycje swojego Zakonu. Odwaga wzrasta o +1. Jako Primaris ignorujesz nieczystości w genoziarnie Zakonu oraz otrzymujesz +3 Żywotności.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 22 implantów [{{B}}Podręcznik Główny{{/B}} (str. 75)], jeśli MG uzna to za możliwe."
       },
       {
         "Gatunek": "Aeldari",
@@ -2141,7 +2141,7 @@
         "Umiejętności": "Atletyka 1\nCzujność 1\nPrzetrwanie 2\nUkrywanie się 2\nWalka wręcz 2",
         "Szybkość": "7",
         "Rozmiar": "Średni",
-        "Zdolności gatunkowe": "{{B}}Mutacje krootów{{/B}}\nMasz tyle Mutacji krootów, ile wynosi twój Poziom. Możesz uzyskać dodatkową Mutacje krootów (str. 91) w ­wyniku Wyniesienia."
+        "Zdolności gatunkowe": "{{B}}Mutacje krootów{{/B}}\nMasz tyle Mutacji krootów, ile wynosi twój Poziom. Możesz uzyskać dodatkową Mutacje krootów [{{B}}Osamotniony System{{/B}} (str. 91)] w ­wyniku Wyniesienia."
       }
     ],
     "Archetypy": [
@@ -2335,7 +2335,7 @@
         "Słowa Kluczowe": "{{RED}}IMPERIUM, ADEPTUS ASTRA TELEPATHICA, PSIONIK, SCHOLASTIA PSYKANA{{/RED}}",
         "Atrybuty Archetypu": "Siła Woli 4",
         "Umiejętności Archetypu": "Mistrzostwo psioniczne 1",
-        "Zdolność Archetypu": "{{B}}Psionik{{/B}}\nOtrzymujesz Słowo kluczowe PSIONIK i jesteś psionikiem. Znasz Uniwersalne zdolności psioniczne (str. 267), 1 Pomniejszą moc psioniczną i Moc psioniczną Porażenie. Możesz wykupić kolejne Moce psioniczne, korzystając z zasad w Rozdziale 11.",
+        "Zdolność Archetypu": "{{B}}Psionik{{/B}}\nOtrzymujesz Słowo kluczowe {{RED}}PSIONIK{{/RED}} i jesteś psionikiem. Znasz Uniwersalne zdolności psioniczne [{{B}}Podręcznik Główny{{/B}} (str. 267), 1 Pomniejszą moc psioniczną i Moc psioniczną Porażenie. Możesz wykupić kolejne Moce psioniczne, korzystając z zasad w Rozdziale 11.",
         "Ekwipunek": "pistolet laserowy, kostur psioniczny, mizerykordia psykana, kuchenny zestaw polowy Munitorum, koc, zestaw do higieny, dwie porcje racji żywnościowych",
         "Inne": "",
         "Podręcznik": "Główny",
@@ -2391,7 +2391,7 @@
         "Słowa Kluczowe": "{{RED}}AELDARI, ASURYANI{{/RED}}",
         "Atrybuty Archetypu": "Zręczność 3",
         "Umiejętności Archetypu": "Przetrwanie 2, Ukrywanie się 1, Umiejętności strzeleckie 2",
-        "Zdolność Archetypu": "{{B}}Z cieni{{/B}}\nJesteś ekspertem w wykorzystywaniu każdej formy osłony. Za każdym razem, kiedy Utrudnienie widoczności (str. 191) lub Osłona (str. 181) nakłada utrudnienie na kogoś próbującego cię zaatakować lub wykryć, to utrudnienie wzrasta o wartość twojej Rangi.",
+        "Zdolność Archetypu": "{{B}}Z cieni{{/B}}\nJesteś ekspertem w wykorzystywaniu każdej formy osłony. Za każdym razem, kiedy Utrudnienie widoczności [{{B}}Podręcznik Główny{{/B}} (str. 191)] lub Osłona [{{B}}Podręcznik Główny{{/B}} (str. 181)] nakłada utrudnienie na kogoś próbującego cię zaatakować lub wykryć, to utrudnienie wzrasta o wartość twojej Rangi.",
         "Ekwipunek": "peleryna maskująca, pancerz splotowy aeldari, karabin wyborowy zwiadowców, miotacz ostrzy, nóż, kamień duszy, śpiwór, koc, celownik magnokularowy",
         "Inne": "",
         "Podręcznik": "Główny",
@@ -2995,7 +2995,7 @@
         "Frakcja": "Chaos",
         "Słowo Kluczowe": "{{RED}}[ZNAMIĘ CHAOSU]{{/RED}}",
         "Opis": "Jeśli posiadasz Słowo kluczowe {{RED}}[ZNAMIĘ CHAOSU]{{/RED}}, możesz je zastąpić imieniem Boga Chaosu, którego zdecydowałeś się wyznawać. Jeśli czcisz moce Chaosu Niepodzielnego, nie musisz zamieniać tego Słowa kluczowego.",
-        "Efekt": "Postacie z tym Słowem kluczowym mogą nabyć Talent Znamię Chaosu (str. 141)."
+        "Efekt": "Postacie z tym Słowem kluczowym mogą nabyć Talent Znamię Chaosu [{{B}}Podręcznik Główny{{/B}} (str. 141)]."
       },
       {
         "Frakcja": "Ogryn",
@@ -3138,7 +3138,7 @@
       {
         "Nazwa": "Mroczne Anioły",
         "Opis": "Krzepcy i tajemniczy Mroczni Aniołowie są zobowiązani honorem do praktykowania tajnych rytuałów i tradycji. Znani ze zdeterminowanego uporu w obliczu przeciwności niejednokrotnie dowiedli swej prawej niezłomności. Pomimo reputacji rezygnują z chwały, zawsze zamykając się w sobie, aby chronić ponure sekrety przeszłej zdrady.",
-        "Zaleta": "{{B}}Ponura odwaga{{/B}}\nMroczne Anioły nie tchórzą. Są szkoleni do tworzenia nieprzebytej linii ognia.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku na odległość, kiedy wykonujesz manewr Celowanie (str. 189)",
+        "Zaleta": "{{B}}Ponura odwaga{{/B}}\nMroczne Anioły nie tchórzą. Są szkoleni do tworzenia nieprzebytej linii ognia.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku na odległość, kiedy wykonujesz manewr Celowanie [{{B}}Podręcznik Główny{{/B}} (str. 189)].",
         "Wada": "{{B}}Bez przebaczenia (Tradycja){{/B}}\nTajemnica, która dręczy zamknięty w sobie Zakon, ma wpływ na każdą interakcję społeczną.\n\nOtrzymujesz karę +2 do ST wszystkich Testów społecznych wykonywanych przeciwko komukolwiek spoza Zakonu (oprócz Zastraszania)."
       },
       {
@@ -3150,7 +3150,7 @@
       {
         "Nazwa": "Żelazne Dłonie",
         "Opis": "Niezłomnych obrońców Imperium, Żelazne Dłonie, trawi religijny wręcz zapał, by zreplikować nieomylną doskonałość maszyny. Pragnąc poprawić swoje i tak już genetycznie ulepszone formy, każdy z Astartes Żelaznych Dłoni poddaje się wielokrotnym augmentacjom w podwójnym hołdzie dla Imperatora i Omnisjasza.",
-        "Zaleta": "{{B}}Synowie Manusa{{/B}}\nŻelazne Dłonie czerpią siłę i pewność z oczyszczania ciał ze słabości.\n\nWybierz jedną Augmentację Ulepszenie (str. 242).\nNie otrzymujesz kar z powodu bycia Rannym (str. 193).\nOtrzymujesz +1 dodatkową kość do Testów Siły Woli za każdą posiadaną augmentację.",
+        "Zaleta": "{{B}}Synowie Manusa{{/B}}\nŻelazne Dłonie czerpią siłę i pewność z oczyszczania ciał ze słabości.\n\nWybierz jedną Augmentację Ulepszenie [{{B}}Podręcznik Główny{{/B}} (str. 242)].\nNie otrzymujesz kar z powodu bycia Rannym [{{B}}Podręcznik Główny{{/B}} (str. 193)].\nOtrzymujesz +1 dodatkową kość do Testów Siły Woli za każdą posiadaną augmentację.",
         "Wada": "{{B}}Bezlitosna logika (Tradycja){{/B}}\nTłumienie wszelkich emocji, rozwijanie beznamiętnej logiki, drobiazgowość i apatyczna natura czynią z nich zimnych sprzymierzeńców dla wszystkich poza Adeptus Mechanicus.\n\nOtrzymujesz karę +2 do ST wszelkich Testów Ogłady wykonywanych przeciwko celowi, który nie ma Słów kluczowych {{RED}}ŻELAZNE DŁONIE{{/RED}} lub {{RED}}ADEPTUS MECHANICUS{{/RED}}."
       },
       {
@@ -3168,8 +3168,8 @@
       {
         "Nazwa": "Kosmiczne Wilki",
         "Opis": "Odważne i dzikie Kosmiczne Wilki praktykują śmiałe i zuchwałe tradycje wojowników z ich rodzimego świata – Fenrisa. Odziedziczywszy dziką charyzmę i agresywne nastawienie Prymarchy Lemana Russa, Zakon ten bardzo sobie ceni rytualne tradycje, polując na bitewną chwałę, by zbudować heroiczne dziedzictwo. Mimo że są całkowicie lojalni Imperium, jego konserwatywne nakazy nie są im w smak. Wolą pierwotne praktyki swego lodowego świata.",
-        "Zaleta": "{{B}}Dzicy łowcy{{/B}}\nWięź Zakonu z wilkami objawia się w ich ulepszonych zmysłach i niemal dzikim stylu walki uzupełnianym brutalną gracją.\n\nPosiadasz Talent Wyczulony Zmysł (str. 140) oraz Talent Oburęczność (str. 136).",
-        "Wada": "{{B}}Dzikość w sercu (Genoziarno){{/B}}\nUparte w dążeniu do chwały Kosmiczne Wilki nie cofną się w obliczu śmierci w chwalebnej walce wręcz.\n\nNie możesz wykonać manewru Odwrót (str. 188)"
+        "Zaleta": "{{B}}Dzicy łowcy{{/B}}\nWięź Zakonu z wilkami objawia się w ich ulepszonych zmysłach i niemal dzikim stylu walki uzupełnianym brutalną gracją.\n\nPosiadasz Talent Wyczulony Zmysł [{{B}}Podręcznik Główny{{/B}} (str. 140)] oraz Talent Oburęczność [{{B}}Podręcznik Główny{{/B}} (str. 136)].",
+        "Wada": "{{B}}Dzikość w sercu (Genoziarno){{/B}}\nUparte w dążeniu do chwały Kosmiczne Wilki nie cofną się w obliczu śmierci w chwalebnej walce wręcz.\n\nNie możesz wykonać manewru Odwrót [{{B}}Podręcznik Główny{{/B}} (str. 188)]."
       },
       {
         "Nazwa": "Ultramarines",
@@ -3180,7 +3180,7 @@
       {
         "Nazwa": "Białe Szramy",
         "Opis": "Białe Szramy są mistrzami błyskawicznych ataków. Mobilizują się z karkołomną szybkością, niosąc rychłą śmierć wrogom, nie zatrzymując się przy tym nawet na chwilę w pędzie do kolejnego szturmu. Mimo że każdy z tych Astartes jest pełen wewnętrznego pragnienia chwały i sprawiedliwości, jak również ma tendencję do szybkich i wściekłych szturmów, to nie są brutalami. Ich plany bitewne podjazdowych ataków są dokładnie opracowane, honorując mądrego Prymarchę Jaghataia Khana.",
-        "Zaleta": "{{B}}Błyskawiczny szturm{{/B}}\nBiałe Szramy swoje słynne zręczne natarcia wykonują przy użyciu szybkich motocykli szturmowych, osiągając przy tym w ataku prędkość, której nikt inny nie byłby w stanie okiełznać.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi za każdym razem, gdy wykonujesz Test Pilotażu (Zr).\nMożesz potroić swoją prędkość, kiedy wykonujesz Szarżę (str. 188).",
+        "Zaleta": "{{B}}Błyskawiczny szturm{{/B}}\nBiałe Szramy swoje słynne zręczne natarcia wykonują przy użyciu szybkich motocykli szturmowych, osiągając przy tym w ataku prędkość, której nikt inny nie byłby w stanie okiełznać.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi za każdym razem, gdy wykonujesz Test Pilotażu [{{B}}Podręcznik Główny{{/B}} (Zr)].\nMożesz potroić swoją prędkość, kiedy wykonujesz Szarżę [{{B}}Podręcznik Główny{{/B}} (str. 188)].",
         "Wada": "{{B}}Rytualna skaryfikacja (Tradycja){{/B}}\nNowo wprowadzeni do Zakonu znaczą twarze głębokimi nacięciami.\n\nOtrzymujesz karę +1 do ST każdego Testu Ogłady wykonywanego przeciwko celowi, który mógłby się przestraszyć twojego wyglądu."
       }
     ],
@@ -3240,7 +3240,7 @@
       {
         "Nazwa": "Śmiercioczaszki",
         "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, „handlują” i modyfikują sprzęt częściej niż inne klany.",
-        "Efekt": "+Ranga dodatkowych kości do Testów\nKorzystania z technologii oraz Wpływów."
+        "Efekt": "+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów."
       },
       {
         "Nazwa": "Złe Słońca",
@@ -3299,7 +3299,7 @@
         "Mutacja Krootów": "Kamuflaż",
         "Pożarta Ofiara": "Dowolne stworzenie zdolne do naturalnej zmiany wyglądu",
         "Opis": "Zyskujesz ograniczona kontrole nad pigmentacja skóry, dzieki czemu mozesz wizualnie wtapiac sie w otoczenie.",
-        "Efekt": "W ramach Akcji podstawowej mozesz zmienic wyglad swojej skóry na identycznych zasadach jak w przypadku peleryny maskujacej (str. 239)."
+        "Efekt": "W ramach Akcji podstawowej mozesz zmienic wyglad swojej skóry na identycznych zasadach jak w przypadku peleryny maskujacej [{{B}}Podręcznik Główny{{/B}} (str. 239)]."
       },
       {
         "Mutacja Krootów": "Opcjonalna dwunożność",
@@ -3311,7 +3311,7 @@
         "Mutacja Krootów": "Nadwrażliwe pióra",
         "Pożarta Ofiara": "Dowolne stworzenie ze wzmocnionymi zmysłami (jak ambulle czy szponiaste biesy)",
         "Opis": "Wystajace z twojej głowy wrazliwe pióra staja sie jeszcze czulsze i zaczynaja wychwytywac ruch wokolicy poprzez subtelne wibracje i zawirowania powietrza.",
-        "Efekt": "Twoje pióra działaja jak auspex (str. 237) ozasiegu 30 metrów."
+        "Efekt": "Twoje pióra działaja jak Auspex [{{B}}Podręcznik Główny{{/B}} (str. 237)] ozasiegu 30 metrów."
       },
       {
         "Mutacja Krootów": "Skrzydła",
@@ -3323,7 +3323,7 @@
         "Mutacja Krootów": "Naturalna broń",
         "Pożarta Ofiara": "Dowolne stworzenie o naturalnej broni (np. diabły z Catachanu lub szponiaste biesy)",
         "Opis": "Twoje czteropalce dłonie wytwarzaja w pełni funkcjonalne pazury. W zaleznosci od natury twojego posiłku moga byc jadowite, twarde, zaostrzone lub wydłuzone na kształt ostrza.",
-        "Efekt": "Twoje Nieuzbrojone ataki zadaja Obrazenia równe\n(S) + 4 / +3 DK\ni maja jedną z ponizszych Cech:\nBrutalna\nParujaca\nPrzebijajaca (Ranga)\nWywołanie (Zatrucie (Ranga))"
+        "Efekt": "Twoje Nieuzbrojone ataki zadaja Obrazenia równe\n(S) + 4 / +3 DK\ni maja jedną z ponizszych Cech:\nBrutalna\nParujaca\nPrzebijajaca (Ranga)\nWywołanie ({{I}}Zatrucie{{/I}} (Ranga))"
       }
     ],
     "Cechy": [
@@ -3340,7 +3340,7 @@
       {
         "Typ": "Cechy Broni",
         "Nazwa": "Ciężka (X)",
-        "Opis": "Trudno jest celować i skutecznie władać bronią, która jest ciężka i nieporęczna. Aby postać mogła normalnie korzystać z Ciężkiej broni, jej Siła musi być równa wartości tej Cechy.\nJeśli postać nie jest wystarczająco silna, wszystkie ataki przy pomocy Ciężkiej broni wykonywane są z karą +2 do ST, a Komplikacja podczas ataku oznacza, że oprócz innych efektów, następuje również Powalenie postaci.\nAkcja Podparcia (str. 189) lub zamocowanie Ciężkiej broni (np. na trójnogu) chwilowo unieważnia tę Cechę."
+        "Opis": "Trudno jest celować i skutecznie władać bronią, która jest ciężka i nieporęczna. Aby postać mogła normalnie korzystać z Ciężkiej broni, jej Siła musi być równa wartości tej Cechy.\nJeśli postać nie jest wystarczająco silna, wszystkie ataki przy pomocy Ciężkiej broni wykonywane są z karą +2 do ST, a Komplikacja podczas ataku oznacza, że oprócz innych efektów, następuje również Powalenie postaci.\nAkcja Podparcia [{{B}}Podręcznik Główny{{/B}} (str. 189)] lub zamocowanie Ciężkiej broni (np. na trójnogu) chwilowo unieważnia tę Cechę."
       },
       {
         "Typ": "Cechy Broni",
@@ -3350,7 +3350,7 @@
       {
         "Typ": "Cechy Broni",
         "Nazwa": "Łooomot!",
-        "Opis": "Broń orków przeczy wszelkiej logice i łamie prawa mechaniki i fizyki, jednak wierzenia zielonoskórych czynią ją jeszcze bardziej śmiercionośną.\nJeśli twoja postać jest orkiem, otrzymuje +1 dodatkową kość do ataków bronią o Cesze Łooomot! Ponadto, jeśli jest Ranna (str. 193), zadaje dodatkowe +1 DK Obrażeń."
+        "Opis": "Broń orków przeczy wszelkiej logice i łamie prawa mechaniki i fizyki, jednak wierzenia zielonoskórych czynią ją jeszcze bardziej śmiercionośną.\nJeśli twoja postać jest orkiem, otrzymuje +1 dodatkową kość do ataków bronią o Cesze Łooomot! Ponadto, jeśli jest Ranna [{{B}}Podręcznik Główny{{/B}} (str. 193)], zadaje dodatkowe +1 DK Obrażeń."
       },
       {
         "Typ": "Cechy Broni",
@@ -3360,7 +3360,7 @@
       {
         "Typ": "Cechy Broni",
         "Nazwa": "Miotacz ognia",
-        "Opis": "Miotacze ognia wypluwają z siebie strumień mieszanki zapalającej. Chlustające z broni potoki ognia mogą być następnie kierowane przez operatora miotacza ognia w celu podpalenia jak największej liczby wrogów.\nAtaki wykonane przy pomocy miotacza ognia ignorują osłonę. Jeśli cel zostanie trafiony z takiej broni, płonąca ciecz wypełnia wszelką przestrzeń w prostej linii między strzelcem a celem. Wszystko, co znajduje się w tej linii, staje się celem ataku.\nPodczas Testu Ataku przy pomocy miotacza ognia możesz wykonać Przeniesienie, by skierować strumień mieszanki w bok o tyle metrów, ile wynosi wartość Umiejętności strzeleckich. Wszystko, co znajduje się w tym zasięgu, staje się celem ataku.\nJeśli trafionych zostanie kilka celów, obrażenia ustalane są tylko raz, a wynik stosuje się do wszystkich trafień. Każdy może spróbować zmniejszyć obrażenia poprzez Unikanie Ataków Obszarowych (str. 186).\nBroń o Cesze Miotacz ognia uznawana jest jednocześnie za posiadającą Cechę Wywołanie (Podpalenie)."
+        "Opis": "Miotacze ognia wypluwają z siebie strumień mieszanki zapalającej. Chlustające z broni potoki ognia mogą być następnie kierowane przez operatora miotacza ognia w celu podpalenia jak największej liczby wrogów.\nAtaki wykonane przy pomocy miotacza ognia ignorują osłonę. Jeśli cel zostanie trafiony z takiej broni, płonąca ciecz wypełnia wszelką przestrzeń w prostej linii między strzelcem a celem. Wszystko, co znajduje się w tej linii, staje się celem ataku.\nPodczas Testu Ataku przy pomocy miotacza ognia możesz wykonać Przeniesienie, by skierować strumień mieszanki w bok o tyle metrów, ile wynosi wartość Umiejętności strzeleckich. Wszystko, co znajduje się w tym zasięgu, staje się celem ataku.\nJeśli trafionych zostanie kilka celów, obrażenia ustalane są tylko raz, a wynik stosuje się do wszystkich trafień. Każdy może spróbować zmniejszyć obrażenia poprzez Unikanie Ataków Obszarowych [{{B}}Podręcznik Główny{{/B}} (str. 186)].\nBroń o Cesze Miotacz ognia uznawana jest jednocześnie za posiadającą Cechę Wywołanie ({{I}}Podpalenie{{/I}})."
       },
       {
         "Typ": "Cechy Broni",
@@ -3370,7 +3370,7 @@
       {
         "Typ": "Cechy Broni",
         "Nazwa": "Niezawodna",
-        "Opis": "Wytrzymała i łatwa w utrzymaniu broń. Możesz zignorować pierwszą Komplikację tej broni w danej scenie.\nTesty naprawy i konserwacji Niezawodnej broni otrzymują +1 dodatkową kość.."
+        "Opis": "Wytrzymała i łatwa w utrzymaniu broń. Możesz zignorować pierwszą Komplikację tej broni w danej scenie.\nTesty naprawy i konserwacji Niezawodnej broni otrzymują +1 dodatkową kość."
       },
       {
         "Typ": "Cechy Broni",
@@ -3425,7 +3425,7 @@
       {
         "Typ": "Cechy Broni",
         "Nazwa": "Szturmowa",
-        "Opis": "Dostosowana do prowadzenia ognia podczas chwalebnej szarży na pozycje wroga.\nMożesz strzelać z broni Szturmowej podczas Sprintu (str. 180), jednak atak jest obarczony karą +2 do ST."
+        "Opis": "Dostosowana do prowadzenia ognia podczas chwalebnej szarży na pozycje wroga.\nMożesz strzelać z broni Szturmowej podczas Sprintu [{{B}}Podręcznik Główny{{/B}} (str. 180)], jednak atak jest obarczony karą +2 do ST."
       },
       {
         "Typ": "Cechy Broni",
@@ -3445,12 +3445,12 @@
       {
         "Typ": "Cechy Broni",
         "Nazwa": "Wywołanie (Stan)",
-        "Opis": "Broń tego typu została stworzona w celu zadania wrogowi obrażeń w wybitnie okrutny i niestandardowy sposób.\nKażda broń o tej Cesze wywołuje określony Stan, jeśli atak zada co najmniej jedną Ranę. Przykładowo, jeśli atak bronią o Cesze Wywołanie (Podpalenie) zada Ranę celowi, ten zostaje również Podpalony.\nJeśli Cecha ta opatrzona została liczbą, stanowi ona ST Testu, którego celem jest usunięcie Stanu. Przykładowo, jeśli broń o Cesze Wywołanie (Zatrucie 4) zada celowi Ranę, wróg zostaje Zatruty i w celu usunięcia Zatrucia w swojej następnej turze musi wykonać Test Wytrzymałości o ST 4."
+        "Opis": "Broń tego typu została stworzona w celu zadania wrogowi obrażeń w wybitnie okrutny i niestandardowy sposób.\nKażda broń o tej Cesze wywołuje określony Stan, jeśli atak zada co najmniej jedną Ranę. Przykładowo, jeśli atak bronią o Cesze Wywołanie ({{I}}Podpalenie{{/I}}) zada Ranę celowi, ten zostaje również Podpalony.\nJeśli Cecha ta opatrzona została liczbą, stanowi ona ST Testu, którego celem jest usunięcie Stanu. Przykładowo, jeśli broń o Cesze Wywołanie ({{I}}Zatrucie 4{{/I}}) zada celowi Ranę, wróg zostaje Zatruty i w celu usunięcia Zatrucia w swojej następnej turze musi wykonać Test Wytrzymałości o ST 4."
       },
       {
         "Typ": "Cechy Broni",
         "Nazwa": "Błogosławiona (X)",
-        "Opis": "Namaszczona przez kapłanów Eklezjarchatu lub chroniona heksagramatycznie przed plugawymi mocami arcywrogów, Błogosławiona bron jest wybitnie skuteczna w walce z obrzydliwymi stworzeniami skazonymi wpływem Immaterium lub wypluwanymi bezposrednio z niego.\nBłogosławiona bron zyskuje dodatkowe DK w liczbie równej wartosci Cechy w atakach wymierzonych w cele o Słowie kluczowym {{RED}}PSIONIK{{/RED}} lub {{RED}}DEMON.{{/RED}}"
+        "Opis": "Namaszczona przez kapłanów Eklezjarchatu lub chroniona heksagramatycznie przed plugawymi mocami arcywrogów, Błogosławiona broń jest wybitnie skuteczna w walce z obrzydliwymi stworzeniami skażonymi wpływem Immaterium lub wypluwanymi bezpośrednio z niego.\nBłogosławiona broń zyskuje dodatkowe DK w liczbie równej wartości Cechy w atakach wymierzonych w cele o Słowie kluczowym {{RED}}PSIONIK{{/RED}} lub {{RED}}DEMON{{/RED}}{{RED}}.{{/RED}}"
       },
       {
         "Typ": "Cechy Pancerza",
@@ -3497,7 +3497,7 @@
       {
         "Typ": "Stan",
         "Nazwa": "Krwawienie",
-        "Opis": "Głęboka rana wywołała ciężki do zatamowania krwotok.\nKrwawiąca postać otrzymuje 1 Ranę śmiertelną na koniec każdej swojej Tury.\nKrwawienie może zostać zatrzymane dzięki udanemu Testowi Wytrzymałości o ST 4 lub dzięki udanemu Testowi Medycyny sojusznika.\nMożliwe jest podjęcie próby użycia Medycyny na samym sobie (str. 123), ale obarczone jest to karą +1 do ST."
+        "Opis": "Głęboka rana wywołała ciężki do zatamowania krwotok.\nKrwawiąca postać otrzymuje 1 Ranę śmiertelną na koniec każdej swojej Tury.\nKrwawienie może zostać zatrzymane dzięki udanemu Testowi Wytrzymałości o ST 4 lub dzięki udanemu Testowi Medycyny sojusznika.\nMożliwe jest podjęcie próby użycia Medycyny na samym sobie [{{B}}Podręcznik Główny{{/B}} (str. 123)], ale obarczone jest to karą +1 do ST."
       },
       {
         "Typ": "Stan",
@@ -3522,7 +3522,7 @@
       {
         "Typ": "Stan",
         "Nazwa": "Powalenie",
-        "Opis": "Postać została powalona na ziemię.\nDla każdego Zagrożenia w promieniu 5 metrów jej Obrona zostaje zmniejszona o 2. Dla Zagrożeń znajdujących się w odległości 6 i więcej metrów od postaci jej Obrona zostaje zmniejszona o 1.\nPowalenie w trakcie lotu skutkuje upadkiem i otrzymaniem obrażeń (str. 201).\nPowstanie z ziemi może być wykonane w ramach Akcji darmowej podczas Tury postaci. W takim wypadku w tej samej Turze postać może wykonać standardowy Ruch, nie może jednak korzystać z wariantów akcji bojowych, jak np. Celowanie czy Podparcie.\nKażdy stojący obok Powalonej postaci może pomóc jej natychmiast wstać, zużywając jednak Akcję podstawową w swojej Turze."
+        "Opis": "Postać została powalona na ziemię.\nDla każdego Zagrożenia w promieniu 5 metrów jej Obrona zostaje zmniejszona o 2. Dla Zagrożeń znajdujących się w odległości 6 i więcej metrów od postaci jej Obrona zostaje zmniejszona o 1.\nPowalenie w trakcie lotu skutkuje upadkiem i otrzymaniem obrażeń [{{B}}Podręcznik Główny{{/B}} (str. 201)].\nPowstanie z ziemi może być wykonane w ramach Akcji darmowej podczas Tury postaci. W takim wypadku w tej samej Turze postać może wykonać standardowy Ruch, nie może jednak korzystać z wariantów akcji bojowych, jak np. Celowanie czy Podparcie.\nKażdy stojący obok Powalonej postaci może pomóc jej natychmiast wstać, zużywając jednak Akcję podstawową w swojej Turze."
       },
       {
         "Typ": "Stan",
@@ -4095,7 +4095,7 @@
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
         "Opis": "Twój ból jest ofiarą dla Imperatora.",
-        "Efekt": "Na początku każdego dnia musisz spędzić co najmniej dwadzieścia standardowych terrańskich minut na modlitwie i otrzymać tyle Ran, ile wynosi twój Poziom, z powodu samobiczowania.\nNie możesz przetestować Determinacji, aby zmniejszyć tę utratę Żywotności, a otrzymane w ten sposób Rany nie mogą zostać wyleczone w żaden inny sposób, niż poprzez Wytchnienie.\nDopóki pozostajesz pod wpływem tych ran, otrzymujesz +Ranga dodatkowych kości do rzutów na Determinację oraz Upór, a także możesz wpaść w Szał bojowy (str. 200) w ramach Akcji bojowej.\nJeśli posiadasz Talent Szał, możesz wpaść w Szał bojowy w ramach Akcji podstawowej. Jeśli z jakiegoś powodu się nie ubiczujesz, poczucie wstydu nie pozwala ci funkcjonować normalnie, a ST wszystkich twoich Testów zwiększa się o 2, dopóki nie dokonasz aktu samobiczowania ponownie."
+        "Efekt": "Na początku każdego dnia musisz spędzić co najmniej dwadzieścia standardowych terrańskich minut na modlitwie i otrzymać tyle Ran, ile wynosi twój Poziom, z powodu samobiczowania.\nNie możesz przetestować Determinacji, aby zmniejszyć tę utratę Żywotności, a otrzymane w ten sposób Rany nie mogą zostać wyleczone w żaden inny sposób, niż poprzez Wytchnienie.\nDopóki pozostajesz pod wpływem tych ran, otrzymujesz +Ranga dodatkowych kości do rzutów na Determinację oraz Upór, a także możesz wpaść w Szał bojowy [{{B}}Podręcznik Główny{{/B}} (str. 200)] w ramach Akcji bojowej.\nJeśli posiadasz Talent Szał, możesz wpaść w Szał bojowy w ramach Akcji podstawowej. Jeśli z jakiegoś powodu się nie ubiczujesz, poczucie wstydu nie pozwala ci funkcjonować normalnie, a ST wszystkich twoich Testów zwiększa się o 2, dopóki nie dokonasz aktu samobiczowania ponownie."
       },
       {
         "Nazwa": "Binarny Żargon",
@@ -4116,7 +4116,7 @@
         "Koszt PD": "20",
         "Wymagania": "Wartość Siły 3 lub wyższa.",
         "Opis": "Niezależnie od broni, którą aktualnie władasz, twoje ciosy są zawsze brutalne i niszczycielskie.",
-        "Efekt": "Każda broń do walki wręcz, którą się posługujesz, zyskuje cechę Brutalna (str. 208), w tym także twoje ataki wręcz bez użycia broni.\nJeśli wykonasz udany atak wręcz bronią posiadającą już cechę Brutalna, zadajesz dodatkowe +1 Obrażeń.\nTe dodatkowe Obrażenia dodają się do całkowitej liczby obrażeń z wykonanego ataku, nie do wartości Obrażeń zadawanych przez daną broń."
+        "Efekt": "Każda broń do walki wręcz, którą się posługujesz, zyskuje cechę Brutalna [{{B}}Podręcznik Główny{{/B}} (str. 208)], w tym także twoje ataki wręcz bez użycia broni.\nJeśli wykonasz udany atak wręcz bronią posiadającą już cechę Brutalna, zadajesz dodatkowe +1 Obrażeń.\nTe dodatkowe Obrażenia dodają się do całkowitej liczby obrażeń z wykonanego ataku, nie do wartości Obrażeń zadawanych przez daną broń."
       },
       {
         "Nazwa": "Budzący grozę",
@@ -4130,28 +4130,28 @@
         "Koszt PD": "30",
         "Wymagania": "Wartość Walki wręcz 4 lub wyższa.",
         "Opis": "Zasypujesz wroga serią szybkich ataków.",
-        "Efekt": "Jeśli jedyną akcją, jaką podejmujesz w swojej Turze, jest Atak wielokrotny, kara do ST tego Testu zmniejsza się o {{B}}-Dwukrotność twojej Rangi.\nTwoja Tura kończy się po wykonaniu Ataku wielokrotnego.{{/B}}"
+        "Efekt": "Jeśli jedyną akcją, jaką podejmujesz w swojej Turze, jest Atak wielokrotny, kara do ST tego Testu zmniejsza się o -Dwukrotność twojej Rangi.\nTwoja Tura kończy się po wykonaniu Ataku wielokrotnego."
       },
       {
         "Nazwa": "Chowaniec Chaosu",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}CHAOS{{/RED}}.",
         "Opis": "Mroczne Potęgi nagrodziły twoje oddanie, wysyłając jeden z poślednich bytów z Osnowy, aby zaspokajał twoje zachcianki.\nTa złowroga istota czerpie perwersyjną radość z przemocy i oszustwa, a także służy jako manifestacja twojej przynależności.\nChowańce Chaosu są kapryśne, zdradzieckie i zwykle nie można na nich polegać, jednak mimo tego mogą być potężnym dodatkiem do mrocznego arsenału oddanego kultysty Chaosu.",
-        "Efekt": "Twoje Spaczenie wzrasta o 2.\nOtrzymujesz na swe usługi pomniejszego demona wyplutego z trzewi Osnowy.\nUżyj profilu Siarkowego strachulca (strona 349), ale zmień wszystkie jego Atrybuty na 1. Jedyne Umiejętności, jakie posiada chowaniec, to Ukrywanie się (8) i Wiedza ogólna (5).\nDemon jest kapryśny. By nakłonić go do wykonania jakiegoś zadania, musisz najpierw wygrać w przeciwstawnym Teście Perswazji (Ogd) lub Zastraszania (SW).\nJeśli wygrasz ten Test, demon pośpieszy wykonać wyznaczone zadanie, najlepiej jak pozwolą mu na to jego ograniczone możliwości.\nWedle uznania Mistrza Gry, jeśli demon uzna, iż działania twojej postaci stoją w sprzeczności z celami Osnowy, chowaniec natychmiast zwróci się przeciwko tobie, a jedynym sposobem, by zmienić jego nastawienie, jest zniszczenie go bądź przekonanie, iż się myli.\nJeśli chowaniec zostanie zniszczony, musisz wydać punkt Furii, aby przyzwać go ponownie. Proces ten jednak wymaga czasu, a także zgody Mistrza Gry."
+        "Efekt": "Twoje Spaczenie wzrasta o 2.\nOtrzymujesz na swe usługi pomniejszego demona wyplutego z trzewi Osnowy.\nUżyj profilu Siarkowego strachulca [{{B}}Podręcznik Główny{{/B}} (strona 349)], ale zmień wszystkie jego Atrybuty na 1. Jedyne Umiejętności, jakie posiada chowaniec, to Ukrywanie się (8) i Wiedza ogólna (5).\nDemon jest kapryśny. By nakłonić go do wykonania jakiegoś zadania, musisz najpierw wygrać w przeciwstawnym Teście Perswazji (Ogd) lub Zastraszania (SW).\nJeśli wygrasz ten Test, demon pośpieszy wykonać wyznaczone zadanie, najlepiej jak pozwolą mu na to jego ograniczone możliwości.\nWedle uznania Mistrza Gry, jeśli demon uzna, iż działania twojej postaci stoją w sprzeczności z celami Osnowy, chowaniec natychmiast zwróci się przeciwko tobie, a jedynym sposobem, by zmienić jego nastawienie, jest zniszczenie go bądź przekonanie, iż się myli.\nJeśli chowaniec zostanie zniszczony, musisz wydać punkt Furii, aby przyzwać go ponownie. Proces ten jednak wymaga czasu, a także zgody Mistrza Gry."
       },
       {
         "Nazwa": "Ciało jest słabe",
         "Koszt PD": "20",
         "Wymagania": "Brak",
         "Opis": "Większość twojego biologicznego ciała została zastąpiona cybernetycznymi wszczepami.\nZabieg ten mógł być efektem straszliwych ran bądź wyrazem głębokiej wiary i oddania Omnisjaszowi.\nImplanty są o wiele wytrzymalsze niż biologiczne organy, jednak drastycznie zmieniły twój wygląd.",
-        "Efekt": "Nie musisz już dłużej oddychać ani nie krwawisz, wobec czego jesteś odporny na efekty Krwawienia (str. 199) oraz Uduszenia (str. 201). Otrzymujesz +Ranga dodatkowych kości do Testów Korzystania z technologii (Int) oraz rzutów na Determinację.\nST wszystkich wykonywanych przez ciebie Testów Perswazji (Ogd) zwiększa się o 2.\nJeśli twoja postać odniosła jakieś Trwałe urazy bądź została Okaleczona (str. 194–195), możesz wyleczyć te rany, kupując ten Talent."
+        "Efekt": "Nie musisz już dłużej oddychać ani nie krwawisz, wobec czego jesteś odporny na efekty Krwawienia [{{B}}Podręcznik Główny{{/B}} (str. 199)] oraz Uduszenia [{{B}}Podręcznik Główny{{/B}} (str. 201)]. Otrzymujesz +Ranga dodatkowych kości do Testów Korzystania z technologii (Int) oraz rzutów na Determinację.\nST wszystkich wykonywanych przez ciebie Testów Perswazji (Ogd) zwiększa się o 2.\nJeśli twoja postać odniosła jakieś Trwałe urazy bądź została Okaleczona [{{B}}Podręcznik Główny{{/B}} (str. 194–195)], możesz wyleczyć te rany, kupując ten Talent."
       },
       {
         "Nazwa": "Cichy",
         "Koszt PD": "20",
         "Wymagania": "Brak",
         "Opis": "Bezszelestne poruszanie się przychodzi ci równie łatwo co oddychanie.",
-        "Efekt": "Możesz przemieszczać się z pełną Szybkością podczas Cichego ruchu (str. 182).\nZawsze, kiedy twój Poziom ukrycia ma ulec zmniejszeniu, obniż go o 1 mniej."
+        "Efekt": "Możesz przemieszczać się z pełną Szybkością podczas Cichego ruchu [{{B}}Podręcznik Główny{{/B}} (str. 182)].\nZawsze, kiedy twój Poziom ukrycia ma ulec zmniejszeniu, obniż go o 1 mniej."
       },
       {
         "Nazwa": "Czytanie z ruchu warg",
@@ -4179,21 +4179,21 @@
         "Koszt PD": "20",
         "Wymagania": "Gatunek aeldari.",
         "Opis": "Długa i pełna smutku historia twojego gatunku ciąży na tobie, jednak potrafisz przekuć ten żal w skupienie i wolę do życia.",
-        "Efekt": "Nie otrzymujesz już kar ze względu na zdolność gatunkową Intensywne emocje (str. 29).\nDrużyna otrzymuje 1 punkt Chwały za każdym razem, kiedy wyjdziesz ze Stanu Konanie."
+        "Efekt": "Nie otrzymujesz już kar ze względu na zdolność gatunkową Intensywne emocje [{{B}}Podręcznik Główny{{/B}} (str. 29)].\nDrużyna otrzymuje 1 punkt Chwały za każdym razem, kiedy wyjdziesz ze Stanu Konanie [{{B}}Podręcznik Główny{{/B}} (str. 193)]."
       },
       {
         "Nazwa": "Eliminator",
         "Koszt PD": "20",
         "Wymagania": "Wartość Ukrywania się 2 lub wyższa.",
         "Opis": "Uderzasz z cienia, wykorzystując element zaskoczenia, by powalić wroga jednym ciosem.",
-        "Efekt": "Jeśli posiadasz Poziom ukrycia (str. 181) i atakujesz przeciwnika nieświadomego twojej obecności, możesz dodać swój Poziom ukrycia jako DK niezależnie od normalnych bonusów, które otrzymujesz za Atak z zaskoczenia (str. 182).\nEwentualne obniżenie twojego Poziomu ukrycia następuje po wykonaniu tego ataku."
+        "Efekt": "Jeśli posiadasz Poziom ukrycia [{{B}}Podręcznik Główny{{/B}} (str. 181)] i atakujesz przeciwnika nieświadomego twojej obecności, możesz dodać swój Poziom ukrycia jako DK niezależnie od normalnych bonusów, które otrzymujesz za Atak z zaskoczenia [{{B}}Podręcznik Główny{{/B}} (str. 182)].\nEwentualne obniżenie twojego Poziomu ukrycia następuje po wykonaniu tego ataku."
       },
       {
         "Nazwa": "Hardy",
         "Koszt PD": "30",
         "Wymagania": "Wartość Wytrzymałości 3 lub wyższa.",
         "Opis": "Jesteś nadzwyczaj wytrzymały, czy to z natury, czy to na skutek bezlitosnego treningu fizycznego.",
-        "Efekt": "W ramach Akcji bojowej możesz wykonać Test Wytrzymałości o ST 3.\nJeśli Test się nie uda, usuwasz sobie 1 punkt Traumy. Jeśli Test się powiedzie, usuwasz sobie 1 +Dwukrotność Rangi punktów Traumy.\nKażda Przeniesiona Wielka Ikona usuwa dodatkowy punkt Traumy.\nJeśli skorzystasz z tego Talentu, nie możesz użyć go ponownie, dopóki nie dokonasz Przegrupowania lub nie złapiesz Wytchnienia (str. 196)."
+        "Efekt": "W ramach Akcji bojowej możesz wykonać Test Wytrzymałości o ST 3.\nJeśli Test się nie uda, usuwasz sobie 1 punkt Traumy. Jeśli Test się powiedzie, usuwasz sobie 1 +Dwukrotność Rangi punktów Traumy.\nKażda Przeniesiona Wielka Ikona usuwa dodatkowy punkt Traumy.\nJeśli skorzystasz z tego Talentu, nie możesz użyć go ponownie, dopóki nie dokonasz Przegrupowania lub nie złapiesz Wytchnienia [{{B}}Podręcznik Główny{{/B}} (str. 196)]."
       },
       {
         "Nazwa": "Kogitator dialogowy",
@@ -4249,14 +4249,14 @@
         "Koszt PD": "20",
         "Wymagania": "Brak",
         "Opis": "Dzięki gibkości ciała, treningowi lub ukrytemu pod skórą sprzętowi jesteś w stanie uciec z dowolnej formy więzów.",
-        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów wykonywanych w celu ucieczki z dowolnej formy więzów, zarówno mechanicznych jak i w przypadku innej postaci, która cię Pochwyciła (str. 188)."
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów wykonywanych w celu ucieczki z dowolnej formy więzów, zarówno mechanicznych jak i w przypadku innej postaci, która cię Pochwyciła [{{B}}Podręcznik Główny{{/B}} (str. 188)]."
       },
       {
         "Nazwa": "Mistrz wiedzy [Dowolne]",
         "Koszt PD": "30",
         "Wymagania": "Wartość Wiedzy ogólnej 3 lub wyższa.",
         "Opis": "Twoje wykształcenie w wyspecjalizowanej dziedzinie nie ma sobie równych.",
-        "Efekt": "Wybierz Słowo kluczowe, które najlepiej opisuje dziedzinę\nwiedzy, w jakiej chcesz się specjalizować. Może to być\njakaś gałąź administracji Imperium, gatunek xenos albo coś\nezoterycznego (i zakazanego) jak demonologia. Musisz uzyskać\nzgodę Mistrza Gry, zanim podejmiesz ostateczną decyzję,\nktóre Słowo kluczowe wybierzesz.\nJeśli wybierzesz specjalizację w wiedzy o innym\ngatunku, potrafisz władać językiem tego gatunku tak dobrze\njak własnym.\nWykształcenie i wiedza mogą mieć szerokie zastosowanie.\nNauka historii danej cywilizacji daje także informacje o jej\ntradycjach, sprawności w walce i poziomie technologicznym.\nKiedy wykonujesz Test Umiejętności powiązany z wybranym Słowem kluczowym, otrzymujesz +Dwukrotność Rangi dodatkowych kości do tego Testu.\nZwykle będzie to Test Wiedzy ogólnej (Int), ale może być to dowolny Test, który zakłada interakcję z danym Słowem kluczowym, w tym także Interakcje bojowe (str. 190).\nMistrz Gry decyduje, czy czynność, którą chcesz wykonać, jest wystarczająco powiązana z tym Talentem, abyś otrzymał ten bonus."
+        "Efekt": "Wybierz Słowo kluczowe, które najlepiej opisuje dziedzinę wiedzy, w jakiej chcesz się specjalizować. Może to być jakaś gałąź administracji Imperium, gatunek xenos albo coś ezoterycznego (i zakazanego) jak demonologia. Musisz uzyskać zgodę Mistrza Gry, zanim podejmiesz ostateczną decyzję, które Słowo kluczowe wybierzesz. Jeśli wybierzesz specjalizację w wiedzy o innym gatunku, potrafisz władać językiem tego gatunku tak dobrze jak własnym. Wykształcenie i wiedza mogą mieć szerokie zastosowanie. Nauka historii danej cywilizacji daje także informacje o jej tradycjach, sprawności w walce i poziomie technologicznym.\nKiedy wykonujesz Test Umiejętności powiązany z wybranym Słowem kluczowym, otrzymujesz +Dwukrotność Rangi dodatkowych kości do tego Testu. Zwykle będzie to Test Wiedzy ogólnej (Int), ale może być to dowolny Test, który zakłada interakcję z danym Słowem kluczowym, w tym także Interakcje bojowe [{{B}}Podręcznik Główny{{/B}} (str. 190)].\nMistrz Gry decyduje, czy czynność, którą chcesz wykonać, jest wystarczająco powiązana z tym Talentem, abyś otrzymał ten bonus."
       },
       {
         "Nazwa": "Nadczłowiek [Atrybut]",
@@ -4270,7 +4270,7 @@
         "Koszt PD": "60",
         "Wymagania": "Wartość [Umiejętność] 4 lub większa.",
         "Opis": "Wybierz jedną ze swoich Umiejętności o wartości co najmniej 4.",
-        "Efekt": "Wykonując Testy wybranej Umiejętności, zmniejszasz wszystkie modyfikatory ST o -Dwukrotność Rangi, do minimum 0.\nEfekt ten nie działa na bazową trudność Testu, a jedynie {{B}}na modyfikatory ST, wynikające na przykład z próby wykonania określonej czynności bez wymaganych narzędzi, w ciemności, bądź modyfikatory do określonych opcji bojowych.{{/B}}"
+        "Efekt": "Wykonując Testy wybranej Umiejętności, zmniejszasz wszystkie modyfikatory ST o -Dwukrotność Rangi, do minimum 0.\nEfekt ten nie działa na bazową trudność Testu, a jedynie na modyfikatory ST, wynikające na przykład z próby wykonania określonej czynności bez wymaganych narzędzi, w ciemności, bądź modyfikatory do określonych opcji bojowych."
       },
       {
         "Nazwa": "Naśladowanie głosów",
@@ -4347,7 +4347,7 @@
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
         "Opis": "Długo trenowałeś posługiwanie się świętym ogniem Imperatora.",
-        "Efekt": "Jeśli używasz broni posiadającej cechę Wywołanie (Podpalenie), otrzymujesz +Ranga DK do wszystkich rzutów na obrażenia.\nRaz na Rundę możesz otrzymać punkt Furii, jeśli zabijesz wroga Imperium, używając broni z cechą Wywołanie (Podpalenie)."
+        "Efekt": "Jeśli używasz broni posiadającej cechę Wywołanie {{I}}(Podpalenie{{/I}}), otrzymujesz +Ranga DK do wszystkich rzutów na obrażenia.\nRaz na Rundę możesz otrzymać punkt Furii, jeśli zabijesz wroga Imperium, używając broni z cechą Wywołanie (Podpalenie)."
       },
       {
         "Nazwa": "Odskok",
@@ -4361,7 +4361,7 @@
         "Koszt PD": "20 plus PD równe kosztowi wybranej broni.",
         "Wymagania": "Słowo kluczowe {{RED}}ASTRA MILITARUM{{/RED}}, wartość Umiejętności strzeleckich 3 lub wyższa.",
         "Opis": "Wielu gwardzistów z Astra Militarum przechodzi dodatkowe szkolenie, aby móc wprawnie posługiwać się wybraną bronią specjalną na polu walki.\nTrening ten często zakłada, obok zwyczajnych ćwiczeń, naukę podstawowych kantyczek i hymnów pochwalnych mających uspokoić ducha maszyny broni, jeśli ten stanie się kapryśny lub odmówi posłuszeństwa.",
-        "Efekt": "Możesz wybrać jedną z poniższych broni jako część standardowego Ekwipunku, zastępując nią swoją broń podstawową:\n* Strzelba bojowa (str. 218).\n* Karabin plazmowy (str. 218).\n* Karabin termiczny (str. 218).\n* Rusznica laserowa (str. 217).\n* Miotacz ognia (str. 219).\n* Granatnik (str. 220). Dodatkowo otrzymujesz trzy granaty odłamkowe i trzy granaty przeciwpancerne.\n* Sprzężony karabin wysokoenergetyczny - tylko {{RED}}MILITARUM TEMPESTUS{{/RED}} (str. 217)."
+        "Efekt": "Możesz wybrać jedną z poniższych broni jako część standardowego Ekwipunku, zastępując nią swoją broń podstawową:\n* Strzelba bojowa [{{B}}Podręcznik Główny{{/B}} (str. 218)].\n* Karabin plazmowy [{{B}}Podręcznik Główny{{/B}} (str. 218)].\n* Karabin termiczny [{{B}}Podręcznik Główny{{/B}} (str. 218)].\n* Rusznica laserowa [Podręcznik Główny{{B}} (str. 217)].\n* Miotacz ognia [Podręcznik Główny{{/B}} (str. 219)].\n* Granatnik [{{B}}Podręcznik Główny{{/B}} (str. 220). Dodatkowo otrzymujesz trzy granaty odłamkowe i trzy granaty przeciwpancerne.\n* Sprzężony karabin wysokoenergetyczny - tylko {{RED}}MILITARUM TEMPESTUS{{/RED}} [{{B}}Podręcznik Główny{{/B}} (str. 217)]."
       },
       {
         "Nazwa": "Ortopraksja",
@@ -4389,7 +4389,7 @@
         "Koszt PD": "20",
         "Wymagania": "Wartość Umiejętności strzeleckich 2 lub wyższa.",
         "Opis": "Twoje umiejętności w posługiwaniu się bronią zasięgową pozwalają ci na zauważenie i staranne obranie na cel słabych punktów przeciwnika.",
-        "Efekt": "Kiedy wykonujesz Celowanie (str. 189) i wykonujesz Atak mierzony (str. 186), podwajasz liczbę DK, które normalnie otrzymujesz."
+        "Efekt": "Kiedy wykonujesz Celowanie [{{B}}Podręcznik Główny{{/B}} (str. 189)] i wykonujesz Atak mierzony [{{B}}Podręcznik Główny{{/B}} (str. 186)], podwajasz liczbę DK, które normalnie otrzymujesz."
       },
       {
         "Nazwa": "Podwójne skupienie",
@@ -4466,14 +4466,14 @@
         "Koszt PD": "20",
         "Wymagania": "Wartość Atletyki 2 lub wyższa i wartość Walki wręcz 2 lub wyższa.",
         "Opis": "Potrafisz szybko skrócić dystans do przeciwnika, wykonując wściekły atak, kiedy wejdziesz z nim w zwarcie.",
-        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do każdego Testu ataku w Zwarciu, jaki wykonujesz w ramach Szarży (str. 188)."
+        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do każdego Testu ataku w Zwarciu, jaki wykonujesz w ramach Szarży [{{B}}Podręcznik Główny{{/B}} (str. 188)]."
       },
       {
         "Nazwa": "Szał",
         "Koszt PD": "20",
         "Wymagania": "Brak",
         "Opis": "Brak",
-        "Efekt": "Możesz użyć Akcji bojowej, aby wpaść w Szał bojowy (str. 200)."
+        "Efekt": "Możesz użyć Akcji bojowej, aby wpaść w Szał bojowy [{{B}}Podręcznik Główny{{/B}} (str. 200)]."
       },
       {
         "Nazwa": "Szlachcic",
@@ -4494,7 +4494,7 @@
         "Koszt PD": "40",
         "Wymagania": "Słowo kluczowe {{RED}}PSIONIK{{/RED}}.",
         "Opis": "Osnowa jest równie kapryśna co niebezpieczna, a jej groza dotyka niektórych w większym stopniu niż innych.\nNawet ci, którzy mają na tyle samokontroli i treningu mentalnego, by władać mocami psionicznymi w, wydawałoby się, kontrolowany sposób, mogą pewnego dnia zostać zdradzeni przez siły, którymi się posługują, a potęga ich mocy może zwrócić się przeciwko nim.",
-        "Efekt": "Możesz użyć tego Talentu, aby przerzucić rzut na Grozę Osnowy (str. 263).\nMusisz zaakceptować nowy wynik."
+        "Efekt": "Możesz użyć tego Talentu, aby przerzucić rzut na Grozę Osnowy [{{B}}Podręcznik Główny{{/B}} (str. 263)].\nMusisz zaakceptować nowy wynik."
       },
       {
         "Nazwa": "Ulubiona broń",
@@ -4515,7 +4515,7 @@
         "Koszt PD": "20",
         "Wymagania": "Brak",
         "Opis": "Znasz całą gamę brudnych sztuczek.",
-        "Efekt": "Kiedy wykonujesz Interakcję bojową (str. 190) i przeniesiesz 2 Wielkie Ikony, możesz nałożyć na cel dodatkowy Stan.\nWybierz najbardziej pasujący do opisu twojej akcji Stan z wymienionych poniżej:\n* Oślepienie (str. 199)\n* Powalenie (str. 199)\n* Unieruchomienie (str. 200)\n* Oszołomienie (str. 199)"
+        "Efekt": "Kiedy wykonujesz Interakcję bojową (str. 190) i przeniesiesz 2 Wielkie Ikony, możesz nałożyć na cel dodatkowy Stan.\nWybierz najbardziej pasujący do opisu twojej akcji Stan z wymienionych poniżej:\n* Oślepienie [{{B}}Podręcznik Główny{{/B}} (str. 199)]\n* Powalenie [{{B}}Podręcznik Główny{{/B}} (str. 199)]\n* Unieruchomienie [{{B}}Podręcznik Główny{{/B}} (str. 200)]\n* Oszołomienie [{{B}}Podręcznik Główny {{/B}}(str. 199)]"
       },
       {
         "Nazwa": "Wierni",
@@ -4529,7 +4529,7 @@
         "Koszt PD": "35",
         "Wymagania": "Gatunek ork.",
         "Opis": "Kochasz dźwięk i zapach Tratata! o poranku.\nMasz także naturalny talent do zużywania niewiarygodnych ilości amunicji, kiedy tylko otwierasz ogień, co jakimś cudem okazuje się być skuteczną taktyką.\nPrzynajmniej dla ciebie.",
-        "Efekt": "Szybkostrzelność każdej broni, którą władasz, zwiększa się o wartość twojej Rangi.\nDobrym pomysłem może być zabranie ze sobą Nabojowca (str. 241), aby nosił dodatkową amunicję."
+        "Efekt": "Szybkostrzelność każdej broni, którą władasz, zwiększa się o wartość twojej Rangi.\nDobrym pomysłem może być zabranie ze sobą Nabojowca [{{B}}Podręcznik Główny{{/B}} (str. 241)], aby nosił dodatkową amunicję."
       },
       {
         "Nazwa": "Wisielczy humor",
@@ -4550,7 +4550,7 @@
         "Koszt PD": "30",
         "Wymagania": "Brak",
         "Opis": "Masz szczególnie odporną psychikę.",
-        "Efekt": "Usuwasz 1 punkt Traumy za każdą Wielką Ikonę w rzucie na Determinację (str. 196)."
+        "Efekt": "Usuwasz 1 punkt Traumy za każdą Wielką Ikonę w rzucie na Determinację [{{B}}Podręcznik Główny{{/B}} (str. 196)]."
       },
       {
         "Nazwa": "Zakapior",
@@ -4578,14 +4578,14 @@
         "Koszt PD": "30",
         "Wymagania": "Słowo kluczowe {{RED}}[ZNAMIĘ CHAOSU]{{/RED}}.",
         "Opis": "Zostałeś obdarzony łaską przez jednego z Bogów Chaosu, czy to przez poświęcenie się celowi danego Boga, czy to dzięki aktom wiary czczącym cały Panteon.\nCzasami zaś Bogowie potrafią zaszczycić swe sługi łaską z – wydawałoby się – czystego kaprysu i przewrotności; może to też być część ich mistycznego planu.",
-        "Efekt": "Otrzymujesz 1 punkt Spaczenia.\nWybierz jedną z opcji przedstawionych poniżej i zapisz odpowiednie bonusy na karcie postaci.\nTen Talent zastępuje Słowo kluczowe {{RED}}[ZNAMIĘ CHAOSU]{{/RED}} imieniem wybranego przez ciebie Boga.\nJeśli wybierzesz opcję Niepodzielny, nie zastępujesz Słowa kluczowego {{RED}}[ZNAMIĘ CHAOSU]{{/RED}}.\n* Nurgle: Twoja Wytrzymałość wzrasta o 1.\n* Khorne: Otrzymujesz 2 dodatkowe kości, kiedy atakujesz, wykonując Szaleńczy atak. Nie możesz wybrać tej opcji, jeśli posiadasz Słowo kluczowe {{RED}}[PSIONIK]{{/RED}}.\n* Slaanesh: Otrzymujesz 2 dodatkowe kości do Testów Czujności (Int) i Perswazji (Ogd).\n* Tzeentch: Otrzymujesz Słowo kluczowe {{RED}}[PSIONIK]{{/RED}}. Jeśli już masz to Słowo kluczowe, otrzymujesz zamiast tego do wyboru jedną Pomniejszą moc psioniczną. Wraz z Mistrzem Gry określcie, jaka Moc psioniczna najbardziej pasuje do twojej postaci.\n* Niepodzielny: Wybierz jedną z podanych Umiejętności: Czujność, Intuicja, Mistrzostwo psioniczne, Oszukiwanie, Perswazja, Przebiegłość, Ukrywanie się lub Walka wręcz. Otrzymujesz +Ranga dodatkowych kości do Testów tej Umiejętności."
+        "Efekt": "Otrzymujesz 1 punkt Spaczenia.\nWybierz jedną z opcji przedstawionych poniżej i zapisz odpowiednie bonusy na karcie postaci.\nTen Talent zastępuje Słowo kluczowe {{RED}}[ZNAMIĘ CHAOSU]{{/RED}} imieniem wybranego przez ciebie Boga.\nJeśli wybierzesz opcję Niepodzielny, nie zastępujesz Słowa kluczowego {{RED}}[ZNAMIĘ CHAOSU]{{/RED}}.\n* Nurgle: Twoja Wytrzymałość wzrasta o 1.\n* Khorne: Otrzymujesz 2 dodatkowe kości, kiedy atakujesz, wykonując Szaleńczy atak. Nie możesz wybrać tej opcji, jeśli posiadasz Słowo kluczowe {{RED}}PSIONIK{{/RED}}.\n* Slaanesh: Otrzymujesz 2 dodatkowe kości do Testów Czujności (Int) i Perswazji (Ogd).\n* Tzeentch: Otrzymujesz Słowo kluczowe {{RED}}PSIONIK{{/RED}}. Jeśli już masz to Słowo kluczowe, otrzymujesz zamiast tego do wyboru jedną Pomniejszą moc psioniczną. Wraz z Mistrzem Gry określcie, jaka Moc psioniczna najbardziej pasuje do twojej postaci.\n* Niepodzielny: Wybierz jedną z podanych Umiejętności: Czujność, Intuicja, Mistrzostwo psioniczne, Oszukiwanie, Perswazja, Przebiegłość, Ukrywanie się lub Walka wręcz. Otrzymujesz +Ranga dodatkowych kości do Testów tej Umiejętności."
       },
       {
         "Nazwa": "Żargon [Umiejętność]",
         "Koszt PD": "20",
         "Wymagania": "Wartość 1 lub wyższa jednej z podanych Umiejętności:\nKorzystanie z technologii (Int), Medycyna (Int), Pilotaż (Zr), Przetrwanie (SW), Umiejętności Strzeleckie (Zr), Walka wręcz (I) lub Wiedza ogólna (Int).",
         "Opis": "Twoja znajomość konkretnego zagadnienia jest niezwykle szeroka; specjalistyczny język i potok informacji wypływają z ciebie, gdy tylko otworzysz usta.\nNiemalże mistyczne sformułowania, precyzyjny dialekt i dziwne idiomy pozwalają ci szybko ogłupić nieoświeconych i przyciągnąć uwagę i sympatię pokrewnych ci zapaleńców.",
-        "Efekt": "Kupując ten Talent, wybierasz jedną z Umiejętności, do których będzie się odnosił. Lista Umiejętności, spośród których możesz wybrać, jest podana w wymaganiach Talentu.\nPodczas dowolnej interakcji społecznej możesz wykonać Test Umiejętności, wykorzystując Umiejętność, którą wybrałeś w ramach tego Talentu.\nST tego Testu określa MG na podstawie sympatii, jaką darzy cię cel – bądź jej braku.\nJeśli Test się nie powiedzie, rozmówcy ignorują zarówno ciebie jak i niezrozumiały bełkot, jaki dobywa się z twoich ust.\nJeśli jednak Test się powiedzie, a twój cel interesuje się poruszanym przez ciebie tematem bądź jest wytrenowany w danej Umiejętności, to stanie się o wiele przyjaźniejszy (str. 168).\nJeśli cel nie podziela twojej wiedzy lub zainteresowań, stoi ogłupiały, patrząc na ciebie i słuchając bez słowa całej paplaniny, niezdolny do ucieczki od potoku słów.\nMożesz zatrzymać cel w rozmowie przez maksymalnie 20 standardowych terrańskich minut."
+        "Efekt": "Kupując ten Talent, wybierasz jedną z Umiejętności, do których będzie się odnosił. Lista Umiejętności, spośród których możesz wybrać, jest podana w wymaganiach Talentu.\nPodczas dowolnej interakcji społecznej możesz wykonać Test Umiejętności, wykorzystując Umiejętność, którą wybrałeś w ramach tego Talentu.\nST tego Testu określa MG na podstawie sympatii, jaką darzy cię cel – bądź jej braku.\nJeśli Test się nie powiedzie, rozmówcy ignorują zarówno ciebie jak i niezrozumiały bełkot, jaki dobywa się z twoich ust.\nJeśli jednak Test się powiedzie, a twój cel interesuje się poruszanym przez ciebie tematem bądź jest wytrenowany w danej Umiejętności, to stanie się o wiele przyjaźniejszy [{{B}}Podręcznik Główny{{/B}} (str. 168)].\nJeśli cel nie podziela twojej wiedzy lub zainteresowań, stoi ogłupiały, patrząc na ciebie i słuchając bez słowa całej paplaniny, niezdolny do ucieczki od potoku słów.\nMożesz zatrzymać cel w rozmowie przez maksymalnie 20 standardowych terrańskich minut."
       },
       {
         "Nazwa": "Anatomiczny cel",
@@ -4627,7 +4627,7 @@
         "Koszt PD": "10",
         "Wymagania": "Wartość Przetrwania lub Korzystania z technologii 2 lub wyższa.",
         "Opis": "Tak naprawdę zawsze masz pod ręką broń, o ile masz do dyspozycji trochę materiałów i czas na majsterkowanie.",
-        "Efekt": "Możesz wykonać Test Przetrwania (SW) lub Korzystania z technologii (Int) i stworzyć prymitywną broń o profilu opisanym w {{B}}Utajone Akta I{{/B}} (str.61)\nStandardowo zajmuje to około ośmiu minut.\nST zazwyczaj wynosi 3 w przypadku broni białej i 5 w przypadku broni dystansowej, ale może być zwiększony w zależności od dostępnych narzędzi i materiałów.\nPrzeniesienia w Teście można zużyć na:\n* Skrócenie czasu produkcji o połowę (tę opcję można wybierać wielokrotnie).\n* Zwiększenie Obrażeń zadawanych przez broń o wartość Rangi.\n* Usunięcie Cechy Niewyważona.\n* Dodanie jednej z następujących Cech: Wywołanie (Podpalenie), Wywołanie (Zatrucie 3), Wywołanie (Unieruchomienie), Parująca, Pistolet, Wytłumiona. Opcję tę można wybierać wielokrotnie, alenie można powtórzyć wyboru.\n* Podwojenie zasięgów (wyłącznie broń dystansowa).\nGracze powinni szczegółowo opisać wykonaną broń, ponieważ może to mieć wpływ na Słowa kluczowe oraz dostępność Cech nadawanych Przeniesieniem."
+        "Efekt": "Możesz wykonać Test Przetrwania (SW) lub Korzystania z technologii (Int) i stworzyć prymitywną broń o profilu opisanym w [{{B}}Utajone Akta I{{/B}} (str. 61)]\nStandardowo zajmuje to około ośmiu minut.\nST zazwyczaj wynosi 3 w przypadku broni białej i 5 w przypadku broni dystansowej, ale może być zwiększony w zależności od dostępnych narzędzi i materiałów.\nPrzeniesienia w Teście można zużyć na:\n* Skrócenie czasu produkcji o połowę (tę opcję można wybierać wielokrotnie).\n* Zwiększenie Obrażeń zadawanych przez broń o wartość Rangi.\n* Usunięcie Cechy Niewyważona.\n* Dodanie jednej z następujących Cech: Wywołanie (Podpalenie), Wywołanie (Zatrucie 3), Wywołanie (Unieruchomienie), Parująca, Pistolet, Wytłumiona. Opcję tę można wybierać wielokrotnie, alenie można powtórzyć wyboru.\n* Podwojenie zasięgów (wyłącznie broń dystansowa).\nGracze powinni szczegółowo opisać wykonaną broń, ponieważ może to mieć wpływ na Słowa kluczowe oraz dostępność Cech nadawanych Przeniesieniem."
       },
       {
         "Nazwa": "Cielesna skrytka",
@@ -4641,7 +4641,7 @@
         "Koszt PD": "10",
         "Wymagania": "Wartość Majątku 2 lub wyższa.",
         "Opis": "Nadążasz za najnowszymi trendami gotyckiej mody i napawasz się każdym efektownym wejściem.",
-        "Efekt": "Kiedy zdobywasz ubiór [{{B}}Podręcznik główny{{/B}} (str. 240)], zyskujesz dodatkowe kości do Testów umiejętności społecznych w liczbie równej Wartości Dostępności ubioru, o ile twój wygląd ma szanse wzbudzić pozytywne reakcje.\nZyskujesz tę premię jedynie na czas jednej misji – w końcu pojawienie się drugi raz w tym samym stroju jest passe, musisz więc zdobyć nowy ubiór, by ponownie korzystać z premii."
+        "Efekt": "Kiedy zdobywasz ubiór [{{B}}Podręcznik Główny{{/B}} (str. 240)], zyskujesz dodatkowe kości do Testów umiejętności społecznych w liczbie równej Wartości Dostępności ubioru, o ile twój wygląd ma szanse wzbudzić pozytywne reakcje.\nZyskujesz tę premię jedynie na czas jednej misji – w końcu pojawienie się drugi raz w tym samym stroju jest passe, musisz więc zdobyć nowy ubiór, by ponownie korzystać z premii."
       },
       {
         "Nazwa": "Dedykowane zabójstwo",
@@ -4655,7 +4655,7 @@
         "Koszt PD": "10",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
         "Opis": "Umiesz rozbroić ludzi gołymi rękami i nie dopuścić, by ktoś, z kim chcesz jedynie porozmawiać, popełnił błąd, którego będzie żałował.",
-        "Efekt": "Jeśli twoja postać wykonuje Rozbrojenie i jest Nieuzbrojona, nie otrzymuje kar za deklarację Ataku mierzonego [{{B}}Podręcznik główny{{/B}} (str. 186)].\nST Testu Siły przeciwnika jest równy zadanym „obrażeniom”, a nie zaledwie ich połowie."
+        "Efekt": "Jeśli twoja postać wykonuje Rozbrojenie i jest Nieuzbrojona, nie otrzymuje kar za deklarację Ataku mierzonego [{{B}}Podręcznik Główny{{/B}} (str. 186)].\nST Testu Siły przeciwnika jest równy zadanym „obrażeniom”, a nie zaledwie ich połowie."
       },
       {
         "Nazwa": "Doktryna Niszczycieli",
@@ -4704,7 +4704,7 @@
         "Koszt PD": "10",
         "Wymagania": "Wartość Mistrzostwa psionicznego 2 lub wyższa.",
         "Opis": "Dla sojuszników twoja obecność jest złem koniecznym, jednak świetnie udaremniasz działania wrogich wiedźm.",
-        "Efekt": "Zyskujesz +Ranga dodatkowych kości w Testach dotyczących Talentu Nie dozwól wiedźmie [{{B}}Podręcznik główny{{/B}} (str. 268)].\nRaz na sesję możesz go wykorzystać w ramach Akcji okazjonalnej."
+        "Efekt": "Zyskujesz +Ranga dodatkowych kości w Testach dotyczących Talentu Nie dozwól wiedźmie [{{B}}Podręcznik Główny{{/B}} (str. 268)].\nRaz na sesję możesz go wykorzystać w ramach Akcji okazjonalnej."
       },
       {
         "Nazwa": "Łańcuchowy",
@@ -4809,7 +4809,7 @@
         "Koszt PD": "10",
         "Wymagania": "Wartość Mistrzostwa psionicznego 2 lub wyższa.",
         "Opis": "Ludzie, którzy ryzykują życiem w starciu z demonami, za nic mają uszkodzenia doczesnego ciała.",
-        "Efekt": "Zyskujesz +Dwukrotność Rangi dodatkowych kości do Testów Siły Woli mających na celu podtrzymanie mocy psionicznych po otrzymaniu obrażeń [{{B}}Podręcznik{{/B}} (str. 265)]."
+        "Efekt": "Zyskujesz +Dwukrotność Rangi dodatkowych kości do Testów Siły Woli mających na celu podtrzymanie mocy psionicznych po otrzymaniu obrażeń [{{B}}Podręcznik Główny{{/B}} (str. 265)]."
       },
       {
         "Nazwa": "Szybkie dobycie",
@@ -4823,7 +4823,7 @@
         "Koszt PD": "20",
         "Wymagania": "Wartość Atletyki 3 lub wyższa.",
         "Opis": "Patrzysz na pole bitwy w trzech wymiarach i szukasz wysokich miejsc, z których możesz szybko i niepostrzeżenie spaść na wroga.",
-        "Efekt": "Zyskujesz +Ranga dodatkowych kości w Testach ataków wykonywanych z przewagą wysokości.\nMożesz wspinać się z Szybkością równą normalnemu Ruchowi bez konieczności wykonywania Testu Atletyki (S).\nPonadto możesz Testować Determinację przeciwko Ranom śmiertelnym wywołanym upadkiem [{{B}}Podręcznik główny{{/B}} (str. 201)]."
+        "Efekt": "Zyskujesz +Ranga dodatkowych kości w Testach ataków wykonywanych z przewagą wysokości.\nMożesz wspinać się z Szybkością równą normalnemu Ruchowi bez konieczności wykonywania Testu Atletyki (S).\nPonadto możesz Testować Determinację przeciwko Ranom śmiertelnym wywołanym upadkiem [{{B}}Podręcznik Główny{{/B}} (str. 201)]."
       },
       {
         "Nazwa": "Taneczna gracja",
@@ -4844,14 +4844,14 @@
         "Koszt PD": "10",
         "Wymagania": "Brak",
         "Opis": "Jesteś ekspertem w walce obronnej i umiesz perfekcyjnie wykorzystywać osłony.",
-        "Efekt": "Kiedy znajdujesz się za Osłoną i stajesz się celem ataku, otrzymujesz premię +2 lub +4 do Obrony (w miejsce +1 lub +2) za ukrycie częściowe lub całkowite.\nJeśli wróg zdecyduje się na strzał przez Osłonę [{{B}}Podręcznik główny{{/B}} (str. 189)], zyskujesz +Ranga do Odporności."
+        "Efekt": "Kiedy znajdujesz się za Osłoną i stajesz się celem ataku, otrzymujesz premię +2 lub +4 do Obrony (w miejsce +1 lub +2) za ukrycie częściowe lub całkowite.\nJeśli wróg zdecyduje się na strzał przez Osłonę [{{B}}Podręcznik Główny{{/B}} (str. 189)], zyskujesz +Ranga do Odporności."
       },
       {
         "Nazwa": "Urodzony ocalały",
         "Koszt PD": "10",
         "Wymagania": "Wartość Przetrwania 2 lub wyższa.",
         "Opis": "Twoja postać jest niezwykle samodzielna i zastępuje formalny medyczny trening tradycyjnymi ludowymi lekami.",
-        "Efekt": "Możesz używać Przetrwania (SW) zamiast Medycyny (Int) w celu wyleczenia własnych Ran, Traum lub Stanów [{{B}}Podręcznik główny{{/B}} (str. 125)], nie otrzymując kar za leczenie samego siebie."
+        "Efekt": "Możesz używać Przetrwania (SW) zamiast Medycyny (Int) w celu wyleczenia własnych Ran, Traum lub Stanów [{{B}}Podręcznik Główny{{/B}} (str. 125)], nie otrzymując kar za leczenie samego siebie."
       },
       {
         "Nazwa": "Weteran świata śmierci",
@@ -4879,7 +4879,7 @@
         "Koszt PD": "10",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
         "Opis": "Dezorientujesz przeciwników fintami, wystawiając ich na kolejne ciosy.",
-        "Efekt": "Możesz użyć Walki wręcz do Interakcji bojowej przeciwko przeciwnikom w Zwarciu [{{B}}Podręcznik główny{{/B}} (str. 190)]."
+        "Efekt": "Możesz użyć Walki wręcz do Interakcji bojowej przeciwko przeciwnikom w Zwarciu [{{B}}Podręcznik Główny{{/B}} (str. 190)]."
       }
     ],
     "Modlitwy": [
@@ -4898,7 +4898,7 @@
       {
         "Nazwa": "Litania NienawiŚci",
         "Koszt PD": "20",
-        "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, Talent Nienawiść (str. 135)",
+        "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, Talent Nienawiść [{{B}}Podręcznik Główn{{/B}}y (str. 135)]",
         "Efekt": "Poświęcając Akcję podstawową, możesz wydać 1 punkt Wiary, aby wyrecytować Litanię Nienawiści.\nWszyscy sojusznicy ze Słowem kluczowym {{RED}}IMPERIUM{{/RED}} w promieniu 10 x Ranga metrów od ciebie mogą korzystać z efektów twojego Talentu Nienawiść."
       },
       {
@@ -5337,7 +5337,7 @@
         "Zasięg": "Psionik",
         "Wiele Celów": "Nie",
         "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "{{B}}Wymagania wstępne:{{/B}} Przynajmniej jedna inna Moc z dyscypliny Biomancji.\nMożesz dowolnie modyfikować swoje ciało siłą umysłu. Jedna myśl wystarczy, aby zmienić jego kształt i wygląd.\nPo aktywowaniu tej Mocy wybierz jeden z efektów. Trwa on tak długo, aż nie zdecydujesz się zakończyć Podtrzymywania tej Mocy.\n* Przybierasz wygląd innej osoby o wadze porównywalnej z twoją. Jeśli chcesz udawać jakąś znaną ci osobę, możesz zmienić także grubość swoich strun głosowych, aby umożliwiała naśladowanie jej tonu głosu – o ile kiedyś ją słyszałeś. Fizycznie jesteś idealną kopią udawanej osoby, ale być może będzie trzeba wykonać Test Oszukiwania (Ogd), aby przekonać innych, że rzeczywiście jesteś tym, za kogo się podajesz.\n* Modyfikujesz swoje ciało na jeden z poniższych sposobów. Niektóre z tych modyfikacji są w oczywisty sposób widoczne i groteskowe – postronni obserwatorzy uznają, że jesteś mutantem.\n- Wyrastają ci skrzydła, pozwalając latać z normalną Szybkością.\n- Wyrastają ci skrzela, co pozwala uniknąć Uduszenia podczas oddychania pod wodą.\n- Wyrastają ci płetwy, co znacznie ułatwia poruszanie się w wodzie. Środowisko wodne przestaje być dla ciebie trudnym terenem, a staje się normalnym.\n- Zmieniasz strukturalnie swoją rogówkę, dzięki czemu widzisz tak, jakbyś korzystał z gogli termowizyjnych (str. 237).\n- Wzmacniasz swoją skórę i otrzymujesz +4 do Odporności.",
+        "Efekt": "{{B}}Wymagania wstępne:{{/B}} Przynajmniej jedna inna Moc z dyscypliny Biomancji.\nMożesz dowolnie modyfikować swoje ciało siłą umysłu. Jedna myśl wystarczy, aby zmienić jego kształt i wygląd.\nPo aktywowaniu tej Mocy wybierz jeden z efektów. Trwa on tak długo, aż nie zdecydujesz się zakończyć Podtrzymywania tej Mocy.\n* Przybierasz wygląd innej osoby o wadze porównywalnej z twoją. Jeśli chcesz udawać jakąś znaną ci osobę, możesz zmienić także grubość swoich strun głosowych, aby umożliwiała naśladowanie jej tonu głosu – o ile kiedyś ją słyszałeś. Fizycznie jesteś idealną kopią udawanej osoby, ale być może będzie trzeba wykonać Test Oszukiwania (Ogd), aby przekonać innych, że rzeczywiście jesteś tym, za kogo się podajesz.\n* Modyfikujesz swoje ciało na jeden z poniższych sposobów. Niektóre z tych modyfikacji są w oczywisty sposób widoczne i groteskowe – postronni obserwatorzy uznają, że jesteś mutantem.\n- Wyrastają ci skrzydła, pozwalając latać z normalną Szybkością.\n- Wyrastają ci skrzela, co pozwala uniknąć Uduszenia podczas oddychania pod wodą.\n- Wyrastają ci płetwy, co znacznie ułatwia poruszanie się w wodzie. Środowisko wodne przestaje być dla ciebie trudnym terenem, a staje się normalnym.\n- Zmieniasz strukturalnie swoją rogówkę, dzięki czemu widzisz tak, jakbyś korzystał z gogli termowizyjnych [{{B}}Podręcznik Główny{{/B}} (str. 237)].\n- Wzmacniasz swoją skórę i otrzymujesz +4 do Odporności.",
         "Wzmocnienie": "[2] +1 dodatkowa kość do Testów Oszukiwania na potrzeby udawania kogoś innego.\n[3] Możesz wybrać dodatkową modyfikację ciała."
       },
       {
@@ -5350,7 +5350,7 @@
         "Zasięg": "Psionik",
         "Wiele Celów": "Nie",
         "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Przez chwilę odcinasz się od świata, przeglądając najbliższe możliwe wersje przyszłości.\nSprawdzasz, jak może potoczyć się aktualnie prowadzone starcie i możesz uzyskać wgląd w to, w jaki sposób walczą twoi przeciwnicy oraz jakie akcje podejmą. Uzbrojony w tę wiedzę możesz lepiej chronić się przed nadchodzącym zagrożeniem.\nPo aktywowaniu tej Mocy możesz Przejąć Inicjatywę (str. 177) bez wydawania punktów Chwały – ale tylko raz w trakcie obecnej lub przyszłej walki. Dodatkowo otrzymujesz premię w postaci +1 do Obrony w trakcie obecnej lub przyszłej walki.",
+        "Efekt": "Przez chwilę odcinasz się od świata, przeglądając najbliższe możliwe wersje przyszłości.\nSprawdzasz, jak może potoczyć się aktualnie prowadzone starcie i możesz uzyskać wgląd w to, w jaki sposób walczą twoi przeciwnicy oraz jakie akcje podejmą. Uzbrojony w tę wiedzę możesz lepiej chronić się przed nadchodzącym zagrożeniem.\nPo aktywowaniu tej Mocy możesz Przejąć Inicjatywę [{{B}}Podręcznik Główny{{/B}} (str. 177)] bez wydawania punktów Chwały – ale tylko raz w trakcie obecnej lub przyszłej walki. Dodatkowo otrzymujesz premię w postaci +1 do Obrony w trakcie obecnej lub przyszłej walki.",
         "Wzmocnienie": "*[1] Aktywacja zredukowana tylko do Akcji.\n[2] Dodatkowa premia +1 do Obrony."
       },
       {
@@ -5545,7 +5545,7 @@
         "Zasięg": "50m",
         "Wiele Celów": "Tak",
         "Słowa Kluczowe": "{{RED}}KINETYKA{{/RED}}, {{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Wykorzystujesz ciśnienie Osnowy, aby oddziaływać na cel za pomocą siły grawitacji.\nPo aktywacji Mocy wykonujesz przeciwstawny Test Siły Woli z jednym lub kilkoma celami w zasięgu. Jeśli go wygrasz, możesz zdecydować o jednym z następujących efektów:\n* Zwiększenie siły ciążenia: Cel staje się Powalony i Unieruchomiony.\n* Zmiana grawitacji: Wybierz jakiś kierunek – od teraz to w tym kierunku dla celu działa grawitacja. Jeśli zdecydujesz się podtrzymywać efekt działania tej Mocy, możesz wybrać inny efekt – np. zwiększenie siły grawitacji po tym, jak jej kierunek został zmieniony lub vice versa. Możesz też znowu odwrócić grawitację dla celu. Gdy skończysz podtrzymywanie Mocy lub jeśli cel oddali się na więcej niż 50 metrów, Moc przestaje na niego działać. Grawitacja, której poddany jest cel, jest równa standardowej grawitacji na Terze. Oznacza to, że może on otrzymać obrażenia w wyniku Upadku (str. 201).\nJeśli celem jest przedmiot, ST określony jest przez jego rozmiar i wagę.",
+        "Efekt": "Wykorzystujesz ciśnienie Osnowy, aby oddziaływać na cel za pomocą siły grawitacji.\nPo aktywacji Mocy wykonujesz przeciwstawny Test Siły Woli z jednym lub kilkoma celami w zasięgu. Jeśli go wygrasz, możesz zdecydować o jednym z następujących efektów:\n* Zwiększenie siły ciążenia: Cel staje się Powalony i Unieruchomiony.\n* Zmiana grawitacji: Wybierz jakiś kierunek – od teraz to w tym kierunku dla celu działa grawitacja. Jeśli zdecydujesz się podtrzymywać efekt działania tej Mocy, możesz wybrać inny efekt – np. zwiększenie siły grawitacji po tym, jak jej kierunek został zmieniony lub vice versa. Możesz też znowu odwrócić grawitację dla celu. Gdy skończysz podtrzymywanie Mocy lub jeśli cel oddali się na więcej niż 50 metrów, Moc przestaje na niego działać. Grawitacja, której poddany jest cel, jest równa standardowej grawitacji na Terze. Oznacza to, że może on otrzymać obrażenia w wyniku Upadku [{{B}}Podręcznik Główny{{/B}} (str. 201)].\nJeśli celem jest przedmiot, ST określony jest przez jego rozmiar i wagę.",
         "Wzmocnienie": "[2] Zadaj celowi 1 Ranę śmiertelną.\n[3] Zwiększ zasięg o +50 metrów."
       },
       {
@@ -5688,7 +5688,7 @@
         "Zasięg": "Dotyk",
         "Wiele Celów": "Tak",
         "Słowa Kluczowe": "{{RED}}CHAOS{{/RED}}, {{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "{{B}}Wymagania wstępne{{/B}}: Psionik musi posiadać Słowo kluczowe{{RED}} CHAOS{{/RED}}.\nUwalniasz niestabilną energię Osnowy, aby zmutować ciało ofiary.\nCel otrzymuje 1 punkt Spaczenia i losową mutację z tabeli Pomniejszych mutacji (str. 288). Mutacja może być odrażająca, ale jest tymczasowa – ciało ofiary wraca do normalnego wyglądu po zakończeniu działania Mocy.\nDotyk spaczenia jest psychicznie męczący. Za każdą minutę podtrzymywania tej Mocy otrzymujesz 1 punkt Traumy i nie możesz usuwać punktów Traumy w trakcie podtrzymywania tej Mocy.",
+        "Efekt": "{{B}}Wymagania wstępne{{/B}}: Psionik musi posiadać Słowo kluczowe{{RED}} CHAOS{{/RED}}.\nUwalniasz niestabilną energię Osnowy, aby zmutować ciało ofiary.\nCel otrzymuje 1 punkt Spaczenia i losową mutację z tabeli Pomniejszych mutacji [{{B}}Podręcznik Główny{{/B}} (str. 288)]. Mutacja może być odrażająca, ale jest tymczasowa – ciało ofiary wraca do normalnego wyglądu po zakończeniu działania Mocy.\nDotyk spaczenia jest psychicznie męczący. Za każdą minutę podtrzymywania tej Mocy otrzymujesz 1 punkt Traumy i nie możesz usuwać punktów Traumy w trakcie podtrzymywania tej Mocy.",
         "Wzmocnienie": "[1] Cel otrzymuje +2 punkty Traumy.\n[2] Cel otrzymuje 1 dodatkowy punkt Spaczenia."
       },
       {
@@ -5714,7 +5714,7 @@
         "Zasięg": "25m",
         "Wiele Celów": "Tak",
         "Słowa Kluczowe": "{{RED}}AELDARI{{/RED}}, {{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "{{B}}Wymagania wstępne{{/B}}: Psionik musi posiadać Słowo kluczowe {{RED}}AELDARI{{/RED}}.\nSięgasz umysłem w cienie dookoła i przejmujesz nad nimi władzę, naginając je do swojej woli i kontrolując.\nPo aktywowaniu możesz wybrać jeden z następujących efektów:\n* Ukrycie: Przyciągasz cienie i chowasz się, okrywając się nimi niczym peleryną. Przez cały okres podtrzymywania tej Mocy ty oraz wszyscy sojusznicy w promieniu 5 metrów otrzymujecie premię w wysokości +1 kości do każdego Testu Ukrywania się (Zr).\n* Odkrycie: Odrzucasz cienie od celu w zasięgu działania Mocy, ujawniając go wszystkim dookoła. Wybierasz jednego przeciwnika w zasięgu, który staje się centrum Obszaru działania Wybuchu (6). Żadni przeciwnicy w zasięgu tego efektu, przez cały czas podtrzymywania Mocy, nie mogą korzystać z premii do Obrony lub do Testów Ukrywania się (Zr) dawanych przez słabą widoczność (str. 191).",
+        "Efekt": "{{B}}Wymagania wstępne{{/B}}: Psionik musi posiadać Słowo kluczowe {{RED}}AELDARI{{/RED}}.\nSięgasz umysłem w cienie dookoła i przejmujesz nad nimi władzę, naginając je do swojej woli i kontrolując.\nPo aktywowaniu możesz wybrać jeden z następujących efektów:\n* Ukrycie: Przyciągasz cienie i chowasz się, okrywając się nimi niczym peleryną. Przez cały okres podtrzymywania tej Mocy ty oraz wszyscy sojusznicy w promieniu 5 metrów otrzymujecie premię w wysokości +1 kości do każdego Testu Ukrywania się (Zr).\n* Odkrycie: Odrzucasz cienie od celu w zasięgu działania Mocy, ujawniając go wszystkim dookoła. Wybierasz jednego przeciwnika w zasięgu, który staje się centrum Obszaru działania Wybuchu (6). Żadni przeciwnicy w zasięgu tego efektu, przez cały czas podtrzymywania Mocy, nie mogą korzystać z premii do Obrony lub do Testów Ukrywania się (Zr) dawanych przez słabą widoczność [{{B}}Podręcznik Główny{{/B}} (str. 191)].",
         "Wzmocnienie": "[3] Ukrycie: Premia zwiększona o +1 do Obrony oraz +1 kość w Testach Ukrywania się.\n*[2] Odkrycie: Obszar działania Mocy zwiększony do Wybuch (10)."
       },
       {
@@ -5811,7 +5811,7 @@
         "Typ": "Ulepszenia",
         "Nazwa": "Augmentyczne oko",
         "Opis": "Istnieje kilka wariantów tej augmentacji, lecz wszystkie znacznie zwiększają zakres percepcji wzrokowej.",
-        "Efekt": "Wybierz 1 wariant za każde augmentyczne oko:\n* Sensor: +1 dodatkowa kość do opartych na wzroku Testów Czujności (Int).\n* Noktowizor: Działa jak gogle termowizyjne (str. 238).\n* Rejestrator: Możesz nagrać 1 godzinę filmu lub wykonać 86 400 statycznych zdjęć.\n* Podziałka: +1 dodatkowa kość do Testów Ataków dystansowych.\n* Oko teleskopowe: Ignorujesz wszelkie kary wynikające z odległości wizualnej.\nDwoje ulepszonych oczu tego samego typu podwaja otrzymywaną premię (o ile to możliwe).",
+        "Efekt": "Wybierz 1 wariant za każde augmentyczne oko:\n* Sensor: +1 dodatkowa kość do opartych na wzroku Testów Czujności (Int).\n* Noktowizor: Działa jak gogle termowizyjne [{{B}}Podręcznik Główny{{/B}} (str. 238)].\n* Rejestrator: Możesz nagrać 1 godzinę filmu lub wykonać 86 400 statycznych zdjęć.\n* Podziałka: +1 dodatkowa kość do Testów Ataków dystansowych.\n* Oko teleskopowe: Ignorujesz wszelkie kary wynikające z odległości wizualnej.\nDwoje ulepszonych oczu tego samego typu podwaja otrzymywaną premię (o ile to możliwe).",
         "Koszt": "6",
         "Dostępność": "1",
         "Słowa Kluczowe": "{{RED}}[DOWOLNE]{{/RED}}",
@@ -5891,7 +5891,7 @@
         "Typ": "Mechadendryt",
         "Nazwa": "Mechadendryt balistyczny",
         "Opis": "Mechadendryty są sztucznymi kończynami wystającymi z połączenia zamontowanego na kręgosłupie.\nUrządzenia te są powszechnie cenione i chętnie wykorzystywane w procesie augmentacji przez Adeptus Mechanicus.\nKażdy mechadendryt kontrolowany jest przy pomocy umysłu i skonstruowany w konkretnym celu, a opanowanie i skoordynowanie pary lub większej liczby wymaga pełnych samodyscypliny dekad treningu.",
-        "Efekt": "Działa jak pistolet laserowy (str. 217) zasilany przez organizm.\nNie wymaga Amunicji i nie musi być Przeładowywany.",
+        "Efekt": "Działa jak pistolet laserowy [{{B}}Podręcznik Główny{{/B}} (str. 217)] zasilany przez organizm.\nNie wymaga Amunicji i nie musi być Przeładowywany.",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}",
@@ -5901,7 +5901,7 @@
         "Typ": "Mechadendryt",
         "Nazwa": "Mechadendryt eksploracyjny",
         "Opis": "Mechadendryty są sztucznymi kończynami wystającymi z połączenia zamontowanego na kręgosłupie.\nUrządzenia te są powszechnie cenione i chętnie wykorzystywane w procesie augmentacji przez Adeptus Mechanicus.\nKażdy mechadendryt kontrolowany jest przy pomocy umysłu i skonstruowany w konkretnym celu, a opanowanie i skoordynowanie pary lub większej liczby wymaga pełnych samodyscypliny dekad treningu.",
-        "Efekt": "Działa jak auspex (str. 237).\n+1 dodatkowa kość do Testów Przetrwania (SW) podczas nawigacji lub tropienia.",
+        "Efekt": "Działa jak auspex [{{B}}Podręcznik Główny{{/B}} (str. 237)].\n+1 dodatkowa kość do Testów Przetrwania (SW) podczas nawigacji lub tropienia.",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}",
@@ -5911,7 +5911,7 @@
         "Typ": "Mechadendryt",
         "Nazwa": "Mechadendryt medyczny",
         "Opis": "Mechadendryty są sztucznymi kończynami wystającymi z połączenia zamontowanego na kręgosłupie.\nUrządzenia te są powszechnie cenione i chętnie wykorzystywane w procesie augmentacji przez Adeptus Mechanicus.\nKażdy mechadendryt kontrolowany jest przy pomocy umysłu i skonstruowany w konkretnym celu, a opanowanie i skoordynowanie pary lub większej liczby wymaga pełnych samodyscypliny dekad treningu.",
-        "Efekt": "Działa jak apteczka i diagnostor (str. 236 i str. 237).\n+1 dodatkowa kość do Testów Medycyny (Int).\nMoże być również użyty w walce w ramach Akcji podstawowej, by wprowadzić do organizmu truciznę, środki uspokajające i stymulanty.\nTrafienie celu wbrew jego woli wymaga wygranej w przeciwstawnym Teście Inicjatywy.",
+        "Efekt": "Działa jak apteczka i diagnostor [{{B}}Podręcznik Główny{{/B}} (str. 236)].\n+1 dodatkowa kość do Testów Medycyny (Int).\nMoże być również użyty w walce w ramach Akcji podstawowej, by wprowadzić do organizmu truciznę, środki uspokajające i stymulanty.\nTrafienie celu wbrew jego woli wymaga wygranej w przeciwstawnym Teście Inicjatywy.",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}",
@@ -5921,7 +5921,7 @@
         "Typ": "Mechadendryt",
         "Nazwa": "Mechadendryt optyczny",
         "Opis": "Mechadendryty są sztucznymi kończynami wystającymi z połączenia zamontowanego na kręgosłupie.\nUrządzenia te są powszechnie cenione i chętnie wykorzystywane w procesie augmentacji przez Adeptus Mechanicus.\nKażdy mechadendryt kontrolowany jest przy pomocy umysłu i skonstruowany w konkretnym celu, a opanowanie i skoordynowanie pary lub większej liczby wymaga pełnych samodyscypliny dekad treningu.",
-        "Efekt": "Działa jak celownik magnokularowy (str. 228) i gogle termowizyjne (str. 237).\n+1 dodatkowa kość do Testów Czujności (Int).\nUmożliwia obserwację przedmiotów w trybie mikroskopu.",
+        "Efekt": "Działa jak celownik magnokularowy [{{B}}Podręcznik Główny{{/B}} (str. 228)] i gogle termowizyjne [{{B}}Podręcznik Główny{{/B}} (str. 237)].\n+1 dodatkowa kość do Testów Czujności (Int).\nUmożliwia obserwację przedmiotów w trybie mikroskopu.",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}",
@@ -5931,7 +5931,7 @@
         "Typ": "Mechadendryt",
         "Nazwa": "Serworamię",
         "Opis": "Mechadendryty są sztucznymi kończynami wystającymi z połączenia zamontowanego na kręgosłupie.\nUrządzenia te są powszechnie cenione i chętnie wykorzystywane w procesie augmentacji przez Adeptus Mechanicus.\nKażdy mechadendryt kontrolowany jest przy pomocy umysłu i skonstruowany w konkretnym celu, a opanowanie i skoordynowanie pary lub większej liczby wymaga pełnych samodyscypliny dekad treningu.",
-        "Efekt": "Masywna łapa zaprojektowana w celu podnoszenia i manipulowania ciężarami.\nSerworamię gwarantuje premię +4 do Siły. W walce wszczep ten umożliwia wykonanie Podparcia (str. 189) w ramach Akcji darmowej.\nPonadto serworamię może być wykorzystane jak broń biała o współczynnikach (str. 245)",
+        "Efekt": "Masywna łapa zaprojektowana w celu podnoszenia i manipulowania ciężarami.\nSerworamię gwarantuje premię +4 do Siły. W walce wszczep ten umożliwia wykonanie Podparcia [{{B}}Podręcznik Główny{{/B}} (str. 189)] w ramach Akcji darmowej.\nPonadto serworamię może być wykorzystane jak broń biała o współczynnikach [{{B}}Podręcznik Główny{{/B}} (str. 245)].",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}",
@@ -5941,7 +5941,7 @@
         "Typ": "Mechadendryt",
         "Nazwa": "Mechadendryt użytkowy",
         "Opis": "Mechadendryty są sztucznymi kończynami wystającymi z połączenia zamontowanego na kręgosłupie.\nUrządzenia te są powszechnie cenione i chętnie wykorzystywane w procesie augmentacji przez Adeptus Mechanicus.\nKażdy mechadendryt kontrolowany jest przy pomocy umysłu i skonstruowany w konkretnym celu, a opanowanie i skoordynowanie pary lub większej liczby wymaga pełnych samodyscypliny dekad treningu.",
-        "Efekt": "Działa jak multinarzędzie (str. 238).\n+1 dodatkowa kość do Testów Korzystania z technologii (Int).",
+        "Efekt": "Działa jak multinarzędzie [{{B}}Podręcznik Główny{{/B}} (str. 238)].\n+1 dodatkowa kość do Testów Korzystania z technologii (Int).",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}",
@@ -6001,7 +6001,7 @@
         "Typ": "Wszczepy",
         "Nazwa": "Wszczep sensoryczny",
         "Opis": "Zbiór podskórnych mikrokogitatorów i sterczących zbitek czujników podłączonych bezpośrednio do kory wzrokowej biorcy, wytwarzających swoisty szósty zmysł.",
-        "Efekt": "W twoim mózgu zainstalowany został na stałe auspex (str. 237) lub diagnostor (str. 237).\nWszczep ten może zostać wykupiony dwukrotnie, co skutkuje podłączeniem obydwu urządzeń.",
+        "Efekt": "W twoim mózgu zainstalowany został na stałe auspex [{{B}}Podręcznik Główny{{/B}} (str. 237)] lub diagnostor [{{B}}Podręcznik Główny{{/B}} (str. 237)].\nWszczep ten może zostać wykupiony dwukrotnie, co skutkuje podłączeniem obydwu urządzeń.",
         "Koszt": "4",
         "Dostępność": "2",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}, {{RED}}IMPERIUM{{/RED}}",
@@ -6041,7 +6041,7 @@
         "Typ": "Ulepszenia",
         "Nazwa": "Tercjat",
         "Opis": "Przypominajace skalpele palce tercjatu moga wybebeszyc przeciwnika z bezduszna skutecznoscia typowa dla Adeptus Mechanicus.\nTrzy ostre jak brzytwy szpony poruszaja sie z niepokojaca predkoscia, zwiekszona jeszcze przez mdlacy rezonans tej transsonicznej broni.",
-        "Efekt": "W miejsce reki wszczepiono ci tercjat.\nFunkcjonuje jak normalna dłon, ale twoje Nieuzbrojone ataki zostaja zastapione statystykami (str. 128)",
+        "Efekt": "W miejsce reki wszczepiono ci tercjat.\nFunkcjonuje jak normalna dłon, ale twoje Nieuzbrojone ataki zostaja zastapione statystykami [{{B}}Podręcznik Główny{{/B}} (str. 128)].",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}, {{RED}}IMPERIUM{{/RED}}",
@@ -6071,7 +6071,7 @@
         "Typ": "Augumentacje Aeldari",
         "Nazwa": "Oko Staruchy",
         "Opis": "Skomplikowane augmentyczne oczy wzmacniają percepcję aeldari, umożliwiając im patrzenie nie tylko na świat materialny, ale również na nici losu.",
-        "Efekt": "Jedno oko Staruchy dodaje premię dwojga różnych augmentycznych oczu (str. 243).",
+        "Efekt": "Jedno oko Staruchy dodaje premię dwojga różnych augmentycznych oczu [{{B}}Podręcznik Główny{{/B}} (str. 243)].",
         "Koszt": "5",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}AELDARI{{/RED}}",
@@ -6133,7 +6133,7 @@
         "Typ": "Ulepszenia Broni",
         "Nazwa": "Bagnet łańcuchowy",
         "Opis": "Przymocowany do broni dystansowej warkoczący i zadający paskudne rany bagnet łańcuchowy.",
-        "Efekt": "Możesz używać tej broni w walce jak bagnetu łańcuchowego (str. 211).",
+        "Efekt": "Możesz używać tej broni w walce jak Bagnetu Łańcuchowego [{{B}}Podręcznik Główny{{/B}} (str. 211)].",
         "Koszt": "4",
         "Dostępność": "2",
         "Słowa Kluczowe": "{{RED}}CHAOS{{/RED}}, {{RED}}IMPERIUM{{/RED}}",
@@ -6233,7 +6233,7 @@
         "Typ": "Ulepszenia Broni",
         "Nazwa": "Mocowanie bagnetu",
         "Opis": "Proste urządzenie umożliwiające zamontowanie ostrza na broni dystansowej.",
-        "Efekt": "Możesz używać tej broni w walce jak noża (str. 211).",
+        "Efekt": "Możesz używać tej broni w walce jak Noża [{{B}}Podręcznik Główny{{/B}} (str. 211)].",
         "Koszt": "1",
         "Dostępność": "0",
         "Słowa Kluczowe": "{{RED}}[DOWOLNE]{{/RED}}",
@@ -6373,7 +6373,7 @@
         "Typ": "Ekwipunek Imperium",
         "Nazwa": "Apteczka polowa \"Dar męczennika\"",
         "Opis": "Ulepszona wersja standardowej apteczki Astra Militarum.\nZostała doposażona w stymulanty bojowe, kauteryzujący żel termiczny oraz jednorazową bionikę.\nTo właśnie dzięki tym apteczkom Potomkowie Tempestus tak szybko i skutecznie wracają do walki.\n„Dar męczennika” zawiera nawet pas wszywanych podskórnie ładunków wybuchowych, które mogą zamienić ciało śmiertelnie rannego żołnierza w zabójczą pułapkę.",
-        "Efekt": "Działa jak apteczka.\nZawiera standardowe bioniczne zamienniki kończyn lub oka (str. 243).\nProteza nie jest trwała i staje się bezużyteczna w ciągu 24 godzin.\nPodskórne ładunki mają takie same współczynniki co odłamkowy pocisk rakietowy (str. 220).",
+        "Efekt": "Działa jak apteczka.\nZawiera standardowe bioniczne zamienniki kończyn lub oka [{{B}}Podręcznik Główny{{/B}} (str. 243)].\nProteza nie jest trwała i staje się bezużyteczna w ciągu 24 godzin.\nPodskórne ładunki mają takie same współczynniki co Odłamkowy Pocisk Rakietowy [{{B}}Podręcznik Główn{{/B}}y (str. 220)].",
         "Koszt": "6",
         "Dostępność": "2",
         "Słowa Kluczowe": "{{RED}}ASTRA MILITARUM{{/RED}}, {{RED}}IMPERIUM{{/RED}}",
@@ -6563,7 +6563,7 @@
         "Typ": "Ekwipunek Imperium",
         "Nazwa": "Plecak skokowy",
         "Opis": "Stabilizowane żyroskopowo silniki odrzutowe plecaka skokowego wystrzeliwują noszącego wysoko w powietrze z siłą, która umożliwia desant na niczego niespodziewającego się wroga.",
-        "Efekt": "Używając Ruchu możesz przelecieć z dwukrotnością swojej Szybkości, ignorując ukształtowanie terenu, o ile uzyskasz sukces w Teście Pilotażu (Zr) o ST 3.\nJeśli Test się nie powiedzie, zbaczasz z obranego kursu zgodnie z zasadami Rozrzutu (str. 186).\nKomplikacja oznacza awarię, która skutkuje otrzymaniem 1k3 Traum oraz obrażeń powstałych wskutek upadku z wysokości (str. 201).",
+        "Efekt": "Używając Ruchu możesz przelecieć z dwukrotnością swojej Szybkości, ignorując ukształtowanie terenu, o ile uzyskasz sukces w Teście Pilotażu (Zr) o ST 3.\nJeśli Test się nie powiedzie, zbaczasz z obranego kursu zgodnie z zasadami Rozrzutu [{{B}}Podręcznik Główny{{/B}} (str. 186)].\nKomplikacja oznacza awarię, która skutkuje otrzymaniem 1k3 Traum oraz obrażeń powstałych wskutek upadku z wysokości [{{B}}Podręcznik Główny{{/B}} (str. 201)].",
         "Koszt": "7",
         "Dostępność": "2",
         "Słowa Kluczowe": "{{RED}}[DOWOLNE]{{/RED}}",
@@ -6603,7 +6603,7 @@
         "Typ": "Ekwipunek Imperium",
         "Nazwa": "Różaniec Eklezjarchatu",
         "Opis": "Ten religijny symbol to ikona Adeptus Ministorum zawieszona na sznurze z nawleczonymi paciorkami z adamantium.\nNiektóre zakony Adepta Sororitas umieszczają paciorki na sznurze jako wspomnienie każdego aktu pokuty.",
-        "Efekt": "Różaniec może zostać użyty jako Symbol władzy (str. 240) lub, w razie konieczności, jako garota.",
+        "Efekt": "Różaniec może zostać użyty jako Symbol władzy [{{B}}Podręcznik Główny{{/B}} (str. 240)] lub, w razie konieczności, jako garota.",
         "Koszt": "3",
         "Dostępność": "1",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MINISTORUM{{/RED}}, {{RED}}ADEPTA SORORITAS{{/RED}}, {{RED}}IMPERIUM{{/RED}}",
@@ -6863,7 +6863,7 @@
         "Typ": "Ekwipunek Orków",
         "Nazwa": "Nabojowiec",
         "Opis": "Orkoidalny sługus pedantycznie wytwarzający i przechowujący amunicję swego pana.",
-        "Efekt": "Nabojowiec ma taką samą charakterystykę co grot (str. 358) i mniej lub bardziej lojalnie wykonuje wszystkie rozkazy swojego właściciela.\nMożesz zignorować wszelkie Komplikacje związane z twoją bronią dystansową, zyskujesz ponadto +2 p. Amunicji, przenoszonej przez nabojowca.",
+        "Efekt": "Nabojowiec ma taką samą charakterystykę co Grot [{{B}}Podręcznik Główny{{/B}} (str. 358)] i mniej lub bardziej lojalnie wykonuje wszystkie rozkazy swojego właściciela.\nMożesz zignorować wszelkie Komplikacje związane z twoją bronią dystansową, zyskujesz ponadto +2 p. Amunicji, przenoszonej przez nabojowca.",
         "Koszt": "5",
         "Dostępność": "2",
         "Słowa Kluczowe": "{{RED}}ORK{{/RED}}",
@@ -6873,7 +6873,7 @@
         "Typ": "Ekwipunek Orków",
         "Nazwa": "Narzendzia konowała",
         "Opis": "Ubabrana krwią torba konowała pełna jest zazwyczaj różnego rodzaju ostrych instrumentów i środków przeciwbólowych domowej roboty, co wystarcza konowałowi nie tylko do utrzymywania chopaków w stanie zdatnym do walki, lecz również do wykonywania dodatkowych operacji na boku.",
-        "Efekt": "Działa jak dostosowana do orczej anatomii apteczka (str. 236). Za każdym razem, kiedy wylosujesz Komplikację podczas używania narzendzi konowała, cel otrzymuje albo 1 Ranę, albo 1 Traumę – zależy, które jest zabawniejsze w danej sytuacji.",
+        "Efekt": "Działa jak dostosowana do orczej anatomii Apteczka [{{B}}Podręcznik Główny{{/B}} (str. 236)]. Za każdym razem, kiedy wylosujesz Komplikację podczas używania narzendzi konowała, cel otrzymuje albo 1 Ranę, albo 1 Traumę – zależy, które jest zabawniejsze w danej sytuacji.",
         "Koszt": "2",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ORK{{/RED}}",
@@ -6883,7 +6883,7 @@
         "Typ": "Ekwipunek Orków",
         "Nazwa": "Narzendzia mekanika",
         "Opis": "Każda kolekcja narzędzi orczych mekaników gromadzona jest w szale natchnienia i tworzenia, a zazwyczaj składa się z ogromnych młotków i kluczy umożliwiających orkom psucie i naginanie technologii do tworzenia bardziej „orczych” rzeczy.",
-        "Efekt": "Działa jak dostosowane do orczej technologii multinarzędzie (str. 238).\nNarzendzia mekanika mogą być użyte do demontażu urządzeń lub pojazdów innych gatunków i ponownego ich montażu, lecz w formie orczego Ekwipunku o równym lub niższym poziomie Dostępności.\nZłożenie części wymaga wykonania Testu Korzystania z technologii (Int) o ST równym Kosztowi tworzonego orczego Ekwipunku, który określa liczbę godzin, jaką należy spędzić na montażu.",
+        "Efekt": "Działa jak dostosowane do orczej technologii Multinarzędzie [{{B}}Podręcznik Główny{{/B}} (str. 238)].\nNarzendzia mekanika mogą być użyte do demontażu urządzeń lub pojazdów innych gatunków i ponownego ich montażu, lecz w formie orczego Ekwipunku o równym lub niższym poziomie Dostępności.\nZłożenie części wymaga wykonania Testu Korzystania z technologii (Int) o ST równym Kosztowi tworzonego orczego Ekwipunku, który określa liczbę godzin, jaką należy spędzić na montażu.",
         "Koszt": "5",
         "Dostępność": "1",
         "Słowa Kluczowe": "{{RED}}ORK{{/RED}}",
@@ -9522,13 +9522,13 @@
     "traits": {
       "Brutalna": "Brutalna broń zadaje przerażające traumatyczne rany. Kiedy rzucasz Dodatkową Kością Obrażeń przy ataku bronią:\nBrutalną Wyniki 1 lub 2 oznaczają 0 dodatkowych Obrażeń. Wyniki 3 lub 4 oznaczają 1 dodatkowe Obrażenie.\nWyniki 5 lub 6 oznaczają 2 dodatkowe Obrażenia.",
       "Celna (X)": "Broń dostosowana do osiągania wysokiej celności na dużych dystansach.\nJeśli wykonujesz Celowanie Celną bronią, zyskujesz +1 dodatkową kość do ataku, a także DK w liczbie równej wartości Cechy.",
-      "Ciężka (X)": "Trudno jest celować i skutecznie władać bronią, która jest ciężka i nieporęczna. Aby postać mogła normalnie korzystać z Ciężkiej broni, jej Siła musi być równa wartości tej Cechy.\nJeśli postać nie jest wystarczająco silna, wszystkie ataki przy pomocy Ciężkiej broni wykonywane są z karą +2 do ST, a Komplikacja podczas ataku oznacza, że oprócz innych efektów, następuje również Powalenie postaci.\nAkcja Podparcia (str. 189) lub zamocowanie Ciężkiej broni (np. na trójnogu) chwilowo unieważnia tę Cechę.",
+      "Ciężka (X)": "Trudno jest celować i skutecznie władać bronią, która jest ciężka i nieporęczna. Aby postać mogła normalnie korzystać z Ciężkiej broni, jej Siła musi być równa wartości tej Cechy.\nJeśli postać nie jest wystarczająco silna, wszystkie ataki przy pomocy Ciężkiej broni wykonywane są z karą +2 do ST, a Komplikacja podczas ataku oznacza, że oprócz innych efektów, następuje również Powalenie postaci.\nAkcja Podparcia [{{B}}Podręcznik Główny{{/B}} (str. 189)] lub zamocowanie Ciężkiej broni (np. na trójnogu) chwilowo unieważnia tę Cechę.",
       "Elektryczna (X)": "Śmiertelnie groźne ładunki wyrzucane z broni Elektrycznej są w stanie usmażyć elementy techniczne wewnątrz pojazdów.\nPodczas atakowania takich celów broń Elektryczna zyskuje dodatkowe Dodatkowe Kości Obrażeń w liczbie równej wartości Cechy",
-      "Łooomot!": "Broń orków przeczy wszelkiej logice i łamie prawa mechaniki i fizyki, jednak wierzenia zielonoskórych czynią ją jeszcze bardziej śmiercionośną.\nJeśli twoja postać jest orkiem, otrzymuje +1 dodatkową kość do ataków bronią o Cesze Łooomot! Ponadto, jeśli jest Ranna (str. 193), zadaje dodatkowe +1 DK Obrażeń.",
+      "Łooomot!": "Broń orków przeczy wszelkiej logice i łamie prawa mechaniki i fizyki, jednak wierzenia zielonoskórych czynią ją jeszcze bardziej śmiercionośną.\nJeśli twoja postać jest orkiem, otrzymuje +1 dodatkową kość do ataków bronią o Cesze Łooomot! Ponadto, jeśli jest Ranna [{{B}}Podręcznik Główny{{/B}} (str. 193)], zadaje dodatkowe +1 DK Obrażeń.",
       "Maszynowa (X)": "Broń tego rodzaju jest w stanie błyskawicznie wypluć z lufy grad śmierci.\nJeśli przy pomocy broni Maszynowej trafiasz cel w Bliskim Zasięgu, zyskujesz Dodatkowe Kości Obrażeń w liczbie równej wartości Cechy.",
-      "Miotacz ognia": "Miotacze ognia wypluwają z siebie strumień mieszanki zapalającej. Chlustające z broni potoki ognia mogą być następnie kierowane przez operatora miotacza ognia w celu podpalenia jak największej liczby wrogów.\nAtaki wykonane przy pomocy miotacza ognia ignorują osłonę. Jeśli cel zostanie trafiony z takiej broni, płonąca ciecz wypełnia wszelką przestrzeń w prostej linii między strzelcem a celem. Wszystko, co znajduje się w tej linii, staje się celem ataku.\nPodczas Testu Ataku przy pomocy miotacza ognia możesz wykonać Przeniesienie, by skierować strumień mieszanki w bok o tyle metrów, ile wynosi wartość Umiejętności strzeleckich. Wszystko, co znajduje się w tym zasięgu, staje się celem ataku.\nJeśli trafionych zostanie kilka celów, obrażenia ustalane są tylko raz, a wynik stosuje się do wszystkich trafień. Każdy może spróbować zmniejszyć obrażenia poprzez Unikanie Ataków Obszarowych (str. 186).\nBroń o Cesze Miotacz ognia uznawana jest jednocześnie za posiadającą Cechę Wywołanie (Podpalenie).",
+      "Miotacz ognia": "Miotacze ognia wypluwają z siebie strumień mieszanki zapalającej. Chlustające z broni potoki ognia mogą być następnie kierowane przez operatora miotacza ognia w celu podpalenia jak największej liczby wrogów.\nAtaki wykonane przy pomocy miotacza ognia ignorują osłonę. Jeśli cel zostanie trafiony z takiej broni, płonąca ciecz wypełnia wszelką przestrzeń w prostej linii między strzelcem a celem. Wszystko, co znajduje się w tej linii, staje się celem ataku.\nPodczas Testu Ataku przy pomocy miotacza ognia możesz wykonać Przeniesienie, by skierować strumień mieszanki w bok o tyle metrów, ile wynosi wartość Umiejętności strzeleckich. Wszystko, co znajduje się w tym zasięgu, staje się celem ataku.\nJeśli trafionych zostanie kilka celów, obrażenia ustalane są tylko raz, a wynik stosuje się do wszystkich trafień. Każdy może spróbować zmniejszyć obrażenia poprzez Unikanie Ataków Obszarowych [{{B}}Podręcznik Główny{{/B}} (str. 186)].\nBroń o Cesze Miotacz ognia uznawana jest jednocześnie za posiadającą Cechę Wywołanie ({{I}}Podpalenie{{/I}}).",
       "Niewyważona (X)": "Zbyt duża lub niewyważona broń jest trudna w obsłudze.\nST ataków wykonywanych Niewyważoną bronią zwiększa się o wartość tej Cechy.",
-      "Niezawodna": "Wytrzymała i łatwa w utrzymaniu broń. Możesz zignorować pierwszą Komplikację tej broni w danej scenie.\nTesty naprawy i konserwacji Niezawodnej broni otrzymują +1 dodatkową kość..",
+      "Niezawodna": "Wytrzymała i łatwa w utrzymaniu broń. Możesz zignorować pierwszą Komplikację tej broni w danej scenie.\nTesty naprawy i konserwacji Niezawodnej broni otrzymują +1 dodatkową kość.",
       "Parująca": "Możesz używać tej broni do odbijania ciosów przeciwnika.\nPodczas walki bronią Parującą w Zwarciu otrzymujesz premię +1 do Obrony.",
       "Pistolet": "Lekka konstrukcja, stworzona do błyskawicznego dobycia i walki na krótkim dystansie.\nBroń o Cesze Pistolet może być używana w Zwarciu.",
       "Przebijająca (X)": "Potężna broń, zdolna przebić się przez pancerz.\nKiedy podczas ataku bronią Przebijającą wykonujesz Przeniesienie, PP broni zwiększa się o wartość Cechy.",
@@ -9539,12 +9539,12 @@
       "Rozrzutowa": "Broń o dużym kalibrze siejąca zniszczenie w zbitych formacjach wroga.\nW Bliskim Zasięgu broń Rozrzutowa może trafić dowolną liczbę celów, o ile znajdują się maksymalnie 3 metry od siebie.\nStrzały w Hordę otrzymują +3 dodatkowe kości.",
       "Samorupka": "Podczas zdobywania Samorupek możesz zastąpić tę Cechę dowolną inną Cechą.\nJeśli wybrana Cecha została oznaczona przy pomocy (X), rzuć 1k3, by ustalić wartość Cechy.",
       "Spaczona": "Broń ta jest zasilana przy pomocy paranormalnej energii, technologii xenos lub czystej mocy Chaosu, niewielu więc jest w stanie stawić jej czoła i wyjść z tego bez szwanku.\nSpaczona broń zadaje Obrażenia równe Całkowitej Odporności celu -4, chyba że współczynnik Obrażeń broni jest wyższy.",
-      "Szturmowa": "Dostosowana do prowadzenia ognia podczas chwalebnej szarży na pozycje wroga.\nMożesz strzelać z broni Szturmowej podczas Sprintu (str. 180), jednak atak jest obarczony karą +2 do ST.",
+      "Szturmowa": "Dostosowana do prowadzenia ognia podczas chwalebnej szarży na pozycje wroga.\nMożesz strzelać z broni Szturmowej podczas Sprintu [{{B}}Podręcznik Główny{{/B}} (str. 180)], jednak atak jest obarczony karą +2 do ST.",
       "Termiczna": "Wydzielane przez tę broń subatomowe fale topią ciało i pancerze na żużel. Kiedy rzucasz Dodatkową Kością Obrażeń przy ataku bronią Termiczną:\nWyniki 1 lub 2 oznaczają 0 dodatkowych Obrażeń.\nWyniki 3 lub 4 oznaczają 1 dodatkowe Obrażenie.\nWyniki 5 lub 6 oznaczają 2 dodatkowe Obrażenia.\nJeśli rzucasz Dodatkową Kością Obrażeń przy ataku bronią Termiczną w Zasięgu Bliskim, a celem jest pojazd lub element fortyfikacji:\nWyniki 1, 2 lub 3 oznaczają 1 dodatkowe Obrażenie.\nWyniki 4, 5 lub 6 oznaczają 2 dodatkowe Obrażenia.",
       "Wybuchowa (X)": "Broń Wybuchowa może unicestwić kilku wrogów jednocześnie. Kiedy strzelasz lub rzucasz bronią Wybuchową, wybierz punkt w zasięgu (w tym inną postać!) i wykonaj Test Umiejętności strzeleckich (Zr) o ST 3.\nZastosuj standardowe modyfikatory wynikające z Zasięgu (str. 184), chyba że korzystasz z broni rzucanej, jak np. granat.\nJeśli odniesiesz porażkę w Teście, atak chybia celu i następuje Rozrzut (str. 186). Sukces oznacza, że trafiasz dokładnie w wyznaczony punkt.\nJeśli dokładnie mierzycie dystanse, wartość Cechy Wybuchowa określa promień eksplozji w metrach. Każda postać w polu rażenia zostaje trafiona w wyniku wybuchu.\nJeśli atakujesz Hordę lub korzystacie z uproszczonych zasad, liczba trafionych w wybuchu Zagrożeń równa jest połowie wartości Cechy Wybuchowa.\nBroń Wybuchowa uniemożliwia Przeniesienie w celu zwiększenia zadawanych obrażeń. Jeśli podczas ataku bronią Wybuchową uzyskasz Trafienie krytyczne, efekty stosuje się do wszystkich trafionych celów.",
       "Wytłumiona": "Broń przeznaczona do zabicia przeciwnika w możliwie jak najcichszy sposób.\nAtak Wytłumioną bronią wywołuje obniżenie Poziomu ukrycia jedynie o 2 p.",
-      "Wywołanie (Stan)": "Broń tego typu została stworzona w celu zadania wrogowi obrażeń w wybitnie okrutny i niestandardowy sposób.\nKażda broń o tej Cesze wywołuje określony Stan, jeśli atak zada co najmniej jedną Ranę. Przykładowo, jeśli atak bronią o Cesze Wywołanie (Podpalenie) zada Ranę celowi, ten zostaje również Podpalony.\nJeśli Cecha ta opatrzona została liczbą, stanowi ona ST Testu, którego celem jest usunięcie Stanu. Przykładowo, jeśli broń o Cesze Wywołanie (Zatrucie 4) zada celowi Ranę, wróg zostaje Zatruty i w celu usunięcia Zatrucia w swojej następnej turze musi wykonać Test Wytrzymałości o ST 4.",
-      "Błogosławiona (X)": "Namaszczona przez kapłanów Eklezjarchatu lub chroniona heksagramatycznie przed plugawymi mocami arcywrogów, Błogosławiona bron jest wybitnie skuteczna w walce z obrzydliwymi stworzeniami skazonymi wpływem Immaterium lub wypluwanymi bezposrednio z niego.\nBłogosławiona bron zyskuje dodatkowe DK w liczbie równej wartosci Cechy w atakach wymierzonych w cele o Słowie kluczowym {{RED}}PSIONIK{{/RED}} lub {{RED}}DEMON.{{/RED}}",
+      "Wywołanie (Stan)": "Broń tego typu została stworzona w celu zadania wrogowi obrażeń w wybitnie okrutny i niestandardowy sposób.\nKażda broń o tej Cesze wywołuje określony Stan, jeśli atak zada co najmniej jedną Ranę. Przykładowo, jeśli atak bronią o Cesze Wywołanie ({{I}}Podpalenie{{/I}}) zada Ranę celowi, ten zostaje również Podpalony.\nJeśli Cecha ta opatrzona została liczbą, stanowi ona ST Testu, którego celem jest usunięcie Stanu. Przykładowo, jeśli broń o Cesze Wywołanie ({{I}}Zatrucie 4{{/I}}) zada celowi Ranę, wróg zostaje Zatruty i w celu usunięcia Zatrucia w swojej następnej turze musi wykonać Test Wytrzymałości o ST 4.",
+      "Błogosławiona (X)": "Namaszczona przez kapłanów Eklezjarchatu lub chroniona heksagramatycznie przed plugawymi mocami arcywrogów, Błogosławiona broń jest wybitnie skuteczna w walce z obrzydliwymi stworzeniami skażonymi wpływem Immaterium lub wypluwanymi bezpośrednio z niego.\nBłogosławiona broń zyskuje dodatkowe DK w liczbie równej wartości Cechy w atakach wymierzonych w cele o Słowie kluczowym {{RED}}PSIONIK{{/RED}} lub {{RED}}DEMON{{/RED}}{{RED}}.{{/RED}}",
       "Energetyczny": "Cuda archeotechnologii, osobiste generatory pola energetycznego, otaczają noszącego je ochronną zaporą energetyczną.\nPancerz o tej Cesze umożliwia wykonanie Testu Determinacji również w następstwie ataków, które zadały Rany śmiertelne.",
       "Masywny": "Masywne pancerze znacznie ograniczają mobilność.\nW Masywnym pancerzu nie możesz wykonywać Biegu ani Sprintu.",
       "Nieporęczny (X)": "Nieporęczny pancerz jest ciężki i ogranicza swobodę ruchów.\nZmniejsza Szybkość noszącego o tyle metrów, ile wynosi wartość Cechy.",
@@ -9555,12 +9555,12 @@
     },
     "states": {
       "Groza": "Poczucie dotkliwej grozy ogarnia postać, przez co nie jest w stanie myśleć racjonalnie. Wykonaj Test Odwagi o ST określanym w zależności od źródła Grozy.\nSukces oznacza, że postać może normalnie działać w swojej Turze. Porażka skutkuje nałożeniem wszystkich efektów Strachu, jednak dodatkowo postać musi wykorzystać wszystkie dostępne w jej Turze Akcje, by oddalić się od źródła Grozy i przestać je widzieć.\nGroza utrzymuje się do końca sceny lub dopóki sojusznik nie uzyska sukcesu w Teście Dowodzenia (SW) o ST równym 2 + wartość Grozy źródła.\nWszelkie efekty dodające premie do Testów Strachu dodają również premie do Testów Grozy. Wszelkie efekty, dzięki którym postać jest niewrażliwa na Strach, dodają 1 Ikonę w Teście Odwagi przeciwko Grozie.\nStworzenia wywołujące Grozę są na nią odporne, jak również na Strach i Interakcję bojową – Zastraszanie.",
-      "Krwawienie": "Głęboka rana wywołała ciężki do zatamowania krwotok.\nKrwawiąca postać otrzymuje 1 Ranę śmiertelną na koniec każdej swojej Tury.\nKrwawienie może zostać zatrzymane dzięki udanemu Testowi Wytrzymałości o ST 4 lub dzięki udanemu Testowi Medycyny sojusznika.\nMożliwe jest podjęcie próby użycia Medycyny na samym sobie (str. 123), ale obarczone jest to karą +1 do ST.",
+      "Krwawienie": "Głęboka rana wywołała ciężki do zatamowania krwotok.\nKrwawiąca postać otrzymuje 1 Ranę śmiertelną na koniec każdej swojej Tury.\nKrwawienie może zostać zatrzymane dzięki udanemu Testowi Wytrzymałości o ST 4 lub dzięki udanemu Testowi Medycyny sojusznika.\nMożliwe jest podjęcie próby użycia Medycyny na samym sobie [{{B}}Podręcznik Główny{{/B}} (str. 123)], ale obarczone jest to karą +1 do ST.",
       "Odsłonięcie": "Postać straciła czujność i się odsłoniła! Skutkuje to karą -1 do Obrony.\nNiektóre zdolności czy efekty zwiększają tę karę. Odsłonięcie utrzymuje się do końca następnej Tury postaci.",
       "Oślepienie": "Nie jesteś w stanie widzieć prawidłowo.\nZwiększ ST każdej czynności opartej na wzroku (w tym Testów bojowych) o 4, zastępując mniejsze kary płynące z ograniczenia wzroku.\nMG może zgodzić się na usunięcie Oślepienia poprzez wykorzystanie Akcji bojowej, o ile możliwe jest logiczne wytłumaczenie wykorzystywania danej Umiejętności.",
       "Oszołomienie": "Postać jest skołowana, np. z powodu zbyt szybkiego biegu przez trudny teren, bliskiego wybuchu pocisku artyleryjskiego lub zranienia zbłąkaną kulą.\nSzybkość Oszołomionej postaci zostaje zmniejszona o połowę. Nie może Biegać ani wykonywać Sprintu o ile inne zasady nie zmieniają sytuacji.\nOszołomienie utrzymuje się do końca następnej Tury postaci.",
       "Podpalenie": "Płoniesz żywym ogniem! Na początku każdej swojej Tury otrzymujesz 1k3 Ran śmiertelnych.\nMożesz zużyć Akcję i paść na ziemię (co skutkuje Powaleniem) i spróbować ugasić ogień, wykonując Test Atletyki (S) o ST 3.\nSukces oznacza, że udało ci się zdławić płomienie, a Podpalenie znika.\nMożesz również zignorować płomienie i działać w swojej Turze normalnie. Wykonaj wtedy Test Siły Woli o ST 3 – porażka oznacza Zdezorientowanie.",
-      "Powalenie": "Postać została powalona na ziemię.\nDla każdego Zagrożenia w promieniu 5 metrów jej Obrona zostaje zmniejszona o 2. Dla Zagrożeń znajdujących się w odległości 6 i więcej metrów od postaci jej Obrona zostaje zmniejszona o 1.\nPowalenie w trakcie lotu skutkuje upadkiem i otrzymaniem obrażeń (str. 201).\nPowstanie z ziemi może być wykonane w ramach Akcji darmowej podczas Tury postaci. W takim wypadku w tej samej Turze postać może wykonać standardowy Ruch, nie może jednak korzystać z wariantów akcji bojowych, jak np. Celowanie czy Podparcie.\nKażdy stojący obok Powalonej postaci może pomóc jej natychmiast wstać, zużywając jednak Akcję podstawową w swojej Turze.",
+      "Powalenie": "Postać została powalona na ziemię.\nDla każdego Zagrożenia w promieniu 5 metrów jej Obrona zostaje zmniejszona o 2. Dla Zagrożeń znajdujących się w odległości 6 i więcej metrów od postaci jej Obrona zostaje zmniejszona o 1.\nPowalenie w trakcie lotu skutkuje upadkiem i otrzymaniem obrażeń [{{B}}Podręcznik Główny{{/B}} (str. 201)].\nPowstanie z ziemi może być wykonane w ramach Akcji darmowej podczas Tury postaci. W takim wypadku w tej samej Turze postać może wykonać standardowy Ruch, nie może jednak korzystać z wariantów akcji bojowych, jak np. Celowanie czy Podparcie.\nKażdy stojący obok Powalonej postaci może pomóc jej natychmiast wstać, zużywając jednak Akcję podstawową w swojej Turze.",
       "Przygwożdźenie": "Postać znalazła się pod ciężkim ogniem, możliwe więc, że jej Odwaga nie podźwignie takiego napięcia. Jeśli postać jest celem Ataku przygważdżającego, może zostać Przygwożdżona. Atakujący musi wygrać w Teście Umiejętności Strzeleckich (Zr) przeciwko Odwadze celu. Sukces oznacza, że do początku następnej Tury atakującego cel zostaje Przygwożdżony. Jeśli postać znajduje się za osłoną, może przykucnąć i skryć się jeszcze bardziej. Postać, która nie ma osłony, musi w swojej Turze zużyć Ruch, by jak najszybciej skryć się w bezpiecznym miejscu. Przygwożdżona postać nie może opuścić kryjówki, ale może normalnie wykonywać wszystkie inne akcje. Jeśli próbujesz trafić w przygważdżającego cię przeciwnika, otrzymujesz karę +2 do ST Testu Umiejętności Strzeleckich (Zr). Możesz podjąć się próby przełamania Przygwożdżenia sojuszników w swojej Turze, zużywając Akcję i wykonując Test Dowodzenia (SW) o ST równym wartości Szybkostrzelności broni przeciwnika z ewentualną karą +1 do ST, jeśli Przygwożdżona postać odniosła w trakcie tej walki Traumę lub Ranę. Udany Test oznacza, że udało ci się usunąć ten Stan i zmobilizować Przygwożdżonych sojuszników w promieniu 5 metrów.",
       "Strach": "Twoja postać jest przestraszona. Strach prowadzi do niepokoju i lęków, a nawet objawów psychosomatycznych jak przyspieszony oddech, drgawki czy trudności z koncentracją.\nKiedy spotkasz cokolwiek, co wywołuje Strach, wykonaj Test Odwagi o ST określonym przez źródło Strachu. Sukces oznacza, że możesz działać w standardowy sposób.\nPorażka skutkuje karą +2 do ST wszystkich Testów. Kara utrzymuje się do końca sceny lub dopóki sojusznik nie zda Testu Dowodzenia (SW) o ST równym 2 + współczynnik Strachu źródła.\nStworzenia wywołujące Strach są odporne nie tylko na niego, ale również na Interakcję bojową – Zastraszanie.",
       "Szał bojowy": "Twoja postać wpadła w żarliwy szał lub aktywowała bojowy środek pobudzający – frenzon – wpada więc w Szał bojowy. Traci instynkt samozachowawczy i rzuca się w sam środek walki.\nPostać może spróbować powstrzymać się przed wejściem w Szał bojowy lub przyjąć go dobrowolnie. Aby nie dopuścić do Szału bojowego, na początku Tury należy wykonać Test Siły Woli o ST 3. Sukces oznacza, że napad szału ustępuje.\nW przypadku porażki, wywołania bądź akceptacji tego Stanu, postać wpada w Szał bojowy i czuje nieodpartą potrzebę rzucenia się w wir walki wręcz, dlatego szarżuje na najbliższego widocznego wroga.\nJeśli postać kryła się za osłoną, wybiega zza niej i atakuje przeciwnika, od którego dzieli ją najmniejszy dystans.\nW trakcie Szału bojowego postać jest odporna na Strach, nie może zostać Przygwożdżona, ale musi wykonywać Szaleńczy atak, kiedy to tylko możliwe. Ponadto Szał bojowy skutkuje premią +1 do Atrybutu Siły.",
