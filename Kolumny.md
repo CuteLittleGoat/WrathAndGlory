@@ -91,12 +91,27 @@ Poniżej znajduje się spis **wszystkich kolumn** wykorzystywanych w module Data
 | Nazwa | 30ch | lewo | standard |
 | Opis | 56ch | lewo | standard |
 
+## Zakony Pierwszego Powołania
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
+| Zaleta | 46ch | lewo | standard |
+| Wada | 46ch | lewo | standard |
+
 ## Ścieżki Asuryani
 | Kolumna | Min-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- |
 | Nazwa | 26ch | lewo | standard |
 | Efekt | 26ch | lewo | standard |
 | Opis | 56ch | lewo | standard |
+
+## Orcze Klany
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa | 26ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
+| Efekt | 26ch | lewo | standard |
 
 ## Mutacje Krootów
 | Kolumna | Min-width | Wyrównanie | Łamanie |

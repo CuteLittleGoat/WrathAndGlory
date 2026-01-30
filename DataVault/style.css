@@ -504,6 +504,15 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Implanty Astartes"] td[data-col="Nazwa"]{min-width:30ch}
 .tableWrap table[data-sheet="Implanty Astartes"] th[data-col="Opis"],
 .tableWrap table[data-sheet="Implanty Astartes"] td[data-col="Opis"]{min-width:56ch}
+/* Zakony Pierwszego Powołania */
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Nazwa"]{min-width:26ch}
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Opis"]{min-width:56ch}
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Zaleta"],
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Zaleta"]{min-width:46ch}
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Wada"],
+.tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Wada"]{min-width:46ch}
 
 /* Sciezki Asuryani */
 .tableWrap table[data-sheet="Ścieżki Asuryani"] th[data-col="Nazwa"],
@@ -512,6 +521,13 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Ścieżki Asuryani"] td[data-col="Efekt"]{min-width:26ch}
 .tableWrap table[data-sheet="Ścieżki Asuryani"] th[data-col="Opis"],
 .tableWrap table[data-sheet="Ścieżki Asuryani"] td[data-col="Opis"]{min-width:56ch}
+/* Orcze Klany */
+.tableWrap table[data-sheet="Orcze Klany"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Orcze Klany"] td[data-col="Nazwa"]{min-width:26ch}
+.tableWrap table[data-sheet="Orcze Klany"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Orcze Klany"] td[data-col="Opis"]{min-width:56ch}
+.tableWrap table[data-sheet="Orcze Klany"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Orcze Klany"] td[data-col="Efekt"]{min-width:26ch}
 
 /* Mutacje Krootow */
 .tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Mutacja krootów"],
