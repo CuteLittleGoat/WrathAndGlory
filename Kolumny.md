@@ -84,6 +84,11 @@ Poniżej znajduje się spis **wszystkich kolumn** wykorzystywanych w module Data
 | Efekt | 26ch | lewo | standard |
 | Opis | 60ch | lewo | standard |
 
+Uwagi formatowania:
+- Kolumna **Słowo Kluczowe** jest renderowana na czerwono poza tokenami `-` i `lub`.
+- Kursywa z arkusza (np. `lub`) jest zachowywana w treści.
+- Token `[ŚWIAT-KUŹNIA]` jest w pełni czerwony, łącznie z myślnikiem.
+
 ## Implanty Astartes
 | Kolumna | Min-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- |

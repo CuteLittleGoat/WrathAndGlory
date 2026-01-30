@@ -138,30 +138,7 @@ function canonKey(s){
 function formatInlineHTML(raw){
   const s = String(raw ?? "");
   const reRefParen = /\(([^)]*(?:\bstr\.?\b|\bstr\b|\bstrona\b)[^)]*)\)/ig;
-  const markerRegex = /{{\/?(?:RED|B|I)}}/g;
-  const segments = [];
-  const stack = [];
-  let cursor = 0;
-  let m;
-
-  while ((m = markerRegex.exec(s))){
-    if (m.index > cursor){
-      segments.push({text: s.slice(cursor, m.index), styles: new Set(stack)});
-    }
-    const token = m[0];
-    const isClose = token.startsWith("{{/");
-    const name = token.includes("RED") ? "RED" : token.includes("B") ? "B" : "I";
-    if (isClose){
-      const idx = stack.lastIndexOf(name);
-      if (idx !== -1) stack.splice(idx, 1);
-    } else {
-      stack.push(name);
-    }
-    cursor = markerRegex.lastIndex;
-  }
-  if (cursor < s.length){
-    segments.push({text: s.slice(cursor), styles: new Set(stack)});
-  }
+  const segments = parseInlineSegments(s);
 
   // Build global positions to allow refs to span across style segments
   const positions = [];
@@ -238,30 +215,78 @@ function formatTextHTML(raw, opts = {}){
   return htmlLines.join("<br>");
 }
 
+function parseInlineSegments(raw){
+  const markerRegex = /{{\/?(?:RED|B|I)}}/g;
+  const segments = [];
+  const stack = [];
+  let cursor = 0;
+  let m;
+
+  while ((m = markerRegex.exec(raw))){
+    if (m.index > cursor){
+      segments.push({text: raw.slice(cursor, m.index), styles: new Set(stack)});
+    }
+    const token = m[0];
+    const isClose = token.startsWith("{{/");
+    const name = token.includes("RED") ? "RED" : token.includes("B") ? "B" : "I";
+    if (isClose){
+      const idx = stack.lastIndexOf(name);
+      if (idx !== -1) stack.splice(idx, 1);
+    } else {
+      stack.push(name);
+    }
+    cursor = markerRegex.lastIndex;
+  }
+  if (cursor < raw.length){
+    segments.push({text: raw.slice(cursor), styles: new Set(stack)});
+  }
+
+  return segments;
+}
+
 function formatFactionKeywordHTML(raw, opts = {}){
   const {maxLines = null, appendHint = null} = opts;
-  const s = stripMarkers(String(raw ?? ""));
+  const s = String(raw ?? "");
   const lines = s.split(/\r?\n/);
   const picked = Number.isInteger(maxLines) ? lines.slice(0, maxLines) : lines;
 
   const htmlLines = picked.map(line => {
     if (!line) return "";
-    const re = /\b(lub)\b|-/gi;
+    const re = /(\[ŚWIAT-KUŹNIA\])|\b(lub)\b|-/gi;
     let out = "";
-    let lastIndex = 0;
-    let m;
-    while ((m = re.exec(line))){
-      const before = line.slice(lastIndex, m.index);
-      if (before){
-        out += `<span class="keyword-red">${escapeHtml(before)}</span>`;
+    const segments = parseInlineSegments(line);
+
+    const renderPiece = (text, styles, isRed) => {
+      if (!text) return "";
+      const classes = [];
+      if (isRed) classes.push("keyword-red");
+      if (styles?.has("B")) classes.push("inline-bold");
+      if (styles?.has("I")) classes.push("inline-italic");
+      const inner = escapeHtml(text);
+      return classes.length ? `<span class="${classes.join(" ")}">${inner}</span>` : inner;
+    };
+
+    for (const seg of segments){
+      re.lastIndex = 0;
+      let lastIndex = 0;
+      let m;
+      while ((m = re.exec(seg.text))){
+        const before = seg.text.slice(lastIndex, m.index);
+        if (before){
+          out += renderPiece(before, seg.styles, true);
+        }
+        const match = m[0];
+        const isSpecial = Boolean(m[1]);
+        const isRed = isSpecial;
+        out += renderPiece(match, seg.styles, isRed);
+        lastIndex = m.index + match.length;
       }
-      out += escapeHtml(m[0]);
-      lastIndex = m.index + m[0].length;
+      const rest = seg.text.slice(lastIndex);
+      if (rest){
+        out += renderPiece(rest, seg.styles, true);
+      }
     }
-    const rest = line.slice(lastIndex);
-    if (rest){
-      out += `<span class="keyword-red">${escapeHtml(rest)}</span>`;
-    }
+
     return out;
   });
 

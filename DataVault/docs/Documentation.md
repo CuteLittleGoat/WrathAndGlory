@@ -367,6 +367,7 @@ Mapowanie na `getElementById`:
 - `norm(s)` — normalizacja spacji i dwukropków.
 - `escapeHtml(s)` — encje HTML.
 - `stripMarkers(s)` — usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` z tekstu (używane w filtrze listowym).
+- `parseInlineSegments(raw)` — dzieli tekst na segmenty z aktywnymi stylami na podstawie markerów `{{RED}}`, `{{B}}`, `{{I}}` (zwraca tablicę `{text, styles}`).
 - `setStatus(msg)` i `logLine(msg, isErr)` — logi (console).
 - `canonKey(s)` — klucz kanoniczny: lowercase, normalizacja spacji, usuwa spację przed `(`.
 
@@ -380,6 +381,7 @@ Mapowanie na `getElementById`:
 - Segmenty renderowane są do `<span>` z klasami:
   - `inline-red`, `inline-bold`, `inline-italic`.
 - Referencje są nakładane nawet wewnątrz stylów.
+- Segmenty ze stylami są wyznaczane przez `parseInlineSegments`.
 
 ### 5.2 `formatTextHTML(raw, opts)`
 - Rozbija tekst na linie (`\n`).
@@ -398,7 +400,9 @@ Mapowanie na `getElementById`:
 
 ### 5.5 `formatFactionKeywordHTML(raw, opts)`
 - Stosowana tylko dla arkusza `Słowa Kluczowe Frakcji` i kolumny `Słowo Kluczowe`.
-- Usuwa markery (`stripMarkers`) i koloruje na czerwono wszystko poza tokenami `-` i `lub`.
+- Zachowuje markery `{{B}}` i `{{I}}` (np. kursywa `lub`) dzięki `parseInlineSegments`.
+- Koloruje na czerwono wszystko poza tokenami `-` i `lub`.
+- Wyróżnia `[ŚWIAT-KUŹNIA]` jako w pełni czerwony token (myślnik pozostaje czerwony).
 - Obsługuje `maxLines` i `appendHint` analogicznie do `formatTextHTML`.
 
 ### 5.6 `getFormattedCellHTML(row, col)`
@@ -533,7 +537,7 @@ Mapowanie na `getElementById`:
 - Kolumna 0: checkbox (zaznaczenia do porównywania).
 - `Cechy` → `renderTraitsCell()` (tagi klikane).
 - `Zasięg` → `getFormattedCellHTML`.
-- `Słowa Kluczowe Frakcji` / `Słowo Kluczowe` → `formatFactionKeywordHTML` (czerwone słowa poza `-` i `lub`).
+- `Słowa Kluczowe Frakcji` / `Słowo Kluczowe` → `formatFactionKeywordHTML` (czerwone słowa poza `-` i `lub`, zachowana kursywa `lub`, `[ŚWIAT-KUŹNIA]` w całości na czerwono).
 - Inne kolumny → `formatTextHTML`, a clamp działa dopiero po renderze na podstawie liczby *wizualnych* linii (opis poniżej).
 
 ### 11.3 Renderowanie tagów cech
@@ -559,7 +563,7 @@ Mechanizm clampu bazuje na liczbie *wizualnych* linii (z uwzględnieniem zawijan
 - Domyślnie czerwone (`.keyword-red`).
 - W arkuszu `Słowa Kluczowe` kolumna `Nazwa` jest również czerwona.
 - W arkuszach `KEYWORD_SHEETS_COMMA_NEUTRAL` przecinki są neutralne (`.keyword-comma`).
-- W arkuszu `Słowa Kluczowe Frakcji` kolumna `Słowo Kluczowe` ma czerwony kolor dla wszystkich tokenów poza `-` i słowem `lub`.
+- W arkuszu `Słowa Kluczowe Frakcji` kolumna `Słowo Kluczowe` ma czerwony kolor dla wszystkich tokenów poza `-` i słowem `lub`; kursywa z arkusza (np. `lub`) jest zachowana, a `[ŚWIAT-KUŹNIA]` pozostaje w całości czerwone.
 
 ---
 
