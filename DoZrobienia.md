@@ -5,3 +5,4 @@
 5. ustawić szerokość kolumn i wyrównania tekstu
 6. Ujednolicić wszystkie cudzysłowy w "Repozytorium"
 7. Poprawić brak polskich liter w "Repozytorium"
+8. Ujednolicić format (str. ) - [Podręcznik Główny (str. )]
