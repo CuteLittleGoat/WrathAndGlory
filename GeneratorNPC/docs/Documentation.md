@@ -26,7 +26,7 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 **Wczytywanie danych:**
 - Dane są pobierane przez `fetch` z `cache: "no-store"`.
 - Po wczytaniu dane są analizowane i rozdzielane na kolekcje: bestiariusz, pancerze, bronie, augumentacje, ekwipunek, talenty, psionika, modlitwy.
-- Kolekcje są sortowane przed zasileniem list wyboru: bestiariusz, talenty i modlitwy alfabetycznie po nazwie; broń, pancerze, augumentacje, ekwipunek po typie i nazwie; psionika po typie malejąco i nazwie.
+- Kolekcje są sortowane przed zasileniem list wyboru: domyślnie po kolumnie `LP` (jeśli istnieje), a gdy jej brak — bestiariusz, talenty i modlitwy alfabetycznie po nazwie; broń, pancerze, augumentacje, ekwipunek po typie i nazwie; psionika po typie malejąco i nazwie.
 
 **Meta dane:**
 - `_meta.traits` zawiera listę cech wraz z opisami wykorzystywanymi w popoverze.
@@ -236,8 +236,9 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `resolveNameKey(record)` — znajduje klucz nazwy rekordu (cache w `nameKeyCache`).
 - `getRecordName(record, index)` — zwraca nazwę rekordu lub fallback „Rekord n”.
 - `compareStrings(left, right, { descending })` — porównanie stringów z normalizacją i opcją sortowania malejącego (locale `pl`).
+- `getSortableLp(record)` — odczytuje `LP` jako wartość liczbową, zwraca `null` gdy brak/niepoprawne.
 - `getSortableType(record)` — zwraca znormalizowaną wartość pola typu (`Typ`, `Type`).
-- `sortRecords(records, compare)` — stabilne sortowanie rekordów z zachowaniem kolejności wejściowej przy remisie.
+- `sortRecords(records, compare)` — stabilne sortowanie rekordów z zachowaniem kolejności wejściowej przy remisie; priorytetowo sortuje po `LP`, jeśli oba rekordy mają tę wartość.
 - `sortByName(records)` — sortuje rekordy alfabetycznie po nazwie.
 - `sortByTypeThenName(records, { typeDescending })` — sortuje po typie, a następnie po nazwie (opcjonalnie malejąco po typie).
 - `findRecordKey(record, label)` — znajduje klucz odpowiadający etykiecie (porównanie znormalizowane).

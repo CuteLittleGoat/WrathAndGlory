@@ -843,6 +843,19 @@
         return descending ? -result : result;
       };
 
+      const getSortableLp = (record) => {
+        const lpValue = getRecordValueByLabels(record, ["LP"]);
+        if (lpValue === null || lpValue === undefined || lpValue === "") {
+          return null;
+        }
+        const match = String(lpValue).match(/-?\d+(\.\d+)?/);
+        if (!match) {
+          return null;
+        }
+        const parsed = Number(match[0]);
+        return Number.isFinite(parsed) ? parsed : null;
+      };
+
       const getSortableType = (record) =>
         normalizeText(getRecordValueByLabels(record, ["Typ", "Type", "type"]));
 
@@ -850,6 +863,17 @@
         records
           .map((record, index) => ({ record, index }))
           .sort((a, b) => {
+            const lpA = getSortableLp(a.record);
+            const lpB = getSortableLp(b.record);
+            if (lpA !== null && lpB !== null && lpA !== lpB) {
+              return lpA - lpB;
+            }
+            if (lpA !== null && lpB === null) {
+              return -1;
+            }
+            if (lpA === null && lpB !== null) {
+              return 1;
+            }
             const result = compare(a, b);
             if (result !== 0) {
               return result;

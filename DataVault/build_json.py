@@ -32,6 +32,8 @@ def derive_column_order(header):
   for col in header:
     if not col:
       continue
+    if str(col).strip().lower() == "lp":
+      continue
     if re.match(r"^Zasi[eę]g\s*\d+$", col, re.IGNORECASE):
       if not has_range:
         order.append("Zasięg")
