@@ -9333,6 +9333,49 @@
         "Zasięg": "- / - / -",
         "Cechy": "Brutalna; Parująca"
       }
+    ],
+    "Zakony Pierwszego Powołania": [
+      {
+        "Nazwa": "Krwawe Anioły",
+        "Opis": "Zarówno szlachetne jak i zaciekłe w walce Krwawe Anioły są modelowym przykładem obrońców ludzkości. Każdy z nich ciągle opłakuje śmierć Prymarchy Sanguiniusa z rąk Arcyzdrajcy Horusa. Jego odejście okaleczyło dusze genetycznych synów. Na polu bitwy ten żal manifestuje się poprzez dziki szał i głód zemsty, czyniąc z nich straszliwych wojowników w zwarciu.",
+        "Zaleta": "Dzikie echa\nKrwawe Anioły jako mistrzowie szturmu są prowadzone przez dzikie pragnienie pomszczenia Prymarchy.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi raz na Test ataku wręcz.",
+        "Wada": "Czerwony głód (Genoziarno)\nMroczna skaza Zakonu jest doskonale skrywaną tajemnicą – Krwawe Anioły są przepełnione destrukcyjną tęsknotą, szałem bitewnym i niemal nienasyconym głodem krwi.\n\nZa każdym razem, gdy walczysz w zawarciu i zobaczysz krew musisz wykonać Test Siły Woli o ST 3. Jeśli Test się nie powiedzie, wpadasz w Szał bojowy."
+      },
+      {
+        "Nazwa": "Mroczne Anioły"
+      }
+    ],
+    "Orcze Klany": [
+      {
+        "Nazwa": "Złe Ksienżyce",
+        "Opis": "Ich zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.",
+        "Efekt": "+1 do Majątku na koniec każdej sesji."
+      },
+      {
+        "Nazwa": "Krwawe Topory",
+        "Opis": "Uważani za „nieorczych” przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne „taktiki”, jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
+        "Efekt": "+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr)."
+      },
+      {
+        "Nazwa": "Śmiercioczaszki",
+        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, „handlują” i modyfikują sprzęt częściej niż inne klany.",
+        "Efekt": "+Ranga dodatkowych kości do Testów\nKorzystania z technologii oraz Wpływów."
+      },
+      {
+        "Nazwa": "Złe Słońca",
+        "Opis": "Ich obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.",
+        "Efekt": "Zyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością."
+      },
+      {
+        "Nazwa": "Gupole",
+        "Opis": "Masywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.",
+        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży (str. 188)."
+      },
+      {
+        "Nazwa": "Wężogryzy",
+        "Opis": "Celowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
+        "Efekt": "+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
+      }
     ]
   },
   "_meta": {

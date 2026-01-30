@@ -34,7 +34,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
 - Pole globalne: `#globalSearch` w `.panelBody`.
-- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
+- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
 - W `.hint` jest statyczna lista wskazówek (tekst, nie logika), m.in. linia o „Shift = sort wielokolumnowy”, mimo że logika multi-sortu nie istnieje w JS.
 
 ### 2.3 Obszar tabeli
@@ -103,7 +103,7 @@ Efekty i obwódki:
 ### 3.5 Zakładki
 - `.tabs` — flex z zawijaniem.
 - `.tab` — uppercase i ten sam font co reszta UI, aktywna z innym tłem i borderem.
-- `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów`) mają jaśniejszy kolor tekstu `var(--code)` i `opacity: .9`, spójny z etykietą checkboxa.
+- `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`) mają jaśniejszy kolor tekstu `var(--code)` i `opacity: .9`, spójny z etykietą checkboxa.
 
 ### 3.6 Tabela
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.
@@ -211,10 +211,21 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Nazwa`: 30ch
   - `Opis`: 56ch
 
+- **Zakony Pierwszego Powołania**
+  - `Nazwa`: 26ch
+  - `Opis`: 56ch
+  - `Zaleta`: 46ch
+  - `Wada`: 46ch
+
 - **Ścieżki Asuryani**
   - `Nazwa`: 26ch
   - `Efekt`: 26ch
   - `Opis`: 56ch
+
+- **Orcze Klany**
+  - `Nazwa`: 26ch
+  - `Opis`: 56ch
+  - `Efekt`: 26ch
 
 - **Mutacje Krootów**
   - `Mutacja krootów`: 22ch
@@ -318,7 +329,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 
 ### 4.1 Stałe
 - `SHEETS_ORDER` — kolejność zakładek (np. Bestiariusz, Tabela Rozmiarów, Archetypy; Tabela Rozmiarów jest zawsze między Bestiariusz a Archetypy).
-- `SHEETS_ORDER` — kolejność zakładek (m.in. Bestiariusz → Tabela Rozmiarów → Gatunki → Archetypy → Bonusy Frakcji → Słowa Kluczowe Frakcji → Implanty Astartes → Ścieżki Asuryani → Mutacje Krootów → Cechy).
+- `SHEETS_ORDER` — kolejność zakładek (m.in. Bestiariusz → Tabela Rozmiarów → Gatunki → Archetypy → Bonusy Frakcji → Słowa Kluczowe Frakcji → Implanty Astartes → Zakony Pierwszego Powołania → Ścieżki Asuryani → Orcze Klany → Mutacje Krootów → Cechy).
 - `SHEET_COLUMN_ORDER` — preferowana kolejność kolumn per arkusz.
   - Dla `Tabela Rozmiarów` kolejność to: `Rozmiar`, `Modyfikator Testu Ataku`, `Zmniejszenie Poziomu Ukrycia`, `Przykłady`.
   - Dla `Gatunki` kolejność to: `Gatunek`, `Koszt PD`, `Atrybuty`, `Umiejętności`, `Zdolności gatunkowe`, `Rozmiar`, `Szybkość`.
@@ -331,7 +342,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz).
-- `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Ścieżki Asuryani`, `Mutacje Krootów`).
+- `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
 
@@ -632,3 +643,8 @@ Obsługuje trzy przypadki:
 - Kolejność zakładek i kolumn jest kluczowa (`SHEETS_ORDER`, `SHEET_COLUMN_ORDER`).
 - Każda interakcja w UI (filtry, sortowanie, porównanie, clamp) jest wykonywana w JS — bez zewnętrznych bibliotek UI.
 - Wszystkie style i efekty (glow, kolory, uppercase, letter-spacing) są definiowane w `style.css` i powinny być odtworzone dokładnie.
+- **Zakony Pierwszego Powołania**
+  - `Nazwa`: 26ch
+  - `Opis`: 56ch
+  - `Zaleta`: 46ch
+  - `Wada`: 46ch
