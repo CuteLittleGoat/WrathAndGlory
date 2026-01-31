@@ -153,3 +153,63 @@ Po wdrożeniu, **każde wysłanie wiadomości w GM** wygeneruje powiadomienie PU
 - **PUSH:** FCM + Firebase Function reagująca na `dataslate/current`.
 
 Jeśli będziesz chciał dostosować linki lub dodać kolejny moduł, wystarczy dodać go w `Main/index.html` (bez przebudowy aplikacji), o ile nie potrzebujesz nowej natywnej funkcji.
+
+---
+
+## 7. Instrukcja krok po kroku: przygotowanie pliku instalacyjnego (APK/AAB)
+
+Poniżej masz kompletną checklistę **co zainstalować** oraz **gdzie kliknąć**, aby zbudować plik instalacyjny aplikacji.
+
+### 7.1. Co zainstalować (jednorazowo)
+1. **Android Studio** (zawiera Android SDK oraz narzędzia build)  
+   - Pobierz z: https://developer.android.com/studio
+2. **JDK 17** (jeśli Android Studio nie zainstaluje automatycznie)  
+   - Pobierz z: https://adoptium.net/
+3. **Android SDK + Build Tools**  
+   - W Android Studio: `Settings/Preferences → Appearance & Behavior → System Settings → Android SDK`  
+   - Upewnij się, że masz **Android 14 (API 34)** oraz **Android SDK Build-Tools** (min. 34.x).
+
+### 7.2. Przygotowanie projektu (raz na projekt)
+1. **Otwórz projekt**  
+   - Android Studio → **Open** → wybierz folder `MigracjaAndroid/AndroidApp`.
+2. **Dodaj prawdziwy `google-services.json`**  
+   - Firebase Console → dodaj aplikację Android `com.cutelittlegoat.wrathandglory` → pobierz plik.  
+   - Podmień plik w: `AndroidApp/app/google-services.json`.
+3. **Synchronizacja Gradle**  
+   - Kliknij **Sync Now** (górny pasek powiadomień) albo `File → Sync Project with Gradle Files`.
+4. **Sprawdź urządzenie/emu**  
+   - Podłącz telefon (USB + Debugowanie USB) lub uruchom emulator z **Device Manager**.
+
+### 7.3. Szybki test (APK debug)
+1. W Android Studio kliknij **Run ▶**.  
+2. Aplikacja zainstaluje się na urządzeniu i uruchomi się automatycznie.  
+3. Debug APK znajdziesz w:  
+   - `AndroidApp/app/build/outputs/apk/debug/app-debug.apk`.
+
+### 7.4. APK / AAB podpisany (release) — krok po kroku
+To jest **prawdziwy plik instalacyjny do dystrybucji**.
+
+1. **Zbuduj podpisany pakiet**  
+   - Android Studio → `Build → Generate Signed Bundle / APK...`
+2. **Wybierz format**  
+   - **Android App Bundle (AAB)** → jeśli publikujesz w Google Play,  
+   - **APK** → jeśli chcesz plik instalacyjny do ręcznej instalacji.
+3. **Keystore (pierwszy raz)**  
+   - Kliknij **Create new...**  
+   - Uzupełnij:
+     - **Key store path** (np. `C:\Keys\wg-release.jks`)
+     - **Password** (zapisz!)
+     - **Key alias** (np. `wg`)
+     - **Key password** (zapisz!)
+     - **Validity** (np. 25 lat)
+4. **Build Variant**  
+   - Wybierz **release** → **Finish**.
+5. **Gdzie jest plik wynikowy?**  
+   - **AAB:** `AndroidApp/app/build/outputs/bundle/release/app-release.aab`  
+   - **APK:** `AndroidApp/app/build/outputs/apk/release/app-release.apk`
+
+### 7.5. Uwaga o bezpieczeństwie i aktualizacjach
+- **Keystore musi być zachowany** — bez niego nie zaktualizujesz aplikacji.  
+- Wersję aplikacji zwiększasz w `AndroidApp/app/build.gradle`:
+  - `versionCode` (liczba),  
+  - `versionName` (np. `"1.1"`).
