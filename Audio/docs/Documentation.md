@@ -73,7 +73,7 @@ window.firebaseConfig = {
   5. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
      - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
        - Każda karta sampla pokazuje: nazwę sampla (z aliasem w nawiasie, jeśli ustawiono), `tag2` (drugi poziom folderu) oraz nazwę pliku.
-       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)** oraz przycisk **Wyczyść**, który usuwa alias dla danego sampla.
+       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)**, a **bezpośrednio pod nim** przycisk **Wyczyść** (powyżej **Odtwórz**), który usuwa alias dla danego sampla.
      - Prawa kolumna `.side-stack`: 
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
@@ -113,11 +113,11 @@ window.firebaseConfig = {
 - `.tag-tree`: kolumnowe drzewko checkboxów, `gap: 6px`.
 - `.tag-children.is-hidden`: ukrywanie podfolderów po odznaczeniu rodzica (`display: none`).
 - `.group-count`: kolor `var(--danger)` dla liczby zgrupowanych plików audio.
-- `.sample-alias`: kolor `--muted`, jaśniejsza czcionka dla aliasu w nawiasie.
+- `.sample-alias`: kolor `#d2fad2`, jaśniejsza czcionka dla aliasu w nawiasie.
 - `.side-stack`: prawa kolumna w adminie, `display: flex`, `flex-direction: column`, `gap: 22px`.
 - `.samples-grid`: `grid-template-columns: repeat(auto-fill, minmax(210px, 1fr))`.
 - `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
-- `.alias-controls`: układ flex dla pola aliasu i przycisku „Wyczyść”, `gap: 6px`.
+- `.alias-controls`: układ kolumnowy (flex) dla pola aliasu, `gap: 6px` (przycisk „Wyczyść” znajduje się pod polem aliasu).
 - `.alias-input`: pole tekstowe aliasu (`background: #031806`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `font-size: 12px`).
 - `.fav-list`: `border: 1px solid rgba(22, 198, 12, 0.5)`, tło `#031206`.
 - Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.

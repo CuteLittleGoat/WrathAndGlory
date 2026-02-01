@@ -224,7 +224,7 @@
     }
 
     .sample-alias {
-      color: var(--muted);
+      color: #d2fad2;
       font-weight: 400;
     }
 
@@ -350,11 +350,12 @@
 
     .alias-controls {
       display: flex;
+      flex-direction: column;
       gap: 6px;
     }
 
     .alias-input {
-      flex: 1;
+      width: 100%;
       background: #031806;
       border: 1px solid rgba(22, 198, 12, 0.6);
       color: var(--text);
@@ -1219,8 +1220,8 @@
               <div class="sample-actions">
                 <div class="alias-controls">
                   <input class="alias-input" data-role="alias" type="text" placeholder="Alias (opcjonalny)" value="${item.alias || ""}" />
-                  <button class="btn" data-action="clear-alias">Wyczyść</button>
                 </div>
+                <button class="btn" data-action="clear-alias">Wyczyść</button>
                 <button class="btn" data-action="play">Odtwórz</button>
                 <select class="fav-select">
                   ${selectOptions}

@@ -533,6 +533,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 
 ### 5) Wyjątki i formatowanie specjalne
 - `.group-count`: czerwony licznik w nawiasie dla zgrupowanych plików audio (`color: var(--danger)`).
+- `.sample-alias`: alias w nawiasie ma jaśniejszy kolor `#D2FAD2`.
 
 ---
 
