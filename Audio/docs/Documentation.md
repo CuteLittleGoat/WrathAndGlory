@@ -7,7 +7,7 @@
   - **Widok użytkownika** (domyślny) — pokazuje panel odtwarzania oraz boczną nawigację między „Widokiem głównym” i listami „Ulubione”.
   - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera w pełni działający podgląd widoku użytkownika (dane i nawigacja są identyczne jak u użytkownika).
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
-- **Ustawienia:** ulubione i „Główny widok” są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
+- **Ustawienia:** ulubione, „Główny widok” oraz aliasy sampli są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
 - **Odtwarzanie:** kliknięcie nazwy sampla lub taga (druga linia pod nazwą) uruchamia/wyłącza dźwięk dla danej karty; równoległe odtwarzanie wielu sampli jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%).
 
 ## 2. Struktura repozytorium (pliki i katalogi)
@@ -56,7 +56,7 @@ window.firebaseConfig = {
 ### 4.2. Firestore
 - Kolekcja: `audio`
 - Dokument: `favorites`
-- Dokument tworzony automatycznie, jeśli nie istnieje. Zawiera `favorites` i `mainView`.
+- Dokument tworzony automatycznie, jeśli nie istnieje. Zawiera `favorites`, `mainView` oraz `aliases` (mapa aliasów po `itemId`).
 
 ## 5. `index.html` — layout i HTML
 - `<title>` ustawiony na `Kozie Audio` (tytuł karty przeglądarki).
@@ -72,7 +72,8 @@ window.firebaseConfig = {
   4. **Toolbar z wyszukiwarką sampli** `.toolbar` (tylko admin): pole „Szukaj sampla...”, umieszczone **pod** panelami tagów.
   5. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
      - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
-       - Każda karta sampla pokazuje: nazwę sampla, `tag2` (drugi poziom folderu) oraz nazwę pliku.
+       - Każda karta sampla pokazuje: nazwę sampla (z aliasem w nawiasie, jeśli ustawiono), `tag2` (drugi poziom folderu) oraz nazwę pliku.
+       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)** oraz przycisk **Wyczyść**, który usuwa alias dla danego sampla.
      - Prawa kolumna `.side-stack`: 
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
@@ -112,9 +113,12 @@ window.firebaseConfig = {
 - `.tag-tree`: kolumnowe drzewko checkboxów, `gap: 6px`.
 - `.tag-children.is-hidden`: ukrywanie podfolderów po odznaczeniu rodzica (`display: none`).
 - `.group-count`: kolor `var(--danger)` dla liczby zgrupowanych plików audio.
+- `.sample-alias`: kolor `--muted`, jaśniejsza czcionka dla aliasu w nawiasie.
 - `.side-stack`: prawa kolumna w adminie, `display: flex`, `flex-direction: column`, `gap: 22px`.
 - `.samples-grid`: `grid-template-columns: repeat(auto-fill, minmax(210px, 1fr))`.
 - `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
+- `.alias-controls`: układ flex dla pola aliasu i przycisku „Wyczyść”, `gap: 6px`.
+- `.alias-input`: pole tekstowe aliasu (`background: #031806`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `font-size: 12px`).
 - `.fav-list`: `border: 1px solid rgba(22, 198, 12, 0.5)`, tło `#031206`.
 - Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
 - `.sample-trigger`: elementy klikalne (nazwa sampla oraz tag), `cursor: pointer` i łagodne przejście koloru.
@@ -154,7 +158,7 @@ window.firebaseConfig = {
 - `cleanTagSegment(segment)` — dekoduje `%20` na spacje, usuwa fragmenty ignorowane (`SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`) i normalizuje spacje.
 - `extractTags(folderUrl)` — zwraca tablicę tagów na podstawie segmentów ścieżki `folderUrl`.
 - `getGroupingBaseLabel(label)` — usuwa numery (na końcu lub jako osobny token w środku) w celu wyznaczenia bazowej etykiety grupowania.
-- `formatSampleLabel(item)` — zwraca HTML etykiety z czerwonym licznikiem wariantów.
+- `formatSampleLabel(item)` — zwraca HTML etykiety z aliasem w nawiasie (jeśli ustawiony) oraz czerwonym licznikiem wariantów.
 - `buildTagTree(items)` — buduje drzewo tagów (hierarchia) z listy sampli.
 - `flattenTagTree(nodes, depth)` — spłaszcza drzewo tagów do listy z poziomem zagnieżdżenia.
 - `ensureTagSelection(nodes)` — inicjalizuje mapę zaznaczeń tagów domyślnie na `true`.
@@ -165,14 +169,17 @@ window.firebaseConfig = {
 - `positionTagMenu()` — pozycjonuje popup filtra listowego przy przycisku.
 - `openTagMenu()` / `closeTagMenu()` — otwiera i zamyka popup filtra tagów.
 
-### 8.2. Ustawienia (ulubione + główny widok)
-- `saveSettings()` — zapisuje `favorites` i `mainView` do Firestore lub `localStorage` (`audio.settings`).
+### 8.2. Ustawienia (ulubione + główny widok + aliasy)
+- `saveSettings()` — zapisuje `favorites`, `mainView` i `aliases` do Firestore lub `localStorage` (`audio.settings`).
 - `defaultFavorites()` — tworzy domyślną listę „Ulubione”.
 - `defaultMainView()` — zwraca pusty „Główny widok”.
+- `defaultAliases()` — zwraca pustą mapę aliasów.
 - `normalizeFavorites(raw)` — normalizuje strukturę list ulubionych.
 - `normalizeMainView(raw)` — normalizuje listę `itemIds` głównego widoku.
-- `normalizeSettings(raw)` — akceptuje zarówno nowy format (`favorites`, `mainView`) jak i stary (`lists`).
+- `normalizeAliases(raw)` — normalizuje mapę aliasów (usuwa puste wartości, trimuje tekst).
+- `normalizeSettings(raw)` — akceptuje zarówno nowy format (`favorites`, `mainView`, `aliases`) jak i stary (`lists`).
 - `loadSettingsLocal()` — wczytuje lokalny zapis (`audio.settings`) lub migruje z `audio.favorites`.
+- `setItemAlias(itemId, alias)` — zapisuje/usuwa alias i odświeża wszystkie widoki.
 
 ### 8.3. Firebase
 - `initFirebase()`:
@@ -183,7 +190,7 @@ window.firebaseConfig = {
 
 ### 8.4. Renderowanie
 - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
-- `renderSamples()` — rysuje siatkę sampli (tylko admin) z selektorem listy (domyślnie „Widok Główny”) i przyciskiem dodania; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
+- `renderSamples()` — rysuje siatkę sampli (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
 - `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.
