@@ -223,6 +223,11 @@
       color: var(--danger);
     }
 
+    .sample-alias {
+      color: var(--muted);
+      font-weight: 400;
+    }
+
     .side-stack {
       display: flex;
       flex-direction: column;
@@ -341,6 +346,22 @@
       flex-direction: column;
       gap: 6px;
       margin-top: auto;
+    }
+
+    .alias-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .alias-input {
+      flex: 1;
+      background: #031806;
+      border: 1px solid rgba(22, 198, 12, 0.6);
+      color: var(--text);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-family: var(--font);
+      font-size: 12px;
     }
 
     .sample-actions select {
@@ -613,6 +634,7 @@
       itemsById: new Map(),
       favorites: { lists: [] },
       mainView: { itemIds: [] },
+      aliases: {},
       firestore: null,
       favoritesDoc: null,
       usingFirestore: false,
@@ -714,10 +736,12 @@
       if (!item) {
         return "";
       }
+      const alias = String(item.alias || "").trim();
+      const aliasMarkup = alias ? ` <span class="sample-alias">(${alias})</span>` : "";
       if (item.groupCount && item.groupCount > 1) {
-        return `${item.label} <span class="group-count">(${item.groupCount})</span>`;
+        return `${item.label}${aliasMarkup} <span class="group-count">(${item.groupCount})</span>`;
       }
-      return item.label;
+      return `${item.label}${aliasMarkup}`;
     };
 
     const buildTagTree = (items) => {
@@ -1028,6 +1052,7 @@
       const payload = {
         favorites: state.favorites,
         mainView: state.mainView,
+        aliases: state.aliases,
         updatedAt: serverTimestamp()
       };
       if (state.usingFirestore && state.favoritesDoc) {
@@ -1036,7 +1061,8 @@
       }
       localStorage.setItem("audio.settings", JSON.stringify({
         favorites: state.favorites,
-        mainView: state.mainView
+        mainView: state.mainView,
+        aliases: state.aliases
       }));
     };
 
@@ -1053,6 +1079,8 @@
     const defaultMainView = () => ({
       itemIds: []
     });
+
+    const defaultAliases = () => ({});
 
     const normalizeFavorites = (raw) => {
       if (!raw || !Array.isArray(raw.lists)) {
@@ -1071,14 +1099,24 @@
       itemIds: Array.isArray(raw?.itemIds) ? raw.itemIds.filter(Boolean) : []
     });
 
+    const normalizeAliases = (raw) => {
+      if (!raw || typeof raw !== "object") {
+        return defaultAliases();
+      }
+      return Object.fromEntries(
+        Object.entries(raw).map(([key, value]) => [key, String(value || "").trim()]).filter(([, value]) => value)
+      );
+    };
+
     const normalizeSettings = (raw) => {
       if (!raw) {
-        return { favorites: defaultFavorites(), mainView: defaultMainView() };
+        return { favorites: defaultFavorites(), mainView: defaultMainView(), aliases: defaultAliases() };
       }
       const favoritesSource = raw.favorites || (raw.lists ? raw : null);
       return {
         favorites: normalizeFavorites(favoritesSource),
-        mainView: normalizeMainView(raw.mainView)
+        mainView: normalizeMainView(raw.mainView),
+        aliases: normalizeAliases(raw.aliases)
       };
     };
 
@@ -1089,16 +1127,19 @@
         if (!legacy) {
           state.favorites = defaultFavorites();
           state.mainView = defaultMainView();
+          state.aliases = defaultAliases();
           return;
         }
         try {
           const legacyFavorites = normalizeFavorites(JSON.parse(legacy));
           state.favorites = legacyFavorites;
           state.mainView = defaultMainView();
+          state.aliases = defaultAliases();
           return;
         } catch (error) {
           state.favorites = defaultFavorites();
           state.mainView = defaultMainView();
+          state.aliases = defaultAliases();
           return;
         }
       }
@@ -1107,9 +1148,11 @@
         const settings = normalizeSettings(parsed);
         state.favorites = settings.favorites;
         state.mainView = settings.mainView;
+        state.aliases = settings.aliases;
       } catch (error) {
         state.favorites = defaultFavorites();
         state.mainView = defaultMainView();
+        state.aliases = defaultAliases();
       }
     };
 
@@ -1138,6 +1181,7 @@
         const settings = normalizeSettings(snapshot.data());
         state.favorites = settings.favorites;
         state.mainView = settings.mainView;
+        state.aliases = settings.aliases;
         renderAllViews();
       });
     };
@@ -1173,6 +1217,10 @@
               <div class="sample-meta">${item.tag2 || "Brak tagu 2"}</div>
               <div class="sample-meta">${item.filename || "Brak nazwy pliku"}</div>
               <div class="sample-actions">
+                <div class="alias-controls">
+                  <input class="alias-input" data-role="alias" type="text" placeholder="Alias (opcjonalny)" value="${item.alias || ""}" />
+                  <button class="btn" data-action="clear-alias">Wyczyść</button>
+                </div>
                 <button class="btn" data-action="play">Odtwórz</button>
                 <select class="fav-select">
                   ${selectOptions}
@@ -1488,6 +1536,23 @@
       }
     };
 
+    const normalizeAliasValue = (value) => String(value || "").trim();
+
+    const setItemAlias = async (itemId, alias) => {
+      const normalized = normalizeAliasValue(alias);
+      if (normalized) {
+        state.aliases[itemId] = normalized;
+      } else {
+        delete state.aliases[itemId];
+      }
+      const item = state.itemsById.get(itemId);
+      if (item) {
+        item.alias = normalized;
+      }
+      await saveSettings();
+      renderAllViews();
+    };
+
     const moveMainViewItem = async (itemId, direction) => {
       const index = state.mainView.itemIds.indexOf(itemId);
       const target = index + direction;
@@ -1569,6 +1634,7 @@
             id,
             label: shouldGroup ? entry.baseLabel : entry.label,
             groupCount: shouldGroup ? groupSize : 0,
+            alias: state.aliases[id] || "",
             filename: entry.filename,
             folderUrl: entry.folderUrl,
             tags,
@@ -1611,6 +1677,10 @@
         return;
       }
       const itemId = card.dataset.id;
+      if (button.dataset.action === "clear-alias") {
+        setItemAlias(itemId, "");
+        return;
+      }
       if (button.dataset.action === "play") {
         togglePlayback(itemId, button);
       }
@@ -1622,6 +1692,18 @@
           addItemToFavorites(select.value, itemId);
         }
       }
+    });
+
+    samplesGrid.addEventListener("change", (event) => {
+      const input = event.target.closest("input[data-role=\"alias\"]");
+      if (!input) {
+        return;
+      }
+      const card = input.closest(".sample-card");
+      if (!card) {
+        return;
+      }
+      setItemAlias(card.dataset.id, input.value);
     });
 
     favoritesPanel.addEventListener("click", (event) => {
