@@ -34,8 +34,8 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 ### Używanie
 #### 1) Przygotowanie
 1. Uruchom **Infoczytnik.html** na ekranie graczy.
-2. Po załadowaniu kliknij raz w ekran, aby odblokować audio (wymóg przeglądarki).
-3. Uruchom **GM.html** w panelu MG.
+2. Uruchom **GM.html** w panelu MG.
+3. (Uwaga) W przeglądarkach audio może zostać zablokowane przez politykę autoplay — w takim przypadku wykonaj dowolną interakcję (kliknięcie/kliknięcie ekranu), aby dźwięk mógł się odtworzyć. W aplikacji Android/WebView dźwięk może działać bez dodatkowego kroku, jeśli WebView zezwala na autoplay.
 
 #### 2) Wysyłanie komunikatu
 1. Wybierz frakcję (layout) z listy.
@@ -105,8 +105,8 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ### Usage
 #### 1) Setup
 1. Open **Infoczytnik.html** on the players’ display.
-2. After loading, click once to unlock audio (browser requirement).
-3. Open **GM.html** in the GM panel.
+2. Open **GM.html** in the GM panel.
+3. (Note) Browsers can block audio due to autoplay policies — if that happens, perform any interaction (click/tap) so audio can play. In the Android/WebView app audio can work without an extra step if the WebView allows autoplay.
 
 #### 2) Sending a message
 1. Select the faction (layout) from the list.
