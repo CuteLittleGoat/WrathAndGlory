@@ -260,14 +260,10 @@ window.firebaseConfig = {
 - `.msg`: `line-height: 1.35`, `word-break: break-word`, `text-shadow` o zielonym poświacie.
 - `.logo`: rozmiar 54×54 px w `.logoBox`, `filter: drop-shadow(...)`, domyślnie `display: none`.
 
-**Overlay audio:**
-- `.unlock`: pełnoekranowy overlay z tłem `rgba(0,0,0,.88)`, tekst center, `z-index: 9999`.
-
-### 7.3. Audio unlock
-- Overlay `#unlock` blokuje dźwięk, dopóki użytkownik nie wykona interakcji.
-- Zdarzenia odblokowujące: `click`, `touchstart`, `pointerdown`, `keydown`.
-- IIFE `setupAudioUnlock()` ustawia `window.__dsAudioArmed = false`, usuwa overlay po pierwszej interakcji i wystawia funkcję:
-  - `window.__dsPlayUrlOnce(url)` — odtwarza dźwięk **tylko** gdy `window.__dsAudioArmed === true`.
+### 7.3. Audio
+- Brak overlayu blokującego dźwięk — aplikacja nie wymusza kliknięcia przed odtworzeniem.
+- Globalna funkcja:
+  - `window.__dsPlayUrlOnce(url)` — próbuje odtworzyć dźwięk przez `new Audio(url).play()` i ignoruje ewentualne błędy (np. blokada autoplay w przeglądarce).
 
 ### 7.4. Mapy i stałe
 - `ASSET_VERSION = window.__dsVersion || "2026-01-22_07-18-48"`.
@@ -290,8 +286,7 @@ window.firebaseConfig = {
 
 ### 7.5. Funkcje renderujące i pomocnicze
 - `autoCacheBust()` (IIFE w `<head>`) — dodaje `?v=<INF_VERSION>` do URL, jeśli brakuje/inna wartość.
-- `setupAudioUnlock()` (IIFE) — patrz sekcja 7.3.
-- `armAudio()` — wewnętrzna funkcja `setupAudioUnlock()` odblokowująca audio i ukrywająca overlay.
+- `window.__dsPlayUrlOnce(url)` — patrz sekcja 7.3.
 - `fitPanel(ar)` — dopasowuje `.panel` do okna, zachowując aspect ratio.
 - `setInsets(p)` — ustawia CSS variables `--screen-*`.
 - `setFlickerState(shouldFlicker)` — dodaje/usuwa `.no-flicker`.
