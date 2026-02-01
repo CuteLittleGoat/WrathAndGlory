@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "382792444120",
+    "project_id": "wh40k-data-slate",
+    "storage_bucket": "wh40k-data-slate.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382792444120:android:6eb3b75526c90197838fad",
+        "android_client_info": {
+          "package_name": "com.cutelittlegoat.wrathandglory"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcnrxWRUst3-FqgygSGixUiT1wfCN4uUo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
