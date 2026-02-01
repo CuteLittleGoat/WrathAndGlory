@@ -1,8 +1,6 @@
 1. poprawić tooltipy w DataVault
 2. w infoczytniku dodać więcej linii prefixu i suffix
-3. zablokować wyświetlanie infoczytnika w pozycji pionowej - wymagana migracja do androida
+3. Usunąć w infoczytniku "Kliknij aby odblokować" - w androdzie nie jest już potrzebne
 4. ustalić kolejność przycisków w main
-5. ustawić szerokość kolumn i wyrównania tekstu
 6. Ujednolicić wszystkie cudzysłowy w "Repozytorium"
 7. Poprawić brak polskich liter w "Repozytorium"
-8. Ujednolicić format (str. ) - [Podręcznik Główny (str. )]
