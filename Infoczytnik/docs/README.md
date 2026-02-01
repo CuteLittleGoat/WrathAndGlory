@@ -59,7 +59,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
    - Audio globalne: `assets/audio/global/Ping.mp3`, `assets/audio/global/Message.mp3`
 2. Zmień wersję cache w `Infoczytnik.html`:
    - `INF_VERSION` (górny skrypt) oraz `ASSET_VERSION` (skrypt modułowy). W praktyce jest to ta sama wartość (`window.__dsVersion`).
-   - Format wersji: `YYYY-MM-DD_HH-mm-ss` (zawsze zgodny z aktualną datą i godziną).
+   - Format wersji: `YYYY-MM-DD_HH-mm-ss` (zawsze zgodny z aktualną datą i godziną, z myślnikami zamiast dwukropków), np. `2026-02-01_10-44-23`.
 3. Odśwież przeglądarkę na urządzeniach graczy. Infoczytnik wymusza cache-busting parametrem `?v=<INF_VERSION>`.
 
 #### Aktualizacja konfiguracji Firebase
@@ -130,7 +130,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
    - Global audio: `assets/audio/global/Ping.mp3`, `assets/audio/global/Message.mp3`
 2. Bump cache version in `Infoczytnik.html`:
    - `INF_VERSION` (top script) and `ASSET_VERSION` (module script). In practice these are the same value (`window.__dsVersion`).
-   - Version format: `YYYY-MM-DD_HH-mm-ss` (always aligned with the current date and time).
+   - Version format: `YYYY-MM-DD_HH-mm-ss` (always aligned with the current date and time, hyphens instead of colons), e.g. `2026-02-01_10-44-23`.
 3. Refresh player devices. Infoczytnik forces cache-busting with the `?v=<INF_VERSION>` parameter.
 
 #### Updating Firebase configuration
