@@ -223,7 +223,7 @@ window.firebaseConfig = {
 ## 7. `Infoczytnik.html` — ekran graczy
 ### 7.1. Auto-cache-busting (INF_VERSION)
 - Skrypt w `<head>` ustawia:
-  - `const INF_VERSION = "YYYY-MM-DD_HH-mm-ss"` (zawsze zgodne z aktualną datą i godziną, ustawiane osobno dla wersji produkcyjnych i testowych).
+  - `const INF_VERSION = "YYYY-MM-DD_HH-mm-ss"` (zawsze zgodne z aktualną datą i godziną; myślniki zamiast dwukropków; ustawiane osobno dla wersji produkcyjnych i testowych), np. `2026-02-01_10-44-23`.
   - `window.__dsVersion = INF_VERSION`.
 - Jeśli `?v` w URL różni się od `INF_VERSION`, wykonywany jest `window.location.replace(...)`.
 
