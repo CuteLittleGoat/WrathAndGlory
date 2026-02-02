@@ -264,3 +264,16 @@ Uwagi formatowania:
 | --- | --- | --- | --- |
 | Nazwa | 20ch | lewo | standard |
 | Opis | 56ch | lewo | standard |
+
+## Hordy
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa zasady | 26ch | lewo | standard |
+| Opis zasady | 60ch | lewo | standard |
+| Przykład | 60ch | lewo | standard |
+
+## Kary do ST
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Ile celów/akcji | 20ch | środek | standard |
+| Kara do ST | 20ch | środek | standard |

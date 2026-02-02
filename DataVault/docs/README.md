@@ -30,12 +30,12 @@ Najważniejsze zasady działania:
 - **Tryb gracza (domyślny)**
   - Automatycznie wczytuje `data.json`.
   - Ukrywa przycisk administracyjny do aktualizacji danych.
-  - Ukrywa zakładkę **Bestiariusz** oraz zakładki **Trafienia Krytyczne** i **Groza Osnowy** (admin-only).
+  - Ukrywa zakładki admin-only: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy** oraz **Hordy**.
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
   - Dostępny jest przycisk **Aktualizuj dane**, który pobiera `Repozytorium.xlsx` z katalogu głównego.
   - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
-  - Zakładki **Bestiariusz**, **Trafienia Krytyczne** i **Groza Osnowy** są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
+  - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
 ### Zakładki sterowane checkboxami
 - Checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (domyślnie odznaczony) pokazuje:
@@ -115,12 +115,12 @@ Key behavior:
 - **Player mode (default)**
   - Automatically loads `data.json`.
   - Hides the admin-only data update button.
-  - Hides the **Bestiariusz**, **Trafienia Krytyczne**, and **Groza Osnowy** tabs (admin-only).
+  - Hides the admin-only tabs: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, and **Hordy**.
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
   - The **Aktualizuj dane** button appears and fetches `Repozytorium.xlsx` from the repository root.
   - The XLSX is parsed in the browser (SheetJS via CDN) and a new `data.json` is generated for download.
-  - The **Bestiariusz**, **Trafienia Krytyczne**, and **Groza Osnowy** tabs are visible only in this mode (when the combat checkbox is enabled).
+  - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) are visible only in this mode (when the combat checkbox is enabled).
 
 ### Tabs controlled by checkboxes
 - The “Czy wyświetlić zakładki dotyczące tworzenia postaci?” checkbox (unchecked by default) shows:

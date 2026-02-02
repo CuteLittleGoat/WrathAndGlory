@@ -297,6 +297,15 @@ Poniżej pełna lista **1:1**.
 - `Słowa Kluczowe`: **26ch**
 - `Cechy`: **32ch**
 
+#### 5.10 Hordy
+- `Nazwa zasady`: **26ch**
+- `Opis zasady`: **60ch**
+- `Przykład`: **60ch**
+
+#### 5.11 Kary do ST
+- `Ile celów/akcji`: **20ch** (wycentrowane)
+- `Kara do ST`: **20ch** (wycentrowane)
+
 ### 6) Wymagania układu (layout)
 - **Siatka główna**: `main` jest gridem z kolumnami `360px` (panel filtrów) i `1fr` (workspace).
 - **Responsywność**: poniżej `980px` layout przechodzi na jedną kolumnę (panel nad tabelą).

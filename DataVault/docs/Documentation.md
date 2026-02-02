@@ -256,6 +256,15 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Nazwa`: 20ch
   - `Opis`: 56ch
 
+- **Hordy**
+  - `Nazwa zasady`: 26ch
+  - `Opis zasady`: 60ch
+  - `Przykład`: 60ch
+
+- **Kary do ST**
+  - `Ile celów/akcji`: 20ch (wycentrowane)
+  - `Kara do ST`: 20ch (wycentrowane)
+
 ## Uwaga: szerokości i kolejność kolumn (Ścieżki Asuryani / Orcze Klany)
 W CSS modułu DataVault dla tych zakładek ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.
 
@@ -349,6 +358,7 @@ W `style.css` część kolumn z wartościami liczbowymi jest **wyrównana do śr
 - **Implanty Astartes**: `Numer`.
 - **Pancerze**: `WP`, `Koszt`, `Dostępność`, `Koszt IM`, `Strona`.
 - **Bronie**: `Obrażenia`, `DK`, `PP`, `Zasięg`, `Szybkostrzelność`, `Koszt`, `Dostępność`, `Koszt IM`, `Strona`.
+- **Kary do ST**: `Ile celów/akcji`, `Kara do ST`.
 
 Dodatkowo kolumna `Zasięg` w **Broniach** ma `white-space: nowrap`, aby nie łamać zapisu z ukośnikami.
 Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
@@ -358,7 +368,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 ### 4.1 Stałe
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
-- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`).
+- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`).
 - `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).

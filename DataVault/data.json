@@ -2102,6 +2102,74 @@
         "Strona": "28"
       }
     ],
+    "Hordy": [
+      {
+        "LP": "1",
+        "Nazwa zasady": "Atakowanie Hordy",
+        "Opis zasady": "Horda to zbiór identycznych Zagrożeń, jak np. grupa 10 orków chopaków. Każdy członek Hordy dysponuje jedną Raną. Atakowanie Hordy wykonywane jest jak normalny atak – najpierw określa się konkretny cel w Hordzie, a następnie wykonuje Test trafienia.\n\nJeśli liczba Ikon jest równa Obronie Hordy, trafienie i obrażenia rozstrzygane są w standardowy sposób. Jeśli zadane obrażenia przekroczą Odporność Hordy, twój cel ginie. Jeśli liczba uzyskanych Ikon przewyższa Obronę\n\nHordy, trafiasz w dodatkowe cele. Każda Ikona powyżej wartości Obrony Hordy oznacza trafienie dodatkowego celu, wybieranego przez MG – zazwyczaj są to pechowcy stojący najbliższej głównego celu ataku.",
+        "Przykład": "{{B}}Przykład:{{/B}} Postać Samanthy celuje z boltera do Hordy kultystów. Decyduje, że najważniejszym celem jest kultysta trzymający karabin plazmowy, ponieważ obawia się przeciążonych strzałów.\n\nTest Umiejętności Strzeleckich postaci Samanthy przekracza Obronę Hordy kultystów o 2 Ikony. Oznacza to, że oprócz głównego celu – kultysty z karabinem plazmowym – trafia w dodatkowe dwie postacie z Hordy. MG określa, które to postacie – w tym przypadku dwóch renegatów stojących najbliżej kultysty."
+      },
+      {
+        "LP": "2",
+        "Nazwa zasady": "Hordy a Atak wielokrotny",
+        "Opis zasady": "Możesz wykorzystać Atak wielokrotny, by zaatakować wiele wybranych celów w Hordzie. W takiej sytuacji każda Ikona powyżej Obrony celu oznacza trafienie dodatkowego celu w Hordzie",
+        "Przykład": "-"
+      },
+      {
+        "LP": "3",
+        "Nazwa zasady": "Hordy i Traumy",
+        "Opis zasady": "Każde poszczególne Zagrożenie w Hordzie ma taki sam poziom Odporności psychicznej. Jeśli zadasz więcej Traum niż wynosi Odporność psychiczna Hordy, jedno Zagrożenie z Hordy zostaje usunięte z walki.\n\nJeśli atak na Hordę wywołuje Traumę, a liczba uzyskanych Ikon przekracza Obronę Hordy, kolejne Zagrożenia padają ofiarą ataku. Każda Ikona powyżej Obrony Hordy oznacza trafienie dodatkowego celu.",
+        "Przykład": "{{B}}Przykład:{{/B}} Atak trafia Hordę kultystów, a liczba Ikon równa się Obronie Hordy. Ponadto atak zadaje również 5 Traum. Odporność psychiczna kultystów wynosi 4, dlatego jeden kultysta zostaje wyłączony z walki.\n\n{{B}}Przykład:{{/B}} Atak trafia w kultystę i przekracza jego Obronę o 2 Ikony, dlatego trafieni zostają dwaj dodatkowi kultyści w Hordzie. W wyniku tego ataku zadane zostaje 5 Traum, podczas gdy każdy z kultystów posiada Odporność psychiczną na poziomie 4. Jeden z kultystów zostaje wyłączony z walki w wyniku Traum, podobnie jak dwóch kolejnych, gdyż atak przebił Obronę kultystów o 2."
+      },
+      {
+        "LP": "4",
+        "Nazwa zasady": "Interakcje Bojowe a Hordy",
+        "Opis zasady": "Każde poszczególne Zagrożenie w Hordzie ma taki sam poziom Umiejętności i Odwagi. Za każde 3 Ikony przekraczające wartość Umiejętności lub Odwagi Hordy, dodatkowe Zagrożenie z Hordy staje się ofiarą twojej Interakcji bojowej.\n\nJeśli MG na to pozwoli, możesz skorzystać z Wyjątkowej Interakcji, by narzucić karę na całą Hordę, ale wtedy nie stosuje się żadnych dodatkowych efektów.",
+        "Przykład": "-"
+      },
+      {
+        "LP": "5",
+        "Nazwa zasady": "Ataki Hordy",
+        "Opis zasady": "Jeśli Horda atakuje jakąś postać, MG wykonuje jeden Test za całą Hordę, jakby była pojedynczą istotą, dodając +1 dodatkową kość za każdego Trepa będącego jej częścią. Maksymalna liczba tych dodatkowych kości jest równa połowie liczby Trepów w Hordzie.\n\nJeśli w Hordzie znajdują się istoty o różnym uzbrojeniu, powinieneś użyć zasad Rozdzielania ataków.",
+        "Przykład": "{{B}}Przykład:{{/B}} Podczas kampanii Poziomu 2 MG wysyła do walki Hordę 10 orków chopaków. Cała Horda rzuca się na pojedynczego Bohatera, otaczając go i wściekle tnąc rembakami. MG zbiera pulę kości odpowiadającą Walce wręcz chopaka (7), dodaje 1 kość za wykonanie szarży, a następnie 5 dodatkowych kości za połowę liczebności Hordy. Całkowita pula kości rzuconych w Teście ataku wynosi 13 (7 + 1 + 5)."
+      },
+      {
+        "LP": "6",
+        "Nazwa zasady": "Rozdzielanie Ataków Hordy",
+        "Opis zasady": "Horda może rozdzielić swoje ataki pomiędzy kilka celów. Ta akcja nie jest traktowana jako Atak wielokrotny [{{B}}Podręcznik Podstawowy{{/B}} (str. 187)] i nie nakłada żadnej kary do ST testów. Mistrz Gry musi zadeklarować, ilu członków Hordy bierze udział w każdym z ataków, jeśli Horda stosuje tę akcję. Do każdego z tych ataków należy doliczyć dodatkowe kości w liczbie połowy Trepów biorących udział w danym ataku.",
+        "Przykład": "{{B}}Przykład:{{/B}} Wściekła Horda 10 chopaków otacza grupę 3 Bohaterów. MG decyduje, że Horda nie będzie się dzieliła, jednak rozłoży ataki pomiędzy Bohaterów. Trzech chopaków atakuje pierwszego z Bohaterów, kolejnych trzech następnego, a pozostałych czterech atakuje ostatniego. Atak wymierzony w ostatniego Bohatera otrzymuje +2 dodatkowe kości (połowa Trepów biorących udział w ataku). Jednakże dwa ataki wykonywane przez trójki chopaków także otrzymują +2 dodatkowe kości (połowa liczebności atakujących Trepów zaokrąglona w górę)."
+      },
+      {
+        "LP": "7",
+        "Nazwa zasady": "Hordy i Obrażenia",
+        "Opis zasady": "Hordy składają się wyłącznie z Trepów, a każdy jej członek ma 1 punkt Żywotności. Jeśli twój atak zadaje więcej obrażeń, niż wynosi Odporność Hordy, jego cel umiera.\n\nLiczba Ikon wyrzuconych w Teście ataku określa, ile istot w Hordzie zostaje trafionych. Każda Ikona powyżej Obrony Hordy oznacza, że kolejna istota z Hordy zostaje trafiona.\n\nKażde indywidualne Zagrożenie w Hordzie ma taką samą wartość Odporności psychicznej. Jeśli Horda otrzyma więcej Traumy niż jej Odporność psychiczna, jedna istota wchodząca w skład Hordy zostaje wyłączona z walki. Jeśli wynik Testu powodującego Traumę przewyższa Obronę Hordy, trafione zostają kolejne istoty z Hordy, tak samo jak w przypadku normalnych ataków.",
+        "Przykład": "{{B}}Przykład:{{/B}} Yasmin wypala z boltera, celując w Hordę 10 strażników Aeldari. Uzyskuje 6 Ikon w Teście Umiejętności strzeleckich, podczas gdy obrona Hordy strażników wynosi 3. Atak Yasmin trafił łącznie czterech strażników – jednego za wyrzucenie 3 Ikon, będących równowartością Obrony Hordy oraz po jednym dodatkowym strażniku za każdą kolejną Ikonę przewyższającą wartość Obrony Hordy.\n\nBolter zadaje 10 Obrażeń, co zdecydowanie wystarcza, by Horda otrzymała 1 Ranę. Oznacza to, że cała 4 trafionych strażników umiera."
+      },
+      {
+        "LP": "8",
+        "Nazwa zasady": "Dowódcy Hord",
+        "Opis zasady": "Większość Hord ma jakiegoś dowódcę, najczęściej sierżanta, weterana lub burszuja. Te Zagrożenia często są Elitami lub nawet Nemezis i mogą zapewniać dodatkowe opcje ataku, premie, a nawet Akcje Zguby, które sprawiają, że dowodzone przez nich Hordy stają się poważnym zagrożeniem. Mimo że mechanicznie istoty te nie są częścią Hordy, działają razem z nią i są przez nią chronione.\n\nJeśli dowódca Hordy zostanie trafiony, możesz wydać punkt Zguby, aby atak zamiast tego trafił jednego z Trepów w Hordzie.",
+        "Przykład": "-"
+      },
+      {
+        "LP": "9",
+        "Nazwa zasady": "Hordy i Odwaga",
+        "Opis zasady": "Jeśli połowa lub więcej istot w Hordzie zostanie zabita, ocalałe powinny wykonać Test Odwagi na koniec Rundy. Jeśli Test się nie powiedzie, cała Horda ucieka z pola bitwy, tak jakby była pod wpływem Grozy, dopóki nie zda Testu Odwagi, by zebrać się w sobie.\n\nNiektóre Hordy mogą walczyć do śmierci niezależnie od sytuacji, a czasami okoliczności mogą sprawić, że grupa tchórzliwych Trepów zacznie walczyć z niezwykłym ferworem. W takich sytuacjach decyzja zawsze należy do Mistrza Gry.",
+        "Przykład": "-"
+      },
+      {
+        "LP": "10",
+        "Nazwa zasady": "Odwaga i Komplikacje",
+        "Opis zasady": "Podawanie tyłów przeciwnikowi rzadko kiedy jest dobrym pomysłem. Jeśli Horda wyrzuci Komplikację w Teście Odwagi, by uniknąć odwrotu, 1k3 członków Hordy zostaje zabitych, złapanych w krzyżowy ogień wroga, bądź stratowanych przez uciekających towarzyszy.",
+        "Przykład": "-"
+      },
+      {
+        "LP": "11",
+        "Nazwa zasady": "Dodatkowe Kości Ataku",
+        "Opis zasady": "02 | 01\n03 | 02\n04 | 02\n05 | 03\n06 | 03\n07 | 04\n08 | 04\n09 | 05\n10 | 05\n11 | 06\n12 | 06\n13 | 07\n14 | 07\n15 | 08\n16 | 08\n17 | 09\n18 | 09\n19 | 10\n20 | 10\n21 | 11\n22 | 11\n23 | 12\n24 | 12\n25 | 13\n26 | 13\n27 | 14\n28 | 14\n29 | 15\n30 | 15",
+        "Przykład": "{{B}}Format:{{/B}}\nIlość Trepów w Hordzie | Dodatkowe Kości Ataku"
+      }
+    ],
     "Tabela Rozmiarów": [
       {
         "LP": "1",
@@ -10941,6 +11009,58 @@
         "Nazwa": "Strzelanie Serią do Hordy",
         "Opis": "W ramach Akcji pełnej możesz zaatakować Hordę Serią. Wykonaj normalny Test ataku przeciwko Hordzie. Jeśli twój atak się powiódł, trafiasz tyle dodatkowych celów w Hordzie, ile wynosi wartość Szybkostrzelności twojej broni."
       }
+    ],
+    "Kary do ST": [
+      {
+        "LP": "1",
+        "Ile celów/akcji": "1",
+        "Kara do ST": "0"
+      },
+      {
+        "LP": "2",
+        "Ile celów/akcji": "2",
+        "Kara do ST": "2"
+      },
+      {
+        "LP": "3",
+        "Ile celów/akcji": "3",
+        "Kara do ST": "4"
+      },
+      {
+        "LP": "4",
+        "Ile celów/akcji": "4",
+        "Kara do ST": "6"
+      },
+      {
+        "LP": "5",
+        "Ile celów/akcji": "5",
+        "Kara do ST": "8"
+      },
+      {
+        "LP": "6",
+        "Ile celów/akcji": "6",
+        "Kara do ST": "10"
+      },
+      {
+        "LP": "7",
+        "Ile celów/akcji": "7",
+        "Kara do ST": "12"
+      },
+      {
+        "LP": "8",
+        "Ile celów/akcji": "8",
+        "Kara do ST": "14"
+      },
+      {
+        "LP": "9",
+        "Ile celów/akcji": "9",
+        "Kara do ST": "16"
+      },
+      {
+        "LP": "10",
+        "Ile celów/akcji": "10",
+        "Kara do ST": "18"
+      }
     ]
   },
   "_meta": {
@@ -10996,6 +11116,7 @@
     },
     "sheetOrder": [
       "Bestiariusz",
+      "Hordy",
       "Tabela Rozmiarów",
       "Gatunki",
       "Archetypy",
@@ -11019,7 +11140,8 @@
       "Trafienia Krytyczne",
       "Groza Osnowy",
       "Skrót Zasad",
-      "Tryby Ognia"
+      "Tryby Ognia",
+      "Kary do ST"
     ],
     "columnOrder": {
       "Bestiariusz": [
@@ -11050,6 +11172,11 @@
         "Rozmiar",
         "Podręcznik",
         "Strona"
+      ],
+      "Hordy": [
+        "Nazwa zasady",
+        "Opis zasady",
+        "Przykład"
       ],
       "Tabela Rozmiarów": [
         "Rozmiar",
@@ -11228,6 +11355,10 @@
       "Tryby Ognia": [
         "Nazwa",
         "Opis"
+      ],
+      "Kary do ST": [
+        "Ile celów/akcji",
+        "Kara do ST"
       ]
     }
   }
