@@ -1,8 +1,8 @@
 1. Po każdej zmianie w pliku "GM_test.html" i/lub "Infoczytnik_test.html" zaktualizuj wersję poprzez podniesienie `INF_VERSION` w plikach Infoczytnik_test oraz GM_test
 2. Zawsze jest wymagany test sprawdzający
-3. Nigdy nie modyfikuj plików "GM.html" oraz "Infoczytnik.html"
+3. Nigdy nie modyfikuj plików "GM.html", "Infoczytnik.html", "GM_backup.html" oraz "Infoczytnik_backup.html"
 4. Wszystkie zmiany rób na plikach "GM_test.html" oraz "Infoczytnik_test.html"
-5. Zmiany w plikach "GM.html" oraz "Infoczytnik.html" zawsze wykonuje ręcznie użytkownik
+5. Zmiany w plikach "GM.html", "Infoczytnik.html", "GM_backup.html" oraz "Infoczytnik_backup.html" zawsze wykonuje ręcznie użytkownik
 6. Po każdej zmianie kodu zmodyfikuj pliki docs/Documentation.md oraz docs/README.md w odpowiednim folderze
 7. Plik README.md ma zawierać instrukcję obsługi dla użytkownika
 8. Plik README.md ma zawierać te same instrukcję w języku polskim i angielskim
