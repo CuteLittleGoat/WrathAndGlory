@@ -730,6 +730,10 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Opis"]{min-width:56ch; text-align:left}
 .tableWrap table[data-sheet="Skrót Zasad"] th[data-col="Strona"],
 .tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Strona"]{min-width:11ch; text-align:center; white-space:nowrap}
+.tableWrap table[data-sheet="Tryby Ognia"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Tryby Ognia"] td[data-col="Nazwa"]{min-width:20ch; text-align:left}
+.tableWrap table[data-sheet="Tryby Ognia"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Tryby Ognia"] td[data-col="Opis"]{min-width:56ch; text-align:left}
 .slash{color:var(--code)}
 .ref{color:var(--code); opacity:.9}
 .caretref{color:var(--code); opacity:.95}

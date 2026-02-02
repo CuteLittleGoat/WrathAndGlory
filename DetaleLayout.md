@@ -142,7 +142,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `rgba(0,0,0,.55)` — tło overlay w modalach.
 - `#E6B35C` — kolor `.compareDiff` (wyróżnienia w porównaniach).
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`.
-- Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad` mają tekst w kolorze `#d74b4b` (`--red`).
+- Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia` mają tekst w kolorze `#d74b4b` (`--red`).
 
 ### 3) Zasady formatowania tekstu i wyjątki
 #### 3.1 Zwykły tekst i łamanie linii

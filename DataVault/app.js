@@ -36,7 +36,7 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Orcze Klany",
   "Mutacje Krootów",
 ]);
-const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad"]);
+const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad", "Tryby Ognia"]);
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
