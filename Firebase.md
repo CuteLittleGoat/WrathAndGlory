@@ -24,6 +24,40 @@
 - **Wady:**
   - wciąż utrzymujesz dwa projekty (dwie konfiguracje, osobne reguły, osobne limity).
 
+#### Co musisz zrobić po stronie Firebase (Wariant A)
+Poniższe kroki przygotują projekty tak, abyś mógł bezpiecznie zaktualizować konfigurację w kodzie aplikacji (jeśli będzie to potrzebne).
+
+1. **Dodaj docelowe konto Google jako właściciela obu projektów**
+   - Firebase Console → każdy projekt osobno → **Project settings** → **Users and permissions**.
+   - Dodaj docelowe konto z rolą **Owner**.
+   - Po zaakceptowaniu zaproszenia możesz opcjonalnie usunąć stare konto (jeśli nie ma już być używane).
+
+2. **(Opcjonalnie) Przenieś rozliczenia na jedno konto**
+   - Google Cloud Console → **Billing** → przypisz oba projekty do tego samego konta rozliczeniowego.
+   - Jeśli projekty zostają w planie Spark (bezpłatnym), krok nie jest wymagany, ale warto uporządkować billing.
+
+3. **Zweryfikuj konfigurację Firestore w obu projektach**
+   - Firebase Console → **Firestore Database**.
+   - Upewnij się, że:
+     - w projekcie Infoczytnik istnieje kolekcja `dataslate` z dokumentem `current`,
+     - w projekcie Audio istnieje kolekcja `audio` z dokumentem `favorites`.
+   - Sprawdź reguły bezpieczeństwa, aby nie blokowały odczytu/zapisu z aplikacji.
+
+4. **Sprawdź konfigurację aplikacji Web**
+   - Firebase Console → **Project settings** → **General** → sekcja **Your apps**.
+   - Dla każdego projektu:
+     - upewnij się, że aplikacja Web istnieje (jeśli nie, dodaj nową),
+     - skopiuj aktualne wartości `firebaseConfig` (apiKey, authDomain, projectId itd.).
+
+5. **Zaktualizuj listę autoryzowanych domen (jeśli używasz Auth lub hostingu)**
+   - Firebase Console → **Authentication** → **Settings** → **Authorized domains**.
+   - Dodaj domeny, z których aplikacja będzie uruchamiana (np. staging/production).
+
+6. **(Opcjonalnie) Sprawdź limity i usage**
+   - Upewnij się, że limity Firestore i zewnętrzny ruch sieciowy są wystarczające dla obu modułów.
+
+> **Wynik dla kodu aplikacji:** jeśli po przeniesieniu projektów konfiguracje `firebaseConfig` nie ulegną zmianie, kod modułów nie wymaga zmian. Jeśli jednak odtworzysz aplikacje Web lub zaktualizujesz dane w **Project settings**, wówczas zaktualizuj odpowiednie pliki `config/firebase-config.js` w modułach.
+
 ### Wariant B — jeden wspólny projekt Firebase dla obu modułów
 - **Opis:** oba moduły używają tego samego `firebaseConfig`, a dane są rozdzielone przez kolekcje (`dataslate/current` i `audio/favorites`).
 - **Zalety:**
