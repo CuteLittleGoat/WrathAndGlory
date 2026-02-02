@@ -22,8 +22,11 @@ from pathlib import Path
 from zipfile import ZipFile
 from xml.etree import ElementTree as ET
 
+def replace_polish_quotes(text: str) -> str:
+  return text.replace("„", "\"").replace("”", "\"")
+
 def norm(s) -> str:
-  return re.sub(r"\s+", " ", str(s or "").strip())
+  return replace_polish_quotes(re.sub(r"\s+", " ", str(s or "").strip()))
 
 def derive_column_order(header):
   order = []
@@ -110,7 +113,7 @@ def rows_to_records(header, rows):
     rec = {}
     for i,h in enumerate(header):
       if not h: continue
-      rec[h] = "" if i>=len(r) or r[i] is None else str(r[i]).strip()
+      rec[h] = "" if i>=len(r) or r[i] is None else replace_polish_quotes(str(r[i]).strip())
     out.append(rec)
   return out
 

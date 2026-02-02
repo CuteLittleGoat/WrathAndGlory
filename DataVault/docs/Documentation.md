@@ -11,7 +11,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `app.js` — cała logika: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i admin-update.
 - `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został wygenerowany na nowo z zaktualizowanego `Repozytorium.xlsx`.
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`.
-- `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce).
+- `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 - `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
 
 ---
