@@ -19,7 +19,7 @@
 ### Pola wejściowe
 Każde pole ma:
 - etykietę `<label>`,
-- `input[type="number"]` z atrybutami `min="1"`, `max="99"`, `value="1"`, `step="1"`,
+- `input[type="number"]` z atrybutami `min="1"`, `max="99"`, `value="3"` dla Stopnia Trudności, `value="2"` dla Puli Kości, `value="1"` dla Kości Furii, `step="1"`,
 - obsługę natywnych strzałek góra/dół (spinner) przeglądarki.
 
 Pola:
@@ -125,6 +125,7 @@ Media query do 600px:
 ## JavaScript (`script.js`)
 ### Stałe i elementy DOM
 - `MIN_VALUE = 1`, `MAX_VALUE = 99` — zakresy wejściowe.
+- `DEFAULT_DIFFICULTY = 3`, `DEFAULT_POOL = 2`, `DEFAULT_WRATH = 1` — domyślne wartości pól wejściowych.
 - `ROLL_DURATION = 900` — czas animacji.
 - Referencje DOM: `difficultyInput`, `poolInput`, `wrathInput`, `rollButton`, `diceContainer`, `summary`, elementy etykiet, podpowiedzi oraz `#languageSelect`.
 - `translations` — obiekt tłumaczeń dla PL/EN (teksty nagłówków, etykiet, przycisków i komunikatów wyników).
@@ -183,7 +184,7 @@ Media query do 600px:
      - `transferable = min(totalSixes, floor(margin/2))`.
 
 10. **`resetState()`**
-   - Przywraca wartości wejściowe do `1`.
+   - Przywraca wartości wejściowe do wartości domyślnych (`3` dla Stopnia Trudności, `2` dla Puli Kości, `1` dla Kości Furii).
    - Czyści kości i ustawia placeholder podsumowania w bieżącym języku.
 
 11. **`updateLanguage(lang)`**
