@@ -10924,6 +10924,23 @@
         "Opis": "Jeśli przeciwnik wychodzi ze Zwarcia bez wykonywania Odwrotu, możesz zaatakować go, wykorzystując Akcję okazjonalną.",
         "Strona": "(str. 179)"
       }
+    ],
+    "Tryby Ognia": [
+      {
+        "LP": "1",
+        "Nazwa": "Ogień ciągły",
+        "Opis": "Opróżniasz cały magazynek, strzelając do jednego celu. Wykonując atak Ogniem ciągłym, zyskujesz tyle dodatkowych kości do Testu ataku, ile wynosi wartość Szybkostrzelności twojej broni."
+      },
+      {
+        "LP": "2",
+        "Nazwa": "Seria",
+        "Opis": "Przeciągasz serią po kilku wrogach naraz. Możesz zaatakować Serią w ramach Ataku wielokrotnego, zmniejszając ST Testu o wartość Szybkostrzelności broni. Nie możesz zmniejszyć ST poniżej wartości kary narzuconej w wyniku Ataku wielokrotnego."
+      },
+      {
+        "LP": "3",
+        "Nazwa": "Strzelanie Serią do Hordy",
+        "Opis": "W ramach Akcji pełnej możesz zaatakować Hordę Serią. Wykonaj normalny Test ataku przeciwko Hordzie. Jeśli twój atak się powiódł, trafiasz tyle dodatkowych celów w Hordzie, ile wynosi wartość Szybkostrzelności twojej broni."
+      }
     ]
   },
   "_meta": {
@@ -11001,7 +11018,8 @@
       "Bronie",
       "Trafienia Krytyczne",
       "Groza Osnowy",
-      "Skrót Zasad"
+      "Skrót Zasad",
+      "Tryby Ognia"
     ],
     "columnOrder": {
       "Bestiariusz": [
@@ -11206,6 +11224,10 @@
         "Nazwa",
         "Opis",
         "Strona"
+      ],
+      "Tryby Ognia": [
+        "Nazwa",
+        "Opis"
       ]
     }
   }
