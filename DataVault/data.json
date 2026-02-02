@@ -10348,6 +10348,122 @@
         "Zasięg": "- / - / -",
         "Cechy": "Brutalna; Parująca"
       }
+    ],
+    "Trafienia Krytyczne": [
+      {
+        "LP": "1",
+        "Rzut k66": "11-16",
+        "Opis": "{{B}}Strzał w głowę{{/B}}\nDobrze wymierzony strzał lub cios w głowę wyrywa postrzępione kawałki kości i mózgu z czaszki twojego wroga. Przeciwnik zatacza się z bólu, niezdolny do skupienia uwagi.",
+        "Efekt": "Cel otrzymuje +1k6 Ran i zostaje {{I}}Oszołomiony{{/I}}.",
+        "Chwała": "+1 Rana za każdy wydany p. Chwały"
+      },
+      {
+        "LP": "2",
+        "Rzut k66": "21-23",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "3",
+        "Rzut k66": "24-26",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "4",
+        "Rzut k66": "31-33",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "5",
+        "Rzut k66": "34-36",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "6",
+        "Rzut k66": "41-43",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "7",
+        "Rzut k66": "44-45",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "8",
+        "Rzut k66": "46",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "9",
+        "Rzut k66": "51-53",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "10",
+        "Rzut k66": "54-55",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "11",
+        "Rzut k66": "56",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "12",
+        "Rzut k66": "61-63",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "13",
+        "Rzut k66": "64-65",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      },
+      {
+        "LP": "15",
+        "Rzut k66": "66",
+        "Opis": "",
+        "Efekt": "",
+        "Chwała": ""
+      }
+    ],
+    "Groza Osnowy": [
+      {
+        "LP": "1",
+        "Rzut k66": "11-16",
+        "Efekt": "{{B}}Strzał w głowę{{/B}}\nDobrze wymierzony strzał lub cios w głowę wyrywa postrzępione kawałki kości i mózgu z czaszki twojego wroga. Przeciwnik zatacza się z bólu, niezdolny do skupienia uwagi."
+      }
+    ],
+    "Skrót Zasad": [
+      {
+        "LP": "1",
+        "Typ": "Akcje",
+        "Nazwa": "Akcja Bojowa",
+        "Opis": "Zaatakowanie przeciwnika, użycie Umiejętności.",
+        "Strona": "(str. 178)"
+      }
     ]
   },
   "_meta": {
@@ -10422,7 +10538,10 @@
       "Augumentacje",
       "Ekwipunek",
       "Pancerze",
-      "Bronie"
+      "Bronie",
+      "Trafienia Krytyczne",
+      "Groza Osnowy",
+      "Skrót Zasad"
     ],
     "columnOrder": {
       "Bestiariusz": [
@@ -10611,6 +10730,22 @@
         "Dostępność",
         "Koszt IM",
         "Słowa Kluczowe"
+      ],
+      "Trafienia Krytyczne": [
+        "Rzut k66",
+        "Opis",
+        "Efekt",
+        "Chwała"
+      ],
+      "Groza Osnowy": [
+        "Rzut k66",
+        "Efekt"
+      ],
+      "Skrót Zasad": [
+        "Typ",
+        "Nazwa",
+        "Opis",
+        "Strona"
       ]
     }
   }

@@ -142,6 +142,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `rgba(0,0,0,.55)` — tło overlay w modalach.
 - `#E6B35C` — kolor `.compareDiff` (wyróżnienia w porównaniach).
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`.
+- Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad` mają tekst w kolorze `#d74b4b` (`--red`).
 
 ### 3) Zasady formatowania tekstu i wyjątki
 #### 3.1 Zwykły tekst i łamanie linii
@@ -300,7 +301,7 @@ Poniżej pełna lista **1:1**.
 - **Siatka główna**: `main` jest gridem z kolumnami `360px` (panel filtrów) i `1fr` (workspace).
 - **Responsywność**: poniżej `980px` layout przechodzi na jedną kolumnę (panel nad tabelą).
 - **Sticky nagłówki**: nagłówki tabeli są sticky (`position: sticky`) z offsetem drugiego wiersza `top: var(--header-row-height)`.
-- **Checkbox w panelu filtrów**: `.checkboxRow` ma uppercase i kolor bazowy `--text2`, natomiast opis `.checkboxLabel` jest jaśniejszy (`color: var(--code)`, `opacity: .9`).
+- **Checkbox w panelu filtrów**: `.checkboxRow` ma uppercase i kolor bazowy `--text2`, natomiast opis `.checkboxLabel` jest jaśniejszy (`color: var(--code)`, `opacity: .9`). Wariant `.checkboxRow--combat` wymusza czerwony tekst `--red` i czerwony akcent (`accent-color: var(--red)`).
 
 ### 7) Stosowanie tych zasad w innych zakładkach
 Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następujące:
