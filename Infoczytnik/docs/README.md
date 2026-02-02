@@ -5,7 +5,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 ## Instrukcja użytkownika (PL)
 ### Wymagania
 - Projekt Firebase z włączonym Firestore.
-- Firebase dla **Infoczytnika** musi być na **oddzielnym koncie Google** niż Firebase dla modułu **Audio** (unikasz konfliktów konfiguracji i reguł).
+- Firebase dla **Infoczytnika** nie wymaga oddzielnego konta Google od modułu **Audio** — oba moduły mogą działać w tym samym koncie/projekcie, jeśli konfiguracje i reguły są rozdzielone. Oddzielne projekty są opcją organizacyjną, a nie wymogiem technicznym.
 - Serwer statyczny (np. GitHub Pages, Firebase Hosting lub lokalny serwer HTTP), ponieważ pliki korzystają z modułów ES i Firestore.
 - Dostęp do internetu (Google Fonts + Firebase SDK).
 
@@ -76,7 +76,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 ## User Guide (EN)
 ### Requirements
 - A Firebase project with Firestore enabled.
-- The **Infoczytnik** Firebase must be on a **separate Google account** than the Firebase used for the **Audio** module (avoids configuration and rules conflicts).
+- The **Infoczytnik** Firebase does not require a separate Google account from the **Audio** module — both modules can run under the same account/project as long as configuration and rules are separated. Separate projects are an organizational option, not a technical requirement.
 - A static web server (e.g. GitHub Pages, Firebase Hosting, or a local HTTP server), because the pages use ES modules and Firestore.
 - Internet access (Google Fonts + Firebase SDK).
 
