@@ -18,11 +18,12 @@ const els = {
   modalClose: document.getElementById("modalClose"),
   filterMenu: document.getElementById("filterMenu"),
   toggleCharacterTabs: document.getElementById("toggleCharacterTabs"),
+  toggleCombatTabs: document.getElementById("toggleCombatTabs"),
 };
 
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
-const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz"]);
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy"]);
 const CHARACTER_CREATION_SHEETS = new Set([
   "Tabela Rozmiarów",
   "Gatunki",
@@ -35,6 +36,7 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Orcze Klany",
   "Mutacje Krootów",
 ]);
+const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad"]);
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
@@ -46,7 +48,8 @@ const view = {
   filtersSet: {},          // col -> Set(selected values) OR null
   selected: new Set(),     // row.__id
   expandedCells: new Set(), // key sheet|rowid|col for clamp toggle
-  showCharacterTabs: false
+  showCharacterTabs: false,
+  showCombatTabs: false
 };
 
 const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (progressive rendering)
@@ -559,9 +562,12 @@ function initUI(){
   els.tabs.innerHTML = "";
   const available = Object.keys(DB.sheets);
   const baseVisible = ADMIN_MODE ? available : available.filter(name => !ADMIN_ONLY_SHEETS.has(name));
-  const visibleSheets = view.showCharacterTabs
+  let visibleSheets = view.showCharacterTabs
     ? baseVisible
     : baseVisible.filter(name => !CHARACTER_CREATION_SHEETS.has(name));
+  visibleSheets = view.showCombatTabs
+    ? visibleSheets
+    : visibleSheets.filter(name => !COMBAT_RULES_SHEETS.has(name));
   const order = getSheetOrder(available);
   const visibleOrder = order.filter(name => visibleSheets.includes(name));
   for (const name of visibleOrder){
@@ -570,6 +576,9 @@ function initUI(){
     b.textContent = name.toUpperCase();
     if (CHARACTER_CREATION_SHEETS.has(name)){
       b.classList.add("tab--character");
+    }
+    if (COMBAT_RULES_SHEETS.has(name)){
+      b.classList.add("tab--combat");
     }
     b.addEventListener("click", ()=>selectSheet(name));
     els.tabs.appendChild(b);
@@ -1227,6 +1236,13 @@ if (els.toggleCharacterTabs){
     initUI();
   });
   view.showCharacterTabs = els.toggleCharacterTabs.checked;
+}
+if (els.toggleCombatTabs){
+  els.toggleCombatTabs.addEventListener("change", ()=>{
+    view.showCombatTabs = els.toggleCombatTabs.checked;
+    initUI();
+  });
+  view.showCombatTabs = els.toggleCombatTabs.checked;
 }
 
 /* ---------- Loaders ---------- */

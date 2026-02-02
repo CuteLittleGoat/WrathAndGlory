@@ -35,6 +35,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `aside.panel` z nagłówkiem `.panelHeader`.
 - Pole globalne: `#globalSearch` w `.panelBody`.
 - Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
+- Checkbox `#toggleCombatTabs` — pytanie „Czy wyświetlić zakładki dotyczące zasad walki?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad` (z czego `Trafienia Krytyczne` i `Groza Osnowy` pozostają widoczne tylko w trybie admina).
 - W `.hint` jest statyczna lista wskazówek (tekst, nie logika), m.in. linia o „Shift = sort wielokolumnowy”, mimo że logika multi-sortu nie istnieje w JS.
 
 ### 2.3 Obszar tabeli
@@ -99,11 +100,13 @@ Efekty i obwódki:
 - `.input` — styl pól tekstowych (tło `--bg`, focus glow).
 - `.checkboxRow` — wiersz z checkboxem, uppercase, kolor `--text2`, `accent-color: var(--accent)`.
 - `.checkboxLabel` — jaśniejszy opis checkboxa, kolor `--code` z `opacity: .9` (taki sam ton jak referencje `str.`).
+- `.checkboxRow--combat` — wariant wiersza z czerwonym tekstem `--red` i `accent-color: var(--red)` dla checkboxa zasad walki.
 
 ### 3.5 Zakładki
 - `.tabs` — flex z zawijaniem.
 - `.tab` — uppercase i ten sam font co reszta UI, aktywna z innym tłem i borderem.
 - `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`) mają jaśniejszy kolor tekstu `var(--code)` i `opacity: .9`, spójny z etykietą checkboxa.
+- `.tab--combat` — zakładki zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`) mają czerwony tekst `var(--red)` niezależnie od stanu aktywnego.
 
 ### 3.6 Tabela
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.
@@ -233,6 +236,22 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Efekt`: 26ch
   - `Opis`: 56ch
 
+- **Trafienia Krytyczne**
+  - `Rzut k66`: 6ch (wycentrowane, bez zawijania)
+  - `Opis`: 56ch
+  - `Efekt`: 26ch
+  - `Chwała`: 26ch
+
+- **Groza Osnowy**
+  - `Rzut k66`: 6ch (wycentrowane, bez zawijania)
+  - `Efekt`: 56ch
+
+- **Skrót Zasad**
+  - `Typ`: 32ch
+  - `Nazwa`: 20ch
+  - `Opis`: 56ch
+  - `Strona`: 11ch (wycentrowane, bez zawijania)
+
 ## Uwaga: szerokości i kolejność kolumn (Ścieżki Asuryani / Orcze Klany)
 W CSS modułu DataVault dla tych zakładek ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.
 
@@ -335,8 +354,9 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 ### 4.1 Stałe
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
-- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (Bestiariusz).
+- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`).
+- `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
 - Kolejność zakładek i kolumn **nie jest hardcode** — pochodzi z `_meta.sheetOrder` i `_meta.columnOrder` w `data.json` (a w razie braku jest odzyskiwana z bieżącego układu danych).
@@ -348,6 +368,8 @@ Mapowanie na `getElementById`:
 - `modal`, `modalBody`, `modalClose`.
 - `filterMenu`.
 - `toggleCharacterTabs`.
+- `toggleCombatTabs`.
+- `toggleCombatTabs`.
 
 ### 4.3 Stan `view`
 - `sort` — `{col, dir, secondary?}` lub `null`, gdzie `secondary` to opcjonalny drugi klucz sortowania.
@@ -357,6 +379,7 @@ Mapowanie na `getElementById`:
 - `selected` — `Set` zaznaczonych `__id` (porównanie).
 - `expandedCells` — `Set` dla rozwiniętych komórek (key: `sheet|rowid|col`).
 - `showCharacterTabs` — `true` gdy checkbox tworzenia postaci jest zaznaczony (pokazuje zestaw zakładek z `CHARACTER_CREATION_SHEETS`).
+- `showCombatTabs` — `true` gdy checkbox zasad walki jest zaznaczony (pokazuje zestaw zakładek z `COMBAT_RULES_SHEETS`, z uwzględnieniem admin-only).
 
 ### 4.4 Helpery tekstowe
 - `norm(s)` — normalizacja spacji i dwukropków.
@@ -474,8 +497,9 @@ Mapowanie na `getElementById`:
 - Czyści `#tabs` i tworzy przyciski `.tab` wg `_meta.sheetOrder` (z fallbackiem do kolejności w `data.json`).
 - Ustawia aktywną pierwszą zakładkę (lub zachowuje obecną, jeśli wciąż jest widoczna).
 - Ukrywa `#updateDataGroup`, gdy nie `ADMIN_MODE`.
-- W trybie gracza usuwa z listy zakładek arkusz `Bestiariusz`, więc jest widoczny tylko dla admina.
+- W trybie gracza usuwa z listy zakładek arkusze `Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, więc są widoczne tylko dla admina.
 - Gdy checkbox `#toggleCharacterTabs` jest niezaznaczony, usuwa z listy zakładek elementy `CHARACTER_CREATION_SHEETS` (zaznaczenie przywraca te zakładki).
+- Gdy checkbox `#toggleCombatTabs` jest niezaznaczony, usuwa z listy zakładek elementy `COMBAT_RULES_SHEETS` (zaznaczenie przywraca te zakładki, ale z zachowaniem ograniczeń admin-only).
 
 ### 8.2 `selectSheet(name)`
 - Ustawia `currentSheet`.

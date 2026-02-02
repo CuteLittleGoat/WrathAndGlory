@@ -236,3 +236,25 @@ Uwagi formatowania:
 | Koszt IM | 8ch | środek | standard |
 | Podręcznik | 17ch | lewo | standard |
 | Strona | 6ch | środek | standard |
+
+## Trafienia Krytyczne
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Rzut k66 | 6ch | środek | brak łamania (`white-space: nowrap`) |
+| Opis | 56ch | lewo | standard |
+| Efekt | 26ch | lewo | standard |
+| Chwała | 26ch | lewo | standard |
+
+## Groza Osnowy
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Rzut k66 | 6ch | środek | brak łamania (`white-space: nowrap`) |
+| Efekt | 56ch | lewo | standard |
+
+## Skrót Zasad
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Typ | 32ch | lewo | standard |
+| Nazwa | 20ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
+| Strona | 11ch | środek | brak łamania (`white-space: nowrap`) |

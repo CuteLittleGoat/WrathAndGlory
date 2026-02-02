@@ -131,6 +131,16 @@ code{color:var(--code)}
   color:var(--code);
   opacity:.9;
 }
+.checkboxRow--combat{
+  color:var(--red);
+}
+.checkboxRow--combat .checkboxLabel{
+  color:var(--red);
+  opacity:1;
+}
+.checkboxRow--combat input{
+  accent-color:var(--red);
+}
 .checkboxRow input{
   width:16px;
   height:16px;
@@ -170,6 +180,12 @@ code{color:var(--code)}
 }
 .tab.tab--character.active{
   color:var(--code);
+}
+.tab.tab--combat{
+  color:var(--red);
+}
+.tab.tab--combat.active{
+  color:var(--red);
 }
 .tab.active{
   background:rgba(22,198,12,.10);
@@ -694,6 +710,26 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Pancerze"] td[data-col="Podręcznik"]{min-width:17ch}
 .tableWrap table[data-sheet="Pancerze"] th[data-col="Strona"],
 .tableWrap table[data-sheet="Pancerze"] td[data-col="Strona"]{min-width:6ch; text-align:center}
+.tableWrap table[data-sheet="Trafienia Krytyczne"] th[data-col="Rzut k66"],
+.tableWrap table[data-sheet="Trafienia Krytyczne"] td[data-col="Rzut k66"]{min-width:6ch; text-align:center; white-space:nowrap}
+.tableWrap table[data-sheet="Trafienia Krytyczne"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Trafienia Krytyczne"] td[data-col="Opis"]{min-width:56ch; text-align:left}
+.tableWrap table[data-sheet="Trafienia Krytyczne"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Trafienia Krytyczne"] td[data-col="Efekt"]{min-width:26ch; text-align:left}
+.tableWrap table[data-sheet="Trafienia Krytyczne"] th[data-col="Chwała"],
+.tableWrap table[data-sheet="Trafienia Krytyczne"] td[data-col="Chwała"]{min-width:26ch; text-align:left}
+.tableWrap table[data-sheet="Groza Osnowy"] th[data-col="Rzut k66"],
+.tableWrap table[data-sheet="Groza Osnowy"] td[data-col="Rzut k66"]{min-width:6ch; text-align:center; white-space:nowrap}
+.tableWrap table[data-sheet="Groza Osnowy"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Groza Osnowy"] td[data-col="Efekt"]{min-width:56ch; text-align:left}
+.tableWrap table[data-sheet="Skrót Zasad"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Typ"]{min-width:32ch; text-align:left}
+.tableWrap table[data-sheet="Skrót Zasad"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Nazwa"]{min-width:20ch; text-align:left}
+.tableWrap table[data-sheet="Skrót Zasad"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Opis"]{min-width:56ch; text-align:left}
+.tableWrap table[data-sheet="Skrót Zasad"] th[data-col="Strona"],
+.tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Strona"]{min-width:11ch; text-align:center; white-space:nowrap}
 .slash{color:var(--code)}
 .ref{color:var(--code); opacity:.9}
 .caretref{color:var(--code); opacity:.95}
