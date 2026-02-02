@@ -258,3 +258,9 @@ Uwagi formatowania:
 | Nazwa | 20ch | lewo | standard |
 | Opis | 56ch | lewo | standard |
 | Strona | 11ch | środek | brak łamania (`white-space: nowrap`) |
+
+## Tryby Ognia
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| Nazwa | 20ch | lewo | standard |
+| Opis | 56ch | lewo | standard |
