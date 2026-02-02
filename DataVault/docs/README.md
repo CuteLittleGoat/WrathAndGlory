@@ -46,7 +46,7 @@ Najważniejsze zasady działania:
   **Skrót Zasad** i **Tryby Ognia** są dostępne dla wszystkich, a **Trafienia Krytyczne** i **Groza Osnowy** tylko w trybie admina.
 
 ### Aktualizacja danych z `Repozytorium.xlsx`
-Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmianie repozytorium `data.json` został ponownie wygenerowany na podstawie najnowszego `Repozytorium.xlsx`, więc tabele odpowiadają aktualnemu arkuszowi. Generator zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
+Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmianie repozytorium `data.json` został ponownie wygenerowany na podstawie najnowszego `Repozytorium.xlsx` (z poprawionymi literówkami), więc tabele odpowiadają aktualnemu arkuszowi. Generator zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 
 #### Metoda 1: panel administratora (rekomendowana)
 1. Podmień `Repozytorium.xlsx` w katalogu głównym aplikacji (na hostingu lub lokalnie).
@@ -131,7 +131,7 @@ Key behavior:
   **Skrót Zasad** and **Tryby Ognia** are available to everyone; **Trafienia Krytyczne** and **Groza Osnowy** are admin-only.
 
 ### Updating data from `Repozytorium.xlsx`
-Below are two equivalent ways to update the data. In this update, `data.json` has been regenerated from the latest `Repozytorium.xlsx`, so the tables reflect the current spreadsheet content. The generator replaces Polish quotation marks „ ” with the standard `"` character.
+Below are two equivalent ways to update the data. In this update, `data.json` has been regenerated from the latest `Repozytorium.xlsx` (with typo fixes), so the tables reflect the current spreadsheet content. The generator replaces Polish quotation marks „ ” with the standard `"` character.
 
 #### Method 1: admin panel (recommended)
 1. Replace `Repozytorium.xlsx` in the app root (hosting or local).

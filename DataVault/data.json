@@ -3525,7 +3525,7 @@
         "LP": "5",
         "Nazwa": "Gupole",
         "Opis": "Masywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.",
-        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży (str. 188)."
+        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży [{{B}}Podręcznik Główny{{/B}} (str. 188)]."
       },
       {
         "LP": "6",
@@ -10465,7 +10465,7 @@
         "Rzut k66": "44-45",
         "Opis": "{{B}}Wybebeszenie{{/B}}\nWnętrzności wroga wylewają się na ziemię, pokrywając okolicę kałużami krwi i częściami przeróżnych organów.",
         "Efekt": "Cel otrzymuje Ranę śmiertelną. Każda postać będąca w Zwarciu z celem musi wykonać Test Zręczności o ST 3. Porażka oznacza {{I}}Powalenie{{/I}}.",
-        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały oraz jeden z poniższych dodatkowych efektów:\n* Cel zostaje Powalony.\n* Cel otrzymuje 2 Traumy."
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały oraz jeden z poniższych dodatkowych efektów:\n* Cel zostaje {{I}}Powalony{{/I}}.\n* Cel otrzymuje 2 Traumy."
       },
       {
         "LP": "8",
