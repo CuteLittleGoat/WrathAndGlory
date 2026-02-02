@@ -13,6 +13,9 @@ const languageSelect = document.getElementById("languageSelect");
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 99;
+const DEFAULT_DIFFICULTY = 3;
+const DEFAULT_POOL = 2;
+const DEFAULT_WRATH = 1;
 const ROLL_DURATION = 900;
 
 const translations = {
@@ -188,9 +191,9 @@ const buildSummary = ({
 };
 
 const resetState = () => {
-  difficultyInput.value = MIN_VALUE;
-  poolInput.value = MIN_VALUE;
-  wrathInput.value = MIN_VALUE;
+  difficultyInput.value = DEFAULT_DIFFICULTY;
+  poolInput.value = DEFAULT_POOL;
+  wrathInput.value = DEFAULT_WRATH;
   diceContainer.innerHTML = "";
   summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].placeholders.idle}</p>`;
 };
