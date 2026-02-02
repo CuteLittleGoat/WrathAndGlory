@@ -10355,105 +10355,250 @@
         "Rzut k66": "11-16",
         "Opis": "{{B}}Strzał w głowę{{/B}}\nDobrze wymierzony strzał lub cios w głowę wyrywa postrzępione kawałki kości i mózgu z czaszki twojego wroga. Przeciwnik zatacza się z bólu, niezdolny do skupienia uwagi.",
         "Efekt": "Cel otrzymuje +1k6 Ran i zostaje {{I}}Oszołomiony{{/I}}.",
-        "Chwała": "+1 Rana za każdy wydany p. Chwały"
+        "Chwała": "+1 Rana za każdy wydany p. Chwały."
       },
       {
         "LP": "2",
         "Rzut k66": "21-23",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Paskudna rana{{/B}}\nZmasakrowane tkanki, zmiażdżone kości i porozrywane organy wewnętrzne zalewają wroga falą obezwładniającego bólu.",
+        "Efekt": "Cel otrzymuje +1k6 Ran i zostaje {{I}}Zdezorientowany{{/I}} (1).",
+        "Chwała": "+1 Rana za każdy wydany p. Chwały."
       },
       {
         "LP": "3",
         "Rzut k66": "24-26",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Mordercze cięcie{{/B}}\nAtak tnie ciało wroga na paski, odsłaniając go na kolejny atak.",
+        "Efekt": "Cel otrzymuje +1k6 Ran i zostaje {{I}}Odsłonięty{{/I}} (2).",
+        "Chwała": "+1 Rana za każdy wydany p. Chwały."
       },
       {
         "LP": "4",
         "Rzut k66": "31-33",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Bezlitosny cios{{/B}}\nCios pozbawia przeciwnika tchu, miażdżąc organy wewnętrzne z obrzydliwym chrzęstem.",
+        "Efekt": "Cel otrzymuje Ranę śmiertelną.",
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały."
       },
       {
         "LP": "5",
         "Rzut k66": "34-36",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Dziki atak{{/B}}\nBrutalny atak masakruje przeciwnika, rozrywając, paląc, łamiąc lub tnąc ciało z ogromną mocą.",
+        "Efekt": "Cel otrzymuje Ranę śmiertelną. Jeśli przeżyje Trafienie krytyczne, natychmiast otrzymuje Trwały uraz.",
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały."
       },
       {
         "LP": "6",
         "Rzut k66": "41-43",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Bezwzględna wiwisekcja{{/B}}\nGwałtowny cios wywołuje obezwładniający przeszywający ból i odrywa fragmenty ciała wroga.",
+        "Efekt": "Cel otrzymuje +1k3 Ran śmiertelnych.",
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały."
       },
       {
         "LP": "7",
         "Rzut k66": "44-45",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Wybebeszenie{{/B}}\nWnętrzności wroga wylewają się na ziemię, pokrywając okolicę kałużami krwi i częściami przeróżnych organów.",
+        "Efekt": "Cel otrzymuje Ranę śmiertelną. Każda postać będąca w Zwarciu z celem musi wykonać Test Zręczności o ST 3. Porażka oznacza {{I}}Powalenie{{/I}}.",
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały oraz jeden z poniższych dodatkowych efektów:\n* Cel zostaje Powalony.\n* Cel otrzymuje 2 Traumy."
       },
       {
         "LP": "8",
         "Rzut k66": "46",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Morderczy atak{{/B}}\nPotężny cios posyła cel na ziemię. Strzaskane żebra przebijają organy wewnętrzne, z rany wystrzeliwują gejzery krwi, a wróg wije się z bólu na ziemi.",
+        "Efekt": "Cel otrzymuje 1k3 +1 Ran śmiertelnych i zostaje {{I}}Powalony.{{/I}}",
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały."
       },
       {
         "LP": "9",
         "Rzut k66": "51-53",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Przełamujący cios{{/B}}\nOgłuszający cios odrzuca przeciwnika, a jego zmysły – po tak potężnym uderzeniu – przestają działać prawidłowo.",
+        "Efekt": "Cel otrzymuje 1k6 Traum i zostaje {{I}}Oszołomiony{{/I}}.",
+        "Chwała": "+2 Traumy za każdy wydany p. Chwały."
       },
       {
         "LP": "10",
         "Rzut k66": "54-55",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Szkarłatny pył{{/B}}\nAtak wypala przeciwnika, zwęglając jego ciało. Płomienie spowijają cel, zmieniając go w powykręcaną skorupę spalonych kości i ścięgien.",
+        "Efekt": "Cel otrzymuje 1k3 + 1 Ran i zostaje{{I}} Podpalony{{/I}}.",
+        "Chwała": "+1 Rana za każdy wydany p. Chwały."
       },
       {
         "LP": "11",
         "Rzut k66": "56",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Zmiażdżenie kości{{/B}}\nWyniszczający cios miażdży ciało wroga, rozłupując ręce, nogi i żebra w drzazgi.",
+        "Efekt": "Cel otrzymuje 1k3 + 1 Ran.",
+        "Chwała": "Cel zostaje {{I}}Unieruchomiony{{/I}} i otrzymuje +1 Ranę za każdy wydany punkt Chwały."
       },
       {
         "LP": "12",
         "Rzut k66": "61-63",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Niepojęta rzeź{{/B}}\nNiezwykle potężny cios, który jest prawdziwym dowodem umiejętności bojowych. Gejzer krwi i wnętrzności chlusta z rany wroga, a siła uderzenia ciska poszarpane resztki ciała przez pole bitwy.",
+        "Efekt": "Cel otrzymuje 1k3 + 3 Ran śmiertelnych.",
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały."
       },
       {
         "LP": "13",
         "Rzut k66": "64-65",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Przerażająca detonacja{{/B}}\nTwój cios lub strzał trafia w niestabilny element Ekwipunku przeciwnika. Reakcja łańcuchowa wybuchów rozrywa jego ciało, a po nim samym pozostaje tylko unosząca się dookoła chmura krwi.",
+        "Efekt": "Cel otrzymuje 1k6 Ran. Jeśli cel miał przy sobie jakiekolwiek materiały wybuchowe (np. granaty lub amunicję), następuje detonacja, wywołująca dodatkowo 1k3 Ran śmiertelnych.",
+        "Chwała": "Każdy wydany punkt Chwały może wywołać jeden z poniższych efektów:\n* Trafienie krytyczne wpływa na jeden dodatkowy cel w zasięgu 10 metrów.\n* Wszystkie cele otrzymują +1 Ranę."
       },
       {
         "LP": "15",
         "Rzut k66": "66",
-        "Opis": "",
-        "Efekt": "",
-        "Chwała": ""
+        "Opis": "{{B}}Makabryczna amputacja{{/B}}\nKończyna wroga zostaje w brutalny sposób oderwana od ciała, a jasna, tętnicza krew zalewa wszystko dookoła.",
+        "Efekt": "Cel otrzymuje 1 Ranę śmiertelną, a jego jedna kończyna zostaje zniszczona. Rzuć 1k6. Wynik parzysty oznacza, że to gracz, którego postać zadała Trafienie krytyczne, wybiera kończynę. W przypadku nieparzystego wyniku, decyzję podejmuje MG.",
+        "Chwała": "+1 Rana śmiertelna za każdy wydany p. Chwały."
       }
     ],
     "Groza Osnowy": [
       {
         "LP": "1",
         "Rzut k66": "11-16",
-        "Efekt": "{{B}}Strzał w głowę{{/B}}\nDobrze wymierzony strzał lub cios w głowę wyrywa postrzępione kawałki kości i mózgu z czaszki twojego wroga. Przeciwnik zatacza się z bólu, niezdolny do skupienia uwagi."
+        "Efekt": "{{B}}MIGAJĄCE ŚWIATŁA{{/B}}\nŹródła światła w pobliżu psionika migają przez krótką chwilę."
+      },
+      {
+        "LP": "2",
+        "Rzut k66": "13-14",
+        "Efekt": "{{B}}OSZRONIENIE{{/B}}\nTemperatura natychmiast spada o 20 stopni. Wszystkie powierzchnie w promieniu 25 metrów od psionika pokrywają się cienką warstwą szronu. Normalna temperatura wraca po około jednej minucie. Szron traktowany jest jak Trudny Teren. Każda postać, która wyrzuci Komplikację, będąc na oszronionej powierzchni, zostaje {{I}}Powalona{{/I}}."
+      },
+      {
+        "LP": "3",
+        "Rzut k66": "15-16",
+        "Efekt": "{{B}}ROZLEWAJĄCA SIĘ MGŁA{{/B}}\nOtoczenie psionika w promieniu 25 metrów jest spowite gęstą mgłą, która po prostu przesącza się z podłoża. Mgła utrudnia widzenie i zniekształca dźwięki. Efekt trwa przez 1 Rundę. Wszystkie Testy wykonywane wewnątrz mgły, które wykorzystują wzrok lub słuch, otrzymują modyfikator +2 do ST."
+      },
+      {
+        "LP": "4",
+        "Rzut k66": "21-22",
+        "Efekt": "{{B}}SZEPTY W CIEMNOŚCIACH{{/B}}\nWszystkie źródła światła w promieniu 25 metrów dookoła psionika blakną – wokół rozlewają się bezkształtne masy cienia i słychać przerażające szepty – każdy, kto może je usłyszeć, musi wykonać Test Spaczenia o ST 3. Jeśli Test się nie powiedzie, dana postać staje się {{I}}Odsłonięta{{/I}} (2) na 1 Rundę."
+      },
+      {
+        "LP": "5",
+        "Rzut k66": "23-24",
+        "Efekt": "{{B}}DUCHY OSNOWY{{/B}}\nPrzez około jedną minutę w promieniu 25 metrów od psionika widać eteryczne obrazy stworów i bestii Osnowy, które wydają się migotać w przestrzeni realnej. Poruszają się w dziwny sposób, ignorując przedmioty i istoty żywe dookoła siebie, ale mogą przez nie przenikać bez przeszkód. Wydają się nie zauważać świata rzeczywistego. Zwierzęta, które są świadkami opisywanej sytuacji, natychmiast uciekają, a istoty rozumne muszą wykonać Test Strachu o ST 3."
+      },
+      {
+        "LP": "6",
+        "Rzut k66": "25-26",
+        "Efekt": "{{B}}ŁZY MĘCZENNIKA{{/B}}\nWszystkie obrazy, posągi i tego typu przedmioty w promieniu 100 metrów od psionika zaczynają płakać krwawymi łzami. Jeśli w promieniu 100 metrów nie ma żadnych tego typu przedmiotów, wtedy ze ścian i podobnych powierzchni zaczyna sączyć się krew. Trwa to przez około jedną minutę. Istoty rozumne będące świadkiem zdarzenia muszą wykonać Test Strachu o ST 3."
+      },
+      {
+        "LP": "7",
+        "Rzut k66": "31-32",
+        "Efekt": "{{B}}ZŁOWIESZCZY CHÓR{{/B}}\nDookoła psionika słychać złowróżbną pieśń lub niski, basowy śmiech. Wszystkie rozumne istoty w promieniu 25 metrów muszą wykonać Test Siły Woli o ST 3. Porażka oznacza, że dana postać staje się Zdezorientowana (1) na 1 Rundę. MG zyskuje punkt Zguby."
+      },
+      {
+        "LP": "8",
+        "Rzut k66": "33-34",
+        "Efekt": "{{B}}OBSERWACJA{{/B}}\nPoczucie wszechogarniającej paranoi spada na psionika i wszystkich dookoła niego w promieniu 20 metrów. Zwierzęta i pomniejsze stwory zamierają w przestrachu, natomiast istoty rozumne muszą wykonać Test Siły Woli o ST 4, który w wypadku niepowodzenia kończy się poczuciem niepewności i skutkuje chęcią weryfikacji wszystkich swoich działań. Postacie stają się {{I}}Zdezorientowane{{/I}} (2). Ten efekt utrzymuje się do końca sceny."
+      },
+      {
+        "LP": "9",
+        "Rzut k66": "35-36",
+        "Efekt": "{{B}}WOŃ ROZKŁADU{{/B}}\nW promieniu 25 metrów od psionika czuć smród gnijącego mięsa i rozkładającego się ciała, który dochodzi od dołu. Wszystkie istoty w zasięgu muszą wykonać Test Wytrzymałości o ST 3. Niepowodzenie oznacza otrzymanie 1 Traumy. Efekt ten oddziałuje także na postaci chronione różnymi rodzajami wyposażenia wspomagającego oddychanie."
+      },
+      {
+        "LP": "10",
+        "Rzut k66": "41-42",
+        "Efekt": "{{B}}KRZYK BANSHEE{{/B}}\nRozlega się głośny wrzask, powalający niczym uderzenie broni sonicznej. Pomniejsze stworzenia (insekty, gryzonie, ptaki itd.) w promieniu 25 metrów po prostu umierają z przestrachu. Inne istoty otrzymują 1k3 Traumy i muszą wykonać Test Wytrzymałości o ST 3 lub zostają {{I}}Oszołomione{{/I}}."
+      },
+      {
+        "LP": "11",
+        "Rzut k66": "43-44",
+        "Efekt": "{{B}}NIENATURALNY ZEW KRWI{{/B}}\nWszystkie stworzenia w promieniu 15 metrów od psionika zaczynają odczuwać pulsowanie w skroniach, a w ustach czują posmak żelaza. W trakcie następnej Rundy wszystkie wykonywane przez nie ataki w Zwarciu uzyskują +1 DK."
+      },
+      {
+        "LP": "12",
+        "Rzut k66": "45-46",
+        "Efekt": "{{B}}ODWRÓCENIE SIĘ ZIEMI{{/B}}\nW promieniu 50 metrów od psionika ma miejsce krótkie, acz gwałtowne trzęsienie ziemi. Nie powoduje ono żadnych prawdziwych szkód, ale wszystkie postaci w zasięgu działania muszą wykonać Test Zręczności o ST 3 lub zostaną {{I}}Powalone{{/I}} i otrzymają 1 Traumę."
+      },
+      {
+        "LP": "13",
+        "Rzut k66": "51-52",
+        "Efekt": "{{B}}WYSSANIE ENERGII ŻYCIOWEJ{{/B}}\nZ ciała psionika wylewa się fala lodowatego znużenia, która dosłownie wyciąga energię ze znajdujących się dookoła istot żywych. Każde żywe stworzenie w promieniu 25 metrów od psionika automatycznie otrzymuje 1k3 Traumy, a wszystkie pomniejsze stworzenia (rośliny, ptaki, insekty itd.) więdną bądź umierają."
+      },
+      {
+        "LP": "14",
+        "Rzut k66": "53-54",
+        "Efekt": "{{B}}WIZJE PRZYSZŁOŚCI{{/B}}\nPsionik otoczony jest barierą brzęczącego ponuro dźwięku, uniemożliwiającą wszelkiego rodzaju komunikację werbalną. Dźwięk ten penetruje także umysł psionika. Wszystkie postaci ze Słowem kluczowym {{RED}}PSIONIK{{/RED}} w promieniu 10 metrów muszą wykonać Test Inteligencji o ST 4. Te, którym się nie uda, zostają Oszołomione i otrzymują także 1k3 punktów Traumy. Udany Test oznacza, że postać otrzymuje 1 punkt Furii."
+      },
+      {
+        "LP": "15",
+        "Rzut k66": "55-56",
+        "Efekt": "{{B}}UDERZENIE PSYCHICZNE{{/B}}\nCiało psionika staje się przekaźnikiem energii elektrycznej. Różowo-fioletowe błyskawice przeskakują po jego kończynach, szukając ujścia. Otrzymuje on 1k3 + 2 punkty Traumy."
+      },
+      {
+        "LP": "16",
+        "Rzut k66": "61-62",
+        "Efekt": "{{B}}ROZSTĄPIENIE SIĘ ZASŁONY{{/B}}\nPowietrze w promieniu 25 metrów od psionika rozrzedza się, wszystkie istoty żywe dostają zadyszki, mają problemy z oddychaniem i cierpią na zawroty głowy. Wszystkie stworzenia bez dostępu do wyposażenia wspomagającego oddychanie są {{I}}Zdezorientowane{{/I}} (2) przez 1 minutę. Co więcej, do wszystkich Testów Mistrzostwa psionicznego (SW) do końca sceny należy dodać 1 dodatkową Kość Furii."
+      },
+      {
+        "LP": "17",
+        "Rzut k66": "63-64",
+        "Efekt": "{{B}}AURA OSNOWY{{/B}}\nMistyczna energia Osnowy otacza psionika i wsiąka w teren w promieniu 25 metrów. Wszystkie istoty w obszarze działania otrzymują 1k3 punktów Traumy. Dodatkowo niewidoczna energia w tym obszarze znacząco zwiększa potęgę fenomenów psionicznych – do wszystkich Testów Mistrzostwa psionicznego (SW) do końca sceny należy dodać 1 dodatkową Kość Furii."
+      },
+      {
+        "LP": "18",
+        "Rzut k66": "65-66",
+        "Efekt": "{{B}}BURZA ENERGII ETERYCZNYCH{{/B}}\nPrzestrzeń dookoła psionika iskrzy się i burzy. Wszystkie istoty w promieniu 25 metrów od psionika otrzymują 1k6 punktów Traumy, a MG otrzymuje 1 punkt Zguby. Do końca sceny wszystkie Kości Furii rzucane w ramach Testów Mistrzostwa psionicznego, na których wypadnie wynik inny niż 1 albo 6, muszą być przerzucone (tylko raz)."
+      },
+      {
+        "LP": "19",
+        "Rzut k66": "71-72",
+        "Efekt": "{{B}}NIENATURALNE WYMIOTY{{/B}}\nPsionikiem wstrząsają spazmy i zaczyna on wymiotować plugawymi, nienaturalnymi płynami. Jest ich o wiele więcej, niż znajduje się w ciele nieszczęśnika. Psionik otrzymuje 1k6 punktów Traumy i jest Unieruchomiony na okres 1k6 Rund."
+      },
+      {
+        "LP": "20",
+        "Rzut k66": "73-74",
+        "Efekt": "{{B}}PEŁZAJĄCA SKÓRA{{/B}}\nPsionikiem wstrząsa obrzydliwe odczucie – jakby tysiące małych robaków pełzało mu tuż pod powierzchnią skóry. Natychmiast otrzymuje on 1k6 + 1 punktów Traumy i musi zwiększyć ST wszystkich wykonywanych Testów o 2. Efekt ten utrzymuje się do końca sceny."
+      },
+      {
+        "LP": "21",
+        "Rzut k66": "75-76",
+        "Efekt": "{{B}}ZNIEKSZTAŁCONE CIAŁO{{/B}}\nEnergia Osnowy mutuje ciała swoich ofiar. Psionik oraz wszystkie inne istoty w promieniu 10 metrów muszą wykonać Test Spaczenia o ST 7. Porażka oznacza, że postać otrzymuje 1k3 punktów Spaczenia (zamiast tylko jednego) oraz 1 Ranę śmiertelną."
+      },
+      {
+        "LP": "22",
+        "Rzut k66": "81-82",
+        "Efekt": "{{B}}GROBOWY CHŁÓD{{/B}}\nOtoczenie dookoła psionika staje się nadnaturalnie chłodne. Ponadnaturalny chłód spowija każdą powierzchnię i pokrywa ją skrzącym się w świetle lodem. Psionik oraz wszystkie istoty w promieniu 50 metrów otrzymują karę -1 do Zręczności i Siły, która utrzymuje się do końca sceny. Wszystkie istoty dotknięte tą Komplikacją muszą wykonać Test Wytrzymałości o ST 5 – porażka oznacza 1 Ranę śmiertelną."
+      },
+      {
+        "LP": "23",
+        "Rzut k66": "83-84",
+        "Efekt": "{{B}}DEMONICZNA INWAZJA{{/B}}\nBariera pomiędzy Osnową i Materium zostaje przerwana i do naszego świata zaczynają wdzierać się demony. W promieniu 25 metrów od psionika pojawia się jakiś demon. Jego dokładna lokalizacja, typ, kształt i inne cechy są w gestii MG. Demon natychmiast zaczyna atakować najbliższą sobie istotę. Po 3 Rundach demon traci formę materialną i wraca do Osnowy. Można też normalnie go zabić."
+      },
+      {
+        "LP": "24",
+        "Rzut k66": "85-86",
+        "Efekt": "{{B}}NIEROZPOZNAWALNE GŁOSY{{/B}}\nWszystkie stworzenia w promieniu 25 metrów od psionika zaczynają słyszeć twarde, gardłowe głosy, które dochodzą zaraz znad ucha, ale nie da się niczego zrozumieć. Wszystkie postaci w promieniu 10 metrów muszą wykonać Test Strachu o ST 5. Wszystkie istoty rozumne w zasięgu działania są {{I}}Oszołomione{{/I}} do końca sceny."
+      },
+      {
+        "LP": "25",
+        "Rzut k66": "91-92",
+        "Efekt": "{{B}}PASAŻER NA GAPĘ{{/B}}\nDemon zagnieżdża się w umyśle psionika. Ma on dostęp do wszystkiego, co widzi jego ofiara, może komunikować się ze swoimi panami oraz może próbować wpływać na działania psionika za każdym razem, gdy ten ucierpi z powodu Komplikacji. Demon może oddziaływać na nosiciela na różne sposoby – może szeptać słowa zachęty prosto w ucho, komentować bieżące wydarzenia lub w jakiś inny sposób przypominać o swoim istnieniu – dopóki nie zostanie przegnany. Efekt ten jest stały i trwa aż do pozbycia się demona. MG zyskuje 1 punkt Zguby oraz może kierować poczynaniami demona. Zajrzyj do ramki pt. Demoniczne opętanie, która znajduje się na (str. 264), aby uzyskać więcej informacji."
+      },
+      {
+        "LP": "26",
+        "Rzut k66": "93-94",
+        "Efekt": "{{B}}BOLESNE OKALECZENIE{{/B}}\nCiałem psionika wstrząsa silny ból i powala go na ziemię. Ofiara otrzymuje 1k6 punktów Traumy oraz 1k3 + 1 punktów Spaczenia. Musi także wykonać rzut na tabeli pomniejszych mutacji (str. 288)."
+      },
+      {
+        "LP": "27",
+        "Rzut k66": "95-96",
+        "Efekt": "{{B}}SPEKTRALNA BURZA{{/B}}\nPsionik staje się okiem cyklonu, szalonej burzy Osnowy, w której co i rusz migają dzikie, drapieżne oblicza nieziemskich stworów, pędzące w różnych kierunkach. Bestie śmieją się, goniąc w szaleńczym pościgu – wszystkie istoty śmiertelne, które mogą to usłyszeć, mają problem z utrzymaniem jasności umysłu. Wszystkie istoty żywe w promieniu 25 metrów od psionika muszą wykonać Test Strachu o ST 7."
+      },
+      {
+        "LP": "28",
+        "Rzut k66": "101-102",
+        "Efekt": "{{B}}OKO BOGÓW{{/B}}\nUmysł psionika przyciąga uwagę któregoś z Bogów Chaosu. Sam psionik oraz inne istoty śmiertelne w promieniu 20 metrów muszą wykonać Test Spaczenia o ST 7. Sukces oznacza, że postać otrzymuje 1 punkt Furii."
+      },
+      {
+        "LP": "29",
+        "Rzut k66": "103-104",
+        "Efekt": "{{B}}KRWAWY DESZCZ{{/B}}\nGorący deszcz klejącej się krwi zaczyna padać w promieniu 8 metrów od psionika. Ta nadnaturalna burza trwa tylko kilka minut, ale niewielki deszcz szybko zamienia się w ulewę. Wszystkie istoty, których ciała dotknie ta krew, muszą wykonać Test Siły Woli o ST 7 lub wpadną w Szał. Obrzydliwy zapach krwi przesiąka wszystkie przedmioty, a sama krew może sprawić, że powierzchnie stają się śliskie."
+      },
+      {
+        "LP": "30",
+        "Rzut k66": "105-106",
+        "Efekt": "{{B}}PSIONICZNE PRZEŁADOWANIE{{/B}}\nCzysta energia Osnowy dosłownie rozsadza psionika od środka, wylewając się z jego oczu i ust, strzelając we wszystkie kierunki i przebijając wszystkie istoty żywe dookoła. Psionik otrzymuje 2k6 Ran śmiertelnych i 1k3 punktów Spaczenia. Wszystkie inne istoty w promieniu 10 metrów otrzymują 1k3 Ran śmiertelnych i muszą wykonać Test Wytrzymałości o ST 7 lub zostaną {{I}}Oślepione{{/I}}."
       }
     ],
     "Skrót Zasad": [
@@ -10463,6 +10608,321 @@
         "Nazwa": "Akcja Bojowa",
         "Opis": "Zaatakowanie przeciwnika, użycie Umiejętności.",
         "Strona": "(str. 178)"
+      },
+      {
+        "LP": "2",
+        "Typ": "Akcje",
+        "Nazwa": "Ruch",
+        "Opis": "Przemieszczenie się o równowartość Szybkości w metrach.",
+        "Strona": "(str. 180)"
+      },
+      {
+        "LP": "3",
+        "Typ": "Akcje",
+        "Nazwa": "Akcja podstawowa",
+        "Opis": "Przeładowanie broni, dobycie miecza, otworzenie drzwi kopnięciem, rozejrzenie się.",
+        "Strona": "(str. 179)"
+      },
+      {
+        "LP": "4",
+        "Typ": "Akcje",
+        "Nazwa": "Akcja darmowa",
+        "Opis": "Test Determinacji, krzyknięcie ostrzeżenia.",
+        "Strona": "(str. 179)"
+      },
+      {
+        "LP": "5",
+        "Typ": "Akcje",
+        "Nazwa": "Akcja okazjonalna",
+        "Opis": "Reakcja na wydarzenia.",
+        "Strona": "(str. 179)"
+      },
+      {
+        "LP": "6",
+        "Typ": "Akcje Zaawansowane",
+        "Nazwa": "Akcja pełna",
+        "Opis": "Poświęcenie wszystkich Akcji i Ruchu w celu wykonania Szarży, Sprintu lub Pełnej obrony.",
+        "Strona": "(str. 179)"
+      },
+      {
+        "LP": "7",
+        "Typ": "Akcje Zaawansowane",
+        "Nazwa": "Akcje złożone",
+        "Opis": "Zadeklaruj wszystkie Akcje, jakie chcesz wykonać.\n+2 do ST wszystkich Testów za każdą dodatkowo podjętą Akcję.",
+        "Strona": "(str. 178)"
+      },
+      {
+        "LP": "8",
+        "Typ": "Akcje Zaawansowane",
+        "Nazwa": "Atak wielokrotny",
+        "Opis": "+2 do ST wszystkich ataków, z wyjątkiem pierwszego ataku.\nObrażenia ustalane są tylko raz, wartość ta określa obrażenia zadawane wszystkim celom.",
+        "Strona": "(str. 187)"
+      },
+      {
+        "LP": "9",
+        "Typ": "Ataki",
+        "Nazwa": "Atak wręcz",
+        "Opis": "Test Walki Wręcz (I) przeciwko Obronie celu.\nZadane obrażenia są równe sumie wartości Siły i współczynnika Obrażeń danej broni.",
+        "Strona": "(str. 183)"
+      },
+      {
+        "LP": "10",
+        "Typ": "Ataki",
+        "Nazwa": "Atak dystansowy",
+        "Opis": "Test Umiejętności Strzeleckich (Zr) przeciwko Obronie celu.\nSprawdź Zasięg w celu wprowadzenia modyfikatorów.",
+        "Strona": "(str. 184)"
+      },
+      {
+        "LP": "11",
+        "Typ": "Ataki",
+        "Nazwa": "Interakcje bojowe",
+        "Opis": "Test Umiejętności przeciwko Umiejętności lub Odwadze celu.\nSukces oznacza, że cel staje się {{I}}Odsłonięty{{/I}} lub {{I}}Zdezorientowany{{/I}}.",
+        "Strona": "(str. 190)"
+      },
+      {
+        "LP": "12",
+        "Typ": "Ruch",
+        "Nazwa": "Bieg",
+        "Opis": "Zużycie Akcji podstawowej oraz Ruchu. Przemieść się o dwukrotność wartości Szybkości w metrach.",
+        "Strona": "(str. 180)"
+      },
+      {
+        "LP": "13",
+        "Typ": "Ruch",
+        "Nazwa": "Sprint",
+        "Opis": "Akcja pełna. Przemieść się o trzykrotność wartości Szybkości w metrach.",
+        "Strona": "(str. 180)"
+      },
+      {
+        "LP": "14",
+        "Typ": "Ruch",
+        "Nazwa": "Czołganie się",
+        "Opis": "Zużycie Akcji podstawowej, aby paść na ziemię (skutkuje {{I}}Powaleniem{{/I}}). Przemieść się o połowę wartości Szybkości w metrach.",
+        "Strona": "(str. 180)"
+      },
+      {
+        "LP": "15",
+        "Typ": "Ruch",
+        "Nazwa": "Osłona",
+        "Opis": "Premia +1 do Obrony, jeśli mniej niż połowa postaci znajduje się za Osłoną.\nPremia +2 do Obrony, jeśli co najmniej połowa postaci znajduje się za Osłoną.",
+        "Strona": "(str. 181)"
+      },
+      {
+        "LP": "16",
+        "Typ": "Obrażenia i Obrona",
+        "Nazwa": "Determinacja",
+        "Opis": "Test Determinacji. Każda Ikona umożliwia zamianę 1 Rany na 1 Traumę.",
+        "Strona": "(str. 196)"
+      },
+      {
+        "LP": "17",
+        "Typ": "Obrażenia i Obrona",
+        "Nazwa": "Konanie",
+        "Opis": "Postać zostaje {{I}}Powalona{{/I}}, może się wyłącznie Czołgać lub wykonać prostą Akcję bojową.\nJeśli Konająca postać otrzyma jakiekolwiek Rany, zamiast Ran dostaje Okaleczenie.",
+        "Strona": "(str. 193)"
+      },
+      {
+        "LP": "18",
+        "Typ": "Obrażenia i Obrona",
+        "Nazwa": "Pełna obrona",
+        "Opis": "Akcja pełna. Wykonaj Test Inicjatywy – każda Ikona zwiększa twoją Obronę o +1 do końca twojej następnej Tury.",
+        "Strona": "(str. 187)"
+      },
+      {
+        "LP": "19",
+        "Typ": "Obrażenia i Obrona",
+        "Nazwa": "Ranna postać",
+        "Opis": "Jeśli postać ma jakiekolwiek Rany, ST wszystkich jej Testów wzrasta o +1.",
+        "Strona": "(str. 193)"
+      },
+      {
+        "LP": "20",
+        "Typ": "Obrażenia i Obrona",
+        "Nazwa": "Rany i Żywotność",
+        "Opis": "Jeśli atak zada więcej obrażeń, niż wynosi twoja Odporność, różnica wartości przekształcana jest w Rany.\nJeśli twoja postać otrzyma więcej Ran, niż wynosi jej Żywotność, staje się Konająca.",
+        "Strona": "(str. 193)"
+      },
+      {
+        "LP": "21",
+        "Typ": "Obrażenia i Obrona",
+        "Nazwa": "Atak mierzony",
+        "Opis": "+1 DK za każdą premię +1 dodaną do Obrony celu.",
+        "Strona": "(str. 186)"
+      },
+      {
+        "LP": "22",
+        "Typ": "Opcjonalne Ataki Wręcz",
+        "Nazwa": "Szaleńczy atak",
+        "Opis": "+2 dodatkowe kości do wszystkich ataków wręcz.\n-2 do Obrony do początku twojej następnej Tury.",
+        "Strona": "(str. 187)"
+      },
+      {
+        "LP": "23",
+        "Typ": "Opcjonalne Ataki Wręcz",
+        "Nazwa": "Szarża",
+        "Opis": "Akcja pełna – Bieg i atak wręcz z +1 dodatkową kością do Testu ataku.",
+        "Strona": "(str. 188)"
+      },
+      {
+        "LP": "24",
+        "Typ": "Opcjonalne Ataki Wręcz",
+        "Nazwa": "Odwrót",
+        "Opis": "Akcja bojowa uniemożliwiająca przeciwnikowi wykonanie Ataku okazjonalnego.",
+        "Strona": "(str. 188)"
+      },
+      {
+        "LP": "25",
+        "Typ": "Opcjonalne Ataki Wręcz",
+        "Nazwa": "Pochwycenie",
+        "Opis": "Przeciwstawny Test Siły z celem w Zwarciu.\nJeśli Test zakończy się sukcesem, cel zostaje {{I}}Unieruchomiony{{/I}}.",
+        "Strona": "(str. 188)"
+      },
+      {
+        "LP": "26",
+        "Typ": "Opcjonalne Ataki Wręcz",
+        "Nazwa": "Pistolety w Zwarciu",
+        "Opis": "Cel zyskuje +2 do Obrony.",
+        "Strona": "(str. 184)"
+      },
+      {
+        "LP": "27",
+        "Typ": "Opcjonalne Ataki Wręcz",
+        "Nazwa": "Ataki bez broni",
+        "Opis": "Obrażenia równe wartości Siły + 1 DK.",
+        "Strona": "(str. 183)"
+      },
+      {
+        "LP": "28",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Bliski zasięg",
+        "Opis": "+1 dodatkowa kość do Testu ataku dystansowego.",
+        "Strona": "(str. 184)"
+      },
+      {
+        "LP": "29",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Daleki zasięg",
+        "Opis": "Cel zyskuje +2 do Obrony.",
+        "Strona": "(str. 184)"
+      },
+      {
+        "LP": "30",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Celowanie",
+        "Opis": "+1 dodatkowa kość do Testu ataku dystansowego.\nNie możesz się poruszać w swojej Turze.",
+        "Strona": "(str. 189)"
+      },
+      {
+        "LP": "31",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Podparcie",
+        "Opis": "Zignorowanie cechy broni: Ciężka.\nNie możesz się poruszać w swojej Turze.",
+        "Strona": "(str. 189)"
+      },
+      {
+        "LP": "32",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Atak mierzony",
+        "Opis": "+1 DK za każdą premię +1 dodaną do Obrony celu.",
+        "Strona": "(str. 186)"
+      },
+      {
+        "LP": "33",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Strzał rozbrajający",
+        "Opis": "Cel wykonuje Test Siły o ST równym połowie obrażeń zadanych przez atak dystansowy.\nJeśli Test zakończy się porażką, cel upuszcza broń.",
+        "Strona": "(str. 187)"
+      },
+      {
+        "LP": "34",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Strzelanie do walczących wręcz",
+        "Opis": "Jeśli w wyniku Testu nastąpi Komplikacja, strzał trafia w losowy inny cel.",
+        "Strona": "(str. 185)"
+      },
+      {
+        "LP": "35",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Granaty i Efekty obszarowe",
+        "Opis": "Aby trafić w cel w zasięgu, należy wykonać Test Umiejętności Strzeleckich o ST 3.\nWszystkie cele w zasięgu rażenia Wybuchu otrzymują obrażenia.",
+        "Strona": "(str. 185)"
+      },
+      {
+        "LP": "36",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Przeładowanie",
+        "Opis": "Przeładowanie broni zużywa Akcję podstawową i 1 p. Amunicji.",
+        "Strona": "(str. 184)"
+      },
+      {
+        "LP": "37",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Tryby ognia",
+        "Opis": "Ułatwienie Testu ataku dystansowego.\nBroń musi zostać przeładowana po każdym ataku tego typu.",
+        "Strona": "(str. 185)"
+      },
+      {
+        "LP": "38",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Rozrzut",
+        "Opis": "Jeśli Test Umiejętności Strzeleckich z Efektem obszarowym zakończy się porażką, rzuć 1k6 i pomnóż wynik przez 2, aby określić dystans rozrzutu oraz 1k6, by określić jego kierunek.",
+        "Strona": "(str. 186)"
+      },
+      {
+        "LP": "39",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Strzał przez Osłonę",
+        "Opis": "Dodaj premię za Osłonę do Odporności celu.",
+        "Strona": "(str. 189)"
+      },
+      {
+        "LP": "40",
+        "Typ": "Opcjonalne Ataki Dystansowe",
+        "Nazwa": "Atak przygważdżający",
+        "Opis": "Aby Przygwoździć przeciwnika, wykonaj Test Umiejętności Strzeleckich przeciwko Odwadze celu. Po każdym ataku tego typu trzeba przeładować broń.",
+        "Strona": "(str. 189)"
+      },
+      {
+        "LP": "41",
+        "Typ": "Okoliczności",
+        "Nazwa": "Trudny teren",
+        "Opis": "Szybkość zostaje zmniejszona o połowę.",
+        "Strona": "(str. 181)"
+      },
+      {
+        "LP": "41",
+        "Typ": "Okoliczności",
+        "Nazwa": "Unikanie Efektów obszarowych",
+        "Opis": "Wykonaj Pełną obronę, by zwiększyć swoją Odporność – tracisz swoją następną Turę.",
+        "Strona": "(str. 186)"
+      },
+      {
+        "LP": "41",
+        "Typ": "Okoliczności",
+        "Nazwa": "Zwarcie",
+        "Opis": "W zasięgu broni białej przeciwnika.",
+        "Strona": "(str. 184)"
+      },
+      {
+        "LP": "41",
+        "Typ": "Okoliczności",
+        "Nazwa": "Przejęcie Inicjatywy",
+        "Opis": "Wydaj 1 p. Chwały, by zadziałać przed MG.",
+        "Strona": "(str. 177)"
+      },
+      {
+        "LP": "41",
+        "Typ": "Okoliczności",
+        "Nazwa": "Ataki z zaskoczenia",
+        "Opis": "Jeśli cel zostaje zaskoczony przez przeciwnika, do puli kości Testu ataku dodawane są +2 kości, a do obrażeń +2 DK.",
+        "Strona": "(str. 182)"
+      },
+      {
+        "LP": "42",
+        "Typ": "Okoliczności",
+        "Nazwa": "Atak okazjonalny",
+        "Opis": "Jeśli przeciwnik wychodzi ze Zwarcia bez wykonywania Odwrotu, możesz zaatakować go, wykorzystując Akcję okazjonalną.",
+        "Strona": "(str. 179)"
       }
     ]
   },
