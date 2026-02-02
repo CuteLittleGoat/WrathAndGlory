@@ -3183,133 +3183,133 @@
       {
         "LP": "1",
         "Numer": "1",
-        "Nazwa": "Drugie serce (Podtrzymywacz)",
+        "Nazwa": "Drugie serce ({{I}}Podtrzymywacz{{/I}})",
         "Opis": "Poprawia przepływ krwi."
       },
       {
         "LP": "2",
         "Numer": "2",
-        "Nazwa": "Ossmodula (Żelazne serce)",
+        "Nazwa": "Ossmodula ({{I}}Żelazne serce{{/I}})",
         "Opis": "Scala żebra, by poprawić integralność strukturalną."
       },
       {
         "LP": "3",
         "Numer": "3",
-        "Nazwa": "Biscopea (Kuźnia siły)",
+        "Nazwa": "Biscopea ({{I}}Kuźnia siły{{/I}})",
         "Opis": "Produkuje hormony zwiększające masę mięśniową."
       },
       {
         "LP": "4",
         "Numer": "4",
-        "Nazwa": "Haemastamen (Organ krwiogenny)",
+        "Nazwa": "Haemastamen ({{I}}Organ krwiogenny{{/I}})",
         "Opis": "Poprawia efektywność krwi."
       },
       {
         "LP": "5",
         "Numer": "5",
-        "Nazwa": "Organ Larramana (Uzdrowiciel)",
+        "Nazwa": "Organ Larramana ({{I}}Uzdrowiciel{{/I}})",
         "Opis": "Pozwala na szybsze krzepnięcie krwi i formowanie tkanki bliznowatej."
       },
       {
         "LP": "6",
         "Numer": "6",
-        "Nazwa": "Węzeł kataleptyczny (Bezsenny)",
+        "Nazwa": "Węzeł kataleptyczny ({{I}}Bezsenny{{/I}})",
         "Opis": "Eliminuje potrzebę snu."
       },
       {
         "LP": "7",
         "Numer": "7",
-        "Nazwa": "Preomnor (Neutralizator)",
+        "Nazwa": "Preomnor ({{I}}Neutralizator{{/I}})",
         "Opis": "Pozwala na konsumpcję trucizn bez konsekwencji."
       },
       {
         "LP": "8",
         "Numer": "8",
-        "Nazwa": "Omophagea (Upamiętniacz)",
+        "Nazwa": "Omophagea ({{I}}Upamiętniacz{{/I}})",
         "Opis": "Przenosi wspomnienia ze spożytego mięsa."
       },
       {
         "LP": "9",
         "Numer": "9",
-        "Nazwa": "Multipłuco (Pochłaniacz)",
+        "Nazwa": "Multipłuco ({{I}}Pochłaniacz{{/I}})",
         "Opis": "Pozwala na oddychanie w trującej atmosferze i wodzie."
       },
       {
         "LP": "10",
         "Numer": "10",
-        "Nazwa": "Occulobe (Oko zemsty)",
+        "Nazwa": "Occulobe ({{I}}Oko zemsty{{/I}})",
         "Opis": "Poprawia wzrok, pozwalając na widzenie przy słabym oświetleniu."
       },
       {
         "LP": "11",
         "Numer": "11",
-        "Nazwa": "Ucho Lymana (Strażnik)",
+        "Nazwa": "Ucho Lymana ({{I}}Strażnik{{/I}})",
         "Opis": "Poprawia słuch i równowagę."
       },
       {
         "LP": "12",
         "Numer": "12",
-        "Nazwa": "Membrana Sus-an (Hibernator)",
+        "Nazwa": "Membrana Sus-an ({{I}}Hibernator{{/I}})",
         "Opis": "Umożliwia dobrowolne wejście w stan hibernacji."
       },
       {
         "LP": "13",
         "Numer": "13",
-        "Nazwa": "Melanchrom (Skórotarcza)",
+        "Nazwa": "Melanchrom ({{I}}Skórotarcza{{/I}})",
         "Opis": "Zapewnia odporność na promieniowanie."
       },
       {
         "LP": "14",
         "Numer": "14",
-        "Nazwa": "Nerka oolityczna (Oczyszczacz)",
+        "Nazwa": "Nerka oolityczna ({{I}}Oczyszczacz{{/I}})",
         "Opis": "Oczyszcza krew z trucizn."
       },
       {
         "LP": "15",
         "Numer": "15",
-        "Nazwa": "Neuroglottis (Pożeracz)",
+        "Nazwa": "Neuroglottis ({{I}}Pożeracz{{/I}})",
         "Opis": "Poprawia zmysły smaku i węchu."
       },
       {
         "LP": "16",
         "Numer": "16",
-        "Nazwa": "Mucranoid (Tkacz)",
+        "Nazwa": "Mucranoid ({{I}}Tkacz{{/I}})",
         "Opis": "Chroni skórę przed ekstremalnymi temperaturami i próżnią."
       },
       {
         "LP": "17",
         "Numer": "17",
-        "Nazwa": "Gruczoł Bletchera (Zatruta ślina)",
+        "Nazwa": "Gruczoł Bletchera ({{I}}Zatruta ślina{{/I}})",
         "Opis": "Pozwala na splunięcie zatrutą, żrącą śliną."
       },
       {
         "LP": "18",
         "Numer": "18",
-        "Nazwa": "Progenoidy (Genoziarno)",
+        "Nazwa": "Progenoidy ({{I}}Genoziarno{{/I}})",
         "Opis": "Daje podstawy dla nowego genoziarna."
       },
       {
         "LP": "19",
         "Numer": "19",
-        "Nazwa": "Interfejs (Czarna Skorupa)",
+        "Nazwa": "Interfejs ({{I}}Czarna Skorupa{{/I}})",
         "Opis": "Interfejs do pancerza wspomaganego."
       },
       {
         "LP": "20",
         "Numer": "20 (tylko Primaris)",
-        "Nazwa": "Splot ścięgnowy (Wewnętrzna stal)",
+        "Nazwa": "Splot ścięgnowy ({{I}}Wewnętrzna stal{{/I}})",
         "Opis": "Jeszcze bardziej zwiększa siłę fizyczną."
       },
       {
         "LP": "21",
         "Numer": "21 (tylko Primaris)",
-        "Nazwa": "Powiększacz (Wzmacniacz)",
+        "Nazwa": "Powiększacz ({{I}}Wzmacniacz{{/I}})",
         "Opis": "Zwiększa wzrost i efektywność implantów."
       },
       {
         "LP": "22",
         "Numer": "22 (tylko Primaris)",
-        "Nazwa": "Piec Belisariusa (Pobudzacz)",
+        "Nazwa": "Piec Belisariusa ({{I}}Pobudzacz{{/I}})",
         "Opis": "Pozwala na szybkie leczenie pod wpływem ekstremalnego stresu."
       }
     ],
@@ -3438,13 +3438,13 @@
       {
         "LP": "2",
         "Nazwa": "Krwawe Topory",
-        "Opis": "Uważani za „nieorczych” przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne „taktiki”, jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
+        "Opis": "Uważani za \"nieorczych\" przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne \"taktiki\", jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
         "Efekt": "+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr)."
       },
       {
         "LP": "3",
         "Nazwa": "Śmiercioczaszki",
-        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, „handlują” i modyfikują sprzęt częściej niż inne klany.",
+        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, \"handlują\" i modyfikują sprzęt częściej niż inne klany.",
         "Efekt": "+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów."
       },
       {
@@ -3938,7 +3938,7 @@
         "LP": "19",
         "Typ": "Frakcje",
         "Nazwa": "{{RED}}DRUKHARI{{/RED}}",
-        "Opis": "„Mroczni”, okrutni i niemoralni aeldari, których całkowicie pochłonął nieskończony hedonizm.\nOd upadku imperium aeldari żyją w mieszczącej się w Pajęczym Trakcie obrzydliwej metropolii Commorragh, w której karmią swe wynaturzone dusze fizycznymi emanacjami cierpienia całych rzesz niewolników."
+        "Opis": "\"Mroczni\", okrutni i niemoralni aeldari, których całkowicie pochłonął nieskończony hedonizm.\nOd upadku imperium aeldari żyją w mieszczącej się w Pajęczym Trakcie obrzydliwej metropolii Commorragh, w której karmią swe wynaturzone dusze fizycznymi emanacjami cierpienia całych rzesz niewolników."
       },
       {
         "LP": "20",
@@ -4118,7 +4118,7 @@
         "LP": "49",
         "Typ": "Frakcje",
         "Nazwa": "{{RED}}QUESTOR MECHANICUS{{/RED}}",
-        "Opis": "Robotyczne bojowe maszyny kroczące, znane pod nazwą Rycerzy Imperialnych, określane są w wysokim gotyku mianem „Questor Mechanicus”.\nRycerz spełniający starożytną powinność feudalnych światów rycerskich wobec Imperium może odwrócić przebieg całej bitwy, zwracając przeciwko wrogom całe milenia doświadczenia bojowego, przekazywanego kolejnym pilotom poprzez Tron Mechanicum."
+        "Opis": "Robotyczne bojowe maszyny kroczące, znane pod nazwą Rycerzy Imperialnych, określane są w wysokim gotyku mianem \"Questor Mechanicus\".\nRycerz spełniający starożytną powinność feudalnych światów rycerskich wobec Imperium może odwrócić przebieg całej bitwy, zwracając przeciwko wrogom całe milenia doświadczenia bojowego, przekazywanego kolejnym pilotom poprzez Tron Mechanicum."
       },
       {
         "LP": "50",
@@ -5104,7 +5104,7 @@
         "Koszt PD": "10",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
         "Opis": "Umiesz rozbroić ludzi gołymi rękami i nie dopuścić, by ktoś, z kim chcesz jedynie porozmawiać, popełnił błąd, którego będzie żałował.",
-        "Efekt": "Jeśli twoja postać wykonuje Rozbrojenie i jest Nieuzbrojona, nie otrzymuje kar za deklarację Ataku mierzonego [{{B}}Podręcznik Główny{{/B}} (str. 186)].\nST Testu Siły przeciwnika jest równy zadanym „obrażeniom”, a nie zaledwie ich połowie."
+        "Efekt": "Jeśli twoja postać wykonuje Rozbrojenie i jest Nieuzbrojona, nie otrzymuje kar za deklarację Ataku mierzonego [{{B}}Podręcznik Główny{{/B}} (str. 186)].\nST Testu Siły przeciwnika jest równy zadanym \"obrażeniom\", a nie zaledwie ich połowie."
       },
       {
         "LP": "88",
@@ -5678,7 +5678,7 @@
         "Zasięg": "5m",
         "Wiele Celów": "Nie",
         "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Zagnieżdżasz w umyśle pobliskiej istoty prostą komendę. Musi być ona krótka (jedna akcja / jedno proste działanie), łatwa do wykonania i oczywista, ale może nie zgadzać się z podstawowymi instynktami lub interesem istoty.\nPrzykładowe komendy to np. „rzuć broń”, „otwórz dla mnie drzwi” albo „popchnij go”. Sugestie nie mogą sprawić, aby istota wykonała akcję, której z jakiegoś powodu wykonać nie może – cybermastiff nie stanie się nagle kogitatorem.\nAby oprzeć się Mocy, cel może wykonać Test Siły Woli o ST 4.",
+        "Efekt": "Zagnieżdżasz w umyśle pobliskiej istoty prostą komendę. Musi być ona krótka (jedna akcja / jedno proste działanie), łatwa do wykonania i oczywista, ale może nie zgadzać się z podstawowymi instynktami lub interesem istoty.\nPrzykładowe komendy to np. \"rzuć broń\", \"otwórz dla mnie drzwi\" albo \"popchnij go\". Sugestie nie mogą sprawić, aby istota wykonała akcję, której z jakiegoś powodu wykonać nie może – cybermastiff nie stanie się nagle kogitatorem.\nAby oprzeć się Mocy, cel może wykonać Test Siły Woli o ST 4.",
         "Wzmocnienie": "[1] +1 do ST Testu Siły Woli celu.\n[2] Czas trwania wydłużony o +1 Rundę."
       },
       {
@@ -5697,90 +5697,6 @@
       },
       {
         "LP": "18",
-        "Typ": "Dyscyplina Kronikarstwa",
-        "Nazwa": "Zasłona czasu",
-        "Koszt PD": "20",
-        "ST": "8",
-        "Aktywacja": "Akcja",
-        "Czas Trwania": "Podtrzymywana",
-        "Zasięg": "20m",
-        "Wiele Celów": "Tak",
-        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Naginasz Osnowe, wykrzywiajac upływ czasu i nienaturalnie wydłuzajac terazniejszosc.\nDopóki Podtrzymujesz te moc, twój cel otrzymuje druga Ture w kazdej Rundzie.",
-        "Wzmocnienie": "Brak"
-      },
-      {
-        "LP": "19",
-        "Typ": "Dyscyplina Kronikarstwa",
-        "Nazwa": "Moc bohaterów",
-        "Koszt PD": "15",
-        "ST": "7",
-        "Aktywacja": "Akcja",
-        "Czas Trwania": "Podtrzymywana",
-        "Zasięg": "15m",
-        "Wiele Celów": "Nie",
-        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Przyzywasz pokłady zawiłej wiedzy zebranej w Librariusie i napełniasz sojusznika moca Osnowy, obdarzajac go wojenna potega poległych juz braci Astartes.\nDo poczatku twojej nastepnej Tury cel mocy zyskuje premie +1 do Siły, Wytrzymałosci i Inicjatywy.",
-        "Wzmocnienie": "[3] Twój cel zyskuje dodatkowa premie +1 do Siły, Wytrzymałosci i Inicjatywy."
-      },
-      {
-        "LP": "20",
-        "Typ": "Dyscyplina Kronikarstwa",
-        "Nazwa": "Psioniczna chłosta",
-        "Koszt PD": "20",
-        "ST": "Siła Woli celu",
-        "Aktywacja": "Akcja",
-        "Czas Trwania": "Natychmiastowa",
-        "Zasięg": "20m",
-        "Wiele Celów": "Tak",
-        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Przebijasz sie przez umysł celu, odzierajac go z wiedzy w przerazajacy i niezwykle bolesny sposób.\nAby aktywowac te moc, musisz wygrac z celem w przeciwstawnym Tescie Siły Woli. Jesli wygrasz, zadajesz mu 1k3 Ran smiertelnych, a ponadto wywołujesz w nim Strach.",
-        "Wzmocnienie": "[3] +1 Rana smiertelna"
-      },
-      {
-        "LP": "21",
-        "Typ": "Dyscyplina Kronikarstwa",
-        "Nazwa": "Gniew starozytnych",
-        "Koszt PD": "15",
-        "ST": "10",
-        "Aktywacja": "Akcja",
-        "Czas Trwania": "Natychmiastowa",
-        "Zasięg": "14m",
-        "Wiele Celów": "Nie",
-        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Siegasz po legendarna wiedze Librariusa i tworzysz obraz potwora, z którym walczono juz w historii twego Zakonu, zasiewajac ociekajaca Osnowa groze w sercach wrogów.\nJesli uda ci sie aktywowac te moc, Gniew starozytnych koncentruje sie we wskazanym przez ciebie kierunku w wiazke długa na 14 metrów. Wszyscy przeciwnicy w linii ataku otrzymuja 2k3 Ran smiertelnych.",
-        "Wzmocnienie": "[1] +7 m Zasiegu.\n[2] +1 Rana smiertelna."
-      },
-      {
-        "LP": "22",
-        "Typ": "Dyscyplina Kronikarstwa",
-        "Nazwa": "Psychiczna forteca",
-        "Koszt PD": "15",
-        "ST": "6",
-        "Aktywacja": "Akcja",
-        "Czas Trwania": "Podtrzymywana",
-        "Zasięg": "20m",
-        "Wiele Celów": "Tak",
-        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Fortyfikujesz umysł celu za pomoca wielowarstwowych psychicznych pieczeci heksagramatycznych, chroniac go przed zakusami Osnowy i wzbudzajac odwage.\nDopóki Podtrzymujesz te moc, cel jest niewrazliwy na Strach i Groze. Ponadto otrzymuje równiez dodatkowe kosci w liczbie równej twojej Sile Woli w Testach Determinacji przy obrazeniach wynikłych z uzycia innych mocy psionicznych.\nDopóki moc jest aktywna, moze równiez wykonywac Test Determinacji w celu zmniejszenia liczby wywołanych mocami psionicznymi Ran smiertelnych.",
-        "Wzmocnienie": "Brak"
-      },
-      {
-        "LP": "23",
-        "Typ": "Dyscyplina Kronikarstwa",
-        "Nazwa": "Wytłumienie",
-        "Koszt PD": "15",
-        "ST": "7",
-        "Aktywacja": "Akcja",
-        "Czas Trwania": "Natychmiastowa",
-        "Zasięg": "20m",
-        "Wiele Celów": "Nie",
-        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Czerpiesz z czystosci samego Imperatora i wypaczasz moce Osnowy, by na jakis czas odepchnac jej szkodliwy wpływ z okreslonego obszaru.\nJesli uda ci sie aktywowac te moc, wybierz punkt lub cel w zasiegu. Tworzysz wokół niego obszar wytłumiajacy o promieniu 6 metrów, który utrzymuje sie do poczatku twojej nastepnej Tury.\nST wszystkich Testów Mistrzostwa psionicznego (SW) w tym obszarze jest zwiekszony o wartosc twojej Siły Woli.\nWewnatrz tego obszaru Pancerze Nieprzebijalne traca swoje własciwosci.",
-        "Wzmocnienie": "[1] +10 m Zasiegu.\n[2] Dwa razy wiekszy obszar wytłumienia."
-      },
-      {
-        "LP": "24",
         "Typ": "Dyscyplina Biomancji",
         "Nazwa": "Osłabienie",
         "Koszt PD": "15",
@@ -5794,7 +5710,7 @@
         "Wzmocnienie": "[1] Zwiększ redukcję Siły o +1.\n[3] +1 Trauma co Rundę."
       },
       {
-        "LP": "25",
+        "LP": "19",
         "Typ": "Dyscyplina Biomancji",
         "Nazwa": "Wyssanie życia",
         "Koszt PD": "15",
@@ -5808,7 +5724,7 @@
         "Wzmocnienie": "[1] +1 Trauma.\n[2] +1 Rana.\n*[3] Zadawane Rany zmieniają się w Rany śmiertelne."
       },
       {
-        "LP": "26",
+        "LP": "20",
         "Typ": "Dyscyplina Biomancji",
         "Nazwa": "Szybkość Osnowy",
         "Koszt PD": "15",
@@ -5822,7 +5738,7 @@
         "Wzmocnienie": "*[1] W trakcie podtrzymywania tej Mocy otrzymujesz 1 punkt Traumy mniej.\n[2] Premia do Obrony wzrasta o +1."
       },
       {
-        "LP": "27",
+        "LP": "21",
         "Typ": "Dyscyplina Biomancji",
         "Nazwa": "Eteryczna postać",
         "Koszt PD": "15",
@@ -5836,7 +5752,7 @@
         "Wzmocnienie": "*[1] Ignorujesz karę do Szybkości.\n*[1] Możesz mówić do istot w świecie realnym i jesteś przez nie słyszany.\n*[3] Możesz wchodzić w interakcję z przedmiotami – jest to dla ciebie Akcja pełna."
       },
       {
-        "LP": "28",
+        "LP": "22",
         "Typ": "Dyscyplina Biomancji",
         "Nazwa": "Regeneracja",
         "Koszt PD": "15",
@@ -5850,7 +5766,7 @@
         "Wzmocnienie": "[1] +1 punkt Traumy uleczony na Rundę.\n[2] +1 Rana wyleczona na Rundę."
       },
       {
-        "LP": "29",
+        "LP": "23",
         "Typ": "Dyscyplina Biomancji",
         "Nazwa": "Kształtowanie ciała",
         "Koszt PD": "20",
@@ -5864,7 +5780,7 @@
         "Wzmocnienie": "[2] +1 dodatkowa kość do Testów Oszukiwania na potrzeby udawania kogoś innego.\n[3] Możesz wybrać dodatkową modyfikację ciała."
       },
       {
-        "LP": "30",
+        "LP": "24",
         "Typ": "Dyscyplina Dywinacji",
         "Nazwa": "Ostrzeżenie",
         "Koszt PD": "15",
@@ -5878,7 +5794,7 @@
         "Wzmocnienie": "*[1] Aktywacja zredukowana tylko do Akcji.\n[2] Dodatkowa premia +1 do Obrony."
       },
       {
-        "LP": "31",
+        "LP": "25",
         "Typ": "Dyscyplina Dywinacji",
         "Nazwa": "Wejrzenie",
         "Koszt PD": "15",
@@ -5888,11 +5804,11 @@
         "Zasięg": "Psionik",
         "Wiele Celów": "Nie",
         "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "{{B}}Wymagania wstępne{{/B}}: Przynajmniej jedna inna Moc z dyscypliny Dywinacji.\nSpoglądasz w głębię Osnowy i odrzucasz możliwe wersje przyszłości, które skrzą się na powierzchni. Pod nimi, pod zwodniczymi obietnicami tego, co może być, znajdujesz wgląd w to, co rzeczywiście ma nadejść – widzisz obrazy przyszłości, w najgorszym wypadku tylko tej najbliższej.\nPo aktywacji Wejrzenia możesz przerzucać jedną kość we wszelkich Testach (ale nie Kość Furii!) wykonywanych do końca obecnej Sceny.\nDodatkowo możesz poprosić nieznające czasu istoty zamieszkujące Osnowę o odpowiedź na jedno pytanie dotyczące przyszłości.\nMG wybiera istotę, która odpowie na twoje wezwanie i w tajemnicy przekazuje ci jej wiadomość. Uzyskana odpowiedź może mieć różną formę – czasem jest to krótkie zdanie, czasem jedno słowo albo jakaś emocja – istoty nazywające Osnowę swoim domem są niezrozumiałe dla ludzkiego umysłu. Poza tym nigdy nie masz pewności, czy chcą ci pomóc, czy może zaszkodzić. A może po prostu w ogóle ich nie obchodzisz? Immaterium i jego mieszkańcy – przynajmniej ci z nich, którzy rzeczywiście interesują się takimi pojęciami śmiertelników jak czas w świecie rzeczywistym, niechętnie dzielą się posiadaną wiedzą. Dlatego psionik wiele ryzykuje, stawiając tego typu pytania.\nW trakcie wykonywania Testu Mistrzostwa psionicznego na potrzeby aktywowania tej Mocy zakłada się, że w rzucie wypadł jeden wynik „1” na Kości Furii (co oznacza, że nawet jeśli żadna Kość Furii nie będzie wskazywać 1, to i tak należy rzucić na tabeli Grozy Osnowy).\nWejrzenia nie można użyć więcej niż raz na daną scenę.",
+        "Efekt": "{{B}}Wymagania wstępne{{/B}}: Przynajmniej jedna inna Moc z dyscypliny Dywinacji.\nSpoglądasz w głębię Osnowy i odrzucasz możliwe wersje przyszłości, które skrzą się na powierzchni. Pod nimi, pod zwodniczymi obietnicami tego, co może być, znajdujesz wgląd w to, co rzeczywiście ma nadejść – widzisz obrazy przyszłości, w najgorszym wypadku tylko tej najbliższej.\nPo aktywacji Wejrzenia możesz przerzucać jedną kość we wszelkich Testach (ale nie Kość Furii!) wykonywanych do końca obecnej Sceny.\nDodatkowo możesz poprosić nieznające czasu istoty zamieszkujące Osnowę o odpowiedź na jedno pytanie dotyczące przyszłości.\nMG wybiera istotę, która odpowie na twoje wezwanie i w tajemnicy przekazuje ci jej wiadomość. Uzyskana odpowiedź może mieć różną formę – czasem jest to krótkie zdanie, czasem jedno słowo albo jakaś emocja – istoty nazywające Osnowę swoim domem są niezrozumiałe dla ludzkiego umysłu. Poza tym nigdy nie masz pewności, czy chcą ci pomóc, czy może zaszkodzić. A może po prostu w ogóle ich nie obchodzisz? Immaterium i jego mieszkańcy – przynajmniej ci z nich, którzy rzeczywiście interesują się takimi pojęciami śmiertelników jak czas w świecie rzeczywistym, niechętnie dzielą się posiadaną wiedzą. Dlatego psionik wiele ryzykuje, stawiając tego typu pytania.\nW trakcie wykonywania Testu Mistrzostwa psionicznego na potrzeby aktywowania tej Mocy zakłada się, że w rzucie wypadł jeden wynik \"1\" na Kości Furii (co oznacza, że nawet jeśli żadna Kość Furii nie będzie wskazywać 1, to i tak należy rzucić na tabeli Grozy Osnowy).\nWejrzenia nie można użyć więcej niż raz na daną scenę.",
         "Wzmocnienie": "[1] Aktywacja skrócona o 5 minut (do minimum 5 minut).\n*[2] Możesz postawić dodatkowe pytanie dotyczące przyszłości."
       },
       {
-        "LP": "32",
+        "LP": "26",
         "Typ": "Dyscyplina Dywinacji",
         "Nazwa": "Pech",
         "Koszt PD": "15",
@@ -5906,7 +5822,7 @@
         "Wzmocnienie": "*[1] Czas aktywacji skrócony do Akcji.\n[2] Cel otrzymuje karę -1 do Obrony.\n[2] Cel otrzymuje karę +1 do ST wszystkich Testów."
       },
       {
-        "LP": "33",
+        "LP": "27",
         "Typ": "Dyscyplina Dywinacji",
         "Nazwa": "Psychometria",
         "Koszt PD": "15",
@@ -5920,7 +5836,7 @@
         "Wzmocnienie": "[1] Możesz udostępnić wizję wydarzenia jakiemuś sojusznikowi w zasięgu działania.\n[2] Zasięg Mocy wzrasta dwukrotnie.\n[2] Czas potrzebny do uzyskania wizji skraca się o połowę."
       },
       {
-        "LP": "34",
+        "LP": "28",
         "Typ": "Dyscyplina Dywinacji",
         "Nazwa": "Spojrzenie wróża",
         "Koszt PD": "5",
@@ -5934,7 +5850,7 @@
         "Wzmocnienie": "[1] Zasięg Mocy zwiększony dziesięciokrotnie."
       },
       {
-        "LP": "35",
+        "LP": "29",
         "Typ": "Dyscyplina Piromancji",
         "Nazwa": "Ognista postać",
         "Koszt PD": "15",
@@ -5948,7 +5864,7 @@
         "Wzmocnienie": "[2] +1 DK obrażeń.\n[3] Premia +1 do Obrony."
       },
       {
-        "LP": "36",
+        "LP": "30",
         "Typ": "Dyscyplina Piromancji",
         "Nazwa": "Ognisty oddech",
         "Koszt PD": "5",
@@ -5962,7 +5878,7 @@
         "Wzmocnienie": "[1] +1 DK obrażeń.\n[1] Ognisty oddech można poprowadzić po łuku na odległość równą wartości SW psionika."
       },
       {
-        "LP": "37",
+        "LP": "31",
         "Typ": "Dyscyplina Piromancji",
         "Nazwa": "Rozgrzanie",
         "Koszt PD": "5",
@@ -5976,7 +5892,7 @@
         "Wzmocnienie": "[1] Zwiększ poziom Zdezorientowania celu o 1.\n*[3] Cel staje się Wycieńczony."
       },
       {
-        "LP": "38",
+        "LP": "32",
         "Typ": "Dyscyplina Piromancji",
         "Nazwa": "Promień stopienia",
         "Koszt PD": "20",
@@ -5990,7 +5906,7 @@
         "Wzmocnienie": "[2] +1 DK obrażeń.\n*[1] + 10 m zasięgu."
       },
       {
-        "LP": "39",
+        "LP": "33",
         "Typ": "Dyscyplina Piromancji",
         "Nazwa": "Spontaniczny zapłon",
         "Koszt PD": "10",
@@ -6004,7 +5920,7 @@
         "Wzmocnienie": "[2] +1 DK obrażeń.\n[1] +10 metrów zasięgu."
       },
       {
-        "LP": "40",
+        "LP": "34",
         "Typ": "Dyscyplina Piromancji",
         "Nazwa": "Ściana płomieni",
         "Koszt PD": "15",
@@ -6018,7 +5934,7 @@
         "Wzmocnienie": "[2] +1 DK obrażeń.\n*[2] Możesz wykorzystać akcję Ruchu, aby zmienić kształt Ściany płomieni – tylko raz w trakcie podtrzymywania Mocy.\n[1] +1 metr wysokości lub długości."
       },
       {
-        "LP": "41",
+        "LP": "35",
         "Typ": "Dyscyplina Telekinezy",
         "Nazwa": "Pchnięcie",
         "Koszt PD": "10",
@@ -6032,7 +5948,7 @@
         "Wzmocnienie": "[1] +1 DK obrażeń.\n[2] +10 metrów zasięgu."
       },
       {
-        "LP": "42",
+        "LP": "36",
         "Typ": "Dyscyplina Telekinezy",
         "Nazwa": "Zmiażdżenie",
         "Koszt PD": "10",
@@ -6046,7 +5962,7 @@
         "Wzmocnienie": "[3] +1 DK obrażeń. Te dodatkowe obrażenia dodawane są co Turę.\n[2] +1 do ST Testu Siły lub Siły Woli."
       },
       {
-        "LP": "43",
+        "LP": "37",
         "Typ": "Dyscyplina Telekinezy",
         "Nazwa": "Lewitacja",
         "Koszt PD": "8",
@@ -6060,7 +5976,7 @@
         "Wzmocnienie": "[1] Szybkość latania zwiększona o 5 metrów.\n[2] +1 do Siły na potrzeby określania możliwości przenoszenia rzeczy/osób przez psionika podczas lotu."
       },
       {
-        "LP": "44",
+        "LP": "38",
         "Typ": "Dyscyplina Telekinezy",
         "Nazwa": "Kopuła telekinetyczna",
         "Koszt PD": "15",
@@ -6074,7 +5990,7 @@
         "Wzmocnienie": "*[2] Zasięg zwiększony do +Ranga metrów. Wszystkie postaci w zasięgu otrzymują taki sam poziom ochrony.\n[2] Zwiększ premię do Odporności o +1."
       },
       {
-        "LP": "45",
+        "LP": "39",
         "Typ": "Dyscyplina Telekinezy",
         "Nazwa": "Ciążenie Osnowy",
         "Koszt PD": "20",
@@ -6088,7 +6004,7 @@
         "Wzmocnienie": "[2] Zadaj celowi 1 Ranę śmiertelną.\n[3] Zwiększ zasięg o +50 metrów."
       },
       {
-        "LP": "46",
+        "LP": "40",
         "Typ": "Dyscyplina Telekinezy",
         "Nazwa": "Fala uderzeniowa",
         "Koszt PD": "15",
@@ -6102,7 +6018,7 @@
         "Wzmocnienie": "[1] Zasięg zwiększony o 5 metrów.\n[2] +1 DK obrażeń."
       },
       {
-        "LP": "47",
+        "LP": "41",
         "Typ": "Dyscyplina Telepatii",
         "Nazwa": "Wymazanie",
         "Koszt PD": "15",
@@ -6116,7 +6032,7 @@
         "Wzmocnienie": "[2] +30 metrów zasięgu.\n[3] Długość usuwanego wspomnienia zwiększona dwukrotnie."
       },
       {
-        "LP": "48",
+        "LP": "42",
         "Typ": "Dyscyplina Telepatii",
         "Nazwa": "Zaciemnienie umysłu",
         "Koszt PD": "15",
@@ -6130,7 +6046,7 @@
         "Wzmocnienie": "[1] +10 metrów do zasięgu Mocy.\n*[2] Czas aktywacji zredukowany do Akcji."
       },
       {
-        "LP": "49",
+        "LP": "43",
         "Typ": "Dyscyplina Telepatii",
         "Nazwa": "Sonda umysłowa",
         "Koszt PD": "15",
@@ -6144,7 +6060,7 @@
         "Wzmocnienie": "[1] Cel odpowiada na jedno dodatkowe pytanie. \n *[2] Cel nie otrzymuje punktów Traumy i nie zdaje sobie sprawy z wtargnięcia w swój umysł."
       },
       {
-        "LP": "50",
+        "LP": "44",
         "Typ": "Dyscyplina Telepatii",
         "Nazwa": "Psioniczny wrzask",
         "Koszt PD": "10",
@@ -6158,7 +6074,7 @@
         "Wzmocnienie": "[1] +1 punkt Traumy.\n[2] +1 do ST Testu Siły Woli."
       },
       {
-        "LP": "51",
+        "LP": "45",
         "Typ": "Dyscyplina Telepatii",
         "Nazwa": "Telepatia",
         "Koszt PD": "5",
@@ -6168,11 +6084,11 @@
         "Zasięg": "100m",
         "Wiele Celów": "Tak",
         "Słowa Kluczowe": "{{RED}}TELEPATIA{{/RED}}, {{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "Sięgasz umysłem do innych, aby umożliwić połączenie i komunikację za pomocą samych myśli.\nNie potrzebujesz mieć celu w zasięgu wzroku i Telepatia nie może być powstrzymana za pomocą żadnej przeszkody natury fizycznej (z wyjątkiem przeszkód mających na celu uniemożliwienie używania Mocy psionicznych). Nie musisz wiedzieć, czy jakiś cel znajduje się w zasięgu działania Mocy – możesz po prostu z niej skorzystać, aby skontaktować się z najbliższym dostępnym celem.\nPo pomyślnym aktywowaniu Mocy komunikacja jest możliwa do momentu zakończenia podtrzymywania jej działania. Jeśli cel chce zakończyć rozmowę, a ty się na to nie zgadzasz, musi zdać Test Siły Woli o ST 3. Jeśli Test się powiedzie, połączenie zostaje przerwane i otrzymujesz 1k3 punktów Traumy.\nZ Telepatii możesz korzystać także po to, aby cel podsłuchiwać, a nie z nim rozmawiać. Możesz zdecydować, że w dowolnym momencie trwania Mocy rozpoczniesz „przemawiać”. Jeśli zdecydujesz się wykorzystać Telepatię do podsłuchiwania myśli celu, może on zorientować się, że coś jest nie tak. Wystarczy zdać Test Czujności (Int) o ST równym liczbie kości w twojej puli Testu Mistrzostwa psionicznego. Jeśli cel zorientuje się, że z jego umysłem otwarte jest połączenie telepatyczne, może skorzystać z oferowanych przez nie możliwości lub je zakończyć, zgodnie z procedurą opisaną powyżej.\nTelepatia pozwala tylko na zapoznawanie się z tymi myślami celu, które akurat są na powierzchni. Ta Moc nie pozwoli ci więc uzyskać wglądu w czyjeś tajemnice, chyba że cel zacznie o nich akurat rozmyślać.\nJeśli korzystasz z Telepatii, aby komunikować się z więcej niż jednym celem, stajesz się przekaźnikiem tego typu rozmowy. Wszystkie osoby biorące w niej udział mogą słyszeć się wzajemnie.\nBycie przekaźnikiem telepatycznym jest psychicznie męczące. Otrzymujesz 1 punkt Traumy za każde 20 minut podtrzymywania tej Mocy.\nW trakcie korzystania z Telepatii nie możesz usuwać punktów Traumy.",
+        "Efekt": "Sięgasz umysłem do innych, aby umożliwić połączenie i komunikację za pomocą samych myśli.\nNie potrzebujesz mieć celu w zasięgu wzroku i Telepatia nie może być powstrzymana za pomocą żadnej przeszkody natury fizycznej (z wyjątkiem przeszkód mających na celu uniemożliwienie używania Mocy psionicznych). Nie musisz wiedzieć, czy jakiś cel znajduje się w zasięgu działania Mocy – możesz po prostu z niej skorzystać, aby skontaktować się z najbliższym dostępnym celem.\nPo pomyślnym aktywowaniu Mocy komunikacja jest możliwa do momentu zakończenia podtrzymywania jej działania. Jeśli cel chce zakończyć rozmowę, a ty się na to nie zgadzasz, musi zdać Test Siły Woli o ST 3. Jeśli Test się powiedzie, połączenie zostaje przerwane i otrzymujesz 1k3 punktów Traumy.\nZ Telepatii możesz korzystać także po to, aby cel podsłuchiwać, a nie z nim rozmawiać. Możesz zdecydować, że w dowolnym momencie trwania Mocy rozpoczniesz \"przemawiać\". Jeśli zdecydujesz się wykorzystać Telepatię do podsłuchiwania myśli celu, może on zorientować się, że coś jest nie tak. Wystarczy zdać Test Czujności (Int) o ST równym liczbie kości w twojej puli Testu Mistrzostwa psionicznego. Jeśli cel zorientuje się, że z jego umysłem otwarte jest połączenie telepatyczne, może skorzystać z oferowanych przez nie możliwości lub je zakończyć, zgodnie z procedurą opisaną powyżej.\nTelepatia pozwala tylko na zapoznawanie się z tymi myślami celu, które akurat są na powierzchni. Ta Moc nie pozwoli ci więc uzyskać wglądu w czyjeś tajemnice, chyba że cel zacznie o nich akurat rozmyślać.\nJeśli korzystasz z Telepatii, aby komunikować się z więcej niż jednym celem, stajesz się przekaźnikiem tego typu rozmowy. Wszystkie osoby biorące w niej udział mogą słyszeć się wzajemnie.\nBycie przekaźnikiem telepatycznym jest psychicznie męczące. Otrzymujesz 1 punkt Traumy za każde 20 minut podtrzymywania tej Mocy.\nW trakcie korzystania z Telepatii nie możesz usuwać punktów Traumy.",
         "Wzmocnienie": "[1] Zasięg Mocy zwiększony dziesięciokrotnie."
       },
       {
-        "LP": "52",
+        "LP": "46",
         "Typ": "Dyscyplina Telepatii",
         "Nazwa": "Przerażenie",
         "Koszt PD": "15",
@@ -6186,7 +6102,7 @@
         "Wzmocnienie": "[2] ST Testu Strachu jest zwiększony o +1.\n*[2] Aktywacja skrócona do zwykłej Akcji.\n[1] +10 metrów do zasięgu."
       },
       {
-        "LP": "53",
+        "LP": "47",
         "Typ": "Dyscyplina Maleficarum",
         "Nazwa": "Mroczny płomień",
         "Koszt PD": "15",
@@ -6200,7 +6116,7 @@
         "Wzmocnienie": "[2] +1 Rana śmiertelna.\n*[2] Zasięg działania zwiększony dwukrotnie."
       },
       {
-        "LP": "54",
+        "LP": "48",
         "Typ": "Dyscyplina Maleficarum",
         "Nazwa": "Opętanie",
         "Koszt PD": "20",
@@ -6214,7 +6130,7 @@
         "Wzmocnienie": "*[1] Aktywacja skrócona do zwykłej Akcji.\n*[2] Możesz podtrzymywać tę Moc przez minutę, zanim zaczniesz otrzymywać punkty Traumy."
       },
       {
-        "LP": "55",
+        "LP": "49",
         "Typ": "Dyscyplina Maleficarum",
         "Nazwa": "Wyssanie duszy",
         "Koszt PD": "20",
@@ -6228,7 +6144,7 @@
         "Wzmocnienie": "[2] +1 Rana śmiertelna.\n[1] Zasięg zwiększony o 10 metrów."
       },
       {
-        "LP": "56",
+        "LP": "50",
         "Typ": "Dyscyplina Maleficarum",
         "Nazwa": "Dotyk spaczenia",
         "Koszt PD": "15",
@@ -6242,7 +6158,7 @@
         "Wzmocnienie": "[1] Cel otrzymuje +2 punkty Traumy.\n[2] Cel otrzymuje 1 dodatkowy punkt Spaczenia."
       },
       {
-        "LP": "57",
+        "LP": "51",
         "Typ": "Dyscyplina Maleficarum",
         "Nazwa": "Piekielne spojrzenie",
         "Koszt PD": "10",
@@ -6256,7 +6172,21 @@
         "Wzmocnienie": "[1] +1 tymczasowo utracony punkt Inteligencji.\n*[3] Cel musi dodać Poziom spaczenia psionika do rzędu dziesiątek w trakcie rzutu na tabeli Grozy Osnowy."
       },
       {
-        "LP": "58",
+        "LP": "52",
+        "Typ": "Dyscyplina Maleficarum",
+        "Nazwa": "Diaboliczna Siła",
+        "Koszt PD": "15",
+        "ST": "5 lub Obrona niechętnego celu",
+        "Aktywacja": "Akcja",
+        "Czas Trwania": "Podtrzymywana",
+        "Zasięg": "30m",
+        "Wiele Celów": "Tak",
+        "Słowa Kluczowe": "{{RED}}CHAOS{{/RED}}, {{RED}}PSIONIKA{{/RED}}",
+        "Efekt": "{{B}}Wymagania wstępne:{{/B}} Psionik musi posiadać Słowo kluczowe {{RED}}CHAOS{{/RED}}.\nNasycasz cel skażoną mocą, zapewniając mu plugawą siłę.\nCele zyskują +Ranga do swojej wartości Siły na czas trwania tej mocy.\nJeśli cel posiada Słowo kluczowe {{RED}}CHAOS{{/RED}}, nie odczuwa dodatkowych efektów. Jeśli go nie posiada, musi natychmiast zdać Test Spaczenia o ST 4 lub otrzyma 1 Punkt Spaczenia.",
+        "Wzmocnienie": "Brak"
+      },
+      {
+        "LP": "53",
         "Typ": "Dyscyplina Run Bitewnych",
         "Nazwa": "Ukrycie/Odkrycie",
         "Koszt PD": "20",
@@ -6270,7 +6200,7 @@
         "Wzmocnienie": "[3] Ukrycie: Premia zwiększona o +1 do Obrony oraz +1 kość w Testach Ukrywania się.\n*[2] Odkrycie: Obszar działania Mocy zwiększony do Wybuch (10)."
       },
       {
-        "LP": "59",
+        "LP": "54",
         "Typ": "Dyscyplina Run Bitewnych",
         "Nazwa": "Ośmielenie/Przestrach",
         "Koszt PD": "20",
@@ -6284,7 +6214,7 @@
         "Wzmocnienie": "[2] Ośmielenie: +1 dodatkowa kość w Testach Odwagi.\n[2] Przestrach: Kara do ST w Testach Odwagi zwiększona o +1."
       },
       {
-        "LP": "60",
+        "LP": "55",
         "Typ": "Dyscyplina Run Bitewnych",
         "Nazwa": "Wzmocnienie/Porażenie",
         "Koszt PD": "30",
@@ -6298,7 +6228,7 @@
         "Wzmocnienie": "[3] Wzmocnienie: +1 DK do obrażeń.\n[3] Porażenie: -1 DK do obrażeń celu."
       },
       {
-        "LP": "61",
+        "LP": "56",
         "Typ": "Dyscyplina Run Bitewnych",
         "Nazwa": "Uwydatnienie/Umniejszenie",
         "Koszt PD": "30",
@@ -6312,7 +6242,7 @@
         "Wzmocnienie": "[2] Uwydatnienie: Dodatkowa premia +1 kość do Testów Walki Wręcz (I).\n[2] Umniejszenie: Dodatkowa kara +1 do ST Testów Walki Wręcz (I) celu."
       },
       {
-        "LP": "62",
+        "LP": "57",
         "Typ": "Dyscyplina Run Bitewnych",
         "Nazwa": "Ochrona/Przekleństwo",
         "Koszt PD": "20",
@@ -6326,7 +6256,7 @@
         "Wzmocnienie": "[3] Ochrona: Dodatkowa premia +1 do Odporności.\n[3] Przekleństwo: Dodatkowa kara -1 do Odporności."
       },
       {
-        "LP": "63",
+        "LP": "58",
         "Typ": "Dyscyplina Run Bitewnych",
         "Nazwa": "Uwolnienie/Spętanie",
         "Koszt PD": "20",
@@ -6340,18 +6270,88 @@
         "Wzmocnienie": "*[2] Uwolnienie: Zwiększ obszar działania efektu do wszystkich sojuszników w promieniu 10 metrów. \n*[2] Spętanie: Obszar działania zwiększony do Wybuchu (10)."
       },
       {
-        "LP": "64",
-        "Typ": "Dyscyplina Maleficarum",
-        "Nazwa": "Diaboliczna Siła",
-        "Koszt PD": "15",
-        "ST": "5 lub Obrona niechętnego celu",
+        "LP": "59",
+        "Typ": "Dyscyplina Kronikarstwa",
+        "Nazwa": "Zasłona czasu",
+        "Koszt PD": "20",
+        "ST": "8",
         "Aktywacja": "Akcja",
         "Czas Trwania": "Podtrzymywana",
-        "Zasięg": "30m",
+        "Zasięg": "20m",
         "Wiele Celów": "Tak",
-        "Słowa Kluczowe": "{{RED}}CHAOS{{/RED}}, {{RED}}PSIONIKA{{/RED}}",
-        "Efekt": "{{B}}Wymagania wstępne:{{/B}} Psionik musi posiadać Słowo kluczowe {{RED}}CHAOS{{/RED}}.\nNasycasz cel skażoną mocą, zapewniając mu plugawą siłę.\nCele zyskują +Ranga do swojej wartości Siły na czas trwania tej mocy.\nJeśli cel posiada Słowo kluczowe {{RED}}CHAOS{{/RED}}, nie odczuwa dodatkowych efektów. Jeśli go nie posiada, musi natychmiast zdać Test Spaczenia o ST 4 lub otrzyma 1 Punkt Spaczenia.",
+        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
+        "Efekt": "Naginasz Osnowe, wykrzywiajac upływ czasu i nienaturalnie wydłuzajac terazniejszosc.\nDopóki Podtrzymujesz te moc, twój cel otrzymuje druga Ture w kazdej Rundzie.",
         "Wzmocnienie": "Brak"
+      },
+      {
+        "LP": "60",
+        "Typ": "Dyscyplina Kronikarstwa",
+        "Nazwa": "Moc bohaterów",
+        "Koszt PD": "15",
+        "ST": "7",
+        "Aktywacja": "Akcja",
+        "Czas Trwania": "Podtrzymywana",
+        "Zasięg": "15m",
+        "Wiele Celów": "Nie",
+        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
+        "Efekt": "Przyzywasz pokłady zawiłej wiedzy zebranej w Librariusie i napełniasz sojusznika moca Osnowy, obdarzajac go wojenna potega poległych juz braci Astartes.\nDo poczatku twojej nastepnej Tury cel mocy zyskuje premie +1 do Siły, Wytrzymałosci i Inicjatywy.",
+        "Wzmocnienie": "[3] Twój cel zyskuje dodatkowa premie +1 do Siły, Wytrzymałosci i Inicjatywy."
+      },
+      {
+        "LP": "61",
+        "Typ": "Dyscyplina Kronikarstwa",
+        "Nazwa": "Psioniczna chłosta",
+        "Koszt PD": "20",
+        "ST": "Siła Woli celu",
+        "Aktywacja": "Akcja",
+        "Czas Trwania": "Natychmiastowa",
+        "Zasięg": "20m",
+        "Wiele Celów": "Tak",
+        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
+        "Efekt": "Przebijasz sie przez umysł celu, odzierajac go z wiedzy w przerazajacy i niezwykle bolesny sposób.\nAby aktywowac te moc, musisz wygrac z celem w przeciwstawnym Tescie Siły Woli. Jesli wygrasz, zadajesz mu 1k3 Ran smiertelnych, a ponadto wywołujesz w nim Strach.",
+        "Wzmocnienie": "[3] +1 Rana smiertelna"
+      },
+      {
+        "LP": "62",
+        "Typ": "Dyscyplina Kronikarstwa",
+        "Nazwa": "Gniew starozytnych",
+        "Koszt PD": "15",
+        "ST": "10",
+        "Aktywacja": "Akcja",
+        "Czas Trwania": "Natychmiastowa",
+        "Zasięg": "14m",
+        "Wiele Celów": "Nie",
+        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
+        "Efekt": "Siegasz po legendarna wiedze Librariusa i tworzysz obraz potwora, z którym walczono juz w historii twego Zakonu, zasiewajac ociekajaca Osnowa groze w sercach wrogów.\nJesli uda ci sie aktywowac te moc, Gniew starozytnych koncentruje sie we wskazanym przez ciebie kierunku w wiazke długa na 14 metrów. Wszyscy przeciwnicy w linii ataku otrzymuja 2k3 Ran smiertelnych.",
+        "Wzmocnienie": "[1] +7 m Zasiegu.\n[2] +1 Rana smiertelna."
+      },
+      {
+        "LP": "63",
+        "Typ": "Dyscyplina Kronikarstwa",
+        "Nazwa": "Psychiczna forteca",
+        "Koszt PD": "15",
+        "ST": "6",
+        "Aktywacja": "Akcja",
+        "Czas Trwania": "Podtrzymywana",
+        "Zasięg": "20m",
+        "Wiele Celów": "Tak",
+        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
+        "Efekt": "Fortyfikujesz umysł celu za pomoca wielowarstwowych psychicznych pieczeci heksagramatycznych, chroniac go przed zakusami Osnowy i wzbudzajac odwage.\nDopóki Podtrzymujesz te moc, cel jest niewrazliwy na Strach i Groze. Ponadto otrzymuje równiez dodatkowe kosci w liczbie równej twojej Sile Woli w Testach Determinacji przy obrazeniach wynikłych z uzycia innych mocy psionicznych.\nDopóki moc jest aktywna, moze równiez wykonywac Test Determinacji w celu zmniejszenia liczby wywołanych mocami psionicznymi Ran smiertelnych.",
+        "Wzmocnienie": "Brak"
+      },
+      {
+        "LP": "64",
+        "Typ": "Dyscyplina Kronikarstwa",
+        "Nazwa": "Wytłumienie",
+        "Koszt PD": "15",
+        "ST": "7",
+        "Aktywacja": "Akcja",
+        "Czas Trwania": "Natychmiastowa",
+        "Zasięg": "20m",
+        "Wiele Celów": "Nie",
+        "Słowa Kluczowe": "{{RED}}PSIONIKA{{/RED}}",
+        "Efekt": "Czerpiesz z czystosci samego Imperatora i wypaczasz moce Osnowy, by na jakis czas odepchnac jej szkodliwy wpływ z okreslonego obszaru.\nJesli uda ci sie aktywowac te moc, wybierz punkt lub cel w zasiegu. Tworzysz wokół niego obszar wytłumiajacy o promieniu 6 metrów, który utrzymuje sie do poczatku twojej nastepnej Tury.\nST wszystkich Testów Mistrzostwa psionicznego (SW) w tym obszarze jest zwiekszony o wartosc twojej Siły Woli.\nWewnatrz tego obszaru Pancerze Nieprzebijalne traca swoje własciwosci.",
+        "Wzmocnienie": "[1] +10 m Zasiegu.\n[2] Dwa razy wiekszy obszar wytłumienia."
       }
     ],
     "Augumentacje": [
@@ -6392,7 +6392,7 @@
         "LP": "4",
         "Typ": "Ulepszenia",
         "Nazwa": "Augmentyczne wnętrzności",
-        "Opis": "Kolokwialnie augmentację tę nazywa się „flakstalą”.\nW ramach operacji przekierowuje się naczynia krwionośne i limfatyczne, a także zastępuje tkanki ulepszonymi mechanicznymi lub hodowanymi w laboratorium zamiennikami",
+        "Opis": "Kolokwialnie augmentację tę nazywa się \"flakstalą\".\nW ramach operacji przekierowuje się naczynia krwionośne i limfatyczne, a także zastępuje tkanki ulepszonymi mechanicznymi lub hodowanymi w laboratorium zamiennikami",
         "Efekt": "Zyskujesz premię +1 do Wytrzymałości.",
         "Koszt": "5",
         "Dostępność": "3",
@@ -6635,7 +6635,7 @@
         "Typ": "Mechadendryt",
         "Nazwa": "Ulepszony mechadendryt balistyczny",
         "Opis": "Tech-kapłani słuzacy Omnisjaszowi w bitwach przeciwko prymitywnym wrogom czesto wbudowuja zaawansowana bron w swoje mechadendryty, dzieki czemu moga jednoczesnie dowodzic oddziałami, wykonywac rytuały naprawcze i razic wrogów tajemnicza technologia.",
-        "Efekt": "{{B}}Wymagania{{/B}}: Bron, która chcesz umiescic w ulepszonym mechadendrycie balistycznym. Bron ta nie moze miec wartosci Szybkostrzelnosci „-” jak np.: granatnik.\nKiedy wykonujesz atak dystansowy przy pomocy ulepszonego mechadendrytu balistycznego w ramach Akcji złozonej lub Ataku wielokrotnego, kara do ST jest zmniejszona o 2.\nBroni nigdy nie trzeba przeładowywac, ale w wyniku wykorzystania Trybów ognia otrzymujesz tyle Traum, ile wynosi Szybkostrzelnosc broni.",
+        "Efekt": "{{B}}Wymagania{{/B}}: Bron, która chcesz umiescic w ulepszonym mechadendrycie balistycznym. Bron ta nie moze miec wartosci Szybkostrzelnosci \"-\" jak np.: granatnik.\nKiedy wykonujesz atak dystansowy przy pomocy ulepszonego mechadendrytu balistycznego w ramach Akcji złozonej lub Ataku wielokrotnego, kara do ST jest zmniejszona o 2.\nBroni nigdy nie trzeba przeładowywac, ale w wyniku wykorzystania Trybów ognia otrzymujesz tyle Traum, ile wynosi Szybkostrzelnosc broni.",
         "Koszt": "5 + Koszt broni",
         "Dostępność": "3",
         "Słowa Kluczowe": "{{RED}}ADEPTUS MECHANICUS{{/RED}}, {{RED}}IMPERIUM{{/RED}}",
@@ -6988,7 +6988,7 @@
         "LP": "26",
         "Typ": "Ekwipunek Imperium",
         "Nazwa": "Apteczka polowa \"Dar męczennika\"",
-        "Opis": "Ulepszona wersja standardowej apteczki Astra Militarum.\nZostała doposażona w stymulanty bojowe, kauteryzujący żel termiczny oraz jednorazową bionikę.\nTo właśnie dzięki tym apteczkom Potomkowie Tempestus tak szybko i skutecznie wracają do walki.\n„Dar męczennika” zawiera nawet pas wszywanych podskórnie ładunków wybuchowych, które mogą zamienić ciało śmiertelnie rannego żołnierza w zabójczą pułapkę.",
+        "Opis": "Ulepszona wersja standardowej apteczki Astra Militarum.\nZostała doposażona w stymulanty bojowe, kauteryzujący żel termiczny oraz jednorazową bionikę.\nTo właśnie dzięki tym apteczkom Potomkowie Tempestus tak szybko i skutecznie wracają do walki.\n\"Dar męczennika\" zawiera nawet pas wszywanych podskórnie ładunków wybuchowych, które mogą zamienić ciało śmiertelnie rannego żołnierza w zabójczą pułapkę.",
         "Efekt": "Działa jak apteczka.\nZawiera standardowe bioniczne zamienniki kończyn lub oka [{{B}}Podręcznik Główny{{/B}} (str. 243)].\nProteza nie jest trwała i staje się bezużyteczna w ciągu 24 godzin.\nPodskórne ładunki mają takie same współczynniki co Odłamkowy Pocisk Rakietowy [{{B}}Podręcznik Główn{{/B}}y (str. 220)].",
         "Koszt": "6",
         "Dostępność": "2",
@@ -7087,7 +7087,7 @@
         "LP": "35",
         "Typ": "Ekwipunek Imperium",
         "Nazwa": "Fetysz psioniczny",
-        "Opis": "Wygląd tych przedmiotów jest naprawdę różnorodny.\nNiektóre są kijami lub laskami, inne skrywane są jako „talizmany” czy specjalna talia imperialnego tarota.",
+        "Opis": "Wygląd tych przedmiotów jest naprawdę różnorodny.\nNiektóre są kijami lub laskami, inne skrywane są jako \"talizmany\" czy specjalna talia imperialnego tarota.",
         "Efekt": "+1 dodatkowa kość do Testów Mistrzostwa psionicznego (SW).",
         "Koszt": "3",
         "Dostępność": "2",
@@ -7142,7 +7142,7 @@
         "LP": "40",
         "Typ": "Ekwipunek Imperium",
         "Nazwa": "Kodeks żołnierski",
-        "Opis": "„Kodeks żołnierski imperialnego piechura” okazał się wiernym i obowiązkowym towarzyszem każdego żołnierza Astra Militarum.\nKsiążeczka omawia różne tematy, jak konserwacja uzbrojenia czy wyposażenia, kwestie higieny osobistej, zasady i regulamin Astra Militarum oraz sposoby rozpoznawania oddziałów wroga.\nCo rusz uzupełniana na marginesach o nowo odkryte lub sprawdzone informacje, staje się swoistym dziennikiem i częścią właściciela.",
+        "Opis": "\"Kodeks żołnierski imperialnego piechura\" okazał się wiernym i obowiązkowym towarzyszem każdego żołnierza Astra Militarum.\nKsiążeczka omawia różne tematy, jak konserwacja uzbrojenia czy wyposażenia, kwestie higieny osobistej, zasady i regulamin Astra Militarum oraz sposoby rozpoznawania oddziałów wroga.\nCo rusz uzupełniana na marginesach o nowo odkryte lub sprawdzone informacje, staje się swoistym dziennikiem i częścią właściciela.",
         "Efekt": "+1 dodatkowa kość do Testów Wiedzy ogólnej (Int).\nKomplikacja w wyniku Testu oznacza, że czytelnik interpretuje jakiś fragment w sposób potencjalnie niebezpieczny, określany przez MG.",
         "Koszt": "2",
         "Dostępność": "0",
@@ -7516,7 +7516,7 @@
         "LP": "74",
         "Typ": "Ekwipunek Aeldari",
         "Nazwa": "Odłamek pieśniarza upiorytu",
-        "Opis": "Odłamki czystego upiorytu w kolorze kości słoniowej są jednocześnie żywym narzędziem i surowym materiałem, stanowią też podstawę większości technologii aeldari.\nOdpowiednio sprawny w swoim rzemiośle aeldari może „wyśpiewać” odłamek do pożądanego kształtu.",
+        "Opis": "Odłamki czystego upiorytu w kolorze kości słoniowej są jednocześnie żywym narzędziem i surowym materiałem, stanowią też podstawę większości technologii aeldari.\nOdpowiednio sprawny w swoim rzemiośle aeldari może \"wyśpiewać\" odłamek do pożądanego kształtu.",
         "Efekt": "Ignorujesz kary do ST podczas budowania, naprawy, konserwacji lub sabotowania technologii aeldari.",
         "Koszt": "4",
         "Dostępność": "2",
@@ -7549,7 +7549,7 @@
         "LP": "77",
         "Typ": "Ekwipunek Orków",
         "Nazwa": "Narzendzia mekanika",
-        "Opis": "Każda kolekcja narzędzi orczych mekaników gromadzona jest w szale natchnienia i tworzenia, a zazwyczaj składa się z ogromnych młotków i kluczy umożliwiających orkom psucie i naginanie technologii do tworzenia bardziej „orczych” rzeczy.",
+        "Opis": "Każda kolekcja narzędzi orczych mekaników gromadzona jest w szale natchnienia i tworzenia, a zazwyczaj składa się z ogromnych młotków i kluczy umożliwiających orkom psucie i naginanie technologii do tworzenia bardziej \"orczych\" rzeczy.",
         "Efekt": "Działa jak dostosowane do orczej technologii Multinarzędzie [{{B}}Podręcznik Główny{{/B}} (str. 238)].\nNarzendzia mekanika mogą być użyte do demontażu urządzeń lub pojazdów innych gatunków i ponownego ich montażu, lecz w formie orczego Ekwipunku o równym lub niższym poziomie Dostępności.\nZłożenie części wymaga wykonania Testu Korzystania z technologii (Int) o ST równym Kosztowi tworzonego orczego Ekwipunku, który określa liczbę godzin, jaką należy spędzić na montażu.",
         "Koszt": "5",
         "Dostępność": "1",
@@ -10920,7 +10920,7 @@
       {
         "LP": "42",
         "Typ": "Okoliczności",
-        "Nazwa": "Atak okazjonalny",
+        "Nazwa": "\"Atak okazjonalny\"",
         "Opis": "Jeśli przeciwnik wychodzi ze Zwarcia bez wykonywania Odwrotu, możesz zaatakować go, wykorzystując Akcję okazjonalną.",
         "Strona": "(str. 179)"
       }
