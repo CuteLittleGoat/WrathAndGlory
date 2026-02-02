@@ -8,7 +8,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 
 ### Wymagania
 - Projekt Firebase z włączonym Firestore.
-- Firebase dla **Audio** musi być na **oddzielnym koncie Google** niż Firebase dla modułu **Infoczytnik** (unika to konfliktów projektów i reguł).
+- Firebase dla **Audio** nie wymaga oddzielnego konta Google od modułu **Infoczytnik** — oba moduły mogą działać w tym samym koncie/projekcie, o ile konfiguracje i reguły są rozdzielone. Oddzielne projekty to tylko opcja organizacyjna, nie wymóg techniczny.
 - Serwer statyczny (np. GitHub Pages, Firebase Hosting, lokalny serwer HTTP), aby poprawnie pobierać plik `AudioManifest.xlsx`.
 - Dostęp do internetu (Firebase SDK + XLSX CDN).
 
@@ -72,7 +72,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 
 ### Requirements
 - A Firebase project with Firestore enabled.
-- The **Audio** Firebase must be on a **separate Google account** than the Firebase used for **Infoczytnik** (prevents project/rules conflicts).
+- The **Audio** Firebase does not require a separate Google account from **Infoczytnik** — both modules can run under the same account/project as long as configuration and rules are separated. Separate projects are an organizational option, not a technical requirement.
 - A static web server (e.g. GitHub Pages, Firebase Hosting, local HTTP server) so `AudioManifest.xlsx` can be fetched.
 - Internet access (Firebase SDK + XLSX CDN).
 

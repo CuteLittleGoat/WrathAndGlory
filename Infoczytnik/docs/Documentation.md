@@ -70,7 +70,7 @@ window.firebaseConfig = {
   appId: "..."
 };
 ```
-**Ważne:** Firebase dla modułu **Infoczytnik** musi być założone na **oddzielnym koncie Google** niż Firebase używany w module **Audio**. Dzięki temu unikasz konfliktów projektów, reguł i namespace'ów między modułami.
+**Ważne:** Firebase dla modułu **Infoczytnik** nie wymaga oddzielnego konta Google od modułu **Audio**. Oba moduły mogą korzystać z tego samego konta/projektu, jeśli konfiguracje i reguły są rozdzielone; rozdzielenie projektów to wyłącznie wygoda organizacyjna, a nie wymóg techniczny.
 
 ### 4.2. Firestore
 - Kolekcja: `dataslate`
