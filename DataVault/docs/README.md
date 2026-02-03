@@ -22,7 +22,7 @@ Najważniejsze zasady działania:
    python -m http.server 8000
    ```
 2. Otwórz w przeglądarce `http://localhost:8000`.
-3. Aplikacja automatycznie wczyta `data.json` z katalogu głównego repozytorium.
+3. Aplikacja automatycznie wczyta `data.json` z folderu modułu DataVault (obok `index.html`).
 
 > **Ważne:** Otwieranie `index.html` bezpośrednio z dysku (file://) może blokować `fetch()` w części przeglądarek. Zalecany jest prosty serwer HTTP.
 
@@ -33,7 +33,7 @@ Najważniejsze zasady działania:
   - Ukrywa zakładki admin-only: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy** oraz **Hordy**.
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
-  - Dostępny jest przycisk **Aktualizuj dane**, który pobiera `Repozytorium.xlsx` z katalogu głównego.
+  - Dostępny jest przycisk **Aktualizuj dane**, który pobiera `Repozytorium.xlsx` z folderu modułu DataVault (obok `index.html`).
   - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
   - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
@@ -49,14 +49,14 @@ Najważniejsze zasady działania:
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmianie repozytorium `data.json` został ponownie wygenerowany na podstawie najnowszego `Repozytorium.xlsx` (z poprawionymi literówkami), więc tabele odpowiadają aktualnemu arkuszowi. Generator zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 
 #### Metoda 1: panel administratora (rekomendowana)
-1. Podmień `Repozytorium.xlsx` w katalogu głównym aplikacji (na hostingu lub lokalnie).
+1. Podmień `Repozytorium.xlsx` w folderze modułu DataVault (obok `index.html`, na hostingu lub lokalnie).
 2. Otwórz aplikację w trybie admina: `http://localhost:8000/?admin=1`.
 3. Kliknij **Aktualizuj dane**.
 4. Przeglądarka pobierze nowy `data.json` — zapisz plik i **podmień** nim `data.json` na hostingu.
 5. Odśwież aplikację w trybie gracza (bez `?admin=1`) i upewnij się, że dane są widoczne.
 
 #### Metoda 2: skrypt CLI
-1. Upewnij się, że w katalogu projektu znajduje się najnowszy `Repozytorium.xlsx`.
+1. Upewnij się, że w folderze modułu DataVault znajduje się najnowszy `Repozytorium.xlsx`.
 2. Wygeneruj `data.json` lokalnie:
    ```bash
    python build_json.py Repozytorium.xlsx data.json
@@ -107,7 +107,7 @@ Key behavior:
    python -m http.server 8000
    ```
 2. Open `http://localhost:8000` in your browser.
-3. The app automatically loads `data.json` from the repository root.
+3. The app automatically loads `data.json` from the DataVault module folder (next to `index.html`).
 
 > **Important:** Opening `index.html` directly from disk (file://) may block `fetch()` in some browsers. Use a simple HTTP server instead.
 
@@ -118,7 +118,7 @@ Key behavior:
   - Hides the admin-only tabs: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, and **Hordy**.
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
-  - The **Aktualizuj dane** button appears and fetches `Repozytorium.xlsx` from the repository root.
+  - The **Aktualizuj dane** button appears and fetches `Repozytorium.xlsx` from the DataVault module folder (next to `index.html`).
   - The XLSX is parsed in the browser (SheetJS via CDN) and a new `data.json` is generated for download.
   - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) are visible only in this mode (when the combat checkbox is enabled).
 
@@ -134,14 +134,14 @@ Key behavior:
 Below are two equivalent ways to update the data. In this update, `data.json` has been regenerated from the latest `Repozytorium.xlsx` (with typo fixes), so the tables reflect the current spreadsheet content. The generator replaces Polish quotation marks „ ” with the standard `"` character.
 
 #### Method 1: admin panel (recommended)
-1. Replace `Repozytorium.xlsx` in the app root (hosting or local).
+1. Replace `Repozytorium.xlsx` in the DataVault module folder (next to `index.html`, hosting or local).
 2. Open the app in admin mode: `http://localhost:8000/?admin=1`.
 3. Click **Aktualizuj dane**.
 4. The browser downloads a new `data.json` — save it and **replace** `data.json` on your hosting.
 5. Refresh the app in player mode (without `?admin=1`) and verify the data.
 
 #### Method 2: CLI script
-1. Make sure the latest `Repozytorium.xlsx` is in the project directory.
+1. Make sure the latest `Repozytorium.xlsx` is in the DataVault module folder.
 2. Generate `data.json` locally:
    ```bash
    python build_json.py Repozytorium.xlsx data.json

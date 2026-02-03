@@ -10,7 +10,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `style.css` — pełne style (kolory, fonty, layout, tabela, popover, modal, menu filtrów listowych).
 - `app.js` — cała logika: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i admin-update.
 - `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego `Repozytorium.xlsx` (po korekcie literówek), aby tabele odpowiadały aktualnym danym.
-- `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`.
+- `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`; plik musi leżeć w folderze modułu DataVault (obok `index.html`), bo frontend pobiera go ścieżką względną.
 - `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 - `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
 
@@ -492,7 +492,7 @@ Mapowanie na `getElementById`:
 - Generuje blob i wymusza pobranie `data.json`.
 
 ### 7.5 `loadXlsxFromRepo()`
-- Pobiera `Repozytorium.xlsx` z `cache:"no-store"`.
+- Pobiera `Repozytorium.xlsx` z `cache:"no-store"` ścieżką względną (z tego samego folderu co `index.html`).
 - Czyta arkusze (`XLSX.utils.sheet_to_json` z `defval:""`).
 - Pobiera pierwszy wiersz jako nagłówki i zapisuje ich kolejność (z uwzględnieniem scalania `Cecha 1..N` → `Cechy` i `Zasięg 1..3` → `Zasięg`).
 - Buduje `data.json` z `_meta.sheetOrder` i `_meta.columnOrder`, a następnie inicjalizuje UI.
