@@ -1158,8 +1158,8 @@ function openTraitPopover(traitText){
   const r = resolveTrait(traitText);
   els.popTitle.textContent = r.title.toUpperCase();
   els.popBody.innerHTML = r.blocks.map(b => `
-    <div style="margin-top:10px">
-      <div style="color:var(--code); letter-spacing:.12em; text-transform:uppercase; font-size:11px">${escapeHtml(b.label)}</div>
+    <div class="popoverBlock">
+      <div class="popoverLabel">${escapeHtml(b.label)}</div>
       <div class="celltext">${formatTextHTML(b.text)}</div>
     </div>`).join("");
   els.pop.setAttribute("aria-hidden","false");
