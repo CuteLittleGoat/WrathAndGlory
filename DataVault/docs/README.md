@@ -14,7 +14,7 @@ Najważniejsze zasady działania:
 - Domyślne sortowanie opiera się o kolumnę `LP` (kolumna jest ukryta w UI, służy tylko do sortowania).
 - W arkuszach z kolumnami `Cecha 1..N` i `Zasięg 1..3` aplikacja scala je do `Cechy` i `Zasięg`.
 - Kolumny liczbowe są wyśrodkowane; w **Broniach** kolumna `Zasięg` nie zawija wierszy.
-- W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), tabela ma `table-layout: fixed` i `width: max-content`, a kolumna wyboru (✓) ma 3ch — dzięki temu kolumny nie rozszerzają się wraz z szerokością okna.
+- W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), tabela ma `table-layout: fixed` i `width: max-content`, a kolumna wyboru (✓) ma 8ch — dzięki temu kolumny nie rozszerzają się wraz z szerokością okna.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
 
 ### Szybki start
@@ -102,7 +102,7 @@ Key behavior:
 - Default sorting uses the hidden `LP` column (it is hidden in the UI and used only for ordering).
 - Sheets that include `Cecha 1..N` and `Zasięg 1..3` are merged into `Cechy` and `Zasięg`.
 - Numeric columns are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
-- In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), the table uses `table-layout: fixed` with `width: max-content`, and the selection (✓) column is 3ch — so the columns do not expand with viewport width.
+- In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), the table uses `table-layout: fixed` with `width: max-content`, and the selection (✓) column is 8ch — so the columns do not expand with viewport width.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
 
 ### Quick start

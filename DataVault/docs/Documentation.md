@@ -267,7 +267,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Kary do ST**
   - tabela ma `table-layout: fixed` i `width: max-content`, aby nie rozciągać kolumn na szerokość okna.
-  - kolumna wyboru (pierwsza, z ✓) ma 3ch (min/max/width) i jest wycentrowana.
+  - kolumna wyboru (pierwsza, z ✓) ma 8ch (min/max/width) i jest wycentrowana.
   - `Ile celów/akcji`: 20ch (min/max/width, wycentrowane)
   - `Kara do ST`: 20ch (min/max/width, wycentrowane)
 
