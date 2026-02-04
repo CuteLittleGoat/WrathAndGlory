@@ -75,7 +75,6 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Drugi wiersz nagłówka: filtr tekstowy oraz filtr listy (przycisk ▾).
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
-- Panel „popover” przewija się przy długich opisach, a tytuł może zawijać się, by nie ucinać znaków.
 - Długie komórki: kliknij, aby rozwinąć/zwinąć treść (zwijanie po przekroczeniu 9 linii wizualnych).
 - Lista wartości w filtrze listowym usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` wyłącznie w etykietach (bez wpływu na logikę filtrowania).
 
@@ -161,7 +160,6 @@ Below are two equivalent ways to update the data. In this update, `data.json` ha
 - Second header row: text filter + list filter (▾ button).
 - Select 2+ rows: record comparison view.
 - Click a trait tag (`Cechy`): description in the popover panel.
-- The popover panel scrolls for long descriptions, and the title can wrap so characters are not cut off.
 - Long cells: click to expand/collapse content (cells clamp after 9 visual lines).
 - The list filter labels strip `{{RED}}`, `{{B}}`, `{{I}}` markers for display only (filter logic is unchanged).
 

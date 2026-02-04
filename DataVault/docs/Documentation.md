@@ -121,11 +121,7 @@ Efekty i obwódki:
 - `.tag` — kapsułka z borderem, uppercase, hover.
 
 ### 3.8 Popover
-- `.popover` — kontener w rogu, flex kolumnowy, stały `max-height`.
-- `.popoverHeader`, `.popoverTitle`, `.popoverBody`.
-- `.popoverTitle` ma `flex: 1` i `word-break`, aby długie tytuły mieściły się obok przycisku zamknięcia.
-- `.popoverBody` jest flex-grow i posiada scroll (z `min-height: 0`).
-- `.popoverBlock`, `.popoverLabel` — bloki sekcji (CECHA / STAN) z kontrolowanym odstępem.
+- `.popover`, `.popoverHeader`, `.popoverTitle`, `.popoverBody`.
 - Wersja aktywna: `[aria-hidden="false"]`.
 
 ### 3.9 Modal porównania
@@ -625,7 +621,7 @@ Obsługuje trzy przypadki:
 
 ### 12.2 `openTraitPopover(traitText)`
 - Tytuł: wersaliki z nazwą cechy.
-- Treść: bloki `.popoverBlock` z labelami `.popoverLabel` (CECHA / STAN) i `formatTextHTML`.
+- Treść: bloki z labelami (CECHA / STAN) i `formatTextHTML`.
 - Popover otwierany przez `aria-hidden="false"`.
 
 ### 12.3 Zamknięcie

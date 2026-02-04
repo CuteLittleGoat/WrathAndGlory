@@ -292,7 +292,6 @@ td.center{text-align:center}
   width:min(520px, calc(100vw - 32px));
   max-height:min(70vh, 520px);
   display:none;
-  flex-direction:column;
   background:var(--panel2);
   border:1px solid var(--b);
   border-radius:4px;
@@ -300,7 +299,7 @@ td.center{text-align:center}
   overflow:hidden;
   z-index:50;
 }
-.popover[aria-hidden="false"]{display:flex}
+.popover[aria-hidden="false"]{display:block}
 .popoverHeader{
   display:flex; align-items:center; justify-content:space-between;
   padding:10px 12px;
@@ -308,14 +307,10 @@ td.center{text-align:center}
   background:rgba(22,198,12,.04);
 }
 .popoverTitle{
-  flex:1;
-  min-width:0;
-  padding-right:10px;
   letter-spacing:.14em;
   text-transform:uppercase;
   color:var(--code);
   font-size:12px;
-  word-break:break-word;
 }
 .iconBtn{
   border:1px solid var(--b2);
@@ -325,22 +320,7 @@ td.center{text-align:center}
   padding:6px 8px;
   cursor:pointer;
 }
-.popoverBody{
-  padding:8px 12px 12px;
-  color:rgba(207,245,220,.92);
-  font-size:13px;
-  overflow:auto;
-  flex:1;
-  min-height:0;
-  white-space:pre-wrap;
-}
-.popoverBlock + .popoverBlock{margin-top:8px}
-.popoverLabel{
-  color:var(--code);
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  font-size:11px;
-}
+.popoverBody{padding:12px; color:rgba(207,245,220,.92); font-size:13px; overflow:auto; max-height:calc(70vh - 44px); white-space:pre-wrap}
 
 /* Modal */
 .modal{position:fixed; inset:0; background:rgba(0,0,0,.55); display:none; z-index:60; padding:16px}
