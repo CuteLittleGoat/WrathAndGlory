@@ -76,6 +76,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
 - Panel „popover” przewija się przy długich opisach, a tytuł może zawijać się, by nie ucinać znaków.
+- W przypadku cechy **Wywołanie** popover obsługuje zapis z dwukropkiem (`Wywołanie: Oślepienie (1)`) oraz z nawiasem (`Wywołanie (Zatrucie (5))`), mapując go do stanu z zakładki **Stany**.
 - Długie komórki: kliknij, aby rozwinąć/zwinąć treść (zwijanie po przekroczeniu 9 linii wizualnych).
 - Lista wartości w filtrze listowym usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` wyłącznie w etykietach (bez wpływu na logikę filtrowania).
 
@@ -162,6 +163,7 @@ Below are two equivalent ways to update the data. In this update, `data.json` ha
 - Select 2+ rows: record comparison view.
 - Click a trait tag (`Cechy`): description in the popover panel.
 - The popover panel scrolls for long descriptions, and the title can wrap so characters are not cut off.
+- For the **Wywołanie** trait, the popover supports both colon notation (`Wywołanie: Oślepienie (1)`) and parenthesis notation (`Wywołanie (Zatrucie (5))`), mapping to the matching state from the **Stany** tab.
 - Long cells: click to expand/collapse content (cells clamp after 9 visual lines).
 - The list filter labels strip `{{RED}}`, `{{B}}`, `{{I}}` markers for display only (filter logic is unchanged).
 

@@ -1115,9 +1115,13 @@ function resolveTrait(traitText){
   const t = norm(traitText);
 
   // 1) Wywołanie: Zatrucie (5) / Wywołanie (Zatrucie (5))
-  const mCall = t.match(/^Wywołanie\s*[:(]\s*([^\)]+?)\s*\)?\s*$/i);
+  const mCall = t.match(/^Wywołanie\s*(?::|\()\s*(.+)\s*$/i);
   if (mCall){
-    const stRaw = norm(mCall[1]);
+    const usesParen = /^Wywołanie\s*\(/i.test(t);
+    let stRaw = norm(mCall[1]);
+    if (usesParen && stRaw.endsWith(")")){
+      stRaw = stRaw.slice(0, -1).trim();
+    }
     const mLvl = stRaw.match(/^(.*)\s*\((\d+)\)\s*$/);
     const stateKeyFull = mLvl ? `${norm(mLvl[1])} (${mLvl[2]})` : stRaw;
     const stateKeyBase = mLvl ? norm(mLvl[1]) : stRaw;
