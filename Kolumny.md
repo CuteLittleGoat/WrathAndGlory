@@ -1,88 +1,88 @@
 # Kolumny — szerokości, wyrównania i łamanie linii
 
-Poniżej znajduje się spis **wszystkich kolumn** wykorzystywanych w module DataVault, podzielony na zakładki. Kolejność kolumn jest zawsze pobierana z pierwszego wiersza arkusza w `Repozytorium.xlsx` (lub z wygenerowanego `data.json`) — to zestawienie odzwierciedla stan bieżącego pliku. W arkuszach zawierających kolumny `Cecha 1..N` oraz `Zasięg 1..3` aplikacja scala je odpowiednio do `Cechy` i `Zasięg` w miejscu pierwszego nagłówka. Wartości „auto” oznaczają brak ustawionego `min-width` w CSS (szerokość zależna od zawartości i dostępnego miejsca). Domyślnie tekst jest **wyrównany do lewej**, a zawartość łamie się zgodnie z `white-space: pre-wrap` w `.celltext`, o ile nie zaznaczono inaczej.
+Poniżej znajduje się spis **wszystkich kolumn** wykorzystywanych w module DataVault, podzielony na zakładki. Kolejność kolumn jest zawsze pobierana z pierwszego wiersza arkusza w `Repozytorium.xlsx` (lub z wygenerowanego `data.json`) — to zestawienie odzwierciedla stan bieżącego pliku. W arkuszach zawierających kolumny `Cecha 1..N` oraz `Zasięg 1..3` aplikacja scala je odpowiednio do `Cechy` i `Zasięg` w miejscu pierwszego nagłówka. Wartości „auto” oznaczają brak ustawionego `min-width` w CSS (szerokość zależna od zawartości i dostępnego miejsca). W kolumnie **Max-width** wpis „brak” oznacza, że w CSS nie zdefiniowano maksymalnej szerokości dla danej kolumny. Domyślnie tekst jest **wyrównany do lewej**, a zawartość łamie się zgodnie z `white-space: pre-wrap` w `.celltext`, o ile nie zaznaczono inaczej.
 
 ## Bestiariusz
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa | 26ch | lewo | standard |
-| Zagrożenie | 4ch | środek | standard |
-| Słowa Kluczowe | 28ch | lewo | standard |
-| S | 3ch | środek | standard |
-| Wt | 3ch | środek | standard |
-| Zr | 3ch | środek | standard |
-| I | 3ch | środek | standard |
-| SW | 3ch | środek | standard |
-| Int | 3ch | środek | standard |
-| Ogd | 3ch | środek | standard |
-| Odporność (w tym WP) | 3ch | środek | standard |
-| Wartość Pancerza | 3ch | środek | standard |
-| Obrona | 3ch | środek | standard |
-| Żywotność | 3ch | środek | standard |
-| Odporność Psychiczna | 3ch | środek | standard |
-| Umiejętności | 28ch | lewo | standard |
-| Premie | 60ch | lewo | standard |
-| Zdolności | 60ch | lewo | standard |
-| Atak | 50ch | lewo | standard |
-| Zdolności Hordy | 60ch | lewo | standard |
-| Opcje Hordy | 60ch | lewo | standard |
-| Upór | 3ch | środek | standard |
-| Odwaga | 3ch | środek | standard |
-| Szybkość | 3ch | środek | standard |
-| Rozmiar | 7ch | środek | standard |
-| Podręcznik | 17ch | lewo | standard |
-| Strona | 6ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Zagrożenie | 4ch | brak | środek | standard  |
+|  Słowa Kluczowe | 28ch | brak | lewo | standard  |
+|  S | 3ch | brak | środek | standard  |
+|  Wt | 3ch | brak | środek | standard  |
+|  Zr | 3ch | brak | środek | standard  |
+|  I | 3ch | brak | środek | standard  |
+|  SW | 3ch | brak | środek | standard  |
+|  Int | 3ch | brak | środek | standard  |
+|  Ogd | 3ch | brak | środek | standard  |
+|  Odporność (w tym WP) | 3ch | brak | środek | standard  |
+|  Wartość Pancerza | 3ch | brak | środek | standard  |
+|  Obrona | 3ch | brak | środek | standard  |
+|  Żywotność | 3ch | brak | środek | standard  |
+|  Odporność Psychiczna | 3ch | brak | środek | standard  |
+|  Umiejętności | 28ch | brak | lewo | standard  |
+|  Premie | 60ch | brak | lewo | standard  |
+|  Zdolności | 60ch | brak | lewo | standard  |
+|  Atak | 50ch | brak | lewo | standard  |
+|  Zdolności Hordy | 60ch | brak | lewo | standard  |
+|  Opcje Hordy | 60ch | brak | lewo | standard  |
+|  Upór | 3ch | brak | środek | standard  |
+|  Odwaga | 3ch | brak | środek | standard  |
+|  Szybkość | 3ch | brak | środek | standard  |
+|  Rozmiar | 7ch | brak | środek | standard  |
+|  Podręcznik | 17ch | brak | lewo | standard  |
+|  Strona | 6ch | brak | środek | standard  |
 
 ## Tabela Rozmiarów
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Rozmiar | 8ch | lewo | standard |
-| Modyfikator Testu Ataku | 25ch | środek | standard |
-| Zmniejszenie Poziomu Ukrycia | 25ch | środek | standard |
-| Przykłady | 85ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Rozmiar | 8ch | brak | lewo | standard  |
+|  Modyfikator Testu Ataku | 25ch | brak | środek | standard  |
+|  Zmniejszenie Poziomu Ukrycia | 25ch | brak | środek | standard  |
+|  Przykłady | 85ch | brak | lewo | standard  |
 
 ## Gatunki
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Gatunek | 26ch | lewo | standard |
-| Koszt PD | 4ch | środek | standard |
-| Atrybuty | 26ch | lewo | standard |
-| Umiejętności | 26ch | lewo | standard |
-| Zdolności gatunkowe | 46ch | lewo | standard |
-| Rozmiar | 10ch | środek | standard |
-| Szybkość | 4ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Gatunek | 26ch | brak | lewo | standard  |
+|  Koszt PD | 4ch | brak | środek | standard  |
+|  Atrybuty | 26ch | brak | lewo | standard  |
+|  Umiejętności | 26ch | brak | lewo | standard  |
+|  Zdolności gatunkowe | 46ch | brak | lewo | standard  |
+|  Rozmiar | 10ch | brak | środek | standard  |
+|  Szybkość | 4ch | brak | środek | standard  |
 
 ## Archetypy
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Poziom | 2ch | środek | standard |
-| Frakcja | 26ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Koszt PD | 4ch | środek | standard |
-| Słowa Kluczowe | 28ch | lewo | standard |
-| Atrybuty Archetypu | 28ch | lewo | standard |
-| Umiejętności Archetypu | 28ch | lewo | standard |
-| Zdolność Archetypu | 46ch | lewo | standard |
-| Ekwipunek | 46ch | lewo | standard |
-| Inne | 10ch | lewo | standard |
-| Podręcznik | 17ch | lewo | standard |
-| Strona | 6ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Poziom | 2ch | brak | środek | standard  |
+|  Frakcja | 26ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Koszt PD | 4ch | brak | środek | standard  |
+|  Słowa Kluczowe | 28ch | brak | lewo | standard  |
+|  Atrybuty Archetypu | 28ch | brak | lewo | standard  |
+|  Umiejętności Archetypu | 28ch | brak | lewo | standard  |
+|  Zdolność Archetypu | 46ch | brak | lewo | standard  |
+|  Ekwipunek | 46ch | brak | lewo | standard  |
+|  Inne | 10ch | brak | lewo | standard  |
+|  Podręcznik | 17ch | brak | lewo | standard  |
+|  Strona | 6ch | brak | środek | standard  |
 
 ## Bonusy Frakcji
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Frakcja | 26ch | lewo | standard |
-| Premia 1 | 56ch | lewo | standard |
-| Premia 2 | 56ch | lewo | standard |
-| Premia 3 | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Frakcja | 26ch | brak | lewo | standard  |
+|  Premia 1 | 56ch | brak | lewo | standard  |
+|  Premia 2 | 56ch | brak | lewo | standard  |
+|  Premia 3 | 56ch | brak | lewo | standard  |
 
 ## Słowa Kluczowe Frakcji
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Frakcja | 26ch | lewo | standard |
-| Słowo Kluczowe | 26ch | lewo | standard |
-| Efekt | 26ch | lewo | standard |
-| Opis | 60ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Frakcja | 26ch | brak | lewo | standard  |
+|  Słowo Kluczowe | 26ch | brak | lewo | standard  |
+|  Efekt | 26ch | brak | lewo | standard  |
+|  Opis | 60ch | brak | lewo | standard  |
 
 Uwagi formatowania:
 - Kolumna **Słowo Kluczowe** jest renderowana na czerwono poza tokenami `-` i `lub`.
@@ -90,190 +90,190 @@ Uwagi formatowania:
 - Token `[ŚWIAT-KUŹNIA]` jest w pełni czerwony, łącznie z myślnikiem.
 
 ## Implanty Astartes
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Numer | 4ch | środek | standard |
-| Nazwa | 30ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Numer | 4ch | brak | środek | standard  |
+|  Nazwa | 30ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
 
 ## Zakony Pierwszego Powołania
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
-| Zaleta | 46ch | lewo | standard |
-| Wada | 46ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
+|  Zaleta | 46ch | brak | lewo | standard  |
+|  Wada | 46ch | brak | lewo | standard  |
 
 ## Ścieżki Asuryani
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa | 26ch | lewo | standard |
-| Efekt | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Efekt | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
 
 ## Orcze Klany
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
-| Efekt | 26ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
+|  Efekt | 26ch | brak | lewo | standard  |
 
 ## Mutacje Krootów
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Mutacja krootów | 22ch | lewo | standard |
-| Pożarta ofiara | 22ch | lewo | standard |
-| Efekt | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Mutacja krootów | 22ch | brak | lewo | standard  |
+|  Pożarta ofiara | 22ch | brak | lewo | standard  |
+|  Efekt | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
 
 ## Cechy
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
 
 ## Stany
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
 
 ## Słowa Kluczowe
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
 
 ## Talenty
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa | 26ch | lewo | standard |
-| Koszt PD | 4ch | środek | standard |
-| Wymagania | 26ch | lewo | standard |
-| Opis | 26ch | lewo | standard |
-| Efekt | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Koszt PD | 4ch | brak | środek | standard  |
+|  Wymagania | 26ch | brak | lewo | standard  |
+|  Opis | 26ch | brak | lewo | standard  |
+|  Efekt | 56ch | brak | lewo | standard  |
 
 ## Modlitwy
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa | 26ch | lewo | standard |
-| Koszt PD | 4ch | środek | standard |
-| Wymagania | 26ch | lewo | standard |
-| Efekt | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Koszt PD | 4ch | brak | środek | standard  |
+|  Wymagania | 26ch | brak | lewo | standard  |
+|  Efekt | 56ch | brak | lewo | standard  |
 
 ## Psionika
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Koszt PD | 4ch | środek | standard |
-| ST | 10ch | środek | standard |
-| Aktywacja | 10ch | lewo | standard |
-| Czas Trwania | 15ch | lewo | standard |
-| Zasięg | 8ch | środek | standard |
-| Wiele Celów | 4ch | środek | standard |
-| Słowa Kluczowe | 28ch | lewo | standard |
-| Efekt | 56ch | lewo | standard |
-| Opis | 26ch | lewo | standard |
-| Wzmocnienie | 26ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Koszt PD | 4ch | brak | środek | standard  |
+|  ST | 10ch | brak | środek | standard  |
+|  Aktywacja | 10ch | brak | lewo | standard  |
+|  Czas Trwania | 15ch | brak | lewo | standard  |
+|  Zasięg | 8ch | brak | środek | standard  |
+|  Wiele Celów | 4ch | brak | środek | standard  |
+|  Słowa Kluczowe | 28ch | brak | lewo | standard  |
+|  Efekt | 56ch | brak | lewo | standard  |
+|  Opis | 26ch | brak | lewo | standard  |
+|  Wzmocnienie | 26ch | brak | lewo | standard  |
 
 ## Augumentacje
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
-| Efekt | 26ch | lewo | standard |
-| Koszt | 3ch | środek | standard |
-| Dostępność | 3ch | środek | standard |
-| Słowa Kluczowe | 28ch | lewo | standard |
-| Koszt IM | 8ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
+|  Efekt | 26ch | brak | lewo | standard  |
+|  Koszt | 3ch | brak | środek | standard  |
+|  Dostępność | 3ch | brak | środek | standard  |
+|  Słowa Kluczowe | 28ch | brak | lewo | standard  |
+|  Koszt IM | 8ch | brak | środek | standard  |
 
 ## Ekwipunek
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
-| Efekt | 26ch | lewo | standard |
-| Koszt | 3ch | środek | standard |
-| Dostępność | 3ch | środek | standard |
-| Słowa Kluczowe | 28ch | lewo | standard |
-| Koszt IM | 8ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
+|  Efekt | 26ch | brak | lewo | standard  |
+|  Koszt | 3ch | brak | środek | standard  |
+|  Dostępność | 3ch | brak | środek | standard  |
+|  Słowa Kluczowe | 28ch | brak | lewo | standard  |
+|  Koszt IM | 8ch | brak | środek | standard  |
 
 ## Pancerze
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| WP | 4ch | środek | standard |
-| Cechy | 32ch | lewo | standard |
-| Koszt | 4ch | środek | standard |
-| Dostępność | 4ch | środek | standard |
-| Słowa Kluczowe | 28ch | lewo | standard |
-| Koszt IM | 8ch | środek | standard |
-| Podręcznik | 17ch | lewo | standard |
-| Strona | 6ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  WP | 4ch | brak | środek | standard  |
+|  Cechy | 32ch | brak | lewo | standard  |
+|  Koszt | 4ch | brak | środek | standard  |
+|  Dostępność | 4ch | brak | środek | standard  |
+|  Słowa Kluczowe | 28ch | brak | lewo | standard  |
+|  Koszt IM | 8ch | brak | środek | standard  |
+|  Podręcznik | 17ch | brak | lewo | standard  |
+|  Strona | 6ch | brak | środek | standard  |
 
 ## Bronie
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Rodzaj | 14ch | lewo | standard |
-| Typ | 14ch | lewo | standard |
-| Nazwa | 26ch | lewo | standard |
-| Obrażenia | auto | środek | standard |
-| DK | auto | środek | standard |
-| PP | auto | środek | standard |
-| Zasięg | 18ch | środek | brak łamania (`white-space: nowrap`) |
-| Szybkostrzelność | 8ch | środek | standard |
-| Cechy | 32ch | lewo | standard |
-| Koszt | 4ch | środek | standard |
-| Dostępność | 4ch | środek | standard |
-| Słowa Kluczowe | 28ch | lewo | standard |
-| Koszt IM | 8ch | środek | standard |
-| Podręcznik | 17ch | lewo | standard |
-| Strona | 6ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Rodzaj | 14ch | brak | lewo | standard  |
+|  Typ | 14ch | brak | lewo | standard  |
+|  Nazwa | 26ch | brak | lewo | standard  |
+|  Obrażenia | auto | brak | środek | standard  |
+|  DK | auto | brak | środek | standard  |
+|  PP | auto | brak | środek | standard  |
+|  Zasięg | 18ch | brak | środek | brak łamania (`white-space: nowrap`)  |
+|  Szybkostrzelność | 8ch | brak | środek | standard  |
+|  Cechy | 32ch | brak | lewo | standard  |
+|  Koszt | 4ch | brak | środek | standard  |
+|  Dostępność | 4ch | brak | środek | standard  |
+|  Słowa Kluczowe | 28ch | brak | lewo | standard  |
+|  Koszt IM | 8ch | brak | środek | standard  |
+|  Podręcznik | 17ch | brak | lewo | standard  |
+|  Strona | 6ch | brak | środek | standard  |
 
 ## Trafienia Krytyczne
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Rzut k66 | 6ch | środek | brak łamania (`white-space: nowrap`) |
-| Opis | 56ch | lewo | standard |
-| Efekt | 26ch | lewo | standard |
-| Chwała | 26ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Rzut k66 | 6ch | brak | środek | brak łamania (`white-space: nowrap`)  |
+|  Opis | 56ch | brak | lewo | standard  |
+|  Efekt | 26ch | brak | lewo | standard  |
+|  Chwała | 26ch | brak | lewo | standard  |
 
 ## Groza Osnowy
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Rzut k66 | 6ch | środek | brak łamania (`white-space: nowrap`) |
-| Efekt | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Rzut k66 | 6ch | brak | środek | brak łamania (`white-space: nowrap`)  |
+|  Efekt | 56ch | brak | lewo | standard  |
 
 ## Skrót Zasad
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Typ | 32ch | lewo | standard |
-| Nazwa | 20ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
-| Strona | 11ch | środek | brak łamania (`white-space: nowrap`) |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Typ | 32ch | brak | lewo | standard  |
+|  Nazwa | 20ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
+|  Strona | 11ch | brak | środek | brak łamania (`white-space: nowrap`)  |
 
 ## Tryby Ognia
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa | 20ch | lewo | standard |
-| Opis | 56ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa | 20ch | brak | lewo | standard  |
+|  Opis | 56ch | brak | lewo | standard  |
 
 ## Hordy
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Nazwa zasady | 26ch | lewo | standard |
-| Opis zasady | 60ch | lewo | standard |
-| Przykład | 60ch | lewo | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Nazwa zasady | 26ch | brak | lewo | standard  |
+|  Opis zasady | 60ch | brak | lewo | standard  |
+|  Przykład | 60ch | brak | lewo | standard  |
 
 ## Kary do ST
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| Ile celów/akcji | 20ch | środek | standard |
-| Kara do ST | 20ch | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+|  Ile celów/akcji | 20ch | brak | środek | standard  |
+|  Kara do ST | 20ch | brak | środek | standard  |
