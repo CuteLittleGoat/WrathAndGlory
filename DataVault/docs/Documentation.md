@@ -615,7 +615,7 @@ Mechanizm clampu bazuje na liczbie *wizualnych* linii (z uwzględnieniem zawijan
 
 ### 12.1 `resolveTrait(traitText)`
 Obsługuje trzy przypadki:
-1. **Wywołanie (Stan)** — np. `Wywołanie (Zatrucie (5))`.
+1. **Wywołanie (Stan)** — np. `Wywołanie (Zatrucie (5))` oraz `Wywołanie: Oślepienie (1)`. Wariant z nawiasem po słowie „Wywołanie” usuwa końcowy nawias, aby poprawnie zachować wewnętrzne parametry (np. `(5)`), a wariant z dwukropkiem pozostawia je bez zmian.
 2. **Cechy parametryzowane** — np. `Nieporęczny (2)` dopasowuje się do `Nieporęczny (X)`.
 3. **Dokładne dopasowanie** — po kluczu kanonicznym.
 
