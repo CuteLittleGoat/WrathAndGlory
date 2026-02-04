@@ -761,9 +761,20 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Hordy"] th[data-col="Przykład"],
 .tableWrap table[data-sheet="Hordy"] td[data-col="Przykład"]{min-width:60ch; text-align:left}
 .tableWrap table[data-sheet="Kary do ST"] th[data-col="Ile celów/akcji"],
-.tableWrap table[data-sheet="Kary do ST"] td[data-col="Ile celów/akcji"]{min-width:20ch; max-width:20ch; text-align:center}
+.tableWrap table[data-sheet="Kary do ST"] td[data-col="Ile celów/akcji"]{min-width:20ch; max-width:20ch; width:20ch; text-align:center}
 .tableWrap table[data-sheet="Kary do ST"] th[data-col="Kara do ST"],
-.tableWrap table[data-sheet="Kary do ST"] td[data-col="Kara do ST"]{min-width:20ch; max-width:20ch; text-align:center}
+.tableWrap table[data-sheet="Kary do ST"] td[data-col="Kara do ST"]{min-width:20ch; max-width:20ch; width:20ch; text-align:center}
+.tableWrap table[data-sheet="Kary do ST"]{
+  table-layout:fixed;
+  width:max-content;
+}
+.tableWrap table[data-sheet="Kary do ST"] th:first-child,
+.tableWrap table[data-sheet="Kary do ST"] td:first-child{
+  min-width:3ch;
+  max-width:3ch;
+  width:3ch;
+  text-align:center;
+}
 .slash{color:var(--code)}
 .ref{color:var(--code); opacity:.9}
 .caretref{color:var(--code); opacity:.95}

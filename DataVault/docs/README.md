@@ -14,7 +14,7 @@ Najważniejsze zasady działania:
 - Domyślne sortowanie opiera się o kolumnę `LP` (kolumna jest ukryta w UI, służy tylko do sortowania).
 - W arkuszach z kolumnami `Cecha 1..N` i `Zasięg 1..3` aplikacja scala je do `Cechy` i `Zasięg`.
 - Kolumny liczbowe są wyśrodkowane; w **Broniach** kolumna `Zasięg` nie zawija wierszy.
-- W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` mają szerokość ustawioną na 20ch (min i max).
+- W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), tabela ma `table-layout: fixed` i `width: max-content`, a kolumna wyboru (✓) ma 3ch — dzięki temu kolumny nie rozszerzają się wraz z szerokością okna.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
 
 ### Szybki start
@@ -82,7 +82,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Lista wartości w filtrze listowym usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` wyłącznie w etykietach (bez wpływu na logikę filtrowania).
 
 ### Uwagi o szerokości kolumn (Ścieżki Asuryani / Orcze Klany)
-W tych zakładkach szerokości kolumn są ustawione jako `min-width` (Nazwa 26ch, Opis 56ch, Efekt 26ch). Przeglądarka może **rozszerzyć** kolumny przy dużej szerokości okna, ponieważ tabela ma `width: 100%` i nie wymusza stałego układu (`table-layout: fixed` nie jest używany). Kolumny mogą więc wyglądać na „nierówne”, mimo że minimalne szerokości są zgodne z dokumentacją.
+W tych zakładkach szerokości kolumn są ustawione jako `min-width` (Nazwa 26ch, Opis 56ch, Efekt 26ch). Przeglądarka może **rozszerzyć** kolumny przy dużej szerokości okna, ponieważ tabela ma `width: 100%` i nie wymusza stałego układu (`table-layout: fixed` nie jest używany). Kolumny mogą więc wyglądać na „nierówne”, mimo że minimalne szerokości są zgodne z dokumentacją. Wyjątek: w **Kary do ST** tabela ma stały układ i nie rozszerza kolumn.
 
 Dodatkowo kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`). Jeśli oczekujesz konkretnej kolejności, zweryfikuj ją w źródłowym arkuszu lub w `_meta.columnOrder`.
 Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny katalog repozytorium).
@@ -102,7 +102,7 @@ Key behavior:
 - Default sorting uses the hidden `LP` column (it is hidden in the UI and used only for ordering).
 - Sheets that include `Cecha 1..N` and `Zasięg 1..3` are merged into `Cechy` and `Zasięg`.
 - Numeric columns are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
-- In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are set to 20ch width (min and max).
+- In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), the table uses `table-layout: fixed` with `width: max-content`, and the selection (✓) column is 3ch — so the columns do not expand with viewport width.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
 
 ### Quick start
@@ -170,7 +170,7 @@ Below are two equivalent ways to update the data. In this update, `data.json` ha
 - The list filter labels strip `{{RED}}`, `{{B}}`, `{{I}}` markers for display only (filter logic is unchanged).
 
 ### Column width notes (Ścieżki Asuryani / Orcze Klany)
-In these tabs, column widths are defined as `min-width` (Nazwa 26ch, Opis 56ch, Efekt 26ch). The browser can **expand** columns on wide viewports because the table is `width: 100%` and does not enforce a fixed layout (`table-layout: fixed` is not used). As a result, columns can look “uneven” even when the minimum widths match the documentation.
+In these tabs, column widths are defined as `min-width` (Nazwa 26ch, Opis 56ch, Efekt 26ch). The browser can **expand** columns on wide viewports because the table is `width: 100%` and does not enforce a fixed layout (`table-layout: fixed` is not used). As a result, columns can look “uneven” even when the minimum widths match the documentation. Exception: **Kary do ST** uses a fixed layout so its columns stay locked.
 
 Column order is also loaded from `data.json` (`_meta.columnOrder`). If you expect a specific order, verify it in the source sheet or in `_meta.columnOrder`.
 Visual/layout rules and formatting details are documented in `DetaleLayout.md` (repository root).
