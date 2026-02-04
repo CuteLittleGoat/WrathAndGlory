@@ -273,7 +273,8 @@ Uwagi formatowania:
 |  Przykład | 60ch | brak | lewo | standard  |
 
 ## Kary do ST
-| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- | --- |
-|  Ile celów/akcji | 20ch | 20ch | środek | standard  |
-|  Kara do ST | 20ch | 20ch | środek | standard  |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie | Auto-rozszerzanie |
+| --- | --- | --- | --- | --- | --- |
+|  Wybór (✓) | 8ch | 8ch | środek | standard | nie (stała szerokość) |
+|  Ile celów/akcji | 20ch | 20ch | środek | standard | nie (stała szerokość) |
+|  Kara do ST | 20ch | 20ch | środek | standard | nie (stała szerokość) |

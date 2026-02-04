@@ -770,9 +770,9 @@ td.center{text-align:center}
 }
 .tableWrap table[data-sheet="Kary do ST"] th:first-child,
 .tableWrap table[data-sheet="Kary do ST"] td:first-child{
-  min-width:3ch;
-  max-width:3ch;
-  width:3ch;
+  min-width:8ch;
+  max-width:8ch;
+  width:8ch;
   text-align:center;
 }
 .slash{color:var(--code)}
