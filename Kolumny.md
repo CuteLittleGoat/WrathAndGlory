@@ -275,5 +275,5 @@ Uwagi formatowania:
 ## Kary do ST
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-|  Ile celów/akcji | 20ch | brak | środek | standard  |
-|  Kara do ST | 20ch | brak | środek | standard  |
+|  Ile celów/akcji | 20ch | 20ch | środek | standard  |
+|  Kara do ST | 20ch | 20ch | środek | standard  |
