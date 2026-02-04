@@ -266,8 +266,8 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Przykład`: 60ch
 
 - **Kary do ST**
-  - `Ile celów/akcji`: 20ch (wycentrowane)
-  - `Kara do ST`: 20ch (wycentrowane)
+  - `Ile celów/akcji`: min 20ch, max 20ch (wycentrowane)
+  - `Kara do ST`: min 20ch, max 20ch (wycentrowane)
 
 ## Uwaga: szerokości i kolejność kolumn (Ścieżki Asuryani / Orcze Klany)
 W CSS modułu DataVault dla tych zakładek ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.

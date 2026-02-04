@@ -14,6 +14,7 @@ Najważniejsze zasady działania:
 - Domyślne sortowanie opiera się o kolumnę `LP` (kolumna jest ukryta w UI, służy tylko do sortowania).
 - W arkuszach z kolumnami `Cecha 1..N` i `Zasięg 1..3` aplikacja scala je do `Cechy` i `Zasięg`.
 - Kolumny liczbowe są wyśrodkowane; w **Broniach** kolumna `Zasięg` nie zawija wierszy.
+- W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` mają szerokość ustawioną na 20ch (min i max).
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
 
 ### Szybki start
@@ -101,6 +102,7 @@ Key behavior:
 - Default sorting uses the hidden `LP` column (it is hidden in the UI and used only for ordering).
 - Sheets that include `Cecha 1..N` and `Zasięg 1..3` are merged into `Cechy` and `Zasięg`.
 - Numeric columns are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
+- In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are set to 20ch width (min and max).
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
 
 ### Quick start
