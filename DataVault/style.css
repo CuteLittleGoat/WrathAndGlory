@@ -369,6 +369,14 @@ td.center{text-align:center}
 
 
 /* Column tweaks */
+/* Kolumna wyboru (pierwsza, ✓) — stała szerokość we wszystkich zakładkach */
+.tableWrap table th:first-child,
+.tableWrap table td:first-child{
+  min-width:8ch;
+  max-width:8ch;
+  width:8ch;
+  text-align:center;
+}
 /* Bestiariusz */
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Nazwa"]{min-width:26ch}
@@ -767,13 +775,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Kary do ST"]{
   table-layout:fixed;
   width:max-content;
-}
-.tableWrap table[data-sheet="Kary do ST"] th:first-child,
-.tableWrap table[data-sheet="Kary do ST"] td:first-child{
-  min-width:8ch;
-  max-width:8ch;
-  width:8ch;
-  text-align:center;
 }
 .slash{color:var(--code)}
 .ref{color:var(--code); opacity:.9}
