@@ -24,7 +24,7 @@ Tytuł karty przeglądarki: **Generator NPC**.
    - Dodatkowe przełączniki pozwalają dołączyć opisy cech lub pełne opisy modułów.
 9. Kliknij „Generuj kartę”, aby otworzyć kartę do druku w nowej karcie przeglądarki.
 10. Kliknij „Reset”, aby wyczyścić wybory i przywrócić domyślne ustawienia.
-11. W panelu „Ulubione” wpisz opcjonalny alias i użyj „Dodaj do ulubionych”, aby zapisać bieżący zestaw ustawień (bestiariusz, modyfikacje, notatki i moduły). Zapisane wpisy możesz wczytać lub usunąć.
+11. W panelu „Ulubione” wpisz opcjonalny alias i użyj „Dodaj do ulubionych”, aby zapisać bieżący zestaw ustawień (bestiariusz, modyfikacje, notatki i moduły). Zapisane wpisy możesz wczytać, usunąć lub zmienić kolejność przyciskami ▲/▼.
     - Domyślnie aplikacja łączy się z Firestore (konfiguracja w `GeneratorNPC/config/firebase-config.js`) i zapisuje listę w dokumencie `generatorNpc/favorites`.
     - Jeśli Firestore jest niedostępny, ulubione są przechowywane lokalnie w przeglądarce.
 
@@ -61,7 +61,7 @@ Browser tab title: **Generator NPC**.
    - Additional toggles let you include trait descriptions or full module details.
 9. Click “Generuj kartę” to open a printable card in a new browser tab.
 10. Click “Reset” to clear selections and restore defaults.
-11. In the “Ulubione” panel, enter an optional alias and use “Dodaj do ulubionych” to save the current setup (bestiary, overrides, notes, and modules). You can load or remove saved entries.
+11. In the “Ulubione” panel, enter an optional alias and use “Dodaj do ulubionych” to save the current setup (bestiary, overrides, notes, and modules). You can load, remove, or reorder saved entries using the ▲/▼ buttons.
     - By default, the app connects to Firestore (configured in `GeneratorNPC/config/firebase-config.js`) and stores the list in the `generatorNpc/favorites` document.
     - If Firestore is unavailable, favorites are stored locally in the browser.
 

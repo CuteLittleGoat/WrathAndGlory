@@ -1587,7 +1587,7 @@
           favoritesList.append(empty);
           return;
         }
-        state.favorites.forEach((favorite) => {
+        state.favorites.forEach((favorite, index) => {
           const wrapper = document.createElement("div");
           wrapper.className = "favorite-item";
           const title = document.createElement("div");
@@ -1605,12 +1605,24 @@
           applyButton.textContent = "Wczytaj";
           applyButton.dataset.favoriteAction = "apply";
           applyButton.dataset.favoriteId = favorite.id;
+          const moveUpButton = document.createElement("button");
+          moveUpButton.className = "btn btn-small secondary";
+          moveUpButton.textContent = "▲";
+          moveUpButton.dataset.favoriteAction = "move-up";
+          moveUpButton.dataset.favoriteId = favorite.id;
+          moveUpButton.disabled = index === 0;
+          const moveDownButton = document.createElement("button");
+          moveDownButton.className = "btn btn-small secondary";
+          moveDownButton.textContent = "▼";
+          moveDownButton.dataset.favoriteAction = "move-down";
+          moveDownButton.dataset.favoriteId = favorite.id;
+          moveDownButton.disabled = index === state.favorites.length - 1;
           const removeButton = document.createElement("button");
           removeButton.className = "btn btn-small secondary";
           removeButton.textContent = "Usuń";
           removeButton.dataset.favoriteAction = "remove";
           removeButton.dataset.favoriteId = favorite.id;
-          actions.append(applyButton, removeButton);
+          actions.append(applyButton, moveUpButton, moveDownButton, removeButton);
           wrapper.append(title, subtitle, actions);
           favoritesList.append(wrapper);
         });
@@ -1756,6 +1768,18 @@
 
       const removeFavorite = async (favoriteId) => {
         state.favorites = state.favorites.filter((favorite) => favorite.id !== favoriteId);
+        renderFavorites();
+        await saveFavorites();
+      };
+
+      const moveFavorite = async (favoriteId, direction) => {
+        const index = state.favorites.findIndex((favorite) => favorite.id === favoriteId);
+        const targetIndex = index + direction;
+        if (index < 0 || targetIndex < 0 || targetIndex >= state.favorites.length) {
+          return;
+        }
+        const [removed] = state.favorites.splice(index, 1);
+        state.favorites.splice(targetIndex, 0, removed);
         renderFavorites();
         await saveFavorites();
       };
@@ -2418,6 +2442,12 @@
           if (!favorite) return;
           if (action === "apply") {
             applyFavorite(favorite);
+          }
+          if (action === "move-up") {
+            moveFavorite(favoriteId, -1);
+          }
+          if (action === "move-down") {
+            moveFavorite(favoriteId, 1);
           }
           if (action === "remove") {
             removeFavorite(favoriteId);
