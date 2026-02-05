@@ -14,6 +14,8 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 ## 2. Struktura projektu
 - `index.html` — główny dokument HTML (tytuł karty: `Generator NPC`), zawiera szkielet UI oraz cały skrypt JS.
 - `style.css` — komplet stylów interfejsu (layout, typografia, tabele, popover, układ responsywny).
+- `config/firebase-config.js` — konfiguracja Firebase (ten sam projekt co Audio) używana do zapisu listy ulubionych.
+- `config/firebase-config.template.js` — szablon konfiguracji Firebase do podmiany.
 - `docs/Documentation.md` — niniejsza dokumentacja techniczna.
 - `docs/README.md` — instrukcja obsługi dla użytkownika (PL/EN).
 
@@ -31,6 +33,10 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 **Meta dane:**
 - `_meta.traits` zawiera listę cech wraz z opisami wykorzystywanymi w popoverze.
 
+**Ulubione (Firebase / localStorage):**
+- Aplikacja zapisuje listę ulubionych w Firestore w dokumencie `generatorNpc/favorites` (jedna lista).
+- Jeśli Firestore jest niedostępny lub brak konfiguracji, dane są zapisywane lokalnie w `localStorage` pod kluczem `generatorNpcFavorites`.
+
 ---
 
 ## 4. Struktura HTML i elementy UI
@@ -46,6 +52,11 @@ Składa się z trzech sekcji:
 2. **Wybór bazowy** — wybór rekordu bestiariusza (`#bestiary`) + notatki (`#bestiary-notes`).
 3. **Moduły aktywne** — checkboxy włączające/wyłączające karty modułów:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
+4. **Ulubione** — panel zapisu i odczytu zapisanych konfiguracji:
+   - `#favorites-status` — informacja o statusie połączenia z Firestore.
+   - `#favorites-alias` — pole aliasu (opcjonalne) dla nowego wpisu.
+   - `#favorites-add`, `#favorites-refresh` — przyciski zapisu i odświeżenia listy.
+   - `#favorites-list` — lista zapisanych wpisów z akcjami „Wczytaj” i „Usuń”.
 
 ### 4.3. Obszar roboczy (`.workspace`)
 Zawiera karty z tabelami danych:
@@ -128,6 +139,7 @@ Ustawienia globalne:
 - `.editable-textarea` — pole edycji `Umiejętności` (ciemne tło, resize w pionie, focus z `--glow`).
 - `.skills-key-cell` — układ flex dla etykiety „Umiejętności” i przycisku **Edytuj/Zapisz**.
 - `.btn.btn-small` — kompaktowa wersja przycisku dla edycji w tabeli.
+- `.favorites-actions`, `.favorites-list`, `.favorite-item`, `.favorite-title`, `.favorite-subtitle`, `.favorite-actions` — layout i typografia listy ulubionych.
 
 ### 6.5. Tabele
 - `.data-table` — tabela z `border-collapse`, efektami hover i zebra.
@@ -198,6 +210,8 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `DATA_URL` — URL z danymi JSON.
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
 - `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków przy inicjalizacji, wpisywaniu i zapisie).
+- `FAVORITES_STORAGE_KEY = "generatorNpcFavorites"` — klucz `localStorage` dla ulubionych.
+- `FAVORITES_COLLECTION = "generatorNpc"` i `FAVORITES_DOC_ID = "favorites"` — docelowa ścieżka dokumentu w Firestore.
 - `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_MENTAL_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
 - `state` — obiekt z danymi aplikacji i stanem UI:
   - `data`, `traits` (Map), `expandedCells` (Set), `selectedBestiaryIndex`,
@@ -206,6 +220,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
     - `skills` (string) dla „Umiejętności”,
     - `skillsEditing` (boolean) przełączający tryb edycji,
   - kolekcje: `bestiary`, `armor`, `weapons`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
+  - ulubione: `favorites` (tablica wpisów), `firestore` (instancja), `favoritesDoc` (referencja), `usingFirestore` (flaga).
 - `clampEvaluators` (WeakMap) — przechowuje funkcje obliczające clamp dla komórek.
 - `nameKeyCache` (WeakMap) — cache klucza nazwy rekordu.
 - `clampObserver` (ResizeObserver) — reaguje na zmianę rozmiaru komórek i przelicza clamp.
@@ -223,7 +238,20 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `isRangeColumn(key)` — rozpoznaje kolumnę „Zasięg”.
 - `getFormattedCellHTML(sheetName, key, rawValue, options)` — decyduje o sposobie formatowania komórki w zależności od typu kolumny.
 
-### 8.3. Funkcje narzędziowe (rekordy i kolekcje)
+### 8.3. Ulubione — logika zapisu
+- `setFavoritesStatus(message, { isError })` — aktualizuje status połączenia/operacji ulubionych.
+- `createFavoriteId()` — generuje unikalne ID wpisu (UUID lub fallback z timestampem).
+- `serializeBestiaryOverrides()` / `deserializeBestiaryOverrides()` — zamieniają Map ↔ obiekt do zapisu w Firestore/localStorage.
+- `setSelectedIndices()` — ustawia zaznaczenie w `<select multiple>` na podstawie tablicy indeksów.
+- `renderFavorites()` — buduje listę wpisów wraz z przyciskami „Wczytaj” i „Usuń”.
+- `loadFavoritesFromLocal()` / `saveFavoritesToLocal()` — obsługa `localStorage`.
+- `saveFavorites()` — zapis do Firestore (z `updatedAt: serverTimestamp()`), a przy błędzie fallback do lokalnego zapisu.
+- `initFavoritesStore()` — inicjalizacja Firebase i nasłuch `onSnapshot()` lub fallback na pamięć lokalną.
+- `buildFavoritePayload()` — tworzy snapshot bieżącego UI (bestiariusz, nadpisania, notatki, wybory modułów, przełączniki).
+- `addFavorite()` / `removeFavorite()` — dodawanie i usuwanie wpisów z listy.
+- `applyFavorite()` — odtwarza zapisany stan UI i re-renderuje tabele.
+
+### 8.4. Funkcje narzędziowe (rekordy i kolekcje)
 - `canonicalTraitName(name)` — normalizuje nazwę cechy.
 - `toDisplayString(value)` — bezpiecznie zwraca string (pusty jeśli brak wartości).
 - `hasMeaningfulValue(value)` — sprawdza, czy tekst ma realną zawartość.
