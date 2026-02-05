@@ -8,6 +8,7 @@
   - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera w pełni działający podgląd widoku użytkownika (dane i nawigacja są identyczne jak u użytkownika).
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
 - **Ustawienia:** ulubione, „Główny widok” oraz aliasy sampli są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
+- **Synchronizacja aliasów:** mapa `aliases` jest synchronizowana do obiektów sampli po wczytaniu manifestu i po każdej aktualizacji z Firestore/lokalnego zapisu, aby alias był widoczny w obu trybach.
 - **Odtwarzanie:** kliknięcie nazwy sampla lub taga (druga linia pod nazwą) uruchamia/wyłącza dźwięk dla danej karty; równoległe odtwarzanie wielu sampli jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%).
 
 ## 2. Struktura repozytorium (pliki i katalogi)
@@ -177,6 +178,7 @@ window.firebaseConfig = {
 - `normalizeFavorites(raw)` — normalizuje strukturę list ulubionych.
 - `normalizeMainView(raw)` — normalizuje listę `itemIds` głównego widoku.
 - `normalizeAliases(raw)` — normalizuje mapę aliasów (usuwa puste wartości, trimuje tekst).
+- `applyAliasesToItems()` — przypisuje wartości z `aliases` do obiektów sampli (`item.alias`), aby aliasy były widoczne po odczycie ustawień.
 - `normalizeSettings(raw)` — akceptuje zarówno nowy format (`favorites`, `mainView`, `aliases`) jak i stary (`lists`).
 - `loadSettingsLocal()` — wczytuje lokalny zapis (`audio.settings`) lub migruje z `audio.favorites`.
 - `setItemAlias(itemId, alias)` — zapisuje/usuwa alias i odświeża wszystkie widoki.
@@ -186,7 +188,7 @@ window.firebaseConfig = {
   1. Sprawdza `window.firebaseConfig`.
   2. Inicjalizuje aplikację i Firestore.
   3. Ustawia referencję `doc(db, "audio", "favorites")`.
-  4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym.
+  4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym oraz przepisać aliasy do obiektów sampli.
 
 ### 8.4. Renderowanie
 - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
@@ -241,6 +243,10 @@ window.firebaseConfig = {
   },
   "mainView": {
     "itemIds": ["sample-1", "sample-3"]
+  },
+  "aliases": {
+    "sample-1": "Test",
+    "sample-3": "Alias"
   },
   "updatedAt": "serverTimestamp"
 }

@@ -1109,6 +1109,15 @@
       );
     };
 
+    const applyAliasesToItems = () => {
+      if (!state.items.length) {
+        return;
+      }
+      state.items.forEach((item) => {
+        item.alias = state.aliases[item.id] || "";
+      });
+    };
+
     const normalizeSettings = (raw) => {
       if (!raw) {
         return { favorites: defaultFavorites(), mainView: defaultMainView(), aliases: defaultAliases() };
@@ -1150,6 +1159,7 @@
         state.favorites = settings.favorites;
         state.mainView = settings.mainView;
         state.aliases = settings.aliases;
+        applyAliasesToItems();
       } catch (error) {
         state.favorites = defaultFavorites();
         state.mainView = defaultMainView();
@@ -1175,6 +1185,7 @@
           const defaults = normalizeSettings(null);
           state.favorites = defaults.favorites;
           state.mainView = defaults.mainView;
+          state.aliases = defaults.aliases;
           saveSettings().catch(console.error);
           renderAllViews();
           return;
@@ -1183,6 +1194,7 @@
         state.favorites = settings.favorites;
         state.mainView = settings.mainView;
         state.aliases = settings.aliases;
+        applyAliasesToItems();
         renderAllViews();
       });
     };
@@ -1662,6 +1674,7 @@
 
       state.items = items.sort((a, b) => a.label.localeCompare(b.label));
       state.itemsById = new Map(state.items.map((item) => [item.id, item]));
+      applyAliasesToItems();
       state.manifestReady = true;
       state.tagTree = buildTagTree(state.items);
       ensureTagSelection(state.tagTree);
