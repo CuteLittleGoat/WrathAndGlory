@@ -56,7 +56,7 @@ Składa się z trzech sekcji:
    - `#favorites-status` — informacja o statusie połączenia z Firestore.
    - `#favorites-alias` — pole aliasu (opcjonalne) dla nowego wpisu.
    - `#favorites-add`, `#favorites-refresh` — przyciski zapisu i odświeżenia listy.
-   - `#favorites-list` — lista zapisanych wpisów z akcjami „Wczytaj” i „Usuń”.
+   - `#favorites-list` — lista zapisanych wpisów z akcjami „Wczytaj”, „Usuń” oraz strzałkami ▲/▼ do zmiany kolejności.
 
 ### 4.3. Obszar roboczy (`.workspace`)
 Zawiera karty z tabelami danych:
@@ -243,12 +243,13 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `createFavoriteId()` — generuje unikalne ID wpisu (UUID lub fallback z timestampem).
 - `serializeBestiaryOverrides()` / `deserializeBestiaryOverrides()` — zamieniają Map ↔ obiekt do zapisu w Firestore/localStorage.
 - `setSelectedIndices()` — ustawia zaznaczenie w `<select multiple>` na podstawie tablicy indeksów.
-- `renderFavorites()` — buduje listę wpisów wraz z przyciskami „Wczytaj” i „Usuń”.
+- `renderFavorites()` — buduje listę wpisów wraz z przyciskami „Wczytaj”, „Usuń” i strzałkami do przesuwania wpisów w górę/dół (pierwszy/ostatni wpis ma zablokowane odpowiednie strzałki).
 - `loadFavoritesFromLocal()` / `saveFavoritesToLocal()` — obsługa `localStorage`.
 - `saveFavorites()` — zapis do Firestore (z `updatedAt: serverTimestamp()`), a przy błędzie fallback do lokalnego zapisu.
 - `initFavoritesStore()` — inicjalizacja Firebase i nasłuch `onSnapshot()` lub fallback na pamięć lokalną.
 - `buildFavoritePayload()` — tworzy snapshot bieżącego UI (bestiariusz, nadpisania, notatki, wybory modułów, przełączniki).
 - `addFavorite()` / `removeFavorite()` — dodawanie i usuwanie wpisów z listy.
+- `moveFavorite()` — przesuwa wpis o jedną pozycję w górę lub dół i zapisuje nową kolejność.
 - `applyFavorite()` — odtwarza zapisany stan UI i re-renderuje tabele.
 
 ### 8.4. Funkcje narzędziowe (rekordy i kolekcje)
