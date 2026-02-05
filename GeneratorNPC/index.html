@@ -79,6 +79,22 @@
           </div>
         </section>
 
+        <section class="panel">
+          <h2>Ulubione</h2>
+          <p class="text-muted" id="favorites-status" aria-live="polite">
+            Łączenie z listą ulubionych...
+          </p>
+          <div class="field">
+            <label for="favorites-alias">Alias (opcjonalny)</label>
+            <input type="text" id="favorites-alias" placeholder="Np. Ork dowódca" />
+          </div>
+          <div class="favorites-actions">
+            <button class="btn secondary" id="favorites-add">Dodaj do ulubionych</button>
+            <button class="btn" id="favorites-refresh">Odśwież</button>
+          </div>
+          <div class="favorites-list" id="favorites-list"></div>
+        </section>
+
       </aside>
 
       <section class="workspace">
@@ -342,7 +358,18 @@
       <p id="trait-description">Kliknij tag, aby zobaczyć opis cechy.</p>
     </aside>
 
-    <script>
+    <script src="config/firebase-config.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        onSnapshot,
+        serverTimestamp,
+        getDoc,
+      } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
       const DATA_URL = "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json";
 
       const bestiarySelect = document.querySelector("#bestiary");
@@ -365,6 +392,11 @@
       const bestiaryNotes = document.querySelector("#bestiary-notes");
       const generateButton = document.querySelector("#generate-card");
       const resetButton = document.querySelector("#reset-page");
+      const favoritesAliasInput = document.querySelector("#favorites-alias");
+      const favoritesAddButton = document.querySelector("#favorites-add");
+      const favoritesRefreshButton = document.querySelector("#favorites-refresh");
+      const favoritesList = document.querySelector("#favorites-list");
+      const favoritesStatus = document.querySelector("#favorites-status");
       const moduleToggles = Array.from(document.querySelectorAll("[data-module-toggle]"));
       const moduleSections = Array.from(document.querySelectorAll("[data-module-section]"));
       const armorTraitDescriptionsToggle = document.querySelector("#armor-trait-descriptions");
@@ -381,6 +413,9 @@
 
       const CLAMP_LINES = 9;
       const MAX_NUMERIC_INPUT_LENGTH = 25;
+      const FAVORITES_STORAGE_KEY = "generatorNpcFavorites";
+      const FAVORITES_COLLECTION = "generatorNpc";
+      const FAVORITES_DOC_ID = "favorites";
 
       const state = {
         data: null,
@@ -400,6 +435,10 @@
         talents: [],
         psionics: [],
         prayers: [],
+        favorites: [],
+        firestore: null,
+        favoritesDoc: null,
+        usingFirestore: false,
       };
 
       const clampEvaluators = new WeakMap();
@@ -418,6 +457,11 @@
         String(value ?? "")
           .replace(/\s+/g, " ")
           .trim();
+
+      const setFavoritesStatus = (message, { isError = false } = {}) => {
+        favoritesStatus.textContent = message;
+        favoritesStatus.classList.toggle("text-red", isError);
+      };
 
       const normalizeKey = (value) =>
         normalizeText(value)
@@ -450,6 +494,24 @@
         ["Odporność Psychiczna", "Odporność psychiczna"].map((label) => normalizeKey(label))
       );
       const EDITABLE_NUMERIC_KEYS = new Set(EDITABLE_STATS_KEYS.map((label) => normalizeKey(label)));
+
+      const createFavoriteId = () => {
+        if (typeof crypto !== "undefined" && crypto.randomUUID) {
+          return crypto.randomUUID();
+        }
+        return `fav-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      };
+
+      const serializeBestiaryOverrides = (overrides) => ({
+        numeric: Object.fromEntries(overrides.numeric),
+        skills: overrides.skills ?? null,
+      });
+
+      const deserializeBestiaryOverrides = (payload) => ({
+        numeric: new Map(Object.entries(payload?.numeric || {})),
+        skills: payload?.skills ?? null,
+        skillsEditing: false,
+      });
 
       const escapeHtml = (value) =>
         String(value)
@@ -1321,6 +1383,14 @@
           .map((option) => Number(option.value))
           .filter((index) => !Number.isNaN(index));
 
+      const setSelectedIndices = (select, indices) => {
+        const selectedSet = new Set(indices);
+        Array.from(select.options).forEach((option) => {
+          const value = Number(option.value);
+          option.selected = selectedSet.has(value);
+        });
+      };
+
       const renderWeaponTable = () => {
         const selected = getSelectedIndices(weaponSelect);
         renderOrderedTable({
@@ -1474,6 +1544,269 @@
 
       const getSelectedRecords = (records, selectedIndices) =>
         selectedIndices.map((index) => records[index]).filter(Boolean);
+
+      const getFavoriteDisplayName = (favorite) => {
+        const alias = normalizeText(favorite?.alias);
+        if (alias) {
+          return alias;
+        }
+        return normalizeText(favorite?.payload?.bestiaryName) || "Bez nazwy";
+      };
+
+      const formatFavoriteDate = (value) => {
+        if (!value) return "";
+        const date =
+          typeof value?.toDate === "function"
+            ? value.toDate()
+            : typeof value === "number" || typeof value === "string"
+              ? new Date(value)
+              : null;
+        if (!date || Number.isNaN(date.getTime())) return "";
+        return date.toLocaleString("pl-PL");
+      };
+
+      const normalizeFavoriteTimestamp = (value) => {
+        if (!value) return null;
+        if (typeof value?.toDate === "function") {
+          return value.toDate().getTime();
+        }
+        if (typeof value === "number") return value;
+        if (typeof value === "string") {
+          const parsed = new Date(value);
+          return Number.isNaN(parsed.getTime()) ? null : parsed.getTime();
+        }
+        return null;
+      };
+
+      const renderFavorites = () => {
+        favoritesList.innerHTML = "";
+        if (!state.favorites.length) {
+          const empty = document.createElement("p");
+          empty.className = "text-muted";
+          empty.textContent = "Brak zapisanych ulubionych.";
+          favoritesList.append(empty);
+          return;
+        }
+        state.favorites.forEach((favorite) => {
+          const wrapper = document.createElement("div");
+          wrapper.className = "favorite-item";
+          const title = document.createElement("div");
+          title.className = "favorite-title";
+          title.textContent = getFavoriteDisplayName(favorite);
+          const subtitle = document.createElement("div");
+          subtitle.className = "favorite-subtitle";
+          const baseName = normalizeText(favorite?.payload?.bestiaryName);
+          const createdAt = formatFavoriteDate(favorite?.createdAt);
+          subtitle.textContent = [baseName, createdAt].filter(Boolean).join(" · ");
+          const actions = document.createElement("div");
+          actions.className = "favorite-actions";
+          const applyButton = document.createElement("button");
+          applyButton.className = "btn btn-small";
+          applyButton.textContent = "Wczytaj";
+          applyButton.dataset.favoriteAction = "apply";
+          applyButton.dataset.favoriteId = favorite.id;
+          const removeButton = document.createElement("button");
+          removeButton.className = "btn btn-small secondary";
+          removeButton.textContent = "Usuń";
+          removeButton.dataset.favoriteAction = "remove";
+          removeButton.dataset.favoriteId = favorite.id;
+          actions.append(applyButton, removeButton);
+          wrapper.append(title, subtitle, actions);
+          favoritesList.append(wrapper);
+        });
+      };
+
+      const loadFavoritesFromLocal = () => {
+        try {
+          const raw = localStorage.getItem(FAVORITES_STORAGE_KEY);
+          state.favorites = raw ? JSON.parse(raw) : [];
+        } catch (error) {
+          state.favorites = [];
+        }
+        renderFavorites();
+      };
+
+      const saveFavoritesToLocal = () => {
+        try {
+          const serialized = state.favorites.map((favorite) => ({
+            ...favorite,
+            createdAt: normalizeFavoriteTimestamp(favorite.createdAt),
+          }));
+          localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(serialized));
+        } catch (error) {
+          console.warn("Nie udało się zapisać ulubionych lokalnie.", error);
+        }
+      };
+
+      const saveFavorites = async () => {
+        if (state.usingFirestore && state.favoritesDoc) {
+          try {
+            await setDoc(
+              state.favoritesDoc,
+              {
+                favorites: state.favorites,
+                updatedAt: serverTimestamp(),
+              },
+              { merge: true }
+            );
+            return;
+          } catch (error) {
+            setFavoritesStatus("Błąd zapisu w Firestore. Zapis lokalny włączony.", { isError: true });
+            state.usingFirestore = false;
+          }
+        }
+        saveFavoritesToLocal();
+      };
+
+      const initFavoritesStore = () => {
+        if (window.firebaseConfig?.apiKey) {
+          try {
+            const app = initializeApp(window.firebaseConfig);
+            const db = getFirestore(app);
+            state.firestore = db;
+            state.favoritesDoc = doc(db, FAVORITES_COLLECTION, FAVORITES_DOC_ID);
+            state.usingFirestore = true;
+            setFavoritesStatus("Połączono z Firestore.");
+            onSnapshot(
+              state.favoritesDoc,
+              (snapshot) => {
+                if (snapshot.exists()) {
+                  const data = snapshot.data();
+                  state.favorites = Array.isArray(data?.favorites) ? data.favorites : [];
+                } else {
+                  state.favorites = [];
+                }
+                renderFavorites();
+              },
+              (error) => {
+                console.warn("Błąd subskrypcji Firestore", error);
+                state.usingFirestore = false;
+                setFavoritesStatus("Brak dostępu do Firestore. Używam pamięci lokalnej.", {
+                  isError: true,
+                });
+                loadFavoritesFromLocal();
+              }
+            );
+            return;
+          } catch (error) {
+            console.warn("Błąd inicjalizacji Firestore", error);
+            state.usingFirestore = false;
+          }
+        }
+        setFavoritesStatus("Brak konfiguracji Firestore. Używam pamięci lokalnej.");
+        loadFavoritesFromLocal();
+      };
+
+      const buildFavoritePayload = () => {
+        const selectedIndex = Number(bestiarySelect.value);
+        if (Number.isNaN(selectedIndex) || !state.bestiary[selectedIndex]) {
+          return null;
+        }
+        return {
+          selectedBestiaryIndex: selectedIndex,
+          bestiaryName: getRecordName(state.bestiary[selectedIndex], selectedIndex),
+          bestiaryOverrides: serializeBestiaryOverrides(state.bestiaryOverrides),
+          notes: bestiaryNotes.value,
+          modules: {
+            weaponIds: getSelectedIndices(weaponSelect),
+            armorIds: getSelectedIndices(armorSelect),
+            augmentationsIds: getSelectedIndices(augmentationsSelect),
+            equipmentIds: getSelectedIndices(equipmentSelect),
+            talentsIds: getSelectedIndices(talentsSelect),
+            psionicsIds: getSelectedIndices(psionicsSelect),
+            prayersIds: getSelectedIndices(prayersSelect),
+          },
+          toggles: {
+            moduleVisibility: Object.fromEntries(
+              moduleToggles.map((toggle) => [toggle.dataset.moduleToggle, toggle.checked])
+            ),
+            traitDescriptions: {
+              weapon: weaponTraitDescriptionsToggle.checked,
+              armor: armorTraitDescriptionsToggle.checked,
+            },
+            fullDetails: {
+              augmentations: augmentationsFullDetailsToggle.checked,
+              equipment: equipmentFullDetailsToggle.checked,
+              talents: talentsFullDetailsToggle.checked,
+              psionics: psionicsFullDetailsToggle.checked,
+              prayers: prayersFullDetailsToggle.checked,
+            },
+          },
+        };
+      };
+
+      const addFavorite = async () => {
+        const payload = buildFavoritePayload();
+        if (!payload) {
+          alert("Wybierz rekord bestiariusza przed dodaniem do ulubionych.");
+          return;
+        }
+        const alias = normalizeText(favoritesAliasInput.value);
+        const favorite = {
+          id: createFavoriteId(),
+          alias,
+          createdAt: Date.now(),
+          payload,
+        };
+        state.favorites = [favorite, ...state.favorites];
+        favoritesAliasInput.value = "";
+        renderFavorites();
+        await saveFavorites();
+      };
+
+      const removeFavorite = async (favoriteId) => {
+        state.favorites = state.favorites.filter((favorite) => favorite.id !== favoriteId);
+        renderFavorites();
+        await saveFavorites();
+      };
+
+      const applyFavorite = (favorite) => {
+        const payload = favorite?.payload;
+        if (!payload) return;
+        const index = Number(payload.selectedBestiaryIndex);
+        if (Number.isNaN(index) || !state.bestiary[index]) {
+          alert("Nie znaleziono rekordu bestiariusza dla tego wpisu.");
+          return;
+        }
+        bestiarySelect.value = String(index);
+        updateBestiarySelection();
+        state.bestiaryOverrides = deserializeBestiaryOverrides(payload.bestiaryOverrides);
+        renderBestiaryTable(state.bestiary[index]);
+        bestiaryNotes.value = payload.notes || "";
+
+        const toggles = payload.toggles || {};
+        moduleToggles.forEach((toggle) => {
+          const key = toggle.dataset.moduleToggle;
+          if (key && Object.prototype.hasOwnProperty.call(toggles.moduleVisibility || {}, key)) {
+            toggle.checked = Boolean(toggles.moduleVisibility[key]);
+          }
+        });
+        updateModuleVisibility();
+
+        setSelectedIndices(weaponSelect, payload.modules?.weaponIds || []);
+        setSelectedIndices(armorSelect, payload.modules?.armorIds || []);
+        setSelectedIndices(augmentationsSelect, payload.modules?.augmentationsIds || []);
+        setSelectedIndices(equipmentSelect, payload.modules?.equipmentIds || []);
+        setSelectedIndices(talentsSelect, payload.modules?.talentsIds || []);
+        setSelectedIndices(psionicsSelect, payload.modules?.psionicsIds || []);
+        setSelectedIndices(prayersSelect, payload.modules?.prayersIds || []);
+
+        weaponTraitDescriptionsToggle.checked = Boolean(toggles.traitDescriptions?.weapon);
+        armorTraitDescriptionsToggle.checked = Boolean(toggles.traitDescriptions?.armor);
+        augmentationsFullDetailsToggle.checked = Boolean(toggles.fullDetails?.augmentations);
+        equipmentFullDetailsToggle.checked = Boolean(toggles.fullDetails?.equipment);
+        talentsFullDetailsToggle.checked = Boolean(toggles.fullDetails?.talents);
+        psionicsFullDetailsToggle.checked = Boolean(toggles.fullDetails?.psionics);
+        prayersFullDetailsToggle.checked = Boolean(toggles.fullDetails?.prayers);
+
+        renderArmorTable();
+        renderWeaponTable();
+        renderAugmentationsTable();
+        renderEquipmentTable();
+        renderTalentsTable();
+        renderPsionicsTable();
+        renderPrayersTable();
+      };
 
       const getTraitNamesFromRecords = (records) => {
         const seen = new Map();
@@ -2054,6 +2387,42 @@
           renderPrayersTable();
           updateModuleVisibility();
         });
+        favoritesAddButton.addEventListener("click", addFavorite);
+        favoritesRefreshButton.addEventListener("click", async () => {
+          if (state.usingFirestore && state.favoritesDoc) {
+            try {
+              const snapshot = await getDoc(state.favoritesDoc);
+              if (snapshot.exists()) {
+                const data = snapshot.data();
+                state.favorites = Array.isArray(data?.favorites) ? data.favorites : [];
+              } else {
+                state.favorites = [];
+              }
+              renderFavorites();
+              setFavoritesStatus("Ulubione odświeżone.");
+            } catch (error) {
+              setFavoritesStatus("Nie udało się odświeżyć Firestore.", { isError: true });
+            }
+          } else {
+            loadFavoritesFromLocal();
+            setFavoritesStatus("Ulubione odświeżone lokalnie.");
+          }
+        });
+        favoritesList.addEventListener("click", (event) => {
+          const button = event.target.closest("button");
+          if (!button) return;
+          const action = button.dataset.favoriteAction;
+          const favoriteId = button.dataset.favoriteId;
+          if (!action || !favoriteId) return;
+          const favorite = state.favorites.find((item) => item.id === favoriteId);
+          if (!favorite) return;
+          if (action === "apply") {
+            applyFavorite(favorite);
+          }
+          if (action === "remove") {
+            removeFavorite(favoriteId);
+          }
+        });
         generateButton.addEventListener("click", () => {
           const index = Number(bestiarySelect.value);
           if (Number.isNaN(index) || !state.bestiary[index]) {
@@ -2203,6 +2572,7 @@
 
       attachListeners();
       updateModuleVisibility();
+      initFavoritesStore();
       loadData();
     </script>
   </body>
