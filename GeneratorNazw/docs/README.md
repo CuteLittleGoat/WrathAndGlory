@@ -19,6 +19,14 @@ Tytuł karty przeglądarki: **Generator Nazw**.
 - Ten sam **Seed** + te same ustawienia = te same wyniki.
 - Puste pole **Seed** oznacza losowość opartą o generator przeglądarki.
 
+### Ręczna zmiana nazw kategorii i opcji
+Nazwy kategorii i opcji są zdefiniowane bezpośrednio w `GeneratorNazw/script.js` w tablicy `DATA`.
+Jeśli chcesz je zmienić:
+1. Otwórz `GeneratorNazw/script.js`.
+2. W wybranym wpisie kategorii edytuj pola `name` (PL) i `nameEn` (EN).
+3. W wybranych opcjach edytuj pola `name` (PL) i `nameEn` (EN).
+4. Zapisz plik i odśwież stronę.
+
 ---
 
 ## EN — User instructions
@@ -39,3 +47,11 @@ Browser tab title: **Generator Nazw**.
 ### Tips
 - The same **Seed** + the same settings = identical results.
 - An empty **Seed** uses true randomness from the browser.
+
+### Manual category/option name changes
+Category and option names are defined directly in `GeneratorNazw/script.js` inside the `DATA` array.
+To edit them:
+1. Open `GeneratorNazw/script.js`.
+2. For a category entry, update the `name` (PL) and `nameEn` (EN) fields.
+3. For option entries, update the `name` (PL) and `nameEn` (EN) fields.
+4. Save the file and refresh the page.

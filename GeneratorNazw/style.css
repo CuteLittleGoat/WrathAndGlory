@@ -62,9 +62,9 @@ body {
 }
 
 .language-switcher {
-  position: absolute;
-  top: 14px;
-  right: 14px;
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 14px;
 }
 
 .language-switcher select {

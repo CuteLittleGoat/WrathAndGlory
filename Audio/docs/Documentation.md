@@ -80,7 +80,7 @@ window.firebaseConfig = {
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
   6. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
      - układ `.user-layout` w dwóch kolumnach,
-     - lewy panel z kontenerami `#userMainView` i `#userFavoritesView` (klikana nazwa/tags sterują odtwarzaniem, bez przycisku),
+     - lewy panel z przełącznikiem języka `#languageSelectUser` (tylko w trybie user) oraz kontenerami `#userMainView` i `#userFavoritesView`,
      - każda karta w widoku użytkownika pokazuje nazwę sampla i `tag2` (bez nazwy pliku) oraz suwak głośności,
      - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
      - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
@@ -113,6 +113,7 @@ window.firebaseConfig = {
 - `.tag-filter-bar.is-collapsed .tag-filter-body`: ukrywa panel checkboxów tagów (`display: none`).
 - `.tag-tree`: kolumnowe drzewko checkboxów, `gap: 6px`.
 - `.tag-children.is-hidden`: ukrywanie podfolderów po odznaczeniu rodzica (`display: none`).
+- `.user-language`: pasek z przełącznikiem języka w widoku użytkownika (`display: flex`, `justify-content: flex-end`, `margin-bottom: 12px`).
 - `.group-count`: kolor `var(--danger)` dla liczby zgrupowanych plików audio.
 - `.sample-alias`: kolor `#d2fad2`, jaśniejsza czcionka dla aliasu w nawiasie.
 - `.side-stack`: prawa kolumna w adminie, `display: flex`, `flex-direction: column`, `gap: 22px`.

@@ -6,7 +6,7 @@
   <title>TEST: Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-02-01_12-00-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-02-15_12-00-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -379,7 +379,7 @@
       en: {
         labels: {
           languageSelect: "Language version",
-          pageTitle: "TEST: Infoczytnik - GM panel",
+          pageTitle: "TEST: Data-Slate - GM panel",
           labelFaction: "Faction / layout",
           labelMessageColor: "Font color (message content)",
           colorGreen: "Green",
@@ -392,7 +392,7 @@
           prefixSuffixPickerHint: "The picker sets color as <code>#RRGGBB</code>",
           labelPrefixSuffixSize: "Prefix + Suffix font size (shared) — px",
           logoHint:
-            "The logo size is fixed in Infoczytnik. Changing the prefix size may wrap (OK), the logo remains unchanged.",
+            "The logo size is fixed in Data-Slate. Changing the prefix size may wrap (OK), the logo remains unchanged.",
           labelFillersRandom: "Filler randomness",
           labelRandomAuto: "Auto randomize",
           labelManual: "Manual",
@@ -447,6 +447,7 @@
         languageSelect.value = lang;
         languageSelect.setAttribute("aria-label", t.labels.languageSelect);
       }
+      document.title = t.labels.pageTitle;
       document.querySelectorAll("[data-i18n]").forEach((element) => {
         const key = element.getAttribute("data-i18n");
         if (key in t.labels) {
@@ -464,9 +465,11 @@
           element.innerHTML = t.labels[element.getAttribute("data-i18n")];
         }
       });
-      el.livePreviewPrefix.textContent = t.preview.prefix;
       el.livePreviewMsg.textContent = t.preview.message;
-      el.livePreviewSuffix.textContent = t.preview.suffix;
+      if (el.status?.dataset?.statusKey && t.messages[el.status.dataset.statusKey]) {
+        el.status.textContent = t.messages[el.status.dataset.statusKey];
+      }
+      computePreview();
     };
 
     const FONT_STACK = {
@@ -499,7 +502,12 @@
                       suffixes:["++ GLORY TO CHAOS ++","++ DARK GODS SMILE ++","++ THE EYE OPENS ++","++ ASCEND AND BURN ++","++ ALL HAIL THE DARK GODS ++","++ REALSPACE BLEEDS ++","++ STARS ARE WRONG ++","++ VOID WITHIN ++","++ ETERNAL CHANGE ++"]},
     };
 
-    function setStatus(t){ el.status.textContent = t; }
+    function setStatus(t, key){
+      el.status.textContent = t;
+      if (key) {
+        el.status.dataset.statusKey = key;
+      }
+    }
     function clampIndex(n, max){ const x=Number(n); if(!Number.isFinite(x)) return 1; return Math.min(max, Math.max(1, Math.floor(x))); }
     function rand1to(max){ return Math.floor(Math.random()*max)+1; }
     function nonce(){ return String(Date.now()) + "-" + String(Math.random()).slice(2); }
@@ -572,7 +580,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
-      setStatus(translations[currentLanguage].messages.statusSending);
+      setStatus(translations[currentLanguage].messages.statusSending, "statusSending");
       try{
         await currentRef.set({
           type: isClear ? "clear" : "message",
@@ -604,11 +612,12 @@
         setStatus(
           isClear
             ? translations[currentLanguage].messages.statusCleared
-            : translations[currentLanguage].messages.statusSent
+            : translations[currentLanguage].messages.statusSent,
+          isClear ? "statusCleared" : "statusSent"
         );
       }catch(e){
         console.error(e);
-        setStatus(translations[currentLanguage].messages.statusError);
+        setStatus(translations[currentLanguage].messages.statusError, "statusError");
         alert("Błąd zapisu:\n\n" + (e?.message || e));
       }
       computePreview();
@@ -618,7 +627,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
-      setStatus(translations[currentLanguage].messages.statusPingLoading);
+      setStatus(translations[currentLanguage].messages.statusPingLoading, "statusPingLoading");
       try{
         await currentRef.set({
           type:"ping",
@@ -639,10 +648,10 @@
           ts: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge:true });
 
-        setStatus(translations[currentLanguage].messages.statusPingSent);
+        setStatus(translations[currentLanguage].messages.statusPingSent, "statusPingSent");
       }catch(e){
         console.error(e);
-        setStatus(translations[currentLanguage].messages.statusPingError);
+        setStatus(translations[currentLanguage].messages.statusPingError, "statusPingError");
         alert(translations[currentLanguage].messages.alertPingError + (e?.message || e));
       }
     }
@@ -704,7 +713,7 @@
       });
     }
 
-    setStatus(translations[currentLanguage].messages.statusReady);
+    setStatus(translations[currentLanguage].messages.statusReady, "statusReady");
     computePreview();
   </script>
 </body>

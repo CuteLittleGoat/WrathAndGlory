@@ -1335,87 +1335,97 @@ const DATA = [
   {
     key: "humans",
     name: "Imperium – Ludzie",
+    nameEn: "Imperium - Humans",
     options: [
-      { key: "upper", name: "Klasa Wyższa", gen: (r) => genHumanUpper(r) },
-      { key: "lower", name: "Klasa Niższa", gen: (r) => genHumanLower(r) },
+      { key: "upper", name: "Klasa Wyższa", nameEn: "Higher Class", gen: (r) => genHumanUpper(r) },
+      { key: "lower", name: "Klasa Niższa", nameEn: "Lower Class", gen: (r) => genHumanLower(r) },
     ],
   },
   {
     key: "aeldari",
     name: "Aeldari",
+    nameEn: "Aeldari",
     options: [
-      { key: "craft", name: "Craftworld (Asuryani)", gen: (r) => genAeldariCraft(r) },
-      { key: "druk", name: "Drukhari", gen: (r) => genAeldariDrukhari(r) },
-      { key: "har", name: "Harlequins", gen: (r) => genAeldariHarlequin(r) },
+      { key: "craft", name: "Craftworld (Asuryani)", nameEn: "Craftworld (Asuryani)", gen: (r) => genAeldariCraft(r) },
+      { key: "druk", name: "Drukhari", nameEn: "Drukhari", gen: (r) => genAeldariDrukhari(r) },
+      { key: "har", name: "Harlequins", nameEn: "Harlequins", gen: (r) => genAeldariHarlequin(r) },
     ],
   },
   {
     key: "necron",
     name: "Necroni",
+    nameEn: "Necrons",
     options: [
-      { key: "common", name: "Necroni (zwykłe)", gen: (r) => genNecronCommon(r) },
-      { key: "lord", name: "Necroni (Lordowie)", gen: (r) => genNecronLord(r) },
+      { key: "common", name: "Necroni (zwykłe)", nameEn: "Necrons (common)", gen: (r) => genNecronCommon(r) },
+      { key: "lord", name: "Necroni (Lordowie)", nameEn: "Necrons (lords)", gen: (r) => genNecronLord(r) },
     ],
   },
   {
     key: "orks",
     name: "Orkowie",
+    nameEn: "Orks",
     options: [
-      { key: "boy", name: "Orkowie (zwykłe)", gen: (r) => genOrk(r) },
-      { key: "boss", name: "Orkowie (bossowie)", gen: (r) => genOrk(r) },
+      { key: "boy", name: "Orkowie (zwykłe)", nameEn: "Orks (common)", gen: (r) => genOrk(r) },
+      { key: "boss", name: "Orkowie (bossowie)", nameEn: "Orks (bosses)", gen: (r) => genOrk(r) },
     ],
   },
   {
     key: "sororitas",
     name: "Adepta Sororitas",
-    options: [{ key: "sister", name: "Sororitas", gen: (r) => genSororitas(r) }],
+    nameEn: "Adepta Sororitas",
+    options: [{ key: "sister", name: "Sororitas", nameEn: "Sororitas", gen: (r) => genSororitas(r) }],
   },
   {
     key: "astartes",
     name: "Astartes – imię i nazwisko bojowe",
-    options: [{ key: "standard", name: "Astartes", gen: (r) => genAstartes(r) }],
+    nameEn: "Astartes - battle name and surname",
+    options: [{ key: "standard", name: "Astartes", nameEn: "Astartes", gen: (r) => genAstartes(r) }],
   },
   {
     key: "admech",
     name: "Adeptus Mechanicus",
+    nameEn: "Adeptus Mechanicus",
     options: [
-      { key: "tp", name: "Tech-Kapłani", gen: (r) => genAdMechTech(r) },
-      { key: "skit", name: "Skitarii", gen: (r) => genAdMechSkit(r) },
+      { key: "tp", name: "Tech-Kapłani", nameEn: "Tech-Priests", gen: (r) => genAdMechTech(r) },
+      { key: "skit", name: "Skitarii", nameEn: "Skitarii", gen: (r) => genAdMechSkit(r) },
     ],
   },
   {
     key: "chaos",
     name: "Chaos",
+    nameEn: "Chaos",
     options: [
-      { key: "und", name: "Undivided", gen: (r) => genChaos(r, "undiv") },
-      { key: "kho", name: "Khorne", gen: (r) => genChaos(r, "khorne") },
-      { key: "nur", name: "Nurgle", gen: (r) => genChaos(r, "nurgle") },
-      { key: "tze", name: "Tzeentch", gen: (r) => genChaos(r, "tzeent") },
-      { key: "sla", name: "Slaanesh", gen: (r) => genChaos(r, "slaan") },
+      { key: "und", name: "Undivided", nameEn: "Undivided", gen: (r) => genChaos(r, "undiv") },
+      { key: "kho", name: "Khorne", nameEn: "Khorne", gen: (r) => genChaos(r, "khorne") },
+      { key: "nur", name: "Nurgle", nameEn: "Nurgle", gen: (r) => genChaos(r, "nurgle") },
+      { key: "tze", name: "Tzeentch", nameEn: "Tzeentch", gen: (r) => genChaos(r, "tzeent") },
+      { key: "sla", name: "Slaanesh", nameEn: "Slaanesh", gen: (r) => genChaos(r, "slaan") },
     ],
   },
   {
     key: "warmachines",
     name: "Maszyny bojowe (Imperium)",
+    nameEn: "War machines (Imperium)",
     options: [
-      { key: "tank", name: "Czołgi", gen: (r) => genWarMachine(r, "tank") },
-      { key: "titan", name: "Tytany", gen: (r) => genWarMachine(r, "titan") },
-      { key: "knight", name: "Rycerze", gen: (r) => genWarMachine(r, "knight") },
-      { key: "valk", name: "Valkyrie / lotnictwo", gen: (r) => genWarMachine(r, "air") },
+      { key: "tank", name: "Czołgi", nameEn: "Tanks", gen: (r) => genWarMachine(r, "tank") },
+      { key: "titan", name: "Tytany", nameEn: "Titans", gen: (r) => genWarMachine(r, "titan") },
+      { key: "knight", name: "Rycerze", nameEn: "Knights", gen: (r) => genWarMachine(r, "knight") },
+      { key: "valk", name: "Valkyrie / lotnictwo", nameEn: "Valkyrie / air wing", gen: (r) => genWarMachine(r, "air") },
     ],
   },
   {
     key: "ships",
     name: "Okręty gwiezdne",
+    nameEn: "Starships",
     options: [
-      { key: "imp", name: "Imperium (Navy)", gen: (r) => genShip(r, "imperial") },
-      { key: "ast", name: "Astartes", gen: (r) => genShip(r, "astartes") },
-      { key: "mec", name: "Adeptus Mechanicus", gen: (r) => genShip(r, "mechanicus") },
-      { key: "eld", name: "Aeldari", gen: (r) => genShip(r, "eldar") },
-      { key: "drk", name: "Drukhari", gen: (r) => genShip(r, "drukhari") },
-      { key: "ork", name: "Orkowie", gen: (r) => genShip(r, "ork") },
-      { key: "nec", name: "Necroni", gen: (r) => genShip(r, "necron") },
-      { key: "cha", name: "Chaos", gen: (r) => genShip(r, "chaos") },
+      { key: "imp", name: "Imperium (Navy)", nameEn: "Imperium (Navy)", gen: (r) => genShip(r, "imperial") },
+      { key: "ast", name: "Astartes", nameEn: "Astartes", gen: (r) => genShip(r, "astartes") },
+      { key: "mec", name: "Adeptus Mechanicus", nameEn: "Adeptus Mechanicus", gen: (r) => genShip(r, "mechanicus") },
+      { key: "eld", name: "Aeldari", nameEn: "Aeldari", gen: (r) => genShip(r, "eldar") },
+      { key: "drk", name: "Drukhari", nameEn: "Drukhari", gen: (r) => genShip(r, "drukhari") },
+      { key: "ork", name: "Orkowie", nameEn: "Orks", gen: (r) => genShip(r, "ork") },
+      { key: "nec", name: "Necroni", nameEn: "Necrons", gen: (r) => genShip(r, "necron") },
+      { key: "cha", name: "Chaos", nameEn: "Chaos", gen: (r) => genShip(r, "chaos") },
     ],
   },
 ];
@@ -1479,6 +1489,13 @@ const copyButton = document.getElementById("copy");
 
 let currentLanguage = "pl";
 
+function getLocalizedName(item) {
+  if (currentLanguage === "en") {
+    return item.nameEn || item.name;
+  }
+  return item.name;
+}
+
 const applyLanguage = (lang) => {
   currentLanguage = lang;
   const t = translations[lang].labels;
@@ -1496,6 +1513,16 @@ const applyLanguage = (lang) => {
   if (resEl.dataset.hasResults !== "true") {
     resEl.textContent = t.resultsPlaceholder;
   }
+  const selectedCategory = catEl.value;
+  const selectedOption = optEl.value;
+  populateCats();
+  if (selectedCategory) {
+    catEl.value = selectedCategory;
+  }
+  populateOpts();
+  if (selectedOption) {
+    optEl.value = selectedOption;
+  }
 };
 
 function populateCats() {
@@ -1503,7 +1530,7 @@ function populateCats() {
   for (const c of DATA) {
     const o = document.createElement("option");
     o.value = c.key;
-    o.textContent = c.name;
+    o.textContent = getLocalizedName(c);
     catEl.appendChild(o);
   }
 }
@@ -1513,7 +1540,7 @@ function populateOpts() {
   for (const op of cat.options) {
     const o = document.createElement("option");
     o.value = op.key;
-    o.textContent = op.name;
+    o.textContent = getLocalizedName(op);
     optEl.appendChild(o);
   }
 }

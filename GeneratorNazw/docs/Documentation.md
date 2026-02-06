@@ -25,7 +25,7 @@ Celem jest umożliwienie odtworzenia modułu 1:1 bez dostępu do kodu.
 ### 2.2 `<body>` i główny układ
 - Główny kontener: `<main class="wrap">`.
 - Wewnątrz **jedna karta** (`<section class="panel">`) z:
-  - przełącznikiem języka (`<div class="language-switcher">` + `<select id="languageSelect">`),
+  - przełącznikiem języka (`<div class="language-switcher">` + `<select id="languageSelect">`), ustawionym w normalnym przepływie na górze panelu,
   - siatką pól wejściowych,
   - przyciskami akcji i statusem trybu losowania,
   - separatorem,
@@ -93,6 +93,10 @@ W `:root`:
 ### 3.5 Panel
 - `.panel`: czarne tło `--panel`, zielona ramka `2px solid --border`,
   zaokrąglenia `12px`, `box-shadow: --glow`, `padding: 16px`.
+
+### 3.5.1 Przełącznik języka
+- `.language-switcher`: `display: flex`, wyrównanie do prawej (`justify-content: flex-end`) i dolny margines `14px`.
+- `select` przełącznika dziedziczy style z `input/select` (ciemne tło, zielona ramka).
 
 ### 3.6 Pola i etykiety
 - `.field`: `flex` kolumnowy z `gap: 6px`.
@@ -181,8 +185,9 @@ Każda funkcja generatora:
 
 ### 4.5 Definicje UI (`DATA`)
 - `DATA` to tablica kategorii. Każda ma:
-  - `key`, `name`, `options`.
-- `options` zawiera `key`, `name`, `gen` (funkcja generująca).
+  - `key`, `name` (PL), `nameEn` (EN), `options`.
+- `options` zawiera `key`, `name` (PL), `nameEn` (EN), `gen` (funkcja generująca).
+- `nameEn` jest używane do wyświetlania kategorii i opcji po przełączeniu języka na angielski.
 
 ### 4.6 Renderowanie i interakcje
 - `populateCats()` — wypełnia `#cat` kategoriami.
@@ -199,6 +204,7 @@ Każda funkcja generatora:
 - `applyLanguage(lang)`:
   - ustawia `document.documentElement.lang`,
   - uzupełnia etykiety, przyciski, podpowiedzi i placeholdery,
+  - odświeża listy kategorii i opcji z pól `name`/`nameEn` (z zachowaniem bieżącego wyboru),
   - przełącza tekst pilla losowości oraz komunikatów kopiowania.
 - `#languageSelect` domyślnie ustawiony na `pl` i uruchamia `applyLanguage()` przy zmianie.
 

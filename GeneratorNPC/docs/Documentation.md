@@ -164,7 +164,7 @@ Ustawienia globalne:
 ### 6.9. Responsywność
 - `@media (max-width: 1000px)` — przełącza layout na jednokolumnowy.
 
-### 6.10. Karta do druku — trackery „Ż/T”
+### 6.10. Karta do druku — trackery „Ż/T” (PL) / „H/S” (EN)
 Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `.tracker-section` — kontener z paddingiem `6px 8px`, układ `grid` i `gap: 6px`, zakończony dolną ramką `1px solid #111`.
 - `.tracker-row` — pojedynczy wiersz trackera z dwoma kolumnami (etykieta + siatka pól):
@@ -176,7 +176,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
   - `grid-auto-rows: var(--tracker-size)`,
   - `gap: 1px`, siatka rozciąga się na całą szerokość karty (bez sztucznego limitu liczby kolumn).
 - `.tracker-cell` — pojedynczy kwadrat (tło `#fff`, obramowanie `1px solid #111`, wyśrodkowany tekst).
-- `.tracker-label` — etykieta „Ż”/„T”:
+- `.tracker-label` — etykieta trackera (PL: „Ż”/„T”, EN: „H”/„S”) osadzona w `<label>`:
   - ma stałą szerokość `var(--tracker-size)`,
   - wysokość to `var(--tracker-size)`, czyli pojedynczy kwadrat niezależny od liczby linii.
 - `.tracker-row--mental` — wariant z szarym wypełnieniem pól (`--tracker-fill: #e9e9e9`).
@@ -331,9 +331,9 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `resolveTrackerCount(value)` — wewnętrzna funkcja karty do druku zamienia wartość „Żywotność” lub „Odporność Psychiczna” na liczbę kwadratów (ignoruje brak liczby i ujemne wartości).
 
 ### 8.11. Karta do druku
-- `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”.
-  - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T”**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
-- Trackery „Ż/T” są generowane dynamicznie: osobne siatki z etykietami „Ż” i „T” oraz pustymi kwadratami. Liczba kwadratów wynika z „Żywotność” i „Odporność Psychiczna”, a gdy „Odporność Psychiczna” ma wartość `-`, renderowana jest tylko etykieta „T”.
+- `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”, a etykiety karty są wybierane z tłumaczeń (PL/EN).
+  - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T” (PL) / „H/S” (EN)**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
+- Trackery są generowane dynamicznie: osobne siatki z etykietami „Ż”/„T” w PL lub „H”/„S” w EN oraz pustymi kwadratami. Liczba kwadratów wynika z „Żywotność” i „Odporność Psychiczna”, a gdy „Odporność Psychiczna” ma wartość `-`, renderowana jest tylko etykieta trackera.
   - Układ trackerów używa inline CSS z przezroczystym tłem i ramkami pól (brak ciemnego wypełnienia po prawej stronie), a liczba pól w wierszu jest obliczana przez `grid-template-columns: repeat(auto-fit, ...)`.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
