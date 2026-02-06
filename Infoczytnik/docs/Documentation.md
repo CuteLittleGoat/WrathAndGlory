@@ -16,7 +16,7 @@
 - `index.html` — strona startowa z linkami do wersji produkcyjnych i testowych (tytuł karty: `DataSlate panel testowy`).
 - `GM.html` — panel MG (UI + zapis do Firestore).
 - `Infoczytnik.html` — ekran graczy (UI + subskrypcja Firestore + audio).
-- `GM_test.html` — wersja testowa panelu MG (zmiany wprowadzane tylko tutaj, tytuł karty: `TEST: Infoczytnik - panel GM`, zawiera przełącznik języka PL/EN).
+- `GM_test.html` — wersja testowa panelu MG (zmiany wprowadzane tylko tutaj, tytuł karty: `TEST: Infoczytnik - panel GM`, a po przełączeniu na EN: `TEST: Data-Slate - GM panel`, zawiera przełącznik języka PL/EN).
 - `Infoczytnik_test.html` — wersja testowa ekranu graczy (zmiany wprowadzane tylko tutaj, tytuł karty: `TEST: Infoczytnik`).
 - `config/`
   - `firebase-config.js` — faktyczna konfiguracja Firebase (globalna zmienna `window.firebaseConfig`).
@@ -151,6 +151,7 @@ window.firebaseConfig = {
   - **Lewa kolumna**: wybór frakcji, kolor treści, rozmiar treści, kolor i rozmiar prefiksu/sufiksu.
   - **Prawa kolumna**: losowość fillerów, ręczny wybór indeksów, przełączniki logo i flicker, live preview.
 - Kluczowe elementy UI:
+  - `select#languageSelect` — przełącznik języka interfejsu (PL/EN); aktualizuje etykiety UI i tekst statusu.
   - `select#faction` — lista frakcji.
   - `input#fontColor` — kolor treści wiadomości.
   - `input#msgFontSize` — rozmiar treści.
@@ -158,6 +159,7 @@ window.firebaseConfig = {
   - `input#psFontSize` — rozmiar prefix/suffix.
   - `input#randomFillers` — włącz/wyłącz losowanie.
   - `input#prefixIndex`, `input#suffixIndex` — ręczne indeksy.
+  - Teksty prefix/suffix w preview pochodzą wyłącznie z `LAYOUTS` i nie są tłumaczone.
   - `input#showLogo`, `input#flicker` — przełączniki.
   - `div#livePreview` — podgląd linii prefix/wiadomość/suffix.
   - `textarea#message` — treść wiadomości.

@@ -447,6 +447,8 @@
             favoritesAliasPlaceholder: "Np. Ork dowódca",
             favoritesAddButton: "Dodaj do ulubionych",
             favoritesRefreshButton: "Odśwież",
+            favoritesLoadButton: "Wczytaj",
+            favoritesRemoveButton: "Usuń",
             basePreviewTitle: "Podgląd bazowy",
             basePreviewBadge: "Bestiariusz",
             tableKeyHeader: "Klucz",
@@ -507,14 +509,55 @@
             traitPopoverTitle: "Opis cechy",
             traitPopoverDescription: "Kliknij tag, aby zobaczyć opis cechy.",
           },
+          card: {
+            titleSuffix: "Karta",
+            levelLabel: "Poziom",
+            threatLabel: "Zagrożenie",
+            keywordsLabel: "Słowa kluczowe",
+            resistanceLabel: "Odporność",
+            armorLabel: "Pancerz",
+            resistanceWithArmor: "(w tym {armorLabel}: {value})",
+            armorTraitsLabel: "Cechy Pancerza",
+            defenseLabel: "Obrona",
+            vitalityLabel: "Żywotność",
+            mentalResistanceLabel: "Odporność psych.",
+            trackerAriaLabel: "Śledzenie Żywotności i Odporności Psychicznej",
+            trackerVitalityLabel: "Żywotność",
+            trackerMentalLabel: "Odporność Psychiczna",
+            trackerVitalityShort: "Ż",
+            trackerMentalShort: "T",
+            gritLabel: "Upór",
+            courageLabel: "Odwaga",
+            speedLabel: "Szybkość",
+            sizeLabel: "Rozmiar",
+            notesLabel: "Notatki",
+          },
+          cardSections: {
+            skills: "Umiejętności",
+            bonuses: "Premie",
+            abilities: "Zdolności",
+            attack: "Atak",
+            hordeAbilities: "Zdolności Hordy",
+            hordeOptions: "Opcje Hordy",
+            augmentations: "Augumentacje",
+            equipment: "Ekwipunek",
+            talents: "Talenty",
+            psionics: "Psionika",
+            prayers: "Modlitwy",
+          },
           messages: {
             noDataOption: "Brak danych",
             edit: "Edytuj",
             save: "Zapisz",
             favoritesEmpty: "Brak zapisanych ulubionych.",
+            favoritesFirestoreConnected: "Połączono z Firestore.",
+            favoritesRefreshSuccess: "Ulubione odświeżone.",
+            favoritesRefreshLocal: "Ulubione odświeżone lokalnie.",
             firestoreSaveError: "Błąd zapisu w Firestore. Zapis lokalny włączony.",
             firestoreNoAccess: "Brak dostępu do Firestore. Używam pamięci lokalnej.",
             firestoreNoConfig: "Brak konfiguracji Firestore. Używam pamięci lokalnej.",
+            favoritesRefreshError: "Nie udało się odświeżyć Firestore.",
+            selectBestiaryAlert: "Wybierz rekord bestiariusza, aby wygenerować kartę.",
             noDataDisplay: "Brak danych do wyświetlenia.",
             loadSummary:
               "Załadowano: Bestiariusz ({bestiary}), Pancerze ({armor}), Bronie ({weapons}), Augumentacje ({augmentations}), Ekwipunek ({equipment}), Talenty ({talents}), Psionika ({psionics}), Modlitwy ({prayers}).",
@@ -559,6 +602,8 @@
             favoritesAliasPlaceholder: "e.g. Ork commander",
             favoritesAddButton: "Add to favorites",
             favoritesRefreshButton: "Refresh",
+            favoritesLoadButton: "Load",
+            favoritesRemoveButton: "Remove",
             basePreviewTitle: "Base preview",
             basePreviewBadge: "Bestiary",
             tableKeyHeader: "Key",
@@ -619,14 +664,55 @@
             traitPopoverTitle: "Trait description",
             traitPopoverDescription: "Click a tag to see its trait description.",
           },
+          card: {
+            titleSuffix: "Card",
+            levelLabel: "Level",
+            threatLabel: "Threat",
+            keywordsLabel: "Keywords",
+            resistanceLabel: "Resilience",
+            armorLabel: "Armor",
+            resistanceWithArmor: "(including {armorLabel}: {value})",
+            armorTraitsLabel: "Armor Traits",
+            defenseLabel: "Defense",
+            vitalityLabel: "Vitality",
+            mentalResistanceLabel: "Mental resist.",
+            trackerAriaLabel: "Vitality and mental resistance tracking",
+            trackerVitalityLabel: "Vitality",
+            trackerMentalLabel: "Mental resistance",
+            trackerVitalityShort: "H",
+            trackerMentalShort: "S",
+            gritLabel: "Resolve",
+            courageLabel: "Courage",
+            speedLabel: "Speed",
+            sizeLabel: "Size",
+            notesLabel: "Notes",
+          },
+          cardSections: {
+            skills: "Skills",
+            bonuses: "Bonuses",
+            abilities: "Abilities",
+            attack: "Attack",
+            hordeAbilities: "Horde Abilities",
+            hordeOptions: "Horde Options",
+            augmentations: "Augmentations",
+            equipment: "Equipment",
+            talents: "Talents",
+            psionics: "Psionics",
+            prayers: "Prayers",
+          },
           messages: {
             noDataOption: "No data",
             edit: "Edit",
             save: "Save",
             favoritesEmpty: "No saved favorites.",
+            favoritesFirestoreConnected: "Connected to Firestore.",
+            favoritesRefreshSuccess: "Favorites refreshed.",
+            favoritesRefreshLocal: "Favorites refreshed locally.",
             firestoreSaveError: "Firestore save failed. Local storage enabled.",
             firestoreNoAccess: "No access to Firestore. Using local storage.",
             firestoreNoConfig: "Firestore not configured. Using local storage.",
+            favoritesRefreshError: "Failed to refresh Firestore.",
+            selectBestiaryAlert: "Select a bestiary record before generating a card.",
             noDataDisplay: "No data to display.",
             loadSummary:
               "Loaded: Bestiary ({bestiary}), Armor ({armor}), Weapons ({weapons}), Augmentations ({augmentations}), Equipment ({equipment}), Talents ({talents}), Psionics ({psionics}), Prayers ({prayers}).",
@@ -1898,7 +1984,7 @@
           actions.className = "favorite-actions";
           const applyButton = document.createElement("button");
           applyButton.className = "btn btn-small";
-          applyButton.textContent = "Wczytaj";
+          applyButton.textContent = translations[currentLanguage].labels.favoritesLoadButton;
           applyButton.dataset.favoriteAction = "apply";
           applyButton.dataset.favoriteId = favorite.id;
           const moveUpButton = document.createElement("button");
@@ -1915,7 +2001,7 @@
           moveDownButton.disabled = index === state.favorites.length - 1;
           const removeButton = document.createElement("button");
           removeButton.className = "btn btn-small secondary";
-          removeButton.textContent = "Usuń";
+          removeButton.textContent = translations[currentLanguage].labels.favoritesRemoveButton;
           removeButton.dataset.favoriteAction = "remove";
           removeButton.dataset.favoriteId = favorite.id;
           actions.append(applyButton, moveUpButton, moveDownButton, removeButton);
@@ -1959,7 +2045,7 @@
             );
             return;
           } catch (error) {
-          setFavoritesStatus(translations[currentLanguage].messages.firestoreSaveError, { isError: true });
+            setFavoritesStatus(translations[currentLanguage].messages.firestoreSaveError, { isError: true });
             state.usingFirestore = false;
           }
         }
@@ -1974,7 +2060,7 @@
             state.firestore = db;
             state.favoritesDoc = doc(db, FAVORITES_COLLECTION, FAVORITES_DOC_ID);
             state.usingFirestore = true;
-            setFavoritesStatus("Połączono z Firestore.");
+            setFavoritesStatus(translations[currentLanguage].messages.favoritesFirestoreConnected);
             onSnapshot(
               state.favoritesDoc,
               (snapshot) => {
@@ -2332,6 +2418,9 @@
         notes,
         { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides } = {}
       ) => {
+        const t = translations[currentLanguage];
+        const cardLabels = t.card;
+        const sectionLabels = t.cardSections;
         const name = toDisplayString(getRecordValue(record, "Nazwa"));
         const keywords = toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
         const threatRaw = toDisplayString(getRecordValue(record, "Zagrożenie"));
@@ -2400,12 +2489,16 @@
           wp = normalizeStarPrefix(wp, baseWp?.hasStar);
         }
         const wpDisplay = hasMeaningfulValue(wp) ? `${escapeHtml(wp)}` : "";
+        const resistanceWithArmor = formatText(cardLabels.resistanceWithArmor, {
+          armorLabel: escapeHtml(cardLabels.armorLabel),
+          value: wpDisplay,
+        });
         const resistanceLine =
           hasMeaningfulValue(wp) && !String(resistance).includes("WP")
-            ? `${escapeHtml(resistance)} <span class="resistance-wp">(w tym Pancerz: ${wpDisplay})</span>`
+            ? `${escapeHtml(resistance)} <span class="resistance-wp">${resistanceWithArmor}</span>`
             : escapeHtml(resistance);
         const armorTraitsLine = armorOverride?.traits?.length
-          ? `Cechy Pancerza: ${armorOverride.traits
+          ? `${cardLabels.armorTraitsLabel}: ${armorOverride.traits
               .map((trait) => `{{B}}${trait}{{/B}}`)
               .join("; ")}`
           : "";
@@ -2445,15 +2538,19 @@
           () => '<div class="tracker-cell" aria-hidden="true"></div>'
         ).join("");
         const trackerHTML = `
-          <div class="tracker-section" aria-label="Śledzenie Żywotności i Odporności Psychicznej">
+          <div class="tracker-section" aria-label="${escapeHtml(cardLabels.trackerAriaLabel)}">
             <div class="tracker-row">
-              <div class="tracker-cell tracker-label">Ż</div>
+              <label class="tracker-cell tracker-label" aria-label="${escapeHtml(
+                cardLabels.trackerVitalityLabel
+              )}">${escapeHtml(cardLabels.trackerVitalityShort)}</label>
               <div class="tracker-squares">
                 ${vitalityTrackerCells}
               </div>
             </div>
             <div class="tracker-row tracker-row--mental">
-              <div class="tracker-cell tracker-label">T</div>
+              <label class="tracker-cell tracker-label" aria-label="${escapeHtml(
+                cardLabels.trackerMentalLabel
+              )}">${escapeHtml(cardLabels.trackerMentalShort)}</label>
               <div class="tracker-squares">
                 ${mentalTrackerCells}
               </div>
@@ -2478,12 +2575,12 @@
         const size = toDisplayString(getRecordValue(record, "Rozmiar"));
 
         const sections = [
-          { label: "Umiejętności", value: skills, striped: false },
-          { label: "Premie", value: bonuses, striped: true },
-          { label: "Zdolności", value: abilities, striped: true },
-          { label: "Atak", value: attacks, striped: true },
-          { label: "Zdolności Hordy", value: hordeAbilities, striped: true },
-          { label: "Opcje Hordy", value: hordeOptions, striped: true },
+          { label: sectionLabels.skills, value: skills, striped: false },
+          { label: sectionLabels.bonuses, value: bonuses, striped: true },
+          { label: sectionLabels.abilities, value: abilities, striped: true },
+          { label: sectionLabels.attack, value: attacks, striped: true },
+          { label: sectionLabels.hordeAbilities, value: hordeAbilities, striped: true },
+          { label: sectionLabels.hordeOptions, value: hordeOptions, striped: true },
         ];
         (moduleEntries ?? []).forEach((entry) => {
           if (entry?.label && hasMeaningfulValue(entry.value)) {
@@ -2511,18 +2608,18 @@
         const notesValue = normalizeText(notes);
         const notesHTML = notesValue
           ? `
-            <div class="section-header">Notatki</div>
+            <div class="section-header">${escapeHtml(cardLabels.notesLabel)}</div>
             <div class="section-body">${escapeHtml(notesValue)}</div>
           `
           : "";
 
         return `
           <!doctype html>
-          <html lang="pl">
+          <html lang="${escapeHtml(currentLanguage)}">
             <head>
               <meta charset="utf-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1" />
-              <title>${escapeHtml(name)} — Karta</title>
+              <title>${escapeHtml(name)} — ${escapeHtml(cardLabels.titleSuffix)}</title>
               <style>
                 * { box-sizing: border-box; }
                 body { margin: 0; background: #fff; color: #111; font-family: "Times New Roman", "Liberation Serif", serif; }
@@ -2574,20 +2671,20 @@
               <div class="card">
                 <div class="title">${escapeHtml(name)}</div>
                 <div class="row">
-                  <div class="cell label">Poziom</div>
+                  <div class="cell label">${escapeHtml(cardLabels.levelLabel)}</div>
                   <div class="cell">1</div>
                   <div class="cell">2</div>
                   <div class="cell">3</div>
                   <div class="cell">4</div>
                 </div>
                 <div class="row">
-                  <div class="cell label">Zagrożenie</div>
+                  <div class="cell label">${escapeHtml(cardLabels.threatLabel)}</div>
                   ${threatLetters
                     .map((letter) => `<div class="cell">${escapeHtml(letter)}</div>`)
                     .join("")}
                 </div>
                 <div class="keywords">
-                  <span class="label">Słowa kluczowe:</span>
+                  <span class="label">${escapeHtml(cardLabels.keywordsLabel)}:</span>
                   <span class="value">${formatInlineHTML(keywords)}</span>
                 </div>
                 <div class="stats labels">
@@ -2600,13 +2697,13 @@
                     .map((val) => `<div class="cell">${escapeHtml(val)}</div>`)
                     .join("")}
                 </div>
-                <div class="section-header centered">Odporność</div>
+                <div class="section-header centered">${escapeHtml(cardLabels.resistanceLabel)}</div>
                 <div class="section-body centered">${resistanceLine}</div>
                 ${armorTraitsHTML}
                 <div class="triple labels">
-                  <div class="cell">Obrona</div>
-                  <div class="cell">Żywotność</div>
-                  <div class="cell">Odporność psych.</div>
+                  <div class="cell">${escapeHtml(cardLabels.defenseLabel)}</div>
+                  <div class="cell">${escapeHtml(cardLabels.vitalityLabel)}</div>
+                  <div class="cell">${escapeHtml(cardLabels.mentalResistanceLabel)}</div>
                 </div>
                 <div class="triple values">
                   <div class="cell">${escapeHtml(defense)}</div>
@@ -2616,10 +2713,10 @@
                 ${trackerHTML}
                 ${sectionHTML}
                 <div class="quad labels">
-                  <div class="cell">Upór</div>
-                  <div class="cell">Odwaga</div>
-                  <div class="cell">Szybkość</div>
-                  <div class="cell">Rozmiar</div>
+                  <div class="cell">${escapeHtml(cardLabels.gritLabel)}</div>
+                  <div class="cell">${escapeHtml(cardLabels.courageLabel)}</div>
+                  <div class="cell">${escapeHtml(cardLabels.speedLabel)}</div>
+                  <div class="cell">${escapeHtml(cardLabels.sizeLabel)}</div>
                 </div>
                 <div class="quad values">
                   <div class="cell">${escapeHtml(grit)}</div>
@@ -2719,13 +2816,13 @@
                 state.favorites = [];
               }
               renderFavorites();
-              setFavoritesStatus("Ulubione odświeżone.");
+              setFavoritesStatus(translations[currentLanguage].messages.favoritesRefreshSuccess);
             } catch (error) {
-              setFavoritesStatus("Nie udało się odświeżyć Firestore.", { isError: true });
+              setFavoritesStatus(translations[currentLanguage].messages.favoritesRefreshError, { isError: true });
             }
           } else {
             loadFavoritesFromLocal();
-            setFavoritesStatus("Ulubione odświeżone lokalnie.");
+            setFavoritesStatus(translations[currentLanguage].messages.favoritesRefreshLocal);
           }
         });
         favoritesList.addEventListener("click", (event) => {
@@ -2752,7 +2849,7 @@
         generateButton.addEventListener("click", () => {
           const index = Number(bestiarySelect.value);
           if (Number.isNaN(index) || !state.bestiary[index]) {
-            alert("Wybierz rekord bestiariusza, aby wygenerować kartę.");
+            alert(translations[currentLanguage].messages.selectBestiaryAlert);
             return;
           }
           const selectedWeapons = getSelectedRecords(state.weapons, getSelectedIndices(weaponSelect));
@@ -2768,34 +2865,35 @@
           const armorOverride = getArmorOverrides(selectedArmor, {
             includeTraitDescriptions: armorTraitDescriptionsToggle.checked,
           });
+          const sectionLabels = translations[currentLanguage].cardSections;
           const moduleEntries = [
             {
-              label: "Augumentacje",
+              label: sectionLabels.augmentations,
               value: buildModuleEntries(selectedAugmentations, augmentationsColumns, {
                 includeFull: augmentationsFullDetailsToggle.checked,
               }),
             },
             {
-              label: "Ekwipunek",
+              label: sectionLabels.equipment,
               value: buildModuleEntries(selectedEquipment, equipmentColumns, {
                 includeFull: equipmentFullDetailsToggle.checked,
               }),
             },
             {
-              label: "Talenty",
+              label: sectionLabels.talents,
               value: buildModuleEntries(selectedTalents, talentsColumns, {
                 includeFull: talentsFullDetailsToggle.checked,
               }),
             },
             {
-              label: "Psionika",
+              label: sectionLabels.psionics,
               value: buildModuleEntries(selectedPsionics, psionicsColumns, {
                 includeFull: psionicsFullDetailsToggle.checked,
                 normalizeColumns: ["Wzmocnienie"],
               }),
             },
             {
-              label: "Modlitwy",
+              label: sectionLabels.prayers,
               value: buildModuleEntries(selectedPrayers, prayersColumns, {
                 includeFull: prayersFullDetailsToggle.checked,
               }),

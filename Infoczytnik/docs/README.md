@@ -22,9 +22,10 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
    - `Infoczytnik.html` (ekran graczy)
    lub użyj `index.html`, aby wybrać wersję produkcyjną lub testową (strona startowa ma zielony motyw i wyraźny podział na sekcje).
    - Tytuły kart dla stron testowych i startowej:
-     - `index.html`: **DataSlate panel testowy**
-     - `GM_test.html`: **TEST: Infoczytnik - panel GM**
-     - `Infoczytnik_test.html`: **TEST: Infoczytnik**
+   - `index.html`: **DataSlate panel testowy**
+    - `GM_test.html`: **TEST: Infoczytnik - panel GM**
+    - `Infoczytnik_test.html`: **TEST: Infoczytnik**
+   - Wersja językowa wpływa na tytuł GM_test: w języku EN wyświetla się **TEST: Data-Slate - GM panel**.
 7. (Opcjonalnie) Przykładowy adres hostingu po migracji:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 8. (Opcjonalnie) Na stronie startowej `index.html` są przyciski do wersji testowych (do sprawdzania zmian):
@@ -46,6 +47,8 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 6. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
 7. Wpisz treść komunikatu.
 8. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje nową treść z wybranym layoutem.
+
+**Uwaga:** Teksty prefixów i suffixów pochodzą bezpośrednio z layoutów i nie zmieniają się wraz z wersją językową. Przełącznik językowy wpływa na etykiety UI oraz status „gotowe/ready”.
 
 #### 3) Dodatkowe akcje
 - **Ping** — wysyła tylko sygnał dźwiękowy (bez zmiany treści) i odświeża styl w infoczytniku.
@@ -95,7 +98,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
    or use `index.html` to choose production or test variants (the landing page uses the same green UI theme and clear sections).
    - Browser tab titles for the landing/test pages:
      - `index.html`: **DataSlate panel testowy**
-     - `GM_test.html`: **TEST: Infoczytnik - panel GM**
+     - `GM_test.html`: **TEST: Infoczytnik - panel GM** (EN: **TEST: Data-Slate - GM panel**)
      - `Infoczytnik_test.html`: **TEST: Infoczytnik**
 7. (Optional) Example hosted URL after migration:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
@@ -118,6 +121,8 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 6. (Optional) Toggle the logo and the “flicker” effect.
 7. Enter the message text.
 8. Click **Wyślij / Send** — the player screen renders the new message and layout immediately.
+
+**Note:** Prefix/suffix lines come directly from the layout definitions and do not change with the language switch. The language toggle affects UI labels and the “ready” status text.
 
 #### 3) Additional actions
 - **Ping** — sends only a sound signal (no content change) and refreshes styles on the player screen.

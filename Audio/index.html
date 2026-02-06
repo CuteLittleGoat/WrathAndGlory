@@ -500,6 +500,12 @@
       display: flex;
     }
 
+    .user-language {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+
     .legend {
       font-size: 12px;
       color: var(--muted);
@@ -598,6 +604,14 @@
     <section class="user-view">
       <div class="user-layout">
         <div class="panel">
+          <div class="user-language user-only">
+            <div class="language-switcher">
+              <select id="languageSelectUser" aria-label="Wersja językowa">
+                <option value="pl">Polski</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
           <div id="userMainView" class="user-panel is-visible"></div>
           <div id="userFavoritesView" class="user-panel"></div>
         </div>
@@ -649,6 +663,7 @@
     const tagMenuSelectAll = document.getElementById("tagMenuSelectAll");
     const tagMenuClearAll = document.getElementById("tagMenuClearAll");
     const languageSelect = document.getElementById("languageSelect");
+    const languageSelectUser = document.getElementById("languageSelectUser");
     const tagFiltersTitle = document.getElementById("tagFiltersTitle");
     const tagFiltersSubtitle = document.getElementById("tagFiltersSubtitle");
     const samplesTitle = document.getElementById("samplesTitle");
@@ -685,7 +700,7 @@
           mainViewSubtitle: "Lista dźwięków wyświetlana użytkownikom w głównym widoku.",
           navigationTitle: "Nawigacja",
           mainViewOption: "Widok Główny",
-          mainViewUserButton: "Widok główny",
+          mainViewUserButton: "WIDOK GŁÓWNY",
           favoritesListsTitle: "Listy ulubionych",
           aliasPlaceholder: "Alias (opcjonalny)",
           buttonClear: "Wyczyść",
@@ -751,7 +766,7 @@
           mainViewSubtitle: "Sound list displayed to users in the main view.",
           navigationTitle: "Navigation",
           mainViewOption: "Main view",
-          mainViewUserButton: "Main view",
+          mainViewUserButton: "MAIN VIEW",
           favoritesListsTitle: "Favorite lists",
           aliasPlaceholder: "Alias (optional)",
           buttonClear: "Clear",
@@ -807,6 +822,10 @@
       if (languageSelect) {
         languageSelect.value = lang;
         languageSelect.setAttribute("aria-label", t.labels.languageSelect);
+      }
+      if (languageSelectUser) {
+        languageSelectUser.value = lang;
+        languageSelectUser.setAttribute("aria-label", t.labels.languageSelect);
       }
       if (headerTitle && headerSubtitle) {
         headerTitle.textContent = ADMIN_MODE ? t.labels.headerTitleAdmin : t.labels.headerTitleUser;
@@ -1005,8 +1024,11 @@
       document.body.classList.toggle("admin-mode", ADMIN_MODE);
       document.body.classList.toggle("user-mode", !ADMIN_MODE);
       const adminOnly = Array.from(document.querySelectorAll(".admin-only"));
+      const userOnly = Array.from(document.querySelectorAll(".user-only"));
       if (!ADMIN_MODE) {
         adminOnly.forEach((el) => el.remove());
+      } else {
+        userOnly.forEach((el) => el.remove());
       }
     };
 
@@ -2213,6 +2235,11 @@
     applyLanguage(currentLanguage);
     if (languageSelect) {
       languageSelect.addEventListener("change", (event) => {
+        applyLanguage(event.target.value);
+      });
+    }
+    if (languageSelectUser) {
+      languageSelectUser.addEventListener("change", (event) => {
         applyLanguage(event.target.value);
       });
     }
