@@ -19,6 +19,188 @@ const els = {
   filterMenu: document.getElementById("filterMenu"),
   toggleCharacterTabs: document.getElementById("toggleCharacterTabs"),
   toggleCombatTabs: document.getElementById("toggleCombatTabs"),
+  languageSelect: document.getElementById("languageSelect"),
+};
+
+const translations = {
+  pl: {
+    labels: {
+      pageTitle: "ADMINISTRATUM DATA VAULT",
+      updateDataButton: "Aktualizuj dane",
+      updateNotePrefix: "Plik",
+      updateNoteMiddle: "musi znajdować się w folderze modułu DataVault",
+      updateNoteAside: "obok",
+      updateNoteExamplePrefix: "np.",
+      updateNoteSuffix: "aby aktualizacja zadziałała.",
+      resetViewButton: "Reset widoku",
+      compareButton: "Porównaj zaznaczone",
+      filtersTitle: "FILTRY",
+      globalSearchLabel: "Szukaj (globalnie)",
+      toggleCharacterTabs: "Czy wyświetlić zakładki dotyczące tworzenia postaci?",
+      toggleCombatTabs: "Czy wyświetlić zakładki dotyczące zasad walki?",
+      hintSort: "▸ Kliknij nagłówek, aby sortować (Shift = sort wielokolumnowy).",
+      hintFilters: "▸ Drugi wiersz nagłówka: filtry per kolumna (fragment / liczby).",
+      hintCompare: "▸ Zaznacz 2+ wiersze, aby porównać.",
+      hintTooltip: "Jeśli tooltipy cech nie wyskakują na telefonie: stuknij w tag cechy.",
+      emptyTitle: "Brak danych",
+      emptyText: "Brak danych do wyświetlenia. W trybie admina użyj <b>Aktualizuj dane</b>.",
+      resultsEmptyTitle: "BRAK WYNIKÓW",
+      resultsEmptyText: "Zmień filtry lub wyczyść widok.",
+      comparisonTitle: "Porównanie",
+      comparisonField: "Pole",
+      comparisonRecord: "Rekord",
+    },
+    placeholders: {
+      globalSearch: "np. Pist, Brutalna, IMPERIUM, Zatrucie (5)...",
+      columnFilter: "filtr...",
+      filterSearch: "Szukaj na liście…",
+    },
+    titles: {
+      resetView: "Wyczyść filtry, sortowanie i zaznaczenia",
+    },
+    aria: {
+      close: "Zamknij",
+      languageSelect: "Wersja językowa",
+    },
+    messages: {
+      filterTitle: "FILTR",
+      selectAll: "Zaznacz wszystko",
+      clearAll: "Wyczyść",
+      filterButtonTitle: "Filtr listy",
+      collapse: "Kliknij aby zwinąć",
+      expand: "Kliknij aby rozwinąć",
+      statusLoadJson: "Ładowanie data.json...",
+      statusLoadOk: "OK — załadowano data.json",
+      statusLoadError: "Błąd ładowania data.json",
+      statusXlsxError: "Błąd ładowania XLSX",
+      statusRepoDownload: "Pobieranie Repozytorium.xlsx...",
+      statusRepoUpdated: "OK — zaktualizowano dane i wygenerowano data.json",
+      statusRepoError: "Błąd aktualizacji danych",
+      modeAdmin: "ADMIN",
+      modePlayer: "GRACZ",
+      invocationLabel: "CECHA: WYWOŁANIE",
+      stateLabel: "STAN",
+      invocationTitle: "Wywołanie",
+      traitLabel: "CECHA",
+      noDescriptionLabel: "BRAK OPISU",
+      traitNotFound: "Nie znaleziono tej cechy w zakładce Cechy.",
+      stateNotFound: "Nie znaleziono tego stanu w zakładce Stany.",
+    },
+  },
+  en: {
+    labels: {
+      pageTitle: "ADMINISTRATUM DATA VAULT",
+      updateDataButton: "Update data",
+      updateNotePrefix: "File",
+      updateNoteMiddle: "must be located in the DataVault module folder",
+      updateNoteAside: "next to",
+      updateNoteExamplePrefix: "e.g.",
+      updateNoteSuffix: "for the update to work.",
+      resetViewButton: "Reset view",
+      compareButton: "Compare selected",
+      filtersTitle: "FILTERS",
+      globalSearchLabel: "Search (global)",
+      toggleCharacterTabs: "Show tabs related to character creation?",
+      toggleCombatTabs: "Show tabs related to combat rules?",
+      hintSort: "▸ Click a header to sort (Shift = multi-column sort).",
+      hintFilters: "▸ Second header row: filters per column (fragment / numbers).",
+      hintCompare: "▸ Select 2+ rows to compare.",
+      hintTooltip: "If trait tooltips do not appear on mobile: tap a trait tag.",
+      emptyTitle: "No data",
+      emptyText: "No data to display. In admin mode use <b>Update data</b>.",
+      resultsEmptyTitle: "NO RESULTS",
+      resultsEmptyText: "Adjust filters or clear the view.",
+      comparisonTitle: "Comparison",
+      comparisonField: "Field",
+      comparisonRecord: "Record",
+    },
+    placeholders: {
+      globalSearch: "e.g. Pist, Brutal, IMPERIUM, Poison (5)...",
+      columnFilter: "filter...",
+      filterSearch: "Search the list…",
+    },
+    titles: {
+      resetView: "Clear filters, sorting, and selections",
+    },
+    aria: {
+      close: "Close",
+      languageSelect: "Language version",
+    },
+    messages: {
+      filterTitle: "FILTER",
+      selectAll: "Select all",
+      clearAll: "Clear",
+      filterButtonTitle: "Filter list",
+      collapse: "Click to collapse",
+      expand: "Click to expand",
+      statusLoadJson: "Loading data.json...",
+      statusLoadOk: "OK — data.json loaded",
+      statusLoadError: "Error loading data.json",
+      statusXlsxError: "Error loading XLSX",
+      statusRepoDownload: "Downloading Repozytorium.xlsx...",
+      statusRepoUpdated: "OK — data updated and data.json generated",
+      statusRepoError: "Error updating data",
+      modeAdmin: "ADMIN",
+      modePlayer: "PLAYER",
+      invocationLabel: "TRAIT: INVOCATION",
+      stateLabel: "STATE",
+      invocationTitle: "Invocation",
+      traitLabel: "TRAIT",
+      noDescriptionLabel: "NO DESCRIPTION",
+      traitNotFound: "Trait not found in the Traits sheet.",
+      stateNotFound: "State not found in the States sheet.",
+    },
+  },
+};
+
+let currentLanguage = "pl";
+
+const applyLanguage = (lang) => {
+  currentLanguage = lang;
+  const t = translations[lang];
+  document.documentElement.lang = lang;
+  if (els.languageSelect) {
+    els.languageSelect.value = lang;
+    els.languageSelect.setAttribute("aria-label", t.aria.languageSelect);
+  }
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (key in t.labels) {
+      if (key === "emptyText") {
+        el.innerHTML = t.labels[key];
+      } else {
+        el.textContent = t.labels[key];
+      }
+    }
+  });
+  document.querySelectorAll("[data-i18n-title]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-title");
+    if (key === "resetViewTitle") {
+      el.setAttribute("title", t.titles.resetView);
+    }
+  });
+  document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+    const key = el.getAttribute("data-i18n-aria");
+    if (key in t.aria) {
+      el.setAttribute("aria-label", t.aria[key]);
+    }
+  });
+  if (els.global) {
+    els.global.placeholder = t.placeholders.globalSearch;
+  }
+  const filterHeader = document.querySelector("thead tr:nth-child(2) th:first-child .muted");
+  if (filterHeader) {
+    filterHeader.textContent = t.placeholders.columnFilter;
+  }
+  document.querySelectorAll(".tableFilters .input").forEach((input) => {
+    input.placeholder = t.placeholders.columnFilter;
+  });
+  document.querySelectorAll(".filterBtn").forEach((button) => {
+    button.title = t.messages.filterButtonTitle;
+  });
+  if (tbodyEl && currentSheet) {
+    renderBody();
+  }
 };
 
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
@@ -423,15 +605,15 @@ function inferColumns(rows, sheetName){
 /* ---------- Loading ---------- */
 async function loadJsonFromRepo(){
   try{
-    setStatus("Ładowanie data.json...");
+    setStatus(translations[currentLanguage].messages.statusLoadJson);
     const res = await fetch("data.json", {cache:"no-store"});
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     DB = normaliseDB(data);
     initUI();
-    setStatus("OK — załadowano data.json");
+    setStatus(translations[currentLanguage].messages.statusLoadOk);
   }catch(e){
-    setStatus("Błąd ładowania data.json");
+    setStatus(translations[currentLanguage].messages.statusLoadError);
     logLine("BŁĄD: "+e.message, true);
   }
 }
@@ -481,7 +663,10 @@ function ensureSheetJS(cb){
   const s = document.createElement("script");
   s.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
   s.onload = cb;
-  s.onerror = () => { setStatus("Błąd ładowania XLSX"); logLine("BŁĄD: nie udało się załadować biblioteki XLSX (CDN).", true); };
+  s.onerror = () => {
+    setStatus(translations[currentLanguage].messages.statusXlsxError);
+    logLine("BŁĄD: nie udało się załadować biblioteki XLSX (CDN).", true);
+  };
   document.head.appendChild(s);
 }
 
@@ -501,7 +686,7 @@ function downloadDataJson(data){
 function loadXlsxFromRepo(){
   ensureSheetJS(async ()=>{
     try{
-      setStatus("Pobieranie Repozytorium.xlsx...");
+      setStatus(translations[currentLanguage].messages.statusRepoDownload);
       const res = await fetch("Repozytorium.xlsx", {cache:"no-store"});
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const buf = await res.arrayBuffer();
@@ -521,9 +706,9 @@ function loadXlsxFromRepo(){
       downloadDataJson(data);
       DB = normaliseDB(data);
       initUI();
-      setStatus("OK — zaktualizowano dane i wygenerowano data.json");
+      setStatus(translations[currentLanguage].messages.statusRepoUpdated);
     }catch(e){
-      setStatus("Błąd aktualizacji danych");
+      setStatus(translations[currentLanguage].messages.statusRepoError);
       logLine("BŁĄD: "+e.message, true);
     }
   });
@@ -646,7 +831,7 @@ function buildTableSkeleton(){
   trH.appendChild(th0);
 
   const th0f = document.createElement("th");
-  th0f.innerHTML = "<span class=\"muted\">filtr</span>";
+  th0f.innerHTML = `<span class="muted">${translations[currentLanguage].placeholders.columnFilter}</span>`;
   trF.appendChild(th0f);
 
   for (const col of cols){
@@ -677,7 +862,7 @@ function buildTableSkeleton(){
 
     const input = document.createElement("input");
     input.className = "input";
-    input.placeholder = "filtr...";
+    input.placeholder = translations[currentLanguage].placeholders.columnFilter;
     input.dataset.col = col;
     input.addEventListener("input", ()=>{ view.filtersText[col] = input.value; renderBody(); });
     input.addEventListener("keydown", ev=>ev.stopPropagation());
@@ -686,7 +871,7 @@ function buildTableSkeleton(){
     btn.type = "button";
     btn.className = "filterBtn";
     btn.textContent = "▾";
-    btn.title = "Filtr listy";
+    btn.title = translations[currentLanguage].messages.filterButtonTitle;
     btn.addEventListener("click", (ev)=>{ ev.preventDefault(); ev.stopPropagation(); openFilterMenu(col, btn); });
 
     row.appendChild(input);
@@ -756,22 +941,22 @@ function openFilterMenu(col, anchorBtn){
 
   const title = document.createElement("div");
   title.className = "fmTitle";
-  title.textContent = `FILTR: ${col}`;
+  title.textContent = `${translations[currentLanguage].messages.filterTitle}: ${col}`;
   menu.appendChild(title);
 
   const search = document.createElement("input");
   search.className = "input fmSearch";
-  search.placeholder = "Szukaj na liście…";
+  search.placeholder = translations[currentLanguage].placeholders.filterSearch;
   menu.appendChild(search);
 
   const actions = document.createElement("div");
   actions.className = "fmActions";
   const bAll = document.createElement("button");
   bAll.className = "btn secondary";
-  bAll.textContent = "Zaznacz wszystko";
+  bAll.textContent = translations[currentLanguage].messages.selectAll;
   const bNone = document.createElement("button");
   bNone.className = "btn secondary";
-  bNone.textContent = "Wyczyść";
+  bNone.textContent = translations[currentLanguage].messages.clearAll;
   actions.appendChild(bAll); actions.appendChild(bNone);
   menu.appendChild(actions);
 
@@ -944,7 +1129,7 @@ function renderBody(){
   const token = ++renderToken;
 
   if (!filtered.length){
-    tbodyEl.innerHTML = `<tr><td colspan="${cols.length+1}" class="emptyState"><div class="emptyTitle">BRAK WYNIKÓW</div><div class="emptyText">Zmień filtry lub wyczyść widok.</div></td></tr>`;
+    tbodyEl.innerHTML = `<tr><td colspan="${cols.length + 1}" class="emptyState"><div class="emptyTitle">${translations[currentLanguage].labels.resultsEmptyTitle}</div><div class="emptyText">${translations[currentLanguage].labels.resultsEmptyText}</div></td></tr>`;
     els.btnCompare.disabled = true;
     return;
   }
@@ -1028,10 +1213,14 @@ function renderRow(r, cols){
           if (!hint) return;
           const expanded = view.expandedCells.has(key);
           td.classList.add("clampable");
-          td.title = expanded ? "Kliknij aby zwinąć" : "Kliknij aby rozwinąć";
+          td.title = expanded
+            ? translations[currentLanguage].messages.collapse
+            : translations[currentLanguage].messages.expand;
           div.style.maxHeight = expanded ? "" : `${lineHeight * 9}px`;
           div.style.overflow = expanded ? "" : "hidden";
-          hint.textContent = expanded ? "Kliknij aby zwinąć" : "Kliknij aby rozwinąć";
+          hint.textContent = expanded
+            ? translations[currentLanguage].messages.collapse
+            : translations[currentLanguage].messages.expand;
         };
 
         const evaluateClamp = () => {
@@ -1132,9 +1321,15 @@ function resolveTrait(traitText){
     const stDesc = stateIndex[canonKey(stateKeyFull)] || stateIndex[canonKey(stateKeyBase)] || null;
 
     const blocks = [];
-    blocks.push({label:"CECHA: WYWOŁANIE", text: traitDesc || "Nie znaleziono tej cechy w zakładce Cechy."});
-    blocks.push({label:`STAN: ${stateKeyFull.toUpperCase()}`, text: stDesc || "Nie znaleziono tego stanu w zakładce Stany."});
-    return {title:`Wywołanie: ${stateKeyFull}`, blocks};
+    blocks.push({
+      label: translations[currentLanguage].messages.invocationLabel,
+      text: traitDesc || translations[currentLanguage].messages.traitNotFound,
+    });
+    blocks.push({
+      label: `${translations[currentLanguage].messages.stateLabel}: ${stateKeyFull.toUpperCase()}`,
+      text: stDesc || translations[currentLanguage].messages.stateNotFound,
+    });
+    return {title: `${translations[currentLanguage].messages.invocationTitle}: ${stateKeyFull}`, blocks};
   }
 
   // 2) Cechy parametryzowane: "Nieporęczny (2)" -> match "Nieporęczny (X)"
@@ -1145,17 +1340,23 @@ function resolveTrait(traitText){
     const key2 = canonKey(`${baseName}(X)`);
     const desc = traitIndex[key1] || traitIndex[key2] || null;
     if (desc){
-      return {title: t, blocks:[{label:"CECHA", text: desc}]};
+      return {title: t, blocks:[{label: translations[currentLanguage].messages.traitLabel, text: desc}]};
     }
   }
 
   // 3) Exact match
   const desc = traitIndex[canonKey(t)] || traitIndex[canonKey(t).replace(/\s+/g,"")] || null;
   if (desc){
-    return {title: t, blocks:[{label:"CECHA", text: desc}]};
+    return {title: t, blocks:[{label: translations[currentLanguage].messages.traitLabel, text: desc}]};
   }
 
-  return {title: t, blocks:[{label:"BRAK OPISU", text:"Nie znaleziono tej cechy w zakładce Cechy."}]};
+  return {
+    title: t,
+    blocks: [{
+      label: translations[currentLanguage].messages.noDescriptionLabel,
+      text: translations[currentLanguage].messages.traitNotFound,
+    }],
+  };
 }
 
 function openTraitPopover(traitText){
@@ -1203,11 +1404,13 @@ function openCompareModal(rows){
   }
   const html = `<div style="overflow:auto; max-height:70vh">
     <table>
-      <thead><tr><th>Pole</th>${rows.map((_,i)=>`<th>Rekord ${i+1}</th>`).join("")}</tr></thead>
+      <thead><tr><th>${translations[currentLanguage].labels.comparisonField}</th>${rows
+        .map((_, i) => `<th>${translations[currentLanguage].labels.comparisonRecord} ${i + 1}</th>`)
+        .join("")}</tr></thead>
       <tbody>${htmlRows.join("")}</tbody>
     </table>
   </div>`;
-  openModal("PORÓWNANIE", html);
+  openModal(translations[currentLanguage].labels.comparisonTitle.toUpperCase(), html);
 }
 
 /* ---------- Reset view ---------- */
@@ -1249,12 +1452,20 @@ if (els.toggleCombatTabs){
   view.showCombatTabs = els.toggleCombatTabs.checked;
 }
 
+if (els.languageSelect){
+  els.languageSelect.addEventListener("change", (event)=>{
+    applyLanguage(event.target.value);
+  });
+}
+
+applyLanguage(currentLanguage);
+
 /* ---------- Loaders ---------- */
 els.btnUpdateData.addEventListener("click", loadXlsxFromRepo);
 
 /* ---------- Boot ---------- */
 (async function boot(){
-  logLine(`Tryb: ${ADMIN_MODE ? "ADMIN" : "GRACZ"}`);
+  logLine(`Tryb: ${ADMIN_MODE ? translations[currentLanguage].messages.modeAdmin : translations[currentLanguage].messages.modePlayer}`);
   // auto-load data.json (players)
   await loadJsonFromRepo();
 })();

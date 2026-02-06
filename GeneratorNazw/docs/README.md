@@ -7,12 +7,13 @@ Generator Nazw służy do szybkiego tworzenia nazw postaci, pojazdów i okrętó
 Tytuł karty przeglądarki: **Generator Nazw**.
 
 ### Jak używać
-1. **Wybierz kategorię** w polu „Kategoria”.
-2. **Wybierz opcję** w polu „Opcja” (np. frakcję lub wariant stylu).
-3. (Opcjonalnie) **Wpisz „Seed”** — dowolny tekst, który ustala powtarzalność wyników.
-4. **Ustaw liczbę wyników** w polu „Ile”.
-5. Kliknij **„Generuj”**, aby otrzymać listę nazw.
-6. Kliknij **„Kopiuj wynik”**, aby skopiować wygenerowaną listę do schowka.
+1. W prawym górnym rogu panelu wybierz język (domyślnie **Polski**).
+2. **Wybierz kategorię** w polu „Kategoria”.
+3. **Wybierz opcję** w polu „Opcja” (np. frakcję lub wariant stylu).
+4. (Opcjonalnie) **Wpisz „Seed”** — dowolny tekst, który ustala powtarzalność wyników.
+5. **Ustaw liczbę wyników** w polu „Ile”.
+6. Kliknij **„Generuj”**, aby otrzymać listę nazw.
+7. Kliknij **„Kopiuj wynik”**, aby skopiować wygenerowaną listę do schowka.
 
 ### Wskazówki
 - Ten sam **Seed** + te same ustawienia = te same wyniki.
@@ -27,12 +28,13 @@ Generator Nazw is a quick name generator for WH40K‑style characters, vehicles,
 Browser tab title: **Generator Nazw**.
 
 ### How to use
-1. **Choose a category** in the “Kategoria” dropdown.
-2. **Choose an option** in the “Opcja” dropdown (e.g., faction or style variant).
-3. (Optional) **Enter a Seed** — any text that makes results repeatable.
-4. **Set the number of results** in the “Ile” field.
-5. Click **“Generuj”** to create a list of names.
-6. Click **“Kopiuj wynik”** to copy the list to the clipboard.
+1. Use the language switcher in the top-right corner of the panel (Polish is selected by default).
+2. **Choose a category** in the “Kategoria” dropdown.
+3. **Choose an option** in the “Opcja” dropdown (e.g., faction or style variant).
+4. (Optional) **Enter a Seed** — any text that makes results repeatable.
+5. **Set the number of results** in the “Ile” field.
+6. Click **“Generuj”** to create a list of names.
+7. Click **“Kopiuj wynik”** to copy the list to the clipboard.
 
 ### Tips
 - The same **Seed** + the same settings = identical results.

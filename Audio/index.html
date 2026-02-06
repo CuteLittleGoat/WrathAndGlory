@@ -59,6 +59,21 @@
       gap: 10px;
     }
 
+    .language-switcher select {
+      min-width: 160px;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: #0b0b0b;
+      color: var(--text);
+      font-size: 13px;
+    }
+
+    .language-switcher select:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25);
+    }
+
     header h1 {
       margin: 0;
       font-size: clamp(22px, 3vw, 30px);
@@ -506,6 +521,12 @@
     <header class="admin-only">
       <h1 id="headerTitle">Audio — panel dźwięków</h1>
       <p id="headerSubtitle">Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.</p>
+      <div class="language-switcher">
+        <select id="languageSelect" aria-label="Wersja językowa">
+          <option value="pl">Polski</option>
+          <option value="en">English</option>
+        </select>
+      </div>
       <div class="status-bar admin-only">
         <span class="status-pill" id="manifestStatus">Manifest: brak danych</span>
         <span class="status-pill" id="firebaseStatus">Firebase: oczekiwanie</span>
@@ -526,8 +547,8 @@
     <section class="tag-filter-bar admin-only" id="tagFilterBar">
       <div class="tag-filter-header">
         <div>
-          <h2>Filtry tagów</h2>
-          <p class="legend">Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.</p>
+          <h2 id="tagFiltersTitle">Filtry tagów</h2>
+          <p class="legend" id="tagFiltersSubtitle">Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.</p>
         </div>
         <button class="btn" id="toggleTagPanel">Ukryj panel</button>
       </div>
@@ -556,19 +577,19 @@
 
     <section class="layout admin-only">
       <div class="panel">
-        <h2>Lista sampli</h2>
-        <p class="legend">Źródło danych: AudioManifest.xlsx (kolumny NazwaSampla, NazwaPliku, LinkDoFolderu).</p>
+        <h2 id="samplesTitle">Lista sampli</h2>
+        <p class="legend" id="samplesSubtitle">Źródło danych: AudioManifest.xlsx (kolumny NazwaSampla, NazwaPliku, LinkDoFolderu).</p>
         <div id="samplesGrid" class="samples-grid"></div>
       </div>
 
       <div class="side-stack">
         <aside class="panel">
-          <h2>Ulubione</h2>
+          <h2 id="favoritesTitle">Ulubione</h2>
           <div class="favorites-panel" id="favoritesPanel"></div>
         </aside>
         <aside class="panel">
-          <h2>Główny widok</h2>
-          <p class="legend">Lista dźwięków wyświetlana użytkownikom w głównym widoku.</p>
+          <h2 id="mainViewTitle">Główny widok</h2>
+          <p class="legend" id="mainViewSubtitle">Lista dźwięków wyświetlana użytkownikom w głównym widoku.</p>
           <div class="favorites-panel" id="mainViewPanel"></div>
         </aside>
       </div>
@@ -581,7 +602,7 @@
           <div id="userFavoritesView" class="user-panel"></div>
         </div>
         <aside class="panel">
-          <h2>Nawigacja</h2>
+          <h2 id="navigationTitle">Nawigacja</h2>
           <div class="user-nav" id="userNav"></div>
         </aside>
       </div>
@@ -627,8 +648,193 @@
     const tagMenuList = document.getElementById("tagMenuList");
     const tagMenuSelectAll = document.getElementById("tagMenuSelectAll");
     const tagMenuClearAll = document.getElementById("tagMenuClearAll");
+    const languageSelect = document.getElementById("languageSelect");
+    const tagFiltersTitle = document.getElementById("tagFiltersTitle");
+    const tagFiltersSubtitle = document.getElementById("tagFiltersSubtitle");
+    const samplesTitle = document.getElementById("samplesTitle");
+    const samplesSubtitle = document.getElementById("samplesSubtitle");
+    const favoritesTitle = document.getElementById("favoritesTitle");
+    const mainViewTitle = document.getElementById("mainViewTitle");
+    const mainViewSubtitle = document.getElementById("mainViewSubtitle");
+    const navigationTitle = document.getElementById("navigationTitle");
 
     const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
+
+    const translations = {
+      pl: {
+        labels: {
+          languageSelect: "Wersja językowa",
+          headerTitleAdmin: "Audio — panel dźwięków",
+          headerTitleUser: "Audio — panel użytkownika",
+          headerSubtitleAdmin: "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.",
+          headerSubtitleUser: "Wybierz widok z panelu bocznego, aby odtwarzać przygotowane dźwięki.",
+          reloadManifest: "Wczytaj manifest",
+          addList: "Nowa lista ulubionych",
+          refreshFavorites: "Odśwież ulubione",
+          tagFiltersTitle: "Filtry tagów",
+          tagFiltersSubtitle: "Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.",
+          toggleTagPanelHide: "Ukryj panel",
+          toggleTagPanelShow: "Pokaż panel",
+          tagFilterMenuButton: "Filtruj ▾",
+          tagMenuSelectAll: "Zaznacz wszystko",
+          tagMenuClearAll: "Odznacz wszystko",
+          samplesTitle: "Lista sampli",
+          samplesSubtitle: "Źródło danych: AudioManifest.xlsx (kolumny NazwaSampla, NazwaPliku, LinkDoFolderu).",
+          favoritesTitle: "Ulubione",
+          mainViewTitle: "Główny widok",
+          mainViewSubtitle: "Lista dźwięków wyświetlana użytkownikom w głównym widoku.",
+          navigationTitle: "Nawigacja",
+          mainViewOption: "Widok Główny",
+          mainViewUserButton: "Widok główny",
+          favoritesListsTitle: "Listy ulubionych",
+          aliasPlaceholder: "Alias (opcjonalny)",
+          buttonClear: "Wyczyść",
+          buttonPlay: "Odtwórz",
+          buttonStop: "Zatrzymaj",
+          buttonAddToList: "Dodaj do listy",
+          buttonRename: "Zmień nazwę",
+          buttonRemove: "Usuń",
+          emptyNoTags: "Brak tagów do filtrowania.",
+          emptyTagFilter: "Brak wyników dla podanego filtra tagów.",
+          emptySamplesFilter: "Brak wyników dla podanego filtra.",
+          emptyFavorites: "Brak list ulubionych.",
+          emptyList: "Lista jest pusta.",
+          emptyMainView: "Brak dźwięków w głównym widoku.",
+          emptyMissingManifest: "(brak w manifeście)",
+          missingTag2: "Brak tagu 2",
+          missingFilename: "Brak nazwy pliku",
+          favoritesLegendEmpty: "Brak list ulubionych.",
+          promptNewListTitle: "Nazwa nowej listy ulubionych:",
+          promptNewListPlaceholder: "Nowa lista",
+          promptRenameList: "Nowa nazwa listy:",
+          confirmRemoveList: "Czy na pewno usunąć listę?",
+          alertMissingAudio: "Brak linku do pliku audio w manifestie.",
+          manifestLoading: "Manifest: wczytywanie...",
+          manifestMissing: "Manifest: brak danych",
+          manifestError: "Manifest: błąd wczytywania",
+          manifestReady: "Manifest: {count} pozycji",
+          firebaseConnected: "Firebase: połączono",
+          firebaseLocal: "Firebase: lokalne ustawienia",
+          firebaseMissing: "Firebase: brak konfiguracji",
+          favoritesStatus: "Ulubione: {count} list",
+          manifestFetchError: "Nie udało się pobrać manifestu.",
+          manifestNoData: "Manifest nie zawiera danych.",
+          defaultListName: "Ulubione",
+        },
+        placeholders: {
+          tagSearch: "Szukaj tagu...",
+          sampleSearch: "Szukaj sampla...",
+          tagMenuSearch: "Szukaj tagu...",
+        },
+      },
+      en: {
+        labels: {
+          languageSelect: "Language version",
+          headerTitleAdmin: "Audio — sound panel",
+          headerTitleUser: "Audio — user panel",
+          headerSubtitleAdmin: "Sample playback, favorite lists management, and Firebase synchronization.",
+          headerSubtitleUser: "Choose a view from the side panel to play prepared sounds.",
+          reloadManifest: "Load manifest",
+          addList: "New favorites list",
+          refreshFavorites: "Refresh favorites",
+          tagFiltersTitle: "Tag filters",
+          tagFiltersSubtitle: "Selecting tags only affects the sample list in the admin panel.",
+          toggleTagPanelHide: "Hide panel",
+          toggleTagPanelShow: "Show panel",
+          tagFilterMenuButton: "Filter ▾",
+          tagMenuSelectAll: "Select all",
+          tagMenuClearAll: "Clear selection",
+          samplesTitle: "Sample list",
+          samplesSubtitle: "Data source: AudioManifest.xlsx (columns: NazwaSampla, NazwaPliku, LinkDoFolderu).",
+          favoritesTitle: "Favorites",
+          mainViewTitle: "Main view",
+          mainViewSubtitle: "Sound list displayed to users in the main view.",
+          navigationTitle: "Navigation",
+          mainViewOption: "Main view",
+          mainViewUserButton: "Main view",
+          favoritesListsTitle: "Favorite lists",
+          aliasPlaceholder: "Alias (optional)",
+          buttonClear: "Clear",
+          buttonPlay: "Play",
+          buttonStop: "Stop",
+          buttonAddToList: "Add to list",
+          buttonRename: "Rename",
+          buttonRemove: "Remove",
+          emptyNoTags: "No tags to filter.",
+          emptyTagFilter: "No results for the selected tag filter.",
+          emptySamplesFilter: "No results for the selected filter.",
+          emptyFavorites: "No favorite lists.",
+          emptyList: "The list is empty.",
+          emptyMainView: "No sounds in the main view.",
+          emptyMissingManifest: "(missing in manifest)",
+          missingTag2: "No tag 2",
+          missingFilename: "No filename",
+          favoritesLegendEmpty: "No favorite lists.",
+          promptNewListTitle: "Name of the new favorites list:",
+          promptNewListPlaceholder: "New list",
+          promptRenameList: "New list name:",
+          confirmRemoveList: "Are you sure you want to remove the list?",
+          alertMissingAudio: "Missing audio file link in the manifest.",
+          manifestLoading: "Manifest: loading...",
+          manifestMissing: "Manifest: no data",
+          manifestError: "Manifest: failed to load",
+          manifestReady: "Manifest: {count} items",
+          firebaseConnected: "Firebase: connected",
+          firebaseLocal: "Firebase: local settings",
+          firebaseMissing: "Firebase: missing configuration",
+          favoritesStatus: "Favorites: {count} lists",
+          manifestFetchError: "Failed to fetch the manifest.",
+          manifestNoData: "The manifest contains no data.",
+          defaultListName: "Favorites",
+        },
+        placeholders: {
+          tagSearch: "Search tag...",
+          sampleSearch: "Search sample...",
+          tagMenuSearch: "Search tag...",
+        },
+      },
+    };
+
+    let currentLanguage = "pl";
+
+    const formatText = (template, vars = {}) =>
+      template.replace(/\{(\w+)\}/g, (_, key) => (key in vars ? vars[key] : ""));
+
+    const applyLanguage = (lang) => {
+      currentLanguage = lang;
+      const t = translations[lang];
+      document.documentElement.lang = lang;
+      if (languageSelect) {
+        languageSelect.value = lang;
+        languageSelect.setAttribute("aria-label", t.labels.languageSelect);
+      }
+      if (headerTitle && headerSubtitle) {
+        headerTitle.textContent = ADMIN_MODE ? t.labels.headerTitleAdmin : t.labels.headerTitleUser;
+        headerSubtitle.textContent = ADMIN_MODE ? t.labels.headerSubtitleAdmin : t.labels.headerSubtitleUser;
+      }
+      if (reloadManifest) reloadManifest.textContent = t.labels.reloadManifest;
+      if (addListButton) addListButton.textContent = t.labels.addList;
+      if (refreshFavoritesButton) refreshFavoritesButton.textContent = t.labels.refreshFavorites;
+      if (tagFiltersTitle) tagFiltersTitle.textContent = t.labels.tagFiltersTitle;
+      if (tagFiltersSubtitle) tagFiltersSubtitle.textContent = t.labels.tagFiltersSubtitle;
+      if (toggleTagPanel) {
+        toggleTagPanel.textContent = state.tagPanelVisible ? t.labels.toggleTagPanelHide : t.labels.toggleTagPanelShow;
+      }
+      if (tagFilterMenuButton) tagFilterMenuButton.textContent = t.labels.tagFilterMenuButton;
+      if (tagMenuSelectAll) tagMenuSelectAll.textContent = t.labels.tagMenuSelectAll;
+      if (tagMenuClearAll) tagMenuClearAll.textContent = t.labels.tagMenuClearAll;
+      if (samplesTitle) samplesTitle.textContent = t.labels.samplesTitle;
+      if (samplesSubtitle) samplesSubtitle.textContent = t.labels.samplesSubtitle;
+      if (favoritesTitle) favoritesTitle.textContent = t.labels.favoritesTitle;
+      if (mainViewTitle) mainViewTitle.textContent = t.labels.mainViewTitle;
+      if (mainViewSubtitle) mainViewSubtitle.textContent = t.labels.mainViewSubtitle;
+      if (navigationTitle) navigationTitle.textContent = t.labels.navigationTitle;
+      if (tagSearchInput) tagSearchInput.placeholder = t.placeholders.tagSearch;
+      if (tagMenuSearchInput) tagMenuSearchInput.placeholder = t.placeholders.tagMenuSearch;
+      if (searchInput) searchInput.placeholder = t.placeholders.sampleSearch;
+      updateStatus();
+      renderAllViews();
+    };
 
     const state = {
       items: [],
@@ -652,7 +858,7 @@
     const activePlayers = new Map();
     let audioContext = null;
 
-    const DEFAULT_LIST_NAME = "Ulubione";
+    const getDefaultListName = () => translations[currentLanguage].labels.defaultListName;
     const TAG_IGNORE_FRAGMENTS = [
       "SoundPad",
       "SoundPad Patreon Version",
@@ -802,23 +1008,15 @@
       if (!ADMIN_MODE) {
         adminOnly.forEach((el) => el.remove());
       }
-
-      if (headerTitle && headerSubtitle) {
-        headerTitle.textContent = ADMIN_MODE ? "Audio — panel dźwięków" : "Audio — panel użytkownika";
-        headerSubtitle.textContent = ADMIN_MODE
-          ? "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase."
-          : "Wybierz widok z panelu bocznego, aby odtwarzać przygotowane dźwięki.";
-      }
     };
 
     const updateStatus = () => {
+      const t = translations[currentLanguage].labels;
       manifestStatus.textContent = state.manifestReady
-        ? `Manifest: ${state.items.length} pozycji`
-        : "Manifest: brak danych";
-      firebaseStatus.textContent = state.usingFirestore
-        ? "Firebase: połączono"
-        : "Firebase: lokalne ustawienia";
-      favoritesStatus.textContent = `Ulubione: ${state.favorites.lists.length} list`;
+        ? formatText(t.manifestReady, { count: state.items.length })
+        : t.manifestMissing;
+      firebaseStatus.textContent = state.usingFirestore ? t.firebaseConnected : t.firebaseLocal;
+      favoritesStatus.textContent = formatText(t.favoritesStatus, { count: state.favorites.lists.length });
     };
 
     const renderTagFilter = () => {
@@ -827,7 +1025,7 @@
       }
 
       if (!state.tagTree.length) {
-        tagFilter.innerHTML = "<div class=\"empty-state\">Brak tagów do filtrowania.</div>";
+        tagFilter.innerHTML = `<div class="empty-state">${translations[currentLanguage].labels.emptyNoTags}</div>`;
         return;
       }
 
@@ -855,7 +1053,9 @@
         return;
       }
       tagFilterBar.classList.toggle("is-collapsed", !state.tagPanelVisible);
-      toggleTagPanel.textContent = state.tagPanelVisible ? "Ukryj panel" : "Pokaż panel";
+      toggleTagPanel.textContent = state.tagPanelVisible
+        ? translations[currentLanguage].labels.toggleTagPanelHide
+        : translations[currentLanguage].labels.toggleTagPanelShow;
     };
 
     const renderTagMenu = () => {
@@ -869,7 +1069,7 @@
         : flattened;
 
       if (!visibleNodes.length) {
-        tagMenuList.innerHTML = "<div class=\"empty-state\">Brak wyników dla podanego filtra tagów.</div>";
+        tagMenuList.innerHTML = `<div class="empty-state">${translations[currentLanguage].labels.emptyTagFilter}</div>`;
         return;
       }
 
@@ -975,7 +1175,9 @@
         return;
       }
       playbackRoot.dataset.playing = isPlaying ? "true" : "false";
-      playbackRoot.textContent = isPlaying ? "Zatrzymaj" : "Odtwórz";
+      playbackRoot.textContent = isPlaying
+        ? translations[currentLanguage].labels.buttonStop
+        : translations[currentLanguage].labels.buttonPlay;
     };
 
     const applyPlayerVolume = (player, value) => {
@@ -1005,7 +1207,7 @@
     const startPlayback = (item, playbackRoot) => {
       const fullUrl = pickRandomVariant(item);
       if (!fullUrl) {
-        alert("Brak linku do pliku audio w manifestie.");
+        alert(translations[currentLanguage].labels.alertMissingAudio);
         return;
       }
       const audio = new Audio(fullUrl);
@@ -1071,7 +1273,7 @@
       lists: [
         {
           id: crypto.randomUUID(),
-          name: DEFAULT_LIST_NAME,
+          name: getDefaultListName(),
           itemIds: []
         }
       ]
@@ -1090,7 +1292,7 @@
       return {
         lists: raw.lists.map((list) => ({
           id: list.id || crypto.randomUUID(),
-          name: list.name || DEFAULT_LIST_NAME,
+          name: list.name || getDefaultListName(),
           itemIds: Array.isArray(list.itemIds) ? list.itemIds : []
         }))
       };
@@ -1169,7 +1371,7 @@
 
     const initFirebase = () => {
       if (!window.firebaseConfig || !window.firebaseConfig.apiKey) {
-        firebaseStatus.textContent = "Firebase: brak konfiguracji";
+        firebaseStatus.textContent = translations[currentLanguage].labels.firebaseMissing;
         loadSettingsLocal();
         renderAllViews();
         return;
@@ -1210,7 +1412,7 @@
       );
 
       if (!visibleItems.length) {
-        samplesGrid.innerHTML = "<div class=\"empty-state\">Brak wyników dla podanego filtra.</div>";
+        samplesGrid.innerHTML = `<div class="empty-state">${translations[currentLanguage].labels.emptySamplesFilter}</div>`;
         return;
       }
 
@@ -1218,7 +1420,7 @@
         .map((list) => `<option value="${list.id}">${list.name}</option>`)
         .join("");
       const selectOptions = `
-        <option value="main">Widok Główny</option>
+        <option value="main">${translations[currentLanguage].labels.mainViewOption}</option>
         ${optionsHtml}
       `;
 
@@ -1227,18 +1429,18 @@
           (item) => `
             <div class="sample-card" data-id="${item.id}">
               <div class="sample-title">${formatSampleLabel(item)}</div>
-              <div class="sample-meta">${item.tag2 || "Brak tagu 2"}</div>
-              <div class="sample-meta">${item.filename || "Brak nazwy pliku"}</div>
+              <div class="sample-meta">${item.tag2 || translations[currentLanguage].labels.missingTag2}</div>
+              <div class="sample-meta">${item.filename || translations[currentLanguage].labels.missingFilename}</div>
               <div class="sample-actions">
                 <div class="alias-controls">
-                  <input class="alias-input" data-role="alias" type="text" placeholder="Alias (opcjonalny)" value="${item.alias || ""}" />
+                  <input class="alias-input" data-role="alias" type="text" placeholder="${translations[currentLanguage].labels.aliasPlaceholder}" value="${item.alias || ""}" />
                 </div>
-                <button class="btn" data-action="clear-alias">Wyczyść</button>
-                <button class="btn" data-action="play">Odtwórz</button>
+                <button class="btn" data-action="clear-alias">${translations[currentLanguage].labels.buttonClear}</button>
+                <button class="btn" data-action="play">${translations[currentLanguage].labels.buttonPlay}</button>
                 <select class="fav-select">
                   ${selectOptions}
                 </select>
-                <button class="btn" data-action="add-favorite">Dodaj do listy</button>
+                <button class="btn" data-action="add-favorite">${translations[currentLanguage].labels.buttonAddToList}</button>
               </div>
             </div>
           `
@@ -1251,7 +1453,7 @@
         return;
       }
       if (!state.favorites.lists.length) {
-        favoritesPanel.innerHTML = "<div class=\"empty-state\">Brak list ulubionych.</div>";
+        favoritesPanel.innerHTML = `<div class="empty-state">${translations[currentLanguage].labels.emptyFavorites}</div>`;
         return;
       }
 
@@ -1264,8 +1466,8 @@
                 <div class="fav-actions">
                   <button class="btn" data-action="list-up" ${index === 0 ? "disabled" : ""}>▲</button>
                   <button class="btn" data-action="list-down" ${index === state.favorites.lists.length - 1 ? "disabled" : ""}>▼</button>
-                  <button class="btn" data-action="list-rename">Zmień nazwę</button>
-                  <button class="btn btn-danger" data-action="list-remove">Usuń</button>
+                  <button class="btn" data-action="list-rename">${translations[currentLanguage].labels.buttonRename}</button>
+                  <button class="btn btn-danger" data-action="list-remove">${translations[currentLanguage].labels.buttonRemove}</button>
                 </div>
               </div>
               <div class="fav-items">
@@ -1276,18 +1478,18 @@
                           const item = state.itemsById.get(itemId);
                           return `
                             <div class="fav-item" data-item-id="${itemId}">
-                              <div class="fav-item-title">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
+                              <div class="fav-item-title">${item ? formatSampleLabel(item) : translations[currentLanguage].labels.emptyMissingManifest}</div>
                               <div class="fav-item-actions">
-                                <button class="btn" data-action="fav-play">Odtwórz</button>
+                                <button class="btn" data-action="fav-play">${translations[currentLanguage].labels.buttonPlay}</button>
                                 <button class="btn" data-action="fav-up" ${itemIndex === 0 ? "disabled" : ""}>▲</button>
                                 <button class="btn" data-action="fav-down" ${itemIndex === list.itemIds.length - 1 ? "disabled" : ""}>▼</button>
-                                <button class="btn btn-danger" data-action="fav-remove">Usuń</button>
+                                <button class="btn btn-danger" data-action="fav-remove">${translations[currentLanguage].labels.buttonRemove}</button>
                               </div>
                             </div>
                           `;
                         })
                         .join("")
-                    : "<div class=\"empty-state\">Lista jest pusta.</div>"
+                    : `<div class="empty-state">${translations[currentLanguage].labels.emptyList}</div>`
                 }
               </div>
             </div>
@@ -1302,7 +1504,7 @@
         return;
       }
       if (!state.mainView.itemIds.length) {
-        mainViewPanel.innerHTML = "<div class=\"empty-state\">Brak dźwięków w głównym widoku.</div>";
+        mainViewPanel.innerHTML = `<div class="empty-state">${translations[currentLanguage].labels.emptyMainView}</div>`;
         return;
       }
       mainViewPanel.innerHTML = state.mainView.itemIds
@@ -1310,14 +1512,14 @@
           const item = state.itemsById.get(itemId);
           return `
             <div class="fav-item" data-item-id="${itemId}" data-playback-root="true">
-              <div class="fav-item-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
-              <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
-              <div class="sample-meta">${item?.filename || "Brak nazwy pliku"}</div>
+              <div class="fav-item-title sample-trigger">${item ? formatSampleLabel(item) : translations[currentLanguage].labels.emptyMissingManifest}</div>
+              <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
+              <div class="sample-meta">${item?.filename || translations[currentLanguage].labels.missingFilename}</div>
               <div class="fav-item-actions">
                 <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
                 <button class="btn" data-action="main-up" ${index === 0 ? "disabled" : ""}>▲</button>
                 <button class="btn" data-action="main-down" ${index === state.mainView.itemIds.length - 1 ? "disabled" : ""}>▼</button>
-                <button class="btn btn-danger" data-action="main-remove">Usuń</button>
+                <button class="btn btn-danger" data-action="main-remove">${translations[currentLanguage].labels.buttonRemove}</button>
               </div>
             </div>
           `;
@@ -1338,8 +1540,8 @@
                 const item = state.itemsById.get(itemId);
                 return `
                   <div class="sample-card" data-id="${itemId}" data-playback-root="true">
-                    <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
-                    <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
+                    <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : translations[currentLanguage].labels.emptyMissingManifest}</div>
+                    <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
                     <div class="sample-actions">
                       <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
                     </div>
@@ -1370,8 +1572,8 @@
               const item = state.itemsById.get(itemId);
               return `
                 <div class="sample-card" data-id="${itemId}" data-playback-root="true">
-                  <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : "(brak w manifeście)"}</div>
-                  <div class="sample-meta sample-trigger">${item?.tag2 || "Brak tagu 2"}</div>
+                  <div class="sample-title sample-trigger">${item ? formatSampleLabel(item) : translations[currentLanguage].labels.emptyMissingManifest}</div>
+                  <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
                   <div class="sample-actions">
                     <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
                   </div>
@@ -1389,7 +1591,7 @@
     const renderUserNavigation = () => {
       const mainButton = `
         <button class="btn ${state.userView === "main" ? "is-active" : ""}" data-action="user-main">
-          Widok główny
+          ${translations[currentLanguage].labels.mainViewUserButton}
         </button>
       `;
       const favoritesButtons = state.favorites.lists.length
@@ -1399,12 +1601,12 @@
                 `<button class="btn ${list.id === state.activeFavoritesListId && state.userView === "favorites" ? "is-active" : ""}" data-action="user-list" data-list-id="${list.id}">${list.name}</button>`
             )
             .join("")
-        : "<div class=\"legend\">Brak list ulubionych.</div>";
+        : `<div class="legend">${translations[currentLanguage].labels.favoritesLegendEmpty}</div>`;
 
       userNav.innerHTML = `
         <div class="user-nav-group">${mainButton}</div>
         <div class="user-nav-group">
-          <div class="legend">Listy ulubionych</div>
+          <div class="legend">${translations[currentLanguage].labels.favoritesListsTitle}</div>
           ${favoritesButtons}
         </div>
       `;
@@ -1446,7 +1648,10 @@
     };
 
     const addFavoriteList = async () => {
-      const name = prompt("Nazwa nowej listy ulubionych:", "Nowa lista");
+      const name = prompt(
+        translations[currentLanguage].labels.promptNewListTitle,
+        translations[currentLanguage].labels.promptNewListPlaceholder
+      );
       if (!name) {
         return;
       }
@@ -1491,7 +1696,7 @@
       if (!list) {
         return;
       }
-      const name = prompt("Nowa nazwa listy:", list.name);
+      const name = prompt(translations[currentLanguage].labels.promptRenameList, list.name);
       if (!name) {
         return;
       }
@@ -1501,7 +1706,7 @@
     };
 
     const removeList = async (listId) => {
-      if (!confirm("Czy na pewno usunąć listę?")) {
+      if (!confirm(translations[currentLanguage].labels.confirmRemoveList)) {
         return;
       }
       state.favorites.lists = state.favorites.lists.filter((entry) => entry.id !== listId);
@@ -1585,10 +1790,10 @@
     };
 
     const parseManifest = async () => {
-      manifestStatus.textContent = "Manifest: wczytywanie...";
+      manifestStatus.textContent = translations[currentLanguage].labels.manifestLoading;
       const response = await fetch("AudioManifest.xlsx", { cache: "no-store" });
       if (!response.ok) {
-        throw new Error("Nie udało się pobrać manifestu.");
+        throw new Error(translations[currentLanguage].labels.manifestFetchError);
       }
       const data = await response.arrayBuffer();
       const workbook = XLSX.read(data, { type: "array" });
@@ -1596,7 +1801,7 @@
       const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
 
       if (!rows.length) {
-        throw new Error("Manifest nie zawiera danych.");
+        throw new Error(translations[currentLanguage].labels.manifestNoData);
       }
 
       const entries = [];
@@ -1852,7 +2057,7 @@
     reloadManifest.addEventListener("click", () => {
       parseManifest().catch((error) => {
         alert(error.message);
-        manifestStatus.textContent = "Manifest: błąd wczytywania";
+        manifestStatus.textContent = translations[currentLanguage].labels.manifestError;
       });
     });
     addListButton.addEventListener("click", addFavoriteList);
@@ -2001,10 +2206,16 @@
     renderAllViews();
     initFirebase();
     parseManifest().catch((error) => {
-      manifestStatus.textContent = "Manifest: błąd wczytywania";
+      manifestStatus.textContent = translations[currentLanguage].labels.manifestError;
       console.error(error);
     });
     updateStatus();
+    applyLanguage(currentLanguage);
+    if (languageSelect) {
+      languageSelect.addEventListener("change", (event) => {
+        applyLanguage(event.target.value);
+      });
+    }
   </script>
 </body>
 </html>

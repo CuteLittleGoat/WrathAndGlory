@@ -3,7 +3,7 @@
 ## Instrukcja obsługi (PL)
 1. Otwórz `DiceRoller/index.html` w przeglądarce.
 2. Interfejs korzysta z zielonego motywu terminalowego spójnego z główną stroną aplikacji.
-3. W prawym górnym rogu wybierz język (PL/EN). Pole wyboru ma ciemne tło spójne z modułem Kalkulator, a zmiana języka resetuje wartości.
+3. W prawym górnym rogu wybierz język (PL/EN). Domyślnie ustawiony jest język polski, pole wyboru ma ciemne tło spójne z modułem Kalkulator, a zmiana języka resetuje wartości.
 4. Domyślnie **Stopień Trudności** wynosi 3 — możesz go zmienić w zakresie 1-99.
 5. Domyślnie **Pula Kości** wynosi 2 — możesz ją zmienić w zakresie 1-99.
 6. Ustaw **Ilość Kości Furii** (1-99) — liczba czerwonych kości (Wrath Die); nie może być większa niż Pula Kości.
@@ -22,7 +22,7 @@
 ## User guide (EN)
 1. Open `DiceRoller/index.html` in your browser.
 2. The interface uses the same green terminal theme as the main application page.
-3. Use the language switcher in the top right corner (PL/EN). The select uses the same dark background as the Calculator module, and changing the language resets values.
+3. Use the language switcher in the top right corner (PL/EN). Polish is selected by default, the select uses the same dark background as the Calculator module, and changing the language resets values.
 4. The default **Difficulty Number** is 3 — you can change it within 1-99.
 5. The default **Dice Pool** is 2 — you can change it within 1-99.
 6. Set the **Number of Wrath Dice** (1-99) — number of red dice (Wrath Die); it cannot exceed the Dice Pool.

@@ -28,6 +28,9 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
   - `#btnUpdateData` w grupie `#updateDataGroup`.
   - `#btnReset` — reset widoku.
   - `#btnCompare` — porównanie zaznaczonych wierszy.
+- Przełącznik języka:
+  - `.language-switcher select#languageSelect` z opcjami `pl` i `en`.
+  - Ciemne tło selecta (`#0b0b0b`) utrzymuje spójność z motywem konsolowym.
 
 **Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`).
 

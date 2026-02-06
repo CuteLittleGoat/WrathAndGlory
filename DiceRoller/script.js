@@ -5,6 +5,7 @@ const rollButton = document.getElementById("roll");
 const diceContainer = document.getElementById("dice");
 const summary = document.getElementById("summary");
 const subtitle = document.getElementById("subtitle");
+const pageTitle = document.getElementById("pageTitle");
 const difficultyLabel = document.getElementById("difficultyLabel");
 const poolLabel = document.getElementById("poolLabel");
 const wrathLabel = document.getElementById("wrathLabel");
@@ -20,21 +21,17 @@ const ROLL_DURATION = 900;
 
 const translations = {
   pl: {
-    subtitle: "Symulacja rzutów kośćmi dla Wrath & Glory",
     labels: {
+      pageTitle: "DiceRoller",
+      subtitle: "Symulacja rzutów kośćmi dla Wrath & Glory",
       difficulty: "Stopień Trudności",
       pool: "Pula Kości",
       wrath: "Ilość Kości Furii",
-    },
-    hints: {
-      wrathLimit: "Nie większa niż Pula Kości.",
-    },
-    buttons: {
+      wrathHint: "Nie większa niż Pula Kości.",
       roll: "Rzuć Kośćmi!",
-    },
-    placeholders: {
-      idle: "Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.",
-      rolling: "Rzut w toku...",
+      placeholderIdle: "Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.",
+      placeholderRolling: "Rzut w toku...",
+      languageSelect: "Wersja językowa",
     },
     messages: {
       success: "Sukces!",
@@ -49,21 +46,17 @@ const translations = {
     },
   },
   en: {
-    subtitle: "Dice Roll Simulation for Wrath & Glory",
     labels: {
+      pageTitle: "DiceRoller",
+      subtitle: "Dice Roll Simulation for Wrath & Glory",
       difficulty: "Difficulty Number",
       pool: "Dice Pool",
       wrath: "Number of Wrath Dice",
-    },
-    hints: {
-      wrathLimit: "No greater than the Dice Pool.",
-    },
-    buttons: {
+      wrathHint: "No greater than the Dice Pool.",
       roll: "Roll the dice!",
-    },
-    placeholders: {
-      idle: "Enter your parameters and roll the dice to see the result.",
-      rolling: "Rolling the dice...",
+      placeholderIdle: "Enter your parameters and roll the dice to see the result.",
+      placeholderRolling: "Rolling the dice...",
+      languageSelect: "Language version",
     },
     messages: {
       success: "Success!",
@@ -195,7 +188,7 @@ const resetState = () => {
   poolInput.value = DEFAULT_POOL;
   wrathInput.value = DEFAULT_WRATH;
   diceContainer.innerHTML = "";
-  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].placeholders.idle}</p>`;
+  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].labels.placeholderIdle}</p>`;
 };
 
 const updateLanguage = (lang) => {
@@ -203,12 +196,14 @@ const updateLanguage = (lang) => {
   const t = translations[lang];
   document.documentElement.lang = lang;
   languageSelect.value = lang;
-  subtitle.textContent = t.subtitle;
+  languageSelect.setAttribute("aria-label", t.labels.languageSelect);
+  pageTitle.textContent = t.labels.pageTitle;
+  subtitle.textContent = t.labels.subtitle;
   difficultyLabel.textContent = t.labels.difficulty;
   poolLabel.textContent = t.labels.pool;
   wrathLabel.textContent = t.labels.wrath;
-  wrathHint.textContent = t.hints.wrathLimit;
-  rollButton.textContent = t.buttons.roll;
+  wrathHint.textContent = t.labels.wrathHint;
+  rollButton.textContent = t.labels.roll;
   resetState();
 };
 
@@ -218,7 +213,7 @@ const handleRoll = () => {
   const t = translations[currentLanguage].messages;
 
   diceContainer.innerHTML = "";
-  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].placeholders.rolling}</p>`;
+  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].labels.placeholderRolling}</p>`;
 
   const diceElements = [];
   for (let i = 0; i < pool; i += 1) {

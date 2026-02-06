@@ -25,6 +25,7 @@ Celem jest umożliwienie odtworzenia modułu 1:1 bez dostępu do kodu.
 ### 2.2 `<body>` i główny układ
 - Główny kontener: `<main class="wrap">`.
 - Wewnątrz **jedna karta** (`<section class="panel">`) z:
+  - przełącznikiem języka (`<div class="language-switcher">` + `<select id="languageSelect">`),
   - siatką pól wejściowych,
   - przyciskami akcji i statusem trybu losowania,
   - separatorem,
@@ -192,6 +193,14 @@ Każda funkcja generatora:
   3. Ustawia pill (`Losowo: SEED` / `Losowo: TAK`).
   4. Waliduje liczbę wyników (1–20).
   5. Generuje listę z prefiksem `•` i wrzuca do `#res`.
+
+### 4.6.1 Lokalizacja UI
+- Obiekt `translations` zawiera teksty dla `pl` i `en`, zgrupowane w `labels`.
+- `applyLanguage(lang)`:
+  - ustawia `document.documentElement.lang`,
+  - uzupełnia etykiety, przyciski, podpowiedzi i placeholdery,
+  - przełącza tekst pilla losowości oraz komunikatów kopiowania.
+- `#languageSelect` domyślnie ustawiony na `pl` i uruchamia `applyLanguage()` przy zmianie.
 
 ### 4.7 Obsługa przycisków
 - `#gen` → `generate()`.

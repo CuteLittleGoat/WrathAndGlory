@@ -9,21 +9,27 @@
   <body>
     <main class="wrap">
       <section class="panel">
+        <div class="language-switcher">
+          <select id="languageSelect" aria-label="Wersja językowa">
+            <option value="pl">Polski</option>
+            <option value="en">English</option>
+          </select>
+        </div>
         <div class="grid">
           <div class="field">
-            <label for="cat">Kategoria</label>
+            <label for="cat" id="labelCategory">Kategoria</label>
             <select id="cat"></select>
           </div>
           <div class="field">
-            <label for="opt">Opcja</label>
+            <label for="opt" id="labelOption">Opcja</label>
             <select id="opt"></select>
           </div>
           <div class="field">
-            <label for="seed">Seed</label>
+            <label for="seed" id="labelSeed">Seed</label>
             <input id="seed" placeholder="wpis cokolwiek" />
           </div>
           <div class="field">
-            <label for="count">Ile</label>
+            <label for="count" id="labelCount">Ile</label>
             <input id="count" type="number" min="1" max="20" value="10" />
           </div>
         </div>
@@ -40,7 +46,7 @@
           <div class="results" id="res">Wybierz kategorię i kliknij „Generuj”.</div>
         </div>
 
-        <p class="hint">
+        <p class="hint" id="seedHint">
           Seed = te same ustawienia → te same wyniki. Brak seeda = prawdziwie losowe.
         </p>
       </section>

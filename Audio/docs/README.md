@@ -23,6 +23,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 ### Tryby działania
 - **Widok użytkownika** (domyślny): widoczne są tylko dwa panele — siatka odtwarzania dźwięków z „Głównego widoku”/„Ulubionych” oraz panel nawigacji list.
 - **Widok admina**: pełna konfiguracja (wczytywanie manifestu, zarządzanie listami, układ „Głównego widoku”) **oraz** te same dwa panele z widoku użytkownika jako podgląd, który odświeża się i działa tak samo jak u użytkownika.
+- Przełącznik języka znajduje się w nagłówku i domyślnie ustawiony jest na **Polski**.
 
 ### Jak korzystać (użytkownik)
 1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
@@ -88,6 +89,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 ### Modes
 - **User view** (default): only two panels are visible — the playback grid (Main View/Favorites) and the navigation panel.
 - **Admin view**: full configuration (manifest reload, list management, Main View order) **plus** the same two user panels shown as a preview that refreshes and behaves exactly like the user view.
+- The language switcher is in the header and defaults to **Polish**.
 
 ### How to use (user)
 1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.

@@ -42,7 +42,8 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 ## 4. Struktura HTML i elementy UI
 
 ### 4.1. Pasek górny (`.topbar`)
-- Zawiera tytuł aplikacji oraz dwa przyciski:
+- Zawiera tytuł aplikacji, przełącznik języka oraz dwa przyciski:
+  - **Wersja językowa** (`#languageSelect`) — select z opcjami PL/EN, z ciemnym tłem.
   - **Reset** (`#reset-page`) — przywraca domyślny stan wyborów.
   - **Generuj kartę** (`#generate-card`) — uruchamia generowanie karty do druku.
 

@@ -38,13 +38,14 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 3. (Uwaga) W przeglądarkach audio może zostać zablokowane przez politykę autoplay — w takim przypadku wykonaj dowolną interakcję (kliknięcie/kliknięcie ekranu), aby dźwięk mógł się odtworzyć. W aplikacji Android/WebView dźwięk może działać bez dodatkowego kroku, jeśli WebView zezwala na autoplay.
 
 #### 2) Wysyłanie komunikatu
-1. Wybierz frakcję (layout) z listy.
-2. Ustaw kolor i rozmiar treści wiadomości.
-3. Ustaw kolor i rozmiar prefiksu/sufiksu.
-4. Zdecyduj, czy fillery (prefix/suffix) mają być losowane automatycznie, czy wybierane ręcznie.
-5. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
-6. Wpisz treść komunikatu.
-7. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje nową treść z wybranym layoutem.
+1. (Opcjonalnie) W górnym selectorze przełącz język interfejsu (domyślnie **Polski**).
+2. Wybierz frakcję (layout) z listy.
+3. Ustaw kolor i rozmiar treści wiadomości.
+4. Ustaw kolor i rozmiar prefiksu/sufiksu.
+5. Zdecyduj, czy fillery (prefix/suffix) mają być losowane automatycznie, czy wybierane ręcznie.
+6. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
+7. Wpisz treść komunikatu.
+8. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje nową treść z wybranym layoutem.
 
 #### 3) Dodatkowe akcje
 - **Ping** — wysyła tylko sygnał dźwiękowy (bez zmiany treści) i odświeża styl w infoczytniku.
@@ -109,13 +110,14 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 3. (Note) Browsers can block audio due to autoplay policies — if that happens, perform any interaction (click/tap) so audio can play. In the Android/WebView app audio can work without an extra step if the WebView allows autoplay.
 
 #### 2) Sending a message
-1. Select the faction (layout) from the list.
-2. Set the message color and size.
-3. Set the prefix/suffix color and size.
-4. Decide whether fillers (prefix/suffix) are randomized or selected manually.
-5. (Optional) Toggle the logo and the “flicker” effect.
-6. Enter the message text.
-7. Click **Wyślij / Send** — the player screen renders the new message and layout immediately.
+1. (Optional) Use the language switcher at the top (Polish is selected by default).
+2. Select the faction (layout) from the list.
+3. Set the message color and size.
+4. Set the prefix/suffix color and size.
+5. Decide whether fillers (prefix/suffix) are randomized or selected manually.
+6. (Optional) Toggle the logo and the “flicker” effect.
+7. Enter the message text.
+8. Click **Wyślij / Send** — the player screen renders the new message and layout immediately.
 
 #### 3) Additional actions
 - **Ping** — sends only a sound signal (no content change) and refreshes styles on the player screen.

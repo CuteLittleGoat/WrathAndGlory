@@ -62,7 +62,7 @@ window.firebaseConfig = {
 ## 5. `index.html` — layout i HTML
 - `<title>` ustawiony na `Kozie Audio` (tytuł karty przeglądarki).
 - Główny kontener `.page` zawiera:
-  1. **Nagłówek** `header` z tytułem, opisem i paskiem statusów (cały nagłówek jest widoczny tylko w trybie admina).
+  1. **Nagłówek** `header` z tytułem, opisem, przełącznikiem języka (`#languageSelect`) i paskiem statusów (cały nagłówek jest widoczny tylko w trybie admina).
   2. **Toolbar** `.toolbar` (tylko admin): przycisk wczytywania manifestu oraz przyciski zarządzania listami.
   3. **Belka filtrów tagów** `.tag-filter-bar` (tylko admin):
      - nagłówek z przyciskiem **Ukryj/Pokaż panel**,
