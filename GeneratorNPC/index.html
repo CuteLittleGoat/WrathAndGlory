@@ -9,88 +9,94 @@
   <body>
     <header class="topbar">
       <div class="brand">
-        <h1>Generator NPC</h1>
+        <h1 data-i18n="pageTitle">Generator NPC</h1>
       </div>
       <div class="actions">
-        <button class="btn" id="reset-page">Reset</button>
-        <button class="btn primary" id="generate-card">Generuj kartę</button>
+        <div class="language-switcher">
+          <select id="languageSelect" aria-label="Wersja językowa">
+            <option value="pl">Polski</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+        <button class="btn" id="reset-page" data-i18n="resetButton">Reset</button>
+        <button class="btn primary" id="generate-card" data-i18n="generateButton">Generuj kartę</button>
       </div>
     </header>
 
     <main class="layout">
       <aside class="sidebar">
         <section class="panel">
-          <h2>Źródło danych</h2>
+          <h2 data-i18n="dataSourceTitle">Źródło danych</h2>
           <p class="text-muted">
-            Dane są pobierane z pliku
+            <span data-i18n="dataSourcePrefix">Dane są pobierane z pliku</span>
             <a class="link" href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json">
               cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json
             </a>
-            , bez modyfikacji źródła.
+            <span data-i18n="dataSourceSuffix">, bez modyfikacji źródła.</span>
           </p>
-          <p class="text-muted" id="data-status" aria-live="polite">Ładowanie danych...</p>
+          <p class="text-muted" id="data-status" aria-live="polite" data-i18n="dataStatusLoading">Ładowanie danych...</p>
         </section>
 
         <section class="panel">
-          <h2>Wybór bazowy</h2>
+          <h2 data-i18n="baseSelectionTitle">Wybór bazowy</h2>
           <div class="field">
-            <label for="bestiary">Bestiariusz · Nazwa</label>
+            <label for="bestiary" data-i18n="bestiaryLabel">Bestiariusz · Nazwa</label>
             <select id="bestiary">
-              <option value="" disabled selected>Ładowanie danych...</option>
+              <option value="" disabled selected data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <div class="field">
-            <label for="bestiary-notes">Uwagi do rekordu</label>
-            <textarea id="bestiary-notes" rows="3" placeholder="Opcjonalne notatki"></textarea>
+            <label for="bestiary-notes" data-i18n="bestiaryNotesLabel">Uwagi do rekordu</label>
+            <textarea id="bestiary-notes" rows="3" placeholder="Opcjonalne notatki" data-i18n-placeholder="bestiaryNotesPlaceholder"></textarea>
           </div>
         </section>
 
         <section class="panel">
-          <h2>Moduły aktywne</h2>
+          <h2 data-i18n="activeModulesTitle">Moduły aktywne</h2>
           <div class="checkbox-list">
             <label class="checkbox">
               <input type="checkbox" checked data-module-toggle="weapon" />
-              <span>Broń — ustaw ataki i cechy.</span>
+              <span data-i18n="moduleWeapon">Broń — ustaw ataki i cechy.</span>
             </label>
             <label class="checkbox">
               <input type="checkbox" data-module-toggle="armor" />
-              <span>Pancerz — nadpisz WP i cechy.</span>
+              <span data-i18n="moduleArmor">Pancerz — nadpisz WP i cechy.</span>
             </label>
             <label class="checkbox">
               <input type="checkbox" data-module-toggle="augmentations" />
-              <span>Augumentacje — moduł modyfikacji.</span>
+              <span data-i18n="moduleAugmentations">Augumentacje — moduł modyfikacji.</span>
             </label>
             <label class="checkbox">
               <input type="checkbox" data-module-toggle="equipment" />
-              <span>Ekwipunek — lista przedmiotów.</span>
+              <span data-i18n="moduleEquipment">Ekwipunek — lista przedmiotów.</span>
             </label>
             <label class="checkbox">
               <input type="checkbox" data-module-toggle="talents" />
-              <span>Talenty — lista umiejętności.</span>
+              <span data-i18n="moduleTalents">Talenty — lista umiejętności.</span>
             </label>
             <label class="checkbox">
               <input type="checkbox" data-module-toggle="psionics" />
-              <span>Psionika — lista zdolności.</span>
+              <span data-i18n="modulePsionics">Psionika — lista zdolności.</span>
             </label>
             <label class="checkbox">
               <input type="checkbox" data-module-toggle="prayers" />
-              <span>Modlitwy — lista zaklęć.</span>
+              <span data-i18n="modulePrayers">Modlitwy — lista zaklęć.</span>
             </label>
           </div>
         </section>
 
         <section class="panel">
-          <h2>Ulubione</h2>
+          <h2 data-i18n="favoritesTitle">Ulubione</h2>
           <p class="text-muted" id="favorites-status" aria-live="polite">
-            Łączenie z listą ulubionych...
+            <span data-i18n="favoritesStatusConnecting">Łączenie z listą ulubionych...</span>
           </p>
           <div class="field">
-            <label for="favorites-alias">Alias (opcjonalny)</label>
-            <input type="text" id="favorites-alias" placeholder="Np. Ork dowódca" />
+            <label for="favorites-alias" data-i18n="favoritesAliasLabel">Alias (opcjonalny)</label>
+            <input type="text" id="favorites-alias" placeholder="Np. Ork dowódca" data-i18n-placeholder="favoritesAliasPlaceholder" />
           </div>
           <div class="favorites-actions">
-            <button class="btn secondary" id="favorites-add">Dodaj do ulubionych</button>
-            <button class="btn" id="favorites-refresh">Odśwież</button>
+            <button class="btn secondary" id="favorites-add" data-i18n="favoritesAddButton">Dodaj do ulubionych</button>
+            <button class="btn" id="favorites-refresh" data-i18n="favoritesRefreshButton">Odśwież</button>
           </div>
           <div class="favorites-list" id="favorites-list"></div>
         </section>
@@ -99,17 +105,17 @@
 
       <section class="workspace">
         <div class="card">
-          <h3>Podgląd bazowy <span class="badge">Bestiariusz</span></h3>
+          <h3><span data-i18n="basePreviewTitle">Podgląd bazowy</span> <span class="badge" data-i18n="basePreviewBadge">Bestiariusz</span></h3>
           <table class="data-table" data-sheet="Bestiariusz">
             <thead>
               <tr>
-                <th>Klucz</th>
-                <th>Wartość</th>
+                <th data-i18n="tableKeyHeader">Klucz</th>
+                <th data-i18n="tableValueHeader">Wartość</th>
               </tr>
             </thead>
             <tbody id="bestiary-table-body">
               <tr>
-                <td colspan="2" class="text-muted">Ładowanie danych...</td>
+                <td colspan="2" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -117,38 +123,38 @@
 
         <div class="card" data-module-section="weapon">
           <div class="card-header">
-            <h3>Wybór Broni</h3>
+            <h3 data-i18n="weaponSectionTitle">Wybór Broni</h3>
           </div>
           <div class="field">
             <div class="field-label-row">
-              <label for="weapon">Bronie</label>
+              <label for="weapon" data-i18n="weaponLabel">Bronie</label>
               <label class="checkbox checkbox-inline">
                 <input type="checkbox" id="weapon-trait-descriptions" />
-                <span>Czy dodać opis Cech?</span>
+                <span data-i18n="weaponTraitToggle">Czy dodać opis Cech?</span>
               </label>
             </div>
             <select id="weapon" multiple size="15">
-              <option value="" disabled>Ładowanie danych...</option>
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <table class="data-table" data-sheet="Bronie">
             <thead>
               <tr>
-                <th class="min-col-nazwa">Nazwa</th>
-                <th class="min-col-obrazenia">Obrażenia</th>
-                <th class="min-col-dk">DK</th>
-                <th class="min-col-pp">PP</th>
-                <th class="min-col-zasieg">Zasięg</th>
-                <th class="min-col-szybkostrzelnosc">Szybkostrzelność</th>
-                <th class="min-col-cechy">Cechy</th>
-                <th class="min-col-slowa-kluczowe">Słowa Kluczowe</th>
-                <th class="min-col-podrecznik">Podręcznik</th>
-                <th class="min-col-strona">Strona</th>
+                <th class="min-col-nazwa" data-i18n="weaponHeaderName">Nazwa</th>
+                <th class="min-col-obrazenia" data-i18n="weaponHeaderDamage">Obrażenia</th>
+                <th class="min-col-dk" data-i18n="weaponHeaderDn">DK</th>
+                <th class="min-col-pp" data-i18n="weaponHeaderAp">PP</th>
+                <th class="min-col-zasieg" data-i18n="weaponHeaderRange">Zasięg</th>
+                <th class="min-col-szybkostrzelnosc" data-i18n="weaponHeaderRate">Szybkostrzelność</th>
+                <th class="min-col-cechy" data-i18n="weaponHeaderTraits">Cechy</th>
+                <th class="min-col-slowa-kluczowe" data-i18n="weaponHeaderKeywords">Słowa Kluczowe</th>
+                <th class="min-col-podrecznik" data-i18n="weaponHeaderBook">Podręcznik</th>
+                <th class="min-col-strona" data-i18n="weaponHeaderPage">Strona</th>
               </tr>
             </thead>
             <tbody id="weapon-table-body">
               <tr>
-                <td colspan="10" class="text-muted">Ładowanie danych...</td>
+                <td colspan="10" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -156,34 +162,34 @@
 
         <div class="card" data-module-section="armor">
           <div class="card-header">
-            <h3>Wybór Pancerzy</h3>
+            <h3 data-i18n="armorSectionTitle">Wybór Pancerzy</h3>
           </div>
           <div class="field">
             <div class="field-label-row">
-              <label for="armor">Pancerze</label>
+              <label for="armor" data-i18n="armorLabel">Pancerze</label>
               <label class="checkbox checkbox-inline">
                 <input type="checkbox" id="armor-trait-descriptions" />
-                <span>Czy dodać opis Cech?</span>
+                <span data-i18n="armorTraitToggle">Czy dodać opis Cech?</span>
               </label>
             </div>
             <select id="armor" multiple size="15">
-              <option value="" disabled>Ładowanie danych...</option>
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <table class="data-table" data-sheet="Pancerze">
             <thead>
               <tr>
-                <th class="min-col-nazwa">Nazwa</th>
-                <th class="min-col-wp">WP</th>
-                <th class="min-col-cechy">Cechy</th>
-                <th class="min-col-slowa-kluczowe">Słowa Kluczowe</th>
-                <th class="min-col-podrecznik">Podręcznik</th>
-                <th class="min-col-strona">Strona</th>
+                <th class="min-col-nazwa" data-i18n="armorHeaderName">Nazwa</th>
+                <th class="min-col-wp" data-i18n="armorHeaderWp">WP</th>
+                <th class="min-col-cechy" data-i18n="armorHeaderTraits">Cechy</th>
+                <th class="min-col-slowa-kluczowe" data-i18n="armorHeaderKeywords">Słowa Kluczowe</th>
+                <th class="min-col-podrecznik" data-i18n="armorHeaderBook">Podręcznik</th>
+                <th class="min-col-strona" data-i18n="armorHeaderPage">Strona</th>
               </tr>
             </thead>
             <tbody id="armor-table-body">
               <tr>
-                <td colspan="6" class="text-muted">Ładowanie danych...</td>
+                <td colspan="6" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -191,30 +197,30 @@
 
         <div class="card" data-module-section="augmentations">
           <div class="card-header">
-            <h3>Wybór Augumentacji</h3>
+            <h3 data-i18n="augmentationsSectionTitle">Wybór Augumentacji</h3>
           </div>
           <div class="field">
             <div class="field-label-row">
-              <label for="augmentations">Augumentacje</label>
+              <label for="augmentations" data-i18n="augmentationsLabel">Augumentacje</label>
               <label class="checkbox checkbox-inline">
                 <input type="checkbox" id="augmentations-full-details" />
-                <span>Czy dodać pełen opis?</span>
+                <span data-i18n="augmentationsDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
             <select id="augmentations" multiple size="15">
-              <option value="" disabled>Ładowanie danych...</option>
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <table class="data-table" data-sheet="Augumentacje">
             <thead>
               <tr>
-                <th class="min-col-nazwa">Nazwa</th>
-                <th class="min-col-efekt">Efekt</th>
+                <th class="min-col-nazwa" data-i18n="augmentationsHeaderName">Nazwa</th>
+                <th class="min-col-efekt" data-i18n="augmentationsHeaderEffect">Efekt</th>
               </tr>
             </thead>
             <tbody id="augmentations-table-body">
               <tr>
-                <td colspan="2" class="text-muted">Ładowanie danych...</td>
+                <td colspan="2" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -222,30 +228,30 @@
 
         <div class="card" data-module-section="equipment">
           <div class="card-header">
-            <h3>Wybór Ekwipunku</h3>
+            <h3 data-i18n="equipmentSectionTitle">Wybór Ekwipunku</h3>
           </div>
           <div class="field">
             <div class="field-label-row">
-              <label for="equipment">Ekwipunek</label>
+              <label for="equipment" data-i18n="equipmentLabel">Ekwipunek</label>
               <label class="checkbox checkbox-inline">
                 <input type="checkbox" id="equipment-full-details" />
-                <span>Czy dodać pełen opis?</span>
+                <span data-i18n="equipmentDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
             <select id="equipment" multiple size="15">
-              <option value="" disabled>Ładowanie danych...</option>
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <table class="data-table" data-sheet="Ekwipunek">
             <thead>
               <tr>
-                <th class="min-col-nazwa">Nazwa</th>
-                <th class="min-col-efekt">Efekt</th>
+                <th class="min-col-nazwa" data-i18n="equipmentHeaderName">Nazwa</th>
+                <th class="min-col-efekt" data-i18n="equipmentHeaderEffect">Efekt</th>
               </tr>
             </thead>
             <tbody id="equipment-table-body">
               <tr>
-                <td colspan="2" class="text-muted">Ładowanie danych...</td>
+                <td colspan="2" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -253,30 +259,30 @@
 
         <div class="card" data-module-section="talents">
           <div class="card-header">
-            <h3>Wybór Talentów</h3>
+            <h3 data-i18n="talentsSectionTitle">Wybór Talentów</h3>
           </div>
           <div class="field">
             <div class="field-label-row">
-              <label for="talents">Talenty</label>
+              <label for="talents" data-i18n="talentsLabel">Talenty</label>
               <label class="checkbox checkbox-inline">
                 <input type="checkbox" id="talents-full-details" />
-                <span>Czy dodać pełen opis?</span>
+                <span data-i18n="talentsDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
             <select id="talents" multiple size="15">
-              <option value="" disabled>Ładowanie danych...</option>
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <table class="data-table" data-sheet="Talenty">
             <thead>
               <tr>
-                <th class="min-col-nazwa">Nazwa</th>
-                <th class="min-col-efekt">Efekt</th>
+                <th class="min-col-nazwa" data-i18n="talentsHeaderName">Nazwa</th>
+                <th class="min-col-efekt" data-i18n="talentsHeaderEffect">Efekt</th>
               </tr>
             </thead>
             <tbody id="talents-table-body">
               <tr>
-                <td colspan="2" class="text-muted">Ładowanie danych...</td>
+                <td colspan="2" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -284,36 +290,36 @@
 
         <div class="card" data-module-section="psionics">
           <div class="card-header">
-            <h3>Wybór Psioniki</h3>
+            <h3 data-i18n="psionicsSectionTitle">Wybór Psioniki</h3>
           </div>
           <div class="field">
             <div class="field-label-row">
-              <label for="psionics">Psionika</label>
+              <label for="psionics" data-i18n="psionicsLabel">Psionika</label>
               <label class="checkbox checkbox-inline">
                 <input type="checkbox" id="psionics-full-details" />
-                <span>Czy dodać pełen opis?</span>
+                <span data-i18n="psionicsDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
             <select id="psionics" multiple size="15">
-              <option value="" disabled>Ładowanie danych...</option>
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <table class="data-table" data-sheet="Psionika">
             <thead>
               <tr>
-                <th class="min-col-nazwa">Nazwa</th>
-                <th class="min-col-st">ST</th>
-                <th class="min-col-aktywacja">Aktywacja</th>
-                <th class="min-col-czas-trwania">Czas trwania</th>
-                <th class="min-col-zasieg">Zasięg</th>
-                <th class="min-col-wiele-celow">Wiele Celów</th>
-                <th class="min-col-efekt">Efekt</th>
-                <th class="min-col-wzmocnienie">Wzmocnienie</th>
+                <th class="min-col-nazwa" data-i18n="psionicsHeaderName">Nazwa</th>
+                <th class="min-col-st" data-i18n="psionicsHeaderSt">ST</th>
+                <th class="min-col-aktywacja" data-i18n="psionicsHeaderActivation">Aktywacja</th>
+                <th class="min-col-czas-trwania" data-i18n="psionicsHeaderDuration">Czas trwania</th>
+                <th class="min-col-zasieg" data-i18n="psionicsHeaderRange">Zasięg</th>
+                <th class="min-col-wiele-celow" data-i18n="psionicsHeaderTargets">Wiele Celów</th>
+                <th class="min-col-efekt" data-i18n="psionicsHeaderEffect">Efekt</th>
+                <th class="min-col-wzmocnienie" data-i18n="psionicsHeaderBoost">Wzmocnienie</th>
               </tr>
             </thead>
             <tbody id="psionics-table-body">
               <tr>
-                <td colspan="8" class="text-muted">Ładowanie danych...</td>
+                <td colspan="8" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -321,30 +327,30 @@
 
         <div class="card" data-module-section="prayers">
           <div class="card-header">
-            <h3>Wybór Modlitw</h3>
+            <h3 data-i18n="prayersSectionTitle">Wybór Modlitw</h3>
           </div>
           <div class="field">
             <div class="field-label-row">
-              <label for="prayers">Modlitwy (wielokrotny wybór)</label>
+              <label for="prayers" data-i18n="prayersLabel">Modlitwy (wielokrotny wybór)</label>
               <label class="checkbox checkbox-inline">
                 <input type="checkbox" id="prayers-full-details" />
-                <span>Czy dodać pełen opis?</span>
+                <span data-i18n="prayersDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
             <select id="prayers" multiple size="15">
-              <option value="" disabled>Ładowanie danych...</option>
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
           </div>
           <table class="data-table" data-sheet="Modlitwy">
             <thead>
               <tr>
-                <th class="min-col-nazwa">Nazwa</th>
-                <th class="min-col-efekt">Efekt</th>
+                <th class="min-col-nazwa" data-i18n="prayersHeaderName">Nazwa</th>
+                <th class="min-col-efekt" data-i18n="prayersHeaderEffect">Efekt</th>
               </tr>
             </thead>
             <tbody id="prayers-table-body">
               <tr>
-                <td colspan="2" class="text-muted">Ładowanie danych...</td>
+                <td colspan="2" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
               </tr>
             </tbody>
           </table>
@@ -354,8 +360,8 @@
     </main>
 
     <aside class="popover" id="trait-popover">
-      <h4 id="trait-title">Opis cechy</h4>
-      <p id="trait-description">Kliknij tag, aby zobaczyć opis cechy.</p>
+      <h4 id="trait-title" data-i18n="traitPopoverTitle">Opis cechy</h4>
+      <p id="trait-description" data-i18n="traitPopoverDescription">Kliknij tag, aby zobaczyć opis cechy.</p>
     </aside>
 
     <script src="config/firebase-config.js"></script>
@@ -397,6 +403,7 @@
       const favoritesRefreshButton = document.querySelector("#favorites-refresh");
       const favoritesList = document.querySelector("#favorites-list");
       const favoritesStatus = document.querySelector("#favorites-status");
+      const languageSelect = document.querySelector("#languageSelect");
       const moduleToggles = Array.from(document.querySelectorAll("[data-module-toggle]"));
       const moduleSections = Array.from(document.querySelectorAll("[data-module-section]"));
       const armorTraitDescriptionsToggle = document.querySelector("#armor-trait-descriptions");
@@ -410,6 +417,293 @@
       const popover = document.querySelector("#trait-popover");
       const popoverTitle = document.querySelector("#trait-title");
       const popoverDescription = document.querySelector("#trait-description");
+
+      const translations = {
+        pl: {
+          labels: {
+            languageSelect: "Wersja językowa",
+            pageTitle: "Generator NPC",
+            resetButton: "Reset",
+            generateButton: "Generuj kartę",
+            dataSourceTitle: "Źródło danych",
+            dataSourcePrefix: "Dane są pobierane z pliku",
+            dataSourceSuffix: ", bez modyfikacji źródła.",
+            dataStatusLoading: "Ładowanie danych...",
+            baseSelectionTitle: "Wybór bazowy",
+            bestiaryLabel: "Bestiariusz · Nazwa",
+            bestiaryNotesLabel: "Uwagi do rekordu",
+            bestiaryNotesPlaceholder: "Opcjonalne notatki",
+            activeModulesTitle: "Moduły aktywne",
+            moduleWeapon: "Broń — ustaw ataki i cechy.",
+            moduleArmor: "Pancerz — nadpisz WP i cechy.",
+            moduleAugmentations: "Augumentacje — moduł modyfikacji.",
+            moduleEquipment: "Ekwipunek — lista przedmiotów.",
+            moduleTalents: "Talenty — lista umiejętności.",
+            modulePsionics: "Psionika — lista zdolności.",
+            modulePrayers: "Modlitwy — lista zaklęć.",
+            favoritesTitle: "Ulubione",
+            favoritesStatusConnecting: "Łączenie z listą ulubionych...",
+            favoritesAliasLabel: "Alias (opcjonalny)",
+            favoritesAliasPlaceholder: "Np. Ork dowódca",
+            favoritesAddButton: "Dodaj do ulubionych",
+            favoritesRefreshButton: "Odśwież",
+            basePreviewTitle: "Podgląd bazowy",
+            basePreviewBadge: "Bestiariusz",
+            tableKeyHeader: "Klucz",
+            tableValueHeader: "Wartość",
+            weaponSectionTitle: "Wybór Broni",
+            weaponLabel: "Bronie",
+            weaponTraitToggle: "Czy dodać opis Cech?",
+            weaponHeaderName: "Nazwa",
+            weaponHeaderDamage: "Obrażenia",
+            weaponHeaderDn: "DK",
+            weaponHeaderAp: "PP",
+            weaponHeaderRange: "Zasięg",
+            weaponHeaderRate: "Szybkostrzelność",
+            weaponHeaderTraits: "Cechy",
+            weaponHeaderKeywords: "Słowa Kluczowe",
+            weaponHeaderBook: "Podręcznik",
+            weaponHeaderPage: "Strona",
+            armorSectionTitle: "Wybór Pancerzy",
+            armorLabel: "Pancerze",
+            armorTraitToggle: "Czy dodać opis Cech?",
+            armorHeaderName: "Nazwa",
+            armorHeaderWp: "WP",
+            armorHeaderTraits: "Cechy",
+            armorHeaderKeywords: "Słowa Kluczowe",
+            armorHeaderBook: "Podręcznik",
+            armorHeaderPage: "Strona",
+            augmentationsSectionTitle: "Wybór Augumentacji",
+            augmentationsLabel: "Augumentacje",
+            augmentationsDetailsToggle: "Czy dodać pełen opis?",
+            augmentationsHeaderName: "Nazwa",
+            augmentationsHeaderEffect: "Efekt",
+            equipmentSectionTitle: "Wybór Ekwipunku",
+            equipmentLabel: "Ekwipunek",
+            equipmentDetailsToggle: "Czy dodać pełen opis?",
+            equipmentHeaderName: "Nazwa",
+            equipmentHeaderEffect: "Efekt",
+            talentsSectionTitle: "Wybór Talentów",
+            talentsLabel: "Talenty",
+            talentsDetailsToggle: "Czy dodać pełen opis?",
+            talentsHeaderName: "Nazwa",
+            talentsHeaderEffect: "Efekt",
+            psionicsSectionTitle: "Wybór Psioniki",
+            psionicsLabel: "Psionika",
+            psionicsDetailsToggle: "Czy dodać pełen opis?",
+            psionicsHeaderName: "Nazwa",
+            psionicsHeaderSt: "ST",
+            psionicsHeaderActivation: "Aktywacja",
+            psionicsHeaderDuration: "Czas trwania",
+            psionicsHeaderRange: "Zasięg",
+            psionicsHeaderTargets: "Wiele Celów",
+            psionicsHeaderEffect: "Efekt",
+            psionicsHeaderBoost: "Wzmocnienie",
+            prayersSectionTitle: "Wybór Modlitw",
+            prayersLabel: "Modlitwy (wielokrotny wybór)",
+            prayersDetailsToggle: "Czy dodać pełen opis?",
+            prayersHeaderName: "Nazwa",
+            prayersHeaderEffect: "Efekt",
+            traitPopoverTitle: "Opis cechy",
+            traitPopoverDescription: "Kliknij tag, aby zobaczyć opis cechy.",
+          },
+          messages: {
+            noDataOption: "Brak danych",
+            edit: "Edytuj",
+            save: "Zapisz",
+            favoritesEmpty: "Brak zapisanych ulubionych.",
+            firestoreSaveError: "Błąd zapisu w Firestore. Zapis lokalny włączony.",
+            firestoreNoAccess: "Brak dostępu do Firestore. Używam pamięci lokalnej.",
+            firestoreNoConfig: "Brak konfiguracji Firestore. Używam pamięci lokalnej.",
+            noDataDisplay: "Brak danych do wyświetlenia.",
+            loadSummary:
+              "Załadowano: Bestiariusz ({bestiary}), Pancerze ({armor}), Bronie ({weapons}), Augumentacje ({augmentations}), Ekwipunek ({equipment}), Talenty ({talents}), Psionika ({psionics}), Modlitwy ({prayers}).",
+            loadError: "Nie udało się pobrać danych. Sprawdź CORS i dostępność źródła.",
+            selectBestiary: "Wybierz nazwę...",
+            selectArmor: "Wybierz pancerze...",
+            selectWeapon: "Wybierz bronie...",
+            selectAugmentations: "Wybierz augumentacje...",
+            selectEquipment: "Wybierz ekwipunek...",
+            selectTalents: "Wybierz talenty...",
+            selectPsionics: "Wybierz psionikę...",
+            selectPrayers: "Wybierz modlitwy...",
+            armorDisabledTitle: "Pancerz z WP '-' nie może być wybrany.",
+            traitDescriptionUnavailable: "Opis cechy nie jest dostępny w _meta.traits.",
+          },
+        },
+        en: {
+          labels: {
+            languageSelect: "Language version",
+            pageTitle: "NPC Generator",
+            resetButton: "Reset",
+            generateButton: "Generate card",
+            dataSourceTitle: "Data source",
+            dataSourcePrefix: "Data is fetched from",
+            dataSourceSuffix: "without modifying the source.",
+            dataStatusLoading: "Loading data...",
+            baseSelectionTitle: "Base selection",
+            bestiaryLabel: "Bestiary · Name",
+            bestiaryNotesLabel: "Record notes",
+            bestiaryNotesPlaceholder: "Optional notes",
+            activeModulesTitle: "Active modules",
+            moduleWeapon: "Weapons — set attacks and traits.",
+            moduleArmor: "Armor — override armor value and traits.",
+            moduleAugmentations: "Augmentations — modification module.",
+            moduleEquipment: "Equipment — item list.",
+            moduleTalents: "Talents — skill list.",
+            modulePsionics: "Psionics — ability list.",
+            modulePrayers: "Prayers — spell list.",
+            favoritesTitle: "Favorites",
+            favoritesStatusConnecting: "Connecting to favorites list...",
+            favoritesAliasLabel: "Alias (optional)",
+            favoritesAliasPlaceholder: "e.g. Ork commander",
+            favoritesAddButton: "Add to favorites",
+            favoritesRefreshButton: "Refresh",
+            basePreviewTitle: "Base preview",
+            basePreviewBadge: "Bestiary",
+            tableKeyHeader: "Key",
+            tableValueHeader: "Value",
+            weaponSectionTitle: "Weapon selection",
+            weaponLabel: "Weapons",
+            weaponTraitToggle: "Include trait descriptions?",
+            weaponHeaderName: "Name",
+            weaponHeaderDamage: "Damage",
+            weaponHeaderDn: "DN",
+            weaponHeaderAp: "AP",
+            weaponHeaderRange: "Range",
+            weaponHeaderRate: "Rate of fire",
+            weaponHeaderTraits: "Traits",
+            weaponHeaderKeywords: "Keywords",
+            weaponHeaderBook: "Source",
+            weaponHeaderPage: "Page",
+            armorSectionTitle: "Armor selection",
+            armorLabel: "Armor",
+            armorTraitToggle: "Include trait descriptions?",
+            armorHeaderName: "Name",
+            armorHeaderWp: "AV",
+            armorHeaderTraits: "Traits",
+            armorHeaderKeywords: "Keywords",
+            armorHeaderBook: "Source",
+            armorHeaderPage: "Page",
+            augmentationsSectionTitle: "Augmentation selection",
+            augmentationsLabel: "Augmentations",
+            augmentationsDetailsToggle: "Include full description?",
+            augmentationsHeaderName: "Name",
+            augmentationsHeaderEffect: "Effect",
+            equipmentSectionTitle: "Equipment selection",
+            equipmentLabel: "Equipment",
+            equipmentDetailsToggle: "Include full description?",
+            equipmentHeaderName: "Name",
+            equipmentHeaderEffect: "Effect",
+            talentsSectionTitle: "Talent selection",
+            talentsLabel: "Talents",
+            talentsDetailsToggle: "Include full description?",
+            talentsHeaderName: "Name",
+            talentsHeaderEffect: "Effect",
+            psionicsSectionTitle: "Psionics selection",
+            psionicsLabel: "Psionics",
+            psionicsDetailsToggle: "Include full description?",
+            psionicsHeaderName: "Name",
+            psionicsHeaderSt: "DN",
+            psionicsHeaderActivation: "Activation",
+            psionicsHeaderDuration: "Duration",
+            psionicsHeaderRange: "Range",
+            psionicsHeaderTargets: "Targets",
+            psionicsHeaderEffect: "Effect",
+            psionicsHeaderBoost: "Boost",
+            prayersSectionTitle: "Prayer selection",
+            prayersLabel: "Prayers (multi-select)",
+            prayersDetailsToggle: "Include full description?",
+            prayersHeaderName: "Name",
+            prayersHeaderEffect: "Effect",
+            traitPopoverTitle: "Trait description",
+            traitPopoverDescription: "Click a tag to see its trait description.",
+          },
+          messages: {
+            noDataOption: "No data",
+            edit: "Edit",
+            save: "Save",
+            favoritesEmpty: "No saved favorites.",
+            firestoreSaveError: "Firestore save failed. Local storage enabled.",
+            firestoreNoAccess: "No access to Firestore. Using local storage.",
+            firestoreNoConfig: "Firestore not configured. Using local storage.",
+            noDataDisplay: "No data to display.",
+            loadSummary:
+              "Loaded: Bestiary ({bestiary}), Armor ({armor}), Weapons ({weapons}), Augmentations ({augmentations}), Equipment ({equipment}), Talents ({talents}), Psionics ({psionics}), Prayers ({prayers}).",
+            loadError: "Failed to fetch data. Check CORS and source availability.",
+            selectBestiary: "Select a name...",
+            selectArmor: "Select armor...",
+            selectWeapon: "Select weapons...",
+            selectAugmentations: "Select augmentations...",
+            selectEquipment: "Select equipment...",
+            selectTalents: "Select talents...",
+            selectPsionics: "Select psionics...",
+            selectPrayers: "Select prayers...",
+            armorDisabledTitle: "Armor with AV '-' cannot be selected.",
+            traitDescriptionUnavailable: "Trait description is unavailable in _meta.traits.",
+          },
+        },
+      };
+
+      let currentLanguage = "pl";
+
+      const applyLanguage = (lang) => {
+        currentLanguage = lang;
+        const t = translations[lang];
+        document.documentElement.lang = lang;
+        if (languageSelect) {
+          languageSelect.value = lang;
+          languageSelect.setAttribute("aria-label", t.labels.languageSelect);
+        }
+        document.querySelectorAll("[data-i18n]").forEach((el) => {
+          const key = el.getAttribute("data-i18n");
+          if (key in t.labels) {
+            el.textContent = t.labels[key];
+          }
+        });
+        document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+          const key = el.getAttribute("data-i18n-placeholder");
+          if (key in t.labels) {
+            el.setAttribute("placeholder", t.labels[key]);
+          }
+        });
+        const updatePlaceholder = (select, placeholder) => {
+          const option = select.querySelector("option[value=\"\"]");
+          if (option) {
+            option.textContent = placeholder;
+          }
+        };
+        updatePlaceholder(bestiarySelect, t.messages.selectBestiary);
+        updatePlaceholder(armorSelect, t.messages.selectArmor);
+        updatePlaceholder(weaponSelect, t.messages.selectWeapon);
+        updatePlaceholder(augmentationsSelect, t.messages.selectAugmentations);
+        updatePlaceholder(equipmentSelect, t.messages.selectEquipment);
+        updatePlaceholder(talentsSelect, t.messages.selectTalents);
+        updatePlaceholder(psionicsSelect, t.messages.selectPsionics);
+        updatePlaceholder(prayersSelect, t.messages.selectPrayers);
+        if (favoritesStatus.querySelector("[data-i18n]")) {
+          favoritesStatus.querySelector("[data-i18n]").textContent = t.labels.favoritesStatusConnecting;
+        }
+        if (state.data) {
+          setStatus(
+            formatText(t.messages.loadSummary, {
+              bestiary: state.bestiary.length,
+              armor: state.armor.length,
+              weapons: state.weapons.length,
+              augmentations: state.augmentations.length,
+              equipment: state.equipment.length,
+              talents: state.talents.length,
+              psionics: state.psionics.length,
+              prayers: state.prayers.length,
+            })
+          );
+        } else {
+          dataStatus.textContent = t.labels.dataStatusLoading;
+        }
+      };
+
+      const formatText = (template, vars = {}) =>
+        template.replace(/\{(\w+)\}/g, (_, key) => (key in vars ? vars[key] : ""));
 
       const CLAMP_LINES = 9;
       const MAX_NUMERIC_INPUT_LENGTH = 25;
@@ -1025,7 +1319,7 @@
         if (state.traits.has(normalizeText(traitName))) {
           return state.traits.get(normalizeText(traitName));
         }
-        return "Opis cechy nie jest dostępny w _meta.traits.";
+        return translations[currentLanguage].messages.traitDescriptionUnavailable;
       };
 
       const setStatus = (message) => {
@@ -1050,7 +1344,7 @@
         if (!items.length) {
           const option = document.createElement("option");
           option.value = "";
-          option.textContent = "Brak danych";
+          option.textContent = translations[currentLanguage].messages.noDataOption;
           option.disabled = true;
           option.selected = true;
           select.append(option);
@@ -1253,7 +1547,9 @@
         button.type = "button";
         button.className = "btn secondary btn-small";
         const isEditing = state.bestiaryOverrides.skillsEditing;
-        button.textContent = isEditing ? "Zapisz" : "Edytuj";
+        button.textContent = isEditing
+          ? translations[currentLanguage].messages.save
+          : translations[currentLanguage].messages.edit;
         keyCell.append(label, button);
         row.append(keyCell);
 
@@ -1583,7 +1879,7 @@
         if (!state.favorites.length) {
           const empty = document.createElement("p");
           empty.className = "text-muted";
-          empty.textContent = "Brak zapisanych ulubionych.";
+          empty.textContent = translations[currentLanguage].messages.favoritesEmpty;
           favoritesList.append(empty);
           return;
         }
@@ -1663,7 +1959,7 @@
             );
             return;
           } catch (error) {
-            setFavoritesStatus("Błąd zapisu w Firestore. Zapis lokalny włączony.", { isError: true });
+          setFavoritesStatus(translations[currentLanguage].messages.firestoreSaveError, { isError: true });
             state.usingFirestore = false;
           }
         }
@@ -1693,7 +1989,7 @@
               (error) => {
                 console.warn("Błąd subskrypcji Firestore", error);
                 state.usingFirestore = false;
-                setFavoritesStatus("Brak dostępu do Firestore. Używam pamięci lokalnej.", {
+                setFavoritesStatus(translations[currentLanguage].messages.firestoreNoAccess, {
                   isError: true,
                 });
                 loadFavoritesFromLocal();
@@ -1705,7 +2001,7 @@
             state.usingFirestore = false;
           }
         }
-        setFavoritesStatus("Brak konfiguracji Firestore. Używam pamięci lokalnej.");
+        setFavoritesStatus(translations[currentLanguage].messages.firestoreNoConfig);
         loadFavoritesFromLocal();
       };
 
@@ -2515,7 +2811,7 @@
       };
 
       const loadData = async () => {
-        setStatus("Ładowanie danych...");
+        setStatus(translations[currentLanguage].labels.dataStatusLoading);
         state.expandedCells.clear();
         bestiarySelect.disabled = true;
         armorSelect.disabled = true;
@@ -2543,19 +2839,28 @@
             typeDescending: true,
           });
           state.prayers = sortByName(getCollection(data, ["modlitw", "prayer"]));
-          setSelectOptions(bestiarySelect, state.bestiary, "Wybierz nazwę...");
-          setSelectOptions(armorSelect, state.armor, "Wybierz pancerze...", {
+          setSelectOptions(bestiarySelect, state.bestiary, translations[currentLanguage].messages.selectBestiary);
+          setSelectOptions(armorSelect, state.armor, translations[currentLanguage].messages.selectArmor, {
             disableOption: isArmorBlocked,
-            disabledTitle: "Pancerz z WP '-' nie może być wybrany.",
+            disabledTitle: translations[currentLanguage].messages.armorDisabledTitle,
           });
-          setSelectOptions(weaponSelect, state.weapons, "Wybierz bronie...");
-          setSelectOptions(augmentationsSelect, state.augmentations, "Wybierz augumentacje...");
-          setSelectOptions(equipmentSelect, state.equipment, "Wybierz ekwipunek...");
-          setSelectOptions(talentsSelect, state.talents, "Wybierz talenty...");
-          setSelectOptions(psionicsSelect, state.psionics, "Wybierz psionikę...");
-          setSelectOptions(prayersSelect, state.prayers, "Wybierz modlitwy...");
+          setSelectOptions(weaponSelect, state.weapons, translations[currentLanguage].messages.selectWeapon);
+          setSelectOptions(augmentationsSelect, state.augmentations, translations[currentLanguage].messages.selectAugmentations);
+          setSelectOptions(equipmentSelect, state.equipment, translations[currentLanguage].messages.selectEquipment);
+          setSelectOptions(talentsSelect, state.talents, translations[currentLanguage].messages.selectTalents);
+          setSelectOptions(psionicsSelect, state.psionics, translations[currentLanguage].messages.selectPsionics);
+          setSelectOptions(prayersSelect, state.prayers, translations[currentLanguage].messages.selectPrayers);
           setStatus(
-            `Załadowano: Bestiariusz (${state.bestiary.length}), Pancerze (${state.armor.length}), Bronie (${state.weapons.length}), Augumentacje (${state.augmentations.length}), Ekwipunek (${state.equipment.length}), Talenty (${state.talents.length}), Psionika (${state.psionics.length}), Modlitwy (${state.prayers.length}).`
+            formatText(translations[currentLanguage].messages.loadSummary, {
+              bestiary: state.bestiary.length,
+              armor: state.armor.length,
+              weapons: state.weapons.length,
+              augmentations: state.augmentations.length,
+              equipment: state.equipment.length,
+              talents: state.talents.length,
+              psionics: state.psionics.length,
+              prayers: state.prayers.length,
+            })
           );
           renderBestiaryTable(null);
           renderArmorTable();
@@ -2566,15 +2871,16 @@
           renderPsionicsTable();
           renderPrayersTable();
         } catch (error) {
-          setStatus("Nie udało się pobrać danych. Sprawdź CORS i dostępność źródła.");
-          clearTableBody(bestiaryTableBody, "Brak danych do wyświetlenia.", 2);
-          clearTableBody(armorTableBody, "Brak danych do wyświetlenia.", 6);
-          clearTableBody(weaponTableBody, "Brak danych do wyświetlenia.", 10);
-          clearTableBody(augmentationsTableBody, "Brak danych do wyświetlenia.", 2);
-          clearTableBody(equipmentTableBody, "Brak danych do wyświetlenia.", 2);
-          clearTableBody(talentsTableBody, "Brak danych do wyświetlenia.", 2);
-          clearTableBody(psionicsTableBody, "Brak danych do wyświetlenia.", 8);
-          clearTableBody(prayersTableBody, "Brak danych do wyświetlenia.", 2);
+          setStatus(translations[currentLanguage].messages.loadError);
+          const noDataDisplay = translations[currentLanguage].messages.noDataDisplay;
+          clearTableBody(bestiaryTableBody, noDataDisplay, 2);
+          clearTableBody(armorTableBody, noDataDisplay, 6);
+          clearTableBody(weaponTableBody, noDataDisplay, 10);
+          clearTableBody(augmentationsTableBody, noDataDisplay, 2);
+          clearTableBody(equipmentTableBody, noDataDisplay, 2);
+          clearTableBody(talentsTableBody, noDataDisplay, 2);
+          clearTableBody(psionicsTableBody, noDataDisplay, 8);
+          clearTableBody(prayersTableBody, noDataDisplay, 2);
           setSelectOptions(bestiarySelect, [], "");
           setSelectOptions(armorSelect, [], "");
           setSelectOptions(weaponSelect, [], "");
@@ -2599,6 +2905,13 @@
           popover.classList.remove("active");
         }
       });
+
+      applyLanguage(currentLanguage);
+      if (languageSelect) {
+        languageSelect.addEventListener("change", (event) => {
+          applyLanguage(event.target.value);
+        });
+      }
 
       attachListeners();
       updateModuleVisibility();

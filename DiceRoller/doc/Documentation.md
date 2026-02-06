@@ -31,6 +31,7 @@ Pola:
 - `<select id="languageSelect">` z opcjami `pl` i `en`.
 - Podmienia wszystkie kluczowe teksty w UI (nagłówek, etykiety, podpowiedź, przycisk, komunikaty wyników).
 - Zmiana języka resetuje pola oraz wynik bez komunikatu ostrzegawczego.
+- Teksty UI są pogrupowane w `translations[lang].labels` (m.in. `pageTitle`, `subtitle`, etykiety pól, podpowiedź, przycisk, placeholdery podsumowania), co ułatwia rozbudowę o kolejne języki.
 
 ### Przycisk
 - `<button class="roll" id="roll">` — uruchamia rzut kośćmi.

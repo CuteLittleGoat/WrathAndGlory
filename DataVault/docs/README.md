@@ -19,6 +19,7 @@ Najważniejsze zasady działania:
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
 
 ### Szybki start
+0. W prawym górnym rogu paska wybierz język interfejsu (domyślnie **Polski**).
 1. Umieść pliki projektu na hostingu statycznym **lub** uruchom lokalny serwer HTTP:
    ```bash
    python -m http.server 8000
@@ -108,6 +109,7 @@ Key behavior:
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
 
 ### Quick start
+0. Use the language switcher in the top bar (Polish is selected by default).
 1. Host the project files on any static hosting **or** run a local HTTP server:
    ```bash
    python -m http.server 8000

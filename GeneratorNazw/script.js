@@ -1423,12 +1423,80 @@ const DATA = [
 /* =======================
    UI wiring
    ======================= */
+const translations = {
+  pl: {
+    labels: {
+      languageSelect: "Wersja językowa",
+      category: "Kategoria",
+      option: "Opcja",
+      seed: "Seed",
+      count: "Ile",
+      generate: "Generuj",
+      copy: "Kopiuj wynik",
+      randomAuto: "Losowo: TAK",
+      randomSeed: "Losowo: SEED",
+      resultsPlaceholder: "Wybierz kategorię i kliknij „Generuj”.",
+      seedHint: "Seed = te same ustawienia → te same wyniki. Brak seeda = prawdziwie losowe.",
+      seedPlaceholder: "wpisz cokolwiek",
+      copiedSuffix: "skopiowano",
+      copyError: "Nie mogę skopiować (blokada przeglądarki). Zaznacz i skopiuj ręcznie.",
+    },
+  },
+  en: {
+    labels: {
+      languageSelect: "Language version",
+      category: "Category",
+      option: "Option",
+      seed: "Seed",
+      count: "How many",
+      generate: "Generate",
+      copy: "Copy result",
+      randomAuto: "Random: YES",
+      randomSeed: "Random: SEED",
+      resultsPlaceholder: "Choose a category and click “Generate”.",
+      seedHint: "Seed = same settings → same results. No seed = truly random.",
+      seedPlaceholder: "type anything",
+      copiedSuffix: "copied",
+      copyError: "Cannot copy (browser restriction). Select the text and copy it manually.",
+    },
+  },
+};
+
 const catEl = document.getElementById("cat");
 const optEl = document.getElementById("opt");
 const seedEl = document.getElementById("seed");
 const countEl = document.getElementById("count");
 const resEl = document.getElementById("res");
 const modePill = document.getElementById("modePill");
+const languageSelect = document.getElementById("languageSelect");
+const labelCategory = document.getElementById("labelCategory");
+const labelOption = document.getElementById("labelOption");
+const labelSeed = document.getElementById("labelSeed");
+const labelCount = document.getElementById("labelCount");
+const seedHint = document.getElementById("seedHint");
+const generateButton = document.getElementById("gen");
+const copyButton = document.getElementById("copy");
+
+let currentLanguage = "pl";
+
+const applyLanguage = (lang) => {
+  currentLanguage = lang;
+  const t = translations[lang].labels;
+  document.documentElement.lang = lang;
+  languageSelect.value = lang;
+  languageSelect.setAttribute("aria-label", t.languageSelect);
+  labelCategory.textContent = t.category;
+  labelOption.textContent = t.option;
+  labelSeed.textContent = t.seed;
+  labelCount.textContent = t.count;
+  generateButton.textContent = t.generate;
+  copyButton.textContent = t.copy;
+  seedHint.textContent = t.seedHint;
+  seedEl.placeholder = t.seedPlaceholder;
+  if (resEl.dataset.hasResults !== "true") {
+    resEl.textContent = t.resultsPlaceholder;
+  }
+};
 
 function populateCats() {
   catEl.innerHTML = "";
@@ -1454,7 +1522,8 @@ function generate() {
   const opt = cat.options.find((x) => x.key === optEl.value);
 
   const { rand, mode } = makeRng(seedEl.value);
-  modePill.textContent = mode === "seed" ? "Losowo: SEED" : "Losowo: TAK";
+  const labels = translations[currentLanguage].labels;
+  modePill.textContent = mode === "seed" ? labels.randomSeed : labels.randomAuto;
 
   let n = parseInt(countEl.value, 10);
   if (!Number.isFinite(n) || n < 1) {
@@ -1469,6 +1538,7 @@ function generate() {
     lines.push(`• ${cleanName(opt.gen(rand))}`);
   }
   resEl.textContent = lines.join("\n");
+  resEl.dataset.hasResults = "true";
 }
 
 document.getElementById("gen").addEventListener("click", generate);
@@ -1476,12 +1546,12 @@ document.getElementById("copy").addEventListener("click", async () => {
   try {
     await navigator.clipboard.writeText(resEl.textContent);
     const prev = modePill.textContent;
-    modePill.textContent = `${prev} | skopiowano`;
+    modePill.textContent = `${prev} | ${translations[currentLanguage].labels.copiedSuffix}`;
     setTimeout(() => {
       modePill.textContent = prev;
     }, 900);
   } catch (e) {
-    alert("Nie mogę skopiować (blokada przeglądarki). Zaznacz i skopiuj ręcznie.");
+    alert(translations[currentLanguage].labels.copyError);
   }
 });
 
@@ -1493,3 +1563,9 @@ optEl.addEventListener("change", generate);
 
 populateCats();
 populateOpts();
+resEl.dataset.hasResults = "false";
+applyLanguage(currentLanguage);
+languageSelect.addEventListener("change", (event) => {
+  applyLanguage(event.target.value);
+  generate();
+});

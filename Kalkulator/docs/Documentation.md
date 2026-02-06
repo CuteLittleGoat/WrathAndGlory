@@ -99,6 +99,7 @@ W `TworzeniePostaci.html` skrypt dodaje klasę `attribute-high` dla wartości at
 ### 5.1. Struktura HTML
 - **Nagłówek** `.topbar` z:
   - tytułem w `.brand` i `.title`,
+  - przełącznikiem języka (`.language-switcher` + `#languageSelect`),
   - przyciskiem **Resetuj wartości** (`#btnReset`).
 - **Panel boczny** `.panel` z instrukcją i polem sumy (`#totalXp`).
 - **Część robocza** `.workspace`:

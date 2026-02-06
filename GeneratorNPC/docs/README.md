@@ -9,22 +9,23 @@ Tytuł karty przeglądarki: **Generator NPC**.
 
 ### Jak korzystać z aplikacji
 1. Otwórz plik `index.html` w przeglądarce.
-2. Poczekaj na wczytanie danych — status pojawi się w panelu „Źródło danych”.
-3. W panelu „Wybór bazowy” wybierz rekord z listy „Bestiariusz · Nazwa”.
-4. (Opcjonalnie) Wpisz własne notatki w polu „Uwagi do rekordu”.
-5. W tabeli „Podgląd bazowy” możesz korygować wartości liczbowe (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) za pomocą pól z przyciskami góra–dół.
+2. W prawym górnym rogu wybierz język (domyślnie **Polski**).
+3. Poczekaj na wczytanie danych — status pojawi się w panelu „Źródło danych”.
+4. W panelu „Wybór bazowy” wybierz rekord z listy „Bestiariusz · Nazwa”.
+5. (Opcjonalnie) Wpisz własne notatki w polu „Uwagi do rekordu”.
+6. W tabeli „Podgląd bazowy” możesz korygować wartości liczbowe (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) za pomocą pól z przyciskami góra–dół.
    - Minimalna wartość dla większości pól to 1.
    - Dla pola „Odporność (w tym WP)” minimum zależy od „WP”; gdy „WP” ma wartość „-”, minimum to 1.
    - Jeśli „Odporność Psychiczna” ma wartość „-”, pole jest zablokowane i nie podlega edycji.
    - Każde pole liczbowe przyjmuje maksymalnie 25 znaków (dłuższe wpisy są automatycznie ucinane także przy wstępnym wypełnieniu), a szerokość pola jest wizualnie ograniczona do 25 znaków.
-6. Przy polu „Umiejętności” użyj przycisku „Edytuj”, aby włączyć edycję i zapisać własny opis.
-7. W sekcji „Moduły aktywne” zdecyduj, które moduły mają być widoczne:
+7. Przy polu „Umiejętności” użyj przycisku „Edytuj”, aby włączyć edycję i zapisać własny opis.
+8. W sekcji „Moduły aktywne” zdecyduj, które moduły mają być widoczne:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
-8. W każdej aktywnej karcie wybierz pozycje z listy (możesz zaznaczyć wiele pozycji).
+9. W każdej aktywnej karcie wybierz pozycje z listy (możesz zaznaczyć wiele pozycji).
    - Dodatkowe przełączniki pozwalają dołączyć opisy cech lub pełne opisy modułów.
-9. Kliknij „Generuj kartę”, aby otworzyć kartę do druku w nowej karcie przeglądarki.
-10. Kliknij „Reset”, aby wyczyścić wybory i przywrócić domyślne ustawienia.
-11. W panelu „Ulubione” wpisz opcjonalny alias i użyj „Dodaj do ulubionych”, aby zapisać bieżący zestaw ustawień (bestiariusz, modyfikacje, notatki i moduły). Zapisane wpisy możesz wczytać, usunąć lub zmienić kolejność przyciskami ▲/▼.
+10. Kliknij „Generuj kartę”, aby otworzyć kartę do druku w nowej karcie przeglądarki.
+11. Kliknij „Reset”, aby wyczyścić wybory i przywrócić domyślne ustawienia.
+12. W panelu „Ulubione” wpisz opcjonalny alias i użyj „Dodaj do ulubionych”, aby zapisać bieżący zestaw ustawień (bestiariusz, modyfikacje, notatki i moduły). Zapisane wpisy możesz wczytać, usunąć lub zmienić kolejność przyciskami ▲/▼.
     - Domyślnie aplikacja łączy się z Firestore (konfiguracja w `GeneratorNPC/config/firebase-config.js`) i zapisuje listę w dokumencie `generatorNpc/favorites`.
     - Jeśli Firestore jest niedostępny, ulubione są przechowywane lokalnie w przeglądarce.
 
@@ -46,22 +47,23 @@ Browser tab title: **Generator NPC**.
 
 ### How to use the application
 1. Open `index.html` in your browser.
-2. Wait for the data to load — the status appears in the “Źródło danych” panel.
-3. In “Wybór bazowy”, select an entry from “Bestiariusz · Nazwa”.
-4. (Optional) Enter your own notes in “Uwagi do rekordu”.
-5. In the “Podgląd bazowy” table, adjust numeric values (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) using the up/down number inputs.
+2. Use the language switcher in the top-right corner (Polish is selected by default).
+3. Wait for the data to load — the status appears in the “Źródło danych” panel.
+4. In “Wybór bazowy”, select an entry from “Bestiariusz · Nazwa”.
+5. (Optional) Enter your own notes in “Uwagi do rekordu”.
+6. In the “Podgląd bazowy” table, adjust numeric values (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) using the up/down number inputs.
    - The minimum value for most fields is 1.
    - For “Odporność (w tym WP)”, the minimum equals the “WP” value; if “WP” is “-”, the minimum is 1.
    - When “Odporność Psychiczna” is “-”, the field is locked and cannot be edited.
    - Each numeric field accepts up to 25 characters (longer input is automatically truncated, including on initial fill), and the input width is visually capped to 25 characters.
-6. Use the “Edytuj” button next to “Umiejętności” to enable editing and save your custom text.
-7. In “Moduły aktywne”, decide which modules should be visible:
+7. Use the “Edytuj” button next to “Umiejętności” to enable editing and save your custom text.
+8. In “Moduły aktywne”, decide which modules should be visible:
    - Weapons, Armor, Augmentations, Equipment, Talents, Psionics, Prayers.
-8. In each active card, select items from the list (multi-select is supported).
+9. In each active card, select items from the list (multi-select is supported).
    - Additional toggles let you include trait descriptions or full module details.
-9. Click “Generuj kartę” to open a printable card in a new browser tab.
-10. Click “Reset” to clear selections and restore defaults.
-11. In the “Ulubione” panel, enter an optional alias and use “Dodaj do ulubionych” to save the current setup (bestiary, overrides, notes, and modules). You can load, remove, or reorder saved entries using the ▲/▼ buttons.
+10. Click “Generuj kartę” to open a printable card in a new browser tab.
+11. Click “Reset” to clear selections and restore defaults.
+12. In the “Ulubione” panel, enter an optional alias and use “Dodaj do ulubionych” to save the current setup (bestiary, overrides, notes, and modules). You can load, remove, or reorder saved entries using the ▲/▼ buttons.
     - By default, the app connects to Firestore (configured in `GeneratorNPC/config/firebase-config.js`) and stores the list in the `generatorNpc/favorites` document.
     - If Firestore is unavailable, favorites are stored locally in the browser.
 

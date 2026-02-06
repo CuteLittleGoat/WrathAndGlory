@@ -12,10 +12,16 @@
       <div class="brand">
         <div class="sigil">⟦⟧</div>
         <div>
-          <div class="title">Kalkulator XP</div>
+          <div class="title" id="pageTitle">Kalkulator XP</div>
         </div>
       </div>
       <div class="actions">
+        <div class="language-switcher">
+          <select id="languageSelect" aria-label="Wersja językowa">
+            <option value="pl">Polski</option>
+            <option value="en">English</option>
+          </select>
+        </div>
         <button class="btn secondary" id="btnReset" title="Ustaw wszystkie pola na 0">Resetuj wartości</button>
       </div>
     </header>
@@ -23,35 +29,35 @@
     <main class="main calculator">
       <aside class="panel">
         <div class="panelHeader">
-          <span class="caret">▸</span><span class="panelTitle">INSTRUKCJE</span>
+          <span class="caret">▸</span><span class="panelTitle" id="instructionsTitle">INSTRUKCJE</span>
         </div>
         <div class="panelBody">
           <div class="hint">
-            <div>▸ Wprowadź aktualną i docelową wartość dla każdej pozycji.</div>
-            <div>▸ Suma XP aktualizuje się automatycznie przy zmianach.</div>
-            <div>▸ Przycisk <b>Resetuj wartości</b> czyści wszystkie pola.</div>
+            <div id="hintLine1">▸ Wprowadź aktualną i docelową wartość dla każdej pozycji.</div>
+            <div id="hintLine2">▸ Suma XP aktualizuje się automatycznie przy zmianach.</div>
+            <div id="hintLine3">▸ Przycisk <b>Resetuj wartości</b> czyści wszystkie pola.</div>
           </div>
           <div class="totalBox">
-            <div class="metricLabel">Całkowity koszt XP</div>
+            <div class="metricLabel" id="totalLabel">Całkowity koszt XP</div>
             <div class="metricValue" id="totalXp">0</div>
           </div>
         </div>
       </aside>
 
       <section class="workspace">
-        <nav class="tabs"><div class="tab active">Obliczenia XP</div></nav>
+        <nav class="tabs"><div class="tab active" id="tabsTitle">Obliczenia XP</div></nav>
         <div class="tableWrap">
           <div class="tableFrame">
             <div class="tableViewport">
               <div class="calcGrid">
                 <section class="calcCard">
-                  <header class="cardHeader">Atrybuty</header>
+                  <header class="cardHeader" id="attributesTitle">Atrybuty</header>
                   <table class="dataTable" id="attributesTable">
                     <thead>
                       <tr>
-                        <th>Aktualna wartość</th>
-                        <th>Docelowa wartość</th>
-                        <th>Koszt XP</th>
+                        <th class="currentHeader">Aktualna wartość</th>
+                        <th class="targetHeader">Docelowa wartość</th>
+                        <th class="costHeader">Koszt XP</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -80,13 +86,13 @@
                 </section>
 
                 <section class="calcCard">
-                  <header class="cardHeader">Umiejętności</header>
+                  <header class="cardHeader" id="skillsTitle">Umiejętności</header>
                   <table class="dataTable" id="skillsTable">
                     <thead>
                       <tr>
-                        <th>Aktualna wartość</th>
-                        <th>Docelowa wartość</th>
-                        <th>Koszt XP</th>
+                        <th class="currentHeader">Aktualna wartość</th>
+                        <th class="targetHeader">Docelowa wartość</th>
+                        <th class="costHeader">Koszt XP</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -122,6 +128,61 @@
   </div>
 
   <script>
+    const translations = {
+      pl: {
+        labels: {
+          languageSelect: "Wersja językowa",
+          pageTitle: "Kalkulator XP",
+          resetButton: "Resetuj wartości",
+          resetTitle: "Ustaw wszystkie pola na 0",
+          instructionsTitle: "INSTRUKCJE",
+          hintLine1: "▸ Wprowadź aktualną i docelową wartość dla każdej pozycji.",
+          hintLine2: "▸ Suma XP aktualizuje się automatycznie przy zmianach.",
+          hintLine3: "▸ Przycisk <b>Resetuj wartości</b> czyści wszystkie pola.",
+          totalLabel: "Całkowity koszt XP",
+          tabsTitle: "Obliczenia XP",
+          attributesTitle: "Atrybuty",
+          skillsTitle: "Umiejętności",
+          currentHeader: "Aktualna wartość",
+          targetHeader: "Docelowa wartość",
+          costHeader: "Koszt XP"
+        }
+      },
+      en: {
+        labels: {
+          languageSelect: "Language version",
+          pageTitle: "XP Calculator",
+          resetButton: "Reset values",
+          resetTitle: "Set all fields to 0",
+          instructionsTitle: "INSTRUCTIONS",
+          hintLine1: "▸ Enter the current and target value for each entry.",
+          hintLine2: "▸ The XP total updates automatically as you change values.",
+          hintLine3: "▸ The <b>Reset values</b> button clears all fields.",
+          totalLabel: "Total XP cost",
+          tabsTitle: "XP calculations",
+          attributesTitle: "Attributes",
+          skillsTitle: "Skills",
+          currentHeader: "Current value",
+          targetHeader: "Target value",
+          costHeader: "XP cost"
+        }
+      }
+    };
+
+    let currentLanguage = "pl";
+
+    const languageSelect = document.getElementById("languageSelect");
+    const pageTitle = document.getElementById("pageTitle");
+    const instructionsTitle = document.getElementById("instructionsTitle");
+    const hintLine1 = document.getElementById("hintLine1");
+    const hintLine2 = document.getElementById("hintLine2");
+    const hintLine3 = document.getElementById("hintLine3");
+    const totalLabel = document.getElementById("totalLabel");
+    const tabsTitle = document.getElementById("tabsTitle");
+    const attributesTitle = document.getElementById("attributesTitle");
+    const skillsTitle = document.getElementById("skillsTitle");
+    const resetButton = document.getElementById("btnReset");
+
     const attributeCosts = {
       0: 0, 1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
     };
@@ -165,6 +226,28 @@
       document.getElementById('totalXp').textContent = attrCost + skillCost;
     }
 
+    function applyLanguage(lang) {
+      currentLanguage = lang;
+      const t = translations[lang].labels;
+      document.documentElement.lang = lang;
+      languageSelect.value = lang;
+      languageSelect.setAttribute("aria-label", t.languageSelect);
+      pageTitle.textContent = t.pageTitle;
+      resetButton.textContent = t.resetButton;
+      resetButton.setAttribute("title", t.resetTitle);
+      instructionsTitle.textContent = t.instructionsTitle;
+      hintLine1.textContent = t.hintLine1;
+      hintLine2.textContent = t.hintLine2;
+      hintLine3.innerHTML = t.hintLine3;
+      totalLabel.textContent = t.totalLabel;
+      tabsTitle.textContent = t.tabsTitle;
+      attributesTitle.textContent = t.attributesTitle;
+      skillsTitle.textContent = t.skillsTitle;
+      document.querySelectorAll(".currentHeader").forEach((el) => { el.textContent = t.currentHeader; });
+      document.querySelectorAll(".targetHeader").forEach((el) => { el.textContent = t.targetHeader; });
+      document.querySelectorAll(".costHeader").forEach((el) => { el.textContent = t.costHeader; });
+    }
+
     document.querySelectorAll('#attributesTable input, #skillsTable input').forEach(input => {
       input.addEventListener('input', recalcAll);
       input.addEventListener('change', recalcAll);
@@ -178,6 +261,10 @@
     });
 
     recalcAll();
+    applyLanguage(currentLanguage);
+    languageSelect.addEventListener("change", (event) => {
+      applyLanguage(event.target.value);
+    });
   </script>
 </body>
 </html>

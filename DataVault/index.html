@@ -12,47 +12,56 @@
       <div class="brand">
         <div class="sigil">⟦⟧</div>
         <div>
-          <div class="title">ADMINISTRATUM DATA VAULT</div>
+          <div class="title" data-i18n="pageTitle">ADMINISTRATUM DATA VAULT</div>
         </div>
       </div>
 
       <div class="actions">
+        <div class="language-switcher">
+          <select id="languageSelect" aria-label="Wersja językowa">
+            <option value="pl">Polski</option>
+            <option value="en">English</option>
+          </select>
+        </div>
         <div class="actionsGroup" id="updateDataGroup">
-          <button class="btn secondary" id="btnUpdateData">Aktualizuj dane</button>
+          <button class="btn secondary" id="btnUpdateData" data-i18n="updateDataButton">Aktualizuj dane</button>
           <div class="actionsNote">
-            Plik <strong>Repozytorium.xlsx</strong> musi znajdować się w folderze modułu DataVault
-            (obok <code>index.html</code>, np. <code>./Repozytorium.xlsx</code>), aby aktualizacja zadziałała.
+            <span data-i18n="updateNotePrefix">Plik</span> <strong>Repozytorium.xlsx</strong>
+            <span data-i18n="updateNoteMiddle">musi znajdować się w folderze modułu DataVault</span>
+            (<span data-i18n="updateNoteAside">obok</span> <code>index.html</code>,
+            <span data-i18n="updateNoteExamplePrefix">np.</span> <code>./Repozytorium.xlsx</code>),
+            <span data-i18n="updateNoteSuffix">aby aktualizacja zadziałała.</span>
           </div>
         </div>
-        <button class="btn secondary" id="btnReset" title="Wyczyść filtry, sortowanie i zaznaczenia">Reset widoku</button>
-        <button class="btn primary" id="btnCompare" disabled>Porównaj zaznaczone</button>
+        <button class="btn secondary" id="btnReset" title="Wyczyść filtry, sortowanie i zaznaczenia" data-i18n="resetViewButton" data-i18n-title="resetViewTitle">Reset widoku</button>
+        <button class="btn primary" id="btnCompare" disabled data-i18n="compareButton">Porównaj zaznaczone</button>
       </div>
     </header>
 
     <main class="main">
       <aside class="panel">
         <div class="panelHeader">
-          <span class="caret">▸</span><span class="panelTitle">FILTRY</span>
+          <span class="caret">▸</span><span class="panelTitle" data-i18n="filtersTitle">FILTRY</span>
         </div>
         <div class="panelBody">
           <label class="field">
-            <div class="fieldLabel">Szukaj (globalnie)</div>
+            <div class="fieldLabel" data-i18n="globalSearchLabel">Szukaj (globalnie)</div>
             <input id="globalSearch" class="input" placeholder="np. Pist, Brutalna, IMPERIUM, Zatrucie (5)..." />
           </label>
           <label class="checkboxRow">
             <input type="checkbox" id="toggleCharacterTabs" />
-            <span class="checkboxLabel">Czy wyświetlić zakładki dotyczące tworzenia postaci?</span>
+            <span class="checkboxLabel" data-i18n="toggleCharacterTabs">Czy wyświetlić zakładki dotyczące tworzenia postaci?</span>
           </label>
           <label class="checkboxRow checkboxRow--combat">
             <input type="checkbox" id="toggleCombatTabs" />
-            <span class="checkboxLabel checkboxLabel--combat">Czy wyświetlić zakładki dotyczące zasad walki?</span>
+            <span class="checkboxLabel checkboxLabel--combat" data-i18n="toggleCombatTabs">Czy wyświetlić zakładki dotyczące zasad walki?</span>
           </label>
 
           <div class="hint">
-            <div>▸ Kliknij nagłówek, aby sortować (Shift = sort wielokolumnowy).</div>
-            <div>▸ Drugi wiersz nagłówka: filtry per kolumna (fragment / liczby).</div>
-            <div>▸ Zaznacz 2+ wiersze, aby porównać.</div>
-            <div class="muted">Jeśli tooltipy cech nie wyskakują na telefonie: stuknij w tag cechy.</div>
+            <div data-i18n="hintSort">▸ Kliknij nagłówek, aby sortować (Shift = sort wielokolumnowy).</div>
+            <div data-i18n="hintFilters">▸ Drugi wiersz nagłówka: filtry per kolumna (fragment / liczby).</div>
+            <div data-i18n="hintCompare">▸ Zaznacz 2+ wiersze, aby porównać.</div>
+            <div class="muted" data-i18n="hintTooltip">Jeśli tooltipy cech nie wyskakują na telefonie: stuknij w tag cechy.</div>
           </div>
         </div>
 
@@ -62,8 +71,8 @@
         <nav class="tabs" id="tabs"></nav>
         <div class="tableWrap" id="tableWrap">
           <div class="emptyState">
-            <div class="emptyTitle">Brak danych</div>
-            <div class="emptyText">Brak danych do wyświetlenia. W trybie admina użyj <b>Aktualizuj dane</b>.</div>
+            <div class="emptyTitle" data-i18n="emptyTitle">Brak danych</div>
+            <div class="emptyText" data-i18n="emptyText">Brak danych do wyświetlenia. W trybie admina użyj <b>Aktualizuj dane</b>.</div>
           </div>
         </div>
       </section>
@@ -74,7 +83,7 @@
   <div id="popover" class="popover" aria-hidden="true">
     <div class="popoverHeader">
       <div id="popoverTitle" class="popoverTitle"></div>
-      <button id="popoverClose" class="iconBtn" aria-label="Zamknij">✕</button>
+      <button id="popoverClose" class="iconBtn" aria-label="Zamknij" data-i18n-aria="close">✕</button>
     </div>
     <div id="popoverBody" class="popoverBody"></div>
   </div>
@@ -82,8 +91,8 @@
   <div id="modal" class="modal" aria-hidden="true">
     <div class="modalCard">
       <div class="modalHeader">
-        <div class="modalTitle" id="modalTitle">Porównanie</div>
-        <button id="modalClose" class="iconBtn" aria-label="Zamknij">✕</button>
+        <div class="modalTitle" id="modalTitle" data-i18n="comparisonTitle">Porównanie</div>
+        <button id="modalClose" class="iconBtn" aria-label="Zamknij" data-i18n-aria="close">✕</button>
       </div>
       <div id="modalBody" class="modalBody"></div>
     </div>

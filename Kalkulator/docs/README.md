@@ -16,11 +16,12 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 
 ### Instrukcja używania
 #### 1) Kalkulator XP
-1. W tabelach **Atrybuty** i **Umiejętności** wpisz wartości **aktualne** i **docelowe**.
+1. W prawym górnym rogu wybierz język interfejsu (domyślnie **Polski**).
+2. W tabelach **Atrybuty** i **Umiejętności** wpisz wartości **aktualne** i **docelowe**.
    - Atrybuty mają zakres `0–12`.
    - Umiejętności mają zakres `0–8`.
-2. Koszt XP w każdym wierszu (wyrównany do środka komórki) oraz suma **Całkowity koszt XP** uaktualniają się automatycznie po każdej zmianie.
-3. Przycisk **Resetuj wartości** ustawia wszystkie pola na `0`.
+3. Koszt XP w każdym wierszu (wyrównany do środka komórki) oraz suma **Całkowity koszt XP** uaktualniają się automatycznie po każdej zmianie.
+4. Przycisk **Resetuj wartości** ustawia wszystkie pola na `0`.
 
 #### 2) Tworzenie Postaci
 1. Ustaw **pulę XP do wydania** w polu u góry.
@@ -90,11 +91,12 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 
 ### How to use
 #### 1) XP Calculator
-1. In the **Attributes** and **Skills** tables, enter **current** and **target** values.
+1. Use the language switcher in the top-right corner (Polish is selected by default).
+2. In the **Attributes** and **Skills** tables, enter **current** and **target** values.
    - Attributes range from `0–12`.
    - Skills range from `0–8`.
-2. The XP cost in each row (centered within the cell) and the **Total XP cost** update automatically on every change.
-3. The **Reset values** button sets all fields to `0`.
+3. The XP cost in each row (centered within the cell) and the **Total XP cost** update automatically on every change.
+4. The **Reset values** button sets all fields to `0`.
 
 #### 2) Character Creation
 1. Set the **XP pool** in the field at the top.

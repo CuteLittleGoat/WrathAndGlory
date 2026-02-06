@@ -4,6 +4,17 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 
 ---
 
+## Wspólny komponent — przełącznik języka
+- W modułach: **GeneratorNazw**, **GeneratorNPC**, **DataVault**, **KalkulatorXP**, **Audio**, **Infoczytnik (GM_test)** oraz **DiceRoller** dodano przełącznik języka (select PL/EN).
+- Styl selecta:
+  - tło: **#0b0b0b** (ciemne, spójne z motywem konsolowym),
+  - obramowanie: `1px solid --b` / `--border` (zależnie od modułu),
+  - tekst: `--text` (zielony),
+  - focus: delikatny glow (`box-shadow` w zieleni).
+- Domyślny wybór języka to **Polski**.
+
+---
+
 ## Moduł — Main
 
 ### 1) Fonty i typografia

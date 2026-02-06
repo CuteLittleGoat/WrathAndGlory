@@ -63,6 +63,15 @@ code{color:var(--code)}
   text-shadow:var(--glowH);
 }
 .actions{display:flex; gap:10px; flex-wrap:wrap}
+.language-switcher select{
+  min-width:140px;
+  padding:8px 12px;
+  border-radius:6px;
+  border:1px solid var(--b);
+  background:#0b0b0b;
+  color:var(--text);
+}
+.language-switcher select:focus{outline:none; box-shadow:0 0 0 3px rgba(22,198,12,.18)}
 .actionsGroup{display:flex; flex-direction:column; gap:6px; max-width:320px}
 .actionsNote{font-size:11px; color:var(--text2); letter-spacing:.02em; text-transform:none}
 .btn{
