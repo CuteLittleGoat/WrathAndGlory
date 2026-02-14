@@ -1291,7 +1291,7 @@
         updatedAt: serverTimestamp()
       };
       if (state.usingFirestore && state.favoritesDoc) {
-        await setDoc(state.favoritesDoc, payload, { merge: true });
+        await setDoc(state.favoritesDoc, payload);
         return;
       }
       localStorage.setItem("audio.settings", JSON.stringify({

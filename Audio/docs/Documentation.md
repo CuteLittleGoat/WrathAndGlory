@@ -173,7 +173,7 @@ window.firebaseConfig = {
 - `openTagMenu()` / `closeTagMenu()` — otwiera i zamyka popup filtra tagów.
 
 ### 8.2. Ustawienia (ulubione + główny widok + aliasy)
-- `saveSettings()` — zapisuje `favorites`, `mainView` i `aliases` do Firestore lub `localStorage` (`audio.settings`).
+- `saveSettings()` — zapisuje `favorites`, `mainView` i `aliases` do Firestore lub `localStorage` (`audio.settings`). W trybie Firestore zapis wykonuje pełne nadpisanie dokumentu (`setDoc` bez `merge`), co gwarantuje poprawne usuwanie kluczy z mapy `aliases` (alias usunięty przyciskiem **Wyczyść** nie wraca po `onSnapshot`).
 - `defaultFavorites()` — tworzy domyślną listę „Ulubione”.
 - `defaultMainView()` — zwraca pusty „Główny widok”.
 - `defaultAliases()` — zwraca pustą mapę aliasów.
@@ -232,6 +232,8 @@ window.firebaseConfig = {
 - **Nawigacja usera**: kliknięcia w panelu `#userNav` przełączają `state.userView` oraz aktywną listę ulubionych.
 
 ## 9. Struktura danych Firestore (`audio/favorites`)
+
+> Uwaga implementacyjna: dokument jest zapisywany jako pełny snapshot ustawień (bez merge), aby operacje usuwania aliasów poprawnie kasowały klucze w mapie `aliases`.
 ```json
 {
   "favorites": {
