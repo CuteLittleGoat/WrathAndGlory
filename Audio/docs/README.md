@@ -55,6 +55,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
    - odtwarzać zapisane sample.
 10. W karcie sampla w panelu admina możesz wpisać **alias** (opcjonalny). Alias zapisuje się w ustawieniach, wyświetla się w nawiasie po nazwie sampla w widoku głównym i na listach ulubionych jaśniejszym kolorem. Przycisk **Wyczyść** znajduje się bezpośrednio pod polem aliasu (nad **Odtwórz**) i usuwa alias.
     - Alias jest zapisywany w Firestore (lub `localStorage`) i po ponownym uruchomieniu modułu powinien pojawić się zarówno w panelu admina, jak i w widoku użytkownika.
+    - Usunięcie aliasu (ręczne wyczyszczenie pola lub przycisk **Wyczyść**) nadpisuje całą mapę `aliases` w dokumencie Firestore, dzięki czemu skasowany alias nie wraca po synchronizacji czasu rzeczywistego.
 11. W panelu „Główny widok” (na dole admina) kliknij nazwę sampla lub tag, aby odsłuchać dźwięk; głośność ustawiasz suwakiem na karcie.
 
 ### Dane wejściowe (AudioManifest.xlsx)
@@ -124,6 +125,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
    - play saved samples.
 10. In the admin sample card you can enter an optional **alias**. The alias is saved in settings and displayed in parentheses after the sample name in the Main View and Favorites lists in a lighter color. The **Wyczyść** button sits directly under the alias field (above **Odtwórz**) and clears the alias.
     - The alias is stored in Firestore (or `localStorage`) and should appear again after reload in both the admin panel and the user view.
+    - Removing an alias (manual field clear or **Wyczyść** button) overwrites the whole Firestore `aliases` map so deleted aliases do not reappear after real-time sync.
 11. In the Main View panel (bottom of admin), click the sample name or tag to play/stop it and use the slider on the card to adjust volume.
 
 ### Input data (AudioManifest.xlsx)
