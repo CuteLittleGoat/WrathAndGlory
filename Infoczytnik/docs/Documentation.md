@@ -357,3 +357,7 @@ window.firebaseConfig = {
 - **Brak dźwięku:** upewnij się, że użytkownik kliknął overlay (sprawdź `window.__dsAudioArmed` w konsoli) i że pliki audio istnieją.
 - **Brak synchronizacji:** sprawdź `config/firebase-config.js`, reguły Firestore i dostępność sieci.
 - **Nowe assety nie widać:** zwiększ `INF_VERSION` i odśwież urządzenie (cache-busting).
+
+## 12. Dokument referencyjny Firebase
+- Dla modułu Infoczytnik/GM utworzono osobny dokument konfiguracyjny: `Infoczytnik/config/Firebase-config.md`.
+- Zawiera on template `firebase-config.js`, schemat dokumentu Firestore `dataslate/current`, skrypt Node.js inicjalizujący dane oraz szczegółową instrukcję wdrożenia (PL/EN).

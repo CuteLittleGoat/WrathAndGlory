@@ -266,3 +266,11 @@ window.firebaseConfig = {
 - **Manifest nie wczytuje się:** sprawdź nazwę pliku (`AudioManifest.xlsx`) i dostępność z serwera statycznego.
 - **Brak połączenia z Firebase:** sprawdź `config/firebase-config.js` i reguły Firestore.
 - **Brak dźwięku:** zweryfikuj poprawność `LinkDoFolderu` i `NazwaPliku` w manifestie.
+
+## 12. Dokument referencyjny Firebase
+- Pełna specyfikacja konfiguracji Firebase dla modułu Audio została wydzielona do pliku: `Audio/config/Firebase-config.md`.
+- Dokument zawiera:
+  1. Template `firebase-config.js`.
+  2. Oczekiwaną strukturę `audio/favorites` (kolekcja/dokument/pola).
+  3. Skrypt Node.js do inicjalizacji dokumentu.
+  4. Instrukcję konfiguracji krok-po-kroku w języku polskim i angielskim.

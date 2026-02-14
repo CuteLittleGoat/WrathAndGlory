@@ -368,3 +368,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - Po każdej zmianie kodu należy zaktualizować `docs/Documentation.md` i `docs/README.md`.
 - `docs/README.md` musi zawierać instrukcje użytkownika w języku polskim i angielskim.
 - `docs/Documentation.md` musi opisywać wszystkie funkcje, style, fonty oraz zasady działania UI, aby umożliwić rekonstrukcję aplikacji 1:1.
+
+## 12. Dokument referencyjny Firebase
+- Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku: `GeneratorNPC/config/Firebase-config.md`.
+- Plik opisuje dokładny template konfiguracji Web, strukturę danych Firestore oraz skrypt Node.js do utworzenia wymaganych dokumentów.

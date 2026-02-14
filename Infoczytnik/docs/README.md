@@ -153,3 +153,7 @@ Warhammer 40,000 and related names/trademarks are the property of Games Workshop
 
 ## Więcej informacji / More information
 Szczegółowy opis kodu, struktury plików i działania każdego elementu aplikacji znajduje się w `docs/Documentation.md`.
+
+## Firebase config reference / Referencja konfiguracji Firebase
+- Kompletny opis konfiguracji Firebase, wymaganej struktury `dataslate/current`, skrypt Node.js oraz instrukcja krok-po-kroku (PL/EN) znajdują się w pliku: `Infoczytnik/config/Firebase-config.md`.
+- Complete Firebase setup notes, required `dataslate/current` schema, Node.js bootstrap script, and step-by-step guide (PL/EN) are available in: `Infoczytnik/config/Firebase-config.md`.
