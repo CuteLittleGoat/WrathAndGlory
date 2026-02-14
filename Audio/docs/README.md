@@ -137,3 +137,9 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
   - Clicking a grouped button plays a random variant.
   - The filename line shows a `(+N)` suffix for grouped variants.
 - Filter tags are generated from the folder path in `LinkDoFolderu`, ignoring fragments: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**. `%20` is converted to spaces and trailing spaces are removed.
+
+---
+
+## Firebase config reference / Referencja konfiguracji Firebase
+- Szczegółowy opis konfiguracji, struktury Firestore, gotowy skrypt Node.js i instrukcję „klik po kliku” (PL/EN) znajdziesz w: `Audio/config/Firebase-config.md`.
+- Detailed Firebase config, expected Firestore shape, ready-to-run Node.js bootstrap script, and click-by-click setup guide (PL/EN) are available in: `Audio/config/Firebase-config.md`.

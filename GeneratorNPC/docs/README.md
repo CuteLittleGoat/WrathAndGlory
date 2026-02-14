@@ -73,3 +73,9 @@ Browser tab title: **Generator NPC**.
 - Selection lists default to the hidden `LP` ordering from the data; when `LP` is missing, they fall back to alphabetical or type → name ordering (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
 - The printed card includes “Ż” and “T” square trackers that visualize “Żywotność” and “Odporność psych.” (the number of squares reflects table edits; when mental resistance is “-”, only the “T” label is shown). The “Ż/T” labels are independent one-square fields, and the squares per row scale with the full card width (no fixed per-line cap). When switched to EN, these labels change to “H” and “S”, and the remaining card labels are translated.
 - The interface uses the same green, console-style theme as `Main/index.html`, with secondary text set to `#4FAF4F` and brighter highlights at `#D2FAD2`.
+
+---
+
+## Firebase config reference / Referencja konfiguracji Firebase
+- Szczegółową instrukcję konfiguracji Firebase dla modułu, strukturę Firestore (`generatorNpc/favorites`) oraz skrypt inicjalizacyjny znajdziesz w: `GeneratorNPC/config/Firebase-config.md`.
+- Full Firebase setup instructions, Firestore data shape (`generatorNpc/favorites`), and the initialization script are documented in: `GeneratorNPC/config/Firebase-config.md`.
