@@ -320,7 +320,7 @@
 
     .samples-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
     }
 
@@ -517,6 +517,16 @@
       }
 
       .user-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .samples-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .samples-grid {
         grid-template-columns: 1fr;
       }
     }

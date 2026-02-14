@@ -117,7 +117,8 @@ window.firebaseConfig = {
 - `.group-count`: kolor `var(--danger)` dla liczby zgrupowanych plików audio.
 - `.sample-alias`: kolor `#d2fad2`, jaśniejsza czcionka dla aliasu w nawiasie.
 - `.side-stack`: prawa kolumna w adminie, `display: flex`, `flex-direction: column`, `gap: 22px`.
-- `.samples-grid`: `grid-template-columns: repeat(auto-fill, minmax(210px, 1fr))`.
+- `.samples-grid`: domyślnie `grid-template-columns: repeat(4, minmax(0, 1fr))` (desktop — 4 kafle w jednym wierszu).
+- Responsywność `.samples-grid`: poniżej `980px` przejście do `repeat(2, minmax(0, 1fr))`, a poniżej `680px` do `1fr`.
 - `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
 - `.alias-controls`: układ kolumnowy (flex) dla pola aliasu, `gap: 6px` (przycisk „Wyczyść” znajduje się pod polem aliasu).
 - `.alias-input`: pole tekstowe aliasu (`background: #031806`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `font-size: 12px`).
@@ -132,7 +133,7 @@ window.firebaseConfig = {
 - `.user-nav-group`: grupowanie przycisków nawigacji, `flex-direction: column`, `gap: 8px`.
 - `.user-nav .btn.is-active`: wzmocniony stan aktywny (zielone tło i glow).
 - `.user-panel`: kontener list w widoku użytkownika, domyślnie `display: none`; klasa `.is-visible` ustawia `display: flex`.
-- Responsywność: poniżej `980px` układ przechodzi do jednej kolumny.
+- Responsywność: poniżej `980px` układ główny (`.layout`, `.user-layout`) przechodzi do jednej kolumny, a siatka sampli do 2 kolumn; poniżej `680px` siatka sampli przechodzi do 1 kolumny.
 
 ## 7. Mapowanie danych z `AudioManifest.xlsx`
 - Plik jest wczytywany przez `fetch` i parsowany przez `XLSX.read`.
