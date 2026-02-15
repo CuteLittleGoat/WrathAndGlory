@@ -67,7 +67,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 - Link do pliku jest budowany jako: `LinkDoFolderu + "/" + NazwaPliku`.
 - Grupowanie odbywa się **wyłącznie w obrębie jednego folderu**:
   - Jeżeli nazwy różnią się **samą cyfrą** na końcu (`Assault Weapon1`, `Assault Weapon2` lub `Rats 1`, `Rats 2`), UI pokazuje **jeden** przycisk `Assault Weapon (2)` / `Rats (2)`.
-  - Jeżeli cyfra występuje **w środku** (`Blaster 1 Burst`, `Blaster 2 Burst`), UI tworzy przycisk `Blaster Burst (2)`.
+  - Jeżeli cyfra występuje **w środku** (`Blaster 1 Burst`, `Blaster 2 Burst`), UI tworzy **oddzielne** przyciski: `Blaster 1 Burst` i `Blaster 2 Burst`.
   - Kliknięcie zgrupowanego przycisku losuje dźwięk z grupy.
   - W nazwie pliku pojawia się dodatkowy sufiks `(+N)` z liczbą wariantów.
 - Tagi do filtrowania są tworzone z folderów ścieżki `LinkDoFolderu` z pominięciem fragmentów: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**. Znaki `%20` są zamieniane na spacje, a końcowe spacje usuwane.
@@ -137,7 +137,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 - The file URL is built as: `LinkDoFolderu + "/" + NazwaPliku`.
 - Grouping happens **only within a single folder**:
   - If names differ only by a **number suffix** (`Assault Weapon1`, `Assault Weapon2` or `Rats 1`, `Rats 2`), the UI shows a single `Assault Weapon (2)` / `Rats (2)` button.
-  - If the number appears **in the middle** (`Blaster 1 Burst`, `Blaster 2 Burst`), the UI shows `Blaster Burst (2)`.
+  - If the number appears **in the middle** (`Blaster 1 Burst`, `Blaster 2 Burst`), the UI creates **separate** buttons: `Blaster 1 Burst` and `Blaster 2 Burst`.
   - Clicking a grouped button plays a random variant.
   - The filename line shows a `(+N)` suffix for grouped variants.
 - Filter tags are generated from the folder path in `LinkDoFolderu`, ignoring fragments: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**. `%20` is converted to spaces and trailing spaces are removed.

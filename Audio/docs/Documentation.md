@@ -147,7 +147,7 @@ window.firebaseConfig = {
 - **Pełny URL**: `folderUrl + "/" + filename` (bez podwójnych `/`).
 - **Grupowanie nazw z cyfrą (tylko w obrębie jednego `folderUrl`):**
   - Jeśli nazwy różnią się **numerem na końcu** (`Assault Weapon1`, `Assault Weapon2`, `Rats 1`, `Rats 2`), tworzone jest **jedno** zgrupowanie.
-  - Jeśli numer występuje **w środku** nazwy (`Blaster 1 Burst`, `Blaster 2 Burst`), numer jest usuwany z etykiety i powstaje przycisk `Blaster Burst (2)`.
+  - Jeśli numer występuje **w środku** nazwy (`Blaster 1 Burst`, `Blaster 2 Burst`), pozycje **nie są grupowane** i powstają dwa oddzielne przyciski.
   - Etykieta grupy zawiera liczebność w nawiasie (np. `Assault Weapon (4)`), a sama liczba jest renderowana na czerwono (`.group-count`).
   - Kliknięcie przycisku losuje dźwięk z listy `variants`.
   - Dla zgrupowanych pozycji przy nazwie pliku pojawia się sufiks `(+N)` informujący o liczbie wariantów.
@@ -160,7 +160,7 @@ window.firebaseConfig = {
 - `escapeRegExp(value)` — ucieka znaki specjalne do użycia w RegExp.
 - `cleanTagSegment(segment)` — dekoduje `%20` na spacje, usuwa fragmenty ignorowane (`SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`) i normalizuje spacje.
 - `extractTags(folderUrl)` — zwraca tablicę tagów na podstawie segmentów ścieżki `folderUrl`.
-- `getGroupingBaseLabel(label)` — usuwa numery (na końcu lub jako osobny token w środku) w celu wyznaczenia bazowej etykiety grupowania.
+- `getGroupingBaseLabel(label)` — wyznacza bazową etykietę grupowania wyłącznie dla numeru na końcu nazwy; numer w środku pozostawia etykietę bez zmian.
 - `formatSampleLabel(item)` — zwraca HTML etykiety z aliasem w nawiasie (jeśli ustawiony) oraz czerwonym licznikiem wariantów.
 - `buildTagTree(items)` — buduje drzewo tagów (hierarchia) z listy sampli.
 - `flattenTagTree(nodes, depth)` — spłaszcza drzewo tagów do listy z poziomem zagnieżdżenia.
