@@ -963,9 +963,7 @@
         const base = suffixMatch[1].trim();
         return { baseLabel: base, changed: base !== trimmed };
       }
-      const withoutNumbers = trimmed.replace(/\b\d+\b/g, " ").replace(/\s+/g, " ").trim();
-      const changed = Boolean(withoutNumbers) && withoutNumbers !== trimmed && /\d/.test(trimmed);
-      return { baseLabel: changed ? withoutNumbers : trimmed, changed };
+      return { baseLabel: trimmed, changed: false };
     };
 
     const formatSampleLabel = (item) => {
