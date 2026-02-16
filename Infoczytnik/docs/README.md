@@ -23,9 +23,9 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
    lub użyj `index.html`, aby wybrać wersję produkcyjną lub testową (strona startowa ma zielony motyw i wyraźny podział na sekcje).
    - Tytuły kart dla stron testowych i startowej:
    - `index.html`: **DataSlate panel testowy**
-    - `GM_test.html`: **TEST: Infoczytnik - panel GM**
-    - `Infoczytnik_test.html`: **TEST: Infoczytnik**
-   - Wersja językowa wpływa na tytuł GM_test: w języku EN wyświetla się **TEST: Data-Slate - GM panel**.
+    - `GM_test.html`: **Infoczytnik - panel GM**
+    - `Infoczytnik_test.html`: **Infoczytnik**
+   - Wersja językowa wpływa na tytuł GM_test: w języku EN wyświetla się **Data-Slate - GM panel**.
 7. (Opcjonalnie) Przykładowy adres hostingu po migracji:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 8. (Opcjonalnie) Na stronie startowej `index.html` są przyciski do wersji testowych (do sprawdzania zmian):
@@ -99,8 +99,8 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
    or use `index.html` to choose production or test variants (the landing page uses the same green UI theme and clear sections).
    - Browser tab titles for the landing/test pages:
      - `index.html`: **DataSlate panel testowy**
-     - `GM_test.html`: **TEST: Infoczytnik - panel GM** (EN: **TEST: Data-Slate - GM panel**)
-     - `Infoczytnik_test.html`: **TEST: Infoczytnik**
+     - `GM_test.html`: **Infoczytnik - panel GM** (EN: **Data-Slate - GM panel**)
+     - `Infoczytnik_test.html`: **Infoczytnik**
 7. (Optional) Example hosted URL after migration:
    - `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
 8. (Optional) On the `index.html` landing page, there are test buttons (for verifying changes):
