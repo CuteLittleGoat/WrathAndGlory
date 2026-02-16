@@ -10,3 +10,6 @@ Ilość modułów może się zmieniać.
 4. Plik Documentation.md ma zawierać dokładny opis kodu. Wszystkich funkcji, użytych styli, fontów, zasad działania poszczególnych elementów itp.
 5. Plik Documentation.md ma służyć do tego, żeby inny użytkownik tylko czytając dokumentację mógł odtworzyć aplikację 1:1
 6. Jeżeli zmiana dotyczy fontu, kolorów itp. to należy też zaktualizować plik DetaleLayout.md w głównym folderze
+7. Jeżeli polecenie użytkownika nie dotyczy zmiany kodu a tylko analizy to wnioski zapisz w folderze Analizy w nowoutworzonym pliku o odekwatnej nazwie do przeprowadzanej analizy
+8. Jeżeli zapisujesz plik z wynikami analizy to w pliku uwzględnij prompt użytkownika, żeby zachować kontekst zapisanych odpowiedzi
+9. Folderu Analizy nie uwzględniaj w żadnych dokumentacjach i instrukcjach
