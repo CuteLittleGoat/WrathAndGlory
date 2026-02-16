@@ -16,8 +16,8 @@
 - `index.html` — strona startowa z linkami do wersji produkcyjnych i testowych (tytuł karty: `DataSlate panel testowy`).
 - `GM.html` — panel MG (UI + zapis do Firestore).
 - `Infoczytnik.html` — ekran graczy (UI + subskrypcja Firestore + audio).
-- `GM_test.html` — wersja testowa panelu MG (zmiany wprowadzane tylko tutaj, tytuł karty: `TEST: Infoczytnik - panel GM`, a po przełączeniu na EN: `TEST: Data-Slate - GM panel`, zawiera przełącznik języka PL/EN).
-- `Infoczytnik_test.html` — wersja testowa ekranu graczy (zmiany wprowadzane tylko tutaj, tytuł karty: `TEST: Infoczytnik`).
+- `GM_test.html` — wersja testowa panelu MG (zmiany wprowadzane tylko tutaj, tytuł karty: `Infoczytnik - panel GM`, a po przełączeniu na EN: `Data-Slate - GM panel`, zawiera przełącznik języka PL/EN).
+- `Infoczytnik_test.html` — wersja testowa ekranu graczy (zmiany wprowadzane tylko tutaj, tytuł karty: `Infoczytnik`).
 - `config/`
   - `firebase-config.js` — faktyczna konfiguracja Firebase (globalna zmienna `window.firebaseConfig`).
   - `firebase-config.template.js` — szablon do wypełnienia własną konfiguracją.
