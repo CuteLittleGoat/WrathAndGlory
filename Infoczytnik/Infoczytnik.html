@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>WH40k Data-Slate — Infoczytnik</title>
+<title>TEST: Infoczytnik</title>
 
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-    const INF_VERSION = "2026-01-22_07-18-48"; // <- zmieniaj przy aktualizacjach
+      const INF_VERSION = "2026-02-16_09-30-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -207,42 +207,10 @@
     white-space: pre-wrap;
   }
 
-  .unlock{
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:rgba(0,0,0,.88);
-    color:rgba(255,255,255,.9);
-    font-family: Calibri, Arial, sans-serif;
-    z-index:9999;
-    text-align:center;
-    cursor:pointer;
-    padding:24px;
-  }
-  .unlock .box{
-    border:1px solid rgba(255,255,255,.18);
-    border-radius:16px;
-    padding:18px 16px;
-    max-width:560px;
-    background:rgba(0,0,0,.35);
-  }
 </style>
 </head>
 
 <body>
-  <div class="unlock" id="unlock">
-    <div class="box">
-      <div style="font-size:18px; margin-bottom:8px;">Kliknij raz, aby odblokować dźwięk</div>
-      <div style="font-size:13px; opacity:.78; line-height:1.35;">
-        Chrome blokuje audio, dopóki w tej karcie nie wykonasz akcji.
-        To jednorazowe (po odświeżeniu trzeba kliknąć ponownie).
-      </div>
-      <div style="margin-top:10px; font-size:12px; opacity:.6;">(Kliknij gdziekolwiek)</div>
-    </div>
-  </div>
-
   <div class="wrap">
     <div class="panel crt" id="panel">
       <img class="layout-img" id="layoutImg" alt="layout" />
@@ -266,29 +234,10 @@
   <!-- ✅ config jako zwykły skrypt (ustawia window.firebaseConfig) -->
   <script src="config/firebase-config.js"></script>
 
-  <!-- ✅ Audio unlock działa NIEZALEŻNIE od Firebase (ważne!) -->
   <script>
-    (function setupAudioUnlock(){
-      const unlock = document.getElementById("unlock");
-      window.__dsAudioArmed = false;
-
-      function armAudio(){
-        if (window.__dsAudioArmed) return;
-        window.__dsAudioArmed = true;
-        unlock.style.display = "none";
-      }
-
-      // możliwie najpewniejsze wejścia na mobile
-      unlock.addEventListener("click", armAudio, { passive:true });
-      unlock.addEventListener("touchstart", armAudio, { passive:true });
-      window.addEventListener("pointerdown", armAudio, { passive:true });
-      window.addEventListener("keydown", armAudio);
-
-      window.__dsPlayUrlOnce = async function(url){
-        if(!window.__dsAudioArmed) return;
-        try { await new Audio(url).play(); } catch(e) {}
-      };
-    })();
+    window.__dsPlayUrlOnce = async function(url){
+      try { await new Audio(url).play(); } catch(e) {}
+    };
   </script>
 
 <script type="module">
@@ -483,6 +432,30 @@
 
   window.addEventListener("resize", () => fitPanel(currentAr));
 
+  function resolveLocalAudioUrl(rawUrl, fallbackUrl){
+    if(typeof rawUrl !== "string") return fallbackUrl;
+
+    const candidate = rawUrl.trim();
+    if(!candidate) return fallbackUrl;
+
+    // Dopuszczamy wyłącznie lokalne ścieżki (repo) — bez zewnętrznych hostów.
+    if(/^assets\/audio\//i.test(candidate)) return candidate;
+    if(/^\.\/?assets\/audio\//i.test(candidate)) return candidate;
+
+    // Opcjonalnie: absolutny URL, ale tylko do bieżącego origin i ścieżki assets/audio.
+    try{
+      const parsed = new URL(candidate, window.location.href);
+      if(parsed.origin === window.location.origin && /^\/?.*assets\/audio\//i.test(parsed.pathname)){
+        return parsed.pathname + parsed.search + parsed.hash;
+      }
+    }catch(e){
+      // Ignorujemy błędny URL i przechodzimy do fallbacku.
+    }
+
+    console.warn("[Infoczytnik] Odrzucono zewnętrzny lub nieprawidłowy URL audio:", candidate);
+    return fallbackUrl;
+  }
+
   const currentRef = doc(db, "dataslate", "current");
   let lastNonce = null;
 
@@ -508,7 +481,7 @@
     }
 
     if(d.type === "ping"){
-      const pingUrl = d.pingUrl ? String(d.pingUrl) : DEFAULT_PING_URL;
+      const pingUrl = resolveLocalAudioUrl(d.pingUrl ? String(d.pingUrl) : "", DEFAULT_PING_URL);
       window.__dsPlayUrlOnce(pingUrl);
       return;
     }
@@ -535,7 +508,10 @@
         showMessage(prefix, text, suffix);
       }
 
-      const msgUrl = (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : DEFAULT_MSG_URL;
+      const msgUrl = resolveLocalAudioUrl(
+        (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : "",
+        DEFAULT_MSG_URL
+      );
       window.__dsPlayUrlOnce(msgUrl);
     }
   });
