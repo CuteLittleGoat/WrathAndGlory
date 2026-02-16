@@ -35,8 +35,8 @@ window.firebaseConfig = {
     - `text` (string)
     - `nonce` (string)
     - `ts` (timestamp)
-    - (opcjonalnie) `pingUrl` (string)
-    - (opcjonalnie) `msgUrl` / `messageUrl` (string)
+    - (opcjonalnie) `pingUrl` (string; tylko lokalna ścieżka `assets/audio/...`)
+    - (opcjonalnie) `msgUrl` / `messageUrl` (string; tylko lokalna ścieżka `assets/audio/...`)
 
 ## 3) Node.js script (utworzenie struktury)
 

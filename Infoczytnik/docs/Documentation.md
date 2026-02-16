@@ -303,6 +303,7 @@ window.firebaseConfig = {
 - `showMessage(prefix, text, suffix)` — wypełnia linie i resetuje scroll.
 - `clearMessageKeepLayout()` — czyści treść bez zmiany layoutu.
 - `window.addEventListener("resize", ...)` — przy zmianie rozmiaru okna uruchamia `fitPanel(currentAr)`.
+- `resolveLocalAudioUrl(rawUrl, fallbackUrl)` — waliduje źródło audio i dopuszcza wyłącznie lokalne ścieżki `assets/audio/...` (lub URL absolutny w tym samym origin prowadzący do `assets/audio/...`); każdy URL zewnętrzny jest odrzucany i zastępowany fallbackiem.
 
 ### 7.6. Obsługa snapshotu Firestore
 **Logika renderowania:**
@@ -331,7 +332,7 @@ window.firebaseConfig = {
 | `text` | `string` | Treść wiadomości. |
 | `showLogo` | `boolean` | Czy pokazać logo frakcji. |
 | `flicker` | `boolean` | Czy włączyć animację CRT. |
-| `pingUrl` / `msgUrl` (`messageUrl`) | `string` | Opcjonalne ścieżki niestandardowych dźwięków. |
+| `pingUrl` / `msgUrl` (`messageUrl`) | `string` | Opcjonalne ścieżki dźwięków, ale tylko lokalne (`assets/audio/...` lub URL tego samego origin wskazujący na `assets/audio/...`). Zewnętrzne hosty są ignorowane. |
 | `nonce` | `string` | Unikalny identyfikator snapshota (zapobiega dublowaniu). |
 | `ts` | `serverTimestamp` | Znacznik czasu Firestore. |
 
@@ -350,7 +351,7 @@ window.firebaseConfig = {
 ## 10. Aktualizacja assetów i layoutów
 - **Nowa frakcja:** dodaj pliki do `assets/layouts/<frakcja>/`, ewentualne logo do `assets/logos/<frakcja>/`, uzupełnij mapy w `Infoczytnik.html` (`LAYOUT_BG`, `FILLERS`, `FONT_STACK`, opcjonalnie `FACTION_LOGO`, `LAYOUT_AR`, `SCREEN_INSETS`).
 - **Nowy layout istniejącej frakcji:** podmień PNG i zaktualizuj mapę `LAYOUT_BG`. Jeśli zmienia się proporcja lub położenie tekstu — zaktualizuj `LAYOUT_AR`/`SCREEN_INSETS`.
-- **Audio:** podmień `assets/audio/global/Ping.mp3` i `Message.mp3` lub używaj `pingUrl`/`msgUrl` w dokumencie.
+- **Audio:** podmień `assets/audio/global/Ping.mp3` i `Message.mp3`; jeśli używasz `pingUrl`/`msgUrl` w dokumencie, wskazuj wyłącznie lokalne pliki z repo (`assets/audio/...`).
 - **Wersjonowanie:** podnieś `INF_VERSION` (a przez to `ASSET_VERSION`), aby wymusić pobranie nowych assetów.
 
 ## 11. Troubleshooting

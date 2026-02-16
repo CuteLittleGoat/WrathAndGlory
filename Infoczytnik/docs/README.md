@@ -52,6 +52,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 
 #### 3) Dodatkowe akcje
 - **Ping** — wysyła tylko sygnał dźwiękowy (bez zmiany treści) i odświeża styl w infoczytniku.
+- **Źródło audio** — Infoczytnik akceptuje wyłącznie lokalne ścieżki z repo (`assets/audio/...`). Jeśli w Firestore pojawi się zewnętrzny URL (np. Google Drive), zostanie automatycznie odrzucony i zastąpiony domyślnym dźwiękiem lokalnym.
 - **Wyczyść ekran** — usuwa treść, ale zachowuje layout i ustawienia stylu.
 - **Wyczyść pole** — czyści pole tekstowe w panelu MG (bez wysyłania do infoczytnika).
 
@@ -71,7 +72,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 
 #### Aktualizacja logiki / layoutów
 - Zmiany wykonuj w `GM_test.html` i `Infoczytnik_test.html`, a po weryfikacji przenieś je ręcznie do wersji produkcyjnych.
-- Po zmianach zawsze zwiększ `INF_VERSION`, aby urządzenia z cache pobrały świeżą wersję.
+- Po zmianach zawsze zwiększ `INF_VERSION` **w obu plikach testowych**: `GM_test.html` i `Infoczytnik_test.html`, aby urządzenia z cache pobrały świeżą wersję.
 
 ### Disclaimer
 To narzędzie jest nieoficjalnym, fanowskim projektem stworzonym jako pomoc dla MG w systemie Wrath & Glory. Aplikacja jest udostępniana za darmo wyłącznie do prywatnego, niekomercyjnego użytku. Projekt nie jest licencjonowany, nie jest powiązany ani wspierany przez Games Workshop, Cubicle 7 Entertainment Ltd. ani Copernicus Corporation.
@@ -126,6 +127,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 
 #### 3) Additional actions
 - **Ping** — sends only a sound signal (no content change) and refreshes styles on the player screen.
+- **Audio source policy** — Infoczytnik accepts only local repository paths (`assets/audio/...`). If Firestore contains an external URL (e.g. Google Drive), it is rejected and replaced with the default local sound.
 - **Wyczyść ekran / Clear screen** — clears the content while keeping layout and style settings.
 - **Wyczyść pole / Clear field** — clears the input field in the GM panel (no Firestore update).
 
@@ -145,7 +147,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 
 #### Updating logic / layouts
 - Make changes in `GM_test.html` and `Infoczytnik_test.html`, then manually copy them into production once verified.
-- After changes, always increment `INF_VERSION` so cached devices load the newest version.
+- After changes, always increment `INF_VERSION` **in both test files**: `GM_test.html` and `Infoczytnik_test.html`, so cached devices load the newest version.
 
 ### Disclaimer
 This tool is an unofficial fan project created to help the GM in Wrath & Glory. The app is provided for private, non-commercial use only. It is not licensed, associated with, or endorsed by Games Workshop, Cubicle 7 Entertainment Ltd., or Copernicus Corporation.
