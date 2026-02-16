@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>WH40k Data-Slate — GM</title>
+  <title>TEST: Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-01-22_07-18-48"; // <- zmieniaj przy aktualizacjach
+      const INF_VERSION = "2026-02-16_09-30-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -23,6 +23,15 @@
     *{box-sizing:border-box}
     body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(180deg,#070707,#0f0f0f);color:var(--text);}
     .wrap{max-width:980px;margin:0 auto}
+    .language-switcher{display:flex;justify-content:flex-end;margin-bottom:10px;}
+    .language-switcher select{
+      background:#0f0f0f;
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:8px 12px;
+      font-size:14px;
+    }
     h1{margin:0 0 10px 0;font-size:20px;color:var(--accent);letter-spacing:.3px}
     .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
     label{display:block;margin:10px 0 6px 0;color:var(--muted);font-size:13px}
@@ -106,110 +115,116 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>WH40k Data-Slate — GM</h1>
+    <div class="language-switcher">
+      <select id="languageSelect" aria-label="Wersja językowa">
+        <option value="pl">Polski</option>
+        <option value="en">English</option>
+      </select>
+    </div>
+    <h1 id="pageTitle" data-i18n="pageTitle">TEST: Infoczytnik - panel GM</h1>
     <div class="card">
 
       <div class="row">
         <!-- LEWA KOLUMNA -->
         <div class="col">
-          <label>Frakcja / layout</label>
+          <label data-i18n="labelFaction">Frakcja / layout</label>
           <select id="faction">
-            <option value="mechanicus">Adeptus Mechanicus</option>
-            <option value="inquisition">Inkwizycja</option>
-            <option value="militarum">Astra Militarum</option>
-            <option value="khorne">Khorne</option>
-            <option value="nurgle">Nurgle</option>
-            <option value="tzeentch">Tzeentch</option>
-            <option value="slaanesh">Slaanesh</option>
-            <option value="chaos_undivided">Chaos Undivided</option>
+            <option value="mechanicus" data-i18n="factionMechanicus">Adeptus Mechanicus</option>
+            <option value="inquisition" data-i18n="factionInquisition">Inkwizycja</option>
+            <option value="militarum" data-i18n="factionMilitarum">Astra Militarum</option>
+            <option value="khorne" data-i18n="factionKhorne">Khorne</option>
+            <option value="nurgle" data-i18n="factionNurgle">Nurgle</option>
+            <option value="tzeentch" data-i18n="factionTzeentch">Tzeentch</option>
+            <option value="slaanesh" data-i18n="factionSlaanesh">Slaanesh</option>
+            <option value="chaos_undivided" data-i18n="factionChaosUndivided">Chaos Undivided</option>
           </select>
 
           <!-- Kolor treści + szybkie -->
-          <label>Kolor fontu (treść wiadomości)</label>
+          <label data-i18n="labelMessageColor">Kolor fontu (treść wiadomości)</label>
           <input type="color" id="fontColor" value="#00ff66" />
           <div class="chips" id="msgColorChips">
-            <div class="chip" data-target="msg" data-color="#00ff66"><span style="background:#00ff66"></span>Zielony</div>
-            <div class="chip" data-target="msg" data-color="#ff3333"><span style="background:#ff3333"></span>Czerwony</div>
-            <div class="chip" data-target="msg" data-color="#d4af37"><span style="background:#d4af37"></span>Złoty</div>
-            <div class="chip" data-target="msg" data-color="#ffffff"><span style="background:#ffffff"></span>Biały</div>
+            <div class="chip" data-target="msg" data-color="#00ff66"><span style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+            <div class="chip" data-target="msg" data-color="#ff3333"><span style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+            <div class="chip" data-target="msg" data-color="#d4af37"><span style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+            <div class="chip" data-target="msg" data-color="#ffffff"><span style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
           </div>
 
           <!-- Rozmiar treści -->
-          <label>Wielkość fontu (treść wiadomości) — px</label>
+          <label data-i18n="labelMessageSize">Wielkość fontu (treść wiadomości) — px</label>
           <input type="number" id="msgFontSize" min="12" max="80" step="1" value="20" />
 
           <hr class="sep">
 
           <!-- Kolor Prefix+Suffix -->
-          <label>Kolor Prefix + Suffix (wspólny)</label>
+          <label data-i18n="labelPrefixSuffixColor">Kolor Prefix + Suffix (wspólny)</label>
           <div class="row" style="gap:10px;">
             <div class="col" style="min-width:180px;">
               <input type="text" id="psColorText" value="rgba(255,255,255,.88)" />
-              <div class="small">Możesz wpisać np. <code>#ffffff</code> albo <code>rgba(255,255,255,.88)</code></div>
+              <div class="small" data-i18n="prefixSuffixColorHint">Możesz wpisać np. <code>#ffffff</code> albo <code>rgba(255,255,255,.88)</code></div>
             </div>
             <div class="col" style="min-width:160px;">
               <input type="color" id="psColorPicker" value="#ffffff" />
-              <div class="small">Picker ustawia kolor jako <code>#RRGGBB</code></div>
+              <div class="small" data-i18n="prefixSuffixPickerHint">Picker ustawia kolor jako <code>#RRGGBB</code></div>
             </div>
           </div>
 
           <!-- Szybkie kolory Prefix/Suffix -->
           <div class="chips" id="psColorChips">
-            <div class="chip" data-target="ps" data-color="#00ff66"><span style="background:#00ff66"></span>Zielony</div>
-            <div class="chip" data-target="ps" data-color="#ff3333"><span style="background:#ff3333"></span>Czerwony</div>
-            <div class="chip" data-target="ps" data-color="#d4af37"><span style="background:#d4af37"></span>Złoty</div>
-            <div class="chip" data-target="ps" data-color="#ffffff"><span style="background:#ffffff"></span>Biały</div>
+            <div class="chip" data-target="ps" data-color="#00ff66"><span style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+            <div class="chip" data-target="ps" data-color="#ff3333"><span style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+            <div class="chip" data-target="ps" data-color="#d4af37"><span style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+            <div class="chip" data-target="ps" data-color="#ffffff"><span style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
           </div>
 
           <!-- Rozmiar Prefix/Suffix -->
-          <label>Wielkość fontu Prefix + Suffix (wspólna) — px</label>
+          <label data-i18n="labelPrefixSuffixSize">Wielkość fontu Prefix + Suffix (wspólna) — px</label>
           <input type="number" id="psFontSize" min="10" max="60" step="1" value="10" />
 
-          <div class="small">
+          <div class="small" data-i18n="logoHint">
             Logo ma stały rozmiar w Infoczytniku. Zmiana rozmiaru prefixu może spowodować zawijanie (OK), logo zostaje bez zmian.
           </div>
         </div>
 
         <!-- PRAWA KOLUMNA -->
         <div class="col">
-          <label>Losowość fillerów</label>
+          <label data-i18n="labelFillersRandom">Losowość fillerów</label>
 
           <div class="fillerBox">
             <div class="fillerTop">
               <input type="checkbox" id="randomFillers" checked />
-              <span>Losuj automatycznie</span>
+              <span data-i18n="labelRandomAuto">Losuj automatycznie</span>
             </div>
 
             <div class="fillerManual">
               <div class="left">
-                <span class="miniLabel">Ręcznie</span>
+                <span class="miniLabel" data-i18n="labelManual">Ręcznie</span>
                 <div class="pairRow">
-                  <b>Prefix</b>
+                  <b data-i18n="labelPrefix">Prefix</b>
                   <input type="number" id="prefixIndex" min="1" value="1" />
                 </div>
               </div>
 
               <div class="right">
                 <div class="pairRow">
-                  <b>Suffix</b>
+                  <b data-i18n="labelSuffix">Suffix</b>
                   <input type="number" id="suffixIndex" min="1" value="1" />
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="small">
+          <div class="small" data-i18n="randomHint">
             Gdy losowanie wyłączone, wybierasz osobno numer Prefix i Suffix (1..N zależnie od frakcji).
           </div>
 
           <div class="row" style="align-items:center; gap:18px; margin-top:12px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <input type="checkbox" id="showLogo" checked style="width:18px; height:18px; margin:0;" />
-              <label for="showLogo" style="margin:0; color:var(--text);">Dodaj logo</label>
+              <label for="showLogo" style="margin:0; color:var(--text);" data-i18n="labelShowLogo">Dodaj logo</label>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <input type="checkbox" id="flicker" checked style="width:18px; height:18px; margin:0;" />
-              <label for="flicker" style="margin:0; color:var(--text);">Flicker</label>
+              <label for="flicker" style="margin:0; color:var(--text);" data-i18n="labelFlicker">Flicker</label>
             </div>
           </div>
 
@@ -223,19 +238,19 @@
 
       <div class="preview" id="prefixPreview"></div>
 
-      <label>Treść komunikatu</label>
-      <textarea id="message" placeholder="Wpisz komunikat dla graczy..."></textarea>
+      <label data-i18n="labelMessage">Treść komunikatu</label>
+      <textarea id="message" placeholder="Wpisz komunikat dla graczy..." data-i18n-placeholder="messagePlaceholder"></textarea>
 
       <div class="preview" id="suffixPreview"></div>
 
       <div class="btnrow">
-        <button class="primary" id="sendBtn">Wyślij</button>
-        <button class="warn" id="pingBtn">Ping</button>
-        <button id="clearBtn">Wyczyść ekran</button>
-        <button id="clearTextBtn">Wyczyść pole</button>
+        <button class="primary" id="sendBtn" data-i18n="buttonSend">Wyślij</button>
+        <button class="warn" id="pingBtn" data-i18n="buttonPing">Ping</button>
+        <button id="clearBtn" data-i18n="buttonClearScreen">Wyczyść ekran</button>
+        <button id="clearTextBtn" data-i18n="buttonClearField">Wyczyść pole</button>
       </div>
 
-      <div class="small">Status: <span class="status" id="status">…</span></div>
+      <div class="small"><span data-i18n="labelStatus">Status:</span> <span class="status" id="status">…</span></div>
     </div>
   </div>
 
@@ -250,7 +265,7 @@
     // --- Konfiguracja Firebase z config/firebase-config.js ---
     const firebaseConfig = window.firebaseConfig;
     if(!firebaseConfig){
-      alert("Brak window.firebaseConfig. Sprawdź plik config/firebase-config.js");
+      alert(translations[currentLanguage].messages.missingConfig);
       throw new Error("Missing window.firebaseConfig");
     }
 
@@ -299,6 +314,164 @@
       chips: Array.from(document.querySelectorAll(".chip")),
     };
 
+    const languageSelect = document.getElementById("languageSelect");
+
+    const translations = {
+      pl: {
+        labels: {
+          languageSelect: "Wersja językowa",
+          pageTitle: "TEST: Infoczytnik - panel GM",
+          labelFaction: "Frakcja / layout",
+          labelMessageColor: "Kolor fontu (treść wiadomości)",
+          colorGreen: "Zielony",
+          colorRed: "Czerwony",
+          colorGold: "Złoty",
+          colorWhite: "Biały",
+          labelMessageSize: "Wielkość fontu (treść wiadomości) — px",
+          labelPrefixSuffixColor: "Kolor Prefix + Suffix (wspólny)",
+          prefixSuffixColorHint: "Możesz wpisać np. <code>#ffffff</code> albo <code>rgba(255,255,255,.88)</code>",
+          prefixSuffixPickerHint: "Picker ustawia kolor jako <code>#RRGGBB</code>",
+          labelPrefixSuffixSize: "Wielkość fontu Prefix + Suffix (wspólna) — px",
+          logoHint:
+            "Logo ma stały rozmiar w Infoczytniku. Zmiana rozmiaru prefixu może spowodować zawijanie (OK), logo zostaje bez zmian.",
+          labelFillersRandom: "Losowość fillerów",
+          labelRandomAuto: "Losuj automatycznie",
+          labelManual: "Ręcznie",
+          labelPrefix: "Prefix",
+          labelSuffix: "Suffix",
+          randomHint: "Gdy losowanie wyłączone, wybierasz osobno numer Prefix i Suffix (1..N zależnie od frakcji).",
+          labelShowLogo: "Dodaj logo",
+          labelFlicker: "Flicker",
+          labelMessage: "Treść komunikatu",
+          messagePlaceholder: "Wpisz komunikat dla graczy...",
+          buttonSend: "Wyślij",
+          buttonPing: "Ping",
+          buttonClearScreen: "Wyczyść ekran",
+          buttonClearField: "Wyczyść pole",
+          labelStatus: "Status:",
+          factionMechanicus: "Adeptus Mechanicus",
+          factionInquisition: "Inkwizycja",
+          factionMilitarum: "Astra Militarum",
+          factionKhorne: "Khorne",
+          factionNurgle: "Nurgle",
+          factionTzeentch: "Tzeentch",
+          factionSlaanesh: "Slaanesh",
+          factionChaosUndivided: "Chaos Undivided",
+        },
+        preview: {
+          prefix: "++ NADCHODZĄCE DANE ++",
+          message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          suffix: "++ CHWAŁA OMNISSJASZOWI ++",
+        },
+        messages: {
+          missingConfig: "Brak window.firebaseConfig. Sprawdź plik config/firebase-config.js",
+          statusReady: "gotowe",
+          statusSending: "wysyłam…",
+          statusCleared: "wyczyszczono",
+          statusSent: "wysłano",
+          statusError: "BŁĄD",
+          statusPingLoading: "ping…",
+          statusPingSent: "ping wysłany",
+          statusPingError: "BŁĄD ping",
+          alertPingError: "Błąd ping:\n\n",
+        },
+      },
+      en: {
+        labels: {
+          languageSelect: "Language version",
+          pageTitle: "TEST: Data-Slate - GM panel",
+          labelFaction: "Faction / layout",
+          labelMessageColor: "Font color (message content)",
+          colorGreen: "Green",
+          colorRed: "Red",
+          colorGold: "Gold",
+          colorWhite: "White",
+          labelMessageSize: "Font size (message content) — px",
+          labelPrefixSuffixColor: "Prefix + Suffix color (shared)",
+          prefixSuffixColorHint: "You can enter e.g. <code>#ffffff</code> or <code>rgba(255,255,255,.88)</code>",
+          prefixSuffixPickerHint: "The picker sets color as <code>#RRGGBB</code>",
+          labelPrefixSuffixSize: "Prefix + Suffix font size (shared) — px",
+          logoHint:
+            "The logo size is fixed in Data-Slate. Changing the prefix size may wrap (OK), the logo remains unchanged.",
+          labelFillersRandom: "Filler randomness",
+          labelRandomAuto: "Auto randomize",
+          labelManual: "Manual",
+          labelPrefix: "Prefix",
+          labelSuffix: "Suffix",
+          randomHint: "When randomization is off, you choose Prefix and Suffix numbers (1..N depending on faction).",
+          labelShowLogo: "Add logo",
+          labelFlicker: "Flicker",
+          labelMessage: "Message content",
+          messagePlaceholder: "Type a message for players...",
+          buttonSend: "Send",
+          buttonPing: "Ping",
+          buttonClearScreen: "Clear screen",
+          buttonClearField: "Clear field",
+          labelStatus: "Status:",
+          factionMechanicus: "Adeptus Mechanicus",
+          factionInquisition: "Inquisition",
+          factionMilitarum: "Astra Militarum",
+          factionKhorne: "Khorne",
+          factionNurgle: "Nurgle",
+          factionTzeentch: "Tzeentch",
+          factionSlaanesh: "Slaanesh",
+          factionChaosUndivided: "Chaos Undivided",
+        },
+        preview: {
+          prefix: "++ INCOMING DATA FEED ++",
+          message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+          suffix: "++ PRAISE THE OMNISSIAH ++",
+        },
+        messages: {
+          missingConfig: "Missing window.firebaseConfig. Check config/firebase-config.js.",
+          statusReady: "ready",
+          statusSending: "sending…",
+          statusCleared: "cleared",
+          statusSent: "sent",
+          statusError: "ERROR",
+          statusPingLoading: "ping…",
+          statusPingSent: "ping sent",
+          statusPingError: "ping error",
+          alertPingError: "Ping error:\n\n",
+        },
+      },
+    };
+
+    let currentLanguage = "pl";
+
+    const applyLanguage = (lang) => {
+      currentLanguage = lang;
+      const t = translations[lang];
+      document.documentElement.lang = lang;
+      if (languageSelect) {
+        languageSelect.value = lang;
+        languageSelect.setAttribute("aria-label", t.labels.languageSelect);
+      }
+      document.title = t.labels.pageTitle;
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        const key = element.getAttribute("data-i18n");
+        if (key in t.labels) {
+          element.textContent = t.labels[key];
+        }
+      });
+      document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
+        const key = element.getAttribute("data-i18n-placeholder");
+        if (key in t.labels) {
+          element.setAttribute("placeholder", t.labels[key]);
+        }
+      });
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        if (["prefixSuffixColorHint", "prefixSuffixPickerHint", "logoHint"].includes(element.getAttribute("data-i18n"))) {
+          element.innerHTML = t.labels[element.getAttribute("data-i18n")];
+        }
+      });
+      el.livePreviewMsg.textContent = t.preview.message;
+      if (el.status?.dataset?.statusKey && t.messages[el.status.dataset.statusKey]) {
+        el.status.textContent = t.messages[el.status.dataset.statusKey];
+      }
+      computePreview();
+    };
+
     const FONT_STACK = {
       mechanicus:      '"Share Tech Mono", Calibri, Arial, sans-serif',
       inquisition:     '"Cinzel", Calibri, Arial, sans-serif',
@@ -329,7 +502,12 @@
                       suffixes:["++ GLORY TO CHAOS ++","++ DARK GODS SMILE ++","++ THE EYE OPENS ++","++ ASCEND AND BURN ++","++ ALL HAIL THE DARK GODS ++","++ REALSPACE BLEEDS ++","++ STARS ARE WRONG ++","++ VOID WITHIN ++","++ ETERNAL CHANGE ++"]},
     };
 
-    function setStatus(t){ el.status.textContent = t; }
+    function setStatus(t, key){
+      el.status.textContent = t;
+      if (key) {
+        el.status.dataset.statusKey = key;
+      }
+    }
     function clampIndex(n, max){ const x=Number(n); if(!Number.isFinite(x)) return 1; return Math.min(max, Math.max(1, Math.floor(x))); }
     function rand1to(max){ return Math.floor(Math.random()*max)+1; }
     function nonce(){ return String(Date.now()) + "-" + String(Math.random()).slice(2); }
@@ -402,7 +580,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
-      setStatus("wysyłam…");
+      setStatus(translations[currentLanguage].messages.statusSending, "statusSending");
       try{
         await currentRef.set({
           type: isClear ? "clear" : "message",
@@ -431,10 +609,15 @@
           ts: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge:false });
 
-        setStatus(isClear ? "wyczyszczono" : "wysłano");
+        setStatus(
+          isClear
+            ? translations[currentLanguage].messages.statusCleared
+            : translations[currentLanguage].messages.statusSent,
+          isClear ? "statusCleared" : "statusSent"
+        );
       }catch(e){
         console.error(e);
-        setStatus("BŁĄD");
+        setStatus(translations[currentLanguage].messages.statusError, "statusError");
         alert("Błąd zapisu:\n\n" + (e?.message || e));
       }
       computePreview();
@@ -444,7 +627,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
-      setStatus("ping…");
+      setStatus(translations[currentLanguage].messages.statusPingLoading, "statusPingLoading");
       try{
         await currentRef.set({
           type:"ping",
@@ -465,11 +648,11 @@
           ts: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge:true });
 
-        setStatus("ping wysłany");
+        setStatus(translations[currentLanguage].messages.statusPingSent, "statusPingSent");
       }catch(e){
         console.error(e);
-        setStatus("BŁĄD ping");
-        alert("Błąd ping:\n\n" + (e?.message || e));
+        setStatus(translations[currentLanguage].messages.statusPingError, "statusPingError");
+        alert(translations[currentLanguage].messages.alertPingError + (e?.message || e));
       }
     }
 
@@ -523,7 +706,14 @@
       el.psFontSize.addEventListener(evt, updateLivePreview);
     });
 
-    setStatus("gotowe");
+    applyLanguage(currentLanguage);
+    if (languageSelect) {
+      languageSelect.addEventListener("change", (event) => {
+        applyLanguage(event.target.value);
+      });
+    }
+
+    setStatus(translations[currentLanguage].messages.statusReady, "statusReady");
     computePreview();
   </script>
 </body>
