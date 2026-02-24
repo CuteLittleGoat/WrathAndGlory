@@ -588,6 +588,7 @@
     <section class="toolbar admin-only">
       <div class="left">
         <input class="search-input" id="searchInput" type="search" placeholder="Szukaj sampla..." />
+        <button class="btn btn-danger" id="clearAllAliases">Wyczyść wszystkie aliasy</button>
       </div>
     </section>
 
@@ -657,6 +658,7 @@
     const reloadManifest = document.getElementById("reloadManifest");
     const addListButton = document.getElementById("addList");
     const refreshFavoritesButton = document.getElementById("refreshFavorites");
+    const clearAllAliasesButton = document.getElementById("clearAllAliases");
     const headerTitle = document.getElementById("headerTitle");
     const headerSubtitle = document.getElementById("headerSubtitle");
     const userMainView = document.getElementById("userMainView");
@@ -714,6 +716,7 @@
           favoritesListsTitle: "Listy ulubionych",
           aliasPlaceholder: "Alias (opcjonalny)",
           buttonClear: "Wyczyść",
+          buttonClearAllAliases: "Wyczyść wszystkie aliasy",
           buttonPlay: "Odtwórz",
           buttonStop: "Zatrzymaj",
           buttonAddToList: "Dodaj do listy",
@@ -733,6 +736,7 @@
           promptNewListPlaceholder: "Nowa lista",
           promptRenameList: "Nowa nazwa listy:",
           confirmRemoveList: "Czy na pewno usunąć listę?",
+          confirmClearAllAliases: "Czy na pewno wyczyścić wszystkie aliasy tylko w module Audio?",
           alertMissingAudio: "Brak linku do pliku audio w manifestie.",
           manifestLoading: "Manifest: wczytywanie...",
           manifestMissing: "Manifest: brak danych",
@@ -780,6 +784,7 @@
           favoritesListsTitle: "Favorite lists",
           aliasPlaceholder: "Alias (optional)",
           buttonClear: "Clear",
+          buttonClearAllAliases: "Clear all aliases",
           buttonPlay: "Play",
           buttonStop: "Stop",
           buttonAddToList: "Add to list",
@@ -799,6 +804,7 @@
           promptNewListPlaceholder: "New list",
           promptRenameList: "New list name:",
           confirmRemoveList: "Are you sure you want to remove the list?",
+          confirmClearAllAliases: "Are you sure you want to clear all aliases only in the Audio module?",
           alertMissingAudio: "Missing audio file link in the manifest.",
           manifestLoading: "Manifest: loading...",
           manifestMissing: "Manifest: no data",
@@ -861,6 +867,7 @@
       if (tagSearchInput) tagSearchInput.placeholder = t.placeholders.tagSearch;
       if (tagMenuSearchInput) tagMenuSearchInput.placeholder = t.placeholders.tagMenuSearch;
       if (searchInput) searchInput.placeholder = t.placeholders.sampleSearch;
+      if (clearAllAliasesButton) clearAllAliasesButton.textContent = t.labels.buttonClearAllAliases;
       updateStatus();
       renderAllViews();
     };
@@ -888,6 +895,10 @@
     let audioContext = null;
 
     const getDefaultListName = () => translations[currentLanguage].labels.defaultListName;
+    const AUDIO_SETTINGS_STORAGE_KEY = "audio.settings";
+    const AUDIO_LEGACY_STORAGE_KEY = "audio.favorites";
+    const AUDIO_SETTINGS_COLLECTION = "audio";
+    const AUDIO_SETTINGS_DOC_ID = "favorites";
     const TAG_IGNORE_FRAGMENTS = [
       "SoundPad",
       "SoundPad Patreon Version",
@@ -1292,7 +1303,7 @@
         await setDoc(state.favoritesDoc, payload);
         return;
       }
-      localStorage.setItem("audio.settings", JSON.stringify({
+      localStorage.setItem(AUDIO_SETTINGS_STORAGE_KEY, JSON.stringify({
         favorites: state.favorites,
         mainView: state.mainView,
         aliases: state.aliases
@@ -1363,9 +1374,9 @@
     };
 
     const loadSettingsLocal = () => {
-      const stored = localStorage.getItem("audio.settings");
+      const stored = localStorage.getItem(AUDIO_SETTINGS_STORAGE_KEY);
       if (!stored) {
-        const legacy = localStorage.getItem("audio.favorites");
+        const legacy = localStorage.getItem(AUDIO_LEGACY_STORAGE_KEY);
         if (!legacy) {
           state.favorites = defaultFavorites();
           state.mainView = defaultMainView();
@@ -1409,7 +1420,7 @@
       const app = initializeApp(window.firebaseConfig);
       const db = getFirestore(app);
       state.firestore = db;
-      state.favoritesDoc = doc(db, "audio", "favorites");
+      state.favoritesDoc = doc(db, AUDIO_SETTINGS_COLLECTION, AUDIO_SETTINGS_DOC_ID);
       state.usingFirestore = true;
 
       onSnapshot(state.favoritesDoc, (snapshot) => {
@@ -1801,6 +1812,19 @@
       renderAllViews();
     };
 
+    const clearAllAliases = async () => {
+      const confirmed = confirm(translations[currentLanguage].labels.confirmClearAllAliases);
+      if (!confirmed) {
+        return;
+      }
+      state.aliases = {};
+      state.items.forEach((item) => {
+        item.alias = "";
+      });
+      await saveSettings();
+      renderAllViews();
+    };
+
     const moveMainViewItem = async (itemId, direction) => {
       const index = state.mainView.itemIds.indexOf(itemId);
       const target = index + direction;
@@ -2097,6 +2121,11 @@
         renderAllViews();
       }
     });
+    if (clearAllAliasesButton) {
+      clearAllAliasesButton.addEventListener("click", () => {
+        clearAllAliases();
+      });
+    }
 
     userNav.addEventListener("click", (event) => {
       const mainButton = event.target.closest("button[data-action=\"user-main\"]");
