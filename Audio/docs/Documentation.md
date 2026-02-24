@@ -70,7 +70,8 @@ window.firebaseConfig = {
      - drzewo checkboxów generowane z tagów folderów,
      - wyskakujące okienko filtra listowego z wyszukiwarką tagów, checkboxami oraz akcjami „Zaznacz wszystko” / „Odznacz wszystko”,
      - filtrowanie wpływa wyłącznie na listę sampli w panelu admina (nie zmienia głównego widoku ani ulubionych).
-  4. **Toolbar z wyszukiwarką sampli** `.toolbar` (tylko admin): pole „Szukaj sampla...”, umieszczone **pod** panelami tagów.
+  4. **Toolbar z wyszukiwarką sampli** `.toolbar` (tylko admin): pole „Szukaj sampla...” oraz przycisk **Wyczyść wszystkie aliasy**, umieszczone **pod** panelami tagów.
+     - Przycisk **Wyczyść wszystkie aliasy** usuwa globalnie całą mapę aliasów `aliases` dla wszystkich sampli (także niewidocznych przez filtry tagów i nieobecnych na aktualnie otwartych listach).
   5. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
      - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
        - Każda karta sampla pokazuje: nazwę sampla (z aliasem w nawiasie, jeśli ustawiono), `tag2` (drugi poziom folderu) oraz nazwę pliku.
@@ -184,6 +185,7 @@ window.firebaseConfig = {
 - `normalizeSettings(raw)` — akceptuje zarówno nowy format (`favorites`, `mainView`, `aliases`) jak i stary (`lists`).
 - `loadSettingsLocal()` — wczytuje lokalny zapis (`audio.settings`) lub migruje z `audio.favorites`.
 - `setItemAlias(itemId, alias)` — zapisuje/usuwa alias i odświeża wszystkie widoki.
+- `clearAllAliases()` — zeruje globalną mapę `aliases`, czyści `item.alias` dla wszystkich pozycji i zapisuje ustawienia, dzięki czemu aliasy znikają jednocześnie z listy sampli, ulubionych i głównego widoku.
 
 ### 8.3. Firebase
 - `initFirebase()`:
@@ -195,6 +197,7 @@ window.firebaseConfig = {
 ### 8.4. Renderowanie
 - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
 - `renderSamples()` — rysuje siatkę sampli (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
+- Klik przycisku `#clearAllAliases` wywołuje `clearAllAliases()`, które czyści aliasy globalnie, bez ograniczenia do aktualnie wyrenderowanych kart.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
 - `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.

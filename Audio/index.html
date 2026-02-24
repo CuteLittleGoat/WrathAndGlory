@@ -588,6 +588,7 @@
     <section class="toolbar admin-only">
       <div class="left">
         <input class="search-input" id="searchInput" type="search" placeholder="Szukaj sampla..." />
+        <button class="btn btn-danger" id="clearAllAliases">Wyczyść wszystkie aliasy</button>
       </div>
     </section>
 
@@ -657,6 +658,7 @@
     const reloadManifest = document.getElementById("reloadManifest");
     const addListButton = document.getElementById("addList");
     const refreshFavoritesButton = document.getElementById("refreshFavorites");
+    const clearAllAliasesButton = document.getElementById("clearAllAliases");
     const headerTitle = document.getElementById("headerTitle");
     const headerSubtitle = document.getElementById("headerSubtitle");
     const userMainView = document.getElementById("userMainView");
@@ -714,6 +716,7 @@
           favoritesListsTitle: "Listy ulubionych",
           aliasPlaceholder: "Alias (opcjonalny)",
           buttonClear: "Wyczyść",
+          buttonClearAllAliases: "Wyczyść wszystkie aliasy",
           buttonPlay: "Odtwórz",
           buttonStop: "Zatrzymaj",
           buttonAddToList: "Dodaj do listy",
@@ -780,6 +783,7 @@
           favoritesListsTitle: "Favorite lists",
           aliasPlaceholder: "Alias (optional)",
           buttonClear: "Clear",
+          buttonClearAllAliases: "Clear all aliases",
           buttonPlay: "Play",
           buttonStop: "Stop",
           buttonAddToList: "Add to list",
@@ -861,6 +865,7 @@
       if (tagSearchInput) tagSearchInput.placeholder = t.placeholders.tagSearch;
       if (tagMenuSearchInput) tagMenuSearchInput.placeholder = t.placeholders.tagMenuSearch;
       if (searchInput) searchInput.placeholder = t.placeholders.sampleSearch;
+      if (clearAllAliasesButton) clearAllAliasesButton.textContent = t.labels.buttonClearAllAliases;
       updateStatus();
       renderAllViews();
     };
@@ -1801,6 +1806,15 @@
       renderAllViews();
     };
 
+    const clearAllAliases = async () => {
+      state.aliases = {};
+      state.items.forEach((item) => {
+        item.alias = "";
+      });
+      await saveSettings();
+      renderAllViews();
+    };
+
     const moveMainViewItem = async (itemId, direction) => {
       const index = state.mainView.itemIds.indexOf(itemId);
       const target = index + direction;
@@ -2097,6 +2111,11 @@
         renderAllViews();
       }
     });
+    if (clearAllAliasesButton) {
+      clearAllAliasesButton.addEventListener("click", () => {
+        clearAllAliases();
+      });
+    }
 
     userNav.addEventListener("click", (event) => {
       const mainButton = event.target.closest("button[data-action=\"user-main\"]");

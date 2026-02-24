@@ -42,21 +42,22 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 3. Użyj belki **Filtry tagów** do zawężenia listy sampli (wpływa tylko na panel admina).
 4. (Opcjonalnie) skorzystaj z pola **Szukaj tagu...** oraz przycisku **Filtruj ▾** — otworzy się okienko z wyszukiwarką tagów, checkboxami oraz opcjami zaznacz/odznacz wszystko.
 5. Wyszukuj sample w polu „Szukaj sampla...” (pole znajduje się pod panelami tagów).
-6. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
-7. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
-8. W karcie sampla wybierz z listy **Widok Główny** lub konkretną listę ulubionych i kliknij **Dodaj do listy**:
+6. Obok pola wyszukiwania użyj przycisku **Wyczyść wszystkie aliasy**, aby globalnie skasować aliasy ze wszystkich sampli (również z niewidocznych aktualnie przez filtry tagów lub brak obecności na listach).
+7. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
+8. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
+9. W karcie sampla wybierz z listy **Widok Główny** lub konkretną listę ulubionych i kliknij **Dodaj do listy**:
    - **Widok Główny** dodaje sample do panelu „Główny widok”.
    - Wybrana lista ulubionych dodaje sample do tej listy.
-9. W panelu „Ulubione” możesz:
+10. W panelu „Ulubione” możesz:
    - zmieniać kolejność list,
    - zmieniać nazwę listy,
    - usuwać listę,
    - przesuwać i usuwać elementy w liście,
    - odtwarzać zapisane sample.
-10. W karcie sampla w panelu admina możesz wpisać **alias** (opcjonalny). Alias zapisuje się w ustawieniach, wyświetla się w nawiasie po nazwie sampla w widoku głównym i na listach ulubionych jaśniejszym kolorem. Przycisk **Wyczyść** znajduje się bezpośrednio pod polem aliasu (nad **Odtwórz**) i usuwa alias.
+11. W karcie sampla w panelu admina możesz wpisać **alias** (opcjonalny). Alias zapisuje się w ustawieniach, wyświetla się w nawiasie po nazwie sampla w widoku głównym i na listach ulubionych jaśniejszym kolorem. Przycisk **Wyczyść** znajduje się bezpośrednio pod polem aliasu (nad **Odtwórz**) i usuwa alias.
     - Alias jest zapisywany w Firestore (lub `localStorage`) i po ponownym uruchomieniu modułu powinien pojawić się zarówno w panelu admina, jak i w widoku użytkownika.
     - Usunięcie aliasu (ręczne wyczyszczenie pola lub przycisk **Wyczyść**) nadpisuje całą mapę `aliases` w dokumencie Firestore, dzięki czemu skasowany alias nie wraca po synchronizacji czasu rzeczywistego.
-11. W panelu „Główny widok” (na dole admina) kliknij nazwę sampla lub tag, aby odsłuchać dźwięk; głośność ustawiasz suwakiem na karcie.
+12. W panelu „Główny widok” (na dole admina) kliknij nazwę sampla lub tag, aby odsłuchać dźwięk; głośność ustawiasz suwakiem na karcie.
 
 ### Dane wejściowe (AudioManifest.xlsx)
 - Kolumny:
@@ -111,22 +112,23 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 2. Click **Wczytaj manifest** to load samples.
 3. Use the **Filtry tagów** bar to filter the admin sample list (does not affect user panels).
 4. (Optional) use the **Szukaj tagu...** field and the **Filtruj ▾** button — it opens a popup with tag search, checkboxes, and select/deselect all options.
-5. Search samples in the “Szukaj sampla...” field (now located below the tag panel).
-6. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
-7. Click **Nowa lista ulubionych** to create a list.
-8. In a sample card choose **Widok Główny** or a specific favorites list, then click **Dodaj do listy**:
+5. Search samples in the “Szukaj sampla...” field (located below the tag panel).
+6. Next to the search field, use **Wyczyść wszystkie aliasy** to globally remove aliases from all samples (including those currently hidden by tag filters or not present in visible lists).
+7. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
+8. Click **Nowa lista ulubionych** to create a list.
+9. In a sample card choose **Widok Główny** or a specific favorites list, then click **Dodaj do listy**:
    - **Widok Główny** adds the sample to the Main View panel.
    - A favorites list adds the sample to that list.
-9. In the Favorites panel you can:
+10. In the Favorites panel you can:
    - reorder lists,
    - rename lists,
    - delete lists,
    - reorder/remove items in a list,
    - play saved samples.
-10. In the admin sample card you can enter an optional **alias**. The alias is saved in settings and displayed in parentheses after the sample name in the Main View and Favorites lists in a lighter color. The **Wyczyść** button sits directly under the alias field (above **Odtwórz**) and clears the alias.
+11. In the admin sample card you can enter an optional **alias**. The alias is saved in settings and displayed in parentheses after the sample name in the Main View and Favorites lists in a lighter color. The **Wyczyść** button sits directly under the alias field (above **Odtwórz**) and clears the alias.
     - The alias is stored in Firestore (or `localStorage`) and should appear again after reload in both the admin panel and the user view.
     - Removing an alias (manual field clear or **Wyczyść** button) overwrites the whole Firestore `aliases` map so deleted aliases do not reappear after real-time sync.
-11. In the Main View panel (bottom of admin), click the sample name or tag to play/stop it and use the slider on the card to adjust volume.
+12. In the Main View panel (bottom of admin), click the sample name or tag to play/stop it and use the slider on the card to adjust volume.
 
 ### Input data (AudioManifest.xlsx)
 - Columns:
