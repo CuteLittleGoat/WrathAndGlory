@@ -736,6 +736,7 @@
           promptNewListPlaceholder: "Nowa lista",
           promptRenameList: "Nowa nazwa listy:",
           confirmRemoveList: "Czy na pewno usunąć listę?",
+          confirmClearAllAliases: "Czy na pewno wyczyścić wszystkie aliasy tylko w module Audio?",
           alertMissingAudio: "Brak linku do pliku audio w manifestie.",
           manifestLoading: "Manifest: wczytywanie...",
           manifestMissing: "Manifest: brak danych",
@@ -803,6 +804,7 @@
           promptNewListPlaceholder: "New list",
           promptRenameList: "New list name:",
           confirmRemoveList: "Are you sure you want to remove the list?",
+          confirmClearAllAliases: "Are you sure you want to clear all aliases only in the Audio module?",
           alertMissingAudio: "Missing audio file link in the manifest.",
           manifestLoading: "Manifest: loading...",
           manifestMissing: "Manifest: no data",
@@ -893,6 +895,10 @@
     let audioContext = null;
 
     const getDefaultListName = () => translations[currentLanguage].labels.defaultListName;
+    const AUDIO_SETTINGS_STORAGE_KEY = "audio.settings";
+    const AUDIO_LEGACY_STORAGE_KEY = "audio.favorites";
+    const AUDIO_SETTINGS_COLLECTION = "audio";
+    const AUDIO_SETTINGS_DOC_ID = "favorites";
     const TAG_IGNORE_FRAGMENTS = [
       "SoundPad",
       "SoundPad Patreon Version",
@@ -1297,7 +1303,7 @@
         await setDoc(state.favoritesDoc, payload);
         return;
       }
-      localStorage.setItem("audio.settings", JSON.stringify({
+      localStorage.setItem(AUDIO_SETTINGS_STORAGE_KEY, JSON.stringify({
         favorites: state.favorites,
         mainView: state.mainView,
         aliases: state.aliases
@@ -1368,9 +1374,9 @@
     };
 
     const loadSettingsLocal = () => {
-      const stored = localStorage.getItem("audio.settings");
+      const stored = localStorage.getItem(AUDIO_SETTINGS_STORAGE_KEY);
       if (!stored) {
-        const legacy = localStorage.getItem("audio.favorites");
+        const legacy = localStorage.getItem(AUDIO_LEGACY_STORAGE_KEY);
         if (!legacy) {
           state.favorites = defaultFavorites();
           state.mainView = defaultMainView();
@@ -1414,7 +1420,7 @@
       const app = initializeApp(window.firebaseConfig);
       const db = getFirestore(app);
       state.firestore = db;
-      state.favoritesDoc = doc(db, "audio", "favorites");
+      state.favoritesDoc = doc(db, AUDIO_SETTINGS_COLLECTION, AUDIO_SETTINGS_DOC_ID);
       state.usingFirestore = true;
 
       onSnapshot(state.favoritesDoc, (snapshot) => {
@@ -1807,6 +1813,10 @@
     };
 
     const clearAllAliases = async () => {
+      const confirmed = confirm(translations[currentLanguage].labels.confirmClearAllAliases);
+      if (!confirmed) {
+        return;
+      }
       state.aliases = {};
       state.items.forEach((item) => {
         item.alias = "";

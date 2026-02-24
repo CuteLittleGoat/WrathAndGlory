@@ -174,7 +174,7 @@ window.firebaseConfig = {
 - `openTagMenu()` / `closeTagMenu()` — otwiera i zamyka popup filtra tagów.
 
 ### 8.2. Ustawienia (ulubione + główny widok + aliasy)
-- `saveSettings()` — zapisuje `favorites`, `mainView` i `aliases` do Firestore lub `localStorage` (`audio.settings`). W trybie Firestore zapis wykonuje pełne nadpisanie dokumentu (`setDoc` bez `merge`), co gwarantuje poprawne usuwanie kluczy z mapy `aliases` (alias usunięty przyciskiem **Wyczyść** nie wraca po `onSnapshot`).
+- `saveSettings()` — zapisuje `favorites`, `mainView` i `aliases` do Firestore lub `localStorage` (`audio.settings`). W trybie Firestore zapis wykonuje pełne nadpisanie dokumentu (`setDoc` bez `merge`) dokumentu `audio/favorites`, co gwarantuje poprawne usuwanie kluczy z mapy `aliases` (alias usunięty przyciskiem **Wyczyść** nie wraca po `onSnapshot`).
 - `defaultFavorites()` — tworzy domyślną listę „Ulubione”.
 - `defaultMainView()` — zwraca pusty „Główny widok”.
 - `defaultAliases()` — zwraca pustą mapę aliasów.
@@ -185,7 +185,7 @@ window.firebaseConfig = {
 - `normalizeSettings(raw)` — akceptuje zarówno nowy format (`favorites`, `mainView`, `aliases`) jak i stary (`lists`).
 - `loadSettingsLocal()` — wczytuje lokalny zapis (`audio.settings`) lub migruje z `audio.favorites`.
 - `setItemAlias(itemId, alias)` — zapisuje/usuwa alias i odświeża wszystkie widoki.
-- `clearAllAliases()` — zeruje globalną mapę `aliases`, czyści `item.alias` dla wszystkich pozycji i zapisuje ustawienia, dzięki czemu aliasy znikają jednocześnie z listy sampli, ulubionych i głównego widoku.
+- `clearAllAliases()` — najpierw wyświetla potwierdzenie (`confirmClearAllAliases`), a następnie zeruje globalną mapę `aliases`, czyści `item.alias` dla wszystkich pozycji i zapisuje ustawienia. Operacja jest ograniczona do przestrzeni danych Audio (`audio/favorites` i `audio.settings`), dzięki czemu nie wpływa na inne moduły.
 
 ### 8.3. Firebase
 - `initFirebase()`:
@@ -197,7 +197,7 @@ window.firebaseConfig = {
 ### 8.4. Renderowanie
 - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
 - `renderSamples()` — rysuje siatkę sampli (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
-- Klik przycisku `#clearAllAliases` wywołuje `clearAllAliases()`, które czyści aliasy globalnie, bez ograniczenia do aktualnie wyrenderowanych kart.
+- Klik przycisku `#clearAllAliases` wywołuje `clearAllAliases()`, które po potwierdzeniu czyści aliasy globalnie (bez ograniczenia do aktualnie wyrenderowanych kart), ale tylko w module Audio.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
 - `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.

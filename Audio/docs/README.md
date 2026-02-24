@@ -42,7 +42,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 3. Użyj belki **Filtry tagów** do zawężenia listy sampli (wpływa tylko na panel admina).
 4. (Opcjonalnie) skorzystaj z pola **Szukaj tagu...** oraz przycisku **Filtruj ▾** — otworzy się okienko z wyszukiwarką tagów, checkboxami oraz opcjami zaznacz/odznacz wszystko.
 5. Wyszukuj sample w polu „Szukaj sampla...” (pole znajduje się pod panelami tagów).
-6. Obok pola wyszukiwania użyj przycisku **Wyczyść wszystkie aliasy**, aby globalnie skasować aliasy ze wszystkich sampli (również z niewidocznych aktualnie przez filtry tagów lub brak obecności na listach).
+6. Obok pola wyszukiwania użyj przycisku **Wyczyść wszystkie aliasy**, aby globalnie skasować aliasy ze wszystkich sampli (również z niewidocznych aktualnie przez filtry tagów lub brak obecności na listach). Operacja dotyczy tylko danych modułu Audio (`audio/favorites` lub `audio.settings`) i wymaga potwierdzenia w oknie dialogowym.
 7. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
 8. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
 9. W karcie sampla wybierz z listy **Widok Główny** lub konkretną listę ulubionych i kliknij **Dodaj do listy**:
@@ -113,7 +113,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 3. Use the **Filtry tagów** bar to filter the admin sample list (does not affect user panels).
 4. (Optional) use the **Szukaj tagu...** field and the **Filtruj ▾** button — it opens a popup with tag search, checkboxes, and select/deselect all options.
 5. Search samples in the “Szukaj sampla...” field (located below the tag panel).
-6. Next to the search field, use **Wyczyść wszystkie aliasy** to globally remove aliases from all samples (including those currently hidden by tag filters or not present in visible lists).
+6. Next to the search field, use **Wyczyść wszystkie aliasy** to globally remove aliases from all samples (including those currently hidden by tag filters or not present in visible lists). The operation is scoped only to Audio module data (`audio/favorites` or `audio.settings`) and requires confirmation in a dialog.
 7. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
 8. Click **Nowa lista ulubionych** to create a list.
 9. In a sample card choose **Widok Główny** or a specific favorites list, then click **Dodaj do listy**:
