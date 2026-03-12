@@ -154,3 +154,23 @@ python -m http.server 8000
 ```
 
 Następnie otwórz `http://localhost:8000/Main/index.html`.
+
+## 8. PWA / Service Worker (wdrożenie)
+- `Main/index.html` dodaje:
+  - `<link rel="manifest" href="../manifest.webmanifest">`
+  - `<meta name="theme-color" content="#031605">`
+  - rejestrację SW po `window.load`:
+    - `navigator.serviceWorker.register("../service-worker.js")`.
+- Globalny `service-worker.js` (w katalogu repo):
+  - obsługuje `install`, `activate`, `fetch`, `push`, `notificationclick`.
+  - cache app-shell: `./`, `./Main/index.html`, `./manifest.webmanifest`, `./IkonaGlowna.png`, `./IkonaPowiadomien.png`.
+  - fallback notyfikacji push:
+    - `body: +++ INCOMING DATA-TRANSMISSION +++`
+    - `icon/badge: ./IkonaPowiadomien.png`
+    - `tag: infoczytnik-new-message`
+    - `url po kliknięciu: ./Infoczytnik/Infoczytnik_test.html`.
+- `manifest.webmanifest`:
+  - `start_url: ./Main/index.html`
+  - `display: standalone`
+  - `orientation: portrait`
+  - `icons`: `IkonaGlowna.png`, `IkonaPowiadomien.png`.

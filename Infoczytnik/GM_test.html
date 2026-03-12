@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-02-16_10-05-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-12_12-00-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -256,6 +256,7 @@
 
   <!-- ✅ Firebase config jako GLOBAL (window.firebaseConfig) -->
   <script src="config/firebase-config.js"></script>
+  <script src="config/web-push-config.js"></script>
 
   <!-- Firebase compat (działa w zwykłym <script>) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
@@ -570,6 +571,24 @@
       updateLivePreview();
     }
 
+
+
+    async function triggerPushNotification(){
+      const triggerEndpoint = window.infWebPushConfig?.triggerEndpoint;
+      if(!triggerEndpoint) return;
+
+      await fetch(triggerEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Infoczytnik",
+          body: "+++ INCOMING DATA-TRANSMISSION +++",
+          icon: "./IkonaPowiadomien.png",
+          tag: "infoczytnik-new-message",
+          url: "./Infoczytnik/Infoczytnik_test.html"
+        })
+      });
+    }
     async function sendMessage(isClear){
       const cfg=getLayout();
       const pMax=cfg.prefixes.length, sMax=cfg.suffixes.length;
@@ -608,6 +627,14 @@
           nonce: nonce(),
           ts: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge:false });
+
+        if(!isClear){
+          try{
+            await triggerPushNotification();
+          }catch(pushError){
+            console.warn("Nie udało się uruchomić triggera Web Push.", pushError);
+          }
+        }
 
         setStatus(
           isClear

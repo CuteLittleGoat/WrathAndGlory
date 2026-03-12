@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-02-16_10-05-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-12_12-00-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -207,6 +207,26 @@
     white-space: pre-wrap;
   }
 
+
+
+  .pushBtn{
+    position:fixed;
+    right:12px;
+    bottom:12px;
+    z-index:20;
+    border:1px solid rgba(0,255,102,.5);
+    background:rgba(0,0,0,.78);
+    color:#9cf09c;
+    border-radius:999px;
+    padding:8px 12px;
+    font-size:12px;
+    letter-spacing:.4px;
+  }
+
+  .pushBtn[disabled]{
+    opacity:.7;
+  }
+
 </style>
 </head>
 
@@ -231,8 +251,11 @@
     </div>
   </div>
 
+  <button class="pushBtn" id="pushBtn" type="button">Włącz powiadomienia</button>
+
   <!-- ✅ config jako zwykły skrypt (ustawia window.firebaseConfig) -->
   <script src="config/firebase-config.js"></script>
+  <script src="config/web-push-config.js"></script>
 
   <script>
     window.__dsPlayUrlOnce = async function(url){
@@ -336,6 +359,73 @@
     msg: document.getElementById("msg"),
     logo: document.getElementById("logo"),
   };
+
+  const pushButton = document.getElementById("pushBtn");
+
+  async function tryLockPortrait(){
+    try{
+      if(screen.orientation && typeof screen.orientation.lock === "function"){
+        await screen.orientation.lock("portrait");
+      }
+    }catch(_error){
+      // Cichy fallback zgodnie z wymaganiem: bez komunikatu dla użytkownika.
+    }
+  }
+
+  function urlBase64ToUint8Array(base64String){
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for(let i = 0; i < rawData.length; i += 1){
+      outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+  }
+
+  async function enablePushNotifications(){
+    const pushConfig = window.infWebPushConfig || {};
+
+    if(!pushConfig.vapidPublicKey || !pushConfig.subscribeEndpoint){
+      alert("Brak konfiguracji Web Push (vapidPublicKey/subscribeEndpoint) w config/web-push-config.js");
+      return;
+    }
+
+    if(!("serviceWorker" in navigator) || !("PushManager" in window)){
+      alert("Ta przeglądarka nie obsługuje Web Push.");
+      return;
+    }
+
+    const permission = await Notification.requestPermission();
+    if(permission !== "granted"){
+      alert("Aby działały powiadomienia, zezwól na powiadomienia w przeglądarce.");
+      return;
+    }
+
+    const registration = await navigator.serviceWorker.ready;
+    const existingSubscription = await registration.pushManager.getSubscription();
+    const subscription = existingSubscription || await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(pushConfig.vapidPublicKey)
+    });
+
+    const response = await fetch(pushConfig.subscribeEndpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        source: "infoczytnik-user",
+        createdAt: Date.now(),
+        subscription
+      })
+    });
+
+    if(!response.ok){
+      throw new Error(`Błąd zapisu subskrypcji: ${response.status}`);
+    }
+
+    pushButton.textContent = "Powiadomienia aktywne";
+    pushButton.disabled = true;
+  }
 
   function fitPanel(ar){
     const vw = window.innerWidth, vh = window.innerHeight;
@@ -515,6 +605,17 @@
       window.__dsPlayUrlOnce(msgUrl);
     }
   });
+
+  if (pushButton) {
+    pushButton.addEventListener("click", () => {
+      enablePushNotifications().catch((error) => {
+        console.error(error);
+        alert("Nie udało się włączyć Web Push. Sprawdź konfigurację i HTTPS.");
+      });
+    });
+  }
+
+  tryLockPortrait();
 
   // Start
   applyLayout("mechanicus", "#00ff66");

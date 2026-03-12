@@ -165,3 +165,17 @@ Updating consists of replacing static files in your hosting (e.g. GitHub Pages):
 ### Disclaimer
 This tool is an unofficial, fan-made project created to support Wrath & Glory game masters. It is provided free of charge for private, non-commercial use only. The project is not licensed, affiliated with, or endorsed by Games Workshop, Cubicle 7 Entertainment Ltd., or Copernicus Corporation.
 Warhammer 40,000 and related names and trademarks are the property of Games Workshop Limited; Wrath & Glory is owned by its respective rights holders.
+
+---
+
+## Aktualizacja PWA (PL)
+- Strona główna rejestruje teraz globalny Service Worker (`../service-worker.js`) i ładuje manifest (`../manifest.webmanifest`).
+- Ikona aplikacji została ustawiona na `IkonaGlowna.png`.
+- Ikona powiadomień została ustawiona na `IkonaPowiadomien.png`.
+- Aby instalacja PWA działała poprawnie, uruchamiaj aplikację przez HTTPS (na GitHub Pages działa domyślnie).
+
+## PWA update (EN)
+- The main page now registers a global Service Worker (`../service-worker.js`) and loads the manifest (`../manifest.webmanifest`).
+- App icon is now `IkonaGlowna.png`.
+- Notification icon is now `IkonaPowiadomien.png`.
+- For proper PWA installation, run the app over HTTPS (GitHub Pages already provides this).
