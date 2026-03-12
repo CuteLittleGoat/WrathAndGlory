@@ -362,3 +362,42 @@ window.firebaseConfig = {
 ## 12. Dokument referencyjny Firebase
 - Dla modułu Infoczytnik/GM utworzono osobny dokument konfiguracyjny: `Infoczytnik/config/Firebase-config.md`.
 - Zawiera on template `firebase-config.js`, schemat dokumentu Firestore `dataslate/current`, skrypt Node.js inicjalizujący dane oraz szczegółową instrukcję wdrożenia (PL/EN).
+
+## 11. Web Push (Opcja B) i PWA — implementacja testowa
+
+### 11.1. Pliki konfiguracyjne
+- `Infoczytnik/config/web-push-config.js` udostępnia globalny obiekt `window.infWebPushConfig`:
+  - `vapidPublicKey` (Base64URL),
+  - `subscribeEndpoint` (POST zapis subskrypcji),
+  - `triggerEndpoint` (opcjonalny POST uruchamiający wysyłkę push).
+
+### 11.2. `Infoczytnik_test.html` — subskrypcja push
+- Dodano przycisk `#pushBtn` (`.pushBtn`) uruchamiający proces subskrypcji.
+- Algorytm:
+  1. Walidacja konfiguracji (`vapidPublicKey`, `subscribeEndpoint`).
+  2. `Notification.requestPermission()`.
+  3. `navigator.serviceWorker.ready` i `registration.pushManager.subscribe(...)`.
+  4. `fetch(subscribeEndpoint, { method: 'POST', body: subscription })`.
+  5. Po sukcesie przycisk przechodzi w stan „Powiadomienia aktywne” (`disabled=true`).
+
+### 11.3. Blokada orientacji
+- Dodano funkcję `tryLockPortrait()`:
+  - wywołuje `screen.orientation.lock('portrait')` jeśli API jest dostępne,
+  - przy błędzie stosuje cichy fallback (`catch`) bez komunikatu UI.
+
+### 11.4. `GM_test.html` — trigger wysyłki
+- Dodano funkcję `triggerPushNotification()`:
+  - jeśli `triggerEndpoint` jest ustawiony, wysyła POST JSON z payloadem powiadomienia:
+    - `title: Infoczytnik`
+    - `body: +++ INCOMING DATA-TRANSMISSION +++`
+    - `icon: ./IkonaPowiadomien.png`
+    - `tag: infoczytnik-new-message`
+    - `url: ./Infoczytnik/Infoczytnik_test.html`.
+- Funkcja jest uruchamiana po zapisie wiadomości (`type: message`), ale nie przy `clear`.
+
+### 11.5. Powiązanie z globalnym Service Workerem
+- Obsługa zdarzeń `push` i `notificationclick` znajduje się w `service-worker.js` (katalog repo).
+- Notyfikacja ma fallback:
+  - body: `+++ INCOMING DATA-TRANSMISSION +++`
+  - icon/badge: `./IkonaPowiadomien.png`
+  - tag: `infoczytnik-new-message`.

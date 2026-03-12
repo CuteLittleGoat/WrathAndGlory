@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kozi Przybornik</title>
+  <link rel="manifest" href="../manifest.webmanifest">
+  <meta name="theme-color" content="#031605">
   <style>
     :root {
       --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
@@ -198,6 +200,15 @@
       .catch((error) => {
         console.warn("Nie udało się wczytać zmiennych hiperłączy.", error);
       });
+
+
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("../service-worker.js").catch((error) => {
+          console.warn("Rejestracja Service Workera nie powiodła się.", error);
+        });
+      });
+    }
   </script>
 </body>
 </html>

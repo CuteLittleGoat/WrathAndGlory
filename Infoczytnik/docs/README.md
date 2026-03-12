@@ -159,3 +159,55 @@ Szczegółowy opis kodu, struktury plików i działania każdego elementu aplika
 ## Firebase config reference / Referencja konfiguracji Firebase
 - Kompletny opis konfiguracji Firebase, wymaganej struktury `dataslate/current`, skrypt Node.js oraz instrukcja krok-po-kroku (PL/EN) znajdują się w pliku: `Infoczytnik/config/Firebase-config.md`.
 - Complete Firebase setup notes, required `dataslate/current` schema, Node.js bootstrap script, and step-by-step guide (PL/EN) are available in: `Infoczytnik/config/Firebase-config.md`.
+
+---
+
+## Web Push + Service Worker (PL)
+Wdrożono wariant **Opcja B — Web Push + Service Worker** dla plików testowych.
+
+### Co zostało dodane
+1. `Infoczytnik_test.html`
+   - Przycisk **Włącz powiadomienia** (`#pushBtn`) do ręcznego uruchomienia subskrypcji push.
+   - Próba blokady orientacji: `screen.orientation.lock('portrait')` (cichy fallback bez komunikatu).
+   - Obsługa subskrypcji `PushManager` i wysyłka subskrypcji do backendu.
+2. `GM_test.html`
+   - Opcjonalny trigger HTTP po wysłaniu wiadomości (dla backendu Web Push).
+3. `config/web-push-config.js`
+   - `vapidPublicKey` — publiczny klucz VAPID.
+   - `subscribeEndpoint` — endpoint zapisujący subskrypcję.
+   - `triggerEndpoint` — opcjonalny endpoint uruchamiający wysyłkę push.
+
+### Konfiguracja
+Uzupełnij `Infoczytnik/config/web-push-config.js`:
+- `vapidPublicKey` (Base64URL),
+- `subscribeEndpoint` (POST JSON `subscription`),
+- opcjonalnie `triggerEndpoint` (POST przy wysłaniu wiadomości przez GM).
+
+### Treść i ikona powiadomienia
+- Treść: `+++ INCOMING DATA-TRANSMISSION +++`
+- Ikona: `IkonaPowiadomien.png`
+
+## Web Push + Service Worker (EN)
+The **Option B — Web Push + Service Worker** variant is implemented for test files.
+
+### What was added
+1. `Infoczytnik_test.html`
+   - **Enable notifications** button (`#pushBtn`) for explicit push subscription.
+   - Portrait lock attempt: `screen.orientation.lock('portrait')` (silent fallback, no UI message).
+   - `PushManager` subscription flow and subscription POST to backend.
+2. `GM_test.html`
+   - Optional HTTP trigger after sending a message (for Web Push backend).
+3. `config/web-push-config.js`
+   - `vapidPublicKey` — public VAPID key.
+   - `subscribeEndpoint` — backend endpoint to store subscriptions.
+   - `triggerEndpoint` — optional endpoint to trigger push dispatch.
+
+### Configuration
+Fill `Infoczytnik/config/web-push-config.js` with:
+- `vapidPublicKey` (Base64URL),
+- `subscribeEndpoint` (POST JSON `subscription`),
+- optional `triggerEndpoint` (POST on GM send).
+
+### Notification content and icon
+- Body: `+++ INCOMING DATA-TRANSMISSION +++`
+- Icon: `IkonaPowiadomien.png`
