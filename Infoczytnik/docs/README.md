@@ -171,6 +171,7 @@ Wdrożono wariant **Opcja B — Web Push + Service Worker** dla plików testowyc
    - Próba blokady orientacji: `screen.orientation.lock('portrait')` (cichy fallback bez komunikatu).
    - Obsługa subskrypcji `PushManager` i wysyłka subskrypcji do backendu.
    - Gdy brakuje konfiguracji (`vapidPublicKey`/`subscribeEndpoint`), przycisk jest automatycznie blokowany z informacją zamiast wyskakującego alertu.
+  - Błędy konfiguracji/zgody przeglądarki/HTTP są pokazywane jako komunikat w samym przycisku (`#pushBtn`), bez blokującego okna `alert()`.
 2. `GM_test.html`
    - Opcjonalny trigger HTTP po wysłaniu wiadomości (dla backendu Web Push).
 3. `config/web-push-config.js`
@@ -197,6 +198,7 @@ The **Option B — Web Push + Service Worker** variant is implemented for test f
    - Portrait lock attempt: `screen.orientation.lock('portrait')` (silent fallback, no UI message).
    - `PushManager` subscription flow and subscription POST to backend.
    - If config (`vapidPublicKey`/`subscribeEndpoint`) is missing, the button is auto-disabled with inline hint instead of a blocking alert.
+  - Config/permission/HTTP errors are surfaced directly on the same button (`#pushBtn`) instead of `alert()` popups.
 2. `GM_test.html`
    - Optional HTTP trigger after sending a message (for Web Push backend).
 3. `config/web-push-config.js`

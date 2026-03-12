@@ -379,6 +379,7 @@ window.firebaseConfig = {
   3. `navigator.serviceWorker.ready` i `registration.pushManager.subscribe(...)`.
   4. `fetch(subscribeEndpoint, { method: 'POST', body: subscription })`.
   5. Po sukcesie przycisk przechodzi w stan „Powiadomienia aktywne” (`disabled=true`).
+  6. Błędy (brak wsparcia Web Push, brak zgody, wyjątek HTTP) są wyświetlane bezpośrednio na `#pushBtn` przez `setPushButtonMessage(...)`, bez `alert()` blokującego UI.
 
 ### 11.3. Blokada orientacji
 - Dodano funkcję `tryLockPortrait()`:
