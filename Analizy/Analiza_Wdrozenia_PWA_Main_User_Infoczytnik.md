@@ -191,47 +191,29 @@ W trybie zainstalowanej aplikacji (display standalone):
 
 ---
 
-## 10) Aktualizacja analizy: pełna lista miejsc z `target="_blank"`
+## 10) Aktualizacja analizy: weryfikacja `target="_blank"` po poprawkach
 
 ### Prompt użytkownika (kontekst tej aktualizacji)
-> Przeczytaj i zaktualizuj analizę: `Analizy/Analiza_Wdrozenia_PWA_Main_User_Infoczytnik.md`  
-> Wypisz mi wszystkie miejsca w których w aplikacji pojawia się target="_blank"
+> Przeczytaj analizę i zaktualizuj: `Analizy/Analiza_Wdrozenia_PWA_Main_User_Infoczytnik.md`
+> Problem z `target="_blank"` powinien być już rozwiązany. Sprawdź kod i zapisz wnioski.
 
-### Wynik przeszukania repozytorium
-Do wyszukania użyto polecenia:
+### Jak sprawdzono kod
+Użyto polecenia:
 
 ```bash
-rg -n "target\s*=\s*['\"]_blank['\"]" --glob '!Analizy/**'
+rg -n "target\s*=\s*['"]_blank['"]" --glob '!Analizy/**'
 ```
 
-Znalezione miejsca:
+### Aktualny wynik przeszukania repozytorium
+Znalezione zostały tylko 3 miejsca:
 
-1. `Main/index.html:116` — link przycisku **Generator NPC**.
-2. `Main/index.html:122` — link przycisku **Skarbiec Danych**.
-3. `Main/index.html:126` — link przycisku **Mapa**.
-4. `Main/index.html:129` — link przycisku **Obrazki**.
-5. `Main/index.html:135` — link przycisku **Kalkulator**.
-6. `Main/docs/Documentation.md:124` — opis dokumentacyjny zachowania linków (wzmianka tekstowa o `target="_blank"`).
+1. `Main/index.html:126` — przycisk **Mapa** (`target="_blank"`, `rel="noopener noreferrer"`).
+2. `Main/index.html:129` — przycisk **Obrazki** (`target="_blank"`, `rel="noopener noreferrer"`).
+3. `Main/docs/Documentation.md:124` — opis dokumentacyjny (tekst, nie kod uruchamialny).
 
-### Korekta po dodatkowych uwagach
+### Wnioski
 
-Po doprecyzowaniu:
-
-- `Main/index.html:126` (**Mapa**) i `Main/index.html:129` (**Obrazki**) prowadzą do zewnętrznych stron internetowych (linki ustawiane dynamicznie przez `ZmienneHiperlacza.md`).
-- Te dwa linki **nie odnoszą się do modułów aplikacji**.
-
-### Rekomendacja dla pozostałych linków
-
-Pozostałe miejsca z `target="_blank"` w `Main/index.html` to:
-
-1. `Main/index.html:116` — **Generator NPC**
-2. `Main/index.html:122` — **Skarbiec Danych**
-3. `Main/index.html:135` — **Kalkulator**
-
-Są to linki do modułów ekosystemu WrathAndGlory, więc dla spójności PWA (standalone) **zalecana jest zmiana kodu**:
-
-- usunąć `target="_blank"` (lub jawnie ustawić `target="_self"`),
-- pozostawić `target="_blank"` tylko dla linków celowo zewnętrznych (tu: **Mapa**, **Obrazki**),
-- docelowo ujednolicić nawigację między modułami tak, aby przejścia moduł↔moduł nie wybijały użytkownika z kontekstu aplikacji.
-
-W praktyce: dla modułów aplikacyjnych zmiana jest rekomendowana (UX + przewidywalność działania PWA), dla linków stricte zewnętrznych obecne `_blank` jest uzasadnione.
+1. **Problem został rozwiązany dla nawigacji wewnętrznej modułów** — linki do modułów uruchamianych w obrębie aplikacji nie używają już `target="_blank"`.
+2. **`target="_blank"` pozostał tylko tam, gdzie jest to intencjonalne** (zewnętrzne linki: Mapa i Obrazki).
+3. **Zabezpieczenie `rel="noopener noreferrer"` jest obecne** dla obu linków zewnętrznych, więc konfiguracja jest poprawna również pod kątem bezpieczeństwa i wydajności.
+4. Dla PWA/standalone obecny stan jest zgodny z rekomendacją: wewnętrzna nawigacja pozostaje w tym samym kontekście, a wyjście na zewnętrzne strony jest jawne i kontrolowane.
