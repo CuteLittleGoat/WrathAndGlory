@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-12_15-10-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-12_16-05-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -407,6 +407,18 @@
     pushButton.title = "Uzupełnij config/web-push-config.js (vapidPublicKey + subscribeEndpoint).";
   }
 
+  function setPushButtonMessage(message, isError = false){
+    if(!pushButton) return;
+
+    pushButton.textContent = message;
+    pushButton.title = message;
+    if(isError){
+      pushButton.dataset.state = "error";
+    }else{
+      delete pushButton.dataset.state;
+    }
+  }
+
   async function enablePushNotifications(){
     const pushState = getPushConfig();
     const pushConfig = pushState.pushConfig;
@@ -418,13 +430,14 @@
     }
 
     if(!("serviceWorker" in navigator) || !("PushManager" in window)){
-      alert("Ta przeglądarka nie obsługuje Web Push.");
+      setPushButtonMessage("Przeglądarka nie obsługuje Web Push.", true);
+      pushButton.disabled = true;
       return;
     }
 
     const permission = await Notification.requestPermission();
     if(permission !== "granted"){
-      alert("Aby działały powiadomienia, zezwól na powiadomienia w przeglądarce.");
+      setPushButtonMessage("Wymagana zgoda na powiadomienia w przeglądarce.", true);
       return;
     }
 
@@ -449,7 +462,7 @@
       throw new Error(`Błąd zapisu subskrypcji: ${response.status}`);
     }
 
-    pushButton.textContent = "Powiadomienia aktywne";
+    setPushButtonMessage("Powiadomienia aktywne");
     pushButton.disabled = true;
   }
 
@@ -636,7 +649,8 @@
     pushButton.addEventListener("click", () => {
       enablePushNotifications().catch((error) => {
         console.error(error);
-        alert("Nie udało się włączyć Web Push. Sprawdź konfigurację i HTTPS.");
+        const errorMessage = error?.message ? String(error.message) : "Nieznany błąd";
+        setPushButtonMessage(`Błąd Web Push: ${errorMessage}`, true);
       });
     });
   }
