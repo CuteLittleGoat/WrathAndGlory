@@ -121,7 +121,7 @@ Struktura dokumentu składa się z:
   8. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
   9. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
 
-Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Mapa, Obrazki, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
+Przyciski do modułów aplikacji (Generator NPC, Skarbiec Danych, Kalkulator) używają `target="_self"`, aby zachować spójny kontekst PWA/standalone. Tylko linki celowo zewnętrzne (**Mapa**, **Obrazki**) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
 ### 4. Logika widoków (skrypt JavaScript)
 Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie parametru URL:

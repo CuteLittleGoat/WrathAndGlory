@@ -44,6 +44,7 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 2. Domyślnie zobaczysz widok użytkownika z sześcioma przyciskami (Skarbiec Danych, Mapa, Obrazki, Infoczytnik, Kalkulator, Rzut kośćmi).
 3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski (m.in. Generator NPC, Generator nazw, Audio) oraz notatki o panelach admina.
 4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
+5. Przyciski modułów aplikacji (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w tym samym kontekście (`_self`), a tylko linki zewnętrzne (Mapa, Obrazki) otwierają nową kartę (`_blank`).
 
 ### Gdzie zmienić link do mapy
 Link do mapy jest przechowywany w pliku `Main/ZmienneHiperlacza.md`. Wpis ma format:
@@ -125,6 +126,7 @@ Browser tab title: **Kozi Przybornik**.
 2. By default you will see the user view with six buttons (DataVault, Map, Images, DataSlate, Calculator, DiceRoller).
 3. To enable admin view, add the `?admin=1` parameter. All buttons (including NPC Generator, Name Generator, Audio) and admin notes become visible.
 4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
+5. App-module buttons (NPC Generator, DataVault, Calculator) open in the same context (`_self`), while only external links (Map, Images) open a new tab (`_blank`).
 
 ### Where to update the map link
 The map URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
