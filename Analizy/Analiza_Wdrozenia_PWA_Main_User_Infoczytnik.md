@@ -1,118 +1,190 @@
-# Analiza wdrożenia PWA (instalacja aplikacji + tryb użytkownika + orientacja Infoczytnika)
+# Aktualizacja analizy wdrożenia PWA (Main + User mode + Infoczytnik + powiadomienia)
 
-## Prompt użytkownika
-> Przeprowadź analizę wdrożenia PWA.  
-> Chciałbym, żeby była możliwość zainstalowania aplikacji (ikona: Main/IkonaGlowna.png).  
-> Uruchomienie aplikacji uruchamiałoby moduł "Main".  
-> W aplikacji byłby zablokowany widok dla widoku użytkownika (bez dopisku ?admin=1).  
-> W aplikacji mobilnej musiałby działać wszystkie moduły aplikacji (np. "DataVault", "Kalkulator") dostępne z poziomu widoku użytkownika (bez dopisku ?admin=1)  
-> Moduł "Infoczytnik" ma się uruchamiać tylko w orientacji pionowej. Pozostałe moduły muszą się odstosowywać do orientacji ekranu urządzenia mobilnego.
-
----
-
-## 1) Stan obecny (na podstawie przeglądu kodu)
-
-1. W repo nie ma obecnie plików PWA (`manifest.webmanifest`, `sw.js`) ani rejestracji Service Workera.
-2. `Main/index.html` pełni rolę launchera modułów i ma logikę ukrywania elementów admina, gdy brak `?admin=1`.
-3. Część linków w `Main` wskazuje na absolutne URL-e GitHub Pages, część na ścieżki względne.
-4. `DataVault` rozróżnia tryb admin/użytkownik przez parametr `?admin=1`.
-5. `Infoczytnik` nie ma obecnie wymuszenia orientacji pionowej (brak mechanizmu blokady orientacji i brak ekranu informującego przy poziomie).
-
-Wniosek: wymagania użytkownika są wykonalne, ale wymagają wdrożenia „shella PWA” na poziomie repo + dopięcia zasad uruchamiania modułów.
+## Prompt użytkownika (kontekst tej aktualizacji)
+> 1. Przeczytaj analizę: `Analizy/Analiza_Wdrozenia_PWA_Main_User_Infoczytnik.md`  
+> 2. Infoczytnik: dodać warunek „tylko pion” (CSS + JS), w poziomie pokazać ekran informacyjny „Obróć urządzenie do pionu”, opcjonalnie próbować `screen.orientation.lock('portrait')` tam, gdzie API działa.  
+> nie chcę, żeby pokazywał się ekran informacyjny. Moduł "Infoczytnik" ma wyświetlać tekst wpisany przez GM w panelu administracyjnym. Jeżeli użytkownik zobaczy, że tekst się wyświetla w niewłaściwej orientacji to sam obróci urządzenie. Zablokuj po prostu orientację ekranu bez żadnego komunikatu.  
+> 3. Dodatkowe uwagi:  
+> - Aplikacja będzie używana tylko online  
+> - Aplikacja raczej będzie tylko na androidzie  
+> - Aplikacja ma wyświetlać stronę internetową. Plik `data.json` będzie na serwerze, a nie w pamięci urządzenia  
+> - „Linki z `target="_blank"` mogą powodować wyjście poza kontekst standalone” — to wymaga szczegółowego wyjaśnienia  
+> 4. Nowe wymaganie:  
+> - Powiadomienie o nowej wiadomości w Infoczytniku:  
+>   a) gdy użytkownik ma otwartą aplikację na innej zakładce  
+>   b) gdy użytkownik ma otwartą inną aplikację na urządzeniu  
+> - Jeśli możliwe: ikona powiadomień `IkonaPowiadomien.png`, treść `+++ INCOMING DATA-TRANSMISSION +++`  
+> - Zaproponuj kilka rozwiązań, opisz czy wymagana modyfikacja Firebase czy da się bez Firebase.  
+> - Wyjaśnij dokładnie `target="_blank"`.  
+> - Zaktualizuj analizę.
 
 ---
 
-## 2) Czy wdrożenie jest możliwe?
+## 1) Decyzje po doprecyzowaniu wymagań
 
-Tak — **wdrożenie jest możliwe** i sensownie podzielić je na 3 warstwy:
-
-### A. Warstwa instalowalności PWA
-- Dodać `manifest.webmanifest` w katalogu głównym repo lub w `Main/` (preferencyjnie w głównym root serwowanym przez GitHub Pages dla spójności).
-- Ustawić:
-  - `name`, `short_name`
-  - `icons` z `Main/IkonaGlowna.png`
-  - `start_url` na `Main/index.html` (z poprawnym prefiksem ścieżki projektu na GH Pages)
-  - `display: standalone`
-  - `scope` obejmujący wszystkie moduły
-- Dodać `sw.js` + rejestrację SW (najlepiej w `Main/index.html`, opcjonalnie wspólny bootstrap JS).
-
-### B. Warstwa nawigacji i blokady trybu admin w aplikacji zainstalowanej
-- W trybie standalone wymusić widok użytkownika:
-  - podczas otwarcia `Main` usuwać `?admin=1` z URL, jeśli wykryto tryb aplikacji zainstalowanej,
-  - dla linków z `Main` generować wyłącznie URL bez `?admin=1`.
-- Dodatkowo można dodać „hard guard” po stronie modułów (`DataVault`, `Audio`, inne):
-  - jeśli `display-mode: standalone`, ignorować `?admin=1`.
-
-### C. Warstwa orientacji i mobile UX
-- `Infoczytnik`:
-  - dodać warunek „tylko pion” (CSS + JS),
-  - w poziomie pokazać ekran informacyjny „Obróć urządzenie do pionu”,
-  - opcjonalnie próbować `screen.orientation.lock('portrait')` tam, gdzie API działa.
-- Pozostałe moduły:
-  - pozostawić adaptacyjne (bez globalnego locka orientacji),
-  - w razie potrzeby dopracować breakpointy/overflow tam, gdzie testy mobilne wykażą problemy.
+1. **Infoczytnik: bez ekranu informacyjnego w poziomie** (zgodnie z Twoją decyzją).  
+   - Stosujemy próbę blokady orientacji na pion (`portrait`) tam, gdzie API działa.  
+   - Nie renderujemy żadnego komunikatu typu „Obróć urządzenie”.
+2. **Priorytet platformy: Android + online-only**.  
+   - Strategia PWA i notyfikacji może być zoptymalizowana pod Chromium/Android (najbardziej przewidywalne wsparcie).  
+   - Nie projektujemy „pełnego offline” (to już nie jest cel).
+3. **`data.json` pozostaje źródłem sieciowym**.  
+   - Brak potrzeby utrzymywania dużego cache danych na urządzeniu.  
+   - Można ograniczyć cache SW do minimalnego app-shella (lub nawet pominąć agresywne cache danych).
 
 ---
 
-## 3) Kluczowe decyzje architektoniczne
+## 2) Infoczytnik: „tylko pion” bez komunikatu — co realnie da się zagwarantować
 
-1. **Jedno PWA dla całego repo** (zalecane):
-   - Plus: jedna instalacja, jeden punkt wejścia (`Main`), wspólny cache.
-   - Minus: większy SW i potrzeba ostrożnego versioningu cache.
+### Wariant implementacyjny (zalecany)
 
-2. **Strategia cache**:
-   - App shell (`Main`, wspólne CSS/JS): `cache-first`.
-   - Dane dynamiczne (`data.json`, Firebase): `network-first` lub `stale-while-revalidate`.
-   - Zasoby zewnętrzne (CDN, Firebase SDK): bez pełnego gwarantowanego offline.
+1. W module `Infoczytnik` dodać próbę:
+   - `await screen.orientation.lock('portrait')` po wejściu do widoku.
+2. Dodać fallback w CSS/JS, który **nie pokazuje żadnego ekranu informacyjnego**, tylko utrzymuje standardowy widok.
+3. Nie blokować działania modułu twardym overlayem.
 
-3. **URL i scope na GitHub Pages**:
-   - konieczne ustawienie `start_url`/`scope` zgodnie z docelowym adresem repo (`/WrathAndGlory/...`),
-   - niespójności ścieżek względnych/absolutnych trzeba ujednolicić, by nawigacja zainstalowanej appki była przewidywalna.
+### Ważne ograniczenie techniczne
 
----
-
-## 4) Ryzyka i ograniczenia
-
-1. **Offline „pełny” może być niemożliwy** dla modułów korzystających z Firebase/CDN, jeśli nie przygotujemy fallbacków.
-2. **iOS Safari**: ograniczone wsparcie części API PWA (np. lock orientacji bywa ograniczony) — potrzebny fallback UI.
-3. **Duże pliki danych** (`DataVault/data.json`) mogą zwiększać pamięć cache i czas pierwszego uruchomienia.
-4. **Linki z `target="_blank"`** mogą powodować wyjście poza kontekst standalone; warto rozważyć ich ograniczenie dla kluczowych modułów.
+- **Przeglądarka może odrzucić lock orientacji** (zależnie od kontekstu, uprawnień, wersji WebView/Chrome, sposobu uruchomienia).  
+- To oznacza: „zablokuj orientację” w web app jest możliwe **warunkowo**, a nie absolutnie na każdym urządzeniu.  
+- Dla Android PWA w trybie standalone szanse powodzenia są wysokie, ale nadal trzeba obsłużyć przypadek odrzucenia bez błędu UX (tu: brak komunikatu, tylko ciche `catch`).
 
 ---
 
-## 5) Proponowany plan wdrożenia (kolejność)
+## 3) Powiadomienia o nowych wiadomościach w Infoczytniku — możliwe rozwiązania
 
-1. Dodać manifest + metatagi PWA + rejestrację SW.
-2. Ustawić `start_url` na `Main` i poprawny `scope` dla wszystkich modułów.
-3. W `Main` wymusić tryb użytkownika dla standalone (strip `admin=1`).
-4. Dodać ochronę po stronie modułów (co najmniej `DataVault`, opcjonalnie wszystkie z panelem admina).
-5. Dodać ograniczenie orientacji „tylko pion” dla `Infoczytnik` z fallbackiem UI.
-6. Przetestować na Android + iOS (instalacja, start, przejścia między modułami, rotacja).
+Poniżej kilka opcji od najprostszej do najbardziej kompletnej.
 
----
+### Opcja A — Notyfikacje tylko gdy aplikacja jest otwarta (także w innej zakładce)
 
-## 6) Kryteria akceptacji (DoD)
+**Mechanizm**
+- Nasłuch zmian wiadomości (polling, SSE, WebSocket albo Firebase Realtime/Firestore listener).
+- Gdy nadejdzie nowa wiadomość i dokument jest ukryty (`document.hidden === true`) lub użytkownik jest na innej zakładce, wywołać `new Notification(...)`.
 
-1. Aplikację da się zainstalować (ikona z `Main/IkonaGlowna.png`).
-2. Po uruchomieniu z ikony startuje `Main`.
-3. W trybie zainstalowanym nie da się wejść w panel admina przez `?admin=1`.
-4. Z poziomu `Main` (widok user) działają moduły użytkownika na mobile (np. `DataVault`, `Kalkulator`).
-5. `Infoczytnik` działa wyłącznie w pionie (w poziomie komunikat o obrocie).
-6. Pozostałe moduły działają w pionie i poziomie (responsive bez blokady orientacji).
+**Czy działa dla warunku (a)?**
+- Tak, zwykle tak (przy nadanym pozwoleniu na notyfikacje).
 
----
+**Czy działa dla warunku (b) — inna aplikacja na urządzeniu?**
+- **Niekoniecznie / ograniczenie**: bez pusha i Service Workera nie ma gwarancji dostarczenia, gdy web app zostanie uśpiona w tle.
 
-## 7) Szacowanie prac
-
-- Przygotowanie PWA shell + SW + manifest: **0.5–1.5 dnia**.
-- Ujednolicenie nawigacji i wymuszenie user mode: **0.5–1 dnia**.
-- Obsługa orientacji Infoczytnika + fallback: **0.5 dnia**.
-- Testy mobilne (Android/iOS): **0.5–1 dnia**.
-
-Łącznie: **~2–4 dni robocze** (w zależności od ilości poprawek responsive w modułach).
+**Firebase potrzebny?**
+- **Nie** (można bez Firebase).
 
 ---
 
-## 8) Rekomendacja końcowa
+### Opcja B — Web Push + Service Worker (pełne powiadomienia także w tle)
 
-Wdrożenie PWA w opisanym zakresie jest **realne i rekomendowane**. Najważniejsze jest poprawne ustawienie `scope/start_url`, wymuszenie trybu użytkownika w standalone oraz osobna logika orientacji tylko dla `Infoczytnik` (bez globalnej blokady orientacji dla całej aplikacji).
+**Mechanizm**
+- Rejestracja Service Workera.
+- Subskrypcja Push API (VAPID).
+- Serwer wysyła push przy nowej wiadomości Infoczytnika.
+- SW pokazuje systemowe powiadomienie:
+  - tytuł/treść: `+++ INCOMING DATA-TRANSMISSION +++`
+  - ikona: `IkonaPowiadomien.png`
+
+**Czy działa dla (a)?**
+- Tak.
+
+**Czy działa dla (b)?**
+- Tak — to jest właściwa ścieżka dla powiadomień, gdy użytkownik ma otwartą inną aplikację.
+
+**Firebase potrzebny?**
+- **Nie jest wymagany**. Da się zrobić na własnym backendzie Web Push (VAPID).
+
+---
+
+### Opcja C — Firebase Cloud Messaging (FCM) + Service Worker
+
+**Mechanizm**
+- Integracja FCM Web SDK i `firebase-messaging-sw.js`.
+- Backend (lub funkcja) wysyła wiadomość przez FCM topic/token po aktualizacji treści Infoczytnika.
+- W tle powiadomienie obsługiwane przez SW.
+
+**Czy działa dla (a) i (b)?**
+- Tak, jak w opcji B (to też push w tle).
+
+**Firebase potrzebny?**
+- **Tak, to rozwiązanie wymaga Firebase (FCM).**
+
+---
+
+## 4) Rekomendacja dla Twojego przypadku
+
+Biorąc pod uwagę: **Android-first**, **online-only**, potrzeba notyfikacji również przy innej aplikacji w foreground:
+
+1. **Najbardziej kompletne**: Opcja B (Web Push VAPID) albo C (FCM).  
+2. Jeśli i tak używacie Firebase i chcecie szybsze wdrożenie operacyjne: **Opcja C (FCM)** bywa prostsza organizacyjnie.  
+3. Jeśli chcesz uniezależnić się od Firebase: **Opcja B (czysty Web Push)**.
+
+Minimalny kompromis:
+- etap 1: Opcja A (szybko),
+- etap 2: przejście na B/C dla gwarancji dostarczania w tle.
+
+---
+
+## 5) Ikona i treść powiadomienia
+
+Docelowe parametry (dla B/C oraz częściowo A):
+- `body`: `+++ INCOMING DATA-TRANSMISSION +++`
+- `icon`: `IkonaPowiadomien.png`
+- opcjonalnie:
+  - `badge` (Android status bar),
+  - `tag: 'infoczytnik-new-message'` (grupowanie/replace),
+  - `renotify: true` (ponowne alarmowanie przy nowej treści).
+
+Uwaga praktyczna:
+- najlepiej trzymać ikonę w publicznej, stabilnej ścieżce (np. w `Main/` albo katalogu zasobów PWA) i używać absolutnego URL w SW.
+
+---
+
+## 6) Szczegółowe wyjaśnienie: co oznacza `target="_blank"` i czemu to bywa problemem w PWA
+
+### Co robi `target="_blank"`
+
+W linku HTML:
+```html
+<a href="/jakas-strona" target="_blank">Otwórz</a>
+```
+przeglądarka otwiera adres w **nowej karcie/nowym kontekście**.
+
+### Dlaczego to bywa problemem w aplikacji PWA (standalone)
+
+W trybie zainstalowanej aplikacji (display standalone):
+1. kliknięcie linku z `_blank` może otworzyć zewnętrzne okno/przeglądarkę systemową,
+2. użytkownik „wychodzi” z kontekstu appki,
+3. traci się spójność UX (czasem inny pasek adresu, inna sesja, inne zachowanie „wstecz”),
+4. czasem otwarty dokument nie jest już pod kontrolą Twojego SW/scope w taki sposób, jak oczekujesz.
+
+### Co robić praktycznie
+
+- Dla kluczowej nawigacji modułów wewnątrz aplikacji używać `_self` (domyślnie bez `target`).
+- `_blank` zostawić tylko tam, gdzie celowo chcesz wyjść „na zewnątrz” (np. dokumentacja, zewnętrzne źródła).
+- Jeśli `_blank` jest konieczne, dodawać `rel="noopener noreferrer"` (bezpieczeństwo i wydajność).
+
+---
+
+## 7) Zaktualizowane ryzyka i ograniczenia (po Twoich uwagach)
+
+1. **Offline-full** nie jest już celem — aplikacja działa online, więc ryzyko offline można odsunąć.  
+2. **Orientacja lock** w web app nadal ma ograniczenia platformowe (mimo priorytetu Android).  
+3. **Powiadomienia w tle** wymagają architektury push + SW (same notyfikacje z aktywnej karty to za mało).  
+4. **`target="_blank"`** może psuć spójność standalone — trzeba świadomie ograniczyć dla krytycznej nawigacji.
+
+---
+
+## 8) Plan wdrożenia (zaktualizowany)
+
+1. PWA shell (manifest + SW + start z `Main`) i user-only flow.  
+2. Infoczytnik: dodać lock `portrait` (`try/catch`, bez komunikatu w UI).  
+3. Powiadomienia etapowo:
+   - Etap 1: lokalne notyfikacje przy aktywnej sesji (Opcja A),
+   - Etap 2: push background (Opcja B lub C).  
+4. Ograniczyć `target="_blank"` w krytycznych przejściach między modułami.
+
+---
+
+## 9) Odpowiedź skrócona na pytanie „czy trzeba modyfikować Firebase?”
+
+- **Nie, nie trzeba** — da się wdrożyć powiadomienia bez Firebase (Web Push VAPID + SW).  
+- **Tak, trzeba** tylko jeśli wybierzesz wariant FCM (Opcja C).  
+- Dla powiadomień działających także gdy użytkownik jest w innej aplikacji: **konieczny jest push + Service Worker** (z Firebase albo bez).
