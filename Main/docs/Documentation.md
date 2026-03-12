@@ -5,7 +5,7 @@ Projekt to pojedyncza strona HTML działająca jako statyczny „hub” z odnoś
 
 ## Struktura plików
 - `Main/index.html` – jedyny plik aplikacji zawierający strukturę strony, stylizację w `<style>` oraz skrypt przełączający widok admina.
-- `Main/ZmienneHiperlacza.md` – plik z dynamicznymi adresami dla przycisków Mapa i Obrazki w formacie `Nazwa: URL`.
+- `Main/ZmienneHiperlacza.md` – plik z dynamicznymi adresami dla przycisków Mapa, Obrazki i Kalkulator w formacie `Nazwa: URL`.
 - `Main/wrath-glory-logo-warhammer.png` – logo wyświetlane w nagłówku strony.
 - `Main/docs/README.md` – instrukcja użytkownika i informacje o aktualizacji aplikacji (PL/EN).
 - `Main/docs/Documentation.md` – niniejszy dokument z opisem kodu.
@@ -111,17 +111,19 @@ Struktura dokumentu składa się z:
 - `<main>` – główny panel.
 - `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"` (plik znajduje się w `Main/` obok `index.html`).
 - `<div class="actions">` – siatka przycisków w kolejności od lewej:
-  1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
+  1. **Generator NPC** – link do `../GeneratorNPC/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
   2. **Generator nazw** – link do `../GeneratorNazw/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
-  3. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
+  3. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `../DataVault/index.html`, a w trybie admina skrypt zamienia go na `../DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
   4. **Mapa** – przycisk posiada atrybut `data-map-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
   5. **Obrazki** – przycisk posiada atrybut `data-images-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
   6. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
-  7. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
+  7. **Kalkulator** – przycisk posiada atrybut `data-calculator-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
   8. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
   9. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
 
-Przyciski kierujące do zewnętrznych adresów (Generator NPC, Skarbiec Danych, Mapa, Obrazki, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
+Przyciski kierujące do zewnętrznych adresów (Mapa, Obrazki, Kalkulator) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
+
+Linki wewnętrzne aplikacji (Generator NPC, Skarbiec Danych i pozostałe moduły lokalne) korzystają z domyślnego otwierania w bieżącej karcie, aby zachować kontekst PWA/standalone i nie wybijać użytkownika poza aplikację.
 
 ### 4. Logika widoków (skrypt JavaScript)
 Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie parametru URL:
@@ -131,17 +133,18 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
   - tryb użytkownika → `../Infoczytnik/Infoczytnik.html`,
   - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
 - Link **Skarbiec Danych** (`[data-datavault-link]`) jest ustawiany dynamicznie:
-  - tryb użytkownika → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`,
-  - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`.
-- Linki **Mapa** i **Obrazki** są ustawiane po wczytaniu pliku `Main/ZmienneHiperlacza.md`:
-  - format pliku: każda linia w postaci `Mapa: URL` lub `Obrazki: URL`.
-  - skrypt pobiera plik `ZmienneHiperlacza.md`, parsuje linie przez wyrażenie regularne `^(Mapa|Obrazki)\s*:\s*(\S+)` i ustawia `href` w elementach z `data-map-link` i `data-images-link`.
+  - tryb użytkownika → `../DataVault/index.html`,
+  - tryb admina → `../DataVault/index.html?admin=1`.
+- Linki **Mapa**, **Obrazki** i **Kalkulator** są ustawiane po wczytaniu pliku `Main/ZmienneHiperlacza.md`:
+  - format pliku: każda linia w postaci `Mapa: URL`, `Obrazki: URL` lub `Kalkulator: URL`.
+  - skrypt pobiera plik `ZmienneHiperlacza.md`, parsuje linie przez wyrażenie regularne `^(Mapa|Obrazki|Kalkulator)\s*:\s*(\S+)` i ustawia `href` w elementach z `data-map-link`, `data-images-link` i `data-calculator-link`.
   - jeśli plik nie jest dostępny, skrypt loguje ostrzeżenie w konsoli i pozostawia domyślne `href="#"`.
 
 ## Aktualizacja treści
-- **Zmiana adresów URL innych przycisków**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html` (np. Generator NPC, Skarbiec Danych, Kalkulator).
+- **Zmiana adresów URL modułów lokalnych**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html` (np. Generator NPC, Skarbiec Danych).
 - **Zmiana linku mapy**: zaktualizuj wpis `Mapa: ...` w pliku `Main/ZmienneHiperlacza.md`.
 - **Zmiana linku obrazków**: zaktualizuj wpis `Obrazki: ...` w pliku `Main/ZmienneHiperlacza.md`.
+- **Zmiana linku kalkulatora**: zaktualizuj wpis `Kalkulator: ...` w pliku `Main/ZmienneHiperlacza.md`.
 - **Zmiana instrukcji admina**: zaktualizuj treść akapitu `.note` pod przyciskiem Skarbiec Danych lub Audio (elementy z `data-admin-only="true"`).
 - **Zmiana stylu**: edytuj sekcję `<style>` w `Main/index.html` i stosuj dokładnie podane wartości (kolory, odstępy, rozmiary, cienie) aby zachować identyczny wygląd.
 - **Zmiana logo**: podmień plik `Main/wrath-glory-logo-warhammer.png` i pozostaw tę samą nazwę, jeśli nie chcesz edytować HTML.
@@ -154,3 +157,10 @@ python -m http.server 8000
 ```
 
 Następnie otwórz `http://localhost:8000/Main/index.html`.
+
+
+## 5. Dlaczego ograniczono `target="_blank"`
+- `target="_blank"` otwiera link w nowej karcie lub nowym kontekście przeglądarki.
+- W PWA uruchomionej jako aplikacja standalone może to przenieść użytkownika do zewnętrznej przeglądarki i zerwać spójny kontekst aplikacji.
+- Dlatego w module `Main` `target="_blank"` pozostawiono wyłącznie dla linków celowo zewnętrznych (Mapa, Obrazki, Kalkulator z konfiguracji), a nawigację wewnętrzną przełączono na bieżącą kartę.
+- Dla linków zewnętrznych utrzymano `rel="noopener noreferrer"`, co odcina dostęp nowej stronie do `window.opener` i poprawia bezpieczeństwo.

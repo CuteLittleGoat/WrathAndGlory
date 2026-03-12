@@ -113,13 +113,13 @@
 
     <div class="actions">
       <div class="stack" data-admin-only="true">
-        <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/" target="_blank" rel="noopener noreferrer">Generator NPC</a>
+        <a class="btn" href="../GeneratorNPC/index.html">Generator NPC</a>
       </div>
       <div class="stack" data-admin-only="true">
         <a class="btn" href="../GeneratorNazw/index.html">Generator Nazw</a>
       </div>
       <div class="stack">
-        <a class="btn" data-datavault-link href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html" target="_blank" rel="noopener noreferrer">Skarbiec Danych</a>
+        <a class="btn" data-datavault-link href="../DataVault/index.html">Skarbiec Danych</a>
         <p class="note" data-admin-only="true">aby wejść do panelu admina dopisz do adresu <strong>index.html?admin=1</strong></p>
       </div>
       <div class="stack">
@@ -132,7 +132,7 @@
         <a class="btn" data-infoczytnik-link href="../Infoczytnik/Infoczytnik.html">Infoczytnik</a>
       </div>
       <div class="stack">
-        <a class="btn" href="https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/" target="_blank" rel="noopener noreferrer">Kalkulator</a>
+        <a class="btn" data-calculator-link href="#" target="_blank" rel="noopener noreferrer">Kalkulator</a>
       </div>
       <div class="stack">
         <a class="btn" href="../DiceRoller/index.html">Rzut kośćmi</a>
@@ -159,13 +159,14 @@
 
     const dataVaultLink = document.querySelector("[data-datavault-link]");
     if (dataVaultLink) {
-      dataVaultLink.href = isAdmin
-        ? "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1"
-        : "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html";
+        dataVaultLink.href = isAdmin
+        ? "../DataVault/index.html?admin=1"
+        : "../DataVault/index.html";
     }
 
     const mapLink = document.querySelector("[data-map-link]");
     const imagesLink = document.querySelector("[data-images-link]");
+    const calculatorLink = document.querySelector("[data-calculator-link]");
     const linkConfigPath = "ZmienneHiperlacza.md";
 
     const applyDynamicLinks = (links) => {
@@ -174,6 +175,9 @@
       }
       if (imagesLink && links.obrazki) {
         imagesLink.href = links.obrazki;
+      }
+      if (calculatorLink && links.kalkulator) {
+        calculatorLink.href = links.kalkulator;
       }
     };
 
@@ -187,7 +191,7 @@
       .then((text) => {
         const links = {};
         text.split(/\r?\n/).forEach((line) => {
-          const match = line.match(/^(Mapa|Obrazki)\s*:\s*(\S+)/);
+          const match = line.match(/^(Mapa|Obrazki|Kalkulator)\s*:\s*(\S+)/);
           if (match) {
             const key = match[1].toLowerCase();
             links[key] = match[2];

@@ -55,6 +55,15 @@ Link do obrazków jest przechowywany w pliku `Main/ZmienneHiperlacza.md`. Wpis m
 `Obrazki: https://...`.
 Jeśli adres kanału się zmieni, podmień URL po dwukropku w tym pliku.
 
+### Gdzie zmienić link do kalkulatora
+Link do kalkulatora jest przechowywany w pliku `Main/ZmienneHiperlacza.md`. Wpis ma format:
+`Kalkulator: https://...`.
+Jeśli adres się zmieni, podmień URL po dwukropku w tym pliku.
+
+
+### `target="_blank"` i zachowanie PWA
+W `Main` linki wewnętrzne aplikacji otwierają się teraz w tej samej karcie, aby zachować kontekst trybu standalone PWA. `target="_blank"` został pozostawiony tylko dla linków zewnętrznych (Mapa, Obrazki, Kalkulator), razem z `rel="noopener noreferrer"`.
+
 ### Uruchamianie lokalne
 To jest strona statyczna bez backendu. Możesz:
 - po prostu otworzyć `Main/index.html` w przeglądarce, albo
@@ -74,7 +83,7 @@ Aktualizacja polega na podmianie plików statycznych w miejscu hostingu (np. Git
 
 ### Pliki projektu
 - `Main/index.html` – główny plik strony z treścią i osadzonymi stylami.
-- `Main/ZmienneHiperlacza.md` – plik z linkami do Mapy i Obrazków w formacie `Nazwa: URL`.
+- `Main/ZmienneHiperlacza.md` – plik z linkami do Mapy, Obrazków i Kalkulatora w formacie `Nazwa: URL`.
 - `Main/wrath-glory-logo-warhammer.png` – logo wyświetlane na stronie.
 - `Main/docs/README.md` – niniejsza instrukcja obsługi (PL/EN).
 - `Main/docs/Documentation.md` – dokumentacja techniczna kodu.
@@ -136,6 +145,15 @@ The images URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
 `Obrazki: https://...`.
 If the channel address changes, replace the URL after the colon in that file.
 
+### Where to update the calculator link
+The calculator URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
+`Kalkulator: https://...`.
+If the address changes, replace the URL after the colon in that file.
+
+
+### `target="_blank"` and PWA behavior
+In `Main`, internal app links now open in the same tab to preserve the PWA standalone context. `target="_blank"` is kept only for external links (Map, Images, Calculator), together with `rel="noopener noreferrer"`.
+
 ### Running locally
 This is a static page with no backend. You can:
 - open `Main/index.html` directly in your browser, or
@@ -155,7 +173,7 @@ Updating consists of replacing static files in your hosting (e.g. GitHub Pages):
 
 ### Project files
 - `Main/index.html` – main page file with content and embedded styles.
-- `Main/ZmienneHiperlacza.md` – link variables for Map and Images in `Label: URL` format.
+- `Main/ZmienneHiperlacza.md` – link variables for Map, Images, and Calculator in `Label: URL` format.
 - `Main/wrath-glory-logo-warhammer.png` – logo displayed on the page.
 - `Main/docs/README.md` – this user guide (PL/EN).
 - `Main/docs/Documentation.md` – technical documentation.
