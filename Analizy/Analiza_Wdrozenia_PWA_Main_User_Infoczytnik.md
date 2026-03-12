@@ -188,3 +188,30 @@ W trybie zainstalowanej aplikacji (display standalone):
 - **Nie, nie trzeba** — da się wdrożyć powiadomienia bez Firebase (Web Push VAPID + SW).  
 - **Tak, trzeba** tylko jeśli wybierzesz wariant FCM (Opcja C).  
 - Dla powiadomień działających także gdy użytkownik jest w innej aplikacji: **konieczny jest push + Service Worker** (z Firebase albo bez).
+
+---
+
+## 10) Aktualizacja analizy: pełna lista miejsc z `target="_blank"`
+
+### Prompt użytkownika (kontekst tej aktualizacji)
+> Przeczytaj i zaktualizuj analizę: `Analizy/Analiza_Wdrozenia_PWA_Main_User_Infoczytnik.md`  
+> Wypisz mi wszystkie miejsca w których w aplikacji pojawia się target="_blank"
+
+### Wynik przeszukania repozytorium
+Do wyszukania użyto polecenia:
+
+```bash
+rg -n "target\s*=\s*['\"]_blank['\"]" --glob '!Analizy/**'
+```
+
+Znalezione miejsca:
+
+1. `Main/index.html:116` — link przycisku **Generator NPC**.
+2. `Main/index.html:122` — link przycisku **Skarbiec Danych**.
+3. `Main/index.html:126` — link przycisku **Mapa**.
+4. `Main/index.html:129` — link przycisku **Obrazki**.
+5. `Main/index.html:135` — link przycisku **Kalkulator**.
+6. `Main/docs/Documentation.md:124` — opis dokumentacyjny zachowania linków (wzmianka tekstowa o `target="_blank"`).
+
+### Wniosek praktyczny
+W samej aplikacji (kod HTML interfejsu użytkownika) `target="_blank"` występuje obecnie **5 razy**, wszystkie w module **Main** (`Main/index.html`).
