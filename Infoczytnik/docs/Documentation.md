@@ -374,7 +374,7 @@ window.firebaseConfig = {
 ### 11.2. `Infoczytnik_test.html` — subskrypcja push
 - Dodano przycisk `#pushBtn` (`.pushBtn`) uruchamiający proces subskrypcji.
 - Algorytm:
-  1. Walidacja konfiguracji (`vapidPublicKey`, `subscribeEndpoint`).
+  1. Walidacja konfiguracji (`vapidPublicKey`, `subscribeEndpoint`). Jeśli brakuje konfiguracji, przycisk `#pushBtn` przechodzi w stan zablokowany z informacją dla użytkownika (bez alertu blokującego).
   2. `Notification.requestPermission()`.
   3. `navigator.serviceWorker.ready` i `registration.pushManager.subscribe(...)`.
   4. `fetch(subscribeEndpoint, { method: 'POST', body: subscription })`.

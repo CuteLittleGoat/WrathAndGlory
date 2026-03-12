@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-12_12-00-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-12_15-10-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -383,11 +383,37 @@
     return outputArray;
   }
 
-  async function enablePushNotifications(){
+  function getPushConfig(){
     const pushConfig = window.infWebPushConfig || {};
+    const hasVapidPublicKey = typeof pushConfig.vapidPublicKey === "string" && pushConfig.vapidPublicKey.trim().length > 0;
+    const hasSubscribeEndpoint = typeof pushConfig.subscribeEndpoint === "string" && pushConfig.subscribeEndpoint.trim().length > 0;
 
-    if(!pushConfig.vapidPublicKey || !pushConfig.subscribeEndpoint){
-      alert("Brak konfiguracji Web Push (vapidPublicKey/subscribeEndpoint) w config/web-push-config.js");
+    return {
+      pushConfig,
+      hasVapidPublicKey,
+      hasSubscribeEndpoint,
+      isConfigured: hasVapidPublicKey && hasSubscribeEndpoint
+    };
+  }
+
+  function refreshPushButtonState(){
+    if(!pushButton) return;
+
+    const pushState = getPushConfig();
+    if(pushState.isConfigured) return;
+
+    pushButton.disabled = true;
+    pushButton.textContent = "Powiadomienia: brak konfiguracji";
+    pushButton.title = "Uzupełnij config/web-push-config.js (vapidPublicKey + subscribeEndpoint).";
+  }
+
+  async function enablePushNotifications(){
+    const pushState = getPushConfig();
+    const pushConfig = pushState.pushConfig;
+
+    if(!pushState.isConfigured){
+      refreshPushButtonState();
+      console.warn("Brak konfiguracji Web Push (vapidPublicKey/subscribeEndpoint) w config/web-push-config.js");
       return;
     }
 
@@ -614,6 +640,8 @@
       });
     });
   }
+
+  refreshPushButtonState();
 
   tryLockPortrait();
 
