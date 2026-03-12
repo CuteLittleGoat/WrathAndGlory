@@ -9,8 +9,9 @@
   - `GM_test.html` i `Infoczytnik_test.html` służą do testowania zmian przed ręcznym przeniesieniem do wersji produkcyjnych.
 - **Firestore:** kolekcja `dataslate`, dokument `current`.
   - `type` określa akcję: `message`, `ping`, `clear`.
-  - Dokument zawiera kompletny stan wizualny (frakcja, kolory, rozmiary, indeksy fillerów, logo, flicker) oraz treść.
+  - Dokument zawiera kompletny stan wizualny (frakcja, kolory, rozmiary, liczba linii fillerów, jawne listy prefix/suffix, logo, flicker) oraz treść.
 - **Cache-busting:** Infoczytnik automatycznie dodaje parametr `?v=<INF_VERSION>` do URL-a i wymusza przeładowanie, aby urządzenia nie trzymały starej wersji.
+- **Źródło fillerów:** prefixy i suffixy są wpisane bezpośrednio w kodzie (`LAYOUTS`/`FILLERS`) w plikach testowych; runtime nie ładuje zewnętrznego pliku tekstowego.
 
 ## 2. Struktura repozytorium (pliki i katalogi)
 - `index.html` — strona startowa z linkami do wersji produkcyjnych i testowych (tytuł karty: `DataSlate panel testowy`).
@@ -402,3 +403,43 @@ window.firebaseConfig = {
   - body: `+++ INCOMING DATA-TRANSMISSION +++`
   - icon/badge: `./IkonaPowiadomien.png`
   - tag: `infoczytnik-new-message`.
+
+
+## 13. Aktualizacja 2026-03-12 — losowość fillerów 1..5 i payload listowy
+### 13.1. Zmiany w `GM_test.html`
+- Podniesiono `INF_VERSION` do `2026-03-12_18-10-00`.
+- Sekcja „Losowość fillerów” została przebudowana:
+  - usunięto checkbox `Losuj automatycznie`,
+  - usunięto ręczne pola `prefixIndex`/`suffixIndex`,
+  - dodano `input#fillerLineCount` (`min=1`, `max=5`, `value=3`),
+  - dodano przycisk `#rerollFillersBtn`.
+- Dodano stan `fillerState` (`count`, `prefixLines`, `suffixLines`) i funkcje:
+  - `drawUniqueRandomLines(source, count)` — unikatowe losowanie metodą Fisher-Yates + `slice`,
+  - `rerollFillers()` — kontrolowany moment losowania (zmiana frakcji, count, klik przycisku, inicjalizacja),
+  - `renderFillerPreview()` — render wielu linii w podglądzie tekstowym,
+  - `updateLivePreview()` — render wielu linii (`join("\n")`) w live preview.
+- `sendMessage()` wysyła aktualnie wylosowany stan bez ponownego losowania:
+  - `fillerLineCount`,
+  - `prefixLines: string[]`,
+  - `suffixLines: string[]`.
+- Wszystkie pule prefix/suffix zostały zaktualizowane i zaszyte bezpośrednio w stałej `LAYOUTS`.
+
+### 13.2. Zmiany w `Infoczytnik_test.html`
+- Podniesiono `INF_VERSION` do `2026-03-12_18-10-00`.
+- Zaktualizowano stałą `FILLERS` do nowego, pełnego zestawu prefix/suffix dla wszystkich frakcji.
+- Odbiór danych Firestore obsługuje nowy model listowy:
+  - jeżeli istnieją `prefixLines` / `suffixLines`, renderer składa je do bloków wieloliniowych (`join("\n")`),
+  - fallback legacy pozostaje aktywny (`prefixIndex` / `suffixIndex`).
+- Dzięki temu panel gracza renderuje 1:1 ten sam zestaw fillerów, który widzi GM w podglądzie.
+
+### 13.3. i18n (PL/EN)
+- Dodane klucze tłumaczeń:
+  - PL: `labelFillerLineCount`, `buttonRerollFillers`, nowy `randomHint`.
+  - EN: `labelFillerLineCount`, `buttonRerollFillers`, nowy `randomHint`.
+
+### 13.4. Replikacja 1:1
+Aby odtworzyć obecną wersję:
+1. Użyj `fillerLineCount` 1..5 (domyślnie 3).
+2. Losowanie uruchamiaj wyłącznie przez `rerollFillers()`.
+3. Do Firestore zapisuj listy `prefixLines` i `suffixLines` (nie tylko indeksy).
+4. Po stronie gracza renderuj listy jako wielolinijkowe bloki tekstowe i pozostaw fallback indeksowy dla starych dokumentów.

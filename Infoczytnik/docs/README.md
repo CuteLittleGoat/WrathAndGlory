@@ -43,12 +43,13 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 2. Wybierz frakcję (layout) z listy.
 3. Ustaw kolor i rozmiar treści wiadomości.
 4. Ustaw kolor i rozmiar prefiksu/sufiksu.
-5. Zdecyduj, czy fillery (prefix/suffix) mają być losowane automatycznie, czy wybierane ręcznie.
-6. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
-7. Wpisz treść komunikatu.
-8. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje nową treść z wybranym layoutem.
+5. Ustaw **Ilość linii fillerów** (zakres 1–5, domyślnie 3).
+6. (Opcjonalnie) Kliknij **Wylosuj ponownie**, aby wylosować nowy zestaw unikatowych prefixów i suffixów.
+7. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
+8. Wpisz treść komunikatu.
+9. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje dokładnie ten sam zestaw fillerów, który widzisz w podglądzie GM.
 
-**Uwaga:** Teksty prefixów i suffixów pochodzą bezpośrednio z layoutów i nie zmieniają się wraz z wersją językową. Przełącznik językowy wpływa na etykiety UI oraz status „gotowe/ready”.
+**Uwaga:** Teksty prefixów i suffixów pochodzą bezpośrednio z layoutów i nie zmieniają się wraz z wersją językową. Przełącznik językowy wpływa na etykiety UI oraz status „gotowe/ready”. Prefixy i suffixy są zaszyte bezpośrednio w `GM_test.html` i `Infoczytnik_test.html` (aplikacja nie pobiera ich z zewnętrznego pliku w runtime).
 
 #### 3) Dodatkowe akcje
 - **Ping** — wysyła tylko sygnał dźwiękowy (bez zmiany treści) i odświeża styl w infoczytniku.
@@ -118,12 +119,13 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 2. Select the faction (layout) from the list.
 3. Set the message color and size.
 4. Set the prefix/suffix color and size.
-5. Decide whether fillers (prefix/suffix) are randomized or selected manually.
-6. (Optional) Toggle the logo and the “flicker” effect.
-7. Enter the message text.
-8. Click **Wyślij / Send** — the player screen renders the new message and layout immediately.
+5. Set **Filler line count** (range 1–5, default 3).
+6. (Optional) Click **Reroll** to generate a new unique set of prefix/suffix lines.
+7. (Optional) Toggle the logo and the “flicker” effect.
+8. Enter the message text.
+9. Click **Wyślij / Send** — the player screen renders exactly the same filler set as in the GM live preview.
 
-**Note:** Prefix/suffix lines come directly from the layout definitions and do not change with the language switch. The language toggle affects UI labels and the “ready” status text.
+**Note:** Prefix/suffix lines come directly from the layout definitions and do not change with the language switch. The language toggle affects UI labels and the “ready” status text. Prefixes and suffixes are embedded directly in `GM_test.html` and `Infoczytnik_test.html` (no external filler file is loaded at runtime).
 
 #### 3) Additional actions
 - **Ping** — sends only a sound signal (no content change) and refreshes styles on the player screen.
