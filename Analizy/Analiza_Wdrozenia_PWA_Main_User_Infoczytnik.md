@@ -213,5 +213,25 @@ Znalezione miejsca:
 5. `Main/index.html:135` — link przycisku **Kalkulator**.
 6. `Main/docs/Documentation.md:124` — opis dokumentacyjny zachowania linków (wzmianka tekstowa o `target="_blank"`).
 
-### Wniosek praktyczny
-W samej aplikacji (kod HTML interfejsu użytkownika) `target="_blank"` występuje obecnie **5 razy**, wszystkie w module **Main** (`Main/index.html`).
+### Korekta po dodatkowych uwagach
+
+Po doprecyzowaniu:
+
+- `Main/index.html:126` (**Mapa**) i `Main/index.html:129` (**Obrazki**) prowadzą do zewnętrznych stron internetowych (linki ustawiane dynamicznie przez `ZmienneHiperlacza.md`).
+- Te dwa linki **nie odnoszą się do modułów aplikacji**.
+
+### Rekomendacja dla pozostałych linków
+
+Pozostałe miejsca z `target="_blank"` w `Main/index.html` to:
+
+1. `Main/index.html:116` — **Generator NPC**
+2. `Main/index.html:122` — **Skarbiec Danych**
+3. `Main/index.html:135` — **Kalkulator**
+
+Są to linki do modułów ekosystemu WrathAndGlory, więc dla spójności PWA (standalone) **zalecana jest zmiana kodu**:
+
+- usunąć `target="_blank"` (lub jawnie ustawić `target="_self"`),
+- pozostawić `target="_blank"` tylko dla linków celowo zewnętrznych (tu: **Mapa**, **Obrazki**),
+- docelowo ujednolicić nawigację między modułami tak, aby przejścia moduł↔moduł nie wybijały użytkownika z kontekstu aplikacji.
+
+W praktyce: dla modułów aplikacyjnych zmiana jest rekomendowana (UX + przewidywalność działania PWA), dla linków stricte zewnętrznych obecne `_blank` jest uzasadnione.
