@@ -383,9 +383,10 @@ window.firebaseConfig = {
   6. Błędy (brak wsparcia Web Push, brak zgody, wyjątek HTTP) są wyświetlane bezpośrednio na `#pushBtn` przez `setPushButtonMessage(...)`, bez `alert()` blokującego UI.
 
 ### 11.3. Blokada orientacji
-- Dodano funkcję `tryLockPortrait()`:
+- Funkcja `tryLockPortrait()`:
   - wywołuje `screen.orientation.lock('portrait')` jeśli API jest dostępne,
   - przy błędzie stosuje cichy fallback (`catch`) bez komunikatu UI.
+- Globalny `manifest.webmanifest` nie wymusza już orientacji, więc tylko Infoczytnik zostaje z lockiem pionowym, a pozostałe moduły przejmują orientację z urządzenia/systemu.
 
 ### 11.4. `GM_test.html` — trigger wysyłki
 - Dodano funkcję `triggerPushNotification()`:
@@ -443,3 +444,44 @@ Aby odtworzyć obecną wersję:
 2. Losowanie uruchamiaj wyłącznie przez `rerollFillers()`.
 3. Do Firestore zapisuj listy `prefixLines` i `suffixLines` (nie tylko indeksy).
 4. Po stronie gracza renderuj listy jako wielolinijkowe bloki tekstowe i pozostaw fallback indeksowy dla starych dokumentów.
+
+
+## 14. Aktualizacja 2026-03-13 — własny backend Web Push
+
+### 14.1. Nowy katalog `Infoczytnik/backend`
+Dodano kompletny, samodzielny backend Node.js obsługujący Web Push.
+
+- `server.js`:
+  - uruchamia serwer Express,
+  - obsługuje CORS (lista `ALLOWED_ORIGINS` z `.env`),
+  - waliduje strukturę subskrypcji push,
+  - zapisuje subskrypcje do pliku JSON (`SUBSCRIPTIONS_FILE`),
+  - wysyła notyfikacje przez bibliotekę `web-push` i klucze VAPID,
+  - usuwa wygasłe endpointy (`404`/`410`) po nieudanej wysyłce.
+- `package.json`:
+  - zależności: `express`, `web-push`, `dotenv`, `cors`.
+- `.env.example`:
+  - `WEB_PUSH_VAPID_PUBLIC_KEY`, `WEB_PUSH_VAPID_PRIVATE_KEY`, `WEB_PUSH_VAPID_SUBJECT`,
+  - `ALLOWED_ORIGINS`, `SUBSCRIPTIONS_FILE`, `PORT`.
+
+### 14.2. Kontrakt API backendu
+1. `GET /api/push/health`
+   - zwraca status backendu, flagę konfiguracji VAPID i liczbę zapisanych subskrypcji.
+2. `POST /api/push/subscribe`
+   - przyjmuje `{ source, createdAt, subscription }`,
+   - zapisuje subskrypcję, jeśli endpoint nie istnieje jeszcze w bazie.
+3. `POST /api/push/trigger`
+   - przyjmuje payload notyfikacji (`title`, `body`, `icon`, `badge`, `tag`, `url`),
+   - wysyła powiadomienia do wszystkich aktywnych subskrypcji.
+
+### 14.3. Integracja z frontem
+- `Infoczytnik/config/web-push-config.js` ma domyślne endpointy lokalnego backendu:
+  - `subscribeEndpoint: http://localhost:8787/api/push/subscribe`,
+  - `triggerEndpoint: http://localhost:8787/api/push/trigger`.
+- `vapidPublicKey` pozostaje celowo puste do uzupełnienia dla środowiska docelowego.
+
+### 14.4. Orientacja PWA po zmianie
+- Z `manifest.webmanifest` usunięto globalne pole `orientation`.
+- Efekt:
+  - `Infoczytnik` (przez `tryLockPortrait`) pozostaje pionowy,
+  - pozostałe moduły działają zgodnie z orientacją urządzenia/systemu.

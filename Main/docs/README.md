@@ -179,3 +179,8 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 - App icon is now `IkonaGlowna.png`.
 - Notification icon is now `IkonaPowiadomien.png`.
 - For proper PWA installation, run the app over HTTPS (GitHub Pages already provides this).
+
+
+## Aktualizacja 2026-03-13 / Update 2026-03-13
+- Usunięto globalny lock orientacji z `manifest.webmanifest`, dlatego orientacja modułów (poza wyjątkami implementowanymi lokalnie w modułach) zależy od ustawień urządzenia/systemu.
+- The global orientation lock was removed from `manifest.webmanifest`, so module orientation (except module-specific local locks) now follows device/system settings.

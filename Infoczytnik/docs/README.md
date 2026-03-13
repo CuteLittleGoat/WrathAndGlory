@@ -217,3 +217,56 @@ Fill `Infoczytnik/config/web-push-config.js` with:
 ### Notification content and icon
 - Body: `+++ INCOMING DATA-TRANSMISSION +++`
 - Icon: `IkonaPowiadomien.png`
+
+
+## Aktualizacja 2026-03-13 (PL)
+### Własny backend Web Push
+Dodano przykładowy backend Node.js w katalogu `Infoczytnik/backend/`.
+
+#### Pliki
+- `Infoczytnik/backend/server.js` — API do zapisu subskrypcji i triggera wysyłki push.
+- `Infoczytnik/backend/package.json` — zależności (`express`, `web-push`, `dotenv`, `cors`).
+- `Infoczytnik/backend/.env.example` — wzór konfiguracji środowiska.
+
+#### Szybkie uruchomienie
+1. Przejdź do `Infoczytnik/backend`.
+2. Uruchom `npm install`.
+3. Skopiuj `.env.example` do `.env` i ustaw klucze VAPID.
+4. Uruchom `npm start`.
+5. Sprawdź status: `GET http://localhost:8787/api/push/health`.
+
+#### Endpointy backendu
+- `POST /api/push/subscribe` — zapis subskrypcji push.
+- `POST /api/push/trigger` — wysyłka powiadomień do zapisanych subskrypcji.
+- `GET /api/push/health` — healthcheck i liczba subskrypcji.
+
+### Orientacja modułów
+- `manifest.webmanifest` nie wymusza już globalnej orientacji.
+- `Infoczytnik` pozostaje w pionie (lock `portrait` w module Infoczytnik).
+- Pozostałe moduły korzystają z orientacji wynikającej z ustawień urządzenia/systemu.
+
+## Update 2026-03-13 (EN)
+### Custom Web Push backend
+A sample Node.js backend was added in `Infoczytnik/backend/`.
+
+#### Files
+- `Infoczytnik/backend/server.js` — API for subscription storage and push trigger.
+- `Infoczytnik/backend/package.json` — dependencies (`express`, `web-push`, `dotenv`, `cors`).
+- `Infoczytnik/backend/.env.example` — environment configuration template.
+
+#### Quick start
+1. Go to `Infoczytnik/backend`.
+2. Run `npm install`.
+3. Copy `.env.example` to `.env` and set VAPID keys.
+4. Run `npm start`.
+5. Check status: `GET http://localhost:8787/api/push/health`.
+
+#### Backend endpoints
+- `POST /api/push/subscribe` — stores push subscriptions.
+- `POST /api/push/trigger` — sends notifications to stored subscriptions.
+- `GET /api/push/health` — healthcheck and subscription count.
+
+### Module orientation
+- `manifest.webmanifest` no longer enforces a global orientation.
+- `Infoczytnik` stays portrait (portrait lock inside the module).
+- Other modules follow device/system orientation settings.

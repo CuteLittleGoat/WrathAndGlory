@@ -172,5 +172,5 @@ Następnie otwórz `http://localhost:8000/Main/index.html`.
 - `manifest.webmanifest`:
   - `start_url: ./Main/index.html`
   - `display: standalone`
-  - `orientation: portrait`
+  - brak wymuszonej orientacji (`orientation` usunięte z manifestu, więc orientacja zależy od urządzenia/systemu)
   - `icons`: `IkonaGlowna.png`, `IkonaPowiadomien.png`.
