@@ -627,3 +627,36 @@ Wersja zawiera datę i czas lokalny (Polska), w formacie `rrrr-MM-dd_gg-mm-ss`.
 - Zgodnie z zasadami modułu podniesiono `INF_VERSION` do `2026-03-13_10-07-18` w:
   - `Infoczytnik/GM_test.html`
   - `Infoczytnik/Infoczytnik_test.html`
+
+## Aktualizacja techniczna 2026-03-13 — domknięcie checklisty Web Push (sekcja 3)
+
+### Zmiana 1: `Infoczytnik/config/web-push-config.js`
+- `vapidPublicKey` pozostaje ustawiony na klucz Firebase Web Push (Key pair).
+- Endpointy zostały zmienione z placeholderów `https://example.com/...` na ścieżki relatywne:
+  - `subscribeEndpoint: "/api/push/subscribe"`
+  - `triggerEndpoint: "/api/push/trigger"`
+
+**Konsekwencja runtime:**
+- Frontend wysyła `fetch` do tego samego originu, z którego serwowana jest aplikacja.
+- Nie trzeba wpisywać domeny „na sztywno” w buildzie frontendu, jeżeli backend push jest reverse-proxy pod tym samym hostem.
+
+### Zmiana 2: `Infoczytnik/backend/server.js`
+- Dodano stałe domyślne:
+  - `defaultVapidPublicKey`
+  - `defaultVapidPrivateKey`
+- Ostateczne wartości kluczy są liczone jako:
+  - `process.env.WEB_PUSH_VAPID_PUBLIC_KEY || defaultVapidPublicKey`
+  - `process.env.WEB_PUSH_VAPID_PRIVATE_KEY || defaultVapidPrivateKey`
+
+**Kolejność priorytetu konfiguracji:**
+1. Klucze z `.env`/zmiennych środowiskowych (produkcyjnie zalecane).
+2. Klucze domyślne zaszyte w `server.js` (fallback awaryjny).
+
+### Zmiana 3: `Infoczytnik/backend/.env.example`
+- Plik przykładowy został uzupełniony realnymi wartościami:
+  - `WEB_PUSH_VAPID_PUBLIC_KEY`
+  - `WEB_PUSH_VAPID_PRIVATE_KEY`
+
+**Znaczenie dla odtwarzalności 1:1:**
+- Użytkownik uruchamiający backend lokalnie ma od razu komplet danych potrzebnych do testu subskrypcji i triggera push.
+- Produkcyjnie nadal zalecane jest trzymanie kluczy poza repo i ustawienie ich przez sekret manager / env na platformie hostingu.
