@@ -189,6 +189,16 @@ Wypisz dokładnie jakie kroki muszę zrobić po stronie CloudFlare oraz Firebase
   <li>E2E test z GM → trigger → urządzenie Android (A/B/C).</li>
 </ol>
 
+<h3>10.4 Odpowiedź na pytanie: checkbox w GM.html (z powiadomieniem / bez powiadomienia)</h3>
+<pre>Pytanie użytkownika: "Czy w pliku GM.html da się zrobić jakiś checkbox, którego zaznaczenie lub odznaczenie skutkowałoby wysłaniem powiadomienia lub samej wiadomości bez powiadomienia?"</pre>
+<p><span class="ok"><b>Tak, da się.</b></span> W <code>Infoczytnik/GM.html</code> można dodać checkbox (np. <code>Wyślij bez powiadomienia</code>), a jego stan przesłać w payloadzie triggera jako flaga, np. <code>silent: true/false</code>.</p>
+<ul>
+  <li><b>Wariant 1 (rekomendowany):</b> checkbox ustawia flagę <code>silent</code>; Cloudflare Worker przekazuje ją dalej; Service Worker po stronie odbiorcy przy <code>silent=true</code> aktualizuje dane/wiadomość, ale nie wywołuje <code>showNotification()</code>.</li>
+  <li><b>Wariant 2:</b> Worker wysyła dwa typy payloadu: „notify” (normalna notyfikacja) i „message-only” (tylko dane). Klient rozróżnia typ i decyduje o wyświetleniu alertu systemowego.</li>
+  <li><b>W Android + natywne FCM:</b> analogicznie można przekazać flagę <code>silent</code> w polu <code>data</code>. Aplikacja w foreground/background może wtedy zapisać wiadomość bez generowania notyfikacji systemowej.</li>
+</ul>
+<p><b>Wniosek praktyczny:</b> checkbox w <code>GM.html</code> jest prosty do wdrożenia i zgodny z obecną architekturą (GM -> trigger -> Worker -> odbiorcy). Wymaga jedynie dodania 1 pola w formularzu GM, 1 pola w żądaniu <code>/api/push/trigger</code> oraz warunku w logice Service Workera / FCM po stronie odbiorcy.</p>
+
 <h2>11) Spis wszystkich plików w repo</h2>
 
 <p class="small">Poniżej pełna lista plików (bez katalogu <code>.git</code>).</p>
