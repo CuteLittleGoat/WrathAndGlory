@@ -306,3 +306,13 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - The Infoczytnik screen remains a read-only message display (no extra actions and no fallback/onboarding links).
 - Message rendering, layouts, and audio behavior remain unchanged.
 - `INF_VERSION` was bumped in test files to: `2026-03-13_09-01-06` (`GM_test.html` and `Infoczytnik_test.html`).
+
+## Aktualizacja 2026-03-13 (PL) — korekta układu fillerów
+- W `GM_test.html` poprawiono podgląd: wieloliniowe prefixy i suffixy renderują się pionowo (linia pod linią), zamiast sklejać się w jeden wiersz.
+- W `Infoczytnik_test.html` poprawiono symetrię odstępów między ostatnią linią prefixu, treścią i pierwszą linią suffixu.
+- Podniesiono `INF_VERSION` do `2026-03-13_09-29-26` w `GM_test.html` i `Infoczytnik_test.html`.
+
+## Update 2026-03-13 (EN) — filler layout correction
+- In `GM_test.html`, preview rendering was fixed so multi-line prefixes/suffixes are displayed vertically line-by-line.
+- In `Infoczytnik_test.html`, spacing symmetry was corrected between the last prefix line, message text, and the first suffix line.
+- `INF_VERSION` was bumped to `2026-03-13_09-29-26` in both `GM_test.html` and `Infoczytnik_test.html`.

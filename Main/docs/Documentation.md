@@ -224,3 +224,11 @@ Dodane funkcje:
 ### Integracja z dotychczasowym SW
 - Dotychczasowa rejestracja SW na `window.load` została zachowana, ale używa wspólnej funkcji `ensureServiceWorkerRegistration()`.
 - Dzięki temu zarówno bierna rejestracja SW, jak i aktywna subskrypcja push korzystają z jednej ścieżki rejestracji.
+
+## Aktualizacja techniczna 2026-03-13 — korekta położenia i rozmiaru CTA push
+- `button#pushBtn` został przeniesiony poza siatkę `.actions` i renderuje się jako element stały (`position: fixed`).
+- Klasa `.pushCta` została zmieniona na wariant kompaktowy:
+  - `right: 14px`, `bottom: 14px`, `z-index: 30`
+  - `padding: 6px 10px`, `font-size: 11px`
+  - `border-radius: 999px`
+- Efekt: przycisk jest zawsze w prawym dolnym rogu ekranu i nie zaburza geometrii przycisków nawigacyjnych modułów.

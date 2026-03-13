@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_09-01-06"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-13_09-29-26"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -38,6 +38,8 @@
     --suffix-font-size: clamp(12px, 2.0vw, 16px);
 
     --filler-gap: clamp(12px, 2vw, 18px);
+    --gap-prefix-to-msg: var(--filler-gap);
+    --gap-msg-to-suffix: var(--filler-gap);
 
     --prefix-color: rgba(255,255,255,.88);
     --suffix-color: rgba(255,255,255,.86);
@@ -119,7 +121,8 @@
     overflow:auto;
     -webkit-overflow-scrolling:touch;
     padding: clamp(14px, 2.4vw, 24px);
-    display:block;
+    display:flex;
+    flex-direction:column;
     text-shadow: 0 2px 6px rgba(0,0,0,.70);
     z-index: 1;
   }
@@ -147,11 +150,10 @@
   }
 
   .prefixRow{
-    display:flex;
-    align-items:flex-start;
-    justify-content:space-between;
-    gap: 12px;
-    margin-bottom: var(--filler-gap);
+    position:relative;
+    display:block;
+    margin-bottom: var(--gap-prefix-to-msg);
+    padding-right: 66px;
   }
 
   .prefix{
@@ -164,9 +166,11 @@
   }
 
   .logoBox{
-    flex: 0 0 auto;
-    width: 54px;
-    height: 54px;
+    position:absolute;
+    top:0;
+    right:0;
+    width:54px;
+    height:54px;
     display:flex;
     align-items:center;
     justify-content:center;
@@ -185,6 +189,7 @@
   }
 
   .msg{
+    margin:0;
     position:relative;
     font-size: var(--msg-font-size);
     line-height: 1.35;
@@ -197,7 +202,7 @@
   .suffixRow{
     display:flex;
     align-items:flex-start;
-    margin-top: var(--filler-gap);
+    margin-top: var(--gap-msg-to-suffix);
   }
   .suffix{
     color: var(--suffix-color);

@@ -107,21 +107,31 @@
       line-height: 1.35;
       word-break: break-word;
     }
-
     .pushCta {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 30;
+      width: auto;
       border-color: #ff3b30;
       background: rgba(255, 59, 48, 0.2);
       color: #ffe5e3;
-      box-shadow: 0 0 18px rgba(255, 59, 48, 0.45);
+      box-shadow: 0 0 14px rgba(255, 59, 48, 0.35);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0.2px;
     }
 
     .pushCta:hover {
-      background: rgba(255, 59, 48, 0.3);
-      box-shadow: 0 0 22px rgba(255, 59, 48, 0.55);
+      background: rgba(255, 59, 48, 0.28);
+      box-shadow: 0 0 16px rgba(255, 59, 48, 0.45);
     }
 
     .pushCta:active {
-      background: rgba(255, 59, 48, 0.4);
+      background: rgba(255, 59, 48, 0.36);
     }
   </style>
 </head>
@@ -164,6 +174,7 @@
       </div>
     </div>
   </main>
+  <button class="btn pushCta" id="pushBtn" type="button">Włącz powiadomienia</button>
   <script src="../Infoczytnik/config/web-push-config.js"></script>
   <script>
     const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";

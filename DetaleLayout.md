@@ -662,3 +662,9 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
   - tekst: `#ffe5e3`
   - poświata: `0 0 18px rgba(255, 59, 48, 0.45)`
 - W stanie `:hover` i `:active` rośnie intensywność czerwonego tła oraz poświaty, aby CTA odróżniało się od standardowych zielonych przycisków modułów.
+
+## Aktualizacja 2026-03-13 — korekta CTA push i spacingu fillerów
+
+- `Main/index.html`: przycisk **Włącz powiadomienia** (`.pushCta`) zmieniono na kompaktowy, "pill" i przypięto do prawego dolnego rogu (`position: fixed; right:14px; bottom:14px`).
+- `Infoczytnik/GM_test.html`: podgląd `livePreview` dla prefix/suffix renderuje nowe linie przez `white-space: pre-line`.
+- `Infoczytnik/Infoczytnik_test.html`: układ odstępów fillerów oparto o dwa równe gapy (`--gap-prefix-to-msg`, `--gap-msg-to-suffix`) oraz odseparowano wpływ logo na wysokość sekcji prefixu (logo pozycjonowane absolutnie).
