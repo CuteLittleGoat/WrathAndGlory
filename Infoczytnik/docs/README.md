@@ -282,3 +282,15 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - The `config/web-push-config.js` file now includes the public VAPID key from Firebase Cloud Messaging.
 - Localhost URLs were replaced with production HTTPS placeholders (`https://example.com/...`) so the config no longer implies local-only setup.
 - A new file `config/web-push-config.production.example.js` was added as a ready-to-use template for your final backend domain.
+
+## Aktualizacja 2026-03-13 — konfiguracja PWA Android + Web Push (PL)
+- `Infoczytnik_test.html` rejestruje teraz globalny Service Worker (`../service-worker.js`) również przy wejściu bezpośrednio do modułu, więc subskrypcja push nie zależy już od wcześniejszego otwarcia `Main/index.html`.
+- W `GM_test.html` payload triggera push został ustawiony na produkcyjny adres modułu: `./Infoczytnik/Infoczytnik.html`.
+- W `backend/server.js` domyślny `url` w payloadzie fallback również wskazuje produkcyjny `./Infoczytnik/Infoczytnik.html`.
+- Podniesiono `INF_VERSION` w plikach testowych (`GM_test.html`, `Infoczytnik_test.html`) do `2026-03-13_08-25-05`.
+
+## Update 2026-03-13 — Android PWA + Web Push configuration (EN)
+- `Infoczytnik_test.html` now registers the global Service Worker (`../service-worker.js`) even when the module is opened directly, so push subscription no longer depends on opening `Main/index.html` first.
+- In `GM_test.html`, push trigger payload now points to the production module URL: `./Infoczytnik/Infoczytnik.html`.
+- In `backend/server.js`, the default fallback payload `url` also points to production `./Infoczytnik/Infoczytnik.html`.
+- `INF_VERSION` was bumped in both test files (`GM_test.html`, `Infoczytnik_test.html`) to `2026-03-13_08-25-05`.

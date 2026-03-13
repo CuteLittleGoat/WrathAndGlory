@@ -83,7 +83,7 @@ function normalizePayload(rawPayload) {
     url:
       typeof payload.url === "string" && payload.url.trim()
         ? payload.url.trim()
-        : "./Infoczytnik/Infoczytnik_test.html"
+        : "./Infoczytnik/Infoczytnik.html"
   };
 }
 
