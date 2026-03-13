@@ -166,3 +166,27 @@
   1) twarde blokowanie tras adminowych w aplikacji Android,
   2) testy A/B/C na fizycznym Androidzie,
   3) usunięcie jawnego tokena triggera z frontendu GM.
+
+---
+
+## 7) Aktualizacja analizy — odpowiedź na dodatkowe pytanie
+
+### Prompt użytkownika (kontekst)
+> Czy w TWA da się zablokować widok Infoczytnika w orientacji pionowej? W WebView taka opcja działała prawidłowo.
+
+### Odpowiedź krótka
+**Tak — w TWA da się skutecznie wymusić pion dla Infoczytnika**, ale nie robi się tego wyłącznie przez `screen.orientation.lock(...)` w samej stronie.
+
+### Jak to działa w praktyce
+- W **WebView** orientację zwykle wymuszasz bezpośrednio w Activity hostującej WebView (`setRequestedOrientation(...)`) i to daje stabilny efekt.
+- W **TWA** treść działa w Chrome Custom Tab (czyli poza klasycznym WebView), więc sam lock webowy bywa zależny od wsparcia przeglądarki/kontekstu.
+- Aby mieć efekt „produkcyjnie pewny”, stosuje się **wymuszenie orientacji po stronie Androida**:
+  - dedykowana Activity (lub logika przełączania) dla URL Infoczytnika z `portrait`,
+  - dla reszty modułów `unspecified` / `fullSensor`.
+
+### Wniosek techniczny
+- **Da się** osiągnąć wymaganie „Infoczytnik zawsze pionowo” w projekcie TWA.
+- **Najlepsza praktyka**: połączyć obie warstwy:
+  1. web: zostawić `screen.orientation.lock("portrait")` w `Infoczytnik.html` jako dodatkowe zabezpieczenie,
+  2. Android/TWA: ustawić regułę orientacji dla ekranu/trasy Infoczytnika.
+- Sam lock po stronie web (bez wsparcia Androida) może nie dawać 100% gwarancji na każdym urządzeniu.
