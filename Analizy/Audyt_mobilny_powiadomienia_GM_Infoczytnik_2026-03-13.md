@@ -111,3 +111,64 @@ Wniosek: **TAK — aktualne pliki dot. push są ustawione na produkcję, nie tes
 1. **P0 (bezpieczeństwo):** usunąć jawny bearer z `GM.html`, wdrożyć bezpieczny mechanizm backendowy triggera.
 2. **P1 (UX):** dodać opcję subskrypcji push bezpośrednio w `Infoczytnik.html`.
 3. **P2 (stabilność offline):** ewentualnie rozszerzyć cache SW o krytyczne pliki Infoczytnik.
+
+---
+
+## Aktualizacja audytu — 2026-03-13 (wątek: brak dedykowanego UX subskrypcji w `Infoczytnik.html`)
+
+## Prompt użytkownika (aktualizacja)
+"Zaktualizuj analizę Analizy/Audyt_mobilny_powiadomienia_GM_Infoczytnik_2026-03-13.md o wątek Brak dedykowanego UX subskrypcji w Infoczytnik.html
+
+Zapisz mi czy kliknięcie na launcherze zapisuje stan powiadomień (zgoda na powiadomienia) przy przechodzeniu na kolejne ekrany. Zapisz mi jak można ewentualnie rozwiązać ten problem bez dodawania przycisku/powiadomienia na samym ekranie Infoczytnik.html"
+
+### Ustalenie A — czy kliknięcie na launcherze zapisuje stan zgody/subskrypcji przy przejściu dalej?
+**Tak — stan jest zachowany, ale nie przez "kliknięcie linku", tylko przez mechanizmy przeglądarki/SW:**
+
+1. W `Main/index.html` przy kliknięciu „Włącz powiadomienia” uruchamiane jest:
+   - `Notification.requestPermission()` (zgoda na poziomie originu),
+   - `serviceWorker.register("../service-worker.js")`,
+   - `registration.pushManager.getSubscription()` / `pushManager.subscribe(...)`,
+   - zapis subskrypcji na backend (`subscribeEndpoint`).
+2. Po przejściu do `Infoczytnik/Infoczytnik.html` aplikacja działa nadal w tym samym originie i z tym samym SW (`../service-worker.js`), więc:
+   - zgoda `Notification` pozostaje aktywna,
+   - istniejąca subskrypcja Web Push pozostaje aktywna,
+   - nie ma potrzeby ponownego pytania użytkownika o zgodę przy każdym ekranie.
+
+**Wniosek praktyczny:** jeśli użytkownik raz poprawnie aktywuje push z launchera, to przejście na kolejne ekrany (w tym `Infoczytnik.html`) nie kasuje tego stanu.
+
+### Ustalenie B — gdzie realnie jest luka UX?
+Luka nie dotyczy utraty stanu po nawigacji, tylko **braku ścieżki aktywacji**, gdy użytkownik:
+- startuje bezpośrednio od `Infoczytnik.html` (z bookmarka/linku/QR),
+- omija launcher (`Main/index.html`),
+- przez co nigdy nie uruchamia flow `enablePushNotifications()`.
+
+### Ustalenie C — jak rozwiązać problem bez dodawania przycisku na `Infoczytnik.html`?
+Poniżej rozwiązania bez nowego przycisku/banera na ekranie Infoczytnika:
+
+1. **Auto-bootstrap subskrypcji w launcherze (rekomendowane minimum)**
+   - W `Main/index.html` na `load` (po cichu, bez dodatkowego UI) wywoływać logikę:
+     - `getSubscription()` i jeśli subskrypcja istnieje → tylko re-sync na backend,
+     - jeśli brak subskrypcji i permission=`default` → zostawić ręczny przycisk (obecny),
+     - jeśli permission=`granted` i brak subskrypcji → automatycznie utworzyć subskrypcję.
+   - Efekt: użytkownik, który już kiedyś dał zgodę, nie musi pamiętać o kliku „Włącz powiadomienia”.
+
+2. **Wymuszenie wejścia przez launcher dla ścieżek użytkownika (routing operacyjny)**
+   - Wszystkie linki/QR/kafelki prowadzące do Infoczytnika kierować najpierw na `Main/index.html` (np. z parametrem `?next=...`),
+   - launcher wykonuje handshake push i dopiero przekierowuje do `Infoczytnik.html`.
+   - Bez zmian UI w samym Infoczytniku, a flow subskrypcji zawsze jest osiągalny.
+
+3. **Pre-subscribe podczas onboardingu/PWA install w Main**
+   - Jeżeli projekt ma etap startowy, uruchamiać handshake push właśnie tam (nie w `Infoczytnik.html`),
+   - utrzymywać okresowy „reconcile” subskrypcji (np. przy każdym otwarciu launchera).
+
+4. **Fallback backendowy (monitoring braków subskrypcji)**
+   - Jeśli GM wysyła push, a backend wykryje brak aktywnych subskrypcji, zwrócić sygnał diagnostyczny do panelu GM,
+   - to nie rozwiązuje UX bezpośrednio, ale natychmiast ujawnia, że użytkownik nie przeszedł flow aktywacji.
+
+### Decyzja architektoniczna
+Jeśli celem jest brak zmian na `Infoczytnik.html`, najbezpieczniejszy układ to:
+- **launcher jako jedyny punkt aktywacji/subskrypcji**,
+- **obowiązkowe wejście użytkownika przez launcher** (linkowanie/routing),
+- **automatyczny re-sync subskrypcji w tle** w `Main/index.html`.
+
+To eliminuje problem „braku dedykowanego UX w Infoczytniku” bez dodawania tam nowego przycisku.
