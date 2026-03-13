@@ -652,3 +652,13 @@ Załadowane fonty (używane zależnie od frakcji):
 
 ## Uwaga końcowa
 Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym pliku, aby zachować spójne, kompletne źródło prawdy dla stylów całej aplikacji.
+
+## Aktualizacja 2026-03-13 — Main: wyróżniony przycisk Web Push
+
+- W `Main/index.html` dodano czerwony wariant przycisku CTA (`.pushCta`) dla akcji **Włącz powiadomienia**.
+- Parametry wizualne nowego wariantu:
+  - obramowanie: `#ff3b30`
+  - tło: `rgba(255, 59, 48, 0.2)`
+  - tekst: `#ffe5e3`
+  - poświata: `0 0 18px rgba(255, 59, 48, 0.45)`
+- W stanie `:hover` i `:active` rośnie intensywność czerwonego tła oraz poświaty, aby CTA odróżniało się od standardowych zielonych przycisków modułów.
