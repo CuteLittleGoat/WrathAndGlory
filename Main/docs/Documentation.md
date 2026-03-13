@@ -239,3 +239,19 @@ Dodane funkcje:
 - Widok użytkownika ma teraz stałą kolejność: **Infoczytnik → Skarbiec Danych → Obrazki → Mapa → Kalkulator → Rzut kośćmi**.
 - Widok admina ma teraz stałą kolejność: **Infoczytnik → Skarbiec Danych → Generator Nazw → Generator NPC → Audio → Obrazki → Mapa → Kalkulator → Rzut kośćmi**.
 - Usunięto z siatki `.actions` zbędny duplikat `button#pushBtn`; przycisk powiadomień występuje tylko raz jako element fixed poza siatką.
+
+## Aktualizacja techniczna 2026-03-13 — osadzenie CTA push pod siatką modułów
+- Usunięto pozycjonowanie viewportowe przycisku (`position: fixed`, `right`, `bottom`, `z-index`) z klasy `.pushCta`.
+- Dodano nowy kontener `.pushCtaWrap` umieszczony **wewnątrz `<main>` i pod `.actions`**:
+  - `width: 100%`
+  - `display: flex`
+  - `justify-content: flex-end`
+  - `margin-top: 4px`
+- `button#pushBtn` został przeniesiony do struktury:
+  - `<div class="pushCtaWrap">`
+  - `  <button class="btn pushCta" id="pushBtn" ...>`
+- Efekt layoutu:
+  - przycisk pozostaje na stałe pod tabelą przycisków nawigacyjnych,
+  - jest wyrównany do prawej strony zielonej ramki panelu,
+  - nie nachodzi na treść podczas scrollowania i nie przesuwa się względem viewportu.
+- Logika JS Web Push pozostała bez zmian (obsługa kliknięcia, walidacja konfiguracji, subskrypcja, POST endpoint).

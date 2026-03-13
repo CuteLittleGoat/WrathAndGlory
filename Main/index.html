@@ -107,11 +107,14 @@
       line-height: 1.35;
       word-break: break-word;
     }
+    .pushCtaWrap {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
     .pushCta {
-      position: fixed;
-      right: 14px;
-      bottom: 14px;
-      z-index: 30;
       width: auto;
       border-color: #ff3b30;
       background: rgba(255, 59, 48, 0.2);
@@ -170,8 +173,10 @@
         <a class="btn" href="../DiceRoller/index.html">Rzut kośćmi</a>
       </div>
     </div>
+    <div class="pushCtaWrap">
+      <button class="btn pushCta" id="pushBtn" type="button">Włącz powiadomienia</button>
+    </div>
   </main>
-  <button class="btn pushCta" id="pushBtn" type="button">Włącz powiadomienia</button>
   <script src="../Infoczytnik/config/web-push-config.js"></script>
   <script>
     const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";

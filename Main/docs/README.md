@@ -214,3 +214,13 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 ## Update 2026-03-13 (EN) — notifications button adjustment
 - The **Enable notifications** button is now smaller and pill-shaped.
 - The button is fixed to the bottom-right corner of the viewport, independent from the modules grid layout.
+
+## Aktualizacja 2026-03-13 (PL) — pozycja przycisku powiadomień pod siatką
+- Przycisk **Włącz powiadomienia** nie jest już przypięty do viewportu (`position: fixed`).
+- Przycisk znajduje się teraz **na stałe pod tabelą/siatką przycisków modułów**, wyrównany do prawej strony zielonej ramki głównego panelu.
+- Dzięki temu nie zasłania treści i nie „podąża” za ekranem podczas przewijania.
+
+## Update 2026-03-13 (EN) — notifications button placed below the grid
+- The **Enable notifications** button is no longer pinned to the viewport (`position: fixed`).
+- It is now permanently placed **below the module buttons grid**, aligned to the right edge of the main green-framed panel.
+- This prevents overlap and stops the button from following the user while scrolling.
