@@ -316,3 +316,13 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - In `GM_test.html`, preview rendering was fixed so multi-line prefixes/suffixes are displayed vertically line-by-line.
 - In `Infoczytnik_test.html`, spacing symmetry was corrected between the last prefix line, message text, and the first suffix line.
 - `INF_VERSION` was bumped to `2026-03-13_09-29-26` in both `GM_test.html` and `Infoczytnik_test.html`.
+
+## Aktualizacja 2026-03-13 (PL) — poprawa rozmieszczenia presetów kolorów
+- W `GM_test.html` poprawiono układ „chipów” kolorów (`Zielony`, `Czerwony`, `Złoty`, `Biały`) tak, aby etykiety nie nachodziły na siebie.
+- Zwiększono odstępy między chipami i ustawiono stabilny układ poziomy z zawijaniem do kolejnego wiersza.
+- Podniesiono `INF_VERSION` do `2026-03-13_10-07-18` w `GM_test.html` i `Infoczytnik_test.html`.
+
+## Update 2026-03-13 (EN) — color preset controls spacing fix
+- In `GM_test.html`, color preset chips (`Green`, `Red`, `Gold`, `White`) were realigned so labels no longer overlap.
+- Chip spacing was increased and the row now uses a stable inline layout with wrapping.
+- `INF_VERSION` was bumped to `2026-03-13_10-07-18` in both `GM_test.html` and `Infoczytnik_test.html`.
