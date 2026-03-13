@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_09-29-26"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-13_10-07-18"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -55,9 +55,9 @@
       margin:10px 0 0 0;padding:10px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,.18);
       background:rgba(0,0,0,.25);color:#cfcfcf;font-family:Consolas,"Courier New",monospace;font-size:13px;white-space:pre-wrap;
     }
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .chip{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;}
-    .chip span{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25)}
+    .chips{display:flex;gap:10px 14px;flex-wrap:wrap;margin-top:8px}
+    .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap;}
+    .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
 
     /* ===== Układ: Losowość fillerów ===== */
     .fillerBox{
@@ -136,10 +136,10 @@
           <label data-i18n="labelMessageColor">Kolor fontu (treść wiadomości)</label>
           <input type="color" id="fontColor" value="#00ff66" />
           <div class="chips" id="msgColorChips">
-            <div class="chip" data-target="msg" data-color="#00ff66"><span style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
-            <div class="chip" data-target="msg" data-color="#ff3333"><span style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
-            <div class="chip" data-target="msg" data-color="#d4af37"><span style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
-            <div class="chip" data-target="msg" data-color="#ffffff"><span style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
+            <div class="chip" data-target="msg" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+            <div class="chip" data-target="msg" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+            <div class="chip" data-target="msg" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+            <div class="chip" data-target="msg" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
           </div>
 
           <!-- Rozmiar treści -->
@@ -163,10 +163,10 @@
 
           <!-- Szybkie kolory Prefix/Suffix -->
           <div class="chips" id="psColorChips">
-            <div class="chip" data-target="ps" data-color="#00ff66"><span style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
-            <div class="chip" data-target="ps" data-color="#ff3333"><span style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
-            <div class="chip" data-target="ps" data-color="#d4af37"><span style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
-            <div class="chip" data-target="ps" data-color="#ffffff"><span style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
+            <div class="chip" data-target="ps" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+            <div class="chip" data-target="ps" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+            <div class="chip" data-target="ps" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+            <div class="chip" data-target="ps" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
           </div>
 
           <!-- Rozmiar Prefix/Suffix -->
