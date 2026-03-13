@@ -1,4 +1,4 @@
-const SW_VERSION = "wg-pwa-v2";
+const SW_VERSION = "wg-pwa-v3";
 const APP_SHELL_CACHE = `${SW_VERSION}-shell`;
 const APP_SHELL_ASSETS = [
   "./",

@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_11-12-40"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-13_12-31-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -565,15 +565,18 @@
     }
 
 
-    async function triggerPushNotification(){
+    async function triggerPushNotification() {
       const triggerEndpoint = window.infWebPushConfig?.triggerEndpoint;
-      if(!triggerEndpoint) {
+      if (!triggerEndpoint) {
         throw new Error("Brak triggerEndpoint w konfiguracji Web Push.");
       }
 
       const response = await fetch(triggerEndpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 3puHu3zzaFy2obwXB7dM7KXPOiVTSjWe"
+        },
         body: JSON.stringify({
           title: "Infoczytnik",
           body: "+++ INCOMING DATA-TRANSMISSION +++",

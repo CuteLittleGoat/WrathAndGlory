@@ -692,3 +692,69 @@ Wersja zawiera datę i czas lokalny (Polska), w formacie `rrrr-MM-dd_gg-mm-ss`.
 
 ### 4) `Infoczytnik_test.html`
 - Zgodnie z zasadą wersjonowania testowych plików modułu, podniesiono `INF_VERSION` do `2026-03-13_11-12-40` (synchronizacja z `GM_test.html`).
+
+## 19. Aktualizacja 2026-03-13 — Cloudflare Workers (PL)
+### 19.1. `config/web-push-config.js`
+Plik zawiera teraz finalną konfigurację produkcyjną Web Push dla frontendu:
+- `vapidPublicKey` — publiczny klucz VAPID przekazywany do `pushManager.subscribe(...)`.
+- `subscribeEndpoint` — pełny URL HTTPS do API zapisu subskrypcji na Cloudflare Workerze.
+- `triggerEndpoint` — pełny URL HTTPS do API triggera wysyłki push.
+
+### 19.2. `GM_test.html` — `triggerPushNotification()`
+Funkcja została dostosowana do docelowego modelu autoryzacji backendu:
+1. Odczytuje `triggerEndpoint` z `window.infWebPushConfig`.
+2. Wysyła `POST` JSON na endpoint triggera.
+3. Dodaje nagłówek `Authorization: Bearer ...` (token triggera).
+4. Używa absolutnych ścieżek payloadu:
+   - `icon: "/IkonaPowiadomien.png"`
+   - `badge: "/IkonaPowiadomien.png"`
+   - `url: "/Infoczytnik/Infoczytnik.html"`
+5. Waliduje odpowiedź przez `response.ok`; przy błędzie odczytuje `response.text()` i rzuca wyjątek z pełnym komunikatem status + body.
+
+### 19.3. Rejestracja subskrypcji push
+Logika subskrypcji pozostaje oparta o konfigurację runtime z `window.infWebPushConfig`:
+- `vapidPublicKey` z configu,
+- `subscribeEndpoint` z configu,
+- pełny komunikat błędu subskrypcji zawierający kod HTTP i body odpowiedzi backendu.
+
+### 19.4. `service-worker.js`
+- Podniesiono `SW_VERSION` z `wg-pwa-v2` do `wg-pwa-v3` w celu wymuszenia odświeżenia cache po publikacji.
+- Fallbacki payloadu push pozostają absolutne (`/IkonaPowiadomien.png`, `/Infoczytnik/Infoczytnik.html`).
+- `notificationclick` zachowuje sekwencję: exact URL → dowolne okno Infoczytnika → `clients.openWindow(...)`.
+
+### 19.5. Usunięcie starego backendu Node
+- Usunięto `Infoczytnik/backend/server.js`.
+- Repo nie utrzymuje już lokalnej implementacji produkcyjnego API push (rolę tę pełni Cloudflare Worker).
+
+## 19. Update 2026-03-13 — Cloudflare Workers (EN)
+### 19.1. `config/web-push-config.js`
+The file now contains final production Web Push config for the frontend:
+- `vapidPublicKey` — public VAPID key used by `pushManager.subscribe(...)`.
+- `subscribeEndpoint` — full HTTPS URL for subscription storage API on Cloudflare Worker.
+- `triggerEndpoint` — full HTTPS URL for push trigger API.
+
+### 19.2. `GM_test.html` — `triggerPushNotification()`
+The function now follows the target backend authorization flow:
+1. Reads `triggerEndpoint` from `window.infWebPushConfig`.
+2. Sends JSON `POST` to the trigger endpoint.
+3. Adds `Authorization: Bearer ...` header (trigger token).
+4. Uses absolute payload paths:
+   - `icon: "/IkonaPowiadomien.png"`
+   - `badge: "/IkonaPowiadomien.png"`
+   - `url: "/Infoczytnik/Infoczytnik.html"`
+5. Validates `response.ok`; on failure reads `response.text()` and throws full status + body error message.
+
+### 19.3. Push subscription storage
+Subscription flow remains runtime-config based via `window.infWebPushConfig`:
+- `vapidPublicKey` from config,
+- `subscribeEndpoint` from config,
+- detailed subscription error including HTTP status and backend response body.
+
+### 19.4. `service-worker.js`
+- `SW_VERSION` was bumped from `wg-pwa-v2` to `wg-pwa-v3` to force cache refresh after deployment.
+- Push payload fallbacks remain absolute (`/IkonaPowiadomien.png`, `/Infoczytnik/Infoczytnik.html`).
+- `notificationclick` keeps the sequence: exact URL → any Infoczytnik window → `clients.openWindow(...)`.
+
+### 19.5. Legacy Node backend removal
+- Removed `Infoczytnik/backend/server.js`.
+- The repository no longer ships a local production push API implementation (Cloudflare Worker is now the production backend).
