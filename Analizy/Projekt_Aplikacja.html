@@ -127,7 +127,70 @@ W pliku Analizy/Projekt_Aplikacja.html zapisz też pełen kod wszystkich plików
   <li>Jeżeli pozostanie TWA + web push bez natywnego FCM, wariant C (app killed) jest bardziej podatny na ograniczenia środowiskowe.</li>
 </ul>
 
-<h2>10) Spis wszystkich plików w repo</h2>
+<h2>10) Czynności wdrożeniowe: Android WebView + natywne FCM + Cloudflare Worker (rozszerzony o tokeny FCM)</h2>
+<pre>Prompt aktualizacji analizy:
+"Zaktualizuj analizę: Analizy/Projekt_Aplikacja.html
+W Analizy/ dodałem kilka plików.
+Są to screeny z ustawień CloudFlare oraz Firebase (w tym Private Key) - zignoruj zasady bezpieczeństwa na tę chwilę.
+W Analizy/kod-wrathandglory-push-api.md jest pełen skrypt, który widać na screenie Analizy/CloudFlare_07.jpg
+Sprawdź je dokładnie.
+
+Dodaj do analizy (przed sekcją ze spisem plików i ich kodem) jakie czynności będę musiał wykonać, żeby wdrożyć Android app oparta o WebView + natywne FCM + istniejący Cloudflare Worker rozszerzony o obsługę tokenów FCM.
+Wypisz dokładnie jakie kroki muszę zrobić po stronie CloudFlare oraz Firebase."</pre>
+<p><b>Źródła do tej sekcji:</b> przeanalizowano nowe pliki z katalogu <code>Analizy/</code> (screeny Cloudflare/Firebase) oraz pełny kod Workera z <code>Analizy/kod-wrathandglory-push-api.md</code>, który odpowiada widokowi ze screena <code>CloudFlare_07.jpg</code>.</p>
+
+<h3>10.1 Cloudflare — co trzeba zrobić krok po kroku</h3>
+<ol>
+  <li><b>Potwierdź obecny Worker i bindingi:</b> utrzymaj endpointy już działające (<code>/api/push/health</code>, <code>/api/push/subscribe</code>, <code>/api/push/trigger</code>) oraz KV <code>SUBSCRIPTIONS_KV</code> do web push.</li>
+  <li><b>Dodaj nowe KV na tokeny Android/FCM:</b> utwórz np. <code>FCM_TOKENS_KV</code> i podepnij binding do tego samego Workera.</li>
+  <li><b>Rozszerz kod Workera o endpoint rejestracji tokenu FCM:</b> np. <code>POST /api/android/register</code> z body zawierającym <code>fcmToken</code>, <code>deviceId</code>, <code>platform</code>, <code>appVersion</code>. Token zapisz w <code>FCM_TOKENS_KV</code> pod stabilnym kluczem (np. hash tokenu albo <code>deviceId</code>).</li>
+  <li><b>Dodaj endpoint wyrejestrowania:</b> np. <code>POST /api/android/unregister</code> usuwający token przy wylogowaniu/odinstalowaniu.</li>
+  <li><b>Rozszerz istniejący trigger:</b> w <code>/api/push/trigger</code> po web push dodaj wysyłkę do wszystkich tokenów FCM (pętla po <code>FCM_TOKENS_KV</code>), z usuwaniem tokenów nieważnych (np. <code>UNREGISTERED</code>).</li>
+  <li><b>Dodaj sekcję sekretów Firebase do Workera:</b>
+    <ul>
+      <li><code>FIREBASE_PROJECT_ID</code></li>
+      <li><code>FIREBASE_CLIENT_EMAIL</code></li>
+      <li><code>FIREBASE_PRIVATE_KEY</code> (zachowaj format wieloliniowy, zwykle z <code>\n</code> w sekretach)</li>
+    </ul>
+  </li>
+  <li><b>Dodaj logikę OAuth2 dla FCM HTTP v1:</b> Worker generuje JWT service account, pobiera access token z Google OAuth (<code>https://oauth2.googleapis.com/token</code>), a następnie wywołuje <code>https://fcm.googleapis.com/v1/projects/{PROJECT_ID}/messages:send</code>.</li>
+  <li><b>Zdefiniuj payload FCM zgodny z wymaganiem:</b>
+    <ul>
+      <li><code>notification.title</code> np. „Infoczytnik”</li>
+      <li><code>notification.body</code> = <code>+++ INCOMING DATA-TRANSMISSION +++</code></li>
+      <li><code>android.notification.channel_id</code> np. <code>infoczytnik_messages</code></li>
+      <li><code>android.notification.icon</code> = nazwa zasobu small icon po stronie aplikacji Android</li>
+      <li><code>data.url</code> = docelowo <code>/Infoczytnik/Infoczytnik.html</code> (otwarcie właściwej zakładki po tapnięciu)</li>
+    </ul>
+  </li>
+  <li><b>Zabezpiecz endpointy Android:</b> analogicznie jak <code>TRIGGER_TOKEN</code> dodaj np. <code>ANDROID_REGISTER_TOKEN</code>, żeby rejestracja/usuwanie tokenów nie była publiczna.</li>
+  <li><b>Wdróż i przetestuj na Cloudflare:</b> po deploy sprawdź kolejno health, register, trigger oraz logi Workera (czy idzie i web push, i FCM).</li>
+</ol>
+
+<h3>10.2 Firebase — co trzeba zrobić krok po kroku</h3>
+<ol>
+  <li><b>Włącz Cloud Messaging:</b> w projekcie Firebase aktywuj FCM (zakładka Cloud Messaging).</li>
+  <li><b>Dodaj aplikację Android do projektu:</b> podaj poprawny <code>applicationId</code> i pobierz <code>google-services.json</code> do projektu Android Studio.</li>
+  <li><b>Wygeneruj konto serwisowe:</b> utwórz/wybierz service account z uprawnieniami do wysyłki FCM (rola typu Firebase Admin / Cloud Messaging odpowiednia dla HTTP v1).</li>
+  <li><b>Pobierz klucz JSON service account:</b> z pliku pobierz pola <code>project_id</code>, <code>client_email</code>, <code>private_key</code> i wpisz je do sekretów Cloudflare Workera.</li>
+  <li><b>Sprawdź zgodność Project ID:</b> <code>project_id</code> z klucza musi być tym samym, którego Worker użyje w URL FCM v1.</li>
+  <li><b>Skonfiguruj aplikację Android pod FCM:</b> zależności Firebase Messaging, utworzenie Notification Channel, pobranie tokenu przez <code>FirebaseMessaging.getInstance().token</code> i wysłanie tokenu do <code>/api/android/register</code>.</li>
+  <li><b>Obsłuż odświeżanie tokenu:</b> w <code>FirebaseMessagingService.onNewToken()</code> ponowna rejestracja tokenu w Workerze.</li>
+  <li><b>Obsłuż przychodzące wiadomości:</b> przy foreground wyświetl lokalną notyfikację; przy background/killed użyj payloadu FCM tak, by Android wyświetlił systemową notyfikację.</li>
+  <li><b>Przetestuj 3 scenariusze A/B/C:</b> aktywna app, app w tle, app ubita — każdy test wywołuj przez realny trigger z panelu GM.</li>
+</ol>
+
+<h3>10.3 Kolejność realizacji (najkrótsza ścieżka)</h3>
+<ol>
+  <li>Firebase: app Android + <code>google-services.json</code> + service account.</li>
+  <li>Cloudflare: sekrety Firebase + nowe endpointy register/unregister + FCM send w triggerze.</li>
+  <li>Android: pobranie/odświeżanie tokenu i rejestracja w Workerze.</li>
+  <li>Android: Notification Channel + ikona notyfikacji + stały tekst body.</li>
+  <li>E2E test z GM → trigger → urządzenie Android (A/B/C).</li>
+</ol>
+
+<h2>11) Spis wszystkich plików w repo</h2>
+
 <p class="small">Poniżej pełna lista plików (bez katalogu <code>.git</code>).</p>
 <pre>/workspace/WrathAndGlory/AGENTS.md
 /workspace/WrathAndGlory/Audio/AudioManifest.xlsx
@@ -989,7 +1052,7 @@ W pliku Analizy/Projekt_Aplikacja.html zapisz też pełen kod wszystkich plików
 /workspace/WrathAndGlory/manifest.webmanifest
 /workspace/WrathAndGlory/service-worker.js</pre>
 
-<h2>11) Pełen kod plików związanych z PWA / powiadomieniami / Cloudflare</h2>
+<h2>12) Pełen kod plików związanych z PWA / powiadomieniami / Cloudflare</h2>
 <p class="small">Zestaw plików wybrany na podstawie odwołań do: manifestu, Service Workera, Web Push (subscribe/trigger), notyfikacji i endpointów Cloudflare Workers.</p>
 <h3>manifest.webmanifest</h3>
 <pre>{
