@@ -590,3 +590,40 @@ Wersja zawiera datę i czas lokalny (Polska), w formacie `rrrr-MM-dd_gg-mm-ss`.
 - `INF_VERSION` podniesiono do `2026-03-13_09-29-26` w:
   - `GM_test.html`
   - `Infoczytnik_test.html`
+
+## Aktualizacja techniczna 2026-03-13_10-07-18 — korekta chipów kolorów w `GM_test.html`
+
+### Zakres
+- Zmiana dotyczy wyłącznie panelu GM (`Infoczytnik/GM_test.html`) w sekcjach szybkiego wyboru koloru:
+  - `#msgColorChips`
+  - `#psColorChips`
+- Celem było usunięcie nakładania się etykiet (`Zielony`, `Czerwony`, `Złoty`, `Biały`) przy węższych szerokościach panelu.
+
+### Zmiany HTML
+- W każdym chipie pierwszy `span` (kolorowy kwadrat) otrzymał klasę `.swatch`.
+- Struktura chipa pozostała dwuelementowa: znacznik koloru + tekst etykiety.
+
+### Zmiany CSS (dokładne)
+1. Kontener chipów:
+- było: `.chips { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px }`
+- jest: `.chips { display:flex; gap:10px 14px; flex-wrap:wrap; margin-top:8px }`
+- Efekt: większy odstęp pionowy/poziomy pomiędzy elementami.
+
+2. Sam chip:
+- dodano `display:inline-flex`, `align-items:center`, `gap:7px`, `white-space:nowrap`.
+- Zachowano: `padding:8px 10px`, `border-radius:999px`, obramowanie i tło.
+- Efekt: kropka koloru i tekst tworzą jedną spójną linię bez „ściskania” etykiety.
+
+3. Znacznik koloru:
+- stary ogólny selektor `.chip span` zastąpiono selektorem `.chip .swatch`.
+- `.chip .swatch` ma: `width:12px`, `height:12px`, `border-radius:3px`, `border:1px solid rgba(0,0,0,.25)`, `flex:0 0 12px`.
+- Efekt: stały rozmiar dotyczy wyłącznie kwadratu koloru, a nie tekstu etykiety.
+
+### Przyczyna i rezultat
+- Poprzednio reguła `.chip span` nadawała stałą szerokość także spanowi z tekstem etykiety, co powodowało wizualne nakładanie nazw.
+- Po rozdzieleniu stylowania (`.swatch`) etykiety renderują się naturalnie i nie nachodzą na siebie.
+
+### Wersjonowanie testowych HTML
+- Zgodnie z zasadami modułu podniesiono `INF_VERSION` do `2026-03-13_10-07-18` w:
+  - `Infoczytnik/GM_test.html`
+  - `Infoczytnik/Infoczytnik_test.html`
