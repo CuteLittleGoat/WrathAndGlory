@@ -1,0 +1,2862 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8" />
+  <title>Analiza projektu WrathAndGlory — Android Studio / PWA / Push</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.45; margin: 24px; color:#111; }
+    h1, h2, h3 { margin-top: 1.4em; }
+    code, pre { font-family: "Courier New", monospace; }
+    pre { background:#f5f5f5; border:1px solid #ddd; padding:12px; overflow:auto; white-space:pre-wrap; }
+    .ok { color:#0a7a0a; font-weight:700; }
+    .warn { color:#b26a00; font-weight:700; }
+    .bad { color:#a10000; font-weight:700; }
+    .meta { background:#eef6ff; border:1px solid #b9d7ff; padding:10px; }
+    .small { font-size:0.92em; color:#333; }
+  </style>
+</head>
+<body>
+<h1>Pełna analiza kodu — WrathAndGlory (Android Studio / PWA / Powiadomienia)</h1>
+
+<h2>1) Prompt użytkownika (kontekst analizy)</h2>
+<pre>Przeprowadź pełną analizę kodu.
+Zapisz jego wyniki w Analizy/Projekt_Aplikacja.html
+
+Chciałbym w Android Studio przygotować plik do instalacji aplikacji mobilnej.
+Ma spełniać warunki:
+Interesuje mnie, żeby aplikacja:
+1. Miała dostęp tylko do widoku użytkownika (bez dopisku ?admin=1)
+2. Moduł Infoczytnik uruchamiała w orientacji pionowej niezależnie od ustawień urządzenia
+3. Pozostałe moduły mogą się uruchamiać w orientacji pionowej lub poziomej.
+4. Logo aplikacji to ma być IkonaGlowna.png
+5. Aplikacja ma wspierać powiadomienia w Androidzie
+6. Aplikacja będzie działać tylko online
+7. W Androidzie powiadomienia mają mieć ikonę: IkonaPowiadomien.png
+8. W Androidzie powiadomienia mają mieć stały tekst: +++ INCOMING DATA-TRANSMISSION +++
+9. Powiadomienie ma się pojawiać jak użytkownik w panelu GM modułu Infoczytnik (uruchamianym na innym urządzeniu) wyśle jakąś wiadomość.
+10. Powiadomienie ma się pojawiać na urządzeniu z zainstalowaną aplikacją:
+Wariant A - niezależnie od tego czy aplikacja jest obecnie uruchomiona czy zminimalizowana
+Wariant B - jeżeli aplikacja jest aktywnie używana ale na innej zakładce
+Wariant C - Nawet jeżeli aplikacja jest wyłączona
+Przebieg:
+Użytkownik 1 - na PC uruchamia Infoczytnik/GM.html
+Użytkownik 2 - na tablecie ma uruchomioną aplikację mobilną PWA
+Użytkownik 1 - przygotowuje wiadomość i naciska &quot;Wyślij&quot;
+Użytkownik 2 - otrzymuje powiadomienie o nadejściu nowej wiadomości
+
+W repo są już pliki do aplikacji PWA. Jest ona powiązana z CloudFlare. Sprawdź czy można użyć tej samej konfiguracji do nowego projektu (plik instalacyjny stworzony w Android Studio).
+Napisz czy lepszym rozwiązaniem byłoby WebView czy TWA. Zaproponuj rozwiązanie gwarantujące wszystkie wymienione funkcjonalności. Opisz wady i zalety każdego z rozwiązań.
+
+W pliku Analizy/Projekt_Aplikacja.html zapisz też spis wszystkich plików w repo.
+W pliku Analizy/Projekt_Aplikacja.html zapisz też pełen kod wszystkich plików korzystających obecnie z PWA i obsługi powiadomień oraz plików odwołujących się do CloudFlare.</pre>
+
+<h2>2) Zakres i metoda</h2>
+<ul>
+  <li>Przeanalizowano konfigurację PWA, Service Workera, punkty subskrypcji/triggera push oraz odwołania do Cloudflare Worker.</li>
+  <li>Przeanalizowano warunki wdrożenia aplikacji Android (WebView vs TWA) pod kątem wymagań 1–10.</li>
+  <li>Dodano pełny spis plików repozytorium oraz pełny kod kluczowych plików związanych z PWA/powiadomieniami/Cloudflare.</li>
+</ul>
+
+<h2>3) Najważniejsze ustalenia techniczne (stan obecny repo)</h2>
+<ul>
+  <li>Main posiada przycisk aktywacji powiadomień, rejestruje Service Workera i zapisuje subskrypcję push na endpoint <code>subscribeEndpoint</code>.</li>
+  <li>GM (Infoczytnik/GM.html) po kliknięciu „Wyślij” odpala endpoint <code>triggerEndpoint</code>, który ma wysłać push do subskrybentów.</li>
+  <li>Service Worker obsługuje zdarzenia <code>push</code> i <code>notificationclick</code>, z domyślnym body: <code>+++ INCOMING DATA-TRANSMISSION +++</code> oraz ikoną <code>/IkonaPowiadomien.png</code>.</li>
+  <li>Manifest PWA wskazuje ikonę główną <code>IkonaGlowna.png</code> i start URL <code>./Main/index.html?pwa=1</code>.</li>
+  <li>Konfiguracja push wskazuje na Cloudflare Workers: <code>wrathandglory-push-api.tarczynski-pawel.workers.dev</code> (subscribe/trigger).</li>
+</ul>
+
+<h2>4) Ocena wymagań 1–10 (Android Studio)</h2>
+<ol>
+  <li><b>Tylko widok użytkownika (bez <code>?admin=1</code>):</b> możliwe i proste. Aplikacja mobilna powinna wymuszać URL bez parametru admin i blokować nawigację do adresów zawierających <code>admin=1</code>.</li>
+  <li><b>Infoczytnik zawsze pionowo:</b> technicznie możliwe natywnie po stronie Androida (ustawienie orientacji per ekran/URL).</li>
+  <li><b>Pozostałe moduły pion/poziom:</b> możliwe natywnie po stronie Androida przez dynamiczną zmianę orientacji poza Infoczytnikiem.</li>
+  <li><b>Logo aplikacji = IkonaGlowna.png:</b> możliwe (adaptive icon / mipmap) bez problemu.</li>
+  <li><b>Wsparcie powiadomień Android:</b> możliwe, najlepiej przez natywne FCM (największa kontrola i przewidywalność).</li>
+  <li><b>Tylko online:</b> możliwe — wyłączyć cache offline w aplikacji Android i wymuszać połączenie sieciowe.</li>
+  <li><b>Ikona powiadomień = IkonaPowiadomien.png:</b> możliwe (po konwersji do zasobów notyfikacji Android, najlepiej monochromatyczna small icon + opcjonalna large icon).</li>
+  <li><b>Stały tekst powiadomienia:</b> możliwe, tekst ustawiany po stronie natywnej lub serwera push.</li>
+  <li><b>Trigger z panelu GM:</b> obecna architektura już to wspiera przez endpoint triggera (Cloudflare Worker). Można utrzymać ten mechanizm.</li>
+  <li><b>A/B/C (foreground/background/killed):</b> <span class="warn">najpewniejsze spełnienie daje natywne FCM.</span> Czysty web push (PWA/TWA) bywa bardziej zależny od polityk systemu/przeglądarki.</li>
+</ol>
+
+<h2>5) Czy da się użyć obecnej konfiguracji Cloudflare w projekcie Android Studio?</h2>
+<p><b>Tak, częściowo / warunkowo:</b></p>
+<ul>
+  <li>Jeśli zostaje model web push (PWA/TWA), obecne endpointy Cloudflare <code>/api/push/subscribe</code> i <code>/api/push/trigger</code> można wykorzystać dalej.</li>
+  <li>Jeśli celem jest <b>gwarancja</b> powiadomień A/B/C, rekomendowane jest rozszerzenie Workerów o kanał natywny FCM (przechowywanie tokenów urządzeń Android + wysyłka FCM).</li>
+  <li>W praktyce: jeden backend (Cloudflare Worker) może obsłużyć oba typy odbiorców: subskrypcje web push i tokeny natywne FCM.</li>
+</ul>
+
+<h2>6) WebView vs TWA — porównanie</h2>
+<h3>WebView</h3>
+<ul>
+  <li><b>Zalety:</b> pełna kontrola natywna (orientacja per moduł/URL, blokada admin, lifecycle, integracja z FCM i kanałami notyfikacji).</li>
+  <li><b>Wady:</b> większy koszt implementacji i utrzymania; część funkcji PWA nie działa jak w Chrome; trzeba dopilnować bezpieczeństwa WebView.</li>
+</ul>
+
+<h3>TWA (Trusted Web Activity)</h3>
+<ul>
+  <li><b>Zalety:</b> szybkie opakowanie istniejącej PWA, renderowanie przez Chrome, naturalne wsparcie standardów web/PWA.</li>
+  <li><b>Wady:</b> mniejsza kontrola natywna (zwłaszcza orientacja per pojedynczy moduł/ścieżka), zależność od Chrome i warunków Digital Asset Links.</li>
+</ul>
+
+<h2>7) Rekomendacja docelowa (gwarancja funkcjonalności)</h2>
+<p><b>Rekomendacja:</b> <span class="ok">Android app oparta o WebView + natywne FCM + istniejący Cloudflare Worker rozszerzony o obsługę tokenów FCM</span>.</p>
+<ul>
+  <li>To rozwiązanie najłatwiej spełnia jednocześnie wymogi: 1 (brak admin), 2/3 (orientacja per moduł), 5/7/8/9/10 (powiadomienia z pełną kontrolą).</li>
+  <li>PWA i Service Worker mogą nadal działać dla wersji webowej, ale na Androidzie krytyczne notyfikacje opierać o natywne FCM.</li>
+</ul>
+
+<h2>8) Proponowana architektura wdrożenia</h2>
+<ol>
+  <li>Android Studio: jedna aplikacja z WebView, start od <code>/Main/index.html</code> bez parametru admin.</li>
+  <li>Przechwytywanie URL w WebView: jeżeli URL zawiera <code>admin=1</code>, przekierowanie do wersji user-only.</li>
+  <li>Dynamiczna orientacja: dla URL zawierających <code>/Infoczytnik/Infoczytnik.html</code> — portrait; dla pozostałych — unspecified/user.</li>
+  <li>Ikona aplikacji: <code>IkonaGlowna.png</code>.</li>
+  <li>Firebase/FCM w aplikacji: zapis tokenu urządzenia do Cloudflare Worker (nowy endpoint np. <code>/api/android/register</code>).</li>
+  <li>GM „Wyślij” uruchamia trigger (już jest): Worker wysyła zarówno web push, jak i natywne FCM.</li>
+  <li>Payload FCM: stały body <code>+++ INCOMING DATA-TRANSMISSION +++</code>, ikona notyfikacji z zasobu opartego o <code>IkonaPowiadomien.png</code>.</li>
+  <li>Tryb online-only: brak cache offline w Androidzie + komunikat braku sieci.</li>
+</ol>
+
+<h2>9) Ryzyka i uwagi</h2>
+<ul>
+  <li>Android small notification icon ma specyficzne wymagania (najlepiej biała, przezroczysta); może być potrzebna wersja uproszczona ikony.</li>
+  <li>„Gwarancja 100%” dostarczeń push nigdy nie jest absolutna (OS/battery/network), ale natywne FCM minimalizuje ryzyko względem czystego web push.</li>
+  <li>Jeżeli pozostanie TWA + web push bez natywnego FCM, wariant C (app killed) jest bardziej podatny na ograniczenia środowiskowe.</li>
+</ul>
+
+<h2>10) Spis wszystkich plików w repo</h2>
+<p class="small">Poniżej pełna lista plików (bez katalogu <code>.git</code>).</p>
+<pre>/workspace/WrathAndGlory/AGENTS.md
+/workspace/WrathAndGlory/Audio/AudioManifest.xlsx
+/workspace/WrathAndGlory/Audio/Disclaimer.md
+/workspace/WrathAndGlory/Audio/config/Firebase-config.md
+/workspace/WrathAndGlory/Audio/config/firebase-config.js
+/workspace/WrathAndGlory/Audio/docs/Documentation.md
+/workspace/WrathAndGlory/Audio/docs/README.md
+/workspace/WrathAndGlory/Audio/index.html
+/workspace/WrathAndGlory/DataVault/Repozytorium.xlsx
+/workspace/WrathAndGlory/DataVault/app.js
+/workspace/WrathAndGlory/DataVault/build_json.py
+/workspace/WrathAndGlory/DataVault/data.json
+/workspace/WrathAndGlory/DataVault/docs/Documentation.md
+/workspace/WrathAndGlory/DataVault/docs/README.md
+/workspace/WrathAndGlory/DataVault/index.html
+/workspace/WrathAndGlory/DataVault/style.css
+/workspace/WrathAndGlory/DetaleLayout.md
+/workspace/WrathAndGlory/DiceRoller/doc/Documentation.md
+/workspace/WrathAndGlory/DiceRoller/doc/README.md
+/workspace/WrathAndGlory/DiceRoller/index.html
+/workspace/WrathAndGlory/DiceRoller/script.js
+/workspace/WrathAndGlory/DiceRoller/style.css
+/workspace/WrathAndGlory/DoZrobienia.md
+/workspace/WrathAndGlory/GeneratorNPC/config/Firebase-config.md
+/workspace/WrathAndGlory/GeneratorNPC/config/firebase-config.js
+/workspace/WrathAndGlory/GeneratorNPC/docs/Documentation.md
+/workspace/WrathAndGlory/GeneratorNPC/docs/README.md
+/workspace/WrathAndGlory/GeneratorNPC/index.html
+/workspace/WrathAndGlory/GeneratorNPC/style.css
+/workspace/WrathAndGlory/GeneratorNazw/docs/Documentation.md
+/workspace/WrathAndGlory/GeneratorNazw/docs/Logika.md
+/workspace/WrathAndGlory/GeneratorNazw/docs/README.md
+/workspace/WrathAndGlory/GeneratorNazw/index.html
+/workspace/WrathAndGlory/GeneratorNazw/script.js
+/workspace/WrathAndGlory/GeneratorNazw/style.css
+/workspace/WrathAndGlory/IkonaGlowna.png
+/workspace/WrathAndGlory/IkonaPowiadomien.png
+/workspace/WrathAndGlory/Infoczytnik/AGENTS.md
+/workspace/WrathAndGlory/Infoczytnik/Draft/DataSlate_01.png
+/workspace/WrathAndGlory/Infoczytnik/Draft/DataSlate_02.png
+/workspace/WrathAndGlory/Infoczytnik/Draft/DataSlate_03.png
+/workspace/WrathAndGlory/Infoczytnik/Draft/DataSlate_04.png
+/workspace/WrathAndGlory/Infoczytnik/Draft/DataSlate_05.png
+/workspace/WrathAndGlory/Infoczytnik/Draft/DataSlate_Inq.png
+/workspace/WrathAndGlory/Infoczytnik/Draft/Litannie_Zaginionych.png
+/workspace/WrathAndGlory/Infoczytnik/GM.html
+/workspace/WrathAndGlory/Infoczytnik/GM_backup.html
+/workspace/WrathAndGlory/Infoczytnik/GM_test.html
+/workspace/WrathAndGlory/Infoczytnik/Infoczytnik.html
+/workspace/WrathAndGlory/Infoczytnik/Infoczytnik_backup.html
+/workspace/WrathAndGlory/Infoczytnik/Infoczytnik_test.html
+/workspace/WrathAndGlory/Infoczytnik/assets/audio/global/Message.mp3
+/workspace/WrathAndGlory/Infoczytnik/assets/audio/global/Ping.mp3
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/chaos_undivided/DataSlate_04.png
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/inquisition/DataSlate_Inq.png
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/khorne/DataSlate_04.png
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/mechanicus/DataSlate_04.png
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/militarum/Litannie_Zaginionych.png
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/nurgle/DataSlate_04.png
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/slaanesh/DataSlate_04.png
+/workspace/WrathAndGlory/Infoczytnik/assets/layouts/tzeentch/DataSlate_04.png
+/workspace/WrathAndGlory/Infoczytnik/assets/logos/inquisition/Inquisition.png
+/workspace/WrathAndGlory/Infoczytnik/assets/logos/mechanicus/Mechanicus.png
+/workspace/WrathAndGlory/Infoczytnik/backend/.env.example
+/workspace/WrathAndGlory/Infoczytnik/backend/data/subscriptions.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/.bin/mime
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/.bin/web-push
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/.package-lock.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/accepts/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/accepts/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/accepts/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/accepts/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/accepts/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/helpers.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/helpers.d.ts.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/helpers.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/helpers.js.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/index.d.ts.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/dist/index.js.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/agent-base/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/array-flatten/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/array-flatten/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/array-flatten/array-flatten.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/array-flatten/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/.eslintrc.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/api.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/base/buffer.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/base/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/base/node.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/base/reporter.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/constants/der.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/constants/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/decoders/der.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/decoders/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/decoders/pem.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/encoders/der.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/encoders/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/lib/asn1/encoders/pem.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/asn1.js/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bn.js/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bn.js/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bn.js/lib/bn.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bn.js/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bn.js/util/genCombMulTo.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bn.js/util/genCombMulTo10.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/lib/read.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/lib/types/json.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/lib/types/raw.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/lib/types/text.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/lib/types/urlencoded.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/body-parser/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/buffer-equal-constant-time/.npmignore
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/buffer-equal-constant-time/.travis.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/buffer-equal-constant-time/LICENSE.txt
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/buffer-equal-constant-time/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/buffer-equal-constant-time/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/buffer-equal-constant-time/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/buffer-equal-constant-time/test.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bytes/History.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bytes/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bytes/Readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bytes/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/bytes/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/actualApply.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/actualApply.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/applyBind.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/applyBind.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/functionApply.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/functionApply.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/functionCall.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/functionCall.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/reflectApply.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/reflectApply.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bind-apply-helpers/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/call-bound/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-disposition/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-disposition/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-disposition/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-disposition/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-disposition/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-type/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-type/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-type/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-type/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/content-type/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie-signature/History.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie-signature/Readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie-signature/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie-signature/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie/SECURITY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cookie/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cors/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cors/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cors/lib/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/cors/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/.coveralls.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/.npmignore
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/.travis.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/Makefile
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/component.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/karma.conf.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/node.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/src/browser.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/src/debug.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/src/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/src/inspector-log.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/debug/src/node.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/depd/History.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/depd/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/depd/Readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/depd/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/depd/lib/browser/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/depd/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/destroy/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/destroy/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/destroy/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/destroy/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/README-es.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/SECURITY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/config.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/config.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/lib/cli-options.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/lib/env-options.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/lib/main.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/lib/main.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dotenv/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/get.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/get.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/set.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/set.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/test/get.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/test/set.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/dunder-proto/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ecdsa-sig-formatter/CODEOWNERS
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ecdsa-sig-formatter/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ecdsa-sig-formatter/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ecdsa-sig-formatter/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ecdsa-sig-formatter/src/ecdsa-sig-formatter.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ecdsa-sig-formatter/src/param-bytes-for-alg.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ee-first/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ee-first/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ee-first/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ee-first/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/encodeurl/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/encodeurl/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/encodeurl/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/encodeurl/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-define-property/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/eval.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/eval.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/range.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/range.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/ref.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/ref.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/syntax.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/syntax.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/type.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/type.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/uri.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-errors/uri.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/RequireObjectCoercible.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/RequireObjectCoercible.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/ToObject.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/ToObject.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/isObject.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/isObject.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/es-object-atoms/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/escape-html/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/escape-html/Readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/escape-html/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/escape-html/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/etag/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/etag/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/etag/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/etag/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/etag/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/History.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/Readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/application.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/express.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/middleware/init.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/middleware/query.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/request.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/response.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/router/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/router/layer.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/router/route.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/utils.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/lib/view.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/express/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/finalhandler/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/finalhandler/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/finalhandler/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/finalhandler/SECURITY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/finalhandler/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/finalhandler/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/forwarded/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/forwarded/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/forwarded/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/forwarded/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/forwarded/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/fresh/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/fresh/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/fresh/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/fresh/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/fresh/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/.github/SECURITY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/implementation.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/test/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/function-bind/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-intrinsic/test/GetIntrinsic.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/Object.getPrototypeOf.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/Object.getPrototypeOf.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/Reflect.getPrototypeOf.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/Reflect.getPrototypeOf.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/get-proto/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/gOPD.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/gOPD.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/gopd/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/shams.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/shams.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/test/shams/core-js.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/test/shams/get-own-property-symbols.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/test/tests.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/has-symbols/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/hasown/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http-errors/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http-errors/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http-errors/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http-errors/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http-errors/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http_ece/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http_ece/ece.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/http_ece/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/index.d.ts.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/index.js.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/parse-proxy-response.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/parse-proxy-response.d.ts.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/parse-proxy-response.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/dist/parse-proxy-response.js.map
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/debug/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/debug/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/debug/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/debug/src/browser.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/debug/src/common.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/debug/src/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/debug/src/node.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/ms/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/ms/license.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/ms/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/node_modules/ms/readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/https-proxy-agent/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/Changelog.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/dbcs-codec.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/dbcs-data.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/internal.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/sbcs-codec.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/sbcs-data-generated.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/sbcs-data.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/big5-added.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/cp936.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/cp949.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/cp950.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/eucjp.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/gb18030-ranges.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/gbk-added.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/tables/shiftjis.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/utf16.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/encodings/utf7.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/lib/bom-handling.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/lib/extend-node.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/lib/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/lib/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/lib/streams.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/iconv-lite/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/inherits/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/inherits/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/inherits/inherits.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/inherits/inherits_browser.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/inherits/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ipaddr.js/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ipaddr.js/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ipaddr.js/ipaddr.min.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ipaddr.js/lib/ipaddr.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ipaddr.js/lib/ipaddr.js.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ipaddr.js/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jwa/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jwa/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jwa/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jwa/opslevel.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jwa/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/lib/data-stream.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/lib/sign-stream.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/lib/tostring.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/lib/verify-stream.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/opslevel.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/jws/readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/abs.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/abs.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/constants/maxArrayLength.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/constants/maxArrayLength.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/constants/maxSafeInteger.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/constants/maxSafeInteger.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/constants/maxValue.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/constants/maxValue.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/floor.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/floor.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isFinite.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isFinite.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isInteger.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isInteger.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isNaN.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isNaN.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isNegativeZero.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/isNegativeZero.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/max.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/max.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/min.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/min.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/mod.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/mod.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/pow.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/pow.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/round.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/round.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/sign.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/sign.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/math-intrinsics/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/media-typer/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/media-typer/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/media-typer/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/media-typer/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/media-typer/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/merge-descriptors/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/merge-descriptors/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/merge-descriptors/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/merge-descriptors/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/merge-descriptors/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/methods/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/methods/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/methods/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/methods/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/methods/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-db/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-db/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-db/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-db/db.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-db/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-db/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-types/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-types/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-types/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-types/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime-types/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/.npmignore
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/cli.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/mime.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/src/build.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/src/test.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/mime/types.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimalistic-assert/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimalistic-assert/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimalistic-assert/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimalistic-assert/readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/example/parse.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/all_bool.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/bool.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/dash.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/default_bool.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/dotted.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/kv_short.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/long.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/num.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/parse.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/parse_modified.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/proto.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/short.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/stop_early.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/unknown.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/minimist/test/whitespace.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ms/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ms/license.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ms/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/ms/readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/lib/charset.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/lib/encoding.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/lib/language.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/lib/mediaType.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/negotiator/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-assign/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-assign/license
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-assign/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-assign/readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/example/all.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/example/circular.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/example/fn.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/example/inspect.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/package-support.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/readme.markdown
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test-core-js.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/bigint.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/browser/dom.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/circular.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/deep.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/element.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/err.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/fakes.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/fn.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/global.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/has.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/holes.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/indent-option.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/inspect.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/lowbyte.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/number.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/quoteStyle.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/toStringTag.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/undef.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/test/values.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/object-inspect/util.inspect.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/on-finished/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/on-finished/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/on-finished/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/on-finished/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/on-finished/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/parseurl/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/parseurl/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/parseurl/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/parseurl/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/parseurl/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/path-to-regexp/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/path-to-regexp/Readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/path-to-regexp/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/path-to-regexp/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/proxy-addr/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/proxy-addr/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/proxy-addr/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/proxy-addr/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/proxy-addr/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/.editorconfig
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/.github/SECURITY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/.github/THREAT_MODEL.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/LICENSE.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/dist/qs.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/eslint.config.mjs
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/lib/formats.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/lib/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/lib/parse.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/lib/stringify.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/lib/utils.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/test/empty-keys-cases.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/test/parse.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/test/stringify.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/qs/test/utils.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/range-parser/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/range-parser/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/range-parser/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/range-parser/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/range-parser/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/raw-body/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/raw-body/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/raw-body/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/raw-body/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/raw-body/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safe-buffer/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safe-buffer/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safe-buffer/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safe-buffer/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safe-buffer/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safer-buffer/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safer-buffer/Porting-Buffer.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safer-buffer/Readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safer-buffer/dangerous.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safer-buffer/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safer-buffer/safer.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/safer-buffer/tests.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/SECURITY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/node_modules/ms/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/node_modules/ms/license.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/node_modules/ms/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/node_modules/ms/readme.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/send/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/serve-static/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/serve-static/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/serve-static/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/serve-static/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/serve-static/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/setprototypeof/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/setprototypeof/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/setprototypeof/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/setprototypeof/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/setprototypeof/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/setprototypeof/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/.editorconfig
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/list.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-list/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/.editorconfig
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-map/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/.editorconfig
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel-weakmap/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/.editorconfig
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/.eslintrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/.github/FUNDING.yml
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/.nycrc
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/CHANGELOG.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/index.d.ts
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/test/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/side-channel/tsconfig.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/statuses/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/statuses/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/statuses/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/statuses/codes.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/statuses/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/statuses/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/toidentifier/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/toidentifier/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/toidentifier/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/toidentifier/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/toidentifier/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/type-is/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/type-is/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/type-is/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/type-is/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/type-is/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/unpipe/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/unpipe/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/unpipe/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/unpipe/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/unpipe/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/utils-merge/.npmignore
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/utils-merge/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/utils-merge/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/utils-merge/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/utils-merge/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/vary/HISTORY.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/vary/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/vary/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/vary/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/vary/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/LICENSE
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/README.md
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/package.json
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/cli.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/encryption-helper.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/index.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/urlsafe-base64-helper.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/vapid-helper.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/web-push-constants.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/web-push-error.js
+/workspace/WrathAndGlory/Infoczytnik/backend/node_modules/web-push/src/web-push-lib.js
+/workspace/WrathAndGlory/Infoczytnik/backend/package.json
+/workspace/WrathAndGlory/Infoczytnik/config/Firebase-config.md
+/workspace/WrathAndGlory/Infoczytnik/config/firebase-config.js
+/workspace/WrathAndGlory/Infoczytnik/config/web-push-config.js
+/workspace/WrathAndGlory/Infoczytnik/config/web-push-config.production.example.js
+/workspace/WrathAndGlory/Infoczytnik/docs/Documentation.md
+/workspace/WrathAndGlory/Infoczytnik/docs/Prefixy_i_Suffixy.txt
+/workspace/WrathAndGlory/Infoczytnik/docs/README.md
+/workspace/WrathAndGlory/Infoczytnik/index.html
+/workspace/WrathAndGlory/Kalkulator/HowToUse/en.pdf
+/workspace/WrathAndGlory/Kalkulator/HowToUse/pl.pdf
+/workspace/WrathAndGlory/Kalkulator/KalkulatorXP.html
+/workspace/WrathAndGlory/Kalkulator/Old/HowToUse_Org.pdf
+/workspace/WrathAndGlory/Kalkulator/Old/Kalkulator_Org.html
+/workspace/WrathAndGlory/Kalkulator/Skull.png
+/workspace/WrathAndGlory/Kalkulator/TworzeniePostaci.html
+/workspace/WrathAndGlory/Kalkulator/docs/Documentation.md
+/workspace/WrathAndGlory/Kalkulator/docs/README.md
+/workspace/WrathAndGlory/Kalkulator/index.html
+/workspace/WrathAndGlory/Kalkulator/kalkulatorxp.css
+/workspace/WrathAndGlory/Kolumny.md
+/workspace/WrathAndGlory/Main/ZmienneHiperlacza.md
+/workspace/WrathAndGlory/Main/docs/Documentation.md
+/workspace/WrathAndGlory/Main/docs/README.md
+/workspace/WrathAndGlory/Main/index.html
+/workspace/WrathAndGlory/Main/wrath-glory-logo-warhammer.png
+/workspace/WrathAndGlory/TRIGGER_TOKEN
+/workspace/WrathAndGlory/manifest.webmanifest
+/workspace/WrathAndGlory/service-worker.js</pre>
+
+<h2>11) Pełen kod plików związanych z PWA / powiadomieniami / Cloudflare</h2>
+<p class="small">Zestaw plików wybrany na podstawie odwołań do: manifestu, Service Workera, Web Push (subscribe/trigger), notyfikacji i endpointów Cloudflare Workers.</p>
+<h3>manifest.webmanifest</h3>
+<pre>{
+  &quot;name&quot;: &quot;Kozi Przybornik&quot;,
+  &quot;short_name&quot;: &quot;Wrath&amp;Glory&quot;,
+  &quot;description&quot;: &quot;Panel startowy Wrath &amp; Glory wraz z modułem Infoczytnik i powiadomieniami push.&quot;,
+  &quot;start_url&quot;: &quot;./Main/index.html?pwa=1&quot;,
+  &quot;scope&quot;: &quot;./&quot;,
+  &quot;display&quot;: &quot;standalone&quot;,
+  &quot;background_color&quot;: &quot;#000000&quot;,
+  &quot;theme_color&quot;: &quot;#031605&quot;,
+  &quot;icons&quot;: [
+    {
+      &quot;src&quot;: &quot;./IkonaGlowna.png&quot;,
+      &quot;sizes&quot;: &quot;192x192&quot;,
+      &quot;type&quot;: &quot;image/png&quot;,
+      &quot;purpose&quot;: &quot;any&quot;
+    },
+    {
+      &quot;src&quot;: &quot;./IkonaGlowna.png&quot;,
+      &quot;sizes&quot;: &quot;512x512&quot;,
+      &quot;type&quot;: &quot;image/png&quot;,
+      &quot;purpose&quot;: &quot;any maskable&quot;
+    },
+    {
+      &quot;src&quot;: &quot;./IkonaPowiadomien.png&quot;,
+      &quot;sizes&quot;: &quot;192x192&quot;,
+      &quot;type&quot;: &quot;image/png&quot;,
+      &quot;purpose&quot;: &quot;any&quot;
+    }
+  ]
+}
+</pre>
+<h3>service-worker.js</h3>
+<pre>const SW_VERSION = &quot;wg-pwa-v3&quot;;
+const APP_SHELL_CACHE = `${SW_VERSION}-shell`;
+const APP_SHELL_ASSETS = [
+  &quot;./&quot;,
+  &quot;./Main/index.html&quot;,
+  &quot;./manifest.webmanifest&quot;,
+  &quot;./IkonaGlowna.png&quot;,
+  &quot;./IkonaPowiadomien.png&quot;
+];
+
+self.addEventListener(&quot;install&quot;, (event) =&gt; {
+  event.waitUntil(
+    caches.open(APP_SHELL_CACHE).then((cache) =&gt; cache.addAll(APP_SHELL_ASSETS)).catch(() =&gt; Promise.resolve())
+  );
+  self.skipWaiting();
+});
+
+self.addEventListener(&quot;activate&quot;, (event) =&gt; {
+  event.waitUntil(
+    caches.keys().then((keys) =&gt;
+      Promise.all(keys.filter((key) =&gt; key !== APP_SHELL_CACHE).map((key) =&gt; caches.delete(key)))
+    )
+  );
+  self.clients.claim();
+});
+
+self.addEventListener(&quot;fetch&quot;, (event) =&gt; {
+  if (event.request.method !== &quot;GET&quot;) return;
+
+  const isNavigationRequest = event.request.mode === &quot;navigate&quot;;
+
+  event.respondWith(
+    fetch(event.request)
+      .catch(() =&gt; caches.match(event.request, { ignoreSearch: true }))
+      .then((response) =&gt; {
+        if (response) return response;
+
+        if (isNavigationRequest) {
+          return new Response(
+            &quot;Aplikacja wymaga połączenia z internetem. Sprawdź sieć i odśwież stronę.&quot;,
+            {
+              status: 503,
+              headers: { &quot;Content-Type&quot;: &quot;text/plain; charset=utf-8&quot; }
+            }
+          );
+        }
+
+        return Response.error();
+      })
+  );
+});
+
+self.addEventListener(&quot;push&quot;, (event) =&gt; {
+  let payload = {};
+  try {
+    payload = event.data ? event.data.json() : {};
+  } catch {
+    payload = { body: event.data ? event.data.text() : &quot;&quot; };
+  }
+
+  const title = payload.title || &quot;Infoczytnik&quot;;
+  const body = payload.body || &quot;+++ INCOMING DATA-TRANSMISSION +++&quot;;
+  const icon = payload.icon || &quot;/IkonaPowiadomien.png&quot;;
+  const badge = payload.badge || &quot;/IkonaPowiadomien.png&quot;;
+  const url = payload.url || &quot;/Infoczytnik/Infoczytnik.html&quot;;
+
+  event.waitUntil(
+    self.registration.showNotification(title, {
+      body,
+      icon,
+      badge,
+      tag: payload.tag || &quot;infoczytnik-new-message&quot;,
+      renotify: true,
+      data: { url }
+    })
+  );
+});
+
+self.addEventListener(&quot;notificationclick&quot;, (event) =&gt; {
+  event.notification.close();
+  const targetPath = event.notification.data?.url || &quot;/Infoczytnik/Infoczytnik.html&quot;;
+  const targetUrl = new URL(targetPath, self.location.origin).href;
+
+  event.waitUntil(
+    clients.matchAll({ type: &quot;window&quot;, includeUncontrolled: true }).then((clientList) =&gt; {
+      for (const client of clientList) {
+        if (client.url === targetUrl &amp;&amp; &quot;focus&quot; in client) {
+          return client.focus();
+        }
+      }
+
+      for (const client of clientList) {
+        if (client.url.includes(&quot;/Infoczytnik/&quot;) &amp;&amp; &quot;focus&quot; in client) {
+          return client.focus();
+        }
+      }
+
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
+
+      return Promise.resolve();
+    })
+  );
+});
+</pre>
+<h3>Main/index.html</h3>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;pl&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Kozi Przybornik&lt;/title&gt;
+  &lt;link rel=&quot;manifest&quot; href=&quot;../manifest.webmanifest&quot;&gt;
+  &lt;meta name=&quot;theme-color&quot; content=&quot;#031605&quot;&gt;
+  &lt;style&gt;
+    :root {
+      --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
+             radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
+             #031605;
+      --panel: #000;
+      --border: #16c60c;
+      --text: #9cf09c;
+      --accent: #16c60c;
+      --accent-dark: #0d7a07;
+      --glow: 0 0 25px rgba(22, 198, 12, 0.45);
+      --radius: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: &quot;Consolas&quot;, &quot;Fira Code&quot;, &quot;Source Code Pro&quot;, monospace;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    main {
+      width: min(860px, 100%);
+      background: var(--panel);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--glow);
+      padding: 32px 32px 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .logo {
+      max-width: clamp(220px, 40vw, 320px);
+      width: 100%;
+      display: block;
+    }
+
+    .actions {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px 20px;
+      align-items: start;
+    }
+
+    .stack {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stack.right {
+      align-items: stretch;
+    }
+
+    .btn {
+      appearance: none;
+      border: 2px solid var(--border);
+      background: rgba(22, 198, 12, 0.08);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 15px;
+      text-decoration: none;
+      font-weight: 600;
+      text-align: center;
+      display: block;
+      width: 100%;
+      transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 18px rgba(22, 198, 12, 0.3);
+      background: rgba(22, 198, 12, 0.14);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      background: rgba(22, 198, 12, 0.22);
+    }
+
+    .note {
+      margin: 0;
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.35;
+      word-break: break-word;
+    }
+    .pushCtaWrap {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    .pushCta {
+      width: auto;
+      border-color: #ff3b30;
+      background: rgba(255, 59, 48, 0.2);
+      color: #ffe5e3;
+      box-shadow: 0 0 14px rgba(255, 59, 48, 0.35);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .pushCta:hover {
+      background: rgba(255, 59, 48, 0.28);
+      box-shadow: 0 0 16px rgba(255, 59, 48, 0.45);
+    }
+
+    .pushCta:active {
+      background: rgba(255, 59, 48, 0.36);
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;main&gt;
+    &lt;img class=&quot;logo&quot; src=&quot;wrath-glory-logo-warhammer.png&quot; alt=&quot;Logo Wrath &amp;amp; Glory&quot;&gt;
+
+    &lt;div class=&quot;actions&quot;&gt;
+      &lt;div class=&quot;stack right&quot;&gt;
+        &lt;a class=&quot;btn&quot; data-infoczytnik-link href=&quot;../Infoczytnik/Infoczytnik.html&quot;&gt;Infoczytnik&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot;&gt;
+        &lt;a class=&quot;btn&quot; data-datavault-link href=&quot;https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html&quot; target=&quot;_self&quot;&gt;Skarbiec Danych&lt;/a&gt;
+        &lt;p class=&quot;note&quot; data-admin-only=&quot;true&quot;&gt;aby wejść do panelu admina dopisz do adresu &lt;strong&gt;index.html?admin=1&lt;/strong&gt;&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot; data-admin-only=&quot;true&quot;&gt;
+        &lt;a class=&quot;btn&quot; href=&quot;../GeneratorNazw/index.html&quot;&gt;Generator Nazw&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot; data-admin-only=&quot;true&quot;&gt;
+        &lt;a class=&quot;btn&quot; href=&quot;https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/&quot; target=&quot;_self&quot;&gt;Generator NPC&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot; data-admin-only=&quot;true&quot;&gt;
+        &lt;a class=&quot;btn&quot; href=&quot;../Audio/index.html&quot;&gt;Audio&lt;/a&gt;
+        &lt;p class=&quot;note&quot;&gt;aby wejść do panelu admina dopisz do adresu &lt;strong&gt;index.html?admin=1&lt;/strong&gt;&lt;/p&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot;&gt;
+        &lt;a class=&quot;btn&quot; data-images-link href=&quot;#&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Obrazki&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot;&gt;
+        &lt;a class=&quot;btn&quot; data-map-link href=&quot;#&quot; target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;&gt;Mapa&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot;&gt;
+        &lt;a class=&quot;btn&quot; href=&quot;https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/&quot; target=&quot;_self&quot;&gt;Kalkulator&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;stack&quot;&gt;
+        &lt;a class=&quot;btn&quot; href=&quot;../DiceRoller/index.html&quot;&gt;Rzut kośćmi&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class=&quot;pushCtaWrap&quot;&gt;
+      &lt;button class=&quot;btn pushCta&quot; id=&quot;pushBtn&quot; type=&quot;button&quot;&gt;Włącz powiadomienia&lt;/button&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+  &lt;script src=&quot;../Infoczytnik/config/web-push-config.js&quot;&gt;&lt;/script&gt;
+  &lt;script&gt;
+    const isAdmin = new URLSearchParams(window.location.search).get(&quot;admin&quot;) === &quot;1&quot;;
+    const adminOnlyElements = document.querySelectorAll(&#x27;[data-admin-only=&quot;true&quot;]&#x27;);
+    if (!isAdmin) {
+      adminOnlyElements.forEach((element) =&gt; element.remove());
+    }
+
+    const infoczytnikLink = document.querySelector(&quot;[data-infoczytnik-link]&quot;);
+    if (infoczytnikLink) {
+      infoczytnikLink.href = isAdmin
+        ? &quot;https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html&quot;
+        : &quot;../Infoczytnik/Infoczytnik.html&quot;;
+    }
+
+    const dataVaultLink = document.querySelector(&quot;[data-datavault-link]&quot;);
+    if (dataVaultLink) {
+      dataVaultLink.href = isAdmin
+        ? &quot;https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1&quot;
+        : &quot;https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html&quot;;
+    }
+
+    const mapLink = document.querySelector(&quot;[data-map-link]&quot;);
+    const imagesLink = document.querySelector(&quot;[data-images-link]&quot;);
+    const linkConfigPath = &quot;ZmienneHiperlacza.md&quot;;
+
+    const applyDynamicLinks = (links) =&gt; {
+      if (mapLink &amp;&amp; links.mapa) {
+        mapLink.href = links.mapa;
+      }
+      if (imagesLink &amp;&amp; links.obrazki) {
+        imagesLink.href = links.obrazki;
+      }
+    };
+
+    fetch(linkConfigPath)
+      .then((response) =&gt; {
+        if (!response.ok) {
+          throw new Error(`Nie udało się pobrać ${linkConfigPath}`);
+        }
+        return response.text();
+      })
+      .then((text) =&gt; {
+        const links = {};
+        text.split(/\r?\n/).forEach((line) =&gt; {
+          const match = line.match(/^(Mapa|Obrazki)\s*:\s*(\S+)/);
+          if (match) {
+            const key = match[1].toLowerCase();
+            links[key] = match[2];
+          }
+        });
+        applyDynamicLinks(links);
+      })
+      .catch((error) =&gt; {
+        console.warn(&quot;Nie udało się wczytać zmiennych hiperłączy.&quot;, error);
+      });
+
+    const pushButton = document.getElementById(&quot;pushBtn&quot;);
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = &quot;=&quot;.repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, &quot;+&quot;).replace(/_/g, &quot;/&quot;);
+      const rawData = atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i &lt; rawData.length; i += 1) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+    function getPushConfig() {
+      const pushConfig = window.infWebPushConfig || {};
+      const hasVapidPublicKey = typeof pushConfig.vapidPublicKey === &quot;string&quot; &amp;&amp; pushConfig.vapidPublicKey.trim().length &gt; 0;
+      const hasSubscribeEndpoint = typeof pushConfig.subscribeEndpoint === &quot;string&quot; &amp;&amp; pushConfig.subscribeEndpoint.trim().length &gt; 0;
+
+      return {
+        pushConfig,
+        hasVapidPublicKey,
+        hasSubscribeEndpoint,
+        isConfigured: hasVapidPublicKey &amp;&amp; hasSubscribeEndpoint
+      };
+    }
+
+    function setPushButtonMessage(message, isError = false) {
+      if (!pushButton) return;
+
+      pushButton.textContent = message;
+      pushButton.title = message;
+      if (isError) {
+        pushButton.dataset.state = &quot;error&quot;;
+      } else {
+        delete pushButton.dataset.state;
+      }
+    }
+
+    function refreshPushButtonState() {
+      if (!pushButton) return;
+
+      const pushState = getPushConfig();
+      if (pushState.isConfigured) return;
+
+      pushButton.disabled = true;
+      pushButton.textContent = &quot;Powiadomienia: brak konfiguracji&quot;;
+      pushButton.title = &quot;Uzupełnij Infoczytnik/config/web-push-config.js (vapidPublicKey + subscribeEndpoint).&quot;;
+    }
+
+    async function ensureServiceWorkerRegistration() {
+      if (!(&quot;serviceWorker&quot; in navigator)) return null;
+      return navigator.serviceWorker.register(&quot;../service-worker.js&quot;);
+    }
+
+    async function enablePushNotifications() {
+      const pushState = getPushConfig();
+      const pushConfig = pushState.pushConfig;
+
+      if (!pushState.isConfigured) {
+        refreshPushButtonState();
+        console.warn(&quot;Brak konfiguracji Web Push (vapidPublicKey/subscribeEndpoint) w Infoczytnik/config/web-push-config.js&quot;);
+        return;
+      }
+
+      if (!(&quot;serviceWorker&quot; in navigator) || !(&quot;PushManager&quot; in window)) {
+        setPushButtonMessage(&quot;Przeglądarka nie obsługuje Web Push.&quot;, true);
+        pushButton.disabled = true;
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission !== &quot;granted&quot;) {
+        setPushButtonMessage(&quot;Wymagana zgoda na powiadomienia w przeglądarce.&quot;, true);
+        return;
+      }
+
+      await ensureServiceWorkerRegistration();
+      const registration = await navigator.serviceWorker.ready;
+      const existingSubscription = await registration.pushManager.getSubscription();
+      const subscription = existingSubscription || await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(pushConfig.vapidPublicKey)
+      });
+
+      const response = await fetch(pushConfig.subscribeEndpoint, {
+        method: &quot;POST&quot;,
+        headers: { &quot;Content-Type&quot;: &quot;application/json&quot; },
+        body: JSON.stringify({
+          source: &quot;main-launcher&quot;,
+          createdAt: Date.now(),
+          subscription
+        })
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text().catch(() =&gt; &quot;&quot;);
+        throw new Error(`Błąd zapisu subskrypcji: ${response.status} ${errorText}`);
+      }
+
+      setPushButtonMessage(&quot;Powiadomienia aktywne&quot;);
+      pushButton.disabled = true;
+    }
+
+    if (pushButton) {
+      pushButton.addEventListener(&quot;click&quot;, () =&gt; {
+        enablePushNotifications().catch((error) =&gt; {
+          console.error(error);
+          const errorMessage = error?.message ? String(error.message) : &quot;Nieznany błąd&quot;;
+          setPushButtonMessage(`Błąd Web Push: ${errorMessage}`, true);
+        });
+      });
+    }
+
+    refreshPushButtonState();
+
+
+    if (&quot;serviceWorker&quot; in navigator) {
+      window.addEventListener(&quot;load&quot;, () =&gt; {
+        ensureServiceWorkerRegistration().catch((error) =&gt; {
+          console.warn(&quot;Rejestracja Service Workera nie powiodła się.&quot;, error);
+        });
+      });
+    }
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<h3>Infoczytnik/Infoczytnik.html</h3>
+<pre>&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;pl&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+&lt;title&gt;Infoczytnik&lt;/title&gt;
+
+&lt;!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) --&gt;
+&lt;script&gt;
+  (function autoCacheBust(){
+      const INF_VERSION = &quot;2026-03-13_12-31-28&quot;; // &lt;- zmieniaj przy aktualizacjach (data + godzina)
+    window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
+    const url = new URL(window.location.href);
+    if (url.searchParams.get(&quot;v&quot;) !== INF_VERSION) {
+      url.searchParams.set(&quot;v&quot;, INF_VERSION);
+      window.location.replace(url.toString());
+    }
+  })();
+&lt;/script&gt;
+
+&lt;!-- Google Fonts --&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+&lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+&lt;link href=&quot;https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;family=Cinzel:wght@400;700&amp;family=Rajdhani:wght@400;600&amp;family=Black+Ops+One&amp;family=Staatliches&amp;family=Orbitron:wght@400;700&amp;family=Questrial&amp;family=Russo+One&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+
+&lt;style&gt;
+  :root{
+    --accent:#00ff66;
+    --font: Calibri, Arial, sans-serif;
+
+    --screen-top: 14%;
+    --screen-right: 14%;
+    --screen-bottom: 22%;
+    --screen-left: 18%;
+
+    --msg-font-size: clamp(18px, 3.4vw, 32px);
+    --prefix-font-size: clamp(12px, 2.0vw, 16px);
+    --suffix-font-size: clamp(12px, 2.0vw, 16px);
+
+    --filler-gap: clamp(12px, 2vw, 18px);
+    --gap-prefix-to-msg: var(--filler-gap);
+    --gap-msg-to-suffix: var(--filler-gap);
+
+    --prefix-color: rgba(255,255,255,.88);
+    --suffix-color: rgba(255,255,255,.86);
+  }
+
+  *{box-sizing:border-box}
+  html,body{height:100%; margin:0; background:#000; overflow:hidden;}
+  body{color:var(--accent); font-family:var(--font);}
+
+  .wrap{
+    width:100vw; height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#000;
+    overflow:hidden;
+  }
+
+  .panel{
+    position:relative;
+    overflow:hidden;
+    background:#000;
+  }
+
+  .layout-img{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    user-select:none;
+    -webkit-user-drag:none;
+    pointer-events:none;
+  }
+
+  .crt::before{
+    content:&quot;&quot;;
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,.06) 0px,
+        rgba(255,255,255,.06) 1px,
+        rgba(0,0,0,0) 3px,
+        rgba(0,0,0,0) 7px
+      );
+    opacity:.28;
+    mix-blend-mode: overlay;
+    animation: scanMove 12s linear infinite;
+  }
+  .crt::after{
+    content:&quot;&quot;;
+    position:absolute;
+    inset:-2%;
+    pointer-events:none;
+    background:
+      radial-gradient(closest-side, rgba(0,0,0,0) 60%, rgba(0,0,0,.70) 100%),
+      rgba(255,255,255,.04);
+    opacity:.65;
+  }
+  @keyframes scanMove { 0%{transform:translateY(0)} 100%{transform:translateY(20px)} }
+  @keyframes flickerBg {
+    0%,92%,100%{opacity:.65}
+    93%{opacity:.55}
+    95%{opacity:.72}
+    97%{opacity:.60}
+  }
+
+  .screen{
+    position:absolute;
+    top:var(--screen-top);
+    right:var(--screen-right);
+    bottom:var(--screen-bottom);
+    left:var(--screen-left);
+
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+    padding: clamp(14px, 2.4vw, 24px);
+    display:flex;
+    flex-direction:column;
+    text-shadow: 0 2px 6px rgba(0,0,0,.70);
+    z-index: 1;
+  }
+
+  .screen::after{
+    content:&quot;&quot;;
+    position:absolute;
+    inset:-2%;
+    pointer-events:none;
+    background:
+      radial-gradient(closest-side, rgba(0,0,0,0) 60%, rgba(0,0,0,.70) 100%),
+      rgba(255,255,255,.04);
+    opacity:.65;
+    animation: flickerBg 9s infinite;
+    z-index: 0;
+  }
+
+  .screen.no-flicker::after{
+    animation: none;
+  }
+
+  .screen &gt; *{
+    position: relative;
+    z-index: 1;
+  }
+
+  .prefixRow{
+    position:relative;
+    display:block;
+    margin-bottom: var(--gap-prefix-to-msg);
+    padding-right: 66px;
+  }
+
+  .prefix{
+    flex: 1 1 auto;
+    color: var(--prefix-color);
+    font-size: var(--prefix-font-size);
+    letter-spacing: 1.5px;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  .logoBox{
+    position:absolute;
+    top:0;
+    right:0;
+    width:54px;
+    height:54px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+
+  .logo{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:center;
+    opacity:.95;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,.7));
+    pointer-events:none;
+    user-select:none;
+    display:none;
+  }
+
+  .msg{
+    margin:0;
+    position:relative;
+    font-size: var(--msg-font-size);
+    line-height: 1.35;
+    white-space: pre-wrap;
+    word-break: break-word;
+    color: var(--accent);
+    text-shadow: 0 0 18px rgba(0,255,120,.18), 0 2px 6px rgba(0,0,0,.70);
+  }
+
+  .suffixRow{
+    display:flex;
+    align-items:flex-start;
+    margin-top: var(--gap-msg-to-suffix);
+  }
+  .suffix{
+    color: var(--suffix-color);
+    font-size: var(--suffix-font-size);
+    letter-spacing: 1.5px;
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+
+
+
+&lt;/style&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+  &lt;div class=&quot;wrap&quot;&gt;
+    &lt;div class=&quot;panel crt&quot; id=&quot;panel&quot;&gt;
+      &lt;img class=&quot;layout-img&quot; id=&quot;layoutImg&quot; alt=&quot;layout&quot; /&gt;
+      &lt;div class=&quot;screen&quot; id=&quot;screen&quot;&gt;
+        &lt;div class=&quot;prefixRow&quot;&gt;
+          &lt;div class=&quot;prefix&quot; id=&quot;prefixLine&quot;&gt;&lt;/div&gt;
+          &lt;div class=&quot;logoBox&quot;&gt;
+            &lt;img class=&quot;logo&quot; id=&quot;logo&quot; alt=&quot;logo&quot; /&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;div class=&quot;msg&quot; id=&quot;msg&quot;&gt;&lt;/div&gt;
+
+        &lt;div class=&quot;suffixRow&quot;&gt;
+          &lt;div class=&quot;suffix&quot; id=&quot;suffixLine&quot;&gt;&lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ✅ config jako zwykły skrypt (ustawia window.firebaseConfig) --&gt;
+  &lt;script src=&quot;config/firebase-config.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;config/web-push-config.js&quot;&gt;&lt;/script&gt;
+
+  &lt;script&gt;
+    window.__dsPlayUrlOnce = async function(url){
+      try { await new Audio(url).play(); } catch(e) {}
+    };
+  &lt;/script&gt;
+
+&lt;script type=&quot;module&quot;&gt;
+  import { initializeApp } from &quot;https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js&quot;;
+  import { getFirestore, doc, onSnapshot } from &quot;https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js&quot;;
+
+  const firebaseConfig = window.firebaseConfig;
+  if(!firebaseConfig){
+    console.error(&quot;Brak window.firebaseConfig — sprawdź config/firebase-config.js&quot;);
+    // Nie blokujemy UI — tylko wyświetli się layout bez aktualizacji.
+  }
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getFirestore(app);
+
+  const ASSET_VERSION = window.__dsVersion || &quot;2026-01-22_07-18-48&quot;;
+
+  const DEFAULT_PING_URL = `assets/audio/global/Ping.mp3?v=${ASSET_VERSION}`;
+  const DEFAULT_MSG_URL  = `assets/audio/global/Message.mp3?v=${ASSET_VERSION}`;
+
+  const LAYOUT_BG = {
+    inquisition: `assets/layouts/inquisition/DataSlate_Inq.png?v=${ASSET_VERSION}`,
+    mechanicus:  `assets/layouts/mechanicus/DataSlate_04.png?v=${ASSET_VERSION}`,
+    militarum:   `assets/layouts/militarum/Litannie_Zaginionych.png?v=${ASSET_VERSION}`,
+    chaos_undivided: `assets/layouts/chaos_undivided/DataSlate_04.png?v=${ASSET_VERSION}`,
+    khorne:      `assets/layouts/khorne/DataSlate_04.png?v=${ASSET_VERSION}`,
+    nurgle:      `assets/layouts/nurgle/DataSlate_04.png?v=${ASSET_VERSION}`,
+    tzeentch:    `assets/layouts/tzeentch/DataSlate_04.png?v=${ASSET_VERSION}`,
+    slaanesh:    `assets/layouts/slaanesh/DataSlate_04.png?v=${ASSET_VERSION}`,
+  };
+
+  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600 };
+  const SCREEN_INSETS = {
+    inquisition: { top:&quot;14%&quot;, right:&quot;14%&quot;, bottom:&quot;26%&quot;, left:&quot;18%&quot; },
+    militarum:   { top:&quot;12.7%&quot;, right:&quot;19.8%&quot;, bottom:&quot;10.1%&quot;, left:&quot;21.46%&quot; },
+    default04:   { top:&quot;14%&quot;, right:&quot;14%&quot;, bottom:&quot;22%&quot;, left:&quot;18%&quot; },
+  };
+
+  const FONT_STACK = {
+    mechanicus:      &#x27;&quot;Share Tech Mono&quot;, Calibri, Arial, sans-serif&#x27;,
+    inquisition:     &#x27;&quot;Cinzel&quot;, Calibri, Arial, sans-serif&#x27;,
+    militarum:       &#x27;&quot;Rajdhani&quot;, Calibri, Arial, sans-serif&#x27;,
+    khorne:          &#x27;&quot;Black Ops One&quot;, Calibri, Arial, sans-serif&#x27;,
+    nurgle:          &#x27;&quot;Staatliches&quot;, Calibri, Arial, sans-serif&#x27;,
+    tzeentch:        &#x27;&quot;Orbitron&quot;, Calibri, Arial, sans-serif&#x27;,
+    slaanesh:        &#x27;&quot;Questrial&quot;, Calibri, Arial, sans-serif&#x27;,
+    chaos_undivided: &#x27;&quot;Russo One&quot;, Calibri, Arial, sans-serif&#x27;,
+  };
+
+  const FILLERS = {
+    mechanicus: {
+      prefixes:[&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ SYSTEM ANALYSIS BEGIN +++&quot;,&quot;+++ ENCRYPTION ONLINE +++&quot;,&quot;+++ ENGAGE LITURGY +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;,&quot;+++ LOGIS-CHANNEL ACTIVE +++&quot;,&quot;+++ DATA LINK ESTABLISHED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ CORE STABILIZED +++&quot;,&quot;+++ BINHARIC CANT OPEN +++&quot;,&quot;+++ COGITATOR STACK ENGAGED +++&quot;,&quot;+++ RITE OF ACCESS COMMENCED +++&quot;,&quot;+++ MACHINE-SPIRIT QUERY +++&quot;,&quot;+++ SCRY-LOG INITIATED +++&quot;,&quot;+++ SANCTIFIED DATA STREAM +++&quot;,&quot;+++ LEXMECHANIC INPUT RECEIVED +++&quot;,&quot;+++ OMNISSIAN PROTOCOL ACTIVE +++&quot;,&quot;+++ SUBROUTINE: DIVINE CALCULATION +++&quot;,&quot;+++ AUSPEX THREAD ALIGNED +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ ACCESS SEALED +++&quot;],
+      suffixes:[&quot;+++ PRAISE THE OMNISSIAH +++&quot;,&quot;+++ MACHINE SPIRIT CALMED +++&quot;,&quot;+++ THE FLESH IS WEAK +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ BINARY PRAYER SENT +++&quot;,&quot;+++ OMNISSIAH GUIDE US +++&quot;,&quot;+++ SERVITOR READY +++&quot;,&quot;+++ RITUAL COMPLETE +++&quot;,&quot;+++ CANTICLE EXECUTED +++&quot;,&quot;+++ BLESSINGS OF THE MACHINE GOD +++&quot;,&quot;+++ DATA IS HOLY +++&quot;,&quot;+++ IMPURITY REJECTED +++&quot;,&quot;+++ CALCULATION: PURE +++&quot;,&quot;+++ BY THE MOTIVE FORCE +++&quot;,&quot;+++ MACHINE SPIRIT PACIFIED +++&quot;,&quot;+++ COGITATION COMPLETE +++&quot;,&quot;+++ THE MACHINE ENDURES +++&quot;,&quot;+++ BINHARIC PRAISE TRANSMITTED +++&quot;,&quot;+++ THE EMPEROR PROTECTS +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]
+    },
+    inquisition: {
+      prefixes:[&quot;+++ INQUISITORIAL NOTICE +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ DECRYPTING ORDER +++&quot;,&quot;+++ COGITATOR ACCESS +++&quot;,&quot;+++ BY HIS WILL +++&quot;,&quot;+++ CLASSIFIED MATERIAL +++&quot;,&quot;+++ MIND CLEANSED +++&quot;,&quot;+++ CODEX SECURED +++&quot;,&quot;+++ INQUISITORIAL MANDATE +++&quot;,&quot;+++ ORDO CLEARANCE VERIFIED +++&quot;,&quot;+++ SEALED DOSSIER OPENED +++&quot;,&quot;+++ SANCTIONED INTELLIGENCE +++&quot;,&quot;+++ HERETICAL TRACE DETECTED +++&quot;,&quot;+++ PRIORITY DECREE INBOUND +++&quot;,&quot;+++ THREAT INDEX ESCALATING +++&quot;,&quot;+++ REDACTED RECORD RETRIEVED +++&quot;,&quot;+++ INTERROGATION TRANSCRIPT +++&quot;,&quot;+++ AUTHORITY OF THE HOLY ORDOS +++&quot;,&quot;+++ SUBJECT UNDER REVIEW +++&quot;,&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;],
+      suffixes:[&quot;+++ THE EMPEROR PROTECTS +++&quot;,&quot;+++ PURGE COMPLETE +++&quot;,&quot;+++ FAITH REMAINS +++&quot;,&quot;+++ THOUGHT FOR THE DAY +++&quot;,&quot;+++ HERESY PURGED +++&quot;,&quot;+++ OATH UPHELD +++&quot;,&quot;+++ FAITH IS ARMOR +++&quot;,&quot;+++ EXAMINATION COMPLETE +++&quot;,&quot;+++ IN HIS NAME +++&quot;,&quot;+++ WITNESS THE THRONE +++&quot;,&quot;+++ COMPLIANCE ENFORCED +++&quot;,&quot;+++ DUTY TO THE THRONE ENDURES +++&quot;,&quot;+++ BY ORDER OF THE HOLY INQUISITION +++&quot;,&quot;+++ SILENCE IS DUTY +++&quot;,&quot;+++ JUDGEMENT STANDS +++&quot;,&quot;+++ PURITY IS NON-NEGOTIABLE +++&quot;,&quot;+++ DENUNCIATION ACCEPTED +++&quot;,&quot;+++ SEAL THE RECORD +++&quot;,&quot;+++ NO MERCY FOR THE TAINTED +++&quot;,&quot;+++ ACCESS SEALED +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ THE EYE OPENS +++&quot;]
+    },
+    militarum: {
+      prefixes:[&quot;+++ IMPERIAL SIGNAL +++&quot;,&quot;+++ HIGH COMMAND ORDER +++&quot;,&quot;+++ ORDERS INCOMING +++&quot;,&quot;+++ TACTICAL FEED +++&quot;,&quot;+++ REGIMENTAL DATA +++&quot;,&quot;+++ COMMAND OVERRIDE +++&quot;,&quot;+++ BATTLELINE UPLINK +++&quot;,&quot;+++ ENGAGEMENT ACTIVE +++&quot;,&quot;+++ OPERATIONAL BRIEF +++&quot;,&quot;+++ MUNITORUM DISPATCH +++&quot;,&quot;+++ FRONTLINE COMMUNIQUÉ +++&quot;,&quot;+++ VOX-CAST RECEIVED +++&quot;,&quot;+++ FIRE MISSION PENDING +++&quot;,&quot;+++ DEPLOYMENT ORDER +++&quot;,&quot;+++ STRATEGIC UPDATE +++&quot;,&quot;+++ THEATRE COMMAND ONLINE +++&quot;,&quot;+++ COMBAT STATUS REPORT +++&quot;,&quot;+++ FORM RANKS +++&quot;,&quot;+++ IMPERIAL TACTICA +++&quot;,&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;],
+      suffixes:[&quot;+++ GLORY TO THE GUARD +++&quot;,&quot;+++ VICTORY IS ASSURED +++&quot;,&quot;+++ CADIA STANDS +++&quot;,&quot;+++ DUTY FULFILLED +++&quot;,&quot;+++ NO SACRIFICE TOO GREAT +++&quot;,&quot;+++ PERIMETER SECURED +++&quot;,&quot;+++ FOR THE EMPEROR +++&quot;,&quot;+++ STRATEGIC DIRECTIVE +++&quot;,&quot;+++ HOLD THE LINE +++&quot;,&quot;+++ STAND FIRM +++&quot;,&quot;+++ BAYONETS FIXED +++&quot;,&quot;+++ MUNITORUM APPROVED +++&quot;,&quot;+++ POSITION MAINTAINED +++&quot;,&quot;+++ CASUALTIES ACCEPTABLE +++&quot;,&quot;+++ ARTILLERY ANSWERS +++&quot;,&quot;+++ REGIMENT ENDURES +++&quot;,&quot;+++ ADVANCE BY COMMAND +++&quot;,&quot;+++ NO STEP BACK +++&quot;,&quot;+++ THE LINE HOLDS +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ ACCESS SEALED +++&quot;,&quot;+++ THE EMPEROR PROTECTS +++&quot;]
+    },
+    khorne: {
+      prefixes:[&quot;+++ BLOOD ALERT +++&quot;,&quot;+++ SKULL COUNT RISING +++&quot;,&quot;+++ RAGE TRANSMISSION +++&quot;,&quot;+++ COMBAT UPLINK +++&quot;,&quot;+++ SLAUGHTER INITIATED +++&quot;,&quot;+++ NO PEACE ONLY WAR +++&quot;,&quot;+++ DOMINATE THROUGH BLOOD +++&quot;,&quot;+++ BUTCHER&#x27;S CALL +++&quot;,&quot;+++ CHAINAXE CHORUS +++&quot;,&quot;+++ CARNAGE PROTOCOL +++&quot;,&quot;+++ BRASS THRONE DEMANDS +++&quot;,&quot;+++ SKULL TITHE ASCENDING +++&quot;,&quot;+++ WRATH WITHOUT MEASURE +++&quot;,&quot;+++ BATTLE FRENZY UNBOUND +++&quot;,&quot;+++ WAR CRY ASCENDANT +++&quot;,&quot;+++ GORE TIDE RISING +++&quot;,&quot;+++ OFFERING OF SKULLS +++&quot;,&quot;+++ MERCY DENIED +++&quot;,&quot;+++ THE RED PATH OPENS +++&quot;,&quot;+++ SLAUGHTER WITHOUT END +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+      suffixes:[&quot;+++ BLOOD FOR THE BLOOD GOD +++&quot;,&quot;+++ SKULLS FOR THE SKULL THRONE +++&quot;,&quot;+++ ALL MUST BLEED +++&quot;,&quot;+++ DEATH WITHOUT END +++&quot;,&quot;+++ STRIKE WITHOUT MERCY +++&quot;,&quot;+++ KILL! MAIM! BURN! +++&quot;,&quot;+++ RED FLOWS +++&quot;,&quot;+++ WRATH IS WORSHIP +++&quot;,&quot;+++ THE THRONE DEMANDS SKULLS +++&quot;,&quot;+++ LET THE GALAXY BLEED +++&quot;,&quot;+++ OFFER THEM TO KHORNE +++&quot;,&quot;+++ ONLY SLAUGHTER REMAINS +++&quot;,&quot;+++ NO RESPITE. NO MERCY. +++&quot;,&quot;+++ THE EIGHTFOLD PATH DRINKS +++&quot;,&quot;+++ BRASS AND BLOOD +++&quot;,&quot;+++ RAGE IS TRUTH +++&quot;,&quot;+++ CHAINBLADES SING +++&quot;,&quot;+++ THEIR SKULLS ARE DUE +++&quot;,&quot;+++ WAR IS THE ONLY PRAYER +++&quot;,&quot;+++ THE RED HARVEST GROWS +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]
+    },
+    nurgle: {
+      prefixes:[&quot;+++ BLOAT SIGNAL +++&quot;,&quot;+++ DECAY INITIATED +++&quot;,&quot;+++ DISEASE VECTOR ACTIVE +++&quot;,&quot;+++ PLAGUE SEED SENT +++&quot;,&quot;+++ SPOREFIELD DEPLOYED +++&quot;,&quot;+++ VIRUSCODE ENGAGED +++&quot;,&quot;+++ ALL IS ROT +++&quot;,&quot;+++ FLESH SAGS +++&quot;,&quot;+++ FOULNESS RISES +++&quot;,&quot;+++ CONTAGION BLOOMS +++&quot;,&quot;+++ PESTILENCE CURRENT +++&quot;,&quot;+++ SEPTIC TIDE RISING +++&quot;,&quot;+++ ROT-WIND ASCENDANT +++&quot;,&quot;+++ INFESTATION CONFIRMED +++&quot;,&quot;+++ BLESSED CORRUPTION SPREADS +++&quot;,&quot;+++ GARDEN GROWS +++&quot;,&quot;+++ PUSTULENT SIGNAL +++&quot;,&quot;+++ PLAGUE BELLS TOLL +++&quot;,&quot;+++ SWEET RUIN APPROACHES +++&quot;,&quot;+++ THE ROT TAKES ROOT +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+      suffixes:[&quot;+++ PRAISE GRANDFATHER NURGLE +++&quot;,&quot;+++ FILTH TRANSMITTED +++&quot;,&quot;+++ ROTTEN JOY +++&quot;,&quot;+++ CONTAGION SPREADS +++&quot;,&quot;+++ FLIES REJOICE +++&quot;,&quot;+++ FESTERING COMPLETE +++&quot;,&quot;+++ MUCOUS FLOW +++&quot;,&quot;+++ BLESSINGS OF ROT +++&quot;,&quot;+++ GLORIOUS CORRUPTION +++&quot;,&quot;+++ THE GARDEN WELCOMES ALL +++&quot;,&quot;+++ DECAY IS GENEROUS +++&quot;,&quot;+++ EMBRACE THE SWEET SICKNESS +++&quot;,&quot;+++ PUTRESCENCE ENDURES +++&quot;,&quot;+++ JOY IN RUIN +++&quot;,&quot;+++ THE BLOATED LORD PROVIDES +++&quot;,&quot;+++ PLAGUE GIFT DELIVERED +++&quot;,&quot;+++ ROT IS A BLESSING +++&quot;,&quot;+++ ALL THINGS RIPEN +++&quot;,&quot;+++ CORRUPTION TAKES HOLD +++&quot;,&quot;+++ THE FLIES SING +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]
+    },
+    tzeentch: {
+      prefixes:[&quot;+++ KNOWLEDGE UNFOLDS +++&quot;,&quot;+++ SCHEME RUNNING +++&quot;,&quot;+++ DATA TWISTED +++&quot;,&quot;+++ WARP-TEXT INCOMING +++&quot;,&quot;+++ INVERSION ACTIVE +++&quot;,&quot;+++ DESTINY WRITTEN +++&quot;,&quot;+++ NOTHING IS AS IT SEEMS +++&quot;,&quot;+++ PATTERNS SHIFT +++&quot;,&quot;+++ THREADS CONVERGE +++&quot;,&quot;+++ PROBABILITY FRACTURES +++&quot;,&quot;+++ HIDDEN HAND MOVES +++&quot;,&quot;+++ THE NEXT TURN BEGINS +++&quot;,&quot;+++ FATE MATRIX REVISED +++&quot;,&quot;+++ MANY PATHS OPEN +++&quot;,&quot;+++ THE SCHEME DEEPENS +++&quot;,&quot;+++ MUTATION OF INTENT +++&quot;,&quot;+++ THE HOUR OF CHANGE +++&quot;,&quot;+++ SECRETS BECOME REAL +++&quot;,&quot;+++ WARP PARADOX STABILIZED +++&quot;,&quot;+++ DESTINY RECURSIVE +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+      suffixes:[&quot;+++ ALL IS CHANGE +++&quot;,&quot;+++ PLAN: PHASE 7 +++&quot;,&quot;+++ EYE OPENS +++&quot;,&quot;+++ THOUGHT MUTATED +++&quot;,&quot;+++ CYCLE CONTINUES +++&quot;,&quot;+++ OBSERVE THE CHANGE +++&quot;,&quot;+++ REWRITE EVERYTHING +++&quot;,&quot;+++ JUST AS PLANNED +++&quot;,&quot;+++ ALL PART OF THE PLAN +++&quot;,&quot;+++ FATE RECOMPILED +++&quot;,&quot;+++ THE CHANGER SMILES +++&quot;,&quot;+++ OUTCOME REVISED +++&quot;,&quot;+++ THE PATTERN HOLDS +++&quot;,&quot;+++ TOMORROW HAS MOVED +++&quot;,&quot;+++ THE SCRIPT BURNS +++&quot;,&quot;+++ TRUTH RECAST +++&quot;,&quot;+++ THE LABYRINTH TURNS +++&quot;,&quot;+++ FORM IS TEMPORARY +++&quot;,&quot;+++ DESTINY FRACTURES +++&quot;,&quot;+++ THE LAST WORD CHANGES +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]
+    },
+    slaanesh: {
+      prefixes:[&quot;+++ ECSTASY PULSE +++&quot;,&quot;+++ SENSORY OVERLOAD +++&quot;,&quot;+++ DESIRE BREACH +++&quot;,&quot;+++ TOUCH THE DIVINE +++&quot;,&quot;+++ TASTE THE PAIN +++&quot;,&quot;+++ LUSTWAVE TRANSMITTED +++&quot;,&quot;+++ EXCESS COMPLETE +++&quot;,&quot;+++ VELVET SCREAM +++&quot;,&quot;+++ RAPTURE SIGNAL +++&quot;,&quot;+++ SENSORIA UNBOUND +++&quot;,&quot;+++ EXQUISITE AGONY INBOUND +++&quot;,&quot;+++ TEMPTATION CHANNEL OPEN +++&quot;,&quot;+++ PERFECT NOTE STRUCK +++&quot;,&quot;+++ THRESHOLD OF ECSTASY +++&quot;,&quot;+++ INDULGENCE WITHOUT LIMIT +++&quot;,&quot;+++ DESIRE ASCENDANT +++&quot;,&quot;+++ HARMONIC OBSESSION +++&quot;,&quot;+++ THE SILKEN EDGE DRAWS NEAR +++&quot;,&quot;+++ SENSORY FEED PEAKING +++&quot;,&quot;+++ DELIGHT SPIKES +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+      suffixes:[&quot;+++ FEED THE HUNGER +++&quot;,&quot;+++ THE PERFECT MOMENT +++&quot;,&quot;+++ PAIN IS PLEASURE +++&quot;,&quot;+++ EXCESS IS TRUTH +++&quot;,&quot;+++ UNHOLY HARMONY +++&quot;,&quot;+++ FEEL EVERYTHING +++&quot;,&quot;+++ TEMPTATION SPIKE +++&quot;,&quot;+++ PERFECTION IS BLISS +++&quot;,&quot;+++ PLEASURE ASCENDANT +++&quot;,&quot;+++ THE SENSES SHALL OPEN +++&quot;,&quot;+++ ECSTASY WITHOUT END +++&quot;,&quot;+++ RAPTURE CONSUMES +++&quot;,&quot;+++ BEAUTY CUTS DEEPLY +++&quot;,&quot;+++ SENSORIA SATURATED +++&quot;,&quot;+++ DESIRE BECOMES LAW +++&quot;,&quot;+++ EVERY NOTE A KNIFE +++&quot;,&quot;+++ BLISS THROUGH EXCESS +++&quot;,&quot;+++ THE HUNGER REMAINS +++&quot;,&quot;+++ PERFECT AGONY +++&quot;,&quot;+++ INDULGENCE VICTORIOUS +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]
+    },
+    chaos_undivided: {
+      prefixes:[&quot;+++ WARP STIRRING +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ SACRIFICE ACCEPTED +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;,&quot;+++ ORDER BREAKS +++&quot;,&quot;+++ FLESH TURNS +++&quot;,&quot;+++ ASCENSION IMMINENT +++&quot;,&quot;+++ REALSPACE THINS +++&quot;,&quot;+++ VEIL BREACH DETECTED +++&quot;,&quot;+++ CHAOS CHORUS RISING +++&quot;,&quot;+++ RUINOUS CONVERGENCE +++&quot;,&quot;+++ THE EYE TURNS +++&quot;,&quot;+++ CORRUPTION VECTOR LOCKED +++&quot;,&quot;+++ THE PACT STANDS +++&quot;,&quot;+++ REALITY UNFASTENS +++&quot;,&quot;+++ THE WARP ANSWERS +++&quot;,&quot;+++ UNHOLY ALIGNMENT +++&quot;,&quot;+++ THE DARK BETWEEN STARS +++&quot;,&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;],
+      suffixes:[&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ DARK GODS SMILE +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ ASCEND AND BURN +++&quot;,&quot;+++ ALL HAIL THE DARK GODS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;,&quot;+++ STARS ARE WRONG +++&quot;,&quot;+++ VOID WITHIN +++&quot;,&quot;+++ ETERNAL CHANGE +++&quot;,&quot;+++ LET THE GALAXY BREAK +++&quot;,&quot;+++ THE VEIL IS TORN +++&quot;,&quot;+++ OFFERING ACCEPTED +++&quot;,&quot;+++ THE RUINOUS POWERS PROVIDE +++&quot;,&quot;+++ CORRUPTION WITHOUT MASTER +++&quot;,&quot;+++ CHAOS IS ASCENDANT +++&quot;,&quot;+++ THE LONG WAR ENDURES +++&quot;,&quot;+++ REALITY YIELDS +++&quot;,&quot;+++ THE WARP CLAIMS ALL +++&quot;,&quot;+++ BLESSED BE THE DAMNED +++&quot;,&quot;+++ NIGHT COMES FROM WITHIN +++&quot;,&quot;+++ ACCESS SEALED +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ THE EMPEROR PROTECTS +++&quot;]
+    },
+  };
+
+  const FACTION_LOGO = {
+    inquisition: `assets/logos/inquisition/Inquisition.png?v=${ASSET_VERSION}`,
+    mechanicus:  `assets/logos/mechanicus/Mechanicus.png?v=${ASSET_VERSION}`
+  };
+
+  const el = {
+    panel: document.getElementById(&quot;panel&quot;),
+    layoutImg: document.getElementById(&quot;layoutImg&quot;),
+    screen: document.getElementById(&quot;screen&quot;),
+    prefixLine: document.getElementById(&quot;prefixLine&quot;),
+    suffixLine: document.getElementById(&quot;suffixLine&quot;),
+    msg: document.getElementById(&quot;msg&quot;),
+    logo: document.getElementById(&quot;logo&quot;),
+  };
+
+
+  async function ensureServiceWorkerRegistration(){
+    if(!(&quot;serviceWorker&quot; in navigator)) return null;
+
+    const registration = await navigator.serviceWorker.register(&quot;../service-worker.js&quot;);
+    return registration;
+  }
+
+  async function tryLockPortrait(){
+    try{
+      if(screen.orientation &amp;&amp; typeof screen.orientation.lock === &quot;function&quot;){
+        await screen.orientation.lock(&quot;portrait&quot;);
+      }
+    }catch(_error){
+      // Cichy fallback zgodnie z wymaganiem: bez komunikatu dla użytkownika.
+    }
+  }
+
+  function fitPanel(ar){
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let h = vh, w = h * ar;
+    if(w &gt; vw){ w = vw; h = w / ar; }
+    el.panel.style.width  = Math.round(w) + &quot;px&quot;;
+    el.panel.style.height = Math.round(h) + &quot;px&quot;;
+  }
+
+  function setInsets(p){
+    document.documentElement.style.setProperty(&quot;--screen-top&quot;, p.top);
+    document.documentElement.style.setProperty(&quot;--screen-right&quot;, p.right);
+    document.documentElement.style.setProperty(&quot;--screen-bottom&quot;, p.bottom);
+    document.documentElement.style.setProperty(&quot;--screen-left&quot;, p.left);
+  }
+
+  function setFlickerState(shouldFlicker){
+    if(shouldFlicker === false){
+      el.screen.classList.add(&quot;no-flicker&quot;);
+    }else{
+      el.screen.classList.remove(&quot;no-flicker&quot;);
+    }
+  }
+
+  let currentAr = LAYOUT_AR.default04;
+
+  function setLogoForFaction(key, shouldShow){
+    if(!shouldShow){
+      el.logo.removeAttribute(&quot;src&quot;);
+      el.logo.style.display = &quot;none&quot;;
+      return;
+    }
+
+    const src = FACTION_LOGO[key];
+    if(!src){
+      el.logo.removeAttribute(&quot;src&quot;);
+      el.logo.style.display = &quot;none&quot;;
+      return;
+    }
+
+    el.logo.src = src;
+    el.logo.style.display = &quot;block&quot;;
+  }
+
+  function getFillerText(key, idx1based, kind){
+    const cfg = FILLERS[key] || FILLERS.mechanicus;
+    const arr = (kind === &quot;prefix&quot;) ? cfg.prefixes : cfg.suffixes;
+    const n = Number(idx1based);
+    const i = (Number.isFinite(n) ? Math.floor(n) : 1) - 1;
+    return arr[Math.max(0, Math.min(arr.length - 1, i))] || &quot;&quot;;
+  }
+
+  function applyLayout(factionKey, color, showLogo){
+    const key = (factionKey &amp;&amp; LAYOUT_BG[factionKey]) ? factionKey : &quot;mechanicus&quot;;
+    el.layoutImg.src = LAYOUT_BG[key] || LAYOUT_BG.mechanicus;
+
+    document.documentElement.style.setProperty(&quot;--font&quot;, FONT_STACK[key] || &#x27;Calibri, Arial, sans-serif&#x27;);
+    document.documentElement.style.setProperty(&quot;--accent&quot;, color || &quot;#00ff66&quot;);
+
+    if(key === &quot;inquisition&quot;){
+      setInsets(SCREEN_INSETS.inquisition);
+      currentAr = LAYOUT_AR.inquisition;
+    }else if(key === &quot;militarum&quot;){
+      setInsets(SCREEN_INSETS.militarum);
+      currentAr = LAYOUT_AR.militarum;
+    }else{
+      setInsets(SCREEN_INSETS.default04);
+      currentAr = LAYOUT_AR.default04;
+    }
+    fitPanel(currentAr);
+    setLogoForFaction(key, showLogo !== false);
+  }
+
+  function applyTextStyleFromDoc(d){
+    if(d.msgFontSize)    document.documentElement.style.setProperty(&quot;--msg-font-size&quot;, String(d.msgFontSize));
+    if(d.prefixFontSize) document.documentElement.style.setProperty(&quot;--prefix-font-size&quot;, String(d.prefixFontSize));
+    if(d.suffixFontSize) document.documentElement.style.setProperty(&quot;--suffix-font-size&quot;, String(d.suffixFontSize));
+    if(d.prefixColor)    document.documentElement.style.setProperty(&quot;--prefix-color&quot;, String(d.prefixColor));
+    if(d.suffixColor)    document.documentElement.style.setProperty(&quot;--suffix-color&quot;, String(d.suffixColor));
+  }
+
+  function showMessage(prefix, text, suffix){
+    el.prefixLine.textContent = prefix || &quot;&quot;;
+    el.msg.textContent = text || &quot;&quot;;
+    el.suffixLine.textContent = suffix || &quot;&quot;;
+    el.screen.scrollTop = 0;
+  }
+
+  function clearMessageKeepLayout(){
+    el.prefixLine.textContent = &quot;&quot;;
+    el.msg.textContent = &quot;&quot;;
+    el.suffixLine.textContent = &quot;&quot;;
+  }
+
+  window.addEventListener(&quot;resize&quot;, () =&gt; fitPanel(currentAr));
+
+  function resolveLocalAudioUrl(rawUrl, fallbackUrl){
+    if(typeof rawUrl !== &quot;string&quot;) return fallbackUrl;
+
+    const candidate = rawUrl.trim();
+    if(!candidate) return fallbackUrl;
+
+    // Dopuszczamy wyłącznie lokalne ścieżki (repo) — bez zewnętrznych hostów.
+    if(/^assets\/audio\//i.test(candidate)) return candidate;
+    if(/^\.\/?assets\/audio\//i.test(candidate)) return candidate;
+
+    // Opcjonalnie: absolutny URL, ale tylko do bieżącego origin i ścieżki assets/audio.
+    try{
+      const parsed = new URL(candidate, window.location.href);
+      if(parsed.origin === window.location.origin &amp;&amp; /^\/?.*assets\/audio\//i.test(parsed.pathname)){
+        return parsed.pathname + parsed.search + parsed.hash;
+      }
+    }catch(e){
+      // Ignorujemy błędny URL i przechodzimy do fallbacku.
+    }
+
+    console.warn(&quot;[Infoczytnik] Odrzucono zewnętrzny lub nieprawidłowy URL audio:&quot;, candidate);
+    return fallbackUrl;
+  }
+
+  const currentRef = doc(db, &quot;dataslate&quot;, &quot;current&quot;);
+  let lastNonce = null;
+
+  onSnapshot(currentRef, (snap)=&gt;{
+    if(!snap.exists()) return;
+    const d = snap.data() || {};
+
+    if(d.nonce &amp;&amp; d.nonce === lastNonce) return;
+    lastNonce = d.nonce || null;
+
+    const faction = d.faction || &quot;mechanicus&quot;;
+    const color   = d.color || d.fontColor || &quot;#00ff66&quot;;
+    const showLogo = d.showLogo !== false;
+    const flicker = d.flicker !== false;
+
+    applyLayout(faction, color, showLogo);
+    setFlickerState(flicker);
+    applyTextStyleFromDoc(d);
+
+    if(d.type === &quot;clear&quot;){
+      clearMessageKeepLayout();
+      return;
+    }
+
+    if(d.type === &quot;ping&quot;){
+      const pingUrl = resolveLocalAudioUrl(d.pingUrl ? String(d.pingUrl) : &quot;&quot;, DEFAULT_PING_URL);
+      window.__dsPlayUrlOnce(pingUrl);
+      return;
+    }
+
+    if(d.type === &quot;message&quot;){
+      const text = d.text ?? &quot;&quot;;
+
+      let prefix = d.prefix ?? d.prefixText ?? &quot;&quot;;
+      let suffix = d.suffix ?? d.suffixText ?? &quot;&quot;;
+
+      if(Array.isArray(d.prefixLines) &amp;&amp; d.prefixLines.length){
+        prefix = d.prefixLines.map((line) =&gt; String(line || &quot;&quot;)).join(&quot;\n&quot;);
+      }
+      if(Array.isArray(d.suffixLines) &amp;&amp; d.suffixLines.length){
+        suffix = d.suffixLines.map((line) =&gt; String(line || &quot;&quot;)).join(&quot;\n&quot;);
+      }
+
+      if(!prefix &amp;&amp; (d.prefixIndex || d.prefixIdx)){
+        prefix = getFillerText(faction, d.prefixIndex || d.prefixIdx, &quot;prefix&quot;);
+      }
+      if(!suffix &amp;&amp; (d.suffixIndex || d.suffixIdx)){
+        suffix = getFillerText(faction, d.suffixIndex || d.suffixIdx, &quot;suffix&quot;);
+      }
+
+      if(!prefix &amp;&amp; (text || &quot;&quot;).trim()) prefix = getFillerText(faction, 1, &quot;prefix&quot;);
+      if(!suffix &amp;&amp; (text || &quot;&quot;).trim()) suffix = getFillerText(faction, 1, &quot;suffix&quot;);
+
+      if((text || &quot;&quot;).trim().length === 0){
+        clearMessageKeepLayout();
+      }else{
+        showMessage(prefix, text, suffix);
+      }
+
+      const msgUrl = resolveLocalAudioUrl(
+        (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : &quot;&quot;,
+        DEFAULT_MSG_URL
+      );
+      window.__dsPlayUrlOnce(msgUrl);
+    }
+  });
+
+
+  ensureServiceWorkerRegistration().catch((error) =&gt; {
+    console.warn(&quot;Nie udało się zarejestrować globalnego Service Workera.&quot;, error);
+  });
+
+  tryLockPortrait();
+
+  // Start
+  applyLayout(&quot;mechanicus&quot;, &quot;#00ff66&quot;);
+  setFlickerState(true);
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<h3>Infoczytnik/GM.html</h3>
+<pre>&lt;!doctype html&gt;
+&lt;html lang=&quot;pl&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot; /&gt;
+  &lt;title&gt;Infoczytnik - panel GM&lt;/title&gt;
+  &lt;script&gt;
+    (function autoCacheBust(){
+      const INF_VERSION = &quot;2026-03-13_12-31-28&quot;; // &lt;- zmieniaj przy aktualizacjach (data + godzina)
+      window.__dsVersion = INF_VERSION;
+      const url = new URL(window.location.href);
+      if (url.searchParams.get(&quot;v&quot;) !== INF_VERSION) {
+        url.searchParams.set(&quot;v&quot;, INF_VERSION);
+        window.location.replace(url.toString());
+      }
+    })();
+  &lt;/script&gt;
+  &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.googleapis.com&quot;&gt;
+  &lt;link rel=&quot;preconnect&quot; href=&quot;https://fonts.gstatic.com&quot; crossorigin&gt;
+  &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Share+Tech+Mono&amp;family=Cinzel:wght@400;700&amp;family=Rajdhani:wght@400;600&amp;family=Black+Ops+One&amp;family=Staatliches&amp;family=Orbitron:wght@400;700&amp;family=Questrial&amp;family=Russo+One&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+  &lt;style&gt;
+    :root{--text:#eaeaea;--muted:#bdbdbd;--accent:#ffd27a;--border:#2a2a2a;--panel:rgba(18,18,18,.92);}
+    *{box-sizing:border-box}
+    body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(180deg,#070707,#0f0f0f);color:var(--text);}
+    .wrap{max-width:980px;margin:0 auto}
+    .language-switcher{display:flex;justify-content:flex-end;margin-bottom:10px;}
+    .language-switcher select{
+      background:#0f0f0f;
+      color:var(--text);
+      border:1px solid var(--border);
+      border-radius:10px;
+      padding:8px 12px;
+      font-size:14px;
+    }
+    h1{margin:0 0 10px 0;font-size:20px;color:var(--accent);letter-spacing:.3px}
+    .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
+    label{display:block;margin:10px 0 6px 0;color:var(--muted);font-size:13px}
+    select,textarea,input[type=&quot;number&quot;],input[type=&quot;color&quot;],input[type=&quot;text&quot;]{
+      width:100%;background:#0f0f0f;color:var(--text);border:1px solid var(--border);
+      border-radius:10px;padding:10px 12px;font-size:16px;outline:none;
+    }
+    textarea{min-height:140px;resize:vertical;line-height:1.3}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .col{flex:1;min-width:240px}
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    button{
+      flex:1;min-width:160px;border:none;border-radius:12px;padding:12px 14px;font-size:16px;cursor:pointer;
+      background:#1d1d1d;color:var(--text);border:1px solid var(--border);
+    }
+    button.primary{background:linear-gradient(180deg,#3a2a12,#1c1408);border:1px solid rgba(255,210,122,.35);color:var(--accent);}
+    button.warn{background:linear-gradient(180deg,#1c0c0c,#120606);border:1px solid rgba(255,120,120,.25);color:#ffb3b3;}
+    .small{margin-top:10px;font-size:12px;color:var(--muted)}
+    .status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+    .preview{
+      margin:10px 0 0 0;padding:10px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,.18);
+      background:rgba(0,0,0,.25);color:#cfcfcf;font-family:Consolas,&quot;Courier New&quot;,monospace;font-size:13px;white-space:pre-wrap;
+    }
+    .chips{display:flex;gap:10px 14px;flex-wrap:wrap;margin-top:8px}
+    .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap;}
+    .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
+
+    /* ===== Układ: Losowość fillerów ===== */
+    .fillerBox{
+      padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#0f0f0f;
+    }
+    .fillerTop{
+      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    }
+    .fillerManual{
+      margin-top:10px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      align-items:end;
+    }
+    .fillerManual .right{
+      justify-self:end;
+      width:min(260px, 100%);
+    }
+    .fillerManual .left{
+      width:min(260px, 100%);
+    }
+    .pairRow{
+      display:flex;gap:10px;align-items:center;justify-content:flex-end;
+    }
+    .pairRow b{color:#bdbdbd;font-weight:600}
+    .pairRow input[type=&quot;number&quot;]{width:110px}
+
+    hr.sep{border:none;border-top:1px solid rgba(255,255,255,.08);margin:14px 0;}
+    code{font-family:Consolas,&quot;Courier New&quot;,monospace;font-size:12px;color:#ddd}
+
+    .livePreviewBox{
+      margin-top:12px;
+      padding:12px 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.08);
+      background:rgba(0,0,0,.35);
+      min-height:140px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      justify-content:center;
+    }
+    .livePreviewBox .line{display:block;}
+    .livePreviewBox .prefix,.livePreviewBox .suffix{opacity:.9; white-space:pre-line;}
+    .livePreviewBox .message{line-height:1.35;}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class=&quot;wrap&quot;&gt;
+    &lt;div class=&quot;language-switcher&quot;&gt;
+      &lt;select id=&quot;languageSelect&quot; aria-label=&quot;Wersja językowa&quot;&gt;
+        &lt;option value=&quot;pl&quot;&gt;Polski&lt;/option&gt;
+        &lt;option value=&quot;en&quot;&gt;English&lt;/option&gt;
+      &lt;/select&gt;
+    &lt;/div&gt;
+    &lt;h1 id=&quot;pageTitle&quot; data-i18n=&quot;pageTitle&quot;&gt;Infoczytnik - panel GM&lt;/h1&gt;
+    &lt;div class=&quot;card&quot;&gt;
+
+      &lt;div class=&quot;row&quot;&gt;
+        &lt;!-- LEWA KOLUMNA --&gt;
+        &lt;div class=&quot;col&quot;&gt;
+          &lt;label data-i18n=&quot;labelFaction&quot;&gt;Frakcja / layout&lt;/label&gt;
+          &lt;select id=&quot;faction&quot;&gt;
+            &lt;option value=&quot;mechanicus&quot; data-i18n=&quot;factionMechanicus&quot;&gt;Adeptus Mechanicus&lt;/option&gt;
+            &lt;option value=&quot;inquisition&quot; data-i18n=&quot;factionInquisition&quot;&gt;Inkwizycja&lt;/option&gt;
+            &lt;option value=&quot;militarum&quot; data-i18n=&quot;factionMilitarum&quot;&gt;Astra Militarum&lt;/option&gt;
+            &lt;option value=&quot;khorne&quot; data-i18n=&quot;factionKhorne&quot;&gt;Khorne&lt;/option&gt;
+            &lt;option value=&quot;nurgle&quot; data-i18n=&quot;factionNurgle&quot;&gt;Nurgle&lt;/option&gt;
+            &lt;option value=&quot;tzeentch&quot; data-i18n=&quot;factionTzeentch&quot;&gt;Tzeentch&lt;/option&gt;
+            &lt;option value=&quot;slaanesh&quot; data-i18n=&quot;factionSlaanesh&quot;&gt;Slaanesh&lt;/option&gt;
+            &lt;option value=&quot;chaos_undivided&quot; data-i18n=&quot;factionChaosUndivided&quot;&gt;Chaos Undivided&lt;/option&gt;
+          &lt;/select&gt;
+
+          &lt;!-- Kolor treści + szybkie --&gt;
+          &lt;label data-i18n=&quot;labelMessageColor&quot;&gt;Kolor fontu (treść wiadomości)&lt;/label&gt;
+          &lt;input type=&quot;color&quot; id=&quot;fontColor&quot; value=&quot;#00ff66&quot; /&gt;
+          &lt;div class=&quot;chips&quot; id=&quot;msgColorChips&quot;&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;msg&quot; data-color=&quot;#00ff66&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#00ff66&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorGreen&quot;&gt;Zielony&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;msg&quot; data-color=&quot;#ff3333&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#ff3333&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorRed&quot;&gt;Czerwony&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;msg&quot; data-color=&quot;#d4af37&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#d4af37&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorGold&quot;&gt;Złoty&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;msg&quot; data-color=&quot;#ffffff&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#ffffff&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorWhite&quot;&gt;Biały&lt;/span&gt;&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;!-- Rozmiar treści --&gt;
+          &lt;label data-i18n=&quot;labelMessageSize&quot;&gt;Wielkość fontu (treść wiadomości) — px&lt;/label&gt;
+          &lt;input type=&quot;number&quot; id=&quot;msgFontSize&quot; min=&quot;12&quot; max=&quot;80&quot; step=&quot;1&quot; value=&quot;20&quot; /&gt;
+
+          &lt;hr class=&quot;sep&quot;&gt;
+
+          &lt;!-- Kolor Prefix+Suffix --&gt;
+          &lt;label data-i18n=&quot;labelPrefixSuffixColor&quot;&gt;Kolor Prefix + Suffix (wspólny)&lt;/label&gt;
+          &lt;div class=&quot;row&quot; style=&quot;gap:10px;&quot;&gt;
+            &lt;div class=&quot;col&quot; style=&quot;min-width:180px;&quot;&gt;
+              &lt;input type=&quot;text&quot; id=&quot;psColorText&quot; value=&quot;rgba(255,255,255,.88)&quot; /&gt;
+              &lt;div class=&quot;small&quot; data-i18n=&quot;prefixSuffixColorHint&quot;&gt;Możesz wpisać np. &lt;code&gt;#ffffff&lt;/code&gt; albo &lt;code&gt;rgba(255,255,255,.88)&lt;/code&gt;&lt;/div&gt;
+            &lt;/div&gt;
+            &lt;div class=&quot;col&quot; style=&quot;min-width:160px;&quot;&gt;
+              &lt;input type=&quot;color&quot; id=&quot;psColorPicker&quot; value=&quot;#ffffff&quot; /&gt;
+              &lt;div class=&quot;small&quot; data-i18n=&quot;prefixSuffixPickerHint&quot;&gt;Picker ustawia kolor jako &lt;code&gt;#RRGGBB&lt;/code&gt;&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;!-- Szybkie kolory Prefix/Suffix --&gt;
+          &lt;div class=&quot;chips&quot; id=&quot;psColorChips&quot;&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;ps&quot; data-color=&quot;#00ff66&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#00ff66&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorGreen&quot;&gt;Zielony&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;ps&quot; data-color=&quot;#ff3333&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#ff3333&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorRed&quot;&gt;Czerwony&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;ps&quot; data-color=&quot;#d4af37&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#d4af37&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorGold&quot;&gt;Złoty&lt;/span&gt;&lt;/div&gt;
+            &lt;div class=&quot;chip&quot; data-target=&quot;ps&quot; data-color=&quot;#ffffff&quot;&gt;&lt;span class=&quot;swatch&quot; style=&quot;background:#ffffff&quot;&gt;&lt;/span&gt;&lt;span data-i18n=&quot;colorWhite&quot;&gt;Biały&lt;/span&gt;&lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;!-- Rozmiar Prefix/Suffix --&gt;
+          &lt;label data-i18n=&quot;labelPrefixSuffixSize&quot;&gt;Wielkość fontu Prefix + Suffix (wspólna) — px&lt;/label&gt;
+          &lt;input type=&quot;number&quot; id=&quot;psFontSize&quot; min=&quot;10&quot; max=&quot;60&quot; step=&quot;1&quot; value=&quot;10&quot; /&gt;
+
+          &lt;div class=&quot;small&quot; data-i18n=&quot;logoHint&quot;&gt;
+            Logo ma stały rozmiar w Infoczytniku. Zmiana rozmiaru prefixu może spowodować zawijanie (OK), logo zostaje bez zmian.
+          &lt;/div&gt;
+        &lt;/div&gt;
+
+        &lt;!-- PRAWA KOLUMNA --&gt;
+        &lt;div class=&quot;col&quot;&gt;
+          &lt;label data-i18n=&quot;labelFillersRandom&quot;&gt;Losowość fillerów&lt;/label&gt;
+
+          &lt;div class=&quot;fillerBox&quot;&gt;
+            &lt;div class=&quot;fillerManual&quot;&gt;
+              &lt;div class=&quot;left&quot;&gt;
+                &lt;div class=&quot;pairRow&quot;&gt;
+                  &lt;b data-i18n=&quot;labelFillerLineCount&quot;&gt;Ilość linii fillerów&lt;/b&gt;
+                  &lt;input type=&quot;number&quot; id=&quot;fillerLineCount&quot; min=&quot;1&quot; max=&quot;5&quot; value=&quot;3&quot; /&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+
+              &lt;div class=&quot;right&quot;&gt;
+                &lt;div class=&quot;pairRow&quot;&gt;
+                  &lt;button type=&quot;button&quot; id=&quot;rerollFillersBtn&quot; data-i18n=&quot;buttonRerollFillers&quot;&gt;Wylosuj ponownie&lt;/button&gt;
+                &lt;/div&gt;
+              &lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;small&quot; data-i18n=&quot;randomHint&quot;&gt;
+            Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.
+          &lt;/div&gt;
+
+          &lt;div class=&quot;row&quot; style=&quot;align-items:center; gap:18px; margin-top:12px;&quot;&gt;
+            &lt;div style=&quot;display:flex; align-items:center; gap:8px;&quot;&gt;
+              &lt;input type=&quot;checkbox&quot; id=&quot;showLogo&quot; checked style=&quot;width:18px; height:18px; margin:0;&quot; /&gt;
+              &lt;label for=&quot;showLogo&quot; style=&quot;margin:0; color:var(--text);&quot; data-i18n=&quot;labelShowLogo&quot;&gt;Dodaj logo&lt;/label&gt;
+            &lt;/div&gt;
+            &lt;div style=&quot;display:flex; align-items:center; gap:8px;&quot;&gt;
+              &lt;input type=&quot;checkbox&quot; id=&quot;flicker&quot; checked style=&quot;width:18px; height:18px; margin:0;&quot; /&gt;
+              &lt;label for=&quot;flicker&quot; style=&quot;margin:0; color:var(--text);&quot; data-i18n=&quot;labelFlicker&quot;&gt;Flicker&lt;/label&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+
+          &lt;div class=&quot;livePreviewBox&quot; id=&quot;livePreview&quot;&gt;
+            &lt;span class=&quot;line prefix&quot; id=&quot;livePreviewPrefix&quot;&gt;++ INCOMING DATA FEED ++&lt;/span&gt;
+            &lt;span class=&quot;line message&quot; id=&quot;livePreviewMsg&quot;&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&lt;/span&gt;
+            &lt;span class=&quot;line suffix&quot; id=&quot;livePreviewSuffix&quot;&gt;++ PRAISE THE OMNISSIAH ++&lt;/span&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;preview&quot; id=&quot;prefixPreview&quot;&gt;&lt;/div&gt;
+
+      &lt;label data-i18n=&quot;labelMessage&quot;&gt;Treść komunikatu&lt;/label&gt;
+      &lt;textarea id=&quot;message&quot; placeholder=&quot;Wpisz komunikat dla graczy...&quot; data-i18n-placeholder=&quot;messagePlaceholder&quot;&gt;&lt;/textarea&gt;
+
+      &lt;div class=&quot;preview&quot; id=&quot;suffixPreview&quot;&gt;&lt;/div&gt;
+
+      &lt;div class=&quot;btnrow&quot;&gt;
+        &lt;button class=&quot;primary&quot; id=&quot;sendBtn&quot; data-i18n=&quot;buttonSend&quot;&gt;Wyślij&lt;/button&gt;
+        &lt;button class=&quot;warn&quot; id=&quot;pingBtn&quot; data-i18n=&quot;buttonPing&quot;&gt;Ping&lt;/button&gt;
+        &lt;button id=&quot;clearBtn&quot; data-i18n=&quot;buttonClearScreen&quot;&gt;Wyczyść ekran&lt;/button&gt;
+        &lt;button id=&quot;clearTextBtn&quot; data-i18n=&quot;buttonClearField&quot;&gt;Wyczyść pole&lt;/button&gt;
+      &lt;/div&gt;
+
+      &lt;div class=&quot;small&quot;&gt;&lt;span data-i18n=&quot;labelStatus&quot;&gt;Status:&lt;/span&gt; &lt;span class=&quot;status&quot; id=&quot;status&quot;&gt;…&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;!-- ✅ Firebase config jako GLOBAL (window.firebaseConfig) --&gt;
+  &lt;script src=&quot;config/firebase-config.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;config/web-push-config.js&quot;&gt;&lt;/script&gt;
+
+  &lt;!-- Firebase compat (działa w zwykłym &lt;script&gt;) --&gt;
+  &lt;script src=&quot;https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js&quot;&gt;&lt;/script&gt;
+  &lt;script src=&quot;https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js&quot;&gt;&lt;/script&gt;
+
+  &lt;script&gt;
+    // --- Konfiguracja Firebase z config/firebase-config.js ---
+    const firebaseConfig = window.firebaseConfig;
+    if(!firebaseConfig){
+      alert(translations[currentLanguage].messages.missingConfig);
+      throw new Error(&quot;Missing window.firebaseConfig&quot;);
+    }
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const currentRef = db.collection(&quot;dataslate&quot;).doc(&quot;current&quot;);
+
+    const el = {
+      faction: document.getElementById(&quot;faction&quot;),
+
+      // treść wiadomości
+      fontColor: document.getElementById(&quot;fontColor&quot;),
+      msgFontSize: document.getElementById(&quot;msgFontSize&quot;),
+
+      // prefix/suffix styl
+      psColorText: document.getElementById(&quot;psColorText&quot;),
+      psColorPicker: document.getElementById(&quot;psColorPicker&quot;),
+      psFontSize: document.getElementById(&quot;psFontSize&quot;),
+
+      // fillery
+      fillerLineCount: document.getElementById(&quot;fillerLineCount&quot;),
+      rerollFillersBtn: document.getElementById(&quot;rerollFillersBtn&quot;),
+      showLogo: document.getElementById(&quot;showLogo&quot;),
+      flicker: document.getElementById(&quot;flicker&quot;),
+
+      // message
+      message: document.getElementById(&quot;message&quot;),
+
+      // buttons
+      sendBtn: document.getElementById(&quot;sendBtn&quot;),
+      clearBtn: document.getElementById(&quot;clearBtn&quot;),
+      clearTextBtn: document.getElementById(&quot;clearTextBtn&quot;),
+      pingBtn: document.getElementById(&quot;pingBtn&quot;),
+
+      // ui
+      status: document.getElementById(&quot;status&quot;),
+      prefixPreview: document.getElementById(&quot;prefixPreview&quot;),
+      suffixPreview: document.getElementById(&quot;suffixPreview&quot;),
+      livePreview: document.getElementById(&quot;livePreview&quot;),
+      livePreviewPrefix: document.getElementById(&quot;livePreviewPrefix&quot;),
+      livePreviewMsg: document.getElementById(&quot;livePreviewMsg&quot;),
+      livePreviewSuffix: document.getElementById(&quot;livePreviewSuffix&quot;),
+
+      // chips
+      chips: Array.from(document.querySelectorAll(&quot;.chip&quot;)),
+    };
+
+    const languageSelect = document.getElementById(&quot;languageSelect&quot;);
+
+    const translations = {
+      pl: {
+        labels: {
+          languageSelect: &quot;Wersja językowa&quot;,
+          pageTitle: &quot;Infoczytnik - panel GM&quot;,
+          labelFaction: &quot;Frakcja / layout&quot;,
+          labelMessageColor: &quot;Kolor fontu (treść wiadomości)&quot;,
+          colorGreen: &quot;Zielony&quot;,
+          colorRed: &quot;Czerwony&quot;,
+          colorGold: &quot;Złoty&quot;,
+          colorWhite: &quot;Biały&quot;,
+          labelMessageSize: &quot;Wielkość fontu (treść wiadomości) — px&quot;,
+          labelPrefixSuffixColor: &quot;Kolor Prefix + Suffix (wspólny)&quot;,
+          prefixSuffixColorHint: &quot;Możesz wpisać np. &lt;code&gt;#ffffff&lt;/code&gt; albo &lt;code&gt;rgba(255,255,255,.88)&lt;/code&gt;&quot;,
+          prefixSuffixPickerHint: &quot;Picker ustawia kolor jako &lt;code&gt;#RRGGBB&lt;/code&gt;&quot;,
+          labelPrefixSuffixSize: &quot;Wielkość fontu Prefix + Suffix (wspólna) — px&quot;,
+          logoHint:
+            &quot;Logo ma stały rozmiar w Infoczytniku. Zmiana rozmiaru prefixu może spowodować zawijanie (OK), logo zostaje bez zmian.&quot;,
+          labelFillersRandom: &quot;Losowość fillerów&quot;,
+          labelFillerLineCount: &quot;Ilość linii fillerów&quot;,
+          buttonRerollFillers: &quot;Wylosuj ponownie&quot;,
+          randomHint: &quot;Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.&quot;,
+          labelShowLogo: &quot;Dodaj logo&quot;,
+          labelFlicker: &quot;Flicker&quot;,
+          labelMessage: &quot;Treść komunikatu&quot;,
+          messagePlaceholder: &quot;Wpisz komunikat dla graczy...&quot;,
+          buttonSend: &quot;Wyślij&quot;,
+          buttonPing: &quot;Ping&quot;,
+          buttonClearScreen: &quot;Wyczyść ekran&quot;,
+          buttonClearField: &quot;Wyczyść pole&quot;,
+          labelStatus: &quot;Status:&quot;,
+          factionMechanicus: &quot;Adeptus Mechanicus&quot;,
+          factionInquisition: &quot;Inkwizycja&quot;,
+          factionMilitarum: &quot;Astra Militarum&quot;,
+          factionKhorne: &quot;Khorne&quot;,
+          factionNurgle: &quot;Nurgle&quot;,
+          factionTzeentch: &quot;Tzeentch&quot;,
+          factionSlaanesh: &quot;Slaanesh&quot;,
+          factionChaosUndivided: &quot;Chaos Undivided&quot;,
+        },
+        preview: {
+          prefix: &quot;++ NADCHODZĄCE DANE ++&quot;,
+          message: &quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&quot;,
+          suffix: &quot;++ CHWAŁA OMNISSJASZOWI ++&quot;,
+        },
+        messages: {
+          missingConfig: &quot;Brak window.firebaseConfig. Sprawdź plik config/firebase-config.js&quot;,
+          statusReady: &quot;gotowe&quot;,
+          statusSending: &quot;wysyłam…&quot;,
+          statusCleared: &quot;wyczyszczono&quot;,
+          statusSent: &quot;wysłano&quot;,
+          statusError: &quot;BŁĄD&quot;,
+          statusPingLoading: &quot;ping…&quot;,
+          statusPingSent: &quot;ping wysłany&quot;,
+          statusPingError: &quot;BŁĄD ping&quot;,
+          alertPingError: &quot;Błąd ping:\n\n&quot;,
+        },
+      },
+      en: {
+        labels: {
+          languageSelect: &quot;Language version&quot;,
+          pageTitle: &quot;Data-Slate - GM panel&quot;,
+          labelFaction: &quot;Faction / layout&quot;,
+          labelMessageColor: &quot;Font color (message content)&quot;,
+          colorGreen: &quot;Green&quot;,
+          colorRed: &quot;Red&quot;,
+          colorGold: &quot;Gold&quot;,
+          colorWhite: &quot;White&quot;,
+          labelMessageSize: &quot;Font size (message content) — px&quot;,
+          labelPrefixSuffixColor: &quot;Prefix + Suffix color (shared)&quot;,
+          prefixSuffixColorHint: &quot;You can enter e.g. &lt;code&gt;#ffffff&lt;/code&gt; or &lt;code&gt;rgba(255,255,255,.88)&lt;/code&gt;&quot;,
+          prefixSuffixPickerHint: &quot;The picker sets color as &lt;code&gt;#RRGGBB&lt;/code&gt;&quot;,
+          labelPrefixSuffixSize: &quot;Prefix + Suffix font size (shared) — px&quot;,
+          logoHint:
+            &quot;The logo size is fixed in Data-Slate. Changing the prefix size may wrap (OK), the logo remains unchanged.&quot;,
+          labelFillersRandom: &quot;Filler randomness&quot;,
+          labelFillerLineCount: &quot;Filler line count&quot;,
+          buttonRerollFillers: &quot;Reroll&quot;,
+          randomHint: &quot;Unique prefixes and suffixes are always randomized based on the selected filler line count.&quot;,
+          labelShowLogo: &quot;Add logo&quot;,
+          labelFlicker: &quot;Flicker&quot;,
+          labelMessage: &quot;Message content&quot;,
+          messagePlaceholder: &quot;Type a message for players...&quot;,
+          buttonSend: &quot;Send&quot;,
+          buttonPing: &quot;Ping&quot;,
+          buttonClearScreen: &quot;Clear screen&quot;,
+          buttonClearField: &quot;Clear field&quot;,
+          labelStatus: &quot;Status:&quot;,
+          factionMechanicus: &quot;Adeptus Mechanicus&quot;,
+          factionInquisition: &quot;Inquisition&quot;,
+          factionMilitarum: &quot;Astra Militarum&quot;,
+          factionKhorne: &quot;Khorne&quot;,
+          factionNurgle: &quot;Nurgle&quot;,
+          factionTzeentch: &quot;Tzeentch&quot;,
+          factionSlaanesh: &quot;Slaanesh&quot;,
+          factionChaosUndivided: &quot;Chaos Undivided&quot;,
+        },
+        preview: {
+          prefix: &quot;++ INCOMING DATA FEED ++&quot;,
+          message: &quot;Lorem ipsum dolor sit amet, consectetur adipiscing elit.&quot;,
+          suffix: &quot;++ PRAISE THE OMNISSIAH ++&quot;,
+        },
+        messages: {
+          missingConfig: &quot;Missing window.firebaseConfig. Check config/firebase-config.js.&quot;,
+          statusReady: &quot;ready&quot;,
+          statusSending: &quot;sending…&quot;,
+          statusCleared: &quot;cleared&quot;,
+          statusSent: &quot;sent&quot;,
+          statusError: &quot;ERROR&quot;,
+          statusPingLoading: &quot;ping…&quot;,
+          statusPingSent: &quot;ping sent&quot;,
+          statusPingError: &quot;ping error&quot;,
+          alertPingError: &quot;Ping error:\n\n&quot;,
+        },
+      },
+    };
+
+    let currentLanguage = &quot;pl&quot;;
+
+    const applyLanguage = (lang) =&gt; {
+      currentLanguage = lang;
+      const t = translations[lang];
+      document.documentElement.lang = lang;
+      if (languageSelect) {
+        languageSelect.value = lang;
+        languageSelect.setAttribute(&quot;aria-label&quot;, t.labels.languageSelect);
+      }
+      document.title = t.labels.pageTitle;
+      document.querySelectorAll(&quot;[data-i18n]&quot;).forEach((element) =&gt; {
+        const key = element.getAttribute(&quot;data-i18n&quot;);
+        if (key in t.labels) {
+          element.textContent = t.labels[key];
+        }
+      });
+      document.querySelectorAll(&quot;[data-i18n-placeholder]&quot;).forEach((element) =&gt; {
+        const key = element.getAttribute(&quot;data-i18n-placeholder&quot;);
+        if (key in t.labels) {
+          element.setAttribute(&quot;placeholder&quot;, t.labels[key]);
+        }
+      });
+      document.querySelectorAll(&quot;[data-i18n]&quot;).forEach((element) =&gt; {
+        if ([&quot;prefixSuffixColorHint&quot;, &quot;prefixSuffixPickerHint&quot;, &quot;logoHint&quot;].includes(element.getAttribute(&quot;data-i18n&quot;))) {
+          element.innerHTML = t.labels[element.getAttribute(&quot;data-i18n&quot;)];
+        }
+      });
+      el.livePreviewMsg.textContent = t.preview.message;
+      if (el.status?.dataset?.statusKey &amp;&amp; t.messages[el.status.dataset.statusKey]) {
+        el.status.textContent = t.messages[el.status.dataset.statusKey];
+      }
+      computePreview();
+    };
+
+    const FONT_STACK = {
+      mechanicus:      &#x27;&quot;Share Tech Mono&quot;, Calibri, Arial, sans-serif&#x27;,
+      inquisition:     &#x27;&quot;Cinzel&quot;, Calibri, Arial, sans-serif&#x27;,
+      militarum:       &#x27;&quot;Rajdhani&quot;, Calibri, Arial, sans-serif&#x27;,
+      khorne:          &#x27;&quot;Black Ops One&quot;, Calibri, Arial, sans-serif&#x27;,
+      nurgle:          &#x27;&quot;Staatliches&quot;, Calibri, Arial, sans-serif&#x27;,
+      tzeentch:        &#x27;&quot;Orbitron&quot;, Calibri, Arial, sans-serif&#x27;,
+      slaanesh:        &#x27;&quot;Questrial&quot;, Calibri, Arial, sans-serif&#x27;,
+      chaos_undivided: &#x27;&quot;Russo One&quot;, Calibri, Arial, sans-serif&#x27;,
+    };
+
+    const LAYOUTS = {
+      mechanicus:{prefixes:[&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ SYSTEM ANALYSIS BEGIN +++&quot;,&quot;+++ ENCRYPTION ONLINE +++&quot;,&quot;+++ ENGAGE LITURGY +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;,&quot;+++ LOGIS-CHANNEL ACTIVE +++&quot;,&quot;+++ DATA LINK ESTABLISHED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ CORE STABILIZED +++&quot;,&quot;+++ BINHARIC CANT OPEN +++&quot;,&quot;+++ COGITATOR STACK ENGAGED +++&quot;,&quot;+++ RITE OF ACCESS COMMENCED +++&quot;,&quot;+++ MACHINE-SPIRIT QUERY +++&quot;,&quot;+++ SCRY-LOG INITIATED +++&quot;,&quot;+++ SANCTIFIED DATA STREAM +++&quot;,&quot;+++ LEXMECHANIC INPUT RECEIVED +++&quot;,&quot;+++ OMNISSIAN PROTOCOL ACTIVE +++&quot;,&quot;+++ SUBROUTINE: DIVINE CALCULATION +++&quot;,&quot;+++ AUSPEX THREAD ALIGNED +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ ACCESS SEALED +++&quot;],
+                 suffixes:[&quot;+++ PRAISE THE OMNISSIAH +++&quot;,&quot;+++ MACHINE SPIRIT CALMED +++&quot;,&quot;+++ THE FLESH IS WEAK +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ BINARY PRAYER SENT +++&quot;,&quot;+++ OMNISSIAH GUIDE US +++&quot;,&quot;+++ SERVITOR READY +++&quot;,&quot;+++ RITUAL COMPLETE +++&quot;,&quot;+++ CANTICLE EXECUTED +++&quot;,&quot;+++ BLESSINGS OF THE MACHINE GOD +++&quot;,&quot;+++ DATA IS HOLY +++&quot;,&quot;+++ IMPURITY REJECTED +++&quot;,&quot;+++ CALCULATION: PURE +++&quot;,&quot;+++ BY THE MOTIVE FORCE +++&quot;,&quot;+++ MACHINE SPIRIT PACIFIED +++&quot;,&quot;+++ COGITATION COMPLETE +++&quot;,&quot;+++ THE MACHINE ENDURES +++&quot;,&quot;+++ BINHARIC PRAISE TRANSMITTED +++&quot;,&quot;+++ THE EMPEROR PROTECTS +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]},
+      inquisition:{prefixes:[&quot;+++ INQUISITORIAL NOTICE +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ DECRYPTING ORDER +++&quot;,&quot;+++ COGITATOR ACCESS +++&quot;,&quot;+++ BY HIS WILL +++&quot;,&quot;+++ CLASSIFIED MATERIAL +++&quot;,&quot;+++ MIND CLEANSED +++&quot;,&quot;+++ CODEX SECURED +++&quot;,&quot;+++ INQUISITORIAL MANDATE +++&quot;,&quot;+++ ORDO CLEARANCE VERIFIED +++&quot;,&quot;+++ SEALED DOSSIER OPENED +++&quot;,&quot;+++ SANCTIONED INTELLIGENCE +++&quot;,&quot;+++ HERETICAL TRACE DETECTED +++&quot;,&quot;+++ PRIORITY DECREE INBOUND +++&quot;,&quot;+++ THREAT INDEX ESCALATING +++&quot;,&quot;+++ REDACTED RECORD RETRIEVED +++&quot;,&quot;+++ INTERROGATION TRANSCRIPT +++&quot;,&quot;+++ AUTHORITY OF THE HOLY ORDOS +++&quot;,&quot;+++ SUBJECT UNDER REVIEW +++&quot;,&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;],
+                  suffixes:[&quot;+++ THE EMPEROR PROTECTS +++&quot;,&quot;+++ PURGE COMPLETE +++&quot;,&quot;+++ FAITH REMAINS +++&quot;,&quot;+++ THOUGHT FOR THE DAY +++&quot;,&quot;+++ HERESY PURGED +++&quot;,&quot;+++ OATH UPHELD +++&quot;,&quot;+++ FAITH IS ARMOR +++&quot;,&quot;+++ EXAMINATION COMPLETE +++&quot;,&quot;+++ IN HIS NAME +++&quot;,&quot;+++ WITNESS THE THRONE +++&quot;,&quot;+++ COMPLIANCE ENFORCED +++&quot;,&quot;+++ DUTY TO THE THRONE ENDURES +++&quot;,&quot;+++ BY ORDER OF THE HOLY INQUISITION +++&quot;,&quot;+++ SILENCE IS DUTY +++&quot;,&quot;+++ JUDGEMENT STANDS +++&quot;,&quot;+++ PURITY IS NON-NEGOTIABLE +++&quot;,&quot;+++ DENUNCIATION ACCEPTED +++&quot;,&quot;+++ SEAL THE RECORD +++&quot;,&quot;+++ NO MERCY FOR THE TAINTED +++&quot;,&quot;+++ ACCESS SEALED +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ THE EYE OPENS +++&quot;]},
+      militarum:{prefixes:[&quot;+++ IMPERIAL SIGNAL +++&quot;,&quot;+++ HIGH COMMAND ORDER +++&quot;,&quot;+++ ORDERS INCOMING +++&quot;,&quot;+++ TACTICAL FEED +++&quot;,&quot;+++ REGIMENTAL DATA +++&quot;,&quot;+++ COMMAND OVERRIDE +++&quot;,&quot;+++ BATTLELINE UPLINK +++&quot;,&quot;+++ ENGAGEMENT ACTIVE +++&quot;,&quot;+++ OPERATIONAL BRIEF +++&quot;,&quot;+++ MUNITORUM DISPATCH +++&quot;,&quot;+++ FRONTLINE COMMUNIQUÉ +++&quot;,&quot;+++ VOX-CAST RECEIVED +++&quot;,&quot;+++ FIRE MISSION PENDING +++&quot;,&quot;+++ DEPLOYMENT ORDER +++&quot;,&quot;+++ STRATEGIC UPDATE +++&quot;,&quot;+++ THEATRE COMMAND ONLINE +++&quot;,&quot;+++ COMBAT STATUS REPORT +++&quot;,&quot;+++ FORM RANKS +++&quot;,&quot;+++ IMPERIAL TACTICA +++&quot;,&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;],
+                 suffixes:[&quot;+++ GLORY TO THE GUARD +++&quot;,&quot;+++ VICTORY IS ASSURED +++&quot;,&quot;+++ CADIA STANDS +++&quot;,&quot;+++ DUTY FULFILLED +++&quot;,&quot;+++ NO SACRIFICE TOO GREAT +++&quot;,&quot;+++ PERIMETER SECURED +++&quot;,&quot;+++ FOR THE EMPEROR +++&quot;,&quot;+++ STRATEGIC DIRECTIVE +++&quot;,&quot;+++ HOLD THE LINE +++&quot;,&quot;+++ STAND FIRM +++&quot;,&quot;+++ BAYONETS FIXED +++&quot;,&quot;+++ MUNITORUM APPROVED +++&quot;,&quot;+++ POSITION MAINTAINED +++&quot;,&quot;+++ CASUALTIES ACCEPTABLE +++&quot;,&quot;+++ ARTILLERY ANSWERS +++&quot;,&quot;+++ REGIMENT ENDURES +++&quot;,&quot;+++ ADVANCE BY COMMAND +++&quot;,&quot;+++ NO STEP BACK +++&quot;,&quot;+++ THE LINE HOLDS +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ ACCESS SEALED +++&quot;,&quot;+++ THE EMPEROR PROTECTS +++&quot;]},
+      khorne:{prefixes:[&quot;+++ BLOOD ALERT +++&quot;,&quot;+++ SKULL COUNT RISING +++&quot;,&quot;+++ RAGE TRANSMISSION +++&quot;,&quot;+++ COMBAT UPLINK +++&quot;,&quot;+++ SLAUGHTER INITIATED +++&quot;,&quot;+++ NO PEACE ONLY WAR +++&quot;,&quot;+++ DOMINATE THROUGH BLOOD +++&quot;,&quot;+++ BUTCHER&#x27;S CALL +++&quot;,&quot;+++ CHAINAXE CHORUS +++&quot;,&quot;+++ CARNAGE PROTOCOL +++&quot;,&quot;+++ BRASS THRONE DEMANDS +++&quot;,&quot;+++ SKULL TITHE ASCENDING +++&quot;,&quot;+++ WRATH WITHOUT MEASURE +++&quot;,&quot;+++ BATTLE FRENZY UNBOUND +++&quot;,&quot;+++ WAR CRY ASCENDANT +++&quot;,&quot;+++ GORE TIDE RISING +++&quot;,&quot;+++ OFFERING OF SKULLS +++&quot;,&quot;+++ MERCY DENIED +++&quot;,&quot;+++ THE RED PATH OPENS +++&quot;,&quot;+++ SLAUGHTER WITHOUT END +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+              suffixes:[&quot;+++ BLOOD FOR THE BLOOD GOD +++&quot;,&quot;+++ SKULLS FOR THE SKULL THRONE +++&quot;,&quot;+++ ALL MUST BLEED +++&quot;,&quot;+++ DEATH WITHOUT END +++&quot;,&quot;+++ STRIKE WITHOUT MERCY +++&quot;,&quot;+++ KILL! MAIM! BURN! +++&quot;,&quot;+++ RED FLOWS +++&quot;,&quot;+++ WRATH IS WORSHIP +++&quot;,&quot;+++ THE THRONE DEMANDS SKULLS +++&quot;,&quot;+++ LET THE GALAXY BLEED +++&quot;,&quot;+++ OFFER THEM TO KHORNE +++&quot;,&quot;+++ ONLY SLAUGHTER REMAINS +++&quot;,&quot;+++ NO RESPITE. NO MERCY. +++&quot;,&quot;+++ THE EIGHTFOLD PATH DRINKS +++&quot;,&quot;+++ BRASS AND BLOOD +++&quot;,&quot;+++ RAGE IS TRUTH +++&quot;,&quot;+++ CHAINBLADES SING +++&quot;,&quot;+++ THEIR SKULLS ARE DUE +++&quot;,&quot;+++ WAR IS THE ONLY PRAYER +++&quot;,&quot;+++ THE RED HARVEST GROWS +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]},
+      nurgle:{prefixes:[&quot;+++ BLOAT SIGNAL +++&quot;,&quot;+++ DECAY INITIATED +++&quot;,&quot;+++ DISEASE VECTOR ACTIVE +++&quot;,&quot;+++ PLAGUE SEED SENT +++&quot;,&quot;+++ SPOREFIELD DEPLOYED +++&quot;,&quot;+++ VIRUSCODE ENGAGED +++&quot;,&quot;+++ ALL IS ROT +++&quot;,&quot;+++ FLESH SAGS +++&quot;,&quot;+++ FOULNESS RISES +++&quot;,&quot;+++ CONTAGION BLOOMS +++&quot;,&quot;+++ PESTILENCE CURRENT +++&quot;,&quot;+++ SEPTIC TIDE RISING +++&quot;,&quot;+++ ROT-WIND ASCENDANT +++&quot;,&quot;+++ INFESTATION CONFIRMED +++&quot;,&quot;+++ BLESSED CORRUPTION SPREADS +++&quot;,&quot;+++ GARDEN GROWS +++&quot;,&quot;+++ PUSTULENT SIGNAL +++&quot;,&quot;+++ PLAGUE BELLS TOLL +++&quot;,&quot;+++ SWEET RUIN APPROACHES +++&quot;,&quot;+++ THE ROT TAKES ROOT +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+              suffixes:[&quot;+++ PRAISE GRANDFATHER NURGLE +++&quot;,&quot;+++ FILTH TRANSMITTED +++&quot;,&quot;+++ ROTTEN JOY +++&quot;,&quot;+++ CONTAGION SPREADS +++&quot;,&quot;+++ FLIES REJOICE +++&quot;,&quot;+++ FESTERING COMPLETE +++&quot;,&quot;+++ MUCOUS FLOW +++&quot;,&quot;+++ BLESSINGS OF ROT +++&quot;,&quot;+++ GLORIOUS CORRUPTION +++&quot;,&quot;+++ THE GARDEN WELCOMES ALL +++&quot;,&quot;+++ DECAY IS GENEROUS +++&quot;,&quot;+++ EMBRACE THE SWEET SICKNESS +++&quot;,&quot;+++ PUTRESCENCE ENDURES +++&quot;,&quot;+++ JOY IN RUIN +++&quot;,&quot;+++ THE BLOATED LORD PROVIDES +++&quot;,&quot;+++ PLAGUE GIFT DELIVERED +++&quot;,&quot;+++ ROT IS A BLESSING +++&quot;,&quot;+++ ALL THINGS RIPEN +++&quot;,&quot;+++ CORRUPTION TAKES HOLD +++&quot;,&quot;+++ THE FLIES SING +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]},
+      tzeentch:{prefixes:[&quot;+++ KNOWLEDGE UNFOLDS +++&quot;,&quot;+++ SCHEME RUNNING +++&quot;,&quot;+++ DATA TWISTED +++&quot;,&quot;+++ WARP-TEXT INCOMING +++&quot;,&quot;+++ INVERSION ACTIVE +++&quot;,&quot;+++ DESTINY WRITTEN +++&quot;,&quot;+++ NOTHING IS AS IT SEEMS +++&quot;,&quot;+++ PATTERNS SHIFT +++&quot;,&quot;+++ THREADS CONVERGE +++&quot;,&quot;+++ PROBABILITY FRACTURES +++&quot;,&quot;+++ HIDDEN HAND MOVES +++&quot;,&quot;+++ THE NEXT TURN BEGINS +++&quot;,&quot;+++ FATE MATRIX REVISED +++&quot;,&quot;+++ MANY PATHS OPEN +++&quot;,&quot;+++ THE SCHEME DEEPENS +++&quot;,&quot;+++ MUTATION OF INTENT +++&quot;,&quot;+++ THE HOUR OF CHANGE +++&quot;,&quot;+++ SECRETS BECOME REAL +++&quot;,&quot;+++ WARP PARADOX STABILIZED +++&quot;,&quot;+++ DESTINY RECURSIVE +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+               suffixes:[&quot;+++ ALL IS CHANGE +++&quot;,&quot;+++ PLAN: PHASE 7 +++&quot;,&quot;+++ EYE OPENS +++&quot;,&quot;+++ THOUGHT MUTATED +++&quot;,&quot;+++ CYCLE CONTINUES +++&quot;,&quot;+++ OBSERVE THE CHANGE +++&quot;,&quot;+++ REWRITE EVERYTHING +++&quot;,&quot;+++ JUST AS PLANNED +++&quot;,&quot;+++ ALL PART OF THE PLAN +++&quot;,&quot;+++ FATE RECOMPILED +++&quot;,&quot;+++ THE CHANGER SMILES +++&quot;,&quot;+++ OUTCOME REVISED +++&quot;,&quot;+++ THE PATTERN HOLDS +++&quot;,&quot;+++ TOMORROW HAS MOVED +++&quot;,&quot;+++ THE SCRIPT BURNS +++&quot;,&quot;+++ TRUTH RECAST +++&quot;,&quot;+++ THE LABYRINTH TURNS +++&quot;,&quot;+++ FORM IS TEMPORARY +++&quot;,&quot;+++ DESTINY FRACTURES +++&quot;,&quot;+++ THE LAST WORD CHANGES +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]},
+      slaanesh:{prefixes:[&quot;+++ ECSTASY PULSE +++&quot;,&quot;+++ SENSORY OVERLOAD +++&quot;,&quot;+++ DESIRE BREACH +++&quot;,&quot;+++ TOUCH THE DIVINE +++&quot;,&quot;+++ TASTE THE PAIN +++&quot;,&quot;+++ LUSTWAVE TRANSMITTED +++&quot;,&quot;+++ EXCESS COMPLETE +++&quot;,&quot;+++ VELVET SCREAM +++&quot;,&quot;+++ RAPTURE SIGNAL +++&quot;,&quot;+++ SENSORIA UNBOUND +++&quot;,&quot;+++ EXQUISITE AGONY INBOUND +++&quot;,&quot;+++ TEMPTATION CHANNEL OPEN +++&quot;,&quot;+++ PERFECT NOTE STRUCK +++&quot;,&quot;+++ THRESHOLD OF ECSTASY +++&quot;,&quot;+++ INDULGENCE WITHOUT LIMIT +++&quot;,&quot;+++ DESIRE ASCENDANT +++&quot;,&quot;+++ HARMONIC OBSESSION +++&quot;,&quot;+++ THE SILKEN EDGE DRAWS NEAR +++&quot;,&quot;+++ SENSORY FEED PEAKING +++&quot;,&quot;+++ DELIGHT SPIKES +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;],
+               suffixes:[&quot;+++ FEED THE HUNGER +++&quot;,&quot;+++ THE PERFECT MOMENT +++&quot;,&quot;+++ PAIN IS PLEASURE +++&quot;,&quot;+++ EXCESS IS TRUTH +++&quot;,&quot;+++ UNHOLY HARMONY +++&quot;,&quot;+++ FEEL EVERYTHING +++&quot;,&quot;+++ TEMPTATION SPIKE +++&quot;,&quot;+++ PERFECTION IS BLISS +++&quot;,&quot;+++ PLEASURE ASCENDANT +++&quot;,&quot;+++ THE SENSES SHALL OPEN +++&quot;,&quot;+++ ECSTASY WITHOUT END +++&quot;,&quot;+++ RAPTURE CONSUMES +++&quot;,&quot;+++ BEAUTY CUTS DEEPLY +++&quot;,&quot;+++ SENSORIA SATURATED +++&quot;,&quot;+++ DESIRE BECOMES LAW +++&quot;,&quot;+++ EVERY NOTE A KNIFE +++&quot;,&quot;+++ BLISS THROUGH EXCESS +++&quot;,&quot;+++ THE HUNGER REMAINS +++&quot;,&quot;+++ PERFECT AGONY +++&quot;,&quot;+++ INDULGENCE VICTORIOUS +++&quot;,&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;]},
+      chaos_undivided:{prefixes:[&quot;+++ WARP STIRRING +++&quot;,&quot;+++ TRANSMISSION CORRUPTED +++&quot;,&quot;+++ HERESY INBOUND +++&quot;,&quot;+++ WARP SIGNATURE FOUND +++&quot;,&quot;+++ SACRIFICE ACCEPTED +++&quot;,&quot;+++ WARP ENERGY RISING +++&quot;,&quot;+++ ORDER BREAKS +++&quot;,&quot;+++ FLESH TURNS +++&quot;,&quot;+++ ASCENSION IMMINENT +++&quot;,&quot;+++ REALSPACE THINS +++&quot;,&quot;+++ VEIL BREACH DETECTED +++&quot;,&quot;+++ CHAOS CHORUS RISING +++&quot;,&quot;+++ RUINOUS CONVERGENCE +++&quot;,&quot;+++ THE EYE TURNS +++&quot;,&quot;+++ CORRUPTION VECTOR LOCKED +++&quot;,&quot;+++ THE PACT STANDS +++&quot;,&quot;+++ REALITY UNFASTENS +++&quot;,&quot;+++ THE WARP ANSWERS +++&quot;,&quot;+++ UNHOLY ALIGNMENT +++&quot;,&quot;+++ THE DARK BETWEEN STARS +++&quot;,&quot;+++ INCOMING DATA FEED +++&quot;,&quot;+++ DATA INTERCEPTED +++&quot;,&quot;+++ SIGNAL LOCKED +++&quot;,&quot;+++ ARCHIVE ACCESS +++&quot;],
+                      suffixes:[&quot;+++ GLORY TO CHAOS +++&quot;,&quot;+++ DARK GODS SMILE +++&quot;,&quot;+++ THE EYE OPENS +++&quot;,&quot;+++ ASCEND AND BURN +++&quot;,&quot;+++ ALL HAIL THE DARK GODS +++&quot;,&quot;+++ REALSPACE BLEEDS +++&quot;,&quot;+++ STARS ARE WRONG +++&quot;,&quot;+++ VOID WITHIN +++&quot;,&quot;+++ ETERNAL CHANGE +++&quot;,&quot;+++ LET THE GALAXY BREAK +++&quot;,&quot;+++ THE VEIL IS TORN +++&quot;,&quot;+++ OFFERING ACCEPTED +++&quot;,&quot;+++ THE RUINOUS POWERS PROVIDE +++&quot;,&quot;+++ CORRUPTION WITHOUT MASTER +++&quot;,&quot;+++ CHAOS IS ASCENDANT +++&quot;,&quot;+++ THE LONG WAR ENDURES +++&quot;,&quot;+++ REALITY YIELDS +++&quot;,&quot;+++ THE WARP CLAIMS ALL +++&quot;,&quot;+++ BLESSED BE THE DAMNED +++&quot;,&quot;+++ NIGHT COMES FROM WITHIN +++&quot;,&quot;+++ ACCESS SEALED +++&quot;,&quot;+++ SYSTEM CLEANSED +++&quot;,&quot;+++ THE EMPEROR PROTECTS +++&quot;]},
+    };
+
+    const fillerState = {
+      count: 3,
+      prefixLines: [],
+      suffixLines: [],
+    };
+
+    function setStatus(t, key){
+      el.status.textContent = t;
+      if (key) {
+        el.status.dataset.statusKey = key;
+      }
+    }
+    function clamp(n, min, max){
+      const x = Number(n);
+      if(!Number.isFinite(x)) return min;
+      return Math.max(min, Math.min(max, Math.floor(x)));
+    }
+    function nonce(){ return String(Date.now()) + &quot;-&quot; + String(Math.random()).slice(2); }
+    function getLayout(){ return LAYOUTS[el.faction.value] || LAYOUTS.mechanicus; }
+
+    function normalizePx(n, min, max, fallback){
+      const x = Number(n);
+      if(!Number.isFinite(x)) return fallback;
+      return Math.max(min, Math.min(max, Math.floor(x)));
+    }
+
+    function getPrefixSuffixColor(){
+      const t = (el.psColorText.value || &quot;&quot;).trim();
+      return t || &quot;rgba(255,255,255,.88)&quot;;
+    }
+
+    function drawUniqueRandomLines(source, count){
+      const arr = [...source];
+      for(let i=arr.length-1; i&gt;0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr.slice(0, Math.min(count, arr.length));
+    }
+
+    function renderFillerPreview(){
+      el.prefixPreview.textContent = fillerState.prefixLines.join(&quot;\n&quot;);
+      el.suffixPreview.textContent = fillerState.suffixLines.join(&quot;\n&quot;);
+    }
+
+    function updateLivePreview(){
+      const fontStack = FONT_STACK[el.faction.value] || &#x27;Calibri, Arial, sans-serif&#x27;;
+      const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20) + &quot;px&quot;;
+      const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10) + &quot;px&quot;;
+      const psColor   = getPrefixSuffixColor();
+      const msgColor  = el.fontColor.value || &quot;#00ff66&quot;;
+
+      el.livePreview.style.fontFamily = fontStack;
+      el.livePreviewPrefix.textContent = fillerState.prefixLines.join(&quot;\n&quot;);
+      el.livePreviewSuffix.textContent = fillerState.suffixLines.join(&quot;\n&quot;);
+
+      el.livePreviewPrefix.style.color = psColor;
+      el.livePreviewSuffix.style.color = psColor;
+      el.livePreviewPrefix.style.fontSize = psFontPx;
+      el.livePreviewSuffix.style.fontSize = psFontPx;
+
+      el.livePreviewMsg.style.color = msgColor;
+      el.livePreviewMsg.style.fontSize = msgFontPx;
+    }
+
+    function rerollFillers(){
+      const cfg = getLayout();
+      fillerState.count = clamp(el.fillerLineCount.value, 1, 5);
+      el.fillerLineCount.value = String(fillerState.count);
+      fillerState.prefixLines = drawUniqueRandomLines(cfg.prefixes, fillerState.count);
+      fillerState.suffixLines = drawUniqueRandomLines(cfg.suffixes, fillerState.count);
+      renderFillerPreview();
+      updateLivePreview();
+    }
+
+    function computePreview(){
+      renderFillerPreview();
+      updateLivePreview();
+    }
+
+
+    async function triggerPushNotification() {
+      const triggerEndpoint = window.infWebPushConfig?.triggerEndpoint;
+      if (!triggerEndpoint) {
+        throw new Error(&quot;Brak triggerEndpoint w konfiguracji Web Push.&quot;);
+      }
+
+      const response = await fetch(triggerEndpoint, {
+        method: &quot;POST&quot;,
+        headers: {
+          &quot;Content-Type&quot;: &quot;application/json&quot;,
+          &quot;Authorization&quot;: &quot;Bearer 3puHu3zzaFy2obwXB7dM7KXPOiVTSjWe&quot;
+        },
+        body: JSON.stringify({
+          title: &quot;Infoczytnik&quot;,
+          body: &quot;+++ INCOMING DATA-TRANSMISSION +++&quot;,
+          icon: &quot;/IkonaPowiadomien.png&quot;,
+          badge: &quot;/IkonaPowiadomien.png&quot;,
+          tag: &quot;infoczytnik-new-message&quot;,
+          url: &quot;/Infoczytnik/Infoczytnik.html&quot;
+        })
+      });
+
+      if (!response.ok) {
+        const text = await response.text().catch(() =&gt; &quot;&quot;);
+        throw new Error(`Trigger push failed: ${response.status} ${text}`);
+      }
+    }
+    async function sendMessage(isClear){
+
+      const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
+      const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
+
+      setStatus(translations[currentLanguage].messages.statusSending, &quot;statusSending&quot;);
+      try{
+        await currentRef.set({
+          type: isClear ? &quot;clear&quot; : &quot;message&quot;,
+          faction: el.faction.value,
+
+          // treść wiadomości
+          color: el.fontColor.value || &quot;#00ff66&quot;,
+          fontColor: el.fontColor.value || &quot;#00ff66&quot;,
+          msgFontSize: msgFontPx + &quot;px&quot;,
+
+          // prefix/suffix styl
+          prefixColor: getPrefixSuffixColor(),
+          suffixColor: getPrefixSuffixColor(),
+          prefixFontSize: psFontPx + &quot;px&quot;,
+          suffixFontSize: psFontPx + &quot;px&quot;,
+
+          // fillery
+          fillerLineCount: fillerState.count,
+          prefixLines: isClear ? [] : fillerState.prefixLines,
+          suffixLines: isClear ? [] : fillerState.suffixLines,
+          showLogo: !!el.showLogo.checked,
+          flicker: !!el.flicker.checked,
+
+          // tekst
+          text: isClear ? &quot;&quot; : (el.message.value || &quot;&quot;),
+
+          nonce: nonce(),
+          ts: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge:false });
+
+        if(!isClear){
+          try{
+            await triggerPushNotification();
+          }catch(pushError){
+            console.warn(&quot;Nie udało się uruchomić triggera Web Push.&quot;, pushError);
+          }
+        }
+
+        setStatus(
+          isClear
+            ? translations[currentLanguage].messages.statusCleared
+            : translations[currentLanguage].messages.statusSent,
+          isClear ? &quot;statusCleared&quot; : &quot;statusSent&quot;
+        );
+      }catch(e){
+        console.error(e);
+        setStatus(translations[currentLanguage].messages.statusError, &quot;statusError&quot;);
+        alert(&quot;Błąd zapisu:\n\n&quot; + (e?.message || e));
+      }
+      computePreview();
+    }
+
+    async function ping(){
+      const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
+      const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
+
+      setStatus(translations[currentLanguage].messages.statusPingLoading, &quot;statusPingLoading&quot;);
+      try{
+        await currentRef.set({
+          type:&quot;ping&quot;,
+          faction: el.faction.value,
+
+          // zostawiamy styl w docu, żeby nie “gubić” ustawień
+          color: el.fontColor.value || &quot;#00ff66&quot;,
+          fontColor: el.fontColor.value || &quot;#00ff66&quot;,
+          msgFontSize: msgFontPx + &quot;px&quot;,
+          prefixColor: getPrefixSuffixColor(),
+          suffixColor: getPrefixSuffixColor(),
+          prefixFontSize: psFontPx + &quot;px&quot;,
+          suffixFontSize: psFontPx + &quot;px&quot;,
+          showLogo: !!el.showLogo.checked,
+          flicker: !!el.flicker.checked,
+
+          nonce: nonce(),
+          ts: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge:true });
+
+        setStatus(translations[currentLanguage].messages.statusPingSent, &quot;statusPingSent&quot;);
+      }catch(e){
+        console.error(e);
+        setStatus(translations[currentLanguage].messages.statusPingError, &quot;statusPingError&quot;);
+        alert(translations[currentLanguage].messages.alertPingError + (e?.message || e));
+      }
+    }
+
+    // ====== EVENTY ======
+    el.sendBtn.addEventListener(&quot;click&quot;, () =&gt; sendMessage(false));
+    el.clearBtn.addEventListener(&quot;click&quot;, () =&gt; sendMessage(true));
+    el.pingBtn.addEventListener(&quot;click&quot;, ping);
+
+    el.clearTextBtn.addEventListener(&quot;click&quot;, () =&gt; {
+      el.message.value = &quot;&quot;;
+      el.message.focus();
+    });
+
+    // chips (msg i ps)
+    el.chips.forEach(ch =&gt; ch.addEventListener(&quot;click&quot;, () =&gt; {
+      const target = ch.getAttribute(&quot;data-target&quot;);
+      const c = ch.getAttribute(&quot;data-color&quot;);
+      if(!c) return;
+
+      if(target === &quot;msg&quot;){
+        el.fontColor.value = c;
+      }else if(target === &quot;ps&quot;){
+        el.psColorText.value = c;
+        if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(c)){
+          el.psColorPicker.value = (c.length===4)
+            ? (&quot;#&quot; + c[1]+c[1]+c[2]+c[2]+c[3]+c[3])
+            : c;
+        }
+      }
+
+      updateLivePreview();
+    }));
+
+    // picker prefix/suffix -&gt; ustawia tekst na #RRGGBB
+    el.psColorPicker.addEventListener(&quot;input&quot;, () =&gt; {
+      el.psColorText.value = el.psColorPicker.value;
+      updateLivePreview();
+    });
+
+    [&quot;change&quot;,&quot;input&quot;].forEach(evt=&gt;{
+      el.faction.addEventListener(evt, rerollFillers);
+      el.fillerLineCount.addEventListener(evt, rerollFillers);
+    });
+    el.rerollFillersBtn.addEventListener(&quot;click&quot;, rerollFillers);
+
+    [&quot;input&quot;,&quot;change&quot;].forEach(evt=&gt;{
+      el.fontColor.addEventListener(evt, updateLivePreview);
+      el.msgFontSize.addEventListener(evt, updateLivePreview);
+      el.psColorText.addEventListener(evt, updateLivePreview);
+      el.psFontSize.addEventListener(evt, updateLivePreview);
+    });
+
+    applyLanguage(currentLanguage);
+    if (languageSelect) {
+      languageSelect.addEventListener(&quot;change&quot;, (event) =&gt; {
+        applyLanguage(event.target.value);
+      });
+    }
+
+    setStatus(translations[currentLanguage].messages.statusReady, &quot;statusReady&quot;);
+    rerollFillers();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<h3>Infoczytnik/config/web-push-config.js</h3>
+<pre>window.infWebPushConfig = {
+  vapidPublicKey: &quot;BHEgyK2LpItiJFrT28XceIiHehAsbya5cg9v88hKDOUkCMcZciwBjgBeum5VQs247VTuSJceWwOaZas0WoI-eig&quot;,
+  subscribeEndpoint: &quot;https://wrathandglory-push-api.tarczynski-pawel.workers.dev/api/push/subscribe&quot;,
+  triggerEndpoint: &quot;https://wrathandglory-push-api.tarczynski-pawel.workers.dev/api/push/trigger&quot;
+};
+</pre>
+<h3>Infoczytnik/config/web-push-config.production.example.js</h3>
+<pre>window.infWebPushConfig = {
+  // Publiczny VAPID key z Firebase Cloud Messaging (Web Push certificates).
+  vapidPublicKey: &quot;BHEgyK2LpItiJFrT28XceIiHehAsbya5cg9v88hKDOUkCMcZciwBjgBeum5VQs247VTuSJceWwOaZas0WoI-eig&quot;,
+
+  // Produkcyjny backend HTTPS zapisujący subskrypcję urządzenia.
+  subscribeEndpoint: &quot;https://twoja-domena.pl/api/push/subscribe&quot;,
+
+  // Produkcyjny backend HTTPS uruchamiający push po wysłaniu wiadomości przez GM.
+  triggerEndpoint: &quot;https://twoja-domena.pl/api/push/trigger&quot;
+};
+</pre>
+<h3>Infoczytnik/backend/package.json</h3>
+<pre>{
+  &quot;name&quot;: &quot;infoczytnik-web-push-backend&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;private&quot;: true,
+  &quot;description&quot;: &quot;Własny backend Web Push dla modułu Infoczytnik&quot;,
+  &quot;main&quot;: &quot;server.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;node server.js&quot;,
+    &quot;dev&quot;: &quot;node --watch server.js&quot;
+  },
+  &quot;dependencies&quot;: {
+    &quot;cors&quot;: &quot;^2.8.5&quot;,
+    &quot;dotenv&quot;: &quot;^16.4.5&quot;,
+    &quot;express&quot;: &quot;^4.19.2&quot;,
+    &quot;web-push&quot;: &quot;^3.6.7&quot;
+  }
+}
+</pre>
+<h3>Infoczytnik/backend/.env.example</h3>
+<pre>PORT=8787
+WEB_PUSH_VAPID_PUBLIC_KEY=TU_WSTAW_PUBLICZNY_KLUCZ_VAPID
+WEB_PUSH_VAPID_PRIVATE_KEY=TU_WSTAW_PRYWATNY_KLUCZ_VAPID
+WEB_PUSH_VAPID_SUBJECT=mailto:admin@example.com
+SUBSCRIPTIONS_FILE=./data/subscriptions.json
+ALLOWED_ORIGINS=https://cutelittlegoat.github.io,https://twojadomena.pl
+</pre>
+<h3>Infoczytnik/backend/data/subscriptions.json</h3>
+<pre>[]
+</pre>
+</body>
+</html>
