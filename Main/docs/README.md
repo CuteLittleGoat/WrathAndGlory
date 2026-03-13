@@ -41,8 +41,8 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 
 ### Jak używać
 1. Otwórz stronę startową `Main/index.html` w przeglądarce.
-2. Domyślnie zobaczysz widok użytkownika z sześcioma przyciskami (Skarbiec Danych, Mapa, Obrazki, Infoczytnik, Kalkulator, Rzut kośćmi).
-3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski (m.in. Generator NPC, Generator nazw, Audio) oraz notatki o panelach admina.
+2. Domyślnie zobaczysz widok użytkownika z sześcioma przyciskami w kolejności: Infoczytnik, Skarbiec Danych, Obrazki, Mapa, Kalkulator, Rzut kośćmi.
+3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski w kolejności: Infoczytnik, Skarbiec Danych, Generator Nazw, Generator NPC, Audio, Obrazki, Mapa, Kalkulator, Rzut kośćmi, oraz notatki o panelach admina.
 4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
 5. Przyciski modułów aplikacji (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w tym samym kontekście (`_self`), a tylko linki zewnętrzne (Mapa, Obrazki) otwierają nową kartę (`_blank`).
 
@@ -123,8 +123,8 @@ Browser tab title: **Kozi Przybornik**.
 
 ### How to use
 1. Open the landing page at `Main/index.html` in your browser.
-2. By default you will see the user view with six buttons (DataVault, Map, Images, DataSlate, Calculator, DiceRoller).
-3. To enable admin view, add the `?admin=1` parameter. All buttons (including NPC Generator, Name Generator, Audio) and admin notes become visible.
+2. By default, the user view shows six buttons in this order: DataSlate, DataVault, Images, Map, Calculator, DiceRoller.
+3. To enable admin view, add the `?admin=1` parameter. All buttons become visible in this order: DataSlate, DataVault, Name Generator, NPC Generator, Audio, Images, Map, Calculator, DiceRoller, plus admin notes.
 4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
 5. App-module buttons (NPC Generator, DataVault, Calculator) open in the same context (`_self`), while only external links (Map, Images) open a new tab (`_blank`).
 
