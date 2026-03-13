@@ -110,16 +110,16 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 Struktura dokumentu składa się z:
 - `<main>` – główny panel.
 - `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"` (plik znajduje się w `Main/` obok `index.html`).
-- `<div class="actions">` – siatka przycisków w kolejności od lewej:
-  1. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
-  2. **Generator nazw** – link do `../GeneratorNazw/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
-  3. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
-  4. **Mapa** – przycisk posiada atrybut `data-map-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
-  5. **Obrazki** – przycisk posiada atrybut `data-images-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
-  6. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
-  7. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
-  8. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
-  9. **Audio** – link do `../Audio/index.html` (cały blok widoczny tylko w trybie admina).
+- `<div class="actions">` – siatka przycisków. Kolejność elementów w DOM została ustawiona tak, aby po ukryciu bloków admina widok użytkownika pozostawał bez luk:
+  1. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
+  2. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
+  3. **Generator nazw** – link do `../GeneratorNazw/index.html` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
+  4. **Generator NPC** – link do `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` (widoczny tylko w trybie admina; element ma `data-admin-only="true"`).
+  5. **Audio** – link do `../Audio/index.html` (widoczny tylko w trybie admina).
+  6. **Obrazki** – przycisk posiada atrybut `data-images-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
+  7. **Mapa** – przycisk posiada atrybut `data-map-link`, a docelowy adres jest ustawiany przez skrypt na podstawie pliku `Main/ZmienneHiperlacza.md`. W HTML domyślnie ma `href="#"` i jest zastępowany po wczytaniu konfiguracji.
+  8. **Kalkulator** – link do `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/`.
+  9. **Rzut kośćmi** – link do `../DiceRoller/index.html` (ścieżka lokalna w repozytorium).
 
 Przyciski do modułów aplikacji (Generator NPC, Skarbiec Danych, Kalkulator) używają `target="_self"`, aby zachować spójny kontekst PWA/standalone. Tylko linki celowo zewnętrzne (**Mapa**, **Obrazki**) otwierają się w nowej karcie (`target="_blank"`) z zabezpieczeniem `rel="noopener noreferrer"`.
 
@@ -232,3 +232,10 @@ Dodane funkcje:
   - `padding: 6px 10px`, `font-size: 11px`
   - `border-radius: 999px`
 - Efekt: przycisk jest zawsze w prawym dolnym rogu ekranu i nie zaburza geometrii przycisków nawigacyjnych modułów.
+
+
+## Aktualizacja techniczna 2026-03-13 — porządkowanie kolejności przycisków modułów
+- Przebudowano kolejność bloków `.stack` w `Main/index.html`, aby po odfiltrowaniu elementów `data-admin-only="true"` nie zostawała pusta komórka siatki między **Infoczytnik** i **Kalkulator**.
+- Widok użytkownika ma teraz stałą kolejność: **Infoczytnik → Skarbiec Danych → Obrazki → Mapa → Kalkulator → Rzut kośćmi**.
+- Widok admina ma teraz stałą kolejność: **Infoczytnik → Skarbiec Danych → Generator Nazw → Generator NPC → Audio → Obrazki → Mapa → Kalkulator → Rzut kośćmi**.
+- Usunięto z siatki `.actions` zbędny duplikat `button#pushBtn`; przycisk powiadomień występuje tylko raz jako element fixed poza siatką.
