@@ -107,6 +107,32 @@
       line-height: 1.35;
       word-break: break-word;
     }
+    .pushCta {
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 30;
+      width: auto;
+      border-color: #ff3b30;
+      background: rgba(255, 59, 48, 0.2);
+      color: #ffe5e3;
+      box-shadow: 0 0 14px rgba(255, 59, 48, 0.35);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .pushCta:hover {
+      background: rgba(255, 59, 48, 0.28);
+      box-shadow: 0 0 16px rgba(255, 59, 48, 0.45);
+    }
+
+    .pushCta:active {
+      background: rgba(255, 59, 48, 0.36);
+    }
   </style>
 </head>
 <body>
@@ -145,6 +171,8 @@
       </div>
     </div>
   </main>
+  <button class="btn pushCta" id="pushBtn" type="button">Włącz powiadomienia</button>
+  <script src="../Infoczytnik/config/web-push-config.js"></script>
   <script>
     const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
     const adminOnlyElements = document.querySelectorAll('[data-admin-only="true"]');
@@ -201,10 +229,124 @@
         console.warn("Nie udało się wczytać zmiennych hiperłączy.", error);
       });
 
+    const pushButton = document.getElementById("pushBtn");
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+      const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+      const rawData = atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+      for (let i = 0; i < rawData.length; i += 1) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+    function getPushConfig() {
+      const pushConfig = window.infWebPushConfig || {};
+      const hasVapidPublicKey = typeof pushConfig.vapidPublicKey === "string" && pushConfig.vapidPublicKey.trim().length > 0;
+      const hasSubscribeEndpoint = typeof pushConfig.subscribeEndpoint === "string" && pushConfig.subscribeEndpoint.trim().length > 0;
+
+      return {
+        pushConfig,
+        hasVapidPublicKey,
+        hasSubscribeEndpoint,
+        isConfigured: hasVapidPublicKey && hasSubscribeEndpoint
+      };
+    }
+
+    function setPushButtonMessage(message, isError = false) {
+      if (!pushButton) return;
+
+      pushButton.textContent = message;
+      pushButton.title = message;
+      if (isError) {
+        pushButton.dataset.state = "error";
+      } else {
+        delete pushButton.dataset.state;
+      }
+    }
+
+    function refreshPushButtonState() {
+      if (!pushButton) return;
+
+      const pushState = getPushConfig();
+      if (pushState.isConfigured) return;
+
+      pushButton.disabled = true;
+      pushButton.textContent = "Powiadomienia: brak konfiguracji";
+      pushButton.title = "Uzupełnij Infoczytnik/config/web-push-config.js (vapidPublicKey + subscribeEndpoint).";
+    }
+
+    async function ensureServiceWorkerRegistration() {
+      if (!("serviceWorker" in navigator)) return null;
+      return navigator.serviceWorker.register("../service-worker.js");
+    }
+
+    async function enablePushNotifications() {
+      const pushState = getPushConfig();
+      const pushConfig = pushState.pushConfig;
+
+      if (!pushState.isConfigured) {
+        refreshPushButtonState();
+        console.warn("Brak konfiguracji Web Push (vapidPublicKey/subscribeEndpoint) w Infoczytnik/config/web-push-config.js");
+        return;
+      }
+
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
+        setPushButtonMessage("Przeglądarka nie obsługuje Web Push.", true);
+        pushButton.disabled = true;
+        return;
+      }
+
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        setPushButtonMessage("Wymagana zgoda na powiadomienia w przeglądarce.", true);
+        return;
+      }
+
+      await ensureServiceWorkerRegistration();
+      const registration = await navigator.serviceWorker.ready;
+      const existingSubscription = await registration.pushManager.getSubscription();
+      const subscription = existingSubscription || await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(pushConfig.vapidPublicKey)
+      });
+
+      const response = await fetch(pushConfig.subscribeEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "main-launcher",
+          createdAt: Date.now(),
+          subscription
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`Błąd zapisu subskrypcji: ${response.status}`);
+      }
+
+      setPushButtonMessage("Powiadomienia aktywne");
+      pushButton.disabled = true;
+    }
+
+    if (pushButton) {
+      pushButton.addEventListener("click", () => {
+        enablePushNotifications().catch((error) => {
+          console.error(error);
+          const errorMessage = error?.message ? String(error.message) : "Nieznany błąd";
+          setPushButtonMessage(`Błąd Web Push: ${errorMessage}`, true);
+        });
+      });
+    }
+
+    refreshPushButtonState();
+
 
     if ("serviceWorker" in navigator) {
       window.addEventListener("load", () => {
-        navigator.serviceWorker.register("../service-worker.js").catch((error) => {
+        ensureServiceWorkerRegistration().catch((error) => {
           console.warn("Rejestracja Service Workera nie powiodła się.", error);
         });
       });

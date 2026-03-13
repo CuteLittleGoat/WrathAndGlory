@@ -196,3 +196,21 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 - The PWA now starts with `start_url` set to `Main/index.html?pwa=1`, which keeps the default user-only view without admin panels.
 - Service Worker now uses an online-first strategy: when offline, it returns a clear “internet required” message instead of maintaining a quasi-offline behavior.
 - Push notifications now open the production screen `Infoczytnik/Infoczytnik.html` by default.
+
+## Aktualizacja 2026-03-13 (PL)
+- Na stronie `Main/index.html` dodano wyróżniony, czerwony przycisk **Włącz powiadomienia**.
+- Przycisk uruchamia zgodę przeglądarki i zapis subskrypcji Web Push dla tego samego origin co moduł Infoczytnik.
+- Przycisk jest widoczny w widoku użytkownika i admina, aby onboarding powiadomień był dostępny od razu po wejściu do menu głównego.
+
+## Update 2026-03-13 (EN)
+- A highlighted red **Enable notifications** button was added to `Main/index.html`.
+- The button requests browser permission and stores a Web Push subscription for the same origin as the Infoczytnik module.
+- The button is visible in both user and admin views to make push-notification onboarding available directly from the main launcher.
+
+## Aktualizacja 2026-03-13 (PL) — korekta przycisku powiadomień
+- Przycisk **Włącz powiadomienia** został zmniejszony i ma mocno zaokrąglone krawędzie.
+- Przycisk jest przypięty na stałe do prawego dolnego rogu ekranu, niezależnie od układu siatki modułów.
+
+## Update 2026-03-13 (EN) — notifications button adjustment
+- The **Enable notifications** button is now smaller and pill-shaped.
+- The button is fixed to the bottom-right corner of the viewport, independent from the modules grid layout.

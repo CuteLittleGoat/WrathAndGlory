@@ -543,3 +543,50 @@ Zgodnie z zasadami modułu `Infoczytnik` podniesiono:
 - `INF_VERSION` w `Infoczytnik_test.html` do `2026-03-13_08-25-05`.
 
 Wersja zawiera datę i czas lokalny (Polska), w formacie `rrrr-MM-dd_gg-mm-ss`.
+
+## Aktualizacja techniczna 2026-03-13 — odseparowanie onboardingu push od ekranu odczytu
+
+### Zmiany w `Infoczytnik_test.html`
+1. Usunięto element HTML `button#pushBtn`.
+2. Usunięto style `.pushBtn` i `.pushBtn[disabled]`.
+3. Usunięto funkcje związane z ręcznym onboardingiem push z poziomu ekranu odczytu:
+   - `urlBase64ToUint8Array`
+   - `getPushConfig`
+   - `refreshPushButtonState`
+   - `setPushButtonMessage`
+   - `enablePushNotifications`
+4. Zachowano automatyczną rejestrację Service Workera (`ensureServiceWorkerRegistration`) wykonywaną przy starcie modułu.
+5. Zachowano orientację pionową (`tryLockPortrait`) i cały przepływ renderu wiadomości bez zmian funkcjonalnych.
+
+### Uzasadnienie UX
+- Moduł Infoczytnik ma pełnić rolę wyłącznie „ekranu w trakcie gry”, bez dodatkowych elementów, które mogłyby wybić z imersji.
+- Onboarding powiadomień został przeniesiony do modułu `Main`.
+
+### Wersjonowanie cache-bustingu
+- Wymagane podniesienie `INF_VERSION` wykonano równolegle w:
+  - `Infoczytnik/GM_test.html`
+  - `Infoczytnik/Infoczytnik_test.html`
+- Aktualna wartość: `2026-03-13_09-01-06`.
+
+## Aktualizacja techniczna 2026-03-13 — korekta podglądu GM i symetrii odstępów Infoczytnika
+
+### `GM_test.html`
+- W `.livePreviewBox` dla `.prefix` i `.suffix` ustawiono `white-space: pre-line`.
+- Dzięki temu znaki nowej linii z `join("\n")` są renderowane jako osobne linie w podglądzie live.
+
+### `Infoczytnik_test.html`
+- `:root` rozszerzono o:
+  - `--gap-prefix-to-msg`
+  - `--gap-msg-to-suffix`
+  Obie zmienne bazują na `--filler-gap`, co zapewnia równy odstęp nad i pod sekcją wiadomości.
+- `.screen` działa jako kolumna (`display:flex; flex-direction:column`) dla stabilnego przepływu pionowego.
+- `.prefixRow`:
+  - ma `padding-right: 66px`,
+  - logo nie wpływa na wysokość bloku tekstu prefixu.
+- `.logoBox` ustawiono absolutnie (`position:absolute; top:0; right:0`), aby wyeliminować sztuczne podnoszenie wysokości górnego wiersza przez ikonę.
+- `.suffixRow` korzysta z `margin-top: var(--gap-msg-to-suffix)`.
+
+### Wersjonowanie
+- `INF_VERSION` podniesiono do `2026-03-13_09-29-26` w:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
