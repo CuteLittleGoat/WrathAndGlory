@@ -485,3 +485,18 @@ Dodano kompletny, samodzielny backend Node.js obsługujący Web Push.
 - Efekt:
   - `Infoczytnik` (przez `tryLockPortrait`) pozostaje pionowy,
   - pozostałe moduły działają zgodnie z orientacją urządzenia/systemu.
+
+## Aktualizacja techniczna push/PWA (2026-03)
+
+### `config/web-push-config.js`
+- Wprowadzono realny `vapidPublicKey` z Firebase Cloud Messaging:
+  - `BHEgyK2LpItiJFrT28XceIiHehAsbya5cg9v88hKDOUkCMcZciwBjgBeum5VQs247VTuSJceWwOaZas0WoI-eig`
+- Endpointy backendu zmieniono na produkcyjne placeholdery HTTPS:
+  - `subscribeEndpoint: https://example.com/api/push/subscribe`
+  - `triggerEndpoint: https://example.com/api/push/trigger`
+- Powód: konfiguracja testowa `localhost` nie spełnia wymagań działania PWA push na urządzeniu Android poza środowiskiem deweloperskim.
+
+### `config/web-push-config.production.example.js` (nowy plik)
+- Dodano gotowy szablon produkcyjny konfiguracji push.
+- Szablon utrzymuje ten sam klucz VAPID i zawiera czytelne przykłady URL-i HTTPS do podmiany na domenę docelową.
+- Plik służy jako wzorzec wdrożeniowy i backup konfiguracji.

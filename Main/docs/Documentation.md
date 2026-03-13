@@ -174,3 +174,17 @@ Następnie otwórz `http://localhost:8000/Main/index.html`.
   - `display: standalone`
   - brak wymuszonej orientacji (`orientation` usunięte z manifestu, więc orientacja zależy od urządzenia/systemu)
   - `icons`: `IkonaGlowna.png`, `IkonaPowiadomien.png`.
+
+## Aktualizacja techniczna PWA (2026-03)
+
+### `manifest.webmanifest`
+- `start_url` zmieniono z `./Main/index.html` na `./Main/index.html?pwa=1`.
+- Cel: instalowana aplikacja ma zawsze startować w trybie user (bez parametru `admin=1`).
+
+### `service-worker.js`
+- Podniesiono wersję cache do `wg-pwa-v2`.
+- Strategia `fetch` została uproszczona do online-first:
+  - najpierw próba `fetch(request)`,
+  - po błędzie sieci dopiero `caches.match(request, { ignoreSearch: true })`,
+  - dla nawigacji bez odpowiedzi zwracany jest `503` z komunikatem tekstowym o wymaganym internecie.
+- Domyślny URL powiadomienia (`push` i `notificationclick`) ustawiono na produkcyjne `./Infoczytnik/Infoczytnik.html` zamiast wersji testowej.
