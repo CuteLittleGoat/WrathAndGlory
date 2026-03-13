@@ -8,6 +8,11 @@
 > Sprawdź czy jest możliwe rozróżnienie czy aplikacja jest uruchamiana na telefonie czy tablecie.  
 > Będzie to miało wpływ na blokowanie orientacji ekranu na niektórych modułach w przyszłości.
 
+### Prompt aktualizacji (2026-03-13)
+> Przeczytaj i zaktualizuj analizę Analizy/Analiza_Poprawnosci_Manifestow_PWA_Orientacja_Infoczytnik_Powiadomienia_2026-03-13.md
+>
+> Rozwiń punkt 4.2 w zakresie wprowadzenia powiadomień. Co to dokładnie znaczy? Czy muszę ustawiać coś w jakiejś innej aplikacji/serwerze (Cloudflare, Firebase) czy wszystko da się zrobić poprzez kod trzymany wraz z innymi plikami na Github?
+
 ---
 
 ## 1. Zakres i sposób weryfikacji
@@ -76,16 +81,50 @@ W projekcie są gotowe elementy architektury Web Push:
 5. W `Infoczytnik/Infoczytnik.html` jest przycisk aktywacji subskrypcji push (`Notification.requestPermission`, `pushManager.subscribe`, wysłanie subskrypcji na backend).
 6. W `Infoczytnik/GM.html` po wysłaniu wiadomości jest opcjonalny trigger backendowy push (`triggerEndpoint`).
 
-## 4.2 Ograniczenie, które trzeba uwzględnić
+## 4.2 Ograniczenie, które trzeba uwzględnić (co to dokładnie znaczy)
 
-Sama obecność mechanizmu po stronie frontu nie wystarczy. Potrzebny jest aktywny backend:
-- zapis subskrypcji (`subscribeEndpoint`),
-- realna wysyłka Web Push (`triggerEndpoint` lub inna logika serwerowa).
+Sama obecność mechanizmu po stronie frontu **nie wystarczy**. Frontend może:
+- poprosić o zgodę (`Notification.requestPermission`),
+- utworzyć subskrypcję (`pushManager.subscribe`),
+- przekazać subskrypcję do API.
 
-W pliku konfiguracyjnym endpointy i klucz VAPID są puste (`""`), więc bez uzupełnienia konfiguracji i backendu powiadomienia nie będą działać produkcyjnie.
+Natomiast **faktyczne wysłanie** pusha „z urządzenia GM na inne urządzenie” musi zostać wykonane po stronie serwera (backend), który:
+1. przechowuje subskrypcje użytkowników (`subscribeEndpoint`),
+2. przy zdarzeniu (np. wysłanie wiadomości w `GM.html`) uruchamia logikę wysyłki,
+3. podpisuje żądanie kluczami VAPID i wysyła Web Push do właściwych endpointów przeglądarek.
+
+W obecnym stanie (`web-push-config.js`) endpointy i klucz VAPID są puste (`""`), więc funkcja nie jest gotowa produkcyjnie.
+
+### Czy trzeba coś ustawiać poza kodem na GitHub?
+
+**Tak — jeżeli aplikacja jest hostowana jako statyczne pliki, sam GitHub Pages nie wystarczy.**
+
+Powód: GitHub Pages nie uruchamia własnego kodu backendowego (brak API do zapisu subskrypcji i brak procesu do wysyłki push).
+
+Masz praktycznie 3 ścieżki:
+
+1. **Własny backend (Node/Python/PHP itp.)**
+   - trzymasz kod w repo,
+   - wdrażasz na serwer/VPS/hosting z backendem,
+   - tam działają endpointy `subscribe` i `trigger`.
+
+2. **Cloudflare (Workers/Pages Functions)**
+   - front może zostać statyczny,
+   - backend push realizujesz jako funkcje serverless,
+   - subskrypcje zapisujesz np. w KV/D1.
+
+3. **Firebase Cloud Messaging (FCM)**
+   - używasz infrastruktury Google do push,
+   - wymaga konfiguracji projektu Firebase i kluczy,
+   - nadal wymaga konfiguracji poza samym statycznym frontendem.
+
+### Minimalna odpowiedź na pytanie „czy wszystko da się tylko kodem w repo?”
+
+- **Kodowo**: tak, całą logikę możesz trzymać w repozytorium.
+- **Operacyjnie/infrastrukturalnie**: nie, potrzebujesz uruchomionego środowiska backendowego (własny serwer lub usługa typu Cloudflare/Firebase), bo sam statyczny hosting z GitHuba nie wyśle Web Push.
 
 ### Wniosek
-Funkcjonalnie rozwiązanie jest możliwe i architektura jest już przygotowana, ale do pełnego działania „na innym urządzeniu” wymagane jest spięcie z backendem Web Push.
+Funkcjonalnie rozwiązanie jest możliwe i architektura jest już przygotowana, ale do pełnego działania „na innym urządzeniu” wymagane jest spięcie z backendem Web Push oraz wdrożenie go w środowisku zdolnym wykonywać logikę serwerową.
 
 ---
 
