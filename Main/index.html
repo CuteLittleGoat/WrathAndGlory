@@ -329,7 +329,8 @@
       });
 
       if (!response.ok) {
-        throw new Error(`Błąd zapisu subskrypcji: ${response.status}`);
+        const errorText = await response.text().catch(() => "");
+        throw new Error(`Błąd zapisu subskrypcji: ${response.status} ${errorText}`);
       }
 
       setPushButtonMessage("Powiadomienia aktywne");

@@ -340,3 +340,18 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
   - `triggerEndpoint: "/api/push/trigger"`
 - This removes the dependency on `example.com` and makes the frontend call the backend on the same domain as the app.
 - In `Infoczytnik/backend/server.js`, default VAPID public/private keys were added from the provided Firebase values, while `.env` variables still take precedence.
+
+
+## Aktualizacja 2026-03-13 (PL) — hardening Web Push
+- Usunięto fallback prywatnego/publicznego klucza VAPID z backendu (`backend/server.js`). Backend działa tylko na kluczach z ENV i zwraca błąd konfiguracji, gdy ich brakuje.
+- W `config/web-push-config.js` endpointy zmieniono z relatywnych (`/api/...`) na pełne HTTPS (`https://push.twojadomena.pl/...`) do wdrożenia produkcyjnego (GitHub Pages + zewnętrzny backend).
+- W `GM_test.html` trigger push sprawdza teraz `response.ok`, a przy błędzie zwraca status + treść odpowiedzi backendu.
+- Ujednolicono payload push do ścieżek absolutnych: `/IkonaPowiadomien.png`, `/Infoczytnik/Infoczytnik.html` (ikonka, badge, URL).
+- Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-13_11-12-40`.
+
+## Update 2026-03-13 (EN) — Web Push hardening
+- Removed hardcoded VAPID private/public key fallbacks from backend (`backend/server.js`). Backend now relies on ENV keys only and returns configuration errors when missing.
+- In `config/web-push-config.js`, endpoints were changed from relative (`/api/...`) to full HTTPS (`https://push.twojadomena.pl/...`) for production deployment (GitHub Pages + external backend).
+- In `GM_test.html`, push trigger now checks `response.ok` and surfaces backend status + response text on failure.
+- Push payload was unified to absolute paths: `/IkonaPowiadomien.png`, `/Infoczytnik/Infoczytnik.html` (icon, badge, URL).
+- `INF_VERSION` was bumped in `GM_test.html` and `Infoczytnik_test.html` to `2026-03-13_11-12-40`.

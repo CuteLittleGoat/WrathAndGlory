@@ -660,3 +660,35 @@ Wersja zawiera datę i czas lokalny (Polska), w formacie `rrrr-MM-dd_gg-mm-ss`.
 **Znaczenie dla odtwarzalności 1:1:**
 - Użytkownik uruchamiający backend lokalnie ma od razu komplet danych potrzebnych do testu subskrypcji i triggera push.
 - Produkcyjnie nadal zalecane jest trzymanie kluczy poza repo i ustawienie ich przez sekret manager / env na platformie hostingu.
+
+
+## Aktualizacja techniczna 2026-03-13 — bezpieczeństwo Web Push (Infoczytnik)
+
+### 1) `backend/server.js`
+- Usunięto stałe fallbacki VAPID (`defaultVapidPublicKey`, `defaultVapidPrivateKey`).
+- Aktualna konfiguracja:
+  - `const vapidPublicKey = (process.env.WEB_PUSH_VAPID_PUBLIC_KEY || "").trim();`
+  - `const vapidPrivateKey = (process.env.WEB_PUSH_VAPID_PRIVATE_KEY || "").trim();`
+  - `const vapidSubject = (process.env.WEB_PUSH_VAPID_SUBJECT || "mailto:admin@example.com").trim();`
+- Gdy brakuje kluczy: serwer loguje ostrzeżenie i endpoint triggera zwraca błąd konfiguracji (`500`).
+- Zaostrzono CORS: domyślnie `ALLOWED_ORIGINS` wskazuje produkcyjny origin (`https://cutelittlegoat.github.io`), bez automatycznego otwarcia dla wszystkich originów przy pustej konfiguracji.
+- Domyślny payload powiadomienia korzysta z absolutnych ścieżek:
+  - `icon: /IkonaPowiadomien.png`
+  - `badge: /IkonaPowiadomien.png`
+  - `url: /Infoczytnik/Infoczytnik.html`
+
+### 2) `config/web-push-config.js`
+- Endpointy API push ustawiono jako pełne URL HTTPS:
+  - `subscribeEndpoint: https://push.twojadomena.pl/api/push/subscribe`
+  - `triggerEndpoint: https://push.twojadomena.pl/api/push/trigger`
+- Dzięki temu konfiguracja działa z frontendem hostowanym na GitHub Pages i zewnętrznym backendem push.
+
+### 3) `GM_test.html`
+- Funkcja `triggerPushNotification()`:
+  - rzuca błąd przy braku `triggerEndpoint`,
+  - sprawdza `response.ok`,
+  - przy błędzie pobiera `response.text()` i buduje komunikat diagnostyczny (`status + treść`).
+- Payload triggera używa ścieżek absolutnych (`/IkonaPowiadomien.png`, `/Infoczytnik/Infoczytnik.html`) i przekazuje także `badge`.
+
+### 4) `Infoczytnik_test.html`
+- Zgodnie z zasadą wersjonowania testowych plików modułu, podniesiono `INF_VERSION` do `2026-03-13_11-12-40` (synchronizacja z `GM_test.html`).
