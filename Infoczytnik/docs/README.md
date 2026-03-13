@@ -326,3 +326,17 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - In `GM_test.html`, color preset chips (`Green`, `Red`, `Gold`, `White`) were realigned so labels no longer overlap.
 - Chip spacing was increased and the row now uses a stable inline layout with wrapping.
 - `INF_VERSION` was bumped to `2026-03-13_10-07-18` in both `GM_test.html` and `Infoczytnik_test.html`.
+
+## Aktualizacja 2026-03-13 (PL) — klucze Firebase Web Push i endpointy
+- W `Infoczytnik/config/web-push-config.js` pozostawiono klucz `vapidPublicKey` z Firebase i podmieniono endpointy na relatywne:
+  - `subscribeEndpoint: "/api/push/subscribe"`
+  - `triggerEndpoint: "/api/push/trigger"`
+- Dzięki temu frontend nie jest już związany z `example.com` i używa backendu pod tą samą domeną co aplikacja.
+- W `Infoczytnik/backend/server.js` dodano domyślne wartości kluczy VAPID (public/private) zgodne z przekazanymi danymi Firebase, z priorytetem dla zmiennych środowiskowych (`.env`).
+
+## Update 2026-03-13 (EN) — Firebase Web Push keys and endpoints
+- In `Infoczytnik/config/web-push-config.js`, the Firebase `vapidPublicKey` was kept and endpoints were switched to relative URLs:
+  - `subscribeEndpoint: "/api/push/subscribe"`
+  - `triggerEndpoint: "/api/push/trigger"`
+- This removes the dependency on `example.com` and makes the frontend call the backend on the same domain as the app.
+- In `Infoczytnik/backend/server.js`, default VAPID public/private keys were added from the provided Firebase values, while `.env` variables still take precedence.

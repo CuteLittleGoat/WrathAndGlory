@@ -16,8 +16,11 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
   .map((value) => value.trim())
   .filter(Boolean);
 
-const vapidPublicKey = (process.env.WEB_PUSH_VAPID_PUBLIC_KEY || "").trim();
-const vapidPrivateKey = (process.env.WEB_PUSH_VAPID_PRIVATE_KEY || "").trim();
+const defaultVapidPublicKey = "BHEgyK2LpItiJFrT28XceIiHehAsbya5cg9v88hKDOUkCMcZciwBjgBeum5VQs247VTuSJceWwOaZas0WoI-eig";
+const defaultVapidPrivateKey = "jNxDs2rcrrFICZJsiPWAMHpyBhUMB9mfeFLPquSXZ3c";
+
+const vapidPublicKey = (process.env.WEB_PUSH_VAPID_PUBLIC_KEY || defaultVapidPublicKey).trim();
+const vapidPrivateKey = (process.env.WEB_PUSH_VAPID_PRIVATE_KEY || defaultVapidPrivateKey).trim();
 const vapidSubject = (process.env.WEB_PUSH_VAPID_SUBJECT || "mailto:admin@example.com").trim();
 
 if (!vapidPublicKey || !vapidPrivateKey) {
