@@ -294,3 +294,15 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - In `GM_test.html`, push trigger payload now points to the production module URL: `./Infoczytnik/Infoczytnik.html`.
 - In `backend/server.js`, the default fallback payload `url` also points to production `./Infoczytnik/Infoczytnik.html`.
 - `INF_VERSION` was bumped in both test files (`GM_test.html`, `Infoczytnik_test.html`) to `2026-03-13_08-25-05`.
+
+## Aktualizacja 2026-03-13 (PL)
+- Z `Infoczytnik_test.html` usunięto przycisk **Włącz powiadomienia** (`#pushBtn`).
+- Ekran Infoczytnika pozostaje wyłącznie ekranem odczytu wiadomości (bez dodatkowych akcji i bez fallbacków/linków onboardingowych).
+- Logika wyświetlania wiadomości, layoutów i audio pozostała bez zmian.
+- Podniesiono `INF_VERSION` w plikach testowych do: `2026-03-13_09-01-06` (`GM_test.html` i `Infoczytnik_test.html`).
+
+## Update 2026-03-13 (EN)
+- The **Enable notifications** button (`#pushBtn`) was removed from `Infoczytnik_test.html`.
+- The Infoczytnik screen remains a read-only message display (no extra actions and no fallback/onboarding links).
+- Message rendering, layouts, and audio behavior remain unchanged.
+- `INF_VERSION` was bumped in test files to: `2026-03-13_09-01-06` (`GM_test.html` and `Infoczytnik_test.html`).

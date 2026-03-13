@@ -188,3 +188,39 @@ Następnie otwórz `http://localhost:8000/Main/index.html`.
   - po błędzie sieci dopiero `caches.match(request, { ignoreSearch: true })`,
   - dla nawigacji bez odpowiedzi zwracany jest `503` z komunikatem tekstowym o wymaganym internecie.
 - Domyślny URL powiadomienia (`push` i `notificationclick`) ustawiono na produkcyjne `./Infoczytnik/Infoczytnik.html` zamiast wersji testowej.
+
+## Aktualizacja techniczna 2026-03-13 — przycisk Web Push w module Main
+
+### Zakres
+- Dodano nowy element UI: `button#pushBtn` w siatce `.actions` obok przycisków modułów.
+- Dodano wariant stylu `.pushCta`, który wizualnie odróżnia CTA powiadomień od standardowych przycisków modułów.
+- Podpięto skrypt `../Infoczytnik/config/web-push-config.js`, aby używać tej samej konfiguracji VAPID i endpointu subskrypcji.
+
+### Style CSS
+- `.pushCta`:
+  - `border-color: #ff3b30`
+  - `background: rgba(255, 59, 48, 0.2)`
+  - `color: #ffe5e3`
+  - `box-shadow: 0 0 18px rgba(255, 59, 48, 0.45)`
+- `.pushCta:hover` zwiększa intensywność tła i poświaty.
+- `.pushCta:active` zwiększa krycie czerwonego tła dla stanu kliknięcia.
+
+### Logika JavaScript
+Dodane funkcje:
+1. `urlBase64ToUint8Array(base64String)` — konwersja klucza VAPID do `Uint8Array` dla `PushManager.subscribe`.
+2. `getPushConfig()` — walidacja `window.infWebPushConfig` (`vapidPublicKey`, `subscribeEndpoint`).
+3. `setPushButtonMessage(message, isError)` — aktualizacja treści i stanu komunikatu na przycisku.
+4. `refreshPushButtonState()` — blokada przycisku przy braku konfiguracji.
+5. `ensureServiceWorkerRegistration()` — rejestracja `../service-worker.js`.
+6. `enablePushNotifications()` — pełny flow: permission → SW ready → `pushManager.subscribe` → POST do `subscribeEndpoint`.
+
+### Zdarzenia i payload
+- `#pushBtn` nasłuchuje na `click` i uruchamia `enablePushNotifications()`.
+- Wysyłany payload subskrypcji zawiera:
+  - `source: "main-launcher"`
+  - `createdAt: Date.now()`
+  - `subscription` (obiekt z `PushSubscription`).
+
+### Integracja z dotychczasowym SW
+- Dotychczasowa rejestracja SW na `window.load` została zachowana, ale używa wspólnej funkcji `ensureServiceWorkerRegistration()`.
+- Dzięki temu zarówno bierna rejestracja SW, jak i aktywna subskrypcja push korzystają z jednej ścieżki rejestracji.

@@ -543,3 +543,27 @@ Zgodnie z zasadami modułu `Infoczytnik` podniesiono:
 - `INF_VERSION` w `Infoczytnik_test.html` do `2026-03-13_08-25-05`.
 
 Wersja zawiera datę i czas lokalny (Polska), w formacie `rrrr-MM-dd_gg-mm-ss`.
+
+## Aktualizacja techniczna 2026-03-13 — odseparowanie onboardingu push od ekranu odczytu
+
+### Zmiany w `Infoczytnik_test.html`
+1. Usunięto element HTML `button#pushBtn`.
+2. Usunięto style `.pushBtn` i `.pushBtn[disabled]`.
+3. Usunięto funkcje związane z ręcznym onboardingiem push z poziomu ekranu odczytu:
+   - `urlBase64ToUint8Array`
+   - `getPushConfig`
+   - `refreshPushButtonState`
+   - `setPushButtonMessage`
+   - `enablePushNotifications`
+4. Zachowano automatyczną rejestrację Service Workera (`ensureServiceWorkerRegistration`) wykonywaną przy starcie modułu.
+5. Zachowano orientację pionową (`tryLockPortrait`) i cały przepływ renderu wiadomości bez zmian funkcjonalnych.
+
+### Uzasadnienie UX
+- Moduł Infoczytnik ma pełnić rolę wyłącznie „ekranu w trakcie gry”, bez dodatkowych elementów, które mogłyby wybić z imersji.
+- Onboarding powiadomień został przeniesiony do modułu `Main`.
+
+### Wersjonowanie cache-bustingu
+- Wymagane podniesienie `INF_VERSION` wykonano równolegle w:
+  - `Infoczytnik/GM_test.html`
+  - `Infoczytnik/Infoczytnik_test.html`
+- Aktualna wartość: `2026-03-13_09-01-06`.
