@@ -184,3 +184,15 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 ## Aktualizacja 2026-03-13 / Update 2026-03-13
 - Usunięto globalny lock orientacji z `manifest.webmanifest`, dlatego orientacja modułów (poza wyjątkami implementowanymi lokalnie w modułach) zależy od ustawień urządzenia/systemu.
 - The global orientation lock was removed from `manifest.webmanifest`, so module orientation (except module-specific local locks) now follows device/system settings.
+
+---
+
+## Aktualizacja PWA (PL)
+- Aplikacja PWA uruchamia się teraz ze `start_url` ustawionym na `Main/index.html?pwa=1`, co utrzymuje domyślny widok użytkownika bez paneli admina.
+- Service Worker działa w trybie online-first: przy braku internetu zwraca komunikat o wymaganym połączeniu zamiast utrwalonego trybu offline.
+- Powiadomienia push otwierają domyślnie produkcyjny ekran `Infoczytnik/Infoczytnik.html`.
+
+## PWA update (EN)
+- The PWA now starts with `start_url` set to `Main/index.html?pwa=1`, which keeps the default user-only view without admin panels.
+- Service Worker now uses an online-first strategy: when offline, it returns a clear “internet required” message instead of maintaining a quasi-offline behavior.
+- Push notifications now open the production screen `Infoczytnik/Infoczytnik.html` by default.

@@ -1,4 +1,4 @@
-const SW_VERSION = "wg-pwa-v1";
+const SW_VERSION = "wg-pwa-v2";
 const APP_SHELL_CACHE = `${SW_VERSION}-shell`;
 const APP_SHELL_ASSETS = [
   "./",
@@ -27,19 +27,26 @@ self.addEventListener("activate", (event) => {
 self.addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") return;
 
+  const isNavigationRequest = event.request.mode === "navigate";
+
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request)
-        .then((response) => {
-          const cloned = response.clone();
-          if (event.request.url.startsWith(self.location.origin)) {
-            caches.open(APP_SHELL_CACHE).then((cache) => cache.put(event.request, cloned)).catch(() => {});
-          }
-          return response;
-        })
-        .catch(() => cached);
-    })
+    fetch(event.request)
+      .catch(() => caches.match(event.request, { ignoreSearch: true }))
+      .then((response) => {
+        if (response) return response;
+
+        if (isNavigationRequest) {
+          return new Response(
+            "Aplikacja wymaga połączenia z internetem. Sprawdź sieć i odśwież stronę.",
+            {
+              status: 503,
+              headers: { "Content-Type": "text/plain; charset=utf-8" }
+            }
+          );
+        }
+
+        return Response.error();
+      })
   );
 });
 
@@ -55,7 +62,7 @@ self.addEventListener("push", (event) => {
   const body = payload.body || "+++ INCOMING DATA-TRANSMISSION +++";
   const icon = payload.icon || "./IkonaPowiadomien.png";
   const badge = payload.badge || "./IkonaPowiadomien.png";
-  const url = payload.url || "./Infoczytnik/Infoczytnik_test.html";
+  const url = payload.url || "./Infoczytnik/Infoczytnik.html";
 
   event.waitUntil(
     self.registration.showNotification(title, {
@@ -71,7 +78,7 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const targetUrl = event.notification.data?.url || "./Infoczytnik/Infoczytnik_test.html";
+  const targetUrl = event.notification.data?.url || "./Infoczytnik/Infoczytnik.html";
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {

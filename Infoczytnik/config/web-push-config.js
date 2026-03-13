@@ -1,11 +1,12 @@
 window.infWebPushConfig = {
-  // Klucz VAPID publiczny (Base64URL) z backendu Web Push.
-  // Wygeneruj komendą: npx web-push generate-vapid-keys
-  vapidPublicKey: "",
+  // Klucz VAPID publiczny (Base64URL) wygenerowany w Firebase Cloud Messaging.
+  vapidPublicKey: "BHEgyK2LpItiJFrT28XceIiHehAsbya5cg9v88hKDOUkCMcZciwBjgBeum5VQs247VTuSJceWwOaZas0WoI-eig",
 
   // Endpoint backendu zapisujący subskrypcję użytkownika (POST JSON subscription).
-  subscribeEndpoint: "http://localhost:8787/api/push/subscribe",
+  // Ustaw tu produkcyjny endpoint HTTPS (bez localhost).
+  subscribeEndpoint: "https://example.com/api/push/subscribe",
 
-  // Opcjonalny endpoint backendu do triggera testowego po wysłaniu wiadomości przez GM.
-  triggerEndpoint: "http://localhost:8787/api/push/trigger"
+  // Opcjonalny endpoint backendu do triggera po wysłaniu wiadomości przez GM.
+  // Ustaw tu produkcyjny endpoint HTTPS (bez localhost).
+  triggerEndpoint: "https://example.com/api/push/trigger"
 };

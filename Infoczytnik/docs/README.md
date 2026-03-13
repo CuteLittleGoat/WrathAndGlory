@@ -270,3 +270,15 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `manifest.webmanifest` no longer enforces a global orientation.
 - `Infoczytnik` stays portrait (portrait lock inside the module).
 - Other modules follow device/system orientation settings.
+
+---
+
+## Aktualizacja konfiguracji push (PL)
+- W pliku `config/web-push-config.js` został ustawiony publiczny klucz VAPID z Firebase Cloud Messaging.
+- Lokalny `localhost` został zastąpiony placeholderami produkcyjnymi HTTPS (`https://example.com/...`), aby konfiguracja nie sugerowała środowiska lokalnego.
+- Dodano plik `config/web-push-config.production.example.js` jako gotowy wzór do uzupełnienia docelową domeną backendu.
+
+## Push configuration update (EN)
+- The `config/web-push-config.js` file now includes the public VAPID key from Firebase Cloud Messaging.
+- Localhost URLs were replaced with production HTTPS placeholders (`https://example.com/...`) so the config no longer implies local-only setup.
+- A new file `config/web-push-config.production.example.js` was added as a ready-to-use template for your final backend domain.
