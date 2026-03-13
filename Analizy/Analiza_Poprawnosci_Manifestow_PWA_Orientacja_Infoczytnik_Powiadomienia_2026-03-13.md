@@ -13,6 +13,11 @@
 >
 > Rozwiń punkt 4.2 w zakresie wprowadzenia powiadomień. Co to dokładnie znaczy? Czy muszę ustawiać coś w jakiejś innej aplikacji/serwerze (Cloudflare, Firebase) czy wszystko da się zrobić poprzez kod trzymany wraz z innymi plikami na Github?
 
+### Prompt aktualizacji (2026-03-13, weryfikacja bieżącego stanu)
+> Przeczytaj i zaktualizuj analizę Analizy/Analiza_Poprawnosci_Manifestow_PWA_Orientacja_Infoczytnik_Powiadomienia_2026-03-13.md
+>
+> Sprawdź czy obecny system plików i ich kod wspiera te wymagania. Infoczytnik ma być wymuszony w pionie.
+
 ---
 
 ## 1. Zakres i sposób weryfikacji
@@ -43,17 +48,14 @@ Manifest jest technicznie poprawny i zawiera wymagane klucze dla instalowalnej P
 
 To oznacza, że baza pod instalację i uruchamianie jako aplikacja mobilna jest przygotowana.
 
-## 2.2 Co jest niezgodne z nowym oczekiwaniem
+## 2.2 Co jest niezgodne / ryzyka do uwzględnienia
 
-W manifeście ustawiono globalnie:
-- `"orientation": "portrait"`
+W aktualnym `manifest.webmanifest` **nie ma** pola `orientation`, więc nie ma globalnego locka orientacji dla całej aplikacji.
 
-To wymusza orientację pionową dla całej aplikacji PWA (globalnie), a nie tylko dla wybranego modułu. To stoi w sprzeczności z nowym celem:
-- wszystkie moduły: orientacja zależna od urządzenia/użytkownika,
-- **wyjątek tylko dla Infoczytnika**: zawsze poziomo.
+To jest zgodne z założeniem, że inne moduły mogą działać adaptacyjnie, a osobny lock orientacji ma dotyczyć tylko Infoczytnika (na poziomie kodu modułu).
 
 ### Wniosek
-Aby spełnić nowe wymaganie, globalna orientacja w manifeście nie powinna być ustawiona na stałe `portrait` (docelowo: usunięcie pola `orientation` lub inna architektura wielo-manifestowa).
+Na poziomie manifestu nie widać obecnie blokady, która łamałaby wymaganie „Infoczytnik wymuszony w pionie, reszta modułów bez globalnego locka”.
 
 ---
 
@@ -62,10 +64,10 @@ Aby spełnić nowe wymaganie, globalna orientacja w manifeście nie powinna być
 W `Infoczytnik/Infoczytnik.html` działa obecnie:
 - cicha próba `screen.orientation.lock("portrait")`.
 
-Czyli aktualny kod blokuje **pion**, a nie **poziom**. To jest odwrotnie niż obecne oczekiwanie użytkownika („Infoczytnik zawsze w poziomie”).
+To jest zgodne z aktualnym wymaganiem: **Infoczytnik ma być wymuszony w pionie**.
 
 ### Wniosek
-Na teraz implementacja orientacji Infoczytnika jest funkcjonalnie niezgodna z nowym celem i wymaga zmiany na `landscape` (z zachowaniem cichego fallbacku).
+Kod modułu wspiera wymaganie orientacji pionowej. Należy pamiętać o ograniczeniu platformowym: lock może zostać odrzucony przez środowisko uruchomieniowe, dlatego pozostaje cichy fallback (bez komunikatu blokującego UI).
 
 ---
 
@@ -159,8 +161,8 @@ Dla przyszłego blokowania orientacji lepiej opierać logikę głównie o:
 
 ## 6. Ocena zgodności z oczekiwanym zachowaniem (stan obecny)
 
-1. **Układ zależny od orientacji urządzenia dla większości modułów** — obecnie częściowo zablokowany przez globalne `orientation: portrait` w manifeście.
-2. **Infoczytnik zawsze poziomo** — obecnie niespełnione, bo kod blokuje `portrait`.
+1. **Układ zależny od orientacji urządzenia dla większości modułów** — aktualnie wspierany; manifest nie narzuca globalnego `orientation`.
+2. **Infoczytnik zawsze pionowo** — aktualnie wspierane przez `screen.orientation.lock("portrait")` w module.
 3. **Powiadomienia o nowej wiadomości na innym urządzeniu** — możliwe i częściowo zaimplementowane; do uruchomienia produkcyjnego brakuje skonfigurowanego backendu Web Push i kluczy/endpointów.
 4. **Rozróżnienie telefon/tablet** — możliwe tylko heurystycznie, nie absolutnie.
 
@@ -168,11 +170,44 @@ Dla przyszłego blokowania orientacji lepiej opierać logikę głównie o:
 
 ## 7. Proponowany kierunek wdrożenia (bez implementacji kodu w tej analizie)
 
-1. Zmienić strategię manifestu z globalnego locka `portrait` na orientację adaptacyjną (dla całej aplikacji).
-2. W Infoczytniku zmienić lock na `landscape` (cichy fallback, bez ekranu informacyjnego).
+1. Utrzymać brak globalnego locka orientacji w manifeście (orientacja adaptacyjna dla całej aplikacji).
+2. W Infoczytniku utrzymać lock `portrait` (cichy fallback, bez ekranu informacyjnego).
 3. Domknąć backend Web Push:
    - VAPID,
    - endpoint zapisu subskrypcji,
    - endpoint/funkcja wysyłki po akcji GM.
 4. Dodać heurystykę phone/tablet jako funkcję pomocniczą i testować na docelowych urządzeniach Android.
 
+---
+
+## 8. Aktualizacja techniczna (2026-03-13) — weryfikacja bieżącego systemu plików i kodu
+
+### 8.1 Co sprawdzono
+
+- obecność i zawartość głównego manifestu PWA,
+- kod locka orientacji w Infoczytniku,
+- gotowość mechanizmów push po stronie frontu i Service Workera,
+- aktualną konfigurację endpointów push i klucza VAPID.
+
+### 8.2 Wynik sprawdzenia względem wymagania „Infoczytnik wymuszony w pionie”
+
+1. `manifest.webmanifest` nie zawiera pola `orientation` — brak globalnej blokady orientacji.
+2. `Infoczytnik/Infoczytnik.html` zawiera `screen.orientation.lock("portrait")` — moduł jest skonfigurowany pod wymuszenie pionu.
+3. Nie wykryto alternatywnego manifestu modułowego, który nadpisywałby to zachowanie.
+
+### 8.3 Wynik sprawdzenia powiadomień
+
+1. `service-worker.js` obsługuje `push` i wyświetlenie notyfikacji oraz `notificationclick`.
+2. `Infoczytnik/Infoczytnik.html` ma flow subskrypcji (`requestPermission`, `pushManager.subscribe`, wysyłka subskrypcji na backend).
+3. `Infoczytnik/GM.html` ma wywołanie `triggerEndpoint` po wysyłce wiadomości.
+4. `Infoczytnik/config/web-push-config.js` ma puste `vapidPublicKey` oraz endpointy lokalne (`localhost`) — to oznacza, że frontend jest gotowy strukturalnie, ale środowisko produkcyjne nie jest jeszcze spięte.
+
+### 8.4 Odpowiedź na pytanie „czy obecny system plików i kod wspiera wymagania?”
+
+**Tak, częściowo i na poziomie architektury frontu: tak.**
+
+- Wymuszanie pionu w Infoczytniku jest już w kodzie.
+- Brak globalnego locka orientacji w manifeście wspiera elastyczność pozostałych modułów.
+- Powiadomienia mają kompletny szkielet po stronie klienta i SW.
+
+**Do pełnego działania produkcyjnego push nadal brakuje warstwy backendowej i konfiguracji VAPID/endpointów poza samym statycznym hostingiem.**
