@@ -355,3 +355,21 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - In `GM_test.html`, push trigger now checks `response.ok` and surfaces backend status + response text on failure.
 - Push payload was unified to absolute paths: `/IkonaPowiadomien.png`, `/Infoczytnik/Infoczytnik.html` (icon, badge, URL).
 - `INF_VERSION` was bumped in `GM_test.html` and `Infoczytnik_test.html` to `2026-03-13_11-12-40`.
+
+## Aktualizacja 2026-03-13 (PL) — podpięcie pod Cloudflare Workers
+- `config/web-push-config.js` wskazuje teraz docelowy backend Cloudflare Worker:
+  - `subscribeEndpoint: https://wrathandglory-push-api.tarczynski-pawel.workers.dev/api/push/subscribe`
+  - `triggerEndpoint: https://wrathandglory-push-api.tarczynski-pawel.workers.dev/api/push/trigger`
+- `GM_test.html` wysyła trigger push na `triggerEndpoint` z nagłówkiem `Authorization: Bearer <TRIGGER_TOKEN>` oraz nadal zgłasza błąd z treścią odpowiedzi backendu, jeśli `response.ok === false`.
+- Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-13_12-31-28`.
+- `service-worker.js` podniesiono do `SW_VERSION = "wg-pwa-v3"` (odświeżenie cache po publikacji).
+- Usunięto `Infoczytnik/backend/server.js` — produkcyjny backend push jest utrzymywany poza repo (Cloudflare Workers).
+
+## Update 2026-03-13 (EN) — Cloudflare Workers integration
+- `config/web-push-config.js` now points to the target Cloudflare Worker backend:
+  - `subscribeEndpoint: https://wrathandglory-push-api.tarczynski-pawel.workers.dev/api/push/subscribe`
+  - `triggerEndpoint: https://wrathandglory-push-api.tarczynski-pawel.workers.dev/api/push/trigger`
+- `GM_test.html` now sends the push trigger to `triggerEndpoint` with the `Authorization: Bearer <TRIGGER_TOKEN>` header, and still throws an error with backend response text when `response.ok === false`.
+- `INF_VERSION` was bumped in `GM_test.html` and `Infoczytnik_test.html` to `2026-03-13_12-31-28`.
+- `service-worker.js` was bumped to `SW_VERSION = "wg-pwa-v3"` (cache refresh after deployment).
+- `Infoczytnik/backend/server.js` was removed — production push backend is now maintained outside the repo (Cloudflare Workers).
