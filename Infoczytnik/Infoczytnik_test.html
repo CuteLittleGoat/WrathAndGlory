@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-12_18-10-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-13_08-25-05"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -362,6 +362,13 @@
 
   const pushButton = document.getElementById("pushBtn");
 
+  async function ensureServiceWorkerRegistration(){
+    if(!("serviceWorker" in navigator)) return null;
+
+    const registration = await navigator.serviceWorker.register("../service-worker.js");
+    return registration;
+  }
+
   async function tryLockPortrait(){
     try{
       if(screen.orientation && typeof screen.orientation.lock === "function"){
@@ -441,6 +448,7 @@
       return;
     }
 
+    await ensureServiceWorkerRegistration();
     const registration = await navigator.serviceWorker.ready;
     const existingSubscription = await registration.pushManager.getSubscription();
     const subscription = existingSubscription || await registration.pushManager.subscribe({
@@ -663,6 +671,10 @@
   }
 
   refreshPushButtonState();
+
+  ensureServiceWorkerRegistration().catch((error) => {
+    console.warn("Nie udało się zarejestrować globalnego Service Workera.", error);
+  });
 
   tryLockPortrait();
 

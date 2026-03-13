@@ -500,3 +500,46 @@ Dodano kompletny, samodzielny backend Node.js obsługujący Web Push.
 - Dodano gotowy szablon produkcyjny konfiguracji push.
 - Szablon utrzymuje ten sam klucz VAPID i zawiera czytelne przykłady URL-i HTTPS do podmiany na domenę docelową.
 - Plik służy jako wzorzec wdrożeniowy i backup konfiguracji.
+
+## 15. Aktualizacja 2026-03-13_08-25-05 — audyt PWA Android + VAPID/Web Push
+
+### 15.1. Problem wykryty podczas audytu
+- W `Infoczytnik_test.html` proces subskrypcji push opierał się na `navigator.serviceWorker.ready`, ale moduł nie rejestrował samodzielnie Service Workera.
+- W praktyce oznaczało to, że wejście bezpośrednio na `Infoczytnik_test.html` (bez odwiedzenia `Main/index.html`, które rejestruje SW) mogło blokować Web Push na Androidzie.
+
+### 15.2. Zmiana w `Infoczytnik_test.html`
+Dodano funkcję:
+- `ensureServiceWorkerRegistration()`
+  - sprawdza wsparcie `serviceWorker` w `navigator`,
+  - wykonuje `navigator.serviceWorker.register("../service-worker.js")`,
+  - zwraca obiekt rejestracji.
+
+Integracja funkcji:
+1. W `enablePushNotifications()` przed `navigator.serviceWorker.ready` wywoływane jest `await ensureServiceWorkerRegistration()`.
+2. Przy starcie modułu wykonywana jest próba rejestracji SW w tle (`catch` loguje ostrzeżenie do konsoli, bez blokowania UI).
+
+Efekt:
+- przepływ Web Push działa zarówno przy wejściu przez `Main`, jak i przy bezpośrednim otwarciu modułu Infoczytnik,
+- zgodność z Android PWA została poprawiona bez ingerencji w pliki produkcyjne.
+
+### 15.3. Zmiana w `GM_test.html`
+W funkcji `triggerPushNotification()` zaktualizowano payload:
+- `url` zmieniono z testowego `./Infoczytnik/Infoczytnik_test.html`
+- na produkcyjny `./Infoczytnik/Infoczytnik.html`.
+
+Powód:
+- zgodnie z zasadą, że odnośniki funkcjonalności powiadomień w plikach konfiguracyjnych/powiązanych mają wskazywać ścieżki produkcyjne.
+
+### 15.4. Zmiana w `backend/server.js`
+W `normalizePayload(...)` domyślna wartość pola `url` została ustawiona na:
+- `./Infoczytnik/Infoczytnik.html`.
+
+Znaczenie:
+- nawet jeśli trigger push nie poda własnego URL-a, kliknięcie powiadomienia przekieruje użytkownika na produkcyjny ekran odbiorcy.
+
+### 15.5. Wersjonowanie testowych HTML
+Zgodnie z zasadami modułu `Infoczytnik` podniesiono:
+- `INF_VERSION` w `GM_test.html` do `2026-03-13_08-25-05`,
+- `INF_VERSION` w `Infoczytnik_test.html` do `2026-03-13_08-25-05`.
+
+Wersja zawiera datę i czas lokalny (Polska), w formacie `rrrr-MM-dd_gg-mm-ss`.

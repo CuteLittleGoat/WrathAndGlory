@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-12_18-10-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-13_08-25-05"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -577,7 +577,7 @@
           body: "+++ INCOMING DATA-TRANSMISSION +++",
           icon: "./IkonaPowiadomien.png",
           tag: "infoczytnik-new-message",
-          url: "./Infoczytnik/Infoczytnik_test.html"
+          url: "./Infoczytnik/Infoczytnik.html"
         })
       });
     }
