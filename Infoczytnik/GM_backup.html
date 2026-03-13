@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-02-16_10-05-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-13_10-07-18"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -55,18 +55,17 @@
       margin:10px 0 0 0;padding:10px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,.18);
       background:rgba(0,0,0,.25);color:#cfcfcf;font-family:Consolas,"Courier New",monospace;font-size:13px;white-space:pre-wrap;
     }
-    .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-    .chip{padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;}
-    .chip span{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25)}
+    .chips{display:flex;gap:10px 14px;flex-wrap:wrap;margin-top:8px}
+    .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap;}
+    .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
 
-    /* ===== Układ: Losowość fillerów (Suffix wyrównany pod Prefix po prawej) ===== */
+    /* ===== Układ: Losowość fillerów ===== */
     .fillerBox{
       padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#0f0f0f;
     }
     .fillerTop{
       display:flex;align-items:center;gap:10px;flex-wrap:wrap;
     }
-    .fillerTop input[type="checkbox"]{width:18px;height:18px;margin:0}
     .fillerManual{
       margin-top:10px;
       display:grid;
@@ -80,12 +79,6 @@
     }
     .fillerManual .left{
       width:min(260px, 100%);
-    }
-    .miniLabel{
-      color:#777;
-      font-size:12px;
-      margin-bottom:6px;
-      display:block;
     }
     .pairRow{
       display:flex;gap:10px;align-items:center;justify-content:flex-end;
@@ -109,7 +102,7 @@
       justify-content:center;
     }
     .livePreviewBox .line{display:block;}
-    .livePreviewBox .prefix,.livePreviewBox .suffix{opacity:.9;}
+    .livePreviewBox .prefix,.livePreviewBox .suffix{opacity:.9; white-space:pre-line;}
     .livePreviewBox .message{line-height:1.35;}
   </style>
 </head>
@@ -143,10 +136,10 @@
           <label data-i18n="labelMessageColor">Kolor fontu (treść wiadomości)</label>
           <input type="color" id="fontColor" value="#00ff66" />
           <div class="chips" id="msgColorChips">
-            <div class="chip" data-target="msg" data-color="#00ff66"><span style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
-            <div class="chip" data-target="msg" data-color="#ff3333"><span style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
-            <div class="chip" data-target="msg" data-color="#d4af37"><span style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
-            <div class="chip" data-target="msg" data-color="#ffffff"><span style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
+            <div class="chip" data-target="msg" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+            <div class="chip" data-target="msg" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+            <div class="chip" data-target="msg" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+            <div class="chip" data-target="msg" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
           </div>
 
           <!-- Rozmiar treści -->
@@ -170,10 +163,10 @@
 
           <!-- Szybkie kolory Prefix/Suffix -->
           <div class="chips" id="psColorChips">
-            <div class="chip" data-target="ps" data-color="#00ff66"><span style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
-            <div class="chip" data-target="ps" data-color="#ff3333"><span style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
-            <div class="chip" data-target="ps" data-color="#d4af37"><span style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
-            <div class="chip" data-target="ps" data-color="#ffffff"><span style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
+            <div class="chip" data-target="ps" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+            <div class="chip" data-target="ps" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+            <div class="chip" data-target="ps" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+            <div class="chip" data-target="ps" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
           </div>
 
           <!-- Rozmiar Prefix/Suffix -->
@@ -190,31 +183,24 @@
           <label data-i18n="labelFillersRandom">Losowość fillerów</label>
 
           <div class="fillerBox">
-            <div class="fillerTop">
-              <input type="checkbox" id="randomFillers" checked />
-              <span data-i18n="labelRandomAuto">Losuj automatycznie</span>
-            </div>
-
             <div class="fillerManual">
               <div class="left">
-                <span class="miniLabel" data-i18n="labelManual">Ręcznie</span>
                 <div class="pairRow">
-                  <b data-i18n="labelPrefix">Prefix</b>
-                  <input type="number" id="prefixIndex" min="1" value="1" />
+                  <b data-i18n="labelFillerLineCount">Ilość linii fillerów</b>
+                  <input type="number" id="fillerLineCount" min="1" max="5" value="3" />
                 </div>
               </div>
 
               <div class="right">
                 <div class="pairRow">
-                  <b data-i18n="labelSuffix">Suffix</b>
-                  <input type="number" id="suffixIndex" min="1" value="1" />
+                  <button type="button" id="rerollFillersBtn" data-i18n="buttonRerollFillers">Wylosuj ponownie</button>
                 </div>
               </div>
             </div>
           </div>
 
           <div class="small" data-i18n="randomHint">
-            Gdy losowanie wyłączone, wybierasz osobno numer Prefix i Suffix (1..N zależnie od frakcji).
+            Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.
           </div>
 
           <div class="row" style="align-items:center; gap:18px; margin-top:12px;">
@@ -256,6 +242,7 @@
 
   <!-- ✅ Firebase config jako GLOBAL (window.firebaseConfig) -->
   <script src="config/firebase-config.js"></script>
+  <script src="config/web-push-config.js"></script>
 
   <!-- Firebase compat (działa w zwykłym <script>) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
@@ -286,9 +273,8 @@
       psFontSize: document.getElementById("psFontSize"),
 
       // fillery
-      randomFillers: document.getElementById("randomFillers"),
-      prefixIndex: document.getElementById("prefixIndex"),
-      suffixIndex: document.getElementById("suffixIndex"),
+      fillerLineCount: document.getElementById("fillerLineCount"),
+      rerollFillersBtn: document.getElementById("rerollFillersBtn"),
       showLogo: document.getElementById("showLogo"),
       flicker: document.getElementById("flicker"),
 
@@ -335,11 +321,9 @@
           logoHint:
             "Logo ma stały rozmiar w Infoczytniku. Zmiana rozmiaru prefixu może spowodować zawijanie (OK), logo zostaje bez zmian.",
           labelFillersRandom: "Losowość fillerów",
-          labelRandomAuto: "Losuj automatycznie",
-          labelManual: "Ręcznie",
-          labelPrefix: "Prefix",
-          labelSuffix: "Suffix",
-          randomHint: "Gdy losowanie wyłączone, wybierasz osobno numer Prefix i Suffix (1..N zależnie od frakcji).",
+          labelFillerLineCount: "Ilość linii fillerów",
+          buttonRerollFillers: "Wylosuj ponownie",
+          randomHint: "Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.",
           labelShowLogo: "Dodaj logo",
           labelFlicker: "Flicker",
           labelMessage: "Treść komunikatu",
@@ -394,11 +378,9 @@
           logoHint:
             "The logo size is fixed in Data-Slate. Changing the prefix size may wrap (OK), the logo remains unchanged.",
           labelFillersRandom: "Filler randomness",
-          labelRandomAuto: "Auto randomize",
-          labelManual: "Manual",
-          labelPrefix: "Prefix",
-          labelSuffix: "Suffix",
-          randomHint: "When randomization is off, you choose Prefix and Suffix numbers (1..N depending on faction).",
+          labelFillerLineCount: "Filler line count",
+          buttonRerollFillers: "Reroll",
+          randomHint: "Unique prefixes and suffixes are always randomized based on the selected filler line count.",
           labelShowLogo: "Add logo",
           labelFlicker: "Flicker",
           labelMessage: "Message content",
@@ -484,22 +466,28 @@
     };
 
     const LAYOUTS = {
-      mechanicus:{prefixes:["++ INCOMING DATA FEED ++","++ SYSTEM ANALYSIS BEGIN ++","++ ENCRYPTION ONLINE ++","++ ENGAGE LITURGY ++","++ ARCHIVE ACCESS ++","++ LOGIS-CHANNEL ACTIVE ++","++ DATA LINK ESTABLISHED ++","++ SIGNAL LOCKED ++","++ CORE STABILIZED ++"],
-                 suffixes:["++ PRAISE THE OMNISSIAH ++","++ MACHINE SPIRIT CALMED ++","++ THE FLESH IS WEAK ++","++ SYSTEM CLEANSED ++","++ BINARY PRAYER SENT ++","++ OMNISSIAH GUIDE US ++","++ SERVITOR READY ++","++ RITUAL COMPLETE ++","++ PRAY TO THE CODE ++"]},
-      inquisition:{prefixes:["++ INQUISITORIAL NOTICE ++","++ DATA INTERCEPTED ++","++ DECRYPTING ORDER ++","++ ORDER: SIGMA-9 ++","++ COGITATOR ACCESS ++","++ BY HIS WILL ++","++ CLASSIFIED MATERIAL ++","++ MIND CLEANSED ++","++ CODEX SECURED ++"],
-                  suffixes:["++ THE EMPEROR PROTECTS ++","++ AUTHORIZATION VERIFIED ++","++ PURGE COMPLETE ++","++ FAITH REMAINS ++","++ THOUGHT FOR THE DAY ++","++ HERESY PURGED ++","++ OATH UPHELD ++","++ FAITH IS ARMOR ++","++ EXAMINATION COMPLETE ++"]},
-      militarum:{prefixes:["++ IMPERIAL SIGNAL ++","++ HIGH COMMAND ORDER ++","++ ORDERS INCOMING ++","++ TACTICAL FEED ++","++ REGIMENTAL DATA ++","++ COMMAND OVERRIDE ++","++ BATTLELINE UPLINK ++","++ ENGAGEMENT ACTIVE ++","++ OPERATIONAL BRIEF ++"],
-                 suffixes:["++ GLORY TO THE GUARD ++","++ VICTORY IS ASSURED ++","++ CADIA STANDS ++","++ DUTY FULFILLED ++","++ NO SACRIFICE TOO GREAT ++","++ PERIMETER SECURED ++","++ FOR THE EMPEROR ++","++ STATUS: GREEN ++","++ STRATEGIC DIRECTIVE ++"]},
-      khorne:{prefixes:["++ BLOOD ALERT ++","++ SKULL COUNT RISING ++","++ RAGE TRANSMISSION ++","++ COMBAT UPLINK ++","++ SLAUGHTER INITIATED ++","++ VIOLENCE MAXIMUM ++","++ NO PEACE ONLY WAR ++","++ RIP THEIR HEADS ++","++ DOMINATE THROUGH BLOOD ++"],
-              suffixes:["++ BLOOD FOR THE BLOOD GOD ++","++ SKULLS FOR THE THRONE ++","++ RIP AND TEAR ++","++ ALL MUST BLEED ++","++ DEATH WITHOUT END ++","++ STRIKE WITHOUT MERCY ++","++ AXE ONLINE ++","++ RED FLOWS ++","++ KILL. MAIM. BURN. ++"]},
-      nurgle:{prefixes:["++ BLOAT SIGNAL ++","++ DECAY INITIATED ++","++ DISEASE VECTOR ACTIVE ++","++ PLAGUE SEED SENT ++","++ SPOREFIELD DEPLOYED ++","++ VIRUSCODE ENGAGED ++","++ ALL IS ROT ++","++ FLESH SAGS ++","++ FOULNESS RISES ++"],
-              suffixes:["++ PRAISE GRANDPA NURGLE ++","++ FILTH TRANSMITTED ++","++ ROTTEN JOY ++","++ CONTAGION SPREADS ++","++ FLIES REJOICE ++","++ FESTERING COMPLETE ++","++ MUCOUS FLOW ++","++ BLESSINGS OF ROT ++","++ CORRUPTION GLORIOUS ++"]},
-      tzeentch:{prefixes:["++ KNOWLEDGE UNFOLDS ++","++ SCHEME RUNNING ++","++ DATA TWISTED ++","++ WARP-TEXT INCOMING ++","++ INVERSION ACTIVE ++","++ DESTINY WRITTEN ++","++ NOTHING IS AS IT SEEMS ++","++ PATTERNS SHIFT ++","++ BURN THE SCRIPT ++"],
-               suffixes:["++ ALL IS CHANGE ++","++ PLAN: PHASE 7 ++","++ EYE OPENS ++","++ BIRD OF FATE SMILES ++","++ THOUGHT MUTATED ++","++ CYCLE CONTINUES ++","++ OBSERVE THE CHANGE ++","++ REWRITE EVERYTHING ++","++ JUST AS PLANNED ++"]},
-      slaanesh:{prefixes:["++ ECSTASY PULSE ++","++ SENSORY OVERLOAD ++","++ LUXURY CHANNEL OPEN ++","++ VELVET SIGNAL ++","++ DESIRE BREACH ++","++ TOUCH THE DIVINE ++","++ TASTE THE PAIN ++","++ LUSTWAVE TRANSMITTED ++","++ EXCESS COMPLETE ++"],
-               suffixes:["++ FEED THE HUNGER ++","++ THE PERFECT MOMENT ++","++ PAIN IS PLEASURE ++","++ EXCESS IS TRUTH ++","++ PLEASURE SATURATED ++","++ UNHOLY HARMONY ++","++ FEEL EVERYTHING ++","++ TEMPTATION SPIKE ++","++ PERFECTION IS BLISS ++"]},
-      chaos_undivided:{prefixes:["++ WARP STIRRING ++","++ TRANSMISSION CORRUPTED ++","++ HERESY INBOUND ++","++ WARP SIGNATURE FOUND ++","++ SACRIFICE ACCEPTED ++","++ WARP ENERGY RISING ++","++ ORDER BREAKS ++","++ FLESH TURNS ++","++ ASCENSION IMMINENT ++"],
-                      suffixes:["++ GLORY TO CHAOS ++","++ DARK GODS SMILE ++","++ THE EYE OPENS ++","++ ASCEND AND BURN ++","++ ALL HAIL THE DARK GODS ++","++ REALSPACE BLEEDS ++","++ STARS ARE WRONG ++","++ VOID WITHIN ++","++ ETERNAL CHANGE ++"]},
+      mechanicus:{prefixes:["+++ INCOMING DATA FEED +++","+++ SYSTEM ANALYSIS BEGIN +++","+++ ENCRYPTION ONLINE +++","+++ ENGAGE LITURGY +++","+++ ARCHIVE ACCESS +++","+++ LOGIS-CHANNEL ACTIVE +++","+++ DATA LINK ESTABLISHED +++","+++ SIGNAL LOCKED +++","+++ CORE STABILIZED +++","+++ BINHARIC CANT OPEN +++","+++ COGITATOR STACK ENGAGED +++","+++ RITE OF ACCESS COMMENCED +++","+++ MACHINE-SPIRIT QUERY +++","+++ SCRY-LOG INITIATED +++","+++ SANCTIFIED DATA STREAM +++","+++ LEXMECHANIC INPUT RECEIVED +++","+++ OMNISSIAN PROTOCOL ACTIVE +++","+++ SUBROUTINE: DIVINE CALCULATION +++","+++ AUSPEX THREAD ALIGNED +++","+++ DATA INTERCEPTED +++","+++ TRANSMISSION CORRUPTED +++","+++ ACCESS SEALED +++"],
+                 suffixes:["+++ PRAISE THE OMNISSIAH +++","+++ MACHINE SPIRIT CALMED +++","+++ THE FLESH IS WEAK +++","+++ SYSTEM CLEANSED +++","+++ BINARY PRAYER SENT +++","+++ OMNISSIAH GUIDE US +++","+++ SERVITOR READY +++","+++ RITUAL COMPLETE +++","+++ CANTICLE EXECUTED +++","+++ BLESSINGS OF THE MACHINE GOD +++","+++ DATA IS HOLY +++","+++ IMPURITY REJECTED +++","+++ CALCULATION: PURE +++","+++ BY THE MOTIVE FORCE +++","+++ MACHINE SPIRIT PACIFIED +++","+++ COGITATION COMPLETE +++","+++ THE MACHINE ENDURES +++","+++ BINHARIC PRAISE TRANSMITTED +++","+++ THE EMPEROR PROTECTS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
+      inquisition:{prefixes:["+++ INQUISITORIAL NOTICE +++","+++ DATA INTERCEPTED +++","+++ DECRYPTING ORDER +++","+++ COGITATOR ACCESS +++","+++ BY HIS WILL +++","+++ CLASSIFIED MATERIAL +++","+++ MIND CLEANSED +++","+++ CODEX SECURED +++","+++ INQUISITORIAL MANDATE +++","+++ ORDO CLEARANCE VERIFIED +++","+++ SEALED DOSSIER OPENED +++","+++ SANCTIONED INTELLIGENCE +++","+++ HERETICAL TRACE DETECTED +++","+++ PRIORITY DECREE INBOUND +++","+++ THREAT INDEX ESCALATING +++","+++ REDACTED RECORD RETRIEVED +++","+++ INTERROGATION TRANSCRIPT +++","+++ AUTHORITY OF THE HOLY ORDOS +++","+++ SUBJECT UNDER REVIEW +++","+++ INCOMING DATA FEED +++","+++ SIGNAL LOCKED +++","+++ TRANSMISSION CORRUPTED +++","+++ ARCHIVE ACCESS +++"],
+                  suffixes:["+++ THE EMPEROR PROTECTS +++","+++ PURGE COMPLETE +++","+++ FAITH REMAINS +++","+++ THOUGHT FOR THE DAY +++","+++ HERESY PURGED +++","+++ OATH UPHELD +++","+++ FAITH IS ARMOR +++","+++ EXAMINATION COMPLETE +++","+++ IN HIS NAME +++","+++ WITNESS THE THRONE +++","+++ COMPLIANCE ENFORCED +++","+++ DUTY TO THE THRONE ENDURES +++","+++ BY ORDER OF THE HOLY INQUISITION +++","+++ SILENCE IS DUTY +++","+++ JUDGEMENT STANDS +++","+++ PURITY IS NON-NEGOTIABLE +++","+++ DENUNCIATION ACCEPTED +++","+++ SEAL THE RECORD +++","+++ NO MERCY FOR THE TAINTED +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EYE OPENS +++"]},
+      militarum:{prefixes:["+++ IMPERIAL SIGNAL +++","+++ HIGH COMMAND ORDER +++","+++ ORDERS INCOMING +++","+++ TACTICAL FEED +++","+++ REGIMENTAL DATA +++","+++ COMMAND OVERRIDE +++","+++ BATTLELINE UPLINK +++","+++ ENGAGEMENT ACTIVE +++","+++ OPERATIONAL BRIEF +++","+++ MUNITORUM DISPATCH +++","+++ FRONTLINE COMMUNIQUÉ +++","+++ VOX-CAST RECEIVED +++","+++ FIRE MISSION PENDING +++","+++ DEPLOYMENT ORDER +++","+++ STRATEGIC UPDATE +++","+++ THEATRE COMMAND ONLINE +++","+++ COMBAT STATUS REPORT +++","+++ FORM RANKS +++","+++ IMPERIAL TACTICA +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++","+++ TRANSMISSION CORRUPTED +++"],
+                 suffixes:["+++ GLORY TO THE GUARD +++","+++ VICTORY IS ASSURED +++","+++ CADIA STANDS +++","+++ DUTY FULFILLED +++","+++ NO SACRIFICE TOO GREAT +++","+++ PERIMETER SECURED +++","+++ FOR THE EMPEROR +++","+++ STRATEGIC DIRECTIVE +++","+++ HOLD THE LINE +++","+++ STAND FIRM +++","+++ BAYONETS FIXED +++","+++ MUNITORUM APPROVED +++","+++ POSITION MAINTAINED +++","+++ CASUALTIES ACCEPTABLE +++","+++ ARTILLERY ANSWERS +++","+++ REGIMENT ENDURES +++","+++ ADVANCE BY COMMAND +++","+++ NO STEP BACK +++","+++ THE LINE HOLDS +++","+++ SYSTEM CLEANSED +++","+++ ACCESS SEALED +++","+++ THE EMPEROR PROTECTS +++"]},
+      khorne:{prefixes:["+++ BLOOD ALERT +++","+++ SKULL COUNT RISING +++","+++ RAGE TRANSMISSION +++","+++ COMBAT UPLINK +++","+++ SLAUGHTER INITIATED +++","+++ NO PEACE ONLY WAR +++","+++ DOMINATE THROUGH BLOOD +++","+++ BUTCHER'S CALL +++","+++ CHAINAXE CHORUS +++","+++ CARNAGE PROTOCOL +++","+++ BRASS THRONE DEMANDS +++","+++ SKULL TITHE ASCENDING +++","+++ WRATH WITHOUT MEASURE +++","+++ BATTLE FRENZY UNBOUND +++","+++ WAR CRY ASCENDANT +++","+++ GORE TIDE RISING +++","+++ OFFERING OF SKULLS +++","+++ MERCY DENIED +++","+++ THE RED PATH OPENS +++","+++ SLAUGHTER WITHOUT END +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
+              suffixes:["+++ BLOOD FOR THE BLOOD GOD +++","+++ SKULLS FOR THE SKULL THRONE +++","+++ ALL MUST BLEED +++","+++ DEATH WITHOUT END +++","+++ STRIKE WITHOUT MERCY +++","+++ KILL! MAIM! BURN! +++","+++ RED FLOWS +++","+++ WRATH IS WORSHIP +++","+++ THE THRONE DEMANDS SKULLS +++","+++ LET THE GALAXY BLEED +++","+++ OFFER THEM TO KHORNE +++","+++ ONLY SLAUGHTER REMAINS +++","+++ NO RESPITE. NO MERCY. +++","+++ THE EIGHTFOLD PATH DRINKS +++","+++ BRASS AND BLOOD +++","+++ RAGE IS TRUTH +++","+++ CHAINBLADES SING +++","+++ THEIR SKULLS ARE DUE +++","+++ WAR IS THE ONLY PRAYER +++","+++ THE RED HARVEST GROWS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
+      nurgle:{prefixes:["+++ BLOAT SIGNAL +++","+++ DECAY INITIATED +++","+++ DISEASE VECTOR ACTIVE +++","+++ PLAGUE SEED SENT +++","+++ SPOREFIELD DEPLOYED +++","+++ VIRUSCODE ENGAGED +++","+++ ALL IS ROT +++","+++ FLESH SAGS +++","+++ FOULNESS RISES +++","+++ CONTAGION BLOOMS +++","+++ PESTILENCE CURRENT +++","+++ SEPTIC TIDE RISING +++","+++ ROT-WIND ASCENDANT +++","+++ INFESTATION CONFIRMED +++","+++ BLESSED CORRUPTION SPREADS +++","+++ GARDEN GROWS +++","+++ PUSTULENT SIGNAL +++","+++ PLAGUE BELLS TOLL +++","+++ SWEET RUIN APPROACHES +++","+++ THE ROT TAKES ROOT +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
+              suffixes:["+++ PRAISE GRANDFATHER NURGLE +++","+++ FILTH TRANSMITTED +++","+++ ROTTEN JOY +++","+++ CONTAGION SPREADS +++","+++ FLIES REJOICE +++","+++ FESTERING COMPLETE +++","+++ MUCOUS FLOW +++","+++ BLESSINGS OF ROT +++","+++ GLORIOUS CORRUPTION +++","+++ THE GARDEN WELCOMES ALL +++","+++ DECAY IS GENEROUS +++","+++ EMBRACE THE SWEET SICKNESS +++","+++ PUTRESCENCE ENDURES +++","+++ JOY IN RUIN +++","+++ THE BLOATED LORD PROVIDES +++","+++ PLAGUE GIFT DELIVERED +++","+++ ROT IS A BLESSING +++","+++ ALL THINGS RIPEN +++","+++ CORRUPTION TAKES HOLD +++","+++ THE FLIES SING +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
+      tzeentch:{prefixes:["+++ KNOWLEDGE UNFOLDS +++","+++ SCHEME RUNNING +++","+++ DATA TWISTED +++","+++ WARP-TEXT INCOMING +++","+++ INVERSION ACTIVE +++","+++ DESTINY WRITTEN +++","+++ NOTHING IS AS IT SEEMS +++","+++ PATTERNS SHIFT +++","+++ THREADS CONVERGE +++","+++ PROBABILITY FRACTURES +++","+++ HIDDEN HAND MOVES +++","+++ THE NEXT TURN BEGINS +++","+++ FATE MATRIX REVISED +++","+++ MANY PATHS OPEN +++","+++ THE SCHEME DEEPENS +++","+++ MUTATION OF INTENT +++","+++ THE HOUR OF CHANGE +++","+++ SECRETS BECOME REAL +++","+++ WARP PARADOX STABILIZED +++","+++ DESTINY RECURSIVE +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
+               suffixes:["+++ ALL IS CHANGE +++","+++ PLAN: PHASE 7 +++","+++ EYE OPENS +++","+++ THOUGHT MUTATED +++","+++ CYCLE CONTINUES +++","+++ OBSERVE THE CHANGE +++","+++ REWRITE EVERYTHING +++","+++ JUST AS PLANNED +++","+++ ALL PART OF THE PLAN +++","+++ FATE RECOMPILED +++","+++ THE CHANGER SMILES +++","+++ OUTCOME REVISED +++","+++ THE PATTERN HOLDS +++","+++ TOMORROW HAS MOVED +++","+++ THE SCRIPT BURNS +++","+++ TRUTH RECAST +++","+++ THE LABYRINTH TURNS +++","+++ FORM IS TEMPORARY +++","+++ DESTINY FRACTURES +++","+++ THE LAST WORD CHANGES +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
+      slaanesh:{prefixes:["+++ ECSTASY PULSE +++","+++ SENSORY OVERLOAD +++","+++ DESIRE BREACH +++","+++ TOUCH THE DIVINE +++","+++ TASTE THE PAIN +++","+++ LUSTWAVE TRANSMITTED +++","+++ EXCESS COMPLETE +++","+++ VELVET SCREAM +++","+++ RAPTURE SIGNAL +++","+++ SENSORIA UNBOUND +++","+++ EXQUISITE AGONY INBOUND +++","+++ TEMPTATION CHANNEL OPEN +++","+++ PERFECT NOTE STRUCK +++","+++ THRESHOLD OF ECSTASY +++","+++ INDULGENCE WITHOUT LIMIT +++","+++ DESIRE ASCENDANT +++","+++ HARMONIC OBSESSION +++","+++ THE SILKEN EDGE DRAWS NEAR +++","+++ SENSORY FEED PEAKING +++","+++ DELIGHT SPIKES +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
+               suffixes:["+++ FEED THE HUNGER +++","+++ THE PERFECT MOMENT +++","+++ PAIN IS PLEASURE +++","+++ EXCESS IS TRUTH +++","+++ UNHOLY HARMONY +++","+++ FEEL EVERYTHING +++","+++ TEMPTATION SPIKE +++","+++ PERFECTION IS BLISS +++","+++ PLEASURE ASCENDANT +++","+++ THE SENSES SHALL OPEN +++","+++ ECSTASY WITHOUT END +++","+++ RAPTURE CONSUMES +++","+++ BEAUTY CUTS DEEPLY +++","+++ SENSORIA SATURATED +++","+++ DESIRE BECOMES LAW +++","+++ EVERY NOTE A KNIFE +++","+++ BLISS THROUGH EXCESS +++","+++ THE HUNGER REMAINS +++","+++ PERFECT AGONY +++","+++ INDULGENCE VICTORIOUS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
+      chaos_undivided:{prefixes:["+++ WARP STIRRING +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ SACRIFICE ACCEPTED +++","+++ WARP ENERGY RISING +++","+++ ORDER BREAKS +++","+++ FLESH TURNS +++","+++ ASCENSION IMMINENT +++","+++ REALSPACE THINS +++","+++ VEIL BREACH DETECTED +++","+++ CHAOS CHORUS RISING +++","+++ RUINOUS CONVERGENCE +++","+++ THE EYE TURNS +++","+++ CORRUPTION VECTOR LOCKED +++","+++ THE PACT STANDS +++","+++ REALITY UNFASTENS +++","+++ THE WARP ANSWERS +++","+++ UNHOLY ALIGNMENT +++","+++ THE DARK BETWEEN STARS +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++"],
+                      suffixes:["+++ GLORY TO CHAOS +++","+++ DARK GODS SMILE +++","+++ THE EYE OPENS +++","+++ ASCEND AND BURN +++","+++ ALL HAIL THE DARK GODS +++","+++ REALSPACE BLEEDS +++","+++ STARS ARE WRONG +++","+++ VOID WITHIN +++","+++ ETERNAL CHANGE +++","+++ LET THE GALAXY BREAK +++","+++ THE VEIL IS TORN +++","+++ OFFERING ACCEPTED +++","+++ THE RUINOUS POWERS PROVIDE +++","+++ CORRUPTION WITHOUT MASTER +++","+++ CHAOS IS ASCENDANT +++","+++ THE LONG WAR ENDURES +++","+++ REALITY YIELDS +++","+++ THE WARP CLAIMS ALL +++","+++ BLESSED BE THE DAMNED +++","+++ NIGHT COMES FROM WITHIN +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EMPEROR PROTECTS +++"]},
+    };
+
+    const fillerState = {
+      count: 3,
+      prefixLines: [],
+      suffixLines: [],
     };
 
     function setStatus(t, key){
@@ -508,8 +496,11 @@
         el.status.dataset.statusKey = key;
       }
     }
-    function clampIndex(n, max){ const x=Number(n); if(!Number.isFinite(x)) return 1; return Math.min(max, Math.max(1, Math.floor(x))); }
-    function rand1to(max){ return Math.floor(Math.random()*max)+1; }
+    function clamp(n, min, max){
+      const x = Number(n);
+      if(!Number.isFinite(x)) return min;
+      return Math.max(min, Math.min(max, Math.floor(x)));
+    }
     function nonce(){ return String(Date.now()) + "-" + String(Math.random()).slice(2); }
     function getLayout(){ return LAYOUTS[el.faction.value] || LAYOUTS.mechanicus; }
 
@@ -524,6 +515,20 @@
       return t || "rgba(255,255,255,.88)";
     }
 
+    function drawUniqueRandomLines(source, count){
+      const arr = [...source];
+      for(let i=arr.length-1; i>0; i--){
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr.slice(0, Math.min(count, arr.length));
+    }
+
+    function renderFillerPreview(){
+      el.prefixPreview.textContent = fillerState.prefixLines.join("\n");
+      el.suffixPreview.textContent = fillerState.suffixLines.join("\n");
+    }
+
     function updateLivePreview(){
       const fontStack = FONT_STACK[el.faction.value] || 'Calibri, Arial, sans-serif';
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20) + "px";
@@ -532,8 +537,8 @@
       const msgColor  = el.fontColor.value || "#00ff66";
 
       el.livePreview.style.fontFamily = fontStack;
-      el.livePreviewPrefix.textContent = el.prefixPreview.textContent || "";
-      el.livePreviewSuffix.textContent = el.suffixPreview.textContent || "";
+      el.livePreviewPrefix.textContent = fillerState.prefixLines.join("\n");
+      el.livePreviewSuffix.textContent = fillerState.suffixLines.join("\n");
 
       el.livePreviewPrefix.style.color = psColor;
       el.livePreviewSuffix.style.color = psColor;
@@ -544,38 +549,39 @@
       el.livePreviewMsg.style.fontSize = msgFontPx;
     }
 
-    function computePreview(){
-      const cfg=getLayout();
-      const pMax=cfg.prefixes.length, sMax=cfg.suffixes.length;
-
-      el.prefixIndex.max = String(pMax);
-      el.suffixIndex.max = String(sMax);
-
-      const pIdx=el.randomFillers.checked ? rand1to(pMax) : clampIndex(el.prefixIndex.value, pMax);
-      const sIdx=el.randomFillers.checked ? rand1to(sMax) : clampIndex(el.suffixIndex.value, sMax);
-
-      if(!el.randomFillers.checked){
-        el.prefixIndex.value = pIdx;
-        el.suffixIndex.value = sIdx;
-      }
-
-      el.prefixPreview.textContent = cfg.prefixes[pIdx-1] || "";
-      el.suffixPreview.textContent = cfg.suffixes[sIdx-1] || "";
-
-      // blokuj ręczne pola gdy losuje
-      const manualDisabled = el.randomFillers.checked;
-      el.prefixIndex.disabled = manualDisabled;
-      el.suffixIndex.disabled = manualDisabled;
-
+    function rerollFillers(){
+      const cfg = getLayout();
+      fillerState.count = clamp(el.fillerLineCount.value, 1, 5);
+      el.fillerLineCount.value = String(fillerState.count);
+      fillerState.prefixLines = drawUniqueRandomLines(cfg.prefixes, fillerState.count);
+      fillerState.suffixLines = drawUniqueRandomLines(cfg.suffixes, fillerState.count);
+      renderFillerPreview();
       updateLivePreview();
     }
 
-    async function sendMessage(isClear){
-      const cfg=getLayout();
-      const pMax=cfg.prefixes.length, sMax=cfg.suffixes.length;
+    function computePreview(){
+      renderFillerPreview();
+      updateLivePreview();
+    }
 
-      const prefixIndex=el.randomFillers.checked ? rand1to(pMax) : clampIndex(el.prefixIndex.value, pMax);
-      const suffixIndex=el.randomFillers.checked ? rand1to(sMax) : clampIndex(el.suffixIndex.value, sMax);
+
+    async function triggerPushNotification(){
+      const triggerEndpoint = window.infWebPushConfig?.triggerEndpoint;
+      if(!triggerEndpoint) return;
+
+      await fetch(triggerEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: "Infoczytnik",
+          body: "+++ INCOMING DATA-TRANSMISSION +++",
+          icon: "./IkonaPowiadomien.png",
+          tag: "infoczytnik-new-message",
+          url: "./Infoczytnik/Infoczytnik.html"
+        })
+      });
+    }
+    async function sendMessage(isClear){
 
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
@@ -598,7 +604,9 @@
           suffixFontSize: psFontPx + "px",
 
           // fillery
-          prefixIndex, suffixIndex,
+          fillerLineCount: fillerState.count,
+          prefixLines: isClear ? [] : fillerState.prefixLines,
+          suffixLines: isClear ? [] : fillerState.suffixLines,
           showLogo: !!el.showLogo.checked,
           flicker: !!el.flicker.checked,
 
@@ -608,6 +616,14 @@
           nonce: nonce(),
           ts: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge:false });
+
+        if(!isClear){
+          try{
+            await triggerPushNotification();
+          }catch(pushError){
+            console.warn("Nie udało się uruchomić triggera Web Push.", pushError);
+          }
+        }
 
         setStatus(
           isClear
@@ -693,11 +709,10 @@
     });
 
     ["change","input"].forEach(evt=>{
-      el.faction.addEventListener(evt, computePreview);
-      el.randomFillers.addEventListener(evt, computePreview);
-      el.prefixIndex.addEventListener(evt, computePreview);
-      el.suffixIndex.addEventListener(evt, computePreview);
+      el.faction.addEventListener(evt, rerollFillers);
+      el.fillerLineCount.addEventListener(evt, rerollFillers);
     });
+    el.rerollFillersBtn.addEventListener("click", rerollFillers);
 
     ["input","change"].forEach(evt=>{
       el.fontColor.addEventListener(evt, updateLivePreview);
@@ -714,7 +729,7 @@
     }
 
     setStatus(translations[currentLanguage].messages.statusReady, "statusReady");
-    computePreview();
+    rerollFillers();
   </script>
 </body>
 </html>
