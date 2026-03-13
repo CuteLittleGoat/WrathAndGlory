@@ -15,6 +15,30 @@ Następnie przygotuj mi nowy plik o nazwie &quot;Analizy/Push.html&quot;.
 4. Ma zawierać kod wszystkich plików związanych z aplikacją PWA i funkcjonalnością powiadomień
 5. Ma zawierać stan &quot;jak jest teraz&quot; (dokładnie)
 6. Ma zawierać instrukcje co mam zrobić w CloudFlare (dokładnie)</code></pre>
+
+<h2>Aktualizacja bezpieczeństwa push — 2026-03-13</h2>
+<p>Wdrożono pakiet zmian bezpieczeństwa i niezawodności Web Push zgodnie z poniższym promptem.</p>
+<h3>Prompt użytkownika (kontekst tej aktualizacji)</h3>
+<pre><code>Przeanalizuj poniższe propozycje zmian i je wprowadź. Następnie zaktualizuj plik Analizy/Push.html
+
+1) usuń prywatny klucz VAPID z backendu
+2) ustaw pełne HTTPS endpointy zamiast względnych /api/...
+3) GM_test.html ma sprawdzać response.ok triggera
+4) ujednolić payload push do ścieżek absolutnych
+5) poprawić notificationclick (dokładne dopasowanie URL + fallback)
+6) rozszerzyć obsługę błędów subscribe o treść odpowiedzi
+7) doprecyzować CORS do konkretnych originów
+8) kierunek wdrożenia: GitHub Pages + Cloudflare Worker + sekrety VAPID</code></pre>
+<ul>
+<li><strong>Zrobione:</strong> usunięto fallback prywatnego klucza VAPID z <code>Infoczytnik/backend/server.js</code>; klucze tylko z ENV.</li>
+<li><strong>Zrobione:</strong> endpointy w <code>Infoczytnik/config/web-push-config.js</code> ustawiono na pełne URL HTTPS.</li>
+<li><strong>Zrobione:</strong> <code>GM_test.html</code> sprawdza <code>response.ok</code> i zwraca szczegółowy błąd backendu.</li>
+<li><strong>Zrobione:</strong> payload push i fallbacki SW/backend używają ścieżek absolutnych (<code>/IkonaPowiadomien.png</code>, <code>/Infoczytnik/Infoczytnik.html</code>).</li>
+<li><strong>Zrobione:</strong> <code>service-worker.js</code> fokusuje najpierw dokładny URL celu, potem okno fallback.</li>
+<li><strong>Zrobione:</strong> <code>Main/index.html</code> raportuje status + treść błędu dla subscribe.</li>
+<li><strong>Zrobione:</strong> CORS backendu ograniczono do listy <code>ALLOWED_ORIGINS</code> (bez domyślnego wildcard).</li>
+</ul>
+
 <h2>1) Wymagania użytkownika (z Analizy/Projekt_PWA.md)</h2><ol>
 <li>1. Miała dostęp tylko do widoku użytkownika (bez dopisku ?admin=1)</li>
 <li>2. Moduł Infoczytnik uruchamiała w orientacji pionowej niezależnie od ustawień urządzenia</li>

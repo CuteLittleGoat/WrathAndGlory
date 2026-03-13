@@ -255,3 +255,12 @@ Dodane funkcje:
   - jest wyrównany do prawej strony zielonej ramki panelu,
   - nie nachodzi na treść podczas scrollowania i nie przesuwa się względem viewportu.
 - Logika JS Web Push pozostała bez zmian (obsługa kliknięcia, walidacja konfiguracji, subskrypcja, POST endpoint).
+
+
+## Aktualizacja techniczna 2026-03-13 — szczegóły błędów subskrypcji push
+- W `enablePushNotifications()` (`Main/index.html`) zmieniono obsługę odpowiedzi `fetch(pushConfig.subscribeEndpoint, ...)`.
+- Poprzednio przy `!response.ok` rzucany był wyjątek tylko ze statusem HTTP.
+- Aktualnie kod odczytuje dodatkowo treść odpowiedzi backendu:
+  - `const errorText = await response.text().catch(() => "");`
+  - `throw new Error(`Błąd zapisu subskrypcji: ${response.status} ${errorText}`);`
+- Efekt: komunikat błędu w UI jest bardziej diagnostyczny i szybciej wskazuje przyczynę po stronie backendu push.

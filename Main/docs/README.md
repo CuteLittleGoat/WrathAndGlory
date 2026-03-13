@@ -224,3 +224,12 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 - The **Enable notifications** button is no longer pinned to the viewport (`position: fixed`).
 - It is now permanently placed **below the module buttons grid**, aligned to the right edge of the main green-framed panel.
 - This prevents overlap and stops the button from following the user while scrolling.
+
+
+## Aktualizacja 2026-03-13 (PL) — obsługa błędu subskrypcji push
+- W `Main/index.html` rozszerzono obsługę błędu przy zapisie subskrypcji push.
+- Jeśli backend zwróci błąd, UI pokazuje teraz: `status HTTP + treść odpowiedzi`, co ułatwia diagnostykę CORS i konfiguracji endpointu.
+
+## Update 2026-03-13 (EN) — push subscription error handling
+- In `Main/index.html`, push subscription error handling was extended.
+- When backend returns an error, the UI now reports: `HTTP status + response body`, making CORS/endpoint diagnostics easier.

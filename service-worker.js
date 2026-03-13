@@ -60,9 +60,9 @@ self.addEventListener("push", (event) => {
 
   const title = payload.title || "Infoczytnik";
   const body = payload.body || "+++ INCOMING DATA-TRANSMISSION +++";
-  const icon = payload.icon || "./IkonaPowiadomien.png";
-  const badge = payload.badge || "./IkonaPowiadomien.png";
-  const url = payload.url || "./Infoczytnik/Infoczytnik.html";
+  const icon = payload.icon || "/IkonaPowiadomien.png";
+  const badge = payload.badge || "/IkonaPowiadomien.png";
+  const url = payload.url || "/Infoczytnik/Infoczytnik.html";
 
   event.waitUntil(
     self.registration.showNotification(title, {
@@ -78,18 +78,27 @@ self.addEventListener("push", (event) => {
 
 self.addEventListener("notificationclick", (event) => {
   event.notification.close();
-  const targetUrl = event.notification.data?.url || "./Infoczytnik/Infoczytnik.html";
+  const targetPath = event.notification.data?.url || "/Infoczytnik/Infoczytnik.html";
+  const targetUrl = new URL(targetPath, self.location.origin).href;
 
   event.waitUntil(
     clients.matchAll({ type: "window", includeUncontrolled: true }).then((clientList) => {
       for (const client of clientList) {
-        if (client.url.includes("Infoczytnik") && "focus" in client) {
+        if (client.url === targetUrl && "focus" in client) {
           return client.focus();
         }
       }
+
+      for (const client of clientList) {
+        if (client.url.includes("/Infoczytnik/") && "focus" in client) {
+          return client.focus();
+        }
+      }
+
       if (clients.openWindow) {
         return clients.openWindow(targetUrl);
       }
+
       return Promise.resolve();
     })
   );

@@ -11,20 +11,17 @@ const app = express();
 
 const PORT = Number(process.env.PORT || 8787);
 const subscriptionsFile = path.resolve(process.env.SUBSCRIPTIONS_FILE || "./data/subscriptions.json");
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://cutelittlegoat.github.io")
   .split(",")
   .map((value) => value.trim())
   .filter(Boolean);
 
-const defaultVapidPublicKey = "BHEgyK2LpItiJFrT28XceIiHehAsbya5cg9v88hKDOUkCMcZciwBjgBeum5VQs247VTuSJceWwOaZas0WoI-eig";
-const defaultVapidPrivateKey = "jNxDs2rcrrFICZJsiPWAMHpyBhUMB9mfeFLPquSXZ3c";
-
-const vapidPublicKey = (process.env.WEB_PUSH_VAPID_PUBLIC_KEY || defaultVapidPublicKey).trim();
-const vapidPrivateKey = (process.env.WEB_PUSH_VAPID_PRIVATE_KEY || defaultVapidPrivateKey).trim();
+const vapidPublicKey = (process.env.WEB_PUSH_VAPID_PUBLIC_KEY || "").trim();
+const vapidPrivateKey = (process.env.WEB_PUSH_VAPID_PRIVATE_KEY || "").trim();
 const vapidSubject = (process.env.WEB_PUSH_VAPID_SUBJECT || "mailto:admin@example.com").trim();
 
 if (!vapidPublicKey || !vapidPrivateKey) {
-  console.warn("[web-push] Brak kluczy VAPID w .env. Endpointy push będą zwracać błąd konfiguracji.");
+  console.warn("[web-push] Brak kluczy VAPID w zmiennych środowiskowych. Endpointy push będą zwracać błąd konfiguracji.");
 } else {
   webpush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
 }
@@ -33,12 +30,20 @@ app.use(express.json({ limit: "256kb" }));
 app.use(
   cors({
     origin(origin, callback) {
-      if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      if (!origin) {
         callback(null, true);
         return;
       }
+
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+        return;
+      }
+
       callback(new Error(`Origin not allowed: ${origin}`));
-    }
+    },
+    methods: ["POST", "GET", "OPTIONS"],
+    allowedHeaders: ["Content-Type"]
   })
 );
 
@@ -80,13 +85,13 @@ function normalizePayload(rawPayload) {
       typeof payload.body === "string" && payload.body.trim()
         ? payload.body.trim()
         : "+++ INCOMING DATA-TRANSMISSION +++",
-    icon: typeof payload.icon === "string" && payload.icon.trim() ? payload.icon.trim() : "./IkonaPowiadomien.png",
-    badge: typeof payload.badge === "string" && payload.badge.trim() ? payload.badge.trim() : "./IkonaPowiadomien.png",
+    icon: typeof payload.icon === "string" && payload.icon.trim() ? payload.icon.trim() : "/IkonaPowiadomien.png",
+    badge: typeof payload.badge === "string" && payload.badge.trim() ? payload.badge.trim() : "/IkonaPowiadomien.png",
     tag: typeof payload.tag === "string" && payload.tag.trim() ? payload.tag.trim() : "infoczytnik-new-message",
     url:
       typeof payload.url === "string" && payload.url.trim()
         ? payload.url.trim()
-        : "./Infoczytnik/Infoczytnik.html"
+        : "/Infoczytnik/Infoczytnik.html"
   };
 }
 

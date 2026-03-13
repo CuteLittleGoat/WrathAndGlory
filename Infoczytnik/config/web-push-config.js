@@ -4,9 +4,9 @@ window.infWebPushConfig = {
 
   // Endpoint backendu zapisujący subskrypcję użytkownika (POST JSON subscription).
   // Ustaw tu produkcyjny endpoint HTTPS (bez localhost).
-  subscribeEndpoint: "/api/push/subscribe",
+  subscribeEndpoint: "https://push.twojadomena.pl/api/push/subscribe",
 
   // Opcjonalny endpoint backendu do triggera po wysłaniu wiadomości przez GM.
   // Ustaw tu produkcyjny endpoint HTTPS (bez localhost).
-  triggerEndpoint: "/api/push/trigger"
+  triggerEndpoint: "https://push.twojadomena.pl/api/push/trigger"
 };
