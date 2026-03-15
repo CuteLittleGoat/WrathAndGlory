@@ -1,0 +1,343 @@
+PODSUMOWANIE KONFIGURACJI FIREBASE + CLOUDFLARE WORKER
+=====================================================
+
+CEL
+----
+Przygotowano backend powiadomień dla projektu WH40k-Data-Slate w taki sposób, aby:
+1. zachować dotychczasowy web push,
+2. dodać obsługę Android / Firebase Cloud Messaging (FCM),
+3. przechowywać tokeny urządzeń Android w osobnym KV namespace,
+4. wysyłać powiadomienia z Cloudflare Workera przez FCM HTTP v1.
+
+=====================================================
+1. FIREBASE — CO ZOSTAŁO ZROBIONE
+=====================================================
+
+[1] Potwierdzono, że projekt Firebase już istnieje:
+- nazwa projektu: WH40k-Data-Slate
+
+[2] Potwierdzono, że aplikacja Android jest już dodana do projektu Firebase:
+- package name: com.cutelittlegoat.wrathandglory
+
+[3] Pobrano plik konfiguracyjny aplikacji Android:
+- google-services.json
+
+UWAGA:
+Ten plik jest potrzebny później po stronie Android Studio.
+Nie był używany do sekretów Cloudflare.
+
+[4] Wygenerowano klucz konta serwisowego Firebase:
+Ścieżka:
+- Firebase Console
+- Project settings
+- Service accounts
+- Generate new private key
+
+Pobrany został plik JSON typu service_account, zawierający m.in.:
+- type
+- project_id
+- private_key_id
+- private_key
+- client_email
+- client_id
+- auth_uri
+- token_uri
+
+UWAGA:
+To właśnie TEN plik został użyty do konfiguracji sekretów w Cloudflare.
+Nie należy go publikować ani wrzucać do repozytorium.
+
+=====================================================
+2. CLOUDFLARE — STAN WYJŚCIOWY
+=====================================================
+
+Przed rozbudową istniał już worker:
+- wrathandglory-push-api
+
+Worker był wcześniej skonfigurowany do klasycznego web push.
+
+Istniał już binding KV dla web push:
+- nazwa bindingu: SUBSCRIPTIONS_KV
+- namespace value: PUSH_SUBSCRIPTIONS
+
+Istniały też wcześniejsze sekrety dla web push:
+- TRIGGER_TOKEN
+- VAPID_PRIVATE_KEY
+- VAPID_PUBLIC_KEY
+- VAPID_SUBJECT
+
+Dodatkowo był ustawiony plaintext:
+- ALLOWED_ORIGIN
+
+=====================================================
+3. CLOUDFLARE — NOWY KV DLA FCM
+=====================================================
+
+[1] Utworzono nowy KV namespace do przechowywania tokenów Firebase / Android:
+- namespace name: FCM_TOKENS
+
+[2] Podłączono nowy namespace do istniejącego workera jako binding:
+- binding name: FCM_TOKENS
+- namespace value: FCM_TOKENS
+
+Końcowy stan KV bindings w workerze:
+- SUBSCRIPTIONS_KV  -> PUSH_SUBSCRIPTIONS
+- FCM_TOKENS       -> FCM_TOKENS
+
+ZNACZENIE:
+- SUBSCRIPTIONS_KV przechowuje web push subscriptions
+- FCM_TOKENS przechowuje tokeny urządzeń Android / FCM
+
+=====================================================
+4. CLOUDFLARE — NOWE SEKRETY FIREBASE
+=====================================================
+
+Do workera dodano 3 nowe sekrety potrzebne do wysyłki przez FCM HTTP v1:
+
+[1] FIREBASE_PROJECT_ID
+Źródło:
+- pole "project_id" z pliku service account JSON
+
+[2] FIREBASE_CLIENT_EMAIL
+Źródło:
+- pole "client_email" z pliku service account JSON
+
+[3] FIREBASE_PRIVATE_KEY
+Źródło:
+- pełna wartość pola "private_key" z pliku service account JSON
+
+WAŻNE:
+Do FIREBASE_PRIVATE_KEY została wklejona pełna zawartość, łącznie z:
+- -----BEGIN PRIVATE KEY-----
+- sekwencjami \n
+- -----END PRIVATE KEY-----
+- ewentualnym końcowym \n
+
+Sekret NIE był ręcznie przerabiany przed zapisaniem.
+To jest poprawne podejście.
+
+Końcowy stan Variables and Secrets w workerze:
+- ALLOWED_ORIGIN              [plaintext]
+- TRIGGER_TOKEN               [secret]
+- VAPID_PRIVATE_KEY           [secret]
+- VAPID_PUBLIC_KEY            [secret]
+- VAPID_SUBJECT               [secret]
+- FIREBASE_PROJECT_ID         [secret]
+- FIREBASE_CLIENT_EMAIL       [secret]
+- FIREBASE_PRIVATE_KEY        [secret]
+
+=====================================================
+5. WORKER — CO BYŁO PRZED ZMIANĄ
+=====================================================
+
+Oryginalny kod workera:
+- obsługiwał tylko web push,
+- korzystał z SUBSCRIPTIONS_KV,
+- korzystał z VAPID_*,
+- miał endpointy:
+  - GET  /api/push/health
+  - POST /api/push/subscribe
+  - POST /api/push/trigger
+- nie korzystał w ogóle z:
+  - FCM_TOKENS
+  - FIREBASE_PROJECT_ID
+  - FIREBASE_CLIENT_EMAIL
+  - FIREBASE_PRIVATE_KEY
+
+Wniosek:
+stary worker nie był w stanie wysyłać nic przez FCM.
+
+=====================================================
+6. WORKER — CO ZOSTAŁO DODANE W NOWYM KODZIE
+=====================================================
+
+Wgrano nową wersję kodu workera, która:
+- zachowuje dotychczasowy web push,
+- dodaje obsługę FCM dla Androida.
+
+NOWE LUB ROZSZERZONE ENDPOINTY:
+--------------------------------
+
+[1] GET /api/push/health
+Zwraca teraz:
+- ok
+- hasVapid
+- hasFirebase
+- webSubscriptions
+- fcmTokens
+
+[2] POST /api/push/subscribe
+Bez zmian funkcjonalnych:
+- zapisuje klasyczne web push subscriptions do SUBSCRIPTIONS_KV
+
+[3] POST /api/fcm/register
+Nowy endpoint:
+- zapisuje token FCM urządzenia do FCM_TOKENS
+
+[4] POST /api/fcm/unregister
+Nowy endpoint:
+- usuwa token FCM urządzenia z FCM_TOKENS
+
+[5] POST /api/push/trigger
+Rozszerzony endpoint:
+- nadal wysyła web push do SUBSCRIPTIONS_KV
+- dodatkowo wysyła wiadomości FCM do tokenów zapisanych w FCM_TOKENS
+
+=====================================================
+7. JAK DZIAŁA NOWA LOGIKA WORKERA
+=====================================================
+
+WEB PUSH:
+---------
+- worker odczytuje subskrypcje z SUBSCRIPTIONS_KV
+- tworzy JWT VAPID
+- wysyła push na endpoint przeglądarkowy
+- usuwa wygasłe subskrypcje z KV
+
+FCM:
+----
+- worker odczytuje tokeny z FCM_TOKENS
+- na podstawie FIREBASE_CLIENT_EMAIL i FIREBASE_PRIVATE_KEY tworzy JWT OAuth
+- pobiera access token z Google OAuth
+- wysyła request do:
+  /v1/projects/{FIREBASE_PROJECT_ID}/messages:send
+- usuwa nieaktualne / wygasłe tokeny FCM z KV
+
+PAYLOAD:
+--------
+Worker normalizuje payload i obsługuje pola:
+- title
+- body
+- icon
+- badge
+- tag
+- url
+- silent
+
+Dla FCM:
+- notification jest wysyłane tylko gdy silent = false
+- dane trafiają też do sekcji data
+- android.notification zawiera:
+  - channel_id: default
+  - tag
+  - icon: ic_notification
+  - click_action: OPEN_INFOCZYTNIK
+
+=====================================================
+8. TEST, KTÓRY ZOSTAŁ WYKONANY
+=====================================================
+
+Uruchomiono test endpointu:
+- GET /api/push/health
+
+Odpowiedź była:
+{
+  "ok": true,
+  "hasVapid": true,
+  "hasFirebase": true,
+  "webSubscriptions": 2,
+  "fcmTokens": 0
+}
+
+INTERPRETACJA:
+- worker działa poprawnie,
+- sekrety VAPID są dostępne,
+- sekrety Firebase są dostępne,
+- zapisane są 2 stare subskrypcje web push,
+- nie ma jeszcze żadnego tokenu Android / FCM.
+
+=====================================================
+9. CO JEST JUŻ GOTOWE
+=====================================================
+
+Na ten moment gotowe są:
+- projekt Firebase,
+- aplikacja Android w Firebase,
+- google-services.json pobrany,
+- service account JSON pobrany,
+- istniejący worker Cloudflare zachowany,
+- stary web push zachowany,
+- nowe KV dla FCM utworzone,
+- nowe sekrety Firebase dodane,
+- nowy kod workera wdrożony,
+- endpoint health działa poprawnie,
+- worker widzi konfigurację Firebase i VAPID.
+
+=====================================================
+10. CZEGO JESZCZE BRAKUJE
+=====================================================
+
+Nie jest jeszcze gotowy klient Android.
+
+Brakuje:
+- projektu Android Studio / aplikacji Android,
+- umieszczenia google-services.json w katalogu app/,
+- integracji Firebase Messaging SDK w aplikacji,
+- pobrania tokenu FCM po stronie Androida,
+- wysłania tokenu do:
+  POST /api/fcm/register
+- odbioru powiadomień w aplikacji Android,
+- obsługi kliknięcia powiadomienia / click_action,
+- ewentualnego utworzenia kanału powiadomień Android "default",
+- ewentualnej ikonki powiadomień ic_notification.
+
+=====================================================
+11. PRAKTYCZNY WNIOSEK
+=====================================================
+
+Backend po stronie Cloudflare + Firebase jest przygotowany.
+
+To oznacza:
+- worker jest już gotowy na przyjęcie tokenów FCM,
+- worker jest już gotowy do wysyłki przez FCM HTTP v1,
+- następny etap to konfiguracja aplikacji Android,
+- dopiero po rejestracji pierwszego tokenu FCM warto testować pełny przepływ powiadomień Android.
+
+=====================================================
+12. NAZWY ELEMENTÓW KONFIGURACJI — LISTA ZBIORCZA
+=====================================================
+
+FIREBASE
+--------
+Projekt:
+- WH40k-Data-Slate
+
+Aplikacja Android:
+- com.cutelittlegoat.wrathandglory
+
+Pobrane pliki:
+- google-services.json
+- service account JSON (z Generate new private key)
+
+CLOUDFLARE WORKER
+-----------------
+Worker:
+- wrathandglory-push-api
+
+KV bindings:
+- SUBSCRIPTIONS_KV -> PUSH_SUBSCRIPTIONS
+- FCM_TOKENS -> FCM_TOKENS
+
+Plaintext variables:
+- ALLOWED_ORIGIN
+
+Secrets:
+- TRIGGER_TOKEN
+- VAPID_PRIVATE_KEY
+- VAPID_PUBLIC_KEY
+- VAPID_SUBJECT
+- FIREBASE_PROJECT_ID
+- FIREBASE_CLIENT_EMAIL
+- FIREBASE_PRIVATE_KEY
+
+ENDPOINTY
+---------
+- GET  /api/push/health
+- POST /api/push/subscribe
+- POST /api/fcm/register
+- POST /api/fcm/unregister
+- POST /api/push/trigger
+
+=====================================================
+KONIEC PODSUMOWANIA
+=====================================================
