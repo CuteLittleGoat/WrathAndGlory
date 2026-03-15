@@ -180,14 +180,56 @@ Wypisz dokładnie jakie kroki muszę zrobić po stronie CloudFlare oraz Firebase
   <li><b>Przetestuj 3 scenariusze A/B/C:</b> aktywna app, app w tle, app ubita — każdy test wywołuj przez realny trigger z panelu GM.</li>
 </ol>
 
-<h3>10.3 Kolejność realizacji (najkrótsza ścieżka)</h3>
+<h3>10.3 Kolejność realizacji (najkrótsza ścieżka) — uzupełnienie + status gotowości</h3>
 <ol>
-  <li>Firebase: app Android + <code>google-services.json</code> + service account.</li>
-  <li>Cloudflare: sekrety Firebase + nowe endpointy register/unregister + FCM send w triggerze.</li>
-  <li>Android: pobranie/odświeżanie tokenu i rejestracja w Workerze.</li>
-  <li>Android: Notification Channel + ikona notyfikacji + stały tekst body.</li>
-  <li>E2E test z GM → trigger → urządzenie Android (A/B/C).</li>
+  <li><b>Firebase (stan: <span class="ok">gotowe</span>):</b>
+    <ul>
+      <li>Aplikacja Android istnieje w Firebase dla pakietu <code>com.cutelittlegoat.wrathandglory</code>.</li>
+      <li>FCM HTTP v1 jest aktywne.</li>
+      <li><code>google-services.json</code> jest pobrany i dodany do repo (plik wejściowy do Android Studio).</li>
+      <li>Konto serwisowe i klucz prywatny zostały wygenerowane (dane użyte do sekretów Workera).</li>
+    </ul>
+  </li>
+  <li><b>Cloudflare Worker (stan: <span class="ok">gotowe</span> po stronie backendu):</b>
+    <ul>
+      <li>Worker działa i ma podpięte oba KV: <code>SUBSCRIPTIONS_KV</code> + <code>FCM_TOKENS</code>.</li>
+      <li>Sekrety Firebase są ustawione: <code>FIREBASE_PROJECT_ID</code>, <code>FIREBASE_CLIENT_EMAIL</code>, <code>FIREBASE_PRIVATE_KEY</code>.</li>
+      <li>Nowe endpointy FCM są obecne: <code>/api/fcm/register</code>, <code>/api/fcm/unregister</code>.</li>
+      <li>Trigger push został rozszerzony o wysyłkę FCM HTTP v1.</li>
+      <li>Health-check raportuje <code>hasFirebase: true</code> i <code>hasVapid: true</code>.</li>
+    </ul>
+  </li>
+  <li><b>Android (stan: <span class="warn">niegotowe — to jest brakujący etap</span>):</b>
+    <ul>
+      <li>Brakuje finalnego projektu Android Studio lub jego kompletnej konfiguracji pod FCM.</li>
+      <li>Brakuje potwierdzonego wdrożenia: Firebase Messaging SDK, <code>FirebaseMessagingService</code>, rejestracja tokenu do <code>/api/fcm/register</code>.</li>
+      <li>Brakuje potwierdzonej obsługi kanału notyfikacji, small icon (<code>ic_notification</code>) i kliknięcia notyfikacji (<code>OPEN_INFOCZYTNIK</code>).</li>
+      <li>Brak testu E2E z realnym tokenem Android (w health jest <code>fcmTokens: 0</code>).</li>
+    </ul>
+  </li>
 </ol>
+
+<p><b>Wniosek dla pytania „czy wszystko jest gotowe do szykowania plików do Android Studio?”</b><br>
+<span class="ok">Tak — backend i konfiguracja chmurowa są gotowe, więc można zaczynać przygotowanie plików Android Studio.</span><br>
+<span class="warn">Nie — nie wszystko jest gotowe do budowy APK/AAB</span>, bo brakuje jeszcze samej implementacji klienta Android i pierwszej skutecznej rejestracji tokenu FCM.</p>
+
+<p><b>Minimalny zestaw plików/konfiguracji, który trzeba teraz przygotować w Android Studio:</b></p>
+<ol>
+  <li><code>app/google-services.json</code> (już pobrany — trzeba włożyć do modułu <code>app</code>).</li>
+  <li>Gradle (project + app): plugin Google Services + zależność Firebase Messaging.</li>
+  <li><code>AndroidManifest.xml</code>: internet, receiver/service FCM, intent-filter dla otwierania ekranu Infoczytnika.</li>
+  <li>Klasa <code>FirebaseMessagingService</code>:
+    <ul>
+      <li><code>onNewToken()</code> → POST do <code>/api/fcm/register</code>,</li>
+      <li><code>onMessageReceived()</code> → notyfikacja lokalna dla foreground + obsługa <code>silent</code>.</li>
+    </ul>
+  </li>
+  <li>Notification Channel (np. <code>default</code> lub <code>infoczytnik_messages</code>) + zasób <code>res/drawable/ic_notification.xml</code>.</li>
+  <li>Obsługa kliknięcia notyfikacji (PendingIntent / deep link) tak, by otwierać właściwy ekran WebView.</li>
+  <li>Konfiguracja WebView (online-only), oraz przekazywanie URL z payloadu (<code>/Infoczytnik/Infoczytnik.html</code>).</li>
+</ol>
+
+<p><b>Checkpoint „GO do budowania”:</b> gdy <code>/api/push/health</code> pokaże <code>fcmTokens &gt;= 1</code>, a test A/B/C (foreground/background/killed) przejdzie na urządzeniu fizycznym.</p>
 
 <h3>10.4 Odpowiedź na pytanie: checkbox w GM.html (z powiadomieniem / bez powiadomienia)</h3>
 <pre>Pytanie użytkownika: "Czy w pliku GM.html da się zrobić jakiś checkbox, którego zaznaczenie lub odznaczenie skutkowałoby wysłaniem powiadomienia lub samej wiadomości bez powiadomienia?"</pre>
