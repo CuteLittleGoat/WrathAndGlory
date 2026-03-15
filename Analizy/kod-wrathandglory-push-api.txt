@@ -22,7 +22,9 @@ async function handleRequest(request, env, ctx) {
   }
 
   if (url.pathname === "/api/push/health" && request.method === "GET") {
-    const count = await countSubscriptions(env);
+    const webSubscriptions = await countSubscriptions(env);
+    const fcmTokens = await countFcmTokens(env);
+
     return jsonResponse(
       {
         ok: true,
@@ -31,7 +33,13 @@ async function handleRequest(request, env, ctx) {
             env.VAPID_PRIVATE_KEY &&
             env.VAPID_SUBJECT
         ),
-        subscriptions: count,
+        hasFirebase: Boolean(
+          env.FIREBASE_PROJECT_ID &&
+            env.FIREBASE_CLIENT_EMAIL &&
+            env.FIREBASE_PRIVATE_KEY
+        ),
+        webSubscriptions,
+        fcmTokens,
       },
       200,
       request,
@@ -41,6 +49,14 @@ async function handleRequest(request, env, ctx) {
 
   if (url.pathname === "/api/push/subscribe" && request.method === "POST") {
     return handleSubscribe(request, env);
+  }
+
+  if (url.pathname === "/api/fcm/register" && request.method === "POST") {
+    return handleFcmRegister(request, env);
+  }
+
+  if (url.pathname === "/api/fcm/unregister" && request.method === "POST") {
+    return handleFcmUnregister(request, env);
   }
 
   if (url.pathname === "/api/push/trigger" && request.method === "POST") {
@@ -103,6 +119,99 @@ async function handleSubscribe(request, env) {
   );
 }
 
+async function handleFcmRegister(request, env) {
+  if (!env.FCM_TOKENS) {
+    return jsonResponse(
+      { ok: false, error: "Missing FCM_TOKENS binding." },
+      500,
+      request,
+      env
+    );
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse(
+      { ok: false, error: "Invalid JSON body." },
+      400,
+      request,
+      env
+    );
+  }
+
+  const token = typeof body?.token === "string" ? body.token.trim() : "";
+  if (!isValidFcmToken(token)) {
+    return jsonResponse(
+      { ok: false, error: "Invalid FCM token." },
+      400,
+      request,
+      env
+    );
+  }
+
+  const key = await fcmStorageKey(token);
+  const existing = await env.FCM_TOKENS.get(key);
+
+  const record = {
+    token,
+    platform: typeof body?.platform === "string" ? body.platform : "android",
+    source: typeof body?.source === "string" ? body.source : "android-app",
+    deviceId: typeof body?.deviceId === "string" ? body.deviceId : null,
+    createdAt:
+      typeof body?.createdAt === "number" ? body.createdAt : Date.now(),
+    updatedAt: Date.now(),
+  };
+
+  await env.FCM_TOKENS.put(key, JSON.stringify(record));
+
+  return jsonResponse(
+    { ok: true, alreadyExists: Boolean(existing) },
+    existing ? 200 : 201,
+    request,
+    env
+  );
+}
+
+async function handleFcmUnregister(request, env) {
+  if (!env.FCM_TOKENS) {
+    return jsonResponse(
+      { ok: false, error: "Missing FCM_TOKENS binding." },
+      500,
+      request,
+      env
+    );
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse(
+      { ok: false, error: "Invalid JSON body." },
+      400,
+      request,
+      env
+    );
+  }
+
+  const token = typeof body?.token === "string" ? body.token.trim() : "";
+  if (!isValidFcmToken(token)) {
+    return jsonResponse(
+      { ok: false, error: "Invalid FCM token." },
+      400,
+      request,
+      env
+    );
+  }
+
+  const key = await fcmStorageKey(token);
+  await env.FCM_TOKENS.delete(key);
+
+  return jsonResponse({ ok: true, removed: true }, 200, request, env);
+}
+
 async function handleTrigger(request, env) {
   if (!env.SUBSCRIPTIONS_KV) {
     return jsonResponse(
@@ -113,17 +222,9 @@ async function handleTrigger(request, env) {
     );
   }
 
-  if (
-    !env.VAPID_PUBLIC_KEY ||
-    !env.VAPID_PRIVATE_KEY ||
-    !env.VAPID_SUBJECT
-  ) {
+  if (!env.FCM_TOKENS) {
     return jsonResponse(
-      {
-        ok: false,
-        error:
-          "Missing VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY or VAPID_SUBJECT.",
-      },
+      { ok: false, error: "Missing FCM_TOKENS binding." },
       500,
       request,
       env
@@ -155,66 +256,83 @@ async function handleTrigger(request, env) {
     );
   }
 
-  // Payload przyjmujemy dla zgodności z frontendem,
-  // ale wysyłamy pusty push.
-  // Service Worker po stronie klienta ma już fallbacki:
-  // title/body/icon/url.
   const normalizedPayload = normalizePayload(body);
 
-  const records = await listAllSubscriptionRecords(env);
-  if (records.length === 0) {
-    return jsonResponse(
-      {
-        ok: true,
-        sent: 0,
-        removed: 0,
-        subscriptions: 0,
-        note: "No subscriptions stored.",
-        payloadAccepted: normalizedPayload,
-      },
-      200,
-      request,
-      env
-    );
-  }
+  const [webRecords, fcmRecords] = await Promise.all([
+    listAllSubscriptionRecords(env),
+    listAllFcmRecords(env),
+  ]);
 
-  let sent = 0;
-  let failed = 0;
-  const expiredKeys = [];
+  let webSent = 0;
+  let webFailed = 0;
+  const expiredWebKeys = [];
 
-  for (const record of records) {
+  for (const record of webRecords) {
     try {
       const result = await sendWebPush(record.subscription, env);
       if (result.ok) {
-        sent += 1;
+        webSent += 1;
       } else if (result.expired) {
-        expiredKeys.push(record.__kvKey);
+        expiredWebKeys.push(record.__kvKey);
       } else {
-        failed += 1;
-        console.error(
-          "[push-worker] Send failed:",
-          result.status,
-          result.text
-        );
+        webFailed += 1;
+        console.error("[push-worker] Web push failed:", result.status, result.text);
       }
     } catch (error) {
-      failed += 1;
-      console.error("[push-worker] Send exception:", error);
+      webFailed += 1;
+      console.error("[push-worker] Web push exception:", error);
     }
   }
 
-  if (expiredKeys.length > 0) {
-    await Promise.all(expiredKeys.map((key) => env.SUBSCRIPTIONS_KV.delete(key)));
+  if (expiredWebKeys.length > 0) {
+    await Promise.all(expiredWebKeys.map((key) => env.SUBSCRIPTIONS_KV.delete(key)));
+  }
+
+  let fcmSent = 0;
+  let fcmFailed = 0;
+  const expiredFcmKeys = [];
+
+  if (fcmRecords.length > 0) {
+    const accessToken = await getGoogleAccessToken(env);
+
+    for (const record of fcmRecords) {
+      try {
+        const result = await sendFcmMessage(record.token, normalizedPayload, accessToken, env);
+        if (result.ok) {
+          fcmSent += 1;
+        } else if (result.expired) {
+          expiredFcmKeys.push(record.__kvKey);
+        } else {
+          fcmFailed += 1;
+          console.error("[push-worker] FCM send failed:", result.status, result.text);
+        }
+      } catch (error) {
+        fcmFailed += 1;
+        console.error("[push-worker] FCM send exception:", error);
+      }
+    }
+  }
+
+  if (expiredFcmKeys.length > 0) {
+    await Promise.all(expiredFcmKeys.map((key) => env.FCM_TOKENS.delete(key)));
   }
 
   return jsonResponse(
     {
       ok: true,
-      sent,
-      failed,
-      removed: expiredKeys.length,
-      subscriptions: records.length,
       payloadAccepted: normalizedPayload,
+      web: {
+        subscriptions: webRecords.length,
+        sent: webSent,
+        failed: webFailed,
+        removed: expiredWebKeys.length,
+      },
+      fcm: {
+        tokens: fcmRecords.length,
+        sent: fcmSent,
+        failed: fcmFailed,
+        removed: expiredFcmKeys.length,
+      },
     },
     200,
     request,
@@ -249,6 +367,7 @@ function normalizePayload(rawPayload) {
       typeof payload.url === "string" && payload.url.trim()
         ? payload.url.trim()
         : "/Infoczytnik/Infoczytnik.html",
+    silent: Boolean(payload.silent),
   };
 }
 
@@ -265,6 +384,10 @@ function isValidSubscription(subscription) {
   );
 }
 
+function isValidFcmToken(token) {
+  return Boolean(token && typeof token === "string" && token.length > 20);
+}
+
 async function subscriptionStorageKey(endpoint) {
   const hashBuffer = await crypto.subtle.digest(
     "SHA-256",
@@ -273,12 +396,35 @@ async function subscriptionStorageKey(endpoint) {
   return `sub:${bufferToHex(hashBuffer)}`;
 }
 
+async function fcmStorageKey(token) {
+  const hashBuffer = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(token)
+  );
+  return `fcm:${bufferToHex(hashBuffer)}`;
+}
+
 async function countSubscriptions(env) {
   let total = 0;
   let cursor = undefined;
 
   do {
     const page = await env.SUBSCRIPTIONS_KV.list({ prefix: "sub:", cursor });
+    total += page.keys.length;
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return total;
+}
+
+async function countFcmTokens(env) {
+  if (!env.FCM_TOKENS) return 0;
+
+  let total = 0;
+  let cursor = undefined;
+
+  do {
+    const page = await env.FCM_TOKENS.list({ prefix: "fcm:", cursor });
     total += page.keys.length;
     cursor = page.list_complete ? undefined : page.cursor;
   } while (cursor);
@@ -304,7 +450,39 @@ async function listAllSubscriptionRecords(env) {
           results.push(parsed);
         }
       } catch (error) {
-        console.error("[push-worker] Invalid record in KV:", item.name, error);
+        console.error("[push-worker] Invalid web record in KV:", item.name, error);
+      }
+    }
+
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+
+  return results;
+}
+
+async function listAllFcmRecords(env) {
+  const results = [];
+  let cursor = undefined;
+
+  if (!env.FCM_TOKENS) {
+    return results;
+  }
+
+  do {
+    const page = await env.FCM_TOKENS.list({ prefix: "fcm:", cursor });
+
+    for (const item of page.keys) {
+      const raw = await env.FCM_TOKENS.get(item.name);
+      if (!raw) continue;
+
+      try {
+        const parsed = JSON.parse(raw);
+        if (isValidFcmToken(parsed.token)) {
+          parsed.__kvKey = item.name;
+          results.push(parsed);
+        }
+      } catch (error) {
+        console.error("[push-worker] Invalid FCM record in KV:", item.name, error);
       }
     }
 
@@ -315,6 +493,14 @@ async function listAllSubscriptionRecords(env) {
 }
 
 async function sendWebPush(subscription, env) {
+  if (
+    !env.VAPID_PUBLIC_KEY ||
+    !env.VAPID_PRIVATE_KEY ||
+    !env.VAPID_SUBJECT
+  ) {
+    throw new Error("Missing VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY or VAPID_SUBJECT.");
+  }
+
   const endpoint = subscription.endpoint;
   const audience = new URL(endpoint).origin;
   const jwt = await createVapidJwt({
@@ -346,6 +532,172 @@ async function sendWebPush(subscription, env) {
   }
 
   return { ok: false, expired: false, status: response.status, text };
+}
+
+async function sendFcmMessage(token, payload, accessToken, env) {
+  const endpoint = `https://fcm.googleapis.com/v1/projects/${encodeURIComponent(
+    env.FIREBASE_PROJECT_ID
+  )}/messages:send`;
+
+  const message = {
+    message: {
+      token,
+      notification: payload.silent
+        ? undefined
+        : {
+            title: payload.title,
+            body: payload.body,
+          },
+      data: {
+        title: payload.title,
+        body: payload.body,
+        icon: payload.icon,
+        badge: payload.badge,
+        tag: payload.tag,
+        url: payload.url,
+        silent: payload.silent ? "true" : "false",
+      },
+      android: {
+        priority: "high",
+        notification: payload.silent
+          ? undefined
+          : {
+              channel_id: "default",
+              tag: payload.tag,
+              icon: "ic_notification",
+              click_action: "OPEN_INFOCZYTNIK",
+            },
+      },
+    },
+  };
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json; charset=utf-8",
+    },
+    body: JSON.stringify(message),
+  });
+
+  if (response.ok) {
+    return { ok: true, status: response.status };
+  }
+
+  const text = await response.text().catch(() => "");
+
+  // FCM zaleca usuwanie nieaktualnych tokenów; typowe przypadki to invalid/unregistered. 
+  // Odpowiedź bywa 404 lub 400 z odpowiednim komunikatem błędu.
+  if (
+    response.status === 404 ||
+    text.includes("UNREGISTERED") ||
+    text.includes("registration-token-not-registered") ||
+    text.includes("invalid argument") && text.includes("token")
+  ) {
+    return { ok: false, expired: true, status: response.status, text };
+  }
+
+  return { ok: false, expired: false, status: response.status, text };
+}
+
+async function getGoogleAccessToken(env) {
+  if (
+    !env.FIREBASE_PROJECT_ID ||
+    !env.FIREBASE_CLIENT_EMAIL ||
+    !env.FIREBASE_PRIVATE_KEY
+  ) {
+    throw new Error(
+      "Missing FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL or FIREBASE_PRIVATE_KEY."
+    );
+  }
+
+  const now = Math.floor(Date.now() / 1000);
+  const header = { alg: "RS256", typ: "JWT" };
+  const payload = {
+    iss: env.FIREBASE_CLIENT_EMAIL,
+    scope: "https://www.googleapis.com/auth/firebase.messaging",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now,
+    exp: now + 3600,
+  };
+
+  const encodedHeader = base64UrlEncodeJson(header);
+  const encodedPayload = base64UrlEncodeJson(payload);
+  const signingInput = `${encodedHeader}.${encodedPayload}`;
+
+  const privateKeyPem = normalizePrivateKey(env.FIREBASE_PRIVATE_KEY);
+  const cryptoKey = await importGoogleServiceAccountPrivateKey(privateKeyPem);
+
+  const signature = await crypto.subtle.sign(
+    "RSASSA-PKCS1-v1_5",
+    cryptoKey,
+    new TextEncoder().encode(signingInput)
+  );
+
+  const assertion = `${signingInput}.${base64UrlEncodeBytes(signature)}`;
+
+  const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+    },
+    body: new URLSearchParams({
+      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+      assertion,
+    }),
+  });
+
+  const text = await tokenResponse.text();
+  if (!tokenResponse.ok) {
+    throw new Error(`OAuth token error: ${tokenResponse.status} ${text}`);
+  }
+
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    throw new Error("OAuth token response was not valid JSON.");
+  }
+
+  if (!data.access_token) {
+    throw new Error("OAuth token response missing access_token.");
+  }
+
+  return data.access_token;
+}
+
+function normalizePrivateKey(value) {
+  return value.replace(/\\n/g, "\n");
+}
+
+async function importGoogleServiceAccountPrivateKey(privateKeyPem) {
+  const binaryDer = pemToArrayBuffer(privateKeyPem);
+  return crypto.subtle.importKey(
+    "pkcs8",
+    binaryDer,
+    {
+      name: "RSASSA-PKCS1-v1_5",
+      hash: "SHA-256",
+    },
+    false,
+    ["sign"]
+  );
+}
+
+function pemToArrayBuffer(pem) {
+  const base64 = pem
+    .replace("-----BEGIN PRIVATE KEY-----", "")
+    .replace("-----END PRIVATE KEY-----", "")
+    .replace(/\s+/g, "");
+
+  const binary = atob(base64);
+  const bytes = new Uint8Array(binary.length);
+
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+
+  return bytes.buffer;
 }
 
 async function createVapidJwt({ aud, sub, publicKey, privateKey }) {
