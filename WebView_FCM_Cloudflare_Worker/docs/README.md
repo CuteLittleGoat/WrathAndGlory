@@ -8,9 +8,11 @@ W folderze `WebView_FCM_Cloudflare_Worker` znajduje się gotowy szkielet projekt
 ### Jak uruchomić w Android Studio
 1. Otwórz Android Studio.
 2. Wybierz **Open** i wskaż folder `WebView_FCM_Cloudflare_Worker`.
-3. Poczekaj na synchronizację Gradle.
-4. Uruchom aplikację na urządzeniu/emulatorze z Google Play Services.
-5. Przy pierwszym uruchomieniu zaakceptuj uprawnienie do powiadomień.
+3. W Android Studio ustaw Gradle w wersji **8.9** (Settings → Build Tools → Gradle).
+4. Ustaw JDK projektu na **17**.
+5. Poczekaj na synchronizację Gradle.
+6. Uruchom aplikację na urządzeniu/emulatorze z Google Play Services.
+7. Przy pierwszym uruchomieniu zaakceptuj uprawnienie do powiadomień.
 
 ### Co robi aplikacja
 - Otwiera stronę: `Main/index.html?pwa=1` (widok użytkownika).
@@ -23,6 +25,7 @@ W folderze `WebView_FCM_Cloudflare_Worker` znajduje się gotowy szkielet projekt
 ### Czego jeszcze nie robiono
 - Punkt 10.4 został celowo pominięty.
 - Finalna podmiana ikon głównej i powiadomień jest do wykonania później w Android Studio.
+- Ze względu na ograniczenia PR (brak obsługi plików binarnych) wrapper nie jest commitowany; użyj ręcznie Gradle 8.9 w Android Studio, aby uniknąć błędu `debugRuntimeClasspathCopy`.
 
 ---
 
@@ -34,9 +37,11 @@ The `WebView_FCM_Cloudflare_Worker` folder now contains a ready Android Studio p
 ### How to run in Android Studio
 1. Open Android Studio.
 2. Select **Open** and choose `WebView_FCM_Cloudflare_Worker`.
-3. Wait for Gradle sync.
-4. Run the app on a device/emulator with Google Play Services.
-5. Grant notification permission on first launch.
+3. In Android Studio set Gradle to **8.9** (Settings → Build Tools → Gradle).
+4. Set project JDK to **17**.
+5. Wait for Gradle sync.
+6. Run the app on a device/emulator with Google Play Services.
+7. Grant notification permission on first launch.
 
 ### What the app does
 - Loads `Main/index.html?pwa=1` (user view).
@@ -49,3 +54,4 @@ The `WebView_FCM_Cloudflare_Worker` folder now contains a ready Android Studio p
 ### Not included yet
 - Point 10.4 is intentionally skipped.
 - Final app icon / notification icon mapping is intentionally left for later setup in Android Studio.
+- Due to PR limitations (binary files unsupported), wrapper binaries are not committed; use Gradle 8.9 manually in Android Studio to avoid the `debugRuntimeClasspathCopy` issue.

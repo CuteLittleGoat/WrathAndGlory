@@ -5,7 +5,7 @@ Moduł zawiera kompletny szkielet aplikacji Android (WebView + FCM) dla nazwy ap
 
 ## 2. Struktura plików
 - `settings.gradle.kts` — konfiguracja repozytoriów i modułu `:app`.
-- `build.gradle.kts` — wersje pluginów Android/Kotlin/Google Services.
+- `build.gradle.kts` — wersje pluginów Android/Kotlin/Google Services (AGP ustawiony na `8.7.2`).
 - `gradle.properties` — podstawowe ustawienia Gradle.
 - `app/build.gradle.kts` — konfiguracja aplikacji, SDK, zależności, `BuildConfig`.
 - `app/google-services.json` — konfiguracja Firebase dla pakietu `com.cutelittlegoat.wrathandglory`.
@@ -19,6 +19,11 @@ Moduł zawiera kompletny szkielet aplikacji Android (WebView + FCM) dla nazwy ap
 - `app/src/main/res/drawable/ic_app_icon.xml` — tymczasowa ikona wektorowa.
 
 ## 3. Konfiguracja aplikacji (`app/build.gradle.kts`)
+### 3.0 Zgodność Gradle/AGP
+- Plugin Android ustawiono na **8.7.2** dla stabilnej synchronizacji w Android Studio.
+- W Android Studio należy ręcznie wymusić **Gradle 8.9** i **JDK 17** (wrapper binarny nie jest commitowany ze względu na ograniczenia PR dotyczące plików binarnych).
+- Celem tej konfiguracji jest uniknięcie błędu: `Cannot select root node 'debugRuntimeClasspathCopy' as a variant`.
+
 ### 3.1 Parametry Android
 - `compileSdk=35`, `targetSdk=35`, `minSdk=26`.
 - `applicationId=namespace=com.cutelittlegoat.wrathandglory`.
