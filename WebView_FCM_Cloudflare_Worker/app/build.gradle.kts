@@ -56,3 +56,13 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.8.0"))
     implementation("com.google.firebase:firebase-messaging-ktx")
 }
+
+
+// Workaround for Gradle 9+ strict configuration validation during Android Studio sync.
+// AGP may create *ClasspathCopy configurations that must be resolvable-only.
+configurations.matching {
+    it.name.endsWith("RuntimeClasspathCopy") || it.name.endsWith("CompileClasspathCopy")
+}.configureEach {
+    isCanBeResolved = true
+    isCanBeConsumed = false
+}
