@@ -7,7 +7,7 @@ Moduł zawiera kompletny szkielet aplikacji Android (WebView + FCM) dla nazwy ap
 - `settings.gradle.kts` — konfiguracja repozytoriów i modułu `:app`.
 - `build.gradle.kts` — wersje pluginów Android/Kotlin/Google Services (AGP ustawiony na `8.7.2`).
 - `gradle.properties` — podstawowe ustawienia Gradle.
-- `app/build.gradle.kts` — konfiguracja aplikacji, SDK, zależności, `BuildConfig`.
+- `app/build.gradle.kts` — konfiguracja aplikacji, SDK, zależności, `BuildConfig` oraz poprawka konfiguracji `*ClasspathCopy`.
 - `app/google-services.json` — konfiguracja Firebase dla pakietu `com.cutelittlegoat.wrathandglory`.
 - `app/src/main/AndroidManifest.xml` — uprawnienia i deklaracje Activity/Service.
 - `app/src/main/java/com/cutelittlegoat/wrathandglory/MainActivity.kt` — WebView host + reguły URL/orientacji + inicjalna rejestracja FCM.
@@ -20,9 +20,10 @@ Moduł zawiera kompletny szkielet aplikacji Android (WebView + FCM) dla nazwy ap
 
 ## 3. Konfiguracja aplikacji (`app/build.gradle.kts`)
 ### 3.0 Zgodność Gradle/AGP
-- Plugin Android ustawiono na **8.7.2** dla stabilnej synchronizacji w Android Studio.
-- W Android Studio należy ręcznie wymusić **Gradle 8.9** i **JDK 17** (wrapper binarny nie jest commitowany ze względu na ograniczenia PR dotyczące plików binarnych).
-- Celem tej konfiguracji jest uniknięcie błędu: `Cannot select root node 'debugRuntimeClasspathCopy' as a variant`.
+- Plugin Android pozostaje na **8.7.2**.
+- Wymagany JDK projektu: **17**.
+- Dodano blok `configurations.matching { ... }.configureEach { ... }`, który ustawia konfiguracje `*RuntimeClasspathCopy` i `*CompileClasspathCopy` jako **resolvable-only** (`canBeResolved=true`, `canBeConsumed=false`).
+- Celem poprawki jest usunięcie błędu Android Studio/Gradle: `Cannot select root node 'debugRuntimeClasspathCopy' as a variant`.
 
 ### 3.1 Parametry Android
 - `compileSdk=35`, `targetSdk=35`, `minSdk=26`.
@@ -116,8 +117,9 @@ Moduł zawiera kompletny szkielet aplikacji Android (WebView + FCM) dla nazwy ap
 ## 11. Jak odtworzyć 1:1
 1. Otwórz folder modułu w Android Studio.
 2. Potwierdź, że `app/google-services.json` istnieje.
-3. Wykonaj Gradle Sync.
-4. Uruchom na urządzeniu z Google Play Services.
-5. Przyjmij permission notyfikacji.
-6. Otwórz endpoint health Workera i potwierdź wzrost `fcmTokens` po uruchomieniu aplikacji.
-7. Wyślij trigger z GM i sprawdź: foreground/background/killed.
+3. Ustaw Gradle JDK na 17.
+4. Wykonaj Gradle Sync.
+5. Uruchom na urządzeniu z Google Play Services.
+6. Przyjmij permission notyfikacji.
+7. Otwórz endpoint health Workera i potwierdź wzrost `fcmTokens` po uruchomieniu aplikacji.
+8. Wyślij trigger z GM i sprawdź: foreground/background/killed.
