@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">Wrath&amp;Glory</string>
-    <string name="notification_title">Infoczytnik</string>
-    <string name="notification_fixed_body">+++ INCOMING DATA-TRANSMISSION +++</string>
-    <string name="offline_warning">Brak połączenia z internetem. Aplikacja działa tylko online.</string>
-</resources>
