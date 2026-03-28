@@ -96,7 +96,7 @@ code{color:var(--code)}
 .btn.primary:hover{filter:brightness(1.08)}
 .filebtn input{display:none}
 
-.main{flex:1; display:grid; grid-template-columns:360px 1fr; gap:12px; padding:12px}
+.main{flex:1; display:grid; grid-template-columns:180px 1fr; gap:12px; padding:12px}
 .panel{
   border:1px solid var(--b);
   background:var(--panel);
