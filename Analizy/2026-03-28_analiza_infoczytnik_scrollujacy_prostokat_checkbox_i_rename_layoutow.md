@@ -71,6 +71,31 @@ Wymagania użytkowe:
   - odczytać `d.movingOverlay` (domyślnie `true`),
   - jeśli `movingOverlay=false`, usunąć klasy odpowiedzialne za overlay i wymusić brak flickera (lub zignorować flicker).
 
+### 2.2.1 Czy musisz coś ręcznie zmieniać w Firebase? (odpowiedź na pytanie)
+
+Krótko: **w typowym scenariuszu — nie, nie musisz ręcznie dodawać pola w Firebase Console**.
+
+Dlaczego:
+1. Firestore jest schemaless — nowe pole `movingOverlay` pojawi się automatycznie w `dataslate/current`, gdy `GM_test.html` zapisze dokument przez `set(...)`.
+2. Moduł i tak pracuje na dokumencie `dataslate/current` (to widać na Twoich screenach), więc nowe pole dojdzie do tego samego dokumentu razem z resztą payloadu.
+3. W kodzie odbiornika plan zakłada fallback: jeśli `movingOverlay` nie istnieje, traktujemy to jak `true` (`d.movingOverlay !== false`), więc brak pola nie wywali aplikacji.
+
+Co warto sprawdzić/przygotować:
+- **Firestore Rules**: tylko jeśli masz bardzo restrykcyjne reguły walidujące *konkretną listę kluczy* w dokumencie, wtedy trzeba dopisać `movingOverlay` do listy dozwolonych pól.
+- **Brak potrzeby zmian w `dataslate/config`**: na screenie masz też dokument konfiguracyjny audio; ta zmiana dotyczy runtime message (`dataslate/current`), nie globalnej konfiguracji audio.
+- **Brak migracji historycznej**: nie trzeba uruchamiać skryptu migracyjnego dla starszych dokumentów, bo i tak pracujesz na jednym dokumencie `current`, a fallback obsługuje brak pola.
+
+### 2.2.2 Minimalny check po wdrożeniu (Firebase Console)
+1. Wyślij wiadomość z `GM_test.html` z zaznaczonym checkboxem nowego efektu.
+2. Otwórz `dataslate/current` i potwierdź obecność pola `movingOverlay: true`.
+3. Odznacz checkbox, wyślij ponownie:
+   - `movingOverlay` powinien być `false`,
+   - `flicker` powinien automatycznie zapisać się jako `false` (zgodnie z wymaganiem).
+4. Przełącz layout na `pismo_odreczne` lub `pismo_ozdobne` i wyślij:
+   - `movingOverlay: false`,
+   - `flicker: false`,
+   - kontrolki w GM powinny być zablokowane (disabled).
+
 ## 2.3 Cel 3: w layoutach pergaminowych opcja wyłączona i zablokowana
 
 Dla `pismo_odreczne` i `pismo_ozdobne`:
