@@ -161,7 +161,7 @@ window.firebaseConfig = {
   - `input#randomFillers` — włącz/wyłącz losowanie.
   - `input#prefixIndex`, `input#suffixIndex` — ręczne indeksy.
   - Teksty prefix/suffix w preview pochodzą wyłącznie z `LAYOUTS` i nie są tłumaczone.
-  - `input#showLogo`, `input#flicker` — przełączniki.
+  - `input#showLogo`, `input#movingOverlay`, `input#flicker` — przełączniki.
   - `div#livePreview` — podgląd linii prefix/wiadomość/suffix.
   - `textarea#message` — treść wiadomości.
   - Przyciski: `#sendBtn`, `#pingBtn`, `#clearBtn`, `#clearTextBtn`.
@@ -257,8 +257,8 @@ window.firebaseConfig = {
 **Efekty CRT:**
 - `.crt::before` — scanlines przez `repeating-linear-gradient` i animację `scanMove` (12s, infinite).
 - `.crt::after` — winieta i subtelny „glow”.
-- `.screen::after` — flicker z animacją `flickerBg` (9s, infinite).
-- `.screen.no-flicker::after` — wyłączenie animacji flicker.
+- `.contentLayer.with-overlay::before` — prostokąt cienia/flicker z animacją `flickerBg` (9s, infinite), przewijany razem z treścią.
+- `.screen.no-flicker .contentLayer.with-overlay::before` — wyłączenie animacji flicker.
 
 **Typografia i układ tekstu:**
 - `.screen`: pozycja przez zmienne `--screen-*`, padding `clamp(14px, 2.4vw, 24px)`.
@@ -279,8 +279,8 @@ window.firebaseConfig = {
 **Mapy layoutów i logo:**
 - `LAYOUT_BG` mapuje frakcję → ścieżka PNG.
   - Dodane ścieżki:
-    - `pismo_odreczne` → `assets/layouts/Pismo_odreczne/Pergamin.jpg`
-    - `pismo_ozdobne` → `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+    - `pismo_odreczne` → `assets/layouts/pismo_odreczne/Pergamin.jpg`
+    - `pismo_ozdobne` → `assets/layouts/pismo_ozdobne/Pergamin.jpg`
 - `LAYOUT_AR` (proporcje):
   - inquisition: `707/1023`
   - militarum: `1263/1595`
@@ -300,7 +300,7 @@ window.firebaseConfig = {
 - `window.__dsPlayUrlOnce(url)` — patrz sekcja 7.3.
 - `fitPanel(ar)` — dopasowuje `.panel` do okna, zachowując aspect ratio.
 - `setInsets(p)` — ustawia CSS variables `--screen-*`.
-- `setFlickerState(shouldFlicker)` — dodaje/usuwa `.no-flicker`.
+- `setOverlayState(shouldShowOverlay, shouldFlicker)` — pokazuje/ukrywa warstwę overlay oraz dodaje/usuwa `.no-flicker`.
 - `setLogoForFaction(key, shouldShow)` — pokazuje logo tylko jeśli istnieje i `shouldShow` jest true.
 - `getFillerText(key, idx1based, kind)` — pobiera prefix/suffix po indeksie 1-based.
 - `applyLayout(factionKey, color, showLogo)`:
@@ -343,7 +343,8 @@ window.firebaseConfig = {
 | `prefix` / `suffix` (`prefixText` / `suffixText`) | `string` | Bezpośredni tekst linii nad/pod wiadomością. |
 | `text` | `string` | Treść wiadomości. |
 | `showLogo` | `boolean` | Czy pokazać logo frakcji. |
-| `flicker` | `boolean` | Czy włączyć animację CRT. |
+| `movingOverlay` | `boolean` | Czy wyświetlić scrollujący prostokąt cienia (`true` domyślnie). |
+| `flicker` | `boolean` | Czy włączyć animację flicker (działa tylko przy `movingOverlay=true`). |
 | `pingUrl` / `msgUrl` (`messageUrl`) | `string` | Opcjonalne ścieżki dźwięków, ale tylko lokalne (`assets/audio/...` lub URL tego samego origin wskazujący na `assets/audio/...`). Zewnętrzne hosty są ignorowane. |
 | `nonce` | `string` | Unikalny identyfikator snapshota (zapobiega dublowaniu). |
 | `ts` | `serverTimestamp` | Znacznik czasu Firestore. |
@@ -783,8 +784,8 @@ To ustawienie jest używane przez funkcję `fitPanel(ar)`, która wylicza docelo
 
 ### 20.3. Dlaczego to naprawia problem
 Pliki:
-- `assets/layouts/Pismo_odreczne/Pergamin.jpg`
-- `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+- `assets/layouts/pismo_odreczne/Pergamin.jpg`
+- `assets/layouts/pismo_ozdobne/Pergamin.jpg`
 mają rzeczywistą proporcję 1280×1920 (2:3), a nie 1:1. Przy wcześniejszym wymuszeniu kwadratu panel był wizualnie „za duży” i źle komponował się z obszarem roboczym na desktopie i mobile. Po ustawieniu 1280/1920 skala i kadrowanie są zgodne z naturalnymi proporcjami assetu.
 
 ### 20.4. Wersjonowanie testowych HTML
@@ -805,8 +806,8 @@ This value is consumed by `fitPanel(ar)`, which computes panel width/height rela
 
 ### 20.3. Why this fixes it
 The files:
-- `assets/layouts/Pismo_odreczne/Pergamin.jpg`
-- `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+- `assets/layouts/pismo_odreczne/Pergamin.jpg`
+- `assets/layouts/pismo_ozdobne/Pergamin.jpg`
 use a real 1280×1920 ratio (2:3), not 1:1. With a square panel, the background looked oversized and poorly matched on both desktop and mobile. After switching to 1280/1920, scaling and framing match the asset’s natural geometry.
 
 ### 20.4. Test HTML versioning
@@ -861,5 +862,68 @@ After setting `LAYOUT_AR.pergamin = 1280/1920`, mobile rendering was still repor
 
 ### 21.4. Versioning
 `INF_VERSION` was bumped to `2026-03-28_18-02-28` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+
+## 22. Aktualizacja 2026-03-28 — scrollujący prostokąt i movingOverlay (PL)
+### 22.1. Zmiany funkcjonalne
+1. Prostokąt cienia nie jest już warstwą przyklejoną do okna czytnika — teraz przewija się razem z treścią.
+2. Dodano pole dokumentu Firestore `movingOverlay` (domyślnie `true`).
+3. W panelu GM dodano checkbox `movingOverlay` (etykieta: „Prostokąt cienia”).
+4. Wyłączenie `movingOverlay` automatycznie odznacza `flicker`.
+5. W layoutach `pismo_odreczne` i `pismo_ozdobne` `movingOverlay=false` oraz `flicker=false` są wymuszone i blokowane w UI.
+
+### 22.2. Zmiany techniczne
+- `Infoczytnik_test.html`:
+  - usunięto użycie `.screen::after` dla efektu prostokąta;
+  - dodano `#contentLayer` i klasę `.contentLayer.with-overlay::before`;
+  - dodano `setOverlayState(shouldShowOverlay, shouldFlicker)`;
+  - odbiornik Firestore odczytuje `movingOverlay` z fallbackiem `d.movingOverlay !== false`.
+- `GM_test.html`:
+  - dodano checkbox `movingOverlay`;
+  - przy zapisie `message` i `ping` wysyłane są pola `movingOverlay` i `flicker` z guardem (`flicker=false`, gdy `movingOverlay=false`);
+  - rozszerzono `updateRestrictedLayoutUi()` o blokadę `movingOverlay`.
+
+### 22.3. Rename folderów layoutów
+Zmieniono nazwy katalogów assetów:
+- `assets/layouts/Pismo_odreczne` → `assets/layouts/pismo_odreczne`
+- `assets/layouts/Pismo_ozdobne` → `assets/layouts/pismo_ozdobne`
+
+W kodzie zaktualizowano ścieżki mapy `LAYOUT_BG` do nowych nazw.
+
+### 22.4. Wersjonowanie
+`INF_VERSION` podniesiono do `2026-03-28_21-05-00` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 22. Update 2026-03-28 — scrolling overlay and movingOverlay (EN)
+### 22.1. Functional changes
+1. The shadow rectangle is no longer fixed to the reader viewport — it now scrolls with content.
+2. A new Firestore field `movingOverlay` was added (default `true`).
+3. GM panel now includes `movingOverlay` checkbox (“Shadow rectangle”).
+4. Turning off `movingOverlay` automatically unchecks `flicker`.
+5. In `pismo_odreczne` and `pismo_ozdobne`, `movingOverlay=false` and `flicker=false` are enforced and locked in UI.
+
+### 22.2. Technical changes
+- `Infoczytnik_test.html`:
+  - replaced fixed `.screen::after` overlay;
+  - added `#contentLayer` and `.contentLayer.with-overlay::before`;
+  - added `setOverlayState(shouldShowOverlay, shouldFlicker)`;
+  - Firestore listener reads `movingOverlay` with fallback `d.movingOverlay !== false`.
+- `GM_test.html`:
+  - added `movingOverlay` checkbox;
+  - `message` and `ping` writes now include `movingOverlay` and guarded `flicker` (`flicker=false` when `movingOverlay=false`);
+  - `updateRestrictedLayoutUi()` now also locks `movingOverlay`.
+
+### 22.3. Layout folder rename
+Asset folder names were renamed:
+- `assets/layouts/Pismo_odreczne` → `assets/layouts/pismo_odreczne`
+- `assets/layouts/Pismo_ozdobne` → `assets/layouts/pismo_ozdobne`
+
+`LAYOUT_BG` paths were updated to these lowercase names.
+
+### 22.4. Versioning
+`INF_VERSION` was bumped to `2026-03-28_21-05-00` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`

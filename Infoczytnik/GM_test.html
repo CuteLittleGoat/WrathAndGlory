@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-28_18-02-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_21-05-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -211,12 +211,16 @@
               <label for="showLogo" style="margin:0; color:var(--text);" data-i18n="labelShowLogo">Dodaj logo</label>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" id="movingOverlay" checked style="width:18px; height:18px; margin:0;" />
+              <label for="movingOverlay" style="margin:0; color:var(--text);" data-i18n="labelMovingOverlay">Prostokąt cienia</label>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
               <input type="checkbox" id="flicker" checked style="width:18px; height:18px; margin:0;" />
               <label for="flicker" style="margin:0; color:var(--text);" data-i18n="labelFlicker">Flicker</label>
             </div>
           </div>
           <div class="small" id="restrictedLayoutHint" data-i18n="restrictedLayoutHint" style="display:none; color:#ffcf91;">
-            Dla tego layoutu wyłączone są: prefix, suffix, logo, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.
+            Dla tego layoutu wyłączone są: prefix, suffix, logo, prostokąt cienia, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.
           </div>
 
           <div class="livePreviewBox" id="livePreview">
@@ -285,6 +289,7 @@
       toggleRow: document.getElementById("toggleRow"),
       restrictedLayoutHint: document.getElementById("restrictedLayoutHint"),
       showLogo: document.getElementById("showLogo"),
+      movingOverlay: document.getElementById("movingOverlay"),
       flicker: document.getElementById("flicker"),
 
       // message
@@ -334,6 +339,7 @@
           buttonRerollFillers: "Wylosuj ponownie",
           randomHint: "Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.",
           labelShowLogo: "Dodaj logo",
+          labelMovingOverlay: "Prostokąt cienia",
           labelFlicker: "Flicker",
           labelMessage: "Treść komunikatu",
           messagePlaceholder: "Wpisz komunikat dla graczy...",
@@ -352,7 +358,7 @@
           factionChaosUndivided: "Chaos Undivided",
           factionPismoOdreczne: "Pismo odręczne",
           factionPismoOzdobne: "Pismo ozdobne",
-          restrictedLayoutHint: "Dla tego layoutu wyłączone są: prefix, suffix, logo, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.",
+          restrictedLayoutHint: "Dla tego layoutu wyłączone są: prefix, suffix, logo, prostokąt cienia, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.",
         },
         preview: {
           prefix: "++ NADCHODZĄCE DANE ++",
@@ -394,6 +400,7 @@
           buttonRerollFillers: "Reroll",
           randomHint: "Unique prefixes and suffixes are always randomized based on the selected filler line count.",
           labelShowLogo: "Add logo",
+          labelMovingOverlay: "Shadow rectangle",
           labelFlicker: "Flicker",
           labelMessage: "Message content",
           messagePlaceholder: "Type a message for players...",
@@ -412,7 +419,7 @@
           factionChaosUndivided: "Chaos Undivided",
           factionPismoOdreczne: "Handwritten Script",
           factionPismoOzdobne: "Decorative Script",
-          restrictedLayoutHint: "For this layout, prefix, suffix, logo, flicker, and Message.mp3 are disabled. Ping still plays sound.",
+          restrictedLayoutHint: "For this layout, prefix, suffix, logo, shadow rectangle, flicker, and Message.mp3 are disabled. Ping still plays sound.",
         },
         preview: {
           prefix: "++ INCOMING DATA FEED ++",
@@ -533,6 +540,8 @@
       if(el.rerollFillersBtn) el.rerollFillersBtn.disabled = restricted;
       if(el.fillerLineCount) el.fillerLineCount.disabled = restricted;
       if(el.showLogo){ el.showLogo.checked = restricted ? false : el.showLogo.checked; el.showLogo.disabled = restricted; }
+      if(el.movingOverlay){ el.movingOverlay.checked = restricted ? false : el.movingOverlay.checked; el.movingOverlay.disabled = restricted; }
+      if(el.movingOverlay && !el.movingOverlay.checked && el.flicker){ el.flicker.checked = false; }
       if(el.flicker){ el.flicker.checked = restricted ? false : el.flicker.checked; el.flicker.disabled = restricted; }
       if(el.restrictedLayoutHint) el.restrictedLayoutHint.style.display = restricted ? "block" : "none";
     }
@@ -638,6 +647,8 @@
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
       const restricted = isRestrictedLayout(el.faction.value);
+      const movingOverlay = restricted ? false : !!el.movingOverlay.checked;
+      const flicker = movingOverlay ? (!!el.flicker.checked) : false;
       setStatus(translations[currentLanguage].messages.statusSending, "statusSending");
       try{
         await currentRef.set({
@@ -660,7 +671,8 @@
           prefixLines: (isClear || restricted) ? [] : fillerState.prefixLines,
           suffixLines: (isClear || restricted) ? [] : fillerState.suffixLines,
           showLogo: restricted ? false : !!el.showLogo.checked,
-          flicker: restricted ? false : !!el.flicker.checked,
+          movingOverlay,
+          flicker,
           disableMessageAudio: restricted,
 
           // tekst
@@ -697,6 +709,8 @@
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
       const restricted = isRestrictedLayout(el.faction.value);
+      const movingOverlay = restricted ? false : !!el.movingOverlay.checked;
+      const flicker = movingOverlay ? (!!el.flicker.checked) : false;
       setStatus(translations[currentLanguage].messages.statusPingLoading, "statusPingLoading");
       try{
         await currentRef.set({
@@ -712,7 +726,8 @@
           prefixFontSize: psFontPx + "px",
           suffixFontSize: psFontPx + "px",
           showLogo: restricted ? false : !!el.showLogo.checked,
-          flicker: restricted ? false : !!el.flicker.checked,
+          movingOverlay,
+          flicker,
 
           nonce: nonce(),
           ts: firebase.firestore.FieldValue.serverTimestamp()
@@ -774,6 +789,21 @@
       el.psColorText.addEventListener(evt, updateLivePreview);
       el.psFontSize.addEventListener(evt, updateLivePreview);
     });
+    if(el.movingOverlay){
+      el.movingOverlay.addEventListener("change", () => {
+        if(!el.movingOverlay.checked && el.flicker){
+          el.flicker.checked = false;
+        }
+        updateLivePreview();
+      });
+    }
+    if(el.flicker){
+      el.flicker.addEventListener("change", () => {
+        if(el.movingOverlay && !el.movingOverlay.checked){
+          el.flicker.checked = false;
+        }
+      });
+    }
 
     applyLanguage(currentLanguage);
     if (languageSelect) {

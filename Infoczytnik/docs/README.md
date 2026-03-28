@@ -45,10 +45,10 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 4. Ustaw kolor i rozmiar prefiksu/sufiksu.
 5. Ustaw **Ilość linii fillerów** (zakres 1–5, domyślnie 3).
 6. (Opcjonalnie) Kliknij **Wylosuj ponownie**, aby wylosować nowy zestaw unikatowych prefixów i suffixów.
-7. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
+7. (Opcjonalnie) Włącz/wyłącz logo, prostokąt cienia oraz efekt „flicker” (flicker działa tylko przy włączonym prostokącie).
 8. Wpisz treść komunikatu.
 9. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje dokładnie ten sam zestaw fillerów, który widzisz w podglądzie GM.
-10. Nowe layouty `Pismo odręczne` i `Pismo ozdobne` mają tryb ograniczony: prefix/suffix, logo, flicker i dźwięk `Message.mp3` są automatycznie wyłączone oraz zablokowane w panelu GM. Dla tych layoutów działa nadal kolor i rozmiar fontu oraz dźwięk po kliknięciu **Ping**.
+10. Nowe layouty `Pismo odręczne` i `Pismo ozdobne` mają tryb ograniczony: prefix/suffix, logo, prostokąt cienia, flicker i dźwięk `Message.mp3` są automatycznie wyłączone oraz zablokowane w panelu GM. Dla tych layoutów działa nadal kolor i rozmiar fontu oraz dźwięk po kliknięciu **Ping**.
 
 **Uwaga:** Teksty prefixów i suffixów pochodzą bezpośrednio z layoutów i nie zmieniają się wraz z wersją językową. Przełącznik językowy wpływa na etykiety UI oraz status „gotowe/ready”. Prefixy i suffixy są zaszyte bezpośrednio w `GM_test.html` i `Infoczytnik_test.html` (aplikacja nie pobiera ich z zewnętrznego pliku w runtime).
 
@@ -122,10 +122,10 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 4. Set the prefix/suffix color and size.
 5. Set **Filler line count** (range 1–5, default 3).
 6. (Optional) Click **Reroll** to generate a new unique set of prefix/suffix lines.
-7. (Optional) Toggle the logo and the “flicker” effect.
+7. (Optional) Toggle logo, shadow rectangle, and the “flicker” effect (flicker works only when the rectangle is enabled).
 8. Enter the message text.
 9. Click **Wyślij / Send** — the player screen renders exactly the same filler set as in the GM live preview.
-10. New layouts `Pismo odręczne` and `Pismo ozdobne` use a restricted mode: prefix/suffix, logo, flicker, and `Message.mp3` are always disabled and locked in the GM panel. Font color/size still work, and **Ping** still plays audio.
+10. New layouts `Pismo odręczne` and `Pismo ozdobne` use a restricted mode: prefix/suffix, logo, shadow rectangle, flicker, and `Message.mp3` are always disabled and locked in the GM panel. Font color/size still work, and **Ping** still plays audio.
 
 **Note:** Prefix/suffix lines come directly from the layout definitions and do not change with the language switch. The language toggle affects UI labels and the “ready” status text. Prefixes and suffixes are embedded directly in `GM_test.html` and `Infoczytnik_test.html` (no external filler file is loaded at runtime).
 
@@ -378,14 +378,14 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 
 ## Aktualizacja 2026-03-28 (PL) — poprawa skali tła pergaminu
 - W `Infoczytnik_test.html` poprawiono proporcję panelu dla presetów `Pismo odręczne` i `Pismo ozdobne` (`pergamin`) z `1/1` na `1280/1920`.
-- Dzięki temu tło pergaminu (`assets/layouts/Pismo_odreczne/Pergamin.jpg` i `assets/layouts/Pismo_ozdobne/Pergamin.jpg`) skaluje się tak jak pozostałe layouty — bez efektu „za dużego” obrazu na PC i mobile.
+- Dzięki temu tło pergaminu (`assets/layouts/pismo_odreczne/Pergamin.jpg` i `assets/layouts/pismo_ozdobne/Pergamin.jpg`) skaluje się tak jak pozostałe layouty — bez efektu „za dużego” obrazu na PC i mobile.
 - Podniesiono `INF_VERSION` w plikach testowych do `2026-03-28_17-50-25`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
 
 ## Update 2026-03-28 (EN) — parchment background scale fix
 - In `Infoczytnik_test.html`, panel aspect ratio for `Pismo odręczne` and `Pismo ozdobne` (`pergamin`) was changed from `1/1` to `1280/1920`.
-- This makes parchment backgrounds (`assets/layouts/Pismo_odreczne/Pergamin.jpg` and `assets/layouts/Pismo_ozdobne/Pergamin.jpg`) scale consistently with other layouts, removing the oversized look on desktop and mobile.
+- This makes parchment backgrounds (`assets/layouts/pismo_odreczne/Pergamin.jpg` and `assets/layouts/pismo_ozdobne/Pergamin.jpg`) scale consistently with other layouts, removing the oversized look on desktop and mobile.
 - `INF_VERSION` in test files was bumped to `2026-03-28_17-50-25`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
@@ -401,5 +401,26 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - For `Pismo odręczne` and `Pismo ozdobne`, the `pergamin` panel ratio was aligned with other `DataSlate_04`-type layouts (`1131/1600`) to keep panel size visually consistent with the rest.
 - Added a parchment-only CSS mode: `.panel.pergamin .layout-img { object-fit: cover; }`, so parchment fills the panel without black empty bands at top/bottom.
 - `INF_VERSION` in test files was bumped to `2026-03-28_18-02-28`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+
+## Aktualizacja 2026-03-28 (PL) — scrollujący prostokąt cienia + rename folderów
+- W `Infoczytnik_test.html` efekt prostokąta cienia został przeniesiony z warstwy przyklejonej do ekranu (`.screen::after`) do warstwy treści (`.contentLayer.with-overlay::before`), dzięki czemu zawsze przewija się razem z tekstem.
+- W `GM_test.html` dodano checkbox **Prostokąt cienia** (`movingOverlay`, domyślnie zaznaczony).
+- Odznaczenie **Prostokąt cienia** automatycznie odznacza **Flicker**.
+- W layoutach `pismo_odreczne` i `pismo_ozdobne` opcje `movingOverlay` i `flicker` są wymuszone na `false` i zablokowane.
+- Zmieniono nazwy folderów layoutów: `Pismo_odreczne` → `pismo_odreczne`, `Pismo_ozdobne` → `pismo_ozdobne`, oraz zaktualizowano ścieżki assetów.
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-28_21-05-00`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-28 (EN) — scrolling shadow rectangle + layout folder rename
+- In `Infoczytnik_test.html`, the shadow rectangle effect was moved from a fixed screen layer (`.screen::after`) to the content layer (`.contentLayer.with-overlay::before`), so it always scrolls with message content.
+- In `GM_test.html`, a new **Shadow rectangle** checkbox was added (`movingOverlay`, enabled by default).
+- Disabling **Shadow rectangle** now automatically disables **Flicker**.
+- For `pismo_odreczne` and `pismo_ozdobne`, both `movingOverlay` and `flicker` are forced to `false` and locked.
+- Layout folder names were renamed: `Pismo_odreczne` → `pismo_odreczne`, `Pismo_ozdobne` → `pismo_ozdobne`, and asset paths were updated accordingly.
+- `INF_VERSION` in test files was bumped to `2026-03-28_21-05-00`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
