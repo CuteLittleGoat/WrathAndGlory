@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_10-07-18"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-13_12-31-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -565,21 +565,32 @@
     }
 
 
-    async function triggerPushNotification(){
+    async function triggerPushNotification() {
       const triggerEndpoint = window.infWebPushConfig?.triggerEndpoint;
-      if(!triggerEndpoint) return;
+      if (!triggerEndpoint) {
+        throw new Error("Brak triggerEndpoint w konfiguracji Web Push.");
+      }
 
-      await fetch(triggerEndpoint, {
+      const response = await fetch(triggerEndpoint, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 3puHu3zzaFy2obwXB7dM7KXPOiVTSjWe"
+        },
         body: JSON.stringify({
           title: "Infoczytnik",
           body: "+++ INCOMING DATA-TRANSMISSION +++",
-          icon: "./IkonaPowiadomien.png",
+          icon: "/IkonaPowiadomien.png",
+          badge: "/IkonaPowiadomien.png",
           tag: "infoczytnik-new-message",
-          url: "./Infoczytnik/Infoczytnik.html"
+          url: "/Infoczytnik/Infoczytnik.html"
         })
       });
+
+      if (!response.ok) {
+        const text = await response.text().catch(() => "");
+        throw new Error(`Trigger push failed: ${response.status} ${text}`);
+      }
     }
     async function sendMessage(isClear){
 
