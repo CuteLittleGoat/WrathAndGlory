@@ -36,3 +36,50 @@ Z perspektywy UX dla jasnych layoutów: może wyglądać jak artefakt, bo kontra
 
 ## Podsumowanie
 „Dziwny prostokąt” to warstwa CSS odpowiedzialna za klimat „ekranu” i vignette. Nie jest to obcy element ani uszkodzony asset, tylko efekt graficzny zdefiniowany w stylach modułu Infoczytnik.
+
+---
+
+## Rozszerzenie analizy (2026-03-28)
+
+### Prompt użytkownika (rozszerzenie)
+> Rozbuduj analizę Analizy/2026-03-28_analiza_infoczytnik_prostokat_z_cieniem.md  
+> Czy można zrobić, żeby ten element przewijał się a nie był "przyklejony"?  
+> Czy można go usunąć? Czy automatycznie usunie to efekt Flicker?
+
+### Odpowiedź skrócona
+- **Tak**, można zrobić, żeby „prostokąt” przewijał się razem z treścią, ale wymaga to zmiany struktury warstw (overlay nie może być pseudo-elementem przypiętym do `.screen`).
+- **Tak**, można go usunąć całkowicie.
+- **Tak**, usunięcie tego elementu **automatycznie usunie flicker**, bo flicker jest przypisany właśnie do tej nakładki (`.screen::after`).
+
+### Dlaczego teraz wygląda jak „przyklejony”
+W obecnym kodzie `.screen` jest kontenerem przewijanym (`overflow:auto`), a „prostokąt z cieniem” jest pseudo-elementem `.screen::after` pozycjonowanym absolutnie na całej powierzchni `.screen`.
+To powoduje efekt stałej maski/vignette nad treścią: treść się przesuwa, ale nakładka pozostaje w miejscu względem okna czytnika.
+
+### Technicznie: gdzie jest powiązanie z flickerem
+- Flicker jest realizowany animacją `@keyframes flickerBg`.
+- Ta animacja jest przypięta bezpośrednio do `.screen::after` (`animation: flickerBg 9s infinite`).
+- Dodatkowo istnieje tryb wyłączenia migotania przez klasę `.screen.no-flicker::after { animation: none; }`.
+
+Wniosek: jeśli usuniesz `.screen::after` (albo ukryjesz `content`), to nie ma już warstwy, która animuje się w `flickerBg`.
+
+### Opcje wdrożeniowe
+1. **Zostawić warstwę, ale bez flicker**
+   - Najmniej inwazyjnie: wymusić stan `no-flicker`.
+   - Efekt: prostokąt/cienie zostają, migotanie znika.
+
+2. **Usunąć tylko flicker, zostawić cienie**
+   - Usunąć `animation` z `.screen::after`.
+   - Efekt: statyczny prostokąt bez pulsowania.
+
+3. **Usunąć cały prostokąt z cieniem**
+   - Wyłączyć/usunąć `.screen::after`.
+   - Efekt: znika i cieniowanie, i flicker.
+
+4. **Sprawić, aby warstwa „przewijała się” razem z treścią**
+   - Trzeba przenieść efekt z pseudo-elementu kontenera `.screen` do elementu osadzonego w samym strumieniu przewijanej treści (np. wrapper wewnątrz `.screen`).
+   - To jest możliwe, ale zmienia logikę wizualną (z „maski ekranu” na „dekorację treści”).
+
+### Odpowiedź na Twoje pytania (1:1)
+- **Czy można, żeby się przewijał, a nie był przyklejony?** — **Tak, można**, ale wymaga przebudowy warstwy (nie tylko drobnej korekty jednej wartości CSS).
+- **Czy można go usunąć?** — **Tak**.
+- **Czy automatycznie usunie to Flicker?** — **Tak**, bo flicker jest częścią tej samej nakładki (`.screen::after`).
