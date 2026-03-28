@@ -95,7 +95,7 @@ Efekty i obwódki:
 ### 3.3 Layout główny
 - `.app` — flex, min-height 100%.
 - `.topbar` — górny pasek z gradientem, borderem i flex-wrap.
-- `.main` — układ grid: **360px** panel + reszta workspace.
+- `.main` — układ grid: **180px** panel + reszta workspace.
   - Media query `@media (max-width: 980px)` przełącza na jedną kolumnę.
 
 ### 3.4 Przyciski i pola
