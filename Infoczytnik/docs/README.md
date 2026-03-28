@@ -375,3 +375,17 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `INF_VERSION` was bumped in `GM_test.html` and `Infoczytnik_test.html` to `2026-03-13_12-31-28`.
 - `service-worker.js` was bumped to `SW_VERSION = "wg-pwa-v3"` (cache refresh after deployment).
 - `Infoczytnik/backend/server.js` was removed — production push backend is now maintained outside the repo (Cloudflare Workers).
+
+## Aktualizacja 2026-03-28 (PL) — poprawa skali tła pergaminu
+- W `Infoczytnik_test.html` poprawiono proporcję panelu dla presetów `Pismo odręczne` i `Pismo ozdobne` (`pergamin`) z `1/1` na `1280/1920`.
+- Dzięki temu tło pergaminu (`assets/layouts/Pismo_odreczne/Pergamin.jpg` i `assets/layouts/Pismo_ozdobne/Pergamin.jpg`) skaluje się tak jak pozostałe layouty — bez efektu „za dużego” obrazu na PC i mobile.
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-28_17-50-25`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-28 (EN) — parchment background scale fix
+- In `Infoczytnik_test.html`, panel aspect ratio for `Pismo odręczne` and `Pismo ozdobne` (`pergamin`) was changed from `1/1` to `1280/1920`.
+- This makes parchment backgrounds (`assets/layouts/Pismo_odreczne/Pergamin.jpg` and `assets/layouts/Pismo_ozdobne/Pergamin.jpg`) scale consistently with other layouts, removing the oversized look on desktop and mobile.
+- `INF_VERSION` in test files was bumped to `2026-03-28_17-50-25`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`

@@ -769,3 +769,47 @@ Subscription flow remains runtime-config based via `window.infWebPushConfig`:
 ### 19.5. Legacy Node backend removal
 - Removed `Infoczytnik/backend/server.js`.
 - The repository no longer ships a local production push API implementation (Cloudflare Worker is now the production backend).
+
+## 20. Aktualizacja 2026-03-28 — skala tła pergaminu (PL)
+### 20.1. Zakres
+Zmiana dotyczy wyłącznie `Infoczytnik_test.html` oraz synchronizacji wersji cache w `GM_test.html`.
+
+### 20.2. Zmiana techniczna (`Infoczytnik_test.html`)
+W mapie proporcji panelu (`LAYOUT_AR`) zmieniono wpis:
+- było: `pergamin: 1`
+- jest: `pergamin: 1280/1920`
+
+To ustawienie jest używane przez funkcję `fitPanel(ar)`, która wylicza docelową szerokość/wysokość panelu względem viewportu. Dla layoutów `pismo_odreczne` i `pismo_ozdobne` aplikacja wymusza preset `pergamin`, więc ta korekta wpływa bezpośrednio na oba pergaminowe tła.
+
+### 20.3. Dlaczego to naprawia problem
+Pliki:
+- `assets/layouts/Pismo_odreczne/Pergamin.jpg`
+- `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+mają rzeczywistą proporcję 1280×1920 (2:3), a nie 1:1. Przy wcześniejszym wymuszeniu kwadratu panel był wizualnie „za duży” i źle komponował się z obszarem roboczym na desktopie i mobile. Po ustawieniu 1280/1920 skala i kadrowanie są zgodne z naturalnymi proporcjami assetu.
+
+### 20.4. Wersjonowanie testowych HTML
+Zgodnie z zasadami modułu podniesiono `INF_VERSION` do `2026-03-28_17-50-25` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 20. Update 2026-03-28 — parchment background scale (EN)
+### 20.1. Scope
+The change affects only `Infoczytnik_test.html` and cache-version synchronization in `GM_test.html`.
+
+### 20.2. Technical change (`Infoczytnik_test.html`)
+In the panel aspect-ratio map (`LAYOUT_AR`), this entry was changed:
+- before: `pergamin: 1`
+- after: `pergamin: 1280/1920`
+
+This value is consumed by `fitPanel(ar)`, which computes panel width/height relative to viewport. Layouts `pismo_odreczne` and `pismo_ozdobne` force the `pergamin` preset, so the change directly affects both parchment backgrounds.
+
+### 20.3. Why this fixes it
+The files:
+- `assets/layouts/Pismo_odreczne/Pergamin.jpg`
+- `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+use a real 1280×1920 ratio (2:3), not 1:1. With a square panel, the background looked oversized and poorly matched on both desktop and mobile. After switching to 1280/1920, scaling and framing match the asset’s natural geometry.
+
+### 20.4. Test HTML versioning
+As required by module rules, `INF_VERSION` was bumped to `2026-03-28_17-50-25` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`

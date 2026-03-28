@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-28_15-00-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_17-50-25"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -280,7 +280,7 @@
     pismo_ozdobne: `assets/layouts/Pismo_ozdobne/Pergamin.jpg?v=${ASSET_VERSION}`,
   };
 
-  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600, pergamin: 1 };
+  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600, pergamin: 1280/1920 };
   const SCREEN_INSETS = {
     inquisition: { top:"14%", right:"14%", bottom:"26%", left:"18%" },
     militarum:   { top:"12.7%", right:"19.8%", bottom:"10.1%", left:"21.46%" },
