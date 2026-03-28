@@ -192,6 +192,17 @@ a.link:hover {
   font-size: 0.9rem;
 }
 
+
+.panel-data-source .data-source-text {
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.panel-data-source .data-source-link {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .field {
   display: flex;
   flex-direction: column;
