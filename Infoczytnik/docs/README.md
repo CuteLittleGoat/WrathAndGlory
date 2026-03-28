@@ -48,6 +48,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 7. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
 8. Wpisz treść komunikatu.
 9. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje dokładnie ten sam zestaw fillerów, który widzisz w podglądzie GM.
+10. Nowe layouty `Pismo odręczne` i `Pismo ozdobne` mają tryb ograniczony: prefix/suffix, logo, flicker i dźwięk `Message.mp3` są automatycznie wyłączone oraz zablokowane w panelu GM. Dla tych layoutów działa nadal kolor i rozmiar fontu oraz dźwięk po kliknięciu **Ping**.
 
 **Uwaga:** Teksty prefixów i suffixów pochodzą bezpośrednio z layoutów i nie zmieniają się wraz z wersją językową. Przełącznik językowy wpływa na etykiety UI oraz status „gotowe/ready”. Prefixy i suffixy są zaszyte bezpośrednio w `GM_test.html` i `Infoczytnik_test.html` (aplikacja nie pobiera ich z zewnętrznego pliku w runtime).
 
@@ -124,6 +125,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 7. (Optional) Toggle the logo and the “flicker” effect.
 8. Enter the message text.
 9. Click **Wyślij / Send** — the player screen renders exactly the same filler set as in the GM live preview.
+10. New layouts `Pismo odręczne` and `Pismo ozdobne` use a restricted mode: prefix/suffix, logo, flicker, and `Message.mp3` are always disabled and locked in the GM panel. Font color/size still work, and **Ping** still plays audio.
 
 **Note:** Prefix/suffix lines come directly from the layout definitions and do not change with the language switch. The language toggle affects UI labels and the “ready” status text. Prefixes and suffixes are embedded directly in `GM_test.html` and `Infoczytnik_test.html` (no external filler file is loaded at runtime).
 

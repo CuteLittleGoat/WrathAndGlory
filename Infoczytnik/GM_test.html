@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_12-31-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_15-00-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -17,7 +17,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
     :root{--text:#eaeaea;--muted:#bdbdbd;--accent:#ffd27a;--border:#2a2a2a;--panel:rgba(18,18,18,.92);}
     *{box-sizing:border-box}
@@ -130,6 +130,8 @@
             <option value="tzeentch" data-i18n="factionTzeentch">Tzeentch</option>
             <option value="slaanesh" data-i18n="factionSlaanesh">Slaanesh</option>
             <option value="chaos_undivided" data-i18n="factionChaosUndivided">Chaos Undivided</option>
+            <option value="pismo_odreczne" data-i18n="factionPismoOdreczne">Pismo odręczne</option>
+            <option value="pismo_ozdobne" data-i18n="factionPismoOzdobne">Pismo ozdobne</option>
           </select>
 
           <!-- Kolor treści + szybkie -->
@@ -182,7 +184,7 @@
         <div class="col">
           <label data-i18n="labelFillersRandom">Losowość fillerów</label>
 
-          <div class="fillerBox">
+          <div class="fillerBox" id="fillerBox">
             <div class="fillerManual">
               <div class="left">
                 <div class="pairRow">
@@ -199,11 +201,11 @@
             </div>
           </div>
 
-          <div class="small" data-i18n="randomHint">
+          <div class="small" data-i18n="randomHint" id="randomHint">
             Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.
           </div>
 
-          <div class="row" style="align-items:center; gap:18px; margin-top:12px;">
+          <div class="row" id="toggleRow" style="align-items:center; gap:18px; margin-top:12px;">
             <div style="display:flex; align-items:center; gap:8px;">
               <input type="checkbox" id="showLogo" checked style="width:18px; height:18px; margin:0;" />
               <label for="showLogo" style="margin:0; color:var(--text);" data-i18n="labelShowLogo">Dodaj logo</label>
@@ -212,6 +214,9 @@
               <input type="checkbox" id="flicker" checked style="width:18px; height:18px; margin:0;" />
               <label for="flicker" style="margin:0; color:var(--text);" data-i18n="labelFlicker">Flicker</label>
             </div>
+          </div>
+          <div class="small" id="restrictedLayoutHint" data-i18n="restrictedLayoutHint" style="display:none; color:#ffcf91;">
+            Dla tego layoutu wyłączone są: prefix, suffix, logo, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.
           </div>
 
           <div class="livePreviewBox" id="livePreview">
@@ -275,6 +280,10 @@
       // fillery
       fillerLineCount: document.getElementById("fillerLineCount"),
       rerollFillersBtn: document.getElementById("rerollFillersBtn"),
+      fillerBox: document.getElementById("fillerBox"),
+      randomHint: document.getElementById("randomHint"),
+      toggleRow: document.getElementById("toggleRow"),
+      restrictedLayoutHint: document.getElementById("restrictedLayoutHint"),
       showLogo: document.getElementById("showLogo"),
       flicker: document.getElementById("flicker"),
 
@@ -341,6 +350,9 @@
           factionTzeentch: "Tzeentch",
           factionSlaanesh: "Slaanesh",
           factionChaosUndivided: "Chaos Undivided",
+          factionPismoOdreczne: "Pismo odręczne",
+          factionPismoOzdobne: "Pismo ozdobne",
+          restrictedLayoutHint: "Dla tego layoutu wyłączone są: prefix, suffix, logo, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.",
         },
         preview: {
           prefix: "++ NADCHODZĄCE DANE ++",
@@ -398,6 +410,9 @@
           factionTzeentch: "Tzeentch",
           factionSlaanesh: "Slaanesh",
           factionChaosUndivided: "Chaos Undivided",
+          factionPismoOdreczne: "Handwritten Script",
+          factionPismoOzdobne: "Decorative Script",
+          restrictedLayoutHint: "For this layout, prefix, suffix, logo, flicker, and Message.mp3 are disabled. Ping still plays sound.",
         },
         preview: {
           prefix: "++ INCOMING DATA FEED ++",
@@ -463,6 +478,8 @@
       tzeentch:        '"Orbitron", Calibri, Arial, sans-serif',
       slaanesh:        '"Questrial", Calibri, Arial, sans-serif',
       chaos_undivided: '"Russo One", Calibri, Arial, sans-serif',
+      pismo_odreczne:  '"Caveat", Calibri, Arial, sans-serif',
+      pismo_ozdobne:   '"Great Vibes", Calibri, Arial, sans-serif',
     };
 
     const LAYOUTS = {
@@ -482,6 +499,8 @@
                suffixes:["+++ FEED THE HUNGER +++","+++ THE PERFECT MOMENT +++","+++ PAIN IS PLEASURE +++","+++ EXCESS IS TRUTH +++","+++ UNHOLY HARMONY +++","+++ FEEL EVERYTHING +++","+++ TEMPTATION SPIKE +++","+++ PERFECTION IS BLISS +++","+++ PLEASURE ASCENDANT +++","+++ THE SENSES SHALL OPEN +++","+++ ECSTASY WITHOUT END +++","+++ RAPTURE CONSUMES +++","+++ BEAUTY CUTS DEEPLY +++","+++ SENSORIA SATURATED +++","+++ DESIRE BECOMES LAW +++","+++ EVERY NOTE A KNIFE +++","+++ BLISS THROUGH EXCESS +++","+++ THE HUNGER REMAINS +++","+++ PERFECT AGONY +++","+++ INDULGENCE VICTORIOUS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
       chaos_undivided:{prefixes:["+++ WARP STIRRING +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ SACRIFICE ACCEPTED +++","+++ WARP ENERGY RISING +++","+++ ORDER BREAKS +++","+++ FLESH TURNS +++","+++ ASCENSION IMMINENT +++","+++ REALSPACE THINS +++","+++ VEIL BREACH DETECTED +++","+++ CHAOS CHORUS RISING +++","+++ RUINOUS CONVERGENCE +++","+++ THE EYE TURNS +++","+++ CORRUPTION VECTOR LOCKED +++","+++ THE PACT STANDS +++","+++ REALITY UNFASTENS +++","+++ THE WARP ANSWERS +++","+++ UNHOLY ALIGNMENT +++","+++ THE DARK BETWEEN STARS +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++"],
                       suffixes:["+++ GLORY TO CHAOS +++","+++ DARK GODS SMILE +++","+++ THE EYE OPENS +++","+++ ASCEND AND BURN +++","+++ ALL HAIL THE DARK GODS +++","+++ REALSPACE BLEEDS +++","+++ STARS ARE WRONG +++","+++ VOID WITHIN +++","+++ ETERNAL CHANGE +++","+++ LET THE GALAXY BREAK +++","+++ THE VEIL IS TORN +++","+++ OFFERING ACCEPTED +++","+++ THE RUINOUS POWERS PROVIDE +++","+++ CORRUPTION WITHOUT MASTER +++","+++ CHAOS IS ASCENDANT +++","+++ THE LONG WAR ENDURES +++","+++ REALITY YIELDS +++","+++ THE WARP CLAIMS ALL +++","+++ BLESSED BE THE DAMNED +++","+++ NIGHT COMES FROM WITHIN +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EMPEROR PROTECTS +++"]},
+      pismo_odreczne:{prefixes:[],suffixes:[]},
+      pismo_ozdobne:{prefixes:[],suffixes:[]},
     };
 
     const fillerState = {
@@ -503,6 +522,20 @@
     }
     function nonce(){ return String(Date.now()) + "-" + String(Math.random()).slice(2); }
     function getLayout(){ return LAYOUTS[el.faction.value] || LAYOUTS.mechanicus; }
+    function isRestrictedLayout(faction){
+      return faction === "pismo_odreczne" || faction === "pismo_ozdobne";
+    }
+
+    function updateRestrictedLayoutUi(){
+      const restricted = isRestrictedLayout(el.faction.value);
+      if(el.fillerBox) el.fillerBox.style.opacity = restricted ? "0.5" : "1";
+      if(el.randomHint) el.randomHint.style.opacity = restricted ? "0.65" : "1";
+      if(el.rerollFillersBtn) el.rerollFillersBtn.disabled = restricted;
+      if(el.fillerLineCount) el.fillerLineCount.disabled = restricted;
+      if(el.showLogo){ el.showLogo.checked = restricted ? false : el.showLogo.checked; el.showLogo.disabled = restricted; }
+      if(el.flicker){ el.flicker.checked = restricted ? false : el.flicker.checked; el.flicker.disabled = restricted; }
+      if(el.restrictedLayoutHint) el.restrictedLayoutHint.style.display = restricted ? "block" : "none";
+    }
 
     function normalizePx(n, min, max, fallback){
       const x = Number(n);
@@ -537,8 +570,9 @@
       const msgColor  = el.fontColor.value || "#00ff66";
 
       el.livePreview.style.fontFamily = fontStack;
-      el.livePreviewPrefix.textContent = fillerState.prefixLines.join("\n");
-      el.livePreviewSuffix.textContent = fillerState.suffixLines.join("\n");
+      const restricted = isRestrictedLayout(el.faction.value);
+      el.livePreviewPrefix.textContent = restricted ? "" : fillerState.prefixLines.join("\n");
+      el.livePreviewSuffix.textContent = restricted ? "" : fillerState.suffixLines.join("\n");
 
       el.livePreviewPrefix.style.color = psColor;
       el.livePreviewSuffix.style.color = psColor;
@@ -553,8 +587,14 @@
       const cfg = getLayout();
       fillerState.count = clamp(el.fillerLineCount.value, 1, 5);
       el.fillerLineCount.value = String(fillerState.count);
-      fillerState.prefixLines = drawUniqueRandomLines(cfg.prefixes, fillerState.count);
-      fillerState.suffixLines = drawUniqueRandomLines(cfg.suffixes, fillerState.count);
+      if(isRestrictedLayout(el.faction.value)){
+        fillerState.prefixLines = [];
+        fillerState.suffixLines = [];
+      }else{
+        fillerState.prefixLines = drawUniqueRandomLines(cfg.prefixes, fillerState.count);
+        fillerState.suffixLines = drawUniqueRandomLines(cfg.suffixes, fillerState.count);
+      }
+      updateRestrictedLayoutUi();
       renderFillerPreview();
       updateLivePreview();
     }
@@ -597,6 +637,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
+      const restricted = isRestrictedLayout(el.faction.value);
       setStatus(translations[currentLanguage].messages.statusSending, "statusSending");
       try{
         await currentRef.set({
@@ -615,11 +656,12 @@
           suffixFontSize: psFontPx + "px",
 
           // fillery
-          fillerLineCount: fillerState.count,
-          prefixLines: isClear ? [] : fillerState.prefixLines,
-          suffixLines: isClear ? [] : fillerState.suffixLines,
-          showLogo: !!el.showLogo.checked,
-          flicker: !!el.flicker.checked,
+          fillerLineCount: restricted ? 0 : fillerState.count,
+          prefixLines: (isClear || restricted) ? [] : fillerState.prefixLines,
+          suffixLines: (isClear || restricted) ? [] : fillerState.suffixLines,
+          showLogo: restricted ? false : !!el.showLogo.checked,
+          flicker: restricted ? false : !!el.flicker.checked,
+          disableMessageAudio: restricted,
 
           // tekst
           text: isClear ? "" : (el.message.value || ""),
@@ -654,6 +696,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
+      const restricted = isRestrictedLayout(el.faction.value);
       setStatus(translations[currentLanguage].messages.statusPingLoading, "statusPingLoading");
       try{
         await currentRef.set({
@@ -668,8 +711,8 @@
           suffixColor: getPrefixSuffixColor(),
           prefixFontSize: psFontPx + "px",
           suffixFontSize: psFontPx + "px",
-          showLogo: !!el.showLogo.checked,
-          flicker: !!el.flicker.checked,
+          showLogo: restricted ? false : !!el.showLogo.checked,
+          flicker: restricted ? false : !!el.flicker.checked,
 
           nonce: nonce(),
           ts: firebase.firestore.FieldValue.serverTimestamp()
