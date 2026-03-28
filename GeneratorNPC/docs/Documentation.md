@@ -49,7 +49,7 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 
 ### 4.2. Panel boczny (`.sidebar`)
 Składa się z trzech sekcji:
-1. **Źródło danych** — informuje o URL danych i statusie wczytywania (`#data-status`).
+1. **Źródło danych** — informuje o URL danych i statusie wczytywania (`#data-status`). Sekcja używa klas `panel-data-source`, `data-source-text` i `data-source-link`, dzięki czemu długi adres URL zawija się wewnątrz panelu (bez wychodzenia poza ramkę), a rozmiar tekstu jest delikatnie mniejszy niż domyślny tekst paneli.
 2. **Wybór bazowy** — wybór rekordu bestiariusza (`#bestiary`) + notatki (`#bestiary-notes`).
 3. **Moduły aktywne** — checkboxy włączające/wyłączające karty modułów:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
@@ -130,6 +130,8 @@ Ustawienia globalne:
 
 ### 6.3. Tekst i typografia
 - `.text-muted`, `.text-red` — stonowane i czerwone akcenty.
+- `.panel-data-source .data-source-text` — zmniejszony rozmiar tekstu (`0.82rem`) i zwiększona wysokość linii (`1.55`) wyłącznie w panelu „Źródło danych”.
+- `.panel-data-source .data-source-link` — wymusza łamanie długiego adresu (`overflow-wrap: anywhere`, `word-break: break-word`), co zapobiega wychodzeniu linku poza ramkę panelu.
 - `.badge` — etykieta typu „Bestiariusz”.
 
 ### 6.4. Formularze
