@@ -279,8 +279,8 @@ window.firebaseConfig = {
 **Mapy layoutów i logo:**
 - `LAYOUT_BG` mapuje frakcję → ścieżka PNG.
   - Dodane ścieżki:
-    - `pismo_odreczne` → `assets/layouts/Pismo_odreczne/Pergamin.jpg`
-    - `pismo_ozdobne` → `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+    - `pismo_odreczne` → `assets/layouts/pismo_odreczne/Pergamin.jpg`
+    - `pismo_ozdobne` → `assets/layouts/pismo_ozdobne/Pergamin.jpg`
 - `LAYOUT_AR` (proporcje):
   - inquisition: `707/1023`
   - militarum: `1263/1595`
@@ -783,8 +783,8 @@ To ustawienie jest używane przez funkcję `fitPanel(ar)`, która wylicza docelo
 
 ### 20.3. Dlaczego to naprawia problem
 Pliki:
-- `assets/layouts/Pismo_odreczne/Pergamin.jpg`
-- `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+- `assets/layouts/pismo_odreczne/Pergamin.jpg`
+- `assets/layouts/pismo_ozdobne/Pergamin.jpg`
 mają rzeczywistą proporcję 1280×1920 (2:3), a nie 1:1. Przy wcześniejszym wymuszeniu kwadratu panel był wizualnie „za duży” i źle komponował się z obszarem roboczym na desktopie i mobile. Po ustawieniu 1280/1920 skala i kadrowanie są zgodne z naturalnymi proporcjami assetu.
 
 ### 20.4. Wersjonowanie testowych HTML
@@ -805,8 +805,8 @@ This value is consumed by `fitPanel(ar)`, which computes panel width/height rela
 
 ### 20.3. Why this fixes it
 The files:
-- `assets/layouts/Pismo_odreczne/Pergamin.jpg`
-- `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+- `assets/layouts/pismo_odreczne/Pergamin.jpg`
+- `assets/layouts/pismo_ozdobne/Pergamin.jpg`
 use a real 1280×1920 ratio (2:3), not 1:1. With a square panel, the background looked oversized and poorly matched on both desktop and mobile. After switching to 1280/1920, scaling and framing match the asset’s natural geometry.
 
 ### 20.4. Test HTML versioning
@@ -861,5 +861,95 @@ After setting `LAYOUT_AR.pergamin = 1280/1920`, mobile rendering was still repor
 
 ### 21.4. Versioning
 `INF_VERSION` was bumped to `2026-03-28_18-02-28` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 22. Aktualizacja 2026-03-28 — scrollujący overlay i kontrola w GM (PL)
+### 22.1. Zakres
+Zmiany objęły:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+- rename folderów `assets/layouts/Pismo_*` → `assets/layouts/pismo_*`
+- aktualizację odwołań do ścieżek pergaminu.
+
+### 22.2. `GM_test.html` — nowe pole `movingOverlay`
+1. W UI dodano nowy checkbox `#movingOverlay` (domyślnie `checked`).
+2. Pole zostało dołączone do mapy elementów `el`.
+3. Dodano translacje (`labelMovingOverlay`) w PL/EN.
+4. `updateRestrictedLayoutUi()` rozszerzono o:
+   - wymuszanie `movingOverlay=false` i `disabled=true` dla layoutów restricted (`pismo_odreczne`, `pismo_ozdobne`),
+   - dodatkowy guard: gdy `movingOverlay=false`, `flicker` jest automatycznie odznaczany.
+5. W payloadach `currentRef.set(...)` (`sendMessage` i `ping`) zapisuje się teraz:
+   - `movingOverlay: restricted ? false : !!el.movingOverlay.checked`,
+   - `flicker: false` gdy `movingOverlay=false` lub layout restricted.
+6. Dodano listener `movingOverlay.change`, który od razu odznacza `flicker` po wyłączeniu overlayu.
+
+### 22.3. `Infoczytnik_test.html` — overlay przewijający się z treścią
+1. Dotychczasowy overlay był realizowany przez `.screen::after`, czyli warstwę przyklejoną do viewportu strefy czytnika.
+2. Wprowadzono kontener `.contentLayer` wewnątrz `.screen` i przeniesiono efekt na `.contentLayer::before`.
+3. Overlay jest aktywowany klasą `.screen.scrolling-overlay`.
+4. `setMovingOverlayState(enabled)` przełącza klasę `scrolling-overlay`.
+5. `setFlickerState(shouldFlicker)` nadal steruje klasą `no-flicker`, ale działa na nowej warstwie (`.contentLayer::before`).
+6. W `onSnapshot(...)` dodano odczyt i guardy:
+   - `movingOverlay = restricted ? false : (d.movingOverlay !== false)`
+   - `flicker = (!movingOverlay || restricted) ? false : (d.flicker !== false)`
+7. Dzięki temu efekt prostokąta przewija się razem z treścią, a flicker nie działa, gdy overlay jest wyłączony.
+
+### 22.4. Rename folderów pergaminowych
+Zmiany na dysku:
+- `assets/layouts/Pismo_odreczne` → `assets/layouts/pismo_odreczne`
+- `assets/layouts/Pismo_ozdobne` → `assets/layouts/pismo_ozdobne`
+
+Zmiany runtime:
+- `LAYOUT_BG.pismo_odreczne` wskazuje `assets/layouts/pismo_odreczne/Pergamin.jpg`
+- `LAYOUT_BG.pismo_ozdobne` wskazuje `assets/layouts/pismo_ozdobne/Pergamin.jpg`
+
+### 22.5. Wersjonowanie testowych HTML
+Zgodnie z zasadami modułu podniesiono `INF_VERSION` do `2026-03-28_18-45-34` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 22. Update 2026-03-28 — scrolling overlay and GM control (EN)
+### 22.1. Scope
+Changes include:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+- renaming parchment folders from `assets/layouts/Pismo_*` to `assets/layouts/pismo_*`
+- updating runtime parchment asset references.
+
+### 22.2. `GM_test.html` — new `movingOverlay` field
+1. A new `#movingOverlay` checkbox was added to the UI (checked by default).
+2. The field was wired into the `el` DOM map.
+3. Translation entries (`labelMovingOverlay`) were added in PL/EN.
+4. `updateRestrictedLayoutUi()` now:
+   - enforces `movingOverlay=false` and `disabled=true` for restricted layouts (`pismo_odreczne`, `pismo_ozdobne`),
+   - applies an extra guard: when `movingOverlay=false`, `flicker` is auto-unchecked.
+5. `currentRef.set(...)` payloads (`sendMessage` and `ping`) now include:
+   - `movingOverlay: restricted ? false : !!el.movingOverlay.checked`,
+   - `flicker: false` when `movingOverlay=false` or restricted layout.
+6. A `movingOverlay.change` listener immediately unchecks `flicker` when overlay is disabled.
+
+### 22.3. `Infoczytnik_test.html` — overlay that scrolls with content
+1. Previously, overlay was drawn via `.screen::after`, i.e. fixed to the reader viewport area.
+2. A `.contentLayer` wrapper was introduced inside `.screen`, and the effect moved to `.contentLayer::before`.
+3. Overlay activation is now controlled by `.screen.scrolling-overlay`.
+4. `setMovingOverlayState(enabled)` toggles the `scrolling-overlay` class.
+5. `setFlickerState(shouldFlicker)` still controls the `no-flicker` class, now applied to the new overlay layer (`.contentLayer::before`).
+6. `onSnapshot(...)` now reads and guards:
+   - `movingOverlay = restricted ? false : (d.movingOverlay !== false)`
+   - `flicker = (!movingOverlay || restricted) ? false : (d.flicker !== false)`
+7. Result: the rectangle effect scrolls together with content, and flicker is disabled whenever overlay is disabled.
+
+### 22.4. Parchment folder rename
+Filesystem changes:
+- `assets/layouts/Pismo_odreczne` → `assets/layouts/pismo_odreczne`
+- `assets/layouts/Pismo_ozdobne` → `assets/layouts/pismo_ozdobne`
+
+Runtime changes:
+- `LAYOUT_BG.pismo_odreczne` now points to `assets/layouts/pismo_odreczne/Pergamin.jpg`
+- `LAYOUT_BG.pismo_ozdobne` now points to `assets/layouts/pismo_ozdobne/Pergamin.jpg`
+
+### 22.5. Test HTML versioning
+As required by module rules, `INF_VERSION` was bumped to `2026-03-28_18-45-34` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`

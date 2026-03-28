@@ -378,14 +378,14 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 
 ## Aktualizacja 2026-03-28 (PL) — poprawa skali tła pergaminu
 - W `Infoczytnik_test.html` poprawiono proporcję panelu dla presetów `Pismo odręczne` i `Pismo ozdobne` (`pergamin`) z `1/1` na `1280/1920`.
-- Dzięki temu tło pergaminu (`assets/layouts/Pismo_odreczne/Pergamin.jpg` i `assets/layouts/Pismo_ozdobne/Pergamin.jpg`) skaluje się tak jak pozostałe layouty — bez efektu „za dużego” obrazu na PC i mobile.
+- Dzięki temu tło pergaminu (`assets/layouts/pismo_odreczne/Pergamin.jpg` i `assets/layouts/pismo_ozdobne/Pergamin.jpg`) skaluje się tak jak pozostałe layouty — bez efektu „za dużego” obrazu na PC i mobile.
 - Podniesiono `INF_VERSION` w plikach testowych do `2026-03-28_17-50-25`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
 
 ## Update 2026-03-28 (EN) — parchment background scale fix
 - In `Infoczytnik_test.html`, panel aspect ratio for `Pismo odręczne` and `Pismo ozdobne` (`pergamin`) was changed from `1/1` to `1280/1920`.
-- This makes parchment backgrounds (`assets/layouts/Pismo_odreczne/Pergamin.jpg` and `assets/layouts/Pismo_ozdobne/Pergamin.jpg`) scale consistently with other layouts, removing the oversized look on desktop and mobile.
+- This makes parchment backgrounds (`assets/layouts/pismo_odreczne/Pergamin.jpg` and `assets/layouts/pismo_ozdobne/Pergamin.jpg`) scale consistently with other layouts, removing the oversized look on desktop and mobile.
 - `INF_VERSION` in test files was bumped to `2026-03-28_17-50-25`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
@@ -401,5 +401,29 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - For `Pismo odręczne` and `Pismo ozdobne`, the `pergamin` panel ratio was aligned with other `DataSlate_04`-type layouts (`1131/1600`) to keep panel size visually consistent with the rest.
 - Added a parchment-only CSS mode: `.panel.pergamin .layout-img { object-fit: cover; }`, so parchment fills the panel without black empty bands at top/bottom.
 - `INF_VERSION` in test files was bumped to `2026-03-28_18-02-28`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Aktualizacja 2026-03-28 (PL) — scrollujący prostokąt, nowy checkbox i rename folderów pergaminu
+- W `GM_test.html` dodano nowy checkbox **„Przesuwający się prostokąt”** (domyślnie zaznaczony), który steruje efektem overlayu w Infoczytniku.
+- Odznaczenie nowego checkboxa automatycznie odznacza `Flicker`.
+- W layoutach `pismo_odreczne` i `pismo_ozdobne` opcja jest wymuszana na `false` i zablokowana (disabled), tak samo jak `Flicker`.
+- W `Infoczytnik_test.html` overlay został przeniesiony z warstwy „przyklejonej” do viewportu na warstwę treści (`.contentLayer::before`), dzięki czemu efekt porusza się razem ze scrollowaniem tekstu.
+- Zmieniono nazwę katalogów layoutów pergaminowych oraz odnośniki runtime:
+  - `assets/layouts/Pismo_odreczne` → `assets/layouts/pismo_odreczne`
+  - `assets/layouts/Pismo_ozdobne` → `assets/layouts/pismo_ozdobne`
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-28_18-45-34`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-28 (EN) — scrolling rectangle, new checkbox, and parchment folder rename
+- `GM_test.html` now includes a new **“Scrolling rectangle”** checkbox (checked by default) that controls the overlay effect in Infoczytnik.
+- Unchecking this new checkbox automatically unchecks `Flicker`.
+- In `pismo_odreczne` and `pismo_ozdobne` layouts, the option is forced to `false` and disabled, same as `Flicker`.
+- In `Infoczytnik_test.html`, the overlay moved from a viewport-fixed layer to a content layer (`.contentLayer::before`), so it now scrolls together with message content.
+- Parchment layout folders and runtime references were renamed to lowercase:
+  - `assets/layouts/Pismo_odreczne` → `assets/layouts/pismo_odreczne`
+  - `assets/layouts/Pismo_ozdobne` → `assets/layouts/pismo_ozdobne`
+- `INF_VERSION` in test files was bumped to `2026-03-28_18-45-34`:
   - `GM_test.html`
   - `Infoczytnik_test.html`

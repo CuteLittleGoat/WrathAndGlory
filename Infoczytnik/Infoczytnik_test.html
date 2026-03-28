@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-28_18-02-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_18-45-34"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -131,7 +131,12 @@
     z-index: 1;
   }
 
-  .screen::after{
+  .contentLayer{
+    position:relative;
+    z-index:1;
+  }
+
+  .contentLayer::before{
     content:"";
     position:absolute;
     inset:-2%;
@@ -142,13 +147,18 @@
     opacity:.65;
     animation: flickerBg 9s infinite;
     z-index: 0;
+    display:none;
   }
 
-  .screen.no-flicker::after{
+  .screen.scrolling-overlay .contentLayer::before{
+    display:block;
+  }
+
+  .screen.no-flicker .contentLayer::before{
     animation: none;
   }
 
-  .screen > *{
+  .contentLayer > *{
     position: relative;
     z-index: 1;
   }
@@ -227,17 +237,19 @@
     <div class="panel crt" id="panel">
       <img class="layout-img" id="layoutImg" alt="layout" />
       <div class="screen" id="screen">
-        <div class="prefixRow">
-          <div class="prefix" id="prefixLine"></div>
-          <div class="logoBox">
-            <img class="logo" id="logo" alt="logo" />
+        <div class="contentLayer" id="contentLayer">
+          <div class="prefixRow">
+            <div class="prefix" id="prefixLine"></div>
+            <div class="logoBox">
+              <img class="logo" id="logo" alt="logo" />
+            </div>
           </div>
-        </div>
 
-        <div class="msg" id="msg"></div>
+          <div class="msg" id="msg"></div>
 
-        <div class="suffixRow">
-          <div class="suffix" id="suffixLine"></div>
+          <div class="suffixRow">
+            <div class="suffix" id="suffixLine"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -280,8 +292,8 @@
     nurgle:      `assets/layouts/nurgle/DataSlate_04.png?v=${ASSET_VERSION}`,
     tzeentch:    `assets/layouts/tzeentch/DataSlate_04.png?v=${ASSET_VERSION}`,
     slaanesh:    `assets/layouts/slaanesh/DataSlate_04.png?v=${ASSET_VERSION}`,
-    pismo_odreczne: `assets/layouts/Pismo_odreczne/Pergamin.jpg?v=${ASSET_VERSION}`,
-    pismo_ozdobne: `assets/layouts/Pismo_ozdobne/Pergamin.jpg?v=${ASSET_VERSION}`,
+    pismo_odreczne: `assets/layouts/pismo_odreczne/Pergamin.jpg?v=${ASSET_VERSION}`,
+    pismo_ozdobne: `assets/layouts/pismo_ozdobne/Pergamin.jpg?v=${ASSET_VERSION}`,
   };
 
   const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600, pergamin: 1131/1600 };
@@ -402,6 +414,10 @@
     }else{
       el.screen.classList.remove("no-flicker");
     }
+  }
+
+  function setMovingOverlayState(enabled){
+    el.screen.classList.toggle("scrolling-overlay", enabled !== false);
   }
 
   function setPergaminMode(isPergamin){
@@ -529,9 +545,11 @@
     const color   = d.color || d.fontColor || "#00ff66";
     const restricted = isRestrictedLayout(faction);
     const showLogo = restricted ? false : (d.showLogo !== false);
-    const flicker = restricted ? false : (d.flicker !== false);
+    const movingOverlay = restricted ? false : (d.movingOverlay !== false);
+    const flicker = (!movingOverlay || restricted) ? false : (d.flicker !== false);
 
     applyLayout(faction, color, showLogo);
+    setMovingOverlayState(movingOverlay);
     setFlickerState(flicker);
     applyTextStyleFromDoc(d);
 
@@ -600,6 +618,7 @@
 
   // Start
   applyLayout("mechanicus", "#00ff66");
+  setMovingOverlayState(true);
   setFlickerState(true);
 </script>
 </body>
