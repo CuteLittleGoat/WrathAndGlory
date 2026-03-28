@@ -389,3 +389,17 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `INF_VERSION` in test files was bumped to `2026-03-28_17-50-25`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
+
+## Aktualizacja 2026-03-28 (PL) — korekta wyświetlania pergaminu na mobile i PC
+- Dla layoutów `Pismo odręczne` i `Pismo ozdobne` ustawiono proporcję panelu `pergamin` taką jak pozostałe layouty typu `DataSlate_04` (`1131/1600`), aby rozmiar panelu był spójny wizualnie z pozostałymi tłami.
+- Dodano tryb CSS tylko dla pergaminu: `.panel.pergamin .layout-img { object-fit: cover; }`, dzięki czemu tło pergaminu wypełnia panel bez czarnych pustych pasów na górze/dole.
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-28_18-02-28`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-28 (EN) — parchment rendering fix on mobile and desktop
+- For `Pismo odręczne` and `Pismo ozdobne`, the `pergamin` panel ratio was aligned with other `DataSlate_04`-type layouts (`1131/1600`) to keep panel size visually consistent with the rest.
+- Added a parchment-only CSS mode: `.panel.pergamin .layout-img { object-fit: cover; }`, so parchment fills the panel without black empty bands at top/bottom.
+- `INF_VERSION` in test files was bumped to `2026-03-28_18-02-28`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`

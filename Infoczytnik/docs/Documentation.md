@@ -813,3 +813,53 @@ use a real 1280×1920 ratio (2:3), not 1:1. With a square panel, the background 
 As required by module rules, `INF_VERSION` was bumped to `2026-03-28_17-50-25` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`
+
+## 21. Aktualizacja 2026-03-28 — finalna korekta pergaminu (PL)
+### 21.1. Problem po poprzedniej poprawce
+Po ustawieniu `LAYOUT_AR.pergamin = 1280/1920` użytkownik nadal raportował niepoprawny wygląd na mobile: panel był wizualnie mniejszy od pozostałych layoutów, a tło pergaminu nie wypełniało obszaru tak jak oczekiwano.
+
+### 21.2. Zmiany kodu
+1. W `LAYOUT_AR` ustawiono:
+   - `pergamin: 1131/1600`
+   (czyli proporcję zgodną z główną rodziną teł `DataSlate_04`, żeby uzyskać podobny gabaryt panelu na ekranie).
+2. Dodano tryb CSS dla pergaminu:
+   - `.panel.pergamin .layout-img { object-fit: cover; }`
+3. Dodano funkcję:
+   - `setPergaminMode(isPergamin)` — przełącza klasę `pergamin` na `#panel`.
+4. W `applyLayoutState(...)` dodano jawne przełączanie trybu:
+   - `setPergaminMode(true)` dla `pismo_odreczne` i `pismo_ozdobne`,
+   - `setPergaminMode(false)` dla pozostałych layoutów.
+
+### 21.3. Efekt runtime
+- Dla pergaminu obraz tła wypełnia panel (cover), więc nie powstają czarne „puste” pasy wynikające z niedopasowania proporcji.
+- Dla pozostałych layoutów zachowano wcześniejsze zachowanie (`object-fit: contain`) i brak zmian w ich renderingu.
+
+### 21.4. Wersjonowanie
+Podniesiono `INF_VERSION` do `2026-03-28_18-02-28` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 21. Update 2026-03-28 — final parchment correction (EN)
+### 21.1. Post-fix issue
+After setting `LAYOUT_AR.pergamin = 1280/1920`, mobile rendering was still reported as incorrect: panel size looked smaller than other layouts and parchment did not fill the area as expected.
+
+### 21.2. Code changes
+1. In `LAYOUT_AR`:
+   - `pergamin: 1131/1600`
+   (aligned with the main `DataSlate_04` layout family to keep panel footprint visually consistent).
+2. Added parchment-only CSS mode:
+   - `.panel.pergamin .layout-img { object-fit: cover; }`
+3. Added function:
+   - `setPergaminMode(isPergamin)` — toggles `pergamin` class on `#panel`.
+4. In `applyLayoutState(...)`, explicit mode toggling:
+   - `setPergaminMode(true)` for `pismo_odreczne` and `pismo_ozdobne`,
+   - `setPergaminMode(false)` for all other layouts.
+
+### 21.3. Runtime effect
+- For parchment layouts, background now fills the panel (cover), removing black empty bands caused by ratio mismatch.
+- All non-parchment layouts keep previous behavior (`object-fit: contain`) unchanged.
+
+### 21.4. Versioning
+`INF_VERSION` was bumped to `2026-03-28_18-02-28` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`

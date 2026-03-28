@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-28_17-50-25"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_18-02-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -74,6 +74,10 @@
     user-select:none;
     -webkit-user-drag:none;
     pointer-events:none;
+  }
+
+  .panel.pergamin .layout-img{
+    object-fit: cover;
   }
 
   .crt::before{
@@ -280,7 +284,7 @@
     pismo_ozdobne: `assets/layouts/Pismo_ozdobne/Pergamin.jpg?v=${ASSET_VERSION}`,
   };
 
-  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600, pergamin: 1280/1920 };
+  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600, pergamin: 1131/1600 };
   const SCREEN_INSETS = {
     inquisition: { top:"14%", right:"14%", bottom:"26%", left:"18%" },
     militarum:   { top:"12.7%", right:"19.8%", bottom:"10.1%", left:"21.46%" },
@@ -400,6 +404,10 @@
     }
   }
 
+  function setPergaminMode(isPergamin){
+    el.panel.classList.toggle("pergamin", isPergamin);
+  }
+
   let currentAr = LAYOUT_AR.default04;
 
   function isRestrictedLayout(faction){
@@ -440,15 +448,19 @@
     document.documentElement.style.setProperty("--accent", color || "#00ff66");
 
     if(key === "inquisition"){
+      setPergaminMode(false);
       setInsets(SCREEN_INSETS.inquisition);
       currentAr = LAYOUT_AR.inquisition;
     }else if(key === "militarum"){
+      setPergaminMode(false);
       setInsets(SCREEN_INSETS.militarum);
       currentAr = LAYOUT_AR.militarum;
     }else if(isRestrictedLayout(key)){
+      setPergaminMode(true);
       setInsets(SCREEN_INSETS.pergamin);
       currentAr = LAYOUT_AR.pergamin;
     }else{
+      setPergaminMode(false);
       setInsets(SCREEN_INSETS.default04);
       currentAr = LAYOUT_AR.default04;
     }
