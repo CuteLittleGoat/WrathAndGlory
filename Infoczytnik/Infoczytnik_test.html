@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_12-31-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_20-10-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -21,7 +21,7 @@
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -276,6 +276,8 @@
     nurgle:      `assets/layouts/nurgle/DataSlate_04.png?v=${ASSET_VERSION}`,
     tzeentch:    `assets/layouts/tzeentch/DataSlate_04.png?v=${ASSET_VERSION}`,
     slaanesh:    `assets/layouts/slaanesh/DataSlate_04.png?v=${ASSET_VERSION}`,
+    pismo_odreczne: `assets/layouts/Pismo_odreczne/Pergamin.jpg?v=${ASSET_VERSION}`,
+    pismo_ozdobne: `assets/layouts/Pismo_ozdobne/Pergamin.jpg?v=${ASSET_VERSION}`,
   };
 
   const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600 };
@@ -294,7 +296,10 @@
     tzeentch:        '"Orbitron", Calibri, Arial, sans-serif',
     slaanesh:        '"Questrial", Calibri, Arial, sans-serif',
     chaos_undivided: '"Russo One", Calibri, Arial, sans-serif',
+    pismo_odreczne:  '"Caveat", "Comic Sans MS", "Segoe UI", cursive',
+    pismo_ozdobne:   '"Great Vibes", "Times New Roman", serif',
   };
+  const RESTRICTED_LAYOUTS = new Set(["pismo_odreczne", "pismo_ozdobne"]);
 
   const FILLERS = {
     mechanicus: {
@@ -414,9 +419,13 @@
     const i = (Number.isFinite(n) ? Math.floor(n) : 1) - 1;
     return arr[Math.max(0, Math.min(arr.length - 1, i))] || "";
   }
+  function isRestrictedLayout(key){
+    return RESTRICTED_LAYOUTS.has(key);
+  }
 
   function applyLayout(factionKey, color, showLogo){
     const key = (factionKey && LAYOUT_BG[factionKey]) ? factionKey : "mechanicus";
+    const restricted = isRestrictedLayout(key);
     el.layoutImg.src = LAYOUT_BG[key] || LAYOUT_BG.mechanicus;
 
     document.documentElement.style.setProperty("--font", FONT_STACK[key] || 'Calibri, Arial, sans-serif');
@@ -433,7 +442,7 @@
       currentAr = LAYOUT_AR.default04;
     }
     fitPanel(currentAr);
-    setLogoForFaction(key, showLogo !== false);
+    setLogoForFaction(key, restricted ? false : showLogo !== false);
   }
 
   function applyTextStyleFromDoc(d){
@@ -494,9 +503,10 @@
     lastNonce = d.nonce || null;
 
     const faction = d.faction || "mechanicus";
+    const restricted = isRestrictedLayout(faction);
     const color   = d.color || d.fontColor || "#00ff66";
-    const showLogo = d.showLogo !== false;
-    const flicker = d.flicker !== false;
+    const showLogo = restricted ? false : d.showLogo !== false;
+    const flicker = restricted ? false : d.flicker !== false;
 
     applyLayout(faction, color, showLogo);
     setFlickerState(flicker);
@@ -533,8 +543,13 @@
         suffix = getFillerText(faction, d.suffixIndex || d.suffixIdx, "suffix");
       }
 
-      if(!prefix && (text || "").trim()) prefix = getFillerText(faction, 1, "prefix");
-      if(!suffix && (text || "").trim()) suffix = getFillerText(faction, 1, "suffix");
+      if(!restricted){
+        if(!prefix && (text || "").trim()) prefix = getFillerText(faction, 1, "prefix");
+        if(!suffix && (text || "").trim()) suffix = getFillerText(faction, 1, "suffix");
+      }else{
+        prefix = "";
+        suffix = "";
+      }
 
       if((text || "").trim().length === 0){
         clearMessageKeepLayout();
@@ -542,11 +557,13 @@
         showMessage(prefix, text, suffix);
       }
 
-      const msgUrl = resolveLocalAudioUrl(
-        (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : "",
-        DEFAULT_MSG_URL
-      );
-      window.__dsPlayUrlOnce(msgUrl);
+      if(!restricted){
+        const msgUrl = resolveLocalAudioUrl(
+          (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : "",
+          DEFAULT_MSG_URL
+        );
+        window.__dsPlayUrlOnce(msgUrl);
+      }
     }
   });
 

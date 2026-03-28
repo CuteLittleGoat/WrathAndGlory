@@ -12,6 +12,7 @@
   - Dokument zawiera kompletny stan wizualny (frakcja, kolory, rozmiary, liczba linii fillerów, jawne listy prefix/suffix, logo, flicker) oraz treść.
 - **Cache-busting:** Infoczytnik automatycznie dodaje parametr `?v=<INF_VERSION>` do URL-a i wymusza przeładowanie, aby urządzenia nie trzymały starej wersji.
 - **Źródło fillerów:** prefixy i suffixy są wpisane bezpośrednio w kodzie (`LAYOUTS`/`FILLERS`) w plikach testowych; runtime nie ładuje zewnętrznego pliku tekstowego.
+- **Layouty pisma (restricted):** dodano `pismo_odreczne` i `pismo_ozdobne`; dla tych layoutów prefix/suffix/logo/flicker są zawsze wyłączone, a audio wiadomości (`Message.mp3`) nie jest odtwarzane.
 
 ## 2. Struktura repozytorium (pliki i katalogi)
 - `index.html` — strona startowa z linkami do wersji produkcyjnych i testowych (tytuł karty: `DataSlate panel testowy`).
@@ -43,6 +44,8 @@
 - `Orbitron` (wagi 400, 700)
 - `Questrial`
 - `Russo One`
+- `Caveat` (layout `pismo_odreczne`)
+- `Great Vibes` (layout `pismo_ozdobne`)
 
 Wszystkie fonty są wczytywane z:
 ```
@@ -186,6 +189,9 @@ window.firebaseConfig = {
   - slaanesh → `"Questrial"`
   - chaos_undivided → `"Russo One"`
 - `LAYOUTS` zawiera tablice `prefixes` i `suffixes` (po 9 wpisów na frakcję).
+- `RESTRICTED_LAYOUTS = {"pismo_odreczne","pismo_ozdobne"}`:
+  - w `GM_test.html` blokuje panel dla fillerów/logo/flicker i wymusza zapis `prefixLines:[]`, `suffixLines:[]`, `showLogo:false`, `flicker:false`,
+  - w `Infoczytnik_test.html` wymusza brak prefix/suffix, brak logo, brak flicker i brak odtwarzania `Message.mp3`.
 
 ### 6.4. Logika JS (wszystkie funkcje)
 - **Firebase:**
@@ -256,6 +262,7 @@ window.firebaseConfig = {
 - `.crt::after` — winieta i subtelny „glow”.
 - `.screen::after` — flicker z animacją `flickerBg` (9s, infinite).
 - `.screen.no-flicker::after` — wyłączenie animacji flicker.
+- Dla `pismo_odreczne` i `pismo_ozdobne` klasa `.no-flicker` jest wymuszana logicznie (flicker zawsze OFF).
 
 **Typografia i układ tekstu:**
 - `.screen`: pozycja przez zmienne `--screen-*`, padding `clamp(14px, 2.4vw, 24px)`.

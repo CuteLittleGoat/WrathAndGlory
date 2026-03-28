@@ -577,6 +577,8 @@ Załadowane fonty (używane zależnie od frakcji):
 - Orbitron (400/700)
 - Questrial
 - Russo One
+- Caveat
+- Great Vibes
 
 #### 1.2 Fonty lokalne i fallbacki
 - Domyślny stos: **Calibri, Arial, sans-serif** (`--font`).
@@ -648,6 +650,7 @@ Załadowane fonty (używane zależnie od frakcji):
 ### 5) Wyjątki i formatowanie specjalne
 - Brak wyjątków formatowania tekstu (poza dynamicznym doborem fontów i kolorów przez GM).
 - Kolor treści, prefixu i suffixu może być zmieniany przez GM (w tym wartości typu `#RRGGBB` i `rgba(...)`).
+- Dla layoutów `pismo_odreczne` i `pismo_ozdobne` aktywny pozostaje wyłącznie kolor/rozmiar fontu treści wiadomości; prefix, suffix, logo i flicker są blokowane.
 
 ---
 
@@ -669,3 +672,20 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - `Main/index.html`: przycisk **Włącz powiadomienia** (`.pushCta`) zmieniono na kompaktowy, "pill" i przypięto do prawego dolnego rogu (`position: fixed; right:14px; bottom:14px`).
 - `Infoczytnik/GM_test.html`: podgląd `livePreview` dla prefix/suffix renderuje nowe linie przez `white-space: pre-line`.
 - `Infoczytnik/Infoczytnik_test.html`: układ odstępów fillerów oparto o dwa równe gapy (`--gap-prefix-to-msg`, `--gap-msg-to-suffix`) oraz odseparowano wpływ logo na wysokość sekcji prefixu (logo pozycjonowane absolutnie).
+
+## Aktualizacja 2026-03-28 — nowe layouty pisma (Infoczytnik)
+
+- Dodano dwa layouty tła:
+  - `Infoczytnik/assets/layouts/Pismo_odreczne/Pergamin.jpg`
+  - `Infoczytnik/assets/layouts/Pismo_ozdobne/Pergamin.jpg`
+- Mapowanie fontów:
+  - `pismo_odreczne` → **Caveat**
+  - `pismo_ozdobne` → **Great Vibes**
+- Dla tych dwóch layoutów w logice GM i ekranu odbiorczego zablokowano:
+  - prefixy,
+  - suffixy,
+  - logo,
+  - flicker.
+- Dla tych samych layoutów pozostawiono aktywne:
+  - zmianę koloru fontu wiadomości,
+  - zmianę rozmiaru fontu wiadomości.

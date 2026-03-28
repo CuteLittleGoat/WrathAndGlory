@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_12-31-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_20-10-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -17,7 +17,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
     :root{--text:#eaeaea;--muted:#bdbdbd;--accent:#ffd27a;--border:#2a2a2a;--panel:rgba(18,18,18,.92);}
     *{box-sizing:border-box}
@@ -104,6 +104,14 @@
     .livePreviewBox .line{display:block;}
     .livePreviewBox .prefix,.livePreviewBox .suffix{opacity:.9; white-space:pre-line;}
     .livePreviewBox .message{line-height:1.35;}
+    .controlsDisabled{opacity:.55; pointer-events:none; filter:grayscale(.2);}
+    .restrictedHint{
+      margin-top:8px;
+      font-size:12px;
+      color:#ffcf8f;
+      display:none;
+    }
+    .restrictedHint.active{display:block;}
   </style>
 </head>
 <body>
@@ -130,6 +138,8 @@
             <option value="tzeentch" data-i18n="factionTzeentch">Tzeentch</option>
             <option value="slaanesh" data-i18n="factionSlaanesh">Slaanesh</option>
             <option value="chaos_undivided" data-i18n="factionChaosUndivided">Chaos Undivided</option>
+            <option value="pismo_odreczne" data-i18n="factionPismoOdreczne">Pismo odręczne</option>
+            <option value="pismo_ozdobne" data-i18n="factionPismoOzdobne">Pismo ozdobne</option>
           </select>
 
           <!-- Kolor treści + szybkie -->
@@ -180,6 +190,7 @@
 
         <!-- PRAWA KOLUMNA -->
         <div class="col">
+          <div id="restrictedControlsWrap">
           <label data-i18n="labelFillersRandom">Losowość fillerów</label>
 
           <div class="fillerBox">
@@ -212,6 +223,10 @@
               <input type="checkbox" id="flicker" checked style="width:18px; height:18px; margin:0;" />
               <label for="flicker" style="margin:0; color:var(--text);" data-i18n="labelFlicker">Flicker</label>
             </div>
+          </div>
+          </div>
+          <div class="restrictedHint" id="restrictedHint" data-i18n="restrictedHint">
+            Dla tego layoutu prefixy, suffixy, logo i flicker są zablokowane.
           </div>
 
           <div class="livePreviewBox" id="livePreview">
@@ -295,6 +310,8 @@
       livePreviewPrefix: document.getElementById("livePreviewPrefix"),
       livePreviewMsg: document.getElementById("livePreviewMsg"),
       livePreviewSuffix: document.getElementById("livePreviewSuffix"),
+      restrictedControlsWrap: document.getElementById("restrictedControlsWrap"),
+      restrictedHint: document.getElementById("restrictedHint"),
 
       // chips
       chips: Array.from(document.querySelectorAll(".chip")),
@@ -341,6 +358,9 @@
           factionTzeentch: "Tzeentch",
           factionSlaanesh: "Slaanesh",
           factionChaosUndivided: "Chaos Undivided",
+          factionPismoOdreczne: "Pismo odręczne",
+          factionPismoOzdobne: "Pismo ozdobne",
+          restrictedHint: "Dla tego layoutu prefixy, suffixy, logo i flicker są zablokowane.",
         },
         preview: {
           prefix: "++ NADCHODZĄCE DANE ++",
@@ -398,6 +418,9 @@
           factionTzeentch: "Tzeentch",
           factionSlaanesh: "Slaanesh",
           factionChaosUndivided: "Chaos Undivided",
+          factionPismoOdreczne: "Handwritten script",
+          factionPismoOzdobne: "Decorative script",
+          restrictedHint: "For this layout, prefixes, suffixes, logo, and flicker are locked.",
         },
         preview: {
           prefix: "++ INCOMING DATA FEED ++",
@@ -463,7 +486,11 @@
       tzeentch:        '"Orbitron", Calibri, Arial, sans-serif',
       slaanesh:        '"Questrial", Calibri, Arial, sans-serif',
       chaos_undivided: '"Russo One", Calibri, Arial, sans-serif',
+      pismo_odreczne: '"Caveat", "Comic Sans MS", "Segoe UI", cursive',
+      pismo_ozdobne: '"Great Vibes", "Times New Roman", serif',
     };
+
+    const RESTRICTED_LAYOUTS = new Set(["pismo_odreczne", "pismo_ozdobne"]);
 
     const LAYOUTS = {
       mechanicus:{prefixes:["+++ INCOMING DATA FEED +++","+++ SYSTEM ANALYSIS BEGIN +++","+++ ENCRYPTION ONLINE +++","+++ ENGAGE LITURGY +++","+++ ARCHIVE ACCESS +++","+++ LOGIS-CHANNEL ACTIVE +++","+++ DATA LINK ESTABLISHED +++","+++ SIGNAL LOCKED +++","+++ CORE STABILIZED +++","+++ BINHARIC CANT OPEN +++","+++ COGITATOR STACK ENGAGED +++","+++ RITE OF ACCESS COMMENCED +++","+++ MACHINE-SPIRIT QUERY +++","+++ SCRY-LOG INITIATED +++","+++ SANCTIFIED DATA STREAM +++","+++ LEXMECHANIC INPUT RECEIVED +++","+++ OMNISSIAN PROTOCOL ACTIVE +++","+++ SUBROUTINE: DIVINE CALCULATION +++","+++ AUSPEX THREAD ALIGNED +++","+++ DATA INTERCEPTED +++","+++ TRANSMISSION CORRUPTED +++","+++ ACCESS SEALED +++"],
@@ -482,6 +509,8 @@
                suffixes:["+++ FEED THE HUNGER +++","+++ THE PERFECT MOMENT +++","+++ PAIN IS PLEASURE +++","+++ EXCESS IS TRUTH +++","+++ UNHOLY HARMONY +++","+++ FEEL EVERYTHING +++","+++ TEMPTATION SPIKE +++","+++ PERFECTION IS BLISS +++","+++ PLEASURE ASCENDANT +++","+++ THE SENSES SHALL OPEN +++","+++ ECSTASY WITHOUT END +++","+++ RAPTURE CONSUMES +++","+++ BEAUTY CUTS DEEPLY +++","+++ SENSORIA SATURATED +++","+++ DESIRE BECOMES LAW +++","+++ EVERY NOTE A KNIFE +++","+++ BLISS THROUGH EXCESS +++","+++ THE HUNGER REMAINS +++","+++ PERFECT AGONY +++","+++ INDULGENCE VICTORIOUS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
       chaos_undivided:{prefixes:["+++ WARP STIRRING +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ SACRIFICE ACCEPTED +++","+++ WARP ENERGY RISING +++","+++ ORDER BREAKS +++","+++ FLESH TURNS +++","+++ ASCENSION IMMINENT +++","+++ REALSPACE THINS +++","+++ VEIL BREACH DETECTED +++","+++ CHAOS CHORUS RISING +++","+++ RUINOUS CONVERGENCE +++","+++ THE EYE TURNS +++","+++ CORRUPTION VECTOR LOCKED +++","+++ THE PACT STANDS +++","+++ REALITY UNFASTENS +++","+++ THE WARP ANSWERS +++","+++ UNHOLY ALIGNMENT +++","+++ THE DARK BETWEEN STARS +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++"],
                       suffixes:["+++ GLORY TO CHAOS +++","+++ DARK GODS SMILE +++","+++ THE EYE OPENS +++","+++ ASCEND AND BURN +++","+++ ALL HAIL THE DARK GODS +++","+++ REALSPACE BLEEDS +++","+++ STARS ARE WRONG +++","+++ VOID WITHIN +++","+++ ETERNAL CHANGE +++","+++ LET THE GALAXY BREAK +++","+++ THE VEIL IS TORN +++","+++ OFFERING ACCEPTED +++","+++ THE RUINOUS POWERS PROVIDE +++","+++ CORRUPTION WITHOUT MASTER +++","+++ CHAOS IS ASCENDANT +++","+++ THE LONG WAR ENDURES +++","+++ REALITY YIELDS +++","+++ THE WARP CLAIMS ALL +++","+++ BLESSED BE THE DAMNED +++","+++ NIGHT COMES FROM WITHIN +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EMPEROR PROTECTS +++"]},
+      pismo_odreczne:{prefixes:[], suffixes:[]},
+      pismo_ozdobne:{prefixes:[], suffixes:[]},
     };
 
     const fillerState = {
@@ -503,6 +532,7 @@
     }
     function nonce(){ return String(Date.now()) + "-" + String(Math.random()).slice(2); }
     function getLayout(){ return LAYOUTS[el.faction.value] || LAYOUTS.mechanicus; }
+    function isRestrictedLayout(){ return RESTRICTED_LAYOUTS.has(el.faction.value); }
 
     function normalizePx(n, min, max, fallback){
       const x = Number(n);
@@ -537,8 +567,9 @@
       const msgColor  = el.fontColor.value || "#00ff66";
 
       el.livePreview.style.fontFamily = fontStack;
-      el.livePreviewPrefix.textContent = fillerState.prefixLines.join("\n");
-      el.livePreviewSuffix.textContent = fillerState.suffixLines.join("\n");
+      const restricted = isRestrictedLayout();
+      el.livePreviewPrefix.textContent = restricted ? "" : fillerState.prefixLines.join("\n");
+      el.livePreviewSuffix.textContent = restricted ? "" : fillerState.suffixLines.join("\n");
 
       el.livePreviewPrefix.style.color = psColor;
       el.livePreviewSuffix.style.color = psColor;
@@ -551,6 +582,15 @@
 
     function rerollFillers(){
       const cfg = getLayout();
+      updateRestrictedModeUI();
+      if(isRestrictedLayout()){
+        fillerState.count = clamp(el.fillerLineCount.value, 1, 5);
+        fillerState.prefixLines = [];
+        fillerState.suffixLines = [];
+        renderFillerPreview();
+        updateLivePreview();
+        return;
+      }
       fillerState.count = clamp(el.fillerLineCount.value, 1, 5);
       el.fillerLineCount.value = String(fillerState.count);
       fillerState.prefixLines = drawUniqueRandomLines(cfg.prefixes, fillerState.count);
@@ -560,8 +600,17 @@
     }
 
     function computePreview(){
+      updateRestrictedModeUI();
       renderFillerPreview();
       updateLivePreview();
+    }
+
+    function updateRestrictedModeUI(){
+      const restricted = isRestrictedLayout();
+      el.restrictedControlsWrap.classList.toggle("controlsDisabled", restricted);
+      el.restrictedHint.classList.toggle("active", restricted);
+      el.showLogo.checked = restricted ? false : el.showLogo.checked;
+      el.flicker.checked = restricted ? false : el.flicker.checked;
     }
 
 
@@ -597,6 +646,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
+      const restricted = isRestrictedLayout();
       setStatus(translations[currentLanguage].messages.statusSending, "statusSending");
       try{
         await currentRef.set({
@@ -616,10 +666,10 @@
 
           // fillery
           fillerLineCount: fillerState.count,
-          prefixLines: isClear ? [] : fillerState.prefixLines,
-          suffixLines: isClear ? [] : fillerState.suffixLines,
-          showLogo: !!el.showLogo.checked,
-          flicker: !!el.flicker.checked,
+          prefixLines: (isClear || restricted) ? [] : fillerState.prefixLines,
+          suffixLines: (isClear || restricted) ? [] : fillerState.suffixLines,
+          showLogo: restricted ? false : !!el.showLogo.checked,
+          flicker: restricted ? false : !!el.flicker.checked,
 
           // tekst
           text: isClear ? "" : (el.message.value || ""),
@@ -654,6 +704,7 @@
       const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
       const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
 
+      const restricted = isRestrictedLayout();
       setStatus(translations[currentLanguage].messages.statusPingLoading, "statusPingLoading");
       try{
         await currentRef.set({
@@ -668,8 +719,8 @@
           suffixColor: getPrefixSuffixColor(),
           prefixFontSize: psFontPx + "px",
           suffixFontSize: psFontPx + "px",
-          showLogo: !!el.showLogo.checked,
-          flicker: !!el.flicker.checked,
+          showLogo: restricted ? false : !!el.showLogo.checked,
+          flicker: restricted ? false : !!el.flicker.checked,
 
           nonce: nonce(),
           ts: firebase.firestore.FieldValue.serverTimestamp()

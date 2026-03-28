@@ -8,6 +8,7 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 - Firebase dla **Infoczytnika** nie wymaga oddzielnego konta Google od modułu **Audio** — oba moduły mogą działać w tym samym koncie/projekcie, jeśli konfiguracje i reguły są rozdzielone. Oddzielne projekty są opcją organizacyjną, a nie wymogiem technicznym.
 - Serwer statyczny (np. GitHub Pages, Firebase Hosting lub lokalny serwer HTTP), ponieważ pliki korzystają z modułów ES i Firestore.
 - Dostęp do internetu (Google Fonts + Firebase SDK).
+- Dla nowych layoutów pisma (`Pismo odręczne`, `Pismo ozdobne`) aplikacja korzysta także z fontów Google: **Caveat** i **Great Vibes**.
 
 ### Instalacja i uruchomienie
 1. Skopiuj `config/firebase-config.template.js` do `config/firebase-config.js`.
@@ -41,6 +42,9 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 #### 2) Wysyłanie komunikatu
 1. (Opcjonalnie) W górnym selectorze przełącz język interfejsu (domyślnie **Polski**).
 2. Wybierz frakcję (layout) z listy.
+   - Nowe layouty:
+     - **Pismo odręczne** (`pismo_odreczne`, font: Caveat, tło: `assets/layouts/Pismo_odreczne/Pergamin.jpg`)
+     - **Pismo ozdobne** (`pismo_ozdobne`, font: Great Vibes, tło: `assets/layouts/Pismo_ozdobne/Pergamin.jpg`)
 3. Ustaw kolor i rozmiar treści wiadomości.
 4. Ustaw kolor i rozmiar prefiksu/sufiksu.
 5. Ustaw **Ilość linii fillerów** (zakres 1–5, domyślnie 3).
@@ -48,6 +52,8 @@ Dwustronicowa aplikacja webowa do szybkiego prezentowania komunikatów inspirowa
 7. (Opcjonalnie) Włącz/wyłącz logo i efekt „flicker”.
 8. Wpisz treść komunikatu.
 9. Kliknij **Wyślij** — infoczytnik natychmiast zrenderuje dokładnie ten sam zestaw fillerów, który widzisz w podglądzie GM.
+
+**Tryb ograniczony dla layoutów pisma:** dla `Pismo odręczne` i `Pismo ozdobne` opcje **prefix**, **suffix**, **logo** i **flicker** są automatycznie wyłączone i zablokowane w panelu GM. Aktywne pozostają zmiana koloru fontu i rozmiaru fontu treści wiadomości.
 
 **Uwaga:** Teksty prefixów i suffixów pochodzą bezpośrednio z layoutów i nie zmieniają się wraz z wersją językową. Przełącznik językowy wpływa na etykiety UI oraz status „gotowe/ready”. Prefixy i suffixy są zaszyte bezpośrednio w `GM_test.html` i `Infoczytnik_test.html` (aplikacja nie pobiera ich z zewnętrznego pliku w runtime).
 
@@ -85,6 +91,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 - The **Infoczytnik** Firebase does not require a separate Google account from the **Audio** module — both modules can run under the same account/project as long as configuration and rules are separated. Separate projects are an organizational option, not a technical requirement.
 - A static web server (e.g. GitHub Pages, Firebase Hosting, or a local HTTP server), because the pages use ES modules and Firestore.
 - Internet access (Google Fonts + Firebase SDK).
+- For the new script layouts (`Handwritten script`, `Decorative script`), the app also uses Google Fonts: **Caveat** and **Great Vibes**.
 
 ### Installation & Launch
 1. Copy `config/firebase-config.template.js` to `config/firebase-config.js`.
@@ -117,6 +124,9 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 #### 2) Sending a message
 1. (Optional) Use the language switcher at the top (Polish is selected by default).
 2. Select the faction (layout) from the list.
+   - New layouts:
+     - **Handwritten script** (`pismo_odreczne`, font: Caveat, background: `assets/layouts/Pismo_odreczne/Pergamin.jpg`)
+     - **Decorative script** (`pismo_ozdobne`, font: Great Vibes, background: `assets/layouts/Pismo_ozdobne/Pergamin.jpg`)
 3. Set the message color and size.
 4. Set the prefix/suffix color and size.
 5. Set **Filler line count** (range 1–5, default 3).
@@ -124,6 +134,8 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 7. (Optional) Toggle the logo and the “flicker” effect.
 8. Enter the message text.
 9. Click **Wyślij / Send** — the player screen renders exactly the same filler set as in the GM live preview.
+
+**Restricted mode for script layouts:** for `Handwritten script` and `Decorative script`, **prefix**, **suffix**, **logo**, and **flicker** are automatically disabled and locked in the GM panel. Message font color and message font size remain active.
 
 **Note:** Prefix/suffix lines come directly from the layout definitions and do not change with the language switch. The language toggle affects UI labels and the “ready” status text. Prefixes and suffixes are embedded directly in `GM_test.html` and `Infoczytnik_test.html` (no external filler file is loaded at runtime).
 
