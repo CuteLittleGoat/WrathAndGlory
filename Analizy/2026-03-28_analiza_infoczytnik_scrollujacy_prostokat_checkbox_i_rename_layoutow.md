@@ -22,6 +22,18 @@ Moduł: `Infoczytnik`
 
 ---
 
+
+## Prompt użytkownika (aktualizacja z doprecyzowaniem)
+> Przeczytaj analizę i zaktualizuj: Analizy/2026-03-28_analiza_infoczytnik_scrollujacy_prostokat_checkbox_i_rename_layoutow.md
+>
+> Doprecyzuję pkt1 i pkt2 z wymagań.
+>
+> ad.1 - Prostokąt zawsze ma się przesuwać z tekstem a nie być przyklejony.
+>
+> ad.2 - checkbox ma włączyć lub wyłączyć ten prostokąt.
+>
+> Nie chcę, żebyś zrozumiał, że checkbox ma przełączać czy prostokąt się przesuwa czy jest przyklejony. Zawsze ma się przesuwać jeżeli ma się wyświetlać. To czy ma się wyświetlać decyduje checkbox.
+
 ## 1) Stan obecny (na bazie kodu)
 
 ### 1.1 „Przyklejony prostokąt” i flicker
@@ -44,23 +56,23 @@ Moduł: `Infoczytnik`
 
 ## 2.1 Cel 1: „prostokąt” ma scrollować się razem z treścią
 
-### Rekomendacja implementacyjna
+### Rekomendacja implementacyjna (po doprecyzowaniu użytkownika)
 Najmniej ryzykowna opcja:
-1. Dodać klasę trybu na `.screen` (np. `scrolling-overlay`).
-2. Dla tej klasy wyłączyć aktualny pseudo-element `.screen::after` (`content:none`).
-3. Narysować analogiczną warstwę tła na elementach treści (`.prefixRow`, `.message`, `.suffixRow`) przez dodatkową klasę, np. `.with-overlay`.
+1. Trwale odejść od „przyklejonego” `.screen::after` jako głównego źródła efektu.
+2. Narysować prostokąt jako część przewijanego contentu (np. pseudo-element w obrębie warstwy treści / wrappera wiadomości), tak aby **zawsze** poruszał się razem ze scrollem.
+3. Checkbox ma sterować wyłącznie widocznością efektu (`on/off`) — **nie** trybem ruchu.
 
 Efekt:
-- Cień/prostokąt staje się częścią przewijanego contentu, więc „jedzie” ze scrollowaniem.
-- Zachowany zostaje wizualny charakter efektu (przy ewentualnej korekcie intensywności).
-
-> Uwaga: To nie będzie już maska całego viewportu `.screen`, tylko dekoracja obszaru treści. Wizualnie zbliżona, ale nie piksel-w-piksel do starego efektu.
+- Gdy efekt jest włączony: prostokąt zawsze scrolluje razem z tekstem.
+- Gdy efekt jest wyłączony: prostokąt nie renderuje się wcale.
+- Nie ma stanu „przyklejony”.
 
 ## 2.2 Cel 2: nowy checkbox w Panelu GM
 
-Wymagania użytkowe:
-- checkbox (domyślnie **zaznaczony**) sterujący efektem prostokąta,
-- wyłączenie tego checkboxa ma automatycznie odznaczyć `Flicker`.
+Wymagania użytkowe (doprecyzowane):
+- checkbox (domyślnie **zaznaczony**) ma sterować **tylko widocznością prostokąta**,
+- wyłączenie checkboxa ma automatycznie odznaczyć `Flicker`,
+- checkbox **nie** przełącza trybu „scrolluje vs przyklejony”; prostokąt, jeśli jest widoczny, zawsze scrolluje.
 
 ### Rekomendowana logika
 - Dodać nowe pole dokumentu Firestore: `movingOverlay` (boolean).
@@ -69,7 +81,8 @@ Wymagania użytkowe:
   - na `change` jeśli `movingOverlay=false` => `flicker.checked=false`.
 - W `Infoczytnik_test.html`:
   - odczytać `d.movingOverlay` (domyślnie `true`),
-  - jeśli `movingOverlay=false`, usunąć klasy odpowiedzialne za overlay i wymusić brak flickera (lub zignorować flicker).
+  - jeśli `movingOverlay=true`, renderować wyłącznie wariant scrollujący,
+  - jeśli `movingOverlay=false`, nie renderować prostokąta i wymusić brak flickera (lub zignorować flicker).
 
 ### 2.2.1 Czy musisz coś ręcznie zmieniać w Firebase? (odpowiedź na pytanie)
 
@@ -136,12 +149,12 @@ Poniżej jest plan pod **wdrożenie kodowe** (to jeszcze nie jest wykonanie zmia
 
 | Plik | Linia(e) | Jak jest obecnie | Jak powinno być po zmianie |
 |---|---:|---|---|
-| `Infoczytnik/Infoczytnik_test.html` | 134–145 | `.screen::after` rysuje overlay i ma `animation: flickerBg 9s infinite;` | Overlay ma być aktywowany warunkowo klasą (np. `.screen.scrolling-overlay .contentLayer::before`) tak, aby był częścią przewijanego contentu. |
+| `Infoczytnik/Infoczytnik_test.html` | 134–145 | `.screen::after` rysuje overlay i ma `animation: flickerBg 9s infinite;` | Usunąć/wyłączyć tryb przyklejony; overlay ma istnieć tylko jako wariant scrollujący powiązany z treścią (np. `.contentLayer.with-overlay::before`). |
 | `Infoczytnik/Infoczytnik_test.html` | 147–149 | `.screen.no-flicker::after { animation: none; }` | Przenieść wyłączanie animacji na nową warstwę (np. `.screen.no-flicker .contentLayer::before { animation:none; }`) lub wygasić cały overlay. |
 | `Infoczytnik/Infoczytnik_test.html` | 283 | `pismo_odreczne: assets/layouts/Pismo_odreczne/Pergamin.jpg` | `pismo_odreczne: assets/layouts/pismo_odreczne/Pergamin.jpg` |
 | `Infoczytnik/Infoczytnik_test.html` | 284 | `pismo_ozdobne: assets/layouts/Pismo_ozdobne/Pergamin.jpg` | `pismo_ozdobne: assets/layouts/pismo_ozdobne/Pergamin.jpg` |
-| `Infoczytnik/Infoczytnik_test.html` | 530–535 | `restricted`, `showLogo`, `flicker` wyliczane bez `movingOverlay` | Dodać `movingOverlay` z guardem restricted: `const movingOverlay = restricted ? false : (d.movingOverlay !== false);` i zastosować do klas CSS. |
-| `Infoczytnik/Infoczytnik_test.html` | okolice 399–405 | `setFlickerState(shouldFlicker)` steruje tylko klasą `no-flicker` | Rozszerzyć o zależność od `movingOverlay` (brak overlay => brak flickera niezależnie od flagi). |
+| `Infoczytnik/Infoczytnik_test.html` | 530–535 | `restricted`, `showLogo`, `flicker` wyliczane bez `movingOverlay` | Dodać `movingOverlay` z guardem restricted: `const movingOverlay = restricted ? false : (d.movingOverlay !== false);` i stosować wyłącznie do pokazywania/ukrywania wersji scrollującej. |
+| `Infoczytnik/Infoczytnik_test.html` | okolice 399–405 | `setFlickerState(shouldFlicker)` steruje tylko klasą `no-flicker` | Rozszerzyć o zależność od `movingOverlay` (brak overlay => brak flickera niezależnie od flagi); brak logiki „przyklej/odklej”. |
 | `Infoczytnik/GM_test.html` | 208–217 | Są tylko checkboxy `showLogo` i `flicker` | Dodać checkbox `movingOverlay` (domyślnie checked) obok istniejących opcji. |
 | `Infoczytnik/GM_test.html` | 269–303 | Brak referencji `movingOverlay` w `el` | Dodać `movingOverlay: document.getElementById("movingOverlay")`. |
 | `Infoczytnik/GM_test.html` | 525–537 | `updateRestrictedLayoutUi()` wyłącza `showLogo` i `flicker` | Rozszerzyć o `movingOverlay` (dla restricted: `checked=false`, `disabled=true`). |
@@ -167,7 +180,7 @@ Poniżej jest plan pod **wdrożenie kodowe** (to jeszcze nie jest wykonanie zmia
 ## 6) Ryzyka i uwagi
 
 1. **Sprzężenie flickera z warstwą overlay**  
-   Zmiana architektury overlay może zmienić charakter animacji. Trzeba testować na krótkich i długich wiadomościach (z/bez scrolla).
+   Zmiana architektury overlay może zmienić charakter animacji. Trzeba testować na krótkich i długich wiadomościach (z/bez scrolla), ale docelowo tylko dla wariantu scrollującego.
 
 2. **Case sensitivity po rename folderów**  
    Na Windows lokalnie może „działać przypadkiem”, na Linuxie produkcyjnym nie. Dlatego ścieżki muszą być 1:1 zgodne z nazwą katalogu.
@@ -183,6 +196,18 @@ Poniżej jest plan pod **wdrożenie kodowe** (to jeszcze nie jest wykonanie zmia
 ## 7) Podsumowanie
 
 - Zmiana jest **wykonalna** bez przebudowy całego modułu, ale wymaga kontrolowanego refaktoru warstwy CSS overlay.
+- Po doprecyzowaniu: prostokąt ma mieć tylko dwa stany — „widoczny i scrollujący” albo „niewidoczny”; brak stanu „przyklejony”.
 - Najbezpieczniejszy kierunek: nowa flaga `movingOverlay` + istniejący mechanizm restricted layout.
 - Rename folderów do małych liter jest sensowny i wymaga obowiązkowo podmiany ścieżek runtime w `Infoczytnik_test.html`; dodatkowo warto zaktualizować dokumentację.
 - W planie wdrożenia i tabeli powyżej wskazane są konkretne pliki i linie do edycji.
+
+
+## 8) Doprecyzowanie interpretacji pkt 1 i 2 (2026-03-28)
+
+Aby uniknąć niejednoznaczności implementacyjnej:
+- `movingOverlay = true` oznacza: **pokazuj prostokąt scrollujący z tekstem**.
+- `movingOverlay = false` oznacza: **nie pokazuj prostokąta**.
+- `Flicker` działa tylko wtedy, gdy prostokąt jest widoczny.
+- Nie implementujemy opcji „prostokąt przyklejony”.
+
+To doprecyzowanie nadpisuje wcześniejsze interpretacje, które mogły sugerować przełączanie trybu zachowania prostokąta.
