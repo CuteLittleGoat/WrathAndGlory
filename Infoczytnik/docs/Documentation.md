@@ -185,7 +185,10 @@ window.firebaseConfig = {
   - tzeentch → `"Orbitron"`
   - slaanesh → `"Questrial"`
   - chaos_undivided → `"Russo One"`
+  - pismo_odreczne → `"Caveat"`
+  - pismo_ozdobne → `"Great Vibes"`
 - `LAYOUTS` zawiera tablice `prefixes` i `suffixes` (po 9 wpisów na frakcję).
+  - Dla `pismo_odreczne` i `pismo_ozdobne` tablice są puste (`[]`) i działają jako layouty „bez dodatków”.
 
 ### 6.4. Logika JS (wszystkie funkcje)
 - **Firebase:**
@@ -275,14 +278,19 @@ window.firebaseConfig = {
 
 **Mapy layoutów i logo:**
 - `LAYOUT_BG` mapuje frakcję → ścieżka PNG.
+  - Dodane ścieżki:
+    - `pismo_odreczne` → `assets/layouts/Pismo_odreczne/Pergamin.jpg`
+    - `pismo_ozdobne` → `assets/layouts/Pismo_ozdobne/Pergamin.jpg`
 - `LAYOUT_AR` (proporcje):
   - inquisition: `707/1023`
   - militarum: `1263/1595`
   - default04: `1131/1600`
+  - pergamin: `1/1`
 - `SCREEN_INSETS` (marginesy panelu tekstu):
   - inquisition: `top 14%`, `right 14%`, `bottom 26%`, `left 18%`
   - militarum: `top 12.7%`, `right 19.8%`, `bottom 10.1%`, `left 21.46%`
   - default04: `top 14%`, `right 14%`, `bottom 22%`, `left 18%`
+  - pergamin: `top 12%`, `right 10%`, `bottom 12%`, `left 10%`
 - `FONT_STACK` — identyczny jak w GM.
 - `FILLERS` — listy prefix/suffix (po 9 wpisów na frakcję).
 - `FACTION_LOGO` — tylko `mechanicus` i `inquisition` mają logo.
@@ -300,6 +308,7 @@ window.firebaseConfig = {
   2. Ustawia `--font` i `--accent`.
   3. Aktualizuje insets i aspect ratio zależnie od frakcji.
   4. Wyświetla logo (jeśli istnieje i `showLogo` nie jest false).
+  - Dla `pismo_odreczne` i `pismo_ozdobne` wymuszany jest preset `pergamin` (insets + AR).
 - `applyTextStyleFromDoc(d)` — ustawia CSS variables `--msg-font-size`, `--prefix-font-size`, `--suffix-font-size`, `--prefix-color`, `--suffix-color`.
 - `showMessage(prefix, text, suffix)` — wypełnia linie i resetuje scroll.
 - `clearMessageKeepLayout()` — czyści treść bez zmiany layoutu.
@@ -313,6 +322,8 @@ window.firebaseConfig = {
 3. `type === "clear"` → wyczyść treść.
 4. `type === "ping"` → odtwórz dźwięk ping bez zmiany tekstu.
 5. `type === "message"` → ustaw prefix, treść i suffix, a następnie odtwórz dźwięk wiadomości.
+   - Wyjątek: dla `pismo_odreczne` i `pismo_ozdobne` prefix/suffix są czyszczone, logo i flicker są wymuszone na `false`, a `Message.mp3` nie jest odtwarzany.
+   - `Ping` dla tych layoutów pozostaje aktywny i odtwarza dźwięk.
 
 **Reguły prefix/suffix dla `message`:**
 - Najpierw używane są `prefix`/`suffix` (lub `prefixText`/`suffixText`).

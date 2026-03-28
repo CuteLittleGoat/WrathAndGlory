@@ -669,3 +669,18 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - `Main/index.html`: przycisk **Włącz powiadomienia** (`.pushCta`) zmieniono na kompaktowy, "pill" i przypięto do prawego dolnego rogu (`position: fixed; right:14px; bottom:14px`).
 - `Infoczytnik/GM_test.html`: podgląd `livePreview` dla prefix/suffix renderuje nowe linie przez `white-space: pre-line`.
 - `Infoczytnik/Infoczytnik_test.html`: układ odstępów fillerów oparto o dwa równe gapy (`--gap-prefix-to-msg`, `--gap-msg-to-suffix`) oraz odseparowano wpływ logo na wysokość sekcji prefixu (logo pozycjonowane absolutnie).
+
+## Aktualizacja 2026-03-28 — nowe layouty pisma (Infoczytnik)
+
+- Dodano dwa nowe layouty w module **Infoczytnik**:
+  - `pismo_odreczne` z fontem **Caveat** (`assets/layouts/Pismo_odreczne/Pergamin.jpg`),
+  - `pismo_ozdobne` z fontem **Great Vibes** (`assets/layouts/Pismo_ozdobne/Pergamin.jpg`).
+- Dla obu layoutów wprowadzono tryb ograniczony:
+  - prefix i suffix są wyłączone (brak losowania, brak fallbacków),
+  - logo jest wymuszone jako wyłączone,
+  - efekt flicker jest wymuszony jako wyłączony,
+  - dźwięk `Message.mp3` nie jest odtwarzany.
+- Zachowano aktywne opcje stylu tekstu:
+  - kolor fontu wiadomości,
+  - rozmiar fontu wiadomości i prefix/suffix (w praktyce dla tych layoutów dotyczy wizualnie treści wiadomości).
+- Dźwięk **Ping** pozostaje aktywny także dla layoutów pisma.
