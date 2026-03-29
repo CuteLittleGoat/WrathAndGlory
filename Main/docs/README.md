@@ -44,7 +44,8 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 2. Domyślnie zobaczysz widok użytkownika z sześcioma przyciskami w kolejności: Infoczytnik, Skarbiec Danych, Obrazki, Mapa, Kalkulator, Rzut kośćmi.
 3. Aby uruchomić widok admina, dodaj do adresu parametr `?admin=1`. Pojawią się wszystkie przyciski w kolejności: Infoczytnik, Skarbiec Danych, Generator Nazw, Generator NPC, Audio, Obrazki, Mapa, Kalkulator, Rzut kośćmi, oraz notatki o panelach admina.
 4. Jeśli potrzebujesz panelu admina w DataVault lub Audio, dopisz `index.html?admin=1` do odpowiedniego adresu (lub skorzystaj z przycisku DataVault w widoku admina).
-5. Przyciski modułów aplikacji (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w tym samym kontekście (`_self`), a tylko linki zewnętrzne (Mapa, Obrazki) otwierają nową kartę (`_blank`).
+5. **PWA i skrót z trybem admina:** najpierw wejdź na `Main/index.html?admin=1`, a dopiero potem wybierz „Dodaj do ekranu głównego”. Aplikacja zapisze preferencję i przy uruchomieniu skrótu (`?pwa=1`) automatycznie pokaże widok admina zamiast użytkownika.
+6. Przyciski modułów aplikacji (Generator NPC, Skarbiec Danych, Kalkulator) otwierają się w tym samym kontekście (`_self`), a tylko linki zewnętrzne (Mapa, Obrazki) otwierają nową kartę (`_blank`).
 
 ### Gdzie zmienić link do mapy
 Link do mapy jest przechowywany w pliku `Main/ZmienneHiperlacza.md`. Wpis ma format:
@@ -126,7 +127,8 @@ Browser tab title: **Kozi Przybornik**.
 2. By default, the user view shows six buttons in this order: DataSlate, DataVault, Images, Map, Calculator, DiceRoller.
 3. To enable admin view, add the `?admin=1` parameter. All buttons become visible in this order: DataSlate, DataVault, Name Generator, NPC Generator, Audio, Images, Map, Calculator, DiceRoller, plus admin notes.
 4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
-5. App-module buttons (NPC Generator, DataVault, Calculator) open in the same context (`_self`), while only external links (Map, Images) open a new tab (`_blank`).
+5. **PWA + shortcut with admin mode:** first open `Main/index.html?admin=1`, then choose “Add to Home screen”. The app stores that preference and when the shortcut starts (`?pwa=1`) it automatically opens admin view instead of user view.
+6. App-module buttons (NPC Generator, DataVault, Calculator) open in the same context (`_self`), while only external links (Map, Images) open a new tab (`_blank`).
 
 ### Where to update the map link
 The map URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
@@ -233,3 +235,8 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 ## Update 2026-03-13 (EN) — push subscription error handling
 - In `Main/index.html`, push subscription error handling was extended.
 - When backend returns an error, the UI now reports: `HTTP status + response body`, making CORS/endpoint diagnostics easier.
+
+
+## Aktualizacja 2026-03-29 / Update 2026-03-29
+- PL: `Main/index.html` zapisuje teraz tryb admina do `localStorage` po wejściu przez `?admin=1`. Jeśli aplikacja działa jako zainstalowane PWA (`display-mode: standalone`) i startuje z `?pwa=1`, tryb admina jest automatycznie włączany na podstawie zapisanej preferencji.
+- EN: `Main/index.html` now stores admin mode in `localStorage` when opened with `?admin=1`. If the app runs as installed PWA (`display-mode: standalone`) and starts with `?pwa=1`, admin mode is auto-enabled from that saved preference.
