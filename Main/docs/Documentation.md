@@ -178,8 +178,8 @@ Następnie otwórz `http://localhost:8000/Main/index.html`.
 ## Aktualizacja techniczna PWA (2026-03)
 
 ### `manifest.webmanifest`
-- `start_url` zmieniono z `./Main/index.html` na `./Main/index.html?admin=1`.
-- Cel: instalowana aplikacja ma startować bezpośrednio w widoku admina.
+- `start_url` ustawiono na `./Main/index.html` (user-only, bez parametru `?admin=1`).
+- Cel: instalowana aplikacja PWA zawsze startuje w widoku użytkownika; tryb admina pozostaje dostępny tylko przez jawny URL z `?admin=1` lub skrót utworzony z takiego URL.
 
 ### `service-worker.js`
 - Podniesiono wersję cache do `wg-pwa-v2`.

@@ -188,14 +188,16 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 ---
 
 ## Aktualizacja PWA (PL)
-- Aplikacja PWA uruchamia się teraz ze `start_url` ustawionym na `Main/index.html?admin=1`, dzięki czemu skrót instalacyjny otwiera od razu widok admina.
+- Aplikacja PWA uruchamia się teraz ze `start_url` ustawionym na `Main/index.html`, dzięki czemu instalowana aplikacja zawsze startuje w widoku użytkownika (bez `?admin=1`).
 - Service Worker działa w trybie online-first: przy braku internetu zwraca komunikat o wymaganym połączeniu zamiast utrwalonego trybu offline.
 - Powiadomienia push otwierają domyślnie produkcyjny ekran `Infoczytnik/Infoczytnik.html`.
+- Skrót przeglądarkowy „Utwórz skrót” zachowuje aktualny URL strony (user/admin), natomiast instalacja PWA używa `start_url` z manifestu (user-only).
 
 ## PWA update (EN)
-- The PWA now starts with `start_url` set to `Main/index.html?admin=1`, so the installed shortcut opens directly in admin view.
+- The PWA now starts with `start_url` set to `Main/index.html`, so the installed app always opens in user view (without `?admin=1`).
 - Service Worker now uses an online-first strategy: when offline, it returns a clear “internet required” message instead of maintaining a quasi-offline behavior.
 - Push notifications now open the production screen `Infoczytnik/Infoczytnik.html` by default.
+- A browser-created home-screen shortcut keeps the current URL (user/admin), while PWA install uses manifest `start_url` (user-only).
 
 ## Aktualizacja 2026-03-13 (PL)
 - Na stronie `Main/index.html` dodano wyróżniony, czerwony przycisk **Włącz powiadomienia**.
