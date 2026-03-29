@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-28_21-05-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-29_11-07-14"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -138,7 +138,7 @@
     min-height:100%;
   }
 
-  .contentLayer.with-overlay::before{
+  .screen.with-overlay::after{
     content:"";
     position:absolute;
     inset:-2%;
@@ -151,7 +151,7 @@
     z-index: 0;
   }
 
-  .screen.no-flicker .contentLayer.with-overlay::before{
+  .screen.no-flicker.with-overlay::after{
     animation: none;
   }
 
@@ -234,7 +234,7 @@
     <div class="panel crt" id="panel">
       <img class="layout-img" id="layoutImg" alt="layout" />
       <div class="screen" id="screen">
-        <div class="contentLayer with-overlay" id="contentLayer">
+        <div class="contentLayer" id="contentLayer">
           <div class="prefixRow">
             <div class="prefix" id="prefixLine"></div>
             <div class="logoBox">
@@ -407,7 +407,7 @@
   }
 
   function setOverlayState(shouldShowOverlay, shouldFlicker){
-    el.contentLayer.classList.toggle("with-overlay", shouldShowOverlay === true);
+    el.screen.classList.toggle("with-overlay", shouldShowOverlay === true);
     if(shouldFlicker === false || shouldShowOverlay === false){
       el.screen.classList.add("no-flicker");
     }else{
