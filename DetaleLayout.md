@@ -684,3 +684,10 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
   - kolor fontu wiadomości,
   - rozmiar fontu wiadomości i prefix/suffix (w praktyce dla tych layoutów dotyczy wizualnie treści wiadomości).
 - Dźwięk **Ping** pozostaje aktywny także dla layoutów pisma.
+
+## Aktualizacja layoutu PWA — 2026-03-29 (Main)
+
+- W `Main/index.html` viewport został rozszerzony do `viewport-fit=cover` dla poprawnej współpracy z obszarami systemowymi Androida.
+- Dodano komplet meta `theme-color` (domyślny + wariant `light` i `dark`) oraz `color-scheme: dark`, aby stabilizować ciemny wygląd elementów systemowych.
+- Dodano bazowe ciemne tło na `html, body` (`#031605`) oraz dolny `safe-area` padding: `calc(24px + env(safe-area-inset-bottom, 0px))`.
+- Celem zmiany jest ograniczenie przypadków jasnego paska systemowego przy uruchamianiu aplikacji jako PWA na Androidzie/tabletach.
