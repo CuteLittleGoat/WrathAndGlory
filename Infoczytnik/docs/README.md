@@ -481,3 +481,28 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `INF_VERSION` in test files was bumped to `2026-03-29_11-59-36`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
+
+
+## Aktualizacja 2026-03-29 (PL) — Pismo odręczne/Pismo ozdobne: obszar roboczy z Test2.jpg
+- W `Infoczytnik_test.html` zaktualizowano `SCREEN_INSETS.pergamin` zgodnie z nową czarną ramką referencyjną z `Infoczytnik/Draft/Test2.jpg` (granica wewnętrzna).
+- Nowe wartości insetów dla wspólnego tła `Pergamin.jpg` (dotyczy layoutów `pismo_odreczne` i `pismo_ozdobne`):
+  - `top: 1.40%`
+  - `right: 1.40%`
+  - `bottom: 1.40%`
+  - `left: 1.40%`
+- Dzięki temu obszar wiadomości i elementów pomocniczych jest rozszerzony niemal na całą powierzchnię pergaminu z zachowaniem cienkiego marginesu bezpieczeństwa od ramki.
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-29_14-20-00`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-29 (EN) — Pismo odręczne/Pismo ozdobne: working area from Test2.jpg
+- In `Infoczytnik_test.html`, `SCREEN_INSETS.pergamin` was updated to match the new black reference frame from `Infoczytnik/Draft/Test2.jpg` (inner border).
+- New inset values for the shared `Pergamin.jpg` background (used by `pismo_odreczne` and `pismo_ozdobne`):
+  - `top: 1.40%`
+  - `right: 1.40%`
+  - `bottom: 1.40%`
+  - `left: 1.40%`
+- This expands the message/auxiliary-elements area to almost the full parchment surface while keeping a thin safety margin from the border.
+- `INF_VERSION` in test files was bumped to `2026-03-29_14-20-00`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
