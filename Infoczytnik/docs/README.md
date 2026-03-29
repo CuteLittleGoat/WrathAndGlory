@@ -424,3 +424,20 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `INF_VERSION` in test files was bumped to `2026-03-28_21-05-00`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
+
+
+## Aktualizacja 2026-03-29 (PL) — stały prostokąt cienia podczas scrolla
+- W `Infoczytnik_test.html` prostokąt cienia został przeniesiony z warstwy treści (`.contentLayer.with-overlay::before`) na warstwę ekranu (`.screen.with-overlay::after`).
+- Prostokąt nie przesuwa się już razem z tekstem; przy scrollowaniu pozostaje w stałej pozycji względem okna czytnika.
+- Checkbox **Prostokąt cienia** (`movingOverlay`) nadal steruje widocznością, a **Flicker** działa tylko gdy prostokąt jest włączony.
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-29_11-07-14`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-29 (EN) — fixed shadow rectangle while scrolling
+- In `Infoczytnik_test.html`, the shadow rectangle was moved from the content layer (`.contentLayer.with-overlay::before`) back to the screen layer (`.screen.with-overlay::after`).
+- The rectangle no longer scrolls with text; it now stays fixed relative to the reader viewport.
+- The **Shadow rectangle** (`movingOverlay`) checkbox still controls visibility, and **Flicker** still works only when rectangle is enabled.
+- `INF_VERSION` in test files was bumped to `2026-03-29_11-07-14`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
