@@ -458,3 +458,26 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `INF_VERSION` in test files was bumped to `2026-03-29_11-14-29`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
+
+
+## Aktualizacja 2026-03-29 (PL) — Inkwizycja: nowy obszar roboczy zgodny z Test.png
+- W `Infoczytnik_test.html` zaktualizowano `SCREEN_INSETS.inquisition` do wartości zgodnych z rekomendacją z analizy (`wariant B`, wewnętrzna granica ramki):
+  - `top: 5.28%`
+  - `right: 8.77%`
+  - `bottom: 18.57%`
+  - `left: 11.60%`
+- Obszar wiadomości, prefixów/suffixów, logo oraz prostokąta cienia/flicker został tym samym rozszerzony i przesunięty zgodnie z zaznaczonym obszarem referencyjnym.
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-29_11-59-36`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-29 (EN) — Inquisition: new working area aligned with Test.png
+- In `Infoczytnik_test.html`, `SCREEN_INSETS.inquisition` was updated to match the analysis recommendation (`variant B`, inner border):
+  - `top: 5.28%`
+  - `right: 8.77%`
+  - `bottom: 18.57%`
+  - `left: 11.60%`
+- This expands and repositions the message/prefix/suffix/logo/shadow-flicker area to match the marked reference frame.
+- `INF_VERSION` in test files was bumped to `2026-03-29_11-59-36`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`

@@ -287,7 +287,7 @@ window.firebaseConfig = {
   - default04: `1131/1600`
   - pergamin: `1/1`
 - `SCREEN_INSETS` (marginesy panelu tekstu):
-  - inquisition: `top 14%`, `right 14%`, `bottom 26%`, `left 18%`
+  - inquisition: `top 5.28%`, `right 8.77%`, `bottom 18.57%`, `left 11.60%`
   - militarum: `top 12.7%`, `right 19.8%`, `bottom 10.1%`, `left 21.46%`
   - default04: `top 14%`, `right 14%`, `bottom 22%`, `left 18%`
   - pergamin: `top 12%`, `right 10%`, `bottom 12%`, `left 10%`
@@ -999,5 +999,38 @@ Even after moving overlay from content to `.screen`, the rectangle still moved w
 
 ### 24.3. Versioning
 `INF_VERSION` was bumped to `2026-03-29_11-14-29` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+
+## 25. Aktualizacja 2026-03-29 — Inkwizycja: korekta obszaru roboczego (PL)
+### 25.1. Zmiany funkcjonalne
+1. Obszar roboczy layoutu `inquisition` został dopasowany do referencyjnej ramki z `Draft/Test.png` (wariant wewnętrzny).
+2. Nowe granice obejmują większą powierzchnię dla wiadomości, prefix/suffix, logo oraz warstwy cienia/flicker.
+
+### 25.2. Zmiany techniczne
+- `Infoczytnik_test.html`:
+  - `SCREEN_INSETS.inquisition` zmieniono z `top 14%, right 14%, bottom 26%, left 18%` na `top 5.28%, right 8.77%, bottom 18.57%, left 11.60%`.
+- `GM_test.html`:
+  - bez zmian logiki layoutu; wykonano jedynie obowiązkowe podniesienie wersji cache testów.
+
+### 25.3. Wersjonowanie
+`INF_VERSION` podniesiono do `2026-03-29_11-59-36` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 25. Update 2026-03-29 — Inquisition: working area correction (EN)
+### 25.1. Functional changes
+1. The `inquisition` working area was aligned with the reference frame from `Draft/Test.png` (inner-border variant).
+2. The new boundaries provide a larger usable region for message, prefix/suffix, logo, and shadow/flicker layer.
+
+### 25.2. Technical changes
+- `Infoczytnik_test.html`:
+  - `SCREEN_INSETS.inquisition` changed from `top 14%, right 14%, bottom 26%, left 18%` to `top 5.28%, right 8.77%, bottom 18.57%, left 11.60%`.
+- `GM_test.html`:
+  - no layout logic changes; only mandatory test-cache version bump.
+
+### 25.3. Versioning
+`INF_VERSION` was bumped to `2026-03-29_11-59-36` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`
