@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_12-31-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-28_21-05-00"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -21,7 +21,7 @@
 <!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
 
 <style>
   :root{
@@ -76,6 +76,10 @@
     pointer-events:none;
   }
 
+  .panel.pergamin .layout-img{
+    object-fit: cover;
+  }
+
   .crt::before{
     content:"";
     position:absolute;
@@ -127,7 +131,14 @@
     z-index: 1;
   }
 
-  .screen::after{
+  .contentLayer{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    min-height:100%;
+  }
+
+  .contentLayer.with-overlay::before{
     content:"";
     position:absolute;
     inset:-2%;
@@ -140,11 +151,11 @@
     z-index: 0;
   }
 
-  .screen.no-flicker::after{
+  .screen.no-flicker .contentLayer.with-overlay::before{
     animation: none;
   }
 
-  .screen > *{
+  .contentLayer > *{
     position: relative;
     z-index: 1;
   }
@@ -223,17 +234,19 @@
     <div class="panel crt" id="panel">
       <img class="layout-img" id="layoutImg" alt="layout" />
       <div class="screen" id="screen">
-        <div class="prefixRow">
-          <div class="prefix" id="prefixLine"></div>
-          <div class="logoBox">
-            <img class="logo" id="logo" alt="logo" />
+        <div class="contentLayer with-overlay" id="contentLayer">
+          <div class="prefixRow">
+            <div class="prefix" id="prefixLine"></div>
+            <div class="logoBox">
+              <img class="logo" id="logo" alt="logo" />
+            </div>
           </div>
-        </div>
 
-        <div class="msg" id="msg"></div>
+          <div class="msg" id="msg"></div>
 
-        <div class="suffixRow">
-          <div class="suffix" id="suffixLine"></div>
+          <div class="suffixRow">
+            <div class="suffix" id="suffixLine"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -276,13 +289,16 @@
     nurgle:      `assets/layouts/nurgle/DataSlate_04.png?v=${ASSET_VERSION}`,
     tzeentch:    `assets/layouts/tzeentch/DataSlate_04.png?v=${ASSET_VERSION}`,
     slaanesh:    `assets/layouts/slaanesh/DataSlate_04.png?v=${ASSET_VERSION}`,
+    pismo_odreczne: `assets/layouts/pismo_odreczne/Pergamin.jpg?v=${ASSET_VERSION}`,
+    pismo_ozdobne: `assets/layouts/pismo_ozdobne/Pergamin.jpg?v=${ASSET_VERSION}`,
   };
 
-  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600 };
+  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600, pergamin: 1131/1600 };
   const SCREEN_INSETS = {
     inquisition: { top:"14%", right:"14%", bottom:"26%", left:"18%" },
     militarum:   { top:"12.7%", right:"19.8%", bottom:"10.1%", left:"21.46%" },
     default04:   { top:"14%", right:"14%", bottom:"22%", left:"18%" },
+    pergamin:    { top:"12%", right:"10%", bottom:"12%", left:"10%" },
   };
 
   const FONT_STACK = {
@@ -294,6 +310,8 @@
     tzeentch:        '"Orbitron", Calibri, Arial, sans-serif',
     slaanesh:        '"Questrial", Calibri, Arial, sans-serif',
     chaos_undivided: '"Russo One", Calibri, Arial, sans-serif',
+    pismo_odreczne:  '"Caveat", Calibri, Arial, sans-serif',
+    pismo_ozdobne:   '"Great Vibes", Calibri, Arial, sans-serif',
   };
 
   const FILLERS = {
@@ -329,6 +347,14 @@
       prefixes:["+++ WARP STIRRING +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ SACRIFICE ACCEPTED +++","+++ WARP ENERGY RISING +++","+++ ORDER BREAKS +++","+++ FLESH TURNS +++","+++ ASCENSION IMMINENT +++","+++ REALSPACE THINS +++","+++ VEIL BREACH DETECTED +++","+++ CHAOS CHORUS RISING +++","+++ RUINOUS CONVERGENCE +++","+++ THE EYE TURNS +++","+++ CORRUPTION VECTOR LOCKED +++","+++ THE PACT STANDS +++","+++ REALITY UNFASTENS +++","+++ THE WARP ANSWERS +++","+++ UNHOLY ALIGNMENT +++","+++ THE DARK BETWEEN STARS +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++"],
       suffixes:["+++ GLORY TO CHAOS +++","+++ DARK GODS SMILE +++","+++ THE EYE OPENS +++","+++ ASCEND AND BURN +++","+++ ALL HAIL THE DARK GODS +++","+++ REALSPACE BLEEDS +++","+++ STARS ARE WRONG +++","+++ VOID WITHIN +++","+++ ETERNAL CHANGE +++","+++ LET THE GALAXY BREAK +++","+++ THE VEIL IS TORN +++","+++ OFFERING ACCEPTED +++","+++ THE RUINOUS POWERS PROVIDE +++","+++ CORRUPTION WITHOUT MASTER +++","+++ CHAOS IS ASCENDANT +++","+++ THE LONG WAR ENDURES +++","+++ REALITY YIELDS +++","+++ THE WARP CLAIMS ALL +++","+++ BLESSED BE THE DAMNED +++","+++ NIGHT COMES FROM WITHIN +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EMPEROR PROTECTS +++"]
     },
+    pismo_odreczne: {
+      prefixes:[],
+      suffixes:[]
+    },
+    pismo_ozdobne: {
+      prefixes:[],
+      suffixes:[]
+    },
   };
 
   const FACTION_LOGO = {
@@ -340,6 +366,7 @@
     panel: document.getElementById("panel"),
     layoutImg: document.getElementById("layoutImg"),
     screen: document.getElementById("screen"),
+    contentLayer: document.getElementById("contentLayer"),
     prefixLine: document.getElementById("prefixLine"),
     suffixLine: document.getElementById("suffixLine"),
     msg: document.getElementById("msg"),
@@ -379,15 +406,24 @@
     document.documentElement.style.setProperty("--screen-left", p.left);
   }
 
-  function setFlickerState(shouldFlicker){
-    if(shouldFlicker === false){
+  function setOverlayState(shouldShowOverlay, shouldFlicker){
+    el.contentLayer.classList.toggle("with-overlay", shouldShowOverlay === true);
+    if(shouldFlicker === false || shouldShowOverlay === false){
       el.screen.classList.add("no-flicker");
     }else{
       el.screen.classList.remove("no-flicker");
     }
   }
 
+  function setPergaminMode(isPergamin){
+    el.panel.classList.toggle("pergamin", isPergamin);
+  }
+
   let currentAr = LAYOUT_AR.default04;
+
+  function isRestrictedLayout(faction){
+    return faction === "pismo_odreczne" || faction === "pismo_ozdobne";
+  }
 
   function setLogoForFaction(key, shouldShow){
     if(!shouldShow){
@@ -423,12 +459,19 @@
     document.documentElement.style.setProperty("--accent", color || "#00ff66");
 
     if(key === "inquisition"){
+      setPergaminMode(false);
       setInsets(SCREEN_INSETS.inquisition);
       currentAr = LAYOUT_AR.inquisition;
     }else if(key === "militarum"){
+      setPergaminMode(false);
       setInsets(SCREEN_INSETS.militarum);
       currentAr = LAYOUT_AR.militarum;
+    }else if(isRestrictedLayout(key)){
+      setPergaminMode(true);
+      setInsets(SCREEN_INSETS.pergamin);
+      currentAr = LAYOUT_AR.pergamin;
     }else{
+      setPergaminMode(false);
       setInsets(SCREEN_INSETS.default04);
       currentAr = LAYOUT_AR.default04;
     }
@@ -495,11 +538,13 @@
 
     const faction = d.faction || "mechanicus";
     const color   = d.color || d.fontColor || "#00ff66";
-    const showLogo = d.showLogo !== false;
-    const flicker = d.flicker !== false;
+    const restricted = isRestrictedLayout(faction);
+    const showLogo = restricted ? false : (d.showLogo !== false);
+    const movingOverlay = restricted ? false : (d.movingOverlay !== false);
+    const flicker = movingOverlay ? (restricted ? false : (d.flicker !== false)) : false;
 
     applyLayout(faction, color, showLogo);
-    setFlickerState(flicker);
+    setOverlayState(movingOverlay, flicker);
     applyTextStyleFromDoc(d);
 
     if(d.type === "clear"){
@@ -526,15 +571,20 @@
         suffix = d.suffixLines.map((line) => String(line || "")).join("\n");
       }
 
-      if(!prefix && (d.prefixIndex || d.prefixIdx)){
+      if(!restricted && !prefix && (d.prefixIndex || d.prefixIdx)){
         prefix = getFillerText(faction, d.prefixIndex || d.prefixIdx, "prefix");
       }
-      if(!suffix && (d.suffixIndex || d.suffixIdx)){
+      if(!restricted && !suffix && (d.suffixIndex || d.suffixIdx)){
         suffix = getFillerText(faction, d.suffixIndex || d.suffixIdx, "suffix");
       }
 
-      if(!prefix && (text || "").trim()) prefix = getFillerText(faction, 1, "prefix");
-      if(!suffix && (text || "").trim()) suffix = getFillerText(faction, 1, "suffix");
+      if(!restricted && !prefix && (text || "").trim()) prefix = getFillerText(faction, 1, "prefix");
+      if(!restricted && !suffix && (text || "").trim()) suffix = getFillerText(faction, 1, "suffix");
+
+      if(restricted){
+        prefix = "";
+        suffix = "";
+      }
 
       if((text || "").trim().length === 0){
         clearMessageKeepLayout();
@@ -546,7 +596,10 @@
         (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : "",
         DEFAULT_MSG_URL
       );
-      window.__dsPlayUrlOnce(msgUrl);
+      const shouldPlayMessageAudio = !restricted && d.disableMessageAudio !== true;
+      if(shouldPlayMessageAudio){
+        window.__dsPlayUrlOnce(msgUrl);
+      }
     }
   });
 
@@ -559,7 +612,7 @@
 
   // Start
   applyLayout("mechanicus", "#00ff66");
-  setFlickerState(true);
+  setOverlayState(true, true);
 </script>
 </body>
 </html>
