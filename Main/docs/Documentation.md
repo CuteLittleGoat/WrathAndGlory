@@ -133,6 +133,13 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
 - Link **Skarbiec Danych** (`[data-datavault-link]`) jest ustawiany dynamicznie:
   - tryb użytkownika → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`,
   - tryb admina → `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`.
+- Tryb admina ma dodatkową logikę trwałości dla PWA:
+  - stała `ADMIN_MODE_STORAGE_KEY = "wg-main-admin-mode"` wskazuje klucz `localStorage` przechowujący preferencję admina.
+  - `hasAdminParam` sprawdza, czy URL ma `admin=1`.
+  - `isStandalonePwa` wykrywa uruchomienie jako zainstalowana aplikacja (`matchMedia("(display-mode: standalone)")` lub `navigator.standalone` dla iOS).
+  - jeżeli `hasAdminParam` jest prawdą, skrypt zapisuje `localStorage.setItem("wg-main-admin-mode", "1")`.
+  - `shouldForceAdminInPwa` włącza admina automatycznie tylko gdy jednocześnie: aplikacja działa standalone, URL zawiera `pwa=1` i zapisano wcześniej preferencję admina.
+  - finalnie `isAdmin = hasAdminParam || shouldForceAdminInPwa`; dzięki temu skrót PWA może startować w adminie nawet jeśli `start_url` manifestu to `...index.html?pwa=1`.
 - Linki **Mapa** i **Obrazki** są ustawiane po wczytaniu pliku `Main/ZmienneHiperlacza.md`:
   - format pliku: każda linia w postaci `Mapa: URL` lub `Obrazki: URL`.
   - skrypt pobiera plik `ZmienneHiperlacza.md`, parsuje linie przez wyrażenie regularne `^(Mapa|Obrazki)\s*:\s*(\S+)` i ustawia `href` w elementach z `data-map-link` i `data-images-link`.
@@ -264,3 +271,9 @@ Dodane funkcje:
   - `const errorText = await response.text().catch(() => "");`
   - `throw new Error(`Błąd zapisu subskrypcji: ${response.status} ${errorText}`);`
 - Efekt: komunikat błędu w UI jest bardziej diagnostyczny i szybciej wskazuje przyczynę po stronie backendu push.
+
+## Aktualizacja techniczna 2026-03-29 — utrwalenie trybu admina dla skrótu PWA
+- Problem: instalacja przez „Dodaj do ekranu głównego” uruchamiała `start_url` z `?pwa=1`, co gubiło bieżący parametr `?admin=1` i pokazywało widok użytkownika.
+- Rozwiązanie: dodano trwałą preferencję admina w `localStorage` (`wg-main-admin-mode`) zapisywaną po wejściu na `?admin=1`.
+- Warunek bezpieczeństwa: preferencja jest stosowana wyłącznie dla uruchomień standalone PWA z `pwa=1`; zwykłe otwarcie strony w karcie bez `admin=1` nadal pokazuje widok użytkownika.
+- Efekt: po wejściu na `Main/index.html?admin=1` i utworzeniu skrótu, uruchomienie aplikacji ze skrótu automatycznie otwiera widok admina.
