@@ -179,21 +179,7 @@
   </main>
   <script src="../Infoczytnik/config/web-push-config.js"></script>
   <script>
-    const ADMIN_MODE_STORAGE_KEY = "wg-main-admin-mode";
-    const urlParams = new URLSearchParams(window.location.search);
-    const hasAdminParam = urlParams.get("admin") === "1";
-    const isStandalonePwa = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
-
-    if (hasAdminParam) {
-      localStorage.setItem(ADMIN_MODE_STORAGE_KEY, "1");
-    }
-
-    const shouldForceAdminInPwa = isStandalonePwa
-      && urlParams.get("pwa") === "1"
-      && localStorage.getItem(ADMIN_MODE_STORAGE_KEY) === "1";
-
-    const isAdmin = hasAdminParam || shouldForceAdminInPwa;
-
+    const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
     const adminOnlyElements = document.querySelectorAll('[data-admin-only="true"]');
     if (!isAdmin) {
       adminOnlyElements.forEach((element) => element.remove());
