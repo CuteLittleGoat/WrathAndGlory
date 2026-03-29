@@ -1034,3 +1034,36 @@ Even after moving overlay from content to `.screen`, the rectangle still moved w
 `INF_VERSION` was bumped to `2026-03-29_11-59-36` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`
+
+
+## 26. Aktualizacja 2026-03-29 — Pismo odręczne/Pismo ozdobne: korekta obszaru roboczego (PL)
+### 26.1. Zmiany funkcjonalne
+1. Wspólny preset `pergamin` (używany przez `pismo_odreczne` i `pismo_ozdobne`) został dopasowany do nowej czarnej ramki referencyjnej z `Draft/Test2.jpg`.
+2. Obszar wyświetlania treści został znacząco rozszerzony: tekst i warstwy zależne od insetów pracują prawie na całym obszarze tła `Pergamin.jpg`.
+
+### 26.2. Zmiany techniczne
+- `Infoczytnik_test.html`:
+  - `SCREEN_INSETS.pergamin` zmieniono z `top 12%, right 10%, bottom 12%, left 10%` na `top 1.40%, right 1.40%, bottom 1.40%, left 1.40%`.
+- `GM_test.html`:
+  - bez zmian logiki; wykonano obowiązkowe podniesienie wersji cache testów.
+
+### 26.3. Wersjonowanie
+`INF_VERSION` podniesiono do `2026-03-29_14-20-00` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 26. Update 2026-03-29 — Pismo odręczne/Pismo ozdobne: working-area correction (EN)
+### 26.1. Functional changes
+1. The shared `pergamin` preset (used by `pismo_odreczne` and `pismo_ozdobne`) was aligned to the new black reference frame from `Draft/Test2.jpg`.
+2. The content display area was significantly expanded: text and inset-driven layers now operate over almost the full `Pergamin.jpg` surface.
+
+### 26.2. Technical changes
+- `Infoczytnik_test.html`:
+  - `SCREEN_INSETS.pergamin` changed from `top 12%, right 10%, bottom 12%, left 10%` to `top 1.40%, right 1.40%, bottom 1.40%, left 1.40%`.
+- `GM_test.html`:
+  - no logic changes; only mandatory test-cache version bump.
+
+### 26.3. Versioning
+`INF_VERSION` was bumped to `2026-03-29_14-20-00` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
