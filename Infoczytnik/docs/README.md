@@ -378,14 +378,14 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 
 ## Aktualizacja 2026-03-28 (PL) — poprawa skali tła pergaminu
 - W `Infoczytnik_test.html` poprawiono proporcję panelu dla presetów `Pismo odręczne` i `Pismo ozdobne` (`pergamin`) z `1/1` na `1280/1920`.
-- Dzięki temu tło pergaminu (`assets/layouts/pismo_odreczne/Pergamin.jpg` i `assets/layouts/pismo_ozdobne/Pergamin.jpg`) skaluje się tak jak pozostałe layouty — bez efektu „za dużego” obrazu na PC i mobile.
+- Dzięki temu tło pergaminu (`assets/layouts/pismo_odreczne/Notatnik.png` i `assets/layouts/pismo_ozdobne/Pergamin.png`) skaluje się tak jak pozostałe layouty — bez efektu „za dużego” obrazu na PC i mobile.
 - Podniesiono `INF_VERSION` w plikach testowych do `2026-03-28_17-50-25`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
 
 ## Update 2026-03-28 (EN) — parchment background scale fix
 - In `Infoczytnik_test.html`, panel aspect ratio for `Pismo odręczne` and `Pismo ozdobne` (`pergamin`) was changed from `1/1` to `1280/1920`.
-- This makes parchment backgrounds (`assets/layouts/pismo_odreczne/Pergamin.jpg` and `assets/layouts/pismo_ozdobne/Pergamin.jpg`) scale consistently with other layouts, removing the oversized look on desktop and mobile.
+- This makes parchment backgrounds (`assets/layouts/pismo_odreczne/Notatnik.png` and `assets/layouts/pismo_ozdobne/Pergamin.png`) scale consistently with other layouts, removing the oversized look on desktop and mobile.
 - `INF_VERSION` in test files was bumped to `2026-03-28_17-50-25`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
@@ -506,3 +506,14 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `INF_VERSION` in test files was bumped to `2026-03-29_14-20-00`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
+
+
+### Aktualizacja layoutów pisma (2026-03-29)
+- `Pismo odręczne` używa teraz tła `assets/layouts/pismo_odreczne/Notatnik.png` (zamiast `Pergamin.jpg`).
+- `Pismo ozdobne` używa teraz tła `assets/layouts/pismo_ozdobne/Pergamin.png` (zamiast `Pergamin.jpg`).
+- Obszary tekstu dla obu layoutów zostały dopasowane do niebieskich ramek z plików testowych (`Draft/Notatnik_test.png`, `Draft/Pergamin_test.png`).
+
+### Handwriting/ornamental layout update (2026-03-29)
+- `Pismo odręczne` now uses `assets/layouts/pismo_odreczne/Notatnik.png` as background (instead of `Pergamin.jpg`).
+- `Pismo ozdobne` now uses `assets/layouts/pismo_ozdobne/Pergamin.png` as background (instead of `Pergamin.jpg`).
+- Text areas for both layouts were aligned to the blue guide frames from test drafts (`Draft/Notatnik_test.png`, `Draft/Pergamin_test.png`).
