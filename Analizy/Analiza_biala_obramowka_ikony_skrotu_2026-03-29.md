@@ -1,33 +1,33 @@
-# Analiza: biała obramówka ikony po utworzeniu skrótu
+# Aktualizacja analizy: biała obramówka ikony po utworzeniu skrótu
 
 ## Prompt użytkownika
-"Przeprowadź analizę i odpowiedz na pytanie: czemu po utworzeniu skrótu do strony ikona wyświetla się w białej obramowce?"
+"Zaktualizuj analizę: Analizy/Analiza_biala_obramowka_ikony_skrotu_2026-03-29.md
+Czy obecna ikona może być poprawnie użyta i trzeba tylko coś w kodzie plików zmienić, czy muszę przygotować całkowicie nową ikonę?"
 
-## Zakres analizy
-- `manifest.webmanifest`
-- `Main/index.html`
-- właściwości plików ikon: `IkonaGlowna.png`, `IkonaPowiadomien.png`
+## Zweryfikowany stan plików
+- `manifest.webmanifest`:
+  - ikona `192x192` wskazuje `./IkonaGlowna.png` z `purpose: "any"`,
+  - ikona `512x512` wskazuje **ten sam plik** `./IkonaGlowna.png` z `purpose: "any maskable"`.
+- `Main/index.html` poprawnie podpina manifest przez `<link rel="manifest" href="../manifest.webmanifest">`.
+- Nagłówek PNG (`IHDR`) dla `IkonaGlowna.png` wskazuje `color_type = 2` (RGB bez kanału alfa), czyli plik nie jest przygotowany jako dedykowana ikona maskowalna.
 
-## Ustalenia techniczne
-1. Strona główna ładuje manifest: `Main/index.html` zawiera `<link rel="manifest" href="../manifest.webmanifest">`.
-2. Manifest ma ikonę oznaczoną jako `purpose: "any maskable"`, ale wskazuje ten sam plik (`IkonaGlowna.png`) co zwykła ikona.
-3. `IkonaGlowna.png` jest plikiem PNG bez kanału alfa (RGB, pełne tło), więc nie jest przygotowana jako dedykowana ikona maskowalna.
-4. Android/Chrome przy tworzeniu skrótu (szczególnie „dodaj do ekranu głównego” jako skrót przeglądarkowy) może renderować ikonę w kształcie narzuconym przez launcher (np. koło) i dodać tło/obwódkę ochronną, gdy obraz nie spełnia zasad safe-zone dla ikon maskowalnych.
+## Odpowiedź na pytanie
+### Krótko
+**Sama zmiana kodu/manifestu może częściowo poprawić sytuację, ale nie da pewnego efektu na wszystkich launcherach.**
+Aby docelowo i przewidywalnie pozbyć się białej obramówki/tła, **powinieneś przygotować nową, dedykowaną ikonę maskowalną**.
 
-## Odpowiedź na pytanie „dlaczego jest biała obramówka?”
-Biała obramówka nie wynika z CSS strony, tylko z mechanizmu systemowego renderowania ikony skrótu przez launcher Androida/Chrome. Dzieje się tak, gdy ikona użyta do skrótu nie jest poprawnie przygotowana jako maskowalna (adaptive/maskable), albo gdy skrót jest tworzony w trybie, który i tak stosuje własną ramkę/tło.
+### Co da się zrobić bez nowej grafiki
+Możesz tymczasowo:
+1. Usunąć `maskable` z wpisu używającego `IkonaGlowna.png` (zostawić tylko `purpose: "any"`),
+2. Wyczyścić cache (service worker/Chrome),
+3. Usunąć i utworzyć skrót ponownie.
 
-## Rekomendacje
-1. Przygotować osobny plik ikony maskowalnej (np. `IkonaGlowna-maskable-512.png`) z:
-   - pełnym tłem sięgającym krawędzi,
-   - głównym motywem w safe-zone (środkowe ~80%).
-2. W manifeście zostawić dwa osobne wpisy:
-   - `purpose: "any"` dla zwykłej ikony,
-   - `purpose: "maskable"` dla dedykowanej ikony maskowalnej.
-3. Po zmianie wyczyścić cache PWA/Chrome i usunąć stary skrót z ekranu, potem utworzyć go ponownie.
-4. Testować dwa scenariusze osobno:
-   - instalacja PWA,
-   - zwykły skrót przeglądarkowy (mogą wyglądać inaczej na części launcherów).
+To czasem zmniejsza artefakty, ale na części urządzeń i launcherów obramówka nadal może się pojawić (bo launcher i tak nakłada własny kształt/tło dla skrótu).
+
+### Co jest poprawnym rozwiązaniem docelowym
+Przygotować **nową ikonę maskowalną** (osobny plik, np. `IkonaGlowna-maskable-512.png`) i użyć w manifeście osobno:
+- `purpose: "any"` → zwykła ikona,
+- `purpose: "maskable"` → nowa ikona zaprojektowana pod safe-zone.
 
 ## Wniosek końcowy
-Źródłem białej obramówki jest sposób, w jaki launcher Androida komponuje ikonę skrótu (adaptive icon treatment), a nie błąd layoutu strony. Najbardziej prawdopodobna przyczyna to brak dedykowanej, poprawnie zaprojektowanej ikony maskowalnej używanej przez manifest.
+Jeśli zależy Ci na stabilnym, poprawnym wyglądzie skrótu/PWA na różnych Android launcherach, **potrzebna jest nowa ikona maskowalna**. Sama zmiana kodu może tylko częściowo pomóc i nie gwarantuje usunięcia białej obramówki.
