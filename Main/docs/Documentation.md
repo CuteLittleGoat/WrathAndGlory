@@ -264,3 +264,54 @@ Dodane funkcje:
   - `const errorText = await response.text().catch(() => "");`
   - `throw new Error(`Błąd zapisu subskrypcji: ${response.status} ${errorText}`);`
 - Efekt: komunikat błędu w UI jest bardziej diagnostyczny i szybciej wskazuje przyczynę po stronie backendu push.
+
+## Aktualizacja techniczna 2026-03-29 — stabilizacja koloru paska systemowego Android (PWA)
+
+### Cel
+Zmniejszenie przypadków, w których dolny pasek nawigacji systemowej Androida (Back/Home/Recents) renderuje jasne tło podczas pracy aplikacji jako zainstalowana PWA.
+
+### Zakres zmian w `Main/index.html`
+1. **Viewport**
+   - Zmieniono:
+     - `width=device-width, initial-scale=1.0`
+   - Na:
+     - `width=device-width, initial-scale=1.0, viewport-fit=cover`
+   - Efekt: lepsza współpraca z obszarami systemowymi (edge-to-edge, wycięcia, insety).
+
+2. **Meta `theme-color` (warianty per scheme)**
+   - Pozostawiono bazowy `meta name="theme-color" content="#031605"`.
+   - Dodano:
+     - `meta name="theme-color" content="#031605" media="(prefers-color-scheme: light)"`
+     - `meta name="theme-color" content="#031605" media="(prefers-color-scheme: dark)"`
+   - Efekt: niezależnie od trybu systemowego (`light`/`dark`) aplikacja zgłasza ten sam ciemny kolor UI.
+
+3. **Meta `color-scheme`**
+   - Dodano: `meta name="color-scheme" content="dark"`.
+   - Efekt: deklaracja, że strona jest zoptymalizowana pod ciemny schemat, co pomaga przeglądarce/systemowi przy doborze kolorystyki kontrolek/system overlay.
+
+4. **Tło root (`html, body`)**
+   - Dodano wspólną regułę:
+     - `margin: 0`
+     - `min-height: 100%`
+     - `background: #031605`
+     - `color: var(--text)`
+   - Efekt: nawet zanim gradient `body` zostanie wyrenderowany, root dokumentu ma ciemne tło zgodne z motywem.
+
+5. **Safe area dla dolnej krawędzi**
+   - W `body` dodano:
+     - `padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));`
+   - Efekt: przy edge-to-edge dolna strefa systemowa nie „zjada” marginesu i nie eksponuje przypadkowego jasnego tła.
+
+### Ograniczenia platformy (ważne)
+- PWA **nie ma pełnej gwarancji** wymuszenia identycznego koloru dolnego paska systemowego na każdym urządzeniu Android.
+- Ostateczny rendering zależy od kombinacji: Android + Chrome/WebView + nakładka producenta + tryb nawigacji (gesty/przyciski) + ustawienia systemowe.
+- Zmiany w tym patchu maksymalizują spójność po stronie web, ale nie obchodzą ograniczeń OEM/systemu.
+
+### Procedura testowa po wdrożeniu
+1. Odinstalować istniejącą PWA na urządzeniu testowym.
+2. Wyczyścić dane strony w Chrome.
+3. Otworzyć stronę ponownie przez HTTPS.
+4. Zainstalować PWA od nowa.
+5. Zweryfikować kolor paska systemowego w:
+   - widoku głównym `Main/index.html`,
+   - przejściach do modułów z poziomu launchera.

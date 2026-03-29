@@ -235,3 +235,23 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 ## Update 2026-03-13 (EN) — push subscription error handling
 - In `Main/index.html`, push subscription error handling was extended.
 - When backend returns an error, the UI now reports: `HTTP status + response body`, making CORS/endpoint diagnostics easier.
+
+## Aktualizacja 2026-03-29 — ciemny pasek systemowy Android (PWA)
+
+### PL
+W celu zwiększenia spójności koloru paska systemowego (dolne przyciski Androida) w zainstalowanej PWA:
+- `Main/index.html` otrzymał `viewport-fit=cover` w tagu viewport,
+- dodano komplet meta tagów `theme-color` (domyślny + warianty dla `light` i `dark`),
+- dodano `meta name="color-scheme" content="dark"`,
+- wymuszono ciemne tło na `html, body` (`#031605`) oraz dodano dolny `safe-area` padding w `body`.
+
+Po wdrożeniu zmian zalecana jest pełna reinstalacja PWA na urządzeniu (odinstalowanie skrótu/aplikacji, wyczyszczenie danych witryny i ponowna instalacja), ponieważ Android/Chrome potrafią cache’ować stare ustawienia UI.
+
+### EN
+To improve consistency of Android system navigation bar color (Back/Home/Recents) in the installed PWA:
+- `Main/index.html` now uses `viewport-fit=cover` in the viewport meta tag,
+- full `theme-color` meta set was added (default + `light` and `dark` media variants),
+- `meta name="color-scheme" content="dark"` was added,
+- dark background is enforced on `html, body` (`#031605`) and `body` now includes bottom `safe-area` padding.
+
+After deployment, a full PWA reinstall is recommended on devices (remove app/shortcut, clear site data, reinstall), because Android/Chrome may cache older UI integration settings.
