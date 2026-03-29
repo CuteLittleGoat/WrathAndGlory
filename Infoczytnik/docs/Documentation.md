@@ -257,8 +257,8 @@ window.firebaseConfig = {
 **Efekty CRT:**
 - `.crt::before` — scanlines przez `repeating-linear-gradient` i animację `scanMove` (12s, infinite).
 - `.crt::after` — winieta i subtelny „glow”.
-- `.contentLayer.with-overlay::before` — prostokąt cienia/flicker z animacją `flickerBg` (9s, infinite), przewijany razem z treścią.
-- `.screen.no-flicker .contentLayer.with-overlay::before` — wyłączenie animacji flicker.
+- `.screenOverlay.with-overlay::after` — prostokąt cienia/flicker z animacją `flickerBg` (9s, infinite), stały względem viewportu czytnika.
+- `.screenOverlay.no-flicker.with-overlay::after` — wyłączenie animacji flicker.
 
 **Typografia i układ tekstu:**
 - `.screen`: pozycja przez zmienne `--screen-*`, padding `clamp(14px, 2.4vw, 24px)`.
@@ -343,7 +343,7 @@ window.firebaseConfig = {
 | `prefix` / `suffix` (`prefixText` / `suffixText`) | `string` | Bezpośredni tekst linii nad/pod wiadomością. |
 | `text` | `string` | Treść wiadomości. |
 | `showLogo` | `boolean` | Czy pokazać logo frakcji. |
-| `movingOverlay` | `boolean` | Czy wyświetlić scrollujący prostokąt cienia (`true` domyślnie). |
+| `movingOverlay` | `boolean` | Czy wyświetlić stały prostokąt cienia przypięty do viewportu czytnika (`true` domyślnie). |
 | `flicker` | `boolean` | Czy włączyć animację flicker (działa tylko przy `movingOverlay=true`). |
 | `pingUrl` / `msgUrl` (`messageUrl`) | `string` | Opcjonalne ścieżki dźwięków, ale tylko lokalne (`assets/audio/...` lub URL tego samego origin wskazujący na `assets/audio/...`). Zewnętrzne hosty są ignorowane. |
 | `nonce` | `string` | Unikalny identyfikator snapshota (zapobiega dublowaniu). |
@@ -925,5 +925,79 @@ Asset folder names were renamed:
 
 ### 22.4. Versioning
 `INF_VERSION` was bumped to `2026-03-28_21-05-00` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+
+## 23. Aktualizacja 2026-03-29 — stały prostokąt cienia przy scrollu (PL)
+### 23.1. Zmiany funkcjonalne
+1. Prostokąt cienia jest ponownie przypięty do okna czytnika i nie przesuwa się podczas scrollowania treści.
+2. `movingOverlay` dalej steruje widocznością prostokąta, a `flicker` pozostaje zależny od `movingOverlay`.
+3. Zachowanie layoutów restrykcyjnych (`pismo_odreczne`, `pismo_ozdobne`) pozostaje bez zmian: `movingOverlay=false` i `flicker=false`.
+
+### 23.2. Zmiany techniczne
+- `Infoczytnik_test.html`:
+  - usunięto overlay oparty o `.contentLayer.with-overlay::before`;
+  - dodano overlay `.screen.with-overlay::after` z tym samym gradientem i animacją;
+  - regułę wyłączenia animacji zmieniono na `.screen.no-flicker.with-overlay::after`;
+  - `setOverlayState(...)` przełącza klasę `with-overlay` na `#screen` zamiast `#contentLayer`;
+  - usunięto domyślną klasę `with-overlay` z `#contentLayer` w HTML.
+
+### 23.3. Wersjonowanie
+`INF_VERSION` podniesiono do `2026-03-29_11-07-14` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 23. Update 2026-03-29 — fixed shadow rectangle while scrolling (EN)
+### 23.1. Functional changes
+1. The shadow rectangle is anchored to the reader viewport again and no longer moves when content scrolls.
+2. `movingOverlay` still controls rectangle visibility, and `flicker` still depends on `movingOverlay`.
+3. Restricted layouts (`pismo_odreczne`, `pismo_ozdobne`) remain unchanged: `movingOverlay=false` and `flicker=false`.
+
+### 23.2. Technical changes
+- `Infoczytnik_test.html`:
+  - removed content-based overlay `.contentLayer.with-overlay::before`;
+  - added screen-based overlay `.screen.with-overlay::after` with same gradient and animation;
+  - flicker-off selector changed to `.screen.no-flicker.with-overlay::after`;
+  - `setOverlayState(...)` now toggles `with-overlay` on `#screen` instead of `#contentLayer`;
+  - removed default `with-overlay` class from `#contentLayer` in HTML.
+
+### 23.3. Versioning
+`INF_VERSION` was bumped to `2026-03-29_11-07-14` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+
+## 24. Aktualizacja 2026-03-29 — poprawka niezależności overlay od scrolla (PL)
+### 24.1. Problem po poprzedniej zmianie
+Mimo przeniesienia overlay z treści na `.screen`, prostokąt dalej poruszał się przy przewijaniu, bo `.screen` jest kontenerem `overflow:auto`.
+
+### 24.2. Zmiany techniczne
+- `Infoczytnik_test.html`:
+  - dodano nową warstwę `#screenOverlay` jako osobny element absolutny, będący rodzeństwem `#screen`;
+  - overlay renderowany jest przez `.screenOverlay.with-overlay::after`;
+  - wyłączenie animacji flicker realizuje `.screenOverlay.no-flicker.with-overlay::after`;
+  - `setOverlayState(...)` przełącza klasy na `#screenOverlay`;
+  - `#screen` pozostaje wyłącznie warstwą przewijanego tekstu (`z-index:2`), a `#screenOverlay` jest pod tekstem (`z-index:1`).
+
+### 24.3. Wersjonowanie
+`INF_VERSION` podniesiono do `2026-03-29_11-14-29` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 24. Update 2026-03-29 — overlay truly independent from scroll (EN)
+### 24.1. Remaining issue after previous change
+Even after moving overlay from content to `.screen`, the rectangle still moved while scrolling because `.screen` is the `overflow:auto` container.
+
+### 24.2. Technical changes
+- `Infoczytnik_test.html`:
+  - added a new absolute sibling layer `#screenOverlay` next to `#screen`;
+  - rectangle is rendered by `.screenOverlay.with-overlay::after`;
+  - flicker-off selector is `.screenOverlay.no-flicker.with-overlay::after`;
+  - `setOverlayState(...)` now toggles classes on `#screenOverlay`;
+  - `#screen` remains scroll-only text layer (`z-index:2`), while `#screenOverlay` sits below text (`z-index:1`).
+
+### 24.3. Versioning
+`INF_VERSION` was bumped to `2026-03-29_11-14-29` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`
