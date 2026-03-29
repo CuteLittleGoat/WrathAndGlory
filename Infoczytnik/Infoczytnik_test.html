@@ -8,7 +8,7 @@
 <!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
 <script>
   (function autoCacheBust(){
-      const INF_VERSION = "2026-03-29_11-07-14"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-29_11-14-29"; // <- zmieniaj przy aktualizacjach (data + godzina)
     window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
     const url = new URL(window.location.href);
     if (url.searchParams.get("v") !== INF_VERSION) {
@@ -128,7 +128,7 @@
     display:flex;
     flex-direction:column;
     text-shadow: 0 2px 6px rgba(0,0,0,.70);
-    z-index: 1;
+    z-index: 2;
   }
 
   .contentLayer{
@@ -138,7 +138,17 @@
     min-height:100%;
   }
 
-  .screen.with-overlay::after{
+  .screenOverlay{
+    position:absolute;
+    top:var(--screen-top);
+    right:var(--screen-right);
+    bottom:var(--screen-bottom);
+    left:var(--screen-left);
+    pointer-events:none;
+    z-index: 1;
+  }
+
+  .screenOverlay.with-overlay::after{
     content:"";
     position:absolute;
     inset:-2%;
@@ -148,10 +158,9 @@
       rgba(255,255,255,.04);
     opacity:.65;
     animation: flickerBg 9s infinite;
-    z-index: 0;
   }
 
-  .screen.no-flicker.with-overlay::after{
+  .screenOverlay.no-flicker.with-overlay::after{
     animation: none;
   }
 
@@ -233,6 +242,7 @@
   <div class="wrap">
     <div class="panel crt" id="panel">
       <img class="layout-img" id="layoutImg" alt="layout" />
+      <div class="screenOverlay" id="screenOverlay"></div>
       <div class="screen" id="screen">
         <div class="contentLayer" id="contentLayer">
           <div class="prefixRow">
@@ -366,6 +376,7 @@
     panel: document.getElementById("panel"),
     layoutImg: document.getElementById("layoutImg"),
     screen: document.getElementById("screen"),
+    screenOverlay: document.getElementById("screenOverlay"),
     contentLayer: document.getElementById("contentLayer"),
     prefixLine: document.getElementById("prefixLine"),
     suffixLine: document.getElementById("suffixLine"),
@@ -407,11 +418,11 @@
   }
 
   function setOverlayState(shouldShowOverlay, shouldFlicker){
-    el.screen.classList.toggle("with-overlay", shouldShowOverlay === true);
+    el.screenOverlay.classList.toggle("with-overlay", shouldShowOverlay === true);
     if(shouldFlicker === false || shouldShowOverlay === false){
-      el.screen.classList.add("no-flicker");
+      el.screenOverlay.classList.add("no-flicker");
     }else{
-      el.screen.classList.remove("no-flicker");
+      el.screenOverlay.classList.remove("no-flicker");
     }
   }
 

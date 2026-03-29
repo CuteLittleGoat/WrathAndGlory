@@ -441,3 +441,20 @@ A sample Node.js backend was added in `Infoczytnik/backend/`.
 - `INF_VERSION` in test files was bumped to `2026-03-29_11-07-14`:
   - `GM_test.html`
   - `Infoczytnik_test.html`
+
+
+## Aktualizacja 2026-03-29 (PL) — poprawka: prostokąt całkowicie niezależny od scrolla
+- Poprzednia poprawka kotwiczyła overlay do `#screen`, który sam jest kontenerem scrolla, więc warstwa nadal przesuwała się wraz z treścią.
+- Dodano osobną, nieprzewijaną warstwę `#screenOverlay` jako rodzeństwo `#screen` i to ona renderuje prostokąt (`.screenOverlay.with-overlay::after`).
+- `setOverlayState(...)` przełącza teraz klasy `with-overlay` / `no-flicker` na `#screenOverlay`, dzięki czemu prostokąt pozostaje stale w tym samym miejscu.
+- Podniesiono `INF_VERSION` w plikach testowych do `2026-03-29_11-14-29`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`
+
+## Update 2026-03-29 (EN) — fix: rectangle fully independent from scroll
+- The previous fix anchored overlay to `#screen`, which is itself the scroll container, so the layer still moved with content.
+- Added a separate non-scrolling sibling layer `#screenOverlay` and moved rectangle rendering there (`.screenOverlay.with-overlay::after`).
+- `setOverlayState(...)` now toggles `with-overlay` / `no-flicker` on `#screenOverlay`, keeping the rectangle fixed in place.
+- `INF_VERSION` in test files was bumped to `2026-03-29_11-14-29`:
+  - `GM_test.html`
+  - `Infoczytnik_test.html`

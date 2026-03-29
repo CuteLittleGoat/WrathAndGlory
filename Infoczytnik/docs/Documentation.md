@@ -257,8 +257,8 @@ window.firebaseConfig = {
 **Efekty CRT:**
 - `.crt::before` — scanlines przez `repeating-linear-gradient` i animację `scanMove` (12s, infinite).
 - `.crt::after` — winieta i subtelny „glow”.
-- `.screen.with-overlay::after` — prostokąt cienia/flicker z animacją `flickerBg` (9s, infinite), stały względem viewportu czytnika.
-- `.screen.no-flicker.with-overlay::after` — wyłączenie animacji flicker.
+- `.screenOverlay.with-overlay::after` — prostokąt cienia/flicker z animacją `flickerBg` (9s, infinite), stały względem viewportu czytnika.
+- `.screenOverlay.no-flicker.with-overlay::after` — wyłączenie animacji flicker.
 
 **Typografia i układ tekstu:**
 - `.screen`: pozycja przez zmienne `--screen-*`, padding `clamp(14px, 2.4vw, 24px)`.
@@ -964,5 +964,40 @@ Asset folder names were renamed:
 
 ### 23.3. Versioning
 `INF_VERSION` was bumped to `2026-03-29_11-07-14` in:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+
+## 24. Aktualizacja 2026-03-29 — poprawka niezależności overlay od scrolla (PL)
+### 24.1. Problem po poprzedniej zmianie
+Mimo przeniesienia overlay z treści na `.screen`, prostokąt dalej poruszał się przy przewijaniu, bo `.screen` jest kontenerem `overflow:auto`.
+
+### 24.2. Zmiany techniczne
+- `Infoczytnik_test.html`:
+  - dodano nową warstwę `#screenOverlay` jako osobny element absolutny, będący rodzeństwem `#screen`;
+  - overlay renderowany jest przez `.screenOverlay.with-overlay::after`;
+  - wyłączenie animacji flicker realizuje `.screenOverlay.no-flicker.with-overlay::after`;
+  - `setOverlayState(...)` przełącza klasy na `#screenOverlay`;
+  - `#screen` pozostaje wyłącznie warstwą przewijanego tekstu (`z-index:2`), a `#screenOverlay` jest pod tekstem (`z-index:1`).
+
+### 24.3. Wersjonowanie
+`INF_VERSION` podniesiono do `2026-03-29_11-14-29` w:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+## 24. Update 2026-03-29 — overlay truly independent from scroll (EN)
+### 24.1. Remaining issue after previous change
+Even after moving overlay from content to `.screen`, the rectangle still moved while scrolling because `.screen` is the `overflow:auto` container.
+
+### 24.2. Technical changes
+- `Infoczytnik_test.html`:
+  - added a new absolute sibling layer `#screenOverlay` next to `#screen`;
+  - rectangle is rendered by `.screenOverlay.with-overlay::after`;
+  - flicker-off selector is `.screenOverlay.no-flicker.with-overlay::after`;
+  - `setOverlayState(...)` now toggles classes on `#screenOverlay`;
+  - `#screen` remains scroll-only text layer (`z-index:2`), while `#screenOverlay` sits below text (`z-index:1`).
+
+### 24.3. Versioning
+`INF_VERSION` was bumped to `2026-03-29_11-14-29` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`
