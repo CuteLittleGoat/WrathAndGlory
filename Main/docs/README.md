@@ -188,12 +188,12 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 ---
 
 ## Aktualizacja PWA (PL)
-- Aplikacja PWA uruchamia się teraz ze `start_url` ustawionym na `Main/index.html?pwa=1`, co utrzymuje domyślny widok użytkownika bez paneli admina.
+- Aplikacja PWA uruchamia się teraz ze `start_url` ustawionym na `Main/index.html?admin=1`, dzięki czemu skrót instalacyjny otwiera od razu widok admina.
 - Service Worker działa w trybie online-first: przy braku internetu zwraca komunikat o wymaganym połączeniu zamiast utrwalonego trybu offline.
 - Powiadomienia push otwierają domyślnie produkcyjny ekran `Infoczytnik/Infoczytnik.html`.
 
 ## PWA update (EN)
-- The PWA now starts with `start_url` set to `Main/index.html?pwa=1`, which keeps the default user-only view without admin panels.
+- The PWA now starts with `start_url` set to `Main/index.html?admin=1`, so the installed shortcut opens directly in admin view.
 - Service Worker now uses an online-first strategy: when offline, it returns a clear “internet required” message instead of maintaining a quasi-offline behavior.
 - Push notifications now open the production screen `Infoczytnik/Infoczytnik.html` by default.
 
