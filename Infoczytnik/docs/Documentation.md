@@ -279,8 +279,8 @@ window.firebaseConfig = {
 **Mapy layoutów i logo:**
 - `LAYOUT_BG` mapuje frakcję → ścieżka PNG.
   - Dodane ścieżki:
-    - `pismo_odreczne` → `assets/layouts/pismo_odreczne/Pergamin.jpg`
-    - `pismo_ozdobne` → `assets/layouts/pismo_ozdobne/Pergamin.jpg`
+    - `pismo_odreczne` → `assets/layouts/pismo_odreczne/Notatnik.png`
+    - `pismo_ozdobne` → `assets/layouts/pismo_ozdobne/Pergamin.png`
 - `LAYOUT_AR` (proporcje):
   - inquisition: `707/1023`
   - militarum: `1263/1595`
@@ -784,8 +784,8 @@ To ustawienie jest używane przez funkcję `fitPanel(ar)`, która wylicza docelo
 
 ### 20.3. Dlaczego to naprawia problem
 Pliki:
-- `assets/layouts/pismo_odreczne/Pergamin.jpg`
-- `assets/layouts/pismo_ozdobne/Pergamin.jpg`
+- `assets/layouts/pismo_odreczne/Notatnik.png`
+- `assets/layouts/pismo_ozdobne/Pergamin.png`
 mają rzeczywistą proporcję 1280×1920 (2:3), a nie 1:1. Przy wcześniejszym wymuszeniu kwadratu panel był wizualnie „za duży” i źle komponował się z obszarem roboczym na desktopie i mobile. Po ustawieniu 1280/1920 skala i kadrowanie są zgodne z naturalnymi proporcjami assetu.
 
 ### 20.4. Wersjonowanie testowych HTML
@@ -806,8 +806,8 @@ This value is consumed by `fitPanel(ar)`, which computes panel width/height rela
 
 ### 20.3. Why this fixes it
 The files:
-- `assets/layouts/pismo_odreczne/Pergamin.jpg`
-- `assets/layouts/pismo_ozdobne/Pergamin.jpg`
+- `assets/layouts/pismo_odreczne/Notatnik.png`
+- `assets/layouts/pismo_ozdobne/Pergamin.png`
 use a real 1280×1920 ratio (2:3), not 1:1. With a square panel, the background looked oversized and poorly matched on both desktop and mobile. After switching to 1280/1920, scaling and framing match the asset’s natural geometry.
 
 ### 20.4. Test HTML versioning
@@ -1067,3 +1067,25 @@ Even after moving overlay from content to `.screen`, the rectangle still moved w
 `INF_VERSION` was bumped to `2026-03-29_14-20-00` in:
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`
+
+
+## 15. Aktualizacja layoutów „Pismo odręczne” i „Pismo ozdobne” (2026-03-29)
+### 15.1. Zmiana plików teł
+- `LAYOUT_BG.pismo_odreczne` wskazuje `assets/layouts/pismo_odreczne/Notatnik.png`.
+- `LAYOUT_BG.pismo_ozdobne` wskazuje `assets/layouts/pismo_ozdobne/Pergamin.png`.
+- Usunięto nieużywane pliki JPG:
+  - `assets/layouts/pismo_odreczne/Pergamin.jpg`
+  - `assets/layouts/pismo_ozdobne/Pergamin.jpg`
+
+### 15.2. Granice obszaru roboczego (SCREEN_INSETS)
+W `Infoczytnik_test.html` layouty pergaminowe korzystają teraz z oddzielnych insetów zamiast wspólnego `pergamin`:
+- `pismo_odreczne`: `top: 3.13%`, `right: 4.39%`, `bottom: 3.06%`, `left: 4.10%`
+- `pismo_ozdobne`: `top: 3.26%`, `right: 5.57%`, `bottom: 2.41%`, `left: 5.86%`
+
+Wartości odpowiadają wewnętrznym granicom niebieskich ramek z draftów (zostawiony margines bezpieczeństwa od obrysu).
+
+### 15.3. Logika wyboru insetów
+W `applyLayout()` dla layoutów ograniczonych (`pismo_odreczne`, `pismo_ozdobne`) ustawienie obszaru jest wybierane po kluczu frakcji:
+- `setInsets(SCREEN_INSETS[key] || SCREEN_INSETS.pismo_odreczne)`
+
+Dzięki temu każdy z dwóch layoutów ma niezależny, precyzyjny obszar dla: treści wiadomości, prefix/suffix, prostokąta cienia i efektu flicker.
