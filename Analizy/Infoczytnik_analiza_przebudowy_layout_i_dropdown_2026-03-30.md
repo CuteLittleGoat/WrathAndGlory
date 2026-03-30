@@ -736,3 +736,77 @@ Przyjęta zasada:
 2. komplet wskazanych plików referencyjnych z narysowaną ramką (sekcja 11.8.5).
 
 Poza tym decyzje wykonawcze do 11.8.6 są domknięte i można rozpoczynać implementację zgodnie z wymaganiami `Infoczytnik/AGENTS.md`.
+
+### 11.8. Aktualizacja po zmianie `DataSlate_manifest.xlsx` (2026-03-30)
+
+#### 11.8.1. Prompt użytkownika (uzupełnienie kontekstu)
+
+> Zaktualizowałem plik DataSlate_manifest.xlsx  
+> Zmieniłem nazwy kolumn i ich ilość.  
+> Obecna struktura:  
+> 1. Zakładki "backgrounds", "logos", "audios": ID, Nazwa, Plik  
+> 2. Zakładka "fonts": ID, Nazwa, Font  
+> 3. Zakładka "fillers": ID, Nazwa, Prefix, Suffix  
+> W skrócie - zmieniłem nazwy kolumn oraz połączyłem kolumny "Link" z "NazwaPliku".
+
+#### 11.8.2. Nowy kontrakt manifestu — wersja uproszczona
+
+Przyjmujemy nowy, spójny kontrakt danych (bez kolumn `Link` i `NazwaPliku`):
+
+1. **`backgrounds` / `logos` / `audios`**
+   - `ID` — dodatnia liczba całkowita (klucz techniczny),
+   - `Nazwa` — etykieta widoczna w UI,
+   - `Plik` — pojedyncza wartość źródłowa (ścieżka lokalna lub URL bezpośredni).
+
+2. **`fonts`**
+   - `ID` — dodatnia liczba całkowita,
+   - `Nazwa` — etykieta widoczna w UI,
+   - `Font` — wartość font-family / preset fontu używany do renderowania.
+
+3. **`fillers`**
+   - `ID` — dodatnia liczba całkowita,
+   - `Nazwa` — etykieta zestawu,
+   - `Prefix` — lista prefixów dla zestawu,
+   - `Suffix` — lista suffixów dla zestawu.
+
+#### 11.8.3. Skutki dla parsera XLSX → JSON
+
+Zmiana jest pozytywna dla implementacji: parser ma mniej transformacji i mniej punktów awarii.
+
+Należy zaktualizować mapowanie kolumn w parserze:
+- **usuń** oczekiwanie na `Link` i `NazwaPliku`,
+- **dodaj** obowiązkowe mapowanie `Plik` (dla backgrounds/logos/audios),
+- **utrzymaj** mapowanie `Font` (fonts) oraz `Prefix`/`Suffix` (fillers),
+- **utrzymaj** `ID` jako klucz zapisu i walidacji unikalności.
+
+Rekomendowany wynik JSON po normalizacji:
+- każda kolekcja zawiera rekordy z polami technicznymi (`id`) i polami runtime (`name`, `file`/`font`, `prefixes`, `suffixes`),
+- `Prefix`/`Suffix` powinny być normalizowane do tablic (split po separatorze, trim, odrzucenie pustych wpisów).
+
+#### 11.8.4. Aktualizacja walidacji danych
+
+Minimalny zestaw walidacji po zmianie schematu:
+1. `ID` — wymagane, dodatnie, unikalne w obrębie danej zakładki,
+2. `Nazwa` — wymagana, niepusta,
+3. `Plik` — wymagany dla `backgrounds/logos/audios`,
+4. `Font` — wymagany dla `fonts`,
+5. `Prefix` i `Suffix` — wymagane dla `fillers` (dopuszczalny format listy tekstowej),
+6. raport błędów powinien wskazywać: zakładkę, numer wiersza i nazwę brakującej/niepoprawnej kolumny.
+
+#### 11.8.5. Wpływ na wcześniejsze sekcje analizy
+
+Ta zmiana **nie modyfikuje** głównych założeń architektury z sekcji 2–5 i 11.6–11.7 (nadal: niezależne dropdowny, checkboxy, stały ping, brak specjalnych blokad dla layoutów pisma).
+
+Aktualizacja dotyczy przede wszystkim warstwy importu i walidacji manifestu:
+- prostszy model źródłowy,
+- mniej pól pośrednich,
+- jednoznaczne źródło pliku w kolumnie `Plik`.
+
+#### 11.8.6. Rekomendacja operacyjna (MVP)
+
+Dla najbliższego wdrożenia warto przyjąć „zamrożony” schemat v2 manifestu:
+- obsługiwane nazwy kolumn: dokładnie `ID`, `Nazwa`, `Plik` / `Font` / `Prefix` / `Suffix`,
+- brak kompatybilności parsera ze starym układem (`Link`, `NazwaPliku`),
+- jawny komunikat o błędzie, jeśli użytkownik zaimportuje starszą wersję arkusza.
+
+To utrzyma spójność procesu i ograniczy niejednoznaczność podczas dalszej przebudowy panelu GM i modułu Infoczytnik.
