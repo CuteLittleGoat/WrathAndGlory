@@ -37,11 +37,25 @@ Zapisywane pola:
 3. `message` -> renderuje tekst + fillery + styl; audio wiadomości działa tylko przy `audioEnabled !== false`.
 4. `clear` -> czyści prefix, treść i suffix bez resetu całej strony.
 5. Font ma wspólny fallback: `Calibri, Arial, sans-serif`.
+6. Kontener overlay jest wyrównany do górnej krawędzi (`align-items:flex-start`), dzięki czemu blok tekstu rozpoczyna się od góry obszaru roboczego.
+7. W bloku wiadomości:
+   - `prefix` i `suffix` mają `text-align:center`,
+   - `msg` ma `text-align:left`,
+   - kontener `.box` używa `align-items:stretch`, aby wyrównania tekstu działały niezależnie dla każdej sekcji.
+8. Overlay jest dynamicznie dopasowywany w dwóch krokach:
+   - najpierw liczony jest prostokąt renderowanego tła (`object-fit:contain`) na podstawie `naturalWidth/naturalHeight` i viewportu,
+   - następnie stosowany jest preset obszaru roboczego zależny od `backgroundId` (`CONTENT_RECTS_BY_BACKGROUND_ID`), co ogranicza tekst do „ekranu” wewnątrz ramki.
+9. Funkcja `fitOverlayToBackground()`:
+   - ustawia `left/top/width/height` overlay do obszaru roboczego dla aktywnego tła,
+   - pozycjonuje logo w prawym górnym rogu obszaru overlay (tego samego co prostokąt cienia i tekst),
+   - uruchamia się po `load` obrazka, przy `resize` okna i po każdej zmianie layoutu.
+10. `shadow::after` ma `inset:0`, więc cień pokrywa dokładnie cały obszar overlay; dzięki temu wiadomość, fillery i logo pozostają w tym samym polu co prostokąt cienia.
 
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.
 - Preview GM ma mini-podgląd tła i logo.
 - Checkbox `Fillery` blokuje `Ilość linii fillerów` i pokazuje komunikat o stanie.
+- Układ tekstu na ekranie gracza jest mieszany: prefix/suffix centralnie, treść wiadomości do lewej, cały blok osadzony od górnej krawędzi warstwy overlay i ograniczony do obszaru roboczego zdefiniowanego dla danego tła; cień i logo są liczone względem tego samego obszaru.
 
 ## Uwagi implementacyjne
 - Produkcyjne pliki (`GM.html`, `Infoczytnik.html`) nie były modyfikowane.

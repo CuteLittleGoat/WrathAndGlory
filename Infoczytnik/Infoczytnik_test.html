@@ -6,7 +6,7 @@
   <title>Infoczytnik</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-30_20-30-00";
+      const INF_VERSION = "2026-03-30_20-36-59";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -20,12 +20,12 @@
     *{box-sizing:border-box} body{margin:0;background:#000;color:#fff;font-family:var(--font)}
     .screen{width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
     .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:0}
-    .overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;padding:4vh 5vw}
-    .box{width:min(90vw,900px);max-height:84vh;display:flex;flex-direction:column;gap:12px;align-items:center;text-align:center;white-space:pre-line;text-shadow:0 2px 5px rgba(0,0,0,.8)}
-    .prefix,.suffix{color:var(--ps);font-size:clamp(12px,2vw,20px)} .msg{color:var(--msg);font-size:clamp(16px,2.8vw,34px)}
-    .logo{position:absolute;top:16px;right:16px;z-index:3;max-width:16vw;max-height:16vw;object-fit:contain;display:none}
+    .overlay{position:absolute;display:flex;align-items:flex-start;justify-content:center;z-index:2;padding:4% 5%;overflow:hidden}
+    .box{width:min(100%,900px);max-height:100%;display:flex;flex-direction:column;gap:12px;align-items:stretch;text-align:left;white-space:pre-line;text-shadow:0 2px 5px rgba(0,0,0,.8);overflow:hidden}
+    .prefix,.suffix{color:var(--ps);font-size:clamp(12px,2vw,20px);text-align:center} .msg{color:var(--msg);font-size:clamp(16px,2.8vw,34px);text-align:left}
+    .logo{position:absolute;z-index:3;object-fit:contain;display:none}
     .hide{display:none!important}
-    .shadow::after{content:"";position:absolute;inset:10% 8%;background:rgba(0,0,0,.28);filter:blur(2px);z-index:1;pointer-events:none}
+    .shadow::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.28);filter:blur(2px);z-index:1;pointer-events:none}
     .flicker{animation:flicker 7s infinite} @keyframes flicker{0%,100%{opacity:1}50%{opacity:.96}51%{opacity:.9}52%{opacity:1}}
   </style>
 </head>
@@ -47,6 +47,18 @@
 <script>
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
+const DEFAULT_CONTENT_RECT = { x:0.10, y:0.16, w:0.80, h:0.74 };
+const CONTENT_RECTS_BY_BACKGROUND_ID = {
+  1:{ x:0.08, y:0.17, w:0.84, h:0.75 }, // DataSlate_01
+  2:{ x:0.09, y:0.16, w:0.82, h:0.76 }, // DataSlate_02
+  3:{ x:0.09, y:0.09, w:0.82, h:0.83 }, // DataSlate_03
+  4:{ x:0.10, y:0.09, w:0.80, h:0.82 }, // DataSlate_04
+  5:{ x:0.09, y:0.09, w:0.82, h:0.83 }, // DataSlate_05
+  6:{ x:0.08, y:0.16, w:0.84, h:0.74 }, // DataSlate_Inq
+  7:{ x:0.08, y:0.06, w:0.84, h:0.88 }, // Litannie_Zaginionych
+  8:{ x:0.07, y:0.08, w:0.86, h:0.84 }, // Notatnik
+  9:{ x:0.10, y:0.10, w:0.80, h:0.82 }  // Pergamin
+};
 if(!window.firebaseConfig){ throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
 const db = firebase.firestore();
@@ -54,6 +66,7 @@ const ref = db.collection('dataslate').doc('current');
 
 const el = { screen:document.getElementById('screen'), bg:document.getElementById('bg'), logo:document.getElementById('logo'), overlay:document.getElementById('overlay'), prefix:document.getElementById('prefix'), msg:document.getElementById('msg'), suffix:document.getElementById('suffix') };
 let lastNonce = '';
+let currentBackgroundId = 1;
 
 function play(url){
   const a = new Audio(url || PING_URL); a.volume = 1; a.play().catch(()=>{});
@@ -70,11 +83,19 @@ function applyStyles(d){
   document.documentElement.style.setProperty('--font', `"${family}"${FONT_FALLBACK}`);
 }
 function applyLayout(d){
+  currentBackgroundId = Number(d.backgroundId) || 1;
   el.bg.src = d.backgroundFile || 'assets/backgrounds/DataSlate_04.png';
-  if(d.showLogo === false || !d.logoFile){ el.logo.classList.add('hide'); }
-  else { el.logo.classList.remove('hide'); el.logo.src = d.logoFile; }
+  if(d.showLogo === false || !d.logoFile){
+    el.logo.classList.add('hide');
+    el.logo.style.display = 'none';
+  } else {
+    el.logo.classList.remove('hide');
+    el.logo.style.display = 'block';
+    el.logo.src = d.logoFile;
+  }
   el.overlay.classList.toggle('shadow', d.movingOverlay !== false);
   el.overlay.classList.toggle('flicker', d.flicker === true);
+  fitOverlayToBackground();
 }
 function applyMessage(d){
   const prefix = (Array.isArray(d.prefixLines) ? d.prefixLines.join('\n') : (d.prefix || ''));
@@ -84,6 +105,39 @@ function applyMessage(d){
   el.msg.textContent = d.text || '';
 }
 function clearMessage(){ el.prefix.textContent=''; el.suffix.textContent=''; el.msg.textContent=''; }
+function fitOverlayToBackground(){
+  const vw = window.innerWidth || document.documentElement.clientWidth || 0;
+  const vh = window.innerHeight || document.documentElement.clientHeight || 0;
+  const nw = el.bg.naturalWidth || vw;
+  const nh = el.bg.naturalHeight || vh;
+  if(!vw || !vh || !nw || !nh){
+    el.overlay.style.left = '0px'; el.overlay.style.top = '0px'; el.overlay.style.width = '100vw'; el.overlay.style.height = '100vh';
+    return;
+  }
+  const scale = Math.min(vw / nw, vh / nh);
+  const rw = Math.max(1, Math.round(nw * scale));
+  const rh = Math.max(1, Math.round(nh * scale));
+  const frameLeft = Math.round((vw - rw) / 2);
+  const frameTop = Math.round((vh - rh) / 2);
+  const rect = CONTENT_RECTS_BY_BACKGROUND_ID[currentBackgroundId] || DEFAULT_CONTENT_RECT;
+  const left = frameLeft + Math.round(rw * rect.x);
+  const top = frameTop + Math.round(rh * rect.y);
+  const width = Math.max(1, Math.round(rw * rect.w));
+  const height = Math.max(1, Math.round(rh * rect.h));
+  el.overlay.style.left = `${left}px`;
+  el.overlay.style.top = `${top}px`;
+  el.overlay.style.width = `${width}px`;
+  el.overlay.style.height = `${height}px`;
+
+  const logoMargin = Math.max(8, Math.round(width * 0.02));
+  const logoSize = Math.max(38, Math.round(width * 0.14));
+  el.logo.style.top = `${top + logoMargin}px`;
+  el.logo.style.left = `${left + width - logoSize - logoMargin}px`;
+  el.logo.style.maxWidth = `${logoSize}px`;
+  el.logo.style.maxHeight = `${logoSize}px`;
+}
+el.bg.addEventListener('load', fitOverlayToBackground);
+window.addEventListener('resize', fitOverlayToBackground);
 
 ref.onSnapshot((snap)=>{
   const d = snap.data();
