@@ -691,3 +691,9 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Dodano komplet meta `theme-color` (domyślny + wariant `light` i `dark`) oraz `color-scheme: dark`, aby stabilizować ciemny wygląd elementów systemowych.
 - Dodano bazowe ciemne tło na `html, body` (`#031605`) oraz dolny `safe-area` padding: `calc(24px + env(safe-area-inset-bottom, 0px))`.
 - Celem zmiany jest ograniczenie przypadków jasnego paska systemowego przy uruchamianiu aplikacji jako PWA na Androidzie/tabletach.
+
+## Aktualizacja 2026-03-30 — Infoczytnik (test)
+- `GM_test.html` i `Infoczytnik_test.html` przeszły na model niezależnych dropdownów.
+- Zachowano spójny fallback fontów: `Calibri, Arial, sans-serif` dla każdego wyboru `Font`.
+- Podgląd GM renderuje tło + logo + treść na jednym komponencie preview.
+- Kolor głównej treści i kolor Prefix+Suffix są niezależne (oddzielne pola i walidacja).

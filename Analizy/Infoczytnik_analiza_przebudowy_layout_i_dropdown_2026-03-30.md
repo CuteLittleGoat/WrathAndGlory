@@ -1,41 +1,41 @@
 # Analiza modułu Infoczytnik — przebudowa layoutu na niezależne dropdowny
 
-**Data analizy:** 2026-03-30  
-**Moduł:** Infoczytnik (`GM_test.html` + `Infoczytnik_test.html`)  
+**Data analizy:** 2026-03-30
+**Moduł:** Infoczytnik (`GM_test.html` + `Infoczytnik_test.html`)
 
 ## Prompt użytkownika (zachowanie kontekstu)
 
-> Przeprowadź mi analizę modułu Infoczytnik.  
-> Obecnie font, prefixy i suffixy oraz tło są spięte razem w jeden layout.  
-> Chciałbym zmienić koncepcję.  
-> Chciałbym w panelu GM mieć kilka pól typu dropdown menu.  
-> W jednym bym wybierał plik tła  
-> W drugim bym wybierał logo  
-> W trzecim bym wybierał zestaw prefixów i suffixów  
-> W czwartym bym wybierał rodzaj fontu.  
-> W piątym bym wybierał dźwięki nadchodzącej wiadomości  
->  
-> Przy checkboxach "Dodaj logo" (trzeba zmienić nazwę na "Logo"), "Prostokąt cienia", "Flicker" należałoby dodać jeszcze dwa: "Fillery" oraz "Audio".  
-> Zaznaczenie "Fillery" skutkowałoby dodaniem prefixów i suffixów (w licznie takiej jak wpisane w "Ilość linii fillerów" - przy odznaczeniu checkboxa pole byłoby nieaktywne, wyszarzone, i byłby stosowny komunikat).  
-> Zaznaczenie i odznaczenie checkboxa "Audio" skutkuje odtworzeniem dźwięku wiadomości lub wyciszeniem. Dźwięk Ping zawsze się odtwarza po naciśnięciu przycisku.  
->  
-> Podgląd prefixów i suffixów nad i pod polem "Treść komunikatu" byłaby zbędna. Podgląd jest w polu "Lorem Ipsum". Trzeba tylko jakoś zmodyfikować i dodać podgląd wybranego rodzaju tła i logo.  
->  
-> Musiałby się też zmienić struktura katalogów w folderze assets.  
-> Foldery nazywałby się:  
-> assets/backgrounds (tutaj będą pliki tła)  
-> assets/logos (tutaj będą pliki logo)  
-> assets/audios (tutaj będą pliki audio przychodzącej wiadomości)  
-> assets/audios/ping (tutaj będzie plik audio do odtworzenia Ping - zawsze będzie to jeden plik assets/audios/ping/Ping.mp3)  
->  
-> W menu dropdown miałbym listę plików w poszczególnych katalogach, np. po kliknięciu w menu do wyboru tła miałbym do wyboru dowolny plik znajdujący się w assets/backgrounds. Mają się tam wyświetlać dokładne nazwy wraz z rozszerzeniem.  
->  
-> Jeżeli chodzi o rodzaj fontu to należy zrobić dwie nazwy. Nazwa obecnego Layout a w nawiasie nazwa fontu, np: "Adeptus Mechanicus (Share Tech Mono)", "Pismo odręczne (Caveat)". Każda nazwa ma być wyświetlana tym fontem.  
->  
-> W menu dropdown dotyczącym zestawu prefixów i suffixów zostają obecnie używane nazwy (np. Nurgle, Khorne).  
->  
-> Dodatkowo trzeba przebudować sposób wyboru koloru fontu dla głównej treści wiadomości. Trzeba dodac opcję wpisania rgba. Panel wyboru koloru głównego tekstu musi być taki sam jak panel "Kolor Prefix + Suffix (wspólny)"  
->  
+> Przeprowadź mi analizę modułu Infoczytnik.
+> Obecnie font, prefixy i suffixy oraz tło są spięte razem w jeden layout.
+> Chciałbym zmienić koncepcję.
+> Chciałbym w panelu GM mieć kilka pól typu dropdown menu.
+> W jednym bym wybierał plik tła
+> W drugim bym wybierał logo
+> W trzecim bym wybierał zestaw prefixów i suffixów
+> W czwartym bym wybierał rodzaj fontu.
+> W piątym bym wybierał dźwięki nadchodzącej wiadomości
+>
+> Przy checkboxach "Dodaj logo" (trzeba zmienić nazwę na "Logo"), "Prostokąt cienia", "Flicker" należałoby dodać jeszcze dwa: "Fillery" oraz "Audio".
+> Zaznaczenie "Fillery" skutkowałoby dodaniem prefixów i suffixów (w licznie takiej jak wpisane w "Ilość linii fillerów" - przy odznaczeniu checkboxa pole byłoby nieaktywne, wyszarzone, i byłby stosowny komunikat).
+> Zaznaczenie i odznaczenie checkboxa "Audio" skutkuje odtworzeniem dźwięku wiadomości lub wyciszeniem. Dźwięk Ping zawsze się odtwarza po naciśnięciu przycisku.
+>
+> Podgląd prefixów i suffixów nad i pod polem "Treść komunikatu" byłaby zbędna. Podgląd jest w polu "Lorem Ipsum". Trzeba tylko jakoś zmodyfikować i dodać podgląd wybranego rodzaju tła i logo.
+>
+> Musiałby się też zmienić struktura katalogów w folderze assets.
+> Foldery nazywałby się:
+> assets/backgrounds (tutaj będą pliki tła)
+> assets/logos (tutaj będą pliki logo)
+> assets/audios (tutaj będą pliki audio przychodzącej wiadomości)
+> assets/audios/ping (tutaj będzie plik audio do odtworzenia Ping - zawsze będzie to jeden plik assets/audios/ping/Ping.mp3)
+>
+> W menu dropdown miałbym listę plików w poszczególnych katalogach, np. po kliknięciu w menu do wyboru tła miałbym do wyboru dowolny plik znajdujący się w assets/backgrounds. Mają się tam wyświetlać dokładne nazwy wraz z rozszerzeniem.
+>
+> Jeżeli chodzi o rodzaj fontu to należy zrobić dwie nazwy. Nazwa obecnego Layout a w nawiasie nazwa fontu, np: "Adeptus Mechanicus (Share Tech Mono)", "Pismo odręczne (Caveat)". Każda nazwa ma być wyświetlana tym fontem.
+>
+> W menu dropdown dotyczącym zestawu prefixów i suffixów zostają obecnie używane nazwy (np. Nurgle, Khorne).
+>
+> Dodatkowo trzeba przebudować sposób wyboru koloru fontu dla głównej treści wiadomości. Trzeba dodac opcję wpisania rgba. Panel wyboru koloru głównego tekstu musi być taki sam jak panel "Kolor Prefix + Suffix (wspólny)"
+>
 > Przeprowadź bardzo wnikliwą analizę kodu i wprowadzenia powyższych funkcjonalności. Jeżeli wymaga to rozbudowy Firabase to to napisz.
 
 ---
@@ -242,7 +242,7 @@ Najbezpieczniej wdrożyć to w dwóch krokach:
 1. najpierw **nowe pola + fallback**,
 2. potem **migracja assets i dynamiczne listy**.
 
-Jeżeli priorytetem jest prostota i szybkie wdrożenie, wybierz **manifest plików (bez rozbudowy Firebase)**.  
+Jeżeli priorytetem jest prostota i szybkie wdrożenie, wybierz **manifest plików (bez rozbudowy Firebase)**.
 Jeżeli priorytetem jest pełna automatyzacja list dropdown bez ręcznej aktualizacji, wybierz **Firebase Storage** (to jest realna rozbudowa Firebase).
 
 
@@ -252,19 +252,19 @@ Jeżeli priorytetem jest pełna automatyzacja list dropdown bez ręcznej aktuali
 
 ### 11.1. Prompt użytkownika (uzupełnienie kontekstu)
 
-> Rozbuduj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md  
-> Nie wprowadzaj zmian w kodzie. Dodaj tylko te informacje do pliku z analizą i zaktualizuj go  
->  
-> Dodatkowe informacje:  
-> 1. Obecnie Layouty "Pismo odręczne" i "Pismo ozdobne" maja blokadę na dodawanie logo, prostokąta i flicker.  
-> W nowym modelu ta blokada nie będzie potrzebna.  
->  
-> 2. Trzeba będzie zmodyfikować działania przycisków "Wyczyść ekran" i "Wyczyść pole".  
-> Zastąpimy je "Wyczyść komunikat" oraz "Przywróć domyślne".  
-> Wyczyść komunikat = ma czyścić treść z pola "Treść komunikatu" bez zmiany pozostałych opcji  
-> Przywróć domyślne = ma czyścić treść z pola "Treść komunikatu" oraz przywracać wartości domyślne we wszystkich polach (czyli domyślny wybór z menu Dropdown oraz stan checkboxów).  
-> Domyślne wartości zostaną przygotowane potem.  
->  
+> Rozbuduj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md
+> Nie wprowadzaj zmian w kodzie. Dodaj tylko te informacje do pliku z analizą i zaktualizuj go
+>
+> Dodatkowe informacje:
+> 1. Obecnie Layouty "Pismo odręczne" i "Pismo ozdobne" maja blokadę na dodawanie logo, prostokąta i flicker.
+> W nowym modelu ta blokada nie będzie potrzebna.
+>
+> 2. Trzeba będzie zmodyfikować działania przycisków "Wyczyść ekran" i "Wyczyść pole".
+> Zastąpimy je "Wyczyść komunikat" oraz "Przywróć domyślne".
+> Wyczyść komunikat = ma czyścić treść z pola "Treść komunikatu" bez zmiany pozostałych opcji
+> Przywróć domyślne = ma czyścić treść z pola "Treść komunikatu" oraz przywracać wartości domyślne we wszystkich polach (czyli domyślny wybór z menu Dropdown oraz stan checkboxów).
+> Domyślne wartości zostaną przygotowane potem.
+>
 > 3. W aplikacji jest dużo tekstów pomocniczych, komunikatów błęów itp. Trzeba będzie zadbać, żeby wszystkie informacje były aktualne po modyfikacji panelu.
 
 ### 11.2. Usunięcie historycznych blokad dla layoutów „Pismo odręczne” i „Pismo ozdobne”
@@ -523,15 +523,15 @@ Dla MVP można uprościć to do jednego pola `id` w każdej zakładce i prostego
 
 #### 11.8.1. Prompt użytkownika (uzupełnienie kontekstu)
 
-> Zaktualizowałem plik DataSlate_manifest.xlsx. Do każdej zakładki dodałem kolumnę ID.  
-> Zasady walidacji:  
-> 1) ID unikatowe w obrębie zakładki; przy duplikacie bierzemy pierwszy rekord i pokazujemy błąd w panelu GM.  
-> 2) Nie może być pustych kolumn — jeśli rekord ma pustą kolumnę, pomijamy rekord.  
-> 3) Nie walidować linków „na twardo”; dodać obsługę błędów (zły link/brak pliku).  
-> Czy to rozwiązuje: 2.2, 2.4, 2.5, 3.4?  
-> Zostawić w kodzie: 2.3, 2.1, 3.2.  
-> Dodatkowo: obszary tekstu są teraz zaszyte w kodzie i po aktualizacji modelu będą przygotowane ponownie jako dwa zestawy plików (tło + wariant z narysowaną ramką/cieniem).  
-> Czy coś jeszcze trzeba wyjaśnić przed wdrożeniem?  
+> Zaktualizowałem plik DataSlate_manifest.xlsx. Do każdej zakładki dodałem kolumnę ID.
+> Zasady walidacji:
+> 1) ID unikatowe w obrębie zakładki; przy duplikacie bierzemy pierwszy rekord i pokazujemy błąd w panelu GM.
+> 2) Nie może być pustych kolumn — jeśli rekord ma pustą kolumnę, pomijamy rekord.
+> 3) Nie walidować linków „na twardo”; dodać obsługę błędów (zły link/brak pliku).
+> Czy to rozwiązuje: 2.2, 2.4, 2.5, 3.4?
+> Zostawić w kodzie: 2.3, 2.1, 3.2.
+> Dodatkowo: obszary tekstu są teraz zaszyte w kodzie i po aktualizacji modelu będą przygotowane ponownie jako dwa zestawy plików (tło + wariant z narysowaną ramką/cieniem).
+> Czy coś jeszcze trzeba wyjaśnić przed wdrożeniem?
 > Dopisać też wszystkie obecnie używane fonty i przypisanie do layoutów.
 
 ---
@@ -575,7 +575,7 @@ Warunek praktyczny:
 1. **Duplikat `ID` w zakładce**
    - parser bierze **pierwszy rekord** wystąpienia `ID`,
    - kolejne rekordy z tym samym `ID` są ignorowane,
-   - do panelu GM trafia komunikat typu:  
+   - do panelu GM trafia komunikat typu:
      `W zakładce backgrounds istnieją dwa wpisy o ID=4`.
 
 2. **Puste kolumny**
@@ -619,16 +619,16 @@ Wniosek architektoniczny:
 
 Żeby implementacja poszła bez blokad, brakuje już tylko kilku decyzji wykonawczych:
 
-1. **Zakres „pustych kolumn” per zakładka**  
+1. **Zakres „pustych kolumn” per zakładka**
    (czy np. w `fonts` wymagamy `ID+WyswietlanaNazwa+NazwaFontu`, a w `fillers` `ID+WyswietlanaNazwa+Prefix+Suffix` — obecnie sugerowane: tak).
 
-2. **Format `ID`**  
+2. **Format `ID`**
    (liczba całkowita dodatnia vs string; rekomendacja: liczba całkowita dodatnia, bez znaków specjalnych).
 
-3. **Sposób raportowania błędów w GM**  
+3. **Sposób raportowania błędów w GM**
    (lista zbiorcza po imporcie + status ostrzeżeń przy użyciu rekordu).
 
-4. **Polityka fallbacku runtime**  
+4. **Polityka fallbacku runtime**
    (przy braku pliku: czy zawsze pierwszy poprawny rekord z listy, czy „brak assetu + ostrzeżenie” bez podmiany).
 
 Poza tym zakres jest już opisany na tyle precyzyjnie, że można bezpiecznie przejść do implementacji.
@@ -658,7 +658,7 @@ Dodatkowo wszystkie powyższe fonty są ładowane z Google Fonts we wspólnym im
 
 #### 11.8.8. Krótka odpowiedź na pytanie „czy to już wszystko wyjaśnia?”
 
-**Tak — praktycznie wszystko kluczowe jest już wyjaśnione do startu prac kodowych.**  
+**Tak — praktycznie wszystko kluczowe jest już wyjaśnione do startu prac kodowych.**
 Do pełnej gotowości wdrożeniowej zostały 4 krótkie decyzje z checklisty 11.8.6 (głównie format `ID`, dokładny zakres pól wymaganych i fallback przy brakującym pliku).
 
 ---
@@ -667,32 +667,32 @@ Do pełnej gotowości wdrożeniowej zostały 4 krótkie decyzje z checklisty 11.
 
 ### 11.8.9.1. Prompt użytkownika (doprecyzowanie kontekstu)
 
-> Zaktualizuj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md  
-> Nie wprowadzaj zmian w kodzie. Zaktualizuj tylko plik z analizą.  
-> Nie usuwaj nic z pliku Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md tylko dodaj nowe informacje.  
->  
-> Dodaj odpowiedzi do 11.8.6.  
-> 1. Zakres „pustych kolumn” per zakładka  
-> Doprecyzuję.  
-> To co jest obecnie w przykładowym pliku DataSlate_manifest.xlsx traktujemy teraz jako wzór.  
-> W przyszłości w pliku może być więcej kolumn, ale aplikacja ma ich nie brać pod uwagę (np. komentarz użytkownika)  
-> Wymogiem jest, żeby były te kolumny co są obecnie (chociaż mogą być w różnej kolejności).  
-> Wymogiem jest, żeby te obecnie zawarte kolumny były unikatowe - np. jeżeli są dwie kolumny w zakładce background o nazwie Link to aplikacja ma zwrócić błąd bez importu danych.  
-> Jeżeli w jakimś rekordzie przynajmniej jedna z obecnych kolumn (czyli wymaganych do działania aplikacji) jest pusta (np. jest ID, WyswietlanaNazwa, Link ale nie ma NazwaPliku to aplikacja pominie ten rekord przy imporcie i zwróci komunikat błędu.  
->  
-> 2. Format ID  
-> Liczby całkowite dodatnie bez znaków specjalnych.  
->  
-> 3. Sposób raportowania błędów w GM  
-> Rozwiązanie lista zbiorcza po imporcie + status ostrzeżeń przy użyciu rekordu jest akceptowalne  
->  
-> 4. Polityka fallbacku runtime  
-> Pierwszy poprawny plik z listy plus ostrzeżenie w panelu z dokładnym opisem błędu.  
->  
-> Dodatkowo - trzeba w UI Panelu GM przygotować pole "Log importu" i tam wyświetlać błędy. W takiej formie, żeby dało się zaznaczyć całość i skopiować do notatnika.  
->  
-> WAŻNE - fallback fontów zapisz w kodzie. Dla każdego fontu będzie taki sam.  
->  
+> Zaktualizuj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md
+> Nie wprowadzaj zmian w kodzie. Zaktualizuj tylko plik z analizą.
+> Nie usuwaj nic z pliku Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md tylko dodaj nowe informacje.
+>
+> Dodaj odpowiedzi do 11.8.6.
+> 1. Zakres „pustych kolumn” per zakładka
+> Doprecyzuję.
+> To co jest obecnie w przykładowym pliku DataSlate_manifest.xlsx traktujemy teraz jako wzór.
+> W przyszłości w pliku może być więcej kolumn, ale aplikacja ma ich nie brać pod uwagę (np. komentarz użytkownika)
+> Wymogiem jest, żeby były te kolumny co są obecnie (chociaż mogą być w różnej kolejności).
+> Wymogiem jest, żeby te obecnie zawarte kolumny były unikatowe - np. jeżeli są dwie kolumny w zakładce background o nazwie Link to aplikacja ma zwrócić błąd bez importu danych.
+> Jeżeli w jakimś rekordzie przynajmniej jedna z obecnych kolumn (czyli wymaganych do działania aplikacji) jest pusta (np. jest ID, WyswietlanaNazwa, Link ale nie ma NazwaPliku to aplikacja pominie ten rekord przy imporcie i zwróci komunikat błędu.
+>
+> 2. Format ID
+> Liczby całkowite dodatnie bez znaków specjalnych.
+>
+> 3. Sposób raportowania błędów w GM
+> Rozwiązanie lista zbiorcza po imporcie + status ostrzeżeń przy użyciu rekordu jest akceptowalne
+>
+> 4. Polityka fallbacku runtime
+> Pierwszy poprawny plik z listy plus ostrzeżenie w panelu z dokładnym opisem błędu.
+>
+> Dodatkowo - trzeba w UI Panelu GM przygotować pole "Log importu" i tam wyświetlać błędy. W takiej formie, żeby dało się zaznaczyć całość i skopiować do notatnika.
+>
+> WAŻNE - fallback fontów zapisz w kodzie. Dla każdego fontu będzie taki sam.
+>
 > Czy (poza brakiem finalnego pliku DataSlate_manifest.xlsx oraz wskazaniem plików z narysowaną ramką - 11.8.5) jesteśmy gotowi do wprowadzania zmian w plikach testowych (zgodnie z wymogiem Infoczytnik/Agents.md) aplikacji?
 
 ### 11.8.9.2. Zamknięcie punktów 11.8.6 — decyzje finalne
@@ -741,12 +741,12 @@ Poza tym decyzje wykonawcze do 11.8.6 są domknięte i można rozpoczynać imple
 
 #### 11.8.1. Prompt użytkownika (uzupełnienie kontekstu)
 
-> Zaktualizowałem plik DataSlate_manifest.xlsx  
-> Zmieniłem nazwy kolumn i ich ilość.  
-> Obecna struktura:  
-> 1. Zakładki "backgrounds", "logos", "audios": ID, Nazwa, Plik  
-> 2. Zakładka "fonts": ID, Nazwa, Font  
-> 3. Zakładka "fillers": ID, Nazwa, Prefix, Suffix  
+> Zaktualizowałem plik DataSlate_manifest.xlsx
+> Zmieniłem nazwy kolumn i ich ilość.
+> Obecna struktura:
+> 1. Zakładki "backgrounds", "logos", "audios": ID, Nazwa, Plik
+> 2. Zakładka "fonts": ID, Nazwa, Font
+> 3. Zakładka "fillers": ID, Nazwa, Prefix, Suffix
 > W skrócie - zmieniłem nazwy kolumn oraz połączyłem kolumny "Link" z "NazwaPliku".
 
 #### 11.8.2. Nowy kontrakt manifestu — wersja uproszczona
@@ -815,16 +815,16 @@ To utrzyma spójność procesu i ograniczy niejednoznaczność podczas dalszej p
 
 #### 11.9.1. Prompt użytkownika (uzupełnienie kontekstu)
 
-> Zaktualizuj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md  
-> Nie wprowadzaj zmian w kodzie. Zaktualizuj tylko plik z analizą.  
-> Nie usuwaj nic z pliku Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md tylko dodaj nowe informacje.  
->  
-> Zaktualizowałem plik DataSlate_manifest.xlsx  
-> Zawarłem w nim już dane produkcyjne. Sprawdź czy wszystko jest ok.  
->  
-> Dodałem też plik Infoczytnik/Draft/Mapowanie.xlsx  
-> Zawiera on przypisanie plików tła do plików z niebieskimi ramkami do umiejscowienia pola podobnie jak w Analizy/2026-03-29_analiza_infoczytnik_inkwizycja_obszar_Test_png.md  
->  
+> Zaktualizuj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md
+> Nie wprowadzaj zmian w kodzie. Zaktualizuj tylko plik z analizą.
+> Nie usuwaj nic z pliku Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md tylko dodaj nowe informacje.
+>
+> Zaktualizowałem plik DataSlate_manifest.xlsx
+> Zawarłem w nim już dane produkcyjne. Sprawdź czy wszystko jest ok.
+>
+> Dodałem też plik Infoczytnik/Draft/Mapowanie.xlsx
+> Zawiera on przypisanie plików tła do plików z niebieskimi ramkami do umiejscowienia pola podobnie jak w Analizy/2026-03-29_analiza_infoczytnik_inkwizycja_obszar_Test_png.md
+>
 > Sprawdź czy widzisz pliki, czy niebieska ramka jest dla ciebie widoczna, czy jesteś w stanie z tych plików policzyć gdzie ma być pole tekstowe.
 
 ---
@@ -902,3 +902,155 @@ Nie wykryto niespójności między:
 - lokalnym zbiorem plików w `Infoczytnik/assets/backgrounds` i `Infoczytnik/assets/ramki`.
 
 W praktyce oznacza to, że możesz przejść do etapu kodowania bez dodatkowego „ręcznego mapowania” pozycji pola.
+
+## 12) Plan i zakres wdrożenia — dokładna lista zmian (2026-03-30)
+
+Poniżej dopisuję pełną listę zmian wdrożeniowych w formacie wymaganym do późniejszego debugowania.
+
+### 12.1. `Infoczytnik/GM_test.html`
+
+Infoczytnik/GM_test.html, linia 9
+Było:
+`const INF_VERSION = "2026-03-29_12-58-12";`
+Będzie:
+`const INF_VERSION = "2026-03-30_20-30-00";`
+
+Infoczytnik/GM_test.html, linie 74-79
+Było:
+`<label data-i18n="labelFaction">Frakcja / layout</label>` + `select#faction` (jeden wybór spinający tło/logo/font/fillery/audio).
+Będzie:
+Pięć niezależnych dropdownów: `#backgroundSelect`, `#logoSelect`, `#fillerSelect`, `#fontSelect`, `#audioSelect`.
+
+Infoczytnik/GM_test.html, linie 113-117
+Było:
+Brak checkboxów `Fillery` i `Audio`.
+Będzie:
+Dodatkowe checkboxy `#fillersEnabled` (Fillery) i `#audioEnabled` (Audio) + zmiana etykiety `Dodaj logo` -> `Logo`.
+
+Infoczytnik/GM_test.html, linie 119-121
+Było:
+Pole `Ilość linii fillerów` zawsze aktywne.
+Będzie:
+Pole blokowane gdy `Fillery` są OFF + komunikat stanu w `#fillersHint`.
+
+Infoczytnik/GM_test.html, linie 123-127
+Było:
+Kolor głównej wiadomości tylko przez `input type="color"`.
+Będzie:
+Panel jak dla Prefix+Suffix: `#messageColorText` + `#messageColorPicker`.
+
+Infoczytnik/GM_test.html, linie 128-133
+Było:
+Preview bez podglądu wybranego tła i logo.
+Będzie:
+`#livePreview` renderuje mini-podgląd tła + `#previewLogo` + tekst (prefix/treść/suffix).
+
+Infoczytnik/GM_test.html, linie 149-153
+Było:
+Przyciski `Wyczyść ekran` i `Wyczyść pole`.
+Będzie:
+Przyciski `Wyczyść komunikat` i `Przywróć domyślne`.
+
+Infoczytnik/GM_test.html, linie 156-157
+Było:
+Brak pola logu importu.
+Będzie:
+Dodane read-only `textarea#importLog` jako „Log importu” (kopiowalny).
+
+Infoczytnik/GM_test.html, linie 170-173
+Było:
+Brak centralnego obiektu domyślnego stanu nowego formularza.
+Będzie:
+`DEFAULT_FORM_STATE` + `FONT_FALLBACK` + stały `PING_URL`.
+
+Infoczytnik/GM_test.html, linie 200-216
+Było:
+Brak runtime ładowania danych opcji z manifestu JSON.
+Będzie:
+`loadManifest()` pobiera `assets/data/data.json`, wypełnia dropdowny i log importu.
+
+Infoczytnik/GM_test.html, linie 218-225
+Było:
+Fillery oparte o `faction` i stare mapy layoutów.
+Będzie:
+`rerollFillers()` losuje z wybranego `fillerId` z manifestu.
+
+Infoczytnik/GM_test.html, linie 227-249
+Było:
+Podgląd i styl zależne od `faction` i blokad „pismo_*”.
+Będzie:
+`renderPreview()` działa wyłącznie na niezależnych polach (background/logo/font/fillers), bez blokad layoutowych.
+
+Infoczytnik/GM_test.html, linie 251-286
+Było:
+Zapis Firestore oparty o `faction`, `disableMessageAudio`, historyczne pola.
+Będzie:
+`getPayload()` zapisuje nowy model: `backgroundFile`, `logoFile`, `fillerSet`, `fontPreset`, `messageAudioFile`, `fillersEnabled`, `audioEnabled`, `messageColor` itd.
+
+Infoczytnik/GM_test.html, linie 296-314
+Było:
+Brak centralnego resetu do stanu domyślnego.
+Będzie:
+`restoreDefaults()` resetuje pełny formularz do `DEFAULT_FORM_STATE` i czyści treść.
+
+### 12.2. `Infoczytnik/Infoczytnik_test.html`
+
+Infoczytnik/Infoczytnik_test.html, linia 8
+Było:
+`const INF_VERSION = "2026-03-29_12-58-12";`
+Będzie:
+`const INF_VERSION = "2026-03-30_20-30-00";`
+
+Infoczytnik/Infoczytnik_test.html, linie 20-34
+Było:
+Stary, rozbudowany układ CSS zależny od `faction` i historycznych proporcji.
+Będzie:
+Uproszczony, spójny układ oparty o niezależne pola `backgroundFile`, `logoFile`, `fontPreset`, `messageColor`.
+
+Infoczytnik/Infoczytnik_test.html, linie 56-61
+Było:
+Domyślne audio: `assets/audio/global/Ping.mp3`.
+Będzie:
+Stały ping: `assets/audios/ping/Ping.mp3`.
+
+Infoczytnik/Infoczytnik_test.html, linie 75-100
+Było:
+Logika z mapami `LAYOUT_BG`, `FONT_STACK`, `FILLERS` oraz specjalne reguły dla `pismo_*`.
+Będzie:
+`applyStyles`, `applyLayout`, `applyMessage` działające na nowych polach dokumentu i bez blokad layoutowych.
+
+Infoczytnik/Infoczytnik_test.html, linie 106-120
+Było:
+Odtwarzanie audio wiadomości zależne od `disableMessageAudio`.
+Będzie:
+Audio wiadomości zależy od `audioEnabled`; ping zawsze gra.
+
+### 12.3. `Infoczytnik/assets/data/data.json`
+
+Infoczytnik/assets/data/data.json, linie 1-210
+Było:
+Brak pliku runtime z danymi opcji do dropdownów.
+Będzie:
+Nowy plik JSON wygenerowany z `DataSlate_manifest.xlsx` (zakładki: backgrounds, logos, audios, fonts, fillers, importLog).
+
+### 12.4. Dokumentacja modułu
+
+Infoczytnik/docs/README.md, linie 1-31
+Było:
+Instrukcja dla starego modelu „frakcja/layout” i starych akcji czyszczenia.
+Będzie:
+Nowa instrukcja PL/EN dla modelu z 5 dropdownami, checkboxami Fillery/Audio, logiem importu i nowymi przyciskami.
+
+Infoczytnik/docs/Documentation.md, linie 1-46
+Było:
+Opis techniczny starej architektury z `faction` i starymi ścieżkami assets.
+Będzie:
+Nowa dokumentacja techniczna nowego modelu danych, logiki GM i Infoczytnika oraz manifestu JSON.
+
+### 12.5. Detale layoutu globalnego
+
+DetaleLayout.md, końcówka pliku
+Było:
+Brak wpisu o zmianie modelu testowego Infoczytnika z 2026-03-30.
+Będzie:
+Nowa sekcja opisująca zmianę na niezależne dropdowny, wspólny fallback fontów i niezależne kolory.
