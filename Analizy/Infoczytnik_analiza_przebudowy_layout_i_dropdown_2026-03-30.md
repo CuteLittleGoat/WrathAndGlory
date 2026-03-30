@@ -517,3 +517,146 @@ Po co:
 3. bezpiecznie obsłużyć zmianę nazw bez utraty spójności danych.
 
 Dla MVP można uprościć to do jednego pola `id` w każdej zakładce i prostego słownika `id -> rekord` budowanego po wczytaniu manifestu.
+
+
+### 11.8. Aktualizacja analizy po zmianie `DataSlate_manifest.xlsx` (dodana kolumna `ID` w każdej zakładce) — 2026-03-30
+
+#### 11.8.1. Prompt użytkownika (uzupełnienie kontekstu)
+
+> Zaktualizowałem plik DataSlate_manifest.xlsx. Do każdej zakładki dodałem kolumnę ID.  
+> Zasady walidacji:  
+> 1) ID unikatowe w obrębie zakładki; przy duplikacie bierzemy pierwszy rekord i pokazujemy błąd w panelu GM.  
+> 2) Nie może być pustych kolumn — jeśli rekord ma pustą kolumnę, pomijamy rekord.  
+> 3) Nie walidować linków „na twardo”; dodać obsługę błędów (zły link/brak pliku).  
+> Czy to rozwiązuje: 2.2, 2.4, 2.5, 3.4?  
+> Zostawić w kodzie: 2.3, 2.1, 3.2.  
+> Dodatkowo: obszary tekstu są teraz zaszyte w kodzie i po aktualizacji modelu będą przygotowane ponownie jako dwa zestawy plików (tło + wariant z narysowaną ramką/cieniem).  
+> Czy coś jeszcze trzeba wyjaśnić przed wdrożeniem?  
+> Dopisać też wszystkie obecnie używane fonty i przypisanie do layoutów.
+
+---
+
+#### 11.8.2. Ocena: czy nowa kolumna `ID` i podane reguły rozwiązują punkty 2.2 / 2.4 / 2.5 / 3.4?
+
+##### A) 2.2. Mapowanie technicznych kluczy — **TAK, w dużej mierze rozwiązane**
+Dodanie kolumny `ID` w każdej zakładce praktycznie realizuje warstwę kluczy technicznych (stabilnych identyfikatorów), o ile:
+- `ID` jest traktowane jako klucz zapisywany do Firestore,
+- `WyswietlanaNazwa` pozostaje tylko etykietą UI,
+- parser buduje słownik `id -> rekord` per zakładka.
+
+Wniosek: punkt 2.2 można uznać za **zamknięty funkcjonalnie** dla MVP.
+
+##### B) 2.4. Ustawienia niefajlowe — **NIE, to nadal osobna decyzja**
+Nowe `ID` porządkuje rekordy assetów, ale nie definiuje ustawień globalnych (limity, flagi, polityki działania kontrolek).
+
+Ponieważ chcesz zostawić `settings` w kodzie (3.2), punkt 2.4 jest rozwiązany przez decyzję architektoniczną „w kodzie”, ale **nie przez samą zmianę w XLSX**.
+
+##### C) 2.5. Aliasy i polityka URL/ścieżek — **CZĘŚCIOWO**
+- Aliasy: nadal opcjonalne; sama kolumna `ID` ich nie zastępuje (choć zmniejsza potrzebę aliasów).
+- Polityka URL/ścieżek: Twoja decyzja „bez twardej walidacji linków, z obsługą błędów runtime” jest spójna i wystarczająca dla MVP.
+
+Czyli 2.5 jest domknięte jako **minimalna polityka operacyjna**:
+1. parser sprawdza kompletność pól (w tym `ID`),
+2. rekord z brakami jest pomijany,
+3. linki/ścieżki nie blokują importu,
+4. błąd ładowania assetu jest raportowany w panelu GM i/lub logu.
+
+##### D) 3.4. routing / keys — **TAK (dla MVP)**
+Jeśli `ID` jest unikatowe per zakładka i na nim opiera się zapis/odczyt, to routing po kluczach technicznych jest zapewniony.
+
+Warunek praktyczny:
+- rozróżniać przestrzenie kluczy per zakładka (`backgrounds`, `logos`, `audios`, `fonts`, `fillers`),
+- komunikaty walidacyjne muszą wskazywać konkretną zakładkę i `ID`.
+
+---
+
+#### 11.8.3. Doprecyzowanie Twoich reguł walidacji (wersja wykonawcza)
+
+1. **Duplikat `ID` w zakładce**
+   - parser bierze **pierwszy rekord** wystąpienia `ID`,
+   - kolejne rekordy z tym samym `ID` są ignorowane,
+   - do panelu GM trafia komunikat typu:  
+     `W zakładce backgrounds istnieją dwa wpisy o ID=4`.
+
+2. **Puste kolumny**
+   - rekord z jakimkolwiek pustym polem wymaganym dla danej zakładki jest pomijany,
+   - panel GM dostaje raport: zakładka + numer wiersza + brakujące pola.
+
+3. **Brak walidacji linków „na twardo”**
+   - import nie odrzuca rekordu tylko dlatego, że URL wygląda podejrzanie,
+   - dopiero przy użyciu assetu obsługa runtime:
+     - `onerror` obrazu,
+     - błąd `audio.play()` / brak pliku,
+     - fallback do pierwszego poprawnie ładującego się rekordu lub bezpiecznej wartości systemowej,
+     - komunikat diagnostyczny w panelu GM.
+
+---
+
+#### 11.8.4. Potwierdzenie elementów, które zostają w kodzie
+
+Zgodnie z Twoją decyzją, bez przenoszenia do manifestu na tym etapie:
+- **2.1 stały ping** (`assets/audios/ping/Ping.mp3`) — zostaje stałą systemową,
+- **2.3 domyślne wartości formularza** — zostają w kodzie (docelowo z podmianą na ID, np. background=3, logo=2),
+- **3.2 settings** — zostają w kodzie jako globalne parametry.
+
+Ta decyzja jest spójna z MVP i skraca zakres zmian.
+
+---
+
+#### 11.8.5. Obszary tekstu po aktualizacji modelu — wpływ na wdrożenie
+
+Doprecyzowanie o dwóch zestawach plików (jak w analizie z 2026-03-29) jest bardzo ważne i **wystarczające koncepcyjnie**:
+- plik A: czyste tło,
+- plik B: to samo tło z naniesioną ramką/obszarem/cieniem referencyjnym.
+
+Wniosek architektoniczny:
+- geometrię obszaru tekstu warto utrzymywać jako dane przypięte do rekordu tła (docelowo per `background ID`),
+- wizualny plik referencyjny B służy tylko jako materiał kalibracyjny i kontrolny.
+
+---
+
+#### 11.8.6. Co jeszcze trzeba doprecyzować przed wejściem w kod? (krótka checklista)
+
+Żeby implementacja poszła bez blokad, brakuje już tylko kilku decyzji wykonawczych:
+
+1. **Zakres „pustych kolumn” per zakładka**  
+   (czy np. w `fonts` wymagamy `ID+WyswietlanaNazwa+NazwaFontu`, a w `fillers` `ID+WyswietlanaNazwa+Prefix+Suffix` — obecnie sugerowane: tak).
+
+2. **Format `ID`**  
+   (liczba całkowita dodatnia vs string; rekomendacja: liczba całkowita dodatnia, bez znaków specjalnych).
+
+3. **Sposób raportowania błędów w GM**  
+   (lista zbiorcza po imporcie + status ostrzeżeń przy użyciu rekordu).
+
+4. **Polityka fallbacku runtime**  
+   (przy braku pliku: czy zawsze pierwszy poprawny rekord z listy, czy „brak assetu + ostrzeżenie” bez podmiany).
+
+Poza tym zakres jest już opisany na tyle precyzyjnie, że można bezpiecznie przejść do implementacji.
+
+---
+
+#### 11.8.7. Aktualna lista fontów używanych w kodzie i przypisanie do layoutów
+
+Na dziś mapowanie `layout/faction -> font` jest spójne w GM i w Infoczytniku (wersje testowe i główne) i wygląda następująco:
+
+- `mechanicus` → **Share Tech Mono**
+- `inquisition` → **Cinzel**
+- `militarum` → **Rajdhani**
+- `khorne` → **Black Ops One**
+- `nurgle` → **Staatliches**
+- `tzeentch` → **Orbitron**
+- `slaanesh` → **Questrial**
+- `chaos_undivided` → **Russo One**
+- `pismo_odreczne` → **Caveat**
+- `pismo_ozdobne` → **Great Vibes**
+
+Fallback techniczny dla każdego mapowania: `Calibri, Arial, sans-serif`.
+
+Dodatkowo wszystkie powyższe fonty są ładowane z Google Fonts we wspólnym imporcie CSS, więc manifest może je bezpośrednio referować przez nazwę rodziny fontu.
+
+---
+
+#### 11.8.8. Krótka odpowiedź na pytanie „czy to już wszystko wyjaśnia?”
+
+**Tak — praktycznie wszystko kluczowe jest już wyjaśnione do startu prac kodowych.**  
+Do pełnej gotowości wdrożeniowej zostały 4 krótkie decyzje z checklisty 11.8.6 (głównie format `ID`, dokładny zakres pól wymaganych i fallback przy brakującym pliku).
