@@ -248,3 +248,99 @@ Najbezpieczniej wdrożyć to w dwóch krokach:
 
 Jeżeli priorytetem jest prostota i szybkie wdrożenie, wybierz **manifest plików (bez rozbudowy Firebase)**.  
 Jeżeli priorytetem jest pełna automatyzacja list dropdown bez ręcznej aktualizacji, wybierz **Firebase Storage** (to jest realna rozbudowa Firebase).
+
+
+---
+
+## 11) Rozbudowa analizy — dodatkowe wymagania z dnia 2026-03-30
+
+### 11.1. Prompt użytkownika (uzupełnienie kontekstu)
+
+> Rozbuduj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md  
+> Nie wprowadzaj zmian w kodzie. Dodaj tylko te informacje do pliku z analizą i zaktualizuj go  
+>  
+> Dodatkowe informacje:  
+> 1. Obecnie Layouty "Pismo odręczne" i "Pismo ozdobne" maja blokadę na dodawanie logo, prostokąta i flicker.  
+> W nowym modelu ta blokada nie będzie potrzebna.  
+>  
+> 2. Trzeba będzie zmodyfikować działania przycisków "Wyczyść ekran" i "Wyczyść pole".  
+> Zastąpimy je "Wyczyść komunikat" oraz "Przywróć domyślne".  
+> Wyczyść komunikat = ma czyścić treść z pola "Treść komunikatu" bez zmiany pozostałych opcji  
+> Przywróć domyślne = ma czyścić treść z pola "Treść komunikatu" oraz przywracać wartości domyślne we wszystkich polach (czyli domyślny wybór z menu Dropdown oraz stan checkboxów).  
+> Domyślne wartości zostaną przygotowane potem.  
+>  
+> 3. W aplikacji jest dużo tekstów pomocniczych, komunikatów błęów itp. Trzeba będzie zadbać, żeby wszystkie informacje były aktualne po modyfikacji panelu.
+
+### 11.2. Usunięcie historycznych blokad dla layoutów „Pismo odręczne” i „Pismo ozdobne”
+
+W nowym modelu konfiguracja jest rozdzielona na niezależne dropdowny i checkboxy, więc dotychczasowe ograniczenia per layout należy usunąć:
+- brak wymuszania `showLogo = false` dla `pismo_odreczne` i `pismo_ozdobne`,
+- brak wymuszania `movingOverlay = false` dla tych presetów,
+- brak wymuszania `flicker = false` dla tych presetów.
+
+#### Konsekwencja architektoniczna
+`fontPreset` ma odpowiadać wyłącznie za typografię (font stack + ewentualne subtelne parametry renderingu), a nie za blokowanie efektów wizualnych. Ograniczenia, jeśli będą potrzebne w przyszłości, powinny wynikać z jawnej walidacji reguł (np. tabela kompatybilności), a nie z „ukrytych” wyjątków osadzonych w kodzie.
+
+### 11.3. Przebudowa semantyki przycisków czyszczenia
+
+Obecne przyciski:
+- „Wyczyść ekran”,
+- „Wyczyść pole”.
+
+Docelowe przyciski:
+- **„Wyczyść komunikat”**,
+- **„Przywróć domyślne”**.
+
+#### Nowa logika operacyjna
+
+1. **Wyczyść komunikat**
+   - czyści wyłącznie pole „Treść komunikatu”,
+   - nie zmienia dropdownów,
+   - nie zmienia checkboxów,
+   - nie resetuje kolorów i innych ustawień.
+
+2. **Przywróć domyślne**
+   - czyści pole „Treść komunikatu”,
+   - resetuje wszystkie dropdowny do wartości domyślnych,
+   - resetuje wszystkie checkboxy do stanów domyślnych,
+   - resetuje pozostałe pola konfiguracyjne do wartości domyślnych (np. kolory, liczba linii fillerów — zgodnie z finalną definicją domyślnych).
+
+#### Ważny detal wdrożeniowy
+Ponieważ „domyślne wartości zostaną przygotowane potem”, warto już teraz przewidzieć jeden centralny obiekt konfiguracyjny, np. `DEFAULT_FORM_STATE`, używany przez:
+- inicjalizację formularza,
+- przycisk „Przywróć domyślne”,
+- ewentualną walidację spójności przy migracjach.
+
+To ograniczy regresje i ryzyko rozjazdu między „domyślnym widokiem po otwarciu” a „domyślnym widokiem po kliknięciu resetu”.
+
+### 11.4. Aktualizacja tekstów pomocniczych, walidacyjnych i błędów
+
+Po przebudowie panelu konieczny będzie pełny przegląd copy/UI textów:
+- etykiety pól (dropdowny, checkboxy, przyciski),
+- podpowiedzi i opisy kontekstowe,
+- komunikaty błędów walidacji (np. dla `rgba(...)`),
+- komunikaty stanów nieaktywnych (np. wyłączone fillery),
+- ewentualne toasty/alerty potwierdzające akcje.
+
+#### Zakres synchronizacji komunikatów
+Należy zsynchronizować treści co najmniej w trzech miejscach:
+1. UI panelu GM,
+2. logika komunikatów runtime (walidacja, błędy ładowania assetów, fallbacki),
+3. dokumentacja użytkowa i techniczna modułu (na etapie implementacji zmian kodu).
+
+#### Rekomendacja jakościowa
+Warto przygotować checklistę „tekstów po zmianie panelu”, aby uniknąć sytuacji, gdzie nazwy dawnych kontrolek („Wyczyść ekran”, „Wyczyść pole”, „Dodaj logo”) pozostaną w komunikatach po wdrożeniu nowej semantyki.
+
+### 11.5. Wpływ na wcześniejszy plan etapów
+
+Dodatkowe wymagania rozszerzają plan z sekcji 8 o dwa punkty:
+
+- **Nowy etap 2a (reguły UI):**
+  - usunąć twarde blokady efektów dla `pismo_odreczne` i `pismo_ozdobne`,
+  - potwierdzić, że font preset nie wyłącza logo/prostokąta/flicker.
+
+- **Nowy etap 2b (akcje formularza i copy):**
+  - podmienić logikę przycisków na „Wyczyść komunikat” i „Przywróć domyślne”,
+  - ujednolicić wszystkie teksty pomocnicze/komunikaty błędów po zmianie nazewnictwa i zachowań.
+
+W praktyce oznacza to, że testy regresji muszą objąć nie tylko funkcjonalność, ale też zgodność treści komunikatów z aktualnym działaniem panelu.
