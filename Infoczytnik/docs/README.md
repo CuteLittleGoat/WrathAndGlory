@@ -10,7 +10,7 @@
 7. **Wyczyść komunikat** czyści tylko pole tekstowe w GM.
 8. **Przywróć domyślne** czyści tekst i resetuje wszystkie pola formularza do `DEFAULT_FORM_STATE`.
 9. Pole **Log importu** pokazuje wynik ładowania `assets/data/data.json` i pozwala skopiować całość.
-10. W ekranie gracza treść komunikatu startuje od górnej krawędzi obszaru roboczego: **Prefix** i **Suffix** są wyśrodkowane, a główna treść wiadomości jest wyrównana do lewej.
+10. W ekranie gracza treść komunikatu startuje od górnej krawędzi **wewnątrz widocznej ramki tła**: **Prefix** i **Suffix** są wyśrodkowane, a główna treść wiadomości jest wyrównana do lewej.
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -22,4 +22,4 @@
 7. **Wyczyść komunikat / Clear message** only clears GM text input.
 8. **Przywróć domyślne / Restore defaults** clears text and resets all form fields to `DEFAULT_FORM_STATE`.
 9. **Log importu / Import log** displays `assets/data/data.json` load results and can be copied entirely.
-10. On the player screen, message content starts from the top edge of the working area: **Prefix** and **Suffix** are centered, while the main message text is left-aligned.
+10. On the player screen, message content starts from the top edge **inside the visible background frame**: **Prefix** and **Suffix** are centered, while the main message text is left-aligned.
