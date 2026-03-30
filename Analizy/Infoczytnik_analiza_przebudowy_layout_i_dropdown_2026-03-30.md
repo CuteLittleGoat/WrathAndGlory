@@ -810,3 +810,95 @@ Dla najbliższego wdrożenia warto przyjąć „zamrożony” schemat v2 manifes
 - jawny komunikat o błędzie, jeśli użytkownik zaimportuje starszą wersję arkusza.
 
 To utrzyma spójność procesu i ograniczy niejednoznaczność podczas dalszej przebudowy panelu GM i modułu Infoczytnik.
+
+### 11.9. Aktualizacja analizy po dostarczeniu danych produkcyjnych i pliku `Mapowanie.xlsx` (2026-03-30)
+
+#### 11.9.1. Prompt użytkownika (uzupełnienie kontekstu)
+
+> Zaktualizuj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md  
+> Nie wprowadzaj zmian w kodzie. Zaktualizuj tylko plik z analizą.  
+> Nie usuwaj nic z pliku Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md tylko dodaj nowe informacje.  
+>  
+> Zaktualizowałem plik DataSlate_manifest.xlsx  
+> Zawarłem w nim już dane produkcyjne. Sprawdź czy wszystko jest ok.  
+>  
+> Dodałem też plik Infoczytnik/Draft/Mapowanie.xlsx  
+> Zawiera on przypisanie plików tła do plików z niebieskimi ramkami do umiejscowienia pola podobnie jak w Analizy/2026-03-29_analiza_infoczytnik_inkwizycja_obszar_Test_png.md  
+>  
+> Sprawdź czy widzisz pliki, czy niebieska ramka jest dla ciebie widoczna, czy jesteś w stanie z tych plików policzyć gdzie ma być pole tekstowe.
+
+---
+
+#### 11.9.2. Walidacja pliku `Infoczytnik/DataSlate_manifest.xlsx` (wersja produkcyjna)
+
+Weryfikacja struktury i danych wykazała, że plik jest spójny z aktualnie przyjętym kontraktem uproszczonym:
+
+- Zakładki obecne: `backgrounds`, `logos`, `audios`, `fonts`, `fillers`.
+- Nagłówki są zgodne z modelem v2:
+  - `backgrounds/logos/audios`: `ID`, `Nazwa`, `Plik`,
+  - `fonts`: `ID`, `Nazwa`, `Font`,
+  - `fillers`: `ID`, `Nazwa`, `Prefix`, `Suffix`.
+- Zakładka `backgrounds` zawiera 9 rekordów (ID 1–9) i pokrywa komplet teł używanych przez nowy model.
+- Zakładki `logos`, `audios`, `fonts`, `fillers` zawierają dane gotowe do importu i użycia runtime.
+
+Ocena: **plik manifestu wygląda poprawnie do wdrożenia MVP** (bez zmian założeń z sekcji 11.8).
+
+---
+
+#### 11.9.3. Walidacja pliku `Infoczytnik/Draft/Mapowanie.xlsx`
+
+Potwierdzone:
+- plik istnieje i jest czytelny,
+- arkusz zawiera kolumny: `ID`, `Nazwa`, `Plik`, `Ramka`,
+- liczba rekordów: 9 (ID 1–9),
+- przypisania `ID/Nazwa/Plik` są 1:1 zgodne z zakładką `backgrounds` z `DataSlate_manifest.xlsx`,
+- każdy rekord ma wskazany plik wariantu z ramką (`*_ramka.png`).
+
+Wniosek: **mapowanie tło → plik referencyjny z ramką jest kompletne i spójne**.
+
+---
+
+#### 11.9.4. Widoczność niebieskiej ramki
+
+Tak — niebieska ramka jest widoczna i wykrywalna.
+
+- Wizualnie (kontrola podglądu) ramka jest wyraźnie odseparowana kolorystycznie od tła.
+- Technicznie (detekcja pikseli o charakterystyce niebieskiej) udało się automatycznie wyznaczyć obszar ramki dla wszystkich 9 plików `*_ramka.png`.
+
+To oznacza, że można przejść z etapu „manualnego pozycjonowania” na etap „pozycjonowania liczonego z plików referencyjnych”.
+
+---
+
+#### 11.9.5. Wyliczone obszary pola tekstowego na podstawie plików `Ramka`
+
+Poniżej orientacyjne bounding boxy (piksele) dla obszaru tekstu, liczone z wykrytej niebieskiej ramki:
+
+| ID | Plik ramki | Rozdzielczość | Lewy-górny (x,y) | Prawy-dolny (x,y) | Rozmiar pola (w×h) |
+|---:|---|---|---|---|---|
+| 1 | `DataSlate_01_ramka.png` | 982×1338 | (63, 102) | (917, 1188) | 855×1087 |
+| 2 | `DataSlate_02_ramka.png` | 526×812 | (66, 75) | (438, 689) | 373×615 |
+| 3 | `DataSlate_03_ramka.png` | 1852×2676 | (194, 384) | (1692, 2188) | 1499×1805 |
+| 4 | `DataSlate_04_ramka.png` | 1131×1600 | (127, 237) | (1002, 1398) | 876×1162 |
+| 5 | `DataSlate_05_ramka.png` | 1034×1571 | (34, 38) | (1001, 1502) | 968×1465 |
+| 6 | `DataSlate_Inq_ramka.png` | 707×1023 | (71, 46) | (653, 843) | 583×798 |
+| 7 | `Litannie_Zaginionych_ramka.png` | 1263×1595 | (251, 200) | (1034, 1418) | 784×1219 |
+| 8 | `Notatnik_ramka.png` | 1024×1536 | (37, 43) | (983, 1493) | 947×1451 |
+| 9 | `Pergamin_ramka.png` | 1024×1536 | (55, 45) | (971, 1503) | 917×1459 |
+
+Uwaga techniczna:
+- wartości są policzone automatycznie i nadają się jako bardzo dobry punkt startowy,
+- przy wdrożeniu warto dodać opcjonalny margines bezpieczeństwa (np. 4–12 px) dla uniknięcia wejścia tekstu na linię ramki po zmianie skali,
+- rekomendowane jest zapisanie geometrii procentowo względem rozdzielczości (np. `x/w`, `y/h`, `width/w`, `height/h`) — dzięki temu pozycjonowanie będzie odporne na różne viewporty.
+
+---
+
+#### 11.9.6. Odpowiedź na pytanie „czy wszystko jest OK?”
+
+Na obecnym etapie: **tak, dane wyglądają poprawnie i wystarczają do rozpoczęcia implementacji mechanizmu liczenia pola tekstowego z par `Plik` + `Ramka`**.
+
+Nie wykryto niespójności między:
+- `DataSlate_manifest.xlsx` (zakładka `backgrounds`),
+- `Draft/Mapowanie.xlsx` (kolumna `Ramka`),
+- lokalnym zbiorem plików w `Infoczytnik/assets/backgrounds` i `Infoczytnik/assets/ramki`.
+
+W praktyce oznacza to, że możesz przejść do etapu kodowania bez dodatkowego „ręcznego mapowania” pozycji pola.
