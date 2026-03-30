@@ -660,3 +660,79 @@ Dodatkowo wszystkie powyższe fonty są ładowane z Google Fonts we wspólnym im
 
 **Tak — praktycznie wszystko kluczowe jest już wyjaśnione do startu prac kodowych.**  
 Do pełnej gotowości wdrożeniowej zostały 4 krótkie decyzje z checklisty 11.8.6 (głównie format `ID`, dokładny zakres pól wymaganych i fallback przy brakującym pliku).
+
+---
+
+#### 11.8.9. Odpowiedzi do checklisty 11.8.6 (aktualizacja 2026-03-30)
+
+### 11.8.9.1. Prompt użytkownika (doprecyzowanie kontekstu)
+
+> Zaktualizuj analizę: Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md  
+> Nie wprowadzaj zmian w kodzie. Zaktualizuj tylko plik z analizą.  
+> Nie usuwaj nic z pliku Analizy/Infoczytnik_analiza_przebudowy_layout_i_dropdown_2026-03-30.md tylko dodaj nowe informacje.  
+>  
+> Dodaj odpowiedzi do 11.8.6.  
+> 1. Zakres „pustych kolumn” per zakładka  
+> Doprecyzuję.  
+> To co jest obecnie w przykładowym pliku DataSlate_manifest.xlsx traktujemy teraz jako wzór.  
+> W przyszłości w pliku może być więcej kolumn, ale aplikacja ma ich nie brać pod uwagę (np. komentarz użytkownika)  
+> Wymogiem jest, żeby były te kolumny co są obecnie (chociaż mogą być w różnej kolejności).  
+> Wymogiem jest, żeby te obecnie zawarte kolumny były unikatowe - np. jeżeli są dwie kolumny w zakładce background o nazwie Link to aplikacja ma zwrócić błąd bez importu danych.  
+> Jeżeli w jakimś rekordzie przynajmniej jedna z obecnych kolumn (czyli wymaganych do działania aplikacji) jest pusta (np. jest ID, WyswietlanaNazwa, Link ale nie ma NazwaPliku to aplikacja pominie ten rekord przy imporcie i zwróci komunikat błędu.  
+>  
+> 2. Format ID  
+> Liczby całkowite dodatnie bez znaków specjalnych.  
+>  
+> 3. Sposób raportowania błędów w GM  
+> Rozwiązanie lista zbiorcza po imporcie + status ostrzeżeń przy użyciu rekordu jest akceptowalne  
+>  
+> 4. Polityka fallbacku runtime  
+> Pierwszy poprawny plik z listy plus ostrzeżenie w panelu z dokładnym opisem błędu.  
+>  
+> Dodatkowo - trzeba w UI Panelu GM przygotować pole "Log importu" i tam wyświetlać błędy. W takiej formie, żeby dało się zaznaczyć całość i skopiować do notatnika.  
+>  
+> WAŻNE - fallback fontów zapisz w kodzie. Dla każdego fontu będzie taki sam.  
+>  
+> Czy (poza brakiem finalnego pliku DataSlate_manifest.xlsx oraz wskazaniem plików z narysowaną ramką - 11.8.5) jesteśmy gotowi do wprowadzania zmian w plikach testowych (zgodnie z wymogiem Infoczytnik/Agents.md) aplikacji?
+
+### 11.8.9.2. Zamknięcie punktów 11.8.6 — decyzje finalne
+
+1. **Zakres „pustych kolumn” per zakładka — ustalone**
+   - `DataSlate_manifest.xlsx` w obecnej postaci jest wzorcem kolumn wymaganych.
+   - Kolejność kolumn może być dowolna.
+   - Dodatkowe kolumny są dozwolone i mają być ignorowane przez importer.
+   - Kolumny wymagane muszą być **unikatowe w obrębie zakładki** (np. podwójny nagłówek `Link` => błąd krytyczny i przerwanie importu całej zakładki / importu całości wg polityki importera).
+   - Jeśli rekord ma pustą wartość w dowolnej kolumnie wymaganej, rekord jest pomijany i wpisywany do logu błędów importu.
+
+2. **Format `ID` — ustalone**
+   - `ID` = dodatnia liczba całkowita (`1,2,3...`), bez znaków specjalnych, bez tekstów.
+   - Rekomendowane walidacje: brak duplikatów `ID` w obrębie zakładki, brak wartości `0`, brak wartości ujemnych, brak wartości niecałkowitych.
+
+3. **Raportowanie błędów w GM — ustalone**
+   - Model: lista zbiorcza po imporcie + ostrzeżenia użycia rekordu runtime.
+   - Dodatkowy wymóg UI: w panelu GM ma powstać pole **„Log importu”** (read-only), które:
+     - pokazuje pełną listę błędów/ostrzeżeń,
+     - pozwala zaznaczyć i skopiować całość (np. `textarea`/`pre` z obsługą zaznaczenia),
+     - zachowuje szczegóły: zakładka, `ID`, kolumna, opis błędu.
+
+4. **Polityka fallbacku runtime — ustalone**
+   - Przy błędzie assetu: wybór **pierwszego poprawnego pliku z listy**.
+   - Jednocześnie: jawne ostrzeżenie w panelu GM z dokładnym opisem problemu (źródło, rekord, powód, zastosowany fallback).
+
+### 11.8.9.3. Fallback fontów — decyzja implementacyjna
+
+Potwierdzone wymaganie:
+- fallback fontów ma być zapisany bezpośrednio w kodzie,
+- fallback ma być identyczny dla każdego fontu.
+
+Przyjęta zasada:
+- niezależnie od wybranego `NazwaFontu`, końcówka stacku fallback pozostaje wspólna (np. `..., Calibri, Arial, sans-serif`).
+- importer manifestu mapuje tylko font podstawowy, a fallback dopina warstwa runtime/UI.
+
+### 11.8.9.4. Odpowiedź na pytanie o gotowość do wdrożenia
+
+**Tak — jesteśmy gotowi do wejścia w zmiany plików testowych**, z dwoma znanymi brakami wskazanymi przez Ciebie:
+1. finalna wersja `DataSlate_manifest.xlsx`,
+2. komplet wskazanych plików referencyjnych z narysowaną ramką (sekcja 11.8.5).
+
+Poza tym decyzje wykonawcze do 11.8.6 są domknięte i można rozpoczynać implementację zgodnie z wymaganiami `Infoczytnik/AGENTS.md`.
