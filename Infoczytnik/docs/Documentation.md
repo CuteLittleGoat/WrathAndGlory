@@ -42,16 +42,19 @@ Zapisywane pola:
    - `prefix` i `suffix` mają `text-align:center`,
    - `msg` ma `text-align:left`,
    - kontener `.box` używa `align-items:stretch`, aby wyrównania tekstu działały niezależnie dla każdej sekcji.
-8. Overlay jest dynamicznie dopasowywany do realnie widocznego obszaru tła (`object-fit:contain`) przez funkcję `fitOverlayToBackground()`. Funkcja:
-   - wylicza docelowy prostokąt renderowanego tła na podstawie `naturalWidth/naturalHeight` i rozmiaru viewportu,
-   - ustawia `left/top/width/height` overlay tak, aby tekst nie wychodził poza ramkę layoutu,
-   - uruchamia się po `load` obrazka oraz przy `resize` okna.
+8. Overlay jest dynamicznie dopasowywany w dwóch krokach:
+   - najpierw liczony jest prostokąt renderowanego tła (`object-fit:contain`) na podstawie `naturalWidth/naturalHeight` i viewportu,
+   - następnie stosowany jest preset obszaru roboczego zależny od `backgroundId` (`CONTENT_RECTS_BY_BACKGROUND_ID`), co ogranicza tekst do „ekranu” wewnątrz ramki.
+9. Funkcja `fitOverlayToBackground()`:
+   - ustawia `left/top/width/height` overlay do obszaru roboczego dla aktywnego tła,
+   - pozycjonuje logo w prawym górnym rogu renderowanej ramki tła,
+   - uruchamia się po `load` obrazka, przy `resize` okna i po każdej zmianie layoutu.
 
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.
 - Preview GM ma mini-podgląd tła i logo.
 - Checkbox `Fillery` blokuje `Ilość linii fillerów` i pokazuje komunikat o stanie.
-- Układ tekstu na ekranie gracza jest mieszany: prefix/suffix centralnie, treść wiadomości do lewej, cały blok osadzony od górnej krawędzi warstwy overlay i ograniczony do obszaru widocznej ramki.
+- Układ tekstu na ekranie gracza jest mieszany: prefix/suffix centralnie, treść wiadomości do lewej, cały blok osadzony od górnej krawędzi warstwy overlay i ograniczony do obszaru roboczego zdefiniowanego dla danego tła.
 
 ## Uwagi implementacyjne
 - Produkcyjne pliki (`GM.html`, `Infoczytnik.html`) nie były modyfikowane.
