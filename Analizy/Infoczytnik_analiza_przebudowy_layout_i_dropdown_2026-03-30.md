@@ -157,33 +157,29 @@ Docelowa struktura:
 
 ## 6) Najważniejszy punkt: skąd brać listę plików do dropdownów?
 
-Użytkownik chce dynamiczną listę plików z katalogów. W czystym statycznym HTML/JS przeglądarka **nie ma bezpośredniego API do listowania plików w folderze serwera**.
+Decyzja docelowa: **Opcja A** (bez rozbudowy Firebase), ale manifest źródłowy ma być utrzymywany w pliku **XLSX**.
 
-### Opcja A (najprostsza, bez rozbudowy Firebase): manifest JSON/JS
-- Tworzysz np. `assets/asset-manifest.json` z listami `backgrounds`, `logos`, `audios`.
-- GM ładuje manifest i buduje dropdowny.
-- Plus: brak zmian w Firebase i backendzie.
-- Minus: manifest trzeba aktualizować przy każdym dodaniu pliku (ręcznie lub skryptem build).
+### Opcja A (docelowa): manifest XLSX + konwersja do JSON
+- Źródłem edycyjnym dla treści będzie `Infoczytnik/DataSlate_manifest.xlsx`.
+- Aplikacja frontowa nie powinna czytać XLSX bezpośrednio w runtime (to zwiększa ciężar frontu i komplikuje walidację), więc rekomendowany jest etap pośredni:
+  1. skrypt konwersji (`DataSlate_manifest.xlsx` → `data.json`),
+  2. strona GM/Infoczytnik czyta gotowy JSON.
+- To jest spójne z Twoim wymaganiem „najprościej, bez rozbudowy Firebase” i z mechanikami znanymi z modułów DataVault/Audio.
 
-### Opcja B (rozbudowa Firebase — tylko jeśli chcesz pełną dynamiczność)
-- Przeniesienie assetów do **Firebase Storage**.
-- GM pobiera listy przez SDK (`listAll`) lub przez backend endpoint.
-- Wymaga:
-  - konfiguracji `storageBucket`,
-  - reguł bezpieczeństwa Storage,
-  - ewentualnie CORS,
-  - przebudowy ładowania assetów i cache bustingu.
+### Czy rozbudowa Firebase jest potrzebna?
+**Nie.** Przy modelu XLSX→JSON nie ma potrzeby wdrażania Firebase Storage ani backendowego listowania katalogów.
 
-### Opcja C (własny backend endpoint)
-- Endpoint (np. Node) zwraca listę plików z lokalnych katalogów.
-- GM pobiera listę przez `fetch('/api/assets')`.
-- Wymaga utrzymania backendu tam, gdzie dziś front może być hostowany statycznie.
+### Uwaga implementacyjna (ważna)
+Przeglądarka nie listuje plików katalogu hostingu statycznego, więc dropdowny **nie mogą** bazować na automatycznym skanie `assets/*` bez warstwy pośredniej. Manifest (po konwersji do JSON) jest właściwą i stabilną ścieżką.
 
-## Wniosek Firebase
-**Rozbudowa Firebase nie jest wymagana**, jeśli akceptujesz manifest statyczny (Opcja A).  
-**Jest wymagana**, jeśli listy mają być „same z siebie” dynamiczne bez aktualizacji manifestu i bez backendu (Opcja B — Firebase Storage).
+### Wariant „przycisk generuj/importuj data.json”
+Jeżeli wybierzesz przepływ podobny do DataVault, analiza przewiduje dwa równoważne tryby:
+- **Tryb A (offline/build-time):** skrypt uruchamiany lokalnie (np. Node/Python) generuje `data.json` z XLSX, a plik jest commitowany do repo.
+- **Tryb B (w panelu GM):** przycisk „Importuj manifest / Generuj data.json” pozwala wybrać lokalny plik `.xlsx`, parser JS odczytuje arkusze i buduje obiekt runtime (opcjonalnie eksport do `data.json`).
 
----
+Rekomendacja praktyczna: wdrożyć oba, gdzie:
+- build-time daje stabilność i powtarzalność,
+- przycisk importu przyspiesza iterację bez ręcznego przepisywania danych.
 
 ## 7) Zakres refaktoryzacji i ryzyka
 
@@ -344,3 +340,60 @@ Dodatkowe wymagania rozszerzają plan z sekcji 8 o dwa punkty:
   - ujednolicić wszystkie teksty pomocnicze/komunikaty błędów po zmianie nazewnictwa i zachowań.
 
 W praktyce oznacza to, że testy regresji muszą objąć nie tylko funkcjonalność, ale też zgodność treści komunikatów z aktualnym działaniem panelu.
+
+
+### 11.6. Aktualizacja analizy wg decyzji użytkownika (2026-03-30)
+
+#### 11.6.1. Brak fallbacków i brak migracji plików
+Przyjęte założenie: wdrożenie „od zera”, bez okresu przejściowego.
+
+Konsekwencja dla planu:
+- można usunąć etap kompatybilności wstecznej oparty o `faction` jako mechanizm ratunkowy,
+- wdrożenie powinno od razu zapisywać i odczytywać nowy model (dropdowny + checkboxy),
+- testy regresji muszą być prowadzone na nowej strukturze danych i nowych ścieżkach assetów.
+
+#### 11.6.2. Ocena formatu `DataSlate_manifest.xlsx` (prefix/suffix + pozostałe zakładki)
+Na podstawie struktury arkuszy (`backgrounds`, `logos`, `audios`, `fonts`, `fillers`) format jest **wystarczający jako MVP** dla nowego panelu:
+- `backgrounds/logos/audios`: `WyswietlanaNazwa`, `Link`, `NazwaPliku`,
+- `fonts`: `WyswietlanaNazwa`, `NazwaFontu`,
+- `fillers`: `WyswietlanaNazwa`, `Prefix`, `Suffix` (lista rozdzielona średnikiem).
+
+Lista `Prefix`/`Suffix` w jednej komórce (separator `;`) jest technicznie poprawna i łatwa do parsowania.
+
+#### 11.6.3. Reguła automatycznego dodawania „+++”
+Wymaganie „aplikacja sama dodaje `+++` na początku i końcu linii” jest wykonalne i powinno być zaimplementowane na etapie konwersji/parsowania:
+- wejście z XLSX przechowuje „czysty” tekst (bez dekoratorów),
+- normalizator tworzy finalny format: `+++ ${tekst.trim()} +++`.
+
+To upraszcza utrzymanie treści i usuwa ryzyko niespójnego formatowania między zestawami.
+
+#### 11.6.4. Czy obecny manifest pokrywa wszystko, co dziś jest zaszyte w kodzie?
+**Prawie wszystko, ale nie w 100%.**
+
+Pokryte:
+- lista teł,
+- lista logo,
+- lista audio wiadomości,
+- lista zestawów fillerów,
+- lista fontów.
+
+Elementy, które nadal są zaszyte poza manifestem i wymagają jawnej decyzji:
+1. stały plik ping (`assets/audios/ping/Ping.mp3`) – zwykle jako stała systemowa (bez dropdownu),
+2. mapowanie technicznych kluczy (`mechanicus`, `inquisition`, itd.) na rekordy manifestu,
+3. wartości domyślne formularza (wybory dropdown + stany checkboxów),
+4. ustawienia niefajlowe (np. domyślne kolory, limity linii fillerów, zachowania ON/OFF),
+5. ewentualne aliasy i polityka walidacji URL/ścieżek.
+
+Dodatkowa obserwacja: w kodzie historycznie istnieją też layouty „pismo_odreczne” i „pismo_ozdobne” (oraz ich reguły), więc trzeba jednoznacznie określić ich odwzorowanie w nowym manifeście (np. jako pozycje font/background albo jawnie wycofane).
+
+#### 11.6.5. Czy potrzebne są dodatkowe zakładki w manifeście?
+Dla MVP – **nie są bezwzględnie konieczne**. Obecne 5 zakładek wystarcza do uruchomienia nowego modelu dropdownów.
+
+Rekomendowane opcjonalne rozszerzenia (jeśli chcesz pełną konfigurację bez „zaszywek”):
+- `defaults` – domyślne wybory i stany checkboxów,
+- `settings` – limity, flagi UI, wartości globalne,
+- `i18n` – etykiety/komunikaty PL/EN,
+- `routing` lub `keys` – stabilne klucze techniczne i aliasy nazw.
+
+Jeśli celem jest prostota na start, zostań przy 5 zakładkach i dodaj tylko minimalną walidację (wymagalność kolumn, brak duplikatów nazw, poprawne URL/ścieżki).
+
