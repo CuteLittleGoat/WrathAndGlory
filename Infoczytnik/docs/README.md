@@ -11,7 +11,8 @@
 8. **Przywróć domyślne** czyści tekst i resetuje wszystkie pola formularza do `DEFAULT_FORM_STATE`.
 9. Pole **Log importu** pokazuje wynik ładowania `assets/data/data.json` i pozwala skopiować całość.
 10. W ekranie gracza treść komunikatu startuje od górnej krawędzi **wewnątrz obszaru roboczego przypisanego do wybranego tła**: **Prefix** i **Suffix** są wyśrodkowane, a główna treść wiadomości jest wyrównana do lewej.
-11. Logo (gdy checkbox **Logo** jest aktywny) pojawia się w prawym górnym rogu ramki wybranego tła.
+11. Prostokąt cienia pokrywa cały obszar roboczy (pole „ekranu” wewnątrz ramki), a wszystkie elementy (wiadomość, prefixy, suffixy, logo) są pozycjonowane wewnątrz tego samego obszaru.
+12. Logo (gdy checkbox **Logo** jest aktywny) pojawia się w prawym górnym rogu obszaru roboczego/prostokąta cienia.
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -24,4 +25,5 @@
 8. **Przywróć domyślne / Restore defaults** clears text and resets all form fields to `DEFAULT_FORM_STATE`.
 9. **Log importu / Import log** displays `assets/data/data.json` load results and can be copied entirely.
 10. On the player screen, message content starts from the top edge **inside the background-specific working area**: **Prefix** and **Suffix** are centered, while the main message text is left-aligned.
-11. Logo (when the **Logo** checkbox is enabled) is placed in the top-right corner of the selected background frame.
+11. The shadow rectangle covers the whole working area (the inner “screen” field), and all elements (message, prefixes, suffixes, logo) are positioned inside that same area.
+12. Logo (when the **Logo** checkbox is enabled) is placed in the top-right corner of the working area/shadow rectangle.
