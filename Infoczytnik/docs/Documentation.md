@@ -37,11 +37,17 @@ Zapisywane pola:
 3. `message` -> renderuje tekst + fillery + styl; audio wiadomości działa tylko przy `audioEnabled !== false`.
 4. `clear` -> czyści prefix, treść i suffix bez resetu całej strony.
 5. Font ma wspólny fallback: `Calibri, Arial, sans-serif`.
+6. Kontener overlay jest wyrównany do górnej krawędzi (`align-items:flex-start`), dzięki czemu blok tekstu rozpoczyna się od góry ekranu roboczego.
+7. W bloku wiadomości:
+   - `prefix` i `suffix` mają `text-align:center`,
+   - `msg` ma `text-align:left`,
+   - kontener `.box` używa `align-items:stretch`, aby wyrównania tekstu działały niezależnie dla każdej sekcji.
 
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.
 - Preview GM ma mini-podgląd tła i logo.
 - Checkbox `Fillery` blokuje `Ilość linii fillerów` i pokazuje komunikat o stanie.
+- Układ tekstu na ekranie gracza jest mieszany: prefix/suffix centralnie, treść wiadomości do lewej, cały blok osadzony od górnej krawędzi warstwy overlay.
 
 ## Uwagi implementacyjne
 - Produkcyjne pliki (`GM.html`, `Infoczytnik.html`) nie były modyfikowane.
