@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-29_12-58-12"; // <- zmieniaj przy aktualizacjach (data + godzina)
+      const INF_VERSION = "2026-03-30_20-30-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -19,801 +19,240 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    :root{--text:#eaeaea;--muted:#bdbdbd;--accent:#ffd27a;--border:#2a2a2a;--panel:rgba(18,18,18,.92);}
-    *{box-sizing:border-box}
-    body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(180deg,#070707,#0f0f0f);color:var(--text);}
-    .wrap{max-width:980px;margin:0 auto}
-    .language-switcher{display:flex;justify-content:flex-end;margin-bottom:10px;}
-    .language-switcher select{
-      background:#0f0f0f;
-      color:var(--text);
-      border:1px solid var(--border);
-      border-radius:10px;
-      padding:8px 12px;
-      font-size:14px;
-    }
-    h1{margin:0 0 10px 0;font-size:20px;color:var(--accent);letter-spacing:.3px}
-    .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.35);}
-    label{display:block;margin:10px 0 6px 0;color:var(--muted);font-size:13px}
-    select,textarea,input[type="number"],input[type="color"],input[type="text"]{
-      width:100%;background:#0f0f0f;color:var(--text);border:1px solid var(--border);
-      border-radius:10px;padding:10px 12px;font-size:16px;outline:none;
-    }
-    textarea{min-height:140px;resize:vertical;line-height:1.3}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    .col{flex:1;min-width:240px}
-    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-    button{
-      flex:1;min-width:160px;border:none;border-radius:12px;padding:12px 14px;font-size:16px;cursor:pointer;
-      background:#1d1d1d;color:var(--text);border:1px solid var(--border);
-    }
-    button.primary{background:linear-gradient(180deg,#3a2a12,#1c1408);border:1px solid rgba(255,210,122,.35);color:var(--accent);}
-    button.warn{background:linear-gradient(180deg,#1c0c0c,#120606);border:1px solid rgba(255,120,120,.25);color:#ffb3b3;}
-    .small{margin-top:10px;font-size:12px;color:var(--muted)}
-    .status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
-    .preview{
-      margin:10px 0 0 0;padding:10px 12px;border-radius:10px;border:1px dashed rgba(255,255,255,.18);
-      background:rgba(0,0,0,.25);color:#cfcfcf;font-family:Consolas,"Courier New",monospace;font-size:13px;white-space:pre-wrap;
-    }
-    .chips{display:flex;gap:10px 14px;flex-wrap:wrap;margin-top:8px}
-    .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap;}
-    .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
-
-    /* ===== Układ: Losowość fillerów ===== */
-    .fillerBox{
-      padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:#0f0f0f;
-    }
-    .fillerTop{
-      display:flex;align-items:center;gap:10px;flex-wrap:wrap;
-    }
-    .fillerManual{
-      margin-top:10px;
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      align-items:end;
-    }
-    .fillerManual .right{
-      justify-self:end;
-      width:min(260px, 100%);
-    }
-    .fillerManual .left{
-      width:min(260px, 100%);
-    }
-    .pairRow{
-      display:flex;gap:10px;align-items:center;justify-content:flex-end;
-    }
-    .pairRow b{color:#bdbdbd;font-weight:600}
-    .pairRow input[type="number"]{width:110px}
-
-    hr.sep{border:none;border-top:1px solid rgba(255,255,255,.08);margin:14px 0;}
-    code{font-family:Consolas,"Courier New",monospace;font-size:12px;color:#ddd}
-
-    .livePreviewBox{
-      margin-top:12px;
-      padding:12px 14px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.08);
-      background:rgba(0,0,0,.35);
-      min-height:140px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      justify-content:center;
-    }
-    .livePreviewBox .line{display:block;}
-    .livePreviewBox .prefix,.livePreviewBox .suffix{opacity:.9; white-space:pre-line;}
-    .livePreviewBox .message{line-height:1.35;}
+    :root{--text:#eaeaea;--muted:#bdbdbd;--accent:#ffd27a;--border:#2a2a2a;--panel:rgba(18,18,18,.92)}
+    *{box-sizing:border-box} body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(180deg,#070707,#0f0f0f);color:var(--text)}
+    .wrap{max-width:1080px;margin:0 auto}.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
+    h1{margin:0 0 10px;color:var(--accent)} label{display:block;margin:10px 0 6px;color:var(--muted);font-size:13px}
+    select,textarea,input{width:100%;background:#0f0f0f;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+    textarea{min-height:120px;resize:vertical}.row{display:flex;gap:12px;flex-wrap:wrap}.col{flex:1;min-width:280px}
+    .inline{display:flex;gap:10px;align-items:center}.toggles{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0}
+    .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button{flex:1;min-width:160px;padding:12px;border-radius:12px;border:1px solid var(--border);background:#1d1d1d;color:var(--text);cursor:pointer}
+    button.primary{background:linear-gradient(180deg,#3a2a12,#1c1408);color:var(--accent)} button.warn{background:linear-gradient(180deg,#1c0c0c,#120606);color:#ffb3b3}
+    .small{font-size:12px;color:var(--muted);margin-top:6px}.status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+    .livePreviewBox{margin-top:10px;padding:12px;border-radius:10px;min-height:150px;background-size:cover;background-position:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+    .previewLogo{position:absolute;top:10px;right:10px;width:84px;max-height:84px;object-fit:contain;opacity:.9;display:none}
+    .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+    .disabled-note{opacity:.6}
+    .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="language-switcher">
-      <select id="languageSelect" aria-label="Wersja językowa">
-        <option value="pl">Polski</option>
-        <option value="en">English</option>
-      </select>
+<div class="wrap"><h1>Infoczytnik - panel GM</h1><div class="card">
+  <div class="row">
+    <div class="col">
+      <label>Tło</label><select id="backgroundSelect"></select>
+      <label>Logo</label><select id="logoSelect"></select>
+      <label>Zestaw fillerów</label><select id="fillerSelect"></select>
+      <label>Font</label><select id="fontSelect"></select>
+      <label>Audio wiadomości</label><select id="audioSelect"></select>
+      <div class="toggles">
+        <label class="inline"><input type="checkbox" id="showLogo" checked style="width:auto"> Logo</label>
+        <label class="inline"><input type="checkbox" id="movingOverlay" checked style="width:auto"> Prostokąt cienia</label>
+        <label class="inline"><input type="checkbox" id="flicker" checked style="width:auto"> Flicker</label>
+        <label class="inline"><input type="checkbox" id="fillersEnabled" checked style="width:auto"> Fillery</label>
+        <label class="inline"><input type="checkbox" id="audioEnabled" checked style="width:auto"> Audio</label>
+      </div>
+      <label>Ilość linii fillerów</label><input type="number" id="fillerLineCount" min="1" max="5" value="3">
+      <div id="fillersHint" class="small">Fillery aktywne.</div>
     </div>
-    <h1 id="pageTitle" data-i18n="pageTitle">Infoczytnik - panel GM</h1>
-    <div class="card">
+    <div class="col">
+      <label>Kolor fontu (treść wiadomości)</label>
+      <div class="row"><div class="col"><input type="text" id="messageColorText" value="#00ff66"></div><div class="col"><input type="color" id="messageColorPicker" value="#00ff66"></div></div>
+      <label>Wielkość fontu (treść) px</label><input type="number" id="msgFontSize" min="12" max="80" value="20">
+      <label>Kolor Prefix + Suffix (wspólny)</label>
+      <div class="row"><div class="col"><input type="text" id="psColorText" value="rgba(255,255,255,.88)"></div><div class="col"><input type="color" id="psColorPicker" value="#ffffff"></div></div>
+      <label>Wielkość fontu Prefix + Suffix px</label><input type="number" id="psFontSize" min="10" max="60" value="12">
 
-      <div class="row">
-        <!-- LEWA KOLUMNA -->
-        <div class="col">
-          <label data-i18n="labelFaction">Frakcja / layout</label>
-          <select id="faction">
-            <option value="mechanicus" data-i18n="factionMechanicus">Adeptus Mechanicus</option>
-            <option value="inquisition" data-i18n="factionInquisition">Inkwizycja</option>
-            <option value="militarum" data-i18n="factionMilitarum">Astra Militarum</option>
-            <option value="khorne" data-i18n="factionKhorne">Khorne</option>
-            <option value="nurgle" data-i18n="factionNurgle">Nurgle</option>
-            <option value="tzeentch" data-i18n="factionTzeentch">Tzeentch</option>
-            <option value="slaanesh" data-i18n="factionSlaanesh">Slaanesh</option>
-            <option value="chaos_undivided" data-i18n="factionChaosUndivided">Chaos Undivided</option>
-            <option value="pismo_odreczne" data-i18n="factionPismoOdreczne">Pismo odręczne</option>
-            <option value="pismo_ozdobne" data-i18n="factionPismoOzdobne">Pismo ozdobne</option>
-          </select>
-
-          <!-- Kolor treści + szybkie -->
-          <label data-i18n="labelMessageColor">Kolor fontu (treść wiadomości)</label>
-          <input type="color" id="fontColor" value="#00ff66" />
-          <div class="chips" id="msgColorChips">
-            <div class="chip" data-target="msg" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
-            <div class="chip" data-target="msg" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
-            <div class="chip" data-target="msg" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
-            <div class="chip" data-target="msg" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
-          </div>
-
-          <!-- Rozmiar treści -->
-          <label data-i18n="labelMessageSize">Wielkość fontu (treść wiadomości) — px</label>
-          <input type="number" id="msgFontSize" min="12" max="80" step="1" value="20" />
-
-          <hr class="sep">
-
-          <!-- Kolor Prefix+Suffix -->
-          <label data-i18n="labelPrefixSuffixColor">Kolor Prefix + Suffix (wspólny)</label>
-          <div class="row" style="gap:10px;">
-            <div class="col" style="min-width:180px;">
-              <input type="text" id="psColorText" value="rgba(255,255,255,.88)" />
-              <div class="small" data-i18n="prefixSuffixColorHint">Możesz wpisać np. <code>#ffffff</code> albo <code>rgba(255,255,255,.88)</code></div>
-            </div>
-            <div class="col" style="min-width:160px;">
-              <input type="color" id="psColorPicker" value="#ffffff" />
-              <div class="small" data-i18n="prefixSuffixPickerHint">Picker ustawia kolor jako <code>#RRGGBB</code></div>
-            </div>
-          </div>
-
-          <!-- Szybkie kolory Prefix/Suffix -->
-          <div class="chips" id="psColorChips">
-            <div class="chip" data-target="ps" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
-            <div class="chip" data-target="ps" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
-            <div class="chip" data-target="ps" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
-            <div class="chip" data-target="ps" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
-          </div>
-
-          <!-- Rozmiar Prefix/Suffix -->
-          <label data-i18n="labelPrefixSuffixSize">Wielkość fontu Prefix + Suffix (wspólna) — px</label>
-          <input type="number" id="psFontSize" min="10" max="60" step="1" value="10" />
-
-          <div class="small" data-i18n="logoHint">
-            Logo ma stały rozmiar w Infoczytniku. Zmiana rozmiaru prefixu może spowodować zawijanie (OK), logo zostaje bez zmian.
-          </div>
-        </div>
-
-        <!-- PRAWA KOLUMNA -->
-        <div class="col">
-          <label data-i18n="labelFillersRandom">Losowość fillerów</label>
-
-          <div class="fillerBox" id="fillerBox">
-            <div class="fillerManual">
-              <div class="left">
-                <div class="pairRow">
-                  <b data-i18n="labelFillerLineCount">Ilość linii fillerów</b>
-                  <input type="number" id="fillerLineCount" min="1" max="5" value="3" />
-                </div>
-              </div>
-
-              <div class="right">
-                <div class="pairRow">
-                  <button type="button" id="rerollFillersBtn" data-i18n="buttonRerollFillers">Wylosuj ponownie</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="small" data-i18n="randomHint" id="randomHint">
-            Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.
-          </div>
-
-          <div class="row" id="toggleRow" style="align-items:center; gap:18px; margin-top:12px;">
-            <div style="display:flex; align-items:center; gap:8px;">
-              <input type="checkbox" id="showLogo" checked style="width:18px; height:18px; margin:0;" />
-              <label for="showLogo" style="margin:0; color:var(--text);" data-i18n="labelShowLogo">Dodaj logo</label>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <input type="checkbox" id="movingOverlay" checked style="width:18px; height:18px; margin:0;" />
-              <label for="movingOverlay" style="margin:0; color:var(--text);" data-i18n="labelMovingOverlay">Prostokąt cienia</label>
-            </div>
-            <div style="display:flex; align-items:center; gap:8px;">
-              <input type="checkbox" id="flicker" checked style="width:18px; height:18px; margin:0;" />
-              <label for="flicker" style="margin:0; color:var(--text);" data-i18n="labelFlicker">Flicker</label>
-            </div>
-          </div>
-          <div class="small" id="restrictedLayoutHint" data-i18n="restrictedLayoutHint" style="display:none; color:#ffcf91;">
-            Dla tego layoutu wyłączone są: prefix, suffix, logo, prostokąt cienia, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.
-          </div>
-
-          <div class="livePreviewBox" id="livePreview">
-            <span class="line prefix" id="livePreviewPrefix">++ INCOMING DATA FEED ++</span>
-            <span class="line message" id="livePreviewMsg">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</span>
-            <span class="line suffix" id="livePreviewSuffix">++ PRAISE THE OMNISSIAH ++</span>
-          </div>
-        </div>
+      <div class="livePreviewBox" id="livePreview">
+        <img id="previewLogo" class="previewLogo" alt="logo preview">
+        <div class="previewText" id="previewPrefix"></div>
+        <div class="previewText" id="previewMsg">Lorem ipsum dolor sit amet...</div>
+        <div class="previewText" id="previewSuffix"></div>
       </div>
-
-      <div class="preview" id="prefixPreview"></div>
-
-      <label data-i18n="labelMessage">Treść komunikatu</label>
-      <textarea id="message" placeholder="Wpisz komunikat dla graczy..." data-i18n-placeholder="messagePlaceholder"></textarea>
-
-      <div class="preview" id="suffixPreview"></div>
-
-      <div class="btnrow">
-        <button class="primary" id="sendBtn" data-i18n="buttonSend">Wyślij</button>
-        <button class="warn" id="pingBtn" data-i18n="buttonPing">Ping</button>
-        <button id="clearBtn" data-i18n="buttonClearScreen">Wyczyść ekran</button>
-        <button id="clearTextBtn" data-i18n="buttonClearField">Wyczyść pole</button>
-      </div>
-
-      <div class="small"><span data-i18n="labelStatus">Status:</span> <span class="status" id="status">…</span></div>
     </div>
   </div>
 
-  <!-- ✅ Firebase config jako GLOBAL (window.firebaseConfig) -->
-  <script src="config/firebase-config.js"></script>
-  <script src="config/web-push-config.js"></script>
+  <label>Treść komunikatu</label>
+  <textarea id="message" placeholder="Wpisz komunikat dla graczy..."></textarea>
 
-  <!-- Firebase compat (działa w zwykłym <script>) -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+  <div class="btnrow">
+    <button class="primary" id="sendBtn">Wyślij</button>
+    <button class="warn" id="pingBtn">Ping</button>
+    <button id="clearMessageBtn">Wyczyść komunikat</button>
+    <button id="restoreDefaultsBtn">Przywróć domyślne</button>
+    <button id="rerollFillersBtn">Wylosuj fillery</button>
+  </div>
 
-  <script>
-    // --- Konfiguracja Firebase z config/firebase-config.js ---
-    const firebaseConfig = window.firebaseConfig;
-    if(!firebaseConfig){
-      alert(translations[currentLanguage].messages.missingConfig);
-      throw new Error("Missing window.firebaseConfig");
-    }
+  <label>Log importu</label>
+  <textarea id="importLog" class="importLog" readonly></textarea>
 
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
-    const currentRef = db.collection("dataslate").doc("current");
+  <div class="small">Status: <span class="status" id="status">…</span></div>
+</div></div>
 
-    const el = {
-      faction: document.getElementById("faction"),
+<script src="config/firebase-config.js"></script>
+<script src="config/web-push-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+<script>
+const DEFAULT_FORM_STATE = { backgroundId:1, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:true, movingOverlay:true, flicker:true, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, messageColor:'#00ff66', prefixSuffixColor:'rgba(255,255,255,.88)', msgFontSize:20, psFontSize:12 };
+const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
+const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 
-      // treść wiadomości
-      fontColor: document.getElementById("fontColor"),
-      msgFontSize: document.getElementById("msgFontSize"),
+if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
+firebase.initializeApp(window.firebaseConfig);
+const db = firebase.firestore();
+const currentRef = db.collection('dataslate').doc('current');
 
-      // prefix/suffix styl
-      psColorText: document.getElementById("psColorText"),
-      psColorPicker: document.getElementById("psColorPicker"),
-      psFontSize: document.getElementById("psFontSize"),
+const el = {
+  backgroundSelect:document.getElementById('backgroundSelect'), logoSelect:document.getElementById('logoSelect'), fillerSelect:document.getElementById('fillerSelect'), fontSelect:document.getElementById('fontSelect'), audioSelect:document.getElementById('audioSelect'),
+  showLogo:document.getElementById('showLogo'), movingOverlay:document.getElementById('movingOverlay'), flicker:document.getElementById('flicker'), fillersEnabled:document.getElementById('fillersEnabled'), audioEnabled:document.getElementById('audioEnabled'),
+  fillerLineCount:document.getElementById('fillerLineCount'), fillersHint:document.getElementById('fillersHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
+  psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'),
+  previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewLogo:document.getElementById('previewLogo'),
+  message:document.getElementById('message'), importLog:document.getElementById('importLog'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
+};
 
-      // fillery
-      fillerLineCount: document.getElementById("fillerLineCount"),
-      rerollFillersBtn: document.getElementById("rerollFillersBtn"),
-      fillerBox: document.getElementById("fillerBox"),
-      randomHint: document.getElementById("randomHint"),
-      toggleRow: document.getElementById("toggleRow"),
-      restrictedLayoutHint: document.getElementById("restrictedLayoutHint"),
-      showLogo: document.getElementById("showLogo"),
-      movingOverlay: document.getElementById("movingOverlay"),
-      flicker: document.getElementById("flicker"),
+let manifest = null;
+let fillerState = {prefixLines:[], suffixLines:[]};
 
-      // message
-      message: document.getElementById("message"),
+function setStatus(t){ el.status.textContent = t; }
+function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
+function safeGet(list,id){ return list.find(x=>x.id===Number(id)) || list[0] || null; }
+function nonce(){ return String(Date.now()) + '-' + Math.random().toString(36).slice(2); }
+function normalizeColor(v,fallback){ const s=String(v||'').trim(); return s || fallback; }
 
-      // buttons
-      sendBtn: document.getElementById("sendBtn"),
-      clearBtn: document.getElementById("clearBtn"),
-      clearTextBtn: document.getElementById("clearTextBtn"),
-      pingBtn: document.getElementById("pingBtn"),
+function fillSelect(select,list,labelKey,styleFont){
+  select.innerHTML='';
+  list.forEach(item=>{
+    const opt=document.createElement('option');
+    opt.value=String(item.id);
+    opt.textContent = `${item.id}. ${item.name}`;
+    if(styleFont){ opt.style.fontFamily = `"${item[styleFont] || ''}"${FONT_FALLBACK}`; }
+    select.appendChild(opt);
+  });
+}
 
-      // ui
-      status: document.getElementById("status"),
-      prefixPreview: document.getElementById("prefixPreview"),
-      suffixPreview: document.getElementById("suffixPreview"),
-      livePreview: document.getElementById("livePreview"),
-      livePreviewPrefix: document.getElementById("livePreviewPrefix"),
-      livePreviewMsg: document.getElementById("livePreviewMsg"),
-      livePreviewSuffix: document.getElementById("livePreviewSuffix"),
+function writeImportLog(lines){ el.importLog.value = (lines||[]).length ? lines.join('\n') : 'Brak błędów importu.'; }
 
-      // chips
-      chips: Array.from(document.querySelectorAll(".chip")),
-    };
+async function loadManifest(){
+  const res = await fetch(`assets/data/data.json?v=${encodeURIComponent(window.__dsVersion || '')}`);
+  if(!res.ok) throw new Error('Nie udało się wczytać assets/data/data.json');
+  manifest = await res.json();
+  fillSelect(el.backgroundSelect, manifest.backgrounds || []);
+  fillSelect(el.logoSelect, manifest.logos || []);
+  fillSelect(el.fillerSelect, manifest.fillers || []);
+  fillSelect(el.fontSelect, manifest.fonts || [], 'font', 'font');
+  fillSelect(el.audioSelect, manifest.audios || []);
+  writeImportLog(manifest.importLog || []);
+  restoreDefaults(false);
+}
 
-    const languageSelect = document.getElementById("languageSelect");
+function rerollFillers(){
+  const count = clamp(el.fillerLineCount.value,1,5,3); el.fillerLineCount.value=String(count);
+  const filler = safeGet(manifest.fillers || [], el.fillerSelect.value);
+  const draw = (arr) => [...arr].sort(()=>Math.random()-0.5).slice(0,count);
+  fillerState.prefixLines = el.fillersEnabled.checked && filler ? draw(filler.prefixes || []) : [];
+  fillerState.suffixLines = el.fillersEnabled.checked && filler ? draw(filler.suffixes || []) : [];
+  renderPreview();
+}
 
-    const translations = {
-      pl: {
-        labels: {
-          languageSelect: "Wersja językowa",
-          pageTitle: "Infoczytnik - panel GM",
-          labelFaction: "Frakcja / layout",
-          labelMessageColor: "Kolor fontu (treść wiadomości)",
-          colorGreen: "Zielony",
-          colorRed: "Czerwony",
-          colorGold: "Złoty",
-          colorWhite: "Biały",
-          labelMessageSize: "Wielkość fontu (treść wiadomości) — px",
-          labelPrefixSuffixColor: "Kolor Prefix + Suffix (wspólny)",
-          prefixSuffixColorHint: "Możesz wpisać np. <code>#ffffff</code> albo <code>rgba(255,255,255,.88)</code>",
-          prefixSuffixPickerHint: "Picker ustawia kolor jako <code>#RRGGBB</code>",
-          labelPrefixSuffixSize: "Wielkość fontu Prefix + Suffix (wspólna) — px",
-          logoHint:
-            "Logo ma stały rozmiar w Infoczytniku. Zmiana rozmiaru prefixu może spowodować zawijanie (OK), logo zostaje bez zmian.",
-          labelFillersRandom: "Losowość fillerów",
-          labelFillerLineCount: "Ilość linii fillerów",
-          buttonRerollFillers: "Wylosuj ponownie",
-          randomHint: "Zawsze losowane są unikatowe prefixy i suffixy zgodnie z wybraną liczbą linii fillerów.",
-          labelShowLogo: "Dodaj logo",
-          labelMovingOverlay: "Prostokąt cienia",
-          labelFlicker: "Flicker",
-          labelMessage: "Treść komunikatu",
-          messagePlaceholder: "Wpisz komunikat dla graczy...",
-          buttonSend: "Wyślij",
-          buttonPing: "Ping",
-          buttonClearScreen: "Wyczyść ekran",
-          buttonClearField: "Wyczyść pole",
-          labelStatus: "Status:",
-          factionMechanicus: "Adeptus Mechanicus",
-          factionInquisition: "Inkwizycja",
-          factionMilitarum: "Astra Militarum",
-          factionKhorne: "Khorne",
-          factionNurgle: "Nurgle",
-          factionTzeentch: "Tzeentch",
-          factionSlaanesh: "Slaanesh",
-          factionChaosUndivided: "Chaos Undivided",
-          factionPismoOdreczne: "Pismo odręczne",
-          factionPismoOzdobne: "Pismo ozdobne",
-          restrictedLayoutHint: "Dla tego layoutu wyłączone są: prefix, suffix, logo, prostokąt cienia, flicker oraz dźwięk Message.mp3. Ping nadal odtwarza dźwięk.",
-        },
-        preview: {
-          prefix: "++ NADCHODZĄCE DANE ++",
-          message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-          suffix: "++ CHWAŁA OMNISSJASZOWI ++",
-        },
-        messages: {
-          missingConfig: "Brak window.firebaseConfig. Sprawdź plik config/firebase-config.js",
-          statusReady: "gotowe",
-          statusSending: "wysyłam…",
-          statusCleared: "wyczyszczono",
-          statusSent: "wysłano",
-          statusError: "BŁĄD",
-          statusPingLoading: "ping…",
-          statusPingSent: "ping wysłany",
-          statusPingError: "BŁĄD ping",
-          alertPingError: "Błąd ping:\n\n",
-        },
-      },
-      en: {
-        labels: {
-          languageSelect: "Language version",
-          pageTitle: "Data-Slate - GM panel",
-          labelFaction: "Faction / layout",
-          labelMessageColor: "Font color (message content)",
-          colorGreen: "Green",
-          colorRed: "Red",
-          colorGold: "Gold",
-          colorWhite: "White",
-          labelMessageSize: "Font size (message content) — px",
-          labelPrefixSuffixColor: "Prefix + Suffix color (shared)",
-          prefixSuffixColorHint: "You can enter e.g. <code>#ffffff</code> or <code>rgba(255,255,255,.88)</code>",
-          prefixSuffixPickerHint: "The picker sets color as <code>#RRGGBB</code>",
-          labelPrefixSuffixSize: "Prefix + Suffix font size (shared) — px",
-          logoHint:
-            "The logo size is fixed in Data-Slate. Changing the prefix size may wrap (OK), the logo remains unchanged.",
-          labelFillersRandom: "Filler randomness",
-          labelFillerLineCount: "Filler line count",
-          buttonRerollFillers: "Reroll",
-          randomHint: "Unique prefixes and suffixes are always randomized based on the selected filler line count.",
-          labelShowLogo: "Add logo",
-          labelMovingOverlay: "Shadow rectangle",
-          labelFlicker: "Flicker",
-          labelMessage: "Message content",
-          messagePlaceholder: "Type a message for players...",
-          buttonSend: "Send",
-          buttonPing: "Ping",
-          buttonClearScreen: "Clear screen",
-          buttonClearField: "Clear field",
-          labelStatus: "Status:",
-          factionMechanicus: "Adeptus Mechanicus",
-          factionInquisition: "Inquisition",
-          factionMilitarum: "Astra Militarum",
-          factionKhorne: "Khorne",
-          factionNurgle: "Nurgle",
-          factionTzeentch: "Tzeentch",
-          factionSlaanesh: "Slaanesh",
-          factionChaosUndivided: "Chaos Undivided",
-          factionPismoOdreczne: "Handwritten Script",
-          factionPismoOzdobne: "Decorative Script",
-          restrictedLayoutHint: "For this layout, prefix, suffix, logo, shadow rectangle, flicker, and Message.mp3 are disabled. Ping still plays sound.",
-        },
-        preview: {
-          prefix: "++ INCOMING DATA FEED ++",
-          message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-          suffix: "++ PRAISE THE OMNISSIAH ++",
-        },
-        messages: {
-          missingConfig: "Missing window.firebaseConfig. Check config/firebase-config.js.",
-          statusReady: "ready",
-          statusSending: "sending…",
-          statusCleared: "cleared",
-          statusSent: "sent",
-          statusError: "ERROR",
-          statusPingLoading: "ping…",
-          statusPingSent: "ping sent",
-          statusPingError: "ping error",
-          alertPingError: "Ping error:\n\n",
-        },
-      },
-    };
+function renderPreview(){
+  const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
+  const logo = safeGet(manifest.logos || [], el.logoSelect.value);
+  const font = safeGet(manifest.fonts || [], el.fontSelect.value);
+  const messageColor = normalizeColor(el.messageColorText.value,'#00ff66');
+  const psColor = normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)');
+  el.livePreview.style.backgroundImage = bg ? `url('${bg.file}')` : 'none';
+  el.livePreview.style.fontFamily = `"${font?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
+  el.previewPrefix.textContent = fillerState.prefixLines.join('\n');
+  el.previewSuffix.textContent = fillerState.suffixLines.join('\n');
+  el.previewPrefix.style.color = psColor; el.previewSuffix.style.color = psColor;
+  el.previewPrefix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
+  el.previewSuffix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
+  el.previewMsg.style.color = messageColor; el.previewMsg.style.fontSize = clamp(el.msgFontSize.value,12,80,20)+'px';
+  if(el.showLogo.checked && logo){ el.previewLogo.src=logo.file; el.previewLogo.style.display='block'; } else { el.previewLogo.style.display='none'; }
+  const fillersOff = !el.fillersEnabled.checked;
+  el.fillerLineCount.disabled = fillersOff;
+  el.fillersHint.textContent = fillersOff ? 'Fillery wyłączone — pole nieaktywne.' : 'Fillery aktywne.';
+  el.fillersHint.className = 'small' + (fillersOff ? ' disabled-note' : '');
+}
 
-    let currentLanguage = "pl";
+function getPayload(type){
+  const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
+  const logo = safeGet(manifest.logos || [], el.logoSelect.value);
+  const filler = safeGet(manifest.fillers || [], el.fillerSelect.value);
+  const font = safeGet(manifest.fonts || [], el.fontSelect.value);
+  const audio = safeGet(manifest.audios || [], el.audioSelect.value);
+  return {
+    type,
+    text: type === 'message' ? (el.message.value || '') : '',
+    backgroundId:bg?.id || null, backgroundFile:bg?.file || '',
+    logoId:logo?.id || null, logoFile:logo?.file || '',
+    fillerId:filler?.id || null, fillerSet:filler?.name || '',
+    fontId:font?.id || null, fontPreset:font?.font || '',
+    messageAudioId:audio?.id || null, messageAudioFile:audio?.file || '',
+    fillersEnabled:!!el.fillersEnabled.checked, audioEnabled:!!el.audioEnabled.checked,
+    showLogo:!!el.showLogo.checked, movingOverlay:!!el.movingOverlay.checked, flicker:!!el.flicker.checked,
+    prefixLines: el.fillersEnabled.checked ? fillerState.prefixLines : [],
+    suffixLines: el.fillersEnabled.checked ? fillerState.suffixLines : [],
+    fillerLineCount: clamp(el.fillerLineCount.value,1,5,3),
+    messageColor: normalizeColor(el.messageColorText.value,'#00ff66'),
+    prefixColor: normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)'),
+    suffixColor: normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)'),
+    msgFontSize: clamp(el.msgFontSize.value,12,80,20) + 'px',
+    prefixFontSize: clamp(el.psFontSize.value,10,60,12) + 'px',
+    suffixFontSize: clamp(el.psFontSize.value,10,60,12) + 'px',
+    pingUrl: PING_URL,
+    nonce: nonce(),
+    ts: firebase.firestore.FieldValue.serverTimestamp(),
+  };
+}
 
-    const applyLanguage = (lang) => {
-      currentLanguage = lang;
-      const t = translations[lang];
-      document.documentElement.lang = lang;
-      if (languageSelect) {
-        languageSelect.value = lang;
-        languageSelect.setAttribute("aria-label", t.labels.languageSelect);
-      }
-      document.title = t.labels.pageTitle;
-      document.querySelectorAll("[data-i18n]").forEach((element) => {
-        const key = element.getAttribute("data-i18n");
-        if (key in t.labels) {
-          element.textContent = t.labels[key];
-        }
-      });
-      document.querySelectorAll("[data-i18n-placeholder]").forEach((element) => {
-        const key = element.getAttribute("data-i18n-placeholder");
-        if (key in t.labels) {
-          element.setAttribute("placeholder", t.labels[key]);
-        }
-      });
-      document.querySelectorAll("[data-i18n]").forEach((element) => {
-        if (["prefixSuffixColorHint", "prefixSuffixPickerHint", "logoHint"].includes(element.getAttribute("data-i18n"))) {
-          element.innerHTML = t.labels[element.getAttribute("data-i18n")];
-        }
-      });
-      el.livePreviewMsg.textContent = t.preview.message;
-      if (el.status?.dataset?.statusKey && t.messages[el.status.dataset.statusKey]) {
-        el.status.textContent = t.messages[el.status.dataset.statusKey];
-      }
-      computePreview();
-    };
+async function send(type){
+  setStatus('wysyłam…');
+  await currentRef.set(getPayload(type), {merge:false});
+  setStatus(type === 'clear' ? 'wyczyszczono' : 'wysłano');
+}
 
-    const FONT_STACK = {
-      mechanicus:      '"Share Tech Mono", Calibri, Arial, sans-serif',
-      inquisition:     '"Cinzel", Calibri, Arial, sans-serif',
-      militarum:       '"Rajdhani", Calibri, Arial, sans-serif',
-      khorne:          '"Black Ops One", Calibri, Arial, sans-serif',
-      nurgle:          '"Staatliches", Calibri, Arial, sans-serif',
-      tzeentch:        '"Orbitron", Calibri, Arial, sans-serif',
-      slaanesh:        '"Questrial", Calibri, Arial, sans-serif',
-      chaos_undivided: '"Russo One", Calibri, Arial, sans-serif',
-      pismo_odreczne:  '"Caveat", Calibri, Arial, sans-serif',
-      pismo_ozdobne:   '"Great Vibes", Calibri, Arial, sans-serif',
-    };
+async function ping(){
+  setStatus('ping…');
+  await currentRef.set({...getPayload('ping'), text: undefined, type:'ping'}, {merge:true});
+  setStatus('ping wysłany');
+}
 
-    const LAYOUTS = {
-      mechanicus:{prefixes:["+++ INCOMING DATA FEED +++","+++ SYSTEM ANALYSIS BEGIN +++","+++ ENCRYPTION ONLINE +++","+++ ENGAGE LITURGY +++","+++ ARCHIVE ACCESS +++","+++ LOGIS-CHANNEL ACTIVE +++","+++ DATA LINK ESTABLISHED +++","+++ SIGNAL LOCKED +++","+++ CORE STABILIZED +++","+++ BINHARIC CANT OPEN +++","+++ COGITATOR STACK ENGAGED +++","+++ RITE OF ACCESS COMMENCED +++","+++ MACHINE-SPIRIT QUERY +++","+++ SCRY-LOG INITIATED +++","+++ SANCTIFIED DATA STREAM +++","+++ LEXMECHANIC INPUT RECEIVED +++","+++ OMNISSIAN PROTOCOL ACTIVE +++","+++ SUBROUTINE: DIVINE CALCULATION +++","+++ AUSPEX THREAD ALIGNED +++","+++ DATA INTERCEPTED +++","+++ TRANSMISSION CORRUPTED +++","+++ ACCESS SEALED +++"],
-                 suffixes:["+++ PRAISE THE OMNISSIAH +++","+++ MACHINE SPIRIT CALMED +++","+++ THE FLESH IS WEAK +++","+++ SYSTEM CLEANSED +++","+++ BINARY PRAYER SENT +++","+++ OMNISSIAH GUIDE US +++","+++ SERVITOR READY +++","+++ RITUAL COMPLETE +++","+++ CANTICLE EXECUTED +++","+++ BLESSINGS OF THE MACHINE GOD +++","+++ DATA IS HOLY +++","+++ IMPURITY REJECTED +++","+++ CALCULATION: PURE +++","+++ BY THE MOTIVE FORCE +++","+++ MACHINE SPIRIT PACIFIED +++","+++ COGITATION COMPLETE +++","+++ THE MACHINE ENDURES +++","+++ BINHARIC PRAISE TRANSMITTED +++","+++ THE EMPEROR PROTECTS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
-      inquisition:{prefixes:["+++ INQUISITORIAL NOTICE +++","+++ DATA INTERCEPTED +++","+++ DECRYPTING ORDER +++","+++ COGITATOR ACCESS +++","+++ BY HIS WILL +++","+++ CLASSIFIED MATERIAL +++","+++ MIND CLEANSED +++","+++ CODEX SECURED +++","+++ INQUISITORIAL MANDATE +++","+++ ORDO CLEARANCE VERIFIED +++","+++ SEALED DOSSIER OPENED +++","+++ SANCTIONED INTELLIGENCE +++","+++ HERETICAL TRACE DETECTED +++","+++ PRIORITY DECREE INBOUND +++","+++ THREAT INDEX ESCALATING +++","+++ REDACTED RECORD RETRIEVED +++","+++ INTERROGATION TRANSCRIPT +++","+++ AUTHORITY OF THE HOLY ORDOS +++","+++ SUBJECT UNDER REVIEW +++","+++ INCOMING DATA FEED +++","+++ SIGNAL LOCKED +++","+++ TRANSMISSION CORRUPTED +++","+++ ARCHIVE ACCESS +++"],
-                  suffixes:["+++ THE EMPEROR PROTECTS +++","+++ PURGE COMPLETE +++","+++ FAITH REMAINS +++","+++ THOUGHT FOR THE DAY +++","+++ HERESY PURGED +++","+++ OATH UPHELD +++","+++ FAITH IS ARMOR +++","+++ EXAMINATION COMPLETE +++","+++ IN HIS NAME +++","+++ WITNESS THE THRONE +++","+++ COMPLIANCE ENFORCED +++","+++ DUTY TO THE THRONE ENDURES +++","+++ BY ORDER OF THE HOLY INQUISITION +++","+++ SILENCE IS DUTY +++","+++ JUDGEMENT STANDS +++","+++ PURITY IS NON-NEGOTIABLE +++","+++ DENUNCIATION ACCEPTED +++","+++ SEAL THE RECORD +++","+++ NO MERCY FOR THE TAINTED +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EYE OPENS +++"]},
-      militarum:{prefixes:["+++ IMPERIAL SIGNAL +++","+++ HIGH COMMAND ORDER +++","+++ ORDERS INCOMING +++","+++ TACTICAL FEED +++","+++ REGIMENTAL DATA +++","+++ COMMAND OVERRIDE +++","+++ BATTLELINE UPLINK +++","+++ ENGAGEMENT ACTIVE +++","+++ OPERATIONAL BRIEF +++","+++ MUNITORUM DISPATCH +++","+++ FRONTLINE COMMUNIQUÉ +++","+++ VOX-CAST RECEIVED +++","+++ FIRE MISSION PENDING +++","+++ DEPLOYMENT ORDER +++","+++ STRATEGIC UPDATE +++","+++ THEATRE COMMAND ONLINE +++","+++ COMBAT STATUS REPORT +++","+++ FORM RANKS +++","+++ IMPERIAL TACTICA +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++","+++ TRANSMISSION CORRUPTED +++"],
-                 suffixes:["+++ GLORY TO THE GUARD +++","+++ VICTORY IS ASSURED +++","+++ CADIA STANDS +++","+++ DUTY FULFILLED +++","+++ NO SACRIFICE TOO GREAT +++","+++ PERIMETER SECURED +++","+++ FOR THE EMPEROR +++","+++ STRATEGIC DIRECTIVE +++","+++ HOLD THE LINE +++","+++ STAND FIRM +++","+++ BAYONETS FIXED +++","+++ MUNITORUM APPROVED +++","+++ POSITION MAINTAINED +++","+++ CASUALTIES ACCEPTABLE +++","+++ ARTILLERY ANSWERS +++","+++ REGIMENT ENDURES +++","+++ ADVANCE BY COMMAND +++","+++ NO STEP BACK +++","+++ THE LINE HOLDS +++","+++ SYSTEM CLEANSED +++","+++ ACCESS SEALED +++","+++ THE EMPEROR PROTECTS +++"]},
-      khorne:{prefixes:["+++ BLOOD ALERT +++","+++ SKULL COUNT RISING +++","+++ RAGE TRANSMISSION +++","+++ COMBAT UPLINK +++","+++ SLAUGHTER INITIATED +++","+++ NO PEACE ONLY WAR +++","+++ DOMINATE THROUGH BLOOD +++","+++ BUTCHER'S CALL +++","+++ CHAINAXE CHORUS +++","+++ CARNAGE PROTOCOL +++","+++ BRASS THRONE DEMANDS +++","+++ SKULL TITHE ASCENDING +++","+++ WRATH WITHOUT MEASURE +++","+++ BATTLE FRENZY UNBOUND +++","+++ WAR CRY ASCENDANT +++","+++ GORE TIDE RISING +++","+++ OFFERING OF SKULLS +++","+++ MERCY DENIED +++","+++ THE RED PATH OPENS +++","+++ SLAUGHTER WITHOUT END +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-              suffixes:["+++ BLOOD FOR THE BLOOD GOD +++","+++ SKULLS FOR THE SKULL THRONE +++","+++ ALL MUST BLEED +++","+++ DEATH WITHOUT END +++","+++ STRIKE WITHOUT MERCY +++","+++ KILL! MAIM! BURN! +++","+++ RED FLOWS +++","+++ WRATH IS WORSHIP +++","+++ THE THRONE DEMANDS SKULLS +++","+++ LET THE GALAXY BLEED +++","+++ OFFER THEM TO KHORNE +++","+++ ONLY SLAUGHTER REMAINS +++","+++ NO RESPITE. NO MERCY. +++","+++ THE EIGHTFOLD PATH DRINKS +++","+++ BRASS AND BLOOD +++","+++ RAGE IS TRUTH +++","+++ CHAINBLADES SING +++","+++ THEIR SKULLS ARE DUE +++","+++ WAR IS THE ONLY PRAYER +++","+++ THE RED HARVEST GROWS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
-      nurgle:{prefixes:["+++ BLOAT SIGNAL +++","+++ DECAY INITIATED +++","+++ DISEASE VECTOR ACTIVE +++","+++ PLAGUE SEED SENT +++","+++ SPOREFIELD DEPLOYED +++","+++ VIRUSCODE ENGAGED +++","+++ ALL IS ROT +++","+++ FLESH SAGS +++","+++ FOULNESS RISES +++","+++ CONTAGION BLOOMS +++","+++ PESTILENCE CURRENT +++","+++ SEPTIC TIDE RISING +++","+++ ROT-WIND ASCENDANT +++","+++ INFESTATION CONFIRMED +++","+++ BLESSED CORRUPTION SPREADS +++","+++ GARDEN GROWS +++","+++ PUSTULENT SIGNAL +++","+++ PLAGUE BELLS TOLL +++","+++ SWEET RUIN APPROACHES +++","+++ THE ROT TAKES ROOT +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-              suffixes:["+++ PRAISE GRANDFATHER NURGLE +++","+++ FILTH TRANSMITTED +++","+++ ROTTEN JOY +++","+++ CONTAGION SPREADS +++","+++ FLIES REJOICE +++","+++ FESTERING COMPLETE +++","+++ MUCOUS FLOW +++","+++ BLESSINGS OF ROT +++","+++ GLORIOUS CORRUPTION +++","+++ THE GARDEN WELCOMES ALL +++","+++ DECAY IS GENEROUS +++","+++ EMBRACE THE SWEET SICKNESS +++","+++ PUTRESCENCE ENDURES +++","+++ JOY IN RUIN +++","+++ THE BLOATED LORD PROVIDES +++","+++ PLAGUE GIFT DELIVERED +++","+++ ROT IS A BLESSING +++","+++ ALL THINGS RIPEN +++","+++ CORRUPTION TAKES HOLD +++","+++ THE FLIES SING +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
-      tzeentch:{prefixes:["+++ KNOWLEDGE UNFOLDS +++","+++ SCHEME RUNNING +++","+++ DATA TWISTED +++","+++ WARP-TEXT INCOMING +++","+++ INVERSION ACTIVE +++","+++ DESTINY WRITTEN +++","+++ NOTHING IS AS IT SEEMS +++","+++ PATTERNS SHIFT +++","+++ THREADS CONVERGE +++","+++ PROBABILITY FRACTURES +++","+++ HIDDEN HAND MOVES +++","+++ THE NEXT TURN BEGINS +++","+++ FATE MATRIX REVISED +++","+++ MANY PATHS OPEN +++","+++ THE SCHEME DEEPENS +++","+++ MUTATION OF INTENT +++","+++ THE HOUR OF CHANGE +++","+++ SECRETS BECOME REAL +++","+++ WARP PARADOX STABILIZED +++","+++ DESTINY RECURSIVE +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-               suffixes:["+++ ALL IS CHANGE +++","+++ PLAN: PHASE 7 +++","+++ EYE OPENS +++","+++ THOUGHT MUTATED +++","+++ CYCLE CONTINUES +++","+++ OBSERVE THE CHANGE +++","+++ REWRITE EVERYTHING +++","+++ JUST AS PLANNED +++","+++ ALL PART OF THE PLAN +++","+++ FATE RECOMPILED +++","+++ THE CHANGER SMILES +++","+++ OUTCOME REVISED +++","+++ THE PATTERN HOLDS +++","+++ TOMORROW HAS MOVED +++","+++ THE SCRIPT BURNS +++","+++ TRUTH RECAST +++","+++ THE LABYRINTH TURNS +++","+++ FORM IS TEMPORARY +++","+++ DESTINY FRACTURES +++","+++ THE LAST WORD CHANGES +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
-      slaanesh:{prefixes:["+++ ECSTASY PULSE +++","+++ SENSORY OVERLOAD +++","+++ DESIRE BREACH +++","+++ TOUCH THE DIVINE +++","+++ TASTE THE PAIN +++","+++ LUSTWAVE TRANSMITTED +++","+++ EXCESS COMPLETE +++","+++ VELVET SCREAM +++","+++ RAPTURE SIGNAL +++","+++ SENSORIA UNBOUND +++","+++ EXQUISITE AGONY INBOUND +++","+++ TEMPTATION CHANNEL OPEN +++","+++ PERFECT NOTE STRUCK +++","+++ THRESHOLD OF ECSTASY +++","+++ INDULGENCE WITHOUT LIMIT +++","+++ DESIRE ASCENDANT +++","+++ HARMONIC OBSESSION +++","+++ THE SILKEN EDGE DRAWS NEAR +++","+++ SENSORY FEED PEAKING +++","+++ DELIGHT SPIKES +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-               suffixes:["+++ FEED THE HUNGER +++","+++ THE PERFECT MOMENT +++","+++ PAIN IS PLEASURE +++","+++ EXCESS IS TRUTH +++","+++ UNHOLY HARMONY +++","+++ FEEL EVERYTHING +++","+++ TEMPTATION SPIKE +++","+++ PERFECTION IS BLISS +++","+++ PLEASURE ASCENDANT +++","+++ THE SENSES SHALL OPEN +++","+++ ECSTASY WITHOUT END +++","+++ RAPTURE CONSUMES +++","+++ BEAUTY CUTS DEEPLY +++","+++ SENSORIA SATURATED +++","+++ DESIRE BECOMES LAW +++","+++ EVERY NOTE A KNIFE +++","+++ BLISS THROUGH EXCESS +++","+++ THE HUNGER REMAINS +++","+++ PERFECT AGONY +++","+++ INDULGENCE VICTORIOUS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]},
-      chaos_undivided:{prefixes:["+++ WARP STIRRING +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ SACRIFICE ACCEPTED +++","+++ WARP ENERGY RISING +++","+++ ORDER BREAKS +++","+++ FLESH TURNS +++","+++ ASCENSION IMMINENT +++","+++ REALSPACE THINS +++","+++ VEIL BREACH DETECTED +++","+++ CHAOS CHORUS RISING +++","+++ RUINOUS CONVERGENCE +++","+++ THE EYE TURNS +++","+++ CORRUPTION VECTOR LOCKED +++","+++ THE PACT STANDS +++","+++ REALITY UNFASTENS +++","+++ THE WARP ANSWERS +++","+++ UNHOLY ALIGNMENT +++","+++ THE DARK BETWEEN STARS +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++"],
-                      suffixes:["+++ GLORY TO CHAOS +++","+++ DARK GODS SMILE +++","+++ THE EYE OPENS +++","+++ ASCEND AND BURN +++","+++ ALL HAIL THE DARK GODS +++","+++ REALSPACE BLEEDS +++","+++ STARS ARE WRONG +++","+++ VOID WITHIN +++","+++ ETERNAL CHANGE +++","+++ LET THE GALAXY BREAK +++","+++ THE VEIL IS TORN +++","+++ OFFERING ACCEPTED +++","+++ THE RUINOUS POWERS PROVIDE +++","+++ CORRUPTION WITHOUT MASTER +++","+++ CHAOS IS ASCENDANT +++","+++ THE LONG WAR ENDURES +++","+++ REALITY YIELDS +++","+++ THE WARP CLAIMS ALL +++","+++ BLESSED BE THE DAMNED +++","+++ NIGHT COMES FROM WITHIN +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EMPEROR PROTECTS +++"]},
-      pismo_odreczne:{prefixes:[],suffixes:[]},
-      pismo_ozdobne:{prefixes:[],suffixes:[]},
-    };
+function restoreDefaults(sendReset=true){
+  const pick = (list, wanted) => list.some(x=>x.id===wanted) ? wanted : (list[0]?.id || '');
+  el.backgroundSelect.value = String(pick(manifest.backgrounds || [], DEFAULT_FORM_STATE.backgroundId));
+  el.logoSelect.value = String(pick(manifest.logos || [], DEFAULT_FORM_STATE.logoId));
+  el.fillerSelect.value = String(pick(manifest.fillers || [], DEFAULT_FORM_STATE.fillerId));
+  el.fontSelect.value = String(pick(manifest.fonts || [], DEFAULT_FORM_STATE.fontId));
+  el.audioSelect.value = String(pick(manifest.audios || [], DEFAULT_FORM_STATE.audioId));
+  el.showLogo.checked = DEFAULT_FORM_STATE.showLogo; el.movingOverlay.checked = DEFAULT_FORM_STATE.movingOverlay; el.flicker.checked = DEFAULT_FORM_STATE.flicker; el.fillersEnabled.checked = DEFAULT_FORM_STATE.fillersEnabled; el.audioEnabled.checked = DEFAULT_FORM_STATE.audioEnabled;
+  el.fillerLineCount.value = String(DEFAULT_FORM_STATE.fillerLineCount);
+  el.messageColorText.value = DEFAULT_FORM_STATE.messageColor; el.messageColorPicker.value = '#00ff66';
+  el.psColorText.value = DEFAULT_FORM_STATE.prefixSuffixColor; el.psColorPicker.value = '#ffffff';
+  el.msgFontSize.value = String(DEFAULT_FORM_STATE.msgFontSize); el.psFontSize.value = String(DEFAULT_FORM_STATE.psFontSize);
+  el.message.value = '';
+  rerollFillers();
+  if(sendReset){ send('clear').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}); }
+}
 
-    const fillerState = {
-      count: 3,
-      prefixLines: [],
-      suffixLines: [],
-    };
+['input','change'].forEach(evt=>{
+  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize].forEach(node=>node.addEventListener(evt, renderPreview));
+});
+el.fillerSelect.addEventListener('change', rerollFillers);
+el.rerollFillersBtn.addEventListener('click', rerollFillers);
+el.messageColorPicker.addEventListener('input',()=>{ el.messageColorText.value = el.messageColorPicker.value; renderPreview(); });
+el.psColorPicker.addEventListener('input',()=>{ el.psColorText.value = el.psColorPicker.value; renderPreview(); });
+el.sendBtn.addEventListener('click',()=>send('message').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}));
+el.clearMessageBtn.addEventListener('click',()=>{el.message.value=''; el.message.focus();});
+el.restoreDefaultsBtn.addEventListener('click',()=>restoreDefaults(true));
+el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'); alert(e.message||e);}));
 
-    function setStatus(t, key){
-      el.status.textContent = t;
-      if (key) {
-        el.status.dataset.statusKey = key;
-      }
-    }
-    function clamp(n, min, max){
-      const x = Number(n);
-      if(!Number.isFinite(x)) return min;
-      return Math.max(min, Math.min(max, Math.floor(x)));
-    }
-    function nonce(){ return String(Date.now()) + "-" + String(Math.random()).slice(2); }
-    function getLayout(){ return LAYOUTS[el.faction.value] || LAYOUTS.mechanicus; }
-    function isRestrictedLayout(faction){
-      return faction === "pismo_odreczne" || faction === "pismo_ozdobne";
-    }
-
-    function updateRestrictedLayoutUi(){
-      const restricted = isRestrictedLayout(el.faction.value);
-      if(el.fillerBox) el.fillerBox.style.opacity = restricted ? "0.5" : "1";
-      if(el.randomHint) el.randomHint.style.opacity = restricted ? "0.65" : "1";
-      if(el.rerollFillersBtn) el.rerollFillersBtn.disabled = restricted;
-      if(el.fillerLineCount) el.fillerLineCount.disabled = restricted;
-      if(el.showLogo){ el.showLogo.checked = restricted ? false : el.showLogo.checked; el.showLogo.disabled = restricted; }
-      if(el.movingOverlay){ el.movingOverlay.checked = restricted ? false : el.movingOverlay.checked; el.movingOverlay.disabled = restricted; }
-      if(el.movingOverlay && !el.movingOverlay.checked && el.flicker){ el.flicker.checked = false; }
-      if(el.flicker){ el.flicker.checked = restricted ? false : el.flicker.checked; el.flicker.disabled = restricted; }
-      if(el.restrictedLayoutHint) el.restrictedLayoutHint.style.display = restricted ? "block" : "none";
-    }
-
-    function normalizePx(n, min, max, fallback){
-      const x = Number(n);
-      if(!Number.isFinite(x)) return fallback;
-      return Math.max(min, Math.min(max, Math.floor(x)));
-    }
-
-    function getPrefixSuffixColor(){
-      const t = (el.psColorText.value || "").trim();
-      return t || "rgba(255,255,255,.88)";
-    }
-
-    function drawUniqueRandomLines(source, count){
-      const arr = [...source];
-      for(let i=arr.length-1; i>0; i--){
-        const j = Math.floor(Math.random() * (i + 1));
-        [arr[i], arr[j]] = [arr[j], arr[i]];
-      }
-      return arr.slice(0, Math.min(count, arr.length));
-    }
-
-    function renderFillerPreview(){
-      el.prefixPreview.textContent = fillerState.prefixLines.join("\n");
-      el.suffixPreview.textContent = fillerState.suffixLines.join("\n");
-    }
-
-    function updateLivePreview(){
-      const fontStack = FONT_STACK[el.faction.value] || 'Calibri, Arial, sans-serif';
-      const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20) + "px";
-      const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10) + "px";
-      const psColor   = getPrefixSuffixColor();
-      const msgColor  = el.fontColor.value || "#00ff66";
-
-      el.livePreview.style.fontFamily = fontStack;
-      const restricted = isRestrictedLayout(el.faction.value);
-      el.livePreviewPrefix.textContent = restricted ? "" : fillerState.prefixLines.join("\n");
-      el.livePreviewSuffix.textContent = restricted ? "" : fillerState.suffixLines.join("\n");
-
-      el.livePreviewPrefix.style.color = psColor;
-      el.livePreviewSuffix.style.color = psColor;
-      el.livePreviewPrefix.style.fontSize = psFontPx;
-      el.livePreviewSuffix.style.fontSize = psFontPx;
-
-      el.livePreviewMsg.style.color = msgColor;
-      el.livePreviewMsg.style.fontSize = msgFontPx;
-    }
-
-    function rerollFillers(){
-      const cfg = getLayout();
-      fillerState.count = clamp(el.fillerLineCount.value, 1, 5);
-      el.fillerLineCount.value = String(fillerState.count);
-      if(isRestrictedLayout(el.faction.value)){
-        fillerState.prefixLines = [];
-        fillerState.suffixLines = [];
-      }else{
-        fillerState.prefixLines = drawUniqueRandomLines(cfg.prefixes, fillerState.count);
-        fillerState.suffixLines = drawUniqueRandomLines(cfg.suffixes, fillerState.count);
-      }
-      updateRestrictedLayoutUi();
-      renderFillerPreview();
-      updateLivePreview();
-    }
-
-    function computePreview(){
-      renderFillerPreview();
-      updateLivePreview();
-    }
-
-
-    async function triggerPushNotification() {
-      const triggerEndpoint = window.infWebPushConfig?.triggerEndpoint;
-      if (!triggerEndpoint) {
-        throw new Error("Brak triggerEndpoint w konfiguracji Web Push.");
-      }
-
-      const response = await fetch(triggerEndpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": "Bearer 3puHu3zzaFy2obwXB7dM7KXPOiVTSjWe"
-        },
-        body: JSON.stringify({
-          title: "Infoczytnik",
-          body: "+++ INCOMING DATA-TRANSMISSION +++",
-          icon: "/IkonaPowiadomien.png",
-          badge: "/IkonaPowiadomien.png",
-          tag: "infoczytnik-new-message",
-          url: "/Infoczytnik/Infoczytnik.html"
-        })
-      });
-
-      if (!response.ok) {
-        const text = await response.text().catch(() => "");
-        throw new Error(`Trigger push failed: ${response.status} ${text}`);
-      }
-    }
-    async function sendMessage(isClear){
-
-      const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
-      const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
-
-      const restricted = isRestrictedLayout(el.faction.value);
-      const movingOverlay = restricted ? false : !!el.movingOverlay.checked;
-      const flicker = movingOverlay ? (!!el.flicker.checked) : false;
-      setStatus(translations[currentLanguage].messages.statusSending, "statusSending");
-      try{
-        await currentRef.set({
-          type: isClear ? "clear" : "message",
-          faction: el.faction.value,
-
-          // treść wiadomości
-          color: el.fontColor.value || "#00ff66",
-          fontColor: el.fontColor.value || "#00ff66",
-          msgFontSize: msgFontPx + "px",
-
-          // prefix/suffix styl
-          prefixColor: getPrefixSuffixColor(),
-          suffixColor: getPrefixSuffixColor(),
-          prefixFontSize: psFontPx + "px",
-          suffixFontSize: psFontPx + "px",
-
-          // fillery
-          fillerLineCount: restricted ? 0 : fillerState.count,
-          prefixLines: (isClear || restricted) ? [] : fillerState.prefixLines,
-          suffixLines: (isClear || restricted) ? [] : fillerState.suffixLines,
-          showLogo: restricted ? false : !!el.showLogo.checked,
-          movingOverlay,
-          flicker,
-          disableMessageAudio: restricted,
-
-          // tekst
-          text: isClear ? "" : (el.message.value || ""),
-
-          nonce: nonce(),
-          ts: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge:false });
-
-        if(!isClear){
-          try{
-            await triggerPushNotification();
-          }catch(pushError){
-            console.warn("Nie udało się uruchomić triggera Web Push.", pushError);
-          }
-        }
-
-        setStatus(
-          isClear
-            ? translations[currentLanguage].messages.statusCleared
-            : translations[currentLanguage].messages.statusSent,
-          isClear ? "statusCleared" : "statusSent"
-        );
-      }catch(e){
-        console.error(e);
-        setStatus(translations[currentLanguage].messages.statusError, "statusError");
-        alert("Błąd zapisu:\n\n" + (e?.message || e));
-      }
-      computePreview();
-    }
-
-    async function ping(){
-      const msgFontPx = normalizePx(el.msgFontSize.value, 12, 80, 20);
-      const psFontPx  = normalizePx(el.psFontSize.value, 10, 60, 10);
-
-      const restricted = isRestrictedLayout(el.faction.value);
-      const movingOverlay = restricted ? false : !!el.movingOverlay.checked;
-      const flicker = movingOverlay ? (!!el.flicker.checked) : false;
-      setStatus(translations[currentLanguage].messages.statusPingLoading, "statusPingLoading");
-      try{
-        await currentRef.set({
-          type:"ping",
-          faction: el.faction.value,
-
-          // zostawiamy styl w docu, żeby nie “gubić” ustawień
-          color: el.fontColor.value || "#00ff66",
-          fontColor: el.fontColor.value || "#00ff66",
-          msgFontSize: msgFontPx + "px",
-          prefixColor: getPrefixSuffixColor(),
-          suffixColor: getPrefixSuffixColor(),
-          prefixFontSize: psFontPx + "px",
-          suffixFontSize: psFontPx + "px",
-          showLogo: restricted ? false : !!el.showLogo.checked,
-          movingOverlay,
-          flicker,
-
-          nonce: nonce(),
-          ts: firebase.firestore.FieldValue.serverTimestamp()
-        }, { merge:true });
-
-        setStatus(translations[currentLanguage].messages.statusPingSent, "statusPingSent");
-      }catch(e){
-        console.error(e);
-        setStatus(translations[currentLanguage].messages.statusPingError, "statusPingError");
-        alert(translations[currentLanguage].messages.alertPingError + (e?.message || e));
-      }
-    }
-
-    // ====== EVENTY ======
-    el.sendBtn.addEventListener("click", () => sendMessage(false));
-    el.clearBtn.addEventListener("click", () => sendMessage(true));
-    el.pingBtn.addEventListener("click", ping);
-
-    el.clearTextBtn.addEventListener("click", () => {
-      el.message.value = "";
-      el.message.focus();
-    });
-
-    // chips (msg i ps)
-    el.chips.forEach(ch => ch.addEventListener("click", () => {
-      const target = ch.getAttribute("data-target");
-      const c = ch.getAttribute("data-color");
-      if(!c) return;
-
-      if(target === "msg"){
-        el.fontColor.value = c;
-      }else if(target === "ps"){
-        el.psColorText.value = c;
-        if(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(c)){
-          el.psColorPicker.value = (c.length===4)
-            ? ("#" + c[1]+c[1]+c[2]+c[2]+c[3]+c[3])
-            : c;
-        }
-      }
-
-      updateLivePreview();
-    }));
-
-    // picker prefix/suffix -> ustawia tekst na #RRGGBB
-    el.psColorPicker.addEventListener("input", () => {
-      el.psColorText.value = el.psColorPicker.value;
-      updateLivePreview();
-    });
-
-    ["change","input"].forEach(evt=>{
-      el.faction.addEventListener(evt, rerollFillers);
-      el.fillerLineCount.addEventListener(evt, rerollFillers);
-    });
-    el.rerollFillersBtn.addEventListener("click", rerollFillers);
-
-    ["input","change"].forEach(evt=>{
-      el.fontColor.addEventListener(evt, updateLivePreview);
-      el.msgFontSize.addEventListener(evt, updateLivePreview);
-      el.psColorText.addEventListener(evt, updateLivePreview);
-      el.psFontSize.addEventListener(evt, updateLivePreview);
-    });
-    if(el.movingOverlay){
-      el.movingOverlay.addEventListener("change", () => {
-        if(!el.movingOverlay.checked && el.flicker){
-          el.flicker.checked = false;
-        }
-        updateLivePreview();
-      });
-    }
-    if(el.flicker){
-      el.flicker.addEventListener("change", () => {
-        if(el.movingOverlay && !el.movingOverlay.checked){
-          el.flicker.checked = false;
-        }
-      });
-    }
-
-    applyLanguage(currentLanguage);
-    if (languageSelect) {
-      languageSelect.addEventListener("change", (event) => {
-        applyLanguage(event.target.value);
-      });
-    }
-
-    setStatus(translations[currentLanguage].messages.statusReady, "statusReady");
-    rerollFillers();
-  </script>
+(async()=>{
+  try{ await loadManifest(); setStatus('gotowe'); }
+  catch(e){ setStatus('BŁĄD'); writeImportLog([String(e.message||e)]); alert(e.message||e); }
+})();
+</script>
 </body>
 </html>
