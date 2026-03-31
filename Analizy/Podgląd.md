@@ -170,3 +170,142 @@ Najlepszym kompromisem jest rozpoczęcie od trybu **„Wycinek/Całość”**, a
 3. **Dokumentacja modułu**
    - Zaktualizowano `Infoczytnik/docs/README.md` (PL/EN) o instrukcję użycia nowego trybu `Wycinek / Całość`.
    - Zaktualizowano `Infoczytnik/docs/Documentation.md` o szczegóły implementacyjne (funkcje, localStorage, zmiany stanu domyślnego i wersji).
+
+---
+
+## Rozszerzenie analizy – nowe wymaganie (2026-03-31)
+
+## Prompt użytkownika (doprecyzowanie)
+> Przeanalizuj plik z analizą: Analizy/Podgląd.md
+>
+> I rozbuduj go o nowe wymaganie.
+>
+> Chcę zmienić nazwy i działanie kontrolek:
+> Napis: "Wycinek" zmień na "Treść".
+> Napis: "Całość" zmień na "Tło".
+>
+> Kliknięcie przycisku "Treść" (domyślnie zaznaczony) ma skutkować wyświetleniem treści (plus ewentualnie prefixy i suffixy i ewentualnie tło) ale bez tła.
+>
+> Kliknięcie na "Tło" ma skutkować wyświetleniem się miniatury pliku tła (ale jednego a nie kilku obok siebie jak to jest obecnie). Ponieważ pole jest prostokątne obrazek tła może być przekręcony o 90 stopni w lewo.
+>
+> Przeprowadź analizę wprowadzenia takiego rozwiązania.
+
+## Interpretacja wymagania
+Nowe wymaganie zmienia semantykę kontrolek z „trybów kadrowania” na „tryby celu podglądu”:
+- **Treść** = podgląd kompozycji treści (tekst + prefix/suffix + elementy UI), bez ekspozycji samej miniatury tła jako głównego obiektu porównania.
+- **Tło** = podgląd **pojedynczej miniatury** pliku tła, skupiony na grafice, bez prezentacji kilku miniatur jednocześnie.
+
+Dodatkowo nazewnictwo ma być bardziej intuicyjne domenowo (co chcę sprawdzić: „Treść” albo „Tło”, a nie „Wycinek”/„Całość”).
+
+## Analiza UX
+
+### 1) Zmiana etykiet
+- „Wycinek” → **„Treść”**
+- „Całość” → **„Tło”**
+
+**Efekt:**
+- Użytkownik szybciej rozumie, co kontrolka pokazuje.
+- Mniejsze ryzyko błędnej interpretacji, że chodzi wyłącznie o skalowanie/kadrowanie.
+
+### 2) Zachowanie trybu „Treść” (domyślny)
+Wymaganie wskazuje: „wyświetlenie treści (…) ale bez tła”.
+Najbezpieczniejsza interpretacja implementacyjna:
+- renderować tekst i elementy kompozycji,
+- tło ustawić na brak grafiki (np. `background-image: none`) lub neutralny kolor techniczny,
+- zachować identyczny układ pozycji treści, żeby widok był nadal WYSIWYG dla warstw tekstowych.
+
+**Korzyść:**
+- Czytelna kontrola treści niezależnie od kontrastu i ornamentów tła.
+
+**Ryzyko:**
+- część użytkowników może oczekiwać, że „Treść” pokaże też finalny efekt z tłem.
+
+**Mitigacja:**
+- dodać krótki opis pod przełącznikiem, np. „Treść: podgląd warstwy tekstowej bez grafiki tła”.
+
+### 3) Zachowanie trybu „Tło”
+Wymaganie: pokazać **jedną** miniaturę wybranego pliku tła.
+
+To oznacza, że w tym trybie:
+- wyłączamy układ wielu miniatur/duplikacji,
+- pokazujemy dokładnie jeden `<img>` (lub jeden blok z backgroundem),
+- źródło grafiki = aktualnie wybrane tło z selektora,
+- zmiana wyboru tła aktualizuje tę samą miniaturę (bez klonowania elementów).
+
+**Korzyść:**
+- jednoznaczny podgląd aktualnego assetu,
+- eliminacja chaosu wizualnego i problemu „kilku obrazków obok siebie”.
+
+### 4) Obrót miniatury o 90° w lewo
+Wymaganie dopuszcza obrót, bo kontener jest prostokątny.
+
+Rekomendacja:
+- stosować obrót warunkowo (tylko w trybie „Tło”) przez klasę CSS, np. `transform: rotate(-90deg)`.
+- zadbać o dopasowanie (`object-fit: contain`) i wyśrodkowanie.
+- zapewnić fallback: jeśli obraz po obrocie jest mniej czytelny, można dodać mały przełącznik „Obróć”, ale to opcja rozszerzona (niekonieczna na etap 1).
+
+**Uwaga techniczna:**
+po obrocie zmieniają się proporcje osi – warto kontrolować maksymalną szerokość/wysokość wrappera, aby obraz nie był ucinany.
+
+## Wpływ na architekturę front-end
+
+### Stan i logika
+Aktualny stan `previewMode` (`crop/full`) powinien zostać zastąpiony semantycznym, np.:
+- `content` (Treść),
+- `background` (Tło).
+
+Do aktualizacji:
+- wartości domyślne stanu formularza,
+- mapowanie localStorage (z migracją starych wartości),
+- logika renderu podglądu (osobna ścieżka dla treści i tła).
+
+### Render podglądu
+- Tryb `content`: render warstwy tekstowej, bez obrazka tła.
+- Tryb `background`: render pojedynczej miniatury aktualnego pliku tła, opcjonalnie obracanej o -90°.
+
+### CSS
+- nowe klasy/stany dla dwóch trybów,
+- klasa obrotu miniatury,
+- ograniczenie do jednej instancji miniatury w kontenerze.
+
+## Kompatybilność i migracja
+Jeśli użytkownicy mają zapisane stare ustawienie (`crop`/`full`), rekomendowana migracja:
+- `crop` → `content`,
+- `full` → `background`.
+
+Dzięki temu po wdrożeniu nie „zgubimy” preferencji użytkownika, tylko zmapujemy je na nową semantykę.
+
+## Ryzyka i działania zapobiegawcze
+1. **Niejasność znaczenia „Treść”**
+   - Dodać podpowiedź tekstową (tooltip/opis).
+2. **Ucinanie obrazu po obrocie**
+   - Ustawić `contain`, testy na skrajnych proporcjach grafik.
+3. **Regresja: wiele miniatur w trybie „Tło”**
+   - Wymusić czyszczenie kontenera przed renderem i test e2e dla pojedynczego elementu.
+4. **Spadek czytelności treści bez tła**
+   - Użyć neutralnego tła technicznego z odpowiednim kontrastem.
+
+## Proponowane kryteria akceptacji dla nowego wymagania
+1. W UI widoczne są etykiety **Treść** i **Tło** zamiast **Wycinek** i **Całość**.
+2. Po wejściu do panelu domyślnie aktywny jest tryb **Treść**.
+3. Tryb **Treść** pokazuje tekst/prefix/suffix i elementy kompozycji bez grafiki tła.
+4. Tryb **Tło** pokazuje dokładnie **jedną** miniaturę aktualnie wybranego pliku tła.
+5. Miniatura w trybie **Tło** może być obrócona o 90° w lewo i pozostaje w całości widoczna w kontenerze.
+6. Przełączanie trybów działa bez migotania, duplikowania elementów i bez zauważalnych opóźnień.
+
+## Rekomendacja wdrożeniowa (minimalny bezpieczny zakres)
+**Etap 1 (obowiązkowy):**
+- podmiana etykiet,
+- nowa semantyka trybów (`content/background`),
+- domyślny tryb `content`,
+- pojedyncza miniatura w trybie `background`.
+
+**Etap 2 (stabilizacja):**
+- migracja wartości localStorage ze starych nazw,
+- testy regresyjne dla przełączania i odświeżania stanu.
+
+**Etap 3 (opcjonalny UX):**
+- przełącznik „obrót miniatury” lub auto-obrót zależny od proporcji obrazu.
+
+## Podsumowanie rozszerzenia
+Nowe wymaganie jest spójne i wykonalne bez przebudowy całego modułu. Najważniejsza zmiana polega na przejściu z „trybów kadrowania” na „tryby intencji podglądu” (Treść/Tło). Kluczowe technicznie jest rozdzielenie renderu warstwy tekstowej od renderu pojedynczej miniatury tła oraz usunięcie obecnego efektu wielokrotnego wyświetlania obrazów w trybie tła.
