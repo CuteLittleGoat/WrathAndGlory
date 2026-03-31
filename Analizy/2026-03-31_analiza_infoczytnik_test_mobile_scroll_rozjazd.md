@@ -57,3 +57,81 @@ W konsekwencji ten sam procentowy rect i te same fonty (`clamp` z `vw`) wizualni
 
 ## Wniosek końcowy
 Problem nie wygląda na losowy błąd renderowania, tylko na konsekwencję obecnego modelu layoutu opartego o dynamiczny viewport mobilny i częste rekalkulacje po `resize`. Różnica wyglądu PC vs telefon wynika z odmiennych proporcji i zachowania viewportu mobilnego podczas gestów przewijania.
+
+---
+
+## Rozszerzenie analizy (2026-03-31) — różnica „niebieskiej ramki” PC vs mobile
+
+## Prompt użytkownika (uzupełnienie kontekstu)
+> Przeczytaj i rozbuduj analizę (dodaj nowe informacje bez usuwania starych) Analizy/2026-03-31_analiza_infoczytnik_test_mobile_scroll_rozjazd.md
+>
+> Załączam dwa screeny. Jeden z wersji mobilnej a drugi z PC. Ten sam testowy tekst wpisany w panelu GM. Czemu na PC wygląda to jakby pole wyznaczone przez niebieską ramkę (szczegóły w Analizy/NiebieskaRamka.md) było niżej? Czy da się to jakoś wyrównać, żeby na PC, telefonie i tablecie zawsze wyglądało to tak samo?
+
+## Co dodatkowo wynika z obecnego kodu `Infoczytnik_test.html`
+
+### A) Wrażenie „ramka jest niżej” to zwykle suma 3 niezależnych zjawisk
+
+1. **Skalowanie obrazu tła przez `object-fit: contain` i `fitOverlayToBackground()`**
+   - Overlay jest liczony procentowo względem obrazu po skalowaniu (`rw`, `rh`, `frameTop`, `frameLeft`).
+   - Gdy proporcje okna różnią się między urządzeniami, punkt startowy (`top`) i wielkość overlay mogą mieć inny wynik po zaokrągleniach (`Math.round`).
+   - To daje małe, ale widoczne przesunięcia między platformami.
+
+2. **Typografia zależna od `vw` (viewport width), nie od realnej szerokości overlay**
+   - `.prefix/.suffix` używają `font-size: clamp(12px, 2vw, 20px)`.
+   - `.msg` używa `font-size: clamp(16px, 2.8vw, 34px)`.
+   - Na PC (szerszy viewport) fonty są większe, więc wizualnie treść „schodzi niżej”, mimo że geometryczny prostokąt overlay może być policzony poprawnie.
+
+3. **Pionowe odstępy jako procent wysokości overlay**
+   - `.overlayScroll` ma `padding: 2.5% 3.5%` i `gap: 2.5%`.
+   - Na większym obszarze procentowy padding/gap to więcej pikseli, więc pierwszy wiersz treści startuje niżej.
+
+W praktyce użytkownik odbiera to jako „niebieska ramka jest niżej”, choć często to **wewnętrzna kompozycja treści** wygląda niżej.
+
+### B) Dodatkowy efekt mobilny: zmienny viewport podczas gestu
+
+Na telefonie `window.innerHeight` zmienia się przy chowaniu/pokazywaniu UI przeglądarki. Ponieważ `fitOverlayToBackground()` jest odpalane na `resize`, top/height overlay potrafią się rekalkulować w trakcie sesji. To potęguje wrażenie niestabilności względem desktopu.
+
+## Czy da się wyrównać wygląd PC / telefon / tablet?
+
+**Tak, da się znacząco wyrównać** (w praktyce „prawie identycznie”), ale trzeba przyjąć jeden model skalowania.
+
+### Zalecany model spójności (najskuteczniejszy)
+
+1. **Skalować typografię i odstępy od wymiarów overlay, nie od viewportu**
+   - Zamiast `vw`, użyć zmiennych CSS ustawianych z JS po `fitOverlayToBackground()`:
+     - `--overlayW`, `--overlayH`, `--overlayMin`.
+   - Przykładowo liczyć font i spacing od `--overlayMin`.
+
+2. **Ograniczyć procentowe pionowe odstępy zależne od wysokości**
+   - `padding-top`, `gap`, `min-height` top/bottom band ustalić w bardziej stabilny sposób:
+     - np. z relacji do `line-height` lub do `--overlayMin` z clampami.
+
+3. **Ustabilizować viewport mobilny**
+   - rozważyć `100dvh` (z fallbackiem) i/lub aktualizację geometrii przez `visualViewport` + debounce,
+   - ignorować mikro-zmiany wysokości (np. < 4–8 px), które wynikają z animacji paska przeglądarki.
+
+4. **Trzymać jednolite metryki tekstu**
+   - jawne `line-height` dla prefix/msg/suffix,
+   - unikać zależności od domyślnych metryk systemowych fontów.
+
+### Czego nie da się zagwarantować 1:1 absolutnie
+
+Nawet po poprawkach mogą zostać subtelne różnice (1–2 px) przez:
+- inny silnik renderowania fontów (desktop vs mobile),
+- różne DPR (device pixel ratio),
+- zaokrąglenia subpikseli.
+
+To normalne. Celem powinno być **spójne pozycjonowanie funkcjonalne** i bardzo małe odchylenie wizualne.
+
+## Szybki test diagnostyczny, który potwierdzi przyczynę
+
+Aby potwierdzić, że problem jest głównie typograficzno-odstępowy (a nie sama geometria ramki), wystarczy tymczasowo:
+1. ustawić stałe fonty `px` (bez `vw`),
+2. ustawić stałe `padding-top` i `gap` w `px`,
+3. porównać PC i mobile.
+
+Jeżeli „opadanie” treści zniknie lub mocno się zmniejszy, przyczyna została potwierdzona.
+
+## Wniosek rozszerzony
+
+Różnica z Twoich screenów jest zgodna z aktualną implementacją: overlay jest poprawnie liczony procentowo, ale zawartość wewnątrz jest skalowana i odsuwana regułami zależnymi od viewportu (`vw`, `%`, dynamiczny `innerHeight`). Dlatego na PC wygląda jakby obszar „niebieskiej ramki” był niżej. Da się to wyrównać, jeśli skala fontów/odstępów zostanie przeniesiona z viewportu na sam overlay i zostanie ustabilizowany mechanizm przeliczania na mobile.
