@@ -58,23 +58,22 @@ Zapisywane pola:
    - ustawia rozmiar slotu logo (`--logoSize`) zależnie od szerokości obszaru roboczego,
    - uruchamia się po `load` obrazka, przy `resize` okna i po każdej zmianie layoutu.
 12. `overlay.shadow::after` ma `inset:0`, więc cień pokrywa dokładnie cały obszar overlay; wiadomość, fillery i logo pozostają w tym samym polu co prostokąt cienia.
-13. Dodano przełącznik diagnostyczny `DIAGNOSTIC_FIXED_TYPO_SPACING_TEST` (w `Infoczytnik_test.html`):
-   - gdy `true`, nakładane są stałe wartości testowe:
-     - `prefix/suffix` font: `16px`,
-     - `msg` font: `24px`,
-     - `overlayScroll` `padding-top`: `14px`,
-     - `overlayScroll` `gap`: `14px`,
-   - gdy `false`, aktywne są wartości bazowe (`clamp`/`%`).
-14. Technicznie test działa przez:
-   - klasę `overlay.diagnostic-fixed-typo-spacing`,
-   - zmienne CSS `--diagPrefixSuffixSize`, `--diagMsgSize`, `--diagPaddingTop`, `--diagGap`,
-   - fallback do standardowych reguł, więc wyłączenie testu nie wymaga cofania przebudowy CSS.
+13. Typografia i spacing są liczone od rozmiaru overlay zamiast `vw/%`:
+   - `--msgBasePx` oraz `--psBasePx` (z Firestore) definiują bazę typografii,
+   - finalny `font-size` używa `clamp(..., calc(basePx * --overlayScale), ...)`,
+   - `--overlayPadY`, `--overlayPadX`, `--overlayGap` są wyliczane z geometrii overlay i trzymane w granicach `min/max`.
+14. Wprowadzono stabilizację viewportu mobilnego:
+   - `.screen` używa `height:100vh; height:100dvh`,
+   - geometrię przelicza `scheduleFitOverlay()` oparty o `requestAnimationFrame + debounce`,
+   - obsługiwane są zdarzenia `resize`, `orientationchange` oraz `visualViewport.resize/scroll`,
+   - mikro-zmiany (`<2px` szerokości i `<6px` wysokości) są ignorowane, aby zredukować jitter po gestach przewijania.
 
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.
 - Preview GM ma mini-podgląd tła i logo.
 - Checkbox `Fillery` blokuje `Ilość linii fillerów` i pokazuje komunikat o stanie.
 - Układ tekstu na ekranie gracza jest mieszany: prefix/suffix centralnie, treść wiadomości do lewej, cały blok osadzony od górnej krawędzi warstwy overlay i ograniczony do obszaru roboczego zdefiniowanego dla danego tła; cień i logo są liczone względem tego samego obszaru.
+- Wysokości odstępów pionowych i skala typografii są normalizowane do wymiaru overlay, dzięki czemu PC/mobile/tablet mają bliższy wizualnie układ startowy treści.
 - Długi prefix nie nachodzi na logo, ponieważ `topBand` używa siatki z dedykowanym slotem logo; przy ukrytym logo aktywuje się wariant `topBand.no-logo` z jedną kolumną pełnej szerokości.
 
 ## Uwagi implementacyjne
