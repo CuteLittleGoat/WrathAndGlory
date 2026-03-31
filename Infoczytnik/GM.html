@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-01_00-15-00";
+      const INF_VERSION = "2026-03-31_22-55-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -29,14 +29,20 @@
     .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button{flex:1;min-width:160px;padding:12px;border-radius:12px;border:1px solid var(--border);background:#1d1d1d;color:var(--text);cursor:pointer}
     button.primary{background:linear-gradient(180deg,#3a2a12,#1c1408);color:var(--accent)} button.warn{background:linear-gradient(180deg,#1c0c0c,#120606);color:#ffb3b3}
     .small{font-size:12px;color:var(--muted);margin-top:6px}.status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
-    .livePreviewBox{margin-top:10px;padding:12px;border-radius:10px;min-height:150px;background-size:cover;background-position:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+    .previewModeRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .previewModeRow .small{margin-top:0}
+    .livePreviewBox{margin-top:10px;padding:12px;border-radius:10px;min-height:150px;background:#10151d;background-size:cover;background-position:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+    .livePreviewBox.preview-mode-content{background:#10151d;padding:12px}
+    .livePreviewBox.preview-mode-background{background:#0a0e14;padding:0}
+    .previewBackgroundThumb{position:absolute;top:50%;left:50%;height:100%;width:auto;max-height:100%;max-width:none;transform:translate(-50%,-50%) rotate(-90deg);transform-origin:center;display:none;opacity:.98}
+    .livePreviewBox.preview-mode-background .previewText,.livePreviewBox.preview-mode-background .previewLogo{display:none !important}
     .previewLogo{position:absolute;top:10px;right:10px;width:84px;max-height:84px;object-fit:contain;opacity:.9;display:none}
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
     .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
-    .importRow{display:flex;gap:10px;align-items:stretch}
+    .importRow{display:flex;gap:10px;align-items:center}
     .importRow .importLog{flex:1;min-width:0}
-    .importUpdateBtn{flex:0 0 clamp(210px,32%,320px);min-width:210px}
+    .importUpdateBtn{flex:0 0 clamp(210px,32%,320px);min-width:210px;align-self:center}
     .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
     .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap}
     .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
@@ -84,7 +90,14 @@
       </div>
       <label>Wielkość fontu Prefix + Suffix px</label><input type="number" id="psFontSize" min="10" max="60" value="12">
 
+      <div class="previewModeRow">
+        <span class="small">Podgląd:</span>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeContent" value="content" checked style="width:auto"> Treść</label>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeBackground" value="background" style="width:auto"> Tło</label>
+      </div>
+      <div class="small">Treść = warstwa tekstowa bez grafiki tła • Tło = pojedyncza miniatura wybranego pliku tła.</div>
       <div class="livePreviewBox" id="livePreview">
+        <img id="previewBackgroundThumb" class="previewBackgroundThumb" alt="background thumbnail">
         <img id="previewLogo" class="previewLogo" alt="logo preview">
         <div class="previewText" id="previewPrefix"></div>
         <div class="previewText" id="previewMsg">Lorem ipsum dolor sit amet...</div>
@@ -119,9 +132,10 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
-const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12 };
+const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12, previewMode:'content' };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
+const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
 
 if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
@@ -133,13 +147,13 @@ const el = {
   showLogo:document.getElementById('showLogo'), movingOverlay:document.getElementById('movingOverlay'), flicker:document.getElementById('flicker'), fillersEnabled:document.getElementById('fillersEnabled'), audioEnabled:document.getElementById('audioEnabled'),
   fillerLineCount:document.getElementById('fillerLineCount'), fillerBandLines:document.getElementById('fillerBandLines'), fillersHint:document.getElementById('fillersHint'), flickerHint:document.getElementById('flickerHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
   psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'),
-  previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewLogo:document.getElementById('previewLogo'),
+  previewModeContent:document.getElementById('previewModeContent'), previewModeBackground:document.getElementById('previewModeBackground'),
+  previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewBackgroundThumb:document.getElementById('previewBackgroundThumb'), previewLogo:document.getElementById('previewLogo'),
   message:document.getElementById('message'), importLog:document.getElementById('importLog'), updateDataBtn:document.getElementById('updateDataBtn'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
 };
 
 let manifest = null;
 let fillerState = {prefixLines:[], suffixLines:[]};
-const colorEditSource = { message: 'text', ps: 'text' };
 
 function setStatus(t){ el.status.textContent = t; }
 function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
@@ -158,13 +172,10 @@ function isFullHexColor(v){
   return /^#[0-9a-fA-F]{3}$/.test(String(v || '').trim()) || /^#[0-9a-fA-F]{6}$/.test(String(v || '').trim());
 }
 
-function resolveHexColor(textValue,pickerValue,fallback,preferText=true){
-  const normalizedText = normalizeHexColor(textValue,fallback);
-  const normalizedPicker = normalizeHexColor(pickerValue,fallback);
-  if(preferText){
-    return isFullHexColor(textValue) ? normalizedText : normalizedPicker;
-  }
-  return isFullHexColor(pickerValue) ? normalizedPicker : normalizedText;
+function resolveHexColor(textValue,pickerValue,fallback){
+  return isFullHexColor(textValue)
+    ? normalizeHexColor(textValue,fallback)
+    : normalizeHexColor(pickerValue,fallback);
 }
 
 function fillSelect(select,list,labelKey,styleFont){
@@ -344,18 +355,47 @@ function syncFlickerDependency(){
   }
 }
 
+function getPreviewMode(){
+  if(el.previewModeBackground.checked) return 'background';
+  return 'content';
+}
+
+function setPreviewMode(mode){
+  const targetMode = mode === 'background' ? 'background' : 'content';
+  el.previewModeBackground.checked = targetMode === 'background';
+  el.previewModeContent.checked = targetMode === 'content';
+  el.livePreview.classList.toggle('preview-mode-background', targetMode === 'background');
+  el.livePreview.classList.toggle('preview-mode-content', targetMode === 'content');
+  try{ localStorage.setItem(PREVIEW_MODE_KEY, targetMode); }catch(_){}
+}
+
+function loadSavedPreviewMode(){
+  let savedMode = DEFAULT_FORM_STATE.previewMode;
+  try{
+    const persisted = localStorage.getItem(PREVIEW_MODE_KEY);
+    if(persisted === 'crop') savedMode = 'content';
+    else if(persisted === 'full') savedMode = 'background';
+    else if(persisted === 'content' || persisted === 'background') savedMode = persisted;
+  }catch(_){}
+  setPreviewMode(savedMode);
+}
+
 function renderPreview(){
   syncFlickerDependency();
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const font = safeGet(manifest.fonts || [], el.fontSelect.value);
-  const messageColor = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', colorEditSource.message !== 'picker');
-  const psColor = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker');
-  if(colorEditSource.message === 'picker' || isFullHexColor(el.messageColorText.value)){ el.messageColorText.value = messageColor; }
-  if(colorEditSource.ps === 'picker' || isFullHexColor(el.psColorText.value)){ el.psColorText.value = psColor; }
+  const messageColor = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66');
+  const psColor = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff');
+  if(isFullHexColor(el.messageColorText.value)){ el.messageColorText.value = messageColor; }
+  if(isFullHexColor(el.psColorText.value)){ el.psColorText.value = psColor; }
   el.messageColorPicker.value = messageColor;
   el.psColorPicker.value = psColor;
-  el.livePreview.style.backgroundImage = bg ? `url('${bg.file}')` : 'none';
+  const previewMode = getPreviewMode();
+  const isBackgroundMode = previewMode === 'background';
+  el.livePreview.style.backgroundImage = 'none';
+  el.previewBackgroundThumb.style.display = (isBackgroundMode && bg) ? 'block' : 'none';
+  if(bg){ el.previewBackgroundThumb.src = bg.file; }
   el.livePreview.style.fontFamily = `"${font?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
   el.previewPrefix.textContent = fillerState.prefixLines.join('\n');
   el.previewSuffix.textContent = fillerState.suffixLines.join('\n');
@@ -363,7 +403,7 @@ function renderPreview(){
   el.previewPrefix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
   el.previewSuffix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
   el.previewMsg.style.color = messageColor; el.previewMsg.style.fontSize = clamp(el.msgFontSize.value,12,80,20)+'px';
-  if(el.showLogo.checked && logo){ el.previewLogo.src=logo.file; el.previewLogo.style.display='block'; } else { el.previewLogo.style.display='none'; }
+  if(!isBackgroundMode && el.showLogo.checked && logo){ el.previewLogo.src=logo.file; el.previewLogo.style.display='block'; } else { el.previewLogo.style.display='none'; }
   const fillersOff = !el.fillersEnabled.checked;
   el.fillerLineCount.disabled = fillersOff;
   el.fillersHint.textContent = fillersOff ? 'Fillery wyłączone — pole nieaktywne.' : 'Fillery aktywne.';
@@ -392,9 +432,9 @@ function getPayload(type){
     suffixLines: el.fillersEnabled.checked ? fillerState.suffixLines : [],
     fillerLineCount: clamp(el.fillerLineCount.value,1,5,3),
     fillerBandLines: clamp(el.fillerBandLines.value,1,6,2),
-    messageColor: resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', colorEditSource.message !== 'picker'),
-    prefixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker'),
-    suffixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker'),
+    messageColor: resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66'),
+    prefixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'),
+    suffixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'),
     msgFontSize: clamp(el.msgFontSize.value,12,80,20),
     prefixFontSize: clamp(el.psFontSize.value,10,60,12),
     suffixFontSize: clamp(el.psFontSize.value,10,60,12),
@@ -428,36 +468,34 @@ function restoreDefaults(sendReset=true){
   el.fillerBandLines.value = String(DEFAULT_FORM_STATE.fillerBandLines);
   el.messageColorText.value = DEFAULT_FORM_STATE.messageColor; el.messageColorPicker.value = '#00ff66';
   el.psColorText.value = DEFAULT_FORM_STATE.prefixSuffixColor; el.psColorPicker.value = DEFAULT_FORM_STATE.prefixSuffixColor;
-  colorEditSource.message = 'text';
-  colorEditSource.ps = 'text';
   el.msgFontSize.value = String(DEFAULT_FORM_STATE.msgFontSize); el.psFontSize.value = String(DEFAULT_FORM_STATE.psFontSize);
   el.message.value = '';
+  setPreviewMode(DEFAULT_FORM_STATE.previewMode);
   rerollFillers();
   if(sendReset){ send('clear').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}); }
 }
 
 ['input','change'].forEach(evt=>{
-  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize].forEach(node=>node.addEventListener(evt, renderPreview));
+  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize,el.previewModeContent,el.previewModeBackground].forEach(node=>node.addEventListener(evt, ()=>{
+    if(node === el.previewModeContent || node === el.previewModeBackground){ setPreviewMode(getPreviewMode()); }
+    renderPreview();
+  }));
 });
-['input','change'].forEach(evt=>el.messageColorText.addEventListener(evt,()=>{ colorEditSource.message = 'text'; }));
-['input','change'].forEach(evt=>el.psColorText.addEventListener(evt,()=>{ colorEditSource.ps = 'text'; }));
 el.fillerSelect.addEventListener('change', rerollFillers);
 ['input','change'].forEach(evt=>el.fillerLineCount.addEventListener(evt, rerollFillers));
 el.fillersEnabled.addEventListener('change', rerollFillers);
 el.rerollFillersBtn.addEventListener('click', rerollFillers);
-['input','change'].forEach(evt=>el.messageColorPicker.addEventListener(evt,()=>{ colorEditSource.message = 'picker'; el.messageColorText.value = el.messageColorPicker.value; renderPreview(); }));
-['input','change'].forEach(evt=>el.psColorPicker.addEventListener(evt,()=>{ colorEditSource.ps = 'picker'; el.psColorText.value = el.psColorPicker.value; renderPreview(); }));
-el.messageColorText.addEventListener('blur', ()=>{ colorEditSource.message = 'text'; el.messageColorText.value = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', true); renderPreview(); });
-el.psColorText.addEventListener('blur', ()=>{ colorEditSource.ps = 'text'; el.psColorText.value = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', true); renderPreview(); });
+['input','change'].forEach(evt=>el.messageColorPicker.addEventListener(evt,()=>{ el.messageColorText.value = el.messageColorPicker.value; renderPreview(); }));
+['input','change'].forEach(evt=>el.psColorPicker.addEventListener(evt,()=>{ el.psColorText.value = el.psColorPicker.value; renderPreview(); }));
+el.messageColorText.addEventListener('blur', ()=>{ el.messageColorText.value = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66'); renderPreview(); });
+el.psColorText.addEventListener('blur', ()=>{ el.psColorText.value = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'); renderPreview(); });
 document.querySelectorAll('.chip[data-target]').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     const color = String(chip.dataset.color || '');
     if(chip.dataset.target === 'msg'){
-      colorEditSource.message = 'text';
       el.messageColorText.value = color;
       el.messageColorPicker.value = color;
     } else {
-      colorEditSource.ps = 'text';
       el.psColorText.value = color;
       el.psColorPicker.value = color;
     }
@@ -471,7 +509,7 @@ el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'
 el.updateDataBtn.addEventListener('click',()=>updateDataFromXlsx());
 
 (async()=>{
-  try{ await loadManifest(); setStatus('gotowe'); }
+  try{ loadSavedPreviewMode(); await loadManifest(); setStatus('gotowe'); }
   catch(e){ setStatus('BŁĄD'); writeImportLog([String(e.message||e)]); alert(e.message||e); }
 })();
 </script>
