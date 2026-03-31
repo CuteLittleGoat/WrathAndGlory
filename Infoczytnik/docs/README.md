@@ -23,6 +23,8 @@
 20. Po włączeniu `Prostokąt cienia` hint Flickera nie pokazuje już komunikatu „aktywny (opcjonalny)”; ostrzeżenie jest widoczne tylko gdy prostokąt cienia jest wyłączony.
 21. Rozmiary fontów są przesyłane do Infoczytnika jako liczby, dzięki czemu zmiana rozmiaru działa poprawnie.
 22. `Infoczytnik_test.html` doładowuje ten sam zestaw Google Fonts co panel GM, więc zmiana fontu działa zgodnie z preview.
+23. W sekcji kolorów **Prefix + Suffix** można od razu używać Pickera i ręcznie wpisywać HEX bez wcześniejszego klikania szybkich kolorów; ręcznie wpisany HEX jest walidowany po opuszczeniu pola.
+24. Gdy pole HEX Prefix + Suffix ma niepełny kod (np. `#fffff`), picker nadal działa płynnie i od razu aktualizuje podgląd oraz pasek „Kolor | Pełny” — bez wymogu wcześniejszej korekty HEX.
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -47,3 +49,5 @@
 20. When `Shadow rectangle` is enabled, the Flicker hint stays empty (no “active/optional” text); warning appears only when shadow rectangle is disabled.
 21. Font sizes are sent to the player screen as numeric values, so runtime font-size changes apply correctly.
 22. `Infoczytnik_test.html` now loads the same Google Fonts set as the GM panel, so font-family changes match the GM preview.
+23. In the **Prefix + Suffix** color section, both the Picker and manual HEX input now work immediately (without pressing quick-color chips first); manual HEX is validated on field blur.
+24. If Prefix + Suffix HEX contains a partial value (e.g. `#fffff`), the picker still updates immediately (including the “Color | Solid” bar and live preview) without requiring a prior HEX fix.
