@@ -6,6 +6,16 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 
 
 
+## Aktualizacja 2026-03-31 — podgląd „Treść / Tło” (nowe wymaganie)
+1. W `GM_test.html` zastąpiono etykiety trybu podglądu: `Wycinek`/`Całość` -> `Treść`/`Tło` (radio: `previewModeContent`, `previewModeBackground`).
+2. Zmieniono semantykę trybów:
+   - `content` (Treść, domyślny) renderuje warstwę tekstową (prefix/wiadomość/suffix + opcjonalne logo) na technicznym tle, bez grafiki tła.
+   - `background` (Tło) renderuje tylko pojedynczą miniaturę aktualnie wybranego pliku tła (`previewBackgroundThumb`) z obrotem `rotate(-90deg)`.
+3. Dodano klasy stanu `preview-mode-content` i `preview-mode-background`, które sterują widocznością warstw podglądu i eliminują efekt wielu miniatur.
+4. `DEFAULT_FORM_STATE.previewMode` zmieniono z `crop` na `content`.
+5. `loadSavedPreviewMode()` migruje stare wartości localStorage: `crop -> content`, `full -> background`; klucz pozostaje `infoczytnik.gm.previewMode`.
+6. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_22-35-00`.
+
 ## Aktualizacja 2026-03-31 — wyrównanie przycisku „Aktualizuj dane z XLSX”
 1. W `GM_test.html` zmieniono styl kontenera `importRow` z `align-items:stretch` na `align-items:center`, aby elementy w wierszu logu importu były centrowane pionowo.
 2. W klasie `.importUpdateBtn` dodano `align-self:center`, dzięki czemu przycisk pozostaje po prawej stronie pola `Log importu`, ale jest wyrównany do środka tego pola.
@@ -130,7 +140,7 @@ Zapisywane pola:
 2. Walidacja domyślnych ID przez fallback do pierwszego rekordu listy.
 3. Losowanie unikalnych fillerów (`rerollFillers`) z wybranego zestawu.
 4. `syncFlickerDependency()` wymusza regułę: gdy `movingOverlay=false`, to `flicker=false` i `flicker.disabled=true` + komunikat informacyjny.
-5. Preview renderuje jednocześnie tło, logo, font, prefix/suffix i treść.
+5. Preview renderuje dwa niezależne cele podglądu: `Treść` (warstwa tekstowa bez grafiki tła) albo `Tło` (jedna miniatura wybranego tła obrócona o 90°).
 6. `getPayload()` wymusza regułę bezpieczeństwa również na poziomie danych (`flicker` nigdy nie idzie jako `true`, jeśli `movingOverlay` jest wyłączony).
 7. `Wyczyść komunikat` czyści wyłącznie `textarea#message`.
 8. `Przywróć domyślne` resetuje formularz do `DEFAULT_FORM_STATE` i wysyła dokument `type=clear`.
