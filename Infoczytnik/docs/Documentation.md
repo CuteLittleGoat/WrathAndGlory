@@ -6,7 +6,9 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 ## Aktualizacja 2026-03-31 — GM/Infoczytnik (wdrożenie rekomendacji)
 0. **Poprawka UX panelu kolorów fillerów (GM)**:
    - Dodano `isFullHexColor(v)` do rozróżniania pełnego HEX (`#RGB`/`#RRGGBB`) od wpisu częściowego.
+   - Dodano `resolveHexColor(textValue,pickerValue,fallback)`, które priorytetowo bierze poprawny HEX z pola tekstowego, a przy wartości niepełnej korzysta z aktualnej wartości pickera.
    - `renderPreview()` nie nadpisuje już pola tekstowego koloru Prefix/Suffix fallbackiem podczas wpisywania częściowego kodu (to samo zachowanie zastosowano także dla koloru treści, dla spójności).
+   - Poprawiono przypadek zgłoszony przez użytkownika: dla `Prefix + Suffix` picker działa od razu nawet gdy pole HEX jest chwilowo niepoprawne (np. `#fffff`), więc zmienia się zarówno podgląd, jak i pasek „Kolor|Pełny”.
    - Walidacja i normalizacja ręcznie wpisanego HEX dla `messageColorText` i `psColorText` dzieje się na `blur`, co pozwala wpisać kod ręcznie „od zera” bez wymogu kliknięcia chipa szybkiego koloru.
    - Pickery (`messageColorPicker`, `psColorPicker`) nadal synchronizują tekst i preview na `input` oraz `change`.
 1. **Kontrakt font-size**:
