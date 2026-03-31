@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_13-20-00";
+      const INF_VERSION = "2026-04-01_00-15-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -34,6 +34,13 @@
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
     .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
+    .importRow{display:flex;gap:10px;align-items:stretch}
+    .importRow .importLog{flex:1;min-width:0}
+    .importUpdateBtn{flex:0 0 clamp(210px,32%,320px);min-width:210px}
+    .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+    .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap}
+    .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
+    .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   </style>
 </head>
 <body>
@@ -52,17 +59,29 @@
         <label class="inline"><input type="checkbox" id="fillersEnabled" checked style="width:auto"> Fillery</label>
         <label class="inline"><input type="checkbox" id="audioEnabled" checked style="width:auto"> Audio</label>
       </div>
-      <div id="flickerHint" class="small">Flicker aktywny.</div>
+      <div id="flickerHint" class="small"></div>
       <label>Ilość linii fillerów</label><input type="number" id="fillerLineCount" min="1" max="5" value="3">
       <label>Wysokość stref Prefix/Suffix (linie)</label><input type="number" id="fillerBandLines" min="1" max="6" value="2">
       <div id="fillersHint" class="small">Fillery aktywne.</div>
     </div>
     <div class="col">
       <label>Kolor fontu (treść wiadomości)</label>
-      <div class="row"><div class="col"><input type="text" id="messageColorText" value="#00ff66"></div><div class="col"><input type="color" id="messageColorPicker" value="#00ff66"></div></div>
+      <div class="pair"><input type="text" id="messageColorText" value="#00ff66" placeholder="#RRGGBB"><input type="color" id="messageColorPicker" value="#00ff66"></div>
+      <div class="chips" id="messageColorChips">
+        <div class="chip" data-target="msg" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span>Zielony</span></div>
+        <div class="chip" data-target="msg" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span>Czerwony</span></div>
+        <div class="chip" data-target="msg" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span>Złoty</span></div>
+        <div class="chip" data-target="msg" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span>Biały</span></div>
+      </div>
       <label>Wielkość fontu (treść) px</label><input type="number" id="msgFontSize" min="12" max="80" value="20">
       <label>Kolor Prefix + Suffix (wspólny)</label>
-      <div class="row"><div class="col"><input type="text" id="psColorText" value="rgba(255,255,255,.88)"></div><div class="col"><input type="color" id="psColorPicker" value="#ffffff"></div></div>
+      <div class="pair"><input type="text" id="psColorText" value="#ffffff" placeholder="#RRGGBB"><input type="color" id="psColorPicker" value="#ffffff"></div>
+      <div class="chips" id="psColorChips">
+        <div class="chip" data-target="ps" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span>Zielony</span></div>
+        <div class="chip" data-target="ps" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span>Czerwony</span></div>
+        <div class="chip" data-target="ps" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span>Złoty</span></div>
+        <div class="chip" data-target="ps" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span>Biały</span></div>
+      </div>
       <label>Wielkość fontu Prefix + Suffix px</label><input type="number" id="psFontSize" min="10" max="60" value="12">
 
       <div class="livePreviewBox" id="livePreview">
@@ -86,7 +105,10 @@
   </div>
 
   <label>Log importu</label>
-  <textarea id="importLog" class="importLog" readonly></textarea>
+  <div class="importRow">
+    <textarea id="importLog" class="importLog" readonly></textarea>
+    <button id="updateDataBtn" class="primary importUpdateBtn" type="button">Aktualizuj dane z XLSX</button>
+  </div>
 
   <div class="small">Status: <span class="status" id="status">…</span></div>
 </div></div>
@@ -95,8 +117,9 @@
 <script src="config/web-push-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
-const DEFAULT_FORM_STATE = { backgroundId:1, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:true, movingOverlay:true, flicker:true, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'rgba(255,255,255,.88)', msgFontSize:20, psFontSize:12 };
+const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12 };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 
@@ -111,17 +134,38 @@ const el = {
   fillerLineCount:document.getElementById('fillerLineCount'), fillerBandLines:document.getElementById('fillerBandLines'), fillersHint:document.getElementById('fillersHint'), flickerHint:document.getElementById('flickerHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
   psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'),
   previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewLogo:document.getElementById('previewLogo'),
-  message:document.getElementById('message'), importLog:document.getElementById('importLog'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
+  message:document.getElementById('message'), importLog:document.getElementById('importLog'), updateDataBtn:document.getElementById('updateDataBtn'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
 };
 
 let manifest = null;
 let fillerState = {prefixLines:[], suffixLines:[]};
+const colorEditSource = { message: 'text', ps: 'text' };
 
 function setStatus(t){ el.status.textContent = t; }
 function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
 function safeGet(list,id){ return list.find(x=>x.id===Number(id)) || list[0] || null; }
 function nonce(){ return String(Date.now()) + '-' + Math.random().toString(36).slice(2); }
-function normalizeColor(v,fallback){ const s=String(v||'').trim(); return s || fallback; }
+function normalizeHexColor(v,fallback){
+  const s = String(v || '').trim();
+  if(/^#[0-9a-fA-F]{3}$/.test(s)){
+    return '#' + s.slice(1).split('').map(ch=>ch+ch).join('').toLowerCase();
+  }
+  if(/^#[0-9a-fA-F]{6}$/.test(s)){ return s.toLowerCase(); }
+  return fallback;
+}
+
+function isFullHexColor(v){
+  return /^#[0-9a-fA-F]{3}$/.test(String(v || '').trim()) || /^#[0-9a-fA-F]{6}$/.test(String(v || '').trim());
+}
+
+function resolveHexColor(textValue,pickerValue,fallback,preferText=true){
+  const normalizedText = normalizeHexColor(textValue,fallback);
+  const normalizedPicker = normalizeHexColor(pickerValue,fallback);
+  if(preferText){
+    return isFullHexColor(textValue) ? normalizedText : normalizedPicker;
+  }
+  return isFullHexColor(pickerValue) ? normalizedPicker : normalizedText;
+}
 
 function fillSelect(select,list,labelKey,styleFont){
   select.innerHTML='';
@@ -135,6 +179,135 @@ function fillSelect(select,list,labelKey,styleFont){
 }
 
 function writeImportLog(lines){ el.importLog.value = (lines||[]).length ? lines.join('\n') : 'Brak błędów importu.'; }
+
+const MANIFEST_XLSX_PATH = 'assets/data/DataSlate_manifest.xlsx';
+
+function normalizeHeader(value){
+  return String(value || '').trim().toLowerCase().replace(/[\s_\-]+/g,'');
+}
+
+function normalizeRecordKeys(rec){
+  const out = {};
+  Object.entries(rec || {}).forEach(([k,v])=>{ out[normalizeHeader(k)] = v; });
+  return out;
+}
+
+function toInt(value, fallback){
+  const n = Number(String(value ?? '').trim());
+  return Number.isFinite(n) ? Math.floor(n) : fallback;
+}
+
+function toStr(value){
+  return String(value ?? '').trim();
+}
+
+function toStringArray(value){
+  return String(value ?? '').split(/\r?\n|\|/).map(v=>v.trim()).filter(Boolean);
+}
+
+function pickValue(rec, aliases){
+  for(const key of aliases){
+    if(rec[key] !== undefined && rec[key] !== null && String(rec[key]).trim() !== '') return rec[key];
+  }
+  return '';
+}
+
+function parseSheetRows(workbook, sheetName){
+  const sheet = workbook.Sheets[sheetName];
+  if(!sheet) return [];
+  const rows = XLSX.utils.sheet_to_json(sheet, {defval:''});
+  return rows.map(normalizeRecordKeys);
+}
+
+function buildManifestFromWorkbook(workbook){
+  const logs = [];
+  const mapBasic = (sheetName, cfg)=>{
+    const rows = parseSheetRows(workbook, sheetName);
+    if(!rows.length){ logs.push(`Brak arkusza lub pusty arkusz: ${sheetName}`); return []; }
+    return rows.map((row, idx)=>{
+      const id = toInt(pickValue(row,['id']), idx+1);
+      const name = toStr(pickValue(row,['name','nazwa']));
+      const file = toStr(pickValue(row,['file','plik','url']));
+      const item = {id, name};
+      item[cfg.thirdKey] = cfg.thirdKey === 'font' ? toStr(pickValue(row,['font','czcionka'])) : file;
+      if(!item.name || !item[cfg.thirdKey]) logs.push(`${sheetName}: niepełny rekord ID ${id}`);
+      return item;
+    });
+  };
+
+  const fillersRows = parseSheetRows(workbook, 'fillers');
+  if(!fillersRows.length) logs.push('Brak arkusza lub pusty arkusz: fillers');
+
+  const manifestData = {
+    backgrounds: mapBasic('backgrounds', {thirdKey:'file'}),
+    logos: mapBasic('logos', {thirdKey:'file'}),
+    audios: mapBasic('audios', {thirdKey:'file'}),
+    fonts: mapBasic('fonts', {thirdKey:'font'}),
+    fillers: fillersRows.map((row, idx)=>({
+      id: toInt(pickValue(row,['id']), idx+1),
+      name: toStr(pickValue(row,['name','nazwa'])),
+      prefixes: toStringArray(pickValue(row,['prefixes','prefix','prefiksy','prefiksy(linie)'])),
+      suffixes: toStringArray(pickValue(row,['suffixes','suffix','sufiksy','sufiksy(linie)']))
+    })),
+    importLog: logs
+  };
+
+  manifestData.fillers.forEach(item=>{
+    if(!item.name || !item.prefixes.length || !item.suffixes.length){
+      logs.push(`fillers: niepełny rekord ID ${item.id}`);
+    }
+  });
+
+  return manifestData;
+}
+
+function downloadJson(filename, data){
+  const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 0);
+}
+
+async function updateDataFromXlsx(){
+  if(typeof XLSX === 'undefined'){
+    setStatus('Błąd: biblioteka XLSX niedostępna');
+    return;
+  }
+  const btn = el.updateDataBtn;
+  const previousLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Aktualizacja...';
+  setStatus('Aktualizacja data.json z DataSlate_manifest.xlsx...');
+  try{
+    const response = await fetch(`${MANIFEST_XLSX_PATH}?v=${encodeURIComponent(window.__dsVersion || '')}`, {cache:'no-store'});
+    if(!response.ok) throw new Error('Nie udało się pobrać DataSlate_manifest.xlsx');
+    const bytes = await response.arrayBuffer();
+    const workbook = XLSX.read(bytes, {type:'array'});
+    const nextManifest = buildManifestFromWorkbook(workbook);
+    manifest = nextManifest;
+    fillSelect(el.backgroundSelect, manifest.backgrounds || []);
+    fillSelect(el.logoSelect, manifest.logos || []);
+    fillSelect(el.fillerSelect, manifest.fillers || []);
+    fillSelect(el.fontSelect, manifest.fonts || [], 'font', 'font');
+    fillSelect(el.audioSelect, manifest.audios || []);
+    writeImportLog(manifest.importLog || []);
+    restoreDefaults(false);
+    downloadJson('data.json', nextManifest);
+    setStatus('Gotowe: wygenerowano nowy data.json (plik pobrany).');
+  }catch(err){
+    console.error(err);
+    setStatus('Błąd aktualizacji danych');
+    writeImportLog([`Błąd aktualizacji: ${err.message || err}`]);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = previousLabel;
+  }
+}
 
 async function loadManifest(){
   const res = await fetch(`assets/data/data.json?v=${encodeURIComponent(window.__dsVersion || '')}`);
@@ -166,7 +339,7 @@ function syncFlickerDependency(){
     el.flickerHint.className = 'small disabled-note';
   } else {
     el.flicker.disabled = false;
-    el.flickerHint.textContent = 'Flicker aktywny (opcjonalny).';
+    el.flickerHint.textContent = '';
     el.flickerHint.className = 'small';
   }
 }
@@ -176,8 +349,12 @@ function renderPreview(){
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const font = safeGet(manifest.fonts || [], el.fontSelect.value);
-  const messageColor = normalizeColor(el.messageColorText.value,'#00ff66');
-  const psColor = normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)');
+  const messageColor = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', colorEditSource.message !== 'picker');
+  const psColor = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker');
+  if(colorEditSource.message === 'picker' || isFullHexColor(el.messageColorText.value)){ el.messageColorText.value = messageColor; }
+  if(colorEditSource.ps === 'picker' || isFullHexColor(el.psColorText.value)){ el.psColorText.value = psColor; }
+  el.messageColorPicker.value = messageColor;
+  el.psColorPicker.value = psColor;
   el.livePreview.style.backgroundImage = bg ? `url('${bg.file}')` : 'none';
   el.livePreview.style.fontFamily = `"${font?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
   el.previewPrefix.textContent = fillerState.prefixLines.join('\n');
@@ -215,12 +392,12 @@ function getPayload(type){
     suffixLines: el.fillersEnabled.checked ? fillerState.suffixLines : [],
     fillerLineCount: clamp(el.fillerLineCount.value,1,5,3),
     fillerBandLines: clamp(el.fillerBandLines.value,1,6,2),
-    messageColor: normalizeColor(el.messageColorText.value,'#00ff66'),
-    prefixColor: normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)'),
-    suffixColor: normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)'),
-    msgFontSize: clamp(el.msgFontSize.value,12,80,20) + 'px',
-    prefixFontSize: clamp(el.psFontSize.value,10,60,12) + 'px',
-    suffixFontSize: clamp(el.psFontSize.value,10,60,12) + 'px',
+    messageColor: resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', colorEditSource.message !== 'picker'),
+    prefixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker'),
+    suffixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker'),
+    msgFontSize: clamp(el.msgFontSize.value,12,80,20),
+    prefixFontSize: clamp(el.psFontSize.value,10,60,12),
+    suffixFontSize: clamp(el.psFontSize.value,10,60,12),
     pingUrl: PING_URL,
     nonce: nonce(),
     ts: firebase.firestore.FieldValue.serverTimestamp(),
@@ -250,7 +427,9 @@ function restoreDefaults(sendReset=true){
   el.fillerLineCount.value = String(DEFAULT_FORM_STATE.fillerLineCount);
   el.fillerBandLines.value = String(DEFAULT_FORM_STATE.fillerBandLines);
   el.messageColorText.value = DEFAULT_FORM_STATE.messageColor; el.messageColorPicker.value = '#00ff66';
-  el.psColorText.value = DEFAULT_FORM_STATE.prefixSuffixColor; el.psColorPicker.value = '#ffffff';
+  el.psColorText.value = DEFAULT_FORM_STATE.prefixSuffixColor; el.psColorPicker.value = DEFAULT_FORM_STATE.prefixSuffixColor;
+  colorEditSource.message = 'text';
+  colorEditSource.ps = 'text';
   el.msgFontSize.value = String(DEFAULT_FORM_STATE.msgFontSize); el.psFontSize.value = String(DEFAULT_FORM_STATE.psFontSize);
   el.message.value = '';
   rerollFillers();
@@ -260,14 +439,36 @@ function restoreDefaults(sendReset=true){
 ['input','change'].forEach(evt=>{
   [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize].forEach(node=>node.addEventListener(evt, renderPreview));
 });
+['input','change'].forEach(evt=>el.messageColorText.addEventListener(evt,()=>{ colorEditSource.message = 'text'; }));
+['input','change'].forEach(evt=>el.psColorText.addEventListener(evt,()=>{ colorEditSource.ps = 'text'; }));
 el.fillerSelect.addEventListener('change', rerollFillers);
+['input','change'].forEach(evt=>el.fillerLineCount.addEventListener(evt, rerollFillers));
+el.fillersEnabled.addEventListener('change', rerollFillers);
 el.rerollFillersBtn.addEventListener('click', rerollFillers);
-el.messageColorPicker.addEventListener('input',()=>{ el.messageColorText.value = el.messageColorPicker.value; renderPreview(); });
-el.psColorPicker.addEventListener('input',()=>{ el.psColorText.value = el.psColorPicker.value; renderPreview(); });
+['input','change'].forEach(evt=>el.messageColorPicker.addEventListener(evt,()=>{ colorEditSource.message = 'picker'; el.messageColorText.value = el.messageColorPicker.value; renderPreview(); }));
+['input','change'].forEach(evt=>el.psColorPicker.addEventListener(evt,()=>{ colorEditSource.ps = 'picker'; el.psColorText.value = el.psColorPicker.value; renderPreview(); }));
+el.messageColorText.addEventListener('blur', ()=>{ colorEditSource.message = 'text'; el.messageColorText.value = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', true); renderPreview(); });
+el.psColorText.addEventListener('blur', ()=>{ colorEditSource.ps = 'text'; el.psColorText.value = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', true); renderPreview(); });
+document.querySelectorAll('.chip[data-target]').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    const color = String(chip.dataset.color || '');
+    if(chip.dataset.target === 'msg'){
+      colorEditSource.message = 'text';
+      el.messageColorText.value = color;
+      el.messageColorPicker.value = color;
+    } else {
+      colorEditSource.ps = 'text';
+      el.psColorText.value = color;
+      el.psColorPicker.value = color;
+    }
+    renderPreview();
+  });
+});
 el.sendBtn.addEventListener('click',()=>send('message').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}));
 el.clearMessageBtn.addEventListener('click',()=>{el.message.value=''; el.message.focus();});
 el.restoreDefaultsBtn.addEventListener('click',()=>restoreDefaults(true));
 el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'); alert(e.message||e);}));
+el.updateDataBtn.addEventListener('click',()=>updateDataFromXlsx());
 
 (async()=>{
   try{ await loadManifest(); setStatus('gotowe'); }
