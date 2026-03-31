@@ -49,13 +49,13 @@
   "logos": [
     {
       "id": 1,
-      "name": "Inkwizycja",
-      "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/logos/Inquisition.png"
+      "name": "Mechanicus",
+      "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/logos/Mechanicus.png"
     },
     {
       "id": 2,
-      "name": "Mechanicus",
-      "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/logos/Mechanicus.png"
+      "name": "Inkwizycja",
+      "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/logos/Inquisition.png"
     }
   ],
   "audios": [
