@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_14-40-38";
+      const INF_VERSION = "2026-03-31_15-02-48";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -29,6 +29,8 @@
     .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button{flex:1;min-width:160px;padding:12px;border-radius:12px;border:1px solid var(--border);background:#1d1d1d;color:var(--text);cursor:pointer}
     button.primary{background:linear-gradient(180deg,#3a2a12,#1c1408);color:var(--accent)} button.warn{background:linear-gradient(180deg,#1c0c0c,#120606);color:#ffb3b3}
     .small{font-size:12px;color:var(--muted);margin-top:6px}.status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
+    .previewModeRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .previewModeRow .small{margin-top:0}
     .livePreviewBox{margin-top:10px;padding:12px;border-radius:10px;min-height:150px;background-size:cover;background-position:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
     .previewLogo{position:absolute;top:10px;right:10px;width:84px;max-height:84px;object-fit:contain;opacity:.9;display:none}
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
@@ -84,6 +86,11 @@
       </div>
       <label>Wielkość fontu Prefix + Suffix px</label><input type="number" id="psFontSize" min="10" max="60" value="12">
 
+      <div class="previewModeRow">
+        <span class="small">Podgląd:</span>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeCrop" value="crop" checked style="width:auto"> Wycinek</label>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeFull" value="full" style="width:auto"> Całość</label>
+      </div>
       <div class="livePreviewBox" id="livePreview">
         <img id="previewLogo" class="previewLogo" alt="logo preview">
         <div class="previewText" id="previewPrefix"></div>
@@ -119,9 +126,10 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
-const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12 };
+const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12, previewMode:'crop' };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
+const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
 
 if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
@@ -133,6 +141,7 @@ const el = {
   showLogo:document.getElementById('showLogo'), movingOverlay:document.getElementById('movingOverlay'), flicker:document.getElementById('flicker'), fillersEnabled:document.getElementById('fillersEnabled'), audioEnabled:document.getElementById('audioEnabled'),
   fillerLineCount:document.getElementById('fillerLineCount'), fillerBandLines:document.getElementById('fillerBandLines'), fillersHint:document.getElementById('fillersHint'), flickerHint:document.getElementById('flickerHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
   psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'),
+  previewModeCrop:document.getElementById('previewModeCrop'), previewModeFull:document.getElementById('previewModeFull'),
   previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewLogo:document.getElementById('previewLogo'),
   message:document.getElementById('message'), importLog:document.getElementById('importLog'), updateDataBtn:document.getElementById('updateDataBtn'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
 };
@@ -340,6 +349,28 @@ function syncFlickerDependency(){
   }
 }
 
+function getPreviewMode(){
+  if(el.previewModeFull.checked) return 'full';
+  return 'crop';
+}
+
+function setPreviewMode(mode){
+  const targetMode = mode === 'full' ? 'full' : 'crop';
+  el.previewModeFull.checked = targetMode === 'full';
+  el.previewModeCrop.checked = targetMode === 'crop';
+  el.livePreview.style.backgroundSize = targetMode === 'full' ? 'contain' : 'cover';
+  try{ localStorage.setItem(PREVIEW_MODE_KEY, targetMode); }catch(_){}
+}
+
+function loadSavedPreviewMode(){
+  let savedMode = DEFAULT_FORM_STATE.previewMode;
+  try{
+    const persisted = localStorage.getItem(PREVIEW_MODE_KEY);
+    if(persisted === 'crop' || persisted === 'full') savedMode = persisted;
+  }catch(_){}
+  setPreviewMode(savedMode);
+}
+
 function renderPreview(){
   syncFlickerDependency();
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
@@ -426,12 +457,16 @@ function restoreDefaults(sendReset=true){
   el.psColorText.value = DEFAULT_FORM_STATE.prefixSuffixColor; el.psColorPicker.value = DEFAULT_FORM_STATE.prefixSuffixColor;
   el.msgFontSize.value = String(DEFAULT_FORM_STATE.msgFontSize); el.psFontSize.value = String(DEFAULT_FORM_STATE.psFontSize);
   el.message.value = '';
+  setPreviewMode(DEFAULT_FORM_STATE.previewMode);
   rerollFillers();
   if(sendReset){ send('clear').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}); }
 }
 
 ['input','change'].forEach(evt=>{
-  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize].forEach(node=>node.addEventListener(evt, renderPreview));
+  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize,el.previewModeCrop,el.previewModeFull].forEach(node=>node.addEventListener(evt, ()=>{
+    if(node === el.previewModeCrop || node === el.previewModeFull){ setPreviewMode(getPreviewMode()); }
+    renderPreview();
+  }));
 });
 el.fillerSelect.addEventListener('change', rerollFillers);
 ['input','change'].forEach(evt=>el.fillerLineCount.addEventListener(evt, rerollFillers));
@@ -461,7 +496,7 @@ el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'
 el.updateDataBtn.addEventListener('click',()=>updateDataFromXlsx());
 
 (async()=>{
-  try{ await loadManifest(); setStatus('gotowe'); }
+  try{ loadSavedPreviewMode(); await loadManifest(); setStatus('gotowe'); }
   catch(e){ setStatus('BŁĄD'); writeImportLog([String(e.message||e)]); alert(e.message||e); }
 })();
 </script>
