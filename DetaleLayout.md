@@ -561,6 +561,17 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 
 ## Moduł — Infoczytnik
 
+## 2026-03-31 — Infoczytnik (domyślny preset GM)
+- Zmieniono domyślny preset formularza w `GM_test.html` (`DEFAULT_FORM_STATE`) na konfigurację startową sesji:
+  - tło `7. Litannie Zaginionych`,
+  - logo `1. Mechanicus`,
+  - filler set `1. Mechanicus`,
+  - audio wiadomości `1. Text-On-Screen`,
+  - checkboxy: `Logo=OFF`, `Prostokąt cienia=OFF`, `Flicker=OFF`, `Audio=ON`,
+  - `Ilość linii fillerów=3`, `Wysokość Prefix/Suffix=2`,
+  - typografia i kolory domyślne: treść `#00ff66 / 20px`, prefix+suffix `#ffffff / 12px`.
+
+
 Moduł składa się z dwóch stron oraz strony startowej:
 - **Infoczytnik.html** — ekran graczy (Data-Slate),
 - **GM.html** — panel prowadzącego,

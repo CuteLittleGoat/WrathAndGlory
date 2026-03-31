@@ -12,6 +12,7 @@
 9. **Ping** zawsze odtwarza `assets/audios/ping/Ping.mp3`.
 10. **Wyczyść komunikat** czyści tylko pole tekstowe w GM.
 11. **Przywróć domyślne** czyści tekst i resetuje wszystkie pola formularza do `DEFAULT_FORM_STATE`.
+    - Domyślny preset GM: `Tło=7. Litannie Zaginionych`, `Logo=1. Mechanicus`, `Zestaw fillerów=1. Mechanicus`, `Audio wiadomości=1. Text-On-Screen`, `Logo=OFF`, `Prostokąt cienia=OFF`, `Flicker=OFF`, `Audio=ON`, `Ilość linii fillerów=3`, `Wysokość Prefix/Suffix=2`, `Kolor treści=#00ff66`, `Rozmiar treści=20px`, `Kolor Prefix/Suffix=#ffffff`, `Rozmiar Prefix/Suffix=12px`.
 12. Pole **Log importu** pokazuje wynik ładowania `assets/data/data.json` i pozwala skopiować całość.
 13. Łamanie linii w prefix/suffix/wiadomości działa bez poziomego scrolla i bez wymuszonego dzielenia wyrazów.
 14. Logo (gdy checkbox **Logo** jest aktywny) ma stały slot w prawym górnym rogu obszaru roboczego/prostokąta cienia i nie koliduje z prefixem.
@@ -40,6 +41,7 @@
 9. **Ping** always plays `assets/audios/ping/Ping.mp3`.
 10. **Wyczyść komunikat / Clear message** only clears GM text input.
 11. **Przywróć domyślne / Restore defaults** clears text and resets all form fields to `DEFAULT_FORM_STATE`.
+    - Default GM preset: `Background=7. Litannie Zaginionych`, `Logo=1. Mechanicus`, `Filler set=1. Mechanicus`, `Message audio=1. Text-On-Screen`, `Logo=OFF`, `Shadow rectangle=OFF`, `Flicker=OFF`, `Audio=ON`, `Filler lines=3`, `Prefix/Suffix band=2`, `Message color=#00ff66`, `Message size=20px`, `Prefix/Suffix color=#ffffff`, `Prefix/Suffix size=12px`.
 12. **Log importu / Import log** displays `assets/data/data.json` load results and can be copied entirely.
 13. Prefix/suffix/message wrapping is vertical-only (no horizontal scroll, no forced word splitting).
 14. Logo (when the **Logo** checkbox is enabled) uses a fixed slot in the top-right of the working area/shadow rectangle and does not overlap prefix text.

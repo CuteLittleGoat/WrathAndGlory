@@ -4,6 +4,21 @@
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
 
+## Aktualizacja 2026-03-31 — domyślne ustawienia panelu GM
+1. W `GM_test.html` zmieniono `DEFAULT_FORM_STATE` tak, aby panel startował z presetem:
+   - `backgroundId=7` (Litannie Zaginionych),
+   - `logoId=1` (Mechanicus),
+   - `fillerId=1` (Mechanicus),
+   - `audioId=1` (Text-On-Screen),
+   - `showLogo=false`, `movingOverlay=false`, `flicker=false`,
+   - `audioEnabled=true`, `fillersEnabled=true`,
+   - `fillerLineCount=3`, `fillerBandLines=2`,
+   - `messageColor=#00ff66`, `msgFontSize=20`,
+   - `prefixSuffixColor=#ffffff`, `psFontSize=12`,
+   - treść komunikatu po resecie: pusta (`''`).
+2. `restoreDefaults()` automatycznie odczytuje te wartości, więc przycisk „Przywróć domyślne” i inicjalne uruchomienie formularza ustawiają identyczny stan.
+3. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_21-45-00`.
+
 ## Aktualizacja 2026-03-31 — DataSlate_manifest.xlsx (zamiana kolejności logo)
 1. Zaktualizowano sekcję `logos` w `assets/data/data.json` zgodnie z nowym plikiem `DataSlate_manifest.xlsx`.
 2. Nowa kolejność i mapowanie ID:
@@ -25,7 +40,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 4. **Reset domyślny**:
    - `restoreDefaults()` resetuje `colorEditSource` do `text` dla obu sekcji kolorów.
 5. **Wersjonowanie plików testowych**:
-   - Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_14-20-00`.
+   - Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_21-45-00`.
 
 ## Aktualizacja 2026-03-31 — GM/Infoczytnik (wdrożenie rekomendacji)
 0. **Poprawka UX panelu kolorów fillerów (GM)**:
