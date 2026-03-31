@@ -4,6 +4,11 @@
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
 ## Aktualizacja 2026-03-31 — GM/Infoczytnik (wdrożenie rekomendacji)
+0. **Poprawka UX panelu kolorów fillerów (GM)**:
+   - Dodano `isFullHexColor(v)` do rozróżniania pełnego HEX (`#RGB`/`#RRGGBB`) od wpisu częściowego.
+   - `renderPreview()` nie nadpisuje już pola tekstowego koloru Prefix/Suffix fallbackiem podczas wpisywania częściowego kodu (to samo zachowanie zastosowano także dla koloru treści, dla spójności).
+   - Walidacja i normalizacja ręcznie wpisanego HEX dla `messageColorText` i `psColorText` dzieje się na `blur`, co pozwala wpisać kod ręcznie „od zera” bez wymogu kliknięcia chipa szybkiego koloru.
+   - Pickery (`messageColorPicker`, `psColorPicker`) nadal synchronizują tekst i preview na `input` oraz `change`.
 1. **Kontrakt font-size**:
    - `GM_test.html` wysyła `msgFontSize`, `prefixFontSize`, `suffixFontSize` jako liczby (bez `px`).
    - `Infoczytnik_test.html` konsumuje je przez istniejący `clamp(...)` i mapuje na CSS custom properties `--msgBasePx`, `--psBasePx`.
