@@ -3,6 +3,34 @@
 ## Zakres
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
+## Aktualizacja 2026-03-31 — GM/Infoczytnik (wdrożenie rekomendacji)
+1. **Kontrakt font-size**:
+   - `GM_test.html` wysyła `msgFontSize`, `prefixFontSize`, `suffixFontSize` jako liczby (bez `px`).
+   - `Infoczytnik_test.html` konsumuje je przez istniejący `clamp(...)` i mapuje na CSS custom properties `--msgBasePx`, `--psBasePx`.
+2. **Flicker hint**:
+   - `syncFlickerDependency()` pokazuje tylko ostrzeżenie „Flicker wymaga włączonego prostokąta cienia.” gdy `movingOverlay=false`.
+   - W stanie `movingOverlay=true` hint jest pusty (usunięto komunikat „Flicker aktywny (opcjonalny)”).
+3. **Ilość linii fillerów**:
+   - `fillerLineCount` wywołuje `rerollFillers()` na `input` i `change`.
+   - `fillersEnabled` również wywołuje `rerollFillers()` po zmianie, dzięki czemu liczba linii i stan włączenia fillerów odświeżają tablice `fillerState` bez ręcznej zmiany zestawu.
+4. **Kolory — HEX only**:
+   - Wprowadzono `normalizeHexColor(v,fallback)` akceptujące wyłącznie `#RGB` i `#RRGGBB` (normalizacja do lowercase `#rrggbb`).
+   - Usunięto domyślne RGBA dla Prefix/Suffix i zastąpiono je `#ffffff`.
+   - Payload wysyła `messageColor`, `prefixColor`, `suffixColor` wyłącznie jako HEX.
+5. **Synchronizacja pickerów**:
+   - Obsługiwane eventy `input` i `change` dla `messageColorPicker` oraz `psColorPicker`.
+   - Każde renderowanie podglądu synchronizuje `text + picker` do wartości znormalizowanej.
+6. **Szybkie kolory (chips)**:
+   - Dodano dla sekcji treści i fillerów: Zielony `#00ff66`, Czerwony `#ff3333`, Złoty `#d4af37`, Biały `#ffffff`.
+   - Kliknięcie chipa aktualizuje pole tekstowe HEX, picker i live preview.
+7. **Układ sekcji kolorów (GM)**:
+   - Dla obu sekcji zastosowano kolejność:
+     - rząd `HEX + Picker` (obok siebie),
+     - rząd przycisków szybkich kolorów,
+     - rząd pola rozmiaru fontu.
+8. **Fonty na ekranie gracza**:
+   - `Infoczytnik_test.html` otrzymał ten sam zestaw linków Google Fonts co `GM_test.html` (`preconnect` + `css2?family=...`), aby `fontPreset` był renderowany zgodnie z podglądem GM.
+
 ## Pliki i dane
 - `Infoczytnik/assets/data/data.json` — runtime manifest (backgrounds, logos, audios, fonts, fillers, importLog).
 - `Infoczytnik/GM_test.html` — panel GM zapisujący dokument `dataslate/current`.
