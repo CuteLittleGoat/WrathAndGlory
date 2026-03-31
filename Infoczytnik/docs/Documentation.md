@@ -5,6 +5,16 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 
 
 
+## Aktualizacja 2026-03-31 — przełączany tryb podglądu tła (Wycinek / Całość)
+1. W `GM_test.html` dodano nowy wiersz sterowania `Podgląd: Wycinek / Całość` (radio buttons `previewModeCrop`, `previewModeFull`) umieszczony bezpośrednio nad `livePreviewBox`.
+2. Dodano obsługę trybu podglądu:
+   - `getPreviewMode()` odczytuje aktywny wybór (`crop` / `full`),
+   - `setPreviewMode(mode)` przełącza `background-size` mini-podglądu (`cover` dla `Wycinek`, `contain` dla `Całość`) i synchronizuje stan kontrolek,
+   - `loadSavedPreviewMode()` odtwarza ostatnio używany tryb po odświeżeniu.
+3. Dodano trwałość wyboru w `localStorage` pod kluczem `infoczytnik.gm.previewMode`; panel pamięta preferencję GM między sesjami przeglądarki.
+4. `DEFAULT_FORM_STATE` rozszerzono o `previewMode:'crop'`; `restoreDefaults()` przywraca ten domyślny tryb i od razu aplikuje go do mini-podglądu.
+5. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_15-02-48`.
+
 ## Aktualizacja 2026-03-31 — nowy `assets/data/data.json` z `assets/data/DataSlate_manifest.xlsx`
 1. Wygenerowano od nowa plik `Infoczytnik/assets/data/data.json` na podstawie zaktualizowanego arkusza `Infoczytnik/assets/data/DataSlate_manifest.xlsx`.
 2. Zmiany danych obejmują:

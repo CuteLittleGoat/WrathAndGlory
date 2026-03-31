@@ -145,3 +145,28 @@ Warto jako funkcja premium, ale niekonieczna na pierwszy etap.
 
 ## Podsumowanie
 Najlepszym kompromisem jest rozpoczęcie od trybu **„Wycinek/Całość”**, a następnie przejście do **split preview**. To zapewnia szybkie wdrożenie i jednocześnie realnie rozwiązuje problem niewidocznych detali poza obecnym kadrem.
+
+---
+
+## Spis wprowadzonych zmian w kodzie (wdrożenie rozwiązania 1)
+1. **`Infoczytnik/GM_test.html`**
+   - Dodano przełącznik radiowy `Podgląd: Wycinek / Całość` nad mini-podglądem (`livePreviewBox`).
+   - Dodano funkcje:
+     - `getPreviewMode()` — odczyt bieżącego trybu,
+     - `setPreviewMode(mode)` — przełączanie renderu tła:
+       - `Wycinek` → `background-size: cover`,
+       - `Całość` → `background-size: contain`,
+     - `loadSavedPreviewMode()` — odczyt i przywrócenie trybu z `localStorage`.
+   - Dodano trwałość ustawienia pod kluczem `infoczytnik.gm.previewMode`.
+   - Rozszerzono `DEFAULT_FORM_STATE` o `previewMode:'crop'`.
+   - `restoreDefaults()` przywraca domyślny tryb `Wycinek`.
+   - Eventy `input/change` dla kontrolek trybu od razu aktualizują podgląd.
+
+2. **Wersjonowanie cache-bust**
+   - Podniesiono `INF_VERSION` do `2026-03-31_15-02-48` w:
+     - `Infoczytnik/GM_test.html`,
+     - `Infoczytnik/Infoczytnik_test.html`.
+
+3. **Dokumentacja modułu**
+   - Zaktualizowano `Infoczytnik/docs/README.md` (PL/EN) o instrukcję użycia nowego trybu `Wycinek / Całość`.
+   - Zaktualizowano `Infoczytnik/docs/Documentation.md` o szczegóły implementacyjne (funkcje, localStorage, zmiany stanu domyślnego i wersji).
