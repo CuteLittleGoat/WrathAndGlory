@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_11-39-25";
+      const INF_VERSION = "2026-03-31_12-13-25";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -146,6 +146,10 @@ function normalizeHexColor(v,fallback){
   return fallback;
 }
 
+function isFullHexColor(v){
+  return /^#[0-9a-fA-F]{3}$/.test(String(v || '').trim()) || /^#[0-9a-fA-F]{6}$/.test(String(v || '').trim());
+}
+
 function fillSelect(select,list,labelKey,styleFont){
   select.innerHTML='';
   list.forEach(item=>{
@@ -201,8 +205,8 @@ function renderPreview(){
   const font = safeGet(manifest.fonts || [], el.fontSelect.value);
   const messageColor = normalizeHexColor(el.messageColorText.value,'#00ff66');
   const psColor = normalizeHexColor(el.psColorText.value,'#ffffff');
-  el.messageColorText.value = messageColor;
-  el.psColorText.value = psColor;
+  if(isFullHexColor(el.messageColorText.value)){ el.messageColorText.value = messageColor; }
+  if(isFullHexColor(el.psColorText.value)){ el.psColorText.value = psColor; }
   el.messageColorPicker.value = messageColor;
   el.psColorPicker.value = psColor;
   el.livePreview.style.backgroundImage = bg ? `url('${bg.file}')` : 'none';
@@ -293,6 +297,8 @@ el.fillersEnabled.addEventListener('change', rerollFillers);
 el.rerollFillersBtn.addEventListener('click', rerollFillers);
 ['input','change'].forEach(evt=>el.messageColorPicker.addEventListener(evt,()=>{ el.messageColorText.value = el.messageColorPicker.value; renderPreview(); }));
 ['input','change'].forEach(evt=>el.psColorPicker.addEventListener(evt,()=>{ el.psColorText.value = el.psColorPicker.value; renderPreview(); }));
+el.messageColorText.addEventListener('blur', ()=>{ el.messageColorText.value = normalizeHexColor(el.messageColorText.value,'#00ff66'); renderPreview(); });
+el.psColorText.addEventListener('blur', ()=>{ el.psColorText.value = normalizeHexColor(el.psColorText.value,'#ffffff'); renderPreview(); });
 document.querySelectorAll('.chip[data-target]').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     const color = String(chip.dataset.color || '');
