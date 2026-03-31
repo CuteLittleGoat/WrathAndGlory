@@ -47,21 +47,11 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
    - `id=2` → `Inkwizycja` (`assets/logos/Inquisition.png`).
 3. Zakres zmiany obejmuje wyłącznie dane manifestu (bez zmian logiki JS/HTML).
 
-## Aktualizacja 2026-03-31 — poprawka pickera dla `#ffffff`
-1. **Aktywny kanał edycji koloru (`text` vs `picker`)**:
-   - Dodano stan `colorEditSource = { message: 'text', ps: 'text' }`.
-   - Zdarzenia `input/change` na polach tekstowych ustawiają aktywne źródło na `text`.
-   - Zdarzenia `input/change` na pickerach ustawiają aktywne źródło na `picker`.
-2. **Rozszerzenie `resolveHexColor(...)`**:
-   - Funkcja przyjmuje nowy parametr `preferText` i potrafi liczyć kolor zarówno z priorytetem pola tekstowego, jak i pickera.
-   - `renderPreview()` i `getPayload()` używają priorytetu zgodnego z ostatnim kanałem edycji.
-3. **Stabilizacja scenariusza „biały start”**:
-   - Przy wartości `#ffffff` (szczególnie dla Prefix/Suffix) picker nie jest już nadpisywany przez stale poprawny HEX z pola tekstowego.
-   - Po ruchu pickera kolor jest traktowany jako źródło prawdy i od razu synchronizowany do pola tekstowego oraz preview.
-4. **Reset domyślny**:
-   - `restoreDefaults()` resetuje `colorEditSource` do `text` dla obu sekcji kolorów.
-5. **Wersjonowanie plików testowych**:
-   - Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_21-45-00`.
+## Aktualizacja 2026-03-31 — porządkowanie po analizie pickera `#ffffff`
+1. Usunięto warstwę eksperymentalną `colorEditSource` (`text` vs `picker`) z `GM_test.html`.
+2. `resolveHexColor(...)` wróciło do prostszego kontraktu 3-parametrowego (`textValue`, `pickerValue`, `fallback`) bez przełączania priorytetu źródła.
+3. `renderPreview()`, `getPayload()` i handlery kolorów korzystają ponownie z jednolitej ścieżki synchronizacji (`text` + `picker`) bez dodatkowego stanu.
+4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_14-40-38`.
 
 ## Aktualizacja 2026-03-31 — GM/Infoczytnik (wdrożenie rekomendacji)
 0. **Poprawka UX panelu kolorów fillerów (GM)**:
