@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_12-37-44";
+      const INF_VERSION = "2026-03-31_14-20-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -132,6 +132,7 @@ const el = {
 
 let manifest = null;
 let fillerState = {prefixLines:[], suffixLines:[]};
+const colorEditSource = { message: 'text', ps: 'text' };
 
 function setStatus(t){ el.status.textContent = t; }
 function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
@@ -150,10 +151,13 @@ function isFullHexColor(v){
   return /^#[0-9a-fA-F]{3}$/.test(String(v || '').trim()) || /^#[0-9a-fA-F]{6}$/.test(String(v || '').trim());
 }
 
-function resolveHexColor(textValue,pickerValue,fallback){
-  return isFullHexColor(textValue)
-    ? normalizeHexColor(textValue,fallback)
-    : normalizeHexColor(pickerValue,fallback);
+function resolveHexColor(textValue,pickerValue,fallback,preferText=true){
+  const normalizedText = normalizeHexColor(textValue,fallback);
+  const normalizedPicker = normalizeHexColor(pickerValue,fallback);
+  if(preferText){
+    return isFullHexColor(textValue) ? normalizedText : normalizedPicker;
+  }
+  return isFullHexColor(pickerValue) ? normalizedPicker : normalizedText;
 }
 
 function fillSelect(select,list,labelKey,styleFont){
@@ -209,10 +213,10 @@ function renderPreview(){
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const font = safeGet(manifest.fonts || [], el.fontSelect.value);
-  const messageColor = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66');
-  const psColor = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff');
-  if(isFullHexColor(el.messageColorText.value)){ el.messageColorText.value = messageColor; }
-  if(isFullHexColor(el.psColorText.value)){ el.psColorText.value = psColor; }
+  const messageColor = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', colorEditSource.message !== 'picker');
+  const psColor = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker');
+  if(colorEditSource.message === 'picker' || isFullHexColor(el.messageColorText.value)){ el.messageColorText.value = messageColor; }
+  if(colorEditSource.ps === 'picker' || isFullHexColor(el.psColorText.value)){ el.psColorText.value = psColor; }
   el.messageColorPicker.value = messageColor;
   el.psColorPicker.value = psColor;
   el.livePreview.style.backgroundImage = bg ? `url('${bg.file}')` : 'none';
@@ -252,9 +256,9 @@ function getPayload(type){
     suffixLines: el.fillersEnabled.checked ? fillerState.suffixLines : [],
     fillerLineCount: clamp(el.fillerLineCount.value,1,5,3),
     fillerBandLines: clamp(el.fillerBandLines.value,1,6,2),
-    messageColor: resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66'),
-    prefixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'),
-    suffixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'),
+    messageColor: resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', colorEditSource.message !== 'picker'),
+    prefixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker'),
+    suffixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', colorEditSource.ps !== 'picker'),
     msgFontSize: clamp(el.msgFontSize.value,12,80,20),
     prefixFontSize: clamp(el.psFontSize.value,10,60,12),
     suffixFontSize: clamp(el.psFontSize.value,10,60,12),
@@ -288,6 +292,8 @@ function restoreDefaults(sendReset=true){
   el.fillerBandLines.value = String(DEFAULT_FORM_STATE.fillerBandLines);
   el.messageColorText.value = DEFAULT_FORM_STATE.messageColor; el.messageColorPicker.value = '#00ff66';
   el.psColorText.value = DEFAULT_FORM_STATE.prefixSuffixColor; el.psColorPicker.value = DEFAULT_FORM_STATE.prefixSuffixColor;
+  colorEditSource.message = 'text';
+  colorEditSource.ps = 'text';
   el.msgFontSize.value = String(DEFAULT_FORM_STATE.msgFontSize); el.psFontSize.value = String(DEFAULT_FORM_STATE.psFontSize);
   el.message.value = '';
   rerollFillers();
@@ -297,21 +303,25 @@ function restoreDefaults(sendReset=true){
 ['input','change'].forEach(evt=>{
   [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize].forEach(node=>node.addEventListener(evt, renderPreview));
 });
+['input','change'].forEach(evt=>el.messageColorText.addEventListener(evt,()=>{ colorEditSource.message = 'text'; }));
+['input','change'].forEach(evt=>el.psColorText.addEventListener(evt,()=>{ colorEditSource.ps = 'text'; }));
 el.fillerSelect.addEventListener('change', rerollFillers);
 ['input','change'].forEach(evt=>el.fillerLineCount.addEventListener(evt, rerollFillers));
 el.fillersEnabled.addEventListener('change', rerollFillers);
 el.rerollFillersBtn.addEventListener('click', rerollFillers);
-['input','change'].forEach(evt=>el.messageColorPicker.addEventListener(evt,()=>{ el.messageColorText.value = el.messageColorPicker.value; renderPreview(); }));
-['input','change'].forEach(evt=>el.psColorPicker.addEventListener(evt,()=>{ el.psColorText.value = el.psColorPicker.value; renderPreview(); }));
-el.messageColorText.addEventListener('blur', ()=>{ el.messageColorText.value = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66'); renderPreview(); });
-el.psColorText.addEventListener('blur', ()=>{ el.psColorText.value = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'); renderPreview(); });
+['input','change'].forEach(evt=>el.messageColorPicker.addEventListener(evt,()=>{ colorEditSource.message = 'picker'; el.messageColorText.value = el.messageColorPicker.value; renderPreview(); }));
+['input','change'].forEach(evt=>el.psColorPicker.addEventListener(evt,()=>{ colorEditSource.ps = 'picker'; el.psColorText.value = el.psColorPicker.value; renderPreview(); }));
+el.messageColorText.addEventListener('blur', ()=>{ colorEditSource.message = 'text'; el.messageColorText.value = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66', true); renderPreview(); });
+el.psColorText.addEventListener('blur', ()=>{ colorEditSource.ps = 'text'; el.psColorText.value = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff', true); renderPreview(); });
 document.querySelectorAll('.chip[data-target]').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     const color = String(chip.dataset.color || '');
     if(chip.dataset.target === 'msg'){
+      colorEditSource.message = 'text';
       el.messageColorText.value = color;
       el.messageColorPicker.value = color;
     } else {
+      colorEditSource.ps = 'text';
       el.psColorText.value = color;
       el.psColorPicker.value = color;
     }
