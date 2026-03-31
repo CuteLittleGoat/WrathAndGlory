@@ -4,6 +4,16 @@
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
 
+
+## Aktualizacja 2026-03-31 — nowy `assets/data/data.json` z `assets/data/DataSlate_manifest.xlsx`
+1. Wygenerowano od nowa plik `Infoczytnik/assets/data/data.json` na podstawie zaktualizowanego arkusza `Infoczytnik/assets/data/DataSlate_manifest.xlsx`.
+2. Zmiany danych obejmują:
+   - nowe i przemianowane frakcje w sekcji `fonts` (łącznie 16 rekordów),
+   - nowe i przemianowane zestawy w sekcji `fillers` (łącznie 14 rekordów),
+   - przemapowane identyfikatory zgodnie z manifestem XLSX.
+3. Zachowano założenie użytkowe dotyczące presetów: identyfikatory elementów domyślnych (`logoId=1`, `fillerId=1`, `fontId=1`) nadal istnieją, więc domyślna konfiguracja modułu nie wymaga zmian w logice.
+4. Zakres zmiany obejmuje dane runtime (`data.json`) i dokumentację; bez zmian w `GM_test.html` / `Infoczytnik_test.html`.
+
 ## Aktualizacja 2026-04-01 — przycisk importu DataSlate_manifest.xlsx w GM_test
 1. W `GM_test.html` dodano obok pola `Log importu` nowy układ `importRow`: log zajmuje ~1/2 wcześniejszej szerokości, a z prawej strony jest przycisk `Aktualizuj dane z XLSX`.
 2. Dodano stałą `MANIFEST_XLSX_PATH = "assets/data/DataSlate_manifest.xlsx"` oraz klientowy importer oparty o SheetJS (`xlsx.full.min.js` z CDN).

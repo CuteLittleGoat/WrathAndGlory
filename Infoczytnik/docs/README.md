@@ -29,6 +29,7 @@
 25. Gdy pole HEX Prefix + Suffix ma niepełny kod (np. `#fffff`), picker nadal działa płynnie i od razu aktualizuje podgląd oraz pasek „Kolor | Pełny” — bez wymogu wcześniejszej korekty HEX.
 26. Naprawiono przypadek z kolorem `#ffffff`: gdy użytkownik wybierze biały i potem otworzy picker, zmiany z pickera ponownie działają poprawnie (kolor nie „zawiesza się” na białym).
 27. Obok pola **Log importu** jest przycisk **Aktualizuj dane z XLSX**: pobiera stały plik `Infoczytnik/assets/data/DataSlate_manifest.xlsx`, generuje z niego nowy `data.json` w przeglądarce i automatycznie pobiera plik do zapisania/podmiany w `Infoczytnik/assets/data/data.json`.
+28. `assets/data/data.json` został przebudowany z aktualnego `assets/data/DataSlate_manifest.xlsx`: dostępne są nowe/nazwane na nowo frakcje fontów i zestawy fillerów; domyślne ID (`Logo=1`, `Filler=1`, `Font=1`) pozostają kompatybilne z presetem.
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -59,3 +60,4 @@
 25. If Prefix + Suffix HEX contains a partial value (e.g. `#fffff`), the picker still updates immediately (including the “Color | Solid” bar and live preview) without requiring a prior HEX fix.
 26. Fixed the `#ffffff` edge case: after selecting white, the color picker now continues to apply new colors correctly (no more “stuck on white” behavior).
 27. Next to **Import log**, the **Aktualizuj dane z XLSX** button fetches the fixed file `Infoczytnik/assets/data/DataSlate_manifest.xlsx`, builds a new `data.json` in-browser, and auto-downloads it so you can save/replace `Infoczytnik/assets/data/data.json`.
+28. `assets/data/data.json` has been rebuilt from the updated `assets/data/DataSlate_manifest.xlsx`: new/renamed font factions and filler sets are now available, while default IDs (`Logo=1`, `Filler=1`, `Font=1`) stay preset-compatible.
