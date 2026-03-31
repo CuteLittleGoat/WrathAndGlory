@@ -255,3 +255,25 @@ To improve consistency of Android system navigation bar color (Back/Home/Recents
 - dark background is enforced on `html, body` (`#031605`) and `body` now includes bottom `safe-area` padding.
 
 After deployment, a full PWA reinstall is recommended on devices (remove app/shortcut, clear site data, reinstall), because Android/Chrome may cache older UI integration settings.
+
+## Aktualizacja 2026-03-31 — skróty user/admin i tymczasowe wyłączenie maskable
+
+### PL
+- Wprowadzono **dwa osobne manifesty**:
+  - `manifest.webmanifest` (user) z `start_url: ./Main/index.html`,
+  - `manifest-admin.webmanifest` (admin) z `start_url: ./Main/index.html?admin=1`.
+- `Main/index.html` wybiera teraz manifest dynamicznie na podstawie parametru URL:
+  - bez `?admin=1` ładuje manifest user,
+  - z `?admin=1` ładuje manifest admin.
+- Zastosowano wariant tymczasowy z analizy: **usunięto `maskable`** z ikon manifestów i pozostawiono wyłącznie `purpose: "any"`.
+- Zaktualizowano cache app-shell w `service-worker.js`, aby obejmował oba manifesty.
+
+### EN
+- Added **two separate manifests**:
+  - `manifest.webmanifest` (user) with `start_url: ./Main/index.html`,
+  - `manifest-admin.webmanifest` (admin) with `start_url: ./Main/index.html?admin=1`.
+- `Main/index.html` now selects the manifest dynamically based on URL parameter:
+  - without `?admin=1` it loads the user manifest,
+  - with `?admin=1` it loads the admin manifest.
+- Applied the temporary analysis option: **removed `maskable`** from manifest icons and left only `purpose: "any"`.
+- Updated app-shell cache in `service-worker.js` so it includes both manifests.

@@ -1,9 +1,10 @@
-const SW_VERSION = "wg-pwa-v3";
+const SW_VERSION = "wg-pwa-v4";
 const APP_SHELL_CACHE = `${SW_VERSION}-shell`;
 const APP_SHELL_ASSETS = [
   "./",
   "./Main/index.html",
   "./manifest.webmanifest",
+  "./manifest-admin.webmanifest",
   "./IkonaGlowna.png",
   "./IkonaPowiadomien.png"
 ];
