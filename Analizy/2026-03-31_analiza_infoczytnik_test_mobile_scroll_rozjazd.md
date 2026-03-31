@@ -245,3 +245,55 @@ Opcjonalnie (cleanup techniczny po zakończeniu diagnozy):
 - zostawić wyłącznie style docelowe.
 
 Ale do samego „szybkiego testu i wycofania” wystarcza punkt 1.
+
+## Uzupełnienie analizy po nowych screenach (2026-03-31) — ocena „czy to już wystarczy do diagnozy i poprawek?”
+
+## Prompt użytkownika (bieżący)
+> Przeczytaj i rozbuduj analizę: Analizy/2026-03-31_analiza_infoczytnik_test_mobile_scroll_rozjazd.md  
+> Nie usuwaj treści tylko dodaj nowe wnioski.  
+> Przygotowałem nową testową wiadomość. Na załączonych screenach masz jak to wygląda na PC i telefonie.  
+> Czy to wystarczy, żeby zdiagnozować przyczynę błędu i wprowadzić poprawki?
+
+## Nowe wnioski z porównania załączonych zrzutów
+
+### 1) Te screeny są bardzo dobre diagnostycznie
+Tak — dostarczony komplet (PC + telefon, ten sam tekst testowy) jest **wystarczający, żeby wskazać główną przyczynę i bezpiecznie wdrożyć poprawkę nr 1**.
+
+Dlaczego:
+- Na obu screenach widać ten sam schemat: geometria „ramki” jest zbliżona, ale pionowa kompozycja treści (oddech górny/dolny + środek bloku) nie pokrywa się 1:1.
+- Różnica rośnie wraz z długością sekcji wiadomości (kolejne linie „Test ...”), co jest typowe dla różnic wynikających z `font-size` i `gap/padding`, a nie z jednorazowego przesunięcia całego overlay.
+
+### 2) Najbardziej prawdopodobna przyczyna (po tych screenach: wysoka pewność)
+Po nowych materiałach najbardziej prawdopodobny jest miks:
+1. skalowanie fontów od viewportu (`vw`),
+2. pionowe odstępy liczone procentowo od wysokości overlay,
+3. dynamiczny viewport mobilny (`innerHeight`, `100vh`, reakcja na `resize`).
+
+To jest spójne z tym, że:
+- desktop (szerszy viewport) ma inną „gęstość” typograficzną,
+- mobile po gestach potrafi zmienić odczuwalną wysokość układu przez zmianę UI przeglądarki.
+
+### 3) Czy wystarczy to do wprowadzenia poprawek?
+**Tak, do pierwszego, właściwego kroku naprawczego — zdecydowanie tak.**
+
+Można już wdrożyć poprawkę o najwyższym ROI:
+- uniezależnić typografię i pionowe spacingi od `vw/%` (przenieść na skalę overlay),
+- ustabilizować wysokość viewportu mobilnego (`dvh`/`visualViewport` + debounce i filtr mikro-zmian).
+
+To powinno usunąć 80–90% obserwowanego „rozjazdu” między urządzeniami.
+
+### 4) Czego te screeny jeszcze nie pokrywają (żeby domknąć temat „na twardo”)
+Do pełnej walidacji „po poprawce” przyda się jeszcze krótki zestaw kontrolny:
+- mobile: 1 screen po wejściu + 1 screen po kilku scrollach (ten sam moment treści),
+- przynajmniej dwa ratio mobile (np. wąski telefon i szerszy telefon/tablet),
+- ten sam test dla bardzo krótkiej i bardzo długiej wiadomości.
+
+To nie jest wymagane do startu poprawek — to jest etap **potwierdzenia jakości po wdrożeniu**.
+
+### 5) Decyzja praktyczna
+Na podstawie obecnych danych rekomendacja brzmi:
+- **wdrażać poprawki teraz** (bez czekania),
+- po wdrożeniu wykonać 3–5 zrzutów porównawczych do szybkiej akceptacji.
+
+## Odpowiedź na pytanie użytkownika (wprost)
+Tak — to już wystarcza, żeby zdiagnozować główną przyczynę i rozpocząć poprawki. Aktualny materiał jest wystarczający do wdrożenia pierwszej, najważniejszej korekty (typografia/spacing + stabilizacja viewportu mobilnego), a dodatkowe screeny będą potrzebne głównie do końcowej walidacji efektu.
