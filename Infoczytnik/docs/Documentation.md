@@ -68,6 +68,17 @@ Zapisywane pola:
    - obsługiwane są zdarzenia `resize`, `orientationchange` oraz `visualViewport.resize/scroll`,
    - mikro-zmiany (`<2px` szerokości i `<6px` wysokości) są ignorowane, aby zredukować jitter po gestach przewijania.
 
+15. Presety `CONTENT_RECTS_BY_BACKGROUND_ID` zostały przeliczone ponownie na podstawie plików `assets/ramki/*_ramka.png` (mapowanie z `Draft/Mapowanie.xlsx`). Aktualne wartości (`x,y,w,h`) to:
+   - `1 DataSlate_01`: `0.0642, 0.0762, 0.8707, 0.8124`
+   - `2 DataSlate_02`: `0.1255, 0.0924, 0.7091, 0.7574`
+   - `3 DataSlate_03`: `0.1048, 0.1435, 0.8094, 0.6745`
+   - `4 DataSlate_04`: `0.1123, 0.1481, 0.7745, 0.7262`
+   - `5 DataSlate_05`: `0.0329, 0.0242, 0.9362, 0.9325`
+   - `6 DataSlate_Inq`: `0.1004, 0.0450, 0.8246, 0.7801`
+   - `7 Litannie_Zaginionych`: `0.1987, 0.1254, 0.6207, 0.7643`
+   - `8 Notatnik`: `0.0361, 0.0280, 0.9248, 0.9447`
+   - `9 Pergamin`: `0.0537, 0.0293, 0.8955, 0.9499`
+
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.
 - Preview GM ma mini-podgląd tła i logo.

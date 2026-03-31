@@ -6,7 +6,7 @@
   <title>Infoczytnik</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_10-10-27";
+      const INF_VERSION = "2026-03-31_13-20-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -59,15 +59,16 @@ const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const DEFAULT_CONTENT_RECT = { x:0.10, y:0.16, w:0.80, h:0.74 };
 const CONTENT_RECTS_BY_BACKGROUND_ID = {
-  1:{ x:0.08, y:0.17, w:0.84, h:0.75 }, // DataSlate_01
-  2:{ x:0.09, y:0.16, w:0.82, h:0.76 }, // DataSlate_02
-  3:{ x:0.09, y:0.09, w:0.82, h:0.83 }, // DataSlate_03
-  4:{ x:0.10, y:0.09, w:0.80, h:0.82 }, // DataSlate_04
-  5:{ x:0.09, y:0.09, w:0.82, h:0.83 }, // DataSlate_05
-  6:{ x:0.08, y:0.16, w:0.84, h:0.74 }, // DataSlate_Inq
-  7:{ x:0.08, y:0.06, w:0.84, h:0.88 }, // Litannie_Zaginionych
-  8:{ x:0.07, y:0.08, w:0.86, h:0.84 }, // Notatnik
-  9:{ x:0.10, y:0.10, w:0.80, h:0.82 }  // Pergamin
+  // Recalculated from *_ramka.png blue-frame overlays (Infoczytnik/Draft/Mapowanie.xlsx)
+  1:{ x:0.0642, y:0.0762, w:0.8707, h:0.8124 }, // DataSlate_01
+  2:{ x:0.1255, y:0.0924, w:0.7091, h:0.7574 }, // DataSlate_02
+  3:{ x:0.1048, y:0.1435, w:0.8094, h:0.6745 }, // DataSlate_03
+  4:{ x:0.1123, y:0.1481, w:0.7745, h:0.7262 }, // DataSlate_04
+  5:{ x:0.0329, y:0.0242, w:0.9362, h:0.9325 }, // DataSlate_05
+  6:{ x:0.1004, y:0.0450, w:0.8246, h:0.7801 }, // DataSlate_Inq
+  7:{ x:0.1987, y:0.1254, w:0.6207, h:0.7643 }, // Litannie_Zaginionych
+  8:{ x:0.0361, y:0.0280, w:0.9248, h:0.9447 }, // Notatnik
+  9:{ x:0.0537, y:0.0293, w:0.8955, h:0.9499 }  // Pergamin
 };
 if(!window.firebaseConfig){ throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
