@@ -4,7 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Kozi Przybornik</title>
-  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="manifest" id="appManifest" href="../manifest.webmanifest">
+  <script>
+    (function setManifestByMode() {
+      const params = new URLSearchParams(window.location.search);
+      const manifestHref = params.get("admin") === "1"
+        ? "../manifest-admin.webmanifest"
+        : "../manifest.webmanifest";
+      const manifestLink = document.getElementById("appManifest");
+      if (manifestLink) {
+        manifestLink.setAttribute("href", manifestHref);
+      }
+    })();
+  </script>
   <meta name="theme-color" content="#031605">
   <meta name="theme-color" content="#031605" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#031605" media="(prefers-color-scheme: dark)">
