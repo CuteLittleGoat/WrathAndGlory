@@ -278,126 +278,36 @@ Stan aktualny jest dobrą bazą geometryczną (overlay w obszarze ramki), ale ni
 
 Do wdrożenia potrzebna jest przede wszystkim przebudowa **wewnętrznej architektury overlay** (DOM+CSS+scroll), a nie zmiana samego mechanizmu pozycjonowania overlay względem tła.
 
-## 7. Zmiany wdrożone w kodzie (2026-03-31)
+## 7. Wnioski po poprawce rozjazdu pola (2026-03-31)
 
-Poniżej lista faktycznie wprowadzonych zmian zgodnie z rekomendacjami.
+### Co powodowało rozjazd „niebieskiej ramki”
+Po wdrożeniu wcześniejszych poprawek layoutowych samo pozycjonowanie obszaru cienia nadal korzystało z przybliżonych presetów `CONTENT_RECTS_BY_BACKGROUND_ID`.
+Te wartości były poprawne „orientacyjnie”, ale dla części teł nie pokrywały dokładnie pola zaznaczonego niebieską ramką w plikach referencyjnych.
 
-Infoczytnik/Infoczytnik_test.html, linia 9  
-Było:  
-const INF_VERSION = "2026-03-30_20-36-59";  
-Będzie:  
-const INF_VERSION = "2026-03-31_09-10-12";
+Efekt praktyczny:
+- prostokąt cienia i treści był przesunięty (najbardziej odczuwalny w osi pionowej),
+- dla niektórych teł cień nie zajmował pełnej wysokości/szerokości pola docelowego,
+- użytkownik widział różnicę między oczekiwanym obszarem (niebieska ramka) a realnym obszarem renderowania tekstu.
 
-Infoczytnik/Infoczytnik_test.html, linie 23-31  
-Było:  
-Układ `.overlay` + `.box` z trzema blokami (prefix/msg/suffix), logo pozycjonowane absolutnie poza overlay.  
-Będzie:  
-Nowy układ stref: `.overlay` (obszar cienia) + `.overlayScroll` (scroll Y) + `.topBand` (prefix + slot logo) + `.msg` + `.bottomBand` (suffix), z jawnie ustawionymi regułami zawijania bez dzielenia wyrazów.
+### Z czego wynikała przyczyna techniczna
+Główna przyczyna nie wynikała już z mechaniki scrolla, tylko z geometrii wejściowej:
+1. `fitOverlayToBackground()` skaluje overlay poprawnie względem obrazu tła (`object-fit: contain`),
+2. ale finalna pozycja/rozmiar overlay zależy bezpośrednio od presetów `x,y,w,h`,
+3. jeżeli preset nie odpowiada dokładnie polu z mapowania, błąd skaluje się na każdym viewportcie (PC/mobile/tablet).
 
-Infoczytnik/Infoczytnik_test.html, linie 35-44  
-Było:  
-`<img id="logo" class="logo">` poza `#overlay`; wewnątrz `#overlay` tylko `.box` z prefix/msg/suffix.  
-Będzie:  
-`<img id="logo" class="logo">` przeniesione do `#topBand` wewnątrz `#overlay`; suffix osadzony w `bottomBand`.
+Czyli algorytm skalowania był poprawny, natomiast część danych wejściowych była niedokładna.
 
-Infoczytnik/Infoczytnik_test.html, linia 67  
-Było:  
-`el` bez referencji do nowych kontenerów scroll/stref.  
-Będzie:  
-`el` rozszerzone o `overlayScroll` i `topBand`.
+### Co zostało zrobione, żeby teraz działało poprawnie
+Wprowadzono pełną rekalkulację obszarów roboczych dla wszystkich 9 teł:
+- źródło mapowania: `Infoczytnik/Draft/Mapowanie.xlsx`,
+- źródło geometrii: pliki `Infoczytnik/assets/ramki/*_ramka.png` z zaznaczoną niebieską ramką,
+- wynik: zaktualizowane `CONTENT_RECTS_BY_BACKGROUND_ID` (`x,y,w,h`) dla ID 1..9.
 
-Infoczytnik/Infoczytnik_test.html, linia 70  
-Było:  
-Brak lokalnej funkcji clamp dla nowych parametrów layoutu.  
-Będzie:  
-Dodana funkcja `clamp(v,min,max,d)` do walidacji liczby linii strefy fillerów.
+Dodatkowo:
+- zsynchronizowano `INF_VERSION` w `Infoczytnik_test.html` i `GM_test.html`, aby wymusić odświeżenie cache po zmianie presetów,
+- zaktualizowano dokumentację użytkową i techniczną o informację, że recty zostały przeliczone na podstawie plików ramek.
 
-Infoczytnik/Infoczytnik_test.html, linie 86-88  
-Było:  
-Brak parametru sterującego wysokością stref prefix/suffix.  
-Będzie:  
-Dodane ustawianie CSS var `--fillerBandLines` z payloadu (`fillerBandLines`).
+### Rezultat po poprawce
+Po aktualizacji presetów obszar cienia pokrywa pełne pole wyznaczone niebieską ramką dla wszystkich teł z mapowania.
+To eliminuje wcześniejsze przesunięcie i przywraca zgodność: „pole cienia = obszar niebieskiej ramki”, a treść/prefix/suffix/logo pozostają w tym samym, poprawnie wyliczonym obszarze roboczym.
 
-Infoczytnik/Infoczytnik_test.html, linie 94-102  
-Było:  
-Ukrywanie/pokazywanie logo bez zmiany struktury top-area.  
-Będzie:  
-Przy braku logo aktywowane `topBand.no-logo` (pełna szerokość prefixu); przy logo przywrócenie układu 2-kolumnowego.
-
-Infoczytnik/Infoczytnik_test.html, linia 104  
-Było:  
-Brak resetu pozycji scrolla po nowej wiadomości/layout.  
-Będzie:  
-`el.overlayScroll.scrollTop = 0;` po `applyLayout()`.
-
-Infoczytnik/Infoczytnik_test.html, linie 139-143  
-Było:  
-Absolutne liczenie `logo.top/left/maxWidth/maxHeight` w `fitOverlayToBackground()`.  
-Będzie:  
-Usunięte absolutne pozycjonowanie logo; pozostawione wyliczanie `--logoSize` dla slotu logo w `topBand`.
-
-Infoczytnik/GM_test.html, linia 9  
-Było:  
-const INF_VERSION = "2026-03-30_20-36-59";  
-Będzie:  
-const INF_VERSION = "2026-03-31_09-10-12";
-
-Infoczytnik/GM_test.html, linie 55-58  
-Było:  
-Brak komunikatu zależności Flicker od Prostokąta cienia oraz brak osobnego parametru wysokości strefy prefix/suffix.  
-Będzie:  
-Dodane `#flickerHint` oraz pole `#fillerBandLines`.
-
-Infoczytnik/GM_test.html, linia 99  
-Było:  
-`DEFAULT_FORM_STATE` bez `fillerBandLines`.  
-Będzie:  
-`DEFAULT_FORM_STATE` zawiera `fillerBandLines:2`.
-
-Infoczytnik/GM_test.html, linie 111-113  
-Było:  
-Brak referencji do `fillerBandLines` i `flickerHint` w mapie `el`.  
-Będzie:  
-`el` rozszerzone o `fillerBandLines` i `flickerHint`.
-
-Infoczytnik/GM_test.html, linie 161-173  
-Było:  
-Brak twardej logiki: `movingOverlay=false => flicker OFF + disabled + info`.  
-Będzie:  
-Dodana funkcja `syncFlickerDependency()` realizująca pełną zależność checkboxów.
-
-Infoczytnik/GM_test.html, linia 176  
-Było:  
-`renderPreview()` nie synchronizował zależności Flicker/Prostokąt cienia.  
-Będzie:  
-`renderPreview()` zaczyna od `syncFlickerDependency()`.
-
-Infoczytnik/GM_test.html, linie 193-211  
-Było:  
-Payload przekazywał `flicker` bez walidacji zależności i nie zawierał `fillerBandLines`.  
-Będzie:  
-Payload wymusza `flicker` tylko przy `movingOverlay=true` i dodaje `fillerBandLines`.
-
-Infoczytnik/GM_test.html, linie 246-247  
-Było:  
-`restoreDefaults()` nie resetował `fillerBandLines`.  
-Będzie:  
-`restoreDefaults()` resetuje także `fillerBandLines`.
-
-Infoczytnik/GM_test.html, linia 256  
-Było:  
-Listenery `renderPreview()` bez nowego pola `fillerBandLines`.  
-Będzie:  
-Listenery obejmują też `el.fillerBandLines`.
-
-Infoczytnik/docs/README.md, sekcja Instrukcja użytkownika/User guide  
-Było:  
-Brak opisu nowej zależności Flicker, brak opisu nowego parametru wysokości stref i modelu scrolla treści wewnątrz cienia.  
-Będzie:  
-Dodane instrukcje PL/EN dla: zależności checkboxów, `fillerBandLines`, pionowego scrolla treści i zachowania prefix/logo/suffix.
-
-Infoczytnik/docs/Documentation.md, sekcje Model danych / GM_test / Infoczytnik_test / Style UX  
-Było:  
-Dokumentacja opisywała starszy model `.box` i logo absolutne, bez `fillerBandLines` i bez twardej zależności Flicker.  
-Będzie:  
-Dokumentacja opisuje nowy model stref, scroll pionowy, reguły łamania linii, `fillerBandLines`, slot logo oraz walidację zależności Flicker w UI i payloadzie.
