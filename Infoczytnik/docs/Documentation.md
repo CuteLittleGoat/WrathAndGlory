@@ -14,7 +14,8 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 3. Dodano klasy stanu `preview-mode-content` i `preview-mode-background`, które sterują widocznością warstw podglądu i eliminują efekt wielu miniatur.
 4. `DEFAULT_FORM_STATE.previewMode` zmieniono z `crop` na `content`.
 5. `loadSavedPreviewMode()` migruje stare wartości localStorage: `crop -> content`, `full -> background`; klucz pozostaje `infoczytnik.gm.previewMode`.
-6. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_22-35-00`.
+6. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_22-55-00`.
+7. Dopracowano wygląd miniatury trybu `Tło`: w stanie `preview-mode-background` usunięto wewnętrzny padding podglądu (`padding:0`), a `previewBackgroundThumb` skaluje się do pełnej wysokości pola (`height:100%`, `width:auto`), dzięki czemu miniatura dochodzi do górnej i dolnej krawędzi bez deformacji (z wolnym miejscem po bokach).
 
 ## Aktualizacja 2026-03-31 — wyrównanie przycisku „Aktualizuj dane z XLSX”
 1. W `GM_test.html` zmieniono styl kontenera `importRow` z `align-items:stretch` na `align-items:center`, aby elementy w wierszu logu importu były centrowane pionowo.
