@@ -30,6 +30,7 @@
 26. Obok pola **Log importu** jest przycisk **Aktualizuj dane z XLSX**: pobiera stały plik `Infoczytnik/assets/data/DataSlate_manifest.xlsx`, generuje z niego nowy `data.json` w przeglądarce i automatycznie pobiera plik do zapisania/podmiany w `Infoczytnik/assets/data/data.json`.
 27. `assets/data/data.json` został przebudowany z aktualnego `assets/data/DataSlate_manifest.xlsx`: dostępne są nowe/nazwane na nowo frakcje fontów i zestawy fillerów; domyślne ID (`Logo=1`, `Filler=1`, `Font=1`) pozostają kompatybilne z presetem.
 28. W mini-podglądzie dodano przełącznik **Podgląd: Wycinek / Całość** — `Wycinek` odwzorowuje dotychczasowy kadr (`cover`), a `Całość` pokazuje pełne tło skalowane do ramki (`contain`); wybrany tryb jest zapisywany lokalnie i przywracany po odświeżeniu panelu GM.
+29. Przycisk **Aktualizuj dane z XLSX** ma teraz taką samą wysokość jak pozostałe przyciski panelu i jest wyśrodkowany pionowo względem pola **Log importu** (pozostaje po prawej stronie logu).
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -61,3 +62,4 @@
 26. Next to **Import log**, the **Aktualizuj dane z XLSX** button fetches the fixed file `Infoczytnik/assets/data/DataSlate_manifest.xlsx`, builds a new `data.json` in-browser, and auto-downloads it so you can save/replace `Infoczytnik/assets/data/data.json`.
 27. `assets/data/data.json` has been rebuilt from the updated `assets/data/DataSlate_manifest.xlsx`: new/renamed font factions and filler sets are now available, while default IDs (`Logo=1`, `Filler=1`, `Font=1`) stay preset-compatible.
 28. The live preview now has a **Preview: Crop / Full** toggle — `Crop` keeps the existing frame (`cover`), while `Full` shows the entire background fitted into the preview box (`contain`); the selected mode is stored locally and restored after GM panel refresh.
+29. The **Aktualizuj dane z XLSX** button now matches the height of the other panel buttons and is vertically centered relative to the **Import log** field (it remains on the right side of the log).

@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_15-02-48";
+      const INF_VERSION = "2026-03-31_15-18-03";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -36,9 +36,9 @@
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
     .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
-    .importRow{display:flex;gap:10px;align-items:stretch}
+    .importRow{display:flex;gap:10px;align-items:center}
     .importRow .importLog{flex:1;min-width:0}
-    .importUpdateBtn{flex:0 0 clamp(210px,32%,320px);min-width:210px}
+    .importUpdateBtn{flex:0 0 clamp(210px,32%,320px);min-width:210px;align-self:center}
     .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
     .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap}
     .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}

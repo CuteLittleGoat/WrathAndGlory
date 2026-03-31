@@ -5,6 +5,13 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 
 
 
+
+## Aktualizacja 2026-03-31 — wyrównanie przycisku „Aktualizuj dane z XLSX”
+1. W `GM_test.html` zmieniono styl kontenera `importRow` z `align-items:stretch` na `align-items:center`, aby elementy w wierszu logu importu były centrowane pionowo.
+2. W klasie `.importUpdateBtn` dodano `align-self:center`, dzięki czemu przycisk pozostaje po prawej stronie pola `Log importu`, ale jest wyrównany do środka tego pola.
+3. Wysokość przycisku pozostała zależna od globalnego stylu `button` (tak jak w pozostałych przyciskach panelu), więc wizualnie ma tę samą wysokość co reszta przycisków akcji.
+4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_15-18-03`.
+
 ## Aktualizacja 2026-03-31 — przełączany tryb podglądu tła (Wycinek / Całość)
 1. W `GM_test.html` dodano nowy wiersz sterowania `Podgląd: Wycinek / Całość` (radio buttons `previewModeCrop`, `previewModeFull`) umieszczony bezpośrednio nad `livePreviewBox`.
 2. Dodano obsługę trybu podglądu:
