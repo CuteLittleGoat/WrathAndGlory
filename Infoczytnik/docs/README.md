@@ -25,6 +25,7 @@
 22. `Infoczytnik_test.html` doładowuje ten sam zestaw Google Fonts co panel GM, więc zmiana fontu działa zgodnie z preview.
 23. W sekcji kolorów **Prefix + Suffix** można od razu używać Pickera i ręcznie wpisywać HEX bez wcześniejszego klikania szybkich kolorów; ręcznie wpisany HEX jest walidowany po opuszczeniu pola.
 24. Gdy pole HEX Prefix + Suffix ma niepełny kod (np. `#fffff`), picker nadal działa płynnie i od razu aktualizuje podgląd oraz pasek „Kolor | Pełny” — bez wymogu wcześniejszej korekty HEX.
+25. Naprawiono przypadek z kolorem `#ffffff`: gdy użytkownik wybierze biały i potem otworzy picker, zmiany z pickera ponownie działają poprawnie (kolor nie „zawiesza się” na białym).
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -51,3 +52,4 @@
 22. `Infoczytnik_test.html` now loads the same Google Fonts set as the GM panel, so font-family changes match the GM preview.
 23. In the **Prefix + Suffix** color section, both the Picker and manual HEX input now work immediately (without pressing quick-color chips first); manual HEX is validated on field blur.
 24. If Prefix + Suffix HEX contains a partial value (e.g. `#fffff`), the picker still updates immediately (including the “Color | Solid” bar and live preview) without requiring a prior HEX fix.
+25. Fixed the `#ffffff` edge case: after selecting white, the color picker now continues to apply new colors correctly (no more “stuck on white” behavior).

@@ -3,6 +3,22 @@
 ## Zakres
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
+## Aktualizacja 2026-03-31 — poprawka pickera dla `#ffffff`
+1. **Aktywny kanał edycji koloru (`text` vs `picker`)**:
+   - Dodano stan `colorEditSource = { message: 'text', ps: 'text' }`.
+   - Zdarzenia `input/change` na polach tekstowych ustawiają aktywne źródło na `text`.
+   - Zdarzenia `input/change` na pickerach ustawiają aktywne źródło na `picker`.
+2. **Rozszerzenie `resolveHexColor(...)`**:
+   - Funkcja przyjmuje nowy parametr `preferText` i potrafi liczyć kolor zarówno z priorytetem pola tekstowego, jak i pickera.
+   - `renderPreview()` i `getPayload()` używają priorytetu zgodnego z ostatnim kanałem edycji.
+3. **Stabilizacja scenariusza „biały start”**:
+   - Przy wartości `#ffffff` (szczególnie dla Prefix/Suffix) picker nie jest już nadpisywany przez stale poprawny HEX z pola tekstowego.
+   - Po ruchu pickera kolor jest traktowany jako źródło prawdy i od razu synchronizowany do pola tekstowego oraz preview.
+4. **Reset domyślny**:
+   - `restoreDefaults()` resetuje `colorEditSource` do `text` dla obu sekcji kolorów.
+5. **Wersjonowanie plików testowych**:
+   - Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_14-20-00`.
+
 ## Aktualizacja 2026-03-31 — GM/Infoczytnik (wdrożenie rekomendacji)
 0. **Poprawka UX panelu kolorów fillerów (GM)**:
    - Dodano `isFullHexColor(v)` do rozróżniania pełnego HEX (`#RGB`/`#RRGGBB`) od wpisu częściowego.
