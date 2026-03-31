@@ -697,3 +697,17 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Zachowano spójny fallback fontów: `Calibri, Arial, sans-serif` dla każdego wyboru `Font`.
 - Podgląd GM renderuje tło + logo + treść na jednym komponencie preview.
 - Kolor głównej treści i kolor Prefix+Suffix są niezależne (oddzielne pola i walidacja).
+
+## Aktualizacja 2026-03-31 — Infoczytnik (test, kolory/fonty/fillery)
+- `GM_test.html`:
+  - sekcje kolorów (treść i fillery) mają układ `HEX + Picker` w jednym rzędzie, pod spodem szybkie kolory i dalej pole rozmiaru fontu;
+  - dodano szybkie kolory: **Zielony** `#00ff66`, **Czerwony** `#ff3333`, **Złoty** `#d4af37`, **Biały** `#ffffff`;
+  - kolory działają w trybie **HEX-only** (`#RGB` i `#RRGGBB`), usunięto domyślne RGBA dla Prefix/Suffix;
+  - pickery kolorów aktualizują pola tekstowe na eventach `input` i `change`;
+  - `fillerLineCount` rerolluje fillery natychmiast po zmianie wartości (bez konieczności zmiany zestawu);
+  - usunięto komunikat „Flicker aktywny (opcjonalny)” — hint pokazuje tylko ostrzeżenie przy wyłączonym prostokącie cienia.
+- Kontrakt GM → Infoczytnik:
+  - `msgFontSize`, `prefixFontSize`, `suffixFontSize` są przekazywane jako **number** (bez `px`).
+- `Infoczytnik_test.html`:
+  - doładowuje ten sam zestaw Google Fonts co panel GM, więc wybór fontu jest zgodny między preview i ekranem gracza;
+  - domyślny kolor Prefix/Suffix ustawiony na `#ffffff`.
