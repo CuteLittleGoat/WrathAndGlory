@@ -6,7 +6,7 @@
   <title>Infoczytnik</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_09-10-12";
+      const INF_VERSION = "2026-03-31_09-50-36";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -27,9 +27,10 @@
     .overlayScroll,.topBand,.msg,.suffix{white-space:pre-wrap;word-break:normal;overflow-wrap:normal;hyphens:manual}
     .topBand{min-height:calc(var(--fillerBandLines,2) * 1.35em);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;column-gap:12px}
     .topBand.no-logo{grid-template-columns:minmax(0,1fr)}
-    .prefix,.suffix{color:var(--ps);font-size:clamp(12px,2vw,20px);text-align:center}
-    .msg{flex:1 0 auto;color:var(--msg);font-size:clamp(16px,2.8vw,34px);text-align:left}
+    .prefix,.suffix{color:var(--ps);font-size:var(--diagPrefixSuffixSize,clamp(12px,2vw,20px));text-align:center}
+    .msg{flex:1 0 auto;color:var(--msg);font-size:var(--diagMsgSize,clamp(16px,2.8vw,34px));text-align:left}
     .bottomBand{min-height:calc(var(--fillerBandLines,2) * 1.35em);display:flex;align-items:flex-end;justify-content:center}
+    .overlay.diagnostic-fixed-typo-spacing .overlayScroll{padding-top:var(--diagPaddingTop,2.5%);gap:var(--diagGap,2.5%)}
     .logo{justify-self:end;align-self:start;object-fit:contain;display:none;max-width:var(--logoSize,84px);max-height:var(--logoSize,84px)}
     .hide{display:none!important}
     .flicker{animation:flicker 7s infinite} @keyframes flicker{0%,100%{opacity:1}50%{opacity:.96}51%{opacity:.9}52%{opacity:1}}
@@ -57,6 +58,10 @@
 <script>
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
+// Szybki test diagnostyczny (analiza 2026-03-31):
+// true  -> wymusza stałe wartości px, by odciąć wpływ vw/% na pozycję optyczną treści.
+// false -> powrót do docelowych reguł zależnych od viewportu i overlay.
+const DIAGNOSTIC_FIXED_TYPO_SPACING_TEST = true;
 const DEFAULT_CONTENT_RECT = { x:0.10, y:0.16, w:0.80, h:0.74 };
 const CONTENT_RECTS_BY_BACKGROUND_ID = {
   1:{ x:0.08, y:0.17, w:0.84, h:0.75 }, // DataSlate_01
@@ -93,6 +98,10 @@ function applyStyles(d){
   const family = String(d.fontPreset || 'Share Tech Mono');
   document.documentElement.style.setProperty('--font', `"${family}"${FONT_FALLBACK}`);
   document.documentElement.style.setProperty('--fillerBandLines', String(clamp(d.fillerBandLines,1,6,2)));
+  document.documentElement.style.setProperty('--diagPrefixSuffixSize', DIAGNOSTIC_FIXED_TYPO_SPACING_TEST ? '16px' : '');
+  document.documentElement.style.setProperty('--diagMsgSize', DIAGNOSTIC_FIXED_TYPO_SPACING_TEST ? '24px' : '');
+  document.documentElement.style.setProperty('--diagPaddingTop', DIAGNOSTIC_FIXED_TYPO_SPACING_TEST ? '14px' : '');
+  document.documentElement.style.setProperty('--diagGap', DIAGNOSTIC_FIXED_TYPO_SPACING_TEST ? '14px' : '');
 }
 function applyLayout(d){
   currentBackgroundId = Number(d.backgroundId) || 1;
@@ -109,6 +118,7 @@ function applyLayout(d){
   }
   el.overlay.classList.toggle('shadow', d.movingOverlay !== false);
   el.overlay.classList.toggle('flicker', d.flicker === true);
+  el.overlay.classList.toggle('diagnostic-fixed-typo-spacing', DIAGNOSTIC_FIXED_TYPO_SPACING_TEST);
   el.overlayScroll.scrollTop = 0;
   fitOverlayToBackground();
 }

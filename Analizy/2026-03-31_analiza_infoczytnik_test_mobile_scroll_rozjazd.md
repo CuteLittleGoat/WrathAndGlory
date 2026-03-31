@@ -135,3 +135,113 @@ Jeżeli „opadanie” treści zniknie lub mocno się zmniejszy, przyczyna zosta
 ## Wniosek rozszerzony
 
 Różnica z Twoich screenów jest zgodna z aktualną implementacją: overlay jest poprawnie liczony procentowo, ale zawartość wewnątrz jest skalowana i odsuwana regułami zależnymi od viewportu (`vw`, `%`, dynamiczny `innerHeight`). Dlatego na PC wygląda jakby obszar „niebieskiej ramki” był niżej. Da się to wyrównać, jeśli skala fontów/odstępów zostanie przeniesiona z viewportu na sam overlay i zostanie ustabilizowany mechanizm przeliczania na mobile.
+
+---
+
+## Doprecyzowanie wdrożenia testu (2026-03-31) — dokładnie co zmieniamy i jak łatwo cofnąć
+
+Poniżej bardzo precyzyjny plan techniczny dla kroku **„Szybki test diagnostyczny, który potwierdzi przyczynę”**, tak aby:
+- test był jednoznaczny,
+- zakres zmian był minimalny,
+- po teście można było wrócić do poprzedniego zachowania jednym przełączeniem.
+
+### 1) Zakres plików i brak zmian produkcyjnych
+
+Zmiany dotyczą wyłącznie:
+- `Infoczytnik/Infoczytnik_test.html` (implementacja testu),
+- `Infoczytnik/GM_test.html` (tylko podbicie `INF_VERSION`, żeby odświeżyć cache testowego frontu).
+
+Pliki produkcyjne `Infoczytnik.html` i `GM.html` pozostają bez zmian.
+
+### 2) Flaga testowa (jeden punkt sterowania)
+
+W `Infoczytnik_test.html` dodajemy pojedynczą stałą:
+
+```js
+const DIAGNOSTIC_FIXED_TYPO_SPACING_TEST = true;
+```
+
+Znaczenie:
+- `true` = włączony test diagnostyczny (stałe px dla fontów i odstępów),
+- `false` = powrót do normalnego działania (`clamp(...vw...)` i `%`).
+
+To jest główny mechanizm „łatwej zmiany po teście”: nie trzeba szukać wielu miejsc w CSS/JS.
+
+### 3) Dokładne elementy objęte testem
+
+Test celowo rusza **tylko** elementy, które według diagnozy tworzą efekt „opadania”:
+
+1. Font `prefix/suffix`:
+   - normalnie: `clamp(12px, 2vw, 20px)`,
+   - test: stałe `16px`.
+
+2. Font `msg`:
+   - normalnie: `clamp(16px, 2.8vw, 34px)`,
+   - test: stałe `24px`.
+
+3. Odstęp pionowy w `overlayScroll`:
+   - normalnie: `padding-top` i `gap` oparte o `%`,
+   - test: stałe `14px` i `14px`.
+
+Celowo **nie** zmieniamy:
+- geometrii `#overlay` liczonej z `CONTENT_RECTS_BY_BACKGROUND_ID`,
+- mapowania tła,
+- logiki `fitOverlayToBackground()`.
+
+Dzięki temu wynik testu izoluje wpływ typografii/spacingu od wpływu samego prostokąta ramki.
+
+### 4) Mechanika CSS/JS (technika „nadpisania bez destrukcji”)
+
+Wdrożenie jest zrobione przez zmienne CSS i klasę warunkową:
+
+- Zmienne ustawiane z JS:
+  - `--diagPrefixSuffixSize`,
+  - `--diagMsgSize`,
+  - `--diagPaddingTop`,
+  - `--diagGap`.
+
+- Klasa aktywująca test:
+  - `overlay.diagnostic-fixed-typo-spacing`.
+
+- W CSS font-size przechodzi na:
+  - `var(--diagPrefixSuffixSize, clamp(...))`,
+  - `var(--diagMsgSize, clamp(...))`.
+
+- W CSS dla `overlayScroll`:
+  - `padding-top: var(--diagPaddingTop, 2.5%)`,
+  - `gap: var(--diagGap, 2.5%)`
+  - tylko przy aktywnej klasie diagnostycznej.
+
+To oznacza:
+- normalna ścieżka nie jest usunięta,
+- wartości produkcyjne nadal są „fallbackiem”,
+- test można wyłączyć bez przebudowy styli.
+
+### 5) Kryterium interpretacji testu
+
+Jeśli po włączeniu testu:
+- różnica mobile vs PC wyraźnie maleje,
+- „opadanie” tekstu względem niebieskiej ramki staje się dużo mniejsze,
+
+to potwierdzamy, że główny problem pochodzi z:
+- skalowania `vw`,
+- procentowych pionowych odstępów.
+
+Jeśli efekt pozostaje prawie bez zmian, to przyczyna leży bardziej w:
+- geometrii `fitOverlayToBackground()`,
+- zmianach viewportu (`innerHeight`) podczas gestów mobile.
+
+### 6) Jak dokładnie cofnąć test po weryfikacji
+
+Najprostsza ścieżka:
+1. Ustawić:
+   - `const DIAGNOSTIC_FIXED_TYPO_SPACING_TEST = false;`
+2. Podbić `INF_VERSION` w `Infoczytnik_test.html` i `GM_test.html`.
+3. Odświeżyć strony.
+
+Opcjonalnie (cleanup techniczny po zakończeniu diagnozy):
+- usunąć zmienne `--diag*`,
+- usunąć klasę `diagnostic-fixed-typo-spacing`,
+- zostawić wyłącznie style docelowe.
+
+Ale do samego „szybkiego testu i wycofania” wystarcza punkt 1.
