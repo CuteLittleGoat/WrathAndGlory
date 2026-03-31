@@ -58,6 +58,17 @@ Zapisywane pola:
    - ustawia rozmiar slotu logo (`--logoSize`) zależnie od szerokości obszaru roboczego,
    - uruchamia się po `load` obrazka, przy `resize` okna i po każdej zmianie layoutu.
 12. `overlay.shadow::after` ma `inset:0`, więc cień pokrywa dokładnie cały obszar overlay; wiadomość, fillery i logo pozostają w tym samym polu co prostokąt cienia.
+13. Dodano przełącznik diagnostyczny `DIAGNOSTIC_FIXED_TYPO_SPACING_TEST` (w `Infoczytnik_test.html`):
+   - gdy `true`, nakładane są stałe wartości testowe:
+     - `prefix/suffix` font: `16px`,
+     - `msg` font: `24px`,
+     - `overlayScroll` `padding-top`: `14px`,
+     - `overlayScroll` `gap`: `14px`,
+   - gdy `false`, aktywne są wartości bazowe (`clamp`/`%`).
+14. Technicznie test działa przez:
+   - klasę `overlay.diagnostic-fixed-typo-spacing`,
+   - zmienne CSS `--diagPrefixSuffixSize`, `--diagMsgSize`, `--diagPaddingTop`, `--diagGap`,
+   - fallback do standardowych reguł, więc wyłączenie testu nie wymaga cofania przebudowy CSS.
 
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.
