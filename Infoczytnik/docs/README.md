@@ -14,7 +14,8 @@
 11. Pole **Log importu** pokazuje wynik ładowania `assets/data/data.json` i pozwala skopiować całość.
 12. Łamanie linii w prefix/suffix/wiadomości działa bez poziomego scrolla i bez wymuszonego dzielenia wyrazów.
 13. Logo (gdy checkbox **Logo** jest aktywny) ma stały slot w prawym górnym rogu obszaru roboczego/prostokąta cienia i nie koliduje z prefixem.
-14. W `Infoczytnik_test.html` działa test diagnostyczny (`DIAGNOSTIC_FIXED_TYPO_SPACING_TEST`): po ustawieniu `true` wymusza stałe fonty i stałe pionowe odstępy (`px`) do porównań mobile vs PC; po ustawieniu `false` wraca tryb standardowy.
+14. `Infoczytnik_test.html` stabilizuje layout mobilny: używa wysokości `100dvh` (z fallbackiem `100vh`), nasłuchuje `visualViewport` i filtruje mikro-zmiany wysokości, aby ograniczyć „skoki” po przewijaniu na telefonie.
+15. Rozmiar fontów i pionowe odstępy są skalowane względem rozmiaru obszaru overlay (`--overlayScale`, `--overlayPadY`, `--overlayGap`), więc wygląd PC/telefon/tablet jest bardziej spójny.
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -30,4 +31,5 @@
 11. **Log importu / Import log** displays `assets/data/data.json` load results and can be copied entirely.
 12. Prefix/suffix/message wrapping is vertical-only (no horizontal scroll, no forced word splitting).
 13. Logo (when the **Logo** checkbox is enabled) uses a fixed slot in the top-right of the working area/shadow rectangle and does not overlap prefix text.
-14. `Infoczytnik_test.html` includes a diagnostic switch (`DIAGNOSTIC_FIXED_TYPO_SPACING_TEST`): when set to `true`, it forces fixed font sizes and fixed vertical spacing (`px`) for mobile vs desktop comparison; when set to `false`, standard behavior is restored.
+14. `Infoczytnik_test.html` now stabilizes mobile layout: it uses `100dvh` (with `100vh` fallback), listens to `visualViewport`, and filters tiny viewport-height changes to reduce post-scroll layout jumps on phones.
+15. Font sizes and vertical spacing are now scaled from overlay dimensions (`--overlayScale`, `--overlayPadY`, `--overlayGap`), improving visual consistency across desktop/phone/tablet.
