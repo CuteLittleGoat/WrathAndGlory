@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_15-18-03";
+      const INF_VERSION = "2026-03-31_22-55-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -31,7 +31,11 @@
     .small{font-size:12px;color:var(--muted);margin-top:6px}.status{display:inline-block;padding:2px 8px;border-radius:999px;border:1px solid var(--border)}
     .previewModeRow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:10px}
     .previewModeRow .small{margin-top:0}
-    .livePreviewBox{margin-top:10px;padding:12px;border-radius:10px;min-height:150px;background-size:cover;background-position:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+    .livePreviewBox{margin-top:10px;padding:12px;border-radius:10px;min-height:150px;background:#10151d;background-size:cover;background-position:center;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.15)}
+    .livePreviewBox.preview-mode-content{background:#10151d;padding:12px}
+    .livePreviewBox.preview-mode-background{background:#0a0e14;padding:0}
+    .previewBackgroundThumb{position:absolute;top:50%;left:50%;height:100%;width:auto;max-height:100%;max-width:none;transform:translate(-50%,-50%) rotate(-90deg);transform-origin:center;display:none;opacity:.98}
+    .livePreviewBox.preview-mode-background .previewText,.livePreviewBox.preview-mode-background .previewLogo{display:none !important}
     .previewLogo{position:absolute;top:10px;right:10px;width:84px;max-height:84px;object-fit:contain;opacity:.9;display:none}
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
@@ -88,10 +92,12 @@
 
       <div class="previewModeRow">
         <span class="small">Podgląd:</span>
-        <label class="inline"><input type="radio" name="previewMode" id="previewModeCrop" value="crop" checked style="width:auto"> Wycinek</label>
-        <label class="inline"><input type="radio" name="previewMode" id="previewModeFull" value="full" style="width:auto"> Całość</label>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeContent" value="content" checked style="width:auto"> Treść</label>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeBackground" value="background" style="width:auto"> Tło</label>
       </div>
+      <div class="small">Treść = warstwa tekstowa bez grafiki tła • Tło = pojedyncza miniatura wybranego pliku tła.</div>
       <div class="livePreviewBox" id="livePreview">
+        <img id="previewBackgroundThumb" class="previewBackgroundThumb" alt="background thumbnail">
         <img id="previewLogo" class="previewLogo" alt="logo preview">
         <div class="previewText" id="previewPrefix"></div>
         <div class="previewText" id="previewMsg">Lorem ipsum dolor sit amet...</div>
@@ -126,7 +132,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
-const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12, previewMode:'crop' };
+const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12, previewMode:'content' };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
@@ -141,8 +147,8 @@ const el = {
   showLogo:document.getElementById('showLogo'), movingOverlay:document.getElementById('movingOverlay'), flicker:document.getElementById('flicker'), fillersEnabled:document.getElementById('fillersEnabled'), audioEnabled:document.getElementById('audioEnabled'),
   fillerLineCount:document.getElementById('fillerLineCount'), fillerBandLines:document.getElementById('fillerBandLines'), fillersHint:document.getElementById('fillersHint'), flickerHint:document.getElementById('flickerHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
   psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'),
-  previewModeCrop:document.getElementById('previewModeCrop'), previewModeFull:document.getElementById('previewModeFull'),
-  previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewLogo:document.getElementById('previewLogo'),
+  previewModeContent:document.getElementById('previewModeContent'), previewModeBackground:document.getElementById('previewModeBackground'),
+  previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewBackgroundThumb:document.getElementById('previewBackgroundThumb'), previewLogo:document.getElementById('previewLogo'),
   message:document.getElementById('message'), importLog:document.getElementById('importLog'), updateDataBtn:document.getElementById('updateDataBtn'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
 };
 
@@ -350,15 +356,16 @@ function syncFlickerDependency(){
 }
 
 function getPreviewMode(){
-  if(el.previewModeFull.checked) return 'full';
-  return 'crop';
+  if(el.previewModeBackground.checked) return 'background';
+  return 'content';
 }
 
 function setPreviewMode(mode){
-  const targetMode = mode === 'full' ? 'full' : 'crop';
-  el.previewModeFull.checked = targetMode === 'full';
-  el.previewModeCrop.checked = targetMode === 'crop';
-  el.livePreview.style.backgroundSize = targetMode === 'full' ? 'contain' : 'cover';
+  const targetMode = mode === 'background' ? 'background' : 'content';
+  el.previewModeBackground.checked = targetMode === 'background';
+  el.previewModeContent.checked = targetMode === 'content';
+  el.livePreview.classList.toggle('preview-mode-background', targetMode === 'background');
+  el.livePreview.classList.toggle('preview-mode-content', targetMode === 'content');
   try{ localStorage.setItem(PREVIEW_MODE_KEY, targetMode); }catch(_){}
 }
 
@@ -366,7 +373,9 @@ function loadSavedPreviewMode(){
   let savedMode = DEFAULT_FORM_STATE.previewMode;
   try{
     const persisted = localStorage.getItem(PREVIEW_MODE_KEY);
-    if(persisted === 'crop' || persisted === 'full') savedMode = persisted;
+    if(persisted === 'crop') savedMode = 'content';
+    else if(persisted === 'full') savedMode = 'background';
+    else if(persisted === 'content' || persisted === 'background') savedMode = persisted;
   }catch(_){}
   setPreviewMode(savedMode);
 }
@@ -382,7 +391,11 @@ function renderPreview(){
   if(isFullHexColor(el.psColorText.value)){ el.psColorText.value = psColor; }
   el.messageColorPicker.value = messageColor;
   el.psColorPicker.value = psColor;
-  el.livePreview.style.backgroundImage = bg ? `url('${bg.file}')` : 'none';
+  const previewMode = getPreviewMode();
+  const isBackgroundMode = previewMode === 'background';
+  el.livePreview.style.backgroundImage = 'none';
+  el.previewBackgroundThumb.style.display = (isBackgroundMode && bg) ? 'block' : 'none';
+  if(bg){ el.previewBackgroundThumb.src = bg.file; }
   el.livePreview.style.fontFamily = `"${font?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
   el.previewPrefix.textContent = fillerState.prefixLines.join('\n');
   el.previewSuffix.textContent = fillerState.suffixLines.join('\n');
@@ -390,7 +403,7 @@ function renderPreview(){
   el.previewPrefix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
   el.previewSuffix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
   el.previewMsg.style.color = messageColor; el.previewMsg.style.fontSize = clamp(el.msgFontSize.value,12,80,20)+'px';
-  if(el.showLogo.checked && logo){ el.previewLogo.src=logo.file; el.previewLogo.style.display='block'; } else { el.previewLogo.style.display='none'; }
+  if(!isBackgroundMode && el.showLogo.checked && logo){ el.previewLogo.src=logo.file; el.previewLogo.style.display='block'; } else { el.previewLogo.style.display='none'; }
   const fillersOff = !el.fillersEnabled.checked;
   el.fillerLineCount.disabled = fillersOff;
   el.fillersHint.textContent = fillersOff ? 'Fillery wyłączone — pole nieaktywne.' : 'Fillery aktywne.';
@@ -463,8 +476,8 @@ function restoreDefaults(sendReset=true){
 }
 
 ['input','change'].forEach(evt=>{
-  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize,el.previewModeCrop,el.previewModeFull].forEach(node=>node.addEventListener(evt, ()=>{
-    if(node === el.previewModeCrop || node === el.previewModeFull){ setPreviewMode(getPreviewMode()); }
+  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize,el.previewModeContent,el.previewModeBackground].forEach(node=>node.addEventListener(evt, ()=>{
+    if(node === el.previewModeContent || node === el.previewModeBackground){ setPreviewMode(getPreviewMode()); }
     renderPreview();
   }));
 });
