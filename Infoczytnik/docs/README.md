@@ -16,6 +16,7 @@
 13. Logo (gdy checkbox **Logo** jest aktywny) ma stały slot w prawym górnym rogu obszaru roboczego/prostokąta cienia i nie koliduje z prefixem.
 14. `Infoczytnik_test.html` stabilizuje layout mobilny: używa wysokości `100dvh` (z fallbackiem `100vh`), nasłuchuje `visualViewport` i filtruje mikro-zmiany wysokości, aby ograniczyć „skoki” po przewijaniu na telefonie.
 15. Rozmiar fontów i pionowe odstępy są skalowane względem rozmiaru obszaru overlay (`--overlayScale`, `--overlayPadY`, `--overlayGap`), więc wygląd PC/telefon/tablet jest bardziej spójny.
+16. Pozycje obszaru roboczego (`CONTENT_RECTS_BY_BACKGROUND_ID`) zostały przeliczone ponownie dla wszystkich 9 teł na podstawie plików `assets/ramki/*_ramka.png` wskazanych w `Draft/Mapowanie.xlsx`, dzięki czemu prostokąt cienia pokrywa pełną niebieską ramkę.
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
@@ -33,3 +34,4 @@
 13. Logo (when the **Logo** checkbox is enabled) uses a fixed slot in the top-right of the working area/shadow rectangle and does not overlap prefix text.
 14. `Infoczytnik_test.html` now stabilizes mobile layout: it uses `100dvh` (with `100vh` fallback), listens to `visualViewport`, and filters tiny viewport-height changes to reduce post-scroll layout jumps on phones.
 15. Font sizes and vertical spacing are now scaled from overlay dimensions (`--overlayScale`, `--overlayPadY`, `--overlayGap`), improving visual consistency across desktop/phone/tablet.
+16. Working-area presets (`CONTENT_RECTS_BY_BACKGROUND_ID`) were recalculated for all 9 backgrounds using `assets/ramki/*_ramka.png` files mapped in `Draft/Mapowanie.xlsx`, so the shadow rectangle covers the entire blue-frame area.
