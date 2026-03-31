@@ -277,3 +277,127 @@ Stan aktualny jest dobrą bazą geometryczną (overlay w obszarze ramki), ale ni
 - dynamicznej wysokości stref fillerów sterowanej z GM.
 
 Do wdrożenia potrzebna jest przede wszystkim przebudowa **wewnętrznej architektury overlay** (DOM+CSS+scroll), a nie zmiana samego mechanizmu pozycjonowania overlay względem tła.
+
+## 7. Zmiany wdrożone w kodzie (2026-03-31)
+
+Poniżej lista faktycznie wprowadzonych zmian zgodnie z rekomendacjami.
+
+Infoczytnik/Infoczytnik_test.html, linia 9  
+Było:  
+const INF_VERSION = "2026-03-30_20-36-59";  
+Będzie:  
+const INF_VERSION = "2026-03-31_09-10-12";
+
+Infoczytnik/Infoczytnik_test.html, linie 23-31  
+Było:  
+Układ `.overlay` + `.box` z trzema blokami (prefix/msg/suffix), logo pozycjonowane absolutnie poza overlay.  
+Będzie:  
+Nowy układ stref: `.overlay` (obszar cienia) + `.overlayScroll` (scroll Y) + `.topBand` (prefix + slot logo) + `.msg` + `.bottomBand` (suffix), z jawnie ustawionymi regułami zawijania bez dzielenia wyrazów.
+
+Infoczytnik/Infoczytnik_test.html, linie 35-44  
+Było:  
+`<img id="logo" class="logo">` poza `#overlay`; wewnątrz `#overlay` tylko `.box` z prefix/msg/suffix.  
+Będzie:  
+`<img id="logo" class="logo">` przeniesione do `#topBand` wewnątrz `#overlay`; suffix osadzony w `bottomBand`.
+
+Infoczytnik/Infoczytnik_test.html, linia 67  
+Było:  
+`el` bez referencji do nowych kontenerów scroll/stref.  
+Będzie:  
+`el` rozszerzone o `overlayScroll` i `topBand`.
+
+Infoczytnik/Infoczytnik_test.html, linia 70  
+Było:  
+Brak lokalnej funkcji clamp dla nowych parametrów layoutu.  
+Będzie:  
+Dodana funkcja `clamp(v,min,max,d)` do walidacji liczby linii strefy fillerów.
+
+Infoczytnik/Infoczytnik_test.html, linie 86-88  
+Było:  
+Brak parametru sterującego wysokością stref prefix/suffix.  
+Będzie:  
+Dodane ustawianie CSS var `--fillerBandLines` z payloadu (`fillerBandLines`).
+
+Infoczytnik/Infoczytnik_test.html, linie 94-102  
+Było:  
+Ukrywanie/pokazywanie logo bez zmiany struktury top-area.  
+Będzie:  
+Przy braku logo aktywowane `topBand.no-logo` (pełna szerokość prefixu); przy logo przywrócenie układu 2-kolumnowego.
+
+Infoczytnik/Infoczytnik_test.html, linia 104  
+Było:  
+Brak resetu pozycji scrolla po nowej wiadomości/layout.  
+Będzie:  
+`el.overlayScroll.scrollTop = 0;` po `applyLayout()`.
+
+Infoczytnik/Infoczytnik_test.html, linie 139-143  
+Było:  
+Absolutne liczenie `logo.top/left/maxWidth/maxHeight` w `fitOverlayToBackground()`.  
+Będzie:  
+Usunięte absolutne pozycjonowanie logo; pozostawione wyliczanie `--logoSize` dla slotu logo w `topBand`.
+
+Infoczytnik/GM_test.html, linia 9  
+Było:  
+const INF_VERSION = "2026-03-30_20-36-59";  
+Będzie:  
+const INF_VERSION = "2026-03-31_09-10-12";
+
+Infoczytnik/GM_test.html, linie 55-58  
+Było:  
+Brak komunikatu zależności Flicker od Prostokąta cienia oraz brak osobnego parametru wysokości strefy prefix/suffix.  
+Będzie:  
+Dodane `#flickerHint` oraz pole `#fillerBandLines`.
+
+Infoczytnik/GM_test.html, linia 99  
+Było:  
+`DEFAULT_FORM_STATE` bez `fillerBandLines`.  
+Będzie:  
+`DEFAULT_FORM_STATE` zawiera `fillerBandLines:2`.
+
+Infoczytnik/GM_test.html, linie 111-113  
+Było:  
+Brak referencji do `fillerBandLines` i `flickerHint` w mapie `el`.  
+Będzie:  
+`el` rozszerzone o `fillerBandLines` i `flickerHint`.
+
+Infoczytnik/GM_test.html, linie 161-173  
+Było:  
+Brak twardej logiki: `movingOverlay=false => flicker OFF + disabled + info`.  
+Będzie:  
+Dodana funkcja `syncFlickerDependency()` realizująca pełną zależność checkboxów.
+
+Infoczytnik/GM_test.html, linia 176  
+Było:  
+`renderPreview()` nie synchronizował zależności Flicker/Prostokąt cienia.  
+Będzie:  
+`renderPreview()` zaczyna od `syncFlickerDependency()`.
+
+Infoczytnik/GM_test.html, linie 193-211  
+Było:  
+Payload przekazywał `flicker` bez walidacji zależności i nie zawierał `fillerBandLines`.  
+Będzie:  
+Payload wymusza `flicker` tylko przy `movingOverlay=true` i dodaje `fillerBandLines`.
+
+Infoczytnik/GM_test.html, linie 246-247  
+Było:  
+`restoreDefaults()` nie resetował `fillerBandLines`.  
+Będzie:  
+`restoreDefaults()` resetuje także `fillerBandLines`.
+
+Infoczytnik/GM_test.html, linia 256  
+Było:  
+Listenery `renderPreview()` bez nowego pola `fillerBandLines`.  
+Będzie:  
+Listenery obejmują też `el.fillerBandLines`.
+
+Infoczytnik/docs/README.md, sekcja Instrukcja użytkownika/User guide  
+Było:  
+Brak opisu nowej zależności Flicker, brak opisu nowego parametru wysokości stref i modelu scrolla treści wewnątrz cienia.  
+Będzie:  
+Dodane instrukcje PL/EN dla: zależności checkboxów, `fillerBandLines`, pionowego scrolla treści i zachowania prefix/logo/suffix.
+
+Infoczytnik/docs/Documentation.md, sekcje Model danych / GM_test / Infoczytnik_test / Style UX  
+Było:  
+Dokumentacja opisywała starszy model `.box` i logo absolutne, bez `fillerBandLines` i bez twardej zależności Flicker.  
+Będzie:  
+Dokumentacja opisuje nowy model stref, scroll pionowy, reguły łamania linii, `fillerBandLines`, slot logo oraz walidację zależności Flicker w UI i payloadzie.

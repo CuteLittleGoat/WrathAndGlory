@@ -4,26 +4,28 @@
 1. Otwórz `Infoczytnik_test.html` na ekranie graczy i `GM_test.html` w panelu MG.
 2. W panelu GM wybierz niezależnie: **Tło**, **Logo**, **Zestaw fillerów**, **Font**, **Audio wiadomości**.
 3. Ustaw checkboxy: **Logo**, **Prostokąt cienia**, **Flicker**, **Fillery**, **Audio**.
-4. Ustaw kolor i rozmiar głównej treści oraz kolor/rozmiar Prefix+Suffix.
-5. Wpisz treść i kliknij **Wyślij**.
-6. **Ping** zawsze odtwarza `assets/audios/ping/Ping.mp3`.
-7. **Wyczyść komunikat** czyści tylko pole tekstowe w GM.
-8. **Przywróć domyślne** czyści tekst i resetuje wszystkie pola formularza do `DEFAULT_FORM_STATE`.
-9. Pole **Log importu** pokazuje wynik ładowania `assets/data/data.json` i pozwala skopiować całość.
-10. W ekranie gracza treść komunikatu startuje od górnej krawędzi **wewnątrz obszaru roboczego przypisanego do wybranego tła**: **Prefix** i **Suffix** są wyśrodkowane, a główna treść wiadomości jest wyrównana do lewej.
-11. Prostokąt cienia pokrywa cały obszar roboczy (pole „ekranu” wewnątrz ramki), a wszystkie elementy (wiadomość, prefixy, suffixy, logo) są pozycjonowane wewnątrz tego samego obszaru.
-12. Logo (gdy checkbox **Logo** jest aktywny) pojawia się w prawym górnym rogu obszaru roboczego/prostokąta cienia.
+4. Jeżeli wyłączysz **Prostokąt cienia**, opcja **Flicker** zostanie automatycznie wyłączona i zablokowana (z komunikatem).
+5. Ustaw **Ilość linii fillerów** oraz **Wysokość stref Prefix/Suffix (linie)**.
+6. Wpisz treść i kliknij **Wyślij**.
+7. W ekranie gracza obszar cienia nie przewija się, ale zawartość w środku przewija się pionowo: prefix+logo znikają przy scrollu, a suffix pojawia się przy końcu treści.
+8. **Ping** zawsze odtwarza `assets/audios/ping/Ping.mp3`.
+9. **Wyczyść komunikat** czyści tylko pole tekstowe w GM.
+10. **Przywróć domyślne** czyści tekst i resetuje wszystkie pola formularza do `DEFAULT_FORM_STATE`.
+11. Pole **Log importu** pokazuje wynik ładowania `assets/data/data.json` i pozwala skopiować całość.
+12. Łamanie linii w prefix/suffix/wiadomości działa bez poziomego scrolla i bez wymuszonego dzielenia wyrazów.
+13. Logo (gdy checkbox **Logo** jest aktywny) ma stały slot w prawym górnym rogu obszaru roboczego/prostokąta cienia i nie koliduje z prefixem.
 
 ## User guide (EN)
 1. Open `Infoczytnik_test.html` on the player screen and `GM_test.html` on the GM screen.
 2. In GM select independently: **Background**, **Logo**, **Filler set**, **Font**, **Message audio**.
 3. Configure checkboxes: **Logo**, **Shadow rectangle**, **Flicker**, **Fillers**, **Audio**.
-4. Set main text color/size and Prefix+Suffix color/size.
-5. Enter message text and click **Wyślij / Send**.
-6. **Ping** always plays `assets/audios/ping/Ping.mp3`.
-7. **Wyczyść komunikat / Clear message** only clears GM text input.
-8. **Przywróć domyślne / Restore defaults** clears text and resets all form fields to `DEFAULT_FORM_STATE`.
-9. **Log importu / Import log** displays `assets/data/data.json` load results and can be copied entirely.
-10. On the player screen, message content starts from the top edge **inside the background-specific working area**: **Prefix** and **Suffix** are centered, while the main message text is left-aligned.
-11. The shadow rectangle covers the whole working area (the inner “screen” field), and all elements (message, prefixes, suffixes, logo) are positioned inside that same area.
-12. Logo (when the **Logo** checkbox is enabled) is placed in the top-right corner of the working area/shadow rectangle.
+4. If **Shadow rectangle** is disabled, **Flicker** is automatically unchecked and disabled (with an on-screen hint).
+5. Set **Filler line count** and **Prefix/Suffix band height (lines)**.
+6. Enter message text and click **Wyślij / Send**.
+7. On the player screen, the shadow area itself stays fixed while inner content scrolls vertically: prefix+logo scroll out at the top, suffix appears near the end.
+8. **Ping** always plays `assets/audios/ping/Ping.mp3`.
+9. **Wyczyść komunikat / Clear message** only clears GM text input.
+10. **Przywróć domyślne / Restore defaults** clears text and resets all form fields to `DEFAULT_FORM_STATE`.
+11. **Log importu / Import log** displays `assets/data/data.json` load results and can be copied entirely.
+12. Prefix/suffix/message wrapping is vertical-only (no horizontal scroll, no forced word splitting).
+13. Logo (when the **Logo** checkbox is enabled) uses a fixed slot in the top-right of the working area/shadow rectangle and does not overlap prefix text.

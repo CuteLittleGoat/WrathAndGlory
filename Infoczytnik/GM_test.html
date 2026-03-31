@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-30_20-36-59";
+      const INF_VERSION = "2026-03-31_09-10-12";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -52,7 +52,9 @@
         <label class="inline"><input type="checkbox" id="fillersEnabled" checked style="width:auto"> Fillery</label>
         <label class="inline"><input type="checkbox" id="audioEnabled" checked style="width:auto"> Audio</label>
       </div>
+      <div id="flickerHint" class="small">Flicker aktywny.</div>
       <label>Ilość linii fillerów</label><input type="number" id="fillerLineCount" min="1" max="5" value="3">
+      <label>Wysokość stref Prefix/Suffix (linie)</label><input type="number" id="fillerBandLines" min="1" max="6" value="2">
       <div id="fillersHint" class="small">Fillery aktywne.</div>
     </div>
     <div class="col">
@@ -94,7 +96,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
 <script>
-const DEFAULT_FORM_STATE = { backgroundId:1, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:true, movingOverlay:true, flicker:true, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, messageColor:'#00ff66', prefixSuffixColor:'rgba(255,255,255,.88)', msgFontSize:20, psFontSize:12 };
+const DEFAULT_FORM_STATE = { backgroundId:1, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:true, movingOverlay:true, flicker:true, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'rgba(255,255,255,.88)', msgFontSize:20, psFontSize:12 };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 
@@ -106,7 +108,7 @@ const currentRef = db.collection('dataslate').doc('current');
 const el = {
   backgroundSelect:document.getElementById('backgroundSelect'), logoSelect:document.getElementById('logoSelect'), fillerSelect:document.getElementById('fillerSelect'), fontSelect:document.getElementById('fontSelect'), audioSelect:document.getElementById('audioSelect'),
   showLogo:document.getElementById('showLogo'), movingOverlay:document.getElementById('movingOverlay'), flicker:document.getElementById('flicker'), fillersEnabled:document.getElementById('fillersEnabled'), audioEnabled:document.getElementById('audioEnabled'),
-  fillerLineCount:document.getElementById('fillerLineCount'), fillersHint:document.getElementById('fillersHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
+  fillerLineCount:document.getElementById('fillerLineCount'), fillerBandLines:document.getElementById('fillerBandLines'), fillersHint:document.getElementById('fillersHint'), flickerHint:document.getElementById('flickerHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
   psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'),
   previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewLogo:document.getElementById('previewLogo'),
   message:document.getElementById('message'), importLog:document.getElementById('importLog'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
@@ -156,7 +158,21 @@ function rerollFillers(){
   renderPreview();
 }
 
+function syncFlickerDependency(){
+  if(!el.movingOverlay.checked){
+    el.flicker.checked = false;
+    el.flicker.disabled = true;
+    el.flickerHint.textContent = 'Flicker wymaga włączonego prostokąta cienia.';
+    el.flickerHint.className = 'small disabled-note';
+  } else {
+    el.flicker.disabled = false;
+    el.flickerHint.textContent = 'Flicker aktywny (opcjonalny).';
+    el.flickerHint.className = 'small';
+  }
+}
+
 function renderPreview(){
+  syncFlickerDependency();
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const font = safeGet(manifest.fonts || [], el.fontSelect.value);
@@ -178,6 +194,8 @@ function renderPreview(){
 }
 
 function getPayload(type){
+  const movingOverlayEnabled = !!el.movingOverlay.checked;
+  const flickerEnabled = movingOverlayEnabled && !!el.flicker.checked;
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const filler = safeGet(manifest.fillers || [], el.fillerSelect.value);
@@ -192,10 +210,11 @@ function getPayload(type){
     fontId:font?.id || null, fontPreset:font?.font || '',
     messageAudioId:audio?.id || null, messageAudioFile:audio?.file || '',
     fillersEnabled:!!el.fillersEnabled.checked, audioEnabled:!!el.audioEnabled.checked,
-    showLogo:!!el.showLogo.checked, movingOverlay:!!el.movingOverlay.checked, flicker:!!el.flicker.checked,
+    showLogo:!!el.showLogo.checked, movingOverlay:movingOverlayEnabled, flicker:flickerEnabled,
     prefixLines: el.fillersEnabled.checked ? fillerState.prefixLines : [],
     suffixLines: el.fillersEnabled.checked ? fillerState.suffixLines : [],
     fillerLineCount: clamp(el.fillerLineCount.value,1,5,3),
+    fillerBandLines: clamp(el.fillerBandLines.value,1,6,2),
     messageColor: normalizeColor(el.messageColorText.value,'#00ff66'),
     prefixColor: normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)'),
     suffixColor: normalizeColor(el.psColorText.value,'rgba(255,255,255,.88)'),
@@ -229,6 +248,7 @@ function restoreDefaults(sendReset=true){
   el.audioSelect.value = String(pick(manifest.audios || [], DEFAULT_FORM_STATE.audioId));
   el.showLogo.checked = DEFAULT_FORM_STATE.showLogo; el.movingOverlay.checked = DEFAULT_FORM_STATE.movingOverlay; el.flicker.checked = DEFAULT_FORM_STATE.flicker; el.fillersEnabled.checked = DEFAULT_FORM_STATE.fillersEnabled; el.audioEnabled.checked = DEFAULT_FORM_STATE.audioEnabled;
   el.fillerLineCount.value = String(DEFAULT_FORM_STATE.fillerLineCount);
+  el.fillerBandLines.value = String(DEFAULT_FORM_STATE.fillerBandLines);
   el.messageColorText.value = DEFAULT_FORM_STATE.messageColor; el.messageColorPicker.value = '#00ff66';
   el.psColorText.value = DEFAULT_FORM_STATE.prefixSuffixColor; el.psColorPicker.value = '#ffffff';
   el.msgFontSize.value = String(DEFAULT_FORM_STATE.msgFontSize); el.psFontSize.value = String(DEFAULT_FORM_STATE.psFontSize);
@@ -238,7 +258,7 @@ function restoreDefaults(sendReset=true){
 }
 
 ['input','change'].forEach(evt=>{
-  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize].forEach(node=>node.addEventListener(evt, renderPreview));
+  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize].forEach(node=>node.addEventListener(evt, renderPreview));
 });
 el.fillerSelect.addEventListener('change', rerollFillers);
 el.rerollFillersBtn.addEventListener('click', rerollFillers);
