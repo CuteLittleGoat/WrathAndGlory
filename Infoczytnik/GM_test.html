@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_21-45-00";
+      const INF_VERSION = "2026-04-01_00-15-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -34,6 +34,9 @@
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
     .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
+    .importRow{display:flex;gap:10px;align-items:stretch}
+    .importRow .importLog{flex:1;min-width:0}
+    .importUpdateBtn{flex:0 0 clamp(210px,32%,320px);min-width:210px}
     .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
     .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap}
     .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
@@ -102,7 +105,10 @@
   </div>
 
   <label>Log importu</label>
-  <textarea id="importLog" class="importLog" readonly></textarea>
+  <div class="importRow">
+    <textarea id="importLog" class="importLog" readonly></textarea>
+    <button id="updateDataBtn" class="primary importUpdateBtn" type="button">Aktualizuj dane z XLSX</button>
+  </div>
 
   <div class="small">Status: <span class="status" id="status">…</span></div>
 </div></div>
@@ -111,6 +117,7 @@
 <script src="config/web-push-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
 const DEFAULT_FORM_STATE = { backgroundId:7, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', msgFontSize:20, psFontSize:12 };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
@@ -127,7 +134,7 @@ const el = {
   fillerLineCount:document.getElementById('fillerLineCount'), fillerBandLines:document.getElementById('fillerBandLines'), fillersHint:document.getElementById('fillersHint'), flickerHint:document.getElementById('flickerHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
   psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'),
   previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewLogo:document.getElementById('previewLogo'),
-  message:document.getElementById('message'), importLog:document.getElementById('importLog'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
+  message:document.getElementById('message'), importLog:document.getElementById('importLog'), updateDataBtn:document.getElementById('updateDataBtn'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
 };
 
 let manifest = null;
@@ -172,6 +179,135 @@ function fillSelect(select,list,labelKey,styleFont){
 }
 
 function writeImportLog(lines){ el.importLog.value = (lines||[]).length ? lines.join('\n') : 'Brak błędów importu.'; }
+
+const MANIFEST_XLSX_PATH = 'assets/data/DataSlate_manifest.xlsx';
+
+function normalizeHeader(value){
+  return String(value || '').trim().toLowerCase().replace(/[\s_\-]+/g,'');
+}
+
+function normalizeRecordKeys(rec){
+  const out = {};
+  Object.entries(rec || {}).forEach(([k,v])=>{ out[normalizeHeader(k)] = v; });
+  return out;
+}
+
+function toInt(value, fallback){
+  const n = Number(String(value ?? '').trim());
+  return Number.isFinite(n) ? Math.floor(n) : fallback;
+}
+
+function toStr(value){
+  return String(value ?? '').trim();
+}
+
+function toStringArray(value){
+  return String(value ?? '').split(/\r?\n|\|/).map(v=>v.trim()).filter(Boolean);
+}
+
+function pickValue(rec, aliases){
+  for(const key of aliases){
+    if(rec[key] !== undefined && rec[key] !== null && String(rec[key]).trim() !== '') return rec[key];
+  }
+  return '';
+}
+
+function parseSheetRows(workbook, sheetName){
+  const sheet = workbook.Sheets[sheetName];
+  if(!sheet) return [];
+  const rows = XLSX.utils.sheet_to_json(sheet, {defval:''});
+  return rows.map(normalizeRecordKeys);
+}
+
+function buildManifestFromWorkbook(workbook){
+  const logs = [];
+  const mapBasic = (sheetName, cfg)=>{
+    const rows = parseSheetRows(workbook, sheetName);
+    if(!rows.length){ logs.push(`Brak arkusza lub pusty arkusz: ${sheetName}`); return []; }
+    return rows.map((row, idx)=>{
+      const id = toInt(pickValue(row,['id']), idx+1);
+      const name = toStr(pickValue(row,['name','nazwa']));
+      const file = toStr(pickValue(row,['file','plik','url']));
+      const item = {id, name};
+      item[cfg.thirdKey] = cfg.thirdKey === 'font' ? toStr(pickValue(row,['font','czcionka'])) : file;
+      if(!item.name || !item[cfg.thirdKey]) logs.push(`${sheetName}: niepełny rekord ID ${id}`);
+      return item;
+    });
+  };
+
+  const fillersRows = parseSheetRows(workbook, 'fillers');
+  if(!fillersRows.length) logs.push('Brak arkusza lub pusty arkusz: fillers');
+
+  const manifestData = {
+    backgrounds: mapBasic('backgrounds', {thirdKey:'file'}),
+    logos: mapBasic('logos', {thirdKey:'file'}),
+    audios: mapBasic('audios', {thirdKey:'file'}),
+    fonts: mapBasic('fonts', {thirdKey:'font'}),
+    fillers: fillersRows.map((row, idx)=>({
+      id: toInt(pickValue(row,['id']), idx+1),
+      name: toStr(pickValue(row,['name','nazwa'])),
+      prefixes: toStringArray(pickValue(row,['prefixes','prefix','prefiksy','prefiksy(linie)'])),
+      suffixes: toStringArray(pickValue(row,['suffixes','suffix','sufiksy','sufiksy(linie)']))
+    })),
+    importLog: logs
+  };
+
+  manifestData.fillers.forEach(item=>{
+    if(!item.name || !item.prefixes.length || !item.suffixes.length){
+      logs.push(`fillers: niepełny rekord ID ${item.id}`);
+    }
+  });
+
+  return manifestData;
+}
+
+function downloadJson(filename, data){
+  const blob = new Blob([JSON.stringify(data, null, 2) + '\n'], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 0);
+}
+
+async function updateDataFromXlsx(){
+  if(typeof XLSX === 'undefined'){
+    setStatus('Błąd: biblioteka XLSX niedostępna');
+    return;
+  }
+  const btn = el.updateDataBtn;
+  const previousLabel = btn.textContent;
+  btn.disabled = true;
+  btn.textContent = 'Aktualizacja...';
+  setStatus('Aktualizacja data.json z DataSlate_manifest.xlsx...');
+  try{
+    const response = await fetch(`${MANIFEST_XLSX_PATH}?v=${encodeURIComponent(window.__dsVersion || '')}`, {cache:'no-store'});
+    if(!response.ok) throw new Error('Nie udało się pobrać DataSlate_manifest.xlsx');
+    const bytes = await response.arrayBuffer();
+    const workbook = XLSX.read(bytes, {type:'array'});
+    const nextManifest = buildManifestFromWorkbook(workbook);
+    manifest = nextManifest;
+    fillSelect(el.backgroundSelect, manifest.backgrounds || []);
+    fillSelect(el.logoSelect, manifest.logos || []);
+    fillSelect(el.fillerSelect, manifest.fillers || []);
+    fillSelect(el.fontSelect, manifest.fonts || [], 'font', 'font');
+    fillSelect(el.audioSelect, manifest.audios || []);
+    writeImportLog(manifest.importLog || []);
+    restoreDefaults(false);
+    downloadJson('data.json', nextManifest);
+    setStatus('Gotowe: wygenerowano nowy data.json (plik pobrany).');
+  }catch(err){
+    console.error(err);
+    setStatus('Błąd aktualizacji danych');
+    writeImportLog([`Błąd aktualizacji: ${err.message || err}`]);
+  }finally{
+    btn.disabled = false;
+    btn.textContent = previousLabel;
+  }
+}
 
 async function loadManifest(){
   const res = await fetch(`assets/data/data.json?v=${encodeURIComponent(window.__dsVersion || '')}`);
@@ -332,6 +468,7 @@ el.sendBtn.addEventListener('click',()=>send('message').catch(e=>{setStatus('BŁ
 el.clearMessageBtn.addEventListener('click',()=>{el.message.value=''; el.message.focus();});
 el.restoreDefaultsBtn.addEventListener('click',()=>restoreDefaults(true));
 el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'); alert(e.message||e);}));
+el.updateDataBtn.addEventListener('click',()=>updateDataFromXlsx());
 
 (async()=>{
   try{ await loadManifest(); setStatus('gotowe'); }
