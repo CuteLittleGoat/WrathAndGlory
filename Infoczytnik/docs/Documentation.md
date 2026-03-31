@@ -18,6 +18,7 @@ Zapisywane pola:
 - `messageAudioId`, `messageAudioFile`
 - `fillersEnabled`, `audioEnabled`, `showLogo`, `movingOverlay`, `flicker`
 - `prefixLines[]`, `suffixLines[]`, `fillerLineCount`
+- `fillerBandLines` (wysokość górnej i dolnej strefy prefix/suffix wyrażona w liniach)
 - `messageColor`, `prefixColor`, `suffixColor`
 - `msgFontSize`, `prefixFontSize`, `suffixFontSize`
 - `pingUrl`, `nonce`, `ts`
@@ -26,10 +27,12 @@ Zapisywane pola:
 1. Ładowanie `assets/data/data.json` i zapełnienie 5 dropdownów.
 2. Walidacja domyślnych ID przez fallback do pierwszego rekordu listy.
 3. Losowanie unikalnych fillerów (`rerollFillers`) z wybranego zestawu.
-4. Preview renderuje jednocześnie tło, logo, font, prefix/suffix i treść.
-5. `Wyczyść komunikat` czyści wyłącznie `textarea#message`.
-6. `Przywróć domyślne` resetuje formularz do `DEFAULT_FORM_STATE` i wysyła dokument `type=clear`.
-7. Pole `Log importu` pokazuje komunikaty z `manifest.importLog`.
+4. `syncFlickerDependency()` wymusza regułę: gdy `movingOverlay=false`, to `flicker=false` i `flicker.disabled=true` + komunikat informacyjny.
+5. Preview renderuje jednocześnie tło, logo, font, prefix/suffix i treść.
+6. `getPayload()` wymusza regułę bezpieczeństwa również na poziomie danych (`flicker` nigdy nie idzie jako `true`, jeśli `movingOverlay` jest wyłączony).
+7. `Wyczyść komunikat` czyści wyłącznie `textarea#message`.
+8. `Przywróć domyślne` resetuje formularz do `DEFAULT_FORM_STATE` i wysyła dokument `type=clear`.
+9. Pole `Log importu` pokazuje komunikaty z `manifest.importLog`.
 
 ## Infoczytnik_test.html — logika
 1. Subskrypcja `onSnapshot` dokumentu `dataslate/current`.
@@ -37,25 +40,31 @@ Zapisywane pola:
 3. `message` -> renderuje tekst + fillery + styl; audio wiadomości działa tylko przy `audioEnabled !== false`.
 4. `clear` -> czyści prefix, treść i suffix bez resetu całej strony.
 5. Font ma wspólny fallback: `Calibri, Arial, sans-serif`.
-6. Kontener overlay jest wyrównany do górnej krawędzi (`align-items:flex-start`), dzięki czemu blok tekstu rozpoczyna się od góry obszaru roboczego.
-7. W bloku wiadomości:
-   - `prefix` i `suffix` mają `text-align:center`,
-   - `msg` ma `text-align:left`,
-   - kontener `.box` używa `align-items:stretch`, aby wyrównania tekstu działały niezależnie dla każdej sekcji.
-8. Overlay jest dynamicznie dopasowywany w dwóch krokach:
+6. Overlay używa struktury stref:
+   - `topBand` (prefix + slot logo),
+   - `msg` (treść wiadomości),
+   - `bottomBand` (suffix).
+7. `overlayScroll` przewija się tylko pionowo (`overflow-y:auto`, `overflow-x:hidden`), więc:
+   - obszar cienia (`overlay`) jest nieruchomy,
+   - prefix/logo znikają przy scrollu w dół,
+   - suffix pojawia się przy dolnych partiach treści.
+8. Reguły łamania linii są jawnie ustawione (`white-space:pre-wrap`, `word-break:normal`, `overflow-wrap:normal`, `hyphens:manual`) dla prefix/msg/suffix.
+9. `fillerBandLines` steruje symetryczną wysokością `topBand` i `bottomBand` przez zmienną CSS `--fillerBandLines`.
+10. Overlay jest dynamicznie dopasowywany w dwóch krokach:
    - najpierw liczony jest prostokąt renderowanego tła (`object-fit:contain`) na podstawie `naturalWidth/naturalHeight` i viewportu,
    - następnie stosowany jest preset obszaru roboczego zależny od `backgroundId` (`CONTENT_RECTS_BY_BACKGROUND_ID`), co ogranicza tekst do „ekranu” wewnątrz ramki.
-9. Funkcja `fitOverlayToBackground()`:
+11. Funkcja `fitOverlayToBackground()`:
    - ustawia `left/top/width/height` overlay do obszaru roboczego dla aktywnego tła,
-   - pozycjonuje logo w prawym górnym rogu obszaru overlay (tego samego co prostokąt cienia i tekst),
+   - ustawia rozmiar slotu logo (`--logoSize`) zależnie od szerokości obszaru roboczego,
    - uruchamia się po `load` obrazka, przy `resize` okna i po każdej zmianie layoutu.
-10. `shadow::after` ma `inset:0`, więc cień pokrywa dokładnie cały obszar overlay; dzięki temu wiadomość, fillery i logo pozostają w tym samym polu co prostokąt cienia.
+12. `overlay.shadow::after` ma `inset:0`, więc cień pokrywa dokładnie cały obszar overlay; wiadomość, fillery i logo pozostają w tym samym polu co prostokąt cienia.
 
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.
 - Preview GM ma mini-podgląd tła i logo.
 - Checkbox `Fillery` blokuje `Ilość linii fillerów` i pokazuje komunikat o stanie.
 - Układ tekstu na ekranie gracza jest mieszany: prefix/suffix centralnie, treść wiadomości do lewej, cały blok osadzony od górnej krawędzi warstwy overlay i ograniczony do obszaru roboczego zdefiniowanego dla danego tła; cień i logo są liczone względem tego samego obszaru.
+- Długi prefix nie nachodzi na logo, ponieważ `topBand` używa siatki z dedykowanym slotem logo; przy ukrytym logo aktywuje się wariant `topBand.no-logo` z jedną kolumną pełnej szerokości.
 
 ## Uwagi implementacyjne
 - Produkcyjne pliki (`GM.html`, `Infoczytnik.html`) nie były modyfikowane.
