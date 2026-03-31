@@ -3,6 +3,14 @@
 ## Zakres
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
+
+## Aktualizacja 2026-03-31 — DataSlate_manifest.xlsx (zamiana kolejności logo)
+1. Zaktualizowano sekcję `logos` w `assets/data/data.json` zgodnie z nowym plikiem `DataSlate_manifest.xlsx`.
+2. Nowa kolejność i mapowanie ID:
+   - `id=1` → `Mechanicus` (`assets/logos/Mechanicus.png`),
+   - `id=2` → `Inkwizycja` (`assets/logos/Inquisition.png`).
+3. Zakres zmiany obejmuje wyłącznie dane manifestu (bez zmian logiki JS/HTML).
+
 ## Aktualizacja 2026-03-31 — poprawka pickera dla `#ffffff`
 1. **Aktywny kanał edycji koloru (`text` vs `picker`)**:
    - Dodano stan `colorEditSource = { message: 'text', ps: 'text' }`.
