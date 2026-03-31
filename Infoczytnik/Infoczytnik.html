@@ -6,7 +6,7 @@
   <title>Infoczytnik</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-03-31_13-20-00";
+      const INF_VERSION = "2026-04-01_00-15-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -15,8 +15,11 @@
       }
     })();
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
-    :root{--font:"Share Tech Mono",Calibri,Arial,sans-serif;--msg:#00ff66;--ps:rgba(255,255,255,.88);--overlayW:960;--overlayH:540;--overlayMin:540;--overlayScale:1;--overlayPadY:14px;--overlayPadX:20px;--overlayGap:14px;--msgBasePx:20;--psBasePx:12}
+    :root{--font:"Share Tech Mono",Calibri,Arial,sans-serif;--msg:#00ff66;--ps:#ffffff;--overlayW:960;--overlayH:540;--overlayMin:540;--overlayScale:1;--overlayPadY:14px;--overlayPadX:20px;--overlayGap:14px;--msgBasePx:20;--psBasePx:12}
     *{box-sizing:border-box} body{margin:0;background:#000;color:#fff;font-family:var(--font);overflow:hidden}
     .screen{width:100vw;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
     .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:0}
@@ -113,7 +116,7 @@ function updateOverlayMetrics(width,height){
 }
 function applyStyles(d){
   const msgColor = String(d.messageColor || d.color || '#00ff66');
-  const psColor = String(d.prefixColor || 'rgba(255,255,255,.88)');
+  const psColor = String(d.prefixColor || '#ffffff');
   document.documentElement.style.setProperty('--msg', msgColor);
   document.documentElement.style.setProperty('--ps', psColor);
   document.documentElement.style.setProperty('--msgBasePx', String(clamp(d.msgFontSize,12,80,20)));
