@@ -79,6 +79,17 @@ Podejście:
 - adminowy manifest z `start_url: ./Main/index.html?admin=1`,
 - podmiana `<link rel="manifest">` zależnie od bieżącego trybu.
 
+Odpowiedź na pytanie: **tak — w praktyce podwójny manifest wpływa głównie na to, jaki URL uruchomi się ze skrótu/PWA utworzonego w danym trybie.**
+
+- Jeśli użytkownik wejdzie na widok admin i w tym kontekście przeglądarka pobierze manifest admin, to utworzony skrót może startować z `?admin=1`.
+- Jeśli aplikacja jest już zainstalowana jako PWA z manifestem user, to system zwykle uruchamia istniejącą instalację zgodnie z jej `start_url` (user), a nie „przełącza” zainstalowanej aplikacji na admin tylko dlatego, że później odwiedzono URL z `?admin=1`.
+- Innymi słowy: dwa manifesty nie są pewnym mechanizmem „globalnego przełączenia” jednej zainstalowanej aplikacji między user/admin; to raczej sposób na rozdzielenie punktu startu podczas tworzenia konkretnego skrótu/instancji.
+
+Jeśli oczekiwane działanie brzmi: **„zainstalowana aplikacja PWA może uruchomić tylko tryb user”**, to:
+- manifest instalacyjny PWA powinien pozostać wyłącznie user (`start_url` bez `?admin=1`),
+- tryb admin powinien być dostępny jedynie przez zwykły URL w przeglądarce (lub osobny, świadomie tworzony skrót poza instalacją PWA),
+- nie należy oferować ścieżki instalacji PWA opartej na manifeście admin.
+
 Plusy:
 - logicznie spójne z PWA.
 
