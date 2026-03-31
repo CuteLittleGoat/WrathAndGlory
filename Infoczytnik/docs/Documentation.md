@@ -4,6 +4,17 @@
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
 
+## Aktualizacja 2026-04-01 — przycisk importu DataSlate_manifest.xlsx w GM_test
+1. W `GM_test.html` dodano obok pola `Log importu` nowy układ `importRow`: log zajmuje ~1/2 wcześniejszej szerokości, a z prawej strony jest przycisk `Aktualizuj dane z XLSX`.
+2. Dodano stałą `MANIFEST_XLSX_PATH = "assets/data/DataSlate_manifest.xlsx"` oraz klientowy importer oparty o SheetJS (`xlsx.full.min.js` z CDN).
+3. Przycisk uruchamia `updateDataFromXlsx()`:
+   - pobiera zawsze stały plik wsadowy `Infoczytnik/assets/data/DataSlate_manifest.xlsx` (`fetch + cache: no-store`),
+   - mapuje arkusze `backgrounds`, `logos`, `audios`, `fonts`, `fillers` do struktury runtime manifestu,
+   - aktualizuje dropdowny i podgląd na żywo,
+   - generuje i pobiera nowy plik `data.json` (do ręcznej podmiany w `Infoczytnik/assets/data/data.json`).
+4. `importLog` raportuje błędy mapowania (np. brak arkusza / niepełny rekord) i nadal pokazuje `Brak błędów importu.` przy pustej liście.
+5. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-01_00-15-00`.
+
 ## Aktualizacja 2026-03-31 — domyślne ustawienia panelu GM
 1. W `GM_test.html` zmieniono `DEFAULT_FORM_STATE` tak, aby panel startował z presetem:
    - `backgroundId=7` (Litannie Zaginionych),
@@ -107,6 +118,7 @@ Zapisywane pola:
 7. `Wyczyść komunikat` czyści wyłącznie `textarea#message`.
 8. `Przywróć domyślne` resetuje formularz do `DEFAULT_FORM_STATE` i wysyła dokument `type=clear`.
 9. Pole `Log importu` pokazuje komunikaty z `manifest.importLog`.
+10. Przycisk `Aktualizuj dane z XLSX` przetwarza lokalny plik `assets/data/DataSlate_manifest.xlsx` w przeglądarce i pobiera nowy `data.json` do ręcznej podmiany.
 
 ## Infoczytnik_test.html — logika
 1. Subskrypcja `onSnapshot` dokumentu `dataslate/current`.
