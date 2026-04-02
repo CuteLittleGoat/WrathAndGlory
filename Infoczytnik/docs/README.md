@@ -35,6 +35,7 @@
 31. Dodano nowe tło **WnG** (`assets/backgrounds/WnG.png`) oraz jego pole robocze wyliczone z `assets/ramki/WnG_ramka.png` (`x=0.1214, y=0.0962, w=0.7385, h=0.8081`).
 32. Wygenerowano nowy `assets/data/data.json` z aktualnego `assets/data/DataSlate_manifest.xlsx` (zawiera teraz 10 teł, w tym `id=10: WnG`).
 33. Dodano plik techniczny `assets/data/NiebieskaRamka.md` z pełną metodą liczenia pola roboczego dla nowych teł na podstawie ramek PNG.
+34. Import `DataSlate_manifest.xlsx -> data.json` dla `fillers.prefixes` i `fillers.suffixes` automatycznie dodaje dekorator `+++ TEKST +++` (zabezpieczenie przed podwójnym dodaniem, jeśli wpis już ma plusy); po zmianie wygenerowano nowy `assets/data/data.json` i aplikacja korzysta teraz z wersji z plusami.
 
 
 ## User guide (EN)
@@ -72,4 +73,5 @@
 31. Added a new background **WnG** (`assets/backgrounds/WnG.png`) with a working-area rectangle derived from `assets/ramki/WnG_ramka.png` (`x=0.1214, y=0.0962, w=0.7385, h=0.8081`).
 32. Rebuilt `assets/data/data.json` from the updated `assets/data/DataSlate_manifest.xlsx` (it now contains 10 backgrounds, including `id=10: WnG`).
 33. Added technical file `assets/data/NiebieskaRamka.md` with the full method for calculating working areas for new backgrounds from PNG frame files.
+34. The `DataSlate_manifest.xlsx -> data.json` import now auto-wraps `fillers.prefixes` and `fillers.suffixes` as `+++ TEXT +++` (with double-wrap protection when pluses already exist); after this change a new `assets/data/data.json` was generated and the app now uses the plus-wrapped version.
 

@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-02_14-27-24";
+      const INF_VERSION = "2026-04-02_16-55-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -216,6 +216,17 @@ function toStringArray(value){
   return String(value ?? '').split(/\r?\n|\|/).map(v=>v.trim()).filter(Boolean);
 }
 
+function formatFillerLine(line){
+  const text = String(line ?? '').trim();
+  if(!text) return '';
+  if(/^\+\+\+\s.*\s\+\+\+$/.test(text)) return text;
+  return `+++ ${text} +++`;
+}
+
+function formatFillerLines(lines){
+  return (lines || []).map(formatFillerLine).filter(Boolean);
+}
+
 function pickValue(rec, aliases){
   for(const key of aliases){
     if(rec[key] !== undefined && rec[key] !== null && String(rec[key]).trim() !== '') return rec[key];
@@ -257,8 +268,8 @@ function buildManifestFromWorkbook(workbook){
     fillers: fillersRows.map((row, idx)=>({
       id: toInt(pickValue(row,['id']), idx+1),
       name: toStr(pickValue(row,['name','nazwa'])),
-      prefixes: toStringArray(pickValue(row,['prefixes','prefix','prefiksy','prefiksy(linie)'])),
-      suffixes: toStringArray(pickValue(row,['suffixes','suffix','sufiksy','sufiksy(linie)']))
+      prefixes: formatFillerLines(toStringArray(pickValue(row,['prefixes','prefix','prefiksy','prefiksy(linie)']))),
+      suffixes: formatFillerLines(toStringArray(pickValue(row,['suffixes','suffix','sufiksy','sufiksy(linie)'])))
     })),
     importLog: logs
   };
