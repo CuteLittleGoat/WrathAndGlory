@@ -4,6 +4,15 @@
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
 
+
+## Aktualizacja 2026-04-02 — autoformat `+++` podczas importu XLSX -> JSON
+1. W `GM_test.html` rozszerzono importer manifestu o funkcje `formatFillerLine(...)` i `formatFillerLines(...)`, które podczas mapowania arkusza `fillers` automatycznie opakowują każdą linię `prefixes` i `suffixes` do formatu `+++ TEKST +++`.
+2. Dodano zabezpieczenie przed podwójnym opakowaniem: jeżeli linia już jest w formacie `+++ ... +++`, importer pozostawia ją bez zmian.
+3. Reguła formatowania działa na etapie `DataSlate_manifest.xlsx -> data.json`, więc GM preview i payload runtime korzystają już z gotowych, sformatowanych wartości z manifestu.
+4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-02_16-55-00` (czas lokalny PL).
+5. Wygenerowano nowy `assets/data/data.json` i zasilono nim aplikację; wszystkie rekordy `fillers.prefixes/suffixes` zapisano jako `+++ ... +++`.
+
+
 ## Aktualizacja 2026-04-02 — Litannie Zagubionych + nowe tło WnG + regeneracja data.json
 1. W `assets/data/DataSlate_manifest.xlsx` i `assets/data/Mapowanie.xlsx` nazwa tła `Litannie Zaginionych` została zastąpiona nazwą `Litannie Zagubionych`; runtime korzysta teraz z pliku `assets/backgrounds/Litannie_Zagubionych.png`.
 2. Dodano nowe tło `WnG` (`backgroundId=10`) i rozszerzono mapę `CONTENT_RECTS_BY_BACKGROUND_ID` w `Infoczytnik_test.html` o wpis: `10:{ x:0.1214, y:0.0962, w:0.7385, h:0.8081 }`.
