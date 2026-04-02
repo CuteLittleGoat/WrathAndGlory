@@ -4,6 +4,15 @@
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
 
+## Aktualizacja 2026-04-02 — Litannie Zagubionych + nowe tło WnG + regeneracja data.json
+1. W `assets/data/DataSlate_manifest.xlsx` i `assets/data/Mapowanie.xlsx` nazwa tła `Litannie Zaginionych` została zastąpiona nazwą `Litannie Zagubionych`; runtime korzysta teraz z pliku `assets/backgrounds/Litannie_Zagubionych.png`.
+2. Dodano nowe tło `WnG` (`backgroundId=10`) i rozszerzono mapę `CONTENT_RECTS_BY_BACKGROUND_ID` w `Infoczytnik_test.html` o wpis: `10:{ x:0.1214, y:0.0962, w:0.7385, h:0.8081 }`.
+3. Zmieniono domyślny preset panelu GM: `DEFAULT_FORM_STATE.backgroundId` ustawiono na `10` (`WnG`).
+4. Utworzono plik `assets/data/NiebieskaRamka.md` dokumentujący algorytm wyliczania `x,y,w,h` z plików `*_ramka.png` (detekcja niebieskiej ramki + normalizacja do wymiaru obrazu).
+5. Wygenerowano od nowa `assets/data/data.json` z aktualnego `assets/data/DataSlate_manifest.xlsx` — sekcja `backgrounds` zawiera teraz 10 rekordów i poprawioną nazwę `Litannie Zagubionych`.
+6. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-02_14-27-24`.
+
+
 
 
 ## Aktualizacja 2026-03-31 — podgląd „Treść / Tło” (nowe wymaganie)
@@ -55,7 +64,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 
 ## Aktualizacja 2026-03-31 — domyślne ustawienia panelu GM
 1. W `GM_test.html` zmieniono `DEFAULT_FORM_STATE` tak, aby panel startował z presetem:
-   - `backgroundId=7` (Litannie Zaginionych),
+   - `backgroundId=10` (WnG),
    - `logoId=1` (Mechanicus),
    - `fillerId=1` (Mechanicus),
    - `audioId=1` (Text-On-Screen),
@@ -182,16 +191,17 @@ Zapisywane pola:
    - obsługiwane są zdarzenia `resize`, `orientationchange` oraz `visualViewport.resize/scroll`,
    - mikro-zmiany (`<2px` szerokości i `<6px` wysokości) są ignorowane, aby zredukować jitter po gestach przewijania.
 
-15. Presety `CONTENT_RECTS_BY_BACKGROUND_ID` zostały przeliczone ponownie na podstawie plików `assets/ramki/*_ramka.png` (mapowanie z `Draft/Mapowanie.xlsx`). Aktualne wartości (`x,y,w,h`) to:
+15. Presety `CONTENT_RECTS_BY_BACKGROUND_ID` zostały przeliczone ponownie na podstawie plików `assets/ramki/*_ramka.png` (mapowanie z `assets/data/Mapowanie.xlsx`). Aktualne wartości (`x,y,w,h`) to:
    - `1 DataSlate_01`: `0.0642, 0.0762, 0.8707, 0.8124`
    - `2 DataSlate_02`: `0.1255, 0.0924, 0.7091, 0.7574`
    - `3 DataSlate_03`: `0.1048, 0.1435, 0.8094, 0.6745`
    - `4 DataSlate_04`: `0.1123, 0.1481, 0.7745, 0.7262`
    - `5 DataSlate_05`: `0.0329, 0.0242, 0.9362, 0.9325`
    - `6 DataSlate_Inq`: `0.1004, 0.0450, 0.8246, 0.7801`
-   - `7 Litannie_Zaginionych`: `0.1987, 0.1254, 0.6207, 0.7643`
+   - `7 Litannie_Zagubionych`: `0.1987, 0.1254, 0.6207, 0.7643`
    - `8 Notatnik`: `0.0361, 0.0280, 0.9248, 0.9447`
    - `9 Pergamin`: `0.0537, 0.0293, 0.8955, 0.9499`
+   - `10 WnG`: `0.1214, 0.0962, 0.7385, 0.8081`
 
 ## Style / UX
 - Fonty Google: Share Tech Mono, Cinzel, Rajdhani, Black Ops One, Staatliches, Orbitron, Questrial, Russo One, Caveat, Great Vibes.

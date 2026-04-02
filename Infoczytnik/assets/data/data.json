@@ -32,8 +32,8 @@
     },
     {
       "id": 7,
-      "name": "Litannie Zaginionych",
-      "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/backgrounds/Litannie_Zaginionych.png"
+      "name": "Litannie Zagubionych",
+      "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/backgrounds/Litannie_Zagubionych.png"
     },
     {
       "id": 8,
@@ -44,6 +44,11 @@
       "id": 9,
       "name": "Pergamin",
       "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/backgrounds/Pergamin.png"
+    },
+    {
+      "id": 10,
+      "name": "WnG",
+      "file": "https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/backgrounds/WnG.png"
     }
   ],
   "logos": [
