@@ -143,8 +143,8 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `--div`: `rgba(22,198,12,.18)` — linie podziału.
 - `--hbg`: `rgba(22,198,12,.06)` — tła nagłówków.
 - `--zebra-odd`: `rgba(22,198,12,.02)` — tło nieparzystych wierszy tabel.
-- `--zebra-even`: `rgba(22,198,12,.06)` — tło parzystych wierszy tabel.
-- `--hover`: `rgba(22,198,12,.12)` — hover w tabeli (mocniejsze podświetlenie niż wcześniej).
+- `--zebra-even`: `rgba(22,198,12,.12)` — tło parzystych (jaśniejszych) wierszy tabel; odpowiada poprzedniemu kolorowi hover.
+- `--hover`: `rgba(22,198,12,.16)` — hover w tabeli; taki sam jak stan zaznaczenia wiersza.
 - `--row-selected`: `rgba(22,198,12,.16)` — podświetlenie całego zaznaczonego wiersza.
 - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)` — mocniejszy glow.
 - `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)` — dodatkowy glow dla tytułów.
