@@ -15,6 +15,11 @@
 >
 > Przeprowadź analizę rozszerzenia modułu o taką funkcjonalność.
 
+
+## Prompt uzupełniający (bieżąca prośba)
+> Przeczytaj i rozbuduj analizę Analizy/analiza-rozbudowy-datavault-specjalne-frakcji-2026-04-09.md
+> Dopisz tam jakie aktualnie są ustawienia kolumn w zakładce "Orcze Klany".
+
 ## Zakres analizy
 - Sprawdzono aktualny mechanizm ładowania arkuszy z `Repozytorium.xlsx` do `data.json` i renderu zakładek.
 - Sprawdzono obecne zasady ukrywania kolumn technicznych (`LP`) i filtrowania zakładek przez checkbox „tworzenie postaci”.
@@ -47,6 +52,23 @@
 
 7. **Kolorystyka i formatowanie inline („czerwony font”, markerowe style, referencje `str.`) są obsługiwane przez istniejący mechanizm i nie wymagają nowego kodu.**  
    Pipeline XLSX zachowuje markery (`{{RED}}`, `{{B}}`, `{{I}}`), a renderer w JS stosuje je w HTML; mechanika referencji nawiasowych i linii `*[n]` działa globalnie dla treści komórek.
+
+
+## Aktualne ustawienia kolumn w zakładce „Orcze Klany” (stan bieżący)
+
+Na podstawie bieżącego kodu i danych modułu DataVault:
+
+- **Kolejność kolumn renderowanych w UI:** `Nazwa` → `Opis` → `Efekt` (z `_meta.columnOrder` dla arkusza `Orcze Klany`).
+- **Kolumna techniczna `LP`:** obecna w danych wejściowych (`LP`, `Nazwa`, `Opis`, `Efekt`), ale ukryta globalnie przez mechanizm `HIDDEN_COLUMNS` / `isHiddenColumn`.
+- **Szerokości minimalne (`min-width`) w CSS dla `Orcze Klany`:**
+  - `Nazwa` → `26ch`
+  - `Opis` → `56ch`
+  - `Efekt` → `26ch`
+- **Wyrównanie tekstu:**
+  - domyślnie nagłówki i komórki tekstowe są wyrównane do lewej (`.dataTable th { text-align: left; }`),
+  - dla powyższych kolumn `Orcze Klany` nie ma lokalnych nadpisań do `center/right`,
+  - pierwsza kolumna wyboru (`✓`, dodawana przez UI) ma stałe `8ch` i wyrównanie centralne.
+- **Model szerokości:** w `Orcze Klany` użyte są minima (`min-width`), nie stałe `width`, więc przy szerokim viewportcie kolumny mogą wizualnie się rozszerzać ponad wartości minimalne.
 
 ## Proponowany projekt implementacji
 
