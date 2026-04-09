@@ -1864,7 +1864,7 @@
       {
         "LP": "63",
         "Nazwa": "Hormagaunt",
-        "Zagrożenie": "TTTT",
+        "Zagrożenie": "TTTTT",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
         "S": "3",
         "Wt": "3",
@@ -1894,7 +1894,7 @@
       {
         "LP": "64",
         "Nazwa": "Mina Zarodnikowa",
-        "Zagrożenie": "TTTT",
+        "Zagrożenie": "TTTTT",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
         "S": "1",
         "Wt": "2",
@@ -1924,7 +1924,7 @@
       {
         "LP": "65",
         "Nazwa": "Łupieżca",
-        "Zagrożenie": "NNEE",
+        "Zagrożenie": "NNEET",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
         "S": "7",
         "Wt": "4",
@@ -1954,7 +1954,7 @@
       {
         "LP": "66",
         "Nazwa": "Termagant",
-        "Zagrożenie": "TTTT",
+        "Zagrożenie": "TTTTT",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
         "S": "3",
         "Wt": "3",
@@ -1984,7 +1984,7 @@
       {
         "LP": "67",
         "Nazwa": "Zoantrop",
-        "Zagrożenie": "NNEE",
+        "Zagrożenie": "NNEEE",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], PSIONIK, SYNAPSA, TYRANID{{/RED}}",
         "S": "3",
         "Wt": "3",
@@ -2014,7 +2014,7 @@
       {
         "LP": "68",
         "Nazwa": "Tyranidzki Wojownik",
-        "Zagrożenie": "NNEE",
+        "Zagrożenie": "NNEET",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], SYNAPSA, TYRANID{{/RED}}",
         "S": "6",
         "Wt": "5",
@@ -2044,7 +2044,7 @@
       {
         "LP": "69",
         "Nazwa": "Gargulec",
-        "Zagrożenie": "TTTT",
+        "Zagrożenie": "TTTTT",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
         "S": "3",
         "Wt": "3",
@@ -2074,7 +2074,7 @@
       {
         "LP": "70",
         "Nazwa": "Karnifeks",
-        "Zagrożenie": "PPPP",
+        "Zagrożenie": "PPPPP",
         "Słowa Kluczowe": "{{RED}}[FLOTA‑RÓJ], TYRANID{{/RED}}",
         "S": "10",
         "Wt": "8",
@@ -2273,7 +2273,7 @@
         "Umiejętności": "Przetrwanie 2",
         "Szybkość": "6",
         "Rozmiar": "Duży",
-        "Zdolności gatunkowe": "{{B}}Lawina mięśni{{/B}}\nKiedy Szarżujesz, otrzymujesz +Ranga dodatkowych kości do Testu ataku wręcz.\n\n{{B}}Klaustrofobia{{/B}}\nZa każdym razem, kiedy wchodzisz do zamkniętej przestrzeni, musisz wykonać Test Strachu (standardowe ST równe 2). Ponadto, jesli wewnatrz zamknietej przestrzeni wyrzucisz Komplikacje, MG moze wydac 1 punkt Zguby, by zmusic cie do powtórzenia Testu Strachu.\n\n{{B}}Lojalny prostaczek{{/B}}\nKiedy sojusznik ze Słowem kluczowym {{RED}}IMPERIUM{{/RED}} wykonuje Test Dowodzenia (SW), którego obiektem jest Ogryn, otrzymuje dodatkowe kosci równe Randze Ogryna."
+        "Zdolności gatunkowe": "{{B}}Lawina mięśni{{/B}}\nKiedy Szarżujesz, otrzymujesz +Ranga dodatkowych kości do Testu ataku wręcz.\n\n{{B}}Klaustrofobia{{/B}}\nZa każdym razem, kiedy wchodzisz do zamkniętej przestrzeni, musisz wykonać Test Strachu (standardowe ST równe 2).\nPonadto, jeśli wewnątrz zamkniętej przestrzeni wyrzucisz Komplikację, MG może wydać 1 punkt Zguby, by zmusić cię do powtórzenia Testu Strachu.\n\n{{B}}Lojalny prostaczek{{/B}}\nKiedy sojusznik ze Słowem kluczowym {{RED}}IMPERIUM{{/RED}} wykonuje Test Dowodzenia (SW), którego obiektem jest Ogryn, otrzymuje dodatkowe kosci równe Randze Ogryna."
       },
       {
         "LP": "7",
@@ -2283,7 +2283,7 @@
         "Umiejętności": "Czujność 2\nOszukiwanie 2\nPrzebiegłość 1\nUkrywanie się 2\nUmiejętności strzeleckie 1",
         "Szybkość": "5",
         "Rozmiar": "Mały",
-        "Zdolności gatunkowe": "{{B}}Łasuch{{/B}}\n+Dwukrotność Rangi dodatkowych kości do wszystkich Testów kucharskich.\nPrzygotowane jedzenie moze byc uzyte podczas Przegrupowania, by usunac +Ranga Traum."
+        "Zdolności gatunkowe": "{{B}}Łasuch{{/B}}\n+Dwukrotność Rangi dodatkowych kości do wszystkich Testów kucharskich.\nPrzygotowane jedzenie może być użyte podczas Przegrupowania, by usunąć +Ranga Traum."
       },
       {
         "LP": "8",
@@ -2293,7 +2293,7 @@
         "Umiejętności": "Atletyka 1\nCzujność 1\nPrzetrwanie 2\nUkrywanie się 2\nWalka wręcz 2",
         "Szybkość": "7",
         "Rozmiar": "Średni",
-        "Zdolności gatunkowe": "{{B}}Mutacje krootów{{/B}}\nMasz tyle Mutacji krootów, ile wynosi twój Poziom. Możesz uzyskać dodatkową Mutacje krootów [{{B}}Osamotniony System{{/B}} (str. 91)] w ­wyniku Wyniesienia."
+        "Zdolności gatunkowe": "{{B}}Mutacje krootów{{/B}}\nMasz tyle Mutacji krootów, ile wynosi twój Poziom. Możesz uzyskać dodatkową Mutacje krootów [{{B}}Osamotniony System{{/B}} (str. 91)] w wyniku Wyniesienia."
       }
     ],
     "Archetypy": [
@@ -3033,7 +3033,7 @@
         "Strona": "19"
       }
     ],
-    "Bonusy Frakcji": [
+    "Premie Frakcji": [
       {
         "LP": "1",
         "Frakcja": "Adepta Sororitas",
@@ -3247,6 +3247,240 @@
         "Efekt": "-"
       }
     ],
+    "Specjalne Bonusy Frakcji": [
+      {
+        "LP": "1",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka przebudzenia",
+        "Opis": "Poświęciłeś dużo czasu na praktykę analizowania otoczenia, skupiając uwagę na zewnątrz, by ukoić duszę.",
+        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Czujności (Int)."
+      },
+      {
+        "LP": "2",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka artysty",
+        "Opis": "Podążając za estetycznymi doznaniami rzeźbiarza, malarza czy pisarza poświęciłeś życie na zgłębienie piękna kultury aeldari.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Wiedzy ogólnej (Int) odnoszących się do Słowa kluczowego {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "LP": "3",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka pieśniarza upiorytu",
+        "Opis": "Dbasz o zagajniki upiorytu i uczyłeś się sztuki fizycznego kształtowania tej substancji w zaawansowaną technologię aeldari.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Korzystania z technologii (Int) dla celów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "LP": "4",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka śniącego",
+        "Opis": "Wpadając w medytacyjny trans, często na wiele dni, spojrzałeś głęboko w siebie. Kontrolując własne sny, opierasz się Tej, Która Pragnie.",
+        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Spaczenia."
+      },
+      {
+        "LP": "5",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka uzdrowiciela",
+        "Opis": "Poświęciłeś się medycznemu dobru innych aeldari, leczyłeś rannych i chorych, spędziłeś dekady, opiekując się innymi.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Medycyny (Int) dla celów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "LP": "6",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka marynarza",
+        "Opis": "Poświęciłeś się swojemu statkowi kosmicznemu, nauczyłeś się żeglować po próżni z ekspercką precyzją i manewrowością, stając się jednością z pilotowaną jednostką.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Pilotażu (Zr) przy prowadzeniu pojazdów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "LP": "7",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka żałobnika",
+        "Opis": "Straciłeś kogoś bliskiego i podążyłeś Ścieżką żalu. Opłakiwałeś jego upadek bez pogrążania się w ekstremalnych emocjach, które przyciągnęłyby Slaanesha.",
+        "Efekt": "Otrzymujesz +Ranga do Odporności psychicznej."
+      },
+      {
+        "LP": "8",
+        "Frakcja": "Aeldari",
+        "Rodzaj": "Ścieżki Asuryani",
+        "Nazwa": "Ścieżka służby",
+        "Opis": "Aby pomóc całemu gatunkowi, poświęciłeś się służbie, odczytując potrzeby innych i ulepszając siebie poprzez empatię.",
+        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Intuicji (Ogd) dla celów posiadających Słowo kluczowe {{RED}}AELDARI{{/RED}}."
+      },
+      {
+        "LP": "9",
+        "Frakcja": "Ork",
+        "Rodzaj": "Orczy Klan",
+        "Nazwa": "Złe Ksienżyce",
+        "Opis": "Ich zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.",
+        "Efekt": "+1 do Majątku na koniec każdej sesji."
+      },
+      {
+        "LP": "10",
+        "Frakcja": "Ork",
+        "Rodzaj": "Orczy Klan",
+        "Nazwa": "Krwawe Topory",
+        "Opis": "Uważani za \"nieorczych\" przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne \"taktiki\", jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
+        "Efekt": "+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr)."
+      },
+      {
+        "LP": "11",
+        "Frakcja": "Ork",
+        "Rodzaj": "Orczy Klan",
+        "Nazwa": "Śmiercioczaszki",
+        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, \"handlują\" i modyfikują sprzęt częściej niż inne klany.",
+        "Efekt": "+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów."
+      },
+      {
+        "LP": "12",
+        "Frakcja": "Ork",
+        "Rodzaj": "Orczy Klan",
+        "Nazwa": "Złe Słońca",
+        "Opis": "Ich obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.",
+        "Efekt": "Zyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością."
+      },
+      {
+        "LP": "13",
+        "Frakcja": "Ork",
+        "Rodzaj": "Orczy Klan",
+        "Nazwa": "Gupole",
+        "Opis": "Masywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.",
+        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży [{{B}}Podręcznik Główny{{/B}} (str. 188)]."
+      },
+      {
+        "LP": "14",
+        "Frakcja": "Ork",
+        "Rodzaj": "Orczy Klan",
+        "Nazwa": "Wężogryzy",
+        "Opis": "Celowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
+        "Efekt": "+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
+      },
+      {
+        "LP": "15",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "Flota-Rój",
+        "Nazwa": "Behemoth",
+        "Opis": "Behemot był pierwszą rozpoznaną flotą‑rojem tyranidów, która zaatakowała galaktykę. Choć przeważająca część armady została zniszczona przez Ultramarines podczas Pierwszej Wojny Tyranidzkiej, obcy pochłonęli wiele światów Ultramaru, pozyskując ich biomasę. Behemot nie został jednak ostatecznie pokonany. Jego niedobitki podzieliły się na mniejsze floty i rozproszyły we wszystkich kierunkach. Każdy odłam niesie ze sobą doświadczenia wyniesione z poniesionej klęski – oraz pochłonięte genoziarna Astartes.",
+        "Efekt": "Dodaj do Siły każdego tyranida połowę Poziomu gry, zaokrąglając w górę."
+      },
+      {
+        "LP": "16",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "Flota-Rój",
+        "Nazwa": "Kraken",
+        "Opis": "Druga tyranidzka flota‑rój, która napadła na galaktykę, została nazwana Krakenem. Wszystko zaczęło się od buntów na setkach imperialnych planet wzniecanych przez kulty genokradów, które torowały drogę dla swoich ohydnych xenoskich bogów. Kraken wyciągnął lekcję z porażki floty‑roju Behemot i rozpoczął ofensywę na wielu frontach. Tyranidzi zostali powstrzymani, lecz sukces okupiono olbrzymimi stratami wśród sił imperialnych i niemal całkowitym zniszczeniem światostatku aeldari znanego jako Iyanden.",
+        "Efekt": "Ataki wręcz otrzymują premię do PP broni białej równą połowie Poziomu gry, zaokrąglając w górę."
+      },
+      {
+        "LP": "17",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "Flota-Rój",
+        "Nazwa": "Lewiatan",
+        "Opis": "Floty‑roje Behemot oraz Kraken okazały się zaledwie wędrującymi badawczymi mackami w porównaniu z Lewiatanem, który zaatakował od spodu galaktycznego dysku na dwóch olbrzymich frontach, odcinając łączność w całych sektorach i uderzając głęboko w imperialne terytoria niczym zaciskające się szczęki drapieżnika. Tyranidzi zdawali się uczyć na porażkach poprzednich flot‑rojów i rzucali do boju nowe bioformy, jeszcze lepiej przystosowane do walki z mieszkańcami galaktyki.",
+        "Efekt": "Tyranidzi ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}} dodają Poziom gry do swojej Odporności."
+      },
+      {
+        "LP": "18",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "Flota-Rój",
+        "Nazwa": "Kronos",
+        "Opis": "Kronos jest częścią floty‑roju Lewiatan i wydaje się odpowiedzią Umysłu Roju na marnotrawstwo olbrzymich ilości galaktycznej biomasy, jakiego dopuszcza się Chaos. Armada naciera ostrożnie, roztaczając przed sobą wyjątkowo zdradliwą formę Cienia w Osnowie, która tłumi psioniczną energię i zdmuchuje demony niczym świece. Ta flota‑rój preferuje walkę na odległość, która umożliwia szybki odwrót przy jednoczesnej możliwości pochłonięcia zgładzonych tyranidów i poległych wrogów, by odzyskać jak najwięcej użytej biomasy.",
+        "Efekt": "Wszystkie ataki dystansowe oraz Testy obrony przed mocami psionicznymi otrzymują dodatkowe kości równe połowie Poziomu gry, zaokrąglając w górę."
+      },
+      {
+        "LP": "19",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Ludojad",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Ludzie\n\nLudzie nie stanowia ewolucyjnie odżywczego posiłku dla krootów.",
+        "Efekt": "+1 do twojego najniższego Atrybutu (do wyboru, jeśli Atrybuty sa równe)."
+      },
+      {
+        "LP": "20",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Pożeracz Astartes\n{{I}}(nie dla nowych postaci){{/I}}",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Astartes\n\nAstartes sa genetycznie ulepszeni i przewyzszaja zwykłych smiertelników niemal pod kazdym wzgledem. Ich wzmocnione DNA to prawdziwa uczta dla krootowej biologii.",
+        "Efekt": "+2 do dowolnego Atrybutu."
+      },
+      {
+        "LP": "21",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Pożeracz Aeldari",
+        "Opis": "{{B}}Pożarta ofiara{{/B}}: Aeldari\n\nKrootowie pozerajacy gibkich i psychicznie zestrojonych aeldari albo nabieraja ich nieziemskiej gracji i zwinnosci, albo hartują umysł.",
+        "Efekt": "+1 do Zrecznosci lub Siły Woli."
+      },
+      {
+        "LP": "22",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Pożeracz Orków",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Orkowie\n\nKrootowie, którzy ucztuja na ciałach brutalnych orków, sa znacznie lepiej przystosowani do szalenczej walki, poniewaz staja sie silniejsi, twardsi i… bardziej zieloni.",
+        "Efekt": "+1 do Siły lub Wytrzymałosci."
+      },
+      {
+        "LP": "23",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Pancerna skóra",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Dowolne stworzenie ogrubej skórze (jak np. ambull lub grox)\n\nTwoja skóra staje sie grubsza, bardziej szorstka i porasta ja coraz wiecej solidnych piór.",
+        "Efekt": "+Ranga do Podstawowej Odpornosci."
+      },
+      {
+        "LP": "24",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Bioluminescencja",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Dowolna bioluminescencyjna istota\n\nWydzielajace swiatło molekuły rozkwitaja w pokrywajacych twoje ciało piórach, dzieki czemu mozesz emitowac bioluminescencyjne swiatło na zyczenie.",
+        "Efekt": "Mozesz sprawic, zedowolna czesc twojego ciała zacznie lekko swiecic. Jezeli swieci całe ciało, to oswietla obszar w promieniu 10 metrów."
+      },
+      {
+        "LP": "25",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Kamuflaż",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Dowolne stworzenie zdolne do naturalnej zmiany wyglądu\n{{B}}\n{{/B}}Zyskujesz ograniczona kontrole nad pigmentacja skóry, dzieki czemu mozesz wizualnie wtapiac sie w otoczenie.",
+        "Efekt": "W ramach Akcji podstawowej mozesz zmienic wyglad swojej skóry na identycznych zasadach jak w przypadku peleryny maskujacej [{{B}}Podręcznik Główny{{/B}} (str. 239)]."
+      },
+      {
+        "LP": "26",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Opcjonalna dwunożność",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Dowolne czworonożne stworzenie\n\nTwoje ciało wydłuża się i garbi, wiec w razie potrzeby mozesz uzywac nóg palcochoda i dłuzszych ramion do czworonoznego biegu.",
+        "Efekt": "Podczas Sprintu pokonujesz dwa razy wieksza odległosc niz zazwyczaj, a w Testach Atletyki (S) podczas skoków lub wspinaczki otrzymujesz +Dwukrotnosc Rangi dodatkowych kosci."
+      },
+      {
+        "LP": "27",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Nadwrażliwe pióra",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Dowolne stworzenie ze wzmocnionymi zmysłami (jak ambulle czy szponiaste biesy)\n\nWystajace z twojej głowy wrazliwe pióra staja sie jeszcze czulsze i zaczynaja wychwytywac ruch wokolicy poprzez subtelne wibracje i zawirowania powietrza.",
+        "Efekt": "Twoje pióra działaja jak Auspex [{{B}}Podręcznik Główny{{/B}} (str. 237)] ozasiegu 30 metrów."
+      },
+      {
+        "LP": "28",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Skrzydła",
+        "Opis": "{{B}}Pożarta ofiara: {{/B}}Dowolne skrzydlate stworzenie (jak brzytwoskrzydły lub wywachy)\n\nTwoja budowa zmienia się w ciagu przepełnionych dreczacym bólem miesiecy, wracajac do pierwotnej sylwetki prastarego ludu krootorłów, az w koncu na twych plecach wyrasta para lekkich skórzastych skrzydeł.",
+        "Efekt": "Możesz latac z Szybkoscia 7."
+      },
+      {
+        "LP": "29",
+        "Frakcja": "Kroot",
+        "Rodzaj": "Mutacja Krootów",
+        "Nazwa": "Naturalna broń",
+        "Opis": "{{B}}Pożarta ofiara:{{/B}} Dowolne stworzenie o naturalnej broni (np. diabły z Catachanu lub szponiaste biesy)\n\nTwoje czteropalce dłonie wytwarzaja w pełni funkcjonalne pazury. W zaleznosci od natury twojego posiłku moga byc jadowite, twarde, zaostrzone lub wydłuzone na kształt ostrza.",
+        "Efekt": "Twoje Nieuzbrojone ataki zadaja Obrazenia równe\n(S) + 4 / +3 DK\ni maja jedną z ponizszych Cech:\nBrutalna\nParujaca\nPrzebijajaca (Ranga)\nWywołanie ({{I}}Zatrucie{{/I}} (Ranga))"
+      }
+    ],
     "Implanty Astartes": [
       {
         "LP": "1",
@@ -3444,173 +3678,6 @@
         "Opis": "Białe Szramy są mistrzami błyskawicznych ataków. Mobilizują się z karkołomną szybkością, niosąc rychłą śmierć wrogom, nie zatrzymując się przy tym nawet na chwilę w pędzie do kolejnego szturmu. Mimo że każdy z tych Astartes jest pełen wewnętrznego pragnienia chwały i sprawiedliwości, jak również ma tendencję do szybkich i wściekłych szturmów, to nie są brutalami. Ich plany bitewne podjazdowych ataków są dokładnie opracowane, honorując mądrego Prymarchę Jaghataia Khana.",
         "Zaleta": "{{B}}Błyskawiczny szturm{{/B}}\nBiałe Szramy swoje słynne zręczne natarcia wykonują przy użyciu szybkich motocykli szturmowych, osiągając przy tym w ataku prędkość, której nikt inny nie byłby w stanie okiełznać.\n\nMożesz przerzucić liczbę kości równą Dwukrotności Rangi za każdym razem, gdy wykonujesz Test Pilotażu [{{B}}Podręcznik Główny{{/B}} (Zr)].\nMożesz potroić swoją prędkość, kiedy wykonujesz Szarżę [{{B}}Podręcznik Główny{{/B}} (str. 188)].",
         "Wada": "{{B}}Rytualna skaryfikacja (Tradycja){{/B}}\nNowo wprowadzeni do Zakonu znaczą twarze głębokimi nacięciami.\n\nOtrzymujesz karę +1 do ST każdego Testu Ogłady wykonywanego przeciwko celowi, który mógłby się przestraszyć twojego wyglądu."
-      }
-    ],
-    "Ścieżki Asuryani": [
-      {
-        "LP": "1",
-        "Nazwa": "Ścieżka przebudzenia",
-        "Opis": "Poświęciłeś dużo czasu na praktykę analizowania otoczenia, skupiając uwagę na zewnątrz, by ukoić duszę.",
-        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Czujności (Int)."
-      },
-      {
-        "LP": "2",
-        "Nazwa": "Ścieżka artysty",
-        "Opis": "Podążając za estetycznymi doznaniami rzeźbiarza, malarza czy pisarza poświęciłeś życie na zgłębienie piękna kultury aeldari.",
-        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Wiedzy ogólnej (Int) odnoszących się do Słowa kluczowego {{RED}}AELDARI{{/RED}}."
-      },
-      {
-        "LP": "3",
-        "Nazwa": "Ścieżka pieśniarza upiorytu",
-        "Opis": "Dbasz o zagajniki upiorytu i uczyłeś się sztuki fizycznego kształtowania tej substancji w zaawansowaną technologię aeldari.",
-        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Korzystania z technologii (Int) dla celów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
-      },
-      {
-        "LP": "4",
-        "Nazwa": "Ścieżka śniącego",
-        "Opis": "Wpadając w medytacyjny trans, często na wiele dni, spojrzałeś głęboko w siebie. Kontrolując własne sny, opierasz się Tej, Która Pragnie.",
-        "Efekt": "Otrzymujesz +Ranga dodatkowych kości do Testów Spaczenia."
-      },
-      {
-        "LP": "5",
-        "Nazwa": "Ścieżka uzdrowiciela",
-        "Opis": "Poświęciłeś się medycznemu dobru innych aeldari, leczyłeś rannych i chorych, spędziłeś dekady, opiekując się innymi.",
-        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Medycyny (Int) dla celów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
-      },
-      {
-        "LP": "6",
-        "Nazwa": "Ścieżka marynarza",
-        "Opis": "Poświęciłeś się swojemu statkowi kosmicznemu, nauczyłeś się żeglować po próżni z ekspercką precyzją i manewrowością, stając się jednością z pilotowaną jednostką.",
-        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Pilotażu (Zr) przy prowadzeniu pojazdów ze Słowem kluczowym {{RED}}AELDARI{{/RED}}."
-      },
-      {
-        "LP": "7",
-        "Nazwa": "Ścieżka żałobnika",
-        "Opis": "Straciłeś kogoś bliskiego i podążyłeś Ścieżką żalu. Opłakiwałeś jego upadek bez pogrążania się w ekstremalnych emocjach, które przyciągnęłyby Slaanesha.",
-        "Efekt": "Otrzymujesz +Ranga do Odporności psychicznej."
-      },
-      {
-        "LP": "8",
-        "Nazwa": "Ścieżka służby",
-        "Opis": "Aby pomóc całemu gatunkowi, poświęciłeś się służbie, odczytując potrzeby innych i ulepszając siebie poprzez empatię.",
-        "Efekt": "Otrzymujesz +Dwukrotność Rangi dodatkowych kości do Testów Intuicji (Ogd) dla celów posiadających Słowo kluczowe {{RED}}AELDARI{{/RED}}."
-      }
-    ],
-    "Orcze Klany": [
-      {
-        "LP": "1",
-        "Nazwa": "Złe Ksienżyce",
-        "Opis": "Ich zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.",
-        "Efekt": "+1 do Majątku na koniec każdej sesji."
-      },
-      {
-        "LP": "2",
-        "Nazwa": "Krwawe Topory",
-        "Opis": "Uważani za \"nieorczych\" przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne \"taktiki\", jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
-        "Efekt": "+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr)."
-      },
-      {
-        "LP": "3",
-        "Nazwa": "Śmiercioczaszki",
-        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, \"handlują\" i modyfikują sprzęt częściej niż inne klany.",
-        "Efekt": "+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów."
-      },
-      {
-        "LP": "4",
-        "Nazwa": "Złe Słońca",
-        "Opis": "Ich obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.",
-        "Efekt": "Zyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością."
-      },
-      {
-        "LP": "5",
-        "Nazwa": "Gupole",
-        "Opis": "Masywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.",
-        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży [{{B}}Podręcznik Główny{{/B}} (str. 188)]."
-      },
-      {
-        "LP": "6",
-        "Nazwa": "Wężogryzy",
-        "Opis": "Celowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
-        "Efekt": "+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
-      }
-    ],
-    "Mutacje Krootów": [
-      {
-        "LP": "1",
-        "Mutacja Krootów": "Ludojad",
-        "Pożarta Ofiara": "Ludzie",
-        "Opis": "Ludzie nie stanowia ewolucyjnie odżywczego posiłku dla krootów.",
-        "Efekt": "+1 do twojego najniższego Atrybutu (do wyboru, jeśli Atrybuty sa równe)."
-      },
-      {
-        "LP": "2",
-        "Mutacja Krootów": "Pożeracz Astartes*",
-        "Pożarta Ofiara": "Astartes",
-        "Opis": "Astartes sa genetycznie ulepszeni i przewyzszaja zwykłych smiertelników niemal pod kazdym wzgledem. Ich wzmocnione DNA to prawdziwa uczta dla krootowej biologii.",
-        "Efekt": "+2 do dowolnego Atrybutu."
-      },
-      {
-        "LP": "3",
-        "Mutacja Krootów": "Pożeracz Aeldari",
-        "Pożarta Ofiara": "Aeldari",
-        "Opis": "Krootowie pozerajacy gibkich i psychicznie zestrojonych aeldari albo nabieraja ich nieziemskiej gracji i zwinnosci, albo hartują umysł.",
-        "Efekt": "+1 do Zrecznosci lub Siły Woli."
-      },
-      {
-        "LP": "4",
-        "Mutacja Krootów": "Pożeracz Orków",
-        "Pożarta Ofiara": "Orkowie",
-        "Opis": "Krootowie, którzy ucztuja na ciałach brutalnych orków, sa znacznie lepiej przystosowani do szalenczej walki, poniewaz staja sie silniejsi, twardsi i… bardziej zieloni.",
-        "Efekt": "+1 do Siły lub Wytrzymałosci."
-      },
-      {
-        "LP": "5",
-        "Mutacja Krootów": "Pancerna skóra",
-        "Pożarta Ofiara": "Dowolne stworzenie ogrubej skórze (jak np. ambull lub grox)",
-        "Opis": "Twoja skóra staje sie grubsza, bardziej szorstka i porasta ja coraz wiecej solidnych piór.",
-        "Efekt": "+Ranga do Podstawowej Odpornosci."
-      },
-      {
-        "LP": "6",
-        "Mutacja Krootów": "Bioluminescencja",
-        "Pożarta Ofiara": "Dowolna bioluminescencyjna istota",
-        "Opis": "Wydzielajace swiatło molekuły rozkwitaja w pokrywajacych twoje ciało piórach, dzieki czemu mozesz emitowac bioluminescencyjne swiatło na zyczenie.",
-        "Efekt": "Mozesz sprawic, zedowolna czesc twojego ciała zacznie lekko swiecic. Jezeli swieci całe ciało, to oswietla obszar w promieniu 10 metrów."
-      },
-      {
-        "LP": "7",
-        "Mutacja Krootów": "Kamuflaż",
-        "Pożarta Ofiara": "Dowolne stworzenie zdolne do naturalnej zmiany wyglądu",
-        "Opis": "Zyskujesz ograniczona kontrole nad pigmentacja skóry, dzieki czemu mozesz wizualnie wtapiac sie w otoczenie.",
-        "Efekt": "W ramach Akcji podstawowej mozesz zmienic wyglad swojej skóry na identycznych zasadach jak w przypadku peleryny maskujacej [{{B}}Podręcznik Główny{{/B}} (str. 239)]."
-      },
-      {
-        "LP": "8",
-        "Mutacja Krootów": "Opcjonalna dwunożność",
-        "Pożarta Ofiara": "Dowolne czworonożne stworzenie",
-        "Opis": "Twoje ciało wydłuża się i garbi, wiec w razie potrzeby mozesz uzywac nóg palcochoda i dłuzszych ramion do czworonoznego biegu.",
-        "Efekt": "Podczas Sprintu pokonujesz dwa razy wieksza odległosc niz zazwyczaj, a w Testach Atletyki (S) podczas skoków lub wspinaczki otrzymujesz +Dwukrotnosc Rangi dodatkowych kosci."
-      },
-      {
-        "LP": "9",
-        "Mutacja Krootów": "Nadwrażliwe pióra",
-        "Pożarta Ofiara": "Dowolne stworzenie ze wzmocnionymi zmysłami (jak ambulle czy szponiaste biesy)",
-        "Opis": "Wystajace z twojej głowy wrazliwe pióra staja sie jeszcze czulsze i zaczynaja wychwytywac ruch wokolicy poprzez subtelne wibracje i zawirowania powietrza.",
-        "Efekt": "Twoje pióra działaja jak Auspex [{{B}}Podręcznik Główny{{/B}} (str. 237)] ozasiegu 30 metrów."
-      },
-      {
-        "LP": "10",
-        "Mutacja Krootów": "Skrzydła",
-        "Pożarta Ofiara": "Dowolne skrzydlate stworzenie (jak brzytwoskrzydły lub wywachy)",
-        "Opis": "Twoja budowa zmienia się w ciagu przepełnionych dreczacym bólem miesiecy, wracajac do pierwotnej sylwetki prastarego ludu krootorłów, az w koncu na twych plecach wyrasta para lekkich skórzastych skrzydeł.",
-        "Efekt": "Możesz latac z Szybkoscia 7."
-      },
-      {
-        "LP": "11",
-        "Mutacja Krootów": "Naturalna broń",
-        "Pożarta Ofiara": "Dowolne stworzenie o naturalnej broni (np. diabły z Catachanu lub szponiaste biesy)",
-        "Opis": "Twoje czteropalce dłonie wytwarzaja w pełni funkcjonalne pazury. W zaleznosci od natury twojego posiłku moga byc jadowite, twarde, zaostrzone lub wydłuzone na kształt ostrza.",
-        "Efekt": "Twoje Nieuzbrojone ataki zadaja Obrazenia równe\n(S) + 4 / +3 DK\ni maja jedną z ponizszych Cech:\nBrutalna\nParujaca\nPrzebijajaca (Ranga)\nWywołanie ({{I}}Zatrucie{{/I}} (Ranga))"
       }
     ],
     "Cechy": [
@@ -11120,13 +11187,11 @@
       "Tabela Rozmiarów",
       "Gatunki",
       "Archetypy",
-      "Bonusy Frakcji",
+      "Premie Frakcji",
       "Słowa Kluczowe Frakcji",
+      "Specjalne Bonusy Frakcji",
       "Implanty Astartes",
       "Zakony Pierwszego Powołania",
-      "Ścieżki Asuryani",
-      "Orcze Klany",
-      "Mutacje Krootów",
       "Cechy",
       "Stany",
       "Słowa Kluczowe",
@@ -11207,7 +11272,7 @@
         "Podręcznik",
         "Strona"
       ],
-      "Bonusy Frakcji": [
+      "Premie Frakcji": [
         "Frakcja",
         "Premia 1",
         "Premia 2",
@@ -11216,6 +11281,13 @@
       "Słowa Kluczowe Frakcji": [
         "Frakcja",
         "Słowo Kluczowe",
+        "Opis",
+        "Efekt"
+      ],
+      "Specjalne Bonusy Frakcji": [
+        "Frakcja",
+        "Rodzaj",
+        "Nazwa",
         "Opis",
         "Efekt"
       ],
@@ -11229,22 +11301,6 @@
         "Opis",
         "Zaleta",
         "Wada"
-      ],
-      "Ścieżki Asuryani": [
-        "Nazwa",
-        "Opis",
-        "Efekt"
-      ],
-      "Orcze Klany": [
-        "Nazwa",
-        "Opis",
-        "Efekt"
-      ],
-      "Mutacje Krootów": [
-        "Mutacja Krootów",
-        "Pożarta Ofiara",
-        "Opis",
-        "Efekt"
       ],
       "Cechy": [
         "Typ",

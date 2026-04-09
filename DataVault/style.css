@@ -514,15 +514,15 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Strona"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 
-/* Bonusy Frakcji */
-.tableWrap table[data-sheet="Bonusy Frakcji"] th[data-col="Frakcja"],
-.tableWrap table[data-sheet="Bonusy Frakcji"] td[data-col="Frakcja"]{min-width:26ch}
-.tableWrap table[data-sheet="Bonusy Frakcji"] th[data-col="Premia 1"],
-.tableWrap table[data-sheet="Bonusy Frakcji"] td[data-col="Premia 1"],
-.tableWrap table[data-sheet="Bonusy Frakcji"] th[data-col="Premia 2"],
-.tableWrap table[data-sheet="Bonusy Frakcji"] td[data-col="Premia 2"],
-.tableWrap table[data-sheet="Bonusy Frakcji"] th[data-col="Premia 3"],
-.tableWrap table[data-sheet="Bonusy Frakcji"] td[data-col="Premia 3"]{min-width:56ch}
+/* Premie Frakcji */
+.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Frakcja"],
+.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Frakcja"]{min-width:26ch}
+.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Premia 1"],
+.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Premia 1"],
+.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Premia 2"],
+.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Premia 2"],
+.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Premia 3"],
+.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Premia 3"]{min-width:56ch}
 
 /* Gatunki */
 .tableWrap table[data-sheet="Gatunki"] th[data-col="Gatunek"],
@@ -567,30 +567,17 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] th[data-col="Wada"],
 .tableWrap table[data-sheet="Zakony Pierwszego Powołania"] td[data-col="Wada"]{min-width:26ch}
 
-/* Sciezki Asuryani */
-.tableWrap table[data-sheet="Ścieżki Asuryani"] th[data-col="Nazwa"],
-.tableWrap table[data-sheet="Ścieżki Asuryani"] td[data-col="Nazwa"]{min-width:26ch}
-.tableWrap table[data-sheet="Ścieżki Asuryani"] th[data-col="Efekt"],
-.tableWrap table[data-sheet="Ścieżki Asuryani"] td[data-col="Efekt"]{min-width:26ch}
-.tableWrap table[data-sheet="Ścieżki Asuryani"] th[data-col="Opis"],
-.tableWrap table[data-sheet="Ścieżki Asuryani"] td[data-col="Opis"]{min-width:56ch}
-/* Orcze Klany */
-.tableWrap table[data-sheet="Orcze Klany"] th[data-col="Nazwa"],
-.tableWrap table[data-sheet="Orcze Klany"] td[data-col="Nazwa"]{min-width:26ch}
-.tableWrap table[data-sheet="Orcze Klany"] th[data-col="Opis"],
-.tableWrap table[data-sheet="Orcze Klany"] td[data-col="Opis"]{min-width:56ch}
-.tableWrap table[data-sheet="Orcze Klany"] th[data-col="Efekt"],
-.tableWrap table[data-sheet="Orcze Klany"] td[data-col="Efekt"]{min-width:26ch}
-
-/* Mutacje Krootow */
-.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Mutacja Krootów"],
-.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Mutacja Krootów"]{min-width:26ch}
-.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Pożarta Ofiara"],
-.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Pożarta Ofiara"]{min-width:26ch}
-.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Efekt"],
-.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Efekt"]{min-width:26ch}
-.tableWrap table[data-sheet="Mutacje Krootów"] th[data-col="Opis"],
-.tableWrap table[data-sheet="Mutacje Krootów"] td[data-col="Opis"]{min-width:56ch}
+/* Specjalne Bonusy Frakcji */
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] th[data-col="Frakcja"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] td[data-col="Frakcja"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] th[data-col="Rodzaj"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] td[data-col="Rodzaj"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] td[data-col="Nazwa"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] td[data-col="Efekt"]{min-width:26ch}
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Specjalne Bonusy Frakcji"] td[data-col="Opis"]{min-width:56ch}
 
 /* Cechy / Stany / Słowa kluczowe */
 .tableWrap table[data-sheet="Cechy"] th[data-col="Nazwa"],

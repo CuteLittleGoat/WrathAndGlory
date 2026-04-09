@@ -43,7 +43,7 @@ Najważniejsze zasady działania:
 
 ### Zakładki sterowane checkboxami
 - Checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (domyślnie odznaczony) pokazuje:
-  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Bonusy Frakcji**, **Słowa Kluczowe Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**, **Ścieżki Asuryani**, **Orcze Klany**, **Mutacje Krootów**.
+  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
   Gdy checkbox jest odznaczony, te zakładki są ukryte.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” (domyślnie odznaczony) pokazuje:
   **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad** i **Tryby Ognia**.
@@ -85,8 +85,8 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Długie komórki: kliknij, aby rozwinąć/zwinąć treść (zwijanie po przekroczeniu 9 linii wizualnych).
 - Lista wartości w filtrze listowym usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` wyłącznie w etykietach (bez wpływu na logikę filtrowania).
 
-### Uwagi o szerokości kolumn (Ścieżki Asuryani / Orcze Klany)
-W tych zakładkach szerokości kolumn są ustawione jako `min-width` (Nazwa 26ch, Opis 56ch, Efekt 26ch). Przeglądarka może **rozszerzyć** kolumny przy dużej szerokości okna, ponieważ tabela ma `width: 100%` i nie wymusza stałego układu (`table-layout: fixed` nie jest używany). Kolumny mogą więc wyglądać na „nierówne”, mimo że minimalne szerokości są zgodne z dokumentacją. Kolumna wyboru (✓) ma stałe 8ch we wszystkich zakładkach, a **Kary do ST** dodatkowo korzysta ze stałego układu tabeli.
+### Uwagi o szerokości kolumn (Specjalne Bonusy Frakcji)
+W tej zakładce szerokości kolumn są ustawione jako `min-width` (`Frakcja`, `Rodzaj`, `Nazwa`, `Efekt` = 26ch; `Opis` = 56ch). Przeglądarka może **rozszerzyć** kolumny przy dużej szerokości okna, ponieważ tabela ma `width: 100%` i nie wymusza stałego układu (`table-layout: fixed` nie jest używany). Kolumny mogą więc wyglądać na „nierówne”, mimo że minimalne szerokości są zgodne z dokumentacją. Kolumna wyboru (✓) ma stałe 8ch we wszystkich zakładkach, a **Kary do ST** dodatkowo korzysta ze stałego układu tabeli.
 
 Dodatkowo kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`). Jeśli oczekujesz konkretnej kolejności, zweryfikuj ją w źródłowym arkuszu lub w `_meta.columnOrder`.
 Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny katalog repozytorium).
@@ -135,7 +135,7 @@ Key behavior:
 
 ### Tabs controlled by checkboxes
 - The “Czy wyświetlić zakładki dotyczące tworzenia postaci?” checkbox (unchecked by default) shows:
-  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Bonusy Frakcji**, **Słowa Kluczowe Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**, **Ścieżki Asuryani**, **Orcze Klany**, **Mutacje Krootów**.
+  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
   When unchecked, these tabs remain hidden.
 - The “Czy wyświetlić zakładki dotyczące zasad walki?” checkbox (unchecked by default) shows:
   **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad**, and **Tryby Ognia**.
@@ -177,8 +177,8 @@ Below are two equivalent ways to update the data. In this update, `data.json` ha
 - Long cells: click to expand/collapse content (cells clamp after 9 visual lines).
 - The list filter labels strip `{{RED}}`, `{{B}}`, `{{I}}` markers for display only (filter logic is unchanged).
 
-### Column width notes (Ścieżki Asuryani / Orcze Klany)
-In these tabs, column widths are defined as `min-width` (Nazwa 26ch, Opis 56ch, Efekt 26ch). The browser can **expand** columns on wide viewports because the table is `width: 100%` and does not enforce a fixed layout (`table-layout: fixed` is not used). As a result, columns can look “uneven” even when the minimum widths match the documentation. The selection (✓) column stays fixed at 8ch across all tabs, while **Kary do ST** additionally uses a fixed table layout.
+### Column width notes (Specjalne Bonusy Frakcji)
+In this tab, column widths are defined as `min-width` (`Frakcja`, `Rodzaj`, `Nazwa`, `Efekt` = 26ch; `Opis` = 56ch). The browser can **expand** columns on wide viewports because the table is `width: 100%` and does not enforce a fixed layout (`table-layout: fixed` is not used). As a result, columns can look “uneven” even when the minimum widths match the documentation. The selection (✓) column stays fixed at 8ch across all tabs, while **Kary do ST** additionally uses a fixed table layout.
 
 Column order is also loaded from `data.json` (`_meta.columnOrder`). If you expect a specific order, verify it in the source sheet or in `_meta.columnOrder`.
 Visual/layout rules and formatting details are documented in `DetaleLayout.md` (repository root).
