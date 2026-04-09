@@ -1167,6 +1167,7 @@ function renderBody(){
 
 function renderRow(r, cols){
   const tr = document.createElement("tr");
+  tr.classList.toggle("row-selected", view.selected.has(r.__id));
 
   const td0 = document.createElement("td");
   const cb = document.createElement("input");
@@ -1174,6 +1175,7 @@ function renderRow(r, cols){
   cb.checked = view.selected.has(r.__id);
   cb.addEventListener("change", ()=>{
     if (cb.checked) view.selected.add(r.__id); else view.selected.delete(r.__id);
+    tr.classList.toggle("row-selected", cb.checked);
     els.btnCompare.disabled = view.selected.size < 2;
   });
   td0.appendChild(cb);

@@ -20,8 +20,10 @@
   --div:rgba(22,198,12,.18);
 
   --hbg:rgba(22,198,12,.06);
-  --zebra:rgba(22,198,12,.04);
-  --hover:rgba(22,198,12,.08);
+  --zebra-odd:rgba(22,198,12,.02);
+  --zebra-even:rgba(22,198,12,.06);
+  --hover:rgba(22,198,12,.12);
+  --row-selected:rgba(22,198,12,.16);
 
   --glow:0 0 25px rgba(22, 198, 12, 0.45);
   --glowH:0 0 18px rgba(22, 198, 12, 0.35);
@@ -252,8 +254,10 @@ code{color:var(--code)}
   top:var(--header-row-height);
   background:rgba(22,198,12,.05);
 }
-.dataTable tbody tr:nth-child(even){background:var(--zebra)}
+.dataTable tbody tr:nth-child(odd){background:var(--zebra-odd)}
+.dataTable tbody tr:nth-child(even){background:var(--zebra-even)}
 .dataTable tbody tr:hover{background:var(--hover)}
+.dataTable tbody tr.row-selected{background:var(--row-selected)}
 .dataTable th,
 .dataTable td{
   vertical-align:top;
@@ -369,6 +373,9 @@ td.center{text-align:center}
 .compareTable{width:100%; border-collapse:collapse}
 .compareTable th,.compareTable td{border-bottom:1px solid var(--div); padding:8px; vertical-align:top}
 .compareTable th{color:var(--code); background:rgba(22,198,12,.04)}
+.compareTable tbody tr:nth-child(odd){background:var(--zebra-odd)}
+.compareTable tbody tr:nth-child(even){background:var(--zebra-even)}
+.compareTable tbody tr:hover{background:var(--hover)}
 .compareDiff{color:#E6B35C}
 
 /* Responsive */

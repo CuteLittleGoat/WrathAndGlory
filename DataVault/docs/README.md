@@ -14,6 +14,7 @@ Najważniejsze zasady działania:
 - Domyślne sortowanie opiera się o kolumnę `LP` (kolumna jest ukryta w UI, służy tylko do sortowania).
 - W arkuszach z kolumnami `Cecha 1..N` i `Zasięg 1..3` aplikacja scala je do `Cechy` i `Zasięg`.
 - Kolumny liczbowe są wyśrodkowane; w **Broniach** kolumna `Zasięg` nie zawija wierszy.
+- Wszystkie tabele używają teraz wyraźnego **zebra striping** (naprzemienne odcienie zieleni dla wierszy parzystych i nieparzystych), a najechanie oraz zaznaczenie checkboxa dodatkowo podświetla cały wiersz.
 - Lewy panel **Filtry** ma stałą szerokość `180px` na desktopie, aby zostawić więcej miejsca na tabelę.
 - Kolumna wyboru (✓) ma zawsze stałą szerokość 8ch (min/max/width) we wszystkich zakładkach, więc nie rozszerza się wraz z szerokością okna.
 - W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), a tabela ma `table-layout: fixed` i `width: max-content`, więc **wszystkie** jej kolumny pozostają stałe.
@@ -106,6 +107,7 @@ Key behavior:
 - Default sorting uses the hidden `LP` column (it is hidden in the UI and used only for ordering).
 - Sheets that include `Cecha 1..N` and `Zasięg 1..3` are merged into `Cechy` and `Zasięg`.
 - Numeric columns are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
+- All tables now use clear **zebra striping** (alternating green shades for odd/even rows), and both hover and checkbox selection highlight the full row.
 - The left **Filters** panel uses a fixed `180px` width on desktop to leave more room for the table.
 - The selection (✓) column is always locked to 8ch (min/max/width) across all tabs, so it does not expand with viewport width.
 - In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), and the table uses `table-layout: fixed` with `width: max-content`, so **all** columns stay fixed.
