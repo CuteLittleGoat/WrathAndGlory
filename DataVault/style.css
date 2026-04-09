@@ -21,8 +21,8 @@
 
   --hbg:rgba(22,198,12,.06);
   --zebra-odd:rgba(22,198,12,.02);
-  --zebra-even:rgba(22,198,12,.06);
-  --hover:rgba(22,198,12,.12);
+  --zebra-even:rgba(22,198,12,.12);
+  --hover:rgba(22,198,12,.16);
   --row-selected:rgba(22,198,12,.16);
 
   --glow:0 0 25px rgba(22, 198, 12, 0.45);

@@ -88,8 +88,8 @@ Efekty i obwódki:
 -- `--div: rgba(22,198,12,.18)`
 -- `--hbg: rgba(22,198,12,.06)`
 - `--zebra-odd: rgba(22,198,12,.02)` (ciemniejszy pas dla wierszy nieparzystych)
-- `--zebra-even: rgba(22,198,12,.06)` (jaśniejszy pas dla wierszy parzystych)
-- `--hover: rgba(22,198,12,.12)` (podświetlenie po najechaniu kursorem)
+- `--zebra-even: rgba(22,198,12,.12)` (jaśniejszy pas dla wierszy parzystych; odpowiada wcześniejszemu kolorowi hover)
+- `--hover: rgba(22,198,12,.16)` (podświetlenie po najechaniu kursorem; takie samo jak zaznaczenie)
 - `--row-selected: rgba(22,198,12,.16)` (podświetlenie zaznaczonego wiersza)
 -- `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
 -- `--glowH: 0 0 18px rgba(22, 198, 12, 0.35)`
