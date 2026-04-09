@@ -373,6 +373,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`).
 - `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`).
+- `CHARACTER_CREATION_SHEET_KEYS` i `COMBAT_RULES_SHEET_KEYS` — kanoniczne (znormalizowane) wersje nazw arkuszy używane do odpornego dopasowania nazw zakładek niezależnie od drobnych różnic zapisu.
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
 - Kolejność zakładek i kolumn **nie jest hardcode** — pochodzi z `_meta.sheetOrder` i `_meta.columnOrder` w `data.json` (a w razie braku jest odzyskiwana z bieżącego układu danych).
@@ -407,6 +408,8 @@ Mapowanie na `getElementById`:
 - `parseInlineSegments(raw)` — dzieli tekst na segmenty z aktywnymi stylami na podstawie markerów `{{RED}}`, `{{B}}`, `{{I}}` (zwraca tablicę `{text, styles}`).
 - `setStatus(msg)` i `logLine(msg, isErr)` — logi (console).
 - `canonKey(s)` — klucz kanoniczny: lowercase, normalizacja spacji, usuwa spację przed `(`.
+- `isCharacterCreationSheet(name)` — sprawdza (po kluczu kanonicznym), czy zakładka należy do grupy tworzenia postaci.
+- `isCombatRulesSheet(name)` — sprawdza (po kluczu kanonicznym), czy zakładka należy do grupy zasad walki.
 
 ---
 
@@ -514,7 +517,7 @@ Mapowanie na `getElementById`:
 - Ustawia aktywną pierwszą zakładkę (lub zachowuje obecną, jeśli wciąż jest widoczna).
 - Ukrywa `#updateDataGroup`, gdy nie `ADMIN_MODE`.
 - W trybie gracza usuwa z listy zakładek arkusze `Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, więc są widoczne tylko dla admina.
-- Gdy checkbox `#toggleCharacterTabs` jest niezaznaczony, usuwa z listy zakładek elementy `CHARACTER_CREATION_SHEETS` (zaznaczenie przywraca te zakładki).
+- Gdy checkbox `#toggleCharacterTabs` jest niezaznaczony, usuwa z listy zakładek elementy grupy tworzenia postaci (sprawdzane kanonicznie przez `isCharacterCreationSheet`, więc obejmuje też `Premie Frakcji` i `Specjalne Bonusy Frakcji` przy drobnych różnicach zapisu).
 - Gdy checkbox `#toggleCombatTabs` jest niezaznaczony, usuwa z listy zakładek elementy `COMBAT_RULES_SHEETS` (zaznaczenie przywraca te zakładki, ale z zachowaniem ograniczeń admin-only).
 
 ### 8.2 `selectSheet(name)`

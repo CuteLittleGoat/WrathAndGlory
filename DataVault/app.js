@@ -217,6 +217,8 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Zakony Pierwszego Powołania",
 ]);
 const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad", "Tryby Ognia"]);
+const CHARACTER_CREATION_SHEET_KEYS = new Set([...CHARACTER_CREATION_SHEETS].map(name => canonKey(name)));
+const COMBAT_RULES_SHEET_KEYS = new Set([...COMBAT_RULES_SHEETS].map(name => canonKey(name)));
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
@@ -342,6 +344,14 @@ function logLine(msg, isErr=false){
 /* Canonical key: ignore case, collapse spaces, and remove space before parentheses. */
 function canonKey(s){
   return norm(s).toLowerCase().replace(/\s+\(/g,"(");
+}
+
+function isCharacterCreationSheet(name){
+  return CHARACTER_CREATION_SHEET_KEYS.has(canonKey(name));
+}
+
+function isCombatRulesSheet(name){
+  return COMBAT_RULES_SHEET_KEYS.has(canonKey(name));
 }
 
 /* ---------- Rich text formatting ---------- */
@@ -747,20 +757,20 @@ function initUI(){
   const baseVisible = ADMIN_MODE ? available : available.filter(name => !ADMIN_ONLY_SHEETS.has(name));
   let visibleSheets = view.showCharacterTabs
     ? baseVisible
-    : baseVisible.filter(name => !CHARACTER_CREATION_SHEETS.has(name));
+    : baseVisible.filter(name => !isCharacterCreationSheet(name));
   visibleSheets = view.showCombatTabs
     ? visibleSheets
-    : visibleSheets.filter(name => !COMBAT_RULES_SHEETS.has(name));
+    : visibleSheets.filter(name => !isCombatRulesSheet(name));
   const order = getSheetOrder(available);
   const visibleOrder = order.filter(name => visibleSheets.includes(name));
   for (const name of visibleOrder){
     const b = document.createElement("button");
     b.className = "tab";
     b.textContent = name.toUpperCase();
-    if (CHARACTER_CREATION_SHEETS.has(name)){
+    if (isCharacterCreationSheet(name)){
       b.classList.add("tab--character");
     }
-    if (COMBAT_RULES_SHEETS.has(name)){
+    if (isCombatRulesSheet(name)){
       b.classList.add("tab--combat");
     }
     b.addEventListener("click", ()=>selectSheet(name));
