@@ -68,6 +68,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 3. Wgraj/umieść nowy `data.json` na hostingu i odśwież stronę.
 
 > **Uwaga (Bestiariusz):** Zakładka **Bestiariusz** jest renderowana jako pierwsza i używa neutralnych przecinków w kolumnie `Słowa Kluczowe` (przecinki są w kolorze podstawowym, reszta na czerwono).
+> Kolumna `Zagrożenie` ma minimalną szerokość **5ch**, dzięki czemu poprawnie mieści także wartości 5-znakowe.
 
 ### Aktualizacja aplikacji (kod)
 1. Zaktualizuj pliki `index.html`, `app.js`, `style.css` oraz ewentualnie `build_json.py`.
@@ -159,6 +160,7 @@ Below are two equivalent ways to update the data. In this update, `data.json` ha
 3. Upload/place the new `data.json` on the hosting and refresh the page.
 
 > **Note (Bestiary):** The **Bestiariusz** tab is rendered first and uses neutral commas in the `Słowa Kluczowe` column (commas are in the base text color, the rest is red).
+> The `Zagrożenie` column uses a minimum width of **5ch**, so 5-character values fit correctly as well.
 
 ### Updating the app (code)
 1. Update `index.html`, `app.js`, `style.css`, and optionally `build_json.py`.

@@ -390,7 +390,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Nazwa"]{min-width:26ch}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Zagrożenie"],
-.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Zagrożenie"]{min-width:4ch; text-align:center}
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Zagrożenie"]{min-width:5ch; text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Słowa Kluczowe"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Słowa Kluczowe"]{min-width:28ch}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="S"],

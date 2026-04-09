@@ -154,7 +154,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Bestiariusz**
   - `Nazwa`: 26ch
-  - `Zagrożenie`: 4ch
+  - `Zagrożenie`: 5ch
   - `Słowa Kluczowe`: 28ch
   - `S`, `Wt`, `Zr`, `I`, `SW`, `Int`, `Ogd`: 3ch
   - `Odporność (w tym WP)`: 3ch
