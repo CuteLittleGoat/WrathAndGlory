@@ -87,8 +87,10 @@ Efekty i obwódki:
 -- `--b2: rgba(22,198,12,.2)`
 -- `--div: rgba(22,198,12,.18)`
 -- `--hbg: rgba(22,198,12,.06)`
--- `--zebra: rgba(22,198,12,.04)`
--- `--hover: rgba(22,198,12,.08)`
+- `--zebra-odd: rgba(22,198,12,.02)` (ciemniejszy pas dla wierszy nieparzystych)
+- `--zebra-even: rgba(22,198,12,.06)` (jaśniejszy pas dla wierszy parzystych)
+- `--hover: rgba(22,198,12,.12)` (podświetlenie po najechaniu kursorem)
+- `--row-selected: rgba(22,198,12,.16)` (podświetlenie zaznaczonego wiersza)
 -- `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
 -- `--glowH: 0 0 18px rgba(22, 198, 12, 0.35)`
 
@@ -117,8 +119,9 @@ Efekty i obwódki:
 - Nagłówki:
   - `thead th` — sticky, uppercase, background gradient.
   - Drugi wiersz nagłówka (`tr:nth-child(2)`) ma niższe tło i `top: var(--header-row-height)`.
-- Zebra rows: `tbody tr:nth-child(even)`.
+- Zebra striping: `tbody tr:nth-child(odd)` + `tbody tr:nth-child(even)` (dwa odcienie zieleni).
 - Hover: `tbody tr:hover`.
+- Zaznaczony wiersz: `tbody tr.row-selected`.
 
 ### 3.7 Tag cechy
 - `.tag` — kapsułka z borderem, uppercase, hover.
@@ -133,7 +136,7 @@ Efekty i obwódki:
 
 ### 3.9 Modal porównania
 - `.modal`, `.modalCard`, `.modalHeader`, `.modalBody`.
-- Porównanie wykorzystuje tabelę w HTML generowaną przez JS (w kodzie bez klasy `.compareTable`, ale struktura `<table>` i `<thead>` jest generowana inline).
+- Porównanie wykorzystuje tabelę `.compareTable`, która ma tę samą logikę zebra striping i hover co tabela główna.
 
 ### 3.10 Menu filtra listowego
 - `.filterMenu` — fixed, z max-height, scroll i shadow.
