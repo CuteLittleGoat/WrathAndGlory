@@ -210,13 +210,11 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Tabela Rozmiarów",
   "Gatunki",
   "Archetypy",
-  "Bonusy Frakcji",
+  "Premie Frakcji",
   "Słowa Kluczowe Frakcji",
+  "Specjalne Bonusy Frakcji",
   "Implanty Astartes",
   "Zakony Pierwszego Powołania",
-  "Ścieżki Asuryani",
-  "Orcze Klany",
-  "Mutacje Krootów",
 ]);
 const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad", "Tryby Ognia"]);
 

@@ -37,7 +37,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
 - Pole globalne: `#globalSearch` w `.panelBody`.
-- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
+- Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
 - Checkbox `#toggleCombatTabs` — pytanie „Czy wyświetlić zakładki dotyczące zasad walki?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia` (z czego `Trafienia Krytyczne` i `Groza Osnowy` pozostają widoczne tylko w trybie admina).
 - W `.hint` jest statyczna lista wskazówek (tekst, nie logika), m.in. linia o „Shift = sort wielokolumnowy”, mimo że logika multi-sortu nie istnieje w JS.
 
@@ -108,7 +108,7 @@ Efekty i obwódki:
 ### 3.5 Zakładki
 - `.tabs` — flex z zawijaniem.
 - `.tab` — uppercase i ten sam font co reszta UI, aktywna z innym tłem i borderem.
-- `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`) mają jaśniejszy kolor tekstu `var(--code)` i `opacity: .9`, spójny z etykietą checkboxa.
+- `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`) mają jaśniejszy kolor tekstu `var(--code)` i `opacity: .9`, spójny z etykietą checkboxa.
 - `.tab--combat` — zakładki zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`) mają czerwony tekst `var(--red)` niezależnie od stanu aktywnego.
 
 ### 3.6 Tabela
@@ -195,7 +195,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Podręcznik`: 17ch
   - `Strona`: 6ch
 
-- **Bonusy Frakcji**
+- **Premie Frakcji**
   - `Frakcja`: 26ch
   - `Premia 1`: 56ch
   - `Premia 2`: 56ch
@@ -227,19 +227,10 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Zaleta`: 26ch
   - `Wada`: 26ch
 
-- **Ścieżki Asuryani**
+- **Specjalne Bonusy Frakcji**
+  - `Frakcja`: 26ch
+  - `Rodzaj`: 26ch
   - `Nazwa`: 26ch
-  - `Efekt`: 26ch
-  - `Opis`: 56ch
-
-- **Orcze Klany**
-  - `Nazwa`: 26ch
-  - `Opis`: 56ch
-  - `Efekt`: 26ch
-
-- **Mutacje Krootów**
-  - `Mutacja Krootów`: 26ch
-  - `Pożarta Ofiara`: 26ch
   - `Efekt`: 26ch
   - `Opis`: 56ch
 
@@ -274,12 +265,12 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Ile celów/akcji`: 20ch (min/max/width, wycentrowane)
   - `Kara do ST`: 20ch (min/max/width, wycentrowane)
 
-## Uwaga: szerokości i kolejność kolumn (Ścieżki Asuryani / Orcze Klany)
-W CSS modułu DataVault dla tych zakładek ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.
+## Uwaga: szerokości i kolejność kolumn (Specjalne Bonusy Frakcji)
+W CSS modułu DataVault dla tej zakładki ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.
 
 Kolumna wyboru (pierwsza, z ✓) jest wyjątkiem globalnym: ma stałą szerokość 8ch (min/max/width) i nie rozszerza się w żadnej zakładce. Arkusz **Kary do ST** dodatkowo ma stały układ (`table-layout: fixed`) i szerokość `max-content`, więc **wszystkie** jego kolumny pozostają zablokowane.
 
-Kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`) i ma pierwszeństwo przed samą listą pól w wierszach. W aktualnym `data.json` kolejność dla **Ścieżek Asuryani** to `Nazwa → Opis → Efekt`, podczas gdy dokumentacja (i `Kolumny.md`) podaje `Nazwa → Efekt → Opis`. Jeśli kolejność ma być stała, należy pilnować jej w arkuszu źródłowym lub w `_meta.columnOrder`.
+Kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`) i ma pierwszeństwo przed samą listą pól w wierszach. W aktualnym `data.json` kolejność dla **Specjalnych Bonusów Frakcji** to `Frakcja → Rodzaj → Nazwa → Opis → Efekt`. Jeśli kolejność ma być stała, należy pilnować jej w arkuszu źródłowym lub w `_meta.columnOrder`.
 
 - **Cechy / Stany / Słowa Kluczowe**
   - `Typ`: 14ch
@@ -380,7 +371,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`).
-- `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Bonusy Frakcji`, `Słowa Kluczowe Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`, `Ścieżki Asuryani`, `Orcze Klany`, `Mutacje Krootów`).
+- `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`).
 - `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`).
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
