@@ -44,7 +44,7 @@ Najważniejsze zasady działania:
 ### Zakładki sterowane checkboxami
 - Checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (domyślnie odznaczony) pokazuje:
   **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
-  Gdy checkbox jest odznaczony, te zakładki są ukryte.
+  Gdy checkbox jest odznaczony, te zakładki są ukryte (w tym **Premie Frakcji** oraz **Specjalne Bonusy Frakcji**). Obie zakładki mają ten sam jaśniejszy kolor co pozostałe zakładki tworzenia postaci.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” (domyślnie odznaczony) pokazuje:
   **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad** i **Tryby Ognia**.
   **Skrót Zasad** i **Tryby Ognia** są dostępne dla wszystkich, a **Trafienia Krytyczne** i **Groza Osnowy** tylko w trybie admina.
@@ -136,7 +136,7 @@ Key behavior:
 ### Tabs controlled by checkboxes
 - The “Czy wyświetlić zakładki dotyczące tworzenia postaci?” checkbox (unchecked by default) shows:
   **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
-  When unchecked, these tabs remain hidden.
+  When unchecked, these tabs remain hidden (including **Premie Frakcji** and **Specjalne Bonusy Frakcji**). Both tabs use the same lighter color as the other character-creation tabs.
 - The “Czy wyświetlić zakładki dotyczące zasad walki?” checkbox (unchecked by default) shows:
   **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad**, and **Tryby Ognia**.
   **Skrót Zasad** and **Tryby Ognia** are available to everyone; **Trafienia Krytyczne** and **Groza Osnowy** are admin-only.
