@@ -33,6 +33,9 @@ Najważniejsze zasady działania:
 > **Ważne:** Otwieranie `index.html` bezpośrednio z dysku (file://) może blokować `fetch()` w części przeglądarek. Zalecany jest prosty serwer HTTP.
 
 ### Tryby pracy
+
+- **Nowy przycisk nawigacyjny (tryb gracza):** w górnym pasku dostępny jest przycisk **Strona Główna / Main Page**, który przenosi do `../Main/index.html`.
+- W trybie admina (`?admin=1`) ten przycisk jest ukryty, żeby nie zakłócać workflow administracyjnego.
 - **Tryb gracza (domyślny)**
   - Automatycznie wczytuje `data.json`.
   - Ukrywa przycisk administracyjny do aktualizacji danych.
@@ -134,6 +137,9 @@ Key behavior:
 > **Important:** Opening `index.html` directly from disk (file://) may block `fetch()` in some browsers. Use a simple HTTP server instead.
 
 ### Modes
+
+- **New navigation button (player mode):** the top bar now includes **Strona Główna / Main Page**, which opens `../Main/index.html`.
+- In admin mode (`?admin=1`) this button is hidden to keep the admin workflow focused.
 - **Player mode (default)**
   - Automatically loads `data.json`.
   - Hides the admin-only data update button.

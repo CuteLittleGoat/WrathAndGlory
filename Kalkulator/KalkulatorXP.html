@@ -22,6 +22,7 @@
             <option value="en">English</option>
           </select>
         </div>
+        <a class="btn secondary" id="btnMainPage" href="../Main/index.html">Strona Główna</a>
         <button class="btn secondary" id="btnReset" title="Ustaw wszystkie pola na 0">Resetuj wartości</button>
       </div>
     </header>
@@ -133,6 +134,7 @@
         labels: {
           languageSelect: "Wersja językowa",
           pageTitle: "Kalkulator XP",
+          mainPageButton: "Strona Główna",
           resetButton: "Resetuj wartości",
           resetTitle: "Ustaw wszystkie pola na 0",
           instructionsTitle: "INSTRUKCJE",
@@ -152,6 +154,7 @@
         labels: {
           languageSelect: "Language version",
           pageTitle: "XP Calculator",
+          mainPageButton: "Main Page",
           resetButton: "Reset values",
           resetTitle: "Set all fields to 0",
           instructionsTitle: "INSTRUCTIONS",
@@ -181,6 +184,7 @@
     const tabsTitle = document.getElementById("tabsTitle");
     const attributesTitle = document.getElementById("attributesTitle");
     const skillsTitle = document.getElementById("skillsTitle");
+    const mainPageButton = document.getElementById("btnMainPage");
     const resetButton = document.getElementById("btnReset");
 
     const attributeCosts = {
@@ -233,6 +237,7 @@
       languageSelect.value = lang;
       languageSelect.setAttribute("aria-label", t.languageSelect);
       pageTitle.textContent = t.pageTitle;
+      mainPageButton.textContent = t.mainPageButton;
       resetButton.textContent = t.resetButton;
       resetButton.setAttribute("title", t.resetTitle);
       instructionsTitle.textContent = t.instructionsTitle;

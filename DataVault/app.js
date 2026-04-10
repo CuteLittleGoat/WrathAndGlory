@@ -8,6 +8,7 @@ const els = {
   btnUpdateData: document.getElementById("btnUpdateData"),
   updateDataGroup: document.getElementById("updateDataGroup"),
   btnCompare: document.getElementById("btnCompare"),
+  btnMainPage: document.getElementById("btnMainPage"),
   btnReset: document.getElementById("btnReset"),
   pop: document.getElementById("popover"),
   popTitle: document.getElementById("popoverTitle"),
@@ -28,6 +29,7 @@ const translations = {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generuj data.json",
       updateNoteFull: "Kliknięcie przycisku wygeneruje nowy plik <code>data.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a wygenerowany <code>data.json</code> trzeba tam wgrać, aby zaktualizować dane w aplikacji.",
+      mainPageButton: "Strona Główna",
       resetViewButton: "Reset widoku",
       compareButton: "Porównaj zaznaczone",
       filtersTitle: "FILTRY",
@@ -90,6 +92,7 @@ const translations = {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generate data.json",
       updateNoteFull: "Clicking the button generates a new <code>data.json</code> file. <code>Repozytorium.xlsx</code> must exist in the DataVault module next to <code>index.html</code>, and the generated <code>data.json</code> must be uploaded there to update app data.",
+      mainPageButton: "Main Page",
       resetViewButton: "Reset view",
       compareButton: "Compare selected",
       filtersTitle: "FILTERS",
@@ -233,6 +236,14 @@ const view = {
 const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (progressive rendering)
 
 const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
+if (els.btnMainPage) {
+  els.btnMainPage.addEventListener("click", () => {
+    window.location.href = "../Main/index.html";
+  });
+  if (ADMIN_MODE) {
+    els.btnMainPage.style.display = "none";
+  }
+}
 const HIDDEN_COLUMNS = new Set(["lp"]);
 
 /* ---------- Utilities ---------- */

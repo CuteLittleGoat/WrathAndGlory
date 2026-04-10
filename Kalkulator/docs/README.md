@@ -16,6 +16,7 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 
 ### Instrukcja używania
 #### 1) Kalkulator XP
+1.5. Obok przycisku resetu jest teraz przycisk **Strona Główna / Main Page**, który przenosi do `../Main/index.html`.
 1. W prawym górnym rogu wybierz język interfejsu (domyślnie **Polski**).
 2. W tabelach **Atrybuty** i **Umiejętności** wpisz wartości **aktualne** i **docelowe**.
    - Atrybuty mają zakres `0–12`.
@@ -24,6 +25,7 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 4. Przycisk **Resetuj wartości** ustawia wszystkie pola na `0`.
 
 #### 2) Tworzenie Postaci
+7. W prawym górnym rogu dodano przycisk **Strona Główna / Main Page** prowadzący do `../Main/index.html`.
 1. Ustaw **pulę XP do wydania** w polu u góry.
 2. Wypełnij **Atrybuty** (domyślnie startują od 1) i **Umiejętności** (domyślnie 0).
 3. Dodaj koszty talentów, mocy, archetypów itp. w tabeli **Talenty…**.
@@ -91,6 +93,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 
 ### How to use
 #### 1) XP Calculator
+1.5. Next to reset there is now a **Strona Główna / Main Page** button that navigates to `../Main/index.html`.
 1. Use the language switcher in the top-right corner (Polish is selected by default).
 2. In the **Attributes** and **Skills** tables, enter **current** and **target** values.
    - Attributes range from `0–12`.
@@ -99,6 +102,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 4. The **Reset values** button sets all fields to `0`.
 
 #### 2) Character Creation
+7. The top-right area now includes a **Strona Główna / Main Page** button that opens `../Main/index.html`.
 1. Set the **XP pool** in the field at the top.
 2. Fill in **Attributes** (default starts at 1) and **Skills** (default 0).
 3. Add costs for talents, powers, archetypes, etc. in the **Talents…** table.

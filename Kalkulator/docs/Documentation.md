@@ -97,6 +97,7 @@ W `TworzeniePostaci.html` skrypt dodaje klasę `attribute-high` dla wartości at
 
 ## 5. `KalkulatorXP.html` – kalkulator XP
 ### 5.1. Struktura HTML
+- W `div.actions` dodano link-przycisk `#btnMainPage` (`<a class="btn secondary" href="../Main/index.html">`). Etykieta jest tłumaczona dynamicznie: `Strona Główna` (PL) / `Main Page` (EN).
 - **Nagłówek** `.topbar` z:
   - tytułem w `.brand` i `.title`,
   - przełącznikiem języka (`.language-switcher` + `#languageSelect`),
@@ -143,6 +144,7 @@ const skillCosts = {
 
 ## 6. `TworzeniePostaci.html` – arkusz tworzenia postaci
 ### 6.1. Struktura HTML
+- W `.language-switcher` dodano przycisk `#backToMainButton`, który prowadzi do `../Main/index.html` i jest tłumaczony w `translations.labels.backToMainButton`.
 - **Kontener** `.wrapper` (ustawiony względem, z cieniem i obramowaniem).
 - **Przełącznik języka** `.language-switcher` z:
   - `<select id="languageSelect">` (PL/EN),
@@ -183,6 +185,7 @@ const skillCosts = {
 
 ### 6.5. Funkcje JavaScript i logika działania
 1. **`updateLanguage(lang)`**
+   - Ustawia etykietę przycisku `#btnMainPage` na `Strona Główna` (PL) lub `Main Page` (EN).
    - Ustawia `currentLanguage`.
    - Podmienia teksty w UI (`pageTitle`, nagłówki tabel, przycisk manuala, stopka).
    - Aktualizuje etykiety atrybutów i umiejętności w obu kolumnach.
@@ -267,3 +270,6 @@ const skillCosts = {
 ├── TworzeniePostaci.html
 └── kalkulatorxp.css
 ```
+
+5.5. **Nawigacja do modułu Main**
+   - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.

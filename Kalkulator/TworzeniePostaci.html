@@ -121,6 +121,7 @@
         <option value="en">English</option>
       </select>
       <button type="button" id="manualButton">Instrukcja</button>
+      <button type="button" id="backToMainButton">Strona Główna</button>
     </div>
 
     <h1 id="pageTitle">Tworzenie Postaci</h1>
@@ -131,10 +132,10 @@
       <input type="number" id="xpPool" value="100" min="0">
       <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">100</strong></span>
     </div>
-    
+
     <!-- Obszar komunikatów o błędach / Error message area -->
     <div class="error-message" id="errorMessage"> </div>
-    
+
     <!-- Sekcja Atrybutów / Attributes Section -->
     <h2 class="section-title" id="attributesHeader">Atrybuty</h2>
     <table class="attributes-table table">
@@ -157,7 +158,7 @@
         <td><input type="number" id="attr_Ogd" value="1" min="1" max="12"></td>
       </tr>
     </table>
-    
+
     <!-- Sekcja Umiejętności / Skills Section -->
     <h2 class="section-title" id="skillsHeader">Umiejętności</h2>
     <table class="skills-table table">
@@ -222,7 +223,7 @@
         <td><input type="number" id="skill_Column2Row9" value="0" min="0" max="8"></td>
       </tr>
     </table>
-    
+
     <!-- Sekcja Talentów / Talents Section -->
     <h2 class="section-title" id="talentsHeader">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2>
     <table class="talents-table table">
@@ -267,7 +268,7 @@
     <!-- Stopka / Footer -->
     <div class="footer" id="footerText">Wykonane przez Spaczoną Inteligencję</div>
   </div>
-  
+
   <!-- Sekcja JavaScript / JavaScript Section -->
   <script>
     /* Inicjalizacja po załadowaniu strony / Initialization after page load */
@@ -285,7 +286,8 @@
             skillsTableHeaders: ['Umiejętność', 'Wartość', 'Umiejętność', 'Wartość'],
             talentsTableHeaders: ['Nazwa', 'Koszt', 'Nazwa', 'Koszt'],
             footerText: 'Wykonane przez Spaczoną Inteligencję',
-            manualButton: 'Instrukcja'
+            manualButton: 'Instrukcja',
+            backToMainButton: 'Strona Główna'
           },
           attributes: ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd'],
           skillsColumn1: [
@@ -313,7 +315,8 @@
             skillsTableHeaders: ['Skill', 'Value', 'Skill', 'Value'],
             talentsTableHeaders: ['Name', 'Cost', 'Name', 'Cost'],
             footerText: 'Made by Abominable Intelligence',
-            manualButton: 'Manual'
+            manualButton: 'Manual',
+            backToMainButton: 'Main Page'
           },
           attributes: ['S', 'T', 'A', 'I', 'Will', 'Int', 'Fell'],
           skillsColumn1: [
@@ -363,6 +366,7 @@
         document.getElementById('talentHeader4').innerText = t.labels.talentsTableHeaders[3];
         document.getElementById('footerText').innerText = t.labels.footerText;
         document.getElementById('manualButton').innerText = t.labels.manualButton;
+        document.getElementById('backToMainButton').innerText = t.labels.backToMainButton;
 
         // Aktualizacja etykiet atrybutów / Update attribute labels
         for (let i = 1; i <= 7; i++) {
@@ -539,6 +543,10 @@
       document.getElementById('manualButton').addEventListener('click', () => {
         const manualPath = `HowToUse/${currentLanguage}.pdf`;
         window.open(manualPath, '_blank', 'noopener');
+      });
+
+      document.getElementById('backToMainButton').addEventListener('click', () => {
+        window.location.href = '../Main/index.html';
       });
 
       // --- Inicjalizacja domyślnych wartości / Initialization of default values ---
