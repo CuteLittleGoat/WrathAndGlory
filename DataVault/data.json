@@ -3039,7 +3039,7 @@
         "Frakcja": "Adepta Sororitas",
         "Premia 1": "Odwaga {{I}}lub\n{{/I}}Determinacja {{I}}lub\n{{/I}}Upór",
         "Premia 2": "Wpływy {{I}}lub\n{{/I}}Żywotność {{I}}lub\n{{/I}}Upór",
-        "Premia 3": "Determinacja lub\nWpływy lub\nOdporność psychiczna"
+        "Premia 3": "Determinacja {{I}}lub{{/I}}\nWpływy {{I}}lub{{/I}}\nOdporność psychiczna"
       },
       {
         "LP": "2",
@@ -3060,7 +3060,7 @@
         "Frakcja": "Adeptus Ministorum",
         "Premia 1": "Upór {{I}}lub\n{{/I}}Odwaga {{I}}lub\n{{/I}}Determinacja",
         "Premia 2": "Wpływy {{I}}lub\n{{/I}}Upór {{I}}lub\n{{/I}}Odwaga",
-        "Premia 3": "Determinacja lub\nWpływy lub\nOdporność psychiczna"
+        "Premia 3": "Determinacja {{I}}lub{{/I}}\nWpływy {{I}}lub{{/I}}\nOdporność psychiczna"
       },
       {
         "LP": "5",
