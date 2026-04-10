@@ -1,17 +1,18 @@
 # Administratum Data Vault — dokumentacja techniczna (super dokładna)
 
-Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na `data.json`, z opcjonalnym wywołaniem kanonicznego generatora danych.
+Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na `data.json`, z kanonicznym generowaniem danych po stronie przeglądarki (parser XML XLSX).
 
 ---
 
 ## 1) Struktura projektu i pliki
 
-- `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypt `app.js` i style `style.css`.
+- `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypty `xlsxCanonicalParser.js` i `app.js` oraz style `style.css`.
 - `style.css` — pełne style (kolory, fonty, layout, tabela, popover, modal, menu filtrów listowych).
-- `app.js` — cała logika: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i admin-update.
+- `app.js` — główna logika UI: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i obsługa przycisku generacji.
 - `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego dostarczonego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (ostatnia regeneracja w repozytorium: **2026-04-10**).
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`; plik musi leżeć w folderze modułu DataVault (obok `index.html`), bo frontend pobiera go ścieżką względną.
-- `build_json.py` — kanoniczny generator `data.json` z XLSX (AI/CLI/backend). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
+- `xlsxCanonicalParser.js` — kanoniczny parser XLSX po stronie przeglądarki: czyta bezpośrednio `xl/styles.xml`, `xl/sharedStrings.xml`, `xl/workbook.xml` i `xl/worksheets/sheet*.xml`, aby odwzorować logikę `build_json.py` (w tym detekcję `{{RED}}`).
+- `build_json.py` — kanoniczny generator referencyjny `data.json` z XLSX (AI/CLI/backend). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 - `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
 
 ---
@@ -502,14 +503,14 @@ Mapowanie na `getElementById`:
 - Generuje blob i wymusza pobranie `data.json`.
 
 ### 7.5 `loadXlsxFromRepo()`
-- Hotfix: funkcja uruchamia kanoniczną ścieżkę przez `POST /api/build-json` (`cache:"no-store"`), aby wynik był zgodny z `build_json.py`.
-- Oczekuje odpowiedzi JSON (`data.json`), po czym:
-  - uruchamia `downloadDataJson(data)`,
-  - normalizuje dane (`normaliseDB`),
-  - odświeża UI (`initUI`).
-- Jeśli endpoint jest niedostępny:
-  - **nie uruchamia generatora przeglądarkowego** (tryb canonical-only),
-  - ustawia status błędu i loguje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
+- Funkcja uruchamia kanoniczną generację w przeglądarce:
+  1. Doładowuje `JSZip` (jeśli nie jest dostępny).
+  2. Pobiera `Repozytorium.xlsx` (`cache:"no-store"`).
+  3. Wywołuje `XlsxCanonicalParser.loadXlsxMinimal(arrayBuffer)`.
+  4. Buduje finalny JSON przez `buildDataJsonFromSheets(rawSheets, {sheetOrder, columnOrder})`.
+  5. Pobiera `data.json` przez `downloadDataJson(data)`, normalizuje dane i odświeża UI.
+- Dzięki bezpośredniemu parsowaniu `styles.xml`/`sharedStrings.xml` wynik przycisku jest zgodny semantycznie z `build_json.py` (w tym markery `{{RED}}`).
+- Gdy parser kanoniczny nie jest dostępny (np. błąd CDN), funkcja ustawia status błędu i loguje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
 
 ### 7.6 `normaliseDB(data)`
 - Ignoruje arkusze zaczynające się od `_`.
