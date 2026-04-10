@@ -9,7 +9,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypt `app.js` i style `style.css`.
 - `style.css` — pełne style (kolory, fonty, layout, tabela, popover, modal, menu filtrów listowych).
 - `app.js` — cała logika: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i admin-update.
-- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego dostarczonego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym.
+- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego dostarczonego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (ostatnia regeneracja w repozytorium: **2026-04-10**).
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`; plik musi leżeć w folderze modułu DataVault (obok `index.html`), bo frontend pobiera go ścieżką względną.
 - `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 - `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
