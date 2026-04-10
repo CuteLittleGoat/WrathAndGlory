@@ -26,12 +26,8 @@ const translations = {
   pl: {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
-      updateDataButton: "Aktualizuj dane",
-      updateNotePrefix: "Plik",
-      updateNoteMiddle: "musi znajdować się w folderze modułu DataVault",
-      updateNoteAside: "obok",
-      updateNoteExamplePrefix: "np.",
-      updateNoteSuffix: "aby aktualizacja zadziałała.",
+      updateDataButton: "Generuj data.json",
+      updateNoteFull: "Kliknięcie przycisku wygeneruje nowy plik <code>data.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a wygenerowany <code>data.json</code> trzeba tam wgrać, aby zaktualizować dane w aplikacji.",
       resetViewButton: "Reset widoku",
       compareButton: "Porównaj zaznaczone",
       filtersTitle: "FILTRY",
@@ -43,7 +39,7 @@ const translations = {
       hintCompare: "▸ Zaznacz 2+ wiersze, aby porównać.",
       hintTooltip: "Jeśli tooltipy cech nie wyskakują na telefonie: stuknij w tag cechy.",
       emptyTitle: "Brak danych",
-      emptyText: "Brak danych do wyświetlenia. W trybie admina użyj <b>Aktualizuj dane</b>.",
+      emptyText: "Brak danych do wyświetlenia. W trybie admina użyj <b>Generuj data.json</b>.",
       resultsEmptyTitle: "BRAK WYNIKÓW",
       resultsEmptyText: "Zmień filtry lub wyczyść widok.",
       comparisonTitle: "Porównanie",
@@ -90,12 +86,8 @@ const translations = {
   en: {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
-      updateDataButton: "Update data",
-      updateNotePrefix: "File",
-      updateNoteMiddle: "must be located in the DataVault module folder",
-      updateNoteAside: "next to",
-      updateNoteExamplePrefix: "e.g.",
-      updateNoteSuffix: "for the update to work.",
+      updateDataButton: "Generate data.json",
+      updateNoteFull: "Clicking the button generates a new <code>data.json</code> file. <code>Repozytorium.xlsx</code> must exist in the DataVault module next to <code>index.html</code>, and the generated <code>data.json</code> must be uploaded there to update app data.",
       resetViewButton: "Reset view",
       compareButton: "Compare selected",
       filtersTitle: "FILTERS",
@@ -107,7 +99,7 @@ const translations = {
       hintCompare: "▸ Select 2+ rows to compare.",
       hintTooltip: "If trait tooltips do not appear on mobile: tap a trait tag.",
       emptyTitle: "No data",
-      emptyText: "No data to display. In admin mode use <b>Update data</b>.",
+      emptyText: "No data to display. In admin mode use <b>Generate data.json</b>.",
       resultsEmptyTitle: "NO RESULTS",
       resultsEmptyText: "Adjust filters or clear the view.",
       comparisonTitle: "Comparison",
@@ -166,7 +158,7 @@ const applyLanguage = (lang) => {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     if (key in t.labels) {
-      if (key === "emptyText") {
+      if (key === "emptyText" || key === "updateNoteFull") {
         el.innerHTML = t.labels[key];
       } else {
         el.textContent = t.labels[key];

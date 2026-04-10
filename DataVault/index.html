@@ -24,13 +24,9 @@
           </select>
         </div>
         <div class="actionsGroup" id="updateDataGroup">
-          <button class="btn secondary" id="btnUpdateData" data-i18n="updateDataButton">Aktualizuj dane</button>
+          <button class="btn secondary" id="btnUpdateData" data-i18n="updateDataButton">Generuj data.json</button>
           <div class="actionsNote">
-            <span data-i18n="updateNotePrefix">Plik</span> <strong>Repozytorium.xlsx</strong>
-            <span data-i18n="updateNoteMiddle">musi znajdować się w folderze modułu DataVault</span>
-            (<span data-i18n="updateNoteAside">obok</span> <code>index.html</code>,
-            <span data-i18n="updateNoteExamplePrefix">np.</span> <code>./Repozytorium.xlsx</code>),
-            <span data-i18n="updateNoteSuffix">aby aktualizacja zadziałała.</span>
+            <span data-i18n="updateNoteFull">Kliknięcie przycisku wygeneruje nowy plik <code>data.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a wygenerowany <code>data.json</code> trzeba tam wgrać, aby zaktualizować dane w aplikacji.</span>
           </div>
         </div>
         <button class="btn secondary" id="btnReset" title="Wyczyść filtry, sortowanie i zaznaczenia" data-i18n="resetViewButton" data-i18n-title="resetViewTitle">Reset widoku</button>
@@ -72,7 +68,7 @@
         <div class="tableWrap" id="tableWrap">
           <div class="emptyState">
             <div class="emptyTitle" data-i18n="emptyTitle">Brak danych</div>
-            <div class="emptyText" data-i18n="emptyText">Brak danych do wyświetlenia. W trybie admina użyj <b>Aktualizuj dane</b>.</div>
+            <div class="emptyText" data-i18n="emptyText">Brak danych do wyświetlenia. W trybie admina użyj <b>Generuj data.json</b>.</div>
           </div>
         </div>
       </section>

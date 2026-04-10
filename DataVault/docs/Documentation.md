@@ -25,14 +25,14 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
   - `.sigil` — znak ⟦⟧ w kwadracie.
   - `.title` — „ADMINISTRATUM DATA VAULT”.
 - Akcje (przyciski):
-  - `#btnUpdateData` w grupie `#updateDataGroup`.
+  - `#btnUpdateData` w grupie `#updateDataGroup` (etykieta przycisku: **„Generuj data.json”** w PL / **„Generate data.json”** w EN).
   - `#btnReset` — reset widoku.
   - `#btnCompare` — porównanie zaznaczonych wierszy.
 - Przełącznik języka:
   - `.language-switcher select#languageSelect` z opcjami `pl` i `en`.
   - Ciemne tło selecta (`#0b0b0b`) utrzymuje spójność z motywem konsolowym.
 
-**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`).
+**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`). W trybie admina grupa pokazuje długi komunikat, że kliknięcie przycisku generuje nowy `data.json`; jednocześnie przypomina, że `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego katalogu, aby zaktualizować dane.
 
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
@@ -102,6 +102,8 @@ Efekty i obwódki:
 
 ### 3.4 Przyciski i pola
 - `.btn` (podstawowy), `.btn.primary`, `.btn.secondary`.
+- `.actionsGroup` — kontener przycisku i notatki administracyjnej, ustawiony na `max-width: 640px` i `width: min(640px, calc(100vw - 40px))`, aby pomieścić dłuższy tekst instrukcji aktualizacji danych.
+- Nazwy plików `index.html`, `Repozytorium.xlsx` i `data.json` w podpowiedzi są renderowane jako `<code>...</code>`, dzięki czemu mają jaśniejszy kolor (`--code`) i wyróżniają się wizualnie.
 - `.input` — styl pól tekstowych (tło `--bg`, focus glow).
 - `.checkboxRow` — wiersz z checkboxem, uppercase, kolor `--text2`, `accent-color: var(--accent)`.
 - `.checkboxLabel` — jaśniejszy opis checkboxa, kolor `--code` z `opacity: .9` (taki sam ton jak referencje `str.`).
