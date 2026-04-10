@@ -72,6 +72,8 @@ const translations = {
       statusRepoDownload: "Pobieranie Repozytorium.xlsx...",
       statusRepoUpdated: "OK — zaktualizowano dane i wygenerowano data.json",
       statusRepoError: "Błąd aktualizacji danych",
+      statusCanonicalStart: "Generowanie data.json ścieżką kanoniczną (build_json.py)...",
+      statusCanonicalUnavailable: "Brak endpointu generatora kanonicznego. Użyj build_json.py lokalnie.",
       modeAdmin: "ADMIN",
       modePlayer: "GRACZ",
       invocationLabel: "CECHA: WYWOŁANIE",
@@ -132,6 +134,8 @@ const translations = {
       statusRepoDownload: "Downloading Repozytorium.xlsx...",
       statusRepoUpdated: "OK — data updated and data.json generated",
       statusRepoError: "Error updating data",
+      statusCanonicalStart: "Generating data.json through canonical pipeline (build_json.py)...",
+      statusCanonicalUnavailable: "Canonical generator endpoint unavailable. Use build_json.py locally.",
       modeAdmin: "ADMIN",
       modePlayer: "PLAYER",
       invocationLabel: "TRAIT: INVOCATION",
@@ -230,6 +234,7 @@ const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (pr
 
 const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 const HIDDEN_COLUMNS = new Set(["lp"]);
+const CANONICAL_GENERATOR_ENDPOINT = "api/build-json";
 
 /* ---------- Utilities ---------- */
 function norm(s){
@@ -820,28 +825,26 @@ function extractSheetRowsWithFormatting(ws){
 function loadXlsxFromRepo(){
   ensureSheetJS(async ()=>{
     try{
-      setStatus(translations[currentLanguage].messages.statusRepoDownload);
-      const res = await fetch("Repozytorium.xlsx", {cache:"no-store"});
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const buf = await res.arrayBuffer();
-      const wb = XLSX.read(buf, {type:"array", cellHTML: true, cellStyles: true});
-      const sheets = {};
-      const sheetOrder = wb.SheetNames.slice();
-      const columnOrder = {};
-      for (const name of wb.SheetNames){
-        const ws = wb.Sheets[name];
-        const {header, rows} = extractSheetRowsWithFormatting(ws);
-        columnOrder[name] = deriveColumnOrderFromHeader(header);
-        sheets[name] = rows;
+      setStatus(translations[currentLanguage].messages.statusCanonicalStart);
+      const res = await fetch(CANONICAL_GENERATOR_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        cache: "no-store",
+      });
+      if (!res.ok){
+        throw new Error(`HTTP ${res.status}`);
       }
-      const data = buildDataJsonFromSheets(sheets, {sheetOrder, columnOrder});
+      const data = await res.json();
       downloadDataJson(data);
       DB = normaliseDB(data);
       initUI();
       setStatus(translations[currentLanguage].messages.statusRepoUpdated);
     }catch(e){
-      setStatus(translations[currentLanguage].messages.statusRepoError);
-      logLine("BŁĄD: "+e.message, true);
+      setStatus(translations[currentLanguage].messages.statusCanonicalUnavailable);
+      const cliHint = "python build_json.py Repozytorium.xlsx data.json";
+      logLine(`${translations[currentLanguage].messages.statusRepoError}: ${e.message}`, true);
+      logLine(`[HOTFIX] ${translations[currentLanguage].messages.statusCanonicalUnavailable}`, true);
+      logLine(`[HOTFIX] CLI: ${cliHint}`, true);
     }
   });
 }

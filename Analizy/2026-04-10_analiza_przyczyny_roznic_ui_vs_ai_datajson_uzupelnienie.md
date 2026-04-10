@@ -108,3 +108,37 @@ To pozwala złapać regresję przed publikacją.
 ## Podsumowanie
 
 Przyczyna różnic nie wynika z danych źródłowych XLSX, tylko z różnicy implementacji parsera stylów w UI i AI. AI poprawnie odczytuje czerwony kolor z definicji stylu komórki (`styles.xml`), natomiast ścieżka UI nie robi tego w pełni niezawodnie, przez co gubi `{{RED}}` w wygenerowanym `data.json`.
+
+---
+
+## Uzupełnienie po wdrożeniu naprawy (2026-04-10)
+
+Wdrożono rekomendowaną naprawę z tej analizy: **przejście przycisku UI na kanoniczną ścieżkę generatora** zamiast lokalnego parsera XLSX w przeglądarce.
+
+### Co zostało zmienione w kodzie
+
+1. `DataVault/app.js`
+   - `loadXlsxFromRepo()` zostało przestawione z parsowania `Repozytorium.xlsx` po stronie przeglądarki na wywołanie endpointu:
+     - `POST /api/build-json` (stała `CANONICAL_GENERATOR_ENDPOINT = "api/build-json"`).
+   - Po sukcesie UI pobiera i zapisuje zwrócony `data.json` oraz odświeża widok (`normaliseDB`, `initUI`).
+   - Dodano komunikaty statusu dla ścieżki kanonicznej i fallback:
+     - start generacji ścieżką kanoniczną,
+     - brak endpointu kanonicznego,
+     - log z komendą CLI: `python build_json.py Repozytorium.xlsx data.json`.
+
+2. `DataVault/docs/README.md`
+   - Zaktualizowano instrukcję PL/EN:
+     - przycisk „Generuj data.json” opisany jako wywołanie kanonicznego endpointu,
+     - dodano scenariusz fallback (brak endpointu → użycie CLI `build_json.py`),
+     - doprecyzowano, że celem jest spójność UI/AI.
+
+3. `DataVault/docs/Documentation.md`
+   - Zaktualizowano opis techniczny przepływu `loadXlsxFromRepo()`:
+     - zamiast lokalnego parsera XLSX opisana jest ścieżka kanoniczna `POST /api/build-json`,
+     - dopisano zachowanie fallback z komendą CLI.
+
+### Efekt wdrożenia
+
+- UI nie opiera już generacji na podatnym na rozjazdy parserze stylów SheetJS.
+- Docelowy `data.json` ma być generowany tą samą logiką co AI (`build_json.py`), co eliminuje źródło różnic markerów `{{RED}}`.
+- Dla środowisk bez backendu pozostawiono jawny fallback operacyjny do CLI.
