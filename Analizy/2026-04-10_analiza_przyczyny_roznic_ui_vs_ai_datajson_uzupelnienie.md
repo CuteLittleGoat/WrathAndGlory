@@ -244,3 +244,74 @@ Przycisk można uznać za zgodny z AI dopiero gdy:
 ### Podsumowanie końcowe (runda 2)
 
 Obecna różnica nie jest sprzeczna z wcześniejszą analizą — potwierdza ją. Hotfix przywrócił „działanie przycisku” dzięki fallbackowi, ale fallback jest inną implementacją niż AI i nadal traci `{{RED}}`. Aby przycisk działał **tak samo** jak AI, trzeba wymusić realne użycie `build_json.py` (endpoint/serwis) i zablokować generację fallbackową jako wynik produkcyjny.
+
+---
+
+## Dodatkowa analiza po zgłoszeniu „przycisk nie reaguje” (2026-04-10, runda 3)
+
+### Prompt użytkownika (uzupełnienie kontekstu)
+> Przeczytaj analizę Analizy/2026-04-10_analiza_przyczyny_roznic_ui_vs_ai_datajson_uzupelnienie.md
+>
+> Po wprowadzeniu ostatniej poprawki przycisk "Generuj data.json" nie reaguje. Sprawdź przyczynę oraz zaproponuj naprawę. Poprzednio został zrobiony fallback, ale utworzony w ten sposób plik nie jest zgodny z tym generowanym przez asystenta AI. Przeprowadź analizę czemu przycisk nie działa i co należy zrobić, żeby działał i żeby wygenerowany plik data.json był identyczny jak ten stworzony przez asystenta AI.
+> Nie wprowadzaj zmian w kodzie tylko rozbuduj analizę.
+>
+> Nie twórz nowego pliku z analizą tylko dodaj te wnioski do Analizy/2026-04-10_analiza_przyczyny_roznic_ui_vs_ai_datajson_uzupelnienie.md
+>
+> Dodatkowo zapisz mi tam, czy jako użytkownik muszę gdzieś (w ustawieniach Github?) coś ustawić. Strona ma działać na github.
+
+### Ustalenie stanu po „ostatniej poprawce”
+
+Aktualna implementacja przycisku w `DataVault/app.js` działa obecnie w trybie **canonical-only**:
+1. kliknięcie wywołuje `POST api/build-json`,
+2. jeśli endpoint nie odpowie, kod wpada do `catch`, loguje komunikat błędu i podpowiada CLI,
+3. nie ma już automatycznego fallbacku JS, który generował plik po stronie przeglądarki.
+
+Wniosek: jeśli uruchamiasz DataVault jako czysty GitHub Pages (statyczny hosting), przycisk nie pobierze `data.json`, bo endpoint `POST /api/build-json` nie istnieje na samym GitHub Pages.
+
+### Dlaczego użytkownik widzi „brak reakcji”
+
+Komunikaty statusu i błędu są zapisywane głównie do konsoli (`console.info`/`console.error`), a nie do wyraźnego panelu statusu w UI.
+
+Z perspektywy użytkownika końcowego wygląda to jak „nic się nie dzieje”, mimo że technicznie zapytanie kończy się błędem HTTP/404 lub błędem sieciowym.
+
+### Co zrobić, żeby było jednocześnie:
+1) „przycisk działa”,
+2) wynik jest 1:1 jak AI.
+
+#### Docelowo (rekomendowane)
+- Zapewnić działający backend/worker z endpointem `POST /api/build-json` używającym dokładnie tej samej logiki co `build_json.py`.
+- Zachować politykę **canonical-only** (bez fallbacku SheetJS dla produkcyjnej generacji).
+- Dodać widoczny komunikat w UI (toast/banner/modal) o sukcesie/błędzie, zamiast tylko logów w konsoli.
+
+To jedyny wariant dający jednocześnie klikalny workflow i pełną zgodność z AI.
+
+#### Operacyjnie „na już” (bez backendu)
+- Na samym GitHub Pages nie uzyskasz dynamicznego `POST /api/build-json` bez dodatkowej usługi.
+- W takim środowisku generację produkcyjną trzeba wykonywać poza przeglądarką: `python build_json.py Repozytorium.xlsx data.json` i dopiero podmieniać plik w repo.
+
+### Odpowiedź na pytanie: „czy muszę coś ustawić w GitHub?”
+
+**Tak — ale to zależy od docelowego trybu działania:**
+
+1. **Jeśli chcesz tylko hostować stronę statycznie** (bez generowania przyciskiem):
+   - wystarczy standardowe włączenie GitHub Pages dla repozytorium (branch/folder z publikacją),
+   - to nie uruchomi endpointu `POST /api/build-json`; przycisk generacji nie będzie działał „backendowo”.
+
+2. **Jeśli chcesz, żeby przycisk generował `data.json` na stronie hostowanej na GitHub**:
+   - samymi ustawieniami GitHub Pages tego nie osiągniesz,
+   - potrzebujesz dodatkowej warstwy wykonawczej (np. API/worker), którą przycisk wywoła.
+
+3. **Najprostsza praktyka na GitHub bez backendu**:
+   - generować `data.json` lokalnie (CLI) albo przez GitHub Actions,
+   - commit/push wygenerowanego pliku do repo,
+   - GitHub Pages serwuje już gotowy `data.json`.
+
+### Kryteria akceptacji po wdrożeniu
+
+1. Przycisk kończy się pobraniem pliku lub jednoznacznym komunikatem błędu w UI (nie tylko w konsoli).
+2. Dla tego samego `Repozytorium.xlsx` wynik przycisku == wynik AI/CLI (w tym markery `{{RED}}`).
+3. Logi potwierdzają ścieżkę kanoniczną, a nie fallback parsera przeglądarkowego.
+
+### Podsumowanie (runda 3)
+
+Aktualny brak reakcji wynika z tego, że po ostatniej zmianie przycisk wymaga endpointu kanonicznego, którego GitHub Pages sam z siebie nie zapewnia. To naprawia problem jakości (unikanie niezgodnego fallbacku), ale bez backendu powoduje niedziałanie przycisku w praktyce. Aby mieć jednocześnie działanie i zgodność 1:1 z AI, trzeba uruchomić endpoint kanoniczny poza samym GitHub Pages albo przejść na proces generacji `data.json` poza UI (CLI/Actions).
