@@ -72,8 +72,8 @@ const translations = {
       statusRepoDownload: "Pobieranie Repozytorium.xlsx...",
       statusRepoUpdated: "OK — zaktualizowano dane i wygenerowano data.json",
       statusRepoError: "Błąd aktualizacji danych",
-      statusCanonicalStart: "Generowanie data.json ścieżką kanoniczną (build_json.py)...",
-      statusCanonicalUnavailable: "Brak endpointu generatora kanonicznego. Generacja z przycisku wymaga /api/build-json. Użyj build_json.py lokalnie.",
+      statusCanonicalStart: "Generowanie data.json kanonicznym parserem XLSX (styles.xml/sharedStrings.xml)...",
+      statusCanonicalUnavailable: "Brak biblioteki parsera kanonicznego (JSZip/xlsxCanonicalParser). Sprawdź połączenie z CDN.",
       modeAdmin: "ADMIN",
       modePlayer: "GRACZ",
       invocationLabel: "CECHA: WYWOŁANIE",
@@ -134,8 +134,8 @@ const translations = {
       statusRepoDownload: "Downloading Repozytorium.xlsx...",
       statusRepoUpdated: "OK — data updated and data.json generated",
       statusRepoError: "Error updating data",
-      statusCanonicalStart: "Generating data.json through canonical pipeline (build_json.py)...",
-      statusCanonicalUnavailable: "Canonical generator endpoint unavailable. Button generation requires /api/build-json. Use build_json.py locally.",
+      statusCanonicalStart: "Generating data.json using canonical XLSX parser (styles.xml/sharedStrings.xml)...",
+      statusCanonicalUnavailable: "Canonical parser library unavailable (JSZip/xlsxCanonicalParser). Check CDN connectivity.",
       modeAdmin: "ADMIN",
       modePlayer: "PLAYER",
       invocationLabel: "TRAIT: INVOCATION",
@@ -234,7 +234,6 @@ const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (pr
 
 const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 const HIDDEN_COLUMNS = new Set(["lp"]);
-const CANONICAL_GENERATOR_ENDPOINT = "api/build-json";
 
 /* ---------- Utilities ---------- */
 function norm(s){
@@ -822,29 +821,44 @@ function extractSheetRowsWithFormatting(ws){
   return {header, rows};
 }
 
+function ensureJSZip(cb){
+  if (window.JSZip) return cb();
+  const s = document.createElement("script");
+  s.src = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+  s.onload = cb;
+  s.onerror = () => {
+    setStatus(translations[currentLanguage].messages.statusXlsxError);
+    logLine("BŁĄD: nie udało się załadować biblioteki JSZip (CDN).", true);
+  };
+  document.head.appendChild(s);
+}
+
 function loadXlsxFromRepo(){
-  (async ()=>{
-    try{
-      setStatus(translations[currentLanguage].messages.statusCanonicalStart);
-      const res = await fetch(CANONICAL_GENERATOR_ENDPOINT, {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        cache: "no-store",
-      });
-      if (!res.ok){
-        throw new Error(`HTTP ${res.status}`);
+  ensureJSZip(()=>{
+    (async ()=>{
+      try{
+        if (!window.XlsxCanonicalParser || !window.XlsxCanonicalParser.loadXlsxMinimal){
+          throw new Error("XlsxCanonicalParser unavailable");
+        }
+        setStatus(translations[currentLanguage].messages.statusCanonicalStart);
+        const xlsxRes = await fetch("Repozytorium.xlsx", {cache:"no-store"});
+        if (!xlsxRes.ok){
+          throw new Error(`HTTP ${xlsxRes.status} while fetching Repozytorium.xlsx`);
+        }
+        const xlsxBuffer = await xlsxRes.arrayBuffer();
+        const {sheets: rawSheets, sheetOrder, columnOrder} = await window.XlsxCanonicalParser.loadXlsxMinimal(xlsxBuffer);
+        const data = buildDataJsonFromSheets(rawSheets, {sheetOrder, columnOrder});
+        downloadDataJson(data);
+        DB = normaliseDB(data);
+        initUI();
+        setStatus(translations[currentLanguage].messages.statusRepoUpdated);
+      }catch(e){
+        setStatus(translations[currentLanguage].messages.statusRepoError);
+        logLine(`${translations[currentLanguage].messages.statusCanonicalUnavailable}: ${e.message}`, true);
+        logLine(`[CANONICAL PARSER] CLI fallback: python build_json.py Repozytorium.xlsx data.json`, true);
       }
-      const data = await res.json();
-      downloadDataJson(data);
-      DB = normaliseDB(data);
-      initUI();
-      setStatus(translations[currentLanguage].messages.statusRepoUpdated);
-    }catch(e){
-      setStatus(translations[currentLanguage].messages.statusRepoError);
-      logLine(`${translations[currentLanguage].messages.statusCanonicalUnavailable}: ${e.message}`, true);
-      logLine(`[CANONICAL ONLY] CLI: python build_json.py Repozytorium.xlsx data.json`, true);
-    }
-  })();
+    })();
+  });
 }
 
 function normaliseDB(data){
