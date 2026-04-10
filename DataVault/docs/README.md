@@ -39,11 +39,10 @@ Najważniejsze zasady działania:
   - Ukrywa zakładki admin-only: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy** oraz **Hordy**.
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
-  - Dostępny jest przycisk **Generuj data.json**, który generuje nowy plik `data.json` na podstawie `Repozytorium.xlsx` znajdującego się w folderze modułu DataVault (obok `index.html`).
+  - Dostępny jest przycisk **Generuj data.json**, który uruchamia kanoniczną ścieżkę generowania (`POST /api/build-json`) i pobiera gotowy plik `data.json`.
   - Podpowiedź pod przyciskiem przypomina też, że `Repozytorium.xlsx` musi istnieć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego miejsca.
-  - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
-  - Generator admina zachowuje formatowanie inline z rich text (`{{I}}`, `{{B}}`, `{{RED}}`) i nadal ignoruje wypełnienie komórek (fill).
-  - Dodatkowo, jeżeli kolor czerwony jest ustawiony stylem całej komórki (a nie tylko fragmentu tekstu), generator opakuje zawartość markerami `{{RED}}...{{/RED}}`, dzięki czemu wynik odpowiada ścieżce CLI (`build_json.py`).
+  - Przycisk korzysta z tej samej logiki co generator AI/CLI (`build_json.py`), więc wynik UI i AI pozostaje spójny (w tym markery `{{RED}}`).
+  - Gdy endpoint jest niedostępny (np. hosting statyczny bez backendu), aplikacja automatycznie przełącza się na generator przeglądarkowy (fallback) i nadal pobiera `data.json`; przy błędzie fallbacku wypisuje komendę CLI.
   - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
 ### Zakładki sterowane checkboxami
@@ -63,10 +62,12 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 1. Podmień `Repozytorium.xlsx` w folderze modułu DataVault (obok `index.html`, na hostingu lub lokalnie).
 2. Otwórz aplikację w trybie admina: `http://localhost:8000/?admin=1`.
 3. Kliknij **Generuj data.json**.
-4. Przeglądarka pobierze nowy `data.json` — zapisz plik i **podmień** nim `data.json` na hostingu.
-5. Odśwież aplikację w trybie gracza (bez `?admin=1`) i upewnij się, że dane są widoczne.
+4. Jeśli endpoint `POST /api/build-json` działa, przeglądarka pobierze nowy `data.json` — zapisz plik i **podmień** nim `data.json` na hostingu.
+5. Jeśli endpoint nie działa, aplikacja automatycznie użyje fallbacku przeglądarkowego i również pobierze `data.json`.
+6. Jeśli również fallback zawiedzie, uruchom CLI: `python build_json.py Repozytorium.xlsx data.json`.
+7. Odśwież aplikację w trybie gracza (bez `?admin=1`) i upewnij się, że dane są widoczne.
 
-> Ta metoda zachowuje formatowanie rich text (italic/bold/red) w komórkach XLSX, jeśli jest zapisane inline.
+> Ta metoda opiera się o kanoniczny generator (`build_json.py`), co eliminuje rozjazdy UI vs AI.
 
 #### Metoda 2: skrypt CLI
 1. Upewnij się, że w folderze modułu DataVault znajduje się najnowszy `Repozytorium.xlsx`.
@@ -140,10 +141,10 @@ Key behavior:
   - Hides the admin-only tabs: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, and **Hordy**.
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
-  - The **Generate data.json** button appears and generates a new `data.json` file from `Repozytorium.xlsx` located in the DataVault module folder (next to `index.html`).
+  - The **Generate data.json** button appears and triggers the canonical generation path (`POST /api/build-json`) to download a ready `data.json` file.
   - The hint below the button also reminds you that `Repozytorium.xlsx` must exist next to `index.html`, and the generated `data.json` must be uploaded to the same location.
-  - The XLSX is parsed in the browser (SheetJS via CDN) and a new `data.json` is generated for download.
-  - The admin generator preserves inline rich text markers (`{{I}}`, `{{B}}`, `{{RED}}`) and still ignores cell fill/background formatting.
+  - The button uses the same logic as the AI/CLI generator (`build_json.py`), ensuring parity between UI and AI output.
+  - If the endpoint is unavailable (e.g. static hosting without backend), the app automatically switches to browser-side generator fallback and still downloads `data.json`; if fallback fails, it logs the CLI command.
   - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) are visible only in this mode (when the combat checkbox is enabled).
 
 ### Tabs controlled by checkboxes
@@ -163,10 +164,12 @@ Below are two equivalent ways to update the data. In this repository update, `da
 1. Replace `Repozytorium.xlsx` in the DataVault module folder (next to `index.html`, hosting or local).
 2. Open the app in admin mode: `http://localhost:8000/?admin=1`.
 3. Click **Generate data.json**.
-4. The browser downloads a new `data.json` — save it and **replace** `data.json` on your hosting.
-5. Refresh the app in player mode (without `?admin=1`) and verify the data.
+4. If `POST /api/build-json` is available, the browser downloads a new `data.json` — save it and **replace** `data.json` on your hosting.
+5. If the endpoint is unavailable, the app automatically runs browser fallback and still downloads `data.json`.
+6. If fallback also fails, run CLI: `python build_json.py Repozytorium.xlsx data.json`.
+7. Refresh the app in player mode (without `?admin=1`) and verify the data.
 
-> This method preserves rich text styling (italic/bold/red) for inline XLSX content and now also respects red color applied at the whole-cell style level (still ignoring fill/background).
+> This method relies on the canonical generator (`build_json.py`), eliminating UI vs AI formatting drift.
 
 #### Method 2: CLI script
 1. Make sure the latest `Repozytorium.xlsx` is in the DataVault module folder.

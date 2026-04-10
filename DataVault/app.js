@@ -72,6 +72,9 @@ const translations = {
       statusRepoDownload: "Pobieranie Repozytorium.xlsx...",
       statusRepoUpdated: "OK — zaktualizowano dane i wygenerowano data.json",
       statusRepoError: "Błąd aktualizacji danych",
+      statusCanonicalStart: "Generowanie data.json ścieżką kanoniczną (build_json.py)...",
+      statusCanonicalUnavailable: "Brak endpointu generatora kanonicznego. Użyj build_json.py lokalnie.",
+      statusFallbackStart: "Brak endpointu kanonicznego — uruchamianie generatora przeglądarkowego (fallback)...",
       modeAdmin: "ADMIN",
       modePlayer: "GRACZ",
       invocationLabel: "CECHA: WYWOŁANIE",
@@ -132,6 +135,9 @@ const translations = {
       statusRepoDownload: "Downloading Repozytorium.xlsx...",
       statusRepoUpdated: "OK — data updated and data.json generated",
       statusRepoError: "Error updating data",
+      statusCanonicalStart: "Generating data.json through canonical pipeline (build_json.py)...",
+      statusCanonicalUnavailable: "Canonical generator endpoint unavailable. Use build_json.py locally.",
+      statusFallbackStart: "Canonical endpoint unavailable — running browser generator (fallback)...",
       modeAdmin: "ADMIN",
       modePlayer: "PLAYER",
       invocationLabel: "TRAIT: INVOCATION",
@@ -230,6 +236,7 @@ const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (pr
 
 const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 const HIDDEN_COLUMNS = new Set(["lp"]);
+const CANONICAL_GENERATOR_ENDPOINT = "api/build-json";
 
 /* ---------- Utilities ---------- */
 function norm(s){
@@ -819,7 +826,8 @@ function extractSheetRowsWithFormatting(ws){
 
 function loadXlsxFromRepo(){
   ensureSheetJS(async ()=>{
-    try{
+    const runBrowserFallback = async () => {
+      setStatus(translations[currentLanguage].messages.statusFallbackStart);
       setStatus(translations[currentLanguage].messages.statusRepoDownload);
       const res = await fetch("Repozytorium.xlsx", {cache:"no-store"});
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -834,14 +842,37 @@ function loadXlsxFromRepo(){
         columnOrder[name] = deriveColumnOrderFromHeader(header);
         sheets[name] = rows;
       }
-      const data = buildDataJsonFromSheets(sheets, {sheetOrder, columnOrder});
+      return buildDataJsonFromSheets(sheets, {sheetOrder, columnOrder});
+    };
+
+    try{
+      setStatus(translations[currentLanguage].messages.statusCanonicalStart);
+      const res = await fetch(CANONICAL_GENERATOR_ENDPOINT, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        cache: "no-store",
+      });
+      if (!res.ok){
+        throw new Error(`HTTP ${res.status}`);
+      }
+      const data = await res.json();
       downloadDataJson(data);
       DB = normaliseDB(data);
       initUI();
       setStatus(translations[currentLanguage].messages.statusRepoUpdated);
     }catch(e){
-      setStatus(translations[currentLanguage].messages.statusRepoError);
-      logLine("BŁĄD: "+e.message, true);
+      logLine(`${translations[currentLanguage].messages.statusCanonicalUnavailable}: ${e.message}`, true);
+      try{
+        const data = await runBrowserFallback();
+        downloadDataJson(data);
+        DB = normaliseDB(data);
+        initUI();
+        setStatus(translations[currentLanguage].messages.statusRepoUpdated);
+      }catch(fallbackError){
+        setStatus(translations[currentLanguage].messages.statusRepoError);
+        logLine(`${translations[currentLanguage].messages.statusRepoError}: ${fallbackError.message}`, true);
+        logLine(`[HOTFIX] CLI: python build_json.py Repozytorium.xlsx data.json`, true);
+      }
     }
   });
 }
