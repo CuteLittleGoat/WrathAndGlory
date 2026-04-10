@@ -93,3 +93,31 @@ Dodać testy regresyjne dla generowania `data.json` po kliknięciu przycisku:
 ## Konkluzja
 Masz rację: oba przypadki startują z tego samego XLSX, ale kończą się różnym `data.json`.
 Kluczowa różnica to brak markerów `{{RED}}` w JSON-ie wygenerowanym przyciskiem UI (`Analizy/data.json`), co bezpośrednio psuje czerwone formatowanie w aplikacji.
+
+---
+
+## Uzupełnienie analizy (2026-04-10): porównanie `Analizy/AI.txt` vs `Analizy/UI.txt`
+
+### Prompt użytkownika (uzupełnienie)
+> Przeczytaj analizę Analizy/2026-04-10_analiza_roznic_ui_vs_ai_datajson.md
+> a następnie porównaj pliki:
+> Analizy/AI.txt (zawartość pliku data.json wygenerowanego przez AI)
+> Analizy/UI.txt (zawartość pliku data.json wygenerowanego przez przycisk)
+>
+> Czy oba są identyczne? Wnioski dopisz do analizy Analizy/2026-04-10_analiza_roznic_ui_vs_ai_datajson.md
+
+### Wynik porównania
+Nie, pliki **nie są identyczne**.
+
+1. Porównanie bajt-do-bajtu (`cmp`) zwraca różnicę.
+2. Oba pliki mają tyle samo linii (11420), ale różną długość w bajtach:
+   - `AI.txt`: 687677 B
+   - `UI.txt`: 660747 B
+3. `AI.txt` używa zakończeń linii `CRLF` (11420 wystąpień), a `UI.txt` używa `LF` (11420 wystąpień).
+4. To nie jest tylko różnica końców linii — po normalizacji `CRLF -> LF` pliki nadal się różnią.
+5. Najważniejsza różnica merytoryczna pozostaje taka sama jak wcześniej:
+   - `{{RED}}` i `{{/RED}}` występują w `AI.txt` po 1128 razy,
+   - w `UI.txt` nie występują ani razu.
+
+### Konkluzja
+`Analizy/AI.txt` i `Analizy/UI.txt` **nie są identyczne** ani technicznie (bajty / EOL), ani merytorycznie (znaczniki formatowania, w szczególności brak `{{RED}}...{{/RED}}` w pliku z UI).
