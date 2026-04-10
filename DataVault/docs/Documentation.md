@@ -501,7 +501,13 @@ Mapowanie na `getElementById`:
 
 ### 7.5 `loadXlsxFromRepo()`
 - Pobiera `Repozytorium.xlsx` z `cache:"no-store"` ścieżką względną (z tego samego folderu co `index.html`).
-- Czyta arkusze (`XLSX.utils.sheet_to_json` z `defval:""`).
+- Czyta arkusze z `cellHTML: true` i `cellStyles: true`.
+- Parsuje komórki własną ścieżką (`extractSheetRowsWithFormatting`) zamiast `XLSX.utils.sheet_to_json`, dzięki czemu zachowuje rich text.
+- Dla komórek z HTML (`cell.h`) konwertuje `<b>/<strong>`, `<i>/<em>` oraz czerwony `color` na markery:
+  - `{{B}}...{{/B}}`
+  - `{{I}}...{{/I}}`
+  - `{{RED}}...{{/RED}}`
+- Wypełnienie komórki (fill/background) nie jest brane pod uwagę.
 - Pobiera pierwszy wiersz jako nagłówki i zapisuje ich kolejność (z uwzględnieniem scalania `Cecha 1..N` → `Cechy` i `Zasięg 1..3` → `Zasięg`).
 - Buduje `data.json` z `_meta.sheetOrder` i `_meta.columnOrder`, a następnie inicjalizuje UI.
 

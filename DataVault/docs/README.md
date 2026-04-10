@@ -40,6 +40,7 @@ Najważniejsze zasady działania:
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
   - Dostępny jest przycisk **Aktualizuj dane**, który pobiera `Repozytorium.xlsx` z folderu modułu DataVault (obok `index.html`).
   - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
+  - Generator admina zachowuje formatowanie inline z rich text (`{{I}}`, `{{B}}`, `{{RED}}`) i nadal ignoruje wypełnienie komórek (fill).
   - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
 ### Zakładki sterowane checkboxami
@@ -59,6 +60,8 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 3. Kliknij **Aktualizuj dane**.
 4. Przeglądarka pobierze nowy `data.json` — zapisz plik i **podmień** nim `data.json` na hostingu.
 5. Odśwież aplikację w trybie gracza (bez `?admin=1`) i upewnij się, że dane są widoczne.
+
+> Ta metoda zachowuje formatowanie rich text (italic/bold/red) w komórkach XLSX, jeśli jest zapisane inline.
 
 #### Metoda 2: skrypt CLI
 1. Upewnij się, że w folderze modułu DataVault znajduje się najnowszy `Repozytorium.xlsx`.
@@ -133,6 +136,7 @@ Key behavior:
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
   - The **Aktualizuj dane** button appears and fetches `Repozytorium.xlsx` from the DataVault module folder (next to `index.html`).
   - The XLSX is parsed in the browser (SheetJS via CDN) and a new `data.json` is generated for download.
+  - The admin generator preserves inline rich text markers (`{{I}}`, `{{B}}`, `{{RED}}`) and still ignores cell fill/background formatting.
   - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) are visible only in this mode (when the combat checkbox is enabled).
 
 ### Tabs controlled by checkboxes
@@ -152,6 +156,8 @@ Below are two equivalent ways to update the data. In this update, `data.json` ha
 3. Click **Aktualizuj dane**.
 4. The browser downloads a new `data.json` — save it and **replace** `data.json` on your hosting.
 5. Refresh the app in player mode (without `?admin=1`) and verify the data.
+
+> This method preserves rich text styling (italic/bold/red) for inline XLSX content.
 
 #### Method 2: CLI script
 1. Make sure the latest `Repozytorium.xlsx` is in the DataVault module folder.
