@@ -315,3 +315,106 @@ To jedyny wariant dający jednocześnie klikalny workflow i pełną zgodność z
 ### Podsumowanie (runda 3)
 
 Aktualny brak reakcji wynika z tego, że po ostatniej zmianie przycisk wymaga endpointu kanonicznego, którego GitHub Pages sam z siebie nie zapewnia. To naprawia problem jakości (unikanie niezgodnego fallbacku), ale bez backendu powoduje niedziałanie przycisku w praktyce. Aby mieć jednocześnie działanie i zgodność 1:1 z AI, trzeba uruchomić endpoint kanoniczny poza samym GitHub Pages albo przejść na proces generacji `data.json` poza UI (CLI/Actions).
+
+---
+
+## Dodatkowe uzupełnienie: odpowiedź na pytanie o GitHub + docelowy model działania (2026-04-10, runda 4)
+
+### Prompt użytkownika (uzupełnienie kontekstu)
+> Przeczytaj i rozbuduj analizę Analizy/2026-04-10_analiza_przyczyny_roznic_ui_vs_ai_datajson_uzupelnienie.md
+>
+> Odpowiem na pytanie z sekcji "Odpowiedź na pytanie: „czy muszę coś ustawić w GitHub?”
+>
+> Działaniem docelowym jest utworzenie pliku data.json przez naciśnięcie przycisku w UI.
+> Użytkownik ręcznie potem się zaloguje do github i wgra aktualny plik data.json.
+> Tak samo jak obecnie ręcznie loguje się i uploaduje plik Repozytorium.xlsx
+>
+> Aplikacja ma przygotować plik i umożliwić pobranie go na dysk twardy urządzenia. Aplikacja będzie hostowana na Github.
+>
+> Uzupełnij plik z analizę o te informacje i następnie napisz czy, aby zachować tę funkcjonalność muszę coś jeszcze ustawić w Github.
+> Dopisz do analizy co należy zmienić w kodzie, żeby uzyskać taki efekt, że poprzez naciśnięcie przycisku "Generuj data.json" tworzy się plik identyczny z tym co utworzył asystent AI.
+> Analizy/AI.txt = zawartość pliku data.json utworzonego przez AI (poprawny).
+> Analizy/UI.txt = zawartość pliku data.json utworzonego przez przycisk (błędny).
+> Analizy/aktualizacja.md = kroki wykonane przez asystenta AI.
+
+### Doprecyzowanie wymagań (na podstawie powyższego)
+Docelowy przepływ ma być **w 100% po stronie użytkownika i przeglądarki**:
+1. Użytkownik klika **„Generuj data.json”**.
+2. Aplikacja lokalnie tworzy plik `data.json`.
+3. Aplikacja udostępnia pobranie pliku na dysk.
+4. Użytkownik samodzielnie loguje się do GitHub i ręcznie uploaduje `data.json`.
+
+Czyli: bez automatycznego pushowania do repozytorium przez aplikację.
+
+### Odpowiedź na pytanie: „czy muszę coś ustawić w GitHub?”
+
+**Krótko: nie, do samej funkcji „wygeneruj + pobierz plik lokalnie” nie musisz dodawać żadnych specjalnych ustawień GitHub.**
+
+Wystarczy, że:
+- repozytorium/strona jest dostępna (np. GitHub Pages),
+- aplikacja potrafi odczytać `Repozytorium.xlsx` i wygenerować JSON w przeglądarce,
+- przeglądarka może wykonać standardowy download (Blob + `a[download]`).
+
+To działanie nie wymaga:
+- GitHub Tokenów,
+- GitHub Apps,
+- GitHub Actions,
+- uprawnień zapisu do repo z poziomu UI.
+
+#### Co ewentualnie warto mieć w GitHub (opcjonalnie, nie jest wymagane)
+1. **GitHub Pages** włączone dla hostingu aplikacji.
+2. Dobre praktyki procesowe: branch protection / PR review / historia zmian (to organizacyjne, nie techniczne wymaganie generatora).
+3. Opcjonalny workflow walidujący JSON po ręcznym uploadzie (np. lint/format) — ale to dodatki, nie warunek działania przycisku.
+
+### Dlaczego obecny przycisk daje inny wynik niż AI
+
+Z porównania `Analizy/AI.txt` i `Analizy/UI.txt` wynika, że obecnie rozjazd dotyczy głównie markerów czerwonego tekstu `{{RED}}...{{/RED}}` (AI je ma, UI je gubi). To oznacza różnicę w logice odczytu stylu czerwonego koloru z XLSX.
+
+W aktualnym modelu fallback JS opiera się na mapowaniu stylów przez warstwę parsera arkusza, a nie na bezpośredniej analizie `styles.xml` tak jak generator AI (`build_json.py`).
+
+### Co zmienić w kodzie, aby przycisk tworzył plik identyczny z AI (bez backendu, na GitHub Pages)
+
+Żeby zachować hosting statyczny i nadal mieć 1:1 z AI, trzeba przenieść do JS **kanoniczną logikę Pythona**, zamiast polegać na uproszczonym odczycie stylów.
+
+#### Zmiana architektoniczna (rekomendowana)
+Utrzymać przycisk jako generator przeglądarkowy, ale:
+1. Odczytywać XLSX jako ZIP (`ArrayBuffer` + `JSZip`).
+2. Parsować bezpośrednio XML-e:
+   - `xl/styles.xml`,
+   - `xl/sharedStrings.xml`,
+   - `xl/worksheets/sheet*.xml`.
+3. Dla każdej komórki używać identycznej logiki jak w `build_json.py`:
+   - mapowanie `styleIndex (s)` -> `xf` -> `fontId` -> `color`,
+   - detekcja czerwieni z wartości typu `FFFF0000` oraz wariantów równoważnych,
+   - dla `shared strings` i zwykłych stringów doklejanie `{{RED}}...{{/RED}}`, jeśli styl komórki jest czerwony,
+   - zachowanie dotychczasowej obsługi `{{B}}`/`{{I}}`.
+4. Dopiero z tak zebranych danych budować finalne struktury JSON (tak samo jak dziś: porządek arkuszy, mapowanie kolumn, `_meta`, itd.).
+
+#### Minimalny zakres zmian implementacyjnych
+1. Wydzielić nowy moduł np. `DataVault/xlsxCanonicalParser.js`:
+   - `loadStylesXml(...)`,
+   - `isStyleRed(styleIndex, stylesDoc)`,
+   - `resolveSharedString(idx, sharedStringsDoc)`,
+   - `extractCellTextWithCanonicalFormatting(cellNode, styleInfo, sharedStrings)`.
+2. W `DataVault/app.js` podmienić ścieżkę kliknięcia **Generuj data.json**:
+   - zamiast bazowania na obecnym uproszczonym wykrywaniu czerwieni,
+   - użyć nowego parsera kanonicznego.
+3. Zostawić download lokalny bez zmian (to jest zgodne z Twoim procesem ręcznego uploadu do GitHub).
+4. Dodać test porównawczy „golden”:
+   - ten sam `Repozytorium.xlsx` -> wynik JS == wynik referencyjny AI,
+   - twardy warunek zgodności liczników `{{RED}}`, `{{B}}`, `{{I}}`.
+
+### Kryterium „gotowe” dla Twojego scenariusza
+
+Funkcjonalność można uznać za domkniętą, gdy jednocześnie:
+1. Kliknięcie przycisku zawsze tworzy `data.json` do pobrania lokalnie.
+2. Wygenerowany plik jest semantycznie identyczny z wynikiem AI (`Analizy/AI.txt`).
+3. Użytkownik nadal wykonuje ręczny upload do GitHub (bez zmian procesu).
+4. Brak dodatkowych wymagań konfiguracyjnych po stronie GitHub poza standardowym hostingiem strony.
+
+### Podsumowanie odpowiedzi dla użytkownika
+
+- **Czy musisz coś dodatkowo ustawiać w GitHub?**
+  - **Nie**, jeśli celem jest tylko: „kliknij -> wygeneruj -> pobierz lokalnie -> ręcznie wgraj na GitHub”.
+- **Co trzeba zmienić w kodzie, żeby wynik był identyczny jak AI?**
+  - Przenieść do UI kanoniczną logikę parsowania XLSX ze `styles.xml` (jak w `build_json.py`) i przestać polegać na niepełnej detekcji czerwieni z obecnej ścieżki fallback.
