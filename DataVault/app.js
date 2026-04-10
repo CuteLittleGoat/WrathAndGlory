@@ -691,6 +691,107 @@ function downloadDataJson(data){
   URL.revokeObjectURL(url);
 }
 
+function isRedColorValue(colorValue){
+  const value = String(colorValue || "").replace(/\s+/g, "").toLowerCase();
+  if (!value) return false;
+  return value === "red"
+    || value === "#f00"
+    || value === "#ff0000"
+    || value === "#ffff0000"
+    || value === "rgb(255,0,0)"
+    || value === "rgba(255,0,0,1)";
+}
+
+function htmlToStyleMarkers(html){
+  if (!html || !String(html).trim()) return "";
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
+  const root = doc.body.firstElementChild;
+  if (!root) return "";
+
+  const chunks = [];
+  const walk = (node, state) => {
+    if (!node) return;
+    if (node.nodeType === Node.TEXT_NODE){
+      const text = node.textContent ?? "";
+      if (!text) return;
+      let marked = text;
+      if (state.red) marked = `{{RED}}${marked}{{/RED}}`;
+      if (state.bold) marked = `{{B}}${marked}{{/B}}`;
+      if (state.italic) marked = `{{I}}${marked}{{/I}}`;
+      chunks.push(marked);
+      return;
+    }
+    if (node.nodeType !== Node.ELEMENT_NODE) return;
+
+    const tag = node.tagName.toLowerCase();
+    const styleAttr = node.getAttribute("style") || "";
+    const inlineColor = styleAttr.match(/color\s*:\s*([^;]+)/i)?.[1] || "";
+    const nextState = {
+      bold: state.bold || tag === "b" || tag === "strong",
+      italic: state.italic || tag === "i" || tag === "em",
+      red: state.red || isRedColorValue(inlineColor),
+    };
+
+    if (tag === "br"){
+      chunks.push("\n");
+      return;
+    }
+    for (const child of node.childNodes){
+      walk(child, nextState);
+    }
+  };
+
+  walk(root, {bold: false, italic: false, red: false});
+  return chunks.join("");
+}
+
+function getCellTextWithMarkers(ws, addr){
+  const cell = ws?.[addr];
+  if (!cell) return "";
+  if (typeof cell.h === "string" && cell.h.trim()){
+    return htmlToStyleMarkers(cell.h).trim();
+  }
+  const raw = cell.w ?? cell.v ?? "";
+  return String(raw).trim();
+}
+
+function extractSheetRowsWithFormatting(ws){
+  const ref = ws?.["!ref"];
+  if (!ref){
+    return {header: [], rows: []};
+  }
+  const range = XLSX.utils.decode_range(ref);
+  const headersByColumn = new Map();
+  const header = [];
+
+  for (let c = range.s.c; c <= range.e.c; c += 1){
+    const addr = XLSX.utils.encode_cell({r: range.s.r, c});
+    const key = norm(getCellTextWithMarkers(ws, addr));
+    if (!key) continue;
+    headersByColumn.set(c, key);
+    header.push(key);
+  }
+
+  const rows = [];
+  for (let r = range.s.r + 1; r <= range.e.r; r += 1){
+    const row = {};
+    let hasData = false;
+    for (let c = range.s.c; c <= range.e.c; c += 1){
+      const key = headersByColumn.get(c);
+      if (!key) continue;
+      const addr = XLSX.utils.encode_cell({r, c});
+      const value = getCellTextWithMarkers(ws, addr);
+      if (value !== "") hasData = true;
+      row[key] = value;
+    }
+    if (hasData){
+      rows.push(row);
+    }
+  }
+  return {header, rows};
+}
+
 function loadXlsxFromRepo(){
   ensureSheetJS(async ()=>{
     try{
@@ -698,16 +799,14 @@ function loadXlsxFromRepo(){
       const res = await fetch("Repozytorium.xlsx", {cache:"no-store"});
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const buf = await res.arrayBuffer();
-      const wb = XLSX.read(buf, {type:"array"});
+      const wb = XLSX.read(buf, {type:"array", cellHTML: true, cellStyles: true});
       const sheets = {};
       const sheetOrder = wb.SheetNames.slice();
       const columnOrder = {};
       for (const name of wb.SheetNames){
         const ws = wb.Sheets[name];
-        const headerRows = XLSX.utils.sheet_to_json(ws, {header:1, defval:"", raw:false});
-        const header = headerRows?.[0] ? headerRows[0].map(norm).filter(Boolean) : [];
+        const {header, rows} = extractSheetRowsWithFormatting(ws);
         columnOrder[name] = deriveColumnOrderFromHeader(header);
-        const rows = XLSX.utils.sheet_to_json(ws, {defval:"", raw:false});
         sheets[name] = rows;
       }
       const data = buildDataJsonFromSheets(sheets, {sheetOrder, columnOrder});
