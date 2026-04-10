@@ -418,3 +418,17 @@ Funkcjonalność można uznać za domkniętą, gdy jednocześnie:
   - **Nie**, jeśli celem jest tylko: „kliknij -> wygeneruj -> pobierz lokalnie -> ręcznie wgraj na GitHub”.
 - **Co trzeba zmienić w kodzie, żeby wynik był identyczny jak AI?**
   - Przenieść do UI kanoniczną logikę parsowania XLSX ze `styles.xml` (jak w `build_json.py`) i przestać polegać na niepełnej detekcji czerwieni z obecnej ścieżki fallback.
+
+---
+
+## Uzupełnienie po ponownym porównaniu plików po ostatniej poprawce (2026-04-10)
+
+Wykonano ponowne porównanie `Analizy/AI.txt` i `Analizy/UI.txt` na świeżo wygenerowanym pliku z przycisku.
+
+### Wynik
+- Pliki różnią się w porównaniu surowym (tekst/bajty),
+- ale po porównaniu semantycznym JSON (`json.loads(...)`) są **identyczne merytorycznie**,
+- różnice dotyczą reprezentacji (głównie kolejności kluczy, np. `Zasięg` ↔ `Cechy` w części rekordów `Bronie`).
+
+### Decyzja
+Zgodnie z kryterium funkcjonalnym: **poprawka działa** (UI generuje te same dane co AI).
