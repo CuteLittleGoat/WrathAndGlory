@@ -20,6 +20,9 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 ## 2) HTML: układ i elementy (index.html)
 
 ### 2.1 Nagłówek i akcje
+
+- Dodano przycisk `#btnMainPage` (klasy: `.btn.secondary`) z etykietą tłumaczoną przez i18n (`mainPageButton`) i nawigacją do `../Main/index.html`.
+- Logika JS ukrywa `#btnMainPage` wyłącznie w trybie admina (`ADMIN_MODE === true`).
 - Główny kontener aplikacji: `.app` (flex kolumnowy).
 - Górny pasek: `.topbar`.
 - Branding:

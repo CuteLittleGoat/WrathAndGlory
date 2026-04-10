@@ -82,6 +82,10 @@ body{
   font-size:12px;
   background:rgba(22,198,12,.08);
   color:var(--text);
+  text-decoration:none;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
 }
 .btn.primary{
   background:var(--text);

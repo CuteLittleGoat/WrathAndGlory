@@ -28,6 +28,8 @@ Pola:
 3. **Ilość Kości Furii** (`#wrath`, etykieta `#wrathLabel`) + podpowiedź `.field__hint` z id `#wrathHint` o limicie.
 
 ### Przełącznik języka
+- Obok selecta dodano link-przycisk `#mainPageButton` (`.nav-button`) kierujący do `../Main/index.html`.
+- Etykieta linku jest tłumaczona w `translations[lang].labels.mainPageButton`: `Strona Główna` / `Main Page`.
 - `<select id="languageSelect">` z opcjami `pl` i `en`.
 - Podmienia wszystkie kluczowe teksty w UI (nagłówek, etykiety, podpowiedź, przycisk, komunikaty wyników).
 - Zmiana języka resetuje pola oraz wynik bez komunikatu ostrzegawczego.
@@ -59,6 +61,7 @@ Zdefiniowane w `:root` (motyw zielonego terminala spójny z główną stroną):
 - `--red-die`, `--red-pip` — barwy czerwonej kości: `#c01717` i `#ffffff`.
 
 ### Typografia
+- `.nav-button` używa lokalnego stylu modułu (outline + neon hover) i nie korzysta z klas `.btn` z innych modułów.
 Globalnie ustawione fonty monospace: `Consolas`, `Fira Code`, `Source Code Pro`.
 
 ### Układ
@@ -189,6 +192,7 @@ Media query do 600px:
    - Czyści kości i ustawia placeholder podsumowania w bieżącym języku.
 
 11. **`updateLanguage(lang)`**
+   - Aktualizuje także tekst linku `#mainPageButton` (`mainPageButton`: `Strona Główna` / `Main Page`).
    - Ustawia `currentLanguage` i aktualizuje `document.documentElement.lang`.
    - Podmienia teksty w UI na podstawie `translations`.
    - Resetuje stan aplikacji (pola i wynik).

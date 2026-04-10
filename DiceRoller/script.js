@@ -11,6 +11,7 @@ const poolLabel = document.getElementById("poolLabel");
 const wrathLabel = document.getElementById("wrathLabel");
 const wrathHint = document.getElementById("wrathHint");
 const languageSelect = document.getElementById("languageSelect");
+const mainPageButton = document.getElementById("mainPageButton");
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 99;
@@ -32,6 +33,7 @@ const translations = {
       placeholderIdle: "Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.",
       placeholderRolling: "Rzut w toku...",
       languageSelect: "Wersja językowa",
+      mainPageButton: "Strona Główna",
     },
     messages: {
       success: "Sukces!",
@@ -57,6 +59,7 @@ const translations = {
       placeholderIdle: "Enter your parameters and roll the dice to see the result.",
       placeholderRolling: "Rolling the dice...",
       languageSelect: "Language version",
+      mainPageButton: "Main Page",
     },
     messages: {
       success: "Success!",
@@ -204,6 +207,7 @@ const updateLanguage = (lang) => {
   wrathLabel.textContent = t.labels.wrath;
   wrathHint.textContent = t.labels.wrathHint;
   rollButton.textContent = t.labels.roll;
+  mainPageButton.textContent = t.labels.mainPageButton;
   resetState();
 };
 
