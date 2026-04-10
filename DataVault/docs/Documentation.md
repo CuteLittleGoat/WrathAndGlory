@@ -508,12 +508,8 @@ Mapowanie na `getElementById`:
   - normalizuje dane (`normaliseDB`),
   - odświeża UI (`initUI`).
 - Jeśli endpoint jest niedostępny:
-  - uruchamia automatyczny fallback przeglądarkowy:
-    - pobiera `Repozytorium.xlsx`,
-    - parsuje arkusze (`extractSheetRowsWithFormatting`),
-    - buduje JSON (`buildDataJsonFromSheets`),
-    - pobiera nowy plik `data.json`.
-  - jeśli fallback także zawiedzie, ustawia status błędu i loguje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
+  - **nie uruchamia generatora przeglądarkowego** (tryb canonical-only),
+  - ustawia status błędu i loguje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
 
 ### 7.6 `normaliseDB(data)`
 - Ignoruje arkusze zaczynające się od `_`.
