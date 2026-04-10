@@ -166,3 +166,81 @@ Po wdrożeniu pierwszej wersji hotfixu wykryto regresję funkcjonalną:
 - Przycisk **Generuj data.json** ponownie działa na hostingu statycznym (bez backendu).
 - Gdy endpoint kanoniczny istnieje, używana jest ścieżka rekomendowana (spójna z AI).
 - Gdy endpoint nie istnieje, użytkownik nadal otrzymuje nowy `data.json` dzięki fallbackowi przeglądarkowemu.
+
+---
+
+## Dodatkowa analiza po zgłoszeniu „po wdrożeniu nadal są różnice” (2026-04-10, runda 2)
+
+### Prompt użytkownika (uzupełnienie kontekstu)
+> Przeczytaj i zaktualizuj analizę Analizy/2026-04-10_analiza_przyczyny_roznic_ui_vs_ai_datajson_uzupelnienie.md
+>
+> Po wdrożeniu poprawki w dalszym ciągu plik data.json wygenerowany przez przycisk różni się od tego stworzonego przez AI.
+> Zapisałem oba jako pliki tekstowe.
+>
+> Analizy/AI.txt = wygenerowany przez AI. Poprawny.
+> Analizy/UI.txt = wygenerowany przez przycisk. Błędny.
+>
+> Przeprowadź analizę przyczyny różnicy i zaproponuj rozwiązanie, aby przycisk działał tak samo jak wykonanie operacji przez AI (kroki w Analizy/aktualizacja.md).
+> Nie wprowadzaj zmiany w kodzie. Zaktualizuj tylko analizę Analizy/2026-04-10_analiza_przyczyny_roznic_ui_vs_ai_datajson_uzupelnienie.md
+
+### Wynik porównania AI.txt vs UI.txt (aktualny stan)
+
+Szybka weryfikacja liczników markerów formatowania pokazuje, że:
+- `{{RED}}` i `{{/RED}}`: **AI ma 1128 wystąpień, UI ma 0**,
+- `{{B}}/{{/B}}` i `{{I}}/{{/I}}`: liczby są zgodne AI=UI.
+
+Wniosek: problem nie dotyczy już całego systemu formatowania, tylko **samego czerwonego koloru** i dokładnie potwierdza wcześniejszą hipotezę o rozjeździe w detekcji „red” po stronie przeglądarkowej.
+
+### Dlaczego „wdrożona poprawka” nie dała pełnej zgodności 1:1
+
+Zachowanie przycisku w obecnym kodzie jest dwuetapowe:
+
+1. Najpierw próba wywołania endpointu kanonicznego:
+   - `POST api/build-json` (stała `CANONICAL_GENERATOR_ENDPOINT`).
+2. Jeżeli endpoint jest niedostępny/błąd HTTP → automatyczny fallback do generatora przeglądarkowego (SheetJS + `extractSheetRowsWithFormatting`).
+
+To oznacza, że „przycisk działa”, ale **niekoniecznie ścieżką AI**. W środowisku statycznym (najczęściej bez backendu) realnie wykonuje się fallback JS, który nadal gubi `{{RED}}`.
+
+Czyli obecny stan to:
+- funkcjonalnie: przycisk pobiera plik,
+- merytorycznie: wynik nie jest równoważny AI, jeśli poszedł fallback.
+
+### Przyczyna bezpośrednia (root cause)
+
+Przyczyną różnicy jest **faktyczne uruchomienie fallbacku przeglądarkowego**, a nie generatora kanonicznego `build_json.py`.
+
+W praktyce:
+- brak działającego `POST /api/build-json` w środowisku uruchomienia przycisku,
+- automatyczne przejście na parser JS,
+- parser JS nie odtwarza czerwonego koloru tak jak Python (style komórki XLSX → `{{RED}}`).
+
+### Odniesienie do „kroków w Analizy/aktualizacja.md”
+
+Jeżeli oczekiwany efekt to dokładnie to, co robi AI, to operacja musi przechodzić przez **kanoniczne budowanie `data.json` z `build_json.py`** (jak w aktualizacji wykonywanej komendą CLI), a nie przez parser fallbackowy w przeglądarce.
+
+Innymi słowy: sam fakt „kliknięcia przycisku” nie gwarantuje obecnie tej samej ścieżki, co kroki aktualizacji.
+
+### Rekomendowane rozwiązanie (żeby przycisk działał tak samo jak AI)
+
+#### Rekomendacja główna (docelowa, wymagana dla 1:1)
+1. Zapewnić działający endpoint `POST /api/build-json` w środowisku, gdzie używany jest przycisk.
+2. Wymusić semantykę „canonical only” dla przycisku:
+   - jeśli endpoint nie działa, **nie generować** pliku fallbackiem JS,
+   - zwrócić czytelny komunikat: „generator kanoniczny niedostępny”.
+3. Dodać test po generacji: liczba `{{RED}}` > 0 i porównanie z baseline/golden.
+
+To jest jedyna droga gwarantująca zgodność przycisk==AI.
+
+#### Rekomendacja operacyjna (na już)
+- Dla hostingu statycznego bez backendu: przycisk powinien informować, że trzeba wykonać generację skryptem `build_json.py` (tak jak w krokach aktualizacji), zamiast produkować „działający, ale rozjechany” plik przez fallback.
+
+### Kryterium akceptacji po poprawce
+
+Przycisk można uznać za zgodny z AI dopiero gdy:
+1. dla tego samego `Repozytorium.xlsx` wynik przycisku i AI ma identyczne markery `{{RED}}/{{B}}/{{I}}`,
+2. diff semantyczny (po normalizacji EOL i kolejności kluczy JSON) jest pusty,
+3. logi potwierdzają wykonanie ścieżki kanonicznej, nie fallbacku JS.
+
+### Podsumowanie końcowe (runda 2)
+
+Obecna różnica nie jest sprzeczna z wcześniejszą analizą — potwierdza ją. Hotfix przywrócił „działanie przycisku” dzięki fallbackowi, ale fallback jest inną implementacją niż AI i nadal traci `{{RED}}`. Aby przycisk działał **tak samo** jak AI, trzeba wymusić realne użycie `build_json.py` (endpoint/serwis) i zablokować generację fallbackową jako wynik produkcyjny.
