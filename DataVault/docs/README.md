@@ -43,6 +43,7 @@ Najważniejsze zasady działania:
   - Podpowiedź pod przyciskiem przypomina też, że `Repozytorium.xlsx` musi istnieć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego miejsca.
   - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
   - Generator admina zachowuje formatowanie inline z rich text (`{{I}}`, `{{B}}`, `{{RED}}`) i nadal ignoruje wypełnienie komórek (fill).
+  - Dodatkowo, jeżeli kolor czerwony jest ustawiony stylem całej komórki (a nie tylko fragmentu tekstu), generator opakuje zawartość markerami `{{RED}}...{{/RED}}`, dzięki czemu wynik odpowiada ścieżce CLI (`build_json.py`).
   - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
 ### Zakładki sterowane checkboxami
@@ -161,7 +162,7 @@ Below are two equivalent ways to update the data. In this repository update, `da
 4. The browser downloads a new `data.json` — save it and **replace** `data.json` on your hosting.
 5. Refresh the app in player mode (without `?admin=1`) and verify the data.
 
-> This method preserves rich text styling (italic/bold/red) for inline XLSX content.
+> This method preserves rich text styling (italic/bold/red) for inline XLSX content and now also respects red color applied at the whole-cell style level (still ignoring fill/background).
 
 #### Method 2: CLI script
 1. Make sure the latest `Repozytorium.xlsx` is in the DataVault module folder.

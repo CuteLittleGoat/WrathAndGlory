@@ -509,6 +509,7 @@ Mapowanie na `getElementById`:
   - `{{B}}...{{/B}}`
   - `{{I}}...{{/I}}`
   - `{{RED}}...{{/RED}}`
+- Dodatkowo sprawdza kolor fontu na poziomie stylu komórki (`cell.s` / `cell.style`); jeśli komórka jest czerwona, a treść nie ma runów rich text z własnym kolorowaniem, zawartość jest opakowywana markerami `{{RED}}...{{/RED}}` (zgodnie z logiką CLI `build_json.py`).
 - Wypełnienie komórki (fill/background) nie jest brane pod uwagę.
 - Pobiera pierwszy wiersz jako nagłówki i zapisuje ich kolejność (z uwzględnieniem scalania `Cecha 1..N` → `Cechy` i `Zasięg 1..3` → `Zasięg`).
 - Buduje `data.json` z `_meta.sheetOrder` i `_meta.columnOrder`, a następnie inicjalizuje UI.

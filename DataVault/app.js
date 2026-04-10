@@ -738,14 +738,47 @@ function htmlToStyleMarkers(html){
   return chunks.join("");
 }
 
+function isCellStyledRed(cell){
+  const colorCandidates = [
+    cell?.s?.fgColor?.rgb,
+    cell?.s?.font?.color?.rgb,
+    cell?.s?.font?.color?.theme,
+    cell?.s?.font?.color?.indexed,
+    cell?.style?.font?.color?.rgb,
+  ];
+  for (const candidate of colorCandidates){
+    if (isRedColorValue(candidate)){
+      return true;
+    }
+  }
+  return false;
+}
+
+function hasInlineFormattingRuns(html){
+  if (typeof html !== "string" || !html.trim()){
+    return false;
+  }
+  return /<\/?(?:span|font|b|strong|i|em)\b|<br\s*\/?>/i.test(html);
+}
+
 function getCellTextWithMarkers(ws, addr){
   const cell = ws?.[addr];
   if (!cell) return "";
+  const styleIsRed = isCellStyledRed(cell);
+
   if (typeof cell.h === "string" && cell.h.trim()){
-    return htmlToStyleMarkers(cell.h).trim();
+    const withMarkers = htmlToStyleMarkers(cell.h).trim();
+    if (styleIsRed && withMarkers && !withMarkers.includes("{{RED}}") && !hasInlineFormattingRuns(cell.h)){
+      return `{{RED}}${withMarkers}{{/RED}}`;
+    }
+    return withMarkers;
   }
   const raw = cell.w ?? cell.v ?? "";
-  return String(raw).trim();
+  const text = String(raw).trim();
+  if (styleIsRed && text && !text.includes("{{RED}}")){
+    return `{{RED}}${text}{{/RED}}`;
+  }
+  return text;
 }
 
 function extractSheetRowsWithFormatting(ws){
