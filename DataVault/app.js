@@ -27,7 +27,7 @@ const translations = {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generuj data.json",
-      updateNoteFull: "Kliknięcie przycisku wygeneruje nowy plik data.json. Następnie wgraj go do folderu modułu obok index.html, aby zaktualizować dane w aplikacji.",
+      updateNoteFull: "Kliknięcie przycisku wygeneruje nowy plik <code>data.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a wygenerowany <code>data.json</code> trzeba tam wgrać, aby zaktualizować dane w aplikacji.",
       resetViewButton: "Reset widoku",
       compareButton: "Porównaj zaznaczone",
       filtersTitle: "FILTRY",
@@ -87,7 +87,7 @@ const translations = {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generate data.json",
-      updateNoteFull: "Clicking the button generates a new data.json file. Then upload it to the module folder next to index.html to update data in the app.",
+      updateNoteFull: "Clicking the button generates a new <code>data.json</code> file. <code>Repozytorium.xlsx</code> must exist in the DataVault module next to <code>index.html</code>, and the generated <code>data.json</code> must be uploaded there to update app data.",
       resetViewButton: "Reset view",
       compareButton: "Compare selected",
       filtersTitle: "FILTERS",
@@ -158,7 +158,7 @@ const applyLanguage = (lang) => {
   document.querySelectorAll("[data-i18n]").forEach((el) => {
     const key = el.getAttribute("data-i18n");
     if (key in t.labels) {
-      if (key === "emptyText") {
+      if (key === "emptyText" || key === "updateNoteFull") {
         el.innerHTML = t.labels[key];
       } else {
         el.textContent = t.labels[key];

@@ -16,7 +16,7 @@ Najważniejsze zasady działania:
 - Kolumny liczbowe są wyśrodkowane; w **Broniach** kolumna `Zasięg` nie zawija wierszy.
 - Wszystkie tabele używają teraz wyraźnego **zebra striping** (ciemny pas pozostaje bez zmian, jasny pas ma ten sam odcień co poprzedni hover), a najechanie oraz zaznaczenie checkboxa używają tego samego, najmocniejszego podświetlenia wiersza.
 - Lewy panel **Filtry** ma stałą szerokość `180px` na desktopie, aby zostawić więcej miejsca na tabelę.
-- W trybie admina notatka obok przycisku generowania danych ma większą szerokość (`max-width: 640px`), aby wygodnie pomieścić dłuższą instrukcję.
+- W trybie admina notatka obok przycisku generowania danych ma większą szerokość (`max-width: 640px`) i zawiera pełną informację: `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` należy tam wgrać, aby odświeżyć dane.
 - Kolumna wyboru (✓) ma zawsze stałą szerokość 8ch (min/max/width) we wszystkich zakładkach, więc nie rozszerza się wraz z szerokością okna.
 - W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), a tabela ma `table-layout: fixed` i `width: max-content`, więc **wszystkie** jej kolumny pozostają stałe.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
@@ -40,6 +40,7 @@ Najważniejsze zasady działania:
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
   - Dostępny jest przycisk **Generuj data.json**, który generuje nowy plik `data.json` na podstawie `Repozytorium.xlsx` znajdującego się w folderze modułu DataVault (obok `index.html`).
+  - Podpowiedź pod przyciskiem przypomina też, że `Repozytorium.xlsx` musi istnieć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego miejsca.
   - XLSX jest odczytywany w przeglądarce (SheetJS z CDN), a następnie generowany jest nowy `data.json` do pobrania.
   - Generator admina zachowuje formatowanie inline z rich text (`{{I}}`, `{{B}}`, `{{RED}}`) i nadal ignoruje wypełnienie komórek (fill).
   - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
@@ -113,7 +114,7 @@ Key behavior:
 - Numeric columns are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
 - All tables now use clear **zebra striping** (the dark stripe stays unchanged, while the light stripe uses the previous hover shade), and both hover and checkbox selection use the same strongest full-row highlight.
 - The left **Filters** panel uses a fixed `180px` width on desktop to leave more room for the table.
-- In admin mode, the data-generation note next to the button is wider (`max-width: 640px`) so the full instruction is readable in one area.
+- In admin mode, the data-generation note next to the button is wider (`max-width: 640px`) and includes the full instruction: `Repozytorium.xlsx` must be next to `index.html`, and the generated `data.json` must be uploaded there.
 - The selection (✓) column is always locked to 8ch (min/max/width) across all tabs, so it does not expand with viewport width.
 - In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), and the table uses `table-layout: fixed` with `width: max-content`, so **all** columns stay fixed.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
@@ -137,6 +138,7 @@ Key behavior:
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
   - The **Generate data.json** button appears and generates a new `data.json` file from `Repozytorium.xlsx` located in the DataVault module folder (next to `index.html`).
+  - The hint below the button also reminds you that `Repozytorium.xlsx` must exist next to `index.html`, and the generated `data.json` must be uploaded to the same location.
   - The XLSX is parsed in the browser (SheetJS via CDN) and a new `data.json` is generated for download.
   - The admin generator preserves inline rich text markers (`{{I}}`, `{{B}}`, `{{RED}}`) and still ignores cell fill/background formatting.
   - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) are visible only in this mode (when the combat checkbox is enabled).
