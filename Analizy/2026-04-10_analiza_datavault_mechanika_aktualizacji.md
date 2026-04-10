@@ -54,3 +54,33 @@ Aby zachować oczekiwane formatowanie (bold/italic/red) i dalej ignorować fill:
 2. Przepisać webową ścieżkę `loadXlsxFromRepo()` tak, by parsowała XML XLSX analogicznie do `build_json.py` i produkowała markery stylów.
 
 Do czasu wdrożenia poprawki wariant 1 jest najpewniejszy i już działa zgodnie z wymaganiami.
+
+## Co zostało zmienione po analizie (wdrożona naprawa)
+
+Wdrożono poprawkę w ścieżce webowej **„Aktualizuj dane”** w `DataVault/app.js`:
+
+1. Zmieniono sposób odczytu XLSX w `loadXlsxFromRepo()`:
+   - wcześniej dane były pobierane przez `XLSX.utils.sheet_to_json(...)` (co gubiło rich text),
+   - teraz workbook jest czytany z opcjami `cellHTML: true` i `cellStyles: true`,
+   - a arkusze są przetwarzane własną funkcją `extractSheetRowsWithFormatting(...)`.
+
+2. Dodano parser formatowania inline:
+   - `htmlToStyleMarkers(html)` konwertuje HTML rich text z komórki (`cell.h`) na markery:
+     - `{{I}}...{{/I}}`
+     - `{{B}}...{{/B}}`
+     - `{{RED}}...{{/RED}}`
+   - parser obsługuje znaczniki `<i>/<em>`, `<b>/<strong>`, `<span style="color: ...">` oraz `<br>`.
+
+3. Dodano wykrywanie czerwonego koloru:
+   - `isRedColorValue(...)` rozpoznaje m.in. `red`, `#f00`, `#ff0000`, `#ffff0000`, `rgb(255,0,0)`, `rgba(255,0,0,1)`.
+
+4. Dodano bezpieczny odczyt wartości komórki:
+   - `getCellTextWithMarkers(...)` preferuje `cell.h` (z markerami), a w pozostałych przypadkach używa `cell.w` / `cell.v`.
+
+5. Zachowano wymaganie biznesowe dotyczące fill:
+   - mechanizm **nie** bierze pod uwagę wypełnienia/tła komórki (fill/background),
+   - uwzględnia tylko formatowanie tekstu inline (bold/italic/red).
+
+6. Zaktualizowano dokumentację modułu DataVault:
+   - `DataVault/docs/README.md` (PL/EN) — doprecyzowano zachowanie przycisku „Aktualizuj dane”,
+   - `DataVault/docs/Documentation.md` — dopisano techniczne szczegóły nowej ścieżki parsowania.
