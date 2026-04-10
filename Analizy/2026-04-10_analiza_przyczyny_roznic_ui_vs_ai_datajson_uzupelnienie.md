@@ -142,3 +142,27 @@ Wdrożono rekomendowaną naprawę z tej analizy: **przejście przycisku UI na ka
 - UI nie opiera już generacji na podatnym na rozjazdy parserze stylów SheetJS.
 - Docelowy `data.json` ma być generowany tą samą logiką co AI (`build_json.py`), co eliminuje źródło różnic markerów `{{RED}}`.
 - Dla środowisk bez backendu pozostawiono jawny fallback operacyjny do CLI.
+
+---
+
+## Korekta po weryfikacji działania przycisku (2026-04-10)
+
+Po wdrożeniu pierwszej wersji hotfixu wykryto regresję funkcjonalną:
+- w środowisku bez endpointu `POST /api/build-json` przycisk **Generuj data.json** nie pobierał pliku (kończył się jedynie logiem błędu),
+- z punktu widzenia użytkownika aplikacja „nie reagowała”.
+
+### Co poprawiono w kodzie
+
+1. W `DataVault/app.js` dodano automatyczny fallback uruchamiany w `catch` po nieudanym wywołaniu endpointu kanonicznego:
+   - fallback pobiera `Repozytorium.xlsx`,
+   - parsuje arkusze przez istniejącą ścieżkę `extractSheetRowsWithFormatting`,
+   - buduje JSON przez `buildDataJsonFromSheets`,
+   - uruchamia `downloadDataJson(data)` i odświeża UI.
+2. Dodano nowe komunikaty statusu `statusFallbackStart` (PL/EN), aby było jasne, że aplikacja przełączyła się na generator przeglądarkowy.
+3. CLI (`python build_json.py Repozytorium.xlsx data.json`) pozostaje ostatnią ścieżką awaryjną tylko wtedy, gdy także fallback przeglądarkowy zakończy się błędem.
+
+### Efekt korekty
+
+- Przycisk **Generuj data.json** ponownie działa na hostingu statycznym (bez backendu).
+- Gdy endpoint kanoniczny istnieje, używana jest ścieżka rekomendowana (spójna z AI).
+- Gdy endpoint nie istnieje, użytkownik nadal otrzymuje nowy `data.json` dzięki fallbackowi przeglądarkowemu.

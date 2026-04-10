@@ -74,6 +74,7 @@ const translations = {
       statusRepoError: "Błąd aktualizacji danych",
       statusCanonicalStart: "Generowanie data.json ścieżką kanoniczną (build_json.py)...",
       statusCanonicalUnavailable: "Brak endpointu generatora kanonicznego. Użyj build_json.py lokalnie.",
+      statusFallbackStart: "Brak endpointu kanonicznego — uruchamianie generatora przeglądarkowego (fallback)...",
       modeAdmin: "ADMIN",
       modePlayer: "GRACZ",
       invocationLabel: "CECHA: WYWOŁANIE",
@@ -136,6 +137,7 @@ const translations = {
       statusRepoError: "Error updating data",
       statusCanonicalStart: "Generating data.json through canonical pipeline (build_json.py)...",
       statusCanonicalUnavailable: "Canonical generator endpoint unavailable. Use build_json.py locally.",
+      statusFallbackStart: "Canonical endpoint unavailable — running browser generator (fallback)...",
       modeAdmin: "ADMIN",
       modePlayer: "PLAYER",
       invocationLabel: "TRAIT: INVOCATION",
@@ -824,6 +826,25 @@ function extractSheetRowsWithFormatting(ws){
 
 function loadXlsxFromRepo(){
   ensureSheetJS(async ()=>{
+    const runBrowserFallback = async () => {
+      setStatus(translations[currentLanguage].messages.statusFallbackStart);
+      setStatus(translations[currentLanguage].messages.statusRepoDownload);
+      const res = await fetch("Repozytorium.xlsx", {cache:"no-store"});
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const buf = await res.arrayBuffer();
+      const wb = XLSX.read(buf, {type:"array", cellHTML: true, cellStyles: true});
+      const sheets = {};
+      const sheetOrder = wb.SheetNames.slice();
+      const columnOrder = {};
+      for (const name of wb.SheetNames){
+        const ws = wb.Sheets[name];
+        const {header, rows} = extractSheetRowsWithFormatting(ws);
+        columnOrder[name] = deriveColumnOrderFromHeader(header);
+        sheets[name] = rows;
+      }
+      return buildDataJsonFromSheets(sheets, {sheetOrder, columnOrder});
+    };
+
     try{
       setStatus(translations[currentLanguage].messages.statusCanonicalStart);
       const res = await fetch(CANONICAL_GENERATOR_ENDPOINT, {
@@ -840,11 +861,18 @@ function loadXlsxFromRepo(){
       initUI();
       setStatus(translations[currentLanguage].messages.statusRepoUpdated);
     }catch(e){
-      setStatus(translations[currentLanguage].messages.statusCanonicalUnavailable);
-      const cliHint = "python build_json.py Repozytorium.xlsx data.json";
-      logLine(`${translations[currentLanguage].messages.statusRepoError}: ${e.message}`, true);
-      logLine(`[HOTFIX] ${translations[currentLanguage].messages.statusCanonicalUnavailable}`, true);
-      logLine(`[HOTFIX] CLI: ${cliHint}`, true);
+      logLine(`${translations[currentLanguage].messages.statusCanonicalUnavailable}: ${e.message}`, true);
+      try{
+        const data = await runBrowserFallback();
+        downloadDataJson(data);
+        DB = normaliseDB(data);
+        initUI();
+        setStatus(translations[currentLanguage].messages.statusRepoUpdated);
+      }catch(fallbackError){
+        setStatus(translations[currentLanguage].messages.statusRepoError);
+        logLine(`${translations[currentLanguage].messages.statusRepoError}: ${fallbackError.message}`, true);
+        logLine(`[HOTFIX] CLI: python build_json.py Repozytorium.xlsx data.json`, true);
+      }
     }
   });
 }
