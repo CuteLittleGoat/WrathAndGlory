@@ -42,7 +42,7 @@ Najważniejsze zasady działania:
   - Dostępny jest przycisk **Generuj data.json**, który uruchamia kanoniczną ścieżkę generowania (`POST /api/build-json`) i pobiera gotowy plik `data.json`.
   - Podpowiedź pod przyciskiem przypomina też, że `Repozytorium.xlsx` musi istnieć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego miejsca.
   - Przycisk korzysta z tej samej logiki co generator AI/CLI (`build_json.py`), więc wynik UI i AI pozostaje spójny (w tym markery `{{RED}}`).
-  - Gdy endpoint jest niedostępny (np. hosting statyczny bez backendu), aplikacja automatycznie przełącza się na generator przeglądarkowy (fallback) i nadal pobiera `data.json`; przy błędzie fallbacku wypisuje komendę CLI.
+  - Gdy endpoint jest niedostępny (np. hosting statyczny bez backendu), przycisk kończy się komunikatem błędu i wskazuje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
   - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
 ### Zakładki sterowane checkboxami
@@ -63,9 +63,9 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 2. Otwórz aplikację w trybie admina: `http://localhost:8000/?admin=1`.
 3. Kliknij **Generuj data.json**.
 4. Jeśli endpoint `POST /api/build-json` działa, przeglądarka pobierze nowy `data.json` — zapisz plik i **podmień** nim `data.json` na hostingu.
-5. Jeśli endpoint nie działa, aplikacja automatycznie użyje fallbacku przeglądarkowego i również pobierze `data.json`.
-6. Jeśli również fallback zawiedzie, uruchom CLI: `python build_json.py Repozytorium.xlsx data.json`.
-7. Odśwież aplikację w trybie gracza (bez `?admin=1`) i upewnij się, że dane są widoczne.
+5. Jeśli endpoint nie działa, przycisk nie wygeneruje pliku (celowo — tryb canonical only).
+6. Wykonaj wtedy CLI: `python build_json.py Repozytorium.xlsx data.json`.
+7. Wgraj wygenerowany plik na hosting i odśwież aplikację w trybie gracza (bez `?admin=1`), aby potwierdzić aktualizację.
 
 > Ta metoda opiera się o kanoniczny generator (`build_json.py`), co eliminuje rozjazdy UI vs AI.
 
@@ -144,7 +144,7 @@ Key behavior:
   - The **Generate data.json** button appears and triggers the canonical generation path (`POST /api/build-json`) to download a ready `data.json` file.
   - The hint below the button also reminds you that `Repozytorium.xlsx` must exist next to `index.html`, and the generated `data.json` must be uploaded to the same location.
   - The button uses the same logic as the AI/CLI generator (`build_json.py`), ensuring parity between UI and AI output.
-  - If the endpoint is unavailable (e.g. static hosting without backend), the app automatically switches to browser-side generator fallback and still downloads `data.json`; if fallback fails, it logs the CLI command.
+  - If the endpoint is unavailable (e.g. static hosting without backend), the button ends with an error message and prints the CLI command (`python build_json.py Repozytorium.xlsx data.json`).
   - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) are visible only in this mode (when the combat checkbox is enabled).
 
 ### Tabs controlled by checkboxes
@@ -165,9 +165,9 @@ Below are two equivalent ways to update the data. In this repository update, `da
 2. Open the app in admin mode: `http://localhost:8000/?admin=1`.
 3. Click **Generate data.json**.
 4. If `POST /api/build-json` is available, the browser downloads a new `data.json` — save it and **replace** `data.json` on your hosting.
-5. If the endpoint is unavailable, the app automatically runs browser fallback and still downloads `data.json`.
-6. If fallback also fails, run CLI: `python build_json.py Repozytorium.xlsx data.json`.
-7. Refresh the app in player mode (without `?admin=1`) and verify the data.
+5. If the endpoint is unavailable, the button will not generate a file (intentional — canonical-only mode).
+6. Run CLI instead: `python build_json.py Repozytorium.xlsx data.json`.
+7. Upload the generated file and refresh the app in player mode (without `?admin=1`) to verify the update.
 
 > This method relies on the canonical generator (`build_json.py`), eliminating UI vs AI formatting drift.
 
