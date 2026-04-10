@@ -1,6 +1,6 @@
 # Administratum Data Vault — dokumentacja techniczna (super dokładna)
 
-Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to statyczny frontend (HTML/CSS/JS) pracujący na `data.json`, z opcjonalnym generowaniem danych z `Repozytorium.xlsx`.
+Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na `data.json`, z opcjonalnym wywołaniem kanonicznego generatora danych.
 
 ---
 
@@ -11,7 +11,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `app.js` — cała logika: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i admin-update.
 - `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego dostarczonego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (ostatnia regeneracja w repozytorium: **2026-04-10**).
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`; plik musi leżeć w folderze modułu DataVault (obok `index.html`), bo frontend pobiera go ścieżką względną.
-- `build_json.py` — skrypt CLI generujący `data.json` z XLSX (alternatywa dla admin update w przeglądarce). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
+- `build_json.py` — kanoniczny generator `data.json` z XLSX (AI/CLI/backend). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 - `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
 
 ---
@@ -32,7 +32,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
   - `.language-switcher select#languageSelect` z opcjami `pl` i `en`.
   - Ciemne tło selecta (`#0b0b0b`) utrzymuje spójność z motywem konsolowym.
 
-**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`). W trybie admina grupa pokazuje długi komunikat, że kliknięcie przycisku generuje nowy `data.json`; jednocześnie przypomina, że `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego katalogu, aby zaktualizować dane.
+**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`). W trybie admina grupa pokazuje komunikat, że kliknięcie przycisku generuje nowy `data.json`; przypomina też, że `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego katalogu, aby zaktualizować dane.
 
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
@@ -502,17 +502,14 @@ Mapowanie na `getElementById`:
 - Generuje blob i wymusza pobranie `data.json`.
 
 ### 7.5 `loadXlsxFromRepo()`
-- Pobiera `Repozytorium.xlsx` z `cache:"no-store"` ścieżką względną (z tego samego folderu co `index.html`).
-- Czyta arkusze z `cellHTML: true` i `cellStyles: true`.
-- Parsuje komórki własną ścieżką (`extractSheetRowsWithFormatting`) zamiast `XLSX.utils.sheet_to_json`, dzięki czemu zachowuje rich text.
-- Dla komórek z HTML (`cell.h`) konwertuje `<b>/<strong>`, `<i>/<em>` oraz czerwony `color` na markery:
-  - `{{B}}...{{/B}}`
-  - `{{I}}...{{/I}}`
-  - `{{RED}}...{{/RED}}`
-- Dodatkowo sprawdza kolor fontu na poziomie stylu komórki (`cell.s` / `cell.style`); jeśli komórka jest czerwona, a treść nie ma runów rich text z własnym kolorowaniem, zawartość jest opakowywana markerami `{{RED}}...{{/RED}}` (zgodnie z logiką CLI `build_json.py`).
-- Wypełnienie komórki (fill/background) nie jest brane pod uwagę.
-- Pobiera pierwszy wiersz jako nagłówki i zapisuje ich kolejność (z uwzględnieniem scalania `Cecha 1..N` → `Cechy` i `Zasięg 1..3` → `Zasięg`).
-- Buduje `data.json` z `_meta.sheetOrder` i `_meta.columnOrder`, a następnie inicjalizuje UI.
+- Hotfix: funkcja uruchamia kanoniczną ścieżkę przez `POST /api/build-json` (`cache:"no-store"`), aby wynik był zgodny z `build_json.py`.
+- Oczekuje odpowiedzi JSON (`data.json`), po czym:
+  - uruchamia `downloadDataJson(data)`,
+  - normalizuje dane (`normaliseDB`),
+  - odświeża UI (`initUI`).
+- Jeśli endpoint jest niedostępny:
+  - ustawia status o braku endpointu kanonicznego,
+  - loguje błąd i hotfix CLI (`python build_json.py Repozytorium.xlsx data.json`).
 
 ### 7.6 `normaliseDB(data)`
 - Ignoruje arkusze zaczynające się od `_`.
