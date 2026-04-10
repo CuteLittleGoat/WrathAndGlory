@@ -74,7 +74,13 @@ code{color:var(--code)}
   color:var(--text);
 }
 .language-switcher select:focus{outline:none; box-shadow:0 0 0 3px rgba(22,198,12,.18)}
-.actionsGroup{display:flex; flex-direction:column; gap:6px; max-width:320px}
+.actionsGroup{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  max-width:640px;
+  width:min(640px, calc(100vw - 40px));
+}
 .actionsNote{font-size:11px; color:var(--text2); letter-spacing:.02em; text-transform:none}
 .btn{
   border-radius:4px;
