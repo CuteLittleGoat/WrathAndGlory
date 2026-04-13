@@ -668,8 +668,13 @@ Obsługuje trzy przypadki:
 - Dla każdej kolumny:
   - Porównuje wartości, jeśli różne → wiersz z klasą `diff`.
   - `Cechy` renderuje jako zwykły tekst.
-  - `Zasięg` → `formatRangeHTML`.
-  - Pozostałe → `formatTextHTML`.
+  - Pozostałe kolumny renderuje przez wspólną funkcję `formatDataCellHTML(row, col, sheetName)`.
+- `formatDataCellHTML(...)` jest używane zarówno przez tabelę główną (`renderRow`), jak i modal porównania, dzięki czemu obie ścieżki mają identyczne reguły:
+  - arkusz `Słowa Kluczowe` + kolumna `Nazwa` → `formatKeywordHTML` (całość na czerwono),
+  - arkusze z `KEYWORD_SHEETS_COMMA_NEUTRAL` + kolumna `Słowa Kluczowe` → `formatKeywordHTML(..., {commasNeutral:true})`,
+  - arkusz `Słowa Kluczowe Frakcji` + kolumna `Słowo Kluczowe` → `formatFactionKeywordHTML` (wyjątki `-`, `lub`, pełna czerwień dla `[ŚWIAT-KUŹNIA]`),
+  - fallback → `getFormattedCellHTML` (`formatRangeHTML` dla `Zasięg`, inaczej `formatTextHTML` z pełnym wsparciem markerów `{{RED}}/{{B}}/{{I}}`, referencji `(str.)` i `*[n]`).
+- `openModal(...)` nie renderuje już dodatkowego nagłówka `<h3>` w treści modala; tytuł pozostaje tylko w pasku `.modalHeader` (`#modalTitle`), co usuwa wizualny duplikat „PORÓWNANIE”.
 
 ### 13.2 Zamknięcie
 - Kliknięcie `#modalClose`.
