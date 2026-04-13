@@ -785,6 +785,25 @@ td.center{text-align:center}
   table-layout:fixed;
   width:max-content;
 }
+
+/* Globalne wymuszenie szerokości i stylu kolumn źródłowych dla wszystkich zakładek */
+.tableWrap table[data-sheet] th[data-col="Podręcznik"],
+.tableWrap table[data-sheet] td[data-col="Podręcznik"]{
+  min-width:17ch;
+  max-width:none;
+  text-align:left;
+  white-space:normal;
+}
+.tableWrap table[data-sheet] th[data-col="Strona"],
+.tableWrap table[data-sheet] td[data-col="Strona"]{
+  min-width:6ch;
+  max-width:none;
+  text-align:center;
+  white-space:normal;
+}
+.tableWrap table[data-sheet] td[data-col="Strona"]{
+  color:var(--code);
+}
 .slash{color:var(--code)}
 .ref{color:var(--code); opacity:.9}
 .caretref{color:var(--code); opacity:.95}

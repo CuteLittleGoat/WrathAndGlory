@@ -158,6 +158,8 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia` mają tekst w kolorze `#d74b4b` (`--red`).
 
 ### 3) Zasady formatowania tekstu i wyjątki
+- We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, środek, standardowe łamanie, brak max-width).
+- Wartości kolumny `Strona` mają kolor `--code` (`#D2FAD2`), taki sam jak referencje `(str.)` (`.ref`).
 #### 3.1 Zwykły tekst i łamanie linii
 - Komórki używają `.celltext`:
   - `white-space: pre-wrap` (zachowanie nowych linii z danych).

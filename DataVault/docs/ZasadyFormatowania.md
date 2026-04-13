@@ -150,6 +150,16 @@ Nowe linie z XLSX (lub z `<br>`) są zachowywane i renderowane jako `<br>`.
 W długich komórkach system może przyciąć podgląd do 9 linii i dopisać hint (`.clampHint`).
 To nie zmienia semantyki koloru/pogrubienia/kursywy, tylko sposób prezentacji skrótu.
 
+### 7.4 Kolumna `Strona` — kolor i prezentacja
+- We wszystkich zakładkach kolumna `Strona` ma kolor tekstu jak referencje `(str.)`, czyli `var(--code)` (ten sam ton co klasa `.ref`).
+- Kolumna `Strona` używa standardowego łamania (`white-space: normal`) i wyśrodkowania wartości.
+- Minimalna szerokość kolumny `Strona` jest ujednolicona do `6ch` we wszystkich tabelach.
+
+### 7.5 Kolumna `Podręcznik` — szerokość i prezentacja
+- We wszystkich zakładkach kolumna `Podręcznik` ma minimalną szerokość `17ch`.
+- Dla kolumny `Podręcznik` nie jest ustawiany `max-width` (wartość: brak/none).
+- Wyrównanie pozostaje do lewej, z domyślnym łamaniem (`white-space: normal`).
+
 ---
 
 ## 8) Checklista dla osoby tworzącej nowy `Repozytorium.xlsx`
@@ -162,6 +172,8 @@ To nie zmienia semantyki koloru/pogrubienia/kursywy, tylko sposób prezentacji s
    - używaj `lub` i `-` świadomie (będą neutralne),
    - zapis `[ŚWIAT-KUŹNIA]` traktuj jako specjalny token, który ma pozostać w całości czerwony.
 6. Jeżeli zależy Ci na kursywie/pogrubieniu (np. `lub` kursywą), ustaw to w samej komórce XLSX rich text — DataVault to zachowa.
+7. W kolumnie `Strona` utrzymuj wartości jako odwołania do stron — UI renderuje je kolorem `var(--code)` jak `(str.)` oraz wyśrodkowuje w polu o min. szerokości `6ch`.
+8. W kolumnie `Podręcznik` utrzymuj krótkie nazwy źródeł — UI rezerwuje min. `17ch`, wyrównanie do lewej, standardowe łamanie.
 
 ---
 

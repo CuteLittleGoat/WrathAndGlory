@@ -122,6 +122,8 @@ Efekty i obwódki:
 ### 3.6 Tabela
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.
 - `.dataTable` — `border-collapse`, `box-shadow`, sticky headers.
+- Kolumny `Podręcznik` i `Strona` są globalnie ujednolicone we wszystkich zakładkach: `Podręcznik` ma `min-width: 17ch`, wyrównanie do lewej i standardowe łamanie; `Strona` ma `min-width: 6ch`, wyrównanie do środka i standardowe łamanie. Obie kolumny nie mają limitu `max-width`.
+- Komórki `Strona` (`td[data-col="Strona"]`) używają koloru `var(--code)`, czyli dokładnie tego samego tonu co referencje `(str.)` renderowane klasą `.ref`.
 - Nagłówki:
   - `thead th` — sticky, uppercase, background gradient.
   - Drugi wiersz nagłówka (`tr:nth-child(2)`) ma niższe tło i `top: var(--header-row-height)`.
@@ -160,6 +162,10 @@ Efekty i obwódki:
 
 ### 3.13 Szerokości kolumn (min-width)
 Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
+
+- **Reguła globalna (nadpisująca lokalne wyjątki):**
+  - `Podręcznik`: `min-width: 17ch`, `max-width: none`, `text-align: left`, `white-space: normal`.
+  - `Strona`: `min-width: 6ch`, `max-width: none`, `text-align: center`, `white-space: normal`, kolor komórek `td` = `var(--code)`.
 
 - **Bestiariusz**
   - `Nazwa`: 26ch
@@ -257,7 +263,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Typ`: 32ch
   - `Nazwa`: 20ch
   - `Opis`: 56ch
-  - `Strona`: 11ch (wycentrowane, bez zawijania)
+  - `Strona`: 6ch (wycentrowane, standardowe łamanie; kolor `var(--code)`)
 
 - **Tryby Ognia**
   - `Nazwa`: 20ch
