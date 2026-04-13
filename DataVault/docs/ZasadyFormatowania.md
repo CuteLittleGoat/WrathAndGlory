@@ -151,14 +151,7 @@ W długich komórkach system może przyciąć podgląd do 9 linii i dopisać hin
 To nie zmienia semantyki koloru/pogrubienia/kursywy, tylko sposób prezentacji skrótu.
 
 ### 7.4 Kolumna `Strona` — kolor i prezentacja
-- We wszystkich zakładkach kolumna `Strona` ma kolor tekstu jak referencje `(str.)`, czyli `var(--code)` (ten sam ton co klasa `.ref`).
-- Kolumna `Strona` używa standardowego łamania (`white-space: normal`) i wyśrodkowania wartości.
-- Minimalna szerokość kolumny `Strona` jest ujednolicona do `6ch` we wszystkich tabelach.
-
-### 7.5 Kolumna `Podręcznik` — szerokość i prezentacja
-- We wszystkich zakładkach kolumna `Podręcznik` ma minimalną szerokość `17ch`.
-- Dla kolumny `Podręcznik` nie jest ustawiany `max-width` (wartość: brak/none).
-- Wyrównanie pozostaje do lewej, z domyślnym łamaniem (`white-space: normal`).
+We wszystkich zakładkach kolumna `Strona` ma kolor tekstu jak referencje `(str.)`, czyli `var(--code)` (ten sam ton co klasa `.ref`).
 
 ---
 
