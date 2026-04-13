@@ -92,6 +92,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 ### Skróty funkcji w interfejsie
 - Kliknięcie nagłówka kolumny: sortowanie rosnąco/malejąco/reset.
 - Drugi wiersz nagłówka: filtr tekstowy oraz filtr listy (przycisk ▾).
+- Przycisk ▾ działa jak przełącznik: drugi klik w ten sam przycisk zamyka menu filtrowania; klik poza menu także je zamyka.
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
 - Panel „popover” przewija się przy długich opisach, a tytuł może zawijać się, by nie ucinać znaków.
@@ -198,6 +199,7 @@ Below are two equivalent ways to update the data. In this repository update, `da
 ### UI shortcuts
 - Click a column header: sort ascending/descending/reset.
 - Second header row: text filter + list filter (▾ button).
+- The ▾ button now works as a toggle: clicking the same button again closes the filter menu; clicking outside the menu also closes it.
 - Select 2+ rows: record comparison view.
 - Click a trait tag (`Cechy`): description in the popover panel.
 - The popover panel scrolls for long descriptions, and the title can wrap so characters are not cut off.
