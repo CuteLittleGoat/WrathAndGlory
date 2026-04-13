@@ -20,6 +20,8 @@ Najważniejsze zasady działania:
 - Kolumna wyboru (✓) ma zawsze stałą szerokość 8ch (min/max/width) we wszystkich zakładkach, więc nie rozszerza się wraz z szerokością okna.
 - W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), a tabela ma `table-layout: fixed` i `width: max-content`, więc **wszystkie** jej kolumny pozostają stałe.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
+- We wszystkich zakładkach kolumny `Podręcznik` i `Strona` mają ujednolicone parametry: `Podręcznik` = min. **17ch** (lewo), `Strona` = min. **6ch** (środek), bez limitu `max-width`, ze standardowym łamaniem linii.
+- Wartości w kolumnie `Strona` mają ten sam jaśniejszy kolor co referencje `(str.)` (czyli `--code`).
 
 ### Szybki start
 0. W prawym górnym rogu paska wybierz język interfejsu (domyślnie **Polski**).
@@ -124,6 +126,8 @@ Key behavior:
 - The selection (✓) column is always locked to 8ch (min/max/width) across all tabs, so it does not expand with viewport width.
 - In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), and the table uses `table-layout: fixed` with `width: max-content`, so **all** columns stay fixed.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
+- Across all tabs, the `Podręcznik` and `Strona` columns now use unified settings: `Podręcznik` = min **17ch** (left), `Strona` = min **6ch** (center), no `max-width` limit, and standard line wrapping.
+- Values in the `Strona` column use the same lighter color as `(str.)` references (`--code`).
 
 ### Quick start
 0. Use the language switcher in the top bar (Polish is selected by default).
