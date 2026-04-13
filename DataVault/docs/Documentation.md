@@ -579,10 +579,17 @@ Mapowanie na `getElementById`:
 ### 10.3 Filtr listowy
 - `uniqueValuesForColumn(col)` — zbiór wartości, puste → `"-"`.
 - `openFilterMenu(col, anchorBtn)`:
+  - Obsługuje **toggle** dla tego samego przycisku (`activeFilterCol`, `activeFilterBtn`): drugi klik w tę samą strzałkę `▾` wywołuje `closeFilterMenu()` i zamyka panel.
+  - Przy kliknięciu `▾` w innej kolumnie najpierw zamyka poprzedni panel (`closeFilterMenu()`), potem buduje nowy dla wskazanej kolumny.
   - Buduje listę checkboxów i wyszukiwarkę.
   - Przyciski **Zaznacz wszystko** i **Wyczyść**.
   - Pozycjonuje menu obok przycisku `▾`.
-  - Klik poza menu zamyka menu.
+  - Podczas otwarcia przypina `filterMenuDocHandler` do `document.mousedown`; klik poza menu/podpiętym przyciskiem zamyka panel.
+- `isFilterMenuOpen()` — helper sprawdzający stan `aria-hidden` menu.
+- `closeFilterMenu()`:
+  - Odpina `filterMenuDocHandler` z `document`.
+  - Czyści `activeFilterCol` i `activeFilterBtn`.
+  - Ustawia `aria-hidden="true"` i czyści HTML menu.
 - Etykiety w menu są wyświetlane bez markerów `{{RED}}`, `{{B}}`, `{{I}}`, ale filtrowanie działa na surowych wartościach (nie zmienia logiki danych).
 - `view.filtersSet[col] = null` oznacza brak filtra (wszystko zaznaczone).
 

@@ -100,3 +100,81 @@ Po zmianie warto sprawdzić:
 ## Dodatkowa sugestia UX (opcjonalna)
 
 Warto rozważyć mały przycisk „Zamknij” w menu filtrowania (zwłaszcza mobile), niezależnie od kliknięcia poza obszarem.
+
+---
+
+## Aktualizacja po wdrożeniu (2026-04-13) — dokładny zakres zmian w kodzie
+
+Poniżej zapisano dokładnie co zostało zmienione i gdzie, aby można było szybko wycofać poprawkę.
+
+### 1) `DataVault/app.js`
+
+Wdrożono rekomendowane rozwiązanie toggle oraz stabilne odpinanie listenera dokumentu.
+
+#### Dodane zmienne stanu (sekcja globalna przy `tableEl` / `tbodyEl`)
+- `let activeFilterCol = null;`
+- `let activeFilterBtn = null;`
+- `let filterMenuDocHandler = null;`
+
+#### Dodany helper
+- `isFilterMenuOpen()` — zwraca `true`, gdy `#filterMenu` ma `aria-hidden` różne od `"true"`.
+
+#### Zmienione `openFilterMenu(col, anchorBtn)`
+1. Na wejściu funkcji:
+   - jeśli menu jest już otwarte **dla tej samej kolumny i tego samego przycisku** (`activeFilterCol === col && activeFilterBtn === anchorBtn`) → wywołuje `closeFilterMenu()` i `return` (to realizuje toggle: drugi klik zamyka menu).
+2. Jeśli menu było otwarte dla innej kolumny:
+   - najpierw `closeFilterMenu()`, potem otwarcie nowego menu.
+3. Przy otwieraniu:
+   - aktualizuje aktywny stan: `activeFilterCol = col`, `activeFilterBtn = anchorBtn`.
+4. Zmieniono obsługę kliknięcia poza menu:
+   - zamiast jednorazowego listenera `{ once: true }` przypinany jest handler do `document.mousedown` i zdejmowany w `closeFilterMenu()`.
+   - handler ignoruje kliknięcie wewnątrz menu oraz w przycisk-kotwicę; w pozostałych przypadkach zamyka menu.
+
+#### Zmienione `closeFilterMenu()`
+- Odpina `document.removeEventListener("mousedown", filterMenuDocHandler)`.
+- Zeruje:
+  - `filterMenuDocHandler = null`
+  - `activeFilterCol = null`
+  - `activeFilterBtn = null`
+- Zachowuje poprzednie zachowanie:
+  - `aria-hidden="true"`
+  - `menu.innerHTML = ""`
+
+### 2) `DataVault/docs/README.md`
+
+Zaktualizowano instrukcję użytkownika (PL i EN), sekcja skrótów funkcji interfejsu / UI shortcuts:
+- dopisano, że przycisk `▾` działa jako toggle (drugi klik zamyka menu, klik poza menu także zamyka).
+
+### 3) `DataVault/docs/Documentation.md`
+
+Zaktualizowano techniczny opis filtrowania (sekcja 10.3):
+- opisano nowe zmienne stanu `activeFilterCol`, `activeFilterBtn`,
+- opisano helper `isFilterMenuOpen()`,
+- opisano nową logikę toggle i przełączania między kolumnami,
+- opisano lifecycle `filterMenuDocHandler` (podpięcie przy otwarciu, odpięcie w `closeFilterMenu()`).
+
+## Jak wycofać poprawkę (rollback)
+
+### Wariant szybki (Git)
+1. Cofnąć commit wdrażający tę zmianę:
+   - `git revert <hash_commitu>`
+2. Wgrać revert na gałąź/deploy.
+
+### Wariant ręczny (bez Git revert)
+W `DataVault/app.js`:
+1. Usuń dodane zmienne:
+   - `activeFilterCol`, `activeFilterBtn`, `filterMenuDocHandler`.
+2. Usuń funkcję `isFilterMenuOpen()`.
+3. W `openFilterMenu(...)`:
+   - usuń warunek toggle na początku,
+   - usuń ustawianie `activeFilterCol/activeFilterBtn`,
+   - przywróć jednorazowy listener:
+     - `const onDoc = (...)`
+     - `document.addEventListener("mousedown", onDoc, { once: true })`
+4. W `closeFilterMenu()`:
+   - usuń odpinanie listenera i reset `activeFilter*`.
+
+W dokumentacji:
+5. Usuń dopisane akapity o toggle w:
+   - `DataVault/docs/README.md`
+   - `DataVault/docs/Documentation.md`

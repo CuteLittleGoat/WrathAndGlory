@@ -942,6 +942,13 @@ function initUI(){
 /* ---------- Sheet selection ---------- */
 let tableEl = null;
 let tbodyEl = null;
+let activeFilterCol = null;
+let activeFilterBtn = null;
+let filterMenuDocHandler = null;
+
+function isFilterMenuOpen(){
+  return els.filterMenu.getAttribute("aria-hidden") !== "true";
+}
 let headerBuiltFor = null;
 
 /* Legacy renderer (z przewijaniem i klamrowaniem) — zostawiony do wglądu
@@ -1095,6 +1102,17 @@ function uniqueValuesForColumn(col){
 
 function openFilterMenu(col, anchorBtn){
   const menu = els.filterMenu;
+  if (isFilterMenuOpen() && activeFilterCol === col && activeFilterBtn === anchorBtn){
+    closeFilterMenu();
+    return;
+  }
+
+  if (isFilterMenuOpen()){
+    closeFilterMenu();
+  }
+
+  activeFilterCol = col;
+  activeFilterBtn = anchorBtn;
   menu.innerHTML = "";
 
   const title = document.createElement("div");
@@ -1200,14 +1218,23 @@ function openFilterMenu(col, anchorBtn){
   menu.setAttribute("aria-hidden","false");
 
   // close handlers
-  const onDoc = (ev)=>{
+  filterMenuDocHandler = (ev)=>{
     if (menu.contains(ev.target) || anchorBtn.contains(ev.target)) return;
     closeFilterMenu();
   };
-  setTimeout(()=>document.addEventListener("mousedown", onDoc, {once:true}), 0);
+  setTimeout(()=>{
+    if (!isFilterMenuOpen()) return;
+    document.addEventListener("mousedown", filterMenuDocHandler);
+  }, 0);
 }
 
 function closeFilterMenu(){
+  if (filterMenuDocHandler){
+    document.removeEventListener("mousedown", filterMenuDocHandler);
+    filterMenuDocHandler = null;
+  }
+  activeFilterCol = null;
+  activeFilterBtn = null;
   els.filterMenu.setAttribute("aria-hidden","true");
   els.filterMenu.innerHTML = "";
 }
