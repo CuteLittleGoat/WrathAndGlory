@@ -552,6 +552,23 @@ function formatKeywordHTML(row, col, opts = {}){
   return html;
 }
 
+function formatDataCellHTML(row, col, sheetName = currentSheet){
+  const isKeywordName = sheetName === KEYWORD_SHEET_ALL_RED && col === "Nazwa";
+  const isKeywordCommaNeutral = KEYWORD_SHEETS_COMMA_NEUTRAL.has(sheetName) && col === "Słowa Kluczowe";
+  const isFactionKeyword = sheetName === "Słowa Kluczowe Frakcji" && col === "Słowo Kluczowe";
+
+  if (isKeywordName){
+    return formatKeywordHTML(row, col);
+  }
+  if (isFactionKeyword){
+    return formatFactionKeywordHTML(row[col]);
+  }
+  if (isKeywordCommaNeutral){
+    return formatKeywordHTML(row, col, {commasNeutral:true});
+  }
+  return getFormattedCellHTML(row, col);
+}
+
 function getFormattedCellHTML(row, col){
   if (!row.__fmt) row.__fmt = {};
   if (row.__fmt[col]) return row.__fmt[col];
@@ -1372,19 +1389,7 @@ function renderRow(r, cols){
 
       const key = `${currentSheet}|${r.__id}|${col}`;
 
-      const isKeywordName = currentSheet === KEYWORD_SHEET_ALL_RED && col === "Nazwa";
-      const isKeywordCommaNeutral = KEYWORD_SHEETS_COMMA_NEUTRAL.has(currentSheet) && col === "Słowa Kluczowe";
-      const isFactionKeyword = currentSheet === "Słowa Kluczowe Frakcji" && col === "Słowo Kluczowe";
-
-      if (isKeywordName){
-        div.innerHTML = formatKeywordHTML(r, col);
-      } else if (isFactionKeyword){
-        div.innerHTML = formatFactionKeywordHTML(r[col]);
-      } else if (isKeywordCommaNeutral){
-        div.innerHTML = formatKeywordHTML(r, col, {commasNeutral:true});
-      } else {
-        div.innerHTML = getFormattedCellHTML(r, col);
-      }
+      div.innerHTML = formatDataCellHTML(r, col, currentSheet);
 
       td.appendChild(div);
 
@@ -1561,7 +1566,8 @@ els.popClose.addEventListener("click", closePopover);
 
 /* ---------- Modal ---------- */
 function openModal(title, html){
-  els.modalBody.innerHTML = `<h3 style="margin:0 0 10px 0">${escapeHtml(title)}</h3>${html}`;
+  void title;
+  els.modalBody.innerHTML = html;
   els.modal.setAttribute("aria-hidden","false");
 }
 function closeModal(){ els.modal.setAttribute("aria-hidden","true"); }
@@ -1586,7 +1592,7 @@ function openCompareModal(rows){
     htmlRows.push(`
       <tr class="${diff ? "diff" : ""}">
         <th>${escapeHtml(col)}</th>
-        ${vals.map(v => `<td>${col==="Cechy" ? escapeHtml(String(v||"")) : (col==="Zasięg" ? formatRangeHTML(v) : formatTextHTML(v))}</td>`).join("")}
+        ${rows.map(r => `<td>${col==="Cechy" ? escapeHtml(String(r[col]||"")) : formatDataCellHTML(r, col, currentSheet)}</td>`).join("")}
       </tr>`);
   }
   const html = `<div style="overflow:auto; max-height:70vh">
