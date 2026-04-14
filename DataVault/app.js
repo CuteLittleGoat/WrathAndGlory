@@ -231,8 +231,8 @@ const DEFAULT_VIEW_CONFIG = {
   "Psionika": { "Typ": ["Uniwersalne Zdolności Psioniczne", "Pomniejsze Moce Psioniczne", "Uniwersalna Dyscyplina Psioniczna", "Dyscyplina Biomancji", "Dyscyplina Dywinacji", "Dyscyplina Piromancji", "Dyscyplina Telekinezy", "Dyscyplina Telepatii"] },
   "Augumentacje": { "Typ": ["Ulepszenia", "Wszczepy", "Mechadendryt"] },
   "Ekwipunek": { "Typ": ["Ulepszenia Broni", "Amunicja", "Ekwipunek Imperium"] },
-  "Pancerze": { "Typ": ["Zwykłe", "Wspomagane", "Energetyczne", "Auxilla"] },
-  "Bronie": { "Typ": ["Adeptus Mechanicus", "Boltowa", "Broń biała", "Broń biała Adeptus Mechanicus", "Broń biała Ogrynów", "Broń dystansowa", "Broń dystansowa Adeptus Mechnicus", "Broń dystansowa Milczących Sióstr", "Broń dystansowa Militarum Auxilla", "Broń energetyczna", "Broń łańcuchowa", "Broń łańcuchowa Astartes", "Broń psioniczna", "Egzotyczna broń biała", "Granaty i Wyrzutnie", "Imperialna broń biała", "Laserowa", "Ogniowa", "Palna", "Plazmowa", "Termiczna"] },
+  "Pancerze": { "Typ": ["Zwykłe", "Wspomagane", "Energetyczne"] },
+  "Bronie": { "Typ": ["Adeptus Mechanicus", "Boltowa", "Broń biała", "Broń biała Adeptus Mechanicus", "Broń dystansowa", "Broń dystansowa Adeptus Mechnicus", "Broń dystansowa Milczących Sióstr", "Broń energetyczna", "Broń łańcuchowa", "Broń łańcuchowa Astartes", "Broń psioniczna", "Egzotyczna broń biała", "Granaty i Wyrzutnie", "Imperialna broń biała", "Laserowa", "Ogniowa", "Palna", "Plazmowa", "Termiczna"] },
 };
 
 const uiState = {
