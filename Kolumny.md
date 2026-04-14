@@ -150,6 +150,7 @@ Uwagi formatowania:
 ## Talenty
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
 |  Nazwa | 26ch | brak | lewo | standard  |
 |  Koszt PD | 4ch | brak | środek | standard  |
 |  Wymagania | 26ch | brak | lewo | standard  |
@@ -159,6 +160,7 @@ Uwagi formatowania:
 ## Modlitwy
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
+|  Typ | 14ch | brak | lewo | standard  |
 |  Nazwa | 26ch | brak | lewo | standard  |
 |  Koszt PD | 4ch | brak | środek | standard  |
 |  Wymagania | 26ch | brak | lewo | standard  |

@@ -14,6 +14,7 @@ Najważniejsze zasady działania:
 - Domyślne sortowanie opiera się o kolumnę `LP` (kolumna jest ukryta w UI, służy tylko do sortowania).
 - W arkuszach z kolumnami `Cecha 1..N` i `Zasięg 1..3` aplikacja scala je do `Cechy` i `Zasięg`.
 - Kolumny liczbowe są wyśrodkowane; w **Broniach** kolumna `Zasięg` nie zawija wierszy.
+- Kolumna `Typ` w zakładkach **Talenty** i **Modlitwy** ma teraz te same parametry co **Bronie / Typ** (`min-width: 14ch`, wyrównanie do lewej).
 - Wszystkie tabele używają teraz wyraźnego **zebra striping** (ciemny pas pozostaje bez zmian, jasny pas ma ten sam odcień co poprzedni hover), a najechanie oraz zaznaczenie checkboxa używają tego samego, najmocniejszego podświetlenia wiersza.
 - Lewy panel **Filtry** ma stałą szerokość `180px` na desktopie, aby zostawić więcej miejsca na tabelę.
 - W trybie admina notatka obok przycisku generowania danych ma większą szerokość (`max-width: 640px`) i zawiera pełną informację: `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` należy tam wgrać, aby odświeżyć dane.
@@ -132,6 +133,7 @@ Key behavior:
 - Default sorting uses the hidden `LP` column (it is hidden in the UI and used only for ordering).
 - Sheets that include `Cecha 1..N` and `Zasięg 1..3` are merged into `Cechy` and `Zasięg`.
 - Numeric columns are center-aligned; the `Zasięg` column in **Bronie** does not wrap.
+- The `Typ` column in **Talenty** and **Modlitwy** now matches **Bronie / Typ** (`min-width: 14ch`, left-aligned).
 - All tables now use clear **zebra striping** (the dark stripe stays unchanged, while the light stripe uses the previous hover shade), and both hover and checkbox selection use the same strongest full-row highlight.
 - The left **Filters** panel uses a fixed `180px` width on desktop to leave more room for the table.
 - In admin mode, the data-generation note next to the button is wider (`max-width: 640px`) and includes the full instruction: `Repozytorium.xlsx` must be next to `index.html`, and the generated `data.json` must be uploaded there.
