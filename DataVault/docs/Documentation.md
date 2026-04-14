@@ -730,7 +730,7 @@ Obsługuje trzy przypadki:
   - najpierw próbuje odczytać stan z `sessionStorage` (`loadSessionState()`),
   - jeśli brak stanu sesji, inicjalizuje wszystkie zakładki profilem domyślnym (`applyDefaultViewForSheet`).
 - Konfiguracja widoku domyślnego (dokładnie):
-  - **Archetypy / Frakcja:** Adepta Sororitas, Adeptus Astartes, Adeptus Astra Telepathica, Adeptus Mechanicus, Adeptus Ministorum, Astra Militarum, Dynastie Wolnych Kupców, Imperium T'au, Inkwizycja, Ork, Szumowiny.
+  - **Archetypy / Frakcja:** Adepta Sororitas, Adeptus Astartes, Adeptus Astra Telepathica, Adeptus Mechanicus, Adeptus Ministorum, Astra Militarum, Dynastie Wolnych Kupców, Inkwizycja, Szumowiny (czyli domyślnie odznaczone: Aeldari, Ork, Imperium T'au).
   - **Premie Frakcji / Frakcja:** Adepta Sororitas, Adeptus Astartes, Adeptus Astra Telepathica, Adeptus Mechanicus, Adeptus Ministorum, Astra Militarum, Chaos, Dynastie Wolnych Kupców, Inkwizycja, Ogryn, Szczurak, Szumowiny.
   - **Psionika / Typ:** Uniwersalne Zdolności Psioniczne, Pomniejsze Moce Psioniczne, Uniwersalna Dyscyplina Psioniczna, Dyscyplina Biomancji, Dyscyplina Dywinacji, Dyscyplina Piromancji, Dyscyplina Telekinezy, Dyscyplina Telepatii.
   - **Augumentacje / Typ:** Ulepszenia, Wszczepy, Mechadendryt.

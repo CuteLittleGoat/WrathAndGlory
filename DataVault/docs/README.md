@@ -103,6 +103,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Przycisk ▾ działa jak przełącznik: drugi klik w ten sam przycisk zamyka menu filtrowania; klik poza menu także je zamyka.
 - Przycisk **Pełen Widok** czyści globalne wyszukiwanie, filtry tekstowe i filtry listowe we wszystkich zakładkach, a następnie pokazuje pełne dane.
 - Przycisk **Widok Domyślny** przywraca globalnie domyślną konfigurację filtrów checkboxowych (oraz resetuje pozostałe filtry), zgodnie z profilem aplikacji.
+- W zakładce **Archetypy** domyślny filtr kolumny **Frakcja** zostawia odznaczone: **Aeldari**, **Ork** i **Imperium T'au**.
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
 - Panel „popover” przewija się przy długich opisach, a tytuł może zawijać się, by nie ucinać znaków.
@@ -218,6 +219,7 @@ Below are two equivalent ways to update the data. In this repository update, `da
 - Second header row: text filter + list filter (▾ button).
 - When a text or list filter is active, the column is marked by a highlighted header and an active filter button state.
 - The ▾ button now works as a toggle: clicking the same button again closes the filter menu; clicking outside the menu also closes it.
+- **Default View** restores the **Archetypy → Frakcja** defaults with **Aeldari**, **Ork**, and **Imperium T'au** unchecked.
 - **Full View** clears global search, text filters, and list filters across all tabs, then shows complete datasets.
 - **Default View** globally restores the predefined checkbox-filter profile (and resets other filters) for the application.
 - Select 2+ rows: record comparison view.
