@@ -1952,6 +1952,48 @@
         "Strona": "28"
       }
     ],
+    "Specjalne Bonusy Wrogów": [
+      {
+        "LP": "1",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "{{RED}}[FLOTA-RÓJ]{{/RED}}",
+        "Nazwa": "Behemoth",
+        "Opis": "Behemot był pierwszą rozpoznaną flotą‑rojem tyranidów, która zaatakowała galaktykę. Choć przeważająca część armady została zniszczona przez Ultramarines podczas Pierwszej Wojny Tyranidzkiej, obcy pochłonęli wiele światów Ultramaru, pozyskując ich biomasę. Behemot nie został jednak ostatecznie pokonany. Jego niedobitki podzieliły się na mniejsze floty i rozproszyły we wszystkich kierunkach. Każdy odłam niesie ze sobą doświadczenia wyniesione z poniesionej klęski – oraz pochłonięte genoziarna Astartes.",
+        "Efekt": "Dodaj do Siły każdego tyranida połowę Poziomu gry, zaokrąglając w górę."
+      },
+      {
+        "LP": "2",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "{{RED}}[FLOTA-RÓJ]{{/RED}}",
+        "Nazwa": "Kraken",
+        "Opis": "Druga tyranidzka flota‑rój, która napadła na galaktykę, została nazwana Krakenem. Wszystko zaczęło się od buntów na setkach imperialnych planet wzniecanych przez kulty genokradów, które torowały drogę dla swoich ohydnych xenoskich bogów. Kraken wyciągnął lekcję z porażki floty‑roju Behemot i rozpoczął ofensywę na wielu frontach. Tyranidzi zostali powstrzymani, lecz sukces okupiono olbrzymimi stratami wśród sił imperialnych i niemal całkowitym zniszczeniem światostatku aeldari znanego jako Iyanden.",
+        "Efekt": "Ataki wręcz otrzymują premię do PP broni białej równą połowie Poziomu gry, zaokrąglając w górę."
+      },
+      {
+        "LP": "3",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "{{RED}}[FLOTA-RÓJ]{{/RED}}",
+        "Nazwa": "Lewiatan",
+        "Opis": "Floty‑roje Behemot oraz Kraken okazały się zaledwie wędrującymi badawczymi mackami w porównaniu z Lewiatanem, który zaatakował od spodu galaktycznego dysku na dwóch olbrzymich frontach, odcinając łączność w całych sektorach i uderzając głęboko w imperialne terytoria niczym zaciskające się szczęki drapieżnika. Tyranidzi zdawali się uczyć na porażkach poprzednich flot‑rojów i rzucali do boju nowe bioformy, jeszcze lepiej przystosowane do walki z mieszkańcami galaktyki.",
+        "Efekt": "Tyranidzi ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}} dodają Poziom gry do swojej Odporności."
+      },
+      {
+        "LP": "4",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "{{RED}}[FLOTA-RÓJ]{{/RED}}",
+        "Nazwa": "Kronos",
+        "Opis": "Kronos jest częścią floty‑roju Lewiatan i wydaje się odpowiedzią Umysłu Roju na marnotrawstwo olbrzymich ilości galaktycznej biomasy, jakiego dopuszcza się Chaos. Armada naciera ostrożnie, roztaczając przed sobą wyjątkowo zdradliwą formę Cienia w Osnowie, która tłumi psioniczną energię i zdmuchuje demony niczym świece. Ta flota‑rój preferuje walkę na odległość, która umożliwia szybki odwrót przy jednoczesnej możliwości pochłonięcia zgładzonych tyranidów i poległych wrogów, by odzyskać jak najwięcej użytej biomasy.",
+        "Efekt": "Wszystkie ataki dystansowe oraz Testy obrony przed mocami psionicznymi otrzymują dodatkowe kości równe połowie Poziomu gry, zaokrąglając w górę."
+      },
+      {
+        "LP": "5",
+        "Frakcja": "Tyranid",
+        "Rodzaj": "{{RED}}SYNAPSA{{/RED}}",
+        "Nazwa": "-",
+        "Opis": "Więksi i inteligentniejsi tyranidzi pełnią funkcję psionicznych przekaźników, umacniając kontrolę Umysłu Roju nad rojami pomniejszych osobników. Tego rodzaju \"stwory synaptyczne\" mogą nadpisać instynkty swoich podwładnych, popychając roje do marszu wprost w objęcia śmierci tylko po to, by wyczerpać zapasy amunicji nieprzyjaciela, bronić większych tyranidów lub koordynować strategię na skalę globalną.",
+        "Efekt": "Tyranid ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}} jest traktowany jako dowódca Hordy [{{B}}Podręcznik Główny{{/B}} (str. 325)] dla wszystkich Hord tyranidów w promieniu 20 metrów i dzieli się swoją wartością Odwagi z każdą nich. Jeśli tyranid z tym Słowem kluczowym umrze i nie ma żadnych innych stworów synaptycznych, które mogłyby zająć jego miejsce, Odporność psychiczna wszystkich tyranidów w promieniu 20 metrów, które nie posiadają Słowa kluczowego {{RED}}SYNAPSA{{/RED}}, zostanie trwale zredukowana o 1. Dodatkowo Hordy tyranidów muszą wykonać rzut 1k6 i otrzymują jeden z poniższych Stanów:\n1 = Strach\n2 = Zdezorientowanie\n3 = Wycieńczenie\n4 = Przygwożdżenie\n5 = Oszołomienie\n6 = Odsłonięcie"
+      }
+    ],
     "Hordy": [
       {
         "LP": "1",
@@ -3227,38 +3269,6 @@
       },
       {
         "LP": "15",
-        "Frakcja": "Tyranid",
-        "Rodzaj": "Flota-Rój",
-        "Nazwa": "Behemoth",
-        "Opis": "Behemot był pierwszą rozpoznaną flotą‑rojem tyranidów, która zaatakowała galaktykę. Choć przeważająca część armady została zniszczona przez Ultramarines podczas Pierwszej Wojny Tyranidzkiej, obcy pochłonęli wiele światów Ultramaru, pozyskując ich biomasę. Behemot nie został jednak ostatecznie pokonany. Jego niedobitki podzieliły się na mniejsze floty i rozproszyły we wszystkich kierunkach. Każdy odłam niesie ze sobą doświadczenia wyniesione z poniesionej klęski – oraz pochłonięte genoziarna Astartes.",
-        "Efekt": "Dodaj do Siły każdego tyranida połowę Poziomu gry, zaokrąglając w górę."
-      },
-      {
-        "LP": "16",
-        "Frakcja": "Tyranid",
-        "Rodzaj": "Flota-Rój",
-        "Nazwa": "Kraken",
-        "Opis": "Druga tyranidzka flota‑rój, która napadła na galaktykę, została nazwana Krakenem. Wszystko zaczęło się od buntów na setkach imperialnych planet wzniecanych przez kulty genokradów, które torowały drogę dla swoich ohydnych xenoskich bogów. Kraken wyciągnął lekcję z porażki floty‑roju Behemot i rozpoczął ofensywę na wielu frontach. Tyranidzi zostali powstrzymani, lecz sukces okupiono olbrzymimi stratami wśród sił imperialnych i niemal całkowitym zniszczeniem światostatku aeldari znanego jako Iyanden.",
-        "Efekt": "Ataki wręcz otrzymują premię do PP broni białej równą połowie Poziomu gry, zaokrąglając w górę."
-      },
-      {
-        "LP": "17",
-        "Frakcja": "Tyranid",
-        "Rodzaj": "Flota-Rój",
-        "Nazwa": "Lewiatan",
-        "Opis": "Floty‑roje Behemot oraz Kraken okazały się zaledwie wędrującymi badawczymi mackami w porównaniu z Lewiatanem, który zaatakował od spodu galaktycznego dysku na dwóch olbrzymich frontach, odcinając łączność w całych sektorach i uderzając głęboko w imperialne terytoria niczym zaciskające się szczęki drapieżnika. Tyranidzi zdawali się uczyć na porażkach poprzednich flot‑rojów i rzucali do boju nowe bioformy, jeszcze lepiej przystosowane do walki z mieszkańcami galaktyki.",
-        "Efekt": "Tyranidzi ze Słowem kluczowym {{RED}}SYNAPSA{{/RED}} dodają Poziom gry do swojej Odporności."
-      },
-      {
-        "LP": "18",
-        "Frakcja": "Tyranid",
-        "Rodzaj": "Flota-Rój",
-        "Nazwa": "Kronos",
-        "Opis": "Kronos jest częścią floty‑roju Lewiatan i wydaje się odpowiedzią Umysłu Roju na marnotrawstwo olbrzymich ilości galaktycznej biomasy, jakiego dopuszcza się Chaos. Armada naciera ostrożnie, roztaczając przed sobą wyjątkowo zdradliwą formę Cienia w Osnowie, która tłumi psioniczną energię i zdmuchuje demony niczym świece. Ta flota‑rój preferuje walkę na odległość, która umożliwia szybki odwrót przy jednoczesnej możliwości pochłonięcia zgładzonych tyranidów i poległych wrogów, by odzyskać jak najwięcej użytej biomasy.",
-        "Efekt": "Wszystkie ataki dystansowe oraz Testy obrony przed mocami psionicznymi otrzymują dodatkowe kości równe połowie Poziomu gry, zaokrąglając w górę."
-      },
-      {
-        "LP": "19",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Ludojad",
@@ -3266,7 +3276,7 @@
         "Efekt": "+1 do twojego najniższego Atrybutu (do wyboru, jeśli Atrybuty sa równe)."
       },
       {
-        "LP": "20",
+        "LP": "16",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pożeracz Astartes\n{{I}}(nie dla nowych postaci){{/I}}",
@@ -3274,7 +3284,7 @@
         "Efekt": "+2 do dowolnego Atrybutu."
       },
       {
-        "LP": "21",
+        "LP": "17",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pożeracz Aeldari",
@@ -3282,7 +3292,7 @@
         "Efekt": "+1 do Zrecznosci lub Siły Woli."
       },
       {
-        "LP": "22",
+        "LP": "18",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pożeracz Orków",
@@ -3290,7 +3300,7 @@
         "Efekt": "+1 do Siły lub Wytrzymałosci."
       },
       {
-        "LP": "23",
+        "LP": "19",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pancerna skóra",
@@ -3298,7 +3308,7 @@
         "Efekt": "+Ranga do Podstawowej Odpornosci."
       },
       {
-        "LP": "24",
+        "LP": "20",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Bioluminescencja",
@@ -3306,7 +3316,7 @@
         "Efekt": "Mozesz sprawic, zedowolna czesc twojego ciała zacznie lekko swiecic. Jezeli swieci całe ciało, to oswietla obszar w promieniu 10 metrów."
       },
       {
-        "LP": "25",
+        "LP": "21",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Kamuflaż",
@@ -3314,7 +3324,7 @@
         "Efekt": "W ramach Akcji podstawowej mozesz zmienic wyglad swojej skóry na identycznych zasadach jak w przypadku peleryny maskujacej [{{B}}Podręcznik Główny{{/B}} (str. 239)]."
       },
       {
-        "LP": "26",
+        "LP": "22",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Opcjonalna dwunożność",
@@ -3322,7 +3332,7 @@
         "Efekt": "Podczas Sprintu pokonujesz dwa razy wieksza odległosc niz zazwyczaj, a w Testach Atletyki (S) podczas skoków lub wspinaczki otrzymujesz +Dwukrotnosc Rangi dodatkowych kosci."
       },
       {
-        "LP": "27",
+        "LP": "23",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Nadwrażliwe pióra",
@@ -3330,7 +3340,7 @@
         "Efekt": "Twoje pióra działaja jak Auspex [{{B}}Podręcznik Główny{{/B}} (str. 237)] ozasiegu 30 metrów."
       },
       {
-        "LP": "28",
+        "LP": "24",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Skrzydła",
@@ -3338,7 +3348,7 @@
         "Efekt": "Możesz latac z Szybkoscia 7."
       },
       {
-        "LP": "29",
+        "LP": "25",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Naturalna broń",
@@ -11660,6 +11670,7 @@
     },
     "sheetOrder": [
       "Bestiariusz",
+      "Specjalne Bonusy Wrogów",
       "Hordy",
       "Tabela Rozmiarów",
       "Gatunki",
@@ -11714,6 +11725,13 @@
         "Rozmiar",
         "Podręcznik",
         "Strona"
+      ],
+      "Specjalne Bonusy Wrogów": [
+        "Frakcja",
+        "Rodzaj",
+        "Nazwa",
+        "Opis",
+        "Efekt"
       ],
       "Hordy": [
         "Nazwa zasady",

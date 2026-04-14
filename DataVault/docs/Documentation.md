@@ -249,6 +249,13 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Efekt`: 26ch
   - `Opis`: 56ch
 
+- **Specjalne Bonusy Wrogów**
+  - `Frakcja`: 26ch
+  - `Rodzaj`: 26ch
+  - `Nazwa`: 26ch
+  - `Efekt`: 26ch
+  - `Opis`: 56ch
+
 - **Trafienia Krytyczne**
   - `Rzut k66`: 6ch (wycentrowane, bez zawijania)
   - `Opis`: 56ch
@@ -280,12 +287,12 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Ile celów/akcji`: 20ch (min/max/width, wycentrowane)
   - `Kara do ST`: 20ch (min/max/width, wycentrowane)
 
-## Uwaga: szerokości i kolejność kolumn (Specjalne Bonusy Frakcji)
-W CSS modułu DataVault dla tej zakładki ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.
+## Uwaga: szerokości i kolejność kolumn (Specjalne Bonusy Frakcji / Specjalne Bonusy Wrogów)
+W CSS modułu DataVault dla obu tych zakładek ustawione są **`min-width`**, a nie stałe `width`. Tabela ma `width: 100%` i nie używa `table-layout: fixed`, więc przeglądarka może **rozciągać** kolumny, aby wypełnić dostępne miejsce. Wizualnie może to wyglądać na nierówne szerokości mimo zgodnych wartości minimalnych.
 
 Kolumna wyboru (pierwsza, z ✓) jest wyjątkiem globalnym: ma stałą szerokość 8ch (min/max/width) i nie rozszerza się w żadnej zakładce. Arkusz **Kary do ST** dodatkowo ma stały układ (`table-layout: fixed`) i szerokość `max-content`, więc **wszystkie** jego kolumny pozostają zablokowane.
 
-Kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`) i ma pierwszeństwo przed samą listą pól w wierszach. W aktualnym `data.json` kolejność dla **Specjalnych Bonusów Frakcji** to `Frakcja → Rodzaj → Nazwa → Opis → Efekt`. Jeśli kolejność ma być stała, należy pilnować jej w arkuszu źródłowym lub w `_meta.columnOrder`.
+Kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`) i ma pierwszeństwo przed samą listą pól w wierszach. W aktualnym `data.json` kolejność dla **Specjalnych Bonusów Frakcji** i **Specjalnych Bonusów Wrogów** to `Frakcja → Rodzaj → Nazwa → Opis → Efekt`. Jeśli kolejność ma być stała, należy pilnować jej w arkuszu źródłowym lub w `_meta.columnOrder`.
 
 - **Cechy / Stany / Słowa Kluczowe**
   - `Typ`: 14ch
@@ -385,7 +392,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 ### 4.1 Stałe
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
-- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`).
+- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`).
 - `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`).
 - `CHARACTER_CREATION_SHEET_KEYS` i `COMBAT_RULES_SHEET_KEYS` — kanoniczne (znormalizowane) wersje nazw arkuszy używane do odpornego dopasowania nazw zakładek niezależnie od drobnych różnic zapisu.

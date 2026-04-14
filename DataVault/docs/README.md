@@ -43,14 +43,14 @@ Najważniejsze zasady działania:
 - **Tryb gracza (domyślny)**
   - Automatycznie wczytuje `data.json`.
   - Ukrywa przycisk administracyjny do aktualizacji danych.
-  - Ukrywa zakładki admin-only: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy** oraz **Hordy**.
+  - Ukrywa zakładki admin-only: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy** oraz **Specjalne Bonusy Wrogów**.
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
   - Dostępny jest przycisk **Generuj data.json**, który uruchamia kanoniczny parser XLSX w przeglądarce (`xlsxCanonicalParser.js` + `JSZip`) i pobiera gotowy plik `data.json`.
   - Podpowiedź pod przyciskiem przypomina też, że `Repozytorium.xlsx` musi istnieć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego miejsca.
   - Przycisk korzysta z tej samej logiki co generator AI/CLI (`build_json.py`), więc wynik UI i AI pozostaje spójny (w tym markery `{{RED}}`).
   - Gdy biblioteka parsera kanonicznego nie załaduje się (np. problem z CDN), przycisk kończy się komunikatem błędu i wskazuje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
-  - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
+  - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
 ### Zakładki sterowane checkboxami
 - Checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (domyślnie odznaczony) pokazuje:
@@ -102,8 +102,8 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Długie komórki: kliknij, aby rozwinąć/zwinąć treść (zwijanie po przekroczeniu 9 linii wizualnych).
 - Lista wartości w filtrze listowym usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` wyłącznie w etykietach (bez wpływu na logikę filtrowania).
 
-### Uwagi o szerokości kolumn (Specjalne Bonusy Frakcji)
-W tej zakładce szerokości kolumn są ustawione jako `min-width` (`Frakcja`, `Rodzaj`, `Nazwa`, `Efekt` = 26ch; `Opis` = 56ch). Przeglądarka może **rozszerzyć** kolumny przy dużej szerokości okna, ponieważ tabela ma `width: 100%` i nie wymusza stałego układu (`table-layout: fixed` nie jest używany). Kolumny mogą więc wyglądać na „nierówne”, mimo że minimalne szerokości są zgodne z dokumentacją. Kolumna wyboru (✓) ma stałe 8ch we wszystkich zakładkach, a **Kary do ST** dodatkowo korzysta ze stałego układu tabeli.
+### Uwagi o szerokości kolumn (Specjalne Bonusy Frakcji / Specjalne Bonusy Wrogów)
+W tych zakładkach szerokości kolumn są ustawione jako `min-width` (`Frakcja`, `Rodzaj`, `Nazwa`, `Efekt` = 26ch; `Opis` = 56ch). Przeglądarka może **rozszerzyć** kolumny przy dużej szerokości okna, ponieważ tabela ma `width: 100%` i nie wymusza stałego układu (`table-layout: fixed` nie jest używany). Kolumny mogą więc wyglądać na „nierówne”, mimo że minimalne szerokości są zgodne z dokumentacją. Kolumna wyboru (✓) ma stałe 8ch we wszystkich zakładkach, a **Kary do ST** dodatkowo korzysta ze stałego układu tabeli.
 
 Dodatkowo kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`). Jeśli oczekujesz konkretnej kolejności, zweryfikuj ją w źródłowym arkuszu lub w `_meta.columnOrder`.
 Dokumentacja wyglądu i zasad formatowania jest w `DetaleLayout.md` (główny katalog repozytorium).
@@ -152,14 +152,14 @@ Key behavior:
 - **Player mode (default)**
   - Automatically loads `data.json`.
   - Hides the admin-only data update button.
-  - Hides the admin-only tabs: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, and **Hordy**.
+  - Hides the admin-only tabs: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, and **Specjalne Bonusy Wrogów**.
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
   - The **Generate data.json** button appears and runs the canonical in-browser XLSX parser (`xlsxCanonicalParser.js` + `JSZip`) to download a ready `data.json` file.
   - The hint below the button also reminds you that `Repozytorium.xlsx` must exist next to `index.html`, and the generated `data.json` must be uploaded to the same location.
   - The button uses the same logic as the AI/CLI generator (`build_json.py`), ensuring parity between UI and AI output.
   - If the canonical parser library cannot be loaded (e.g. CDN issue), the button ends with an error message and prints the CLI command (`python build_json.py Repozytorium.xlsx data.json`).
-  - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**) are visible only in this mode (when the combat checkbox is enabled).
+  - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów**) are visible only in this mode (when the combat checkbox is enabled).
 
 ### Tabs controlled by checkboxes
 - The “Czy wyświetlić zakładki dotyczące tworzenia postaci?” checkbox (unchecked by default) shows:
@@ -211,8 +211,8 @@ Below are two equivalent ways to update the data. In this repository update, `da
 - Long cells: click to expand/collapse content (cells clamp after 9 visual lines).
 - The list filter labels strip `{{RED}}`, `{{B}}`, `{{I}}` markers for display only (filter logic is unchanged).
 
-### Column width notes (Specjalne Bonusy Frakcji)
-In this tab, column widths are defined as `min-width` (`Frakcja`, `Rodzaj`, `Nazwa`, `Efekt` = 26ch; `Opis` = 56ch). The browser can **expand** columns on wide viewports because the table is `width: 100%` and does not enforce a fixed layout (`table-layout: fixed` is not used). As a result, columns can look “uneven” even when the minimum widths match the documentation. The selection (✓) column stays fixed at 8ch across all tabs, while **Kary do ST** additionally uses a fixed table layout.
+### Column width notes (Specjalne Bonusy Frakcji / Specjalne Bonusy Wrogów)
+In these tabs, column widths are defined as `min-width` (`Frakcja`, `Rodzaj`, `Nazwa`, `Efekt` = 26ch; `Opis` = 56ch). The browser can **expand** columns on wide viewports because the table is `width: 100%` and does not enforce a fixed layout (`table-layout: fixed` is not used). As a result, columns can look “uneven” even when the minimum widths match the documentation. The selection (✓) column stays fixed at 8ch across all tabs, while **Kary do ST** additionally uses a fixed table layout.
 
 Column order is also loaded from `data.json` (`_meta.columnOrder`). If you expect a specific order, verify it in the source sheet or in `_meta.columnOrder`.
 Visual/layout rules and formatting details are documented in `DetaleLayout.md` (repository root).
