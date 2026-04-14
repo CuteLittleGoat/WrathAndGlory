@@ -117,3 +117,100 @@ Możliwe i zgodne z wymaganiem „po resecie przeglądarki wraca domyślny” po
 - konfigurowalnej mapy domyślnych filtrów.
 
 To są zmiany ewolucyjne, nie re-architektura.
+
+
+---
+
+## Uzupełnienie analizy (2026-04-14) — checkboxy domyślnie zaznaczone
+
+Poniżej znajduje się definicja tego, co ma być **domyślnie widoczne** (czyli jakie wartości checkboxów mają być zaznaczone) po uruchomieniu aplikacji oraz po kliknięciu przycisku **„Widok Domyślny”**.
+
+### Zakładka „Archetypy” — kolumna „Frakcja”
+Domyślnie zaznaczone:
+- Adepta Sororitas
+- Adeptus Astartes
+- Adeptus Astra Telepathica
+- Adeptus Mechanicus
+- Adeptus Ministorum
+- Astra Militarum
+- Dynastie Wolnych Kupców
+- Imperium T'au
+- Inkwizycja
+- Ork
+- Szumowiny
+
+### Zakładka „Premie Frakcji” — kolumna „Frakcja”
+Domyślnie zaznaczone:
+- Adepta Sororitas
+- Adeptus Astartes
+- Adeptus Astra Telepathica
+- Adeptus Mechanicus
+- Adeptus Ministorum
+- Astra Militarum
+- Chaos
+- Dynastie Wolnych Kupców
+- Inkwizycja
+- Ogryn
+- Szczurak
+- Szumowiny
+
+### Zakładka „Psionika” — kolumna „Typ”
+Domyślnie zaznaczone:
+- Uniwersalne Zdolności Psioniczne
+- Pomniejsze Moce Psioniczne
+- Uniwersalna Dyscyplina Psioniczna
+- Dyscyplina Biomancji
+- Dyscyplina Dywinacji
+- Dyscyplina Piromancji
+- Dyscyplina Telekinezy
+- Dyscyplina Telepatii
+
+### Zakładka „Augumentacje” — kolumna „Typ”
+Domyślnie zaznaczone:
+- Ulepszenia
+- Wszczepy
+- Mechadendryt
+
+### Zakładka „Ekwipunek” — kolumna „Typ”
+Domyślnie zaznaczone:
+- Ulepszenia Broni
+- Amunicja
+- Ekwipunek Imperium
+
+### Zakładka „Pancerze” — kolumna „Typ”
+Domyślnie zaznaczone:
+- Zwykłe
+- Wspomagane
+- Energetyczne
+- Astartes
+- Auxilla
+
+### Zakładka „Bronie” — kolumna „Typ”
+Domyślnie zaznaczone:
+- Adeptus Mechanicus
+- Boltowa
+- Broń biała
+- Broń biała Adeptus Mechanicus
+- Broń biała Ogrynów
+- Broń dystansowa
+- Broń dystansowa Adeptus Mechnicus
+- Broń dystansowa Milczących Sióstr
+- Broń dystansowa Militarum Auxilla
+- Broń energetyczna
+- Broń łańcuchowa
+- Broń łańcuchowa Astartes
+- Broń psioniczna
+- Egzotyczna broń biała
+- Granaty i Wyrzutnie
+- Imperialna broń biała
+- Laserowa
+- Ogniowa
+- Palna
+- Plazmowa
+- Termiczna
+
+### Pozostałe zakładki
+W domyślnym widoku mają wyświetlać **wszystkie dane** (brak dodatkowych ograniczeń checkboxami względem pełnego zestawu wartości).
+
+## Notatka wdrożeniowa
+Po wdrożeniu tej zmiany należy to **dokładnie opisać w dokumentacji modułu** (w szczególności: lista zakładek, kolumn, wartości domyślnie zaznaczonych oraz zachowanie przycisków „Pełen Widok” i „Widok Domyślny”).
