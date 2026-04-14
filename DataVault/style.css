@@ -699,6 +699,8 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Psionika"] td[data-col="Wzmocnienie"]{min-width:26ch}
 
 /* Modlitwy */
+.tableWrap table[data-sheet="Modlitwy"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Modlitwy"] td[data-col="Typ"]{min-width:14ch}
 .tableWrap table[data-sheet="Modlitwy"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Modlitwy"] td[data-col="Nazwa"]{min-width:26ch}
 .tableWrap table[data-sheet="Modlitwy"] th[data-col="Koszt PD"],
@@ -709,6 +711,8 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Modlitwy"] td[data-col="Efekt"]{min-width:56ch}
 
 /* Talenty */
+.tableWrap table[data-sheet="Talenty"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Talenty"] td[data-col="Typ"]{min-width:14ch}
 .tableWrap table[data-sheet="Talenty"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Talenty"] td[data-col="Nazwa"]{min-width:26ch}
 .tableWrap table[data-sheet="Talenty"] th[data-col="Koszt PD"],

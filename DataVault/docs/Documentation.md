@@ -308,6 +308,7 @@ Kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`) i ma pierw
   - `Opis`: 56ch
 
 - **Talenty**
+  - `Typ`: 14ch
   - `Nazwa`: 26ch
   - `Koszt PD`: 4ch
   - `Wymagania`: 26ch
@@ -315,6 +316,7 @@ Kolejność kolumn jest pobierana z `data.json` (`_meta.columnOrder`) i ma pierw
   - `Efekt`: 56ch
 
 - **Modlitwy**
+  - `Typ`: 14ch
   - `Nazwa`: 26ch
   - `Koszt PD`: 4ch
   - `Wymagania`: 26ch
