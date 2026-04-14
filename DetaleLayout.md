@@ -154,6 +154,10 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `rgba(207,245,220,.92)` — kolor treści `.popoverBody`.
 - `rgba(0,0,0,.55)` — tło overlay w modalach.
 - `#E6B35C` — kolor `.compareDiff` (wyróżnienia w porównaniach).
+- Aktywny przycisk filtra kolumny (`.filterBtn.filter-active`) używa:
+  - tła `rgba(22,198,12,.18)`,
+  - zewnętrznej poświaty `0 0 10px rgba(22,198,12,.22)`,
+  - dodatkowego znacznika `●` (`::after`) w kolorze `var(--code)`.
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia` mają tekst w kolorze `#d74b4b` (`--red`).
 
@@ -190,6 +194,12 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 
 #### 3.6 Formatowanie wierszy specjalnych
 - Linie zaczynające się od `*[n]` (np. `*[3]`) są wyróżniane klasą `.caretref` i jaśniejszym kolorem `var(--code)`.
+
+#### 3.6a Sygnalizacja aktywnych filtrów kolumnowych
+- Aktywny filtr (tekstowy lub listowy) oznacza:
+  - podświetlenie nagłówka kolumny (`thead tr:first-child th.filter-active`) z akcentową linią dolną (`inset 0 -2px 0 var(--accent)`),
+  - aktywny stan przycisku filtra (`.filterBtn.filter-active`) z kropką `●`.
+- W drugim wierszu nagłówka komórka odpowiadająca kolumnie wyboru `✓` (`th.noFilterCell`) jest celowo pusta — usunięto placeholder „filtr...”, bo ta kolumna nie posiada filtra.
 
 #### 3.7 Specjalne formatowanie kolumny `Zasięg`
 - Wartości `Zasięg` są dzielone po `/` i składane na nowo.
