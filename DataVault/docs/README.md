@@ -17,6 +17,9 @@ Najważniejsze zasady działania:
 - Wszystkie tabele używają teraz wyraźnego **zebra striping** (ciemny pas pozostaje bez zmian, jasny pas ma ten sam odcień co poprzedni hover), a najechanie oraz zaznaczenie checkboxa używają tego samego, najmocniejszego podświetlenia wiersza.
 - Lewy panel **Filtry** ma stałą szerokość `180px` na desktopie, aby zostawić więcej miejsca na tabelę.
 - W trybie admina notatka obok przycisku generowania danych ma większą szerokość (`max-width: 640px`) i zawiera pełną informację: `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` należy tam wgrać, aby odświeżyć dane.
+- Aplikacja startuje w **Widoku Domyślnym**: dla wybranych zakładek domyślnie ukrywa część wartości przez predefiniowane filtry checkboxowe.
+- W topbarze są teraz dwa przyciski: **Pełen Widok** (odsłania wszystkie dane we wszystkich zakładkach) oraz **Widok Domyślny** (przywraca domyślne ukrycia i sortowanie). Pod przyciskami jest podpis: „Część danych jest domyślnie ukryta.”
+- Stan filtrów i sortowania jest zapisywany w `sessionStorage` per urządzenie/sesja, dzięki czemu po przełączaniu zakładek stan się utrzymuje, a po zakończeniu sesji wraca domyślny widok.
 - Kolumna wyboru (✓) ma zawsze stałą szerokość 8ch (min/max/width) we wszystkich zakładkach, więc nie rozszerza się wraz z szerokością okna.
 - W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), a tabela ma `table-layout: fixed` i `width: max-content`, więc **wszystkie** jej kolumny pozostają stałe.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
@@ -95,6 +98,8 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Kliknięcie nagłówka kolumny: sortowanie rosnąco/malejąco/reset.
 - Drugi wiersz nagłówka: filtr tekstowy oraz filtr listy (przycisk ▾).
 - Przycisk ▾ działa jak przełącznik: drugi klik w ten sam przycisk zamyka menu filtrowania; klik poza menu także je zamyka.
+- Przycisk **Pełen Widok** czyści globalne wyszukiwanie, filtry tekstowe i filtry listowe we wszystkich zakładkach, a następnie pokazuje pełne dane.
+- Przycisk **Widok Domyślny** przywraca globalnie domyślną konfigurację filtrów checkboxowych (oraz resetuje pozostałe filtry), zgodnie z profilem aplikacji.
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
 - Panel „popover” przewija się przy długich opisach, a tytuł może zawijać się, by nie ucinać znaków.
@@ -126,6 +131,9 @@ Key behavior:
 - All tables now use clear **zebra striping** (the dark stripe stays unchanged, while the light stripe uses the previous hover shade), and both hover and checkbox selection use the same strongest full-row highlight.
 - The left **Filters** panel uses a fixed `180px` width on desktop to leave more room for the table.
 - In admin mode, the data-generation note next to the button is wider (`max-width: 640px`) and includes the full instruction: `Repozytorium.xlsx` must be next to `index.html`, and the generated `data.json` must be uploaded there.
+- The app now starts in **Default View**: selected tabs load with predefined checkbox filters that hide part of the data.
+- The top bar now has two view buttons: **Full View** (shows all data across all tabs) and **Default View** (restores default hidden values and default sorting). A caption is displayed below them: “Some data is hidden by default.”
+- Filter/sort state is persisted in per-session `sessionStorage`, so switching tabs keeps your state on the same device/session, while a new browser session returns to the default profile.
 - The selection (✓) column is always locked to 8ch (min/max/width) across all tabs, so it does not expand with viewport width.
 - In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), and the table uses `table-layout: fixed` with `width: max-content`, so **all** columns stay fixed.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
@@ -204,6 +212,8 @@ Below are two equivalent ways to update the data. In this repository update, `da
 - Click a column header: sort ascending/descending/reset.
 - Second header row: text filter + list filter (▾ button).
 - The ▾ button now works as a toggle: clicking the same button again closes the filter menu; clicking outside the menu also closes it.
+- **Full View** clears global search, text filters, and list filters across all tabs, then shows complete datasets.
+- **Default View** globally restores the predefined checkbox-filter profile (and resets other filters) for the application.
 - Select 2+ rows: record comparison view.
 - Click a trait tag (`Cechy`): description in the popover panel.
 - The popover panel scrolls for long descriptions, and the title can wrap so characters are not cut off.

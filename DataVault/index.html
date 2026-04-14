@@ -30,7 +30,15 @@
           </div>
         </div>
         <button class="btn secondary" id="btnMainPage" data-i18n="mainPageButton">Strona Główna</button>
-        <button class="btn secondary" id="btnReset" title="Wyczyść filtry, sortowanie i zaznaczenia" data-i18n="resetViewButton" data-i18n-title="resetViewTitle">Reset widoku</button>
+        <div class="actionsGroup actionsGroup--view">
+          <div class="viewButtons">
+            <button class="btn secondary" id="btnReset" title="Wyczyść filtry, sortowanie i zaznaczenia" data-i18n="fullViewButton" data-i18n-title="fullViewTitle">Pełen Widok</button>
+            <button class="btn secondary" id="btnDefaultView" title="Przywróć domyślne ukrycia danych" data-i18n="defaultViewButton" data-i18n-title="defaultViewTitle">Widok Domyślny</button>
+          </div>
+          <div class="actionsNote actionsNote--view">
+            <span data-i18n="viewButtonsNote">Część danych jest domyślnie ukryta.</span>
+          </div>
+        </div>
         <button class="btn primary" id="btnCompare" disabled data-i18n="compareButton">Porównaj zaznaczone</button>
       </div>
     </header>
