@@ -272,6 +272,10 @@ code{color:var(--code)}
   top:var(--header-row-height);
   background:rgba(22,198,12,.05);
 }
+.dataTable thead tr:first-child th.filter-active{
+  box-shadow: inset 0 -2px 0 var(--accent);
+  background:linear-gradient(180deg, rgba(22,198,12,.16), rgba(22,198,12,.06));
+}
 .dataTable tbody tr:nth-child(odd){background:var(--zebra-odd)}
 .dataTable tbody tr:nth-child(even){background:var(--zebra-even)}
 .dataTable tbody tr:hover{background:var(--hover)}
@@ -839,6 +843,20 @@ td.center{text-align:center}
 .filterBtn{margin-left:6px; width:24px; height:24px; display:inline-grid; place-items:center;
   border:1px solid var(--b2); background:rgba(22,198,12,.04); color:var(--text); border-radius:6px; cursor:pointer}
 .filterBtn:hover{background:rgba(22,198,12,.08)}
+.filterBtn.filter-active{
+  border-color:var(--accent);
+  background:rgba(22,198,12,.18);
+  box-shadow:0 0 0 1px rgba(22,198,12,.22), 0 0 10px rgba(22,198,12,.22);
+  position:relative;
+}
+.filterBtn.filter-active::after{
+  content:"●";
+  font-size:9px;
+  color:var(--code);
+  position:absolute;
+  top:-4px;
+  right:-2px;
+}
 .filterMenu{position:fixed; z-index:40; min-width:240px; max-width:320px; max-height:360px; overflow:auto;
   background:var(--panel); border:1px solid var(--b); border-radius:8px; box-shadow:0 0 16px rgba(22,198,12,.10);
   padding:10px; display:none}
@@ -863,5 +881,6 @@ td.center{text-align:center}
   gap:6px;
   padding:6px 0 8px;
 }
+.dataTable thead tr:nth-child(2) th.noFilterCell{padding:8px 9px}
 .tableFilters .filterRow{display:flex; gap:6px; align-items:center}
 .tableFilters .filterRow .input{padding:8px 8px}

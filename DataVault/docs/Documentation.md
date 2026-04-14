@@ -129,6 +129,8 @@ Efekty i obwódki:
 - Nagłówki:
   - `thead th` — sticky, uppercase, background gradient.
   - Drugi wiersz nagłówka (`tr:nth-child(2)`) ma niższe tło i `top: var(--header-row-height)`.
+  - W drugim wierszu pierwsza komórka (`th.noFilterCell`) jest celowo pusta — kolumna wyboru `✓` nie ma filtra, więc nie renderuje placeholdera „filtr...”.
+  - Aktywny filtr kolumny dodaje klasę `.filter-active` do nagłówka z pierwszego wiersza, co daje akcentowe podświetlenie (`box-shadow` + mocniejszy gradient tła).
 - Zebra striping: `tbody tr:nth-child(odd)` + `tbody tr:nth-child(even)` (dwa odcienie zieleni).
 - Hover: `tbody tr:hover`.
 - Zaznaczony wiersz: `tbody tr.row-selected`.
@@ -151,6 +153,10 @@ Efekty i obwódki:
 ### 3.10 Menu filtra listowego
 - `.filterMenu` — fixed, z max-height, scroll i shadow.
 - `.fmTitle`, `.fmSearch`, `.fmActions`, `.fmList`, `.fmItem`.
+- `.filterBtn.filter-active`:
+  - mocniejsza ramka (`border-color: var(--accent)`),
+  - mocniejsze tło i glow,
+  - pseudo-element `::after` z kropką `●` jako jednoznaczny znacznik aktywnego filtra.
 
 ### 3.11 Formatowanie inline
 - `.inline-red`, `.keyword-red`, `.keyword-comma`, `.inline-bold`, `.inline-italic`.
@@ -567,7 +573,9 @@ Mapowanie na `getElementById`:
   - wiersz 1: nazwy kolumn + `sortMark`.
   - wiersz 2: `input` filtrów + przycisk `▾` (filtr listowy).
 - Dodaje kolumnę checkboxów `✓` na początku.
+- Komórka filtra dla kolumny `✓` ma klasę `noFilterCell` i pozostaje pusta (usunięto napis „filtr...”, bo brak logiki filtrowania dla tej kolumny).
 - Tooltip przycisku filtru listowego to „Filtr listy”.
+- Po zbudowaniu nagłówka uruchamiane jest `updateFilterIndicators()`, które synchronizuje klasy aktywnego filtra z aktualnym stanem `view`.
 
 ---
 
@@ -595,6 +603,13 @@ Mapowanie na `getElementById`:
 
 ### 10.3 Filtr listowy
 - `uniqueValuesForColumn(col)` — zbiór wartości, puste → `"-"`.
+- `isColumnFilterActive(col)`:
+  - zwraca `true`, gdy istnieje niepusty filtr tekstowy (`filtersText[col].trim()`),
+  - albo gdy filtr listowy `filtersSet[col]` jest typu `Set` i zawiera mniej wartości niż pełna lista unikalnych wartości kolumny.
+- `updateFilterIndicators()`:
+  - dla każdej kolumny ustawia `.filter-active` na nagłówku (`thead tr:first-child th[data-col]`) oraz na przycisku `.filterBtn`,
+  - ustawia `aria-pressed` przycisku filtra (`true`/`false`),
+  - jest wołane po budowie nagłówka (`buildTableSkeleton()`) i na każdym renderze (`renderBody()`), więc wskaźnik zawsze odzwierciedla aktualny stan filtrów.
 - `openFilterMenu(col, anchorBtn)`:
   - Obsługuje **toggle** dla tego samego przycisku (`activeFilterCol`, `activeFilterBtn`): drugi klik w tę samą strzałkę `▾` wywołuje `closeFilterMenu()` i zamyka panel.
   - Przy kliknięciu `▾` w innej kolumnie najpierw zamyka poprzedni panel (`closeFilterMenu()`), potem buduje nowy dla wskazanej kolumny.

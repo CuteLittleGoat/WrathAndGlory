@@ -21,6 +21,8 @@ Najważniejsze zasady działania:
 - W topbarze są teraz dwa przyciski: **Pełen Widok** (odsłania wszystkie dane we wszystkich zakładkach) oraz **Widok Domyślny** (przywraca domyślne ukrycia i sortowanie). Pod przyciskami jest podpis: „Część danych jest domyślnie ukryta.”
 - Stan filtrów i sortowania jest zapisywany w `sessionStorage` per urządzenie/sesja, dzięki czemu po przełączaniu zakładek stan się utrzymuje, a po zakończeniu sesji wraca domyślny widok.
 - Kolumna wyboru (✓) ma zawsze stałą szerokość 8ch (min/max/width) we wszystkich zakładkach, więc nie rozszerza się wraz z szerokością okna.
+- W drugim wierszu nagłówka pierwsza kolumna wyboru (✓) nie pokazuje już napisu „filtr...”, ponieważ ta kolumna nie ma logiki filtrowania.
+- Aktywne filtry kolumn są sygnalizowane wizualnie: nagłówek kolumny dostaje podświetlenie akcentowe, a przycisk filtra (▾) ma stan aktywny z kropką-indykatorem.
 - W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), a tabela ma `table-layout: fixed` i `width: max-content`, więc **wszystkie** jej kolumny pozostają stałe.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
 - We wszystkich zakładkach kolumny `Podręcznik` i `Strona` mają ujednolicone parametry: `Podręcznik` = min. **17ch** (lewo), `Strona` = min. **6ch** (środek), bez limitu `max-width`, ze standardowym łamaniem linii.
@@ -97,6 +99,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 ### Skróty funkcji w interfejsie
 - Kliknięcie nagłówka kolumny: sortowanie rosnąco/malejąco/reset.
 - Drugi wiersz nagłówka: filtr tekstowy oraz filtr listy (przycisk ▾).
+- Gdy filtr tekstowy lub listowy jest aktywny, kolumna jest oznaczona podświetleniem nagłówka i aktywnym stanem przycisku filtra.
 - Przycisk ▾ działa jak przełącznik: drugi klik w ten sam przycisk zamyka menu filtrowania; klik poza menu także je zamyka.
 - Przycisk **Pełen Widok** czyści globalne wyszukiwanie, filtry tekstowe i filtry listowe we wszystkich zakładkach, a następnie pokazuje pełne dane.
 - Przycisk **Widok Domyślny** przywraca globalnie domyślną konfigurację filtrów checkboxowych (oraz resetuje pozostałe filtry), zgodnie z profilem aplikacji.
@@ -135,6 +138,8 @@ Key behavior:
 - The top bar now has two view buttons: **Full View** (shows all data across all tabs) and **Default View** (restores default hidden values and default sorting). A caption is displayed below them: “Some data is hidden by default.”
 - Filter/sort state is persisted in per-session `sessionStorage`, so switching tabs keeps your state on the same device/session, while a new browser session returns to the default profile.
 - The selection (✓) column is always locked to 8ch (min/max/width) across all tabs, so it does not expand with viewport width.
+- In the second header row, the first selection column (✓) no longer shows the “filter...” text because this column has no filtering logic.
+- Active column filters are now clearly signaled: the column header gets an accent highlight, and the filter button (▾) switches to an active state with a dot indicator.
 - In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), and the table uses `table-layout: fixed` with `width: max-content`, so **all** columns stay fixed.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
 - Across all tabs, the `Podręcznik` and `Strona` columns now use unified settings: `Podręcznik` = min **17ch** (left), `Strona` = min **6ch** (center), no `max-width` limit, and standard line wrapping.
@@ -211,6 +216,7 @@ Below are two equivalent ways to update the data. In this repository update, `da
 ### UI shortcuts
 - Click a column header: sort ascending/descending/reset.
 - Second header row: text filter + list filter (▾ button).
+- When a text or list filter is active, the column is marked by a highlighted header and an active filter button state.
 - The ▾ button now works as a toggle: clicking the same button again closes the filter menu; clicking outside the menu also closes it.
 - **Full View** clears global search, text filters, and list filters across all tabs, then shows complete datasets.
 - **Default View** globally restores the predefined checkbox-filter profile (and resets other filters) for the application.

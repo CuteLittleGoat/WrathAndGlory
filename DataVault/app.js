@@ -193,10 +193,6 @@ const applyLanguage = (lang) => {
   if (els.global) {
     els.global.placeholder = t.placeholders.globalSearch;
   }
-  const filterHeader = document.querySelector("thead tr:nth-child(2) th:first-child .muted");
-  if (filterHeader) {
-    filterHeader.textContent = t.placeholders.columnFilter;
-  }
   document.querySelectorAll(".tableFilters .input").forEach((input) => {
     input.placeholder = t.placeholders.columnFilter;
   });
@@ -1250,7 +1246,7 @@ function buildTableSkeleton(){
   trH.appendChild(th0);
 
   const th0f = document.createElement("th");
-  th0f.innerHTML = `<span class="muted">${translations[currentLanguage].placeholders.columnFilter}</span>`;
+  th0f.className = "noFilterCell";
   trF.appendChild(th0f);
 
   for (const col of cols){
@@ -1318,6 +1314,7 @@ function buildTableSkeleton(){
   els.wrap.appendChild(frame);
 
   updateSortMarks();
+  updateFilterIndicators();
 }
 
 /* ---------- Sorting ---------- */
@@ -1357,6 +1354,29 @@ function uniqueValuesForColumn(col){
     vals.add(String(r[col] ?? "").trim() || "-");
   }
   return [...vals].sort((a,b)=>a.localeCompare(b,"pl",{numeric:true,sensitivity:"base"}));
+}
+
+function isColumnFilterActive(col){
+  const textFilter = String(view.filtersText?.[col] ?? "").trim();
+  if (textFilter) return true;
+  const setFilter = view.filtersSet?.[col];
+  if (!(setFilter instanceof Set)) return false;
+  const allValuesCount = uniqueValuesForColumn(col).length;
+  return setFilter.size < allValuesCount;
+}
+
+function updateFilterIndicators(){
+  if (!tableEl) return;
+  tableEl.querySelectorAll('thead tr:first-child th[data-col]').forEach((headerCell) => {
+    const col = headerCell.dataset.col;
+    const active = isColumnFilterActive(col);
+    headerCell.classList.toggle("filter-active", active);
+    const btn = tableEl.querySelector(`thead tr:nth-child(2) th[data-col="${CSS.escape(col)}"] .filterBtn`);
+    if (btn){
+      btn.classList.toggle("filter-active", active);
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    }
+  });
 }
 
 function openFilterMenu(col, anchorBtn){
@@ -1569,6 +1589,7 @@ function renderBody(){
   if (!DB || !currentSheet || !tbodyEl) return;
   const rowsAll = DB.sheets[currentSheet] || [];
   const cols = DB.sheets[currentSheet]._cols || inferColumns(rowsAll, currentSheet);
+  updateFilterIndicators();
 
   const filtered = sortRows(rowsAll.filter(r => passesFilters(r, cols)));
   const token = ++renderToken;
