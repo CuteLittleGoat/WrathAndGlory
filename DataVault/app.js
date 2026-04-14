@@ -204,7 +204,7 @@ const applyLanguage = (lang) => {
 
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
-const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy"]);
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów"]);
 const CHARACTER_CREATION_SHEETS = new Set([
   "Tabela Rozmiarów",
   "Gatunki",
