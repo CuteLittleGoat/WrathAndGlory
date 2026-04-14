@@ -5733,7 +5733,7 @@
     "Modlitwy": [
       {
         "LP": "1",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Boskie przewodnictwo",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -5743,7 +5743,7 @@
       },
       {
         "LP": "2",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Imperator chroni",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, co najmniej 1 punkt Wiary.",
@@ -5753,7 +5753,7 @@
       },
       {
         "LP": "3",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Litania NienawiŚci",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, Talent Nienawiść [{{B}}Podręcznik Główn{{/B}}y (str. 135)]",
@@ -5763,7 +5763,7 @@
       },
       {
         "LP": "4",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Łzy męczennika",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Siły Woli 3 lub wyższa.",
@@ -5773,7 +5773,7 @@
       },
       {
         "LP": "5",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Natchnione błogosławieństwo",
         "Koszt PD": "25",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}}.",
@@ -5783,7 +5783,7 @@
       },
       {
         "LP": "6",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Pasja",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -5793,7 +5793,7 @@
       },
       {
         "LP": "7",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Pokuta!",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Siły Woli 3 lub wyższa.",
@@ -5803,7 +5803,7 @@
       },
       {
         "LP": "8",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Święty gniew",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Siły Woli 3 lub wyższa.",
@@ -5813,7 +5813,7 @@
       },
       {
         "LP": "9",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}}.",
         "Nazwa": "Święte Światło",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} ADEPTUS MINISTORUM{{/RED}}.",
@@ -5823,7 +5823,7 @@
       },
       {
         "LP": "10",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Tarcza wiary",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Siły Woli 3 lub wyższa.",
@@ -5833,7 +5833,7 @@
       },
       {
         "LP": "11",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "W Jego imieniu",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Wiedzy ogólnej 1 lub wyższa.",
@@ -5843,7 +5843,7 @@
       },
       {
         "LP": "12",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Wzmacniająca czystość",
         "Koszt PD": "40",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -5853,7 +5853,7 @@
       },
       {
         "LP": "13",
-        "Typ": "-",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
         "Nazwa": "Z Jego woli",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -7229,7 +7229,7 @@
       },
       {
         "LP": "27",
-        "Typ": "Ulepszenia",
+        "Typ": "Ulepszenia Ogrynów",
         "Nazwa": "W.A.T.",
         "Opis": "Choc Ogryni sa niezaprzeczalnie nieinteligentnym gatunkiem, zdarzaja sie bystrzejsze sztuki.\nOrły intelektu, które rozumieja, ze rzeczy nie przestaja istniec po zniknieciu z widocznosci, potrafia liczyc do wiecej niz trzech, a moze nawet posiadły zdolnosc rozwiazywania prostych problemów, dostaja przydział na Wszczep Augmentacji Taktycznej, który zwieksza ich mozliwosci umysłowe.\nOgryni ci nazywani sa watutami, a dzieki wspomaganej implantami mózgowymi wiekszej inteligencji sa nawet w stanie poprowadzic natarcie.",
         "Efekt": "{{B}}Wymagania{{/B}}: Gatunek: Ogryn, Dowodzenie 1, Ranga 3.\nZwieksza maksymalny poziom Inteligencji do 3 i zwieksza premie do Inteligencji o 1.",

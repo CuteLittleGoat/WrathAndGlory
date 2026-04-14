@@ -69,7 +69,7 @@ Najważniejsze zasady działania:
 ### Aktualizacja danych z `Repozytorium.xlsx`
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmianie repozytorium `data.json` został ponownie wygenerowany na podstawie najnowszego dostarczonego pliku `Repozytorium.xlsx`, więc tabele odpowiadają aktualnemu arkuszowi. Generator zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 
-**Status tej aktualizacji:** `data.json` został wygenerowany ponownie dnia **2026-04-14** na podstawie nowo wgranego `Repozytorium.xlsx`.
+**Status tej aktualizacji:** `data.json` został wygenerowany ponownie dnia **2026-04-14** na podstawie nowo wgranego `Repozytorium.xlsx` (aktualizacja danych tabel DataVault po dostarczeniu nowego pliku).
 
 #### Metoda 1: panel administratora (rekomendowana)
 1. Podmień `Repozytorium.xlsx` w folderze modułu DataVault (obok `index.html`, na hostingu lub lokalnie).
@@ -189,7 +189,7 @@ Key behavior:
 ### Updating data from `Repozytorium.xlsx`
 Below are two equivalent ways to update the data. In this repository update, `data.json` has been regenerated from the latest provided `Repozytorium.xlsx` file, so the tables reflect the current spreadsheet content. The generator replaces Polish quotation marks „ ” with the standard `"` character.
 
-**Update status:** `data.json` was regenerated on **2026-04-14** from the newly uploaded `Repozytorium.xlsx`.
+**Update status:** `data.json` was regenerated on **2026-04-14** from the newly uploaded `Repozytorium.xlsx` (DataVault table data refresh after delivering the new file).
 
 #### Method 1: admin panel (recommended)
 1. Replace `Repozytorium.xlsx` in the DataVault module folder (next to `index.html`, hosting or local).
