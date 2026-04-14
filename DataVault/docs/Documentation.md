@@ -30,8 +30,10 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
   - `.title` — „ADMINISTRATUM DATA VAULT”.
 - Akcje (przyciski):
   - `#btnUpdateData` w grupie `#updateDataGroup` (etykieta przycisku: **„Generuj data.json”** w PL / **„Generate data.json”** w EN).
-  - `#btnReset` — reset widoku.
+  - `#btnReset` — **Pełen Widok** (odsłania wszystkie dane i czyści filtry/sortowanie).
+  - `#btnDefaultView` — **Widok Domyślny** (przywraca predefiniowane ukrycia i domyślne sortowanie).
   - `#btnCompare` — porównanie zaznaczonych wierszy.
+- Pod przyciskami `#btnReset` i `#btnDefaultView` widoczny jest podpis i18n (`viewButtonsNote`): „Część danych jest domyślnie ukryta.” / „Some data is hidden by default.”.
 - Przełącznik języka:
   - `.language-switcher select#languageSelect` z opcjami `pl` i `en`.
   - Ciemne tło selecta (`#0b0b0b`) utrzymuje spójność z motywem konsolowym.
@@ -398,24 +400,30 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 - `CHARACTER_CREATION_SHEET_KEYS` i `COMBAT_RULES_SHEET_KEYS` — kanoniczne (znormalizowane) wersje nazw arkuszy używane do odpornego dopasowania nazw zakładek niezależnie od drobnych różnic zapisu.
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
+- `SESSION_VIEW_KEY = "datavault_session_view_v2"` — klucz zapisu stanu widoku w `sessionStorage`.
+- `DEFAULT_VIEW_CONFIG` — mapa domyślnych checkboxów (sheet/column/values) dla przycisku `Widok Domyślny` i startu aplikacji.
 - Kolejność zakładek i kolumn **nie jest hardcode** — pochodzi z `_meta.sheetOrder` i `_meta.columnOrder` w `data.json` (a w razie braku jest odzyskiwana z bieżącego układu danych).
 
 ### 4.2 Elementy DOM (`els`)
 Mapowanie na `getElementById`:
-- `tabs`, `tableWrap`, `globalSearch`, `btnUpdateData`, `updateDataGroup`, `btnCompare`, `btnReset`.
+- `tabs`, `tableWrap`, `globalSearch`, `btnUpdateData`, `updateDataGroup`, `btnCompare`, `btnReset`, `btnDefaultView`.
 - `popover`, `popoverTitle`, `popoverBody`, `popoverClose`.
 - `modal`, `modalBody`, `modalClose`.
 - `filterMenu`.
-- `toggleCharacterTabs`.
-- `toggleCombatTabs`.
-- `toggleCombatTabs`.
+- `toggleCharacterTabs`, `toggleCombatTabs`, `languageSelect`.
 
-### 4.3 Stan `view`
-- `sort` — `{col, dir, secondary?}` lub `null`, gdzie `secondary` to opcjonalny drugi klucz sortowania.
-- `global` — tekst globalnego filtra.
-- `filtersText` — per kolumna tekstowy filtr (substring).
-- `filtersSet` — per kolumna Set wartości z menu listowego lub `null`.
-- `selected` — `Set` zaznaczonych `__id` (porównanie).
+### 4.3 Stan widoku (per zakładka + globalny UI)
+- `uiState`:
+  - `showCharacterTabs`,
+  - `showCombatTabs`.
+- `viewBySheet` — obiekt stanu per zakładka (serializowany do `sessionStorage`).
+- `view` — aktywny stan aktualnie wybranej zakładki:
+  - `sort` — `{col, dir, secondary?}` lub `null`,
+  - `global` — tekst globalnego filtra,
+  - `filtersText` — per kolumna tekstowy filtr,
+  - `filtersSet` — per kolumna `Set` wartości z menu listowego lub `null`,
+  - `selected` — `Set` zaznaczonych `__id`,
+  - `expandedCells` — `Set` komórek rozwiniętych w clampie.
 - `expandedCells` — `Set` dla rozwiniętych komórek (key: `sheet|rowid|col`).
 - `showCharacterTabs` — `true` gdy checkbox tworzenia postaci jest zaznaczony (pokazuje zestaw zakładek z `CHARACTER_CREATION_SHEETS`).
 - `showCombatTabs` — `true` gdy checkbox zasad walki jest zaznaczony (pokazuje zestaw zakładek z `COMBAT_RULES_SHEETS`, z uwzględnieniem admin-only).
@@ -548,9 +556,11 @@ Mapowanie na `getElementById`:
 
 ### 8.2 `selectSheet(name)`
 - Ustawia `currentSheet`.
-- Resetuje sortowanie i filtry; jeśli w danych istnieje kolumna `LP`, ustawia domyślny sort po `LP` (rosnąco). Kolumna `LP` jest ukryta w tabeli i służy wyłącznie do domyślnego porządku.
-- Czyści zaznaczenia porównywarki.
+- Zapisuje stan bieżącej zakładki do bufora per-zakładka (`viewBySheet`) i odtwarza stan docelowej zakładki.
+- Stan zakładki obejmuje: `sort`, `global`, `filtersText`, `filtersSet`, `selected`, `expandedCells`.
+- Jeżeli zakładka nie ma jeszcze stanu, tworzony jest nowy stan z domyślnym sortem (po `LP`, jeśli istnieje) i pustymi filtrami.
 - Buduje tabelę i renderuje wiersze.
+- Stan jest synchronizowany do `sessionStorage` (klucz `datavault_session_view_v2`).
 
 ### 8.3 `buildTableSkeleton()`
 - Tworzy `<table>` z dwoma wierszami nagłówka:
@@ -599,6 +609,7 @@ Mapowanie na `getElementById`:
   - Ustawia `aria-hidden="true"` i czyści HTML menu.
 - Etykiety w menu są wyświetlane bez markerów `{{RED}}`, `{{B}}`, `{{I}}`, ale filtrowanie działa na surowych wartościach (nie zmienia logiki danych).
 - `view.filtersSet[col] = null` oznacza brak filtra (wszystko zaznaczone).
+- Domyślny profil widoku jest definiowany przez `DEFAULT_VIEW_CONFIG` (mapa `sheet -> column -> allowedValues`) i nakładany przez `applyDefaultViewForSheet`.
 
 ### 10.4 `passesFilters(row, cols)`
 - Łączy wszystkie filtry (globalny + tekstowy + listowy).
@@ -689,15 +700,29 @@ Obsługuje trzy przypadki:
 
 ---
 
-## 14) JS: reset, wyszukiwanie i zdarzenia globalne
+## 14) JS: profile widoku, persistencja, wyszukiwanie i zdarzenia globalne
 
-- `#btnReset` czyści:
-  - sortowanie,
-  - globalne wyszukiwanie,
-  - filtry per kolumna,
-  - zaznaczenia,
-  - rozwinięte komórki,
-  - wartości inputów w nagłówku.
+- `#btnReset` (Pełen Widok) uruchamia `applyViewModeToAllSheets("full")`:
+  - czyści globalne wyszukiwanie, filtry tekstowe, filtry listowe i zaznaczenia dla **wszystkich** zakładek,
+  - ustawia `sort = null`,
+  - zapisuje wynik do `sessionStorage`.
+- `#btnDefaultView` uruchamia `applyViewModeToAllSheets("default")`:
+  - przywraca domyślne filtry checkboxowe wg `DEFAULT_VIEW_CONFIG` dla wszystkich zakładek,
+  - resetuje pozostałe filtry i zaznaczenia,
+  - przywraca domyślny sort (`getDefaultSort(sheet)`),
+  - zapisuje wynik do `sessionStorage`.
+- Aplikacja po starcie:
+  - najpierw próbuje odczytać stan z `sessionStorage` (`loadSessionState()`),
+  - jeśli brak stanu sesji, inicjalizuje wszystkie zakładki profilem domyślnym (`applyDefaultViewForSheet`).
+- Konfiguracja widoku domyślnego (dokładnie):
+  - **Archetypy / Frakcja:** Adepta Sororitas, Adeptus Astartes, Adeptus Astra Telepathica, Adeptus Mechanicus, Adeptus Ministorum, Astra Militarum, Dynastie Wolnych Kupców, Imperium T'au, Inkwizycja, Ork, Szumowiny.
+  - **Premie Frakcji / Frakcja:** Adepta Sororitas, Adeptus Astartes, Adeptus Astra Telepathica, Adeptus Mechanicus, Adeptus Ministorum, Astra Militarum, Chaos, Dynastie Wolnych Kupców, Inkwizycja, Ogryn, Szczurak, Szumowiny.
+  - **Psionika / Typ:** Uniwersalne Zdolności Psioniczne, Pomniejsze Moce Psioniczne, Uniwersalna Dyscyplina Psioniczna, Dyscyplina Biomancji, Dyscyplina Dywinacji, Dyscyplina Piromancji, Dyscyplina Telekinezy, Dyscyplina Telepatii.
+  - **Augumentacje / Typ:** Ulepszenia, Wszczepy, Mechadendryt.
+  - **Ekwipunek / Typ:** Ulepszenia Broni, Amunicja, Ekwipunek Imperium.
+  - **Pancerze / Typ:** Zwykłe, Wspomagane, Energetyczne, Astartes, Auxilla.
+  - **Bronie / Typ:** Adeptus Mechanicus, Boltowa, Broń biała, Broń biała Adeptus Mechanicus, Broń biała Ogrynów, Broń dystansowa, Broń dystansowa Adeptus Mechnicus, Broń dystansowa Milczących Sióstr, Broń dystansowa Militarum Auxilla, Broń energetyczna, Broń łańcuchowa, Broń łańcuchowa Astartes, Broń psioniczna, Egzotyczna broń biała, Granaty i Wyrzutnie, Imperialna broń biała, Laserowa, Ogniowa, Palna, Plazmowa, Termiczna.
+  - Pozostałe zakładki: brak ograniczeń (`filtersSet = {}` lub `null` per kolumna).
 - `#globalSearch` aktualizuje `view.global` na `input`.
 - `Escape` zamyka popover, modal i menu filtra listowego.
 

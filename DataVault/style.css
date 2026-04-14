@@ -82,6 +82,18 @@ code{color:var(--code)}
   width:min(640px, calc(100vw - 40px));
 }
 .actionsNote{font-size:11px; color:var(--text2); letter-spacing:.02em; text-transform:none}
+.actionsGroup--view{
+  max-width:none;
+  width:auto;
+}
+.viewButtons{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+.actionsNote--view{
+  max-width:260px;
+}
 .btn{
   border-radius:4px;
   padding:10px 12px;

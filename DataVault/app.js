@@ -10,6 +10,7 @@ const els = {
   btnCompare: document.getElementById("btnCompare"),
   btnMainPage: document.getElementById("btnMainPage"),
   btnReset: document.getElementById("btnReset"),
+  btnDefaultView: document.getElementById("btnDefaultView"),
   pop: document.getElementById("popover"),
   popTitle: document.getElementById("popoverTitle"),
   popBody: document.getElementById("popoverBody"),
@@ -30,7 +31,9 @@ const translations = {
       updateDataButton: "Generuj data.json",
       updateNoteFull: "Kliknięcie przycisku wygeneruje nowy plik <code>data.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a wygenerowany <code>data.json</code> trzeba tam wgrać, aby zaktualizować dane w aplikacji.",
       mainPageButton: "Strona Główna",
-      resetViewButton: "Reset widoku",
+      fullViewButton: "Pełen Widok",
+      defaultViewButton: "Widok Domyślny",
+      viewButtonsNote: "Część danych jest domyślnie ukryta.",
       compareButton: "Porównaj zaznaczone",
       filtersTitle: "FILTRY",
       globalSearchLabel: "Szukaj (globalnie)",
@@ -54,7 +57,8 @@ const translations = {
       filterSearch: "Szukaj na liście…",
     },
     titles: {
-      resetView: "Wyczyść filtry, sortowanie i zaznaczenia",
+      fullView: "Pokaż pełny widok danych (bez ukryć domyślnych)",
+      defaultView: "Przywróć domyślny widok danych (z ukryciami)",
     },
     aria: {
       close: "Zamknij",
@@ -93,7 +97,9 @@ const translations = {
       updateDataButton: "Generate data.json",
       updateNoteFull: "Clicking the button generates a new <code>data.json</code> file. <code>Repozytorium.xlsx</code> must exist in the DataVault module next to <code>index.html</code>, and the generated <code>data.json</code> must be uploaded there to update app data.",
       mainPageButton: "Main Page",
-      resetViewButton: "Reset view",
+      fullViewButton: "Full View",
+      defaultViewButton: "Default View",
+      viewButtonsNote: "Some data is hidden by default.",
       compareButton: "Compare selected",
       filtersTitle: "FILTERS",
       globalSearchLabel: "Search (global)",
@@ -117,7 +123,8 @@ const translations = {
       filterSearch: "Search the list…",
     },
     titles: {
-      resetView: "Clear filters, sorting, and selections",
+      fullView: "Show the full data view (without default hiding)",
+      defaultView: "Restore the default data view (with hidden values)",
     },
     aria: {
       close: "Close",
@@ -174,9 +181,8 @@ const applyLanguage = (lang) => {
   });
   document.querySelectorAll("[data-i18n-title]").forEach((el) => {
     const key = el.getAttribute("data-i18n-title");
-    if (key === "resetViewTitle") {
-      el.setAttribute("title", t.titles.resetView);
-    }
+    if (key === "fullViewTitle") el.setAttribute("title", t.titles.fullView);
+    if (key === "defaultViewTitle") el.setAttribute("title", t.titles.defaultView);
   });
   document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
     const key = el.getAttribute("data-i18n-aria");
@@ -222,16 +228,23 @@ const COMBAT_RULES_SHEET_KEYS = new Set([...COMBAT_RULES_SHEETS].map(name => can
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
 
-const view = {
-  sort: null,              // {col, dir:'asc'|'desc'}
-  global: "",
-  filtersText: {},         // col -> contains text
-  filtersSet: {},          // col -> Set(selected values) OR null
-  selected: new Set(),     // row.__id
-  expandedCells: new Set(), // key sheet|rowid|col for clamp toggle
+const SESSION_VIEW_KEY = "datavault_session_view_v2";
+const DEFAULT_VIEW_CONFIG = {
+  "Archetypy": { "Frakcja": ["Adepta Sororitas", "Adeptus Astartes", "Adeptus Astra Telepathica", "Adeptus Mechanicus", "Adeptus Ministorum", "Astra Militarum", "Dynastie Wolnych Kupców", "Imperium T'au", "Inkwizycja", "Ork", "Szumowiny"] },
+  "Premie Frakcji": { "Frakcja": ["Adepta Sororitas", "Adeptus Astartes", "Adeptus Astra Telepathica", "Adeptus Mechanicus", "Adeptus Ministorum", "Astra Militarum", "Chaos", "Dynastie Wolnych Kupców", "Inkwizycja", "Ogryn", "Szczurak", "Szumowiny"] },
+  "Psionika": { "Typ": ["Uniwersalne Zdolności Psioniczne", "Pomniejsze Moce Psioniczne", "Uniwersalna Dyscyplina Psioniczna", "Dyscyplina Biomancji", "Dyscyplina Dywinacji", "Dyscyplina Piromancji", "Dyscyplina Telekinezy", "Dyscyplina Telepatii"] },
+  "Augumentacje": { "Typ": ["Ulepszenia", "Wszczepy", "Mechadendryt"] },
+  "Ekwipunek": { "Typ": ["Ulepszenia Broni", "Amunicja", "Ekwipunek Imperium"] },
+  "Pancerze": { "Typ": ["Zwykłe", "Wspomagane", "Energetyczne", "Astartes", "Auxilla"] },
+  "Bronie": { "Typ": ["Adeptus Mechanicus", "Boltowa", "Broń biała", "Broń biała Adeptus Mechanicus", "Broń biała Ogrynów", "Broń dystansowa", "Broń dystansowa Adeptus Mechnicus", "Broń dystansowa Milczących Sióstr", "Broń dystansowa Militarum Auxilla", "Broń energetyczna", "Broń łańcuchowa", "Broń łańcuchowa Astartes", "Broń psioniczna", "Egzotyczna broń biała", "Granaty i Wyrzutnie", "Imperialna broń biała", "Laserowa", "Ogniowa", "Palna", "Plazmowa", "Termiczna"] },
+};
+
+const uiState = {
   showCharacterTabs: false,
   showCombatTabs: false
 };
+const viewBySheet = {};
+let view = createSheetViewState();
 
 const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (progressive rendering)
 
@@ -359,6 +372,208 @@ function isCharacterCreationSheet(name){
 
 function isCombatRulesSheet(name){
   return COMBAT_RULES_SHEET_KEYS.has(canonKey(name));
+}
+
+function createSheetViewState(sheetName = null){
+  return {
+    sort: sheetName ? getDefaultSort(sheetName) : null,
+    global: "",
+    filtersText: {},
+    filtersSet: {},
+    selected: new Set(),
+    expandedCells: new Set(),
+  };
+}
+
+function uniqueValuesForColumnFromRows(rows, col){
+  return [...new Set(rows.map(r => String(r[col] ?? "").trim() || "-"))]
+    .sort((a,b)=>a.localeCompare(b,"pl",{numeric:true,sensitivity:"base"}));
+}
+
+function getDefaultConfigForSheet(sheetName){
+  const sheetConfig = Object.entries(DEFAULT_VIEW_CONFIG).find(([sheet]) => canonKey(sheet) === canonKey(sheetName))?.[1];
+  if (!sheetConfig) return null;
+  return Object.fromEntries(
+    Object.entries(sheetConfig).map(([col, values]) => [canonKey(col), values.map(v => String(v ?? "").trim() || "-")])
+  );
+}
+
+function setCurrentSheetView(state){
+  view = {
+    sort: state.sort ? {...state.sort} : null,
+    global: state.global || "",
+    filtersText: {...(state.filtersText || {})},
+    filtersSet: Object.fromEntries(
+      Object.entries(state.filtersSet || {}).map(([col, set]) => [col, set instanceof Set ? new Set(set) : null])
+    ),
+    selected: state.selected instanceof Set ? new Set(state.selected) : new Set(),
+    expandedCells: state.expandedCells instanceof Set ? new Set(state.expandedCells) : new Set(),
+  };
+}
+
+function persistCurrentSheetView(){
+  if (!currentSheet) return;
+  viewBySheet[currentSheet] = {
+    sort: view.sort ? {...view.sort} : null,
+    global: view.global || "",
+    filtersText: {...view.filtersText},
+    filtersSet: Object.fromEntries(Object.entries(view.filtersSet).map(([col, set]) => [col, set instanceof Set ? [...set] : null])),
+    selected: [...view.selected],
+    expandedCells: [...view.expandedCells],
+  };
+}
+
+function restoreSheetView(sheetName){
+  const stored = viewBySheet[sheetName];
+  if (!stored){
+    const base = createSheetViewState(sheetName);
+    viewBySheet[sheetName] = {
+      ...base,
+      filtersSet: {},
+      selected: [],
+      expandedCells: [],
+    };
+    setCurrentSheetView(base);
+    return;
+  }
+  setCurrentSheetView({
+    sort: stored.sort,
+    global: stored.global,
+    filtersText: stored.filtersText,
+    filtersSet: Object.fromEntries(Object.entries(stored.filtersSet || {}).map(([col, set]) => [col, Array.isArray(set) ? new Set(set) : null])),
+    selected: new Set(stored.selected || []),
+    expandedCells: new Set(stored.expandedCells || []),
+  });
+}
+
+function applyDefaultViewForSheet(sheetName){
+  const rows = DB?.sheets?.[sheetName] || [];
+  const cols = inferColumns(rows, sheetName);
+  const config = getDefaultConfigForSheet(sheetName);
+  const next = createSheetViewState(sheetName);
+  next.sort = getDefaultSort(sheetName);
+  for (const col of cols){
+    const allVals = uniqueValuesForColumnFromRows(rows, col);
+    const cfg = config?.[canonKey(col)];
+    if (!cfg) continue;
+    const allowed = allVals.filter(v => cfg.includes(v));
+    if (allowed.length === allVals.length){
+      next.filtersSet[col] = null;
+    } else {
+      next.filtersSet[col] = new Set(allowed);
+    }
+  }
+  viewBySheet[sheetName] = {
+    sort: next.sort,
+    global: "",
+    filtersText: {},
+    filtersSet: Object.fromEntries(Object.entries(next.filtersSet).map(([col, set]) => [col, set instanceof Set ? [...set] : null])),
+    selected: [],
+    expandedCells: [],
+  };
+}
+
+function applyFullViewForSheet(sheetName){
+  const next = createSheetViewState(sheetName);
+  next.sort = null;
+  viewBySheet[sheetName] = {
+    sort: next.sort,
+    global: "",
+    filtersText: {},
+    filtersSet: {},
+    selected: [],
+    expandedCells: [],
+  };
+}
+
+function saveSessionState(){
+  if (!DB) return;
+  persistCurrentSheetView();
+  const payload = {
+    sheetViews: viewBySheet,
+    toggles: {...uiState},
+    language: currentLanguage,
+  };
+  sessionStorage.setItem(SESSION_VIEW_KEY, JSON.stringify(payload));
+}
+
+function loadSessionState(){
+  try{
+    const raw = sessionStorage.getItem(SESSION_VIEW_KEY);
+    if (!raw) return false;
+    const parsed = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object") return false;
+    for (const [sheetName, state] of Object.entries(parsed.sheetViews || {})){
+      if (!DB?.sheets?.[sheetName]) continue;
+      const rows = DB.sheets[sheetName] || [];
+      const cols = inferColumns(rows, sheetName);
+      const next = createSheetViewState(sheetName);
+      if (state && typeof state === "object"){
+        if (state.sort?.col && cols.includes(state.sort.col)){
+          next.sort = {
+            col: state.sort.col,
+            dir: state.sort.dir === "desc" ? "desc" : "asc",
+            secondary: state.sort.secondary?.col && cols.includes(state.sort.secondary.col)
+              ? {
+                  col: state.sort.secondary.col,
+                  dir: state.sort.secondary.dir === "desc" ? "desc" : "asc",
+                }
+              : null,
+          };
+        }
+        next.global = String(state.global || "");
+        for (const [col, txt] of Object.entries(state.filtersText || {})){
+          if (!cols.includes(col)) continue;
+          next.filtersText[col] = String(txt || "");
+        }
+        for (const [col, rawSet] of Object.entries(state.filtersSet || {})){
+          if (!cols.includes(col)) continue;
+          if (rawSet === null){
+            next.filtersSet[col] = null;
+            continue;
+          }
+          if (!Array.isArray(rawSet)) continue;
+          const allowed = new Set(uniqueValuesForColumnFromRows(rows, col));
+          const selected = rawSet.map(v => String(v || "")).filter(v => allowed.has(v));
+          if (selected.length === allowed.size){
+            next.filtersSet[col] = null;
+          } else {
+            next.filtersSet[col] = new Set(selected);
+          }
+        }
+      }
+      viewBySheet[sheetName] = {
+        sort: next.sort,
+        global: next.global,
+        filtersText: next.filtersText,
+        filtersSet: Object.fromEntries(Object.entries(next.filtersSet).map(([col, set]) => [col, set instanceof Set ? [...set] : null])),
+        selected: [],
+        expandedCells: [],
+      };
+    }
+    if (parsed.toggles){
+      uiState.showCharacterTabs = Boolean(parsed.toggles.showCharacterTabs);
+      uiState.showCombatTabs = Boolean(parsed.toggles.showCombatTabs);
+    }
+    if (parsed.language && translations[parsed.language]){
+      applyLanguage(parsed.language);
+    }
+    return true;
+  }catch{
+    return false;
+  }
+}
+
+function applyViewModeToAllSheets(mode){
+  for (const sheetName of Object.keys(DB?.sheets || {})){
+    if (mode === "default") applyDefaultViewForSheet(sheetName);
+    if (mode === "full") applyFullViewForSheet(sheetName);
+  }
+  restoreSheetView(currentSheet);
+  if (els.global) els.global.value = view.global || "";
+  updateSortMarks();
+  renderBody();
+  saveSessionState();
 }
 
 /* ---------- Rich text formatting ---------- */
@@ -642,7 +857,14 @@ async function loadJsonFromRepo(){
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     DB = normaliseDB(data);
+    const restored = loadSessionState();
+    if (!restored){
+      for (const sheetName of Object.keys(DB.sheets || {})){
+        applyDefaultViewForSheet(sheetName);
+      }
+    }
     initUI();
+    saveSessionState();
     setStatus(translations[currentLanguage].messages.statusLoadOk);
   }catch(e){
     setStatus(translations[currentLanguage].messages.statusLoadError);
@@ -878,7 +1100,14 @@ function loadXlsxFromRepo(){
         const data = buildDataJsonFromSheets(rawSheets, {sheetOrder, columnOrder});
         downloadDataJson(data);
         DB = normaliseDB(data);
+        const restored = loadSessionState();
+        if (!restored){
+          for (const sheetName of Object.keys(DB.sheets || {})){
+            applyDefaultViewForSheet(sheetName);
+          }
+        }
         initUI();
+        saveSessionState();
         setStatus(translations[currentLanguage].messages.statusRepoUpdated);
       }catch(e){
         setStatus(translations[currentLanguage].messages.statusRepoError);
@@ -922,10 +1151,10 @@ function initUI(){
   els.tabs.innerHTML = "";
   const available = Object.keys(DB.sheets);
   const baseVisible = ADMIN_MODE ? available : available.filter(name => !ADMIN_ONLY_SHEETS.has(name));
-  let visibleSheets = view.showCharacterTabs
+  let visibleSheets = uiState.showCharacterTabs
     ? baseVisible
     : baseVisible.filter(name => !isCharacterCreationSheet(name));
-  visibleSheets = view.showCombatTabs
+  visibleSheets = uiState.showCombatTabs
     ? visibleSheets
     : visibleSheets.filter(name => !isCombatRulesSheet(name));
   const order = getSheetOrder(available);
@@ -946,6 +1175,13 @@ function initUI(){
   // select first
   const nextSheet = visibleOrder.includes(currentSheet) ? currentSheet : (visibleOrder[0] || visibleSheets[0]);
   if (nextSheet) selectSheet(nextSheet);
+
+  if (els.toggleCharacterTabs){
+    els.toggleCharacterTabs.checked = uiState.showCharacterTabs;
+  }
+  if (els.toggleCombatTabs){
+    els.toggleCombatTabs.checked = uiState.showCombatTabs;
+  }
 
   // Actions / admin visibility
   if (!ADMIN_MODE){
@@ -973,18 +1209,19 @@ function buildTableSkeleton(){...}
 */
 
 function selectSheet(name){
+  persistCurrentSheetView();
   currentSheet = name;
-  view.sort = getDefaultSort(name);
-  view.filtersText = {};
-  view.filtersSet = {};
-  view.selected.clear();
-  view.expandedCells.clear();
+  restoreSheetView(name);
   els.btnCompare.disabled = true;
+  if (els.global){
+    els.global.value = view.global || "";
+  }
 
   [...els.tabs.querySelectorAll(".tab")].forEach(t => t.classList.toggle("active", t.textContent === name.toUpperCase()));
 
   buildTableSkeleton();
   renderBody();
+  saveSessionState();
 }
 
 function buildTableSkeleton(){
@@ -1046,7 +1283,11 @@ function buildTableSkeleton(){
     input.className = "input";
     input.placeholder = translations[currentLanguage].placeholders.columnFilter;
     input.dataset.col = col;
-    input.addEventListener("input", ()=>{ view.filtersText[col] = input.value; renderBody(); });
+    input.addEventListener("input", ()=>{
+      view.filtersText[col] = input.value;
+      renderBody();
+      saveSessionState();
+    });
     input.addEventListener("keydown", ev=>ev.stopPropagation());
 
     const btn = document.createElement("button");
@@ -1093,6 +1334,7 @@ function toggleSort(col){
   }
   updateSortMarks();
   renderBody();
+  saveSessionState();
 }
 
 function updateSortMarks(){
@@ -1193,6 +1435,7 @@ function openFilterMenu(col, anchorBtn){
       view.filtersSet[col] = new Set(selected);
     }
     renderBody();
+    saveSessionState();
   }
 
   search.addEventListener("input", ()=>{
@@ -1606,48 +1849,46 @@ function openCompareModal(rows){
   openModal(translations[currentLanguage].labels.comparisonTitle.toUpperCase(), html);
 }
 
-/* ---------- Reset view ---------- */
+/* ---------- View presets ---------- */
 els.btnReset.addEventListener("click", ()=>{
-  view.sort = null;
-  view.global = "";
-  view.filtersText = {};
-  view.filtersSet = {};
-  view.selected.clear();
-  view.expandedCells.clear();
-  // clear inputs
-  els.global.value = "";
-  if (tableEl){
-    tableEl.querySelectorAll("thead tr:nth-child(2) input.input").forEach(inp => inp.value = "");
-  }
-  updateSortMarks();
-  renderBody();
+  applyViewModeToAllSheets("full");
 });
+
+if (els.btnDefaultView){
+  els.btnDefaultView.addEventListener("click", ()=>{
+    applyViewModeToAllSheets("default");
+  });
+}
 
 /* ---------- Global search ---------- */
 els.global.addEventListener("input", ()=>{
   view.global = els.global.value;
   renderBody();
+  saveSessionState();
 });
 els.global.addEventListener("keydown", (ev)=>ev.stopPropagation());
 
 if (els.toggleCharacterTabs){
   els.toggleCharacterTabs.addEventListener("change", ()=>{
-    view.showCharacterTabs = els.toggleCharacterTabs.checked;
+    uiState.showCharacterTabs = els.toggleCharacterTabs.checked;
     initUI();
+    saveSessionState();
   });
-  view.showCharacterTabs = els.toggleCharacterTabs.checked;
+  uiState.showCharacterTabs = els.toggleCharacterTabs.checked;
 }
 if (els.toggleCombatTabs){
   els.toggleCombatTabs.addEventListener("change", ()=>{
-    view.showCombatTabs = els.toggleCombatTabs.checked;
+    uiState.showCombatTabs = els.toggleCombatTabs.checked;
     initUI();
+    saveSessionState();
   });
-  view.showCombatTabs = els.toggleCombatTabs.checked;
+  uiState.showCombatTabs = els.toggleCombatTabs.checked;
 }
 
 if (els.languageSelect){
   els.languageSelect.addEventListener("change", (event)=>{
     applyLanguage(event.target.value);
+    saveSessionState();
   });
 }
 
