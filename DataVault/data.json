@@ -2320,6 +2320,26 @@
         "Szybkość": "7",
         "Rozmiar": "Średni",
         "Zdolności gatunkowe": "{{B}}Mutacje krootów{{/B}}\nMasz tyle Mutacji krootów, ile wynosi twój Poziom. Możesz uzyskać dodatkową Mutacje krootów [{{B}}Osamotniony System{{/B}} (str. 91)] w wyniku Wyniesienia."
+      },
+      {
+        "LP": "9",
+        "Gatunek": "Drukhari",
+        "Koszt PD": "10",
+        "Atrybuty": "Zręczność 3",
+        "Umiejętności": "-",
+        "Szybkość": "8",
+        "Rozmiar": "Średni",
+        "Zdolności gatunkowe": "[brak danych]"
+      },
+      {
+        "LP": "10",
+        "Gatunek": "Konstrukt Upiorytowy",
+        "Koszt PD": "90",
+        "Atrybuty": "Siła 5\nWytrzymałość 6",
+        "Umiejętności": "-",
+        "Szybkość": "5",
+        "Rozmiar": "Duży",
+        "Zdolności gatunkowe": "[brak danych]"
       }
     ],
     "Archetypy": [
@@ -3140,7 +3160,7 @@
       },
       {
         "LP": "10",
-        "Frakcja": "Aeldari",
+        "Frakcja": "Aeldari (Asuryani)",
         "Premia 1": "Determinacja {{I}}lub{{/I}}\nOdwaga {{I}}lub{{/I}}\nOdporność psychiczna {{I}}lub{{/I}}\nMajątek {{I}}lub{{/I}}\nWpływy {{I}}lub{{/I}}\nUpór",
         "Premia 2": "Upór {{I}}lub\n{{/I}}Odporność psychiczna {{I}}lub\n{{/I}}Upór {{I}}lub\n{{/I}}Determinacja {{I}}lub\n{{/I}}Odwaga lub\nWpływy",
         "Premia 3": "-"
@@ -3179,6 +3199,20 @@
         "Premia 1": "Żywotność {{I}}lub\n{{/I}}Odporność psychiczna {{I}}lub\n{{/I}}Majątek",
         "Premia 2": "Determinacja {{I}}lub\n{{/I}}Odwaga {{I}}lub\n{{/I}}Wpływy",
         "Premia 3": "Upór {{I}}lub\n{{/I}}Żywotność {{I}}lub\n{{/I}}Determinacja"
+      },
+      {
+        "LP": "17",
+        "Frakcja": "Drukhari",
+        "Premia 1": "[brak danych]",
+        "Premia 2": "[brak danych]",
+        "Premia 3": "[brak danych]"
+      },
+      {
+        "LP": "18",
+        "Frakcja": "Harlequin",
+        "Premia 1": "[brak danych]",
+        "Premia 2": "[brak danych]",
+        "Premia 3": "[brak danych]"
       }
     ],
     "Słowa Kluczowe Frakcji": [
@@ -3249,15 +3283,22 @@
         "LP": "10",
         "Frakcja": "Aeldari",
         "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub{{/I}}{{RED}} [KOTERIA]{{/RED}}",
-        "Opis": "{{B}}Światostatki Aeldari{{/B}}\nŚwiatostatek to tytaniczny okręt kosmiczny o rozmiarach i populacji planety. Każdy z nich jest samowystarczalnym królestwem wykutym z żywego upiorytu i innych psionicznie aktywnych substancji, bezpiecznym schronieniem dla odłamu rozbitego imperium aeldari. Odcinając się od reszty galaktyki, Asuryani ze światostatków bronią swych unikalnych kultur i tradycji przed obcymi, ponieważ każdy z nich chroni Kręgu Wieczności zawierającego tysiące świadomych dusz martwych aeldari.\n\n{{B}}Koterie Aeldari{{/B}}\nKażdy korsarz aeldari należy do Koterii, gangu piratów prowadzonych przez księcia lub księżniczkę. Korsarze tworzą silne więzi w tych koalicjach mimo tego, że są one pełne rywalizacji i podstępów. Każda Koteria ma własne cele i przyciąga aeldari o podobnym nastawieniu. Koteria, do której należysz, mówi wiele o tobie, a jej reputacja może pomóc zawiązać szybkie przyjaźnie, jak również przysporzyć natychmiastowych wrogów.",
-        "Efekt": "{{B}}Światostatki Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[ŚWIATOSTATEK]{{/RED}} nazwą światostatku, z którego pochodzisz, w ten sposób określając wiele ze swoich przekonań i wyznawanych wartości. Możesz wybrać radykalnego Ulthwé, zależnego od proroctw Rady Proroków, albo też tradycjonalistę ze światostatku Ul-Khari, poturbowanego i unieruchomionego po katastrofie na lodowym świecie Trollius, uwięzionego w systemie Gilead przez intrygi Niszczycielskich Potęg.\n\n{{B}}Koterie Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[KOTERIA]{{/RED}} nazwą Koterii, do której należysz. Możesz wybrać, między innymi, dumnych Starożytnych Łupieżców prowadzonych przez księcia Yriela, który zajął tysiące wrogich okrętów lub tajemniczych Wojowników Zielonej Stali, którzy raz wspierają, a raz łupią Imperium w systemie Gilead."
+        "Opis": "{{B}}Światostatki Aeldari{{/B}}\nŚwiatostatek to tytaniczny okręt kosmiczny o rozmiarach i populacji planety. Każdy z nich jest samowystarczalnym królestwem wykutym z żywego upiorytu i innych psionicznie aktywnych substancji, bezpiecznym schronieniem dla odłamu rozbitego imperium aeldari. Odcinając się od reszty galaktyki, Asuryani ze światostatków bronią swych unikalnych kultur i tradycji przed obcymi, ponieważ każdy z nich chroni Kręgu Wieczności zawierającego tysiące świadomych dusz martwych aeldari.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n[brak danych]\n\n{{B}}Biel-Tan{{/B}}\n[brak danych]\n\n{{B}}Iyanden{{/B}}\n[brak danych]\n\n{{B}}Saim-Hann{{/B}}\n[brak danych]\n\n{{B}}Ul-Khari{{/B}}\n[brak danych]\n\n{{B}}Ulthwé{{/B}}\n[brak danych]",
+        "Efekt": "{{B}}Światostatki Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[ŚWIATOSTATEK]{{/RED}} nazwą światostatku, z którego pochodzisz, w ten sposób określając wiele ze swoich przekonań i wyznawanych wartości. Możesz wybrać radykalnego Ulthwé, zależnego od proroctw Rady Proroków, albo też tradycjonalistę ze światostatku Ul-Khari, poturbowanego i unieruchomionego po katastrofie na lodowym świecie Trollius, uwięzionego w systemie Gilead przez intrygi Niszczycielskich Potęg.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n[brak danych]\n\n{{B}}Biel-Tan{{/B}}\n[brak danych]\n\n{{B}}Iyanden{{/B}}\n[brak danych]\n\n{{B}}Saim-Hann{{/B}}\n[brak danych]\n\n{{B}}Ul-Khari{{/B}}\n[brak danych]\n\n{{B}}Ulthwé{{/B}}\n[brak danych]"
+      },
+      {
+        "LP": "11",
+        "Frakcja": "Aeldari",
+        "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub{{/I}}{{RED}} [KOTERIA]{{/RED}}",
+        "Opis": "{{B}}Koterie Aeldari{{/B}}\nKażdy korsarz aeldari należy do Koterii, gangu piratów prowadzonych przez księcia lub księżniczkę. Korsarze tworzą silne więzi w tych koalicjach mimo tego, że są one pełne rywalizacji i podstępów. Każda Koteria ma własne cele i przyciąga aeldari o podobnym nastawieniu. Koteria, do której należysz, mówi wiele o tobie, a jej reputacja może pomóc zawiązać szybkie przyjaźnie, jak również przysporzyć natychmiastowych wrogów.\n\n=PRZYKŁADY=\n\nEldritch Raiders\n[brak danych]\n\nGreensteel Warriors\n[brak danych]\n\nSteeleye Reavers\n[brak danych]\n\nSunblitz Brotherhood\n[brak danych]\n\nVoid Dragons\n[brak danych]",
+        "Efekt": "{{B}}Koterie Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[KOTERIA]{{/RED}} nazwą Koterii, do której należysz. Możesz wybrać, między innymi, dumnych Starożytnych Łupieżców prowadzonych przez księcia Yriela, który zajął tysiące wrogich okrętów lub tajemniczych Wojowników Zielonej Stali, którzy raz wspierają, a raz łupią Imperium w systemie Gilead.\n\n=PRZYKŁADY=\n\nEldritch Raiders\n[brak danych]\n\nGreensteel Warriors\n[brak danych]\n\nSteeleye Reavers\n[brak danych]\n\nSunblitz Brotherhood\n[brak danych]\n\nVoid Dragons\n[brak danych]"
       },
       {
         "LP": "11",
         "Frakcja": "Ork",
         "Słowo Kluczowe": "{{RED}}[KLAN]{{/RED}}",
-        "Opis": "Orkowie mogliby być nazwani istotami społecznymi. Ich instynktowna psychologia nakazuje im zbierać się w wielkich watahach, aby uformować lepsze jednostki do walki (albo żeby bić się pomiędzy sobą). Te olbrzymie zgromadzenia są nazywane klanami; każdy ork należy do jakiegoś klanu, a każdy z nich ma własne metody wygrywania wojen.",
-        "Efekt": "Możesz zastąpić Słowo kluczowe {{RED}}[KLAN]{{/RED}} nazwą dowolnego klanu."
+        "Opis": "Orkowie mogliby być nazwani istotami społecznymi. Ich instynktowna psychologia nakazuje im zbierać się w wielkich watahach, aby uformować lepsze jednostki do walki (albo żeby bić się pomiędzy sobą). Te olbrzymie zgromadzenia są nazywane klanami; każdy ork należy do jakiegoś klanu, a każdy z nich ma własne metody wygrywania wojen.\n\n=Przykłady=\n\n{{B}}Złe Ksienżyce{{/B}}\nIch zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.\n\n{{B}}Krwawe Topory{{/B}}\nUważani za \"nieorczych\" przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne \"taktiki\", jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.\n\n{{B}}Śmiercioczaszki{{/B}}\nKnujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, \"handlują\" i modyfikują sprzęt częściej niż inne klany.\n\n{{B}}Złe Słońca{{/B}}\nIch obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.\n\n{{B}}Gupole{{/B}}\nMasywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.\n\n{{B}}Wężogryzy{{/B}}\nCelowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
+        "Efekt": "Możesz zastąpić Słowo kluczowe {{RED}}[KLAN]{{/RED}} nazwą dowolnego klanu.\n\n=Przykłady=\n\n{{B}}Złe Ksienżyce{{/B}}\n+1 do Majątku na koniec każdej sesji.\n\n{{B}}Krwawe Topory{{/B}}\n+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr).\n\n{{B}}Śmiercioczaszki{{/B}}\n+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów.\n\n{{B}}Złe Słońca{{/B}}\nZyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością.\n\n{{B}}Gupole{{/B}}\n+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży [Podręcznik Główny (str. 188)].\n\n{{B}}Wężogryzy{{/B}}\n+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
       },
       {
         "LP": "12",
@@ -3286,6 +3327,41 @@
         "Słowo Kluczowe": "-",
         "Opis": "-",
         "Efekt": "-"
+      },
+      {
+        "LP": "16",
+        "Frakcja": "Drukhari",
+        "Słowo Kluczowe": "[KABAŁA] {{I}}lub{{/I}}{{RED}} [WIEDŹMIE KULTY] {{/RED}}{{I}}lub{{/I}}{{RED}} [SABAT HOMUNKULUSÓW]{{/RED}}",
+        "Opis": "[brak danych]",
+        "Efekt": "[brak danych]"
+      },
+      {
+        "LP": "17",
+        "Frakcja": "Drukhari",
+        "Słowo Kluczowe": "[KABAŁA] {{I}}lub{{/I}}{{RED}} [WIEDŹMIE KULTY] {{/RED}}{{I}}lub{{/I}}{{RED}} [SABAT HOMUNKULUSÓW]{{/RED}}",
+        "Opis": "[brak danych]",
+        "Efekt": "[brak danych]"
+      },
+      {
+        "LP": "18",
+        "Frakcja": "Drukhari",
+        "Słowo Kluczowe": "[KABAŁA] {{I}}lub{{/I}}{{RED}} [WIEDŹMIE KULTY] {{/RED}}{{I}}lub{{/I}}{{RED}} [SABAT HOMUNKULUSÓW]{{/RED}}",
+        "Opis": "[brak danych]",
+        "Efekt": "[brak danych]"
+      },
+      {
+        "LP": "19",
+        "Frakcja": "Harlequin",
+        "Słowo Kluczowe": "{{RED}}[BRAK DANYCH]{{/RED}}",
+        "Opis": "[brak danych]",
+        "Efekt": "[brak danych]"
+      },
+      {
+        "LP": "20",
+        "Frakcja": "Ynnari",
+        "Słowo Kluczowe": "-",
+        "Opis": "[brak danych]",
+        "Efekt": "[brak danych]"
       }
     ],
     "Specjalne Bonusy Frakcji": [
@@ -3355,54 +3431,6 @@
       },
       {
         "LP": "9",
-        "Frakcja": "Ork",
-        "Rodzaj": "Orczy Klan",
-        "Nazwa": "Złe Ksienżyce",
-        "Opis": "Ich zemby, które są orczą walutą, wyrastają szybciej niż w jakimkolwiek innym klanie, więc Złe Ksienżyce są najbogatsi i mają dzięki temu najlepsze jedzenie i najbardziej widowiskową broń – rzeczy, z których są wyjątkowo dumni.",
-        "Efekt": "+1 do Majątku na koniec każdej sesji."
-      },
-      {
-        "LP": "10",
-        "Frakcja": "Ork",
-        "Rodzaj": "Orczy Klan",
-        "Nazwa": "Krwawe Topory",
-        "Opis": "Uważani za \"nieorczych\" przez inne klany. Krwawe Topory wykorzystują nieortodoksyjne \"taktiki\", jak planowanie, strategię czy nawet handel z Imperium, by zdobyć lepszy ekwipunek.",
-        "Efekt": "+Ranga dodatkowych kości do Testów Dowodzenia (SW) oraz Skradania się (Zr)."
-      },
-      {
-        "LP": "11",
-        "Frakcja": "Ork",
-        "Rodzaj": "Orczy Klan",
-        "Nazwa": "Śmiercioczaszki",
-        "Opis": "Knujące ścierwojady. Śmiercioczaszki kradną, łupią lub wygrzebują, cokolwiek tylko mogą. Znani z gromadzenia, \"handlują\" i modyfikują sprzęt częściej niż inne klany.",
-        "Efekt": "+Ranga dodatkowych kości do Testów Korzystania z technologii oraz Wpływów."
-      },
-      {
-        "LP": "12",
-        "Frakcja": "Ork",
-        "Rodzaj": "Orczy Klan",
-        "Nazwa": "Złe Słońca",
-        "Opis": "Ich obsesją jest szybkość, Złe Słońca żyją dla ryku silników, zapachu płonącego prometium oraz uczuć, jakie daje jazda pełnym pędem.",
-        "Efekt": "Zyskujesz +1 do Szybkości oraz +Ranga dodatkowych kości do wszystkich Testów, kiedy jesteś w pojeździe poruszającym się z maksymalną prędkością."
-      },
-      {
-        "LP": "13",
-        "Frakcja": "Ork",
-        "Rodzaj": "Orczy Klan",
-        "Nazwa": "Gupole",
-        "Opis": "Masywne i liczebne Gupole stanowią przykład typowej orczej wojaczki. Wszyscy są twardymi, wielkimi, chamskimi brutalami, tylko szukającymi wymówki do bezpośredniej szarży prosto w ogień bitwy, jak największą możliwą chmarą.",
-        "Efekt": "+Ranga dodatkowych kości do Testów ataku wręcz podczas Szarży [{{B}}Podręcznik Główny{{/B}} (str. 188)]."
-      },
-      {
-        "LP": "14",
-        "Frakcja": "Ork",
-        "Rodzaj": "Orczy Klan",
-        "Nazwa": "Wężogryzy",
-        "Opis": "Celowo prymitywne i plemienne Wężogryzy bardziej wolą swoją grubą skórę od jakiegokolwiek pancerza. Są niezwykle dumni z umiejętności przeżycia na płodach ziemi.",
-        "Efekt": "+Dwukrotność Rangi dodatkowych kości do Testów Przetrwania (SW)."
-      },
-      {
-        "LP": "15",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Ludojad",
@@ -3410,7 +3438,7 @@
         "Efekt": "+1 do twojego najniższego Atrybutu (do wyboru, jeśli Atrybuty sa równe)."
       },
       {
-        "LP": "16",
+        "LP": "10",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pożeracz Astartes\n{{I}}(nie dla nowych postaci){{/I}}",
@@ -3418,7 +3446,7 @@
         "Efekt": "+2 do dowolnego Atrybutu."
       },
       {
-        "LP": "17",
+        "LP": "11",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pożeracz Aeldari",
@@ -3426,7 +3454,7 @@
         "Efekt": "+1 do Zrecznosci lub Siły Woli."
       },
       {
-        "LP": "18",
+        "LP": "12",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pożeracz Orków",
@@ -3434,7 +3462,7 @@
         "Efekt": "+1 do Siły lub Wytrzymałosci."
       },
       {
-        "LP": "19",
+        "LP": "13",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Pancerna skóra",
@@ -3442,7 +3470,7 @@
         "Efekt": "+Ranga do Podstawowej Odpornosci."
       },
       {
-        "LP": "20",
+        "LP": "14",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Bioluminescencja",
@@ -3450,7 +3478,7 @@
         "Efekt": "Mozesz sprawic, zedowolna czesc twojego ciała zacznie lekko swiecic. Jezeli swieci całe ciało, to oswietla obszar w promieniu 10 metrów."
       },
       {
-        "LP": "21",
+        "LP": "15",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Kamuflaż",
@@ -3458,7 +3486,7 @@
         "Efekt": "W ramach Akcji podstawowej mozesz zmienic wyglad swojej skóry na identycznych zasadach jak w przypadku peleryny maskujacej [{{B}}Podręcznik Główny{{/B}} (str. 239)]."
       },
       {
-        "LP": "22",
+        "LP": "16",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Opcjonalna dwunożność",
@@ -3466,7 +3494,7 @@
         "Efekt": "Podczas Sprintu pokonujesz dwa razy wieksza odległosc niz zazwyczaj, a w Testach Atletyki (S) podczas skoków lub wspinaczki otrzymujesz +Dwukrotnosc Rangi dodatkowych kosci."
       },
       {
-        "LP": "23",
+        "LP": "17",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Nadwrażliwe pióra",
@@ -3474,7 +3502,7 @@
         "Efekt": "Twoje pióra działaja jak Auspex [{{B}}Podręcznik Główny{{/B}} (str. 237)] ozasiegu 30 metrów."
       },
       {
-        "LP": "24",
+        "LP": "18",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Skrzydła",
@@ -3482,7 +3510,7 @@
         "Efekt": "Możesz latac z Szybkoscia 7."
       },
       {
-        "LP": "25",
+        "LP": "19",
         "Frakcja": "Kroot",
         "Rodzaj": "Mutacja Krootów",
         "Nazwa": "Naturalna broń",
