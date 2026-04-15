@@ -4,6 +4,8 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 
 Aktualizacja danych w repozytorium z dnia **2026-04-15**: po dodaniu nowej wersji `Repozytorium.xlsx` (z nową kolumną `Gatunek` w `Archetypy`) wykonano ponowną regenerację pliku `data.json`, aby odświeżyć zestaw rekordów używany przez tabele DataVault.
 
+Aktualizacja logiki widoku domyślnego z dnia **2026-04-15**: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
+
 ---
 
 ## 1) Struktura projektu i pliki
@@ -742,7 +744,6 @@ Obsługuje trzy przypadki:
   - najpierw próbuje odczytać stan z `sessionStorage` (`loadSessionState()`),
   - jeśli brak stanu sesji, inicjalizuje wszystkie zakładki profilem domyślnym (`applyDefaultViewForSheet`).
 - Konfiguracja widoku domyślnego (dokładnie):
-  - **Archetypy / Frakcja:** Adepta Sororitas, Adeptus Astartes, Adeptus Astra Telepathica, Adeptus Mechanicus, Adeptus Ministorum, Astra Militarum, Dynastie Wolnych Kupców, Inkwizycja, Szumowiny (czyli domyślnie odznaczone: Aeldari, Ork, Imperium T'au).
   - **Archetypy / Gatunek:** Człowiek (czyli w widoku domyślnym zaznaczona jest wyłącznie wartość `Człowiek`).
   - **Premie Frakcji / Frakcja:** Adepta Sororitas, Adeptus Astartes, Adeptus Astra Telepathica, Adeptus Mechanicus, Adeptus Ministorum, Astra Militarum, Chaos, Dynastie Wolnych Kupców, Inkwizycja, Ogryn, Szczurak, Szumowiny.
   - **Psionika / Typ:** Uniwersalne Zdolności Psioniczne, Pomniejsze Moce Psioniczne, Uniwersalna Dyscyplina Psioniczna, Dyscyplina Biomancji, Dyscyplina Dywinacji, Dyscyplina Piromancji, Dyscyplina Telekinezy, Dyscyplina Telepatii.
