@@ -227,7 +227,6 @@ let currentSheet = null;
 const SESSION_VIEW_KEY = "datavault_session_view_v2";
 const DEFAULT_VIEW_CONFIG = {
   "Archetypy": {
-    "Frakcja": ["Adepta Sororitas", "Adeptus Astartes", "Adeptus Astra Telepathica", "Adeptus Mechanicus", "Adeptus Ministorum", "Astra Militarum", "Dynastie Wolnych Kupców", "Inkwizycja", "Szumowiny"],
     "Gatunek": ["Człowiek"]
   },
   "Premie Frakcji": { "Frakcja": ["Adepta Sororitas", "Adeptus Astartes", "Adeptus Astra Telepathica", "Adeptus Mechanicus", "Adeptus Ministorum", "Astra Militarum", "Chaos", "Dynastie Wolnych Kupców", "Inkwizycja", "Ogryn", "Szczurak", "Szumowiny"] },

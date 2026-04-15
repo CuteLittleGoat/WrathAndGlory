@@ -5,6 +5,9 @@ Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikac
 Aktualizacja repozytorium (2026-04-15): po wgraniu nowej wersji pliku `Repozytorium.xlsx` (z dodaną kolumną `Gatunek` w zakładce `Archetypy`) ponownie wygenerowano `data.json` dla modułu DataVault, aby zsynchronizować dane widoczne w tabelach.
 Repository update (2026-04-15): after uploading a new revision of `Repozytorium.xlsx` (with the new `Gatunek` column in the `Archetypy` sheet), `data.json` was regenerated for the DataVault module to keep table data in sync.
 
+Aktualizacja modułu (2026-04-15): w zakładce `Archetypy` widok domyślny usuwa reguły filtrowania dla kolumny `Frakcja` i zostawia wyłącznie filtr `Gatunek = Człowiek`.
+Module update (2026-04-15): in the `Archetypy` tab, the default view no longer applies `Frakcja` filtering rules and keeps only `Gatunek = Człowiek`.
+
 ---
 
 ## 🇵🇱 Instrukcja (PL)
@@ -108,7 +111,6 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - Przycisk ▾ działa jak przełącznik: drugi klik w ten sam przycisk zamyka menu filtrowania; klik poza menu także je zamyka.
 - Przycisk **Pełen Widok** czyści globalne wyszukiwanie, filtry tekstowe i filtry listowe we wszystkich zakładkach, a następnie pokazuje pełne dane.
 - Przycisk **Widok Domyślny** przywraca globalnie domyślną konfigurację filtrów checkboxowych (oraz resetuje pozostałe filtry), zgodnie z profilem aplikacji.
-- W zakładce **Archetypy** domyślny filtr kolumny **Frakcja** zostawia odznaczone: **Aeldari**, **Ork** i **Imperium T'au**.
 - W zakładce **Archetypy** domyślny filtr kolumny **Gatunek** ma zaznaczoną wartość: **Człowiek**.
 - W zakładce **Pancerze** domyślny filtr kolumny **Typ** zostawia odznaczone: **Astartes** oraz **Auxilla**.
 - W zakładce **Bronie** domyślny filtr kolumny **Typ** zostawia odznaczone: **Broń biała Ogrynów** oraz **Broń dystansowa Militarum Auxilla**.
@@ -230,7 +232,6 @@ Below are two equivalent ways to update the data. In this repository update, `da
 - Second header row: text filter + list filter (▾ button).
 - When a text or list filter is active, the column is marked by a highlighted header and an active filter button state.
 - The ▾ button now works as a toggle: clicking the same button again closes the filter menu; clicking outside the menu also closes it.
-- **Default View** restores the **Archetypy → Frakcja** defaults with **Aeldari**, **Ork**, and **Imperium T'au** unchecked.
 - In **Archetypy**, the **Default View** profile keeps only **Gatunek → Człowiek** selected.
 - In **Pancerze**, the **Default View** profile keeps **Typ → Astartes** and **Auxilla** unchecked.
 - In **Bronie**, the **Default View** profile keeps **Typ → Broń biała Ogrynów** and **Broń dystansowa Militarum Auxilla** unchecked.
