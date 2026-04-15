@@ -815,7 +815,6 @@ td.center{text-align:center}
   table-layout:fixed;
   width:max-content;
 }
-
 /* Globalne wymuszenie szerokości i stylu kolumn źródłowych dla wszystkich zakładek */
 .tableWrap table[data-sheet] th[data-col="Podręcznik"],
 .tableWrap table[data-sheet] td[data-col="Podręcznik"]{
@@ -833,6 +832,29 @@ td.center{text-align:center}
 }
 .tableWrap table[data-sheet] td[data-col="Strona"]{
   color:var(--code);
+}
+
+/* Notatki — override względem globalnych reguł Podręcznik/Strona */
+.tableWrap table[data-sheet="Notatki"] th[data-col="Co"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Co"]{
+  min-width:20ch;
+  max-width:auto;
+  text-align:left;
+  white-space:normal;
+}
+.tableWrap table[data-sheet="Notatki"] th[data-col="Podręcznik"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Podręcznik"]{
+  min-width:auto;
+  max-width:none;
+  text-align:left;
+  white-space:normal;
+}
+.tableWrap table[data-sheet="Notatki"] th[data-col="Strona"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Strona"]{
+  min-width:6ch;
+  max-width:auto;
+  text-align:left;
+  white-space:normal;
 }
 .slash{color:var(--code)}
 .ref{color:var(--code); opacity:.9}
