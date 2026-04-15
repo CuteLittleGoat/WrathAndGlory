@@ -2,6 +2,9 @@
 
 Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikacja to statyczny frontend do przeglądania danych Wrath & Glory w formie tabel, bez backendu i bez lokalnych zależności (poza opcjonalnym Pythonem do generowania `data.json`).
 
+Aktualizacja repozytorium (2026-04-15): po wgraniu nowej wersji pliku `Repozytorium.xlsx` ponownie wygenerowano `data.json` dla modułu DataVault, aby zsynchronizować dane widoczne w tabelach.
+Repository update (2026-04-15): after uploading a new revision of `Repozytorium.xlsx`, `data.json` was regenerated for the DataVault module to keep table data in sync.
+
 ---
 
 ## 🇵🇱 Instrukcja (PL)

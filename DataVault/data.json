@@ -3282,14 +3282,14 @@
       {
         "LP": "10",
         "Frakcja": "Aeldari",
-        "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub{{/I}}{{RED}} [KOTERIA]{{/RED}}",
+        "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub\n{{/I}}{{RED}}[KOTERIA]{{/RED}}",
         "Opis": "{{B}}Światostatki Aeldari{{/B}}\nŚwiatostatek to tytaniczny okręt kosmiczny o rozmiarach i populacji planety. Każdy z nich jest samowystarczalnym królestwem wykutym z żywego upiorytu i innych psionicznie aktywnych substancji, bezpiecznym schronieniem dla odłamu rozbitego imperium aeldari. Odcinając się od reszty galaktyki, Asuryani ze światostatków bronią swych unikalnych kultur i tradycji przed obcymi, ponieważ każdy z nich chroni Kręgu Wieczności zawierającego tysiące świadomych dusz martwych aeldari.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n[brak danych]\n\n{{B}}Biel-Tan{{/B}}\n[brak danych]\n\n{{B}}Iyanden{{/B}}\n[brak danych]\n\n{{B}}Saim-Hann{{/B}}\n[brak danych]\n\n{{B}}Ul-Khari{{/B}}\n[brak danych]\n\n{{B}}Ulthwé{{/B}}\n[brak danych]",
         "Efekt": "{{B}}Światostatki Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[ŚWIATOSTATEK]{{/RED}} nazwą światostatku, z którego pochodzisz, w ten sposób określając wiele ze swoich przekonań i wyznawanych wartości. Możesz wybrać radykalnego Ulthwé, zależnego od proroctw Rady Proroków, albo też tradycjonalistę ze światostatku Ul-Khari, poturbowanego i unieruchomionego po katastrofie na lodowym świecie Trollius, uwięzionego w systemie Gilead przez intrygi Niszczycielskich Potęg.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n[brak danych]\n\n{{B}}Biel-Tan{{/B}}\n[brak danych]\n\n{{B}}Iyanden{{/B}}\n[brak danych]\n\n{{B}}Saim-Hann{{/B}}\n[brak danych]\n\n{{B}}Ul-Khari{{/B}}\n[brak danych]\n\n{{B}}Ulthwé{{/B}}\n[brak danych]"
       },
       {
         "LP": "11",
         "Frakcja": "Aeldari",
-        "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub{{/I}}{{RED}} [KOTERIA]{{/RED}}",
+        "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub\n{{/I}}{{RED}}[KOTERIA]{{/RED}}",
         "Opis": "{{B}}Koterie Aeldari{{/B}}\nKażdy korsarz aeldari należy do Koterii, gangu piratów prowadzonych przez księcia lub księżniczkę. Korsarze tworzą silne więzi w tych koalicjach mimo tego, że są one pełne rywalizacji i podstępów. Każda Koteria ma własne cele i przyciąga aeldari o podobnym nastawieniu. Koteria, do której należysz, mówi wiele o tobie, a jej reputacja może pomóc zawiązać szybkie przyjaźnie, jak również przysporzyć natychmiastowych wrogów.\n\n=PRZYKŁADY=\n\nEldritch Raiders\n[brak danych]\n\nGreensteel Warriors\n[brak danych]\n\nSteeleye Reavers\n[brak danych]\n\nSunblitz Brotherhood\n[brak danych]\n\nVoid Dragons\n[brak danych]",
         "Efekt": "{{B}}Koterie Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[KOTERIA]{{/RED}} nazwą Koterii, do której należysz. Możesz wybrać, między innymi, dumnych Starożytnych Łupieżców prowadzonych przez księcia Yriela, który zajął tysiące wrogich okrętów lub tajemniczych Wojowników Zielonej Stali, którzy raz wspierają, a raz łupią Imperium w systemie Gilead.\n\n=PRZYKŁADY=\n\nEldritch Raiders\n[brak danych]\n\nGreensteel Warriors\n[brak danych]\n\nSteeleye Reavers\n[brak danych]\n\nSunblitz Brotherhood\n[brak danych]\n\nVoid Dragons\n[brak danych]"
       },
@@ -3331,21 +3331,21 @@
       {
         "LP": "16",
         "Frakcja": "Drukhari",
-        "Słowo Kluczowe": "[KABAŁA] {{I}}lub{{/I}}{{RED}} [WIEDŹMIE KULTY] {{/RED}}{{I}}lub{{/I}}{{RED}} [SABAT HOMUNKULUSÓW]{{/RED}}",
+        "Słowo Kluczowe": "[KABAŁA] {{I}}lub\n{{/I}}{{RED}}[WIEDŹMIE KULTY] {{/RED}}{{I}}lub\n{{/I}}{{RED}}[SABAT HOMUNKULUSÓW]{{/RED}}",
         "Opis": "[brak danych]",
         "Efekt": "[brak danych]"
       },
       {
         "LP": "17",
         "Frakcja": "Drukhari",
-        "Słowo Kluczowe": "[KABAŁA] {{I}}lub{{/I}}{{RED}} [WIEDŹMIE KULTY] {{/RED}}{{I}}lub{{/I}}{{RED}} [SABAT HOMUNKULUSÓW]{{/RED}}",
+        "Słowo Kluczowe": "[KABAŁA] {{I}}lub\n{{/I}}{{RED}}[WIEDŹMIE KULTY] {{/RED}}{{I}}lub\n{{/I}}{{RED}}[SABAT HOMUNKULUSÓW]{{/RED}}",
         "Opis": "[brak danych]",
         "Efekt": "[brak danych]"
       },
       {
         "LP": "18",
         "Frakcja": "Drukhari",
-        "Słowo Kluczowe": "[KABAŁA] {{I}}lub{{/I}}{{RED}} [WIEDŹMIE KULTY] {{/RED}}{{I}}lub{{/I}}{{RED}} [SABAT HOMUNKULUSÓW]{{/RED}}",
+        "Słowo Kluczowe": "[KABAŁA] {{I}}lub\n{{/I}}{{RED}}[WIEDŹMIE KULTY] {{/RED}}{{I}}lub\n{{/I}}{{RED}}[SABAT HOMUNKULUSÓW]{{/RED}}",
         "Opis": "[brak danych]",
         "Efekt": "[brak danych]"
       },
