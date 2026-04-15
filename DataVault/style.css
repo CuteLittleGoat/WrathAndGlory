@@ -521,7 +521,9 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Frakcja"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Frakcja"],
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Nazwa"],
-.tableWrap table[data-sheet="Archetypy"] td[data-col="Nazwa"]{min-width:26ch}
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Nazwa"],
+.tableWrap table[data-sheet="Archetypy"] th[data-col="Gatunek"],
+.tableWrap table[data-sheet="Archetypy"] td[data-col="Gatunek"]{min-width:26ch}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Koszt XP"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Koszt XP"],
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Koszt PD"],
