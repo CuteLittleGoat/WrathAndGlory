@@ -255,3 +255,13 @@ To improve consistency of Android system navigation bar color (Back/Home/Recents
 - dark background is enforced on `html, body` (`#031605`) and `body` now includes bottom `safe-area` padding.
 
 After deployment, a full PWA reinstall is recommended on devices (remove app/shortcut, clear site data, reinstall), because Android/Chrome may cache older UI integration settings.
+
+## Aktualizacja 2026-04-15 — stabilizacja układu przy ładowaniu logo (PL)
+- W `Main/index.html` dodano atrybuty `width="1366"` i `height="768"` do obrazka logo.
+- W klasie `.logo` dodano jawne `height: auto`.
+- Efekt: przeglądarka zna proporcje logo przed pobraniem bitmapy i rezerwuje właściwą wysokość, dzięki czemu przyciski nie „przeskakują” po starcie strony.
+
+## Update 2026-04-15 — layout stability while logo loads (EN)
+- Added `width="1366"` and `height="768"` attributes to the logo image in `Main/index.html`.
+- Added explicit `height: auto` to the `.logo` CSS rule.
+- Result: the browser knows the logo aspect ratio before the bitmap is downloaded and reserves the correct height, preventing startup button shift/layout jump.
