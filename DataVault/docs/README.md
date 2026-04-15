@@ -26,7 +26,7 @@ Najważniejsze zasady działania:
 - Aktywne filtry kolumn są sygnalizowane wizualnie: nagłówek kolumny dostaje podświetlenie akcentowe, a przycisk filtra (▾) ma stan aktywny z kropką-indykatorem.
 - W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), a tabela ma `table-layout: fixed` i `width: max-content`, więc **wszystkie** jej kolumny pozostają stałe.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
-- We wszystkich zakładkach kolumny `Podręcznik` i `Strona` mają ujednolicone parametry: `Podręcznik` = min. **17ch** (lewo), `Strona` = min. **6ch** (środek), bez limitu `max-width`, ze standardowym łamaniem linii.
+- We wszystkich zakładkach kolumny `Podręcznik` i `Strona` mają ujednolicone parametry: `Podręcznik` = min. **17ch** (lewo), `Strona` = min. **6ch** (lewo), `max-width: auto`, ze standardowym łamaniem linii.
 - Wartości w kolumnie `Strona` mają ten sam jaśniejszy kolor co referencje `(str.)` (czyli `--code`).
 - Okno **Porównanie** używa teraz dokładnie tej samej logiki formatowania komórek co tabela główna (w tym reguł czerwonego koloru, neutralnych przecinków w `Słowa Kluczowe`, wyjątków dla `Słowa Kluczowe Frakcji` jak `[ŚWIAT-KUŹNIA]`, `lub`, `-`, oraz reguł inline jak `(str.)`), więc wygląd jest spójny między widokami.
 - W modalu porównania usunięto z treści duplikat nagłówka „PORÓWNANIE” (został tylko nagłówek w pasku modala).
@@ -147,7 +147,7 @@ Key behavior:
 - Active column filters are now clearly signaled: the column header gets an accent highlight, and the filter button (▾) switches to an active state with a dot indicator.
 - In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), and the table uses `table-layout: fixed` with `width: max-content`, so **all** columns stay fixed.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
-- Across all tabs, the `Podręcznik` and `Strona` columns now use unified settings: `Podręcznik` = min **17ch** (left), `Strona` = min **6ch** (center), no `max-width` limit, and standard line wrapping.
+- Across all tabs, the `Podręcznik` and `Strona` columns now use unified settings: `Podręcznik` = min **17ch** (left), `Strona` = min **6ch** (left), `max-width: auto`, and standard line wrapping.
 - Values in the `Strona` column use the same lighter color as `(str.)` references (`--code`).
 - The **Comparison** modal now uses exactly the same cell-formatting logic as the main table (including red keyword rules, neutral commas in `Słowa Kluczowe`, `Słowa Kluczowe Frakcji` exceptions like `[ŚWIAT-KUŹNIA]`, `lub`, `-`, and inline rules such as `(str.)`), so both views stay visually consistent.
 - The duplicate in-body modal heading “PORÓWNANIE” was removed (only the modal header title remains).

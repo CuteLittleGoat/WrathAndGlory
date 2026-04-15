@@ -124,7 +124,7 @@ Efekty i obwódki:
 ### 3.6 Tabela
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.
 - `.dataTable` — `border-collapse`, `box-shadow`, sticky headers.
-- Kolumny `Podręcznik` i `Strona` są globalnie ujednolicone we wszystkich zakładkach: `Podręcznik` ma `min-width: 17ch`, wyrównanie do lewej i standardowe łamanie; `Strona` ma `min-width: 6ch`, wyrównanie do środka i standardowe łamanie. Obie kolumny nie mają limitu `max-width`.
+- Kolumny `Podręcznik` i `Strona` są globalnie ujednolicone we wszystkich zakładkach: `Podręcznik` ma `min-width: 17ch`, wyrównanie do lewej i standardowe łamanie; `Strona` ma `min-width: 6ch`, `max-width: auto`, wyrównanie do lewej i standardowe łamanie. `Podręcznik` pozostaje bez limitu `max-width`.
 - Komórki `Strona` (`td[data-col="Strona"]`) używają koloru `var(--code)`, czyli dokładnie tego samego tonu co referencje `(str.)` renderowane klasą `.ref`.
 - Nagłówki:
   - `thead th` — sticky, uppercase, background gradient.
@@ -173,7 +173,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Reguła globalna (nadpisująca lokalne wyjątki):**
   - `Podręcznik`: `min-width: 17ch`, `max-width: none`, `text-align: left`, `white-space: normal`.
-  - `Strona`: `min-width: 6ch`, `max-width: none`, `text-align: center`, `white-space: normal`, kolor komórek `td` = `var(--code)`.
+  - `Strona`: `min-width: 6ch`, `max-width: auto`, `text-align: left`, `white-space: normal`, kolor komórek `td` = `var(--code)`.
 
 - **Bestiariusz**
   - `Nazwa`: 26ch

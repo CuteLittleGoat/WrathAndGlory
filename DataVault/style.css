@@ -827,8 +827,8 @@ td.center{text-align:center}
 .tableWrap table[data-sheet] th[data-col="Strona"],
 .tableWrap table[data-sheet] td[data-col="Strona"]{
   min-width:6ch;
-  max-width:none;
-  text-align:center;
+  max-width:auto;
+  text-align:left;
   white-space:normal;
 }
 .tableWrap table[data-sheet] td[data-col="Strona"]{
