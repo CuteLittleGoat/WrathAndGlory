@@ -1,5 +1,25 @@
 {
   "sheets": {
+    "Notatki": [
+      {
+        "LP": "1",
+        "Co": "Maksymalne wartości atrybutów dla gatunków",
+        "Podręcznik": "Główny",
+        "Strona": "25"
+      },
+      {
+        "LP": "2",
+        "Co": "Języki",
+        "Podręcznik": "Główny",
+        "Strona": "31"
+      },
+      {
+        "LP": "3",
+        "Co": "Wzrost",
+        "Podręcznik": "Główny",
+        "Strona": "33"
+      }
+    ],
     "Bestiariusz": [
       {
         "LP": "1",
@@ -4422,7 +4442,7 @@
     "Talenty": [
       {
         "LP": "1",
-        "Typ": "-",
+        "Typ": "Astartes",
         "Nazwa": "Anioł Śmierci",
         "Koszt PD": "30",
         "Wymagania": "Ranga 2 bądź wyższa, Gatunek Adeptus Astartes lub Primaris Astartes.",
@@ -4433,7 +4453,7 @@
       },
       {
         "LP": "2",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Atak symultaniczny",
         "Koszt PD": "30",
         "Wymagania": "Wartość Umiejętności strzeleckich 4 lub wyższa lub wartość Walki wręcz 4 lub wyższa.",
@@ -4444,7 +4464,7 @@
       },
       {
         "LP": "3",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Augmentacja",
         "Koszt PD": "20 plus PD równe wartości augmentacji, którą wybierzesz.",
         "Wymagania": "Brak",
@@ -4455,7 +4475,7 @@
       },
       {
         "LP": "4",
-        "Typ": "-",
+        "Typ": "Imperium",
         "Nazwa": "Badacz kopców",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
@@ -4466,7 +4486,7 @@
       },
       {
         "LP": "5",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Berserker",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4477,7 +4497,7 @@
       },
       {
         "LP": "6",
-        "Typ": "-",
+        "Typ": "Człowiek",
         "Nazwa": "BezmyŚlna wydajność",
         "Koszt PD": "20",
         "Wymagania": "Gatunek człowiek.",
@@ -4488,7 +4508,7 @@
       },
       {
         "LP": "7",
-        "Typ": "-",
+        "Typ": "Imperium",
         "Nazwa": "Biczownik",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
@@ -4499,7 +4519,7 @@
       },
       {
         "LP": "8",
-        "Typ": "-",
+        "Typ": "Mechanicus",
         "Nazwa": "Binarny Żargon",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MECHANICUS{{/RED}}.",
@@ -4510,7 +4530,7 @@
       },
       {
         "LP": "9",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Bombardowanie",
         "Koszt PD": "40",
         "Wymagania": "Ranga 2 lub wyższa i dowolne ze Słów kluczowych:\n{{RED}}ADEPTUS ASTARTES{{/RED}}, {{RED}}AELDARI{{/RED}}, {{RED}}ASTRA MILITARUM{{/RED}}, {{RED}}CHAOS{{/RED}}, {{RED}}ORK{{/RED}}, {{RED}}WOLNY KUPIEC{{/RED}}.",
@@ -4521,7 +4541,7 @@
       },
       {
         "LP": "10",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Brutalność",
         "Koszt PD": "20",
         "Wymagania": "Wartość Siły 3 lub wyższa.",
@@ -4532,7 +4552,7 @@
       },
       {
         "LP": "11",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Budzący grozę",
         "Koszt PD": "30",
         "Wymagania": "Brak",
@@ -4543,7 +4563,7 @@
       },
       {
         "LP": "12",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Burza Śmierci",
         "Koszt PD": "30",
         "Wymagania": "Wartość Walki wręcz 4 lub wyższa.",
@@ -4554,7 +4574,7 @@
       },
       {
         "LP": "13",
-        "Typ": "-",
+        "Typ": "Chaos",
         "Nazwa": "Chowaniec Chaosu",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}CHAOS{{/RED}}.",
@@ -4565,7 +4585,7 @@
       },
       {
         "LP": "14",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Ciało jest słabe",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4576,7 +4596,7 @@
       },
       {
         "LP": "15",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Cichy",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4587,7 +4607,7 @@
       },
       {
         "LP": "16",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Czytanie z ruchu warg",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4598,7 +4618,7 @@
       },
       {
         "LP": "17",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Detektyw",
         "Koszt PD": "20",
         "Wymagania": "Wartość Inteligencji 3 lub wyższa.",
@@ -4609,7 +4629,7 @@
       },
       {
         "LP": "18",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Dotknięty przez Los",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4620,7 +4640,7 @@
       },
       {
         "LP": "19",
-        "Typ": "-",
+        "Typ": "Aeldari",
         "Nazwa": "Dziedzictwo rozpaczy",
         "Koszt PD": "20",
         "Wymagania": "Gatunek aeldari.",
@@ -4631,7 +4651,7 @@
       },
       {
         "LP": "20",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Eliminator",
         "Koszt PD": "20",
         "Wymagania": "Wartość Ukrywania się 2 lub wyższa.",
@@ -4642,7 +4662,7 @@
       },
       {
         "LP": "21",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Hardy",
         "Koszt PD": "30",
         "Wymagania": "Wartość Wytrzymałości 3 lub wyższa.",
@@ -4653,7 +4673,7 @@
       },
       {
         "LP": "22",
-        "Typ": "-",
+        "Typ": "Mechanicus",
         "Nazwa": "Kogitator dialogowy",
         "Koszt PD": "10",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MECHANICUS{{/RED}}.",
@@ -4664,7 +4684,7 @@
       },
       {
         "LP": "23",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Kontratak",
         "Koszt PD": "30",
         "Wymagania": "Wartość Walki wręcz 5 lub wyższa.",
@@ -4675,7 +4695,7 @@
       },
       {
         "LP": "24",
-        "Typ": "-",
+        "Typ": "Ork",
         "Nazwa": "Kupom chopaki!",
         "Koszt PD": "20",
         "Wymagania": "Gatunek ork.",
@@ -4686,7 +4706,7 @@
       },
       {
         "LP": "25",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Majestatyczna obecność [Umiejętność]",
         "Koszt PD": "30",
         "Wymagania": "Wartość 4 lub wyższa w jednej z podanych Umiejętności:\nAtletyka (S), Korzystanie z technologii (Int), Oszukiwanie (Ogd), Perswazja (Ogd) lub Zastraszanie (SW).",
@@ -4697,7 +4717,7 @@
       },
       {
         "LP": "26",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Miażdżący atak",
         "Koszt PD": "20",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
@@ -4708,7 +4728,7 @@
       },
       {
         "LP": "27",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Mistrz dyscypliny",
         "Koszt PD": "30",
         "Wymagania": "Wartość Mistrzostwa psionicznego 4 lub wyższa, co najmniej dwie moce psioniczne z jednej dyscypliny.",
@@ -4719,7 +4739,7 @@
       },
       {
         "LP": "28",
-        "Typ": "-",
+        "Typ": "Aeldari",
         "Nazwa": "Mistrz Ścieżek",
         "Koszt PD": "20",
         "Wymagania": "Gatunek aeldari, Słowo kluczowe {{RED}}ASURYANI{{/RED}}.",
@@ -4730,7 +4750,7 @@
       },
       {
         "LP": "29",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Mistrz ucieczek",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4741,7 +4761,7 @@
       },
       {
         "LP": "30",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Mistrz wiedzy [Dowolne]",
         "Koszt PD": "30",
         "Wymagania": "Wartość Wiedzy ogólnej 3 lub wyższa.",
@@ -4752,7 +4772,7 @@
       },
       {
         "LP": "31",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Nadczłowiek [Atrybut]",
         "Koszt PD": "60",
         "Wymagania": "Wartość [Atrybut] 5 lub wyższa.",
@@ -4763,7 +4783,7 @@
       },
       {
         "LP": "32",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Nadnaturalna [Umiejętność]",
         "Koszt PD": "60",
         "Wymagania": "Wartość [Umiejętność] 4 lub większa.",
@@ -4774,7 +4794,7 @@
       },
       {
         "LP": "33",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Naśladowanie głosów",
         "Koszt PD": "20",
         "Wymagania": "Wartość Oszukiwania 3 lub wyższa.",
@@ -4785,7 +4805,7 @@
       },
       {
         "LP": "34",
-        "Typ": "-",
+        "Typ": "Chaos",
         "Nazwa": "Niech galaktyka płonie!",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}CHAOS{{/RED}}.",
@@ -4796,7 +4816,7 @@
       },
       {
         "LP": "35",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Niech płynie krew!",
         "Koszt PD": "20",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
@@ -4807,7 +4827,7 @@
       },
       {
         "LP": "36",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Nieczuły na ból",
         "Koszt PD": "40",
         "Wymagania": "Wartość Wytrzymałości 4 lub wyższa.",
@@ -4818,7 +4838,7 @@
       },
       {
         "LP": "37",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Nienawiść [Dowolne]",
         "Koszt PD": "30",
         "Wymagania": "Brak",
@@ -4829,7 +4849,7 @@
       },
       {
         "LP": "38",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Niesamowita [Cecha]",
         "Koszt PD": "40",
         "Wymagania": "Brak",
@@ -4840,7 +4860,7 @@
       },
       {
         "LP": "39",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Nieustraszony",
         "Koszt PD": "30",
         "Wymagania": "Wartość Siły Woli 4 lub wyższa.",
@@ -4851,7 +4871,7 @@
       },
       {
         "LP": "40",
-        "Typ": "-",
+        "Typ": "Imperium",
         "Nazwa": "Nijaki",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
@@ -4862,7 +4882,7 @@
       },
       {
         "LP": "41",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Niszczyciel pancerzy",
         "Koszt PD": "20",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
@@ -4873,7 +4893,7 @@
       },
       {
         "LP": "42",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Oburęczność",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4884,7 +4904,7 @@
       },
       {
         "LP": "43",
-        "Typ": "-",
+        "Typ": "Imperium",
         "Nazwa": "Obyty z prometium",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
@@ -4895,7 +4915,7 @@
       },
       {
         "LP": "44",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Odskok",
         "Koszt PD": "30",
         "Wymagania": "Wartość Inicjatywy 3 lub wyższa.",
@@ -4906,7 +4926,7 @@
       },
       {
         "LP": "45",
-        "Typ": "-",
+        "Typ": "Militarum",
         "Nazwa": "Operator broni specjalnej",
         "Koszt PD": "20 plus PD równe kosztowi wybranej broni.",
         "Wymagania": "Słowo kluczowe {{RED}}ASTRA MILITARUM{{/RED}}, wartość Umiejętności strzeleckich 3 lub wyższa.",
@@ -4917,7 +4937,7 @@
       },
       {
         "LP": "46",
-        "Typ": "-",
+        "Typ": "Imperium",
         "Nazwa": "Ortopraksja",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
@@ -4928,7 +4948,7 @@
       },
       {
         "LP": "47",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Paranoja",
         "Koszt PD": "20",
         "Wymagania": "Wartość Przebiegłości 3 lub wyższa.",
@@ -4939,7 +4959,7 @@
       },
       {
         "LP": "48",
-        "Typ": "-",
+        "Typ": "Astartes",
         "Nazwa": "Perspektywa Primarisa",
         "Koszt PD": "40",
         "Wymagania": "Gatunek Primaris Astartes.",
@@ -4950,7 +4970,7 @@
       },
       {
         "LP": "49",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Pewny strzał",
         "Koszt PD": "20",
         "Wymagania": "Wartość Umiejętności strzeleckich 2 lub wyższa.",
@@ -4961,7 +4981,7 @@
       },
       {
         "LP": "50",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Podwójne skupienie",
         "Koszt PD": "20",
         "Wymagania": "Wartość Mistrzostwa psionicznego 4 lub wyższa.",
@@ -4972,7 +4992,7 @@
       },
       {
         "LP": "51",
-        "Typ": "-",
+        "Typ": "Człowiek",
         "Nazwa": "Pojętna szumowina",
         "Koszt PD": "20",
         "Wymagania": "Gatunek człowiek.",
@@ -4983,7 +5003,7 @@
       },
       {
         "LP": "52",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Pokerowa twarz",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -4994,7 +5014,7 @@
       },
       {
         "LP": "53",
-        "Typ": "-",
+        "Typ": "Mechanicus",
         "Nazwa": "Rytuał czystej myśli",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MECHANICUS{{/RED}}.",
@@ -5005,7 +5025,7 @@
       },
       {
         "LP": "54",
-        "Typ": "-",
+        "Typ": "Mechanicus",
         "Nazwa": "Rytuał lęku",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MECHANICUS{{/RED}}.",
@@ -5016,7 +5036,7 @@
       },
       {
         "LP": "55",
-        "Typ": "-",
+        "Typ": "Mechanicus",
         "Nazwa": "Rytuał magnometrii",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MECHANICUS{{/RED}}.",
@@ -5027,7 +5047,7 @@
       },
       {
         "LP": "56",
-        "Typ": "-",
+        "Typ": "Inkwizycja",
         "Nazwa": "Sekretna tożsamość",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}INKWIZYCJA{{/RED}}.",
@@ -5038,7 +5058,7 @@
       },
       {
         "LP": "57",
-        "Typ": "-",
+        "Typ": "Imperium",
         "Nazwa": "Służba aż do śmierci",
         "Koszt PD": "20",
         "Wymagania": "Wartość Siły Woli 3 lub wyższa, Słowo kluczowe {{RED}}IMPERIUM{{/RED}}.",
@@ -5049,7 +5069,7 @@
       },
       {
         "LP": "58",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Spaczony umysł",
         "Koszt PD": "30",
         "Wymagania": "Wartość Mistrzostwa psionicznego 4 lub wyższa.",
@@ -5060,7 +5080,7 @@
       },
       {
         "LP": "59",
-        "Typ": "-",
+        "Typ": "Człowiek",
         "Nazwa": "Suplikant",
         "Koszt PD": "20",
         "Wymagania": "Gatunek człowiek.",
@@ -5071,7 +5091,7 @@
       },
       {
         "LP": "60",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Szaleńcza szarża",
         "Koszt PD": "20",
         "Wymagania": "Wartość Atletyki 2 lub wyższa i wartość Walki wręcz 2 lub wyższa.",
@@ -5082,7 +5102,7 @@
       },
       {
         "LP": "61",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Szał",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5093,7 +5113,7 @@
       },
       {
         "LP": "62",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Szlachcic",
         "Koszt PD": "30",
         "Wymagania": "Wartość Perswazji 3 lub wyższa.",
@@ -5104,7 +5124,7 @@
       },
       {
         "LP": "63",
-        "Typ": "-",
+        "Typ": "Człowiek",
         "Nazwa": "Śmierć lub Chwała!",
         "Koszt PD": "20",
         "Wymagania": "Gatunek człowiek.",
@@ -5115,7 +5135,7 @@
       },
       {
         "LP": "64",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Ulubieniec Osnowy",
         "Koszt PD": "40",
         "Wymagania": "Słowo kluczowe {{RED}}PSIONIK{{/RED}}.",
@@ -5126,7 +5146,7 @@
       },
       {
         "LP": "65",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Ulubiona broń",
         "Koszt PD": "30",
         "Wymagania": "Brak",
@@ -5137,7 +5157,7 @@
       },
       {
         "LP": "66",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Walka na oślep",
         "Koszt PD": "20",
         "Wymagania": "Wartość Czujności 3 lub wyższa.",
@@ -5148,7 +5168,7 @@
       },
       {
         "LP": "67",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Walka uliczna",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5159,7 +5179,7 @@
       },
       {
         "LP": "68",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Wierni",
         "Koszt PD": "30",
         "Wymagania": "Wartość Dowodzenia 4 lub wyższa.",
@@ -5170,7 +5190,7 @@
       },
       {
         "LP": "69",
-        "Typ": "-",
+        "Typ": "Ork",
         "Nazwa": "Więcej Tratata!",
         "Koszt PD": "35",
         "Wymagania": "Gatunek ork.",
@@ -5181,7 +5201,7 @@
       },
       {
         "LP": "70",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Wisielczy humor",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5192,7 +5212,7 @@
       },
       {
         "LP": "71",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Wyczulony zmysł",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5203,7 +5223,7 @@
       },
       {
         "LP": "72",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Zaciekły",
         "Koszt PD": "30",
         "Wymagania": "Brak",
@@ -5214,7 +5234,7 @@
       },
       {
         "LP": "73",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Zakapior",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5225,7 +5245,7 @@
       },
       {
         "LP": "74",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Zawsze czujny",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5236,7 +5256,7 @@
       },
       {
         "LP": "75",
-        "Typ": "-",
+        "Typ": "Chaos",
         "Nazwa": "Zdrajca",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}CHAOS{{/RED}}.",
@@ -5247,7 +5267,7 @@
       },
       {
         "LP": "76",
-        "Typ": "-",
+        "Typ": "Chaos",
         "Nazwa": "Znamię Chaosu",
         "Koszt PD": "30",
         "Wymagania": "Słowo kluczowe {{RED}}[ZNAMIĘ CHAOSU]{{/RED}}.",
@@ -5258,7 +5278,7 @@
       },
       {
         "LP": "77",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Żargon [Umiejętność]",
         "Koszt PD": "20",
         "Wymagania": "Wartość 1 lub wyższa jednej z podanych Umiejętności:\nKorzystanie z technologii (Int), Medycyna (Int), Pilotaż (Zr), Przetrwanie (SW), Umiejętności Strzeleckie (Zr), Walka wręcz (I) lub Wiedza ogólna (Int).",
@@ -5269,7 +5289,7 @@
       },
       {
         "LP": "78",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Anatomiczny cel",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}PSIONIK{{/RED}} lub wartość Medycyny 2 lub wyższa.",
@@ -5280,7 +5300,7 @@
       },
       {
         "LP": "79",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Anioł miłosierdzia",
         "Koszt PD": "10",
         "Wymagania": "Wartość Medycyny 2 lub wyższa.",
@@ -5291,7 +5311,7 @@
       },
       {
         "LP": "80",
-        "Typ": "-",
+        "Typ": "Sororitas",
         "Nazwa": "Apostołka Świętej Trójcy",
         "Koszt PD": "30",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -5302,7 +5322,7 @@
       },
       {
         "LP": "81",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Bezwzględne spalenie",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5313,7 +5333,7 @@
       },
       {
         "LP": "82",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Bombardier",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5324,7 +5344,7 @@
       },
       {
         "LP": "83",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Broń improwizowana",
         "Koszt PD": "10",
         "Wymagania": "Wartość Przetrwania lub Korzystania z technologii 2 lub wyższa.",
@@ -5335,7 +5355,7 @@
       },
       {
         "LP": "84",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Cielesna skrytka",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5346,7 +5366,7 @@
       },
       {
         "LP": "85",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Dandys",
         "Koszt PD": "10",
         "Wymagania": "Wartość Majątku 2 lub wyższa.",
@@ -5357,7 +5377,7 @@
       },
       {
         "LP": "86",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Dedykowane zabójstwo",
         "Koszt PD": "10",
         "Wymagania": "Wartość Wiary 1 lub wyższa.",
@@ -5368,7 +5388,7 @@
       },
       {
         "LP": "87",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Deeskalacja",
         "Koszt PD": "10",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
@@ -5379,7 +5399,7 @@
       },
       {
         "LP": "88",
-        "Typ": "-",
+        "Typ": "Astartes",
         "Nazwa": "Doktryna Niszczycieli",
         "Koszt PD": "30",
         "Wymagania": "Gatunek Adeptus Astartes, Poziom 3 lub wyższy (niedostępne dla Primarisów).",
@@ -5390,7 +5410,7 @@
       },
       {
         "LP": "89",
-        "Typ": "-",
+        "Typ": "Astartes",
         "Nazwa": "Doktryna Szturmowa",
         "Koszt PD": "30",
         "Wymagania": "Gatunek Adeptus Astartes, Poziom 3 lub wyższy (niedostępne dla Primarisów).",
@@ -5401,7 +5421,7 @@
       },
       {
         "LP": "90",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Geniusz dedukcji",
         "Koszt PD": "10",
         "Wymagania": "Wartość Analizy 3 lub wyższa.",
@@ -5412,7 +5432,7 @@
       },
       {
         "LP": "91",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Grad pocisków",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5423,7 +5443,7 @@
       },
       {
         "LP": "92",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Imponująca postura",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5434,7 +5454,7 @@
       },
       {
         "LP": "93",
-        "Typ": "-",
+        "Typ": "Astartes",
         "Nazwa": "Jedność z bolterem",
         "Koszt PD": "10",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS ASTARTES{{/RED}}.",
@@ -5445,7 +5465,7 @@
       },
       {
         "LP": "94",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Kontrklątwa",
         "Koszt PD": "10",
         "Wymagania": "Wartość Mistrzostwa psionicznego 2 lub wyższa.",
@@ -5456,7 +5476,7 @@
       },
       {
         "LP": "95",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Łańcuchowy",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5467,7 +5487,7 @@
       },
       {
         "LP": "96",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Maestro",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5478,7 +5498,7 @@
       },
       {
         "LP": "97",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Mistrz ostrzy",
         "Koszt PD": "20",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
@@ -5489,7 +5509,7 @@
       },
       {
         "LP": "98",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Mylący odskok",
         "Koszt PD": "10",
         "Wymagania": "Dowolne Słowo kluczowe z wymienionych:\n{{RED}}ADEPTA SORORITAS{{/RED}}, {{RED}}ADEPTUS ASTARTES{{/RED}}, {{RED}}AELDARI{{/RED}}, {{RED}}HERETYCKI ASTARTES{{/RED}}, {{RED}}ORK{{/RED}}",
@@ -5500,7 +5520,7 @@
       },
       {
         "LP": "99",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Określenie słabości",
         "Koszt PD": "20",
         "Wymagania": "Wartość Analizy (Int), Czujności (Int), Intuicji (Ogd) lub Wiedzy ogólnej (Int) 3 lub wyższa.",
@@ -5511,7 +5531,7 @@
       },
       {
         "LP": "100",
-        "Typ": "-",
+        "Typ": "Astartes",
         "Nazwa": "Omofagia śledcza",
         "Koszt PD": "10",
         "Wymagania": "Gatunek Adeptus Astartes lub Primaris Astartes. Musi posiadać działającą Omophageę (Upamiętniacz, implant Kosmicznych Marines nr 8).",
@@ -5522,7 +5542,7 @@
       },
       {
         "LP": "101",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Podpalacz",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5533,7 +5553,7 @@
       },
       {
         "LP": "102",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Poskramiacz bestii",
         "Koszt PD": "10",
         "Wymagania": "Wartość Przetrwania 2 lub wyższa.",
@@ -5544,7 +5564,7 @@
       },
       {
         "LP": "103",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Posokowiec",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5555,7 +5575,7 @@
       },
       {
         "LP": "104",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Potężna sylwetka",
         "Koszt PD": "10",
         "Wymagania": "Wartość Siły (S) 3 lub wyższa, wartość Wytrzymałości (Wt) 3 lub wyższa.",
@@ -5566,7 +5586,7 @@
       },
       {
         "LP": "105",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Psionik bojowy",
         "Koszt PD": "20",
         "Wymagania": "Wartość Mistrzostwa psionicznego 4 lub wyższa.",
@@ -5577,7 +5597,7 @@
       },
       {
         "LP": "106",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Rozbrajające spojrzenie",
         "Koszt PD": "10",
         "Wymagania": "Wartość Zastraszania 2 lub wyższa.",
@@ -5588,7 +5608,7 @@
       },
       {
         "LP": "107",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Rykoszet",
         "Koszt PD": "10",
         "Wymagania": "Wartość Inicjatywy 4 lub wyższa.",
@@ -5599,7 +5619,7 @@
       },
       {
         "LP": "108",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Sanitariusz pierwszego kontaktu",
         "Koszt PD": "10",
         "Wymagania": "Wartość Medycyny 2 lub wyższa.",
@@ -5610,7 +5630,7 @@
       },
       {
         "LP": "109",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Silna wola",
         "Koszt PD": "10",
         "Wymagania": "Wartość Mistrzostwa psionicznego 2 lub wyższa.",
@@ -5621,7 +5641,7 @@
       },
       {
         "LP": "110",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Szybkie dobycie",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5632,7 +5652,7 @@
       },
       {
         "LP": "111",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Śmierć z niebios",
         "Koszt PD": "20",
         "Wymagania": "Wartość Atletyki 3 lub wyższa.",
@@ -5643,7 +5663,7 @@
       },
       {
         "LP": "112",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Taneczna gracja",
         "Koszt PD": "10",
         "Wymagania": "Wartość Zręczności 3 lub wyższa.",
@@ -5654,7 +5674,7 @@
       },
       {
         "LP": "113",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Uczta dla głodnych",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5665,7 +5685,7 @@
       },
       {
         "LP": "114",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Umocnienie polowe",
         "Koszt PD": "10",
         "Wymagania": "Brak",
@@ -5676,7 +5696,7 @@
       },
       {
         "LP": "115",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Urodzony ocalały",
         "Koszt PD": "10",
         "Wymagania": "Wartość Przetrwania 2 lub wyższa.",
@@ -5687,7 +5707,7 @@
       },
       {
         "LP": "116",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Weteran świata śmierci",
         "Koszt PD": "10",
         "Wymagania": "Wartość Wytrzymałości (Wt) 3 lub wyższa.",
@@ -5698,7 +5718,7 @@
       },
       {
         "LP": "117",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Zabójcze ostrze",
         "Koszt PD": "20",
         "Wymagania": "Brak",
@@ -5709,7 +5729,7 @@
       },
       {
         "LP": "118",
-        "Typ": "-",
+        "Typ": "Imperium",
         "Nazwa": "Zakazana wiedza",
         "Koszt PD": "10",
         "Wymagania": "Słowo kluczowe{{RED}} IMPERIUM{{/RED}}.",
@@ -5720,7 +5740,7 @@
       },
       {
         "LP": "119",
-        "Typ": "-",
+        "Typ": "Ogólne",
         "Nazwa": "Zwód i atak",
         "Koszt PD": "10",
         "Wymagania": "Wartość Walki wręcz 2 lub wyższa.",
@@ -11801,6 +11821,7 @@
       "Zdezorientowanie": "Wszystko wydaje się skomplikowane i trudne.\nZdezorientowane postaci otrzymują karę +1 do ST wszystkich Testów, choć kara może być większa, jeżeli źródeł Zdezorientowania jest więcej.\nStan ten utrzymuje się do końca następnej Tury postaci, jednak dodatkowe zasady mogą to zmienić."
     },
     "sheetOrder": [
+      "Notatki",
       "Bestiariusz",
       "Specjalne Bonusy Wrogów",
       "Hordy",
@@ -11829,6 +11850,11 @@
       "Kary do ST"
     ],
     "columnOrder": {
+      "Notatki": [
+        "Co",
+        "Podręcznik",
+        "Strona"
+      ],
       "Bestiariusz": [
         "Nazwa",
         "Zagrożenie",

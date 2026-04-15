@@ -9,7 +9,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 - `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypty `xlsxCanonicalParser.js` i `app.js` oraz style `style.css`.
 - `style.css` — pełne style (kolory, fonty, layout, tabela, popover, modal, menu filtrów listowych).
 - `app.js` — główna logika UI: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i obsługa przycisku generacji.
-- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego dostarczonego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (ostatnia regeneracja w repozytorium: **2026-04-14**, wykonana po podmianie pliku `Repozytorium.xlsx` dla odświeżenia tabel DataVault).
+- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego dostarczonego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (ostatnia regeneracja w repozytorium: **2026-04-15**, wykonana po podmianie pliku `Repozytorium.xlsx` dla odświeżenia tabel DataVault).
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`; plik musi leżeć w folderze modułu DataVault (obok `index.html`), bo frontend pobiera go ścieżką względną.
 - `xlsxCanonicalParser.js` — kanoniczny parser XLSX po stronie przeglądarki: czyta bezpośrednio `xl/styles.xml`, `xl/sharedStrings.xml`, `xl/workbook.xml` i `xl/worksheets/sheet*.xml`, aby odwzorować logikę `build_json.py` (w tym detekcję `{{RED}}`).
 - `build_json.py` — kanoniczny generator referencyjny `data.json` z XLSX (AI/CLI/backend). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
@@ -289,6 +289,13 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Opis zasady`: 60ch
   - `Przykład`: 60ch
 
+- **Notatki**
+  - `LP`: kolumna ukryta (używana do sortowania domyślnego)
+  - `Co`: min-width 20ch, max-width auto, wyrównanie do lewej, standardowe łamanie
+  - `Podręcznik`: min-width auto, max-width bez limitu, wyrównanie do lewej, standardowe łamanie
+  - `Strona`: min-width 6ch, max-width auto, wyrównanie do lewej, standardowe łamanie
+
+
 - **Kary do ST**
   - tabela ma `table-layout: fixed` i `width: max-content`, aby nie rozciągać kolumn na szerokość okna.
   - kolumna wyboru (pierwsza, z ✓) ma 8ch (min/max/width) i jest wycentrowana — identycznie jak w pozostałych zakładkach.
@@ -402,7 +409,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 ### 4.1 Stałe
 - `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
-- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`).
+- `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, `Notatki`).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`).
 - `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`).
 - `CHARACTER_CREATION_SHEET_KEYS` i `COMBAT_RULES_SHEET_KEYS` — kanoniczne (znormalizowane) wersje nazw arkuszy używane do odpornego dopasowania nazw zakładek niezależnie od drobnych różnic zapisu.

@@ -27,6 +27,7 @@ Najważniejsze zasady działania:
 - W zakładce **Kary do ST** kolumny `Ile celów/akcji` oraz `Kara do ST` są zablokowane na 20ch (min/max/width), a tabela ma `table-layout: fixed` i `width: max-content`, więc **wszystkie** jej kolumny pozostają stałe.
 - W **Słowa Kluczowe Frakcji** kolumna **Słowo Kluczowe** jest czerwona poza tokenami `-` i `lub`, zachowuje kursywę z XLSX (np. w `lub`) i traktuje `[ŚWIAT-KUŹNIA]` jako w pełni czerwone słowo kluczowe.
 - We wszystkich zakładkach kolumny `Podręcznik` i `Strona` mają ujednolicone parametry: `Podręcznik` = min. **17ch** (lewo), `Strona` = min. **6ch** (lewo), `max-width: auto`, ze standardowym łamaniem linii.
+- Nowa zakładka **Notatki** jest widoczna tylko w trybie admina i ma układ kolumn: `Co` (min-width **20ch**, max `auto`, lewo), `Podręcznik` (min `auto`, max bez limitu, lewo), `Strona` (min **6ch**, max `auto`, lewo), wszystkie z domyślnym łamaniem.
 - Wartości w kolumnie `Strona` mają ten sam jaśniejszy kolor co referencje `(str.)` (czyli `--code`).
 - Okno **Porównanie** używa teraz dokładnie tej samej logiki formatowania komórek co tabela główna (w tym reguł czerwonego koloru, neutralnych przecinków w `Słowa Kluczowe`, wyjątków dla `Słowa Kluczowe Frakcji` jak `[ŚWIAT-KUŹNIA]`, `lub`, `-`, oraz reguł inline jak `(str.)`), więc wygląd jest spójny między widokami.
 - W modalu porównania usunięto z treści duplikat nagłówka „PORÓWNANIE” (został tylko nagłówek w pasku modala).
@@ -49,14 +50,14 @@ Najważniejsze zasady działania:
 - **Tryb gracza (domyślny)**
   - Automatycznie wczytuje `data.json`.
   - Ukrywa przycisk administracyjny do aktualizacji danych.
-  - Ukrywa zakładki admin-only: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy** oraz **Specjalne Bonusy Wrogów**.
+  - Ukrywa zakładki admin-only: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów** oraz **Notatki**.
 - **Tryb admina**
   - Dodaj do adresu `?admin=1`, np. `http://localhost:8000/?admin=1`.
   - Dostępny jest przycisk **Generuj data.json**, który uruchamia kanoniczny parser XLSX w przeglądarce (`xlsxCanonicalParser.js` + `JSZip`) i pobiera gotowy plik `data.json`.
   - Podpowiedź pod przyciskiem przypomina też, że `Repozytorium.xlsx` musi istnieć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego miejsca.
   - Przycisk korzysta z tej samej logiki co generator AI/CLI (`build_json.py`), więc wynik UI i AI pozostaje spójny (w tym markery `{{RED}}`).
   - Gdy biblioteka parsera kanonicznego nie załaduje się (np. problem z CDN), przycisk kończy się komunikatem błędu i wskazuje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
-  - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
+  - Zakładki admin-only (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów**, **Notatki**) są widoczne wyłącznie w tym trybie (o ile checkbox zasad walki jest zaznaczony).
 
 ### Zakładki sterowane checkboxami
 - Checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (domyślnie odznaczony) pokazuje:
@@ -69,7 +70,7 @@ Najważniejsze zasady działania:
 ### Aktualizacja danych z `Repozytorium.xlsx`
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmianie repozytorium `data.json` został ponownie wygenerowany na podstawie najnowszego dostarczonego pliku `Repozytorium.xlsx`, więc tabele odpowiadają aktualnemu arkuszowi. Generator zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 
-**Status tej aktualizacji:** `data.json` został wygenerowany ponownie dnia **2026-04-14** na podstawie nowo wgranego `Repozytorium.xlsx` (aktualizacja danych tabel DataVault po dostarczeniu nowego pliku).
+**Status tej aktualizacji:** `data.json` został wygenerowany ponownie dnia **2026-04-15** na podstawie nowo wgranego `Repozytorium.xlsx` (aktualizacja danych tabel DataVault po dostarczeniu nowego pliku).
 
 #### Metoda 1: panel administratora (rekomendowana)
 1. Podmień `Repozytorium.xlsx` w folderze modułu DataVault (obok `index.html`, na hostingu lub lokalnie).
@@ -148,6 +149,7 @@ Key behavior:
 - In the **Kary do ST** tab, the `Ile celów/akcji` and `Kara do ST` columns are locked to 20ch (min/max/width), and the table uses `table-layout: fixed` with `width: max-content`, so **all** columns stay fixed.
 - In **Słowa Kluczowe Frakcji**, the **Słowo Kluczowe** column is red except for `-` and the word `lub`, preserves italic styling coming from XLSX (e.g., `lub`), and treats `[ŚWIAT-KUŹNIA]` as fully red.
 - Across all tabs, the `Podręcznik` and `Strona` columns now use unified settings: `Podręcznik` = min **17ch** (left), `Strona` = min **6ch** (left), `max-width: auto`, and standard line wrapping.
+- The new **Notatki** tab is visible only in admin mode and uses: `Co` (min-width **20ch**, max `auto`, left), `Podręcznik` (min `auto`, no max limit, left), and `Strona` (min **6ch**, max `auto`, left), all with standard wrapping.
 - Values in the `Strona` column use the same lighter color as `(str.)` references (`--code`).
 - The **Comparison** modal now uses exactly the same cell-formatting logic as the main table (including red keyword rules, neutral commas in `Słowa Kluczowe`, `Słowa Kluczowe Frakcji` exceptions like `[ŚWIAT-KUŹNIA]`, `lub`, `-`, and inline rules such as `(str.)`), so both views stay visually consistent.
 - The duplicate in-body modal heading “PORÓWNANIE” was removed (only the modal header title remains).
@@ -170,14 +172,14 @@ Key behavior:
 - **Player mode (default)**
   - Automatically loads `data.json`.
   - Hides the admin-only data update button.
-  - Hides the admin-only tabs: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, and **Specjalne Bonusy Wrogów**.
+  - Hides the admin-only tabs: **Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów**, and **Notatki**.
 - **Admin mode**
   - Append `?admin=1` to the URL, e.g. `http://localhost:8000/?admin=1`.
   - The **Generate data.json** button appears and runs the canonical in-browser XLSX parser (`xlsxCanonicalParser.js` + `JSZip`) to download a ready `data.json` file.
   - The hint below the button also reminds you that `Repozytorium.xlsx` must exist next to `index.html`, and the generated `data.json` must be uploaded to the same location.
   - The button uses the same logic as the AI/CLI generator (`build_json.py`), ensuring parity between UI and AI output.
   - If the canonical parser library cannot be loaded (e.g. CDN issue), the button ends with an error message and prints the CLI command (`python build_json.py Repozytorium.xlsx data.json`).
-  - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów**) are visible only in this mode (when the combat checkbox is enabled).
+  - The admin-only tabs (**Bestiariusz**, **Trafienia Krytyczne**, **Groza Osnowy**, **Hordy**, **Specjalne Bonusy Wrogów**, **Notatki**) are visible only in this mode (when the combat checkbox is enabled).
 
 ### Tabs controlled by checkboxes
 - The “Czy wyświetlić zakładki dotyczące tworzenia postaci?” checkbox (unchecked by default) shows:
@@ -190,7 +192,7 @@ Key behavior:
 ### Updating data from `Repozytorium.xlsx`
 Below are two equivalent ways to update the data. In this repository update, `data.json` has been regenerated from the latest provided `Repozytorium.xlsx` file, so the tables reflect the current spreadsheet content. The generator replaces Polish quotation marks „ ” with the standard `"` character.
 
-**Update status:** `data.json` was regenerated on **2026-04-14** from the newly uploaded `Repozytorium.xlsx` (DataVault table data refresh after delivering the new file).
+**Update status:** `data.json` was regenerated on **2026-04-15** from the newly uploaded `Repozytorium.xlsx` (DataVault table data refresh after delivering the new file).
 
 #### Method 1: admin panel (recommended)
 1. Replace `Repozytorium.xlsx` in the DataVault module folder (next to `index.html`, hosting or local).
