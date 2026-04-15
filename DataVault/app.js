@@ -233,6 +233,7 @@ const DEFAULT_VIEW_CONFIG = {
   "Ekwipunek": { "Typ": ["Ulepszenia Broni", "Amunicja", "Ekwipunek Imperium"] },
   "Pancerze": { "Typ": ["Zwykłe", "Wspomagane", "Energetyczne"] },
   "Bronie": { "Typ": ["Adeptus Mechanicus", "Boltowa", "Broń biała", "Broń biała Adeptus Mechanicus", "Broń dystansowa", "Broń dystansowa Adeptus Mechnicus", "Broń dystansowa Milczących Sióstr", "Broń energetyczna", "Broń łańcuchowa", "Broń łańcuchowa Astartes", "Broń psioniczna", "Egzotyczna broń biała", "Granaty i Wyrzutnie", "Imperialna broń biała", "Laserowa", "Ogniowa", "Palna", "Plazmowa", "Termiczna"] },
+  "Talenty": { "Typ": ["Człowiek", "Imperium", "Inkwizycja", "Mechanicus", "Militarum", "Ogólne", "Sororitas"] },
 };
 
 const uiState = {
