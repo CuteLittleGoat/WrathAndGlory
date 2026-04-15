@@ -746,6 +746,7 @@ Obsługuje trzy przypadki:
   - **Ekwipunek / Typ:** Ulepszenia Broni, Amunicja, Ekwipunek Imperium.
   - **Pancerze / Typ:** Zwykłe, Wspomagane, Energetyczne (czyli domyślnie odznaczone: Astartes, Auxilla).
   - **Bronie / Typ:** Adeptus Mechanicus, Boltowa, Broń biała, Broń biała Adeptus Mechanicus, Broń dystansowa, Broń dystansowa Adeptus Mechnicus, Broń dystansowa Milczących Sióstr, Broń energetyczna, Broń łańcuchowa, Broń łańcuchowa Astartes, Broń psioniczna, Egzotyczna broń biała, Granaty i Wyrzutnie, Imperialna broń biała, Laserowa, Ogniowa, Palna, Plazmowa, Termiczna (czyli domyślnie odznaczone: Broń biała Ogrynów, Broń dystansowa Militarum Auxilla).
+  - **Talenty / Typ:** Człowiek, Imperium, Inkwizycja, Mechanicus, Militarum, Ogólne, Sororitas (czyli domyślnie odznaczone: Aeldari, Astartes, Chaos, Ork).
   - Pozostałe zakładki: brak ograniczeń (`filtersSet = {}` lub `null` per kolumna).
 - `#globalSearch` aktualizuje `view.global` na `input`.
 - `Escape` zamyka popover, modal i menu filtra listowego.

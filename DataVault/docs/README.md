@@ -108,6 +108,7 @@ Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmia
 - W zakładce **Archetypy** domyślny filtr kolumny **Frakcja** zostawia odznaczone: **Aeldari**, **Ork** i **Imperium T'au**.
 - W zakładce **Pancerze** domyślny filtr kolumny **Typ** zostawia odznaczone: **Astartes** oraz **Auxilla**.
 - W zakładce **Bronie** domyślny filtr kolumny **Typ** zostawia odznaczone: **Broń biała Ogrynów** oraz **Broń dystansowa Militarum Auxilla**.
+- W zakładce **Talenty** domyślny filtr kolumny **Typ** ma zaznaczone: **Człowiek**, **Imperium**, **Inkwizycja**, **Mechanicus**, **Militarum**, **Ogólne**, **Sororitas**.
 - Zaznaczenie 2+ wierszy: porównywarka rekordów.
 - Kliknięcie w tag cechy (`Cechy`): opis w panelu „popover”.
 - Panel „popover” przewija się przy długich opisach, a tytuł może zawijać się, by nie ucinać znaków.
@@ -228,6 +229,7 @@ Below are two equivalent ways to update the data. In this repository update, `da
 - **Default View** restores the **Archetypy → Frakcja** defaults with **Aeldari**, **Ork**, and **Imperium T'au** unchecked.
 - In **Pancerze**, the **Default View** profile keeps **Typ → Astartes** and **Auxilla** unchecked.
 - In **Bronie**, the **Default View** profile keeps **Typ → Broń biała Ogrynów** and **Broń dystansowa Militarum Auxilla** unchecked.
+- In **Talenty**, the **Default View** profile keeps the following **Typ** values selected: **Człowiek**, **Imperium**, **Inkwizycja**, **Mechanicus**, **Militarum**, **Ogólne**, **Sororitas**.
 - **Full View** clears global search, text filters, and list filters across all tabs, then shows complete datasets.
 - **Default View** globally restores the predefined checkbox-filter profile (and resets other filters) for the application.
 - Select 2+ rows: record comparison view.
