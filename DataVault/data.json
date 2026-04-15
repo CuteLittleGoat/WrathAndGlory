@@ -18,6 +18,90 @@
         "Co": "Wzrost",
         "Podręcznik": "Główny",
         "Strona": "33"
+      },
+      {
+        "LP": "4",
+        "Co": "Zwiększenie rangi",
+        "Podręcznik": "Główny",
+        "Strona": "147"
+      },
+      {
+        "LP": "5",
+        "Co": "Wyniesienie archetypu",
+        "Podręcznik": "Główny",
+        "Strona": "155"
+      },
+      {
+        "LP": "6",
+        "Co": "Pomoc w teście",
+        "Podręcznik": "Główny",
+        "Strona": "169"
+      },
+      {
+        "LP": "7",
+        "Co": "Atak z zaskoczenia",
+        "Podręcznik": "Główny",
+        "Strona": "182"
+      },
+      {
+        "LP": "8",
+        "Co": "Zasięg broni wybuchowej",
+        "Podręcznik": "Główny",
+        "Strona": "186"
+      },
+      {
+        "LP": "9",
+        "Co": "Strzał przez osłonę",
+        "Podręcznik": "Główny",
+        "Strona": "189"
+      },
+      {
+        "LP": "10",
+        "Co": "Haniebny odwrót",
+        "Podręcznik": "Główny",
+        "Strona": "194"
+      },
+      {
+        "LP": "11",
+        "Co": "Obrażenia od elektyczności",
+        "Podręcznik": "Główny",
+        "Strona": "201"
+      },
+      {
+        "LP": "12",
+        "Co": "Obrażenia od promieniowania",
+        "Podręcznik": "Główny",
+        "Strona": "202"
+      },
+      {
+        "LP": "13",
+        "Co": "Koszt i dostępność amunicji",
+        "Podręcznik": "Główny",
+        "Strona": "229"
+      },
+      {
+        "LP": "14",
+        "Co": "Poziom mocy psionicznej",
+        "Podręcznik": "Główny",
+        "Strona": "260"
+      },
+      {
+        "LP": "15",
+        "Co": "Poziom spaczenia",
+        "Podręcznik": "Główny",
+        "Strona": "285"
+      },
+      {
+        "LP": "16",
+        "Co": "Typy przeciwników",
+        "Podręcznik": "Główny",
+        "Strona": "323"
+      },
+      {
+        "LP": "17",
+        "Co": "Maksymalne wartości atrybutów dla gatunków",
+        "Podręcznik": "Ostamotniony System",
+        "Strona": "91"
       }
     ],
     "Bestiariusz": [
@@ -1970,6 +2054,36 @@
         "Rozmiar": "Wielki",
         "Podręcznik": "Zniszczyć Rój",
         "Strona": "28"
+      },
+      {
+        "LP": "66",
+        "Nazwa": "Psychneuein",
+        "Zagrożenie": "?",
+        "Słowa Kluczowe": "{{RED}}XENOS, CHAOS{{/RED}}",
+        "S": "4",
+        "Wt": "4",
+        "Zr": "4",
+        "I": "4",
+        "SW": "4",
+        "Int": "1",
+        "Ogd": "1",
+        "Odporność (w tym WP)": "7",
+        "Wartość Pancerza": "2",
+        "Obrona": "3",
+        "Żywotność": "6",
+        "Odporność Psychiczna": "5",
+        "Umiejętności": "Czujność 6 (Pasywna 3), Mistrzostwo psioniczne 3, Ukrywanie się 4, Walka wręcz 5",
+        "Premie": "{{B}}Bezmyślność{{/B}}: To zagrożenie automatycznie zdaje Testy Odwagi",
+        "Zdolności": "{{B}}TRUTNIE PSIONICZNE:{{/B}} Każdy słyszący buczący rój psychneueinów musi wykonać Test Strachu o ST 5.\n\n{{B}}SKRZYDŁA:{{/B}} To zagrożenie może latać z Szybkością 10. Po otrzymaniu obrażeń musi odnieść sukces w Teście Zręczności o ST 5, by utrzymać się w powietrzu.\n\n{{B}}ZGUBA: Implantacja {{/B}}(wyłącznie młode królowe)\nZasięg 18. Wydaj 1 punkt Zguby, by wykonać próbę psionicznego złożenia jaj w umyśle postaci o Słowie kluczowym {{RED}}PSIONIK{{/RED}}. Wykonaj przeciwstawny Test Mistrzostwa psionicznego o ST równym Sile Woli celu. Jeśli psychneuein wygra, składa w głowie celu 1k6 jaj. Jeśli nie zostaną usunięte (Test Medycyny o ST 8), za 2k6 godzin wyklują się, doprowadzając do brutalnej śmierci nosiciela.\n\n{{B}}DETERMINACJA:{{/B}} Wydaj 1 punkt Zguby, aby rzucić 3k6.",
+        "Atak": "{{B}}Ugryzienie{{/B}}: 13 + 4 DK / PP -2 / Zasięg 1\n\n{{B}}Użądlenie{{/B}} (wyłącznie trutnie): 13 + 2 DK / PP -4 / Zasięg 1\n\nKażdy psionik użądlony przez trutnia psychneueina musi natychmiast wykonać Test Wytrzymałości o ST 6. Porażka oznacza natychmiastowy rzut w tabeli Groza Osnowy [{{B}}Podręcznik Główny{{/B}} (str. 263)].",
+        "Zdolności Hordy": "",
+        "Opcje Hordy": "",
+        "Upór": "4",
+        "Odwaga": "3",
+        "Szybkość": "10 (lot)",
+        "Rozmiar": "Średni",
+        "Podręcznik": "Utajone Akta I",
+        "Strona": "16"
       }
     ],
     "Specjalne Bonusy Wrogów": [
@@ -3072,8 +3186,8 @@
         "LP": "1",
         "Frakcja": "Adepta Sororitas",
         "Słowo Kluczowe": "{{RED}}[ZAKON ŻEŃSKI]{{/RED}}",
-        "Opis": "Kiedy wykonujesz akcję związaną z wybranym zakonem, MG może ci przyznać dodatkową kość.\n\n{{B}}Zakony Bojowe{{/B}}\nSiostry Bitwy są armią Eklezjarchii i dzielą się na kilka różnych zakonów, każdy z nich posiada własne tradycje i strategie. Zakon Naszej Umęczonej Pani udoskonalił stosowanie oczyszczającego ognia i chętnie używa go do trzebienia wrogów, natomiast Zakon Uświęconej Tarczy z Enoch woli przeprowadzać kontrataki i miażdżyć heretyków na swoich niezłomnych formacjach obronnych.\n\n{{B}}Zakony Dialogus{{/B}}\nLingwistki i uczone. Dialogistki badają i tłumaczą starożytne teksty, zarówno święte, jak i bluźniercze. Ekspertki w porozumiewaniu się – zapewniają, że modlitwy i rozkazy Sororitas są rozumiane oraz rozszyfrowują wiadomości w językach obcych.\n\n{{B}}Zakony Famulous{{/B}}\nUłatwiając dyplomatyczne przymierza pomiędzy imperialnymi szlachcicami, negocjatorki zapewniają, że koła feudalnego społeczeństwa toczą się na korzyść Imperatora. Działają jako szare eminencje, jednocześnie doradzając innym i rozwiązując heretyckie spiski na wysokim szczeblu.\n\n{{B}}Zakony Szpitalnicze{{/B}}\nZapewniają pomoc medyczną wszelkim siłom zbrojnym poza Adeptus Astartes. Szpitalniczki leczą ciała i dusze swych sprzymierzeńców.\n\n{{B}}Zakony Sabine{{/B}}\nWspółpracując z Missionarus Galaxia, misjonarki są w stanie przekształcić na wpół heretycki, prymitywny świat w populację śpiewającą hymny w imię Imperatora. Ich prorokinie przenikają do społeczeństwa i prywatnie nauczają świętych słów Imperatora, wywołując słuszne powstania przeciw dawnym porządkom i fałszywym bogom.\n\n{{B}}Zakony Pronatus{{/B}}\nObrończynie i ratowniczki najświętszych reliktów Imperium. Kustoszki zapewniają, że te uświęcone przedmioty nie wpadną w plugawe ręce wroga. Są znane z determinacji podczas krucjat prowadzonych w celu odzyskania starożytnego dziedzictwa.",
-        "Efekt": "Kiedy wykonujesz akcję związaną z wybranym zakonem, MG może ci przyznać dodatkową kość."
+        "Opis": "Kiedy wykonujesz akcję związaną z wybranym zakonem, MG może ci przyznać dodatkową kość.\n\n{{B}}Zakony Bojowe{{/B}}\nSiostry Bitwy są armią Eklezjarchii i dzielą się na kilka różnych zakonów, każdy z nich posiada własne tradycje i strategie. Zakon Naszej Umęczonej Pani udoskonalił stosowanie oczyszczającego ognia i chętnie używa go do trzebienia wrogów, natomiast Zakon Uświęconej Tarczy z Enoch woli przeprowadzać kontrataki i miażdżyć heretyków na swoich niezłomnych formacjach obronnych.\n\n{{B}}Zakony Dialogus{{/B}}\nLingwistki i uczone. Dialogistki badają i tłumaczą starożytne teksty, zarówno święte, jak i bluźniercze. Ekspertki w porozumiewaniu się – zapewniają, że modlitwy i rozkazy Sororitas są rozumiane oraz rozszyfrowują wiadomości w językach obcych.\n\n{{B}}Zakony Famulous{{/B}}\nUłatwiając dyplomatyczne przymierza pomiędzy imperialnymi szlachcicami, negocjatorki zapewniają, że koła feudalnego społeczeństwa toczą się na korzyść Imperatora. Działają jako szare eminencje, jednocześnie doradzając innym i rozwiązując heretyckie spiski na wysokim szczeblu.\n\n{{B}}Zakony Szpitalnicze{{/B}}\nZapewniają pomoc medyczną wszelkim siłom zbrojnym poza Adeptus Astartes. Szpitalniczki leczą ciała i dusze swych sprzymierzeńców.\n\n{{B}}Zakony Sabine{{/B}}\nWspółpracując z Missionarus Galaxia, misjonarki są w stanie przekształcić na wpół heretycki, prymitywny świat w populację śpiewającą hymny w imię Imperatora. Ich prorokinie przenikają do społeczeństwa i prywatnie nauczają świętych słów Imperatora, wywołując słuszne powstania przeciw dawnym porządkom i fałszywym bogom.\n\n{{B}}Zakony Pronatus{{/B}}\nObrończynie i ratowniczki najświętszych reliktów Imperium. Kustoszki zapewniają, że te uświęcone przedmioty nie wpadną w plugawe ręce wroga. Są znane z determinacji podczas krucjat prowadzonych w celu odzyskania starożytnego dziedzictwa.\n\n=PRZYKŁADY=\n\n{{B}}Uświęconej Tarczy{{/B}}\nNiewielki zakon bojowy z kwaterą główną na Enoch, wyspecjalizowany w wyprowadzaniu kontrataków przeciw czyhającym na niewinnych demonom.\n\n{{B}}Nowy Kolos{{/B}}\nSiostry szpitalniczki podróżujące wraz ze stłoczonymi masami pielgrzymów i uchodźców, leczące dolegliwości i choroby szerzące się wśród tłumów.\n\n{{B}}Święte Pisma{{/B}}\nSiostry dialogistki z Enoch prowadzące kroniki chwały Krucjaty Gilead i opiekujące się posągami Imperatora, od kiedy powstał system.\n\n{{B}}Powściągliwa Duma{{/B}}\nSiostry negocjatorki od dawna utrzymujące kontakty z dynastią Varoniusa, wspomagające ją radą i wypleniające spaczenie z jej szeregów.",
+        "Efekt": "Kiedy wykonujesz akcję związaną z wybranym zakonem, MG może ci przyznać dodatkową kość.\n\n=PRZYKŁADY=\n\n{{B}}Uświęconej Tarczy{{/B}}\n+Ranga dodatkowych kości przeciwko przeciwnikom, którzy w swojej ostatniej turze zaatakowali twojego sojusznika (ale nie ciebie).\n\n{{B}}Nowy Kolos{{/B}}\n+Ranga dodatkowych kości do Testów Czujności (Int) i Intuicji (Ogd) przeciwko Hordom lub innym dużym grupom.\n\n{{B}}Święte Pisma{{/B}}\n+Ranga dodatkowych kości do Testów Analizy (Int) i Wiedzy ogólnej (Int) dotyczących historii systemu Gilead.\n\n{{B}}Powściągliwa Duma{{/B}}\n+Ranga premii do Wpływów."
       },
       {
         "LP": "2",
@@ -3086,8 +3200,8 @@
         "LP": "3",
         "Frakcja": "Adeptus Mechanicus",
         "Słowo Kluczowe": "{{RED}}[ŚWIAT-KUŹNIA]{{/RED}}",
-        "Opis": "Możesz zamienić Słowo kluczowe {{RED}}[ŚWIAT-KUŹNIA]{{/RED}} nazwą rodzinnej planety, miejscem, gdzie nauczono cię tajemnic Omnisjasza. Może to być Mars – kolebka Kultu Mechanicus, najświętsza ze sfer niebieskich – lub Metalica, planeta odarta z biologicznego życia, które niemal całkiem zastąpiono sterylnym metalem.",
-        "Efekt": "-"
+        "Opis": "Możesz zamienić Słowo kluczowe {{RED}}[ŚWIAT-KUŹNIA]{{/RED}} nazwą rodzinnej planety, miejscem, gdzie nauczono cię tajemnic Omnisjasza. Może to być Mars – kolebka Kultu Mechanicus, najświętsza ze sfer niebieskich – lub Metalica, planeta odarta z biologicznego życia, które niemal całkiem zastąpiono sterylnym metalem.\n\n=PRZYKŁADY=\n\n{{B}}Avachrus{{/B}}\nAvachruskie Mechanicus, żyjące pod powierzchnią wymarłego radioaktywnego pustkowia, cechuje się imponującą zaradnością w poszukiwaniach schronienia i odnajdowaniu technologii najmniejszym możliwym kosztem.\n\n{{B}}Mars{{/B}}\nStolica tech-kapłaństwa. Stąpający po otaczanych czcią czerwonych piaskach Marsa są nagradzani za oddanie najnowszą i najbardziej zabójczą bronią w arsenale Mechanicus.\n\n{{B}}Agripinaa{{/B}}\nŻołnierze tego świata wielokrotnie byli oblegani przez siły Chaosu, więc specjalizują się w wojnie totalnej: walczą do ostatniej kropli krwi lub smaru, a nawet wtedy często decydują się na przemianę w serwitory i kontynuują walkę.\n\n{{B}}Graia{{/B}}\nŚwiat zdolny do niezależnych podróży przez Osnowę jest domem dla wyznawców nieprzejednanej logiki, którzy odrzucają panikę, strach i umysłową dominację.",
+        "Efekt": "=PRZYKŁADY=\n\n{{B}}Avachrus{{/B}}\n+Ranga dodatkowych kości do Testów Przetrwania (SW).\n\n{{B}}Mars{{/B}}\n+Ranga DK w atakach bronią dystansową w Bliskim Zasięgu.\n\n{{B}}Agripinaa{{/B}}\n+Ranga premii do puli kości rzutu na Determinację.\n\n{{B}}Graia{{/B}}\n+Ranga dodatkowych kości w Testach odpierania Strachu, Grozy i efektów mocy psionicznych."
       },
       {
         "LP": "4",
@@ -5753,7 +5867,7 @@
     "Modlitwy": [
       {
         "LP": "1",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Boskie przewodnictwo",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -5763,7 +5877,7 @@
       },
       {
         "LP": "2",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Imperator chroni",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, co najmniej 1 punkt Wiary.",
@@ -5773,7 +5887,7 @@
       },
       {
         "LP": "3",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Litania NienawiŚci",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, Talent Nienawiść [{{B}}Podręcznik Główn{{/B}}y (str. 135)]",
@@ -5783,7 +5897,7 @@
       },
       {
         "LP": "4",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Łzy męczennika",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Siły Woli 3 lub wyższa.",
@@ -5793,7 +5907,7 @@
       },
       {
         "LP": "5",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Natchnione błogosławieństwo",
         "Koszt PD": "25",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}}.",
@@ -5803,7 +5917,7 @@
       },
       {
         "LP": "6",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Pasja",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -5813,7 +5927,7 @@
       },
       {
         "LP": "7",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Pokuta!",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Siły Woli 3 lub wyższa.",
@@ -5823,7 +5937,7 @@
       },
       {
         "LP": "8",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Święty gniew",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Siły Woli 3 lub wyższa.",
@@ -5833,7 +5947,7 @@
       },
       {
         "LP": "9",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}}",
         "Nazwa": "Święte Światło",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe{{RED}} ADEPTUS MINISTORUM{{/RED}}.",
@@ -5853,7 +5967,7 @@
       },
       {
         "LP": "11",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "W Jego imieniu",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}, wartość Wiedzy ogólnej 1 lub wyższa.",
@@ -5863,7 +5977,7 @@
       },
       {
         "LP": "12",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Wzmacniająca czystość",
         "Koszt PD": "40",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
@@ -5873,7 +5987,7 @@
       },
       {
         "LP": "13",
-        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
+        "Typ": "{{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}",
         "Nazwa": "Z Jego woli",
         "Koszt PD": "20",
         "Wymagania": "Słowo kluczowe {{RED}}ADEPTUS MINISTORUM{{/RED}} lub {{RED}}ADEPTA SORORITAS{{/RED}}.",
