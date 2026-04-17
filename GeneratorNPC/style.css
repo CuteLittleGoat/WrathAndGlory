@@ -9,6 +9,7 @@
   --text2: #4FAF4F;
   --muted: #4a8b4a;
   --code: #D2FAD2;
+  --text-old: #7f9b7f;
   --red: #d74b4b;
   --border: #16c60c;
   --accent: #16c60c;
@@ -412,6 +413,18 @@ textarea:focus {
   border: 1px solid var(--div);
   box-shadow: var(--glow);
 }
+.data-table[data-sheet="Bestiariusz"] {
+  table-layout: fixed;
+}
+.data-table[data-sheet="Bestiariusz"] th:first-child,
+.data-table[data-sheet="Bestiariusz"] td:first-child {
+  width: 25ch;
+  min-width: 25ch;
+  max-width: 25ch;
+}
+.data-table[data-sheet="Bestiariusz"] td:last-child {
+  width: auto;
+}
 
 .data-table th,
 .data-table td {
@@ -773,6 +786,15 @@ textarea:focus {
   font-style: italic;
 }
 
+.inline-strike {
+  text-decoration: line-through;
+  color: var(--text-old);
+}
+
+.inline-strike.inline-red {
+  color: var(--red);
+}
+
 .keyword-red {
   color: var(--red);
 }
@@ -793,6 +815,10 @@ textarea:focus {
 
 .slash {
   color: var(--code);
+}
+
+.bestiary-old-key {
+  color: var(--text-old);
 }
 
 .popover {

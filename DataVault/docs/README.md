@@ -253,3 +253,31 @@ Visual/layout rules and formatting details are documented in `DetaleLayout.md` (
 
 ### Disclaimer
 This tool is an unofficial fan project created to assist GMs in the Wrath & Glory system. The application is provided for free, private, non-commercial use only. The project is not licensed and is not affiliated with or endorsed by Games Workshop, Cubicle 7 Entertainment Ltd., or Copernicus Corporation. Warhammer 40,000 and related names and trademarks are owned by Games Workshop Limited; Wrath & Glory is owned by its respective rights holders.
+
+## Aktualizacja 2026-04-17 (PL)
+- Dodano obsługę przekreślenia w całym pipeline danych (`{{S}}...{{/S}}`):
+  - parser CLI (`build_json.py`),
+  - parser kanoniczny w przeglądarce (`xlsxCanonicalParser.js`),
+  - renderer komórek (`app.js` + `style.css`).
+- Przekreślony tekst renderuje się jako `line-through` i domyślnie używa koloru archiwalnego (`--text-old`), ale segmenty `{{RED}}` pozostają czerwone.
+- Dodano obsługę statusu rekordu `Status=old`:
+  - kolumna `Status` jest techniczna i domyślnie ukryta,
+  - cały wiersz ma kolor archiwalny,
+  - przecinki i referencje w tym wierszu dziedziczą kolor archiwalny,
+  - czerwone segmenty nadal mają priorytet.
+- W zakładce **Bestiariusz** dodano regułę dla kolumny `Typ` (`min-width: 14ch`, wyrównanie do lewej), analogicznie do `Bronie/Typ`.
+- `data.json` został wygenerowany ponownie po wdrożeniu zmian parsera.
+
+## Update 2026-04-17 (EN)
+- Added full strikethrough support across the data pipeline (`{{S}}...{{/S}}`):
+  - CLI parser (`build_json.py`),
+  - in-browser canonical parser (`xlsxCanonicalParser.js`),
+  - cell renderer (`app.js` + `style.css`).
+- Struck text is rendered with `line-through` and uses the archival color token (`--text-old`) by default, while `{{RED}}` segments remain red.
+- Added `Status=old` record handling:
+  - `Status` is now treated as a hidden technical column,
+  - the whole row uses archival color,
+  - commas and references inherit archival color in that row,
+  - red fragments still have priority.
+- In the **Bestiariusz** tab, a `Typ` column rule was added (`min-width: 14ch`, left-aligned), matching `Bronie/Typ`.
+- `data.json` was regenerated after parser updates.
