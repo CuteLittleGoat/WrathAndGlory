@@ -260,8 +260,8 @@ This tool is an unofficial fan project created to assist GMs in the Wrath & Glor
   - parser kanoniczny w przeglądarce (`xlsxCanonicalParser.js`),
   - renderer komórek (`app.js` + `style.css`).
 - Przekreślony tekst renderuje się jako `line-through` i domyślnie używa koloru archiwalnego (`--text-old`), ale segmenty `{{RED}}` pozostają czerwone.
-- Dodano obsługę statusu rekordu `Status=old`:
-  - kolumna `Status` jest techniczna i domyślnie ukryta,
+- Dodano obsługę statusu rekordu `Stan=old`:
+  - kolumna `Stan` jest techniczna i domyślnie ukryta,
   - cały wiersz ma kolor archiwalny,
   - przecinki i referencje w tym wierszu dziedziczą kolor archiwalny,
   - czerwone segmenty nadal mają priorytet.
@@ -274,10 +274,12 @@ This tool is an unofficial fan project created to assist GMs in the Wrath & Glor
   - in-browser canonical parser (`xlsxCanonicalParser.js`),
   - cell renderer (`app.js` + `style.css`).
 - Struck text is rendered with `line-through` and uses the archival color token (`--text-old`) by default, while `{{RED}}` segments remain red.
-- Added `Status=old` record handling:
-  - `Status` is now treated as a hidden technical column,
+- Added `Stan=old` record handling:
+  - `Stan` is now treated as a hidden technical column,
   - the whole row uses archival color,
   - commas and references inherit archival color in that row,
   - red fragments still have priority.
 - In the **Bestiariusz** tab, a `Typ` column rule was added (`min-width: 14ch`, left-aligned), matching `Bronie/Typ`.
 - `data.json` was regenerated after parser updates.
+- Poprawka: logika `Stan=old` działa wyłącznie na kolumnie `Stan` (`stan`) i ta kolumna jest traktowana jako techniczna (ukryta).
+- Fix: `Stan=old` logic now relies on the `Stan` column (`stan`) only, and this column is treated as a hidden technical field.

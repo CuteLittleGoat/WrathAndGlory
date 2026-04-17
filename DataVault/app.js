@@ -256,7 +256,7 @@ if (els.btnMainPage) {
     els.btnMainPage.style.display = "none";
   }
 }
-const HIDDEN_COLUMNS = new Set(["lp", "status"]);
+const HIDDEN_COLUMNS = new Set(["lp", "stan"]);
 const STATUS_OLD_VALUE = "old";
 
 /* ---------- Utilities ---------- */
@@ -700,7 +700,13 @@ function parseInlineSegments(raw){
 }
 
 function isOldStatusRow(row){
-  const value = String(row?.Status ?? "").trim().toLowerCase();
+  if (!row || typeof row !== "object") return false;
+  const statusKey = Object.keys(row).find((key)=>{
+    const normKey = String(key ?? "").trim().toLowerCase();
+    return normKey === "stan";
+  });
+  if (!statusKey) return false;
+  const value = stripMarkers(String(row[statusKey] ?? "")).trim().toLowerCase();
   return value === STATUS_OLD_VALUE;
 }
 

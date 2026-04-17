@@ -83,7 +83,7 @@ Browser tab title: **Generator NPC**.
 - Full Firebase setup instructions, Firestore data shape (`generatorNpc/favorites`), and the initialization script are documented in: `GeneratorNPC/config/Firebase-config.md`.
 
 ## Aktualizacja 2026-04-17 (PL)
-- W podglądzie bazowym (`Bestiariusz`) kolumna techniczna `Status` nie jest wyświetlana jako osobny wiersz.
+- W podglądzie bazowym (`Bestiariusz`) kolumna techniczna `Stan` nie jest wyświetlana jako osobny wiersz.
 - Dla rekordów ze statusem `old` pola `LP`, `Nazwa` i `Typ` są wyświetlane kolorem archiwalnym (`--text-old`).
 - Ustabilizowano szerokość kolumny `Klucz` w podglądzie bazowym:
   - tabela używa `table-layout: fixed`,
@@ -93,11 +93,13 @@ Browser tab title: **Generator NPC**.
 - Zmiany nie modyfikują logiki przycisku **Generuj kartę**.
 
 ## Update 2026-04-17 (EN)
-- In the base preview (`Bestiariusz`), the technical `Status` column is no longer shown as a standalone row.
-- For records with `Status=old`, fields `LP`, `Nazwa`, and `Typ` are rendered using the archival text color token (`--text-old`).
+- In the base preview (`Bestiariusz`), the technical `Stan` column is no longer shown as a standalone row.
+- For records with `Stan=old`, fields `LP`, `Nazwa`, and `Typ` are rendered using the archival text color token (`--text-old`).
 - The `Key` column width in base preview is now stable:
   - the table uses `table-layout: fixed`,
   - the first column is locked to `25ch`,
   - the second column uses remaining space.
 - Inline renderer now supports `{{S}}...{{/S}}` (strikethrough) alongside `{{RED}}`, `{{B}}`, `{{I}}`.
 - These changes do not alter **Generate card** logic.
+- Poprawka: podgląd bazowy opiera logikę `old` wyłącznie na polu `Stan` (case-insensitive) i ukrywa ten wiersz z kolumny „Klucz”.
+- Fix: base preview now relies on `Stan` only (case-insensitive) for `old` logic and hides this row from the “Key” column.

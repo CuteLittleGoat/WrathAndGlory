@@ -791,7 +791,7 @@ Obsługuje trzy przypadki:
   - `Zaleta`: 46ch
   - `Wada`: 46ch
 
-## 14) Aktualizacja 2026-04-17 — `Status=old` i marker `{{S}}`
+## 14) Aktualizacja 2026-04-17 — `Stan=old` i marker `{{S}}`
 
 ### 14.1 Pipeline danych (Python + parser kanoniczny JS)
 - `build_json.py`
@@ -810,9 +810,9 @@ Obsługuje trzy przypadki:
   - tagów `<s>`, `<strike>`, `<del>`,
   - stylu inline `text-decoration` / `text-decoration-line: line-through`.
 
-### 14.3 Status `old`
-- `HIDDEN_COLUMNS` zawiera `status`, więc kolumna nie jest renderowana.
-- `isOldStatusRow(row)` wykrywa rekordy `Status=old` (`trim + lowercase`).
+### 14.3 Stan `old`
+- `HIDDEN_COLUMNS` zawiera `stan`, więc kolumna nie jest renderowana.
+- `isOldStatusRow(row)` wykrywa rekordy `Stan=old` (`trim + lowercase`).
 - `renderRow()` ustawia klasę `row-old` dla rekordów archiwalnych.
 
 ### 14.4 CSS i priorytet kolorów
@@ -828,3 +828,6 @@ Obsługuje trzy przypadki:
 - W `Bestiariusz` dodano regułę kolumny `Typ`:
   - `min-width: 14ch`,
   - `text-align: left`.
+### 14.6 Alias kolumny statusu
+- Wykrywanie archiwalności i ukrywania kolumny działa dla `Stan` (case-insensitive).
+- Funkcja `isOldStatusRow(row)` wyszukuje klucz `Stan` i normalizuje wartość przez `stripMarkers(...).trim().toLowerCase()`.

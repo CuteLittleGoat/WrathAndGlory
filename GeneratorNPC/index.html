@@ -1066,7 +1066,7 @@
       };
 
       const isOldBestiaryRecord = (record) =>
-        normalizeText(getRecordValueByLabels(record, ["Status", "status"])).toLowerCase() === "old";
+        normalizeText(getRecordValueByLabels(record, ["Stan", "stan"])).toLowerCase() === "old";
 
       const shouldGrayBestiaryKey = (key, record) => {
         if (!isOldBestiaryRecord(record)) return false;
@@ -1721,7 +1721,7 @@
         bestiaryTableBody.innerHTML = "";
         const entries = Object.entries(record);
         entries.forEach(([key, value]) => {
-          if (normalizeKey(key) === "status") {
+          if (normalizeKey(key) === "stan") {
             return;
           }
           const valueString = toDisplayString(value);
