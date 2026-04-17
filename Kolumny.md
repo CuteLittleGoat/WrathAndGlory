@@ -285,3 +285,10 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | --- | --- | --- | --- | --- |
 | Ile celów/akcji | 20ch | 20ch | lewo | standard |
 | Kara do ST | 20ch | 20ch | lewo | standard |
+
+## Aktualizacja 2026-04-17
+- W zakładce **Bestiariusz** dodano regułę kolumny `Typ` zgodną z `Bronie/Typ`:
+  - `min-width: 14ch`
+  - wyrównanie: `left`
+  - standardowe zawijanie (`white-space: normal` + `pre-wrap` w `.celltext`).
+- Kolumna techniczna `Status` jest ukrywana przez logikę aplikacji (`HIDDEN_COLUMNS`) i nie bierze udziału w renderingu tabeli.

@@ -374,3 +374,31 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 ## 12. Dokument referencyjny Firebase
 - Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku: `GeneratorNPC/config/Firebase-config.md`.
 - Plik opisuje dokładny template konfiguracji Web, strukturę danych Firestore oraz skrypt Node.js do utworzenia wymaganych dokumentów.
+
+## 12) Aktualizacja 2026-04-17 — Status/strike i stabilizacja „Klucz”
+
+### 12.1 Formatowanie inline
+- `formatInlineHTML(raw)` rozpoznaje teraz markery: `{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}`.
+- Segmenty `{{S}}` otrzymują klasę `.inline-strike` (`line-through`).
+- Jeśli segment ma jednocześnie `RED` i `S`, klasa `.inline-red` utrzymuje kolor czerwony.
+
+### 12.2 Logika `Status=old` w podglądzie bazowym
+- Dodano helper `isOldBestiaryRecord(record)`:
+  - odczyt wartości z `Status` (`Status`/`status`),
+  - normalizacja `trim + lowercase`,
+  - porównanie do `old`.
+- Dodano helper `shouldGrayBestiaryKey(key, record)`:
+  - aktywny tylko dla rekordów `old`,
+  - obejmuje wyłącznie klucze `LP`, `Nazwa`, `Typ`.
+- W `renderBestiaryTable(record)`:
+  - wiersz `Status` jest pomijany (niewidoczny w kolumnie „Klucz”),
+  - komórki klucza i wartości dla `LP/Nazwa/Typ` dostają klasę `.bestiary-old-key`.
+
+### 12.3 Stabilna geometria tabeli podglądu bazowego
+- Dla `.data-table[data-sheet="Bestiariusz"]` ustawiono `table-layout: fixed`.
+- Pierwsza kolumna (`th:first-child`, `td:first-child`) ma stałe `25ch` (`width/min/max`).
+- Druga kolumna przejmuje pozostałą szerokość (`auto`), co eliminuje skoki szerokości „Klucz” między rekordami.
+
+### 12.4 Zakres wpływu
+- Zmiany dotyczą podglądu bazowego i renderingu tabel modułu.
+- Generator wydruku (okno tworzone przez `buildPrintableCardHTML`) nie został zmodyfikowany logicznie przez te zmiany.
