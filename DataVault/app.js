@@ -256,7 +256,8 @@ if (els.btnMainPage) {
     els.btnMainPage.style.display = "none";
   }
 }
-const HIDDEN_COLUMNS = new Set(["lp"]);
+const HIDDEN_COLUMNS = new Set(["lp", "stan"]);
+const STATUS_OLD_VALUE = "old";
 
 /* ---------- Utilities ---------- */
 function norm(s){
@@ -352,7 +353,7 @@ function escapeHtml(s){
   return String(s ?? "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[c]));
 }
 function stripMarkers(s){
-  return String(s ?? "").replace(/{{\/?(?:RED|B|I)}}/g, "");
+  return String(s ?? "").replace(/{{\/?(?:RED|B|I|S)}}/g, "");
 }
 function setStatus(msg){ console.info(msg); }
 function logLine(msg, isErr=false){
@@ -608,6 +609,7 @@ function formatInlineHTML(raw){
       if (styles?.has("RED")) classes.push("inline-red");
       if (styles?.has("B")) classes.push("inline-bold");
       if (styles?.has("I")) classes.push("inline-italic");
+      if (styles?.has("S")) classes.push("inline-strike");
       const inner = escapeHtml(text);
       return classes.length ? `<span class="${classes.join(" ")}">${inner}</span>` : inner;
     }
@@ -633,6 +635,7 @@ function formatInlineHTML(raw){
     if (styles?.has("RED")) styleClasses.push("inline-red");
     if (styles?.has("B")) styleClasses.push("inline-bold");
     if (styles?.has("I")) styleClasses.push("inline-italic");
+    if (styles?.has("S")) styleClasses.push("inline-strike");
 
     return tokens.map(t => {
       const classes = [...styleClasses];
@@ -662,7 +665,7 @@ function formatTextHTML(raw, opts = {}){
 }
 
 function parseInlineSegments(raw){
-  const markerRegex = /{{\/?(?:RED|B|I)}}/g;
+  const markerRegex = /{{\/?(?:RED|B|I|S)}}/g;
   const segments = [];
   const stack = [];
   let cursor = 0;
@@ -674,7 +677,13 @@ function parseInlineSegments(raw){
     }
     const token = m[0];
     const isClose = token.startsWith("{{/");
-    const name = token.includes("RED") ? "RED" : token.includes("B") ? "B" : "I";
+    const name = token.includes("RED")
+      ? "RED"
+      : token.includes("B")
+        ? "B"
+        : token.includes("I")
+          ? "I"
+          : "S";
     if (isClose){
       const idx = stack.lastIndexOf(name);
       if (idx !== -1) stack.splice(idx, 1);
@@ -688,6 +697,17 @@ function parseInlineSegments(raw){
   }
 
   return segments;
+}
+
+function isOldStatusRow(row){
+  if (!row || typeof row !== "object") return false;
+  const statusKey = Object.keys(row).find((key)=>{
+    const normKey = String(key ?? "").trim().toLowerCase();
+    return normKey === "stan";
+  });
+  if (!statusKey) return false;
+  const value = stripMarkers(String(row[statusKey] ?? "")).trim().toLowerCase();
+  return value === STATUS_OLD_VALUE;
 }
 
 function formatFactionKeywordHTML(raw, opts = {}){
@@ -964,6 +984,7 @@ function htmlToStyleMarkers(html){
       if (state.red) marked = `{{RED}}${marked}{{/RED}}`;
       if (state.bold) marked = `{{B}}${marked}{{/B}}`;
       if (state.italic) marked = `{{I}}${marked}{{/I}}`;
+      if (state.strike) marked = `{{S}}${marked}{{/S}}`;
       chunks.push(marked);
       return;
     }
@@ -972,10 +993,13 @@ function htmlToStyleMarkers(html){
     const tag = node.tagName.toLowerCase();
     const styleAttr = node.getAttribute("style") || "";
     const inlineColor = styleAttr.match(/color\s*:\s*([^;]+)/i)?.[1] || "";
+    const hasTextDecorationStrike =
+      /text-decoration(?:-line)?\s*:\s*[^;]*line-through/i.test(styleAttr);
     const nextState = {
       bold: state.bold || tag === "b" || tag === "strong",
       italic: state.italic || tag === "i" || tag === "em",
       red: state.red || isRedColorValue(inlineColor),
+      strike: state.strike || tag === "s" || tag === "strike" || tag === "del" || hasTextDecorationStrike,
     };
 
     if (tag === "br"){
@@ -987,7 +1011,7 @@ function htmlToStyleMarkers(html){
     }
   };
 
-  walk(root, {bold: false, italic: false, red: false});
+  walk(root, {bold: false, italic: false, red: false, strike: false});
   return chunks.join("");
 }
 
@@ -1629,6 +1653,7 @@ function renderBody(){
 function renderRow(r, cols){
   const tr = document.createElement("tr");
   tr.classList.toggle("row-selected", view.selected.has(r.__id));
+  tr.classList.toggle("row-old", isOldStatusRow(r));
 
   const td0 = document.createElement("td");
   const cb = document.createElement("input");

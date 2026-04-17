@@ -51,11 +51,12 @@
     return val === null || !["0","false"].includes(String(val).toLowerCase());
   }
 
-  function wrapWithMarkers(text, {red=false, bold=false, italic=false} = {}){
+  function wrapWithMarkers(text, {red=false, bold=false, italic=false, strike=false} = {}){
     const markers = [
       ["{{RED}}", "{{/RED}}", red],
       ["{{B}}", "{{/B}}", bold],
       ["{{I}}", "{{/I}}", italic],
+      ["{{S}}", "{{/S}}", strike],
     ];
     const start = markers.filter((m)=>m[2]).map((m)=>m[0]).join("");
     const end = markers.slice().reverse().filter((m)=>m[2]).map((m)=>m[1]).join("");
@@ -76,7 +77,8 @@
       const red = isRedColor(rpr ? q(rpr, "color") : null);
       const bold = isEnabled(rpr ? q(rpr, "b") : null);
       const italic = isEnabled(rpr ? q(rpr, "i") : null);
-      parts.push(wrapWithMarkers(text, {red, bold, italic}));
+      const strike = isEnabled(rpr ? q(rpr, "strike") : null);
+      parts.push(wrapWithMarkers(text, {red, bold, italic, strike}));
     }
     return {text: parts.join(""), hasRuns:true};
   }

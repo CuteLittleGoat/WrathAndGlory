@@ -68,11 +68,12 @@ def _is_enabled(tag) -> bool:
   return val is None or str(val).lower() not in {"0", "false"}
 
 
-def _wrap_with_markers(text: str, *, red=False, bold=False, italic=False) -> str:
+def _wrap_with_markers(text: str, *, red=False, bold=False, italic=False, strike=False) -> str:
   markers = [
     ("{{RED}}", "{{/RED}}", red),
     ("{{B}}", "{{/B}}", bold),
     ("{{I}}", "{{/I}}", italic),
+    ("{{S}}", "{{/S}}", strike),
   ]
   start = "".join(op for op,_,use in markers if use)
   end = "".join(cl for _,cl,use in reversed(markers) if use)
@@ -94,7 +95,8 @@ def _rich_text_to_string(el, ns):
     red = _is_red_color(color)
     bold = _is_enabled(rpr.find("main:b", ns) if rpr is not None else None)
     italic = _is_enabled(rpr.find("main:i", ns) if rpr is not None else None)
-    parts.append(_wrap_with_markers(text, red=red, bold=bold, italic=italic))
+    strike = _is_enabled(rpr.find("main:strike", ns) if rpr is not None else None)
+    parts.append(_wrap_with_markers(text, red=red, bold=bold, italic=italic, strike=strike))
   return "".join(parts), True
 
 def sheet_to_records(ws):

@@ -911,7 +911,7 @@
       const formatInlineHTML = (raw) => {
         const s = String(raw ?? "");
         const reRefParen = /\(([^)]*(?:\bstr\.?\b|\bstr\b|\bstrona\b)[^)]*)\)/gi;
-        const markerRegex = /{{\/?(?:RED|B|I)}}/g;
+        const markerRegex = /{{\/?(?:RED|B|I|S)}}/g;
         const segments = [];
         const stack = [];
         let cursor = 0;
@@ -923,7 +923,13 @@
           }
           const token = match[0];
           const isClose = token.startsWith("{{/");
-          const name = token.includes("RED") ? "RED" : token.includes("B") ? "B" : "I";
+          const name = token.includes("RED")
+            ? "RED"
+            : token.includes("B")
+              ? "B"
+              : token.includes("I")
+                ? "I"
+                : "S";
           if (isClose) {
             const idx = stack.lastIndexOf(name);
             if (idx !== -1) stack.splice(idx, 1);
@@ -957,6 +963,7 @@
             if (styles?.has("RED")) classes.push("inline-red");
             if (styles?.has("B")) classes.push("inline-bold");
             if (styles?.has("I")) classes.push("inline-italic");
+            if (styles?.has("S")) classes.push("inline-strike");
             const inner = escapeHtml(text);
             return classes.length ? `<span class="${classes.join(" ")}">${inner}</span>` : inner;
           }
@@ -982,6 +989,7 @@
           if (styles?.has("RED")) styleClasses.push("inline-red");
           if (styles?.has("B")) styleClasses.push("inline-bold");
           if (styles?.has("I")) styleClasses.push("inline-italic");
+          if (styles?.has("S")) styleClasses.push("inline-strike");
 
           return tokens
             .map((token) => {
@@ -1055,6 +1063,16 @@
           return formatRangeHTML(rawValue);
         }
         return formatTextHTML(rawValue, options);
+      };
+
+      const isOldBestiaryRecord = (record) =>
+        normalizeText(getRecordValueByLabels(record, ["Stan", "stan"])).toLowerCase() === "old";
+
+      const shouldGrayBestiaryKey = (key, record) => {
+        if (!isOldBestiaryRecord(record)) return false;
+        const normalized = normalizeKey(key);
+        const allowed = new Set(["lp", "nazwa", "typ"]);
+        return allowed.has(normalized);
       };
 
       const canonicalTraitName = (name) =>
@@ -1703,6 +1721,9 @@
         bestiaryTableBody.innerHTML = "";
         const entries = Object.entries(record);
         entries.forEach(([key, value]) => {
+          if (normalizeKey(key) === "stan") {
+            return;
+          }
           const valueString = toDisplayString(value);
           const normalizedKey = normalizeKey(key);
           if (normalizedKey === EDITABLE_SKILLS_KEY) {
@@ -1712,6 +1733,9 @@
           const row = document.createElement("tr");
           const keyCell = document.createElement("td");
           keyCell.textContent = key;
+          if (shouldGrayBestiaryKey(key, record)) {
+            keyCell.classList.add("bestiary-old-key");
+          }
           row.append(keyCell);
 
           let valueCell;
@@ -1725,6 +1749,9 @@
             }
           } else {
             valueCell = createClampCell("Bestiariusz", key, key, valueString);
+          }
+          if (shouldGrayBestiaryKey(key, record)) {
+            valueCell.classList.add("bestiary-old-key");
           }
           row.append(valueCell);
           bestiaryTableBody.append(row);

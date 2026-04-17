@@ -10,6 +10,7 @@
   --text2:#4FAF4F;
   --muted:#4a8b4a;
   --code:#D2FAD2;
+  --text-old:#7f9b7f;
   --red:#d74b4b;
   --border:#16c60c;
   --accent:#16c60c;
@@ -418,6 +419,8 @@ td.center{text-align:center}
 /* Bestiariusz */
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Nazwa"]{min-width:26ch}
+.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Typ"]{min-width:14ch; text-align:left}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Zagrożenie"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Zagrożenie"]{min-width:5ch; text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Słowa Kluczowe"],
@@ -866,6 +869,16 @@ td.center{text-align:center}
 .keyword-comma{color:var(--text)}
 .inline-bold{font-weight:700}
 .inline-italic{font-style:italic}
+.inline-strike{
+  text-decoration:line-through;
+  color:var(--text-old);
+}
+.inline-strike.inline-red{color:var(--red)}
+.dataTable tbody tr.row-old{color:var(--text-old)}
+.dataTable tbody tr.row-old .keyword-comma,
+.dataTable tbody tr.row-old .ref,
+.dataTable tbody tr.row-old .caretref,
+.dataTable tbody tr.row-old .slash{color:var(--text-old)}
 
 /* Filter menu */
 .filterBtn{margin-left:6px; width:24px; height:24px; display:inline-grid; place-items:center;

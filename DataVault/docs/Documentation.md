@@ -790,3 +790,44 @@ Obsługuje trzy przypadki:
   - `Opis`: 56ch
   - `Zaleta`: 46ch
   - `Wada`: 46ch
+
+## 14) Aktualizacja 2026-04-17 — `Stan=old` i marker `{{S}}`
+
+### 14.1 Pipeline danych (Python + parser kanoniczny JS)
+- `build_json.py`
+  - `_wrap_with_markers()` obsługuje teraz czwarty marker: `S`.
+  - `_rich_text_to_string()` mapuje `<strike/>` z `rPr` na `{{S}}...{{/S}}`.
+- `xlsxCanonicalParser.js`
+  - `wrapWithMarkers()` obsługuje `strike`.
+  - `richTextToString()` wykrywa `rPr/strike` i serializuje marker `S`.
+- Obie ścieżki (CLI i parser kanoniczny) używają identycznego porządku markerów, więc wygenerowany `data.json` pozostaje spójny semantycznie.
+
+### 14.2 Parser/renderer UI
+- `stripMarkers(s)` usuwa teraz także `{{S}}`.
+- `parseInlineSegments(raw)` rozpoznaje zestaw markerów: `RED`, `B`, `I`, `S`.
+- `formatInlineHTML(raw)` dodaje klasę `.inline-strike` dla segmentów ze stylem `S`.
+- `htmlToStyleMarkers(html)` mapuje strike z:
+  - tagów `<s>`, `<strike>`, `<del>`,
+  - stylu inline `text-decoration` / `text-decoration-line: line-through`.
+
+### 14.3 Stan `old`
+- `HIDDEN_COLUMNS` zawiera `stan`, więc kolumna nie jest renderowana.
+- `isOldStatusRow(row)` wykrywa rekordy `Stan=old` (`trim + lowercase`).
+- `renderRow()` ustawia klasę `row-old` dla rekordów archiwalnych.
+
+### 14.4 CSS i priorytet kolorów
+- Dodano token `--text-old: #7f9b7f`.
+- `.dataTable tbody tr.row-old` wymusza kolor bazowy archiwalny.
+- `.inline-strike`:
+  - `text-decoration: line-through`,
+  - kolor domyślny `var(--text-old)`.
+- `.inline-strike.inline-red` przywraca czerwony (`var(--red)`), co realizuje priorytet RED > OLD.
+- Dla `row-old` doprecyzowano kolory: `.keyword-comma`, `.ref`, `.caretref`, `.slash` dziedziczą kolor archiwalny.
+
+### 14.5 Reguły kolumn
+- W `Bestiariusz` dodano regułę kolumny `Typ`:
+  - `min-width: 14ch`,
+  - `text-align: left`.
+### 14.6 Alias kolumny statusu
+- Wykrywanie archiwalności i ukrywania kolumny działa dla `Stan` (case-insensitive).
+- Funkcja `isOldStatusRow(row)` wyszukuje klucz `Stan` i normalizuje wartość przez `stripMarkers(...).trim().toLowerCase()`.

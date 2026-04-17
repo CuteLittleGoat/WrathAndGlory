@@ -736,3 +736,21 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - `Infoczytnik_test.html`:
   - doładowuje ten sam zestaw Google Fonts co panel GM, więc wybór fontu jest zgodny między preview i ekranem gracza;
   - domyślny kolor Prefix/Suffix ustawiony na `#ffffff`.
+
+## Aktualizacja 2026-04-17 — Status `old` i przekreślenia
+
+### Nowy token koloru (DataVault + GeneratorNPC)
+- Dodano kolor archiwalny: `--text-old: #7f9b7f`.
+- Zastosowanie:
+  - rekordy oznaczone `Status=old` w DataVault (kolor bazowy wiersza),
+  - pola `LP`, `Nazwa`, `Typ` w podglądzie bazowym GeneratorNPC,
+  - teksty przekreślone (`{{S}}...{{/S}}`) jako kolor domyślny przekreślenia.
+
+### Priorytet kolorów
+- Czerwony (`{{RED}}`) ma wyższy priorytet niż styl archiwalny i przekreślenie.
+- Segment `{{RED}}{{S}}...{{/S}}{{/RED}}` pozostaje czerwony, ale jest przekreślony.
+
+### Stała szerokość kolumny „Klucz” (GeneratorNPC)
+- W tabeli `data-sheet="Bestiariusz"` ustawiono `table-layout: fixed`.
+- Pierwsza kolumna (`Klucz`) ma stałą szerokość: `25ch` (`width/min-width/max-width`).
+- Druga kolumna (`Wartość`) zajmuje pozostałe miejsce (`auto`).
