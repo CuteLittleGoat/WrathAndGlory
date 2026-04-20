@@ -158,11 +158,11 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
   - tła `rgba(22,198,12,.18)`,
   - zewnętrznej poświaty `0 0 10px rgba(22,198,12,.22)`,
   - dodatkowego znacznika `●` (`::after`) w kolorze `var(--code)`.
-- Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
+- Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia` mają tekst w kolorze `#d74b4b` (`--red`).
 
 ### 3) Zasady formatowania tekstu i wyjątki
-- We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, środek, standardowe łamanie, brak max-width).
+- We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, lewo, standardowe łamanie, brak max-width).
 - Wartości kolumny `Strona` mają kolor `--code` (`#D2FAD2`), taki sam jak referencje `(str.)` (`.ref`).
 #### 3.1 Zwykły tekst i łamanie linii
 - Komórki używają `.celltext`:
@@ -178,7 +178,7 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 
 #### 3.3 Wyjątki na czerwony kolor (reguły logiczne)
 - **Słowa kluczowe** mają kolor czerwony (`.keyword-red`):
-  - Dotyczy kolumny `Słowa Kluczowe` w arkuszach: `Bestiariusz`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`.
+  - Dotyczy kolumny `Słowa Kluczowe` w arkuszach: `Bestiariusz`, `Archetypy`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`, `Pakiety Wyniesienia`.
   - Dotyczy kolumny `Nazwa` w arkuszu `Slowa_Kluczowe`.
 - **Ręczne markery** `{{RED}}` w danych wymuszają czerwony kolor niezależnie od kolumny.
 
@@ -207,29 +207,25 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 
 ### 4) Zwijanie i rozwijanie treści (clamp > 9 linii)
 
-Mechanizm działa **dwustopniowo**:
+Mechanizm działa na **faktycznej wysokości wyrenderowanego tekstu** (bez wstępnego skracania po liczbie `\n`).
 
-#### 4.1 Wstępne wykrycie po liczbie linii danych
-- Dla każdej komórki liczona jest liczba linii po `\n`.
-- Jeśli jest **więcej niż 10 linii**, komórka jest traktowana jako potencjalnie „clampowalna”.
-- W tym trybie:
-  - renderowany jest skrót do **pierwszych 9 linii**,
-  - na końcu dodawany jest hint „Kliknij aby rozwinąć”.
-
-#### 4.2 Weryfikacja po faktycznej wysokości (linijki wizualne)
-Po renderze uruchamia się `ResizeObserver`, który:
+#### 4.1 Wykrycie clampowalnych komórek
+Po renderze uruchamiany jest `ResizeObserver`, który:
 - mierzy realną liczbę linii: `scrollHeight / lineHeight`;
-- jeśli liczba linii **> 9**, to:
-  - zawartość jest obcięta do `max-height = lineHeight * 9`,
-  - `overflow` ustawiane jest na `hidden`,
-  - dopinany jest `.clampHint` z tekstem:
-    - „Kliknij aby rozwinąć” (domyślnie),
-    - „Kliknij aby zwinąć” (po rozwinięciu).
+- jeśli liczba linii **> 9**, komórka dostaje klasę `.clampable`.
 
-#### 4.3 Mechanika kliknięcia
-- Kliknięcie w komórkę z klasą `.clampable` przełącza stan w `view.expandedCells`.
+#### 4.2 Render i stan UI
+Dla komórki `.clampable`:
+- `max-height` ustawiane jest na `lineHeight * 9`,
+- `overflow` ustawiane jest na `hidden`,
+- dodawany jest hint `.clampHint` z tekstem:
+  - „Kliknij aby rozwinąć” (domyślnie),
+  - „Kliknij aby zwinąć” (po rozwinięciu).
+
+#### 4.3 Interakcja
+- Kliknięcie komórki przełącza stan w `view.expandedCells`.
 - Stan jest zapamiętywany per klucz: `sheet|rowid|col`.
-- Po przełączeniu następuje **natychmiastowy re-render** treści dla tej komórki.
+- Zmiana wysokości treści automatycznie przelicza clamp dzięki `ResizeObserver`.
 
 ### 5) Wymagania szerokości kolumn (min-width)
 
@@ -754,3 +750,9 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - W tabeli `data-sheet="Bestiariusz"` ustawiono `table-layout: fixed`.
 - Pierwsza kolumna (`Klucz`) ma stałą szerokość: `25ch` (`width/min-width/max-width`).
 - Druga kolumna (`Wartość`) zajmuje pozostałe miejsce (`auto`).
+
+## Aktualizacja 2026-04-20 — korekta DataVault (kolumny i layout)
+- Zaktualizowano opis zakładek tworzenia postaci o `Pakiety Wyniesienia`.
+- Poprawiono globalny opis kolumny `Strona`: wyrównanie jest `left` (nie `center`).
+- Uzupełniono listę arkuszy z neutralnym przecinkiem w `Słowa Kluczowe` o `Archetypy` i `Pakiety Wyniesienia`.
+- Urealniono opis clampa do aktualnej implementacji opartej wyłącznie o pomiar renderu (`ResizeObserver`).
