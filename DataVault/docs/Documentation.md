@@ -4,6 +4,7 @@ Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł od
 
 Aktualizacja danych w repozytorium z dnia **2026-04-20**: po dodaniu nowej zakładki `Pakiety Wyniesienia` w `Repozytorium.xlsx` wykonano ponowną regenerację pliku `data.json`, aby odświeżyć zestaw rekordów używany przez tabele DataVault.
 Aktualizacja logiki kolorowania z dnia **2026-04-20**: w zakładce `Pakiety Wyniesienia`, kolumna `Słowa Kluczowe` nie jest już kolorowana globalnie na czerwono (z wyjątkiem przecinków); od teraz czerwone pozostają wyłącznie fragmenty oznaczone czerwienią w XLSX i przeniesione do `data.json` jako markery `{{RED}}...{{/RED}}`.
+Aktualizacja szerokości kolumny z dnia **2026-04-20**: w zakładce `Pakiety Wyniesienia` kolumna `Koszt PD` ma teraz `min-width: 26ch`, czyli dokładnie tyle samo co `Premia Wpływu`.
 
 Aktualizacja logiki widoku domyślnego z dnia **2026-04-15**: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
 
@@ -227,7 +228,7 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 - **Pakiety Wyniesienia**
   - `Nazwa`: 26ch (jak `Stany / Nazwa`)
   - `Opis`: 56ch (jak `Słowa Kluczowe Frakcji / Opis`)
-  - `Koszt PD`: 56ch (jak `Psionika / Opis`)
+  - `Koszt PD`: 26ch (taka sama szerokość jak `Premia Wpływu`)
   - `Wymagania`: 26ch (jak `Archetypy / Umiejętności Archetypu`)
   - `Słowa Kluczowe`: 26ch (jak `Archetypy / Umiejętności Archetypu`)
   - `Premia Wpływu`: 26ch (jak `Archetypy / Umiejętności Archetypu`)

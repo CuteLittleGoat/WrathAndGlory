@@ -8,6 +8,9 @@ Repository update (2026-04-20): after uploading a new revision of `Repozytorium.
 Aktualizacja modułu (2026-04-20): w zakładce `Pakiety Wyniesienia`, w kolumnie `Słowa Kluczowe`, czerwony kolor jest teraz stosowany tylko do fragmentów oznaczonych na czerwono w źródłowym XLSX (zamiast kolorowania całej komórki poza przecinkami).
 Module update (2026-04-20): in the `Pakiety Wyniesienia` tab, the `Słowa Kluczowe` column now applies red color only to fragments marked as red in the source XLSX (instead of coloring the whole cell except commas).
 
+Aktualizacja modułu (2026-04-20): w zakładce `Pakiety Wyniesienia` szerokość kolumny `Koszt PD` została zmniejszona do `26ch`, tak aby była taka sama jak szerokość kolumny `Premia Wpływu`.
+Module update (2026-04-20): in the `Pakiety Wyniesienia` tab, the `Koszt PD` column width was reduced to `26ch` so it now matches the `Premia Wpływu` column width.
+
 Aktualizacja modułu (2026-04-15): w zakładce `Archetypy` widok domyślny usuwa reguły filtrowania dla kolumny `Frakcja` i zostawia wyłącznie filtr `Gatunek = Człowiek`.
 Module update (2026-04-15): in the `Archetypy` tab, the default view no longer applies `Frakcja` filtering rules and keeps only `Gatunek = Człowiek`.
 
