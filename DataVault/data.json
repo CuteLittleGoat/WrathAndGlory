@@ -1295,7 +1295,7 @@
         "Typ": "Aeldari",
         "Nazwa": "Upiorny Strażnik",
         "Zagrożenie": "NNEE",
-        "Słowa Kluczowe": "{{RED}}AELDARI, ASURYANI, PSIONIK, KONSTRUKT UPIORYTOWY, [ŚWIATOSTATEK{{/RED}}",
+        "Słowa Kluczowe": "{{RED}}AELDARI, ASURYANI, PSIONIK, KONSTRUKT UPIORYTOWY, [ŚWIATOSTATEK]{{/RED}}",
         "S": "9",
         "Wt": "7",
         "Zr": "4",
@@ -1868,7 +1868,7 @@
       {
         "LP": "56",
         "Stan": "-",
-        "Typ": "",
+        "Typ": "Heretycy",
         "Nazwa": "Zdradziecka Milicja",
         "Zagrożenie": "?",
         "Słowa Kluczowe": "{{RED}}ASTRA MILITARUM, CHAOS, HERETYK, IMPERIUM{{/RED}}",
@@ -2187,7 +2187,7 @@
       },
       {
         "LP": "66",
-        "Stan": "old",
+        "Stan": "-",
         "Typ": "Chaos",
         "Nazwa": "Psychneuein",
         "Zagrożenie": "?",
@@ -2461,7 +2461,7 @@
         "Umiejętności": "-",
         "Szybkość": "8",
         "Rozmiar": "Średni",
-        "Zdolności gatunkowe": "[brak danych]"
+        "Zdolności gatunkowe": "[dane utajnione]"
       },
       {
         "LP": "10",
@@ -2471,7 +2471,7 @@
         "Umiejętności": "-",
         "Szybkość": "5",
         "Rozmiar": "Duży",
-        "Zdolności gatunkowe": "[brak danych]"
+        "Zdolności gatunkowe": "[dane utajnione]"
       }
     ],
     "Archetypy": [
@@ -3276,6 +3276,99 @@
         "Strona": "19"
       }
     ],
+    "Pakiety Wyniesienia": [
+      {
+        "LP": "1",
+        "Nazwa": "Stały kurs",
+        "Opis": "Od dawna pełnisz obowiązki na wyznaczonej pozycji, przewyższając nawet swoich przełożonych tak doświadczeniem, jak i umiejętnościami. Mimo iż dotychczas cię nie awansowano, twoje starania zostały dostrzeżone i docenione. Zawsze można na tobie polegać, co przyniosło ci znaczną sławę w szeregach Frakcji. Przełożeni znają twoją reputację, nawet jeśli nigdy cię nie widzieli, a sama wzmianka twojego imienia przyciąga zainteresowanie.\n\nWraz z tym dodatkowym autorytetem przychodzi też większa odpowiedzialność. Twoi przełożeni będą częściej prosić cię o pomoc lub delegować do wymagających zadań. Czasami nawet może zostać ci powierzona tymczasowa władza nad sprzymierzonymi grupami. Twoja Frakcja będzie oczekiwać, że podołasz temu zadaniu jako odpowiedzialny dowódca. Jeśli jednak twoi sojusznicy zawiodą bądź spotka ich marny koniec, jest więcej niż prawdopodobne, że część winy spadnie też na ciebie.\n\nPrzynajmniej jedno wydarzenie w historii twojej służby wyróżnia się jako wyjątkowo imponujący przykład posiadanych przez ciebie zdolności. Twoi przełożeni będą chcieli usłyszeć o tej historii więcej, będą też bardziej skłonni zaufać, że osiągniesz sukces. Oczywiście przetrwanie tak wymagających prób zapewne pozostawi cię z kilkoma bliznami, nie tylko na ciele. Te zaś mogą być pozostałością po jednej z waszych przygód bądź po wydarzeniach mających miejsce poza sesją.",
+        "Koszt PD": "10 x nowy Poziom",
+        "Wymagania": "-",
+        "Słowa Kluczowe": "-",
+        "Premia Wpływu": "+1 za każdy Poziom Wyniesienia",
+        "Pamiętna historia": "Jeśli dotąd nie posiadasz żadnego Trwałego Urazu, rzuć kością i porównaj wynik z tabelą Trwałego Urazu [{{B}}Podręcznik Główny{{/B}} (str. 194)]. Otrzymujesz wylosowany Trwały Uraz. Wraz z Mistrzem Gry ustal, w jakich okolicznościach doszło do tego zranienia. Możesz także otrzymać 3 punkty Spaczenia, zamiast lub dodatkowo do Trwałego Urazu.",
+        "Ekwipunek": "Wybierz jedną z poniższych opcji:\n\n* Otrzymujesz 2 przedmioty o Dostępności Niespotykane (2) i Wartości 3 + nowy Poziom każdy.\n* Otrzymujesz 1 przedmiot o Dostępności Wyjątkowe (3) i Wartości 3 + nowy Poziom.\n\nW ramach powyższych możesz wybrać także Augmentacje.",
+        "Podręcznik": "Główny",
+        "Strona": "154"
+      },
+      {
+        "LP": "2",
+        "Nazwa": "Wyniesienie Archetypu",
+        "Opis": "Dla wielu Archetypów najbardziej logicznym sposobem na rozwój jest wspinaczka w hierarchii Frakcji i przejście na inny Archetyp. Jeśli Mistrz Gry wyrazi zgodę, możesz dokonać Wyniesienia.",
+        "Koszt PD": "Osiągnij Rangę 3, zdobywając co najmniej 80 PD.",
+        "Wymagania": "Wybierz jeden z Archetypów swojej Frakcji o Poziomie odpowiadającym nowemu Poziomowi rozgrywki.\n\nKorzystając ze zgromadzonych PD rozwiń swoje Atrybuty i Umiejętności na tyle, by wyrównać bądź przekroczyć wartość Atrybutów i Umiejętności wybranego Archetypu.\n\nZapisz swój nowy Poziom na karcie postaci.",
+        "Słowa Kluczowe": "-",
+        "Premia Wpływu": "-",
+        "Pamiętna historia": "Od tej chwili jesteś nowym, wybranym Archetypem. Wprowadź stosowne zmiany do swojej karty postaci, dodając wszystkie bonusy z nowego Archetypu (Zdolność Archetypu, Ekwipunek, Wpływ, etc.). Nie otrzymujesz żadnej premii do Atrybutów lub Umiejętności z nowego Archetypu, ale zachowujesz wszystkie bonusy ze swojego poprzedniego Archetypu.",
+        "Ekwipunek": "-",
+        "Podręcznik": "Główny",
+        "Strona": "155"
+      },
+      {
+        "LP": "3",
+        "Nazwa": "Powrót zza grobu",
+        "Opis": "Jesteś martwy. A przynajmniej wszyscy tak myślą. Niezależnie jednak jak straszliwy spotkał cię los, nie udało mu się pozbawić cię życia, a wszelkie utracone przez ciebie kończyny zastąpiono wszczepami.\n\nTen pakiet wymaga, by w twojej historii miał miejsce wypadek lub spotkanie, które niemal pozbawiło cię życia i sprawiło, iż wszyscy świadkowie mogli z łatwością pomyśleć, że poległeś. Jeśli będzie to bitwa z przerażającym wrogiem, możesz stworzyć swoje nemezis, które pojawi się później w toku waszych przygód. Porozmawiaj z Mistrzem Gry o tym, co mogło spotkać twoją postać, szczególnie jeśli chcesz, aby pozostali gracze usłyszeli plotki o jej rzekomej śmierci, zanim zaszokujesz ich powrotem zza grobu.\n\nKiedy już ustalisz w jaki sposób \"umarłeś\", określ, kto cię uratował. Popracuj z Mistrzem Gry nad odpowiednią historią – w końcu kimkolwiek nie byliby twoi zbawcy, z pewnością będą oczekiwali jakiejś formy rekompensaty za swą szczodrość. Czy powrót twojej postaci zza grobu jest dla niej drugą szansą na zmianę świata? Czy może cybernetyczne wszczepy są dla niej oznaką hańby i wstydu i już zawsze będą przypominać o porażce? Czy poprzysiągłeś zemstę na istocie, która zniszczyła twoje ciało? Czy może przytłacza cię strach przed ponowną konfrontacją ze śmiercią, napędzany traumatycznymi wspomnieniami?",
+        "Koszt PD": "10 x nowy Poziom",
+        "Wymagania": "-",
+        "Słowa Kluczowe": "{{RED}}[DOWOLNE]{{/RED}} (związane z Frakcją, która cię uratowała)",
+        "Premia Wpływu": "-",
+        "Pamiętna historia": "Po potwornym wypadku lub potyczce zostałeś uleczony przy pomocy cudów błogosławionej (lub przeklętej) technologii.\n\n1. Dwukrotnie rzuć kością i porównaj wyniki z tabelą Trwałego Urazu [{{B}}Podręcznik Główny{{/B}} (str. 194)]. Otrzymujesz oba Trwałe Urazy.\n2. Dwukrotnie rzuć kością i porównaj wyniki z tabelą Okaleczenia [{{B}}Podręcznik Główny{{/B}} (str. 195)]. Otrzymujesz oba wylosowane Okaleczenia.\n3. Zastąp dowolne utracone części ciała odpowiednimi wszczepami. Możesz wybrać dowolne wszczepy o Dostępności wyznaczonej przez Mistrza Gry.\n\nTylko osoby odpowiedzialne za twój ratunek i rekonstrukcję wiedzą, że żyjesz. Jednak wiadomość o twojej śmierci mogła się już roznieść szerokim echem, a twoi nowi sojusznicy mogą zażądać czegoś w zamian za uratowanie ci życia.",
+        "Ekwipunek": "-",
+        "Podręcznik": "Główny",
+        "Strona": "150"
+      },
+      {
+        "LP": "4",
+        "Nazwa": "Przytłaczająca reputacja",
+        "Opis": "Pojedynczy, chwalebny akt męstwa bądź pokaz niezwykłej biegłości, którego dokonałeś, przysporzył ci nie lada reputacji. Wieści o twych dokonaniach szybko się rozniosły, a twoja renoma zapewniła ci zarówno rozpoznawalność, jak i popleczników oddanych twojej sprawie.\n\nZ wielką mocą przychodzą przywileje, ale także wielka odpowiedzialność. Część członków twojej Frakcji będzie patrzeć na ciebie z podziwem i bez wahania wykonają twoje polecenia, jednak niektórzy, czy to z zawiści, czy to ze względu na podejrzliwą naturę, zaczną podkopywać twoje plany, uznając, iż nie jesteś gotowy na tak szybki awans.\n\nOd twoich działań oczekuje się, że dorównają twojej reputacji. Wrogowie mogą wykorzystać sławę przeciwko tobie, manipulując wydarzeniami tak, aby wciągnąć cię w pułapkę bądź wykorzystać do swoich własnych celów. Zastanów się, jak twoja postać patrzy na swoją renomę. Czy jest to dla niej przekleństwo i ciężar, czy raczej zasłużona nagroda i błogosławieństwo?\n\nUstal wraz z Mistrzem Gry, jakiego niezwykłego czynu dokonałeś, który zapewnił ci tak wielką sławę. Najlepszym wyborem byłoby coś, co szczególnie zaimponowałoby Frakcji powiązanej z twoim nowym Słowem kluczowym. Być może udało ci się odzyskać zaginioną relikwię dla Ministorum, przekazałeś Administratum informacje, które uratowały całą planetę od biurokratycznej katastrofy bądź przyczyniłeś się do obrony leża szumowin przed siepaczami szlachcica-tyrana. Twoi nowi poplecznicy pochodzą z Frakcji, której zaimponowałeś.\n\nNiezależnie od tego, jak zdobyłeś nową sławę, zaskarbiłeś sobie czyjąś wrogość i zyskałeś nemezis. Ustal wraz z Mistrzem Gry kto będzie twoim zaciekłym przeciwnikiem, bądź pozwól mu cię zaskoczyć, pozostawiając tożsamość wroga owianą tajemnicą.",
+        "Koszt PD": "30 x nowy Poziom",
+        "Wymagania": "-",
+        "Słowa Kluczowe": "{{RED}}[DOWOLNE]{{/RED}} (związane z Frakcją, której imponujesz)",
+        "Premia Wpływu": "+2 za każdy Poziom Wyniesienia",
+        "Pamiętna historia": "Otrzymujesz:\n\n* Talent Wierni [Podręcznik Główny (str. 140)]. Nie musisz posiadać wymaganej wartości Dowodzenia (SW).\n* Znaczny wzrost reputacji wśród jednej z Frakcji.\n* Nemezis",
+        "Ekwipunek": "-",
+        "Podręcznik": "Główny",
+        "Strona": "151"
+      },
+      {
+        "LP": "5",
+        "Nazwa": "Wymagający patron",
+        "Opis": "Twoje czyny przyciągnęły uwagę potężnej osoby. Jej wstawiennictwo pomoże ci osiągnąć jeszcze więcej i umożliwi zrealizowanie twoich ambicji, jednak patron będzie oczekiwał spełnienia swoich żądań w zamian za pomoc.\n\nWraz z Mistrzem Gry ustal tożsamość mecenasa. Może być to zasłużony członek twojej Frakcji, wpływowy arystokrata z twojego gatunku (bądź innego), czy też dobrze usytuowany władca półświatka z dobrymi koneksjami.\n\nPatron może nie zgadzać się w pełni z twoimi celami, jednak wciąż będzie cię wspierał, tak długo, jak długo będziesz dla niego przydatny. Dobrym rozwiązaniem jest ustalenie, z kim twoja postać mogłaby pracować, a jeszcze lepiej określić z kim nigdy by nie doszła do porozumienia. Czasy są ciężkie\ni system Gilead widział już niejedną dziwną współpracę, jednak każdy ma pewne granice, których nie przekroczy. Ustal też, w jaki sposób zawarłeś układ ze swoim mocodawcą – zdobycie przychylności wysoko postawionego patrona może być celem całej przygody, podczas której twoja postać będzie zmuszona do przekroczenia granic jej możliwości, by zaimponować wpływowemu mecenasowi.\n\nTwój patron może być w stanie zapewnić ci dostęp do przeróżnych zasobów, zależnie od jego pozycji. Bogaty lub powiązany z armią mecenas może użyczyć ci majątku, ekwipunku bądź pojazdów, podczas gdy mocodawca z dobrymi koneksjami może zapewnić ci dostęp do niedostępnych normalnie lokacji lub przekazać poufne informacje\n\nTwój mecenas zawsze będzie oczekiwał czegoś w zamian za pomoc. Może poprosić cię o wykonanie jakiegoś zadania, które czasami może stać w opozycji do celów reszty drużyny. Pamiętaj, że nieposłuszeństwo wobec wpływowego mocodawcy bądź porażka podczas wykonywania zleconego przez niego zadania z pewnością zaowocuje karą.",
+        "Koszt PD": "10 x nowy Poziom",
+        "Wymagania": "Wartość Perswazji 3 lub wyższa.",
+        "Słowa Kluczowe": "{{RED}}[DOWOLNE]{{/RED}} (Frakcja Twojego nowego patrona)",
+        "Premia Wpływu": "-",
+        "Pamiętna historia": "Odpowiadasz teraz przed wymagającym mecenasem, któremu zdajesz raporty pomiędzy kolejnymi przygodami.\n\nJeśli kupisz ten Pakiet Wyniesienia, wybierz jedno z poniższych:\n\n* Natychmiast otrzymujesz 1 przedmiot o Dostępności Niespotykane (2) i wartości 3 + nowy Poziom.\n* Natychmiast zwiększ Majątek o 2.\n* Natychmiast zwiększ swój Wpływ o 2 za każdy Poziom Wyniesienia.",
+        "Ekwipunek": "-",
+        "Podręcznik": "Główny",
+        "Strona": "151"
+      },
+      {
+        "LP": "6",
+        "Nazwa": "Zdradziecki łotr",
+        "Opis": "Zdradziłeś swoich sojuszników, by zyskać przychylność innej Frakcji. Mogłeś zostać skuszony obietnicą władzy lub bogactwa albo dojść do wniosku, że twoje nowo wykształcone, radykalne poglądy lepiej przysłużą się innej organizacji.\n\nZastanów się nad powodami swojej zdrady, tym kogo zdradziłeś oraz nad nową Frakcją, do której dołączysz. Same okoliczności wiarołomstwa będą zapewne materiałem na mroczną historię pełną działań sprawdzających twoją determinację w swym postanowieniu.\n\nPoprzednia Frakcja raczej nie przyjmie twoich działań z radością i wszystkie wasze przyszłe interakcje będą w najlepszym przypadku napięte bądź wprost wrogie. Wraz z Mistrzem Gry dopracuj historię opuszczenia szeregów starej organizacji i dołączenia do obecnej. Nawet twoi nowi sojusznicy mogą nie patrzeć przychylnie na zdrajcę i dezertera, a ich podejrzliwość wobec ciebie może się też rozciągnąć na całą drużynę.\n\nWykupienie tego pakietu może radykalnie zmienić całą fabułę trwającej kampanii i skierować ją na zupełnie nowe tory. Dobrym pomysłem może być porozmawianie z resztą drużyny, zanim podejmiesz tak brzemienną w skutki decyzję. Nie każdemu może odpowiadać nowy kierunek, w jakim będą zmierzały wasze przygody, nawet jeśli ma to sens z punktu widzenia fabuły. Z drugiej jednak strony być może będzie to sygnał dla reszty graczy, by całą drużyną przeprowadzić zdradziecką rebelię.",
+        "Koszt PD": "5 x nowy Poziom",
+        "Wymagania": "Wartość Przebiegłości 3 lub wyższa.",
+        "Słowa Kluczowe": "Otrzymujesz {{RED}}[DOWOLNE]{{/RED}} i tracisz Słowo kluczowe Frakcji, którą zdradziłeś.",
+        "Premia Wpływu": "-2",
+        "Pamiętna historia": "Twoi nowi sojusznicy zapewniają ci, co następuje:\n\n* +3 Majątku\n* 1 przedmiot o Wartości 3 + nowy Poziom i o Dostępności Niespotykana (2) lub wyższej.\n\nTwój brak lojalności sprowadził na ciebie wrogość zdradzonej Frakcji, lecz zagwarantował wdzięczność innej.",
+        "Ekwipunek": "-",
+        "Podręcznik": "Główny",
+        "Strona": "152"
+      },
+      {
+        "LP": "7",
+        "Nazwa": "Psioniczne objawienie",
+        "Opis": "Czy to przez spontaniczną manifestację mocy Osnowy, rozwój uśpionych zdolności, czy też ekspozycję na potworności Immaterium, jesteś teraz psionikiem i możesz władać tajemnymi mocami Eteru.\n\nW targanym przez Burzę Osnowy systemie Gilead to zjawisko staje się coraz powszechniejsze. Mimo że zdolności psioniczne ujawniają się zwykle w okolicach wieku dojrzewania, w obecnych czasach umiejętności psioniczne mogą rozwinąć się w dowolnym okresie życia. Twój uśpiony talent może wyjść na światło dzienne w ekstremalnie stresującej sytuacji – na przykład w walce – lub w innych okolicznościach zagrożenia życia.\n\nObywatelom Imperium od urodzenia wpajany jest instynktowny wręcz strach przed psionikami. Ci, którzy wykazują talent psioniczny, mają obowiązek oddać się pod jurysdykcję Adeptus Astra Telepathica natychmiast, kiedy tylko ich umiejętności się ujawnią. Oczywiście nie każdy może chcieć oddać się w ręce władz, co jednak może prowadzić do poważnych problemów, zwłaszcza że każdy świadek manifestacji mocy psionicznej powinien zgłosić obecność psionika władzom.\n\nWraz z Mistrzem Gry ustal, w jakich okolicznościach twoje umiejętności psioniczne zamanifestowały się po raz pierwszy. W jaki sposób postrzega je twoja postać? Czy uznaje swoje nadnaturalne zdolności za dar, czy może za przekleństwo? Weź także pod uwagę, że to, kto był świadkiem pierwszego przebudzenia twoich mocy, a także komu, o ile w ogóle, zgłosiłeś swój nowo odkryty talent, może istotnie wpłynąć na twoją historię, nawet zanim po raz pierwszy użyjesz mocy Osnowy przy stole.",
+        "Koszt PD": "10 x nowy Poziom",
+        "Wymagania": "-",
+        "Słowa Kluczowe": "{{RED}}PSIONIK{{/RED}}",
+        "Premia Wpływu": "+1 za każdy Poziom Wyniesienia",
+        "Pamiętna historia": "Otrzymujesz, co następuje:\n\n* Moc psioniczną Porażenie oraz Uniwersalne zdolności psioniczne [Podręcznik Główny (str. 267)].\n* Jedną Pomniejszą moc psioniczną do wyboru za każdy Poziom Wyniesienia.\n* Możesz wykupić Moce psioniczne z dyscypliny, którą wybierzesz.",
+        "Ekwipunek": "-",
+        "Podręcznik": "Główny",
+        "Strona": "152"
+      }
+    ],
     "Premie Frakcji": [
       {
         "LP": "1",
@@ -3385,16 +3478,16 @@
       {
         "LP": "17",
         "Frakcja": "Drukhari",
-        "Premia 1": "[brak danych]",
-        "Premia 2": "[brak danych]",
-        "Premia 3": "[brak danych]"
+        "Premia 1": "[dane utajnione]",
+        "Premia 2": "[dane utajnione]",
+        "Premia 3": "[dane utajnione]"
       },
       {
         "LP": "18",
         "Frakcja": "Arlekin",
-        "Premia 1": "[brak danych]",
-        "Premia 2": "[brak danych]",
-        "Premia 3": "[brak danych]"
+        "Premia 1": "[dane utajnione]",
+        "Premia 2": "[dane utajnione]",
+        "Premia 3": "[dane utajnione]"
       }
     ],
     "Słowa Kluczowe Frakcji": [
@@ -3465,15 +3558,15 @@
         "LP": "10",
         "Frakcja": "Aeldari",
         "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub\n{{/I}}{{RED}}[KOTERIA]{{/RED}}",
-        "Opis": "{{B}}Światostatki Aeldari{{/B}}\nŚwiatostatek to tytaniczny okręt kosmiczny o rozmiarach i populacji planety. Każdy z nich jest samowystarczalnym królestwem wykutym z żywego upiorytu i innych psionicznie aktywnych substancji, bezpiecznym schronieniem dla odłamu rozbitego imperium aeldari. Odcinając się od reszty galaktyki, Asuryani ze światostatków bronią swych unikalnych kultur i tradycji przed obcymi, ponieważ każdy z nich chroni Kręgu Wieczności zawierającego tysiące świadomych dusz martwych aeldari.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n[brak danych]\n\n{{B}}Biel-Tan{{/B}}\n[brak danych]\n\n{{B}}Iyanden{{/B}}\n[brak danych]\n\n{{B}}Saim-Hann{{/B}}\n[brak danych]\n\n{{B}}Ul-Khari{{/B}}\n[brak danych]\n\n{{B}}Ulthwé{{/B}}\n[brak danych]",
-        "Efekt": "{{B}}Światostatki Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[ŚWIATOSTATEK]{{/RED}} nazwą światostatku, z którego pochodzisz, w ten sposób określając wiele ze swoich przekonań i wyznawanych wartości. Możesz wybrać radykalnego Ulthwé, zależnego od proroctw Rady Proroków, albo też tradycjonalistę ze światostatku Ul-Khari, poturbowanego i unieruchomionego po katastrofie na lodowym świecie Trollius, uwięzionego w systemie Gilead przez intrygi Niszczycielskich Potęg.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n[brak danych]\n\n{{B}}Biel-Tan{{/B}}\n[brak danych]\n\n{{B}}Iyanden{{/B}}\n[brak danych]\n\n{{B}}Saim-Hann{{/B}}\n[brak danych]\n\n{{B}}Ul-Khari{{/B}}\n[brak danych]\n\n{{B}}Ulthwé{{/B}}\n[brak danych]"
+        "Opis": "{{B}}Światostatki Aeldari{{/B}}\nŚwiatostatek to tytaniczny okręt kosmiczny o rozmiarach i populacji planety. Każdy z nich jest samowystarczalnym królestwem wykutym z żywego upiorytu i innych psionicznie aktywnych substancji, bezpiecznym schronieniem dla odłamu rozbitego imperium aeldari. Odcinając się od reszty galaktyki, Asuryani ze światostatków bronią swych unikalnych kultur i tradycji przed obcymi, ponieważ każdy z nich chroni Kręgu Wieczności zawierającego tysiące świadomych dusz martwych aeldari.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Biel-Tan{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Iyanden{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Saim-Hann{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Ul-Khari{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Ulthwé{{/B}}\n{{I}}[dane utajnione]{{/I}}",
+        "Efekt": "{{B}}Światostatki Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[ŚWIATOSTATEK]{{/RED}} nazwą światostatku, z którego pochodzisz, w ten sposób określając wiele ze swoich przekonań i wyznawanych wartości. Możesz wybrać radykalnego Ulthwé, zależnego od proroctw Rady Proroków, albo też tradycjonalistę ze światostatku Ul-Khari, poturbowanego i unieruchomionego po katastrofie na lodowym świecie Trollius, uwięzionego w systemie Gilead przez intrygi Niszczycielskich Potęg.\n\n=PRZYKŁADY=\n\n{{B}}Alaitoc{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Biel-Tan{{/B}}\n{{I}}[dane utajnione]\n{{/I}}\n{{B}}Iyanden{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Saim-Hann{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Ul-Khari{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Ulthwé{{/B}}\n{{I}}[dane utajnione]{{/I}}"
       },
       {
         "LP": "11",
         "Frakcja": "Aeldari",
         "Słowo Kluczowe": "[ŚWIATOSTATEK] {{I}}lub\n{{/I}}{{RED}}[KOTERIA]{{/RED}}",
-        "Opis": "{{B}}Koterie Aeldari{{/B}}\nKażdy korsarz aeldari należy do Koterii, gangu piratów prowadzonych przez księcia lub księżniczkę. Korsarze tworzą silne więzi w tych koalicjach mimo tego, że są one pełne rywalizacji i podstępów. Każda Koteria ma własne cele i przyciąga aeldari o podobnym nastawieniu. Koteria, do której należysz, mówi wiele o tobie, a jej reputacja może pomóc zawiązać szybkie przyjaźnie, jak również przysporzyć natychmiastowych wrogów.\n\n=PRZYKŁADY=\n\nEldritch Raiders\n[brak danych]\n\nGreensteel Warriors\n[brak danych]\n\nSteeleye Reavers\n[brak danych]\n\nSunblitz Brotherhood\n[brak danych]\n\nVoid Dragons\n[brak danych]",
-        "Efekt": "{{B}}Koterie Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[KOTERIA]{{/RED}} nazwą Koterii, do której należysz. Możesz wybrać, między innymi, dumnych Starożytnych Łupieżców prowadzonych przez księcia Yriela, który zajął tysiące wrogich okrętów lub tajemniczych Wojowników Zielonej Stali, którzy raz wspierają, a raz łupią Imperium w systemie Gilead.\n\n=PRZYKŁADY=\n\nEldritch Raiders\n[brak danych]\n\nGreensteel Warriors\n[brak danych]\n\nSteeleye Reavers\n[brak danych]\n\nSunblitz Brotherhood\n[brak danych]\n\nVoid Dragons\n[brak danych]"
+        "Opis": "{{B}}Koterie Aeldari{{/B}}\nKażdy korsarz aeldari należy do Koterii, gangu piratów prowadzonych przez księcia lub księżniczkę. Korsarze tworzą silne więzi w tych koalicjach mimo tego, że są one pełne rywalizacji i podstępów. Każda Koteria ma własne cele i przyciąga aeldari o podobnym nastawieniu. Koteria, do której należysz, mówi wiele o tobie, a jej reputacja może pomóc zawiązać szybkie przyjaźnie, jak również przysporzyć natychmiastowych wrogów.\n\n=PRZYKŁADY=\n\n{{B}}Eldritch Raiders{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Greensteel Warriors{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Steeleye Reavers{{/B}}\n{{I}}[dane utajnione]{{/I}}\n{{B}}\nSunblitz Brotherhood{{/B}}\n{{I}}[dane utajnione]{{/I}}\n\n{{B}}Void Dragons{{/B}}\n{{I}}[dane utajnione]{{/I}}",
+        "Efekt": "{{B}}Koterie Aeldari{{/B}}\nMożesz zastąpić Słowo kluczowe {{RED}}[KOTERIA]{{/RED}} nazwą Koterii, do której należysz. Możesz wybrać, między innymi, dumnych Starożytnych Łupieżców prowadzonych przez księcia Yriela, który zajął tysiące wrogich okrętów lub tajemniczych Wojowników Zielonej Stali, którzy raz wspierają, a raz łupią Imperium w systemie Gilead.\n\n=PRZYKŁADY=\n\n{{B}}Eldritch Raiders{{/B}}{{I}}\n[dane utajnione]\n\n{{/I}}{{B}}Greensteel Warriors{{/B}}{{I}}\n[dane utajnione]\n\n{{/I}}{{B}}Steeleye Reavers{{/B}}{{I}}\n[dane utajnione]\n{{/I}}{{B}}\nSunblitz Brotherhood{{/B}}{{I}}\n[dane utajnione]\n\n{{/I}}{{B}}Void Dragons{{/B}}{{I}}\n[dane utajnione]{{/I}}"
       },
       {
         "LP": "11",
@@ -3514,36 +3607,36 @@
         "LP": "16",
         "Frakcja": "Drukhari",
         "Słowo Kluczowe": "[KABAŁA] {{I}}lub\n{{/I}}{{RED}}[WIEDŹMIE KULTY] {{/RED}}{{I}}lub\n{{/I}}{{RED}}[SABAT HOMUNKULUSÓW]{{/RED}}",
-        "Opis": "[brak danych]",
-        "Efekt": "[brak danych]"
+        "Opis": "[dane utajnione]",
+        "Efekt": "[dane utajnione]"
       },
       {
         "LP": "17",
         "Frakcja": "Drukhari",
         "Słowo Kluczowe": "[KABAŁA] {{I}}lub\n{{/I}}{{RED}}[WIEDŹMIE KULTY] {{/RED}}{{I}}lub\n{{/I}}{{RED}}[SABAT HOMUNKULUSÓW]{{/RED}}",
-        "Opis": "[brak danych]",
-        "Efekt": "[brak danych]"
+        "Opis": "[dane utajnione]",
+        "Efekt": "[dane utajnione]"
       },
       {
         "LP": "18",
         "Frakcja": "Drukhari",
         "Słowo Kluczowe": "[KABAŁA] {{I}}lub\n{{/I}}{{RED}}[WIEDŹMIE KULTY] {{/RED}}{{I}}lub\n{{/I}}{{RED}}[SABAT HOMUNKULUSÓW]{{/RED}}",
-        "Opis": "[brak danych]",
-        "Efekt": "[brak danych]"
+        "Opis": "[dane utajnione]",
+        "Efekt": "[dane utajnione]"
       },
       {
         "LP": "19",
         "Frakcja": "Arlekin",
         "Słowo Kluczowe": "{{RED}}[BRAK DANYCH]{{/RED}}",
-        "Opis": "[brak danych]",
-        "Efekt": "[brak danych]"
+        "Opis": "[dane utajnione]",
+        "Efekt": "[dane utajnione]"
       },
       {
         "LP": "20",
         "Frakcja": "Ynnari",
         "Słowo Kluczowe": "-",
-        "Opis": "[brak danych]",
-        "Efekt": "[brak danych]"
+        "Opis": "[dane utajnione]",
+        "Efekt": "[dane utajnione]"
       }
     ],
     "Specjalne Bonusy Frakcji": [
@@ -12152,6 +12245,7 @@
       "Tabela Rozmiarów",
       "Gatunki",
       "Archetypy",
+      "Pakiety Wyniesienia",
       "Premie Frakcji",
       "Słowa Kluczowe Frakcji",
       "Specjalne Bonusy Frakcji",
@@ -12249,6 +12343,18 @@
         "Zdolność Archetypu",
         "Ekwipunek",
         "Inne",
+        "Podręcznik",
+        "Strona"
+      ],
+      "Pakiety Wyniesienia": [
+        "Nazwa",
+        "Opis",
+        "Koszt PD",
+        "Wymagania",
+        "Słowa Kluczowe",
+        "Premia Wpływu",
+        "Pamiętna historia",
+        "Ekwipunek",
         "Podręcznik",
         "Strona"
       ],
