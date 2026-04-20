@@ -2,8 +2,8 @@
 
 Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikacja to statyczny frontend do przeglądania danych Wrath & Glory w formie tabel, bez backendu i bez lokalnych zależności (poza opcjonalnym Pythonem do generowania `data.json`).
 
-Aktualizacja repozytorium (2026-04-15): po wgraniu nowej wersji pliku `Repozytorium.xlsx` (z dodaną kolumną `Gatunek` w zakładce `Archetypy`) ponownie wygenerowano `data.json` dla modułu DataVault, aby zsynchronizować dane widoczne w tabelach.
-Repository update (2026-04-15): after uploading a new revision of `Repozytorium.xlsx` (with the new `Gatunek` column in the `Archetypy` sheet), `data.json` was regenerated for the DataVault module to keep table data in sync.
+Aktualizacja repozytorium (2026-04-20): po wgraniu nowej wersji pliku `Repozytorium.xlsx` (z dodaną zakładką `Pakiety Wyniesienia`) ponownie wygenerowano `data.json` dla modułu DataVault, aby zsynchronizować dane widoczne w tabelach.
+Repository update (2026-04-20): after uploading a new revision of `Repozytorium.xlsx` (with the new `Pakiety Wyniesienia` sheet), `data.json` was regenerated for the DataVault module to keep table data in sync.
 
 Aktualizacja modułu (2026-04-15): w zakładce `Archetypy` widok domyślny usuwa reguły filtrowania dla kolumny `Frakcja` i zostawia wyłącznie filtr `Gatunek = Człowiek`.
 Module update (2026-04-15): in the `Archetypy` tab, the default view no longer applies `Frakcja` filtering rules and keeps only `Gatunek = Człowiek`.
@@ -37,6 +37,8 @@ Najważniejsze zasady działania:
 - Wartości w kolumnie `Strona` mają ten sam jaśniejszy kolor co referencje `(str.)` (czyli `--code`).
 - Okno **Porównanie** używa teraz dokładnie tej samej logiki formatowania komórek co tabela główna (w tym reguł czerwonego koloru, neutralnych przecinków w `Słowa Kluczowe`, wyjątków dla `Słowa Kluczowe Frakcji` jak `[ŚWIAT-KUŹNIA]`, `lub`, `-`, oraz reguł inline jak `(str.)`), więc wygląd jest spójny między widokami.
 - W modalu porównania usunięto z treści duplikat nagłówka „PORÓWNANIE” (został tylko nagłówek w pasku modala).
+- Dodano zakładkę **Pakiety Wyniesienia** (widoczną zarówno w trybie admina, jak i gracza), ale tylko gdy checkbox zakładek tworzenia postaci jest zaznaczony.
+- W zakładce **Pakiety Wyniesienia** działa pełna logika formatowania (w tym czerwone fragmenty, markery inline i wyjątki referencji `(str.)`).
 
 ### Szybki start
 0. W prawym górnym rogu paska wybierz język interfejsu (domyślnie **Polski**).
@@ -67,7 +69,7 @@ Najważniejsze zasady działania:
 
 ### Zakładki sterowane checkboxami
 - Checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (domyślnie odznaczony) pokazuje:
-  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
+  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Pakiety Wyniesienia**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
   Gdy checkbox jest odznaczony, te zakładki są ukryte (w tym **Premie Frakcji** oraz **Specjalne Bonusy Frakcji**). Obie zakładki mają ten sam jaśniejszy kolor co pozostałe zakładki tworzenia postaci.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” (domyślnie odznaczony) pokazuje:
   **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad** i **Tryby Ognia**.
@@ -76,7 +78,7 @@ Najważniejsze zasady działania:
 ### Aktualizacja danych z `Repozytorium.xlsx`
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmianie repozytorium `data.json` został ponownie wygenerowany na podstawie najnowszego dostarczonego pliku `Repozytorium.xlsx`, więc tabele odpowiadają aktualnemu arkuszowi. Generator zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 
-**Status tej aktualizacji:** `data.json` został wygenerowany ponownie dnia **2026-04-15** na podstawie nowo wgranego `Repozytorium.xlsx` (aktualizacja danych tabel DataVault po dostarczeniu nowego pliku). W tej konkretnej operacji wykonano ponowną regenerację po przesłaniu nowej wersji arkusza do repozytorium.
+**Status tej aktualizacji:** `data.json` został wygenerowany ponownie dnia **2026-04-20** na podstawie nowo wgranego `Repozytorium.xlsx` (aktualizacja danych tabel DataVault po dodaniu zakładki `Pakiety Wyniesienia`).
 
 #### Metoda 1: panel administratora (rekomendowana)
 1. Podmień `Repozytorium.xlsx` w folderze modułu DataVault (obok `index.html`, na hostingu lub lokalnie).
@@ -160,6 +162,8 @@ Key behavior:
 - Values in the `Strona` column use the same lighter color as `(str.)` references (`--code`).
 - The **Comparison** modal now uses exactly the same cell-formatting logic as the main table (including red keyword rules, neutral commas in `Słowa Kluczowe`, `Słowa Kluczowe Frakcji` exceptions like `[ŚWIAT-KUŹNIA]`, `lub`, `-`, and inline rules such as `(str.)`), so both views stay visually consistent.
 - The duplicate in-body modal heading “PORÓWNANIE” was removed (only the modal header title remains).
+- Added the **Pakiety Wyniesienia** tab (visible in both admin and player modes), but only when the character-creation checkbox is enabled.
+- The **Pakiety Wyniesienia** tab uses the same full formatting pipeline as the other tabs (including red fragments, inline markers, and `(str.)` reference highlighting).
 
 ### Quick start
 0. Use the language switcher in the top bar (Polish is selected by default).
@@ -190,7 +194,7 @@ Key behavior:
 
 ### Tabs controlled by checkboxes
 - The “Czy wyświetlić zakładki dotyczące tworzenia postaci?” checkbox (unchecked by default) shows:
-  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
+  **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Pakiety Wyniesienia**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
   When unchecked, these tabs remain hidden (including **Premie Frakcji** and **Specjalne Bonusy Frakcji**). Both tabs use the same lighter color as the other character-creation tabs.
 - The “Czy wyświetlić zakładki dotyczące zasad walki?” checkbox (unchecked by default) shows:
   **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad**, and **Tryby Ognia**.
@@ -199,7 +203,7 @@ Key behavior:
 ### Updating data from `Repozytorium.xlsx`
 Below are two equivalent ways to update the data. In this repository update, `data.json` has been regenerated from the latest provided `Repozytorium.xlsx` file, so the tables reflect the current spreadsheet content. The generator replaces Polish quotation marks „ ” with the standard `"` character.
 
-**Update status:** `data.json` was regenerated on **2026-04-15** from the newly uploaded `Repozytorium.xlsx` (DataVault table data refresh after delivering the new file). In this specific operation, the file was regenerated again right after uploading the new spreadsheet revision to the repository.
+**Update status:** `data.json` was regenerated on **2026-04-20** from the newly uploaded `Repozytorium.xlsx` (DataVault table data refresh after adding the `Pakiety Wyniesienia` sheet).
 
 #### Method 1: admin panel (recommended)
 1. Replace `Repozytorium.xlsx` in the DataVault module folder (next to `index.html`, hosting or local).
