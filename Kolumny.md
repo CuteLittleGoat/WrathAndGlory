@@ -4,15 +4,23 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 
 - Kolejność zakładek pochodzi z `_meta.sheetOrder` w `data.json`.
 - Kolejność kolumn pochodzi z `_meta.columnOrder` (z fallbackiem do realnych kluczy rekordów).
-- Kolumny techniczne `LP` są ukrywane w UI i nie występują w tabelach poniżej.
+- Kolumny techniczne `LP` i `Stan` są ukrywane w UI i nie występują w tabelach poniżej.
 - Kolumna wyboru (`✓`) ma stałe `min-width/max-width/width = 8ch` dla wszystkich zakładek.
 - Domyślnie tekst jest wyrównany do lewej i zawijany (`white-space: normal` dla komórki + `pre-wrap` w `.celltext`).
+
+
+## Notatki
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Co | 20ch | auto | lewo | standard |
+| Podręcznik | auto | brak | lewo | standard |
+| Strona | 6ch | auto | lewo | standard |
 
 ## Bestiariusz
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Nazwa | auto | brak | lewo | standard |
-| Zagrożenie | 5ch | brak | lewo | standard |
+| Zagrożenie | 5ch | brak | środek | standard |
 | Słowa Kluczowe | auto | brak | lewo | standard |
 | S | 3ch | brak | lewo | standard |
 | Wt | 3ch | brak | lewo | standard |
@@ -59,34 +67,50 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Rozmiar | auto | brak | lewo | standard |
-| Modyfikator Testu Ataku | 26ch | brak | lewo | standard |
-| Zmniejszenie Poziomu Ukrycia | 26ch | brak | lewo | standard |
+| Modyfikator Testu Ataku | 26ch | brak | środek | standard |
+| Zmniejszenie Poziomu Ukrycia | 26ch | brak | środek | standard |
 | Przykłady | 85ch | brak | lewo | standard |
 
 ## Gatunki
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Gatunek | auto | brak | lewo | standard |
-| Koszt PD | 4ch | brak | lewo | standard |
+| Koszt PD | 4ch | brak | środek | standard |
 | Atrybuty | auto | brak | lewo | standard |
 | Umiejętności | auto | brak | lewo | standard |
-| Szybkość | 4ch | brak | lewo | standard |
-| Rozmiar | 10ch | brak | lewo | standard |
+| Szybkość | 4ch | brak | środek | standard |
+| Rozmiar | 10ch | brak | środek | standard |
 | Zdolności gatunkowe | auto | brak | lewo | standard |
 
 ## Archetypy
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Poziom | 2ch | brak | lewo | standard |
+| Poziom | 2ch | brak | środek | standard |
 | Frakcja | auto | brak | lewo | standard |
 | Nazwa | auto | brak | lewo | standard |
-| Koszt PD | 4ch | brak | lewo | standard |
+| Gatunek | 26ch | brak | lewo | standard |
+| Koszt PD | 4ch | brak | środek | standard |
 | Słowa Kluczowe | auto | brak | lewo | standard |
 | Atrybuty Archetypu | auto | brak | lewo | standard |
 | Umiejętności Archetypu | auto | brak | lewo | standard |
 | Zdolność Archetypu | auto | brak | lewo | standard |
 | Ekwipunek | auto | brak | lewo | standard |
 | Inne | auto | brak | lewo | standard |
+| Podręcznik | auto | brak | lewo | standard |
+| Strona | 6ch | brak | lewo | standard |
+
+
+## Pakiety Wyniesienia
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Koszt PD | 26ch | brak | lewo | standard |
+| Wymagania | auto | brak | lewo | standard |
+| Słowa Kluczowe | auto | brak | lewo | standard |
+| Premia Wpływu | 26ch | brak | lewo | standard |
+| Pamiętna historia | auto | brak | lewo | standard |
+| Ekwipunek | 46ch | brak | lewo | standard |
 | Podręcznik | auto | brak | lewo | standard |
 | Strona | 6ch | brak | lewo | standard |
 
@@ -118,7 +142,7 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 ## Implanty Astartes
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Numer | 4ch | brak | lewo | standard |
+| Numer | 4ch | brak | środek | standard |
 | Nazwa | auto | brak | lewo | standard |
 | Opis | auto | brak | lewo | standard |
 
@@ -180,11 +204,11 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Typ | auto | brak | lewo | standard |
 | Nazwa | auto | brak | lewo | standard |
 | Koszt PD | 4ch | brak | lewo | standard |
-| ST | 10ch | brak | lewo | standard |
+| ST | 10ch | brak | środek | standard |
 | Aktywacja | auto | brak | lewo | standard |
 | Czas Trwania | auto | brak | lewo | standard |
-| Zasięg | 8ch | brak | lewo | standard |
-| Wiele Celów | 4ch | brak | lewo | standard |
+| Zasięg | 8ch | brak | środek | standard |
+| Wiele Celów | 4ch | brak | środek | standard |
 | Słowa Kluczowe | auto | brak | lewo | standard |
 | Efekt | auto | brak | lewo | standard |
 | Wzmocnienie | auto | brak | lewo | standard |
@@ -198,10 +222,10 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Nazwa | auto | brak | lewo | standard |
 | Opis | auto | brak | lewo | standard |
 | Efekt | auto | brak | lewo | standard |
-| Koszt | 3ch | brak | lewo | standard |
-| Dostępność | 3ch | brak | lewo | standard |
+| Koszt | 3ch | brak | środek | standard |
+| Dostępność | 3ch | brak | środek | standard |
 | Słowa Kluczowe | auto | brak | lewo | standard |
-| Koszt IM | 8ch | brak | lewo | standard |
+| Koszt IM | 8ch | brak | środek | standard |
 | Podręcznik | auto | brak | lewo | standard |
 | Strona | auto | brak | lewo | standard |
 
@@ -212,10 +236,10 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Nazwa | auto | brak | lewo | standard |
 | Opis | auto | brak | lewo | standard |
 | Efekt | auto | brak | lewo | standard |
-| Koszt | 3ch | brak | lewo | standard |
-| Dostępność | 3ch | brak | lewo | standard |
+| Koszt | 3ch | brak | środek | standard |
+| Dostępność | 3ch | brak | środek | standard |
 | Słowa Kluczowe | auto | brak | lewo | standard |
-| Koszt IM | 8ch | brak | lewo | standard |
+| Koszt IM | 8ch | brak | środek | standard |
 | Podręcznik | auto | brak | lewo | standard |
 | Strona | auto | brak | lewo | standard |
 
@@ -224,12 +248,12 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | --- | --- | --- | --- | --- |
 | Typ | auto | brak | lewo | standard |
 | Nazwa | auto | brak | lewo | standard |
-| WP | 4ch | brak | lewo | standard |
+| WP | 4ch | brak | środek | standard |
 | Cechy | auto | brak | lewo | standard |
-| Koszt | 4ch | brak | lewo | standard |
-| Dostępność | 4ch | brak | lewo | standard |
-| Koszt IM | 8ch | brak | lewo | standard |
+| Koszt | 4ch | brak | środek | standard |
+| Dostępność | 4ch | brak | środek | standard |
 | Słowa Kluczowe | auto | brak | lewo | standard |
+| Koszt IM | 8ch | brak | środek | standard |
 | Podręcznik | auto | brak | lewo | standard |
 | Strona | 6ch | brak | lewo | standard |
 
@@ -239,15 +263,15 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Rodzaj | auto | brak | lewo | standard |
 | Typ | auto | brak | lewo | standard |
 | Nazwa | auto | brak | lewo | standard |
-| Obrażenia | auto | brak | lewo | standard |
-| DK | auto | brak | lewo | standard |
-| PP | auto | brak | lewo | standard |
-| Zasięg | 18ch | brak | lewo | brak łamania (`white-space: nowrap`) |
-| Szybkostrzelność | 8ch | brak | lewo | standard |
+| Obrażenia | auto | brak | środek | standard |
+| DK | auto | brak | środek | standard |
+| PP | auto | brak | środek | standard |
+| Zasięg | 18ch | brak | środek | brak łamania (`white-space: nowrap`) |
+| Szybkostrzelność | 8ch | brak | środek | standard |
 | Cechy | auto | brak | lewo | standard |
-| Koszt | 4ch | brak | lewo | standard |
-| Dostępność | 4ch | brak | lewo | standard |
-| Koszt IM | 8ch | brak | lewo | standard |
+| Koszt | 4ch | brak | środek | standard |
+| Dostępność | 4ch | brak | środek | standard |
+| Koszt IM | 8ch | brak | środek | standard |
 | Słowa Kluczowe | auto | brak | lewo | standard |
 | Podręcznik | auto | brak | lewo | standard |
 | Strona | 6ch | brak | lewo | standard |
@@ -272,7 +296,7 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Typ | 32ch | brak | lewo | standard |
 | Nazwa | 20ch | brak | lewo | standard |
 | Opis | 56ch | brak | lewo | standard |
-| Strona | 11ch | brak | środek | standard |
+| Strona | 11ch | brak | lewo | standard |
 
 ## Tryby Ognia
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
@@ -283,12 +307,18 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 ## Kary do ST
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Ile celów/akcji | 20ch | 20ch | lewo | standard |
-| Kara do ST | 20ch | 20ch | lewo | standard |
+| Ile celów/akcji | 20ch | 20ch | środek | standard |
+| Kara do ST | 20ch | 20ch | środek | standard |
 
 ## Aktualizacja 2026-04-17
 - W zakładce **Bestiariusz** dodano regułę kolumny `Typ` zgodną z `Bronie/Typ`:
   - `min-width: 14ch`
   - wyrównanie: `left`
   - standardowe zawijanie (`white-space: normal` + `pre-wrap` w `.celltext`).
-- Kolumna techniczna `Status` jest ukrywana przez logikę aplikacji (`HIDDEN_COLUMNS`) i nie bierze udziału w renderingu tabeli.
+- Kolumny techniczne `LP` i `Stan` są ukrywane przez logikę aplikacji (`HIDDEN_COLUMNS`) i nie biorą udziału w renderingu tabeli.
+
+## Aktualizacja 2026-04-20
+- Dodano brakujące sekcje `Notatki` i `Pakiety Wyniesienia` zgodnie z aktualnym `data.json` i regułami CSS.
+- Uzupełniono kolumnę `Gatunek` w `Archetypy`.
+- Skorygowano wyrównania do wartości z `DataVault/style.css` (m.in. `Zagrożenie`, `Koszt PD`, `ST`, `Zasięg`, `Wiele Celów`, kolumny numeryczne i `Kary do ST`).
+- W `Pancerze` poprawiono kolejność `Słowa Kluczowe` / `Koszt IM`, aby odpowiadała `_meta.columnOrder`.
