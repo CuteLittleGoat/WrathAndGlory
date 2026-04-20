@@ -554,7 +554,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Opis"],
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Opis"]{min-width:56ch}
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Koszt PD"],
-.tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Koszt PD"]{min-width:56ch}
+.tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Koszt PD"]{min-width:26ch}
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Wymagania"],
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Wymagania"],
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Słowa Kluczowe"],
