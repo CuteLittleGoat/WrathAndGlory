@@ -3,6 +3,7 @@
 Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na `data.json`, z kanonicznym generowaniem danych po stronie przeglądarki (parser XML XLSX).
 
 Aktualizacja danych w repozytorium z dnia **2026-04-20**: po dodaniu nowej zakładki `Pakiety Wyniesienia` w `Repozytorium.xlsx` wykonano ponowną regenerację pliku `data.json`, aby odświeżyć zestaw rekordów używany przez tabele DataVault.
+Aktualizacja logiki kolorowania z dnia **2026-04-20**: w zakładce `Pakiety Wyniesienia`, kolumna `Słowa Kluczowe` nie jest już kolorowana globalnie na czerwono (z wyjątkiem przecinków); od teraz czerwone pozostają wyłącznie fragmenty oznaczone czerwienią w XLSX i przeniesione do `data.json` jako markery `{{RED}}...{{/RED}}`.
 
 Aktualizacja logiki widoku domyślnego z dnia **2026-04-15**: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
 
@@ -424,7 +425,8 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 ## 4) JS: stałe, stan aplikacji i helpery
 
 ### 4.1 Stałe
-- `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy): `Bestiariusz`, `Archetypy`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`, `Pakiety Wyniesienia`.
+- `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy): `Bestiariusz`, `Archetypy`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`, `Pakiety Wyniesienia`.  
+  Uwaga implementacyjna: dla `Pakiety Wyniesienia / Słowa Kluczowe` działa dodatkowy wyjątek w `formatDataCellHTML`, który pomija globalne wymuszanie czerwieni i oddaje renderowanie do zwykłego `getFormattedCellHTML` (czyli tylko style inline z XLSX).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, `Notatki`).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`).
@@ -693,6 +695,7 @@ Mechanizm clampu bazuje na liczbie *wizualnych* linii (z uwzględnieniem zawijan
 - Domyślnie czerwone (`.keyword-red`).
 - W arkuszu `Słowa Kluczowe` kolumna `Nazwa` jest również czerwona.
 - W arkuszach `KEYWORD_SHEETS_COMMA_NEUTRAL` przecinki są neutralne (`.keyword-comma`).
+- Wyjątek: `Pakiety Wyniesienia / Słowa Kluczowe` nie używa już globalnego wrappera `.keyword-red`; kolor czerwony pojawia się tylko tam, gdzie parser XLSX wykrył czerwony styl inline (`{{RED}}`).
 - W arkuszu `Słowa Kluczowe Frakcji` kolumna `Słowo Kluczowe` ma czerwony kolor dla wszystkich tokenów poza `-` i słowem `lub`; kursywa z arkusza (np. `lub`) jest zachowana, a `[ŚWIAT-KUŹNIA]` pozostaje w całości czerwone.
 
 ---
@@ -730,6 +733,7 @@ Obsługuje trzy przypadki:
   - Pozostałe kolumny renderuje przez wspólną funkcję `formatDataCellHTML(row, col, sheetName)`.
 - `formatDataCellHTML(...)` jest używane zarówno przez tabelę główną (`renderRow`), jak i modal porównania, dzięki czemu obie ścieżki mają identyczne reguły:
   - arkusz `Słowa Kluczowe` + kolumna `Nazwa` → `formatKeywordHTML` (całość na czerwono),
+  - arkusz `Pakiety Wyniesienia` + kolumna `Słowa Kluczowe` → `getFormattedCellHTML` (bez globalnego wymuszania czerwieni; tylko inline `{{RED}}`),
   - arkusze z `KEYWORD_SHEETS_COMMA_NEUTRAL` + kolumna `Słowa Kluczowe` → `formatKeywordHTML(..., {commasNeutral:true})`,
   - arkusz `Słowa Kluczowe Frakcji` + kolumna `Słowo Kluczowe` → `formatFactionKeywordHTML` (wyjątki `-`, `lub`, pełna czerwień dla `[ŚWIAT-KUŹNIA]`),
   - fallback → `getFormattedCellHTML` (`formatRangeHTML` dla `Zasięg`, inaczej `formatTextHTML` z pełnym wsparciem markerów `{{RED}}/{{B}}/{{I}}`, referencji `(str.)` i `*[n]`).

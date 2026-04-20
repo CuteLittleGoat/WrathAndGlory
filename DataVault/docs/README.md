@@ -5,6 +5,9 @@ Poniżej znajdują się **identyczne instrukcje** po polsku i angielsku. Aplikac
 Aktualizacja repozytorium (2026-04-20): po wgraniu nowej wersji pliku `Repozytorium.xlsx` (z dodaną zakładką `Pakiety Wyniesienia`) ponownie wygenerowano `data.json` dla modułu DataVault, aby zsynchronizować dane widoczne w tabelach.
 Repository update (2026-04-20): after uploading a new revision of `Repozytorium.xlsx` (with the new `Pakiety Wyniesienia` sheet), `data.json` was regenerated for the DataVault module to keep table data in sync.
 
+Aktualizacja modułu (2026-04-20): w zakładce `Pakiety Wyniesienia`, w kolumnie `Słowa Kluczowe`, czerwony kolor jest teraz stosowany tylko do fragmentów oznaczonych na czerwono w źródłowym XLSX (zamiast kolorowania całej komórki poza przecinkami).
+Module update (2026-04-20): in the `Pakiety Wyniesienia` tab, the `Słowa Kluczowe` column now applies red color only to fragments marked as red in the source XLSX (instead of coloring the whole cell except commas).
+
 Aktualizacja modułu (2026-04-15): w zakładce `Archetypy` widok domyślny usuwa reguły filtrowania dla kolumny `Frakcja` i zostawia wyłącznie filtr `Gatunek = Człowiek`.
 Module update (2026-04-15): in the `Archetypy` tab, the default view no longer applies `Frakcja` filtering rules and keeps only `Gatunek = Człowiek`.
 
@@ -39,6 +42,7 @@ Najważniejsze zasady działania:
 - W modalu porównania usunięto z treści duplikat nagłówka „PORÓWNANIE” (został tylko nagłówek w pasku modala).
 - Dodano zakładkę **Pakiety Wyniesienia** (widoczną zarówno w trybie admina, jak i gracza), ale tylko gdy checkbox zakładek tworzenia postaci jest zaznaczony.
 - W zakładce **Pakiety Wyniesienia** działa pełna logika formatowania (w tym czerwone fragmenty, markery inline i wyjątki referencji `(str.)`).
+- W zakładce **Pakiety Wyniesienia**, kolumna **Słowa Kluczowe** nie jest już sztucznie cała czerwona — kolor czerwony pochodzi wyłącznie z markerów inline wygenerowanych z XLSX (`{{RED}}...{{/RED}}`).
 
 ### Szybki start
 0. W prawym górnym rogu paska wybierz język interfejsu (domyślnie **Polski**).
@@ -164,6 +168,7 @@ Key behavior:
 - The duplicate in-body modal heading “PORÓWNANIE” was removed (only the modal header title remains).
 - Added the **Pakiety Wyniesienia** tab (visible in both admin and player modes), but only when the character-creation checkbox is enabled.
 - The **Pakiety Wyniesienia** tab uses the same full formatting pipeline as the other tabs (including red fragments, inline markers, and `(str.)` reference highlighting).
+- In the **Pakiety Wyniesienia** tab, the **Słowa Kluczowe** column is no longer force-colored red — red styling now comes only from inline markers generated from XLSX (`{{RED}}...{{/RED}}`).
 
 ### Quick start
 0. Use the language switcher in the top bar (Polish is selected by default).
