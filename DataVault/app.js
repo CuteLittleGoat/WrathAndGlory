@@ -790,6 +790,7 @@ function formatKeywordHTML(row, col, opts = {}){
 function formatDataCellHTML(row, col, sheetName = currentSheet){
   const isKeywordName = sheetName === KEYWORD_SHEET_ALL_RED && col === "Nazwa";
   const isKeywordCommaNeutral = KEYWORD_SHEETS_COMMA_NEUTRAL.has(sheetName) && col === "Słowa Kluczowe";
+  const isAscensionPackageKeyword = sheetName === "Pakiety Wyniesienia" && col === "Słowa Kluczowe";
   const isFactionKeyword = sheetName === "Słowa Kluczowe Frakcji" && col === "Słowo Kluczowe";
 
   if (isKeywordName){
@@ -797,6 +798,9 @@ function formatDataCellHTML(row, col, sheetName = currentSheet){
   }
   if (isFactionKeyword){
     return formatFactionKeywordHTML(row[col]);
+  }
+  if (isAscensionPackageKeyword){
+    return getFormattedCellHTML(row, col);
   }
   if (isKeywordCommaNeutral){
     return formatKeywordHTML(row, col, {commasNeutral:true});
