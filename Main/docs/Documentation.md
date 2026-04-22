@@ -59,7 +59,9 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 #### 2.4 Logo (`.logo`)
 - `max-width: clamp(220px, 40vw, 320px)` ustawia zakres wielkości 220–320px, zależnie od szerokości viewportu.
 - `width: 100%` pozwala logo wypełnić dostępną szerokość w limicie clamp.
+- `height: auto` jawnie utrzymuje proporcje grafiki podczas skalowania responsywnego.
 - `display: block` usuwa domyślne odstępy inline.
+- Element `<img class="logo">` ma ustawione natywne atrybuty `width="1366"` i `height="768"` (proporcja 16:9), co rezerwuje poprawną wysokość już podczas pierwszego przebiegu layoutu i ogranicza CLS (layout shift) przy starcie strony.
 
 #### 2.5 Sekcja akcji (`.actions`, `.stack`, `.stack.right`)
 - `.actions`
@@ -109,7 +111,12 @@ Zmienne definiują motyw „zielonego terminala”. Poniżej pełna lista wraz z
 ### 3. Zawartość (`<body>`)
 Struktura dokumentu składa się z:
 - `<main>` – główny panel.
-- `<img class="logo">` – logo z atrybutami `src="wrath-glory-logo-warhammer.png"` oraz `alt="Logo Wrath & Glory"` (plik znajduje się w `Main/` obok `index.html`).
+- `<img class="logo">` – logo z atrybutami:
+  - `src="wrath-glory-logo-warhammer.png"`
+  - `alt="Logo Wrath & Glory"`
+  - `width="1366"`
+  - `height="768"`
+  (plik znajduje się w `Main/` obok `index.html`).
 - `<div class="actions">` – siatka przycisków. Kolejność elementów w DOM została ustawiona tak, aby po ukryciu bloków admina widok użytkownika pozostawał bez luk:
   1. **Infoczytnik** – link dynamiczny: w trybie użytkownika kieruje do `../Infoczytnik/Infoczytnik.html`, a w trybie admina do `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html`.
   2. **Skarbiec Danych** – link oznaczony atrybutem `data-datavault-link`. W kodzie źródłowym domyślnie wskazuje `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html`, a w trybie admina skrypt zamienia go na `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1`. Pod przyciskiem znajduje się notka o parametrze admina, widoczna wyłącznie w trybie admina.
@@ -315,3 +322,19 @@ Zmniejszenie przypadków, w których dolny pasek nawigacji systemowej Androida (
 5. Zweryfikować kolor paska systemowego w:
    - widoku głównym `Main/index.html`,
    - przejściach do modułów z poziomu launchera.
+
+## Aktualizacja techniczna 2026-04-15 — eliminacja przesunięcia przycisków przy ładowaniu logo
+
+### Zakres zmian
+- W `Main/index.html` obraz logo otrzymał natywne atrybuty rozmiaru:
+  - `width="1366"`
+  - `height="768"`
+- W regule CSS `.logo` dodano jawne `height: auto`.
+
+### Powód zmiany
+- Bez natywnych wymiarów `<img>` przeglądarka nie znała proporcji obrazu podczas pierwszego przebiegu layoutu, co powodowało chwilowe przeskoczenie układu przycisków po dociągnięciu bitmapy.
+
+### Efekt
+- Silnik renderujący rezerwuje poprawną wysokość logo od początku.
+- Panel `<main>` ma stabilną geometrię od pierwszego renderu.
+- Zmiana zmniejsza wskaźnik CLS i eliminuje wizualny efekt „skakania” przycisków na starcie.
