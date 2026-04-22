@@ -55,6 +55,12 @@ Aplikacja jest statyczna – „aktualizacja” oznacza podmianę plików lub r�
   - `index.html` ma własny CSS w sekcji `<style>`.
   - Motyw wizualny jest zgodny z `Main/index.html` (zielony kolor, glow, font z konsolowego stosu), z tekstem pomocniczym `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
 
+### Ostatnia aktualizacja (2026-04-22)
+- Poprawiono stabilność układu na stronie startowej `index.html` dla logo `Skull.png`:
+  - dodano natywne wymiary obrazka (`width="1024"`, `height="1536"`),
+  - dopisano jawne `height: auto` w klasie `.logo`.
+- Efekt: przeglądarka rezerwuje poprawną przestrzeń dla obrazka od razu przy pierwszym renderze, więc układ panelu i przycisków nie „przeskakuje” podczas ładowania logo.
+
 ### Struktura katalogów
 ```
 .
@@ -131,6 +137,12 @@ The app is static — “updating” means replacing files or editing the HTML/C
   - `TworzeniePostaci.html` includes extra inline styles in its `<style>` section.
   - `index.html` has its own CSS in a `<style>` block.
   - The visual theme matches `Main/index.html` (green glow, console-style font stack), with secondary text at `#4FAF4F` and brighter highlights at `#D2FAD2`.
+
+### Latest update (2026-04-22)
+- Improved landing page layout stability in `index.html` for the `Skull.png` logo:
+  - added intrinsic image dimensions (`width="1024"`, `height="1536"`),
+  - added explicit `height: auto` to the `.logo` class.
+- Result: the browser reserves the correct space for the logo before image download completes, so the panel/buttons layout no longer “jumps” during initial load.
 
 ### Directory structure
 ```

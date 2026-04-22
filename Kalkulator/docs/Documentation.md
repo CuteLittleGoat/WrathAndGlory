@@ -17,6 +17,7 @@ Najważniejsze pliki:
 
 ### 2.2. Obraz
 - `Skull.png` – logo na stronie startowej (`index.html`).
+- `Skull.png` ma natywne proporcje `1024 × 1536` i te wartości są jawnie wpisane do znacznika `<img>` (`width` i `height`), żeby przeglądarka mogła zarezerwować miejsce przed pobraniem bitmapy.
 
 ### 2.3. Instrukcje PDF
 - `HowToUse/pl.pdf` oraz `HowToUse/en.pdf` – otwierane przyciskiem **Instrukcja / Manual** w `TworzeniePostaci.html`.
@@ -43,6 +44,11 @@ Najważniejsze pliki:
 - Układ:
   - `body` – centrowanie zawartości i pełna wysokość ekranu.
   - `main` – panel z obramowaniem i `box-shadow` (efekt „glow”).
+- Logo `.logo`:
+  - `max-width: clamp(220px, 40vw, 320px)`,
+  - `width: 100%`,
+  - `height: auto` (jawne zachowanie proporcji),
+  - atrybuty HTML: `width="1024"` i `height="1536"` (rezerwacja miejsca i stabilniejszy pierwszy layout).
 - Przyciski `.btn`:
   - Tło: półprzezroczysta zieleń (`rgba(22, 198, 12, ...)`).
   - Interakcje: `:hover` podbija cień, `:active` przyciemnia tło.
@@ -270,6 +276,18 @@ const skillCosts = {
 ├── TworzeniePostaci.html
 └── kalkulatorxp.css
 ```
+
+## 9. Aktualizacja 2026-04-22 – stabilne renderowanie logo w `index.html`
+Wdrożono analogiczne podejście jak w module `Main`:
+1. Do elementu logo dodano natywne wymiary pliku PNG:
+   - `width="1024"`
+   - `height="1536"`
+2. W CSS klasy `.logo` dodano jawne `height: auto`.
+
+### Dlaczego to działa
+- Przeglądarka zna proporcje obrazka od razu (przed pobraniem pliku), więc może wyznaczyć wysokość elementu już przy pierwszym przebiegu layoutu.
+- Kontener `<main>` i sekcja z przyciskami dostają stabilny układ od początku renderowania.
+- Zmniejsza to odczuwalne „skakanie” elementów (niższy Cumulative Layout Shift / CLS).
 
 5.5. **Nawigacja do modułu Main**
    - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.
