@@ -1,3 +1,9 @@
+## Aktualizacja 2026-04-22 — nowe pole robocze dla tła `Pergamin`
+1. W `Infoczytnik_test.html` zaktualizowano preset `CONTENT_RECTS_BY_BACKGROUND_ID` dla `backgroundId=9` (`Pergamin`) na podstawie nowego pliku `assets/ramki/Pergamin_ramka.png`.
+2. Nowe wartości obszaru (`x,y,w,h`) to: `0.0771, 0.1302, 0.8672, 0.6973`.
+3. Współrzędne zostały wyznaczone z bounding boxa niebieskiej ramki (`minX=79`, `minY=200`, `maxX=966`, `maxY=1270`) dla obrazu `1024x1536`, zgodnie z metodą opisaną w `assets/data/NiebieskaRamka.md`.
+4. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-22_15-28-38` (czas lokalny PL), aby wymusić odświeżenie cache zasobów po zmianie.
+
 # Infoczytnik — Documentation (test files)
 
 ## Zakres

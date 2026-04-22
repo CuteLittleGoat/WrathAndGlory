@@ -46,6 +46,22 @@ Wpis do `CONTENT_RECTS_BY_BACKGROUND_ID`:
 10:{ x:0.1214, y:0.0962, w:0.7385, h:0.8081 } // WnG
 ```
 
+
+## 4a) Wynik po podmianie pliku `Pergamin_ramka.png` (2026-04-22)
+Plik: `Infoczytnik/assets/ramki/Pergamin_ramka.png`
+- Wymiary PNG: `1024 x 1536`
+- Bounding box: `minX=79`, `minY=200`, `maxX=966`, `maxY=1270`
+- Współczynniki:
+  - `x = 0.0771`
+  - `y = 0.1302`
+  - `w = 0.8672`
+  - `h = 0.6973`
+
+Wpis do `CONTENT_RECTS_BY_BACKGROUND_ID`:
+```js
+9:{ x:0.0771, y:0.1302, w:0.8672, h:0.6973 } // Pergamin
+```
+
 ## 5) Procedura przy dodawaniu kolejnego tła
 1. Dodaj plik tła do `assets/backgrounds/`.
 2. Dodaj odpowiadającą ramkę do `assets/ramki/`.
