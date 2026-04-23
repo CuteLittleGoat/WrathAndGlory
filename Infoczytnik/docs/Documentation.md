@@ -6,6 +6,12 @@
 
 # Infoczytnik — Documentation (test files)
 
+## Aktualizacja 2026-04-23 — hardening ścieżki fontu (drugi hotfix)
+1. W `GM_test.html` dodano helper `getSelectedFont()`, który centralizuje pobieranie aktywnego rekordu fontu z `manifest.fonts`.
+2. `applySelectedFontToPreview()` i `getPayload(type)` korzystają teraz z tego samego helpera, co eliminuje rozjazd logiki między podglądem i wysyłką danych.
+3. W payloadzie `fontId`/`fontPreset` są mapowane z `selectedFont`, bez bezpośredniego odwołania do luźnej zmiennej `font`.
+4. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_12-30-44` (czas lokalny PL).
+
 ## Aktualizacja 2026-04-23 — hotfix błędu `font is not defined`
 1. W `GM_test.html` w funkcji `getPayload(type)` przywrócono pobieranie wybranego fontu: `const font = safeGet(manifest.fonts || [], el.fontSelect.value);`.
 2. Naprawa usuwa błąd runtime widoczny podczas `Wyślij` (`font is not defined`) i przywraca poprawne wysyłanie pól `fontId` oraz `fontPreset` do Firestore.

@@ -6,7 +6,7 @@
   <title>Infoczytnik - panel GM</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-23_12-22-46";
+      const INF_VERSION = "2026-04-23_12-30-44";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -158,6 +158,7 @@ let fillerState = {prefixLines:[], suffixLines:[]};
 function setStatus(t){ el.status.textContent = t; }
 function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
 function safeGet(list,id){ return list.find(x=>x.id===Number(id)) || list[0] || null; }
+function getSelectedFont(){ return safeGet(manifest?.fonts || [], el.fontSelect?.value); }
 function nonce(){ return String(Date.now()) + '-' + Math.random().toString(36).slice(2); }
 function normalizeHexColor(v,fallback){
   const s = String(v || '').trim();
@@ -402,8 +403,8 @@ async function preloadManifestFonts(){
 }
 
 function applySelectedFontToPreview(){
-  const font = safeGet(manifest.fonts || [], el.fontSelect.value);
-  el.livePreview.style.fontFamily = `"${font?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
+  const selectedFont = getSelectedFont();
+  el.livePreview.style.fontFamily = `"${selectedFont?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
   void el.livePreview.offsetWidth;
 }
 
@@ -442,6 +443,7 @@ function getPayload(type){
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const filler = safeGet(manifest.fillers || [], el.fillerSelect.value);
+  const selectedFont = getSelectedFont();
   const audio = safeGet(manifest.audios || [], el.audioSelect.value);
   return {
     type,
@@ -449,7 +451,7 @@ function getPayload(type){
     backgroundId:bg?.id || null, backgroundFile:bg?.file || '',
     logoId:logo?.id || null, logoFile:logo?.file || '',
     fillerId:filler?.id || null, fillerSet:filler?.name || '',
-    fontId:font?.id || null, fontPreset:font?.font || '',
+    fontId:selectedFont?.id || null, fontPreset:selectedFont?.font || '',
     messageAudioId:audio?.id || null, messageAudioFile:audio?.file || '',
     fillersEnabled:!!el.fillersEnabled.checked, audioEnabled:!!el.audioEnabled.checked,
     showLogo:!!el.showLogo.checked, movingOverlay:movingOverlayEnabled, flicker:flickerEnabled,
