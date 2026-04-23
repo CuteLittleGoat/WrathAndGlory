@@ -442,7 +442,6 @@ function getPayload(type){
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const filler = safeGet(manifest.fillers || [], el.fillerSelect.value);
-  const font = safeGet(manifest.fonts || [], el.fontSelect.value);
   const audio = safeGet(manifest.audios || [], el.audioSelect.value);
   return {
     type,
