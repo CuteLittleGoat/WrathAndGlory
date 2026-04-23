@@ -29,8 +29,8 @@ Najważniejsze pliki:
 - Dwa linki (`.btn`) prowadzą do:
   - `KalkulatorXP.html`
   - `TworzeniePostaci.html`
-- W prawej kolumnie (`.stack.right`) pod linkiem `TworzeniePostaci.html` dodano przycisk:
-  - `<button id="secretButton" class="btn secret">Tajny przycisk!</button>`
+- Pod siatką `.actions` dodano kontener wyrównujący do prawej (`.secretCtaWrap`) z przyciskiem:
+  - `<button id="secretButton" class="btn secretCta">Tajny przycisk!</button>`
 - Pod panelem `<main>` dodano nakładkę:
   - `<div id="secretOverlay" class="secret-overlay">` z dialogiem `.secret-dialog`,
   - `<img src="Koza.gif">` oraz przyciskiem zamknięcia `#secretCloseButton`.
@@ -58,9 +58,11 @@ Najważniejsze pliki:
 - Przyciski `.btn`:
   - Tło: półprzezroczysta zieleń (`rgba(22, 198, 12, ...)`).
   - Interakcje: `:hover` podbija cień, `:active` przyciemnia tło.
-- Przycisk tajny `.btn.secret`:
-  - Czerwony kontrastujący motyw (`#ff5a5a`, `rgba(255, 90, 90, ...)`, jasny tekst `#ffd8d8`).
-  - Osobne stany `:hover` i `:active`, ale z tą samą animacją co standardowe `.btn`.
+- Kontener `.secretCtaWrap`:
+  - `display: flex`, `justify-content: flex-end`, `width: 100%`, `margin-top: 4px` – ustawia „Tajny przycisk!” w prawym dolnym obszarze panelu, analogicznie do CTA push w module Main.
+- Przycisk `.btn.secretCta`:
+  - Styl 1:1 jak przycisk `Włącz powiadomienia` z `Main/index.html`: kompaktowy rozmiar, kształt `pill` (`border-radius: 999px`), szerokość auto, mały padding i font (`11px`).
+  - Czerwona paleta CTA: `#ff3b30`, `rgba(255, 59, 48, ...)`, jasny tekst `#ffe5e3`, dedykowane stany `:hover` i `:active`.
 - Nakładka GIF:
   - `.secret-overlay` to pełnoekranowa warstwa `position: fixed; inset: 0;` z tłem `rgba(0, 0, 0, 0.8)`.
   - `.secret-overlay.is-open` przełącza widoczność (`display: flex`).
@@ -304,7 +306,7 @@ const skillCosts = {
 
 ## 9. Aktualizacja 2026-04-23 – tajny przycisk i overlay GIF w `index.html`
 Wdrożono rekomendowane rozwiązanie z analizy:
-1. Dodano czerwony przycisk **Tajny przycisk!** pod `Tworzenie Postaci`, nadal wewnątrz zielonej ramki panelu.
+1. Przeniesiono i wystylizowano **Tajny przycisk!** jako kompaktowy czerwony CTA po prawej stronie pod siatką `.actions` (jak przycisk powiadomień w Main).
 2. Dodano modalny overlay z `Koza.gif`.
 3. Dodano pełną obsługę zamykania (przycisk, kliknięcie tła, `Escape`) i atrybut `aria-hidden`.
 4. Zachowano pozycję `Kalkulator XP` względem `Tworzenie Postaci` (przyciski pozostają obok siebie w jednej linii).

@@ -99,19 +99,34 @@
       background: rgba(22, 198, 12, 0.22);
     }
 
-    .btn.secret {
-      border-color: #ff5a5a;
-      background: rgba(255, 90, 90, 0.12);
-      color: #ffd8d8;
+    .secretCtaWrap {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
     }
 
-    .btn.secret:hover {
-      box-shadow: 0 0 18px rgba(255, 90, 90, 0.35);
-      background: rgba(255, 90, 90, 0.2);
+    .btn.secretCta {
+      width: auto;
+      border-color: #ff3b30;
+      background: rgba(255, 59, 48, 0.2);
+      color: #ffe5e3;
+      box-shadow: 0 0 14px rgba(255, 59, 48, 0.35);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0.2px;
     }
 
-    .btn.secret:active {
-      background: rgba(255, 90, 90, 0.28);
+    .btn.secretCta:hover {
+      box-shadow: 0 0 16px rgba(255, 59, 48, 0.45);
+      background: rgba(255, 59, 48, 0.28);
+    }
+
+    .btn.secretCta:active {
+      background: rgba(255, 59, 48, 0.36);
     }
 
     .secret-overlay {
@@ -176,15 +191,18 @@
       </div>
       <div class="stack right">
         <a class="btn" href="TworzeniePostaci.html">Tworzenie Postaci</a>
-        <button class="btn secret" id="secretButton" type="button">Tajny przycisk!</button>
+
       </div>
+    </div>
+    <div class="secretCtaWrap">
+      <button class="btn secretCta" id="secretButton" type="button">Tajny przycisk!</button>
     </div>
   </main>
 
   <div class="secret-overlay" id="secretOverlay" aria-hidden="true">
     <div class="secret-dialog" role="dialog" aria-modal="true" aria-label="Tajny gif kozy">
       <img src="Koza.gif" alt="Animowany gif kozy">
-      <button class="btn secret secret-close" id="secretCloseButton" type="button">Zamknij</button>
+      <button class="btn secretCta secret-close" id="secretCloseButton" type="button">Zamknij</button>
     </div>
   </div>
 

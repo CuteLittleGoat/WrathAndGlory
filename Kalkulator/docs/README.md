@@ -9,7 +9,7 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 2. Na ekranie startowym wybierz narzędzie:
    - **Kalkulator XP** (`KalkulatorXP.html`) – liczy koszt rozwoju atrybutów i umiejętności.
    - **Tworzenie Postaci** (`TworzeniePostaci.html`) – arkusz budowania postaci z pulą XP, kontrolą limitów i tabelami.
-3. Pod przyciskiem **Tworzenie Postaci** (w tej samej zielonej ramce panelu) znajduje się czerwony przycisk **Tajny przycisk!** — otwiera GIF `Koza.gif` jako nakładkę (overlay).
+3. W prawym dolnym obszarze panelu (pod siatką głównych przycisków) znajduje się czerwony przycisk **Tajny przycisk!** w stylu identycznym jak przycisk **Włącz powiadomienia** z modułu Main — otwiera GIF `Koza.gif` jako nakładkę (overlay).
 
 > ℹ️ **Uwaga dotycząca urządzeń mobilnych**
 >
@@ -37,7 +37,7 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 6. Przycisk **Instrukcja / Manual** otwiera PDF z pełną instrukcją dla aktualnego języka (`HowToUse/pl.pdf` lub `HowToUse/en.pdf`).
 
 #### 3) Tajny przycisk (GIF)
-1. Na stronie startowej kliknij **Tajny przycisk!** (przycisk pod **Tworzenie Postaci**).
+1. Na stronie startowej kliknij **Tajny przycisk!** (mały czerwony przycisk „pill” wyrównany do prawej pod główną siatką przycisków).
 2. Otworzy się nakładka z animacją `Koza.gif`.
 3. Zamknij nakładkę:
    - przyciskiem **Zamknij**,
@@ -65,7 +65,7 @@ Aplikacja jest statyczna – „aktualizacja” oznacza podmianę plików lub r�
   - Motyw wizualny jest zgodny z `Main/index.html` (zielony kolor, glow, font z konsolowego stosu), z tekstem pomocniczym `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
 
 ### Ostatnia aktualizacja (2026-04-23)
-- W `index.html` dodano czerwony przycisk **Tajny przycisk!** pod linkiem **Tworzenie Postaci** (w obrębie zielonej ramki panelu startowego).
+- W `index.html` dopasowano przycisk **Tajny przycisk!** do stylu przycisku **Włącz powiadomienia** z modułu Main (ten sam rozmiar, kształt „pill”, kolorystyka i prawa strona panelu).
 - Dodano overlay z GIF-em `Koza.gif`, otwierany po kliknięciu i zamykany przez:
   - przycisk **Zamknij**,
   - kliknięcie tła nakładki,
@@ -103,7 +103,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 2. On the start screen choose a tool:
    - **XP Calculator** (`KalkulatorXP.html`) – calculates the XP cost for attributes and skills.
    - **Character Creation** (`TworzeniePostaci.html`) – a character sheet with an XP pool, limit checks, and tables.
-3. Under **Character Creation** (still inside the green framed panel) there is now a red **Secret button!** that opens `Koza.gif` in an overlay.
+3. In the lower-right area of the panel (below the main button grid) there is a red **Tajny przycisk!** button styled exactly like the Main module's **Enable notifications** button; it opens `Koza.gif` in an overlay.
 
 > ℹ️ **Mobile note**
 >
@@ -131,7 +131,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 6. The **Instrukcja / Manual** button opens the full PDF manual for the current language (`HowToUse/pl.pdf` or `HowToUse/en.pdf`).
 
 #### 3) Secret button (GIF)
-1. On the landing page click **Tajny przycisk!** (the button below **Tworzenie Postaci**).
+1. On the landing page click **Tajny przycisk!** (the small red pill button aligned to the right below the main button grid).
 2. An overlay opens with the animated `Koza.gif`.
 3. Close it by:
    - clicking **Zamknij**,
@@ -159,7 +159,7 @@ The app is static — “updating” means replacing files or editing the HTML/C
   - The visual theme matches `Main/index.html` (green glow, console-style font stack), with secondary text at `#4FAF4F` and brighter highlights at `#D2FAD2`.
 
 ### Latest update (2026-04-23)
-- Added a red **Tajny przycisk!** button in `index.html` under **Tworzenie Postaci** (inside the same green-framed start panel).
+- Updated the **Tajny przycisk!** button in `index.html` to match the **Enable notifications** button style from the Main module (same compact size, pill shape, color palette, and right-side placement).
 - Added a `Koza.gif` overlay opened by that button and closed by:
   - **Zamknij** button,
   - clicking on overlay background,
