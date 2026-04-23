@@ -186,3 +186,62 @@ Gdy przygotujesz pełną tabelę ras i limitów (PL/EN), najlepiej:
 - mapować wszystko po stabilnych kluczach technicznych.
 
 To uprości dalsze aktualizacje bez ingerencji w logikę kalkulatora.
+
+---
+
+## 10) Wariant alternatywny: brak wyboru rasy w UI, statyczna informacja pod tabelami
+
+Zgodnie z nowym podejściem:
+- **nie dodajemy menu wyboru rasy** (brak `select` w interfejsie),
+- pod tabelami wyświetlamy **statyczną informację** o limitach,
+- **same tabele, sposób liczenia, walidacja i UX wpisywania wartości pozostają bez zmian**,
+- zmieniamy tylko warstwę informacyjną i tłumaczenia nazw widocznych w tej informacji.
+
+### 10.1. Konsekwencje funkcjonalne
+
+1. Kalkulator dalej działa na obecnych limitach wejściowych (Atrybuty globalnie, Umiejętności = 8), bez dynamicznego przełączania limitu per rasa.
+2. Informacja pod tabelą Atrybutów ma charakter **opisowy** (referencyjny), a nie sterujący logiką inputów.
+3. Nazwy ras oraz atrybutów w sekcji informacyjnej są zależne od języka (PL/EN), ale wartości wprowadzane przez użytkownika nie są automatycznie mapowane do wybranej rasy, ponieważ rasa nie jest wybierana w UI.
+
+### 10.2. Rekomendowana forma sekcji pod tabelą Atrybutów
+
+Najprostsza i najczytelniejsza forma:
+- nagłówek lokalizowany (PL/EN),
+- jedna lub więcej mini-tabel „Rasa → maksima 8 atrybutów”,
+- pełne nazwy ras i atrybutów pobierane z tłumaczeń.
+
+Przykład układu:
+- **PL**: „Maksymalne wartości atrybutów (informacyjne)”
+- **EN**: „Maximum attribute values (reference)”
+
+Dane mogą być renderowane z tej samej struktury technicznej kluczy (`species`, `attributes`), ale bez podpinania jej do walidacji pól formularza.
+
+### 10.3. Zakres zmian w kodzie (minimalny)
+
+1. Dodać pod tabelą Atrybutów blok informacyjny (kontener HTML + render w JS).
+2. Rozszerzyć `translations` o:
+   - etykietę nagłówka sekcji informacyjnej,
+   - nazwy ras,
+   - nazwy atrybutów (jeżeli nie są jeszcze kompletne).
+3. Dodać prostą funkcję renderującą statyczne zestawienie limitów.
+4. **Nie zmieniać** mechanizmu `recalcTable` ani obecnych ograniczeń inputów.
+
+### 10.4. Plusy i minusy wariantu
+
+**Plusy**
+- najmniejsza ingerencja w istniejący kod,
+- niskie ryzyko regresji w logice obliczeń XP,
+- szybkie wdrożenie i prostsze testy.
+
+**Minusy**
+- brak automatycznego pilnowania limitów zależnych od rasy,
+- użytkownik sam musi dopilnować zgodności wpisanych wartości z tabelą referencyjną,
+- większe ryzyko błędu danych wejściowych względem faktycznej rasy postaci.
+
+### 10.5. Doprecyzowane kryteria akceptacji dla tego wariantu
+
+- [ ] Nie ma pola wyboru rasy w interfejsie.
+- [ ] Pod tabelą Atrybutów widoczna jest statyczna sekcja informacyjna z limitami rasowymi.
+- [ ] Nazwy ras i atrybutów w tej sekcji przełączają się poprawnie między PL i EN.
+- [ ] Tabele wejściowe i logika obliczeń działają jak dotychczas (bez zmian funkcjonalnych).
+- [ ] Pod tabelą Umiejętności pozostaje informacja o limicie 8.
