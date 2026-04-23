@@ -159,7 +159,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
   - zewnętrznej poświaty `0 0 10px rgba(22,198,12,.22)`,
   - dodatkowego znacznika `●` (`::after`) w kolorze `var(--code)`.
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
-- Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia` mają tekst w kolorze `#d74b4b` (`--red`).
+- Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
 
 ### 3) Zasady formatowania tekstu i wyjątki
 - We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, lewo, standardowe łamanie, brak max-width).

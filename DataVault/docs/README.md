@@ -14,6 +14,10 @@ Module update (2026-04-20): in the `Pakiety Wyniesienia` tab, the `Koszt PD` col
 Aktualizacja modułu (2026-04-15): w zakładce `Archetypy` widok domyślny usuwa reguły filtrowania dla kolumny `Frakcja` i zostawia wyłącznie filtr `Gatunek = Człowiek`.
 Module update (2026-04-15): in the `Archetypy` tab, the default view no longer applies `Frakcja` filtering rules and keeps only `Gatunek = Człowiek`.
 
+Aktualizacja modułu (2026-04-23): zakładka `Kary do ST` została powiązana z checkboxem „Czy wyświetlić zakładki dotyczące zasad walki?”, więc jest widoczna tylko po jego zaznaczeniu i ma czerwony styl zakładek walki (w trybie użytkownika i admina).
+Module update (2026-04-23): the `Kary do ST` tab is now linked to the “Show tabs related to combat rules?” checkbox, so it appears only when enabled and uses the red combat-tab styling (in both player and admin modes).
+
+
 ---
 
 ## 🇵🇱 Instrukcja (PL)
@@ -79,8 +83,8 @@ Najważniejsze zasady działania:
   **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Pakiety Wyniesienia**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
   Gdy checkbox jest odznaczony, te zakładki są ukryte (w tym **Premie Frakcji** oraz **Specjalne Bonusy Frakcji**). Obie zakładki mają ten sam jaśniejszy kolor co pozostałe zakładki tworzenia postaci.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” (domyślnie odznaczony) pokazuje:
-  **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad** i **Tryby Ognia**.
-  **Skrót Zasad** i **Tryby Ognia** są dostępne dla wszystkich, a **Trafienia Krytyczne** i **Groza Osnowy** tylko w trybie admina.
+  **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad**, **Tryby Ognia** i **Kary do ST**.
+  **Skrót Zasad**, **Tryby Ognia** i **Kary do ST** są dostępne dla wszystkich, a **Trafienia Krytyczne** i **Groza Osnowy** tylko w trybie admina.
 
 ### Aktualizacja danych z `Repozytorium.xlsx`
 Poniżej znajdują się dwa równoważne sposoby aktualizacji danych. W tej zmianie repozytorium `data.json` został ponownie wygenerowany na podstawie najnowszego dostarczonego pliku `Repozytorium.xlsx`, więc tabele odpowiadają aktualnemu arkuszowi. Generator zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
@@ -205,8 +209,8 @@ Key behavior:
   **Tabela Rozmiarów**, **Gatunki**, **Archetypy**, **Premie Frakcji**, **Słowa Kluczowe Frakcji**, **Pakiety Wyniesienia**, **Specjalne Bonusy Frakcji**, **Implanty Astartes**, **Zakony Pierwszego Powołania**.
   When unchecked, these tabs remain hidden (including **Premie Frakcji** and **Specjalne Bonusy Frakcji**). Both tabs use the same lighter color as the other character-creation tabs.
 - The “Czy wyświetlić zakładki dotyczące zasad walki?” checkbox (unchecked by default) shows:
-  **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad**, and **Tryby Ognia**.
-  **Skrót Zasad** and **Tryby Ognia** are available to everyone; **Trafienia Krytyczne** and **Groza Osnowy** are admin-only.
+  **Trafienia Krytyczne**, **Groza Osnowy**, **Skrót Zasad**, **Tryby Ognia**, and **Kary do ST**.
+  **Skrót Zasad**, **Tryby Ognia**, and **Kary do ST** are available to everyone; **Trafienia Krytyczne** and **Groza Osnowy** are admin-only.
 
 ### Updating data from `Repozytorium.xlsx`
 Below are two equivalent ways to update the data. In this repository update, `data.json` has been regenerated from the latest provided `Repozytorium.xlsx` file, so the tables reflect the current spreadsheet content. The generator replaces Polish quotation marks „ ” with the standard `"` character.

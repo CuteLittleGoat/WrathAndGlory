@@ -218,7 +218,7 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Implanty Astartes",
   "Zakony Pierwszego Powołania",
 ]);
-const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad", "Tryby Ognia"]);
+const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad", "Tryby Ognia", "Kary do ST"]);
 const CHARACTER_CREATION_SHEET_KEYS = new Set([...CHARACTER_CREATION_SHEETS].map(name => canonKey(name)));
 const COMBAT_RULES_SHEET_KEYS = new Set([...COMBAT_RULES_SHEETS].map(name => canonKey(name)));
 

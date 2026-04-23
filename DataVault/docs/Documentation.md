@@ -9,6 +9,8 @@ Aktualizacja szerokości kolumny z dnia **2026-04-20**: w zakładce `Pakiety Wyn
 Aktualizacja logiki widoku domyślnego z dnia **2026-04-15**: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
 
 ---
+Aktualizacja logiki zakładek z dnia **2026-04-23**: zakładka `Kary do ST` została dopisana do zbioru zakładek zasad walki (`COMBAT_RULES_SHEETS`), dzięki czemu jest ukrywana/pokazywana przez checkbox `#toggleCombatTabs` i dziedziczy czerwony styl `.tab--combat` zarówno w trybie admina, jak i użytkownika.
+
 
 ## 1) Struktura projektu i pliki
 
@@ -50,7 +52,7 @@ Aktualizacja logiki widoku domyślnego z dnia **2026-04-15**: w `DEFAULT_VIEW_CO
 - `aside.panel` z nagłówkiem `.panelHeader`.
 - Pole globalne: `#globalSearch` w `.panelBody`.
 - Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
-- Checkbox `#toggleCombatTabs` — pytanie „Czy wyświetlić zakładki dotyczące zasad walki?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia` (z czego `Trafienia Krytyczne` i `Groza Osnowy` pozostają widoczne tylko w trybie admina).
+- Checkbox `#toggleCombatTabs` — pytanie „Czy wyświetlić zakładki dotyczące zasad walki?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` (z czego `Trafienia Krytyczne` i `Groza Osnowy` pozostają widoczne tylko w trybie admina).
 - W `.hint` jest statyczna lista wskazówek (tekst, nie logika), m.in. linia o „Shift = sort wielokolumnowy”, mimo że logika multi-sortu nie istnieje w JS.
 
 ### 2.3 Obszar tabeli
@@ -125,7 +127,7 @@ Efekty i obwódki:
 - `.tabs` — flex z zawijaniem.
 - `.tab` — uppercase i ten sam font co reszta UI, aktywna z innym tłem i borderem.
 - `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`) mają jaśniejszy kolor tekstu `var(--code)` i `opacity: .9`, spójny z etykietą checkboxa.
-- `.tab--combat` — zakładki zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`) mają czerwony tekst `var(--red)` niezależnie od stanu aktywnego.
+- `.tab--combat` — zakładki zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST`) mają czerwony tekst `var(--red)` niezależnie od stanu aktywnego.
 
 ### 3.6 Tabela
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.
