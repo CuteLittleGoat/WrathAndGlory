@@ -104,3 +104,84 @@ Zmiana jest **niskiego ryzyka** i lokalna. Obecna architektura pliku już wspier
 
 4. **Ryzyko literówki `attr_speed` vs `attr_Speed`**
    - Należy zadbać o pełną spójność identyfikatorów podczas rozbudowy, aby uniknąć braku naliczania kosztu lub braku resetu.
+
+## Nowe wymaganie (2026-04-23): przycisk „Maksima dla gatunków” + okno z tabelą
+
+### Treść nowego wymagania
+1. W `Kalkulator/TworzeniePostaci.html` należy dodać **nowy czerwony przycisk**.
+2. Przycisk ma być umieszczony **pod przyciskiem „Strona Główna”**.
+3. Etykieta przycisku (PL): **„Maksima dla gatunków”**.
+4. Kliknięcie przycisku ma otwierać **okno z tabelą** (modal/popup), analogicznie do działania przycisku **„Tajny Przycisk!”** z `Kalkulator/index.html`.
+5. W oknie ma znaleźć się tabela zawierająca:
+   - wiersze dla ras/gatunków,
+   - kolumny dla atrybutów,
+   - wartości maksymalne.
+6. **Nazwy ras, nazwy atrybutów oraz wartości** mają być przygotowane pod przełączanie językowe (PL/EN), ale konkretne treści i tłumaczenia zostaną dostarczone później.
+
+### Analiza techniczna wdrożenia
+
+#### 1) Zakres zmian w HTML (`Kalkulator/TworzeniePostaci.html`)
+- Dodać nowy przycisk pod istniejącą nawigacją powrotu do strony głównej, np. z ID typu `showSpeciesMaxBtn`.
+- Dodać strukturę modala (overlay + kontener + nagłówek + przycisk zamknięcia + tabela).
+- Dodać kontener na dynamicznie renderowane nagłówki kolumn i wiersze tabeli (aby uniknąć twardego kodowania nazw przed dostarczeniem danych).
+
+#### 2) Zakres zmian w CSS (w tym samym pliku)
+- Dodać styl czerwonego przycisku (spójny z obecnym systemem stylów, ale wizualnie wyróżniony):
+  - kolor tła: czerwony,
+  - stan hover/focus,
+  - zachowanie kontrastu i czytelności tekstu.
+- Dodać style modala i tabeli:
+  - przyciemnione tło overlay,
+  - centralne pozycjonowanie okna,
+  - przewijanie przy większej liczbie ras/kolumn,
+  - responsywność dla mniejszych ekranów.
+
+#### 3) Zakres zmian w JavaScript
+- Dodać mechanizm otwierania/zamykania okna:
+  - kliknięcie przycisku „Maksima dla gatunków” otwiera modal,
+  - zamknięcie przyciskiem „X”, kliknięciem poza oknem lub klawiszem `Escape` (rekomendowane).
+- Dodać strukturę danych dla tabeli (tymczasowo placeholder), np.:
+  - `speciesMaxima.pl` i `speciesMaxima.en`,
+  - lista nagłówków atrybutów,
+  - lista ras z wartościami.
+- Dodać funkcję renderującą tabelę na podstawie aktywnego języka, wywoływaną:
+  - przy otwarciu modala,
+  - przy `updateLanguage(lang)` jeśli modal jest otwarty.
+
+#### 4) Integracja z istniejącym systemem językowym
+- Ponieważ końcowe tłumaczenia zostaną podane później, należy przygotować „szkielet” translacyjny:
+  - osobne klucze dla etykiety przycisku,
+  - osobne klucze dla nagłówków tabeli i nazw ras,
+  - możliwość podmiany samych danych bez zmiany logiki renderowania.
+- Wymaganie wskazuje, że przełączenie języka ma aktualizować zarówno nazwy ras, jak i atrybutów. To oznacza, że nie wystarczy statyczny HTML tabeli — tabela powinna być budowana z danych zależnych od języka.
+
+#### 5) Odniesienie do „Tajny Przycisk!” z `Kalkulator/index.html`
+- Należy skopiować/zaadaptować sam wzorzec zachowania (otwórz/zamknij okno), ale bez ścisłego kopiowania kodu 1:1.
+- Rekomendacja: wydzielić możliwie prosty, lokalny mechanizm modala w `TworzeniePostaci.html`, aby uniknąć zależności między modułami.
+
+### Ryzyka i decyzje projektowe
+1. **Brak docelowych danych (nazwy/tłumaczenia/wartości) na etapie implementacji**
+   - Ryzyko: konieczność ponownej edycji struktury tabeli.
+   - Ograniczenie ryzyka: już teraz przygotować format danych wejściowych (JSON-like w JS), który później tylko zostanie uzupełniony.
+
+2. **Duża liczba kolumn atrybutów**
+   - Ryzyko: tabela może nie mieścić się na mniejszych ekranach.
+   - Ograniczenie ryzyka: poziome przewijanie kontenera tabeli i „sticky” nagłówek (opcjonalnie).
+
+3. **Spójność tłumaczeń z istniejącymi skrótami/pełnymi nazwami atrybutów**
+   - Ryzyko: niespójność nazewnictwa między sekcją główną a modalem.
+   - Ograniczenie ryzyka: po otrzymaniu finalnych tłumaczeń zastosować jeden uzgodniony słownik dla całego modułu.
+
+### Rekomendowany plan wdrożenia (po dostarczeniu danych)
+1. Dodać czerwony przycisk pod „Strona Główna”.
+2. Dodać modal i tabelę z renderowaniem dynamicznym.
+3. Podpiąć tłumaczenia przycisku i danych tabeli do `updateLanguage(lang)`.
+4. Uzupełnić finalne nazwy ras, atrybutów i wartości po otrzymaniu od użytkownika.
+5. Wykonać testy manualne otwierania/zamykania modala, przełączania języka i responsywności tabeli.
+
+### Kryteria akceptacji
+1. Widzoczny czerwony przycisk „Maksima dla gatunków” pod „Strona Główna”.
+2. Kliknięcie przycisku otwiera okno z tabelą ras i atrybutów.
+3. Przełączenie języka zmienia nazwy ras i atrybutów w oknie.
+4. Mechanizm działania jest analogiczny funkcjonalnie do „Tajny Przycisk!” w `Kalkulator/index.html`.
+5. Rozwiązanie nie wpływa negatywnie na istniejące liczenie XP i działanie kalkulatora postaci.
