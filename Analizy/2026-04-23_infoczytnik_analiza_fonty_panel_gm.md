@@ -205,3 +205,69 @@ Custom listbox musi obsłużyć:
   1) ograniczenia natywnego `<select>` (brak możliwości mieszanego stylowania w ramach jednej opcji),
   2) niepełny import wymaganych rodzin fontów.
 - Wdrożenie oczekiwanego efektu 1:1 wymaga custom dropdown/listbox + uzupełnienia importów fontów.
+
+---
+
+## Aktualizacja analizy — 2026-04-23 (nowe wymaganie)
+
+## Prompt użytkownika (uzupełnienie kontekstu)
+
+> Przeczytaj i zaktualizuj analizę Analizy/2026-04-23_infoczytnik_analiza_fonty_panel_gm.md  
+> Nic nie kasuj tylko dodaj nowe wymaganie.  
+> Rezygnuję z wymagania dotyczącego, żeby na liście rozwijanej część nazwy była prezentowana specjalnym fontem.  
+> Niech będzie format {id}. {Frakcja} - {Nazwa fontu}, ale wszystko standardowym fontem.  
+> Zwracam uwagę, że zgodnie z Infoczytnik/AGENTS.md pkt.4 nie możesz zmieniać pliku Infoczytnik/Infoczytnik.html.  
+> Wszystkie zmiany mają być na plikach "GM_test.html" oraz "Infoczytnik_test.html".  
+> Należy też naprawić problem z wyświetlaniem fontów na podglądzie poprzez doimportowanie brakujących fontów.  
+> DODATKOWO: Przy zmianie fontu przez menu rozwijane trzeba poczekać ok. 1-2sek aż na podglądzie się to zaktualizuje.  
+> Czy można jakoś sprawić, że zmiana fontu na podglądzie będzie natychmiastowa?
+
+### Zmiana wymagań funkcjonalnych (nadpisanie wcześniejszego celu UI)
+
+1. **Lista rozwijana ma mieć etykietę tekstową wyłącznie w standardowym foncie UI**:
+   - format: `{id}. {Frakcja} - {Nazwa fontu}`,
+   - bez renderowania fragmentu `{Nazwa fontu}` dedykowanym krojem.
+2. **Nie ma już wymagania na „mieszane fonty” w ramach pojedynczej opcji**.
+3. W konsekwencji **natywny `<select>` jest wystarczający** dla listy (custom listbox nie jest już konieczny z powodów funkcjonalnych).
+
+### Ograniczenie zakresu plików do modyfikacji
+
+Zgodnie z doprecyzowaniem użytkownika i zasadą z `Infoczytnik/AGENTS.md`:
+- **nie modyfikować** `Infoczytnik/Infoczytnik.html`,
+- wykonywać zmiany wyłącznie w:
+  - `Infoczytnik/GM_test.html`,
+  - `Infoczytnik/Infoczytnik_test.html`.
+
+### Nowe wymaganie techniczne — natychmiastowa aktualizacja podglądu fontu
+
+Aktualne opóźnienie ~1–2 s po zmianie fontu wynika z „cold load” webfontu (font pobierany dopiero przy pierwszym użyciu na podglądzie).  
+Wymaganie: **zmiana ma być odczuwalnie natychmiastowa**.
+
+#### Rekomendowane rozwiązanie (bez zmiany architektury UI)
+
+1. **Uzupełnić import o brakujące rodziny** (co najmniej w `GM_test.html` i `Infoczytnik_test.html`):
+   - IBM Plex Serif,
+   - Open Sans,
+   - Noto Serif,
+   - DM Serif Display,
+   - IBM Plex Sans Condensed,
+   - Exo 2.
+2. **Wstępnie załadować fonty po starcie panelu GM**:
+   - iteracja po `fonts[]`,
+   - `document.fonts.load('16px "Nazwa Fontu"')` dla każdej rodziny,
+   - opcjonalnie `await Promise.all(...)` przed pierwszą interakcją użytkownika.
+3. **Natychmiastowy optyczny update podglądu**:
+   - na `change` ustaw `fontFamily` od razu,
+   - wymuś repaint/reflow (np. odczyt `offsetWidth` lub użycie `requestAnimationFrame`),
+   - nie czekać na kolejne zdarzenia asynchroniczne, jeśli nie są wymagane.
+4. **Dodatkowa optymalizacja ładowania**:
+   - `rel="preconnect"` do `fonts.googleapis.com` i `fonts.gstatic.com`,
+   - import tylko potrzebnych wag (bez nadmiarowych stylów),
+   - w miarę możliwości `font-display: swap` (jeśli fonty będą hostowane lokalnie / przez `@font-face`).
+
+### Zaktualizowane kryteria akceptacji
+
+1. W dropdownie każda opcja ma format: `{id}. {Frakcja} - {Nazwa fontu}` i cały tekst jest w standardowym foncie UI.
+2. Na podglądzie po wyborze opcji zastosowany jest właściwy font przypisany do frakcji.
+3. Podgląd aktualizuje się natychmiast (bez odczuwalnego opóźnienia 1–2 s przy typowych warunkach sieciowych po inicjalnym preloadzie).
+4. Zakres zmian kodu ogranicza się do `GM_test.html` oraz `Infoczytnik_test.html`.
