@@ -770,3 +770,18 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Poprawiono globalny opis kolumny `Strona`: wyrównanie jest `left` (nie `center`).
 - Uzupełniono listę arkuszy z neutralnym przecinkiem w `Słowa Kluczowe` o `Archetypy` i `Pakiety Wyniesienia`.
 - Urealniono opis clampa do aktualnej implementacji opartej wyłącznie o pomiar renderu (`ResizeObserver`).
+
+## Aktualizacja 2026-04-23 — Kalkulator: styl i pozycja „Tajny przycisk!”
+- W `Kalkulator/index.html` przycisk **Tajny przycisk!** otrzymał ten sam wariant CTA co `Main/index.html` (**Włącz powiadomienia**):
+  - obramowanie: `#ff3b30`,
+  - tło: `rgba(255, 59, 48, 0.2)`,
+  - tekst: `#ffe5e3`,
+  - poświata: `0 0 14px rgba(255, 59, 48, 0.35)`.
+- Zmieniono geometrię przycisku na kompaktowy „pill”:
+  - `border-radius: 999px`,
+  - `width: auto`,
+  - `padding: 6px 10px`,
+  - `font-size: 11px`, `line-height: 1.1`.
+- Zmieniono położenie przycisku:
+  - przeniesienie z prawej kolumny siatki `.actions` do osobnego kontenera `.secretCtaWrap`,
+  - wyrównanie do prawej (`justify-content: flex-end`) pod główną siatką nawigacji.
