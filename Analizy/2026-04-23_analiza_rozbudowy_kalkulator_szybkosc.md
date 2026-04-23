@@ -89,3 +89,18 @@ Bez zmian w:
 
 ## Podsumowanie
 Zmiana jest **niskiego ryzyka** i lokalna. Obecna architektura pliku już wspiera takie rozszerzenie (tablice ID + wspólna funkcja przeliczeń), więc dodanie „Szybkość/Speed” wymaga jedynie konsekwentnego dopięcia nowego pola we wszystkich miejscach, gdzie kod iteruje po atrybutach.
+
+## Doprecyzowanie decyzji (odpowiedzi użytkownika)
+1. **Decyzja dot. stylu etykiety nowego pola**
+   - Wybrano **styl mieszany**.
+   - Dotychczasowe pola pozostają skrótowe, a nowa nazwa ma być pełna: **„Szybkość” / „Speed”**.
+
+2. **Niespójność nazewnictwa etykiet**
+   - Uznano za wyjaśnioną przez pkt 1.
+   - Niespójność wizualna jest w tym przypadku **akceptowalna**.
+
+3. **Czytelność po dodaniu 8. kolumny**
+   - Ryzyko pogorszenia czytelności na małych rozdzielczościach jest **akceptowalne**.
+
+4. **Ryzyko literówki `attr_speed` vs `attr_Speed`**
+   - Należy zadbać o pełną spójność identyfikatorów podczas rozbudowy, aby uniknąć braku naliczania kosztu lub braku resetu.
