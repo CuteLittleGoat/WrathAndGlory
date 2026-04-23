@@ -6,7 +6,7 @@
   <title>Infoczytnik</title>
   <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-22_15-28-38";
+      const INF_VERSION = "2026-04-23_11-55-45";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -17,7 +17,7 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=IBM+Plex+Serif:wght@400;700&family=Open+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&family=DM+Serif+Display&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=Exo+2:wght@400;600;700&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
   <style>
     :root{--font:"Share Tech Mono",Calibri,Arial,sans-serif;--msg:#00ff66;--ps:#ffffff;--overlayW:960;--overlayH:540;--overlayMin:540;--overlayScale:1;--overlayPadY:14px;--overlayPadX:20px;--overlayGap:14px;--msgBasePx:20;--psBasePx:12}
     *{box-sizing:border-box} body{margin:0;background:#000;color:#fff;font-family:var(--font);overflow:hidden}
@@ -81,6 +81,12 @@ const ref = db.collection('dataslate').doc('current');
 
 const el = { screen:document.getElementById('screen'), bg:document.getElementById('bg'), logo:document.getElementById('logo'), overlay:document.getElementById('overlay'), overlayScroll:document.getElementById('overlayScroll'), topBand:document.getElementById('topBand'), prefix:document.getElementById('prefix'), msg:document.getElementById('msg'), suffix:document.getElementById('suffix') };
 let lastNonce = '';
+const PRELOAD_FONT_FAMILIES = ['Share Tech Mono','Cinzel','Rajdhani','IBM Plex Serif','Open Sans','Noto Serif','DM Serif Display','IBM Plex Sans Condensed','Exo 2','Black Ops One','Staatliches','Orbitron','Questrial','Russo One','Caveat','Great Vibes'];
+
+async function preloadKnownFonts(){
+  if(!document.fonts || typeof document.fonts.load !== 'function') return;
+  await Promise.all(PRELOAD_FONT_FAMILIES.map(fontName => document.fonts.load(`16px "${fontName}"`)));
+}
 let currentBackgroundId = 1;
 let resizeRaf = 0;
 let resizeDebounce = 0;
@@ -200,6 +206,8 @@ if(window.visualViewport){
   window.visualViewport.addEventListener('resize', scheduleFitOverlay, { passive:true });
   window.visualViewport.addEventListener('scroll', scheduleFitOverlay, { passive:true });
 }
+
+preloadKnownFonts().catch(()=>{});
 
 ref.onSnapshot((snap)=>{
   const d = snap.data();

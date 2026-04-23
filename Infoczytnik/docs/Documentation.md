@@ -6,6 +6,13 @@
 
 # Infoczytnik — Documentation (test files)
 
+## Aktualizacja 2026-04-23 — dropdown fontów GM + preload webfontów
+1. W `GM_test.html` zmieniono budowanie etykiet opcji fontów: `buildOptionLabel(item, 'font')` zwraca teraz format `ID. Frakcja - Nazwa fontu`; cały tekst opcji jest renderowany standardowym fontem UI (bez stylowania per-opcja).
+2. Rozszerzono import Google Fonts w `GM_test.html` oraz `Infoczytnik_test.html` o brakujące rodziny: `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
+3. W `GM_test.html` dodano preload manifestowych fontów (`preloadManifestFonts`) oparty o `document.fonts.load(...)` oraz natychmiastową aplikację rodziny przy zmianie selecta (`applySelectedFontToPreview()` + repaint), co eliminuje odczuwalne opóźnienie 1–2 s w mini-podglądzie.
+4. W `Infoczytnik_test.html` dodano preload stałej listy rodzin (`PRELOAD_FONT_FAMILIES` + `preloadKnownFonts`), żeby pierwsze użycie fontu na ekranie gracza również było szybsze.
+5. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_11-55-45` (czas lokalny PL).
+
 ## Zakres
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
 
