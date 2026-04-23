@@ -1,567 +1,218 @@
-<!-- Przed dodaniem layoutu Perganin i zmiany prostokąta -->
-
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pl">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Infoczytnik</title>
-
-<!-- ✅ AUTO-CACHE-BUSTING (żeby tablet nie trzymał starej wersji) -->
-<script>
-  (function autoCacheBust(){
-      const INF_VERSION = "2026-03-13_12-31-28"; // <- zmieniaj przy aktualizacjach (data + godzina)
-    window.__dsVersion = INF_VERSION;    // spójne dla assetów i cache-bustingu
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("v") !== INF_VERSION) {
-      url.searchParams.set("v", INF_VERSION);
-      window.location.replace(url.toString());
-    }
-  })();
-</script>
-
-<!-- Google Fonts -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&display=swap" rel="stylesheet">
-
-<style>
-  :root{
-    --accent:#00ff66;
-    --font: Calibri, Arial, sans-serif;
-
-    --screen-top: 14%;
-    --screen-right: 14%;
-    --screen-bottom: 22%;
-    --screen-left: 18%;
-
-    --msg-font-size: clamp(18px, 3.4vw, 32px);
-    --prefix-font-size: clamp(12px, 2.0vw, 16px);
-    --suffix-font-size: clamp(12px, 2.0vw, 16px);
-
-    --filler-gap: clamp(12px, 2vw, 18px);
-    --gap-prefix-to-msg: var(--filler-gap);
-    --gap-msg-to-suffix: var(--filler-gap);
-
-    --prefix-color: rgba(255,255,255,.88);
-    --suffix-color: rgba(255,255,255,.86);
-  }
-
-  *{box-sizing:border-box}
-  html,body{height:100%; margin:0; background:#000; overflow:hidden;}
-  body{color:var(--accent); font-family:var(--font);}
-
-  .wrap{
-    width:100vw; height:100vh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    background:#000;
-    overflow:hidden;
-  }
-
-  .panel{
-    position:relative;
-    overflow:hidden;
-    background:#000;
-  }
-
-  .layout-img{
-    position:absolute;
-    inset:0;
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    object-position:center;
-    user-select:none;
-    -webkit-user-drag:none;
-    pointer-events:none;
-  }
-
-  .crt::before{
-    content:"";
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-    background:
-      repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,.06) 0px,
-        rgba(255,255,255,.06) 1px,
-        rgba(0,0,0,0) 3px,
-        rgba(0,0,0,0) 7px
-      );
-    opacity:.28;
-    mix-blend-mode: overlay;
-    animation: scanMove 12s linear infinite;
-  }
-  .crt::after{
-    content:"";
-    position:absolute;
-    inset:-2%;
-    pointer-events:none;
-    background:
-      radial-gradient(closest-side, rgba(0,0,0,0) 60%, rgba(0,0,0,.70) 100%),
-      rgba(255,255,255,.04);
-    opacity:.65;
-  }
-  @keyframes scanMove { 0%{transform:translateY(0)} 100%{transform:translateY(20px)} }
-  @keyframes flickerBg {
-    0%,92%,100%{opacity:.65}
-    93%{opacity:.55}
-    95%{opacity:.72}
-    97%{opacity:.60}
-  }
-
-  .screen{
-    position:absolute;
-    top:var(--screen-top);
-    right:var(--screen-right);
-    bottom:var(--screen-bottom);
-    left:var(--screen-left);
-
-    overflow:auto;
-    -webkit-overflow-scrolling:touch;
-    padding: clamp(14px, 2.4vw, 24px);
-    display:flex;
-    flex-direction:column;
-    text-shadow: 0 2px 6px rgba(0,0,0,.70);
-    z-index: 1;
-  }
-
-  .screen::after{
-    content:"";
-    position:absolute;
-    inset:-2%;
-    pointer-events:none;
-    background:
-      radial-gradient(closest-side, rgba(0,0,0,0) 60%, rgba(0,0,0,.70) 100%),
-      rgba(255,255,255,.04);
-    opacity:.65;
-    animation: flickerBg 9s infinite;
-    z-index: 0;
-  }
-
-  .screen.no-flicker::after{
-    animation: none;
-  }
-
-  .screen > *{
-    position: relative;
-    z-index: 1;
-  }
-
-  .prefixRow{
-    position:relative;
-    display:block;
-    margin-bottom: var(--gap-prefix-to-msg);
-    padding-right: 66px;
-  }
-
-  .prefix{
-    flex: 1 1 auto;
-    color: var(--prefix-color);
-    font-size: var(--prefix-font-size);
-    letter-spacing: 1.5px;
-    margin: 0;
-    white-space: pre-wrap;
-  }
-
-  .logoBox{
-    position:absolute;
-    top:0;
-    right:0;
-    width:54px;
-    height:54px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-  }
-
-  .logo{
-    width:100%;
-    height:100%;
-    object-fit:contain;
-    object-position:center;
-    opacity:.95;
-    filter: drop-shadow(0 2px 6px rgba(0,0,0,.7));
-    pointer-events:none;
-    user-select:none;
-    display:none;
-  }
-
-  .msg{
-    margin:0;
-    position:relative;
-    font-size: var(--msg-font-size);
-    line-height: 1.35;
-    white-space: pre-wrap;
-    word-break: break-word;
-    color: var(--accent);
-    text-shadow: 0 0 18px rgba(0,255,120,.18), 0 2px 6px rgba(0,0,0,.70);
-  }
-
-  .suffixRow{
-    display:flex;
-    align-items:flex-start;
-    margin-top: var(--gap-msg-to-suffix);
-  }
-  .suffix{
-    color: var(--suffix-color);
-    font-size: var(--suffix-font-size);
-    letter-spacing: 1.5px;
-    margin: 0;
-    white-space: pre-wrap;
-  }
-
-
-
-
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Infoczytnik</title>
+  <script>
+    (function autoCacheBust(){
+      const INF_VERSION = "2026-04-22_15-28-38";
+      window.__dsVersion = INF_VERSION;
+      const url = new URL(window.location.href);
+      if (url.searchParams.get("v") !== INF_VERSION) {
+        url.searchParams.set("v", INF_VERSION);
+        window.location.replace(url.toString());
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root{--font:"Share Tech Mono",Calibri,Arial,sans-serif;--msg:#00ff66;--ps:#ffffff;--overlayW:960;--overlayH:540;--overlayMin:540;--overlayScale:1;--overlayPadY:14px;--overlayPadX:20px;--overlayGap:14px;--msgBasePx:20;--psBasePx:12}
+    *{box-sizing:border-box} body{margin:0;background:#000;color:#fff;font-family:var(--font);overflow:hidden}
+    .screen{width:100vw;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+    .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:0}
+    .overlay{position:absolute;z-index:2;overflow:hidden}
+    .overlay::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.28);filter:blur(2px);z-index:1;pointer-events:none;opacity:0}
+    .overlay.shadow::after{opacity:1}
+    .overlayScroll{position:relative;z-index:2;width:100%;height:100%;overflow-y:auto;overflow-x:hidden;padding:var(--overlayPadY) var(--overlayPadX);display:flex;flex-direction:column;gap:var(--overlayGap);text-shadow:0 2px 5px rgba(0,0,0,.8);overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+    .overlayScroll,.topBand,.msg,.suffix{white-space:pre-wrap;word-break:normal;overflow-wrap:normal;hyphens:manual}
+    .topBand{min-height:calc(var(--fillerBandLines,2) * 1.35em);display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;column-gap:12px}
+    .topBand.no-logo{grid-template-columns:minmax(0,1fr)}
+    .prefix,.suffix{color:var(--ps);font-size:clamp(12px,calc(var(--psBasePx) * 1px * var(--overlayScale)),28px);line-height:1.3;text-align:center}
+    .msg{flex:1 0 auto;color:var(--msg);font-size:clamp(16px,calc(var(--msgBasePx) * 1px * var(--overlayScale)),44px);line-height:1.32;text-align:left}
+    .bottomBand{min-height:calc(var(--fillerBandLines,2) * 1.35em);display:flex;align-items:flex-end;justify-content:center}
+    .logo{justify-self:end;align-self:start;object-fit:contain;display:none;max-width:var(--logoSize,84px);max-height:var(--logoSize,84px)}
+    .hide{display:none!important}
+    .flicker{animation:flicker 7s infinite} @keyframes flicker{0%,100%{opacity:1}50%{opacity:.96}51%{opacity:.9}52%{opacity:1}}
+  </style>
 </head>
-
 <body>
-  <div class="wrap">
-    <div class="panel crt" id="panel">
-      <img class="layout-img" id="layoutImg" alt="layout" />
-      <div class="screen" id="screen">
-        <div class="prefixRow">
-          <div class="prefix" id="prefixLine"></div>
-          <div class="logoBox">
-            <img class="logo" id="logo" alt="logo" />
-          </div>
-        </div>
-
-        <div class="msg" id="msg"></div>
-
-        <div class="suffixRow">
-          <div class="suffix" id="suffixLine"></div>
-        </div>
+<div class="screen" id="screen">
+  <img id="bg" class="bg" alt="layout">
+  <div id="overlay" class="overlay">
+    <div id="overlayScroll" class="overlayScroll">
+      <div id="topBand" class="topBand">
+        <div id="prefix" class="prefix"></div>
+        <img id="logo" class="logo" alt="logo">
+      </div>
+      <div id="msg" class="msg"></div>
+      <div class="bottomBand">
+        <div id="suffix" class="suffix"></div>
       </div>
     </div>
   </div>
+</div>
+<script src="config/firebase-config.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+<script>
+const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
+const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
+const DEFAULT_CONTENT_RECT = { x:0.10, y:0.16, w:0.80, h:0.74 };
+const CONTENT_RECTS_BY_BACKGROUND_ID = {
+  // Recalculated from *_ramka.png blue-frame overlays (Infoczytnik/assets/data/Mapowanie.xlsx)
+  1:{ x:0.0642, y:0.0762, w:0.8707, h:0.8124 }, // DataSlate_01
+  2:{ x:0.1255, y:0.0924, w:0.7091, h:0.7574 }, // DataSlate_02
+  3:{ x:0.1048, y:0.1435, w:0.8094, h:0.6745 }, // DataSlate_03
+  4:{ x:0.1123, y:0.1481, w:0.7745, h:0.7262 }, // DataSlate_04
+  5:{ x:0.0329, y:0.0242, w:0.9362, h:0.9325 }, // DataSlate_05
+  6:{ x:0.1004, y:0.0450, w:0.8246, h:0.7801 }, // DataSlate_Inq
+  7:{ x:0.1987, y:0.1254, w:0.6207, h:0.7643 }, // Litannie_Zagubionych
+  8:{ x:0.0361, y:0.0280, w:0.9248, h:0.9447 }, // Notatnik
+  9:{ x:0.0771, y:0.1302, w:0.8672, h:0.6973 }, // Pergamin
+  10:{ x:0.1214, y:0.0962, w:0.7385, h:0.8081 } // WnG
+};
+if(!window.firebaseConfig){ throw new Error('Missing firebase config'); }
+firebase.initializeApp(window.firebaseConfig);
+const db = firebase.firestore();
+const ref = db.collection('dataslate').doc('current');
 
-  <!-- ✅ config jako zwykły skrypt (ustawia window.firebaseConfig) -->
-  <script src="config/firebase-config.js"></script>
-  <script src="config/web-push-config.js"></script>
+const el = { screen:document.getElementById('screen'), bg:document.getElementById('bg'), logo:document.getElementById('logo'), overlay:document.getElementById('overlay'), overlayScroll:document.getElementById('overlayScroll'), topBand:document.getElementById('topBand'), prefix:document.getElementById('prefix'), msg:document.getElementById('msg'), suffix:document.getElementById('suffix') };
+let lastNonce = '';
+let currentBackgroundId = 1;
+let resizeRaf = 0;
+let resizeDebounce = 0;
+let lastViewport = { w:0, h:0 };
 
-  <script>
-    window.__dsPlayUrlOnce = async function(url){
-      try { await new Audio(url).play(); } catch(e) {}
-    };
-  </script>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
-  const firebaseConfig = window.firebaseConfig;
-  if(!firebaseConfig){
-    console.error("Brak window.firebaseConfig — sprawdź config/firebase-config.js");
-    // Nie blokujemy UI — tylko wyświetli się layout bez aktualizacji.
+function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
+function play(url){
+  const a = new Audio(url || PING_URL); a.volume = 1; a.play().catch(()=>{});
+}
+function getViewportSize(){
+  const vv = window.visualViewport;
+  if(vv && Number.isFinite(vv.width) && Number.isFinite(vv.height)){
+    return { w: Math.round(vv.width), h: Math.round(vv.height) };
   }
-
-  const app = initializeApp(firebaseConfig);
-  const db  = getFirestore(app);
-
-  const ASSET_VERSION = window.__dsVersion || "2026-01-22_07-18-48";
-
-  const DEFAULT_PING_URL = `assets/audio/global/Ping.mp3?v=${ASSET_VERSION}`;
-  const DEFAULT_MSG_URL  = `assets/audio/global/Message.mp3?v=${ASSET_VERSION}`;
-
-  const LAYOUT_BG = {
-    inquisition: `assets/layouts/inquisition/DataSlate_Inq.png?v=${ASSET_VERSION}`,
-    mechanicus:  `assets/layouts/mechanicus/DataSlate_04.png?v=${ASSET_VERSION}`,
-    militarum:   `assets/layouts/militarum/Litannie_Zaginionych.png?v=${ASSET_VERSION}`,
-    chaos_undivided: `assets/layouts/chaos_undivided/DataSlate_04.png?v=${ASSET_VERSION}`,
-    khorne:      `assets/layouts/khorne/DataSlate_04.png?v=${ASSET_VERSION}`,
-    nurgle:      `assets/layouts/nurgle/DataSlate_04.png?v=${ASSET_VERSION}`,
-    tzeentch:    `assets/layouts/tzeentch/DataSlate_04.png?v=${ASSET_VERSION}`,
-    slaanesh:    `assets/layouts/slaanesh/DataSlate_04.png?v=${ASSET_VERSION}`,
+  return {
+    w: Math.round(window.innerWidth || document.documentElement.clientWidth || 0),
+    h: Math.round(window.innerHeight || document.documentElement.clientHeight || 0)
   };
+}
+function updateOverlayMetrics(width,height){
+  const overlayMin = Math.max(1, Math.min(width, height));
+  const overlayScale = Math.max(0.75, Math.min(1.45, overlayMin / 560));
+  const padY = Math.round(Math.max(10, Math.min(26, overlayMin * 0.026)));
+  const padX = Math.round(Math.max(14, Math.min(34, width * 0.04)));
+  const gap = Math.round(Math.max(8, Math.min(24, overlayMin * 0.024)));
 
-  const LAYOUT_AR = { inquisition: 707/1023, militarum: 1263/1595, default04: 1131/1600 };
-  const SCREEN_INSETS = {
-    inquisition: { top:"14%", right:"14%", bottom:"26%", left:"18%" },
-    militarum:   { top:"12.7%", right:"19.8%", bottom:"10.1%", left:"21.46%" },
-    default04:   { top:"14%", right:"14%", bottom:"22%", left:"18%" },
-  };
-
-  const FONT_STACK = {
-    mechanicus:      '"Share Tech Mono", Calibri, Arial, sans-serif',
-    inquisition:     '"Cinzel", Calibri, Arial, sans-serif',
-    militarum:       '"Rajdhani", Calibri, Arial, sans-serif',
-    khorne:          '"Black Ops One", Calibri, Arial, sans-serif',
-    nurgle:          '"Staatliches", Calibri, Arial, sans-serif',
-    tzeentch:        '"Orbitron", Calibri, Arial, sans-serif',
-    slaanesh:        '"Questrial", Calibri, Arial, sans-serif',
-    chaos_undivided: '"Russo One", Calibri, Arial, sans-serif',
-  };
-
-  const FILLERS = {
-    mechanicus: {
-      prefixes:["+++ INCOMING DATA FEED +++","+++ SYSTEM ANALYSIS BEGIN +++","+++ ENCRYPTION ONLINE +++","+++ ENGAGE LITURGY +++","+++ ARCHIVE ACCESS +++","+++ LOGIS-CHANNEL ACTIVE +++","+++ DATA LINK ESTABLISHED +++","+++ SIGNAL LOCKED +++","+++ CORE STABILIZED +++","+++ BINHARIC CANT OPEN +++","+++ COGITATOR STACK ENGAGED +++","+++ RITE OF ACCESS COMMENCED +++","+++ MACHINE-SPIRIT QUERY +++","+++ SCRY-LOG INITIATED +++","+++ SANCTIFIED DATA STREAM +++","+++ LEXMECHANIC INPUT RECEIVED +++","+++ OMNISSIAN PROTOCOL ACTIVE +++","+++ SUBROUTINE: DIVINE CALCULATION +++","+++ AUSPEX THREAD ALIGNED +++","+++ DATA INTERCEPTED +++","+++ TRANSMISSION CORRUPTED +++","+++ ACCESS SEALED +++"],
-      suffixes:["+++ PRAISE THE OMNISSIAH +++","+++ MACHINE SPIRIT CALMED +++","+++ THE FLESH IS WEAK +++","+++ SYSTEM CLEANSED +++","+++ BINARY PRAYER SENT +++","+++ OMNISSIAH GUIDE US +++","+++ SERVITOR READY +++","+++ RITUAL COMPLETE +++","+++ CANTICLE EXECUTED +++","+++ BLESSINGS OF THE MACHINE GOD +++","+++ DATA IS HOLY +++","+++ IMPURITY REJECTED +++","+++ CALCULATION: PURE +++","+++ BY THE MOTIVE FORCE +++","+++ MACHINE SPIRIT PACIFIED +++","+++ COGITATION COMPLETE +++","+++ THE MACHINE ENDURES +++","+++ BINHARIC PRAISE TRANSMITTED +++","+++ THE EMPEROR PROTECTS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]
-    },
-    inquisition: {
-      prefixes:["+++ INQUISITORIAL NOTICE +++","+++ DATA INTERCEPTED +++","+++ DECRYPTING ORDER +++","+++ COGITATOR ACCESS +++","+++ BY HIS WILL +++","+++ CLASSIFIED MATERIAL +++","+++ MIND CLEANSED +++","+++ CODEX SECURED +++","+++ INQUISITORIAL MANDATE +++","+++ ORDO CLEARANCE VERIFIED +++","+++ SEALED DOSSIER OPENED +++","+++ SANCTIONED INTELLIGENCE +++","+++ HERETICAL TRACE DETECTED +++","+++ PRIORITY DECREE INBOUND +++","+++ THREAT INDEX ESCALATING +++","+++ REDACTED RECORD RETRIEVED +++","+++ INTERROGATION TRANSCRIPT +++","+++ AUTHORITY OF THE HOLY ORDOS +++","+++ SUBJECT UNDER REVIEW +++","+++ INCOMING DATA FEED +++","+++ SIGNAL LOCKED +++","+++ TRANSMISSION CORRUPTED +++","+++ ARCHIVE ACCESS +++"],
-      suffixes:["+++ THE EMPEROR PROTECTS +++","+++ PURGE COMPLETE +++","+++ FAITH REMAINS +++","+++ THOUGHT FOR THE DAY +++","+++ HERESY PURGED +++","+++ OATH UPHELD +++","+++ FAITH IS ARMOR +++","+++ EXAMINATION COMPLETE +++","+++ IN HIS NAME +++","+++ WITNESS THE THRONE +++","+++ COMPLIANCE ENFORCED +++","+++ DUTY TO THE THRONE ENDURES +++","+++ BY ORDER OF THE HOLY INQUISITION +++","+++ SILENCE IS DUTY +++","+++ JUDGEMENT STANDS +++","+++ PURITY IS NON-NEGOTIABLE +++","+++ DENUNCIATION ACCEPTED +++","+++ SEAL THE RECORD +++","+++ NO MERCY FOR THE TAINTED +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EYE OPENS +++"]
-    },
-    militarum: {
-      prefixes:["+++ IMPERIAL SIGNAL +++","+++ HIGH COMMAND ORDER +++","+++ ORDERS INCOMING +++","+++ TACTICAL FEED +++","+++ REGIMENTAL DATA +++","+++ COMMAND OVERRIDE +++","+++ BATTLELINE UPLINK +++","+++ ENGAGEMENT ACTIVE +++","+++ OPERATIONAL BRIEF +++","+++ MUNITORUM DISPATCH +++","+++ FRONTLINE COMMUNIQUÉ +++","+++ VOX-CAST RECEIVED +++","+++ FIRE MISSION PENDING +++","+++ DEPLOYMENT ORDER +++","+++ STRATEGIC UPDATE +++","+++ THEATRE COMMAND ONLINE +++","+++ COMBAT STATUS REPORT +++","+++ FORM RANKS +++","+++ IMPERIAL TACTICA +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++","+++ TRANSMISSION CORRUPTED +++"],
-      suffixes:["+++ GLORY TO THE GUARD +++","+++ VICTORY IS ASSURED +++","+++ CADIA STANDS +++","+++ DUTY FULFILLED +++","+++ NO SACRIFICE TOO GREAT +++","+++ PERIMETER SECURED +++","+++ FOR THE EMPEROR +++","+++ STRATEGIC DIRECTIVE +++","+++ HOLD THE LINE +++","+++ STAND FIRM +++","+++ BAYONETS FIXED +++","+++ MUNITORUM APPROVED +++","+++ POSITION MAINTAINED +++","+++ CASUALTIES ACCEPTABLE +++","+++ ARTILLERY ANSWERS +++","+++ REGIMENT ENDURES +++","+++ ADVANCE BY COMMAND +++","+++ NO STEP BACK +++","+++ THE LINE HOLDS +++","+++ SYSTEM CLEANSED +++","+++ ACCESS SEALED +++","+++ THE EMPEROR PROTECTS +++"]
-    },
-    khorne: {
-      prefixes:["+++ BLOOD ALERT +++","+++ SKULL COUNT RISING +++","+++ RAGE TRANSMISSION +++","+++ COMBAT UPLINK +++","+++ SLAUGHTER INITIATED +++","+++ NO PEACE ONLY WAR +++","+++ DOMINATE THROUGH BLOOD +++","+++ BUTCHER'S CALL +++","+++ CHAINAXE CHORUS +++","+++ CARNAGE PROTOCOL +++","+++ BRASS THRONE DEMANDS +++","+++ SKULL TITHE ASCENDING +++","+++ WRATH WITHOUT MEASURE +++","+++ BATTLE FRENZY UNBOUND +++","+++ WAR CRY ASCENDANT +++","+++ GORE TIDE RISING +++","+++ OFFERING OF SKULLS +++","+++ MERCY DENIED +++","+++ THE RED PATH OPENS +++","+++ SLAUGHTER WITHOUT END +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-      suffixes:["+++ BLOOD FOR THE BLOOD GOD +++","+++ SKULLS FOR THE SKULL THRONE +++","+++ ALL MUST BLEED +++","+++ DEATH WITHOUT END +++","+++ STRIKE WITHOUT MERCY +++","+++ KILL! MAIM! BURN! +++","+++ RED FLOWS +++","+++ WRATH IS WORSHIP +++","+++ THE THRONE DEMANDS SKULLS +++","+++ LET THE GALAXY BLEED +++","+++ OFFER THEM TO KHORNE +++","+++ ONLY SLAUGHTER REMAINS +++","+++ NO RESPITE. NO MERCY. +++","+++ THE EIGHTFOLD PATH DRINKS +++","+++ BRASS AND BLOOD +++","+++ RAGE IS TRUTH +++","+++ CHAINBLADES SING +++","+++ THEIR SKULLS ARE DUE +++","+++ WAR IS THE ONLY PRAYER +++","+++ THE RED HARVEST GROWS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]
-    },
-    nurgle: {
-      prefixes:["+++ BLOAT SIGNAL +++","+++ DECAY INITIATED +++","+++ DISEASE VECTOR ACTIVE +++","+++ PLAGUE SEED SENT +++","+++ SPOREFIELD DEPLOYED +++","+++ VIRUSCODE ENGAGED +++","+++ ALL IS ROT +++","+++ FLESH SAGS +++","+++ FOULNESS RISES +++","+++ CONTAGION BLOOMS +++","+++ PESTILENCE CURRENT +++","+++ SEPTIC TIDE RISING +++","+++ ROT-WIND ASCENDANT +++","+++ INFESTATION CONFIRMED +++","+++ BLESSED CORRUPTION SPREADS +++","+++ GARDEN GROWS +++","+++ PUSTULENT SIGNAL +++","+++ PLAGUE BELLS TOLL +++","+++ SWEET RUIN APPROACHES +++","+++ THE ROT TAKES ROOT +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-      suffixes:["+++ PRAISE GRANDFATHER NURGLE +++","+++ FILTH TRANSMITTED +++","+++ ROTTEN JOY +++","+++ CONTAGION SPREADS +++","+++ FLIES REJOICE +++","+++ FESTERING COMPLETE +++","+++ MUCOUS FLOW +++","+++ BLESSINGS OF ROT +++","+++ GLORIOUS CORRUPTION +++","+++ THE GARDEN WELCOMES ALL +++","+++ DECAY IS GENEROUS +++","+++ EMBRACE THE SWEET SICKNESS +++","+++ PUTRESCENCE ENDURES +++","+++ JOY IN RUIN +++","+++ THE BLOATED LORD PROVIDES +++","+++ PLAGUE GIFT DELIVERED +++","+++ ROT IS A BLESSING +++","+++ ALL THINGS RIPEN +++","+++ CORRUPTION TAKES HOLD +++","+++ THE FLIES SING +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]
-    },
-    tzeentch: {
-      prefixes:["+++ KNOWLEDGE UNFOLDS +++","+++ SCHEME RUNNING +++","+++ DATA TWISTED +++","+++ WARP-TEXT INCOMING +++","+++ INVERSION ACTIVE +++","+++ DESTINY WRITTEN +++","+++ NOTHING IS AS IT SEEMS +++","+++ PATTERNS SHIFT +++","+++ THREADS CONVERGE +++","+++ PROBABILITY FRACTURES +++","+++ HIDDEN HAND MOVES +++","+++ THE NEXT TURN BEGINS +++","+++ FATE MATRIX REVISED +++","+++ MANY PATHS OPEN +++","+++ THE SCHEME DEEPENS +++","+++ MUTATION OF INTENT +++","+++ THE HOUR OF CHANGE +++","+++ SECRETS BECOME REAL +++","+++ WARP PARADOX STABILIZED +++","+++ DESTINY RECURSIVE +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-      suffixes:["+++ ALL IS CHANGE +++","+++ PLAN: PHASE 7 +++","+++ EYE OPENS +++","+++ THOUGHT MUTATED +++","+++ CYCLE CONTINUES +++","+++ OBSERVE THE CHANGE +++","+++ REWRITE EVERYTHING +++","+++ JUST AS PLANNED +++","+++ ALL PART OF THE PLAN +++","+++ FATE RECOMPILED +++","+++ THE CHANGER SMILES +++","+++ OUTCOME REVISED +++","+++ THE PATTERN HOLDS +++","+++ TOMORROW HAS MOVED +++","+++ THE SCRIPT BURNS +++","+++ TRUTH RECAST +++","+++ THE LABYRINTH TURNS +++","+++ FORM IS TEMPORARY +++","+++ DESTINY FRACTURES +++","+++ THE LAST WORD CHANGES +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]
-    },
-    slaanesh: {
-      prefixes:["+++ ECSTASY PULSE +++","+++ SENSORY OVERLOAD +++","+++ DESIRE BREACH +++","+++ TOUCH THE DIVINE +++","+++ TASTE THE PAIN +++","+++ LUSTWAVE TRANSMITTED +++","+++ EXCESS COMPLETE +++","+++ VELVET SCREAM +++","+++ RAPTURE SIGNAL +++","+++ SENSORIA UNBOUND +++","+++ EXQUISITE AGONY INBOUND +++","+++ TEMPTATION CHANNEL OPEN +++","+++ PERFECT NOTE STRUCK +++","+++ THRESHOLD OF ECSTASY +++","+++ INDULGENCE WITHOUT LIMIT +++","+++ DESIRE ASCENDANT +++","+++ HARMONIC OBSESSION +++","+++ THE SILKEN EDGE DRAWS NEAR +++","+++ SENSORY FEED PEAKING +++","+++ DELIGHT SPIKES +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ WARP ENERGY RISING +++"],
-      suffixes:["+++ FEED THE HUNGER +++","+++ THE PERFECT MOMENT +++","+++ PAIN IS PLEASURE +++","+++ EXCESS IS TRUTH +++","+++ UNHOLY HARMONY +++","+++ FEEL EVERYTHING +++","+++ TEMPTATION SPIKE +++","+++ PERFECTION IS BLISS +++","+++ PLEASURE ASCENDANT +++","+++ THE SENSES SHALL OPEN +++","+++ ECSTASY WITHOUT END +++","+++ RAPTURE CONSUMES +++","+++ BEAUTY CUTS DEEPLY +++","+++ SENSORIA SATURATED +++","+++ DESIRE BECOMES LAW +++","+++ EVERY NOTE A KNIFE +++","+++ BLISS THROUGH EXCESS +++","+++ THE HUNGER REMAINS +++","+++ PERFECT AGONY +++","+++ INDULGENCE VICTORIOUS +++","+++ GLORY TO CHAOS +++","+++ THE EYE OPENS +++","+++ REALSPACE BLEEDS +++"]
-    },
-    chaos_undivided: {
-      prefixes:["+++ WARP STIRRING +++","+++ TRANSMISSION CORRUPTED +++","+++ HERESY INBOUND +++","+++ WARP SIGNATURE FOUND +++","+++ SACRIFICE ACCEPTED +++","+++ WARP ENERGY RISING +++","+++ ORDER BREAKS +++","+++ FLESH TURNS +++","+++ ASCENSION IMMINENT +++","+++ REALSPACE THINS +++","+++ VEIL BREACH DETECTED +++","+++ CHAOS CHORUS RISING +++","+++ RUINOUS CONVERGENCE +++","+++ THE EYE TURNS +++","+++ CORRUPTION VECTOR LOCKED +++","+++ THE PACT STANDS +++","+++ REALITY UNFASTENS +++","+++ THE WARP ANSWERS +++","+++ UNHOLY ALIGNMENT +++","+++ THE DARK BETWEEN STARS +++","+++ INCOMING DATA FEED +++","+++ DATA INTERCEPTED +++","+++ SIGNAL LOCKED +++","+++ ARCHIVE ACCESS +++"],
-      suffixes:["+++ GLORY TO CHAOS +++","+++ DARK GODS SMILE +++","+++ THE EYE OPENS +++","+++ ASCEND AND BURN +++","+++ ALL HAIL THE DARK GODS +++","+++ REALSPACE BLEEDS +++","+++ STARS ARE WRONG +++","+++ VOID WITHIN +++","+++ ETERNAL CHANGE +++","+++ LET THE GALAXY BREAK +++","+++ THE VEIL IS TORN +++","+++ OFFERING ACCEPTED +++","+++ THE RUINOUS POWERS PROVIDE +++","+++ CORRUPTION WITHOUT MASTER +++","+++ CHAOS IS ASCENDANT +++","+++ THE LONG WAR ENDURES +++","+++ REALITY YIELDS +++","+++ THE WARP CLAIMS ALL +++","+++ BLESSED BE THE DAMNED +++","+++ NIGHT COMES FROM WITHIN +++","+++ ACCESS SEALED +++","+++ SYSTEM CLEANSED +++","+++ THE EMPEROR PROTECTS +++"]
-    },
-  };
-
-  const FACTION_LOGO = {
-    inquisition: `assets/logos/inquisition/Inquisition.png?v=${ASSET_VERSION}`,
-    mechanicus:  `assets/logos/mechanicus/Mechanicus.png?v=${ASSET_VERSION}`
-  };
-
-  const el = {
-    panel: document.getElementById("panel"),
-    layoutImg: document.getElementById("layoutImg"),
-    screen: document.getElementById("screen"),
-    prefixLine: document.getElementById("prefixLine"),
-    suffixLine: document.getElementById("suffixLine"),
-    msg: document.getElementById("msg"),
-    logo: document.getElementById("logo"),
-  };
-
-
-  async function ensureServiceWorkerRegistration(){
-    if(!("serviceWorker" in navigator)) return null;
-
-    const registration = await navigator.serviceWorker.register("../service-worker.js");
-    return registration;
+  document.documentElement.style.setProperty('--overlayW', `${width}`);
+  document.documentElement.style.setProperty('--overlayH', `${height}`);
+  document.documentElement.style.setProperty('--overlayMin', `${overlayMin}`);
+  document.documentElement.style.setProperty('--overlayScale', `${overlayScale.toFixed(3)}`);
+  document.documentElement.style.setProperty('--overlayPadY', `${padY}px`);
+  document.documentElement.style.setProperty('--overlayPadX', `${padX}px`);
+  document.documentElement.style.setProperty('--overlayGap', `${gap}px`);
+}
+function applyStyles(d){
+  const msgColor = String(d.messageColor || d.color || '#00ff66');
+  const psColor = String(d.prefixColor || '#ffffff');
+  document.documentElement.style.setProperty('--msg', msgColor);
+  document.documentElement.style.setProperty('--ps', psColor);
+  document.documentElement.style.setProperty('--msgBasePx', String(clamp(d.msgFontSize,12,80,20)));
+  document.documentElement.style.setProperty('--psBasePx', String(clamp(d.prefixFontSize,10,60,12)));
+  const family = String(d.fontPreset || 'Share Tech Mono');
+  document.documentElement.style.setProperty('--font', `"${family}"${FONT_FALLBACK}`);
+  document.documentElement.style.setProperty('--fillerBandLines', String(clamp(d.fillerBandLines,1,6,2)));
+}
+function applyLayout(d){
+  currentBackgroundId = Number(d.backgroundId) || 1;
+  el.bg.src = d.backgroundFile || 'assets/backgrounds/DataSlate_04.png';
+  if(d.showLogo === false || !d.logoFile){
+    el.logo.classList.add('hide');
+    el.logo.style.display = 'none';
+    el.topBand.classList.add('no-logo');
+  } else {
+    el.logo.classList.remove('hide');
+    el.logo.style.display = 'block';
+    el.logo.src = d.logoFile;
+    el.topBand.classList.remove('no-logo');
   }
-
-  async function tryLockPortrait(){
-    try{
-      if(screen.orientation && typeof screen.orientation.lock === "function"){
-        await screen.orientation.lock("portrait");
-      }
-    }catch(_error){
-      // Cichy fallback zgodnie z wymaganiem: bez komunikatu dla użytkownika.
-    }
+  el.overlay.classList.toggle('shadow', d.movingOverlay !== false);
+  el.overlay.classList.toggle('flicker', d.flicker === true);
+  el.overlayScroll.scrollTop = 0;
+  fitOverlayToBackground();
+}
+function applyMessage(d){
+  const prefix = (Array.isArray(d.prefixLines) ? d.prefixLines.join('\n') : (d.prefix || ''));
+  const suffix = (Array.isArray(d.suffixLines) ? d.suffixLines.join('\n') : (d.suffix || ''));
+  el.prefix.textContent = d.fillersEnabled === false ? '' : prefix;
+  el.suffix.textContent = d.fillersEnabled === false ? '' : suffix;
+  el.msg.textContent = d.text || '';
+}
+function clearMessage(){ el.prefix.textContent=''; el.suffix.textContent=''; el.msg.textContent=''; }
+function fitOverlayToBackground(){
+  const viewport = getViewportSize();
+  const vw = viewport.w;
+  const vh = viewport.h;
+  const nw = el.bg.naturalWidth || vw;
+  const nh = el.bg.naturalHeight || vh;
+  if(!vw || !vh || !nw || !nh){
+    el.overlay.style.left = '0px'; el.overlay.style.top = '0px'; el.overlay.style.width = '100vw'; el.overlay.style.height = '100dvh';
+    updateOverlayMetrics(vw || 1, vh || 1);
+    return;
   }
+  const scale = Math.min(vw / nw, vh / nh);
+  const rw = Math.max(1, Math.round(nw * scale));
+  const rh = Math.max(1, Math.round(nh * scale));
+  const frameLeft = Math.round((vw - rw) / 2);
+  const frameTop = Math.round((vh - rh) / 2);
+  const rect = CONTENT_RECTS_BY_BACKGROUND_ID[currentBackgroundId] || DEFAULT_CONTENT_RECT;
+  const left = frameLeft + Math.round(rw * rect.x);
+  const top = frameTop + Math.round(rh * rect.y);
+  const width = Math.max(1, Math.round(rw * rect.w));
+  const height = Math.max(1, Math.round(rh * rect.h));
+  el.overlay.style.left = `${left}px`;
+  el.overlay.style.top = `${top}px`;
+  el.overlay.style.width = `${width}px`;
+  el.overlay.style.height = `${height}px`;
+  const logoSize = Math.max(38, Math.round(width * 0.14));
+  document.documentElement.style.setProperty('--logoSize', `${logoSize}px`);
+  updateOverlayMetrics(width, height);
+}
+function scheduleFitOverlay(){
+  const viewport = getViewportSize();
+  const widthDelta = Math.abs(viewport.w - lastViewport.w);
+  const heightDelta = Math.abs(viewport.h - lastViewport.h);
+  if(lastViewport.w && widthDelta < 2 && heightDelta < 6){ return; }
+  lastViewport = viewport;
+  if(resizeRaf){ cancelAnimationFrame(resizeRaf); }
+  resizeRaf = requestAnimationFrame(()=>{ fitOverlayToBackground(); resizeRaf = 0; });
+  clearTimeout(resizeDebounce);
+  resizeDebounce = setTimeout(fitOverlayToBackground, 140);
+}
 
-  function fitPanel(ar){
-    const vw = window.innerWidth, vh = window.innerHeight;
-    let h = vh, w = h * ar;
-    if(w > vw){ w = vw; h = w / ar; }
-    el.panel.style.width  = Math.round(w) + "px";
-    el.panel.style.height = Math.round(h) + "px";
-  }
+el.bg.addEventListener('load', fitOverlayToBackground);
+window.addEventListener('resize', scheduleFitOverlay, { passive:true });
+window.addEventListener('orientationchange', scheduleFitOverlay, { passive:true });
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', scheduleFitOverlay, { passive:true });
+  window.visualViewport.addEventListener('scroll', scheduleFitOverlay, { passive:true });
+}
 
-  function setInsets(p){
-    document.documentElement.style.setProperty("--screen-top", p.top);
-    document.documentElement.style.setProperty("--screen-right", p.right);
-    document.documentElement.style.setProperty("--screen-bottom", p.bottom);
-    document.documentElement.style.setProperty("--screen-left", p.left);
-  }
+ref.onSnapshot((snap)=>{
+  const d = snap.data();
+  if(!d) return;
+  if(d.nonce && d.nonce === lastNonce) return;
+  lastNonce = d.nonce || '';
 
-  function setFlickerState(shouldFlicker){
-    if(shouldFlicker === false){
-      el.screen.classList.add("no-flicker");
-    }else{
-      el.screen.classList.remove("no-flicker");
-    }
-  }
-
-  let currentAr = LAYOUT_AR.default04;
-
-  function setLogoForFaction(key, shouldShow){
-    if(!shouldShow){
-      el.logo.removeAttribute("src");
-      el.logo.style.display = "none";
-      return;
-    }
-
-    const src = FACTION_LOGO[key];
-    if(!src){
-      el.logo.removeAttribute("src");
-      el.logo.style.display = "none";
-      return;
-    }
-
-    el.logo.src = src;
-    el.logo.style.display = "block";
-  }
-
-  function getFillerText(key, idx1based, kind){
-    const cfg = FILLERS[key] || FILLERS.mechanicus;
-    const arr = (kind === "prefix") ? cfg.prefixes : cfg.suffixes;
-    const n = Number(idx1based);
-    const i = (Number.isFinite(n) ? Math.floor(n) : 1) - 1;
-    return arr[Math.max(0, Math.min(arr.length - 1, i))] || "";
-  }
-
-  function applyLayout(factionKey, color, showLogo){
-    const key = (factionKey && LAYOUT_BG[factionKey]) ? factionKey : "mechanicus";
-    el.layoutImg.src = LAYOUT_BG[key] || LAYOUT_BG.mechanicus;
-
-    document.documentElement.style.setProperty("--font", FONT_STACK[key] || 'Calibri, Arial, sans-serif');
-    document.documentElement.style.setProperty("--accent", color || "#00ff66");
-
-    if(key === "inquisition"){
-      setInsets(SCREEN_INSETS.inquisition);
-      currentAr = LAYOUT_AR.inquisition;
-    }else if(key === "militarum"){
-      setInsets(SCREEN_INSETS.militarum);
-      currentAr = LAYOUT_AR.militarum;
-    }else{
-      setInsets(SCREEN_INSETS.default04);
-      currentAr = LAYOUT_AR.default04;
-    }
-    fitPanel(currentAr);
-    setLogoForFaction(key, showLogo !== false);
-  }
-
-  function applyTextStyleFromDoc(d){
-    if(d.msgFontSize)    document.documentElement.style.setProperty("--msg-font-size", String(d.msgFontSize));
-    if(d.prefixFontSize) document.documentElement.style.setProperty("--prefix-font-size", String(d.prefixFontSize));
-    if(d.suffixFontSize) document.documentElement.style.setProperty("--suffix-font-size", String(d.suffixFontSize));
-    if(d.prefixColor)    document.documentElement.style.setProperty("--prefix-color", String(d.prefixColor));
-    if(d.suffixColor)    document.documentElement.style.setProperty("--suffix-color", String(d.suffixColor));
-  }
-
-  function showMessage(prefix, text, suffix){
-    el.prefixLine.textContent = prefix || "";
-    el.msg.textContent = text || "";
-    el.suffixLine.textContent = suffix || "";
-    el.screen.scrollTop = 0;
-  }
-
-  function clearMessageKeepLayout(){
-    el.prefixLine.textContent = "";
-    el.msg.textContent = "";
-    el.suffixLine.textContent = "";
-  }
-
-  window.addEventListener("resize", () => fitPanel(currentAr));
-
-  function resolveLocalAudioUrl(rawUrl, fallbackUrl){
-    if(typeof rawUrl !== "string") return fallbackUrl;
-
-    const candidate = rawUrl.trim();
-    if(!candidate) return fallbackUrl;
-
-    // Dopuszczamy wyłącznie lokalne ścieżki (repo) — bez zewnętrznych hostów.
-    if(/^assets\/audio\//i.test(candidate)) return candidate;
-    if(/^\.\/?assets\/audio\//i.test(candidate)) return candidate;
-
-    // Opcjonalnie: absolutny URL, ale tylko do bieżącego origin i ścieżki assets/audio.
-    try{
-      const parsed = new URL(candidate, window.location.href);
-      if(parsed.origin === window.location.origin && /^\/?.*assets\/audio\//i.test(parsed.pathname)){
-        return parsed.pathname + parsed.search + parsed.hash;
-      }
-    }catch(e){
-      // Ignorujemy błędny URL i przechodzimy do fallbacku.
-    }
-
-    console.warn("[Infoczytnik] Odrzucono zewnętrzny lub nieprawidłowy URL audio:", candidate);
-    return fallbackUrl;
-  }
-
-  const currentRef = doc(db, "dataslate", "current");
-  let lastNonce = null;
-
-  onSnapshot(currentRef, (snap)=>{
-    if(!snap.exists()) return;
-    const d = snap.data() || {};
-
-    if(d.nonce && d.nonce === lastNonce) return;
-    lastNonce = d.nonce || null;
-
-    const faction = d.faction || "mechanicus";
-    const color   = d.color || d.fontColor || "#00ff66";
-    const showLogo = d.showLogo !== false;
-    const flicker = d.flicker !== false;
-
-    applyLayout(faction, color, showLogo);
-    setFlickerState(flicker);
-    applyTextStyleFromDoc(d);
-
-    if(d.type === "clear"){
-      clearMessageKeepLayout();
-      return;
-    }
-
-    if(d.type === "ping"){
-      const pingUrl = resolveLocalAudioUrl(d.pingUrl ? String(d.pingUrl) : "", DEFAULT_PING_URL);
-      window.__dsPlayUrlOnce(pingUrl);
-      return;
-    }
-
-    if(d.type === "message"){
-      const text = d.text ?? "";
-
-      let prefix = d.prefix ?? d.prefixText ?? "";
-      let suffix = d.suffix ?? d.suffixText ?? "";
-
-      if(Array.isArray(d.prefixLines) && d.prefixLines.length){
-        prefix = d.prefixLines.map((line) => String(line || "")).join("\n");
-      }
-      if(Array.isArray(d.suffixLines) && d.suffixLines.length){
-        suffix = d.suffixLines.map((line) => String(line || "")).join("\n");
-      }
-
-      if(!prefix && (d.prefixIndex || d.prefixIdx)){
-        prefix = getFillerText(faction, d.prefixIndex || d.prefixIdx, "prefix");
-      }
-      if(!suffix && (d.suffixIndex || d.suffixIdx)){
-        suffix = getFillerText(faction, d.suffixIndex || d.suffixIdx, "suffix");
-      }
-
-      if(!prefix && (text || "").trim()) prefix = getFillerText(faction, 1, "prefix");
-      if(!suffix && (text || "").trim()) suffix = getFillerText(faction, 1, "suffix");
-
-      if((text || "").trim().length === 0){
-        clearMessageKeepLayout();
-      }else{
-        showMessage(prefix, text, suffix);
-      }
-
-      const msgUrl = resolveLocalAudioUrl(
-        (d.msgUrl || d.messageUrl) ? String(d.msgUrl || d.messageUrl) : "",
-        DEFAULT_MSG_URL
-      );
-      window.__dsPlayUrlOnce(msgUrl);
-    }
-  });
-
-
-  ensureServiceWorkerRegistration().catch((error) => {
-    console.warn("Nie udało się zarejestrować globalnego Service Workera.", error);
-  });
-
-  tryLockPortrait();
-
-  // Start
-  applyLayout("mechanicus", "#00ff66");
-  setFlickerState(true);
+  applyLayout(d); applyStyles(d);
+  if(d.type === 'ping'){ play(PING_URL); return; }
+  if(d.type === 'clear'){ clearMessage(); return; }
+  applyMessage(d);
+  if(d.type === 'message' && d.audioEnabled !== false){ play(d.messageAudioFile); }
+});
 </script>
 </body>
 </html>
