@@ -571,6 +571,11 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 
 ## Moduł — Infoczytnik
 
+## 2026-04-23 — Infoczytnik (test): etykiety fontów + preload
+- `Infoczytnik/GM_test.html`: dropdown **Font** używa teraz etykiet tekstowych `ID. Frakcja - Nazwa fontu` i renderuje je jednolitym fontem UI (bez stylowania fragmentów opcji).
+- `Infoczytnik/GM_test.html` i `Infoczytnik/Infoczytnik_test.html`: rozszerzono import Google Fonts o brakujące rodziny: `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
+- Dodano preload webfontów przez `document.fonts.load(...)` (manifestowe fonty w GM + lista stała na ekranie gracza), aby przełączenie fontu i pierwszy render były natychmiastowe optycznie.
+
 ## 2026-03-31 — Infoczytnik (domyślny preset GM)
 - Zmieniono domyślny preset formularza w `GM_test.html` (`DEFAULT_FORM_STATE`) na konfigurację startową sesji:
   - tło `7. Litannie Zaginionych`,
