@@ -68,6 +68,7 @@ Najważniejsze pliki:
   - `.secret-overlay.is-open` przełącza widoczność (`display: flex`).
   - `.secret-dialog` zachowuje estetykę modułu: zielona ramka, czarne tło i `box-shadow: var(--glow)`.
   - Obraz ograniczono do `max-height: 70vh` i `max-width: min(92vw, 640px)` dla responsywności.
+  - `.secret-close` ma `margin: 10px 0 0 auto` oraz `width: auto`, dzięki czemu przycisk **Zamknij** jest przypięty do prawego dolnego rogu okna GIF-a (zamiast pełnej szerokości).
 
 ### 3.3. Logika
 `index.html` zawiera teraz lekki skrypt JS sterujący overlayem:
@@ -309,7 +310,8 @@ Wdrożono rekomendowane rozwiązanie z analizy:
 1. Przeniesiono i wystylizowano **Tajny przycisk!** jako kompaktowy czerwony CTA po prawej stronie pod siatką `.actions` (jak przycisk powiadomień w Main).
 2. Dodano modalny overlay z `Koza.gif`.
 3. Dodano pełną obsługę zamykania (przycisk, kliknięcie tła, `Escape`) i atrybut `aria-hidden`.
-4. Zachowano pozycję `Kalkulator XP` względem `Tworzenie Postaci` (przyciski pozostają obok siebie w jednej linii).
+4. Przesunięto przycisk **Zamknij** z lewego dolnego obszaru na prawy dolny róg okna GIF-a (`.secret-close`).
+5. Zachowano pozycję `Kalkulator XP` względem `Tworzenie Postaci` (przyciski pozostają obok siebie w jednej linii).
 
 ### Dlaczego to działa
 - Funkcja nie zmienia głównej siatki `.actions`, więc układ podstawowej nawigacji pozostaje stabilny.
