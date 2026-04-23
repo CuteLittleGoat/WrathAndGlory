@@ -56,7 +56,16 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - Brak funkcjonalności clamp w module Main.
 
 ### 5) Wyjątki i formatowanie specjalne
-- Brak wyjątków kolorystycznych lub reguł specjalnych.
+- W `Kalkulator/index.html` dodano wyjątek kolorystyczny:
+  - przycisk `.btn.secret` celowo używa czerwonej palety, aby odróżniał się od zielonych przycisków nawigacyjnych.
+  - wartości kolorów:
+    - obramowanie: `#ff5a5a`,
+    - tło: `rgba(255, 90, 90, 0.12)` (normal), `rgba(255, 90, 90, 0.20)` (hover), `rgba(255, 90, 90, 0.28)` (active),
+    - tekst: `#ffd8d8`.
+- Dla funkcji „tajnego przycisku” zastosowano overlay pełnoekranowy:
+  - tło: `rgba(0, 0, 0, 0.8)`,
+  - warstwa: `position: fixed; inset: 0; z-index: 1000`,
+  - dialog zachowuje standard modułu Main (`--border`, `--glow`, tło `#000`).
 
 ---
 
