@@ -6,6 +6,11 @@
 
 # Infoczytnik — Documentation (test files)
 
+## Aktualizacja 2026-04-23 — hotfix błędu `font is not defined`
+1. W `GM_test.html` w funkcji `getPayload(type)` przywrócono pobieranie wybranego fontu: `const font = safeGet(manifest.fonts || [], el.fontSelect.value);`.
+2. Naprawa usuwa błąd runtime widoczny podczas `Wyślij` (`font is not defined`) i przywraca poprawne wysyłanie pól `fontId` oraz `fontPreset` do Firestore.
+3. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_12-22-46` (czas lokalny PL).
+
 ## Aktualizacja 2026-04-23 — dropdown fontów GM + preload webfontów
 1. W `GM_test.html` zmieniono budowanie etykiet opcji fontów: `buildOptionLabel(item, 'font')` zwraca teraz format `ID. Frakcja - Nazwa fontu`; cały tekst opcji jest renderowany standardowym fontem UI (bez stylowania per-opcja).
 2. Rozszerzono import Google Fonts w `GM_test.html` oraz `Infoczytnik_test.html` o brakujące rodziny: `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
