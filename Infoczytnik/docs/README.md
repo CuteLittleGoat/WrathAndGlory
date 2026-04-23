@@ -37,6 +37,8 @@
 33. Dla tła **Pergamin** przeliczono pole robocze z nowego pliku `assets/ramki/Pergamin_ramka.png`; aktualne wartości to `x=0.0771, y=0.1302, w=0.8672, h=0.6973` (zastępuje poprzedni preset).
 34. Dodano plik techniczny `assets/data/NiebieskaRamka.md` z pełną metodą liczenia pola roboczego dla nowych teł na podstawie ramek PNG.
 35. Import `DataSlate_manifest.xlsx -> data.json` dla `fillers.prefixes` i `fillers.suffixes` automatycznie dodaje dekorator `+++ TEKST +++` (zabezpieczenie przed podwójnym dodaniem, jeśli wpis już ma plusy); po zmianie wygenerowano nowy `assets/data/data.json` i aplikacja korzysta teraz z wersji z plusami.
+36. Lista **Font** w panelu GM ma teraz stały format `ID. Frakcja - Nazwa fontu` i jest renderowana jednolitym fontem UI; jednocześnie doimportowano brakujące rodziny (`IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`) oraz dodano preload fontów, dzięki czemu zmiana fontu w podglądzie jest odczuwalnie natychmiastowa.
+37. Naprawiono błąd wysyłki wiadomości w panelu GM (`font is not defined`): payload ponownie pobiera wybrany font (`fontId`, `fontPreset`) przed zapisem do Firestore.
 
 
 ## User guide (EN)
@@ -76,4 +78,6 @@
 33. For the **Pergamin** background, the working area was recalculated from the new `assets/ramki/Pergamin_ramka.png`; the current values are `x=0.0771, y=0.1302, w=0.8672, h=0.6973` (replacing the previous preset).
 34. Added technical file `assets/data/NiebieskaRamka.md` with the full method for calculating working areas for new backgrounds from PNG frame files.
 35. The `DataSlate_manifest.xlsx -> data.json` import now auto-wraps `fillers.prefixes` and `fillers.suffixes` as `+++ TEXT +++` (with double-wrap protection when pluses already exist); after this change a new `assets/data/data.json` was generated and the app now uses the plus-wrapped version.
+36. The **Font** dropdown in the GM panel now uses a fixed label format `ID. Faction - Font name` rendered with one standard UI font; missing families (`IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`) were also imported and font preloading was added, so preview font switching is perceptibly immediate.
+37. Fixed the GM send-message error (`font is not defined`): payload now correctly reads the selected font (`fontId`, `fontPreset`) before writing to Firestore.
 
