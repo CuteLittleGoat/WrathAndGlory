@@ -18,6 +18,7 @@ Najważniejsze pliki:
 ### 2.2. Obraz
 - `Skull.png` – logo na stronie startowej (`index.html`).
 - `Skull.png` ma natywne proporcje `1024 × 1536` i te wartości są jawnie wpisane do znacznika `<img>` (`width` i `height`), żeby przeglądarka mogła zarezerwować miejsce przed pobraniem bitmapy.
+- `Koza.gif` – animacja wyświetlana jako overlay po kliknięciu tajnego przycisku na stronie startowej (`index.html`).
 
 ### 2.3. Instrukcje PDF
 - `HowToUse/pl.pdf` oraz `HowToUse/en.pdf` – otwierane przyciskiem **Instrukcja / Manual** w `TworzeniePostaci.html`.
@@ -28,6 +29,11 @@ Najważniejsze pliki:
 - Dwa linki (`.btn`) prowadzą do:
   - `KalkulatorXP.html`
   - `TworzeniePostaci.html`
+- W prawej kolumnie (`.stack.right`) pod linkiem `TworzeniePostaci.html` dodano przycisk:
+  - `<button id="secretButton" class="btn secret">Tajny przycisk!</button>`
+- Pod panelem `<main>` dodano nakładkę:
+  - `<div id="secretOverlay" class="secret-overlay">` z dialogiem `.secret-dialog`,
+  - `<img src="Koza.gif">` oraz przyciskiem zamknięcia `#secretCloseButton`.
 - `<title>` ustawiony na `Kozie Liczydła` (tytuł karty przeglądarki).
 
 ### 3.2. Style (inline)
@@ -52,9 +58,28 @@ Najważniejsze pliki:
 - Przyciski `.btn`:
   - Tło: półprzezroczysta zieleń (`rgba(22, 198, 12, ...)`).
   - Interakcje: `:hover` podbija cień, `:active` przyciemnia tło.
+- Przycisk tajny `.btn.secret`:
+  - Czerwony kontrastujący motyw (`#ff5a5a`, `rgba(255, 90, 90, ...)`, jasny tekst `#ffd8d8`).
+  - Osobne stany `:hover` i `:active`, ale z tą samą animacją co standardowe `.btn`.
+- Nakładka GIF:
+  - `.secret-overlay` to pełnoekranowa warstwa `position: fixed; inset: 0;` z tłem `rgba(0, 0, 0, 0.8)`.
+  - `.secret-overlay.is-open` przełącza widoczność (`display: flex`).
+  - `.secret-dialog` zachowuje estetykę modułu: zielona ramka, czarne tło i `box-shadow: var(--glow)`.
+  - Obraz ograniczono do `max-height: 70vh` i `max-width: min(92vw, 640px)` dla responsywności.
 
 ### 3.3. Logika
-Brak JavaScript – strona jest czysto statyczna.
+`index.html` zawiera teraz lekki skrypt JS sterujący overlayem:
+1. **Pobranie referencji DOM**
+   - `#secretButton`, `#secretOverlay`, `#secretCloseButton`.
+2. **`toggleSecretOverlay(forceOpen)`**
+   - Gdy `forceOpen` jest podane (`true/false`), wymusza stan.
+   - W przeciwnym razie działa jako toggle.
+   - Przełącza klasę `.is-open` i aktualizuje `aria-hidden`.
+3. **Zdarzenia zamknięcia/otwarcia**
+   - kliknięcie `#secretButton` → otwórz/zamknij overlay,
+   - kliknięcie `#secretCloseButton` → zamknij,
+   - kliknięcie w tło overlay (poza dialogiem) → zamknij,
+   - klawisz `Escape` przy otwartym overlayu → zamknij.
 
 ## 4. `kalkulatorxp.css` – wspólne style
 Plik stosowany przez `KalkulatorXP.html` i częściowo przez `TworzeniePostaci.html`.
@@ -277,17 +302,17 @@ const skillCosts = {
 └── kalkulatorxp.css
 ```
 
-## 9. Aktualizacja 2026-04-22 – stabilne renderowanie logo w `index.html`
-Wdrożono analogiczne podejście jak w module `Main`:
-1. Do elementu logo dodano natywne wymiary pliku PNG:
-   - `width="1024"`
-   - `height="1536"`
-2. W CSS klasy `.logo` dodano jawne `height: auto`.
+## 9. Aktualizacja 2026-04-23 – tajny przycisk i overlay GIF w `index.html`
+Wdrożono rekomendowane rozwiązanie z analizy:
+1. Dodano czerwony przycisk **Tajny przycisk!** pod `Tworzenie Postaci`, nadal wewnątrz zielonej ramki panelu.
+2. Dodano modalny overlay z `Koza.gif`.
+3. Dodano pełną obsługę zamykania (przycisk, kliknięcie tła, `Escape`) i atrybut `aria-hidden`.
+4. Zachowano pozycję `Kalkulator XP` względem `Tworzenie Postaci` (przyciski pozostają obok siebie w jednej linii).
 
 ### Dlaczego to działa
-- Przeglądarka zna proporcje obrazka od razu (przed pobraniem pliku), więc może wyznaczyć wysokość elementu już przy pierwszym przebiegu layoutu.
-- Kontener `<main>` i sekcja z przyciskami dostają stabilny układ od początku renderowania.
-- Zmniejsza to odczuwalne „skakanie” elementów (niższy Cumulative Layout Shift / CLS).
+- Funkcja nie zmienia głównej siatki `.actions`, więc układ podstawowej nawigacji pozostaje stabilny.
+- Overlay działa niezależnie od flow dokumentu (`position: fixed`) i nie wypycha elementów panelu.
+- Ograniczenia rozmiaru obrazu zapobiegają wyjściu GIF-a poza viewport na mniejszych ekranach.
 
 5.5. **Nawigacja do modułu Main**
    - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.
