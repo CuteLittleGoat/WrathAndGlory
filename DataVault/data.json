@@ -2188,7 +2188,7 @@
       {
         "LP": "66",
         "Stan": "-",
-        "Typ": "Chaos",
+        "Typ": "Xeno",
         "Nazwa": "Psychneuein",
         "Zagrożenie": "?",
         "Słowa Kluczowe": "{{RED}}XENOS, CHAOS{{/RED}}",
@@ -2401,7 +2401,7 @@
         "Umiejętności": "Atletyka 3\nCzujność 3\nUkrywanie się 3\nUmiejętności\nstrzeleckie 4\nWalka wręcz 3",
         "Szybkość": "7",
         "Rozmiar": "Średni",
-        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu (Primaris){{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz honorować wierzenia i tradycje swojego Zakonu. Odwaga wzrasta o +1. Jako Primaris ignorujesz nieczystości w genoziarnie Zakonu oraz otrzymujesz +3 Żywotności.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 22 implantów [{{B}}Podręcznik Główny{{/B}} (str. 75)], jeśli MG uzna to za możliwe."
+        "Zdolności gatunkowe": "{{B}}Obrońca Ludzkości{{/B}}\nDodaj +Ranga Ikon do każdego udanego ataku przeciw Hordzie.\n\n{{B}}Honor Zakonu (Primaris){{/B}}\nJesteś związany rozkazami mistrza zakonnego i musisz honorować wierzenia i tradycje swojego Zakonu. Odwaga wzrasta o +1. Jako Primaris {{S}}ignorujesz nieczystości w genoziarnie Zakonu oraz{{/S}} otrzymujesz +3 Żywotności.\n\n{{B}}Implanty Kosmicznych Marines{{/B}}\nJesteś odporny na Stan Krwawienie. Otrzymujesz +1 dodatkową kość do każdego testu związanego z jednym z 22 implantów [{{B}}Podręcznik Główny{{/B}} (str. 75)], jeśli MG uzna to za możliwe."
       },
       {
         "LP": "4",
