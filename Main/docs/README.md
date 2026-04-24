@@ -32,7 +32,7 @@ Tytuł karty przeglądarki: **Kozi Przybornik**.
 
 ### Instrukcje modułów (README)
 - Generator NPC: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
-- Generator nazw: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNazw/docs/README.txt
+- Generator nazw: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNazw/docs/README.md
 - DataVault: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/docs/README.md
 - Infoczytnik: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/docs/README.md
 - Kalkulator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/docs/README.md
@@ -114,7 +114,7 @@ Browser tab title: **Kozi Przybornik**.
 
 ### Module README links
 - NPC Generator: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/docs/README.md
-- Name Generator: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNazw/docs/README.txt
+- Name Generator: https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNazw/docs/README.md
 - DataVault: https://cutelittlegoat.github.io/WrathAndGlory/DataVault/docs/README.md
 - DataSlate: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/docs/README.md
 - Calculator: https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/docs/README.md

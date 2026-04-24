@@ -21,8 +21,8 @@
 - `DiceRoller/index.html` — struktura widoku i kontenery na dane.
 - `DiceRoller/style.css` — layout, motyw, style pól/przycisków, kości i animacje.
 - `DiceRoller/script.js` — logika walidacji, tłumaczeń, rzutu i podsumowania.
-- `DiceRoller/doc/README.md` — instrukcja użytkownika (PL/EN).
-- `DiceRoller/doc/Documentation.md` — niniejsza dokumentacja techniczna.
+- `DiceRoller/docs/README.md` — instrukcja użytkownika (PL/EN).
+- `DiceRoller/docs/Documentation.md` — niniejsza dokumentacja techniczna.
 
 ## 4. HTML — architektura widoku (`index.html`)
 ### 4.1 Kluczowe sekcje

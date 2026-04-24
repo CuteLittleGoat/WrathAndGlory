@@ -850,3 +850,26 @@ Obsługuje trzy przypadki:
 ### 14.6 Alias kolumny statusu
 - Wykrywanie archiwalności i ukrywania kolumny działa dla `Stan` (case-insensitive).
 - Funkcja `isOldStatusRow(row)` wyszukuje klucz `Stan` i normalizuje wartość przez `stripMarkers(...).trim().toLowerCase()`.
+
+---
+
+## Aktualizacja 2026-04-24 — detale techniczne przeniesione z README
+Po uproszczeniu `docs/README.md` (wersja użytkowa) przeniesiono i utrwalono tutaj szczegóły implementacyjne:
+
+1. **Szerokości i układ kolumn**
+   - `Talenty/Typ` i `Modlitwy/Typ` mają te same parametry jak `Bronie/Typ` (w tym `min-width: 14ch`, wyrównanie do lewej).
+   - W zakładce `Kary do ST` kolumny `Ile celów/akcji` i `Kara do ST` mają stały rozmiar (`20ch`), a tabela działa w układzie stałym (`table-layout: fixed`, `width: max-content`).
+   - Dla zakładki `Notatki` (admin) utrzymano opis technicznych reguł szerokości i wyrównań kolumn (`Co`, `Podręcznik`, `Strona`).
+
+2. **Stan UI i pamięć sesji**
+   - Filtry oraz sortowanie są przechowywane per sesja przeglądarki (`sessionStorage`), aby przełączanie zakładek nie zerowało bieżącej pracy.
+
+3. **Formatowanie treści i markery inline**
+   - Widok główny i modal porównania korzystają z tej samej ścieżki renderowania formatowania.
+   - W `Pakiety Wyniesienia` czerwony kolor pochodzi wyłącznie z markerów `{{RED}}...{{/RED}}` wygenerowanych z XLSX.
+   - Etykiety w filtrach listowych usuwają markery techniczne (`{{RED}}`, `{{B}}`, `{{I}}`) tylko na potrzeby prezentacji etykiety; logika filtrowania pozostaje oparta o surowe dane.
+
+4. **Spójność generatora danych**
+   - Przycisk administracyjny generujący `data.json` zachowuje spójność z kanoniczną logiką parsera/generatora (w tym markerów inline i normalizacji formatowania).
+
+Ta sekcja jest utrzymywana jako techniczne uzupełnienie po odchudzeniu README do instrukcji nietechnicznej.

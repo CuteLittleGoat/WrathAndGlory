@@ -247,3 +247,19 @@ Zapisywane pola:
 ## Uwagi implementacyjne
 - Produkcyjne pliki (`GM.html`, `Infoczytnik.html`) nie były modyfikowane.
 - Manifest runtime to JSON; XLSX pozostaje źródłem wejściowym do generacji JSON.
+
+---
+
+## Aktualizacja 2026-04-24 — przeniesienie detali technicznych z README
+W celu zachowania użytkowego charakteru `docs/README.md` przeniesiono do dokumentacji technicznej szczegóły implementacyjne, które wcześniej były opisane w README:
+
+1. Stabilizacja viewportu mobilnego (`100dvh` z fallbackiem, obsługa `visualViewport`, filtracja mikro-zmian wysokości).
+2. Skalowanie overlay (`--overlayScale`, `--overlayPadY`, `--overlayGap`) dla spójności PC/telefon/tablet.
+3. Techniczny mechanizm wyznaczania `CONTENT_RECTS_BY_BACKGROUND_ID` na podstawie plików ramek i mapowania.
+4. Szczegóły walidacji kolorów i synchronizacji pól HEX + picker (`input` i `change`).
+5. Logika payloadu dla rozmiarów fontów, doładowania rodzin Google Fonts i preloadu fontów.
+6. Szczegóły importu `DataSlate_manifest.xlsx -> data.json` oraz reguły formatowania linii fillerów (`+++ ... +++`).
+7. Implementacyjne informacje o mini-podglądzie (`Treść / Tło`), migracji starych wartości oraz zapisie trybu w pamięci przeglądarki.
+8. Szczegóły hardeningu ścieżki fontu i użycia wspólnego helpera wyboru fontu.
+
+README pozostaje teraz instrukcją stricte użytkową (kroki „co kliknąć i co się stanie”).
