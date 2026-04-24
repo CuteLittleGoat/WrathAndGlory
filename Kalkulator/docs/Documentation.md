@@ -320,3 +320,67 @@ Wdrożono rekomendowane rozwiązanie z analizy:
 
 5.5. **Nawigacja do modułu Main**
    - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.
+
+## 10. Aktualizacja 2026-04-24 – tabela maksymalnych wartości atrybutów w `KalkulatorXP.html`
+
+### 10.1. Zakres funkcjonalny
+Wdrożono wariant informacyjny opisany w analizie: pod istniejącymi tabelami **Atrybuty** i **Umiejętności** dodano trzecią kartę (`.referenceCard`) zawierającą statyczną tabelę referencyjną z maksymalnymi wartościami 8 atrybutów dla 10 ras.
+
+Najważniejsze założenia:
+1. Dane maksimów atrybutów są zaszyte w kodzie JS (brak odczytu z `MaxAttributes.md` i `Labels.md` w runtime).
+2. Nazwy ras i atrybutów są lokalizowane przez ten sam system tłumaczeń PL/EN co pozostałe etykiety kalkulatora.
+3. Nie dodano osobnej informacji o limicie umiejętności = 8 (zgodnie z decyzją funkcjonalną z 2026-04-24).
+4. Nie zmieniono logiki walidacji pól wejściowych ani algorytmu liczenia XP.
+
+### 10.2. Zmiany w HTML (`KalkulatorXP.html`)
+W `div.calcGrid` dodano nową sekcję:
+- `<section class="calcCard referenceCard">`
+- nagłówek `#maxAttributesTitle`
+- kontener `.referenceTableWrap`
+- tabelę `#maxAttributesTable`, której `<thead>` i `<tbody>` są budowane dynamicznie przez JS.
+
+Ta sekcja znajduje się po kartach **Atrybuty** i **Umiejętności**, więc wizualnie trafia dokładnie pod nie.
+
+### 10.3. Zmiany w JS (`KalkulatorXP.html`)
+Dodano nowe struktury danych:
+- `attributeMaximumRows` – 10 rekordów ras (`race_1..race_10`) i tablice 8 wartości (`Attribute_1..Attribute_8`).
+- `attributeKeys` – stabilna lista kluczy `attribute_1..attribute_8` używana do budowy nagłówków kolumn.
+
+Rozszerzono `translations`:
+- `labels.maxAttributesTitle`
+- `labels.raceHeader`
+- `races.*` (10 etykiet)
+- `attributes.*` (8 etykiet)
+
+Dodano funkcję:
+- `renderMaxAttributesTable(lang)`
+  - pobiera słownik tłumaczeń dla aktywnego języka,
+  - buduje dynamicznie `thead` i `tbody` tabeli referencyjnej,
+  - wpisuje wynik do `#maxAttributesTable` przez `innerHTML`.
+
+Zmieniono `applyLanguage(lang)`:
+- aktualizuje `#maxAttributesTitle`,
+- wywołuje `renderMaxAttributesTable(lang)` po podmianie etykiet, dzięki czemu tabela referencyjna natychmiast przełącza nazwy PL/EN.
+
+### 10.4. Zmiany w CSS (`kalkulatorxp.css`)
+Dodane klasy:
+- `.referenceCard { grid-column: 1 / -1; }`
+  - wymusza pełną szerokość karty referencyjnej pod dwoma kartami wejściowymi.
+- `.referenceTableWrap { padding: 10px; }`
+  - separuje tabelę od krawędzi karty.
+- `.referenceTable { table-layout: fixed; }`
+  - stabilizuje szerokości kolumn.
+- Wyrównanie centralne:
+  - `.referenceTable thead th`, `.referenceTable tbody th`, `.referenceTable td { text-align: center; vertical-align: middle; }`
+- `.referenceTable tbody th` używa `color: var(--code)` i `font-weight: 600` dla czytelności nazw ras.
+
+Zebra striping działa przez istniejącą regułę globalną:
+- `.dataTable tbody tr:nth-child(even) { background: var(--zebra); }`
+
+### 10.5. Spójność i odtwarzalność 1:1
+Aby odtworzyć aktualny interfejs kalkulatora 1:1:
+1. Zachowaj strukturę `calcGrid` z trzema kartami (Atrybuty, Umiejętności, tabela referencyjna).
+2. Skopiuj wartości `attributeMaximumRows` dokładnie w tej samej kolejności ras i atrybutów.
+3. Utrzymaj klucze tłumaczeń (`race_1..race_10`, `attribute_1..attribute_8`) bez lokalizowania kluczy technicznych.
+4. Wywołuj `renderMaxAttributesTable(lang)` zawsze po zmianie języka.
+5. Pozostaw dotychczasowe limity inputów: atrybuty `0..12`, umiejętności `0..8`.

@@ -120,6 +120,13 @@
                     </tbody>
                   </table>
                 </section>
+
+                <section class="calcCard referenceCard">
+                  <header class="cardHeader" id="maxAttributesTitle">Maksymalne wartości atrybutów (informacyjne)</header>
+                  <div class="referenceTableWrap">
+                    <table class="dataTable referenceTable" id="maxAttributesTable"></table>
+                  </div>
+                </section>
               </div>
             </div>
           </div>
@@ -129,6 +136,30 @@
   </div>
 
   <script>
+    const attributeMaximumRows = [
+      { race: "race_1", values: [8, 8, 8, 8, 8, 8, 8, 8] },
+      { race: "race_2", values: [12, 12, 7, 7, 8, 7, 7, 7] },
+      { race: "race_3", values: [8, 7, 12, 12, 12, 10, 6, 10] },
+      { race: "race_4", values: [10, 10, 9, 9, 10, 10, 8, 9] },
+      { race: "race_5", values: [12, 12, 9, 9, 10, 10, 8, 9] },
+      { race: "race_6", values: [12, 12, 7, 4, 8, 1, 4, 8] },
+      { race: "race_7", values: [6, 6, 10, 10, 8, 8, 10, 7] },
+      { race: "race_8", values: [12, 12, 12, 12, 10, 6, 6, 10] },
+      { race: "race_9", values: [8, 8, 12, 12, 10, 10, 6, 10] },
+      { race: "race_10", values: [12, 12, 8, 8, 12, 10, 4, 8] }
+    ];
+
+    const attributeKeys = [
+      "attribute_1",
+      "attribute_2",
+      "attribute_3",
+      "attribute_4",
+      "attribute_5",
+      "attribute_6",
+      "attribute_7",
+      "attribute_8"
+    ];
+
     const translations = {
       pl: {
         labels: {
@@ -147,7 +178,31 @@
           skillsTitle: "Umiejętności",
           currentHeader: "Aktualna wartość",
           targetHeader: "Docelowa wartość",
-          costHeader: "Koszt XP"
+          costHeader: "Koszt XP",
+          maxAttributesTitle: "Maksymalne wartości atrybutów (informacyjne)",
+          raceHeader: "Rasa"
+        },
+        races: {
+          race_1: "Człowiek",
+          race_2: "Ork",
+          race_3: "Aeldari",
+          race_4: "Adeptus Astartes",
+          race_5: "Primaris Astartes",
+          race_6: "Ogryn",
+          race_7: "Szczurak",
+          race_8: "Kroot",
+          race_9: "Drukhari",
+          race_10: "Konstrukt Upiorytowy"
+        },
+        attributes: {
+          attribute_1: "Siła",
+          attribute_2: "Wytrzymałość",
+          attribute_3: "Zręczność",
+          attribute_4: "Inicjatywa",
+          attribute_5: "Siła Woli",
+          attribute_6: "Inteligencja",
+          attribute_7: "Ogłada",
+          attribute_8: "Szybkość"
         }
       },
       en: {
@@ -167,7 +222,31 @@
           skillsTitle: "Skills",
           currentHeader: "Current value",
           targetHeader: "Target value",
-          costHeader: "XP cost"
+          costHeader: "XP cost",
+          maxAttributesTitle: "Maximum attribute values (reference)",
+          raceHeader: "Species"
+        },
+        races: {
+          race_1: "Human",
+          race_2: "Ork",
+          race_3: "Aeldari",
+          race_4: "Adeptus Astartes",
+          race_5: "Primaris Astartes",
+          race_6: "Ogryn",
+          race_7: "Ratling",
+          race_8: "Kroot",
+          race_9: "Drukhari",
+          race_10: "Wraith Construct"
+        },
+        attributes: {
+          attribute_1: "Strength",
+          attribute_2: "Toughness",
+          attribute_3: "Agility",
+          attribute_4: "Initiative",
+          attribute_5: "Willpower",
+          attribute_6: "Intellect",
+          attribute_7: "Fellowship",
+          attribute_8: "Speed"
         }
       }
     };
@@ -184,6 +263,7 @@
     const tabsTitle = document.getElementById("tabsTitle");
     const attributesTitle = document.getElementById("attributesTitle");
     const skillsTitle = document.getElementById("skillsTitle");
+    const maxAttributesTitle = document.getElementById("maxAttributesTitle");
     const mainPageButton = document.getElementById("btnMainPage");
     const resetButton = document.getElementById("btnReset");
 
@@ -230,6 +310,23 @@
       document.getElementById('totalXp').textContent = attrCost + skillCost;
     }
 
+    function renderMaxAttributesTable(lang) {
+      const t = translations[lang];
+      const table = document.getElementById("maxAttributesTable");
+
+      const headerCells = [
+        `<th>${t.labels.raceHeader}</th>`,
+        ...attributeKeys.map((key) => `<th>${t.attributes[key]}</th>`)
+      ].join("");
+
+      const bodyRows = attributeMaximumRows.map((row) => {
+        const valueCells = row.values.map((value) => `<td>${value}</td>`).join("");
+        return `<tr><th>${t.races[row.race]}</th>${valueCells}</tr>`;
+      }).join("");
+
+      table.innerHTML = `<thead><tr>${headerCells}</tr></thead><tbody>${bodyRows}</tbody>`;
+    }
+
     function applyLanguage(lang) {
       currentLanguage = lang;
       const t = translations[lang].labels;
@@ -248,9 +345,11 @@
       tabsTitle.textContent = t.tabsTitle;
       attributesTitle.textContent = t.attributesTitle;
       skillsTitle.textContent = t.skillsTitle;
+      maxAttributesTitle.textContent = t.maxAttributesTitle;
       document.querySelectorAll(".currentHeader").forEach((el) => { el.textContent = t.currentHeader; });
       document.querySelectorAll(".targetHeader").forEach((el) => { el.textContent = t.targetHeader; });
       document.querySelectorAll(".costHeader").forEach((el) => { el.textContent = t.costHeader; });
+      renderMaxAttributesTable(lang);
     }
 
     document.querySelectorAll('#attributesTable input, #skillsTable input').forEach(input => {
