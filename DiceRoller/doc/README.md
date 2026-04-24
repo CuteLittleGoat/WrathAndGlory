@@ -1,41 +1,67 @@
-# DiceRoller
+# DiceRoller — instrukcja użytkownika / User guide
 
-## Instrukcja obsługi (PL)
-1. Otwórz `DiceRoller/index.html` w przeglądarce.
-2. Interfejs korzysta z zielonego motywu terminalowego spójnego z główną stroną aplikacji.
-3. W prawym górnym rogu wybierz język (PL/EN). Domyślnie ustawiony jest język polski, pole wyboru ma ciemne tło spójne z modułem Kalkulator, a zmiana języka resetuje wartości.
-4. W tym samym panelu jest przycisk **Strona Główna / Main Page** przenoszący do `../Main/index.html`.
-4. Domyślnie **Stopień Trudności** wynosi 3 — możesz go zmienić w zakresie 1-99.
-5. Domyślnie **Pula Kości** wynosi 2 — możesz ją zmienić w zakresie 1-99.
-6. Ustaw **Ilość Kości Furii** (1-99) — liczba czerwonych kości (Wrath Die); nie może być większa niż Pula Kości.
-   - Pola wejściowe są wyrównane do górnej krawędzi, aby wszystkie kontrolki miały równy start.
-7. Kliknij **Rzuć Kośćmi!**
-8. W trakcie animacji na kościach pojawia się obracający znak zapytania:
-   - biały znak zapytania na czerwonych kościach,
-   - czarny znak zapytania na białych kościach.
-9. Po animacji zobaczysz:
-   - informację **Sukces!** lub **Porażka!**,
-   - bezpośrednio pod nią ewentualny komunikat **Komplikacja Furii 🙁** lub **Krytyczna Furia 🙂** w tym samym kroju co nagłówek,
-   - komunikat **Możliwe Przeniesienie: X**,
-   - odstęp i dopiero łączną liczbę punktów w kroju takim jak lista wyników kości,
-   - wynik każdej kości.
+## 🇵🇱 Instrukcja dla użytkownika (PL)
 
-## User guide (EN)
-1. Open `DiceRoller/index.html` in your browser.
-2. The interface uses the same green terminal theme as the main application page.
-3. Use the language switcher in the top right corner (PL/EN). Polish is selected by default, the select uses the same dark background as the Calculator module, and changing the language resets values.
-4. The same panel also includes a **Strona Główna / Main Page** button that navigates to `../Main/index.html`.
-4. The default **Difficulty Number** is 3 — you can change it within 1-99.
-5. The default **Dice Pool** is 2 — you can change it within 1-99.
-6. Set the **Number of Wrath Dice** (1-99) — number of red dice (Wrath Die); it cannot exceed the Dice Pool.
-   - The input fields are aligned to the top edge so every control starts at the same height.
-7. Click **Roll the dice!**
-8. During the animation a rotating question mark appears on the dice:
-   - white question mark on red dice,
-   - black question mark on white dice.
-9. After the animation you will see:
-   - the **Success!** or **Failure!** headline,
-   - directly below it **Wrath Complication 🙁** or **Wrath Critical 🙂** in the same headline style,
-   - the **Possible Shift: X** line,
-   - a spacer, then the total points line styled like the dice results list,
-   - each die result.
+### Co robi ten moduł
+DiceRoller pozwala szybko wykonać rzut kośćmi do systemu Wrath & Glory i od razu pokazuje, czy test zakończył się sukcesem, ile zdobyto punktów oraz ile wynosi możliwe przeniesienie.
+
+### Jak uruchomić
+1. Otwórz stronę `DiceRoller/index.html`.
+2. W prawym górnym rogu możesz:
+   - zmienić język (PL/EN),
+   - kliknąć **Strona Główna**, aby wrócić do ekranu startowego.
+
+### Jak wykonać rzut (krok po kroku)
+1. Ustaw **Stopień Trudności** (ile punktów potrzeba do sukcesu).
+2. Ustaw **Pulę Kości** (ile kości rzucasz łącznie).
+3. Ustaw **Ilość Kości Furii** (ile z tych kości ma być czerwonych).
+4. Kliknij **Rzuć Kośćmi!**.
+5. Poczekaj na krótką animację.
+6. Odczytaj wynik:
+   - **Sukces!** albo **Porażka!**,
+   - ewentualnie **Komplikacja Furii** lub **Krytyczna Furia**,
+   - **Możliwe Przeniesienie**,
+   - lista wyników każdej kości.
+
+### Ważne zasady i podpowiedzi
+- Zakres pól liczbowych to **1–99**.
+- **Ilość Kości Furii** nie może być większa niż **Pula Kości**.
+- Zmiana języka resetuje pola i wynik, aby uniknąć mieszania komunikatów w dwóch językach.
+- Domyślne wartości po odświeżeniu/resetowaniu:
+  - Stopień Trudności: **3**
+  - Pula Kości: **2**
+  - Kości Furii: **1**
+
+---
+
+## 🇬🇧 User instructions (EN)
+
+### What this module does
+DiceRoller lets you quickly resolve Wrath & Glory dice rolls and immediately shows success/failure, total points, and possible shift.
+
+### How to open
+1. Open `DiceRoller/index.html`.
+2. In the top-right corner you can:
+   - switch language (PL/EN),
+   - click **Main Page** to return to the launcher screen.
+
+### How to roll (step by step)
+1. Set **Difficulty Number** (required points to succeed).
+2. Set **Dice Pool** (total number of rolled dice).
+3. Set **Number of Wrath Dice** (how many dice are red).
+4. Click **Roll the dice!**.
+5. Wait for the short animation.
+6. Read the result:
+   - **Success!** or **Failure!**,
+   - optional **Wrath Complication** or **Wrath Critical**,
+   - **Possible Shift**,
+   - per-die results list.
+
+### Important rules and tips
+- Numeric inputs allow values from **1 to 99**.
+- **Number of Wrath Dice** cannot be greater than **Dice Pool**.
+- Changing language resets inputs and summary to keep messaging consistent.
+- Default values after refresh/reset:
+  - Difficulty Number: **3**
+  - Dice Pool: **2**
+  - Wrath Dice: **1**
