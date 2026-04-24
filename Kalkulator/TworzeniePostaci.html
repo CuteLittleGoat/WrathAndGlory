@@ -109,6 +109,61 @@
     .xp-section #xpPool{width:19ch;}
     .error-message{min-height:20px; color:var(--red); margin:6px 0 2px;}
     .footer{margin-top:18px; color:var(--muted); text-align:center; letter-spacing:.08em;}
+
+    .species-max-modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,.75);
+      z-index:1000;
+    }
+    .species-max-modal.is-open{display:flex;}
+    .species-max-modal__dialog{
+      width:min(1100px, 96vw);
+      max-height:88vh;
+      background:var(--panel);
+      border:1px solid var(--b);
+      border-radius:10px;
+      box-shadow:var(--glow);
+      padding:14px;
+      overflow:auto;
+    }
+    .species-max-modal__header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .species-max-modal__header h2{
+      margin:0;
+      color:var(--code);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-size:1rem;
+    }
+    .species-max-modal__close{
+      width:auto;
+      padding:4px 10px;
+      font-size:20px;
+      line-height:1;
+      border-radius:6px;
+      border:1px solid var(--b);
+      background:var(--panel2);
+      color:var(--text);
+      cursor:pointer;
+    }
+    .species-max-modal__close:hover{background:var(--hover);}
+    .species-max-modal__table-wrap{overflow-x:auto;}
+    .species-max-table th, .species-max-table td{
+      text-align:center;
+      white-space:nowrap;
+    }
+    .species-max-table td:first-child{font-weight:600;}
+
   </style>
 </head>
 <body>
@@ -122,6 +177,7 @@
       </select>
       <button type="button" id="manualButton">Instrukcja</button>
       <button type="button" id="backToMainButton">Strona Główna</button>
+      <button type="button" id="showSpeciesMaxButton">Maksima dla gatunków</button>
     </div>
 
     <h1 id="pageTitle">Tworzenie Postaci</h1>
@@ -147,6 +203,7 @@
         <th id="attrLabel5">SW</th>
         <th id="attrLabel6">Int</th>
         <th id="attrLabel7">Ogd</th>
+        <th id="attrLabel8">Szybkość</th>
       </tr>
       <tr>
         <td><input type="number" id="attr_S" value="1" min="1" max="12"></td>
@@ -156,6 +213,7 @@
         <td><input type="number" id="attr_SW" value="1" min="1" max="12"></td>
         <td><input type="number" id="attr_Int" value="1" min="1" max="12"></td>
         <td><input type="number" id="attr_Ogd" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Speed" value="1" min="1" max="12"></td>
       </tr>
     </table>
 
@@ -269,6 +327,20 @@
     <div class="footer" id="footerText">Wykonane przez Spaczoną Inteligencję</div>
   </div>
 
+
+
+  <div id="speciesMaxModal" class="species-max-modal" aria-hidden="true">
+    <div class="species-max-modal__dialog">
+      <div class="species-max-modal__header">
+        <h2 id="speciesMaxModalTitle">Maksymalne wartości atrybutów</h2>
+        <button type="button" id="closeSpeciesMaxButton" class="species-max-modal__close" aria-label="Zamknij">×</button>
+      </div>
+      <div class="species-max-modal__table-wrap">
+        <table class="table species-max-table" id="speciesMaxTable"></table>
+      </div>
+    </div>
+  </div>
+
   <!-- Sekcja JavaScript / JavaScript Section -->
   <script>
     /* Inicjalizacja po załadowaniu strony / Initialization after page load */
@@ -287,9 +359,19 @@
             talentsTableHeaders: ['Nazwa', 'Koszt', 'Nazwa', 'Koszt'],
             footerText: 'Wykonane przez Spaczoną Inteligencję',
             manualButton: 'Instrukcja',
-            backToMainButton: 'Strona Główna'
+            backToMainButton: 'Strona Główna',
+            showSpeciesMaxButton: 'Maksima dla gatunków',
+            speciesMaxModalTitle: 'Maksymalne wartości atrybutów'
           },
-          attributes: ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd'],
+          attributes: ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Szybkość'],
+          races: {
+            race_1: 'Człowiek', race_2: 'Ork', race_3: 'Aeldari', race_4: 'Adeptus Astartes', race_5: 'Primaris Astartes',
+            race_6: 'Ogryn', race_7: 'Szczurak', race_8: 'Kroot', race_9: 'Drukhari', race_10: 'Konstrukt Upiorytowy'
+          },
+          maxAttributes: {
+            attribute_1: 'Siła', attribute_2: 'Wytrzymałość', attribute_3: 'Zręczność', attribute_4: 'Inicjatywa',
+            attribute_5: 'Siła Woli', attribute_6: 'Inteligencja', attribute_7: 'Ogłada', attribute_8: 'Szybkość'
+          },
           skillsColumn1: [
             'Analiza (Int)', 'Atletyka (S)', 'Czujność (Int)', 'Dowodzenie (SW)', 'Intuicja (Ogd)',
             'Korzystanie z technologii (Int)', 'Medycyna (Int)', 'Mistrzostwo psioniczne (SW)', 'Oszukiwanie (Ogd)'
@@ -316,9 +398,19 @@
             talentsTableHeaders: ['Name', 'Cost', 'Name', 'Cost'],
             footerText: 'Made by Abominable Intelligence',
             manualButton: 'Manual',
-            backToMainButton: 'Main Page'
+            backToMainButton: 'Main Page',
+            showSpeciesMaxButton: 'Species maxima',
+            speciesMaxModalTitle: 'Maximum attribute values'
           },
-          attributes: ['S', 'T', 'A', 'I', 'Will', 'Int', 'Fell'],
+          attributes: ['S', 'T', 'A', 'I', 'Will', 'Int', 'Fell', 'Speed'],
+          races: {
+            race_1: 'Human', race_2: 'Ork', race_3: 'Aeldari', race_4: 'Adeptus Astartes', race_5: 'Primaris Astartes',
+            race_6: 'Ogryn', race_7: 'Ratling', race_8: 'Kroot', race_9: 'Drukhari', race_10: 'Wraith Construct'
+          },
+          maxAttributes: {
+            attribute_1: 'Strength', attribute_2: 'Toughness', attribute_3: 'Agility', attribute_4: 'Initiative',
+            attribute_5: 'Willpower', attribute_6: 'Intellect', attribute_7: 'Fellowship', attribute_8: 'Speed'
+          },
           skillsColumn1: [
             'Athletics (S)', 'Awareness (Int)', 'Ballistic Skill (A)', 'Cunning (Fel)', 'Deception (Fel)',
             'Insight (Fel)', 'Intimidation (Will)', 'Investigation (Int)', 'Leadership (Will)'
@@ -337,6 +429,22 @@
 
       // --- Domyślny język (polski) / Default language (Polish) ---
       let currentLanguage = 'pl';
+
+      const maxAttributeRows = [
+        { race: 'race_1', values: [8, 8, 8, 8, 8, 8, 8, 8] },
+        { race: 'race_2', values: [12, 12, 7, 7, 8, 7, 7, 7] },
+        { race: 'race_3', values: [8, 7, 12, 12, 12, 10, 6, 10] },
+        { race: 'race_4', values: [10, 10, 9, 9, 10, 10, 8, 9] },
+        { race: 'race_5', values: [12, 12, 9, 9, 10, 10, 8, 9] },
+        { race: 'race_6', values: [12, 12, 7, 4, 8, 1, 4, 8] },
+        { race: 'race_7', values: [6, 6, 10, 10, 8, 8, 10, 7] },
+        { race: 'race_8', values: [12, 12, 12, 12, 10, 6, 6, 10] },
+        { race: 'race_9', values: [8, 8, 12, 12, 10, 10, 6, 10] },
+        { race: 'race_10', values: [12, 12, 8, 8, 12, 10, 4, 8] }
+      ];
+
+      const maxAttributeKeys = ['attribute_1','attribute_2','attribute_3','attribute_4','attribute_5','attribute_6','attribute_7','attribute_8'];
+
 
       // --- Koszty atrybutów i umiejętności / Attribute and skill costs ---
       const attributeCosts = {
@@ -367,9 +475,11 @@
         document.getElementById('footerText').innerText = t.labels.footerText;
         document.getElementById('manualButton').innerText = t.labels.manualButton;
         document.getElementById('backToMainButton').innerText = t.labels.backToMainButton;
+        document.getElementById('showSpeciesMaxButton').innerText = t.labels.showSpeciesMaxButton;
+        document.getElementById('speciesMaxModalTitle').innerText = t.labels.speciesMaxModalTitle;
 
         // Aktualizacja etykiet atrybutów / Update attribute labels
-        for (let i = 1; i <= 7; i++) {
+        for (let i = 1; i <= 8; i++) {
           document.getElementById(`attrLabel${i}`).innerText = t.attributes[i - 1];
         }
 
@@ -382,12 +492,53 @@
         for (let i = 1; i <= 9; i++) {
           document.getElementById(`skillLabelColumn2Row${i}`).innerText = t.skillsColumn2[i - 1];
         }
+
+        if (document.getElementById('speciesMaxModal').classList.contains('is-open')) {
+          renderSpeciesMaxTable();
+        }
+      }
+
+
+
+      function renderSpeciesMaxTable() {
+        const t = translations[currentLanguage];
+        const table = document.getElementById('speciesMaxTable');
+
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const raceHeader = document.createElement('th');
+        raceHeader.innerText = '';
+        headerRow.appendChild(raceHeader);
+
+        maxAttributeKeys.forEach(key => {
+          const th = document.createElement('th');
+          th.innerText = t.maxAttributes[key];
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        const tbody = document.createElement('tbody');
+        maxAttributeRows.forEach((row) => {
+          const tr = document.createElement('tr');
+          const raceCell = document.createElement('td');
+          raceCell.innerText = t.races[row.race];
+          tr.appendChild(raceCell);
+
+          row.values.forEach((value) => {
+            const td = document.createElement('td');
+            td.innerText = String(value);
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+
+        table.replaceChildren(thead, tbody);
       }
 
       // --- Funkcja resetująca wszystkie pola do wartości domyślnych / Function to reset all fields to default values ---
       function resetAll() {
         document.getElementById('xpPool').value = 100;
-        ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd'].forEach(id => {
+        ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach(id => {
           document.getElementById(`attr_${id}`).value = 1;
         });
         for (let i = 1; i <= 9; i++) {
@@ -405,7 +556,7 @@
       function recalcXP() {
         let xpPool = parseInt(document.getElementById('xpPool').value) || 0;
         let totalAttrCost = 0;
-        const attrIds = ['attr_S', 'attr_Wt', 'attr_Zr', 'attr_I', 'attr_SW', 'attr_Int', 'attr_Ogd'];
+        const attrIds = ['attr_S', 'attr_Wt', 'attr_Zr', 'attr_I', 'attr_SW', 'attr_Int', 'attr_Ogd', 'attr_Speed'];
         attrIds.forEach(id => {
           let inp = document.getElementById(id);
           let val = parseInt(inp.value) || 1;
@@ -540,6 +691,33 @@
         ta.addEventListener('input', () => adjustTalentFontSize(ta));
       });
 
+
+
+      const speciesMaxModal = document.getElementById('speciesMaxModal');
+
+      function toggleSpeciesMaxModal(forceOpen) {
+        const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !speciesMaxModal.classList.contains('is-open');
+        speciesMaxModal.classList.toggle('is-open', shouldOpen);
+        speciesMaxModal.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        if (shouldOpen) {
+          renderSpeciesMaxTable();
+        }
+      }
+
+      document.getElementById('showSpeciesMaxButton').addEventListener('click', () => {
+        toggleSpeciesMaxModal(true);
+      });
+
+      document.getElementById('closeSpeciesMaxButton').addEventListener('click', () => {
+        toggleSpeciesMaxModal(false);
+      });
+
+      speciesMaxModal.addEventListener('click', (event) => {
+        if (event.target === speciesMaxModal) {
+          toggleSpeciesMaxModal(false);
+        }
+      });
+
       document.getElementById('manualButton').addEventListener('click', () => {
         const manualPath = `HowToUse/${currentLanguage}.pdf`;
         window.open(manualPath, '_blank', 'noopener');
@@ -547,6 +725,12 @@
 
       document.getElementById('backToMainButton').addEventListener('click', () => {
         window.location.href = '../Main/index.html';
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && speciesMaxModal.classList.contains('is-open')) {
+          toggleSpeciesMaxModal(false);
+        }
       });
 
       // --- Inicjalizacja domyślnych wartości / Initialization of default values ---
