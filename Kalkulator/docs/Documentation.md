@@ -17,6 +17,12 @@ W tej zmianie zaktualizowano wyłącznie polskie etykiety interfejsu (bez zmiany
 - `TworzeniePostaci.html`: polskie stringi interfejsu związane z pulą punktów i błędem przekroczenia puli zmienione z **XP** na **PD**.
 - Warstwa EN (English) pozostaje bez zmian i nadal używa skrótu **XP**.
 
+## 1.2. Aktualizacja 2026-04-24: `TworzeniePostaci.html` (Szybkość + tabela maksimów ras)
+- Rozszerzono sekcję atrybutów do 8 pozycji przez dodanie `attr_Speed` oraz etykiet `Szybkość` (PL) / `Speed` (EN).
+- Rozszerzono wszystkie miejsca iterujące po atrybutach: tłumaczenia (`attrLabel1..8`), reset danych, przeliczanie kosztów XP.
+- Dodano nowy przycisk otwierający modal z tabelą maksimów ras. Wymaganie koloru zostało spełnione przez użycie tego samego stylu co przyciski `Instrukcja`/`Strona Główna` (brak czerwieni).
+- Dodano dynamiczny renderer tabeli ras z danymi osadzonymi bezpośrednio w kodzie, wraz z obsługą przełączania PL/EN.
+
 ## 2. Zależności zewnętrzne i assety
 ### 2.1. Fonty
 - Wszystkie strony (`index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`) korzystają z lokalnego stosu fontów, bez zewnętrznych CDN:
@@ -192,10 +198,17 @@ const skillCosts = {
   - `<button id="manualButton">` (otwiera PDF).
 - Sekcje:
   - **Pula XP** (`#xpPool`, `#xpRemaining`).
-  - **Atrybuty** – tabela 7 pól (`attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`).
+  - **Atrybuty** – tabela 8 pól (`attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, `attr_Speed`).
   - **Umiejętności** – 18 pól w 2 kolumnach (`skill_Column1Row1..9`, `skill_Column2Row1..9`).
   - **Talenty…** – 10 par pól (`talent_name_1..10`, `talent_cost_1..10`).
   - **Komunikaty**: `#errorMessage`.
+
+
+### 6.1a. Modal „Maksymalne wartości atrybutów”
+- W obszarze `.language-switcher` dodano przycisk `#showSpeciesMaxButton` (styl identyczny jak `#manualButton` i `#backToMainButton`, bez czerwonej palety).
+- Dodano overlay `#speciesMaxModal` z dialogiem `.species-max-modal__dialog`, nagłówkiem `#speciesMaxModalTitle`, przyciskiem zamknięcia `#closeSpeciesMaxButton` i tabelą `#speciesMaxTable`.
+- Dane tabeli są zaszyte w JS (`maxAttributeRows` oraz słowniki `races` i `maxAttributes` w `translations.pl/en`) i odpowiadają mapowaniu `Race_1..Race_10` oraz `Attribute_1..Attribute_8`.
+- Render tabeli (`renderSpeciesMaxTable`) buduje `thead`/`tbody` dynamicznie dla bieżącego języka, bez odczytu z plików `.md`.
 
 ### 6.2. Style inline w pliku
 `TworzeniePostaci.html` rozszerza `kalkulatorxp.css`:
@@ -205,6 +218,7 @@ const skillCosts = {
 - `.table` – obramowania, zebra, hover, `box-shadow: var(--glow)`, nagłówki z gradientem `rgba(22,198,12,...)`.
 - `input`, `select`, `textarea` – spójne tło, `border: 1px solid var(--b)`, focus ring.
 - `.footer` – subtelny tekst w stopce, `letter-spacing: .08em`.
+- `.species-max-modal*` – zestaw klas modala: przyciemnione tło, centrowany dialog, przewijanie i responsywne ograniczenie wysokości; tabela dziedziczy istniejące style `.table` (zebra/hover) i wymusza wyśrodkowanie wszystkich komórek.
 
 ### 6.3. Słowniki kosztów XP
 ```js
@@ -229,15 +243,16 @@ const skillCosts = {
    - Ustawia etykietę przycisku `#btnMainPage` na `Strona Główna` (PL) lub `Main Page` (EN).
    - Ustawia `currentLanguage`.
    - Podmienia teksty w UI (`pageTitle`, nagłówki tabel, przycisk manuala, stopka).
-   - Aktualizuje etykiety atrybutów i umiejętności w obu kolumnach.
+   - Aktualizuje etykiety atrybutów (1..8) i umiejętności w obu kolumnach.
+  - Aktualizuje etykietę przycisku i tytuł modala maksimów ras; jeśli modal jest otwarty, renderuje tabelę ponownie dla nowego języka.
    - Ustawia `xpRemainingLabel` z wartością `100` w znaczniku `<strong id="xpRemaining">`.
 2. **`resetAll()`**
-   - Ustawia domyślne wartości: `xpPool=100`, atrybuty=1, umiejętności=0, talenty=0.
+   - Ustawia domyślne wartości: `xpPool=100`, atrybuty=1 (w tym `attr_Speed`), umiejętności=0, talenty=0.
    - Czyści nazwy talentów.
    - Wywołuje `recalcXP()`.
 3. **`recalcXP()`**
    - Waliduje `xpPool` (brak limitu górnego, brak wartości ujemnych).
-   - Dla atrybutów:
+   - Dla atrybutów (8 pól, z `attr_Speed`):
      - zakres `1–12`,
      - sumuje koszt z `attributeCosts`,
      - dodaje klasę `attribute-high` przy wartości > 8.
@@ -273,6 +288,9 @@ const skillCosts = {
   - na `input` → `adjustTalentFontSize()`.
 - Przycisk `#manualButton`:
   - otwiera `HowToUse/${currentLanguage}.pdf` w nowej karcie (`window.open` z `noopener`).
+- Modal maksimów ras:
+  - `#showSpeciesMaxButton` otwiera overlay i renderuje tabelę,
+  - `#closeSpeciesMaxButton`, kliknięcie tła overlay lub `Escape` zamyka modal.
 
 ### 6.7. Domyślne wartości po starcie
 - `currentLanguage = 'pl'`.
