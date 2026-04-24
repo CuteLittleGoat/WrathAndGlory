@@ -194,6 +194,9 @@ body{
   color:var(--code);
   font-weight:600;
 }
+.referenceTable tbody th:first-child{
+  text-align:left;
+}
 
 .cardHeader{
   padding:10px 12px;
