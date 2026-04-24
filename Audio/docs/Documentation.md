@@ -280,3 +280,22 @@ window.firebaseConfig = {
   2. Oczekiwaną strukturę `audio/favorites` (kolekcja/dokument/pola).
   3. Skrypt Node.js do inicjalizacji dokumentu.
   4. Instrukcję konfiguracji krok-po-kroku w języku polskim i angielskim.
+## 16. Uzupełnienie: precyzyjne kolory i wartości UI (bez opisów ogólnych)
+- `--bg`: radialne gradienty (`rgba(0,255,128,0.06)` + `rgba(0,255,128,0.08)`) i baza `#031605`.
+- `--panel`: `#000`; `--panel-alt`: `#041b08`.
+- `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`; `--accent-strong`: `#1ee616`.
+- `--text`: `#9cf09c`; `--muted`: `rgba(156, 240, 156, 0.7)`.
+- `--danger`: `#ff5f5f` (aktywnie odtwarzane sample i liczniki grup).
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--shadow`: `0 8px 24px rgba(0, 0, 0, 0.45)`.
+- `.sample-alias`: `#d2fad2`.
+- Border toolbarów/paneli filtrów: `rgba(22, 198, 12, 0.6)` do `rgba(22, 198, 12, 0.7)` (w zależności od sekcji).
+- Focus ring pól i selectów: zielone obwódki oparte o `rgba(22, 198, 12, 0.25)`.
+
+## 17. Uzupełnienie: logika funkcjonalna (pełny przepływ)
+1. Import manifestu XLSX -> normalizacja rekordów -> budowa listy sampli i drzewa tagów.
+2. Nadpisanie aliasów z zapisanych ustawień (`aliases`) po `itemId`.
+3. Render widoku admina i widoku użytkownika z tego samego źródła stanu.
+4. Operacje na listach (`favorites`, `mainView`) z zachowaniem kolejności ręcznej.
+5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100%.
+6. Zapis zmian do Firestore (`audio/favorites`) lub fallback do `localStorage` (`audio.settings`).
+7. Przełączanie języka równolegle aktualizuje etykiety obu widoków (admin + user preview).

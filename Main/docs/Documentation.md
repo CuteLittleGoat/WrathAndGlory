@@ -338,3 +338,21 @@ Zmniejszenie przypadków, w których dolny pasek nawigacji systemowej Androida (
 - Silnik renderujący rezerwuje poprawną wysokość logo od początku.
 - Panel `<main>` ma stabilną geometrię od pierwszego renderu.
 - Zmiana zmniejsza wskaźnik CLS i eliminuje wizualny efekt „skakania” przycisków na starcie.
+## 13. Kompletny wykaz funkcji JavaScript (`index.html`)
+- `urlBase64ToUint8Array(base64String)` – zamiana klucza VAPID z Base64URL na `Uint8Array` dla `PushManager.subscribe`.
+- `getPushConfig()` – pobranie konfiguracji Web Push (`publicVapidKey`, `backendSubscribeUrl`) z `Infoczytnik/config/web-push-config.js`.
+- `setPushButtonMessage(message, isError = false)` – komunikat pod CTA push (status/blad).
+- `refreshPushButtonState()` – odświeżenie widoczności i stanu przycisku „Włącz powiadomienia” na podstawie wsparcia przeglądarki, SW i subskrypcji.
+- `ensureServiceWorkerRegistration()` – rejestracja/odczyt aktywnego Service Workera.
+- `enablePushNotifications()` – pełny flow: permission -> rejestracja SW -> subskrypcja -> wysyłka do backendu.
+
+## 14. Precyzyjna paleta kolorystyczna (bez skrótów)
+- Tło `--bg`: dwa radialne gradienty (`rgba(0,255,128,0.06)` i `rgba(0,255,128,0.08)`) + kolor bazowy `#031605`.
+- Tło panelu `--panel`: `#000`.
+- Ramki `--border`: `#16c60c`.
+- Tekst `--text`: `#9cf09c`.
+- Akcent `--accent`: `#16c60c`; ciemny akcent `--accent-dark`: `#0d7a07`.
+- Glow `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
+- Tła przycisków: `rgba(22, 198, 12, 0.08)` (normal), `rgba(22, 198, 12, 0.14)` (hover), `rgba(22, 198, 12, 0.22)` (active).
+- Cień hover przycisków: `0 0 18px rgba(22, 198, 12, 0.3)`.
+- CTA push (wariant czerwony): obramowanie `#ff3b30`, tło `rgba(255, 59, 48, 0.2)`, tekst `#ffe5e3`, glow `0 0 18px rgba(255, 59, 48, 0.45)`.

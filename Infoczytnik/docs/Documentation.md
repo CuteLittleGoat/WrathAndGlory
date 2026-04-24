@@ -263,3 +263,34 @@ W celu zachowania użytkowego charakteru `docs/README.md` przeniesiono do dokume
 8. Szczegóły hardeningu ścieżki fontu i użycia wspólnego helpera wyboru fontu.
 
 README pozostaje teraz instrukcją stricte użytkową (kroki „co kliknąć i co się stanie”).
+## Sekcja techniczna 1:1 — kolory, fonty, funkcje (doprecyzowanie)
+
+### A) Dokładna paleta kolorystyczna (zamiast opisów ogólnych)
+#### A.1 `Infoczytnik_test.html` (ekran gracza)
+- Akcent treści: `#00ff66` (domyślny, nadpisywalny payloadem GM).
+- Tło bazowe i obszar ekranu: `#000`.
+- Prefix: `rgba(255,255,255,.88)`.
+- Suffix: `rgba(255,255,255,.86)`.
+- Cień tekstu: `0 2px 6px rgba(0,0,0,.70)` + glow `0 0 18px rgba(0,255,120,.18)`.
+- CRT scanline/vignette: `rgba(255,255,255,.06)`, `rgba(0,0,0,0)`, `rgba(0,0,0,.70)`, `rgba(255,255,255,.04)`.
+- Overlay odblokowania dźwięku: `rgba(0,0,0,.88)`.
+
+#### A.2 `GM_test.html` (panel GM)
+- Tekst: `#eaeaea`, tekst pomocniczy: `#bdbdbd`.
+- Akcent przycisków: `#ffd27a`; obramowania: `#2a2a2a`.
+- Tło panelu: `rgba(18,18,18,.92)`; tło strony: `linear-gradient(180deg, #070707, #0f0f0f)`.
+- Przycisk standard: `linear-gradient(180deg, #3a2a12, #1c1408)` + border `rgba(255,210,122,.35)`.
+- Przycisk ostrzegawczy: `linear-gradient(180deg, #1c0c0c, #120606)`, border `rgba(255,120,120,.25)`, tekst `#ffb3b3`.
+- Inputy: `#0f0f0f`.
+- Szybkie kolory: `#00ff66`, `#ff3333`, `#d4af37`, `#ffffff`.
+
+### B) Katalog funkcji — `GM_test.html`
+Najważniejsze funkcje do rekonstrukcji 1:1: `safeGet`, `getSelectedFont`, `normalizeHexColor`, `resolveHexColor`, `buildManifestFromWorkbook`, `updateDataFromXlsx`, `loadManifest`, `rerollFillers`, `getPreviewMode`, `setPreviewMode`, `preloadManifestFonts`, `applySelectedFontToPreview`, `renderPreview`, `getPayload`, `send`, `ping`, `restoreDefaults`.
+
+### C) Katalog funkcji — `Infoczytnik_test.html`
+Najważniejsze funkcje runtime: `preloadKnownFonts`, `play`, `getViewportSize`, `updateOverlayMetrics`, `applyStyles`, `applyLayout`, `applyMessage`, `fitOverlayToBackground`, `scheduleFitOverlay`, `clearMessage`.
+
+### D) Fonty — pełna lista robocza
+- UI/fallback: `Calibri, Arial, sans-serif` (ekran gracza), `Arial, sans-serif` (panel GM).
+- Debug/techniczne: `Consolas, "Courier New", monospace`.
+- Rodziny ładowane z Google Fonts (w zależności od presetów): `Share Tech Mono`, `Cinzel`, `Rajdhani`, `Black Ops One`, `Staatliches`, `Orbitron`, `Questrial`, `Russo One`, `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.

@@ -226,3 +226,40 @@ Każda funkcja generatora:
 - Maksymalna liczba wyników: **20**.
 - Seed jest dowolnym tekstem — stabilizuje RNG.
 - Generator nie dodaje tytułów, honorificów ani sufiksów poza listami segmentów.
+## 13) Mapa funkcji w `script.js` (ultra-dokładnie)
+Poniżej pełna warstwa narzędziowa generatora nazw, żeby odtworzyć logikę 1:1:
+
+### 13.1 RNG
+- `xfnv1a(str)` – hash 32-bit dla seeda tekstowego.
+- `mulberry32(a)` – deterministyczny generator pseudolosowy oparty o seed.
+- `cryptoRand()` – losowość kryptograficzna (`crypto.getRandomValues`).
+- `makeRng(seedStr)` – przełącza tryb `seed`/`auto`; zwraca `{ rand, mode }`.
+
+### 13.2 Helpers składania nazw
+- `chance(p, rand)` – test prawdopodobieństwa.
+- `cap(s)` – kapitalizacja pierwszej litery.
+- `cleanName(s)` – czyszczenie cudzysłowów, nawiasów, podwójnych spacji i zbędnych odstępów przed interpunkcją.
+- `pick(arr, rand)` – losowanie elementu z tablicy.
+- `pickWeighted(arr, rand)` – losowanie ważone (`{v,w}`) z fallbackiem na zwykłą tablicę stringów.
+- `rollInt(min, max, rand)` – losowanie liczby całkowitej w zakresie domkniętym.
+- `isVowel(ch)` – test samogłoski (z uwzględnieniem polskich znaków).
+- `tidySegmentBoundary(a, b)` – wygładzanie styku segmentów (duplikaty liter/samogłosek).
+- `phoneticPolish(s)` – końcowe „wygładzenie fonetyczne” (redukcja niechcianych zlepków).
+- `buildName(parts)` – składanie finalnej nazwy z segmentów i wygładzaniem granic.
+- `looksGood(s)` – walidator jakości wygenerowanego napisu.
+- `tryGenerate(fn, rand, tries=8)` – wielokrotna próba i wybór najlepszego wariantu.
+- `formatWithTitle(core, titles, rand, chanceValue)` – opcjonalny tytuł przed nazwą.
+- `formatNamedThing(classifier, core)` – format `Klasyfikator "Nazwa"`.
+
+## 14) Specyfikacja kolorów 1:1
+- `--bg`: `#031605`; `--bg-grad`: radialne gradienty + `#031605`.
+- `--panel`: `#000`.
+- `--panel-soft`: `rgba(22, 198, 12, 0.06)`.
+- `--text`: `#9cf09c`.
+- `--muted`: `#4a8b4a`.
+- `--border`: `#16c60c`.
+- `--accent`: `#16c60c`.
+- `--accent-dark`: `#0d7a07`.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
+- `--divider`: `rgba(22, 198, 12, 0.18)`.
+- Focus ring: `0 0 0 2px rgba(22, 198, 12, 0.2)`.
