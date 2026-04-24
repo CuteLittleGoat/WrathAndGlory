@@ -67,8 +67,8 @@ python -m http.server 8000
 
 Następnie przejdź do `http://localhost:8000/Main/index.html`.
 
-### Aktualizacja aplikacji
-Aktualizacja polega na podmianie plików statycznych w miejscu hostingu (np. GitHub Pages):
+### Utrzymanie aplikacji
+Utrzymanie polega na podmianie plików statycznych w miejscu hostingu (np. GitHub Pages):
 1. Zaktualizuj treść w `Main/index.html` (np. adresy URL przycisków, teksty).
 2. Jeśli zmieniasz logo, podmień plik `Main/wrath-glory-logo-warhammer.png`.
 3. Wdróż zmiany w swoim hostingu (np. push do repozytorium obsługującego GitHub Pages).
@@ -168,75 +168,75 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 
 ---
 
-## Aktualizacja PWA (PL)
+## PWA (PL)
 - Strona główna rejestruje teraz globalny Service Worker (`../service-worker.js`) i ładuje manifest (`../manifest.webmanifest`).
 - Ikona aplikacji została ustawiona na `IkonaGlowna.png`.
 - Ikona powiadomień została ustawiona na `IkonaPowiadomien.png`.
 - Aby instalacja PWA działała poprawnie, uruchamiaj aplikację przez HTTPS (na GitHub Pages działa domyślnie).
 
-## PWA update (EN)
+## PWA (EN)
 - The main page now registers a global Service Worker (`../service-worker.js`) and loads the manifest (`../manifest.webmanifest`).
 - App icon is now `IkonaGlowna.png`.
 - Notification icon is now `IkonaPowiadomien.png`.
 - For proper PWA installation, run the app over HTTPS (GitHub Pages already provides this).
 
 
-## Aktualizacja 2026-03-13 / Update 2026-03-13
+## Orientacja aplikacji (PL/EN)
 - Usunięto globalny lock orientacji z `manifest.webmanifest`, dlatego orientacja modułów (poza wyjątkami implementowanymi lokalnie w modułach) zależy od ustawień urządzenia/systemu.
 - The global orientation lock was removed from `manifest.webmanifest`, so module orientation (except module-specific local locks) now follows device/system settings.
 
 ---
 
-## Aktualizacja PWA (PL)
+## PWA (PL)
 - Aplikacja PWA uruchamia się teraz ze `start_url` ustawionym na `Main/index.html`, dzięki czemu instalowana aplikacja zawsze startuje w widoku użytkownika (bez `?admin=1`).
 - Service Worker działa w trybie online-first: przy braku internetu zwraca komunikat o wymaganym połączeniu zamiast utrwalonego trybu offline.
 - Powiadomienia push otwierają domyślnie produkcyjny ekran `Infoczytnik/Infoczytnik.html`.
 - Skrót przeglądarkowy „Utwórz skrót” zachowuje aktualny URL strony (user/admin), natomiast instalacja PWA używa `start_url` z manifestu (user-only).
 
-## PWA update (EN)
+## PWA (EN)
 - The PWA now starts with `start_url` set to `Main/index.html`, so the installed app always opens in user view (without `?admin=1`).
 - Service Worker now uses an online-first strategy: when offline, it returns a clear “internet required” message instead of maintaining a quasi-offline behavior.
 - Push notifications now open the production screen `Infoczytnik/Infoczytnik.html` by default.
 - A browser-created home-screen shortcut keeps the current URL (user/admin), while PWA install uses manifest `start_url` (user-only).
 
-## Aktualizacja 2026-03-13 (PL)
+## Powiadomienia push (PL)
 - Na stronie `Main/index.html` dodano wyróżniony, czerwony przycisk **Włącz powiadomienia**.
 - Przycisk uruchamia zgodę przeglądarki i zapis subskrypcji Web Push dla tego samego origin co moduł Infoczytnik.
 - Przycisk jest widoczny w widoku użytkownika i admina, aby onboarding powiadomień był dostępny od razu po wejściu do menu głównego.
 
-## Update 2026-03-13 (EN)
+## Push notifications (EN)
 - A highlighted red **Enable notifications** button was added to `Main/index.html`.
 - The button requests browser permission and stores a Web Push subscription for the same origin as the Infoczytnik module.
 - The button is visible in both user and admin views to make push-notification onboarding available directly from the main launcher.
 
-## Aktualizacja 2026-03-13 (PL) — korekta przycisku powiadomień
+## Powiadomienia push (PL) — korekta przycisku powiadomień
 - Przycisk **Włącz powiadomienia** został zmniejszony i ma mocno zaokrąglone krawędzie.
 - Przycisk jest przypięty na stałe do prawego dolnego rogu ekranu, niezależnie od układu siatki modułów.
 
-## Update 2026-03-13 (EN) — notifications button adjustment
+## Push notifications (EN) — notifications button adjustment
 - The **Enable notifications** button is now smaller and pill-shaped.
 - The button is fixed to the bottom-right corner of the viewport, independent from the modules grid layout.
 
-## Aktualizacja 2026-03-13 (PL) — pozycja przycisku powiadomień pod siatką
+## Powiadomienia push (PL) — pozycja przycisku powiadomień pod siatką
 - Przycisk **Włącz powiadomienia** nie jest już przypięty do viewportu (`position: fixed`).
 - Przycisk znajduje się teraz **na stałe pod tabelą/siatką przycisków modułów**, wyrównany do prawej strony zielonej ramki głównego panelu.
 - Dzięki temu nie zasłania treści i nie „podąża” za ekranem podczas przewijania.
 
-## Update 2026-03-13 (EN) — notifications button placed below the grid
+## Push notifications (EN) — notifications button placed below the grid
 - The **Enable notifications** button is no longer pinned to the viewport (`position: fixed`).
 - It is now permanently placed **below the module buttons grid**, aligned to the right edge of the main green-framed panel.
 - This prevents overlap and stops the button from following the user while scrolling.
 
 
-## Aktualizacja 2026-03-13 (PL) — obsługa błędu subskrypcji push
+## Powiadomienia push (PL) — obsługa błędu subskrypcji push
 - W `Main/index.html` rozszerzono obsługę błędu przy zapisie subskrypcji push.
 - Jeśli backend zwróci błąd, UI pokazuje teraz: `status HTTP + treść odpowiedzi`, co ułatwia diagnostykę CORS i konfiguracji endpointu.
 
-## Update 2026-03-13 (EN) — push subscription error handling
+## Push notifications (EN) — push subscription error handling
 - In `Main/index.html`, push subscription error handling was extended.
 - When backend returns an error, the UI now reports: `HTTP status + response body`, making CORS/endpoint diagnostics easier.
 
-## Aktualizacja 2026-03-29 — ciemny pasek systemowy Android (PWA)
+## Ciemny pasek systemowy Android (PWA)
 
 ### PL
 W celu zwiększenia spójności koloru paska systemowego (dolne przyciski Androida) w zainstalowanej PWA:
@@ -256,12 +256,12 @@ To improve consistency of Android system navigation bar color (Back/Home/Recents
 
 After deployment, a full PWA reinstall is recommended on devices (remove app/shortcut, clear site data, reinstall), because Android/Chrome may cache older UI integration settings.
 
-## Aktualizacja 2026-04-15 — stabilizacja układu przy ładowaniu logo (PL)
+## stabilizacja układu przy ładowaniu logo (PL)
 - W `Main/index.html` dodano atrybuty `width="1366"` i `height="768"` do obrazka logo.
 - W klasie `.logo` dodano jawne `height: auto`.
 - Efekt: przeglądarka zna proporcje logo przed pobraniem bitmapy i rezerwuje właściwą wysokość, dzięki czemu przyciski nie „przeskakują” po starcie strony.
 
-## Update 2026-04-15 — layout stability while logo loads (EN)
+## layout stability while logo loads (EN)
 - Added `width="1366"` and `height="768"` attributes to the logo image in `Main/index.html`.
 - Added explicit `height: auto` to the `.logo` CSS rule.
 - Result: the browser knows the logo aspect ratio before the bitmap is downloaded and reserves the correct height, preventing startup button shift/layout jump.

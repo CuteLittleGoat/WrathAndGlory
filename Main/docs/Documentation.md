@@ -145,7 +145,7 @@ Skrypt na końcu `<body>` przełącza widok użytkownika i admina na podstawie p
   - skrypt pobiera plik `ZmienneHiperlacza.md`, parsuje linie przez wyrażenie regularne `^(Mapa|Obrazki)\s*:\s*(\S+)` i ustawia `href` w elementach z `data-map-link` i `data-images-link`.
   - jeśli plik nie jest dostępny, skrypt loguje ostrzeżenie w konsoli i pozostawia domyślne `href="#"`.
 
-## Aktualizacja treści
+## Treść i nawigacja
 - **Zmiana adresów URL innych przycisków**: edytuj atrybuty `href` w przyciskach `<a class="btn">` w `Main/index.html` (np. Generator NPC, Skarbiec Danych, Kalkulator).
 - **Zmiana linku mapy**: zaktualizuj wpis `Mapa: ...` w pliku `Main/ZmienneHiperlacza.md`.
 - **Zmiana linku obrazków**: zaktualizuj wpis `Obrazki: ...` w pliku `Main/ZmienneHiperlacza.md`.
@@ -182,7 +182,7 @@ Następnie otwórz `http://localhost:8000/Main/index.html`.
   - brak wymuszonej orientacji (`orientation` usunięte z manifestu, więc orientacja zależy od urządzenia/systemu)
   - `icons`: `IkonaGlowna.png`, `IkonaPowiadomien.png`.
 
-## Aktualizacja techniczna PWA (2026-03)
+## PWA — konfiguracja techniczna
 
 ### `manifest.webmanifest`
 - `start_url` ustawiono na `./Main/index.html` (user-only, bez parametru `?admin=1`).
@@ -196,7 +196,7 @@ Następnie otwórz `http://localhost:8000/Main/index.html`.
   - dla nawigacji bez odpowiedzi zwracany jest `503` z komunikatem tekstowym o wymaganym internecie.
 - Domyślny URL powiadomienia (`push` i `notificationclick`) ustawiono na produkcyjne `./Infoczytnik/Infoczytnik.html` zamiast wersji testowej.
 
-## Aktualizacja techniczna 2026-03-13 — przycisk Web Push w module Main
+## przycisk Web Push w module Main
 
 ### Zakres
 - Dodano nowy element UI: `button#pushBtn` w siatce `.actions` obok przycisków modułów.
@@ -232,7 +232,7 @@ Dodane funkcje:
 - Dotychczasowa rejestracja SW na `window.load` została zachowana, ale używa wspólnej funkcji `ensureServiceWorkerRegistration()`.
 - Dzięki temu zarówno bierna rejestracja SW, jak i aktywna subskrypcja push korzystają z jednej ścieżki rejestracji.
 
-## Aktualizacja techniczna 2026-03-13 — korekta położenia i rozmiaru CTA push
+## korekta położenia i rozmiaru CTA push
 - `button#pushBtn` został przeniesiony poza siatkę `.actions` i renderuje się jako element stały (`position: fixed`).
 - Klasa `.pushCta` została zmieniona na wariant kompaktowy:
   - `right: 14px`, `bottom: 14px`, `z-index: 30`
@@ -241,13 +241,13 @@ Dodane funkcje:
 - Efekt: przycisk jest zawsze w prawym dolnym rogu ekranu i nie zaburza geometrii przycisków nawigacyjnych modułów.
 
 
-## Aktualizacja techniczna 2026-03-13 — porządkowanie kolejności przycisków modułów
+## porządkowanie kolejności przycisków modułów
 - Przebudowano kolejność bloków `.stack` w `Main/index.html`, aby po odfiltrowaniu elementów `data-admin-only="true"` nie zostawała pusta komórka siatki między **Infoczytnik** i **Kalkulator**.
 - Widok użytkownika ma teraz stałą kolejność: **Infoczytnik → Skarbiec Danych → Obrazki → Mapa → Kalkulator → Rzut kośćmi**.
 - Widok admina ma teraz stałą kolejność: **Infoczytnik → Skarbiec Danych → Generator Nazw → Generator NPC → Audio → Obrazki → Mapa → Kalkulator → Rzut kośćmi**.
 - Usunięto z siatki `.actions` zbędny duplikat `button#pushBtn`; przycisk powiadomień występuje tylko raz jako element fixed poza siatką.
 
-## Aktualizacja techniczna 2026-03-13 — osadzenie CTA push pod siatką modułów
+## osadzenie CTA push pod siatką modułów
 - Usunięto pozycjonowanie viewportowe przycisku (`position: fixed`, `right`, `bottom`, `z-index`) z klasy `.pushCta`.
 - Dodano nowy kontener `.pushCtaWrap` umieszczony **wewnątrz `<main>` i pod `.actions`**:
   - `width: 100%`
@@ -264,7 +264,7 @@ Dodane funkcje:
 - Logika JS Web Push pozostała bez zmian (obsługa kliknięcia, walidacja konfiguracji, subskrypcja, POST endpoint).
 
 
-## Aktualizacja techniczna 2026-03-13 — szczegóły błędów subskrypcji push
+## szczegóły błędów subskrypcji push
 - W `enablePushNotifications()` (`Main/index.html`) zmieniono obsługę odpowiedzi `fetch(pushConfig.subscribeEndpoint, ...)`.
 - Poprzednio przy `!response.ok` rzucany był wyjątek tylko ze statusem HTTP.
 - Aktualnie kod odczytuje dodatkowo treść odpowiedzi backendu:
@@ -272,7 +272,7 @@ Dodane funkcje:
   - `throw new Error(`Błąd zapisu subskrypcji: ${response.status} ${errorText}`);`
 - Efekt: komunikat błędu w UI jest bardziej diagnostyczny i szybciej wskazuje przyczynę po stronie backendu push.
 
-## Aktualizacja techniczna 2026-03-29 — stabilizacja koloru paska systemowego Android (PWA)
+## stabilizacja koloru paska systemowego Android (PWA)
 
 ### Cel
 Zmniejszenie przypadków, w których dolny pasek nawigacji systemowej Androida (Back/Home/Recents) renderuje jasne tło podczas pracy aplikacji jako zainstalowana PWA.
@@ -323,7 +323,7 @@ Zmniejszenie przypadków, w których dolny pasek nawigacji systemowej Androida (
    - widoku głównym `Main/index.html`,
    - przejściach do modułów z poziomu launchera.
 
-## Aktualizacja techniczna 2026-04-15 — eliminacja przesunięcia przycisków przy ładowaniu logo
+## eliminacja przesunięcia przycisków przy ładowaniu logo
 
 ### Zakres zmian
 - W `Main/index.html` obraz logo otrzymał natywne atrybuty rozmiaru:

@@ -375,7 +375,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku: `GeneratorNPC/config/Firebase-config.md`.
 - Plik opisuje dokładny template konfiguracji Web, strukturę danych Firestore oraz skrypt Node.js do utworzenia wymaganych dokumentów.
 
-## 12) Aktualizacja 2026-04-17 — Stan/strike i stabilizacja „Klucz”
+## 12) Stan/strike i stabilizacja „Klucz”
 
 ### 12.1 Formatowanie inline
 - `formatInlineHTML(raw)` rozpoznaje teraz markery: `{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}`.

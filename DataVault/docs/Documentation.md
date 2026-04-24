@@ -2,14 +2,14 @@
 
 Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na `data.json`, z kanonicznym generowaniem danych po stronie przeglądarki (parser XML XLSX).
 
-Aktualizacja danych w repozytorium z dnia **2026-04-20**: po dodaniu nowej zakładki `Pakiety Wyniesienia` w `Repozytorium.xlsx` wykonano ponowną regenerację pliku `data.json`, aby odświeżyć zestaw rekordów używany przez tabele DataVault.
-Aktualizacja logiki kolorowania z dnia **2026-04-20**: w zakładce `Pakiety Wyniesienia`, kolumna `Słowa Kluczowe` nie jest już kolorowana globalnie na czerwono (z wyjątkiem przecinków); od teraz czerwone pozostają wyłącznie fragmenty oznaczone czerwienią w XLSX i przeniesione do `data.json` jako markery `{{RED}}...{{/RED}}`.
-Aktualizacja szerokości kolumny z dnia **2026-04-20**: w zakładce `Pakiety Wyniesienia` kolumna `Koszt PD` ma teraz `min-width: 26ch`, czyli dokładnie tyle samo co `Premia Wpływu`.
+Bieżący stan danych w repozytorium: po dodaniu nowej zakładki `Pakiety Wyniesienia` w `Repozytorium.xlsx` wykonano ponowną regenerację pliku `data.json`, aby odświeżyć zestaw rekordów używany przez tabele DataVault.
+Bieżąca logika kolorowania: w zakładce `Pakiety Wyniesienia`, kolumna `Słowa Kluczowe` nie jest już kolorowana globalnie na czerwono (z wyjątkiem przecinków); od teraz czerwone pozostają wyłącznie fragmenty oznaczone czerwienią w XLSX i przeniesione do `data.json` jako markery `{{RED}}...{{/RED}}`.
+Bieżące ustawienie szerokości kolumny: w zakładce `Pakiety Wyniesienia` kolumna `Koszt PD` ma teraz `min-width: 26ch`, czyli dokładnie tyle samo co `Premia Wpływu`.
 
-Aktualizacja logiki widoku domyślnego z dnia **2026-04-15**: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
+Bieżąca logika widoku domyślnego: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
 
 ---
-Aktualizacja logiki zakładek z dnia **2026-04-23**: zakładka `Kary do ST` została dopisana do zbioru zakładek zasad walki (`COMBAT_RULES_SHEETS`), dzięki czemu jest ukrywana/pokazywana przez checkbox `#toggleCombatTabs` i dziedziczy czerwony styl `.tab--combat` zarówno w trybie admina, jak i użytkownika.
+Bieżąca logika zakładek: zakładka `Kary do ST` została dopisana do zbioru zakładek zasad walki (`COMBAT_RULES_SHEETS`), dzięki czemu jest ukrywana/pokazywana przez checkbox `#toggleCombatTabs` i dziedziczy czerwony styl `.tab--combat` zarówno w trybie admina, jak i użytkownika.
 
 
 ## 1) Struktura projektu i pliki
@@ -17,7 +17,7 @@ Aktualizacja logiki zakładek z dnia **2026-04-23**: zakładka `Kary do ST` zost
 - `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypty `xlsxCanonicalParser.js` i `app.js` oraz style `style.css`.
 - `style.css` — pełne style (kolory, fonty, layout, tabela, popover, modal, menu filtrów listowych).
 - `app.js` — główna logika UI: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i obsługa przycisku generacji.
-- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); w tej aktualizacji repozytorium plik został ponownie wygenerowany z najnowszego dostarczonego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (ostatnia regeneracja w repozytorium: **2026-04-20**, wykonana po podmianie pliku `Repozytorium.xlsx` i dodaniu zakładki `Pakiety Wyniesienia`; potwierdzone ponowną regeneracją w bieżącym zadaniu).
+- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); plik jest generowany z aktualnego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (plik powinien być regenerowany po każdej zmianie `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym).
 - `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`; plik musi leżeć w folderze modułu DataVault (obok `index.html`), bo frontend pobiera go ścieżką względną.
 - `xlsxCanonicalParser.js` — kanoniczny parser XLSX po stronie przeglądarki: czyta bezpośrednio `xl/styles.xml`, `xl/sharedStrings.xml`, `xl/workbook.xml` i `xl/worksheets/sheet*.xml`, aby odwzorować logikę `build_json.py` (w tym detekcję `{{RED}}`).
 - `build_json.py` — kanoniczny generator referencyjny `data.json` z XLSX (AI/CLI/backend). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
@@ -810,7 +810,7 @@ Obsługuje trzy przypadki:
   - `Zaleta`: 46ch
   - `Wada`: 46ch
 
-## 14) Aktualizacja 2026-04-17 — `Stan=old` i marker `{{S}}`
+## 14) `Stan=old` i marker `{{S}}`
 
 ### 14.1 Pipeline danych (Python + parser kanoniczny JS)
 - `build_json.py`
@@ -853,7 +853,7 @@ Obsługuje trzy przypadki:
 
 ---
 
-## Aktualizacja 2026-04-24 — detale techniczne przeniesione z README
+## detale techniczne przeniesione z README
 Po uproszczeniu `docs/README.md` (wersja użytkowa) przeniesiono i utrwalono tutaj szczegóły implementacyjne:
 
 1. **Szerokości i układ kolumn**
