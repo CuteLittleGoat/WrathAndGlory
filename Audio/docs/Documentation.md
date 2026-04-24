@@ -7,13 +7,13 @@
   - **Widok użytkownika** (domyślny) — pokazuje panel odtwarzania oraz boczną nawigację między „Widokiem głównym” i listami „Ulubione”.
   - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera w pełni działający podgląd widoku użytkownika (dane i nawigacja są identyczne jak u użytkownika).
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
-- **Ustawienia:** ulubione, „Główny widok” oraz aliasy sampli są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
-- **Synchronizacja aliasów:** mapa `aliases` jest synchronizowana do obiektów sampli po wczytaniu manifestu i po każdej aktualizacji z Firestore/lokalnego zapisu, aby alias był widoczny w obu trybach.
-- **Odtwarzanie:** kliknięcie nazwy sampla lub taga (druga linia pod nazwą) uruchamia/wyłącza dźwięk dla danej karty; równoległe odtwarzanie wielu sampli jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%).
+- **Ustawienia:** ulubione, „Główny widok” oraz aliasy SFX są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
+- **Synchronizacja aliasów:** mapa `aliases` jest synchronizowana do obiektów SFX po wczytaniu manifestu i po każdej aktualizacji z Firestore/lokalnego zapisu, aby alias był widoczny w obu trybach.
+- **Odtwarzanie:** kliknięcie nazwy SFX lub taga (druga linia pod nazwą) uruchamia/wyłącza dźwięk dla danej karty; równoległe odtwarzanie wielu SFX jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%).
 
 ## 2. Struktura repozytorium (pliki i katalogi)
 - `Audio/index.html` — główny panel (HTML + CSS + JS).
-- `Audio/AudioManifest.xlsx` — źródłowy manifest sampli (kolumny: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`).
+- `Audio/AudioManifest.xlsx` — źródłowy manifest SFX (kolumny: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`).
 - `Audio/config/firebase-config.js` — konfiguracja Firebase (globalna zmienna `window.firebaseConfig`).
 - `Audio/config/firebase-config.template.js` — szablon konfiguracji.
 - `Audio/docs/README.md` — instrukcja użytkownika.
@@ -69,20 +69,20 @@ window.firebaseConfig = {
      - pole „Szukaj tagu...” oraz przycisk **Filtruj ▾**,
      - drzewo checkboxów generowane z tagów folderów,
      - wyskakujące okienko filtra listowego z wyszukiwarką tagów, checkboxami oraz akcjami „Zaznacz wszystko” / „Odznacz wszystko”,
-     - filtrowanie wpływa wyłącznie na listę sampli w panelu admina (nie zmienia głównego widoku ani ulubionych).
-  4. **Toolbar z wyszukiwarką sampli** `.toolbar` (tylko admin): pole „Szukaj sampla...” oraz przycisk **Wyczyść wszystkie aliasy**, umieszczone **pod** panelami tagów.
-     - Przycisk **Wyczyść wszystkie aliasy** usuwa globalnie całą mapę aliasów `aliases` dla wszystkich sampli (także niewidocznych przez filtry tagów i nieobecnych na aktualnie otwartych listach).
+     - filtrowanie wpływa wyłącznie na listę SFX w panelu admina (nie zmienia głównego widoku ani ulubionych).
+  4. **Toolbar z wyszukiwarką SFX** `.toolbar` (tylko admin): pole „Szukaj SFX...” oraz przycisk **Wyczyść wszystkie aliasy**, umieszczone **pod** panelami tagów.
+     - Przycisk **Wyczyść wszystkie aliasy** usuwa globalnie całą mapę aliasów `aliases` dla wszystkich SFX (także niewidocznych przez filtry tagów i nieobecnych na aktualnie otwartych listach).
   5. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
-     - Lewy panel: lista sampli (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
-       - Każda karta sampla pokazuje: nazwę sampla (z aliasem w nawiasie, jeśli ustawiono), `tag2` (drugi poziom folderu) oraz nazwę pliku.
-       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)**, a **bezpośrednio pod nim** przycisk **Wyczyść** (powyżej **Odtwórz**), który usuwa alias dla danego sampla.
+     - Lewy panel: lista SFX (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
+       - Każda karta SFX pokazuje: nazwę SFX (z aliasem w nawiasie, jeśli ustawiono), `tag2` (drugi poziom folderu) oraz nazwę pliku.
+       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)**, a **bezpośrednio pod nim** przycisk **Wyczyść** (powyżej **Odtwórz**), który usuwa alias dla danego SFX.
      - Prawa kolumna `.side-stack`: 
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
   6. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
      - układ `.user-layout` w dwóch kolumnach,
      - lewy panel z przełącznikiem języka `#languageSelectUser` (tylko w trybie user) oraz kontenerami `#userMainView` i `#userFavoritesView`,
-     - każda karta w widoku użytkownika pokazuje nazwę sampla i `tag2` (bez nazwy pliku) oraz suwak głośności,
+     - każda karta w widoku użytkownika pokazuje nazwę SFX i `tag2` (bez nazwy pliku) oraz suwak głośności,
      - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
      - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
 
@@ -125,7 +125,7 @@ window.firebaseConfig = {
 - `.alias-input`: pole tekstowe aliasu (`background: #031806`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `font-size: 12px`).
 - `.fav-list`: `border: 1px solid rgba(22, 198, 12, 0.5)`, tło `#031206`.
 - Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
-- `.sample-trigger`: elementy klikalne (nazwa sampla oraz tag), `cursor: pointer` i łagodne przejście koloru.
+- `.sample-trigger`: elementy klikalne (nazwa SFX oraz tag), `cursor: pointer` i łagodne przejście koloru.
 - `.sample-card.is-playing .sample-trigger` oraz `.fav-item.is-playing .sample-trigger`: aktywne odtwarzanie podświetla nazwę i tag na `--danger`.
 - `.volume-slider`: suwak głośności (`input[type="range"]`) o szerokości 100% i `accent-color: --accent`.
 - `.user-view`: kolumna usera, `display: flex`, `flex-direction: column`, `gap: 16px`.
@@ -134,7 +134,7 @@ window.firebaseConfig = {
 - `.user-nav-group`: grupowanie przycisków nawigacji, `flex-direction: column`, `gap: 8px`.
 - `.user-nav .btn.is-active`: wzmocniony stan aktywny (zielone tło i glow).
 - `.user-panel`: kontener list w widoku użytkownika, domyślnie `display: none`; klasa `.is-visible` ustawia `display: flex`.
-- Responsywność: poniżej `980px` układ główny (`.layout`, `.user-layout`) przechodzi do jednej kolumny, a siatka sampli do 2 kolumn; poniżej `680px` siatka sampli przechodzi do 1 kolumny.
+- Responsywność: poniżej `980px` układ główny (`.layout`, `.user-layout`) przechodzi do jednej kolumny, a siatka SFX do 2 kolumn; poniżej `680px` siatka SFX przechodzi do 1 kolumny.
 
 ## 7. Mapowanie danych z `AudioManifest.xlsx`
 - Plik jest wczytywany przez `fetch` i parsowany przez `XLSX.read`.
@@ -144,7 +144,7 @@ window.firebaseConfig = {
   - `NazwaPliku` → `filename`.
   - `LinkDoFolderu` → `folderUrl`.
 - Dodatkowe kolumny (w tym kolory) są ignorowane.
-- **ID sampla**: tworzony przez `slugify` (lowercase + zamiana znaków nie-alfanumerycznych na `-`).
+- **ID SFX**: tworzony przez `slugify` (lowercase + zamiana znaków nie-alfanumerycznych na `-`).
 - **Pełny URL**: `folderUrl + "/" + filename` (bez podwójnych `/`).
 - **Grupowanie nazw z cyfrą (tylko w obrębie jednego `folderUrl`):**
   - Jeśli nazwy różnią się **numerem na końcu** (`Assault Weapon1`, `Assault Weapon2`, `Rats 1`, `Rats 2`), tworzone jest **jedno** zgrupowanie.
@@ -152,7 +152,7 @@ window.firebaseConfig = {
   - Etykieta grupy zawiera liczebność w nawiasie (np. `Assault Weapon (4)`), a sama liczba jest renderowana na czerwono (`.group-count`).
   - Kliknięcie przycisku losuje dźwięk z listy `variants`.
   - Dla zgrupowanych pozycji przy nazwie pliku pojawia się sufiks `(+N)` informujący o liczbie wariantów.
-- **Tagi folderów:** z `folderUrl` wyciągane są segmenty ścieżki, z których tworzone są tagi hierarchiczne. Segment `AudioRPG` jest pomijany jako folder bazowy. Z pozostałych segmentów usuwane są fragmenty: `SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`. Segmenty są dekodowane z `%20` na spacje, a końcowe spacje usuwane. Drugi tag z hierarchii (`tag2`) jest wyświetlany w panelu admina i w widoku użytkownika pod nazwą sampla.
+- **Tagi folderów:** z `folderUrl` wyciągane są segmenty ścieżki, z których tworzone są tagi hierarchiczne. Segment `AudioRPG` jest pomijany jako folder bazowy. Z pozostałych segmentów usuwane są fragmenty: `SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`. Segmenty są dekodowane z `%20` na spacje, a końcowe spacje usuwane. Drugi tag z hierarchii (`tag2`) jest wyświetlany w panelu admina i w widoku użytkownika pod nazwą SFX.
 
 ## 8. Logika JS (wszystkie funkcje)
 ### 8.1. Utility
@@ -163,7 +163,7 @@ window.firebaseConfig = {
 - `extractTags(folderUrl)` — zwraca tablicę tagów na podstawie segmentów ścieżki `folderUrl`.
 - `getGroupingBaseLabel(label)` — wyznacza bazową etykietę grupowania wyłącznie dla numeru na końcu nazwy; numer w środku pozostawia etykietę bez zmian.
 - `formatSampleLabel(item)` — zwraca HTML etykiety z aliasem w nawiasie (jeśli ustawiony) oraz czerwonym licznikiem wariantów.
-- `buildTagTree(items)` — buduje drzewo tagów (hierarchia) z listy sampli.
+- `buildTagTree(items)` — buduje drzewo tagów (hierarchia) z listy SFX.
 - `flattenTagTree(nodes, depth)` — spłaszcza drzewo tagów do listy z poziomem zagnieżdżenia.
 - `ensureTagSelection(nodes)` — inicjalizuje mapę zaznaczeń tagów domyślnie na `true`.
 - `setAllTagSelection(value)` — masowo zaznacza/odznacza wszystkie tagi.
@@ -181,7 +181,7 @@ window.firebaseConfig = {
 - `normalizeFavorites(raw)` — normalizuje strukturę list ulubionych.
 - `normalizeMainView(raw)` — normalizuje listę `itemIds` głównego widoku.
 - `normalizeAliases(raw)` — normalizuje mapę aliasów (usuwa puste wartości, trimuje tekst).
-- `applyAliasesToItems()` — przypisuje wartości z `aliases` do obiektów sampli (`item.alias`), aby aliasy były widoczne po odczycie ustawień.
+- `applyAliasesToItems()` — przypisuje wartości z `aliases` do obiektów SFX (`item.alias`), aby aliasy były widoczne po odczycie ustawień.
 - `normalizeSettings(raw)` — akceptuje zarówno nowy format (`favorites`, `mainView`, `aliases`) jak i stary (`lists`).
 - `loadSettingsLocal()` — wczytuje lokalny zapis (`audio.settings`) lub migruje z `audio.favorites`.
 - `setItemAlias(itemId, alias)` — zapisuje/usuwa alias i odświeża wszystkie widoki.
@@ -192,11 +192,11 @@ window.firebaseConfig = {
   1. Sprawdza `window.firebaseConfig`.
   2. Inicjalizuje aplikację i Firestore.
   3. Ustawia referencję `doc(db, "audio", "favorites")`.
-  4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym oraz przepisać aliasy do obiektów sampli.
+  4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym oraz przepisać aliasy do obiektów SFX.
 
 ### 8.4. Renderowanie
 - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
-- `renderSamples()` — rysuje siatkę sampli (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę sampli **oraz** aktywne tagi.
+- `renderSamples()` — rysuje siatkę SFX (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę SFX **oraz** aktywne tagi.
 - Klik przycisku `#clearAllAliases` wywołuje `clearAllAliases()`, które po potwierdzeniu czyści aliasy globalnie (bez ograniczenia do aktualnie wyrenderowanych kart), ale tylko w module Audio.
 - `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
 - `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
@@ -207,25 +207,25 @@ window.firebaseConfig = {
 - `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
 
 ### 8.5. Akcje użytkownika
-- `pickRandomVariant(item)` — losuje plik z `variants` dla zgrupowanych sampli.
+- `pickRandomVariant(item)` — losuje plik z `variants` dla zgrupowanych SFX.
 - `getAudioContext()` — inicjalizuje `AudioContext` (jeśli dostępny), aby obsłużyć wzmocnienie głośności powyżej 100%.
 - `volumeToGain(value)` — mapuje zakres `-100..100` na gain `0..2`.
 - `startPlayback(item, playbackRoot)` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`.
 - `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing` i resetuje etykietę (jeśli to przycisk).
 - `togglePlayback(itemId, playbackRoot)` — przełącza odtwarzanie/stop dla wskazanego elementu sterującego.
-- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego sampla po zmianie suwaka.
-- Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę sampli.
+- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego SFX po zmianie suwaka.
+- Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę SFX.
 - Pole `#tagSearchInput` otwiera popup filtra listowego, a wyszukiwanie odbywa się w okienku `#tagMenuSearchInput`.
 - Kliknięcie `#toggleTagPanel` ukrywa lub odsłania cały panel checkboxów tagów bez resetowania stanu zaznaczeń.
-- Popup filtra tagów zawiera checkboxy oraz przyciski **Zaznacz wszystko** / **Odznacz wszystko**; zmiany odświeżają drzewko i listę sampli.
+- Popup filtra tagów zawiera checkboxy oraz przyciski **Zaznacz wszystko** / **Odznacz wszystko**; zmiany odświeżają drzewko i listę SFX.
 - `addFavoriteList()` — tworzy nową listę.
-- `addItemToFavorites(listId, itemId)` — dodaje sample do listy.
+- `addItemToFavorites(listId, itemId)` — dodaje SFX do listy.
 - `moveList(listId, direction)` — przesuwa listę w górę/dół.
 - `renameList(listId)` — zmienia nazwę listy.
 - `removeList(listId)` — usuwa listę (z potwierdzeniem).
 - `moveItem(listId, itemId, direction)` — przesuwa element w obrębie listy.
 - `removeItem(listId, itemId)` — usuwa element z listy.
-- `addItemToMainView(itemId)` — dodaje sample do „Głównego widoku” (wybierane w selektorze jako „Widok Główny”).
+- `addItemToMainView(itemId)` — dodaje SFX do „Głównego widoku” (wybierane w selektorze jako „Widok Główny”).
 - Kliknięcie **Dodaj do listy** sprawdza wartość selektora: jeśli to `main`, element trafia do „Głównego widoku”; w przeciwnym razie trafia do wskazanej listy ulubionych.
 - `moveMainViewItem(itemId, direction)` — przesuwa element w głównym widoku.
 - `removeMainViewItem(itemId)` — usuwa element z głównego widoku.
@@ -265,7 +265,7 @@ window.firebaseConfig = {
 3. Wgraj `AudioManifest.xlsx` z kolumnami `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`.
 4. Załaduj stronę `Audio/index.html` na serwerze statycznym.
 5. Wejdź na `Audio/index.html?admin=1` i potwierdź, że manifest ładuje się poprawnie (status „Manifest: X pozycji”).
-6. Dodaj kilka sampli do „Głównego widoku” i do list ulubionych — sprawdź zapis w Firestore.
+6. Dodaj kilka SFX do „Głównego widoku” i do list ulubionych — sprawdź zapis w Firestore.
 7. Wejdź na `Audio/index.html` (bez parametru) i zweryfikuj, że użytkownik widzi panel odtwarzania z boczną nawigacją „Widok główny” + listy „Ulubione”.
 
 ## 11. Troubleshooting
@@ -285,14 +285,14 @@ window.firebaseConfig = {
 - `--panel`: `#000`; `--panel-alt`: `#041b08`.
 - `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`; `--accent-strong`: `#1ee616`.
 - `--text`: `#9cf09c`; `--muted`: `rgba(156, 240, 156, 0.7)`.
-- `--danger`: `#ff5f5f` (aktywnie odtwarzane sample i liczniki grup).
+- `--danger`: `#ff5f5f` (aktywnie odtwarzane SFX i liczniki grup).
 - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--shadow`: `0 8px 24px rgba(0, 0, 0, 0.45)`.
 - `.sample-alias`: `#d2fad2`.
 - Border toolbarów/paneli filtrów: `rgba(22, 198, 12, 0.6)` do `rgba(22, 198, 12, 0.7)` (w zależności od sekcji).
 - Focus ring pól i selectów: zielone obwódki oparte o `rgba(22, 198, 12, 0.25)`.
 
 ## 17. Uzupełnienie: logika funkcjonalna (pełny przepływ)
-1. Import manifestu XLSX -> normalizacja rekordów -> budowa listy sampli i drzewa tagów.
+1. Import manifestu XLSX -> normalizacja rekordów -> budowa listy SFX i drzewa tagów.
 2. Nadpisanie aliasów z zapisanych ustawień (`aliases`) po `itemId`.
 3. Render widoku admina i widoku użytkownika z tego samego źródła stanu.
 4. Operacje na listach (`favorites`, `mainView`) z zachowaniem kolejności ręcznej.

@@ -1,6 +1,6 @@
 # Audio — instrukcja użytkownika / User guide
 
-Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zarządzania listami „Ulubione” oraz konfiguracji „Głównego widoku” (nadrzędna lista odtwarzania). Panel administracyjny jest dostępny po dodaniu `?admin=1` do adresu.
+Moduł **Audio** służy do odtwarzania SFX z pliku `AudioManifest.xlsx`, zarządzania listami „Ulubione” oraz konfiguracji „Głównego widoku” (nadrzędna lista odtwarzania). Panel administracyjny jest dostępny po dodaniu `?admin=1` do adresu.
 
 ---
 
@@ -22,42 +22,42 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 
 ### Tryby działania
 - **Widok użytkownika** (domyślny): widoczne są tylko dwa panele — siatka odtwarzania dźwięków z „Głównego widoku”/„Ulubionych” oraz panel nawigacji list.
-- Na szerokich ekranach (desktop) siatka sampli jest renderowana w **4 kolumnach**; na mniejszych ekranach automatycznie redukuje liczbę kolumn (2, a następnie 1).
+- Na szerokich ekranach (desktop) siatka SFX jest renderowana w **4 kolumnach**; na mniejszych ekranach automatycznie redukuje liczbę kolumn (2, a następnie 1).
 - **Widok admina**: pełna konfiguracja (wczytywanie manifestu, zarządzanie listami, układ „Głównego widoku”) **oraz** te same dwa panele z widoku użytkownika jako podgląd, który odświeża się i działa tak samo jak u użytkownika.
 - Przełącznik języka:
   - w panelu admina znajduje się w nagłówku (domyślnie **Polski**),
-  - w widoku użytkownika znajduje się nad listą sampli i zmienia tylko etykiety **Nawigacja**, **WIDOK GŁÓWNY** oraz **Listy ulubionych**.
+  - w widoku użytkownika znajduje się nad listą SFX i zmienia tylko etykiety **Nawigacja**, **WIDOK GŁÓWNY** oraz **Listy ulubionych**.
 
 ### Jak korzystać (użytkownik)
 1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
 2. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
-3. Kliknij nazwę sampla lub tag pod nazwą, aby włączyć/wyłączyć dźwięk (możesz odtwarzać kilka jednocześnie).
-4. (Opcjonalnie) po nazwie sampla może pojawić się alias w nawiasie — wyświetlany jaśniejszą czcionką.
-5. Pod nazwą sampla zobaczysz tag folderu (ułatwia orientację) — podczas odtwarzania nazwa i tag świecą na czerwono.
-6. Użyj suwaka głośności na karcie sampla: środek to standard (0%), lewo to wyciszenie (-100%), prawo to wzmocnienie (+100%).
+3. Kliknij nazwę SFX lub tag pod nazwą, aby włączyć/wyłączyć dźwięk (możesz odtwarzać kilka jednocześnie).
+4. (Opcjonalnie) po nazwie SFX może pojawić się alias w nawiasie — wyświetlany jaśniejszą czcionką.
+5. Pod nazwą SFX zobaczysz tag folderu (ułatwia orientację) — podczas odtwarzania nazwa i tag świecą na czerwono.
+6. Użyj suwaka głośności na karcie SFX: środek to standard (0%), lewo to wyciszenie (-100%), prawo to wzmocnienie (+100%).
 
 ### Jak korzystać (administrator)
 1. Otwórz `Audio/index.html?admin=1`.
-2. Kliknij **Wczytaj manifest**, aby załadować listę sampli.
-3. Użyj belki **Filtry tagów** do zawężenia listy sampli (wpływa tylko na panel admina).
+2. Kliknij **Wczytaj manifest**, aby załadować listę SFX.
+3. Użyj belki **Filtry tagów** do zawężenia listy SFX (wpływa tylko na panel admina).
 4. (Opcjonalnie) skorzystaj z pola **Szukaj tagu...** oraz przycisku **Filtruj ▾** — otworzy się okienko z wyszukiwarką tagów, checkboxami oraz opcjami zaznacz/odznacz wszystko.
-5. Wyszukuj sample w polu „Szukaj sampla...” (pole znajduje się pod panelami tagów).
-6. Obok pola wyszukiwania użyj przycisku **Wyczyść wszystkie aliasy**, aby globalnie skasować aliasy ze wszystkich sampli (również z niewidocznych aktualnie przez filtry tagów lub brak obecności na listach). Operacja dotyczy tylko danych modułu Audio (`audio/favorites` lub `audio.settings`) i wymaga potwierdzenia w oknie dialogowym.
+5. Wyszukuj SFX w polu „Szukaj SFX...” (pole znajduje się pod panelami tagów).
+6. Obok pola wyszukiwania użyj przycisku **Wyczyść wszystkie aliasy**, aby globalnie skasować aliasy ze wszystkich SFX (również z niewidocznych aktualnie przez filtry tagów lub brak obecności na listach). Operacja dotyczy tylko danych modułu Audio (`audio/favorites` lub `audio.settings`) i wymaga potwierdzenia w oknie dialogowym.
 7. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
 8. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
-9. W karcie sampla wybierz z listy **Widok Główny** lub konkretną listę ulubionych i kliknij **Dodaj do listy**:
-   - **Widok Główny** dodaje sample do panelu „Główny widok”.
-   - Wybrana lista ulubionych dodaje sample do tej listy.
+9. W karcie SFX wybierz z listy **Widok Główny** lub konkretną listę ulubionych i kliknij **Dodaj do listy**:
+   - **Widok Główny** dodaje SFX do panelu „Główny widok”.
+   - Wybrana lista ulubionych dodaje SFX do tej listy.
 10. W panelu „Ulubione” możesz:
    - zmieniać kolejność list,
    - zmieniać nazwę listy,
    - usuwać listę,
    - przesuwać i usuwać elementy w liście,
-   - odtwarzać zapisane sample.
-11. W karcie sampla w panelu admina możesz wpisać **alias** (opcjonalny). Alias zapisuje się w ustawieniach, wyświetla się w nawiasie po nazwie sampla w widoku głównym i na listach ulubionych jaśniejszym kolorem. Przycisk **Wyczyść** znajduje się bezpośrednio pod polem aliasu (nad **Odtwórz**) i usuwa alias.
+   - odtwarzać zapisane SFX.
+11. W karcie SFX w panelu admina możesz wpisać **alias** (opcjonalny). Alias zapisuje się w ustawieniach, wyświetla się w nawiasie po nazwie SFX w widoku głównym i na listach ulubionych jaśniejszym kolorem. Przycisk **Wyczyść** znajduje się bezpośrednio pod polem aliasu (nad **Odtwórz**) i usuwa alias.
     - Alias jest zapisywany w Firestore (lub `localStorage`) i po ponownym uruchomieniu modułu powinien pojawić się zarówno w panelu admina, jak i w widoku użytkownika.
     - Usunięcie aliasu (ręczne wyczyszczenie pola lub przycisk **Wyczyść**) nadpisuje całą mapę `aliases` w dokumencie Firestore, dzięki czemu skasowany alias nie wraca po synchronizacji czasu rzeczywistego.
-12. W panelu „Główny widok” (na dole admina) kliknij nazwę sampla lub tag, aby odsłuchać dźwięk; głośność ustawiasz suwakiem na karcie.
+12. W panelu „Główny widok” (na dole admina) kliknij nazwę SFX lub tag, aby odsłuchać dźwięk; głośność ustawiasz suwakiem na karcie.
 
 ### Dane wejściowe (AudioManifest.xlsx)
 - Kolumny:
@@ -93,7 +93,7 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 
 ### Modes
 - **User view** (default): only two panels are visible — the playback grid (Main View/Favorites) and the navigation panel.
-- On wide screens (desktop), the sample grid renders in **4 columns**; on smaller screens it automatically drops to 2 and then 1 column.
+- On wide screens (desktop), the SFX grid renders in **4 columns**; on smaller screens it automatically drops to 2 and then 1 column.
 - **Admin view**: full configuration (manifest reload, list management, Main View order) **plus** the same two user panels shown as a preview that refreshes and behaves exactly like the user view.
 - Language switchers:
   - in admin mode it sits in the header (default language: **Polish**),
@@ -102,33 +102,33 @@ Moduł **Audio** służy do odtwarzania sampli z pliku `AudioManifest.xlsx`, zar
 ### How to use (user)
 1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
 2. In the side panel select **Main view** or one of the Favorites lists.
-3. Click the sample name or the tag under it to toggle playback (multiple sounds can play simultaneously).
-4. (Optional) an alias can appear in parentheses after the sample name, shown in a lighter tone.
-5. The folder tag is shown under each sample name for orientation — while playing, both the name and tag turn red.
+3. Click the SFX name or the tag under it to toggle playback (multiple sounds can play simultaneously).
+4. (Optional) an alias can appear in parentheses after the SFX name, shown in a lighter tone.
+5. The folder tag is shown under each SFX name for orientation — while playing, both the name and tag turn red.
 6. Use the volume slider on the card: center is normal (0%), left mutes (-100%), right boosts (+100%).
 
 ### How to use (admin)
 1. Open `Audio/index.html?admin=1`.
-2. Click **Wczytaj manifest** to load samples.
-3. Use the **Filtry tagów** bar to filter the admin sample list (does not affect user panels).
+2. Click **Wczytaj manifest** to load SFX.
+3. Use the **Filtry tagów** bar to filter the admin SFX list (does not affect user panels).
 4. (Optional) use the **Szukaj tagu...** field and the **Filtruj ▾** button — it opens a popup with tag search, checkboxes, and select/deselect all options.
-5. Search samples in the “Szukaj sampla...” field (located below the tag panel).
-6. Next to the search field, use **Wyczyść wszystkie aliasy** to globally remove aliases from all samples (including those currently hidden by tag filters or not present in visible lists). The operation is scoped only to Audio module data (`audio/favorites` or `audio.settings`) and requires confirmation in a dialog.
+5. Search SFX in the “Szukaj SFX...” field (located below the tag panel).
+6. Next to the search field, use **Wyczyść wszystkie aliasy** to globally remove aliases from all SFX (including those currently hidden by tag filters or not present in visible lists). The operation is scoped only to Audio module data (`audio/favorites` or `audio.settings`) and requires confirmation in a dialog.
 7. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
 8. Click **Nowa lista ulubionych** to create a list.
-9. In a sample card choose **Widok Główny** or a specific favorites list, then click **Dodaj do listy**:
-   - **Widok Główny** adds the sample to the Main View panel.
-   - A favorites list adds the sample to that list.
+9. In a SFX card choose **Widok Główny** or a specific favorites list, then click **Dodaj do listy**:
+   - **Widok Główny** adds the SFX to the Main View panel.
+   - A favorites list adds the SFX to that list.
 10. In the Favorites panel you can:
    - reorder lists,
    - rename lists,
    - delete lists,
    - reorder/remove items in a list,
-   - play saved samples.
-11. In the admin sample card you can enter an optional **alias**. The alias is saved in settings and displayed in parentheses after the sample name in the Main View and Favorites lists in a lighter color. The **Wyczyść** button sits directly under the alias field (above **Odtwórz**) and clears the alias.
+   - play saved SFX.
+11. In the admin SFX card you can enter an optional **alias**. The alias is saved in settings and displayed in parentheses after the SFX name in the Main View and Favorites lists in a lighter color. The **Wyczyść** button sits directly under the alias field (above **Odtwórz**) and clears the alias.
     - The alias is stored in Firestore (or `localStorage`) and should appear again after reload in both the admin panel and the user view.
     - Removing an alias (manual field clear or **Wyczyść** button) overwrites the whole Firestore `aliases` map so deleted aliases do not reappear after real-time sync.
-12. In the Main View panel (bottom of admin), click the sample name or tag to play/stop it and use the slider on the card to adjust volume.
+12. In the Main View panel (bottom of admin), click the SFX name or tag to play/stop it and use the slider on the card to adjust volume.
 
 ### Input data (AudioManifest.xlsx)
 - Columns:
