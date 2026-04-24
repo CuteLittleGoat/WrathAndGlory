@@ -10,19 +10,19 @@ Najważniejsze pliki:
 - `kalkulatorxp.css` – wspólne style dla kalkulatora i arkusza.
 - `HowToUse/pl.pdf` i `HowToUse/en.pdf` – instrukcje PDF otwierane z poziomu arkusza.
 
-## 1.0.1. Aktualizacja 2026-04-24: wyrównanie nazw ras w tabelach „Maksymalne wartości atrybutów”
+## 1.0.1. wyrównanie nazw ras w tabelach „Maksymalne wartości atrybutów”
 - `kalkulatorxp.css`: dodano regułę `.referenceTable tbody th:first-child { text-align: left; }`, która ustawia lewostronne wyrównanie dla nazw ras w pierwszej kolumnie tabeli referencyjnej w `KalkulatorXP.html`.
 - `TworzeniePostaci.html` (`<style>` inline): zaktualizowano regułę `.species-max-table td:first-child`, dodając `text-align: left;` przy zachowaniu `font-weight: 600;`.
 - Zakres zmiany obejmuje wyłącznie pierwszą kolumnę z nazwami ras; wszystkie komórki liczbowe nadal używają wyrównania centralnego z reguł bazowych tabeli.
 
-## 1.1. Aktualizacja terminologii PL: XP → PD (2026-04-24)
+## 1.1. Terminologia PL: XP → PD
 W tej zmianie zaktualizowano wyłącznie polskie etykiety interfejsu (bez zmiany logiki obliczeń oraz bez zmiany nazw plików i odnośników):
 - `index.html`: nazwa przycisku na stronie startowej zmieniona z **Kalkulator XP** na **Kalkulator PD**.
 - `KalkulatorXP.html`: polskie stringi interfejsu zmienione z **XP** na **PD** (tytuł, instrukcja, etykiety kosztu i zakładki).
 - `TworzeniePostaci.html`: polskie stringi interfejsu związane z pulą punktów i błędem przekroczenia puli zmienione z **XP** na **PD**.
 - Warstwa EN (English) pozostaje bez zmian i nadal używa skrótu **XP**.
 
-## 1.2. Aktualizacja 2026-04-24: `TworzeniePostaci.html` (Szybkość + tabela maksimów ras)
+## 1.2. `TworzeniePostaci.html` (Szybkość + tabela maksimów ras)
 - Rozszerzono sekcję atrybutów do 8 pozycji przez dodanie `attr_Speed` oraz etykiet `Szybkość` (PL) / `Speed` (EN).
 - Rozszerzono wszystkie miejsca iterujące po atrybutach: tłumaczenia (`attrLabel1..8`), reset danych, przeliczanie kosztów XP.
 - Dodano nowy przycisk otwierający modal z tabelą maksimów ras. Wymaganie koloru zostało spełnione przez użycie tego samego stylu co przyciski `Instrukcja`/`Strona Główna` (brak czerwieni).
@@ -335,7 +335,7 @@ const skillCosts = {
 └── kalkulatorxp.css
 ```
 
-## 9. Aktualizacja 2026-04-23 – tajny przycisk i overlay GIF w `index.html`
+## 9. – tajny przycisk i overlay GIF w `index.html`
 Wdrożono rekomendowane rozwiązanie z analizy:
 1. Przeniesiono i wystylizowano **Tajny przycisk!** jako kompaktowy czerwony CTA po prawej stronie pod siatką `.actions` (jak przycisk powiadomień w Main).
 2. Dodano modalny overlay z `Koza.gif`.
@@ -351,7 +351,7 @@ Wdrożono rekomendowane rozwiązanie z analizy:
 5.5. **Nawigacja do modułu Main**
    - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.
 
-## 10. Aktualizacja 2026-04-24 – tabela maksymalnych wartości atrybutów w `KalkulatorXP.html`
+## 10. – tabela maksymalnych wartości atrybutów w `KalkulatorXP.html`
 
 ### 10.1. Zakres funkcjonalny
 Wdrożono wariant informacyjny opisany w analizie: pod istniejącymi tabelami **Atrybuty** i **Umiejętności** dodano trzecią kartę (`.referenceCard`) zawierającą statyczną tabelę referencyjną z maksymalnymi wartościami 8 atrybutów dla 10 ras.
@@ -359,7 +359,7 @@ Wdrożono wariant informacyjny opisany w analizie: pod istniejącymi tabelami **
 Najważniejsze założenia:
 1. Dane maksimów atrybutów są zaszyte w kodzie JS (brak odczytu z `MaxAttributes.md` i `Labels.md` w runtime).
 2. Nazwy ras i atrybutów są lokalizowane przez ten sam system tłumaczeń PL/EN co pozostałe etykiety kalkulatora.
-3. Nie dodano osobnej informacji o limicie umiejętności = 8 (zgodnie z decyzją funkcjonalną z 2026-04-24).
+3. Nie dodano osobnej informacji o limicie umiejętności = 8 (zgodnie z bieżącą decyzją funkcjonalną).
 4. Nie zmieniono logiki walidacji pól wejściowych ani algorytmu liczenia XP.
 
 ### 10.2. Zmiany w HTML (`KalkulatorXP.html`)
@@ -391,7 +391,7 @@ Zmieniono `applyLanguage(lang)`:
 - aktualizuje `#maxAttributesTitle`,
 - wywołuje `renderMaxAttributesTable(lang)` po podmianie etykiet, dzięki czemu tabela referencyjna natychmiast przełącza nazwy PL/EN.
 
-### 10.6. Korekta nazewnictwa (2026-04-24)
+### 10.6. Korekta nazewnictwa
 Wprowadzono korektę copywritingu w sekcji referencyjnej `KalkulatorXP.html`:
 1. Tytuł sekcji skrócono z:
    - `Maksymalne wartości atrybutów (informacyjne)` → `Maksymalne wartości atrybutów`,

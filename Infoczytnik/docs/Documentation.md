@@ -1,4 +1,4 @@
-## Aktualizacja 2026-04-22 — nowe pole robocze dla tła `Pergamin`
+## nowe pole robocze dla tła `Pergamin`
 1. W `Infoczytnik_test.html` zaktualizowano preset `CONTENT_RECTS_BY_BACKGROUND_ID` dla `backgroundId=9` (`Pergamin`) na podstawie nowego pliku `assets/ramki/Pergamin_ramka.png`.
 2. Nowe wartości obszaru (`x,y,w,h`) to: `0.0771, 0.1302, 0.8672, 0.6973`.
 3. Współrzędne zostały wyznaczone z bounding boxa niebieskiej ramki (`minX=79`, `minY=200`, `maxX=966`, `maxY=1270`) dla obrazu `1024x1536`, zgodnie z metodą opisaną w `assets/data/NiebieskaRamka.md`.
@@ -6,18 +6,18 @@
 
 # Infoczytnik — Documentation (test files)
 
-## Aktualizacja 2026-04-23 — hardening ścieżki fontu (drugi hotfix)
+## Stabilizacja ścieżki fontu
 1. W `GM_test.html` dodano helper `getSelectedFont()`, który centralizuje pobieranie aktywnego rekordu fontu z `manifest.fonts`.
 2. `applySelectedFontToPreview()` i `getPayload(type)` korzystają teraz z tego samego helpera, co eliminuje rozjazd logiki między podglądem i wysyłką danych.
 3. W payloadzie `fontId`/`fontPreset` są mapowane z `selectedFont`, bez bezpośredniego odwołania do luźnej zmiennej `font`.
 4. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_12-30-44` (czas lokalny PL).
 
-## Aktualizacja 2026-04-23 — hotfix błędu `font is not defined`
+## Obsługa wyboru fontu w payloadzie
 1. W `GM_test.html` w funkcji `getPayload(type)` przywrócono pobieranie wybranego fontu: `const font = safeGet(manifest.fonts || [], el.fontSelect.value);`.
 2. Naprawa usuwa błąd runtime widoczny podczas `Wyślij` (`font is not defined`) i przywraca poprawne wysyłanie pól `fontId` oraz `fontPreset` do Firestore.
 3. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_12-22-46` (czas lokalny PL).
 
-## Aktualizacja 2026-04-23 — dropdown fontów GM + preload webfontów
+## dropdown fontów GM + preload webfontów
 1. W `GM_test.html` zmieniono budowanie etykiet opcji fontów: `buildOptionLabel(item, 'font')` zwraca teraz format `ID. Frakcja - Nazwa fontu`; cały tekst opcji jest renderowany standardowym fontem UI (bez stylowania per-opcja).
 2. Rozszerzono import Google Fonts w `GM_test.html` oraz `Infoczytnik_test.html` o brakujące rodziny: `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
 3. W `GM_test.html` dodano preload manifestowych fontów (`preloadManifestFonts`) oparty o `document.fonts.load(...)` oraz natychmiastową aplikację rodziny przy zmianie selecta (`applySelectedFontToPreview()` + repaint), co eliminuje odczuwalne opóźnienie 1–2 s w mini-podglądzie.
@@ -29,7 +29,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 
 
 
-## Aktualizacja 2026-04-02 — autoformat `+++` podczas importu XLSX -> JSON
+## autoformat `+++` podczas importu XLSX -> JSON
 1. W `GM_test.html` rozszerzono importer manifestu o funkcje `formatFillerLine(...)` i `formatFillerLines(...)`, które podczas mapowania arkusza `fillers` automatycznie opakowują każdą linię `prefixes` i `suffixes` do formatu `+++ TEKST +++`.
 2. Dodano zabezpieczenie przed podwójnym opakowaniem: jeżeli linia już jest w formacie `+++ ... +++`, importer pozostawia ją bez zmian.
 3. Reguła formatowania działa na etapie `DataSlate_manifest.xlsx -> data.json`, więc GM preview i payload runtime korzystają już z gotowych, sformatowanych wartości z manifestu.
@@ -37,7 +37,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 5. Wygenerowano nowy `assets/data/data.json` i zasilono nim aplikację; wszystkie rekordy `fillers.prefixes/suffixes` zapisano jako `+++ ... +++`.
 
 
-## Aktualizacja 2026-04-02 — Litannie Zagubionych + nowe tło WnG + regeneracja data.json
+## Litannie Zagubionych + nowe tło WnG + regeneracja data.json
 1. W `assets/data/DataSlate_manifest.xlsx` i `assets/data/Mapowanie.xlsx` nazwa tła `Litannie Zaginionych` została zastąpiona nazwą `Litannie Zagubionych`; runtime korzysta teraz z pliku `assets/backgrounds/Litannie_Zagubionych.png`.
 2. Dodano nowe tło `WnG` (`backgroundId=10`) i rozszerzono mapę `CONTENT_RECTS_BY_BACKGROUND_ID` w `Infoczytnik_test.html` o wpis: `10:{ x:0.1214, y:0.0962, w:0.7385, h:0.8081 }`.
 3. Zmieniono domyślny preset panelu GM: `DEFAULT_FORM_STATE.backgroundId` ustawiono na `10` (`WnG`).
@@ -48,7 +48,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 
 
 
-## Aktualizacja 2026-03-31 — podgląd „Treść / Tło” (nowe wymaganie)
+## podgląd „Treść / Tło” (nowe wymaganie)
 1. W `GM_test.html` zastąpiono etykiety trybu podglądu: `Wycinek`/`Całość` -> `Treść`/`Tło` (radio: `previewModeContent`, `previewModeBackground`).
 2. Zmieniono semantykę trybów:
    - `content` (Treść, domyślny) renderuje warstwę tekstową (prefix/wiadomość/suffix + opcjonalne logo) na technicznym tle, bez grafiki tła.
@@ -59,13 +59,13 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 6. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_22-55-00`.
 7. Dopracowano wygląd miniatury trybu `Tło`: w stanie `preview-mode-background` usunięto wewnętrzny padding podglądu (`padding:0`), a `previewBackgroundThumb` skaluje się do pełnej wysokości pola (`height:100%`, `width:auto`), dzięki czemu miniatura dochodzi do górnej i dolnej krawędzi bez deformacji (z wolnym miejscem po bokach).
 
-## Aktualizacja 2026-03-31 — wyrównanie przycisku „Aktualizuj dane z XLSX”
+## wyrównanie przycisku „Aktualizuj dane z XLSX”
 1. W `GM_test.html` zmieniono styl kontenera `importRow` z `align-items:stretch` na `align-items:center`, aby elementy w wierszu logu importu były centrowane pionowo.
 2. W klasie `.importUpdateBtn` dodano `align-self:center`, dzięki czemu przycisk pozostaje po prawej stronie pola `Log importu`, ale jest wyrównany do środka tego pola.
 3. Wysokość przycisku pozostała zależna od globalnego stylu `button` (tak jak w pozostałych przyciskach panelu), więc wizualnie ma tę samą wysokość co reszta przycisków akcji.
 4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_15-18-03`.
 
-## Aktualizacja 2026-03-31 — przełączany tryb podglądu tła (Wycinek / Całość)
+## przełączany tryb podglądu tła (Wycinek / Całość)
 1. W `GM_test.html` dodano nowy wiersz sterowania `Podgląd: Wycinek / Całość` (radio buttons `previewModeCrop`, `previewModeFull`) umieszczony bezpośrednio nad `livePreviewBox`.
 2. Dodano obsługę trybu podglądu:
    - `getPreviewMode()` odczytuje aktywny wybór (`crop` / `full`),
@@ -75,7 +75,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 4. `DEFAULT_FORM_STATE` rozszerzono o `previewMode:'crop'`; `restoreDefaults()` przywraca ten domyślny tryb i od razu aplikuje go do mini-podglądu.
 5. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_15-02-48`.
 
-## Aktualizacja 2026-03-31 — nowy `assets/data/data.json` z `assets/data/DataSlate_manifest.xlsx`
+## nowy `assets/data/data.json` z `assets/data/DataSlate_manifest.xlsx`
 1. Wygenerowano od nowa plik `Infoczytnik/assets/data/data.json` na podstawie zaktualizowanego arkusza `Infoczytnik/assets/data/DataSlate_manifest.xlsx`.
 2. Zmiany danych obejmują:
    - nowe i przemianowane frakcje w sekcji `fonts` (łącznie 16 rekordów),
@@ -84,7 +84,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 3. Zachowano założenie użytkowe dotyczące presetów: identyfikatory elementów domyślnych (`logoId=1`, `fillerId=1`, `fontId=1`) nadal istnieją, więc domyślna konfiguracja modułu nie wymaga zmian w logice.
 4. Zakres zmiany obejmuje dane runtime (`data.json`) i dokumentację; bez zmian w `GM_test.html` / `Infoczytnik_test.html`.
 
-## Aktualizacja 2026-04-01 — przycisk importu DataSlate_manifest.xlsx w GM_test
+## przycisk importu DataSlate_manifest.xlsx w GM_test
 1. W `GM_test.html` dodano obok pola `Log importu` nowy układ `importRow`: log zajmuje ~1/2 wcześniejszej szerokości, a z prawej strony jest przycisk `Aktualizuj dane z XLSX`.
 2. Dodano stałą `MANIFEST_XLSX_PATH = "assets/data/DataSlate_manifest.xlsx"` oraz klientowy importer oparty o SheetJS (`xlsx.full.min.js` z CDN).
 3. Przycisk uruchamia `updateDataFromXlsx()`:
@@ -95,7 +95,7 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 4. `importLog` raportuje błędy mapowania (np. brak arkusza / niepełny rekord) i nadal pokazuje `Brak błędów importu.` przy pustej liście.
 5. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-01_00-15-00`.
 
-## Aktualizacja 2026-03-31 — domyślne ustawienia panelu GM
+## domyślne ustawienia panelu GM
 1. W `GM_test.html` zmieniono `DEFAULT_FORM_STATE` tak, aby panel startował z presetem:
    - `backgroundId=10` (WnG),
    - `logoId=1` (Mechanicus),
@@ -110,20 +110,20 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 2. `restoreDefaults()` automatycznie odczytuje te wartości, więc przycisk „Przywróć domyślne” i inicjalne uruchomienie formularza ustawiają identyczny stan.
 3. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_21-45-00`.
 
-## Aktualizacja 2026-03-31 — DataSlate_manifest.xlsx (zamiana kolejności logo)
+## DataSlate_manifest.xlsx (zamiana kolejności logo)
 1. Zaktualizowano sekcję `logos` w `assets/data/data.json` zgodnie z nowym plikiem `DataSlate_manifest.xlsx`.
 2. Nowa kolejność i mapowanie ID:
    - `id=1` → `Mechanicus` (`assets/logos/Mechanicus.png`),
    - `id=2` → `Inkwizycja` (`assets/logos/Inquisition.png`).
 3. Zakres zmiany obejmuje wyłącznie dane manifestu (bez zmian logiki JS/HTML).
 
-## Aktualizacja 2026-03-31 — porządkowanie po analizie pickera `#ffffff`
+## porządkowanie po analizie pickera `#ffffff`
 1. Usunięto warstwę eksperymentalną `colorEditSource` (`text` vs `picker`) z `GM_test.html`.
 2. `resolveHexColor(...)` wróciło do prostszego kontraktu 3-parametrowego (`textValue`, `pickerValue`, `fallback`) bez przełączania priorytetu źródła.
 3. `renderPreview()`, `getPayload()` i handlery kolorów korzystają ponownie z jednolitej ścieżki synchronizacji (`text` + `picker`) bez dodatkowego stanu.
 4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_14-40-38`.
 
-## Aktualizacja 2026-03-31 — GM/Infoczytnik (wdrożenie rekomendacji)
+## GM/Infoczytnik (wdrożenie rekomendacji)
 0. **Poprawka UX panelu kolorów fillerów (GM)**:
    - Dodano `isFullHexColor(v)` do rozróżniania pełnego HEX (`#RGB`/`#RRGGBB`) od wpisu częściowego.
    - Dodano `resolveHexColor(textValue,pickerValue,fallback)`, które priorytetowo bierze poprawny HEX z pola tekstowego, a przy wartości niepełnej korzysta z aktualnej wartości pickera.
@@ -250,7 +250,7 @@ Zapisywane pola:
 
 ---
 
-## Aktualizacja 2026-04-24 — przeniesienie detali technicznych z README
+## przeniesienie detali technicznych z README
 W celu zachowania użytkowego charakteru `docs/README.md` przeniesiono do dokumentacji technicznej szczegóły implementacyjne, które wcześniej były opisane w README:
 
 1. Stabilizacja viewportu mobilnego (`100dvh` z fallbackiem, obsługa `visualViewport`, filtracja mikro-zmian wysokości).

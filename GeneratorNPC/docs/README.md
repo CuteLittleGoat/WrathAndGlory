@@ -82,7 +82,7 @@ Browser tab title: **Generator NPC**.
 - Szczegółową instrukcję konfiguracji Firebase dla modułu, strukturę Firestore (`generatorNpc/favorites`) oraz skrypt inicjalizacyjny znajdziesz w: `GeneratorNPC/config/Firebase-config.md`.
 - Full Firebase setup instructions, Firestore data shape (`generatorNpc/favorites`), and the initialization script are documented in: `GeneratorNPC/config/Firebase-config.md`.
 
-## Aktualizacja 2026-04-17 (PL)
+## Podgląd bazowy i markery inline (PL)
 - W podglądzie bazowym (`Bestiariusz`) kolumna techniczna `Stan` nie jest wyświetlana jako osobny wiersz.
 - Dla rekordów ze statusem `old` pola `LP`, `Nazwa` i `Typ` są wyświetlane kolorem archiwalnym (`--text-old`).
 - Ustabilizowano szerokość kolumny `Klucz` w podglądzie bazowym:
@@ -92,7 +92,7 @@ Browser tab title: **Generator NPC**.
 - Renderer tekstu obsługuje marker `{{S}}...{{/S}}` (przekreślenie) wraz z markerami `{{RED}}`, `{{B}}`, `{{I}}`.
 - Zmiany nie modyfikują logiki przycisku **Generuj kartę**.
 
-## Update 2026-04-17 (EN)
+## Base preview and inline markers (EN)
 - In the base preview (`Bestiariusz`), the technical `Stan` column is no longer shown as a standalone row.
 - For records with `Stan=old`, fields `LP`, `Nazwa`, and `Typ` are rendered using the archival text color token (`--text-old`).
 - The `Key` column width in base preview is now stable:
