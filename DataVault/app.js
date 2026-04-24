@@ -1201,7 +1201,11 @@ function initUI(){
     els.tabs.appendChild(b);
   }
   // select first
-  const nextSheet = visibleOrder.includes(currentSheet) ? currentSheet : (visibleOrder[0] || visibleSheets[0]);
+  const preferredStartSheet = ADMIN_MODE ? "Notatki" : "Bronie";
+  const fallbackSheet = visibleOrder[0] || visibleSheets[0];
+  const nextSheet = visibleOrder.includes(currentSheet)
+    ? currentSheet
+    : (visibleOrder.includes(preferredStartSheet) ? preferredStartSheet : fallbackSheet);
   if (nextSheet) selectSheet(nextSheet);
 
   if (els.toggleCharacterTabs){
