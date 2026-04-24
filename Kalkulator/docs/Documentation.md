@@ -205,7 +205,7 @@ const skillCosts = {
 
 
 ### 6.1a. Modal „Maksymalne wartości atrybutów”
-- W obszarze `.language-switcher` dodano przycisk `#showSpeciesMaxButton` (styl identyczny jak `#manualButton` i `#backToMainButton`, bez czerwonej palety).
+- W obszarze `.language-switcher` dodano przycisk `#showSpeciesMaxButton` (styl identyczny jak `#manualButton` i `#backToMainButton`, bez czerwonej palety) z etykietą: PL **„Maksymalne wartości atrybutów”**, EN **„Maximum attribute values”**.
 - Dodano overlay `#speciesMaxModal` z dialogiem `.species-max-modal__dialog`, nagłówkiem `#speciesMaxModalTitle`, przyciskiem zamknięcia `#closeSpeciesMaxButton` i tabelą `#speciesMaxTable`.
 - Dane tabeli są zaszyte w JS (`maxAttributeRows` oraz słowniki `races` i `maxAttributes` w `translations.pl/en`) i odpowiadają mapowaniu `Race_1..Race_10` oraz `Attribute_1..Attribute_8`.
 - Render tabeli (`renderSpeciesMaxTable`) buduje `thead`/`tbody` dynamicznie dla bieżącego języka, bez odczytu z plików `.md`.

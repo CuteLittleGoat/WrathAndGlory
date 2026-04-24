@@ -38,7 +38,7 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 5. Przełącznik języka (PL/EN) znajduje się w prawym górnym rogu. Po zmianie języka aplikacja resetuje wszystkie dane (wymaga potwierdzenia).
 6. Przycisk **Instrukcja / Manual** otwiera PDF z pełną instrukcją dla aktualnego języka (`HowToUse/pl.pdf` lub `HowToUse/en.pdf`).
 7. Sekcja **Atrybuty** zawiera teraz 8. pole: **Szybkość / Speed**. Pole działa identycznie jak pozostałe atrybuty (zakres, koszt, wpływ na pulę).
-8. Pod przyciskiem **Strona Główna / Main Page** znajduje się przycisk **Maksima dla gatunków / Species maxima** (ten sam styl co przyciski instrukcji/powrotu, bez czerwonej palety).
+8. Pod przyciskiem **Strona Główna / Main Page** znajduje się przycisk **Maksymalne wartości atrybutów / Maximum attribute values** (ten sam styl co przyciski instrukcji/powrotu, bez czerwonej palety).
 9. Przycisk otwiera okno z tabelą maksymalnych wartości atrybutów dla ras (dane PL/EN zaszyte w kodzie, wartości wyśrodkowane, zebra striping).
 
 #### 3) Tajny przycisk (GIF)
@@ -71,7 +71,7 @@ Aplikacja jest statyczna – „aktualizacja” oznacza podmianę plików lub r�
 
 ### Ostatnia aktualizacja (2026-04-24, Tworzenie Postaci: Szybkość + tabela maksimów)
 - `TworzeniePostaci.html`: dodano 8. atrybut **Szybkość / Speed** (`attr_Speed`) i rozszerzono logikę przeliczeń/resetu/tłumaczeń z 7 do 8 atrybutów.
-- Dodano przycisk **Maksima dla gatunków / Species maxima** pod przyciskiem **Strona Główna / Main Page**.
+- Dodano przycisk **Maksymalne wartości atrybutów / Maximum attribute values** pod przyciskiem **Strona Główna / Main Page**.
 - Przycisk otwiera modal z tabelą maksymalnych wartości atrybutów dla 10 ras (dane zaszyte w JS na podstawie `Race_1..Race_10` i `Attribute_1..Attribute_8`).
 - Styl przycisku pozostaje zgodny z przyciskami **Instrukcja** i **Strona Główna** (bez czerwonej kolorystyki).
 - Tabela w modalu ma wyśrodkowane wartości, przewijanie poziome na małych ekranach i układ zebra striping zgodny z motywem aplikacji.
@@ -157,7 +157,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 5. The language switch (PL/EN) is in the top-right corner. Changing the language resets all data (confirmation required).
 6. The **Instrukcja / Manual** button opens the full PDF manual for the current language (`HowToUse/pl.pdf` or `HowToUse/en.pdf`).
 7. The **Attributes** section now includes an 8th field: **Szybkość / Speed**. It uses the same rules as other attributes (range, cost, XP impact).
-8. Under **Strona Główna / Main Page** there is a **Maksima dla gatunków / Species maxima** button (same style as Manual/Main Page buttons; not red).
+8. Under **Strona Główna / Main Page** there is a **Maksymalne wartości atrybutów / Maximum attribute values** button (same style as Manual/Main Page buttons; not red).
 9. The button opens a modal with species maximum-attribute values (PL/EN labels hardcoded in JS, centered values, zebra striping).
 
 #### 3) Secret button (GIF)
@@ -190,7 +190,7 @@ The app is static — “updating” means replacing files or editing the HTML/C
 
 ### Latest update (2026-04-24, Character Creation: Speed + species maxima table)
 - `TworzeniePostaci.html`: added the 8th attribute **Szybkość / Speed** (`attr_Speed`) and extended recalculation/reset/translation logic from 7 to 8 attributes.
-- Added **Maksima dla gatunków / Species maxima** button below **Strona Główna / Main Page**.
+- Added **Maksymalne wartości atrybutów / Maximum attribute values** button below **Strona Główna / Main Page**.
 - The button opens a modal with maximum attribute values for 10 species (data hardcoded in JS using `Race_1..Race_10` and `Attribute_1..Attribute_8`).
 - The button style now matches **Instrukcja/Manual** and **Strona Główna/Main Page** buttons (no red palette).
 - Modal table uses centered values, horizontal overflow support on small screens, and zebra striping consistent with the app theme.
