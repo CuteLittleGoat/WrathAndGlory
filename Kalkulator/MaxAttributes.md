@@ -1,4 +1,4 @@
-| Race | Attribute_1 | Attribute_2 | Attribute_3 | Attribute_4 | Attribute_5 | Attribute_6 | Attribute_7 | Attribute_8 |
+| - | Attribute_1 | Attribute_2 | Attribute_3 | Attribute_4 | Attribute_5 | Attribute_6 | Attribute_7 | Attribute_8 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
 | Race_1 | 8 | 8 | 8 | 8 | 8 | 8 | 8 | 8 |
 | Race_2 | 12 | 12 | 7 | 7 | 8 | 7 | 7 | 7 |
