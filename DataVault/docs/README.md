@@ -4,6 +4,8 @@
 
 - **PL (2026-04-24):** Po podmianie pliku `Repozytorium.xlsx` przygotowano nowy `data.json`, aby wszystkie zakładki pokazywały aktualne rekordy.
 - **EN (2026-04-24):** After replacing `Repozytorium.xlsx`, a new `data.json` was generated so all tabs use the latest records.
+- **PL (2026-04-24):** Ustawiono domyślną pierwszą zakładkę po wejściu do modułu: w widoku użytkownika otwiera się **Bronie**, a w widoku admina **Notatki**.
+- **EN (2026-04-24):** The default first tab on module open was set to **Bronie** in user view and **Notatki** in admin view.
 
 ## PL — Instrukcja dla użytkownika
 
@@ -32,6 +34,9 @@ DataVault to przeglądarka danych do Wrath & Glory. Pozwala szybko wyszukiwać z
 ### Tryb użytkownika vs admin
 - **Użytkownik**: widzi standardowy zestaw zakładek i funkcji potrzebnych do gry.
 - **Admin**: ma dostęp do dodatkowych zakładek i narzędzi utrzymaniowych.
+- **Pierwsza zakładka po otwarciu**:
+  - w trybie użytkownika moduł startuje na zakładce **Bronie**,
+  - w trybie admina moduł startuje na zakładce **Notatki**.
 
 ### Przycisk „Generuj data.json” (tylko admin)
 Ten przycisk służy do odświeżenia danych aplikacji z pliku XLSX. Używaj go, gdy aktualizujesz źródłowy plik z danymi.
@@ -71,6 +76,9 @@ DataVault is a Wrath & Glory data browser. It helps you quickly find rules, tabl
 ### User vs admin mode
 - **User mode**: standard tabs and features for regular play.
 - **Admin mode**: includes additional tabs and maintenance tools.
+- **First tab after opening**:
+  - user mode starts on **Bronie**,
+  - admin mode starts on **Notatki**.
 
 ### “Generate data.json” button (admin only)
 Use this button when you need to refresh app data from the source XLSX file.

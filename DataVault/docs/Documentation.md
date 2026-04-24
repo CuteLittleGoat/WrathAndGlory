@@ -13,6 +13,15 @@ Bieżąca logika widoku domyślnego: w `DEFAULT_VIEW_CONFIG` usunięto reguły f
 ---
 Bieżąca logika zakładek: zakładka `Kary do ST` została dopisana do zbioru zakładek zasad walki (`COMBAT_RULES_SHEETS`), dzięki czemu jest ukrywana/pokazywana przez checkbox `#toggleCombatTabs` i dziedziczy czerwony styl `.tab--combat` zarówno w trybie admina, jak i użytkownika.
 
+---
+Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
+- jeżeli bieżąca zakładka (`currentSheet`) nadal jest widoczna, pozostaje aktywna (bez zmian zachowania),
+- jeżeli trzeba wybrać nową zakładkę startową:
+  - w trybie admina preferowana jest `Notatki`,
+  - w trybie użytkownika preferowana jest `Bronie`,
+- jeśli preferowana zakładka nie jest aktualnie widoczna (np. przez filtry widoczności zakładek), używany jest fallback `visibleOrder[0] || visibleSheets[0]`.
+- Zmiana dotyczy wyłącznie etapu wyznaczania `nextSheet` i **nie zmienia** logiki `applyDefaultViewForSheet`, `applyViewModeToAllSheets` ani przycisku `Widok Domyślny`.
+
 
 ## 1) Struktura projektu i pliki
 
