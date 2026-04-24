@@ -404,3 +404,27 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - Generator wydruku (okno tworzone przez `buildPrintableCardHTML`) nie został zmodyfikowany logicznie przez te zmiany.
 ### 12.5 Alias pola statusu
 - Wykrywanie `old` i ukrywanie pola technicznego działa dla etykiety `Stan` (case-insensitive).
+## 11. Uzupełnienie: twarda specyfikacja stylu (kolory, fonty, stany)
+
+### 11.1 Kolory UI głównego
+- `--bg`: `#031605`; `--bg-grad`: radialne gradienty + `#031605`.
+- `--panel`/`--panel2`: `#000`.
+- `--text`: `#9cf09c`; `--text2`: `#4FAF4F`; `--muted`: `#4a8b4a`; `--code`: `#D2FAD2`; `--red`: `#d74b4b`.
+- `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`.
+- `--b`: `rgba(22,198,12,.35)`; `--b2`: `rgba(22,198,12,.2)`; `--div`: `rgba(22,198,12,.18)`.
+- `--hbg`: `rgba(22,198,12,.06)`; `--zebra`: `rgba(22,198,12,.04)`; `--hover`: `rgba(22,198,12,.08)`.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)`.
+- Dodatkowe warstwy tła sekcji: `rgba(22,198,12,0.03/0.04/0.05/0.06/0.08/0.14/0.18)`.
+- Akcenty pomocnicze: `rgba(111, 227, 140, 0.06)` i `rgba(111, 227, 140, 0.1)`.
+
+### 11.2 Fonty
+- UI: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
+- Karta eksportowana/druk: `"Times New Roman", "Liberation Serif", serif`.
+
+## 12. Uzupełnienie: mapa logiki aplikacji
+- Pobieranie danych `data.json` z DataVault (`fetch` + `cache: no-store`).
+- Transformacja rekordów i zasilenie list wyboru.
+- Interaktywna tabela bazowa NPC (część pól liczbowych edytowalna in-place).
+- Zarządzanie modułami (broń/pancerz/itd.) przez sekcje wielokrotnego wyboru.
+- System ulubionych: Firestore `generatorNpc/favorites` + fallback localStorage.
+- Generowanie karty eksportowej (szablon HTML print z osobną paletą i fontem).

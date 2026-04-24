@@ -873,3 +873,19 @@ Po uproszczeniu `docs/README.md` (wersja użytkowa) przeniesiono i utrwalono tut
    - Przycisk administracyjny generujący `data.json` zachowuje spójność z kanoniczną logiką parsera/generatora (w tym markerów inline i normalizacji formatowania).
 
 Ta sekcja jest utrzymywana jako techniczne uzupełnienie po odchudzeniu README do instrukcji nietechnicznej.
+## 22) Uzupełnienie audytowe — pełna specyfikacja „ciemne tło / zielone akcenty”
+Aby uniknąć opisów skrótowych, poniżej literalne wartości:
+- Tło bazowe: `#031605`.
+- Gradient tła: `rgba(0,255,128,0.06)` + `rgba(0,255,128,0.08)` + `#031605`.
+- Tła paneli: `#000`.
+- Tekst bazowy: `#9cf09c`; tekst wtórny: `#4FAF4F`; tekst przygaszony: `#4a8b4a`; tekst jasny kodu: `#D2FAD2`.
+- Czerwony ostrzegawczy: `#d74b4b`.
+- Ramki i akcent: `#16c60c`; ciemny akcent: `#0d7a07`.
+- Delikatne obramowania: `rgba(22,198,12,.2)` i `rgba(22,198,12,.35)`.
+- Linie podziału: `rgba(22,198,12,.18)`.
+- Zebra: `rgba(22,198,12,.02)` i `rgba(22,198,12,.12)`.
+- Hover i zaznaczenie: `rgba(22,198,12,.16)`.
+- Glow: `0 0 25px rgba(22, 198, 12, 0.45)`; glow nagłówków: `0 0 18px rgba(22, 198, 12, 0.35)`.
+
+## 23) Uzupełnienie audytowe — katalog funkcji krytycznych
+W `app.js` funkcje kluczowe dla rekonstrukcji 1:1 to m.in.: normalizacja (`norm`, `normaliseDB`), budowa konfiguracji widoku (`createSheetViewState`, `applyDefaultViewForSheet`, `applyFullViewForSheet`), formatowanie inline (`formatInlineHTML`, `formatTextHTML`, `formatKeywordHTML`), render (`buildTableSkeleton`, `renderBody`, `renderRow`), clamp (`measureRenderedLines`, `updateClampableHints`), filtrowanie/sortowanie (`passesFilters`, `sortRows`, `compareByColumn`), parsowanie XLSX (`getCellTextWithMarkers`, `extractSheetRowsWithFormatting`, `buildDataJsonFromSheets`).

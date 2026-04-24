@@ -134,3 +134,45 @@ Dla tego modułu **nie dotyczy**:
 - brak Firebase,
 - brak wymaganej struktury kolekcji,
 - brak skryptu Node.js do bootstrapu danych.
+## 11. Specyfikacja wizualna 1:1 (dokładne wartości, bez skrótów)
+Poniższa sekcja zastępuje ogólne opisy typu „ciemne tło / zielone akcenty” konkretnymi parametrami:
+
+### 11.1. Kolory i efekty
+- Tło strony (`--bg`) to 3 warstwy:  
+  `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),`  
+  `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),`  
+  `#031605`.
+- Tło panelu: `#000`.
+- Główna ramka i akcent: `#16c60c`.
+- Ciemniejszy akcent focus/active: `#0d7a07`.
+- Tekst podstawowy: `#9cf09c`.
+- Tekst pomocniczy (`--muted`): `rgba(156, 240, 156, 0.7)`.
+- Glow panelu: `0 0 25px rgba(22, 198, 12, 0.45)`.
+- Focus ring pól/selectów: `0 0 0 2px rgba(22, 198, 12, 0.25)`.
+- Hover przycisku rzutu: `background: rgba(22, 198, 12, 0.14)`, cień `0 0 18px rgba(22, 198, 12, 0.3)`.
+- Active przycisku rzutu: `background: rgba(22, 198, 12, 0.22)`.
+
+### 11.2. Kolory kości
+- Kość zwykła: tło `#f6f6f6`, oczka `#111111`, obramowanie `#1c1c1c`.
+- Kość furii: tło `#c01717`, oczka `#ffffff`, obramowanie `#650909`.
+- Cień kości: `inset 0 0 10px rgba(0, 0, 0, 0.2), 0 6px 14px rgba(0, 0, 0, 0.35)`.
+
+### 11.3. Typografia i rozmiary
+- Globalny stos fontów: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
+- `h1`: `30px`, uppercase, `letter-spacing: 0.05em`.
+- Label pól: `13px`, `font-weight: 600`, uppercase.
+- Wejścia liczbowe: `16px`.
+- Przycisk rzutu: `15px`, `font-weight: 600`, uppercase.
+
+## 12. Mapa funkcji JS (pełna lista odpowiedzialności)
+- `clampValue(value, min, max)` – ogranicza liczby do zakresu 1..99.
+- `sanitizeField(input)` – normalizuje pojedyncze pole (`parseInt` + clamp + zapis do DOM).
+- `syncPoolAndWrath()` – pilnuje reguły `wrath <= pool`.
+- `createDieElement(isWrath)` – buduje strukturę DOM pojedynczej kości (7 oczek + znak `?`).
+- `setDieFace(die, value)` – przełącza klasę `face-1..face-6`.
+- `rollDie()` – zwraca liczbę losową 1..6.
+- `scoreValue(value)` – mapuje wynik kości na punkty (1-3=0, 4-5=1, 6=2).
+- `buildSummary(payload)` – renderuje pełne podsumowanie testu (nagłówek, furia, shift, lista kości).
+- `resetState()` – resetuje formularz i panel wyników do wartości domyślnych.
+- `updateLanguage(lang)` – podmienia wszystkie etykiety PL/EN i resetuje stan.
+- `handleRoll()` – orkiestracja całego rzutu: walidacja, animacja, losowanie, obliczenia, render.

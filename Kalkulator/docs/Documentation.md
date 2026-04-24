@@ -415,3 +415,19 @@ Aby odtworzyć aktualny interfejs kalkulatora 1:1:
 3. Utrzymaj klucze tłumaczeń (`race_1..race_10`, `attribute_1..attribute_8`) bez lokalizowania kluczy technicznych.
 4. Wywołuj `renderMaxAttributesTable(lang)` zawsze po zmianie języka.
 5. Pozostaw dotychczasowe limity inputów: atrybuty `0..12`, umiejętności `0..8`.
+## 9. Uzupełnienie: komplet wartości kolorów (1:1)
+Poniżej pełna paleta używana przez trzy strony modułu:
+- `--bg`: `#031605`.
+- `--bg-grad`: radial gradient `rgba(0,255,128,0.06)` + radial gradient `rgba(0,255,128,0.08)` + `#031605`.
+- `--panel`: `#000`; `--panel2`: `#000`.
+- `--text`: `#9cf09c`; `--text2`: `#4FAF4F`; `--muted`: `#4a8b4a`; `--code`: `#D2FAD2`; `--red`: `#d74b4b`.
+- `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`.
+- `--b`: `rgba(22,198,12,.35)`; `--b2`: `rgba(22,198,12,.2)`; `--div`: `rgba(22,198,12,.18)`.
+- `--hbg`: `rgba(22,198,12,.06)`; `--zebra`: `rgba(22,198,12,.04)`; `--hover`: `rgba(22,198,12,.08)`.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)`.
+- Tajny przycisk (CTA czerwone): `#ff3b30`, `rgba(255,59,48,0.2)`, `#ffe5e3`, glow `0 0 14px rgba(255,59,48,0.35)`.
+
+## 10. Uzupełnienie: pełna lista funkcji runtime
+- `index.html`: `toggleSecretOverlay(forceOpen)`.
+- `KalkulatorXP.html`: `clampValue`, `calculateRowCost`, `recalcTable`, `recalcAll`, `renderMaxAttributesTable`, `applyLanguage`.
+- `TworzeniePostaci.html`: `updateLanguage`, `renderSpeciesMaxTable`, `resetAll`, `recalcXP`, `displayError`, `checkSkillTree`, `attachDefaultOnBlur`, `adjustTalentFontSize`, `toggleSpeciesMaxModal`.
