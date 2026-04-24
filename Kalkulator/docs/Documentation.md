@@ -348,19 +348,25 @@ Dodano nowe struktury danych:
 
 Rozszerzono `translations`:
 - `labels.maxAttributesTitle`
-- `labels.raceHeader`
 - `races.*` (10 etykiet)
 - `attributes.*` (8 etykiet)
 
 Dodano funkcję:
 - `renderMaxAttributesTable(lang)`
   - pobiera słownik tłumaczeń dla aktywnego języka,
-  - buduje dynamicznie `thead` i `tbody` tabeli referencyjnej,
+  - buduje dynamicznie `thead` i `tbody` tabeli referencyjnej (pierwsza komórka nagłówka jest celowo pusta, bez etykiety „Rasa/Species”),
   - wpisuje wynik do `#maxAttributesTable` przez `innerHTML`.
 
 Zmieniono `applyLanguage(lang)`:
 - aktualizuje `#maxAttributesTitle`,
 - wywołuje `renderMaxAttributesTable(lang)` po podmianie etykiet, dzięki czemu tabela referencyjna natychmiast przełącza nazwy PL/EN.
+
+### 10.6. Korekta nazewnictwa (2026-04-24)
+Wprowadzono korektę copywritingu w sekcji referencyjnej `KalkulatorXP.html`:
+1. Tytuł sekcji skrócono z:
+   - `Maksymalne wartości atrybutów (informacyjne)` → `Maksymalne wartości atrybutów`,
+   - `Maximum attribute values (reference)` → `Maximum attribute values`.
+2. Usunięto tłumaczeniowy klucz `labels.raceHeader` i podpis pierwszej kolumny tabeli (`Rasa / Species`), pozostawiając samą listę ras jako wartości wierszy.
 
 ### 10.4. Zmiany w CSS (`kalkulatorxp.css`)
 Dodane klasy:
