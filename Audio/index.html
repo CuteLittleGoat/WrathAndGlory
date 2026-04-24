@@ -536,7 +536,7 @@
   <div class="page">
     <header class="admin-only">
       <h1 id="headerTitle">Audio — panel dźwięków</h1>
-      <p id="headerSubtitle">Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.</p>
+      <p id="headerSubtitle">Odtwarzanie SFX, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.</p>
       <div class="language-switcher">
         <select id="languageSelect" aria-label="Wersja językowa">
           <option value="pl">Polski</option>
@@ -564,7 +564,7 @@
       <div class="tag-filter-header">
         <div>
           <h2 id="tagFiltersTitle">Filtry tagów</h2>
-          <p class="legend" id="tagFiltersSubtitle">Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.</p>
+          <p class="legend" id="tagFiltersSubtitle">Zaznaczenie tagów wpływa wyłącznie na listę SFX w panelu admina.</p>
         </div>
         <button class="btn" id="toggleTagPanel">Ukryj panel</button>
       </div>
@@ -587,14 +587,14 @@
 
     <section class="toolbar admin-only">
       <div class="left">
-        <input class="search-input" id="searchInput" type="search" placeholder="Szukaj sampla..." />
+        <input class="search-input" id="searchInput" type="search" placeholder="Szukaj SFX..." />
         <button class="btn btn-danger" id="clearAllAliases">Wyczyść wszystkie aliasy</button>
       </div>
     </section>
 
     <section class="layout admin-only">
       <div class="panel">
-        <h2 id="samplesTitle">Lista sampli</h2>
+        <h2 id="samplesTitle">Lista SFX</h2>
         <p class="legend" id="samplesSubtitle">Źródło danych: AudioManifest.xlsx (kolumny NazwaSampla, NazwaPliku, LinkDoFolderu).</p>
         <div id="samplesGrid" class="samples-grid"></div>
       </div>
@@ -693,19 +693,19 @@
           languageSelect: "Wersja językowa",
           headerTitleAdmin: "Audio — panel dźwięków",
           headerTitleUser: "Audio — panel użytkownika",
-          headerSubtitleAdmin: "Odtwarzanie sampli, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.",
+          headerSubtitleAdmin: "Odtwarzanie SFX, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.",
           headerSubtitleUser: "Wybierz widok z panelu bocznego, aby odtwarzać przygotowane dźwięki.",
           reloadManifest: "Wczytaj manifest",
           addList: "Nowa lista ulubionych",
           refreshFavorites: "Odśwież ulubione",
           tagFiltersTitle: "Filtry tagów",
-          tagFiltersSubtitle: "Zaznaczenie tagów wpływa wyłącznie na listę sampli w panelu admina.",
+          tagFiltersSubtitle: "Zaznaczenie tagów wpływa wyłącznie na listę SFX w panelu admina.",
           toggleTagPanelHide: "Ukryj panel",
           toggleTagPanelShow: "Pokaż panel",
           tagFilterMenuButton: "Filtruj ▾",
           tagMenuSelectAll: "Zaznacz wszystko",
           tagMenuClearAll: "Odznacz wszystko",
-          samplesTitle: "Lista sampli",
+          samplesTitle: "Lista SFX",
           samplesSubtitle: "Źródło danych: AudioManifest.xlsx (kolumny NazwaSampla, NazwaPliku, LinkDoFolderu).",
           favoritesTitle: "Ulubione",
           mainViewTitle: "Główny widok",
@@ -752,7 +752,7 @@
         },
         placeholders: {
           tagSearch: "Szukaj tagu...",
-          sampleSearch: "Szukaj sampla...",
+          sampleSearch: "Szukaj SFX...",
           tagMenuSearch: "Szukaj tagu...",
         },
       },
@@ -761,19 +761,19 @@
           languageSelect: "Language version",
           headerTitleAdmin: "Audio — sound panel",
           headerTitleUser: "Audio — user panel",
-          headerSubtitleAdmin: "Sample playback, favorite lists management, and Firebase synchronization.",
+          headerSubtitleAdmin: "SFX playback, favorite lists management, and Firebase synchronization.",
           headerSubtitleUser: "Choose a view from the side panel to play prepared sounds.",
           reloadManifest: "Load manifest",
           addList: "New favorites list",
           refreshFavorites: "Refresh favorites",
           tagFiltersTitle: "Tag filters",
-          tagFiltersSubtitle: "Selecting tags only affects the sample list in the admin panel.",
+          tagFiltersSubtitle: "Selecting tags only affects the SFX list in the admin panel.",
           toggleTagPanelHide: "Hide panel",
           toggleTagPanelShow: "Show panel",
           tagFilterMenuButton: "Filter ▾",
           tagMenuSelectAll: "Select all",
           tagMenuClearAll: "Clear selection",
-          samplesTitle: "Sample list",
+          samplesTitle: "SFX list",
           samplesSubtitle: "Data source: AudioManifest.xlsx (columns: NazwaSampla, NazwaPliku, LinkDoFolderu).",
           favoritesTitle: "Favorites",
           mainViewTitle: "Main view",
@@ -820,7 +820,7 @@
         },
         placeholders: {
           tagSearch: "Search tag...",
-          sampleSearch: "Search sample...",
+          sampleSearch: "Search SFX...",
           tagMenuSearch: "Search tag...",
         },
       },
