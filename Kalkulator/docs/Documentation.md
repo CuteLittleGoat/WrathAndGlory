@@ -125,6 +125,7 @@ W `:root` zdefiniowano:
 - **Komórki kosztu XP** (`.dataTable td.cost`): wartości wyrównane do środka w pionie i poziomie.
 - **Inputy** (`.input`): ciemne tło, jasny tekst, focus ring.
 - **Layout** (`.main`, `.workspace`, `.tableWrap`, `.calcGrid`): dwukolumnowy układ z responsywnością w `@media (max-width: 980px)`.
+- **Tabela referencyjna maksimów** (`.maxReferenceCard`, `.maxReferenceTable`, `.skillMaximumInfo`): pełna szerokość pod obiema tabelami kalkulacyjnymi, wyśrodkowane dane, zebra striping odziedziczony po `.dataTable`, oraz dodatkowa linia informacyjna o limicie umiejętności.
 
 ### 4.3. Klasa `attribute-high`
 W `TworzeniePostaci.html` skrypt dodaje klasę `attribute-high` dla wartości atrybutów > 8. Styl nie jest zdefiniowany w CSS – to rezerwa na przyszłe wyróżnienie.
@@ -139,12 +140,17 @@ W `TworzeniePostaci.html` skrypt dodaje klasę `attribute-high` dla wartości at
 - **Panel boczny** `.panel` z instrukcją i polem sumy (`#totalXp`).
 - **Część robocza** `.workspace`:
   - tabela **Atrybuty** (`#attributesTable`),
-  - tabela **Umiejętności** (`#skillsTable`).
+  - tabela **Umiejętności** (`#skillsTable`),
+  - sekcja referencyjna maksimów (`.maxReferenceCard`) zawierająca:
+    - nagłówek `#attributeMaximumsTitle`,
+    - tabelę `#attributeMaximumsTable` (`#attributeMaximumsHeadRow`, `#attributeMaximumsBody`),
+    - informację o limicie umiejętności `#skillMaximumInfo`.
 
 ### 5.2. Zakresy i walidacja
 - Atrybuty: `min=0`, `max=12`.
 - Umiejętności: `min=0`, `max=8`.
 - Dodatkowo skrypt wymusza zakresy w funkcji `clampValue`.
+- Tabela referencyjna maksimów ma charakter informacyjny (nie zmienia bieżącej walidacji pól wejściowych).
 
 ### 5.3. Słowniki kosztów XP
 ```js
@@ -171,10 +177,15 @@ const skillCosts = {
 4. **`recalcAll()`**
    - Sumuje koszty z obu tabel.
    - Aktualizuje `#totalXp`.
+5. **`renderAttributeMaximums(lang)`**
+   - Renderuje nagłówki i wiersze tabeli referencyjnej na podstawie danych zaszytych w JS (`maxAttributeTable`).
+   - Używa tłumaczeń `translations[lang].races` i `translations[lang].attributes`.
+   - Wartości są wstawiane jako komórki tabeli i wyświetlane centralnie.
 
 ### 5.5. Zdarzenia
 - `input` i `change` na wszystkich polach → `recalcAll()`.
 - Kliknięcie `#btnReset` → zeruje pola i przelicza sumę.
+- `applyLanguage(lang)` poza tłumaczeniami UI odświeża też tabelę referencyjną maksimów i nagłówek kolumny rasy/species.
 
 ## 6. `TworzeniePostaci.html` – arkusz tworzenia postaci
 ### 6.1. Struktura HTML
@@ -320,3 +331,11 @@ Wdrożono rekomendowane rozwiązanie z analizy:
 
 5.5. **Nawigacja do modułu Main**
    - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.
+
+
+## 10. Aktualizacja 2026-04-24 – tabela referencyjna maksimów w `KalkulatorXP.html`
+1. Dodano nową sekcję pod tabelami **Atrybuty** i **Umiejętności** z tabelą referencyjną maksymalnych wartości atrybutów (10 ras × 8 atrybutów).
+2. Dane `Race_1..Race_10` i `Attribute_1..Attribute_8` oraz odpowiadające limity zostały zaszyte bezpośrednio w kodzie JS (`maxAttributeTable`).
+3. Nazwy ras i atrybutów są tłumaczone przez `translations` (oddzielnie dla `pl` i `en`) i renderowane dynamicznie przez `renderAttributeMaximums(lang)`.
+4. Wprowadzono centralne wyrównanie wszystkich wartości tabeli referencyjnej i styl „zebra striping” zgodny z dotychczasową estetyką aplikacji.
+5. Pod tabelą dodano informację o stałym limicie umiejętności (`8`) z tłumaczeniem PL/EN.

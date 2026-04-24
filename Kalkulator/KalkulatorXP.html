@@ -121,6 +121,16 @@
                   </table>
                 </section>
               </div>
+              <section class="calcCard maxReferenceCard" aria-live="polite">
+                <header class="cardHeader" id="attributeMaximumsTitle">Maksymalne wartości atrybutów (informacyjne)</header>
+                <table class="dataTable maxReferenceTable" id="attributeMaximumsTable">
+                  <thead>
+                    <tr id="attributeMaximumsHeadRow"></tr>
+                  </thead>
+                  <tbody id="attributeMaximumsBody"></tbody>
+                </table>
+                <div class="skillMaximumInfo" id="skillMaximumInfo">Maksymalna wartość umiejętności: 8</div>
+              </section>
             </div>
           </div>
         </div>
@@ -147,7 +157,32 @@
           skillsTitle: "Umiejętności",
           currentHeader: "Aktualna wartość",
           targetHeader: "Docelowa wartość",
-          costHeader: "Koszt XP"
+          costHeader: "Koszt XP",
+          attributeMaximumsTitle: "Maksymalne wartości atrybutów (informacyjne)",
+          skillMaximumInfo: "Maksymalna wartość umiejętności: 8",
+          raceHeader: "Rasa"
+        },
+        races: {
+          Race_1: "Człowiek",
+          Race_2: "Ork",
+          Race_3: "Aeldari",
+          Race_4: "Adeptus Astartes",
+          Race_5: "Primaris Astartes",
+          Race_6: "Ogryn",
+          Race_7: "Szczurak",
+          Race_8: "Kroot",
+          Race_9: "Drukhari",
+          Race_10: "Konstrukt Upiorytowy"
+        },
+        attributes: {
+          Attribute_1: "Siła",
+          Attribute_2: "Wytrzymałość",
+          Attribute_3: "Zręczność",
+          Attribute_4: "Inicjatywa",
+          Attribute_5: "Siła Woli",
+          Attribute_6: "Inteligencja",
+          Attribute_7: "Ogłada",
+          Attribute_8: "Szybkość"
         }
       },
       en: {
@@ -167,7 +202,32 @@
           skillsTitle: "Skills",
           currentHeader: "Current value",
           targetHeader: "Target value",
-          costHeader: "XP cost"
+          costHeader: "XP cost",
+          attributeMaximumsTitle: "Maximum attribute values (reference)",
+          skillMaximumInfo: "Maximum skill value: 8",
+          raceHeader: "Species"
+        },
+        races: {
+          Race_1: "Human",
+          Race_2: "Ork",
+          Race_3: "Aeldari",
+          Race_4: "Adeptus Astartes",
+          Race_5: "Primaris Astartes",
+          Race_6: "Ogryn",
+          Race_7: "Ratling",
+          Race_8: "Kroot",
+          Race_9: "Drukhari",
+          Race_10: "Wraith Construct"
+        },
+        attributes: {
+          Attribute_1: "Strength",
+          Attribute_2: "Toughness",
+          Attribute_3: "Agility",
+          Attribute_4: "Initiative",
+          Attribute_5: "Willpower",
+          Attribute_6: "Intellect",
+          Attribute_7: "Fellowship",
+          Attribute_8: "Speed"
         }
       }
     };
@@ -184,8 +244,59 @@
     const tabsTitle = document.getElementById("tabsTitle");
     const attributesTitle = document.getElementById("attributesTitle");
     const skillsTitle = document.getElementById("skillsTitle");
+    const attributeMaximumsTitle = document.getElementById("attributeMaximumsTitle");
+    const skillMaximumInfo = document.getElementById("skillMaximumInfo");
+    const attributeMaximumsHeadRow = document.getElementById("attributeMaximumsHeadRow");
+    const attributeMaximumsBody = document.getElementById("attributeMaximumsBody");
     const mainPageButton = document.getElementById("btnMainPage");
     const resetButton = document.getElementById("btnReset");
+
+    const maxAttributeTable = [
+      { race: "Race_1", values: { Attribute_1: 8, Attribute_2: 8, Attribute_3: 8, Attribute_4: 8, Attribute_5: 8, Attribute_6: 8, Attribute_7: 8, Attribute_8: 8 } },
+      { race: "Race_2", values: { Attribute_1: 12, Attribute_2: 12, Attribute_3: 7, Attribute_4: 7, Attribute_5: 8, Attribute_6: 7, Attribute_7: 7, Attribute_8: 7 } },
+      { race: "Race_3", values: { Attribute_1: 8, Attribute_2: 7, Attribute_3: 12, Attribute_4: 12, Attribute_5: 12, Attribute_6: 10, Attribute_7: 6, Attribute_8: 10 } },
+      { race: "Race_4", values: { Attribute_1: 10, Attribute_2: 10, Attribute_3: 9, Attribute_4: 9, Attribute_5: 10, Attribute_6: 10, Attribute_7: 8, Attribute_8: 9 } },
+      { race: "Race_5", values: { Attribute_1: 12, Attribute_2: 12, Attribute_3: 9, Attribute_4: 9, Attribute_5: 10, Attribute_6: 10, Attribute_7: 8, Attribute_8: 9 } },
+      { race: "Race_6", values: { Attribute_1: 12, Attribute_2: 12, Attribute_3: 7, Attribute_4: 4, Attribute_5: 8, Attribute_6: 1, Attribute_7: 4, Attribute_8: 8 } },
+      { race: "Race_7", values: { Attribute_1: 6, Attribute_2: 6, Attribute_3: 10, Attribute_4: 10, Attribute_5: 8, Attribute_6: 8, Attribute_7: 10, Attribute_8: 7 } },
+      { race: "Race_8", values: { Attribute_1: 12, Attribute_2: 12, Attribute_3: 12, Attribute_4: 12, Attribute_5: 10, Attribute_6: 6, Attribute_7: 6, Attribute_8: 10 } },
+      { race: "Race_9", values: { Attribute_1: 8, Attribute_2: 8, Attribute_3: 12, Attribute_4: 12, Attribute_5: 10, Attribute_6: 10, Attribute_7: 6, Attribute_8: 10 } },
+      { race: "Race_10", values: { Attribute_1: 12, Attribute_2: 12, Attribute_3: 8, Attribute_4: 8, Attribute_5: 12, Attribute_6: 10, Attribute_7: 4, Attribute_8: 8 } }
+    ];
+    const attributeKeys = Object.keys(maxAttributeTable[0].values);
+
+    function renderAttributeMaximums(lang) {
+      const raceTranslations = translations[lang].races;
+      const attributeTranslations = translations[lang].attributes;
+
+      attributeMaximumsHeadRow.innerHTML = "";
+      attributeMaximumsBody.innerHTML = "";
+
+      const raceHeader = document.createElement("th");
+      raceHeader.textContent = translations[lang].labels.raceHeader;
+      attributeMaximumsHeadRow.appendChild(raceHeader);
+
+      attributeKeys.forEach((attributeKey) => {
+        const headerCell = document.createElement("th");
+        headerCell.textContent = attributeTranslations[attributeKey];
+        attributeMaximumsHeadRow.appendChild(headerCell);
+      });
+
+      maxAttributeTable.forEach((row) => {
+        const tr = document.createElement("tr");
+        const raceCell = document.createElement("th");
+        raceCell.textContent = raceTranslations[row.race];
+        tr.appendChild(raceCell);
+
+        attributeKeys.forEach((attributeKey) => {
+          const valueCell = document.createElement("td");
+          valueCell.textContent = row.values[attributeKey];
+          tr.appendChild(valueCell);
+        });
+
+        attributeMaximumsBody.appendChild(tr);
+      });
+    }
 
     const attributeCosts = {
       0: 0, 1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
@@ -248,9 +359,12 @@
       tabsTitle.textContent = t.tabsTitle;
       attributesTitle.textContent = t.attributesTitle;
       skillsTitle.textContent = t.skillsTitle;
+      attributeMaximumsTitle.textContent = t.attributeMaximumsTitle;
+      skillMaximumInfo.textContent = t.skillMaximumInfo;
       document.querySelectorAll(".currentHeader").forEach((el) => { el.textContent = t.currentHeader; });
       document.querySelectorAll(".targetHeader").forEach((el) => { el.textContent = t.targetHeader; });
       document.querySelectorAll(".costHeader").forEach((el) => { el.textContent = t.costHeader; });
+      renderAttributeMaximums(lang);
     }
 
     document.querySelectorAll('#attributesTable input, #skillsTable input').forEach(input => {
