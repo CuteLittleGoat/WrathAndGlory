@@ -10,6 +10,13 @@ Najważniejsze pliki:
 - `kalkulatorxp.css` – wspólne style dla kalkulatora i arkusza.
 - `HowToUse/pl.pdf` i `HowToUse/en.pdf` – instrukcje PDF otwierane z poziomu arkusza.
 
+## 1.1. Aktualizacja terminologii PL: XP → PD (2026-04-24)
+W tej zmianie zaktualizowano wyłącznie polskie etykiety interfejsu (bez zmiany logiki obliczeń oraz bez zmiany nazw plików i odnośników):
+- `index.html`: nazwa przycisku na stronie startowej zmieniona z **Kalkulator XP** na **Kalkulator PD**.
+- `KalkulatorXP.html`: polskie stringi interfejsu zmienione z **XP** na **PD** (tytuł, instrukcja, etykiety kosztu i zakładki).
+- `TworzeniePostaci.html`: polskie stringi interfejsu związane z pulą punktów i błędem przekroczenia puli zmienione z **XP** na **PD**.
+- Warstwa EN (English) pozostaje bez zmian i nadal używa skrótu **XP**.
+
 ## 2. Zależności zewnętrzne i assety
 ### 2.1. Fonty
 - Wszystkie strony (`index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`) korzystają z lokalnego stosu fontów, bez zewnętrznych CDN:
