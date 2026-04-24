@@ -1,5 +1,10 @@
 # DataVault — instrukcja użytkownika / User Guide
 
+## Aktualizacja danych / Data refresh
+
+- **PL (2026-04-24):** Po podmianie pliku `Repozytorium.xlsx` przygotowano nowy `data.json`, aby wszystkie zakładki pokazywały aktualne rekordy.
+- **EN (2026-04-24):** After replacing `Repozytorium.xlsx`, a new `data.json` was generated so all tabs use the latest records.
+
 ## PL — Instrukcja dla użytkownika
 
 ### Do czego służy DataVault
