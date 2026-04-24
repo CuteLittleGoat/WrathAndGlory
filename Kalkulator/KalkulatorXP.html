@@ -122,7 +122,7 @@
                 </section>
 
                 <section class="calcCard referenceCard">
-                  <header class="cardHeader" id="maxAttributesTitle">Maksymalne wartości atrybutów (informacyjne)</header>
+                  <header class="cardHeader" id="maxAttributesTitle">Maksymalne wartości atrybutów</header>
                   <div class="referenceTableWrap">
                     <table class="dataTable referenceTable" id="maxAttributesTable"></table>
                   </div>
@@ -179,8 +179,7 @@
           currentHeader: "Aktualna wartość",
           targetHeader: "Docelowa wartość",
           costHeader: "Koszt XP",
-          maxAttributesTitle: "Maksymalne wartości atrybutów (informacyjne)",
-          raceHeader: "Rasa"
+          maxAttributesTitle: "Maksymalne wartości atrybutów"
         },
         races: {
           race_1: "Człowiek",
@@ -223,8 +222,7 @@
           currentHeader: "Current value",
           targetHeader: "Target value",
           costHeader: "XP cost",
-          maxAttributesTitle: "Maximum attribute values (reference)",
-          raceHeader: "Species"
+          maxAttributesTitle: "Maximum attribute values"
         },
         races: {
           race_1: "Human",
@@ -315,7 +313,7 @@
       const table = document.getElementById("maxAttributesTable");
 
       const headerCells = [
-        `<th>${t.labels.raceHeader}</th>`,
+        `<th></th>`,
         ...attributeKeys.map((key) => `<th>${t.attributes[key]}</th>`)
       ].join("");
 
