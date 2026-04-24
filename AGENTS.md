@@ -11,3 +11,4 @@ Ilość modułów może się zmieniać.
 5. Jeżeli polecenie użytkownika nie dotyczy zmiany kodu a tylko analizy to wnioski zapisz w folderze Analizy w nowoutworzonym pliku o odekwatnej nazwie do przeprowadzanej analizy
 6. Jeżeli zapisujesz plik z wynikami analizy to w pliku uwzględnij prompt użytkownika, żeby zachować kontekst zapisanych odpowiedzi
 7. Folderu Analizy nie uwzględniaj w żadnych dokumentacjach i instrukcjach
+8. Jeżeli polecenie użytkownika dotyczy zmiany w kodzie w oparciu o plik z analizą to po realizacji zadania należy zaktualizować plik z analizą o o sekcję ze wszystkimi zmianami w kodzie w każdym z plików w formacie cytując dokładne linie kodu przed i po zmianie np: Plik Second/app.js Linia 24 Było: return false; Jest: return true;
