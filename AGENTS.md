@@ -5,11 +5,9 @@ Niektóre moduły korzystają z tych samych plików (np. DataVault i GeneratorNP
 Ilość modułów może się zmieniać.
 
 1. Po każdej zmianie kodu któregokolwiek z modułów zmodyfikuj pliki docs/Documentation.md oraz docs/README.md w odpowiednim folderze
-2. Plik README.md ma zawierać instrukcję obsługi dla użytkownika
-3. Plik README.md ma zawierać te same instrukcję w języku polskim i angielskim
-4. Plik Documentation.md ma zawierać dokładny opis kodu. Wszystkich funkcji, użytych styli, fontów, zasad działania poszczególnych elementów itp.
-5. Plik Documentation.md ma służyć do tego, żeby inny użytkownik tylko czytając dokumentację mógł odtworzyć aplikację 1:1
-6. Jeżeli zmiana dotyczy fontu, kolorów itp. to należy też zaktualizować plik DetaleLayout.md w głównym folderze
-7. Jeżeli polecenie użytkownika nie dotyczy zmiany kodu a tylko analizy to wnioski zapisz w folderze Analizy w nowoutworzonym pliku o odekwatnej nazwie do przeprowadzanej analizy
-8. Jeżeli zapisujesz plik z wynikami analizy to w pliku uwzględnij prompt użytkownika, żeby zachować kontekst zapisanych odpowiedzi
-9. Folderu Analizy nie uwzględniaj w żadnych dokumentacjach i instrukcjach
+2. Pliki README.md mają zawierać szczegółową informację dla użytkownika. Co i gdzie klikać, co powinno się stać, jak działa każdy z modułów. Instrukcja powinna być napisana w języku polskim i angielskim. Instrukcja nie powinna zawierać technicznego języka tylko użytkowe informacje dla użytkownika, który się nie zna na programowaniu. Ma to być dokładna instrukcja po przeczytaniu której dowolna osoba będzie w stanie w pełni korzystać z danego modułu.
+3. Pliki Documentation.md mają zawierać szczegółową instrukcję techniczną. Mają tu być zawarte wszystkie informacje o stylach, funkcjach, sposobach obliczeń, integracji z Firebase, strukturę plików Firebase, skrypt node.js do utworzenia stosownej struktury itd. Ma to być pełna informacja techniczna służąca do odtworzenia aplikacji 1:1 w przypadku utraty plików. Język może być techniczny. Celem dokumentu jest to, że dowolny programista mając do dyspozycji tylko plik Documentation.md będzie w stanie odtworzyć cały moduł.
+4. Jeżeli zmiana dotyczy fontu, kolorów itp. to należy też zaktualizować plik DetaleLayout.md w głównym folderze
+5. Jeżeli polecenie użytkownika nie dotyczy zmiany kodu a tylko analizy to wnioski zapisz w folderze Analizy w nowoutworzonym pliku o odekwatnej nazwie do przeprowadzanej analizy
+6. Jeżeli zapisujesz plik z wynikami analizy to w pliku uwzględnij prompt użytkownika, żeby zachować kontekst zapisanych odpowiedzi
+7. Folderu Analizy nie uwzględniaj w żadnych dokumentacjach i instrukcjach
