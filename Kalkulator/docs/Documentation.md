@@ -10,6 +10,11 @@ Najważniejsze pliki:
 - `kalkulatorxp.css` – wspólne style dla kalkulatora i arkusza.
 - `HowToUse/pl.pdf` i `HowToUse/en.pdf` – instrukcje PDF otwierane z poziomu arkusza.
 
+## 1.0.1. Aktualizacja 2026-04-24: wyrównanie nazw ras w tabelach „Maksymalne wartości atrybutów”
+- `kalkulatorxp.css`: dodano regułę `.referenceTable tbody th:first-child { text-align: left; }`, która ustawia lewostronne wyrównanie dla nazw ras w pierwszej kolumnie tabeli referencyjnej w `KalkulatorXP.html`.
+- `TworzeniePostaci.html` (`<style>` inline): zaktualizowano regułę `.species-max-table td:first-child`, dodając `text-align: left;` przy zachowaniu `font-weight: 600;`.
+- Zakres zmiany obejmuje wyłącznie pierwszą kolumnę z nazwami ras; wszystkie komórki liczbowe nadal używają wyrównania centralnego z reguł bazowych tabeli.
+
 ## 1.1. Aktualizacja terminologii PL: XP → PD (2026-04-24)
 W tej zmianie zaktualizowano wyłącznie polskie etykiety interfejsu (bez zmiany logiki obliczeń oraz bez zmiany nazw plików i odnośników):
 - `index.html`: nazwa przycisku na stronie startowej zmieniona z **Kalkulator XP** na **Kalkulator PD**.
