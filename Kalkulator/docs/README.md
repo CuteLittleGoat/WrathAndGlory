@@ -253,3 +253,33 @@ The app is static — “updating” means replacing files or editing the HTML/C
 ### Disclaimer
 This tool is an unofficial fan-made project created to help GMs in Wrath & Glory. The app is provided for free for private, non-commercial use only. The project is not licensed, affiliated with, or supported by Games Workshop, Cubicle 7 Entertainment Ltd., or Copernicus Corporation.
 Warhammer 40,000 and related names and trademarks are owned by Games Workshop Limited; Wrath & Glory is owned by their respective rights holders.
+
+## Aktualizacja 2026-04-27 – zapis/odczyt Firebase (Tworzenie Postaci)
+
+### 🇵🇱 Co nowego dla użytkownika
+1. W module **Tworzenie Postaci** pod sekcją puli PD dodano przyciski **Zapisz** i **Wczytaj**.
+2. Przed wykonaniem zapisu oraz odczytu pojawia się okno potwierdzenia z przyciskami **Tak/Nie**.
+3. Treści przycisków i okna potwierdzenia automatycznie dopasowują się do języka aplikacji (PL/EN).
+4. **Zapisz** nadpisuje poprzedni stan w Firebase.
+5. **Wczytaj** przywraca pełny stan formularza (wszystkie pola), a kalkulacja punktów aktualizuje się automatycznie.
+
+### 🇬🇧 What is new for users
+1. In **Character Creation**, new **Save** and **Load** buttons were added below the XP pool section.
+2. Before saving and loading, a confirmation window appears with **Yes/No** actions.
+3. Button labels and confirmation texts automatically follow the currently selected language (PL/EN).
+4. **Save** overwrites the previous state in Firebase.
+5. **Load** restores the full form state (all fields), then XP calculations refresh automatically.
+
+## Firebase – wymagania użytkowe / User requirements
+
+### 🇵🇱
+Aby funkcja **Zapisz/Wczytaj** działała poprawnie:
+1. W Firestore musi istnieć dokument `character_builder/current`.
+2. Reguły Firestore muszą zezwalać na odczyt i zapis tej ścieżki.
+3. Plik `Kalkulator/config/firebase-config.js` musi zawierać poprawną konfigurację projektu.
+
+### 🇬🇧
+For **Save/Load** to work correctly:
+1. Firestore must contain `character_builder/current`.
+2. Firestore Rules must allow read/write for this path.
+3. `Kalkulator/config/firebase-config.js` must contain valid project configuration.

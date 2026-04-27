@@ -421,3 +421,72 @@ Dopiero komplet punktów 1–6 oznacza pełne „działa zgodnie z wymaganiem u�
 ### Decyzja końcowa (na dziś)
 - **TAK**: Twoja obecna konfiguracja Firestore (kolekcja+dokument+`schemaVersion`+rules) jest wystarczająca, żeby zacząć integrację i wykonać testy zapisu/odczytu.
 - **NIE**: to nie jest jeszcze „całość rozwiązania”, bo bez zmian w kodzie modułu nie będzie realnego zapisu/wczytania stanu z UI.
+
+## 11) Aktualizacja po wdrożeniu zmian w kodzie (2026-04-27)
+
+### Prompt użytkownika (ten etap)
+> Przeczytaj analizę Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md
+>
+> 1. Wprowadź zmiany w kodzie, żeby działała funkcjonalność zapisu i odczytu
+> 2. Zaktualizuj dokumentację o wymagania dotyczące Firebase.,
+> 3. Stwórz plik Kalkulator/config/Firebase-config.md na podstawie Infoczytnik/config/Firebase-config.md (plik ma opisywać oczekiwaną strukturę, kod node.js do jej stworzenia, instrukcję krok-po-kroku)
+> 4. Przygotuj też plik Kalkulator/config/firebase-config.js podobny jak w Infoczytnik/config/firebase-config.js (jeżeli jest on potrzebny).
+> 5. Jeżeli potrzebujesz ode mnie jeszcze jakiś danych/plików/sekretów z Firebase to zapisz mi dokładnie co potrzebujesz w Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md
+
+### Zmiany w kodzie (cytowanie „było/jest”)
+
+#### Plik `Kalkulator/TworzeniePostaci.html`
+- Linia (sekcja przycisków danych)
+  - Było: *(brak sekcji)*
+  - Jest: `<div class="data-actions"> ... <button id="saveToFirebaseButton">Zapisz</button> ... <button id="loadFromFirebaseButton">Wczytaj</button> ... </div>`
+
+- Linia (modal potwierdzenia)
+  - Było: *(brak własnego modala potwierdzenia save/load)*
+  - Jest: `<div id="confirmModal" class="confirm-modal" aria-hidden="true"> ... </div>`
+
+- Linia (integracja Firebase)
+  - Było: *(brak skryptów Firebase)*
+  - Jest: `<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js"></script>`
+  - Jest: `<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore-compat.js"></script>`
+  - Jest: `<script src="config/firebase-config.js"></script>`
+
+- Linia (tłumaczenia)
+  - Było: `labels` nie zawierały `saveButton/loadButton/confirm...`
+  - Jest: dodano klucze `saveButton`, `loadButton`, `confirmYes`, `confirmNo`, `confirmSaveTitle`, `confirmSaveMessage`, `confirmLoadTitle`, `confirmLoadMessage`, `modalImageAlt` (PL i EN).
+
+- Linia (nowe funkcje logiki)
+  - Było: brak funkcji zapisu/odczytu Firebase
+  - Jest: dodano `initializeFirebaseContext()`, `collectCurrentState()`, `applySavedState(data)`, `toggleConfirmModal()`, `showConfirmationModal()`, `saveStateToFirebase()`, `loadStateFromFirebase()`.
+
+- Linia (eventy)
+  - Było: brak obsługi kliknięcia zapisz/wczytaj
+  - Jest: `document.getElementById('saveToFirebaseButton').addEventListener('click', saveStateToFirebase);`
+  - Jest: `document.getElementById('loadFromFirebaseButton').addEventListener('click', loadStateFromFirebase);`
+
+#### Plik `Kalkulator/config/Firebase-config.md`
+- Linia (nowy plik)
+  - Było: *(plik nie istniał)*
+  - Jest: pełna specyfikacja struktury `character_builder/current`, skrypt Node.js do inicjalizacji oraz instrukcje krok-po-kroku PL/EN.
+
+#### Plik `Kalkulator/config/firebase-config.js`
+- Linia (nowy plik)
+  - Było: *(plik nie istniał)*
+  - Jest: `window.firebaseConfig = { ... }` dla modułu Kalkulator/TworzeniePostaci.
+
+#### Plik `Kalkulator/docs/README.md`
+- Linia
+  - Było: brak opisu funkcji Save/Load i wymagań Firebase.
+  - Jest: dodana sekcja „Aktualizacja 2026-04-27 – zapis/odczyt Firebase (Tworzenie Postaci)” + „Firebase – wymagania użytkowe / User requirements”.
+
+#### Plik `Kalkulator/docs/Documentation.md`
+- Linia
+  - Było: brak technicznego opisu implementacji Save/Load Firebase.
+  - Jest: dodana sekcja „8. Integracja Firebase w TworzeniePostaci.html (aktualizacja 2026-04-27)”.
+
+### Czy potrzebne są dodatkowe dane/sekrety od użytkownika?
+Na ten moment: **nie są potrzebne dodatkowe sekrety**.
+
+Warunek działania jest taki, że:
+1. `Kalkulator/config/firebase-config.js` musi wskazywać na właściwy projekt,
+2. Firestore Rules muszą zezwalać na `character_builder/current`,
+3. Dokument `character_builder/current` musi być dostępny do odczytu/zapisu.
