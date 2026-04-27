@@ -1,83 +1,43 @@
-# DataVault — instrukcja użytkownika / User Guide
+# DataVault — Skarbiec Danych
 
 ## 🇵🇱 Instrukcja dla użytkownika (PL)
+DataVault to przeglądarka danych Wrath & Glory (tabele, filtry, porównanie rekordów).
 
-### Do czego służy DataVault
-DataVault to przeglądarka danych do Wrath & Glory. Pozwala szybko wyszukiwać zasady, tabele i opisy w jednym miejscu.
+### Jak korzystać
+1. Otwórz `DataVault/index.html`.
+2. Wybierz zakładkę u góry obszaru tabel (np. bestiariusz, uzbrojenie, zasady).
+3. Użyj pola **Szukaj (globalnie)**, aby filtrować całość.
+4. Użyj filtrów w nagłówkach kolumn, aby zawęzić wyniki precyzyjnie.
+5. Kliknij nagłówek kolumny, aby sortować (z `Shift` możesz sortować po wielu kolumnach).
+6. Zaznacz co najmniej 2 rekordy i kliknij **Porównaj zaznaczone**.
 
-### Jak otworzyć moduł
-- Widok użytkownika: `DataVault/index.html`
-- Widok administratora: `DataVault/index.html?admin=1`
+### Przełączniki widoku
+- **Pełen Widok**: pokazuje wszystkie dane.
+- **Widok Domyślny**: wraca do domyślnych ukryć.
+- Dodatkowe przełączniki pozwalają pokazywać/ukrywać zakładki dotyczące tworzenia postaci i walki.
 
-### Najważniejsze elementy ekranu
-- **Zakładki** u góry tabeli — przełączają grupy danych.
-- **Pole szukania** — przeszukuje aktualnie wyświetlane dane.
-- **Filtry kolumnowe** — zawężają wyniki w konkretnej kolumnie.
-- **Pełen widok** — resetuje filtry i pokazuje pełny zestaw danych.
-- **Widok domyślny** — przywraca układ rekomendowany na start sesji.
-- **Porównanie** — porównuje zaznaczone pozycje.
-
-### Szybki start
-1. Otwórz DataVault.
-2. Wybierz zakładkę z obszarem, którego szukasz.
-3. Wpisz frazę w pole wyszukiwania.
-4. Jeśli wyników jest dużo, użyj filtrów kolumnowych.
-5. Zaznacz interesujące wiersze i kliknij **Porównanie**, aby zobaczyć je obok siebie.
-
-### Tryb użytkownika vs admin
-- **Użytkownik**: widzi standardowy zestaw zakładek i funkcji potrzebnych do gry.
-- **Admin**: ma dostęp do dodatkowych zakładek i narzędzi utrzymaniowych.
-- **Pierwsza zakładka po otwarciu**:
-  - w trybie użytkownika moduł startuje na zakładce **Bronie**,
-  - w trybie admina moduł startuje na zakładce **Notatki**.
-
-### Przycisk „Generuj data.json” (tylko admin)
-Ten przycisk służy do odświeżenia danych aplikacji z pliku XLSX. Używaj go, gdy aktualizujesz źródłowy plik z danymi.
-
-### Dobre praktyki na sesji
-- Zacznij od **Widoku domyślnego**.
-- Używaj krótkich haseł w wyszukiwarce (np. nazwa zdolności, słowo kluczowe).
-- Do szybkiego porównywania używaj zaznaczeń i okna **Porównanie**.
-- Po zakończeniu wyszukiwania kliknij **Pełen widok**, aby wrócić do pełnej listy.
-
----
+### Tryb administratora
+- Otwórz `DataVault/index.html?admin=1`.
+- Pojawi się przycisk **Generuj data.json**.
+- Używaj go tylko, jeśli masz aktualny plik `Repozytorium.xlsx` obok `index.html`.
 
 ## 🇬🇧 User instructions (EN)
+DataVault is a Wrath & Glory data browser (tables, filters, selected-record comparison).
 
-### What DataVault is for
-DataVault is a Wrath & Glory data browser. It helps you quickly find rules, tables, and references in one place.
+### How to use
+1. Open `DataVault/index.html`.
+2. Choose a tab in the table area (for example bestiary, equipment, rules).
+3. Use **Search (global)** to filter everything.
+4. Use column-header filters for precise narrowing.
+5. Click a column header to sort (use `Shift` for multi-column sort).
+6. Select at least 2 rows and click **Compare selected**.
 
-### How to open the module
-- User view: `DataVault/index.html`
-- Admin view: `DataVault/index.html?admin=1`
+### View switches
+- **Full View**: shows all data.
+- **Default View**: restores default hidden fields.
+- Additional toggles can show/hide character-creation and combat-related tabs.
 
-### Main screen elements
-- **Tabs** at the top — switch between data groups.
-- **Search field** — searches within currently displayed data.
-- **Column filters** — narrow down results per column.
-- **Pełen widok / Full view** — clears filters and shows full data.
-- **Widok domyślny / Default view** — restores recommended session layout.
-- **Porównanie / Compare** — compares selected rows.
-
-### Quick start
-1. Open DataVault.
-2. Choose a tab matching what you need.
-3. Enter a phrase in the search field.
-4. If there are too many results, use column filters.
-5. Select rows and click **Compare** to view them side by side.
-
-### User vs admin mode
-- **User mode**: standard tabs and features for regular play.
-- **Admin mode**: includes additional tabs and maintenance tools.
-- **First tab after opening**:
-  - user mode starts on **Bronie**,
-  - admin mode starts on **Notatki**.
-
-### “Generate data.json” button (admin only)
-Use this button when you need to refresh app data from the source XLSX file.
-
-### Good session workflow
-- Start with **Default view**.
-- Use short search phrases (ability name, keyword, etc.).
-- Use row selection + **Compare** for quick decisions.
-- Click **Full view** when done to return to the complete list.
+### Admin mode
+- Open `DataVault/index.html?admin=1`.
+- The **Generate data.json** button appears.
+- Use it only when `Repozytorium.xlsx` is present next to `index.html`.
