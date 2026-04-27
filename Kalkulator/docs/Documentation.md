@@ -441,3 +441,64 @@ Poniżej pełna paleta używana przez trzy strony modułu:
 - `index.html`: `toggleSecretOverlay(forceOpen)`.
 - `KalkulatorXP.html`: `clampValue`, `calculateRowCost`, `recalcTable`, `recalcAll`, `renderMaxAttributesTable`, `applyLanguage`.
 - `TworzeniePostaci.html`: `updateLanguage`, `renderSpeciesMaxTable`, `resetAll`, `recalcXP`, `displayError`, `checkSkillTree`, `attachDefaultOnBlur`, `adjustTalentFontSize`, `toggleSpeciesMaxModal`.
+
+## 8. Integracja Firebase w `TworzeniePostaci.html` (aktualizacja 2026-04-27)
+
+### 8.1. Dołączone skrypty
+W pliku `TworzeniePostaci.html` dołączono:
+- `https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js`
+- `https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore-compat.js`
+- lokalny plik `config/firebase-config.js`
+
+Konfiguracja jest odczytywana z `window.firebaseConfig`.
+
+### 8.2. Ścieżka Firestore
+Stała ścieżka dokumentu:
+- kolekcja: `character_builder`
+- dokument: `current`
+
+Zapis wykonywany jest przez `set(payload)` (nadpisanie pojedynczego slotu),
+a odczyt przez `get()` na tym samym dokumencie.
+
+### 8.3. Serializacja i deserializacja stanu
+Dodane funkcje:
+- `collectCurrentState()` – buduje obiekt zapisu zawierający:
+  - metadane (`schemaVersion`, `module`, `lang`, `savedAt`, `savedBy`),
+  - wartości XP (`xpPool`, `xpTotal`, `xpSpent`, `xpAvailable`),
+  - status walidacji (`hasValidationErrors`, `validationMessages`),
+  - mapy `attributes` i `skills`,
+  - tablicę `talents` (10 elementów),
+  - `formSnapshot` (migawka wszystkich `input/textarea/select` po `id`).
+- `applySavedState(data)` – odtwarza wartości z `formSnapshot`, ustawia język (jeśli istnieje), a następnie uruchamia `recalcXP()`.
+
+### 8.4. Warstwa UI dla potwierdzeń
+Wdrożono własny modal potwierdzeń (`#confirmModal`) z:
+- dynamicznym tytułem i treścią,
+- przyciskami `Tak/Nie` lub `Yes/No` zależnie od tłumaczeń,
+- opcjonalnym obrazem (`modalImageUrl`, obecnie `Skull.png`).
+
+Funkcje modalne:
+- `toggleConfirmModal(forceOpen, config)`
+- `showConfirmationModal(config)` zwracająca `Promise<boolean>`.
+
+### 8.5. Akcje zapisu i odczytu
+- `saveStateToFirebase()`:
+  1. Otwiera modal potwierdzenia.
+  2. Po akceptacji zbiera payload i wykonuje zapis do `character_builder/current`.
+  3. Wyświetla komunikat sukcesu lub błędu (zależny od języka).
+
+- `loadStateFromFirebase()`:
+  1. Otwiera modal potwierdzenia.
+  2. Po akceptacji pobiera `character_builder/current`.
+  3. Odtwarza dane przez `applySavedState()` i przelicza XP.
+  4. Wyświetla komunikat sukcesu lub błędu.
+
+### 8.6. Wymagana struktura i instrukcja
+Pełna specyfikacja struktury Firestore, skrypt Node.js inicjalizujący dokument oraz instrukcja krok-po-kroku (PL/EN) znajdują się w:
+- `Kalkulator/config/Firebase-config.md`.
+
+### 8.7. Wymagania środowiskowe
+Aby funkcja działała:
+1. Musi być dostępny poprawny `window.firebaseConfig`.
+2. Firestore Rules muszą dopuszczać read/write dla `character_builder/current`.
+3. Przeglądarka musi mieć dostęp do CDN Firebase (`gstatic`).
