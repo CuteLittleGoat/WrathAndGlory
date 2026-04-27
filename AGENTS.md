@@ -11,6 +11,7 @@ Ilość modułów może się zmieniać.
 5. Pliki *.html, *.js, *.css muszą zawierać dokładne komentarze w języku polskim i angielskim, np:
    
          // --- Funkcja aktualizująca teksty w wybranym języku / Function to update texts in the selected language ---
+   
          // Jeśli XP jest w normie, pokazujemy błąd "Drzewa Nauki" tylko jeśli zasada nie jest spełniona
         // If XP is fine, show "Tree of Learning" error only if the rule is broken
    
