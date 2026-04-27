@@ -9,9 +9,11 @@ Ilość modułów może się zmieniać.
 3. Pliki Documentation.md mają zawierać szczegółową instrukcję techniczną. Mają tu być zawarte wszystkie informacje o stylach, funkcjach, mechanikach, sposobach obliczeń, logik, integracji z Firebase, skrypt node.js do utworzenia stosownej struktury itd. Ma to być pełna informacja techniczna służąca do odtworzenia aplikacji 1:1 w przypadku utraty plików. Język może być techniczny. Mają one zawierać detaliczną informację o działaniu kodu we wszystkich aspektach. Pliki te mogą zawierać fragmenty kodu i wytłumaczenie co one dokładnie i jak robią. Celem dokumentu jest to, że dowolny programista mając do dyspozycji tylko plik Documentation.md będzie w stanie odtworzyć cały moduł.
 4. Pliki README.md i Documentation.md mają zawierać aktualne dane, bez zapisów historycznych. Te pliki nie mają mieć za zadanie byciem changelog.
 5. Pliki *.html, *.js, *.css muszą zawierać dokładne komentarze w języku polskim i angielskim, np:
+   
          // --- Funkcja aktualizująca teksty w wybranym języku / Function to update texts in the selected language ---
          // Jeśli XP jest w normie, pokazujemy błąd "Drzewa Nauki" tylko jeśli zasada nie jest spełniona
         // If XP is fine, show "Tree of Learning" error only if the rule is broken
+   
 7. Jeżeli zmiana dotyczy fontu, kolorów itp. to należy też zaktualizować plik DetaleLayout.md w głównym folderze
 8. Jeżeli polecenie użytkownika nie dotyczy zmiany kodu a tylko analizy to wnioski zapisz w folderze Analizy w nowoutworzonym pliku o odekwatnej nazwie do przeprowadzanej analizy
 9. Jeżeli zapisujesz plik z wynikami analizy to w pliku uwzględnij prompt użytkownika, żeby zachować kontekst zapisanych odpowiedzi
