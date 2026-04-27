@@ -2,70 +2,92 @@
 
 ## 🇵🇱 Instrukcja dla użytkownika (PL)
 
-### Do czego służy Infoczytnik
-Infoczytnik służy do wyświetlania graczom komunikatów fabularnych (treść, prefix, suffix, opcjonalne logo i dźwięk), które przygotowujesz w panelu MG.
+### Do czego służy moduł
+**Infoczytnik** wyświetla graczom komunikaty fabularne na osobnym ekranie. Prowadzący steruje treścią, stylem, dźwiękiem i efektami z panelu GM.
 
-### Co otworzyć
-1. Na ekranie graczy otwórz: `Infoczytnik/Infoczytnik_test.html`.
-2. Na ekranie MG otwórz: `Infoczytnik/GM_test.html`.
+### Co otworzyć podczas sesji
+1. Ekran graczy: `Infoczytnik/Infoczytnik_test.html`.
+2. Ekran prowadzącego: `Infoczytnik/GM_test.html`.
 
-### Szybki start
-1. W panelu MG wybierz tło, logo, zestaw fillerów, font i dźwięk wiadomości.
-2. Włącz/wyłącz opcje: **Logo**, **Prostokąt cienia**, **Flicker**, **Fillery**, **Audio**.
-3. Wpisz treść wiadomości.
-4. Kliknij **Wyślij**.
-5. Sprawdź ekran gracza — wiadomość powinna pojawić się od razu.
+> Najwygodniej uruchomić oba okna równocześnie (osobne urządzenia albo dwa monitory).
 
-### Co robią najważniejsze przyciski
-- **Wyślij** — publikuje aktualną wiadomość na ekran graczy.
-- **Ping** — odtwarza szybki sygnał audio (bez zmiany treści wiadomości).
-- **Wyczyść komunikat** — czyści tylko pole wpisywania wiadomości w panelu MG.
-- **Przywróć domyślne** — przywraca domyślne ustawienia formularza.
-- **Aktualizuj dane z XLSX** — pobiera aktualny manifest i przygotowuje nowy plik `data.json` do zapisania.
+### Szybki start (pierwsza wiadomość)
+1. W panelu GM wybierz **Tło** i **Logo**.
+2. Wybierz **Font** i opcjonalnie **Audio wiadomości**.
+3. Zaznacz/odznacz przełączniki: **Logo**, **Prostokąt cienia**, **Flicker**, **Fillery**, **Audio**.
+4. Wpisz tekst w polu **Treść komunikatu**.
+5. Kliknij **Wyślij**.
+6. Sprawdź ekran gracza — komunikat powinien pokazać się od razu.
 
-### Jak pracować wygodnie podczas sesji
-- Najpierw ustaw styl wiadomości (tło, kolory, font), potem wpisuj treść.
-- Jeśli chcesz zachować klimat ekranu, użyj prefixu i suffixu (np. ostrzeżenia, podpisy frakcyjne).
-- Gdy chcesz natychmiast zwrócić uwagę graczy, użyj **Ping**.
-- Po większych zmianach ustawień możesz użyć **Przywróć domyślne** i zacząć od czystego układu.
+### Co robią przyciski w panelu GM
+- **Wyślij** – publikuje aktualny komunikat na ekranie graczy.
+- **Ping** – odtwarza sygnał dźwiękowy bez zmiany treści.
+- **Wyczyść komunikat** – czyści tylko pole wpisywania tekstu.
+- **Przywróć domyślne** – przywraca domyślne ustawienia panelu.
+- **Aktualizuj dane z XLSX** – aktualizuje źródła danych używane przez moduł.
 
-### Typowe problemy
-- **Nie widzę wiadomości u graczy** — upewnij się, że na ekranie graczy jest otwarty `Infoczytnik_test.html`.
-- **Nie słyszę dźwięku** — sprawdź, czy opcja **Audio** jest włączona.
-- **Układ wygląda inaczej na telefonie** — odśwież oba okna i ponownie wyślij wiadomość.
+### Ustawienia, które najczęściej zmieniasz
+- **Kolor i wielkość tekstu wiadomości**.
+- **Kolor i wielkość prefix/suffix**.
+- **Ilość linii fillerów** i wysokość strefy prefix/suffix.
+- **Tryb podglądu**:
+  - **Treść** – podgląd warstwy tekstowej.
+  - **Tło** – podgląd samego tła.
+
+### Jak pracować w trakcie gry
+1. Przygotuj zestaw stylu (tło/font/kolory) dla sceny.
+2. Wysyłaj krótkie komunikaty częściej, zamiast jednego bardzo długiego.
+3. Używaj **Ping**, gdy chcesz natychmiast zwrócić uwagę graczy.
+4. Gdy układ „rozjedzie się” po eksperymentach, użyj **Przywróć domyślne**.
+
+### Typowe problemy i szybkie rozwiązania
+- **Brak komunikatu na ekranie gracza** → odśwież oba okna i wyślij ponownie.
+- **Brak dźwięku** → sprawdź, czy przełącznik **Audio** jest aktywny i czy głośność systemowa nie jest wyciszona.
+- **Inny wygląd na projektorze/telefonie** → ustaw ponownie tło i wyślij krótszą wiadomość.
 
 ---
 
 ## 🇬🇧 User instructions (EN)
 
-### What Infoczytnik is for
-Infoczytnik shows narrative messages to players (message text, prefix, suffix, optional logo and audio), prepared in the GM panel.
+### What this module is for
+**Infoczytnik** shows narrative messages to players on a dedicated display. The GM controls text, style, sound, and effects from a separate panel.
 
-### What to open
-1. On the player screen open: `Infoczytnik/Infoczytnik_test.html`.
-2. On the GM screen open: `Infoczytnik/GM_test.html`.
+### What to open during play
+1. Player screen: `Infoczytnik/Infoczytnik_test.html`.
+2. GM screen: `Infoczytnik/GM_test.html`.
 
-### Quick start
-1. In the GM panel select background, logo, filler set, font, and message audio.
-2. Toggle options: **Logo**, **Shadow rectangle**, **Flicker**, **Fillers**, **Audio**.
-3. Enter message text.
-4. Click **Wyślij / Send**.
-5. Check the player screen — the message should appear immediately.
+> Best setup: both pages open at the same time (separate devices or dual monitor).
 
-### Main buttons
-- **Wyślij / Send** — publishes the current message to the player screen.
-- **Ping** — plays a quick audio signal (without changing message text).
-- **Wyczyść komunikat / Clear message** — clears only the GM text input.
-- **Przywróć domyślne / Restore defaults** — restores default form settings.
-- **Aktualizuj dane z XLSX / Update data from XLSX** — fetches the latest manifest and prepares a new `data.json` file for saving.
+### Quick start (first message)
+1. In GM panel choose **Background** and **Logo**.
+2. Choose **Font** and optional **Message audio**.
+3. Toggle: **Logo**, **Shadow rectangle**, **Flicker**, **Fillers**, **Audio**.
+4. Enter text in **Message content**.
+5. Click **Send**.
+6. Check player screen — message should appear immediately.
 
-### Session workflow tips
-- Set style first (background, colors, font), then write the message.
-- Use prefix/suffix for better narrative framing (warnings, faction signatures, etc.).
-- Use **Ping** when you need instant attention.
-- After multiple experiments, use **Restore defaults** to reset to a clean baseline.
+### GM panel button actions
+- **Send** – publishes current message to player screen.
+- **Ping** – plays attention sound without changing message text.
+- **Clear message** – clears input text only.
+- **Restore defaults** – resets panel settings to default values.
+- **Update data from XLSX** – refreshes module data sources.
 
-### Common issues
-- **Message not visible to players** — make sure `Infoczytnik_test.html` is open on the player screen.
-- **No sound** — verify that **Audio** is enabled.
-- **Layout looks different on mobile** — refresh both pages and send again.
+### Most-used settings
+- **Message text color and size**.
+- **Prefix/suffix color and size**.
+- **Filler line count** and prefix/suffix area height.
+- **Preview mode**:
+  - **Content** – text layer preview.
+  - **Background** – background-only preview.
+
+### In-session workflow
+1. Prepare a style preset (background/font/colors) per scene.
+2. Send shorter messages more often instead of one long block.
+3. Use **Ping** for immediate player attention.
+4. If layout becomes messy after many changes, press **Restore defaults**.
+
+### Common issues and quick fixes
+- **No message on player screen** → refresh both pages and send again.
+- **No sound** → check **Audio** toggle and system volume.
+- **Different look on projector/mobile** → reselect background and send shorter text.

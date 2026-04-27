@@ -1,105 +1,81 @@
-# Generator NPC — instrukcja obsługi / User guide
+# Generator NPC — instrukcja użytkownika / User Guide
 
 ## 🇵🇱 Instrukcja dla użytkownika (PL)
 
-### Wymagania
-- Przeglądarka z obsługą JavaScript (np. Chrome, Firefox, Edge).
-- Dostęp do internetu, aby pobrać dane z `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
-Tytuł karty przeglądarki: **Generator NPC**.
+### Do czego służy moduł
+**Generator NPC** pomaga szybko zbudować kartę przeciwnika lub postaci niezależnej na sesję. Wybierasz bazę, dopasowujesz statystyki i generujesz gotową kartę do wydruku/podglądu.
 
-### Jak korzystać z aplikacji
-1. Otwórz plik `index.html` w przeglądarce.
-2. W prawym górnym rogu wybierz język (domyślnie **Polski**).
-3. Poczekaj na wczytanie danych — status pojawi się w panelu „Źródło danych”.
-4. W panelu „Wybór bazowy” wybierz rekord z listy „Bestiariusz · Nazwa”.
-5. (Opcjonalnie) Wpisz własne notatki w polu „Uwagi do rekordu”.
-6. W tabeli „Podgląd bazowy” możesz korygować wartości liczbowe (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) za pomocą pól z przyciskami góra–dół.
-   - Minimalna wartość dla większości pól to 1.
-   - Dla pola „Odporność (w tym WP)” minimum zależy od „WP”; gdy „WP” ma wartość „-”, minimum to 1.
-   - Jeśli „Odporność Psychiczna” ma wartość „-”, pole jest zablokowane i nie podlega edycji.
-   - Każde pole liczbowe przyjmuje maksymalnie 25 znaków (dłuższe wpisy są automatycznie ucinane także przy wstępnym wypełnieniu), a szerokość pola jest wizualnie ograniczona do 25 znaków.
-7. Przy polu „Umiejętności” użyj przycisku „Edytuj”, aby włączyć edycję i zapisać własny opis.
-8. W sekcji „Moduły aktywne” zdecyduj, które moduły mają być widoczne:
-   - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
-9. W każdej aktywnej karcie wybierz pozycje z listy (możesz zaznaczyć wiele pozycji).
-   - Dodatkowe przełączniki pozwalają dołączyć opisy cech lub pełne opisy modułów.
-10. Kliknij „Generuj kartę”, aby otworzyć kartę do druku w nowej karcie przeglądarki.
-11. Kliknij „Reset”, aby wyczyścić wybory i przywrócić domyślne ustawienia.
-12. W panelu „Ulubione” wpisz opcjonalny alias i użyj „Dodaj do ulubionych”, aby zapisać bieżący zestaw ustawień (bestiariusz, modyfikacje, notatki i moduły). Zapisane wpisy możesz wczytać, usunąć lub zmienić kolejność przyciskami ▲/▼.
-    - Domyślnie aplikacja łączy się z Firestore (konfiguracja w `GeneratorNPC/config/firebase-config.js`) i zapisuje listę w dokumencie `generatorNpc/favorites`.
-    - Jeśli Firestore jest niedostępny, ulubione są przechowywane lokalnie w przeglądarce.
+### Jak zacząć
+1. Otwórz `GeneratorNPC/index.html`.
+2. W prawym górnym rogu wybierz język.
+3. Poczekaj, aż sekcja **Źródło danych** pokaże, że dane zostały załadowane.
 
-### Podpowiedzi
-- Klikaj w tagi cech, aby zobaczyć opis cechy w panelu popover.
-- W tabelach długie komórki można rozwijać kliknięciem (pojawia się wskazówka „kliknij, aby rozwinąć”).
-- Listy wyboru są sortowane domyślnie wg kolumny `LP` z danych (kolumna jest ukryta); przy braku `LP` zachowany jest porządek alfabetyczny lub typ → nazwa (np. Bestiariusz i Talenty alfabetycznie, a Broń/Pancerz/Augumentacje/Ekwipunek/Psionika po typie i nazwie).
-- Na wygenerowanej karcie pojawia się sekcja kwadratów „Ż” i „T”, która wizualizuje wartości „Żywotność” i „Odporność psych.” (liczba pól aktualizuje się na podstawie edycji w tabeli; przy wartości „-” dla odporności psychicznej widoczna jest wyłącznie etykieta „T”). Etykiety „Ż/T” są niezależnymi, jednopolowymi kwadratami, a liczba pól w wierszu skaluje się do szerokości całej karty (bez stałego limitu w linii). Po przełączeniu na EN etykiety te zmieniają się odpowiednio na „H” i „S”, a pozostałe podpisy na karcie są tłumaczone.
-- Interfejs używa zielonego, konsolowego motywu spójnego z `Main/index.html`, z kolorem tekstu pomocniczego `#4FAF4F` i jaśniejszymi wyróżnieniami `#D2FAD2`.
-- W panelu „Źródło danych” link do `data.json` automatycznie zawija się w obrębie ramki, a tekst tej sekcji ma lekko zmniejszony rozmiar (spójniejszy z resztą modułu).
+### Tworzenie NPC krok po kroku
+1. W sekcji **Wybór bazowy** wybierz rekord z listy **Bestiariusz · Nazwa**.
+2. (Opcjonalnie) dopisz własne notatki w polu **Uwagi do rekordu**.
+3. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość).
+4. W sekcji **Moduły aktywne** zaznacz, które bloki mają być pokazane na finalnej karcie (np. Broń, Talenty, Psionika).
+5. W aktywnych modułach wybierz konkretne elementy z list.
+6. Kliknij **Generuj kartę**.
+7. Karta otworzy się w nowej karcie przeglądarki.
+
+### Jak działa panel „Ulubione”
+1. Ustaw NPC tak, jak chcesz go zapisać.
+2. (Opcjonalnie) wpisz nazwę własną w polu **Alias**.
+3. Kliknij **Dodaj do ulubionych**.
+4. Zapisany układ możesz później:
+   - wczytać,
+   - usunąć,
+   - przesunąć wyżej/niżej na liście.
+5. Przycisk **Odśwież** ponownie pobiera listę ulubionych.
+
+### Najważniejsze przyciski
+- **Generuj kartę** – tworzy końcowy widok NPC.
+- **Reset** – czyści wybory i wraca do wartości początkowych.
+- **Edytuj** (przy umiejętnościach) – pozwala ręcznie dopisać/zmienić opis.
+
+### Dobre praktyki
+- Najpierw wybierz bazę, potem dopiero modyfikuj liczby.
+- Do często używanych przeciwników twórz wpisy w ulubionych.
+- Przed drukiem sprawdź kartę po zmianie języka, jeśli grasz z grupą dwujęzyczną.
 
 ---
 
 ## 🇬🇧 User instructions (EN)
 
-### Requirements
-- A JavaScript-enabled browser (e.g., Chrome, Firefox, Edge).
-- Internet access to load data from `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json`.
-Browser tab title: **Generator NPC**.
+### What this module is for
+**NPC Generator** helps you quickly build enemy/NPC sheets for sessions. Pick a base profile, adjust values, and generate a ready card.
 
-### How to use the application
-1. Open `index.html` in your browser.
-2. Use the language switcher in the top-right corner (Polish is selected by default).
-3. Wait for the data to load — the status appears in the “Źródło danych” panel.
-4. In “Wybór bazowy”, select an entry from “Bestiariusz · Nazwa”.
-5. (Optional) Enter your own notes in “Uwagi do rekordu”.
-6. In the “Podgląd bazowy” table, adjust numeric values (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) using the up/down number inputs.
-   - The minimum value for most fields is 1.
-   - For “Odporność (w tym WP)”, the minimum equals the “WP” value; if “WP” is “-”, the minimum is 1.
-   - When “Odporność Psychiczna” is “-”, the field is locked and cannot be edited.
-   - Each numeric field accepts up to 25 characters (longer input is automatically truncated, including on initial fill), and the input width is visually capped to 25 characters.
-7. Use the “Edytuj” button next to “Umiejętności” to enable editing and save your custom text.
-8. In “Moduły aktywne”, decide which modules should be visible:
-   - Weapons, Armor, Augmentations, Equipment, Talents, Psionics, Prayers.
-9. In each active card, select items from the list (multi-select is supported).
-   - Additional toggles let you include trait descriptions or full module details.
-10. Click “Generuj kartę” to open a printable card in a new browser tab.
-11. Click “Reset” to clear selections and restore defaults.
-12. In the “Ulubione” panel, enter an optional alias and use “Dodaj do ulubionych” to save the current setup (bestiary, overrides, notes, and modules). You can load, remove, or reorder saved entries using the ▲/▼ buttons.
-    - By default, the app connects to Firestore (configured in `GeneratorNPC/config/firebase-config.js`) and stores the list in the `generatorNpc/favorites` document.
-    - If Firestore is unavailable, favorites are stored locally in the browser.
+### Getting started
+1. Open `GeneratorNPC/index.html`.
+2. Choose language in the top-right corner.
+3. Wait until **Data source** confirms the data is loaded.
 
-### Tips
-- Click trait tags to see their description in the popover panel.
-- In tables, long cells can be expanded by clicking them (a “click to expand” hint is shown).
-- Selection lists default to the hidden `LP` ordering from the data; when `LP` is missing, they fall back to alphabetical or type → name ordering (e.g., Bestiary and Talents alphabetically, while Weapons/Armor/Augmentations/Equipment/Psionics by type and name).
-- The printed card includes “Ż” and “T” square trackers that visualize “Żywotność” and “Odporność psych.” (the number of squares reflects table edits; when mental resistance is “-”, only the “T” label is shown). The “Ż/T” labels are independent one-square fields, and the squares per row scale with the full card width (no fixed per-line cap). When switched to EN, these labels change to “H” and “S”, and the remaining card labels are translated.
-- The interface uses the same green, console-style theme as `Main/index.html`, with secondary text set to `#4FAF4F` and brighter highlights at `#D2FAD2`.
-- In the “Źródło danych” panel, the `data.json` link now wraps inside the panel bounds, and this section uses a slightly smaller font size to match the rest of the module.
+### Build an NPC step by step
+1. In **Base selection**, choose an entry from **Bestiary · Name**.
+2. (Optional) add custom notes in **Record notes**.
+3. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed).
+4. In **Active modules**, enable blocks that should appear on final card (e.g., Weapons, Talents, Psionics).
+5. In active blocks, select specific items.
+6. Click **Generate card**.
+7. The final card opens in a new browser tab.
 
----
+### How “Favorites” works
+1. Configure NPC setup.
+2. (Optional) enter a custom **Alias**.
+3. Click **Add to favorites**.
+4. Saved setups can be:
+   - loaded,
+   - removed,
+   - moved up/down.
+5. **Refresh** reloads favorites list.
 
-## Firebase config reference / Referencja konfiguracji Firebase
-- Szczegółową instrukcję konfiguracji Firebase dla modułu, strukturę Firestore (`generatorNpc/favorites`) oraz skrypt inicjalizacyjny znajdziesz w: `GeneratorNPC/config/Firebase-config.md`.
-- Full Firebase setup instructions, Firestore data shape (`generatorNpc/favorites`), and the initialization script are documented in: `GeneratorNPC/config/Firebase-config.md`.
+### Main buttons
+- **Generate card** – creates final NPC card.
+- **Reset** – clears setup back to defaults.
+- **Edit** (next to skills) – allows manual text updates.
 
-## Podgląd bazowy i markery inline (PL)
-- W podglądzie bazowym (`Bestiariusz`) kolumna techniczna `Stan` nie jest wyświetlana jako osobny wiersz.
-- Dla rekordów ze statusem `old` pola `LP`, `Nazwa` i `Typ` są wyświetlane kolorem archiwalnym (`--text-old`).
-- Ustabilizowano szerokość kolumny `Klucz` w podglądzie bazowym:
-  - tabela używa `table-layout: fixed`,
-  - pierwsza kolumna ma stałe `25ch`,
-  - druga kolumna zajmuje pozostałą przestrzeń.
-- Renderer tekstu obsługuje marker `{{S}}...{{/S}}` (przekreślenie) wraz z markerami `{{RED}}`, `{{B}}`, `{{I}}`.
-- Zmiany nie modyfikują logiki przycisku **Generuj kartę**.
-
-## Base preview and inline markers (EN)
-- In the base preview (`Bestiariusz`), the technical `Stan` column is no longer shown as a standalone row.
-- For records with `Stan=old`, fields `LP`, `Nazwa`, and `Typ` are rendered using the archival text color token (`--text-old`).
-- The `Key` column width in base preview is now stable:
-  - the table uses `table-layout: fixed`,
-  - the first column is locked to `25ch`,
-  - the second column uses remaining space.
-- Inline renderer now supports `{{S}}...{{/S}}` (strikethrough) alongside `{{RED}}`, `{{B}}`, `{{I}}`.
-- These changes do not alter **Generate card** logic.
-- Poprawka: podgląd bazowy opiera logikę `old` wyłącznie na polu `Stan` (case-insensitive) i ukrywa ten wiersz z kolumny „Klucz”.
-- Fix: base preview now relies on `Stan` only (case-insensitive) for `old` logic and hides this row from the “Key” column.
+### Best practices
+- Choose base profile first, then edit numbers.
+- Save recurring opponents as favorites.
+- If your table is bilingual, review card after language switch before print/share.

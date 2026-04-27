@@ -1,87 +1,95 @@
-# Kalkulator Wrath & Glory — instrukcja użytkownika / User guide
+# Kalkulator Wrath & Glory — instrukcja użytkownika / User Guide
 
 ## 🇵🇱 Instrukcja dla użytkownika (PL)
 
-### Szybki start
+### Co znajdziesz w module
+Moduł **Kalkulator** ma dwie główne części:
+1. **Kalkulator PD** – szybkie liczenie kosztu rozwoju.
+2. **Tworzenie Postaci** – pełny panel budowy postaci.
+
+Na stronie startowej znajduje się też **Tajny przycisk!** (easter egg).
+
+### Jak rozpocząć
 1. Otwórz `Kalkulator/index.html`.
-2. Kliknij:
-   - **Kalkulator PD** — liczenie kosztów rozwoju,
-   - **Tworzenie Postaci** — pełny arkusz tworzenia postaci.
-3. W prawym dolnym rogu strony startowej jest **Tajny przycisk!** (otwiera GIF `Koza.gif`).
+2. Wybierz, czy chcesz wejść do:
+   - **Kalkulator PD**,
+   - **Tworzenie Postaci**.
 
-### 1) Kalkulator PD
+### 1) Kalkulator PD — krok po kroku
 1. Ustaw język w prawym górnym rogu.
-2. Wpisz wartości bieżące i docelowe w tabelach **Atrybuty** i **Umiejętności**.
-3. Koszt w każdym wierszu i suma całkowita aktualizują się automatycznie.
-4. Pod tabelami znajduje się tabela **Maksymalne wartości atrybutów** dla ras.
-5. Przycisk **Resetuj wartości** czyści pola do zera.
-6. Przycisk **Strona Główna / Main Page** wraca do `../Main/index.html`.
+2. Wpisz wartości bieżące i docelowe dla atrybutów i umiejętności.
+3. Obserwuj koszty w wierszach i sumę całkowitą (liczy się automatycznie).
+4. Jeśli chcesz zacząć od nowa, kliknij **Resetuj wartości**.
+5. Aby wrócić do menu głównego modułów, kliknij **Strona Główna**.
 
-### 2) Tworzenie Postaci
-1. Ustaw pulę PD (domyślnie `155`).
-2. Uzupełnij atrybuty (domyślnie 1, a **Szybkość** domyślnie 6).
-3. Uzupełnij umiejętności i koszty talentów/archetypu/mocy.
-4. Obserwuj komunikaty:
-   - przekroczenie puli PD,
-   - reguła „Tree of Learning”.
-5. Przełącznik języka (PL/EN) jest w prawym górnym rogu.
-6. Przycisk **Instrukcja / Manual** otwiera PDF (`HowToUse/pl.pdf` lub `HowToUse/en.pdf`).
-7. Przycisk **Maksymalne wartości atrybutów** otwiera modal z limitami ras.
-8. **Reset** przywraca wartości początkowe.
+### 2) Tworzenie Postaci — krok po kroku
+1. Ustaw pulę punktów (domyślnie 155).
+2. Uzupełnij atrybuty.
+3. Uzupełnij umiejętności i koszty dodatkowe (np. talenty/archetyp/moce).
+4. Obserwuj komunikaty ostrzegawcze:
+   - przekroczenie puli punktów,
+   - zasada „Tree of Learning”.
+5. Przycisk **Instrukcja / Manual** otwiera plik PDF pomocy.
+6. Przycisk **Maksymalne wartości atrybutów** pokazuje limity ras.
+7. **Reset** przywraca wartości początkowe.
 
 ### 3) Tajny przycisk
-1. Kliknij **Tajny przycisk!**.
-2. Otworzy się nakładka z `Koza.gif`.
-3. Zamknij przez:
+1. Na stronie startowej kliknij **Tajny przycisk!**.
+2. Otworzy się okno z animacją.
+3. Zamkniesz je przez:
    - przycisk **Zamknij**,
    - kliknięcie tła,
    - klawisz `Escape`.
 
-### Ważne informacje dla użytkownika
-- Polska wersja interfejsu używa skrótu **PD** zamiast XP.
-- Angielska wersja pozostaje przy **XP**.
-- Tabele limitów ras są informacyjne i nie zmieniają Twoich danych automatycznie.
+### Ważne informacje
+- W języku polskim moduł używa skrótu **PD**.
+- W języku angielskim używa skrótu **XP**.
+- Tabele limitów ras są podpowiedzią i nie wpisują wartości automatycznie.
 
 ---
 
 ## 🇬🇧 User instructions (EN)
 
-### Quick start
+### What this module includes
+The **Calculator** module has two main parts:
+1. **XP Calculator** – quick progression cost counting.
+2. **Character Creation** – full character building panel.
+
+The landing page also includes a **Secret button!** (easter egg).
+
+### Getting started
 1. Open `Kalkulator/index.html`.
-2. Click:
-   - **Kalkulator PD / XP Calculator** — development cost calculator,
-   - **Tworzenie Postaci / Character Creation** — full character sheet.
-3. A **Tajny przycisk! / Secret button!** is available at the lower-right corner of the landing page (opens `Koza.gif`).
+2. Choose one section:
+   - **XP Calculator**,
+   - **Character Creation**.
 
-### 1) XP Calculator
-1. Set language in the top-right corner.
-2. Enter current and target values in **Attributes** and **Skills**.
-3. Row costs and total update automatically.
-4. The **Maximum attribute values** species table is shown below.
-5. **Reset values** clears editable fields to zero.
-6. **Main Page** button opens `../Main/index.html`.
+### 1) XP Calculator — step by step
+1. Set language in top-right corner.
+2. Enter current and target values for attributes and skills.
+3. Read row costs and total (updated automatically).
+4. Click **Reset values** to clear editable fields.
+5. Click **Main Page** to return to module launcher.
 
-### 2) Character Creation
-1. Set XP pool (default `155`).
-2. Fill attributes (default 1, and **Speed** default 6).
-3. Fill skills and talent/archetype/power costs.
+### 2) Character Creation — step by step
+1. Set point pool (default 155).
+2. Fill attribute values.
+3. Fill skills and extra costs (talents/archetype/powers).
 4. Watch warning messages:
    - pool exceeded,
    - Tree of Learning rule.
-5. Language switch (PL/EN) is in top-right corner.
-6. **Manual** opens the PDF for current language.
-7. **Maximum attribute values** opens a species-limit modal.
-8. **Reset** restores default values.
+5. **Instruction / Manual** opens help PDF.
+6. **Maximum attribute values** opens species limits.
+7. **Reset** returns defaults.
 
 ### 3) Secret button
-1. Click **Tajny przycisk! / Secret button!**.
-2. An overlay with `Koza.gif` opens.
-3. Close it via:
-   - **Zamknij / Close** button,
+1. Click **Secret button!** on landing page.
+2. An overlay animation opens.
+3. Close it with:
+   - **Close** button,
    - background click,
    - `Escape` key.
 
 ### Important notes
-- Polish UI uses **PD** terminology.
-- English UI keeps **XP** terminology.
-- Species maximum tables are reference-only and do not auto-edit your inputs.
+- Polish language uses **PD** label.
+- English language uses **XP** label.
+- Species limit tables are reference-only and do not auto-fill fields.
