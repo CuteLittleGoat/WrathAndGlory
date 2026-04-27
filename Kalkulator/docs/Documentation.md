@@ -566,3 +566,16 @@ Był to natywny efekt funkcji `alert(...)`/`confirm(...)` przeglądarki. Te okna
 - W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
 - W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
 - Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.
+
+## Aktualizacja 2026-04-27 – korekta odwołania do strony (Drzewo Nauki)
+
+### Zakres
+- Zmieniono polski string tłumaczenia dla klucza `treeOfLearning` w `TworzeniePostaci.html`.
+
+### Zmiana
+- **Było:** `Niezgodność z zasadą Drzewa Nauki (str. 25)`
+- **Jest:** `Niezgodność z zasadą Drzewa Nauki (str. 26)`
+
+### Uzasadnienie
+- Korekta zgodności z właściwym odwołaniem do podręcznika: zasada Drzewa Nauki jest opisana na stronie 26.
+- Zmiana dotyczy wyłącznie warstwy tekstowej (i18n PL), bez wpływu na logikę walidacji i obliczeń XP.
