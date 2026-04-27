@@ -95,3 +95,73 @@ Przycisk `Włącz powiadomienia`:
 3. Mapa/Obrazki otwierają właściwe URL z `ZmienneHiperlacza.md`.
 4. DataVault w adminie używa `?admin=1`.
 5. Przycisk powiadomień poprawnie przechodzi flow zgody i subskrypcji.
+
+## 11. Specyfikacja UI 1:1 (wartości bezpośrednio z kodu)
+### 11.1. Zmienne CSS i kolorystyka
+Deklaracje z `:root`:
+- `--bg`: kompozycja 2 gradientów radialnych + kolor bazowy `#031605`.
+- `--panel: #000`
+- `--border: #16c60c`
+- `--text: #9cf09c`
+- `--accent: #16c60c`
+- `--accent-dark: #0d7a07`
+- `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
+- `--radius: 10px`
+
+Wyróżnienie przycisku push:
+- ramka: `#ff3b30`,
+- tło: `rgba(255, 59, 48, 0.2)`,
+- tekst: `#ffe5e3`,
+- glow: `0 0 14px rgba(255, 59, 48, 0.35)`.
+
+### 11.2. Layout i responsywność
+- `main`: `width: min(860px, 100%)`, `padding: 32px 32px 28px`, `gap: 22px`, układ kolumnowy.
+- `.actions`: `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`, `gap: 18px 20px`.
+- `body`: centrowanie pion/poziom + `padding-bottom` z `env(safe-area-inset-bottom)`.
+- `.logo`: `max-width: clamp(220px, 40vw, 320px)`.
+
+### 11.3. Typografia i interakcje
+- Globalny font-stack: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
+- `.btn`: `font-size: 15px`, `font-weight: 600`, `border: 2px solid`.
+- Hover `.btn`: przesunięcie `translateY(-1px)` + glow.
+- Active `.btn`: cofnięcie przesunięcia i mocniejsze tło.
+
+## 12. Mapa funkcji JavaScript (pełna lista odpowiedzialności)
+- `applyDynamicLinks(links)` — podmienia `href` dla przycisków Mapa/Obrazki po sparsowaniu `ZmienneHiperlacza.md`.
+- `urlBase64ToUint8Array(base64String)` — konwersja klucza VAPID do formatu wymaganego przez `PushManager.subscribe`.
+- `getPushConfig()` — waliduje obecność `vapidPublicKey` i `subscribeEndpoint` w `window.infWebPushConfig`.
+- `setPushButtonMessage(message, isError)` — aktualizuje etykietę przycisku push oraz stan błędu (`data-state="error"`).
+- `refreshPushButtonState()` — blokuje CTA push przy brakującej konfiguracji (`Powiadomienia: brak konfiguracji`).
+- `ensureServiceWorkerRegistration()` — rejestruje wspólny `../service-worker.js`.
+- `enablePushNotifications()` — pełny flow: permission → SW ready → subscription → POST do backendu.
+
+Inicjalizacja skryptu:
+1. Wylicza `isAdmin` z query string (`admin=1`).
+2. Usuwa elementy `data-admin-only="true"` dla użytkownika końcowego.
+3. Przełącza link Infoczytnika (`Infoczytnik.html` vs panel modułu).
+4. Przełącza link DataVault (`?admin=1` tylko dla admina).
+5. Ładuje dynamiczne linki Mapa/Obrazki z pliku markdown.
+6. Podłącza obsługę przycisku push.
+7. Rejestruje Service Worker po `window.load`.
+
+## 13. Kontrakt backendu push (wymagania interoperacyjne)
+Żądanie `POST` do endpointu subskrypcji wysyłane przez moduł Main ma payload:
+```json
+{
+  "source": "main-launcher",
+  "createdAt": 1714212000000,
+  "subscription": { "...": "obiekt PushSubscription" }
+}
+```
+
+Wymagania odpowiedzi backendu:
+- status `2xx` => UI przechodzi do stanu `Powiadomienia aktywne` i blokuje przycisk,
+- status `!2xx` => wyjątek z treścią odpowiedzi serwera i komunikatem `Błąd Web Push: ...`.
+
+## 14. Macierz kompletności technicznej (dla odtworzenia modułu)
+- **Style i kolory:** zawarte w sekcjach 5 i 11.
+- **Funkcje i logika:** sekcje 6 i 12.
+- **Mechaniki przełączania ról i linków:** sekcje 3, 6.1, 12.
+- **PWA (manifest + SW):** sekcja 7.
+- **Firebase:** brak bezpośredniej integracji w tym module (pośrednio: push endpoint Infoczytnika).
+- **Node.js bootstrap:** nie dotyczy modułu Main (backend znajduje się w module Infoczytnik).
