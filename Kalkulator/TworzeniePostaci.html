@@ -216,7 +216,8 @@
     }
     .confirm-modal__media{
       width:100%;
-      height:180px;
+      height:192px;
+      min-height:192px;
       border:1px solid var(--b2);
       border-radius:8px;
       margin:8px 0 12px;
@@ -228,8 +229,9 @@
       flex-shrink:0;
     }
     .confirm-modal__image{
-      width:100%;
-      height:100%;
+      width:auto;
+      height:192px;
+      max-width:100%;
       object-fit:contain;
       display:block;
     }
@@ -445,7 +447,7 @@
       <h2 class="confirm-modal__title" id="confirmModalTitle">Potwierdzenie</h2>
       <p id="confirmModalMessage"></p>
       <div class="confirm-modal__media">
-        <img id="confirmModalImage" class="confirm-modal__image is-hidden" alt="modal image">
+        <img id="confirmModalImage" class="confirm-modal__image is-hidden" alt="modal image" width="1980" height="2048" decoding="async">
       </div>
       <div class="confirm-modal__actions">
         <button type="button" id="confirmModalYesButton">OK</button>

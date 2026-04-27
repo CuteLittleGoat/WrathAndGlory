@@ -348,3 +348,11 @@ For **Save/Load** to work correctly:
 ### 🇬🇧 What changed
 - Corrected the page number in the Polish warning message for the **Tree of Learning** rule.
 - The message was updated from: `Niezgodność z zasadą Drzewa Nauki (str. 25)` to: `Niezgodność z zasadą Drzewa Nauki (str. 26)`.
+
+### Bieżący stan funkcji
+- `TworzeniePostaci.html`: w oknie potwierdzenia (`confirm-modal`) obraz `Modal_Icon.png` został przeskalowany tak, aby wyświetlał się z wysokością odpowiadającą poprzedniej ikonie (`Modal_Icon_old.png`) i zachowywał oryginalne proporcje.
+- Obszar grafiki w modalu ma teraz stałą, zarezerwowaną wysokość `192px`, dzięki czemu okno nie „podskakuje” i nie rozszerza się podczas doczytywania obrazka.
+
+### Current behavior
+- `TworzeniePostaci.html`: in the confirmation modal (`confirm-modal`), `Modal_Icon.png` is now scaled to match the display height used previously for `Modal_Icon_old.png`, while keeping the new file’s original aspect ratio.
+- The modal image area now reserves a fixed `192px` height, so the dialog no longer jumps or expands while the image is loading.
