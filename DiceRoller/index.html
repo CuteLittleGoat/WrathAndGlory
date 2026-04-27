@@ -1,13 +1,17 @@
 <!DOCTYPE html>
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DiceRoller - Wrath & Glory</title>
   <link rel="stylesheet" href="style.css">
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
-  <main class="app">
+  <!-- Główna zawartość modułu / Main module content -->
+<main class="app">
     <div class="language-switcher">
       <select id="languageSelect" aria-label="Wersja językowa">
         <option value="pl">Polski</option>
@@ -15,12 +19,14 @@
       </select>
       <a id="mainPageButton" class="nav-button" href="../Main/index.html">Strona Główna</a>
     </div>
-    <header class="app__header">
+    <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
+<header class="app__header">
       <h1 id="pageTitle">DiceRoller</h1>
       <p class="app__subtitle" id="subtitle">Symulacja rzutów kośćmi dla Wrath &amp; Glory</p>
     </header>
 
-    <section class="panel">
+    <!-- Wydzielona sekcja funkcjonalna / Dedicated functional section -->
+<section class="panel">
       <div class="field">
         <label for="difficulty" id="difficultyLabel">Stopień Trudności</label>
         <input id="difficulty" type="number" min="1" max="99" value="3" step="1">
@@ -45,6 +51,7 @@
     </section>
   </main>
 
-  <script src="script.js"></script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script src="script.js"></script>
 </body>
 </html>

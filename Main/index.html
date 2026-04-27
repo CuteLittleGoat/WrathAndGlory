@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -9,7 +11,8 @@
   <meta name="theme-color" content="#031605" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#031605" media="(prefers-color-scheme: dark)">
   <meta name="color-scheme" content="dark">
-  <style>
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
     :root {
       --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
              radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
@@ -149,8 +152,10 @@
     }
   </style>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
-  <main>
+  <!-- Główna zawartość modułu / Main module content -->
+<main>
     <img
       class="logo"
       src="wrath-glory-logo-warhammer.png"
@@ -194,7 +199,8 @@
       <button class="btn pushCta" id="pushBtn" type="button">Włącz powiadomienia</button>
     </div>
   </main>
-  <script src="../Infoczytnik/config/web-push-config.js"></script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script src="../Infoczytnik/config/web-push-config.js"></script>
   <script>
     const isAdmin = new URLSearchParams(window.location.search).get("admin") === "1";
     const adminOnlyElements = document.querySelectorAll('[data-admin-only="true"]');

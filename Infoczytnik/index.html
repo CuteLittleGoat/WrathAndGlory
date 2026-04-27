@@ -1,10 +1,13 @@
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <!doctype html>
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>DataSlate panel testowy</title>
-  <style>
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
     :root {
       --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
              radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
@@ -135,15 +138,19 @@
     }
   </style>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
-  <main>
-    <header>
+  <!-- Główna zawartość modułu / Main module content -->
+<main>
+    <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
+<header>
       <h1>DataSlate panel testowy</h1>
       <p>Wybierz wersję produkcyjną lub testową panelu GM i Infoczytnika.</p>
     </header>
 
     <div class="sections">
-      <section class="section">
+      <!-- Wydzielona sekcja funkcjonalna / Dedicated functional section -->
+<section class="section">
         <h2>Wersje produkcyjne</h2>
         <div class="row">
           <a class="btn" href="./GM.html">Otwórz GM</a>

@@ -1,3 +1,4 @@
+// Plik logiki modułu: konfiguracja, funkcje i obsługa zdarzeń / Module logic file: configuration, functions, and event handling
 const difficultyInput = document.getElementById("difficulty");
 const poolInput = document.getElementById("pool");
 const wrathInput = document.getElementById("wrath");

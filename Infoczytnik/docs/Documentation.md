@@ -294,3 +294,11 @@ Najważniejsze funkcje runtime: `preloadKnownFonts`, `play`, `getViewportSize`, 
 - UI/fallback: `Calibri, Arial, sans-serif` (ekran gracza), `Arial, sans-serif` (panel GM).
 - Debug/techniczne: `Consolas, "Courier New", monospace`.
 - Rodziny ładowane z Google Fonts (w zależności od presetów): `Share Tech Mono`, `Cinzel`, `Rajdhani`, `Black Ops One`, `Staatliches`, `Orbitron`, `Questrial`, `Russo One`, `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
+
+
+## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
+- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
+- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
+- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
+- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
+- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

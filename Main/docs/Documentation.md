@@ -356,3 +356,11 @@ Zmniejszenie przypadków, w których dolny pasek nawigacji systemowej Androida (
 - Tła przycisków: `rgba(22, 198, 12, 0.08)` (normal), `rgba(22, 198, 12, 0.14)` (hover), `rgba(22, 198, 12, 0.22)` (active).
 - Cień hover przycisków: `0 0 18px rgba(22, 198, 12, 0.3)`.
 - CTA push (wariant czerwony): obramowanie `#ff3b30`, tło `rgba(255, 59, 48, 0.2)`, tekst `#ffe5e3`, glow `0 0 18px rgba(255, 59, 48, 0.45)`.
+
+
+## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
+- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
+- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
+- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
+- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
+- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

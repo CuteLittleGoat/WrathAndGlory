@@ -333,3 +333,8 @@ For **Save/Load** to work correctly:
 2. A confirmation dialog appears with the icon and **Yes/No** buttons.
 3. After the action, a second dialog appears with the result and an **OK** button.
 4. The whole interaction stays inside the app, without browser-native popup windows.
+
+
+## Aktualizacja 2026-04-27 – Komentarze PL/EN
+- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
+- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.

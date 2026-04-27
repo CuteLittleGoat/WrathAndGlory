@@ -1,10 +1,13 @@
 <!DOCTYPE html>
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kozie Liczydła</title>
-  <style>
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
     :root {
       --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
              radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
@@ -175,8 +178,10 @@
     }
   </style>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
-  <main>
+  <!-- Główna zawartość modułu / Main module content -->
+<main>
     <img
       class="logo"
       src="Skull.png"
@@ -206,7 +211,8 @@
     </div>
   </div>
 
-  <script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script>
     const secretButton = document.getElementById('secretButton');
     const secretOverlay = document.getElementById('secretOverlay');
     const secretCloseButton = document.getElementById('secretCloseButton');
