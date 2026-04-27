@@ -299,11 +299,3 @@ window.firebaseConfig = {
 5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100%.
 6. Zapis zmian do Firestore (`audio/favorites`) lub fallback do `localStorage` (`audio.settings`).
 7. Przełączanie języka równolegle aktualizuje etykiety obu widoków (admin + user preview).
-
-
-## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
-- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
-- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
-- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
-- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
-- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

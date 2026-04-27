@@ -2,7 +2,7 @@
 
 Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w systemie **Wrath & Glory**. Aplikacja działa lokalnie w przeglądarce (bez serwera i bez instalacji). Wystarczy otworzyć pliki HTML.
 
-## 🇵🇱 Instrukcja (PL)
+## 🇵🇱 Instrukcja dla użytkownika (PL)
 ### Szybki start
 1. Otwórz plik `index.html` w przeglądarce (dwuklik lub przeciągnięcie pliku do okna przeglądarki).
    - Tytuł karty przeglądarki na stronie startowej: **Kozie Liczydła**.
@@ -52,10 +52,6 @@ Ten projekt to zestaw statycznych stron HTML do planowania rozwoju postaci w sys
 
 ### Utrzymanie aplikacji (dla użytkownika)
 Aplikacja jest statyczna – „aktualizacja” oznacza podmianę plików lub ręczną edycję HTML/CSS.
-
-#### Aktualizacja plików
-- Pobierz najnowszą wersję plików i **zamień** stare `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html` oraz `kalkulatorxp.css` na nowe.
-- Jeśli trzymasz własne zmiany (np. inne tabele), zrób kopię i przenieś je do nowej wersji.
 
 #### Najczęstsze modyfikacje
 - **Zmiana kosztów XP**:
@@ -129,7 +125,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 
 ---
 
-## 🇬🇧 Manual (EN)
+## 🇬🇧 User instructions (EN)
 ### Quick start
 1. Open `index.html` in a browser (double-click or drag-and-drop into the browser window).
    - Browser tab title on the start page: **Kozie Liczydła**.
@@ -221,7 +217,6 @@ The app is static — “updating” means replacing files or editing the HTML/C
 - Added a new section in `KalkulatorXP.html` below **Attributes** and **Skills**: a reference table with maximum values for 8 attributes across 10 species.
 - The table data is hardcoded directly in JS (`attributeMaximumRows` + PL/EN dictionaries for species and attribute labels). Helper files `MaxAttributes.md` and `Labels.md` are not loaded at runtime.
 - Styling remains aligned with the app's look: green palette, centered values, zebra striping, and hover row feedback.
-- Removed the planned standalone note about the constant skills limit = 8 (as requested, it is not species-dependent and does not need separate display).
 - Standardized the reference section labels to **Maksymalne wartości atrybutów** / **Maximum attribute values** (without “informacyjne” / “reference”) and removed the **Rasa / Species** header label from the table.
 
 ### Current behavior
@@ -254,22 +249,6 @@ The app is static — “updating” means replacing files or editing the HTML/C
 This tool is an unofficial fan-made project created to help GMs in Wrath & Glory. The app is provided for free for private, non-commercial use only. The project is not licensed, affiliated with, or supported by Games Workshop, Cubicle 7 Entertainment Ltd., or Copernicus Corporation.
 Warhammer 40,000 and related names and trademarks are owned by Games Workshop Limited; Wrath & Glory is owned by their respective rights holders.
 
-## Aktualizacja 2026-04-27 – zapis/odczyt Firebase (Tworzenie Postaci)
-
-### 🇵🇱 Co nowego dla użytkownika
-1. W module **Tworzenie Postaci** pod sekcją puli PD dodano przyciski **Zapisz** i **Wczytaj**.
-2. Przed wykonaniem zapisu oraz odczytu pojawia się okno potwierdzenia z przyciskami **Tak/Nie**.
-3. Treści przycisków i okna potwierdzenia automatycznie dopasowują się do języka aplikacji (PL/EN).
-4. **Zapisz** nadpisuje poprzedni stan w Firebase.
-5. **Wczytaj** przywraca pełny stan formularza (wszystkie pola), a kalkulacja punktów aktualizuje się automatycznie.
-
-### 🇬🇧 What is new for users
-1. In **Character Creation**, new **Save** and **Load** buttons were added below the XP pool section.
-2. Before saving and loading, a confirmation window appears with **Yes/No** actions.
-3. Button labels and confirmation texts automatically follow the currently selected language (PL/EN).
-4. **Save** overwrites the previous state in Firebase.
-5. **Load** restores the full form state (all fields), then XP calculations refresh automatically.
-
 ## Firebase – wymagania użytkowe / User requirements
 
 ### 🇵🇱
@@ -283,76 +262,3 @@ For **Save/Load** to work correctly:
 1. Firestore must contain `character_builder/current`.
 2. Firestore Rules must allow read/write for this path.
 3. `Kalkulator/config/firebase-config.js` must contain valid project configuration.
-
-## Aktualizacja 2026-04-27 – modal zapisu/wczytania (UI)
-
-### 🇵🇱 Co się zmieniło
-1. W oknie potwierdzenia zapisu/wczytania wyświetla się teraz właściwa ikona: `Kalkulator/Modal_Icon.png`.
-2. Okno potwierdzenia nie zmienia już rozmiaru po pojawieniu się obrazka (stabilny wygląd).
-3. Zmieniono kolejność przycisków: najpierw **Tak**, potem **Nie**.
-4. Przycisk **Tak** ma teraz czerwony kolor, żeby akcja była wyraźnie widoczna.
-
-### 🇬🇧 What changed
-1. The save/load confirmation dialog now uses the correct icon: `Kalkulator/Modal_Icon.png`.
-2. The confirmation window no longer resizes when the image appears (stable layout).
-3. Button order was swapped: **Yes** first, then **No**.
-4. The **Yes** button is now red so the action is clearly visible.
-
-## Aktualizacja 2026-04-27 – poprawka wyświetlania ikony w modalu
-
-### 🇵🇱 Co się zmieniło
-1. Poprawiono ścieżkę obrazka w oknie potwierdzenia zapisu/wczytania.
-2. Modal ładuje ikonę z lokalnego pliku `Modal_Icon.png` względem pliku `TworzeniePostaci.html`, dzięki czemu obraz pojawia się zamiast tekstu zastępczego.
-
-### 🇬🇧 What changed
-1. Fixed the confirmation dialog image path for Save/Load actions.
-2. The modal now loads the icon from local `Modal_Icon.png` relative to `TworzeniePostaci.html`, so the image is shown instead of fallback text.
-
-
-### Aktualizacja 2026-04-27 – zapis/odczyt bez systemowych okien przeglądarki
-- Po kliknięciu **Zapisz** i **Wczytaj** nie pojawiają się już systemowe okna przeglądarki (typu „alert”).
-- Komunikaty o powodzeniu i błędach pojawiają się teraz w tym samym oknie modułu, w tym samym stylu co potwierdzenie.
-- Ikona w oknie potwierdzenia korzysta z pliku `Kalkulator/Modal_Icon.png` i jest pokazywana w pełnym kadrze (bez przycinania).
-- Rozmiar okna potwierdzenia jest stały — miejsce na ikonę jest zarezerwowane, więc okno nie „skacze” i nie rozszerza się przy ładowaniu grafiki.
-
-#### Jak działa to dla użytkownika (PL)
-1. Kliknij **Zapisz** albo **Wczytaj**.
-2. Zobaczysz okno potwierdzenia z ikoną i przyciskami **Tak/Nie**.
-3. Po wykonaniu akcji zobaczysz drugie okno z informacją o wyniku i przyciskiem **OK**.
-4. Cały proces odbywa się wewnątrz aplikacji, bez dodatkowych systemowych popupów przeglądarki.
-
-
-### Update 2026-04-27 – save/load without browser-native popups
-- Clicking **Save** and **Load** no longer shows browser-native popups (like `alert`).
-- Success and error messages are now shown in the same in-app modal style as confirmations.
-- The confirmation icon uses `Kalkulator/Modal_Icon.png` and is displayed fully (no cropping).
-- The confirmation dialog keeps a fixed size — image space is reserved, so the modal does not jump or expand while the icon loads.
-
-#### User flow (EN)
-1. Click **Save** or **Load**.
-2. A confirmation dialog appears with the icon and **Yes/No** buttons.
-3. After the action, a second dialog appears with the result and an **OK** button.
-4. The whole interaction stays inside the app, without browser-native popup windows.
-
-
-## Aktualizacja 2026-04-27 – Komentarze PL/EN
-- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
-- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.
-
-## Aktualizacja 2026-04-27 – korekta numeru strony (Drzewo Nauki)
-
-### 🇵🇱 Co się zmieniło
-- Poprawiono numer strony w polskim komunikacie ostrzegawczym dotyczącym zasady **Drzewa Nauki**.
-- Treść komunikatu została zmieniona z: `Niezgodność z zasadą Drzewa Nauki (str. 25)` na: `Niezgodność z zasadą Drzewa Nauki (str. 26)`.
-
-### 🇬🇧 What changed
-- Corrected the page number in the Polish warning message for the **Tree of Learning** rule.
-- The message was updated from: `Niezgodność z zasadą Drzewa Nauki (str. 25)` to: `Niezgodność z zasadą Drzewa Nauki (str. 26)`.
-
-### Bieżący stan funkcji
-- `TworzeniePostaci.html`: w oknie potwierdzenia (`confirm-modal`) obraz `Modal_Icon.png` został przeskalowany tak, aby wyświetlał się z wysokością odpowiadającą poprzedniej ikonie (`Modal_Icon_old.png`) i zachowywał oryginalne proporcje.
-- Obszar grafiki w modalu ma teraz stałą, zarezerwowaną wysokość `192px`, dzięki czemu okno nie „podskakuje” i nie rozszerza się podczas doczytywania obrazka.
-
-### Current behavior
-- `TworzeniePostaci.html`: in the confirmation modal (`confirm-modal`), `Modal_Icon.png` is now scaled to match the display height used previously for `Modal_Icon_old.png`, while keeping the new file’s original aspect ratio.
-- The modal image area now reserves a fixed `192px` height, so the dialog no longer jumps or expands while the image is loading.

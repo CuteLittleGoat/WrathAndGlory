@@ -1,13 +1,6 @@
 # DataVault — instrukcja użytkownika / User Guide
 
-## Aktualizacja danych / Data refresh
-
-- **PL (2026-04-24):** Po podmianie pliku `Repozytorium.xlsx` przygotowano nowy `data.json`, aby wszystkie zakładki pokazywały aktualne rekordy.
-- **EN (2026-04-24):** After replacing `Repozytorium.xlsx`, a new `data.json` was generated so all tabs use the latest records.
-- **PL (2026-04-24):** Ustawiono domyślną pierwszą zakładkę po wejściu do modułu: w widoku użytkownika otwiera się **Bronie**, a w widoku admina **Notatki**.
-- **EN (2026-04-24):** The default first tab on module open was set to **Bronie** in user view and **Notatki** in admin view.
-
-## PL — Instrukcja dla użytkownika
+## 🇵🇱 Instrukcja dla użytkownika (PL)
 
 ### Do czego służy DataVault
 DataVault to przeglądarka danych do Wrath & Glory. Pozwala szybko wyszukiwać zasady, tabele i opisy w jednym miejscu.
@@ -49,7 +42,7 @@ Ten przycisk służy do odświeżenia danych aplikacji z pliku XLSX. Używaj go,
 
 ---
 
-## EN — User instructions
+## 🇬🇧 User instructions (EN)
 
 ### What DataVault is for
 DataVault is a Wrath & Glory data browser. It helps you quickly find rules, tables, and references in one place.
@@ -88,8 +81,3 @@ Use this button when you need to refresh app data from the source XLSX file.
 - Use short search phrases (ability name, keyword, etc.).
 - Use row selection + **Compare** for quick decisions.
 - Click **Full view** when done to return to the complete list.
-
-
-## Aktualizacja 2026-04-27 – Komentarze PL/EN
-- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
-- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.
