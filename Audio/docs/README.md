@@ -4,7 +4,7 @@ Moduł **Audio** służy do odtwarzania SFX z pliku `AudioManifest.xlsx`, zarzą
 
 ---
 
-## Instrukcja obsługi (PL)
+## 🇵🇱 Instrukcja dla użytkownika (PL)
 
 ### Wymagania
 - Projekt Firebase z włączonym Firestore.
@@ -75,7 +75,7 @@ Moduł **Audio** służy do odtwarzania SFX z pliku `AudioManifest.xlsx`, zarzą
 
 ---
 
-## User guide (EN)
+## 🇬🇧 User instructions (EN)
 
 ### Requirements
 - A Firebase project with Firestore enabled.
@@ -149,8 +149,3 @@ Moduł **Audio** służy do odtwarzania SFX z pliku `AudioManifest.xlsx`, zarzą
 ## Firebase config reference / Referencja konfiguracji Firebase
 - Szczegółowy opis konfiguracji, struktury Firestore, gotowy skrypt Node.js i instrukcję „klik po kliku” (PL/EN) znajdziesz w: `Audio/config/Firebase-config.md`.
 - Detailed Firebase config, expected Firestore shape, ready-to-run Node.js bootstrap script, and click-by-click setup guide (PL/EN) are available in: `Audio/config/Firebase-config.md`.
-
-
-## Aktualizacja 2026-04-27 – Komentarze PL/EN
-- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
-- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.

@@ -4,7 +4,7 @@ Statyczna strona startowa (landing page) z linkami do narzędzi wspierających r
 
 ---
 
-## Instrukcja obsługi (PL)
+## 🇵🇱 Instrukcja dla użytkownika (PL)
 Tytuł karty przeglądarki: **Kozi Przybornik**.
 
 ### Dostępne narzędzia
@@ -86,7 +86,7 @@ Warhammer 40,000 oraz powiązane nazwy i znaki towarowe są własnością Games 
 
 ---
 
-## User guide (EN)
+## 🇬🇧 User instructions (EN)
 Browser tab title: **Kozi Przybornik**.
 
 ### Available tools
@@ -127,16 +127,6 @@ Browser tab title: **Kozi Przybornik**.
 3. To enable admin view, add the `?admin=1` parameter. All buttons become visible in this order: DataSlate, DataVault, Name Generator, NPC Generator, Audio, Images, Map, Calculator, DiceRoller, plus admin notes.
 4. If you need the DataVault or Audio admin panel, append `index.html?admin=1` to the relevant address (or use the DataVault button in admin view).
 5. App-module buttons (NPC Generator, DataVault, Calculator) open in the same context (`_self`), while only external links (Map, Images) open a new tab (`_blank`).
-
-### Where to update the map link
-The map URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
-`Mapa: https://...`.
-If the map address changes, replace the URL after the colon in that file.
-
-### Where to update the images link
-The images URL is stored in `Main/ZmienneHiperlacza.md`. The entry format is:
-`Obrazki: https://...`.
-If the channel address changes, replace the URL after the colon in that file.
 
 ### Running locally
 This is a static page with no backend. You can:
@@ -179,7 +169,6 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 - App icon is now `IkonaGlowna.png`.
 - Notification icon is now `IkonaPowiadomien.png`.
 - For proper PWA installation, run the app over HTTPS (GitHub Pages already provides this).
-
 
 ## Orientacja aplikacji (PL/EN)
 - Usunięto globalny lock orientacji z `manifest.webmanifest`, dlatego orientacja modułów (poza wyjątkami implementowanymi lokalnie w modułach) zależy od ustawień urządzenia/systemu.
@@ -227,7 +216,6 @@ Warhammer 40,000 and related names and trademarks are the property of Games Work
 - It is now permanently placed **below the module buttons grid**, aligned to the right edge of the main green-framed panel.
 - This prevents overlap and stops the button from following the user while scrolling.
 
-
 ## Powiadomienia push (PL) — obsługa błędu subskrypcji push
 - W `Main/index.html` rozszerzono obsługę błędu przy zapisie subskrypcji push.
 - Jeśli backend zwróci błąd, UI pokazuje teraz: `status HTTP + treść odpowiedzi`, co ułatwia diagnostykę CORS i konfiguracji endpointu.
@@ -265,8 +253,3 @@ After deployment, a full PWA reinstall is recommended on devices (remove app/sho
 - Added `width="1366"` and `height="768"` attributes to the logo image in `Main/index.html`.
 - Added explicit `height: auto` to the `.logo` CSS rule.
 - Result: the browser knows the logo aspect ratio before the bitmap is downloaded and reserves the correct height, preventing startup button shift/layout jump.
-
-
-## Aktualizacja 2026-04-27 – Komentarze PL/EN
-- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
-- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.

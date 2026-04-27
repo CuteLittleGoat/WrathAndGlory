@@ -2,8 +2,6 @@
 
 Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na `data.json`, z kanonicznym generowaniem danych po stronie przeglądarki (parser XML XLSX).
 
-Status synchronizacji danych (2026-04-24): do repozytorium wgrano nowy plik `Repozytorium.xlsx`, po czym wykonano regenerację `DataVault/data.json` komendą `python3 build_json.py` w katalogu modułu DataVault.
-
 Bieżący stan danych w repozytorium: po dodaniu nowej zakładki `Pakiety Wyniesienia` w `Repozytorium.xlsx` wykonano ponowną regenerację pliku `data.json`, aby odświeżyć zestaw rekordów używany przez tabele DataVault.
 Bieżąca logika kolorowania: w zakładce `Pakiety Wyniesienia`, kolumna `Słowa Kluczowe` nie jest już kolorowana globalnie na czerwono (z wyjątkiem przecinków); od teraz czerwone pozostają wyłącznie fragmenty oznaczone czerwienią w XLSX i przeniesione do `data.json` jako markery `{{RED}}...{{/RED}}`.
 Bieżące ustawienie szerokości kolumny: w zakładce `Pakiety Wyniesienia` kolumna `Koszt PD` ma teraz `min-width: 26ch`, czyli dokładnie tyle samo co `Premia Wpływu`.
@@ -21,7 +19,6 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
   - w trybie użytkownika preferowana jest `Bronie`,
 - jeśli preferowana zakładka nie jest aktualnie widoczna (np. przez filtry widoczności zakładek), używany jest fallback `visibleOrder[0] || visibleSheets[0]`.
 - Zmiana dotyczy wyłącznie etapu wyznaczania `nextSheet` i **nie zmienia** logiki `applyDefaultViewForSheet`, `applyViewModeToAllSheets` ani przycisku `Widok Domyślny`.
-
 
 ## 1) Struktura projektu i pliki
 
@@ -326,7 +323,6 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
   - `Co`: min-width 20ch, max-width auto, wyrównanie do lewej, standardowe łamanie
   - `Podręcznik`: min-width auto, max-width bez limitu, wyrównanie do lewej, standardowe łamanie
   - `Strona`: min-width 6ch, max-width auto, wyrównanie do lewej, standardowe łamanie
-
 
 - **Kary do ST**
   - tabela ma `table-layout: fixed` i `width: max-content`, aby nie rozciągać kolumn na szerokość okna.
@@ -900,11 +896,3 @@ Aby uniknąć opisów skrótowych, poniżej literalne wartości:
 
 ## 23) Uzupełnienie audytowe — katalog funkcji krytycznych
 W `app.js` funkcje kluczowe dla rekonstrukcji 1:1 to m.in.: normalizacja (`norm`, `normaliseDB`), budowa konfiguracji widoku (`createSheetViewState`, `applyDefaultViewForSheet`, `applyFullViewForSheet`), formatowanie inline (`formatInlineHTML`, `formatTextHTML`, `formatKeywordHTML`), render (`buildTableSkeleton`, `renderBody`, `renderRow`), clamp (`measureRenderedLines`, `updateClampableHints`), filtrowanie/sortowanie (`passesFilters`, `sortRows`, `compareByColumn`), parsowanie XLSX (`getCellTextWithMarkers`, `extractSheetRowsWithFormatting`, `buildDataJsonFromSheets`).
-
-
-## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
-- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
-- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
-- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
-- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
-- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

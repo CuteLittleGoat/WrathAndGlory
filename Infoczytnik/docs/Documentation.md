@@ -1,8 +1,9 @@
+# Infoczytnik — dokumentacja techniczna
+
 ## nowe pole robocze dla tła `Pergamin`
 1. W `Infoczytnik_test.html` zaktualizowano preset `CONTENT_RECTS_BY_BACKGROUND_ID` dla `backgroundId=9` (`Pergamin`) na podstawie nowego pliku `assets/ramki/Pergamin_ramka.png`.
 2. Nowe wartości obszaru (`x,y,w,h`) to: `0.0771, 0.1302, 0.8672, 0.6973`.
 3. Współrzędne zostały wyznaczone z bounding boxa niebieskiej ramki (`minX=79`, `minY=200`, `maxX=966`, `maxY=1270`) dla obrazu `1024x1536`, zgodnie z metodą opisaną w `assets/data/NiebieskaRamka.md`.
-4. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-22_15-28-38` (czas lokalny PL), aby wymusić odświeżenie cache zasobów po zmianie.
 
 # Infoczytnik — Documentation (test files)
 
@@ -10,32 +11,25 @@
 1. W `GM_test.html` dodano helper `getSelectedFont()`, który centralizuje pobieranie aktywnego rekordu fontu z `manifest.fonts`.
 2. `applySelectedFontToPreview()` i `getPayload(type)` korzystają teraz z tego samego helpera, co eliminuje rozjazd logiki między podglądem i wysyłką danych.
 3. W payloadzie `fontId`/`fontPreset` są mapowane z `selectedFont`, bez bezpośredniego odwołania do luźnej zmiennej `font`.
-4. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_12-30-44` (czas lokalny PL).
 
 ## Obsługa wyboru fontu w payloadzie
 1. W `GM_test.html` w funkcji `getPayload(type)` przywrócono pobieranie wybranego fontu: `const font = safeGet(manifest.fonts || [], el.fontSelect.value);`.
 2. Naprawa usuwa błąd runtime widoczny podczas `Wyślij` (`font is not defined`) i przywraca poprawne wysyłanie pól `fontId` oraz `fontPreset` do Firestore.
-3. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_12-22-46` (czas lokalny PL).
 
 ## dropdown fontów GM + preload webfontów
 1. W `GM_test.html` zmieniono budowanie etykiet opcji fontów: `buildOptionLabel(item, 'font')` zwraca teraz format `ID. Frakcja - Nazwa fontu`; cały tekst opcji jest renderowany standardowym fontem UI (bez stylowania per-opcja).
 2. Rozszerzono import Google Fonts w `GM_test.html` oraz `Infoczytnik_test.html` o brakujące rodziny: `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
 3. W `GM_test.html` dodano preload manifestowych fontów (`preloadManifestFonts`) oparty o `document.fonts.load(...)` oraz natychmiastową aplikację rodziny przy zmianie selecta (`applySelectedFontToPreview()` + repaint), co eliminuje odczuwalne opóźnienie 1–2 s w mini-podglądzie.
 4. W `Infoczytnik_test.html` dodano preload stałej listy rodzin (`PRELOAD_FONT_FAMILIES` + `preloadKnownFonts`), żeby pierwsze użycie fontu na ekranie gracza również było szybsze.
-5. Zaktualizowano `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-23_11-55-45` (czas lokalny PL).
 
 ## Zakres
 Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przebudowie na niezależne dropdowny i manifest JSON.
-
-
 
 ## autoformat `+++` podczas importu XLSX -> JSON
 1. W `GM_test.html` rozszerzono importer manifestu o funkcje `formatFillerLine(...)` i `formatFillerLines(...)`, które podczas mapowania arkusza `fillers` automatycznie opakowują każdą linię `prefixes` i `suffixes` do formatu `+++ TEKST +++`.
 2. Dodano zabezpieczenie przed podwójnym opakowaniem: jeżeli linia już jest w formacie `+++ ... +++`, importer pozostawia ją bez zmian.
 3. Reguła formatowania działa na etapie `DataSlate_manifest.xlsx -> data.json`, więc GM preview i payload runtime korzystają już z gotowych, sformatowanych wartości z manifestu.
-4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-02_16-55-00` (czas lokalny PL).
 5. Wygenerowano nowy `assets/data/data.json` i zasilono nim aplikację; wszystkie rekordy `fillers.prefixes/suffixes` zapisano jako `+++ ... +++`.
-
 
 ## Litannie Zagubionych + nowe tło WnG + regeneracja data.json
 1. W `assets/data/DataSlate_manifest.xlsx` i `assets/data/Mapowanie.xlsx` nazwa tła `Litannie Zaginionych` została zastąpiona nazwą `Litannie Zagubionych`; runtime korzysta teraz z pliku `assets/backgrounds/Litannie_Zagubionych.png`.
@@ -43,10 +37,6 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 3. Zmieniono domyślny preset panelu GM: `DEFAULT_FORM_STATE.backgroundId` ustawiono na `10` (`WnG`).
 4. Utworzono plik `assets/data/NiebieskaRamka.md` dokumentujący algorytm wyliczania `x,y,w,h` z plików `*_ramka.png` (detekcja niebieskiej ramki + normalizacja do wymiaru obrazu).
 5. Wygenerowano od nowa `assets/data/data.json` z aktualnego `assets/data/DataSlate_manifest.xlsx` — sekcja `backgrounds` zawiera teraz 10 rekordów i poprawioną nazwę `Litannie Zagubionych`.
-6. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-02_14-27-24`.
-
-
-
 
 ## podgląd „Treść / Tło” (nowe wymaganie)
 1. W `GM_test.html` zastąpiono etykiety trybu podglądu: `Wycinek`/`Całość` -> `Treść`/`Tło` (radio: `previewModeContent`, `previewModeBackground`).
@@ -56,14 +46,12 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 3. Dodano klasy stanu `preview-mode-content` i `preview-mode-background`, które sterują widocznością warstw podglądu i eliminują efekt wielu miniatur.
 4. `DEFAULT_FORM_STATE.previewMode` zmieniono z `crop` na `content`.
 5. `loadSavedPreviewMode()` migruje stare wartości localStorage: `crop -> content`, `full -> background`; klucz pozostaje `infoczytnik.gm.previewMode`.
-6. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_22-55-00`.
 7. Dopracowano wygląd miniatury trybu `Tło`: w stanie `preview-mode-background` usunięto wewnętrzny padding podglądu (`padding:0`), a `previewBackgroundThumb` skaluje się do pełnej wysokości pola (`height:100%`, `width:auto`), dzięki czemu miniatura dochodzi do górnej i dolnej krawędzi bez deformacji (z wolnym miejscem po bokach).
 
 ## wyrównanie przycisku „Aktualizuj dane z XLSX”
 1. W `GM_test.html` zmieniono styl kontenera `importRow` z `align-items:stretch` na `align-items:center`, aby elementy w wierszu logu importu były centrowane pionowo.
 2. W klasie `.importUpdateBtn` dodano `align-self:center`, dzięki czemu przycisk pozostaje po prawej stronie pola `Log importu`, ale jest wyrównany do środka tego pola.
 3. Wysokość przycisku pozostała zależna od globalnego stylu `button` (tak jak w pozostałych przyciskach panelu), więc wizualnie ma tę samą wysokość co reszta przycisków akcji.
-4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_15-18-03`.
 
 ## przełączany tryb podglądu tła (Wycinek / Całość)
 1. W `GM_test.html` dodano nowy wiersz sterowania `Podgląd: Wycinek / Całość` (radio buttons `previewModeCrop`, `previewModeFull`) umieszczony bezpośrednio nad `livePreviewBox`.
@@ -73,7 +61,6 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
    - `loadSavedPreviewMode()` odtwarza ostatnio używany tryb po odświeżeniu.
 3. Dodano trwałość wyboru w `localStorage` pod kluczem `infoczytnik.gm.previewMode`; panel pamięta preferencję GM między sesjami przeglądarki.
 4. `DEFAULT_FORM_STATE` rozszerzono o `previewMode:'crop'`; `restoreDefaults()` przywraca ten domyślny tryb i od razu aplikuje go do mini-podglądu.
-5. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_15-02-48`.
 
 ## nowy `assets/data/data.json` z `assets/data/DataSlate_manifest.xlsx`
 1. Wygenerowano od nowa plik `Infoczytnik/assets/data/data.json` na podstawie zaktualizowanego arkusza `Infoczytnik/assets/data/DataSlate_manifest.xlsx`.
@@ -93,7 +80,6 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
    - aktualizuje dropdowny i podgląd na żywo,
    - generuje i pobiera nowy plik `data.json` (do ręcznej podmiany w `Infoczytnik/assets/data/data.json`).
 4. `importLog` raportuje błędy mapowania (np. brak arkusza / niepełny rekord) i nadal pokazuje `Brak błędów importu.` przy pustej liście.
-5. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-04-01_00-15-00`.
 
 ## domyślne ustawienia panelu GM
 1. W `GM_test.html` zmieniono `DEFAULT_FORM_STATE` tak, aby panel startował z presetem:
@@ -108,7 +94,6 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
    - `prefixSuffixColor=#ffffff`, `psFontSize=12`,
    - treść komunikatu po resecie: pusta (`''`).
 2. `restoreDefaults()` automatycznie odczytuje te wartości, więc przycisk „Przywróć domyślne” i inicjalne uruchomienie formularza ustawiają identyczny stan.
-3. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_21-45-00`.
 
 ## DataSlate_manifest.xlsx (zamiana kolejności logo)
 1. Zaktualizowano sekcję `logos` w `assets/data/data.json` zgodnie z nowym plikiem `DataSlate_manifest.xlsx`.
@@ -121,7 +106,6 @@ Dokument opisuje aktualny stan `GM_test.html` i `Infoczytnik_test.html` po przeb
 1. Usunięto warstwę eksperymentalną `colorEditSource` (`text` vs `picker`) z `GM_test.html`.
 2. `resolveHexColor(...)` wróciło do prostszego kontraktu 3-parametrowego (`textValue`, `pickerValue`, `fallback`) bez przełączania priorytetu źródła.
 3. `renderPreview()`, `getPayload()` i handlery kolorów korzystają ponownie z jednolitej ścieżki synchronizacji (`text` + `picker`) bez dodatkowego stanu.
-4. Podniesiono `INF_VERSION` w `GM_test.html` i `Infoczytnik_test.html` do `2026-03-31_14-40-38`.
 
 ## GM/Infoczytnik (wdrożenie rekomendacji)
 0. **Poprawka UX panelu kolorów fillerów (GM)**:
@@ -294,11 +278,3 @@ Najważniejsze funkcje runtime: `preloadKnownFonts`, `play`, `getViewportSize`, 
 - UI/fallback: `Calibri, Arial, sans-serif` (ekran gracza), `Arial, sans-serif` (panel GM).
 - Debug/techniczne: `Consolas, "Courier New", monospace`.
 - Rodziny ładowane z Google Fonts (w zależności od presetów): `Share Tech Mono`, `Cinzel`, `Rajdhani`, `Black Ops One`, `Staatliches`, `Orbitron`, `Questrial`, `Russo One`, `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
-
-
-## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
-- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
-- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
-- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
-- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
-- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

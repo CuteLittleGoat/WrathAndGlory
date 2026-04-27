@@ -1,6 +1,6 @@
 # Generator NPC — instrukcja obsługi / User guide
 
-## Polski (PL)
+## 🇵🇱 Instrukcja dla użytkownika (PL)
 
 ### Wymagania
 - Przeglądarka z obsługą JavaScript (np. Chrome, Firefox, Edge).
@@ -39,7 +39,7 @@ Tytuł karty przeglądarki: **Generator NPC**.
 
 ---
 
-## English (EN)
+## 🇬🇧 User instructions (EN)
 
 ### Requirements
 - A JavaScript-enabled browser (e.g., Chrome, Firefox, Edge).
@@ -103,8 +103,3 @@ Browser tab title: **Generator NPC**.
 - These changes do not alter **Generate card** logic.
 - Poprawka: podgląd bazowy opiera logikę `old` wyłącznie na polu `Stan` (case-insensitive) i ukrywa ten wiersz z kolumny „Klucz”.
 - Fix: base preview now relies on `Stan` only (case-insensitive) for `old` logic and hides this row from the “Key” column.
-
-
-## Aktualizacja 2026-04-27 – Komentarze PL/EN
-- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
-- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.
