@@ -569,3 +569,84 @@ Błąd komunikatu „Nie udało się zapisać stanu postaci.” jest komunikatem
 #### Plik `DetaleLayout.md`
 - Było: *(brak wpisu o zmianie kolorystyki przycisku „Tak” i zmianie ikony modala)*
 - Jest: dodano sekcję `Aktualizacja 2026-04-27 – modal potwierdzenia (Kalkulator/TworzeniePostaci)` opisującą nowy asset i czerwony wariant przycisku.
+
+## 13) Uzupełnienie analizy – weryfikacja checklisty Firebase i tworzenia pól (2026-04-27)
+
+### Prompt użytkownika (ten etap)
+> Przeczytaj i uzupełnij analizę Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md o nowe wnoski
+>
+> 1. Czy Firestore Database jest uruchomiona w projekcie wh40k-data-slate (Build → Firestore Database).
+> - Moduł "Infoczytnik" działa, więc zakładam, ze Firestore Database jest uruchomiona
+>
+> 2. Czy opublikowane Rules faktycznie obejmują zapis na character_builder/current (i są aktywne po kliknięciu Publish).
+> - Screen w Analizy/F3.jpg
+>
+> 3. Czy dane trafiają do właściwego projektu: porównać projectId z firebase-config.js z projektem otwartym w konsoli.
+> - Screen w Analizy/F1.jpg
+>
+> 4. Czy dokument się aktualizuje: po zapisie pole savedAt powinno zmieniać timestamp.
+> - Chyba nie. Screen w Analizy/F2.jpg
+>
+> 5. Czy przeglądarka nie blokuje połączeń do Firestore (DevTools → Network/Console, błędy permission-denied, failed-precondition, unavailable, CORS).
+> - Moduł Infoczytnik działa, więc chyba tu jest ok
+>
+> 6. Czy domena/testowy hosting jest zgodny z konfiguracją aplikacji web i środowiskiem, z którego uruchamiasz moduł.
+> - Nie rozumiem
+>
+> Sprawdź czy kod aplikacji tworzy nowe pola w dokumencie w Firebase. Bo ja utworzyłem tylko jedno pole o typie int64
+
+### Nowe wnioski (odpowiedzi 1:1)
+
+1. **Czy Firestore jest uruchomiony?**  
+   **Najpewniej tak.** Sam fakt, że moduł Infoczytnik działa z Firestore i że w konsoli widzisz dane/reguły (`Analizy/F2.jpg`, `Analizy/F3.jpg`), wskazuje, że baza Cloud Firestore dla projektu `wh40k-data-slate` jest aktywna.
+
+2. **Czy Rules obejmują zapis `character_builder/current` i są opublikowane?**  
+   **Tak.** Na screenie `Analizy/F3.jpg` jest reguła:
+   `match /character_builder/{document=**} { allow read, write: if true; }`  
+   Taka reguła obejmuje również dokument `character_builder/current`. W lewym panelu historii widać świeżą publikację („Today • 8:30 AM”), więc wersja wygląda na opublikowaną.
+
+3. **Czy zapis idzie do właściwego projektu?**  
+   **Tak.** `Kalkulator/config/firebase-config.js` ma `projectId: "wh40k-data-slate"`, a na `Analizy/F1.jpg` web app jest przypięta do projektu `wh40k-data-slate` z tym samym identyfikatorem aplikacji i sender ID. To jest spójne.
+
+4. **Czy dokument się aktualizuje (`savedAt`)?**  
+   **Na pokazanym stanie jeszcze nie.** Na `Analizy/F2.jpg` w `character_builder/current` widać wyłącznie `schemaVersion: 1` i brak pola `savedAt`.  
+   To oznacza, że **nie ma potwierdzonego skutecznego zapisu z modułu Kalkulator** od czasu utworzenia dokumentu ręcznie. Po udanym zapisie z aplikacji powinny pojawić się nowe pola (w tym `savedAt` jako timestamp serwera).
+
+5. **Czy przeglądarka blokuje połączenia (DevTools)?**  
+   Na podstawie samych screenshotów **nie da się tego potwierdzić** — potrzebny jest log z Console/Network podczas kliknięcia „Zapisz”.  
+   Jednak ponieważ Infoczytnik działa, problemy typu globalny CORS/sieć są mniej prawdopodobne. Nadal możliwy jest błąd specyficzny dla strony Kalkulator (np. uruchomienie z innego originu lub brak poprawnej inicjalizacji na tej podstronie).
+
+6. **Domena/testowy hosting – co to znaczy?**  
+   Chodzi o to, **z jakiego adresu otwierasz moduł** (np. `https://...`, `http://localhost:...`, `file://...`) i czy ten sposób uruchomienia jest zgodny z konfiguracją aplikacji web Firebase.  
+   Praktycznie: testuj moduł z normalnego serwera HTTP/HTTPS (nie z `file://`) i upewnij się, że to ta sama aplikacja/projekt co w `firebase-config.js`.
+
+### Kluczowe sprawdzenie: czy kod tworzy nowe pola w Firestore?
+
+**Tak — kod tworzy/nadpisuje wiele pól automatycznie.**  
+W `Kalkulator/TworzeniePostaci.html` funkcja `collectCurrentState()` buduje pełny payload z polami:
+- `schemaVersion`, `module`, `lang`, `savedAt`, `savedBy`,
+- `xpPool`, `xpTotal`, `xpSpent`, `xpAvailable`,
+- `hasValidationErrors`, `validationMessages`,
+- `attributes`, `skills`, `talents`, `formSnapshot`.
+
+Następnie `saveStateToFirebase()` wykonuje:
+`await firebaseContext.characterRef.set(payload);`
+na dokumencie `character_builder/current`.
+
+To oznacza:
+- **nie musisz ręcznie dodawać tych pól** w konsoli Firebase,
+- wystarczy, że dokument istnieje i rules pozwalają na write,
+- po pierwszym udanym zapisie pola pojawią się same.
+
+### Dlaczego teraz widzisz tylko `schemaVersion: int64`?
+
+Bo to pole zostało utworzone ręcznie i wygląda na to, że zapis z modułu nie zakończył się sukcesem (brak `savedAt` i reszty payloadu).
+
+### Co dokładnie sprawdzić teraz (krótki plan)
+
+1. Otwórz Kalkulator i kliknij „Zapisz”.  
+2. Od razu sprawdź DevTools → Console i zapisz dokładny kod błędu (np. `permission-denied`, `failed-precondition`, `unavailable`).  
+3. Sprawdź Firestore `character_builder/current`:
+   - czy doszły nowe pola,
+   - czy `savedAt` zmienił się na aktualny timestamp.
+4. Jeżeli dalej brak pól — wklej dokładny błąd z konsoli; to pozwoli wskazać precyzyjnie, czy problem jest w rules, środowisku uruchomienia czy połączeniu.
