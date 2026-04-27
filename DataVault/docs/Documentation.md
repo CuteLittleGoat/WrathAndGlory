@@ -440,7 +440,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, `Notatki`).
 - `CHARACTER_CREATION_SHEETS` — zestaw zakładek sterowanych przez checkbox tworzenia postaci (`Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`).
-- `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`).
+- `COMBAT_RULES_SHEETS` — zestaw zakładek sterowanych przez checkbox zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST`).
 - `CHARACTER_CREATION_SHEET_KEYS` i `COMBAT_RULES_SHEET_KEYS` — kanoniczne (znormalizowane) wersje nazw arkuszy używane do odpornego dopasowania nazw zakładek niezależnie od drobnych różnic zapisu.
 - `RENDER_CHUNK_SIZE = 80` — ile wierszy renderuje się w jednym kroku (progressive rendering).
 - `ADMIN_MODE` — `?admin=1` w URL.
@@ -478,8 +478,8 @@ Mapowanie na `getElementById`:
 - `getSheetOrder(available)` — bierze `_meta.sheetOrder` i filtruje do arkuszy dostępnych w danych (dokleja brakujące).
 - `getColumnOrder(rows, sheetName)` — bierze `_meta.columnOrder[sheetName]`, filtruje do kolumn obecnych w danych i dokleja brakujące alfabetycznie (kolumna `LP` jest pomijana, aby nie pojawiała się w UI).
 - `escapeHtml(s)` — encje HTML.
-- `stripMarkers(s)` — usuwa markery `{{RED}}`, `{{B}}`, `{{I}}` z tekstu (używane w filtrze listowym).
-- `parseInlineSegments(raw)` — dzieli tekst na segmenty z aktywnymi stylami na podstawie markerów `{{RED}}`, `{{B}}`, `{{I}}` (zwraca tablicę `{text, styles}`).
+- `stripMarkers(s)` — usuwa markery `{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}` z tekstu (używane w filtrze listowym).
+- `parseInlineSegments(raw)` — dzieli tekst na segmenty z aktywnymi stylami na podstawie markerów `{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}` (zwraca tablicę `{text, styles}`).
 - `setStatus(msg)` i `logLine(msg, isErr)` — logi (console).
 - `canonKey(s)` — klucz kanoniczny: lowercase, normalizacja spacji, usuwa spację przed `(`.
 - `isCharacterCreationSheet(name)` — sprawdza (po kluczu kanonicznym), czy zakładka należy do grupy tworzenia postaci.
@@ -490,10 +490,10 @@ Mapowanie na `getElementById`:
 ## 5) JS: formatowanie treści
 
 ### 5.1 `formatInlineHTML(raw)`
-- Wspiera markery: `{{RED}}`, `{{B}}`, `{{I}}` z zamknięciem `{{/RED}}`, `{{/B}}`, `{{/I}}`.
+- Wspiera markery: `{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}` z zamknięciem `{{/RED}}`, `{{/B}}`, `{{/I}}`, `{{/S}}`.
 - Zawiera wykrywanie referencji w nawiasach z `str`, `str.`, `strona` → klasa `.ref`.
 - Segmenty renderowane są do `<span>` z klasami:
-  - `inline-red`, `inline-bold`, `inline-italic`.
+  - `inline-red`, `inline-bold`, `inline-italic`, `inline-strike`.
 - Referencje są nakładane nawet wewnątrz stylów.
 - Segmenty ze stylami są wyznaczane przez `parseInlineSegments`.
 
@@ -522,6 +522,19 @@ Mapowanie na `getElementById`:
 ### 5.6 `getFormattedCellHTML(row, col)`
 - Cache HTML w `row.__fmt[col]`.
 - Dla `Zasięg` używa `formatRangeHTML`, inaczej `formatTextHTML`.
+
+### 5.7 Pełne reguły formatowania (mapa 1:1)
+- Kanoniczny wycinek reguł renderowania znajduje się w `DataVault/docs/ZasadyFormatowania.md`.
+- Dokument ten jest nadrzędną „ściągą” do samego formatowania (kolory, markery, tokeny, wyjątki arkuszy i kolejność nakładania styli).
+- Najważniejsze reguły, które muszą być odtworzone 1:1:
+  - pipeline: markery inline → referencje `(str.)` → reguły per-kolumna/per-arkusz → clamp/podpowiedzi,
+  - obsługa markerów `RED/B/I/S` i ich łączenia na jednym segmencie,
+  - `Słowa Kluczowe` (`Nazwa`) = pełna czerwień,
+  - `KEYWORD_SHEETS_COMMA_NEUTRAL` = czerwone słowa + neutralne przecinki,
+  - wyjątek `Pakiety Wyniesienia / Słowa Kluczowe` = brak globalnego wrappera `.keyword-red`, tylko style inline z XLSX,
+  - `Słowa Kluczowe Frakcji / Słowo Kluczowe` = neutralne `-` i `lub`, czerwone `[ŚWIAT-KUŹNIA]`,
+  - `Zasięg` = separator `/` renderowany jako `.slash`,
+  - `row-old` i `inline-strike` = archiwalny kolor z wyjątkiem kombinacji `.inline-strike.inline-red` (czerwień zachowana).
 
 ---
 

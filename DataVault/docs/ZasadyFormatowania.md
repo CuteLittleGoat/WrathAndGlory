@@ -1,84 +1,78 @@
-# DataVault — Zasady formatowania tekstu (baza wiedzy do `Repozytorium.xlsx`)
+# DataVault — Zasady formatowania tekstu
 
 ## Cel dokumentu
-Ten dokument opisuje **wszystkie reguły renderowania i interpretacji formatowania tekstu** używane w module DataVault, tak aby podczas tworzenia/aktualizacji `Repozytorium.xlsx` zachować zachowanie aplikacji 1:1.
+Ten dokument jest **wycinkiem dokumentacji technicznej** i opisuje wyłącznie reguły renderowania oraz interpretacji formatowania tekstu stosowane przez moduł DataVault.
+
+> Pełny opis techniczny (architektura, ładowanie danych, UI, filtrowanie, sortowanie, clamp, parser XLSX itd.) znajduje się w `DataVault/docs/Documentation.md`.
 
 ---
 
-## 1) Klasy i kolory używane przez silnik renderujący
+## 1. Pipeline formatowania (kolejność ma znaczenie)
 
-### 1.1 Klasy odpowiedzialne za formatowanie inline
-- `.inline-red` → kolor czerwony (`var(--red)` = `#d74b4b`).
-- `.keyword-red` → kolor czerwony (`var(--red)` = `#d74b4b`) dla treści słów kluczowych.
-- `.keyword-comma` → kolor podstawowy tekstu (`var(--text)`), używany do „neutralnych przecinków”.
-- `.inline-bold` → pogrubienie (`font-weight: 700`).
-- `.inline-italic` → kursywa (`font-style: italic`).
-- `.ref` → jaśniejszy kolor referencji (`var(--code)`) z `opacity: .9`.
-- `.caretref` → jaśniejszy kolor linii specjalnych (`var(--code)`) z `opacity: .95`.
-- `.slash` → jaśniejszy kolor separatora „/” (`var(--code)`).
-
-### 1.2 Paleta kolorów istotna dla formatowania treści
-- Czerwony: `--red: #d74b4b`.
-- Podstawowy tekst: `--text: #d7f5dc`.
-- Jaśniejszy tekst/referencje: `--code: #d2fad2`.
+1. Tekst z danych wejściowych (`data.json`) trafia do parsera markerów inline (`{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}`).
+2. Segmenty tekstu otrzymują style inline (`czerwony`, `bold`, `italic`, `strike`) na podstawie aktualnego stanu markerów.
+3. W tym samym przebiegu wykrywane są referencje stron w nawiasach `(...)` zawierające `str`, `str.` lub `strona` i dostają klasę `.ref`.
+4. Następnie nakładane są reguły semantyczne per kolumna/arkusz:
+   - `Słowa Kluczowe` (globalna czerwień + wyjątki przecinków),
+   - `Słowa Kluczowe Frakcji` (tokeny `-`, `lub`, `[ŚWIAT-KUŹNIA]`),
+   - `Zasięg` (separator `/` jako `.slash`).
+5. Na końcu działają reguły prezentacyjne (np. przycięcie podglądu do `maxLines`, hint `.clampHint`, styl archiwalny `row-old`).
 
 ---
 
-## 2) Skąd bierze się formatowanie z `Repozytorium.xlsx`
+## 2. Markery inline i ich interpretacja
 
-### 2.1 Źródło rich text
-Jeżeli komórka XLSX ma HTML (`cell.h`), parser konwertuje ją do znaczników wewnętrznych:
-- kolor czerwony → `{{RED}}...{{/RED}}`,
-- pogrubienie (`<b>`, `<strong>`) → `{{B}}...{{/B}}`,
-- kursywa (`<i>`, `<em>`) → `{{I}}...{{/I}}`,
-- `<br>` → nowa linia (`\n`).
+Obsługiwane markery w treści:
+- `{{RED}}...{{/RED}}` → czerwony (`.inline-red`)
+- `{{B}}...{{/B}}` → pogrubienie (`.inline-bold`)
+- `{{I}}...{{/I}}` → kursywa (`.inline-italic`)
+- `{{S}}...{{/S}}` → przekreślenie (`.inline-strike`)
 
-### 2.2 Jak wykrywany jest czerwony kolor z XLSX
-Za czerwony uznawane są wartości stylu `color`:
-- `red`
-- `#f00`
-- `#ff0000`
-- `#ffff0000`
-- `rgb(255,0,0)`
-- `rgba(255,0,0,1)`
-
-Wniosek praktyczny dla `Repozytorium.xlsx`: jeśli red ma zostać zachowany po eksporcie/importcie, ustawiaj inline dokładnie któryś z powyższych wariantów.
+Ważne zasady:
+- Markery mogą być zagnieżdżone.
+- Parser działa stosowo (stack), więc zachowuje kolejność otwarć/zamknięć.
+- Jeśli style się łączą, segment dostaje wiele klas jednocześnie (np. `inline-red inline-bold`).
 
 ---
 
-## 3) Reguły „jaśniejszego fontu” (referencje i linie specjalne)
+## 3. Źródło markerów (XLSX → data.json)
 
-### 3.1 Referencje w nawiasach
-Fragment tekstu wewnątrz nawiasów `(...)` otrzymuje klasę `.ref` (jaśniejszy kolor), jeżeli zawiera co najmniej jeden wzorzec:
-- `str.`
-- `str`
-- `strona`
+Markery są generowane z `Repozytorium.xlsx`:
+- parser rich text rozpoznaje style runów i mapuje je na `RED/B/I` (oraz wspierane `S`),
+- `<br>` i podziały linii są zachowane jako nowe linie,
+- gdy komórka ma czerwony styl i brak runów stylowanych, cała wartość może zostać opakowana w `{{RED}}...{{/RED}}`.
 
-Wykrywanie jest niewrażliwe na wielkość liter.
+Kolor czerwony jest wykrywany m.in. dla:
+- `red`, `#f00`, `#ff0000`, `#ffff0000`, `rgb(255,0,0)`, `rgba(255,0,0,1)`.
 
-Przykłady traktowane jako referencja:
+---
+
+## 4. Referencje stron i linie specjalne
+
+### 4.1 Referencje w nawiasach
+Fragment `(...)` otrzymuje `.ref`, jeśli wewnątrz nawiasu występuje `str`, `str.` lub `strona` (case-insensitive).
+
+Przykłady:
 - `(str. 123)`
-- `(STR 123)`
+- `(STR 88)`
 - `(zob. strona 45)`
 
-### 3.2 Linie zaczynające się od wzorca `*[cyfra]`
-Każda linia pasująca do wzorca:
-- `* [<liczba>] ...` (spacje opcjonalne),
-otrzymuje klasę `.caretref`, czyli jaśniejszy wariant tekstu.
+### 4.2 Linie pomocnicze `*[n]`
+Linia pasująca do wzorca `^\*\s*\[(\d+)\]\s*(.*)$` jest renderowana jako `.caretref` (jaśniejszy kolor linii).
 
-Ważne:
-- Gwiazdka `*` i nawiasy kwadratowe pozostają widoczne.
-- Reguła działa per linia (po podziale po `\n`).
+Reguły:
+- Gwiazdka i `[n]` pozostają widoczne.
+- Działa per linia po podziale po `\n`.
 
 ---
 
-## 4) Reguły czerwonego koloru dla „Słowa Kluczowe”
+## 5. Reguły dla kolumn „Słowa Kluczowe”
 
-### 4.1 Domyślna reguła dla kolumn słów kluczowych
-W komórkach renderowanych przez `formatKeywordHTML` cała treść otrzymuje `.keyword-red` (czyli jest czerwona), chyba że zadziała wyjątek dla przecinków.
+### 5.1 Arkusz `Słowa Kluczowe` / kolumna `Nazwa`
+Zawsze pełna czerwień (`.keyword-red`) dla całej treści.
 
-### 4.2 Arkusze z neutralnym kolorem przecinka
-W arkuszach:
+### 5.2 Arkusze z neutralnym przecinkiem
+W kolumnie `Słowa Kluczowe` dla arkuszy:
 - `Bestiariusz`
 - `Archetypy`
 - `Psionika`
@@ -87,88 +81,79 @@ W arkuszach:
 - `Pancerze`
 - `Bronie`
 
-w kolumnie `Słowa Kluczowe` przecinek `,` jest zamieniany na:
-- `<span class="keyword-comma">,</span>`
+cała treść jest czerwona, ale każdy przecinek `,` jest zastępowany przez:
+`<span class="keyword-comma">,</span>`
 
-To oznacza:
-- słowa pozostają czerwone,
-- **sam przecinek jest w kolorze podstawowym** (`--text`), nie czerwonym.
+Efekt: słowa czerwone, przecinek w kolorze bazowym tekstu.
 
-### 4.3 Arkusz „Słowa Kluczowe” — pełna czerwień kolumny `Nazwa`
-W arkuszu `Słowa Kluczowe` kolumna `Nazwa` jest zawsze renderowana jako czerwona (reguła „all red”).
-
----
-
-## 5) Specjalna reguła dla arkusza „Słowa Kluczowe Frakcji”
-
-Dotyczy wyłącznie:
-- arkusz: `Słowa Kluczowe Frakcji`
-- kolumna: `Słowo Kluczowe`
-
-Silnik stosuje dedykowaną funkcję `formatFactionKeywordHTML` z regułami tokenowymi:
-
-1. **Domyślnie wszystko jest czerwone** (`.keyword-red`).
-2. Token `-` (myślnik) jest wyjątkiem: **nie jest czerwony**.
-3. Słowo `lub` (niezależnie od wielkości liter) jest wyjątkiem: **nie jest czerwone**.
-4. Specjalny wyjątek nadrzędny: `[ŚWIAT-KUŹNIA]` jest zawsze traktowane jako jeden token i renderowane **w całości na czerwono**.
-   - To obejmuje również myślnik wewnątrz tego tokenu; tutaj myślnik **pozostaje czerwony**.
-5. Jeżeli w tekście jest pogrubienie/kursywa z XLSX, te style są zachowane niezależnie od reguły koloru.
-
-Praktyczna interpretacja:
-- `Adeptus Mechanicus - lub [ŚWIAT-KUŹNIA]` →
-  - `Adeptus Mechanicus` czerwone,
-  - `-` neutralne,
-  - `lub` neutralne (może być kursywą, jeśli tak ustawiono w XLSX),
-  - `[ŚWIAT-KUŹNIA]` całe czerwone.
+### 5.3 Wyjątek: `Pakiety Wyniesienia` / `Słowa Kluczowe`
+Mimo że arkusz figuruje w zbiorze arkuszy „comma-neutral”, `formatDataCellHTML` ma nadrzędny wyjątek:
+- **nie** nakłada globalnego wrappera `.keyword-red`,
+- renderuje komórkę jak zwykły tekst (`getFormattedCellHTML`),
+- czerwony kolor pochodzi tylko z markerów inline (`{{RED}}...{{/RED}}`) przeniesionych z XLSX.
 
 ---
 
-## 6) Kolejność nakładania formatowania (ważne przy projektowaniu XLSX)
+## 6. Reguły specjalne: `Słowa Kluczowe Frakcji` / `Słowo Kluczowe`
 
-1. Najpierw odczytywany jest tekst i ewentualne markery stylu z `cell.h`.
-2. Następnie tekst dzielony jest na segmenty z aktywnymi stylami (`RED`, `B`, `I`).
-3. Potem nakładane są reguły semantyczne DataVault:
-   - referencje `str./str/strona` w nawiasach,
-   - linie `*[n]`,
-   - reguły czerwieni dla słów kluczowych,
-   - wyjątki przecinka / `lub` / `-` / `[ŚWIAT-KUŹNIA]`.
-4. Na końcu renderowany jest HTML z klasami CSS.
-
-Wniosek: nawet jeśli część tekstu jest czerwona z XLSX, reguły domenowe dla kolumn słów kluczowych mogą dodatkowo wymusić/zmienić kolor wybranych tokenów (np. przecinka albo `lub`).
+W `formatFactionKeywordHTML` obowiązuje tokenizacja:
+1. Domyślnie tekst jest czerwony (`.keyword-red`).
+2. Token `-` jest neutralny (bez `.keyword-red`).
+3. Słowo `lub` (dowolna wielkość liter) jest neutralne.
+4. `[ŚWIAT-KUŹNIA]` to wyjątek nadrzędny: cały token zawsze czerwony (wraz z myślnikiem).
+5. Style `{{B}}` i `{{I}}` są zachowane, więc np. neutralne `lub` może pozostać kursywą.
 
 ---
 
-## 7) Reguły dodatkowe wpływające na odbiór tekstu
+## 7. Reguła dla kolumny `Zasięg`
 
-### 7.1 Zasięg (`Zasięg`) i separator `/`
-W kolumnie `Zasięg` separator `/` dostaje klasę `.slash` (jaśniejszy kolor), a wartości po obu stronach pozostają standardowe.
-
-### 7.2 Nowe linie
-Nowe linie z XLSX (lub z `<br>`) są zachowywane i renderowane jako `<br>`.
-
-### 7.3 Clamp (ucięcie po 9 liniach) i podpowiedź
-W długich komórkach system może przyciąć podgląd do 9 linii i dopisać hint (`.clampHint`).
-To nie zmienia semantyki koloru/pogrubienia/kursywy, tylko sposób prezentacji skrótu.
-
-### 7.4 Kolumna `Strona` — kolor i prezentacja
-We wszystkich zakładkach kolumna `Strona` ma kolor tekstu jak referencje `(str.)`, czyli `var(--code)` (ten sam ton co klasa `.ref`).
+Wartość dzielona po `/`:
+- część tekstowa pozostaje standardowa,
+- separator `/` dostaje klasę `.slash` (jaśniejszy kolor).
 
 ---
 
-## 8) Checklista dla osoby tworzącej nowy `Repozytorium.xlsx`
+## 8. Clamp i render wieloliniowy
 
-1. Dla tekstu wymagającego zachowania koloru czerwonego ustawiaj inline `color` w jednym z obsługiwanych formatów (np. `#ff0000`).
-2. Referencje stron zapisuj w nawiasach i z frazami `str.`, `str` lub `strona`.
-3. Gdy potrzebujesz jaśniejszej linii pomocniczej, zaczynaj linię od `*[liczba]`.
-4. W kolumnach `Słowa Kluczowe` pamiętaj o wyjątkach przecinków w wskazanych arkuszach.
-5. W `Słowa Kluczowe Frakcji / Słowo Kluczowe`:
-   - używaj `lub` i `-` świadomie (będą neutralne),
-   - zapis `[ŚWIAT-KUŹNIA]` traktuj jako specjalny token, który ma pozostać w całości czerwony.
-6. Jeżeli zależy Ci na kursywie/pogrubieniu (np. `lub` kursywą), ustaw to w samej komórce XLSX rich text — DataVault to zachowa.
-7. W kolumnie `Strona` utrzymuj wartości jako odwołania do stron — UI renderuje je kolorem `var(--code)` jak `(str.)` oraz wyśrodkowuje w polu o min. szerokości `6ch`.
-8. W kolumnie `Podręcznik` utrzymuj krótkie nazwy źródeł — UI rezerwuje min. `17ch`, wyrównanie do lewej, standardowe łamanie.
+- `formatTextHTML(..., { maxLines })` może ograniczyć render do pierwszych `N` linii.
+- `appendHint` dopina linię z klasą `.clampHint`.
+- Właściwe rozwijanie/zwijanie komórek nie zmienia semantyki formatowania; dotyczy wyłącznie prezentacji.
 
 ---
 
-## 9) Zakres odpowiedzialności dokumentu
-Dokument opisuje wyłącznie reguły formatowania tekstu używane przez DataVault przy renderowaniu danych z `data.json` / `Repozytorium.xlsx`, ze szczególnym naciskiem na reguły koloru czerwonego, referencje `str.*`, jaśniejszy font oraz wyjątki tokenowe.
+## 9. Styl „archiwalny” (`row-old`) i priorytety kolorów
+
+Dla wierszy ze stanem `old` (`row-old`):
+- domyślny kolor tekstu przechodzi na `var(--text-old)`,
+- klasy `.keyword-comma`, `.ref`, `.caretref`, `.slash` dziedziczą ten sam kolor archiwalny,
+- `.inline-strike` używa `text-decoration: line-through` i koloru `var(--text-old)`.
+
+Priorytet koloru dla przekreślenia:
+- `.inline-strike.inline-red` przywraca czerwony (`var(--red)`),
+- dzięki temu kombinacja `RED + S` pozostaje czerwona mimo stylu archiwalnego.
+
+---
+
+## 10. Klasy CSS używane przez formatowanie
+
+- `.inline-red`
+- `.inline-bold`
+- `.inline-italic`
+- `.inline-strike`
+- `.keyword-red`
+- `.keyword-comma`
+- `.ref`
+- `.caretref`
+- `.slash`
+- `.clampHint`
+
+---
+
+## 11. Checklista dla przygotowania `Repozytorium.xlsx`
+
+1. Czerwony kolor, który ma przetrwać do UI, ustawiaj jako realny styl fontu (obsługiwane warianty czerwieni).
+2. Jeśli tekst ma być pogrubiony/kursywą/przekreślony, ustaw to bezpośrednio w rich text komórki.
+3. Referencje stron zapisuj najlepiej w nawiasach z tokenami `str.`, `str`, `strona`.
+4. Linie pomocnicze zaczynaj od `*[liczba]`, jeśli mają być pokazane jaśniejszym tonem.
+5. W `Słowa Kluczowe Frakcji` pamiętaj, że `-` i `lub` są neutralne, a `[ŚWIAT-KUŹNIA]` jest zawsze czerwone.
+6. W `Pakiety Wyniesienia / Słowa Kluczowe` nie licz na automatyczną pełną czerwień — kolor wynika tylko z inline styli z XLSX.
