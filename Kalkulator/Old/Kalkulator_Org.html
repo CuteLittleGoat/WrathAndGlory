@@ -1,9 +1,12 @@
 <!DOCTYPE html>
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="UTF-8">
   <title>Wrath & Glory</title>
-  <style>
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
     /* Ogólne style strony / General page styles */
     body {
       font-family: Arial, sans-serif;
@@ -113,6 +116,7 @@
     }
   </style>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
   <!-- Główny kontener strony / Main page container -->
   <div class="container">
@@ -130,10 +134,10 @@
       <input type="number" id="xpPool" value="100" min="0">
       <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">100</strong></span>
     </div>
-    
+
     <!-- Obszar komunikatów o błędach / Error message area -->
     <div class="error-message" id="errorMessage"> </div>
-    
+
     <!-- Sekcja Atrybutów / Attributes Section -->
     <h2 id="attributesHeader">Atrybuty</h2>
     <table class="attributes-table">
@@ -156,7 +160,7 @@
         <td><input type="number" id="attr_Ogd" value="1" min="1" max="12"></td>
       </tr>
     </table>
-    
+
     <!-- Sekcja Umiejętności / Skills Section -->
     <h2 id="skillsHeader">Umiejętności</h2>
     <table class="skills-table">
@@ -221,7 +225,7 @@
         <td><input type="number" id="skill_Column2Row9" value="0" min="0" max="8"></td>
       </tr>
     </table>
-    
+
     <!-- Sekcja Talentów / Talents Section -->
     <h2 id="talentsHeader">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2>
     <table class="talents-table">
@@ -266,9 +270,10 @@
     <!-- Stopka / Footer -->
     <div class="footer" id="footerText">Wykonane przez Spaczoną Inteligencję</div>
   </div>
-  
+
   <!-- Sekcja JavaScript / JavaScript Section -->
-  <script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script>
     /* Inicjalizacja po załadowaniu strony / Initialization after page load */
     document.addEventListener('DOMContentLoaded', function() {
       // --- Obiekt tłumaczeń dla obsługi wielu języków / Translation object for multi-language support ---

@@ -558,3 +558,11 @@ W `translations.labels` dodano klucz `infoOk` (`PL: OK`, `EN: OK`), używany prz
 
 ### Dlaczego wcześniej pojawiało się „okno przeglądarki”
 Był to natywny efekt funkcji `alert(...)`/`confirm(...)` przeglądarki. Te okna nie podlegają stylowaniu CSS aplikacji. Po przejściu na custom modal komunikaty pozostają w pełni kontrolowane przez kod HTML/CSS modułu.
+
+
+## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
+- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
+- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
+- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
+- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
+- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

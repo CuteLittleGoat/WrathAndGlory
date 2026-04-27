@@ -69,3 +69,8 @@ Infoczytnik shows narrative messages to players (message text, prefix, suffix, o
 - **Message not visible to players** — make sure `Infoczytnik_test.html` is open on the player screen.
 - **No sound** — verify that **Audio** is enabled.
 - **Layout looks different on mobile** — refresh both pages and send again.
+
+
+## Aktualizacja 2026-04-27 – Komentarze PL/EN
+- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
+- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.

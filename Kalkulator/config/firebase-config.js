@@ -1,3 +1,4 @@
+// Plik logiki modułu: konfiguracja, funkcje i obsługa zdarzeń / Module logic file: configuration, functions, and event handling
 // config/firebase-config.js
 // GLOBALNA konfiguracja Firebase dla modułu Kalkulator/TworzeniePostaci
 // (bez "export", żeby działało z firebase-*-compat)

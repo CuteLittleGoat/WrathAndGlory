@@ -1,3 +1,4 @@
+// Plik logiki modułu: konfiguracja, funkcje i obsługa zdarzeń / Module logic file: configuration, functions, and event handling
 const SW_VERSION = "wg-pwa-v3";
 const APP_SHELL_CACHE = `${SW_VERSION}-shell`;
 const APP_SHELL_ASSETS = [

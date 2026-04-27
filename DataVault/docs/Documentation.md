@@ -439,7 +439,7 @@ Kolumna `Przykłady` w **Tabela Rozmiarów** ma jawne `text-align: left`.
 ## 4) JS: stałe, stan aplikacji i helpery
 
 ### 4.1 Stałe
-- `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy): `Bestiariusz`, `Archetypy`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`, `Pakiety Wyniesienia`.  
+- `KEYWORD_SHEETS_COMMA_NEUTRAL` — arkusze, gdzie przecinki w „Słowa Kluczowe” są neutralne (kolor podstawowy): `Bestiariusz`, `Archetypy`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`, `Pakiety Wyniesienia`.
   Uwaga implementacyjna: dla `Pakiety Wyniesienia / Słowa Kluczowe` działa dodatkowy wyjątek w `formatDataCellHTML`, który pomija globalne wymuszanie czerwieni i oddaje renderowanie do zwykłego `getFormattedCellHTML` (czyli tylko style inline z XLSX).
 - `KEYWORD_SHEET_ALL_RED` — arkusz `Słowa Kluczowe`, gdzie kolumna `Nazwa` zawsze jest czerwona.
 - `ADMIN_ONLY_SHEETS` — zestaw arkuszy widocznych tylko w trybie admina (`Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, `Notatki`).
@@ -900,3 +900,11 @@ Aby uniknąć opisów skrótowych, poniżej literalne wartości:
 
 ## 23) Uzupełnienie audytowe — katalog funkcji krytycznych
 W `app.js` funkcje kluczowe dla rekonstrukcji 1:1 to m.in.: normalizacja (`norm`, `normaliseDB`), budowa konfiguracji widoku (`createSheetViewState`, `applyDefaultViewForSheet`, `applyFullViewForSheet`), formatowanie inline (`formatInlineHTML`, `formatTextHTML`, `formatKeywordHTML`), render (`buildTableSkeleton`, `renderBody`, `renderRow`), clamp (`measureRenderedLines`, `updateClampableHints`), filtrowanie/sortowanie (`passesFilters`, `sortRows`, `compareByColumn`), parsowanie XLSX (`getCellTextWithMarkers`, `extractSheetRowsWithFormatting`, `buildDataJsonFromSheets`).
+
+
+## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
+- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
+- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
+- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
+- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
+- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

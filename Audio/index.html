@@ -1,5 +1,7 @@
 <!DOCTYPE html>
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
-  <style>
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
     :root {
       --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
              radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
@@ -532,9 +535,11 @@
     }
   </style>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
   <div class="page">
-    <header class="admin-only">
+    <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
+<header class="admin-only">
       <h1 id="headerTitle">Audio — panel dźwięków</h1>
       <p id="headerSubtitle">Odtwarzanie SFX, zarządzanie listami „Ulubione” oraz synchronizacja przez Firebase.</p>
       <div class="language-switcher">
@@ -550,7 +555,8 @@
       </div>
     </header>
 
-    <section class="toolbar admin-only">
+    <!-- Wydzielona sekcja funkcjonalna / Dedicated functional section -->
+<section class="toolbar admin-only">
       <div class="left">
         <button class="btn" id="reloadManifest">Wczytaj manifest</button>
       </div>
@@ -634,7 +640,8 @@
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="config/firebase-config.js"></script>
   <script type="module">
     import {

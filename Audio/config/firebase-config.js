@@ -1,3 +1,4 @@
+// Plik logiki modułu: konfiguracja, funkcje i obsługa zdarzeń / Module logic file: configuration, functions, and event handling
 // Skopiuj ten plik jako: config/firebase-config.js (bez ".template")
 // Następnie wklej swój firebaseConfig z:
 // Firebase Console → Project settings → Your apps (Web) → Firebase SDK snippet (Config)

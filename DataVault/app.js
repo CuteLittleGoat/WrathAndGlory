@@ -1,3 +1,4 @@
+// Plik logiki modułu: konfiguracja, funkcje i obsługa zdarzeń / Module logic file: configuration, functions, and event handling
 /* Administratum Data Vault — bez Tabulatora (zero zależności UI).
    Źródło danych: data.json (GitHub Pages) lub aktualizacja z Repozytorium.xlsx (admin).
 */

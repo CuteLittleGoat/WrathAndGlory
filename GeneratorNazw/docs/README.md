@@ -55,3 +55,8 @@ To edit them:
 2. For a category entry, update the `name` (PL) and `nameEn` (EN) fields.
 3. For option entries, update the `name` (PL) and `nameEn` (EN) fields.
 4. Save the file and refresh the page.
+
+
+## Aktualizacja 2026-04-27 – Komentarze PL/EN
+- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
+- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.

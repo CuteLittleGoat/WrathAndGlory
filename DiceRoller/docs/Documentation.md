@@ -138,9 +138,9 @@ Dla tego modułu **nie dotyczy**:
 Poniższa sekcja zastępuje ogólne opisy typu „ciemne tło / zielone akcenty” konkretnymi parametrami:
 
 ### 11.1. Kolory i efekty
-- Tło strony (`--bg`) to 3 warstwy:  
-  `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),`  
-  `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),`  
+- Tło strony (`--bg`) to 3 warstwy:
+  `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),`
+  `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),`
   `#031605`.
 - Tło panelu: `#000`.
 - Główna ramka i akcent: `#16c60c`.
@@ -176,3 +176,11 @@ Poniższa sekcja zastępuje ogólne opisy typu „ciemne tło / zielone akcenty�
 - `resetState()` – resetuje formularz i panel wyników do wartości domyślnych.
 - `updateLanguage(lang)` – podmienia wszystkie etykiety PL/EN i resetuje stan.
 - `handleRoll()` – orkiestracja całego rzutu: walidacja, animacja, losowanie, obliczenia, render.
+
+
+## Zmiany techniczne 2026-04-27 – Komentarze PL/EN
+- Dodano nagłówkowe komentarze dwujęzyczne (PL/EN) w plikach `.html`, `.js` i `.css` modułu.
+- W plikach HTML dodano komentarze sekcyjne przed kluczowymi znacznikami (`head`, `body`, `main`, `section`, `header`, `nav`, `footer`, `script`, `style`) – jeśli występują w pliku.
+- W plikach JS dodano komentarz opisujący rolę warstwy logiki (konfiguracja, funkcje, zdarzenia).
+- W plikach CSS dodano komentarz opisujący rolę warstwy stylów (układ, kolory, responsywność).
+- Zmiana ma charakter dokumentacyjny i nie modyfikuje logiki wykonawczej modułu.

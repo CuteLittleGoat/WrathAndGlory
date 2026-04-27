@@ -265,3 +265,8 @@ After deployment, a full PWA reinstall is recommended on devices (remove app/sho
 - Added `width="1366"` and `height="768"` attributes to the logo image in `Main/index.html`.
 - Added explicit `height: auto` to the `.logo` CSS rule.
 - Result: the browser knows the logo aspect ratio before the bitmap is downloaded and reserves the correct height, preventing startup button shift/layout jump.
+
+
+## Aktualizacja 2026-04-27 – Komentarze PL/EN
+- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
+- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.

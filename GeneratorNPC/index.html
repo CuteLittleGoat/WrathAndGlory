@@ -1,13 +1,17 @@
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <!doctype html>
 <html lang="pl">
-  <head>
+  <!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Generator NPC</title>
     <link rel="stylesheet" href="style.css" />
   </head>
-  <body>
-    <header class="topbar">
+  <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
+<body>
+    <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
+<header class="topbar">
       <div class="brand">
         <h1 data-i18n="pageTitle">Generator NPC</h1>
       </div>
@@ -23,9 +27,11 @@
       </div>
     </header>
 
-    <main class="layout">
+    <!-- Główna zawartość modułu / Main module content -->
+<main class="layout">
       <aside class="sidebar">
-        <section class="panel panel-data-source">
+        <!-- Wydzielona sekcja funkcjonalna / Dedicated functional section -->
+<section class="panel panel-data-source">
           <h2 data-i18n="dataSourceTitle">Źródło danych</h2>
           <p class="text-muted data-source-text">
             <span data-i18n="dataSourcePrefix">Dane są pobierane z pliku</span>
@@ -364,7 +370,8 @@
       <p id="trait-description" data-i18n="traitPopoverDescription">Kliknij tag, aby zobaczyć opis cechy.</p>
     </aside>
 
-    <script src="config/firebase-config.js"></script>
+    <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script src="config/firebase-config.js"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
       import {
@@ -2647,7 +2654,8 @@
               <meta charset="utf-8" />
               <meta name="viewport" content="width=device-width, initial-scale=1" />
               <title>${escapeHtml(name)} — ${escapeHtml(cardLabels.titleSuffix)}</title>
-              <style>
+              <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
                 * { box-sizing: border-box; }
                 body { margin: 0; background: #fff; color: #111; font-family: "Times New Roman", "Liberation Serif", serif; }
                 .card { width: min(760px, 95vw); margin: 24px auto; border: 1px solid #111; }

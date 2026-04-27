@@ -1,14 +1,18 @@
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <!doctype html>
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Administratum Data Vault</title>
   <link rel="stylesheet" href="style.css"/>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
   <div class="app">
-    <header class="topbar">
+    <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
+<header class="topbar">
       <div class="brand">
         <div class="sigil">⟦⟧</div>
         <div>
@@ -43,7 +47,8 @@
       </div>
     </header>
 
-    <main class="main">
+    <!-- Główna zawartość modułu / Main module content -->
+<main class="main">
       <aside class="panel">
         <div class="panelHeader">
           <span class="caret">▸</span><span class="panelTitle" data-i18n="filtersTitle">FILTRY</span>
@@ -72,8 +77,10 @@
 
       </aside>
 
-      <section class="workspace">
-        <nav class="tabs" id="tabs"></nav>
+      <!-- Wydzielona sekcja funkcjonalna / Dedicated functional section -->
+<section class="workspace">
+        <!-- Sekcja nawigacji i przełączania widoków / Navigation and view-switching section -->
+<nav class="tabs" id="tabs"></nav>
         <div class="tableWrap" id="tableWrap">
           <div class="emptyState">
             <div class="emptyTitle" data-i18n="emptyTitle">Brak danych</div>
@@ -105,7 +112,8 @@
 
   <div id="filterMenu" class="filterMenu" aria-hidden="true"></div>
 
-  <script src="xlsxCanonicalParser.js"></script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script src="xlsxCanonicalParser.js"></script>
   <script src="app.js"></script>
 
   <!-- XLSX opcjonalnie (legacy path) -->

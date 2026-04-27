@@ -88,3 +88,8 @@ Use this button when you need to refresh app data from the source XLSX file.
 - Use short search phrases (ability name, keyword, etc.).
 - Use row selection + **Compare** for quick decisions.
 - Click **Full view** when done to return to the complete list.
+
+
+## Aktualizacja 2026-04-27 – Komentarze PL/EN
+- **PL:** W plikach HTML, JS i CSS tego modułu dodano dwujęzyczne komentarze (polski/angielski), aby łatwiej zrozumieć układ ekranu, sekcje i logikę działania podczas korzystania z modułu.
+- **EN:** Bilingual comments (Polish/English) were added to this module’s HTML, JS, and CSS files to make screen layout, sections, and behavior easier to understand while using the module.

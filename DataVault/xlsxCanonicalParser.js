@@ -1,3 +1,4 @@
+// Plik logiki modułu: konfiguracja, funkcje i obsługa zdarzeń / Module logic file: configuration, functions, and event handling
 (function(global){
   const MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
   const REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships";
