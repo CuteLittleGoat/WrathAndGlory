@@ -300,3 +300,124 @@ Minimalny, kompletny zakres zmian po stronie Firebase:
 5. **Nie tworzyć historii wersji** — zawsze nadpisywać `current`.
 
 To dokładnie realizuje model „zapis/wczyt jednego stanu” i pozostaje spójne z wzorcem już użytym w module Infoczytnik.
+
+## 10) Aktualizacja analizy po utworzeniu kolekcji `character_builder/current` (2026-04-27)
+
+### Prompt użytkownika (ten etap)
+> Przeczytaj i rozbuduj analizę Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md
+>
+> Przygotowałem nową kolekcję i dokument w Firebase.
+> Screen jest w Analizy/Firebase.jpg
+>
+> collection=character_builder
+> document=current
+>
+> field=schemaVersion
+> type=int64
+> value=1
+>
+> Czy to wystarczy, żeby Firebase zadziałał?
+>
+> Moje aktualne Rules
+> 
+> rules_version = '2';
+>
+> service cloud.firestore {
+>   match /databases/{database}/documents {
+>
+>     // TESTOWO: pełny odczyt i zapis dla Data Slate
+>     match /dataslate/{document=**} {
+>       allow read, write: if true;
+>     }
+>
+>     // TESTOWO: pełny odczyt i zapis dla kreatora postaci
+>     match /character_builder/{document=**} {
+>       allow read, write: if true;
+>     }
+>
+>     // Wszystko inne zablokowane
+>     match /{document=**} {
+>       allow read, write: if false;
+>     }
+>   }
+> }
+
+### Weryfikacja tego, co już jest gotowe
+Na podstawie opisu i zrzutu `Analizy/Firebase.jpg`:
+- kolekcja `character_builder` istnieje,
+- dokument `current` istnieje,
+- pole `schemaVersion: 1 (int64)` istnieje,
+- reguły dopuszczają odczyt i zapis dla całej ścieżki `character_builder/**`.
+
+To oznacza, że **po stronie Firestore baza jest już przygotowana na poziomie minimalnym do pierwszych testów zapisu i odczytu**.
+
+### Czy to wystarczy, żeby „Firebase zadziałał”?
+
+Krótka odpowiedź: **tak, do testowego działania Save/Load — wystarczy**.
+
+Dłuższa odpowiedź: 
+- samo istnienie dokumentu i otwartych rules pozwoli frontowi wykonać `set()` i `get()` na `character_builder/current`,
+- ale pełna funkcjonalność zależy jeszcze od kodu w `TworzeniePostaci.html` (serializacja stanu formularza, mapowanie pól, modal potwierdzenia, obsługa komunikatów).
+
+Czyli:
+- **Firestore: gotowe na start testów**, 
+- **moduł UI/logika: nadal do wdrożenia** (zgodnie z sekcjami 4–7 tej analizy).
+
+### Czy obecne Rules są poprawne?
+Tak, dla etapu testowego są poprawne i spójne z Twoim celem:
+- `character_builder/**` ma pełny read/write,
+- `dataslate/**` ma pełny read/write,
+- wszystko inne zablokowane.
+
+To jest dobry układ „na czas integracji”, bo ograniczasz otwarty dostęp tylko do 2 kolekcji zamiast całej bazy.
+
+### Co warto dodać przed przejściem na produkcję
+
+Obecne reguły są **testowe**. Przed produkcją rekomendowane są 2 kroki:
+
+1. **Zawężenie ścieżki** do jednego dokumentu:
+   - zamiast `match /character_builder/{document=**}`
+   - użyć `match /character_builder/current`.
+
+2. **Walidacja schematu** (chociaż podstawowa):
+   - `schemaVersion == 1`,
+   - `lang` w `['pl', 'en']`,
+   - typy dla pól XP i walidacji,
+   - `talents` jako tablica 10 elementów.
+
+Minimalny wariant „bezpieczniejszy, ale prosty”:
+
+```firestore
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /dataslate/{document=**} {
+      allow read, write: if true;
+    }
+
+    match /character_builder/current {
+      allow read, write: if request.resource.data.schemaVersion == 1;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+```
+
+### Checklist „co musi być, żeby test Save/Load przeszedł”
+
+1. Firestore ma dokument `character_builder/current` (✅ już jest).
+2. Rules pozwalają na read/write tej ścieżki (✅ już jest).
+3. Front inicjalizuje Firebase poprawnym configiem.
+4. Przycisk „Zapisz” zapisuje cały stan formularza do `character_builder/current`.
+5. Przycisk „Wczytaj” pobiera dokument i odtwarza pola + uruchamia `recalcXP()`.
+6. Modal potwierdzeń jest zależny od języka (`pl/en`) i zastępuje `confirm()`.
+
+Dopiero komplet punktów 1–6 oznacza pełne „działa zgodnie z wymaganiem użytkowym”.
+
+### Decyzja końcowa (na dziś)
+- **TAK**: Twoja obecna konfiguracja Firestore (kolekcja+dokument+`schemaVersion`+rules) jest wystarczająca, żeby zacząć integrację i wykonać testy zapisu/odczytu.
+- **NIE**: to nie jest jeszcze „całość rozwiązania”, bo bez zmian w kodzie modułu nie będzie realnego zapisu/wczytania stanu z UI.
