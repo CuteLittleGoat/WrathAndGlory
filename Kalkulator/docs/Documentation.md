@@ -579,3 +579,8 @@ Był to natywny efekt funkcji `alert(...)`/`confirm(...)` przeglądarki. Te okna
 ### Uzasadnienie
 - Korekta zgodności z właściwym odwołaniem do podręcznika: zasada Drzewa Nauki jest opisana na stronie 26.
 - Zmiana dotyczy wyłącznie warstwy tekstowej (i18n PL), bez wpływu na logikę walidacji i obliczeń XP.
+
+## 1.3. `TworzeniePostaci.html` – stabilizacja modala potwierdzenia i skalowanie `Modal_Icon.png`
+- W stylach inline sekcji `confirm-modal` zmieniono kontener `.confirm-modal__media` na stałą wysokość `192px` (`height` + `min-height`), aby wymusić rezerwację miejsca na grafikę jeszcze przed pełnym wczytaniem bitmapy.
+- Klasa `.confirm-modal__image` została ustawiona na `height: 192px`, `width: auto`, `max-width: 100%`, `object-fit: contain`; to zachowuje proporcje nowego pliku `Modal_Icon.png` i utrzymuje docelową wysokość zgodną z poprzednią ikoną referencyjną `Modal_Icon_old.png`.
+- W znaczniku `<img id="confirmModalImage">` dodano atrybuty `width="1980"` i `height="2048"` (natywny rozmiar nowego pliku) oraz `decoding="async"`, aby przeglądarka mogła wcześniej obliczyć proporcje i utrzymać stabilny layout modala podczas ładowania obrazu.
