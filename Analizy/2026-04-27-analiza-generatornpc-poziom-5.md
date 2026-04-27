@@ -176,3 +176,49 @@ Najlepszy wariant to **parametryzacja liczby poziomów stałą (`CARD_LEVEL_COLU
 - gridem CSS w widoku karty.
 
 Taki wariant realizuje dzisiejsze wymaganie 1:1 i minimalizuje koszt przyszłych rozszerzeń.
+
+---
+
+## 9) Zrealizowane zmiany w kodzie (wdrożenie na podstawie tej analizy)
+
+### Plik `GeneratorNPC/index.html`
+
+- Linia (sekcja stałych)  
+  **Było:** `const FAVORITES_STORAGE_KEY = "generatorNpcFavorites";`  
+  **Jest (dodano wcześniej):** `const CARD_LEVEL_COLUMNS = 5;`
+
+- Linia (parsowanie `Zagrożenie`)  
+  **Było:** `threatRaw.match(/[A-Za-zĄĆĘŁŃÓŚŹŻ]/g)?.slice(0, 4) ||`  
+  **Jest:** `threatRaw.match(/[A-Za-zĄĆĘŁŃÓŚŹŻ]/g)?.slice(0, CARD_LEVEL_COLUMNS) ||`
+
+- Linia (fallback `split`)  
+  **Było:** `threatRaw.split("").filter(Boolean).slice(0, 4);`  
+  **Jest:** `threatRaw.split("").filter(Boolean).slice(0, CARD_LEVEL_COLUMNS);`
+
+- Linia (dopełnianie pustych komórek)  
+  **Było:** `while (threatLetters.length < 4) {`  
+  **Jest:** `while (threatLetters.length < CARD_LEVEL_COLUMNS) {`
+
+- Linia (CSS siatki wiersza poziomów)  
+  **Było:** `.row { display: grid; grid-template-columns: 140px repeat(4, 1fr); border-bottom: 1px solid #111; }`  
+  **Jest:** `.row { display: grid; grid-template-columns: 140px repeat(${CARD_LEVEL_COLUMNS}, 1fr); border-bottom: 1px solid #111; }`
+
+- Linie (nagłówek poziomów karty)  
+  **Było:** statyczne komórki `<div class="cell">1</div> ... <div class="cell">4</div>`  
+  **Jest:** `${levelColumns.map((level) => \`<div class="cell">\${level}</div>\`).join("")}`
+
+### Plik `GeneratorNPC/docs/Documentation.md`
+
+- Sekcja „8.1. Stałe i stan aplikacji”  
+  **Było:** brak stałej opisującej liczbę kolumn poziomu karty.  
+  **Jest:** dodana stała `CARD_LEVEL_COLUMNS = 5` wraz z technicznym opisem powiązania z parserem `Zagrożenie`, renderowaniem nagłówka i CSS grid.
+
+- Sekcja funkcji karty drukowanej  
+  **Było:** opis `buildPrintableCardHTML` bez formalizacji mechanizmu 5 kolumn poziomu.  
+  **Jest:** dodany opis działania mechanizmu `CARD_LEVEL_COLUMNS = 5` (limit, fallback `?`, dopełnianie pustych komórek, dynamiczny nagłówek 1..5).
+
+### Plik `GeneratorNPC/docs/README.md`
+
+- Sekcja instrukcji użytkownika (PL/EN)  
+  **Było:** brak explicite opisu pięciu kolumn `Poziom` na wygenerowanej karcie.  
+  **Jest:** dodane kroki wyjaśniające, że karta zawsze renderuje kolumny `1..5`, a krótsze wartości `Zagrożenie` pozostawiają puste komórki.

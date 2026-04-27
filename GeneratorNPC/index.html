@@ -800,6 +800,8 @@
 
       const CLAMP_LINES = 9;
       const MAX_NUMERIC_INPUT_LENGTH = 25;
+      // Stała określająca liczbę kolumn poziomu na karcie do druku / Constant defining number of level columns on the printable card
+      const CARD_LEVEL_COLUMNS = 5;
       const FAVORITES_STORAGE_KEY = "generatorNpcFavorites";
       const FAVORITES_COLLECTION = "generatorNpc";
       const FAVORITES_DOC_ID = "favorites";
@@ -2458,10 +2460,13 @@
         const name = toDisplayString(getRecordValue(record, "Nazwa"));
         const keywords = toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
         const threatRaw = toDisplayString(getRecordValue(record, "Zagrożenie"));
+        // Tworzymy dynamiczną listę numerów poziomu 1..CARD_LEVEL_COLUMNS / Build a dynamic level index list from 1 to CARD_LEVEL_COLUMNS
+        const levelColumns = Array.from({ length: CARD_LEVEL_COLUMNS }, (_, index) => index + 1);
         const threatLetters =
-          threatRaw.match(/[A-Za-zĄĆĘŁŃÓŚŹŻ]/g)?.slice(0, 4) ||
-          threatRaw.split("").filter(Boolean).slice(0, 4);
-        while (threatLetters.length < 4) {
+          threatRaw.match(/[A-Za-zĄĆĘŁŃÓŚŹŻ]/g)?.slice(0, CARD_LEVEL_COLUMNS) ||
+          threatRaw.split("").filter(Boolean).slice(0, CARD_LEVEL_COLUMNS);
+        // Dopełniamy brakujące komórki zagrożenia do pełnej szerokości karty / Fill missing threat cells to keep full card width
+        while (threatLetters.length < CARD_LEVEL_COLUMNS) {
           threatLetters.push("");
         }
 
@@ -2660,7 +2665,7 @@
                 body { margin: 0; background: #fff; color: #111; font-family: "Times New Roman", "Liberation Serif", serif; }
                 .card { width: min(760px, 95vw); margin: 24px auto; border: 1px solid #111; }
                 .title { background: #2c2c2c; color: #fff; text-align: center; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; padding: 8px 12px; }
-                .row { display: grid; grid-template-columns: 140px repeat(4, 1fr); border-bottom: 1px solid #111; }
+                .row { display: grid; grid-template-columns: 140px repeat(${CARD_LEVEL_COLUMNS}, 1fr); border-bottom: 1px solid #111; }
                 .row .cell { padding: 6px 8px; border-right: 1px solid #111; text-align: center; }
                 .row .cell:last-child { border-right: none; }
                 .row .label { text-align: left; font-weight: 700; }
@@ -2707,10 +2712,7 @@
                 <div class="title">${escapeHtml(name)}</div>
                 <div class="row">
                   <div class="cell label">${escapeHtml(cardLabels.levelLabel)}</div>
-                  <div class="cell">1</div>
-                  <div class="cell">2</div>
-                  <div class="cell">3</div>
-                  <div class="cell">4</div>
+                  ${levelColumns.map((level) => `<div class="cell">${level}</div>`).join("")}
                 </div>
                 <div class="row">
                   <div class="cell label">${escapeHtml(cardLabels.threatLabel)}</div>
