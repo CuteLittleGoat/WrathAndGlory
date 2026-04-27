@@ -307,3 +307,29 @@ For **Save/Load** to work correctly:
 ### 🇬🇧 What changed
 1. Fixed the confirmation dialog image path for Save/Load actions.
 2. The modal now loads the icon from local `Modal_Icon.png` relative to `TworzeniePostaci.html`, so the image is shown instead of fallback text.
+
+
+### Aktualizacja 2026-04-27 – zapis/odczyt bez systemowych okien przeglądarki
+- Po kliknięciu **Zapisz** i **Wczytaj** nie pojawiają się już systemowe okna przeglądarki (typu „alert”).
+- Komunikaty o powodzeniu i błędach pojawiają się teraz w tym samym oknie modułu, w tym samym stylu co potwierdzenie.
+- Ikona w oknie potwierdzenia korzysta z pliku `Kalkulator/Modal_Icon.png` i jest pokazywana w pełnym kadrze (bez przycinania).
+- Rozmiar okna potwierdzenia jest stały — miejsce na ikonę jest zarezerwowane, więc okno nie „skacze” i nie rozszerza się przy ładowaniu grafiki.
+
+#### Jak działa to dla użytkownika (PL)
+1. Kliknij **Zapisz** albo **Wczytaj**.
+2. Zobaczysz okno potwierdzenia z ikoną i przyciskami **Tak/Nie**.
+3. Po wykonaniu akcji zobaczysz drugie okno z informacją o wyniku i przyciskiem **OK**.
+4. Cały proces odbywa się wewnątrz aplikacji, bez dodatkowych systemowych popupów przeglądarki.
+
+
+### Update 2026-04-27 – save/load without browser-native popups
+- Clicking **Save** and **Load** no longer shows browser-native popups (like `alert`).
+- Success and error messages are now shown in the same in-app modal style as confirmations.
+- The confirmation icon uses `Kalkulator/Modal_Icon.png` and is displayed fully (no cropping).
+- The confirmation dialog keeps a fixed size — image space is reserved, so the modal does not jump or expand while the icon loads.
+
+#### User flow (EN)
+1. Click **Save** or **Load**.
+2. A confirmation dialog appears with the icon and **Yes/No** buttons.
+3. After the action, a second dialog appears with the result and an **OK** button.
+4. The whole interaction stays inside the app, without browser-native popup windows.

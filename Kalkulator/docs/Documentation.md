@@ -530,3 +530,31 @@ Błąd jest wyświetlany po wejściu do bloku `catch` w `saveStateToFirebase()`,
 3. W Firebase Console sprawdź, czy po kliknięciu zapisu dokument `character_builder/current` aktualizuje pole `savedAt`.
 4. W Project settings porównaj 1:1 wartości z `firebase-config.js`.
 5. W Firestore Rules upewnij się, że reguła jest opublikowana i aktywna dla właściwej bazy.
+
+
+## Aktualizacja 2026-04-27 – modal zapisu/odczytu i render ikony
+
+### Zakres zmian
+W `TworzeniePostaci.html` usunięto użycie systemowych okien `alert(...)` podczas zapisu/odczytu Firebase i zastąpiono je własnym modalem opartym o istniejący komponent `#confirmModal`.
+
+### Implementacja techniczna
+1. **Jedno źródło UI dla potwierdzeń i informacji**
+   - `showConfirmationModal(config)` nadal obsługuje pytania Tak/Nie.
+   - Dodano `showInfoModal(config)`, które uruchamia ten sam modal w trybie jednoprzyciskowym (`OK`) poprzez `singleAction: true`.
+2. **Eliminacja popupów przeglądarki**
+   - `saveStateToFirebase()` i `loadStateFromFirebase()` nie wywołują już `alert(...)`.
+   - Sukces/błąd jest prezentowany przez `await showInfoModal(...)`.
+   - Potwierdzenie zmiany języka nie korzysta już z `confirm(...)`; zamiast tego używa `showConfirmationModal(...)`.
+3. **Ikona `Modal_Icon.png` bez przycinania i bez skoków layoutu**
+   - Dodano kontener `.confirm-modal__media` o stałej wysokości `180px`, zarezerwowany zawsze.
+   - Obrazek `#confirmModalImage` ma `object-fit: contain` i jest renderowany w pełnym kadrze.
+   - Przy braku obrazu stosowana jest klasa `.is-hidden` (`visibility:hidden`), co zachowuje stałe miejsce w układzie.
+4. **Stały rozmiar okna**
+   - Dialog otrzymał `min-height: 420px` i układ `flex` kolumnowy.
+   - `.confirm-modal__actions` używa `margin-top: auto`, więc przyciski pozostają stabilnie w dolnej części dialogu.
+
+### Konfiguracja tłumaczeń
+W `translations.labels` dodano klucz `infoOk` (`PL: OK`, `EN: OK`), używany przez tryb informacyjny modala.
+
+### Dlaczego wcześniej pojawiało się „okno przeglądarki”
+Był to natywny efekt funkcji `alert(...)`/`confirm(...)` przeglądarki. Te okna nie podlegają stylowaniu CSS aplikacji. Po przejściu na custom modal komunikaty pozostają w pełni kontrolowane przez kod HTML/CSS modułu.
