@@ -475,7 +475,7 @@ Dodane funkcje:
 Wdrożono własny modal potwierdzeń (`#confirmModal`) z:
 - dynamicznym tytułem i treścią,
 - przyciskami `Tak/Nie` lub `Yes/No` zależnie od tłumaczeń,
-- opcjonalnym obrazem (`modalImageUrl`, obecnie `Skull.png`).
+- opcjonalnym obrazem (`modalImageUrl`, obecnie `/Kalkulator/Modal_Icon.png`).
 
 Funkcje modalne:
 - `toggleConfirmModal(forceOpen, config)`
@@ -502,3 +502,26 @@ Aby funkcja działała:
 1. Musi być dostępny poprawny `window.firebaseConfig`.
 2. Firestore Rules muszą dopuszczać read/write dla `character_builder/current`.
 3. Przeglądarka musi mieć dostęp do CDN Firebase (`gstatic`).
+
+## 8.1. Aktualizacja 2026-04-27 (modal zapisu/wczytania + diagnostyka zapisu Firebase)
+
+### Zmiany UI modala potwierdzenia
+- W `TworzeniePostaci.html` zmieniono źródło obrazka modala z `Skull.png` na `/Kalkulator/Modal_Icon.png`.
+- Kolejność przycisków w modalu została zamieniona: najpierw **Tak**, potem **Nie**.
+- Przycisk **Tak** otrzymał czerwony wariant (`#confirmModalYesButton`) z dedykowanym `:hover`.
+- Ustawiono stałą wysokość obrazka modala (`height: 180px`), dzięki czemu dialog nie „podskakuje” i nie zmienia wysokości po dociągnięciu obrazu.
+
+### Diagnostyka błędu „Nie udało się zapisać stanu postaci.”
+Błąd jest wyświetlany po wejściu do bloku `catch` w `saveStateToFirebase()`, więc realna przyczyna jest w wyjątku rzucanym przez Firestore. Najczęstsze przyczyny do sprawdzenia:
+1. Firestore Database nie jest aktywna w projekcie `projectId` z `Kalkulator/config/firebase-config.js`.
+2. Rules opublikowane w konsoli nie obejmują dokładnie ścieżki `character_builder/current` (lub opublikowano inne rules niż oczekiwane).
+3. Aplikacja działa pod inną domeną niż dopuszczona w konfiguracji projektu Firebase (hosting testowy / lokalny).
+4. Po stronie sieci: blokada połączenia do `firestore.googleapis.com` lub błąd CORS/proxy.
+5. Konfiguracja web app (`apiKey`, `authDomain`, `projectId`, `appId`) wskazuje inny projekt niż ten, w którym tworzona była kolekcja.
+
+### Szybki check techniczny (krok po kroku)
+1. Otwórz `TworzeniePostaci.html`, uruchom próbę zapisu.
+2. W DevTools > Console sprawdź dokładny kod błędu (`permission-denied`, `failed-precondition`, `unavailable`, `not-found` itd.).
+3. W Firebase Console sprawdź, czy po kliknięciu zapisu dokument `character_builder/current` aktualizuje pole `savedAt`.
+4. W Project settings porównaj 1:1 wartości z `firebase-config.js`.
+5. W Firestore Rules upewnij się, że reguła jest opublikowana i aktywna dla właściwej bazy.

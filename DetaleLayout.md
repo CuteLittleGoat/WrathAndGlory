@@ -785,3 +785,12 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Zmieniono położenie przycisku:
   - przeniesienie z prawej kolumny siatki `.actions` do osobnego kontenera `.secretCtaWrap`,
   - wyrównanie do prawej (`justify-content: flex-end`) pod główną siatką nawigacji.
+
+## Aktualizacja 2026-04-27 – modal potwierdzenia (Kalkulator/TworzeniePostaci)
+- Zmieniono asset grafiki modala na `/Kalkulator/Modal_Icon.png`.
+- Dla przycisku potwierdzającego (`Tak` / `Yes`) ustawiono czerwony wariant kolorystyczny:
+  - obramowanie: `rgba(190,40,40,.75)`
+  - tło: `rgba(110,20,20,.7)`
+  - hover: `rgba(150,28,28,.8)`
+  - tekst: `#ffdada`
+- Utrzymano ciemne tło modala i zielony motyw ramki, aby zachować spójność stylistyczną modułu.

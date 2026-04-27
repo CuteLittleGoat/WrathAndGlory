@@ -210,11 +210,11 @@
     }
     .confirm-modal__image{
       width:100%;
+      height:180px;
       border:1px solid var(--b2);
       border-radius:8px;
       margin:8px 0 12px;
       object-fit:cover;
-      max-height:180px;
       display:none;
     }
     .confirm-modal__image.is-visible{display:block;}
@@ -232,6 +232,14 @@
       background:var(--panel2);
       color:var(--text);
       cursor:pointer;
+    }
+    #confirmModalYesButton{
+      border-color:rgba(190,40,40,.75);
+      background:rgba(110,20,20,.7);
+      color:#ffdada;
+    }
+    #confirmModalYesButton:hover{
+      background:rgba(150,28,28,.8);
     }
 
   </style>
@@ -421,8 +429,8 @@
       <p id="confirmModalMessage"></p>
       <img id="confirmModalImage" class="confirm-modal__image" alt="modal image">
       <div class="confirm-modal__actions">
-        <button type="button" id="confirmModalNoButton">Nie</button>
         <button type="button" id="confirmModalYesButton">Tak</button>
+        <button type="button" id="confirmModalNoButton">Nie</button>
       </div>
     </div>
   </div>
@@ -560,7 +568,7 @@
       ];
 
       const maxAttributeKeys = ['attribute_1','attribute_2','attribute_3','attribute_4','attribute_5','attribute_6','attribute_7','attribute_8'];
-      const modalImageUrl = 'Skull.png';
+      const modalImageUrl = '/Kalkulator/Modal_Icon.png';
       const firebaseContext = initializeFirebaseContext();
 
 
