@@ -650,3 +650,70 @@ Bo to pole zostało utworzone ręcznie i wygląda na to, że zapis z modułu nie
    - czy doszły nowe pola,
    - czy `savedAt` zmienił się na aktualny timestamp.
 4. Jeżeli dalej brak pól — wklej dokładny błąd z konsoli; to pozwoli wskazać precyzyjnie, czy problem jest w rules, środowisku uruchomienia czy połączeniu.
+
+## 14) Aktualizacja analizy po błędach ładowania SDK Firebase na GitHub Pages (2026-04-27)
+
+### Prompt użytkownika (ten etap)
+> Przeczytaj i zaktualizuj analizę Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md
+>
+> 1. Przy wejściu na stronę https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html konsola pokazuje błędy:
+>
+> https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore-compat.js
+> https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js
+> Wczytanie się nie powiodło dla elementu „script” ze źródłem „https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js”.
+> https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore-compat.js
+> Wczytanie się nie powiodło dla elementu „script” ze źródłem „https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore-compat.js”.
+>
+> Błąd: https://cutelittlegoat.github.io/favicon.ico jest związany z czymś innym (Analizy/analiza-favicon-kalkulator-2026-04-27.md)
+>
+> 2. Po nieudanej próbie zapisu w konsoli przeglądarki nie pojawia się nic nowego.
+>
+> Przygotowałem dwa screeny:
+> Analizy/1.jpg
+> Analizy/2.jpg
+
+### Nowe ustalenia na podstawie screenów `Analizy/1.jpg` i `Analizy/2.jpg`
+
+1. **Problem występuje wcześniej niż zapis do Firestore**.
+   Na wejściu strony nie ładują się dwa kluczowe skrypty:
+   - `firebase-app-compat.js`
+   - `firebase-firestore-compat.js`
+
+   Skutek: obiekt `firebase` nie jest dostępny w runtime dla modułu Kalkulator.
+
+2. **To tłumaczy brak nowych błędów po kliknięciu „Zapisz”**.
+   W obecnej implementacji `saveStateToFirebase()` gdy `firebaseContext.ready === false`, kod pokazuje tylko `alert("Nie udało się zapisać stanu postaci.")` i kończy działanie (`return`), bez `console.error(...)`.
+   Dlatego po kliknięciu „Zapisz” nie pojawia się nowy wpis w konsoli — to jest zgodne z aktualną logiką aplikacji.
+
+3. **Błąd `favicon.ico 404` jest niezależny** i nie wpływa na zapisywanie danych do Firestore (zgodnie z Twoją notatką i osobną analizą).
+
+### Najbardziej prawdopodobna przyczyna źródłowa
+
+Najbardziej prawdopodobny root cause: **na wersji opublikowanej w GitHub Pages jest różnica względem kodu lokalnego (deploy mismatch), albo przeglądarka/proxy zwraca 404 dla CDN Firebase**, przez co SDK nie ładuje się przed inicjalizacją.
+
+Uwaga diagnostyczna: na screenshotach komunikat ostrzegawczy pokazuje URL z fragmentem `firebasesjs` (z dodatkowym `s`), co sugeruje możliwy literowy błąd w finalnym atrybucie `src` po stronie wersji, którą faktycznie serwuje GitHub Pages. To trzeba potwierdzić bezpośrednio w źródle strony online (`View Source`) i porównać 1:1 z repo.
+
+### Co sprawdzić krok po kroku (konkretnie)
+
+1. **Sprawdź finalny HTML na produkcji (GitHub Pages)**
+   - Otwórz `View Source` dla:
+     `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/TworzeniePostaci.html`
+   - Potwierdź dokładne wartości trzech tagów:
+     - `https://www.gstatic.com/firebasejs/8.10.1/firebase-app-compat.js`
+     - `https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore-compat.js`
+     - `config/firebase-config.js`
+   - Jeśli w source jest inna ścieżka (np. literówka), popraw i wykonaj redeploy.
+
+2. **W zakładce Network kliknij na każdy request do `gstatic`**
+   - sprawdź **Request URL** i **Status**,
+   - jeżeli status 404 i URL ma literówkę, to błąd w HTML,
+   - jeżeli URL jest poprawny, ale dalej 404/blocked, sprawdź czy nie działa filtr sieciowy/proxy/rozszerzenie blokujące.
+
+3. **Potwierdź, że po udanym załadowaniu SDK pojawia się aktywność Firestore**
+   - po kliknięciu „Zapisz” powinny pojawić się requesty `firestore.googleapis.com` w Network,
+   - w dokumencie `character_builder/current` powinny dojść pola (`savedAt`, `xpPool`, `attributes`, `skills`, `talents`, `formSnapshot`, itd.).
+
+### Wniosek końcowy (na teraz)
+
+- Obecny problem z zapisem **nie wygląda na błąd Rules ani strukturę dokumentu Firestore**, tylko na **błąd ładowania SDK Firebase w przeglądarce** na etapie startu strony.
+- Dopóki `firebase-app-compat.js` i `firebase-firestore-compat.js` nie ładują się poprawnie, zapis/wczyt nie zadziała niezależnie od tego, że Firestore i Rules są skonfigurowane.
