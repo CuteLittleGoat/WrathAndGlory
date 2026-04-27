@@ -28,6 +28,11 @@ W tej zmianie zaktualizowano wyłącznie polskie etykiety interfejsu (bez zmiany
 - Dodano nowy przycisk otwierający modal z tabelą maksimów ras. Wymaganie koloru zostało spełnione przez użycie tego samego stylu co przyciski `Instrukcja`/`Strona Główna` (brak czerwieni).
 - Dodano dynamiczny renderer tabeli ras z danymi osadzonymi bezpośrednio w kodzie, wraz z obsługą przełączania PL/EN.
 
+## 1.2.1. Domyślna wartość `Szybkość` = 6 (start + reset)
+- `TworzeniePostaci.html`: input `#attr_Speed` ma w HTML `value="6"`, dzięki czemu pierwsze wejście na stronę ustawia Szybkość na 6.
+- `resetAll()` resetuje wszystkie atrybuty do 1 w pętli, a następnie wykonuje jawne nadpisanie `document.getElementById('attr_Speed').value = 6;`.
+- Logika `recalcXP()` pozostaje bez zmian: używa bieżącej wartości wpisanej przez użytkownika, waliduje ją do zakresu `1..12`, aktualizuje koszt i klasy wizualne.
+
 ## 2. Zależności zewnętrzne i assety
 ### 2.1. Fonty
 - Wszystkie strony (`index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`) korzystają z lokalnego stosu fontów, bez zewnętrznych CDN:
@@ -252,7 +257,7 @@ const skillCosts = {
   - Aktualizuje etykietę przycisku i tytuł modala maksimów ras; jeśli modal jest otwarty, renderuje tabelę ponownie dla nowego języka.
    - Ustawia `xpRemainingLabel` z wartością `100` w znaczniku `<strong id="xpRemaining">`.
 2. **`resetAll()`**
-   - Ustawia domyślne wartości: `xpPool=100`, atrybuty=1 (w tym `attr_Speed`), umiejętności=0, talenty=0.
+   - Ustawia domyślne wartości: `xpPool=100`, atrybuty=1 dla `attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, a następnie nadpisuje `attr_Speed=6`; umiejętności=0, talenty=0.
    - Czyści nazwy talentów.
    - Wywołuje `recalcXP()`.
 3. **`recalcXP()`**
