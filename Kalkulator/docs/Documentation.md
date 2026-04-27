@@ -255,9 +255,9 @@ const skillCosts = {
    - Podmienia teksty w UI (`pageTitle`, nagłówki tabel, przycisk manuala, stopka).
    - Aktualizuje etykiety atrybutów (1..8) i umiejętności w obu kolumnach.
   - Aktualizuje etykietę przycisku i tytuł modala maksimów ras; jeśli modal jest otwarty, renderuje tabelę ponownie dla nowego języka.
-   - Ustawia `xpRemainingLabel` z wartością `100` w znaczniku `<strong id="xpRemaining">`.
+   - Ustawia `xpRemainingLabel` z wartością `155` w znaczniku `<strong id="xpRemaining">`.
 2. **`resetAll()`**
-   - Ustawia domyślne wartości: `xpPool=100`, atrybuty=1 dla `attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, a następnie nadpisuje `attr_Speed=6`; umiejętności=0, talenty=0.
+   - Ustawia domyślne wartości: `xpPool=155`, atrybuty=1 dla `attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, a następnie nadpisuje `attr_Speed=6`; umiejętności=0, talenty=0.
    - Czyści nazwy talentów.
    - Wywołuje `recalcXP()`.
 3. **`recalcXP()`**
@@ -304,7 +304,7 @@ const skillCosts = {
 
 ### 6.7. Domyślne wartości po starcie
 - `currentLanguage = 'pl'`.
-- `xpPool = 100`.
+- `xpPool = 155`.
 - Atrybuty = 1, umiejętności = 0, talenty = 0.
 - `updateLanguage()` + `recalcXP()` uruchamiane po `DOMContentLoaded`.
 

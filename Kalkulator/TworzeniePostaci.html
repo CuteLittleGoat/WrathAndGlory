@@ -188,8 +188,8 @@
     <!-- Sekcja XP / XP Section -->
     <div class="xp-section">
       <label id="xpPoolLabel">Pula PD do wydania:</label>
-      <input type="number" id="xpPool" value="100" min="0">
-      <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">100</strong></span>
+      <input type="number" id="xpPool" value="155" min="0">
+      <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">155</strong></span>
     </div>
 
     <!-- Obszar komunikatów o błędach / Error message area -->
@@ -463,7 +463,7 @@
         const t = translations[lang];
         document.getElementById('pageTitle').innerText = t.labels.pageTitle;
         document.getElementById('xpPoolLabel').innerText = t.labels.xpPool;
-        document.getElementById('xpRemainingLabel').innerHTML = `${t.labels.remainingXP} <strong id="xpRemaining">100</strong>`;
+        document.getElementById('xpRemainingLabel').innerHTML = `${t.labels.remainingXP} <strong id="xpRemaining">155</strong>`;
         document.getElementById('attributesHeader').innerText = t.labels.attributesHeader;
         document.getElementById('skillsHeader').innerText = t.labels.skillsHeader;
         document.getElementById('talentsHeader').innerText = t.labels.talentsHeader;
@@ -540,7 +540,7 @@
 
       // --- Funkcja resetująca wszystkie pola do wartości domyślnych / Function to reset all fields to default values ---
       function resetAll() {
-        document.getElementById('xpPool').value = 100;
+        document.getElementById('xpPool').value = 155;
         ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach(id => {
           document.getElementById(`attr_${id}`).value = 1;
         });
@@ -738,7 +738,7 @@
       });
 
       // --- Inicjalizacja domyślnych wartości / Initialization of default values ---
-      attachDefaultOnBlur('#xpPool', 100);
+      attachDefaultOnBlur('#xpPool', 155);
       attachDefaultOnBlur("input[id^='attr_']", 1);
       attachDefaultOnBlur("input[id^='skill_Column']", 0);
       attachDefaultOnBlur("input[id^='talent_cost_']", 0);
