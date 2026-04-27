@@ -717,3 +717,53 @@ Uwaga diagnostyczna: na screenshotach komunikat ostrzegawczy pokazuje URL z frag
 
 - Obecny problem z zapisem **nie wygląda na błąd Rules ani strukturę dokumentu Firestore**, tylko na **błąd ładowania SDK Firebase w przeglądarce** na etapie startu strony.
 - Dopóki `firebase-app-compat.js` i `firebase-firestore-compat.js` nie ładują się poprawnie, zapis/wczyt nie zadziała niezależnie od tego, że Firestore i Rules są skonfigurowane.
+
+---
+
+## Aktualizacja analizy po wdrożeniu (2026-04-27)
+
+### Prompt użytkownika (kontekst tej aktualizacji)
+> Przeczytaj i zaktualizuj analizę Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md
+>
+> 1. Zmieniłem fragment kodu ... Po tej zmianie stan postaci się prawidłowo zapisuje i wczytuje.
+> 2. Zaktualizuj dokumentecję o sposób naprawy.
+> 3. Po zapisie/odczycie pojawia się okno przeglądarki ...
+> 4. W oknie do potwierdzenia pojawia się zniekształcona (przycięta) ikona ...
+
+### Wnioski po wdrożeniu
+1. Przyczyną „okna przeglądarki” po zapisie/odczycie były natywne wywołania `alert(...)` (oraz wcześniej `confirm(...)` przy zmianie języka).
+2. Rozwiązaniem jest użycie wyłącznie custom modala (`#confirmModal`) zarówno do potwierdzeń (Tak/Nie), jak i komunikatów końcowych (OK).
+3. Przycięcie ikony wynikało z `object-fit: cover`; zmiana na `object-fit: contain` i stały kontener o zarezerwowanej wysokości eliminują problem.
+4. Aby modal nie rozszerzał się po załadowaniu obrazu, dialog ma stałą minimalną wysokość, a sekcja grafiki jest renderowana stale.
+
+### Sekcja zmian w kodzie (przed/po)
+
+#### Plik: `Kalkulator/TworzeniePostaci.html`
+- Linia (sekcja CSS obrazka modala)
+  - Było: `.confirm-modal__image{ ... object-fit:cover; display:none; }`
+  - Jest: `.confirm-modal__image{ ... object-fit:contain; display:block; }`
+- Linia (widoczność obrazka)
+  - Było: `.confirm-modal__image.is-visible{display:block;}`
+  - Jest: `.confirm-modal__image.is-hidden{visibility:hidden;}`
+- Linia (struktura HTML modala)
+  - Było: `<img id="confirmModalImage" class="confirm-modal__image" alt="modal image">`
+  - Jest: `<div class="confirm-modal__media"><img id="confirmModalImage" class="confirm-modal__image is-hidden" alt="modal image"></div>`
+- Linia (komunikaty po zapisie/odczycie)
+  - Było: `alert(t.errors.saveSuccess);`, `alert(t.errors.loadError);` itd.
+  - Jest: `await showInfoModal({ ... message: t.errors.saveSuccess ... });` oraz analogicznie dla błędów i wczytywania.
+- Linia (potwierdzenie zmiany języka)
+  - Było: `const confirmed = confirm(translations[currentLanguage].errors.languageChangeWarning);`
+  - Jest: `const confirmed = await showConfirmationModal({ title: t.labels.pageTitle, message: t.errors.languageChangeWarning, imageUrl: modalImageUrl });`
+- Linia (nowa funkcja)
+  - Było: brak funkcji trybu informacyjnego.
+  - Jest: dodano `function showInfoModal(config) { ... }` używaną do komunikatów końcowych bez natywnych popupów.
+
+#### Plik: `Kalkulator/docs/README.md`
+- Dodano sekcję użytkową PL/EN:
+  - Było: brak opisu eliminacji natywnych popupów i zasad wyświetlania ikony.
+  - Jest: sekcje „Aktualizacja 2026-04-27 – zapis/odczyt bez systemowych okien przeglądarki” oraz „Update 2026-04-27 – save/load without browser-native popups”.
+
+#### Plik: `Kalkulator/docs/Documentation.md`
+- Dodano sekcję techniczną:
+  - Było: brak opisu implementacji `showInfoModal`, rezerwy miejsca na ikonę i usunięcia `alert/confirm`.
+  - Jest: sekcja „Aktualizacja 2026-04-27 – modal zapisu/odczytu i render ikony” z opisem implementacji, przyczyn i efektu.

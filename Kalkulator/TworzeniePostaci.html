@@ -196,11 +196,14 @@
     .confirm-modal.is-open{display:flex;}
     .confirm-modal__dialog{
       width:min(520px, 95vw);
+      min-height:420px;
       background:var(--panel);
       border:1px solid var(--b);
       border-radius:10px;
       box-shadow:var(--glow);
       padding:14px;
+      display:flex;
+      flex-direction:column;
     }
     .confirm-modal__title{
       margin:0 0 8px;
@@ -208,21 +211,31 @@
       text-transform:uppercase;
       letter-spacing:.08em;
     }
-    .confirm-modal__image{
+    .confirm-modal__media{
       width:100%;
       height:180px;
       border:1px solid var(--b2);
       border-radius:8px;
       margin:8px 0 12px;
-      object-fit:cover;
-      display:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.35);
+      overflow:hidden;
+      flex-shrink:0;
     }
-    .confirm-modal__image.is-visible{display:block;}
+    .confirm-modal__image{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      display:block;
+    }
+    .confirm-modal__image.is-hidden{visibility:hidden;}
     .confirm-modal__actions{
       display:flex;
       justify-content:flex-end;
       gap:8px;
-      margin-top:12px;
+      margin-top:auto;
     }
     .confirm-modal__actions button{
       width:auto;
@@ -427,9 +440,11 @@
     <div class="confirm-modal__dialog">
       <h2 class="confirm-modal__title" id="confirmModalTitle">Potwierdzenie</h2>
       <p id="confirmModalMessage"></p>
-      <img id="confirmModalImage" class="confirm-modal__image" alt="modal image">
+      <div class="confirm-modal__media">
+        <img id="confirmModalImage" class="confirm-modal__image is-hidden" alt="modal image">
+      </div>
       <div class="confirm-modal__actions">
-        <button type="button" id="confirmModalYesButton">Tak</button>
+        <button type="button" id="confirmModalYesButton">OK</button>
         <button type="button" id="confirmModalNoButton">Nie</button>
       </div>
     </div>
@@ -467,7 +482,8 @@
             confirmSaveMessage: 'Czy na pewno chcesz zapisać aktualny stan postaci?',
             confirmLoadTitle: 'Potwierdzenie wczytania',
             confirmLoadMessage: 'Czy na pewno chcesz wczytać zapisany stan postaci?',
-            modalImageAlt: 'Ilustracja potwierdzenia'
+            modalImageAlt: 'Ilustracja potwierdzenia',
+            infoOk: 'OK'
           },
           attributes: ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Szybkość'],
           races: {
@@ -489,8 +505,7 @@
           errors: {
             tooMuchXP: 'Przekroczono dostępną pulę PD!',
             treeOfLearning: 'Niezgodność z zasadą Drzewa Nauki (str. 25)',
-            languageChangeWarning: 'Zmiana języka spowoduje zresetowanie wszystkich danych. Czy na pewno chcesz kontynuować?'
-            ,
+            languageChangeWarning: 'Zmiana języka spowoduje zresetowanie wszystkich danych. Czy na pewno chcesz kontynuować?',
             saveSuccess: 'Stan postaci został zapisany.',
             saveError: 'Nie udało się zapisać stanu postaci.',
             loadSuccess: 'Stan postaci został wczytany.',
@@ -520,7 +535,8 @@
             confirmSaveMessage: 'Do you want to save the current character state?',
             confirmLoadTitle: 'Load confirmation',
             confirmLoadMessage: 'Do you want to load the saved character state?',
-            modalImageAlt: 'Confirmation image'
+            modalImageAlt: 'Confirmation image',
+            infoOk: 'OK'
           },
           attributes: ['S', 'T', 'A', 'I', 'Will', 'Int', 'Fell', 'Speed'],
           races: {
@@ -825,17 +841,22 @@
         const title = document.getElementById('confirmModalTitle');
         const message = document.getElementById('confirmModalMessage');
         const image = document.getElementById('confirmModalImage');
+        const yesButton = document.getElementById('confirmModalYesButton');
+        const noButton = document.getElementById('confirmModalNoButton');
         const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !modal.classList.contains('is-open');
 
         if (shouldOpen) {
           title.innerText = config.title || '';
           message.innerText = config.message || '';
+          yesButton.innerText = config.yesText || translations[currentLanguage].labels.confirmYes;
+          noButton.innerText = config.noText || translations[currentLanguage].labels.confirmNo;
+          noButton.style.display = config.singleAction ? 'none' : '';
           if (config.imageUrl) {
             image.src = config.imageUrl;
-            image.classList.add('is-visible');
+            image.classList.remove('is-hidden');
           } else {
             image.removeAttribute('src');
-            image.classList.remove('is-visible');
+            image.classList.add('is-hidden');
           }
         }
 
@@ -887,6 +908,46 @@
         });
       }
 
+      function showInfoModal(config) {
+        return new Promise((resolve) => {
+          const okButton = document.getElementById('confirmModalYesButton');
+          const modal = document.getElementById('confirmModal');
+
+          const cleanup = () => {
+            okButton.removeEventListener('click', onOk);
+            modal.removeEventListener('click', onOverlay);
+            document.removeEventListener('keydown', onEsc);
+            toggleConfirmModal(false);
+          };
+
+          const onOk = () => {
+            cleanup();
+            resolve();
+          };
+
+          const onOverlay = (event) => {
+            if (event.target === modal) {
+              onOk();
+            }
+          };
+
+          const onEsc = (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+              onOk();
+            }
+          };
+
+          okButton.addEventListener('click', onOk);
+          modal.addEventListener('click', onOverlay);
+          document.addEventListener('keydown', onEsc);
+          toggleConfirmModal(true, {
+            ...config,
+            singleAction: true,
+            yesText: translations[currentLanguage].labels.infoOk
+          });
+        });
+      }
+
       async function saveStateToFirebase() {
         const t = translations[currentLanguage];
         const confirmed = await showConfirmationModal({
@@ -896,16 +957,28 @@
         });
         if (!confirmed) return;
         if (!firebaseContext.ready) {
-          alert(t.errors.saveError);
+          await showInfoModal({
+            title: t.labels.confirmSaveTitle,
+            message: t.errors.saveError,
+            imageUrl: modalImageUrl
+          });
           return;
         }
         try {
           const payload = collectCurrentState();
           await firebaseContext.characterRef.set(payload);
-          alert(t.errors.saveSuccess);
+          await showInfoModal({
+            title: t.labels.confirmSaveTitle,
+            message: t.errors.saveSuccess,
+            imageUrl: modalImageUrl
+          });
         } catch (error) {
           console.error(error);
-          alert(t.errors.saveError);
+          await showInfoModal({
+            title: t.labels.confirmSaveTitle,
+            message: t.errors.saveError,
+            imageUrl: modalImageUrl
+          });
         }
       }
 
@@ -918,20 +991,36 @@
         });
         if (!confirmed) return;
         if (!firebaseContext.ready) {
-          alert(t.errors.loadError);
+          await showInfoModal({
+            title: t.labels.confirmLoadTitle,
+            message: t.errors.loadError,
+            imageUrl: modalImageUrl
+          });
           return;
         }
         try {
           const snapshot = await firebaseContext.characterRef.get();
           if (snapshot.exists) {
             applySavedState(snapshot.data());
-            alert(translations[currentLanguage].errors.loadSuccess);
+            await showInfoModal({
+              title: t.labels.confirmLoadTitle,
+              message: translations[currentLanguage].errors.loadSuccess,
+              imageUrl: modalImageUrl
+            });
           } else {
-            alert(translations[currentLanguage].errors.loadError);
+            await showInfoModal({
+              title: t.labels.confirmLoadTitle,
+              message: translations[currentLanguage].errors.loadError,
+              imageUrl: modalImageUrl
+            });
           }
         } catch (error) {
           console.error(error);
-          alert(translations[currentLanguage].errors.loadError);
+          await showInfoModal({
+            title: t.labels.confirmLoadTitle,
+            message: translations[currentLanguage].errors.loadError,
+            imageUrl: modalImageUrl
+          });
         }
       }
 
@@ -1000,9 +1089,14 @@
       }
 
       // --- Logika przełącznika języka z ostrzeżeniem / Language switcher logic with warning ---
-      document.getElementById('languageSelect').addEventListener('change', function(e) {
+      document.getElementById('languageSelect').addEventListener('change', async function(e) {
         const newLang = e.target.value;
-        const confirmed = confirm(translations[currentLanguage].errors.languageChangeWarning);
+        const t = translations[currentLanguage];
+        const confirmed = await showConfirmationModal({
+          title: t.labels.pageTitle,
+          message: t.errors.languageChangeWarning,
+          imageUrl: modalImageUrl
+        });
         if (confirmed) {
           updateLanguage(newLang);
           resetAll();
