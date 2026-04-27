@@ -1,151 +1,103 @@
-# Audio — instrukcja użytkownika / User guide
-
-Moduł **Audio** służy do odtwarzania SFX z pliku `AudioManifest.xlsx`, zarządzania listami „Ulubione” oraz konfiguracji „Głównego widoku” (nadrzędna lista odtwarzania). Panel administracyjny jest dostępny po dodaniu `?admin=1` do adresu.
-
----
+# Audio — instrukcja użytkownika / User Guide
 
 ## 🇵🇱 Instrukcja dla użytkownika (PL)
 
-### Wymagania
-- Projekt Firebase z włączonym Firestore.
-- Firebase dla **Audio** nie wymaga oddzielnego konta Google od modułu **Infoczytnik** — oba moduły mogą działać w tym samym koncie/projekcie, o ile konfiguracje i reguły są rozdzielone. Oddzielne projekty to tylko opcja organizacyjna, nie wymóg techniczny.
-- Serwer statyczny (np. GitHub Pages, Firebase Hosting, lokalny serwer HTTP), aby poprawnie pobierać plik `AudioManifest.xlsx`.
-- Dostęp do internetu (Firebase SDK + XLSX CDN).
+### Do czego służy moduł
+Moduł **Audio** służy do szybkiego odtwarzania efektów dźwiękowych (SFX) podczas sesji. Możesz korzystać z gotowego widoku gracza albo z rozszerzonego widoku prowadzącego (admina), w którym ustawiasz listy i kolejność dźwięków.
 
-### Instalacja i uruchomienie
-1. Skopiuj `config/firebase-config.template.js` do `config/firebase-config.js`.
-2. Wklej konfigurację Firebase (Web) z konsoli: **Project settings → Your apps → Firebase SDK snippet (Config)**.
-3. Upewnij się, że Firestore ma włączone reguły zapisu/odczytu dla dokumentu `audio/favorites` (zawiera ustawienia ulubionych i głównego widoku).
-4. Upewnij się, że plik `AudioManifest.xlsx` znajduje się w katalogu `Audio/`.
-5. Uruchom stronę `Audio/index.html` na serwerze statycznym.
-6. Tytuł karty przeglądarki powinien brzmieć: **Kozie Audio**.
+### Jak otworzyć moduł
+1. Otwórz `Audio/index.html`.
+2. Jeśli chcesz zwykły widok odtwarzania, pozostaw adres bez zmian.
+3. Jeśli chcesz pełny panel zarządzania, dopisz w adresie: `?admin=1`.
 
-### Tryby działania
-- **Widok użytkownika** (domyślny): widoczne są tylko dwa panele — siatka odtwarzania dźwięków z „Głównego widoku”/„Ulubionych” oraz panel nawigacji list.
-- Na szerokich ekranach (desktop) siatka SFX jest renderowana w **4 kolumnach**; na mniejszych ekranach automatycznie redukuje liczbę kolumn (2, a następnie 1).
-- **Widok admina**: pełna konfiguracja (wczytywanie manifestu, zarządzanie listami, układ „Głównego widoku”) **oraz** te same dwa panele z widoku użytkownika jako podgląd, który odświeża się i działa tak samo jak u użytkownika.
-- Przełącznik języka:
-  - w panelu admina znajduje się w nagłówku (domyślnie **Polski**),
-  - w widoku użytkownika znajduje się nad listą SFX i zmienia tylko etykiety **Nawigacja**, **WIDOK GŁÓWNY** oraz **Listy ulubionych**.
+### Co zobaczysz w widoku użytkownika (bez `?admin=1`)
+- Panel **Nawigacja** (po lewej) z wyborem listy.
+- Panel **dźwięków** (po prawej) z przyciskami odtwarzania.
+- Przełącznik języka dla opisów panelu.
 
-### Jak korzystać (użytkownik)
-1. Otwórz `Audio/index.html` (bez parametru `?admin=1`) — zobaczysz tylko panel odtwarzania i panel nawigacji.
-2. W panelu bocznym wybierz **Widok główny** lub jedną z list „Ulubione”.
-3. Kliknij nazwę SFX lub tag pod nazwą, aby włączyć/wyłączyć dźwięk (możesz odtwarzać kilka jednocześnie).
-4. (Opcjonalnie) po nazwie SFX może pojawić się alias w nawiasie — wyświetlany jaśniejszą czcionką.
-5. Pod nazwą SFX zobaczysz tag folderu (ułatwia orientację) — podczas odtwarzania nazwa i tag świecą na czerwono.
-6. Użyj suwaka głośności na karcie SFX: środek to standard (0%), lewo to wyciszenie (-100%), prawo to wzmocnienie (+100%).
+### Jak odtwarzać dźwięki (widok użytkownika)
+1. W panelu nawigacji kliknij **Widok główny** albo wybraną listę ulubionych.
+2. Kliknij nazwę dźwięku, aby go uruchomić.
+3. Kliknij ponownie, aby zatrzymać.
+4. Możesz uruchomić kilka dźwięków równocześnie.
+5. Suwakiem na kafelku ustaw głośność konkretnego dźwięku.
 
-### Jak korzystać (administrator)
-1. Otwórz `Audio/index.html?admin=1`.
-2. Kliknij **Wczytaj manifest**, aby załadować listę SFX.
-3. Użyj belki **Filtry tagów** do zawężenia listy SFX (wpływa tylko na panel admina).
-4. (Opcjonalnie) skorzystaj z pola **Szukaj tagu...** oraz przycisku **Filtruj ▾** — otworzy się okienko z wyszukiwarką tagów, checkboxami oraz opcjami zaznacz/odznacz wszystko.
-5. Wyszukuj SFX w polu „Szukaj SFX...” (pole znajduje się pod panelami tagów).
-6. Obok pola wyszukiwania użyj przycisku **Wyczyść wszystkie aliasy**, aby globalnie skasować aliasy ze wszystkich SFX (również z niewidocznych aktualnie przez filtry tagów lub brak obecności na listach). Operacja dotyczy tylko danych modułu Audio (`audio/favorites` lub `audio.settings`) i wymaga potwierdzenia w oknie dialogowym.
-7. Kliknij **Odtwórz**, aby odsłuchać dźwięk. W trakcie odtwarzania przycisk zmienia się na **Zatrzymaj**.
-8. Kliknij **Nowa lista ulubionych**, aby utworzyć własną listę.
-9. W karcie SFX wybierz z listy **Widok Główny** lub konkretną listę ulubionych i kliknij **Dodaj do listy**:
-   - **Widok Główny** dodaje SFX do panelu „Główny widok”.
-   - Wybrana lista ulubionych dodaje SFX do tej listy.
-10. W panelu „Ulubione” możesz:
+### Co oznaczają elementy na kafelku dźwięku
+- **Nazwa dźwięku** – główny przycisk odtwarzania.
+- **Tag pod nazwą** – informacja, z jakiej grupy/folderu pochodzi dźwięk.
+- **Alias w nawiasie** (jeśli ustawiony) – dodatkowa pomocnicza nazwa.
+- **Suwak głośności** – indywidualna głośność tego dźwięku.
+
+### Jak korzystać z panelu administratora (`?admin=1`)
+1. Kliknij **Wczytaj manifest**, aby załadować bazę dźwięków.
+2. Użyj filtrów tagów, aby zawęzić listę widocznych SFX.
+3. W polu wyszukiwarki wpisz fragment nazwy, aby szybciej znaleźć konkretny dźwięk.
+4. Kliknij **Nowa lista ulubionych**, aby utworzyć nową listę.
+5. Przy wybranym dźwięku wybierz listę docelową i kliknij **Dodaj do listy**.
+6. W sekcji list możesz:
    - zmieniać kolejność list,
-   - zmieniać nazwę listy,
-   - usuwać listę,
-   - przesuwać i usuwać elementy w liście,
-   - odtwarzać zapisane SFX.
-11. W karcie SFX w panelu admina możesz wpisać **alias** (opcjonalny). Alias zapisuje się w ustawieniach, wyświetla się w nawiasie po nazwie SFX w widoku głównym i na listach ulubionych jaśniejszym kolorem. Przycisk **Wyczyść** znajduje się bezpośrednio pod polem aliasu (nad **Odtwórz**) i usuwa alias.
-    - Alias jest zapisywany w Firestore (lub `localStorage`) i po ponownym uruchomieniu modułu powinien pojawić się zarówno w panelu admina, jak i w widoku użytkownika.
-    - Usunięcie aliasu (ręczne wyczyszczenie pola lub przycisk **Wyczyść**) nadpisuje całą mapę `aliases` w dokumencie Firestore, dzięki czemu skasowany alias nie wraca po synchronizacji czasu rzeczywistego.
-12. W panelu „Główny widok” (na dole admina) kliknij nazwę SFX lub tag, aby odsłuchać dźwięk; głośność ustawiasz suwakiem na karcie.
+   - zmieniać nazwy list,
+   - usuwać listy,
+   - zmieniać kolejność dźwięków w liście.
 
-### Dane wejściowe (AudioManifest.xlsx)
-- Kolumny:
-  - **NazwaSampla** – nazwa przycisku w UI.
-  - **NazwaPliku** – nazwa pliku audio.
-  - **LinkDoFolderu** – URL do folderu z plikami.
-- Dodatkowe kolumny (np. z kolorami) są ignorowane.
-- Link do pliku jest budowany jako: `LinkDoFolderu + "/" + NazwaPliku`.
-- Grupowanie odbywa się **wyłącznie w obrębie jednego folderu**:
-  - Jeżeli nazwy różnią się **samą cyfrą** na końcu (`Assault Weapon1`, `Assault Weapon2` lub `Rats 1`, `Rats 2`), UI pokazuje **jeden** przycisk `Assault Weapon (2)` / `Rats (2)`.
-  - Jeżeli cyfra występuje **w środku** (`Blaster 1 Burst`, `Blaster 2 Burst`), UI tworzy **oddzielne** przyciski: `Blaster 1 Burst` i `Blaster 2 Burst`.
-  - Kliknięcie zgrupowanego przycisku losuje dźwięk z grupy.
-  - W nazwie pliku pojawia się dodatkowy sufiks `(+N)` z liczbą wariantów.
-- Tagi do filtrowania są tworzone z folderów ścieżki `LinkDoFolderu` z pominięciem fragmentów: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**. Znaki `%20` są zamieniane na spacje, a końcowe spacje usuwane.
+### Przyciski specjalne
+- **Wyczyść wszystkie aliasy** – usuwa wszystkie aliasy dźwięków jednocześnie (po potwierdzeniu).
+- **Odtwórz / Zatrzymaj** – szybki odsłuch pojedynczego dźwięku z panelu admina.
+- **Wyczyść** (przy polu aliasu) – usuwa alias tylko dla jednego dźwięku.
+
+### Dobre praktyki podczas sesji
+- Przed sesją przygotuj 1 listę „główną” i 2–3 listy tematyczne.
+- Nadawaj aliasy dźwiękom trudnym do rozpoznania po samej nazwie.
+- Ustaw głośność każdego kluczowego dźwięku wcześniej, żeby nie poprawiać tego w trakcie sceny.
 
 ---
 
 ## 🇬🇧 User instructions (EN)
 
-### Requirements
-- A Firebase project with Firestore enabled.
-- The **Audio** Firebase does not require a separate Google account from **Infoczytnik** — both modules can run under the same account/project as long as configuration and rules are separated. Separate projects are an organizational option, not a technical requirement.
-- A static web server (e.g. GitHub Pages, Firebase Hosting, local HTTP server) so `AudioManifest.xlsx` can be fetched.
-- Internet access (Firebase SDK + XLSX CDN).
+### What this module is for
+The **Audio** module lets you quickly play sound effects (SFX) during sessions. You can use a simple player view or the extended admin view to manage lists and ordering.
 
-### Installation & Launch
-1. Copy `config/firebase-config.template.js` to `config/firebase-config.js`.
-2. Paste the Firebase (Web) config from the console: **Project settings → Your apps → Firebase SDK snippet (Config)**.
-3. Ensure Firestore rules allow read/write on `audio/favorites` (stores favorites and main view settings).
-4. Make sure `AudioManifest.xlsx` is located in the `Audio/` folder.
-5. Serve and open `Audio/index.html` from a static server.
-6. The browser tab title should read: **Kozie Audio**.
+### How to open the module
+1. Open `Audio/index.html`.
+2. For standard playback mode, keep the URL as is.
+3. For the full management panel, append: `?admin=1`.
 
-### Modes
-- **User view** (default): only two panels are visible — the playback grid (Main View/Favorites) and the navigation panel.
-- On wide screens (desktop), the SFX grid renders in **4 columns**; on smaller screens it automatically drops to 2 and then 1 column.
-- **Admin view**: full configuration (manifest reload, list management, Main View order) **plus** the same two user panels shown as a preview that refreshes and behaves exactly like the user view.
-- Language switchers:
-  - in admin mode it sits in the header (default language: **Polish**),
-  - in user mode it appears above the playback panel and only changes **Navigation**, **MAIN VIEW**, and **Favorite lists** labels.
+### What you see in user view (without `?admin=1`)
+- **Navigation** panel (left) to choose a list.
+- **Sound grid** (right) with playable SFX tiles.
+- Language switch for panel labels.
 
-### How to use (user)
-1. Open `Audio/index.html` (without `?admin=1`) — only the playback panel and navigation panel are shown.
-2. In the side panel select **Main view** or one of the Favorites lists.
-3. Click the SFX name or the tag under it to toggle playback (multiple sounds can play simultaneously).
-4. (Optional) an alias can appear in parentheses after the SFX name, shown in a lighter tone.
-5. The folder tag is shown under each SFX name for orientation — while playing, both the name and tag turn red.
-6. Use the volume slider on the card: center is normal (0%), left mutes (-100%), right boosts (+100%).
+### How to play sounds (user view)
+1. In navigation, click **Main view** or a selected favorites list.
+2. Click a sound name to start it.
+3. Click again to stop it.
+4. Multiple sounds can play at the same time.
+5. Use the tile slider to adjust volume for that sound.
 
-### How to use (admin)
-1. Open `Audio/index.html?admin=1`.
-2. Click **Wczytaj manifest** to load SFX.
-3. Use the **Filtry tagów** bar to filter the admin SFX list (does not affect user panels).
-4. (Optional) use the **Szukaj tagu...** field and the **Filtruj ▾** button — it opens a popup with tag search, checkboxes, and select/deselect all options.
-5. Search SFX in the “Szukaj SFX...” field (located below the tag panel).
-6. Next to the search field, use **Wyczyść wszystkie aliasy** to globally remove aliases from all SFX (including those currently hidden by tag filters or not present in visible lists). The operation is scoped only to Audio module data (`audio/favorites` or `audio.settings`) and requires confirmation in a dialog.
-7. Click **Odtwórz** to preview a sound. While playing, it turns into **Zatrzymaj**.
-8. Click **Nowa lista ulubionych** to create a list.
-9. In a SFX card choose **Widok Główny** or a specific favorites list, then click **Dodaj do listy**:
-   - **Widok Główny** adds the SFX to the Main View panel.
-   - A favorites list adds the SFX to that list.
-10. In the Favorites panel you can:
+### What each sound tile element means
+- **Sound name** – main play/stop button.
+- **Tag below name** – source group/folder hint.
+- **Alias in parentheses** (if set) – extra custom label.
+- **Volume slider** – per-sound volume control.
+
+### How to use admin mode (`?admin=1`)
+1. Click **Wczytaj manifest** to load the SFX database.
+2. Use tag filters to narrow visible sounds.
+3. Use search to quickly find a sound by name fragment.
+4. Click **Nowa lista ulubionych** to create a favorites list.
+5. On a sound tile, choose destination list and click **Dodaj do listy**.
+6. In list management you can:
    - reorder lists,
    - rename lists,
    - delete lists,
-   - reorder/remove items in a list,
-   - play saved SFX.
-11. In the admin SFX card you can enter an optional **alias**. The alias is saved in settings and displayed in parentheses after the SFX name in the Main View and Favorites lists in a lighter color. The **Wyczyść** button sits directly under the alias field (above **Odtwórz**) and clears the alias.
-    - The alias is stored in Firestore (or `localStorage`) and should appear again after reload in both the admin panel and the user view.
-    - Removing an alias (manual field clear or **Wyczyść** button) overwrites the whole Firestore `aliases` map so deleted aliases do not reappear after real-time sync.
-12. In the Main View panel (bottom of admin), click the SFX name or tag to play/stop it and use the slider on the card to adjust volume.
+   - reorder items inside a list.
 
-### Input data (AudioManifest.xlsx)
-- Columns:
-  - **NazwaSampla** – UI button label.
-  - **NazwaPliku** – audio filename.
-  - **LinkDoFolderu** – URL of the folder with files.
-- Extra columns (including color hints) are ignored.
-- The file URL is built as: `LinkDoFolderu + "/" + NazwaPliku`.
-- Grouping happens **only within a single folder**:
-  - If names differ only by a **number suffix** (`Assault Weapon1`, `Assault Weapon2` or `Rats 1`, `Rats 2`), the UI shows a single `Assault Weapon (2)` / `Rats (2)` button.
-  - If the number appears **in the middle** (`Blaster 1 Burst`, `Blaster 2 Burst`), the UI creates **separate** buttons: `Blaster 1 Burst` and `Blaster 2 Burst`.
-  - Clicking a grouped button plays a random variant.
-  - The filename line shows a `(+N)` suffix for grouped variants.
-- Filter tags are generated from the folder path in `LinkDoFolderu`, ignoring fragments: **SoundPad**, **SoundPad Patreon Version**, **_Siege_SoundPad**, **Patreon**. `%20` is converted to spaces and trailing spaces are removed.
+### Special buttons
+- **Wyczyść wszystkie aliasy** – removes all aliases at once (with confirmation).
+- **Odtwórz / Zatrzymaj** – quick preview from admin panel.
+- **Wyczyść** (next to alias field) – clears alias for one sound.
 
----
-
-## Firebase config reference / Referencja konfiguracji Firebase
-- Szczegółowy opis konfiguracji, struktury Firestore, gotowy skrypt Node.js i instrukcję „klik po kliku” (PL/EN) znajdziesz w: `Audio/config/Firebase-config.md`.
-- Detailed Firebase config, expected Firestore shape, ready-to-run Node.js bootstrap script, and click-by-click setup guide (PL/EN) are available in: `Audio/config/Firebase-config.md`.
+### Session best practices
+- Prepare 1 main list and 2–3 scene-based lists before play.
+- Use aliases for sounds with unclear names.
+- Pre-check key sound volumes before the session starts.

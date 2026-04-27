@@ -1,57 +1,61 @@
-# Generator Nazw — instrukcja użytkownika
+# Generator Nazw — instrukcja użytkownika / User Guide
 
 ## 🇵🇱 Instrukcja dla użytkownika (PL)
 
-### Cel modułu
-Generator Nazw służy do szybkiego tworzenia nazw postaci, pojazdów i okrętów w klimacie WH40K.
-Tytuł karty przeglądarki: **Generator Nazw**.
+### Do czego służy moduł
+**Generator Nazw** tworzy gotowe nazwy w klimacie Warhammer 40k (postacie, pojazdy, okręty i inne style zależnie od wybranej kategorii).
 
 ### Jak używać
-1. W prawym górnym rogu panelu wybierz język (domyślnie **Polski**).
-2. **Wybierz kategorię** w polu „Kategoria”.
-3. **Wybierz opcję** w polu „Opcja” (np. frakcję lub wariant stylu).
-4. (Opcjonalnie) **Wpisz „Seed”** — dowolny tekst, który ustala powtarzalność wyników.
-5. **Ustaw liczbę wyników** w polu „Ile”.
-6. Kliknij **„Generuj”**, aby otrzymać listę nazw.
-7. Kliknij **„Kopiuj wynik”**, aby skopiować wygenerowaną listę do schowka.
+1. Otwórz `GeneratorNazw/index.html`.
+2. W prawym górnym rogu wybierz język.
+3. W polu **Kategoria** wybierz obszar, z którego chcesz nazwy.
+4. W polu **Opcja** doprecyzuj styl (np. frakcję albo wariant).
+5. (Opcjonalnie) w polu **Seed** wpisz własny tekst, jeśli chcesz mieć powtarzalne wyniki.
+6. W polu **Ile** ustaw liczbę propozycji.
+7. Kliknij **Generuj**.
+8. Kliknij **Kopiuj wynik**, aby skopiować listę do schowka.
+
+### Jak czytać pasek pod przyciskami
+- Informacja typu **Losowo: TAK/NIE** podpowiada, czy wynik jest w pełni losowy.
+- Jeśli wpiszesz seed, generator tworzy ten sam zestaw przy tych samych ustawieniach.
+
+### Praktyczne scenariusze
+- **Szybkie imię NPC**: kategoria + opcja + „Ile: 1”, potem Generuj.
+- **Lista nazw dla drużyny**: „Ile: 10–20”, potem kopiuj i wklej do notatek.
+- **Powtarzalne nazwy do kampanii**: używaj jednego seeda dla spójności stylu.
 
 ### Wskazówki
-- Ten sam **Seed** + te same ustawienia = te same wyniki.
-- Puste pole **Seed** oznacza losowość opartą o generator przeglądarki.
-
-### Ręczna zmiana nazw kategorii i opcji
-Nazwy kategorii i opcji są zdefiniowane bezpośrednio w `GeneratorNazw/script.js` w tablicy `DATA`.
-Jeśli chcesz je zmienić:
-1. Otwórz `GeneratorNazw/script.js`.
-2. W wybranym wpisie kategorii edytuj pola `name` (PL) i `nameEn` (EN).
-3. W wybranych opcjach edytuj pola `name` (PL) i `nameEn` (EN).
-4. Zapisz plik i odśwież stronę.
+- Zmień kategorię, jeśli wyniki nie pasują klimatem.
+- Zmieniaj seed jednym znakiem, gdy chcesz podobny, ale nie identyczny zestaw.
+- Najszybciej pracuje się: wybór kategorii → generuj → kopiuj.
 
 ---
 
 ## 🇬🇧 User instructions (EN)
 
-### Module purpose
-Generator Nazw is a quick name generator for WH40K‑style characters, vehicles, and ships.
-Browser tab title: **Generator Nazw**.
+### What this module is for
+**Name Generator** creates Warhammer 40k-style names (characters, vehicles, ships, and other sets depending on category).
 
 ### How to use
-1. Use the language switcher in the top-right corner of the panel (Polish is selected by default).
-2. **Choose a category** in the “Kategoria” dropdown.
-3. **Choose an option** in the “Opcja” dropdown (e.g., faction or style variant).
-4. (Optional) **Enter a Seed** — any text that makes results repeatable.
-5. **Set the number of results** in the “Ile” field.
-6. Click **“Generuj”** to create a list of names.
-7. Click **“Kopiuj wynik”** to copy the list to the clipboard.
+1. Open `GeneratorNazw/index.html`.
+2. Use top-right language switch.
+3. In **Category**, choose the name family you want.
+4. In **Option**, narrow the style (e.g., faction/variant).
+5. (Optional) enter **Seed** for repeatable output.
+6. Set how many names in **Count**.
+7. Click **Generate**.
+8. Click **Copy result** to copy the list to clipboard.
+
+### How to read the status pill
+- **Random: YES/NO** indicates whether output is fully random.
+- With the same seed + same settings, results stay identical.
+
+### Practical use cases
+- **Quick NPC name**: category + option + count 1, then generate.
+- **Party name shortlist**: count 10–20, generate, then copy.
+- **Campaign consistency**: reuse one seed for a coherent naming style.
 
 ### Tips
-- The same **Seed** + the same settings = identical results.
-- An empty **Seed** uses true randomness from the browser.
-
-### Manual category/option name changes
-Category and option names are defined directly in `GeneratorNazw/script.js` inside the `DATA` array.
-To edit them:
-1. Open `GeneratorNazw/script.js`.
-2. For a category entry, update the `name` (PL) and `nameEn` (EN) fields.
-3. For option entries, update the `name` (PL) and `nameEn` (EN) fields.
-4. Save the file and refresh the page.
+- Switch category if tone does not fit your scene.
+- Change seed slightly for similar-but-fresh results.
+- Fast flow: choose category → generate → copy.

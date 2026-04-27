@@ -3,81 +3,81 @@
 ## 🇵🇱 Instrukcja dla użytkownika (PL)
 
 ### Do czego służy DataVault
-DataVault to przeglądarka danych do Wrath & Glory. Pozwala szybko wyszukiwać zasady, tabele i opisy w jednym miejscu.
+**DataVault** to wyszukiwarka wiedzy do Wrath & Glory. W jednym miejscu przeglądasz tabele, zasady i opisy potrzebne podczas gry.
 
-### Jak otworzyć moduł
-- Widok użytkownika: `DataVault/index.html`
-- Widok administratora: `DataVault/index.html?admin=1`
+### Jak otworzyć
+- Widok standardowy: `DataVault/index.html`
+- Widok rozszerzony (admin): `DataVault/index.html?admin=1`
 
-### Najważniejsze elementy ekranu
-- **Zakładki** u góry tabeli — przełączają grupy danych.
-- **Pole szukania** — przeszukuje aktualnie wyświetlane dane.
-- **Filtry kolumnowe** — zawężają wyniki w konkretnej kolumnie.
-- **Pełen widok** — resetuje filtry i pokazuje pełny zestaw danych.
-- **Widok domyślny** — przywraca układ rekomendowany na start sesji.
-- **Porównanie** — porównuje zaznaczone pozycje.
+### Co znajdziesz na ekranie
+- **Zakładki** – przełączają między grupami danych.
+- **Szukaj (globalnie)** – szuka wpisów w aktualnym obszarze.
+- **Filtry kolumnowe** – zawężają wyniki w konkretnych kolumnach.
+- **Pełen Widok** – czyści filtry/sortowanie i pokazuje pełną listę.
+- **Widok Domyślny** – przywraca domyślny układ danych.
+- **Porównaj zaznaczone** – otwiera porównanie wybranych pozycji.
 
-### Szybki start
-1. Otwórz DataVault.
-2. Wybierz zakładkę z obszarem, którego szukasz.
-3. Wpisz frazę w pole wyszukiwania.
-4. Jeśli wyników jest dużo, użyj filtrów kolumnowych.
-5. Zaznacz interesujące wiersze i kliknij **Porównanie**, aby zobaczyć je obok siebie.
+### Jak pracować krok po kroku
+1. Wejdź do modułu i wybierz zakładkę odpowiadającą tematowi, którego szukasz.
+2. Wpisz słowo kluczowe w polu wyszukiwania.
+3. Jeśli wyników jest dużo, ustaw filtry tylko na interesujących kolumnach.
+4. Zaznacz 2 lub więcej wierszy.
+5. Kliknij **Porównaj zaznaczone**, aby zobaczyć dane obok siebie.
+6. Po zakończeniu kliknij **Pełen Widok**, aby wrócić do pełnych danych.
 
-### Tryb użytkownika vs admin
-- **Użytkownik**: widzi standardowy zestaw zakładek i funkcji potrzebnych do gry.
-- **Admin**: ma dostęp do dodatkowych zakładek i narzędzi utrzymaniowych.
-- **Pierwsza zakładka po otwarciu**:
-  - w trybie użytkownika moduł startuje na zakładce **Bronie**,
-  - w trybie admina moduł startuje na zakładce **Notatki**.
+### Różnice: użytkownik vs admin
+- **Użytkownik**: widzi zestaw najczęściej używanych danych na sesji.
+- **Admin**: ma dodatkowe zakładki i przycisk utrzymaniowy.
+- Domyślna zakładka po wejściu:
+  - użytkownik: **Bronie**,
+  - admin: **Notatki**.
 
 ### Przycisk „Generuj data.json” (tylko admin)
-Ten przycisk służy do odświeżenia danych aplikacji z pliku XLSX. Używaj go, gdy aktualizujesz źródłowy plik z danymi.
+Używaj go, gdy chcesz odświeżyć dane modułu po aktualizacji pliku źródłowego. Po kliknięciu system przygotowuje nowy plik danych dla aplikacji.
 
-### Dobre praktyki na sesji
-- Zacznij od **Widoku domyślnego**.
-- Używaj krótkich haseł w wyszukiwarce (np. nazwa zdolności, słowo kluczowe).
-- Do szybkiego porównywania używaj zaznaczeń i okna **Porównanie**.
-- Po zakończeniu wyszukiwania kliknij **Pełen widok**, aby wrócić do pełnej listy.
+### Dobre nawyki na sesję
+- Zaczynaj od krótkich fraz (np. nazwa talentu, cechy lub warunku).
+- Używaj porównania, gdy grupa rozważa kilka opcji naraz.
+- Jeśli „zgubisz” widok po wielu filtrach, wróć przez **Pełen Widok**.
 
 ---
 
 ## 🇬🇧 User instructions (EN)
 
 ### What DataVault is for
-DataVault is a Wrath & Glory data browser. It helps you quickly find rules, tables, and references in one place.
+**DataVault** is a Wrath & Glory knowledge browser. It keeps rules, tables, and references in one searchable place.
 
-### How to open the module
-- User view: `DataVault/index.html`
-- Admin view: `DataVault/index.html?admin=1`
+### How to open
+- Standard view: `DataVault/index.html`
+- Extended admin view: `DataVault/index.html?admin=1`
 
-### Main screen elements
-- **Tabs** at the top — switch between data groups.
-- **Search field** — searches within currently displayed data.
-- **Column filters** — narrow down results per column.
-- **Pełen widok / Full view** — clears filters and shows full data.
-- **Widok domyślny / Default view** — restores recommended session layout.
-- **Porównanie / Compare** — compares selected rows.
+### What you get on screen
+- **Tabs** – switch between data groups.
+- **Global search** – finds entries in the current area.
+- **Column filters** – narrow results per column.
+- **Pełen Widok / Full View** – clears filters/sorting and restores full list.
+- **Widok Domyślny / Default View** – restores default data layout.
+- **Porównaj zaznaczone / Compare selected** – opens side-by-side comparison.
 
-### Quick start
-1. Open DataVault.
-2. Choose a tab matching what you need.
-3. Enter a phrase in the search field.
-4. If there are too many results, use column filters.
-5. Select rows and click **Compare** to view them side by side.
+### Step-by-step workflow
+1. Open the module and choose a tab related to your topic.
+2. Enter a keyword in search.
+3. If results are too broad, apply filters to specific columns.
+4. Select 2 or more rows.
+5. Click **Compare selected** to inspect entries side by side.
+6. Click **Full View** when done to return to complete data.
 
-### User vs admin mode
-- **User mode**: standard tabs and features for regular play.
-- **Admin mode**: includes additional tabs and maintenance tools.
-- **First tab after opening**:
-  - user mode starts on **Bronie**,
-  - admin mode starts on **Notatki**.
+### User vs admin differences
+- **User mode**: core session-focused content.
+- **Admin mode**: extra tabs plus maintenance control.
+- Default opening tab:
+  - user: **Bronie**,
+  - admin: **Notatki**.
 
-### “Generate data.json” button (admin only)
-Use this button when you need to refresh app data from the source XLSX file.
+### “Generuj data.json” button (admin only)
+Use it when module data needs refreshing after source updates. It prepares a new data file for the app.
 
-### Good session workflow
-- Start with **Default view**.
-- Use short search phrases (ability name, keyword, etc.).
-- Use row selection + **Compare** for quick decisions.
-- Click **Full view** when done to return to the complete list.
+### Good session habits
+- Start with short keywords (talent/trait/condition names).
+- Use compare mode when choosing between options.
+- If the screen becomes too filtered, use **Full View**.
