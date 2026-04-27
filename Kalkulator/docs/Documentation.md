@@ -511,6 +511,11 @@ Aby funkcja działała:
 - Przycisk **Tak** otrzymał czerwony wariant (`#confirmModalYesButton`) z dedykowanym `:hover`.
 - Ustawiono stałą wysokość obrazka modala (`height: 180px`), dzięki czemu dialog nie „podskakuje” i nie zmienia wysokości po dociągnięciu obrazu.
 
+### Poprawka ścieżki ikony (2026-04-27)
+- W `TworzeniePostaci.html` stała `modalImageUrl` została zmieniona z absolutnej ścieżki `/Kalkulator/Modal_Icon.png` na relatywną `./Modal_Icon.png`.
+- Powód: w uruchomieniach lokalnych (otwarcie pliku HTML bez serwera lub inne bazowe URL) ścieżka absolutna mogła nie wskazywać poprawnie zasobu i przeglądarka wyświetlała tekst zastępczy z `alt`.
+- Efekt: ikona modala zapis/wczytaj renderuje się poprawnie i stabilnie niezależnie od kontekstu uruchomienia modułu Kalkulator.
+
 ### Diagnostyka błędu „Nie udało się zapisać stanu postaci.”
 Błąd jest wyświetlany po wejściu do bloku `catch` w `saveStateToFirebase()`, więc realna przyczyna jest w wyjątku rzucanym przez Firestore. Najczęstsze przyczyny do sprawdzenia:
 1. Firestore Database nie jest aktywna w projekcie `projectId` z `Kalkulator/config/firebase-config.js`.

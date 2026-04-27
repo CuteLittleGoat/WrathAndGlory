@@ -297,3 +297,13 @@ For **Save/Load** to work correctly:
 2. The confirmation window no longer resizes when the image appears (stable layout).
 3. Button order was swapped: **Yes** first, then **No**.
 4. The **Yes** button is now red so the action is clearly visible.
+
+## Aktualizacja 2026-04-27 – poprawka wyświetlania ikony w modalu
+
+### 🇵🇱 Co się zmieniło
+1. Poprawiono ścieżkę obrazka w oknie potwierdzenia zapisu/wczytania.
+2. Modal ładuje ikonę z lokalnego pliku `Modal_Icon.png` względem pliku `TworzeniePostaci.html`, dzięki czemu obraz pojawia się zamiast tekstu zastępczego.
+
+### 🇬🇧 What changed
+1. Fixed the confirmation dialog image path for Save/Load actions.
+2. The modal now loads the icon from local `Modal_Icon.png` relative to `TworzeniePostaci.html`, so the image is shown instead of fallback text.
