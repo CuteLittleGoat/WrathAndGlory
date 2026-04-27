@@ -216,7 +216,7 @@
         <td><input type="number" id="attr_SW" value="1" min="1" max="12"></td>
         <td><input type="number" id="attr_Int" value="1" min="1" max="12"></td>
         <td><input type="number" id="attr_Ogd" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_Speed" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Speed" value="6" min="1" max="12"></td>
       </tr>
     </table>
 
@@ -544,6 +544,7 @@
         ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach(id => {
           document.getElementById(`attr_${id}`).value = 1;
         });
+        document.getElementById('attr_Speed').value = 6;
         for (let i = 1; i <= 9; i++) {
           document.getElementById(`skill_Column1Row${i}`).value = 0;
           document.getElementById(`skill_Column2Row${i}`).value = 0;

@@ -72,3 +72,39 @@ document.getElementById('attr_Speed').value = 6;
   1) wartość startową po wejściu na stronę,
   2) wartość po resecie.
 - Nie zmieniać logiki samych obliczeń — mają korzystać z aktualnej wartości ustawionej przez użytkownika.
+
+## Realizacja zmiany w kodzie (2026-04-27)
+
+Poniżej zestawienie wdrożonych zmian na podstawie tej analizy, z cytowaniem linii „przed” i „po”.
+
+### 1) Plik `Kalkulator/TworzeniePostaci.html`
+- Linia (sekcja atrybutów, input `attr_Speed`)
+  - Było: `<td><input type="number" id="attr_Speed" value="1" min="1" max="12"></td>`
+  - Jest: `<td><input type="number" id="attr_Speed" value="6" min="1" max="12"></td>`
+
+- Linia (funkcja `resetAll()` po pętli resetu atrybutów)
+  - Było: *(brak dodatkowej linii nadpisującej Speed po pętli ustawiającej wszystkie atrybuty na 1)*
+  - Jest: `document.getElementById('attr_Speed').value = 6;`
+
+### 2) Plik `Kalkulator/docs/README.md`
+- Linia (instrukcja użytkownika PL, sekcja „Tworzenie Postaci”)
+  - Było: `Wypełnij Atrybuty (domyślnie startują od 1) i Umiejętności (domyślnie 0).`
+  - Jest: `Wypełnij Atrybuty (domyślnie startują od 1, z wyjątkiem Szybkość, która domyślnie startuje od 6) i Umiejętności (domyślnie 0).`
+
+- Linia (instrukcja użytkownika EN, sekcja „Character Creation”)
+  - Było: `Fill in Attributes (default starts at 1) and Skills (default 0).`
+  - Jest: `Fill in Attributes (default starts at 1, except Speed, which defaults to 6) and Skills (default 0).`
+
+- Linia (opis resetu PL/EN)
+  - Było: *(brak jawnego doprecyzowania, że reset przywraca Speed do 6)*
+  - Jest (PL): `Przycisk Reset przywraca wartości domyślne: wszystkie atrybuty wracają do 1, a Szybkość do 6.`
+  - Jest (EN): `The Reset action restores defaults: all attributes return to 1, while Speed returns to 6.`
+
+### 3) Plik `Kalkulator/docs/Documentation.md`
+- Linia (opis techniczny `resetAll()`)
+  - Było: `Ustawia domyślne wartości: xpPool=100, atrybuty=1 (w tym attr_Speed), umiejętności=0, talenty=0.`
+  - Jest: `Ustawia domyślne wartości: xpPool=100, atrybuty=1 dla attr_S, attr_Wt, attr_Zr, attr_I, attr_SW, attr_Int, attr_Ogd, a następnie nadpisuje attr_Speed=6; umiejętności=0, talenty=0.`
+
+- Dodano nową sekcję techniczną:
+  - `## 1.2.1. Domyślna wartość Szybkość = 6 (start + reset)`
+  - Sekcja opisuje: wartość startową `value="6"`, reset z nadpisaniem `attr_Speed=6`, oraz brak zmian w logice `recalcXP()`.
