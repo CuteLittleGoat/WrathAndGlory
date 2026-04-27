@@ -213,6 +213,11 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `DATA_URL` — URL z danymi JSON.
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
 - `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków przy inicjalizacji, wpisywaniu i zapisie).
+- `CARD_LEVEL_COLUMNS = 5` — liczba kolumn poziomu na karcie do druku. Stała steruje równocześnie:
+  - limitem znaków pobieranych z pola `Zagrożenie`,
+  - dopełnianiem pustych komórek do stałej szerokości wiersza,
+  - renderowaniem nagłówka `Poziom` (1..N),
+  - siatką CSS `.row` (`grid-template-columns: 140px repeat(N, 1fr)`).
 - `FAVORITES_STORAGE_KEY = "generatorNpcFavorites"` — klucz `localStorage` dla ulubionych.
 - `FAVORITES_COLLECTION = "generatorNpc"` i `FAVORITES_DOC_ID = "favorites"` — docelowa ścieżka dokumentu w Firestore.
 - `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_MENTAL_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
@@ -335,6 +340,8 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 ### 8.11. Karta do druku
 - `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”, a etykiety karty są wybierane z tłumaczeń (PL/EN).
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T” (PL) / „H/S” (EN)**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
+  - Mechanizm `CARD_LEVEL_COLUMNS = 5` działa jako pojedyncze źródło prawdy dla sekcji `Poziom/Zagrożenie`: parser obcina dane do 5 znaków, fallback (`split("")`) zachowuje nietypowe znaki jak `?`, brakujące wartości są dopełniane pustymi komórkami, a nagłówek poziomów jest budowany dynamicznie (`1..5`).
+  - Dzięki temu rekordy `PPPPP` renderują komplet pięciu kolumn, a krótsze rekordy (np. `?`) zostawiają puste pola od kolumny 2 do 5.
 - Trackery są generowane dynamicznie: osobne siatki z etykietami „Ż”/„T” w PL lub „H”/„S” w EN oraz pustymi kwadratami. Liczba kwadratów wynika z „Żywotność” i „Odporność Psychiczna”, a gdy „Odporność Psychiczna” ma wartość `-`, renderowana jest tylko etykieta trackera.
   - Układ trackerów używa inline CSS z przezroczystym tłem i ramkami pól (brak ciemnego wypełnienia po prawej stronie), a liczba pól w wierszu jest obliczana przez `grid-template-columns: repeat(auto-fit, ...)`.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.

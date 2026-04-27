@@ -18,6 +18,10 @@
 5. W aktywnych modułach wybierz konkretne elementy z list.
 6. Kliknij **Generuj kartę**.
 7. Karta otworzy się w nowej karcie przeglądarki.
+8. W górnym wierszu karty zobaczysz zawsze kolumny **Poziom 1, 2, 3, 4, 5**.
+9. Wiersz **Zagrożenie** uzupełnia te kolumny od lewej:
+   - gdy rekord ma 5 znaków (np. `PPPPP`) — wszystkie kolumny 1–5 będą wypełnione,
+   - gdy rekord ma mniej znaków (np. `?`) — znak trafi do pierwszej kolumny, a pozostałe zostaną puste.
 
 ### Jak działa panel „Ulubione”
 1. Ustaw NPC tak, jak chcesz go zapisać.
@@ -59,6 +63,10 @@
 5. In active blocks, select specific items.
 6. Click **Generate card**.
 7. The final card opens in a new browser tab.
+8. The top card row always shows **Level 1, 2, 3, 4, 5** columns.
+9. The **Threat** row fills those columns from left to right:
+   - if an entry has 5 symbols (for example `PPPPP`), all 1–5 columns are filled,
+   - if an entry has fewer symbols (for example `?`), only the first column is filled and the rest stay empty.
 
 ### How “Favorites” works
 1. Configure NPC setup.
