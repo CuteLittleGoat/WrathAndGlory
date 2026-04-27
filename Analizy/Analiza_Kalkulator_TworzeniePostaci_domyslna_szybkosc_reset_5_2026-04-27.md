@@ -1,6 +1,6 @@
-# Analiza zmiany: domyślna wartość atrybutu „Szybkość” po resecie strony
+# Analiza zmiany: domyślna wartość atrybutu „Szybkość” przy wejściu na stronę i po resecie
 
-## Prompt użytkownika
+## Prompt użytkownika (oryginalny)
 > Przeprowadź analizę pliku /Kalkulator/TworzeniePostaci.html
 >
 > Chciałbym, żeby domyślna wartość w atrybucie szybkość po resecie strony wynosiła "5".
@@ -8,49 +8,67 @@
 >
 > Przeprowadź analizę wprowadzenia takiej zmiany.
 
+## Prompt użytkownika (doprecyzowanie z 2026-04-27)
+> Przeczytaj i rozbuduj analizę Analizy/Analiza_Kalkulator_TworzeniePostaci_domyslna_szybkosc_reset_5_2026-04-27.md o doprecyzowanie wymagań. Każde wejście na stronę ma domyślnie ustawić wartość Szybkość na 6.
+> W pierwotnej analizie była mowa o Szybkość = 5. To błąd. Ma być 6.
+> Przy wejściu na stronę i przy resecie Szybkość ma przyjmować domyślnie wartość 6.
+>
+> Użytkownik będzie mógł zmieniać tę wartość (jak każdego innego atrybutu) i ma to wpływać na obliczenia.
+
+## Status wymagania
+- Poprzednia wartość docelowa (`Szybkość = 5`) jest **nieaktualna**.
+- Aktualne wymaganie docelowe:
+  - **przy pierwszym wejściu na stronę**: `Szybkość = 6`,
+  - **po użyciu resetu**: `Szybkość = 6`,
+  - **po ręcznej zmianie przez użytkownika**: nowa wartość `Szybkość` ma normalnie wpływać na wszystkie obliczenia.
+
 ## Zakres analizy
 - Plik: `Kalkulator/TworzeniePostaci.html`
-- Cel: ocena wpływu zmiany domyślnej wartości tylko dla `attr_Speed` po resecie.
-- Ograniczenie: bez zmiany pozostałych wartości domyślnych, walidacji i logiki kosztów XP.
+- Cel: dostosowanie zachowania pola `attr_Speed` tak, aby domyślna wartość była spójnie równa `6` zarówno na starcie widoku, jak i po resecie.
+- Ograniczenie: pozostałe atrybuty i ich domyślne wartości mają pozostać bez zmian.
 
 ## Stan obecny (przed zmianą)
-1. Pole `attr_Speed` ma wartość początkową `1` w HTML (`value="1"`).
-2. Funkcja `resetAll()` ustawia wszystkie atrybuty (`S`, `Wt`, `Zr`, `I`, `SW`, `Int`, `Ogd`, `Speed`) na `1`.
-3. Mechanizm `attachDefaultOnBlur("input[id^='attr_']", 1)` również przywraca `1`, gdy pole atrybutu zostanie wyczyszczone lub ma wartość nienumeryczną.
-4. Kalkulacja XP (`recalcXP`) i ograniczenia min/max (`1..12`) działają wspólnie dla wszystkich atrybutów i nie rozróżniają domyślnej wartości szybkości.
+1. Pole `attr_Speed` ma wartość początkową ustawioną jak inne atrybuty (`1`).
+2. `resetAll()` ustawia komplet atrybutów (`S`, `Wt`, `Zr`, `I`, `SW`, `Int`, `Ogd`, `Speed`) na `1`.
+3. Logika obliczeń (np. `recalcXP`) bierze bieżące wartości pól i przelicza koszty dynamicznie.
 
-## Wniosek: gdzie trzeba wprowadzić zmianę
-Aby **po resecie strony** `Szybkość` miała `5`, a reszta pozostała bez zmian, wystarczy:
-- w `resetAll()` po pętli ustawiającej atrybuty na `1` nadpisać tylko `attr_Speed` na `5`.
+## Wymagane doprecyzowanie implementacyjne
+Aby spełnić nowe wymaganie, potrzebne są dwie zmiany funkcjonalne:
 
-Przykład minimalnej zmiany (koncepcyjnie):
+1. **Start strony (pierwsze wejście)**
+   - `attr_Speed` musi mieć domyślnie `6` od razu po załadowaniu widoku.
+   - Technicznie można to osiągnąć przez zmianę wartości startowej pola (`value`) albo przez inicjalizację wykonywaną po załadowaniu DOM.
+
+2. **Reset**
+   - `resetAll()` po ustawieniu atrybutów bazowych na `1` powinien nadpisać wyłącznie `attr_Speed` na `6`.
+
+Przykład minimalnej logiki resetu (koncepcyjnie):
 ```js
 ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach(id => {
   document.getElementById(`attr_${id}`).value = 1;
 });
-document.getElementById('attr_Speed').value = 5;
+document.getElementById('attr_Speed').value = 6;
 ```
 
-## Dlaczego to spełnia wymaganie
-- Zmienia się wyłącznie efekt resetu (`resetAll`).
-- Nie zmieniają się:
-  - domyślne wartości innych atrybutów,
-  - sposób liczenia kosztów i pozostałego XP,
-  - walidacje zakresów,
-  - logika umiejętności i talentów.
+## Doprecyzowanie zachowania użytkowego
+- `Szybkość = 6` jest wartością **domyślną**, nie zablokowaną.
+- Użytkownik może ją zmienić ręcznie tak jak inne atrybuty.
+- Każda ręczna zmiana `Szybkości` ma być natychmiast uwzględniana przez istniejące obliczenia (XP, pochodne statystyki itp., zgodnie z aktualną logiką modułu).
 
-## Ryzyka i skutki uboczne
-1. **Różnica między resetem a „blur default” dla atrybutów**: po tej zmianie reset da `Speed=5`, ale ręczne wyczyszczenie pola i utrata fokusu nadal ustawi `1` (bo `attachDefaultOnBlur` jest wspólne dla wszystkich atrybutów). Jest to zgodne z wymaganiem „po resecie”, ale warto mieć świadomość różnicy zachowania.
-2. **Różnica między startem strony a resetem**: jeżeli nie zmieniamy `value` w HTML, pierwsze wejście na stronę nadal rozpocznie się od `Speed=1`, a dopiero reset ustawi `5`. To również jest zgodne z literalnym wymaganiem.
+## Ryzyka i punkty do decyzji
+1. **Spójność z mechanizmem „blur default”**
+   - Jeżeli istnieje globalna logika przywracania pustego/nienumerycznego atrybutu do `1`, to dla `Szybkości` może wystąpić niespójność względem nowej wartości domyślnej `6`.
+   - Decyzja: albo zostawić tę różnicę (jeżeli wymaganie dotyczy tylko wejścia/resetu), albo dodać wyjątek dla `attr_Speed` również w tym mechanizmie.
 
-## Opcjonalna decyzja produktowa (bez wdrażania w tej analizie)
-Jeżeli w przyszłości oczekiwane byłoby `Speed=5` także:
-- przy pierwszym otwarciu strony,
-- po wyczyszczeniu pola i blur,
-to trzeba dodatkowo zmienić odpowiednio `value` pola `attr_Speed` i logikę `attachDefaultOnBlur` dla `attr_Speed`.
+2. **Zakres testów manualnych po wdrożeniu**
+   - wejście na stronę: `Szybkość` startuje od `6`,
+   - reset: `Szybkość` wraca do `6`, inne atrybuty wracają wg obecnych reguł,
+   - ręczna zmiana `Szybkości`: obliczenia przeliczają się poprawnie,
+   - (opcjonalnie) wyczyszczenie pola i utrata fokusu: potwierdzenie zachowania zgodnie z decyzją projektową.
 
-## Rekomendacja wdrożeniowa
-- Wprowadzić wyłącznie zmianę w `resetAll()` (nadpisanie `attr_Speed` na `5`), bez modyfikacji pozostałych sekcji.
-- Po wdrożeniu sprawdzić ręcznie dwa scenariusze:
-  1. klik „Reset” -> `Szybkość` = `5`, inne atrybuty = `1`;
-  2. wyczyszczenie pola `Szybkość` i opuszczenie pola -> wartość wraca do `1` (obecna logika globalna).
+## Rekomendacja końcowa
+- Zastąpić we wcześniejszej analizie wszystkie założenia `Speed = 5` nowym, obowiązującym wymaganiem `Speed = 6`.
+- Wdrożyć zmianę tylko w punktach odpowiedzialnych za:
+  1) wartość startową po wejściu na stronę,
+  2) wartość po resecie.
+- Nie zmieniać logiki samych obliczeń — mają korzystać z aktualnej wartości ustawionej przez użytkownika.
