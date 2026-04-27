@@ -283,3 +283,17 @@ For **Save/Load** to work correctly:
 1. Firestore must contain `character_builder/current`.
 2. Firestore Rules must allow read/write for this path.
 3. `Kalkulator/config/firebase-config.js` must contain valid project configuration.
+
+## Aktualizacja 2026-04-27 – modal zapisu/wczytania (UI)
+
+### 🇵🇱 Co się zmieniło
+1. W oknie potwierdzenia zapisu/wczytania wyświetla się teraz właściwa ikona: `Kalkulator/Modal_Icon.png`.
+2. Okno potwierdzenia nie zmienia już rozmiaru po pojawieniu się obrazka (stabilny wygląd).
+3. Zmieniono kolejność przycisków: najpierw **Tak**, potem **Nie**.
+4. Przycisk **Tak** ma teraz czerwony kolor, żeby akcja była wyraźnie widoczna.
+
+### 🇬🇧 What changed
+1. The save/load confirmation dialog now uses the correct icon: `Kalkulator/Modal_Icon.png`.
+2. The confirmation window no longer resizes when the image appears (stable layout).
+3. Button order was swapped: **Yes** first, then **No**.
+4. The **Yes** button is now red so the action is clearly visible.

@@ -490,3 +490,82 @@ Warunek działania jest taki, że:
 1. `Kalkulator/config/firebase-config.js` musi wskazywać na właściwy projekt,
 2. Firestore Rules muszą zezwalać na `character_builder/current`,
 3. Dokument `character_builder/current` musi być dostępny do odczytu/zapisu.
+
+## 12) Aktualizacja po poprawkach UI modala + analiza błędu zapisu (2026-04-27)
+
+### Prompt użytkownika (ten etap)
+> Przeczytaj analizę Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md
+>
+> Kilka rzeczy do poprawy:
+> 1. Ikona w modalu do potwierdzenia ma być Kalkulator/Modal_Icon.png
+> 2. Zrób tak, żeby modal się nie rozciągał przy wczytywaniu obrazka. Podobne rozwiązanie jest już w Kalkulator/TworzeniePostaci.html
+> 3. Zamień kolejnością przyciski "Tak" i "Nie" w modalu
+> 4. Przycisk "Tak" ma być czerwony
+>
+> 5. Przy próbie zapisu stanu pojawia się błąd "Nie udało się zapisać stanu postaci."
+> Sprawdź czy to błąd konfiguracji Firebase, błąd Rules, błąd zawartości pliku Kalkulator/config/firebase-config.js
+>
+> Punkty 1, 2, 3 i 4 napraw.
+> Punkt 5 przeprowadź dokładną analizę (zapisz jej wyniki w Analizy/2026-04-27-analiza-kalkulator-tworzeniepostaci-zapis-wczytaj-firebase.md) i napisz mi co mam sprawdzić po stronie Firebase, żeby się upewnić, że wszystko jest ok.
+
+### Wynik analizy błędu zapisu (punkt 5)
+Błąd komunikatu „Nie udało się zapisać stanu postaci.” jest komunikatem generycznym uruchamianym w bloku `catch` funkcji `saveStateToFirebase()`. To oznacza, że przyczyna jest po stronie wyjątku zwracanego przez Firestore API.
+
+#### Co jest poprawne po stronie kodu i konfiguracji lokalnej
+- Ścieżka zapisu jest prawidłowa: `character_builder/current`.
+- Inicjalizacja opiera się na `window.firebaseConfig` i jest zgodna ze stylem `firebase-compat`.
+- W `Kalkulator/config/firebase-config.js` pola (`apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`) są kompletne i wskazują na ten sam projekt `wh40k-data-slate`.
+
+#### Co sprawdzić po stronie Firebase (checklista)
+1. **Czy Firestore Database jest uruchomiona** w projekcie `wh40k-data-slate` (Build → Firestore Database).
+2. **Czy opublikowane Rules** faktycznie obejmują zapis na `character_builder/current` (i są aktywne po kliknięciu Publish).
+3. **Czy dane trafiają do właściwego projektu**: porównać `projectId` z `firebase-config.js` z projektem otwartym w konsoli.
+4. **Czy dokument się aktualizuje**: po zapisie pole `savedAt` powinno zmieniać timestamp.
+5. **Czy przeglądarka nie blokuje połączeń** do Firestore (DevTools → Network/Console, błędy `permission-denied`, `failed-precondition`, `unavailable`, CORS).
+6. **Czy domena/testowy hosting jest zgodny** z konfiguracją aplikacji web i środowiskiem, z którego uruchamiasz moduł.
+
+#### Interpretacja najczęstszych kodów błędów
+- `permission-denied` → problem z Rules.
+- `failed-precondition` → zwykle brak włączonego Firestore Database lub zła konfiguracja środowiska.
+- `unavailable` → problem sieciowy / chwilowa niedostępność.
+- `not-found` (rzadziej przy `set`) → zła ścieżka lub nie ta baza/projekt.
+
+### Zmiany w kodzie (cytowanie „było/jest”)
+
+#### Plik `Kalkulator/TworzeniePostaci.html`
+- Sekcja CSS `.confirm-modal__image`
+  - Było: `max-height:180px;`
+  - Jest: `height:180px;`
+
+- Sekcja CSS (nowy styl przycisku potwierdzenia)
+  - Było: *(brak dedykowanego czerwonego stylu dla `#confirmModalYesButton`)*
+  - Jest:
+    - `#confirmModalYesButton{ border-color:rgba(190,40,40,.75); background:rgba(110,20,20,.7); color:#ffdada; }`
+    - `#confirmModalYesButton:hover{ background:rgba(150,28,28,.8); }`
+
+- Sekcja HTML modala (`.confirm-modal__actions`)
+  - Było:
+    - `<button type="button" id="confirmModalNoButton">Nie</button>`
+    - `<button type="button" id="confirmModalYesButton">Tak</button>`
+  - Jest:
+    - `<button type="button" id="confirmModalYesButton">Tak</button>`
+    - `<button type="button" id="confirmModalNoButton">Nie</button>`
+
+- Sekcja JS (źródło ikony)
+  - Było: `const modalImageUrl = 'Skull.png';`
+  - Jest: `const modalImageUrl = '/Kalkulator/Modal_Icon.png';`
+
+#### Plik `Kalkulator/docs/Documentation.md`
+- Było: *(brak sekcji o poprawkach UI modala i checklisty diagnostycznej błędu zapisu)*
+- Jest: dodano sekcję `8.1. Aktualizacja 2026-04-27 (modal zapisu/wczytania + diagnostyka zapisu Firebase)` z:
+  - opisem zmian UI,
+  - listą potencjalnych przyczyn błędu,
+  - checklistą kroków diagnostycznych.
+
+#### Plik `Kalkulator/docs/README.md`
+- Było: *(brak zwięzłej sekcji użytkowej o nowych zmianach modala z dnia 2026-04-27)*
+- Jest: dodano sekcję `Aktualizacja 2026-04-27 – modal zapisu/wczytania (UI)` z instrukcją PL/EN.
+
+#### Plik `DetaleLayout.md`
+- Było: *(brak wpisu o zmianie kolorystyki przycisku „Tak” i zmianie ikony modala)*
+- Jest: dodano sekcję `Aktualizacja 2026-04-27 – modal potwierdzenia (Kalkulator/TworzeniePostaci)` opisującą nowy asset i czerwony wariant przycisku.
