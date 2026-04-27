@@ -3,105 +3,171 @@
     "Notatki": [
       {
         "LP": "1",
-        "Co": "Maksymalne wartości atrybutów dla gatunków",
+        "Co": "Koszt atrybutów",
+        "Podręcznik": "Główny",
+        "Strona": "24"
+      },
+      {
+        "LP": "2",
+        "Co": "Koszt umiejętności",
         "Podręcznik": "Główny",
         "Strona": "25"
       },
       {
-        "LP": "2",
+        "LP": "3",
+        "Co": "Drzewo nauki",
+        "Podręcznik": "Główny",
+        "Strona": "26"
+      },
+      {
+        "LP": "4",
         "Co": "Języki",
         "Podręcznik": "Główny",
         "Strona": "31"
       },
       {
-        "LP": "3",
+        "LP": "5",
         "Co": "Wzrost",
         "Podręcznik": "Główny",
         "Strona": "33"
       },
       {
-        "LP": "4",
+        "LP": "6",
         "Co": "Zwiększenie rangi",
         "Podręcznik": "Główny",
         "Strona": "147"
       },
       {
-        "LP": "5",
+        "LP": "7",
         "Co": "Wyniesienie archetypu",
         "Podręcznik": "Główny",
         "Strona": "155"
       },
       {
-        "LP": "6",
-        "Co": "Pomoc w teście",
+        "LP": "8",
+        "Co": "Początkowa Furia, Chwała i Zguba",
+        "Podręcznik": "Główny",
+        "Strona": "162"
+      },
+      {
+        "LP": "9",
+        "Co": "Użycia Chwały",
+        "Podręcznik": "Główny",
+        "Strona": "164"
+      },
+      {
+        "LP": "10",
+        "Co": "Testy Wpływów i Pomoc w teście",
         "Podręcznik": "Główny",
         "Strona": "169"
       },
       {
-        "LP": "7",
+        "LP": "11",
+        "Co": "Zasadzka, przerwanie i przejęcie inicjatywy",
+        "Podręcznik": "Główny",
+        "Strona": "177"
+      },
+      {
+        "LP": "12",
+        "Co": "Osłony i ukrywanie się",
+        "Podręcznik": "Główny",
+        "Strona": "181"
+      },
+      {
+        "LP": "13",
         "Co": "Atak z zaskoczenia",
         "Podręcznik": "Główny",
         "Strona": "182"
       },
       {
-        "LP": "8",
+        "LP": "14",
+        "Co": "Cele w zwarciu i Pistolety w zwarciu",
+        "Podręcznik": "Główny",
+        "Strona": "184"
+      },
+      {
+        "LP": "15",
         "Co": "Zasięg broni wybuchowej",
         "Podręcznik": "Główny",
         "Strona": "186"
       },
       {
-        "LP": "9",
+        "LP": "16",
         "Co": "Strzał przez osłonę",
         "Podręcznik": "Główny",
         "Strona": "189"
       },
       {
-        "LP": "10",
+        "LP": "17",
+        "Co": "Rany i Konanie",
+        "Podręcznik": "Główny",
+        "Strona": "193"
+      },
+      {
+        "LP": "18",
         "Co": "Haniebny odwrót",
         "Podręcznik": "Główny",
         "Strona": "194"
       },
       {
-        "LP": "11",
+        "LP": "19",
+        "Co": "Przegrupowanie i Wytchnienie (odpoczynek)",
+        "Podręcznik": "Główny",
+        "Strona": "196"
+      },
+      {
+        "LP": "20",
         "Co": "Obrażenia od elektyczności",
         "Podręcznik": "Główny",
         "Strona": "201"
       },
       {
-        "LP": "12",
+        "LP": "21",
         "Co": "Obrażenia od promieniowania",
         "Podręcznik": "Główny",
         "Strona": "202"
       },
       {
-        "LP": "13",
+        "LP": "22",
         "Co": "Koszt i dostępność amunicji",
         "Podręcznik": "Główny",
         "Strona": "229"
       },
       {
-        "LP": "14",
+        "LP": "23",
         "Co": "Poziom mocy psionicznej",
         "Podręcznik": "Główny",
         "Strona": "260"
       },
       {
-        "LP": "15",
+        "LP": "24",
         "Co": "Poziom spaczenia",
         "Podręcznik": "Główny",
         "Strona": "285"
       },
       {
-        "LP": "16",
+        "LP": "25",
+        "Co": "Testy Mutacji",
+        "Podręcznik": "Główny",
+        "Strona": "287"
+      },
+      {
+        "LP": "26",
+        "Co": "Punkty Zguby",
+        "Podręcznik": "Główny",
+        "Strona": "320"
+      },
+      {
+        "LP": "27",
         "Co": "Typy przeciwników",
         "Podręcznik": "Główny",
         "Strona": "323"
       },
       {
-        "LP": "17",
-        "Co": "Maksymalne wartości atrybutów dla gatunków",
-        "Podręcznik": "Ostamotniony System",
-        "Strona": "91"
+        "LP": "28",
+        "Co": "Zasady Hord",
+        "Podręcznik": "Główny",
+        "Strona": "324"
       }
     ],
     "Bestiariusz": [
