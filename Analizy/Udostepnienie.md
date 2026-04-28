@@ -181,3 +181,47 @@ Przed udostępnieniem nowej wersji `DoPublikacji` należy wykonać kontrolę:
 ## Podsumowanie końcowe
 
 Plan `DoPublikacji` jest dobry i zwiększy bezpieczeństwo oraz niezależność grup, ale wymaga dyscypliny: **sanityzacja konfiguracji + usunięcie twardych URL-i + synchronizacja zmian między wersją główną i publikacyjną**. Jeśli te trzy elementy będą egzekwowane, grupy będą mogły działać całkowicie niezależnie „bez przeszkadzania sobie”.
+
+---
+
+## Uzupełnienie (2026-04-28): pytanie o `DataSlate_manifest.xlsx` i ryzyko zmian
+
+### Prompt użytkownika (kontekst)
+
+> Przeczytaj pliki:
+> Analizy/Hardcoded_URL_Audyt_2026-04-28.md
+> Analizy/Udostepnienie.md
+>
+> Mam pytanie odnośnie modułu DataVault. Tam jest plik DataSlate_manifest.xlsx zawierający ścieżki do assetów (tło, audio, itd.)
+> Czy nic się nie popsuje w przypadku modyfikacji tego modułu? Nie wystarczy w pliku DataSlate_manifest.xlsx wpisać nowych ścieżek do plików?
+>
+> Wnioski dopisz do pliku Analizy/Hardcoded_URL_Audyt_2026-04-28.md oraz do pliku Analizy/Udostepnienie.md
+
+### Odpowiedź analityczna
+
+**Samo wpisanie nowych ścieżek w `DataSlate_manifest.xlsx` nie jest gwarancją, że wszystko zadziała bezbłędnie.**
+
+Dodatkowo: plik `DataSlate_manifest.xlsx` należy do przepływu modułu **Infoczytnik** (panel GM), a nie do `DataVault`.
+
+### Dlaczego to nie wystarcza jako jedyny krok
+
+1. `DataSlate_manifest.xlsx` jest źródłem wejściowym, ale widok użytkownika korzysta z finalnego `assets/data/data.json`.
+2. Po zmianie XLSX trzeba przeprowadzić aktualizację (import/eksport) tak, aby nowy stan trafił do `data.json`.
+3. Trzeba zweryfikować dostępność plików pod nowymi ścieżkami (status 200, poprawny typ pliku, brak blokad CORS/mixed content).
+4. W kopii `DoPublikacji` preferowane są ścieżki względne do lokalnych assetów, aby uniknąć zależności od hostingu autora.
+
+### Rekomendowany minimalny proces bezpiecznej zmiany
+
+1. Zmienić ścieżki w `DataSlate_manifest.xlsx`.
+2. Odtworzyć/zapisać `assets/data/data.json` przez panel GM.
+3. Przetestować w widoku użytkownika:
+   - wszystkie tła,
+   - logo,
+   - audio,
+   - zachowanie po odświeżeniu strony,
+   - brak odwołań do starych domen.
+
+### Wniosek końcowy
+
+Jeżeli wykonasz tylko krok 1 (sam XLSX), istnieje realne ryzyko niespójności i błędów w runtime.
+Bezpieczny wariant to: **XLSX + regeneracja `data.json` + test funkcjonalny**.
