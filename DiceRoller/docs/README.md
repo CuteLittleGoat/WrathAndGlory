@@ -36,6 +36,11 @@
 
 ---
 
+### Ważne przy kopiowaniu modułu
+Przycisk **Strona Główna** ma ustawiony hiperłącze do modułu Main. Jeśli przeniesiesz aplikację do innej lokalizacji (np. inny serwer, inny folder), **musisz zaktualizować ten link**, aby powrót działał poprawnie.
+
+---
+
 ## 🇬🇧 User instructions (EN)
 
 ### What this module does
@@ -70,12 +75,5 @@
 - Language switching resets current result, so switch language before rolling.
 - Default start values: DN 3, Pool 2, Wrath 1.
 
-
-### Ważne przy kopiowaniu modułu
-Przycisk **Strona Główna** ma ustawiony hiperłącze do modułu Main. Jeśli przeniesiesz aplikację do innej lokalizacji (np. inny serwer, inny folder), **musisz zaktualizować ten link**, aby powrót działał poprawnie.
-
----
-
 ### Important when copying the module
 The **Main Page** button uses a hyperlink to the Main module. If you move the app to another location (for example another server or folder), you **must update this link** so return navigation still works.
-

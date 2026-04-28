@@ -52,6 +52,33 @@ Moduł **Audio** służy do szybkiego odtwarzania efektów dźwiękowych (SFX) p
 
 ---
 
+### Integracja Firebase — wymagana dla współdzielonych list
+Aby listy ulubionych i ustawienia były wspólne dla wielu urządzeń/użytkowników, moduł **Audio** wymaga integracji z Firebase (Firestore). Bez niej działa tylko lokalnie na jednym urządzeniu.
+
+#### Krok po kroku — konfiguracja bazy
+1. Wejdź na [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Wpisz nazwę projektu i kliknij **Dalej**.
+4. Wybierz ustawienia Analytics (opcjonalnie) i zakończ tworzenie.
+5. Kliknij ikonę **Web** (`</>`) i zarejestruj aplikację webową.
+6. Skopiuj obiekt `firebaseConfig`.
+7. Wklej dane do `Audio/config/firebase-config.js`.
+8. Otwórz **Firestore Database** w menu Firebase.
+9. Kliknij **Utwórz bazę danych**.
+10. Wybierz tryb startowy, kliknij **Dalej**, wybierz region i kliknij **Włącz**.
+11. W zakładce **Reguły** ustaw dostęp tak, aby uprawnieni użytkownicy mogli czytać i zapisywać ustawienia.
+12. Otwórz `Audio/index.html?admin=1` i sprawdź status Firebase.
+13. Utwórz testową listę ulubionych i odśwież stronę — lista powinna pozostać.
+
+---
+
+## Kopia modułu dla nowej grupy
+- Przed pierwszym użyciem na nowym serwerze podmień `Audio/config/firebase-config.js` na dane Firebase tej grupy.
+- Po uruchomieniu `Audio/index.html?admin=1` sprawdź status „Firebase” — ma wskazywać połączenie z właściwym projektem.
+- Dzięki osobnym konfiguracjom grupy nie nadpisują sobie danych list i widoków.
+
+---
+
 ## 🇬🇧 User instructions (EN)
 
 ### What this module is for
@@ -102,27 +129,6 @@ The **Audio** module lets you quickly play sound effects (SFX) during sessions. 
 - Use aliases for sounds with unclear names.
 - Pre-check key sound volumes before the session starts.
 
-
-### Integracja Firebase — wymagana dla współdzielonych list
-Aby listy ulubionych i ustawienia były wspólne dla wielu urządzeń/użytkowników, moduł **Audio** wymaga integracji z Firebase (Firestore). Bez niej działa tylko lokalnie na jednym urządzeniu.
-
-#### Krok po kroku — konfiguracja bazy
-1. Wejdź na [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Kliknij **Utwórz projekt**.
-3. Wpisz nazwę projektu i kliknij **Dalej**.
-4. Wybierz ustawienia Analytics (opcjonalnie) i zakończ tworzenie.
-5. Kliknij ikonę **Web** (`</>`) i zarejestruj aplikację webową.
-6. Skopiuj obiekt `firebaseConfig`.
-7. Wklej dane do `Audio/config/firebase-config.js`.
-8. Otwórz **Firestore Database** w menu Firebase.
-9. Kliknij **Utwórz bazę danych**.
-10. Wybierz tryb startowy, kliknij **Dalej**, wybierz region i kliknij **Włącz**.
-11. W zakładce **Reguły** ustaw dostęp tak, aby uprawnieni użytkownicy mogli czytać i zapisywać ustawienia.
-12. Otwórz `Audio/index.html?admin=1` i sprawdź status Firebase.
-13. Utwórz testową listę ulubionych i odśwież stronę — lista powinna pozostać.
-
----
-
 ### Firebase integration — required for shared lists
 To share favorites and settings across multiple devices/users, **Audio** requires Firebase (Firestore). Without it, settings work only locally on one device.
 
@@ -140,11 +146,6 @@ To share favorites and settings across multiple devices/users, **Audio** require
 11. In **Rules** set read/write access for authorized users.
 12. Open `Audio/index.html?admin=1` and verify Firebase status.
 13. Create a test favorites list and refresh page — it should persist.
-## Kopia modułu dla nowej grupy
-- Przed pierwszym użyciem na nowym serwerze podmień `Audio/config/firebase-config.js` na dane Firebase tej grupy.
-- Po uruchomieniu `Audio/index.html?admin=1` sprawdź status „Firebase” — ma wskazywać połączenie z właściwym projektem.
-- Dzięki osobnym konfiguracjom grupy nie nadpisują sobie danych list i widoków.
-
 ## Copying module for a new group
 - Before first use on a new server, replace `Audio/config/firebase-config.js` with that group’s Firebase credentials.
 - After opening `Audio/index.html?admin=1`, verify the “Firebase” status points to the intended project.
