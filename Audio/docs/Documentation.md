@@ -299,3 +299,8 @@ window.firebaseConfig = {
 5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100%.
 6. Zapis zmian do Firestore (`audio/favorites`) lub fallback do `localStorage` (`audio.settings`).
 7. Przełączanie języka równolegle aktualizuje etykiety obu widoków (admin + user preview).
+
+## 13. Wymagalność Firebase w instrukcji użytkownika
+- `docs/README.md` modułu Audio musi zawierać jasną informację, że Firebase/Firestore jest wymagane do współdzielonych list i ustawień między urządzeniami.
+- Instrukcja użytkowa powinna prowadzić przez pełny proces konsoli Firebase: projekt → aplikacja web → `config/firebase-config.js` → Firestore Database → reguły → test trwałości list.
+

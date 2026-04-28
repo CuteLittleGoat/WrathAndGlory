@@ -266,3 +266,8 @@ Sugerowany minimalny szkielet:
 - **Firebase/Firestore:** sekcje 5, 10 (dokument `dataslate/current`).
 - **Node.js / Web Push backend:** sekcje 9, 16, 17.
 - **Wersjonowanie i cache-busting:** sekcja 18.
+
+## 14. Wymagalność Firebase w instrukcji użytkownika
+- Instrukcja użytkownika (`docs/README.md`) musi jednoznacznie wskazywać, że moduł Infoczytnik wymaga integracji z Firebase/Firestore do komunikacji GM↔gracze.
+- W procedurze użytkowej należy utrzymywać kroki: utworzenie projektu, rejestracja aplikacji web, konfiguracja `config/firebase-config.js`, utworzenie Firestore Database, ustawienie reguł i test dwuekranowy.
+

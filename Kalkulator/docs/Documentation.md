@@ -445,3 +445,9 @@ Poniżej pełna paleta używana przez trzy strony modułu:
 - W stylach inline sekcji `confirm-modal` zmieniono kontener `.confirm-modal__media` na stałą wysokość `192px` (`height` + `min-height`), aby wymusić rezerwację miejsca na grafikę jeszcze przed pełnym wczytaniem bitmapy.
 - Klasa `.confirm-modal__image` została ustawiona na `height: 192px`, `width: auto`, `max-width: 100%`, `object-fit: contain`; to zachowuje proporcje nowego pliku `Modal_Icon.png` i utrzymuje docelową wysokość zgodną z poprzednią ikoną referencyjną `Modal_Icon_old.png`.
 - W znaczniku `<img id="confirmModalImage">` dodano atrybuty `width="1980"` i `height="2048"` (natywny rozmiar nowego pliku) oraz `decoding="async"`, aby przeglądarka mogła wcześniej obliczyć proporcje i utrzymać stabilny layout modala podczas ładowania obrazu.
+
+## 17. Firebase i nawigacja po migracji
+- Funkcja zapisu/odczytu postaci w `TworzeniePostaci.html` wymaga poprawnej konfiguracji Firebase (`Kalkulator/config/firebase-config.js`) oraz aktywnej bazy Firestore.
+- Minimalna procedura wdrożeniowa obejmuje: utworzenie projektu Firebase, rejestrację aplikacji web, utworzenie Firestore Database oraz skonfigurowanie reguł dostępu.
+- Przyciski `Strona Główna / Main Page` (w `KalkulatorXP.html` i `TworzeniePostaci.html`) należy po migracji aplikacji zweryfikować pod kątem poprawnego `href`/adresu docelowego.
+

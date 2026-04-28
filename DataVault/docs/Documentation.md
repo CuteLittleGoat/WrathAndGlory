@@ -909,3 +909,8 @@ Aby uniknąć opisów skrótowych, poniżej literalne wartości:
 
 ## 23) Uzupełnienie audytowe — katalog funkcji krytycznych
 W `app.js` funkcje kluczowe dla rekonstrukcji 1:1 to m.in.: normalizacja (`norm`, `normaliseDB`), budowa konfiguracji widoku (`createSheetViewState`, `applyDefaultViewForSheet`, `applyFullViewForSheet`), formatowanie inline (`formatInlineHTML`, `formatTextHTML`, `formatKeywordHTML`), render (`buildTableSkeleton`, `renderBody`, `renderRow`), clamp (`measureRenderedLines`, `updateClampableHints`), filtrowanie/sortowanie (`passesFilters`, `sortRows`, `compareByColumn`), parsowanie XLSX (`getCellTextWithMarkers`, `extractSheetRowsWithFormatting`, `buildDataJsonFromSheets`).
+
+## 18) Wymaganie aktualizacji hiperłącza `Strona Główna`
+- `#btnMainPage` jest przyciskiem nawigującym do modułu Main.
+- Po migracji aplikacji do innej lokalizacji należy zweryfikować i w razie potrzeby zaktualizować docelowy adres odnośnika.
+

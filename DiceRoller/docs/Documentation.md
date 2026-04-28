@@ -176,3 +176,8 @@ Poniższa sekcja zastępuje ogólne opisy typu „ciemne tło / zielone akcenty�
 - `resetState()` – resetuje formularz i panel wyników do wartości domyślnych.
 - `updateLanguage(lang)` – podmienia wszystkie etykiety PL/EN i resetuje stan.
 - `handleRoll()` – orkiestracja całego rzutu: walidacja, animacja, losowanie, obliczenia, render.
+
+## 11. Nawigacja „Strona Główna” po migracji
+- Przycisk `#mainPageButton` zawiera hiperłącze do `../Main/index.html`.
+- Przy zmianie struktury katalogów lub hosta trzeba zaktualizować `href`, aby zachować poprawny powrót do launchera.
+

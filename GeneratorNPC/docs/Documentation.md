@@ -435,3 +435,8 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - Zarządzanie modułami (broń/pancerz/itd.) przez sekcje wielokrotnego wyboru.
 - System ulubionych: Firestore `generatorNpc/favorites` + fallback localStorage.
 - Generowanie karty eksportowej (szablon HTML print z osobną paletą i fontem).
+
+## 13. Wymagalność Firebase w instrukcji użytkownika
+- `docs/README.md` modułu GeneratorNPC powinien informować, że Firebase/Firestore jest wymagane dla współdzielonych ulubionych (cross-device persistence).
+- Procedura użytkowa musi zawierać sekwencję: projekt Firebase, aplikacja web, konfiguracja `config/firebase-config.js`, utworzenie Firestore Database, reguły oraz test zapisu/odczytu ulubionych.
+
