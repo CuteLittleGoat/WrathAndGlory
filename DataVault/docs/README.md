@@ -42,6 +42,11 @@ Używaj go, gdy chcesz odświeżyć dane modułu po aktualizacji pliku źródło
 
 ---
 
+### Ważne przy kopiowaniu modułu
+W module jest przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji (inna domena, inny katalog) **koniecznie zaktualizuj jego hiperłącze**, żeby poprawnie wracał do strony startowej.
+
+---
+
 ## 🇬🇧 User instructions (EN)
 
 ### What DataVault is for
@@ -82,12 +87,5 @@ Use it when module data needs refreshing after source updates. It prepares a new
 - Use compare mode when choosing between options.
 - If the screen becomes too filtered, use **Full View**.
 
-
-### Ważne przy kopiowaniu modułu
-W module jest przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji (inna domena, inny katalog) **koniecznie zaktualizuj jego hiperłącze**, żeby poprawnie wracał do strony startowej.
-
----
-
 ### Important when copying the module
 This module includes a **Strona Główna / Main Page** button. After copying the app to another location (different domain or folder), **update its hyperlink** so it returns to the launcher correctly.
-

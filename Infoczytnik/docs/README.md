@@ -47,6 +47,34 @@
 
 ---
 
+### Integracja Firebase — wymagana
+Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran graczy wymieniają dane na żywo przez bazę.
+
+#### Krok po kroku — jak utworzyć bazę danych
+1. Otwórz [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Wpisz nazwę projektu i przejdź dalej.
+4. Wybierz ustawienia Analytics (opcjonalnie) i zakończ tworzenie projektu.
+5. W panelu projektu kliknij ikonę **Web** (`</>`) i zarejestruj aplikację webową.
+6. Skopiuj konfigurację `firebaseConfig`.
+7. Otwórz plik `Infoczytnik/config/firebase-config.js` i wklej dane projektu.
+8. W menu po lewej kliknij **Firestore Database**.
+9. Kliknij **Utwórz bazę danych**.
+10. Wybierz tryb startowy i kliknij **Dalej**.
+11. Wybierz region i kliknij **Włącz**.
+12. W zakładce **Reguły** ustaw dostęp zgodnie z potrzebą (np. tylko dla Twojej grupy).
+13. Zapisz reguły.
+14. Uruchom `Infoczytnik/GM_test.html` oraz `Infoczytnik/Infoczytnik_test.html` i sprawdź, czy wysłana wiadomość od razu pojawia się na ekranie gracza.
+
+---
+
+## Kopia modułu dla nowej grupy
+- W nowej kopii modułu ustaw własny `Infoczytnik/config/firebase-config.js`.
+- Dzięki temu panel GM i ekran odczytu korzystają z oddzielnego Firestore i nie mieszają treści między grupami.
+- Po konfiguracji uruchom `GM_test.html` i `Infoczytnik_test.html`, wpisz wiadomość testową i sprawdź odczyt.
+
+---
+
 ## 🇬🇧 User instructions (EN)
 
 ### What this module is for
@@ -92,28 +120,6 @@
 - **No sound** → check **Audio** toggle and system volume.
 - **Different look on projector/mobile** → reselect background and send shorter text.
 
-
-### Integracja Firebase — wymagana
-Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran graczy wymieniają dane na żywo przez bazę.
-
-#### Krok po kroku — jak utworzyć bazę danych
-1. Otwórz [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Kliknij **Utwórz projekt**.
-3. Wpisz nazwę projektu i przejdź dalej.
-4. Wybierz ustawienia Analytics (opcjonalnie) i zakończ tworzenie projektu.
-5. W panelu projektu kliknij ikonę **Web** (`</>`) i zarejestruj aplikację webową.
-6. Skopiuj konfigurację `firebaseConfig`.
-7. Otwórz plik `Infoczytnik/config/firebase-config.js` i wklej dane projektu.
-8. W menu po lewej kliknij **Firestore Database**.
-9. Kliknij **Utwórz bazę danych**.
-10. Wybierz tryb startowy i kliknij **Dalej**.
-11. Wybierz region i kliknij **Włącz**.
-12. W zakładce **Reguły** ustaw dostęp zgodnie z potrzebą (np. tylko dla Twojej grupy).
-13. Zapisz reguły.
-14. Uruchom `Infoczytnik/GM_test.html` oraz `Infoczytnik/Infoczytnik_test.html` i sprawdź, czy wysłana wiadomość od razu pojawia się na ekranie gracza.
-
----
-
 ### Firebase integration — required
 **Infoczytnik** requires Firebase (Firestore), because GM and player screens exchange data live through the database.
 
@@ -132,11 +138,6 @@ Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran g
 12. In **Rules** tab set access for your group.
 13. Save rules.
 14. Launch `Infoczytnik/GM_test.html` and `Infoczytnik/Infoczytnik_test.html` and confirm sent message appears immediately on player screen.
-## Kopia modułu dla nowej grupy
-- W nowej kopii modułu ustaw własny `Infoczytnik/config/firebase-config.js`.
-- Dzięki temu panel GM i ekran odczytu korzystają z oddzielnego Firestore i nie mieszają treści między grupami.
-- Po konfiguracji uruchom `GM_test.html` i `Infoczytnik_test.html`, wpisz wiadomość testową i sprawdź odczyt.
-
 ## Copying module for a new group
 - In each new module copy, set a dedicated `Infoczytnik/config/firebase-config.js`.
 - This ensures GM panel and reader screen use separate Firestore data and do not mix messages between groups.

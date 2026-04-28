@@ -45,6 +45,33 @@
 
 ---
 
+### Integracja Firebase — wymagana dla współdzielonych ulubionych
+Aby lista **Ulubionych** była współdzielona i trwała między urządzeniami, moduł **Generator NPC** wymaga integracji z Firebase (Firestore). Bez niej zapis działa tylko lokalnie.
+
+#### Krok po kroku — tworzenie projektu i bazy
+1. Otwórz [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Podaj nazwę projektu i kliknij **Dalej**.
+4. Ustaw Analytics (opcjonalnie) i zakończ tworzenie.
+5. Dodaj aplikację webową przez ikonę **Web** (`</>`).
+6. Skopiuj konfigurację `firebaseConfig`.
+7. Wklej wartości do pliku `GeneratorNPC/config/firebase-config.js`.
+8. Przejdź do **Firestore Database**.
+9. Kliknij **Utwórz bazę danych**.
+10. Wybierz tryb, kliknij **Dalej**, wybierz region, kliknij **Włącz**.
+11. Ustaw reguły dostępu w zakładce **Reguły**.
+12. Otwórz `GeneratorNPC/index.html`.
+13. Dodaj wpis do **Ulubionych** i odśwież stronę — wpis powinien być dalej dostępny.
+
+---
+
+## Kopia modułu dla nowej grupy
+- Podmień `GeneratorNPC/config/firebase-config.js` na konfigurację Firebase grupy.
+- Sprawdź i ewentualnie zmień adres źródła danych `DATA_URL`, aby wskazywał DataVault na tym samym prywatnym serwerze grupy.
+- Po zmianie wygeneruj testową kartę i zapisz ulubione, aby potwierdzić działanie.
+
+---
+
 ## 🇬🇧 User instructions (EN)
 
 ### What this module is for
@@ -88,27 +115,6 @@
 - Save recurring opponents as favorites.
 - If your table is bilingual, review card after language switch before print/share.
 
-
-### Integracja Firebase — wymagana dla współdzielonych ulubionych
-Aby lista **Ulubionych** była współdzielona i trwała między urządzeniami, moduł **Generator NPC** wymaga integracji z Firebase (Firestore). Bez niej zapis działa tylko lokalnie.
-
-#### Krok po kroku — tworzenie projektu i bazy
-1. Otwórz [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Kliknij **Utwórz projekt**.
-3. Podaj nazwę projektu i kliknij **Dalej**.
-4. Ustaw Analytics (opcjonalnie) i zakończ tworzenie.
-5. Dodaj aplikację webową przez ikonę **Web** (`</>`).
-6. Skopiuj konfigurację `firebaseConfig`.
-7. Wklej wartości do pliku `GeneratorNPC/config/firebase-config.js`.
-8. Przejdź do **Firestore Database**.
-9. Kliknij **Utwórz bazę danych**.
-10. Wybierz tryb, kliknij **Dalej**, wybierz region, kliknij **Włącz**.
-11. Ustaw reguły dostępu w zakładce **Reguły**.
-12. Otwórz `GeneratorNPC/index.html`.
-13. Dodaj wpis do **Ulubionych** i odśwież stronę — wpis powinien być dalej dostępny.
-
----
-
 ### Firebase integration — required for shared favorites
 To keep **Favorites** shared and persistent across devices, **NPC Generator** requires Firebase (Firestore). Without it, favorites are local only.
 
@@ -126,11 +132,6 @@ To keep **Favorites** shared and persistent across devices, **NPC Generator** re
 11. Set access rules in **Rules**.
 12. Open `GeneratorNPC/index.html`.
 13. Add one favorite and refresh page — entry should still be present.
-## Kopia modułu dla nowej grupy
-- Podmień `GeneratorNPC/config/firebase-config.js` na konfigurację Firebase grupy.
-- Sprawdź i ewentualnie zmień adres źródła danych `DATA_URL`, aby wskazywał DataVault na tym samym prywatnym serwerze grupy.
-- Po zmianie wygeneruj testową kartę i zapisz ulubione, aby potwierdzić działanie.
-
 ## Copying module for a new group
 - Replace `GeneratorNPC/config/firebase-config.js` with the group-specific Firebase configuration.
 - Verify and, if needed, change `DATA_URL` so it points to DataVault hosted on the same private server.

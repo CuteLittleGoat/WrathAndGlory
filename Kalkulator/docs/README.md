@@ -48,6 +48,38 @@ Na stronie startowej znajduje się też **Tajny przycisk!** (easter egg).
 
 ---
 
+### Integracja Firebase — wymagana dla pełnego zapisu postaci
+Aby funkcja zapisu/odczytu postaci w części **Tworzenie Postaci** działała poprawnie między urządzeniami, musisz mieć aktywny projekt Firebase i bazę Firestore.
+
+#### Krok po kroku (Firebase Console)
+1. Wejdź na stronę [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Wpisz nazwę projektu i kliknij **Dalej**.
+4. (Opcjonalnie) wyłącz Google Analytics, jeśli nie jest potrzebne, i kliknij **Utwórz projekt**.
+5. Po utworzeniu projektu kliknij ikonę **Web** (`</>`) aby dodać aplikację webową.
+6. Podaj nazwę aplikacji i kliknij **Zarejestruj aplikację**.
+7. Skopiuj dane konfiguracyjne `firebaseConfig`.
+8. Otwórz plik `Kalkulator/config/firebase-config.js` i wklej tam skopiowane wartości.
+9. W lewym menu Firebase kliknij **Firestore Database**.
+10. Kliknij **Utwórz bazę danych**.
+11. Wybierz tryb startowy (na start testowy, potem reguły produkcyjne) i kliknij **Dalej**.
+12. Wybierz region najbliższy użytkownikom i kliknij **Włącz**.
+13. W zakładce **Reguły** ustaw reguły dostępu odpowiednie do Twojej grupy.
+14. Zapisz reguły i odśwież `Kalkulator/TworzeniePostaci.html`.
+15. Wykonaj próbny zapis postaci i sprawdź, czy dane wracają po ponownym wczytaniu.
+
+### Ważne przy kopiowaniu modułu
+W Kalkulatorze występuje przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji **musisz edytować hiperłącze**, aby wskazywało poprawny adres modułu Main.
+
+---
+
+## Kopia modułu dla nowej grupy
+- Ustaw osobny `Kalkulator/config/firebase-config.js` dla serwera grupy.
+- Sprawdź przycisk **Strona Główna / Main Page** w `TworzeniePostaci`, aby wracał do właściwego `Main` na tym serwerze.
+- Wykonaj test: zapisz postać i odczytaj ją ponownie.
+
+---
+
 ## 🇬🇧 User instructions (EN)
 
 ### What this module includes
@@ -94,32 +126,6 @@ The landing page also includes a **Secret button!** (easter egg).
 - English language uses **XP** label.
 - Species limit tables are reference-only and do not auto-fill fields.
 
-
-### Integracja Firebase — wymagana dla pełnego zapisu postaci
-Aby funkcja zapisu/odczytu postaci w części **Tworzenie Postaci** działała poprawnie między urządzeniami, musisz mieć aktywny projekt Firebase i bazę Firestore.
-
-#### Krok po kroku (Firebase Console)
-1. Wejdź na stronę [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Kliknij **Utwórz projekt**.
-3. Wpisz nazwę projektu i kliknij **Dalej**.
-4. (Opcjonalnie) wyłącz Google Analytics, jeśli nie jest potrzebne, i kliknij **Utwórz projekt**.
-5. Po utworzeniu projektu kliknij ikonę **Web** (`</>`) aby dodać aplikację webową.
-6. Podaj nazwę aplikacji i kliknij **Zarejestruj aplikację**.
-7. Skopiuj dane konfiguracyjne `firebaseConfig`.
-8. Otwórz plik `Kalkulator/config/firebase-config.js` i wklej tam skopiowane wartości.
-9. W lewym menu Firebase kliknij **Firestore Database**.
-10. Kliknij **Utwórz bazę danych**.
-11. Wybierz tryb startowy (na start testowy, potem reguły produkcyjne) i kliknij **Dalej**.
-12. Wybierz region najbliższy użytkownikom i kliknij **Włącz**.
-13. W zakładce **Reguły** ustaw reguły dostępu odpowiednie do Twojej grupy.
-14. Zapisz reguły i odśwież `Kalkulator/TworzeniePostaci.html`.
-15. Wykonaj próbny zapis postaci i sprawdź, czy dane wracają po ponownym wczytaniu.
-
-### Ważne przy kopiowaniu modułu
-W Kalkulatorze występuje przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji **musisz edytować hiperłącze**, aby wskazywało poprawny adres modułu Main.
-
----
-
 ### Firebase integration — required for full character save
 To use cross-device save/load in **Character Creation**, you need an active Firebase project and Firestore database.
 
@@ -142,11 +148,6 @@ To use cross-device save/load in **Character Creation**, you need an active Fire
 
 ### Important when copying the module
 Calculator contains a **Strona Główna / Main Page** button. After moving the app to another location, **edit its hyperlink** to point to the correct Main module path.
-## Kopia modułu dla nowej grupy
-- Ustaw osobny `Kalkulator/config/firebase-config.js` dla serwera grupy.
-- Sprawdź przycisk **Strona Główna / Main Page** w `TworzeniePostaci`, aby wracał do właściwego `Main` na tym serwerze.
-- Wykonaj test: zapisz postać i odczytaj ją ponownie.
-
 ## Copying module for a new group
 - Set a separate `Kalkulator/config/firebase-config.js` for the group server.
 - Verify the **Strona Główna / Main Page** button in `TworzeniePostaci` returns to the correct `Main` on that server.
