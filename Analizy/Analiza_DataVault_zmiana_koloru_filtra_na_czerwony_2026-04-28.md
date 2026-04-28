@@ -97,3 +97,59 @@ Dodatkowo (dobra praktyka, choć nie było wymagane wprost):
 2. Zarówno przycisk filtra, jak i nagłówek aktywnej kolumny mają spójne czerwone wyróżnienie.
 3. Brak zmian w działaniu filtrowania (wyłącznie warstwa wizualna).
 4. Zaktualizowane pliki: `DetaleLayout.md` i `DataVault/docs/Documentation.md`.
+
+## Sekcja wdrożenia po analizie (2026-04-28)
+
+Poniżej pełna lista zmian wykonanych na podstawie tej analizy.
+
+### 1) DataVault/style.css
+- Linia 279
+  Było: `box-shadow: inset 0 -2px 0 var(--accent);`
+  Jest: `box-shadow: inset 0 -2px 0 rgba(255,85,85,.40);`
+
+- Linia 280
+  Było: `background:linear-gradient(180deg, rgba(22,198,12,.16), rgba(22,198,12,.06));`
+  Jest: `background:linear-gradient(180deg, rgba(255,70,70,.18), rgba(255,70,70,.07));`
+
+- Linia 913
+  Było: `border-color:var(--accent);`
+  Jest: `border-color:rgba(255,85,85,.40);`
+
+- Linia 914
+  Było: `background:rgba(22,198,12,.18);`
+  Jest: `background:rgba(255,70,70,.20);`
+
+- Linia 915
+  Było: `box-shadow:0 0 0 1px rgba(22,198,12,.22), 0 0 10px rgba(22,198,12,.22);`
+  Jest: `box-shadow:0 0 0 1px rgba(255,85,85,.30), 0 0 10px rgba(255,85,85,.40);`
+
+- Linia 921
+  Było: `color:var(--code);`
+  Jest: `color:rgb(255,120,120);`
+
+### 2) DataVault/docs/Documentation.md
+- Linia 149
+  Było: `- Aktywny filtr kolumny dodaje klasę .filter-active do nagłówka z pierwszego wiersza, co daje akcentowe podświetlenie (box-shadow + mocniejszy gradient tła).`
+  Jest: `- Aktywny filtr kolumny dodaje klasę .filter-active do nagłówka z pierwszego wiersza, co daje jasnoczerwone podświetlenie (box-shadow: inset 0 -2px 0 rgba(255,85,85,.40) + czerwony gradient tła).`
+
+- Linie 173-175 (blok opisu `.filterBtn.filter-active`)
+  Było: opis zielonego aktywnego filtra (`border-color: var(--accent)`, zielone tło i glow, marker `var(--code)`).
+  Jest: opis czerwonego aktywnego filtra (`border-color: rgba(255,85,85,.40)`, `rgba(255,70,70,.20)`, `0 0 10px rgba(255,85,85,.40)`, marker `rgb(255,120,120)`).
+
+### 3) DataVault/docs/README.md
+- Linia 15
+  Było: `- **Filtry kolumnowe** – zawężają wyniki w konkretnych kolumnach.`
+  Jest: `- **Filtry kolumnowe** – zawężają wyniki w konkretnych kolumnach; aktywny filtr jest oznaczony jasnoczerwonym podświetleniem i kropką przy ikonie filtra.`
+
+- Linia 57
+  Było: `- **Column filters** – narrow results per column.`
+  Jest: `- **Column filters** – narrow results per column; an active filter is marked with a bright red highlight and a dot next to the filter icon.`
+
+### 4) DetaleLayout.md
+- Linie 167-169 (blok aktywnego przycisku filtra)
+  Było: opis zielonego tła i zielonego glow.
+  Jest: opis jasnoczerwonego tła (`rgba(255,70,70,.20)`), czerwonego glow (`0 0 10px rgba(255,85,85,.40)`), obwódki (`0 0 0 1px rgba(255,85,85,.30)`) i czerwonego znacznika `●`.
+
+- Linia 209
+  Było: `... akcentową linią dolną (inset 0 -2px 0 var(--accent)),`
+  Jest: `... jasnoczerwoną linią dolną (inset 0 -2px 0 rgba(255,85,85,.40)) i czerwonym gradientem tła (rgba(255,70,70,.18) → rgba(255,70,70,.07)),`

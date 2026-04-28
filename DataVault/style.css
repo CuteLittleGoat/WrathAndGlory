@@ -274,9 +274,10 @@ code{color:var(--code)}
   top:var(--header-row-height);
   background:rgba(22,198,12,.05);
 }
+/* --- Aktywny filtr kolumny: jasna czerwień + glow dla nagłówka / Active column filter: bright red + glow for header --- */
 .dataTable thead tr:first-child th.filter-active{
-  box-shadow: inset 0 -2px 0 var(--accent);
-  background:linear-gradient(180deg, rgba(22,198,12,.16), rgba(22,198,12,.06));
+  box-shadow: inset 0 -2px 0 rgba(255,85,85,.40);
+  background:linear-gradient(180deg, rgba(255,70,70,.18), rgba(255,70,70,.07));
 }
 .dataTable tbody tr:nth-child(odd){background:var(--zebra-odd)}
 .dataTable tbody tr:nth-child(even){background:var(--zebra-even)}
@@ -907,16 +908,17 @@ td.center{text-align:center}
 .filterBtn{margin-left:6px; width:24px; height:24px; display:inline-grid; place-items:center;
   border:1px solid var(--b2); background:rgba(22,198,12,.04); color:var(--text); border-radius:6px; cursor:pointer}
 .filterBtn:hover{background:rgba(22,198,12,.08)}
+/* --- Aktywny przycisk filtra: jasna czerwień + glow / Active filter button: bright red + glow --- */
 .filterBtn.filter-active{
-  border-color:var(--accent);
-  background:rgba(22,198,12,.18);
-  box-shadow:0 0 0 1px rgba(22,198,12,.22), 0 0 10px rgba(22,198,12,.22);
+  border-color:rgba(255,85,85,.40);
+  background:rgba(255,70,70,.20);
+  box-shadow:0 0 0 1px rgba(255,85,85,.30), 0 0 10px rgba(255,85,85,.40);
   position:relative;
 }
 .filterBtn.filter-active::after{
   content:"●";
   font-size:9px;
-  color:var(--code);
+  color:rgb(255,120,120);
   position:absolute;
   top:-4px;
   right:-2px;

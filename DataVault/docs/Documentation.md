@@ -146,7 +146,7 @@ Efekty i obwódki:
   - `thead th` — sticky, uppercase, background gradient.
   - Drugi wiersz nagłówka (`tr:nth-child(2)`) ma niższe tło i `top: var(--header-row-height)`.
   - W drugim wierszu pierwsza komórka (`th.noFilterCell`) jest celowo pusta — kolumna wyboru `✓` nie ma filtra, więc nie renderuje placeholdera „filtr...”.
-  - Aktywny filtr kolumny dodaje klasę `.filter-active` do nagłówka z pierwszego wiersza, co daje akcentowe podświetlenie (`box-shadow` + mocniejszy gradient tła).
+  - Aktywny filtr kolumny dodaje klasę `.filter-active` do nagłówka z pierwszego wiersza, co daje jasnoczerwone podświetlenie (`box-shadow: inset 0 -2px 0 rgba(255,85,85,.40)` + czerwony gradient tła).
 - Zebra striping: `tbody tr:nth-child(odd)` + `tbody tr:nth-child(even)` (dwa odcienie zieleni).
 - Hover: `tbody tr:hover`.
 - Zaznaczony wiersz: `tbody tr.row-selected`.
@@ -170,9 +170,9 @@ Efekty i obwódki:
 - `.filterMenu` — fixed, z max-height, scroll i shadow.
 - `.fmTitle`, `.fmSearch`, `.fmActions`, `.fmList`, `.fmItem`.
 - `.filterBtn.filter-active`:
-  - mocniejsza ramka (`border-color: var(--accent)`),
-  - mocniejsze tło i glow,
-  - pseudo-element `::after` z kropką `●` jako jednoznaczny znacznik aktywnego filtra.
+  - mocniejsza ramka (`border-color: rgba(255,85,85,.40)`),
+  - jasnoczerwone tło (`rgba(255,70,70,.20)`) i czerwony glow (`0 0 10px rgba(255,85,85,.40)`),
+  - pseudo-element `::after` z kropką `●` w kolorze `rgb(255,120,120)` jako jednoznaczny znacznik aktywnego filtra.
 
 ### 3.11 Formatowanie inline
 - `.inline-red`, `.keyword-red`, `.keyword-comma`, `.inline-bold`, `.inline-italic`.
