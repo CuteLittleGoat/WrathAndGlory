@@ -68,6 +68,7 @@ Aby lista **Ulubionych** była współdzielona i trwała między urządzeniami, 
 ## Kopia modułu dla nowej grupy
 - Podmień `GeneratorNPC/config/firebase-config.js` na konfigurację Firebase grupy.
 - Sprawdź i ewentualnie zmień adres źródła danych `DATA_URL`, aby wskazywał DataVault na tym samym prywatnym serwerze grupy.
+- Moduł działa poprawnie, jeżeli obok folderu `GeneratorNPC` znajduje się folder `DataVault` zawierający plik `data.json` (ścieżka względna: `../DataVault/data.json`).
 - Po zmianie wygeneruj testową kartę i zapisz ulubione, aby potwierdzić działanie.
 
 ---
@@ -135,4 +136,5 @@ To keep **Favorites** shared and persistent across devices, **NPC Generator** re
 ## Copying module for a new group
 - Replace `GeneratorNPC/config/firebase-config.js` with the group-specific Firebase configuration.
 - Verify and, if needed, change `DATA_URL` so it points to DataVault hosted on the same private server.
+- The module works correctly when a `DataVault` folder is placed next to `GeneratorNPC` and contains `data.json` (relative path: `../DataVault/data.json`).
 - After changes, generate a test card and save favorites to confirm everything works.

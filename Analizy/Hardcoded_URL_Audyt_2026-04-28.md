@@ -288,3 +288,67 @@ Na wszystkie pytania 1–4: **tak, ścieżki względne są poprawnym i zalecanym
 
 Na pytania 5–6: **Twoje założenie jest poprawne** — jeśli kopia nie zawiera push, usunięcie plików push i archiwum całkowicie zamyka temat tych hardcoded-ów w kopii.
 
+
+
+---
+
+## Proponowane zmiany w kodzie
+
+Założenie wdrożeniowe: w **wersji produkcyjnej** i w **kopii** przechodzimy na ścieżki względne tam, gdzie moduły i zasoby są częścią tej samej paczki katalogów.
+
+### 1) `Main/index.html` — nawigacja między modułami
+
+Zmienić linki absolutne GitHub Pages na relatywne:
+
+- `href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html"` → `href="../DataVault/index.html"`
+- `href="https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/"` → `href="../GeneratorNPC/"`
+- `href="https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/"` → `href="../Kalkulator/"`
+- `"https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html"` → `"../Infoczytnik/index.html"`
+- `"https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1"` → `"../DataVault/index.html?admin=1"`
+- `"https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html"` → `"../DataVault/index.html"`
+
+Efekt: brak zależności od domeny autora przy zachowaniu działania na tej samej strukturze katalogów.
+
+### 2) `GeneratorNPC/index.html` — źródło `data.json`
+
+Zamienić odwołania absolutne do DataVault na relatywne:
+
+- `href="https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json"` → `href="../DataVault/data.json"`
+- tekst pomocniczy `cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json` → `../DataVault/data.json`
+- `const DATA_URL = "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json";` → `const DATA_URL = "../DataVault/data.json";`
+
+Efekt: `GeneratorNPC` działa z lokalnym `DataVault/data.json` w tej samej paczce modułów.
+
+### 3) `Infoczytnik/assets/data/data.json` — media (obrazy, audio, logo)
+
+Zamienić pełne URL-e na relatywne ścieżki do zasobów modułu, np.:
+
+- `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/backgrounds/DataSlate_01.png` → `../backgrounds/DataSlate_01.png`
+- `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/logos/Mechanicus.png` → `../logos/Mechanicus.png`
+- `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/audios/Message.mp3` → `../audios/Message.mp3`
+
+Efekt: multimedia ładują się lokalnie z katalogu `Infoczytnik/assets/...`, bez stałej domeny.
+
+### 4) `Infoczytnik/index.html` — opis adresu aplikacji
+
+Zmienić statyczny tekst z adresem autora na neutralny komunikat (bez domeny), np.:
+
+- `Adres strony: https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/`
+- → `Adres strony: uruchomiono lokalną instancję modułu Infoczytnik`
+
+Efekt: UI nie ujawnia ani nie wymaga konkretnego hostingu autora.
+
+### 5) Pliki push i archiwum (tylko kopia)
+
+Zgodnie z założeniami:
+- w kopii nie dostarczamy funkcji push,
+- folder `WebView_FCM_Cloudflare_Worker` nie trafia do kopii,
+- `Infoczytnik/config/web-push-config.js` i zależna logika UI są usuwane lub wyłączane w kopii.
+
+Efekt: brak zależności od `workers.dev` i brak danych środowiskowych autora.
+
+### 6) Zmiana dokumentacji użytkowej wymagana dla GeneratorNPC
+
+Dodać do `GeneratorNPC/docs/README.md` (PL i EN) informację:
+- moduł działa poprawnie, jeśli obok katalogu `GeneratorNPC` znajduje się katalog `DataVault` z plikiem `data.json`.
+- rekomendowana relacja katalogów: `../DataVault/data.json` względem `GeneratorNPC/index.html`.
