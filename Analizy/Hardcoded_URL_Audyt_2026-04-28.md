@@ -352,3 +352,48 @@ Efekt: brak zależności od `workers.dev` i brak danych środowiskowych autora.
 Dodać do `GeneratorNPC/docs/README.md` (PL i EN) informację:
 - moduł działa poprawnie, jeśli obok katalogu `GeneratorNPC` znajduje się katalog `DataVault` z plikiem `data.json`.
 - rekomendowana relacja katalogów: `../DataVault/data.json` względem `GeneratorNPC/index.html`.
+
+---
+
+## Dodatkowe wnioski (2026-04-28) — pytanie o `DataSlate_manifest.xlsx` i bezpieczeństwo zmian
+
+### Prompt użytkownika (kontekst)
+
+> Przeczytaj pliki:
+> Analizy/Hardcoded_URL_Audyt_2026-04-28.md
+> Analizy/Udostepnienie.md
+>
+> Mam pytanie odnośnie modułu DataVault. Tam jest plik DataSlate_manifest.xlsx zawierający ścieżki do assetów (tło, audio, itd.)
+> Czy nic się nie popsuje w przypadku modyfikacji tego modułu? Nie wystarczy w pliku DataSlate_manifest.xlsx wpisać nowych ścieżek do plików?
+>
+> Wnioski dopisz do pliku Analizy/Hardcoded_URL_Audyt_2026-04-28.md oraz do pliku Analizy/Udostepnienie.md
+
+### Krótka odpowiedź
+
+**Nie — samo wpisanie nowych ścieżek w `DataSlate_manifest.xlsx` zwykle nie wystarczy jako jedyna zmiana.**
+
+### Doprecyzowanie kluczowe
+
+1. `DataSlate_manifest.xlsx` dotyczy modułu **Infoczytnik**, a nie `DataVault`.
+   - W kodzie import tego pliku jest realizowany w `Infoczytnik/GM.html` (`MANIFEST_XLSX_PATH = 'assets/data/DataSlate_manifest.xlsx'`) oraz odpowiednikach test/backup.
+
+2. Moduł użytkownika (`Infoczytnik/Infoczytnik.html`) czyta finalnie `assets/data/data.json`.
+   - To oznacza, że sama edycja XLSX jest pośrednia — po zmianie ścieżek trzeba jeszcze poprawnie odświeżyć/zapisać wynikowy `data.json` (zgodnie z workflow modułu GM).
+
+3. Żeby „nic się nie popsuło”, muszą być spełnione dodatkowe warunki poza samą zmianą ścieżek:
+   - pliki faktycznie istnieją pod nowymi adresami,
+   - formaty i nazwy plików są zgodne,
+   - jeśli użyte są URL absolutne, to muszą być dostępne publicznie,
+   - jeśli użyte są ścieżki względne, muszą być zgodne ze strukturą katalogów po wdrożeniu,
+   - nie może być konfliktu mixed-content (np. `http` przy stronie `https`).
+
+4. W kontekście kopii `DoPublikacji` bezpieczniej jest przejść na ścieżki względne do lokalnych zasobów (`Infoczytnik/assets/...`) niż utrzymywać URL-e do hostingu autora.
+
+### Wniosek praktyczny
+
+Aby bezpiecznie zmodyfikować ten obszar:
+1) zaktualizować ścieżki w `DataSlate_manifest.xlsx`,
+2) wygenerować/odświeżyć `assets/data/data.json` przez mechanizm GM,
+3) wykonać test końcowy w widoku użytkownika (tło, logo, audio, fallbacki, ładowanie po refreshu).
+
+Dopiero taki komplet daje wysoką pewność, że nic się nie popsuje.
