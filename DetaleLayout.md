@@ -164,9 +164,9 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `rgba(0,0,0,.55)` — tło overlay w modalach.
 - `#E6B35C` — kolor `.compareDiff` (wyróżnienia w porównaniach).
 - Aktywny przycisk filtra kolumny (`.filterBtn.filter-active`) używa:
-  - tła `rgba(22,198,12,.18)`,
-  - zewnętrznej poświaty `0 0 10px rgba(22,198,12,.22)`,
-  - dodatkowego znacznika `●` (`::after`) w kolorze `var(--code)`.
+  - tła `rgba(255,70,70,.20)`,
+  - czerwonej zewnętrznej poświaty `0 0 10px rgba(255,85,85,.40)` + obwódki `0 0 0 1px rgba(255,85,85,.30)`,
+  - dodatkowego znacznika `●` (`::after`) w kolorze `rgb(255,120,120)`.
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
 
@@ -206,7 +206,7 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 
 #### 3.6a Sygnalizacja aktywnych filtrów kolumnowych
 - Aktywny filtr (tekstowy lub listowy) oznacza:
-  - podświetlenie nagłówka kolumny (`thead tr:first-child th.filter-active`) z akcentową linią dolną (`inset 0 -2px 0 var(--accent)`),
+  - podświetlenie nagłówka kolumny (`thead tr:first-child th.filter-active`) z jasnoczerwoną linią dolną (`inset 0 -2px 0 rgba(255,85,85,.40)`) i czerwonym gradientem tła (`rgba(255,70,70,.18)` → `rgba(255,70,70,.07)`),
   - aktywny stan przycisku filtra (`.filterBtn.filter-active`) z kropką `●`.
 - W drugim wierszu nagłówka komórka odpowiadająca kolumnie wyboru `✓` (`th.noFilterCell`) jest celowo pusta — usunięto placeholder „filtr...”, bo ta kolumna nie posiada filtra.
 

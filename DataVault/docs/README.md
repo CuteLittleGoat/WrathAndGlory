@@ -12,7 +12,7 @@
 ### Co znajdziesz na ekranie
 - **Zakładki** – przełączają między grupami danych.
 - **Szukaj (globalnie)** – szuka wpisów w aktualnym obszarze.
-- **Filtry kolumnowe** – zawężają wyniki w konkretnych kolumnach.
+- **Filtry kolumnowe** – zawężają wyniki w konkretnych kolumnach; aktywny filtr jest oznaczony jasnoczerwonym podświetleniem i kropką przy ikonie filtra.
 - **Pełen Widok** – czyści filtry/sortowanie i pokazuje pełną listę.
 - **Widok Domyślny** – przywraca domyślny układ danych.
 - **Porównaj zaznaczone** – otwiera porównanie wybranych pozycji.
@@ -54,7 +54,7 @@ Używaj go, gdy chcesz odświeżyć dane modułu po aktualizacji pliku źródło
 ### What you get on screen
 - **Tabs** – switch between data groups.
 - **Global search** – finds entries in the current area.
-- **Column filters** – narrow results per column.
+- **Column filters** – narrow results per column; an active filter is marked with a bright red highlight and a dot next to the filter icon.
 - **Pełen Widok / Full View** – clears filters/sorting and restores full list.
 - **Widok Domyślny / Default View** – restores default data layout.
 - **Porównaj zaznaczone / Compare selected** – opens side-by-side comparison.
