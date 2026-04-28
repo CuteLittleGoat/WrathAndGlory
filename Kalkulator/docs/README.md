@@ -142,4 +142,12 @@ To use cross-device save/load in **Character Creation**, you need an active Fire
 
 ### Important when copying the module
 Calculator contains a **Strona Główna / Main Page** button. After moving the app to another location, **edit its hyperlink** to point to the correct Main module path.
+## Kopia modułu dla nowej grupy
+- Ustaw osobny `Kalkulator/config/firebase-config.js` dla serwera grupy.
+- Sprawdź przycisk **Strona Główna / Main Page** w `TworzeniePostaci`, aby wracał do właściwego `Main` na tym serwerze.
+- Wykonaj test: zapisz postać i odczytaj ją ponownie.
 
+## Copying module for a new group
+- Set a separate `Kalkulator/config/firebase-config.js` for the group server.
+- Verify the **Strona Główna / Main Page** button in `TworzeniePostaci` returns to the correct `Main` on that server.
+- Run a test: save a character and load it back.

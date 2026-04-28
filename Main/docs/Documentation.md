@@ -169,4 +169,12 @@ Wymagania odpowiedzi backendu:
 ## 15. Utrzymanie linków po migracji
 - Po przeniesieniu aplikacji na inną domenę/serwer należy zaktualizować linki zewnętrzne modułu Main w pliku `Main/ZmienneHiperlacza.md` (Mapa/Obrazki).
 - Dotyczy to szczególnie wdrożeń dla nowej grupy użytkowników, gdzie adresy kanałów zewnętrznych różnią się od oryginału.
-
+## Konfiguracja multi-tenant (wiele grup)
+- `Main/index.html` zawiera jawne komentarze `WAŻNE/IMPORTANT` przy:
+  - przyciskach modułów,
+  - przyciskach `Mapa` i `Obrazki`,
+  - domyślnych wartościach obiektu `links`.
+- Przy wdrożeniu dla nowej grupy trzeba:
+  1. podmienić wpisy `Mapa:` i `Obrazki:` w `Main/ZmienneHiperlacza.md`,
+  2. zweryfikować wszystkie hiperłącza modułów (lokalne i zewnętrzne),
+  3. potwierdzić działanie przy `admin=1` i bez parametru.

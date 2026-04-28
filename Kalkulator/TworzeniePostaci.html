@@ -459,6 +459,7 @@
 <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
 <!-- Sekcja JavaScript / JavaScript Section -->
 <script>
@@ -1158,6 +1159,7 @@
       document.getElementById('loadFromFirebaseButton').addEventListener('click', loadStateFromFirebase);
 
       document.getElementById('backToMainButton').addEventListener('click', () => {
+        // --- WAŻNE: Po wdrożeniu na inny serwer zaktualizuj ścieżkę powrotu do modułu Main zgodnie ze strukturą grupy. / IMPORTANT: After deployment to another server, update the return path to the Main module based on that group's structure. ---
         window.location.href = '../Main/index.html';
       });
 

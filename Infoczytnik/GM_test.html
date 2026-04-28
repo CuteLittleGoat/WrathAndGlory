@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-27_10-59-25";
+      const INF_VERSION = "2026-04-28_10-33-51";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -131,6 +131,7 @@
   <div class="small">Status: <span class="status" id="status">…</span></div>
 </div></div>
 
+<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
 <script src="config/web-push-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
@@ -142,6 +143,7 @@ const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
 
+// --- WAŻNE: Każda grupa musi mieć własny Firebase, inaczej dane będą współdzielone między serwerami. / IMPORTANT: Each group must have its own Firebase, otherwise data will be shared across servers. ---
 if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
 const db = firebase.firestore();

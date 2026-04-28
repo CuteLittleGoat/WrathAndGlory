@@ -126,4 +126,12 @@ To keep **Favorites** shared and persistent across devices, **NPC Generator** re
 11. Set access rules in **Rules**.
 12. Open `GeneratorNPC/index.html`.
 13. Add one favorite and refresh page — entry should still be present.
+## Kopia modułu dla nowej grupy
+- Podmień `GeneratorNPC/config/firebase-config.js` na konfigurację Firebase grupy.
+- Sprawdź i ewentualnie zmień adres źródła danych `DATA_URL`, aby wskazywał DataVault na tym samym prywatnym serwerze grupy.
+- Po zmianie wygeneruj testową kartę i zapisz ulubione, aby potwierdzić działanie.
 
+## Copying module for a new group
+- Replace `GeneratorNPC/config/firebase-config.js` with the group-specific Firebase configuration.
+- Verify and, if needed, change `DATA_URL` so it points to DataVault hosted on the same private server.
+- After changes, generate a test card and save favorites to confirm everything works.

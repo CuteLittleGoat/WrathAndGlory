@@ -450,4 +450,10 @@ Poniżej pełna paleta używana przez trzy strony modułu:
 - Funkcja zapisu/odczytu postaci w `TworzeniePostaci.html` wymaga poprawnej konfiguracji Firebase (`Kalkulator/config/firebase-config.js`) oraz aktywnej bazy Firestore.
 - Minimalna procedura wdrożeniowa obejmuje: utworzenie projektu Firebase, rejestrację aplikacji web, utworzenie Firestore Database oraz skonfigurowanie reguł dostępu.
 - Przyciski `Strona Główna / Main Page` (w `KalkulatorXP.html` i `TworzeniePostaci.html`) należy po migracji aplikacji zweryfikować pod kątem poprawnego `href`/adresu docelowego.
-
+## Izolacja danych między grupami
+- `TworzeniePostaci.html` zawiera komentarze `WAŻNE/IMPORTANT` przy:
+  - ładowaniu `config/firebase-config.js`,
+  - nawigacji `window.location.href = '../Main/index.html'`.
+- Wdrożenie:
+  1. osobny Firebase per grupa (Firestore dla zapisu postaci),
+  2. weryfikacja ścieżki powrotu do modułu Main zgodnie z topologią serwera grupy.

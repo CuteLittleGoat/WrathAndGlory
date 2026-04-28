@@ -140,4 +140,12 @@ To share favorites and settings across multiple devices/users, **Audio** require
 11. In **Rules** set read/write access for authorized users.
 12. Open `Audio/index.html?admin=1` and verify Firebase status.
 13. Create a test favorites list and refresh page — it should persist.
+## Kopia modułu dla nowej grupy
+- Przed pierwszym użyciem na nowym serwerze podmień `Audio/config/firebase-config.js` na dane Firebase tej grupy.
+- Po uruchomieniu `Audio/index.html?admin=1` sprawdź status „Firebase” — ma wskazywać połączenie z właściwym projektem.
+- Dzięki osobnym konfiguracjom grupy nie nadpisują sobie danych list i widoków.
 
+## Copying module for a new group
+- Before first use on a new server, replace `Audio/config/firebase-config.js` with that group’s Firebase credentials.
+- After opening `Audio/index.html?admin=1`, verify the “Firebase” status points to the intended project.
+- Separate configurations prevent groups from overwriting each other’s lists and views.

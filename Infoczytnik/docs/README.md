@@ -132,4 +132,12 @@ Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran g
 12. In **Rules** tab set access for your group.
 13. Save rules.
 14. Launch `Infoczytnik/GM_test.html` and `Infoczytnik/Infoczytnik_test.html` and confirm sent message appears immediately on player screen.
+## Kopia modułu dla nowej grupy
+- W nowej kopii modułu ustaw własny `Infoczytnik/config/firebase-config.js`.
+- Dzięki temu panel GM i ekran odczytu korzystają z oddzielnego Firestore i nie mieszają treści między grupami.
+- Po konfiguracji uruchom `GM_test.html` i `Infoczytnik_test.html`, wpisz wiadomość testową i sprawdź odczyt.
 
+## Copying module for a new group
+- In each new module copy, set a dedicated `Infoczytnik/config/firebase-config.js`.
+- This ensures GM panel and reader screen use separate Firestore data and do not mix messages between groups.
+- After setup, run `GM_test.html` and `Infoczytnik_test.html`, send a test message, and verify reader output.

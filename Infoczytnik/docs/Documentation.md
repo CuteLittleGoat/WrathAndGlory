@@ -270,4 +270,10 @@ Sugerowany minimalny szkielet:
 ## 14. Wymagalność Firebase w instrukcji użytkownika
 - Instrukcja użytkownika (`docs/README.md`) musi jednoznacznie wskazywać, że moduł Infoczytnik wymaga integracji z Firebase/Firestore do komunikacji GM↔gracze.
 - W procedurze użytkowej należy utrzymywać kroki: utworzenie projektu, rejestracja aplikacji web, konfiguracja `config/firebase-config.js`, utworzenie Firestore Database, ustawienie reguł i test dwuekranowy.
-
+## Multi-group deployment (isolated instances)
+- W plikach `GM_test.html` i `Infoczytnik_test.html` dodano komentarze `WAŻNE/IMPORTANT` przy:
+  - `INF_VERSION` (cache-busting testowej wersji),
+  - `config/firebase-config.js`,
+  - walidacji `window.firebaseConfig`.
+- Każda grupa wymaga osobnego projektu Firebase, aby dokument `dataslate/current` nie był współdzielony.
+- Po każdej zmianie testowych plików należy podnieść `INF_VERSION` w obu plikach do tej samej wartości.

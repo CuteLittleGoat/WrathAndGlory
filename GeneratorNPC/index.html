@@ -371,6 +371,7 @@
     </aside>
 
     <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
@@ -383,6 +384,7 @@
         getDoc,
       } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
+      // --- WAŻNE: DATA_URL wskazuje wspólny DataVault. Dla niezależnych grup podmień adres na własny serwer grupy. / IMPORTANT: DATA_URL points to a shared DataVault. For independent groups, change it to that group's own server URL. ---
       const DATA_URL = "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json";
 
       const bestiarySelect = document.querySelector("#bestiary");

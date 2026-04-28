@@ -3,6 +3,8 @@
 // Następnie wklej swój firebaseConfig z:
 // Firebase Console → Project settings → Your apps (Web) → Firebase SDK snippet (Config)
 
+// WAŻNE WDROŻENIE: Każda grupa (każdy serwer) powinna mieć własny projekt Firebase i własny komplet kluczy poniżej.
+// IMPORTANT DEPLOYMENT: Each group (each server) should use its own Firebase project and its own full key set below.
 window.firebaseConfig = {
   apiKey: "AIzaSyA4m8ZkI-L9MYgKcbAtt8gJaTtr2TlCN5s",
   authDomain: "audiorpg-2eb6f.firebaseapp.com",
