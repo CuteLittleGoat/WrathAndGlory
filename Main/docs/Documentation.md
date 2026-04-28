@@ -165,3 +165,8 @@ Wymagania odpowiedzi backendu:
 - **PWA (manifest + SW):** sekcja 7.
 - **Firebase:** brak bezpośredniej integracji w tym module (pośrednio: push endpoint Infoczytnika).
 - **Node.js bootstrap:** nie dotyczy modułu Main (backend znajduje się w module Infoczytnik).
+
+## 15. Utrzymanie linków po migracji
+- Po przeniesieniu aplikacji na inną domenę/serwer należy zaktualizować linki zewnętrzne modułu Main w pliku `Main/ZmienneHiperlacza.md` (Mapa/Obrazki).
+- Dotyczy to szczególnie wdrożeń dla nowej grupy użytkowników, gdzie adresy kanałów zewnętrznych różnią się od oryginału.
+

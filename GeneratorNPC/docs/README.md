@@ -87,3 +87,43 @@
 - Choose base profile first, then edit numbers.
 - Save recurring opponents as favorites.
 - If your table is bilingual, review card after language switch before print/share.
+
+
+### Integracja Firebase — wymagana dla współdzielonych ulubionych
+Aby lista **Ulubionych** była współdzielona i trwała między urządzeniami, moduł **Generator NPC** wymaga integracji z Firebase (Firestore). Bez niej zapis działa tylko lokalnie.
+
+#### Krok po kroku — tworzenie projektu i bazy
+1. Otwórz [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Podaj nazwę projektu i kliknij **Dalej**.
+4. Ustaw Analytics (opcjonalnie) i zakończ tworzenie.
+5. Dodaj aplikację webową przez ikonę **Web** (`</>`).
+6. Skopiuj konfigurację `firebaseConfig`.
+7. Wklej wartości do pliku `GeneratorNPC/config/firebase-config.js`.
+8. Przejdź do **Firestore Database**.
+9. Kliknij **Utwórz bazę danych**.
+10. Wybierz tryb, kliknij **Dalej**, wybierz region, kliknij **Włącz**.
+11. Ustaw reguły dostępu w zakładce **Reguły**.
+12. Otwórz `GeneratorNPC/index.html`.
+13. Dodaj wpis do **Ulubionych** i odśwież stronę — wpis powinien być dalej dostępny.
+
+---
+
+### Firebase integration — required for shared favorites
+To keep **Favorites** shared and persistent across devices, **NPC Generator** requires Firebase (Firestore). Without it, favorites are local only.
+
+#### Step by step — create project and database
+1. Open [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Click **Create a project**.
+3. Enter project name and click **Continue**.
+4. Configure Analytics (optional) and finish creation.
+5. Add a web app using **Web** icon (`</>`).
+6. Copy `firebaseConfig` values.
+7. Paste values into `GeneratorNPC/config/firebase-config.js`.
+8. Go to **Firestore Database**.
+9. Click **Create database**.
+10. Choose mode, click **Next**, select region, click **Enable**.
+11. Set access rules in **Rules**.
+12. Open `GeneratorNPC/index.html`.
+13. Add one favorite and refresh page — entry should still be present.
+

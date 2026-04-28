@@ -93,3 +93,53 @@ The landing page also includes a **Secret button!** (easter egg).
 - Polish language uses **PD** label.
 - English language uses **XP** label.
 - Species limit tables are reference-only and do not auto-fill fields.
+
+
+### Integracja Firebase — wymagana dla pełnego zapisu postaci
+Aby funkcja zapisu/odczytu postaci w części **Tworzenie Postaci** działała poprawnie między urządzeniami, musisz mieć aktywny projekt Firebase i bazę Firestore.
+
+#### Krok po kroku (Firebase Console)
+1. Wejdź na stronę [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Wpisz nazwę projektu i kliknij **Dalej**.
+4. (Opcjonalnie) wyłącz Google Analytics, jeśli nie jest potrzebne, i kliknij **Utwórz projekt**.
+5. Po utworzeniu projektu kliknij ikonę **Web** (`</>`) aby dodać aplikację webową.
+6. Podaj nazwę aplikacji i kliknij **Zarejestruj aplikację**.
+7. Skopiuj dane konfiguracyjne `firebaseConfig`.
+8. Otwórz plik `Kalkulator/config/firebase-config.js` i wklej tam skopiowane wartości.
+9. W lewym menu Firebase kliknij **Firestore Database**.
+10. Kliknij **Utwórz bazę danych**.
+11. Wybierz tryb startowy (na start testowy, potem reguły produkcyjne) i kliknij **Dalej**.
+12. Wybierz region najbliższy użytkownikom i kliknij **Włącz**.
+13. W zakładce **Reguły** ustaw reguły dostępu odpowiednie do Twojej grupy.
+14. Zapisz reguły i odśwież `Kalkulator/TworzeniePostaci.html`.
+15. Wykonaj próbny zapis postaci i sprawdź, czy dane wracają po ponownym wczytaniu.
+
+### Ważne przy kopiowaniu modułu
+W Kalkulatorze występuje przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji **musisz edytować hiperłącze**, aby wskazywało poprawny adres modułu Main.
+
+---
+
+### Firebase integration — required for full character save
+To use cross-device save/load in **Character Creation**, you need an active Firebase project and Firestore database.
+
+#### Step by step (Firebase Console)
+1. Go to [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Click **Create a project**.
+3. Enter project name and click **Continue**.
+4. (Optional) disable Google Analytics if not needed, then click **Create project**.
+5. After project creation, click the **Web** icon (`</>`) to add a web app.
+6. Enter app nickname and click **Register app**.
+7. Copy the `firebaseConfig` values.
+8. Open `Kalkulator/config/firebase-config.js` and paste those values.
+9. In Firebase left menu, open **Firestore Database**.
+10. Click **Create database**.
+11. Choose initial mode (test first, production rules later) and click **Next**.
+12. Select region closest to users and click **Enable**.
+13. In **Rules** tab set access rules for your group.
+14. Save rules and refresh `Kalkulator/TworzeniePostaci.html`.
+15. Perform a test character save and verify data loads again.
+
+### Important when copying the module
+Calculator contains a **Strona Główna / Main Page** button. After moving the app to another location, **edit its hyperlink** to point to the correct Main module path.
+

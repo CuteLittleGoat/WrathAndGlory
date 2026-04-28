@@ -101,3 +101,43 @@ The **Audio** module lets you quickly play sound effects (SFX) during sessions. 
 - Prepare 1 main list and 2–3 scene-based lists before play.
 - Use aliases for sounds with unclear names.
 - Pre-check key sound volumes before the session starts.
+
+
+### Integracja Firebase — wymagana dla współdzielonych list
+Aby listy ulubionych i ustawienia były wspólne dla wielu urządzeń/użytkowników, moduł **Audio** wymaga integracji z Firebase (Firestore). Bez niej działa tylko lokalnie na jednym urządzeniu.
+
+#### Krok po kroku — konfiguracja bazy
+1. Wejdź na [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Wpisz nazwę projektu i kliknij **Dalej**.
+4. Wybierz ustawienia Analytics (opcjonalnie) i zakończ tworzenie.
+5. Kliknij ikonę **Web** (`</>`) i zarejestruj aplikację webową.
+6. Skopiuj obiekt `firebaseConfig`.
+7. Wklej dane do `Audio/config/firebase-config.js`.
+8. Otwórz **Firestore Database** w menu Firebase.
+9. Kliknij **Utwórz bazę danych**.
+10. Wybierz tryb startowy, kliknij **Dalej**, wybierz region i kliknij **Włącz**.
+11. W zakładce **Reguły** ustaw dostęp tak, aby uprawnieni użytkownicy mogli czytać i zapisywać ustawienia.
+12. Otwórz `Audio/index.html?admin=1` i sprawdź status Firebase.
+13. Utwórz testową listę ulubionych i odśwież stronę — lista powinna pozostać.
+
+---
+
+### Firebase integration — required for shared lists
+To share favorites and settings across multiple devices/users, **Audio** requires Firebase (Firestore). Without it, settings work only locally on one device.
+
+#### Step by step — database setup
+1. Open [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Click **Create a project**.
+3. Enter project name and click **Continue**.
+4. Choose Analytics settings (optional) and finish creation.
+5. Click the **Web** icon (`</>`) and register a web app.
+6. Copy the `firebaseConfig` object.
+7. Paste values into `Audio/config/firebase-config.js`.
+8. Open **Firestore Database** in Firebase menu.
+9. Click **Create database**.
+10. Choose initial mode, click **Next**, pick region, click **Enable**.
+11. In **Rules** set read/write access for authorized users.
+12. Open `Audio/index.html?admin=1` and verify Firebase status.
+13. Create a test favorites list and refresh page — it should persist.
+

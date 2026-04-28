@@ -91,3 +91,45 @@
 - **No message on player screen** → refresh both pages and send again.
 - **No sound** → check **Audio** toggle and system volume.
 - **Different look on projector/mobile** → reselect background and send shorter text.
+
+
+### Integracja Firebase — wymagana
+Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran graczy wymieniają dane na żywo przez bazę.
+
+#### Krok po kroku — jak utworzyć bazę danych
+1. Otwórz [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Kliknij **Utwórz projekt**.
+3. Wpisz nazwę projektu i przejdź dalej.
+4. Wybierz ustawienia Analytics (opcjonalnie) i zakończ tworzenie projektu.
+5. W panelu projektu kliknij ikonę **Web** (`</>`) i zarejestruj aplikację webową.
+6. Skopiuj konfigurację `firebaseConfig`.
+7. Otwórz plik `Infoczytnik/config/firebase-config.js` i wklej dane projektu.
+8. W menu po lewej kliknij **Firestore Database**.
+9. Kliknij **Utwórz bazę danych**.
+10. Wybierz tryb startowy i kliknij **Dalej**.
+11. Wybierz region i kliknij **Włącz**.
+12. W zakładce **Reguły** ustaw dostęp zgodnie z potrzebą (np. tylko dla Twojej grupy).
+13. Zapisz reguły.
+14. Uruchom `Infoczytnik/GM_test.html` oraz `Infoczytnik/Infoczytnik_test.html` i sprawdź, czy wysłana wiadomość od razu pojawia się na ekranie gracza.
+
+---
+
+### Firebase integration — required
+**Infoczytnik** requires Firebase (Firestore), because GM and player screens exchange data live through the database.
+
+#### Step by step — how to create the database
+1. Open [https://console.firebase.google.com](https://console.firebase.google.com).
+2. Click **Create a project**.
+3. Enter project name and continue.
+4. Choose Analytics settings (optional) and finish project creation.
+5. In project dashboard click the **Web** icon (`</>`) and register a web app.
+6. Copy `firebaseConfig` values.
+7. Open `Infoczytnik/config/firebase-config.js` and paste project config.
+8. In left menu click **Firestore Database**.
+9. Click **Create database**.
+10. Choose initial mode and click **Next**.
+11. Select region and click **Enable**.
+12. In **Rules** tab set access for your group.
+13. Save rules.
+14. Launch `Infoczytnik/GM_test.html` and `Infoczytnik/Infoczytnik_test.html` and confirm sent message appears immediately on player screen.
+

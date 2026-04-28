@@ -81,3 +81,13 @@ Use it when module data needs refreshing after source updates. It prepares a new
 - Start with short keywords (talent/trait/condition names).
 - Use compare mode when choosing between options.
 - If the screen becomes too filtered, use **Full View**.
+
+
+### Ważne przy kopiowaniu modułu
+W module jest przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji (inna domena, inny katalog) **koniecznie zaktualizuj jego hiperłącze**, żeby poprawnie wracał do strony startowej.
+
+---
+
+### Important when copying the module
+This module includes a **Strona Główna / Main Page** button. After copying the app to another location (different domain or folder), **update its hyperlink** so it returns to the launcher correctly.
+
