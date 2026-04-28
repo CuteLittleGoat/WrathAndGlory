@@ -642,6 +642,7 @@
 
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
   <script src="config/firebase-config.js"></script>
   <script type="module">
     import {
@@ -1418,6 +1419,7 @@
     };
 
     const initFirebase = () => {
+      // --- WAŻNE: Brak poprawnej konfiguracji oznacza pracę lokalną; dla niezależnych grup konieczne jest użycie osobnego firebase-config.js. / IMPORTANT: Missing config means local mode; independent groups must use their own firebase-config.js. ---
       if (!window.firebaseConfig || !window.firebaseConfig.apiKey) {
         firebaseStatus.textContent = translations[currentLanguage].labels.firebaseMissing;
         loadSettingsLocal();

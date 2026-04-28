@@ -439,4 +439,11 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 ## 13. Wymagalność Firebase w instrukcji użytkownika
 - `docs/README.md` modułu GeneratorNPC powinien informować, że Firebase/Firestore jest wymagane dla współdzielonych ulubionych (cross-device persistence).
 - Procedura użytkowa musi zawierać sekwencję: projekt Firebase, aplikacja web, konfiguracja `config/firebase-config.js`, utworzenie Firestore Database, reguły oraz test zapisu/odczytu ulubionych.
-
+## Multi-server / multi-group deployment notes
+- `index.html` zawiera komentarze `WAŻNE/IMPORTANT`:
+  - przy `script src="config/firebase-config.js"`,
+  - przy stałej `DATA_URL`.
+- Wymagania wdrożeniowe:
+  1. osobny projekt Firebase per grupa,
+  2. własny endpoint DataVault (`data.json`) per grupa lub własna izolowana kopia danych,
+  3. test zapisu/odczytu ulubionych po wdrożeniu.

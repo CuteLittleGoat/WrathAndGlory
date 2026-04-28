@@ -303,4 +303,9 @@ window.firebaseConfig = {
 ## 13. Wymagalność Firebase w instrukcji użytkownika
 - `docs/README.md` modułu Audio musi zawierać jasną informację, że Firebase/Firestore jest wymagane do współdzielonych list i ustawień między urządzeniami.
 - Instrukcja użytkowa powinna prowadzić przez pełny proces konsoli Firebase: projekt → aplikacja web → `config/firebase-config.js` → Firestore Database → reguły → test trwałości list.
-
+## Wdrożenie wielu niezależnych grup
+- W `Audio/index.html` dodano komentarze `WAŻNE/IMPORTANT` przy ładowaniu `config/firebase-config.js` oraz przy walidacji `window.firebaseConfig`.
+- Mechanika:
+  - brak klucza `apiKey` -> moduł przechodzi w tryb lokalny,
+  - poprawny config -> aktywacja Firestore (`audio/favorites`).
+- Dla każdej grupy wymagany jest osobny `config/firebase-config.js` (osobny projekt Firebase), aby odizolować dane.

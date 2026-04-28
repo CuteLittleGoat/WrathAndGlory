@@ -3,6 +3,8 @@
 // GLOBALNA konfiguracja Firebase dla GM.html i Infoczytnik.html
 // (nie używamy "export", żeby działało też z firebase-*-compat)
 
+// WAŻNE WDROŻENIE: Każda grupa (każdy serwer) powinna mieć własny projekt Firebase i własny komplet kluczy poniżej.
+// IMPORTANT DEPLOYMENT: Each group (each server) should use its own Firebase project and its own full key set below.
 window.firebaseConfig = {
   apiKey: "AIzaSyCVoWzXtO-vipsxnvZlFkcqcNgYYuH3osc",
   authDomain: "wh40k-data-slate.firebaseapp.com",

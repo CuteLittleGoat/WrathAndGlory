@@ -106,4 +106,14 @@ Steps:
 3. Save the file.
 4. Refresh `Main/index.html` and click **Map** and **Images**.
 5. Confirm they open correct destinations for the new group.
+## Konfiguracja dla wielu grup (oddzielne serwery)
+Przy kopiowaniu modułu **Main** dla nowej grupy:
+- Ustaw własne adresy dla **Mapa** i **Obrazki** w pliku `Main/ZmienneHiperlacza.md`.
+- Sprawdź w `Main/index.html`, czy wszystkie odnośniki do modułów wskazują poprawne lokalizacje na nowym serwerze.
+- Po zmianach odśwież stronę i kliknij każdy przycisk, aby potwierdzić poprawną nawigację.
 
+## Multi-group setup (separate servers)
+When copying the **Main** module for a new group:
+- Set group-specific **Map** and **Images** URLs in `Main/ZmienneHiperlacza.md`.
+- Verify in `Main/index.html` that all module links point to valid locations on the new server.
+- Refresh the page and click every button to confirm navigation works correctly.
