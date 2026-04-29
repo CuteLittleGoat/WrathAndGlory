@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-28_10-33-51";
+      const INF_VERSION = "2026-04-29_11-26-17";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -486,7 +486,8 @@ async function send(type){
 
 async function ping(){
   setStatus('ping…');
-  await currentRef.set({...getPayload('ping'), text: undefined, type:'ping'}, {merge:true});
+  // --- Ping zapisujemy pełnym obiektem bez wartości `undefined`, bo Firestore odrzuca takie pola / Save ping as a full object without `undefined`, because Firestore rejects such fields ---
+  await currentRef.set(getPayload('ping'), {merge:false});
   setStatus('ping wysłany');
 }
 
