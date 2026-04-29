@@ -23,7 +23,7 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 
 ## 3. Dane wejściowe i źródło
 **Źródło danych:**
-- `DATA_URL = "https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json"`.
+- `DATA_URL = "../DataVault/data.json"`.
 
 **Wczytywanie danych:**
 - Dane są pobierane przez `fetch` z `cache: "no-store"`.
@@ -447,3 +447,9 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
   1. osobny projekt Firebase per grupa,
   2. własny endpoint DataVault (`data.json`) per grupa lub własna izolowana kopia danych,
   3. test zapisu/odczytu ulubionych po wdrożeniu.
+
+## Aktualizacja linków względnych / Relative links update
+W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
+
+The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
+
