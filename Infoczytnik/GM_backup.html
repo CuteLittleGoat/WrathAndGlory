@@ -1,12 +1,15 @@
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <!doctype html>
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Infoczytnik - panel GM</title>
-  <script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-22_15-28-38";
+      const INF_VERSION = "2026-04-29_11-26-17";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -17,8 +20,9 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
-  <style>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=IBM+Plex+Serif:wght@400;700&family=Open+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&family=DM+Serif+Display&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=Exo+2:wght@400;600;700&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
     :root{--text:#eaeaea;--muted:#bdbdbd;--accent:#ffd27a;--border:#2a2a2a;--panel:rgba(18,18,18,.92)}
     *{box-sizing:border-box} body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(180deg,#070707,#0f0f0f);color:var(--text)}
     .wrap{max-width:1080px;margin:0 auto}.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
@@ -49,6 +53,7 @@
     .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   </style>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
 <div class="wrap"><h1>Infoczytnik - panel GM</h1><div class="card">
   <div class="row">
@@ -126,6 +131,7 @@
   <div class="small">Status: <span class="status" id="status">…</span></div>
 </div></div>
 
+<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
 <script src="config/web-push-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
@@ -137,6 +143,7 @@ const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
 
+// --- WAŻNE: Każda grupa musi mieć własny Firebase, inaczej dane będą współdzielone między serwerami. / IMPORTANT: Each group must have its own Firebase, otherwise data will be shared across servers. ---
 if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
 const db = firebase.firestore();
@@ -158,6 +165,7 @@ let fillerState = {prefixLines:[], suffixLines:[]};
 function setStatus(t){ el.status.textContent = t; }
 function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
 function safeGet(list,id){ return list.find(x=>x.id===Number(id)) || list[0] || null; }
+function getSelectedFont(){ return safeGet(manifest?.fonts || [], el.fontSelect?.value); }
 function nonce(){ return String(Date.now()) + '-' + Math.random().toString(36).slice(2); }
 function normalizeHexColor(v,fallback){
   const s = String(v || '').trim();
@@ -178,13 +186,17 @@ function resolveHexColor(textValue,pickerValue,fallback){
     : normalizeHexColor(pickerValue,fallback);
 }
 
-function fillSelect(select,list,labelKey,styleFont){
+function buildOptionLabel(item, labelKey){
+  if(labelKey === 'font') return `${item.id}. ${item.name} - ${item.font || ''}`;
+  return `${item.id}. ${item.name}`;
+}
+
+function fillSelect(select,list,labelKey){
   select.innerHTML='';
   list.forEach(item=>{
     const opt=document.createElement('option');
     opt.value=String(item.id);
-    opt.textContent = `${item.id}. ${item.name}`;
-    if(styleFont){ opt.style.fontFamily = `"${item[styleFont] || ''}"${FONT_FALLBACK}`; }
+    opt.textContent = buildOptionLabel(item, labelKey);
     select.appendChild(opt);
   });
 }
@@ -315,7 +327,7 @@ async function updateDataFromXlsx(){
     fillSelect(el.backgroundSelect, manifest.backgrounds || []);
     fillSelect(el.logoSelect, manifest.logos || []);
     fillSelect(el.fillerSelect, manifest.fillers || []);
-    fillSelect(el.fontSelect, manifest.fonts || [], 'font', 'font');
+    fillSelect(el.fontSelect, manifest.fonts || [], 'font');
     fillSelect(el.audioSelect, manifest.audios || []);
     writeImportLog(manifest.importLog || []);
     restoreDefaults(false);
@@ -338,7 +350,7 @@ async function loadManifest(){
   fillSelect(el.backgroundSelect, manifest.backgrounds || []);
   fillSelect(el.logoSelect, manifest.logos || []);
   fillSelect(el.fillerSelect, manifest.fillers || []);
-  fillSelect(el.fontSelect, manifest.fonts || [], 'font', 'font');
+  fillSelect(el.fontSelect, manifest.fonts || [], 'font');
   fillSelect(el.audioSelect, manifest.audios || []);
   writeImportLog(manifest.importLog || []);
   restoreDefaults(false);
@@ -391,11 +403,22 @@ function loadSavedPreviewMode(){
   setPreviewMode(savedMode);
 }
 
+async function preloadManifestFonts(){
+  if(!manifest || !Array.isArray(manifest.fonts) || !document.fonts || typeof document.fonts.load !== 'function') return;
+  const uniqueFonts = [...new Set((manifest.fonts || []).map(f=>String(f?.font || '').trim()).filter(Boolean))];
+  await Promise.all(uniqueFonts.map(fontName => document.fonts.load(`16px "${fontName}"`)));
+}
+
+function applySelectedFontToPreview(){
+  const selectedFont = getSelectedFont();
+  el.livePreview.style.fontFamily = `"${selectedFont?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
+  void el.livePreview.offsetWidth;
+}
+
 function renderPreview(){
   syncFlickerDependency();
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
-  const font = safeGet(manifest.fonts || [], el.fontSelect.value);
   const messageColor = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66');
   const psColor = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff');
   if(isFullHexColor(el.messageColorText.value)){ el.messageColorText.value = messageColor; }
@@ -407,7 +430,7 @@ function renderPreview(){
   el.livePreview.style.backgroundImage = 'none';
   el.previewBackgroundThumb.style.display = (isBackgroundMode && bg) ? 'block' : 'none';
   if(bg){ el.previewBackgroundThumb.src = bg.file; }
-  el.livePreview.style.fontFamily = `"${font?.font || 'Share Tech Mono'}"${FONT_FALLBACK}`;
+  applySelectedFontToPreview();
   el.previewPrefix.textContent = fillerState.prefixLines.join('\n');
   el.previewSuffix.textContent = fillerState.suffixLines.join('\n');
   el.previewPrefix.style.color = psColor; el.previewSuffix.style.color = psColor;
@@ -427,7 +450,7 @@ function getPayload(type){
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const filler = safeGet(manifest.fillers || [], el.fillerSelect.value);
-  const font = safeGet(manifest.fonts || [], el.fontSelect.value);
+  const selectedFont = getSelectedFont();
   const audio = safeGet(manifest.audios || [], el.audioSelect.value);
   return {
     type,
@@ -435,7 +458,7 @@ function getPayload(type){
     backgroundId:bg?.id || null, backgroundFile:bg?.file || '',
     logoId:logo?.id || null, logoFile:logo?.file || '',
     fillerId:filler?.id || null, fillerSet:filler?.name || '',
-    fontId:font?.id || null, fontPreset:font?.font || '',
+    fontId:selectedFont?.id || null, fontPreset:selectedFont?.font || '',
     messageAudioId:audio?.id || null, messageAudioFile:audio?.file || '',
     fillersEnabled:!!el.fillersEnabled.checked, audioEnabled:!!el.audioEnabled.checked,
     showLogo:!!el.showLogo.checked, movingOverlay:movingOverlayEnabled, flicker:flickerEnabled,
@@ -463,7 +486,8 @@ async function send(type){
 
 async function ping(){
   setStatus('ping…');
-  await currentRef.set({...getPayload('ping'), text: undefined, type:'ping'}, {merge:true});
+  // --- Ping zapisujemy pełnym obiektem bez wartości `undefined`, bo Firestore odrzuca takie pola / Save ping as a full object without `undefined`, because Firestore rejects such fields ---
+  await currentRef.set(getPayload('ping'), {merge:false});
   setStatus('ping wysłany');
 }
 
@@ -487,11 +511,12 @@ function restoreDefaults(sendReset=true){
 }
 
 ['input','change'].forEach(evt=>{
-  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.fontSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize,el.previewModeContent,el.previewModeBackground].forEach(node=>node.addEventListener(evt, ()=>{
+  [el.backgroundSelect,el.logoSelect,el.fillerSelect,el.audioSelect,el.showLogo,el.movingOverlay,el.flicker,el.fillersEnabled,el.audioEnabled,el.fillerLineCount,el.fillerBandLines,el.messageColorText,el.msgFontSize,el.psColorText,el.psFontSize,el.previewModeContent,el.previewModeBackground].forEach(node=>node.addEventListener(evt, ()=>{
     if(node === el.previewModeContent || node === el.previewModeBackground){ setPreviewMode(getPreviewMode()); }
     renderPreview();
   }));
 });
+el.fontSelect.addEventListener('change', ()=>{ applySelectedFontToPreview(); requestAnimationFrame(renderPreview); });
 el.fillerSelect.addEventListener('change', rerollFillers);
 ['input','change'].forEach(evt=>el.fillerLineCount.addEventListener(evt, rerollFillers));
 el.fillersEnabled.addEventListener('change', rerollFillers);
@@ -520,7 +545,7 @@ el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'
 el.updateDataBtn.addEventListener('click',()=>updateDataFromXlsx());
 
 (async()=>{
-  try{ loadSavedPreviewMode(); await loadManifest(); setStatus('gotowe'); }
+  try{ loadSavedPreviewMode(); await loadManifest(); await preloadManifestFonts(); renderPreview(); setStatus('gotowe'); }
   catch(e){ setStatus('BŁĄD'); writeImportLog([String(e.message||e)]); alert(e.message||e); }
 })();
 </script>
