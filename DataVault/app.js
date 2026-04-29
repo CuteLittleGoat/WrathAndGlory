@@ -580,13 +580,14 @@ function applyViewModeToAllSheets(mode){
 
 /* ---------- Rich text formatting ---------- */
 /* Highlights:
- - references in parentheses containing "str.", "str", or "strona"
+ - references in parentheses containing "str.", "str", "strona", "page", or "p."
  - lines beginning with "*[cyfra]" (rendered jaśniejszym fontem, gwiazdka jest widoczna)
  - keeps newlines
 */
 function formatInlineHTML(raw){
   const s = String(raw ?? "");
-  const reRefParen = /\(([^)]*(?:\bstr\.?\b|\bstr\b|\bstrona\b)[^)]*)\)/ig;
+  // --- Wykrywanie odnośników do stron w PL i EN / Detect page references in PL and EN ---
+  const reRefParen = /\(([^)]*(?:\bstr\.?\b|\bstr\b|\bstrona\b|\bpage\b|\bp\.)[^)]*)\)/ig;
   const segments = parseInlineSegments(s);
 
   // Build global positions to allow refs to span across style segments

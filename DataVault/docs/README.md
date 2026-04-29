@@ -16,6 +16,7 @@
 - **Pełen Widok** – czyści filtry/sortowanie i pokazuje pełną listę.
 - **Widok Domyślny** – przywraca domyślny układ danych.
 - **Porównaj zaznaczone** – otwiera porównanie wybranych pozycji.
+- **Oznaczenia odnośników stron** – zapisy w nawiasach typu `str. 123`, `strona 123`, `page 123` i `p. 123` są automatycznie wyróżniane, żeby łatwiej znaleźć odwołania do podręcznika.
 
 ### Jak pracować krok po kroku
 1. Wejdź do modułu i wybierz zakładkę odpowiadającą tematowi, którego szukasz.
@@ -63,6 +64,7 @@ W module jest przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji
 - **Pełen Widok / Full View** – clears filters/sorting and restores full list.
 - **Widok Domyślny / Default View** – restores default data layout.
 - **Porównaj zaznaczone / Compare selected** – opens side-by-side comparison.
+- **Page-reference highlights** – bracketed references such as `str. 123`, `strona 123`, `page 123`, and `p. 123` are automatically highlighted for faster rulebook lookup.
 
 ### Step-by-step workflow
 1. Open the module and choose a tab related to your topic.
