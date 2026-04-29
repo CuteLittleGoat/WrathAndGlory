@@ -178,3 +178,9 @@ Wymagania odpowiedzi backendu:
   1. podmienić wpisy `Mapa:` i `Obrazki:` w `Main/ZmienneHiperlacza.md`,
   2. zweryfikować wszystkie hiperłącza modułów (lokalne i zewnętrzne),
   3. potwierdzić działanie przy `admin=1` i bez parametru.
+
+## Aktualizacja linków względnych / Relative links update
+W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
+
+The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
+

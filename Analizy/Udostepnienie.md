@@ -225,3 +225,27 @@ Tak, ale zalecane jest, aby były to „dokładne ścieżki względne”, a nie 
 - w finalnym JSON nie ma linków do domeny autora.
 
 Wniosek: zmiana jest bezpieczna, jeśli traktujesz ją jako proces **manifest + regeneracja danych + test runtime**, a nie tylko edycję jednego arkusza.
+
+---
+
+## Etap 1 wykonany (2026-04-29): przejście na ścieżki względne
+
+Poniżej pełna lista linków poprawionych w kodzie (Było → Jest):
+
+1. `Main/index.html`
+- `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html` → `../DataVault/index.html`
+- `https://cutelittlegoat.github.io/WrathAndGlory/GeneratorNPC/` → `../GeneratorNPC/`
+- `https://cutelittlegoat.github.io/WrathAndGlory/Kalkulator/` → `../Kalkulator/`
+- `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/index.html` → `../Infoczytnik/index.html`
+- `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/index.html?admin=1` → `../DataVault/index.html?admin=1`
+
+2. `GeneratorNPC/index.html`
+- `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json` → `../DataVault/data.json`
+
+3. `GeneratorNPC/docs/Documentation.md`
+- `https://cutelittlegoat.github.io/WrathAndGlory/DataVault/data.json` → `../DataVault/data.json`
+
+4. `Infoczytnik/assets/data/data.json` (wygenerowane ponownie z nowego `DataSlate_manifest.xlsx`)
+- linki absolutne `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/...` → ścieżki względne `assets/...`
+- audio: `.../assets/audios/Message.mp3` → `assets/audios/KeyboardTyping.mp3`
+

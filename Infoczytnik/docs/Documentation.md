@@ -278,3 +278,9 @@ Sugerowany minimalny szkielet:
   - walidacji `window.firebaseConfig`.
 - Każda grupa wymaga osobnego projektu Firebase, aby dokument `dataslate/current` nie był współdzielony.
 - Po każdej zmianie testowych plików należy podnieść `INF_VERSION` w obu plikach do tej samej wartości.
+
+## Aktualizacja linków względnych / Relative links update
+W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
+
+The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
+

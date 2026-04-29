@@ -138,3 +138,9 @@ To keep **Favorites** shared and persistent across devices, **NPC Generator** re
 - Verify and, if needed, change `DATA_URL` so it points to DataVault hosted on the same private server.
 - The module works correctly when a `DataVault` folder is placed next to `GeneratorNPC` and contains `data.json` (relative path: `../DataVault/data.json`).
 - After changes, generate a test card and save favorites to confirm everything works.
+
+## Aktualizacja linków względnych / Relative links update
+W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
+
+The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
+
