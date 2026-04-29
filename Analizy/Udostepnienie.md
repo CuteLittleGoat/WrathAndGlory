@@ -249,3 +249,46 @@ Poniżej pełna lista linków poprawionych w kodzie (Było → Jest):
 - linki absolutne `https://cutelittlegoat.github.io/WrathAndGlory/Infoczytnik/assets/...` → ścieżki względne `assets/...`
 - audio: `.../assets/audios/Message.mp3` → `assets/audios/KeyboardTyping.mp3`
 
+
+---
+
+## Weryfikacja gotowości do przygotowania kopii `DoPublikacji` (2026-04-29)
+
+### Prompt użytkownika (kontekst)
+
+> Przeczytaj analizę Analizy/Udostepnienie.md a następnie sprawdź kod aplikacji. Czy wszystko już jest gotowe do przygotowania kopii wszystkich modułów do DoPublikacji?
+> Kopia modułu DataVault ma zawierać data.json będący kopią pliku Analizy/test.json
+> Wnioski analizy dopisz do pliku Analizy/Udostepnienie.md
+
+### Wynik krótkiej kontroli
+
+**Nie — na ten moment repozytorium nie jest jeszcze w pełni gotowe do finalnego przygotowania kompletnej kopii wszystkich modułów do `DoPublikacji`.**
+
+Najważniejszy brak blokujący:
+- W folderze `DoPublikacji` znajduje się obecnie tylko `DoPublikacji/AGENTS.md` (brak skopiowanych modułów).
+- Nie istnieje `DoPublikacji/DataVault/data.json`, więc wymaganie „kopia `Analizy/test.json`” nie jest jeszcze spełnione.
+
+### Co już jest przygotowane, a co nadal wymaga pracy
+
+1. **Relatywne ścieżki między modułami**
+   - Część zmian została już wykonana (wcześniejszy etap z URL-ami względnymi).
+   - To dobry fundament do kopiowania modułów między serwerami.
+
+2. **Domyślny język EN w kopii publikacyjnej**
+   - W kodzie nadal występują ustawienia domyślne PL (`<html lang="pl">`, `currentLanguage = "pl"`) w wielu modułach.
+   - Przed publikacją kopii należy je przełączyć na EN w wariancie `DoPublikacji`.
+
+3. **Usunięcie śladów PWA / Web Push**
+   - W kodzie nadal występują elementy Web Push / SW (m.in. `web-push-config.js`, rejestracja `service-worker.js`).
+   - Wersja publikacyjna powinna mieć te elementy usunięte zgodnie z założeniami.
+
+4. **DataVault: wymagany `data.json` z `Analizy/test.json`**
+   - Warunek jest jednoznaczny: do kopii publikacyjnej modułu DataVault trzeba wstawić `data.json` jako kopię `Analizy/test.json`.
+   - Na teraz ten krok nie został jeszcze wykonany, bo nie ma jeszcze struktury modułu DataVault w `DoPublikacji`.
+
+### Wniosek operacyjny
+
+Repo jest **w fazie przygotowania**, ale **nie w stanie „gotowe do publikacji”**.
+Aby osiągnąć gotowość, trzeba najpierw utworzyć kompletną strukturę modułów w `DoPublikacji`, a następnie wykonać sanityzację zgodną z wcześniejszą analizą (placeholdery, EN default, usunięcie PWA/push, podmiana danych wsadowych), w tym obowiązkowo:
+
+- utworzyć `DoPublikacji/DataVault/data.json` jako kopię `Analizy/test.json`.
