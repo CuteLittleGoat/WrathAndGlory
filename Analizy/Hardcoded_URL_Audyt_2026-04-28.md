@@ -352,3 +352,64 @@ Efekt: brak zależności od `workers.dev` i brak danych środowiskowych autora.
 Dodać do `GeneratorNPC/docs/README.md` (PL i EN) informację:
 - moduł działa poprawnie, jeśli obok katalogu `GeneratorNPC` znajduje się katalog `DataVault` z plikiem `data.json`.
 - rekomendowana relacja katalogów: `../DataVault/data.json` względem `GeneratorNPC/index.html`.
+
+---
+
+## Uzupełnienie: Infoczytnik i plik `DataSlate_manifest.xlsx` (2026-04-29)
+
+### Prompt użytkownika (kontekst)
+
+> Przeczytaj pliki:
+> Analizy/Hardcoded_URL_Audyt_2026-04-28.md
+> Analizy/Udostepnienie.md
+>
+> Mam pytanie odnośnie modułu Infoczytnik. Tam jest plik DataSlate_manifest.xlsx zawierający ścieżki do assetów (tło, audio, itd.) Czy nic się nie popsuje w przypadku modyfikacji tego modułu? Nie wystarczy w pliku DataSlate_manifest.xlsx wpisać nowych ścieżek do plików?
+> Jak dokładnie ma wyglądać zmiana linków? W pliku z manifestem będę miał dalej zapisane dokładne linki bezpośrednio do pliku?
+>
+> Wnioski dopisz do pliku Analizy/Hardcoded_URL_Audyt_2026-04-28.md oraz do pliku Analizy/Udostepnienie.md
+
+### Wniosek krótki
+
+Samo wpisanie nowych ścieżek w `DataSlate_manifest.xlsx` **może być wystarczające**, ale tylko wtedy, gdy finalny plik JSON używany przez moduł (`Infoczytnik/assets/data/data.json`) zostanie przebudowany i faktycznie będzie czytany przez aplikację. Najważniejsze jest to, co finalnie trafia do `data.json` i jak ten plik jest interpretowany przez frontend.
+
+### Co może się „popsuć” po zmianie ścieżek
+
+1. Jeśli zmienisz tylko `DataSlate_manifest.xlsx`, ale moduł w runtime korzysta z wcześniej wygenerowanego `data.json`, to zmiany nie będą widoczne.
+2. Jeśli nowe linki będą wskazywać na niedostępne zasoby (404, zła wielkość liter nazw plików, zła ścieżka katalogu), tła/logo/audio nie załadują się.
+3. Jeśli użyjesz URL absolutnych do cudzego hostingu, kopia dalej będzie zależna od zewnętrznej domeny.
+4. Jeśli użyjesz ścieżek względnych, ale niezgodnych z lokalizacją `data.json`, aplikacja może szukać plików w złym katalogu.
+
+### Jak ma wyglądać poprawna zmiana linków (rekomendacja)
+
+Dla wariantu „kopia do udostępnienia” zalecany standard:
+
+- **preferuj ścieżki względne** do zasobów znajdujących się w paczce modułu,
+- unikaj hardcoded domen autora,
+- utrzymuj spójną strukturę folderów `Infoczytnik/assets/...`.
+
+Praktycznie:
+- zamiast `https://.../Infoczytnik/assets/backgrounds/DataSlate_01.png`
+- stosować np. `../backgrounds/DataSlate_01.png` (gdy wpis jest interpretowany relatywnie do `assets/data/data.json`).
+
+### Czy w manifeście mogą zostać „dokładne linki bezpośrednio do pliku”?
+
+Tak, technicznie mogą — ale są dwa różne podejścia:
+
+1. **Link bezpośredni absolutny (https://...)**
+   - działa tylko dopóki istnieje konkretny hosting,
+   - zwiększa zależność od jednej domeny,
+   - niezalecane dla izolowanej kopii grupowej.
+
+2. **Link bezpośredni jako ścieżka względna (np. `../backgrounds/...`)**
+   - nadal jest „dokładnym wskazaniem pliku”, ale niezależnym od domeny,
+   - to podejście jest zalecane dla `DoPublikacji` i dla łatwego przenoszenia modułu między serwerami.
+
+### Decyzja praktyczna dla Infoczytnik
+
+Aby zmiana była bezpieczna:
+1. Zaktualizować źródłowy manifest (`DataSlate_manifest.xlsx`) na ścieżki względne.
+2. Przebudować / wyeksportować aktualny `data.json` używany przez aplikację.
+3. Zweryfikować w przeglądarce ładowanie: tło, logo, audio dla każdego wpisu.
+4. Sprawdzić brak odwołań do starej domeny autora w finalnym `data.json`.
+
+Konkluzja: **nie chodzi tylko o sam XLSX, ale o cały łańcuch XLSX → JSON runtime → faktyczne assety w katalogach**.

@@ -181,3 +181,47 @@ Przed udostępnieniem nowej wersji `DoPublikacji` należy wykonać kontrolę:
 ## Podsumowanie końcowe
 
 Plan `DoPublikacji` jest dobry i zwiększy bezpieczeństwo oraz niezależność grup, ale wymaga dyscypliny: **sanityzacja konfiguracji + usunięcie twardych URL-i + synchronizacja zmian między wersją główną i publikacyjną**. Jeśli te trzy elementy będą egzekwowane, grupy będą mogły działać całkowicie niezależnie „bez przeszkadzania sobie”.
+
+---
+
+## Doprecyzowanie: Infoczytnik i `DataSlate_manifest.xlsx` (2026-04-29)
+
+### Prompt użytkownika (kontekst)
+
+> Przeczytaj pliki:
+> Analizy/Hardcoded_URL_Audyt_2026-04-28.md
+> Analizy/Udostepnienie.md
+>
+> Mam pytanie odnośnie modułu Infoczytnik. Tam jest plik DataSlate_manifest.xlsx zawierający ścieżki do assetów (tło, audio, itd.) Czy nic się nie popsuje w przypadku modyfikacji tego modułu? Nie wystarczy w pliku DataSlate_manifest.xlsx wpisać nowych ścieżek do plików?
+> Jak dokładnie ma wyglądać zmiana linków? W pliku z manifestem będę miał dalej zapisane dokładne linki bezpośrednio do pliku?
+>
+> Wnioski dopisz do pliku Analizy/Hardcoded_URL_Audyt_2026-04-28.md oraz do pliku Analizy/Udostepnienie.md
+
+### Odpowiedź operacyjna
+
+Dla Infoczytnik samo uzupełnienie `DataSlate_manifest.xlsx` jest poprawnym krokiem, **ale niewystarczającym**, jeśli nie zostanie odświeżony finalny plik danych ładowany przez frontend (`Infoczytnik/assets/data/data.json`).
+
+Innymi słowy: o tym, czy moduł działa po zmianie, decyduje finalny JSON używany w runtime, a nie sam plik XLSX jako źródło pośrednie.
+
+### Rekomendowany standard dla „DoPublikacji”
+
+1. W manifeście wpisywać ścieżki niezależne od domeny autora.
+2. Preferować ścieżki względne do plików w obrębie `Infoczytnik/assets/...`.
+3. Po każdej zmianie manifestu przebudować JSON i sprawdzić działanie modułu.
+4. Nie zostawiać URL-i absolutnych do starego hostingu, jeśli celem jest pełna niezależność grup.
+
+### Czy można zostawić „dokładne linki bezpośrednio do pliku”?
+
+Tak, ale zalecane jest, aby były to „dokładne ścieżki względne”, a nie absolutne URL-e `https://...`.
+
+- Absolutne URL-e: wygodne, ale wiążą kopię z jednym hostem.
+- Relatywne ścieżki: również precyzyjne, a jednocześnie przenośne między środowiskami.
+
+### Minimalna checklista bezpieczeństwa zmiany
+
+- zaktualizowano `DataSlate_manifest.xlsx`,
+- wygenerowano/odświeżono `data.json` używany przez Infoczytnik,
+- wszystkie assety (tła/logo/audio) ładują się bez błędów 404,
+- w finalnym JSON nie ma linków do domeny autora.
+
+Wniosek: zmiana jest bezpieczna, jeśli traktujesz ją jako proces **manifest + regeneracja danych + test runtime**, a nie tylko edycję jednego arkusza.
