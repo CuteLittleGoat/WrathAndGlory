@@ -21,7 +21,7 @@
 
 ### Co robią przyciski w panelu GM
 - **Wyślij** – publikuje aktualny komunikat na ekranie graczy.
-- **Ping** – odtwarza sygnał dźwiękowy bez zmiany treści.
+- **Ping** – odtwarza sygnał dźwiękowy bez zmiany treści. Przycisk korzysta z pliku `Infoczytnik/assets/audios/ping/Ping.mp3`.
 - **Wyczyść komunikat** – czyści tylko pole wpisywania tekstu.
 - **Przywróć domyślne** – przywraca domyślne ustawienia panelu.
 - **Aktualizuj dane z XLSX** – aktualizuje źródła danych używane przez moduł.
@@ -96,7 +96,7 @@ Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran g
 
 ### GM panel button actions
 - **Send** – publishes current message to player screen.
-- **Ping** – plays attention sound without changing message text.
+- **Ping** – plays attention sound without changing message text. The button uses `Infoczytnik/assets/audios/ping/Ping.mp3`.
 - **Clear message** – clears input text only.
 - **Restore defaults** – resets panel settings to default values.
 - **Update data from XLSX** – refreshes module data sources.

@@ -203,7 +203,7 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 ### 14.6. Payload i publikacja
 - `getPayload()` — serializacja bieżącego stanu panelu do modelu Firestore.
 - `send()` — zapis snapshotu wiadomości do `dataslate/current`.
-- `ping()` — szybki test łączności warstwy publikacji.
+- `ping()` — szybki test łączności warstwy publikacji; zapisuje pełny snapshot `getPayload('ping')` bez pól `undefined`, bo Firestore odrzuca `undefined` (błąd `Function DocumentReference.set() called with invalid data`).
 - `restoreDefaults()` — przywrócenie ustawień domyślnych panelu.
 - `rerollFillers()` i `pick()` — odświeżanie oraz wybór elementów dynamicznych (`fillers`).
 
@@ -258,6 +258,7 @@ Sugerowany minimalny szkielet:
 - Format obowiązkowy: `rrrr-MM-dd_gg-hh-ss` (czas lokalny Polski).
 - Każda zmiana kodu w którymkolwiek z plików testowych wymaga podniesienia tej wartości w obu plikach.
 - Funkcja `autoCacheBust()` wymusza spójność `?v=INF_VERSION`, co gwarantuje odświeżenie zasobów na kliencie.
+- Aktualna wersja testowa: `2026-04-29_11-26-17`.
 
 ## 19. Macierz kompletności technicznej
 - **Style, kolory, fonty i warstwy:** sekcje 3, 14.3, 15.
