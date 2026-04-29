@@ -141,7 +141,7 @@ Efekty i obwódki:
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.
 - `.dataTable` — `border-collapse`, `box-shadow`, sticky headers.
 - Kolumny `Podręcznik` i `Strona` są globalnie ujednolicone we wszystkich zakładkach: `Podręcznik` ma `min-width: 17ch`, wyrównanie do lewej i standardowe łamanie; `Strona` ma `min-width: 6ch`, `max-width: auto`, wyrównanie do lewej i standardowe łamanie. `Podręcznik` pozostaje bez limitu `max-width`.
-- Komórki `Strona` (`td[data-col="Strona"]`) używają koloru `var(--code)`, czyli dokładnie tego samego tonu co referencje `(str.)` renderowane klasą `.ref`.
+- Komórki `Strona` (`td[data-col="Strona"]`) używają koloru `var(--code)`, czyli dokładnie tego samego tonu co referencje `(str./page/p.)` renderowane klasą `.ref`.
 - Nagłówki:
   - `thead th` — sticky, uppercase, background gradient.
   - Drugi wiersz nagłówka (`tr:nth-child(2)`) ma niższe tło i `top: var(--header-row-height)`.
@@ -491,7 +491,7 @@ Mapowanie na `getElementById`:
 
 ### 5.1 `formatInlineHTML(raw)`
 - Wspiera markery: `{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}` z zamknięciem `{{/RED}}`, `{{/B}}`, `{{/I}}`, `{{/S}}`.
-- Zawiera wykrywanie referencji w nawiasach z `str`, `str.`, `strona` → klasa `.ref`.
+- Zawiera wykrywanie referencji w nawiasach z `str`, `str.`, `strona`, `page`, `p.` → klasa `.ref`.
 - Segmenty renderowane są do `<span>` z klasami:
   - `inline-red`, `inline-bold`, `inline-italic`, `inline-strike`.
 - Referencje są nakładane nawet wewnątrz stylów.
@@ -527,7 +527,7 @@ Mapowanie na `getElementById`:
 - Kanoniczny wycinek reguł renderowania znajduje się w `DataVault/docs/ZasadyFormatowania.md`.
 - Dokument ten jest nadrzędną „ściągą” do samego formatowania (kolory, markery, tokeny, wyjątki arkuszy i kolejność nakładania styli).
 - Najważniejsze reguły, które muszą być odtworzone 1:1:
-  - pipeline: markery inline → referencje `(str.)` → reguły per-kolumna/per-arkusz → clamp/podpowiedzi,
+  - pipeline: markery inline → referencje `(str./page/p.)` → reguły per-kolumna/per-arkusz → clamp/podpowiedzi,
   - obsługa markerów `RED/B/I/S` i ich łączenia na jednym segmencie,
   - `Słowa Kluczowe` (`Nazwa`) = pełna czerwień,
   - `KEYWORD_SHEETS_COMMA_NEUTRAL` = czerwone słowa + neutralne przecinki,
@@ -759,7 +759,7 @@ Obsługuje trzy przypadki:
   - arkusz `Pakiety Wyniesienia` + kolumna `Słowa Kluczowe` → `getFormattedCellHTML` (bez globalnego wymuszania czerwieni; tylko inline `{{RED}}`),
   - arkusze z `KEYWORD_SHEETS_COMMA_NEUTRAL` + kolumna `Słowa Kluczowe` → `formatKeywordHTML(..., {commasNeutral:true})`,
   - arkusz `Słowa Kluczowe Frakcji` + kolumna `Słowo Kluczowe` → `formatFactionKeywordHTML` (wyjątki `-`, `lub`, pełna czerwień dla `[ŚWIAT-KUŹNIA]`),
-  - fallback → `getFormattedCellHTML` (`formatRangeHTML` dla `Zasięg`, inaczej `formatTextHTML` z pełnym wsparciem markerów `{{RED}}/{{B}}/{{I}}`, referencji `(str.)` i `*[n]`).
+  - fallback → `getFormattedCellHTML` (`formatRangeHTML` dla `Zasięg`, inaczej `formatTextHTML` z pełnym wsparciem markerów `{{RED}}/{{B}}/{{I}}`, referencji `(str./page/p.)` i `*[n]`).
 - `openModal(...)` nie renderuje już dodatkowego nagłówka `<h3>` w treści modala; tytuł pozostaje tylko w pasku `.modalHeader` (`#modalTitle`), co usuwa wizualny duplikat „PORÓWNANIE”.
 
 ### 13.2 Zamknięcie
@@ -815,7 +815,7 @@ Obsługuje trzy przypadki:
   - `{{B}}...{{/B}}`
   - `{{I}}...{{/I}}`
 - Linia `*[n]` jest renderowana jaśniejszym tekstem.
-- Fragmenty w nawiasach zawierające `str`, `str.`, `strona` są oznaczane klasą `.ref`.
+- Fragmenty w nawiasach zawierające `str`, `str.`, `strona`, `page`, `p.` są oznaczane klasą `.ref`.
 
 ---
 

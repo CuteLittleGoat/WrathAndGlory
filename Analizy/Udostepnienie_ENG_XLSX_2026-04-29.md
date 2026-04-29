@@ -101,3 +101,19 @@ Największym realnym ryzykiem nie jest sama zmiana języka, tylko brak standaryz
 - [ ] `data.json` ma ten sam kontrakt co wcześniej,
 - [ ] test odczytu działa dla przykładowych danych EN,
 - [ ] dokumentacja modułu do publikacji opisuje wymagany format XLSX (EN).
+
+---
+
+## Aktualizacja po wdrożeniu zmian w kodzie (2026-04-29)
+
+Warunki dla wersji angielskiej zostały już dopisane w module DataVault.
+
+### Zmiany w kodzie (cytowanie linii przed/po)
+
+- Plik `DataVault/app.js` linia z regexem wykrywania referencji stron:
+  - Było: `const reRefParen = /\(([^)]*(?:\bstr\.?\b|\bstr\b|\bstrona\b)[^)]*)\)/ig;`
+  - Jest: `const reRefParen = /\(([^)]*(?:\bstr\.?\b|\bstr\b|\bstrona\b|\bpage\b|\bp\.)[^)]*)\)/ig;`
+
+- Plik `DataVault/app.js` opis reguł formatowania referencji:
+  - Było: `- references in parentheses containing "str.", "str", or "strona"`
+  - Jest: `- references in parentheses containing "str.", "str", "strona", "page", or "p."`
