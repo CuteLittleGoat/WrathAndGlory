@@ -351,3 +351,24 @@ Aby osiągnąć gotowość, trzeba najpierw utworzyć kompletną strukturę modu
 - Plik `Main/index.html`
   - Było: `<main>`
   - Jest: `<main>` + komentarz HTML z informacją, że stałe etykiety trzeba aktualizować ręcznie przy nowym języku.
+
+---
+
+## Realizacja zadania: dokumentacja publikacyjna i komentarze i18n (2026-04-30)
+
+### Prompt użytkownika (kontekst)
+
+> Przeczytaj plik Analizy/Udostepnienie.md
+> ...
+> Nic nie zmieniaj w samym działaniu aplikacji. Aktualizuj tylko dokumentację oraz dodaj komentarze w kodzie.
+
+### Zmiany w kodzie (Było / Jest)
+
+- Plik `DataVault/app.js` (sekcja konfiguracji reguł zależnych od nazw zakładek)
+  - Było: `const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", ...]);`
+  - Jest: dodany blok komentarzy `MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT` z instrukcją aktualizacji mapowania nazw zakładek i warunków filtrów przy dodawaniu nowego języka + dotychczasowa linia `const KEYWORD_SHEETS_COMMA_NEUTRAL = ...`.
+
+### Zmiany w dokumentacji
+
+- Przeredagowano kolejność sekcji we wszystkich `docs/README.md` modułów tak, aby najpierw występował kompletny blok polski, a dopiero potem kompletny blok angielski.
+- Uzupełniono `DataVault/docs/Documentation.md` o sekcję techniczną wyjaśniającą zależność domyślnych filtrów od nazw zakładek (`sheetName`) oraz wymagane kroki przy dodaniu nowej wersji językowej.

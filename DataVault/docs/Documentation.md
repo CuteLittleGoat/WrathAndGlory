@@ -940,3 +940,24 @@ This is the update map for adding another language (for example FR/DE):
 5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+
+## Uwaga krytyczna: domyślne filtry zależne od nazw zakładek (PL)
+
+Reguły domyślnego widoku i część formatowania działają na podstawie nazw zakładek (`sheetName`) wczytanych z `data.json` (np. zbiory `KEYWORD_SHEETS_COMMA_NEUTRAL`, `ADMIN_ONLY_SHEETS`, konfiguracje `DEFAULT_VIEW_CONFIG`).
+
+Przy dodawaniu nowego języka (np. FR/DE) trzeba wykonać **jedną** z dwóch ścieżek:
+1. dodać mapowanie aliasów nazw zakładek do obecnych kluczy kanonicznych, albo
+2. zaktualizować wszystkie zbiory/warunki zależne od nazw zakładek.
+
+Bez tej aktualizacji część domyślnych filtrów, sortowania i formatowania nie zadziała poprawnie.
+
+## Critical note: default filters depend on tab names (EN)
+
+Default-view rules and part of formatting logic rely on `sheetName` values loaded from `data.json` (for example `KEYWORD_SHEETS_COMMA_NEUTRAL`, `ADMIN_ONLY_SHEETS`, `DEFAULT_VIEW_CONFIG`).
+
+When adding a new language (for example FR/DE), you must do **one** of the following:
+1. add alias mapping from localized tab names to current canonical keys, or
+2. update every set/condition that depends on tab names.
+
+Without this update, part of default filters, sorting and formatting will not work correctly.
+
