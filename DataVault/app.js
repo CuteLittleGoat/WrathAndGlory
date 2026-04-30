@@ -25,6 +25,11 @@ const els = {
   languageSelect: document.getElementById("languageSelect"),
 };
 
+// --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
+// Przy dodawaniu nowej wersji językowej dodaj nowy klucz w obiekcie translations (np. fr/de),
+// zaktualizuj nazwy zakładek oraz warunki kolorowania skrótu "str." powiązane z tekstami w wielu językach.
+// When adding a new language version, add a new key to translations (e.g., fr/de),
+// update tab names and update all "pg."/"str." coloring rules tied to multilingual text variants.
 const translations = {
   pl: {
     labels: {

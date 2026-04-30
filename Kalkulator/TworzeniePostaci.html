@@ -466,7 +466,10 @@
     /* Inicjalizacja po załadowaniu strony / Initialization after page load */
     document.addEventListener('DOMContentLoaded', function() {
       // --- Obiekt tłumaczeń dla obsługi wielu języków / Translation object for multi-language support ---
-      const translations = {
+            // --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
+      // Dodanie nowego języka wymaga rozszerzenia translations oraz wszystkich etykiet pól, błędów i przycisków dialogowych.
+      // Adding a new language requires extending translations and all field labels, errors, and dialog button captions.
+const translations = {
         pl: {
           labels: {
             pageTitle: 'Tworzenie Postaci',
