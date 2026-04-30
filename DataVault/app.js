@@ -210,6 +210,15 @@ const applyLanguage = (lang) => {
   }
 };
 
+// --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
+// Domyślne filtry i reguły formatowania niżej działają na nazwach zakładek (sheetName) z data.json.
+// Jeśli dodasz nowy język (np. fr/de), zapewnij mapowanie nazw zakładek do obecnych kluczy kanonicznych
+// (np. przez canonKey + słownik aliasów) albo zaktualizuj każdy zbiór/warunek oparty o nazwę zakładki.
+// Inaczej część domyślnych filtrów i zachowań (np. słowa kluczowe, widok domyślny, sortowanie) nie zadziała.
+// Default filters and formatting rules below rely on sheet names (sheetName) from data.json.
+// If you add a new language (e.g., fr/de), provide mapping from localized tab names to current canonical keys
+// (for example via canonKey + alias dictionary) or update every set/condition that depends on tab names.
+// Otherwise some default filters/behaviors (keywords, default view, sorting) will stop working.
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie", "Pakiety Wyniesienia"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
 const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki"]);
