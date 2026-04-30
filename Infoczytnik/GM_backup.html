@@ -1,15 +1,12 @@
-<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <!doctype html>
 <html lang="pl">
-<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Infoczytnik - panel GM</title>
-  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
-<script>
+  <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-30_11-41-19";
+      const INF_VERSION = "2026-04-23_12-30-44";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -21,8 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=IBM+Plex+Serif:wght@400;700&family=Open+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&family=DM+Serif+Display&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=Exo+2:wght@400;600;700&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
-  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
-<style>
+  <style>
     :root{--text:#eaeaea;--muted:#bdbdbd;--accent:#ffd27a;--border:#2a2a2a;--panel:rgba(18,18,18,.92)}
     *{box-sizing:border-box} body{margin:0;padding:18px;font-family:Arial,sans-serif;background:linear-gradient(180deg,#070707,#0f0f0f);color:var(--text)}
     .wrap{max-width:1080px;margin:0 auto}.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
@@ -53,7 +49,6 @@
     .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   </style>
 </head>
-<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
 <div class="wrap"><h1>Infoczytnik - panel GM</h1><div class="card">
   <div class="row">
@@ -131,7 +126,6 @@
   <div class="small">Status: <span class="status" id="status">…</span></div>
 </div></div>
 
-<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
 <script src="config/web-push-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
@@ -143,7 +137,6 @@ const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
 
-// --- WAŻNE: Każda grupa musi mieć własny Firebase, inaczej dane będą współdzielone między serwerami. / IMPORTANT: Each group must have its own Firebase, otherwise data will be shared across servers. ---
 if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
 const db = firebase.firestore();
@@ -225,10 +218,7 @@ function toStr(value){
 }
 
 function toStringArray(value){
-  // --- Rozbijanie wartości fillerów po nowych liniach, pionowej kresce i średniku / Split filler values by new lines, pipe, and semicolon ---
-  // Akceptujemy średnik jako separator, aby import poprawnie oddzielał linie fillerów zamiast traktować cały wpis jako jedną pozycję.
-  // We accept semicolon as a separator so import correctly separates filler lines instead of treating the whole entry as a single item.
-  return String(value ?? '').split(/\r?\n|\||;/).map(v=>v.trim()).filter(Boolean);
+  return String(value ?? '').split(/\r?\n|\|/).map(v=>v.trim()).filter(Boolean);
 }
 
 function formatFillerLine(line){
@@ -489,8 +479,7 @@ async function send(type){
 
 async function ping(){
   setStatus('ping…');
-  // --- Ping zapisujemy pełnym obiektem bez wartości `undefined`, bo Firestore odrzuca takie pola / Save ping as a full object without `undefined`, because Firestore rejects such fields ---
-  await currentRef.set(getPayload('ping'), {merge:false});
+  await currentRef.set({...getPayload('ping'), text: undefined, type:'ping'}, {merge:true});
   setStatus('ping wysłany');
 }
 
