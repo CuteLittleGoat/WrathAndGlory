@@ -30,6 +30,8 @@
 - **Kolor i wielkość tekstu wiadomości**.
 - **Kolor i wielkość prefix/suffix**.
 - **Ilość linii fillerów** i wysokość strefy prefix/suffix.
+- W danych fillerów separatorami linii mogą być: nowa linia, pionowa kreska `|` oraz średnik `;`. Dzięki temu każdy fragment jest losowany osobno, a nie jako jeden długi blok tekstu.
+- In filler data, line separators can be: newline, pipe `|`, and semicolon `;`. This ensures each fragment is randomized separately instead of being treated as one long text block.
 - **Tryb podglądu**:
   - **Treść** – podgląd warstwy tekstowej.
   - **Tło** – podgląd samego tła.
