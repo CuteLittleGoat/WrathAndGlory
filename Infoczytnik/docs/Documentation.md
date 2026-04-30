@@ -76,7 +76,7 @@ Ta zasada jest obowiązkowa przy odtwarzaniu modułu 1:1.
 ### 6.2. Przetwarzanie
 - Dane z arkusza są mapowane do pól używanych przez payload UI.
 - Obsługiwane jest autoformatowanie tokenu `+++` podczas importu do JSON.
-- Wynik importu może nadpisać `assets/data/data.json` dla lokalnego odczytu.
+- Wynik importu **zawsze** generuje aktualny `assets/data/data.json` na podstawie zawartości `DataSlate_manifest.xlsx` dla lokalnego odczytu.
 
 ### 6.3. Oczekiwany efekt
 - Po imporcie nowa struktura jest od razu dostępna do podglądu i publikacji.

@@ -114,6 +114,7 @@ Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYK�
 - **Clear message** – clears input text only.
 - **Restore defaults** – resets panel settings to default values.
 - **Update data from XLSX** – refreshes module data sources.
+- Po odświeżeniu dane zapisują się do `assets/data/data.json` i od razu są gotowe do użycia w panelu. / After refresh, data is saved to `assets/data/data.json` and is immediately ready to use in the panel.
 
 ### Most-used settings
 - **Message text color and size**.
