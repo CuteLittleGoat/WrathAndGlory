@@ -372,3 +372,136 @@ Aby osiągnąć gotowość, trzeba najpierw utworzyć kompletną strukturę modu
 
 - Przeredagowano kolejność sekcji we wszystkich `docs/README.md` modułów tak, aby najpierw występował kompletny blok polski, a dopiero potem kompletny blok angielski.
 - Uzupełniono `DataVault/docs/Documentation.md` o sekcję techniczną wyjaśniającą zależność domyślnych filtrów od nazw zakładek (`sheetName`) oraz wymagane kroki przy dodaniu nowej wersji językowej.
+
+
+## Aktualizacja analizy (2026-04-30): Repozytorium_EN.xlsx + gotowość do utworzenia kopii modułów
+
+### Prompt użytkownika (kontekst)
+
+> Przeczytaj plik Analizy/Udostepnienie.md
+>
+> Przygotowuję się do przygotowania kopii modułów do dalszego udostępnienia.
+> Przez "DoPublikacji" rozumiem kopię modułu, który będzie przygotowany do dalszego udostępniania zgodnie z opisem w Analizy/Udostepnienie.md
+> Będę też używać okreśenia "kopia do udostępnienia". To oznacza to samo.
+>
+> Wgrałem nowy plik Analizy/Repozytorium_EN.xlsx
+> Zawiera on przykładowe dane do modułu DataVault w wersji "DoPublikacji".
+> Przygotuj z niego data.json i zapisz go w Analizy/data.json
+>
+> Następnie zapisz w Analizy/Udostepnienie.md jakie zmiany trzeba będzie dokonać, żeby moduł DataVault działał z nowymi nazwami (zakładki i kolumny).
+> W wersji "DoPublikacji" nie będzie domyślnie włączonych żadnych filtrów. W wersji "DoPublikacji" trzeba będzie dokładnie w dokumentacji dopisać gdzie i co zmienić, żeby przyciski "Pełen Widok" i "Widok Domyślny" działały zgodnie z założeniami.
+>
+> Następnie dopisz do Analizy/Udostepnienie.md jakie zmiany należy wprowadzić, żeby kopie wszystkich modułów "DoPublikacji" spełniały wymagania: (...) 
+>
+> Przeprowadź analizę, czy można już tworzyć kopię modułów i zapisać je w "DoPublikacji" (gdzie zostaną następnie zmodyfikowane zgodnie z powyższymi wymaganiami), czy jeszcze coś trzeba przygotować.
+>
+> Wszystkie wnioski dopisz do pliku Analizy/Udostepnienie.md
+
+### Wykonane działanie na danych wejściowych
+
+- Utworzono plik `Analizy/data.json` bezpośrednio z `Analizy/Repozytorium_EN.xlsx`.
+- Konwersja objęła wszystkie zakładki z pliku XLSX; każda zakładka została zapisana jako tablica rekordów JSON.
+- Plik ma charakter przykładowy (seed) dla wariantu „DoPublikacji”, zgodnie z założeniem, że docelowe grupy wypełniają własne dane.
+
+### DataVault — zmiany wymagane dla nowych nazw zakładek i kolumn (EN)
+
+Aby moduł DataVault działał poprawnie z nowym `data.json` opartym o angielskie nazwy zakładek i kolumn, trzeba wykonać co najmniej:
+
+1. Ujednolicić mapowanie nazw zakładek używanych przez logikę aplikacji:
+   - `DEFAULT_VIEW_CONFIG`,
+   - `ADMIN_ONLY_SHEETS`,
+   - `CHARACTER_CREATION_SHEETS`,
+   - `COMBAT_RULES_SHEETS`,
+   - reguły formatowania warunkowego zależne od `sheetName`.
+
+2. Ujednolicić mapowanie nazw kolumn używanych przez logikę:
+   - kolumny używane w domyślnych filtrach (`Typ`, `Słowa Kluczowe`, itd.) trzeba przełączyć na odpowiedniki EN (`Type`, `Keywords`, ...),
+   - kolumny specjalne wykorzystywane przez formatowanie/porównania (np. cechy broni, keywordy frakcji, nazwy stanów) muszą mieć aliasy PL↔EN lub pełne przełączenie na EN.
+
+3. Zastąpić porównania hardcoded po literalnych nazwach mechanizmem aliasów (zalecane):
+   - warstwa `canonKey + alias dictionary` dla sheetów i kolumn,
+   - dopiero na tej warstwie wykonywać `if`/`switch` dla filtrów, sortowania i formatowania.
+
+4. Zaktualizować opisy i komunikaty administracyjne związane z generowaniem `data.json`, aby referowały nowy plik wsadowy EN.
+
+### DataVault „DoPublikacji” — brak domyślnych filtrów + zachowanie przycisków „Pełen Widok” / „Widok Domyślny”
+
+Założenie docelowe: po uruchomieniu modułu nie ma aktywnych filtrów domyślnych.
+
+W praktyce oznacza to:
+
+1. `DEFAULT_VIEW_CONFIG` w wariancie „DoPublikacji” powinien być pusty (lub logicznie równoważny brakowi ograniczeń).
+2. Inicjalizacja zakładek po starcie powinna tworzyć stan bez aktywnych `filtersSet` i bez filtrów tekstowych.
+3. Przycisk **Pełen Widok** ma czyścić wszystko (to już odpowiada założeniu).
+4. Przycisk **Widok Domyślny** w „DoPublikacji” ma odtwarzać stan „bez filtrów” (a nie historyczne ukrycia).
+
+#### Co dokładnie dopisać do dokumentacji technicznej DataVault (obowiązkowo)
+
+W `DataVault/docs/Documentation.md` (w kopii „DoPublikacji”) dodać osobną sekcję, która wskaże:
+
+- dokładną lokalizację stałej konfiguracyjnej domyślnego widoku (`DEFAULT_VIEW_CONFIG`) i docelową postać dla wariantu publicznego,
+- funkcję inicjalizacji stanu zakładki (`createSheetViewState` / `applyDefaultViewForSheet`) i oczekiwane wartości w trybie bez filtrów,
+- funkcje obsługi przycisków (`applyViewModeToAllSheets("full")` oraz `applyViewModeToAllSheets("default")`) i ich semantykę w wersji „DoPublikacji”,
+- regułę testową: po kliknięciu obu przycisków wszystkie rekordy pozostają widoczne (z wyjątkiem filtrów uruchomionych ręcznie przez użytkownika po starcie).
+
+### Zmiany wymagane globalnie dla kopii wszystkich modułów „DoPublikacji”
+
+Poniżej precyzyjna lista zmian zgodna z wymaganiami 1–10:
+
+1. **Hiperłącza do strony głównej „czyste”**
+   - W kodzie przycisków/linków „Strona Główna / Main Page” ustawić placeholder (np. `href="#"` + komentarz TODO).
+   - W każdym `docs/README.md` dodać instrukcję użytkownika gdzie wkleić właściwy adres strony głównej.
+
+2. **DataVault: pliki wsadowe**
+   - W module DataVault pozostawić `Repozytorium.xlsx` jako kopię `Analizy/Repozytorium_EN.xlsx`.
+   - Dodać przykładowy `data.json` (seed) i wyraźną informację, że grupa ma przygotować własny wsad.
+
+3. **Audio: plik wsadowy**
+   - W module Audio pozostawić `AudioManifest.xlsx` jako kopię `Analizy/AudioManifest_EN.xlsx`.
+   - Dokumentacja musi wyjaśniać, że bez własnej zawartości manifestu moduł nie będzie zawierał docelowych danych/audio.
+
+4. **firebase-config.js placeholdery**
+   - We wszystkich modułach zastąpić realne dane (`apiKey`, `authDomain`, `projectId`, itd.) placeholderem konfiguracyjnym.
+   - Dodać fail-fast komunikat na UI/log, gdy placeholder nie został uzupełniony.
+
+5. **Domyślny język EN**
+   - W modułach z przełącznikiem języka ustawić `currentLanguage = "en"`.
+   - Dodatkowo ustawić `<html lang="en">` i domyślną wartość selektora języka na EN.
+
+6. **Kolejność dokumentacji EN -> PL**
+   - W każdym module: `docs/README.md` i `docs/Documentation.md` przebudować tak, by najpierw była kompletna sekcja EN, a dopiero potem PL.
+
+7. **Usunięcie PWA/powiadomień**
+   - Usunąć z kopii: manifest PWA, service-worker, rejestrację SW, UI do push notifications, konfiguracje web-push i integracje pomocnicze.
+
+8. **Main/ZmienneHiperlacza.md**
+   - Zastąpić realne linki placeholderami opisowymi (`ENTER_DISCORD_LINK_HERE`, `ENTER_VTT_LINK_HERE`, ...).
+
+9. **Usunięcie zbędnych plików**
+   - Nie dołączać do kopii: `AGENTS.md`, `DetaleLayout.md`, `DoZrobienia.md`, `Kolumny.md`, `WebView_FCM_Cloudflare_Worker`.
+
+10. **Weryfikacja ścieżek obrazów i assetów**
+   - Przeskanować wszystkie moduły pod kątem absolutnych URL-i do `github.io` (lub innego hosta autora).
+   - Zamienić na ścieżki względne tam, gdzie asset ma być częścią lokalnej kopii.
+
+### Czy można już tworzyć kopię modułów do folderu „DoPublikacji”?
+
+Tak, można utworzyć kopię roboczą już teraz, ale **nie jest jeszcze gotowa do publikacji bezpiecznej**.
+
+Rekomendowany etapowy proces:
+
+1. Utworzyć kopię wszystkich modułów w `DoPublikacji`.
+2. Wykonać sanityzację wg listy 1–10 powyżej.
+3. Dla DataVault wdrożyć mapowanie nazw (sheet/column aliases) i tryb bez domyślnych filtrów.
+4. Przebudować dokumentację każdego modułu (EN->PL + instrukcje placeholderów).
+5. Wykonać końcowy audyt „zero hardcoded production links / zero real firebase secrets / zero PWA-push artifacts”.
+
+### Co jeszcze trzeba przygotować przed finalnym udostępnieniem
+
+- Krótki checklist-script (automatyczny lub półautomatyczny), który wykryje:
+  - URL-e do starego hostingu,
+  - realne wartości Firebase,
+  - pozostałości PWA/powiadomień,
+  - nieuzupełnione placeholdery krytyczne.
+- „Quick start” dla grupy docelowej: 1 strona z kolejnością konfiguracji (hyperlinks -> firebase -> dane wsadowe -> test smoke).
+- Minimalny zestaw testów dymnych po wdrożeniu na obcym hostingu.
