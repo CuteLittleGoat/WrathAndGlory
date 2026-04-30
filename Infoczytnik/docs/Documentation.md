@@ -175,7 +175,7 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - `clamp(value, min, max)` — ograniczenie zakresu numerycznego.
 - `safeGet(obj, path, fallback)` — bezpieczne pobieranie zagnieżdżonych pól.
 - `toInt`, `toStr`, `toStringArray` — normalizacja typów rekordów importu.
-- `toStringArray` rozdziela wartości fillerów po separatorach: `\n`, `|`, `;`, a następnie trimuje i odrzuca puste elementy. To gwarantuje poprawne rozpoznawanie średnika jako separatora i zapobiega scalaniu wielu fillerów w jeden wpis.
+- `toStringArray` rozdziela wartości fillerów po separatorach: `\n` oraz `|`, a następnie trimuje i odrzuca puste elementy. Średnik jest pozostawiany w treści pojedynczego fillera, aby nie rozbijać gotowych litanii na sztuczne fragmenty.
 - `normalizeHexColor`, `isFullHexColor`, `resolveHexColor` — sanityzacja kolorów z manifestu.
 
 ### 14.3. Fonty, selecty i etykiety
