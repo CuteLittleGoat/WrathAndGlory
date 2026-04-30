@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-29_11-26-17";
+      const INF_VERSION = "2026-04-30_11-41-19";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -225,7 +225,10 @@ function toStr(value){
 }
 
 function toStringArray(value){
-  return String(value ?? '').split(/\r?\n|\|/).map(v=>v.trim()).filter(Boolean);
+  // --- Rozbijanie wartości fillerów po nowych liniach, pionowej kresce i średniku / Split filler values by new lines, pipe, and semicolon ---
+  // Akceptujemy średnik jako separator, aby import poprawnie oddzielał linie fillerów zamiast traktować cały wpis jako jedną pozycję.
+  // We accept semicolon as a separator so import correctly separates filler lines instead of treating the whole entry as a single item.
+  return String(value ?? '').split(/\r?\n|\||;/).map(v=>v.trim()).filter(Boolean);
 }
 
 function formatFillerLine(line){
