@@ -378,37 +378,37 @@ Aby osiągnąć gotowość, trzeba najpierw utworzyć kompletną strukturę modu
 
 ### Prompt użytkownika (kontekst)
 
-Przeczytaj plik Analizy/Udostepnienie.md
-
-Przygotowuję się do przygotowania kopii modułów do dalszego udostępnienia.
-Przez "DoPublikacji" rozumiem kopię modułu, który będzie przygotowany do dalszego udostępniania zgodnie z opisem w Analizy/Udostepnienie.md
-Będę też używać okreśenia "kopia do udostępnienia". To oznacza to samo.
-
-Wgrałem nowy plik Analizy/Repozytorium_EN.xlsx
-Zawiera on przykładowe dane do modułu DataVault w wersji "DoPublikacji".
-Przygotuj z niego data.json i zapisz go w Analizy/data.json
-
-Następnie zapisz w Analizy/Udostepnienie.md jakie zmiany trzeba będzie dokonać, żeby moduł DataVault działał z nowymi nazwami (zakładki i kolumny).
-W wersji "DoPublikacji" nie będzie domyślnie włączonych żadnych filtrów. W wersji "DoPublikacji" trzeba będzie dokładnie w dokumentacji dopisać gdzie i co zmienić, żeby przyciski "Pełen Widok" i "Widok Domyślny" działały zgodnie z założeniami.
-
-Następnie dopisz do Analizy/Udostepnienie.md jakie zmiany należy wprowadzić, żeby kopie wszystkich modułów "DoPublikacji" spełniały wymagania:
-
-1. Hiperłącza do strony głównej byłby czyste. Nie przenosiłby nigdzie. W kodzie i pliku README musi być informacja, że należy to uzupełnić.
-2. W module DataVault będzie plik "Repozytorium.xlsx" (kopia pliku Analizy/Repozytorium_EN.xlsx). Będzie też utworzony nowy plik data.json zawierający tylko przykładowe dane. Każda grupa musi sobie własnoręcznie przygotować plik wsadowy.
-3. Podobnie jak w pkt2 w module Audio będzie plik "AudioManifest.xlsx" (kopia pliku Analizy/AudioManifest_EN.xlsx)
-4. Pliki "firebase-config.js" w każdym z modułów nie będzie zawierać prawdziwych danych typu apiKey, authDomain, projectId itd. Zamiast tego będzie placeholder "ENTER FIREBASE CONFIG HERE" (lub inny o lepszej treści)
-5. W niektórych modułach jest menu do zmiany języka. Domyślnie jest polski. W kopiach do udostępnienia domyślnie ma być angielski.
-6. W plikach dokumentacji (README.md i Documentation.md) najpierw ma być angielska wersja językowa a następnie polska wersja językowa.
-7. W kopii do udostępnienia ma nie być śladów po tworzeniu aplikacji PWA oraz funkcji wyświetlania powiadomień.
-8. W kopii w pliku Main/ZmienneHiperlacza.md musi zawierać placeholdery zamiast prawdziwych linków.
-9. W kopii nie będą potrzebne pliki AGENST.md, DetaleLayout.md, DoZrobienia.md, Kolumny.md oraz WebView_FCM_Cloudflare_Worker (jest to powiązane z wymaganiem z pkt7)
-10. W wielu miejscach aplikacji są ładowane obrazki, grafiki itd. One będą skopiowane do folderu "DoPublikacji". Sprawdź czy zadziałają po skopiowaniu (czy nie ma ścieżek odnoszących się bezpośrednio do mojego gihtuba)
-
-
-Przeprowadź analizę, czy można już tworzyć kopię modułów i zapisać je w "DoPublikacji" (gdzie zostaną następnie zmodyfikowane zgodnie z powyższymi wymaganiami), czy jeszcze coś trzeba przygotować.
-
-Wszystkie wnioski dopisz do pliku Analizy/Udostepnienie.md
-
+> Przeczytaj plik Analizy/Udostepnienie.md
+>
+> Przygotowuję się do przygotowania kopii modułów do dalszego udostępnienia.
+> Przez "DoPublikacji" rozumiem kopię modułu, który będzie przygotowany do dalszego udostępniania zgodnie z opisem w Analizy/Udostepnienie.md
+> Będę też używać okreśenia "kopia do udostępnienia". To oznacza to samo.
+> 
+> Wgrałem nowy plik Analizy/Repozytorium_EN.xlsx
+> Zawiera on przykładowe dane do modułu DataVault w wersji "DoPublikacji".
+> Przygotuj z niego data.json i zapisz go w Analizy/data.json
+> 
+> Następnie zapisz w Analizy/Udostepnienie.md jakie zmiany trzeba będzie dokonać, żeby moduł DataVault działał z nowymi nazwami (zakładki i kolumny).
+> W wersji "DoPublikacji" nie będzie domyślnie włączonych żadnych filtrów. W wersji "DoPublikacji" trzeba będzie dokładnie w dokumentacji dopisać gdzie i co zmienić, żeby przyciski "Pełen Widok" i "Widok Domyślny" działały > > zgodnie z założeniami.
+> 
+> Następnie dopisz do Analizy/Udostepnienie.md jakie zmiany należy wprowadzić, żeby kopie wszystkich modułów "DoPublikacji" spełniały wymagania:
+> 
+> 1. Hiperłącza do strony głównej byłby czyste. Nie przenosiłby nigdzie. W kodzie i pliku README musi być informacja, że należy to uzupełnić.
+> 2. W module DataVault będzie plik "Repozytorium.xlsx" (kopia pliku Analizy/Repozytorium_EN.xlsx). Będzie też utworzony nowy plik data.json zawierający tylko przykładowe dane. Każda grupa musi sobie własnoręcznie przygotować > plik wsadowy.
+> 3. Podobnie jak w pkt2 w module Audio będzie plik "AudioManifest.xlsx" (kopia pliku Analizy/AudioManifest_EN.xlsx)
+> 4. Pliki "firebase-config.js" w każdym z modułów nie będzie zawierać prawdziwych danych typu apiKey, authDomain, projectId itd. Zamiast tego będzie placeholder "ENTER FIREBASE CONFIG HERE" (lub inny o lepszej treści)
+> 5. W niektórych modułach jest menu do zmiany języka. Domyślnie jest polski. W kopiach do udostępnienia domyślnie ma być angielski.
+> 6. W plikach dokumentacji (README.md i Documentation.md) najpierw ma być angielska wersja językowa a następnie polska wersja językowa.
+> 7. W kopii do udostępnienia ma nie być śladów po tworzeniu aplikacji PWA oraz funkcji wyświetlania powiadomień.
+> 8. W kopii w pliku Main/ZmienneHiperlacza.md musi zawierać placeholdery zamiast prawdziwych linków.
+> 9. W kopii nie będą potrzebne pliki AGENST.md, DetaleLayout.md, DoZrobienia.md, Kolumny.md oraz WebView_FCM_Cloudflare_Worker (jest to powiązane z wymaganiem z pkt7)
+> 10. W wielu miejscach aplikacji są ładowane obrazki, grafiki itd. One będą skopiowane do folderu "DoPublikacji". Sprawdź czy zadziałają po skopiowaniu (czy nie ma ścieżek odnoszących się bezpośrednio do mojego gihtuba)
+> 
+> 
+> Przeprowadź analizę, czy można już tworzyć kopię modułów i zapisać je w "DoPublikacji" (gdzie zostaną następnie zmodyfikowane zgodnie z powyższymi wymaganiami), czy jeszcze coś trzeba przygotować.
+> 
+> Wszystkie wnioski dopisz do pliku Analizy/Udostepnienie.md
+> 
 ### Wykonane działanie na danych wejściowych
 
 - Utworzono plik `Analizy/data.json` bezpośrednio z `Analizy/Repozytorium_EN.xlsx`.
