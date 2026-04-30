@@ -695,7 +695,10 @@
 
     const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 
-    const translations = {
+        // --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
+    // Dodając nowy język, rozbuduj translations i sprawdź wszystkie etykiety przycisków oraz komunikaty statusu.
+    // When adding a new language, extend translations and verify all button labels and status messages.
+const translations = {
       pl: {
         labels: {
           languageSelect: "Wersja językowa",

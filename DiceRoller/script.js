@@ -21,6 +21,9 @@ const DEFAULT_POOL = 2;
 const DEFAULT_WRATH = 1;
 const ROLL_DURATION = 900;
 
+// --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
+// Nowy język wymaga dopisania pełnego zestawu labels/messages w translations oraz aktualizacji opcji selecta języka w HTML.
+// A new language requires a full labels/messages set in translations and an updated language select list in HTML.
 const translations = {
   pl: {
     labels: {

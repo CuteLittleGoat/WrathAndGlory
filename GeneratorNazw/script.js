@@ -1145,6 +1145,9 @@ const DATA = [
 /* =======================
    UI wiring
    ======================= */
+// --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
+// Przy nowej wersji językowej dodaj słownik w translations i upewnij się, że wszystkie opisy generatora mają odpowiedniki.
+// For a new language version, add a dictionary in translations and ensure every generator description has an equivalent.
 const translations = {
   pl: {
     labels: {
