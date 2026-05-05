@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WrathAndGlory – Skrypt prezentacji modułów</title>
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.5; margin: 24px; background: #111; color: #f5f5f5; }
+    h1, h2, h3 { color: #ffd166; }
+    .box { background: #1b1b1b; border: 1px solid #333; border-radius: 10px; padding: 16px; margin: 14px 0; }
+    .checklist li { margin: 6px 0; }
+    .say { color: #8ecae6; font-weight: bold; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 12px; margin-left: 8px; }
+    .obs { background: #3a0ca3; }
+    .tablet { background: #2a9d8f; }
+    .browser { background: #ef476f; }
+    code { color: #ffd6a5; }
+  </style>
+</head>
+<body>
+  <h1>Skrypt nagrania prezentacji – WrathAndGlory</h1>
+
+  <div class="box">
+    <h2>Prompt użytkownika (kontekst analizy)</h2>
+    <p>
+      „Przygotowuję się do prezentacji aplikacji i wszystkich modułów. Mam do dyspozycji OBS, kamerę i tablet z zainstalowaną aplikacją.
+      Kamera będzie skierowana na tablet i będzie nagrywać co się na nim wyświetla (przy module Infoczytnik). W pozostałych modułach nagranie będzie z okna przeglądarki.
+      Utwórz mi plik Analizy/Prezentacja.html
+      Plik ten ma zawierać dokładną instrukcję co i gdzie klikać, żeby zaprezentować wszystkie funkcje każdego z modułów.
+      Napisz też krótkie zdanie jakie ma być wypowiadane na nagraniu (np. Tutaj mogę zmienić font.).
+      Plik ma być pełnym skryptem do nagrania prezentacji oraz checklistą do wykonania krok-po-kroku.”
+    </p>
+  </div>
+
+  <div class="box">
+    <h2>1) Setup przed nagraniem</h2>
+    <ul class="checklist">
+      <li>☐ Uruchom OBS i przygotuj dwie sceny: <b>Przeglądarka</b> oraz <b>Kamera na tablet</b>. <span class="tag obs">OBS</span></li>
+      <li>☐ W scenie „Przeglądarka” dodaj przechwytywanie okna przeglądarki.</li>
+      <li>☐ W scenie „Kamera na tablet” ustaw kadr tak, aby ekran tabletu był czytelny i bez odbić.</li>
+      <li>☐ Otwórz moduł startowy: <code>Main/index.html?admin=1</code>. <span class="tag browser">Przeglądarka</span></li>
+      <li>☐ Sprawdź, czy dźwięk systemowy jest aktywny (potrzebny do Audio i Ping w Infoczytniku).</li>
+    </ul>
+  </div>
+
+  <div class="box">
+    <h2>2) Moduł Main (centrum sterowania)</h2>
+    <ol class="checklist">
+      <li>☐ Pokaż ekran główny i wszystkie kafelki modułów.</li>
+      <li>☐ Kliknij „Włącz powiadomienia” i pokaż okno zgody przeglądarki.</li>
+      <li>☐ Kliknij „Mapa” i „Obrazki” (otwarcie nowych kart).</li>
+      <li>☐ Wróć do karty Main.</li>
+    </ol>
+    <p class="say">Powiedz: „To jest ekran startowy – stąd jednym kliknięciem uruchamiam każdy moduł.”</p>
+  </div>
+
+  <div class="box">
+    <h2>3) DataVault</h2>
+    <ol class="checklist">
+      <li>☐ Z Main kliknij „Skarbiec Danych”.</li>
+      <li>☐ Przełącz 2–3 zakładki danych, aby pokazać różne sekcje.</li>
+      <li>☐ Wpisz frazę do wyszukiwarki globalnej i pokaż filtrowanie wyników.</li>
+      <li>☐ Użyj filtra kolumny (ikona filtra), a następnie zdejmij filtr.</li>
+      <li>☐ Zaznacz minimum 2 rekordy i kliknij „Porównaj zaznaczone”.</li>
+      <li>☐ Kliknij „Pełen Widok”, potem „Widok Domyślny”.</li>
+      <li>☐ (Admin) kliknij „Generuj data.json” i krótko pokaż funkcję utrzymaniową.</li>
+    </ol>
+    <p class="say">Powiedz: „Tutaj bardzo szybko wyszukuję zasady i porównuję kilka opcji obok siebie.”</p>
+  </div>
+
+  <div class="box">
+    <h2>4) Generator NPC</h2>
+    <ol class="checklist">
+      <li>☐ Otwórz „Generator NPC”.</li>
+      <li>☐ Wybierz rekord bazowy z listy „Bestiariusz · Nazwa”.</li>
+      <li>☐ Zmień 1–2 wartości w podglądzie bazowym (np. Żywotność).</li>
+      <li>☐ Włącz moduły aktywne (np. Broń, Talenty) i wybierz elementy.</li>
+      <li>☐ Kliknij „Generuj kartę” i pokaż kartę w nowej karcie.</li>
+      <li>☐ Wróć do generatora, wpisz Alias i kliknij „Dodaj do ulubionych”.</li>
+      <li>☐ Pokaż wczytanie zapisanego ulubionego wpisu i przycisk „Odśwież”.</li>
+    </ol>
+    <p class="say">Powiedz: „W kilka kliknięć buduję pełną kartę NPC i mogę ją zapisać do ulubionych.”</p>
+  </div>
+
+  <div class="box">
+    <h2>5) Generator Nazw</h2>
+    <ol class="checklist">
+      <li>☐ Otwórz „Generator Nazw”.</li>
+      <li>☐ Wybierz kategorię i opcję stylu nazw.</li>
+      <li>☐ Ustaw „Ile”, wpisz własny seed i kliknij „Generuj”.</li>
+      <li>☐ Kliknij „Kopiuj wynik”.</li>
+      <li>☐ Zmień język interfejsu i wygeneruj drugą serię nazw.</li>
+    </ol>
+    <p class="say">Powiedz: „Ten moduł daje mi gotowe nazwy klimatyczne i mogę je od razu skopiować.”</p>
+  </div>
+
+  <div class="box">
+    <h2>6) Kalkulator</h2>
+    <ol class="checklist">
+      <li>☐ Otwórz „Kalkulator”.</li>
+      <li>☐ Pokaż szybkie dodanie danych wejściowych (np. parametry testu/obliczeń).</li>
+      <li>☐ Kliknij obliczanie i omów wynik.</li>
+      <li>☐ Zresetuj formularz i pokaż powrót do wartości startowych.</li>
+      <li>☐ (Jeśli dostępne) pokaż przełącznik języka oraz instrukcję/pomoc.</li>
+    </ol>
+    <p class="say">Powiedz: „Tutaj przeliczam wynik bez ręcznego liczenia i od razu widzę rezultat.”</p>
+  </div>
+
+  <div class="box">
+    <h2>7) DiceRoller</h2>
+    <ol class="checklist">
+      <li>☐ Otwórz „Rzut kośćmi”.</li>
+      <li>☐ Ustaw: Stopień Trudności, Pula Kości, Ilość Kości Furii.</li>
+      <li>☐ Kliknij „Rzuć Kośćmi!” i poczekaj na animację.</li>
+      <li>☐ Omów: sukces/porażka, komplikacja furii, krytyczna furia, possible shift.</li>
+      <li>☐ Zmień parametry i wykonaj drugi rzut porównawczy.</li>
+    </ol>
+    <p class="say">Powiedz: „Wynik rzutu pokazuje się od razu razem ze wszystkimi dodatkowymi efektami.”</p>
+  </div>
+
+  <div class="box">
+    <h2>8) Audio</h2>
+    <ol class="checklist">
+      <li>☐ Otwórz <code>Audio/index.html?admin=1</code>.</li>
+      <li>☐ Kliknij „Wczytaj manifest”.</li>
+      <li>☐ Użyj filtrów tagów i wyszukiwarki.</li>
+      <li>☐ Odtwórz i zatrzymaj 2 różne dźwięki.</li>
+      <li>☐ Zmień głośność suwakiem na jednym kafelku.</li>
+      <li>☐ Utwórz „Nowa lista ulubionych”, dodaj do niej dźwięk i pokaż zmianę kolejności.</li>
+      <li>☐ Ustaw alias dla dźwięku, potem wyczyść alias.</li>
+    </ol>
+    <p class="say">Powiedz: „Tu przygotowuję sceniczne efekty dźwiękowe i odpalam je w idealnym momencie.”</p>
+  </div>
+
+  <div class="box">
+    <h2>9) Infoczytnik (nagranie kamerą na tablet)</h2>
+    <p><span class="tag obs">OBS</span> Przełącz scenę na <b>Kamera na tablet</b>.</p>
+    <ol class="checklist">
+      <li>☐ Na komputerze otwórz panel GM: <code>Infoczytnik/GM_test.html</code>. <span class="tag browser">Przeglądarka</span></li>
+      <li>☐ Na tablecie otwórz ekran gracza: <code>Infoczytnik/Infoczytnik_test.html</code>. <span class="tag tablet">Tablet</span></li>
+      <li>☐ W GM ustaw tło, logo, font i kolor tekstu.</li>
+      <li>☐ Wpisz krótką wiadomość i kliknij „Wyślij”.</li>
+      <li>☐ Pokaż na tablecie, że wiadomość pojawia się natychmiast.</li>
+      <li>☐ Kliknij „Ping” i pokaż reakcję dźwiękową.</li>
+      <li>☐ Włącz/wyłącz: Logo, Prostokąt cienia, Flicker, Fillery, Audio.</li>
+      <li>☐ Zmień tryb podglądu: Treść / Tło.</li>
+      <li>☐ Kliknij „Wyczyść komunikat”, następnie „Przywróć domyślne”.</li>
+    </ol>
+    <p class="say">Powiedz: „Tutaj steruję komunikatami na żywo, a gracze widzą je od razu na osobnym ekranie.”</p>
+  </div>
+
+  <div class="box">
+    <h2>10) Zakończenie nagrania</h2>
+    <ol class="checklist">
+      <li>☐ Wróć do modułu Main i pokaż jeszcze raz ekran startowy.</li>
+      <li>☐ Krótko podsumuj: dane, NPC, nazwy, kalkulator, kości, audio, komunikaty live.</li>
+      <li>☐ Zatrzymaj nagrywanie w OBS.</li>
+      <li>☐ Obejrzyj podgląd nagrania i sprawdź, czy wszystkie moduły są pokazane.</li>
+    </ol>
+    <p class="say">Powiedz: „To cały ekosystem narzędzi do prowadzenia sesji – od wiedzy i obliczeń po dźwięk i komunikaty na żywo.”</p>
+  </div>
+
+</body>
+</html>
