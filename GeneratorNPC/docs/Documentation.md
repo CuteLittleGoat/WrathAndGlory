@@ -493,3 +493,11 @@ Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować pu
 ## Widoczność przełącznika języka / Language switch visibility
 - PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
 - EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.
+
+
+## Aktualizacja: runtime Firebase (2026-05-12)
+- GeneratorNPC ładuje `shared/firebase-config.js` przed `shared/firebase-data-loader.js`.
+- Moduł używa `getFirebaseApi()` i czeka na event gotowości loadera.
+- Dostęp do danych DataVault odbywa się przez `loadDataVaultLive()` (Auth + RTDB `/datavault/live`) i wrapper `dataJson`.
+- Usunięto dodatkowy skrypt po `</html>`; obsługa bramki oraz startu działa w głównym module.
+

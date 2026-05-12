@@ -182,3 +182,9 @@ EN: GeneratorNPC loads data via `shared/firebase-data-loader.js` (Firebase Auth 
 ## Widoczność przełącznika języka / Language switch visibility
 - PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
 - EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.
+
+
+## Aktualizacja / Update
+PL: GeneratorNPC korzysta ze wspólnej konfiguracji `shared/firebase-config.js` i czeka na gotowość loadera Firebase przed pobraniem danych.
+EN: GeneratorNPC now uses shared `shared/firebase-config.js` and waits for Firebase loader readiness before data loading.
+

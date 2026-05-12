@@ -121,7 +121,7 @@ const translations = {
       hintCompare: "▸ Select 2+ rows to compare.",
       hintTooltip: "If trait tooltips do not appear on mobile: tap a trait tag.",
       emptyTitle: "No data",
-      emptyText: "No data to display. In admin mode use <b>Generate data files</b>.",
+      emptyText: "No data to display. Sign in to load data from the private database, or in admin mode generate data files and import firebase-import.json into Firebase.",
       resultsEmptyTitle: "NO RESULTS",
       resultsEmptyText: "Adjust filters or clear the view.",
       comparisonTitle: "Comparison",
@@ -895,10 +895,26 @@ function inferColumns(rows, sheetName){
 }
 
 /* ---------- Loading ---------- */
+function assertDataVaultShape(data){
+  if (!data || typeof data !== "object") throw new Error("DATAVAULT_DATA_NOT_OBJECT");
+  if (!data.sheets || typeof data.sheets !== "object") throw new Error("DATAVAULT_DATA_MISSING_SHEETS");
+}
+
+async function getFirebaseApi(){
+  if (window.DataVaultFirebaseReady) return window.DataVaultFirebaseReady;
+  await new Promise((resolve, reject)=>{
+    const timeout = setTimeout(()=>reject(new Error("FIREBASE_LOADER_NOT_READY")), 8000);
+    window.addEventListener("datavault-firebase-loader-ready", ()=>{ clearTimeout(timeout); resolve(); }, { once: true });
+  });
+  if (!window.DataVaultFirebaseReady) throw new Error("FIREBASE_LOADER_NOT_READY");
+  return window.DataVaultFirebaseReady;
+}
+
 async function loadPrivateDataFromFirebase(){
-  const firebaseApi = await window.DataVaultFirebaseReady;
+  const firebaseApi = await getFirebaseApi();
   setStatus(translations[currentLanguage].messages.statusLoadJson);
   const data = await firebaseApi.loadDataVaultLive();
+  assertDataVaultShape(data);
   DB = normaliseDB(data);
   const restored = loadSessionState();
   if (!restored){
@@ -911,7 +927,7 @@ async function loadPrivateDataFromFirebase(){
 function showAccessGate(message=""){ if (els.accessGate) els.accessGate.hidden=false; if (els.accessError) els.accessError.textContent=message; }
 function hideAccessGate(){ if (els.accessGate) els.accessGate.hidden=true; if (els.accessError) els.accessError.textContent=""; if (els.accessPassword) els.accessPassword.value=""; }
 function clearRuntimeData(){ DB=null; currentSheet=null; if (els.tabs) els.tabs.innerHTML=""; if (els.wrap) els.wrap.innerHTML=`<div class="emptyState"><div class="emptyTitle">${translations[currentLanguage].labels.emptyTitle}</div><div class="emptyText">${translations[currentLanguage].labels.emptyText}</div></div>`; }
-async function startPrivateDataFlow(){ const firebaseApi = await window.DataVaultFirebaseReady; try{ await firebaseApi.initFirebaseDataAccess(); const user=await firebaseApi.waitForAuthReady(); if(!user){ clearRuntimeData(); showAccessGate(); return; } hideAccessGate(); await loadPrivateDataFromFirebase(); }catch(error){ clearRuntimeData(); showAccessGate(firebaseApi.getReadableAccessError(error,currentLanguage)); }}
+async function startPrivateDataFlow(){ let firebaseApi; try{ firebaseApi = await getFirebaseApi(); await firebaseApi.initFirebaseDataAccess(); const user=await firebaseApi.waitForAuthReady(); if(!user){ clearRuntimeData(); showAccessGate(); return; } hideAccessGate(); await loadPrivateDataFromFirebase(); }catch(error){ clearRuntimeData(); const message = firebaseApi && firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error,currentLanguage) : String(error && error.message ? error.message : error); showAccessGate(message); setStatus(message); logLine("BŁĄD FIREBASE: " + message, true); }}
 
 function buildDataJsonFromSheets(rawSheets, opts = {}){
   const {sheetOrder = null, columnOrder = null} = opts;
@@ -2031,5 +2047,5 @@ els.btnUpdateData.addEventListener("click", loadXlsxFromRepo);
   await startPrivateDataFlow();
 })();
 
-if (els.accessForm){ els.accessForm.addEventListener("submit", async (event)=>{ event.preventDefault(); const firebaseApi = await window.DataVaultFirebaseReady; try{ if (els.accessError) els.accessError.textContent=""; await firebaseApi.loginWithGroupPassword(els.accessPassword?.value||""); hideAccessGate(); await loadPrivateDataFromFirebase(); }catch(error){ showAccessGate(firebaseApi.getReadableAccessError(error,currentLanguage)); }});}
-if (els.btnLogoutData){ els.btnLogoutData.addEventListener("click", async ()=>{ const firebaseApi = await window.DataVaultFirebaseReady; await firebaseApi.logoutDataAccess(); clearRuntimeData(); showAccessGate(translations[currentLanguage].messages.accessSignedOut || "Wylogowano."); }); }
+if (els.accessForm){ els.accessForm.addEventListener("submit", async (event)=>{ event.preventDefault(); let firebaseApi; try{ firebaseApi = await getFirebaseApi(); if (els.accessError) els.accessError.textContent=""; await firebaseApi.loginWithGroupPassword(els.accessPassword?.value||""); hideAccessGate(); await loadPrivateDataFromFirebase(); }catch(error){ const message = firebaseApi && firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error,currentLanguage) : String(error && error.message ? error.message : error); showAccessGate(message); setStatus(message); logLine("BŁĄD LOGOWANIA FIREBASE: " + message, true); }});}
+if (els.btnLogoutData){ els.btnLogoutData.addEventListener("click", async ()=>{ let firebaseApi; try{ firebaseApi = await getFirebaseApi(); await firebaseApi.logoutDataAccess(); }catch(error){ logLine("BŁĄD WYLOGOWANIA FIREBASE: " + (error.message || error), true); } clearRuntimeData(); showAccessGate(translations[currentLanguage].messages.accessSignedOut || "Wylogowano. Dane zostały zablokowane."); }); }
