@@ -167,3 +167,8 @@ This is the update map for adding another language (for example FR/DE):
 5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+
+
+## Źródło danych / Data source
+PL: Interfejs informuje teraz, że dane pochodzą z prywatnej bazy DataVault po autoryzacji, a nie z publicznego pliku `../DataVault/data.json`.
+EN: The UI now states that data comes from a private authorized DataVault database, not from a public `../DataVault/data.json` file.

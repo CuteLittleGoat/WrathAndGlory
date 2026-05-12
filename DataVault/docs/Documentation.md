@@ -961,3 +961,9 @@ When adding a new language (for example FR/DE), you must do **one** of the follo
 
 Without this update, part of default filters, sorting and formatting will not work correctly.
 
+
+
+## Runtime data security update
+Generator danych nie pobiera już `Repozytorium.xlsx` przez `fetch`. Zamiast tego używa systemowego okna `input type=file` i czyta lokalny plik przez `arrayBuffer()`. Dzięki temu źródłowy XLSX nie musi istnieć jako publiczny zasób hostingu.
+
+Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVersion`, `createdAt`, `source`, `dataJson`) z walidacją round-trip `JSON.parse(dataJson)`.

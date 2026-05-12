@@ -115,3 +115,8 @@ This is the update map for adding another language (for example FR/DE):
 5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+
+
+## Aktualne źródło danych / Current data source
+PL: Przycisk **Generuj pliki danych** otwiera okno wyboru lokalnego pliku `Repozytorium.xlsx` i generuje dwa pliki: `data.json` (backup/kontrola) oraz `firebase-import.json` (wyłącznie do importu do Firebase RTDB `/datavault/live`).
+EN: The **Generate data files** button opens a local `Repozytorium.xlsx` picker and generates two files: `data.json` (backup/control) and `firebase-import.json` (import this file only into Firebase RTDB at `/datavault/live`).
