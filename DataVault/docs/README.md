@@ -140,3 +140,10 @@ EN: Added `shared/firebase-config.js` (without password), and DataVault now load
 ## Logowanie do prywatnych danych Firebase / Firebase private data sign-in
 - PL: Po wpisaniu poprawnego hasła bramka zamyka się, a dane ładują się od razu z prywatnej bazy. Jeżeli sesja logowania nie zostanie wykryta po wpisaniu hasła, zobaczysz dokładny komunikat z informacją, że problem dotyczy sesji Auth, a niekoniecznie samego hasła.
 - EN: After entering the correct password, the gate closes and data is loaded immediately from the private database. If the sign-in session is not detected after login, you now get a precise message saying the issue is with Auth session detection, not necessarily the password itself.
+
+
+## Aktualny dostęp do danych / Current data access
+- PL: DataVault i GeneratorNPC używają wspólnego logowania Firebase. Zalogowanie w jednym module odblokowuje drugi bez ponownego wpisywania hasła w tej samej przeglądarce.
+- EN: DataVault and GeneratorNPC share the same Firebase login. Signing in once unlocks the other module in the same browser session.
+- PL: Przycisk „WYLOGUJ / ZABLOKUJ DANE” nie jest dostępny w interfejsie.
+- EN: The “LOG OUT / LOCK DATA” button is not available in the interface.

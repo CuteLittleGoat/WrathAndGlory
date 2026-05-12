@@ -188,3 +188,10 @@ EN: GeneratorNPC loads data via `shared/firebase-data-loader.js` (Firebase Auth 
 PL: GeneratorNPC korzysta ze wspólnej konfiguracji `shared/firebase-config.js` i czeka na gotowość loadera Firebase przed pobraniem danych.
 EN: GeneratorNPC now uses shared `shared/firebase-config.js` and waits for Firebase loader readiness before data loading.
 
+
+
+## Dostęp do prywatnych danych / Private data access
+- PL: GeneratorNPC ładuje dane wyłącznie z prywatnej bazy DataVault po autoryzacji i używa tej samej sesji co DataVault.
+- EN: GeneratorNPC loads data only from the private DataVault database after authorization and uses the same session as DataVault.
+- PL: Okno logowania jest takie samo jak w DataVault.
+- EN: The login gate is visually and textually identical to DataVault.
