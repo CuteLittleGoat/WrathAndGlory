@@ -138,6 +138,8 @@ EN: Added `shared/firebase-config.js` (without password), and DataVault now load
 
 
 ## Logowanie do prywatnych danych Firebase / Firebase private data sign-in
+- PL: W oknie logowania wyświetla się ikona `IkonaPowiadomien.png` w stałym polu (72×72 px), więc karta logowania nie zmienia rozmiaru podczas doczytywania zasobów.
+- EN: The login window now shows `IkonaPowiadomien.png` in a fixed 72×72 px slot, so the login card keeps a stable size while assets load.
 - PL: Po wpisaniu poprawnego hasła bramka zamyka się, a dane ładują się od razu z prywatnej bazy. Jeżeli sesja logowania nie zostanie wykryta po wpisaniu hasła, zobaczysz dokładny komunikat z informacją, że problem dotyczy sesji Auth, a niekoniecznie samego hasła.
 - EN: After entering the correct password, the gate closes and data is loaded immediately from the private database. If the sign-in session is not detected after login, you now get a precise message saying the issue is with Auth session detection, not necessarily the password itself.
 
