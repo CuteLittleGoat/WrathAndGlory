@@ -469,3 +469,112 @@ Najbezpieczniejsze podejście pozostaje takie samo:
 1. Najpierw decyzje właścicielskie (co jest archiwum celowym, a co nie).
 2. Następnie testy/regresja dla obszarów wrażliwych (`DataVault`).
 3. Dopiero na końcu selektywny cleanup plików potwierdzonych jako zbędne.
+
+## 12. Dodatkowe wnioski po doprecyzowaniu właściciela (2026-05-12)
+
+Prompt użytkownika (oryginalny, skrócony): prośba o dopisanie kolejnych wniosków do `Analizy/Cleanup.md` bez kasowania treści, z doprecyzowaniem statusu archiwum `WebView_FCM_Cloudflare_Worker`, statusu `Infoczytnik/backend/node_modules`, decyzji dla `service-worker.js` i dodatkowym ostrzeżeniem o mechanice `DataVault` (dwa różne wyjścia danych z jednego `Repozytorium.xlsx`).
+
+### 12.1 Status `Infoczytnik/backend/node_modules` po doprecyzowaniu
+
+#### Wniosek
+
+Na podstawie decyzji właściciela ten katalog należy traktować jako **pozostałość po pracach push/PWA**, a więc jako element kandydujący do usunięcia na etapie właściwego cleanupu (nie teraz, bo obecny etap jest analityczny).
+
+#### Konsekwencja dla planu cleanupu
+
+- Oznaczyć `Infoczytnik/backend/node_modules` jako „do usunięcia w etapie wykonawczym cleanupu”.
+- Przed usunięciem potwierdzić, że moduł `Infoczytnik/backend` nadal odtwarza środowisko z `package.json` / lockfile (jeśli są używane).
+
+### 12.2 Duplikaty ikon root vs `WebView_FCM_Cloudflare_Worker`
+
+#### Wniosek
+
+Po decyzji właściciela duplikaty w tym obszarze są **akceptowalne**, bo folder `WebView_FCM_Cloudflare_Worker` ma status archiwalny i pozostaje bez zmian.
+
+#### Konsekwencja dla planu cleanupu
+
+- Nie usuwać duplikatów ikon z folderu archiwalnego.
+- Utrzymać zasadę: archiwum zostaje 1:1, nawet jeśli technicznie zawiera redundancję.
+
+### 12.3 `Kalkulator/Old/` jako archiwum historyczne
+
+#### Wniosek
+
+Status potwierdzony: to świadome archiwum historyczne, nie martwy kod aktywnego modułu.
+
+#### Konsekwencja dla planu cleanupu
+
+- Brak działań usuwających.
+- Traktować folder jako część zasobów historycznych projektu.
+
+### 12.4 Decyzja dla `service-worker.js` przy modelu „online-only + PWA”
+
+#### Wniosek techniczny w prostym języku
+
+Jeżeli aplikacja ma działać **wyłącznie online**, to aktywny service worker z cache offline jest zbędny, a czasem nawet szkodliwy (może utrzymywać stare pliki i dawać różne efekty u różnych użytkowników).
+
+Jednocześnie sam tryb PWA (ikona na ekranie, uruchamianie jak aplikacja) może działać przez sam `manifest.webmanifest` — bez aktywnego cache offline.
+
+#### Rekomendowane działanie
+
+Najbezpieczniejsza ścieżka:
+
+1. Zostawić `manifest.webmanifest` (PWA UI zostaje).
+2. Podmienić `service-worker.js` na wersję cleanup/no-op, która:
+   - czyści stare cache,
+   - wyrejestrowuje service workera.
+3. Zaktualizować dokumentację, że aplikacja działa online-only i nie utrzymuje offline cache.
+
+Ta ścieżka lepiej „domyka” stare instalacje PWA niż samo usunięcie pliku.
+
+#### Decyzja właścicielska do podjęcia (wymagana)
+
+Do finalnego wdrożenia cleanupu potrzebna jest jedna jawna decyzja:
+
+- **Opcja A (zalecana):** migracja cleanup/no-op service workera (bezpieczniejsza dla użytkowników, którzy już kiedyś instalowali PWA).
+- **Opcja B:** twarde usunięcie `service-worker.js` bez migracji (prościej, ale większe ryzyko ręcznych problemów po stronie części użytkowników).
+
+### 12.5 Potwierdzenie strategii usuwania zbędnych plików
+
+#### Wniosek
+
+W tej iteracji nie usuwamy plików — najpierw kończymy analizę. Dodatkowo właściciel potwierdził, że pliki/foldery:
+
+- `DetaleLayout.md`,
+- `DoZrobienia.md`,
+- `Kolumny.md`,
+- `Analizy/`
+
+mają pozostać po cleanupie, nawet jeśli nie są krytyczne runtime’owo.
+
+#### Konsekwencja dla planu cleanupu
+
+- Oznaczyć je jako „zachować celowo”.
+- Nie kwalifikować ich więcej jako kandydatów do usuwania.
+
+### 12.6 Krytyczna zasada bezpieczeństwa dla `DataVault` (doprecyzowanie)
+
+#### Kontekst problemu
+
+Historycznie wystąpiła niedopuszczalna sytuacja: z jednego wejścia (`Repozytorium.xlsx`) powstawały różne warianty `data.json` zależnie od ścieżki generowania (agent/skrypt vs przycisk w UI admina).
+
+Obecnie intencjonalnie istnieją dwa wyjścia:
+
+1. plik archiwum danych,
+2. plik do importu do Firebase.
+
+To jest akceptowalne tylko wtedy, gdy ich relacja jest zgodna z założeniami systemu i nie powstaje przypadkowa rozbieżność semantyczna danych.
+
+#### Wniosek
+
+Podczas cleanupu **nie wolno** upraszczać parserów/generatorów/fallbacków w `DataVault`, jeśli nie ma twardego porównania wyników między ścieżkami generacji.
+
+#### Konsekwencja dla planu cleanupu
+
+Przed jakąkolwiek zmianą logiki `DataVault` obowiązkowo wykonać test zgodności (ten sam `Repozytorium.xlsx` → porównanie wyników wszystkich istotnych ścieżek), w szczególności:
+
+- generator referencyjny (`build_json.py`),
+- generator przeglądarkowy (UI admin),
+- struktura przeznaczona do Firebase import.
+
+Brak takiego testu = brak zgody na cleanup logiki danych.
