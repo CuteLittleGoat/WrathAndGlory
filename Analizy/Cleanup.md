@@ -472,7 +472,30 @@ Najbezpieczniejsze podejście pozostaje takie samo:
 
 ## 12. Dodatkowe wnioski po doprecyzowaniu właściciela (2026-05-12)
 
-Prompt użytkownika (oryginalny, skrócony): prośba o dopisanie kolejnych wniosków do `Analizy/Cleanup.md` bez kasowania treści, z doprecyzowaniem statusu archiwum `WebView_FCM_Cloudflare_Worker`, statusu `Infoczytnik/backend/node_modules`, decyzji dla `service-worker.js` i dodatkowym ostrzeżeniem o mechanice `DataVault` (dwa różne wyjścia danych z jednego `Repozytorium.xlsx`).
+Prompt użytkownika: Przeczytaj Analizy/Cleanup.md a następnie dopisz do analizy kolejne wnioski. Nic nie kasuj z Analizy/Cleanup.md tylko dopisz kolejne wnioski. Nie wprowadzaj zmian w kodzie.
+
+Wstęp: Na pewnym etapie projektu były prowadzone prace nad powiadomieniami Push w aplikacji PWA. Dokumentacja jest w WebView_FCM_Cloudflare_Worker. Folder WebView_FCM_Cloudflare_Worker pozostawiamy jako archiwalny. Funkcjonalność nie będzie wdrażana.
+
+Poniżej moje komentarze:
+
+11.1 Infoczytnik/backend/node_modules jest zacommitowane do repozytorium
+- Czy to nie jest pozostałość po próbie wdrożenia powiadomień Push? Jeżeli tak, to traktujemy to jako pozostałość i oznaczamy jako do skasowania.
+
+11.2 Potencjalne duplikaty zasobów ikon między root i WebView_FCM_Cloudflare_Worker
+- Folder WebView_FCM_Cloudflare_Worker pozostawiamy jako archiwalny. Duble są akceptowalne
+
+11.3 Kalkulator/Old/ wygląda na świadome archiwum historyczne, nie martwy kod aktywnego modułu
+- Tak. To archiwum historyczne. Pozostaje jak jest.
+
+11.4 service-worker.js nadal obecny w root i nadal niespójny z online-only (potwierdzenie)
+- Aplikacja ma działać tylko w trybie online. Zarówno przez stronę https://cutelittlegoat.github.io/WrathAndGlory/Main/index.html?admin=1 lub https://cutelittlegoat.github.io/WrathAndGlory/Main/index.html oraz przez aplikację PWA. Nie rozumiem tego technicznego żargonu. Zdecyduj co należy zrobić z tym plikiem. Jeżeli trzeba coś doprecyzować to napisz jaką decyzję muszę podjąć (opisz tylko dokładnie co, dlaczego i jakie będą konsekwencje).
+
+11.5 Brak twardego potwierdzenia, że istnieje zbędny plik możliwy do natychmiastowego bezpiecznego usunięcia
+- Zbędne pliki będziemy kasować dopiero po zakończeniu analizy. Pliki DealeLayout.md, DoZrobienia.md, Kolumny.md teoretycznie nie są do niczego potrzebne, ale mają zostać po czyszczeniu. Tak samo folder Analizy nie jest potrzebny, ale chcę, żeby został.
+
+Dodatkowa uwaga dotycząca modułu DataVault - w poprzedniej wersji aplikacji plik "Repozytorium.xlsx" był w folderze w repo. Aplikacja tworzyła plik data.json. Pojawił się jednak pewien problem - jeżeli data.json generował agent AI Codex to tworzył inny plik data.json niż plik, który tworzył się poprzez przycisk w interface użytkownika z poziomu admina. Powodowało to niedopuszczalną sytuację, gdzie z jednego pliku wsadowego (Repozytorium.xlsx) powstawały dwa różne pliki data.json
+Obecnie tworzą się dwa pliki. Jeden jako archiwum danych i drugi do importu do Firebase.
+Zwróć szczególną uwagę, żeby przy Cleanup nie popsuć tej mechaniki.
 
 ### 12.1 Status `Infoczytnik/backend/node_modules` po doprecyzowaniu
 
