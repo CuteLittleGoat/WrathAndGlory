@@ -39,7 +39,7 @@ const translations = {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generuj pliki danych",
-      updateNoteFull: "Kliknięcie przycisku wygeneruje nowe pliki <code>data.json</code> oraz <code>firebase-import.json</code>. Plik <code>Repozytorium.xlsx</code> z dysku. Aplikacja wygeneruje data.json oraz firebase-import.json. Do Firebase Realtime Database importuj wyłącznie firebase-import.json.",
+      updateNoteFull: "Kliknij, aby wybrać lokalny plik <code>Repozytorium.xlsx</code>. Aplikacja wygeneruje <code>data.json</code> jako backup oraz <code>firebase-import.json</code> — tylko ten drugi plik importuj do Firebase Realtime Database.",
       mainPageButton: "Strona Główna",
       fullViewButton: "Pełen Widok",
       defaultViewButton: "Widok Domyślny",
@@ -105,7 +105,7 @@ const translations = {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generate data files",
-      updateNoteFull: "Clicking the button generates new <code>data.json</code> and <code>firebase-import.json</code> files. <code>Repozytorium.xlsx</code> from disk. The app generates data.json and firebase-import.json. Import only firebase-import.json into Firebase Realtime Database.",
+      updateNoteFull: "Click to choose a local <code>Repozytorium.xlsx</code> file. The app will generate <code>data.json</code> as a backup and <code>firebase-import.json</code> — import only the second file into Firebase Realtime Database.",
       mainPageButton: "Main Page",
       fullViewButton: "Full View",
       defaultViewButton: "Default View",

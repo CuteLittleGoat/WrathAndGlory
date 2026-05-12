@@ -118,8 +118,8 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 
 ## Aktualne źródło danych / Current data source
-PL: Przycisk **Generuj pliki danych** otwiera okno wyboru lokalnego pliku `Repozytorium.xlsx` i generuje dwa pliki: `data.json` (backup/kontrola) oraz `firebase-import.json` (wyłącznie do importu do Firebase RTDB `/datavault/live`).
-EN: The **Generate data files** button opens a local `Repozytorium.xlsx` picker and generates two files: `data.json` (backup/control) and `firebase-import.json` (import this file only into Firebase RTDB at `/datavault/live`).
+PL: Kliknij **Generuj pliki danych**, aby wskazać lokalny plik `Repozytorium.xlsx`. Aplikacja wygeneruje `data.json` (backup) oraz `firebase-import.json` (tylko ten plik importuj do Firebase RTDB `/datavault/live`).
+EN: Click **Generate data files** to choose a local `Repozytorium.xlsx` file. The app generates `data.json` (backup) and `firebase-import.json` (import only this file into Firebase RTDB at `/datavault/live`).
 
 
 ## Runtime danych / Data runtime

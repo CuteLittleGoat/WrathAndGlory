@@ -54,7 +54,7 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
   - `.language-switcher select#languageSelect` z opcjami `pl` i `en`.
   - Ciemne tło selecta (`#0b0b0b`) utrzymuje spójność z motywem konsolowym.
 
-**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`). W trybie admina grupa pokazuje komunikat, że kliknięcie przycisku generuje nowe `data.json` oraz `firebase-import.json`; przypomina też, że `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego katalogu, aby zaktualizować dane.
+**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`). W trybie admina grupa pokazuje komunikat, że użytkownik ma wskazać lokalny plik `Repozytorium.xlsx`; następnie aplikacja generuje `data.json` (backup) oraz `firebase-import.json` (jedyny plik do importu do Firebase Realtime Database).
 
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
