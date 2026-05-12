@@ -1,0 +1,577 @@
+INSTRUKCJA DLA AGENTA AI CODEX
+Plik: 7.txt
+Data: 2026-05-12
+Repozytorium: CuteLittleGoat/WrathAndGlory
+
+======================================================================
+0. CEL TEGO ZADANIA
+======================================================================
+
+Napraw błąd logowania w module GeneratorNPC:
+
+Firebase Authentication nie jest poprawnie skonfigurowane.
+
+Obecna sytuacja:
+- DataVault działa poprawnie.
+- Logowanie w DataVault działa.
+- Dane z Firebase Realtime Database ładują się poprawnie w DataVault.
+- GeneratorNPC po wejściu pokazuje bramkę logowania.
+- GeneratorNPC nie korzysta z sesji uzyskanej wcześniej w DataVault.
+- Po wpisaniu hasła w GeneratorNPC pojawia się błąd:
+  „Firebase Authentication nie jest poprawnie skonfigurowane.”
+
+Diagnoza:
+GeneratorNPC miesza dwa różne projekty Firebase:
+1. Projekt prywatnych danych DataVault:
+   wh40k-data-slate
+
+2. Stary projekt GeneratorNPC / favorites:
+   audiorpg-2eb6f
+
+shared/firebase-data-loader.js używa aktualnie niebezpiecznej logiki:
+
+app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
+To jest błąd.
+
+Jeżeli GeneratorNPC wcześniej zainicjalizuje domyślną aplikację Firebase dla projektu audiorpg-2eb6f, to shared/firebase-data-loader.js bierze tę istniejącą domyślną aplikację przez getApp() i próbuje logować użytkownika taryf@o2.pl w złym projekcie Firebase.
+
+Efekt:
+- DataVault działa, bo trafia w dobry projekt.
+- GeneratorNPC nie działa, bo prywatny loader może używać złego Firebase App.
+- Komunikat „auth/configuration-not-found” / „Firebase Authentication nie jest poprawnie skonfigurowane” wynika z użycia złego projektu Firebase.
+
+Docelowo:
+- prywatne dane DataVault muszą mieć własną nazwaną aplikację Firebase,
+- GeneratorNPC favorites, jeśli nadal potrzebne, musi mieć osobną nazwaną aplikację Firebase,
+- żaden z tych mechanizmów nie może przejmować przypadkowej aplikacji domyślnej przez getApp(),
+- DataVault i GeneratorNPC muszą używać tej samej nazwanej aplikacji dla prywatnych danych,
+- sesja Auth musi być współdzielona między DataVault i GeneratorNPC.
+
+======================================================================
+1. NAJWAŻNIEJSZA ZMIANA: NIE UŻYWAĆ getApp() DLA PRYWATNYCH DANYCH
+======================================================================
+
+W pliku:
+
+shared/firebase-data-loader.js
+
+znajdź kod podobny do:
+
+app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
+Usuń tę logikę.
+
+Zastąp ją nazwanym Firebase App dla prywatnych danych.
+
+Dodaj stałą:
+
+const PRIVATE_DATA_APP_NAME = "wh40k-data-slate-private-data";
+
+Dodaj funkcję:
+
+function getPrivateDataApp() {
+  const firebaseConfig = getFirebaseConfig();
+
+  const existing = getApps().find((candidate) => candidate.name === PRIVATE_DATA_APP_NAME);
+
+  if (existing) {
+    return existing;
+  }
+
+  return initializeApp(firebaseConfig, PRIVATE_DATA_APP_NAME);
+}
+
+Następnie w initFirebaseDataAccess() użyj:
+
+app = getPrivateDataApp();
+auth = getAuth(app);
+database = getDatabase(app);
+
+Czyli cała inicjalizacja ma wyglądać koncepcyjnie tak:
+
+function initFirebaseDataAccess() {
+  if (!app) {
+    assertFirebaseRuntimeConfig();
+
+    app = getPrivateDataApp();
+    auth = getAuth(app);
+    database = getDatabase(app);
+
+    authReadyPromise = setPersistence(auth, browserLocalPersistence)
+      .catch((error) => {
+        console.warn("Firebase Auth persistence warning:", error);
+      })
+      .then(() => new Promise((resolve) => {
+        let resolved = false;
+
+        authUnsubscribe = onAuthStateChanged(auth, (user) => {
+          currentAuthUser = user || null;
+
+          if (!resolved) {
+            resolved = true;
+            resolve(currentAuthUser);
+          }
+        });
+      }));
+  }
+
+  return { app, auth, database };
+}
+
+Ważne:
+- Nie używaj getApp() bez nazwy.
+- Nie używaj getApps().length jako testu dla prywatnych danych.
+- Prywatny loader zawsze ma używać aplikacji nazwanej:
+  wh40k-data-slate-private-data
+- Ten sam app name musi być użyty zarówno w DataVault, jak i GeneratorNPC.
+
+======================================================================
+2. DLACZEGO TO JEST KONIECZNE
+======================================================================
+
+W GeneratorNPC istnieje albo może istnieć osobna konfiguracja:
+
+GeneratorNPC/config/firebase-config.js
+
+która ustawia:
+
+window.firebaseConfig
+
+dla starego projektu:
+
+audiorpg-2eb6f
+
+Ten projekt może być używany do ulubionych/favorites.
+
+Ale prywatne dane DataVault używają:
+
+shared/firebase-config.js
+
+który ustawia:
+
+window.WG_FIREBASE_CONFIG
+
+dla projektu:
+
+wh40k-data-slate
+
+Nie wolno dopuścić, aby shared/firebase-data-loader.js przypadkowo wziął aplikację audiorpg-2eb6f przez getApp().
+
+Prywatny loader ma zawsze brać WG_FIREBASE_CONFIG i tworzyć/getować nazwany app:
+wh40k-data-slate-private-data.
+
+======================================================================
+3. SPRAWDŹ shared/firebase-config.js
+======================================================================
+
+Plik:
+
+shared/firebase-config.js
+
+ma pozostać źródłem konfiguracji prywatnych danych.
+
+Ma zawierać:
+
+window.WG_FIREBASE_CONFIG = {
+  apiKey: "AIzaSyCVoWzXtO-vipsxnvZlFkcqcNgYYuH3osc",
+  authDomain: "wh40k-data-slate.firebaseapp.com",
+  databaseURL: "https://wh40k-data-slate-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "wh40k-data-slate",
+  storageBucket: "wh40k-data-slate.firebasestorage.app",
+  messagingSenderId: "382792444120",
+  appId: "1:382792444120:web:9eb27e2ed29109ac838fad"
+};
+
+window.WG_DATA_ACCESS_EMAIL = "taryf@o2.pl";
+
+Nie dodawaj hasła.
+Nie zmieniaj databaseURL.
+Nie używaj window.firebaseConfig dla prywatnych danych DataVault.
+window.firebaseConfig może być tylko dla starego mechanizmu favorites, jeżeli nadal jest potrzebny.
+
+======================================================================
+4. POPRAW GeneratorNPC — INICJALIZACJA FAVORITES NIE MOŻE BYĆ DEFAULT APP
+======================================================================
+
+W pliku:
+
+GeneratorNPC/index.html
+
+w głównym <script type="module"> znajdź inicjalizację Firebase dla favorites/Firestore.
+
+Szukaj fragmentów typu:
+
+initializeApp(window.firebaseConfig)
+getApp()
+getApps().length ? getApp() : initializeApp(window.firebaseConfig)
+const app = initializeApp(...)
+const db = getFirestore(app)
+
+Jeżeli ten kod dotyczy ulubionych/favorites i używa configu GeneratorNPC/config/firebase-config.js, to NIE może inicjalizować domyślnej aplikacji Firebase.
+
+Zmień to na nazwaną aplikację:
+
+const FAVORITES_APP_NAME = "generator-npc-favorites";
+
+function getOrCreateNamedFirebaseApp(name, config) {
+  const existing = getApps().find((candidate) => candidate.name === name);
+
+  if (existing) {
+    return existing;
+  }
+
+  return initializeApp(config, name);
+}
+
+const favoritesApp = getOrCreateNamedFirebaseApp(FAVORITES_APP_NAME, window.firebaseConfig);
+const db = getFirestore(favoritesApp);
+
+Ważne:
+- Favorites nie może używać default app.
+- Favorites nie może przejąć domyślnego getApp().
+- Favorites nie może nadpisać aplikacji prywatnych danych.
+- Jeśli favorites nie jest już używane albo ma zostać wyłączone, można usunąć inicjalizację starego projektu, ale nie wolno zepsuć UI GeneratorNPC.
+
+======================================================================
+5. DWA PROJEKTY FIREBASE MUSZĄ BYĆ ROZDZIELONE
+======================================================================
+
+Po poprawce stan ma być taki:
+
+Prywatne dane DataVault:
+- config: window.WG_FIREBASE_CONFIG
+- plik: shared/firebase-config.js
+- projekt: wh40k-data-slate
+- app name: wh40k-data-slate-private-data
+- Auth: getAuth(privateDataApp)
+- RTDB: getDatabase(privateDataApp)
+- dane: datavault/live
+- email techniczny: window.WG_DATA_ACCESS_EMAIL = "taryf@o2.pl"
+
+Favorites GeneratorNPC:
+- config: window.firebaseConfig
+- plik: GeneratorNPC/config/firebase-config.js
+- projekt: audiorpg-2eb6f albo inny, jeśli tak było wcześniej
+- app name: generator-npc-favorites
+- Firestore: getFirestore(favoritesApp)
+
+Nie mieszać tych dwóch konfiguracji.
+
+======================================================================
+6. KOLEJNOŚĆ SKRYPTÓW W GENERATORNPC
+======================================================================
+
+W GeneratorNPC/index.html kolejność może zostać taka:
+
+<script src="config/firebase-config.js"></script>
+<script src="../shared/firebase-config.js"></script>
+<script type="module" src="../shared/firebase-data-loader.js"></script>
+<script type="module">
+  // główny kod GeneratorNPC
+</script>
+
+Ale po poprawce kolejność nie może powodować konfliktu, bo:
+- shared/firebase-data-loader.js użyje nazwanej aplikacji wh40k-data-slate-private-data,
+- favorites użyje nazwanej aplikacji generator-npc-favorites.
+
+Jeżeli stary config favorites nie jest już potrzebny, można go usunąć z GeneratorNPC, ale tylko jeśli wszystkie funkcje favorites działają bez niego albo mają być świadomie wyłączone. W przeciwnym razie zostawić go i nazwać app.
+
+======================================================================
+7. POPRAW shared/firebase-data-loader.js — DODAJ DEBUG APP NAME
+======================================================================
+
+Dodaj bezpieczny debug bez haseł:
+
+function debugAuthState(label) {
+  const user = auth ? (auth.currentUser || currentAuthUser) : null;
+
+  console.info("[DataVaultFirebase]", label, {
+    appName: app ? app.name : null,
+    projectId: app && app.options ? app.options.projectId : null,
+    databaseURL: app && app.options ? app.options.databaseURL : null,
+    hasAuth: !!auth,
+    hasCurrentUser: !!user,
+    uid: user ? user.uid : null,
+    email: user ? user.email : null
+  });
+}
+
+Wywołaj:
+- po initFirebaseDataAccess(),
+- po loginWithGroupPassword(),
+- przed loadDataVaultLive().
+
+Oczekiwane logi w GeneratorNPC po poprawce:
+
+appName: "wh40k-data-slate-private-data"
+projectId: "wh40k-data-slate"
+databaseURL: "https://wh40k-data-slate-default-rtdb.europe-west1.firebasedatabase.app"
+email: "taryf@o2.pl"
+uid: "raCylxrrJ8YbOtgqXpvH6ygGkn72"
+
+Jeżeli w logu pojawi się:
+projectId: "audiorpg-2eb6f"
+
+to poprawka nie została wykonana poprawnie.
+
+Nie loguj hasła.
+Nie loguj dataJson.
+Nie loguj danych z bazy.
+
+======================================================================
+8. POPRAW getReadableAccessError()
+======================================================================
+
+W shared/firebase-data-loader.js doprecyzuj komunikat dla auth/configuration-not-found.
+
+Obecny komunikat:
+„Firebase Authentication nie jest poprawnie skonfigurowane.”
+
+jest prawdziwy, ale niewystarczający diagnostycznie.
+
+Zmień go na coś bardziej pomocnego:
+
+if (code.includes("auth/configuration-not-found")) {
+  return lang === "en"
+    ? "Firebase Authentication is not configured for the Firebase app currently used. Check that GeneratorNPC uses the private data app wh40k-data-slate-private-data, not the old favorites Firebase project."
+    : "Firebase Authentication nie jest poprawnie skonfigurowane dla aktualnie użytej aplikacji Firebase. Sprawdź, czy GeneratorNPC używa aplikacji wh40k-data-slate-private-data, a nie starego projektu favorites.";
+}
+
+Dodaj też auth/operation-not-allowed:
+
+if (code.includes("auth/operation-not-allowed")) {
+  return lang === "en"
+    ? "Email/password sign-in is disabled for this Firebase project."
+    : "Logowanie e-mail/hasło jest wyłączone w tym projekcie Firebase.";
+}
+
+Jeżeli DataVault działa, a GeneratorNPC pokazuje auth/configuration-not-found, to niemal na pewno GeneratorNPC używa złego Firebase App/projektu.
+
+======================================================================
+9. SPRAWDŹ MECHANIZM WSPÓLNEJ SESJI
+======================================================================
+
+Po zmianie na nazwany app:
+
+wh40k-data-slate-private-data
+
+DataVault i GeneratorNPC muszą używać dokładnie tej samej nazwy app.
+
+To jest ważne, bo Firebase Auth persistence musi wskazywać tę samą aplikację i ten sam projekt.
+
+Po wdrożeniu może być wymagane jednorazowe ponowne logowanie, ponieważ wcześniejsza sesja mogła być zapisana pod default app. Po jednorazowym zalogowaniu przez named app sesja ma działać między modułami.
+
+Wspólna sesja wymaga:
+- ten sam origin, np. cutelittlegoat.github.io,
+- ten sam shared/firebase-config.js,
+- ten sam shared/firebase-data-loader.js,
+- ten sam PRIVATE_DATA_APP_NAME,
+- browserLocalPersistence,
+- ten sam Firebase Auth projectId.
+
+======================================================================
+10. SPRAWDŹ DataVault PO ZMIANIE
+======================================================================
+
+Zmiana shared/firebase-data-loader.js wpływa także na DataVault.
+
+Po poprawce sprawdź:
+
+1. Otwórz DataVault.
+2. Jeśli pojawi się bramka logowania, wpisz poprawne hasło.
+3. DataVault ma załadować dane.
+4. Console debug ma pokazać:
+   appName: "wh40k-data-slate-private-data"
+   projectId: "wh40k-data-slate"
+   uid: "raCylxrrJ8YbOtgqXpvH6ygGkn72"
+
+Jeżeli DataVault przestanie działać, problem jest w shared/firebase-data-loader.js.
+
+======================================================================
+11. SPRAWDŹ GeneratorNPC PO ZMIANIE
+======================================================================
+
+Po poprawce sprawdź:
+
+Test A — po zalogowaniu w DataVault:
+1. Wyczyść dane strony albo zrób Ctrl+F5 po wdrożeniu.
+2. Otwórz DataVault.
+3. Zaloguj się.
+4. Dane DataVault mają się załadować.
+5. Otwórz GeneratorNPC w tej samej przeglądarce.
+6. GeneratorNPC NIE powinien pytać ponownie o hasło.
+7. GeneratorNPC powinien załadować dane.
+8. Console debug ma pokazać:
+   appName: "wh40k-data-slate-private-data"
+   projectId: "wh40k-data-slate"
+
+Test B — od razu GeneratorNPC:
+1. Wyczyść dane strony.
+2. Otwórz GeneratorNPC.
+3. Powinna pojawić się bramka hasła.
+4. Wpisz poprawne hasło.
+5. GeneratorNPC ma załadować dane.
+6. Nie może pojawić się auth/configuration-not-found.
+
+Test C — favorites:
+1. Sprawdź, czy sekcja Ulubione nie rzuca błędu:
+   Firebase App named '[DEFAULT]' already exists
+2. Sprawdź, czy Firestore favorites, jeśli używane, działa na named app:
+   generator-npc-favorites
+3. Jeżeli favorites są niedostępne, nie mogą blokować ładowania głównych danych NPC.
+
+======================================================================
+12. NIE BLOKOWAĆ DANYCH NPC PRZEZ AWARIĘ FAVORITES
+======================================================================
+
+Jeżeli stary projekt favorites ma problem, GeneratorNPC nie może wisieć na „Ładowanie danych...” ani blokować prywatnych danych.
+
+Zasada:
+- awaria DataVault private loader = blokuje dane NPC, pokazuje bramkę/błąd,
+- awaria favorites = pokazuje błąd tylko w panelu Ulubione, ale nie blokuje ładowania danych NPC.
+
+Jeżeli obecny kod inicjalizuje favorites przed ładowaniem danych NPC i wyjątek favorites przerywa cały moduł, przenieś inicjalizację favorites do osobnego try/catch.
+
+Przykład:
+
+try {
+  initFavorites();
+} catch (error) {
+  console.error("[GeneratorNPC] Favorites init failed:", error);
+  setFavoritesStatus("Nie udało się połączyć z ulubionymi.");
+}
+
+await startPrivateDataFlow();
+
+Nie pozwól, aby błąd favorites zatrzymał startPrivateDataFlow().
+
+======================================================================
+13. USUNĄĆ GOŁE getApp() TAM, GDZIE MOŻE WZIĄĆ ZŁY PROJEKT
+======================================================================
+
+Przeszukaj repo pod kątem:
+
+getApp()
+getApps().length ? getApp()
+initializeApp(window.firebaseConfig)
+initializeApp(window.WG_FIREBASE_CONFIG)
+
+Zasada:
+- dla prywatnych danych używaj tylko getPrivateDataApp(),
+- dla favorites używaj tylko named app generator-npc-favorites,
+- nie używaj getApp() bez nazwy w module, który może działać po zainicjalizowaniu wielu projektów.
+
+Dopuszczalne:
+getApp("nazwa") albo wyszukiwanie po getApps().find(app => app.name === "nazwa")
+
+Niedopuszczalne:
+getApp() bez nazwy w shared/firebase-data-loader.js.
+
+======================================================================
+14. NIE ZMIENIAĆ TYCH RZECZY
+======================================================================
+
+Nie zmieniaj:
+- hasła,
+- konta taryf@o2.pl,
+- UID raCylxrrJ8YbOtgqXpvH6ygGkn72,
+- ścieżki RTDB datavault/live,
+- formatu firebase-import.json,
+- dataJson wrappera,
+- reguł RTDB, jeśli są już poprawne,
+- generatora plików data.json/firebase-import.json,
+- .gitignore.
+
+Nie zapisuj hasła w kodzie.
+Nie przenoś prywatnych danych do repo.
+Nie używaj Firestore passwordHash jako zabezpieczenia runtime.
+
+======================================================================
+15. TESTY KOŃCOWE
+======================================================================
+
+Test 1 — DataVault:
+1. Otwórz DataVault.
+2. Zaloguj się.
+3. Dane mają się załadować.
+4. Console:
+   appName = wh40k-data-slate-private-data
+   projectId = wh40k-data-slate
+
+Test 2 — GeneratorNPC po DataVault:
+1. Po zalogowaniu w DataVault otwórz GeneratorNPC.
+2. GeneratorNPC nie pyta o hasło.
+3. GeneratorNPC ładuje dane.
+4. Nie ma błędu:
+   Firebase Authentication nie jest poprawnie skonfigurowane.
+5. Nie ma auth/configuration-not-found.
+6. Console:
+   appName = wh40k-data-slate-private-data
+   projectId = wh40k-data-slate
+
+Test 3 — GeneratorNPC jako pierwszy moduł:
+1. Wyczyść dane strony.
+2. Otwórz GeneratorNPC.
+3. Pojawia się bramka hasła.
+4. Wpisz poprawne hasło.
+5. GeneratorNPC ładuje dane.
+6. Otwórz DataVault.
+7. DataVault nie pyta ponownie o hasło.
+
+Test 4 — Favorites:
+1. Otwórz GeneratorNPC.
+2. Sprawdź konsolę.
+3. Nie może być:
+   Firebase App named '[DEFAULT]' already exists
+4. Jeśli favorites mają osobny błąd, nie może on blokować danych NPC.
+
+Test 5 — stary projekt:
+1. Sprawdź debug.
+2. Dla prywatnego loadera NIE może być:
+   projectId = audiorpg-2eb6f
+3. Dla prywatnego loadera musi być:
+   projectId = wh40k-data-slate
+
+======================================================================
+16. KRYTERIA AKCEPTACJI
+======================================================================
+
+Zadanie jest zakończone, gdy:
+
+1. shared/firebase-data-loader.js używa named app:
+   wh40k-data-slate-private-data
+2. shared/firebase-data-loader.js nie używa getApp() bez nazwy.
+3. DataVault nadal działa.
+4. GeneratorNPC nie pokazuje auth/configuration-not-found.
+5. GeneratorNPC ładuje dane po loginie.
+6. GeneratorNPC korzysta z sesji uzyskanej w DataVault.
+7. DataVault korzysta z sesji uzyskanej w GeneratorNPC.
+8. Stary Firebase favorites, jeśli nadal używany, działa jako named app:
+   generator-npc-favorites
+9. Błąd favorites nie blokuje ładowania danych NPC.
+10. Console debug pokazuje dla prywatnych danych:
+    appName = wh40k-data-slate-private-data
+    projectId = wh40k-data-slate
+11. Hasło nie jest zapisane w kodzie.
+12. .gitignore nie jest zmieniany.
+
+======================================================================
+17. PODSUMOWANIE DLA AGENTA
+======================================================================
+
+Nie naprawiaj teraz Firebase Database — baza jest poprawna.
+Nie naprawiaj hasła — DataVault potwierdza, że hasło i Auth działają.
+Nie naprawiaj reguł RTDB, jeśli DataVault działa.
+
+Napraw konflikt Firebase App w GeneratorNPC.
+
+Prywatny loader nie może brać „pierwszej lepszej” aplikacji Firebase przez getApp().
+Musi używać nazwanej aplikacji:
+wh40k-data-slate-private-data.
+
+Favorites, jeśli są potrzebne, muszą używać własnej nazwanej aplikacji:
+generator-npc-favorites.
+
+To rozdziela projekt wh40k-data-slate od starego audiorpg-2eb6f i powinno usunąć błąd:
+„Firebase Authentication nie jest poprawnie skonfigurowane.”
