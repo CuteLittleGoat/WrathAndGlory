@@ -1,0 +1,15 @@
+# Private source/runtime data
+Repozytorium.xlsx
+**/Repozytorium.xlsx
+DataVault/Repozytorium.xlsx
+DataVault/data.json
+DataVault/firebase-import.json
+GeneratorNPC/data.json
+GeneratorNPC/firebase-import.json
+data.json
+firebase-import.json
+
+# Excel temp files
+~$*.xlsx
+~$*.xlsm
+~$*.xls

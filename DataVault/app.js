@@ -22,6 +22,11 @@ const els = {
   filterMenu: document.getElementById("filterMenu"),
   toggleCharacterTabs: document.getElementById("toggleCharacterTabs"),
   toggleCombatTabs: document.getElementById("toggleCombatTabs"),
+  accessGate: document.getElementById("accessGate"),
+  accessForm: document.getElementById("accessForm"),
+  accessPassword: document.getElementById("accessPassword"),
+  accessError: document.getElementById("accessError"),
+  btnLogoutData: document.getElementById("btnLogoutData"),
   languageSelect: document.getElementById("languageSelect"),
 };
 
@@ -35,7 +40,7 @@ const translations = {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generuj pliki danych",
-      updateNoteFull: "Kliknięcie przycisku wygeneruje nowe pliki <code>data.json</code> oraz <code>firebase-import.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a następnie do Firebase Realtime Database importuj <code>firebase-import.json</code>.",
+      updateNoteFull: "Kliknięcie przycisku wygeneruje nowe pliki <code>data.json</code> oraz <code>firebase-import.json</code>. Plik <code>Repozytorium.xlsx</code> z dysku. Aplikacja wygeneruje data.json oraz firebase-import.json. Do Firebase Realtime Database importuj wyłącznie firebase-import.json.",
       mainPageButton: "Strona Główna",
       fullViewButton: "Pełen Widok",
       defaultViewButton: "Widok Domyślny",
@@ -77,9 +82,9 @@ const translations = {
       filterButtonTitle: "Filtr listy",
       collapse: "Kliknij aby zwinąć",
       expand: "Kliknij aby rozwinąć",
-      statusLoadJson: "Ładowanie data.json...",
-      statusLoadOk: "OK — załadowano data.json",
-      statusLoadError: "Błąd ładowania data.json",
+      statusLoadJson: "Ładowanie danych z prywatnej bazy...",
+      statusLoadOk: "OK — załadowano dane z prywatnej bazy",
+      statusLoadError: "Błąd ładowania danych z prywatnej bazy",
       statusXlsxError: "Błąd ładowania XLSX",
       statusRepoDownload: "Wskaż lokalny plik Repozytorium.xlsx...",
       statusRepoUpdated: "OK — wygenerowano data.json oraz firebase-import.json",
@@ -101,7 +106,7 @@ const translations = {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
       updateDataButton: "Generate data files",
-      updateNoteFull: "Clicking the button generates new <code>data.json</code> and <code>firebase-import.json</code> files. <code>Repozytorium.xlsx</code> must exist in the DataVault module next to <code>index.html</code>, then import <code>firebase-import.json</code> into Firebase Realtime Database.",
+      updateNoteFull: "Clicking the button generates new <code>data.json</code> and <code>firebase-import.json</code> files. <code>Repozytorium.xlsx</code> from disk. The app generates data.json and firebase-import.json. Import only firebase-import.json into Firebase Realtime Database.",
       mainPageButton: "Main Page",
       fullViewButton: "Full View",
       defaultViewButton: "Default View",
@@ -143,9 +148,9 @@ const translations = {
       filterButtonTitle: "Filter list",
       collapse: "Click to collapse",
       expand: "Click to expand",
-      statusLoadJson: "Loading data.json...",
-      statusLoadOk: "OK — data.json loaded",
-      statusLoadError: "Error loading data.json",
+      statusLoadJson: "Loading data from private database...",
+      statusLoadOk: "OK — loaded data from private database",
+      statusLoadError: "Error loading data from private database",
       statusXlsxError: "Error loading XLSX",
       statusRepoDownload: "Select local Repozytorium.xlsx file...",
       statusRepoUpdated: "OK — generated data.json and firebase-import.json",
@@ -890,27 +895,23 @@ function inferColumns(rows, sheetName){
 }
 
 /* ---------- Loading ---------- */
-async function loadJsonFromRepo(){
-  try{
-    setStatus(translations[currentLanguage].messages.statusLoadJson);
-    const res = await fetch("data.json", {cache:"no-store"});
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    DB = normaliseDB(data);
-    const restored = loadSessionState();
-    if (!restored){
-      for (const sheetName of Object.keys(DB.sheets || {})){
-        applyDefaultViewForSheet(sheetName);
-      }
-    }
-    initUI();
-    saveSessionState();
-    setStatus(translations[currentLanguage].messages.statusLoadOk);
-  }catch(e){
-    setStatus(translations[currentLanguage].messages.statusLoadError);
-    logLine("BŁĄD: "+e.message, true);
+async function loadPrivateDataFromFirebase(){
+  const firebaseApi = await window.DataVaultFirebaseReady;
+  setStatus(translations[currentLanguage].messages.statusLoadJson);
+  const data = await firebaseApi.loadDataVaultLive();
+  DB = normaliseDB(data);
+  const restored = loadSessionState();
+  if (!restored){
+    for (const sheetName of Object.keys(DB.sheets || {})){ applyDefaultViewForSheet(sheetName); }
   }
+  initUI();
+  saveSessionState();
+  setStatus(translations[currentLanguage].messages.statusLoadOk);
 }
+function showAccessGate(message=""){ if (els.accessGate) els.accessGate.hidden=false; if (els.accessError) els.accessError.textContent=message; }
+function hideAccessGate(){ if (els.accessGate) els.accessGate.hidden=true; if (els.accessError) els.accessError.textContent=""; if (els.accessPassword) els.accessPassword.value=""; }
+function clearRuntimeData(){ DB=null; currentSheet=null; if (els.tabs) els.tabs.innerHTML=""; if (els.wrap) els.wrap.innerHTML=`<div class="emptyState"><div class="emptyTitle">${translations[currentLanguage].labels.emptyTitle}</div><div class="emptyText">${translations[currentLanguage].labels.emptyText}</div></div>`; }
+async function startPrivateDataFlow(){ const firebaseApi = await window.DataVaultFirebaseReady; try{ await firebaseApi.initFirebaseDataAccess(); const user=await firebaseApi.waitForAuthReady(); if(!user){ clearRuntimeData(); showAccessGate(); return; } hideAccessGate(); await loadPrivateDataFromFirebase(); }catch(error){ clearRuntimeData(); showAccessGate(firebaseApi.getReadableAccessError(error,currentLanguage)); }}
 
 function buildDataJsonFromSheets(rawSheets, opts = {}){
   const {sheetOrder = null, columnOrder = null} = opts;
@@ -2027,5 +2028,8 @@ els.btnUpdateData.addEventListener("click", loadXlsxFromRepo);
 (async function boot(){
   logLine(`Tryb: ${ADMIN_MODE ? translations[currentLanguage].messages.modeAdmin : translations[currentLanguage].messages.modePlayer}`);
   // auto-load data.json (players)
-  await loadJsonFromRepo();
+  await startPrivateDataFlow();
 })();
+
+if (els.accessForm){ els.accessForm.addEventListener("submit", async (event)=>{ event.preventDefault(); const firebaseApi = await window.DataVaultFirebaseReady; try{ if (els.accessError) els.accessError.textContent=""; await firebaseApi.loginWithGroupPassword(els.accessPassword?.value||""); hideAccessGate(); await loadPrivateDataFromFirebase(); }catch(error){ showAccessGate(firebaseApi.getReadableAccessError(error,currentLanguage)); }});}
+if (els.btnLogoutData){ els.btnLogoutData.addEventListener("click", async ()=>{ const firebaseApi = await window.DataVaultFirebaseReady; await firebaseApi.logoutDataAccess(); clearRuntimeData(); showAccessGate(translations[currentLanguage].messages.accessSignedOut || "Wylogowano."); }); }

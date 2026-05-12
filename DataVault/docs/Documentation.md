@@ -967,3 +967,9 @@ Without this update, part of default filters, sorting and formatting will not wo
 Generator danych nie pobiera już `Repozytorium.xlsx` przez `fetch`. Zamiast tego używa systemowego okna `input type=file` i czyta lokalny plik przez `arrayBuffer()`. Dzięki temu źródłowy XLSX nie musi istnieć jako publiczny zasób hostingu.
 
 Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVersion`, `createdAt`, `source`, `dataJson`) z walidacją round-trip `JSON.parse(dataJson)`.
+
+
+## Firebase runtime
+- Data source runtime: RTDB `/datavault/live` + Firebase Auth.
+- Wrapper `datavault-firebase-import-v1` is unwrapped by `shared/firebase-data-loader.js` via `JSON.parse(dataJson)`.
+- Service worker must not cache private payloads.

@@ -10,6 +10,7 @@
 </head>
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
+  <div id="accessGate" class="accessGate" hidden><div class="accessGate__card"><h2 data-i18n="accessTitle">Dostęp do prywatnych danych</h2><p data-i18n="accessDescription">Dane aplikacji są prywatne. Podaj hasło dostępu.</p><form id="accessForm"><label class="field"><span data-i18n="accessPasswordLabel">Hasło dostępu</span><input id="accessPassword" type="password" autocomplete="current-password"></label><button class="btn primary" type="submit" data-i18n="accessUnlockButton">Odblokuj dane</button></form><div id="accessError" class="accessGate__error" aria-live="polite"></div></div></div>
   <div class="app">
     <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
 <header class="topbar">
@@ -33,6 +34,7 @@
             <span data-i18n="updateNoteFull">Kliknięcie przycisku wygeneruje nowe pliki <code>data.json</code> oraz <code>firebase-import.json</code>. Wskaż lokalny plik <code>Repozytorium.xlsx</code> z dysku, a następnie do Firebase Realtime Database importuj <code>firebase-import.json</code>.</span>
           </div>
         </div>
+        <button class="btn secondary" id="btnLogoutData" data-i18n="logoutDataButton">Wyloguj / Zablokuj dane</button>
         <button class="btn secondary" id="btnMainPage" data-i18n="mainPageButton">Strona Główna</button>
         <div class="actionsGroup actionsGroup--view">
           <div class="viewButtons">
@@ -114,6 +116,7 @@
 
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script src="xlsxCanonicalParser.js"></script>
+  <script type="module" src="../shared/firebase-data-loader.js"></script>
   <script src="app.js"></script>
 
   <!-- XLSX opcjonalnie (legacy path) -->
