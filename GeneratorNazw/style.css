@@ -68,6 +68,12 @@ body {
   margin-bottom: 14px;
 }
 
+/* Ukrywa przełącznik języka, ale zachowuje tłumaczenia; aby ponownie go pokazać usuń klasę .language-switcher--hidden z HTML. */
+/* Hides the language switcher while preserving translations; to reveal it again remove .language-switcher--hidden from HTML. */
+.language-switcher--hidden {
+  display: none !important;
+}
+
 .language-switcher select {
   width: auto;
   min-width: 140px;

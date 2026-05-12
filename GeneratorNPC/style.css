@@ -870,3 +870,7 @@ textarea:focus {
 .accessGate[hidden]{display:none}
 .accessGate__card{width:min(520px,calc(100vw - 32px));border:1px solid #1cff6b;background:#020802;padding:24px}
 .accessGate__error{margin-top:12px;color:#ff6b6b;min-height:1.2em}
+
+/* Ukrywa przełącznik języka, ale utrzymuje komplet danych tłumaczeń; aby odkryć przełącznik usuń klasę .language-switcher--hidden z HTML. */
+/* Hides the language switch while keeping full translation data; to unhide it remove .language-switcher--hidden from HTML. */
+.language-switcher--hidden { display: none !important; }

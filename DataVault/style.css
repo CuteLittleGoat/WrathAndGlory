@@ -76,6 +76,9 @@ code{color:var(--code)}
   color:var(--text);
 }
 .language-switcher select:focus{outline:none; box-shadow:0 0 0 3px rgba(22,198,12,.18)}
+/* Ukrywa przełącznik języka, ale zostawia całą logikę tłumaczeń aktywną; aby przywrócić przełącznik usuń klasę .language-switcher--hidden z HTML. */
+/* Hides the language switcher while keeping all translation logic active; to restore it remove .language-switcher--hidden from HTML. */
+.language-switcher--hidden{display:none !important}
 .actionsGroup{
   display:flex;
   flex-direction:column;
