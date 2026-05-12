@@ -501,3 +501,9 @@ Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować pu
 - Dostęp do danych DataVault odbywa się przez `loadDataVaultLive()` (Auth + RTDB `/datavault/live`) i wrapper `dataJson`.
 - Usunięto dodatkowy skrypt po `</html>`; obsługa bramki oraz startu działa w głównym module.
 
+
+
+## Firebase runtime
+- GeneratorNPC uruchamia przepływ startPrivateDataFlow(): sprawdza sesję, pokazuje bramkę hasła przy braku sesji i ładuje dane przez loadDataVaultLive().
+- Moduł nie używa publicznego data.json ani bezpośredniego REST fetch do /datavault/live.json.
+- Inicjalizacja Firestore ulubionych używa istniejącej aplikacji Firebase (getApp/getApps), aby uniknąć konfliktu [DEFAULT].

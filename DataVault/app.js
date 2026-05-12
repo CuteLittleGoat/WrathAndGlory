@@ -26,7 +26,6 @@ const els = {
   accessForm: document.getElementById("accessForm"),
   accessPassword: document.getElementById("accessPassword"),
   accessError: document.getElementById("accessError"),
-  btnLogoutData: document.getElementById("btnLogoutData"),
   languageSelect: document.getElementById("languageSelect"),
 };
 
@@ -2048,4 +2047,3 @@ els.btnUpdateData.addEventListener("click", loadXlsxFromRepo);
 })();
 
 if (els.accessForm){ els.accessForm.addEventListener("submit", async (event)=>{ event.preventDefault(); let firebaseApi; try{ firebaseApi = await getFirebaseApi(); if (els.accessError) els.accessError.textContent=""; await firebaseApi.loginWithGroupPassword(els.accessPassword?.value||""); hideAccessGate(); await loadPrivateDataFromFirebase(); }catch(error){ const message = firebaseApi && firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error,currentLanguage) : String(error && error.message ? error.message : error); showAccessGate(message); setStatus(message); logLine("BŁĄD LOGOWANIA FIREBASE: " + message, true); }});}
-if (els.btnLogoutData){ els.btnLogoutData.addEventListener("click", async ()=>{ let firebaseApi; try{ firebaseApi = await getFirebaseApi(); await firebaseApi.logoutDataAccess(); }catch(error){ logLine("BŁĄD WYLOGOWANIA FIREBASE: " + (error.message || error), true); } clearRuntimeData(); showAccessGate(translations[currentLanguage].messages.accessSignedOut || "Wylogowano. Dane zostały zablokowane."); }); }

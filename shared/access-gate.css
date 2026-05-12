@@ -1,0 +1,5 @@
+/* --- Wspólny styl bramki dostępu dla modułów DataVault i GeneratorNPC / Shared access-gate styles for DataVault and GeneratorNPC modules --- */
+.accessGate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.92);}
+.accessGate[hidden]{display:none;}
+.accessGate__card{width:min(520px,calc(100vw - 32px));border:1px solid var(--border,#1cff6b);background:#020802;padding:24px;}
+.accessGate__error{margin-top:12px;color:#ff6b6b;min-height:1.2em;}

@@ -822,3 +822,37 @@ GeneratorNPC musi działać tak:
 
 Sesja ma być wspólna między modułami.
 Hasło nie może być zapisywane w kodzie ani localStorage.
+
+======================================================================
+24. ZREALIZOWANE ZMIANY W KODZIE (POWDROŻENIOWO)
+======================================================================
+Plik DataVault/index.html
+- Usunięto element przycisku wylogowania.
+  Było: <button class="btn secondary" id="btnLogoutData" data-i18n="logoutDataButton">Wyloguj / Zablokuj dane</button>
+  Jest: (element usunięty z nagłówka).
+
+Plik DataVault/app.js
+- Usunięto odwołanie do przycisku wylogowania w mapie elementów.
+  Było: btnLogoutData: document.getElementById("btnLogoutData"),
+  Jest: (linia usunięta).
+- Usunięto listener kliknięcia wylogowania.
+  Było: if (els.btnLogoutData){ els.btnLogoutData.addEventListener("click", async ()=>{ ... }); }
+  Jest: (blok usunięty).
+
+Plik GeneratorNPC/index.html
+- Ujednolicono tekst źródła danych i dodano spójne tłumaczenia bramki dostępu.
+  Było (PL): dataSourcePrefix: "Dane są pobierane z pliku"
+  Jest (PL): dataSourcePrefix: "Dane są pobierane z prywatnej bazy DataVault po autoryzacji."
+- Zastąpiono start ładowania danych przepływem sesji Firebase.
+  Było: const loadData = async () => { ... firebaseApi.loadDataVaultLive() ... }
+  Jest: const startPrivateDataFlow = async () => { ... waitForAuthReady() ... loadPrivateGeneratorData() ... }
+- Dodano obsługę submit formularza accessForm z loginWithGroupPassword().
+- Zmieniono inicjalizację Firestore ulubionych.
+  Było: const app = initializeApp(window.firebaseConfig);
+  Jest: const app = getApps().length ? getApp() : initializeApp(window.firebaseConfig);
+
+Plik shared/access-gate.css
+- Dodano wspólne style bramki logowania używane przez DataVault i GeneratorNPC.
+
+Pliki DataVault/style.css i GeneratorNPC/style.css
+- Usunięto zduplikowane lokalne style .accessGate*, aby korzystać ze wspólnego shared/access-gate.css.

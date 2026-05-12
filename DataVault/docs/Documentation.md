@@ -998,3 +998,8 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
   - `auth/invalid-api-key`,
   - `auth/configuration-not-found`,
   - rozszerzony opis `NOT_AUTHENTICATED` po loginie.
+
+
+## Runtime auth/session
+- DataVault i GeneratorNPC korzystają z shared/firebase-data-loader.js oraz tej samej sesji Firebase Auth (browserLocalPersistence).
+- UI nie posiada publicznego przycisku wylogowania; reset dostępu realizuje się przez Firebase Auth (zmiana hasła) lub wyczyszczenie danych strony.

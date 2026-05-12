@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Generator NPC</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../shared/access-gate.css" />
   </head>
   <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
@@ -373,7 +374,7 @@
 <script src="../shared/firebase-config.js"></script>
 <script type="module" src="../shared/firebase-data-loader.js"></script>
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
       import {
         getFirestore,
         doc,
@@ -440,8 +441,11 @@ const translations = {
             resetButton: "Reset",
             generateButton: "Generuj kartę",
             dataSourceTitle: "Źródło danych",
-            dataSourcePrefix: "Dane są pobierane z pliku",
-            dataSourceSuffix: ", bez modyfikacji źródła.",
+            dataSourcePrefix: "Dane są pobierane z prywatnej bazy DataVault po autoryzacji.",
+            accessTitle: "Dostęp do prywatnych danych",
+            accessDescription: "Dane aplikacji są prywatne. Podaj hasło dostępu.",
+            accessPasswordLabel: "Hasło dostępu",
+            accessUnlockButton: "Odblokuj dane",
             dataStatusLoading: "Ładowanie danych...",
             baseSelectionTitle: "Wybór bazowy",
             bestiaryLabel: "Bestiariusz · Nazwa",
@@ -575,7 +579,11 @@ const translations = {
             noDataDisplay: "Brak danych do wyświetlenia.",
             loadSummary:
               "Załadowano: Bestiariusz ({bestiary}), Pancerze ({armor}), Bronie ({weapons}), Augumentacje ({augmentations}), Ekwipunek ({equipment}), Talenty ({talents}), Psionika ({psionics}), Modlitwy ({prayers}).",
-            loadError: "Nie udało się pobrać danych. Sprawdź CORS i dostępność źródła.",
+            loadError: "Nie udało się pobrać danych. Sprawdź dostępność prywatnej bazy.",
+            accessInvalidPassword: "Nieprawidłowe hasło dostępu.",
+            statusLoadPrivateData: "Ładowanie danych z prywatnej bazy...",
+            statusPrivateDataOk: "OK — załadowano dane z prywatnej bazy",
+            statusPrivateDataError: "Nie udało się załadować prywatnych danych.",
             selectBestiary: "Wybierz nazwę...",
             selectArmor: "Wybierz pancerze...",
             selectWeapon: "Wybierz bronie...",
@@ -595,8 +603,11 @@ const translations = {
             resetButton: "Reset",
             generateButton: "Generate card",
             dataSourceTitle: "Data source",
-            dataSourcePrefix: "Data is fetched from",
-            dataSourceSuffix: "without modifying the source.",
+            dataSourcePrefix: "Data is loaded from the private DataVault database after authorization.",
+            accessTitle: "Private data access",
+            accessDescription: "Application data is private. Enter the access password.",
+            accessPasswordLabel: "Access password",
+            accessUnlockButton: "Unlock data",
             dataStatusLoading: "Loading data...",
             baseSelectionTitle: "Base selection",
             bestiaryLabel: "Bestiary · Name",
@@ -730,7 +741,11 @@ const translations = {
             noDataDisplay: "No data to display.",
             loadSummary:
               "Loaded: Bestiary ({bestiary}), Armor ({armor}), Weapons ({weapons}), Augmentations ({augmentations}), Equipment ({equipment}), Talents ({talents}), Psionics ({psionics}), Prayers ({prayers}).",
-            loadError: "Failed to fetch data. Check CORS and source availability.",
+            loadError: "Could not load data. Check private database availability.",
+            accessInvalidPassword: "Invalid access password.",
+            statusLoadPrivateData: "Loading data from private database...",
+            statusPrivateDataOk: "OK — loaded data from private database",
+            statusPrivateDataError: "Could not load private data.",
             selectBestiary: "Select a name...",
             selectArmor: "Select armor...",
             selectWeapon: "Select weapons...",
@@ -2098,7 +2113,7 @@ const translations = {
       const initFavoritesStore = () => {
         if (window.firebaseConfig?.apiKey) {
           try {
-            const app = initializeApp(window.firebaseConfig);
+            const app = getApps().length ? getApp() : initializeApp(window.firebaseConfig);
             const db = getFirestore(app);
             state.firestore = db;
             state.favoritesDoc = doc(db, FAVORITES_COLLECTION, FAVORITES_DOC_ID);
@@ -2963,82 +2978,51 @@ const translations = {
         return window.DataVaultFirebaseReady;
       }
 
-      const loadData = async () => {
-        setStatus(translations[currentLanguage].labels.dataStatusLoading);
-        state.expandedCells.clear();
-        bestiarySelect.disabled = true;
-        armorSelect.disabled = true;
-        weaponSelect.disabled = true;
-        augmentationsSelect.disabled = true;
-        equipmentSelect.disabled = true;
-        talentsSelect.disabled = true;
-        psionicsSelect.disabled = true;
-        prayersSelect.disabled = true;
+      const loadPrivateGeneratorData = async () => {
+        const firebaseApi = await getFirebaseApi();
+        setStatus(translations[currentLanguage].messages.statusLoadPrivateData);
+        const data = await firebaseApi.loadDataVaultLive();
+        if (!data || typeof data !== "object" || !data.sheets || typeof data.sheets !== "object") throw new Error("GENERATORNPC_DATA_MISSING_SHEETS");
+        state.data = data;
+        state.traits = buildTraitsMap(data);
+        state.bestiary = sortByName(getCollection(data, ["besti", "bestiariusz"]));
+        state.armor = sortByTypeThenName(getCollection(data, ["pancerz", "armor"]));
+        state.weapons = sortByTypeThenName(getCollection(data, ["broń", "bron", "weapon"]));
+        state.augmentations = sortByTypeThenName(getCollection(data, ["augument", "augment", "modyfikac"]));
+        state.equipment = sortByTypeThenName(getCollection(data, ["ekwipunek", "equipment"]));
+        state.talents = sortByName(getCollection(data, ["talent"]));
+        state.psionics = sortByTypeThenName(getCollection(data, ["psion", "psionik"]), { typeDescending: true });
+        state.prayers = sortByName(getCollection(data, ["modlitw", "prayer"]));
+        setSelectOptions(bestiarySelect, state.bestiary, translations[currentLanguage].messages.selectBestiary);
+        setSelectOptions(armorSelect, state.armor, translations[currentLanguage].messages.selectArmor, { disableOption: isArmorBlocked, disabledTitle: translations[currentLanguage].messages.armorDisabledTitle });
+        setSelectOptions(weaponSelect, state.weapons, translations[currentLanguage].messages.selectWeapon);
+        setSelectOptions(augmentationsSelect, state.augmentations, translations[currentLanguage].messages.selectAugmentations);
+        setSelectOptions(equipmentSelect, state.equipment, translations[currentLanguage].messages.selectEquipment);
+        setSelectOptions(talentsSelect, state.talents, translations[currentLanguage].messages.selectTalents);
+        setSelectOptions(psionicsSelect, state.psionics, translations[currentLanguage].messages.selectPsionics);
+        setSelectOptions(prayersSelect, state.prayers, translations[currentLanguage].messages.selectPrayers);
+        renderBestiaryTable(null); renderArmorTable(); renderWeaponTable(); renderAugmentationsTable(); renderEquipmentTable(); renderTalentsTable(); renderPsionicsTable(); renderPrayersTable();
+        setStatus(translations[currentLanguage].messages.statusPrivateDataOk);
+      };
+
+      const startPrivateDataFlow = async () => {
         try {
           const firebaseApi = await getFirebaseApi();
-          const data = await firebaseApi.loadDataVaultLive();
-          state.data = data;
-          state.traits = buildTraitsMap(data);
-          state.bestiary = sortByName(getCollection(data, ["besti", "bestiariusz"]));
-          state.armor = sortByTypeThenName(getCollection(data, ["pancerz", "armor"]));
-          state.weapons = sortByTypeThenName(getCollection(data, ["broń", "bron", "weapon"]));
-          state.augmentations = sortByTypeThenName(getCollection(data, ["augument", "augment", "modyfikac"]));
-          state.equipment = sortByTypeThenName(getCollection(data, ["ekwipunek", "equipment"]));
-          state.talents = sortByName(getCollection(data, ["talent"]));
-          state.psionics = sortByTypeThenName(getCollection(data, ["psion", "psionik"]), {
-            typeDescending: true,
-          });
-          state.prayers = sortByName(getCollection(data, ["modlitw", "prayer"]));
-          setSelectOptions(bestiarySelect, state.bestiary, translations[currentLanguage].messages.selectBestiary);
-          setSelectOptions(armorSelect, state.armor, translations[currentLanguage].messages.selectArmor, {
-            disableOption: isArmorBlocked,
-            disabledTitle: translations[currentLanguage].messages.armorDisabledTitle,
-          });
-          setSelectOptions(weaponSelect, state.weapons, translations[currentLanguage].messages.selectWeapon);
-          setSelectOptions(augmentationsSelect, state.augmentations, translations[currentLanguage].messages.selectAugmentations);
-          setSelectOptions(equipmentSelect, state.equipment, translations[currentLanguage].messages.selectEquipment);
-          setSelectOptions(talentsSelect, state.talents, translations[currentLanguage].messages.selectTalents);
-          setSelectOptions(psionicsSelect, state.psionics, translations[currentLanguage].messages.selectPsionics);
-          setSelectOptions(prayersSelect, state.prayers, translations[currentLanguage].messages.selectPrayers);
-          setStatus(
-            formatText(translations[currentLanguage].messages.loadSummary, {
-              bestiary: state.bestiary.length,
-              armor: state.armor.length,
-              weapons: state.weapons.length,
-              augmentations: state.augmentations.length,
-              equipment: state.equipment.length,
-              talents: state.talents.length,
-              psionics: state.psionics.length,
-              prayers: state.prayers.length,
-            })
-          );
-          renderBestiaryTable(null);
-          renderArmorTable();
-          renderWeaponTable();
-          renderAugmentationsTable();
-          renderEquipmentTable();
-          renderTalentsTable();
-          renderPsionicsTable();
-          renderPrayersTable();
+          await firebaseApi.initFirebaseDataAccess();
+          const user = await firebaseApi.waitForAuthReady();
+          if (!user) {
+            setStatus(translations[currentLanguage].messages.statusLoadPrivateData);
+            accessGate.hidden = false;
+            return;
+          }
+          accessGate.hidden = true;
+          await loadPrivateGeneratorData();
         } catch (error) {
-          setStatus(translations[currentLanguage].messages.loadError);
-          const noDataDisplay = translations[currentLanguage].messages.noDataDisplay;
-          clearTableBody(bestiaryTableBody, noDataDisplay, 2);
-          clearTableBody(armorTableBody, noDataDisplay, 6);
-          clearTableBody(weaponTableBody, noDataDisplay, 10);
-          clearTableBody(augmentationsTableBody, noDataDisplay, 2);
-          clearTableBody(equipmentTableBody, noDataDisplay, 2);
-          clearTableBody(talentsTableBody, noDataDisplay, 2);
-          clearTableBody(psionicsTableBody, noDataDisplay, 8);
-          clearTableBody(prayersTableBody, noDataDisplay, 2);
-          setSelectOptions(bestiarySelect, [], "");
-          setSelectOptions(armorSelect, [], "");
-          setSelectOptions(weaponSelect, [], "");
-          setSelectOptions(augmentationsSelect, [], "");
-          setSelectOptions(equipmentSelect, [], "");
-          setSelectOptions(talentsSelect, [], "");
-          setSelectOptions(psionicsSelect, [], "");
-          setSelectOptions(prayersSelect, [], "");
+          const firebaseApi = await getFirebaseApi();
+          const message = firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error, currentLanguage) : translations[currentLanguage].messages.statusPrivateDataError;
+          setStatus(message);
+          accessGate.hidden = false;
+          accessError.textContent = message;
         }
       };
 
@@ -3055,6 +3039,25 @@ const translations = {
           popover.classList.remove("active");
         }
       });
+
+
+      if (accessForm) {
+        accessForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          const firebaseApi = await getFirebaseApi();
+          try {
+            await firebaseApi.loginWithGroupPassword(accessPassword?.value || "");
+            accessError.textContent = "";
+            accessGate.hidden = true;
+            await loadPrivateGeneratorData();
+          } catch (error) {
+            const message = firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error, currentLanguage) : translations[currentLanguage].messages.accessInvalidPassword;
+            setStatus(message);
+            accessError.textContent = message;
+            accessGate.hidden = false;
+          }
+        });
+      }
 
       applyLanguage(currentLanguage);
       if (languageSelect) {
