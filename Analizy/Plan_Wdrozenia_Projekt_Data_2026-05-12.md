@@ -870,6 +870,8 @@ Wariant A: Repo było prywatne, ryzyko akceptowane, usuwamy pliki z main i dodaj
 Wariant B: Repo było publiczne albo dane mogły zostać pobrane, trzeba przepisać historię Git.
 Wariant C: Tworzymy nowe czyste repo publiczne i przenosimy tylko kod bez danych.
 ```
+## Notatka użytkownika
+> Na obecną chwilę nie bierzemy pod uwagę danych w historii repo.
 
 ---
 
