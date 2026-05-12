@@ -987,3 +987,14 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
 - DataVault i GeneratorNPC czekają na gotowość loadera przez `getFirebaseApi()` zamiast bezpośredniego odczytu globala.
 - Runtime danych działa wyłącznie przez Firebase Auth + RTDB (`/datavault/live`), bez publicznego `data.json` i bez `passwordHash` z Firestore.
 
+
+## Firebase Auth session lifecycle (DataVault runtime)
+- Loader `shared/firebase-data-loader.js` utrzymuje stały listener `onAuthStateChanged` (bez natychmiastowego `unsubscribe`), a bieżący stan sesji trzyma w `currentAuthUser`.
+- `authReadyPromise` służy tylko do potwierdzenia, że pierwszy stan Auth został odczytany; nie jest już jedynym źródłem informacji o użytkowniku.
+- Po `signInWithEmailAndPassword(...)` loader natychmiast aktualizuje `currentAuthUser`, odświeża token (`getIdToken(true)`) i ustawia `authReadyPromise = Promise.resolve(currentAuthUser)`.
+- `loadDataVaultLive()` wykonuje defensywne sprawdzenie `auth.currentUser || currentAuthUser`, dopiero potem odczyt `/datavault/live`.
+- Dodano bezpieczny debug (`debugAuthState`) logujący tylko: `hasAuth`, `hasCurrentUser`, `uid`, `email`.
+- Rozszerzono mapowanie błędów o:
+  - `auth/invalid-api-key`,
+  - `auth/configuration-not-found`,
+  - rozszerzony opis `NOT_AUTHENTICATED` po loginie.
