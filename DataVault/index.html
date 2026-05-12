@@ -86,7 +86,7 @@
         <div class="tableWrap" id="tableWrap">
           <div class="emptyState">
             <div class="emptyTitle" data-i18n="emptyTitle">Brak danych</div>
-            <div class="emptyText" data-i18n="emptyText">Brak danych do wyświetlenia. W trybie admina użyj <b>Generuj pliki danych</b>.</div>
+            <div class="emptyText" data-i18n="emptyText">Brak danych do wyświetlenia. Zaloguj się, aby pobrać dane z prywatnej bazy, albo w trybie admina wygeneruj pliki danych i zaimportuj firebase-import.json do Firebase.</div>
           </div>
         </div>
       </section>
@@ -116,6 +116,7 @@
 
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script src="xlsxCanonicalParser.js"></script>
+  <script src="../shared/firebase-config.js"></script>
   <script type="module" src="../shared/firebase-data-loader.js"></script>
   <script src="app.js"></script>
 

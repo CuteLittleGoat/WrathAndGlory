@@ -370,6 +370,7 @@
     <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
+<script src="../shared/firebase-config.js"></script>
 <script type="module" src="../shared/firebase-data-loader.js"></script>
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
@@ -2952,6 +2953,16 @@ const translations = {
         });
       };
 
+      async function getFirebaseApi(){
+        if (window.DataVaultFirebaseReady) return window.DataVaultFirebaseReady;
+        await new Promise((resolve, reject)=>{
+          const timeout = setTimeout(()=>reject(new Error("FIREBASE_LOADER_NOT_READY")), 8000);
+          window.addEventListener("datavault-firebase-loader-ready", ()=>{ clearTimeout(timeout); resolve(); }, { once: true });
+        });
+        if (!window.DataVaultFirebaseReady) throw new Error("FIREBASE_LOADER_NOT_READY");
+        return window.DataVaultFirebaseReady;
+      }
+
       const loadData = async () => {
         setStatus(translations[currentLanguage].labels.dataStatusLoading);
         state.expandedCells.clear();
@@ -2964,7 +2975,7 @@ const translations = {
         psionicsSelect.disabled = true;
         prayersSelect.disabled = true;
         try {
-          const firebaseApi = await window.DataVaultFirebaseReady;
+          const firebaseApi = await getFirebaseApi();
           const data = await firebaseApi.loadDataVaultLive();
           state.data = data;
           state.traits = buildTraitsMap(data);
@@ -3059,5 +3070,3 @@ const translations = {
     </script>
   </body>
 </html>
-
-<script>function showAccessGate(message=""){const g=document.getElementById("accessGate");const e=document.getElementById("accessError");if(g)g.hidden=false;if(e)e.textContent=message;}function hideAccessGate(){const g=document.getElementById("accessGate");const e=document.getElementById("accessError");const p=document.getElementById("accessPassword");if(g)g.hidden=true;if(e)e.textContent="";if(p)p.value="";}async function startPrivateDataFlow(){const firebaseApi=await window.DataVaultFirebaseReady;const user=await firebaseApi.waitForAuthReady();if(!user){showAccessGate();return;}hideAccessGate();document.querySelector("#data-status")&& (document.querySelector("#data-status").textContent="Ładowanie danych z prywatnej bazy..."); if(window.loadData) await window.loadData();}document.getElementById("accessForm")?.addEventListener("submit",async(e)=>{e.preventDefault();const firebaseApi=await window.DataVaultFirebaseReady;try{await firebaseApi.loginWithGroupPassword(document.getElementById("accessPassword").value||"");hideAccessGate();if(window.loadData) await window.loadData();}catch(err){showAccessGate(firebaseApi.getReadableAccessError(err, "pl"));}});</script>

@@ -842,3 +842,43 @@ Nie dodawaj .gitignore.
 Nie zapisuj hasła.
 Nie używaj Firestore passwordHash do ochrony danych.
 Nie wracaj do publicznego data.json.
+
+======================================================================
+22. SEKcja zmian po wdrożeniu (code diff summary)
+======================================================================
+Prompt użytkownika:
+"Przeczytaj plik Analizy/4.txt i wprowadź rekomendowane rozwiązania."
+
+Plik shared/firebase-data-loader.js
+- Było: `const firebaseConfig = window.WG_FIREBASE_CONFIG || {};`
+  Jest: `function getFirebaseConfig(){ return window.WG_FIREBASE_CONFIG || {}; }`
+- Było: brak walidacji konfiguracji runtime.
+  Jest: `assertFirebaseRuntimeConfig()` z błędami `MISSING_*`.
+- Było: brak eventu gotowości.
+  Jest: `window.dispatchEvent(new Event("datavault-firebase-loader-ready"));`
+
+Plik shared/firebase-config.js
+- Było: plik nie istniał.
+  Jest: nowy plik ustawiający `window.WG_FIREBASE_CONFIG` i `window.WG_DATA_ACCESS_EMAIL` (bez hasła).
+
+Plik DataVault/index.html
+- Było: `<script type="module" src="../shared/firebase-data-loader.js"></script>` bez configu.
+  Jest: `<script src="../shared/firebase-config.js"></script>` przed loaderem.
+- Było: tekst empty state sugerował tylko tryb admina.
+  Jest: tekst wskazuje logowanie do prywatnej bazy lub import `firebase-import.json`.
+
+Plik DataVault/app.js
+- Było: `const firebaseApi = await window.DataVaultFirebaseReady;`
+  Jest: `const firebaseApi = await getFirebaseApi();`
+- Było: brak walidacji struktury danych.
+  Jest: `assertDataVaultShape(data)` z błędem `DATAVAULT_DATA_MISSING_SHEETS`.
+- Było: uproszczony start flow bez fallbacku na brak loadera.
+  Jest: `startPrivateDataFlow()` z obsługą błędów i komunikatami statusu.
+
+Plik GeneratorNPC/index.html
+- Było: brak `../shared/firebase-config.js` przed loaderem.
+  Jest: dodany `<script src="../shared/firebase-config.js"></script>` przed `firebase-data-loader.js`.
+- Było: użycie `await window.DataVaultFirebaseReady`.
+  Jest: użycie `await getFirebaseApi()`.
+- Było: dodatkowy skrypt po `</html>`.
+  Jest: usunięty; logika pozostaje w module głównym.
