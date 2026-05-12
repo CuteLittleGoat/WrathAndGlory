@@ -1,0 +1,220 @@
+INSTRUKCJA DLA AGENTA AI CODEX
+
+Cel zadania
+Zmodyfikuj kod modułu DataVault tak, aby z jednego wskazanego pliku Repozytorium.xlsx generowane były dwa pliki wynikowe:
+
+1. data.json
+   - obecny format,
+   - ma pozostać zgodny z aktualnym działaniem aplikacji,
+   - służy jako backup, plik kontrolny i plik do weryfikacji danych,
+   - nie zmieniaj jego struktury, nazw pól, nazw arkuszy ani wartości.
+
+2. firebase-import.json
+   - nowy plik techniczny przeznaczony do importu do Firebase Realtime Database,
+   - ma być bezpieczny dla Realtime Database,
+   - nie może używać nazw kolumn, nazw cech, nazw stanów ani innych danych z Excela jako kluczy Firebase, jeżeli mogą zawierać niedozwolone znaki,
+   - musi pozwalać aplikacji odtworzyć dokładnie tę samą strukturę danych, którą obecnie ma data.json.
+
+Kontekst problemu
+Firebase Realtime Database nie pozwala, aby klucze obiektów zawierały znaki:
+
+. $ # [ ] /
+
+oraz nie pozwala na puste klucze.
+
+Obecny data.json jest poprawnym JSON-em, ale nie jest bezpieczny do bezpośredniego importu do Realtime Database, ponieważ nazwy kolumn / pól pochodzące z Excela mogą zawierać niedozwolone znaki, np. slash.
+
+Bardzo ważne: problem dotyczy tylko KLUCZY JSON, nie wartości tekstowych.
+
+Znaczniki w wartościach muszą zostać zachowane bez zmian, np.:
+
+{{RED}}...{{/RED}}
+{{B}}...{{/B}}
+{{I}}...{{/I}}
+{{S}}...{{/S}}
+
+Nie wolno ich usuwać, escapować w inny sposób, zamieniać ani interpretować podczas generowania firebase-import.json.
+
+Pliki do przejrzenia przed zmianami
+1. DataVault/app.js
+2. DataVault/xlsxCanonicalParser.js
+3. DataVault/index.html
+4. Analizy/Projekt_Data.html
+5. Analizy/Plan_Wdrozenia_Projekt_Data_2026-05-12.md
+
+Najważniejsze wymaganie
+Nie zmieniaj logiki biznesowej transformacji Repozytorium.xlsx -> data.json.
+
+Najpierw aktualny mechanizm ma wygenerować obiekt danych dokładnie tak jak teraz. Dopiero z tego gotowego obiektu należy utworzyć drugi wariant eksportu: firebase-import.json.
+
+Rekomendowany format firebase-import.json
+Użyj wrappera z bezpiecznymi kluczami statycznymi.
+
+Proponowana struktura:
+
+{
+  "schemaVersion": "datavault-firebase-import-v1",
+  "createdAt": "2026-05-12T00:00:00.000Z",
+  "source": "Repozytorium.xlsx",
+  "dataJson": "TU_MA_BYC_STRING_ZAWIERAJACY_JSON.stringify(dataJsonObject)"
+}
+
+Wyjaśnienie:
+- schemaVersion, createdAt, source i dataJson są bezpiecznymi kluczami dla Realtime Database.
+- Cała właściwa zawartość data.json jest zapisana jako tekst w polu dataJson.
+- Dzięki temu żadne nazwy kolumn, arkuszy, cech, stanów ani pól z Excela nie stają się kluczami Firebase.
+- Po pobraniu z Firebase aplikacja może wykonać JSON.parse(snapshot.val().dataJson) i odzyskać dokładny oryginalny obiekt data.json.
+- Wszystkie znaczniki typu {{RED}} zostają zachowane, ponieważ są częścią wartości tekstowych wewnątrz stringa.
+
+Nie stosuj prostego zamieniania znaków w kluczach, np. / na _. To jest ryzykowne, bo może zmienić nazwy kolumn widziane przez aplikację i zepsuć mapowanie danych.
+
+Zakres zmian w generatorze
+Znajdź miejsce, w którym obecnie po przetworzeniu Repozytorium.xlsx tworzony jest plik data.json i uruchamiane jest jego pobieranie w przeglądarce.
+
+Zmień ten proces tak, aby:
+
+1. Obiekt canonicalData / dataJsonObject był tworzony dokładnie tak jak obecnie.
+2. Z tego obiektu pobierany był plik data.json w obecnym formacie.
+3. Następnie z tego samego obiektu tworzony był obiekt firebaseImportObject.
+4. Pobierany był drugi plik firebase-import.json.
+
+Przykładowa funkcja pomocnicza:
+
+function buildFirebaseImportJson(dataJsonObject) {
+  return {
+    schemaVersion: "datavault-firebase-import-v1",
+    createdAt: new Date().toISOString(),
+    source: "Repozytorium.xlsx",
+    dataJson: JSON.stringify(dataJsonObject)
+  };
+}
+
+Przykładowa funkcja pobierania pliku:
+
+function downloadJsonFile(filename, objectToDownload) {
+  const json = JSON.stringify(objectToDownload, null, 2);
+  const blob = new Blob([json], { type: "application/json;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+Użycie po wygenerowaniu danych:
+
+downloadJsonFile("data.json", dataJsonObject);
+downloadJsonFile("firebase-import.json", buildFirebaseImportJson(dataJsonObject));
+
+Jeżeli przeglądarka blokuje dwa automatyczne pobrania po jednym kliknięciu, zastosuj jedno z tych rozwiązań:
+1. pobierz data.json automatycznie, a firebase-import.json po drugim kliknięciu/przycisku,
+2. pokaż dwa przyciski pobierania po wygenerowaniu danych,
+3. albo uruchom drugie pobranie z krótkim setTimeout, jeśli działa stabilnie w przeglądarce.
+
+Preferowany UX
+Po kliknięciu „Generuj data.json” i wskazaniu Repozytorium.xlsx aplikacja powinna wygenerować dane raz, a następnie umożliwić pobranie obu plików.
+
+Jeżeli wymaga to zmiany tekstu przycisku lub komunikatu, użyj sformułowania:
+
+Generuj pliki danych
+
+albo zostaw obecny przycisk, ale zaktualizuj komunikat statusu na:
+
+OK — wygenerowano data.json oraz firebase-import.json
+
+Wersje językowe
+Jeżeli komunikaty są w obiekcie translations, dodaj odpowiedniki PL i EN.
+
+PL:
+OK — wygenerowano data.json oraz firebase-import.json
+
+EN:
+OK — generated data.json and firebase-import.json
+
+Loader danych z Firebase
+Jeżeli w tym samym zadaniu modyfikujesz loader danych z Firebase Realtime Database, musi on obsługiwać format wrappera:
+
+const snapshotValue = snapshot.val();
+
+if (
+  snapshotValue &&
+  snapshotValue.schemaVersion === "datavault-firebase-import-v1" &&
+  typeof snapshotValue.dataJson === "string"
+) {
+  return JSON.parse(snapshotValue.dataJson);
+}
+
+Dla kompatybilności możesz zostawić fallback:
+
+return snapshotValue;
+
+Dzięki temu aplikacja będzie mogła działać zarówno z nowym wrapperem, jak i ewentualnie z danymi w starym formacie podczas testów.
+
+Walidacja firebase-import.json
+Dodaj prostą walidację po zbudowaniu firebaseImportObject:
+
+1. Sprawdź, czy firebaseImportObject ma tylko bezpieczne klucze na top-level.
+2. Sprawdź, czy firebaseImportObject.dataJson jest stringiem.
+3. Sprawdź, czy JSON.parse(firebaseImportObject.dataJson) daje obiekt równoważny z dataJsonObject.
+
+Przykład:
+
+function validateFirebaseImportObject(firebaseImportObject, originalData) {
+  const forbidden = /[.$#[\]\/]/;
+
+  for (const key of Object.keys(firebaseImportObject)) {
+    if (!key || forbidden.test(key)) {
+      throw new Error("firebase-import.json contains an invalid Firebase key: " + key);
+    }
+  }
+
+  if (typeof firebaseImportObject.dataJson !== "string") {
+    throw new Error("firebase-import.json dataJson must be a string");
+  }
+
+  const restored = JSON.parse(firebaseImportObject.dataJson);
+
+  if (JSON.stringify(restored) !== JSON.stringify(originalData)) {
+    throw new Error("firebase-import.json round-trip validation failed");
+  }
+}
+
+Uwaga: ta walidacja nie ma przeszukiwać kluczy wewnątrz dataJson, bo one są zapisane jako tekst i nie są kluczami Firebase.
+
+Import do Firebase
+Docelowo użytkownik będzie importował plik firebase-import.json do:
+
+Realtime Database -> /datavault/live
+
+Nie importować zwykłego data.json do Realtime Database, bo może zawierać niedozwolone klucze.
+
+Nie używać Firebase Storage.
+Firebase Storage nie może być użyty w tym projekcie z powodu wymogu darmowego rozwiązania.
+
+Kryteria akceptacji
+1. Z jednego Repozytorium.xlsx można wygenerować data.json i firebase-import.json.
+2. data.json pozostaje w obecnym formacie i działa jako backup/weryfikacja.
+3. firebase-import.json importuje się do Firebase Realtime Database bez błędu „Invalid JSON: Keys cannot be empty or contain $#[]./”.
+4. Po pobraniu danych z Firebase i wykonaniu JSON.parse(dataJson) aplikacja otrzymuje strukturę zgodną z data.json.
+5. Znaczniki {{RED}}, {{B}}, {{I}}, {{S}} i inne podobne znaczniki pozostają nienaruszone.
+6. Nie zmienia się logika parsera XLSX ani semantyka danych.
+7. Nie zapisujesz ani nie hardkodujesz hasła grupowego, sekretów ani prywatnych danych.
+8. Do repo nie dodajesz prawdziwego Repozytorium.xlsx, data.json ani firebase-import.json, chyba że są to wyłącznie sztuczne pliki testowe bez danych z podręczników.
+
+Dodatkowe zalecenie
+Jeżeli dodajesz testowy JSON do repo, musi zawierać tylko fikcyjne dane, np.:
+
+{
+  "sheets": {
+    "Test": [
+      {
+        "Kolumna/Test": "{{RED}}TEST{{/RED}}"
+      }
+    ]
+  }
+}
+
+Taki test powinien potwierdzić, że zwykły data.json może mieć problematyczny klucz, ale firebase-import.json nadal importuje się poprawnie, bo problematyczny klucz jest wewnątrz stringa dataJson, a nie jako klucz Firebase.
