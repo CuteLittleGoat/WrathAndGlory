@@ -232,7 +232,7 @@ Analizy/audyt-datavault-parser-xlsx.md
 
 ## 10. Kontekst promptu w plikach analitycznych
 
-Jeżeli zapisywany jest plik z wynikami analizy, należy uwzględnić w nim prompt użytkownika.
+Jeżeli zapisywany jest plik z wynikami analizy, należy uwzględnić w nim pełen prompt użytkownika. Bez skracania.
 
 Celem jest zachowanie kontekstu odpowiedzi i umożliwienie zrozumienia, dlaczego dana analiza została wykonana.
 
@@ -240,7 +240,7 @@ Plik analityczny powinien zawierać przynajmniej:
 
 - datę analizy;
 - temat analizy;
-- oryginalny prompt użytkownika;
+- oryginalny pełny prompt użytkownika;
 - zakres analizy;
 - wnioski;
 - rekomendacje;
