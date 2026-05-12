@@ -172,3 +172,8 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 ## Źródło danych / Data source
 PL: Interfejs informuje teraz, że dane pochodzą z prywatnej bazy DataVault po autoryzacji, a nie z publicznego pliku `../DataVault/data.json`.
 EN: The UI now states that data comes from a private authorized DataVault database, not from a public `../DataVault/data.json` file.
+
+
+## Runtime danych / Data runtime
+PL: GeneratorNPC laduje dane przez `shared/firebase-data-loader.js` (Firebase Auth + RTDB `/datavault/live`), bez `../DataVault/data.json` i bez publicznego REST URL.
+EN: GeneratorNPC loads data via `shared/firebase-data-loader.js` (Firebase Auth + RTDB `/datavault/live`), without `../DataVault/data.json` and without a public REST URL.

@@ -120,3 +120,8 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 ## Aktualne źródło danych / Current data source
 PL: Przycisk **Generuj pliki danych** otwiera okno wyboru lokalnego pliku `Repozytorium.xlsx` i generuje dwa pliki: `data.json` (backup/kontrola) oraz `firebase-import.json` (wyłącznie do importu do Firebase RTDB `/datavault/live`).
 EN: The **Generate data files** button opens a local `Repozytorium.xlsx` picker and generates two files: `data.json` (backup/control) and `firebase-import.json` (import this file only into Firebase RTDB at `/datavault/live`).
+
+
+## Runtime danych / Data runtime
+PL: Runtime pochodzi z Firebase Realtime Database (sciezka /datavault/live) przez Firebase Auth i wspolny loader `shared/firebase-data-loader.js`. Publiczny `data.json` nie jest uzywany jako runtime.
+EN: Runtime is loaded from Firebase Realtime Database (`/datavault/live`) through Firebase Auth and shared loader `shared/firebase-data-loader.js`. Public `data.json` is not used as runtime.

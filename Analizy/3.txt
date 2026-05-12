@@ -1033,3 +1033,22 @@ Teraz trzeba przepiąć runtime:
 
 Docelowo aplikacja ma działać bez publicznego data.json i bez publicznego Repozytorium.xlsx.
 Jedynym runtime źródłem danych ma być Firebase Realtime Database /datavault/live, dostępny po Firebase Authentication.
+
+======================================================================
+ANEKS WDROŻENIOWY — ZMIANY W KODZIE
+======================================================================
+Plik DataVault/app.js Linia ~896
+Było: const res = await fetch("data.json", {cache:"no-store"});
+Jest: const data = await firebaseApi.loadDataVaultLive();
+
+Plik GeneratorNPC/index.html Linia ~384
+Było: const DATA_URL = "https://wh40k-data-slate-default-rtdb.europe-west1.firebasedatabase.app/datavault/live.json";
+Jest: użycie window.DataVaultFirebaseReady oraz loadDataVaultLive().
+
+Plik DataVault/index.html
+Było: brak UI bramki hasła.
+Jest: dodany #accessGate z formularzem hasła.
+
+Plik GeneratorNPC/index.html
+Było: brak UI bramki hasła.
+Jest: dodany #accessGate z formularzem hasła.

@@ -483,3 +483,8 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 ## Data source note
 Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować publicznego linku do `../DataVault/data.json`. UI komunikuje prywatne źródło danych po autoryzacji.
+
+
+## Firebase runtime
+- GeneratorNPC uses shared Firebase loader and receives unwrapped DataVault object.
+- Access gate requires password and reuses active session on the same origin.
