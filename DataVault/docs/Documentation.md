@@ -1010,3 +1010,8 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
 - Private loader (`shared/firebase-data-loader.js`) tworzy/odzyskuje wyłącznie nazwaną aplikację `wh40k-data-slate-private-data` (wyszukiwanie po `getApps().find(...)`).
 - Usunięto ryzykowny fallback `getApp()` bez nazwy, który mógł wskazać projekt favorites zamiast `wh40k-data-slate`.
 - Debug auth (`debugAuthState`) loguje teraz także `appName`, `projectId`, `databaseURL` (bez hasła i bez payloadu danych), co ułatwia diagnostykę konfliktów projektów Firebase.
+
+
+## Okno dostępu do danych prywatnych (K.O.Z.A.)
+- Warstwa UI (`#accessGate`) używa nowych tekstów PL/EN zgodnie z motywem K.O.Z.A.: tytuł, opis, etykieta hasła i CTA zostały podmienione na warianty „Litanii Dostępu” i „Rytuału Uwierzytelnienia”.
+- Logika komunikatów błędów pochodzi ze wspólnego pliku `shared/firebase-data-loader.js`, więc DataVault i GeneratorNPC wyświetlają identyczne, zaktualizowane komunikaty o błędach (walidacja hasła, limity prób, błędy konfiguracji Firebase, brak danych, uszkodzone dane).

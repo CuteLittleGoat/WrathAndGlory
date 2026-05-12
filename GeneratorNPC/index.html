@@ -11,7 +11,7 @@
   </head>
   <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
-    <div id="accessGate" class="accessGate" hidden><div class="accessGate__card"><!-- Stałe miejsce na ikonę powiadomienia, aby karta nie zmieniała rozmiaru podczas ładowania / Fixed notification icon slot so card size does not jump while loading --><div class="accessGate__iconSlot" aria-hidden="true"><img class="accessGate__icon" src="../IkonaPowiadomien.png" alt=""></div><h2 data-i18n="accessTitle">Dostęp do prywatnych danych</h2><p data-i18n="accessDescription">Dane aplikacji są prywatne. Podaj hasło dostępu.</p><form id="accessForm"><label class="field"><span data-i18n="accessPasswordLabel">Hasło dostępu</span><input id="accessPassword" type="password" autocomplete="current-password"></label><button class="btn primary" type="submit" data-i18n="accessUnlockButton">Odblokuj dane</button></form><div id="accessError" class="accessGate__error" aria-live="polite"></div></div></div>
+    <div id="accessGate" class="accessGate" hidden><div class="accessGate__card"><!-- Stałe miejsce na ikonę powiadomienia, aby karta nie zmieniała rozmiaru podczas ładowania / Fixed notification icon slot so card size does not jump while loading --><div class="accessGate__iconSlot" aria-hidden="true"><img class="accessGate__icon" src="../IkonaPowiadomien.png" alt=""></div><h2 data-i18n="accessTitle">Dostęp do danych z klauzulą tajności K.O.Z.A.</h2><p data-i18n="accessDescription">Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.</p><form id="accessForm"><label class="field"><span data-i18n="accessPasswordLabel">Litania Dostępu</span><input id="accessPassword" type="password" autocomplete="current-password"></label><button class="btn primary" type="submit" data-i18n="accessUnlockButton">Rozpocznij Rytuał</button></form><div id="accessError" class="accessGate__error" aria-live="polite"></div></div></div>
     <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
 <header class="topbar">
       <div class="brand">
@@ -442,10 +442,10 @@ const translations = {
             generateButton: "Generuj kartę",
             dataSourceTitle: "Źródło danych",
             dataSourcePrefix: "Dane są pobierane z prywatnej bazy DataVault po autoryzacji.",
-            accessTitle: "Dostęp do prywatnych danych",
-            accessDescription: "Dane aplikacji są prywatne. Podaj hasło dostępu.",
-            accessPasswordLabel: "Hasło dostępu",
-            accessUnlockButton: "Odblokuj dane",
+            accessTitle: "Dostęp do danych z klauzulą tajności K.O.Z.A.",
+            accessDescription: "Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.",
+            accessPasswordLabel: "Litania Dostępu",
+            accessUnlockButton: "Rozpocznij Rytuał",
             dataStatusLoading: "Ładowanie danych...",
             baseSelectionTitle: "Wybór bazowy",
             bestiaryLabel: "Bestiariusz · Nazwa",
@@ -580,10 +580,10 @@ const translations = {
             loadSummary:
               "Załadowano: Bestiariusz ({bestiary}), Pancerze ({armor}), Bronie ({weapons}), Augumentacje ({augmentations}), Ekwipunek ({equipment}), Talenty ({talents}), Psionika ({psionics}), Modlitwy ({prayers}).",
             loadError: "Nie udało się pobrać danych. Sprawdź dostępność prywatnej bazy.",
-            accessInvalidPassword: "Nieprawidłowe hasło dostępu.",
+            accessInvalidPassword: "Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona.",
             statusLoadPrivateData: "Ładowanie danych z prywatnej bazy...",
             statusPrivateDataOk: "OK — załadowano dane z prywatnej bazy",
-            statusPrivateDataError: "Nie udało się załadować prywatnych danych.",
+            statusPrivateDataError: "Duch Maszyny milczy: nie udało się załadować prywatnych danych.",
             selectBestiary: "Wybierz nazwę...",
             selectArmor: "Wybierz pancerze...",
             selectWeapon: "Wybierz bronie...",
@@ -604,10 +604,10 @@ const translations = {
             generateButton: "Generate card",
             dataSourceTitle: "Data source",
             dataSourcePrefix: "Data is loaded from the private DataVault database after authorization.",
-            accessTitle: "Private data access",
-            accessDescription: "Application data is private. Enter the access password.",
-            accessPasswordLabel: "Access password",
-            accessUnlockButton: "Unlock data",
+            accessTitle: "Access to K.O.Z.A. Classified Data",
+            accessDescription: "Data is sealed by the Machine Spirit’s protocols. Enter the Litany of Access to begin the Rite of Authentication.",
+            accessPasswordLabel: "Litany of Access",
+            accessUnlockButton: "Begin Rite",
             dataStatusLoading: "Loading data...",
             baseSelectionTitle: "Base selection",
             bestiaryLabel: "Bestiary · Name",
@@ -742,10 +742,10 @@ const translations = {
             loadSummary:
               "Loaded: Bestiary ({bestiary}), Armor ({armor}), Weapons ({weapons}), Augmentations ({augmentations}), Equipment ({equipment}), Talents ({talents}), Psionics ({psionics}), Prayers ({prayers}).",
             loadError: "Could not load data. Check private database availability.",
-            accessInvalidPassword: "Invalid access password.",
+            accessInvalidPassword: "The angered Machine Spirit replies: the Litany of Access was rejected.",
             statusLoadPrivateData: "Loading data from private database...",
             statusPrivateDataOk: "OK — loaded data from private database",
-            statusPrivateDataError: "Could not load private data.",
+            statusPrivateDataError: "The Machine Spirit is silent: could not load private data.",
             selectBestiary: "Select a name...",
             selectArmor: "Select armor...",
             selectWeapon: "Select weapons...",
@@ -2740,7 +2740,7 @@ const translations = {
               </style>
             </head>
             <body>
-    <div id="accessGate" class="accessGate" hidden><div class="accessGate__card"><!-- Stałe miejsce na ikonę powiadomienia, aby karta nie zmieniała rozmiaru podczas ładowania / Fixed notification icon slot so card size does not jump while loading --><div class="accessGate__iconSlot" aria-hidden="true"><img class="accessGate__icon" src="../IkonaPowiadomien.png" alt=""></div><h2 data-i18n="accessTitle">Dostęp do prywatnych danych</h2><p data-i18n="accessDescription">Dane aplikacji są prywatne. Podaj hasło dostępu.</p><form id="accessForm"><label class="field"><span data-i18n="accessPasswordLabel">Hasło dostępu</span><input id="accessPassword" type="password" autocomplete="current-password"></label><button class="btn primary" type="submit" data-i18n="accessUnlockButton">Odblokuj dane</button></form><div id="accessError" class="accessGate__error" aria-live="polite"></div></div></div>
+    <div id="accessGate" class="accessGate" hidden><div class="accessGate__card"><!-- Stałe miejsce na ikonę powiadomienia, aby karta nie zmieniała rozmiaru podczas ładowania / Fixed notification icon slot so card size does not jump while loading --><div class="accessGate__iconSlot" aria-hidden="true"><img class="accessGate__icon" src="../IkonaPowiadomien.png" alt=""></div><h2 data-i18n="accessTitle">Dostęp do danych z klauzulą tajności K.O.Z.A.</h2><p data-i18n="accessDescription">Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.</p><form id="accessForm"><label class="field"><span data-i18n="accessPasswordLabel">Litania Dostępu</span><input id="accessPassword" type="password" autocomplete="current-password"></label><button class="btn primary" type="submit" data-i18n="accessUnlockButton">Rozpocznij Rytuał</button></form><div id="accessError" class="accessGate__error" aria-live="polite"></div></div></div>
               <div class="card">
                 <div class="title">${escapeHtml(name)}</div>
                 <div class="row">

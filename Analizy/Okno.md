@@ -32,3 +32,41 @@
 | Komunikat błędu oznaczający konflikt albo zły projekt Firebase w GeneratorNPC | GeneratorNPC używa niewłaściwej aplikacji Firebase. | GeneratorNPC is using the wrong Firebase app. | Duch Maszyny wykrył niezgodny cogitator: GeneratorNPC używa niewłaściwej aplikacji Firebase. | The Machine Spirit detected a mismatched cogitator: GeneratorNPC is using the wrong Firebase app. |
 | Komunikat błędu oznaczający, że loader logowania nie uruchomił się poprawnie | Nie udało się uruchomić modułu logowania. | Could not start the sign-in module. | Duch Maszyny nie odpowiedział na wezwanie: nie udało się uruchomić modułu logowania. | The Machine Spirit did not answer the invocation: could not start the sign-in module. |
 | Ogólny komunikat błędu, gdy nie uda się rozpoznać przyczyny | Nie udało się załadować prywatnych danych. | Could not load private data. | Duch Maszyny milczy: nie udało się załadować prywatnych danych. | The Machine Spirit is silent: could not load private data. |
+
+
+## Sekcja zmian po wdrożeniu
+Plik DataVault/index.html Linia 14
+- Było: <h2 data-i18n="accessTitle">Dostęp do prywatnych danych</h2>
+- Jest: <h2 data-i18n="accessTitle">Dostęp do danych z klauzulą tajności K.O.Z.A.</h2>
+
+Plik DataVault/index.html Linia 14
+- Było: <p data-i18n="accessDescription">Dane aplikacji są prywatne. Podaj hasło dostępu.</p>
+- Jest: <p data-i18n="accessDescription">Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.</p>
+
+Plik DataVault/index.html Linia 14
+- Było: <span data-i18n="accessPasswordLabel">Hasło dostępu</span>
+- Jest: <span data-i18n="accessPasswordLabel">Litania Dostępu</span>
+
+Plik DataVault/index.html Linia 14
+- Było: <button class="btn primary" type="submit" data-i18n="accessUnlockButton">Odblokuj dane</button>
+- Jest: <button class="btn primary" type="submit" data-i18n="accessUnlockButton">Rozpocznij Rytuał</button>
+
+Plik GeneratorNPC/index.html Linia 14
+- Było: <h2 data-i18n="accessTitle">Dostęp do prywatnych danych</h2>
+- Jest: <h2 data-i18n="accessTitle">Dostęp do danych z klauzulą tajności K.O.Z.A.</h2>
+
+Plik GeneratorNPC/index.html Linia 445
+- Było: accessTitle: "Dostęp do prywatnych danych",
+- Jest: accessTitle: "Dostęp do danych z klauzulą tajności K.O.Z.A.",
+
+Plik GeneratorNPC/index.html Linia 607
+- Było: accessTitle: "Private data access",
+- Jest: accessTitle: "Access to K.O.Z.A. Classified Data",
+
+Plik shared/firebase-data-loader.js Linia 124
+- Było: return lang==='en'?'Enter the access password.':'Podaj hasło dostępu.';
+- Jest: return lang==='en'?'The angered Machine Spirit replies: the Litany of Access has not been recited.':'Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana.';
+
+Plik shared/firebase-data-loader.js Linia 147
+- Było: return lang==='en'?'Could not load private data.':'Nie udało się załadować prywatnych danych.';
+- Jest: return lang==='en'?'The Machine Spirit is silent: could not load private data.':'Duch Maszyny milczy: nie udało się załadować prywatnych danych.';
