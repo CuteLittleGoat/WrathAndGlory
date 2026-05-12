@@ -1,7 +1,7 @@
 {
   "name": "Kozi Przybornik",
   "short_name": "Wrath&Glory",
-  "description": "Panel startowy Wrath & Glory wraz z modułem Infoczytnik i powiadomieniami push.",
+  "description": "Panel startowy Wrath & Glory wraz z modułem Infoczytnik.",
   "start_url": "./Main/index.html",
   "scope": "./",
   "display": "standalone",
@@ -19,12 +19,6 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
-    },
-    {
-      "src": "./IkonaPowiadomien.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
     }
   ]
 }

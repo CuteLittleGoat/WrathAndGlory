@@ -794,3 +794,8 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
   - hover: `rgba(150,28,28,.8)`
   - tekst: `#ffdada`
 - Utrzymano ciemne tło modala i zielony motyw ramki, aby zachować spójność stylistyczną modułu.
+
+
+## Aktualizacja 2026-05-12 — usunięcie CTA powiadomień z Main
+- `Main/index.html`: usunięto czerwony przycisk `Włącz powiadomienia` oraz jego dedykowane style `.pushCta*`.
+- Układ ekranu głównego pozostał oparty o siatkę kart modułów bez dodatkowego elementu CTA pod listą modułów.
