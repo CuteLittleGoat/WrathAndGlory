@@ -50,7 +50,7 @@ const translations = {
       hintCompare: "▸ Zaznacz 2+ wiersze, aby porównać.",
       hintTooltip: "Jeśli tooltipy cech nie wyskakują na telefonie: stuknij w tag cechy.",
       emptyTitle: "Brak danych",
-      emptyText: "Brak danych do wyświetlenia. W trybie admina użyj <b>Generuj data.json</b>.",
+      emptyText: "Brak danych do wyświetlenia. W trybie admina użyj <b>Generuj pliki danych</b>.",
       resultsEmptyTitle: "BRAK WYNIKÓW",
       resultsEmptyText: "Zmień filtry lub wyczyść widok.",
       comparisonTitle: "Porównanie",
@@ -81,7 +81,7 @@ const translations = {
       statusLoadOk: "OK — załadowano data.json",
       statusLoadError: "Błąd ładowania data.json",
       statusXlsxError: "Błąd ładowania XLSX",
-      statusRepoDownload: "Pobieranie Repozytorium.xlsx...",
+      statusRepoDownload: "Wskaż lokalny plik Repozytorium.xlsx...",
       statusRepoUpdated: "OK — wygenerowano data.json oraz firebase-import.json",
       statusRepoError: "Błąd aktualizacji danych",
       statusCanonicalStart: "Generowanie data.json kanonicznym parserem XLSX (styles.xml/sharedStrings.xml)...",
@@ -116,7 +116,7 @@ const translations = {
       hintCompare: "▸ Select 2+ rows to compare.",
       hintTooltip: "If trait tooltips do not appear on mobile: tap a trait tag.",
       emptyTitle: "No data",
-      emptyText: "No data to display. In admin mode use <b>Generate data.json</b>.",
+      emptyText: "No data to display. In admin mode use <b>Generate data files</b>.",
       resultsEmptyTitle: "NO RESULTS",
       resultsEmptyText: "Adjust filters or clear the view.",
       comparisonTitle: "Comparison",
@@ -147,7 +147,7 @@ const translations = {
       statusLoadOk: "OK — data.json loaded",
       statusLoadError: "Error loading data.json",
       statusXlsxError: "Error loading XLSX",
-      statusRepoDownload: "Downloading Repozytorium.xlsx...",
+      statusRepoDownload: "Select local Repozytorium.xlsx file...",
       statusRepoUpdated: "OK — generated data.json and firebase-import.json",
       statusRepoError: "Error updating data",
       statusCanonicalStart: "Generating data.json using canonical XLSX parser (styles.xml/sharedStrings.xml)...",
@@ -1143,6 +1143,31 @@ function extractSheetRowsWithFormatting(ws){
   return {header, rows};
 }
 
+
+// --- Wybór lokalnego pliku XLSX przez systemowe okno dialogowe / Select local XLSX file through a system file picker ---
+async function pickLocalWorkbookFile(){
+  return new Promise((resolve, reject) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".xlsx,.xlsm,.xls";
+    input.style.display = "none";
+    input.addEventListener("change", async () => {
+      try{
+        const file = input.files && input.files[0];
+        if (!file){
+          reject(new Error("No workbook selected"));
+          return;
+        }
+        const buffer = await file.arrayBuffer();
+        resolve(buffer);
+      }catch(err){ reject(err); }
+      finally { input.remove(); }
+    }, {once:true});
+    document.body.appendChild(input);
+    input.click();
+  });
+}
+
 function ensureJSZip(cb){
   if (window.JSZip) return cb();
   const s = document.createElement("script");
@@ -1163,11 +1188,7 @@ function loadXlsxFromRepo(){
           throw new Error("XlsxCanonicalParser unavailable");
         }
         setStatus(translations[currentLanguage].messages.statusCanonicalStart);
-        const xlsxRes = await fetch("Repozytorium.xlsx", {cache:"no-store"});
-        if (!xlsxRes.ok){
-          throw new Error(`HTTP ${xlsxRes.status} while fetching Repozytorium.xlsx`);
-        }
-        const xlsxBuffer = await xlsxRes.arrayBuffer();
+        const xlsxBuffer = await pickLocalWorkbookFile();
         const {sheets: rawSheets, sheetOrder, columnOrder} = await window.XlsxCanonicalParser.loadXlsxMinimal(xlsxBuffer);
         const data = buildDataJsonFromSheets(rawSheets, {sheetOrder, columnOrder});
         const firebaseImportObject = buildFirebaseImportJson(data);

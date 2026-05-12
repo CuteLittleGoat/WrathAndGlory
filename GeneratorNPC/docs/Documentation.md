@@ -479,3 +479,7 @@ This is the update map for adding another language (for example FR/DE):
 5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+
+
+## Data source note
+Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować publicznego linku do `../DataVault/data.json`. UI komunikuje prywatne źródło danych po autoryzacji.

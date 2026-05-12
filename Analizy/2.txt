@@ -1482,3 +1482,37 @@ Wdrożenie ma doprowadzić do następującego stanu:
 - PWA nie cache’uje statycznego data.json,
 - dokumentacja jest zaktualizowana,
 - hasło i prawdziwe dane nie trafiają do repo.
+
+======================================================================
+26. AKTUALIZACJA PO WDROŻENIU (2026-05-12)
+======================================================================
+Prompt użytkownika: "Przeczytaj plik Analizy/2.txt i wprowadź rekomendowane rozwiązania."
+
+Plik DataVault/app.js
+- Linia (status PL) było: statusRepoDownload: "Pobieranie Repozytorium.xlsx..."
+  Jest: statusRepoDownload: "Wskaż lokalny plik Repozytorium.xlsx..."
+- Linia (status EN) było: statusRepoDownload: "Downloading Repozytorium.xlsx..."
+  Jest: statusRepoDownload: "Select local Repozytorium.xlsx file..."
+- Linia (emptyText PL) było: "...użyj <b>Generuj data.json</b>."
+  Jest: "...użyj <b>Generuj pliki danych</b>."
+- Dodano funkcję: pickLocalWorkbookFile() używającą input type=file + file.arrayBuffer().
+- Linia ładowania XLSX było: fetch("Repozytorium.xlsx", {cache:"no-store"})
+  Jest: const xlsxBuffer = await pickLocalWorkbookFile();
+
+Plik DataVault/index.html
+- Linia opisu było: "Plik Repozytorium.xlsx musi istnieć w module DataVault obok index.html..."
+  Jest: "Wskaż lokalny plik Repozytorium.xlsx z dysku..."
+- Linia empty state było: "Generuj data.json"
+  Jest: "Generuj pliki danych"
+
+Plik GeneratorNPC/index.html
+- Linia sekcji źródła danych było: link do ../DataVault/data.json
+  Jest: komunikat o prywatnej bazie DataVault po autoryzacji.
+- Linia stałej było: const DATA_URL = "../DataVault/data.json";
+  Jest: const DATA_URL = "https://wh40k-data-slate-default-rtdb.europe-west1.firebasedatabase.app/datavault/live.json";
+
+Plik .gitignore
+- Dodano wpisy blokujące commit: Repozytorium.xlsx, data.json, firebase-import.json (root i moduły), oraz pliki tymczasowe Excela.
+
+Pliki dokumentacji
+- Zaktualizowano: DataVault/docs/README.md, DataVault/docs/Documentation.md, GeneratorNPC/docs/README.md, GeneratorNPC/docs/Documentation.md.
