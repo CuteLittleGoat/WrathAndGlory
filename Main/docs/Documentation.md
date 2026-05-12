@@ -5,7 +5,6 @@
 - prezentację przycisków modułów,
 - przełączanie widoku użytkownik/admin,
 - dynamiczne wczytanie linków Mapa/Obrazki,
-- inicjację PWA i Web Push.
 
 ## 2. Struktura plików
 - `Main/index.html` — HTML + CSS + JS modułu.
@@ -60,12 +59,9 @@ Na tej podstawie JS:
 - Wyszukuje wpisy `Mapa:` i `Obrazki:`.
 - Podmienia `href` odpowiednich przycisków.
 
-### 6.3. Web Push CTA
 Przycisk `Włącz powiadomienia`:
 1. prosi o zgodę przeglądarki,
-2. tworzy/odczytuje subskrypcję push,
 3. przekazuje subskrypcję do backendu Infoczytnika,
-4. raportuje błędy użytkownikowi (m.in. odmowa zgody, brak SW, brak wsparcia push).
 
 ## 7. PWA
 ### 7.1. Manifest
@@ -79,14 +75,12 @@ Przycisk `Włącz powiadomienia`:
 
 ## 8. Integracje
 - Moduł nie używa bezpośrednio Firebase.
-- Integruje się pośrednio z backendem push Infoczytnika (ten sam origin).
 
 ## 9. Odtworzenie modułu 1:1
 1. Utwórz `Main/index.html` z osadzonym CSS/JS.
 2. Dodaj logo `wrath-glory-logo-warhammer.png`.
 3. Dodaj `ZmienneHiperlacza.md` i parser wpisów `Mapa`/`Obrazki`.
 4. Dodaj obsługę `?admin=1` + warunkowe sekcje admin.
-5. Dodaj przycisk Web Push i rejestrację SW.
 6. Podłącz `manifest.webmanifest` i `service-worker.js`.
 
 ## 10. Testy regresyjne
@@ -94,7 +88,7 @@ Przycisk `Włącz powiadomienia`:
 2. Wejście z `?admin=1` pokazuje komplet przycisków admin.
 3. Mapa/Obrazki otwierają właściwe URL z `ZmienneHiperlacza.md`.
 4. DataVault w adminie używa `?admin=1`.
-5. Przycisk powiadomień poprawnie przechodzi flow zgody i subskrypcji.
+5. Wszystkie przyciski modułów otwierają poprawne ścieżki lokalne i zewnętrzne.
 
 ## 11. Specyfikacja UI 1:1 (wartości bezpośrednio z kodu)
 ### 11.1. Zmienne CSS i kolorystyka
@@ -108,7 +102,6 @@ Deklaracje z `:root`:
 - `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
 - `--radius: 10px`
 
-Wyróżnienie przycisku push:
 - ramka: `#ff3b30`,
 - tło: `rgba(255, 59, 48, 0.2)`,
 - tekst: `#ffe5e3`,
@@ -128,12 +121,7 @@ Wyróżnienie przycisku push:
 
 ## 12. Mapa funkcji JavaScript (pełna lista odpowiedzialności)
 - `applyDynamicLinks(links)` — podmienia `href` dla przycisków Mapa/Obrazki po sparsowaniu `ZmienneHiperlacza.md`.
-- `urlBase64ToUint8Array(base64String)` — konwersja klucza VAPID do formatu wymaganego przez `PushManager.subscribe`.
-- `getPushConfig()` — waliduje obecność `vapidPublicKey` i `subscribeEndpoint` w `window.infWebPushConfig`.
-- `setPushButtonMessage(message, isError)` — aktualizuje etykietę przycisku push oraz stan błędu (`data-state="error"`).
-- `refreshPushButtonState()` — blokuje CTA push przy brakującej konfiguracji (`Powiadomienia: brak konfiguracji`).
 - `ensureServiceWorkerRegistration()` — rejestruje wspólny `../service-worker.js`.
-- `enablePushNotifications()` — pełny flow: permission → SW ready → subscription → POST do backendu.
 
 Inicjalizacja skryptu:
 1. Wylicza `isAdmin` z query string (`admin=1`).
@@ -141,29 +129,27 @@ Inicjalizacja skryptu:
 3. Przełącza link Infoczytnika (`Infoczytnik.html` vs panel modułu).
 4. Przełącza link DataVault (`?admin=1` tylko dla admina).
 5. Ładuje dynamiczne linki Mapa/Obrazki z pliku markdown.
-6. Podłącza obsługę przycisku push.
+6. Pozostawia interfejs bez dodatkowych akcji asynchronicznych poza dynamicznym ładowaniem linków.
 7. Rejestruje Service Worker po `window.load`.
 
-## 13. Kontrakt backendu push (wymagania interoperacyjne)
+## 13. Integracje zewnętrzne
 Żądanie `POST` do endpointu subskrypcji wysyłane przez moduł Main ma payload:
 ```json
 {
   "source": "main-launcher",
   "createdAt": 1714212000000,
-  "subscription": { "...": "obiekt PushSubscription" }
 }
 ```
 
 Wymagania odpowiedzi backendu:
 - status `2xx` => UI przechodzi do stanu `Powiadomienia aktywne` i blokuje przycisk,
-- status `!2xx` => wyjątek z treścią odpowiedzi serwera i komunikatem `Błąd Web Push: ...`.
 
 ## 14. Macierz kompletności technicznej (dla odtworzenia modułu)
 - **Style i kolory:** zawarte w sekcjach 5 i 11.
 - **Funkcje i logika:** sekcje 6 i 12.
 - **Mechaniki przełączania ról i linków:** sekcje 3, 6.1, 12.
 - **PWA (manifest + SW):** sekcja 7.
-- **Firebase:** brak bezpośredniej integracji w tym module (pośrednio: push endpoint Infoczytnika).
+- **Firebase:** brak bezpośredniej integracji w tym module.
 - **Node.js bootstrap:** nie dotyczy modułu Main (backend znajduje się w module Infoczytnik).
 
 ## 15. Utrzymanie linków po migracji

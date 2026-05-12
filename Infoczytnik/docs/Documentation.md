@@ -17,8 +17,6 @@ Pliki produkcyjne (`GM.html`, `Infoczytnik.html`) są utrzymywane osobno i nie s
 - `assets/ramki/*` — ramki odpowiadające tłom.
 - `assets/logos/*` — logotypy warstw UI.
 - `config/firebase-config.js` — konfiguracja klienta Firebase.
-- `config/web-push-config.js` — konfiguracja Web Push dla środowiska lokalnego/testowego.
-- `backend/*` — backend powiadomień push (Node.js/Express + web-push + zapis subskrypcji).
 
 ## 3. Renderowanie UI i warstwa stylów
 ### 3.1. Fonty i typografia
@@ -99,18 +97,6 @@ Kluczowe grupy funkcji:
 4. Bezpieczne fallbacki przy brakujących zasobach.
 5. Utrzymanie czytelności i responsywności w różnych proporcjach ekranu.
 
-## 9. Powiadomienia push (backend Node.js)
-### 9.1. Komponenty
-- `backend/package.json` — zależności serwera.
-- `backend/data/subscriptions.json` — magazyn subskrypcji push.
-- `config/web-push-config.js` — klucze i konfiguracja VAPID dla testów.
-- `config/web-push-config.production.example.js` — wzorzec konfiguracji produkcyjnej.
-
-### 9.2. Zakres serwera
-- Rejestracja subskrypcji urządzeń.
-- Wysyłka powiadomień web push.
-- Podstawowa obsługa wygasłych subskrypcji i błędów dostarczenia.
-
 ## 10. Struktura Firestore do odtworzenia
 Minimalna struktura:
 ```
@@ -156,7 +142,7 @@ console.log('Bootstrap complete');
 2. Otwórz `Infoczytnik_test.html` i sprawdź natychmiastowy render.
 3. Zmień font i tło — potwierdź poprawne odświeżenie.
 4. Wykonaj import XLSX i sprawdź poprawność mapowania.
-5. Wyślij testowe powiadomienie push i potwierdź otwarcie właściwego ekranu.
+5. Zweryfikuj tryb podglądu oraz poprawność renderu po zmianach ustawień.
 
 ## 13. Ograniczenia i zasady utrzymania
 - Nie edytować automatycznie: `GM.html`, `Infoczytnik.html`, `GM_backup.html`, `Infoczytnik_backup.html`.
@@ -221,38 +207,6 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - `clearMessage()` — bezpieczne czyszczenie widoku przy błędzie/braku danych.
 - `fitOverlayToBackground()` — dopasowanie skali overlay do tła.
 - `scheduleFitOverlay()` — debouncing/odroczenie dopasowania przy zmianie rozmiaru.
-
-## 16. Integracja push — kontrakt techniczny
-Konfiguracja klienta (Main + GM) oczekuje obiektu globalnego:
-```js
-window.infWebPushConfig = {
-  vapidPublicKey: "...",
-  subscribeEndpoint: "https://.../api/push/subscribe",
-  triggerEndpoint: "https://.../api/push/trigger"
-};
-```
-
-Kontrakt minimalny backendu:
-1. `POST /api/push/subscribe` — zapis subskrypcji urządzenia.
-2. `POST /api/push/trigger` — wysłanie notyfikacji do zapisanych subskrypcji.
-3. Trwały magazyn subskrypcji (w repo: `backend/data/subscriptions.json`).
-
-## 17. Node.js — struktura serwera push do odtworzenia 1:1
-W katalogu `backend/` wymagane są:
-- `package.json` ze skryptami:
-  - `npm run start` → `node server.js`,
-  - `npm run dev` → `node --watch server.js`.
-- Zależności: `express`, `cors`, `dotenv`, `web-push`.
-- `.env` oparty o `.env.example` (VAPID subject/public/private, port).
-- `server.js` implementujący endpointy z sekcji 16.
-
-Sugerowany minimalny szkielet:
-1. `dotenv.config()`,
-2. `app.use(cors())`, `app.use(express.json())`,
-3. odczyt/zapis `subscriptions.json`,
-4. `webpush.setVapidDetails(...)`,
-5. implementacja endpointów subscribe/trigger,
-6. cleanup wygasłych subskrypcji po błędach `410/404`.
 
 ## 18. Specyfikacja wersjonowania testowego (`INF_VERSION`)
 - Pole `INF_VERSION` występuje równolegle w `GM_test.html` i `Infoczytnik_test.html`.

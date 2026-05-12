@@ -12,7 +12,6 @@ Moduł **Main** to ekran startowy całego pakietu Wrath & Glory. Z tego miejsca 
 ### Co zobaczysz w trybie standardowym
 - Logo aplikacji.
 - Siatkę przycisków modułów podstawowych.
-- Czerwony przycisk **Włącz powiadomienia**.
 
 ### Co dodatkowo zobaczysz w trybie admin (`?admin=1`)
 - Dodatkowe przyciski modułów: **Generator Nazw**, **Generator NPC**, **Audio**.
@@ -28,13 +27,12 @@ Moduł **Main** to ekran startowy całego pakietu Wrath & Glory. Z tego miejsca 
 - **Mapa** – otwiera zewnętrzny link do mapy.
 - **Kalkulator** – otwiera moduł kalkulatora.
 - **Rzut kośćmi** – otwiera DiceRoller.
-- **Włącz powiadomienia** – prosi przeglądarkę o zgodę i zapisuje subskrypcję.
 
 ### Jak korzystać podczas sesji
 1. Otwórz Main jako „centrum sterowania”.
 2. Wejdź do potrzebnego modułu jednym kliknięciem.
 3. Wracaj do Main, gdy przełączasz się między narzędziami.
-4. Jeśli prowadzisz sesję online i chcesz alerty, uruchom **Włącz powiadomienia**.
+4. Korzystaj z przycisków modułów, aby przejść do odpowiednich narzędzi.
 
 ### Wskazówki
 - **Mapa** i **Obrazki** otwierają się w nowej karcie.
@@ -87,7 +85,6 @@ The **Main** module is the launcher for the whole Wrath & Glory toolkit. Open ot
 ### What you see in standard mode
 - App logo.
 - Grid of core module buttons.
-- Red **Enable notifications** button.
 
 ### Extra in admin mode (`?admin=1`)
 - Additional module buttons: **Name Generator**, **NPC Generator**, **Audio**.
@@ -103,13 +100,12 @@ The **Main** module is the launcher for the whole Wrath & Glory toolkit. Open ot
 - **Map** – opens external map room.
 - **Calculator** – opens calculator module.
 - **DiceRoller** – opens dice module.
-- **Enable notifications** – requests browser permission and stores push subscription.
 
 ### Session workflow suggestion
 1. Keep Main open as your control center.
 2. Open modules as needed with single clicks.
 3. Return to Main when switching tools.
-4. If you rely on alerts, enable notifications at session start.
+4. Use module buttons to move quickly between tools during the session.
 
 ### Tips
 - **Map** and **Images** open in a new tab.

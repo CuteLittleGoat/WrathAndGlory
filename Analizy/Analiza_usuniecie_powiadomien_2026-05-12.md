@@ -158,3 +158,54 @@ To oznacza, że backend/artefakty Cloudflare mogą istnieć archiwalnie, ale apl
 
 Niemodyfikowane zgodnie z wymaganiem:
 - `WebView_FCM_Cloudflare_Worker/**`
+
+---
+
+## 8) Zrealizowane zmiany w kodzie (wdrożenie)
+
+### Plik `Main/index.html`
+- Linia 124  
+  Było: `.pushCtaWrap { ... }` oraz `.pushCta { ... }`  
+  Jest: usunięto cały blok stylów przycisku powiadomień.
+- Linia 174  
+  Było: `<button class="btn pushCta" id="pushBtn" type="button">Włącz powiadomienia</button>`  
+  Jest: usunięto cały kontener CTA powiadomień.
+- Linia 176  
+  Było: `<script src="../Infoczytnik/config/web-push-config.js"></script>`  
+  Jest: import usunięty.
+- Linia 177+  
+  Było: funkcje `urlBase64ToUint8Array`, `getPushConfig`, `enablePushNotifications`, `refreshPushButtonState`, rejestracja SW i listener `pushBtn`.  
+  Jest: pozostawiono tylko logikę admin/non-admin i dynamiczne linki `Mapa/Obrazki`.
+
+### Plik `service-worker.js`
+- Linia 9  
+  Było: `"./IkonaPowiadomien.png"` w `APP_SHELL_ASSETS`.  
+  Jest: pozycja usunięta z cache app-shell.
+- Linia 53+  
+  Było: `self.addEventListener("push", ...)` i `self.addEventListener("notificationclick", ...)`.  
+  Jest: oba handlery całkowicie usunięte; pozostaje tylko install/activate/fetch.
+
+### Plik `manifest.webmanifest`
+- Linia 4  
+  Było: `"description": "... i powiadomieniami push."`  
+  Jest: `"description": "Panel startowy Wrath & Glory wraz z modułem Infoczytnik."`
+- Linia 18+  
+  Było: ikona `IkonaPowiadomien.png` w `icons[]`.  
+  Jest: wpis ikony powiadomień usunięty.
+
+### Plik `Infoczytnik/GM.html`
+- Linia 24 (przed zmianą)  
+  Było: `<script src="config/web-push-config.js"></script>`  
+  Jest: wpis usunięty.
+
+### Plik `Main/docs/README.md`
+- Było: instrukcje użytkowe dla przycisku „Włącz powiadomienia”.  
+  Jest: usunięto opisy funkcji powiadomień i zaktualizowano kroki użytkowe bez tej funkcji.
+
+### Plik `Main/docs/Documentation.md`
+- Było: sekcje techniczne opisujące flow subskrypcji push, VAPID i kontrakt endpointów backendu.  
+  Jest: usunięto opisy techniczne Web Push i doprecyzowano, że moduł Main nie obsługuje już powiadomień.
+
+### Plik `Infoczytnik/docs/Documentation.md`
+- Było: sekcje „Powiadomienia push (backend Node.js)”, „Integracja push — kontrakt techniczny”, „Node.js — struktura serwera push...”.  
+  Jest: sekcje usunięte z dokumentacji modułu; testy kontrolne zaktualizowane do aktualnej funkcjonalności bez push.
