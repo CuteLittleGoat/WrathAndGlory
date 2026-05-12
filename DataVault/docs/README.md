@@ -147,3 +147,7 @@ EN: Added `shared/firebase-config.js` (without password), and DataVault now load
 - EN: DataVault and GeneratorNPC share the same Firebase login. Signing in once unlocks the other module in the same browser session.
 - PL: Przycisk „WYLOGUJ / ZABLOKUJ DANE” nie jest dostępny w interfejsie.
 - EN: The “LOG OUT / LOCK DATA” button is not available in the interface.
+
+## Wspólna sesja z GeneratorNPC / Shared session with GeneratorNPC
+- PL: DataVault i GeneratorNPC korzystają z tej samej nazwanej aplikacji prywatnych danych (`wh40k-data-slate-private-data`), więc logowanie wykonane w jednym module działa też w drugim.
+- EN: DataVault and GeneratorNPC use the same named private-data app (`wh40k-data-slate-private-data`), so sign-in in one module is reused in the other.

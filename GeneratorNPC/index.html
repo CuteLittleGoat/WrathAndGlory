@@ -374,7 +374,7 @@
 <script src="../shared/firebase-config.js"></script>
 <script type="module" src="../shared/firebase-data-loader.js"></script>
     <script type="module">
-      import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
       import {
         getFirestore,
         doc,
@@ -827,6 +827,16 @@ const translations = {
       const FAVORITES_STORAGE_KEY = "generatorNpcFavorites";
       const FAVORITES_COLLECTION = "generatorNpc";
       const FAVORITES_DOC_ID = "favorites";
+      const FAVORITES_APP_NAME = "generator-npc-favorites";
+
+      // --- Pobranie lub utworzenie nazwanej aplikacji Firebase dla ulubionych / Get or create named Firebase app for favorites ---
+      const getOrCreateNamedFirebaseApp = (name, config) => {
+        const existing = getApps().find((candidate) => candidate.name === name);
+        if (existing) {
+          return existing;
+        }
+        return initializeApp(config, name);
+      };
 
       const state = {
         data: null,
@@ -2113,8 +2123,8 @@ const translations = {
       const initFavoritesStore = () => {
         if (window.firebaseConfig?.apiKey) {
           try {
-            const app = getApps().length ? getApp() : initializeApp(window.firebaseConfig);
-            const db = getFirestore(app);
+            const favoritesApp = getOrCreateNamedFirebaseApp(FAVORITES_APP_NAME, window.firebaseConfig);
+            const db = getFirestore(favoritesApp);
             state.firestore = db;
             state.favoritesDoc = doc(db, FAVORITES_COLLECTION, FAVORITES_DOC_ID);
             state.usingFirestore = true;
@@ -3068,7 +3078,12 @@ const translations = {
 
       attachListeners();
       updateModuleVisibility();
-      initFavoritesStore();
+      try {
+        initFavoritesStore();
+      } catch (error) {
+        console.error("[GeneratorNPC] Favorites init failed:", error);
+        setFavoritesStatus("Nie udało się połączyć z ulubionymi.", { isError: true });
+      }
       startPrivateDataFlow();
     </script>
   </body>

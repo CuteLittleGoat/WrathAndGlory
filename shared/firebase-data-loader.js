@@ -1,10 +1,11 @@
 // --- Wspólny loader prywatnych danych Firebase / Shared Firebase private data loader ---
-import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
 
 const FIREBASE_IMPORT_SCHEMA_VERSION = "datavault-firebase-import-v1";
 const DATA_PATH = "datavault/live";
+const PRIVATE_DATA_APP_NAME = "wh40k-data-slate-private-data";
 let app;
 let auth;
 let database;
@@ -14,6 +15,13 @@ let currentAuthUser = null;
 
 function getFirebaseConfig(){ return window.WG_FIREBASE_CONFIG || {}; }
 function getDataAccessEmail(){ return window.WG_DATA_ACCESS_EMAIL || ""; }
+// --- Pobranie lub utworzenie nazwanej aplikacji prywatnych danych / Get or create named Firebase app for private data ---
+function getPrivateDataApp(){
+  const firebaseConfig = getFirebaseConfig();
+  const existing = getApps().find((candidate) => candidate.name === PRIVATE_DATA_APP_NAME);
+  if (existing) return existing;
+  return initializeApp(firebaseConfig, PRIVATE_DATA_APP_NAME);
+}
 
 function assertFirebaseRuntimeConfig(){
   const config = getFirebaseConfig();
@@ -29,6 +37,9 @@ function assertFirebaseRuntimeConfig(){
 function debugAuthState(label){
   const user = auth ? (auth.currentUser || currentAuthUser) : null;
   console.info("[DataVaultFirebase]", label, {
+    appName: app ? app.name : null,
+    projectId: app && app.options ? app.options.projectId : null,
+    databaseURL: app && app.options ? app.options.databaseURL : null,
     hasAuth: !!auth,
     hasCurrentUser: !!user,
     uid: user ? user.uid : null,
@@ -39,8 +50,7 @@ function debugAuthState(label){
 function initFirebaseDataAccess(){
   if(!app){
     assertFirebaseRuntimeConfig();
-    const firebaseConfig = getFirebaseConfig();
-    app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+    app = getPrivateDataApp();
     auth = getAuth(app);
     database = getDatabase(app);
     authReadyPromise = setPersistence(auth, browserLocalPersistence)
@@ -52,7 +62,6 @@ function initFirebaseDataAccess(){
 
         authUnsubscribe = onAuthStateChanged(auth, (user) => {
           currentAuthUser = user || null;
-          debugAuthState("onAuthStateChanged");
 
           if (!resolved) {
             resolved = true;
@@ -60,6 +69,7 @@ function initFirebaseDataAccess(){
           }
         });
       }));
+    debugAuthState("after initFirebaseDataAccess");
   }
   return {app,auth,database};
 }
@@ -127,7 +137,8 @@ function getReadableAccessError(error, lang='pl'){
   if(code.includes('MISSING_DATA_ACCESS_EMAIL')) return lang==='en'?'Firebase access email is missing.':'Brakuje technicznego e-maila dostępu Firebase.';
   if(code.includes('auth/invalid-credential')||code.includes('auth/wrong-password')||code.includes('auth/user-not-found')) return lang==='en'?'Invalid access password.':'Nieprawidłowe hasło dostępu.';
   if(code.includes('auth/invalid-api-key')) return lang==='en'?'Invalid Firebase apiKey.':'Nieprawidłowy apiKey Firebase.';
-  if(code.includes('auth/configuration-not-found')) return lang==='en'?'Firebase Authentication is not configured correctly.':'Firebase Authentication nie jest poprawnie skonfigurowane.';
+  if(code.includes('auth/configuration-not-found')) return lang==='en'?'Firebase Authentication is not configured for the Firebase app currently used. Check that GeneratorNPC uses the private data app wh40k-data-slate-private-data, not the old favorites Firebase project.':'Firebase Authentication nie jest poprawnie skonfigurowane dla aktualnie użytej aplikacji Firebase. Sprawdź, czy GeneratorNPC używa aplikacji wh40k-data-slate-private-data, a nie starego projektu favorites.';
+  if(code.includes('auth/operation-not-allowed')) return lang==='en'?'Email/password sign-in is disabled for this Firebase project.':'Logowanie e-mail/hasło jest wyłączone w tym projekcie Firebase.';
   if(code.includes('NOT_AUTHENTICATED')) return lang==='en'?'Sign in to access private data. If this appears after entering the password, the Auth session was not detected after login.':'Zaloguj się, aby uzyskać dostęp do prywatnych danych. Jeżeli widzisz to po wpisaniu hasła, aplikacja nie wykryła sesji Auth po logowaniu.';
   if(code.includes('permission_denied')||code.includes('PERMISSION_DENIED')||code.includes('permission-denied')) return lang==='en'?'No permission to read private data.':'Brak uprawnień do odczytu prywatnych danych.';
   if(code.includes('DATA_NOT_FOUND')) return lang==='en'?'Private data was not found in Firebase.':'Nie znaleziono prywatnych danych w Firebase.';

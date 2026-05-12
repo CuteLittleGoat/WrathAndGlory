@@ -195,3 +195,9 @@ EN: GeneratorNPC now uses shared `shared/firebase-config.js` and waits for Fireb
 - EN: GeneratorNPC loads data only from the private DataVault database after authorization and uses the same session as DataVault.
 - PL: Okno logowania jest takie samo jak w DataVault.
 - EN: The login gate is visually and textually identical to DataVault.
+
+## Rozdzielenie sesji Firebase (DataVault vs Ulubione) / Firebase session separation (DataVault vs Favorites)
+- PL: Generator NPC korzysta teraz z oddzielnej, nazwanej aplikacji Firebase dla panelu **Ulubione** (`generator-npc-favorites`), dzięki czemu nie zakłóca logowania do prywatnych danych DataVault.
+- EN: Generator NPC now uses a separate named Firebase app for **Favorites** (`generator-npc-favorites`), so it no longer interferes with DataVault private-data login.
+- PL: Jeśli połączenie z Ulubionymi się nie powiedzie, generator nadal ładuje główne dane NPC i działa normalnie.
+- EN: If Favorites connection fails, the generator still loads core NPC data and remains usable.

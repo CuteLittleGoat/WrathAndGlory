@@ -575,3 +575,33 @@ generator-npc-favorites.
 
 To rozdziela projekt wh40k-data-slate od starego audiorpg-2eb6f i powinno usunąć błąd:
 „Firebase Authentication nie jest poprawnie skonfigurowane.”
+
+======================================================================
+18. ZREALIZOWANE ZMIANY W KODZIE (AUTOMATYCZNE UZUPEŁNIENIE)
+======================================================================
+Prompt użytkownika:
+"Przeczytaj plik Analizy/7.txt i wprowadź rekomendowane rozwiązania."
+
+Plik: shared/firebase-data-loader.js
+- Linia (import) było: import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  Jest: import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+- Linia (inicjalizacja app) było: app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  Jest: app = getPrivateDataApp();
+- Dodano stałą: const PRIVATE_DATA_APP_NAME = "wh40k-data-slate-private-data";
+- Dodano funkcję getPrivateDataApp() z wyszukiwaniem po nazwie app i initializeApp(firebaseConfig, PRIVATE_DATA_APP_NAME).
+- Rozszerzono debugAuthState o pola: appName, projectId, databaseURL.
+- Zmieniono komunikat auth/configuration-not-found na wersję diagnostyczną wskazującą na wymóg app: wh40k-data-slate-private-data.
+- Dodano mapowanie błędu auth/operation-not-allowed.
+
+Plik: GeneratorNPC/index.html
+- Linia (import) było: import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  Jest: import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+- Dodano stałą: const FAVORITES_APP_NAME = "generator-npc-favorites";
+- Dodano funkcję: getOrCreateNamedFirebaseApp(name, config).
+- Linia (favorites init) było: const app = getApps().length ? getApp() : initializeApp(window.firebaseConfig);
+  Jest: const favoritesApp = getOrCreateNamedFirebaseApp(FAVORITES_APP_NAME, window.firebaseConfig);
+- Linia (Firestore) było: const db = getFirestore(app);
+  Jest: const db = getFirestore(favoritesApp);
+- Start modułu było: initFavoritesStore(); startPrivateDataFlow();
+  Jest: try { initFavoritesStore(); } catch (...) { ... } startPrivateDataFlow();
+  (awaria favorites nie blokuje ładowania danych NPC).
