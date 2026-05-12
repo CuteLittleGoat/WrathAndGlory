@@ -34,8 +34,8 @@ const translations = {
   pl: {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
-      updateDataButton: "Generuj data.json",
-      updateNoteFull: "Kliknięcie przycisku wygeneruje nowy plik <code>data.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a wygenerowany <code>data.json</code> trzeba tam wgrać, aby zaktualizować dane w aplikacji.",
+      updateDataButton: "Generuj pliki danych",
+      updateNoteFull: "Kliknięcie przycisku wygeneruje nowe pliki <code>data.json</code> oraz <code>firebase-import.json</code>. Plik <code>Repozytorium.xlsx</code> musi istnieć w module DataVault obok <code>index.html</code>, a następnie do Firebase Realtime Database importuj <code>firebase-import.json</code>.",
       mainPageButton: "Strona Główna",
       fullViewButton: "Pełen Widok",
       defaultViewButton: "Widok Domyślny",
@@ -82,7 +82,7 @@ const translations = {
       statusLoadError: "Błąd ładowania data.json",
       statusXlsxError: "Błąd ładowania XLSX",
       statusRepoDownload: "Pobieranie Repozytorium.xlsx...",
-      statusRepoUpdated: "OK — zaktualizowano dane i wygenerowano data.json",
+      statusRepoUpdated: "OK — wygenerowano data.json oraz firebase-import.json",
       statusRepoError: "Błąd aktualizacji danych",
       statusCanonicalStart: "Generowanie data.json kanonicznym parserem XLSX (styles.xml/sharedStrings.xml)...",
       statusCanonicalUnavailable: "Brak biblioteki parsera kanonicznego (JSZip/xlsxCanonicalParser). Sprawdź połączenie z CDN.",
@@ -100,8 +100,8 @@ const translations = {
   en: {
     labels: {
       pageTitle: "ADMINISTRATUM DATA VAULT",
-      updateDataButton: "Generate data.json",
-      updateNoteFull: "Clicking the button generates a new <code>data.json</code> file. <code>Repozytorium.xlsx</code> must exist in the DataVault module next to <code>index.html</code>, and the generated <code>data.json</code> must be uploaded there to update app data.",
+      updateDataButton: "Generate data files",
+      updateNoteFull: "Clicking the button generates new <code>data.json</code> and <code>firebase-import.json</code> files. <code>Repozytorium.xlsx</code> must exist in the DataVault module next to <code>index.html</code>, then import <code>firebase-import.json</code> into Firebase Realtime Database.",
       mainPageButton: "Main Page",
       fullViewButton: "Full View",
       defaultViewButton: "Default View",
@@ -148,7 +148,7 @@ const translations = {
       statusLoadError: "Error loading data.json",
       statusXlsxError: "Error loading XLSX",
       statusRepoDownload: "Downloading Repozytorium.xlsx...",
-      statusRepoUpdated: "OK — data updated and data.json generated",
+      statusRepoUpdated: "OK — generated data.json and firebase-import.json",
       statusRepoError: "Error updating data",
       statusCanonicalStart: "Generating data.json using canonical XLSX parser (styles.xml/sharedStrings.xml)...",
       statusCanonicalUnavailable: "Canonical parser library unavailable (JSZip/xlsxCanonicalParser). Check CDN connectivity.",
@@ -964,17 +964,45 @@ function ensureSheetJS(cb){
   document.head.appendChild(s);
 }
 
-function downloadDataJson(data){
-  const jsonText = JSON.stringify(data, null, 2);
+// --- Funkcja pobierająca dowolny plik JSON jako bezpieczny artefakt roboczy / Function that downloads any JSON file as a safe working artifact ---
+function downloadJsonFile(filename, objectToDownload){
+  const jsonText = JSON.stringify(objectToDownload, null, 2);
   const blob = new Blob([jsonText], {type:"application/json"});
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "data.json";
+  link.download = filename;
   document.body.appendChild(link);
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
+}
+
+// --- Budowanie wrappera Firebase z bezpiecznymi kluczami top-level / Build Firebase wrapper with top-level safe keys ---
+function buildFirebaseImportJson(dataJsonObject){
+  return {
+    schemaVersion: "datavault-firebase-import-v1",
+    createdAt: new Date().toISOString(),
+    source: "Repozytorium.xlsx",
+    dataJson: JSON.stringify(dataJsonObject),
+  };
+}
+
+// --- Walidacja wrappera Firebase bez dotykania kluczy wewnątrz dataJson-string / Validate Firebase wrapper without touching keys inside dataJson string ---
+function validateFirebaseImportObject(firebaseImportObject, originalData){
+  const forbidden = /[.$#[\]\/]/;
+  for (const key of Object.keys(firebaseImportObject)){
+    if (!key || forbidden.test(key)){
+      throw new Error(`firebase-import.json contains an invalid Firebase key: ${key}`);
+    }
+  }
+  if (typeof firebaseImportObject.dataJson !== "string"){
+    throw new Error("firebase-import.json dataJson must be a string");
+  }
+  const restored = JSON.parse(firebaseImportObject.dataJson);
+  if (JSON.stringify(restored) !== JSON.stringify(originalData)){
+    throw new Error("firebase-import.json round-trip validation failed");
+  }
 }
 
 function isRedColorValue(colorValue){
@@ -1142,7 +1170,10 @@ function loadXlsxFromRepo(){
         const xlsxBuffer = await xlsxRes.arrayBuffer();
         const {sheets: rawSheets, sheetOrder, columnOrder} = await window.XlsxCanonicalParser.loadXlsxMinimal(xlsxBuffer);
         const data = buildDataJsonFromSheets(rawSheets, {sheetOrder, columnOrder});
-        downloadDataJson(data);
+        const firebaseImportObject = buildFirebaseImportJson(data);
+        validateFirebaseImportObject(firebaseImportObject, data);
+        downloadJsonFile("data.json", data);
+        setTimeout(() => downloadJsonFile("firebase-import.json", firebaseImportObject), 150);
         DB = normaliseDB(data);
         const restored = loadSessionState();
         if (!restored){

@@ -218,3 +218,44 @@ Jeżeli dodajesz testowy JSON do repo, musi zawierać tylko fikcyjne dane, np.:
 }
 
 Taki test powinien potwierdzić, że zwykły data.json może mieć problematyczny klucz, ale firebase-import.json nadal importuje się poprawnie, bo problematyczny klucz jest wewnątrz stringa dataJson, a nie jako klucz Firebase.
+
+---
+SEKCJA AKTUALIZACJI PO WDROŻENIU (2026-05-12)
+
+Plik DataVault/app.js
+Linia 37
+Było: updateDataButton: "Generuj data.json",
+Jest: updateDataButton: "Generuj pliki danych",
+
+Plik DataVault/app.js
+Linia 85
+Było: statusRepoUpdated: "OK — zaktualizowano dane i wygenerowano data.json",
+Jest: statusRepoUpdated: "OK — wygenerowano data.json oraz firebase-import.json",
+
+Plik DataVault/app.js
+Linie 967-978
+Było: function downloadDataJson(data){ ... link.download = "data.json"; ... }
+Jest: function downloadJsonFile(filename, objectToDownload){ ... link.download = filename; ... }
+
+Plik DataVault/app.js
+Linie 982-1010
+Było: (brak)
+Jest: dodano buildFirebaseImportJson(dataJsonObject) oraz validateFirebaseImportObject(firebaseImportObject, originalData).
+
+Plik DataVault/app.js
+Linie 1173-1176
+Było: downloadDataJson(data);
+Jest: const firebaseImportObject = buildFirebaseImportJson(data);
+Jest: validateFirebaseImportObject(firebaseImportObject, data);
+Jest: downloadJsonFile("data.json", data);
+Jest: setTimeout(() => downloadJsonFile("firebase-import.json", firebaseImportObject), 150);
+
+Plik DataVault/index.html
+Linia 28
+Było: <button class="btn secondary" id="btnUpdateData" data-i18n="updateDataButton">Generuj data.json</button>
+Jest: <button class="btn secondary" id="btnUpdateData" data-i18n="updateDataButton">Generuj pliki danych</button>
+
+Plik DataVault/index.html
+Linia 30
+Było: ...wygeneruje nowy plik <code>data.json</code>...
+Jest: ...wygeneruje nowe pliki <code>data.json</code> oraz <code>firebase-import.json</code>...

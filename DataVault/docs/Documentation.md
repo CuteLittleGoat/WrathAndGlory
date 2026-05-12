@@ -45,7 +45,7 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
   - `.sigil` — znak ⟦⟧ w kwadracie.
   - `.title` — „ADMINISTRATUM DATA VAULT”.
 - Akcje (przyciski):
-  - `#btnUpdateData` w grupie `#updateDataGroup` (etykieta przycisku: **„Generuj data.json”** w PL / **„Generate data.json”** w EN).
+  - `#btnUpdateData` w grupie `#updateDataGroup` (etykieta przycisku: **„Generuj pliki danych”** w PL / **„Generate data files”** w EN).
   - `#btnReset` — **Pełen Widok** (odsłania wszystkie dane i czyści filtry/sortowanie).
   - `#btnDefaultView` — **Widok Domyślny** (przywraca predefiniowane ukrycia i domyślne sortowanie).
   - `#btnCompare` — porównanie zaznaczonych wierszy.
@@ -54,7 +54,7 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
   - `.language-switcher select#languageSelect` z opcjami `pl` i `en`.
   - Ciemne tło selecta (`#0b0b0b`) utrzymuje spójność z motywem konsolowym.
 
-**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`). W trybie admina grupa pokazuje komunikat, że kliknięcie przycisku generuje nowy `data.json`; przypomina też, że `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego katalogu, aby zaktualizować dane.
+**Ważne:** `#updateDataGroup` jest ukrywany w trybie gracza (JS ustawia `display:none`). W trybie admina grupa pokazuje komunikat, że kliknięcie przycisku generuje nowe `data.json` oraz `firebase-import.json`; przypomina też, że `Repozytorium.xlsx` musi leżeć obok `index.html`, a wygenerowany `data.json` trzeba wgrać do tego samego katalogu, aby zaktualizować dane.
 
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
@@ -581,7 +581,7 @@ Mapowanie na `getElementById`:
 - Jeśli `window.XLSX` nie istnieje, doładowuje SheetJS z CDN (`0.18.5`).
 
 ### 7.4 `downloadDataJson(data)`
-- Generuje blob i wymusza pobranie `data.json`.
+- Generuje blob i wymusza pobranie `data.json` oraz `firebase-import.json`.
 
 ### 7.5 `loadXlsxFromRepo()`
 - Funkcja uruchamia kanoniczną generację w przeglądarce:
@@ -589,7 +589,7 @@ Mapowanie na `getElementById`:
   2. Pobiera `Repozytorium.xlsx` (`cache:"no-store"`).
   3. Wywołuje `XlsxCanonicalParser.loadXlsxMinimal(arrayBuffer)`.
   4. Buduje finalny JSON przez `buildDataJsonFromSheets(rawSheets, {sheetOrder, columnOrder})`.
-  5. Pobiera `data.json` przez `downloadDataJson(data)`, normalizuje dane i odświeża UI.
+  5. Buduje wrapper `firebase-import.json`, waliduje round-trip `JSON.parse(dataJson)` i pobiera `data.json`; następnie po krótkim opóźnieniu pobiera `firebase-import.json`, normalizuje dane i odświeża UI.
 - Dzięki bezpośredniemu parsowaniu `styles.xml`/`sharedStrings.xml` wynik przycisku jest zgodny semantycznie z `build_json.py` (w tym markery `{{RED}}`).
 - Gdy parser kanoniczny nie jest dostępny (np. błąd CDN), funkcja ustawia status błędu i loguje komendę CLI (`python build_json.py Repozytorium.xlsx data.json`).
 
