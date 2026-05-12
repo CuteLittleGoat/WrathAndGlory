@@ -136,3 +136,7 @@ EN: Runtime is loaded from Firebase Realtime Database (`/datavault/live`) throug
 PL: Dodano konfigurację `shared/firebase-config.js` (bez hasła), a DataVault ładuje ją przed loaderem Firebase. Przy braku sesji zawsze pojawia się bramka hasła. Błędy konfiguracji i dostępu są wyświetlane czytelnie.
 EN: Added `shared/firebase-config.js` (without password), and DataVault now loads it before the Firebase loader. The password gate always appears when no session exists. Configuration and access errors are now shown clearly.
 
+
+## Logowanie do prywatnych danych Firebase / Firebase private data sign-in
+- PL: Po wpisaniu poprawnego hasła bramka zamyka się, a dane ładują się od razu z prywatnej bazy. Jeżeli sesja logowania nie zostanie wykryta po wpisaniu hasła, zobaczysz dokładny komunikat z informacją, że problem dotyczy sesji Auth, a niekoniecznie samego hasła.
+- EN: After entering the correct password, the gate closes and data is loaded immediately from the private database. If the sign-in session is not detected after login, you now get a precise message saying the issue is with Auth session detection, not necessarily the password itself.

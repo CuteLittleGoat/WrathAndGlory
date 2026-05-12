@@ -582,3 +582,81 @@ Problemem jest stan Firebase Auth w shared/firebase-data-loader.js.
 
 Loader zapamiętał początkowy brak użytkownika jako null i po poprawnym loginie nadal używa tego starego null.
 Napraw mechanizm authReadyPromise/currentAuthUser zgodnie z instrukcją.
+
+======================================================================
+21. ZREALIZOWANE ZMIANY W KODZIE (WYMAGANE PRZEZ AGENTS.md)
+======================================================================
+
+Plik: shared/firebase-data-loader.js
+- Sekcja zmiennych stanu
+  Było: let app, auth, database, authReadyPromise;
+  Jest:
+    let app;
+    let auth;
+    let database;
+    let authReadyPromise;
+    let authUnsubscribe = null;
+    let currentAuthUser = null;
+
+- Inicjalizacja Auth listenera
+  Było: const unsubscribe = onAuthStateChanged(auth, (user)=>{ unsubscribe(); resolve(user); });
+  Jest: authUnsubscribe = onAuthStateChanged(auth, (user) => { currentAuthUser = user || null; ... resolve(currentAuthUser); });
+
+- waitForAuthReady
+  Było: async function waitForAuthReady(){ initFirebaseDataAccess(); return authReadyPromise; }
+  Jest:
+    async function waitForAuthReady(){
+      initFirebaseDataAccess();
+      await authReadyPromise;
+      currentAuthUser = auth.currentUser || currentAuthUser || null;
+      return currentAuthUser;
+    }
+
+- getCurrentUser
+  Było: function getCurrentUser(){ initFirebaseDataAccess(); return auth.currentUser; }
+  Jest: function getCurrentUser(){ initFirebaseDataAccess(); return auth.currentUser || currentAuthUser || null; }
+
+- loginWithGroupPassword
+  Było: return signInWithEmailAndPassword(auth,email,clean);
+  Jest:
+    const credential = await signInWithEmailAndPassword(auth,email,clean);
+    currentAuthUser = credential.user || auth.currentUser || null;
+    authReadyPromise = Promise.resolve(currentAuthUser);
+    await currentAuthUser.getIdToken(true);
+    return credential;
+
+- logoutDataAccess
+  Było: async function logoutDataAccess(){ initFirebaseDataAccess(); await signOut(auth); }
+  Jest:
+    async function logoutDataAccess(){
+      initFirebaseDataAccess();
+      await signOut(auth);
+      currentAuthUser = null;
+      authReadyPromise = Promise.resolve(null);
+    }
+
+- loadDataVaultLive
+  Było: const user=await waitForAuthReady(); if(!user) throw new Error('NOT_AUTHENTICATED');
+  Jest:
+    await waitForAuthReady();
+    const user = auth.currentUser || currentAuthUser || null;
+    if(!user) throw new Error('NOT_AUTHENTICATED');
+    await user.getIdToken();
+
+- Debug
+  Dodano funkcję: debugAuthState(label)
+  Dodano wywołania: "onAuthStateChanged", "after login", "before loadDataVaultLive"
+
+- getReadableAccessError
+  Dodano obsługę:
+    auth/invalid-api-key
+    auth/configuration-not-found
+  Zmieniono komunikat NOT_AUTHENTICATED na wersję rozszerzoną (PL/EN) z informacją o niewykrytej sesji po loginie.
+
+Plik: DataVault/docs/README.md
+- Dodano sekcję:
+  "Logowanie do prywatnych danych Firebase / Firebase private data sign-in"
+
+Plik: DataVault/docs/Documentation.md
+- Dodano sekcję:
+  "Firebase Auth session lifecycle (DataVault runtime)"
