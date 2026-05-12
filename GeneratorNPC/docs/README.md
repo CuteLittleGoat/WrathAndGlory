@@ -203,3 +203,9 @@ EN: GeneratorNPC now uses shared `shared/firebase-config.js` and waits for Fireb
 - EN: Generator NPC now uses a separate named Firebase app for **Favorites** (`generator-npc-favorites`), so it no longer interferes with DataVault private-data login.
 - PL: Jeśli połączenie z Ulubionymi się nie powiedzie, generator nadal ładuje główne dane NPC i działa normalnie.
 - EN: If Favorites connection fails, the generator still loads core NPC data and remains usable.
+
+
+## Teksty okna dostępu K.O.Z.A. / K.O.Z.A. gate wording
+- PL: Okno hasła w GeneratorNPC ma teraz identyczne słownictwo jak DataVault: **„Dostęp do danych z klauzulą tajności K.O.Z.A.”**, **„Litania Dostępu”**, **„Rozpocznij Rytuał”** oraz opis rytuału uwierzytelnienia.
+- EN: GeneratorNPC now matches DataVault wording: **“Access to K.O.Z.A. Classified Data”**, **“Litany of Access”**, **“Begin Rite”**, and the Rite of Authentication description.
+- PL/EN: Komunikaty błędów logowania i odczytu prywatnych danych również używają nowej narracji „Machine Spirit / Duch Maszyny”.

@@ -128,23 +128,23 @@ async function loadDataVaultLive(){
 
 function getReadableAccessError(error, lang='pl'){
   const code=String((error&&(error.code||error.message))||'');
-  if(code.includes('EMPTY_PASSWORD')) return lang==='en'?'Enter the access password.':'Podaj hasło dostępu.';
-  if(code.includes('MISSING_WG_FIREBASE_CONFIG')) return lang==='en'?'Firebase configuration is missing.':'Brakuje konfiguracji Firebase.';
-  if(code.includes('MISSING_FIREBASE_API_KEY')) return lang==='en'?'Firebase apiKey is missing.':'Brakuje apiKey w konfiguracji Firebase.';
-  if(code.includes('MISSING_FIREBASE_AUTH_DOMAIN')) return lang==='en'?'Firebase authDomain is missing.':'Brakuje authDomain w konfiguracji Firebase.';
-  if(code.includes('MISSING_FIREBASE_DATABASE_URL')) return lang==='en'?'Firebase databaseURL is missing.':'Brakuje databaseURL w konfiguracji Firebase.';
-  if(code.includes('MISSING_FIREBASE_PROJECT_ID')) return lang==='en'?'Firebase projectId is missing.':'Brakuje projectId w konfiguracji Firebase.';
-  if(code.includes('MISSING_DATA_ACCESS_EMAIL')) return lang==='en'?'Firebase access email is missing.':'Brakuje technicznego e-maila dostępu Firebase.';
-  if(code.includes('auth/invalid-credential')||code.includes('auth/wrong-password')||code.includes('auth/user-not-found')) return lang==='en'?'Invalid access password.':'Nieprawidłowe hasło dostępu.';
-  if(code.includes('auth/invalid-api-key')) return lang==='en'?'Invalid Firebase apiKey.':'Nieprawidłowy apiKey Firebase.';
+  if(code.includes('EMPTY_PASSWORD')) return lang==='en'?'The angered Machine Spirit replies: the Litany of Access has not been recited.':'Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana.';
+  if(code.includes('MISSING_WG_FIREBASE_CONFIG')) return lang==='en'?'The Machine Spirit detected a configuration fault: Firebase configuration is missing.':'Duch Maszyny wykrył usterkę konfiguracji: brakuje konfiguracji Firebase.';
+  if(code.includes('MISSING_FIREBASE_API_KEY')) return lang==='en'?'The Machine Spirit detected a configuration fault: Firebase apiKey is missing.':'Duch Maszyny wykrył usterkę konfiguracji: brakuje apiKey w konfiguracji Firebase.';
+  if(code.includes('MISSING_FIREBASE_AUTH_DOMAIN')) return lang==='en'?'The Machine Spirit detected a configuration fault: Firebase authDomain is missing.':'Duch Maszyny wykrył usterkę konfiguracji: brakuje authDomain w konfiguracji Firebase.';
+  if(code.includes('MISSING_FIREBASE_DATABASE_URL')) return lang==='en'?'The Machine Spirit detected a configuration fault: Firebase databaseURL is missing.':'Duch Maszyny wykrył usterkę konfiguracji: brakuje databaseURL w konfiguracji Firebase.';
+  if(code.includes('MISSING_FIREBASE_PROJECT_ID')) return lang==='en'?'The Machine Spirit detected a configuration fault: Firebase projectId is missing.':'Duch Maszyny wykrył usterkę konfiguracji: brakuje projectId w konfiguracji Firebase.';
+  if(code.includes('MISSING_DATA_ACCESS_EMAIL')) return lang==='en'?'The Machine Spirit detected a configuration fault: Firebase access email is missing.':'Duch Maszyny wykrył usterkę konfiguracji: brakuje technicznego e-maila dostępu Firebase.';
+  if(code.includes('auth/invalid-credential')||code.includes('auth/wrong-password')||code.includes('auth/user-not-found')) return lang==='en'?'The angered Machine Spirit replies: the Litany of Access was rejected.':'Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona.';
+  if(code.includes('auth/invalid-api-key')) return lang==='en'?'The Machine Spirit detected a false access sigil: invalid Firebase apiKey.':'Duch Maszyny wykrył fałszywy znak dostępu: nieprawidłowy apiKey Firebase.';
   if(code.includes('auth/configuration-not-found')) return lang==='en'?'Firebase Authentication is not configured for the Firebase app currently used. Check that GeneratorNPC uses the private data app wh40k-data-slate-private-data, not the old favorites Firebase project.':'Firebase Authentication nie jest poprawnie skonfigurowane dla aktualnie użytej aplikacji Firebase. Sprawdź, czy GeneratorNPC używa aplikacji wh40k-data-slate-private-data, a nie starego projektu favorites.';
-  if(code.includes('auth/operation-not-allowed')) return lang==='en'?'Email/password sign-in is disabled for this Firebase project.':'Logowanie e-mail/hasło jest wyłączone w tym projekcie Firebase.';
-  if(code.includes('NOT_AUTHENTICATED')) return lang==='en'?'Sign in to access private data. If this appears after entering the password, the Auth session was not detected after login.':'Zaloguj się, aby uzyskać dostęp do prywatnych danych. Jeżeli widzisz to po wpisaniu hasła, aplikacja nie wykryła sesji Auth po logowaniu.';
-  if(code.includes('permission_denied')||code.includes('PERMISSION_DENIED')||code.includes('permission-denied')) return lang==='en'?'No permission to read private data.':'Brak uprawnień do odczytu prywatnych danych.';
-  if(code.includes('DATA_NOT_FOUND')) return lang==='en'?'Private data was not found in Firebase.':'Nie znaleziono prywatnych danych w Firebase.';
+  if(code.includes('auth/operation-not-allowed')) return lang==='en'?'The Machine Spirit rejected the rite: email/password sign-in is disabled for this Firebase project.':'Duch Maszyny odrzucił rytuał: logowanie e-mail/hasło jest wyłączone w tym projekcie Firebase.';
+  if(code.includes('NOT_AUTHENTICATED')) return lang==='en'?'The Machine Spirit denies access: the Rite of Authentication has not been completed. If this appears after entering the password, the Auth session was not detected after login.':'Duch Maszyny odmawia dostępu: Rytuał Uwierzytelnienia nie został ukończony. Jeżeli widzisz to po wpisaniu hasła, aplikacja nie wykryła sesji Auth po logowaniu.';
+  if(code.includes('permission_denied')||code.includes('PERMISSION_DENIED')||code.includes('permission-denied')) return lang==='en'?'The Machine Spirit denies access: no authorization to read K.O.Z.A. classified data.':'Duch Maszyny odmawia dostępu: brak autoryzacji do odczytu danych z klauzulą tajności K.O.Z.A.';
+  if(code.includes('DATA_NOT_FOUND')) return lang==='en'?'The Machine Spirit detected an empty data reliquary: private data was not found in Firebase.':'Duch Maszyny wykrył pusty relikwiarz danych: nie znaleziono prywatnych danych w Firebase.';
   if(code.includes('FIREBASE_IMPORT_DATAJSON_PARSE_FAILED')) return lang==='en'?'Firebase data wrapper is invalid. Cannot parse dataJson.':'Wrapper danych w Firebase jest niepoprawny. Nie można sparsować dataJson.';
-  if(code.includes('DATAVAULT_DATA_MISSING_SHEETS')) return lang==='en'?'Firebase data does not contain the expected sheets structure.':'Dane z Firebase nie mają oczekiwanej struktury sheets.';
-  return lang==='en'?'Could not load private data.':'Nie udało się załadować prywatnych danych.';
+  if(code.includes('DATAVAULT_DATA_MISSING_SHEETS')) return lang==='en'?'The Machine Spirit detected an incomplete archive schema: Firebase data does not contain the expected sheets structure.':'Duch Maszyny wykrył niepełny schemat archiwum: dane z Firebase nie mają oczekiwanej struktury sheets.';
+  return lang==='en'?'The Machine Spirit is silent: could not load private data.':'Duch Maszyny milczy: nie udało się załadować prywatnych danych.';
 }
 
 window.DataVaultFirebase={initFirebaseDataAccess,waitForAuthReady,getCurrentUser,loginWithGroupPassword,logoutDataAccess,loadDataVaultLive,unwrapDataVaultPayload,getReadableAccessError};

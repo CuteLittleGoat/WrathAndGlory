@@ -514,3 +514,8 @@ Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować pu
 - `shared/firebase-data-loader.js` używa nazwanej aplikacji `wh40k-data-slate-private-data` dla Auth + RTDB (`/datavault/live`) i nie korzysta z `getApp()` bez nazwy.
 - `GeneratorNPC/index.html` używa nazwanej aplikacji `generator-npc-favorites` do Firestore favorites przez helper `getOrCreateNamedFirebaseApp(name, config)`.
 - Inicjalizacja favorites ma dodatkowe zabezpieczenie `try/catch`, aby awaria favorites nie blokowała `startPrivateDataFlow()` i ładowania prywatnych danych NPC.
+
+
+## Bramka dostępu prywatnych danych — aktualne teksty
+- W `index.html` podmieniono wszystkie słowniki i18n oraz statyczny fallback HTML bramki `#accessGate` na teksty K.O.Z.A. (PL/EN).
+- `GeneratorNPC` nadal korzysta ze wspólnego `shared/firebase-data-loader.js` dla błędów autoryzacji i odczytu, ale teraz zwracane komunikaty mają pełne brzmienie „Duch Maszyny / Machine Spirit” dla wszystkich znanych kodów błędów.
