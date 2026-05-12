@@ -507,3 +507,8 @@ Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować pu
 - GeneratorNPC uruchamia przepływ startPrivateDataFlow(): sprawdza sesję, pokazuje bramkę hasła przy braku sesji i ładuje dane przez loadDataVaultLive().
 - Moduł nie używa publicznego data.json ani bezpośredniego REST fetch do /datavault/live.json.
 - Inicjalizacja Firestore ulubionych używa istniejącej aplikacji Firebase (getApp/getApps), aby uniknąć konfliktu [DEFAULT].
+
+## Firebase app isolation (private data vs favorites)
+- `shared/firebase-data-loader.js` używa nazwanej aplikacji `wh40k-data-slate-private-data` dla Auth + RTDB (`/datavault/live`) i nie korzysta z `getApp()` bez nazwy.
+- `GeneratorNPC/index.html` używa nazwanej aplikacji `generator-npc-favorites` do Firestore favorites przez helper `getOrCreateNamedFirebaseApp(name, config)`.
+- Inicjalizacja favorites ma dodatkowe zabezpieczenie `try/catch`, aby awaria favorites nie blokowała `startPrivateDataFlow()` i ładowania prywatnych danych NPC.

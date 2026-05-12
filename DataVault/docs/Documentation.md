@@ -1003,3 +1003,8 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
 ## Runtime auth/session
 - DataVault i GeneratorNPC korzystają z shared/firebase-data-loader.js oraz tej samej sesji Firebase Auth (browserLocalPersistence).
 - UI nie posiada publicznego przycisku wylogowania; reset dostępu realizuje się przez Firebase Auth (zmiana hasła) lub wyczyszczenie danych strony.
+
+## Named Firebase app for private data
+- Private loader (`shared/firebase-data-loader.js`) tworzy/odzyskuje wyłącznie nazwaną aplikację `wh40k-data-slate-private-data` (wyszukiwanie po `getApps().find(...)`).
+- Usunięto ryzykowny fallback `getApp()` bez nazwy, który mógł wskazać projekt favorites zamiast `wh40k-data-slate`.
+- Debug auth (`debugAuthState`) loguje teraz także `appName`, `projectId`, `databaseURL` (bez hasła i bez payloadu danych), co ułatwia diagnostykę konfliktów projektów Firebase.
