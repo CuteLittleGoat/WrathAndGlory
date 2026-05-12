@@ -279,7 +279,7 @@ Sekcja musi zawierać:
 
 Format zapisu:
 
-```markdown
+````markdown
 ## Zmiany wykonane w kodzie
 
 ### Plik: `Second/app.js`
@@ -297,7 +297,7 @@ Jest:
 ```js
 return true;
 ```
-```
+````
 
 Jeżeli numer linii nie jest stabilny albo nie można go jednoznacznie ustalić, należy podać najbliższą nazwę funkcji, selektora lub sekcji kodu.
 
