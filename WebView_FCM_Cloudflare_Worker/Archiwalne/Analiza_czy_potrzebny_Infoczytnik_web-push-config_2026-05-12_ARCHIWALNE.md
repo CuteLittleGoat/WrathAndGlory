@@ -1,4 +1,9 @@
-# Analiza: czy plik `Infoczytnik/config/web-push-config.js` jest potrzebny?
+# [ARCHIWALNE] Analiza: czy potrzebny Infoczytnik web-push-config (2026-05-12)
+
+> Status: **Archiwalne**.
+>
+> Plik przeniesiony z folderu `Analizy` do `WebView_FCM_Cloudflare_Worker/Archiwalne` dnia 2026-05-12, zgodnie z poleceniem użytkownika.
+
 
 ## Prompt użytkownika
 > Przeprowadź analizę czy plik Infoczytnik/config/web-push-config.js jest do czegokolwiek potrzebny?
