@@ -32,7 +32,6 @@ Aktywowany parametrem URL: `?admin=1`.
   - `data-map-link` — URL mapy,
   - `data-images-link` — URL obrazków,
   - `data-datavault-link` — URL DataVault zależny od trybu.
-- CTA `Włącz powiadomienia` umieszczone pod siatką modułów.
 
 ## 5. Stylizacja (CSS)
 Motyw „zielonego terminala” oparty o zmienne CSS:
@@ -59,19 +58,15 @@ Na tej podstawie JS:
 - Wyszukuje wpisy `Mapa:` i `Obrazki:`.
 - Podmienia `href` odpowiednich przycisków.
 
-Przycisk `Włącz powiadomienia`:
-1. prosi o zgodę przeglądarki,
-3. przekazuje subskrypcję do backendu Infoczytnika,
-
 ## 7. PWA
 ### 7.1. Manifest
 - Aplikacja używa wspólnego `manifest.webmanifest`.
 - `start_url` ustawiony na `Main/index.html` (start w widoku user).
 
 ### 7.2. Service Worker
-- Rejestrowany globalnie.
-- Strategia online-first.
-- Przy braku sieci zwraca komunikat o konieczności internetu.
+- `service-worker.js` istnieje w katalogu głównym repozytorium i realizuje wyłącznie mechanikę cache/fetch.
+- Plik nie zawiera mechaniki zdarzeń związanych z komunikatami systemowymi przeglądarki.
+- Moduł Main nie inicjuje żadnej subskrypcji komunikatów.
 
 ## 8. Integracje
 - Moduł nie używa bezpośrednio Firebase.
@@ -81,7 +76,8 @@ Przycisk `Włącz powiadomienia`:
 2. Dodaj logo `wrath-glory-logo-warhammer.png`.
 3. Dodaj `ZmienneHiperlacza.md` i parser wpisów `Mapa`/`Obrazki`.
 4. Dodaj obsługę `?admin=1` + warunkowe sekcje admin.
-6. Podłącz `manifest.webmanifest` i `service-worker.js`.
+6. Podłącz `manifest.webmanifest` (Main używa manifestu PWA).
+7. Jeśli aplikacja ma działać offline, utrzymaj współdzielony `service-worker.js` dla cache/fetch.
 
 ## 10. Testy regresyjne
 1. Wejście bez `?admin=1` pokazuje tylko widok user.
@@ -121,7 +117,6 @@ Deklaracje z `:root`:
 
 ## 12. Mapa funkcji JavaScript (pełna lista odpowiedzialności)
 - `applyDynamicLinks(links)` — podmienia `href` dla przycisków Mapa/Obrazki po sparsowaniu `ZmienneHiperlacza.md`.
-- `ensureServiceWorkerRegistration()` — rejestruje wspólny `../service-worker.js`.
 
 Inicjalizacja skryptu:
 1. Wylicza `isAdmin` z query string (`admin=1`).
@@ -130,19 +125,6 @@ Inicjalizacja skryptu:
 4. Przełącza link DataVault (`?admin=1` tylko dla admina).
 5. Ładuje dynamiczne linki Mapa/Obrazki z pliku markdown.
 6. Pozostawia interfejs bez dodatkowych akcji asynchronicznych poza dynamicznym ładowaniem linków.
-7. Rejestruje Service Worker po `window.load`.
-
-## 13. Integracje zewnętrzne
-Żądanie `POST` do endpointu subskrypcji wysyłane przez moduł Main ma payload:
-```json
-{
-  "source": "main-launcher",
-  "createdAt": 1714212000000,
-}
-```
-
-Wymagania odpowiedzi backendu:
-- status `2xx` => UI przechodzi do stanu `Powiadomienia aktywne` i blokuje przycisk,
 
 ## 14. Macierz kompletności technicznej (dla odtworzenia modułu)
 - **Style i kolory:** zawarte w sekcjach 5 i 11.
