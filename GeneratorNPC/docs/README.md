@@ -191,6 +191,8 @@ EN: GeneratorNPC now uses shared `shared/firebase-config.js` and waits for Fireb
 
 
 ## Dostęp do prywatnych danych / Private data access
+- PL: W oknie dostępu do prywatnych danych dodano ikonę `IkonaPowiadomien.png` ze stałym miejscem 72×72 px, aby zapobiec „skakaniu” rozmiaru okna w trakcie ładowania.
+- EN: The private-data access window now includes `IkonaPowiadomien.png` in a fixed 72×72 px slot to prevent dialog size jumps during loading.
 - PL: GeneratorNPC ładuje dane wyłącznie z prywatnej bazy DataVault po autoryzacji i używa tej samej sesji co DataVault.
 - EN: GeneratorNPC loads data only from the private DataVault database after authorization and uses the same session as DataVault.
 - PL: Okno logowania jest takie samo jak w DataVault.

@@ -488,6 +488,8 @@ Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować pu
 ## Firebase runtime
 - GeneratorNPC uses shared Firebase loader and receives unwrapped DataVault object.
 - Access gate requires password and reuses active session on the same origin.
+- Access gate requires password and reuses active session on the same origin.
+- Access gate UI includes a fixed icon placeholder (`.accessGate__iconSlot`, `72px × 72px`) with `../IkonaPowiadomien.png` rendered as `.accessGate__icon` (`object-fit: contain`) to avoid layout shift during image load.
 
 
 ## Widoczność przełącznika języka / Language switch visibility
