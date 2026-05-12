@@ -1,12 +1,15 @@
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <!doctype html>
 <html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Infoczytnik</title>
-  <script>
+  <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-04-23_12-30-44";
+      const INF_VERSION = "2026-04-30_12-00-51";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -18,7 +21,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Cinzel:wght@400;700&family=Rajdhani:wght@400;600&family=IBM+Plex+Serif:wght@400;700&family=Open+Sans:wght@400;600;700&family=Noto+Serif:wght@400;700&family=DM+Serif+Display&family=IBM+Plex+Sans+Condensed:wght@400;600;700&family=Exo+2:wght@400;600;700&family=Black+Ops+One&family=Staatliches&family=Orbitron:wght@400;700&family=Questrial&family=Russo+One&family=Caveat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
-  <style>
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
     :root{--font:"Share Tech Mono",Calibri,Arial,sans-serif;--msg:#00ff66;--ps:#ffffff;--overlayW:960;--overlayH:540;--overlayMin:540;--overlayScale:1;--overlayPadY:14px;--overlayPadX:20px;--overlayGap:14px;--msgBasePx:20;--psBasePx:12}
     *{box-sizing:border-box} body{margin:0;background:#000;color:#fff;font-family:var(--font);overflow:hidden}
     .screen{width:100vw;height:100vh;height:100dvh;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
@@ -38,6 +42,7 @@
     .flicker{animation:flicker 7s infinite} @keyframes flicker{0%,100%{opacity:1}50%{opacity:.96}51%{opacity:.9}52%{opacity:1}}
   </style>
 </head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
 <div class="screen" id="screen">
   <img id="bg" class="bg" alt="layout">
@@ -54,6 +59,7 @@
     </div>
   </div>
 </div>
+<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
@@ -74,6 +80,7 @@ const CONTENT_RECTS_BY_BACKGROUND_ID = {
   9:{ x:0.0771, y:0.1302, w:0.8672, h:0.6973 }, // Pergamin
   10:{ x:0.1214, y:0.0962, w:0.7385, h:0.8081 } // WnG
 };
+// --- WAŻNE: Każda grupa musi mieć własny Firebase, inaczej dane będą współdzielone między serwerami. / IMPORTANT: Each group must have its own Firebase, otherwise data will be shared across servers. ---
 if(!window.firebaseConfig){ throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
 const db = firebase.firestore();
