@@ -33,7 +33,7 @@
   - użytkownik: **Bronie**,
   - admin: **Notatki**.
 
-### Przycisk „Generuj data.json” (tylko admin)
+### Przycisk „Generuj pliki danych” (tylko admin)
 Używaj go, gdy chcesz odświeżyć dane modułu po aktualizacji pliku źródłowego. Po kliknięciu system przygotowuje nowy plik danych dla aplikacji.
 
 ### Dobre nawyki na sesję
@@ -93,7 +93,7 @@ Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYK�
   - user: **Bronie**,
   - admin: **Notatki**.
 
-### “Generuj data.json” button (admin only)
+### “Generuj pliki danych” button (admin only)
 Use it when module data needs refreshing after source updates. It prepares a new data file for the app.
 
 ### Good session habits
