@@ -174,3 +174,8 @@ This is the update map for adding another language (for example FR/DE):
 5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+
+
+## Widoczność przełącznika języka / Language switch visibility
+- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
+- EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.

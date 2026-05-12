@@ -973,3 +973,8 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
 - Data source runtime: RTDB `/datavault/live` + Firebase Auth.
 - Wrapper `datavault-firebase-import-v1` is unwrapped by `shared/firebase-data-loader.js` via `JSON.parse(dataJson)`.
 - Service worker must not cache private payloads.
+
+
+## Widoczność przełącznika języka / Language switch visibility
+- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
+- EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.
