@@ -382,3 +382,90 @@ Repozytorium nie wygląda na pełne przypadkowych śmieci w aktywnym kodzie. Gł
 - bardzo wrażliwy obszar generowania danych, którego nie wolno sprzątać bez testów porównawczych.
 
 Najważniejsza zasada przy dalszych zmianach: nie upraszczać `DataVault` bez porównania wyniku generowania danych z `Repozytorium.xlsx` po obu ścieżkach: referencyjnej i przeglądarkowej.
+
+## 11. Dodatkowe wnioski po pełnym przeglądzie plików (kontynuacja analizy)
+
+Prompt użytkownika, dla zachowania kontekstu: „Przeczytaj Analizy/Cleanup.md a następnie dopisz do analizy kolejne wnioski. Sprawdź całą analizę i kod aplikacji. Sprawdź czy są jakieś zbędne pliki. Nic nie kasuj z Analizy/Cleanup.md tylko dopisz kolejne wnioski.”
+
+### 11.1 `Infoczytnik/backend/node_modules` jest zacommitowane do repozytorium
+
+#### Stan
+
+W drzewie repozytorium znajduje się pełny katalog zależności runtime/development `Infoczytnik/backend/node_modules`.
+
+#### Wniosek
+
+To może być celowe (np. środowisko bez instalacji `npm i`), ale z perspektywy utrzymania często jest to techniczny balast:
+
+- bardzo zwiększa rozmiar repo;
+- utrudnia code review (dużo szumu przy zmianach zależności);
+- zwiększa ryzyko konfliktów i przypadkowych nadpisań lockfile/deps.
+
+Nie klasyfikuję tego automatycznie jako „śmieć do usunięcia”, bo repo ma niestandardowe założenia i część folderów archiwalnych jest celowo utrzymywana. To jednak obszar, który warto świadomie potwierdzić decyzją właściciela.
+
+#### Rekomendacja
+
+- Jeżeli to nie jest wymóg wdrożeniowy: rozważyć usunięcie `node_modules` z repo i przejście na instalację przez `package.json`/`package-lock.json`.
+- Jeżeli to jest wymóg wdrożeniowy: zostawić, ale dopisać explicite do dokumentacji repo, że `node_modules` w `Infoczytnik/backend` jest utrzymywane celowo.
+
+### 11.2 Potencjalne duplikaty zasobów ikon między root i `WebView_FCM_Cloudflare_Worker`
+
+#### Stan
+
+W repo jednocześnie występują:
+
+- `IkonaGlowna.png` (root);
+- `IkonaPowiadomien.png` (root);
+- `WebView_FCM_Cloudflare_Worker/IkonaGlowna.png`;
+- `WebView_FCM_Cloudflare_Worker/IkonaPowiadomien.png`.
+
+#### Wniosek
+
+To potencjalna redundancja plików binarnych (dwie kopie tych samych nazw), ale ponieważ folder `WebView_FCM_Cloudflare_Worker` został wcześniej oznaczony jako „zostaje bez zmian”, nie należy wykonywać automatycznego cleanupu.
+
+#### Rekomendacja
+
+- Sprawdzić sumy kontrolne (hash) i potwierdzić, czy pliki są identyczne.
+- Jeżeli identyczne i nie ma wymogu osobnych kopii dla pipeline’u worker/webview: można docelowo zredukować do jednego źródła prawdy.
+- Jeżeli pipeline wymaga osobnych kopii: zostawić i opisać to w dokumentacji technicznej tego modułu, żeby uniknąć przypadkowego „sprzątania” w przyszłości.
+
+### 11.3 `Kalkulator/Old/` wygląda na świadome archiwum historyczne, nie martwy kod aktywnego modułu
+
+#### Stan
+
+Występuje folder `Kalkulator/Old/` z plikami `HowToUse_Org.pdf` i `Kalkulator_Org.html`.
+
+#### Wniosek
+
+Nazewnictwo i lokalizacja sugerują archiwum wersji historycznej. Bez jednoznacznego potwierdzenia właściciela nie należy traktować tego jako śmieci do usunięcia.
+
+#### Rekomendacja
+
+- Zostawić pliki.
+- Ewentualnie dodać krótki komentarz w dokumentacji technicznej Kalkulatora, że `Old/` jest archiwum i nie jest częścią aktywnej ścieżki wykonania.
+
+### 11.4 `service-worker.js` nadal obecny w root i nadal niespójny z online-only (potwierdzenie)
+
+#### Stan
+
+Po ponownej weryfikacji plik `service-worker.js` nadal istnieje w katalogu głównym repo. `Main/index.html` pozostaje podpięty do manifestu PWA.
+
+#### Wniosek
+
+To podtrzymuje wcześniejszy wniosek: plik nie został jeszcze rozstrzygnięty strategicznie (cleanup/no-op vs pełne usunięcie + obsługa starych instalacji).
+
+#### Rekomendacja
+
+Utrzymać wysoki priorytet zadania z sekcji „Priorytet działań” i nie wykonywać przypadkowego usunięcia bez planu migracji dla istniejących instalacji PWA.
+
+### 11.5 Brak twardego potwierdzenia, że istnieje zbędny plik możliwy do natychmiastowego bezpiecznego usunięcia
+
+#### Wniosek końcowy z tej iteracji
+
+Po ponownym przeglądzie całego repo (z uwzględnieniem wcześniejszych wyjątków właściciela) nie ma obecnie oczywistego kandydata typu „na pewno śmieć, usuń od razu” bez ryzyka naruszenia procesu lub historycznych zasobów referencyjnych.
+
+Najbezpieczniejsze podejście pozostaje takie samo:
+
+1. Najpierw decyzje właścicielskie (co jest archiwum celowym, a co nie).
+2. Następnie testy/regresja dla obszarów wrażliwych (`DataVault`).
+3. Dopiero na końcu selektywny cleanup plików potwierdzonych jako zbędne.
