@@ -3,12 +3,13 @@
 // Hasło użytkownik wpisuje w formularzu aplikacji. / Password is entered by the user in the app form.
 // Web firebaseConfig nie jest hasłem; bezpieczeństwo zapewniają Firebase Auth i reguły RTDB. / Web firebaseConfig is not a password; security is provided by Firebase Auth and RTDB rules.
 window.WG_FIREBASE_CONFIG = {
-  apiKey: "UZUPEŁNIJ_API_KEY_Z_FIREBASE_PROJECT_SETTINGS",
+  apiKey: "TU_PRAWDZIWY_API_KEY",
   authDomain: "wh40k-data-slate.firebaseapp.com",
   databaseURL: "https://wh40k-data-slate-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "wh40k-data-slate",
   storageBucket: "wh40k-data-slate.firebasestorage.app",
-  messagingSenderId: "UZUPEŁNIJ_MESSAGING_SENDER_ID_Z_FIREBASE_PROJECT_SETTINGS",
-  appId: "UZUPEŁNIJ_APP_ID_Z_FIREBASE_PROJECT_SETTINGS"
+  messagingSenderId: "TU_PRAWDZIWY_MESSAGING_SENDER_ID",
+  appId: "TU_PRAWDZIWY_APP_ID"
 };
-window.WG_DATA_ACCESS_EMAIL = "UZUPEŁNIJ_EMAIL_TECHNICZNEGO_UZYTKOWNIKA_FIREBASE_AUTH";
+
+window.WG_DATA_ACCESS_EMAIL = "taryf@o2.pl";
