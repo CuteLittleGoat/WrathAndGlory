@@ -209,3 +209,18 @@ Niemodyfikowane zgodnie z wymaganiem:
 ### Plik `Infoczytnik/docs/Documentation.md`
 - Było: sekcje „Powiadomienia push (backend Node.js)”, „Integracja push — kontrakt techniczny”, „Node.js — struktura serwera push...”.  
   Jest: sekcje usunięte z dokumentacji modułu; testy kontrolne zaktualizowane do aktualnej funkcjonalności bez push.
+
+
+## 9) Dodatkowe czyszczenie po audycie wdrożenia
+Po dodatkowej weryfikacji usunięto pozostałości po mechanice Web Push:
+- aktywny import `config/web-push-config.js` z `Infoczytnik/GM.html`,
+- nieaktualne opisy przycisku „Włącz powiadomienia” i flow subskrypcji z `Main/docs/Documentation.md`,
+- pozostałe wzmianki o `Node.js / Web Push backend` z `Infoczytnik/docs/Documentation.md`.
+
+Wynik końcowy po cleanupie:
+- `Main/index.html` nie ma UI ani logiki Web Push,
+- `service-worker.js` nie ma handlerów `push` ani `notificationclick`,
+- `manifest.webmanifest` nie wspomina o powiadomieniach push i nie zawiera ikony powiadomień,
+- `Infoczytnik/GM.html` nie ładuje już `config/web-push-config.js`,
+- dokumentacja Main i Infoczytnik nie opisuje Web Push jako aktywnej funkcji,
+- `WebView_FCM_Cloudflare_Worker/**` pozostał bez zmian.

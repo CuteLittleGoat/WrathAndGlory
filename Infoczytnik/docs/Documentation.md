@@ -220,7 +220,6 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - **Funkcje i mechaniki UI:** sekcje 7, 8, 14, 15.
 - **Model danych i logika publikacji:** sekcje 4, 5, 14.6.
 - **Firebase/Firestore:** sekcje 5, 10 (dokument `dataslate/current`).
-- **Node.js / Web Push backend:** sekcje 9, 16, 17.
 - **Wersjonowanie i cache-busting:** sekcja 18.
 
 ## 14. Wymagalność Firebase w instrukcji użytkownika
