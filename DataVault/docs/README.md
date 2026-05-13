@@ -16,7 +16,7 @@
 - **Pełen Widok** – czyści filtry/sortowanie i pokazuje pełną listę.
 - **Widok Domyślny** – przywraca domyślny układ danych.
 - **Porównaj zaznaczone** – otwiera porównanie wybranych pozycji.
-- **Ikona DataVault w nagłówku** – w lewym górnym rogu widzisz ikonę `Icon.png` osadzoną w stałym zielonym polu 44×44 px, dzięki czemu nagłówek nie „skacze” podczas ładowania.
+- **Ikona DataVault w nagłówku** – w lewym górnym rogu widzisz ikonę `Icon.png` osadzoną w stałym zielonym polu 44×44 px (z większym renderem ikony 48×48 px), dzięki czemu nagłówek nie „skacze” podczas ładowania.
 - **Oznaczenia odnośników stron** – zapisy w nawiasach typu `str. 123`, `strona 123`, `page 123` i `p. 123` są automatycznie wyróżniane, żeby łatwiej znaleźć odwołania do podręcznika.
 
 ### Jak pracować krok po kroku
@@ -81,7 +81,7 @@ The language switcher is hidden by default; the exact visibility change point is
 - **Pełen Widok / Full View** – clears filters/sorting and restores full list.
 - **Widok Domyślny / Default View** – restores default data layout.
 - **Porównaj zaznaczone / Compare selected** – opens side-by-side comparison.
-- **DataVault header icon** – the top-left corner shows `Icon.png` inside a fixed 44×44 px green slot, so the header stays stable while assets load.
+- **DataVault header icon** – the top-left corner shows `Icon.png` inside a fixed 44×44 px green slot (with a larger 48×48 px icon render), so the header stays stable while assets load.
 - **Page-reference highlights** – bracketed references such as `str. 123`, `strona 123`, `page 123`, and `p. 123` are automatically highlighted for faster rulebook lookup.
 
 ### Step-by-step workflow

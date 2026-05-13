@@ -39,7 +39,7 @@ zmiany.
 Zastąpić tekst `⟦⟧` obrazem w istniejącym kontenerze `.sigil`, np.:
 
 - kontener pozostaje `<div class="sigil">...</div>`
-- wewnątrz dodać `<img class="sigilIcon" src="Icon.png" alt="DataVault" width="32" height="32" decoding="async" loading="eager">`
+- wewnątrz dodać `<img class="sigilIcon" src="Icon.png" alt="DataVault" width="48" height="48" decoding="async" loading="eager">`
 
 Uwagi:
 - `width` i `height` w znaczniku `<img>` rezerwują miejsce zanim obraz się wyrenderuje, co ogranicza CLS.
@@ -49,10 +49,10 @@ Uwagi:
 ### 2) Zmiana CSS (stabilność i brak „skakania”)
 Dodać styl np.:
 - `.sigil { overflow:hidden; }`
-- `.sigilIcon { width:32px; height:32px; display:block; object-fit:contain; }`
+- `.sigilIcon { width:48px; height:48px; display:block; object-fit:contain; }`
 
 Opcjonalnie, gdyby ikona miała nieregularne marginesy wewnętrzne PNG:
-- dopracować do `30px` lub `34px` bez zmiany zewnętrznego `44x44`.
+- dopracować do `44px` lub `48px` bez zmiany zewnętrznego `44x44`.
 
 ### 3) Brak zmian JS
 Nie ma potrzeby modyfikacji `app.js`, ponieważ:
@@ -83,7 +83,7 @@ Zmiana jest wyłącznie kosmetyczna i dotyczy warstwy prezentacji nagłówka.
 
 ## Rekomendacje wdrożeniowe
 1. Wykonać minimalny patch w `DataVault/index.html` i `DataVault/style.css`.
-2. Zachować stały kontener 44x44 i jawne wymiary obrazka (np. 32x32).
+2. Zachować stały kontener 44x44 i jawne wymiary obrazka (np. 48x48).
 3. Po wdrożeniu zweryfikować:
    - widok administratora,
    - widok użytkownika,
@@ -110,7 +110,7 @@ Było:
 Jest:
 ```html
 <div class="sigil">
-  <img class="sigilIcon" src="Icon.png" alt="DataVault" width="32" height="32" decoding="async" loading="eager">
+  <img class="sigilIcon" src="Icon.png" alt="DataVault" width="48" height="48" decoding="async" loading="eager">
 </div>
 ```
 
@@ -140,8 +140,8 @@ Jest:
   overflow:hidden;
 }
 .sigilIcon{
-  width:32px;
-  height:32px;
+  width:48px;
+  height:48px;
   display:block;
   object-fit:contain;
 }
@@ -167,3 +167,65 @@ Lokalizacja: moduł DataVault, podsekcja „Ikona nagłówka DataVault (stabilno
 
 Opis zmiany:
 - Dodano szczegóły dotyczące wymiarów kontenera ikony, obrazu i ograniczenia CLS.
+
+## Zmiany wykonane w kodzie (powiększenie ikony do ~150%)
+
+### Plik: `DataVault/index.html`
+Lokalizacja: sekcja nagłówka `.topbar` → `.brand` → `.sigil`.
+
+Było:
+```html
+<img class="sigilIcon" src="Icon.png" alt="DataVault" width="32" height="32" decoding="async" loading="eager">
+```
+
+Jest:
+```html
+<img class="sigilIcon" src="Icon.png" alt="DataVault" width="48" height="48" decoding="async" loading="eager">
+```
+
+Opis zmiany:
+- Zwiększono jawne wymiary renderowania ikony z `32×32` do `48×48` (około 150%), przy zachowaniu stałego kontenera.
+
+### Plik: `DataVault/style.css`
+Lokalizacja: blok `.sigilIcon`.
+
+Było:
+```css
+.sigilIcon{
+  width:32px;
+  height:32px;
+  display:block;
+  object-fit:contain;
+}
+```
+
+Jest:
+```css
+.sigilIcon{
+  width:48px;
+  height:48px;
+  display:block;
+  object-fit:contain;
+}
+```
+
+Opis zmiany:
+- Powiększono render ikony do `48px × 48px`, aby uzyskać wizualnie większy znak w tym samym obszarze nagłówka.
+
+### Plik: `DataVault/docs/README.md`
+Lokalizacja: sekcje opisu ikony nagłówka (PL i EN).
+
+Opis zmiany:
+- Zaktualizowano instrukcję użytkownika o informację, że ikona jest renderowana większa (`48×48`) w stałym slocie `44×44`.
+
+### Plik: `DataVault/docs/Documentation.md`
+Lokalizacja: sekcje struktury UI i layoutu (`.sigil`, `.sigilIcon`).
+
+Opis zmiany:
+- Zaktualizowano dokumentację techniczną o aktualne wymiary `.sigilIcon` (`48×48`).
+
+### Plik: `DetaleLayout.md`
+Lokalizacja: moduł DataVault, podsekcja „Ikona nagłówka DataVault (stabilność layoutu)”.
+
+Opis zmiany:
+- Ujednolicono opis layoutu z aktualnym rozmiarem renderowanej ikony (`48×48`).

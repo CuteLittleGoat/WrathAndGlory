@@ -172,7 +172,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 
 ### 2.4 Ikona nagłówka DataVault (stabilność layoutu)
 - W bloku `.brand` w `.topbar` używany jest stały kontener `.sigil` o rozmiarze `44px × 44px` z zielonym tłem i obramowaniem.
-- Wewnątrz renderowany jest obraz `.sigilIcon` (`DataVault/Icon.png`) o stałym rozmiarze `32px × 32px`, `display: block`, `object-fit: contain`.
+- Wewnątrz renderowany jest obraz `.sigilIcon` (`DataVault/Icon.png`) o stałym rozmiarze `48px × 48px`, `display: block`, `object-fit: contain`.
 - Kontener ma `overflow: hidden`, a znacznik `<img>` zawiera jawne `width` i `height`, co ogranicza skoki interfejsu podczas ładowania zasobu.
 
 ### 3) Zasady formatowania tekstu i wyjątki
