@@ -673,3 +673,41 @@ Pełny test 3-ścieżkowy opisany wcześniej (w tym ścieżka kliknięcia w UI a
 
 - Dla cleanupu `service-worker.js`: realizować już wybraną Opcję B.
 - Dla `DataVault`: utrzymać zasadę „najpierw test porównawczy, potem cleanup logiki” jako blokadę bezpieczeństwa przed każdą zmianą parserów/generatorów/fallbacków.
+
+## Aktualizacja analizy — 2026-05-13
+
+### Temat
+Weryfikacja zgodności plików referencyjnych `Analizy/data.reference.json` i `Analizy/firebase-import.reference.json` względem wzorca `Analizy/data.json`.
+
+### Oryginalny pełny prompt użytkownika
+Przeczytaj plik Analizy/Cleanup.md i go zaktualizuj. Nic nie kasuj tylko dopisz nowe informacje. Nie modyfikuj kodu aplikacji.
+
+Dodałem plik Analizy/data.json - jest to kopia z poprzedniej wersji aplikacji. Sprawdź czy nowe pliki Analizy/data.reference.json i Analizy/firebase-import.reference.json są zgodne ze wzorcowym Analizy/data.json
+
+### Zakres analizy
+- Odczytano `Analizy/Cleanup.md` i dopisano wyniki bez usuwania istniejących treści.
+- Porównano struktury JSON po deserializacji (porównanie semantyczne, nie tekstowe) dla:
+  - `Analizy/data.json` vs `Analizy/data.reference.json`,
+  - `Analizy/data.json` vs `Analizy/firebase-import.reference.json:dataJson`,
+  - `Analizy/data.reference.json` vs `Analizy/firebase-import.reference.json:dataJson`.
+
+### Wyniki porównania
+1. `Analizy/data.reference.json` **nie jest zgodny** z `Analizy/data.json`.
+2. `Analizy/firebase-import.reference.json` (pole `dataJson`) **nie jest zgodny** z `Analizy/data.json`.
+3. `Analizy/firebase-import.reference.json` (pole `dataJson`) **jest zgodny** z `Analizy/data.reference.json`.
+
+Wniosek praktyczny: oba nowe pliki referencyjne (`data.reference.json` i `firebase-import.reference.json`) są ze sobą spójne, ale reprezentują inny stan danych niż wzorcowy `Analizy/data.json`.
+
+### Rekomendacje
+- Jeżeli `Analizy/data.json` ma być obowiązującym wzorcem, należy zregenerować lub podmienić:
+  - `Analizy/data.reference.json`,
+  - `Analizy/firebase-import.reference.json` (sekcja `dataJson`),
+  tak, aby odpowiadały dokładnie temu samemu zestawowi danych.
+- Jeżeli to `data.reference.json` ma być nowym wzorcem, warto to jawnie opisać w dedykowanej analizie, aby uniknąć dalszych niejednoznaczności.
+
+### Ryzyka
+- Dalsza praca na niespójnych „wzorcach” grozi fałszywymi wynikami testów regresyjnych dla DataVault.
+- Import do Firebase oparty o `firebase-import.reference.json` może być zgodny z referencją, ale niezgodny z historycznym snapshotem uznawanym za kanoniczny.
+
+### Następne kroki
+- Wykonać szczegółowy diff semantyczny między `Analizy/data.json` i `Analizy/data.reference.json` (np. wskazanie różnic per arkusz, rekord, pole), aby zdecydować, który zestaw danych jest prawidłowy biznesowo.
