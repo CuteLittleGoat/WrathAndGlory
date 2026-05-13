@@ -1,140 +1,157 @@
-# 🇵🇱 Instrukcja konfiguracji Firebase dla folderu `shared/` (PL)
+# 🇵🇱 Instrukcja Firebase dla folderu `shared/` (PL)
 
-## Cel tego pliku
-Ten dokument opisuje **dokładnie** jak przygotować konfigurację Firebase dla plików współdzielonych przez moduły (szczególnie DataVault i GeneratorNPC), aby inna osoba mogła podpiąć repozytorium pod **własny** projekt Firebase bez zgadywania.
+## Cel
+Ten plik zawiera pełny skrypt Node.js tworzący strukturę **Realtime Database** wymaganą przez wspólny loader danych (`shared/firebase-data-loader.js`).
 
-## Pliki konfiguracyjne w `shared/` i ich rola
-- `shared/firebase-config.js` — główny plik runtime. Zawiera:
-  - `window.WG_FIREBASE_CONFIG` (konfiguracja web Firebase),
-  - `window.WG_DATA_ACCESS_EMAIL` (techniczny e-mail użytkownika Auth, którego hasło wpisuje się w UI).
-- `shared/firebase-data-loader.js` — loader danych prywatnych:
-  - logowanie Firebase Auth (email+hasło),
-  - odczyt Firebase Realtime Database z `datavault/live`,
-  - rozpakowanie wrappera `datavault-firebase-import-v1`.
-- `shared/access-gate.css` — tylko style bramki dostępu (bez danych konfiguracyjnych).
+## 1) Konfiguracja `shared/firebase-config.js`
+Uzupełnij:
+- `window.WG_FIREBASE_CONFIG` (web config Firebase),
+- `window.WG_DATA_ACCESS_EMAIL` (email użytkownika technicznego z Firebase Authentication).
 
-## Jak uzupełnić `shared/firebase-config.js`
-Uzupełnij pola (bez kluczy prywatnych i bez tokenów admin):
-
-```js
-window.WG_FIREBASE_CONFIG = {
-  apiKey: "...",
-  authDomain: "...",
-  databaseURL: "...", // wymagane, bo loader czyta RTDB
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
-};
-window.WG_DATA_ACCESS_EMAIL = "TECHNICZNY_EMAIL_UZYTKOWNIKA_AUTH";
+## 2) Struktura Realtime Database (drzewko + typy)
+```text
+root
+└── datavault (obiekt)
+    └── live (obiekt)
+        ├── schemaVersion (string) = "datavault-firebase-import-v1"
+        ├── createdAt (string, ISO datetime)
+        ├── source (string)
+        └── dataJson (string, pełny JSON zapisany jako tekst)
 ```
 
-Skąd skopiować dane:
-1. Firebase Console → projekt → **Project settings** → zakładka **General**.
-2. Sekcja **Your apps** → aplikacja web (`</>`).
-3. Blok **Firebase SDK snippet / Config** — stąd kopiujesz `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
-4. `databaseURL` pobierz z sekcji Realtime Database (adres instancji) albo z configu, jeśli już jest widoczny.
-5. `WG_DATA_ACCESS_EMAIL`: wpisz e-mail użytkownika utworzonego w **Authentication → Users**.
+## 3) Pełny skrypt Node.js (do skopiowania)
+Zapisz jako `shared/init-rtdb-datavault-live.js`:
 
-## Oczekiwana struktura Firebase dla `shared/`
-W tym wariancie podstawą jest **Realtime Database**, nie Firestore:
-- Ścieżka: `datavault/live`
-- Wartość: obiekt wrappera:
-  - `schemaVersion: "datavault-firebase-import-v1"`
-  - `createdAt`
-  - `source`
-  - `dataJson` (string JSON z właściwymi danymi).
+```js
+const admin = require("firebase-admin");
 
-Wniosek praktyczny: struktura zwykle powstaje przez DataVault (eksport/import `firebase-import.json`), więc osobny skrypt Node.js do `shared/` zazwyczaj **nie jest potrzebny**.
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.error("[ERR] Ustaw GOOGLE_APPLICATION_CREDENTIALS na ścieżkę do pliku JSON konta serwisowego.");
+  process.exit(1);
+}
 
-## Czy tworzyć skrypt Node.js dla `shared/`?
-W aktualnym układzie: **zwykle nie**.
-- Jeżeli działają DataVault i GeneratorNPC, to zakładamy, że struktura `datavault/live` już jest i musi zostać zgodna z formatem DataVault.
-- Ręczne „wymyślanie” struktury lub inny skrypt może uszkodzić zgodność loadera.
+if (!process.env.FIREBASE_DATABASE_URL) {
+  console.error("[ERR] Ustaw FIREBASE_DATABASE_URL, np. https://twoj-projekt-default-rtdb.europe-west1.firebasedatabase.app");
+  process.exit(1);
+}
 
-## Bardzo dokładna procedura utworzenia własnej bazy (krok po kroku)
-1. Utwórz nowy projekt w Firebase Console.
-2. Dodaj aplikację Web (`</>`) i skopiuj config.
-3. Włącz **Authentication** i provider **Email/Password**.
-4. Dodaj użytkownika technicznego (email+hasło) — email wpiszesz do `WG_DATA_ACCESS_EMAIL`.
-5. Włącz **Realtime Database** i utwórz instancję w wybranym regionie.
-6. Ustaw reguły RTDB tak, aby zalogowany użytkownik miał odczyt `datavault/live`.
-7. Wklej wartości do `shared/firebase-config.js`.
-8. Zaloguj się do modułu hasłem użytkownika technicznego i sprawdź odczyt danych.
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: process.env.FIREBASE_DATABASE_URL
+});
 
-## Gdy nowa osoba przejmuje moduły
-Nowa osoba musi podać własne:
-- `WG_FIREBASE_CONFIG` (z własnego projektu Firebase),
-- `WG_DATA_ACCESS_EMAIL` (z własnego Firebase Auth),
-- hasło do tego konta (wpisywane tylko w UI, nie do repozytorium).
+const db = admin.database();
+
+const payload = {
+  schemaVersion: "datavault-firebase-import-v1",
+  createdAt: new Date().toISOString(),
+  source: "node-bootstrap",
+  dataJson: JSON.stringify({
+    meta: {
+      note: "Wstaw tutaj docelowe dane DataVault jako JSON."
+    }
+  })
+};
+
+async function main() {
+  await db.ref("datavault/live").set(payload);
+  console.log("[OK] Utworzono / zaktualizowano ścieżkę datavault/live w Realtime Database");
+}
+
+main().catch((err) => {
+  console.error("[ERR] Błąd inicjalizacji:", err);
+  process.exit(1);
+});
+```
+
+## 4) Uruchomienie skryptu
+```bash
+npm i firebase-admin
+export GOOGLE_APPLICATION_CREDENTIALS="/pełna/ścieżka/do/service-account.json"
+export FIREBASE_DATABASE_URL="https://twoj-projekt-default-rtdb.REGION.firebasedatabase.app"
+node shared/init-rtdb-datavault-live.js
+```
+
+## 5) Ważne uwagi zgodności
+- `dataJson` musi być **stringiem JSON**, nie surowym obiektem.
+- `schemaVersion` musi mieć wartość `datavault-firebase-import-v1`.
+- Jeśli używasz eksportu z DataVault, wklej dokładną zawartość jako `dataJson`.
 
 ---
 
-# 🇬🇧 Firebase setup guide for `shared/` folder (EN)
+# 🇬🇧 Firebase guide for `shared/` folder (EN)
 
 ## Purpose
-This file explains exactly how to connect shared runtime files (especially DataVault + GeneratorNPC) to a different person’s Firebase project.
+This file includes a full Node.js script that creates the **Realtime Database** structure required by the shared data loader.
 
-## Config-related files in `shared/`
-- `shared/firebase-config.js`
-  - `window.WG_FIREBASE_CONFIG` (public web Firebase config)
-  - `window.WG_DATA_ACCESS_EMAIL` (technical Firebase Auth user email)
-- `shared/firebase-data-loader.js`
-  - signs in with email/password,
-  - reads Realtime Database path `datavault/live`,
-  - unwraps `datavault-firebase-import-v1` payload.
-- `shared/access-gate.css` (UI style only).
+## 1) `shared/firebase-config.js`
+Fill in:
+- `window.WG_FIREBASE_CONFIG` (Firebase web config),
+- `window.WG_DATA_ACCESS_EMAIL` (technical user email from Firebase Authentication).
 
-## How to fill `shared/firebase-config.js`
-
-```js
-window.WG_FIREBASE_CONFIG = {
-  apiKey: "...",
-  authDomain: "...",
-  databaseURL: "...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
-};
-window.WG_DATA_ACCESS_EMAIL = "TECHNICAL_AUTH_USER_EMAIL";
+## 2) Realtime Database structure (tree + field types)
+```text
+root
+└── datavault (object)
+    └── live (object)
+        ├── schemaVersion (string) = "datavault-firebase-import-v1"
+        ├── createdAt (string, ISO datetime)
+        ├── source (string)
+        └── dataJson (string, full JSON serialized as text)
 ```
 
-Where values come from:
-1. Firebase Console → project → **Project settings** → **General**.
-2. **Your apps** → Web app (`</>`).
-3. Copy web `firebaseConfig` values.
-4. Get `databaseURL` from Realtime Database instance details.
-5. Create Auth user in **Authentication → Users**, then put that email into `WG_DATA_ACCESS_EMAIL`.
+## 3) Full Node.js script (copy-paste)
+Save as `shared/init-rtdb-datavault-live.js`:
 
-## Expected Firebase structure for `shared/`
-This integration uses **Realtime Database** (not Firestore) at:
-- `datavault/live`
-- value format:
-  - `schemaVersion: "datavault-firebase-import-v1"`
-  - `createdAt`
-  - `source`
-  - `dataJson` (JSON string).
+```js
+const admin = require("firebase-admin");
 
-Because DataVault produces this wrapper, a custom shared Node.js bootstrap is usually unnecessary.
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.error("[ERR] Set GOOGLE_APPLICATION_CREDENTIALS to your service account JSON path.");
+  process.exit(1);
+}
 
-## Should `shared/` have a Node.js bootstrap script?
-Usually: **no**.
-- If DataVault + GeneratorNPC are working, required structure already exists.
-- Custom script may break strict compatibility expected by the shared loader.
+if (!process.env.FIREBASE_DATABASE_URL) {
+  console.error("[ERR] Set FIREBASE_DATABASE_URL, e.g. https://your-project-default-rtdb.europe-west1.firebasedatabase.app");
+  process.exit(1);
+}
 
-## Exact setup steps for a new Firebase project
-1. Create Firebase project.
-2. Register a Web app and copy config values.
-3. Enable **Authentication → Email/Password**.
-4. Create technical auth user (email/password).
-5. Enable **Realtime Database**.
-6. Configure RTDB rules so authenticated access can read `datavault/live`.
-7. Fill `shared/firebase-config.js`.
-8. Use module login UI with that password and verify data loading.
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: process.env.FIREBASE_DATABASE_URL
+});
 
-## Handover to another person
-They must provide their own:
-- `WG_FIREBASE_CONFIG`,
-- `WG_DATA_ACCESS_EMAIL`,
-- Auth password typed in app UI (never stored in repo).
+const db = admin.database();
+
+const payload = {
+  schemaVersion: "datavault-firebase-import-v1",
+  createdAt: new Date().toISOString(),
+  source: "node-bootstrap",
+  dataJson: JSON.stringify({
+    meta: { note: "Put the final DataVault JSON payload here." }
+  })
+};
+
+async function main() {
+  await db.ref("datavault/live").set(payload);
+  console.log("[OK] Created / updated datavault/live in Realtime Database");
+}
+
+main().catch((err) => {
+  console.error("[ERR] Initialization failed:", err);
+  process.exit(1);
+});
+```
+
+## 4) How to run
+```bash
+npm i firebase-admin
+export GOOGLE_APPLICATION_CREDENTIALS="/full/path/to/service-account.json"
+export FIREBASE_DATABASE_URL="https://your-project-default-rtdb.REGION.firebasedatabase.app"
+node shared/init-rtdb-datavault-live.js
+```
+
+## 5) Compatibility notes
+- `dataJson` must be a **JSON string**, not a raw object.
+- `schemaVersion` must be `datavault-firebase-import-v1`.
+- If you use DataVault export, paste it exactly into `dataJson`.

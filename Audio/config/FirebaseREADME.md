@@ -1,69 +1,166 @@
 # 🇵🇱 Instrukcja Firebase dla modułu `Audio` (PL)
 
-## 1. Skąd skopiować dane do `config/firebase-config.js`
-1. Firebase Console → wybierz projekt.
-2. **Project settings** → **Your apps** → aplikacja Web (`</>`).
-3. Skopiuj z `Firebase SDK snippet (Config)` wartości: `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
-4. Wklej je do `Audio/config/firebase-config.js` jako `window.firebaseConfig`.
+## Cel
+Ten plik zawiera kompletny, gotowy do skopiowania skrypt Node.js, który tworzy wymagany dokument Firestore dla modułu `Audio`.
 
-## 2. Oczekiwana struktura Firestore
-- Ścieżka główna: `audio/favorites`.
-- Najważniejsze pola: `favorites.lists[], mainView.itemIds[], aliases, updatedAt`.
-- Struktura musi być zgodna z logiką modułu (zapisy/odczyty przycisków UI).
+## 1) Konfiguracja Firebase Web (`config/firebase-config.js`)
+1. Wejdź do Firebase Console → **Project settings** → **Your apps** → aplikacja Web (`</>`).
+2. Skopiuj wartości `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
+3. Wklej do `Audio/config/firebase-config.js` jako `window.firebaseConfig`.
 
-## 3. Jak utworzyć bazę krok po kroku
-1. Firebase Console → **Build → Firestore Database**.
-2. Jeśli brak bazy: **Create database** → wybierz tryb i region.
-3. Utwórz kolekcję i dokument zgodnie ze ścieżką `audio/favorites`.
-4. Dodaj wymagane pola.
-5. Ustaw **Rules** tak, aby moduł miał potrzebny odczyt/zapis.
+## 2) Struktura Firestore (drzewko + typy pól)
+```text
+audio (kolekcja)
+└── favorites (dokument)
+    ├── updatedAt (string, ISO datetime)
+    ├── aliases (mapa / obiekt)
+    │   └── <itemId> (string) -> <aliasText> (string)
+    ├── mainView (mapa / obiekt)
+    │   └── itemIds (tablica stringów)
+    │       └── [0..n] (string)
+    └── favorites (mapa / obiekt)
+        └── lists (tablica obiektów)
+            └── [0..n] (obiekt)
+                ├── id (string)
+                ├── name (string)
+                ├── itemIds (tablica stringów)
+                │   └── [0..n] (string)
+                └── createdAt (string, ISO datetime)
+```
 
-## 4. Skrypt Node.js do utworzenia struktury
-Dla modułu `Audio` zalecany skrypt: `config/init-firestore-structure.js`.
+## 3) Pełny skrypt Node.js (do skopiowania)
+Zapisz poniższy kod jako np. `Audio/config/init-firestore-structure.js`:
 
-Uruchomienie:
-1. `npm i firebase-admin`
-2. Ustaw konto serwisowe: `GOOGLE_APPLICATION_CREDENTIALS`.
-3. Uruchom: `node Audio/config/init-firestore-structure.js` (jeżeli skrypt istnieje lokalnie).
-4. Sprawdź log `[OK]` i zweryfikuj dokument `audio/favorites` w Firestore.
+```js
+/**
+ * Audio Firestore initializer
+ * Tworzy dokument: audio/favorites
+ */
 
-## 5. Co przekazać nowej osobie
-- Treść `config/firebase-config.js` z jej własnego projektu.
-- Informację, że struktura musi mieć ścieżkę `audio/favorites` i pola `favorites.lists[], mainView.itemIds[], aliases, updatedAt`.
-- Informację, gdzie w module wykonać test zapisu/odczytu po podpięciu Firebase.
+const admin = require("firebase-admin");
+
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.error("[ERR] Ustaw GOOGLE_APPLICATION_CREDENTIALS na ścieżkę do klucza konta serwisowego JSON.");
+  process.exit(1);
+}
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault()
+});
+
+const db = admin.firestore();
+
+const payload = {
+  updatedAt: new Date().toISOString(),
+  aliases: {},
+  mainView: {
+    itemIds: []
+  },
+  favorites: {
+    lists: []
+  }
+};
+
+async function main() {
+  const ref = db.collection("audio").doc("favorites");
+  await ref.set(payload, { merge: true });
+  console.log("[OK] Utworzono / zaktualizowano dokument audio/favorites");
+}
+
+main().catch((err) => {
+  console.error("[ERR] Błąd inicjalizacji:", err);
+  process.exit(1);
+});
+```
+
+## 4) Jak uruchomić skrypt
+1. Przejdź do katalogu repozytorium.
+2. Zainstaluj zależność:
+   ```bash
+   npm i firebase-admin
+   ```
+3. Ustaw zmienną środowiskową (podaj własną ścieżkę):
+   ```bash
+   export GOOGLE_APPLICATION_CREDENTIALS="/pełna/ścieżka/do/service-account.json"
+   ```
+4. Uruchom:
+   ```bash
+   node Audio/config/init-firestore-structure.js
+   ```
+5. Otwórz Firestore i sprawdź dokument `audio/favorites`.
 
 ---
 
 # 🇬🇧 Firebase guide for `Audio` module (EN)
 
-## 1. Where to copy data for `config/firebase-config.js`
-1. Firebase Console → select project.
-2. **Project settings** → **Your apps** → Web app (`</>`).
-3. Copy from `Firebase SDK snippet (Config)`: `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
-4. Paste into `Audio/config/firebase-config.js` as `window.firebaseConfig`.
+## Purpose
+This file includes a full copy-paste Node.js script that creates the required Firestore document for `Audio`.
 
-## 2. Expected Firestore structure
-- Main path: `audio/favorites`.
-- Key fields: `favorites.lists[], mainView.itemIds[], aliases, updatedAt`.
-- Structure must match module UI save/load behavior.
+## 1) Firebase Web config (`config/firebase-config.js`)
+1. Open Firebase Console → **Project settings** → **Your apps** → Web app (`</>`).
+2. Copy `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
+3. Paste into `Audio/config/firebase-config.js` as `window.firebaseConfig`.
 
-## 3. Exact database creation flow
-1. Firebase Console → **Build → Firestore Database**.
-2. If missing: **Create database** and choose mode/region.
-3. Create collection/document for `audio/favorites`.
-4. Add required fields.
-5. Configure Firestore **Rules** for required reads/writes.
+## 2) Firestore structure (tree + field types)
+```text
+audio (collection)
+└── favorites (document)
+    ├── updatedAt (string, ISO datetime)
+    ├── aliases (map / object)
+    │   └── <itemId> (string) -> <aliasText> (string)
+    ├── mainView (map / object)
+    │   └── itemIds (array of strings)
+    │       └── [0..n] (string)
+    └── favorites (map / object)
+        └── lists (array of objects)
+            └── [0..n] (object)
+                ├── id (string)
+                ├── name (string)
+                ├── itemIds (array of strings)
+                │   └── [0..n] (string)
+                └── createdAt (string, ISO datetime)
+```
 
-## 4. Node.js bootstrap script
-Recommended script for `Audio`: `config/init-firestore-structure.js`.
+## 3) Full Node.js script (copy-paste)
+Save as `Audio/config/init-firestore-structure.js`:
 
-Run steps:
-1. `npm i firebase-admin`
-2. Set service account via `GOOGLE_APPLICATION_CREDENTIALS`.
-3. Run: `node Audio/config/init-firestore-structure.js` (if script exists locally).
-4. Verify `[OK]` output and check `audio/favorites` in Firestore.
+```js
+const admin = require("firebase-admin");
 
-## 5. Handover checklist for another person
-- Their own `config/firebase-config.js` values.
-- Required path `audio/favorites` and fields `favorites.lists[], mainView.itemIds[], aliases, updatedAt`.
-- A module-level smoke test for read/write after setup.
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.error("[ERR] Set GOOGLE_APPLICATION_CREDENTIALS to your service account JSON path.");
+  process.exit(1);
+}
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault()
+});
+
+const db = admin.firestore();
+
+const payload = {
+  updatedAt: new Date().toISOString(),
+  aliases: {},
+  mainView: { itemIds: [] },
+  favorites: { lists: [] }
+};
+
+async function main() {
+  const ref = db.collection("audio").doc("favorites");
+  await ref.set(payload, { merge: true });
+  console.log("[OK] Created / updated audio/favorites");
+}
+
+main().catch((err) => {
+  console.error("[ERR] Initialization failed:", err);
+  process.exit(1);
+});
+```
+
+## 4) How to run
+```bash
+npm i firebase-admin
+export GOOGLE_APPLICATION_CREDENTIALS="/full/path/to/service-account.json"
+node Audio/config/init-firestore-structure.js
+```
+Then verify `audio/favorites` in Firestore.
