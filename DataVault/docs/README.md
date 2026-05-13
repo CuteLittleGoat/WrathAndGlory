@@ -121,6 +121,28 @@ This is the update map for adding another language (for example FR/DE):
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
 
+
+
+## 🇵🇱 Wymagania dla pliku wsadowego XLSX
+- Plik wejściowy **musi mieć nazwę `Repozytorium.xlsx`** i znajdować się w folderze `DataVault` (obok `index.html`).
+- W praktyce używane są zakładki widoczne w interfejsie DataVault (np. `Bronie`, `Archetypy`, `Bestiariusz`, `Skrót Zasad`, `Pakiety Wyniesienia`). Brak zakładki oznacza brak tej tabeli w aplikacji.
+- Każda zakładka powinna zachować stałe nazwy kolumn. Najważniejsze kolumny wspólne dla wielu zakładek to m.in. `Nazwa`, `Opis`, `Podręcznik`, `Strona`, `Słowa Kluczowe`.
+- Kolorowanie i styl tekstu są czytane z formatowania komórek (rich text):
+  - czerwony tekst -> podświetlenie czerwone w aplikacji,
+  - pogrubienie/kursywa/przekreślenie -> zachowane 1:1 w aplikacji.
+- Odnośniki stron w nawiasach (np. `(str. 123)`, `(strona 45)`, `(page 88)`, `(p. 12)`) są automatycznie wyświetlane jaśniejszym kolorem.
+- W kolumnach `Słowa Kluczowe` obowiązują dodatkowe reguły renderowania (np. neutralny przecinek, wyjątek dla `Pakiety Wyniesienia`), opisane szczegółowo w `docs/ZasadyFormatowania.md`.
+
+## 🇬🇧 XLSX batch-file requirements
+- The input file **must be named `Repozytorium.xlsx`** and placed in the `DataVault` folder (next to `index.html`).
+- In practice, DataVault uses worksheet tabs that are visible in the UI (for example: `Bronie`, `Archetypy`, `Bestiariusz`, `Skrót Zasad`, `Pakiety Wyniesienia`). If a tab is missing, that table is missing in the app.
+- Each tab should keep stable column names. Key columns reused across many tabs include `Nazwa`, `Opis`, `Podręcznik`, `Strona`, and `Słowa Kluczowe`.
+- Text colors/styles are read from cell formatting (rich text):
+  - red text -> red highlight in the app,
+  - bold/italic/strikethrough -> preserved 1:1 in the app.
+- Page references in parentheses (for example `(str. 123)`, `(strona 45)`, `(page 88)`, `(p. 12)`) are automatically shown in a lighter color.
+- `Słowa Kluczowe` columns use extra rendering rules (for example neutral commas and the `Pakiety Wyniesienia` exception), documented in detail in `docs/ZasadyFormatowania.md`.
+
 ## Aktualne źródło danych / Current data source
 PL: Kliknij **Generuj pliki danych**, aby wskazać lokalny plik `Repozytorium.xlsx`. Aplikacja wygeneruje `data.json` (backup) oraz `firebase-import.json` (tylko ten plik importuj do Firebase RTDB `/datavault/live`).
 EN: Click **Generate data files** to choose a local `Repozytorium.xlsx` file. The app generates `data.json` (backup) and `firebase-import.json` (import only this file into Firebase RTDB at `/datavault/live`).
