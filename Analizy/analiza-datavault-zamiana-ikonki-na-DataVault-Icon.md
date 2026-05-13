@@ -95,3 +95,75 @@ Zmiana jest wyłącznie kosmetyczna i dotyczy warstwy prezentacji nagłówka.
 
 ## Następne kroki
 - Jeśli zatwierdzasz analizę, kolejnym krokiem będzie implementacja zgodnie z powyższym planem (HTML+CSS), testy UI i aktualizacja dokumentacji modułu.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/index.html`
+Lokalizacja: sekcja nagłówka `.topbar` → `.brand` → `.sigil`.
+
+Było:
+```html
+<div class="sigil">⟦⟧</div>
+```
+
+Jest:
+```html
+<div class="sigil">
+  <img class="sigilIcon" src="Icon.png" alt="DataVault" width="32" height="32" decoding="async" loading="eager">
+</div>
+```
+
+Opis zmiany:
+- Zastąpiono tekstową ikonkę `⟦⟧` obrazem `Icon.png` z jawnymi wymiarami, aby utrzymać stabilny layout przy ładowaniu.
+
+### Plik: `DataVault/style.css`
+Lokalizacja: definicje `.sigil` oraz nowy blok `.sigilIcon`.
+
+Było:
+```css
+.sigil{
+  width:44px; height:44px; display:grid; place-items:center;
+  border:1px solid var(--b);
+  background:rgba(22,198,12,.04);
+  box-shadow: inset 0 0 0 1px rgba(22,198,12,.08);
+}
+```
+
+Jest:
+```css
+.sigil{
+  width:44px; height:44px; display:grid; place-items:center;
+  border:1px solid var(--b);
+  background:rgba(22,198,12,.04);
+  box-shadow: inset 0 0 0 1px rgba(22,198,12,.08);
+  overflow:hidden;
+}
+.sigilIcon{
+  width:32px;
+  height:32px;
+  display:block;
+  object-fit:contain;
+}
+```
+
+Opis zmiany:
+- Dodano styl gwarantujący stały rozmiar pola i ikony, eliminując „skakanie” elementów w nagłówku.
+
+### Plik: `DataVault/docs/README.md`
+Lokalizacja: sekcja „Co znajdziesz na ekranie” (PL) i „What you get on screen” (EN).
+
+Opis zmiany:
+- Dodano opis zachowania ikony DataVault w stałym polu 44×44 px dla użytkownika końcowego.
+
+### Plik: `DataVault/docs/Documentation.md`
+Lokalizacja: sekcja struktury UI (`.sigil`, `.sigilIcon`) oraz sekcja layoutu (`.topbar`).
+
+Opis zmiany:
+- Zaktualizowano dokumentację techniczną o nową implementację ikony i mechanizm stabilizacji layoutu.
+
+### Plik: `DetaleLayout.md`
+Lokalizacja: moduł DataVault, podsekcja „Ikona nagłówka DataVault (stabilność layoutu)”.
+
+Opis zmiany:
+- Dodano szczegóły dotyczące wymiarów kontenera ikony, obrazu i ograniczenia CLS.

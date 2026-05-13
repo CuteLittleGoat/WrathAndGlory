@@ -170,6 +170,11 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
 
+### 2.4 Ikona nagłówka DataVault (stabilność layoutu)
+- W bloku `.brand` w `.topbar` używany jest stały kontener `.sigil` o rozmiarze `44px × 44px` z zielonym tłem i obramowaniem.
+- Wewnątrz renderowany jest obraz `.sigilIcon` (`DataVault/Icon.png`) o stałym rozmiarze `32px × 32px`, `display: block`, `object-fit: contain`.
+- Kontener ma `overflow: hidden`, a znacznik `<img>` zawiera jawne `width` i `height`, co ogranicza skoki interfejsu podczas ładowania zasobu.
+
 ### 3) Zasady formatowania tekstu i wyjątki
 - We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, lewo, standardowe łamanie, brak max-width).
 - Wartości kolumny `Strona` mają kolor `--code` (`#D2FAD2`), taki sam jak referencje `(str.)` (`.ref`).

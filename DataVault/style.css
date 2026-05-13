@@ -59,6 +59,14 @@ code{color:var(--code)}
   border:1px solid var(--b);
   background:rgba(22,198,12,.04);
   box-shadow: inset 0 0 0 1px rgba(22,198,12,.08);
+  overflow:hidden;
+}
+/* Ikona DataVault ma stałe wymiary, aby nie powodować skoków interfejsu / DataVault icon keeps fixed dimensions to avoid interface shifts */
+.sigilIcon{
+  width:32px;
+  height:32px;
+  display:block;
+  object-fit:contain;
 }
 .title{
   text-transform:uppercase;
