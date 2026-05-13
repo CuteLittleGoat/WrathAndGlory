@@ -1370,3 +1370,59 @@ Było:
 
 Jest:
 - dodano komentarz PL/EN wskazujący, że należy usunąć klasę `language-switcher--hidden`, aby przełącznik był widoczny.
+
+## 13. Wynik porównania JSON po poprawkach Cleanup (2026-05-13)
+
+### Oryginalny prompt użytkownika (pełny)
+
+Przeczytaj plik Analizy/Cleanup.md
+Masz w nim odnośniki do testowych plików json i wzorcowego pliku xlsx (wszystkie pliki znajdują się w folderze Analizy).
+Po poprawkach związanych z Cleanup jeszcze raz przygotuj nowe pliki json ze wzorcowego pliku xlsx i porównaj nowo utworzone pliki z tymi, które były utworzone przed zmianami związanymi z Cleanup.
+Wyniki porównania dopisz do analizy Analizy/Cleanup.md
+
+### Zakres wykonanych czynności
+
+1. Wygenerowano nowy plik JSON ze wzorcowego pliku `Analizy/Repozytorium.xlsx` przez generator referencyjny:
+   - `python3 DataVault/build_json.py Analizy/Repozytorium.xlsx Analizy/data.cleanup-new.json`
+2. Porównano nowy plik z plikami referencyjnymi wskazanymi w folderze `Analizy`:
+   - `Analizy/data.json`
+   - `Analizy/data.reference.json`
+   - `Analizy/data.from-firebase-import.json`
+3. Dla różnic względem `Analizy/data.json` wykonano dodatkowy diff strukturalny (rekurencyjny po JSON).
+
+### Wyniki porównania
+
+- `Analizy/data.cleanup-new.json` == `Analizy/data.reference.json` (zgodność 1:1).
+- `Analizy/data.cleanup-new.json` == `Analizy/data.from-firebase-import.json` (zgodność 1:1).
+- `Analizy/data.cleanup-new.json` != `Analizy/data.json`.
+
+Liczba wykrytych różnic względem `Analizy/data.json`: **34**.
+
+Najważniejsze grupy różnic:
+
+1. **Kolejność pozycji w `_meta.sheetOrder`**
+   - zamiana kolejności pozycji `Hordy` i `Specjalne Bonusy Wrogów`.
+
+2. **Różnice w znakach diakrytycznych i transliteracji w treściach tekstowych**
+   - przykłady: `Ż` vs `Z`, `ę` vs `e`, `ń` vs `n` w polach tekstowych (np. `Słowa Kluczowe`, `Umiejętności Archetypu`).
+
+3. **Brak różnic typu „zmiana struktury modelu danych”**
+   - top-level klucze są zgodne;
+   - różnice dotyczą głównie treści tekstowych i pojedynczej różnicy kolejności w metadanych arkuszy.
+
+### Wnioski
+
+- Po poprawkach Cleanup wynik nowego generowania jest zgodny z plikami referencyjnymi używanymi do weryfikacji (`data.reference.json` oraz `data.from-firebase-import.json`).
+- Rozbieżność dotyczy starszego `Analizy/data.json`, który reprezentuje inny wariant serializacji treści (m.in. diakrytyki i kolejność elementów `sheetOrder`).
+- Na potrzeby testu regresyjnego po Cleanup można uznać, że aktualna ścieżka generowania referencyjnego jest spójna z referencją i wariantem odtworzonym z `firebase-import`.
+
+### Ryzyka
+
+- Jeżeli `Analizy/data.json` było wcześniej traktowane jako główny punkt odniesienia, trzeba jednoznacznie ustalić, czy pozostaje plikiem historycznym, czy ma zostać zaktualizowane do aktualnej referencji.
+- Przy dalszym cleanupie `DataVault` należy utrzymać porównania 3-ścieżkowe (generator Python, generator przeglądarkowy, wariant z `firebase-import`) dla każdego istotnego zestawu danych.
+
+### Rekomendowane następne kroki
+
+1. Oznaczyć rolę pliku `Analizy/data.json` (historyczny vs aktywna referencja).
+2. Zachować `Analizy/data.reference.json` jako bazę porównawczą dla kolejnych testów regresji po cleanupie.
+3. Przy każdej zmianie parsera/generatora powtarzać identyczny test i dopisywać wynik do tej analizy.
