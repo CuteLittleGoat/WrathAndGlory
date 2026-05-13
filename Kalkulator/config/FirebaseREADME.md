@@ -1,69 +1,161 @@
 # 🇵🇱 Instrukcja Firebase dla modułu `Kalkulator` (PL)
 
-## 1. Skąd skopiować dane do `config/firebase-config.js`
-1. Firebase Console → wybierz projekt.
-2. **Project settings** → **Your apps** → aplikacja Web (`</>`).
-3. Skopiuj z `Firebase SDK snippet (Config)` wartości: `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
-4. Wklej je do `Kalkulator/config/firebase-config.js` jako `window.firebaseConfig`.
+## Cel
+Ten plik zawiera pełny skrypt Node.js do utworzenia dokumentu `character_builder/current` wraz z kompletną strukturą pól.
 
-## 2. Oczekiwana struktura Firestore
-- Ścieżka główna: `character_builder/current`.
-- Najważniejsze pola: `schemaVersion, xpPool/xpSpent/xpAvailable, attributes, skills, talents, formSnapshot`.
-- Struktura musi być zgodna z logiką modułu (zapisy/odczyty przycisków UI).
+## 1) Konfiguracja `config/firebase-config.js`
+Skopiuj dane z Firebase Console → **Project settings** → **Your apps** → Web app (`</>`), a następnie wklej do `Kalkulator/config/firebase-config.js` jako `window.firebaseConfig`.
 
-## 3. Jak utworzyć bazę krok po kroku
-1. Firebase Console → **Build → Firestore Database**.
-2. Jeśli brak bazy: **Create database** → wybierz tryb i region.
-3. Utwórz kolekcję i dokument zgodnie ze ścieżką `character_builder/current`.
-4. Dodaj wymagane pola.
-5. Ustaw **Rules** tak, aby moduł miał potrzebny odczyt/zapis.
+## 2) Struktura Firestore (drzewko + typy)
+```text
+character_builder (kolekcja)
+└── current (dokument)
+    ├── schemaVersion (string)
+    ├── updatedAt (string, ISO datetime)
+    ├── xpPool (number)
+    ├── xpSpent (number)
+    ├── xpAvailable (number)
+    ├── attributes (mapa / obiekt)
+    │   └── <attributeName> (string) -> <value> (number)
+    ├── skills (mapa / obiekt)
+    │   └── <skillName> (string) -> <value> (number)
+    ├── talents (tablica obiektów)
+    │   └── [0..n] (obiekt)
+    │       ├── id (string)
+    │       ├── name (string)
+    │       └── rank (number)
+    └── formSnapshot (mapa / obiekt)
+        ├── archetype (string)
+        ├── species (string)
+        └── notes (string)
+```
 
-## 4. Skrypt Node.js do utworzenia struktury
-Dla modułu `Kalkulator` zalecany skrypt: `config/init-firestore-character-builder.js`.
+## 3) Pełny skrypt Node.js (do skopiowania)
+Zapisz jako `Kalkulator/config/init-firestore-character-builder.js`:
 
-Uruchomienie:
-1. `npm i firebase-admin`
-2. Ustaw konto serwisowe: `GOOGLE_APPLICATION_CREDENTIALS`.
-3. Uruchom: `node Kalkulator/config/init-firestore-character-builder.js` (jeżeli skrypt istnieje lokalnie).
-4. Sprawdź log `[OK]` i zweryfikuj dokument `character_builder/current` w Firestore.
+```js
+const admin = require("firebase-admin");
 
-## 5. Co przekazać nowej osobie
-- Treść `config/firebase-config.js` z jej własnego projektu.
-- Informację, że struktura musi mieć ścieżkę `character_builder/current` i pola `schemaVersion, xpPool/xpSpent/xpAvailable, attributes, skills, talents, formSnapshot`.
-- Informację, gdzie w module wykonać test zapisu/odczytu po podpięciu Firebase.
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.error("[ERR] Ustaw GOOGLE_APPLICATION_CREDENTIALS na ścieżkę do pliku JSON konta serwisowego.");
+  process.exit(1);
+}
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault()
+});
+
+const db = admin.firestore();
+
+const payload = {
+  schemaVersion: "character-builder-v1",
+  updatedAt: new Date().toISOString(),
+  xpPool: 0,
+  xpSpent: 0,
+  xpAvailable: 0,
+  attributes: {},
+  skills: {},
+  talents: [],
+  formSnapshot: {
+    archetype: "",
+    species: "",
+    notes: ""
+  }
+};
+
+async function main() {
+  const ref = db.collection("character_builder").doc("current");
+  await ref.set(payload, { merge: true });
+  console.log("[OK] Utworzono / zaktualizowano dokument character_builder/current");
+}
+
+main().catch((err) => {
+  console.error("[ERR] Błąd inicjalizacji:", err);
+  process.exit(1);
+});
+```
+
+## 4) Uruchomienie
+```bash
+npm i firebase-admin
+export GOOGLE_APPLICATION_CREDENTIALS="/pełna/ścieżka/do/service-account.json"
+node Kalkulator/config/init-firestore-character-builder.js
+```
 
 ---
 
 # 🇬🇧 Firebase guide for `Kalkulator` module (EN)
 
-## 1. Where to copy data for `config/firebase-config.js`
-1. Firebase Console → select project.
-2. **Project settings** → **Your apps** → Web app (`</>`).
-3. Copy from `Firebase SDK snippet (Config)`: `apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`.
-4. Paste into `Kalkulator/config/firebase-config.js` as `window.firebaseConfig`.
+## Purpose
+This file contains a full Node.js script to create `character_builder/current` with the complete field structure.
 
-## 2. Expected Firestore structure
-- Main path: `character_builder/current`.
-- Key fields: `schemaVersion, xpPool/xpSpent/xpAvailable, attributes, skills, talents, formSnapshot`.
-- Structure must match module UI save/load behavior.
+## 1) `config/firebase-config.js`
+Copy web config values from Firebase Console and paste them into `Kalkulator/config/firebase-config.js` as `window.firebaseConfig`.
 
-## 3. Exact database creation flow
-1. Firebase Console → **Build → Firestore Database**.
-2. If missing: **Create database** and choose mode/region.
-3. Create collection/document for `character_builder/current`.
-4. Add required fields.
-5. Configure Firestore **Rules** for required reads/writes.
+## 2) Firestore structure (tree + types)
+```text
+character_builder (collection)
+└── current (document)
+    ├── schemaVersion (string)
+    ├── updatedAt (string, ISO datetime)
+    ├── xpPool (number)
+    ├── xpSpent (number)
+    ├── xpAvailable (number)
+    ├── attributes (map / object)
+    │   └── <attributeName> (string) -> <value> (number)
+    ├── skills (map / object)
+    │   └── <skillName> (string) -> <value> (number)
+    ├── talents (array of objects)
+    │   └── [0..n] (object: id/name/rank)
+    └── formSnapshot (map / object)
+        ├── archetype (string)
+        ├── species (string)
+        └── notes (string)
+```
 
-## 4. Node.js bootstrap script
-Recommended script for `Kalkulator`: `config/init-firestore-character-builder.js`.
+## 3) Full Node.js script (copy-paste)
+Save as `Kalkulator/config/init-firestore-character-builder.js`:
 
-Run steps:
-1. `npm i firebase-admin`
-2. Set service account via `GOOGLE_APPLICATION_CREDENTIALS`.
-3. Run: `node Kalkulator/config/init-firestore-character-builder.js` (if script exists locally).
-4. Verify `[OK]` output and check `character_builder/current` in Firestore.
+```js
+const admin = require("firebase-admin");
 
-## 5. Handover checklist for another person
-- Their own `config/firebase-config.js` values.
-- Required path `character_builder/current` and fields `schemaVersion, xpPool/xpSpent/xpAvailable, attributes, skills, talents, formSnapshot`.
-- A module-level smoke test for read/write after setup.
+if (!process.env.GOOGLE_APPLICATION_CREDENTIALS) {
+  console.error("[ERR] Set GOOGLE_APPLICATION_CREDENTIALS to your service account JSON path.");
+  process.exit(1);
+}
+
+admin.initializeApp({
+  credential: admin.credential.applicationDefault()
+});
+
+const db = admin.firestore();
+
+const payload = {
+  schemaVersion: "character-builder-v1",
+  updatedAt: new Date().toISOString(),
+  xpPool: 0,
+  xpSpent: 0,
+  xpAvailable: 0,
+  attributes: {},
+  skills: {},
+  talents: [],
+  formSnapshot: { archetype: "", species: "", notes: "" }
+};
+
+async function main() {
+  await db.collection("character_builder").doc("current").set(payload, { merge: true });
+  console.log("[OK] Created / updated character_builder/current");
+}
+
+main().catch((err) => {
+  console.error("[ERR] Initialization failed:", err);
+  process.exit(1);
+});
+```
+
+## 4) Run
+```bash
+npm i firebase-admin
+export GOOGLE_APPLICATION_CREDENTIALS="/full/path/to/service-account.json"
+node Kalkulator/config/init-firestore-character-builder.js
+```
