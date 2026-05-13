@@ -1426,3 +1426,45 @@ Najważniejsze grupy różnic:
 1. Oznaczyć rolę pliku `Analizy/data.json` (historyczny vs aktywna referencja).
 2. Zachować `Analizy/data.reference.json` jako bazę porównawczą dla kolejnych testów regresji po cleanupie.
 3. Przy każdej zmianie parsera/generatora powtarzać identyczny test i dopisywać wynik do tej analizy.
+
+
+## 15. Weryfikacja funkcji `sheet_to_records(ws)` (2026-05-13)
+
+### Oryginalny prompt użytkownika (pełny)
+
+Przeczytaj plik Analizy/Cleanup.md. Sprawdź czy w kodzie istnieje funkcja sheet_to_records(ws) oraz czy jest gdzieś używana. Sprawdź czy jest zbędna i czy można ją usunąć.
+Dopisz wnioski do pliku Analizy/Cleanup.md
+
+### Zakres analizy
+
+- Sprawdzono aktualny stan kodu w repozytorium pod kątem definicji i użyć `sheet_to_records(ws)`.
+- Zweryfikowano wyniki wyszukiwania tekstowego w całym repozytorium.
+
+### Użyte polecenia
+
+1. `rg "sheet_to_records\s*\(" -n`
+
+### Wyniki
+
+1. Funkcja **istnieje** w pliku:
+   - `DataVault/build_json.py` (definicja: `def sheet_to_records(ws):`).
+
+2. W kodzie aplikacyjnym nie znaleziono żadnego wywołania tej funkcji.
+   - Wystąpienia poza definicją pochodzą z pliku analitycznego `Analizy/Cleanup.md` (opisy i rekomendacje), a nie z kodu wykonywalnego.
+
+3. Aktualna ścieżka budowania danych w `DataVault/build_json.py` opiera się na parserze minimalnym XLSX (`load_xlsx_minimal(...)`) i dalszym przetwarzaniu rekordów przez `merge_range(...)` / `merge_traits(...)`, bez użycia obiektu arkusza `ws.iter_rows(...)`.
+
+### Wnioski
+
+- `sheet_to_records(ws)` jest obecnie funkcją osieroconą (martwy kod) i można ją usunąć bez wpływu na aktualną ścieżkę generowania JSON, **o ile** po usunięciu zostanie wykonany test regresyjny generowania danych z `Repozytorium.xlsx`.
+- Samo pozostawienie funkcji nie wpływa na wynik działania, ale utrudnia utrzymanie kodu, bo sugeruje istnienie alternatywnej ścieżki (openpyxl/worksheet), która nie jest używana.
+
+### Ryzyka
+
+- Niskie, jeśli po usunięciu funkcji zostanie uruchomiony test porównawczy JSON (ścieżka Python vs referencja).
+
+### Rekomendowane następne kroki
+
+1. Usunąć `sheet_to_records(ws)` z `DataVault/build_json.py`.
+2. Wykonać test generowania JSON i porównanie z referencją (`Analizy/data.reference.json`).
+3. Zachować ten wpis w `Analizy/Cleanup.md` jako potwierdzenie decyzji cleanupowej.
