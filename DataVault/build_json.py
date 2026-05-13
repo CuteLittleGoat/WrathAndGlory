@@ -99,14 +99,6 @@ def _rich_text_to_string(el, ns):
     parts.append(_wrap_with_markers(text, red=red, bold=bold, italic=italic, strike=strike))
   return "".join(parts), True
 
-def sheet_to_records(ws):
-  # first row is header
-  rows = list(ws.iter_rows(values_only=True))
-  if not rows: return []
-  header = [norm(h) for h in rows[0]]
-  return rows_to_records(header, rows[1:])
-
-
 def rows_to_records(header, rows):
   out = []
   for r in rows:

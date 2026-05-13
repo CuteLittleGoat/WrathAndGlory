@@ -1019,3 +1019,9 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
 ## Okno dostępu do danych prywatnych (K.O.Z.A.)
 - Warstwa UI (`#accessGate`) używa nowych tekstów PL/EN zgodnie z motywem K.O.Z.A.: tytuł, opis, etykieta hasła i CTA zostały podmienione na warianty „Litanii Dostępu” i „Rytuału Uwierzytelnienia”.
 - Logika komunikatów błędów pochodzi ze wspólnego pliku `shared/firebase-data-loader.js`, więc DataVault i GeneratorNPC wyświetlają identyczne, zaktualizowane komunikaty o błędach (walidacja hasła, limity prób, błędy konfiguracji Firebase, brak danych, uszkodzone dane).
+
+## Aktualizacja techniczna: `build_json.py` (PL)
+Usunięto nieużywaną funkcję `sheet_to_records(ws)`. Aktualna i aktywna ścieżka generowania rekordów w `build_json.py` opiera się na parserze minimalnym XLSX (`load_xlsx_minimal(...)`) i konwersji przez `rows_to_records(...)`, a następnie na transformacjach `merge_range(...)` i `merge_traits(...)`.
+
+## Technical update: `build_json.py` (EN)
+The unused `sheet_to_records(ws)` function was removed. The current active record-generation flow in `build_json.py` is based on the minimal XLSX parser (`load_xlsx_minimal(...)`) and conversion through `rows_to_records(...)`, followed by `merge_range(...)` and `merge_traits(...)` transformations.
