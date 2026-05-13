@@ -523,3 +523,9 @@ Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować pu
 ## Bramka dostępu prywatnych danych — aktualne teksty
 - W `index.html` podmieniono wszystkie słowniki i18n oraz statyczny fallback HTML bramki `#accessGate` na teksty K.O.Z.A. (PL/EN).
 - `GeneratorNPC` nadal korzysta ze wspólnego `shared/firebase-data-loader.js` dla błędów autoryzacji i odczytu, ale teraz zwracane komunikaty mają pełne brzmienie „Duch Maszyny / Machine Spirit” dla wszystkich znanych kodów błędów.
+
+## 🇵🇱 Układ techniczny bramki hasła (Litania Dostępu)
+Formularz `#accessForm` używa teraz kontenera `.accessGate__credentials` opartego o CSS Grid (2 kolumny). Lewa kolumna zawiera etykietę `.accessGate__label`, prawa kolumna zawiera `#accessPassword` (`.accessGate__password`) i przycisk `.accessGate__submit` w drugim wierszu. W breakpoint `max-width: 640px` układ przechodzi do jednej kolumny.
+
+## 🇬🇧 Technical password-gate layout (Litany of Access)
+The `#accessForm` now uses a `.accessGate__credentials` container based on a 2-column CSS Grid. The left column contains `.accessGate__label`, while the right column contains `#accessPassword` (`.accessGate__password`) and `.accessGate__submit` in the second row. At `max-width: 640px`, the layout switches to a single-column flow.

@@ -1054,3 +1054,9 @@ Usunięto nieużywaną funkcję `sheet_to_records(ws)`. Aktualna i aktywna ście
 
 ## Technical update: `build_json.py` (EN)
 The unused `sheet_to_records(ws)` function was removed. The current active record-generation flow in `build_json.py` is based on the minimal XLSX parser (`load_xlsx_minimal(...)`) and conversion through `rows_to_records(...)`, followed by `merge_range(...)` and `merge_traits(...)` transformations.
+
+## 🇵🇱 Układ techniczny bramki hasła (Litania Dostępu)
+Formularz `#accessForm` używa teraz kontenera `.accessGate__credentials` opartego o CSS Grid (2 kolumny). Lewa kolumna zawiera etykietę `.accessGate__label`, prawa kolumna zawiera `#accessPassword` (`.accessGate__password`) i przycisk `.accessGate__submit` w drugim wierszu. W breakpoint `max-width: 640px` układ przechodzi do jednej kolumny.
+
+## 🇬🇧 Technical password-gate layout (Litany of Access)
+The `#accessForm` now uses a `.accessGate__credentials` container based on a 2-column CSS Grid. The left column contains `.accessGate__label`, while the right column contains `#accessPassword` (`.accessGate__password`) and `.accessGate__submit` in the second row. At `max-width: 640px`, the layout switches to a single-column flow.

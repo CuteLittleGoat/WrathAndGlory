@@ -86,3 +86,44 @@ Obecna logika autoryzacji w `DataVault/app.js` i `GeneratorNPC/index.html` nie w
 - Krok 2: Wdrożyć HTML/CSS w obu modułach + `shared/access-gate.css`.
 - Krok 3: Zaktualizować dokumentacje modułów (`docs/README.md`, `docs/Documentation.md`) zgodnie z zasadami repo.
 - Krok 4: Wykonać test wizualny obu modułów i potwierdzić identyczny efekt.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/index.html`
+Lokalizacja: sekcja `#accessGate` → `#accessForm`
+
+Było:
+```html
+<form id="accessForm"><label class="field"><span data-i18n="accessPasswordLabel">Litania Dostępu</span><input id="accessPassword" type="password" autocomplete="current-password"></label><button class="btn primary" type="submit" data-i18n="accessUnlockButton">Rozpocznij Rytuał</button></form>
+```
+
+Jest:
+```html
+<form id="accessForm"><div class="accessGate__credentials"><label class="field accessGate__label" for="accessPassword"><span data-i18n="accessPasswordLabel">Litania Dostępu</span></label><input id="accessPassword" class="accessGate__password" type="password" autocomplete="current-password"><button class="btn primary accessGate__submit" type="submit" data-i18n="accessUnlockButton">Rozpocznij Rytuał</button></div></form>
+```
+
+### Plik: `GeneratorNPC/index.html`
+Lokalizacja: sekcja `#accessGate` → `#accessForm` (oba wystąpienia markupu w pliku)
+
+Było:
+```html
+<form id="accessForm"><label class="field"><span data-i18n="accessPasswordLabel">Litania Dostępu</span><input id="accessPassword" type="password" autocomplete="current-password"></label><button class="btn primary" type="submit" data-i18n="accessUnlockButton">Rozpocznij Rytuał</button></form>
+```
+
+Jest:
+```html
+<form id="accessForm"><div class="accessGate__credentials"><label class="field accessGate__label" for="accessPassword"><span data-i18n="accessPasswordLabel">Litania Dostępu</span></label><input id="accessPassword" class="accessGate__password" type="password" autocomplete="current-password"><button class="btn primary accessGate__submit" type="submit" data-i18n="accessUnlockButton">Rozpocznij Rytuał</button></div></form>
+```
+
+### Plik: `shared/access-gate.css`
+Lokalizacja: nowe reguły `.accessGate__credentials`, `.accessGate__label`, `.accessGate__password`, `.accessGate__submit` + media query `@media (max-width:640px)`
+
+Było:
+```css
+Brak dedykowanego układu 2-kolumnowego dla etykiety/pola/przycisku.
+```
+
+Jest:
+```css
+Dodany układ CSS Grid wymuszający: etykieta po lewej, pole po prawej, przycisk pod polem po prawej oraz fallback mobilny.
+```
