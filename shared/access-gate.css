@@ -19,6 +19,9 @@
 /* --- Mobilny fallback: układ jednokolumnowy z czytelną kolejnością / Mobile fallback: single-column flow with readable order --- */
 @media (max-width:640px){
   .accessGate__credentials{grid-template-columns:1fr;row-gap:10px;}
+  /* --- Jawna kolejność wierszy mobilnych zapobiega nakładaniu etykiety przez pole hasła / Explicit mobile row order prevents label overlap by the password field --- */
   .accessGate__label,.accessGate__password,.accessGate__submit{grid-column:1;justify-self:stretch;}
-  .accessGate__submit{justify-self:end;}
+  .accessGate__label{grid-row:1;}
+  .accessGate__password{grid-row:2;}
+  .accessGate__submit{grid-row:3;justify-self:end;}
 }

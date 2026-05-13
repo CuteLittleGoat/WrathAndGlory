@@ -194,7 +194,7 @@ Skrypt `DataVault/build_json.py` został uproszczony do aktualnie używanej ści
 The `DataVault/build_json.py` script has been simplified to the currently used XLSX parsing path (ZIP/XML). This does not change end-user behavior: the **Generate data files** button still produces the current working files according to the active DataVault logic.
 
 ## 🇵🇱 Układ pola „Litania Dostępu”
-W oknie dostępu etykieta **„Litania Dostępu”** jest ustawiona po lewej stronie, a pole hasła po prawej. Przycisk **„Rozpocznij Rytuał”** znajduje się pod polem hasła, po prawej stronie. Na wąskich ekranach (telefon) elementy przechodzą do układu pionowego: etykieta nad polem, a przycisk pod nim.
+W oknie dostępu etykieta **„Litania Dostępu”** jest ustawiona po lewej stronie, a pole hasła po prawej. Przycisk **„Rozpocznij Rytuał”** znajduje się pod polem hasła, po prawej stronie. Na wąskich ekranach (telefon) elementy mają wymuszoną kolejność pionową: wiersz 1 etykieta, wiersz 2 pole hasła, wiersz 3 przycisk, a komunikat błędu pozostaje pod formularzem.
 
 ## 🇬🇧 “Litany of Access” field layout
-In the access window, the **“Litany of Access”** label is positioned on the left, while the password field is on the right. The **“Begin Rite”** button is placed below the password field on the right side. On narrow screens (mobile), the layout switches to a vertical flow: label above the field and button below it.
+In the access window, the **“Litany of Access”** label is positioned on the left, while the password field is on the right. The **“Begin Rite”** button is placed below the password field on the right side. On narrow screens (mobile), the order is explicitly vertical: row 1 label, row 2 password field, row 3 button, while the error message remains below the form.

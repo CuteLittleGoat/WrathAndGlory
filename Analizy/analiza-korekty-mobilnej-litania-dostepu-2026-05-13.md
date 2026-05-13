@@ -82,3 +82,60 @@ Efekt po tej korekcie na telefonie:
    - prawidłową kolejność label → input → button,
    - brak regresji na PC,
    - poprawne działanie komunikatu błędu.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `shared/access-gate.css`
+
+Lokalizacja: sekcja `@media (max-width:640px)`
+
+Było:
+
+```css
+.accessGate__label,.accessGate__password,.accessGate__submit{grid-column:1;justify-self:stretch;}
+.accessGate__submit{justify-self:end;}
+```
+
+Jest:
+
+```css
+.accessGate__label,.accessGate__password,.accessGate__submit{grid-column:1;justify-self:stretch;}
+.accessGate__label{grid-row:1;}
+.accessGate__password{grid-row:2;}
+.accessGate__submit{grid-row:3;justify-self:end;}
+```
+
+Opis: dodano jawne `grid-row` dla mobile, aby etykieta „Litania Dostępu” nie była przykrywana przez pole hasła.
+
+### Plik: `DataVault/docs/README.md`
+
+Lokalizacja: sekcja `Układ pola „Litania Dostępu”` (PL/EN)
+
+Było: ogólny opis układu pionowego na telefonie.
+
+Jest: doprecyzowana kolejność wierszy na mobile (etykieta → pole hasła → przycisk + błąd pod formularzem).
+
+### Plik: `DataVault/docs/Documentation.md`
+
+Lokalizacja: sekcja `🇬🇧 “Litany of Access” field layout`
+
+Było: brak technicznego opisu wymuszenia kolejności wierszy mobilnych.
+
+Jest: dopisany opis `max-width: 640px` i jawnych `grid-row` w `shared/access-gate.css`.
+
+### Plik: `GeneratorNPC/docs/README.md`
+
+Lokalizacja: sekcja `Układ pola „Litania Dostępu”` (PL/EN)
+
+Było: ogólny opis układu pionowego na telefonie.
+
+Jest: doprecyzowana kolejność wierszy na mobile (etykieta → pole hasła → przycisk + błąd pod formularzem).
+
+### Plik: `GeneratorNPC/docs/Documentation.md`
+
+Lokalizacja: sekcja `🇬🇧 “Litany of Access” field layout`
+
+Było: brak technicznego opisu wymuszenia kolejności wierszy mobilnych.
+
+Jest: dopisany opis `max-width: 640px` i jawnych `grid-row` w `shared/access-gate.css`.
