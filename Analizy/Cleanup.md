@@ -711,3 +711,124 @@ Wniosek praktyczny: oba nowe pliki referencyjne (`data.reference.json` i `fireba
 
 ### Następne kroki
 - Wykonać szczegółowy diff semantyczny między `Analizy/data.json` i `Analizy/data.reference.json` (np. wskazanie różnic per arkusz, rekord, pole), aby zdecydować, który zestaw danych jest prawidłowy biznesowo.
+## Aktualizacja analizy — doprecyzowanie różnic między plikami JSON referencyjnymi
+
+### Temat
+
+Doprecyzowanie wcześniejszego wyniku porównania plików:
+
+- `Analizy/data.json`
+- `Analizy/data.from-firebase-import.json`
+- `Analizy/firebase-import.reference.json`
+
+W poprzedniej analizie stwierdzono, że pliki referencyjne nie są zgodne z `Analizy/data.json`. Po dodatkowym sprawdzeniu ustalono, że różnica ma najprawdopodobniej charakter pojedynczej korekty treści, a nie rozjazdu struktury danych.
+
+### Zakres sprawdzenia
+
+Sprawdzono relację między plikami:
+
+1. `Analizy/firebase-import.reference.json`
+   - pełny plik importu do Firebase;
+   - zawiera dane wewnątrz pola `dataJson`.
+
+2. `Analizy/data.from-firebase-import.json`
+   - dane wyciągnięte z pola `dataJson` pliku `firebase-import.reference.json`;
+   - ma strukturę bez wrappera Firebase, czyli zaczyna się od `sheets`.
+
+3. `Analizy/data.json`
+   - historyczny / wzorcowy plik danych z poprzedniej wersji aplikacji;
+   - również zaczyna się od `sheets`.
+
+### Różnice strukturalne
+
+Różnica między `firebase-import.reference.json` a pozostałymi plikami jest oczekiwana i techniczna.
+
+`firebase-import.reference.json` ma dodatkową warstwę:
+
+```json
+{
+  "dataJson": {
+    "sheets": {}
+  }
+}
+```
+
+Natomiast `data.json` oraz `data.from-firebase-import.json` mają bezpośrednio:
+
+```json
+{
+  "sheets": {}
+}
+```
+
+To nie jest błąd danych, tylko różnica formatu wynikająca z przygotowania pliku do importu do Firebase.
+
+### Różnica merytoryczna
+
+Wykryta różnica merytoryczna dotyczy arkusza:
+
+- `Notatki`
+
+rekordu:
+
+- `LP: "23"`
+
+pola:
+
+- `Co`
+
+W `Analizy/data.json` wartość brzmi:
+
+```json
+"Co": "Poziom mocy psionicznej"
+```
+
+W `Analizy/data.from-firebase-import.json` oraz w danych pochodzących z `firebase-import.reference.json` wartość brzmi:
+
+```json
+"Co": "Poziom mocy psionicznej i Brak Krytyków oraz Chwały"
+```
+
+### Interpretacja
+
+Ta różnica jest akceptowalna.
+
+Najbardziej prawdopodobne wyjaśnienie: plik backupowy / historyczny `Analizy/data.json` został zapisany przed późniejszą korektą jednego wpisu w danych źródłowych lub referencyjnych.
+
+Nie wygląda to na problem z parserem, generatorem, kolejnością arkuszy, utratą rekordów, błędem wrappera Firebase ani rozjazdem całej struktury danych.
+
+### Wniosek praktyczny
+
+Wcześniejsze stwierdzenie:
+
+> `data.reference.json` / `firebase-import.reference.json:dataJson` nie są zgodne z `data.json`
+
+pozostaje technicznie prawdziwe, ale wymaga doprecyzowania.
+
+Niezgodność nie oznacza istotnego błędu generowania danych. Na podstawie sprawdzenia wygląda na to, że różnica sprowadza się do jednej zaakceptowanej zmiany tekstowej:
+
+```text
+Poziom mocy psionicznej
+```
+
+vs
+
+```text
+Poziom mocy psionicznej i Brak Krytyków oraz Chwały
+```
+
+### Decyzja
+
+Różnicę uznajemy za akceptowalną.
+
+Nie ma potrzeby traktować tego jako blokera dla dalszego cleanupu `DataVault`, o ile kolejne testy nie wykażą dodatkowych różnic.
+
+### Rekomendacja na przyszłość
+
+Dla uniknięcia podobnych wątpliwości warto w przyszłości przy testach porównawczych zapisywać szczegółowy diff semantyczny, czyli listę konkretnych różnic w formacie:
+
+```text
+arkusz / rekord / pole / wartość w pliku A / wartość w pliku B
+```
+
+Samo stwierdzenie `JSON-y nie są zgodne` jest zbyt ogólne, ponieważ nie odróżnia poważnego błędu struktury od pojedynczej zaakceptowanej korekty tekstu.
