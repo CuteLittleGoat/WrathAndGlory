@@ -1468,3 +1468,39 @@ Dopisz wnioski do pliku Analizy/Cleanup.md
 1. Usunąć `sheet_to_records(ws)` z `DataVault/build_json.py`.
 2. Wykonać test generowania JSON i porównanie z referencją (`Analizy/data.reference.json`).
 3. Zachować ten wpis w `Analizy/Cleanup.md` jako potwierdzenie decyzji cleanupowej.
+
+## 16. Realizacja zmiany w kodzie na podstawie tej analizy (2026-05-13)
+
+### Oryginalny pełny prompt użytkownika
+Przeczytaj analizę Analizy/Cleanup.md i zgodnie z punktem 15 usuń zbędną funkcję.
+
+### Zmiany wykonane w kodzie
+
+### Plik: `DataVault/build_json.py`
+Lokalizacja: sekcja z funkcją `sheet_to_records(ws)` (między `_rich_text_to_string(...)` a `rows_to_records(...)`).
+
+Było:
+- w pliku istniała funkcja `sheet_to_records(ws)`, oparta o `ws.iter_rows(values_only=True)`.
+- funkcja nie była używana przez aktualną ścieżkę parsera minimalnego XLSX.
+
+Jest:
+- funkcja `sheet_to_records(ws)` została usunięta.
+- aktywna ścieżka pozostaje oparta o `load_xlsx_minimal(...)`, `rows_to_records(...)`, `merge_range(...)` i `merge_traits(...)`.
+
+### Plik: `DataVault/docs/Documentation.md`
+Lokalizacja: sekcja końcowa dokumentu.
+
+Było:
+- dokument nie zawierał jawnej informacji, że `sheet_to_records(ws)` została usunięta.
+
+Jest:
+- dodano sekcję techniczną (PL/EN) opisującą usunięcie nieużywanej funkcji i aktualną ścieżkę generowania rekordów.
+
+### Plik: `DataVault/docs/README.md`
+Lokalizacja: sekcja końcowa dokumentu.
+
+Było:
+- instrukcja użytkownika nie zawierała notatki o uproszczeniu skryptu referencyjnego.
+
+Jest:
+- dodano krótką notatkę (PL/EN), że uproszczenie `build_json.py` nie zmienia sposobu użycia modułu przez użytkownika.

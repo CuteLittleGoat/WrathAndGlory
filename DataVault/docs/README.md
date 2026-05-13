@@ -162,3 +162,9 @@ EN: Added `shared/firebase-config.js` (without password), and DataVault now load
 ## Okno dostępu K.O.Z.A. / K.O.Z.A. access window
 - PL: Okno hasła używa teraz narracji K.O.Z.A. i Ducha Maszyny. Tytuł to **„Dostęp do danych z klauzulą tajności K.O.Z.A.”**, opis prowadzi przez **Rytuał Uwierzytelnienia**, etykieta pola to **„Litania Dostępu”**, a przycisk to **„Rozpocznij Rytuał”**.
 - EN: The password gate now uses K.O.Z.A./Machine Spirit wording. The title is **“Access to K.O.Z.A. Classified Data”**, description references the **Rite of Authentication**, the field label is **“Litany of Access”**, and the button is **“Begin Rite”**.
+
+### Aktualna uwaga o generatorze referencyjnym (PL)
+Skrypt `DataVault/build_json.py` został uproszczony do aktualnie używanej ścieżki parsera XLSX (ZIP/XML). Dla użytkownika nic nie zmienia to w obsłudze modułu: przycisk **Generuj pliki danych** dalej tworzy aktualne pliki robocze zgodnie z obecną logiką DataVault.
+
+### Current note about the reference generator (EN)
+The `DataVault/build_json.py` script has been simplified to the currently used XLSX parsing path (ZIP/XML). This does not change end-user behavior: the **Generate data files** button still produces the current working files according to the active DataVault logic.
