@@ -229,3 +229,58 @@ Lokalizacja: moduł DataVault, podsekcja „Ikona nagłówka DataVault (stabilno
 
 Opis zmiany:
 - Ujednolicono opis layoutu z aktualnym rozmiarem renderowanej ikony (`48×48`).
+
+
+## Zmiany wykonane w kodzie (dopasowanie ikony do pełnego pola + powiększenie pola o ~10%)
+
+### Plik: `DataVault/style.css`
+Lokalizacja: selektory `.sigil` i `.sigilIcon` w sekcji nagłówka (`.brand`).
+
+Było:
+```css
+.sigil{
+  width:44px; height:44px;
+  ...
+  overflow:hidden;
+}
+.sigilIcon{
+  width:48px;
+  height:48px;
+  object-fit:contain;
+}
+```
+
+Jest:
+```css
+.sigil{
+  width:48px; height:48px;
+  ...
+}
+.sigilIcon{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+}
+```
+
+Opis zmiany:
+- Powiększono slot ikony z `44×44` do `48×48` (około +9,1%, praktycznie ~10%).
+- Usunięto przycinanie (`overflow:hidden`) i ustawiono ikonę na pełne wypełnienie slotu (`100% × 100%`), żeby grafika zajmowała całe pole bez ucinania fragmentów.
+
+### Plik: `DataVault/docs/README.md`
+Lokalizacja: sekcje opisu ikony nagłówka (PL i EN).
+
+Opis zmiany:
+- Zaktualizowano instrukcję użytkownika: slot ikony ma teraz `48×48`, a ikona wypełnia cały obszar bez przycinania.
+
+### Plik: `DataVault/docs/Documentation.md`
+Lokalizacja: sekcje struktury UI (`.sigil`, `.sigilIcon`) i layoutu.
+
+Opis zmiany:
+- Zaktualizowano dokumentację techniczną o nowe wymiary kontenera i sposób skalowania ikony (`width/height: 100%`).
+
+### Plik: `DetaleLayout.md`
+Lokalizacja: sekcja modułu DataVault opisująca ikonę nagłówka.
+
+Opis zmiany:
+- Ujednolicono opis layoutu z aktualnym stanem: slot `48×48`, ikona bez przycinania, pełne wypełnienie pola.

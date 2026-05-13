@@ -69,8 +69,8 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
 - Główny kontener aplikacji: `.app` (flex kolumnowy).
 - Górny pasek: `.topbar`.
 - Branding:
-  - `.sigil` — stały kontener 44×44 px w górnym lewym rogu brandingu.
-  - `.sigilIcon` — obraz `Icon.png` (`48×48`, `object-fit: contain`, `loading="eager"`) renderowany wewnątrz `.sigil`, aby zapobiegać skokom layoutu (CLS).
+  - `.sigil` — stały kontener 48×48 px w górnym lewym rogu brandingu.
+  - `.sigilIcon` — obraz `Icon.png` (`width:100%`, `height:100%`, `object-fit: contain`, `loading="eager"`) renderowany wewnątrz `.sigil`, aby zapobiegać skokom layoutu (CLS).
   - `.title` — „ADMINISTRATUM DATA VAULT”.
 - Akcje (przyciski):
   - `#btnUpdateData` w grupie `#updateDataGroup` (etykieta przycisku: **„Generuj pliki danych”** w PL / **„Generate data files”** w EN).
@@ -147,7 +147,7 @@ Efekty i obwódki:
 ### 3.3 Layout główny
 - `.app` — flex, min-height 100%.
 - `.topbar` — górny pasek z gradientem, borderem i flex-wrap.
-- Slot ikony `.sigil` ma `44px × 44px` i `overflow:hidden`; sama ikona `.sigilIcon` ma stałe `48px × 48px`, co utrzymuje stabilny layout przy doczytywaniu zasobów.
+- Slot ikony `.sigil` ma `48px × 48px`; sama ikona `.sigilIcon` korzysta z `width:100%` i `height:100%` z `object-fit:contain`, więc wypełnia cały slot bez przycinania i utrzymuje stabilny layout przy doczytywaniu zasobów.
 - `.main` — układ grid: **180px** panel + reszta workspace.
   - Media query `@media (max-width: 980px)` przełącza na jedną kolumnę.
 

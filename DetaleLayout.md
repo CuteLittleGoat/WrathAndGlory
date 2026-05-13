@@ -171,9 +171,9 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
 
 ### 2.4 Ikona nagłówka DataVault (stabilność layoutu)
-- W bloku `.brand` w `.topbar` używany jest stały kontener `.sigil` o rozmiarze `44px × 44px` z zielonym tłem i obramowaniem.
-- Wewnątrz renderowany jest obraz `.sigilIcon` (`DataVault/Icon.png`) o stałym rozmiarze `48px × 48px`, `display: block`, `object-fit: contain`.
-- Kontener ma `overflow: hidden`, a znacznik `<img>` zawiera jawne `width` i `height`, co ogranicza skoki interfejsu podczas ładowania zasobu.
+- W bloku `.brand` w `.topbar` używany jest stały kontener `.sigil` o rozmiarze `48px × 48px` z zielonym tłem i obramowaniem.
+- Wewnątrz renderowany jest obraz `.sigilIcon` (`DataVault/Icon.png`) skalowany do pełnego pola (`width:100%`, `height:100%`) z `display: block`, `object-fit: contain`, bez ucinania grafiki.
+- Znacznik `<img>` zawiera jawne `width` i `height`, a stały rozmiar slotu ogranicza skoki interfejsu podczas ładowania zasobu.
 
 ### 3) Zasady formatowania tekstu i wyjątki
 - We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, lewo, standardowe łamanie, brak max-width).
