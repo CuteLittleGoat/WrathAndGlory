@@ -887,3 +887,396 @@ To znaczy:
 ### 13.5 Następny krok praktyczny
 
 Przygotować „Checklistę wykonawczą Cleanup v1” (kolejność usuwania + punkty kontrolne + kryteria rollback), a dopiero potem przejść do kasowania potwierdzonych elementów.
+
+## Zakres zmian do wykonania po analizie cleanupu
+
+Poniższy zakres zmian wynika z aktualnego pliku `Analizy/Cleanup.md` oraz ponownego sprawdzenia kodu aplikacji.
+
+Celem zmian jest uporządkowanie repozytorium bez naruszania krytycznej ścieżki danych `DataVault`, szczególnie generowania `data.json` i `firebase-import.json` z `Repozytorium.xlsx`.
+
+---
+
+## 1. PWA online-only i `service-worker.js`
+
+### Decyzja
+
+Aplikacja ma działać tylko online, zarówno jako strona:
+
+- `https://cutelittlegoat.github.io/WrathAndGlory/Main/index.html`
+- `https://cutelittlegoat.github.io/WrathAndGlory/Main/index.html?admin=1`
+
+jak i jako aplikacja PWA.
+
+W związku z tym rootowy plik:
+
+- `service-worker.js`
+
+należy potraktować jako pozostałość po wcześniejszej koncepcji cache/offline i usunąć z aktywnego repozytorium.
+
+### Zakres zmian
+
+1. Skasować plik:
+
+   - `service-worker.js`
+
+2. Nie kasować pliku:
+
+   - `manifest.webmanifest`
+
+3. W `Main/index.html` zostawić podpięcie manifestu:
+
+   - `../manifest.webmanifest`
+
+4. Dodać w `Main/index.html` bezpieczny cleanup starych instalacji PWA, który spróbuje wyrejestrować wcześniej zainstalowanego service workera, jeżeli użytkownik ma go jeszcze w przeglądarce.
+
+5. Zaktualizować dokumentację `Main/docs/Documentation.md`:
+   - usunąć opis `service-worker.js` jako aktywnego elementu aplikacji,
+   - jasno napisać, że aplikacja jest PWA online-only,
+   - napisać, że manifest zostaje, ale offline/cache nie jest wspierany,
+   - dodać uwagę, że stare instalacje PWA mogą wymagać odświeżenia albo wyczyszczenia danych strony, jeżeli wcześniej działały pod service workerem.
+
+### Uwaga
+
+Nie wybieramy wariantu `cleanup/no-op`. Zgodnie z decyzją z analizy plik `service-worker.js` jest do skasowania.
+
+---
+
+## 2. Stary backend Web Push w `Infoczytnik/backend`
+
+### Decyzja
+
+Wcześniejsze prace nad powiadomieniami Push nie będą wdrażane. Dokumentacja i archiwum związane z tym tematem zostają w `WebView_FCM_Cloudflare_Worker/`, ale aktywny backend w `Infoczytnik/backend` należy potraktować jako pozostałość.
+
+### Zakres zmian
+
+1. Skasować:
+
+   - `Infoczytnik/backend/node_modules/`
+   - `Infoczytnik/backend/package.json`
+
+2. Jeżeli po usunięciu tych elementów folder `Infoczytnik/backend/` będzie pusty, skasować również sam folder:
+
+   - `Infoczytnik/backend/`
+
+3. Nie kasować i nie sprzątać automatycznie folderu:
+
+   - `WebView_FCM_Cloudflare_Worker/`
+
+4. Nie usuwać duplikatów ikon z `WebView_FCM_Cloudflare_Worker/`, ponieważ folder został świadomie oznaczony jako archiwalny i ma zostać bez zmian.
+
+### Uwaga dotycząca punktu 13.3
+
+Jeżeli punkt 13.3 dotyczy pliku związanego z `Infoczytnik/backend`, to zgodnie z rozstrzygnięciem z 13.1 plik nie jest do zachowania ani dokumentowania jako aktywny element. Jest do skasowania razem z pozostałościami backendu Web Push.
+
+---
+
+## 3. `DataVault/index.html` — brakujący `JSZip`
+
+### Problem
+
+`DataVault/xlsxCanonicalParser.js` wymaga globalnego `JSZip`, ale `DataVault/index.html` nie ładuje `jszip.min.js` przed `xlsxCanonicalParser.js`.
+
+To grozi tym, że aplikacja przejdzie na fallback albo wygeneruje dane inną ścieżką niż parser referencyjny.
+
+### Zakres zmian
+
+1. W `DataVault/index.html` dodać ładowanie `JSZip` przed `xlsxCanonicalParser.js`.
+
+2. Docelowa kolejność powinna być logicznie taka:
+
+   - najpierw `jszip.min.js`,
+   - potem `xlsxCanonicalParser.js`,
+   - potem konfiguracja Firebase,
+   - potem loader Firebase,
+   - potem `app.js`,
+   - `xlsx.full.min.js` zostaje jako legacy/fallback do czasu testów regresyjnych.
+
+3. Nie usuwać jeszcze:
+
+   - `xlsx.full.min.js`,
+   - fallbacków XLSX w `app.js`.
+
+---
+
+## 4. Test regresyjny generowania danych z XLSX
+
+### Cel
+
+Nie wolno ponownie dopuścić do sytuacji, w której:
+
+- `build_json.py` generuje jeden wariant `data.json`,
+- aplikacja w przeglądarce generuje drugi wariant,
+- do Firebase trafia jeszcze inny wariant danych.
+
+### Zakres zmian
+
+Przygotować albo opisać test porównawczy dla trzech źródeł:
+
+1. `data.json` wygenerowany przez:
+
+   - `DataVault/build_json.py`
+
+2. `data.json` wygenerowany w przeglądarce przez:
+
+   - `DataVault/index.html?admin=1`
+   - przycisk `Generuj pliki danych`
+
+3. dane `dataJson` zapisane w:
+
+   - `firebase-import.json`
+
+Porównanie powinno normalizować formatowanie JSON, ale nie może ignorować realnych różnic merytorycznych w strukturze danych.
+
+### Ważne
+
+Dopiero po takim teście można rozważać usuwanie fallbacków XLSX albo dalsze upraszczanie generatora.
+
+---
+
+## 5. `DataVault/build_json.py`
+
+### Decyzja
+
+Nie usuwać całego pliku:
+
+- `DataVault/build_json.py`
+
+Plik zostaje jako generator referencyjny.
+
+### Zakres zmian
+
+1. Zostawić funkcje odpowiedzialne za:
+   - minimalny odczyt XLSX przez ZIP/XML,
+   - rich text,
+   - czerwone markery `{{RED}}...{{/RED}}`,
+   - scalanie `Zasięg 1..3` do `Zasięg`,
+   - scalanie `Cecha 1..N` do `Cechy`,
+   - budowę `_meta.traits`,
+   - budowę `_meta.states`,
+   - budowę `_meta.sheetOrder`,
+   - budowę `_meta.columnOrder`.
+
+2. Usunąć tylko funkcję:
+
+   - `sheet_to_records(ws)`
+
+   pod warunkiem, że nie jest nigdzie wywoływana.
+
+3. Po usunięciu funkcji wykonać test generowania `data.json`.
+
+---
+
+## 6. `shared/firebase-data-loader.js`
+
+### Problem
+
+Zmienna `authUnsubscribe` jest ustawiana wynikiem `onAuthStateChanged(...)`, ale nie jest potem realnie używana do cleanupu listenera.
+
+### Zakres zmian
+
+1. Uprościć kod:
+   - usunąć zmienną `authUnsubscribe`,
+   - wywołać `onAuthStateChanged(...)` bez przypisywania wyniku.
+
+2. Zostawić sam listener `onAuthStateChanged(...)`, ponieważ jest potrzebny do ustalenia stanu logowania.
+
+3. `logoutDataAccess()` można zostawić, ponieważ jest małą i logiczną funkcją pomocniczą. Nie trzeba jej teraz usuwać tylko dlatego, że nie ma aktywnego przycisku wylogowania.
+
+---
+
+## 7. `DataVault/index.html` i `DataVault/app.js` — fałszywy hint o multi-sortowaniu
+
+### Problem
+
+Interfejs pokazuje informację:
+
+- `Shift = sort wielokolumnowy`
+
+ale w kodzie aplikacji nie ma realnej obsługi multi-sortowania przez `event.shiftKey`.
+
+### Decyzja
+
+Nie dodawać teraz multi-sortowania. To byłaby zmiana funkcjonalna większa niż cleanup.
+
+### Zakres zmian
+
+1. Usunąć wzmiankę o `Shift = sort wielokolumnowy` z widocznej podpowiedzi w `DataVault/index.html`.
+
+2. Usunąć analogiczną wzmiankę z tłumaczeń w `DataVault/app.js`:
+   - `hintSort` w języku polskim,
+   - `hintSort` w języku angielskim.
+
+3. Zostawić zwykłe sortowanie po kliknięciu nagłówka.
+
+---
+
+## 8. `DataVault/xlsxCanonicalParser.js` — nieużywane stałe
+
+### Problem
+
+W pliku są stałe, które wyglądają na nieużywane:
+
+- `MAIN_NS`
+- `REL_NS`
+
+Stała `DOC_REL_NS` jest używana i powinna zostać.
+
+### Zakres zmian
+
+1. Usunąć:
+
+   - `MAIN_NS`
+   - `REL_NS`
+
+2. Zostawić:
+
+   - `DOC_REL_NS`
+
+3. Po zmianie sprawdzić generowanie danych z XLSX.
+
+---
+
+## 9. `DataVault/app.js` — niejawny global `m`
+
+### Problem
+
+W funkcji `formatInlineHTML()` używana jest zmienna `m` bez lokalnej deklaracji.
+
+To tworzy niejawny global i może spowodować błąd przy przyszłej refaktoryzacji.
+
+### Zakres zmian
+
+1. Dodać lokalną deklarację:
+
+   - `let m;`
+
+2. Deklaracja powinna znajdować się bezpośrednio przed pętlą używającą `reRefParen.exec(...)`.
+
+3. Nie zmieniać logiki samego formatowania referencji do stron.
+
+---
+
+## 10. Dokumentacja `Main` i `DataVault`
+
+### Zakres zmian w `Main/docs/Documentation.md`
+
+Zaktualizować dokumentację tak, żeby mówiła, że:
+
+- aplikacja jest PWA online-only,
+- `manifest.webmanifest` zostaje,
+- `service-worker.js` został usunięty,
+- offline/cache nie jest wspierany,
+- stare instalacje PWA mogą wymagać odświeżenia albo wyczyszczenia danych strony.
+
+Usunąć lub zmienić fragmenty sugerujące, że `service-worker.js` jest aktywnym globalnym Service Workerem.
+
+### Zakres zmian w `DataVault/docs/Documentation.md`
+
+Dopisać albo poprawić informacje, że:
+
+- `JSZip` jest wymaganą zależnością parsera kanonicznego,
+- `xlsxCanonicalParser.js` jest browserowym odpowiednikiem generatora referencyjnego,
+- `build_json.py` zostaje jako generator referencyjny,
+- `xlsx.full.min.js` jest legacy/fallbackiem i nie jest teraz usuwany,
+- informacja o `Shift = multi-column sort` była nieaktualna, jeżeli zostanie usunięta z UI.
+
+---
+
+## 11. Pliki i foldery, których nie ruszać w tej turze
+
+Nie usuwać:
+
+- `DataVault/build_json.py`
+- `DataVault/xlsxCanonicalParser.js`
+- `DataVault/data.json`
+- `DataVault/Repozytorium.xlsx`
+- `manifest.webmanifest`
+- `WebView_FCM_Cloudflare_Worker/`
+- `Kalkulator/Old/`
+- `Analizy/`
+- `DetaleLayout.md`
+- `DoZrobienia.md`
+- `Kolumny.md`
+- produkcyjnych, testowych i backupowych plików w `Infoczytnik`, poza wskazanym backendem Web Push
+
+---
+
+## 12. Kolejność wykonania zmian
+
+Rekomendowana kolejność:
+
+1. Skasować pozostałości backendu Web Push:
+   - `Infoczytnik/backend/node_modules/`
+   - `Infoczytnik/backend/package.json`
+   - ewentualnie pusty folder `Infoczytnik/backend/`
+
+2. Skasować rootowy:
+   - `service-worker.js`
+
+3. Dodać cleanup starych service workerów w `Main/index.html`.
+
+4. Zaktualizować `Main/docs/Documentation.md`.
+
+5. Dodać `JSZip` w `DataVault/index.html`.
+
+6. Poprawić hint o sortowaniu w `DataVault/index.html` i `DataVault/app.js`.
+
+7. Poprawić `DataVault/app.js`, dodając lokalne `let m;`.
+
+8. Usunąć nieużywane stałe `MAIN_NS` i `REL_NS` z `DataVault/xlsxCanonicalParser.js`.
+
+9. Usunąć niewykorzystywaną funkcję `sheet_to_records(ws)` z `DataVault/build_json.py`, jeżeli po wyszukaniu nadal nie ma żadnych wywołań.
+
+10. Uprościć `authUnsubscribe` w `shared/firebase-data-loader.js`.
+
+11. Zaktualizować `DataVault/docs/Documentation.md`.
+
+12. Wykonać test regresyjny generowania danych z XLSX.
+
+---
+
+## 13. Kontrola po zmianach
+
+Po wykonaniu zmian sprawdzić:
+
+1. Czy `Main/index.html` działa:
+   - bez `?admin=1`,
+   - z `?admin=1`,
+   - jako zainstalowana PWA.
+
+2. Czy `DataVault/index.html` działa:
+   - bez `?admin=1`,
+   - z `?admin=1`.
+
+3. Czy przycisk `Generuj pliki danych` nadal tworzy:
+   - `data.json`,
+   - `firebase-import.json`.
+
+4. Czy wynik `data.json` z przeglądarki jest zgodny z wynikiem `build_json.py`.
+
+5. Czy `firebase-import.json.dataJson` po sparsowaniu jest zgodny z wygenerowanym `data.json`.
+
+6. Czy prywatne dane nadal ładują się z Firebase.
+
+7. Czy nie ma błędów w konsoli przeglądarki dotyczących:
+   - `JSZip`,
+   - `XlsxCanonicalParser`,
+   - Firebase Auth,
+   - Firebase Database,
+   - service workera.
+
+---
+
+## 14. Wniosek końcowy
+
+Po ponownym sprawdzeniu kodu nie widać dodatkowego aktywnego obszaru cleanupu, który zostałby pominięty i który można bezpiecznie skasować bez decyzji właścicielskiej albo testu regresyjnego.
+
+Najważniejsze korekty do wykonania to:
+
+- usunięcie starego `service-worker.js`,
+- usunięcie pozostałości backendu Web Push w `Infoczytnik/backend`,
+- dodanie brakującego `JSZip`,
+- zabezpieczenie regresji generowania danych,
+- drobne porządki w `DataVault` i dokumentacji.
+
+Obszar `DataVault` pozostaje krytyczny i nie powinien być dalej upraszczany bez porównania wyników generowania danych.
