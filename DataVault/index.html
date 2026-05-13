@@ -24,6 +24,7 @@
 
       <div class="actions">
         <div class="language-switcher language-switcher--hidden">
+          <!-- Ukryty przełącznik języka: usuń klasę language-switcher--hidden, aby go pokazać / Hidden language switcher: remove language-switcher--hidden to show it -->
           <select id="languageSelect" aria-label="Wersja językowa">
             <option value="pl">Polski</option>
             <option value="en">English</option>
@@ -70,7 +71,7 @@
           </label>
 
           <div class="hint">
-            <div data-i18n="hintSort">▸ Kliknij nagłówek, aby sortować (Shift = sort wielokolumnowy).</div>
+            <div data-i18n="hintSort">▸ Kliknij nagłówek, aby sortować.</div>
             <div data-i18n="hintFilters">▸ Drugi wiersz nagłówka: filtry per kolumna (fragment / liczby).</div>
             <div data-i18n="hintCompare">▸ Zaznacz 2+ wiersze, aby porównać.</div>
             <div class="muted" data-i18n="hintTooltip">Jeśli tooltipy cech nie wyskakują na telefonie: stuknij w tag cechy.</div>
@@ -115,6 +116,7 @@
   <div id="filterMenu" class="filterMenu" aria-hidden="true"></div>
 
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
 <script src="xlsxCanonicalParser.js"></script>
   <script src="../shared/firebase-config.js"></script>
   <script type="module" src="../shared/firebase-data-loader.js"></script>

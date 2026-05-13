@@ -1280,3 +1280,93 @@ Najważniejsze korekty do wykonania to:
 - drobne porządki w `DataVault` i dokumentacji.
 
 Obszar `DataVault` pozostaje krytyczny i nie powinien być dalej upraszczany bez porównania wyników generowania danych.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/index.html`
+Lokalizacja: sekcja `language-switcher`, sekcja `.hint`, blok `<script>` na końcu dokumentu.
+
+Było:
+- brak jawnego komentarza przy ukrytym przełączniku języka,
+- hint sortowania zawierał obietnicę `Shift = sort wielokolumnowy`,
+- brak `JSZip` przed `xlsxCanonicalParser.js`.
+
+Jest:
+- dodano komentarz wskazujący miejsce ujawnienia przełącznika języka,
+- hint zawiera tylko informację o standardowym sortowaniu po nagłówku,
+- dodano `jszip.min.js` przed `xlsxCanonicalParser.js`.
+
+### Plik: `DataVault/app.js`
+Lokalizacja: tłumaczenia `hintSort` (PL/EN), funkcja `formatInlineHTML()`.
+
+Było:
+- tłumaczenia obiecywały multi-sort z klawiszem Shift,
+- zmienna `m` była używana bez lokalnej deklaracji.
+
+Jest:
+- tłumaczenia opisują wyłącznie istniejące sortowanie,
+- dodano lokalną deklarację `let m;` przed pętlą regex.
+
+### Plik: `DataVault/xlsxCanonicalParser.js`
+Lokalizacja: stałe na początku pliku.
+
+Było:
+- obecne były nieużywane stałe `MAIN_NS` i `REL_NS`.
+
+Jest:
+- usunięto `MAIN_NS` i `REL_NS`, pozostawiono używane `DOC_REL_NS`.
+
+### Plik: `DataVault/build_json.py`
+Lokalizacja: funkcja `sheet_to_records(ws)`.
+
+Było:
+- funkcja `sheet_to_records(ws)` była obecna, ale nieużywana w aktualnej ścieżce parsera ZIP/XML.
+
+Jest:
+- usunięto funkcję `sheet_to_records(ws)`.
+
+### Plik: `shared/firebase-data-loader.js`
+Lokalizacja: sekcja inicjalizacji auth.
+
+Było:
+- zmienna `authUnsubscribe` przechowywała wynik `onAuthStateChanged(...)`, ale nie była wykorzystywana.
+
+Jest:
+- usunięto `authUnsubscribe`, `onAuthStateChanged(...)` jest wywoływane bez przypisania.
+
+### Plik: `Main/index.html`
+Lokalizacja: końcowy blok `<script>` przed `</body>`.
+
+Było:
+- brak cleanupu starych rejestracji Service Workera.
+
+Jest:
+- dodano cleanup rejestracji (`getRegistrations()` + `unregister()`), zgodnie z trybem online-only.
+
+### Plik: `service-worker.js`
+Lokalizacja: katalog główny repo.
+
+Było:
+- plik obecny mimo decyzji online-only.
+
+Jest:
+- plik usunięty z aktywnego repozytorium.
+
+### Plik: `Infoczytnik/backend/package.json` oraz `Infoczytnik/backend/node_modules/`
+Lokalizacja: moduł `Infoczytnik/backend`.
+
+Było:
+- pozostałości backendu Web Push były obecne.
+
+Jest:
+- `package.json` i `node_modules/` zostały usunięte; pusty katalog `backend/` także usunięty.
+
+### Pliki: `GeneratorNazw/index.html`, `GeneratorNPC/index.html`, `Audio/index.html`
+Lokalizacja: każdy blok `<div class="language-switcher language-switcher--hidden">`.
+
+Było:
+- brak jednolitego komentarza wskazującego miejsce ujawnienia przełącznika języka.
+
+Jest:
+- dodano komentarz PL/EN wskazujący, że należy usunąć klasę `language-switcher--hidden`, aby przełącznik był widoczny.

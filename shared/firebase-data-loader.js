@@ -10,7 +10,6 @@ let app;
 let auth;
 let database;
 let authReadyPromise;
-let authUnsubscribe = null;
 let currentAuthUser = null;
 
 function getFirebaseConfig(){ return window.WG_FIREBASE_CONFIG || {}; }
@@ -60,7 +59,7 @@ function initFirebaseDataAccess(){
       .then(() => new Promise((resolve) => {
         let resolved = false;
 
-        authUnsubscribe = onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, (user) => {
           currentAuthUser = user || null;
 
           if (!resolved) {
