@@ -832,3 +832,58 @@ arkusz / rekord / pole / wartość w pliku A / wartość w pliku B
 ```
 
 Samo stwierdzenie `JSON-y nie są zgodne` jest zbyt ogólne, ponieważ nie odróżnia poważnego błędu struktury od pojedynczej zaakceptowanej korekty tekstu.
+
+## 13. Dodatkowe wnioski przed rozpoczęciem etapu wykonawczego Cleanup (2026-05-13)
+
+Data analizy: 2026-05-13  
+Temat: Gotowość do rozpoczęcia procesu Cleanup.
+
+Oryginalny pełny prompt użytkownika:
+"Przeczytaj plik Analizy/Cleanup.md i go zaktualizuj. Nic nie kasuj tylko dopisz nowe informacje. Nie modyfikuj kodu aplikacji.
+
+Czy mamy jeszcze jakieś wątpliwości do wyjaśnienia, czy możemy już rozpocząć proces Cleanup?"
+
+Zakres tej iteracji:
+- ponowny odczyt pliku `Analizy/Cleanup.md`;
+- dopisanie decyzji operacyjnych „co już jest jasne” i „co jeszcze wymaga jednego potwierdzenia”, bez modyfikowania kodu aplikacji.
+
+### 13.1 Krótka odpowiedź operacyjna
+
+Możemy rozpocząć proces Cleanup, ale rekomenduję **1 krótkie potwierdzenie właścicielskie przed pierwszym kasowaniem plików**. To nie blokuje planowania i przygotowania checklisty, ale powinno poprzedzić etap usuwania.
+
+### 13.2 Co jest już wystarczająco jasne (brak wątpliwości krytycznych)
+
+1. Folder `WebView_FCM_Cloudflare_Worker` ma status archiwalny i zostaje bez zmian (wraz z ewentualnymi duplikatami ikon).
+2. Folder `Analizy` ma zostać.
+3. Pliki `DetaleLayout.md`, `DoZrobienia.md`, `Kolumny.md` mają zostać.
+4. `Kalkulator/Old/` to archiwum historyczne i ma zostać.
+5. W `DataVault` nie wolno wykonywać cleanupu, który mógłby rozjechać wynik generowania danych z `Repozytorium.xlsx` między ścieżką przeglądarkową i referencyjną.
+
+### 13.3 Jedyna wątpliwość, którą warto doprecyzować przed kasowaniem
+
+Chodzi o `service-worker.js` w katalogu głównym.
+
+Powód: aplikacja ma działać online-only, ale użytkownicy, którzy kiedyś zainstalowali starszą wersję PWA, mogli mieć zarejestrowany service worker. Dlatego samo „skasuj plik” nie zawsze czyści stan po stronie przeglądarek, które już go mają.
+
+Najbezpieczniejsza decyzja biznesowo-techniczna (rekomendowana):
+- nie usuwać od razu „na twardo” bez ścieżki wygaszenia;
+- najpierw wdrożyć wariant cleanup/no-op service workera (wersja, która czyści cache i przestaje przechwytywać ruch),
+- po okresie przejściowym dopiero rozważyć pełne usunięcie.
+
+Konsekwencje:
+- mniejsze ryzyko problemów u użytkowników ze starą instalacją PWA,
+- bardziej przewidywalne przejście do trybu online-only,
+- potrzeba krótkiej aktualizacji dokumentacji `Main` po wdrożeniu.
+
+### 13.4 Rekomendacja „go/no-go”
+
+Status: **GO warunkowe**.
+
+To znaczy:
+- można rozpocząć Cleanup od elementów niewrażliwych i wcześniej oznaczonych jako archiwalne/pozostałości,
+- przed pierwszym usuwaniem plików ustalić finalną decyzję dla strategii `service-worker.js`,
+- obszar `DataVault` traktować jako chroniony i wykonywać wyłącznie zmiany poprzedzone testem porównawczym wyników generowania danych.
+
+### 13.5 Następny krok praktyczny
+
+Przygotować „Checklistę wykonawczą Cleanup v1” (kolejność usuwania + punkty kontrolne + kryteria rollback), a dopiero potem przejść do kasowania potwierdzonych elementów.
