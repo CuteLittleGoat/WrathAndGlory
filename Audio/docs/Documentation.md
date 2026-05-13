@@ -311,6 +311,8 @@ window.firebaseConfig = {
 - Dla każdej grupy wymagany jest osobny `config/firebase-config.js` (osobny projekt Firebase), aby odizolować dane.
 
 
+W `index.html` oba ukryte przełączniki języka (`#languageSelect` i `#languageSelectUser`) mają komentarz „MIEJSCE ZMIANY WIDOCZNOŚCI…”, który wskazuje dokładny punkt usunięcia klasy `.language-switcher--hidden`.
+
 ## Dodawanie nowej wersji językowej (PL)
 
 To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
@@ -323,6 +325,8 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+
+In `index.html`, both hidden language switchers (`#languageSelect` and `#languageSelectUser`) include the “LANGUAGE SWITCHER VISIBILITY CHANGE POINT…” comment indicating the exact place to remove `.language-switcher--hidden`.
 
 ## Adding a new language version (EN)
 

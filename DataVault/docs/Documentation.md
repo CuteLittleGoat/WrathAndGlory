@@ -916,6 +916,8 @@ W `app.js` funkcje kluczowe dla rekonstrukcji 1:1 to m.in.: normalizacja (`norm`
 
 
 
+W `DataVault/index.html` przełącznik języka ma komentarz „MIEJSCE ZMIANY WIDOCZNOŚCI…”, który wskazuje punkt ujawnienia kontrolki przez usunięcie klasy `.language-switcher--hidden`.
+
 ## Dodawanie nowej wersji językowej (PL)
 
 To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
@@ -928,6 +930,8 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+
+In `DataVault/index.html`, the language switcher includes the “LANGUAGE SWITCHER VISIBILITY CHANGE POINT…” comment marking where to reveal the control by removing `.language-switcher--hidden`.
 
 ## Adding a new language version (EN)
 

@@ -91,7 +91,11 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+Przełącznik języka jest obecnie ukryty; miejsce jego ujawnienia jest oznaczone komentarzem w kodzie HTML przy elementach `.language-switcher--hidden`.
+
 ## 🇬🇧 User instructions (EN)
+
+The language switcher is currently hidden; the place to reveal it is marked with an HTML code comment next to `.language-switcher--hidden` elements.
 
 ### What this module is for
 The **Audio** module lets you quickly play sound effects (SFX) during sessions. You can use a simple player view or the extended admin view to manage lists and ordering.

@@ -85,7 +85,11 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+Przełącznik języka jest ukryty celowo; miejsce do jego włączenia jest oznaczone komentarzem przy kontenerze `.language-switcher--hidden`.
+
 ## 🇬🇧 User instructions (EN)
+
+The language switcher is intentionally hidden; the place to enable it is marked with a comment next to the `.language-switcher--hidden` container.
 
 ### What this module is for
 **NPC Generator** helps you quickly build enemy/NPC sheets for sessions. Pick a base profile, adjust values, and generate a ready card.

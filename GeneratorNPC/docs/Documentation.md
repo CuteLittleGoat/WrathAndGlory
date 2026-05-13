@@ -455,6 +455,8 @@ The module now uses relative paths for navigation and/or data loading so that a 
 
 
 
+W `GeneratorNPC/index.html` ukryty przełącznik języka ma jawny komentarz „MIEJSCE ZMIANY WIDOCZNOŚCI…”, wskazujący miejsce wymaganej modyfikacji klasy CSS.
+
 ## Dodawanie nowej wersji językowej (PL)
 
 To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
@@ -467,6 +469,8 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+
+In `GeneratorNPC/index.html`, the hidden language switcher has an explicit “LANGUAGE SWITCHER VISIBILITY CHANGE POINT…” comment indicating where the CSS class must be changed.
 
 ## Adding a new language version (EN)
 

@@ -60,7 +60,11 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+Przełącznik języka jest domyślnie ukryty; dokładne miejsce zmiany widoczności opisuje komentarz w `index.html` obok `.language-switcher--hidden`.
+
 ## 🇬🇧 User instructions (EN)
+
+The language switcher is hidden by default; the exact visibility change point is documented by a comment in `index.html` next to `.language-switcher--hidden`.
 
 ### What DataVault is for
 **DataVault** is a Wrath & Glory knowledge browser. It keeps rules, tables, and references in one searchable place.
