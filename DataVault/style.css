@@ -63,8 +63,8 @@ code{color:var(--code)}
 }
 /* Ikona DataVault ma stałe wymiary, aby nie powodować skoków interfejsu / DataVault icon keeps fixed dimensions to avoid interface shifts */
 .sigilIcon{
-  width:32px;
-  height:32px;
+  width:48px;
+  height:48px;
   display:block;
   object-fit:contain;
 }
