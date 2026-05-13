@@ -37,3 +37,34 @@ Sprawdź czy po poprawce kolor fontu "Litania dostępu" jest ciemniejszy niż re
 1. Ustalić docelowy odcień „ciemniejszego” tekstu (np. przez porównanie z historycznym screenem).
 2. Wprowadzić regułę koloru tylko dla etykiety „Litania Dostępu”.
 3. Zweryfikować kontrast WCAG i wygląd na mobile/desktop.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `shared/access-gate.css`
+
+Lokalizacja: selektor `.accessGate__label`
+
+Było:
+
+```css
+.accessGate__label{grid-column:1;grid-row:1;margin:0;align-self:center;}
+```
+
+Jest:
+
+```css
+.accessGate__label{grid-column:1;grid-row:1;margin:0;align-self:center;color:var(--muted,#4a8b4a);}
+```
+
+### Plik: `DetaleLayout.md`
+
+Lokalizacja: sekcje „🇵🇱 Okno hasła — Litania Dostępu” oraz „🇬🇧 Password window — Litany of Access”
+
+Było:
+
+- Sekcja opisywała układ siatki i breakpoint mobilny, bez jawnej informacji o ciemniejszym kolorze etykiety.
+
+Jest:
+
+- Sekcja jawnie opisuje, że etykieta „Litania Dostępu” / „Litany of Access” używa ciemniejszego koloru `var(--muted, #4a8b4a)`.
