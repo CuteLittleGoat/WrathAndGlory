@@ -20,6 +20,33 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
 - jeśli preferowana zakładka nie jest aktualnie widoczna (np. przez filtry widoczności zakładek), używany jest fallback `visibleOrder[0] || visibleSheets[0]`.
 - Zmiana dotyczy wyłącznie etapu wyznaczania `nextSheet` i **nie zmienia** logiki `applyDefaultViewForSheet`, `applyViewModeToAllSheets` ani przycisku `Widok Domyślny`.
 
+
+## 0) Wymagania dla pliku wsadowego `Repozytorium.xlsx`
+
+### 0.1 Nazwa i lokalizacja pliku
+- Wymagana nazwa wejścia: **`Repozytorium.xlsx`**.
+- Wymagana lokalizacja: folder modułu `DataVault` (ten sam poziom co `index.html`, `app.js`, `xlsxCanonicalParser.js`).
+- UI i parsery zakładają pracę na tym pliku; zmiana nazwy lub ścieżki wymagałaby zmian w kodzie.
+
+### 0.2 Wymagane zakładki (arkusze)
+- Z perspektywy działania modułu wymagane są wszystkie zakładki, które mają być widoczne i filtrowalne w DataVault.
+- Zakładki używane przez logikę widoków i checkboxów obejmują m.in.:
+  - tworzenie postaci: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`,
+  - zasady walki: `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST`.
+- Brak danej zakładki skutkuje brakiem odpowiadającej tabeli w UI.
+
+### 0.3 Wymagane kolumny
+- Kolumny muszą mieć stabilne nazwy dokładnie takie, jakich używa konfiguracja tabel i reguły formatowania.
+- Szczególnie istotne są kolumny wykorzystywane globalnie lub przez reguły specjalne: `Nazwa`, `Opis`, `Podręcznik`, `Strona`, `Słowa Kluczowe`, `Słowo Kluczowe`, `Efekt`, `Wymagania`, `Koszt PD`.
+- Zmiana nazwy kolumny bez aktualizacji kodu powoduje utratę części funkcji (filtrowanie, szerokości, style semantyczne).
+
+### 0.4 Wymagane reguły formatowania w XLSX
+- Czerwony tekst w XLSX jest mapowany na markery `{{RED}}...{{/RED}}` i renderowany na czerwono w UI.
+- Pogrubienie/kursywa/przekreślenie są mapowane odpowiednio na `{{B}}`, `{{I}}`, `{{S}}`.
+- Referencje stron w nawiasach z tokenami `str`, `str.`, `strona`, `page`, `p.` są automatycznie oznaczane jaśniejszym kolorem (`.ref`).
+- Linie pomocnicze `*[n]` są oznaczane stylem `.caretref` (jaśniejszy ton).
+- Dodatkowe wyjątki semantyczne (np. neutralne przecinki i wyjątek `Pakiety Wyniesienia / Słowa Kluczowe`) są obowiązkowo opisane i utrzymywane w `docs/ZasadyFormatowania.md`.
+
 ## 1) Struktura projektu i pliki
 
 - `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypty `xlsxCanonicalParser.js` i `app.js` oraz style `style.css`.
