@@ -265,6 +265,8 @@ Poniżej pełna warstwa narzędziowa generatora nazw, żeby odtworzyć logikę 1
 - Focus ring: `0 0 0 2px rgba(22, 198, 12, 0.2)`.
 
 
+W `GeneratorNazw/index.html` kontener przełącznika języka zawiera komentarz „MIEJSCE ZMIANY WIDOCZNOŚCI…”, który jednoznacznie wskazuje miejsce zmiany kodu.
+
 ## Dodawanie nowej wersji językowej (PL)
 
 To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
@@ -277,6 +279,8 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+
+In `GeneratorNazw/index.html`, the language switcher container includes the “LANGUAGE SWITCHER VISIBILITY CHANGE POINT…” comment that clearly marks the code-change location.
 
 ## Adding a new language version (EN)
 

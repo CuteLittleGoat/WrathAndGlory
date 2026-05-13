@@ -43,7 +43,11 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+Przełącznik języka jest ukryty, ale gotowy do użycia; miejsce zmiany widoczności jest opisane komentarzem w `index.html`.
+
 ## 🇬🇧 User instructions (EN)
+
+The language switcher is hidden but ready to use; the visibility change point is described by a comment in `index.html`.
 
 ### What this module is for
 **Name Generator** creates Warhammer 40k-style names (characters, vehicles, ships, and other sets depending on category).
