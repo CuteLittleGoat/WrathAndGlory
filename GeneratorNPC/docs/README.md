@@ -213,3 +213,9 @@ EN: GeneratorNPC now uses shared `shared/firebase-config.js` and waits for Fireb
 - PL: Okno hasła w GeneratorNPC ma teraz identyczne słownictwo jak DataVault: **„Dostęp do danych z klauzulą tajności K.O.Z.A.”**, **„Litania Dostępu”**, **„Rozpocznij Rytuał”** oraz opis rytuału uwierzytelnienia.
 - EN: GeneratorNPC now matches DataVault wording: **“Access to K.O.Z.A. Classified Data”**, **“Litany of Access”**, **“Begin Rite”**, and the Rite of Authentication description.
 - PL/EN: Komunikaty błędów logowania i odczytu prywatnych danych również używają nowej narracji „Machine Spirit / Duch Maszyny”.
+
+## 🇵🇱 Układ pola „Litania Dostępu”
+W oknie dostępu etykieta **„Litania Dostępu”** jest ustawiona po lewej stronie, a pole hasła po prawej. Przycisk **„Rozpocznij Rytuał”** znajduje się pod polem hasła, po prawej stronie. Na wąskich ekranach (telefon) elementy przechodzą do układu pionowego: etykieta nad polem, a przycisk pod nim.
+
+## 🇬🇧 “Litany of Access” field layout
+In the access window, the **“Litany of Access”** label is positioned on the left, while the password field is on the right. The **“Begin Rite”** button is placed below the password field on the right side. On narrow screens (mobile), the layout switches to a vertical flow: label above the field and button below it.

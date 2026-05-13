@@ -804,3 +804,15 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 ## Aktualizacja 2026-05-12 — usunięcie CTA powiadomień z Main
 - `Main/index.html`: usunięto czerwony przycisk `Włącz powiadomienia` oraz jego dedykowane style `.pushCta*`.
 - Układ ekranu głównego pozostał oparty o siatkę kart modułów bez dodatkowego elementu CTA pod listą modułów.
+
+## 🇵🇱 Okno hasła — Litania Dostępu
+- Wspólny overlay hasła (`shared/access-gate.css`) używa siatki 2-kolumnowej.
+- Lewa kolumna: etykieta „Litania Dostępu” (wyrównanie do lewej).
+- Prawa kolumna: pole hasła, a pod nim przycisk zatwierdzenia wyrównany do prawej.
+- Breakpoint mobilny: `max-width: 640px`, układ jednokolumnowy.
+
+## 🇬🇧 Password window — Litany of Access
+- Shared password overlay (`shared/access-gate.css`) uses a 2-column grid.
+- Left column: “Litany of Access” label (left-aligned).
+- Right column: password field, with submit button below aligned to the right.
+- Mobile breakpoint: `max-width: 640px`, single-column layout.
