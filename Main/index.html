@@ -230,5 +230,13 @@
       });
 
   </script>
+<script>
+// --- Cleanup starych Service Workerów: aplikacja działa wyłącznie online / Cleanup for old Service Workers: the app is online-only ---
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    registrations.forEach((registration) => registration.unregister());
+  }).catch(() => {});
+}
+</script>
 </body>
 </html>
