@@ -11,7 +11,9 @@
 /* --- Dwukolumnowy układ Litanii Dostępu: etykieta po lewej, kontrolki po prawej / Two-column Litany layout: label on the left, controls on the right --- */
 #accessForm{display:block;}
 .accessGate__credentials{display:grid;grid-template-columns:minmax(150px,1fr) minmax(220px,1.3fr);column-gap:16px;row-gap:10px;align-items:start;}
-.accessGate__label{grid-column:1;grid-row:1;margin:0;align-self:center;}
+.accessGate__label{grid-column:1;grid-row:1;margin:0;align-self:center;
+  /* --- Ciemniejsza etykieta odróżnia tytuł Litanii od pozostałej treści / Darker label distinguishes Litany title from the rest of the message --- */
+  color:var(--muted,#4a8b4a);}
 .accessGate__label span{display:block;text-align:left;}
 .accessGate__password{grid-column:2;grid-row:1;justify-self:stretch;width:100%;}
 .accessGate__submit{grid-column:2;grid-row:2;justify-self:end;}

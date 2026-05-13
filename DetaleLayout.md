@@ -810,9 +810,11 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Lewa kolumna: etykieta „Litania Dostępu” (wyrównanie do lewej).
 - Prawa kolumna: pole hasła, a pod nim przycisk zatwierdzenia wyrównany do prawej.
 - Breakpoint mobilny: `max-width: 640px`, układ jednokolumnowy.
+- Kolor etykiety „Litania Dostępu” jest celowo ciemniejszy niż treść komunikatu: `var(--muted, #4a8b4a)`.
 
 ## 🇬🇧 Password window — Litany of Access
 - Shared password overlay (`shared/access-gate.css`) uses a 2-column grid.
 - Left column: “Litany of Access” label (left-aligned).
 - Right column: password field, with submit button below aligned to the right.
 - Mobile breakpoint: `max-width: 640px`, single-column layout.
+- The “Litany of Access” label is intentionally darker than the message body text: `var(--muted, #4a8b4a)`.
