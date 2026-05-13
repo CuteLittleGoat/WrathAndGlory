@@ -16,7 +16,10 @@
     <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
 <header class="topbar">
       <div class="brand">
-        <div class="sigil">⟦⟧</div>
+        <div class="sigil">
+          <!-- Stałe pole ikony DataVault z jawnymi wymiarami, aby zapobiec skokom layoutu / Fixed DataVault icon slot with explicit dimensions to prevent layout shifts -->
+          <img class="sigilIcon" src="Icon.png" alt="DataVault" width="32" height="32" decoding="async" loading="eager">
+        </div>
         <div>
           <div class="title" data-i18n="pageTitle">ADMINISTRATUM DATA VAULT</div>
         </div>
