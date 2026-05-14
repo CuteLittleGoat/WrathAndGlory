@@ -529,3 +529,10 @@ Formularz `#accessForm` używa teraz kontenera `.accessGate__credentials` oparte
 
 ## 🇬🇧 Technical password-gate layout (Litany of Access)
 The `#accessForm` now uses a `.accessGate__credentials` container based on a 2-column CSS Grid. The left column contains `.accessGate__label`, while the right column contains `#accessPassword` (`.accessGate__password`) and `.accessGate__submit` in the second row. At `max-width: 640px`, the layout switches to a single-column flow with explicit row order enforced in `shared/access-gate.css` (`.accessGate__label` row 1, `.accessGate__password` row 2, `.accessGate__submit` row 3), preventing label/input overlap on mobile.
+
+
+## Okno dostępu na telefonie / Access gate on phones
+- PL: Wspólny overlay `shared/access-gate.css` jest zakotwiczony do viewportu (`width:100vw`, `max-width:100vw`, `height:100dvh`) i ma `overflow:auto`, dzięki czemu karta hasła pozostaje widoczna nawet przy szerokim layoucie modułu.
+- EN: Shared overlay `shared/access-gate.css` is anchored to the viewport (`width:100vw`, `max-width:100vw`, `height:100dvh`) and uses `overflow:auto`, so the password card stays visible even when the module layout is very wide.
+- PL: W `GeneratorNPC/style.css` karty danych mają `overflow-x:auto`, a `.data-table` ma `min-width:max-content`, więc szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
+- EN: In `GeneratorNPC/style.css`, data cards use `overflow-x:auto` and `.data-table` uses `min-width:max-content`, so wide tables scroll inside cards instead of stretching the whole document.

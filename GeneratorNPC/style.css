@@ -354,6 +354,17 @@ textarea:focus {
   letter-spacing: 0.16em;
 }
 
+/* --- Karty z tabelami przewijają się poziomo lokalnie, aby nie rozszerzać całej strony na mobile / Table cards scroll horizontally inside themselves to avoid widening the whole mobile page --- */
+.card {
+  overflow-x: auto;
+}
+
+/* --- Tabela zachowuje pełną szerokość karty i własny minimalny rozmiar treści / Table keeps card width while preserving content minimum width --- */
+.data-table {
+  width: 100%;
+  min-width: max-content;
+}
+
 .card-header {
   display: flex;
   flex-wrap: wrap;

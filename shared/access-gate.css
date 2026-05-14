@@ -1,7 +1,8 @@
 /* --- Wspólny styl bramki dostępu dla modułów DataVault i GeneratorNPC / Shared access-gate styles for DataVault and GeneratorNPC modules --- */
-.accessGate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.92);}
+/* --- Overlay bramki zakotwiczony do rzeczywistego viewportu, aby karta hasła była widoczna na telefonie / Access-gate overlay anchored to the real viewport so the password card stays visible on phones --- */
+.accessGate{position:fixed;left:0;top:0;z-index:9999;display:grid;place-items:center;width:100vw;max-width:100vw;height:100vh;height:100dvh;overflow:auto;padding:16px;background:rgba(0,0,0,.92);}
 .accessGate[hidden]{display:none;}
-.accessGate__card{width:min(520px,calc(100vw - 32px));border:1px solid var(--border,#1cff6b);background:#020802;padding:24px;}
+.accessGate__card{width:min(520px,100%);border:1px solid var(--border,#1cff6b);background:#020802;padding:24px;}
 .accessGate__error{margin-top:12px;color:#ff6b6b;min-height:1.2em;}
 
 /* --- Stały kontener ikony w bramce dostępu, żeby zapobiec skokom układu / Fixed icon container in access gate to prevent layout shift --- */
@@ -20,6 +21,9 @@
 
 /* --- Mobilny fallback: układ jednokolumnowy z czytelną kolejnością / Mobile fallback: single-column flow with readable order --- */
 @media (max-width:640px){
+  /* --- Dodatkowe zabezpieczenie mobilne: karta zawsze mieści się w wysokości widoku / Extra mobile safeguard: card always fits viewport height --- */
+  .accessGate{place-items:center;padding:16px;}
+  .accessGate__card{max-height:calc(100dvh - 32px);overflow:auto;}
   .accessGate__credentials{grid-template-columns:1fr;row-gap:10px;}
   /* --- Jawna kolejność wierszy mobilnych zapobiega nakładaniu etykiety przez pole hasła / Explicit mobile row order prevents label overlap by the password field --- */
   .accessGate__label,.accessGate__password,.accessGate__submit{grid-column:1;justify-self:stretch;}

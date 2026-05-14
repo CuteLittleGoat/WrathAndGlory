@@ -232,3 +232,46 @@ height:100dvh;
 oraz dodanie przewijania awaryjnego dla samego overlayu i karty.
 
 Dodatkowo warto zamknąć szerokie tabele `GeneratorNPC` w poziomo przewijanych kontenerach, żeby nie rozpychały całej strony na telefonie.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `shared/access-gate.css`
+
+Lokalizacja: sekcja `.accessGate` oraz `@media (max-width:640px)`.
+
+Było:
+
+```css
+.accessGate{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;background:rgba(0,0,0,.92);}
+.accessGate__card{width:min(520px,calc(100vw - 32px));...}
+```
+
+Jest:
+
+```css
+.accessGate{position:fixed;left:0;top:0;width:100vw;max-width:100vw;height:100vh;height:100dvh;overflow:auto;padding:16px;...}
+.accessGate__card{width:min(520px,100%);...}
+@media (max-width:640px){ .accessGate__card{max-height:calc(100dvh - 32px);overflow:auto;} }
+```
+
+Opis: overlay bramki został jawnie przypięty do viewportu i dostał awaryjne przewijanie, aby karta hasła zawsze była widoczna na telefonie.
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: reguły `.card` i `.data-table`.
+
+Było:
+
+```css
+/* brak lokalnego ograniczenia szerokości dla kart z tabelami */
+```
+
+Jest:
+
+```css
+.card{overflow-x:auto;}
+.data-table{width:100%;min-width:max-content;}
+```
+
+Opis: szerokie tabele przewijają się poziomo w obrębie kart i nie rozpychają całego dokumentu na urządzeniach mobilnych.
