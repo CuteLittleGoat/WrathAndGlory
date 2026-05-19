@@ -127,10 +127,6 @@ When copying the **Main** module for a new group:
 - Verify in `Main/index.html` that all module links point to valid locations on the new server.
 - Refresh the page and click every button to confirm navigation works correctly.
 
-## Aktualizacja linków względnych / Relative links update
-W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
-
-The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
 
 ## Adding a new language version (EN)
 

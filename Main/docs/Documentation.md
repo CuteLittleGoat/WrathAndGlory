@@ -11,7 +11,7 @@
 - `Main/ZmienneHiperlacza.md` — konfiguracja linków Mapa/Obrazki (`Nazwa: URL`).
 - `Main/wrath-glory-logo-warhammer.png` — logo strony.
 - `manifest.webmanifest` (repo root) — manifest PWA wspólny.
-- `service-worker.js` (repo root) — globalny Service Worker.
+- `service-worker.js` (repo root) — globalny plik `service-worker.js` utrzymywany kompatybilnie, ale moduł Main działa jako strona online i czyści starsze rejestracje SW z poziomu `index.html`.
 
 ## 3. Widoki i routing
 ### 3.1. Tryb użytkownika
@@ -63,7 +63,7 @@ Na tej podstawie JS:
 - Aplikacja używa wspólnego `manifest.webmanifest`.
 - `start_url` ustawiony na `Main/index.html` (start w widoku user).
 
-### 7.2. Service Worker
+### 7.2. Service Worker (stan aktualny)
 - `service-worker.js` istnieje w katalogu głównym repozytorium i realizuje wyłącznie mechanikę cache/fetch.
 - Plik nie zawiera mechaniki zdarzeń związanych z komunikatami systemowymi przeglądarki.
 - Moduł Main nie inicjuje żadnej subskrypcji komunikatów.
@@ -146,12 +146,6 @@ Inicjalizacja skryptu:
   1. podmienić wpisy `Mapa:` i `Obrazki:` w `Main/ZmienneHiperlacza.md`,
   2. zweryfikować wszystkie hiperłącza modułów (lokalne i zewnętrzne),
   3. potwierdzić działanie przy `admin=1` i bez parametru.
-
-## Aktualizacja linków względnych / Relative links update
-W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
-
-The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
-
 
 
 ## Dodawanie nowej wersji językowej (PL)

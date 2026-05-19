@@ -155,10 +155,6 @@ To keep **Favorites** shared and persistent across devices, **NPC Generator** re
 - The module loads core data through `../shared/firebase-data-loader.js` from private DataVault runtime (`/datavault/live`) after authorization.
 - After changes, generate a test card and save favorites to confirm everything works.
 
-## Aktualizacja linków względnych / Relative links update
-W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
-
-The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
 
 ## Adding a new language version (EN)
 
@@ -184,14 +180,6 @@ EN: GeneratorNPC loads data via `shared/firebase-data-loader.js` (Firebase Auth 
 
 
 ## Widoczność przełącznika języka / Language switch visibility
-- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
-- EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.
-
-
-## Aktualizacja / Update
-PL: GeneratorNPC korzysta ze wspólnej konfiguracji `shared/firebase-config.js` i czeka na gotowość loadera Firebase przed pobraniem danych.
-EN: GeneratorNPC now uses shared `shared/firebase-config.js` and waits for Firebase loader readiness before data loading.
-
 
 
 ## Dostęp do prywatnych danych / Private data access

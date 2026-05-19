@@ -450,14 +450,6 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
   2. własna konfiguracja Firebase i izolowane środowisko danych per grupa (dedykowany RTDB path/projekt),
   3. test zapisu/odczytu ulubionych po wdrożeniu.
 
-## Aktualizacja linków względnych / Relative links update
-W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
-
-The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
-
-
-
-W `GeneratorNPC/index.html` ukryty przełącznik języka ma jawny komentarz „MIEJSCE ZMIANY WIDOCZNOŚCI…”, wskazujący miejsce wymaganej modyfikacji klasy CSS.
 
 ## Dodawanie nowej wersji językowej (PL)
 
@@ -499,16 +491,6 @@ Sekcja „Źródło danych” komunikuje prywatne źródło danych po autoryzacj
 
 
 ## Widoczność przełącznika języka / Language switch visibility
-- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
-- EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.
-
-
-## Aktualizacja: runtime Firebase (2026-05-12)
-- GeneratorNPC ładuje `shared/firebase-config.js` przed `shared/firebase-data-loader.js`.
-- Moduł używa `getFirebaseApi()` i czeka na event gotowości loadera.
-- Dostęp do danych DataVault odbywa się przez `loadDataVaultLive()` (Auth + RTDB `/datavault/live`) i wrapper `dataJson`.
-- Usunięto dodatkowy skrypt po `</html>`; obsługa bramki oraz startu działa w głównym module.
-
 
 
 ## Firebase runtime
