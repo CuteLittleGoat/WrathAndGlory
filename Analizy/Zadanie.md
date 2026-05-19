@@ -1106,3 +1106,367 @@ Dodano pełną sekcję z listą zmian, zakresem i podsumowaniem wykonania.
 - Potwierdzenie: `Audio/Disclaimer.md` nie został zmodyfikowany.
 - Potwierdzenie: nie zmieniono kodu aplikacji, konfiguracji produkcyjnych ani plików danych.
 - Potwierdzenie: nie zmieniono żadnego pliku `AGENTS.md`.
+
+### Aktualizacja 2025-05-19 15:57
+
+Zadanie 1 — Main/docs/Documentation.md
+
+W pliku Main/docs/Documentation.md usuń albo zastąp wszystkie fragmenty, które opisują Main jako moduł PWA/offline z aktywnym Service Workerem, cache, obsługą install/fetch albo trwałym działaniem offline.
+
+Fragment opisujący Service Workera/PWA/offline zastąp dokładnie takim tekstem:
+
+## Service Worker i tryb offline
+
+Moduł Main nie rejestruje obecnie Service Workera i nie działa jako samodzielna aplikacja PWA/offline.
+
+Aktualna strona startowa pełni rolę statycznego menu nawigacyjnego do pozostałych modułów. W kodzie `Main/index.html` znajduje się mechanizm porządkujący po wcześniejszych wersjach: jeśli przeglądarka ma zarejestrowane stare Service Workery dla tej ścieżki, strona próbuje je wyrejestrować i oczyścić powiązane cache.
+
+Ten mechanizm nie jest funkcją offline. Jego celem jest uniknięcie sytuacji, w której użytkownik widzi nieaktualną wersję strony z pamięci podręcznej przeglądarki.
+
+Jeżeli w pliku są nagłówki typu „PWA”, „Cache”, „Tryb offline”, „Service Worker lifecycle”, „install/fetch” albo podobne, usuń je i przenieś istotną informację wyłącznie do powyższej sekcji.
+
+Zadanie 2 — GeneratorNazw/docs/README.md
+
+W pliku GeneratorNazw/docs/README.md popraw instrukcję użytkownika tak, aby nie kazała użytkownikowi używać ukrytego przełącznika języka.
+
+W sekcji polskiej zastąp listę kroków „Jak używać” dokładnie taką listą:
+
+### Jak używać
+1. Otwórz `GeneratorNazw/index.html`.
+2. W polu **Kategoria** wybierz obszar, z którego chcesz nazwy.
+3. W polu **Opcja** doprecyzuj styl, na przykład frakcję albo wariant.
+4. Opcjonalnie w polu **Seed** wpisz własny tekst, jeśli chcesz mieć powtarzalne wyniki.
+5. W polu **Ile** ustaw liczbę propozycji.
+6. Kliknij **Generuj**.
+7. Kliknij **Kopiuj wynik**, aby skopiować listę do schowka.
+
+Bezpośrednio po tej liście dodaj akapit:
+
+Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Kod zawiera przygotowaną obsługę wersji PL/EN, ale zwykły użytkownik nie wybiera języka z poziomu strony.
+
+W sekcji angielskiej zastąp listę kroków „How to use” dokładnie taką listą:
+
+### How to use
+1. Open `GeneratorNazw/index.html`.
+2. In **Category**, choose the name family you want.
+3. In **Option**, narrow the style, for example faction or variant.
+4. Optionally enter **Seed** for repeatable output.
+5. Set how many names in **Count**.
+6. Click **Generate**.
+7. Click **Copy result** to copy the list to clipboard.
+
+Bezpośrednio po tej liście dodaj akapit:
+
+The language switcher is currently hidden in the user interface. The code already contains PL/EN language support, but a regular user does not choose the language from the page.
+
+Usuń z tego pliku zdania, które mówią użytkownikowi, żeby w prawym górnym rogu wybrał język albo użył top-right language switch.
+
+Zadanie 3 — Audio/docs/README.md
+
+W pliku Audio/docs/README.md usuń instrukcje dla zwykłego użytkownika, które każą wybrać język z przełącznika języka, jeżeli taki fragment występuje.
+
+W polskiej instrukcji użytkownika dodaj w miejscu opisującym uruchamianie modułu taki akapit:
+
+Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma przygotowaną obsługę tekstów PL/EN, ale użytkownik korzysta z aktualnie widocznej wersji interfejsu bez ręcznej zmiany języka.
+
+W angielskiej instrukcji użytkownika dodaj odpowiednik:
+
+The language switcher is currently hidden in the user interface. The module contains prepared PL/EN text support, but the user works with the currently visible interface without manually switching language.
+
+Usuń z list kroków każde zdanie typu „wybierz język”, „choose language”, „use language switch” lub równoważne, ponieważ przełącznik nie jest widoczny dla użytkownika.
+
+Zadanie 4 — GeneratorNPC/docs/README.md
+
+W pliku GeneratorNPC/docs/README.md popraw opis źródła danych i dostępu.
+
+Jeżeli w instrukcji użytkownika występuje opis sugerujący publiczny plik `../DataVault/data.json`, lokalny JSON jako główne źródło danych albo brak backendu, zastąp go poniższym tekstem:
+
+### Źródło danych i dostęp
+Generator NPC korzysta z prywatnych danych DataVault pobieranych przez wspólny loader Firebase z `shared/firebase-data-loader.js`.
+
+Po otwarciu modułu aplikacja pokazuje ekran dostępu do danych z klauzulą tajności K.O.Z.A. Użytkownik wpisuje Litanię Dostępu, czyli hasło do technicznego konta Firebase Authentication. Po poprawnym logowaniu moduł pobiera aktualny pakiet danych z Realtime Database ze ścieżki `datavault/live`.
+
+Dane muszą mieć strukturę zgodną z eksportem DataVault i zawierać obiekt `sheets`. Jeżeli dane nie zawierają oczekiwanej struktury, moduł wyświetla błąd ładowania danych prywatnych.
+
+W sekcji angielskiej dodaj odpowiednik:
+
+### Data source and access
+Generator NPC uses private DataVault data loaded through the shared Firebase loader from `shared/firebase-data-loader.js`.
+
+After opening the module, the application displays an access gate for K.O.Z.A. classified data. The user enters the Litany of Access, which is the password for the technical Firebase Authentication account. After successful login, the module loads the current data package from Realtime Database path `datavault/live`.
+
+The data must match the DataVault export structure and contain the `sheets` object. If the expected structure is missing, the module displays a private data loading error.
+
+Usuń z tego pliku instrukcje mówiące, że GeneratorNPC działa bez backendu albo że jego głównym źródłem danych jest publiczny plik JSON.
+
+Zadanie 5 — GeneratorNPC/docs/Documentation.md
+
+W pliku GeneratorNPC/docs/Documentation.md zastąp początkowy opis architektury danych i źródła danych takim tekstem:
+
+## Źródło danych
+
+GeneratorNPC nie korzysta obecnie z publicznego pliku `../DataVault/data.json` jako głównego źródła danych.
+
+Aktualny przepływ danych wygląda następująco:
+
+1. Strona ładuje `../shared/firebase-config.js`.
+2. Strona ładuje `../shared/firebase-data-loader.js`.
+3. Loader inicjalizuje nazwaną aplikację Firebase `wh40k-data-slate-private-data`.
+4. Użytkownik przechodzi ekran dostępu K.O.Z.A. i loguje się hasłem technicznego konta Firebase Authentication.
+5. Po autoryzacji loader odczytuje Realtime Database ze ścieżki `datavault/live`.
+6. Jeżeli odczytany obiekt jest wrapperem `datavault-firebase-import-v1`, loader parsuje pole `dataJson`.
+7. GeneratorNPC oczekuje finalnego obiektu danych zawierającego `sheets`.
+8. Z `sheets` budowane są kolekcje: bestiariusz, pancerze, bronie, augumentacje, ekwipunek, talenty, psionika i modlitwy.
+
+## Ekran dostępu
+
+Moduł pokazuje ekran dostępu przed załadowaniem prywatnych danych. Teksty ekranu używają motywu K.O.Z.A. i Rytuału Uwierzytelnienia.
+
+Najważniejsze elementy ekranu:
+- tytuł: „Dostęp do danych z klauzulą tajności K.O.Z.A.”,
+- opis informujący o Litanii Dostępu i Rytuale Uwierzytelnienia,
+- pole hasła `accessPassword`,
+- przycisk „Rozpocznij Rytuał”,
+- pole błędu `accessError`.
+
+Błędy dostępu są tłumaczone przez `getReadableAccessError` ze wspólnego loadera Firebase.
+
+## Ulubione profile NPC
+
+Ulubione profile NPC są niezależne od prywatnego DataVault.
+
+Jeżeli `GeneratorNPC/config/firebase-config.js` zawiera poprawne `window.firebaseConfig`, moduł tworzy osobną nazwaną aplikację Firebase `generator-npc-favorites` i zapisuje ulubione w Firestore:
+
+`generatorNpc/favorites`
+
+Jeżeli Firestore nie jest dostępny albo konfiguracja nie istnieje, moduł przechodzi na lokalny zapis w `localStorage` pod kluczem `generatorNpcFavorites`.
+
+Usuń albo przeredaguj wszystkie sprzeczne fragmenty w tym pliku, które mówią o publicznym lokalnym JSON jako głównym źródle danych, braku backendu albo braku autoryzacji.
+
+Zadanie 6 — GeneratorNPC/config/FirebaseREADME.md
+
+W pliku GeneratorNPC/config/FirebaseREADME.md zastąp sekcję „Struktura Firestore” po polsku dokładnie takim opisem:
+
+## 2) Struktura Firestore (drzewko + typy)
+```text
+generatorNpc (kolekcja)
+└── favorites (dokument)
+    ├── updatedAt (timestamp serwera Firestore)
+    └── favorites (tablica obiektów)
+        └── [0..n] (obiekt)
+            ├── id (string)
+            ├── alias (string)
+            ├── createdAt (number, timestamp z Date.now())
+            └── payload (mapa / obiekt)
+                ├── selectedBestiaryIndex (number)
+                ├── bestiaryName (string)
+                ├── bestiaryOverrides (mapa / obiekt)
+                │   ├── numeric (mapa wartości nadpisanych)
+                │   └── skills (string albo null)
+                ├── notes (string)
+                ├── modules (mapa / obiekt)
+                │   ├── weaponIds (tablica numberów)
+                │   ├── armorIds (tablica numberów)
+                │   ├── augmentationsIds (tablica numberów)
+                │   ├── equipmentIds (tablica numberów)
+                │   ├── talentsIds (tablica numberów)
+                │   ├── psionicsIds (tablica numberów)
+                │   └── prayersIds (tablica numberów)
+                └── toggles (mapa / obiekt)
+                    ├── moduleVisibility (mapa booleanów)
+                    ├── traitDescriptions (mapa booleanów)
+                    └── fullDetails (mapa booleanów)
+```
+
+Zastąp sekcję „Firestore structure” po angielsku dokładnie takim opisem:
+
+## 2) Firestore structure (tree + types)
+```text
+generatorNpc (collection)
+└── favorites (document)
+    ├── updatedAt (Firestore server timestamp)
+    └── favorites (array of objects)
+        └── [0..n] (object)
+            ├── id (string)
+            ├── alias (string)
+            ├── createdAt (number, Date.now() timestamp)
+            └── payload (map/object)
+                ├── selectedBestiaryIndex (number)
+                ├── bestiaryName (string)
+                ├── bestiaryOverrides (map/object)
+                │   ├── numeric (map of overridden values)
+                │   └── skills (string or null)
+                ├── notes (string)
+                ├── modules (map/object)
+                │   ├── weaponIds (array of numbers)
+                │   ├── armorIds (array of numbers)
+                │   ├── augmentationsIds (array of numbers)
+                │   ├── equipmentIds (array of numbers)
+                │   ├── talentsIds (array of numbers)
+                │   ├── psionicsIds (array of numbers)
+                │   └── prayersIds (array of numbers)
+                └── toggles (map/object)
+                    ├── moduleVisibility (map of booleans)
+                    ├── traitDescriptions (map of booleans)
+                    └── fullDetails (map of booleans)
+```
+
+W polskim skrypcie Node.js w tym pliku zastąp payload dokładnie takim payloadem:
+
+```js
+const payload = {
+  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  favorites: []
+};
+```
+
+W angielskim skrypcie Node.js zrób tę samą zmianę:
+
+```js
+const payload = {
+  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+  favorites: []
+};
+```
+
+Usuń z tego README stare pola `name`, `build`, `tier`, `archetype`, `species`, `traits` i `createdAt` jako ISO string, ponieważ nie odpowiadają aktualnemu zapisowi ulubionych w kodzie.
+
+Zadanie 7 — shared/FirebaseREADME.md
+
+W pliku shared/FirebaseREADME.md pozostaw opis Realtime Database `datavault/live`, ale doprecyzuj, że ten plik dotyczy prywatnych danych DataVault, a nie ulubionych GeneratorNPC ani konfiguracji Audio.
+
+Po sekcji „Cel” po polsku dodaj akapit:
+
+Ten dokument dotyczy wyłącznie wspólnego źródła prywatnych danych DataVault używanego przez moduły korzystające z `shared/firebase-data-loader.js`. Nie opisuje Firestore dla ulubionych GeneratorNPC ani Firestore dla modułu Audio.
+
+Po sekcji „Purpose” po angielsku dodaj akapit:
+
+This document applies only to the shared private DataVault data source used by modules that rely on `shared/firebase-data-loader.js`. It does not describe GeneratorNPC favorites Firestore or Audio module Firestore.
+
+Zadanie 8 — Infoczytnik/docs/Documentation.md
+
+W pliku Infoczytnik/docs/Documentation.md zastąp sekcję „Model danych (payload komunikatu)” takim tekstem:
+
+## 4. Model danych (payload komunikatu)
+
+Panel `GM_test.html` zapisuje do Firestore pełny snapshot bieżącego komunikatu. Zapis jest wykonywany przez `currentRef.set(getPayload(type), { merge: false })`.
+
+Aktualny payload zawiera następujące pola:
+
+```text
+type: string
+text: string
+backgroundId: string albo null
+backgroundFile: string
+logoId: string albo null
+logoFile: string
+fillerId: string albo null
+fillerSet: string
+fontId: string albo null
+fontPreset: string
+messageAudioId: string albo null
+messageAudioFile: string
+fillersEnabled: boolean
+audioEnabled: boolean
+showLogo: boolean
+movingOverlay: boolean
+flicker: boolean
+prefixLines: tablica stringów
+suffixLines: tablica stringów
+fillerLineCount: number
+fillerBandLines: number
+messageColor: string HEX
+prefixColor: string HEX
+suffixColor: string HEX
+msgFontSize: number
+prefixFontSize: number
+suffixFontSize: number
+pingUrl: string
+nonce: string
+ts: Firestore serverTimestamp
+```
+
+Dla `type: "message"` pole `text` zawiera treść wiadomości wpisaną przez GM. Dla `type: "ping"` i `type: "clear"` pole `text` jest pustym stringiem.
+
+Zastąp sekcję „Struktura Firestore do odtworzenia” takim tekstem:
+
+## 10. Struktura Firestore do odtworzenia
+
+Minimalna struktura Firestore używana przez moduł:
+
+```text
+dataslate (kolekcja)
+└── current (dokument)
+    ├── type
+    ├── text
+    ├── backgroundId
+    ├── backgroundFile
+    ├── logoId
+    ├── logoFile
+    ├── fillerId
+    ├── fillerSet
+    ├── fontId
+    ├── fontPreset
+    ├── messageAudioId
+    ├── messageAudioFile
+    ├── fillersEnabled
+    ├── audioEnabled
+    ├── showLogo
+    ├── movingOverlay
+    ├── flicker
+    ├── prefixLines
+    ├── suffixLines
+    ├── fillerLineCount
+    ├── fillerBandLines
+    ├── messageColor
+    ├── prefixColor
+    ├── suffixColor
+    ├── msgFontSize
+    ├── prefixFontSize
+    ├── suffixFontSize
+    ├── pingUrl
+    ├── nonce
+    └── ts
+```
+
+Usuń z tego pliku stare pola `title`, `content`, `backgroundKey`, `frameKey`, `logoKey`, `fontFamily`, `updatedAt` jako opis minimalnego aktualnego payloadu. Jeżeli te nazwy pojawiają się wyłącznie jako historyczne albo przykładowe, przeredaguj je na aktualne pola z powyższej listy.
+
+Zadanie 9 — styl dokumentacji bez changeloga
+
+W dokumentacji technicznej nie opisuj historii zmian. W plikach:
+- Kalkulator/docs/Documentation.md
+- Audio/docs/Documentation.md
+- DataVault/docs/Documentation.md
+- Infoczytnik/docs/Documentation.md
+- GeneratorNPC/docs/Documentation.md
+
+przeredaguj zdania w stylu „dodano”, „wdrożono”, „zmieniono”, „wcześniej”, „po migracji”, „w nowej wersji” na opis stanu obecnego.
+
+Stosuj wzór:
+- zamiast „Dodano obsługę X” napisz „Moduł obsługuje X.”
+- zamiast „Wdrożono mechanizm X” napisz „Mechanizm X odpowiada za ...”
+- zamiast „Po migracji dane są pobierane z X” napisz „Dane są pobierane z X.”
+- zamiast „Wcześniej moduł używał X” usuń zdanie, jeśli nie jest potrzebne do aktualnego użycia modułu.
+
+Nie usuwaj informacji technicznych, które są nadal prawdziwe. Zmieniaj formę z historii zmian na opis aktualnego działania.
+
+Zadanie 10 — Analizy/Zadanie.md
+
+Po wykonaniu zmian dopisz na końcu pliku Analizy/Zadanie.md nową sekcję:
+
+## Zmiany wykonane przez Codex — aktualizacja dokumentacji po weryfikacji
+
+W tej sekcji opisz krótko i konkretnie wykonane zmiany:
+- poprawiono opis Main tak, aby nie przedstawiał modułu jako aktywnej aplikacji PWA/offline;
+- usunięto instrukcje korzystania z ukrytych przełączników języka w README modułów, których to dotyczyło;
+- poprawiono dokumentację GeneratorNPC, aby opisywała prywatny DataVault z Firebase Realtime Database i ekran dostępu K.O.Z.A.;
+- poprawiono GeneratorNPC/config/FirebaseREADME.md tak, aby struktura Firestore odpowiadała faktycznemu payloadowi ulubionych;
+- doprecyzowano shared/FirebaseREADME.md jako dokument dotyczący wspólnego prywatnego DataVault;
+- poprawiono Infoczytnik/docs/Documentation.md tak, aby model payloadu odpowiadał aktualnemu `GM_test.html`;
+- przeredagowano techniczną dokumentację z formy changelogowej na opis aktualnego stanu modułów.
+
+Na końcu tej sekcji dodaj krótką notatkę:
+
+Te zmiany dotyczą dokumentacji i opisu aktualnego działania repozytorium. Nie zmieniają logiki działania aplikacji.
+
+Po wykonaniu zmian uruchom dostępne podstawowe formatowanie/linters tylko wtedy, gdy repozytorium ma już gotowe polecenia do takiej weryfikacji. Nie dodawaj nowych narzędzi build ani nowych zależności.
