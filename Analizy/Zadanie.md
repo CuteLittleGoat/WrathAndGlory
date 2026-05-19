@@ -730,13 +730,3 @@ Dokumentacja nie powinna zawierać historii zmian, nieaktualnych źródeł danyc
 Jeżeli funkcja istnieje w kodzie, ale jest celowo ukryta w interfejsie, dokumentacja ma to jasno opisywać i wskazywać, jak właściciel repozytorium może ją ponownie włączyć przez zmianę odpowiedniej klasy, selektora, atrybutu albo reguły CSS.
 
 Kod aplikacji, konfiguracje produkcyjne i pliki danych mają pozostać bez zmian.
-
-W podsumowaniu końcowym wypisz:
-
-1. zmienione pliki;
-2. najważniejsze usunięte nieaktualne informacje;
-3. najważniejsze dopisane lub poprawione aktualne informacje;
-4. pliki pominięte celowo;
-5. ewentualne miejsca wymagające decyzji właściciela repozytorium;
-6. potwierdzenie, że nie zmieniono kodu aplikacji ani plików danych;
-7. potwierdzenie, że ukryte przełączniki języka, jeśli występują, zostały opisane jako funkcje przygotowane, ale celowo wyłączone w interfejsie.
