@@ -58,15 +58,13 @@ Na tej podstawie JS:
 - Wyszukuje wpisy `Mapa:` i `Obrazki:`.
 - Podmienia `href` odpowiednich przycisków.
 
-## 7. PWA
-### 7.1. Manifest
-- Aplikacja używa wspólnego `manifest.webmanifest`.
-- `start_url` ustawiony na `Main/index.html` (start w widoku user).
+## Service Worker i tryb offline
 
-### 7.2. Service Worker (stan aktualny)
-- `service-worker.js` istnieje w katalogu głównym repozytorium i realizuje wyłącznie mechanikę cache/fetch.
-- Plik nie zawiera mechaniki zdarzeń związanych z komunikatami systemowymi przeglądarki.
-- Moduł Main nie inicjuje żadnej subskrypcji komunikatów.
+Moduł Main nie rejestruje obecnie Service Workera i nie działa jako samodzielna aplikacja PWA/offline.
+
+Aktualna strona startowa pełni rolę statycznego menu nawigacyjnego do pozostałych modułów. W kodzie `Main/index.html` znajduje się mechanizm porządkujący po wcześniejszych wersjach: jeśli przeglądarka ma zarejestrowane stare Service Workery dla tej ścieżki, strona próbuje je wyrejestrować i oczyścić powiązane cache.
+
+Ten mechanizm nie jest funkcją offline. Jego celem jest uniknięcie sytuacji, w której użytkownik widzi nieaktualną wersję strony z pamięci podręcznej przeglądarki.
 
 ## 8. Integracje
 - Moduł nie używa bezpośrednio Firebase.
@@ -76,8 +74,8 @@ Na tej podstawie JS:
 2. Dodaj logo `wrath-glory-logo-warhammer.png`.
 3. Dodaj `ZmienneHiperlacza.md` i parser wpisów `Mapa`/`Obrazki`.
 4. Dodaj obsługę `?admin=1` + warunkowe sekcje admin.
-6. Podłącz `manifest.webmanifest` (Main używa manifestu PWA).
-7. Utrzymaj współdzielony `service-worker.js` zgodnie z aktualnym modelem cache/fetch aplikacji.
+6. Podłącz `manifest.webmanifest` tylko wtedy, gdy jest potrzebny do metadanych instalacyjnych hostingu.
+7. Nie rejestruj Service Workera; zachowaj jedynie mechanizm czyszczenia starych rejestracji w `Main/index.html`.
 
 ## 10. Testy regresyjne
 1. Wejście bez `?admin=1` pokazuje tylko widok user.

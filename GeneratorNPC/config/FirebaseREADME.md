@@ -10,18 +10,31 @@ Skopiuj wartości web config z Firebase Console i wklej do `GeneratorNPC/config/
 ```text
 generatorNpc (kolekcja)
 └── favorites (dokument)
-    ├── updatedAt (string, ISO datetime)
+    ├── updatedAt (timestamp serwera Firestore)
     └── favorites (tablica obiektów)
         └── [0..n] (obiekt)
             ├── id (string)
-            ├── name (string)
-            ├── createdAt (string, ISO datetime)
-            └── build (mapa / obiekt)
-                ├── tier (number)
-                ├── archetype (string)
-                ├── species (string)
-                ├── traits (tablica stringów)
-                └── notes (string)
+            ├── alias (string)
+            ├── createdAt (number, timestamp z Date.now())
+            └── payload (mapa / obiekt)
+                ├── selectedBestiaryIndex (number)
+                ├── bestiaryName (string)
+                ├── bestiaryOverrides (mapa / obiekt)
+                │   ├── numeric (mapa wartości nadpisanych)
+                │   └── skills (string albo null)
+                ├── notes (string)
+                ├── modules (mapa / obiekt)
+                │   ├── weaponIds (tablica numberów)
+                │   ├── armorIds (tablica numberów)
+                │   ├── augmentationsIds (tablica numberów)
+                │   ├── equipmentIds (tablica numberów)
+                │   ├── talentsIds (tablica numberów)
+                │   ├── psionicsIds (tablica numberów)
+                │   └── prayersIds (tablica numberów)
+                └── toggles (mapa / obiekt)
+                    ├── moduleVisibility (mapa booleanów)
+                    ├── traitDescriptions (mapa booleanów)
+                    └── fullDetails (mapa booleanów)
 ```
 
 ## 3) Pełny skrypt Node.js (do skopiowania)
@@ -42,7 +55,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const payload = {
-  updatedAt: new Date().toISOString(),
+  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   favorites: []
 };
 
@@ -78,18 +91,31 @@ Copy Firebase Web config values and paste into `GeneratorNPC/config/firebase-con
 ```text
 generatorNpc (collection)
 └── favorites (document)
-    ├── updatedAt (string, ISO datetime)
+    ├── updatedAt (Firestore server timestamp)
     └── favorites (array of objects)
         └── [0..n] (object)
             ├── id (string)
-            ├── name (string)
-            ├── createdAt (string, ISO datetime)
-            └── build (map/object)
-                ├── tier (number)
-                ├── archetype (string)
-                ├── species (string)
-                ├── traits (array of strings)
-                └── notes (string)
+            ├── alias (string)
+            ├── createdAt (number, Date.now() timestamp)
+            └── payload (map/object)
+                ├── selectedBestiaryIndex (number)
+                ├── bestiaryName (string)
+                ├── bestiaryOverrides (map/object)
+                │   ├── numeric (map of overridden values)
+                │   └── skills (string or null)
+                ├── notes (string)
+                ├── modules (map/object)
+                │   ├── weaponIds (array of numbers)
+                │   ├── armorIds (array of numbers)
+                │   ├── augmentationsIds (array of numbers)
+                │   ├── equipmentIds (array of numbers)
+                │   ├── talentsIds (array of numbers)
+                │   ├── psionicsIds (array of numbers)
+                │   └── prayersIds (array of numbers)
+                └── toggles (map/object)
+                    ├── moduleVisibility (map of booleans)
+                    ├── traitDescriptions (map of booleans)
+                    └── fullDetails (map of booleans)
 ```
 
 ## 3) Full Node.js script (copy-paste)
@@ -110,7 +136,7 @@ admin.initializeApp({
 const db = admin.firestore();
 
 const payload = {
-  updatedAt: new Date().toISOString(),
+  updatedAt: admin.firestore.FieldValue.serverTimestamp(),
   favorites: []
 };
 

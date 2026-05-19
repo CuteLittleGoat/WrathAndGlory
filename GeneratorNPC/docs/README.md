@@ -7,7 +7,6 @@
 
 ### Jak zacząć
 1. Otwórz `GeneratorNPC/index.html`.
-2. W prawym górnym rogu wybierz język.
 3. Poczekaj, aż sekcja **Źródło danych** pokaże, że dane zostały załadowane.
 
 ### Tworzenie NPC krok po kroku
@@ -96,7 +95,6 @@ The language switcher is intentionally hidden; the place to enable it is marked 
 
 ### Getting started
 1. Open `GeneratorNPC/index.html`.
-2. Choose language in the top-right corner.
 3. Wait until **Data source** confirms the data is loaded.
 
 ### Build an NPC step by step
