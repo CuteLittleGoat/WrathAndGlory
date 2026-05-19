@@ -1,11 +1,76 @@
-1. Po każdej zmianie w pliku "GM_test.html" i/lub "Infoczytnik_test.html" zaktualizuj wersję poprzez podniesienie `INF_VERSION` w plikach Infoczytnik_test oraz GM_test
-2. Wersja pliku ma zawierać aktualną datę i godzinę. np. 2026-03-13_08-16-00. Format: rrrr-MM-dd_gg-hh-ss godzina lokalna dla Polski.
-3. Zawsze jest wymagany test sprawdzający
-4. Nigdy nie modyfikuj plików "GM.html", "Infoczytnik.html", "GM_backup.html" oraz "Infoczytnik_backup.html"
-5. Wszystkie zmiany rób na plikach "GM_test.html" oraz "Infoczytnik_test.html"
-6. Zmiany w plikach "GM.html", "Infoczytnik.html", "GM_backup.html" oraz "Infoczytnik_backup.html" zawsze wykonuje ręcznie użytkownik
-7. Po każdej zmianie kodu zmodyfikuj pliki docs/Documentation.md oraz docs/README.md w odpowiednim folderze
-8. Plik README.md ma zawierać instrukcję obsługi dla użytkownika
-9. Plik README.md ma zawierać te same instrukcję w języku polskim i angielskim
-10. Plik Documentation.md ma zawierać dokładny opis kodu. Wszystkich funkcji, użytych styli, fontów, zasad działania poszczególnych elementów itp.
-11. Plik Documentation.md ma służyć do tego, żeby inny użytkownik tylko czytając dokumentację mógł odtworzyć aplikację 1:1
+# Zasady pracy z modułem Infoczytnik
+
+## 1. Pliki robocze
+
+Wszystkie zmiany kodu w module `Infoczytnik` należy wykonywać wyłącznie w plikach:
+
+- `GM_test.html`
+- `Infoczytnik_test.html`
+
+Nie wolno modyfikować plików:
+
+- `GM.html`
+- `Infoczytnik.html`
+- `GM_backup.html`
+- `Infoczytnik_backup.html`
+
+Pliki produkcyjne i backupy są aktualizowane ręcznie przez właściciela repozytorium.
+
+## 2. Wersja INF_VERSION
+
+Po każdej zmianie w pliku `GM_test.html` i/lub `Infoczytnik_test.html` należy zaktualizować wartość `INF_VERSION` w obu plikach testowych.
+
+Wersja musi mieć format:
+
+`rrrr-MM-dd_HH-mm-ss`
+
+Przykład:
+
+`2026-03-13_08-16-00`
+
+Godzina ma być podana według lokalnego czasu w Polsce.
+
+Wartość `INF_VERSION` musi być taka sama w plikach:
+
+- `GM_test.html`
+- `Infoczytnik_test.html`
+
+## 3. Test po zmianach
+
+Po każdej zmianie wymagany jest test sprawdzający działanie plików testowych.
+
+Minimalny test powinien obejmować:
+
+- uruchomienie `GM_test.html`;
+- uruchomienie `Infoczytnik_test.html`;
+- wysłanie testowej wiadomości z panelu GM;
+- sprawdzenie, czy wiadomość pojawia się na ekranie odbiorcy;
+- sprawdzenie, czy wybrany layout/frakcja działa poprawnie;
+- sprawdzenie, czy dźwięk działa po uzbrojeniu audio w przeglądarce;
+- sprawdzenie konsoli lub debug overlay, jeżeli zmiana dotyczy Firebase, audio albo komunikacji między ekranami.
+
+## 4. Dokumentacja
+
+Po każdej zmianie kodu w plikach testowych należy zaktualizować dokumentację modułu:
+
+- `Infoczytnik/docs/Documentation.md`
+- `Infoczytnik/docs/README.md`
+
+`README.md` ma zawierać instrukcję obsługi dla użytkownika.
+
+`README.md` ma zawierać pełną wersję polską i pełną wersję angielską.
+
+`Documentation.md` ma zawierać dokładny opis techniczny kodu, w tym:
+
+- strukturę plików;
+- funkcje JavaScript;
+- użyte style;
+- fonty;
+- layouty;
+- strukturę danych;
+- integrację Firebase;
+- obsługę audio;
+- obsługę debug overlay;
+- zasady działania poszczególnych elementów.
+
+`Documentation.md` ma być wystarczająco szczegółowy, aby inny użytkownik lub programista mógł odtworzyć aplikację 1:1 wyłącznie na podstawie dokumentacji.
