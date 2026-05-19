@@ -1,12 +1,75 @@
 Masz dostęp do repozytorium `CuteLittleGoat/WrathAndGlory` i uprawnienia do edycji.
 
-Cel zadania: popraw dokumentację repozytorium tak, aby opisywała aktualny stan aplikacji, a nie historię zmian. Zadanie dotyczy wyłącznie dokumentacji, instrukcji użytkownika i plików README/Documentation/FirebaseREADME/Disclaimer wskazanych lub wynikających z modułów.
+Cel zadania: popraw wyłącznie pliki dokumentacyjne repozytorium tak, aby opisywały aktualny stan działającej aplikacji.
 
-Nie zmieniaj kodu aplikacji, logiki działania modułów, konfiguracji produkcyjnych ani plików danych, chyba że użytkownik osobno o to poprosi.
+Bardzo ważne: sam kod aplikacji działa poprawnie. Nie naprawiaj kodu, nie refaktoryzuj kodu, nie zmieniaj logiki działania modułów, nie poprawiaj HTML/CSS/JS/Python, nie zmieniaj konfiguracji produkcyjnych i nie zmieniaj plików danych używanych przez aplikację.
 
-## 1. Najważniejsze zasady
+Zadanie dotyczy tylko modyfikacji dokumentacji.
 
-1. Przed edycją sprawdź aktualny stan kodu modułu, którego dokumentację poprawiasz.
+Jeżeli dokumentacja jest sprzeczna z kodem, popraw dokumentację, a nie kod.
+
+Jeżeli kod działa inaczej niż dokumentacja opisuje, uznaj kod za źródło prawdy i dostosuj dokumentację do aktualnego kodu.
+
+Nie twórz, nie usuwaj i nie przenoś plików. Modyfikuj tylko istniejące pliki dokumentacyjne wskazane w tej instrukcji.
+
+## 1. Pliki, które można edytować
+
+Możesz edytować wyłącznie poniższe pliki dokumentacyjne, o ile wymagają aktualizacji:
+
+- `Main/docs/README.md`
+- `Main/docs/Documentation.md`
+
+- `DataVault/docs/README.md`
+- `DataVault/docs/Documentation.md`
+- `DataVault/docs/ZasadyFormatowania.md`
+
+- `GeneratorNPC/docs/README.md`
+- `GeneratorNPC/docs/Documentation.md`
+- `GeneratorNPC/config/FirebaseREADME.md`
+
+- `Kalkulator/docs/README.md`
+- `Kalkulator/docs/Documentation.md`
+- `Kalkulator/config/FirebaseREADME.md`
+
+- `Infoczytnik/docs/README.md`
+- `Infoczytnik/docs/Documentation.md`
+- `Infoczytnik/config/FirebaseREADME.md`
+
+- `Audio/docs/README.md`
+- `Audio/docs/Documentation.md`
+- `Audio/config/FirebaseREADME.md`
+- `Audio/Disclaimer.md`
+
+- `GeneratorNazw/docs/README.md`
+- `GeneratorNazw/docs/Documentation.md`
+- `GeneratorNazw/docs/Logika.md`
+
+- `DiceRoller/docs/README.md`
+- `DiceRoller/docs/Documentation.md`
+
+- `shared/FirebaseREADME.md`
+
+Nie edytuj żadnych innych plików.
+
+## 2. Pliki ignorowane
+
+Całkowicie zignoruj poniższe pliki. Nie analizuj ich, nie poprawiaj ich i nie ujmuj ich w podsumowaniu jako wymagających zmian:
+
+- `DetaleLayout.md`
+- `Analizy/Cleanup.md`
+- `DoZrobienia.md`
+- `Kolumny.md`
+
+Nie traktuj poniższych plików jako dokumentacji do edycji:
+
+- `Main/ZmienneHiperlacza.md`
+- `Infoczytnik/assets/data/NiebieskaRamka.md`
+
+Uwaga: `Main/ZmienneHiperlacza.md` jest używany przez `Main/index.html` jako plik konfiguracyjny do dynamicznego podstawiania linków „Mapa” i „Obrazki”. Nie edytuj tego pliku w ramach tego zadania. Dokumentacja modułu Main powinna jednak opisywać, do czego ten plik służy i jaki ma format.
+
+## 3. Ogólne zasady aktualizacji dokumentacji
+
+1. Przed edycją dokumentacji sprawdź aktualny stan kodu modułu, którego dokumentację poprawiasz.
 
 2. Nie zakładaj, że dokumentacja jest aktualna.
 
@@ -67,11 +130,41 @@ Nie zmieniaj kodu aplikacji, logiki działania modułów, konfiguracji produkcyj
 
 13. Jeżeli dokument mówi, że coś działa w określony sposób, potwierdź to w aktualnym kodzie.
 
-14. Nie opisuj funkcji, które nie istnieją w interfejsie.
+14. Nie opisuj funkcji, które nie istnieją w kodzie.
 
-15. Nie pisz użytkownikowi, że ma użyć przełącznika języka, jeśli w aktualnym kodzie przełącznik jest ukryty albo niedostępny.
+15. Jeżeli funkcja istnieje w kodzie, ale jest celowo ukryta w interfejsie, dokumentacja ma to jasno rozróżniać:
+   - użytkownik nie widzi tej funkcji w aktualnym interfejsie;
+   - mechanizm jest przygotowany w kodzie;
+   - funkcja została celowo wyłączona albo ukryta;
+   - dokumentacja techniczna ma wskazywać, gdzie i jak można ją ponownie włączyć.
 
-16. Rozróżniaj:
+16. Dotyczy to w szczególności przełącznika języka. Jeżeli w kodzie istnieje mechanizm przełączania języka, ale przełącznik jest ukryty, nie usuwaj informacji o tej funkcji z dokumentacji.
+
+17. W przypadku ukrytego przełącznika języka dokumentacja ma jasno opisywać:
+   - że mechanizm przełączania języka jest gotowy w kodzie;
+   - że przełącznik jest obecnie celowo wyłączony albo ukryty w interfejsie;
+   - że zwykły użytkownik nie widzi tego przełącznika;
+   - gdzie dokładnie w kodzie znajduje się element przełącznika;
+   - jaka klasa CSS, atrybut albo reguła ukrywa przełącznik;
+   - co dokładnie trzeba zmienić, żeby przełącznik pojawił się w interfejsie.
+
+18. W `README.md` nie pisz użytkownikowi, że ma kliknąć albo używać przełącznika języka, którego obecnie nie widzi.
+
+19. W `Documentation.md` opisz technicznie, jak przełącznik języka jest ukryty i jak właściciel repozytorium może go ponownie pokazać.
+
+20. Jeżeli przełącznik jest ukryty przez klasę `language-switcher--hidden`, opisz w dokumentacji, że ponowne pokazanie przełącznika wymaga usunięcia klasy `language-switcher--hidden` z odpowiedniego elementu HTML albo zmiany powiązanej reguły CSS, zgodnie z faktycznym kodem danego modułu.
+
+21. W dokumentacji technicznej podaj konkretną lokalizację:
+   - plik;
+   - nazwę selektora;
+   - nazwę klasy;
+   - najbliższy nagłówek, komentarz albo fragment kodu pozwalający łatwo znaleźć miejsce zmiany.
+
+22. Jeżeli dokładny numer linii może się zmienić, nie opieraj instrukcji wyłącznie na numerze linii. Podaj również selektor, klasę albo charakterystyczny fragment kodu.
+
+23. Nie zmieniaj kodu, żeby pokazać przełącznik języka. To zadanie dotyczy wyłącznie dokumentacji.
+
+24. Rozróżniaj:
    - Firestore;
    - Firebase Realtime Database;
    - lokalny JSON;
@@ -80,56 +173,49 @@ Nie zmieniaj kodu aplikacji, logiki działania modułów, konfiguracji produkcyj
    - fallback;
    - dane produkcyjne używane przez aplikację.
 
-17. Nie traktuj Firestore i Firebase Realtime Database jako tego samego mechanizmu.
+25. Nie traktuj Firestore i Firebase Realtime Database jako tego samego mechanizmu.
 
-18. Po zakończeniu zadania wypisz:
-   - które pliki zostały zmienione;
-   - jakie nieaktualne informacje usunięto;
-   - jakie aktualne zachowania opisano;
-   - które miejsca wymagały decyzji właściciela;
-   - czego celowo nie edytowano.
+26. Nie dopisuj do dokumentacji informacji o zmianach wykonanych w ramach tego zadania. Dokumentacja po poprawce ma wyglądać tak, jakby od początku opisywała aktualny stan aplikacji.
 
-## 2. Pliki ignorowane
+## 4. Main
 
-Całkowicie zignoruj poniższe pliki. Nie analizuj ich, nie poprawiaj ich i nie ujmuj ich w podsumowaniu jako wymagających zmian:
-
-- `DetaleLayout.md`
-- `Analizy/Cleanup.md`
-- `DoZrobienia.md`
-- `Kolumny.md`
-
-Nie traktuj jako dokumentacji użytkowej poniższych plików danych albo konfiguracji:
-
-- `Main/ZmienneHiperlacza.md`
-- `Infoczytnik/assets/data/NiebieskaRamka.md`
-
-Nie przerabiaj ich na dokumentację.
-
-## 3. Main
-
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `Main/docs/README.md`
 - `Main/docs/Documentation.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem i plikami używanymi przez moduł:
 
 - `Main/index.html`
 - `manifest.webmanifest`
 - `service-worker.js`, jeżeli istnieje
+- `Main/ZmienneHiperlacza.md`
+
+Nie modyfikuj plików:
+
+- `Main/index.html`
+- `manifest.webmanifest`
+- `service-worker.js`
+- `Main/ZmienneHiperlacza.md`
 
 Wykryty problem:
 
-- dokumentacja Main opisuje rootowy `service-worker.js` jako globalny mechanizm cache/fetch i sugeruje tryb offline;
-- aktualny `Main/index.html` zawiera mechanizm online-only i wyrejestrowuje stare Service Workery przez `navigator.serviceWorker.getRegistrations().then(...unregister())`.
+- dokumentacja Main może opisywać rootowy `service-worker.js` jako globalny mechanizm cache/fetch i sugerować tryb offline;
+- aktualny `Main/index.html` zawiera mechanizm online-only i wyrejestrowuje stare Service Workery;
+- `Main/ZmienneHiperlacza.md` jest używany przez `Main/index.html` jako plik konfiguracyjny dla linków „Mapa” i „Obrazki”, więc dokumentacja powinna opisywać jego rolę, ale sam plik nie powinien być zmieniany.
 
 Zadanie:
 
-1. Popraw opis PWA, manifestu i Service Workera.
+1. Popraw opis PWA, manifestu i Service Workera w dokumentacji.
 2. Opisz aktualny stan: aplikacja działa online-only, jeśli kod nadal wyrejestrowuje Service Workery.
 3. Nie pisz, że aplikacja działa offline, jeśli aktualny kod tego nie wspiera.
 4. Jeżeli manifest PWA nadal istnieje, opisz go jako element instalacji/trybu standalone, a nie dowód obsługi offline.
-5. W `README.md` opisz użytkownikowi:
+5. Opisz w dokumentacji rolę `Main/ZmienneHiperlacza.md`:
+   - plik jest używany przez `Main/index.html`;
+   - zawiera linki dla przycisków „Mapa” i „Obrazki”;
+   - oczekiwany format wpisów to linie zaczynające się od `Mapa:` i `Obrazki:`;
+   - brak pliku, brak wpisu albo błędny format powoduje, że dynamiczne linki nie zostaną poprawnie podstawione.
+6. W `README.md` opisz użytkownikowi:
    - do czego służy strona główna;
    - czym różni się widok zwykły od widoku administratora;
    - jak wejść w tryb administratora;
@@ -137,22 +223,22 @@ Zadanie:
    - które przyciski są widoczne dla administratora;
    - jak działają linki do mapy i obrazków;
    - co zrobić, jeśli link mapy albo obrazków nie działa.
-6. W `Documentation.md` opisz technicznie:
+7. W `Documentation.md` opisz technicznie:
    - strukturę `Main/index.html`;
    - obsługę parametru `admin=1`;
-   - dynamiczne ładowanie linków z `ZmienneHiperlacza.md`;
+   - dynamiczne ładowanie linków z `Main/ZmienneHiperlacza.md`;
    - aktualny mechanizm PWA/online-only;
    - brak bezpośredniej integracji Firebase, jeżeli kod tego nie używa.
 
-## 4. DataVault
+## 5. DataVault
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `DataVault/docs/README.md`
 - `DataVault/docs/Documentation.md`
 - `DataVault/docs/ZasadyFormatowania.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `DataVault/index.html`
 - `DataVault/app.js`
@@ -160,6 +246,8 @@ Porównaj z aktualnym kodem:
 - `DataVault/xlsxCanonicalParser.js`
 - `shared/firebase-data-loader.js`
 - `shared/FirebaseREADME.md`
+
+Nie modyfikuj kodu ani plików danych DataVault.
 
 Wykryty problem:
 
@@ -180,7 +268,8 @@ Zadanie:
 3. Jeżeli `Repozytorium.xlsx`, `build_json.py`, `xlsxCanonicalParser.js`, `data.json` albo `firebase-import.json` pełnią rolę narzędzi importu, generowania, eksportu lub backupu, opisz je jako takie.
 4. Nie opisuj `data.json` jako aktualnego produkcyjnego źródła danych, jeżeli aktualny kod tak nie działa.
 5. Popraw opis `firebase-import.json`, jeśli jest używany jako plik importu do Firebase.
-6. W `README.md` wyjaśnij użytkownikowi:
+6. Sprawdź, czy moduł ma przygotowany mechanizm przełączania języka, który jest celowo ukryty. Jeśli tak, opisz to zgodnie z zasadami z sekcji ogólnej.
+7. W `README.md` wyjaśnij użytkownikowi:
    - jak uruchomić DataVault;
    - czym różni się widok zwykły od admina;
    - jak korzystać z tabel;
@@ -190,8 +279,9 @@ Zadanie:
    - jak działa sortowanie;
    - jak działa podgląd szczegółów;
    - jak działa porównywanie rekordów;
-   - co zrobić przy braku danych albo błędzie ładowania.
-7. W `Documentation.md` opisz technicznie:
+   - co zrobić przy braku danych albo błędzie ładowania;
+   - czy przełącznik języka jest obecnie widoczny dla użytkownika.
+8. W `Documentation.md` opisz technicznie:
    - strukturę plików modułu;
    - zależności od wspólnych plików;
    - faktyczne źródło danych;
@@ -201,28 +291,32 @@ Zadanie:
    - integrację Firebase;
    - fallbacki;
    - zasady formatowania tekstu;
-   - mechanikę filtrów, sortowania, zakładek i modali.
-8. `ZasadyFormatowania.md` popraw tylko wtedy, gdy opisuje nieaktualne markery, kolory, wyjątki formatowania albo zasady renderowania danych.
+   - mechanikę filtrów, sortowania, zakładek i modali;
+   - mechanizm przełączania języka, jeśli istnieje w kodzie, wraz ze wskazaniem, jak jest ukryty i jak można go ponownie pokazać.
+9. `ZasadyFormatowania.md` popraw tylko wtedy, gdy opisuje nieaktualne markery, kolory, wyjątki formatowania albo zasady renderowania danych.
 
-## 5. GeneratorNPC
+## 6. GeneratorNPC
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `GeneratorNPC/docs/README.md`
 - `GeneratorNPC/docs/Documentation.md`
 - `GeneratorNPC/config/FirebaseREADME.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `GeneratorNPC/index.html`
 - `shared/firebase-data-loader.js`
 - `shared/FirebaseREADME.md`
 
+Nie modyfikuj kodu GeneratorNPC.
+
 Wykryty problem:
 
 - dokumentacja może nadal opisywać `../DataVault/data.json` albo `DATA_URL = "../DataVault/data.json"` jako aktualne główne źródło danych;
 - dokumentacja miesza opis publicznego JSON, prywatnych danych Firebase i zapisu ulubionych;
-- trzeba oddzielić dane główne NPC od ulubionych/zapisów użytkownika.
+- trzeba oddzielić dane główne NPC od ulubionych/zapisów użytkownika;
+- mechanizm przełączania języka może być przygotowany w kodzie, ale celowo ukryty w interfejsie.
 
 Zadanie:
 
@@ -237,14 +331,16 @@ Zadanie:
    - fallbacku;
    - kilku mechanizmów naraz.
 5. Usuń albo przeredaguj nieaktualne wzmianki o `DATA_URL = "../DataVault/data.json"`, jeśli kod już tego nie używa.
-6. W `README.md` opisz użytkownikowi:
+6. Sprawdź, czy przełącznik języka jest ukryty przez klasę `language-switcher--hidden`, atrybut albo regułę CSS.
+7. W `README.md` opisz użytkownikowi:
    - jak uruchomić moduł;
    - jak wygenerować NPC;
    - jakie opcje można wybrać;
    - jak działają filtry;
    - jak działają ulubione albo zapisy, jeśli są dostępne;
-   - co zrobić, jeśli dane nie załadują się poprawnie.
-7. W `Documentation.md` opisz technicznie:
+   - co zrobić, jeśli dane nie załadują się poprawnie;
+   - że przełącznik języka nie jest obecnie widoczny, jeśli jest celowo ukryty.
+8. W `Documentation.md` opisz technicznie:
    - źródło danych głównych;
    - strukturę danych;
    - integrację Firebase;
@@ -252,22 +348,27 @@ Zadanie:
    - fallbacki;
    - zależności od wspólnych plików;
    - funkcje generujące wynik;
-   - renderowanie karty NPC.
-8. Jeżeli przełącznik języka jest ukryty w aktualnym kodzie, nie opisuj go jako elementu dostępnego dla użytkownika.
+   - renderowanie karty NPC;
+   - gdzie znajduje się mechanizm przełączania języka;
+   - jaka klasa, atrybut albo reguła CSS ukrywa przełącznik;
+   - co dokładnie trzeba zmienić, aby przełącznik pojawił się w interfejsie.
+9. Nie zmieniaj kodu, żeby pokazać przełącznik języka.
 
-## 6. Kalkulator
+## 7. Kalkulator
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `Kalkulator/docs/README.md`
 - `Kalkulator/docs/Documentation.md`
 - `Kalkulator/config/FirebaseREADME.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `Kalkulator/index.html`
 - `Kalkulator/TworzeniePostaci.html`
 - pliki w `Kalkulator/config/`
+
+Nie modyfikuj kodu Kalkulatora.
 
 Wykryty problem:
 
@@ -284,7 +385,8 @@ Zadanie:
    - wczytywanie stanu postaci;
    - konfigurację Firebase;
    - zachowanie przy błędzie Firebase.
-3. W `README.md` opisz użytkownikowi:
+3. Sprawdź, czy moduł ma przygotowany mechanizm przełączania języka, który jest celowo ukryty. Jeśli tak, opisz to zgodnie z zasadami z sekcji ogólnej.
+4. W `README.md` opisz użytkownikowi:
    - jak wejść do kalkulatora;
    - jak używać kreatora postaci;
    - jak działają pola XP/PD;
@@ -294,8 +396,9 @@ Zadanie:
    - jak działa zapis;
    - jak działa wczytywanie;
    - co się stanie, gdy Firebase nie jest skonfigurowany albo zapis się nie uda;
-   - jak otworzyć instrukcję PDF, jeśli moduł ją udostępnia.
-4. W `Documentation.md` opisz technicznie:
+   - jak otworzyć instrukcję PDF, jeśli moduł ją udostępnia;
+   - czy przełącznik języka jest obecnie widoczny dla użytkownika.
+5. W `Documentation.md` opisz technicznie:
    - strukturę plików;
    - kalkulacje XP/PD;
    - walidacje;
@@ -303,22 +406,25 @@ Zadanie:
    - integrację Firestore;
    - konfigurację Firebase;
    - zapis i odczyt stanu postaci;
-   - fallbacki i obsługę błędów.
-5. Usuń sekcje changelogowe.
-6. Nie pisz „dodano przycisk”, „zmieniono XP na PD” ani podobnych historii. Opisz aktualny interfejs.
+   - fallbacki i obsługę błędów;
+   - mechanizm przełączania języka, jeśli istnieje w kodzie, wraz ze wskazaniem, jak jest ukryty i jak można go ponownie pokazać.
+6. Usuń sekcje changelogowe.
+7. Nie pisz „dodano przycisk”, „zmieniono XP na PD” ani podobnych historii. Opisz aktualny interfejs.
 
-## 7. Infoczytnik
+## 8. Infoczytnik
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `Infoczytnik/docs/README.md`
 - `Infoczytnik/docs/Documentation.md`
 - `Infoczytnik/config/FirebaseREADME.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `Infoczytnik/GM_test.html`
 - `Infoczytnik/Infoczytnik_test.html`
+
+Nie modyfikuj kodu Infoczytnika.
 
 Nie edytuj:
 
@@ -326,6 +432,8 @@ Nie edytuj:
 - `Infoczytnik/Infoczytnik.html`
 - `Infoczytnik/GM_backup.html`
 - `Infoczytnik/Infoczytnik_backup.html`
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
 
 Wykryty problem:
 
@@ -340,7 +448,8 @@ Zadanie:
 2. Popraw dokumentację tak, aby wersja zgadzała się z kodem.
 3. Sprawdź aktualną strukturę danych zapisywaną i odczytywaną przez moduł.
 4. Usuń albo przeredaguj opis `aliases`, jeśli aktualny kod go nie używa.
-5. W `README.md` opisz użytkownikowi:
+5. Sprawdź, czy moduł ma przygotowany mechanizm przełączania języka, który jest celowo ukryty. Jeśli tak, opisz to zgodnie z zasadami z sekcji ogólnej.
+6. W `README.md` opisz użytkownikowi:
    - do czego służy Infoczytnik;
    - czym różni się panel GM od ekranu gracza;
    - jak wysłać wiadomość;
@@ -348,10 +457,11 @@ Zadanie:
    - jak działają dźwięki;
    - jak działa uzbrajanie audio po stronie odbiornika;
    - jak działa tryb debug;
-   - co zrobić, jeśli wiadomość albo dźwięk się nie pojawia.
-6. W `Documentation.md` opisz technicznie:
+   - co zrobić, jeśli wiadomość albo dźwięk się nie pojawia;
+   - czy przełącznik języka jest obecnie widoczny dla użytkownika.
+7. W `Documentation.md` opisz technicznie:
    - strukturę plików testowych;
-   - aktualne ograniczenia edycji plików produkcyjnych i backupów bez ich modyfikowania;
+   - ograniczenia edycji plików produkcyjnych i backupów bez ich modyfikowania;
    - `INF_VERSION`;
    - strukturę danych w Firestore;
    - funkcje wysyłania i odbioru wiadomości;
@@ -359,34 +469,39 @@ Zadanie:
    - obsługę layoutów;
    - debug overlay;
    - fallbacki;
-   - testy regresyjne.
-7. Nie zmieniaj plików produkcyjnych ani backupów.
+   - testy regresyjne;
+   - mechanizm przełączania języka, jeśli istnieje w kodzie, wraz ze wskazaniem, jak jest ukryty i jak można go ponownie pokazać.
+8. Nie zmieniaj żadnych plików HTML Infoczytnika. To zadanie dotyczy wyłącznie dokumentacji.
 
-## 8. Audio
+## 9. Audio
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `Audio/docs/README.md`
 - `Audio/docs/Documentation.md`
 - `Audio/config/FirebaseREADME.md`
 - `Audio/Disclaimer.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `Audio/index.html`
 - pliki w `Audio/config/`
 - katalogi z plikami audio, jeżeli są używane przez moduł
 
+Nie modyfikuj kodu Audio ani plików audio.
+
 Wykryty problem:
 
-- część README może opisywać przełącznik języka jako dostępny w prawym górnym rogu, mimo że w kodzie przełącznik może być ukryty;
+- mechanizm przełączania języka może być przygotowany w kodzie, ale celowo ukryty w interfejsie;
+- dokumentacja powinna jasno mówić, że użytkownik obecnie nie widzi przełącznika, jeżeli jest ukryty;
+- dokumentacja techniczna powinna wskazywać, gdzie znajduje się kod przełącznika i co trzeba zmienić, aby go pokazać;
 - trzeba sprawdzić aktualny sposób wyboru języka, tryb admina i integrację Firebase;
-- trzeba upewnić się, że dokumentacja nie opisuje starych lub niedostępnych funkcji.
+- trzeba upewnić się, że dokumentacja nie opisuje starych lub niedostępnych funkcji jako dostępnych dla użytkownika.
 
 Zadanie:
 
 1. Sprawdź, czy przełącznik języka jest widoczny dla użytkownika.
-2. Jeżeli jest ukryty, usuń z README instrukcje każące użytkownikowi go używać.
+2. Jeżeli jest ukryty, nie usuwaj informacji o mechanizmie językowym. Opisz, że funkcja jest przygotowana, ale celowo wyłączona w interfejsie.
 3. Sprawdź, jak działa tryb zwykły i tryb administratora.
 4. Sprawdź, czy Audio używa Firebase, Firestore, Realtime Database albo plików konfiguracyjnych.
 5. W `README.md` opisz użytkownikowi:
@@ -396,7 +511,8 @@ Zadanie:
    - jak dodawać albo wybierać dźwięki, jeśli interfejs to wspiera;
    - jak działają kategorie;
    - jak działają komunikaty błędów;
-   - co zrobić, jeśli przeglądarka blokuje odtwarzanie.
+   - co zrobić, jeśli przeglądarka blokuje odtwarzanie;
+   - że przełącznik języka nie jest obecnie widoczny, jeśli jest celowo ukryty.
 6. W `Documentation.md` opisz technicznie:
    - strukturę plików;
    - logikę odtwarzania;
@@ -404,90 +520,115 @@ Zadanie:
    - integrację Firebase, jeśli występuje;
    - konfigurację;
    - obsługę trybu admin;
-   - fallbacki i błędy.
+   - fallbacki i błędy;
+   - gdzie znajduje się mechanizm przełączania języka;
+   - jaka klasa, atrybut albo reguła CSS ukrywa przełącznik;
+   - co dokładnie trzeba zmienić, aby przełącznik pojawił się w interfejsie.
 7. `Audio/Disclaimer.md` popraw tylko wtedy, gdy zawiera nieaktualne lub niejasne informacje względem aktualnego działania modułu.
+8. Nie zmieniaj kodu, żeby pokazać przełącznik języka.
 
-## 9. GeneratorNazw
+## 10. GeneratorNazw
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `GeneratorNazw/docs/README.md`
 - `GeneratorNazw/docs/Documentation.md`
-- `GeneratorNazw/docs/Logika.md`, jeżeli istnieje i jest aktualną dokumentacją modułu
+- `GeneratorNazw/docs/Logika.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `GeneratorNazw/index.html`
 
+Nie modyfikuj kodu GeneratorNazw.
+
 Wykryty problem:
 
-- README może opisywać przełącznik języka jako dostępny dla użytkownika, mimo że w kodzie przełącznik może być ukryty klasą `language-switcher--hidden`.
+- mechanizm przełączania języka może być przygotowany w kodzie, ale celowo ukryty w interfejsie, np. przez klasę `language-switcher--hidden`;
+- dokumentacja powinna opisywać ten stan jako gotową, ale wyłączoną funkcję, a nie jako błąd.
 
 Zadanie:
 
 1. Sprawdź aktualny interfejs.
-2. Jeżeli przełącznik języka jest ukryty, usuń z README instrukcję używania go.
-3. W `README.md` opisz użytkownikowi:
+2. Sprawdź, czy przełącznik języka jest ukryty przez klasę `language-switcher--hidden`, atrybut albo regułę CSS.
+3. Jeżeli przełącznik języka jest ukryty, opisz, że:
+   - mechanizm przełączania języka jest przygotowany;
+   - przełącznik jest obecnie celowo ukryty w interfejsie;
+   - użytkownik obecnie go nie widzi;
+   - właściciel repozytorium może go pokazać przez usunięcie odpowiedniej klasy albo zmianę reguły CSS.
+4. W `README.md` opisz użytkownikowi:
    - do czego służy generator;
    - jak wybrać płeć/typ/imiona/nazwiska, jeśli takie opcje istnieją;
    - jak wygenerować wynik;
    - jak czytać listę wyników;
-   - co zrobić, jeśli wynik się nie pojawia.
-4. W `Documentation.md` opisz technicznie:
+   - co zrobić, jeśli wynik się nie pojawia;
+   - że przełącznik języka nie jest obecnie widoczny, jeśli jest celowo ukryty.
+5. W `Documentation.md` opisz technicznie:
    - strukturę pliku;
    - dane wejściowe;
    - listy nazw;
    - funkcje losujące;
    - renderowanie wyników;
    - obsługę języka, jeśli istnieje;
-   - style i layout.
-5. `Logika.md` nie może być sprzeczny z aktualnym kodem. Jeżeli zawiera stare założenia, popraw go albo wyraźnie ogranicz do aktualnej logiki.
+   - style i layout;
+   - gdzie znajduje się mechanizm przełączania języka;
+   - jaka klasa, atrybut albo reguła CSS ukrywa przełącznik;
+   - co dokładnie trzeba zmienić, aby przełącznik pojawił się w interfejsie.
+6. `Logika.md` nie może być sprzeczny z aktualnym kodem. Jeżeli zawiera stare założenia, popraw go albo ogranicz jego treść do aktualnej logiki.
+7. Nie zmieniaj kodu, żeby pokazać przełącznik języka.
 
-## 10. DiceRoller
+## 11. DiceRoller
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `DiceRoller/docs/README.md`
 - `DiceRoller/docs/Documentation.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `DiceRoller/index.html`
 - `DiceRoller/script.js`
 - `DiceRoller/style.css`, jeśli istnieje
 
+Nie modyfikuj kodu DiceRoller.
+
 Zadanie:
 
 1. Sprawdź aktualną funkcjonalność rzutu kośćmi.
-2. W `README.md` opisz użytkownikowi:
+2. Sprawdź, czy moduł ma przygotowany mechanizm przełączania języka, który jest celowo ukryty. Jeśli tak, opisz to zgodnie z zasadami z sekcji ogólnej.
+3. W `README.md` opisz użytkownikowi:
    - jak wykonać rzut;
    - jakie kości albo pule są obsługiwane;
    - jak czytać wynik;
    - czy są modyfikatory;
    - czy są automatyczne sukcesy/porażki/ikony;
-   - co zrobić przy błędnym wejściu.
-3. W `Documentation.md` opisz technicznie:
+   - co zrobić przy błędnym wejściu;
+   - czy przełącznik języka jest obecnie widoczny dla użytkownika.
+4. W `Documentation.md` opisz technicznie:
    - strukturę plików;
    - parser wejścia;
    - funkcje losujące;
    - strukturę wyniku;
    - renderowanie historii;
    - obsługę błędów;
-   - style i layout.
-4. Usuń historię zmian, jeśli występuje.
-5. Nie opisuj funkcji, których nie ma w aktualnym kodzie.
+   - style i layout;
+   - mechanizm przełączania języka, jeśli istnieje w kodzie, wraz ze wskazaniem, jak jest ukryty i jak można go ponownie pokazać.
+5. Usuń historię zmian, jeśli występuje.
+6. Nie opisuj funkcji, których nie ma w aktualnym kodzie.
+7. Nie zmieniaj kodu, żeby pokazać przełącznik języka.
 
-## 11. Shared Firebase
+## 12. Shared Firebase
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `shared/FirebaseREADME.md`
 
-Porównaj z aktualnym kodem:
+Porównaj dokumentację z aktualnym kodem:
 
 - `shared/firebase-data-loader.js`
 - `shared/firebase-config.js`, jeśli istnieje
 - moduły korzystające ze wspólnego loadera
+
+Nie modyfikuj kodu wspólnego loadera ani konfiguracji.
 
 Zadanie:
 
@@ -503,79 +644,78 @@ Zadanie:
 4. Nie pisz ogólnie „Firebase”, jeśli trzeba rozróżnić Firestore i Realtime Database.
 5. Usuń nieaktualne wzmianki o plikach importu albo lokalnych JSON-ach jako produkcyjnym źródle danych, jeżeli aktualny loader tak nie działa.
 
-## 12. Pliki FirebaseREADME w modułach
+## 13. Pliki FirebaseREADME w modułach
 
-Sprawdź i popraw:
+Sprawdź i popraw wyłącznie dokumentację:
 
 - `Kalkulator/config/FirebaseREADME.md`
 - `GeneratorNPC/config/FirebaseREADME.md`
 - `Infoczytnik/config/FirebaseREADME.md`
 - `Audio/config/FirebaseREADME.md`
 
+Porównaj każdy plik z aktualnym kodem danego modułu.
+
+Nie modyfikuj plików konfiguracyjnych Firebase ani kodu modułów.
+
 Zadanie:
 
-1. Porównaj każdy plik z aktualnym kodem danego modułu.
-2. Ustal, czy moduł korzysta z:
+1. Ustal, czy moduł korzysta z:
    - Firestore;
    - Firebase Realtime Database;
    - Authentication;
    - plików lokalnych;
    - fallbacków.
-3. Popraw nazewnictwo usług Firebase.
-4. Nie mieszaj Firestore i Realtime Database.
-5. Opisz konfigurację potrzebną użytkownikowi albo administratorowi.
-6. Usuń informacje o nieistniejących plikach, kolekcjach, ścieżkach albo funkcjach.
-7. Nie dodawaj historii zmian.
-
-## 13. Pozostałe pliki dokumentacyjne wykryte w repozytorium
-
-Poza plikami wymienionymi wyżej wyszukaj dokumentację po wzorcach:
-
-- `docs/README.md`
-- `docs/Documentation.md`
-- `FirebaseREADME.md`
-- `README.md`
-- `Disclaimer.md`
-
-Popraw tylko te pliki, które są rzeczywiście dokumentacją użytkową, techniczną lub konfiguracyjną.
-
-Nie poprawiaj plików z listy ignorowanych.
-
-Nie poprawiaj plików danych ani treści fabularnych, które tylko mają rozszerzenie `.md`.
+2. Popraw nazewnictwo usług Firebase.
+3. Nie mieszaj Firestore i Realtime Database.
+4. Opisz konfigurację potrzebną użytkownikowi albo administratorowi.
+5. Usuń informacje o nieistniejących plikach, kolekcjach, ścieżkach albo funkcjach.
+6. Nie dodawaj historii zmian.
 
 ## 14. Kontrola jakości po poprawkach
 
-Po edycji wykonaj kontrolę:
+Po edycji wykonaj kontrolę dokumentacji.
 
-1. Wyszukaj w dokumentacji wystąpienia:
-   - `wcześniej`
-   - `dodano`
-   - `zmieniono`
-   - `stara wersja`
-   - `nowa wersja`
-   - `po migracji`
-   - `DATA_URL`
-   - `../DataVault/data.json`
-   - `nie ma backendu`
-   - `offline`
-   - `Service Worker`
-   - `Firestore`
-   - `Realtime Database`
-   - `language-switcher--hidden`
+Wyszukaj w edytowanych plikach dokumentacyjnych wystąpienia:
 
-2. Dla każdego wystąpienia oceń, czy jest aktualne i potrzebne.
+- `wcześniej`
+- `dodano`
+- `zmieniono`
+- `stara wersja`
+- `nowa wersja`
+- `po migracji`
+- `DATA_URL`
+- `../DataVault/data.json`
+- `nie ma backendu`
+- `offline`
+- `Service Worker`
+- `Firestore`
+- `Realtime Database`
+- `language-switcher--hidden`
+- `przełącznik języka`
+- `language switcher`
 
-3. Usuń albo przeredaguj nieaktualne fragmenty.
+Dla każdego wystąpienia oceń, czy jest aktualne i potrzebne.
 
-4. Sprawdź, czy README użytkowe mają pełną sekcję PL i pełną sekcję EN.
+Usuń albo przeredaguj nieaktualne fragmenty.
 
-5. Sprawdź, czy dokumenty techniczne nie są tylko listą zmian.
+Sprawdź, czy README użytkowe mają pełną sekcję PL i pełną sekcję EN.
 
-6. Sprawdź, czy dokumentacja nie opisuje funkcji ukrytych albo niedostępnych w interfejsie.
+Sprawdź, czy dokumenty techniczne nie są tylko listą zmian.
 
-7. Sprawdź, czy dokumentacja nie myli Firestore z Firebase Realtime Database.
+Sprawdź, czy dokumentacja nie myli Firestore z Firebase Realtime Database.
 
-8. Sprawdź, czy nie zmieniono plików z listy ignorowanych.
+Sprawdź, czy dokumentacja poprawnie rozróżnia:
+- funkcje dostępne dla użytkownika;
+- funkcje istniejące w kodzie, ale celowo ukryte w interfejsie.
+
+Jeżeli przełącznik języka jest ukryty, dokumentacja ma mówić:
+- że użytkownik obecnie go nie widzi;
+- że mechanizm jest przygotowany;
+- gdzie w kodzie jest ukryty;
+- jaka klasa, atrybut albo reguła CSS go ukrywa;
+- co trzeba zmienić, żeby go pokazać.
+
+Sprawdź, czy nie zmieniono żadnych plików spoza listy dozwolonych plików dokumentacyjnych.
 
 ## 15. Oczekiwany rezultat
 
@@ -585,4 +725,18 @@ Użytkownik czytający README powinien wiedzieć, jak korzystać z modułu.
 
 Programista czytający Documentation powinien wiedzieć, jak moduł działa technicznie i jak go odtworzyć.
 
-Dokumentacja nie powinna zawierać historii zmian, nieaktualnych źródeł danych, nieistniejących funkcji ani instrukcji używania ukrytych elementów interfejsu.
+Dokumentacja nie powinna zawierać historii zmian, nieaktualnych źródeł danych ani nieistniejących funkcji.
+
+Jeżeli funkcja istnieje w kodzie, ale jest celowo ukryta w interfejsie, dokumentacja ma to jasno opisywać i wskazywać, jak właściciel repozytorium może ją ponownie włączyć przez zmianę odpowiedniej klasy, selektora, atrybutu albo reguły CSS.
+
+Kod aplikacji, konfiguracje produkcyjne i pliki danych mają pozostać bez zmian.
+
+W podsumowaniu końcowym wypisz:
+
+1. zmienione pliki;
+2. najważniejsze usunięte nieaktualne informacje;
+3. najważniejsze dopisane lub poprawione aktualne informacje;
+4. pliki pominięte celowo;
+5. ewentualne miejsca wymagające decyzji właściciela repozytorium;
+6. potwierdzenie, że nie zmieniono kodu aplikacji ani plików danych;
+7. potwierdzenie, że ukryte przełączniki języka, jeśli występują, zostały opisane jako funkcje przygotowane, ale celowo wyłączone w interfejsie.
