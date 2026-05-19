@@ -6,6 +6,8 @@
 Moduł **Audio** służy do szybkiego odtwarzania efektów dźwiękowych (SFX) podczas sesji. Możesz korzystać z gotowego widoku gracza albo z rozszerzonego widoku prowadzącego (admina), w którym ustawiasz listy i kolejność dźwięków.
 
 ### Jak otworzyć moduł
+Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma przygotowaną obsługę tekstów PL/EN, ale użytkownik korzysta z aktualnie widocznej wersji interfejsu bez ręcznej zmiany języka.
+
 1. Otwórz `Audio/index.html`.
 2. Jeśli chcesz zwykły widok odtwarzania, pozostaw adres bez zmian.
 3. Jeśli chcesz pełny panel zarządzania, dopisz w adresie: `?admin=1`.
@@ -13,7 +15,6 @@ Moduł **Audio** służy do szybkiego odtwarzania efektów dźwiękowych (SFX) p
 ### Co zobaczysz w widoku użytkownika (bez `?admin=1`)
 - Panel **Nawigacja** (po lewej) z wyborem listy.
 - Panel **dźwięków** (po prawej) z przyciskami odtwarzania.
-- Przełącznik języka dla opisów panelu.
 
 ### Jak odtwarzać dźwięki (widok użytkownika)
 1. W panelu nawigacji kliknij **Widok główny** albo wybraną listę ulubionych.
@@ -101,6 +102,8 @@ The language switcher is currently hidden; the place to reveal it is marked with
 The **Audio** module lets you quickly play sound effects (SFX) during sessions. You can use a simple player view or the extended admin view to manage lists and ordering.
 
 ### How to open the module
+The language switcher is currently hidden in the user interface. The module contains prepared PL/EN text support, but the user works with the currently visible interface without manually switching language.
+
 1. Open `Audio/index.html`.
 2. For standard playback mode, keep the URL as is.
 3. For the full management panel, append: `?admin=1`.

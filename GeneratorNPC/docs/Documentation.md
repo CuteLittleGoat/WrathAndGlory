@@ -1,15 +1,47 @@
 # Generator NPC — dokumentacja techniczna (pełny opis)
 
 ## 1. Cel aplikacji i ogólny opis
-Aplikacja to statyczny frontend (HTML + CSS + JS) służący do przeglądania danych NPC oraz generowania karty postaci do druku na podstawie rekordów z pliku JSON. Dane są pobierane z publicznego źródła (URL), a interfejs umożliwia:
-- wybór rekordu bestiariusza jako bazowej postaci,
-- wybór wielu pozycji z modułów (broń, pancerz, augumentacje, ekwipunek, talenty, psionika, modlitwy),
-- podgląd danych w tabelach,
-- generowanie karty do druku z uwzględnieniem wybranych modułów oraz notatek użytkownika.
 
-Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypcie osadzonym w `index.html`, a wygląd w `style.css`.
+Generator NPC jest narzędziem do losowania, modyfikowania i zapisu profili postaci niezależnych. Interfejs działa po stronie przeglądarki, a dane źródłowe są pobierane z prywatnego zasobu DataVault przez Firebase.
 
----
+## Źródło danych
+
+GeneratorNPC nie korzysta obecnie z publicznego pliku `../DataVault/data.json` jako głównego źródła danych.
+
+Aktualny przepływ danych wygląda następująco:
+
+1. Strona ładuje `../shared/firebase-config.js`.
+2. Strona ładuje `../shared/firebase-data-loader.js`.
+3. Loader inicjalizuje nazwaną aplikację Firebase `wh40k-data-slate-private-data`.
+4. Użytkownik przechodzi ekran dostępu K.O.Z.A. i loguje się hasłem technicznego konta Firebase Authentication.
+5. Po autoryzacji loader odczytuje Realtime Database ze ścieżki `datavault/live`.
+6. Jeżeli odczytany obiekt jest wrapperem `datavault-firebase-import-v1`, loader parsuje pole `dataJson`.
+7. GeneratorNPC oczekuje finalnego obiektu danych zawierającego `sheets`.
+8. Z `sheets` budowane są kolekcje: bestiariusz, pancerze, bronie, augumentacje, ekwipunek, talenty, psionika i modlitwy.
+
+## Ekran dostępu
+
+Moduł pokazuje ekran dostępu przed załadowaniem prywatnych danych. Teksty ekranu używają motywu K.O.Z.A. i Rytuału Uwierzytelnienia.
+
+Najważniejsze elementy ekranu:
+- tytuł: „Dostęp do danych z klauzulą tajności K.O.Z.A.”,
+- opis informujący o Litanii Dostępu i Rytuale Uwierzytelnienia,
+- pole hasła `accessPassword`,
+- przycisk „Rozpocznij Rytuał”,
+- pole błędu `accessError`.
+
+Błędy dostępu są tłumaczone przez `getReadableAccessError` ze wspólnego loadera Firebase.
+
+## Ulubione profile NPC
+
+Ulubione profile NPC są niezależne od prywatnego DataVault.
+
+Jeżeli `GeneratorNPC/config/firebase-config.js` zawiera poprawne `window.firebaseConfig`, moduł tworzy osobną nazwaną aplikację Firebase `generator-npc-favorites` i zapisuje ulubione w Firestore:
+
+`generatorNpc/favorites`
+
+Jeżeli Firestore nie jest dostępny albo konfiguracja nie istnieje, moduł przechodzi na lokalny zapis w `localStorage` pod kluczem `generatorNpcFavorites`.
+
 
 ## 2. Struktura projektu
 - `index.html` — główny dokument HTML (tytuł karty: `Generator NPC`), zawiera szkielet UI oraz cały skrypt JS.

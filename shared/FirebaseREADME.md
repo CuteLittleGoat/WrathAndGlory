@@ -1,6 +1,8 @@
 # 🇵🇱 Instrukcja Firebase dla folderu `shared/` (PL)
 
 ## Cel
+Ten dokument dotyczy wyłącznie wspólnego źródła prywatnych danych DataVault używanego przez moduły korzystające z `shared/firebase-data-loader.js`. Nie opisuje Firestore dla ulubionych GeneratorNPC ani Firestore dla modułu Audio.
+
 Ten plik zawiera pełny skrypt Node.js tworzący strukturę **Realtime Database** wymaganą przez wspólny loader danych (`shared/firebase-data-loader.js`).
 
 ## 1) Konfiguracja `shared/firebase-config.js`
@@ -82,6 +84,8 @@ node shared/init-rtdb-datavault-live.js
 # 🇬🇧 Firebase guide for `shared/` folder (EN)
 
 ## Purpose
+This document applies only to the shared private DataVault data source used by modules that rely on `shared/firebase-data-loader.js`. It does not describe GeneratorNPC favorites Firestore or Audio module Firestore.
+
 This file includes a full Node.js script that creates the **Realtime Database** structure required by the shared data loader.
 
 ## 1) `shared/firebase-config.js`

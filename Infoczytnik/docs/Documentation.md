@@ -36,20 +36,46 @@ Pliki produkcyjne (`GM.html`, `Infoczytnik.html`) są utrzymywane osobno i nie s
 - Dzięki temu operator przed publikacją kontroluje czytelność, kontrast i finalny układ.
 
 ## 4. Model danych (payload komunikatu)
-Minimalny payload wysyłany do Firestore/odczytu powinien zawierać:
-- `title` — nagłówek komunikatu,
-- `content` — treść główna,
-- `backgroundKey` — identyfikator tła,
-- `frameKey` — identyfikator ramki,
-- `logoKey` — identyfikator logo,
-- `fontFamily` — font wybrany przez GM,
-- `updatedAt` — znacznik czasu publikacji,
-- `version` / `INF_VERSION` — wersja interfejsu testowego.
 
-Dodatkowe pola (opcjonalne):
-- flagi trybu podglądu,
-- metadane importu arkusza,
-- ustawienia dodatkowego formatowania.
+Panel `GM_test.html` zapisuje do Firestore pełny snapshot bieżącego komunikatu. Zapis jest wykonywany przez `currentRef.set(getPayload(type), { merge: false })`.
+
+Aktualny payload zawiera następujące pola:
+
+```text
+type: string
+text: string
+backgroundId: string albo null
+backgroundFile: string
+logoId: string albo null
+logoFile: string
+fillerId: string albo null
+fillerSet: string
+fontId: string albo null
+fontPreset: string
+messageAudioId: string albo null
+messageAudioFile: string
+fillersEnabled: boolean
+audioEnabled: boolean
+showLogo: boolean
+movingOverlay: boolean
+flicker: boolean
+prefixLines: tablica stringów
+suffixLines: tablica stringów
+fillerLineCount: number
+fillerBandLines: number
+messageColor: string HEX
+prefixColor: string HEX
+suffixColor: string HEX
+msgFontSize: number
+prefixFontSize: number
+suffixFontSize: number
+pingUrl: string
+nonce: string
+ts: Firestore serverTimestamp
+```
+
+Dla `type: "message"` pole `text` zawiera treść wiadomości wpisaną przez GM. Dla `type: "ping"` i `type: "clear"` pole `text` jest pustym stringiem.
+
 
 ## 5. Integracja Firebase
 ### 5.1. Warstwa klienta
@@ -98,18 +124,44 @@ Kluczowe grupy funkcji:
 5. Utrzymanie czytelności i responsywności w różnych proporcjach ekranu.
 
 ## 10. Struktura Firestore do odtworzenia
-Minimalna struktura:
+
+Minimalna struktura Firestore używana przez moduł:
+
+```text
+dataslate (kolekcja)
+└── current (dokument)
+    ├── type
+    ├── text
+    ├── backgroundId
+    ├── backgroundFile
+    ├── logoId
+    ├── logoFile
+    ├── fillerId
+    ├── fillerSet
+    ├── fontId
+    ├── fontPreset
+    ├── messageAudioId
+    ├── messageAudioFile
+    ├── fillersEnabled
+    ├── audioEnabled
+    ├── showLogo
+    ├── movingOverlay
+    ├── flicker
+    ├── prefixLines
+    ├── suffixLines
+    ├── fillerLineCount
+    ├── fillerBandLines
+    ├── messageColor
+    ├── prefixColor
+    ├── suffixColor
+    ├── msgFontSize
+    ├── prefixFontSize
+    ├── suffixFontSize
+    ├── pingUrl
+    ├── nonce
+    └── ts
 ```
-dataslate/
-  current (document)
-    title: string
-    content: string
-    backgroundKey: string
-    frameKey: string
-    logoKey: string
-    fontFamily: string
-    updatedAt: timestamp
-```
+
 
 ## 11. Skrypt Node.js do bootstrapu (przykład)
 Przykład inicjalizacji dokumentu `dataslate/current`:
