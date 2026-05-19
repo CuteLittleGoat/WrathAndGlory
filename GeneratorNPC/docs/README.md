@@ -67,8 +67,8 @@ Aby lista **Ulubionych** była współdzielona i trwała między urządzeniami, 
 
 ## Kopia modułu dla nowej grupy
 - Podmień `GeneratorNPC/config/firebase-config.js` na konfigurację Firebase grupy.
-- Sprawdź i ewentualnie zmień adres źródła danych `DATA_URL`, aby wskazywał DataVault na tym samym prywatnym serwerze grupy.
-- Moduł działa poprawnie, jeżeli obok folderu `GeneratorNPC` znajduje się folder `DataVault` zawierający plik `data.json` (ścieżka względna: `../DataVault/data.json`).
+- Sprawdź konfigurację Firebase (`config/firebase-config.js` i `../shared/firebase-config.js`) dla własnego środowiska grupy.
+- Moduł ładuje dane główne przez `../shared/firebase-data-loader.js` z prywatnego runtime DataVault (`/datavault/live`) po autoryzacji.
 - Po zmianie wygeneruj testową kartę i zapisz ulubione, aby potwierdzić działanie.
 
 ---
@@ -151,8 +151,8 @@ To keep **Favorites** shared and persistent across devices, **NPC Generator** re
 13. Add one favorite and refresh page — entry should still be present.
 ## Copying module for a new group
 - Replace `GeneratorNPC/config/firebase-config.js` with the group-specific Firebase configuration.
-- Verify and, if needed, change `DATA_URL` so it points to DataVault hosted on the same private server.
-- The module works correctly when a `DataVault` folder is placed next to `GeneratorNPC` and contains `data.json` (relative path: `../DataVault/data.json`).
+- Verify Firebase configuration (`config/firebase-config.js` and `../shared/firebase-config.js`) for your group environment.
+- The module loads core data through `../shared/firebase-data-loader.js` from private DataVault runtime (`/datavault/live`) after authorization.
 - After changes, generate a test card and save favorites to confirm everything works.
 
 ## Aktualizacja linków względnych / Relative links update
@@ -174,13 +174,13 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 
 ## Źródło danych / Data source
-PL: Interfejs informuje teraz, że dane pochodzą z prywatnej bazy DataVault po autoryzacji, a nie z publicznego pliku `../DataVault/data.json`.
-EN: The UI now states that data comes from a private authorized DataVault database, not from a public `../DataVault/data.json` file.
+PL: Interfejs informuje, że dane pochodzą z prywatnej bazy DataVault po autoryzacji Firebase.
+EN: The UI states that data comes from a private DataVault database after Firebase authorization.
 
 
 ## Runtime danych / Data runtime
-PL: GeneratorNPC laduje dane przez `shared/firebase-data-loader.js` (Firebase Auth + RTDB `/datavault/live`), bez `../DataVault/data.json` i bez publicznego REST URL.
-EN: GeneratorNPC loads data via `shared/firebase-data-loader.js` (Firebase Auth + RTDB `/datavault/live`), without `../DataVault/data.json` and without a public REST URL.
+PL: GeneratorNPC ładuje dane przez `shared/firebase-data-loader.js` (Firebase Auth + RTDB `/datavault/live`).
+EN: GeneratorNPC loads data via `shared/firebase-data-loader.js` (Firebase Auth + RTDB `/datavault/live`).
 
 
 ## Widoczność przełącznika języka / Language switch visibility

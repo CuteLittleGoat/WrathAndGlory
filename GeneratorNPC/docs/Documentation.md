@@ -22,11 +22,13 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 ---
 
 ## 3. Dane wejściowe i źródło
-**Źródło danych:**
-- `DATA_URL = "../DataVault/data.json"`.
+**Źródło danych głównych (runtime NPC):**
+- Dane są pobierane z prywatnego runtime DataVault przez wspólny loader `../shared/firebase-data-loader.js`.
+- Loader korzysta z Firebase Auth oraz Firebase Realtime Database (`/datavault/live`).
+- Sekcja „Źródło danych” w UI pokazuje status ładowania i nie eksponuje publicznego linku do statycznego pliku JSON.
 
 **Wczytywanie danych:**
-- Dane są pobierane przez `fetch` z `cache: "no-store"`.
+- Dane są pobierane asynchronicznie przez `loadDataVaultRuntimeData(...)` po inicjalizacji konfiguracji Firebase.
 - Po wczytaniu dane są analizowane i rozdzielane na kolekcje: bestiariusz, pancerze, bronie, augumentacje, ekwipunek, talenty, psionika, modlitwy.
 - Kolekcje są sortowane przed zasileniem list wyboru: domyślnie po kolumnie `LP` (jeśli istnieje), a gdy jej brak — bestiariusz, talenty i modlitwy alfabetycznie po nazwie; broń, pancerze, augumentacje, ekwipunek po typie i nazwie; psionika po typie malejąco i nazwie.
 
@@ -49,7 +51,7 @@ Aplikacja nie posiada backendu. Cała logika renderowania znajduje się w skrypc
 
 ### 4.2. Panel boczny (`.sidebar`)
 Składa się z trzech sekcji:
-1. **Źródło danych** — informuje o URL danych i statusie wczytywania (`#data-status`). Sekcja używa klas `panel-data-source`, `data-source-text` i `data-source-link`, dzięki czemu długi adres URL zawija się wewnątrz panelu (bez wychodzenia poza ramkę), a rozmiar tekstu jest delikatnie mniejszy niż domyślny tekst paneli.
+1. **Źródło danych** — informuje o prywatnym źródle DataVault i statusie wczytywania (`#data-status`). Sekcja używa klas `panel-data-source`, `data-source-text` i `data-source-link`; tekst jest przygotowany pod dłuższe komunikaty statusowe i zawija się wewnątrz panelu bez wychodzenia poza ramkę.
 2. **Wybór bazowy** — wybór rekordu bestiariusza (`#bestiary`) + notatki (`#bestiary-notes`).
 3. **Moduły aktywne** — checkboxy włączające/wyłączające karty modułów:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
@@ -210,7 +212,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 ## 8. Logika aplikacji (pełny opis funkcji)
 
 ### 8.1. Stałe i stan aplikacji
-- `DATA_URL` — URL z danymi JSON.
+- `loadDataVaultRuntimeData(...)` — główny mechanizm ładowania danych z prywatnego runtime DataVault (Firebase Auth + RTDB).
 - `CLAMP_LINES = 9` — liczba linii do przycinania komórek.
 - `MAX_NUMERIC_INPUT_LENGTH = 25` — maksymalna długość tekstu w polach liczbowych bestiariusza (obcina nadmiar znaków przy inicjalizacji, wpisywaniu i zapisie).
 - `CARD_LEVEL_COLUMNS = 5` — liczba kolumn poziomu na karcie do druku. Stała steruje równocześnie:
@@ -429,7 +431,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - Karta eksportowana/druk: `"Times New Roman", "Liberation Serif", serif`.
 
 ## 12. Uzupełnienie: mapa logiki aplikacji
-- Pobieranie danych `data.json` z DataVault (`fetch` + `cache: no-store`).
+- Pobieranie danych runtime DataVault przez wspólny loader Firebase (`loadDataVaultRuntimeData`).
 - Transformacja rekordów i zasilenie list wyboru.
 - Interaktywna tabela bazowa NPC (część pól liczbowych edytowalna in-place).
 - Zarządzanie modułami (broń/pancerz/itd.) przez sekcje wielokrotnego wyboru.
@@ -442,10 +444,10 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 ## Multi-server / multi-group deployment notes
 - `index.html` zawiera komentarze `WAŻNE/IMPORTANT`:
   - przy `script src="config/firebase-config.js"`,
-  - przy stałej `DATA_URL`.
+  - przy inicjalizacji loadera Firebase i obsłudze zdarzenia gotowości danych.
 - Wymagania wdrożeniowe:
   1. osobny projekt Firebase per grupa,
-  2. własny endpoint DataVault (`data.json`) per grupa lub własna izolowana kopia danych,
+  2. własna konfiguracja Firebase i izolowane środowisko danych per grupa (dedykowany RTDB path/projekt),
   3. test zapisu/odczytu ulubionych po wdrożeniu.
 
 ## Aktualizacja linków względnych / Relative links update
@@ -486,7 +488,7 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 
 ## Data source note
-Sekcja „Źródło danych” została zaktualizowana tak, aby nie sugerować publicznego linku do `../DataVault/data.json`. UI komunikuje prywatne źródło danych po autoryzacji.
+Sekcja „Źródło danych” komunikuje prywatne źródło danych po autoryzacji Firebase (DataVault runtime z `/datavault/live`).
 
 
 ## Firebase runtime
