@@ -903,3 +903,83 @@ Dodatkowo nie traktujemy jako dokumentacji do edycji:
 - Na tym etapie **nie edytujemy** żadnego pliku dokumentacyjnego modułów.
 - Na tym etapie **nie zmieniamy** żadnego kodu, konfiguracji ani danych.
 - Bieżący krok kończy się wyłącznie dopisaniem planu do `Analizy/Zadanie.md`.
+
+## Zmiany wykonane na podstawie analizy
+
+### Plik: `Main/docs/Documentation.md`
+
+Lokalizacja: sekcja `## 9. Odtworzenie modułu 1:1` (punkt 7) oraz nagłówek `## 15. Utrzymanie linków...`.
+
+Było:
+```markdown
+7. Jeśli aplikacja ma działać offline, utrzymaj współdzielony `service-worker.js` dla cache/fetch.
+## 15. Utrzymanie linków po migracji
+- Po przeniesieniu aplikacji na inną domenę/serwer należy zaktualizować linki zewnętrzne...
+```
+
+Jest:
+```markdown
+7. Utrzymaj współdzielony `service-worker.js` zgodnie z aktualnym modelem cache/fetch aplikacji.
+## 15. Utrzymanie linków
+- Linki zewnętrzne modułu Main są utrzymywane w pliku `Main/ZmienneHiperlacza.md`...
+```
+
+### Plik: `Kalkulator/docs/Documentation.md`
+
+Lokalizacja: sekcja `## 1. Cel i ogólny opis`, `## 1.0.1...`, `## 1.1...`, `## 17...`.
+
+Było:
+```markdown
+Aplikacja to ... Nie ma backendu ...
+## 1.1. Terminologia PL: XP → PD
+W tej zmianie zaktualizowano...
+## 17. Firebase i nawigacja po migracji
+```
+
+Jest:
+```markdown
+Aplikacja to ... moduł Tworzenie Postaci korzysta dodatkowo z Firestore...
+## 1.1. Terminologia PL: PD
+Polskie etykiety interfejsu używają skrótu **PD**...
+## 17. Firebase i nawigacja
+```
+
+### Plik: `Infoczytnik/docs/Documentation.md`
+
+Lokalizacja: sekcje `## 5.3`, `## 10. Struktura Firestore do odtworzenia`, `## 11. Skrypt Node.js...`, `## 18. Specyfikacja wersjonowania testowego`.
+
+Było:
+```markdown
+...kasowały klucze w mapie `aliases`.
+...
+    aliases: map<string,string>
+...
+  aliases: {}
+...
+- Aktualna wersja testowa: `2026-04-29_11-26-17`.
+```
+
+Jest:
+```markdown
+...aby zawsze nadpisywać kompletny payload publikacji.
+...
+(struktura bez pola aliases)
+...
+(przykład bootstrapu bez aliases)
+...
+- Aktualna wersja testowa: `2026-04-30_12-00-51`.
+```
+
+### Plik: `DiceRoller/docs/Documentation.md`
+
+Lokalizacja: nagłówek sekcji nawigacji.
+
+Było:
+```markdown
+## 11. Nawigacja „Strona Główna” po migracji
+```
+
+Jest:
+```markdown
+## 11. Nawigacja „Strona Główna”
+```
