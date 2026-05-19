@@ -77,7 +77,7 @@ Na tej podstawie JS:
 3. Dodaj `ZmienneHiperlacza.md` i parser wpisów `Mapa`/`Obrazki`.
 4. Dodaj obsługę `?admin=1` + warunkowe sekcje admin.
 6. Podłącz `manifest.webmanifest` (Main używa manifestu PWA).
-7. Jeśli aplikacja ma działać offline, utrzymaj współdzielony `service-worker.js` dla cache/fetch.
+7. Utrzymaj współdzielony `service-worker.js` zgodnie z aktualnym modelem cache/fetch aplikacji.
 
 ## 10. Testy regresyjne
 1. Wejście bez `?admin=1` pokazuje tylko widok user.
@@ -134,8 +134,8 @@ Inicjalizacja skryptu:
 - **Firebase:** brak bezpośredniej integracji w tym module.
 - **Node.js bootstrap:** nie dotyczy modułu Main (backend znajduje się w module Infoczytnik).
 
-## 15. Utrzymanie linków po migracji
-- Po przeniesieniu aplikacji na inną domenę/serwer należy zaktualizować linki zewnętrzne modułu Main w pliku `Main/ZmienneHiperlacza.md` (Mapa/Obrazki).
+## 15. Utrzymanie linków
+- Linki zewnętrzne modułu Main są utrzymywane w pliku `Main/ZmienneHiperlacza.md` (Mapa/Obrazki); przy zmianie środowiska wdrożeniowego trzeba zaktualizować ich wartości.
 - Dotyczy to szczególnie wdrożeń dla nowej grupy użytkowników, gdzie adresy kanałów zewnętrznych różnią się od oryginału.
 ## Konfiguracja multi-tenant (wiele grup)
 - `Main/index.html` zawiera jawne komentarze `WAŻNE/IMPORTANT` przy:

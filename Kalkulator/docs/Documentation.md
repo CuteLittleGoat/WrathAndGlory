@@ -1,7 +1,7 @@
 # Documentation – szczegółowy opis kodu narzędzi Wrath & Glory
 
 ## 1. Cel i ogólny opis
-Aplikacja to **zestaw statycznych stron HTML i CSS** do planowania rozwoju postaci w systemie Wrath & Glory. Nie ma backendu ani procesu budowania – cała logika działa **po stronie przeglądarki** w skryptach osadzonych w HTML. Wszystkie strony można uruchomić lokalnie z dysku.
+Aplikacja to **zestaw statycznych stron HTML/CSS/JS** do planowania rozwoju postaci w systemie Wrath & Glory. Logika interfejsu i obliczeń działa po stronie przeglądarki, a moduł Tworzenie Postaci korzysta dodatkowo z Firestore do zapisu/odczytu danych postaci między urządzeniami.
 
 Najważniejsze pliki:
 - `index.html` – strona startowa z nawigacją.
@@ -10,13 +10,13 @@ Najważniejsze pliki:
 - `kalkulatorxp.css` – wspólne style dla kalkulatora i arkusza.
 - `HowToUse/pl.pdf` i `HowToUse/en.pdf` – instrukcje PDF otwierane z poziomu arkusza.
 
-## 1.0.1. wyrównanie nazw ras w tabelach „Maksymalne wartości atrybutów”
-- `kalkulatorxp.css`: dodano regułę `.referenceTable tbody th:first-child { text-align: left; }`, która ustawia lewostronne wyrównanie dla nazw ras w pierwszej kolumnie tabeli referencyjnej w `KalkulatorXP.html`.
-- `TworzeniePostaci.html` (`<style>` inline): zaktualizowano regułę `.species-max-table td:first-child`, dodając `text-align: left;` przy zachowaniu `font-weight: 600;`.
+## 1.0.1. Tabela „Maksymalne wartości atrybutów”
+. `kalkulatorxp.css`: reguła `.referenceTable tbody th:first-child { text-align: left; }`, która ustawia lewostronne wyrównanie dla nazw ras w pierwszej kolumnie tabeli referencyjnej w `KalkulatorXP.html`.
+. `TworzeniePostaci.html` (`<style>` inline): reguła `.species-max-table td:first-child`, dodając `text-align: left;` przy zachowaniu `font-weight: 600;`.
 - Zakres zmiany obejmuje wyłącznie pierwszą kolumnę z nazwami ras; wszystkie komórki liczbowe nadal używają wyrównania centralnego z reguł bazowych tabeli.
 
-## 1.1. Terminologia PL: XP → PD
-W tej zmianie zaktualizowano wyłącznie polskie etykiety interfejsu (bez zmiany logiki obliczeń oraz bez zmiany nazw plików i odnośników):
+## 1.1. Terminologia PL: PD
+Polskie etykiety interfejsu używają skrótu **PD** (bez zmiany logiki obliczeń oraz bez zmiany nazw plików i odnośników):
 - `index.html`: nazwa przycisku na stronie startowej zmieniona z **Kalkulator XP** na **Kalkulator PD**.
 - `KalkulatorXP.html`: polskie stringi interfejsu zmienione z **XP** na **PD** (tytuł, instrukcja, etykiety kosztu i zakładki).
 - `TworzeniePostaci.html`: polskie stringi interfejsu związane z pulą punktów i błędem przekroczenia puli zmienione z **XP** na **PD**.
@@ -447,7 +447,7 @@ Poniżej pełna paleta używana przez trzy strony modułu:
 - Klasa `.confirm-modal__image` została ustawiona na `height: 192px`, `width: auto`, `max-width: 100%`, `object-fit: contain`; to zachowuje proporcje nowego pliku `Modal_Icon.png` i utrzymuje docelową wysokość zgodną z poprzednią ikoną referencyjną `Modal_Icon_old.png`.
 - W znaczniku `<img id="confirmModalImage">` dodano atrybuty `width="1980"` i `height="2048"` (natywny rozmiar nowego pliku) oraz `decoding="async"`, aby przeglądarka mogła wcześniej obliczyć proporcje i utrzymać stabilny layout modala podczas ładowania obrazu.
 
-## 17. Firebase i nawigacja po migracji
+## 17. Firebase i nawigacja
 - Funkcja zapisu/odczytu postaci w `TworzeniePostaci.html` wymaga poprawnej konfiguracji Firebase (`Kalkulator/config/firebase-config.js`) oraz aktywnej bazy Firestore.
 - Minimalna procedura wdrożeniowa obejmuje: utworzenie projektu Firebase, rejestrację aplikacji web, utworzenie Firestore Database oraz skonfigurowanie reguł dostępu.
 - Przyciski `Strona Główna / Main Page` (w `KalkulatorXP.html` i `TworzeniePostaci.html`) należy po migracji aplikacji zweryfikować pod kątem poprawnego `href`/adresu docelowego.

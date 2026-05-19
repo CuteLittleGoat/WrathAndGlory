@@ -62,7 +62,7 @@ Dodatkowe pola (opcjonalne):
 - Zapis powinien być pełnym snapshotem stanu wiadomości (single source of truth).
 
 ### 5.3. Uwaga implementacyjna (krytyczna)
-**Uwaga implementacyjna: dokument jest zapisywany jako pełny snapshot ustawień (bez merge), aby operacje usuwania aliasów poprawnie kasowały klucze w mapie `aliases`.**
+**Uwaga implementacyjna:** dokument jest zapisywany jako pełny snapshot stanu wiadomości (bez merge), aby zawsze nadpisywać kompletny payload publikacji.
 
 Ta zasada jest obowiązkowa przy odtwarzaniu modułu 1:1.
 
@@ -109,7 +109,6 @@ dataslate/
     logoKey: string
     fontFamily: string
     updatedAt: timestamp
-    aliases: map<string,string>
 ```
 
 ## 11. Skrypt Node.js do bootstrapu (przykład)
@@ -131,7 +130,6 @@ await db.doc('dataslate/current').set({
   logoKey: 'Inquisition',
   fontFamily: 'Cinzel',
   updatedAt: new Date(),
-  aliases: {}
 });
 
 console.log('Bootstrap complete');
@@ -213,7 +211,7 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - Format obowiązkowy: `rrrr-MM-dd_gg-hh-ss` (czas lokalny Polski).
 - Każda zmiana kodu w którymkolwiek z plików testowych wymaga podniesienia tej wartości w obu plikach.
 - Funkcja `autoCacheBust()` wymusza spójność `?v=INF_VERSION`, co gwarantuje odświeżenie zasobów na kliencie.
-- Aktualna wersja testowa: `2026-04-29_11-26-17`.
+- Aktualna wersja testowa: `2026-04-30_12-00-51`.
 
 ## 19. Macierz kompletności technicznej
 - **Style, kolory, fonty i warstwy:** sekcje 3, 14.3, 15.
