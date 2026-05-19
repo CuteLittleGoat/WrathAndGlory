@@ -730,3 +730,176 @@ Dokumentacja nie powinna zawierać historii zmian, nieaktualnych źródeł danyc
 Jeżeli funkcja istnieje w kodzie, ale jest celowo ukryta w interfejsie, dokumentacja ma to jasno opisywać i wskazywać, jak właściciel repozytorium może ją ponownie włączyć przez zmianę odpowiedniej klasy, selektora, atrybutu albo reguły CSS.
 
 Kod aplikacji, konfiguracje produkcyjne i pliki danych mają pozostać bez zmian.
+
+## Sekcja planistyczna — zakres aktualizacji dokumentacji (etap bez edycji dokumentacji)
+
+Data przygotowania planu: 2026-05-19
+
+### Cel etapu
+Na tym etapie wykonujemy wyłącznie plan realizacji. Nie edytujemy jeszcze żadnego pliku dokumentacji, kodu, konfiguracji ani danych. Celem jest precyzyjne wskazanie, które pliki dokumentacyjne trzeba później zweryfikować i jakiego typu korekty będą wymagane na podstawie aktualnego kodu.
+
+### Pliki dokumentacyjne wymagające sprawdzenia/aktualizacji
+
+#### Main
+- `Main/docs/README.md`
+- `Main/docs/Documentation.md`
+
+Zakres planowanych zmian:
+- Ujednolicenie opisu modułu Main jako strony startowej uruchamiającej moduły.
+- Weryfikacja i doprecyzowanie trybu zwykłego oraz trybu administratora (`admin=1`) zgodnie z rzeczywistą logiką.
+- Poprawny opis dynamicznych linków „Mapa” i „Obrazki” opartych o `Main/ZmienneHiperlacza.md` (bez edycji samego pliku konfiguracyjnego).
+- Usunięcie/przeredagowanie nieaktualnych treści o globalnym mechanizmie Service Worker/offline, jeśli nie odpowiadają stanowi kodu.
+
+Pliki kodu/referencyjne do weryfikacji:
+- `Main/index.html`
+- `manifest.webmanifest`
+- `service-worker.js` (jeśli istnieje)
+- `Main/ZmienneHiperlacza.md` (tylko odczyt)
+
+#### DataVault
+- `DataVault/docs/README.md`
+- `DataVault/docs/Documentation.md`
+- `DataVault/docs/ZasadyFormatowania.md` (tylko jeśli obecne zasady są niezgodne z aktualnym renderowaniem)
+
+Zakres planowanych zmian:
+- Rozdzielenie opisu produkcyjnego źródła danych od plików narzędziowych/importowych (`Repozytorium.xlsx`, `build_json.py`, `xlsxCanonicalParser.js`, `data.json`, `firebase-import.json`).
+- Korekta opisu integracji Firebase (precyzyjne nazwy usług i faktyczny przepływ danych).
+- Doprecyzowanie mechanik interfejsu: zakładki, filtry, sortowanie, wyszukiwanie, szczegóły, porównywanie rekordów.
+- Weryfikacja opisu mechanizmu językowego (w tym ewentualnego ukrycia przełącznika).
+
+Pliki kodu/referencyjne do weryfikacji:
+- `DataVault/index.html`
+- `DataVault/app.js`
+- `DataVault/build_json.py`
+- `DataVault/xlsxCanonicalParser.js`
+- `shared/firebase-data-loader.js`
+- `shared/FirebaseREADME.md`
+
+#### GeneratorNPC
+- `GeneratorNPC/docs/README.md`
+- `GeneratorNPC/docs/Documentation.md`
+- `GeneratorNPC/config/FirebaseREADME.md`
+
+Zakres planowanych zmian:
+- Usunięcie/przeredagowanie nieaktualnych odwołań do `DATA_URL = "../DataVault/data.json"`, jeżeli kod ich już nie używa.
+- Jasne rozdzielenie: źródło danych głównych NPC vs zapisy/ulubione użytkownika.
+- Doprecyzowanie użycia wspólnego loadera i usług Firebase.
+- Weryfikacja mechanizmu przełącznika języka (w tym ukrycia w UI, jeśli dotyczy).
+
+Pliki kodu/referencyjne do weryfikacji:
+- `GeneratorNPC/index.html`
+- `shared/firebase-data-loader.js`
+- `shared/FirebaseREADME.md`
+
+#### Kalkulator
+- `Kalkulator/docs/README.md`
+- `Kalkulator/docs/Documentation.md`
+- `Kalkulator/config/FirebaseREADME.md`
+
+Zakres planowanych zmian:
+- Usunięcie twierdzeń, że moduł „nie ma backendu”, jeśli kod używa Firebase/Firestore.
+- Rozdzielenie opisu lokalnych obliczeń XP/PD od zapisu/odczytu stanu postaci.
+- Doprecyzowanie ścieżek błędów i fallbacków przy problemach z Firebase.
+- Weryfikacja opisu przełącznika języka (w tym jego ewentualnego ukrycia).
+
+Pliki kodu/referencyjne do weryfikacji:
+- `Kalkulator/index.html`
+- `Kalkulator/TworzeniePostaci.html`
+- pliki w `Kalkulator/config/`
+
+#### Infoczytnik
+- `Infoczytnik/docs/README.md`
+- `Infoczytnik/docs/Documentation.md`
+- `Infoczytnik/config/FirebaseREADME.md`
+
+Zakres planowanych zmian:
+- Synchronizacja `INF_VERSION` z wartościami występującymi w plikach testowych.
+- Weryfikacja realnej struktury payloadu i usunięcie/przeredagowanie opisu `aliases`, jeśli nie jest używane.
+- Doprecyzowanie różnic między panelem GM i ekranem gracza, audio, debug overlay oraz obsługą błędów.
+- Weryfikacja mechanizmu przełączania języka (w tym ukrycia przełącznika, jeśli dotyczy).
+
+Pliki kodu/referencyjne do weryfikacji:
+- `Infoczytnik/GM_test.html`
+- `Infoczytnik/Infoczytnik_test.html`
+
+#### Audio
+- `Audio/docs/README.md`
+- `Audio/docs/Documentation.md`
+- `Audio/config/FirebaseREADME.md`
+- `Audio/Disclaimer.md` (tylko jeśli treść jest nieaktualna względem działania)
+
+Zakres planowanych zmian:
+- Doprecyzowanie działania trybu zwykłego i administratora.
+- Aktualizacja opisu źródeł audio i konfiguracji/fallbacków.
+- Precyzyjny opis integracji Firebase (jeśli występuje) bez mieszania usług.
+- Weryfikacja opisu mechanizmu językowego i statusu widoczności przełącznika.
+
+Pliki kodu/referencyjne do weryfikacji:
+- `Audio/index.html`
+- pliki w `Audio/config/`
+- katalogi audio używane przez moduł
+
+#### GeneratorNazw
+- `GeneratorNazw/docs/README.md`
+- `GeneratorNazw/docs/Documentation.md`
+- `GeneratorNazw/docs/Logika.md`
+
+Zakres planowanych zmian:
+- Uzgodnienie dokumentacji z rzeczywistymi opcjami generatora i sposobem prezentacji wyników.
+- Weryfikacja logiki losowania oraz opisu danych wejściowych/list nazw.
+- Sprawdzenie, czy przełącznik języka jest celowo ukryty i techniczny opis sposobu jego ponownego pokazania.
+
+Pliki kodu/referencyjne do weryfikacji:
+- `GeneratorNazw/index.html`
+
+#### DiceRoller
+- `DiceRoller/docs/README.md`
+- `DiceRoller/docs/Documentation.md`
+
+Zakres planowanych zmian:
+- Uaktualnienie opisu parsera wejścia, mechaniki rzutu, prezentacji wyników i historii.
+- Korekta opisu błędów walidacyjnych i ograniczeń wejścia.
+- Weryfikacja mechanizmu przełączania języka (jeśli istnieje), wraz z informacją o ewentualnym ukryciu w UI.
+
+Pliki kodu/referencyjne do weryfikacji:
+- `DiceRoller/index.html`
+- `DiceRoller/script.js`
+- `DiceRoller/style.css` (jeśli istnieje)
+
+#### Shared
+- `shared/FirebaseREADME.md`
+
+Zakres planowanych zmian:
+- Precyzyjne określenie roli wspólnego loadera danych i modułów zależnych.
+- Rozróżnienie Firestore i Realtime Database zgodnie z faktycznym kodem.
+- Usunięcie/przeredagowanie nieaktualnych odniesień do lokalnych JSON-ów jako produkcyjnego źródła danych (jeśli niezgodne ze stanem bieżącym).
+
+Pliki kodu/referencyjne do weryfikacji:
+- `shared/firebase-data-loader.js`
+- `shared/firebase-config.js` (jeśli istnieje)
+- moduły korzystające ze wspólnego loadera
+
+### Informacje do usunięcia, przeredagowania lub doprecyzowania (globalnie)
+W późniejszym etapie aktualizacji dokumentacji trzeba będzie:
+- usunąć język changelogowy („dodano”, „zmieniono”, „wcześniej”, „stara/nowa wersja”, „po migracji” itd.),
+- usunąć niezgodne z kodem opisy źródeł danych,
+- doprecyzować rozróżnienie: Firestore vs Realtime Database,
+- doprecyzować różnicę między funkcjami dostępnymi dla użytkownika a funkcjami przygotowanymi w kodzie, ale ukrytymi w UI,
+- utrzymać kompletny układ językowy dokumentów użytkowych: najpierw pełna sekcja PL, następnie pełna sekcja EN,
+- potwierdzić, że każda opisana funkcja faktycznie istnieje i działa w aktualnym kodzie.
+
+### Pliki, które należy pominąć zgodnie z listą ignorowanych
+Zgodnie z wytycznymi analizy, w planie i późniejszej realizacji należy pominąć:
+- `DetaleLayout.md`
+- `Analizy/Cleanup.md`
+- `DoZrobienia.md`
+- `Kolumny.md`
+
+Dodatkowo nie traktujemy jako dokumentacji do edycji:
+- `Main/ZmienneHiperlacza.md`
+- `Infoczytnik/assets/data/NiebieskaRamka.md`
+
+### Ograniczenia bieżącego etapu
+- Na tym etapie **nie edytujemy** żadnego pliku dokumentacyjnego modułów.
+- Na tym etapie **nie zmieniamy** żadnego kodu, konfiguracji ani danych.
+- Bieżący krok kończy się wyłącznie dopisaniem planu do `Analizy/Zadanie.md`.
