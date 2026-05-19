@@ -390,6 +390,17 @@ Dotyczy to w szczególności folderu:
 
 ## 18. Modyfikowanie plików AGENTS.md
 
-Nie wolno modyfikować treści plików AGENTS.md.
-Nie wolno przenosić plików AGENTS.md w inne lokalizacje repo.
-Nie wolno kasować plików AGENTS.md.
+Agent AI nie może wykonywać żadnych zmian w plikach `AGENTS.md` znajdujących się w repozytorium.
+
+Zakaz obejmuje w szczególności:
+
+- edytowanie treści plików `AGENTS.md`;
+- poprawianie formatowania plików `AGENTS.md`;
+- zmianę numeracji, nagłówków, list lub interpunkcji;
+- przenoszenie plików `AGENTS.md` do innych lokalizacji;
+- zmianę nazw plików `AGENTS.md`;
+- usuwanie plików `AGENTS.md`;
+- tworzenie nowych plików `AGENTS.md`;
+- nadpisywanie plików `AGENTS.md`.
+
+Zakaz obowiązuje nawet wtedy, gdy inne instrukcje repozytorium nakazywałyby aktualizację dokumentacji, instrukcji lub plików konfiguracyjnych.
