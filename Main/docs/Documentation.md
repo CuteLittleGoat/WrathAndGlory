@@ -1,180 +1,77 @@
 # Main — dokumentacja techniczna (odtworzenie 1:1)
 
-## 1. Zakres modułu
-`Main` to statyczny launcher modułów Wrath & Glory. Odpowiada za:
-- prezentację przycisków modułów,
-- przełączanie widoku użytkownik/admin,
-- dynamiczne wczytanie linków Mapa/Obrazki,
+## 🇵🇱 Dokumentacja techniczna (PL)
 
-## 2. Struktura plików
-- `Main/index.html` — HTML + CSS + JS modułu.
-- `Main/ZmienneHiperlacza.md` — konfiguracja linków Mapa/Obrazki (`Nazwa: URL`).
-- `Main/wrath-glory-logo-warhammer.png` — logo strony.
-- `manifest.webmanifest` (repo root) — manifest PWA wspólny.
-- `service-worker.js` (repo root) — globalny Service Worker.
+### 1. Cel modułu
+`Main/index.html` jest stroną startową i launcherem pozostałych modułów.
 
-## 3. Widoki i routing
-### 3.1. Tryb użytkownika
-Domyślny widok (bez parametru `admin`) pokazuje podstawowe moduły.
+### 2. Struktura plików
+- `Main/index.html` — UI + style + logika launcher.
+- `Main/ZmienneHiperlacza.md` — źródło dynamicznych linków dla przycisków **Mapa** i **Obrazki**.
+- `Main/wrath-glory-logo-warhammer.png` — logo.
+- `manifest.webmanifest` (root) — manifest instalacyjny PWA.
 
-### 3.2. Tryb administratora
-Aktywowany parametrem URL: `?admin=1`.
-- Odsłania przyciski adminowe (Generator Nazw, Generator NPC, Audio).
-- Pokazuje notatki dotyczące wejścia do paneli admina DataVault i Audio.
-- Link DataVault jest przełączany na wariant z parametrem `?admin=1`.
+### 3. Tryby pracy i parametr `admin=1`
+- Bez parametru: widok standardowy użytkownika.
+- Z `?admin=1`: widok administracyjny z dodatkowymi przyciskami i wariantem linku do DataVault z parametrem admin.
 
-## 4. Struktura HTML (`Main/index.html`)
-- `main` — kontener główny.
-- `img.logo` — logo (z jawnie ustawionymi `width`/`height` dla stabilnego layoutu).
-- `.actions` — siatka przycisków modułów.
-- Przyciski adminowe oznaczone `data-admin-only="true"`.
-- Linki dynamiczne:
-  - `data-map-link` — URL mapy,
-  - `data-images-link` — URL obrazków,
-  - `data-datavault-link` — URL DataVault zależny od trybu.
+### 4. Dynamiczne linki z `ZmienneHiperlacza.md`
+`Main/index.html` pobiera `Main/ZmienneHiperlacza.md` i oczekuje wpisów:
+- `Mapa: <URL>`
+- `Obrazki: <URL>`
 
-## 5. Stylizacja (CSS)
-Motyw „zielonego terminala” oparty o zmienne CSS:
-- `--bg`, `--panel`, `--border`, `--text`, `--accent`, `--accent-dark`, `--glow`, `--radius`.
+Brak pliku, brak wpisu albo błędny format powoduje, że dynamiczne podstawienie linków nie następuje poprawnie.
 
-Kluczowe cechy:
-- centralny panel z zieloną ramką i glow,
-- przyciski z animacją hover/active,
-- responsywna siatka `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`,
-- notki pomocnicze (`.note`) widoczne kontekstowo tylko dla admina.
+### 5. PWA i online-only
+- Manifest (`manifest.webmanifest`) obsługuje instalację i uruchamianie w trybie standalone.
+- Moduł nie zapewnia trybu offline.
+- Kod strony usuwa/wyrejestrowuje stare Service Workery, dlatego należy traktować Main jako **online-only**.
 
-## 6. Logika JavaScript
-### 6.1. Detekcja roli
-```js
-const isAdmin = new URLSearchParams(window.location.search).get('admin') === '1';
-```
-Na tej podstawie JS:
-- pokazuje/ukrywa elementy `data-admin-only`,
-- przełącza target linku Infoczytnika,
-- przełącza URL DataVault.
+### 6. Integracje
+- Brak bezpośredniej integracji Firebase w module Main.
 
-### 6.2. Wczytywanie konfiguracji linków
-- Parser czyta `Main/ZmienneHiperlacza.md`.
-- Wyszukuje wpisy `Mapa:` i `Obrazki:`.
-- Podmienia `href` odpowiednich przycisków.
+### 7. Kroki odtworzenia
+1. Odtwórz `Main/index.html` z sekcją przycisków launcher.
+2. Dodaj obsługę parametru `admin=1`.
+3. Dodaj parser wpisów `Mapa:` / `Obrazki:` z `Main/ZmienneHiperlacza.md`.
+4. Podłącz `manifest.webmanifest` jako metadane instalacyjne.
+5. Zachowaj zachowanie online-only (bez cache offline przez Service Worker).
 
-## 7. PWA
-### 7.1. Manifest
-- Aplikacja używa wspólnego `manifest.webmanifest`.
-- `start_url` ustawiony na `Main/index.html` (start w widoku user).
+---
 
-### 7.2. Service Worker
-- `service-worker.js` istnieje w katalogu głównym repozytorium i realizuje wyłącznie mechanikę cache/fetch.
-- Plik nie zawiera mechaniki zdarzeń związanych z komunikatami systemowymi przeglądarki.
-- Moduł Main nie inicjuje żadnej subskrypcji komunikatów.
+## 🇬🇧 Technical documentation (EN)
 
-## 8. Integracje
-- Moduł nie używa bezpośrednio Firebase.
+### 1. Module purpose
+`Main/index.html` is the entry launcher for all modules.
 
-## 9. Odtworzenie modułu 1:1
-1. Utwórz `Main/index.html` z osadzonym CSS/JS.
-2. Dodaj logo `wrath-glory-logo-warhammer.png`.
-3. Dodaj `ZmienneHiperlacza.md` i parser wpisów `Mapa`/`Obrazki`.
-4. Dodaj obsługę `?admin=1` + warunkowe sekcje admin.
-6. Podłącz `manifest.webmanifest` (Main używa manifestu PWA).
-7. Jeśli aplikacja ma działać offline, utrzymaj współdzielony `service-worker.js` dla cache/fetch.
+### 2. File structure
+- `Main/index.html` — launcher UI, styles, and logic.
+- `Main/ZmienneHiperlacza.md` — dynamic source for **Map** and **Images** button URLs.
+- `Main/wrath-glory-logo-warhammer.png` — logo asset.
+- `manifest.webmanifest` (repo root) — install metadata.
 
-## 10. Testy regresyjne
-1. Wejście bez `?admin=1` pokazuje tylko widok user.
-2. Wejście z `?admin=1` pokazuje komplet przycisków admin.
-3. Mapa/Obrazki otwierają właściwe URL z `ZmienneHiperlacza.md`.
-4. DataVault w adminie używa `?admin=1`.
-5. Wszystkie przyciski modułów otwierają poprawne ścieżki lokalne i zewnętrzne.
+### 3. Modes and `admin=1`
+- No query param: standard user mode.
+- `?admin=1`: admin mode with extra buttons and admin DataVault link variant.
 
-## 11. Specyfikacja UI 1:1 (wartości bezpośrednio z kodu)
-### 11.1. Zmienne CSS i kolorystyka
-Deklaracje z `:root`:
-- `--bg`: kompozycja 2 gradientów radialnych + kolor bazowy `#031605`.
-- `--panel: #000`
-- `--border: #16c60c`
-- `--text: #9cf09c`
-- `--accent: #16c60c`
-- `--accent-dark: #0d7a07`
-- `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
-- `--radius: 10px`
+### 4. Dynamic links from `ZmienneHiperlacza.md`
+`Main/index.html` reads:
+- `Mapa: <URL>`
+- `Obrazki: <URL>`
 
-- ramka: `#ff3b30`,
-- tło: `rgba(255, 59, 48, 0.2)`,
-- tekst: `#ffe5e3`,
-- glow: `0 0 14px rgba(255, 59, 48, 0.35)`.
+If file/entries/format are missing, dynamic URL injection does not complete correctly.
 
-### 11.2. Layout i responsywność
-- `main`: `width: min(860px, 100%)`, `padding: 32px 32px 28px`, `gap: 22px`, układ kolumnowy.
-- `.actions`: `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`, `gap: 18px 20px`.
-- `body`: centrowanie pion/poziom + `padding-bottom` z `env(safe-area-inset-bottom)`.
-- `.logo`: `max-width: clamp(220px, 40vw, 320px)`.
+### 5. PWA and online-only behavior
+- `manifest.webmanifest` is used for install/standalone behavior.
+- The module should be documented as **online-only**.
+- Existing service workers are cleaned up/unregistered by page logic, so offline cache behavior is not part of current runtime.
 
-### 11.3. Typografia i interakcje
-- Globalny font-stack: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
-- `.btn`: `font-size: 15px`, `font-weight: 600`, `border: 2px solid`.
-- Hover `.btn`: przesunięcie `translateY(-1px)` + glow.
-- Active `.btn`: cofnięcie przesunięcia i mocniejsze tło.
+### 6. Integrations
+- No direct Firebase integration in Main.
 
-## 12. Mapa funkcji JavaScript (pełna lista odpowiedzialności)
-- `applyDynamicLinks(links)` — podmienia `href` dla przycisków Mapa/Obrazki po sparsowaniu `ZmienneHiperlacza.md`.
-
-Inicjalizacja skryptu:
-1. Wylicza `isAdmin` z query string (`admin=1`).
-2. Usuwa elementy `data-admin-only="true"` dla użytkownika końcowego.
-3. Przełącza link Infoczytnika (`Infoczytnik.html` vs panel modułu).
-4. Przełącza link DataVault (`?admin=1` tylko dla admina).
-5. Ładuje dynamiczne linki Mapa/Obrazki z pliku markdown.
-6. Pozostawia interfejs bez dodatkowych akcji asynchronicznych poza dynamicznym ładowaniem linków.
-
-## 14. Macierz kompletności technicznej (dla odtworzenia modułu)
-- **Style i kolory:** zawarte w sekcjach 5 i 11.
-- **Funkcje i logika:** sekcje 6 i 12.
-- **Mechaniki przełączania ról i linków:** sekcje 3, 6.1, 12.
-- **PWA (manifest + SW):** sekcja 7.
-- **Firebase:** brak bezpośredniej integracji w tym module.
-- **Node.js bootstrap:** nie dotyczy modułu Main (backend znajduje się w module Infoczytnik).
-
-## 15. Utrzymanie linków po migracji
-- Po przeniesieniu aplikacji na inną domenę/serwer należy zaktualizować linki zewnętrzne modułu Main w pliku `Main/ZmienneHiperlacza.md` (Mapa/Obrazki).
-- Dotyczy to szczególnie wdrożeń dla nowej grupy użytkowników, gdzie adresy kanałów zewnętrznych różnią się od oryginału.
-## Konfiguracja multi-tenant (wiele grup)
-- `Main/index.html` zawiera jawne komentarze `WAŻNE/IMPORTANT` przy:
-  - przyciskach modułów,
-  - przyciskach `Mapa` i `Obrazki`,
-  - domyślnych wartościach obiektu `links`.
-- Przy wdrożeniu dla nowej grupy trzeba:
-  1. podmienić wpisy `Mapa:` i `Obrazki:` w `Main/ZmienneHiperlacza.md`,
-  2. zweryfikować wszystkie hiperłącza modułów (lokalne i zewnętrzne),
-  3. potwierdzić działanie przy `admin=1` i bez parametru.
-
-## Aktualizacja linków względnych / Relative links update
-W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
-
-The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
-
-
-
-## Dodawanie nowej wersji językowej (PL)
-
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
-
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
-
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
-
-
-## Adding a new language version (EN)
-
-This is the update map for adding another language (for example FR/DE):
-
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
-
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+### 7. Rebuild checklist
+1. Recreate `Main/index.html` launcher grid.
+2. Keep `admin=1` mode switching logic.
+3. Keep dynamic parser for `Mapa:` / `Obrazki:` lines.
+4. Link manifest metadata.
+5. Preserve online-only behavior.
