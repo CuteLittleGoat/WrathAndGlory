@@ -4,11 +4,11 @@ Repozytorium `WrathAndGlory` jest zbiorem modułów, czyli osobnych aplikacji um
 
 Moduł `Main` zawiera stronę główną służącą do uruchamiania pozostałych modułów.
 
-Niektóre moduły mogą korzystać ze wspólnych plików.
+Niektóre moduły mogą korzystać ze wspólnych źródeł danych, konfiguracji, usług zewnętrznych albo plików pomocniczych.
 
-Przykład: `DataVault` i `GeneratorNPC` mogą korzystać z tego samego pliku `data.json` z tej samej lokalizacji.
+Przykład: moduły `DataVault` i `GeneratorNPC` mogą korzystać z tego samego źródła danych wskazanego w aktualnej konfiguracji projektu. Źródłem tym może być baza danych, usługa Firebase/Firestore, plik statyczny albo inne rozwiązanie używane w bieżącej wersji repozytorium.
 
-Liczba modułów może się zmieniać. Przy każdej zmianie należy sprawdzić aktualną strukturę repozytorium, zamiast zakładać, że lista modułów jest stała.
+Liczba modułów i sposób współdzielenia danych mogą się zmieniać. Przy każdej zmianie należy sprawdzić aktualną strukturę repozytorium oraz aktualne źródła danych, zamiast zakładać, że lista modułów lub sposób ładowania danych są stałe.
 
 ---
 
