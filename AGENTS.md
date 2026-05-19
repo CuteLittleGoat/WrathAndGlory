@@ -375,3 +375,15 @@ Wszystkie pliki instrukcji i dokumentacji mają opisywać aktualny stan repozyto
 Jeżeli repozytorium zostało ręcznie uporządkowane, usunięto foldery albo przeniesiono sekrety, dokumentacja i instrukcje muszą odzwierciedlać nowy stan.
 
 Nie wolno zostawiać w dokumentacji informacji o plikach, folderach lub mechanikach, które już nie istnieją.
+
+## 17. Foldery chronione przed edycją
+
+Jeżeli w repozytorium istnieje lokalny plik `AGENTS.md`, jego instrukcje obowiązują dla folderu, w którym się znajduje, oraz dla wszystkich jego podfolderów.
+
+Jeżeli lokalny `AGENTS.md` oznacza folder jako tylko do odczytu albo chroniony przed edycją, agent AI nie może modyfikować żadnych plików w tym folderze, nawet jeżeli ogólne zasady z głównego `AGENTS.md` nakazywałyby aktualizację dokumentacji, komentarzy, layoutu, analiz lub innych plików.
+
+W takim przypadku lokalny zakaz edycji ma pierwszeństwo przed ogólnymi zasadami repozytorium.
+
+Dotyczy to w szczególności folderu:
+
+- `WebView_FCM_Cloudflare_Worker/`
