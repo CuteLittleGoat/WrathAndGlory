@@ -1007,16 +1007,6 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
 
 
 ## Widoczność przełącznika języka / Language switch visibility
-- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
-- EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.
-
-
-## Aktualizacja: runtime Firebase (2026-05-12)
-- Dodano `shared/firebase-config.js` z `window.WG_FIREBASE_CONFIG` i `window.WG_DATA_ACCESS_EMAIL` (bez hasła).
-- DataVault i GeneratorNPC ładują teraz `shared/firebase-config.js` przed `shared/firebase-data-loader.js`.
-- Loader waliduje konfigurację, emituje event `datavault-firebase-loader-ready`, mapuje nowe błędy i odczytuje `/datavault/live` z wrappera `firebase-import.json` przez `JSON.parse(dataJson)`.
-- DataVault i GeneratorNPC czekają na gotowość loadera przez `getFirebaseApi()` zamiast bezpośredniego odczytu globala.
-- Runtime danych działa wyłącznie przez Firebase Auth + RTDB (`/datavault/live`), bez publicznego `data.json` i bez `passwordHash` z Firestore.
 
 
 ## Firebase Auth session lifecycle (DataVault runtime)
@@ -1047,8 +1037,6 @@ Parser nadal generuje `data.json` oraz wrapper `firebase-import.json` (`schemaVe
 - Warstwa UI (`#accessGate`) używa nowych tekstów PL/EN zgodnie z motywem K.O.Z.A.: tytuł, opis, etykieta hasła i CTA zostały podmienione na warianty „Litanii Dostępu” i „Rytuału Uwierzytelnienia”.
 - Logika komunikatów błędów pochodzi ze wspólnego pliku `shared/firebase-data-loader.js`, więc DataVault i GeneratorNPC wyświetlają identyczne, zaktualizowane komunikaty o błędach (walidacja hasła, limity prób, błędy konfiguracji Firebase, brak danych, uszkodzone dane).
 
-## Aktualizacja techniczna: `build_json.py` (PL)
-Usunięto nieużywaną funkcję `sheet_to_records(ws)`. Aktualna i aktywna ścieżka generowania rekordów w `build_json.py` opiera się na parserze minimalnym XLSX (`load_xlsx_minimal(...)`) i konwersji przez `rows_to_records(...)`, a następnie na transformacjach `merge_range(...)` i `merge_traits(...)`.
 
 ## Technical update: `build_json.py` (EN)
 The unused `sheet_to_records(ws)` function was removed. The current active record-generation flow in `build_json.py` is based on the minimal XLSX parser (`load_xlsx_minimal(...)`) and conversion through `rows_to_records(...)`, followed by `merge_range(...)` and `merge_traits(...)` transformations.

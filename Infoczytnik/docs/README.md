@@ -158,10 +158,6 @@ Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYK�
 - This ensures GM panel and reader screen use separate Firestore data and do not mix messages between groups.
 - After setup, run `GM_test.html` and `Infoczytnik_test.html`, send a test message, and verify reader output.
 
-## Aktualizacja linków względnych / Relative links update
-W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
-
-The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
 
 ## Adding a new language version (EN)
 

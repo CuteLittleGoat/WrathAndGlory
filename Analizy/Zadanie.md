@@ -983,3 +983,126 @@ Jest:
 ```markdown
 ## 11. Nawigacja „Strona Główna”
 ```
+
+## Korekta i pełne wykonanie po weryfikacji
+
+### Plik: `Main/docs/Documentation.md`
+
+Lokalizacja: `## 7.2. Service Worker (stan aktualny)` i opis plików modułu.
+
+Było:
+```markdown
+Opis sugerował utrzymywanie modelu offline/cache bez doprecyzowania aktualnego zachowania Main.
+```
+
+Jest:
+```markdown
+Opis wskazuje aktualny stan: Main działa jako ekran online, a dokumentacja precyzuje kontekst utrzymania `service-worker.js` oraz porządkowanie starych rejestracji.
+```
+
+### Plik: `Main/docs/README.md`
+
+Lokalizacja: sekcje końcowe z blokiem aktualizacyjnym.
+
+Było:
+```markdown
+Sekcja „Aktualizacja linków względnych / Relative links update”.
+```
+
+Jest:
+```markdown
+Usunięto sekcję changelogową; pozostawiono wyłącznie instrukcje użytkowe zgodne z aktualnym działaniem.
+```
+
+### Plik: `GeneratorNPC/docs/README.md`
+
+Lokalizacja: sekcje końcowe z „Aktualizacja / Update” i dopiskami wdrożeniowymi.
+
+Było:
+```markdown
+README zawierał historyczne wpisy zmian i techniczne dopiski aktualizacyjne.
+```
+
+Jest:
+```markdown
+Usunięto fragmenty changelogowe; pozostawiono instrukcję użytkownika oraz informację, że przełącznik języka jest ukryty.
+```
+
+### Plik: `GeneratorNPC/docs/Documentation.md`
+
+Lokalizacja: końcowe sekcje aktualizacyjne.
+
+Było:
+```markdown
+Sekcja „Aktualizacja: runtime Firebase (2026-05-12)” opisywała zmiany historyczne.
+```
+
+Jest:
+```markdown
+Usunięto sekcję historyczną; dokumentacja opisuje stan bieżący bez narracji zmian.
+```
+
+### Plik: `DataVault/docs/README.md`
+
+Lokalizacja: końcówka pliku.
+
+Było:
+```markdown
+Sekcja „Aktualizacja / Update” i podwójne dopiski techniczne.
+```
+
+Jest:
+```markdown
+Usunięto sekcję changelogową; pozostawiono bieżące instrukcje użytkowe i informację o ukrytym przełączniku języka.
+```
+
+### Plik: `DataVault/docs/Documentation.md`
+
+Lokalizacja: sekcje końcowe „Aktualizacja...”.
+
+Było:
+```markdown
+Występowały sekcje aktualizacyjne opisujące migrację/runtime i zmiany narzędzi.
+```
+
+Jest:
+```markdown
+Sekcje historyczne usunięto; pozostawiono opis aktualnego działania i integracji.
+```
+
+### Plik: `DiceRoller/docs/Documentation.md`
+
+Lokalizacja: opis elementu przełącznika języka i zapis o mobilnym zachowaniu.
+
+Było:
+```markdown
+Niejednoznaczny opis mobilnego zachowania przełącznika języka.
+```
+
+Jest:
+```markdown
+Ujednolicono opis do aktualnego stanu responsywnego UI.
+```
+
+### Plik: `Analizy/Zadanie.md`
+
+Lokalizacja: dopisana sekcja końcowa.
+
+Było:
+```markdown
+Brak sekcji „Korekta i pełne wykonanie po weryfikacji”.
+```
+
+Jest:
+```markdown
+Dodano pełną sekcję z listą zmian, zakresem i podsumowaniem wykonania.
+```
+
+### Podsumowanie
+
+- Zmienione pliki: `Main/docs/Documentation.md`, `Main/docs/README.md`, `GeneratorNPC/docs/README.md`, `GeneratorNPC/docs/Documentation.md`, `DataVault/docs/README.md`, `DataVault/docs/Documentation.md`, `DiceRoller/docs/Documentation.md`, `Analizy/Zadanie.md`.
+- Sprawdzone, bez konieczności zmian w tym przebiegu: `Audio/docs/README.md`, `GeneratorNazw/docs/README.md`, `Infoczytnik/docs/README.md` (weryfikacja fraz i zgodności z zakresem).
+- Pominięte zgodnie z zakresem i zastrzeżeniami: pliki ignorowane z analizy oraz katalog chroniony `WebView_FCM_Cloudflare_Worker/`.
+- Potwierdzenie: `Audio/Disclaimer.md` nie został zmodyfikowany.
+- Potwierdzenie: nie zmieniono kodu aplikacji, konfiguracji produkcyjnych ani plików danych.
+- Potwierdzenie: nie zmieniono żadnego pliku `AGENTS.md`.
