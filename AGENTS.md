@@ -387,3 +387,9 @@ W takim przypadku lokalny zakaz edycji ma pierwszeństwo przed ogólnymi zasadam
 Dotyczy to w szczególności folderu:
 
 - `WebView_FCM_Cloudflare_Worker/`
+
+## 18. Modyfikowanie plików AGENTS.md
+
+Nie wolno modyfikować treści plików AGENTS.md.
+Nie wolno przenosić plików AGENTS.md w inne lokalizacje repo.
+Nie wolno kasować plików AGENTS.md.
