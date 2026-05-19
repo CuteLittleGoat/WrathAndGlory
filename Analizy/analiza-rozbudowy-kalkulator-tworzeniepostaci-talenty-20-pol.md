@@ -154,3 +154,51 @@ Przy wczytywaniu starszych danych dodatkowe pola 11..20 pozostaną domyślne (pu
 1. Wykonanie implementacji kodu 10 -> 20 według planu.
 2. Aktualizacja dokumentacji modułu po implementacji.
 3. (Opcjonalnie) Refaktor generatora pól talentów do renderowania dynamicznego.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Kalkulator/TworzeniePostaci.html`
+
+Lokalizacja: sekcja tabeli „Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne” oraz funkcje `resetAll()`, `recalcXP()`, `collectCurrentState()`.
+
+Było:
+- Tabela zawierała pola `talent_name_1..10` i `talent_cost_1..10` (2 kolumny po 5 pozycji).
+- Pętle w `resetAll()`, `recalcXP()`, `collectCurrentState()` działały w zakresie `i <= 10`.
+
+Jest:
+- Tabela zawiera pola `talent_name_1..20` i `talent_cost_1..20` (2 kolumny po 10 pozycji).
+- Dodano stałą `TALENT_COUNT = 20` i zastosowano ją w pętlach `resetAll()`, `recalcXP()`, `collectCurrentState()`.
+
+### Plik: `Kalkulator/docs/Documentation.md`
+
+Lokalizacja: sekcja `6.1. Struktura HTML` oraz opis funkcji `resetAll()`.
+
+Było:
+- Dokumentacja opisywała 10 par pól talentów.
+
+Jest:
+- Dokumentacja opisuje 20 par pól talentów (2 kolumny po 10 pozycji) oraz wskazuje użycie stałej `TALENT_COUNT = 20`.
+
+### Plik: `Kalkulator/docs/README.md`
+
+Lokalizacja: sekcja instrukcji użytkownika PL i EN dla „Tworzenie Postaci / Character Creation”.
+
+Było:
+- Brak jawnej informacji o liczbie dostępnych pól talentów.
+
+Jest:
+- Dodano informację, że sekcja talentów zawiera 20 pozycji (2 kolumny po 10 wpisów: nazwa + koszt).
+
+### Plik: `Kalkulator/tests/talents-20.test.mjs`
+
+Lokalizacja: nowy plik testowy.
+
+Było:
+- Brak automatycznego testu sprawdzającego spójność rozszerzenia talentów do 20 pól.
+
+Jest:
+- Dodano test, który sprawdza:
+  - obecność zakresu identyfikatorów pól talentów `1..20`,
+  - kompletność 20 pól nazw i 20 pól kosztów,
+  - obecność stałej `TALENT_COUNT = 20`,
+  - użycie pętli opartych o `TALENT_COUNT`.

@@ -210,7 +210,7 @@ const skillCosts = {
   - **Pula XP** (`#xpPool`, `#xpRemaining`).
   - **Atrybuty** – tabela 8 pól (`attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, `attr_Speed`).
   - **Umiejętności** – 18 pól w 2 kolumnach (`skill_Column1Row1..9`, `skill_Column2Row1..9`).
-  - **Talenty…** – 10 par pól (`talent_name_1..10`, `talent_cost_1..10`).
+  - **Talenty…** – 20 par pól (`talent_name_1..20`, `talent_cost_1..20`), w układzie 2 kolumny po 10 pozycji.
   - **Komunikaty**: `#errorMessage`.
 
 ### 6.1a. Modal „Maksymalne wartości atrybutów”
@@ -258,6 +258,7 @@ const skillCosts = {
 2. **`resetAll()`**
    - Ustawia domyślne wartości: `xpPool=155`, atrybuty=1 dla `attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, a następnie nadpisuje `attr_Speed=6`; umiejętności=0, talenty=0.
    - Czyści nazwy talentów.
+   - Zakres pól talentów jest kontrolowany przez stałą `TALENT_COUNT = 20`.
    - Wywołuje `recalcXP()`.
 3. **`recalcXP()`**
    - Waliduje `xpPool` (brak limitu górnego, brak wartości ujemnych).

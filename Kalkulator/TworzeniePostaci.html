@@ -422,6 +422,36 @@
         <td><textarea id="talent_name_10" class="talent-name"></textarea></td>
         <td><input type="number" id="talent_cost_10" value="0" min="0"></td>
       </tr>
+      <tr>
+        <td><textarea id="talent_name_11" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_11" value="0" min="0"></td>
+        <td><textarea id="talent_name_12" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_12" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_13" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_13" value="0" min="0"></td>
+        <td><textarea id="talent_name_14" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_14" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_15" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_15" value="0" min="0"></td>
+        <td><textarea id="talent_name_16" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_16" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_17" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_17" value="0" min="0"></td>
+        <td><textarea id="talent_name_18" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_18" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_19" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_19" value="0" min="0"></td>
+        <td><textarea id="talent_name_20" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_20" value="0" min="0"></td>
+      </tr>
     </table>
 
     <!-- Stopka / Footer -->
@@ -694,6 +724,9 @@ const translations = {
       }
 
       // --- Funkcja resetująca wszystkie pola do wartości domyślnych / Function to reset all fields to default values ---
+      // Stała określająca liczbę pól talentów (2 kolumny po 10 pozycji) / Constant defining number of talent fields (2 columns with 10 entries each)
+      const TALENT_COUNT = 20;
+
       function resetAll() {
         document.getElementById('xpPool').value = 155;
         ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach(id => {
@@ -704,7 +737,7 @@ const translations = {
           document.getElementById(`skill_Column1Row${i}`).value = 0;
           document.getElementById(`skill_Column2Row${i}`).value = 0;
         }
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= TALENT_COUNT; i++) {
           document.getElementById(`talent_name_${i}`).value = '';
           document.getElementById(`talent_cost_${i}`).value = 0;
         }
@@ -742,7 +775,7 @@ const translations = {
         });
 
         let totalTalentCost = 0;
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= TALENT_COUNT; i++) {
           let inp = document.getElementById(`talent_cost_${i}`);
           let val = parseInt(inp.value) || 0;
           if (val < 0) val = 0;
@@ -791,7 +824,7 @@ const translations = {
         }
 
         const talents = [];
-        for (let i = 1; i <= 10; i++) {
+        for (let i = 1; i <= TALENT_COUNT; i++) {
           talents.push({
             name: document.getElementById(`talent_name_${i}`).value || '',
             cost: parseInt(document.getElementById(`talent_cost_${i}`).value, 10) || 0
