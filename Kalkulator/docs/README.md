@@ -26,6 +26,7 @@ Na stronie startowej znajduje się też **Tajny przycisk!** (easter egg).
 1. Ustaw pulę punktów (domyślnie 155).
 2. Uzupełnij atrybuty.
 3. Uzupełnij umiejętności i koszty dodatkowe (np. talenty/archetyp/moce).
+   - Sekcja talentów ma 20 pozycji (2 kolumny po 10 wpisów: nazwa + koszt).
 4. Obserwuj komunikaty ostrzegawcze:
    - przekroczenie puli punktów,
    - zasada „Tree of Learning”.
@@ -118,6 +119,7 @@ The landing page also includes a **Secret button!** (easter egg).
 1. Set point pool (default 155).
 2. Fill attribute values.
 3. Fill skills and extra costs (talents/archetype/powers).
+   - The talents section has 20 entries (2 columns × 10 rows: name + cost).
 4. Watch warning messages:
    - pool exceeded,
    - Tree of Learning rule.
