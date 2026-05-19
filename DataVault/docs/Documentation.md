@@ -1,9 +1,7 @@
 # Administratum Data Vault — dokumentacja techniczna (super dokładna)
 
-Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na `data.json`, z kanonicznym generowaniem danych po stronie przeglądarki (parser XML XLSX).
+Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na danych runtime pobieranych z Firebase Realtime Database (`/datavault/live`) przez wspólny loader `shared/firebase-data-loader.js`, z kanonicznym generowaniem plików importowych po stronie przeglądarki (parser XML XLSX).
 
-Bieżący stan danych w repozytorium: po dodaniu nowej zakładki `Pakiety Wyniesienia` w `Repozytorium.xlsx` wykonano ponowną regenerację pliku `data.json`, aby odświeżyć zestaw rekordów używany przez tabele DataVault.
-Bieżąca logika kolorowania: w zakładce `Pakiety Wyniesienia`, kolumna `Słowa Kluczowe` nie jest już kolorowana globalnie na czerwono (z wyjątkiem przecinków); od teraz czerwone pozostają wyłącznie fragmenty oznaczone czerwienią w XLSX i przeniesione do `data.json` jako markery `{{RED}}...{{/RED}}`.
 Bieżące ustawienie szerokości kolumny: w zakładce `Pakiety Wyniesienia` kolumna `Koszt PD` ma teraz `min-width: 26ch`, czyli dokładnie tyle samo co `Premia Wpływu`.
 
 Bieżąca logika widoku domyślnego: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
@@ -52,8 +50,8 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
 - `index.html` — szkielet UI: pasek górny, panel filtrów, obszar tabeli, popover, modal porównania, kontener menu filtrów, skrypty `xlsxCanonicalParser.js` i `app.js` oraz style `style.css`.
 - `style.css` — pełne style (kolory, fonty, layout, tabela, popover, modal, menu filtrów listowych).
 - `app.js` — główna logika UI: wczytywanie danych, normalizacja, filtrowanie, sortowanie, renderowanie, porównywanie i obsługa przycisku generacji.
-- `data.json` — produkcyjne źródło danych (z `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder`); plik jest generowany z aktualnego pliku `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym. (plik powinien być regenerowany po każdej zmianie `Repozytorium.xlsx`, aby tabele odpowiadały aktualnym danym).
-- `Repozytorium.xlsx` — źródło prawdy (XLSX), z którego generuje się `data.json`; plik musi leżeć w folderze modułu DataVault (obok `index.html`), bo frontend pobiera go ścieżką względną.
+- `data.json` — plik pomocniczy/backup generowany lokalnie przez narzędzia DataVault; zawiera `_meta.traits`, `_meta.states`, `_meta.sheetOrder` i `_meta.columnOrder` i służy do walidacji, porównań oraz eksportu podczas utrzymania danych (nie jest runtime produkcyjnym).
+- `Repozytorium.xlsx` — źródło wsadowe do generowania plików importowych (`data.json` backup + `firebase-import.json`) w trybie admina; administrator wskazuje lokalny plik przez okno wyboru pliku.
 - `xlsxCanonicalParser.js` — kanoniczny parser XLSX po stronie przeglądarki: czyta bezpośrednio `xl/styles.xml`, `xl/sharedStrings.xml`, `xl/workbook.xml` i `xl/worksheets/sheet*.xml`, aby odwzorować logikę `build_json.py` (w tym detekcję `{{RED}}`).
 - `build_json.py` — kanoniczny generator referencyjny `data.json` z XLSX (AI/CLI/backend). Normalizuje białe znaki i zamienia polskie cudzysłowy „ ” na standardowy znak `"`.
 - `DetaleLayout.md` (w katalogu głównym repozytorium) — główny dokument opisujący fonty, kolory, wyjątki formatowania, clamp i szerokości kolumn 1:1.
@@ -596,7 +594,7 @@ Mapowanie na `getElementById`:
 ## 7) JS: ładowanie danych
 
 ### 7.1 `loadJsonFromRepo()`
-- `fetch("data.json", {cache:"no-store"})`.
+- Odczyt danych runtime przez `loadDataVaultLive()` (wspólny loader Firebase Auth + RTDB `/datavault/live`).
 - `normaliseDB()` → `initUI()`.
 
 ### 7.2 `buildDataJsonFromSheets(rawSheets)`
