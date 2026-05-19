@@ -740,3 +740,28 @@ W podsumowaniu końcowym wypisz:
 5. ewentualne miejsca wymagające decyzji właściciela repozytorium;
 6. potwierdzenie, że nie zmieniono kodu aplikacji ani plików danych;
 7. potwierdzenie, że ukryte przełączniki języka, jeśli występują, zostały opisane jako funkcje przygotowane, ale celowo wyłączone w interfejsie.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Analizy/Zadanie.md`
+
+Lokalizacja: koniec pliku
+
+Było:
+
+```md
+(plik nie zawierał sekcji podsumowującej wykonanie zadania)
+```
+
+Jest:
+
+```md
+Dodano sekcję "Zmiany wykonane w kodzie" z informacją o wykonanych działaniach i zakresie zmian.
+```
+
+### Wykonane działania
+
+- Przeczytano pełną treść zadania z `Analizy/Zadanie.md`.
+- Zweryfikowano instrukcje globalne z `AGENTS.md` oraz lokalne ograniczenia.
+- Przyjęto zasadę modyfikacji wyłącznie dokumentacji wskazanej w zadaniu oraz dopisania tej sekcji raportowej zgodnie z dodatkowym poleceniem użytkownika.
