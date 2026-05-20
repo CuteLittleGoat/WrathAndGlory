@@ -1828,3 +1828,12 @@ Sprawdź też, czy:
    - sposób ponownego pokazania przełącznika przez usunięcie klasy.
 3. `Infoczytnik/docs/Documentation.md` ma przykład bootstrapu zgodny z aktualnym payloadem `dataslate/current`.
 4. Żaden plik poza trzema wskazanymi nie został zmieniony.
+
+## Zmiany wykonane przez Codex — aktualizacja dokumentacji po weryfikacji
+
+- Poprawiono opisy w `Kalkulator/docs/Documentation.md`, `GeneratorNPC/docs/Documentation.md` oraz `Infoczytnik/docs/Documentation.md`, aby przedstawiały stan aktualny zamiast historii zmian.
+- Uzupełniono `GeneratorNPC/docs/Documentation.md` o poprawne odwołanie do `GeneratorNPC/config/FirebaseREADME.md` i szczegółowy opis ukrytego przełącznika języka (`.language-switcher`, `language-switcher--hidden`, `#languageSelect`, komentarz `LANGUAGE SWITCHER VISIBILITY CHANGE POINT`).
+- Zastąpiono sekcję bootstrapu Firestore w `Infoczytnik/docs/Documentation.md` przykładem zgodnym z aktualnym payloadem `dataslate/current` oraz przeredagowano sekcję linków względnych.
+- Przeredagowano wskazane sekcje `Kalkulator/docs/Documentation.md` (tabela maksimów, terminologia PD, obsługa Szybkości, modal) na opis działania modułu bez narracji changelogowej.
+
+Te zmiany dotyczą dokumentacji i opisu aktualnego działania repozytorium. Nie zmieniają logiki działania aplikacji.
