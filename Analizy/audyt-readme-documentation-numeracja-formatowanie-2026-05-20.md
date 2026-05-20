@@ -69,3 +69,60 @@ Podstawowe formatowanie Markdown jest poprawne we wszystkich sprawdzonych plikac
 # Ewentualne następne kroki
 - Wykonać poprawki bez zmiany treści merytorycznej.
 - Dodać prosty skrypt walidujący numerację list do rutynowej kontroli dokumentacji.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `GeneratorNPC/docs/README.md`
+
+Lokalizacja: sekcja „Jak zacząć” (PL) i sekcja „Getting started” (EN).
+
+Było:
+
+```markdown
+1. Otwórz `GeneratorNPC/index.html`.
+3. Poczekaj, aż sekcja **Źródło danych** pokaże, że dane zostały załadowane.
+```
+
+```markdown
+1. Open `GeneratorNPC/index.html`.
+3. Wait until **Data source** confirms the data is loaded.
+```
+
+Jest:
+
+```markdown
+1. Otwórz `GeneratorNPC/index.html`.
+2. Poczekaj, aż sekcja **Źródło danych** pokaże, że dane zostały załadowane.
+```
+
+```markdown
+1. Open `GeneratorNPC/index.html`.
+2. Wait until **Data source** confirms the data is loaded.
+```
+
+### Plik: `Main/docs/Documentation.md`
+
+Lokalizacja: sekcja „9. Odtworzenie modułu 1:1”.
+
+Było:
+
+```markdown
+1. ...
+2. ...
+3. ...
+4. ...
+6. Podłącz `manifest.webmanifest` tylko wtedy, gdy jest potrzebny do metadanych instalacyjnych hostingu.
+7. Nie rejestruj Service Workera; zachowaj jedynie mechanizm czyszczenia starych rejestracji w `Main/index.html`.
+```
+
+Jest:
+
+```markdown
+1. ...
+2. ...
+3. ...
+4. ...
+5. Podłącz `manifest.webmanifest` tylko wtedy, gdy jest potrzebny do metadanych instalacyjnych hostingu.
+6. Nie rejestruj Service Workera; zachowaj jedynie mechanizm czyszczenia starych rejestracji w `Main/index.html`.
+```
