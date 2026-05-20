@@ -403,7 +403,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - Trackery „Ż/T” obliczają liczbę kwadratów na podstawie wartości liczbowych; etykiety „Ż/T” to niezależne pojedyncze kwadraty, a siatka pól skaluje się do szerokości wiersza dzięki `auto-fit`.
 - Dla modułu psioniki możliwe jest normalizowanie kolumny „Wzmocnienie” do jednej linii.
 - Sekcje bez danych są pomijane.
-- Zastosowano naprzemienny „zebra striping” dla bloków z listami wpisów.
+- Bloki z listami wpisów używają naprzemiennego „zebra striping”.
 
 ---
 
