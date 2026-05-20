@@ -299,18 +299,28 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - **Firebase/Firestore:** sekcje 5, 10 (dokument `dataslate/current`).
 - **Wersjonowanie i cache-busting:** sekcja 18.
 
-## 14. Wymagalność Firebase w instrukcji użytkownika
-- Instrukcja użytkownika (`docs/README.md`) musi jednoznacznie wskazywać, że moduł Infoczytnik wymaga integracji z Firebase/Firestore do komunikacji GM↔gracze.
-- W procedurze użytkowej należy utrzymywać kroki: utworzenie projektu, rejestracja aplikacji web, konfiguracja `config/firebase-config.js`, utworzenie Firestore Database, ustawienie reguł i test dwuekranowy.
-## Multi-group deployment (isolated instances)
-- W plikach `GM_test.html` i `Infoczytnik_test.html` zawiera komentarze `WAŻNE/IMPORTANT` przy:
-  - `INF_VERSION` (cache-busting testowej wersji),
-  - `config/firebase-config.js`,
-  - walidacji `window.firebaseConfig`.
-- Każda grupa wymaga osobnego projektu Firebase, aby dokument `dataslate/current` nie był współdzielony.
-- Po każdej zmianie testowych plików należy podnieść `INF_VERSION` w obu plikach do tej samej wartości.
+## 20. Wymagalność Firebase w instrukcji użytkownika
+Instrukcja użytkownika (`docs/README.md`) powinna jednoznacznie wskazywać, że moduł Infoczytnik wymaga integracji z Firebase/Firestore do komunikacji GM↔gracze.
 
-## Linki względne
+Procedura użytkowa powinna obejmować:
+- utworzenie projektu Firebase,
+- rejestrację aplikacji web,
+- konfigurację `config/firebase-config.js`,
+- utworzenie Firestore Database,
+- ustawienie reguł,
+- test dwuekranowy GM↔Infoczytnik.
+
+## 21. Wdrożenia dla wielu grup
+Każda grupa wymaga osobnego projektu Firebase, aby dokument `dataslate/current` nie był współdzielony między niezależnymi instancjami.
+
+W plikach `GM_test.html` i `Infoczytnik_test.html` komentarze `WAŻNE/IMPORTANT` oznaczają istotne miejsca wdrożeniowe:
+- `INF_VERSION` jako cache-busting testowej wersji,
+- `config/firebase-config.js`,
+- walidację `window.firebaseConfig`.
+
+Po każdej zmianie testowych plików wartość `INF_VERSION` powinna być taka sama w `GM_test.html` i `Infoczytnik_test.html`.
+
+## 22. Linki względne
 Moduł używa ścieżek względnych do nawigacji i ładowania zasobów. Dzięki temu kopia modułu może działać po przeniesieniu na inny serwer lub do innej instancji wdrożeniowej, o ile zachowana jest struktura katalogów.
 
 Przy wdrożeniu dla osobnej grupy należy sprawdzić:
@@ -318,28 +328,3 @@ Przy wdrożeniu dla osobnej grupy należy sprawdzić:
 - ścieżki do assetów,
 - ścieżki używane przez panel GM i ekran Infoczytnika,
 - zgodność konfiguracji Firebase z docelowym projektem.
-
-## Dodawanie nowej wersji językowej (PL)
-
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
-
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
-
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
-
-
-## Adding a new language version (EN)
-
-This is the update map for adding another language (for example FR/DE):
-
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
-
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.

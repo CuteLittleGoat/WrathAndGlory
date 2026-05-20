@@ -408,9 +408,13 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 ---
 
 ## 11. Instrukcje utrzymaniowe
-- Po każdej zmianie kodu należy zaktualizować `docs/Documentation.md` i `docs/README.md`.
-- `docs/README.md` musi zawierać instrukcje użytkownika w języku polskim i angielskim.
-- `docs/Documentation.md` musi opisywać wszystkie funkcje, style, fonty oraz zasady działania UI, aby umożliwić rekonstrukcję aplikacji 1:1.
+Po każdej zmianie kodu modułu należy zaktualizować:
+- `GeneratorNPC/docs/Documentation.md`,
+- `GeneratorNPC/docs/README.md`.
+
+`docs/README.md` jest instrukcją użytkownika i powinien zawierać pełną wersję polską oraz pełną wersję angielską.
+
+`docs/Documentation.md` jest dokumentacją techniczną i powinien opisywać funkcje, style, fonty, strukturę danych, integracje Firebase oraz zasady działania UI w sposób pozwalający odtworzyć moduł 1:1.
 
 ## 12. Dokument referencyjny Firebase
 Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku:
@@ -425,7 +429,7 @@ Funkcja `formatInlineHTML(raw)` obsługuje markery:
 - `{{RED}}...{{/RED}}`,
 - `{{B}}...{{/B}}`,
 - `{{I}}...{{/I}}`,
-- `{{S}}...{{/S}}`.
+- `{{S}}...{{/S}`.
 
 Segmenty oznaczone markerem `{{S}}` otrzymują klasę `.inline-strike` i są renderowane jako przekreślone. Jeżeli segment jest jednocześnie czerwony i przekreślony, klasa `.inline-red` utrzymuje czerwony kolor tekstu.
 
@@ -451,58 +455,57 @@ Mechanika pola `Stan`, szarego oznaczania rekordów `old` i stabilizacji kolumn 
 
 Generator karty do druku używa osobnej ścieżki renderowania przez `buildPrintableCardHTML`.
 
-## 11. Uzupełnienie: twarda specyfikacja stylu (kolory, fonty, stany)
-
-### 11.1 Kolory UI głównego
+## 14. Specyfikacja stylu
+### 14.1. Kolory UI głównego
 - `--bg`: `#031605`; `--bg-grad`: radialne gradienty + `#031605`.
-- `--panel`/`--panel2`: `#000`.
+- `--panel` / `--panel2`: `#000`.
 - `--text`: `#9cf09c`; `--text2`: `#4FAF4F`; `--muted`: `#4a8b4a`; `--code`: `#D2FAD2`; `--red`: `#d74b4b`.
 - `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`.
 - `--b`: `rgba(22,198,12,.35)`; `--b2`: `rgba(22,198,12,.2)`; `--div`: `rgba(22,198,12,.18)`.
 - `--hbg`: `rgba(22,198,12,.06)`; `--zebra`: `rgba(22,198,12,.04)`; `--hover`: `rgba(22,198,12,.08)`.
 - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)`.
-- Dodatkowe warstwy tła sekcji: `rgba(22,198,12,0.03/0.04/0.05/0.06/0.08/0.14/0.18)`.
-- Akcenty pomocnicze: `rgba(111, 227, 140, 0.06)` i `rgba(111, 227, 140, 0.1)`.
+- Dodatkowe warstwy tła sekcji używają wariantów `rgba(22,198,12,...)`.
+- Akcenty pomocnicze używają wariantów `rgba(111, 227, 140, ...)`.
 
-### 11.2 Fonty
+### 14.2. Fonty
 - UI: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
-- Karta eksportowana/druk: `"Times New Roman", "Liberation Serif", serif`.
+- Karta eksportowana / druk: `"Times New Roman", "Liberation Serif", serif`.
 
-## 12. Uzupełnienie: mapa logiki aplikacji
-- Pobieranie danych runtime DataVault przez wspólny loader Firebase (`loadDataVaultRuntimeData`).
-- Transformacja rekordów i zasilenie list wyboru.
-- Interaktywna tabela bazowa NPC (część pól liczbowych edytowalna in-place).
-- Zarządzanie modułami (broń/pancerz/itd.) przez sekcje wielokrotnego wyboru.
-- System ulubionych: Firestore `generatorNpc/favorites` + fallback localStorage.
-- Generowanie karty eksportowej (szablon HTML print z osobną paletą i fontem).
+## 15. Mapa logiki aplikacji
+- Dane runtime są pobierane z DataVault przez wspólny loader Firebase (`loadDataVaultRuntimeData`).
+- Rekordy są transformowane i używane do zasilenia list wyboru.
+- Tabela bazowa NPC jest interaktywna i obsługuje edycję części pól liczbowych in-place.
+- Moduły broni, pancerza, augumentacji, ekwipunku, talentów, psioniki i modlitw są obsługiwane przez sekcje wielokrotnego wyboru.
+- System ulubionych używa Firestore (`generatorNpc/favorites`) z fallbackiem do `localStorage`.
+- Karta eksportowa jest generowana jako osobny szablon HTML print z osobną paletą i fontem.
 
-## 13. Wymagalność Firebase w instrukcji użytkownika
-- `docs/README.md` modułu GeneratorNPC powinien informować, że Firebase/Firestore jest wymagane dla współdzielonych ulubionych (cross-device persistence).
-- Procedura użytkowa musi zawierać sekwencję: projekt Firebase, aplikacja web, konfiguracja `config/firebase-config.js`, utworzenie Firestore Database, reguły oraz test zapisu/odczytu ulubionych.
-## Multi-server / multi-group deployment notes
-- `index.html` zawiera komentarze `WAŻNE/IMPORTANT`:
-  - przy `script src="config/firebase-config.js"`,
-  - przy inicjalizacji loadera Firebase i obsłudze zdarzenia gotowości danych.
-- Wymagania wdrożeniowe:
-  1. osobny projekt Firebase per grupa,
-  2. własna konfiguracja Firebase i izolowane środowisko danych per grupa (dedykowany RTDB path/projekt),
-  3. test zapisu/odczytu ulubionych po wdrożeniu.
+## 16. Firebase i izolacja aplikacji
+### 16.1. Dane prywatne NPC
+GeneratorNPC uruchamia przepływ `startPrivateDataFlow()`, który:
+- sprawdza aktywną sesję,
+- pokazuje bramkę hasła przy braku sesji,
+- ładuje dane przez `loadDataVaultLive()`.
 
+Moduł nie używa publicznego `data.json` ani bezpośredniego REST `fetch` do `/datavault/live.json`.
 
-## Dodawanie nowej wersji językowej (PL)
+`shared/firebase-data-loader.js` używa nazwanej aplikacji Firebase `wh40k-data-slate-private-data` dla Auth + RTDB (`/datavault/live`) i nie korzysta z beznazwowego `getApp()`.
 
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
+### 16.2. Ulubione
+Ulubione są zapisywane w Firestore. Inicjalizacja ulubionych używa nazwanej aplikacji Firebase `generator-npc-favorites` przez helper `getOrCreateNamedFirebaseApp(name, config)`.
 
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+Inicjalizacja ulubionych ma zabezpieczenie `try/catch`, dzięki czemu awaria Firestore favorites nie blokuje `startPrivateDataFlow()` i ładowania prywatnych danych NPC.
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+### 16.3. Wdrożenia dla wielu grup
+Dla odizolowanych grup zalecany jest osobny projekt Firebase na grupę.
 
+W pliku `GeneratorNPC/index.html` komentarze `WAŻNE/IMPORTANT` oznaczają istotne miejsca wdrożeniowe:
+- `script src="config/firebase-config.js"`,
+- inicjalizacja loadera Firebase,
+- obsługa zdarzenia gotowości danych.
 
-## 14. Ukryty przełącznik języka
+Po wdrożeniu należy przetestować zapis i odczyt ulubionych.
+
+## 17. Ukryty przełącznik języka
 Mechanizm przełączania języka PL/EN jest obecny w kodzie modułu GeneratorNPC, ale przełącznik jest obecnie ukryty w interfejsie użytkownika.
 
 Zwykły użytkownik nie widzi selektora języka.
@@ -520,59 +523,43 @@ Przełącznik ukrywa klasa CSS:
 
 Aby ponownie pokazać przełącznik w interfejsie, należy usunąć klasę `language-switcher--hidden` z kontenera `.language-switcher` albo zmienić powiązaną regułę CSS ukrywającą ten element.
 
-Nie należy usuwać mechanizmu tłumaczeń z dokumentacji, ponieważ słowniki tłumaczeń i funkcje aktualizacji języka nadal istnieją w kodzie.
+Mechanizm tłumaczeń pozostaje częścią kodu, ponieważ słowniki tłumaczeń i funkcje aktualizacji języka nadal istnieją.
 
-## Adding a new language version (EN)
+## 18. Dodawanie nowej wersji językowej
+Mapa miejsc do aktualizacji przy dodaniu kolejnego języka, na przykład FR albo DE:
 
-This is the update map for adding another language (for example FR/DE):
+1. W kodzie modułu należy znaleźć słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
+2. W selektorze języka należy dodać nową opcję `<option>`, jeśli przełącznik jest aktywny w danym module.
+3. W modułach bez widocznego menu językowego należy ręcznie zaktualizować teksty statyczne.
+4. Jeśli moduł otwiera instrukcję zależną od języka, należy dodać odpowiedni plik instrukcji.
+5. Po dodaniu języka należy sprawdzić przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport i druk.
 
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
+Miejsca w kodzie są oznaczone komentarzem:
 
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`
 
+## 19. Źródło danych
+Sekcja „Źródło danych” w UI informuje, że dane są pobierane z prywatnego DataVault po autoryzacji Firebase.
 
-## Data source note
-Sekcja „Źródło danych” komunikuje prywatne źródło danych po autoryzacji Firebase (DataVault runtime z `/datavault/live`).
+GeneratorNPC używa wspólnego loadera Firebase i otrzymuje rozpakowany obiekt DataVault runtime z `/datavault/live`.
 
+## 20. Bramka dostępu prywatnych danych
+Bramka dostępu używa tekstów K.O.Z.A. w wersji PL/EN. GeneratorNPC korzysta ze wspólnego `shared/firebase-data-loader.js` dla błędów autoryzacji i odczytu.
 
-## Firebase runtime
-- GeneratorNPC uses shared Firebase loader and receives unwrapped DataVault object.
-- Access gate requires password and reuses active session on the same origin.
-- Access gate requires password and reuses active session on the same origin.
-- Access gate UI includes a fixed icon placeholder (`.accessGate__iconSlot`, `72px × 72px`) with `../IkonaPowiadomien2.png` rendered as `.accessGate__icon` (`object-fit: contain`) to avoid layout shift during image load.
+Formularz `#accessForm` używa kontenera `.accessGate__credentials` opartego o CSS Grid:
+- lewa kolumna: etykieta `.accessGate__label`,
+- prawa kolumna: pole `#accessPassword` (`.accessGate__password`) i przycisk `.accessGate__submit`.
 
+W breakpoint `max-width: 640px` układ przechodzi do jednej kolumny z jawną kolejnością wierszy w `shared/access-gate.css`:
+- `.accessGate__label` — wiersz 1,
+- `.accessGate__password` — wiersz 2,
+- `.accessGate__submit` — wiersz 3.
 
-## Widoczność przełącznika języka / Language switch visibility
+Wspólny overlay `shared/access-gate.css` jest zakotwiczony do viewportu (`width: 100vw`, `max-width: 100vw`, `height: 100dvh`) i ma `overflow: auto`, dzięki czemu karta hasła pozostaje widoczna także przy szerokim layoucie modułu.
 
+Ikona bramki używa stałego slotu `.accessGate__iconSlot` (`72px × 72px`) z obrazem `../IkonaPowiadomien2.png` renderowanym jako `.accessGate__icon` (`object-fit: contain`), aby ograniczyć przesunięcia layoutu podczas ładowania grafiki.
 
-## Firebase runtime
-- GeneratorNPC uruchamia przepływ startPrivateDataFlow(): sprawdza sesję, pokazuje bramkę hasła przy braku sesji i ładuje dane przez loadDataVaultLive().
-- Moduł nie używa publicznego data.json ani bezpośredniego REST fetch do /datavault/live.json.
-- Inicjalizacja Firestore ulubionych używa istniejącej aplikacji Firebase (getApp/getApps), aby uniknąć konfliktu [DEFAULT].
+## 21. Szerokie tabele na telefonie
+W `GeneratorNPC/style.css` karty danych używają `overflow-x: auto`, a `.data-table` używa `min-width: max-content`.
 
-## Firebase app isolation (private data vs favorites)
-- `shared/firebase-data-loader.js` używa nazwanej aplikacji `wh40k-data-slate-private-data` dla Auth + RTDB (`/datavault/live`) i nie korzysta z `getApp()` bez nazwy.
-- `GeneratorNPC/index.html` używa nazwanej aplikacji `generator-npc-favorites` do Firestore favorites przez helper `getOrCreateNamedFirebaseApp(name, config)`.
-- Inicjalizacja favorites ma dodatkowe zabezpieczenie `try/catch`, aby awaria favorites nie blokowała `startPrivateDataFlow()` i ładowania prywatnych danych NPC.
-
-
-## Bramka dostępu prywatnych danych — aktualne teksty
-- W `index.html` podmieniono wszystkie słowniki i18n oraz statyczny fallback HTML bramki `#accessGate` na teksty K.O.Z.A. (PL/EN).
-- `GeneratorNPC` nadal korzysta ze wspólnego `shared/firebase-data-loader.js` dla błędów autoryzacji i odczytu, ale teraz zwracane komunikaty mają pełne brzmienie „Duch Maszyny / Machine Spirit” dla wszystkich znanych kodów błędów.
-
-## 🇵🇱 Układ techniczny bramki hasła (Litania Dostępu)
-Formularz `#accessForm` używa teraz kontenera `.accessGate__credentials` opartego o CSS Grid (2 kolumny). Lewa kolumna zawiera etykietę `.accessGate__label`, prawa kolumna zawiera `#accessPassword` (`.accessGate__password`) i przycisk `.accessGate__submit` w drugim wierszu. W breakpoint `max-width: 640px` układ przechodzi do jednej kolumny z jawną kolejnością wierszy w `shared/access-gate.css` (`.accessGate__label` wiersz 1, `.accessGate__password` wiersz 2, `.accessGate__submit` wiersz 3), co zapobiega nakładaniu etykiety i pola hasła na mobile.
-
-## 🇬🇧 Technical password-gate layout (Litany of Access)
-The `#accessForm` now uses a `.accessGate__credentials` container based on a 2-column CSS Grid. The left column contains `.accessGate__label`, while the right column contains `#accessPassword` (`.accessGate__password`) and `.accessGate__submit` in the second row. At `max-width: 640px`, the layout switches to a single-column flow with explicit row order enforced in `shared/access-gate.css` (`.accessGate__label` row 1, `.accessGate__password` row 2, `.accessGate__submit` row 3), preventing label/input overlap on mobile.
-
-
-## Okno dostępu na telefonie / Access gate on phones
-- PL: Wspólny overlay `shared/access-gate.css` jest zakotwiczony do viewportu (`width:100vw`, `max-width:100vw`, `height:100dvh`) i ma `overflow:auto`, dzięki czemu karta hasła pozostaje widoczna nawet przy szerokim layoucie modułu.
-- EN: Shared overlay `shared/access-gate.css` is anchored to the viewport (`width:100vw`, `max-width:100vw`, `height:100dvh`) and uses `overflow:auto`, so the password card stays visible even when the module layout is very wide.
-- PL: W `GeneratorNPC/style.css` karty danych mają `overflow-x:auto`, a `.data-table` ma `min-width:max-content`, więc szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
-- EN: In `GeneratorNPC/style.css`, data cards use `overflow-x:auto` and `.data-table` uses `min-width:max-content`, so wide tables scroll inside cards instead of stretching the whole document.
+Dzięki temu szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
