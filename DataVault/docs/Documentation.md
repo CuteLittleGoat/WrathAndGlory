@@ -2,9 +2,9 @@
 
 Dokument opisuje **mechanizmy aplikacji i wygląd 1:1**, tak aby ktoś mógł odtworzyć identyczne zachowanie w innej implementacji. Aplikacja to frontend (HTML/CSS/JS) pracujący na danych runtime pobieranych z Firebase Realtime Database (`/datavault/live`) przez wspólny loader `shared/firebase-data-loader.js`, z kanonicznym generowaniem plików importowych po stronie przeglądarki (parser XML XLSX).
 
-Bieżące ustawienie szerokości kolumny: w zakładce `Pakiety Wyniesienia` kolumna `Koszt PD` ma teraz `min-width: 26ch`, czyli dokładnie tyle samo co `Premia Wpływu`.
+## 0. Aktualny stan danych i konfiguracji
 
-Bieżąca logika widoku domyślnego: w `DEFAULT_VIEW_CONFIG` usunięto reguły filtrowania `Archetypy / Frakcja`; pozostawiono wyłącznie warunek `Archetypy / Gatunek = Człowiek`.
+Moduł DataVault korzysta z prywatnego runtime Firebase RTDB `/datavault/live`. Lokalny `data.json` pełni rolę backupu i artefaktu pomocniczego, natomiast do Firebase importowany jest `firebase-import.json` wygenerowany z lokalnego pliku `Repozytorium.xlsx`.
 
 ---
 Bieżąca logika zakładek: zakładka `Kary do ST` została dopisana do zbioru zakładek zasad walki (`COMBAT_RULES_SHEETS`), dzięki czemu jest ukrywana/pokazywana przez checkbox `#toggleCombatTabs` i dziedziczy czerwony styl `.tab--combat` zarówno w trybie admina, jak i użytkownika.
@@ -87,7 +87,7 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
 - Pole globalne: `#globalSearch` w `.panelBody`.
 - Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
 - Checkbox `#toggleCombatTabs` — pytanie „Czy wyświetlić zakładki dotyczące zasad walki?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` (z czego `Trafienia Krytyczne` i `Groza Osnowy` pozostają widoczne tylko w trybie admina).
-- W `.hint` jest statyczna lista wskazówek (tekst, nie logika), m.in. linia o „Shift = sort wielokolumnowy”, mimo że logika multi-sortu nie istnieje w JS.
+- Podpowiedź sortowania informuje, że kliknięcie nagłówka kolumny sortuje dane, a kolejne kliknięcie zmienia kierunek sortowania.
 
 ### 2.3 Obszar tabeli
 - Zakładki: `#tabs` (przyciski `.tab` generowane w JS).

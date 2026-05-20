@@ -4,7 +4,7 @@
 
 Generator NPC jest narzędziem do losowania, modyfikowania i zapisu profili postaci niezależnych. Interfejs działa po stronie przeglądarki, a dane źródłowe są pobierane z prywatnego zasobu DataVault przez Firebase.
 
-## Źródło danych
+## 2. Źródło danych
 
 GeneratorNPC nie korzysta obecnie z publicznego pliku `../DataVault/data.json` jako głównego źródła danych.
 
@@ -19,7 +19,7 @@ Aktualny przepływ danych wygląda następująco:
 7. GeneratorNPC oczekuje finalnego obiektu danych zawierającego `sheets`.
 8. Z `sheets` budowane są kolekcje: bestiariusz, pancerze, bronie, augumentacje, ekwipunek, talenty, psionika i modlitwy.
 
-## Ekran dostępu
+## 3. Ekran dostępu
 
 Moduł pokazuje ekran dostępu przed załadowaniem prywatnych danych. Teksty ekranu używają motywu K.O.Z.A. i Rytuału Uwierzytelnienia.
 
@@ -32,7 +32,7 @@ Najważniejsze elementy ekranu:
 
 Błędy dostępu są tłumaczone przez `getReadableAccessError` ze wspólnego loadera Firebase.
 
-## Ulubione profile NPC
+## 4. Ulubione profile NPC
 
 Ulubione profile NPC są niezależne od prywatnego DataVault.
 
@@ -43,7 +43,7 @@ Jeżeli `GeneratorNPC/config/firebase-config.js` zawiera poprawne `window.fireba
 Jeżeli Firestore nie jest dostępny albo konfiguracja nie istnieje, moduł przechodzi na lokalny zapis w `localStorage` pod kluczem `generatorNpcFavorites`.
 
 
-## 2. Struktura projektu
+## 5. Struktura projektu
 - `index.html` — główny dokument HTML (tytuł karty: `Generator NPC`), zawiera szkielet UI oraz cały skrypt JS.
 - `style.css` — komplet stylów interfejsu (layout, typografia, tabele, popover, układ responsywny).
 - `config/firebase-config.js` — konfiguracja Firebase (ten sam projekt co Audio) używana do zapisu listy ulubionych.
@@ -53,7 +53,7 @@ Jeżeli Firestore nie jest dostępny albo konfiguracja nie istnieje, moduł prze
 
 ---
 
-## 3. Dane wejściowe i źródło
+## 6. Dane wejściowe i źródło
 **Źródło danych głównych (runtime NPC):**
 - Dane są pobierane z prywatnego runtime DataVault przez wspólny loader `../shared/firebase-data-loader.js`.
 - Loader korzysta z Firebase Auth oraz Firebase Realtime Database (`/datavault/live`).
@@ -73,17 +73,17 @@ Jeżeli Firestore nie jest dostępny albo konfiguracja nie istnieje, moduł prze
 
 ---
 
-## 4. Struktura HTML i elementy UI
+## 7. Struktura HTML i elementy UI
 
-### 4.1. Pasek górny (`.topbar`)
+### 7.1. Pasek górny (`.topbar`)
 - Zawiera tytuł aplikacji, przełącznik języka oraz dwa przyciski:
   - **Wersja językowa** (`#languageSelect`) — select z opcjami PL/EN, z ciemnym tłem.
   - **Reset** (`#reset-page`) — przywraca domyślny stan wyborów.
   - **Generuj kartę** (`#generate-card`) — uruchamia generowanie karty do druku.
 
-### 4.2. Panel boczny (`.sidebar`)
+### 7.2. Panel boczny (`.sidebar`)
 Składa się z trzech sekcji:
-1. **Źródło danych** — informuje o prywatnym źródle DataVault i statusie wczytywania (`#data-status`). Sekcja używa klas `panel-data-source`, `data-source-text` i `data-source-link`; tekst jest przygotowany pod dłuższe komunikaty statusowe i zawija się wewnątrz panelu bez wychodzenia poza ramkę.
+1. **Źródło danych** — informuje o prywatnym źródle DataVault i statusie wczytywania (`#data-status`). Sekcja używa klas `panel-data-source` i `data-source-text`; status ładowania danych jest wyświetlany w `#data-status`. Interfejs nie eksponuje publicznego linku do statycznego pliku JSON.
 2. **Wybór bazowy** — wybór rekordu bestiariusza (`#bestiary`) + notatki (`#bestiary-notes`).
 3. **Moduły aktywne** — checkboxy włączające/wyłączające karty modułów:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
@@ -320,7 +320,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `getNumericOverride(label)` — pobiera nadpisaną wartość liczbową z `state.bestiaryOverrides`.
 - `resetBestiaryOverrides()` — czyści wszystkie nadpisania bestiariusza i wyłącza tryb edycji „Umiejętności”.
 
-### 8.4. Specyfika pancerzy i cech
+### 8.13. Specyfika pancerzy i cech
 - `getArmorWpValue(record)` — odczytuje wartość WP z rekordu pancerza.
 - `isArmorBlocked(record)` — blokuje pancerze z WP „-”.
 - `isBestiaryArmorBlocked(record)` — sprawdza, czy bestiariusz ma blokującą wartość WP.
@@ -328,7 +328,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `buildTraitsMap(data)` — buduje Mapę cech z `_meta.traits`.
 - `resolveTraitDescription(traitName)` — zwraca opis cechy z mapy (lub komunikat o braku opisu).
 
-### 8.5. UI i renderowanie tabel
+### 8.13. UI i renderowanie tabel
 - `setStatus(message)` — ustawia tekst statusu w panelu danych.
 - `updateModuleVisibility()` — ukrywa/pokazuje moduły według checkboxów.
 - `setSelectOptions(select, items, placeholder, { disableOption, disabledTitle })` — wypełnia select opcjami.
@@ -341,20 +341,20 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `renderOrderedTable({ tableBody, records, columns, sheetName })` — renderuje tabelę z określonymi kolumnami.
 - `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne (z blokadą „Odporność Psychiczna” przy wartości `-`).
 
-### 8.6. Konfiguracje kolumn
+### 8.13. Konfiguracje kolumn
 - `weaponColumns`, `armorColumns`, `augmentationsColumns`, `equipmentColumns`, `talentsColumns`, `psionicsColumns`, `prayersColumns` — listy nagłówków dla tabel modułów.
 
-### 8.7. Obsługa wyborów
+### 8.13. Obsługa wyborów
 - `getSelectedIndices(select)` — zwraca indeksy zaznaczonych opcji.
 - `renderWeaponTable()`, `renderArmorTable()`, `renderAugmentationsTable()`, `renderEquipmentTable()`, `renderTalentsTable()`, `renderPsionicsTable()`, `renderPrayersTable()` — renderują odpowiednie tabele według aktualnego wyboru.
 - `setArmorSelectionEnabled(enabled)` — włącza/wyłącza select pancerzy.
 - `updateBestiarySelection()` — aktualizuje podgląd bestiariusza i stan pancerzy, resetuje nadpisania przy zmianie rekordu.
 
-### 8.8. Formatowanie sekcji na karcie
+### 8.13. Formatowanie sekcji na karcie
 - `splitEntries(raw)` — dzieli wpisy na sekcje wg heurystyki (np. `Nazwa — ...`, `Etykieta: ...`, `*[n]`, `[n]`).
 - `formatSectionEntries(entries)` — tworzy HTML z naprzemiennym tłem wierszy.
 
-### 8.9. Moduły i agregacja danych
+### 8.13. Moduły i agregacja danych
 - `getSelectedRecords(records, selectedIndices)` — mapuje wybór na listę rekordów.
 - `getTraitNamesFromRecords(records)` — wyciąga i normalizuje unikalne cechy.
 - `buildTraitDescriptionLine(records, label)` — generuje linię „Cechy: ...” z opisami.
@@ -364,14 +364,14 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `buildWeaponOverride(records, { includeTraitDescriptions })` — tworzy listę ataków oraz opis cech z broni.
 - `buildModuleEntries(records, columns, { includeFull, normalizeColumns })` — generuje listę wpisów modułu (nazwy + szczegóły).
 
-### 8.10. Parsowanie wartości liczbowych
+### 8.13. Parsowanie wartości liczbowych
 - `normalizeStarPrefix(value, hasStar)` — usuwa gwiazdki i dodaje je wg potrzeby.
 - `formatNumericWithStar(numeric, hasStar, fallbackText)` — buduje wartość z gwiazdką.
 - `parseStarNumber(value)` — parsuje liczbę i informację o gwiazdce.
 - `extractWpFromResistance(value)` — wyciąga WP z pola „Odporność”.
 - `resolveTrackerCount(value)` — wewnętrzna funkcja karty do druku zamienia wartość „Żywotność” lub „Odporność Psychiczna” na liczbę kwadratów (ignoruje brak liczby i ujemne wartości).
 
-### 8.11. Karta do druku
+### 8.13. Karta do druku
 - `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”, a etykiety karty są wybierane z tłumaczeń (PL/EN).
   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T” (PL) / „H/S” (EN)**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
   - Mechanizm `CARD_LEVEL_COLUMNS = 5` działa jako pojedyncze źródło prawdy dla sekcji `Poziom/Zagrożenie`: parser obcina dane do 5 znaków, fallback (`split("")`) zachowuje nietypowe znaki jak `?`, brakujące wartości są dopełniane pustymi komórkami, a nagłówek poziomów jest budowany dynamicznie (`1..5`).
@@ -380,7 +380,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
   - Układ trackerów używa inline CSS z przezroczystym tłem i ramkami pól (brak ciemnego wypełnienia po prawej stronie), a liczba pól w wierszu jest obliczana przez `grid-template-columns: repeat(auto-fit, ...)`.
 - `openPrintableCard(record, notes, overrides)` — otwiera nową kartę i wstrzykuje wygenerowany HTML.
 
-### 8.12. Eventy i inicjalizacja
+### 8.13. Eventy i inicjalizacja
 - `attachListeners()` — podpina listenery `change` i `click`, resetuje stan, generuje kartę.
 - `loadData()` — pobiera dane, inicjalizuje listy wyboru, wypełnia tabele i status.
 - Listener `document.addEventListener("click")` — obsługuje popover tagów cech.

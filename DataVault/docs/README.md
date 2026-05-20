@@ -88,8 +88,8 @@ Przełącznik języka jest domyślnie ukryty; dokładne miejsce zmiany widoczno�
 ## Ważne przy kopiowaniu modułu
 W module jest przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji (inna domena, inny katalog) **zaktualizuj jego hiperłącze**, żeby poprawnie wracał do strony startowej.
 
-## Aktualna uwaga o generatorze referencyjnym
-Skrypt `DataVault/build_json.py` został uproszczony do aktualnie używanej ścieżki parsera XLSX (ZIP/XML). Dla użytkownika nic nie zmienia to w obsłudze modułu: przycisk **Generuj pliki danych** dalej tworzy aktualne pliki robocze zgodnie z obecną logiką DataVault.
+## Generator referencyjny
+Skrypt `DataVault/build_json.py` jest referencyjną ścieżką generowania plików danych z `Repozytorium.xlsx` przy użyciu parsera XLSX ZIP/XML. Wynik powinien odpowiadać plikom tworzonym w aplikacji przez przycisk **Generuj pliki danych**.
 
 ---
 
@@ -183,5 +183,5 @@ The language switcher is hidden by default; the exact visibility change point is
 ## Important when copying the module
 This module includes a **Strona Główna / Main Page** button. After copying the app to another location (different domain or folder), **update its hyperlink** so it returns to the launcher correctly.
 
-## Current note about the reference generator
-The `DataVault/build_json.py` script has been simplified to the currently used XLSX parsing path (ZIP/XML). This does not change end-user behavior: the **Generate data files** button still produces the current working files according to the active DataVault logic.
+## Reference generator
+The `DataVault/build_json.py` script is the reference path for generating data files from `Repozytorium.xlsx` using the XLSX ZIP/XML parser. Its output should match the files generated in the app by the **Generate data files** button.

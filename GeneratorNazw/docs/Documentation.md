@@ -11,7 +11,6 @@ Celem jest umożliwienie odtworzenia modułu 1:1 bez dostępu do kodu.
 - `style.css` — pełny wygląd (kolory, fonty, layout, stany interakcji).
 - `script.js` — logika losowania, RNG, generatory nazw, obsługa UI.
 - `docs/Logika.md` — opis segmentów słowotwórczych i reguł składania nazw.
-- `Szablon.html` — plik usunięty jako nieużywany (nie występuje już w module).
 
 ---
 
@@ -94,7 +93,7 @@ W `:root`:
 - `.panel`: czarne tło `--panel`, zielona ramka `2px solid --border`,
   zaokrąglenia `12px`, `box-shadow: --glow`, `padding: 16px`.
 
-### 3.5.1 Przełącznik języka
+### 3.5.1 Topbar i przełącznik języka
 - `.language-switcher`: `display: flex`, wyrównanie do prawej (`justify-content: flex-end`) i dolny margines `14px`.
 - `select` przełącznika dziedziczy style z `input/select` (ciemne tło, zielona ramka).
 
@@ -226,7 +225,7 @@ Każda funkcja generatora:
 - Maksymalna liczba wyników: **20**.
 - Seed jest dowolnym tekstem — stabilizuje RNG.
 - Generator nie dodaje tytułów, honorificów ani sufiksów poza listami segmentów.
-## 13) Mapa funkcji w `script.js` (ultra-dokładnie)
+## 6. Wymagalność Firebase w instrukcji użytkownika
 Poniżej pełna warstwa narzędziowa generatora nazw, żeby odtworzyć logikę 1:1:
 
 ### 13.1 RNG
@@ -251,7 +250,7 @@ Poniżej pełna warstwa narzędziowa generatora nazw, żeby odtworzyć logikę 1
 - `formatWithTitle(core, titles, rand, chanceValue)` – opcjonalny tytuł przed nazwą.
 - `formatNamedThing(classifier, core)` – format `Klasyfikator "Nazwa"`.
 
-## 14) Specyfikacja kolorów 1:1
+## 7. Linki względne
 - `--bg`: `#031605`; `--bg-grad`: radialne gradienty + `#031605`.
 - `--panel`: `#000`.
 - `--panel-soft`: `rgba(22, 198, 12, 0.06)`.

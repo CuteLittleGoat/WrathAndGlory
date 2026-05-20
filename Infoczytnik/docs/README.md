@@ -31,7 +31,6 @@
 - **Kolor i wielkość prefix/suffix**.
 - **Ilość linii fillerów** i wysokość strefy prefix/suffix.
 - W danych fillerów separatorami linii są: nowa linia oraz pionowa kreska `|`. Średnik pozostaje częścią tekstu i nie dzieli wpisu na wiele elementów.
-- In filler data, line separators are: newline and pipe `|`. Semicolon stays inside the text and does not split one entry into multiple elements.
 - **Tryb podglądu**:
   - **Treść** – podgląd warstwy tekstowej.
   - **Tło** – podgląd samego tła.
@@ -113,10 +112,11 @@ Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYK�
 - **Ping** – plays attention sound without changing message text. The button uses `Infoczytnik/assets/audios/ping/Ping.mp3`.
 - **Clear message** – clears input text only.
 - **Restore defaults** – resets panel settings to default values.
-- **Update data from XLSX** – refreshes module data sources.
+- **Update data from XLSX** – reads `DataSlate_manifest.xlsx` and generates a refreshed JSON export.
 - Po odświeżeniu dane zapisują się do `assets/data/data.json` i od razu są gotowe do użycia w panelu. / After refresh, data is saved to `assets/data/data.json` and is immediately ready to use in the panel.
 
 ### Most-used settings
+- In filler data, line separators are newline and pipe `|`. Semicolon stays inside the text and does not split one entry into multiple elements.
 - **Message text color and size**.
 - **Prefix/suffix color and size**.
 - **Filler line count** and prefix/suffix area height.
