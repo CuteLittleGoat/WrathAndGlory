@@ -429,7 +429,7 @@ Funkcja `formatInlineHTML(raw)` obsługuje markery:
 - `{{RED}}...{{/RED}}`,
 - `{{B}}...{{/B}}`,
 - `{{I}}...{{/I}}`,
-- `{{S}}...{{/S}`.
+- `{{S}}...{{/S}}`.
 
 Segmenty oznaczone markerem `{{S}}` otrzymują klasę `.inline-strike` i są renderowane jako przekreślone. Jeżeli segment jest jednocześnie czerwony i przekreślony, klasa `.inline-red` utrzymuje czerwony kolor tekstu.
 
