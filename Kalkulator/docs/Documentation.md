@@ -368,9 +368,9 @@ const skillCosts = {
 └── kalkulatorxp.css
 ```
 
-## 9. – tajny przycisk i overlay GIF w `index.html`
-Wdrożono rekomendowane rozwiązanie z analizy:
-1. Przeniesiono i wystylizowano **Tajny przycisk!** jako kompaktowy czerwony CTA po prawej stronie pod siatką `.actions` (jak przycisk powiadomień w Main).
+## 9. Sekretny przycisk przejścia do tworzenia postaci
+Ekran startowy zawiera ukryty przycisk `#secretButton`, który po aktywacji przełącza użytkownika do `TworzeniePostaci.html`.
+1. Przycisk **Tajny przycisk!** jest kompaktowym CTA po prawej stronie pod siatką `.actions` i kieruje do widoku tworzenia postaci.
 2. Zawiera modalny overlay z `Koza.gif`.
 3. Zawiera pełną obsługę zamykania (przycisk, kliknięcie tła, `Escape`) i atrybut `aria-hidden`.
 4. Przesunięto przycisk **Zamknij** z lewego dolnego obszaru na prawy dolny róg okna GIF-a (`.secret-close`).
@@ -384,10 +384,10 @@ Wdrożono rekomendowane rozwiązanie z analizy:
 5.5. **Nawigacja do modułu Main**
    - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.
 
-## 10. – tabela maksymalnych wartości atrybutów w `KalkulatorXP.html`
+## 10. Maksymalne wartości atrybutów ras
 
 ### 10.1. Zakres funkcjonalny
-Wdrożono wariant informacyjny opisany w analizie: pod istniejącymi tabelami **Atrybuty** i **Umiejętności** zawiera trzecią kartę (`.referenceCard`) zawierającą statyczną tabelę referencyjną z maksymalnymi wartościami 8 atrybutów dla 10 ras.
+Definicje maksymalnych wartości atrybutów ras znajdują się w `KalkulatorXP.html` w bloku `speciesMaxAttributes` i są prezentowane jako tabela referencyjna pod tabelami **Atrybuty** i **Umiejętności**.
 
 Najważniejsze założenia:
 1. Dane maksimów atrybutów są zaszyte w kodzie JS (brak odczytu z `MaxAttributes.md` i `Labels.md` w runtime).
@@ -424,14 +424,14 @@ Ustawiono `applyLanguage(lang)`:
 - aktualizuje `#maxAttributesTitle`,
 - wywołuje `renderMaxAttributesTable(lang)` po podmianie etykiet, dzięki czemu tabela referencyjna natychmiast przełącza nazwy PL/EN.
 
-### 10.6. Korekta nazewnictwa
+### 10.4. Korekta nazewnictwa
 Zastosowano korektę copywritingu w sekcji referencyjnej `KalkulatorXP.html`:
 1. Tytuł sekcji skrócono z:
    - `Maksymalne wartości atrybutów (informacyjne)` → `Maksymalne wartości atrybutów`,
    - `Maximum attribute values (reference)` → `Maximum attribute values`.
 2. Usunięto tłumaczeniowy klucz `labels.raceHeader` i podpis pierwszej kolumny tabeli (`Rasa / Species`), pozostawiając samą listę ras jako wartości wierszy.
 
-### 10.4. Zmiany w CSS (`kalkulatorxp.css`)
+### 10.5. Zmiany w CSS (`kalkulatorxp.css`)
 Dodane klasy:
 - `.referenceCard { grid-column: 1 / -1; }`
   - wymusza pełną szerokość karty referencyjnej pod dwoma kartami wejściowymi.
@@ -446,14 +446,14 @@ Dodane klasy:
 Zebra striping działa przez istniejącą regułę globalną:
 - `.dataTable tbody tr:nth-child(even) { background: var(--zebra); }`
 
-### 10.5. Spójność i odtwarzalność 1:1
+### 10.6. Spójność i odtwarzalność 1:1
 Aby odtworzyć aktualny interfejs kalkulatora 1:1:
 1. Zachowaj strukturę `calcGrid` z trzema kartami (Atrybuty, Umiejętności, tabela referencyjna).
 2. Skopiuj wartości `attributeMaximumRows` dokładnie w tej samej kolejności ras i atrybutów.
 3. Utrzymaj klucze tłumaczeń (`race_1..race_10`, `attribute_1..attribute_8`) bez lokalizowania kluczy technicznych.
 4. Wywołuj `renderMaxAttributesTable(lang)` zawsze po zmianie języka.
 5. Pozostaw dotychczasowe limity inputów: atrybuty `0..12`, umiejętności `0..8`.
-## 9. Uzupełnienie: komplet wartości kolorów (1:1)
+## 11. Zasady zapisu i odczytu postaci
 Poniżej pełna paleta używana przez trzy strony modułu:
 - `--bg`: `#031605`.
 - `--bg-grad`: radial gradient `rgba(0,255,128,0.06)` + radial gradient `rgba(0,255,128,0.08)` + `#031605`.
@@ -465,21 +465,21 @@ Poniżej pełna paleta używana przez trzy strony modułu:
 - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)`.
 - Tajny przycisk (CTA czerwone): `#ff3b30`, `rgba(255,59,48,0.2)`, `#ffe5e3`, glow `0 0 14px rgba(255,59,48,0.35)`.
 
-## 10. Uzupełnienie: pełna lista funkcji runtime
+## 12. UI tworzenia postaci
 - `index.html`: `toggleSecretOverlay(forceOpen)`.
 - `KalkulatorXP.html`: `clampValue`, `calculateRowCost`, `recalcTable`, `recalcAll`, `renderMaxAttributesTable`, `applyLanguage`.
 - `TworzeniePostaci.html`: `updateLanguage`, `renderSpeciesMaxTable`, `resetAll`, `recalcXP`, `displayError`, `checkSkillTree`, `attachDefaultOnBlur`, `adjustTalentFontSize`, `toggleSpeciesMaxModal`.
 
-## 1.3. `TworzeniePostaci.html` – stabilizacja modala potwierdzenia i skalowanie `Modal_Icon.png`
+## 13. Firebase i aktualizacja konfiguracji
 - W stylach inline sekcji `confirm-modal` ustawiono kontener `.confirm-modal__media` na stałą wysokość `192px` (`height` + `min-height`), aby wymusić rezerwację miejsca na grafikę jeszcze przed pełnym wczytaniem bitmapy.
 - Klasa `.confirm-modal__image` została ustawiona na `height: 192px`, `width: auto`, `max-width: 100%`, `object-fit: contain`; to zachowuje proporcje nowego pliku `Modal_Icon.png` i utrzymuje docelową wysokość zgodną z poprzednią ikoną referencyjną `Modal_Icon_old.png`.
 - W znaczniku `<img id="confirmModalImage">` zawiera atrybuty `width="1980"` i `height="2048"` (natywny rozmiar nowego pliku) oraz `decoding="async"`, aby przeglądarka mogła uprzednio obliczyć proporcje i utrzymać stabilny layout modala podczas ładowania obrazu.
 
-## 17. Firebase i nawigacja
+## 14. Detale layoutu ekranu startowego
 - Funkcja zapisu/odczytu postaci w `TworzeniePostaci.html` wymaga poprawnej konfiguracji Firebase (`Kalkulator/config/firebase-config.js`) oraz aktywnej bazy Firestore.
 - Minimalna procedura wdrożeniowa obejmuje: utworzenie projektu Firebase, rejestrację aplikacji web, utworzenie Firestore Database oraz skonfigurowanie reguł dostępu.
 - Przyciski `Strona Główna / Main Page` (w `KalkulatorXP.html` i `TworzeniePostaci.html`) należy w docelowym wdrożeniu aplikacji zweryfikować pod kątem poprawnego `href`/adresu docelowego.
-## Izolacja danych między grupami
+## 15. Kopia modułu dla nowej grupy
 - `TworzeniePostaci.html` zawiera komentarze `WAŻNE/IMPORTANT` przy:
   - ładowaniu `config/firebase-config.js`,
   - nawigacji `window.location.href = '../Main/index.html'`.
@@ -488,7 +488,7 @@ Poniżej pełna paleta używana przez trzy strony modułu:
   2. weryfikacja ścieżki powrotu do modułu Main zgodnie z topologią serwera grupy.
 
 
-## Dodawanie nowej wersji językowej (PL)
+## 16. Widoczność przełącznika języka
 
 To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
 
@@ -501,7 +501,7 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
 
-## Adding a new language version (EN)
+## 17. Bootstrap Node.js
 
 This is the update map for adding another language (for example FR/DE):
 
@@ -512,3 +512,7 @@ This is the update map for adding another language (for example FR/DE):
 5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+
+
+## 18. Konfiguracja multi-tenant
+- Każda grupa powinna używać własnego pliku `Kalkulator/config/firebase-config.js` i własnych reguł dostępu do danych.

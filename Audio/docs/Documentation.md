@@ -280,7 +280,8 @@ window.firebaseConfig = {
   2. Oczekiwaną strukturę `audio/favorites` (kolekcja/dokument/pola).
   3. Skrypt Node.js do inicjalizacji dokumentu.
   4. Instrukcję konfiguracji krok-po-kroku w języku polskim i angielskim.
-## 16. Uzupełnienie: precyzyjne kolory i wartości UI (bez opisów ogólnych)
+
+## 13. Uzupełnienie: precyzyjne kolory i wartości UI (bez opisów ogólnych)
 - `--bg`: radialne gradienty (`rgba(0,255,128,0.06)` + `rgba(0,255,128,0.08)`) i baza `#031605`.
 - `--panel`: `#000`; `--panel-alt`: `#041b08`.
 - `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`; `--accent-strong`: `#1ee616`.
@@ -291,7 +292,7 @@ window.firebaseConfig = {
 - Border toolbarów/paneli filtrów: `rgba(22, 198, 12, 0.6)` do `rgba(22, 198, 12, 0.7)` (w zależności od sekcji).
 - Focus ring pól i selectów: zielone obwódki oparte o `rgba(22, 198, 12, 0.25)`.
 
-## 17. Uzupełnienie: logika funkcjonalna (pełny przepływ)
+## 14. Uzupełnienie: logika funkcjonalna (pełny przepływ)
 1. Import manifestu XLSX -> normalizacja rekordów -> budowa listy SFX i drzewa tagów.
 2. Nadpisanie aliasów z zapisanych ustawień (`aliases`) po `itemId`.
 3. Render widoku admina i widoku użytkownika z tego samego źródła stanu.
@@ -300,15 +301,15 @@ window.firebaseConfig = {
 6. Zapis zmian do Firestore (`audio/favorites`) lub fallback do `localStorage` (`audio.settings`).
 7. Przełączanie języka równolegle aktualizuje etykiety obu widoków (admin + user preview).
 
-## 13. Wymagalność Firebase w instrukcji użytkownika
+## 15. Wymagalność Firebase w instrukcji użytkownika
 - `docs/README.md` modułu Audio musi zawierać jasną informację, że Firebase/Firestore jest wymagane do współdzielonych list i ustawień między urządzeniami.
 - Instrukcja użytkowa powinna prowadzić przez pełny proces konsoli Firebase: projekt → aplikacja web → `config/firebase-config.js` → Firestore Database → reguły → test trwałości list.
-## Wdrożenie wielu niezależnych grup
+## 16. Wdrożenie wielu niezależnych grup
 - W `Audio/index.html` dodano komentarze `WAŻNE/IMPORTANT` przy ładowaniu `config/firebase-config.js` oraz przy walidacji `window.firebaseConfig`.
 - Mechanika:
   - brak klucza `apiKey` -> moduł przechodzi w tryb lokalny,
   - poprawny config -> aktywacja Firestore (`audio/favorites`).
-- Dla każdej grupy wymagany jest osobny `config/firebase-config.js` (osobny projekt Firebase), aby odizolować dane.
+- Dla każdej grupy wymagany jest własny `Audio/config/firebase-config.js`. Może on wskazywać osobny projekt Firebase albo ten sam projekt z odpowiednio rozdzielonymi regułami i przestrzenią danych. Jeżeli grupy mają być w pełni odizolowane bez dodatkowych zmian w ścieżkach danych, najprostsze jest użycie osobnego projektu Firebase.
 
 
 W `index.html` oba ukryte przełączniki języka (`#languageSelect` i `#languageSelectUser`) mają komentarz „MIEJSCE ZMIANY WIDOCZNOŚCI…”, który wskazuje dokładny punkt usunięcia klasy `.language-switcher--hidden`.

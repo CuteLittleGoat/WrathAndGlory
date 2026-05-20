@@ -63,4 +63,3 @@ This is the update map for adding another language (for example FR/DE):
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
 
-## Widoczność przełącznika języka / Language switch visibility

@@ -100,7 +100,7 @@ Ta zasada jest obowiązkowa przy odtwarzaniu modułu 1:1.
 ### 6.2. Przetwarzanie
 - Dane z arkusza są mapowane do pól używanych przez payload UI.
 - Obsługiwane jest autoformatowanie tokenu `+++` podczas importu do JSON.
-- Wynik importu **zawsze** generuje aktualny `assets/data/data.json` na podstawie zawartości `DataSlate_manifest.xlsx` dla lokalnego odczytu.
+- Wynik importu generuje plik JSON do pobrania. Po wygenerowaniu należy umieścić pobrany `data.json` w `Infoczytnik/assets/data/data.json`, jeżeli ma zastąpić lokalny snapshot używany przez moduł.
 
 ### 6.3. Oczekiwany efekt
 - Po imporcie nowa struktura jest od razu dostępna do podglądu i publikacji.
@@ -123,7 +123,7 @@ Kluczowe grupy funkcji:
 4. Bezpieczne fallbacki przy brakujących zasobach.
 5. Utrzymanie czytelności i responsywności w różnych proporcjach ekranu.
 
-## 10. Struktura Firestore do odtworzenia
+## 9. Struktura Firestore do odtworzenia
 
 Minimalna struktura Firestore używana przez moduł:
 
@@ -163,7 +163,7 @@ dataslate (kolekcja)
 ```
 
 
-## 11. Skrypt Node.js do bootstrapu dokumentu `dataslate/current`
+## 10. Skrypt Node.js do bootstrapu dokumentu `dataslate/current`
 Poniższy przykład pokazuje minimalny bootstrap dokumentu `dataslate/current` zgodny z aktualnym modelem payloadu modułu Infoczytnik.
 
 Przykład służy wyłącznie do przygotowania struktury dokumentu w Firestore. Panel GM zapisuje później pełny snapshot przez `currentRef.set(getPayload(type), { merge: false })`.
@@ -214,20 +214,20 @@ await db.doc('dataslate/current').set({
 console.log('Bootstrap complete');
 ```
 
-## 12. Testy kontrolne po wdrożeniu
+## 11. Testy kontrolne po wdrożeniu
 1. Otwórz `GM_test.html` i opublikuj testowy komunikat.
 2. Otwórz `Infoczytnik_test.html` i sprawdź natychmiastowy render.
 3. Zmień font i tło — potwierdź poprawne odświeżenie.
 4. Wykonaj import XLSX i sprawdź poprawność mapowania.
 5. Zweryfikuj tryb podglądu oraz poprawność renderu po zmianach ustawień.
 
-## 13. Ograniczenia i zasady utrzymania
+## 12. Ograniczenia i zasady utrzymania
 - Nie edytować automatycznie: `GM.html`, `Infoczytnik.html`, `GM_backup.html`, `Infoczytnik_backup.html`.
 - Zmiany funkcjonalne wykonywać w plikach `_test`.
 - Po każdej zmianie kodu aktualizować `docs/README.md` i `docs/Documentation.md`.
 - Przy zmianach `GM_test.html`/`Infoczytnik_test.html` podnosić `INF_VERSION` w formacie czasu lokalnego PL.
 
-## 14. Szczegółowa mapa funkcji (`GM_test.html`)
+## 13. Szczegółowa mapa funkcji (`GM_test.html`)
 Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 
 ### 14.1. Wersjonowanie i status UI
@@ -271,7 +271,7 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - `restoreDefaults()` — przywrócenie ustawień domyślnych panelu.
 - `rerollFillers()` i `pick()` — odświeżanie oraz wybór elementów dynamicznych (`fillers`).
 
-## 15. Szczegółowa mapa funkcji (`Infoczytnik_test.html`)
+## 14. Szczegółowa mapa funkcji (`Infoczytnik_test.html`)
 - `autoCacheBust()` — ten sam mechanizm wersjonowania URL co po stronie GM.
 - `preloadKnownFonts()` — preload typowych rodzin fontów dla szybszego first paint.
 - `clamp()` — pomocnicze ograniczenia numeryczne.
@@ -285,21 +285,21 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - `fitOverlayToBackground()` — dopasowanie skali overlay do tła.
 - `scheduleFitOverlay()` — debouncing/odroczenie dopasowania przy zmianie rozmiaru.
 
-## 18. Specyfikacja wersjonowania testowego (`INF_VERSION`)
+## 15. Specyfikacja wersjonowania testowego (`INF_VERSION`)
 - Pole `INF_VERSION` występuje równolegle w `GM_test.html` i `Infoczytnik_test.html`.
 - Format obowiązkowy: `rrrr-MM-dd_gg-hh-ss` (czas lokalny Polski).
 - Każda zmiana kodu w którymkolwiek z plików testowych wymaga podniesienia tej wartości w obu plikach.
 - Funkcja `autoCacheBust()` wymusza spójność `?v=INF_VERSION`, co gwarantuje odświeżenie zasobów na kliencie.
 - Aktualna wersja testowa: `2026-04-30_12-00-51`.
 
-## 19. Macierz kompletności technicznej
+## 16. Macierz kompletności technicznej
 - **Style, kolory, fonty i warstwy:** sekcje 3, 14.3, 15.
 - **Funkcje i mechaniki UI:** sekcje 7, 8, 14, 15.
 - **Model danych i logika publikacji:** sekcje 4, 5, 14.6.
 - **Firebase/Firestore:** sekcje 5, 10 (dokument `dataslate/current`).
 - **Wersjonowanie i cache-busting:** sekcja 18.
 
-## 20. Wymagalność Firebase w instrukcji użytkownika
+## 17. Wymagalność Firebase w instrukcji użytkownika
 Instrukcja użytkownika (`docs/README.md`) powinna jednoznacznie wskazywać, że moduł Infoczytnik wymaga integracji z Firebase/Firestore do komunikacji GM↔gracze.
 
 Procedura użytkowa powinna obejmować:
@@ -310,7 +310,7 @@ Procedura użytkowa powinna obejmować:
 - ustawienie reguł,
 - test dwuekranowy GM↔Infoczytnik.
 
-## 21. Wdrożenia dla wielu grup
+## 18. Wdrożenia dla wielu grup
 Każda grupa wymaga osobnego projektu Firebase, aby dokument `dataslate/current` nie był współdzielony między niezależnymi instancjami.
 
 W plikach `GM_test.html` i `Infoczytnik_test.html` komentarze `WAŻNE/IMPORTANT` oznaczają istotne miejsca wdrożeniowe:
@@ -320,7 +320,7 @@ W plikach `GM_test.html` i `Infoczytnik_test.html` komentarze `WAŻNE/IMPORTANT`
 
 Po każdej zmianie testowych plików wartość `INF_VERSION` powinna być taka sama w `GM_test.html` i `Infoczytnik_test.html`.
 
-## 22. Linki względne
+## 19. Linki względne
 Moduł używa ścieżek względnych do nawigacji i ładowania zasobów. Dzięki temu kopia modułu może działać po przeniesieniu na inny serwer lub do innej instancji wdrożeniowej, o ile zachowana jest struktura katalogów.
 
 Przy wdrożeniu dla osobnej grupy należy sprawdzić:

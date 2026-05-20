@@ -178,6 +178,8 @@ EN: GeneratorNPC loads data via `shared/firebase-data-loader.js` (Firebase Auth 
 
 
 ## Widoczność przełącznika języka / Language switch visibility
+- PL: Przełącznik języka jest celowo ukryty w interfejsie. Kod tłumaczeń pozostaje aktywny, a miejsce zmiany widoczności jest oznaczone komentarzem przy `.language-switcher--hidden`.
+- EN: The language switcher is intentionally hidden in the UI. Translation code remains active, and the visibility change point is marked by a comment next to `.language-switcher--hidden`.
 
 
 ## Dostęp do prywatnych danych / Private data access

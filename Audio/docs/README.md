@@ -13,8 +13,8 @@ Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma 
 3. Jeśli chcesz pełny panel zarządzania, dopisz w adresie: `?admin=1`.
 
 ### Co zobaczysz w widoku użytkownika (bez `?admin=1`)
-- Panel **Nawigacja** (po lewej) z wyborem listy.
-- Panel **dźwięków** (po prawej) z przyciskami odtwarzania.
+- Panel **dźwięków** (po lewej) z przyciskami odtwarzania.
+- Panel **Nawigacja** (po prawej) z wyborem widoku głównego i list ulubionych.
 
 ### Jak odtwarzać dźwięki (widok użytkownika)
 1. W panelu nawigacji kliknij **Widok główny** albo wybraną listę ulubionych.
@@ -109,9 +109,9 @@ The language switcher is currently hidden in the user interface. The module cont
 3. For the full management panel, append: `?admin=1`.
 
 ### What you see in user view (without `?admin=1`)
-- **Navigation** panel (left) to choose a list.
-- **Sound grid** (right) with playable SFX tiles.
-- Language switch for panel labels.
+- **Sound grid** panel (left) with playable SFX tiles.
+- **Navigation** panel (right) to choose the main view or a favorites list.
+- The language switcher is intentionally hidden; the UI uses the currently visible language version.
 
 ### How to play sounds (user view)
 1. In navigation, click **Main view** or a selected favorites list.
@@ -184,3 +184,5 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 
 ## Widoczność przełącznika języka / Language switch visibility
+- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie. Kod tłumaczeń pozostaje aktywny, a miejsce zmiany widoczności jest oznaczone komentarzem przy `.language-switcher--hidden`.
+- EN: The language selector is intentionally hidden in the UI. Translation code remains active, and the visibility change point is marked by a comment next to `.language-switcher--hidden`.
