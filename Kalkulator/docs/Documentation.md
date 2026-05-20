@@ -69,9 +69,9 @@ Funkcja `recalcXP()` korzysta z bieżącej wartości wpisanej przez użytkownika
 - Dwa linki (`.btn`) prowadzą do:
   - `KalkulatorXP.html`
   - `TworzeniePostaci.html`
-- Pod siatką `.actions` zawiera kontener wyrównujący do prawej (`.secretCtaWrap`) z przyciskiem:
+- Pod siatką `.actions` znajduje się kontener wyrównany do prawej (`.secretCtaWrap`) z przyciskiem:
   - `<button id="secretButton" class="btn secretCta">Tajny przycisk!</button>`
-- Pod panelem `<main>` zawiera nakładkę:
+- Pod panelem `<main>` znajduje się nakładka:
   - `<div id="secretOverlay" class="secret-overlay">` z dialogiem `.secret-dialog`,
   - `<img src="Koza.gif">` oraz przyciskiem zamknięcia `#secretCloseButton`.
 - `<title>` ustawiony na `Kozie Liczydła` (tytuł karty przeglądarki).
@@ -111,7 +111,7 @@ Funkcja `recalcXP()` korzysta z bieżącej wartości wpisanej przez użytkownika
   - `.secret-close` ma `margin: 10px 0 0 auto` oraz `width: auto`, dzięki czemu przycisk **Zamknij** jest przypięty do prawego dolnego rogu okna GIF-a (zamiast pełnej szerokości).
 
 ### 3.3. Logika
-`index.html` zawiera teraz lekki skrypt JS sterujący overlayem:
+`index.html` zawiera lekki skrypt JS sterujący overlayem:
 1. **Pobranie referencji DOM**
    - `#secretButton`, `#secretOverlay`, `#secretCloseButton`.
 2. **`toggleSecretOverlay(forceOpen)`**
@@ -171,7 +171,7 @@ W `TworzeniePostaci.html` skrypt dodaje klasę `attribute-high` dla wartości at
 
 ## 5. `KalkulatorXP.html` – kalkulator XP
 ### 5.1. Struktura HTML
-- W `div.actions` zawiera link-przycisk `#btnMainPage` (`<a class="btn secondary" href="../Main/index.html">`). Etykieta jest tłumaczona dynamicznie: `Strona Główna` (PL) / `Main Page` (EN).
+- W `div.actions` znajduje się link-przycisk `#btnMainPage` (`<a class="btn secondary" href="../Main/index.html">`). Etykieta jest tłumaczona dynamicznie: `Strona Główna` (PL) / `Main Page` (EN).
 - **Nagłówek** `.topbar` z:
   - tytułem w `.brand` i `.title`,
   - przełącznikiem języka (`.language-switcher` + `#languageSelect`),
@@ -218,7 +218,7 @@ const skillCosts = {
 
 ## 6. `TworzeniePostaci.html` – arkusz tworzenia postaci
 ### 6.1. Struktura HTML
-- W `.language-switcher` zawiera przycisk `#backToMainButton`, który prowadzi do `../Main/index.html` i jest tłumaczony w `translations.labels.backToMainButton`.
+- W `.language-switcher` znajduje się przycisk `#backToMainButton`, który prowadzi do `../Main/index.html` i jest tłumaczony w `translations.labels.backToMainButton`.
 - **Kontener** `.wrapper` (ustawiony względem, z cieniem i obramowaniem).
 - **Przełącznik języka** `.language-switcher` z:
   - `<select id="languageSelect">` (PL/EN),

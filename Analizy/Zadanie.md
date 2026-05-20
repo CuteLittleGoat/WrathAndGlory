@@ -2223,3 +2223,42 @@ Sprawdź też:
 
 3. `Kalkulator/docs/Documentation.md`:
    - nie ma mechanicznie brzmiących zdań typu „W X zawiera...”.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Kalkulator/docs/Documentation.md`
+Lokalizacja: sekcje opisujące strukturę `index.html` (część o `div.actions`, `.language-switcher`, overlay i przyciskach).
+
+Było:
+- występowały mechaniczne, niegramatyczne konstrukcje typu „W X zawiera...” i „zawiera teraz”.
+
+Jest:
+- zdania zostały przeredagowane na naturalne i technicznie równoważne formy, np. „znajduje się ...” oraz „zawiera ...”, bez zmiany sensu funkcjonalnego.
+
+### Plik: `GeneratorNPC/docs/Documentation.md`
+Lokalizacja: zakres od nagłówka `## 11. Instrukcje utrzymaniowe` do końca pliku.
+
+Było:
+- niespójna numeracja sekcji,
+- zdublowane i puste nagłówki,
+- duplikaty treści,
+- sekcje mieszające style i pozostałości changelogowe.
+
+Jest:
+- wstawiona spójna, rosnąca struktura sekcji `11–21`,
+- usunięte duplikaty i puste sekcje,
+- zachowany opis techniczny Firebase, access gate, źródła danych i ukrytego przełącznika języka (`.language-switcher`, `language-switcher--hidden`, `#languageSelect`, komentarz `LANGUAGE SWITCHER VISIBILITY CHANGE POINT`),
+- odwołanie do `GeneratorNPC/config/FirebaseREADME.md`.
+
+### Plik: `Infoczytnik/docs/Documentation.md`
+Lokalizacja: dolna część pliku po `## 19. Macierz kompletności technicznej`.
+
+Było:
+- po sekcji `## 19` występował ponownie nagłówek `## 14`,
+- końcowe sekcje miały niespójną numerację i mieszaną strukturę.
+
+Jest:
+- podmienione końcowe sekcje na spójną numerację `## 20`, `## 21`, `## 22`,
+- zachowany techniczny opis wymagalności Firebase, wdrożeń wielogrupowych i linków względnych,
+- usunięte błędne nagłówki i nienaturalne sformułowania.
