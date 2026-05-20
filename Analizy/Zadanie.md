@@ -1837,3 +1837,389 @@ Sprawdź też, czy:
 - Przeredagowano wskazane sekcje `Kalkulator/docs/Documentation.md` (tabela maksimów, terminologia PD, obsługa Szybkości, modal) na opis działania modułu bez narracji changelogowej.
 
 Te zmiany dotyczą dokumentacji i opisu aktualnego działania repozytorium. Nie zmieniają logiki działania aplikacji.
+
+
+### Aktualizacja 2026-05-20 07:30
+
+NIE zmieniaj kodu aplikacji.
+NIE zmieniaj HTML/CSS/JS/Python.
+NIE zmieniaj konfiguracji produkcyjnych.
+NIE zmieniaj danych.
+NIE twórz, nie usuwaj i nie przenoś plików.
+
+Poprzednia zmiana poprawiła główne problemy merytoryczne, ale zostawiła bałagan redakcyjny i strukturalny:
+
+- zdublowane albo niespójne nagłówki,
+- błędną numerację sekcji,
+- puste sekcje,
+- duplikaty treści,
+- mechanicznie przeredagowane zdania typu „W `.language-switcher` zawiera...”,
+- sekcje mieszające PL/EN w jednym nagłówku lub bloku,
+- pojedyncze pozostałości stylu changelogowego.
+
+Dokumentacja ma opisywać aktualny stan aplikacji, a nie historię zmian.
+
+Nie usuwaj informacji technicznych, jeśli są nadal prawdziwe.
+Nie dopisuj historii zmian.
+Nie dopisuj informacji o tym, że dokumentacja została poprawiona.
+
+────────────────────────────────────
+PLIK 1: `Kalkulator/docs/Documentation.md`
+────────────────────────────────────
+
+W tym pliku wykonaj korektę językową zdań, które po poprzedniej zmianie brzmią nienaturalnie.
+
+Popraw co najmniej poniższe fragmenty:
+
+1. Znajdź:
+
+`Pod siatką `.actions` zawiera kontener wyrównujący do prawej (`.secretCtaWrap`) z przyciskiem:`
+
+Zastąp:
+
+`Pod siatką `.actions` znajduje się kontener wyrównany do prawej (`.secretCtaWrap`) z przyciskiem:`
+
+2. Znajdź:
+
+`Pod panelem `<main>` zawiera nakładkę:`
+
+Zastąp:
+
+`Pod panelem `<main>` znajduje się nakładka:`
+
+3. Znajdź:
+
+`index.html` zawiera teraz lekki skrypt JS sterujący overlayem:`
+
+Zastąp:
+
+`index.html` zawiera lekki skrypt JS sterujący overlayem:`
+
+4. Znajdź:
+
+`W `div.actions` zawiera link-przycisk `#btnMainPage``
+
+Zastąp:
+
+`W `div.actions` znajduje się link-przycisk `#btnMainPage``
+
+5. Znajdź:
+
+`W `.language-switcher` zawiera przycisk `#backToMainButton``
+
+Zastąp:
+
+`W `.language-switcher` znajduje się przycisk `#backToMainButton``
+
+Następnie przejrzyj cały plik i popraw podobne mechaniczne konstrukcje:
+- „zawiera kontener” → „znajduje się kontener” albo „element zawiera kontener”, zależnie od sensu,
+- „zawiera przycisk” bez podmiotu → „znajduje się przycisk”,
+- „zawiera teraz” → „zawiera”,
+- „dodano / zmieniono / rozszerzono / wprowadzono / usunięto / przeniesiono / wcześniej / po migracji” → opis aktualnego stanu.
+
+Nie zmieniaj sensu technicznego dokumentacji.
+
+────────────────────────────────────
+PLIK 2: `GeneratorNPC/docs/Documentation.md`
+────────────────────────────────────
+
+Ten plik wymaga uporządkowania struktury po poprzedniej zmianie.
+
+Aktualny problem:
+- po sekcji `## 13. Stan rekordu, przekreślenie i stabilna geometria tabeli` dokument wraca do `## 11`, `## 12`, `## 13`,
+- są zdublowane nagłówki `## Firebase runtime`,
+- jest pusta sekcja `## Widoczność przełącznika języka / Language switch visibility`,
+- zdanie `Access gate requires password and reuses active session on the same origin.` występuje dwa razy,
+- są sekcje mieszające PL/EN,
+- jest fragment changelogowy: `W index.html podmieniono...`.
+
+Zrób porządek w dolnej części pliku, zaczynając od pierwszego wystąpienia:
+
+`## 11. Instrukcje utrzymaniowe`
+
+aż do końca pliku.
+
+Zastąp CAŁY ten zakres poniższą uporządkowaną treścią:
+
+## 11. Instrukcje utrzymaniowe
+Po każdej zmianie kodu modułu należy zaktualizować:
+- `GeneratorNPC/docs/Documentation.md`,
+- `GeneratorNPC/docs/README.md`.
+
+`docs/README.md` jest instrukcją użytkownika i powinien zawierać pełną wersję polską oraz pełną wersję angielską.
+
+`docs/Documentation.md` jest dokumentacją techniczną i powinien opisywać funkcje, style, fonty, strukturę danych, integracje Firebase oraz zasady działania UI w sposób pozwalający odtworzyć moduł 1:1.
+
+## 12. Dokument referencyjny Firebase
+Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku:
+
+`GeneratorNPC/config/FirebaseREADME.md`
+
+Dokument opisuje konfigurację Web Firebase używaną przez moduł, zapis ulubionych w Firestore oraz fallback do `localStorage`.
+
+## 13. Stan rekordu, przekreślenie i stabilna geometria tabeli
+### 13.1. Formatowanie inline
+Funkcja `formatInlineHTML(raw)` obsługuje markery:
+- `{{RED}}...{{/RED}}`,
+- `{{B}}...{{/B}}`,
+- `{{I}}...{{/I}}`,
+- `{{S}}...{{/S}}`.
+
+Segmenty oznaczone markerem `{{S}}` otrzymują klasę `.inline-strike` i są renderowane jako przekreślone. Jeżeli segment jest jednocześnie czerwony i przekreślony, klasa `.inline-red` utrzymuje czerwony kolor tekstu.
+
+### 13.2. Pole `Stan` i rekordy `old`
+Helper `isOldBestiaryRecord(record)` odczytuje wartość pola `Stan` w sposób niewrażliwy na wielkość liter. Wartość jest normalizowana przez `trim()` i `lowercase`, a następnie porównywana z tekstem `old`.
+
+Helper `shouldGrayBestiaryKey(key, record)` działa dla rekordów oznaczonych jako `old` i obejmuje pola:
+- `LP`,
+- `Nazwa`,
+- `Typ`.
+
+W tabeli podglądu bazowego pole techniczne `Stan` nie jest pokazywane jako zwykły wiersz danych. Dla rekordów `old` komórki klucza i wartości pól `LP`, `Nazwa` i `Typ` otrzymują klasę `.bestiary-old-key`.
+
+### 13.3. Geometria tabeli podglądu bazowego
+Tabela `.data-table[data-sheet="Bestiariusz"]` używa `table-layout: fixed`.
+
+Pierwsza kolumna (`th:first-child`, `td:first-child`) ma stałą szerokość `25ch`. Druga kolumna przejmuje pozostałą dostępną szerokość.
+
+Ten układ stabilizuje szerokość kolumny „Klucz” między rekordami i zapobiega skokom layoutu podczas zmiany wybranego wpisu bestiariusza.
+
+### 13.4. Zakres działania
+Mechanika pola `Stan`, szarego oznaczania rekordów `old` i stabilizacji kolumn dotyczy podglądu bazowego w module GeneratorNPC.
+
+Generator karty do druku używa osobnej ścieżki renderowania przez `buildPrintableCardHTML`.
+
+## 14. Specyfikacja stylu
+### 14.1. Kolory UI głównego
+- `--bg`: `#031605`; `--bg-grad`: radialne gradienty + `#031605`.
+- `--panel` / `--panel2`: `#000`.
+- `--text`: `#9cf09c`; `--text2`: `#4FAF4F`; `--muted`: `#4a8b4a`; `--code`: `#D2FAD2`; `--red`: `#d74b4b`.
+- `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`.
+- `--b`: `rgba(22,198,12,.35)`; `--b2`: `rgba(22,198,12,.2)`; `--div`: `rgba(22,198,12,.18)`.
+- `--hbg`: `rgba(22,198,12,.06)`; `--zebra`: `rgba(22,198,12,.04)`; `--hover`: `rgba(22,198,12,.08)`.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)`.
+- Dodatkowe warstwy tła sekcji używają wariantów `rgba(22,198,12,...)`.
+- Akcenty pomocnicze używają wariantów `rgba(111, 227, 140, ...)`.
+
+### 14.2. Fonty
+- UI: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
+- Karta eksportowana / druk: `"Times New Roman", "Liberation Serif", serif`.
+
+## 15. Mapa logiki aplikacji
+- Dane runtime są pobierane z DataVault przez wspólny loader Firebase (`loadDataVaultRuntimeData`).
+- Rekordy są transformowane i używane do zasilenia list wyboru.
+- Tabela bazowa NPC jest interaktywna i obsługuje edycję części pól liczbowych in-place.
+- Moduły broni, pancerza, augumentacji, ekwipunku, talentów, psioniki i modlitw są obsługiwane przez sekcje wielokrotnego wyboru.
+- System ulubionych używa Firestore (`generatorNpc/favorites`) z fallbackiem do `localStorage`.
+- Karta eksportowa jest generowana jako osobny szablon HTML print z osobną paletą i fontem.
+
+## 16. Firebase i izolacja aplikacji
+### 16.1. Dane prywatne NPC
+GeneratorNPC uruchamia przepływ `startPrivateDataFlow()`, który:
+- sprawdza aktywną sesję,
+- pokazuje bramkę hasła przy braku sesji,
+- ładuje dane przez `loadDataVaultLive()`.
+
+Moduł nie używa publicznego `data.json` ani bezpośredniego REST `fetch` do `/datavault/live.json`.
+
+`shared/firebase-data-loader.js` używa nazwanej aplikacji Firebase `wh40k-data-slate-private-data` dla Auth + RTDB (`/datavault/live`) i nie korzysta z beznazwowego `getApp()`.
+
+### 16.2. Ulubione
+Ulubione są zapisywane w Firestore. Inicjalizacja ulubionych używa nazwanej aplikacji Firebase `generator-npc-favorites` przez helper `getOrCreateNamedFirebaseApp(name, config)`.
+
+Inicjalizacja ulubionych ma zabezpieczenie `try/catch`, dzięki czemu awaria Firestore favorites nie blokuje `startPrivateDataFlow()` i ładowania prywatnych danych NPC.
+
+### 16.3. Wdrożenia dla wielu grup
+Dla odizolowanych grup zalecany jest osobny projekt Firebase na grupę.
+
+W pliku `GeneratorNPC/index.html` komentarze `WAŻNE/IMPORTANT` oznaczają istotne miejsca wdrożeniowe:
+- `script src="config/firebase-config.js"`,
+- inicjalizacja loadera Firebase,
+- obsługa zdarzenia gotowości danych.
+
+Po wdrożeniu należy przetestować zapis i odczyt ulubionych.
+
+## 17. Ukryty przełącznik języka
+Mechanizm przełączania języka PL/EN jest obecny w kodzie modułu GeneratorNPC, ale przełącznik jest obecnie ukryty w interfejsie użytkownika.
+
+Zwykły użytkownik nie widzi selektora języka.
+
+Lokalizacja techniczna:
+- plik: `GeneratorNPC/index.html`,
+- kontener: `<div class="language-switcher language-switcher--hidden">`,
+- selektor pola: `#languageSelect`,
+- opcje: `pl` i `en`,
+- komentarz pomocniczy w kodzie: `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA / LANGUAGE SWITCHER VISIBILITY CHANGE POINT`.
+
+Przełącznik ukrywa klasa CSS:
+
+`language-switcher--hidden`
+
+Aby ponownie pokazać przełącznik w interfejsie, należy usunąć klasę `language-switcher--hidden` z kontenera `.language-switcher` albo zmienić powiązaną regułę CSS ukrywającą ten element.
+
+Mechanizm tłumaczeń pozostaje częścią kodu, ponieważ słowniki tłumaczeń i funkcje aktualizacji języka nadal istnieją.
+
+## 18. Dodawanie nowej wersji językowej
+Mapa miejsc do aktualizacji przy dodaniu kolejnego języka, na przykład FR albo DE:
+
+1. W kodzie modułu należy znaleźć słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
+2. W selektorze języka należy dodać nową opcję `<option>`, jeśli przełącznik jest aktywny w danym module.
+3. W modułach bez widocznego menu językowego należy ręcznie zaktualizować teksty statyczne.
+4. Jeśli moduł otwiera instrukcję zależną od języka, należy dodać odpowiedni plik instrukcji.
+5. Po dodaniu języka należy sprawdzić przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport i druk.
+
+Miejsca w kodzie są oznaczone komentarzem:
+
+`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`
+
+## 19. Źródło danych
+Sekcja „Źródło danych” w UI informuje, że dane są pobierane z prywatnego DataVault po autoryzacji Firebase.
+
+GeneratorNPC używa wspólnego loadera Firebase i otrzymuje rozpakowany obiekt DataVault runtime z `/datavault/live`.
+
+## 20. Bramka dostępu prywatnych danych
+Bramka dostępu używa tekstów K.O.Z.A. w wersji PL/EN. GeneratorNPC korzysta ze wspólnego `shared/firebase-data-loader.js` dla błędów autoryzacji i odczytu.
+
+Formularz `#accessForm` używa kontenera `.accessGate__credentials` opartego o CSS Grid:
+- lewa kolumna: etykieta `.accessGate__label`,
+- prawa kolumna: pole `#accessPassword` (`.accessGate__password`) i przycisk `.accessGate__submit`.
+
+W breakpoint `max-width: 640px` układ przechodzi do jednej kolumny z jawną kolejnością wierszy w `shared/access-gate.css`:
+- `.accessGate__label` — wiersz 1,
+- `.accessGate__password` — wiersz 2,
+- `.accessGate__submit` — wiersz 3.
+
+Wspólny overlay `shared/access-gate.css` jest zakotwiczony do viewportu (`width: 100vw`, `max-width: 100vw`, `height: 100dvh`) i ma `overflow: auto`, dzięki czemu karta hasła pozostaje widoczna także przy szerokim layoucie modułu.
+
+Ikona bramki używa stałego slotu `.accessGate__iconSlot` (`72px × 72px`) z obrazem `../IkonaPowiadomien2.png` renderowanym jako `.accessGate__icon` (`object-fit: contain`), aby ograniczyć przesunięcia layoutu podczas ładowania grafiki.
+
+## 21. Szerokie tabele na telefonie
+W `GeneratorNPC/style.css` karty danych używają `overflow-x: auto`, a `.data-table` używa `min-width: max-content`.
+
+Dzięki temu szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
+
+Po tej podmianie upewnij się, że w całym pliku:
+- nie ma drugiego nagłówka `## Firebase runtime`,
+- nie ma pustej sekcji `## Widoczność przełącznika języka / Language switch visibility`,
+- zdanie `Access gate requires password and reuses active session on the same origin.` nie występuje dwa razy,
+- nie ma nagłówków `## Adding a new language version (EN)` ani mieszanych nagłówków PL/EN,
+- numeracja od sekcji 11 do końca jest rosnąca i bez powtórek.
+
+────────────────────────────────────
+PLIK 3: `Infoczytnik/docs/Documentation.md`
+────────────────────────────────────
+
+Ten plik ma już poprawny przykład bootstrapu Firestore i poprawioną sekcję `## Linki względne`, ale nadal ma błędną numerację.
+
+Aktualny problem:
+- po `## 19. Macierz kompletności technicznej` pojawia się ponownie `## 14. Wymagalność Firebase w instrukcji użytkownika`,
+- sekcje po `## 19` powinny dostać kolejne numery,
+- zdanie `W plikach GM_test.html i Infoczytnik_test.html zawiera komentarze...` jest niegramatyczne.
+
+Popraw wyłącznie dolną część pliku od nagłówka:
+
+`## 14. Wymagalność Firebase w instrukcji użytkownika`
+
+który znajduje się PO sekcji `## 19. Macierz kompletności technicznej`.
+
+Zastąp ten nagłówek i następujące po nim sekcje:
+
+- `## 14. Wymagalność Firebase w instrukcji użytkownika`
+- `## Multi-group deployment (isolated instances)`
+- `## Linki względne`
+
+poniższą uporządkowaną treścią:
+
+## 20. Wymagalność Firebase w instrukcji użytkownika
+Instrukcja użytkownika (`docs/README.md`) powinna jednoznacznie wskazywać, że moduł Infoczytnik wymaga integracji z Firebase/Firestore do komunikacji GM↔gracze.
+
+Procedura użytkowa powinna obejmować:
+- utworzenie projektu Firebase,
+- rejestrację aplikacji web,
+- konfigurację `config/firebase-config.js`,
+- utworzenie Firestore Database,
+- ustawienie reguł,
+- test dwuekranowy GM↔Infoczytnik.
+
+## 21. Wdrożenia dla wielu grup
+Każda grupa wymaga osobnego projektu Firebase, aby dokument `dataslate/current` nie był współdzielony między niezależnymi instancjami.
+
+W plikach `GM_test.html` i `Infoczytnik_test.html` komentarze `WAŻNE/IMPORTANT` oznaczają istotne miejsca wdrożeniowe:
+- `INF_VERSION` jako cache-busting testowej wersji,
+- `config/firebase-config.js`,
+- walidację `window.firebaseConfig`.
+
+Po każdej zmianie testowych plików wartość `INF_VERSION` powinna być taka sama w `GM_test.html` i `Infoczytnik_test.html`.
+
+## 22. Linki względne
+Moduł używa ścieżek względnych do nawigacji i ładowania zasobów. Dzięki temu kopia modułu może działać po przeniesieniu na inny serwer lub do innej instancji wdrożeniowej, o ile zachowana jest struktura katalogów.
+
+Przy wdrożeniu dla osobnej grupy należy sprawdzić:
+- ścieżkę do `config/firebase-config.js`,
+- ścieżki do assetów,
+- ścieżki używane przez panel GM i ekran Infoczytnika,
+- zgodność konfiguracji Firebase z docelowym projektem.
+
+Po tej zmianie upewnij się, że:
+- po `## 19` nie występuje ponownie `## 14`,
+- numeracja końcowych sekcji jest rosnąca,
+- nie ma nagłówka `## Multi-group deployment (isolated instances)`,
+- nie ma nagłówka mieszanego `Aktualizacja linków względnych / Relative links update`,
+- nie ma zdania `W plikach GM_test.html i Infoczytnik_test.html zawiera komentarze`.
+
+────────────────────────────────────
+KONTROLA KOŃCOWA
+────────────────────────────────────
+
+Po edycji wykonaj kontrolę trzech zmienionych plików.
+
+Sprawdź, czy w plikach:
+
+- `Kalkulator/docs/Documentation.md`
+- `GeneratorNPC/docs/Documentation.md`
+- `Infoczytnik/docs/Documentation.md`
+
+nie występują już problematyczne frazy:
+
+- `dodano`
+- `zmieniono`
+- `rozszerzono`
+- `wprowadzono`
+- `usunięto`
+- `przeniesiono`
+- `wcześniej`
+- `obecnie po zmianie`
+- `nowa wersja`
+- `stara wersja`
+- `po migracji`
+- `zostało rozszerzone`
+- `zawiera teraz`
+- `podmieniono`
+- `Relative links update`
+- `Multi-group deployment`
+- `Language switch visibility`
+- `Firebase-config.md`
+
+Jeśli występują, popraw je na opis aktualnego stanu albo usuń, jeśli są puste/zdublowane.
+
+Sprawdź też:
+
+1. `GeneratorNPC/docs/Documentation.md`:
+   - numeracja od sekcji 11 do końca jest rosnąca,
+   - nie ma zdublowanego `## Firebase runtime`,
+   - nie ma pustej sekcji o widoczności przełącznika języka,
+   - nie ma powtórzonego zdania o access gate session,
+   - opis ukrytego przełącznika języka nadal zawiera:
+     - `GeneratorNPC/index.html`,
+     - `.language-switcher`,
+     - `language-switcher--hidden`,
+     - `#languageSelect`,
+     - `LANGUAGE SWITCHER VISIBILITY CHANGE POINT`.
+
+2. `Infoczytnik/docs/Documentation.md`:
+   - końcowe sekcje po `## 19` mają numery `## 20`, `## 21`, `## 22`,
+   - bootstrap Firestore nadal używa aktualnego payloadu `dataslate/current`,
+   - `INF_VERSION` nie został zmieniony.
+
+3. `Kalkulator/docs/Documentation.md`:
+   - nie ma mechanicznie brzmiących zdań typu „W X zawiera...”.
