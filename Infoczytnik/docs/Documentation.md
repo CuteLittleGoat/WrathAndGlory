@@ -163,25 +163,52 @@ dataslate (kolekcja)
 ```
 
 
-## 11. Skrypt Node.js do bootstrapu (przykład)
-Przykład inicjalizacji dokumentu `dataslate/current`:
+## 11. Skrypt Node.js do bootstrapu dokumentu `dataslate/current`
+Poniższy przykład pokazuje minimalny bootstrap dokumentu `dataslate/current` zgodny z aktualnym modelem payloadu modułu Infoczytnik.
+
+Przykład służy wyłącznie do przygotowania struktury dokumentu w Firestore. Panel GM zapisuje później pełny snapshot przez `currentRef.set(getPayload(type), { merge: false })`.
+
 ```js
 // node scripts/bootstrap-dataslate.js
 import { initializeApp, cert } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
 import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
 
 initializeApp({ credential: cert(serviceAccount) });
+
 const db = getFirestore();
 
 await db.doc('dataslate/current').set({
-  title: 'DataSlate',
-  content: 'Treść startowa',
-  backgroundKey: 'WnG',
-  frameKey: 'WnG_ramka',
-  logoKey: 'Inquisition',
-  fontFamily: 'Cinzel',
-  updatedAt: new Date(),
+  type: 'clear',
+  text: '',
+  backgroundId: null,
+  backgroundFile: '',
+  logoId: null,
+  logoFile: '',
+  fillerId: null,
+  fillerSet: '',
+  fontId: null,
+  fontPreset: '',
+  messageAudioId: null,
+  messageAudioFile: '',
+  fillersEnabled: true,
+  audioEnabled: true,
+  showLogo: true,
+  movingOverlay: true,
+  flicker: true,
+  prefixLines: [],
+  suffixLines: [],
+  fillerLineCount: 3,
+  fillerBandLines: 2,
+  messageColor: '#00ff66',
+  prefixColor: '#ffffff',
+  suffixColor: '#ffffff',
+  msgFontSize: 20,
+  prefixFontSize: 12,
+  suffixFontSize: 12,
+  pingUrl: '',
+  nonce: '',
+  ts: FieldValue.serverTimestamp(),
 });
 
 console.log('Bootstrap complete');
@@ -276,19 +303,21 @@ Poniżej lista funkcji wymaganych do odtworzenia zachowania 1:1:
 - Instrukcja użytkownika (`docs/README.md`) musi jednoznacznie wskazywać, że moduł Infoczytnik wymaga integracji z Firebase/Firestore do komunikacji GM↔gracze.
 - W procedurze użytkowej należy utrzymywać kroki: utworzenie projektu, rejestracja aplikacji web, konfiguracja `config/firebase-config.js`, utworzenie Firestore Database, ustawienie reguł i test dwuekranowy.
 ## Multi-group deployment (isolated instances)
-- W plikach `GM_test.html` i `Infoczytnik_test.html` dodano komentarze `WAŻNE/IMPORTANT` przy:
+- W plikach `GM_test.html` i `Infoczytnik_test.html` zawiera komentarze `WAŻNE/IMPORTANT` przy:
   - `INF_VERSION` (cache-busting testowej wersji),
   - `config/firebase-config.js`,
   - walidacji `window.firebaseConfig`.
 - Każda grupa wymaga osobnego projektu Firebase, aby dokument `dataslate/current` nie był współdzielony.
 - Po każdej zmianie testowych plików należy podnieść `INF_VERSION` w obu plikach do tej samej wartości.
 
-## Aktualizacja linków względnych / Relative links update
-W module używane są ścieżki względne do nawigacji i/lub danych, aby kopia modułu działała po przeniesieniu na inny serwer bez zależności od domeny autora.
+## Linki względne
+Moduł używa ścieżek względnych do nawigacji i ładowania zasobów. Dzięki temu kopia modułu może działać po przeniesieniu na inny serwer lub do innej instancji wdrożeniowej, o ile zachowana jest struktura katalogów.
 
-The module now uses relative paths for navigation and/or data loading so that a copied module works on another server without dependencies on the author domain.
-
-
+Przy wdrożeniu dla osobnej grupy należy sprawdzić:
+- ścieżkę do `config/firebase-config.js`,
+- ścieżki do assetów,
+- ścieżki używane przez panel GM i ekran Infoczytnika,
+- zgodność konfiguracji Firebase z docelowym projektem.
 
 ## Dodawanie nowej wersji językowej (PL)
 

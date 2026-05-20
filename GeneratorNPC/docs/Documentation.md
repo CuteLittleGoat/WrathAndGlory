@@ -413,38 +413,44 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `docs/Documentation.md` musi opisywać wszystkie funkcje, style, fonty oraz zasady działania UI, aby umożliwić rekonstrukcję aplikacji 1:1.
 
 ## 12. Dokument referencyjny Firebase
-- Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku: `GeneratorNPC/config/Firebase-config.md`.
-- Plik opisuje dokładny template konfiguracji Web, strukturę danych Firestore oraz skrypt Node.js do utworzenia wymaganych dokumentów.
+Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku:
 
-## 12) Stan/strike i stabilizacja „Klucz”
+`GeneratorNPC/config/FirebaseREADME.md`
 
-### 12.1 Formatowanie inline
-- `formatInlineHTML(raw)` rozpoznaje teraz markery: `{{RED}}`, `{{B}}`, `{{I}}`, `{{S}}`.
-- Segmenty `{{S}}` otrzymują klasę `.inline-strike` (`line-through`).
-- Jeśli segment ma jednocześnie `RED` i `S`, klasa `.inline-red` utrzymuje kolor czerwony.
+Dokument opisuje konfigurację Web Firebase używaną przez moduł, zapis ulubionych w Firestore oraz fallback do `localStorage`.
 
-### 12.2 Logika `Stan=old` w podglądzie bazowym
-- Dodano helper `isOldBestiaryRecord(record)`:
-  - odczyt wartości z `Stan` (`Stan`/`stan`),
-  - normalizacja `trim + lowercase`,
-  - porównanie do `old`.
-- Dodano helper `shouldGrayBestiaryKey(key, record)`:
-  - aktywny tylko dla rekordów `old`,
-  - obejmuje wyłącznie klucze `LP`, `Nazwa`, `Typ`.
-- W `renderBestiaryTable(record)`:
-  - wiersz `Stan` jest pomijany (niewidoczny w kolumnie „Klucz”),
-  - komórki klucza i wartości dla `LP/Nazwa/Typ` dostają klasę `.bestiary-old-key`.
+## 13. Stan rekordu, przekreślenie i stabilna geometria tabeli
+### 13.1. Formatowanie inline
+Funkcja `formatInlineHTML(raw)` obsługuje markery:
+- `{{RED}}...{{/RED}}`,
+- `{{B}}...{{/B}}`,
+- `{{I}}...{{/I}}`,
+- `{{S}}...{{/S}}`.
 
-### 12.3 Stabilna geometria tabeli podglądu bazowego
-- Dla `.data-table[data-sheet="Bestiariusz"]` ustawiono `table-layout: fixed`.
-- Pierwsza kolumna (`th:first-child`, `td:first-child`) ma stałe `25ch` (`width/min/max`).
-- Druga kolumna przejmuje pozostałą szerokość (`auto`), co eliminuje skoki szerokości „Klucz” między rekordami.
+Segmenty oznaczone markerem `{{S}}` otrzymują klasę `.inline-strike` i są renderowane jako przekreślone. Jeżeli segment jest jednocześnie czerwony i przekreślony, klasa `.inline-red` utrzymuje czerwony kolor tekstu.
 
-### 12.4 Zakres wpływu
-- Zmiany dotyczą podglądu bazowego i renderingu tabel modułu.
-- Generator wydruku (okno tworzone przez `buildPrintableCardHTML`) nie został zmodyfikowany logicznie przez te zmiany.
-### 12.5 Alias pola statusu
-- Wykrywanie `old` i ukrywanie pola technicznego działa dla etykiety `Stan` (case-insensitive).
+### 13.2. Pole `Stan` i rekordy `old`
+Helper `isOldBestiaryRecord(record)` odczytuje wartość pola `Stan` w sposób niewrażliwy na wielkość liter. Wartość jest normalizowana przez `trim()` i `lowercase`, a następnie porównywana z tekstem `old`.
+
+Helper `shouldGrayBestiaryKey(key, record)` działa dla rekordów oznaczonych jako `old` i obejmuje pola:
+- `LP`,
+- `Nazwa`,
+- `Typ`.
+
+W tabeli podglądu bazowego pole techniczne `Stan` nie jest pokazywane jako zwykły wiersz danych. Dla rekordów `old` komórki klucza i wartości pól `LP`, `Nazwa` i `Typ` otrzymują klasę `.bestiary-old-key`.
+
+### 13.3. Geometria tabeli podglądu bazowego
+Tabela `.data-table[data-sheet="Bestiariusz"]` używa `table-layout: fixed`.
+
+Pierwsza kolumna (`th:first-child`, `td:first-child`) ma stałą szerokość `25ch`. Druga kolumna przejmuje pozostałą dostępną szerokość.
+
+Ten układ stabilizuje szerokość kolumny „Klucz” między rekordami i zapobiega skokom layoutu podczas zmiany wybranego wpisu bestiariusza.
+
+### 13.4. Zakres działania
+Mechanika pola `Stan`, szarego oznaczania rekordów `old` i stabilizacji kolumn dotyczy podglądu bazowego w module GeneratorNPC.
+
+Generator karty do druku używa osobnej ścieżki renderowania przez `buildPrintableCardHTML`.
+
 ## 11. Uzupełnienie: twarda specyfikacja stylu (kolory, fonty, stany)
 
 ### 11.1 Kolory UI głównego
@@ -496,7 +502,25 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
 
-In `GeneratorNPC/index.html`, the hidden language switcher has an explicit “LANGUAGE SWITCHER VISIBILITY CHANGE POINT…” comment indicating where the CSS class must be changed.
+## 14. Ukryty przełącznik języka
+Mechanizm przełączania języka PL/EN jest obecny w kodzie modułu GeneratorNPC, ale przełącznik jest obecnie ukryty w interfejsie użytkownika.
+
+Zwykły użytkownik nie widzi selektora języka.
+
+Lokalizacja techniczna:
+- plik: `GeneratorNPC/index.html`,
+- kontener: `<div class="language-switcher language-switcher--hidden">`,
+- selektor pola: `#languageSelect`,
+- opcje: `pl` i `en`,
+- komentarz pomocniczy w kodzie: `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA / LANGUAGE SWITCHER VISIBILITY CHANGE POINT`.
+
+Przełącznik ukrywa klasa CSS:
+
+`language-switcher--hidden`
+
+Aby ponownie pokazać przełącznik w interfejsie, należy usunąć klasę `language-switcher--hidden` z kontenera `.language-switcher` albo zmienić powiązaną regułę CSS ukrywającą ten element.
+
+Nie należy usuwać mechanizmu tłumaczeń z dokumentacji, ponieważ słowniki tłumaczeń i funkcje aktualizacji języka nadal istnieją w kodzie.
 
 ## Adding a new language version (EN)
 
