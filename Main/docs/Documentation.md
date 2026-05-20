@@ -74,8 +74,8 @@ Ten mechanizm nie jest funkcją offline. Jego celem jest uniknięcie sytuacji, w
 2. Dodaj logo `wrath-glory-logo-warhammer.png`.
 3. Dodaj `ZmienneHiperlacza.md` i parser wpisów `Mapa`/`Obrazki`.
 4. Dodaj obsługę `?admin=1` + warunkowe sekcje admin.
-6. Podłącz `manifest.webmanifest` tylko wtedy, gdy jest potrzebny do metadanych instalacyjnych hostingu.
-7. Nie rejestruj Service Workera; zachowaj jedynie mechanizm czyszczenia starych rejestracji w `Main/index.html`.
+5. Podłącz `manifest.webmanifest` tylko wtedy, gdy jest potrzebny do metadanych instalacyjnych hostingu.
+6. Nie rejestruj Service Workera; zachowaj jedynie mechanizm czyszczenia starych rejestracji w `Main/index.html`.
 
 ## 10. Testy regresyjne
 1. Wejście bez `?admin=1` pokazuje tylko widok user.

@@ -7,7 +7,7 @@
 
 ### Jak zacząć
 1. Otwórz `GeneratorNPC/index.html`.
-3. Poczekaj, aż sekcja **Źródło danych** pokaże, że dane zostały załadowane.
+2. Poczekaj, aż sekcja **Źródło danych** pokaże, że dane zostały załadowane.
 
 ### Tworzenie NPC krok po kroku
 1. W sekcji **Wybór bazowy** wybierz rekord z listy **Bestiariusz · Nazwa**.
@@ -95,7 +95,7 @@ The language switcher is intentionally hidden; the place to enable it is marked 
 
 ### Getting started
 1. Open `GeneratorNPC/index.html`.
-3. Wait until **Data source** confirms the data is loaded.
+2. Wait until **Data source** confirms the data is loaded.
 
 ### Build an NPC step by step
 1. In **Base selection**, choose an entry from **Bestiary · Name**.
