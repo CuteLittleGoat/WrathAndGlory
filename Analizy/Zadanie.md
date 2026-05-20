@@ -1470,3 +1470,361 @@ Na końcu tej sekcji dodaj krótką notatkę:
 Te zmiany dotyczą dokumentacji i opisu aktualnego działania repozytorium. Nie zmieniają logiki działania aplikacji.
 
 Po wykonaniu zmian uruchom dostępne podstawowe formatowanie/linters tylko wtedy, gdy repozytorium ma już gotowe polecenia do takiej weryfikacji. Nie dodawaj nowych narzędzi build ani nowych zależności.
+
+### Aktualizacja 2026-05-20 04:54
+
+1. `Kalkulator/docs/Documentation.md`
+2. `GeneratorNPC/docs/Documentation.md`
+3. `Infoczytnik/docs/Documentation.md`
+
+Wymaganie nadrzędne:
+Dokumentacja ma opisywać AKTUALNY STAN aplikacji, a nie historię zmian. Usuń albo przeredaguj sformułowania changelogowe, szczególnie:
+- dodano
+- zmieniono
+- rozszerzono
+- wprowadzono
+- usunięto
+- przeniesiono
+- wcześniej
+- obecnie po zmianie
+- nowa wersja
+- stara wersja
+- po migracji
+- zostało rozszerzone
+
+Po poprawkach dokumenty mają brzmieć tak, jakby od początku opisywały aktualny stan repozytorium.
+
+────────────────────────────────────
+PLIK 1: `Kalkulator/docs/Documentation.md`
+────────────────────────────────────
+
+Problem:
+Ten plik nadal zawiera dużo sformułowań historycznych/changelogowych, np. „dodano”, „rozszerzono”, „zmieniono z… na…”. Przeredaguj je na opis aktualnego stanu.
+
+W tym pliku popraw co najmniej poniższe sekcje, zastępując ich treść dokładnie poniższą treścią.
+
+Zastąp całą sekcję:
+
+`## 1.0.1. Tabela „Maksymalne wartości atrybutów”`
+
+nową treścią:
+
+## 1.0.1. Tabela „Maksymalne wartości atrybutów”
+Tabela maksymalnych wartości atrybutów jest dostępna w arkuszu tworzenia postaci i prezentuje limity rasowe dla ośmiu atrybutów.
+
+Wyrównanie pierwszej kolumny z nazwami ras działa w dwóch miejscach:
+- `kalkulatorxp.css`: reguła `.referenceTable tbody th:first-child { text-align: left; }` ustawia lewostronne wyrównanie nazw ras w tabeli referencyjnej.
+- `TworzeniePostaci.html`: reguła `.species-max-table td:first-child` utrzymuje lewostronne wyrównanie pierwszej kolumny oraz `font-weight: 600`.
+
+Zakres działania obejmuje wyłącznie kolumnę z nazwami ras. Komórki liczbowe pozostają wyrównane centralnie zgodnie z regułami bazowymi tabel.
+
+Zastąp całą sekcję:
+
+`## 1.1. Terminologia PL: PD`
+
+nową treścią:
+
+## 1.1. Terminologia PL: PD
+Polski interfejs używa skrótu **PD** jako odpowiednika angielskiego **XP**. Dotyczy to etykiet widocznych dla użytkownika, tytułów, opisów puli punktów i komunikatów walidacyjnych.
+
+Logika obliczeń, nazwy plików i odnośniki techniczne pozostają oparte na istniejących nazwach modułów, na przykład `KalkulatorXP.html`.
+
+Warstwa angielska używa skrótu **XP**.
+
+Zastąp całą sekcję:
+
+`## 1.2. `TworzeniePostaci.html` (Szybkość + tabela maksimów ras)`
+
+nową treścią:
+
+## 1.2. `TworzeniePostaci.html` — Szybkość i tabela maksimów ras
+Arkusz tworzenia postaci obsługuje osiem atrybutów:
+- Siła / Strength,
+- Wytrzymałość / Toughness,
+- Zręczność / Agility,
+- Inicjatywa / Initiative,
+- Siła Woli / Willpower,
+- Intelekt / Intellect,
+- Ogłada / Fellowship,
+- Szybkość / Speed.
+
+Atrybut `attr_Speed` jest częścią formularza, resetu danych i przeliczania kosztów. Etykiety atrybutów są obsługiwane przez tłumaczenia PL/EN.
+
+Tabela maksymalnych wartości atrybutów jest dostępna z poziomu arkusza tworzenia postaci jako modal. Przycisk otwierający modal używa tego samego stylu wizualnego co przyciski `Instrukcja` / `Manual` i `Strona Główna` / `Main Page`.
+
+Dane tabeli są osadzone w kodzie modułu i renderowane dynamicznie dla aktualnego języka interfejsu.
+
+Zastąp całą sekcję:
+
+`## 1.2.1. Domyślna wartość `Szybkość` = 6 (start + reset)`
+
+nową treścią:
+
+## 1.2.1. Domyślna wartość `Szybkość` = 6
+Pole `#attr_Speed` ma domyślną wartość `6` przy pierwszym wejściu na stronę.
+
+Funkcja `resetAll()` przywraca wartości formularza do stanu początkowego i ustawia `attr_Speed` na `6`.
+
+Funkcja `recalcXP()` korzysta z bieżącej wartości wpisanej przez użytkownika, waliduje zakres `1..12`, aktualizuje koszt i stosuje odpowiednie klasy wizualne.
+
+Zastąp całą sekcję:
+
+`### 6.1a. Modal „Maksymalne wartości atrybutów”`
+
+nową treścią:
+
+### 6.1a. Modal „Maksymalne wartości atrybutów”
+Modal maksymalnych wartości atrybutów znajduje się w `TworzeniePostaci.html`.
+
+Elementy modalu:
+- przycisk `#showSpeciesMaxButton` w obszarze `.language-switcher`,
+- overlay `#speciesMaxModal`,
+- dialog `.species-max-modal__dialog`,
+- nagłówek `#speciesMaxModalTitle`,
+- przycisk zamknięcia `#closeSpeciesMaxButton`,
+- tabela `#speciesMaxTable`.
+
+Etykieta przycisku jest tłumaczona:
+- PL: „Maksymalne wartości atrybutów”,
+- EN: „Maximum attribute values”.
+
+Renderer `renderSpeciesMaxTable()` buduje `thead` i `tbody` dynamicznie dla aktualnego języka. Dane tabeli pochodzą z tablicy `maxAttributeRows` oraz słowników `races` i `maxAttributes` w obiekcie tłumaczeń.
+
+Po tych zmianach przejrzyj cały `Kalkulator/docs/Documentation.md` i usuń pozostałe sformułowania changelogowe, zachowując znaczenie techniczne. Nie usuwaj informacji technicznych — tylko zmień styl z historii zmian na opis aktualnego stanu.
+
+────────────────────────────────────
+PLIK 2: `GeneratorNPC/docs/Documentation.md`
+────────────────────────────────────
+
+Problem 1:
+Plik zawiera sekcje w stylu changeloga, np. „Dodano helper…”, „Zmiany dotyczą…”.
+
+Problem 2:
+Opis ukrytego przełącznika języka jest zbyt krótki. Trzeba jasno opisać, że mechanizm językowy istnieje, ale przełącznik jest ukryty przez klasę `language-switcher--hidden`.
+
+Problem 3:
+Plik odwołuje się do `GeneratorNPC/config/Firebase-config.md`, a prawidłowy dokument konfiguracyjny to `GeneratorNPC/config/FirebaseREADME.md`.
+
+Wykonaj poniższe zmiany.
+
+Znajdź sekcję:
+
+`## 12. Dokument referencyjny Firebase`
+
+i zastąp ją treścią:
+
+## 12. Dokument referencyjny Firebase
+Specyfikacja Firebase dla modułu GeneratorNPC znajduje się w pliku:
+
+`GeneratorNPC/config/FirebaseREADME.md`
+
+Dokument opisuje konfigurację Web Firebase używaną przez moduł, zapis ulubionych w Firestore oraz fallback do `localStorage`.
+
+Znajdź sekcję:
+
+`## 12) Stan/strike i stabilizacja „Klucz”`
+
+oraz wszystkie jej podsekcje:
+
+- `### 12.1 Formatowanie inline`
+- `### 12.2 Logika `Stan=old` w podglądzie bazowym`
+- `### 12.3 Stabilna geometria tabeli podglądu bazowego`
+- `### 12.4 Zakres wpływu`
+- `### 12.5 Alias pola statusu`
+
+Zastąp całość poniższą treścią:
+
+## 13. Stan rekordu, przekreślenie i stabilna geometria tabeli
+### 13.1. Formatowanie inline
+Funkcja `formatInlineHTML(raw)` obsługuje markery:
+- `{{RED}}...{{/RED}}`,
+- `{{B}}...{{/B}}`,
+- `{{I}}...{{/I}}`,
+- `{{S}}...{{/S}}`.
+
+Segmenty oznaczone markerem `{{S}}` otrzymują klasę `.inline-strike` i są renderowane jako przekreślone. Jeżeli segment jest jednocześnie czerwony i przekreślony, klasa `.inline-red` utrzymuje czerwony kolor tekstu.
+
+### 13.2. Pole `Stan` i rekordy `old`
+Helper `isOldBestiaryRecord(record)` odczytuje wartość pola `Stan` w sposób niewrażliwy na wielkość liter. Wartość jest normalizowana przez `trim()` i `lowercase`, a następnie porównywana z tekstem `old`.
+
+Helper `shouldGrayBestiaryKey(key, record)` działa dla rekordów oznaczonych jako `old` i obejmuje pola:
+- `LP`,
+- `Nazwa`,
+- `Typ`.
+
+W tabeli podglądu bazowego pole techniczne `Stan` nie jest pokazywane jako zwykły wiersz danych. Dla rekordów `old` komórki klucza i wartości pól `LP`, `Nazwa` i `Typ` otrzymują klasę `.bestiary-old-key`.
+
+### 13.3. Geometria tabeli podglądu bazowego
+Tabela `.data-table[data-sheet="Bestiariusz"]` używa `table-layout: fixed`.
+
+Pierwsza kolumna (`th:first-child`, `td:first-child`) ma stałą szerokość `25ch`. Druga kolumna przejmuje pozostałą dostępną szerokość.
+
+Ten układ stabilizuje szerokość kolumny „Klucz” między rekordami i zapobiega skokom layoutu podczas zmiany wybranego wpisu bestiariusza.
+
+### 13.4. Zakres działania
+Mechanika pola `Stan`, szarego oznaczania rekordów `old` i stabilizacji kolumn dotyczy podglądu bazowego w module GeneratorNPC.
+
+Generator karty do druku używa osobnej ścieżki renderowania przez `buildPrintableCardHTML`.
+
+Następnie znajdź fragment:
+
+`In `GeneratorNPC/index.html`, the hidden language switcher has an explicit “LANGUAGE SWITCHER VISIBILITY CHANGE POINT…” comment indicating where the CSS class must be changed.`
+
+Usuń go i w tym miejscu wstaw nową sekcję:
+
+## 14. Ukryty przełącznik języka
+Mechanizm przełączania języka PL/EN jest obecny w kodzie modułu GeneratorNPC, ale przełącznik jest obecnie ukryty w interfejsie użytkownika.
+
+Zwykły użytkownik nie widzi selektora języka.
+
+Lokalizacja techniczna:
+- plik: `GeneratorNPC/index.html`,
+- kontener: `<div class="language-switcher language-switcher--hidden">`,
+- selektor pola: `#languageSelect`,
+- opcje: `pl` i `en`,
+- komentarz pomocniczy w kodzie: `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA / LANGUAGE SWITCHER VISIBILITY CHANGE POINT`.
+
+Przełącznik ukrywa klasa CSS:
+
+`language-switcher--hidden`
+
+Aby ponownie pokazać przełącznik w interfejsie, należy usunąć klasę `language-switcher--hidden` z kontenera `.language-switcher` albo zmienić powiązaną regułę CSS ukrywającą ten element.
+
+Nie należy usuwać mechanizmu tłumaczeń z dokumentacji, ponieważ słowniki tłumaczeń i funkcje aktualizacji języka nadal istnieją w kodzie.
+
+Po tych zmianach przejrzyj cały `GeneratorNPC/docs/Documentation.md` i:
+- usuń pozostałe sformułowania changelogowe,
+- popraw numerację sekcji, jeśli zrobi się niespójna,
+- nie usuwaj informacji technicznych,
+- nie zmieniaj opisu źródeł danych Firebase/RTDB/Firestore, jeśli jest zgodny z kodem.
+
+────────────────────────────────────
+PLIK 3: `Infoczytnik/docs/Documentation.md`
+────────────────────────────────────
+
+Problem 1:
+Przykład bootstrapu Firestore używa starego/innego modelu danych:
+`title`, `content`, `backgroundKey`, `frameKey`, `logoKey`, `fontFamily`, `updatedAt`.
+
+Aktualna dokumentacja wcześniej opisuje payload oparty m.in. o:
+`type`, `text`, `backgroundId`, `backgroundFile`, `logoId`, `logoFile`, `fillerId`, `fillerSet`, `fontId`, `fontPreset`, `messageAudioId`, `messageAudioFile`, `fillersEnabled`, `audioEnabled`, `showLogo`, `movingOverlay`, `flicker`, `prefixLines`, `suffixLines`, `fillerLineCount`, `fillerBandLines`, `messageColor`, `prefixColor`, `suffixColor`, `msgFontSize`, `prefixFontSize`, `suffixFontSize`, `pingUrl`, `nonce`, `ts`.
+
+Problem 2:
+Plik nadal zawiera fragmenty mieszane PL/EN i changelogowe, np. „Aktualizacja linków względnych / Relative links update” z dwoma zdaniami jedno po drugim.
+
+Wykonaj poniższe zmiany.
+
+Znajdź sekcję:
+
+`## 11. Skrypt Node.js do bootstrapu (przykład)`
+
+i zastąp ją całą poniższą treścią:
+
+## 11. Skrypt Node.js do bootstrapu dokumentu `dataslate/current`
+Poniższy przykład pokazuje minimalny bootstrap dokumentu `dataslate/current` zgodny z aktualnym modelem payloadu modułu Infoczytnik.
+
+Przykład służy wyłącznie do przygotowania struktury dokumentu w Firestore. Panel GM zapisuje później pełny snapshot przez `currentRef.set(getPayload(type), { merge: false })`.
+
+```js
+// node scripts/bootstrap-dataslate.js
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getFirestore, FieldValue } from 'firebase-admin/firestore';
+import serviceAccount from './serviceAccountKey.json' assert { type: 'json' };
+
+initializeApp({ credential: cert(serviceAccount) });
+
+const db = getFirestore();
+
+await db.doc('dataslate/current').set({
+  type: 'clear',
+  text: '',
+  backgroundId: null,
+  backgroundFile: '',
+  logoId: null,
+  logoFile: '',
+  fillerId: null,
+  fillerSet: '',
+  fontId: null,
+  fontPreset: '',
+  messageAudioId: null,
+  messageAudioFile: '',
+  fillersEnabled: true,
+  audioEnabled: true,
+  showLogo: true,
+  movingOverlay: true,
+  flicker: true,
+  prefixLines: [],
+  suffixLines: [],
+  fillerLineCount: 3,
+  fillerBandLines: 2,
+  messageColor: '#00ff66',
+  prefixColor: '#ffffff',
+  suffixColor: '#ffffff',
+  msgFontSize: 20,
+  prefixFontSize: 12,
+  suffixFontSize: 12,
+  pingUrl: '',
+  nonce: '',
+  ts: FieldValue.serverTimestamp(),
+});
+
+console.log('Bootstrap complete');
+```
+
+Znajdź sekcję:
+
+`## Aktualizacja linków względnych / Relative links update`
+
+i zastąp ją całą poniższą treścią:
+
+## Linki względne
+Moduł używa ścieżek względnych do nawigacji i ładowania zasobów. Dzięki temu kopia modułu może działać po przeniesieniu na inny serwer lub do innej instancji wdrożeniowej, o ile zachowana jest struktura katalogów.
+
+Przy wdrożeniu dla osobnej grupy należy sprawdzić:
+- ścieżkę do `config/firebase-config.js`,
+- ścieżki do assetów,
+- ścieżki używane przez panel GM i ekran Infoczytnika,
+- zgodność konfiguracji Firebase z docelowym projektem.
+
+Po tych zmianach przejrzyj cały `Infoczytnik/docs/Documentation.md` i:
+- usuń pozostałe sformułowania changelogowe,
+- nie zmieniaj wartości `INF_VERSION`, jeśli nadal jest zgodna z kodem,
+- nie usuwaj informacji o `GM_test.html` i `Infoczytnik_test.html`,
+- nie zmieniaj opisu Firestore `dataslate/current`, jeśli jest zgodny z kodem,
+- zachowaj rozróżnienie między plikami testowymi, produkcyjnymi i backupami.
+
+────────────────────────────────────
+KONTROLA PO ZMIANACH
+────────────────────────────────────
+
+Po edycji wykonaj kontrolę tekstową w trzech zmienionych plikach.
+
+Sprawdź, czy w zmienionych plikach nie zostały changelogowe sformułowania:
+
+- dodano
+- zmieniono
+- rozszerzono
+- wprowadzono
+- usunięto
+- przeniesiono
+- wcześniej
+- obecnie po zmianie
+- nowa wersja
+- stara wersja
+- po migracji
+- zostało rozszerzone
+
+Jeżeli występują, przeredaguj je na opis aktualnego stanu.
+
+Sprawdź też, czy:
+
+1. `GeneratorNPC/docs/Documentation.md` wskazuje `GeneratorNPC/config/FirebaseREADME.md`, a nie `GeneratorNPC/config/Firebase-config.md`.
+2. `GeneratorNPC/docs/Documentation.md` opisuje ukryty przełącznik języka:
+   - plik `GeneratorNPC/index.html`,
+   - kontener `.language-switcher`,
+   - klasę `language-switcher--hidden`,
+   - selektor `#languageSelect`,
+   - komentarz `LANGUAGE SWITCHER VISIBILITY CHANGE POINT`,
+   - sposób ponownego pokazania przełącznika przez usunięcie klasy.
+3. `Infoczytnik/docs/Documentation.md` ma przykład bootstrapu zgodny z aktualnym payloadem `dataslate/current`.
+4. Żaden plik poza trzema wskazanymi nie został zmieniony.
