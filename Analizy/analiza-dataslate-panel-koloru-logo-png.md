@@ -2,84 +2,96 @@
 2026-05-28
 
 # Temat analizy
-Rozbudowa modułu DataSlate (Infoczytnik): możliwość sterowania kolorem logo PNG w panelu GM przy zasobach tymczasowo umieszczonych w `Infoczytnik/Draft/Loga` oraz docelowo w `Infoczytnik/assets/logos` i `DataSlate_manifest.xlsx`.
+Weryfikacja plików PNG w `Infoczytnik/Draft/Loga` pod kątem jednokolorowości oraz rekomendacja rozwiązania dla panelu koloru logo w module DataSlate (Infoczytnik).
 
 # Oryginalny pełny prompt użytkownika
-Przeprowadź analizę rozbudowy modułu DataSlate.
-W Infoczytnik/Draft/Loga są pliki png, które docelowo będą nowymi logo do wyboru.
-Docelowo będą wgrane do Infoczytnik/assets/logos i będą opisane w pliku DataSlate_manifest.xlsx
-
-Tymczasowo, na potrzeby analizy są w Infoczytnik/Draft/Log
-
-Chciałbym, żeby przy wyborze logo w panelu GM był też panel do obsługi koloru logo - taki sam jak przy fontach. Czy da się tak zrobić dla plików png obecnie zapisanych w lokalizacji Infoczytnik/Draft/Loga ?
+Przeczytaj i zaktualizuj analizę Analizy/analiza-dataslate-panel-koloru-logo-png.md
+Sprawdź wszystkie pliki w lokalizacji Infoczytnik/Draft/Loga/ i zarekomenduj odpowiednie rozwiązanie dla tych plików. Wydaje mi się, że wszystkie są jednokolorowe.
 
 # Zakres analizy
-1. Sprawdzenie, jak obecnie ładowane są loga i kolory w panelu GM (`GM_test.html`) i w ekranie odbiorcy (`Infoczytnik_test.html`).
-2. Ocena, czy da się dodać „panel koloru logo” dla PNG i jakie są konsekwencje techniczne.
-3. Ocena, czy tymczasowa lokalizacja `Infoczytnik/Draft/Loga` nadaje się do testowego użycia bez migracji do `assets/logos`.
-4. Przygotowanie wariantów wdrożenia oraz ryzyk jakościowych.
+1. Odczyt dotychczasowej treści analizy `Analizy/analiza-dataslate-panel-koloru-logo-png.md`.
+2. Sprawdzenie wszystkich plików PNG w `Infoczytnik/Draft/Loga/`.
+3. Techniczna weryfikacja, czy pliki są faktycznie jednokolorowe (z pominięciem przezroczystości alpha).
+4. Rekomendacja wdrożenia panelu koloru logo dla obecnego zestawu plików.
 
-# Wnioski
-## 1) Krótka odpowiedź
-Tak — **da się** dodać panel koloru logo dla plików PNG już teraz (w tym dla plików z `Infoczytnik/Draft/Loga`), ale sposób realizacji zależy od typu grafik:
-- jeśli PNG są monochromatyczne (najlepiej białe/czarne z przezroczystością), kolorowanie będzie proste i przewidywalne;
-- jeśli PNG są wielokolorowe/cieniowane, „podmiana koloru” nie będzie 1:1 jak w przypadku fontu i trzeba zastosować filtrację (gorsza kontrola) albo przygotować oddzielne wersje logo.
+# Metodyka weryfikacji
+- Ze względu na brak bibliotek obrazowych (`PIL`, `opencv`, `imageio`) i brak narzędzia `identify`, wykonano analizę PNG własnym skryptem Python opartym o:
+  - dekodowanie chunków PNG (`IHDR`, `PLTE`, `tRNS`, `IDAT`),
+  - dekompresję IDAT,
+  - rekonstrukcję scanline z filtrami PNG,
+  - zliczenie unikalnych kolorów RGB tylko dla pikseli nieprzezroczystych (alpha > 0).
 
-## 2) Stan obecny modułu
-- Wybór logo jest oparty o manifest (`logos[].file`) i przypisanie ścieżki do `img.src`.
-- Ekran odbiorcy również renderuje logo przez `<img>` + `src`.
-- Kolory istnieją obecnie tylko dla tekstu wiadomości i prefix/suffix (pole tekstowe + color picker + chipy).
+# Wyniki sprawdzenia plików `Infoczytnik/Draft/Loga`
+## Klasyfikacja plików
 
-To oznacza, że architektura już ma gotowy wzorzec UX dla „panelu koloru”, ale logo jest aktualnie traktowane jako obraz bez warstwy kolorystycznej.
+### A) Pliki praktycznie jednokolorowe (bez gradientów)
+- `Apothecary.png` — 1 kolor
+- `Aquila.png` — 1 kolor
+- `Astra_Militarum.png` — 1 kolor
+- `Mechanicus.png` — 1 kolor
+- `Slaanesh.png` — 1 kolor
 
-## 3) Czy lokalizacja `Infoczytnik/Draft/Loga` zadziała teraz?
-Tak, jeśli ścieżki w manifeście wskazują bezpośrednio na ten folder (np. `Draft/Loga/Aquila.png`) i pliki są serwowane statycznie przez ten sam host.
+### B) Pliki prawie jednokolorowe (niewielkie odchylenia odcienia)
+- `Nurgle.png` — 2 kolory
+- `Khorne.png` — 6 kolorów
 
-Do analizy wystarczy to rozwiązanie tymczasowe. Na produkcję i porządek repo i tak lepiej docelowo przejść na `assets/logos` i spójne wpisy w `DataSlate_manifest.xlsx`.
+### C) Pliki wieloodcieniowe / gradientowe (nie są jednokolorowe)
+- `Administratum.png` — 224 kolory
+- `Chaos.png` — 184 kolory
+- `Inquisition.png` — 29 kolorów
+- `Medicae.png` — 22 kolory
+- `Navigator.png` — 291 kolorów
+- `Sororitas.png` — 68 kolorów
+- `Tzeentch.png` — 122 kolory
 
-## 4) Realne opcje kolorowania PNG
-### Opcja A — CSS `filter` na `<img>`
-- Plusy: szybkie wdrożenie, brak canvas.
-- Minusy: trudne dokładne odwzorowanie koloru HEX; wyniki zależne od bazowego koloru logo.
+## Wniosek do hipotezy użytkownika
+Hipoteza „wydaje mi się, że wszystkie są jednokolorowe” jest **częściowo nieprawdziwa**.
+Tylko część plików jest stricte jednokolorowa, a istotna część zestawu zawiera wiele odcieni/gradientów.
 
-### Opcja B — Canvas z „tintowaniem” alpha-maski (rekomendowana)
-- Mechanika: wczytać PNG, narysować na canvas, nałożyć wybrany kolor tylko na obszary nieprzezroczyste, wynik wysłać jako DataURL.
-- Plusy: przewidywalny kolor (blisko „tak samo jak font”), pełna kontrola.
-- Minusy: trochę więcej kodu i obsługa cache wyników dla wydajności.
+# Rekomendowane rozwiązanie
+## Rekomendacja główna (najbezpieczniejsza jakościowo)
+Wprowadzić w manifeście logo atrybut trybu kolorowania, np.:
+- `logoMode: mono` — logo może być kolorowane pickerem 1:1,
+- `logoMode: gradient` (lub `fullcolor`) — logo pozostaje w oryginale albo korzysta z osobnej ścieżki kolorowania.
 
-### Opcja C — Przygotowanie wielu wersji logo (na kolor) bez runtime tint
-- Plusy: zero logiki kolorowania w JS.
-- Minusy: dużo plików i gorsza skalowalność.
+Następnie:
+1. Dla `mono` użyć kolorowania przez canvas (tintowanie maski alpha) i przesyłać `logoColor` w payloadzie.
+2. Dla `gradient/fullcolor`:
+   - albo wyłączyć picker koloru,
+   - albo pokazywać ostrzeżenie „kolorowanie może zmienić charakter logo”,
+   - albo dostarczyć osobne, ręcznie przygotowane wersje kolorystyczne.
 
-## 5) Co znaczy „taki sam panel jak przy fontach”
-UX-owo można zrobić praktycznie 1:1:
-- pole HEX + color picker + chipy presetów;
-- zapis do payloadu (np. `logoColor`);
-- podgląd live w panelu GM;
-- zastosowanie tego samego koloru po stronie odbiorcy.
+## Rekomendacja alternatywna (szybkie wdrożenie)
+Uruchomić picker koloru dla wszystkich logo, ale:
+- oznaczyć w UI, że wynik dla logo wieloodcieniowych będzie przybliżony,
+- dodać przełącznik „Użyj oryginalnych barw logo”.
 
-Jedyna różnica: tekst używa natywnego CSS `color`, a logo PNG wymaga dodatkowej warstwy transformacji (filter/canvas).
+# Proponowany podział obecnych plików dla manifestu
+## `logoMode: mono`
+- Apothecary
+- Aquila
+- Astra_Militarum
+- Mechanicus
+- Slaanesh
+- (opcjonalnie po testach) Nurgle
+- (opcjonalnie po testach) Khorne
 
-# Rekomendacje
-1. **Wdrożyć opcję B (canvas tint) jako domyślną** dla logo w DataSlate.
-2. Dodać do manifestu opcjonalne pole, np.:
-   - `tintable: true/false` albo
-   - `logoMode: mono|fullcolor`.
-3. Kolorowanie uruchamiać tylko dla `tintable=true`; dla `fullcolor` wyświetlać oryginał.
-4. Na etapie przejściowym dopuścić wpisy `Draft/Loga/*.png` w manifeście testowym.
-5. Przy migracji do `assets/logos` nie zmieniać kontraktu payloadu (`logoFile`, `logoColor`), aby uniknąć regresji.
+## `logoMode: gradient/fullcolor`
+- Administratum
+- Chaos
+- Inquisition
+- Medicae
+- Navigator
+- Sororitas
+- Tzeentch
 
-# Ewentualne ryzyka
-1. **Niejednolity efekt kolorowania** dla wielokolorowych PNG (szczególnie przy filtrach CSS).
-2. **Wydajność** przy częstych zmianach koloru/logo bez cache renderu (canvas).
-3. **CORS/tainted canvas** jeśli kiedyś logo będą ładowane z obcej domeny bez poprawnych nagłówków.
-4. **Czytelność na tle** — niektóre kolory logo mogą zlewać się z tłem, więc warto dodać minimalny kontrast lub obrys.
+# Ryzyka
+1. Wymuszone kolorowanie gradientowych logo może pogorszyć czytelność i estetykę.
+2. Brak jawnego `logoMode` zwiększa ryzyko niejednolitego UX (część logo wygląda dobrze, część źle).
+3. Jeśli logo będą ładowane z innej domeny bez poprawnego CORS, canvas może zostać „tainted”, co utrudni generowanie DataURL.
 
-# Ewentualne następne kroki
-1. Przygotować krótką listę logo „tintowalnych” (mono) i „nietintowalnych” (fullcolor).
-2. Wykonać implementację testową tylko w:
-   - `Infoczytnik/GM_test.html`
-   - `Infoczytnik/Infoczytnik_test.html`
-3. Dodać `logoColor` do payloadu i snapshotu danych.
-4. Zweryfikować poprawność na aktualnych plikach z `Infoczytnik/Draft/Loga`.
-5. Po akceptacji: przepiąć ścieżki na `assets/logos` + uzupełnić `DataSlate_manifest.xlsx`.
+# Następne kroki
+1. Dodać pole `logoMode` do źródła danych (docelowo `DataSlate_manifest.xlsx`).
+2. Dla plików `mono` wdrożyć panel koloru identyczny UX-owo jak dla fontu.
+3. Dla `gradient/fullcolor` pozostawić oryginał lub przygotować dedykowane warianty kolorystyczne.
+4. Po migracji plików do `Infoczytnik/assets/logos` powtórzyć automatyczną walidację liczby kolorów, aby potwierdzić klasyfikację.
