@@ -341,3 +341,9 @@ Przy wdrożeniu dla osobnej grupy należy sprawdzić:
 
 
 - Kolor logo w szybkich presetach obejmuje teraz wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.
+
+
+## 16. Domyślne logo / Default logo
+- `DEFAULT_FORM_STATE.logoId = 3` w `GM_test.html`.
+- Rekord logo o ID `3` wskazuje `assets/logos/Aquila.png` i nazwę `Aquilla` w `assets/data/data.json`.
+- Po przywróceniu ustawień domyślnych panel GM ładuje tę pozycję automatycznie.

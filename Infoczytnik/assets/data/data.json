@@ -61,6 +61,11 @@
       "id": 2,
       "name": "Inkwizycja",
       "file": "assets/logos/Inquisition.png"
+    },
+    {
+      "id": 3,
+      "name": "Aquilla",
+      "file": "assets/logos/Aquila.png"
     }
   ],
   "audios": [

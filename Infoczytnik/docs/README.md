@@ -188,3 +188,10 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 
 - Kolor logo w szybkich presetach obejmuje teraz wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.
+
+
+## 🇵🇱 Domyślne logo
+- Domyślnie po użyciu przycisku **Przywróć domyślne** wybierane jest logo **Aquilla** (ID 3, plik `assets/logos/Aquila.png`).
+
+## 🇬🇧 Default logo
+- By default, after using **Restore defaults**, the selected logo is **Aquilla** (ID 3, file `assets/logos/Aquila.png`).

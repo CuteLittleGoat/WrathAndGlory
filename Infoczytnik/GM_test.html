@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-05-28_19-05-00";
+      const INF_VERSION = "2026-05-29_00-10-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -147,7 +147,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
-const DEFAULT_FORM_STATE = { backgroundId:10, logoId:1, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', logoColor:'#ffffff', msgFontSize:20, psFontSize:12, previewMode:'content' };
+const DEFAULT_FORM_STATE = { backgroundId:10, logoId:3, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', logoColor:'#ffffff', msgFontSize:20, psFontSize:12, previewMode:'content' };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
