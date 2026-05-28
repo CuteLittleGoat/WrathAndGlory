@@ -174,14 +174,14 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 ### Kolor logo (panel GM)
 - Pod polem **Logo** znajduje się panel **Kolor logo** (pole HEX + próbnik + gotowe kolory).
-- Domyślny kolor logo to **biały** (`#ffffff`).
+- Domyślny kolor logo to **złoty** (`#d4af37`).
 - Gdy przełącznik **Logo** jest wyłączony, panel koloru logo robi się szary i nie można go kliknąć.
 - Zmiana koloru jest widoczna od razu w podglądzie panelu GM i po wysłaniu komunikatu na ekranie gracza.
 - Gotowe kolory w panelu **Kolor logo** zmieniają tylko kolor logo i nie wpływają na pole **Kolor Prefix + Suffix (wspólny)**.
 
 ### Logo color (GM panel)
 - Directly below **Logo** there is a **Logo color** panel (HEX field + picker + preset chips).
-- Default logo color is **white** (`#ffffff`).
+- Default logo color is **gold** (`#d4af37`).
 - When **Logo** toggle is off, the logo color panel becomes gray and inactive.
 - Preset chips in the **Logo color** panel affect only the logo color and do not change **Prefix + Suffix (shared) color**.
 - Color changes are visible immediately in GM preview and, after sending, on the player screen.
