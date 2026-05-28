@@ -341,3 +341,10 @@ Przy wdrożeniu dla osobnej grupy należy sprawdzić:
 
 
 - Kolor logo w szybkich presetach obejmuje teraz wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.
+
+## 15. DataSlate manifest snapshot (current)
+
+- `assets/data/data.json` was refreshed to match the current logo asset set in `assets/logos/`.
+- The `logos` array now contains 14 entries and points to PNG files from `assets/logos/`.
+- In `GM_test.html`, `DEFAULT_FORM_STATE.logoId` is set to `3`, which selects `Aquila` (`assets/logos/Aquila.png`) as the default logo.
+- `INF_VERSION` was synchronized in `GM_test.html` and `Infoczytnik_test.html` to keep cache-busting consistent for both test entry points.
