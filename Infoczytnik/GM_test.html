@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-05-28_21-30-00";
+      const INF_VERSION = "2026-05-28_14-50-22";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -40,7 +40,7 @@
     .livePreviewBox.preview-mode-background{background:#0a0e14;padding:0}
     .previewBackgroundThumb{position:absolute;top:50%;left:50%;height:100%;width:auto;max-height:100%;max-width:none;transform:translate(-50%,-50%) rotate(-90deg);transform-origin:center;display:none;opacity:.98}
     .livePreviewBox.preview-mode-background .previewText,.livePreviewBox.preview-mode-background .previewLogo{display:none !important}
-    .previewLogo{position:absolute;top:10px;right:10px;width:84px;height:84px;background:var(--logoPreviewColor,#ffffff);opacity:.9;display:none;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain;mask-repeat:no-repeat;mask-position:center;mask-size:contain}
+    .previewLogo{position:absolute;top:10px;right:10px;width:84px;height:84px;background:var(--logoPreviewColor,#d4af37);opacity:.9;display:none;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain;mask-repeat:no-repeat;mask-position:center;mask-size:contain}
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
     .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
@@ -62,7 +62,7 @@
       <label>Logo</label><select id="logoSelect"></select>
       <label>Kolor logo</label>
       <div id="logoColorPanel">
-        <div class="pair"><input type="text" id="logoColorText" value="#ffffff" placeholder="#RRGGBB"><input type="color" id="logoColorPicker" value="#ffffff"></div>
+        <div class="pair"><input type="text" id="logoColorText" value="#d4af37" placeholder="#RRGGBB"><input type="color" id="logoColorPicker" value="#d4af37"></div>
         <div class="chips" id="logoColorChips">
           <div class="chip" data-target="logo" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span>Biały</span></div>
           <div class="chip" data-target="logo" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span>Zielony</span></div>
@@ -147,7 +147,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
-const DEFAULT_FORM_STATE = { backgroundId:10, logoId:3, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', logoColor:'#ffffff', msgFontSize:20, psFontSize:12, previewMode:'content' };
+const DEFAULT_FORM_STATE = { backgroundId:10, logoId:3, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', logoColor:'#d4af37', msgFontSize:20, psFontSize:12, previewMode:'content' };
 const FONT_FALLBACK = ', Calibri, Arial, sans-serif';
 const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__dsVersion || '');
 const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
@@ -457,7 +457,7 @@ function renderPreview(){
   el.previewPrefix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
   el.previewSuffix.style.fontSize = clamp(el.psFontSize.value,10,60,12)+'px';
   el.previewMsg.style.color = messageColor; el.previewMsg.style.fontSize = clamp(el.msgFontSize.value,12,80,20)+'px';
-  const logoColor = resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, '#ffffff');
+  const logoColor = resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, '#d4af37');
   if(isFullHexColor(el.logoColorText.value)){ el.logoColorText.value = logoColor; }
   el.logoColorPicker.value = logoColor;
   el.previewLogo.style.setProperty('--logoPreviewColor', logoColor);
@@ -491,7 +491,7 @@ function getPayload(type){
     fillerLineCount: clamp(el.fillerLineCount.value,1,5,3),
     fillerBandLines: clamp(el.fillerBandLines.value,1,6,2),
     messageColor: resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66'),
-    logoColor: resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, '#ffffff'),
+    logoColor: resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, '#d4af37'),
     prefixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'),
     suffixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'),
     msgFontSize: clamp(el.msgFontSize.value,12,80,20),
@@ -551,7 +551,7 @@ el.rerollFillersBtn.addEventListener('click', rerollFillers);
 ['input','change'].forEach(evt=>el.logoColorPicker.addEventListener(evt,()=>{ el.logoColorText.value = el.logoColorPicker.value; renderPreview(); }));
 ['input','change'].forEach(evt=>el.psColorPicker.addEventListener(evt,()=>{ el.psColorText.value = el.psColorPicker.value; renderPreview(); }));
 el.messageColorText.addEventListener('blur', ()=>{ el.messageColorText.value = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66'); renderPreview(); });
-el.logoColorText.addEventListener('blur', ()=>{ el.logoColorText.value = resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, '#ffffff'); renderPreview(); });
+el.logoColorText.addEventListener('blur', ()=>{ el.logoColorText.value = resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, '#d4af37'); renderPreview(); });
 el.psColorText.addEventListener('blur', ()=>{ el.psColorText.value = resolveHexColor(el.psColorText.value, el.psColorPicker.value, '#ffffff'); renderPreview(); });
 document.querySelectorAll('.chip[data-target]').forEach(chip=>{
   chip.addEventListener('click', ()=>{

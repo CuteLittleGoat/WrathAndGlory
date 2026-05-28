@@ -331,7 +331,7 @@ Przy wdrożeniu dla osobnej grupy należy sprawdzić:
 
 ## 14. Rozszerzenie testowe: panel koloru logo
 - W `GM_test.html` dodano panel `logoColorPanel` pod wyborem logo i nad `Zestaw fillerów`.
-- Domyślna wartość `DEFAULT_FORM_STATE.logoColor` to `#ffffff`.
+- Domyślna wartość `DEFAULT_FORM_STATE.logoColor` to `#d4af37`.
 - Payload publikowany do Firestore rozszerzono o pole `logoColor` (HEX), aby ekran odbiorcy renderował identyczny kolor co panel GM.
 - W `renderPreview()` logo podglądu jest kolorowane przez CSS mask (`mask-image`/`-webkit-mask-image`) i zmienną koloru, dzięki czemu podgląd reaguje natychmiast.
 - Gdy `showLogo=false`, funkcja `updateLogoColorPanelState()` wyszarza panel i blokuje interakcję (`opacity` + `pointer-events`).
