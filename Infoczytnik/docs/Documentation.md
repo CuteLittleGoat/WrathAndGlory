@@ -335,4 +335,6 @@ Przy wdrożeniu dla osobnej grupy należy sprawdzić:
 - Payload publikowany do Firestore rozszerzono o pole `logoColor` (HEX), aby ekran odbiorcy renderował identyczny kolor co panel GM.
 - W `renderPreview()` logo podglądu jest kolorowane przez CSS mask (`mask-image`/`-webkit-mask-image`) i zmienną koloru, dzięki czemu podgląd reaguje natychmiast.
 - Gdy `showLogo=false`, funkcja `updateLogoColorPanelState()` wyszarza panel i blokuje interakcję (`opacity` + `pointer-events`).
+- Zdarzenia `.chip[data-target]` rozdzielają trzy cele (`msg`, `logo`, `ps`), aby presety koloru logo nie nadpisywały koloru prefix/suffix.
+- `updateLogoColorPanelState()` jest wywoływana wewnątrz `renderPreview()`, dzięki czemu stan aktywności panelu koloru logo jest zawsze zsynchronizowany z checkboxem `showLogo`.
 - W `Infoczytnik_test.html` logo odbiorcy również renderowane jest jako maska PNG z jednolitym kolorem (`--logoColor`), pobieranym z payloadu (`d.logoColor`).

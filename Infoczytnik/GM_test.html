@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-05-28_14-30-00";
+      const INF_VERSION = "2026-05-28_16-45-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -436,6 +436,7 @@ function updateLogoColorPanelState(){
 
 function renderPreview(){
   syncFlickerDependency();
+  updateLogoColorPanelState();
   const bg = safeGet(manifest.backgrounds || [], el.backgroundSelect.value);
   const logo = safeGet(manifest.logos || [], el.logoSelect.value);
   const messageColor = resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, '#00ff66');
@@ -558,6 +559,9 @@ document.querySelectorAll('.chip[data-target]').forEach(chip=>{
     if(chip.dataset.target === 'msg'){
       el.messageColorText.value = color;
       el.messageColorPicker.value = color;
+    } else if(chip.dataset.target === 'logo'){
+      el.logoColorText.value = color;
+      el.logoColorPicker.value = color;
     } else {
       el.psColorText.value = color;
       el.psColorPicker.value = color;
