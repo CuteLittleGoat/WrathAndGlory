@@ -338,3 +338,6 @@ Przy wdrożeniu dla osobnej grupy należy sprawdzić:
 - Zdarzenia `.chip[data-target]` rozdzielają trzy cele (`msg`, `logo`, `ps`), aby presety koloru logo nie nadpisywały koloru prefix/suffix.
 - `updateLogoColorPanelState()` jest wywoływana wewnątrz `renderPreview()`, dzięki czemu stan aktywności panelu koloru logo jest zawsze zsynchronizowany z checkboxem `showLogo`.
 - W `Infoczytnik_test.html` logo odbiorcy również renderowane jest jako maska PNG z jednolitym kolorem (`--logoColor`), pobieranym z payloadu (`d.logoColor`).
+
+
+- Kolor logo w szybkich presetach obejmuje teraz wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.

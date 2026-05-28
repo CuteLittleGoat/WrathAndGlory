@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-05-28_16-45-00";
+      const INF_VERSION = "2026-05-28_19-05-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -50,7 +50,7 @@
     <div id="overlayScroll" class="overlayScroll">
       <div id="topBand" class="topBand">
         <div id="prefix" class="prefix"></div>
-        <img id="logo" class="logo" alt="logo">
+        <div id="logo" class="logo" aria-hidden="true"></div>
       </div>
       <div id="msg" class="msg"></div>
       <div class="bottomBand">

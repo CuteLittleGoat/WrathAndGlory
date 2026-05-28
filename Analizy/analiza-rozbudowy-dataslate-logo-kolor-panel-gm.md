@@ -205,3 +205,90 @@ el.logo.style.maskImage = `url(${d.logoFile})`;
 - Kliknięcie koloru w panelu pod logo zmienia kolor logo (podgląd + payload), bez ingerencji w kolor Prefix/Suffix.
 - Pole `Kolor Prefix + Suffix (wspólny)` nie jest już nadpisywane przez presety logo.
 - Po odznaczeniu `Logo` panel `Kolor logo` jest wyszarzony i nieaktywny; po zaznaczeniu wraca do stanu aktywnego.
+
+
+## Dodatkowe wnioski po kolejnych testach zoom/logo (2026-05-28)
+
+### Oryginalny pełny prompt użytkownika
+```text
+Przeczytaj analizę Analizy/analiza-rozbudowy-dataslate-logo-kolor-panel-gm.md
+
+Nic z niej nie kasuj tylko dopisz nowe wnioski. Dopisz pełen prompt tego zadania.
+
+Po wdrożeniu poprawki wszystko wydaje się działać poprawnie.
+Aktywność panelu zmiany koloru jest powiązana z logo.
+Logo zmienia się wraz ze zmianą kolorów.
+Zmiana koloru logo jest niezależna od zmiany koloru fillerów oraz treści.
+
+Pojawił się jednak jeszcze jeden dziwny problem.
+Przez logo przebija się jakiś tekst i fragment koloru. Nie mogę go dobrze odczytać.
+Jak zmieniam powiększenie strony to tekst widoczny na logo się przesuwa.
+
+Żeby problem był dobrze widoczny ustawiłem szare logo. Następnie zmieniałem powiększenie strony Infoczytnik i robiłem screeny.
+Screeny zapisałem w jako
+Analizy/1.jpg
+Analizy/2.jpg
+Analizy/3.jpg
+Analizy/4.jpg
+
+Zidentyfikuj co to za napis i czemu on się pojawia.
+
+Dodatkowo zmień przyciski szybkiego wyboru koloru dla panelu logo. W przypadku logo zamiast Czerwony ma być Czarny (#000000)
+```
+
+### Zakres tej analizy
+1. Identyfikacja napisu przebijającego przez logo po zmianie zoomu.
+2. Wyjaśnienie przyczyny zjawiska i wskazanie, dlaczego przesuwa się przy powiększaniu.
+3. Wdrożenie poprawki w plikach testowych modułu Infoczytnik.
+4. Zmiana presetu szybkiego koloru logo z „Czerwony” na „Czarny (#000000)”.
+
+### Wnioski
+1. Przebijający napis to tekst atrybutu alternatywnego elementu IMG (`alt`), czyli „logo” (na ekranie gracza) oraz analogicznie „logo preview” (w podglądzie GM).
+2. Problem wynikał z użycia elementów `<img>` bez ustawionego `src`, ale z nałożonym maskowaniem CSS (`mask-image`). Przeglądarka renderowała warstwę zastępczą/alt wewnątrz obszaru elementu, co przy zoomie dawało przesuwający się artefakt.
+3. Zachowanie zmiany po zoomie wynikało z rasteryzacji i relayoutu fallbackowej zawartości IMG przy zmianie skali widoku.
+4. Stabilnym rozwiązaniem jest zastąpienie elementów `<img>` elementami blokowymi (`<div>`) używanymi wyłącznie jako nośnik maski, bez treści zastępczej.
+
+### Rekomendacje
+1. Dla logo kolorowanych maską używać wyłącznie elementów niebędących replaced elements (np. `div`, `span`).
+2. Nie stosować `alt` dla elementów, które są dekoracyjne i nie mają semantyki obrazu; używać `aria-hidden="true"`.
+3. Utrzymać spójność presetów logo z wymaganiami UI (Biały, Zielony, Czarny, Złoty).
+
+### Ryzyka
+1. Jeżeli w przyszłości ktoś przywróci `<img>` bez `src` w torze renderowania maskowanego logo, artefakt może wrócić.
+2. Różne silniki przeglądarek mogą odmiennie renderować fallback IMG, więc ten typ błędu może być niestabilny i trudniejszy do reprodukcji bez testów zoomu.
+
+### Następne kroki
+1. Zweryfikować wizualnie brak artefaktów przy zoomie 80%, 100%, 125%, 150%, 175% na `Infoczytnik_test.html`.
+2. Zachować test regresji przy przyszłych zmianach warstwy logo i panelu kolorów.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Infoczytnik/GM_test.html`
+
+Lokalizacja: sekcja wersji `INF_VERSION`, presety `#logoColorChips`, sekcja podglądu `.previewLogo`.
+
+Było:
+```html
+<div class="chip" data-target="logo" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span>Czerwony</span></div>
+<img id="previewLogo" class="previewLogo" alt="logo preview">
+```
+
+Jest:
+```html
+<div class="chip" data-target="logo" data-color="#000000"><span class="swatch" style="background:#000000"></span><span>Czarny</span></div>
+<div id="previewLogo" class="previewLogo" aria-hidden="true"></div>
+```
+
+### Plik: `Infoczytnik/Infoczytnik_test.html`
+
+Lokalizacja: sekcja wersji `INF_VERSION`, element logo w kontenerze `#topBand`.
+
+Było:
+```html
+<img id="logo" class="logo" alt="logo">
+```
+
+Jest:
+```html
+<div id="logo" class="logo" aria-hidden="true"></div>
+```

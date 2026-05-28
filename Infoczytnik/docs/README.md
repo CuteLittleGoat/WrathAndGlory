@@ -185,3 +185,6 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 - When **Logo** toggle is off, the logo color panel becomes gray and inactive.
 - Preset chips in the **Logo color** panel affect only the logo color and do not change **Prefix + Suffix (shared) color**.
 - Color changes are visible immediately in GM preview and, after sending, on the player screen.
+
+
+- Kolor logo w szybkich presetach obejmuje teraz wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.
