@@ -54,13 +54,73 @@
   "logos": [
     {
       "id": 1,
+      "name": "Administratum",
+      "file": "assets/logos/Administratum.png"
+    },
+    {
+      "id": 2,
+      "name": "Apothecary",
+      "file": "assets/logos/Apothecary.png"
+    },
+    {
+      "id": 3,
+      "name": "Aquila",
+      "file": "assets/logos/Aquila.png"
+    },
+    {
+      "id": 4,
+      "name": "Astra_Militarum",
+      "file": "assets/logos/Astra_Militarum.png"
+    },
+    {
+      "id": 5,
+      "name": "Chaos_Undivided",
+      "file": "assets/logos/Chaos_Undivided.png"
+    },
+    {
+      "id": 6,
+      "name": "Inquisition",
+      "file": "assets/logos/Inquisition.png"
+    },
+    {
+      "id": 7,
+      "name": "Khorne",
+      "file": "assets/logos/Khorne.png"
+    },
+    {
+      "id": 8,
       "name": "Mechanicus",
       "file": "assets/logos/Mechanicus.png"
     },
     {
-      "id": 2,
-      "name": "Inkwizycja",
-      "file": "assets/logos/Inquisition.png"
+      "id": 9,
+      "name": "Medicae",
+      "file": "assets/logos/Medicae.png"
+    },
+    {
+      "id": 10,
+      "name": "Navigator",
+      "file": "assets/logos/Navigator.png"
+    },
+    {
+      "id": 11,
+      "name": "Nurgle",
+      "file": "assets/logos/Nurgle.png"
+    },
+    {
+      "id": 12,
+      "name": "Slaanesh",
+      "file": "assets/logos/Slaanesh.png"
+    },
+    {
+      "id": 13,
+      "name": "Sororitas",
+      "file": "assets/logos/Sororitas.png"
+    },
+    {
+      "id": 14,
+      "name": "Tzeentch",
+      "file": "assets/logos/Tzeentch.png"
     }
   ],
   "audios": [

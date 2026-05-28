@@ -188,3 +188,13 @@ Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / 
 
 
 - Kolor logo w szybkich presetach obejmuje teraz wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.
+
+## Aktualne dane DataSlate / Current DataSlate data
+
+### 🇵🇱
+- `assets/data/data.json` zawiera teraz pełną listę 14 logo z folderu `assets/logos/`.
+- Domyślne logo panelu GM to teraz **Aquila** (`id: 3`, `assets/logos/Aquila.png`).
+
+### 🇬🇧
+- `assets/data/data.json` now contains the full list of 14 logos from `assets/logos/`.
+- The default logo in the GM panel is now **Aquila** (`id: 3`, `assets/logos/Aquila.png`).
