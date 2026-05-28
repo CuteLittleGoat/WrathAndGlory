@@ -818,3 +818,9 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Right column: password field, with submit button below aligned to the right.
 - Mobile breakpoint: `max-width: 640px`, single-column layout.
 - The “Litany of Access” label is intentionally darker than the message body text: `var(--muted, #4a8b4a)`.
+
+## Moduł — Infoczytnik (aktualizacja 2026-05-28)
+- W panelu GM (`Infoczytnik/GM_test.html`) dodano blok **Kolor logo** pomiędzy polami **Logo** i **Zestaw fillerów**.
+- Domyślna barwa logo: `#ffffff`.
+- W stanie wyłączonego checkboxa **Logo** panel koloru logo przechodzi do stanu nieaktywnego (wyszarzenie + blokada kliknięcia).
+- Podgląd GM i ekran odbiorcy renderują logo jako maskę PNG, a kolor jest kontrolowany przez jednolity fill (bez gradientu).

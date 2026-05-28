@@ -328,3 +328,11 @@ Przy wdrożeniu dla osobnej grupy należy sprawdzić:
 - ścieżki do assetów,
 - ścieżki używane przez panel GM i ekran Infoczytnika,
 - zgodność konfiguracji Firebase z docelowym projektem.
+
+## 14. Rozszerzenie testowe: panel koloru logo
+- W `GM_test.html` dodano panel `logoColorPanel` pod wyborem logo i nad `Zestaw fillerów`.
+- Domyślna wartość `DEFAULT_FORM_STATE.logoColor` to `#ffffff`.
+- Payload publikowany do Firestore rozszerzono o pole `logoColor` (HEX), aby ekran odbiorcy renderował identyczny kolor co panel GM.
+- W `renderPreview()` logo podglądu jest kolorowane przez CSS mask (`mask-image`/`-webkit-mask-image`) i zmienną koloru, dzięki czemu podgląd reaguje natychmiast.
+- Gdy `showLogo=false`, funkcja `updateLogoColorPanelState()` wyszarza panel i blokuje interakcję (`opacity` + `pointer-events`).
+- W `Infoczytnik_test.html` logo odbiorcy również renderowane jest jako maska PNG z jednolitym kolorem (`--logoColor`), pobieranym z payloadu (`d.logoColor`).

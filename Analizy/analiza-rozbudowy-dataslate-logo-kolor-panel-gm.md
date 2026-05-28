@@ -94,3 +94,95 @@ Efekt:
 2. Dodać panel „Kolor logo” i pole `logoColor` do payloadu testowego.
 3. Przepiąć renderer logo na CSS mask i przetestować wszystkie PNG z `Infoczytnik/Draft/Loga`.
 4. Po akceptacji efektu przenieść assety do `Infoczytnik/assets/logos` i uzupełnić `DataSlate_manifest.xlsx`.
+
+## Rozbudowanie analizy — wymagania testowe (2026-05-28)
+
+### Nowe wymagania wejściowe
+1. Panel wyboru koloru logo ma być umieszczony pod rozwijanym menu wyboru logo i nad polem „Zestaw fillerów”.
+2. Domyślny kolor logo ma być ustawiony na biały (`#ffffff`).
+3. Gdy checkbox „Logo” jest odznaczony, panel wyboru koloru logo ma być wyszarzony i nieaktywny.
+4. Podgląd w panelu GM ma od razu pokazywać zmianę koloru logo.
+5. Etap testowy ma działać na obecnych dwóch plikach logo z katalogu `Infoczytnik/assets/logos` (bez podmiany assetów na tym etapie).
+
+### Wnioski projektowe po doprecyzowaniu wymagań
+- Wdrożenie testowe można wykonać bez zmian w strukturze `assets/logos` i bez wgrywania nowych PNG, bo kolorowanie jest realizowane po stronie CSS (maskowanie PNG przez `mask-image` i `background-color`).
+- Wymaganie wyszarzenia panelu po odznaczeniu „Logo” jest najbezpieczniej realizować przez jednoczesne ustawienie `opacity` i `pointer-events`, aby użytkownik widział stan zablokowania i nie mógł zmieniać wartości przez przypadek.
+- Zgodnie z zakresem testowym należy przekazywać `logoColor` już w payloadzie wiadomości do `dataslate/current`, żeby ekran odbiorcy (`Infoczytnik_test.html`) renderował ten sam kolor co podgląd GM.
+- W testach należy sprawdzić dwa stany graniczne:
+  1) logo włączone + zmiana koloru,
+  2) logo wyłączone + panel koloru zablokowany + brak renderu logo po stronie odbiorcy.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Infoczytnik/GM_test.html`
+
+Lokalizacja: sekcje `INF_VERSION`, panel boczny formularza (okolice pól `Logo` i `Zestaw fillerów`), definicja `DEFAULT_FORM_STATE`, mapa `el`, funkcje `renderPreview`, `getPayload`, `restoreDefaults`, obsługa eventów kolorów.
+
+Było:
+```html
+<label>Logo</label><select id="logoSelect"></select>
+<label>Zestaw fillerów</label><select id="fillerSelect"></select>
+```
+
+Jest:
+```html
+<label>Logo</label><select id="logoSelect"></select>
+<label>Kolor logo</label>
+<div id="logoColorPanel">...</div>
+<label>Zestaw fillerów</label><select id="fillerSelect"></select>
+```
+
+Było:
+```js
+const DEFAULT_FORM_STATE = { ..., messageColor:'#00ff66', prefixSuffixColor:'#ffffff', ... };
+```
+
+Jest:
+```js
+const DEFAULT_FORM_STATE = { ..., messageColor:'#00ff66', prefixSuffixColor:'#ffffff', logoColor:'#ffffff', ... };
+```
+
+Było:
+```js
+if(!isBackgroundMode && el.showLogo.checked && logo){
+  el.previewLogo.src=logo.file;
+  el.previewLogo.style.display='block';
+}
+```
+
+Jest:
+```js
+const logoColor = resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, '#ffffff');
+el.previewLogo.style.setProperty('--logoPreviewColor', logoColor);
+if(!isBackgroundMode && el.showLogo.checked && logo){
+  el.previewLogo.style.display='block';
+  el.previewLogo.style.webkitMaskImage = `url(${logo.file})`;
+  el.previewLogo.style.maskImage = `url(${logo.file})`;
+}
+```
+
+### Plik: `Infoczytnik/Infoczytnik_test.html`
+
+Lokalizacja: sekcja stylów `.logo`, funkcje `applyStyles` i `applyLayout`.
+
+Było:
+```css
+.logo{...;object-fit:contain;...}
+```
+
+Jest:
+```css
+.logo{...;background:var(--logoColor,#ffffff);...;mask-size:contain}
+```
+
+Było:
+```js
+el.logo.src = d.logoFile;
+```
+
+Jest:
+```js
+document.documentElement.style.setProperty('--logoColor', String(d.logoColor || '#ffffff'));
+el.logo.style.webkitMaskImage = `url(${d.logoFile})`;
+el.logo.style.maskImage = `url(${d.logoFile})`;
+```

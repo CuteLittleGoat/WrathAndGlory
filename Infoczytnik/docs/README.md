@@ -171,3 +171,15 @@ This is the update map for adding another language (for example FR/DE):
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+
+### Kolor logo (panel GM)
+- Pod polem **Logo** znajduje się panel **Kolor logo** (pole HEX + próbnik + gotowe kolory).
+- Domyślny kolor logo to **biały** (`#ffffff`).
+- Gdy przełącznik **Logo** jest wyłączony, panel koloru logo robi się szary i nie można go kliknąć.
+- Zmiana koloru jest widoczna od razu w podglądzie panelu GM i po wysłaniu komunikatu na ekranie gracza.
+
+### Logo color (GM panel)
+- Directly below **Logo** there is a **Logo color** panel (HEX field + picker + preset chips).
+- Default logo color is **white** (`#ffffff`).
+- When **Logo** toggle is off, the logo color panel becomes gray and inactive.
+- Color changes are visible immediately in GM preview and, after sending, on the player screen.
