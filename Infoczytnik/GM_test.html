@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-05-28_16-45-00";
+      const INF_VERSION = "2026-05-28_19-05-00";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -66,7 +66,7 @@
         <div class="chips" id="logoColorChips">
           <div class="chip" data-target="logo" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span>Biały</span></div>
           <div class="chip" data-target="logo" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span>Zielony</span></div>
-          <div class="chip" data-target="logo" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span>Czerwony</span></div>
+          <div class="chip" data-target="logo" data-color="#000000"><span class="swatch" style="background:#000000"></span><span>Czarny</span></div>
           <div class="chip" data-target="logo" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span>Złoty</span></div>
         </div>
       </div>
@@ -113,7 +113,7 @@
       <div class="small">Treść = warstwa tekstowa bez grafiki tła • Tło = pojedyncza miniatura wybranego pliku tła.</div>
       <div class="livePreviewBox" id="livePreview">
         <img id="previewBackgroundThumb" class="previewBackgroundThumb" alt="background thumbnail">
-        <img id="previewLogo" class="previewLogo" alt="logo preview">
+        <div id="previewLogo" class="previewLogo" aria-hidden="true"></div>
         <div class="previewText" id="previewPrefix"></div>
         <div class="previewText" id="previewMsg">Lorem ipsum dolor sit amet...</div>
         <div class="previewText" id="previewSuffix"></div>
