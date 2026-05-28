@@ -186,3 +186,22 @@ document.documentElement.style.setProperty('--logoColor', String(d.logoColor || 
 el.logo.style.webkitMaskImage = `url(${d.logoFile})`;
 el.logo.style.maskImage = `url(${d.logoFile})`;
 ```
+
+
+## Dodatkowe wnioski po wdrożeniu poprawki (2026-05-28)
+
+### Przyczyna błędu
+1. W obsłudze kliknięć presetów kolorów (`.chip[data-target]`) brakowało osobnej gałęzi dla `data-target="logo"`.
+2. Logika miała tylko rozróżnienie: `msg` oraz `else`, gdzie `else` zapisywał kolor do pól Prefix/Suffix (`psColorText`, `psColorPicker`).
+3. W efekcie kliknięcie presetów z panelu koloru logo traktowane było jak zmiana koloru Prefix/Suffix, co aktualizowało hexy i kolor fillerów zamiast logo.
+4. Dodatkowo funkcja `updateLogoColorPanelState()` istniała, ale nie była wywoływana, więc panel koloru logo pozostawał aktywny nawet przy odznaczonym checkboxie `Logo`.
+
+### Jak naprawiono
+1. Rozszerzono handler presetów o trzecią gałąź `else if (chip.dataset.target === 'logo')`, która aktualizuje wyłącznie `logoColorText` i `logoColorPicker`.
+2. Gałąź `else` pozostawiono tylko dla `ps` (Prefix+Suffix).
+3. Dodano wywołanie `updateLogoColorPanelState()` na początku `renderPreview()`, aby przy każdej zmianie UI natychmiast synchronizować aktywność panelu logo z `showLogo`.
+
+### Efekt po poprawce
+- Kliknięcie koloru w panelu pod logo zmienia kolor logo (podgląd + payload), bez ingerencji w kolor Prefix/Suffix.
+- Pole `Kolor Prefix + Suffix (wspólny)` nie jest już nadpisywane przez presety logo.
+- Po odznaczeniu `Logo` panel `Kolor logo` jest wyszarzony i nieaktywny; po zaznaczeniu wraca do stanu aktywnego.
