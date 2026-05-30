@@ -17,6 +17,7 @@ Pliki produkcyjne (`GM.html`, `Infoczytnik.html`) są utrzymywane osobno i nie s
 - `assets/ramki/*` — ramki odpowiadające tłom.
 - `assets/logos/*` — logotypy warstw UI.
 - `config/firebase-config.js` — konfiguracja klienta Firebase.
+- Moduł nie wymaga katalogu backendowego: aktywna komunikacja działa wyłącznie przez Firebase App oraz Firestore.
 
 ## 3. Renderowanie UI i warstwa stylów
 ### 3.1. Fonty i typografia
@@ -80,6 +81,7 @@ Dla `type: "message"` pole `text` zawiera treść wiadomości wpisaną przez GM.
 ## 5. Integracja Firebase
 ### 5.1. Warstwa klienta
 - Konfiguracja znajduje się w `config/firebase-config.js`.
+- Klient ładuje wyłącznie Firebase App oraz Firestore; moduł nie korzysta z dodatkowego backendu komunikacyjnego.
 - Ekran GM publikuje payload do dokumentu bieżącego komunikatu.
 - Ekran Infoczytnika nasłuchuje zmian i renderuje aktualny snapshot.
 
