@@ -49,7 +49,7 @@
 ---
 
 ### Integracja Firebase — wymagana
-Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran graczy wymieniają dane na żywo przez bazę.
+Moduł **Infoczytnik** wymaga Firebase (Firestore), ponieważ ekran GM i ekran graczy wymieniają dane na żywo przez bazę. Do korzystania z modułu nie trzeba uruchamiać dodatkowego serwera komunikacyjnego.
 
 #### Krok po kroku — jak utworzyć bazę danych
 1. Otwórz [https://console.firebase.google.com](https://console.firebase.google.com).
@@ -136,7 +136,7 @@ Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYK�
 - **Different look on projector/mobile** → reselect background and send shorter text.
 
 ### Firebase integration — required
-**Infoczytnik** requires Firebase (Firestore), because GM and player screens exchange data live through the database.
+**Infoczytnik** requires Firebase (Firestore), because GM and player screens exchange data live through the database. No additional communication server is required to use the module.
 
 #### Step by step — how to create the database
 1. Open [https://console.firebase.google.com](https://console.firebase.google.com).
