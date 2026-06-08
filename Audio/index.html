@@ -1269,9 +1269,9 @@ const translations = {
       if (!playbackRoot) {
         return;
       }
-      const loopButton = playbackRoot.matches?.("button[data-action=\"loop\"], button[data-action=\"fav-loop\"]")
+      const loopButton = playbackRoot.matches?.("button[data-action=\"loop\"]")
         ? playbackRoot
-        : playbackRoot.querySelector("button[data-action=\"loop\"], button[data-action=\"fav-loop\"]");
+        : playbackRoot.querySelector("button[data-action=\"loop\"]");
       if (!loopButton) {
         return;
       }
@@ -1592,7 +1592,6 @@ const translations = {
                 </div>
                 <button class="btn" data-action="clear-alias">${translations[currentLanguage].labels.buttonClear}</button>
                 <button class="btn" data-action="play">${translations[currentLanguage].labels.buttonPlay}</button>
-                <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                 <select class="fav-select">
                   ${selectOptions}
                 </select>
@@ -1637,7 +1636,6 @@ const translations = {
                               <div class="fav-item-title">${item ? formatSampleLabel(item) : translations[currentLanguage].labels.emptyMissingManifest}</div>
                               <div class="fav-item-actions">
                                 <button class="btn" data-action="fav-play">${translations[currentLanguage].labels.buttonPlay}</button>
-                                <button class="btn loop-btn" data-action="fav-loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                                 <button class="btn" data-action="fav-up" ${itemIndex === 0 ? "disabled" : ""}>▲</button>
                                 <button class="btn" data-action="fav-down" ${itemIndex === list.itemIds.length - 1 ? "disabled" : ""}>▼</button>
                                 <button class="btn btn-danger" data-action="fav-remove">${translations[currentLanguage].labels.buttonRemove}</button>
@@ -1674,7 +1672,6 @@ const translations = {
               <div class="sample-meta">${item?.filename || translations[currentLanguage].labels.missingFilename}</div>
               <div class="fav-item-actions">
                 <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
-                <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                 <button class="btn" data-action="main-up" ${index === 0 ? "disabled" : ""}>▲</button>
                 <button class="btn" data-action="main-down" ${index === state.mainView.itemIds.length - 1 ? "disabled" : ""}>▼</button>
                 <button class="btn btn-danger" data-action="main-remove">${translations[currentLanguage].labels.buttonRemove}</button>
@@ -1686,6 +1683,10 @@ const translations = {
     };
 
     const renderUserMainView = () => {
+      // --- Przycisk Loop renderujemy wyłącznie w prawdziwym widoku użytkownika bez ?admin=1. / Render the Loop button only in the real user view without ?admin=1. ---
+      const loopControlHtml = ADMIN_MODE
+        ? ""
+        : `<button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>`;
       if (!state.mainView.itemIds.length) {
         userMainView.innerHTML = "<div class=\"samples-grid\"></div>";
         return;
@@ -1702,7 +1703,7 @@ const translations = {
                     <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
                     <div class="sample-actions">
                       <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
-                      <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
+                      ${loopControlHtml}
                     </div>
                   </div>
                 `;
@@ -1714,6 +1715,10 @@ const translations = {
     };
 
     const renderUserFavorites = () => {
+      // --- Ulubione w panelu admina są listą zarządzania, dlatego przełącznik Loop zostaje ukryty. / Favorites in admin mode are a management list, so the Loop toggle stays hidden. ---
+      const loopControlHtml = ADMIN_MODE
+        ? ""
+        : `<button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>`;
       if (!state.favorites.lists.length) {
         userFavoritesView.innerHTML = "<div class=\"samples-grid\"></div>";
         return;
@@ -1735,7 +1740,7 @@ const translations = {
                   <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
                   <div class="sample-actions">
                     <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
-                    <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
+                    ${loopControlHtml}
                   </div>
                 </div>
               `;
@@ -2076,9 +2081,6 @@ const translations = {
       if (button.dataset.action === "play") {
         togglePlayback(itemId, card);
       }
-      if (button.dataset.action === "loop") {
-        toggleLoop(itemId, card);
-      }
       if (button.dataset.action === "add-favorite") {
         const select = card.querySelector(".fav-select");
         if (select.value === "main") {
@@ -2132,11 +2134,6 @@ const translations = {
             togglePlayback(itemId, itemEl);
           }
           break;
-        case "fav-loop":
-          if (itemId) {
-            toggleLoop(itemId, itemEl);
-          }
-          break;
         case "fav-up":
           if (itemId) {
             moveItem(listId, itemId, -1);
@@ -2177,9 +2174,6 @@ const translations = {
       }
       const itemId = itemEl.dataset.itemId;
       switch (button.dataset.action) {
-        case "loop":
-          toggleLoop(itemId, itemEl);
-          break;
         case "main-up":
           moveMainViewItem(itemId, -1);
           break;
