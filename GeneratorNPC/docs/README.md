@@ -35,7 +35,7 @@
 ### Najważniejsze przyciski
 - **Generuj kartę** – tworzy końcowy widok NPC.
 - **Reset** – czyści wybory i wraca do wartości początkowych.
-- **Edytuj** (przy **Umiejętnościach** i **Słowach Kluczowych**) – przełącza wybrane pole tekstowe w tryb pisania.
+- **Edytuj** (przy **Umiejętnościach** i **Słowach Kluczowych**) – przełącza wybrane pole tekstowe w tryb pisania. Ten przycisk ma jasny napis i jasne obramowanie, takie jak numery stron w module DataVault.
 - **Zapisz** (w tym samym miejscu) – zapisuje wpisany tekst i ponownie pokazuje zwykły podgląd. W podglądzie **Słowa Kluczowe** pozostają czerwone, a przecinki mają zwykły zielony kolor. Na wygenerowanej karcie drukowanej słowa kluczowe są czarno-białe.
 
 ### Dobre praktyki
@@ -124,7 +124,7 @@ The language switcher is intentionally hidden; the place to enable it is marked 
 ### Main buttons
 - **Generate card** – creates final NPC card.
 - **Reset** – clears setup back to defaults.
-- **Edit** (next to **Skills** and **Keywords**) – switches the selected text field into typing mode.
+- **Edit** (next to **Skills** and **Keywords**) – switches the selected text field into typing mode. This button uses bright text and a bright border, matching the page-number color in the DataVault module.
 - **Save** (in the same place) – stores the typed text and returns to the normal preview. In the preview, **Keywords** stay red while commas keep the regular green color. On the generated printable card, keywords are black and white.
 
 ### Best practices

@@ -425,7 +425,7 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - Górny pasek (`.topbar`) sticky, panele boczne i workspace w układzie `grid` (`360px` + `1fr`).
 - Panele z `box-shadow: var(--glow)` i `border: 1px solid var(--div)`.
 - Tabele: zebra i hover oparte o `--zebra` i `--hover`.
-- Przyciski **Edytuj/Zapisz** przy edytowalnych polach tekstowych podglądu bazowego (`Umiejętności`, `Słowa Kluczowe`) używają klasy `.editable-text-button`: tekst ma `var(--code)` / `#D2FAD2` oraz `opacity: 0.9`, dzięki czemu jest jaśniejszy niż standardowy wariant `.btn.secondary` bez zmiany pozostałych przycisków pobocznych.
+- Przyciski **Edytuj/Zapisz** przy edytowalnych polach tekstowych podglądu bazowego (`Umiejętności`, `Słowa Kluczowe`) używają klasy `.editable-text-button`: tekst i obramowanie mają `var(--code)` / `#D2FAD2`, czyli ten sam kolor co numery stron w DataVault, z pełną nieprzezroczystością `opacity: 1`; reguła nie zmienia pozostałych przycisków pobocznych.
 - Sekcja „Źródło danych” w panelu bocznym (`.panel-data-source`) ma celowo mniejszą typografię (`.data-source-text`: `font-size: 0.82rem`, `line-height: 1.55`) i wymuszone zawijanie długiego linku (`.data-source-link`: `overflow-wrap: anywhere`, `word-break: break-word`), aby URL `data.json` nie wychodził poza ramkę.
 
 ---
