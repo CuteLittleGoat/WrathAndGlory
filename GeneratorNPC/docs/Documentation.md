@@ -176,7 +176,7 @@ Ustawienia globalne:
 - `.editable-textarea` — pole edycji tekstowej dla „Umiejętności” i „Słowa Kluczowe” (ciemne tło, resize w pionie, focus z `--glow`).
 - `.skills-key-cell` — układ flex dla etykiety edytowalnego pola tekstowego i przycisku **Edytuj/Zapisz**.
 - `.btn.btn-small` — kompaktowa wersja przycisku dla edycji w tabeli.
-- `.editable-text-button` — jaśniejszy wariant przycisku **Edytuj/Zapisz** dla edytowalnych pól tekstowych (`color: var(--code)`, `opacity: 0.9`).
+- `.editable-text-button` — jasny wariant przycisku **Edytuj/Zapisz** dla edytowalnych pól tekstowych (`border-color: var(--code)`, `color: var(--code)`, `opacity: 1`), zgodny z kolorem numerów stron w DataVault.
 - `.favorites-actions`, `.favorites-list`, `.favorite-item`, `.favorite-title`, `.favorite-subtitle`, `.favorite-actions` — layout i typografia listy ulubionych.
 
 ### 6.5. Tabele

@@ -1708,8 +1708,8 @@ const translations = {
         label.textContent = key;
         const button = document.createElement("button");
         button.type = "button";
-        // Dedykowana klasa rozjaśnia przycisk Edytuj/Zapisz tylko przy edytowalnych polach tekstowych.
-        // The dedicated class brightens the Edit/Save button only for editable text fields.
+        // Dedykowana klasa ustawia jasny tekst i obramowanie przycisku Edytuj/Zapisz tylko przy edytowalnych polach tekstowych.
+        // The dedicated class sets bright text and border for the Edit/Save button only in editable text fields.
         button.className = "btn secondary btn-small editable-text-button";
         const isEditing = state.bestiaryOverrides[config.editingKey];
         button.textContent = isEditing

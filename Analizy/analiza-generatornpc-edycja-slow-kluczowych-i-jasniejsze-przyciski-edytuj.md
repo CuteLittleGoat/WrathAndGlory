@@ -574,3 +574,127 @@ Lokalizacja: sekcja `Moduł — GeneratorNPC`, okolice linii 428
 Było: opis layoutu GeneratorNPC nie wskazywał jaśniejszego wariantu przycisków tekstowej edycji.
 
 Jest: opis layoutu wskazuje, że przyciski **Edytuj/Zapisz** przy „Umiejętnościach” i „Słowach Kluczowych” używają `var(--code)` / `#D2FAD2` z `opacity: 0.9`.
+
+## Aktualizacja analizy po doprecyzowaniu koloru przycisków — 2026-06-08
+
+### Oryginalny pełny prompt użytkownika
+
+```text
+Przeczytaj analizę: Analizy/analiza-generatornpc-edycja-slow-kluczowych-i-jasniejsze-przyciski-edytuj.md
+
+Ogólnie mechanizm edycji działa. Nic tu nie będziemy zmieniać.
+Trzeba tylko zmienić kolor obu przycisków "Edytuj".
+
+Obecnie są zielone. Jeżeli jest użyty jaśniejszy odcień to jest niewidoczny.
+Chce, żeby kolor obramowania przycisku oraz sam napis "Edytuj" był takim samym kolorem jak odnośniki do numerów stron w module DataVault (załączam screena z numerem 24).
+
+Po realizacji zaktualizuj analizę Analizy/analiza-generatornpc-edycja-slow-kluczowych-i-jasniejsze-przyciski-edytuj.md o ten prompt i nowe zmiany w kodzie.
+```
+
+Do promptu dołączono zrzuty ekranu pokazujące zielone przyciski **Edytuj** w wierszach **Słowa Kluczowe** i **Umiejętności** oraz referencyjny jasny kolor numeru strony `24` w module DataVault.
+
+### Zakres aktualizacji
+
+Mechanizm edycji tekstu nie został zmieniony. Aktualizacja dotyczy wyłącznie wyglądu przycisków **Edytuj/Zapisz** przypisanych do edytowalnych pól tekstowych **Umiejętności** i **Słowa Kluczowe** oraz dokumentacji opisującej aktualny wygląd.
+
+### Wnioski
+
+- Referencyjny kolor numerów stron w DataVault pochodzi z `var(--code)`, czyli `#D2FAD2`.
+- Dotychczasowa reguła `.editable-text-button` zmieniała tylko kolor tekstu i używała `opacity: 0.9`, więc obramowanie nadal pozostawało zielonkawe przez `.btn.secondary`, a rzeczywisty odcień tekstu nie był identyczny z numerami stron DataVault.
+- Aby spełnić wymaganie, zarówno `border-color`, jak i `color` przycisku muszą używać `var(--code)`, a sam przycisk powinien mieć pełną nieprzezroczystość.
+
+### Rekomendacje
+
+- Pozostawić zmianę ograniczoną do klasy `.editable-text-button`, żeby nie zmieniać wszystkich przycisków `.btn.secondary` w module.
+- Utrzymać ten sam wygląd także po przełączeniu etykiety z **Edytuj** na **Zapisz**, ponieważ jest to ten sam kontrolny przycisk w tym samym miejscu interfejsu.
+
+### Ryzyka
+
+- Jeżeli w przyszłości kolor numerów stron DataVault zostanie przeniesiony na inną zmienną niż `--code`, trzeba ponownie zsynchronizować opis i styl GeneratorNPC.
+- Zmiana zwiększa kontrast obramowania, więc przyciski edycji tekstu są bardziej widoczne niż pozostałe przyciski poboczne; jest to zgodne z aktualnym wymaganiem użytkownika.
+
+### Następne kroki
+
+- Po uruchomieniu modułu sprawdzić wizualnie oba przyciski **Edytuj** w podglądzie bazowym: przy **Umiejętnościach** i przy **Słowach Kluczowych**.
+- Sprawdzić, czy po wejściu w tryb edycji przycisk **Zapisz** zachowuje ten sam jasny kolor tekstu i obramowania.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: reguła `.editable-text-button`, okolice linii 163-169
+
+Było:
+
+```css
+.editable-text-button {
+  color: var(--code);
+  opacity: 0.9;
+}
+```
+
+Jest:
+
+```css
+.editable-text-button {
+  border-color: var(--code);
+  color: var(--code);
+  opacity: 1;
+}
+```
+
+Opis: przyciski **Edytuj/Zapisz** przy edytowalnych polach tekstowych mają teraz taki sam kolor obramowania i napisu jak numery stron w DataVault (`var(--code)` / `#D2FAD2`), bez przyciemniania przez opacity.
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: `createEditableTextRow(...)`, komentarz przed przypisaniem klasy `editable-text-button`, okolice linii 1711-1713
+
+Było:
+
+```js
+// Dedykowana klasa rozjaśnia przycisk Edytuj/Zapisz tylko przy edytowalnych polach tekstowych.
+// The dedicated class brightens the Edit/Save button only for editable text fields.
+```
+
+Jest:
+
+```js
+// Dedykowana klasa ustawia jasny tekst i obramowanie przycisku Edytuj/Zapisz tylko przy edytowalnych polach tekstowych.
+// The dedicated class sets bright text and border for the Edit/Save button only in editable text fields.
+```
+
+Opis: komentarz w kodzie opisuje aktualny zakres klasy `.editable-text-button`: jasny tekst i jasne obramowanie.
+
+### Plik: `GeneratorNPC/docs/README.md`
+
+Lokalizacja: sekcje „Najważniejsze przyciski” / “Most important buttons”
+
+Było: instrukcja wyjaśniała działanie przycisku **Edytuj**, ale nie wskazywała jego jasnego obramowania i jasnego napisu.
+
+Jest: instrukcja użytkownika w wersji polskiej i angielskiej opisuje, że przycisk **Edytuj** przy **Umiejętnościach** i **Słowach Kluczowych** ma jasny napis oraz jasne obramowanie zgodne z kolorem numerów stron w DataVault.
+
+### Plik: `GeneratorNPC/docs/Documentation.md`
+
+Lokalizacja: opis `.editable-text-button` w sekcji formularzy
+
+Było:
+
+```markdown
+- `.editable-text-button` — jaśniejszy wariant przycisku **Edytuj/Zapisz** dla edytowalnych pól tekstowych (`color: var(--code)`, `opacity: 0.9`).
+```
+
+Jest:
+
+```markdown
+- `.editable-text-button` — jasny wariant przycisku **Edytuj/Zapisz** dla edytowalnych pól tekstowych (`border-color: var(--code)`, `color: var(--code)`, `opacity: 1`), zgodny z kolorem numerów stron w DataVault.
+```
+
+Opis: dokumentacja techniczna wskazuje aktualne wartości stylu i powiązanie z kolorem numerów stron DataVault.
+
+### Plik: `DetaleLayout.md`
+
+Lokalizacja: sekcja `Moduł — GeneratorNPC`, podsekcja `Layout i elementy UI`
+
+Było: opis wskazywał tylko jaśniejszy tekst `var(--code)` z `opacity: 0.9`.
+
+Jest: opis wskazuje, że tekst i obramowanie przycisków **Edytuj/Zapisz** używają `var(--code)` / `#D2FAD2` z pełną nieprzezroczystością `opacity: 1`, czyli tego samego koloru co numery stron w DataVault.
