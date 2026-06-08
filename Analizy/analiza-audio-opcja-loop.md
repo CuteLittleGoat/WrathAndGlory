@@ -410,3 +410,163 @@ Rozbudowa modułu `Audio` o przycisk „Loop” jest technicznie prosta do wykon
 - istniejące czerwone zmienne kolorystyczne przez `--danger`.
 
 Najważniejsze jest, aby nie używać samego `audio.loop = true`, tylko po zdarzeniu `ended` uruchamiać kolejny wariant tak, jakby użytkownik ponownie nacisnął odtwarzanie. Dzięki temu funkcja spełni wymóg losowej kolejności dla kilku podpiętych dźwięków.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: style `.loop-btn` w sekcji CSS, okolice linii 362-368
+
+Było:
+
+```css
+.sample-card.is-playing .sample-trigger,
+.fav-item.is-playing .sample-trigger {
+  color: var(--danger);
+}
+```
+
+Jest:
+
+```css
+.sample-card.is-playing .sample-trigger,
+.fav-item.is-playing .sample-trigger {
+  color: var(--danger);
+}
+
+.loop-btn.is-looping,
+.loop-btn[aria-pressed="true"] {
+  background: rgba(255, 95, 95, 0.22);
+  border-color: var(--danger);
+  color: #ffd6d6;
+  box-shadow: 0 0 12px rgba(255, 95, 95, 0.35);
+}
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: obiekt `translations`, okolice linii 741-813
+
+Było:
+
+```js
+buttonPlay: "Odtwórz",
+buttonStop: "Zatrzymaj",
+```
+
+oraz:
+
+```js
+buttonPlay: "Play",
+buttonStop: "Stop",
+```
+
+Jest:
+
+```js
+buttonPlay: "Odtwórz",
+buttonStop: "Zatrzymaj",
+buttonLoop: "Loop",
+```
+
+oraz:
+
+```js
+buttonPlay: "Play",
+buttonStop: "Stop",
+buttonLoop: "Loop",
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: funkcje odtwarzania `pickRandomVariant`, `startPlayback`, `stopPlayback`, `togglePlayback`, `toggleLoop`, okolice linii 1204-1399
+
+Było:
+
+```js
+const pickRandomVariant = (item) => {
+  const index = Math.floor(Math.random() * item.variants.length);
+  return item.variants[index]?.fullUrl || "";
+};
+
+const startPlayback = (item, playbackRoot) => {
+  const fullUrl = pickRandomVariant(item);
+  const player = { audio, gainNode };
+  activePlayers.set(playbackRoot, player);
+  audio.addEventListener("ended", () => stopPlayback(playbackRoot));
+};
+```
+
+Jest:
+
+```js
+const pickRandomVariant = (item, previousUrl = "") => {
+  // przy wielu wariantach unika natychmiastowej powtórki, jeżeli dostępny jest inny URL
+};
+
+const startPlayback = (item, playbackRoot, options = {}) => {
+  const player = { item, audio, gainNode, loop: Boolean(options.loop), lastUrl: fullUrl };
+  activePlayers.set(playbackRoot, player);
+  audio.addEventListener("ended", () => {
+    const current = activePlayers.get(playbackRoot);
+    if (current?.audio !== audio) return;
+    if (current.loop) {
+      startPlayback(current.item, playbackRoot, { loop: true, previousUrl: current.lastUrl });
+      return;
+    }
+    stopPlayback(playbackRoot);
+  });
+};
+
+const toggleLoop = (itemId, playbackRoot) => {
+  // uruchamia pętlę, przełącza aktywne Play w Loop albo zatrzymuje aktywną pętlę
+};
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: funkcje renderujące i obsługa kliknięć, okolice linii 1582-1740 oraz 2072-2240
+
+Było:
+
+```html
+<button class="btn" data-action="play">Odtwórz</button>
+<input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+```
+
+oraz kliknięcia Play używały bezpośrednio przycisku jako `playbackRoot` w adminowych listach.
+
+Jest:
+
+```html
+<button class="btn" data-action="play">Odtwórz</button>
+<button class="btn loop-btn" data-action="loop" aria-pressed="false">Loop</button>
+<input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+<button class="btn loop-btn" data-action="loop" aria-pressed="false">Loop</button>
+```
+
+Renderowane karty i elementy list otrzymują `data-playback-root="true"`, a obsługa kliknięć kieruje Play i Loop do tego samego korzenia widoku, aby zwykłe odtwarzanie i pętla nie tworzyły dwóch równoległych odtworzeń tego samego widocznego elementu.
+
+### Plik: `Audio/docs/README.md`
+
+Lokalizacja: sekcje „Jak odtwarzać dźwięki”, „Co oznaczają elementy na kafelku dźwięku”, „Przyciski specjalne” oraz ich angielskie odpowiedniki, okolice linii 18-57 i 122-162
+
+Było: instrukcja opisywała kliknięcie nazwy dźwięku, zatrzymywanie ponownym kliknięciem i suwak głośności.
+
+Jest: instrukcja opisuje zwykłe odtwarzanie, przycisk **Loop**, czerwony stan aktywnej pętli, losowy wybór wariantów, wyłączanie pętli ponownym kliknięciem oraz wpływ suwaka głośności na kolejne iteracje.
+
+### Plik: `Audio/docs/Documentation.md`
+
+Lokalizacja: sekcje architektury, layoutu, CSS, renderowania i akcji użytkownika, okolice linii 9-13, 75-87, 127-132 oraz 198-219
+
+Było: dokumentacja techniczna opisywała wyłącznie zwykły przepływ Play/Stop i aktywny stan `.is-playing`.
+
+Jest: dokumentacja techniczna opisuje stan `loop`, `lastUrl`, funkcję `toggleLoop`, unikanie natychmiastowej powtórki wariantu, `aria-pressed`, czerwony styl `.loop-btn` oraz renderowanie Loop w widokach użytkownika i admina.
+
+### Plik: `DetaleLayout.md`
+
+Lokalizacja: sekcja „Moduł — Audio”, okolice linii 572-576
+
+Było: layout modułu Audio opisywał aktywny stan odtwarzania `.is-playing` i suwak `.volume-slider`.
+
+Jest: layout modułu Audio opisuje także przycisk `.loop-btn`, jego czerwony aktywny stan, `aria-pressed="true"`, obramowanie, kolor tekstu i cień.

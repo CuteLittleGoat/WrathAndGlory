@@ -359,6 +359,15 @@
       color: var(--danger);
     }
 
+    /* Czerwony stan aktywnej pętli jest powiązany z aria-pressed, aby wygląd i dostępność mówiły to samo. / The red active loop state is tied to aria-pressed so visuals and accessibility say the same thing. */
+    .loop-btn.is-looping,
+    .loop-btn[aria-pressed="true"] {
+      background: rgba(255, 95, 95, 0.22);
+      border-color: var(--danger);
+      color: #ffd6d6;
+      box-shadow: 0 0 12px rgba(255, 95, 95, 0.35);
+    }
+
     .sample-actions {
       display: flex;
       flex-direction: column;
@@ -732,6 +741,7 @@ const translations = {
           buttonClearAllAliases: "Wyczyść wszystkie aliasy",
           buttonPlay: "Odtwórz",
           buttonStop: "Zatrzymaj",
+          buttonLoop: "Loop",
           buttonAddToList: "Dodaj do listy",
           buttonRename: "Zmień nazwę",
           buttonRemove: "Usuń",
@@ -800,6 +810,7 @@ const translations = {
           buttonClearAllAliases: "Clear all aliases",
           buttonPlay: "Play",
           buttonStop: "Stop",
+          buttonLoop: "Loop",
           buttonAddToList: "Add to list",
           buttonRename: "Rename",
           buttonRemove: "Remove",
@@ -1190,12 +1201,24 @@ const translations = {
       tagFilterMenu.setAttribute("aria-hidden", "true");
     };
 
-    const pickRandomVariant = (item) => {
+    // --- Losowanie wariantu z ochroną przed natychmiastową powtórką w pętli / Variant picker with protection against immediate repeats in loop mode ---
+    const pickRandomVariant = (item, previousUrl = "") => {
       if (!item?.variants?.length) {
         return "";
       }
-      const index = Math.floor(Math.random() * item.variants.length);
-      return item.variants[index]?.fullUrl || "";
+      if (item.variants.length === 1) {
+        return item.variants[0]?.fullUrl || "";
+      }
+      let selectedUrl = "";
+      for (let attempt = 0; attempt < 8; attempt += 1) {
+        const index = Math.floor(Math.random() * item.variants.length);
+        selectedUrl = item.variants[index]?.fullUrl || "";
+        if (selectedUrl && selectedUrl !== previousUrl) {
+          return selectedUrl;
+        }
+      }
+      const fallback = item.variants.find((variant) => variant.fullUrl && variant.fullUrl !== previousUrl);
+      return fallback?.fullUrl || selectedUrl;
     };
 
     const getAudioContext = () => {
@@ -1224,14 +1247,36 @@ const translations = {
 
     const volumeToGain = (value) => (Math.max(-100, Math.min(100, value)) + 100) / 100;
 
+    // --- Aktualizacja przycisku Play/Stop niezależnie od tego, czy korzeniem jest przycisk, czy kafel. / Updates Play/Stop whether the root is a button or a card. ---
     const updatePlaybackLabel = (playbackRoot, isPlaying) => {
-      if (!playbackRoot || playbackRoot.tagName !== "BUTTON") {
+      if (!playbackRoot) {
         return;
       }
-      playbackRoot.dataset.playing = isPlaying ? "true" : "false";
-      playbackRoot.textContent = isPlaying
+      const playButton = playbackRoot.tagName === "BUTTON"
+        ? playbackRoot
+        : playbackRoot.querySelector("button[data-action=\"play\"], button[data-action=\"fav-play\"]");
+      if (!playButton) {
+        return;
+      }
+      playButton.dataset.playing = isPlaying ? "true" : "false";
+      playButton.textContent = isPlaying
         ? translations[currentLanguage].labels.buttonStop
         : translations[currentLanguage].labels.buttonPlay;
+    };
+
+    // --- Stan Loop jest wizualny i semantyczny: klasa daje czerwony kolor, aria-pressed opisuje przełącznik. / Loop state is visual and semantic: the class gives red color, aria-pressed describes the toggle. ---
+    const updateLoopButtonState = (playbackRoot, isLooping) => {
+      if (!playbackRoot) {
+        return;
+      }
+      const loopButton = playbackRoot.matches?.("button[data-action=\"loop\"], button[data-action=\"fav-loop\"]")
+        ? playbackRoot
+        : playbackRoot.querySelector("button[data-action=\"loop\"], button[data-action=\"fav-loop\"]");
+      if (!loopButton) {
+        return;
+      }
+      loopButton.classList.toggle("is-looping", isLooping);
+      loopButton.setAttribute("aria-pressed", isLooping ? "true" : "false");
     };
 
     const applyPlayerVolume = (player, value) => {
@@ -1249,20 +1294,30 @@ const translations = {
     const stopPlayback = (playbackRoot) => {
       const entry = activePlayers.get(playbackRoot);
       if (!entry) {
+        updatePlaybackLabel(playbackRoot, false);
+        updateLoopButtonState(playbackRoot, false);
+        playbackRoot?.classList.remove("is-playing");
         return;
       }
       entry.audio.pause();
       entry.audio.currentTime = 0;
       activePlayers.delete(playbackRoot);
       updatePlaybackLabel(playbackRoot, false);
+      updateLoopButtonState(playbackRoot, false);
       playbackRoot.classList.remove("is-playing");
     };
 
-    const startPlayback = (item, playbackRoot) => {
-      const fullUrl = pickRandomVariant(item);
+    // --- Start odtwarzania obsługuje zwykłe Play i Loop, a po zakończeniu pętli tworzy nowy element Audio. / Playback start supports normal Play and Loop, and creates a new Audio element after each loop iteration. ---
+    const startPlayback = (item, playbackRoot, options = {}) => {
+      const previous = activePlayers.get(playbackRoot);
+      const fullUrl = pickRandomVariant(item, options.previousUrl || previous?.lastUrl || "");
       if (!fullUrl) {
         alert(translations[currentLanguage].labels.alertMissingAudio);
         return;
+      }
+      if (previous?.audio && !previous.audio.ended) {
+        previous.audio.pause();
+        previous.audio.currentTime = 0;
       }
       const audio = new Audio(fullUrl);
       const context = getAudioContext();
@@ -1277,17 +1332,42 @@ const translations = {
         gainNode.connect(context.destination);
       }
       const volumeValue = getPlaybackVolumeValue(playbackRoot);
-      const player = { audio, gainNode };
+      const player = {
+        item,
+        audio,
+        gainNode,
+        loop: Boolean(options.loop),
+        lastUrl: fullUrl,
+      };
       applyPlayerVolume(player, volumeValue);
       activePlayers.set(playbackRoot, player);
       updatePlaybackLabel(playbackRoot, true);
+      updateLoopButtonState(playbackRoot, player.loop);
       playbackRoot.classList.add("is-playing");
-      audio.addEventListener("ended", () => stopPlayback(playbackRoot));
+      audio.addEventListener("ended", () => {
+        const current = activePlayers.get(playbackRoot);
+        if (current?.audio !== audio) {
+          return;
+        }
+        if (current.loop) {
+          startPlayback(current.item, playbackRoot, { loop: true, previousUrl: current.lastUrl });
+          return;
+        }
+        stopPlayback(playbackRoot);
+      });
       audio.addEventListener("error", () => {
+        const current = activePlayers.get(playbackRoot);
+        if (current?.audio !== audio) {
+          return;
+        }
         alert("Nie można odtworzyć dźwięku. Sprawdź link.");
         stopPlayback(playbackRoot);
       });
       audio.play().catch(() => {
+        const current = activePlayers.get(playbackRoot);
+        if (current?.audio !== audio) {
+          return;
+        }
         alert("Nie można odtworzyć dźwięku. Sprawdź link.");
         stopPlayback(playbackRoot);
       });
@@ -1303,6 +1383,26 @@ const translations = {
         return;
       }
       startPlayback(item, playbackRoot);
+    };
+
+    // --- Przycisk Loop uruchamia pętlę, przełącza trwające Play w tryb pętli albo zatrzymuje aktywną pętlę. / The Loop button starts a loop, converts current Play into loop mode, or stops an active loop. ---
+    const toggleLoop = (itemId, playbackRoot) => {
+      const item = state.itemsById.get(itemId);
+      if (!item || !playbackRoot) {
+        return;
+      }
+      const entry = activePlayers.get(playbackRoot);
+      if (entry?.loop) {
+        stopPlayback(playbackRoot);
+        return;
+      }
+      if (entry) {
+        entry.item = item;
+        entry.loop = true;
+        updateLoopButtonState(playbackRoot, true);
+        return;
+      }
+      startPlayback(item, playbackRoot, { loop: true });
     };
 
     const saveSettings = async () => {
@@ -1482,7 +1582,7 @@ const translations = {
       samplesGrid.innerHTML = visibleItems
         .map(
           (item) => `
-            <div class="sample-card" data-id="${item.id}">
+            <div class="sample-card" data-id="${item.id}" data-playback-root="true">
               <div class="sample-title">${formatSampleLabel(item)}</div>
               <div class="sample-meta">${item.tag2 || translations[currentLanguage].labels.missingTag2}</div>
               <div class="sample-meta">${item.filename || translations[currentLanguage].labels.missingFilename}</div>
@@ -1492,6 +1592,7 @@ const translations = {
                 </div>
                 <button class="btn" data-action="clear-alias">${translations[currentLanguage].labels.buttonClear}</button>
                 <button class="btn" data-action="play">${translations[currentLanguage].labels.buttonPlay}</button>
+                <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                 <select class="fav-select">
                   ${selectOptions}
                 </select>
@@ -1532,10 +1633,11 @@ const translations = {
                         .map((itemId, itemIndex) => {
                           const item = state.itemsById.get(itemId);
                           return `
-                            <div class="fav-item" data-item-id="${itemId}">
+                            <div class="fav-item" data-item-id="${itemId}" data-playback-root="true">
                               <div class="fav-item-title">${item ? formatSampleLabel(item) : translations[currentLanguage].labels.emptyMissingManifest}</div>
                               <div class="fav-item-actions">
                                 <button class="btn" data-action="fav-play">${translations[currentLanguage].labels.buttonPlay}</button>
+                                <button class="btn loop-btn" data-action="fav-loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                                 <button class="btn" data-action="fav-up" ${itemIndex === 0 ? "disabled" : ""}>▲</button>
                                 <button class="btn" data-action="fav-down" ${itemIndex === list.itemIds.length - 1 ? "disabled" : ""}>▼</button>
                                 <button class="btn btn-danger" data-action="fav-remove">${translations[currentLanguage].labels.buttonRemove}</button>
@@ -1572,6 +1674,7 @@ const translations = {
               <div class="sample-meta">${item?.filename || translations[currentLanguage].labels.missingFilename}</div>
               <div class="fav-item-actions">
                 <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+                <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                 <button class="btn" data-action="main-up" ${index === 0 ? "disabled" : ""}>▲</button>
                 <button class="btn" data-action="main-down" ${index === state.mainView.itemIds.length - 1 ? "disabled" : ""}>▼</button>
                 <button class="btn btn-danger" data-action="main-remove">${translations[currentLanguage].labels.buttonRemove}</button>
@@ -1599,6 +1702,7 @@ const translations = {
                     <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
                     <div class="sample-actions">
                       <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+                      <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                     </div>
                   </div>
                 `;
@@ -1631,6 +1735,7 @@ const translations = {
                   <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
                   <div class="sample-actions">
                     <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+                    <button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>
                   </div>
                 </div>
               `;
@@ -1969,7 +2074,10 @@ const translations = {
         return;
       }
       if (button.dataset.action === "play") {
-        togglePlayback(itemId, button);
+        togglePlayback(itemId, card);
+      }
+      if (button.dataset.action === "loop") {
+        toggleLoop(itemId, card);
       }
       if (button.dataset.action === "add-favorite") {
         const select = card.querySelector(".fav-select");
@@ -2021,7 +2129,12 @@ const translations = {
           break;
         case "fav-play":
           if (itemId) {
-            togglePlayback(itemId, button);
+            togglePlayback(itemId, itemEl);
+          }
+          break;
+        case "fav-loop":
+          if (itemId) {
+            toggleLoop(itemId, itemEl);
           }
           break;
         case "fav-up":
@@ -2064,6 +2177,9 @@ const translations = {
       }
       const itemId = itemEl.dataset.itemId;
       switch (button.dataset.action) {
+        case "loop":
+          toggleLoop(itemId, itemEl);
+          break;
         case "main-up":
           moveMainViewItem(itemId, -1);
           break;
@@ -2079,6 +2195,14 @@ const translations = {
     });
 
     userMainView.addEventListener("click", (event) => {
+      const loopButton = event.target.closest("button[data-action=\"loop\"]");
+      if (loopButton && userMainView.contains(loopButton)) {
+        const card = loopButton.closest("[data-playback-root]");
+        if (card) {
+          toggleLoop(card.dataset.id, card);
+        }
+        return;
+      }
       const trigger = event.target.closest(".sample-trigger");
       if (!trigger || !userMainView.contains(trigger)) {
         return;
@@ -2106,6 +2230,14 @@ const translations = {
     };
 
     userFavoritesView.addEventListener("click", (event) => {
+      const loopButton = event.target.closest("button[data-action=\"loop\"]");
+      if (loopButton && userFavoritesView.contains(loopButton)) {
+        const card = loopButton.closest("[data-playback-root]");
+        if (card) {
+          toggleLoop(card.dataset.id, card);
+        }
+        return;
+      }
       const trigger = event.target.closest(".sample-trigger");
       if (!trigger || !userFavoritesView.contains(trigger)) {
         return;

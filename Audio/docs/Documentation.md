@@ -9,7 +9,7 @@
 - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
 - **Ustawienia:** ulubione, „Główny widok” oraz aliasy SFX są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
 - **Synchronizacja aliasów:** mapa `aliases` jest synchronizowana do obiektów SFX po wczytaniu manifestu i po każdej aktualizacji z Firestore/lokalnego zapisu, aby alias był widoczny w obu trybach.
-- **Odtwarzanie:** kliknięcie nazwy SFX lub taga (druga linia pod nazwą) uruchamia/wyłącza dźwięk dla danej karty; równoległe odtwarzanie wielu SFX jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%).
+- **Odtwarzanie:** kliknięcie nazwy SFX lub taga (druga linia pod nazwą) uruchamia/wyłącza pojedyncze odtworzenie dla danej karty; równoległe odtwarzanie wielu SFX jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%). Przycisk **Loop** działa jako przełącznik pętli dla konkretnego widocznego elementu: uruchamia dźwięk od razu, po zdarzeniu `ended` startuje kolejny losowy wariant i zatrzymuje całość po ponownym kliknięciu.
 
 ## 2. Struktura repozytorium (pliki i katalogi)
 - `Audio/index.html` — główny panel (HTML + CSS + JS).
@@ -75,14 +75,14 @@ window.firebaseConfig = {
   5. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
      - Lewy panel: lista SFX (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
        - Każda karta SFX pokazuje: nazwę SFX (z aliasem w nawiasie, jeśli ustawiono), `tag2` (drugi poziom folderu) oraz nazwę pliku.
-       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)**, a **bezpośrednio pod nim** przycisk **Wyczyść** (powyżej **Odtwórz**), który usuwa alias dla danego SFX.
+       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)**, a **bezpośrednio pod nim** przycisk **Wyczyść** (powyżej **Odtwórz** i **Loop**), który usuwa alias dla danego SFX.
      - Prawa kolumna `.side-stack`:
        - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
        - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
   6. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
      - układ `.user-layout` w dwóch kolumnach,
      - lewy panel z przełącznikiem języka `#languageSelectUser` (tylko w trybie user) oraz kontenerami `#userMainView` i `#userFavoritesView`,
-     - każda karta w widoku użytkownika pokazuje nazwę SFX i `tag2` (bez nazwy pliku) oraz suwak głośności,
+     - każda karta w widoku użytkownika pokazuje nazwę SFX i `tag2` (bez nazwy pliku), suwak głośności oraz przycisk **Loop**,
      - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
      - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
 
@@ -127,6 +127,7 @@ window.firebaseConfig = {
 - Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
 - `.sample-trigger`: elementy klikalne (nazwa SFX oraz tag), `cursor: pointer` i łagodne przejście koloru.
 - `.sample-card.is-playing .sample-trigger` oraz `.fav-item.is-playing .sample-trigger`: aktywne odtwarzanie podświetla nazwę i tag na `--danger`.
+- `.loop-btn.is-looping` oraz `.loop-btn[aria-pressed="true"]`: aktywny przycisk pętli używa czerwonego tła `rgba(255, 95, 95, 0.22)`, obramowania `--danger`, tekstu `#ffd6d6` i cienia `0 0 12px rgba(255, 95, 95, 0.35)`.
 - `.volume-slider`: suwak głośności (`input[type="range"]`) o szerokości 100% i `accent-color: --accent`.
 - `.user-view`: kolumna usera, `display: flex`, `flex-direction: column`, `gap: 16px`.
 - `.user-layout`: siatka 2-kolumnowa (`minmax(0, 1.7fr)` + `minmax(240px, 0.7fr)`).
@@ -196,24 +197,26 @@ window.firebaseConfig = {
 
 ### 8.4. Renderowanie
 - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
-- `renderSamples()` — rysuje siatkę SFX (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę SFX **oraz** aktywne tagi.
+- `renderSamples()` — rysuje siatkę SFX (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania, przyciskami **Odtwórz**/**Loop** oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę SFX **oraz** aktywne tagi.
 - Klik przycisku `#clearAllAliases` wywołuje `clearAllAliases()`, które po potwierdzeniu czyści aliasy globalnie (bez ograniczenia do aktualnie wyrenderowanych kart), ale tylko w module Audio.
-- `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
-- `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
-- `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.
-- `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag + suwak głośności) dla aktualnie wybranej listy w obu trybach.
+- `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move) oraz przyciskami **Odtwórz**/**Loop** przy każdym elemencie.
+- `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + Loop + reorder + remove).
+- `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag, suwak głośności oraz Loop) zarówno w trybie użytkownika, jak i w podglądzie admina.
+- `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag, suwak głośności oraz Loop) dla aktualnie wybranej listy w obu trybach.
 - `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
 - `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu, w tym widoczność panelu tagów.
 - `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
 
 ### 8.5. Akcje użytkownika
-- `pickRandomVariant(item)` — losuje plik z `variants` dla zgrupowanych SFX.
+- `pickRandomVariant(item, previousUrl = "")` — losuje plik z `variants` dla zgrupowanych SFX; przy wielu wariantach i podanym `previousUrl` próbuje uniknąć natychmiastowego powtórzenia tego samego adresu.
 - `getAudioContext()` — inicjalizuje `AudioContext` (jeśli dostępny), aby obsłużyć wzmocnienie głośności powyżej 100%.
 - `volumeToGain(value)` — mapuje zakres `-100..100` na gain `0..2`.
-- `startPlayback(item, playbackRoot)` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`.
-- `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing` i resetuje etykietę (jeśli to przycisk).
-- `togglePlayback(itemId, playbackRoot)` — przełącza odtwarzanie/stop dla wskazanego elementu sterującego.
-- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego SFX po zmianie suwaka.
+- `startPlayback(item, playbackRoot, options = {})` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`, zapisuje w `activePlayers` pola `item`, `audio`, `gainNode`, `loop` i `lastUrl`; jeśli `options.loop` jest aktywne, obsługa `ended` uruchamia kolejną iterację zamiast kończyć odtwarzanie.
+- `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing`, resetuje etykietę Play/Stop i wyłącza wizualny stan Loop.
+- `togglePlayback(itemId, playbackRoot)` — przełącza zwykłe odtwarzanie/stop dla wskazanego elementu sterującego.
+- `toggleLoop(itemId, playbackRoot)` — uruchamia pętlę, zamienia trwające zwykłe odtwarzanie w pętlę bez restartu albo zatrzymuje aktywną pętlę po kolejnym kliknięciu.
+- `updateLoopButtonState(playbackRoot, isLooping)` — synchronizuje klasę `.is-looping` i atrybut `aria-pressed`, dzięki czemu czerwony stan przycisku jest spójny z semantyką przełącznika.
+- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego SFX po zmianie suwaka; kolejne iteracje Loop tworzą nowy `GainNode`, ale odczytują aktualną wartość suwaka z tego samego `playbackRoot`.
 - Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę SFX.
 - Pole `#tagSearchInput` otwiera popup filtra listowego, a wyszukiwanie odbywa się w okienku `#tagMenuSearchInput`.
 - Kliknięcie `#toggleTagPanel` ukrywa lub odsłania cały panel checkboxów tagów bez resetowania stanu zaznaczeń.
@@ -297,7 +300,7 @@ window.firebaseConfig = {
 2. Nadpisanie aliasów z zapisanych ustawień (`aliases`) po `itemId`.
 3. Render widoku admina i widoku użytkownika z tego samego źródła stanu.
 4. Operacje na listach (`favorites`, `mainView`) z zachowaniem kolejności ręcznej.
-5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100%.
+5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100% oraz przełącznik Loop losujący kolejne warianty po zakończeniu pliku.
 6. Zapis zmian do Firestore (`audio/favorites`) lub fallback do `localStorage` (`audio.settings`).
 7. Przełączanie języka równolegle aktualizuje etykiety obu widoków (admin + user preview).
 

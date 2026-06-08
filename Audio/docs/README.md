@@ -18,15 +18,20 @@ Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma 
 
 ### Jak odtwarzać dźwięki (widok użytkownika)
 1. W panelu nawigacji kliknij **Widok główny** albo wybraną listę ulubionych.
-2. Kliknij nazwę dźwięku, aby go uruchomić.
-3. Kliknij ponownie, aby zatrzymać.
-4. Możesz uruchomić kilka dźwięków równocześnie.
-5. Suwakiem na kafelku ustaw głośność konkretnego dźwięku.
+2. Kliknij nazwę dźwięku, aby uruchomić pojedyncze odtworzenie.
+3. Kliknij nazwę ponownie, aby zatrzymać aktualne odtworzenie.
+4. Kliknij **Loop**, aby od razu uruchomić dźwięk w pętli.
+5. Gdy **Loop** jest aktywny, przycisk jest czerwony. Po zakończeniu pliku moduł automatycznie uruchamia następne odtworzenie tego samego dźwięku.
+6. Jeżeli dźwięk ma kilka podpiętych plików, kolejne odtworzenia w pętli są wybierane losowo, a aplikacja unika natychmiastowego powtórzenia tego samego pliku, gdy ma inną możliwość.
+7. Kliknij czerwony **Loop** ponownie, aby wyłączyć pętlę i zatrzymać aktualny dźwięk.
+8. Możesz uruchomić kilka dźwięków równocześnie.
+9. Suwakiem na kafelku ustaw głośność konkretnego dźwięku; aktywna pętla używa bieżącej wartości suwaka także przy kolejnych odtworzeniach.
 
 ### Co oznaczają elementy na kafelku dźwięku
 - **Nazwa dźwięku** – główny przycisk odtwarzania.
 - **Tag pod nazwą** – informacja, z jakiej grupy/folderu pochodzi dźwięk.
 - **Alias w nawiasie** (jeśli ustawiony) – dodatkowa pomocnicza nazwa.
+- **Loop** – przełącznik pętli. Zwykły zielony stan oznacza, że pętla jest wyłączona, a czerwony stan oznacza aktywne zapętlenie.
 - **Suwak głośności** – indywidualna głośność tego dźwięku.
 
 ### Jak korzystać z panelu administratora (`?admin=1`)
@@ -44,12 +49,14 @@ Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma 
 ### Przyciski specjalne
 - **Wyczyść wszystkie aliasy** – usuwa wszystkie aliasy dźwięków jednocześnie (po potwierdzeniu).
 - **Odtwórz / Zatrzymaj** – szybki odsłuch pojedynczego dźwięku z panelu admina.
+- **Loop** – uruchamia dźwięk w pętli; czerwony przycisk oznacza, że pętla działa, a ponowne kliknięcie ją zatrzymuje.
 - **Wyczyść** (przy polu aliasu) – usuwa alias tylko dla jednego dźwięku.
 
 ### Dobre praktyki podczas sesji
 - Przed sesją przygotuj 1 listę „główną” i 2–3 listy tematyczne.
 - Nadawaj aliasy dźwiękom trudnym do rozpoznania po samej nazwie.
 - Ustaw głośność każdego kluczowego dźwięku wcześniej, żeby nie poprawiać tego w trakcie sceny.
+- Długie tła ambientowe uruchamiaj przyciskiem **Loop**, a krótkie efekty jednorazowe kliknięciem nazwy albo przyciskiem **Odtwórz** w panelu admina.
 
 ---
 
@@ -115,15 +122,20 @@ The language switcher is currently hidden in the user interface. The module cont
 
 ### How to play sounds (user view)
 1. In navigation, click **Main view** or a selected favorites list.
-2. Click a sound name to start it.
-3. Click again to stop it.
-4. Multiple sounds can play at the same time.
-5. Use the tile slider to adjust volume for that sound.
+2. Click a sound name to start one playback.
+3. Click the sound name again to stop the current playback.
+4. Click **Loop** to start the sound in loop mode immediately.
+5. When **Loop** is active, the button is red. After the file ends, the module automatically starts the next playback of the same sound.
+6. If the sound has several connected files, loop playback chooses later files randomly and avoids repeating the same file immediately when another option exists.
+7. Click the red **Loop** again to turn loop mode off and stop the current sound.
+8. Multiple sounds can play at the same time.
+9. Use the tile slider to adjust volume for that sound; an active loop uses the current slider value for later iterations too.
 
 ### What each sound tile element means
 - **Sound name** – main play/stop button.
 - **Tag below name** – source group/folder hint.
 - **Alias in parentheses** (if set) – extra custom label.
+- **Loop** – loop switch. The normal green state means loop mode is off, and the red state means looping is active.
 - **Volume slider** – per-sound volume control.
 
 ### How to use admin mode (`?admin=1`)
@@ -141,12 +153,14 @@ The language switcher is currently hidden in the user interface. The module cont
 ### Special buttons
 - **Wyczyść wszystkie aliasy** – removes all aliases at once (with confirmation).
 - **Odtwórz / Zatrzymaj** – quick preview from admin panel.
+- **Loop** – starts looping; a red button means the loop is active, and clicking it again stops the loop.
 - **Wyczyść** (next to alias field) – clears alias for one sound.
 
 ### Session best practices
 - Prepare 1 main list and 2–3 scene-based lists before play.
 - Use aliases for sounds with unclear names.
 - Pre-check key sound volumes before the session starts.
+- Use **Loop** for long ambient backgrounds and use the sound name or admin **Odtwórz** button for short one-shot effects.
 
 ### Firebase integration — required for shared lists
 To share favorites and settings across multiple devices/users, **Audio** requires Firebase (Firestore). Without it, settings work only locally on one device.
