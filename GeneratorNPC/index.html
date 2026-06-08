@@ -848,6 +848,8 @@ const translations = {
           numeric: new Map(),
           skills: null,
           skillsEditing: false,
+          keywords: null,
+          keywordsEditing: false,
         },
         bestiary: [],
         armor: [],
@@ -909,6 +911,11 @@ const translations = {
         "Szybkość",
       ];
       const EDITABLE_SKILLS_KEY = normalizeKey("Umiejętności");
+      // Słowa kluczowe korzystają z tego samego trybu edycji tekstu co umiejętności,
+      // ale po zapisie wracają przez formatter kolumny, aby zachować czerwony tekst i neutralne przecinki.
+      // Keywords use the same text editing mode as skills, but after saving they go back through the
+      // column formatter to preserve red text and neutral commas.
+      const EDITABLE_KEYWORDS_KEY = normalizeKey("Słowa Kluczowe");
       const EDITABLE_RESISTANCE_KEYS = new Set(
         ["Odporność (w tym WP)", "Obrona (w tym WP)"].map((label) => normalizeKey(label))
       );
@@ -927,12 +934,15 @@ const translations = {
       const serializeBestiaryOverrides = (overrides) => ({
         numeric: Object.fromEntries(overrides.numeric),
         skills: overrides.skills ?? null,
+        keywords: overrides.keywords ?? null,
       });
 
       const deserializeBestiaryOverrides = (payload) => ({
         numeric: new Map(Object.entries(payload?.numeric || {})),
         skills: payload?.skills ?? null,
         skillsEditing: false,
+        keywords: payload?.keywords ?? null,
+        keywordsEditing: false,
       });
 
       const escapeHtml = (value) =>
@@ -1183,6 +1193,8 @@ const translations = {
         state.bestiaryOverrides.numeric.clear();
         state.bestiaryOverrides.skills = null;
         state.bestiaryOverrides.skillsEditing = false;
+        state.bestiaryOverrides.keywords = null;
+        state.bestiaryOverrides.keywordsEditing = false;
       };
 
       const extractRecords = (section) => {
@@ -1683,7 +1695,12 @@ const translations = {
         return cell;
       };
 
-      const createSkillsRow = (record, key, valueString) => {
+      const EDITABLE_TEXT_FIELDS = {
+        [EDITABLE_SKILLS_KEY]: { valueKey: "skills", editingKey: "skillsEditing" },
+        [EDITABLE_KEYWORDS_KEY]: { valueKey: "keywords", editingKey: "keywordsEditing" },
+      };
+
+      const createEditableTextRow = (record, key, valueString, config) => {
         const row = document.createElement("tr");
         const keyCell = document.createElement("td");
         keyCell.classList.add("skills-key-cell");
@@ -1691,8 +1708,10 @@ const translations = {
         label.textContent = key;
         const button = document.createElement("button");
         button.type = "button";
-        button.className = "btn secondary btn-small";
-        const isEditing = state.bestiaryOverrides.skillsEditing;
+        // Dedykowana klasa rozjaśnia przycisk Edytuj/Zapisz tylko przy edytowalnych polach tekstowych.
+        // The dedicated class brightens the Edit/Save button only for editable text fields.
+        button.className = "btn secondary btn-small editable-text-button";
+        const isEditing = state.bestiaryOverrides[config.editingKey];
         button.textContent = isEditing
           ? translations[currentLanguage].messages.save
           : translations[currentLanguage].messages.edit;
@@ -1703,20 +1722,24 @@ const translations = {
           const valueCell = document.createElement("td");
           const textarea = document.createElement("textarea");
           textarea.className = "editable-textarea";
-          const currentValue = state.bestiaryOverrides.skills ?? valueString;
+          const currentValue = state.bestiaryOverrides[config.valueKey] ?? valueString;
           textarea.value = currentValue === "—" ? "" : currentValue;
           valueCell.append(textarea);
           row.append(valueCell);
           button.addEventListener("click", () => {
-            state.bestiaryOverrides.skills = textarea.value;
-            state.bestiaryOverrides.skillsEditing = false;
+            state.bestiaryOverrides[config.valueKey] = textarea.value;
+            state.bestiaryOverrides[config.editingKey] = false;
             renderBestiaryTable(record);
           });
         } else {
-          const displayValue = state.bestiaryOverrides.skills ?? valueString;
+          const displayValue = state.bestiaryOverrides[config.valueKey] ?? valueString;
+          // Podgląd po zapisie nadal używa createClampCell, więc „Słowa Kluczowe” przechodzą przez
+          // getFormattedCellHTML i zachowują czerwone słowa oraz neutralne przecinki.
+          // The saved preview still uses createClampCell, so “Keywords” pass through getFormattedCellHTML
+          // and keep red words plus neutral commas.
           row.append(createClampCell("Bestiariusz", key, key, displayValue));
           button.addEventListener("click", () => {
-            state.bestiaryOverrides.skillsEditing = true;
+            state.bestiaryOverrides[config.editingKey] = true;
             renderBestiaryTable(record);
           });
         }
@@ -1768,8 +1791,10 @@ const translations = {
           }
           const valueString = toDisplayString(value);
           const normalizedKey = normalizeKey(key);
-          if (normalizedKey === EDITABLE_SKILLS_KEY) {
-            bestiaryTableBody.append(createSkillsRow(record, key, valueString));
+          if (EDITABLE_TEXT_FIELDS[normalizedKey]) {
+            bestiaryTableBody.append(
+              createEditableTextRow(record, key, valueString, EDITABLE_TEXT_FIELDS[normalizedKey])
+            );
             return;
           }
           const row = document.createElement("tr");
@@ -2491,7 +2516,9 @@ const translations = {
         const cardLabels = t.card;
         const sectionLabels = t.cardSections;
         const name = toDisplayString(getRecordValue(record, "Nazwa"));
-        const keywords = toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
+        const keywordsOverride = bestiaryOverrides?.keywords;
+        const keywords =
+          keywordsOverride != null ? keywordsOverride : toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
         const threatRaw = toDisplayString(getRecordValue(record, "Zagrożenie"));
         // Tworzymy dynamiczną listę numerów poziomu 1..CARD_LEVEL_COLUMNS / Build a dynamic level index list from 1 to CARD_LEVEL_COLUMNS
         const levelColumns = Array.from({ length: CARD_LEVEL_COLUMNS }, (_, index) => index + 1);

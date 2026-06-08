@@ -12,7 +12,7 @@
 ### Tworzenie NPC krok po kroku
 1. W sekcji **Wybór bazowy** wybierz rekord z listy **Bestiariusz · Nazwa**.
 2. (Opcjonalnie) dopisz własne notatki w polu **Uwagi do rekordu**.
-3. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość).
+3. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość). Przy wierszach **Umiejętności** i **Słowa Kluczowe** użyj przycisku **Edytuj**, aby przejść do pola tekstowego, a potem kliknij **Zapisz**.
 4. W sekcji **Moduły aktywne** zaznacz, które bloki mają być pokazane na finalnej karcie (np. Broń, Talenty, Psionika).
 5. W aktywnych modułach wybierz konkretne elementy z list.
 6. Kliknij **Generuj kartę**.
@@ -35,7 +35,8 @@
 ### Najważniejsze przyciski
 - **Generuj kartę** – tworzy końcowy widok NPC.
 - **Reset** – czyści wybory i wraca do wartości początkowych.
-- **Edytuj** (przy umiejętnościach) – pozwala ręcznie dopisać/zmienić opis.
+- **Edytuj** (przy **Umiejętnościach** i **Słowach Kluczowych**) – przełącza wybrane pole tekstowe w tryb pisania.
+- **Zapisz** (w tym samym miejscu) – zapisuje wpisany tekst i ponownie pokazuje zwykły podgląd. W podglądzie **Słowa Kluczowe** pozostają czerwone, a przecinki mają zwykły zielony kolor. Na wygenerowanej karcie drukowanej słowa kluczowe są czarno-białe.
 
 ### Dobre praktyki
 - Najpierw wybierz bazę, potem dopiero modyfikuj liczby.
@@ -100,7 +101,7 @@ The language switcher is intentionally hidden; the place to enable it is marked 
 ### Build an NPC step by step
 1. In **Base selection**, choose an entry from **Bestiary · Name**.
 2. (Optional) add custom notes in **Record notes**.
-3. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed).
+3. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed). For **Skills** and **Keywords**, click **Edit** to open a text field, then click **Save**.
 4. In **Active modules**, enable blocks that should appear on final card (e.g., Weapons, Talents, Psionics).
 5. In active blocks, select specific items.
 6. Click **Generate card**.
@@ -123,7 +124,8 @@ The language switcher is intentionally hidden; the place to enable it is marked 
 ### Main buttons
 - **Generate card** – creates final NPC card.
 - **Reset** – clears setup back to defaults.
-- **Edit** (next to skills) – allows manual text updates.
+- **Edit** (next to **Skills** and **Keywords**) – switches the selected text field into typing mode.
+- **Save** (in the same place) – stores the typed text and returns to the normal preview. In the preview, **Keywords** stay red while commas keep the regular green color. On the generated printable card, keywords are black and white.
 
 ### Best practices
 - Choose base profile first, then edit numbers.

@@ -160,6 +160,13 @@ a.link:hover {
   letter-spacing: 0.12em;
 }
 
+/* Rozjaśniony tekst przycisków Edytuj/Zapisz w edytowalnych polach tekstowych podglądu bazowego.
+   Brightened text for Edit/Save buttons in editable text fields of the base preview. */
+.editable-text-button {
+  color: var(--code);
+  opacity: 0.9;
+}
+
 .layout {
   display: grid;
   grid-template-columns: 360px 1fr;

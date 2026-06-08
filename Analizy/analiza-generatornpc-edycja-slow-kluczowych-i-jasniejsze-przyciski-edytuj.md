@@ -368,3 +368,209 @@ Najbezpieczniejsza implementacja to uogólnienie istniejącego mechanizmu `creat
 3. Uzupełnić niniejszą analizę o sekcję `## Zmiany wykonane w kodzie`.
 4. Wykonać testy ręczne UI, testy ulubionych oraz test wygenerowanej karty.
 5. Wykonać zrzut ekranu gotowej zmiany.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: `state.bestiaryOverrides`, linie 847-852
+
+Było:
+
+```js
+bestiaryOverrides: {
+  numeric: new Map(),
+  skills: null,
+  skillsEditing: false,
+},
+```
+
+Jest:
+
+```js
+bestiaryOverrides: {
+  numeric: new Map(),
+  skills: null,
+  skillsEditing: false,
+  keywords: null,
+  keywordsEditing: false,
+},
+```
+
+Opis: stan nadpisań przechowuje teraz osobną wartość i tryb edycji dla pola „Słowa Kluczowe”.
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: stałe edytowalnych kluczy i serializacja nadpisań, okolice linii 913-945
+
+Było:
+
+```js
+const EDITABLE_SKILLS_KEY = normalizeKey("Umiejętności");
+
+const serializeBestiaryOverrides = (overrides) => ({
+  numeric: Object.fromEntries(overrides.numeric),
+  skills: overrides.skills ?? null,
+});
+```
+
+Jest:
+
+```js
+const EDITABLE_SKILLS_KEY = normalizeKey("Umiejętności");
+const EDITABLE_KEYWORDS_KEY = normalizeKey("Słowa Kluczowe");
+
+const serializeBestiaryOverrides = (overrides) => ({
+  numeric: Object.fromEntries(overrides.numeric),
+  skills: overrides.skills ?? null,
+  keywords: overrides.keywords ?? null,
+});
+```
+
+Opis: dodano rozpoznawanie edytowalnych słów kluczowych oraz zapis i odczyt pola `keywords` w ulubionych. Deserializacja ustawia `keywordsEditing` na `false`, żeby zapisane ulubione nie otwierały się od razu w trybie edycji.
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: `resetBestiaryOverrides()`, linie 1192-1198
+
+Było:
+
+```js
+state.bestiaryOverrides.numeric.clear();
+state.bestiaryOverrides.skills = null;
+state.bestiaryOverrides.skillsEditing = false;
+```
+
+Jest:
+
+```js
+state.bestiaryOverrides.numeric.clear();
+state.bestiaryOverrides.skills = null;
+state.bestiaryOverrides.skillsEditing = false;
+state.bestiaryOverrides.keywords = null;
+state.bestiaryOverrides.keywordsEditing = false;
+```
+
+Opis: reset wyboru rekordu lub strony czyści teraz także nadpisane słowa kluczowe.
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: renderer edytowalnych pól tekstowych, okolice linii 1698-1749
+
+Było:
+
+```js
+const createSkillsRow = (record, key, valueString) => {
+  // renderer obsługiwał tylko pole „Umiejętności”
+};
+```
+
+Jest:
+
+```js
+const EDITABLE_TEXT_FIELDS = {
+  [EDITABLE_SKILLS_KEY]: { valueKey: "skills", editingKey: "skillsEditing" },
+  [EDITABLE_KEYWORDS_KEY]: { valueKey: "keywords", editingKey: "keywordsEditing" },
+};
+
+const createEditableTextRow = (record, key, valueString, config) => {
+  // wspólny renderer dla „Umiejętności” i „Słowa Kluczowe”
+};
+```
+
+Opis: renderer jest wspólny dla obu pól tekstowych, używa przycisku z klasą `editable-text-button` i po zapisie nadal renderuje podgląd przez `createClampCell(...)`, dzięki czemu pole „Słowa Kluczowe” zachowuje czerwony tekst i neutralne przecinki.
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: `renderBestiaryTable(record)`, okolice linii 1791-1795
+
+Było:
+
+```js
+if (normalizedKey === EDITABLE_SKILLS_KEY) {
+  bestiaryTableBody.append(createSkillsRow(record, key, valueString));
+  return;
+}
+```
+
+Jest:
+
+```js
+if (EDITABLE_TEXT_FIELDS[normalizedKey]) {
+  bestiaryTableBody.append(
+    createEditableTextRow(record, key, valueString, EDITABLE_TEXT_FIELDS[normalizedKey])
+  );
+  return;
+}
+```
+
+Opis: tabela bestiariusza rozpoznaje teraz każdy klucz opisany w `EDITABLE_TEXT_FIELDS`, a nie tylko „Umiejętności”.
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: `buildPrintableCardHTML(...)`, okolice linii 2519-2521
+
+Było:
+
+```js
+const keywords = toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
+```
+
+Jest:
+
+```js
+const keywordsOverride = bestiaryOverrides?.keywords;
+const keywords =
+  keywordsOverride != null ? keywordsOverride : toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
+```
+
+Opis: wygenerowana karta korzysta z ręcznie nadpisanych słów kluczowych, ale nadal renderuje je ścieżką czarno-białej karty.
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: okolice linii 161-166
+
+Było:
+
+```css
+.btn.btn-small {
+  padding: 6px 10px;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+```
+
+Jest:
+
+```css
+.editable-text-button {
+  color: var(--code);
+  opacity: 0.9;
+}
+```
+
+Opis: dodano dedykowaną klasę jaśniejszego tekstu dla przycisków **Edytuj/Zapisz** przy polach „Umiejętności” i „Słowa Kluczowe”, bez globalnej zmiany wszystkich przycisków pobocznych.
+
+### Plik: `GeneratorNPC/docs/README.md`
+
+Lokalizacja: okolice linii 15 oraz 38-39
+
+Było: instrukcja użytkownika opisywała przycisk **Edytuj** tylko przy umiejętnościach.
+
+Jest: instrukcja wyjaśnia obsługę **Edytuj/Zapisz** przy „Umiejętnościach” i „Słowach Kluczowych”, a także różnicę między kolorowym podglądem słów kluczowych i czarno-białą kartą drukowaną.
+
+### Plik: `GeneratorNPC/docs/Documentation.md`
+
+Lokalizacja: sekcje o podglądzie bazowym, stylach, stanie, rendererach i karcie do druku, okolice linii 102, 176-179, 258-266, 343-346, 379 oraz 406
+
+Było: dokumentacja techniczna opisywała edycję tekstową wyłącznie dla „Umiejętności”.
+
+Jest: dokumentacja opisuje `EDITABLE_KEYWORDS_KEY`, pola `keywords`/`keywordsEditing`, wspólny renderer `createEditableTextRow(...)`, klasę `.editable-text-button`, serializację/reset nadpisania oraz użycie nadpisanych słów kluczowych na karcie.
+
+### Plik: `DetaleLayout.md`
+
+Lokalizacja: sekcja `Moduł — GeneratorNPC`, okolice linii 428
+
+Było: opis layoutu GeneratorNPC nie wskazywał jaśniejszego wariantu przycisków tekstowej edycji.
+
+Jest: opis layoutu wskazuje, że przyciski **Edytuj/Zapisz** przy „Umiejętnościach” i „Słowach Kluczowych” używają `var(--code)` / `#D2FAD2` z `opacity: 0.9`.
