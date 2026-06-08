@@ -572,6 +572,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Karty sampli w widoku użytkownika i w panelu „Główny widok” admina:
   - nazwa i tag mają klasę `.sample-trigger` (kursor `pointer`),
   - aktywne odtwarzanie dodaje `.is-playing`, co barwi `.sample-trigger` na `--danger`,
+  - przycisk `.loop-btn` znajduje się w obszarze akcji kafla/listy; aktywny stan pętli ma klasę `.is-looping` i `aria-pressed="true"`, czerwone tło `rgba(255, 95, 95, 0.22)`, obramowanie `--danger`, tekst `#ffd6d6` oraz cień `0 0 12px rgba(255, 95, 95, 0.35)`,
   - suwak głośności to `.volume-slider` (`width: 100%`, `accent-color: --accent`).
 
 ### 4) Zwijanie/rozwijanie > 9 linii
