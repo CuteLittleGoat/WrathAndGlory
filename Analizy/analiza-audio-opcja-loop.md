@@ -196,12 +196,9 @@ Ważne: przed startem kolejnej iteracji trzeba usunąć albo zastąpić stary ob
 
 ### 4. Aktualizacja UI
 
-Należy dodać przycisk `Loop` do każdego miejsca, z którego użytkownik ma korzystać z pętli. Są dwie możliwe interpretacje:
+Przycisk `Loop` ma być dostępny tylko w prawdziwym widoku użytkownika uruchomionym bez parametru `?admin=1`. W panelu admina nie należy renderować przycisku `Loop` na liście SFX, w listach „Ulubione”, w adminowym panelu „Główny widok” ani w adminowym podglądzie widoku użytkownika.
 
-- **Minimalna**: przycisk Loop tylko w widokach użytkownika, bo obraz pokazuje kafel użytkownika.
-- **Spójna**: przycisk Loop we wszystkich miejscach, w których można uruchomić dźwięk.
-
-Rekomendacja: wdrożyć spójnie w widoku użytkownika, adminowym „Głównym widoku” i adminowej liście SFX. W adminowych listach ulubionych można również dodać Loop obok Play, aby nie było niespójności z przyciskiem `fav-play`.
+Decyzja aktualna po doprecyzowaniu wymagania: pętla jest funkcją gracza/użytkownika, a panel admina pozostaje miejscem zarządzania listami, aliasami i szybkim odsłuchem przez **Odtwórz/Zatrzymaj**.
 
 Proponowane atrybuty:
 
@@ -209,7 +206,7 @@ Proponowane atrybuty:
 <button class="btn loop-btn" data-action="loop">Loop</button>
 ```
 
-Dla wariantów adminowych, gdzie akcje mają prefiksy, można użyć jednolitego `data-action="loop"`, `data-action="fav-loop"` i `data-action="main-loop"`, ale prostsza obsługa zdarzeń będzie możliwa, jeśli wszystkie przyciski użyją `data-action="loop"`, a `itemId` zostanie pobrany z najbliższego root elementu.
+Atrybut `data-action="loop"` wystarczy dla kart użytkownika. Wariant `data-action="fav-loop"` nie jest potrzebny, ponieważ adminowe listy ulubionych nie renderują już przełącznika pętli.
 
 ### 5. Czerwony aktywny stan przycisku
 
@@ -261,16 +258,16 @@ Zmiany JavaScript:
 - zmienić `startPlayback()` tak, aby przyjmowała opcję `{ loop: true/false }`;
 - zmienić obsługę `ended` tak, aby aktywna pętla startowała kolejny losowy wariant zamiast wywoływać `stopPlayback()`;
 - dodać funkcję aktualizującą stan przycisku Loop, np. `updateLoopButtonState(playbackRoot, isLooping)`;
-- podpiąć obsługę kliknięć `data-action="loop"` w tych samych miejscach, gdzie działa Play;
+- podpiąć obsługę kliknięć `data-action="loop"` tylko dla zwykłego widoku użytkownika;
 - dopilnować, aby suwak głośności wpływał także na kolejne iteracje Loop.
 
 Zmiany HTML generowanego w JS:
 
-- dodać przycisk Loop w `renderSamples()`;
-- dodać przycisk Loop w `renderFavorites()`;
-- dodać przycisk Loop w `renderMainViewAdmin()`;
-- dodać przycisk Loop w `renderUserMainView()`;
-- dodać przycisk Loop w `renderUserFavorites()`.
+- nie dodawać przycisku Loop w `renderSamples()`;
+- nie dodawać przycisku Loop w `renderFavorites()`;
+- nie dodawać przycisku Loop w `renderMainViewAdmin()`;
+- renderować przycisk Loop w `renderUserMainView()` wyłącznie, gdy aplikacja nie działa w `ADMIN_MODE`;
+- renderować przycisk Loop w `renderUserFavorites()` wyłącznie, gdy aplikacja nie działa w `ADMIN_MODE`.
 
 Zmiany CSS:
 
@@ -391,13 +388,13 @@ Dodatkowo warto uruchomić prostą kontrolę składni HTML/JS przez przeglądark
 
 1. Dodać etykiety tłumaczeń `buttonLoop`.
 2. Dodać CSS dla `.loop-btn` i aktywnego czerwonego stanu.
-3. Dodać przyciski Loop w renderowanych kartach i listach.
+3. Renderować przyciski Loop tylko w prawdziwym widoku użytkownika bez `?admin=1`, a nie w panelach admina.
 4. Rozszerzyć strukturę `activePlayers`.
 5. Dodać `toggleLoop()` i warunkową obsługę `ended`.
 6. Upewnić się, że zwykłe Play/Stop nadal działa identycznie jak przed zmianą.
 7. Przetestować losowanie wariantów i brak natychmiastowej powtórki, jeżeli zostanie wdrożona rekomendowana wersja.
 8. Zaktualizować `Audio/docs/README.md`, `Audio/docs/Documentation.md` i `DetaleLayout.md`.
-9. Wykonać testy manualne w widoku użytkownika i admina.
+9. Wykonać testy manualne w widoku użytkownika i admina, potwierdzając obecność Loop tylko bez `?admin=1`.
 
 ## Konkluzja
 
@@ -570,3 +567,191 @@ Lokalizacja: sekcja „Moduł — Audio”, okolice linii 572-576
 Było: layout modułu Audio opisywał aktywny stan odtwarzania `.is-playing` i suwak `.volume-slider`.
 
 Jest: layout modułu Audio opisuje także przycisk `.loop-btn`, jego czerwony aktywny stan, `aria-pressed="true"`, obramowanie, kolor tekstu i cień.
+
+## Aktualizacja analizy — 2026-06-08
+
+### Temat aktualizacji
+
+Ukrycie przycisku `Loop` w panelu admina modułu `Audio` i pozostawienie go tylko w zwykłym widoku użytkownika bez parametru `?admin=1`.
+
+### Oryginalny pełny prompt użytkownika
+
+```text
+Przeczytaj analizę Analizy/analiza-audio-opcja-loop.md
+Trzeba wprowadzić jedną poprawkę.
+
+W widoku admina przycisk "Loop" nie jest potrzebny na liście plików SFX. Przycisk "loop" jest potrzebny tylko w widoku użytkownika (bez dopisku ?admin=1).
+Tak samo w widoku admina przycisk "Loop" nie jest potrzebny przy widoku ulubionych.
+Po wprowadzeniu poprawek zaktualizuj plik Analizy/analiza-audio-opcja-loop.md o ten prompt oraz zmiany jakie wprowadziłeś.
+```
+
+Do promptu dołączono zrzut ekranu panelu admina pokazujący przyciski `Loop` na liście SFX oraz w panelu „Ulubione”; te miejsca wskazują elementy do usunięcia z adminowego UI.
+
+### Zakres aktualizacji
+
+- sprawdzenie aktualnego renderowania przycisków `Loop` w `Audio/index.html`;
+- usunięcie przycisku `Loop` z adminowej listy SFX;
+- usunięcie przycisku `Loop` z adminowego panelu „Ulubione”;
+- usunięcie przycisku `Loop` z adminowego panelu „Główny widok” i adminowego podglądu widoku użytkownika, zgodnie z zasadą, że `Loop` ma działać tylko bez `?admin=1`;
+- aktualizacja dokumentacji modułu `Audio` i opisu layoutu.
+
+### Wnioski po aktualizacji
+
+- `Loop` pozostaje przełącznikiem pętli dla kart użytkownika w `Audio/index.html` uruchomionym bez `?admin=1`.
+- Panel admina zachowuje przyciski odsłuchu **Odtwórz/Zatrzymaj**, ale nie pokazuje przełącznika `Loop` ani na liście SFX, ani przy pozycjach ulubionych, ani w adminowym „Głównym widoku”.
+- Adminowy podgląd widoku użytkownika również nie renderuje `Loop`, ponieważ działa pod adresem z `?admin=1`.
+
+### Rekomendacje po aktualizacji
+
+- Testować `Loop` w zwykłym widoku użytkownika bez `?admin=1`.
+- W panelu admina testować tylko odsłuch jednorazowy, dodawanie do list, zmianę kolejności, zmianę nazw i usuwanie pozycji.
+- Nie dodawać ponownie `fav-loop` dla panelu admina, jeśli nie pojawi się nowe wymaganie biznesowe.
+
+### Ryzyka
+
+- Jeżeli osoba korzystająca z panelu admina potrzebuje pętli podczas przygotowywania list, musi otworzyć zwykły widok użytkownika bez `?admin=1`.
+- Ukrycie `Loop` w adminowym podglądzie jest celowe, ale może wymagać przypomnienia w instrukcji użytkownika, że podgląd admina nie jest tym samym co realny widok gracza.
+
+### Następne kroki
+
+- Po wdrożeniu uruchomić stronę w dwóch wariantach adresu: `Audio/index.html?admin=1` oraz `Audio/index.html`.
+- W `?admin=1` potwierdzić brak tekstu/przycisku `Loop` w adminowych panelach.
+- Bez `?admin=1` potwierdzić obecność i działanie przycisku `Loop` w widoku głównym i ulubionych użytkownika.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: funkcja `updateLoopButtonState()`
+
+Było:
+
+```js
+const loopButton = playbackRoot.matches?.("button[data-action=\"loop\"], button[data-action=\"fav-loop\"]")
+  ? playbackRoot
+  : playbackRoot.querySelector("button[data-action=\"loop\"], button[data-action=\"fav-loop\"]");
+```
+
+Jest:
+
+```js
+const loopButton = playbackRoot.matches?.("button[data-action=\"loop\"]")
+  ? playbackRoot
+  : playbackRoot.querySelector("button[data-action=\"loop\"]");
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: funkcja `renderSamples()`
+
+Było:
+
+```html
+<button class="btn" data-action="play">...</button>
+<button class="btn loop-btn" data-action="loop" aria-pressed="false">...</button>
+<select class="fav-select">...</select>
+```
+
+Jest:
+
+```html
+<button class="btn" data-action="play">...</button>
+<select class="fav-select">...</select>
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: funkcja `renderFavorites()`
+
+Było:
+
+```html
+<button class="btn" data-action="fav-play">...</button>
+<button class="btn loop-btn" data-action="fav-loop" aria-pressed="false">...</button>
+<button class="btn" data-action="fav-up">▲</button>
+```
+
+Jest:
+
+```html
+<button class="btn" data-action="fav-play">...</button>
+<button class="btn" data-action="fav-up">▲</button>
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: funkcja `renderMainViewAdmin()`
+
+Było:
+
+```html
+<input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+<button class="btn loop-btn" data-action="loop" aria-pressed="false">...</button>
+<button class="btn" data-action="main-up">▲</button>
+```
+
+Jest:
+
+```html
+<input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
+<button class="btn" data-action="main-up">▲</button>
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: funkcje `renderUserMainView()` i `renderUserFavorites()`
+
+Było:
+
+```html
+<button class="btn loop-btn" data-action="loop" aria-pressed="false">...</button>
+```
+
+Jest:
+
+```js
+const loopControlHtml = ADMIN_MODE
+  ? ""
+  : `<button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>`;
+```
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: obsługa kliknięć `samplesGrid`, `favoritesPanel`, `mainViewPanel`
+
+Było:
+
+```js
+// Adminowe listenery obsługiwały akcje `loop` albo `fav-loop`.
+```
+
+Jest:
+
+```js
+// Adminowe listenery nie obsługują już `loop` ani `fav-loop`, ponieważ te przyciski nie są renderowane w panelu admina.
+```
+
+### Plik: `Audio/docs/README.md`
+
+Lokalizacja: sekcje PL i EN opisujące przyciski specjalne oraz dobre praktyki
+
+Było: instrukcja opisywała `Loop` jako przycisk dostępny także w panelu admina.
+
+Jest: instrukcja wyjaśnia, że `Loop` jest dostępny tylko w zwykłym widoku użytkownika bez `?admin=1`, a panel admina służy do odsłuchu przez **Odtwórz/Zatrzymaj**.
+
+### Plik: `Audio/docs/Documentation.md`
+
+Lokalizacja: opis architektury, renderowania oraz logiki funkcjonalnej
+
+Było: dokumentacja techniczna opisywała `Loop` przy adminowej liście SFX, listach „Ulubione”, panelu „Główny widok” i widoku użytkownika.
+
+Jest: dokumentacja techniczna opisuje `Loop` jako element renderowany tylko w zwykłym widoku użytkownika bez `?admin=1`; adminowe panele nie renderują tego przycisku.
+
+### Plik: `DetaleLayout.md`
+
+Lokalizacja: sekcja `Audio` → `Layout i elementy UI`
+
+Było: opis rozmieszczał `.loop-btn` w obszarze akcji kafla/listy także w kontekście adminowego panelu „Główny widok”.
+
+Jest: opis wskazuje, że `.loop-btn` występuje wyłącznie w zwykłym widoku użytkownika bez `?admin=1`, z zachowaniem czerwonego stanu aktywnej pętli.
+

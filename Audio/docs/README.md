@@ -49,14 +49,14 @@ Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma 
 ### Przyciski specjalne
 - **Wyczyść wszystkie aliasy** – usuwa wszystkie aliasy dźwięków jednocześnie (po potwierdzeniu).
 - **Odtwórz / Zatrzymaj** – szybki odsłuch pojedynczego dźwięku z panelu admina.
-- **Loop** – uruchamia dźwięk w pętli; czerwony przycisk oznacza, że pętla działa, a ponowne kliknięcie ją zatrzymuje.
+- W panelu admina przycisk **Loop** nie jest wyświetlany. Pętla jest dostępna tylko w zwykłym widoku użytkownika otwartym bez `?admin=1`.
 - **Wyczyść** (przy polu aliasu) – usuwa alias tylko dla jednego dźwięku.
 
 ### Dobre praktyki podczas sesji
 - Przed sesją przygotuj 1 listę „główną” i 2–3 listy tematyczne.
 - Nadawaj aliasy dźwiękom trudnym do rozpoznania po samej nazwie.
 - Ustaw głośność każdego kluczowego dźwięku wcześniej, żeby nie poprawiać tego w trakcie sceny.
-- Długie tła ambientowe uruchamiaj przyciskiem **Loop**, a krótkie efekty jednorazowe kliknięciem nazwy albo przyciskiem **Odtwórz** w panelu admina.
+- Długie tła ambientowe uruchamiaj przyciskiem **Loop** w zwykłym widoku użytkownika, a krótkie efekty jednorazowe kliknięciem nazwy albo przyciskiem **Odtwórz** w panelu admina.
 
 ---
 
@@ -153,14 +153,14 @@ The language switcher is currently hidden in the user interface. The module cont
 ### Special buttons
 - **Wyczyść wszystkie aliasy** – removes all aliases at once (with confirmation).
 - **Odtwórz / Zatrzymaj** – quick preview from admin panel.
-- **Loop** – starts looping; a red button means the loop is active, and clicking it again stops the loop.
+- In admin mode, the **Loop** button is not displayed. Looping is available only in the normal user view opened without `?admin=1`.
 - **Wyczyść** (next to alias field) – clears alias for one sound.
 
 ### Session best practices
 - Prepare 1 main list and 2–3 scene-based lists before play.
 - Use aliases for sounds with unclear names.
 - Pre-check key sound volumes before the session starts.
-- Use **Loop** for long ambient backgrounds and use the sound name or admin **Odtwórz** button for short one-shot effects.
+- Use **Loop** for long ambient backgrounds in the normal user view, and use the sound name or admin **Odtwórz** button for short one-shot effects.
 
 ### Firebase integration — required for shared lists
 To share favorites and settings across multiple devices/users, **Audio** requires Firebase (Firestore). Without it, settings work only locally on one device.
