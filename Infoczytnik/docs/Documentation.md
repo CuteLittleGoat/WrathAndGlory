@@ -19,6 +19,38 @@ Pliki produkcyjne (`GM.html`, `Infoczytnik.html`) są utrzymywane osobno i nie s
 - `config/firebase-config.js` — konfiguracja klienta Firebase.
 - Moduł nie wymaga katalogu backendowego: aktywna komunikacja działa wyłącznie przez Firebase App oraz Firestore.
 
+### Ramki techniczne i obliczanie pola tekstu
+
+`Infoczytnik/assets/ramki/` zawiera techniczne wersje teł z widoczną niebieską ramką nałożoną na odpowiadające im tła gracza. Te pliki nie są docelowymi tłami wyświetlanymi graczom. Służą jako zasoby robocze/referencyjne do obliczania prostokąta treści, czyli pola, w którym renderer powinien umieścić tekst wiadomości.
+
+`Infoczytnik/assets/data/NiebieskaRamka.md` opisuje metodę wyliczania prostokąta treści (`x`, `y`, `w`, `h`). Prostokąt jest wykrywany na podstawie niebieskiej ramki w odpowiednim pliku `*_ramka.png`, normalizowany do współrzędnych `0..1`, a następnie wpisywany do `CONTENT_RECTS_BY_BACKGROUND_ID` w `Infoczytnik/Infoczytnik_test.html`.
+
+`Infoczytnik/assets/data/Mapowanie.xlsx` określa, który plik z `Infoczytnik/assets/ramki/` odpowiada któremu plikowi z `Infoczytnik/assets/backgrounds/`. To mapowanie jest potrzebne przy dodawaniu i weryfikowaniu teł, ponieważ renderer wyświetla normalne tło, ale do obliczenia bezpiecznego pola tekstowego używana jest techniczna wersja z niebieską ramką.
+
+Przy dodawaniu nowego tła należy:
+1. dodać docelowe tło do `Infoczytnik/assets/backgrounds/`,
+2. dodać odpowiadającą mu techniczną grafikę z niebieską ramką do `Infoczytnik/assets/ramki/`,
+3. zaktualizować `Infoczytnik/assets/data/Mapowanie.xlsx`,
+4. wyliczyć znormalizowany prostokąt treści według `Infoczytnik/assets/data/NiebieskaRamka.md`,
+5. zaktualizować `CONTENT_RECTS_BY_BACKGROUND_ID`,
+6. sprawdzić, czy `backgroundId` używany w payloadzie GM odpowiada temu samemu wpisowi tła.
+
+### Technical frame mapping and text area calculation
+
+`Infoczytnik/assets/ramki/` contains technical background variants with a visible blue frame overlaid on top of the corresponding player background. These files are not the final backgrounds displayed to players. They are maintenance/reference assets used to calculate the content rectangle where message text should be rendered.
+
+`Infoczytnik/assets/data/NiebieskaRamka.md` documents the calculation method for the content rectangle (`x`, `y`, `w`, `h`). The rectangle is detected from the blue frame in the matching `*_ramka.png` file, normalized to `0..1` coordinates, and then entered into `CONTENT_RECTS_BY_BACKGROUND_ID` in `Infoczytnik/Infoczytnik_test.html`.
+
+`Infoczytnik/assets/data/Mapowanie.xlsx` defines which file from `Infoczytnik/assets/ramki/` corresponds to which file from `Infoczytnik/assets/backgrounds/`. This mapping is required when adding or verifying backgrounds, because the renderer uses the normal background for display but the blue-frame variant for calculating the safe text area.
+
+When adding a new background:
+1. add the final background to `Infoczytnik/assets/backgrounds/`,
+2. add the matching technical blue-frame image to `Infoczytnik/assets/ramki/`,
+3. update `Infoczytnik/assets/data/Mapowanie.xlsx`,
+4. calculate the normalized content rectangle according to `Infoczytnik/assets/data/NiebieskaRamka.md`,
+5. update `CONTENT_RECTS_BY_BACKGROUND_ID`,
+6. verify that the `backgroundId` used by the GM payload matches the same background entry.
+
 ## 3. Renderowanie UI i warstwa stylów
 ### 3.1. Fonty i typografia
 - Moduł obsługuje wybór fontu z panelu GM oraz przekazanie fontu w payloadzie danych.

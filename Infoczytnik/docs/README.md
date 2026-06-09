@@ -25,6 +25,7 @@
 - **Wyczyść komunikat** – czyści tylko pole wpisywania tekstu.
 - **Przywróć domyślne** – przywraca domyślne ustawienia panelu.
 - **Aktualizuj dane z XLSX** – aktualizuje źródła danych używane przez moduł.
+- Po odświeżeniu dane zapisują się do `Infoczytnik/assets/data/data.json` i od razu są gotowe do użycia w panelu.
 
 ### Ustawienia, które najczęściej zmieniasz
 - **Kolor i wielkość tekstu wiadomości**.
@@ -88,6 +89,25 @@ To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka
 
 Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
 
+### Kolor logo (panel GM)
+- Pod polem **Logo** znajduje się panel **Kolor logo** (pole HEX + próbnik + gotowe kolory).
+- Domyślny kolor logo to **złoty** (`#d4af37`).
+- Gdy przełącznik **Logo** jest wyłączony, panel koloru logo robi się szary i nie można go kliknąć.
+- Zmiana koloru jest widoczna od razu w podglądzie panelu GM i po wysłaniu komunikatu na ekranie gracza.
+- Gotowe kolory w panelu **Kolor logo** zmieniają tylko kolor logo i nie wpływają na pole **Kolor Prefix + Suffix (wspólny)**.
+- Kolor logo w szybkich presetach obejmuje wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.
+
+## Aktualne dane DataSlate
+
+- `Infoczytnik/assets/data/data.json` zawiera pełną listę 14 logo z folderu `Infoczytnik/assets/logos/`.
+- Domyślne logo panelu GM to **Aquila** (`id: 3`, `Infoczytnik/assets/logos/Aquila.png`).
+
+### Pliki techniczne do utrzymania teł
+
+Pliki w `Infoczytnik/assets/ramki/`, razem z `Infoczytnik/assets/data/NiebieskaRamka.md` i `Infoczytnik/assets/data/Mapowanie.xlsx`, są plikami technicznymi dla osób dodających albo poprawiających tła. Nie są potrzebne podczas normalnego prowadzenia sesji.
+
+`Infoczytnik/assets/ramki/` zawiera wersje teł z niebieską ramką, używane do wyznaczania bezpiecznego pola tekstowego. `Infoczytnik/assets/data/Mapowanie.xlsx` wskazuje, który plik ramki odpowiada któremu tłu z `Infoczytnik/assets/backgrounds/`. `Infoczytnik/assets/data/NiebieskaRamka.md` wyjaśnia, jak z niebieskiej ramki wyliczany jest prostokąt tekstu.
+
 ## 🇬🇧 User instructions (EN)
 
 ### What this module is for
@@ -112,8 +132,8 @@ Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYK�
 - **Ping** – plays attention sound without changing message text. The button uses `Infoczytnik/assets/audios/ping/Ping.mp3`.
 - **Clear message** – clears input text only.
 - **Restore defaults** – resets panel settings to default values.
-- **Update data from XLSX** – reads `DataSlate_manifest.xlsx` and generates a refreshed JSON export.
-- Po odświeżeniu dane zapisują się do `assets/data/data.json` i od razu są gotowe do użycia w panelu. / After refresh, data is saved to `assets/data/data.json` and is immediately ready to use in the panel.
+- **Update data from XLSX** – reads `Infoczytnik/assets/data/DataSlate_manifest.xlsx` and generates a refreshed JSON export.
+- After refresh, data is saved to `Infoczytnik/assets/data/data.json` and is immediately ready to use in the panel.
 
 ### Most-used settings
 - In filler data, line separators are newline and pipe `|`. Semicolon stays inside the text and does not split one entry into multiple elements.
@@ -170,31 +190,21 @@ This is the update map for adding another language (for example FR/DE):
 5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
 
 Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
-
-
-### Kolor logo (panel GM)
-- Pod polem **Logo** znajduje się panel **Kolor logo** (pole HEX + próbnik + gotowe kolory).
-- Domyślny kolor logo to **złoty** (`#d4af37`).
-- Gdy przełącznik **Logo** jest wyłączony, panel koloru logo robi się szary i nie można go kliknąć.
-- Zmiana koloru jest widoczna od razu w podglądzie panelu GM i po wysłaniu komunikatu na ekranie gracza.
-- Gotowe kolory w panelu **Kolor logo** zmieniają tylko kolor logo i nie wpływają na pole **Kolor Prefix + Suffix (wspólny)**.
-
 ### Logo color (GM panel)
 - Directly below **Logo** there is a **Logo color** panel (HEX field + picker + preset chips).
 - Default logo color is **gold** (`#d4af37`).
 - When **Logo** toggle is off, the logo color panel becomes gray and inactive.
 - Preset chips in the **Logo color** panel affect only the logo color and do not change **Prefix + Suffix (shared) color**.
 - Color changes are visible immediately in GM preview and, after sending, on the player screen.
+- The quick logo color presets include the **Black (#000000)** variant instead of red, and the logo is rendered on decorative elements without an IMG text fallback, which removes artifacts during zooming.
 
+## Current DataSlate data
 
-- Kolor logo w szybkich presetach obejmuje teraz wariant **Czarny (#000000)** zamiast czerwonego, a logo renderowane jest na elementach dekoracyjnych bez fallbacku tekstowego IMG, co eliminuje artefakty podczas zoomu.
+- `Infoczytnik/assets/data/data.json` contains the full list of 14 logos from `Infoczytnik/assets/logos/`.
+- The default logo in the GM panel is **Aquila** (`id: 3`, `Infoczytnik/assets/logos/Aquila.png`).
 
-## Aktualne dane DataSlate / Current DataSlate data
+### Background maintenance files
 
-### 🇵🇱
-- `assets/data/data.json` zawiera teraz pełną listę 14 logo z folderu `assets/logos/`.
-- Domyślne logo panelu GM to teraz **Aquila** (`id: 3`, `assets/logos/Aquila.png`).
+The files in `Infoczytnik/assets/ramki/`, together with `Infoczytnik/assets/data/NiebieskaRamka.md` and `Infoczytnik/assets/data/Mapowanie.xlsx`, are maintenance files for people adding or correcting backgrounds. They are not required during normal play.
 
-### 🇬🇧
-- `assets/data/data.json` now contains the full list of 14 logos from `assets/logos/`.
-- The default logo in the GM panel is now **Aquila** (`id: 3`, `assets/logos/Aquila.png`).
+`Infoczytnik/assets/ramki/` contains blue-frame versions of backgrounds used to determine the safe text area. `Infoczytnik/assets/data/Mapowanie.xlsx` tells which blue-frame file matches which background from `Infoczytnik/assets/backgrounds/`. `Infoczytnik/assets/data/NiebieskaRamka.md` explains how the text rectangle is calculated from the blue frame.
