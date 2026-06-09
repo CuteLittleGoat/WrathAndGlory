@@ -1,0 +1,772 @@
+diff --git a/Audio/docs/Documentation.md b/Audio/docs/Documentation.md
+index 3d914ce..adbce4f 100644
+--- a/Audio/docs/Documentation.md
++++ b/Audio/docs/Documentation.md
+@@ -9,7 +9,7 @@
+ - **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
+ - **Ustawienia:** ulubione, „Główny widok” oraz aliasy SFX są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
+ - **Synchronizacja aliasów:** mapa `aliases` jest synchronizowana do obiektów SFX po wczytaniu manifestu i po każdej aktualizacji z Firestore/lokalnego zapisu, aby alias był widoczny w obu trybach.
+-- **Odtwarzanie:** kliknięcie nazwy SFX lub taga (druga linia pod nazwą) uruchamia/wyłącza dźwięk dla danej karty; równoległe odtwarzanie wielu SFX jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a obok dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%).
++- **Odtwarzanie:** kliknięcie nazwy SFX lub taga (druga linia pod nazwą) uruchamia/wyłącza pojedyncze odtworzenie dla danej karty; równoległe odtwarzanie wielu SFX jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a w widoku użytkownika i adminowym panelu „Główny widok” dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%). Przycisk **Loop** działa tylko w prawdziwym widoku użytkownika bez `?admin=1`: uruchamia dźwięk od razu, po zdarzeniu `ended` startuje kolejny losowy wariant i zatrzymuje całość po ponownym kliknięciu.
+ 
+ ## 2. Struktura repozytorium (pliki i katalogi)
+ - `Audio/index.html` — główny panel (HTML + CSS + JS).
+@@ -82,7 +82,7 @@ window.firebaseConfig = {
+   6. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
+      - układ `.user-layout` w dwóch kolumnach,
+      - lewy panel z przełącznikiem języka `#languageSelectUser` (tylko w trybie user) oraz kontenerami `#userMainView` i `#userFavoritesView`,
+-     - każda karta w widoku użytkownika pokazuje nazwę SFX i `tag2` (bez nazwy pliku) oraz suwak głośności,
++     - każda karta w prawdziwym widoku użytkownika bez `?admin=1` pokazuje nazwę SFX i `tag2` (bez nazwy pliku), suwak głośności oraz przycisk **Loop**; w adminowym podglądzie tego widoku przycisk **Loop** nie jest renderowany,
+      - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
+      - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
+ 
+@@ -127,6 +127,7 @@ window.firebaseConfig = {
+ - Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
+ - `.sample-trigger`: elementy klikalne (nazwa SFX oraz tag), `cursor: pointer` i łagodne przejście koloru.
+ - `.sample-card.is-playing .sample-trigger` oraz `.fav-item.is-playing .sample-trigger`: aktywne odtwarzanie podświetla nazwę i tag na `--danger`.
++- `.loop-btn.is-looping` oraz `.loop-btn[aria-pressed="true"]`: aktywny przycisk pętli używa czerwonego tła `rgba(255, 95, 95, 0.22)`, obramowania `--danger`, tekstu `#ffd6d6` i cienia `0 0 12px rgba(255, 95, 95, 0.35)`.
+ - `.volume-slider`: suwak głośności (`input[type="range"]`) o szerokości 100% i `accent-color: --accent`.
+ - `.user-view`: kolumna usera, `display: flex`, `flex-direction: column`, `gap: 16px`.
+ - `.user-layout`: siatka 2-kolumnowa (`minmax(0, 1.7fr)` + `minmax(240px, 0.7fr)`).
+@@ -196,24 +197,26 @@ window.firebaseConfig = {
+ 
+ ### 8.4. Renderowanie
+ - `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
+-- `renderSamples()` — rysuje siatkę SFX (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę SFX **oraz** aktywne tagi.
++- `renderSamples()` — rysuje siatkę SFX (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania, przyciskiem **Odtwórz** oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę SFX **oraz** aktywne tagi.
+ - Klik przycisku `#clearAllAliases` wywołuje `clearAllAliases()`, które po potwierdzeniu czyści aliasy globalnie (bez ograniczenia do aktualnie wyrenderowanych kart), ale tylko w module Audio.
+-- `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move).
+-- `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove).
+-- `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag oraz suwak głośności) zarówno w trybie użytkownika, jak i w podglądzie admina.
+-- `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag + suwak głośności) dla aktualnie wybranej listy w obu trybach.
++- `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move) oraz przyciskiem **Odtwórz** przy każdym elemencie; przycisk **Loop** nie jest renderowany w panelu admina.
++- `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove), bez przycisku **Loop**.
++- `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag, suwak głośności oraz **Loop** tylko poza `?admin=1`); w podglądzie admina pozostaje bez przycisku **Loop**.
++- `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag, suwak głośności oraz **Loop** tylko poza `?admin=1`) dla aktualnie wybranej listy; w podglądzie admina pozostaje bez przycisku **Loop**.
+ - `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
+ - `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu, w tym widoczność panelu tagów.
+ - `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
+ 
+ ### 8.5. Akcje użytkownika
+-- `pickRandomVariant(item)` — losuje plik z `variants` dla zgrupowanych SFX.
++- `pickRandomVariant(item, previousUrl = "")` — losuje plik z `variants` dla zgrupowanych SFX; przy wielu wariantach i podanym `previousUrl` próbuje uniknąć natychmiastowego powtórzenia tego samego adresu.
+ - `getAudioContext()` — inicjalizuje `AudioContext` (jeśli dostępny), aby obsłużyć wzmocnienie głośności powyżej 100%.
+ - `volumeToGain(value)` — mapuje zakres `-100..100` na gain `0..2`.
+-- `startPlayback(item, playbackRoot)` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`.
+-- `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing` i resetuje etykietę (jeśli to przycisk).
+-- `togglePlayback(itemId, playbackRoot)` — przełącza odtwarzanie/stop dla wskazanego elementu sterującego.
+-- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego SFX po zmianie suwaka.
++- `startPlayback(item, playbackRoot, options = {})` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`, zapisuje w `activePlayers` pola `item`, `audio`, `gainNode`, `loop` i `lastUrl`; jeśli `options.loop` jest aktywne, obsługa `ended` uruchamia kolejną iterację zamiast kończyć odtwarzanie.
++- `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing`, resetuje etykietę Play/Stop i wyłącza wizualny stan Loop.
++- `togglePlayback(itemId, playbackRoot)` — przełącza zwykłe odtwarzanie/stop dla wskazanego elementu sterującego.
++- `toggleLoop(itemId, playbackRoot)` — uruchamia pętlę, zamienia trwające zwykłe odtwarzanie w pętlę bez restartu albo zatrzymuje aktywną pętlę po kolejnym kliknięciu.
++- `updateLoopButtonState(playbackRoot, isLooping)` — synchronizuje klasę `.is-looping` i atrybut `aria-pressed`, dzięki czemu czerwony stan przycisku jest spójny z semantyką przełącznika.
++- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego SFX po zmianie suwaka; kolejne iteracje Loop tworzą nowy `GainNode`, ale odczytują aktualną wartość suwaka z tego samego `playbackRoot`.
+ - Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę SFX.
+ - Pole `#tagSearchInput` otwiera popup filtra listowego, a wyszukiwanie odbywa się w okienku `#tagMenuSearchInput`.
+ - Kliknięcie `#toggleTagPanel` ukrywa lub odsłania cały panel checkboxów tagów bez resetowania stanu zaznaczeń.
+@@ -297,7 +300,7 @@ window.firebaseConfig = {
+ 2. Nadpisanie aliasów z zapisanych ustawień (`aliases`) po `itemId`.
+ 3. Render widoku admina i widoku użytkownika z tego samego źródła stanu.
+ 4. Operacje na listach (`favorites`, `mainView`) z zachowaniem kolejności ręcznej.
+-5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100%.
++5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100% oraz przełącznik Loop w zwykłym widoku użytkownika, losujący kolejne warianty po zakończeniu pliku.
+ 6. Zapis zmian do Firestore (`audio/favorites`) lub fallback do `localStorage` (`audio.settings`).
+ 7. Przełączanie języka równolegle aktualizuje etykiety obu widoków (admin + user preview).
+ 
+diff --git a/Audio/docs/README.md b/Audio/docs/README.md
+index a556d8b..3a1c0d2 100644
+--- a/Audio/docs/README.md
++++ b/Audio/docs/README.md
+@@ -18,15 +18,20 @@ Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma
+ 
+ ### Jak odtwarzać dźwięki (widok użytkownika)
+ 1. W panelu nawigacji kliknij **Widok główny** albo wybraną listę ulubionych.
+-2. Kliknij nazwę dźwięku, aby go uruchomić.
+-3. Kliknij ponownie, aby zatrzymać.
+-4. Możesz uruchomić kilka dźwięków równocześnie.
+-5. Suwakiem na kafelku ustaw głośność konkretnego dźwięku.
++2. Kliknij nazwę dźwięku, aby uruchomić pojedyncze odtworzenie.
++3. Kliknij nazwę ponownie, aby zatrzymać aktualne odtworzenie.
++4. Kliknij **Loop**, aby od razu uruchomić dźwięk w pętli.
++5. Gdy **Loop** jest aktywny, przycisk jest czerwony. Po zakończeniu pliku moduł automatycznie uruchamia następne odtworzenie tego samego dźwięku.
++6. Jeżeli dźwięk ma kilka podpiętych plików, kolejne odtworzenia w pętli są wybierane losowo, a aplikacja unika natychmiastowego powtórzenia tego samego pliku, gdy ma inną możliwość.
++7. Kliknij czerwony **Loop** ponownie, aby wyłączyć pętlę i zatrzymać aktualny dźwięk.
++8. Możesz uruchomić kilka dźwięków równocześnie.
++9. Suwakiem na kafelku ustaw głośność konkretnego dźwięku; aktywna pętla używa bieżącej wartości suwaka także przy kolejnych odtworzeniach.
+ 
+ ### Co oznaczają elementy na kafelku dźwięku
+ - **Nazwa dźwięku** – główny przycisk odtwarzania.
+ - **Tag pod nazwą** – informacja, z jakiej grupy/folderu pochodzi dźwięk.
+ - **Alias w nawiasie** (jeśli ustawiony) – dodatkowa pomocnicza nazwa.
++- **Loop** – przełącznik pętli. Zwykły zielony stan oznacza, że pętla jest wyłączona, a czerwony stan oznacza aktywne zapętlenie.
+ - **Suwak głośności** – indywidualna głośność tego dźwięku.
+ 
+ ### Jak korzystać z panelu administratora (`?admin=1`)
+@@ -44,12 +49,14 @@ Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma
+ ### Przyciski specjalne
+ - **Wyczyść wszystkie aliasy** – usuwa wszystkie aliasy dźwięków jednocześnie (po potwierdzeniu).
+ - **Odtwórz / Zatrzymaj** – szybki odsłuch pojedynczego dźwięku z panelu admina.
++- W panelu admina przycisk **Loop** nie jest wyświetlany. Pętla jest dostępna tylko w zwykłym widoku użytkownika otwartym bez `?admin=1`.
+ - **Wyczyść** (przy polu aliasu) – usuwa alias tylko dla jednego dźwięku.
+ 
+ ### Dobre praktyki podczas sesji
+ - Przed sesją przygotuj 1 listę „główną” i 2–3 listy tematyczne.
+ - Nadawaj aliasy dźwiękom trudnym do rozpoznania po samej nazwie.
+ - Ustaw głośność każdego kluczowego dźwięku wcześniej, żeby nie poprawiać tego w trakcie sceny.
++- Długie tła ambientowe uruchamiaj przyciskiem **Loop** w zwykłym widoku użytkownika, a krótkie efekty jednorazowe kliknięciem nazwy albo przyciskiem **Odtwórz** w panelu admina.
+ 
+ ---
+ 
+@@ -115,15 +122,20 @@ The language switcher is currently hidden in the user interface. The module cont
+ 
+ ### How to play sounds (user view)
+ 1. In navigation, click **Main view** or a selected favorites list.
+-2. Click a sound name to start it.
+-3. Click again to stop it.
+-4. Multiple sounds can play at the same time.
+-5. Use the tile slider to adjust volume for that sound.
++2. Click a sound name to start one playback.
++3. Click the sound name again to stop the current playback.
++4. Click **Loop** to start the sound in loop mode immediately.
++5. When **Loop** is active, the button is red. After the file ends, the module automatically starts the next playback of the same sound.
++6. If the sound has several connected files, loop playback chooses later files randomly and avoids repeating the same file immediately when another option exists.
++7. Click the red **Loop** again to turn loop mode off and stop the current sound.
++8. Multiple sounds can play at the same time.
++9. Use the tile slider to adjust volume for that sound; an active loop uses the current slider value for later iterations too.
+ 
+ ### What each sound tile element means
+ - **Sound name** – main play/stop button.
+ - **Tag below name** – source group/folder hint.
+ - **Alias in parentheses** (if set) – extra custom label.
++- **Loop** – loop switch. The normal green state means loop mode is off, and the red state means looping is active.
+ - **Volume slider** – per-sound volume control.
+ 
+ ### How to use admin mode (`?admin=1`)
+@@ -141,12 +153,14 @@ The language switcher is currently hidden in the user interface. The module cont
+ ### Special buttons
+ - **Wyczyść wszystkie aliasy** – removes all aliases at once (with confirmation).
+ - **Odtwórz / Zatrzymaj** – quick preview from admin panel.
++- In admin mode, the **Loop** button is not displayed. Looping is available only in the normal user view opened without `?admin=1`.
+ - **Wyczyść** (next to alias field) – clears alias for one sound.
+ 
+ ### Session best practices
+ - Prepare 1 main list and 2–3 scene-based lists before play.
+ - Use aliases for sounds with unclear names.
+ - Pre-check key sound volumes before the session starts.
++- Use **Loop** for long ambient backgrounds in the normal user view, and use the sound name or admin **Odtwórz** button for short one-shot effects.
+ 
+ ### Firebase integration — required for shared lists
+ To share favorites and settings across multiple devices/users, **Audio** requires Firebase (Firestore). Without it, settings work only locally on one device.
+diff --git a/Audio/index.html b/Audio/index.html
+index a2a4dc9..542a9ab 100644
+--- a/Audio/index.html
++++ b/Audio/index.html
+@@ -359,6 +359,15 @@
+       color: var(--danger);
+     }
+ 
++    /* Czerwony stan aktywnej pętli jest powiązany z aria-pressed, aby wygląd i dostępność mówiły to samo. / The red active loop state is tied to aria-pressed so visuals and accessibility say the same thing. */
++    .loop-btn.is-looping,
++    .loop-btn[aria-pressed="true"] {
++      background: rgba(255, 95, 95, 0.22);
++      border-color: var(--danger);
++      color: #ffd6d6;
++      box-shadow: 0 0 12px rgba(255, 95, 95, 0.35);
++    }
++
+     .sample-actions {
+       display: flex;
+       flex-direction: column;
+@@ -732,6 +741,7 @@ const translations = {
+           buttonClearAllAliases: "Wyczyść wszystkie aliasy",
+           buttonPlay: "Odtwórz",
+           buttonStop: "Zatrzymaj",
++          buttonLoop: "Loop",
+           buttonAddToList: "Dodaj do listy",
+           buttonRename: "Zmień nazwę",
+           buttonRemove: "Usuń",
+@@ -800,6 +810,7 @@ const translations = {
+           buttonClearAllAliases: "Clear all aliases",
+           buttonPlay: "Play",
+           buttonStop: "Stop",
++          buttonLoop: "Loop",
+           buttonAddToList: "Add to list",
+           buttonRename: "Rename",
+           buttonRemove: "Remove",
+@@ -1190,12 +1201,24 @@ const translations = {
+       tagFilterMenu.setAttribute("aria-hidden", "true");
+     };
+ 
+-    const pickRandomVariant = (item) => {
++    // --- Losowanie wariantu z ochroną przed natychmiastową powtórką w pętli / Variant picker with protection against immediate repeats in loop mode ---
++    const pickRandomVariant = (item, previousUrl = "") => {
+       if (!item?.variants?.length) {
+         return "";
+       }
+-      const index = Math.floor(Math.random() * item.variants.length);
+-      return item.variants[index]?.fullUrl || "";
++      if (item.variants.length === 1) {
++        return item.variants[0]?.fullUrl || "";
++      }
++      let selectedUrl = "";
++      for (let attempt = 0; attempt < 8; attempt += 1) {
++        const index = Math.floor(Math.random() * item.variants.length);
++        selectedUrl = item.variants[index]?.fullUrl || "";
++        if (selectedUrl && selectedUrl !== previousUrl) {
++          return selectedUrl;
++        }
++      }
++      const fallback = item.variants.find((variant) => variant.fullUrl && variant.fullUrl !== previousUrl);
++      return fallback?.fullUrl || selectedUrl;
+     };
+ 
+     const getAudioContext = () => {
+@@ -1224,16 +1247,38 @@ const translations = {
+ 
+     const volumeToGain = (value) => (Math.max(-100, Math.min(100, value)) + 100) / 100;
+ 
++    // --- Aktualizacja przycisku Play/Stop niezależnie od tego, czy korzeniem jest przycisk, czy kafel. / Updates Play/Stop whether the root is a button or a card. ---
+     const updatePlaybackLabel = (playbackRoot, isPlaying) => {
+-      if (!playbackRoot || playbackRoot.tagName !== "BUTTON") {
++      if (!playbackRoot) {
++        return;
++      }
++      const playButton = playbackRoot.tagName === "BUTTON"
++        ? playbackRoot
++        : playbackRoot.querySelector("button[data-action=\"play\"], button[data-action=\"fav-play\"]");
++      if (!playButton) {
+         return;
+       }
+-      playbackRoot.dataset.playing = isPlaying ? "true" : "false";
+-      playbackRoot.textContent = isPlaying
++      playButton.dataset.playing = isPlaying ? "true" : "false";
++      playButton.textContent = isPlaying
+         ? translations[currentLanguage].labels.buttonStop
+         : translations[currentLanguage].labels.buttonPlay;
+     };
+ 
++    // --- Stan Loop jest wizualny i semantyczny: klasa daje czerwony kolor, aria-pressed opisuje przełącznik. / Loop state is visual and semantic: the class gives red color, aria-pressed describes the toggle. ---
++    const updateLoopButtonState = (playbackRoot, isLooping) => {
++      if (!playbackRoot) {
++        return;
++      }
++      const loopButton = playbackRoot.matches?.("button[data-action=\"loop\"]")
++        ? playbackRoot
++        : playbackRoot.querySelector("button[data-action=\"loop\"]");
++      if (!loopButton) {
++        return;
++      }
++      loopButton.classList.toggle("is-looping", isLooping);
++      loopButton.setAttribute("aria-pressed", isLooping ? "true" : "false");
++    };
++
+     const applyPlayerVolume = (player, value) => {
+       if (!player) {
+         return;
+@@ -1249,21 +1294,31 @@ const translations = {
+     const stopPlayback = (playbackRoot) => {
+       const entry = activePlayers.get(playbackRoot);
+       if (!entry) {
++        updatePlaybackLabel(playbackRoot, false);
++        updateLoopButtonState(playbackRoot, false);
++        playbackRoot?.classList.remove("is-playing");
+         return;
+       }
+       entry.audio.pause();
+       entry.audio.currentTime = 0;
+       activePlayers.delete(playbackRoot);
+       updatePlaybackLabel(playbackRoot, false);
++      updateLoopButtonState(playbackRoot, false);
+       playbackRoot.classList.remove("is-playing");
+     };
+ 
+-    const startPlayback = (item, playbackRoot) => {
+-      const fullUrl = pickRandomVariant(item);
++    // --- Start odtwarzania obsługuje zwykłe Play i Loop, a po zakończeniu pętli tworzy nowy element Audio. / Playback start supports normal Play and Loop, and creates a new Audio element after each loop iteration. ---
++    const startPlayback = (item, playbackRoot, options = {}) => {
++      const previous = activePlayers.get(playbackRoot);
++      const fullUrl = pickRandomVariant(item, options.previousUrl || previous?.lastUrl || "");
+       if (!fullUrl) {
+         alert(translations[currentLanguage].labels.alertMissingAudio);
+         return;
+       }
++      if (previous?.audio && !previous.audio.ended) {
++        previous.audio.pause();
++        previous.audio.currentTime = 0;
++      }
+       const audio = new Audio(fullUrl);
+       const context = getAudioContext();
+       let gainNode = null;
+@@ -1277,17 +1332,42 @@ const translations = {
+         gainNode.connect(context.destination);
+       }
+       const volumeValue = getPlaybackVolumeValue(playbackRoot);
+-      const player = { audio, gainNode };
++      const player = {
++        item,
++        audio,
++        gainNode,
++        loop: Boolean(options.loop),
++        lastUrl: fullUrl,
++      };
+       applyPlayerVolume(player, volumeValue);
+       activePlayers.set(playbackRoot, player);
+       updatePlaybackLabel(playbackRoot, true);
++      updateLoopButtonState(playbackRoot, player.loop);
+       playbackRoot.classList.add("is-playing");
+-      audio.addEventListener("ended", () => stopPlayback(playbackRoot));
++      audio.addEventListener("ended", () => {
++        const current = activePlayers.get(playbackRoot);
++        if (current?.audio !== audio) {
++          return;
++        }
++        if (current.loop) {
++          startPlayback(current.item, playbackRoot, { loop: true, previousUrl: current.lastUrl });
++          return;
++        }
++        stopPlayback(playbackRoot);
++      });
+       audio.addEventListener("error", () => {
++        const current = activePlayers.get(playbackRoot);
++        if (current?.audio !== audio) {
++          return;
++        }
+         alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+         stopPlayback(playbackRoot);
+       });
+       audio.play().catch(() => {
++        const current = activePlayers.get(playbackRoot);
++        if (current?.audio !== audio) {
++          return;
++        }
+         alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+         stopPlayback(playbackRoot);
+       });
+@@ -1305,6 +1385,26 @@ const translations = {
+       startPlayback(item, playbackRoot);
+     };
+ 
++    // --- Przycisk Loop uruchamia pętlę, przełącza trwające Play w tryb pętli albo zatrzymuje aktywną pętlę. / The Loop button starts a loop, converts current Play into loop mode, or stops an active loop. ---
++    const toggleLoop = (itemId, playbackRoot) => {
++      const item = state.itemsById.get(itemId);
++      if (!item || !playbackRoot) {
++        return;
++      }
++      const entry = activePlayers.get(playbackRoot);
++      if (entry?.loop) {
++        stopPlayback(playbackRoot);
++        return;
++      }
++      if (entry) {
++        entry.item = item;
++        entry.loop = true;
++        updateLoopButtonState(playbackRoot, true);
++        return;
++      }
++      startPlayback(item, playbackRoot, { loop: true });
++    };
++
+     const saveSettings = async () => {
+       const payload = {
+         favorites: state.favorites,
+@@ -1482,7 +1582,7 @@ const translations = {
+       samplesGrid.innerHTML = visibleItems
+         .map(
+           (item) => `
+-            <div class="sample-card" data-id="${item.id}">
++            <div class="sample-card" data-id="${item.id}" data-playback-root="true">
+               <div class="sample-title">${formatSampleLabel(item)}</div>
+               <div class="sample-meta">${item.tag2 || translations[currentLanguage].labels.missingTag2}</div>
+               <div class="sample-meta">${item.filename || translations[currentLanguage].labels.missingFilename}</div>
+@@ -1532,7 +1632,7 @@ const translations = {
+                         .map((itemId, itemIndex) => {
+                           const item = state.itemsById.get(itemId);
+                           return `
+-                            <div class="fav-item" data-item-id="${itemId}">
++                            <div class="fav-item" data-item-id="${itemId}" data-playback-root="true">
+                               <div class="fav-item-title">${item ? formatSampleLabel(item) : translations[currentLanguage].labels.emptyMissingManifest}</div>
+                               <div class="fav-item-actions">
+                                 <button class="btn" data-action="fav-play">${translations[currentLanguage].labels.buttonPlay}</button>
+@@ -1583,6 +1683,10 @@ const translations = {
+     };
+ 
+     const renderUserMainView = () => {
++      // --- Przycisk Loop renderujemy wyłącznie w prawdziwym widoku użytkownika bez ?admin=1. / Render the Loop button only in the real user view without ?admin=1. ---
++      const loopControlHtml = ADMIN_MODE
++        ? ""
++        : `<button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>`;
+       if (!state.mainView.itemIds.length) {
+         userMainView.innerHTML = "<div class=\"samples-grid\"></div>";
+         return;
+@@ -1599,6 +1703,7 @@ const translations = {
+                     <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
+                     <div class="sample-actions">
+                       <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
++                      ${loopControlHtml}
+                     </div>
+                   </div>
+                 `;
+@@ -1610,6 +1715,10 @@ const translations = {
+     };
+ 
+     const renderUserFavorites = () => {
++      // --- Ulubione w panelu admina są listą zarządzania, dlatego przełącznik Loop zostaje ukryty. / Favorites in admin mode are a management list, so the Loop toggle stays hidden. ---
++      const loopControlHtml = ADMIN_MODE
++        ? ""
++        : `<button class="btn loop-btn" data-action="loop" aria-pressed="false">${translations[currentLanguage].labels.buttonLoop}</button>`;
+       if (!state.favorites.lists.length) {
+         userFavoritesView.innerHTML = "<div class=\"samples-grid\"></div>";
+         return;
+@@ -1631,6 +1740,7 @@ const translations = {
+                   <div class="sample-meta sample-trigger">${item?.tag2 || translations[currentLanguage].labels.missingTag2}</div>
+                   <div class="sample-actions">
+                     <input class="volume-slider" data-role="volume" type="range" min="-100" max="100" value="0" />
++                    ${loopControlHtml}
+                   </div>
+                 </div>
+               `;
+@@ -1969,7 +2079,7 @@ const translations = {
+         return;
+       }
+       if (button.dataset.action === "play") {
+-        togglePlayback(itemId, button);
++        togglePlayback(itemId, card);
+       }
+       if (button.dataset.action === "add-favorite") {
+         const select = card.querySelector(".fav-select");
+@@ -2021,7 +2131,7 @@ const translations = {
+           break;
+         case "fav-play":
+           if (itemId) {
+-            togglePlayback(itemId, button);
++            togglePlayback(itemId, itemEl);
+           }
+           break;
+         case "fav-up":
+@@ -2079,6 +2189,14 @@ const translations = {
+     });
+ 
+     userMainView.addEventListener("click", (event) => {
++      const loopButton = event.target.closest("button[data-action=\"loop\"]");
++      if (loopButton && userMainView.contains(loopButton)) {
++        const card = loopButton.closest("[data-playback-root]");
++        if (card) {
++          toggleLoop(card.dataset.id, card);
++        }
++        return;
++      }
+       const trigger = event.target.closest(".sample-trigger");
+       if (!trigger || !userMainView.contains(trigger)) {
+         return;
+@@ -2106,6 +2224,14 @@ const translations = {
+     };
+ 
+     userFavoritesView.addEventListener("click", (event) => {
++      const loopButton = event.target.closest("button[data-action=\"loop\"]");
++      if (loopButton && userFavoritesView.contains(loopButton)) {
++        const card = loopButton.closest("[data-playback-root]");
++        if (card) {
++          toggleLoop(card.dataset.id, card);
++        }
++        return;
++      }
+       const trigger = event.target.closest(".sample-trigger");
+       if (!trigger || !userFavoritesView.contains(trigger)) {
+         return;
+diff --git a/DetaleLayout.md b/DetaleLayout.md
+index 82c16a2..b1f3f63 100644
+--- a/DetaleLayout.md
++++ b/DetaleLayout.md
+@@ -425,6 +425,7 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
+ - Górny pasek (`.topbar`) sticky, panele boczne i workspace w układzie `grid` (`360px` + `1fr`).
+ - Panele z `box-shadow: var(--glow)` i `border: 1px solid var(--div)`.
+ - Tabele: zebra i hover oparte o `--zebra` i `--hover`.
++- Przyciski **Edytuj/Zapisz** przy edytowalnych polach tekstowych podglądu bazowego (`Umiejętności`, `Słowa Kluczowe`) używają klasy `.editable-text-button`: tekst i obramowanie mają `var(--code)` / `#D2FAD2`, czyli ten sam kolor co numery stron w DataVault, z pełną nieprzezroczystością `opacity: 1`; reguła nie zmienia pozostałych przycisków pobocznych.
+ - Sekcja „Źródło danych” w panelu bocznym (`.panel-data-source`) ma celowo mniejszą typografię (`.data-source-text`: `font-size: 0.82rem`, `line-height: 1.55`) i wymuszone zawijanie długiego linku (`.data-source-link`: `overflow-wrap: anywhere`, `word-break: break-word`), aby URL `data.json` nie wychodził poza ramkę.
+ 
+ ---
+@@ -573,6 +574,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
+   - nazwa i tag mają klasę `.sample-trigger` (kursor `pointer`),
+   - aktywne odtwarzanie dodaje `.is-playing`, co barwi `.sample-trigger` na `--danger`,
+   - suwak głośności to `.volume-slider` (`width: 100%`, `accent-color: --accent`).
++- Przycisk `.loop-btn` znajduje się wyłącznie w zwykłym widoku użytkownika uruchomionym bez `?admin=1`; aktywny stan pętli ma klasę `.is-looping` i `aria-pressed="true"`, czerwone tło `rgba(255, 95, 95, 0.22)`, obramowanie `--danger`, tekst `#ffd6d6` oraz cień `0 0 12px rgba(255, 95, 95, 0.35)`.
+ 
+ ### 4) Zwijanie/rozwijanie > 9 linii
+ - Brak clampowania treści w module Audio.
+diff --git a/GeneratorNPC/docs/Documentation.md b/GeneratorNPC/docs/Documentation.md
+index 07829b3..ba79d0f 100644
+--- a/GeneratorNPC/docs/Documentation.md
++++ b/GeneratorNPC/docs/Documentation.md
+@@ -99,7 +99,7 @@ Zawiera karty z tabelami danych:
+   - W wybranych wierszach (S, Wt, Zr, I, SW, Int, Ogd, Odporność (w tym WP), Obrona, Żywotność, Odporność Psychiczna, Upór, Odwaga, Szybkość) zamiast tekstu pojawiają się pola `number` z przyciskami góra–dół.
+   - Pole „Odporność Psychiczna” jest blokowane dla rekordów z wartością `-` (brak edycji).
+   - Pola liczbowe są ograniczone do 25 znaków — nadmiar jest automatycznie obcinany również przy wstępnym ustawieniu wartości — oraz mają wizualny limit szerokości 25ch.
+-  - Wiersz „Umiejętności” posiada przycisk **Edytuj** w kolumnie klucza, który przełącza komórkę na edycję w `textarea`.
++  - Wiersze „Umiejętności” i „Słowa Kluczowe” posiadają przycisk **Edytuj** w kolumnie klucza, który przełącza komórkę na edycję w `textarea`; po kliknięciu **Zapisz** zapisany podgląd wraca przez standardowy formatter komórki.
+ - **Wybór Broni** (`#weapon`, `#weapon-table-body`).
+ - **Wybór Pancerzy** (`#armor`, `#armor-table-body`).
+ - **Wybór Augumentacji** (`#augmentations`, `#augmentations-table-body`).
+@@ -173,9 +173,10 @@ Ustawienia globalne:
+ - `.field`, `.field-label-row` — układ etykiet i kontroli.
+ - `.checkbox`, `.checkbox-list`, `.checkbox-inline` — checkboxy modułów i ustawień szczegółów.
+ - `.table-number-input` — wąskie pole `number` w tabeli bestiariusza (mniejszy padding i font); wejście jest obcinane do 25 znaków, a szerokość jest ograniczona do 25ch (`width: min(25ch, 100%); max-width: 25ch`).
+-- `.editable-textarea` — pole edycji `Umiejętności` (ciemne tło, resize w pionie, focus z `--glow`).
+-- `.skills-key-cell` — układ flex dla etykiety „Umiejętności” i przycisku **Edytuj/Zapisz**.
++- `.editable-textarea` — pole edycji tekstowej dla „Umiejętności” i „Słowa Kluczowe” (ciemne tło, resize w pionie, focus z `--glow`).
++- `.skills-key-cell` — układ flex dla etykiety edytowalnego pola tekstowego i przycisku **Edytuj/Zapisz**.
+ - `.btn.btn-small` — kompaktowa wersja przycisku dla edycji w tabeli.
++- `.editable-text-button` — jasny wariant przycisku **Edytuj/Zapisz** dla edytowalnych pól tekstowych (`border-color: var(--code)`, `color: var(--code)`, `opacity: 1`), zgodny z kolorem numerów stron w DataVault.
+ - `.favorites-actions`, `.favorites-list`, `.favorite-item`, `.favorite-title`, `.favorite-subtitle`, `.favorite-actions` — layout i typografia listy ulubionych.
+ 
+ ### 6.5. Tabele
+@@ -254,13 +255,15 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
+   - siatką CSS `.row` (`grid-template-columns: 140px repeat(N, 1fr)`).
+ - `FAVORITES_STORAGE_KEY = "generatorNpcFavorites"` — klucz `localStorage` dla ulubionych.
+ - `FAVORITES_COLLECTION = "generatorNpc"` i `FAVORITES_DOC_ID = "favorites"` — docelowa ścieżka dokumentu w Firestore.
+-- `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_MENTAL_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz „Umiejętności”).
++- `EDITABLE_STATS_KEYS`, `EDITABLE_SKILLS_KEY`, `EDITABLE_KEYWORDS_KEY`, `EDITABLE_RESISTANCE_KEYS`, `EDITABLE_MENTAL_RESISTANCE_KEYS`, `EDITABLE_NUMERIC_KEYS` — definicje pól bestiariusza, które mają wbudowaną edycję (liczbowe oraz tekstowe „Umiejętności” i „Słowa Kluczowe”).
+ - `state` — obiekt z danymi aplikacji i stanem UI:
+   - `data`, `traits` (Map), `expandedCells` (Set), `selectedBestiaryIndex`,
+   - `bestiaryOverrides` — obiekt nadpisań wprowadzonych przez użytkownika:
+     - `numeric` (Map) dla pól liczbowych,
+     - `skills` (string) dla „Umiejętności”,
+-    - `skillsEditing` (boolean) przełączający tryb edycji,
++    - `skillsEditing` (boolean) przełączający tryb edycji „Umiejętności”,
++    - `keywords` (string) dla „Słowa Kluczowe”,
++    - `keywordsEditing` (boolean) przełączający tryb edycji „Słowa Kluczowe”,
+   - kolekcje: `bestiary`, `armor`, `weapons`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
+   - ulubione: `favorites` (tablica wpisów), `firestore` (instancja), `favoritesDoc` (referencja), `usingFirestore` (flaga).
+ - `clampEvaluators` (WeakMap) — przechowuje funkcje obliczające clamp dla komórek.
+@@ -318,7 +321,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
+ - `getBestiaryWpMinimum(record)` — wyznacza minimalną wartość pola „Odporność (w tym WP)” na podstawie WP (lub 1, gdy WP to `-`).
+ - `getEditableNumericMinimum(label, record)` — zwraca minimum dla edytowalnego pola (1 lub wartość WP).
+ - `getNumericOverride(label)` — pobiera nadpisaną wartość liczbową z `state.bestiaryOverrides`.
+-- `resetBestiaryOverrides()` — czyści wszystkie nadpisania bestiariusza i wyłącza tryb edycji „Umiejętności”.
++- `resetBestiaryOverrides()` — czyści wszystkie nadpisania bestiariusza i wyłącza tryb edycji „Umiejętności” oraz „Słowa Kluczowe”.
+ 
+ ### 8.13. Specyfika pancerzy i cech
+ - `getArmorWpValue(record)` — odczytuje wartość WP z rekordu pancerza.
+@@ -337,9 +340,10 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
+ - `renderTraitsCell(value, columnClass)` — renderuje komórkę cech jako zestaw tagów.
+ - `createClampCell(sheetName, rowId, key, valueString, columnClass)` — tworzy komórkę z mechanizmem clamp.
+ - `createNumericInputCell(record, key, valueString)` — tworzy pole `number` z minimum zależnym od WP, obcina wpis do 25 znaków i zapisuje nadpisanie do `state.bestiaryOverrides`.
+-- `createSkillsRow(record, key, valueString)` — renderuje wiersz „Umiejętności” z przyciskiem **Edytuj/Zapisz** i `textarea`.
++- `EDITABLE_TEXT_FIELDS` — mapuje znormalizowane klucze `Umiejętności` i `Słowa Kluczowe` na pola stanu (`skills`/`skillsEditing`, `keywords`/`keywordsEditing`).
++- `createEditableTextRow(record, key, valueString, config)` — renderuje edytowalny wiersz tekstowy z przyciskiem **Edytuj/Zapisz** i `textarea`; w trybie podglądu używa `createClampCell`, więc ręcznie zapisane „Słowa Kluczowe” nadal przechodzą przez `getFormattedCellHTML("Bestiariusz", "Słowa Kluczowe", ...)` i zachowują czerwony kolor tekstu z neutralnymi przecinkami.
+ - `renderOrderedTable({ tableBody, records, columns, sheetName })` — renderuje tabelę z określonymi kolumnami.
+-- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne (z blokadą „Odporność Psychiczna” przy wartości `-`).
++- `renderBestiaryTable(record)` — renderuje tabelę bazowego bestiariusza, podmieniając wybrane komórki na pola edycyjne (z blokadą „Odporność Psychiczna” przy wartości `-` oraz tekstową edycją „Umiejętności” i „Słowa Kluczowe”).
+ 
+ ### 8.13. Konfiguracje kolumn
+ - `weaponColumns`, `armorColumns`, `augmentationsColumns`, `equipmentColumns`, `talentsColumns`, `psionicsColumns`, `prayersColumns` — listy nagłówków dla tabel modułów.
+@@ -372,7 +376,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
+ - `resolveTrackerCount(value)` — wewnętrzna funkcja karty do druku zamienia wartość „Żywotność” lub „Odporność Psychiczna” na liczbę kwadratów (ignoruje brak liczby i ujemne wartości).
+ 
+ ### 8.13. Karta do druku
+-- `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb i „Umiejętności”, a etykiety karty są wybierane z tłumaczeń (PL/EN).
++- `buildPrintableCardHTML(record, notes, { weaponOverride, armorOverride, moduleEntries, bestiaryOverrides })` — generuje pełny HTML karty do druku z osobnymi stylami (czarno-biała karta, układ tabelaryczny), uwzględniając nadpisania liczb, „Umiejętności” i „Słowa Kluczowe”, a etykiety karty są wybierane z tłumaczeń (PL/EN).
+   - Sekcje kart: tytuł, zagrożenie, słowa kluczowe, statystyki, odporność, pancerze/cechy, obrona/żywotność/odporność psychiczna, **trackery pól „Ż/T” (PL) / „H/S” (EN)**, bloki opisowe (umiejętności, premie, zdolności, atak, horda itd.), upór/odwaga/szybkość/rozmiar, notatki.
+   - Mechanizm `CARD_LEVEL_COLUMNS = 5` działa jako pojedyncze źródło prawdy dla sekcji `Poziom/Zagrożenie`: parser obcina dane do 5 znaków, fallback (`split("")`) zachowuje nietypowe znaki jak `?`, brakujące wartości są dopełniane pustymi komórkami, a nagłówek poziomów jest budowany dynamicznie (`1..5`).
+   - Dzięki temu rekordy `PPPPP` renderują komplet pięciu kolumn, a krótsze rekordy (np. `?`) zostawiają puste pola od kolumny 2 do 5.
+@@ -399,7 +403,7 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
+ ## 10. Logika generowania karty do druku
+ - Karta jest generowana w nowym oknie i posiada własny zestaw stylów inline.
+ - W sekcji „Odporność” wartość WP jest opisywana etykietą „w tym Pancerz”.
+-- Jeśli użytkownik zmodyfikuje statystyki lub „Umiejętności”, karta używa wartości z `bestiaryOverrides`; edytowana „Odporność (w tym WP)” jest bazą do przeliczeń z pancerzem, a „Odporność Psychiczna” jest przenoszona bezpośrednio na kartę.
++- Jeśli użytkownik zmodyfikuje statystyki, „Umiejętności” lub „Słowa Kluczowe”, karta używa wartości z `bestiaryOverrides`; edytowana „Odporność (w tym WP)” jest bazą do przeliczeń z pancerzem, a „Odporność Psychiczna” jest przenoszona bezpośrednio na kartę. Słowa kluczowe na karcie pozostają czarno-białe, ponieważ karta używa `formatInlineHTML(keywords)` i własnych stylów druku.
+ - Trackery „Ż/T” obliczają liczbę kwadratów na podstawie wartości liczbowych; etykiety „Ż/T” to niezależne pojedyncze kwadraty, a siatka pól skaluje się do szerokości wiersza dzięki `auto-fit`.
+ - Dla modułu psioniki możliwe jest normalizowanie kolumny „Wzmocnienie” do jednej linii.
+ - Sekcje bez danych są pomijane.
+diff --git a/GeneratorNPC/docs/README.md b/GeneratorNPC/docs/README.md
+index 4df15d5..a533a80 100644
+--- a/GeneratorNPC/docs/README.md
++++ b/GeneratorNPC/docs/README.md
+@@ -12,7 +12,7 @@
+ ### Tworzenie NPC krok po kroku
+ 1. W sekcji **Wybór bazowy** wybierz rekord z listy **Bestiariusz · Nazwa**.
+ 2. (Opcjonalnie) dopisz własne notatki w polu **Uwagi do rekordu**.
+-3. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość).
++3. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość). Przy wierszach **Umiejętności** i **Słowa Kluczowe** użyj przycisku **Edytuj**, aby przejść do pola tekstowego, a potem kliknij **Zapisz**.
+ 4. W sekcji **Moduły aktywne** zaznacz, które bloki mają być pokazane na finalnej karcie (np. Broń, Talenty, Psionika).
+ 5. W aktywnych modułach wybierz konkretne elementy z list.
+ 6. Kliknij **Generuj kartę**.
+@@ -35,7 +35,8 @@
+ ### Najważniejsze przyciski
+ - **Generuj kartę** – tworzy końcowy widok NPC.
+ - **Reset** – czyści wybory i wraca do wartości początkowych.
+-- **Edytuj** (przy umiejętnościach) – pozwala ręcznie dopisać/zmienić opis.
++- **Edytuj** (przy **Umiejętnościach** i **Słowach Kluczowych**) – przełącza wybrane pole tekstowe w tryb pisania. Ten przycisk ma jasny napis i jasne obramowanie, takie jak numery stron w module DataVault.
++- **Zapisz** (w tym samym miejscu) – zapisuje wpisany tekst i ponownie pokazuje zwykły podgląd. W podglądzie **Słowa Kluczowe** pozostają czerwone, a przecinki mają zwykły zielony kolor. Na wygenerowanej karcie drukowanej słowa kluczowe są czarno-białe.
+ 
+ ### Dobre praktyki
+ - Najpierw wybierz bazę, potem dopiero modyfikuj liczby.
+@@ -100,7 +101,7 @@ The language switcher is intentionally hidden; the place to enable it is marked
+ ### Build an NPC step by step
+ 1. In **Base selection**, choose an entry from **Bestiary · Name**.
+ 2. (Optional) add custom notes in **Record notes**.
+-3. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed).
++3. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed). For **Skills** and **Keywords**, click **Edit** to open a text field, then click **Save**.
+ 4. In **Active modules**, enable blocks that should appear on final card (e.g., Weapons, Talents, Psionics).
+ 5. In active blocks, select specific items.
+ 6. Click **Generate card**.
+@@ -123,7 +124,8 @@ The language switcher is intentionally hidden; the place to enable it is marked
+ ### Main buttons
+ - **Generate card** – creates final NPC card.
+ - **Reset** – clears setup back to defaults.
+-- **Edit** (next to skills) – allows manual text updates.
++- **Edit** (next to **Skills** and **Keywords**) – switches the selected text field into typing mode. This button uses bright text and a bright border, matching the page-number color in the DataVault module.
++- **Save** (in the same place) – stores the typed text and returns to the normal preview. In the preview, **Keywords** stay red while commas keep the regular green color. On the generated printable card, keywords are black and white.
+ 
+ ### Best practices
+ - Choose base profile first, then edit numbers.
+diff --git a/GeneratorNPC/index.html b/GeneratorNPC/index.html
+index cf64315..8750b3a 100644
+--- a/GeneratorNPC/index.html
++++ b/GeneratorNPC/index.html
+@@ -848,6 +848,8 @@ const translations = {
+           numeric: new Map(),
+           skills: null,
+           skillsEditing: false,
++          keywords: null,
++          keywordsEditing: false,
+         },
+         bestiary: [],
+         armor: [],
+@@ -909,6 +911,11 @@ const translations = {
+         "Szybkość",
+       ];
+       const EDITABLE_SKILLS_KEY = normalizeKey("Umiejętności");
++      // Słowa kluczowe korzystają z tego samego trybu edycji tekstu co umiejętności,
++      // ale po zapisie wracają przez formatter kolumny, aby zachować czerwony tekst i neutralne przecinki.
++      // Keywords use the same text editing mode as skills, but after saving they go back through the
++      // column formatter to preserve red text and neutral commas.
++      const EDITABLE_KEYWORDS_KEY = normalizeKey("Słowa Kluczowe");
+       const EDITABLE_RESISTANCE_KEYS = new Set(
+         ["Odporność (w tym WP)", "Obrona (w tym WP)"].map((label) => normalizeKey(label))
+       );
+@@ -927,12 +934,15 @@ const translations = {
+       const serializeBestiaryOverrides = (overrides) => ({
+         numeric: Object.fromEntries(overrides.numeric),
+         skills: overrides.skills ?? null,
++        keywords: overrides.keywords ?? null,
+       });
+ 
+       const deserializeBestiaryOverrides = (payload) => ({
+         numeric: new Map(Object.entries(payload?.numeric || {})),
+         skills: payload?.skills ?? null,
+         skillsEditing: false,
++        keywords: payload?.keywords ?? null,
++        keywordsEditing: false,
+       });
+ 
+       const escapeHtml = (value) =>
+@@ -1183,6 +1193,8 @@ const translations = {
+         state.bestiaryOverrides.numeric.clear();
+         state.bestiaryOverrides.skills = null;
+         state.bestiaryOverrides.skillsEditing = false;
++        state.bestiaryOverrides.keywords = null;
++        state.bestiaryOverrides.keywordsEditing = false;
+       };
+ 
+       const extractRecords = (section) => {
+@@ -1683,7 +1695,12 @@ const translations = {
+         return cell;
+       };
+ 
+-      const createSkillsRow = (record, key, valueString) => {
++      const EDITABLE_TEXT_FIELDS = {
++        [EDITABLE_SKILLS_KEY]: { valueKey: "skills", editingKey: "skillsEditing" },
++        [EDITABLE_KEYWORDS_KEY]: { valueKey: "keywords", editingKey: "keywordsEditing" },
++      };
++
++      const createEditableTextRow = (record, key, valueString, config) => {
+         const row = document.createElement("tr");
+         const keyCell = document.createElement("td");
+         keyCell.classList.add("skills-key-cell");
+@@ -1691,8 +1708,10 @@ const translations = {
+         label.textContent = key;
+         const button = document.createElement("button");
+         button.type = "button";
+-        button.className = "btn secondary btn-small";
+-        const isEditing = state.bestiaryOverrides.skillsEditing;
++        // Dedykowana klasa ustawia jasny tekst i obramowanie przycisku Edytuj/Zapisz tylko przy edytowalnych polach tekstowych.
++        // The dedicated class sets bright text and border for the Edit/Save button only in editable text fields.
++        button.className = "btn secondary btn-small editable-text-button";
++        const isEditing = state.bestiaryOverrides[config.editingKey];
+         button.textContent = isEditing
+           ? translations[currentLanguage].messages.save
+           : translations[currentLanguage].messages.edit;
+@@ -1703,20 +1722,24 @@ const translations = {
+           const valueCell = document.createElement("td");
+           const textarea = document.createElement("textarea");
+           textarea.className = "editable-textarea";
+-          const currentValue = state.bestiaryOverrides.skills ?? valueString;
++          const currentValue = state.bestiaryOverrides[config.valueKey] ?? valueString;
+           textarea.value = currentValue === "—" ? "" : currentValue;
+           valueCell.append(textarea);
+           row.append(valueCell);
+           button.addEventListener("click", () => {
+-            state.bestiaryOverrides.skills = textarea.value;
+-            state.bestiaryOverrides.skillsEditing = false;
++            state.bestiaryOverrides[config.valueKey] = textarea.value;
++            state.bestiaryOverrides[config.editingKey] = false;
+             renderBestiaryTable(record);
+           });
+         } else {
+-          const displayValue = state.bestiaryOverrides.skills ?? valueString;
++          const displayValue = state.bestiaryOverrides[config.valueKey] ?? valueString;
++          // Podgląd po zapisie nadal używa createClampCell, więc „Słowa Kluczowe” przechodzą przez
++          // getFormattedCellHTML i zachowują czerwone słowa oraz neutralne przecinki.
++          // The saved preview still uses createClampCell, so “Keywords” pass through getFormattedCellHTML
++          // and keep red words plus neutral commas.
+           row.append(createClampCell("Bestiariusz", key, key, displayValue));
+           button.addEventListener("click", () => {
+-            state.bestiaryOverrides.skillsEditing = true;
++            state.bestiaryOverrides[config.editingKey] = true;
+             renderBestiaryTable(record);
+           });
+         }
+@@ -1768,8 +1791,10 @@ const translations = {
+           }
+           const valueString = toDisplayString(value);
+           const normalizedKey = normalizeKey(key);
+-          if (normalizedKey === EDITABLE_SKILLS_KEY) {
+-            bestiaryTableBody.append(createSkillsRow(record, key, valueString));
++          if (EDITABLE_TEXT_FIELDS[normalizedKey]) {
++            bestiaryTableBody.append(
++              createEditableTextRow(record, key, valueString, EDITABLE_TEXT_FIELDS[normalizedKey])
++            );
+             return;
+           }
+           const row = document.createElement("tr");
+@@ -2491,7 +2516,9 @@ const translations = {
+         const cardLabels = t.card;
+         const sectionLabels = t.cardSections;
+         const name = toDisplayString(getRecordValue(record, "Nazwa"));
+-        const keywords = toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
++        const keywordsOverride = bestiaryOverrides?.keywords;
++        const keywords =
++          keywordsOverride != null ? keywordsOverride : toDisplayString(getRecordValue(record, "Słowa Kluczowe"));
+         const threatRaw = toDisplayString(getRecordValue(record, "Zagrożenie"));
+         // Tworzymy dynamiczną listę numerów poziomu 1..CARD_LEVEL_COLUMNS / Build a dynamic level index list from 1 to CARD_LEVEL_COLUMNS
+         const levelColumns = Array.from({ length: CARD_LEVEL_COLUMNS }, (_, index) => index + 1);
+diff --git a/GeneratorNPC/style.css b/GeneratorNPC/style.css
+index 935aea2..dd74b21 100644
+--- a/GeneratorNPC/style.css
++++ b/GeneratorNPC/style.css
+@@ -160,6 +160,14 @@ a.link:hover {
+   letter-spacing: 0.12em;
+ }
+ 
++/* Jasny tekst i obramowanie przycisków Edytuj/Zapisz w edytowalnych polach tekstowych podglądu bazowego.
++   Bright text and border for Edit/Save buttons in editable text fields of the base preview. */
++.editable-text-button {
++  border-color: var(--code);
++  color: var(--code);
++  opacity: 1;
++}
++
+ .layout {
+   display: grid;
+   grid-template-columns: 360px 1fr;
