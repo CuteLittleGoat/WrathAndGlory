@@ -186,6 +186,12 @@
       font-weight:600;
       text-align:left;
     }
+    .species-max-footnotes{
+      margin-top:8px;
+      color:var(--text2);
+      font-size:.9rem;
+      line-height:1.4;
+    }
     .confirm-modal{
       position:fixed;
       inset:0;
@@ -469,6 +475,7 @@
       <div class="species-max-modal__table-wrap">
         <table class="table species-max-table" id="speciesMaxTable"></table>
       </div>
+      <div id="speciesMaxFootnotes" class="species-max-footnotes"></div>
     </div>
   </div>
 
@@ -537,6 +544,9 @@ const translations = {
             attribute_1: 'Siła', attribute_2: 'Wytrzymałość', attribute_3: 'Zręczność', attribute_4: 'Inicjatywa',
             attribute_5: 'Siła Woli', attribute_6: 'Inteligencja', attribute_7: 'Ogłada', attribute_8: 'Szybkość'
           },
+          maxAttributesFootnotes: {
+            vespidSpeedFixed: '* Vespidzi mają stałą Szybkość równą 14. Na potrzeby obliczeń PD zignoruj pole Szybkość.'
+          },
           skillsColumn1: [
             'Analiza (Int)', 'Atletyka (S)', 'Czujność (Int)', 'Dowodzenie (SW)', 'Intuicja (Ogd)',
             'Korzystanie z technologii (Int)', 'Medycyna (Int)', 'Mistrzostwo psioniczne (SW)', 'Oszukiwanie (Ogd)'
@@ -592,6 +602,9 @@ const translations = {
             attribute_1: 'Strength', attribute_2: 'Toughness', attribute_3: 'Agility', attribute_4: 'Initiative',
             attribute_5: 'Willpower', attribute_6: 'Intellect', attribute_7: 'Fellowship', attribute_8: 'Speed'
           },
+          maxAttributesFootnotes: {
+            vespidSpeedFixed: '* Vespids have a fixed Speed value of 14. For XP calculation purposes, ignore the Speed field.'
+          },
           skillsColumn1: [
             'Athletics (S)', 'Awareness (Int)', 'Ballistic Skill (A)', 'Cunning (Fel)', 'Deception (Fel)',
             'Insight (Fel)', 'Intimidation (Will)', 'Investigation (Int)', 'Leadership (Will)'
@@ -635,6 +648,10 @@ const translations = {
       ];
 
       const maxAttributeKeys = ['attribute_1','attribute_2','attribute_3','attribute_4','attribute_5','attribute_6','attribute_7','attribute_8'];
+      // --- Przypisy specjalne są opisane osobno, aby dane liczbowe tabeli pozostały liczbami. / Special footnotes are described separately so table numeric data stays numeric. ---
+      const maxAttributeFootnotes = [
+        { race: 'race_16', attribute: 'attribute_8', marker: '*', noteKey: 'vespidSpeedFixed' }
+      ];
       const modalImageUrl = './Modal_Icon.png';
       const firebaseContext = initializeFirebaseContext();
 
@@ -701,6 +718,8 @@ const translations = {
       function renderSpeciesMaxTable() {
         const t = translations[currentLanguage];
         const table = document.getElementById('speciesMaxTable');
+        const footnotes = document.getElementById('speciesMaxFootnotes');
+        const renderedFootnoteKeys = new Set();
 
         const thead = document.createElement('thead');
         const headerRow = document.createElement('tr');
@@ -722,15 +741,29 @@ const translations = {
           raceCell.innerText = t.races[row.race];
           tr.appendChild(raceCell);
 
-          row.values.forEach((value) => {
+          row.values.forEach((value, index) => {
             const td = document.createElement('td');
-            td.innerText = String(value);
+            const attribute = maxAttributeKeys[index];
+            const footnote = maxAttributeFootnotes.find(item => item.race === row.race && item.attribute === attribute);
+            // Gwiazdka jest wyłącznie warstwą prezentacji tej komórki, bez zmiany wartości 14 w danych. / The asterisk is only the presentation layer for this cell and does not change the numeric value 14 in data.
+            td.innerText = footnote ? `${value}${footnote.marker}` : String(value);
+            if (footnote) {
+              renderedFootnoteKeys.add(footnote.noteKey);
+            }
             tr.appendChild(td);
           });
           tbody.appendChild(tr);
         });
 
         table.replaceChildren(thead, tbody);
+        const noteTexts = Array.from(renderedFootnoteKeys)
+          .map(key => (t.maxAttributesFootnotes || {})[key])
+          .filter(Boolean);
+        footnotes.replaceChildren(...noteTexts.map((text) => {
+          const note = document.createElement('p');
+          note.innerText = text;
+          return note;
+        }));
       }
 
       // --- Funkcja resetująca wszystkie pola do wartości domyślnych / Function to reset all fields to default values ---
