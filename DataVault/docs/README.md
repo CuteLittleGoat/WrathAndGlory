@@ -47,10 +47,15 @@ Używaj go, gdy chcesz odświeżyć dane modułu po aktualizacji pliku źródło
 - W kolumnach `Słowa Kluczowe` obowiązują dodatkowe reguły renderowania (np. neutralny przecinek, wyjątek dla `Pakiety Wyniesienia`), opisane szczegółowo w `docs/ZasadyFormatowania.md`.
 
 ## Aktualne źródło danych
-Kliknij **Generuj pliki danych**, aby wskazać lokalny plik `Repozytorium.xlsx`. Aplikacja wygeneruje `data.json` (backup) oraz `firebase-import.json` (tylko ten plik importuj do Firebase RTDB `/datavault/live`).
+Kliknij **Generuj pliki danych**, aby wskazać lokalny plik `Repozytorium.xlsx`. Aplikacja wygeneruje dwa pliki:
+
+- `data.json` — lokalny backup i plik pomocniczy do sprawdzenia danych;
+- `firebase-import.json` — plik gotowy do importu z poziomu **root** Firebase Realtime Database.
+
+Importuj `firebase-import.json` na głównym poziomie bazy Firebase Realtime Database. Po imporcie Firebase utworzy dane pod ścieżką `/datavault/live`. Nie importuj tego pliku bezpośrednio do `/datavault/live`, ponieważ wtedy powstałaby zła, podwójna ścieżka `/datavault/live/datavault/live`.
 
 ## Runtime danych
-Runtime pochodzi z Firebase Realtime Database (ścieżka `/datavault/live`) przez Firebase Auth i wspólny loader `shared/firebase-data-loader.js`. Publiczny `data.json` nie jest używany jako runtime.
+Runtime pochodzi z Firebase Realtime Database (ścieżka `/datavault/live`) przez Firebase Auth i wspólny loader `shared/firebase-data-loader.js`. Publiczny `data.json` nie jest używany jako runtime. W `firebase-import.json` właściwe dane pozostają zapisane w polu `dataJson` jako string JSON, a payload pod `/datavault/live` ma `schemaVersion` równy `datavault-firebase-import-v1`.
 
 ## Logowanie do prywatnych danych Firebase
 - W oknie logowania wyświetla się ikona `IkonaPowiadomien2.png` w stałym polu (72×72 px), więc karta logowania nie zmienia rozmiaru podczas doczytywania zasobów.
@@ -142,10 +147,15 @@ Use it when module data needs refreshing after source updates. After clicking it
 - `Słowa Kluczowe` columns use extra rendering rules (for example neutral commas and the `Pakiety Wyniesienia` exception), documented in detail in `docs/ZasadyFormatowania.md`.
 
 ## Current data source
-Click **Generate data files** to choose a local `Repozytorium.xlsx` file. The app generates `data.json` (backup) and `firebase-import.json` (import only this file into Firebase RTDB at `/datavault/live`).
+Click **Generate data files** to choose a local `Repozytorium.xlsx` file. The app generates two files:
+
+- `data.json` — a local backup and helper file for data checks;
+- `firebase-import.json` — a file ready to import at the Firebase Realtime Database **root**.
+
+Import `firebase-import.json` at the top/root level of Firebase Realtime Database. After import, Firebase creates the data under `/datavault/live`. Do not import this file directly into `/datavault/live`, because that would create the wrong double path `/datavault/live/datavault/live`.
 
 ## Data runtime
-Runtime is loaded from Firebase Realtime Database (`/datavault/live`) through Firebase Auth and shared loader `shared/firebase-data-loader.js`. Public `data.json` is not used as runtime.
+Runtime is loaded from Firebase Realtime Database (`/datavault/live`) through Firebase Auth and shared loader `shared/firebase-data-loader.js`. Public `data.json` is not used as runtime. In `firebase-import.json`, the actual data remains stored in the `dataJson` field as a JSON string, and the payload under `/datavault/live` keeps `schemaVersion` equal to `datavault-firebase-import-v1`.
 
 ## Firebase private data sign-in
 - The login window shows `IkonaPowiadomien2.png` in a fixed 72×72 px slot, so the login card keeps a stable size while assets load.
