@@ -125,3 +125,119 @@ Główne ryzyko polega na błędnym utożsamieniu wartości `Szybkość = 14` dl
 - Sprawdzić w przeglądarce, czy tabela pomocnicza pokazuje nowe wiersze w wersji polskiej i angielskiej.
 - Przy osobnym zadaniu można rozważyć aktualizację analogicznych kalkulatorów w innych repozytoriach zgodnie z instrukcją przeniesienia.
 - Nie zmieniać kosztów ani limitów inputów bez oddzielnego wymagania projektowego.
+
+## Aktualizacja: przypis dla stałej Szybkości Vespidów w generatorze postaci
+
+Vespidzi / Vespids mają stałą Szybkość równą dokładnie `14`. Nie jest to zakres wartości i nie należy traktować tej liczby jako zwykłego zakupu PD.
+
+W pliku `Kalkulator/TworzeniePostaci.html` przy wartości `14` w pomocniczej tabeli maksymalnych wartości atrybutów dodano prezentacyjną gwiazdkę wyłącznie dla komórki:
+
+- rasa/gatunek: `race_16`, czyli PL `Vespidzi` / EN `Vespid`,
+- atrybut: `attribute_8`, czyli PL `Szybkość` / EN `Speed`,
+- wartość źródłowa: liczba `14`,
+- wartość widoczna w tabeli generatora postaci: `14*`.
+
+Pod tabelą w modalu generatora postaci dodano przypis w wersji PL i EN:
+
+- PL: `* Vespidzi mają stałą Szybkość równą 14. Na potrzeby obliczeń PD zignoruj pole Szybkość.`
+- EN: `* Vespids have a fixed Speed value of 14. For XP calculation purposes, ignore the Speed field.`
+
+Przypis jest częścią systemu tłumaczeń (`translations.pl.maxAttributesFootnotes` oraz `translations.en.maxAttributesFootnotes`). Dzięki temu można rozszerzyć go o kolejne języki przez dopisanie odpowiedniego tekstu pod tym samym kluczem, bez przepisywania funkcji renderującej tabelę.
+
+Wartość w danych tabeli pozostaje liczbą `14` w `maxAttributeRows`. Gwiazdka jest wyłącznie elementem prezentacji dodawanym podczas renderowania komórki przez `renderSpeciesMaxTable()`. Mechanika obliczania PD nie została zmieniona.
+
+`Kalkulator/KalkulatorXP.html` celowo nie otrzymuje gwiazdki ani przypisu. Osobny kalkulator PD nadal pokazuje Vespidów / Vespid z wartością Szybkości `14` bez oznaczenia `*`, ponieważ przypis dotyczy tylko generatora postaci i ręcznej interpretacji pola Szybkość przy tworzeniu Vespidów.
+
+## Czego celowo nie zmieniono
+
+- Nie zmieniono `attributeCosts`.
+- Nie zmieniono `skillCosts`.
+- Nie zmieniono limitów pól input.
+- Nie dodano obsługi przeliczania wartości Szybkości `14`.
+- Szybkość `14` dla Vespidów pozostaje informacją w tabeli pomocniczej.
+- Gwiazdka i przypis występują tylko w `Kalkulator/TworzeniePostaci.html`.
+- W `Kalkulator/KalkulatorXP.html` wartość `14` pozostaje bez gwiazdki i bez przypisu.
+
+## Instrukcja przeniesienia zmiany do innych repozytoriów
+
+1. Znajdź widok generatora postaci, w którym tabela maksymalnych wartości atrybutów pełni funkcję pomocy przy tworzeniu postaci.
+2. Znajdź funkcję renderującą tabelę maksymalnych wartości atrybutów.
+3. Znajdź wpis `race_16` / `Vespidzi` / `Vespid`.
+4. Zachowaj wartość Szybkości jako liczbę `14` w danych.
+5. Dodaj gwiazdkę tylko w warstwie renderowania generatora postaci.
+6. Dodaj przypis do struktury tłumaczeń.
+7. Wyrenderuj przypis pod tabelą.
+8. Nie dodawaj tej gwiazdki ani przypisu do osobnego kalkulatora PD, chyba że w danym repozytorium zostanie podjęta osobna decyzja.
+9. Nie zmieniaj mechaniki kosztów PD ani limitów inputów.
+
+## Lista kontrolna po aktualizacji przypisu Vespidów
+
+- [ ] W `Kalkulator/TworzeniePostaci.html` przy Vespidach/Vespidach w kolumnie Szybkość/Speed widoczna jest wartość `14*`.
+- [ ] Gwiazdka nie pojawia się przy nagłówku kolumny.
+- [ ] Gwiazdka nie pojawia się przy innych rasach/gatunkach.
+- [ ] Pod tabelą w generatorze postaci widoczny jest polski przypis.
+- [ ] Po przełączeniu na angielski widoczny jest angielski przypis.
+- [ ] Przypis jest pobierany ze struktury tłumaczeń.
+- [ ] Wartość w danych pozostaje liczbą `14`, a nie stringiem `14*`.
+- [ ] W `Kalkulator/KalkulatorXP.html` nie ma gwiazdki przy wartości `14`.
+- [ ] W `Kalkulator/KalkulatorXP.html` nie ma przypisu dla Vespidów.
+- [ ] Nie zmieniono `attributeCosts`.
+- [ ] Nie zmieniono `skillCosts`.
+- [ ] Nie zmieniono limitów inputów.
+- [ ] Nie zmieniono mechaniki przeliczania PD.
+- [ ] Nie występuje błędna forma `Ethernal Caste`.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `Kalkulator/TworzeniePostaci.html`
+
+Lokalizacja: modal `#speciesMaxModal`
+
+Było:
+
+```html
+<table class="table species-max-table" id="speciesMaxTable"></table>
+```
+
+Jest:
+
+```html
+<table class="table species-max-table" id="speciesMaxTable"></table>
+<div id="speciesMaxFootnotes" class="species-max-footnotes"></div>
+```
+
+Lokalizacja: `translations.pl.maxAttributesFootnotes` i `translations.en.maxAttributesFootnotes`
+
+Było: brak osobnej struktury tłumaczeń dla przypisu Vespidów.
+
+Jest: dodany klucz `vespidSpeedFixed` z pełnym tekstem PL i EN.
+
+Lokalizacja: stałe przy `maxAttributeRows` i `maxAttributeKeys`
+
+Było: brak struktury opisującej specjalne przypisy komórek tabeli.
+
+Jest:
+
+```js
+const maxAttributeFootnotes = [
+  { race: 'race_16', attribute: 'attribute_8', marker: '*', noteKey: 'vespidSpeedFixed' }
+];
+```
+
+Lokalizacja: funkcja `renderSpeciesMaxTable()`
+
+Było:
+
+```js
+td.innerText = String(value);
+```
+
+Jest: funkcja wykrywa tylko komórkę `race_16` + `attribute_8`, wyświetla ją jako `14*`, zbiera klucz przypisu i renderuje tekst przypisu pod tabelą na podstawie aktualnego języka.
+
+### Plik: `Kalkulator/KalkulatorXP.html`
+
+Lokalizacja: tabela maksymalnych wartości atrybutów i funkcja `renderMaxAttributesTable(lang)`
+
+Było: wartość Vespidów dla Szybkości była zwykłą liczbą `14` bez przypisu.
+
+Jest: pozostawiono zwykłą liczbę `14` bez gwiazdki i bez przypisu; nie wprowadzono zmian w tym pliku.

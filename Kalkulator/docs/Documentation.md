@@ -11,11 +11,12 @@ Najważniejsze pliki:
 - `HowToUse/pl.pdf` i `HowToUse/en.pdf` – instrukcje PDF otwierane z poziomu arkusza.
 
 ## 1.0.1. Tabela „Maksymalne wartości atrybutów”
-Tabela maksymalnych wartości atrybutów jest dostępna w arkuszu tworzenia postaci i prezentuje limity rasowe dla ośmiu atrybutów.
+Tabela maksymalnych wartości atrybutów jest dostępna w arkuszu tworzenia postaci i prezentuje limity rasowe dla ośmiu atrybutów. Dla wiersza `race_16` i kolumny `attribute_8` renderer pokazuje wartość `14*`, ale źródłowa wartość w `maxAttributeRows` pozostaje liczbą `14`. Przypis jest częścią tłumaczeń `translations.<lang>.maxAttributesFootnotes` i występuje tylko w `TworzeniePostaci.html`; osobny `KalkulatorXP.html` pokazuje Vespid/Vespidów z wartością `14` bez gwiazdki.
 
 Wyrównanie pierwszej kolumny z nazwami ras działa w dwóch miejscach:
 - `kalkulatorxp.css`: reguła `.referenceTable tbody th:first-child { text-align: left; }` ustawia lewostronne wyrównanie nazw ras w tabeli referencyjnej.
 - `TworzeniePostaci.html`: reguła `.species-max-table td:first-child` utrzymuje lewostronne wyrównanie pierwszej kolumny oraz `font-weight: 600`.
+- `TworzeniePostaci.html`: reguła `.species-max-footnotes` ustawia mniejszy rozmiar tekstu, kolor `var(--text2)` i niewielki odstęp nad przypisem pod tabelą.
 
 Zakres działania obejmuje wyłącznie kolumnę z nazwami ras. Komórki liczbowe pozostają wyrównane centralnie zgodnie z regułami bazowymi tabel.
 
@@ -239,13 +240,14 @@ Elementy modalu:
 - dialog `.species-max-modal__dialog`,
 - nagłówek `#speciesMaxModalTitle`,
 - przycisk zamknięcia `#closeSpeciesMaxButton`,
-- tabela `#speciesMaxTable`.
+- tabela `#speciesMaxTable`,
+- kontener przypisów `#speciesMaxFootnotes` z klasą `.species-max-footnotes`.
 
 Etykieta przycisku jest tłumaczona:
 - PL: „Maksymalne wartości atrybutów”,
 - EN: „Maximum attribute values”.
 
-Renderer `renderSpeciesMaxTable()` buduje `thead` i `tbody` dynamicznie dla aktualnego języka. Dane tabeli pochodzą z tablicy `maxAttributeRows` oraz słowników `races` i `maxAttributes` w obiekcie tłumaczeń.
+Renderer `renderSpeciesMaxTable()` buduje `thead`, `tbody` i przypisy dynamicznie dla aktualnego języka. Dane tabeli pochodzą z tablicy `maxAttributeRows` oraz słowników `races` i `maxAttributes` w obiekcie tłumaczeń. Specjalne oznaczenie komórki jest opisane w `maxAttributeFootnotes`: wpis `{ race: 'race_16', attribute: 'attribute_8', marker: '*', noteKey: 'vespidSpeedFixed' }` sprawia, że tylko komórka Vespid/Vespidzi + Speed/Szybkość wyświetla `14*`. Tekst przypisu pochodzi z `translations[currentLanguage].maxAttributesFootnotes.vespidSpeedFixed`, więc kolejne języki mogą dodać własną treść bez przepisywania renderera. Mechanika liczenia PD, `attributeCosts`, `skillCosts` i limity inputów nie używają tego przypisu.
 
 ### 6.2. Style inline w pliku
 `TworzeniePostaci.html` rozszerza `kalkulatorxp.css`:
@@ -256,6 +258,7 @@ Renderer `renderSpeciesMaxTable()` buduje `thead` i `tbody` dynamicznie dla aktu
 - `input`, `select`, `textarea` – spójne tło, `border: 1px solid var(--b)`, focus ring.
 - `.footer` – subtelny tekst w stopce, `letter-spacing: .08em`.
 - `.species-max-modal*` – zestaw klas modala: przyciemnione tło, centrowany dialog, przewijanie i responsywne ograniczenie wysokości; tabela dziedziczy istniejące style `.table` (zebra/hover) i wymusza wyśrodkowanie wszystkich komórek.
+- `.species-max-footnotes` – przypis pod tabelą, `margin-top: 8px`, `color: var(--text2)`, `font-size: .9rem`, `line-height: 1.4`.
 
 ### 6.3. Słowniki kosztów XP
 ```js
@@ -387,13 +390,14 @@ Ekran startowy zawiera ukryty przycisk `#secretButton`, który po aktywacji prze
 ## 10. Maksymalne wartości atrybutów ras
 
 ### 10.1. Zakres funkcjonalny
-Definicje maksymalnych wartości atrybutów ras znajdują się w `KalkulatorXP.html` w bloku `speciesMaxAttributes` i są prezentowane jako tabela referencyjna pod tabelami **Atrybuty** i **Umiejętności**.
+Definicje maksymalnych wartości atrybutów ras znajdują się w `KalkulatorXP.html` w tablicy `attributeMaximumRows` i są prezentowane jako tabela referencyjna pod tabelami **Atrybuty** i **Umiejętności**.
 
 Najważniejsze założenia:
 1. Dane maksimów atrybutów są zaszyte w kodzie JS (brak odczytu z `MaxAttributes.md` i `Labels.md` w runtime).
 2. Nazwy ras i atrybutów są lokalizowane przez ten sam system tłumaczeń PL/EN co pozostałe etykiety kalkulatora.
 3. Nie zawiera osobnej informacji o limicie umiejętności = 8 (zgodnie z bieżącą decyzją funkcjonalną).
 4. Nie ustawiono logiki walidacji pól wejściowych ani algorytmu liczenia XP.
+5. W `KalkulatorXP.html` wartość Szybkości Vespidów pozostaje zwykłą liczbą `14`; ten widok nie renderuje gwiazdki ani przypisu Vespidów.
 
 ### 10.2. Zmiany w HTML (`KalkulatorXP.html`)
 W `div.calcGrid` zawiera nową sekcję:

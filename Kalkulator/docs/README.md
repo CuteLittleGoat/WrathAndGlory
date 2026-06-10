@@ -31,7 +31,7 @@ Na stronie startowej znajduje się też **Tajny przycisk!** (easter egg).
    - przekroczenie puli punktów,
    - zasada „Tree of Learning”.
 5. Przycisk **Instrukcja / Manual** otwiera plik PDF pomocy.
-6. Przycisk **Maksymalne wartości atrybutów** pokazuje limity ras.
+6. Przycisk **Maksymalne wartości atrybutów** pokazuje limity ras. W tej tabeli Vespidzi mają wartość **Szybkość 14\***; przypis pod tabelą wyjaśnia, że przy obliczaniu PD dla Vespidów należy ręcznie zignorować pole Szybkość.
 7. **Reset** przywraca wartości początkowe.
 
 ### 3) Tajny przycisk
@@ -46,6 +46,7 @@ Na stronie startowej znajduje się też **Tajny przycisk!** (easter egg).
 - W języku polskim moduł używa skrótu **PD**.
 - W języku angielskim używa skrótu **XP**.
 - Tabele limitów ras są podpowiedzią i nie wpisują wartości automatycznie.
+- Przypis **Szybkość 14\*** dla Vespidów występuje tylko w części **Tworzenie Postaci**. Osobny **Kalkulator PD** pokazuje wartość 14 bez gwiazdki i bez przypisu.
 
 ---
 
@@ -124,7 +125,7 @@ The landing page also includes a **Secret button!** (easter egg).
    - pool exceeded,
    - Tree of Learning rule.
 5. **Instruction / Manual** opens help PDF.
-6. **Maximum attribute values** opens species limits.
+6. **Maximum attribute values** opens species limits. In this table, Vespids have **Speed 14\***; the footnote below the table explains that the Speed field should be manually ignored for Vespid XP calculations.
 7. **Reset** returns defaults.
 
 ### 3) Secret button
@@ -139,6 +140,7 @@ The landing page also includes a **Secret button!** (easter egg).
 - Polish language uses **PD** label.
 - English language uses **XP** label.
 - Species limit tables are reference-only and do not auto-fill fields.
+- The **Speed 14\*** footnote for Vespids appears only in **Character Creation**. The separate **XP Calculator** shows value 14 without an asterisk and without a footnote.
 
 ### Firebase integration — required for full character save
 To use cross-device save/load in **Character Creation**, you need an active Firebase project and Firestore database.
