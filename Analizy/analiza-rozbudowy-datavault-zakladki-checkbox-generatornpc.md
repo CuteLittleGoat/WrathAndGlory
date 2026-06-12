@@ -1445,3 +1445,943 @@ Minimalny bezpieczny zakres obejmuje:
 
 Najważniejsza zasada projektowa: **nazwy arkuszy są kontraktem danych, a etykiety widoczne w interfejsie są warstwą prezentacji**. Rozdzielenie tych dwóch warstw zapobiegnie problemom z tłumaczeniami, filtrowaniem, aktywnymi zakładkami i zależnościami GeneratorNPC.
 
+# Aktualizacja po analizie struktury nowych arkuszy pojazdów
+
+**Podstawa aktualizacji:** analiza pliku `Analizy/Repozytorium.xlsx` oraz doprecyzowanie wymagań dotyczących działania DataVault i GeneratorNPC.
+**Zakres:** ustalenia funkcjonalne i techniczne przed wdrożeniem.
+**Stan danych:** struktura arkuszy i kolumn jest docelowa, natomiast treść rekordów jest nadal uzupełniana. Kolejny update oraz pełny audyt zostaną wykonane po przygotowaniu kompletnego zestawu danych.
+
+---
+
+## 1. Faktyczny zestaw nowych arkuszy
+
+Po połączeniu arkuszy dotyczących cech pojazdów i cech broni pojazdów grupa pojazdów obejmuje siedem arkuszy:
+
+1. `Role W Pojeździe`
+2. `Akcje Pojazdu`
+3. `Stany Pojazdów`
+4. `Cechy Pojazdów`
+5. `Pojazdy`
+6. `Bronie Pojazdów`
+7. `Ekwipunek Pojazdów`
+
+Nie będzie osobnego arkusza `Cechy Broni Pojazdów`.
+
+Arkusz `Cechy Pojazdów` zawiera wspólnie:
+
+* cechy pojazdów;
+* cechy broni pojazdów.
+
+Rodzaj rekordu jest rozróżniany przez kolumnę `Typ`, w której występują wartości:
+
+```text
+Cecha Pojazdu
+Cecha Broni Pojazdu
+```
+
+Kolumna `Typ` stanowi część kontraktu danych i będzie wykorzystywana przy budowaniu indeksów opisów cech.
+
+---
+
+## 2. Widoczność nowych zakładek
+
+Wszystkie siedem zakładek pojazdów ma być dostępnych:
+
+* w widoku użytkownika;
+* w widoku admina.
+
+Żadna z nowych zakładek nie będzie przypisana do `ADMIN_ONLY_SHEETS`.
+
+Zakładki będą domyślnie ukryte i pokazywane przez nowy checkbox.
+
+Tekst polski:
+
+```text
+Czy wyświetlić zakładki dotyczące pojazdów?
+```
+
+Tekst angielski:
+
+```text
+Show tabs related to vehicles?
+```
+
+Rekomendowane identyfikatory:
+
+```text
+Element DOM:       toggleVehicleTabs
+Klucz i18n:        toggleVehicleTabs
+Stan UI:           showVehicleTabs
+Grupa arkuszy:     VEHICLE_SHEETS
+Klucze grupy:      VEHICLE_SHEET_KEYS
+Helper:            isVehicleSheet(name)
+Klasa checkboxa:   checkboxRow--vehicle
+Klasa zakładki:    tab--vehicle
+```
+
+Stan domyślny:
+
+```js
+showVehicleTabs: false
+```
+
+Stan checkboxa ma być zapisywany i odtwarzany w `sessionStorage` analogicznie do istniejących checkboxów tworzenia postaci i zasad walki.
+
+Przykładowa konfiguracja grupy:
+
+```js
+const VEHICLE_SHEETS = new Set([
+  "Role W Pojeździe",
+  "Akcje Pojazdu",
+  "Stany Pojazdów",
+  "Cechy Pojazdów",
+  "Pojazdy",
+  "Bronie Pojazdów",
+  "Ekwipunek Pojazdów",
+]);
+```
+
+---
+
+## 3. Kolor zakładek pojazdów
+
+Tekst checkboxa oraz tekst przycisków zakładek pojazdów ma mieć kolor srebrno-stalowy.
+
+Kolor ma służyć wyłącznie do oznaczenia grupy pojazdów.
+
+Po aktywowaniu zakładki należy zachować obecne, wspólne zachowanie interfejsu:
+
+* zielone obramowanie aktywnej zakładki;
+* zielone tło aktywnej zakładki;
+* zielony glow;
+* standardową klasę `.active`.
+
+Nie należy dodawać:
+
+* stalowego obramowania;
+* stalowego tła aktywnego przycisku;
+* stalowego glow;
+* osobnego sposobu oznaczania aktywnej zakładki.
+
+Zachowanie ma być analogiczne do czerwonych zakładek zasad walki: kolor tekstu identyfikuje grupę, ale aktywny stan pozostaje wspólny dla całego DataVault.
+
+Docelowe wartości koloru srebrno-stalowego zostaną ustalone podczas wdrożenia i testów wizualnych.
+
+---
+
+## 4. Tłumaczenia i nazwy arkuszy
+
+Moduł DataVault nie ma tłumaczyć treści pochodzących z XLSX lub JSON.
+
+Dotyczy to:
+
+* nazw arkuszy;
+* nazw kolumn;
+* wartości rekordów;
+* opisów;
+* nazw cech;
+* słów kluczowych;
+* nazw broni, pojazdów i wyposażenia.
+
+Tłumaczone są wyłącznie stałe elementy interfejsu aplikacji, między innymi:
+
+* etykiety przycisków;
+* opisy checkboxów;
+* komunikaty;
+* błędy;
+* nazwy elementów sterujących.
+
+Dlatego nazwy angielskie nowych zakładek mają obecnie charakter wyłącznie informacyjny i dokumentacyjny.
+
+Kanonicznymi nazwami arkuszy oraz nazwami wyświetlanymi jako zakładki pozostają nazwy polskie z `Repozytorium.xlsx`.
+
+Nie należy wprowadzać mapy tłumaczącej nazwy arkuszy w DataVault.
+
+Informacyjne odpowiedniki angielskie:
+
+| Nazwa arkusza PL     | Nazwa informacyjna EN |
+| -------------------- | --------------------- |
+| `Role W Pojeździe`   | `Vehicle Roles`       |
+| `Akcje Pojazdu`      | `Vehicle Actions`     |
+| `Stany Pojazdów`     | `Vehicle Conditions`  |
+| `Cechy Pojazdów`     | `Vehicle Traits`      |
+| `Pojazdy`            | `Vehicles`            |
+| `Bronie Pojazdów`    | `Vehicle Weapons`     |
+| `Ekwipunek Pojazdów` | `Vehicle Wargear`     |
+
+---
+
+## 5. Kolumna `LP`
+
+Kolumna `LP` ma pozostać w pliku XLSX oraz w danych wynikowych jako techniczna informacja o kolejności rekordów.
+
+Nie może być jednak wyświetlana użytkownikowi w tabelach DataVault.
+
+Zasada dotyczy wszystkich zakładek, w tym wszystkich siedmiu nowych zakładek pojazdów.
+
+`LP` ma być:
+
+* dostępne dla logiki sortowania;
+* zachowane podczas konwersji XLSX do JSON;
+* niewidoczne w nagłówkach tabel;
+* niewidoczne w komórkach tabel;
+* niewidoczne w modalnym porównaniu rekordów;
+* niewidoczne zarówno w `Widoku Domyślnym`, jak i `Pełnym Widoku`.
+
+Domyślne sortowanie może nadal wykorzystywać `LP`, jeżeli dany arkusz nie otrzyma później innej, jawnie określonej reguły sortowania.
+
+Ukrycie `LP` nie oznacza usuwania tej wartości z rekordów.
+
+---
+
+## 6. Łączenie kolumn `Cecha`
+
+### 6.1. Arkusz `Pojazdy`
+
+Kolumny:
+
+```text
+Cecha 1
+Cecha 2
+Cecha 3
+Cecha 4
+Cecha 5
+Cecha 6
+```
+
+mają zostać połączone w jedną kolumnę:
+
+```text
+Cechy
+```
+
+Wartości mają być oddzielane średnikiem i spacją:
+
+```text
+Niezawodny; Terenowy
+```
+
+Puste wartości oraz `-` powinny być pomijane.
+
+Jeżeli pojazd nie ma żadnej cechy, wartością wynikową ma być:
+
+```text
+-
+```
+
+### 6.2. Arkusz `Bronie Pojazdów`
+
+Kolumny:
+
+```text
+Cecha 1
+Cecha 2
+Cecha 3
+Cecha 4
+Cecha 5
+```
+
+mają zostać połączone w jedną kolumnę:
+
+```text
+Cechy
+```
+
+Zasady separatorów, pustych wartości i wartości `-` są takie same jak dla arkusza `Pojazdy`.
+
+### 6.3. Zgodność generatorów
+
+Scalanie musi zostać zaimplementowane identycznie w:
+
+* `DataVault/app.js`;
+* `DataVault/build_json.py`;
+* ścieżce generowania `data.json`;
+* ścieżce generowania `firebase-import.json`.
+
+Wynik generatora przeglądarkowego i generatora Python musi być identyczny.
+
+Nie może wystąpić sytuacja, w której `_meta.columnOrder` zawiera kolumnę `Cechy`, ale rekord nadal zawiera wyłącznie `Cecha 1`, `Cecha 2` itd.
+
+---
+
+## 7. Łączenie kolumn `Zasięg`
+
+W arkuszu `Bronie Pojazdów` kolumny:
+
+```text
+Zasięg 1
+Zasięg 2
+Zasięg 3
+```
+
+mają zostać połączone w jedną kolumnę:
+
+```text
+Zasięg
+```
+
+Format wynikowy:
+
+```text
+18 / 36 / 54
+```
+
+Brakujące wartości powinny być reprezentowane zgodnie z istniejącym mechanizmem dla zwykłych broni.
+
+Kolumna `Zasięg`:
+
+* ma być wyśrodkowana;
+* nie może się zawijać;
+* powinna używać `white-space: nowrap`;
+* powinna korzystać z obecnego formatowania separatorów `/`.
+
+Mechanizm ma działać analogicznie do arkusza `Bronie`.
+
+---
+
+## 8. Klikalne elementy
+
+Klikalne mają być wyłącznie wartości w scalonej kolumnie:
+
+```text
+Cechy
+```
+
+Klikalne nie będą:
+
+* nazwy broni;
+* nazwy pojazdów;
+* nazwy wyposażenia;
+* wartości w kolumnie `Uzbrojenie`;
+* wartości w kolumnie `Wyposażenie`;
+* tekstowe odwołania do innych rekordów;
+* nazwy akcji;
+* nazwy stanów występujące jako zwykły tekst.
+
+Nazwy broni i wyposażenia mają być traktowane jak zwykła treść tekstowa.
+
+Nie należy tworzyć automatycznych linków pomiędzy:
+
+* `Pojazdy` i `Bronie Pojazdów`;
+* `Pojazdy` i `Ekwipunek Pojazdów`;
+* polami `Uzbrojenie` i `Wyposażenie` a odpowiadającymi im rekordami.
+
+---
+
+## 9. Indeksy cech z arkusza `Cechy Pojazdów`
+
+Mimo przechowywania wszystkich cech w jednym arkuszu należy utworzyć dwa osobne indeksy runtime:
+
+```text
+_meta.vehicleTraits
+_meta.vehicleWeaponTraits
+```
+
+Podział rekordów:
+
+```text
+Typ = "Cecha Pojazdu"
+→ _meta.vehicleTraits
+
+Typ = "Cecha Broni Pojazdu"
+→ _meta.vehicleWeaponTraits
+```
+
+Oddzielne indeksy zapobiegają:
+
+* pomyleniu rodzaju cechy;
+* kolizjom identycznych nazw;
+* wyświetleniu opisu cechy pojazdu dla broni pojazdu;
+* wyświetleniu opisu cechy broni dla samego pojazdu.
+
+Podczas normalizacji danych należy zbudować odpowiadające indeksy kanoniczne, analogiczne do istniejącego `traitIndex`.
+
+---
+
+## 10. Źródła opisów cech
+
+### 10.1. Arkusz `Pojazdy`
+
+Cechy w arkuszu `Pojazdy` mają być rozwiązywane wyłącznie na podstawie rekordów:
+
+```text
+Typ = "Cecha Pojazdu"
+```
+
+z arkusza:
+
+```text
+Cechy Pojazdów
+```
+
+Schemat:
+
+```text
+Pojazdy
+→ _meta.vehicleTraits
+```
+
+### 10.2. Arkusz `Bronie Pojazdów`
+
+Cechy broni pojazdów mogą pochodzić z dwóch źródeł.
+
+Kolejność wyszukiwania:
+
+1. cechy typu `Cecha Broni Pojazdu` z arkusza `Cechy Pojazdów`;
+2. zwykłe cechy ze starego arkusza `Cechy`;
+3. komunikat o braku opisu.
+
+Schemat:
+
+```text
+Bronie Pojazdów
+→ _meta.vehicleWeaponTraits
+→ fallback: _meta.traits
+```
+
+Przykłady:
+
+```text
+Montowana (Duży)
+→ Cechy Pojazdów
+
+Wybuchowa (6)
+→ Cechy
+```
+
+Zwykłe arkusze zachowują dotychczasowe źródła:
+
+```text
+Bronie
+→ _meta.traits
+
+Pancerze
+→ _meta.traits
+```
+
+---
+
+## 11. Cecha `Montowana (X)`
+
+W arkuszu `Cechy Pojazdów` znajduje się ogólny wpis:
+
+```text
+Montowana (X)
+```
+
+Opis tej cechy:
+
+> Broń o tej Cesze wymaga montażu na odpowiedniej platformie, na przykład pojeździe. Wymaga zaawansowanej maszynerii, ogromnej mocy lub innego specjalnego traktowania typowego dla większych machin. Zazwyczaj nie może z niej skorzystać pojedyncza postać. Wartość w nawiasie określa najmniejszy Rozmiar pojazdu, na którym można zamontować broń.
+
+Każdy wariant cechy ma korzystać z tego samego opisu, niezależnie od tekstu w nawiasie.
+
+Przykłady:
+
+```text
+Montowana (Duży)
+Montowana (Wielki)
+Montowana (Ogromny)
+```
+
+mają zostać dopasowane do:
+
+```text
+Montowana (X)
+```
+
+Parametr ma pozostać widoczny w tytule popovera, ale nie wpływa na wybór opisu.
+
+Przykład:
+
+```text
+Tytuł popovera:
+MONTOWANA (DUŻY)
+
+Opis:
+tekst wpisu Montowana (X)
+```
+
+Mechanizm dopasowywania `(X)` musi obsługiwać:
+
+* parametry liczbowe;
+* parametry tekstowe;
+* polskie znaki;
+* parametry składające się z więcej niż jednego słowa.
+
+Nie należy ograniczać dopasowania do wzorca zawierającego wyłącznie cyfry.
+
+---
+
+## 12. Zwykłe cechy broni pojazdów
+
+Poza cechami typu `Cecha Broni Pojazdu`, broń pojazdu może korzystać ze zwykłych cech z istniejącego arkusza `Cechy`.
+
+Przykład:
+
+```text
+Wybuchowa (6)
+```
+
+powinna być dopasowana do:
+
+```text
+Wybuchowa (X)
+```
+
+ze starego arkusza `Cechy`.
+
+Nie należy kopiować zwykłych cech do arkusza `Cechy Pojazdów`.
+
+Dzięki fallbackowi broń pojazdu może jednocześnie posiadać:
+
+* cechy charakterystyczne wyłącznie dla broni pojazdów;
+* zwykłe cechy broni działające w całym systemie.
+
+---
+
+## 13. Cecha `Wywołanie` i stany
+
+Mechanizm `Wywołanie (Stan)` ma działać dla broni pojazdów analogicznie do obecnego mechanizmu zwykłych broni.
+
+Przykład:
+
+```text
+Wywołanie (Podpalenie)
+```
+
+Popover ma zawierać:
+
+1. opis cechy `Wywołanie`;
+2. opis stanu `Podpalenie`.
+
+Dla nowych arkuszy należy uwzględnić dwa możliwe źródła stanów:
+
+```text
+Stany Pojazdów
+Stany
+```
+
+Przyjęta kolejność wyszukiwania:
+
+1. `Stany Pojazdów`;
+2. fallback do starego arkusza `Stany`;
+3. komunikat o braku opisu.
+
+Pozwala to obsłużyć:
+
+* stany specyficzne dla pojazdów;
+* istniejące stany ogólne;
+* bronie pojazdów korzystające ze starych mechanik.
+
+Jeżeli identyczna nazwa stanu występuje w obu arkuszach, pierwszeństwo ma opis z `Stany Pojazdów`.
+
+Podczas generowania metadanych należy utworzyć osobny indeks:
+
+```text
+_meta.vehicleStates
+```
+
+Źródłem indeksu będzie arkusz:
+
+```text
+Stany Pojazdów
+```
+
+---
+
+## 14. Słowa kluczowe
+
+Kolumna `Słowa Kluczowe` występuje w:
+
+* `Pojazdy`;
+* `Bronie Pojazdów`;
+* `Ekwipunek Pojazdów`.
+
+Wszystkie trzy arkusze mają zostać dodane do reguły arkuszy z neutralnym przecinkiem.
+
+Docelowe zachowanie:
+
+* treść słów kluczowych jest czerwona;
+* przecinki pozostają w podstawowym zielonym kolorze;
+* formatowanie działa semantycznie, niezależnie od ręcznego koloru ustawionego w XLSX.
+
+Nowe arkusze powinny zostać dodane do:
+
+```js
+KEYWORD_SHEETS_COMMA_NEUTRAL
+```
+
+Reguła ma działać identycznie jak obecnie w:
+
+* `Bronie`;
+* `Pancerze`;
+* `Ekwipunek`;
+* `Augumentacje`;
+* `Bestiariusz`;
+* `Archetypy`;
+* `Psionika`.
+
+Nie należy tworzyć osobnego sposobu kolorowania słów kluczowych dla pojazdów.
+
+---
+
+## 15. Szerokości, wyrównanie i łamanie kolumn
+
+Głównym dokumentem referencyjnym dla konfiguracji kolumn jest:
+
+```text
+Kolumny.md
+```
+
+Dla każdej kolumny nowych arkuszy należy ustalić:
+
+* `min-width`;
+* wyrównanie;
+* sposób łamania tekstu;
+* ewentualne `white-space: nowrap`;
+* ewentualne ograniczenie `max-width`;
+* zastosowanie istniejącego clampowania.
+
+Jako punkt wyjścia można wykorzystać konfiguracje istniejących arkuszy:
+
+* `Bronie`;
+* `Ekwipunek`;
+* `Cechy`;
+* `Stany`.
+
+### Zasady wstępne
+
+Tekst do lewej:
+
+* nazwy;
+* typy;
+* opisy;
+* efekty;
+* przykłady;
+* słowa kluczowe;
+* cechy;
+* uzbrojenie;
+* wyposażenie;
+* skład załogi.
+
+Wartości wyśrodkowane:
+
+* liczby;
+* koszty;
+* dostępność;
+* parametry mechaniczne;
+* strona;
+* zasięg;
+* szybkość;
+* manewrowość;
+* odporność;
+* żywotność;
+* rozmiar, jeżeli jego wartości są krótkie.
+
+Kolumna `Zasięg`:
+
+```text
+white-space: nowrap
+text-align: center
+```
+
+Kolumny `Podręcznik` i `Strona` powinny zachować obecne globalne standardy DataVault.
+
+Kolumna `LP` nie jest uwzględniana w konfiguracji wizualnej, ponieważ ma być całkowicie ukryta w interfejsie.
+
+Wstępne szerokości będą traktowane jako punkt wyjścia. Po pierwszym wdrożeniu i sprawdzeniu rzeczywistych rekordów mogą zostać skorygowane.
+
+---
+
+## 16. Wstępna konfiguracja kolumn
+
+Poniższe wartości nie są jeszcze ostateczne. Mają służyć jako punkt wyjścia przy pierwszej implementacji.
+
+### `Role W Pojeździe`
+
+| Kolumna         |                       Min-width | Wyrównanie | Łamanie     |
+| --------------- | ------------------------------: | ---------- | ----------- |
+| `LP`            |                          ukryta | —          | —           |
+| `Rola`          |                            14ch | lewo       | standardowe |
+| `Akcje Pojazdu` |                            60ch | lewo       | standardowe |
+| `Podręcznik`    | zgodnie ze standardem globalnym | lewo       | standardowe |
+| `Strona`        | zgodnie ze standardem globalnym | środek     | standardowe |
+
+### `Akcje Pojazdu`
+
+| Kolumna      |                       Min-width | Wyrównanie | Łamanie     |
+| ------------ | ------------------------------: | ---------- | ----------- |
+| `LP`         |                          ukryta | —          | —           |
+| `Nazwa`      |                            26ch | lewo       | standardowe |
+| `Opis`       |                            56ch | lewo       | standardowe |
+| `Przykład`   |                            56ch | lewo       | standardowe |
+| `Podręcznik` | zgodnie ze standardem globalnym | lewo       | standardowe |
+| `Strona`     | zgodnie ze standardem globalnym | środek     | standardowe |
+
+### `Stany Pojazdów`
+
+| Kolumna      |                       Min-width | Wyrównanie | Łamanie     |
+| ------------ | ------------------------------: | ---------- | ----------- |
+| `LP`         |                          ukryta | —          | —           |
+| `Nazwa`      |                            26ch | lewo       | standardowe |
+| `Opis`       |                            56ch | lewo       | standardowe |
+| `Podręcznik` | zgodnie ze standardem globalnym | lewo       | standardowe |
+| `Strona`     | zgodnie ze standardem globalnym | środek     | standardowe |
+
+### `Cechy Pojazdów`
+
+| Kolumna      |                       Min-width | Wyrównanie | Łamanie     |
+| ------------ | ------------------------------: | ---------- | ----------- |
+| `LP`         |                          ukryta | —          | —           |
+| `Typ`        |                            22ch | lewo       | standardowe |
+| `Nazwa`      |                            26ch | lewo       | standardowe |
+| `Opis`       |                            56ch | lewo       | standardowe |
+| `Podręcznik` | zgodnie ze standardem globalnym | lewo       | standardowe |
+| `Strona`     | zgodnie ze standardem globalnym | środek     | standardowe |
+
+### `Pojazdy`
+
+| Kolumna          |                       Min-width | Wyrównanie | Łamanie     |
+| ---------------- | ------------------------------: | ---------- | ----------- |
+| `LP`             |                          ukryta | —          | —           |
+| `Typ`            |                            14ch | lewo       | standardowe |
+| `Nazwa`          |                            30ch | lewo       | standardowe |
+| `Koszt`          |                             4ch | środek     | standardowe |
+| `Dostępność`     |                             4ch | środek     | standardowe |
+| `Słowa Kluczowe` |                            28ch | lewo       | standardowe |
+| `Szybkość`       |                            10ch | środek     | standardowe |
+| `Manewrowość`    |                            14ch | środek     | standardowe |
+| `Odporność`      |                            10ch | środek     | standardowe |
+| `Żywotność`      |                            10ch | środek     | standardowe |
+| `Rozmiar`        |                            10ch | środek     | standardowe |
+| `Skład Załogi`   |                            22ch | lewo       | standardowe |
+| `Cechy`          |                            32ch | lewo       | standardowe |
+| `Uzbrojenie`     |                            36ch | lewo       | standardowe |
+| `Wyposażenie`    |                            32ch | lewo       | standardowe |
+| `Podręcznik`     | zgodnie ze standardem globalnym | lewo       | standardowe |
+| `Strona`         | zgodnie ze standardem globalnym | środek     | standardowe |
+
+### `Bronie Pojazdów`
+
+Punktem wyjścia ma być konfiguracja arkusza `Bronie`.
+
+| Kolumna            |                       Min-width | Wyrównanie | Łamanie     |
+| ------------------ | ------------------------------: | ---------- | ----------- |
+| `LP`               |                          ukryta | —          | —           |
+| `Typ`              |                  jak w `Bronie` | lewo       | standardowe |
+| `Rodzaj`           |                  jak w `Bronie` | lewo       | standardowe |
+| `Nazwa`            |                  jak w `Bronie` | lewo       | standardowe |
+| `Obrażenia`        |                  jak w `Bronie` | środek     | standardowe |
+| `PP`               |                  jak w `Bronie` | środek     | standardowe |
+| `DK`               |                  jak w `Bronie` | środek     | standardowe |
+| `Szybkostrzelność` |                  jak w `Bronie` | środek     | standardowe |
+| `Zasięg`           |                            18ch | środek     | bez łamania |
+| `Cechy`            |                            32ch | lewo       | standardowe |
+| `Słowa Kluczowe`   |                            28ch | lewo       | standardowe |
+| `Koszt`            |                  jak w `Bronie` | środek     | standardowe |
+| `Dostępność`       |                  jak w `Bronie` | środek     | standardowe |
+| `Koszt IM`         |                  jak w `Bronie` | środek     | standardowe |
+| `Podręcznik`       | zgodnie ze standardem globalnym | lewo       | standardowe |
+| `Strona`           | zgodnie ze standardem globalnym | środek     | standardowe |
+
+### `Ekwipunek Pojazdów`
+
+Punktem wyjścia ma być konfiguracja arkusza `Ekwipunek`.
+
+| Kolumna          |                       Min-width | Wyrównanie | Łamanie     |
+| ---------------- | ------------------------------: | ---------- | ----------- |
+| `LP`             |                          ukryta | —          | —           |
+| `Typ`            |                            14ch | lewo       | standardowe |
+| `Nazwa`          |                            26ch | lewo       | standardowe |
+| `Opis`           |                         48–56ch | lewo       | standardowe |
+| `Efekt`          |                            56ch | lewo       | standardowe |
+| `Słowa Kluczowe` |                            28ch | lewo       | standardowe |
+| `Koszt`          |                             4ch | środek     | standardowe |
+| `Dostępność`     |                             4ch | środek     | standardowe |
+| `Koszt IM`       |                             8ch | środek     | standardowe |
+| `Podręcznik`     | zgodnie ze standardem globalnym | lewo       | standardowe |
+| `Strona`         | zgodnie ze standardem globalnym | środek     | standardowe |
+
+Ostateczne wartości zostaną ustalone po przygotowaniu kompletnych rekordów i sprawdzeniu rzeczywistego renderowania.
+
+---
+
+## 17. Niekompletne rekordy w pliku XLSX
+
+Aktualny `Repozytorium.xlsx` jest plikiem pokazującym docelową strukturę:
+
+* arkuszy;
+* nagłówków;
+* kolejności kolumn;
+* podstawowych zależności.
+
+Część rekordów jest jeszcze pusta lub częściowo uzupełniona.
+
+Nie należy dodawać walidatora blokującego generowanie plików danych z powodu pustych pól.
+
+Aplikacja ma zachowywać i wyświetlać puste dane, ponieważ pozwala to zauważyć:
+
+* problem w pliku wsadowym;
+* przypadkowo nieuzupełniony rekord;
+* błąd konwersji XLSX;
+* błąd generowania JSON;
+* utratę wartości podczas transformacji.
+
+Nie należy:
+
+* pomijać wierszy tylko dlatego, że nie mają wartości w `Nazwa`;
+* cicho usuwać niekompletnych rekordów;
+* zatrzymywać generowania `data.json`;
+* zatrzymywać generowania `firebase-import.json`.
+
+Przed produkcyjnym wdrożeniem wszystkie docelowe pola zostaną uzupełnione.
+
+---
+
+## 18. GeneratorNPC — obowiązkowa poprawka
+
+Poprawienie GeneratorNPC jest warunkiem wdrożenia nowych zakładek.
+
+GeneratorNPC nie może wybierać kolekcji na podstawie dopasowania fragmentu nazwy arkusza.
+
+Nowe nazwy powodują bezpośrednie ryzyko kolizji:
+
+```text
+Bronie Pojazdów
+→ może zostać uznane za Bronie
+
+Ekwipunek Pojazdów
+→ może zostać uznane za Ekwipunek
+
+Cechy Pojazdów
+→ nie może być używane jako zwykłe Cechy
+```
+
+GeneratorNPC ma pobierać istniejące kolekcje przez dokładne nazwy arkuszy:
+
+```text
+Bestiariusz
+Pancerze
+Bronie
+Augumentacje
+Ekwipunek
+Talenty
+Psionika
+Modlitwy
+```
+
+Przykładowy wymagany model:
+
+```js
+data.sheets["Bestiariusz"]
+data.sheets["Pancerze"]
+data.sheets["Bronie"]
+data.sheets["Augumentacje"]
+data.sheets["Ekwipunek"]
+data.sheets["Talenty"]
+data.sheets["Psionika"]
+data.sheets["Modlitwy"]
+```
+
+GeneratorNPC ma całkowicie ignorować:
+
+* `Role W Pojeździe`;
+* `Akcje Pojazdu`;
+* `Stany Pojazdów`;
+* `Cechy Pojazdów`;
+* `Pojazdy`;
+* `Bronie Pojazdów`;
+* `Ekwipunek Pojazdów`.
+
+Poprawność GeneratorNPC nie może zależeć od:
+
+* kolejności arkuszy w XLSX;
+* kolejności kluczy w JSON;
+* tego, który arkusz zostanie znaleziony jako pierwszy;
+* podobieństwa nazw.
+
+Nowe dane pojazdów nie będą obecnie używane do generowania kart NPC.
+
+---
+
+## 19. Brak automatycznej integralności nazw broni i wyposażenia
+
+Kolumny takie jak:
+
+```text
+Uzbrojenie
+Wyposażenie
+Akcje Pojazdu
+```
+
+mają pozostać polami tekstowymi.
+
+Aplikacja nie ma obecnie:
+
+* sprawdzać, czy wymieniona broń istnieje w `Bronie Pojazdów`;
+* sprawdzać, czy wyposażenie istnieje w `Ekwipunek Pojazdów`;
+* zamieniać nazw na linki;
+* otwierać dodatkowych popoverów;
+* synchronizować nazw pomiędzy arkuszami.
+
+Ewentualny audyt spójności nazw może zostać przeprowadzony ręcznie lub jako osobne narzędzie utrzymaniowe podczas kolejnego audytu danych.
+
+---
+
+## 20. Zaktualizowany zakres wdrożenia
+
+Bezpieczne wdrożenie zakładek pojazdów wymaga co najmniej:
+
+1. dodania grupy siedmiu zakładek pojazdów;
+2. dodania checkboxa pojazdów;
+3. zapisywania `showVehicleTabs` w sesji;
+4. dodania srebrno-stalowego koloru tekstu grupy;
+5. zachowania zielonego aktywnego stanu zakładek;
+6. ukrycia kolumny `LP` w każdej zakładce;
+7. zachowania `LP` w danych i logice sortowania;
+8. dodania trzech nowych arkuszy do reguł `Słowa Kluczowe`;
+9. scalania `Cecha 1..N` w `Pojazdy`;
+10. scalania `Cecha 1..N` w `Bronie Pojazdów`;
+11. scalania `Zasięg 1..3` w `Bronie Pojazdów`;
+12. budowania `_meta.vehicleTraits`;
+13. budowania `_meta.vehicleWeaponTraits`;
+14. budowania `_meta.vehicleStates`;
+15. rozszerzenia resolvera cech o kontekst arkusza;
+16. obsługi tekstowych parametrów `(X)`;
+17. zachowania obsługi zwykłych cech w broni pojazdów;
+18. zachowania obsługi `Wywołanie (Stan)`;
+19. poprawienia selekcji arkuszy w GeneratorNPC;
+20. dodania konfiguracji kolumn zgodnej z `Kolumny.md`;
+21. aktualizacji dokumentacji projektu;
+22. wykonania testów obu generatorów danych.
+
+---
+
+## 21. Zakres kolejnego audytu
+
+Kolejny update analizy oraz pełny audyt zostaną wykonane po przygotowaniu kompletnej zawartości nowych arkuszy.
+
+Kolejny audyt powinien objąć:
+
+* kompletność rekordów;
+* zgodność wartości `Typ`;
+* poprawność wszystkich nazw cech;
+* poprawność dopasowań `(X)`;
+* poprawność stanów i cechy `Wywołanie`;
+* brakujące opisy;
+* duplikaty nazw;
+* odwołania do nieistniejących cech;
+* finalne szerokości kolumn;
+* wyrównanie wszystkich kolumn;
+* reguły łamania;
+* potwierdzenie ukrycia `LP` we wszystkich widokach;
+* widok domyślny nowych arkuszy;
+* domyślne sortowanie;
+* domyślne filtry;
+* wynik `data.json`;
+* wynik `firebase-import.json`;
+* zgodność parsera JS i `build_json.py`;
+* regresję GeneratorNPC;
+* wygląd zakładek i checkboxa na desktopie oraz urządzeniach mobilnych.
+
+Do czasu przygotowania kompletnych danych nie należy traktować obecnych propozycji szerokości i widoku jako wartości ostatecznych.
