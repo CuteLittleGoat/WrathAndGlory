@@ -145,6 +145,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 - `--red`: `#d74b4b` (kolor ostrzeżeń/akcentów na czerwono).
 - `--border`: `#16c60c` (ramki i akcenty).
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
+- `--text-old`: `#7f9b7f` — kolor archiwalny dla starych wpisów i kontrolki widoczności starych wpisów Bestiariusza.
 
 #### 2.2 Obwódki, cienie i tła pomocnicze
 - `--b`: `rgba(22,198,12,.35)` — obwódki aktywne.
@@ -169,6 +170,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
   - dodatkowego znacznika `●` (`::after`) w kolorze `rgb(255,120,120)`.
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
+- Kontrolka DataVault „Czy wyświetlić zdezaktualizowane wpisy?” dla starych wpisów Bestiariusza używa koloru archiwalnego `var(--text-old)` / `#7f9b7f`: kontener i etykieta mają pełną nieprzezroczystość (`opacity: 1`), a zaznaczony checkbox używa `accent-color: var(--text-old)`.
 
 ### 2.4 Ikona nagłówka DataVault (stabilność layoutu)
 - W bloku `.brand` w `.topbar` używany jest stały kontener `.sigil` o rozmiarze `48px × 48px` z zielonym tłem i obramowaniem.
@@ -380,6 +382,7 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - `--red`: `#d74b4b`.
 - `--border`: `#16c60c`.
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
+- `--text-old`: `#7f9b7f` — kolor archiwalny synchronizowany z DataVault dla starych wpisów Bestiariusza i kontrolki ich widoczności.
 - `--b`: `rgba(22, 198, 12, 0.35)`.
 - `--b2`: `rgba(22, 198, 12, 0.2)`.
 - `--div`: `rgba(22, 198, 12, 0.18)`.
@@ -427,6 +430,7 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - Panele z `box-shadow: var(--glow)` i `border: 1px solid var(--div)`.
 - Tabele: zebra i hover oparte o `--zebra` i `--hover`.
 - Przyciski **Edytuj/Zapisz** przy edytowalnych polach tekstowych podglądu bazowego (`Umiejętności`, `Słowa Kluczowe`) używają klasy `.editable-text-button`: tekst i obramowanie mają `var(--code)` / `#D2FAD2`, czyli ten sam kolor co numery stron w DataVault, z pełną nieprzezroczystością `opacity: 1`; reguła nie zmienia pozostałych przycisków pobocznych.
+- Kontrolka „Czy wyświetlić zdezaktualizowane wpisy?” w GeneratorNPC jest celowo zsynchronizowana wizualnie z analogiczną kontrolką DataVault. Selektory `.bestiary-show-old-toggle` i `.bestiary-show-old-toggle span` ustawiają tekst na `var(--text-old)` / `#7f9b7f` oraz `opacity: 1`, a selektor `#bestiary-show-old` ustawia zaznaczony checkbox przez `accent-color: var(--text-old)` / `#7f9b7f`. Reguły są zawężone do tej jednej kontrolki i nie zmieniają checkboxów modułów aktywnych, selecta Bestiariusza ani koloru zdezaktualizowanych opcji.
 - Sekcja „Źródło danych” w panelu bocznym (`.panel-data-source`) ma celowo mniejszą typografię (`.data-source-text`: `font-size: 0.82rem`, `line-height: 1.55`) i wymuszone zawijanie długiego linku (`.data-source-link`: `overflow-wrap: anywhere`, `word-break: break-word`), aby URL `data.json` nie wychodził poza ramkę.
 
 ---
@@ -763,6 +767,7 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Zastosowanie:
   - rekordy oznaczone `Status=old` w DataVault (kolor bazowy wiersza),
   - pola `LP`, `Nazwa`, `Typ` w podglądzie bazowym GeneratorNPC,
+  - kontrolka „Czy wyświetlić zdezaktualizowane wpisy?” w GeneratorNPC i DataVault (`var(--text-old)` / `#7f9b7f`, `opacity: 1`, `accent-color: var(--text-old)` dla zaznaczonego checkboxa),
   - teksty przekreślone (`{{S}}...{{/S}}`) jako kolor domyślny przekreślenia.
 
 ### Priorytet kolorów

@@ -11,7 +11,7 @@
 
 ### Tworzenie NPC krok po kroku
 1. W sekcji **Wybór bazowy** wybierz rekord z listy **Bestiariusz · Nazwa**. Domyślnie lista ukrywa zdezaktualizowane wpisy bestiariusza.
-2. Jeżeli chcesz zobaczyć także zdezaktualizowane wpisy, zaznacz pole **Czy wyświetlić zdezaktualizowane wpisy?**. Takie wpisy są pokazane przygaszonym kolorem. Po odznaczeniu pola zdezaktualizowane wpisy znikają; jeśli jeden z nich był wybrany, wybór zostanie wyczyszczony, a podgląd wróci do stanu braku wyboru.
+2. Jeżeli chcesz zobaczyć także zdezaktualizowane wpisy, zaznacz pole **Czy wyświetlić zdezaktualizowane wpisy?**. Etykieta tego pola i zaznaczenie checkboxa mają ten sam spokojny zielony kolor starych wpisów co w DataVault. Takie wpisy są pokazane przygaszonym kolorem. Po odznaczeniu pola zdezaktualizowane wpisy znikają; jeśli jeden z nich był wybrany, wybór zostanie wyczyszczony, a podgląd wróci do stanu braku wyboru.
 3. (Opcjonalnie) dopisz własne notatki w polu **Uwagi do rekordu**.
 4. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość). Przy wierszach **Umiejętności** i **Słowa Kluczowe** użyj przycisku **Edytuj**, aby przejść do pola tekstowego, a potem kliknij **Zapisz**.
 5. W sekcji **Moduły aktywne** zaznacz, które bloki mają być pokazane na finalnej karcie (np. Broń, Talenty, Psionika).
@@ -101,7 +101,7 @@ The language switcher is intentionally hidden; the place to enable it is marked 
 
 ### Build an NPC step by step
 1. In **Base selection**, choose an entry from **Bestiary · Name**. By default, the list hides outdated bestiary entries.
-2. To see outdated entries too, tick **Show outdated entries?**. Those entries appear in a dimmed color. When you untick the field, outdated entries disappear; if one of them was selected, the selection is cleared and the preview returns to the no-selection state.
+2. To see outdated entries too, tick **Show outdated entries?**. This field label and the checked checkbox use the same calm green old-entry color as DataVault. Those entries appear in a dimmed color. When you untick the field, outdated entries disappear; if one of them was selected, the selection is cleared and the preview returns to the no-selection state.
 3. (Optional) add custom notes in **Record notes**.
 4. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed). For **Skills** and **Keywords**, click **Edit** to open a text field, then click **Save**.
 5. In **Active modules**, enable blocks that should appear on final card (e.g., Weapons, Talents, Psionics).
