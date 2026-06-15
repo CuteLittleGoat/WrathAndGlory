@@ -962,3 +962,183 @@ Lokalizacja: sekcje opisujące panel filtrów, filtrowanie, renderowanie, stan `
 Było: dokumentacja opisywała ogólne checkboxy zakładek oraz globalny styl `row-old`.
 
 Jest: dokumentacja opisuje aktualny adminowy checkbox zdezaktualizowanych wpisów, systemowe filtrowanie `old` tylko w `Bestiariuszu`, brak zapisu stanu checkboxa w sesji, czyszczenie zaznaczeń ukrytych rekordów oraz stylowanie tylko pól `Nazwa` i `Typ`.
+
+---
+
+# Aktualizacja analizy — checkbox wpisów zdezaktualizowanych widoczny w trybie użytkownika
+
+**Data aktualizacji:** 2026-06-15
+**Temat:** ustalenie przyczyny, dla której checkbox `Czy wyświetlić zdezaktualizowane wpisy?` pojawia się także w widoku użytkownika, oraz wskazanie naprawy ograniczającej widoczność opcji do trybu admina.
+
+## Pełna treść nowego promptu użytkownika
+
+```text
+Przeczytaj i zaktualizuj analizę o nowe wnioski Analizy/Bestiariusz_old.md
+
+1. Checkbox "Czy wyświetlić zdezaktualizowane wpisy?" się pojawił
+2. Checkbox "Czy wyświetlić zdezaktualizowane wpisy? domyślnie jest odznaczony
+3. Wpisy "old" pojawiają się tylko jak checkbox jest zaznaczony
+
+To wszystko działa i tak powinno być.
+
+Problem jest tylko w tym, że ten checkbox pojawia się zarówno w trybie admina jak i użytkownika. Powinien być widoczny tylko w trybie admina.
+
+Przeprowadź analizę czemu checkbox jest widoczny również w widoku użytkownika i jak to naprawić, żeby ta opcja była widoczna tylko w trybie admina.
+```
+
+## Zakres dodatkowej analizy
+
+Sprawdzono aktualny stan plików modułu `DataVault` związanych z widocznością checkboxa:
+
+- `DataVault/index.html` — miejsce dodania wrappera `#toggleBestiaryOldGroup` i inputa `#toggleOldBestiaryEntries`;
+- `DataVault/app.js` — wykrywanie `ADMIN_MODE`, ustawianie `hidden` w `initUI()` oraz listener checkboxa;
+- `DataVault/style.css` — reguły layoutu checkboxów, szczególnie `.checkboxRow` oraz `.checkboxRow--bestiaryOld`.
+
+## Potwierdzone działające elementy
+
+Aktualna implementacja spełnia trzy główne warunki funkcjonalne:
+
+1. Checkbox `Czy wyświetlić zdezaktualizowane wpisy?` został dodany do panelu filtrów.
+2. Checkbox jest domyślnie odznaczony, ponieważ stan runtime `showOldBestiaryEntries` startuje jako `false` i nie jest zapisywany w `uiState`.
+3. Wpisy `old` w `Bestiariuszu` pojawiają się tylko wtedy, gdy checkbox jest zaznaczony, ponieważ renderowanie korzysta z `getSystemVisibleRows(currentSheet)`, a `shouldShowRowInCurrentSystemView(row, sheetName)` ukrywa rekordy `old` dla `Bestiariusza`, gdy `showOldBestiaryEntries` jest fałszywe.
+
+Problem nie dotyczy więc logiki filtrowania rekordów. Dotyczy wyłącznie warstwy widoczności samego elementu HTML checkboxa w panelu bocznym.
+
+## Przyczyna problemu
+
+W `DataVault/index.html` wrapper checkboxa ma poprawnie ustawiony atrybut `hidden`:
+
+```html
+<label class="checkboxRow checkboxRow--bestiaryOld" id="toggleBestiaryOldGroup" hidden>
+  <input type="checkbox" id="toggleOldBestiaryEntries" />
+  <span class="checkboxLabel" data-i18n="toggleOldBestiaryEntries">Czy wyświetlić zdezaktualizowane wpisy?</span>
+</label>
+```
+
+W `DataVault/app.js` logika również jest poprawna intencyjnie:
+
+```js
+if (els.toggleBestiaryOldGroup){
+  els.toggleBestiaryOldGroup.hidden = !ADMIN_MODE;
+}
+```
+
+Dla adresu bez parametru `?admin=1` stała `ADMIN_MODE` ma wartość `false`, więc JavaScript ustawia:
+
+```js
+els.toggleBestiaryOldGroup.hidden = true;
+```
+
+Mimo to checkbox pozostaje widoczny, ponieważ reguła CSS dla `.checkboxRow` wymusza wyświetlanie elementu:
+
+```css
+.checkboxRow{
+  display:flex;
+  gap:10px;
+  align-items:center;
+  margin-top:12px;
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:var(--text2);
+}
+```
+
+Atrybut HTML `hidden` działa domyślnie przez przeglądarkową regułę podobną do:
+
+```css
+[hidden] { display: none; }
+```
+
+Reguła projektu `.checkboxRow { display:flex; }` pochodzi jednak z arkusza autora strony i ma pierwszeństwo nad domyślną regułą przeglądarki. W efekcie element z atrybutem `hidden`, który jednocześnie ma klasę `.checkboxRow`, może zostać ponownie pokazany jako flex.
+
+To wyjaśnia obserwację ze zrzutu ekranu: checkbox jest odznaczony i filtruje dane poprawnie, ale wrapper nie znika w trybie użytkownika, bo CSS nadpisuje mechanizm ukrywania.
+
+## Rekomendowana naprawa
+
+Najbezpieczniej dodać globalną regułę CSS respektującą atrybut `hidden` również dla elementów stylowanych przez własne klasy projektu:
+
+```css
+[hidden]{display:none !important}
+```
+
+Reguła powinna znaleźć się wysoko w `DataVault/style.css`, najlepiej w części bazowej, zanim zaczynają się komponenty takie jak `.checkboxRow`, `.panel`, `.modal`, `.popover` i `.filterMenu`.
+
+Dlaczego wariant globalny jest rekomendowany:
+
+- naprawia bezpośrednio checkbox `#toggleBestiaryOldGroup`;
+- zabezpiecza inne elementy w module, które także używają atrybutu `hidden`, np. bramkę dostępu `#accessGate`;
+- zachowuje semantykę HTML — jeśli element ma `hidden`, ma być niewidoczny niezależnie od klasy layoutowej;
+- nie wymaga zmian w działającej logice filtrowania `old`;
+- nie wpływa na elementy sterowane przez `aria-hidden`, takie jak modal, popover lub menu filtrów, ponieważ one używają osobnych selektorów `[aria-hidden="false"]`.
+
+Minimalny wariant zawężony tylko do tego checkboxa również jest możliwy:
+
+```css
+#toggleBestiaryOldGroup[hidden]{display:none !important}
+```
+
+albo:
+
+```css
+.checkboxRow[hidden]{display:none !important}
+```
+
+Wariant globalny `[hidden]{display:none !important}` jest jednak bardziej odporny na podobne błędy w przyszłości.
+
+## Dodatkowe zabezpieczenie w JavaScript
+
+Po stronie JavaScript można dodatkowo ustawić styl inline tylko dla wrappera adminowego:
+
+```js
+if (els.toggleBestiaryOldGroup){
+  els.toggleBestiaryOldGroup.hidden = !ADMIN_MODE;
+  els.toggleBestiaryOldGroup.style.display = ADMIN_MODE ? "" : "none";
+}
+```
+
+Nie jest to jednak rekomendowana główna naprawa, ponieważ miesza odpowiedzialności: JavaScript powinien ustawić stan (`hidden`), a CSS powinien gwarantować, że stan `hidden` oznacza brak widoczności. Lepszym rozwiązaniem jest poprawka w CSS.
+
+## Rekomendowany zakres implementacji
+
+Do naprawy wystarczy zmienić `DataVault/style.css`:
+
+```css
+[hidden]{display:none !important}
+```
+
+Nie trzeba zmieniać:
+
+- `DataVault/index.html`, bo wrapper ma już poprawny atrybut `hidden`;
+- logiki filtrowania `old` w `DataVault/app.js`, bo działa poprawnie;
+- tłumaczeń checkboxa;
+- domyślnego stanu checkboxa;
+- mechanizmu `getSystemVisibleRows()`;
+- stylowania rekordów `old` w tabeli.
+
+## Ryzyka i uwagi testowe
+
+Po dodaniu reguły `[hidden]{display:none !important}` należy sprawdzić:
+
+1. Widok użytkownika pod adresem bez `?admin=1`:
+   - checkbox `Czy wyświetlić zdezaktualizowane wpisy?` nie jest widoczny;
+   - pierwszym widocznym checkboxem pozostaje `Czy wyświetlić zakładki dotyczące tworzenia postaci?`;
+   - rekordy `old` w `Bestiariuszu` nie są dostępne dla użytkownika, a sama zakładka `Bestiariusz` pozostaje ukryta jako `ADMIN_ONLY_SHEETS`.
+2. Widok admina pod adresem z `?admin=1`:
+   - checkbox jest widoczny;
+   - checkbox jest domyślnie odznaczony;
+   - wpisy `old` pojawiają się tylko po zaznaczeniu checkboxa;
+   - po odznaczeniu checkboxa wpisy `old` znikają.
+3. Elementy z `aria-hidden`, czyli modal, popover i menu filtrów, nadal działają normalnie, ponieważ reguła dotyczy wyłącznie atrybutu `hidden`, a nie `aria-hidden`.
+
+## Wniosek końcowy
+
+Przyczyną widoczności checkboxa w trybie użytkownika nie jest błędne wykrywanie admina ani błędna logika checkboxa. Przyczyną jest konflikt CSS: klasa `.checkboxRow` ustawia `display:flex`, przez co nadpisuje domyślne ukrywanie elementów z atrybutem `hidden`.
+
+Naprawa powinna polegać na dodaniu w `DataVault/style.css` reguły:
+
+```css
+[hidden]{display:none !important}
+```
+
+Po tej zmianie istniejący kod `els.toggleBestiaryOldGroup.hidden = !ADMIN_MODE;` zacznie działać zgodnie z intencją: checkbox będzie widoczny tylko w trybie admina i ukryty w trybie użytkownika.
