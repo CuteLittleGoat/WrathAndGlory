@@ -924,7 +924,6 @@ td.center{text-align:center}
 .dataTable tbody tr.row-old--bestiary td.bestiary-old-identity .caretref,
 .dataTable tbody tr.row-old--bestiary td.bestiary-old-identity .slash{
   color:var(--text-old);
-  font-style:italic;
 }
 
 /* Filter menu */
