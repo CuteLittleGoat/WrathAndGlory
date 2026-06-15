@@ -155,15 +155,15 @@ Efekty i obwódki:
 - `.actionsGroup` — kontener przycisku i notatki administracyjnej, ustawiony na `max-width: 640px` i `width: min(640px, calc(100vw - 40px))`, aby pomieścić dłuższy tekst instrukcji aktualizacji danych.
 - Nazwy plików `index.html`, `Repozytorium.xlsx` i `data.json` w podpowiedzi są renderowane jako `<code>...</code>`, dzięki czemu mają jaśniejszy kolor (`--code`) i wyróżniają się wizualnie.
 - `.input` — styl pól tekstowych (tło `--bg`, focus glow).
-- `.checkboxRow` — wiersz z checkboxem, uppercase, kolor `--text2`, `accent-color: var(--accent)`.
-- `.checkboxLabel` — jaśniejszy opis checkboxa, kolor `--code` z `opacity: .9` (taki sam ton jak referencje `str.`).
-- `.checkboxRow--combat` — wariant wiersza z czerwonym tekstem `--red` i `accent-color: var(--red)` dla checkboxa zasad walki.
+- `.checkboxRow` — wiersz z checkboxem, uppercase, kolor `--text2`, bazowo `accent-color: var(--accent)` dla zwykłych zielonych przełączników.
+- `.checkboxLabel` — jaśniejszy opis checkboxa, kolor `--code` z `opacity: .9` (taki sam ton jak referencje `str.`); checkbox `#toggleCharacterTabs` używa końcowej reguły `accent-color: var(--code)`, żeby znacznik wyboru pasował do jasnego komunikatu.
+- `.checkboxRow--combat` — wariant wiersza z czerwonym tekstem `--red`; checkbox `#toggleCombatTabs` ma końcową regułę `accent-color: var(--red)`, żeby nie przegrywał z bazowym zielonym kolorem checkboxów.
 
 ### 3.5 Zakładki
 - `.tabs` — flex z zawijaniem.
 - `.tab` — uppercase i ten sam font co reszta UI, aktywna z innym tłem i borderem.
-- `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`) mają jaśniejszy kolor tekstu `var(--code)` i `opacity: .9`, spójny z etykietą checkboxa.
-- `.tab--combat` — zakładki zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST`) mają czerwony tekst `var(--red)` niezależnie od stanu aktywnego.
+- `.tab--character` — zakładki powiązane z checkboxem tworzenia postaci (arkusze: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`) mają jaśniejszy kolor tekstu `var(--code)`, własne delikatne tło, jasne obramowanie na hover/focus oraz aktywny jasny glow oparty o `rgba(210,250,210,...)`, więc nie dziedziczą zielonego glow zwykłych zakładek.
+- `.tab--combat` — zakładki zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST`) mają czerwony tekst `var(--red)` niezależnie od stanu aktywnego; aktywne czerwone obramowanie i glow są zdefiniowane końcową regułą po `.tab.active`.
 
 ### 3.6 Tabela
 - `.tableWrap`, `.tableFrame`, `.tableViewport` — kontenery dla tabeli.
