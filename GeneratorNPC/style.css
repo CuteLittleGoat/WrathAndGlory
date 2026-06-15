@@ -70,8 +70,10 @@ a.link:hover {
 
 .topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
+  gap: 12px 18px;
   padding: 18px 28px;
   border-bottom: 1px solid var(--div);
   background: var(--panel);
@@ -102,6 +104,7 @@ a.link:hover {
 
 .actions {
   display: flex;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
@@ -168,10 +171,14 @@ a.link:hover {
   opacity: 1;
 }
 
+/* Siatka może się kurczyć mimo szerokich tabel; lokalny overflow zostaje na kartach.
+   The grid can shrink despite wide tables; local overflow remains on cards. */
 .layout {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 360px minmax(0, 1fr);
   gap: 24px;
+  width: 100%;
+  max-width: 100%;
   padding: 28px;
 }
 
@@ -356,10 +363,13 @@ textarea:focus {
   letter-spacing: 0.12em;
 }
 
+/* Obszar roboczy jako element siatki musi mieć min-width: 0, aby nie rozszerzał dokumentu przez tabele.
+   As a grid item, the workspace needs min-width: 0 so tables do not widen the document. */
 .workspace {
   display: flex;
   flex-direction: column;
   gap: 20px;
+  min-width: 0;
 }
 
 .card {
@@ -367,6 +377,8 @@ textarea:focus {
   border: 1px solid var(--div);
   border-radius: 8px;
   padding: 18px 20px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .card.is-hidden {

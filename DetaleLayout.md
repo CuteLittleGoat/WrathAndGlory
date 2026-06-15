@@ -422,7 +422,8 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - Stan ekspansji zapisany w `state.expandedCells` dla klucza `sheet|rowId|col`.
 
 ### 5) Layout i elementy UI
-- Górny pasek (`.topbar`) sticky, panele boczne i workspace w układzie `grid` (`360px` + `1fr`).
+- Górny pasek (`.topbar`) sticky, z `flex-wrap: wrap` i odstępem `12px 18px`; kontener przycisków `.actions` również może zawijać przyciski.
+- Panele boczne i workspace działają w układzie `grid` (`360px` + `minmax(0, 1fr)`). `.layout` ma `width: 100%` i `max-width: 100%`, `.workspace` ma `min-width: 0`, a `.card` ma `min-width: 0`, `max-width: 100%` i `overflow-x: auto`, dlatego szerokie tabele przewijają się lokalnie wewnątrz kart zamiast rozszerzać cały dokument.
 - Panele z `box-shadow: var(--glow)` i `border: 1px solid var(--div)`.
 - Tabele: zebra i hover oparte o `--zebra` i `--hover`.
 - Przyciski **Edytuj/Zapisz** przy edytowalnych polach tekstowych podglądu bazowego (`Umiejętności`, `Słowa Kluczowe`) używają klasy `.editable-text-button`: tekst i obramowanie mają `var(--code)` / `#D2FAD2`, czyli ten sam kolor co numery stron w DataVault, z pełną nieprzezroczystością `opacity: 1`; reguła nie zmienia pozostałych przycisków pobocznych.

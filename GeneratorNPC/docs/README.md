@@ -216,8 +216,8 @@ In the access window, the **“Litany of Access”** label is positioned on the 
 ## Okno dostępu na telefonie / Access gate on phones
 - PL: Wspólny overlay `shared/access-gate.css` jest zakotwiczony do viewportu (`width:100vw`, `max-width:100vw`, `height:100dvh`) i ma `overflow:auto`, dzięki czemu karta hasła pozostaje widoczna nawet przy szerokim layoucie modułu.
 - EN: Shared overlay `shared/access-gate.css` is anchored to the viewport (`width:100vw`, `max-width:100vw`, `height:100dvh`) and uses `overflow:auto`, so the password card stays visible even when the module layout is very wide.
-- PL: W `GeneratorNPC/style.css` karty danych mają `overflow-x:auto`, a `.data-table` ma `min-width:max-content`, więc szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
-- EN: In `GeneratorNPC/style.css`, data cards use `overflow-x:auto` and `.data-table` uses `min-width:max-content`, so wide tables scroll inside cards instead of stretching the whole document.
+- PL: W `GeneratorNPC/style.css` szerokie tabele przewijają się poziomo w obrębie kart. Jeżeli tabela ma więcej kolumn niż mieści się na ekranie, przewiń poziomy pasek widoczny przy karcie, a nie całą stronę.
+- EN: In `GeneratorNPC/style.css`, wide tables scroll horizontally inside their cards. If a table has more columns than fit on the screen, use the horizontal bar on that card rather than scrolling the whole page.
 
 # 🇵🇱 Instrukcja dla użytkownika (PL) — dane GeneratorNPC
 
