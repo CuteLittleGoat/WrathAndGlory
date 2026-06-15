@@ -581,6 +581,9 @@ const translations = {
             loadSummary:
               "Załadowano: Bestiariusz ({bestiary}), Pancerze ({armor}), Bronie ({weapons}), Augumentacje ({augmentations}), Ekwipunek ({equipment}), Talenty ({talents}), Psionika ({psionics}), Modlitwy ({prayers}).",
             loadError: "Nie udało się pobrać danych. Sprawdź dostępność prywatnej bazy.",
+            requiredSheetsMissingContainer: "Dane DataVault nie zawierają listy arkuszy wymaganej przez GeneratorNPC.",
+            requiredSheetMissing: "W danych DataVault brakuje wymaganego arkusza GeneratorNPC: {sheet}.",
+            requiredSheetEmpty: "Wymagany arkusz GeneratorNPC jest pusty: {sheet}.",
             accessInvalidPassword: "Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona.",
             statusLoadPrivateData: "Ładowanie danych z prywatnej bazy...",
             statusPrivateDataOk: "OK — załadowano dane z prywatnej bazy",
@@ -743,6 +746,9 @@ const translations = {
             loadSummary:
               "Loaded: Bestiary ({bestiary}), Armor ({armor}), Weapons ({weapons}), Augmentations ({augmentations}), Equipment ({equipment}), Talents ({talents}), Psionics ({psionics}), Prayers ({prayers}).",
             loadError: "Could not load data. Check private database availability.",
+            requiredSheetsMissingContainer: "DataVault data does not contain the sheet list required by GeneratorNPC.",
+            requiredSheetMissing: "DataVault data is missing a required GeneratorNPC sheet: {sheet}.",
+            requiredSheetEmpty: "A required GeneratorNPC sheet is empty: {sheet}.",
             accessInvalidPassword: "The angered Machine Spirit replies: the Litany of Access was rejected.",
             statusLoadPrivateData: "Loading data from private database...",
             statusPrivateDataOk: "OK — loaded data from private database",
@@ -1318,13 +1324,45 @@ const translations = {
         return null;
       };
 
-      // --- Generator używa wyłącznie dokładnych nazw arkuszy DataVault / The generator uses only exact DataVault sheet names ---
-      const getCollection = (db, exactSheetName) => {
+      // --- Generator używa wyłącznie dokładnych nazw wymaganych arkuszy DataVault / The generator uses only exact names of required DataVault sheets ---
+      const getRequiredCollection = (db, exactSheetName) => {
         if (!db || typeof db !== "object" || !db.sheets || typeof db.sheets !== "object") {
-          return [];
+          throw new Error("GENERATORNPC_DATA_MISSING_SHEETS");
         }
-        const section = db.sheets[exactSheetName];
-        return extractRecords(section);
+
+        if (!Object.prototype.hasOwnProperty.call(db.sheets, exactSheetName)) {
+          throw new Error(`GENERATORNPC_REQUIRED_SHEET_MISSING:${exactSheetName}`);
+        }
+
+        const records = extractRecords(db.sheets[exactSheetName]);
+
+        if (!records.length) {
+          throw new Error(`GENERATORNPC_REQUIRED_SHEET_EMPTY:${exactSheetName}`);
+        }
+
+        return records;
+      };
+
+      // --- Czytelny komunikat dla błędów struktury DataVault / Readable message for DataVault structure errors ---
+      const getGeneratorDataLoadErrorMessage = (error) => {
+        const rawMessage = error?.message || String(error || "");
+        const messages = translations[currentLanguage].messages;
+
+        if (rawMessage === "GENERATORNPC_DATA_MISSING_SHEETS") {
+          return messages.requiredSheetsMissingContainer;
+        }
+
+        if (rawMessage.startsWith("GENERATORNPC_REQUIRED_SHEET_MISSING:")) {
+          const sheetName = rawMessage.split(":").slice(1).join(":");
+          return messages.requiredSheetMissing.replace("{sheet}", sheetName);
+        }
+
+        if (rawMessage.startsWith("GENERATORNPC_REQUIRED_SHEET_EMPTY:")) {
+          const sheetName = rawMessage.split(":").slice(1).join(":");
+          return messages.requiredSheetEmpty.replace("{sheet}", sheetName);
+        }
+
+        return null;
       };
 
       const resolveNameKey = (record) => {
@@ -3021,17 +3059,16 @@ const translations = {
         const firebaseApi = await getFirebaseApi();
         setStatus(translations[currentLanguage].messages.statusLoadPrivateData);
         const data = await firebaseApi.loadDataVaultLive();
-        if (!data || typeof data !== "object" || !data.sheets || typeof data.sheets !== "object") throw new Error("GENERATORNPC_DATA_MISSING_SHEETS");
         state.data = data;
         state.traits = buildTraitsMap(data);
-        state.bestiary = sortByName(getCollection(data, "Bestiariusz"));
-        state.armor = sortByTypeThenName(getCollection(data, "Pancerze"));
-        state.weapons = sortByTypeThenName(getCollection(data, "Bronie"));
-        state.augmentations = sortByTypeThenName(getCollection(data, "Augumentacje"));
-        state.equipment = sortByTypeThenName(getCollection(data, "Ekwipunek"));
-        state.talents = sortByName(getCollection(data, "Talenty"));
-        state.psionics = sortByTypeThenName(getCollection(data, "Psionika"), { typeDescending: true });
-        state.prayers = sortByName(getCollection(data, "Modlitwy"));
+        state.bestiary = sortByName(getRequiredCollection(data, "Bestiariusz"));
+        state.armor = sortByTypeThenName(getRequiredCollection(data, "Pancerze"));
+        state.weapons = sortByTypeThenName(getRequiredCollection(data, "Bronie"));
+        state.augmentations = sortByTypeThenName(getRequiredCollection(data, "Augumentacje"));
+        state.equipment = sortByTypeThenName(getRequiredCollection(data, "Ekwipunek"));
+        state.talents = sortByName(getRequiredCollection(data, "Talenty"));
+        state.psionics = sortByTypeThenName(getRequiredCollection(data, "Psionika"), { typeDescending: true });
+        state.prayers = sortByName(getRequiredCollection(data, "Modlitwy"));
         setSelectOptions(bestiarySelect, state.bestiary, translations[currentLanguage].messages.selectBestiary);
         setSelectOptions(armorSelect, state.armor, translations[currentLanguage].messages.selectArmor, { disableOption: isArmorBlocked, disabledTitle: translations[currentLanguage].messages.armorDisabledTitle });
         setSelectOptions(weaponSelect, state.weapons, translations[currentLanguage].messages.selectWeapon);
@@ -3058,7 +3095,7 @@ const translations = {
           await loadPrivateGeneratorData();
         } catch (error) {
           const firebaseApi = await getFirebaseApi();
-          const message = firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error, currentLanguage) : translations[currentLanguage].messages.statusPrivateDataError;
+          const message = getGeneratorDataLoadErrorMessage(error) || (firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error, currentLanguage) : translations[currentLanguage].messages.statusPrivateDataError);
           setStatus(message);
           accessGate.hidden = false;
           accessError.textContent = message;
@@ -3090,7 +3127,7 @@ const translations = {
             accessGate.hidden = true;
             await loadPrivateGeneratorData();
           } catch (error) {
-            const message = firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error, currentLanguage) : translations[currentLanguage].messages.accessInvalidPassword;
+            const message = getGeneratorDataLoadErrorMessage(error) || (firebaseApi.getReadableAccessError ? firebaseApi.getReadableAccessError(error, currentLanguage) : translations[currentLanguage].messages.accessInvalidPassword);
             setStatus(message);
             accessError.textContent = message;
             accessGate.hidden = false;
