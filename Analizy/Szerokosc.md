@@ -463,3 +463,69 @@ Najlepsza poprawka to nie zmniejszanie tabel, tylko poprawienie zasad kurczenia 
 ```
 
 To powinno usunąć długi poziomy scrollbar całej strony i zachować zamierzone lokalne przewijanie szerokich tabel w kartach.
+
+
+## Zmiany wykonane w kodzie
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: selektor `.layout`
+
+Było:
+
+```css
+grid-template-columns: 360px 1fr;
+```
+
+Jest:
+
+```css
+grid-template-columns: 360px minmax(0, 1fr);
+width: 100%;
+max-width: 100%;
+```
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: selektor `.workspace`
+
+Było: obszar roboczy nie miał jawnego ograniczenia minimalnej szerokości jako element siatki.
+
+Jest:
+
+```css
+min-width: 0;
+```
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: selektor `.card`
+
+Było: karta miała lokalne `overflow-x: auto`, ale nie miała jawnego `min-width: 0` ani `max-width: 100%`.
+
+Jest:
+
+```css
+min-width: 0;
+max-width: 100%;
+overflow-x: auto;
+```
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: selektory `.topbar` i `.actions`
+
+Było: górny pasek i kontener akcji nie miały zawijania elementów.
+
+Jest:
+
+```css
+.topbar {
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+
+.actions {
+  flex-wrap: wrap;
+}
+```

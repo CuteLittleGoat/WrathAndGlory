@@ -159,7 +159,13 @@ Ustawienia globalne:
 - `--header-row-height` — wysokość wiersza nagłówków tabel (36px).
 
 ### 6.2. Klasy layoutu
-- `.topbar`, `.layout`, `.sidebar`, `.workspace`, `.panel`, `.card`, `.card-header`.
+- `.topbar` — sticky pasek nagłówka z elastycznym zawijaniem (`flex-wrap: wrap`) i odstępem `12px 18px`, dzięki czemu przyciski nie wymuszają szerokości dokumentu na węższych ekranach.
+- `.actions` — kontener przycisków nagłówka z `flex-wrap: wrap`.
+- `.layout` — główna siatka `360px minmax(0, 1fr)` z `width: 100%` i `max-width: 100%`; prawa kolumna może się kurczyć zamiast rozszerzać cały dokument przez szerokie tabele.
+- `.sidebar` — lewa kolumna z panelami ustawień.
+- `.workspace` — prawa kolumna robocza z `min-width: 0`, która pozwala kartom i tabelom przewijać się lokalnie.
+- `.panel`, `.card`, `.card-header`.
+- `.card` — karta z `min-width: 0`, `max-width: 100%` i lokalnym `overflow-x: auto`; szerokie tabele przewijają się w obrębie karty.
 - `.card.is-hidden` — ukrywa moduł, gdy jest wyłączony.
 
 ### 6.3. Tekst i typografia
@@ -200,6 +206,9 @@ Ustawienia globalne:
 
 ### 6.9. Responsywność
 - `@media (max-width: 1000px)` — przełącza layout na jednokolumnowy.
+- Szerokość dokumentu jest stabilizowana przez `minmax(0, 1fr)` w `.layout`, `min-width: 0` w `.workspace` i `.card` oraz `max-width: 100%` w `.card`; moduł nie używa `body { overflow-x: hidden; }` do maskowania problemów z szerokością.
+- Na szerokich ekranach działa układ dwukolumnowy: panel boczny ma 360px, a workspace zajmuje pozostałą przestrzeń.
+- Na wąskich ekranach nagłówek i przyciski mogą zawijać się do kolejnego wiersza bez zmniejszania czytelności przycisków.
 
 ### 6.10. Karta do druku — trackery „Ż/T” (PL) / „H/S” (EN)
 Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
@@ -571,10 +580,10 @@ Wspólny overlay `shared/access-gate.css` jest zakotwiczony do viewportu (`width
 
 Ikona bramki używa stałego slotu `.accessGate__iconSlot` (`72px × 72px`) z obrazem `../IkonaPowiadomien2.png` renderowanym jako `.accessGate__icon` (`object-fit: contain`), aby ograniczyć przesunięcia layoutu podczas ładowania grafiki.
 
-## 21. Szerokie tabele na telefonie
-W `GeneratorNPC/style.css` karty danych używają `overflow-x: auto`, a `.data-table` używa `min-width: max-content`.
+## 21. Szerokie tabele i szerokość dokumentu
+W `GeneratorNPC/style.css` karty danych używają `overflow-x: auto`, a `.data-table` używa `min-width: max-content`. Minimalne szerokości kolumn pozostają zdefiniowane per arkusz danych, aby opisy broni, pancerzy, psioniki i modlitw były czytelne.
 
-Dzięki temu szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
+Główna siatka `.layout` używa `grid-template-columns: 360px minmax(0, 1fr)`, `width: 100%` i `max-width: 100%`. Obszar `.workspace` oraz karty `.card` mają `min-width: 0`, a karty dodatkowo `max-width: 100%`. Dzięki temu szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
 
 # 🇵🇱 Dokumentacja techniczna (PL) — źródła danych
 
