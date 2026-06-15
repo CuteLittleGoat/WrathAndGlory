@@ -19,7 +19,7 @@ Checkboxy w panelu filtrów używają natywnego `accent-color`:
 - checkbox zasad walki `#toggleCombatTabs` ma czerwony kolor `--red`, zgodny z czerwonym tekstem komunikatu;
 - checkbox pojazdów pozostaje stalowo-szary dzięki `--steel`.
 
-Końcowe reguły CSS dla tych elementów znajdują się po bazowych regułach `.checkboxRow input` i `.tab.active`, aby kaskada CSS nie przywracała zwykłego zielonego stylu.
+Końcowe reguły CSS dla tych elementów znajdują się po bazowych regułach `.checkboxRow input` i `.tab.active`, aby kaskada CSS nie przywracała zwykłego zielonego stylu. Globalna reguła `[hidden]{display:none !important}` znajduje się wysoko w `style.css`, więc wrapper adminowego checkboxa Bestiariusza ukrywa się całkowicie w trybie użytkownika mimo bazowego `display:flex` klasy `.checkboxRow`.
 
 # 🇬🇧 DataVault layout details (EN)
 
@@ -42,4 +42,4 @@ The filter-panel checkboxes use native `accent-color`:
 - the combat-rules checkbox `#toggleCombatTabs` uses red `--red`, matching the red message text;
 - the vehicle checkbox stays steel gray through `--steel`.
 
-The final CSS rules for these elements are placed after the base `.checkboxRow input` and `.tab.active` rules so the CSS cascade does not restore the standard green style.
+The final CSS rules for these elements are placed after the base `.checkboxRow input` and `.tab.active` rules so the CSS cascade does not restore the standard green style. The global `[hidden]{display:none !important}` rule is placed high in `style.css`, so the admin-only Bestiary checkbox wrapper is fully hidden in user mode despite the base `.checkboxRow` `display:flex`.

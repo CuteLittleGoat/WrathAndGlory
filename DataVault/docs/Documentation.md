@@ -152,6 +152,7 @@ Efekty i obwódki:
   - Media query `@media (max-width: 980px)` przełącza na jedną kolumnę.
 
 ### 3.4 Przyciski i pola
+- Globalna reguła `[hidden]{display:none !important}` znajduje się w bazowej części `style.css` przed komponentami i wymusza semantykę HTML `hidden`; dzięki temu wrapper adminowego checkboxa Bestiariusza znika bez pustego miejsca w trybie użytkownika, a selektory `[aria-hidden="false"]` dla modala, popovera i menu filtrów działają niezależnie.
 - `.btn` (podstawowy), `.btn.primary`, `.btn.secondary`.
 - `.actionsGroup` — kontener przycisku i notatki administracyjnej, ustawiony na `max-width: 640px` i `width: min(640px, calc(100vw - 40px))`, aby pomieścić dłuższy tekst instrukcji aktualizacji danych.
 - Nazwy plików `index.html`, `Repozytorium.xlsx` i `data.json` w podpowiedzi są renderowane jako `<code>...</code>`, dzięki czemu mają jaśniejszy kolor (`--code`) i wyróżniają się wizualnie.
