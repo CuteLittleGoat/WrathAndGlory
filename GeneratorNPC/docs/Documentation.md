@@ -567,3 +567,11 @@ Ikona bramki używa stałego slotu `.accessGate__iconSlot` (`72px × 72px`) z ob
 W `GeneratorNPC/style.css` karty danych używają `overflow-x: auto`, a `.data-table` używa `min-width: max-content`.
 
 Dzięki temu szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
+
+# 🇵🇱 Dokumentacja techniczna (PL) — źródła danych
+
+GeneratorNPC pobiera kolekcje wyłącznie z dokładnych nazw arkuszy w `data.sheets`: `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika` i `Modlitwy`. Moduł nie używa dopasowania fragmentów nazw arkuszy, dlatego ignoruje arkusze pojazdów, takie jak `Bronie Pojazdów`, `Ekwipunek Pojazdów` i `Cechy Pojazdów`.
+
+# 🇬🇧 Technical documentation (EN) — data sources
+
+GeneratorNPC reads collections only from exact sheet names in `data.sheets`: `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, and `Modlitwy`. The module does not match partial sheet names, so it ignores vehicle sheets such as `Bronie Pojazdów`, `Ekwipunek Pojazdów`, and `Cechy Pojazdów`.

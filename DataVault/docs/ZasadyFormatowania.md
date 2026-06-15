@@ -157,3 +157,15 @@ Priorytet koloru dla przekreślenia:
 4. Linie pomocnicze zaczynaj od `*[liczba]`, jeśli mają być pokazane jaśniejszym tonem.
 5. W `Słowa Kluczowe Frakcji` pamiętaj, że `-` i `lub` są neutralne, a `[ŚWIAT-KUŹNIA]` jest zawsze czerwone.
 6. W `Pakiety Wyniesienia / Słowa Kluczowe` nie licz na automatyczną pełną czerwień — kolor wynika tylko z inline styli z XLSX.
+
+# 🇵🇱 Zasady formatowania (PL) — pojazdy
+
+Kolumny `Słowa Kluczowe` w arkuszach `Pojazdy`, `Bronie Pojazdów` i `Ekwipunek Pojazdów` są formatowane tak samo jak inne arkusze z neutralnymi przecinkami: słowa kluczowe są czerwone, a przecinki zachowują kolor podstawowy. Kolejność słów kluczowych pozostaje taka sama jak w XLSX.
+
+Kolumna `Cechy` w arkuszach `Pojazdy` i `Bronie Pojazdów` powstaje przez scalenie kolumn `Cecha N`. Puste wartości i `-` są pomijane, a brak cech daje wartość `-`.
+
+# 🇬🇧 Formatting rules (EN) — vehicles
+
+The `Słowa Kluczowe` columns in `Pojazdy`, `Bronie Pojazdów`, and `Ekwipunek Pojazdów` are formatted like other comma-neutral keyword sheets: keywords are red and commas keep the base color. Keyword order stays the same as in the XLSX file.
+
+The `Cechy` column in `Pojazdy` and `Bronie Pojazdów` is created by merging `Cecha N` columns. Empty values and `-` are skipped, and records with no traits receive `-`.

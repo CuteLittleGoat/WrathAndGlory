@@ -283,6 +283,9 @@ def main():
   sheets = {}
   traits = {}
   states = {}
+  vehicle_traits = {}
+  vehicle_weapon_traits = {}
+  vehicle_states = {}
 
   # Traits meta from Cechy sheet
   if "Cechy" in raw_sheets:
@@ -304,10 +307,33 @@ def main():
       if desc:
         states[name] = desc
 
+  # Metadane cech pojazdów z arkusza Cechy Pojazdów dzielone według Typ / Vehicle trait metadata from the Cechy Pojazdów sheet split by Typ
+  if "Cechy Pojazdów" in raw_sheets:
+    for r in raw_sheets["Cechy Pojazdów"]:
+      name = norm(r.get("Nazwa", ""))
+      if not name:
+        continue
+      desc = (r.get("Opis") or "").strip()
+      typ = norm(r.get("Typ", ""))
+      if desc and typ == "Cecha Pojazdu":
+        vehicle_traits[name] = desc
+      elif desc and typ == "Cecha Broni Pojazdu":
+        vehicle_weapon_traits[name] = desc
+
+  # Metadane stanów pojazdów z arkusza Stany Pojazdów / Vehicle state metadata from the Stany Pojazdów sheet
+  if "Stany Pojazdów" in raw_sheets:
+    for r in raw_sheets["Stany Pojazdów"]:
+      name = norm(r.get("Nazwa", ""))
+      if not name:
+        continue
+      desc = (r.get("Opis") or r.get("Efekt") or "").strip()
+      if desc:
+        vehicle_states[name] = desc
+
   for name, recs in raw_sheets.items():
-    if name == "Bronie":
+    if name in ("Bronie", "Bronie Pojazdów"):
       recs = [merge_traits(merge_range(r)) for r in recs]
-    elif name == "Pancerze":
+    elif name in ("Pancerze", "Pojazdy"):
       recs = [merge_traits(r) for r in recs]
     sheets[name] = recs
 
@@ -316,6 +342,9 @@ def main():
     "_meta": {
       "traits": traits,
       "states": states,
+      "vehicleTraits": vehicle_traits,
+      "vehicleWeaponTraits": vehicle_weapon_traits,
+      "vehicleStates": vehicle_states,
       "sheetOrder": sheet_order,
       "columnOrder": column_order,
     }

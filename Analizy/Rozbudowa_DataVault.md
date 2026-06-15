@@ -1241,3 +1241,49 @@ Po zakończeniu agent powinien zwrócić:
    * `Analizy/firebase-import.json`;
 4. informację, jakie testy wykonano;
 5. informację, czy są znane ograniczenia lub rzeczy wymagające ręcznej weryfikacji.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/index.html`
+
+Lokalizacja: panel filtrów modułu DataVault.
+
+Było: dostępne były checkboxy zakładek tworzenia postaci i zasad walki.
+
+Jest: dodano checkbox `toggleVehicleTabs` z etykietą sterującą widocznością siedmiu zakładek pojazdów.
+
+### Plik: `DataVault/app.js`
+
+Lokalizacja: konfiguracja arkuszy, stan UI, transformacja danych, metadane i popovery cech.
+
+Było: DataVault znał grupy zakładek tworzenia postaci i zasad walki, scalał cechy/range dla dotychczasowych arkuszy oraz korzystał z `_meta.traits` i `_meta.states`.
+
+Jest: dodano `VEHICLE_SHEETS`, `showVehicleTabs`, zapisywanie stanu checkboxa pojazdów, style klas `tab--vehicle`, domyślne filtry dla `Pojazdy`, `Bronie Pojazdów` i `Ekwipunek Pojazdów`, scalanie `Cecha N` i `Zasięg N` dla arkuszy pojazdów oraz metadane `_meta.vehicleTraits`, `_meta.vehicleWeaponTraits` i `_meta.vehicleStates`. Popovery obsługują cechy pojazdów, cechy broni pojazdów, fallback do zwykłych cech, tekstowe parametry `(X)` i `Wywołanie (Zatrucie 2/4/6)`.
+
+### Plik: `DataVault/style.css`
+
+Lokalizacja: zmienne kolorów, checkboxy, zakładki i konfiguracja kolumn.
+
+Było: zakładki zasad walki miały czerwony tekst, a aktywny stan korzystał głównie z globalnej zielonej reguły; brakowało palety pojazdów i konfiguracji kolumn dla arkuszy pojazdów.
+
+Jest: dodano stalowo-srebrną paletę pojazdów, stalowy checkbox, aktywny czerwony glow zakładek zasad walki, aktywny stalowy glow zakładek pojazdów oraz reguły szerokości, wyrównania i zawijania kolumn nowych arkuszy.
+
+### Plik: `DataVault/build_json.py`
+
+Lokalizacja: transformacja XLSX do JSON.
+
+Było: skrypt budował `_meta.traits`, `_meta.states`, scalał `Cecha N` dla wybranych arkuszy i `Zasięg N` dla zwykłych broni.
+
+Jest: skrypt scala `Cecha N` w `Pojazdy` i `Bronie Pojazdów`, scala `Zasięg N` w `Bronie Pojazdów` oraz buduje `_meta.vehicleTraits`, `_meta.vehicleWeaponTraits` i `_meta.vehicleStates`.
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: funkcja `getCollection` i ładowanie kolekcji po pobraniu danych DataVault.
+
+Było: kolekcje mogły być wyszukiwane przez dopasowanie fragmentów nazw, co groziło kolizją z arkuszami pojazdów.
+
+Jest: kolekcje GeneratorNPC są pobierane wyłącznie z dokładnych nazw arkuszy `data.sheets[...]`, a arkusze pojazdów są ignorowane.
+
+### Pliki dokumentacji i artefaktów
+
+Zaktualizowano dokumentację DataVault, GeneratorNPC, `Kolumny.md`, `DetaleLayout.md` i `DataVault/docs/ZasadyFormatowania.md`. Wygenerowano `Analizy/data.json` i `Analizy/firebase-import.json` na podstawie `Analizy/Repozytorium.xlsx`.

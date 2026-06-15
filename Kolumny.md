@@ -322,3 +322,64 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 - Uzupełniono kolumnę `Gatunek` w `Archetypy`.
 - Skorygowano wyrównania do wartości z `DataVault/style.css` (m.in. `Zagrożenie`, `Koszt PD`, `ST`, `Zasięg`, `Wiele Celów`, kolumny numeryczne i `Kary do ST`).
 - W `Pancerze` poprawiono kolejność `Słowa Kluczowe` / `Koszt IM`, aby odpowiadała `_meta.columnOrder`.
+
+## Zakładki pojazdów — aktualna konfiguracja kolumn
+
+Kolumna `LP` pozostaje w danych jako kolejność techniczna, ale nie jest renderowana w tabelach, porównaniu, Widoku Domyślnym ani Pełnym Widoku.
+
+### `Role W Pojeździe`
+- `Rola`: min. `14ch`, tekst do lewej.
+- `Akcje Pojazdu`: min. `60ch`, tekst do lewej.
+- `Podręcznik`: standard globalny, tekst do lewej.
+- `Strona`: standard globalny, tekst wyśrodkowany.
+
+### `Akcje Pojazdu`
+- `Nazwa`: min. `26ch`, tekst do lewej.
+- `Opis`, `Przykład`: min. `56ch`, tekst do lewej.
+- `Podręcznik`: standard globalny, tekst do lewej.
+- `Strona`: standard globalny, tekst wyśrodkowany.
+
+### `Stany Pojazdów`
+- `Nazwa`: min. `26ch`, tekst do lewej.
+- `Opis`: min. `56ch`, tekst do lewej.
+- `Podręcznik`: standard globalny, tekst do lewej.
+- `Strona`: standard globalny, tekst wyśrodkowany.
+
+### `Cechy Pojazdów`
+- `Typ`: min. `22ch`, tekst do lewej.
+- `Nazwa`: min. `26ch`, tekst do lewej.
+- `Opis`: min. `56ch`, tekst do lewej.
+- `Podręcznik`: standard globalny, tekst do lewej.
+- `Strona`: standard globalny, tekst wyśrodkowany.
+
+### `Pojazdy`
+- `Typ`: min. `14ch`, tekst do lewej.
+- `Nazwa`: min. `30ch`, tekst do lewej.
+- `Koszt`, `Dostępność`, `Szybkość`, `Manewrowość`, `Odporność`, `Żywotność`, `Rozmiar`: min. `10ch`, tekst wyśrodkowany.
+- `Słowa Kluczowe`: min. `28ch`, tekst do lewej, słowa czerwone z neutralnymi przecinkami.
+- `Skład Załogi`: min. `22ch`, tekst do lewej.
+- `Cechy`: min. `32ch`, tekst do lewej, wartości z `Cecha N` scalone separatorem `; `.
+- `Uzbrojenie`: min. `36ch`, tekst do lewej.
+- `Wyposażenie`: min. `32ch`, tekst do lewej.
+- `Podręcznik`: standard globalny, tekst do lewej.
+- `Strona`: standard globalny, tekst wyśrodkowany.
+
+### `Bronie Pojazdów`
+- `Rodzaj`, `Typ`: min. `14ch`, tekst do lewej.
+- `Nazwa`: min. `26ch`, tekst do lewej.
+- `Obrażenia`, `DK`, `PP`, `Szybkostrzelność`, `Koszt`, `Dostępność`, `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
+- `Zasięg`: min. `18ch`, tekst wyśrodkowany, bez zawijania, wartości `Zasięg N` scalone formatem `krótki / średni / daleki`.
+- `Cechy`: min. `32ch`, tekst do lewej, wartości z `Cecha N` scalone separatorem `; `.
+- `Słowa Kluczowe`: min. `28ch`, tekst do lewej, słowa czerwone z neutralnymi przecinkami.
+- `Podręcznik`: standard globalny, tekst do lewej.
+- `Strona`: standard globalny, tekst wyśrodkowany.
+
+### `Ekwipunek Pojazdów`
+- `Typ`: min. `14ch`, tekst do lewej.
+- `Nazwa`: min. `26ch`, tekst do lewej.
+- `Opis`: min. `48ch`, tekst do lewej.
+- `Efekt`: min. `56ch`, tekst do lewej.
+- `Słowa Kluczowe`: min. `28ch`, tekst do lewej, słowa czerwone z neutralnymi przecinkami.
+- `Koszt`, `Dostępność`, `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
+- `Podręcznik`: standard globalny, tekst do lewej.
+- `Strona`: standard globalny, tekst wyśrodkowany.

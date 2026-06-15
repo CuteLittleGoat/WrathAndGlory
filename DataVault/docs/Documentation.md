@@ -1049,3 +1049,23 @@ Formularz `#accessForm` używa teraz kontenera `.accessGate__credentials` oparte
 
 ## 🇬🇧 Technical password-gate layout (Litany of Access)
 The `#accessForm` now uses a `.accessGate__credentials` container based on a 2-column CSS Grid. The left column contains `.accessGate__label`, while the right column contains `#accessPassword` (`.accessGate__password`) and `.accessGate__submit` in the second row. At `max-width: 640px`, the layout switches to a single-column flow with explicit row order enforced in `shared/access-gate.css` (`.accessGate__label` row 1, `.accessGate__password` row 2, `.accessGate__submit` row 3), preventing label/input overlap on mobile.
+
+# 🇵🇱 Dokumentacja techniczna (PL) — obsługa pojazdów
+
+DataVault obsługuje grupę arkuszy pojazdów: `Role W Pojeździe`, `Akcje Pojazdu`, `Stany Pojazdów`, `Cechy Pojazdów`, `Pojazdy`, `Bronie Pojazdów` i `Ekwipunek Pojazdów`. Widocznością tej grupy steruje checkbox `toggleVehicleTabs`, którego stan jest zapisywany w `sessionStorage` razem z pozostałym stanem widoku.
+
+Parser danych w przeglądarce i skrypt `build_json.py` zachowują kolumnę `LP` w rekordach JSON, ale interfejs ukrywa ją w nagłówkach, komórkach i porównaniu rekordów. Arkusze `Pojazdy` oraz `Bronie Pojazdów` scalają wszystkie kolumny zgodne ze wzorcem `Cecha N` do kolumny `Cechy`. Arkusz `Bronie Pojazdów` scala także `Zasięg N` do kolumny `Zasięg` w formacie z ukośnikami.
+
+Metadane pojazdów znajdują się w `_meta.vehicleTraits`, `_meta.vehicleWeaponTraits` i `_meta.vehicleStates`. Arkusz `Cechy Pojazdów` jest dzielony według kolumny `Typ`: `Cecha Pojazdu` trafia do cech pojazdów, a `Cecha Broni Pojazdu` do cech broni pojazdów. Popovery cech w arkuszu `Pojazdy` korzystają z `_meta.vehicleTraits`; w arkuszu `Bronie Pojazdów` najpierw z `_meta.vehicleWeaponTraits`, a następnie z dotychczasowego `_meta.traits`.
+
+Cechy parametryzowane używają wzorca `(X)`, który obsługuje liczby i tekst. `Montowana (Duży)` wyszukuje opis `Montowana (X)`. `Wywołanie (...)` pokazuje opis cechy oraz opis stanu; dla broni pojazdów stany pojazdów mają pierwszeństwo przed zwykłymi stanami. Wartości `Wywołanie (Zatrucie 2)`, `Wywołanie (Zatrucie 4)` i `Wywołanie (Zatrucie 6)` korzystają z opisu stanu `Zatrucie` i zachowują parametr w tytule popovera.
+
+# 🇬🇧 Technical documentation (EN) — vehicle support
+
+DataVault supports the vehicle sheet group: `Role W Pojeździe`, `Akcje Pojazdu`, `Stany Pojazdów`, `Cechy Pojazdów`, `Pojazdy`, `Bronie Pojazdów`, and `Ekwipunek Pojazdów`. This group is controlled by the `toggleVehicleTabs` checkbox, and its state is stored in `sessionStorage` with the rest of the view state.
+
+The browser parser and `build_json.py` keep the `LP` column in JSON records, while the interface hides it from headers, cells, and record comparison. `Pojazdy` and `Bronie Pojazdów` merge every `Cecha N` column into `Cechy`. `Bronie Pojazdów` also merges `Zasięg N` into `Zasięg` using slash-separated range values.
+
+Vehicle metadata is stored in `_meta.vehicleTraits`, `_meta.vehicleWeaponTraits`, and `_meta.vehicleStates`. The `Cechy Pojazdów` sheet is split by the `Typ` column: `Cecha Pojazdu` becomes a vehicle trait, and `Cecha Broni Pojazdu` becomes a vehicle weapon trait. Trait popovers in `Pojazdy` use `_meta.vehicleTraits`; in `Bronie Pojazdów` they use `_meta.vehicleWeaponTraits` first and fall back to the existing `_meta.traits`.
+
+Parameterized traits use the `(X)` pattern, which supports numbers and text. `Montowana (Duży)` resolves to the `Montowana (X)` description. `Wywołanie (...)` displays the trait description and the referenced state description; for vehicle weapons, vehicle states take priority over regular states. `Wywołanie (Zatrucie 2)`, `Wywołanie (Zatrucie 4)`, and `Wywołanie (Zatrucie 6)` use the `Zatrucie` state description and keep the parameter visible in the popover title.

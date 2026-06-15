@@ -216,3 +216,11 @@ In the access window, the **“Litany of Access”** label is positioned on the 
 - EN: Shared overlay `shared/access-gate.css` is anchored to the viewport (`width:100vw`, `max-width:100vw`, `height:100dvh`) and uses `overflow:auto`, so the password card stays visible even when the module layout is very wide.
 - PL: W `GeneratorNPC/style.css` karty danych mają `overflow-x:auto`, a `.data-table` ma `min-width:max-content`, więc szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
 - EN: In `GeneratorNPC/style.css`, data cards use `overflow-x:auto` and `.data-table` uses `min-width:max-content`, so wide tables scroll inside cards instead of stretching the whole document.
+
+# 🇵🇱 Instrukcja dla użytkownika (PL) — dane GeneratorNPC
+
+GeneratorNPC korzysta z dotychczasowych danych postaci niezależnych: bestiariusza, pancerzy, broni, augumentacji, ekwipunku, talentów, psioniki i modlitw. Zakładki pojazdów z DataVault nie są częścią GeneratorNPC i nie pojawiają się w wyborach podczas tworzenia karty NPC.
+
+# 🇬🇧 User instructions (EN) — GeneratorNPC data
+
+GeneratorNPC uses the existing non-player character data: bestiary, armor, weapons, augmentations, equipment, talents, psionics, and prayers. DataVault vehicle tabs are not part of GeneratorNPC and do not appear in the choices used to create an NPC card.

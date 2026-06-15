@@ -22,6 +22,7 @@ const els = {
   filterMenu: document.getElementById("filterMenu"),
   toggleCharacterTabs: document.getElementById("toggleCharacterTabs"),
   toggleCombatTabs: document.getElementById("toggleCombatTabs"),
+  toggleVehicleTabs: document.getElementById("toggleVehicleTabs"),
   accessGate: document.getElementById("accessGate"),
   accessForm: document.getElementById("accessForm"),
   accessPassword: document.getElementById("accessPassword"),
@@ -49,6 +50,7 @@ const translations = {
       globalSearchLabel: "Szukaj (globalnie)",
       toggleCharacterTabs: "Czy wyświetlić zakładki dotyczące tworzenia postaci?",
       toggleCombatTabs: "Czy wyświetlić zakładki dotyczące zasad walki?",
+      toggleVehicleTabs: "Czy wyświetlić zakładki dotyczące pojazdów?",
       hintSort: "▸ Kliknij nagłówek, aby sortować.",
       hintFilters: "▸ Drugi wiersz nagłówka: filtry per kolumna (fragment / liczby).",
       hintCompare: "▸ Zaznacz 2+ wiersze, aby porównać.",
@@ -115,6 +117,7 @@ const translations = {
       globalSearchLabel: "Search (global)",
       toggleCharacterTabs: "Show tabs related to character creation?",
       toggleCombatTabs: "Show tabs related to combat rules?",
+      toggleVehicleTabs: "Show tabs related to vehicles?",
       hintSort: "▸ Click a header to sort.",
       hintFilters: "▸ Second header row: filters per column (fragment / numbers).",
       hintCompare: "▸ Select 2+ rows to compare.",
@@ -223,7 +226,7 @@ const applyLanguage = (lang) => {
 // If you add a new language (e.g., fr/de), provide mapping from localized tab names to current canonical keys
 // (for example via canonKey + alias dictionary) or update every set/condition that depends on tab names.
 // Otherwise some default filters/behaviors (keywords, default view, sorting) will stop working.
-const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie", "Pakiety Wyniesienia"]);
+const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie", "Pakiety Wyniesienia", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
 const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki"]);
 const CHARACTER_CREATION_SHEETS = new Set([
@@ -238,8 +241,10 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Zakony Pierwszego Powołania",
 ]);
 const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad", "Tryby Ognia", "Kary do ST"]);
+const VEHICLE_SHEETS = new Set(["Role W Pojeździe", "Akcje Pojazdu", "Stany Pojazdów", "Cechy Pojazdów", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów"]);
 const CHARACTER_CREATION_SHEET_KEYS = new Set([...CHARACTER_CREATION_SHEETS].map(name => canonKey(name)));
 const COMBAT_RULES_SHEET_KEYS = new Set([...COMBAT_RULES_SHEETS].map(name => canonKey(name)));
+const VEHICLE_SHEET_KEYS = new Set([...VEHICLE_SHEETS].map(name => canonKey(name)));
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
@@ -256,11 +261,15 @@ const DEFAULT_VIEW_CONFIG = {
   "Pancerze": { "Typ": ["Zwykłe", "Wspomagane", "Energetyczne"] },
   "Bronie": { "Typ": ["Adeptus Mechanicus", "Boltowa", "Broń biała", "Broń biała Adeptus Mechanicus", "Broń dystansowa", "Broń dystansowa Adeptus Mechnicus", "Broń dystansowa Milczących Sióstr", "Broń energetyczna", "Broń łańcuchowa", "Broń łańcuchowa Astartes", "Broń psioniczna", "Egzotyczna broń biała", "Granaty i Wyrzutnie", "Imperialna broń biała", "Laserowa", "Ogniowa", "Palna", "Plazmowa", "Termiczna"] },
   "Talenty": { "Typ": ["Człowiek", "Imperium", "Inkwizycja", "Mechanicus", "Militarum", "Ogólne", "Sororitas"] },
+  "Pojazdy": { "Typ": ["Imperium", "Adepta Sororitas", "Adeptus Mechanicus"] },
+  "Bronie Pojazdów": { "Rodzaj": ["Imperium"] },
+  "Ekwipunek Pojazdów": { "Typ": ["Ekwipunek Imperialny"] },
 };
 
 const uiState = {
   showCharacterTabs: false,
-  showCombatTabs: false
+  showCombatTabs: false,
+  showVehicleTabs: false
 };
 const viewBySheet = {};
 let view = createSheetViewState();
@@ -392,6 +401,10 @@ function isCharacterCreationSheet(name){
 
 function isCombatRulesSheet(name){
   return COMBAT_RULES_SHEET_KEYS.has(canonKey(name));
+}
+
+function isVehicleSheet(name){
+  return VEHICLE_SHEET_KEYS.has(canonKey(name));
 }
 
 function createSheetViewState(sheetName = null){
@@ -574,6 +587,7 @@ function loadSessionState(){
     if (parsed.toggles){
       uiState.showCharacterTabs = Boolean(parsed.toggles.showCharacterTabs);
       uiState.showCombatTabs = Boolean(parsed.toggles.showCombatTabs);
+      uiState.showVehicleTabs = Boolean(parsed.toggles.showVehicleTabs);
     }
     if (parsed.language && translations[parsed.language]){
       applyLanguage(parsed.language);
@@ -870,10 +884,10 @@ function mergeRange(row){
 
 function transformSheet(name, rows){
   let out = rows.map(stripPrivateFields);
-  if (name === "Bronie"){
+  if (name === "Bronie" || name === "Bronie Pojazdów"){
     out = out.map(r => mergeRange(mergeTraits(r)));
   }
-  if (name === "Pancerze"){
+  if (name === "Pancerze" || name === "Pojazdy"){
     out = out.map(r => mergeTraits(r));
   }
   return out.map((r, idx) => ({__id: r.__id ?? `${name}:${idx+1}`, ...r}));
@@ -933,6 +947,9 @@ function buildDataJsonFromSheets(rawSheets, opts = {}){
   const sheets = {};
   const traits = {};
   const states = {};
+  const vehicleTraits = {};
+  const vehicleWeaponTraits = {};
+  const vehicleStates = {};
 
   for (const [name, rows] of Object.entries(rawSheets)){
     if (name === "Cechy"){
@@ -953,11 +970,29 @@ function buildDataJsonFromSheets(rawSheets, opts = {}){
         }
       }
     }
+    if (name === "Stany Pojazdów"){
+      for (const row of rows){
+        const stateName = norm(row?.Nazwa);
+        const desc = String(row?.Opis ?? row?.Efekt ?? "").trim();
+        if (stateName && desc){
+          vehicleStates[stateName] = desc;
+        }
+      }
+    }
+    if (name === "Cechy Pojazdów"){
+      for (const row of rows){
+        const traitName = norm(row?.Nazwa);
+        const desc = String(row?.Opis ?? "").trim();
+        const type = norm(row?.Typ);
+        if (traitName && desc && type === "Cecha Pojazdu") vehicleTraits[traitName] = desc;
+        if (traitName && desc && type === "Cecha Broni Pojazdu") vehicleWeaponTraits[traitName] = desc;
+      }
+    }
 
     let processed = rows.map(r => ({...r}));
-    if (name === "Bronie"){
+    if (name === "Bronie" || name === "Bronie Pojazdów"){
       processed = processed.map(r => mergeRange(mergeTraits(r)));
-    } else if (name === "Pancerze"){
+    } else if (name === "Pancerze" || name === "Pojazdy"){
       processed = processed.map(r => mergeTraits(r));
     }
     sheets[name] = processed;
@@ -965,7 +1000,7 @@ function buildDataJsonFromSheets(rawSheets, opts = {}){
 
   const resolvedSheetOrder = Array.isArray(sheetOrder) ? sheetOrder : Object.keys(rawSheets);
   const resolvedColumnOrder = columnOrder && typeof columnOrder === "object" ? columnOrder : {};
-  return {sheets, _meta:{traits, states, sheetOrder: resolvedSheetOrder, columnOrder: resolvedColumnOrder}};
+  return {sheets, _meta:{traits, states, vehicleTraits, vehicleWeaponTraits, vehicleStates, sheetOrder: resolvedSheetOrder, columnOrder: resolvedColumnOrder}};
 }
 
 function ensureSheetJS(cb){
@@ -1273,6 +1308,9 @@ function normaliseDB(data){
   const meta = data._meta || {};
   const traits = meta.traits || {};
   const states = meta.states || {};
+  const vehicleTraits = meta.vehicleTraits || {};
+  const vehicleWeaponTraits = meta.vehicleWeaponTraits || {};
+  const vehicleStates = meta.vehicleStates || {};
   const sheetOrder = Array.isArray(meta.sheetOrder) ? meta.sheetOrder : Object.keys(sheetsIn);
   const columnOrder = meta.columnOrder && typeof meta.columnOrder === "object" ? meta.columnOrder : {};
   // build fast indexes (canonical keys)
@@ -1286,7 +1324,13 @@ function normaliseDB(data){
   for (const [k,v] of Object.entries(states)){
     stateIndex[canonKey(k)] = v;
   }
-  return {sheets, _meta:{traits, states, traitIndex, stateIndex, sheetOrder, columnOrder}};
+  const vehicleTraitIndex = {};
+  for (const [k,v] of Object.entries(vehicleTraits)){ vehicleTraitIndex[canonKey(k)] = v; vehicleTraitIndex[canonKey(k).replace(/\s+/g,"")] = v; }
+  const vehicleWeaponTraitIndex = {};
+  for (const [k,v] of Object.entries(vehicleWeaponTraits)){ vehicleWeaponTraitIndex[canonKey(k)] = v; vehicleWeaponTraitIndex[canonKey(k).replace(/\s+/g,"")] = v; }
+  const vehicleStateIndex = {};
+  for (const [k,v] of Object.entries(vehicleStates)){ vehicleStateIndex[canonKey(k)] = v; }
+  return {sheets, _meta:{traits, states, vehicleTraits, vehicleWeaponTraits, vehicleStates, traitIndex, stateIndex, vehicleTraitIndex, vehicleWeaponTraitIndex, vehicleStateIndex, sheetOrder, columnOrder}};
 }
 
 /* ---------- UI init ---------- */
@@ -1301,6 +1345,9 @@ function initUI(){
   visibleSheets = uiState.showCombatTabs
     ? visibleSheets
     : visibleSheets.filter(name => !isCombatRulesSheet(name));
+  visibleSheets = uiState.showVehicleTabs
+    ? visibleSheets
+    : visibleSheets.filter(name => !isVehicleSheet(name));
   const order = getSheetOrder(available);
   const visibleOrder = order.filter(name => visibleSheets.includes(name));
   for (const name of visibleOrder){
@@ -1312,6 +1359,9 @@ function initUI(){
     }
     if (isCombatRulesSheet(name)){
       b.classList.add("tab--combat");
+    }
+    if (isVehicleSheet(name)){
+      b.classList.add("tab--vehicle");
     }
     b.addEventListener("click", ()=>selectSheet(name));
     els.tabs.appendChild(b);
@@ -1329,6 +1379,9 @@ function initUI(){
   }
   if (els.toggleCombatTabs){
     els.toggleCombatTabs.checked = uiState.showCombatTabs;
+  }
+  if (els.toggleVehicleTabs){
+    els.toggleVehicleTabs.checked = uiState.showVehicleTabs;
   }
 
   // Actions / admin visibility
@@ -1905,10 +1958,13 @@ function renderTraitsCell(v){
 }
 
 /* ---------- Trait + state resolution ---------- */
-function resolveTrait(traitText){
+function resolveTrait(traitText, sheetName = currentSheet){
   const meta = DB?._meta || {};
   const traitIndex = meta.traitIndex || {};
   const stateIndex = meta.stateIndex || {};
+  const vehicleTraitIndex = meta.vehicleTraitIndex || {};
+  const vehicleWeaponTraitIndex = meta.vehicleWeaponTraitIndex || {};
+  const vehicleStateIndex = meta.vehicleStateIndex || {};
 
   const t = norm(traitText);
 
@@ -1920,14 +1976,14 @@ function resolveTrait(traitText){
     if (usesParen && stRaw.endsWith(")")){
       stRaw = stRaw.slice(0, -1).trim();
     }
-    const mLvl = stRaw.match(/^(.*)\s*\((\d+)\)\s*$/);
+    const mLvl = stRaw.match(/^(.*)\s*\((\d+)\)\s*$/) || stRaw.match(/^(Zatrucie)\s+(\d+)\s*$/i);
     const stateKeyFull = mLvl ? `${norm(mLvl[1])} (${mLvl[2]})` : stRaw;
     const stateKeyBase = mLvl ? norm(mLvl[1]) : stRaw;
 
     const traitTextTpl = "Wywołanie (Stan)";
     const traitDesc = traitIndex[canonKey(traitTextTpl)] || traitIndex[canonKey("Wywołanie(Stan)")] || null;
 
-    const stDesc = stateIndex[canonKey(stateKeyFull)] || stateIndex[canonKey(stateKeyBase)] || null;
+    const stDesc = vehicleStateIndex[canonKey(stateKeyFull)] || vehicleStateIndex[canonKey(stateKeyBase)] || stateIndex[canonKey(stateKeyFull)] || stateIndex[canonKey(stateKeyBase)] || null;
 
     const blocks = [];
     blocks.push({
@@ -1942,19 +1998,21 @@ function resolveTrait(traitText){
   }
 
   // 2) Cechy parametryzowane: "Nieporęczny (2)" -> match "Nieporęczny (X)"
-  const mNum = t.match(/^(.*?)(\s*)\((\d+)\)\s*$/);
+  const mNum = t.match(/^(.*?)(\s*)\(([^)]+)\)\s*$/);
   if (mNum){
     const baseName = norm(mNum[1]);
     const key1 = canonKey(`${baseName} (X)`);
     const key2 = canonKey(`${baseName}(X)`);
-    const desc = traitIndex[key1] || traitIndex[key2] || null;
+    const preferredTraitIndex = sheetName === "Pojazdy" ? vehicleTraitIndex : (sheetName === "Bronie Pojazdów" ? vehicleWeaponTraitIndex : traitIndex);
+    const desc = preferredTraitIndex[key1] || preferredTraitIndex[key2] || (sheetName === "Bronie Pojazdów" ? (traitIndex[key1] || traitIndex[key2]) : null) || null;
     if (desc){
       return {title: t, blocks:[{label: translations[currentLanguage].messages.traitLabel, text: desc}]};
     }
   }
 
   // 3) Exact match
-  const desc = traitIndex[canonKey(t)] || traitIndex[canonKey(t).replace(/\s+/g,"")] || null;
+  const preferredTraitIndex = sheetName === "Pojazdy" ? vehicleTraitIndex : (sheetName === "Bronie Pojazdów" ? vehicleWeaponTraitIndex : traitIndex);
+  const desc = preferredTraitIndex[canonKey(t)] || preferredTraitIndex[canonKey(t).replace(/\s+/g,"")] || (sheetName === "Bronie Pojazdów" ? (traitIndex[canonKey(t)] || traitIndex[canonKey(t).replace(/\s+/g,"")]) : null) || null;
   if (desc){
     return {title: t, blocks:[{label: translations[currentLanguage].messages.traitLabel, text: desc}]};
   }
@@ -1968,8 +2026,8 @@ function resolveTrait(traitText){
   };
 }
 
-function openTraitPopover(traitText){
-  const r = resolveTrait(traitText);
+function openTraitPopover(traitText, sheetName = currentSheet){
+  const r = resolveTrait(traitText, sheetName);
   els.popTitle.textContent = r.title.toUpperCase();
   els.popBody.innerHTML = r.blocks.map(b => `
     <div class="popoverBlock">
@@ -2057,6 +2115,14 @@ if (els.toggleCombatTabs){
     saveSessionState();
   });
   uiState.showCombatTabs = els.toggleCombatTabs.checked;
+}
+if (els.toggleVehicleTabs){
+  els.toggleVehicleTabs.addEventListener("change", ()=>{
+    uiState.showVehicleTabs = els.toggleVehicleTabs.checked;
+    initUI();
+    saveSessionState();
+  });
+  uiState.showVehicleTabs = els.toggleVehicleTabs.checked;
 }
 
 if (els.languageSelect){

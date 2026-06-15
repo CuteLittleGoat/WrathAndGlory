@@ -1318,12 +1318,13 @@ const translations = {
         return null;
       };
 
-      const getCollection = (db, keywords) => {
-        if (!db || typeof db !== "object") {
+      // --- Generator używa wyłącznie dokładnych nazw arkuszy DataVault / The generator uses only exact DataVault sheet names ---
+      const getCollection = (db, exactSheetName) => {
+        if (!db || typeof db !== "object" || !db.sheets || typeof db.sheets !== "object") {
           return [];
         }
-        const records = findCollectionInNode(db, keywords, new WeakSet());
-        return records ?? [];
+        const section = db.sheets[exactSheetName];
+        return extractRecords(section);
       };
 
       const resolveNameKey = (record) => {
@@ -3023,14 +3024,14 @@ const translations = {
         if (!data || typeof data !== "object" || !data.sheets || typeof data.sheets !== "object") throw new Error("GENERATORNPC_DATA_MISSING_SHEETS");
         state.data = data;
         state.traits = buildTraitsMap(data);
-        state.bestiary = sortByName(getCollection(data, ["besti", "bestiariusz"]));
-        state.armor = sortByTypeThenName(getCollection(data, ["pancerz", "armor"]));
-        state.weapons = sortByTypeThenName(getCollection(data, ["broń", "bron", "weapon"]));
-        state.augmentations = sortByTypeThenName(getCollection(data, ["augument", "augment", "modyfikac"]));
-        state.equipment = sortByTypeThenName(getCollection(data, ["ekwipunek", "equipment"]));
-        state.talents = sortByName(getCollection(data, ["talent"]));
-        state.psionics = sortByTypeThenName(getCollection(data, ["psion", "psionik"]), { typeDescending: true });
-        state.prayers = sortByName(getCollection(data, ["modlitw", "prayer"]));
+        state.bestiary = sortByName(getCollection(data, "Bestiariusz"));
+        state.armor = sortByTypeThenName(getCollection(data, "Pancerze"));
+        state.weapons = sortByTypeThenName(getCollection(data, "Bronie"));
+        state.augmentations = sortByTypeThenName(getCollection(data, "Augumentacje"));
+        state.equipment = sortByTypeThenName(getCollection(data, "Ekwipunek"));
+        state.talents = sortByName(getCollection(data, "Talenty"));
+        state.psionics = sortByTypeThenName(getCollection(data, "Psionika"), { typeDescending: true });
+        state.prayers = sortByName(getCollection(data, "Modlitwy"));
         setSelectOptions(bestiarySelect, state.bestiary, translations[currentLanguage].messages.selectBestiary);
         setSelectOptions(armorSelect, state.armor, translations[currentLanguage].messages.selectArmor, { disableOption: isArmorBlocked, disabledTitle: translations[currentLanguage].messages.armorDisabledTitle });
         setSelectOptions(weaponSelect, state.weapons, translations[currentLanguage].messages.selectWeapon);
