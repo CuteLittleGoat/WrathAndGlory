@@ -38,6 +38,8 @@
   font-family:"Consolas","Fira Code","Source Code Pro",monospace;
 }
 html,body{height:100%}
+/* Globalnie przywraca semantykę atrybutu hidden, nawet gdy klasy komponentów ustawiają własny display / Globally restores hidden attribute semantics even when component classes set their own display */
+[hidden]{display:none !important}
 body{
   margin:0;
   background:var(--bg-grad);

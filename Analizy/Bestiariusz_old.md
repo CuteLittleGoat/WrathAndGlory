@@ -1142,3 +1142,25 @@ Naprawa powinna polegać na dodaniu w `DataVault/style.css` reguły:
 ```
 
 Po tej zmianie istniejący kod `els.toggleBestiaryOldGroup.hidden = !ADMIN_MODE;` zacznie działać zgodnie z intencją: checkbox będzie widoczny tylko w trybie admina i ukryty w trybie użytkownika.
+
+### Plik: `DataVault/style.css`
+
+Lokalizacja: sekcja bazowa po `html,body{height:100%}`, przed definicjami komponentów, w tym `.checkboxRow`.
+
+Było:
+
+```css
+html,body{height:100%}
+body{
+```
+
+Jest:
+
+```css
+html,body{height:100%}
+/* Globalnie przywraca semantykę atrybutu hidden, nawet gdy klasy komponentów ustawiają własny display / Globally restores hidden attribute semantics even when component classes set their own display */
+[hidden]{display:none !important}
+body{
+```
+
+Zmiana sprawia, że wrapper `#toggleBestiaryOldGroup` z atrybutem `hidden` jest całkowicie niewidoczny w trybie użytkownika i nie zostawia pustego miejsca, mimo że klasa `.checkboxRow` ustawia `display:flex`. Reguła nie dotyczy elementów sterowanych przez `aria-hidden`, więc modal, popover i menu filtrów nadal korzystają z dotychczasowych selektorów `[aria-hidden="false"]`.
