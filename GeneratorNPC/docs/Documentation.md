@@ -306,7 +306,8 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `getSectionName(section)` — zwraca nazwę sekcji (normalizuje nazwy pól `name`).
 - `looksLikeRecordArray(items)` — heurystyka sprawdzająca, czy tablica wygląda jak lista rekordów.
 - `findCollectionInNode(node, keywords, visited)` — rekurencyjne wyszukiwanie kolekcji po słowach kluczowych.
-- `getCollection(db, keywords)` — zwraca kolekcję rekordów dla podanych słów kluczowych.
+- `getRequiredCollection(db, exactSheetName)` — pobiera rekordy wyłącznie z dokładnie wskazanego wymaganego arkusza `data.sheets`; zgłasza `GENERATORNPC_DATA_MISSING_SHEETS`, gdy brakuje kontenera arkuszy, `GENERATORNPC_REQUIRED_SHEET_MISSING:<arkusz>`, gdy brakuje arkusza, oraz `GENERATORNPC_REQUIRED_SHEET_EMPTY:<arkusz>`, gdy arkusz nie zawiera rekordów po `extractRecords(...)`.
+- `getGeneratorDataLoadErrorMessage(error)` — zamienia techniczne kody błędów wymaganych arkuszy na czytelne komunikaty statusu i okna dostępu.
 - `resolveNameKey(record)` — znajduje klucz nazwy rekordu (cache w `nameKeyCache`).
 - `getRecordName(record, index)` — zwraca nazwę rekordu lub fallback „Rekord n”.
 - `compareStrings(left, right, { descending })` — porównanie stringów z normalizacją i opcją sortowania malejącego (locale `pl`).
@@ -570,8 +571,8 @@ Dzięki temu szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać
 
 # 🇵🇱 Dokumentacja techniczna (PL) — źródła danych
 
-GeneratorNPC pobiera kolekcje wyłącznie z dokładnych nazw arkuszy w `data.sheets`: `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika` i `Modlitwy`. Moduł nie używa dopasowania fragmentów nazw arkuszy, dlatego ignoruje arkusze pojazdów, takie jak `Bronie Pojazdów`, `Ekwipunek Pojazdów` i `Cechy Pojazdów`.
+GeneratorNPC pobiera kolekcje wyłącznie z dokładnych nazw wymaganych arkuszy w `data.sheets`: `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika` i `Modlitwy`. Każdy z tych arkuszy musi istnieć i musi zawierać co najmniej jeden rekord po odczycie przez `extractRecords(...)`. Brak kontenera `data.sheets`, brak któregokolwiek wymaganego arkusza albo pusty wymagany arkusz zatrzymuje ładowanie i wyświetla czytelny komunikat błędu. Moduł nie używa dopasowania fragmentów nazw arkuszy, dlatego ignoruje arkusze pojazdów, takie jak `Bronie Pojazdów`, `Ekwipunek Pojazdów` i `Cechy Pojazdów`.
 
 # 🇬🇧 Technical documentation (EN) — data sources
 
-GeneratorNPC reads collections only from exact sheet names in `data.sheets`: `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, and `Modlitwy`. The module does not match partial sheet names, so it ignores vehicle sheets such as `Bronie Pojazdów`, `Ekwipunek Pojazdów`, and `Cechy Pojazdów`.
+GeneratorNPC reads collections only from exact required sheet names in `data.sheets`: `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, and `Modlitwy`. Each of these sheets must exist and must contain at least one record after `extractRecords(...)` reads it. A missing `data.sheets` container, a missing required sheet, or an empty required sheet stops loading and shows a readable error message. The module does not match partial sheet names, so it ignores vehicle sheets such as `Bronie Pojazdów`, `Ekwipunek Pojazdów`, and `Cechy Pojazdów`.

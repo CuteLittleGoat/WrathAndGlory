@@ -219,8 +219,8 @@ In the access window, the **“Litany of Access”** label is positioned on the 
 
 # 🇵🇱 Instrukcja dla użytkownika (PL) — dane GeneratorNPC
 
-GeneratorNPC korzysta z dotychczasowych danych postaci niezależnych: bestiariusza, pancerzy, broni, augumentacji, ekwipunku, talentów, psioniki i modlitw. Zakładki pojazdów z DataVault nie są częścią GeneratorNPC i nie pojawiają się w wyborach podczas tworzenia karty NPC.
+GeneratorNPC korzysta z dotychczasowych danych postaci niezależnych: bestiariusza, pancerzy, broni, augumentacji, ekwipunku, talentów, psioniki i modlitw. Dane muszą zawierać zakładki `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika` i `Modlitwy`, a każda z nich musi mieć przynajmniej jeden wpis. Jeśli którejś zakładki brakuje albo jest pusta, moduł pokaże komunikat błędu i nie wypełni list pustymi wyborami. Zakładki pojazdów z DataVault nie są częścią GeneratorNPC i nie pojawiają się w wyborach podczas tworzenia karty NPC.
 
 # 🇬🇧 User instructions (EN) — GeneratorNPC data
 
-GeneratorNPC uses the existing non-player character data: bestiary, armor, weapons, augmentations, equipment, talents, psionics, and prayers. DataVault vehicle tabs are not part of GeneratorNPC and do not appear in the choices used to create an NPC card.
+GeneratorNPC uses the existing non-player character data: bestiary, armor, weapons, augmentations, equipment, talents, psionics, and prayers. The data must include the `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, and `Modlitwy` tabs, and each tab must contain at least one entry. If any required tab is missing or empty, the module shows an error message and does not fill the lists with empty choices. DataVault vehicle tabs are not part of GeneratorNPC and do not appear in the choices used to create an NPC card.
