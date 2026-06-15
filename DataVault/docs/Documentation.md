@@ -86,6 +86,7 @@ Bieżąca logika pierwszej aktywnej zakładki po `initUI()`:
 ### 2.2 Panel filtrów
 - `aside.panel` z nagłówkiem `.panelHeader`.
 - Pole globalne: `#globalSearch` w `.panelBody`.
+- Checkbox `#toggleOldBestiaryEntries` w wrapperze `#toggleBestiaryOldGroup` — pytanie „Czy wyświetlić zdezaktualizowane wpisy?”; widoczny tylko w trybie admina, domyślnie odznaczony, nie jest zapisywany w `sessionStorage` i steruje wyłącznie systemowym filtrem rekordów `old` w zakładce `Bestiariusz`.
 - Checkbox `#toggleCharacterTabs` — pytanie „Czy wyświetlić zakładki dotyczące tworzenia postaci?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania` (gdy checkbox nie jest zaznaczony, te zakładki są ukryte).
 - Checkbox `#toggleCombatTabs` — pytanie „Czy wyświetlić zakładki dotyczące zasad walki?”; domyślnie odznaczony. Zaznaczenie pokazuje zakładki: `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` (z czego `Trafienia Krytyczne` i `Groza Osnowy` pozostają widoczne tylko w trybie admina).
 - Podpowiedź sortowania informuje, że kliknięcie nagłówka kolumny sortuje dane, a kolejne kliknięcie zmienia kierunek sortowania.
@@ -681,7 +682,7 @@ Mapowanie na `getElementById`:
 - `view.filtersText[col]` ustawiane na `input` w nagłówku.
 
 ### 10.3 Filtr listowy
-- `uniqueValuesForColumn(col)` — zbiór wartości, puste → `"-"`.
+- `uniqueValuesForColumn(col)` — zbiór wartości, puste → `"-"`; korzysta z `getSystemVisibleRows(currentSheet)`, więc ukryte rekordy `old` z `Bestiariusza` nie dostarczają wartości do menu filtrów kolumn.
 - `isColumnFilterActive(col)`:
   - zwraca `true`, gdy istnieje niepusty filtr tekstowy (`filtersText[col].trim()`),
   - albo gdy filtr listowy `filtersSet[col]` jest typu `Set` i zawiera mniej wartości niż pełna lista unikalnych wartości kolumny.
@@ -704,6 +705,7 @@ Mapowanie na `getElementById`:
 - Etykiety w menu są wyświetlane bez markerów `{{RED}}`, `{{B}}`, `{{I}}`, ale filtrowanie działa na surowych wartościach (nie zmienia logiki danych).
 - `view.filtersSet[col] = null` oznacza brak filtra (wszystko zaznaczone).
 - Domyślny profil widoku jest definiowany przez `DEFAULT_VIEW_CONFIG` (mapa `sheet -> column -> allowedValues`) i nakładany przez `applyDefaultViewForSheet`.
+- `isBestiarySheet(name)`, `shouldShowRowInCurrentSystemView(row, sheetName)` i `getSystemVisibleRows(sheetName)` tworzą systemową warstwę widoczności. Dla arkusza `Bestiariusz` ukrywają wiersze `Stan=old`, dopóki admin nie zaznaczy runtime checkboxa `#toggleOldBestiaryEntries`.
 
 ### 10.4 `passesFilters(row, cols)`
 - Łączy wszystkie filtry (globalny + tekstowy + listowy).
@@ -714,7 +716,7 @@ Mapowanie na `getElementById`:
 ## 11) JS: renderowanie tabeli
 
 ### 11.1 Renderowanie progresywne
-- `renderBody()` filtruje i sortuje dane, a następnie renderuje w chunkach (`RENDER_CHUNK_SIZE = 80`) z `requestAnimationFrame`.
+- `renderBody()` najpierw pobiera systemowo widoczne wiersze przez `getSystemVisibleRows(currentSheet)`, potem stosuje global search, filtry kolumn i sortowanie, a następnie renderuje wynik w chunkach (`RENDER_CHUNK_SIZE = 80`) z `requestAnimationFrame`.
 
 ### 11.2 `renderRow(r, cols)` — generowanie wiersza
 - Kolumna 0: checkbox (zaznaczenia do porównywania).
@@ -880,16 +882,16 @@ Obsługuje trzy przypadki:
 ### 14.3 Stan `old`
 - `HIDDEN_COLUMNS` zawiera `stan`, więc kolumna nie jest renderowana.
 - `isOldStatusRow(row)` wykrywa rekordy `Stan=old` (`trim + lowercase`).
-- `renderRow()` ustawia klasę `row-old` dla rekordów archiwalnych.
+- `renderRow()` ustawia klasę `row-old` dla rekordów archiwalnych. Dla arkusza `Bestiariusz` dodaje też `row-old--bestiary`, a komórkom kolumn `Nazwa` i `Typ` dodaje `bestiary-old-identity`.
 
 ### 14.4 CSS i priorytet kolorów
 - Dodano token `--text-old: #7f9b7f`.
-- `.dataTable tbody tr.row-old` wymusza kolor bazowy archiwalny.
+- `.dataTable tbody tr.row-old:not(.row-old--bestiary)` wymusza kolor bazowy archiwalny poza Bestiariuszem.
 - `.inline-strike`:
   - `text-decoration: line-through`,
   - kolor domyślny `var(--text-old)`.
 - `.inline-strike.inline-red` przywraca czerwony (`var(--red)`), co realizuje priorytet RED > OLD.
-- Dla `row-old` doprecyzowano kolory: `.keyword-comma`, `.ref`, `.caretref`, `.slash` dziedziczą kolor archiwalny.
+- Dla `row-old` poza Bestiariuszem doprecyzowano kolory: `.keyword-comma`, `.ref`, `.caretref`, `.slash` dziedziczą kolor archiwalny. W Bestiariuszu styl archiwalny trafia tylko do komórek `.bestiary-old-identity`, czyli kolumn `Nazwa` i `Typ`.
 
 ### 14.5 Reguły kolumn
 - W `Bestiariusz` dodano regułę kolumny `Typ`:

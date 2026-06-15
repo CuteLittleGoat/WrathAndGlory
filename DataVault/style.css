@@ -908,11 +908,22 @@ td.center{text-align:center}
   color:var(--text-old);
 }
 .inline-strike.inline-red{color:var(--red)}
-.dataTable tbody tr.row-old{color:var(--text-old)}
-.dataTable tbody tr.row-old .keyword-comma,
-.dataTable tbody tr.row-old .ref,
-.dataTable tbody tr.row-old .caretref,
-.dataTable tbody tr.row-old .slash{color:var(--text-old)}
+/* Globalny styl archiwalny działa poza Bestiariuszem / Global archival style applies outside Bestiary */
+.dataTable tbody tr.row-old:not(.row-old--bestiary){color:var(--text-old)}
+.dataTable tbody tr.row-old:not(.row-old--bestiary) .keyword-comma,
+.dataTable tbody tr.row-old:not(.row-old--bestiary) .ref,
+.dataTable tbody tr.row-old:not(.row-old--bestiary) .caretref,
+.dataTable tbody tr.row-old:not(.row-old--bestiary) .slash{color:var(--text-old)}
+/* W Bestiariuszu tylko pola Nazwa i Typ starego wpisu dostają wyróżnienie / In Bestiary only Name and Type of an old entry receive highlighting */
+.dataTable tbody tr.row-old--bestiary td.bestiary-old-identity,
+.dataTable tbody tr.row-old--bestiary td.bestiary-old-identity .celltext,
+.dataTable tbody tr.row-old--bestiary td.bestiary-old-identity .keyword-comma,
+.dataTable tbody tr.row-old--bestiary td.bestiary-old-identity .ref,
+.dataTable tbody tr.row-old--bestiary td.bestiary-old-identity .caretref,
+.dataTable tbody tr.row-old--bestiary td.bestiary-old-identity .slash{
+  color:var(--text-old);
+  font-style:italic;
+}
 
 /* Filter menu */
 .filterBtn{margin-left:6px; width:24px; height:24px; display:inline-grid; place-items:center;
@@ -977,6 +988,10 @@ td.center{text-align:center}
   --character-bg:rgba(210,250,210,.05);
   --character-bg-active:rgba(210,250,210,.12);
 }
+/* Checkbox old Bestiariusza używa archiwalnego koloru zgodnego ze starymi wpisami / Bestiary old checkbox uses the archival color matching old entries */
+.checkboxRow--bestiaryOld,
+.checkboxRow--bestiaryOld .checkboxLabel{color:var(--text-old); opacity:1}
+#toggleOldBestiaryEntries{accent-color:var(--text-old)}
 /* Checkbox tworzenia postaci przejmuje jasny kolor tekstu komunikatu / The character-creation checkbox inherits the bright message text color */
 #toggleCharacterTabs{accent-color:var(--code)}
 /* Checkbox zasad walki pozostaje czerwony mimo wcześniejszej reguły bazowej / The combat-rules checkbox stays red despite the earlier base rule */
