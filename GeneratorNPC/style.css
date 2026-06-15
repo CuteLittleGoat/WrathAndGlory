@@ -343,16 +343,17 @@ textarea:focus {
 
 .bestiary-show-old-toggle {
   margin-top: 10px;
-  color: var(--text2);
 }
 
+/* Kontrolka zdezaktualizowanych wpisów używa tego samego koloru archiwalnego co DataVault. / The outdated-entries toggle uses the same archival color as DataVault. */
+.bestiary-show-old-toggle,
 .bestiary-show-old-toggle span {
-  color: var(--code);
-  opacity: 0.9;
+  color: var(--text-old);
+  opacity: 1;
 }
 
 #bestiary-show-old {
-  accent-color: var(--accent);
+  accent-color: var(--text-old);
 }
 
 .checkbox input,
