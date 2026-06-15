@@ -346,6 +346,15 @@ textarea:focus {
   color: var(--text2);
 }
 
+.bestiary-show-old-toggle span {
+  color: var(--code);
+  opacity: 0.9;
+}
+
+#bestiary-show-old {
+  accent-color: var(--accent);
+}
+
 .checkbox input,
 .checkbox-line input {
   margin-top: 2px;
