@@ -465,11 +465,11 @@ Checkbox `#bestiary-show-old` przechowuje stan UI w `state.showOldBestiaryRecord
 Wczytywanie ulubionych używa `selectedBestiaryIndex` jako oryginalnego indeksu w `state.bestiary`. Jeśli ulubiony profil wskazuje rekord `old`, a checkbox jest odznaczony, aplikacja automatycznie zaznacza `#bestiary-show-old`, przebudowuje opcje i dopiero potem ustawia wartość selecta. Reset odznacza checkbox, przebudowuje listę bez rekordów `old`, czyści klasę `.bestiary-select-old` i przywraca pusty wybór bestiariusza.
 
 ### 13.3. Geometria tabeli podglądu bazowego
-Tabela `.data-table[data-sheet="Bestiariusz"]` używa `table-layout: fixed`.
+Tabela `.data-table[data-sheet="Bestiariusz"]` używa `table-layout: auto`, aby Firefox wyliczał naturalną szerokość Bestiariusza zamiast rozdmuchiwać lokalny obszar przewijania do absurdalnych wartości.
 
-Pierwsza kolumna (`th:first-child`, `td:first-child`) ma stałą szerokość `25ch`. Druga kolumna przejmuje pozostałą dostępną szerokość.
+Pierwsza kolumna (`th:first-child`, `td:first-child`) zachowuje szerokość `25ch` przez `width`, `min-width` i `max-width`. Druga kolumna pozostaje elastyczna i dopasowuje się do treści oraz dostępnego miejsca.
 
-Ten układ stabilizuje szerokość kolumny „Klucz” między rekordami i zapobiega skokom layoutu podczas zmiany wybranego wpisu bestiariusza.
+Ten układ stabilizuje szerokość kolumny „Klucz” między rekordami, zachowuje lokalne przewijanie w karcie i nie rozszerza całego dokumentu.
 
 ### 13.4. Zakres działania
 Mechanika pola `Stan`, szarego oznaczania rekordów `old` i stabilizacji kolumn dotyczy podglądu bazowego w module GeneratorNPC.
@@ -581,7 +581,7 @@ Wspólny overlay `shared/access-gate.css` jest zakotwiczony do viewportu (`width
 Ikona bramki używa stałego slotu `.accessGate__iconSlot` (`72px × 72px`) z obrazem `../IkonaPowiadomien2.png` renderowanym jako `.accessGate__icon` (`object-fit: contain`), aby ograniczyć przesunięcia layoutu podczas ładowania grafiki.
 
 ## 21. Szerokie tabele i szerokość dokumentu
-W `GeneratorNPC/style.css` karty danych używają `overflow-x: auto`, a `.data-table` używa `min-width: max-content`. Minimalne szerokości kolumn pozostają zdefiniowane per arkusz danych, aby opisy broni, pancerzy, psioniki i modlitw były czytelne.
+W `GeneratorNPC/style.css` karty danych używają `overflow-x: auto`, a `.data-table` używa `min-width: max-content`. Bestiariusz ma jawne `table-layout: auto`, dzięki czemu Firefox utrzymuje rozsądną lokalną szerokość tabeli. Minimalne szerokości kolumn pozostają zdefiniowane per arkusz danych, aby opisy bestiariusza, broni, pancerzy, psioniki i modlitw były czytelne.
 
 Główna siatka `.layout` używa `grid-template-columns: 360px minmax(0, 1fr)`, `width: 100%` i `max-width: 100%`. Obszar `.workspace` oraz karty `.card` mają `min-width: 0`, a karty dodatkowo `max-width: 100%`. Dzięki temu szerokie tabele przewijają się wewnątrz kart zamiast rozszerzać cały dokument.
 

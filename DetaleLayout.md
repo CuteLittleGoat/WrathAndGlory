@@ -769,10 +769,10 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Czerwony (`{{RED}}`) ma wyższy priorytet niż styl archiwalny i przekreślenie.
 - Segment `{{RED}}{{S}}...{{/S}}{{/RED}}` pozostaje czerwony, ale jest przekreślony.
 
-### Stała szerokość kolumny „Klucz” (GeneratorNPC)
-- W tabeli `data-sheet="Bestiariusz"` ustawiono `table-layout: fixed`.
-- Pierwsza kolumna (`Klucz`) ma stałą szerokość: `25ch` (`width/min-width/max-width`).
-- Druga kolumna (`Wartość`) zajmuje pozostałe miejsce (`auto`).
+### Szerokość kolumny „Klucz” (GeneratorNPC)
+- W tabeli `data-sheet="Bestiariusz"` ustawiono `table-layout: auto`, aby Firefox nie rozdmuchiwał lokalnego przewijania tabeli Bestiariusza do nienaturalnych szerokości.
+- Pierwsza kolumna (`Klucz`) ma stabilną szerokość: `25ch` (`width/min-width/max-width`).
+- Druga kolumna (`Wartość`) pozostaje elastyczna i dopasowuje się do treści oraz dostępnej przestrzeni karty.
 
 ## Aktualizacja 2026-04-20 — korekta DataVault (kolumny i layout)
 - Zaktualizowano opis zakładek tworzenia postaci o `Pakiety Wyniesienia`.
