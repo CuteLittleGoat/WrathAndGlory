@@ -248,6 +248,17 @@ textarea {
   font-family: inherit;
 }
 
+/* Zwykłe opcje selecta Bestiariusza zachowują podstawowy kolor tekstu. / Regular Bestiary select options keep the base text color. */
+#bestiary option {
+  color: var(--text);
+}
+
+/* Zdezaktualizowane opcje oraz zamknięty select po ich wyborze używają koloru old. / Outdated options and the closed select after selecting them use the old color. */
+#bestiary option.bestiary-option-old,
+#bestiary.bestiary-select-old {
+  color: var(--text-old);
+}
+
 .input {
   width: 100%;
   padding: 10px 12px;
@@ -316,13 +327,20 @@ textarea:focus {
   flex-wrap: wrap;
 }
 
-.checkbox {
+.checkbox,
+.checkbox-line {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 }
 
-.checkbox input {
+.bestiary-show-old-toggle {
+  margin-top: 10px;
+  color: var(--text2);
+}
+
+.checkbox input,
+.checkbox-line input {
   margin-top: 2px;
 }
 

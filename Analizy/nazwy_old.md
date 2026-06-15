@@ -1246,3 +1246,96 @@ Uzasadnienie:
 * zachowuje możliwość przyszłej rozbudowy.
 
 Wdrożenie powinno być traktowane jako umiarkowanie mała zmiana front-endowa w `GeneratorNPC`.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `GeneratorNPC/index.html`
+
+Lokalizacja: panel `Wybór bazowy`, stałe DOM, stan `state`, tłumaczenia, helpery listy Bestiariusza, obsługa wyboru, ulubione, reset i ładowanie danych.
+
+Było:
+
+```html
+<select id="bestiary">
+  <option value="" disabled selected data-i18n="dataStatusLoading">Ładowanie danych...</option>
+</select>
+```
+
+Jest:
+
+```html
+<select id="bestiary">
+  <option value="" disabled selected data-i18n="dataStatusLoading">Ładowanie danych...</option>
+</select>
+<label class="checkbox-line bestiary-show-old-toggle" for="bestiary-show-old">
+  <input type="checkbox" id="bestiary-show-old" />
+  <span data-i18n="bestiaryShowOldToggle">Czy wyświetlić zdezaktualizowane wpisy?</span>
+</label>
+```
+
+Było: lista `#bestiary` była wypełniana bezpośrednio przez `setSelectOptions(bestiarySelect, state.bestiary, ...)`, więc każdy rekord z `state.bestiary` był widoczny na liście.
+
+Jest: `refreshBestiaryOptions()` przebudowuje tylko widoczne opcje `#bestiary`, domyślnie pomija rekordy rozpoznane przez `isOldBestiaryRecord(record)`, zachowuje `state.bestiary` bez zmian i ustawia `option.value` na oryginalny indeks rekordu. Opcje `old` otrzymują klasę `bestiary-option-old` tylko wtedy, gdy checkbox jest zaznaczony i rekordy są widoczne.
+
+Było: wybrany rekord `old` był oznaczany w `Podglądzie bazowym`, ale zamknięty select nie otrzymywał osobnej klasy koloru.
+
+Jest: `updateBestiarySelectOldClass(record)` dodaje klasę `bestiary-select-old` do `#bestiary`, gdy wybrany rekord jest `old`, i usuwa ją po wyczyszczeniu wyboru albo wyborze rekordu aktualnego.
+
+Było: odznaczenie widoczności rekordów `old` nie występowało, ponieważ nie było checkboxa.
+
+Jest: `updateBestiaryOldVisibility()` po odznaczeniu checkboxa ukrywa rekordy `old`; jeśli wybrany był rekord `old`, czyści wybór Bestiariusza, resetuje nadpisania, usuwa klasę `bestiary-select-old`, przywraca pusty `Podgląd bazowy` i pozostawia pancerze w bezpiecznym, odblokowanym stanie.
+
+Było: ulubione ustawiały `bestiarySelect.value` bez konieczności przebudowania listy z ukrytymi rekordami `old`.
+
+Jest: `applyFavorite(favorite)` sprawdza `selectedBestiaryIndex`; jeśli ulubione wskazuje rekord `old`, a checkbox jest odznaczony, automatycznie zaznacza checkbox, przebudowuje listę i dopiero potem wybiera rekord z oryginalnym indeksem `state.bestiary`.
+
+Było: reset czyścił select Bestiariusza, ale nie obsługiwał widoczności rekordów `old` ani klasy zamkniętego selecta.
+
+Jest: reset odznacza `#bestiary-show-old`, ustawia `state.showOldBestiaryRecords = false`, przebudowuje listę bez rekordów `old`, czyści wybór i usuwa klasę `bestiary-select-old`.
+
+### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: style pól formularza oraz checkboxów.
+
+Było:
+
+```css
+select,
+input[type="text"],
+textarea {
+  color: var(--text);
+}
+```
+
+Jest:
+
+```css
+#bestiary option {
+  color: var(--text);
+}
+
+#bestiary option.bestiary-option-old,
+#bestiary.bestiary-select-old {
+  color: var(--text-old);
+}
+```
+
+Było: brak dedykowanego stylu dla checkboxa pokazującego zdezaktualizowane wpisy.
+
+Jest: `.checkbox-line` i `.bestiary-show-old-toggle` ustawiają czytelny układ checkboxa pod selectem Bestiariusza.
+
+### Plik: `GeneratorNPC/docs/README.md`
+
+Lokalizacja: sekcje PL i EN opisujące tworzenie NPC krok po kroku.
+
+Było: instrukcja mówiła tylko o wyborze wpisu z listy Bestiariusza.
+
+Jest: instrukcja wyjaśnia, że zdezaktualizowane wpisy są domyślnie ukryte, jak działa checkbox pokazujący te wpisy, co oznacza ich przygaszony kolor oraz co dzieje się po odznaczeniu checkboxa przy wybranym wpisie `old`.
+
+### Plik: `GeneratorNPC/docs/Documentation.md`
+
+Lokalizacja: opis panelu bocznego, helperów JavaScript, obsługi wyborów oraz mechaniki pola `Stan`.
+
+Było: dokumentacja opisywała tylko dotychczasowe oznaczanie pól `LP`, `Nazwa` i `Typ` w `Podglądzie bazowym` dla rekordów `old`.
+
+Jest: dokumentacja opisuje `#bestiary-show-old`, `state.showOldBestiaryRecords`, `refreshBestiaryOptions()`, `updateBestiarySelectOldClass(record)`, `updateBestiaryOldVisibility()`, zachowanie resetu i zachowanie ulubionych opartych na oryginalnym `selectedBestiaryIndex`.
