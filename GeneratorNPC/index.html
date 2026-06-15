@@ -49,6 +49,11 @@
             <select id="bestiary">
               <option value="" disabled selected data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
+            <!-- Checkbox steruje tylko widocznymi opcjami selecta, bez zmiany state.bestiary. / The checkbox controls only visible select options without changing state.bestiary. -->
+            <label class="checkbox-line bestiary-show-old-toggle" for="bestiary-show-old">
+              <input type="checkbox" id="bestiary-show-old" />
+              <span data-i18n="bestiaryShowOldToggle">Czy wyświetlić zdezaktualizowane wpisy?</span>
+            </label>
           </div>
           <div class="field">
             <label for="bestiary-notes" data-i18n="bestiaryNotesLabel">Uwagi do rekordu</label>
@@ -392,6 +397,7 @@
       const accessError = document.querySelector("#accessError");
 
       const bestiarySelect = document.querySelector("#bestiary");
+      const bestiaryShowOldToggle = document.querySelector("#bestiary-show-old");
       const armorSelect = document.querySelector("#armor");
       const weaponSelect = document.querySelector("#weapon");
       const augmentationsSelect = document.querySelector("#augmentations");
@@ -450,6 +456,7 @@ const translations = {
             dataStatusLoading: "Ładowanie danych...",
             baseSelectionTitle: "Wybór bazowy",
             bestiaryLabel: "Bestiariusz · Nazwa",
+            bestiaryShowOldToggle: "Czy wyświetlić zdezaktualizowane wpisy?",
             bestiaryNotesLabel: "Uwagi do rekordu",
             bestiaryNotesPlaceholder: "Opcjonalne notatki",
             activeModulesTitle: "Moduły aktywne",
@@ -615,6 +622,7 @@ const translations = {
             dataStatusLoading: "Loading data...",
             baseSelectionTitle: "Base selection",
             bestiaryLabel: "Bestiary · Name",
+            bestiaryShowOldToggle: "Show outdated entries?",
             bestiaryNotesLabel: "Record notes",
             bestiaryNotesPlaceholder: "Optional notes",
             activeModulesTitle: "Active modules",
@@ -850,6 +858,7 @@ const translations = {
         traits: new Map(),
         expandedCells: new Set(),
         selectedBestiaryIndex: null,
+        showOldBestiaryRecords: false,
         bestiaryOverrides: {
           numeric: new Map(),
           skills: null,
@@ -1575,6 +1584,42 @@ const translations = {
         select.disabled = false;
       };
 
+      // --- Przebudowanie listy Bestiariusza bez modyfikowania state.bestiary / Rebuild Bestiary options without modifying state.bestiary ---
+      const refreshBestiaryOptions = () => {
+        const selectedValue = bestiarySelect.value;
+        bestiarySelect.innerHTML = "";
+        const placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = translations[currentLanguage].messages.selectBestiary;
+        placeholder.disabled = true;
+        placeholder.selected = true;
+        bestiarySelect.append(placeholder);
+
+        const visibleRecords = state.bestiary
+          .map((record, index) => ({ record, index }))
+          .filter(({ record }) => state.showOldBestiaryRecords || !isOldBestiaryRecord(record));
+
+        visibleRecords.forEach(({ record, index }) => {
+          const option = document.createElement("option");
+          option.value = String(index);
+          option.textContent = getRecordName(record, index);
+          option.classList.toggle("bestiary-option-old", isOldBestiaryRecord(record));
+          bestiarySelect.append(option);
+        });
+
+        bestiarySelect.disabled = !state.bestiary.length;
+        if (selectedValue && Array.from(bestiarySelect.options).some((option) => option.value === selectedValue)) {
+          bestiarySelect.value = selectedValue;
+        } else {
+          bestiarySelect.value = "";
+        }
+      };
+
+      // --- Aktualizacja koloru zamkniętego selecta Bestiariusza / Update closed Bestiary select color ---
+      const updateBestiarySelectOldClass = (record) => {
+        bestiarySelect.classList.toggle("bestiary-select-old", Boolean(record && isOldBestiaryRecord(record)));
+      };
+
       const clearTableBody = (tbody, message, colSpan) => {
         tbody.innerHTML = "";
         const row = document.createElement("tr");
@@ -2006,6 +2051,7 @@ const translations = {
           state.selectedBestiaryIndex = null;
           resetBestiaryOverrides();
           renderBestiaryTable(null);
+          updateBestiarySelectOldClass(null);
           setArmorSelectionEnabled(true);
           return;
         }
@@ -2015,7 +2061,26 @@ const translations = {
         }
         const record = state.bestiary[index];
         renderBestiaryTable(record);
+        updateBestiarySelectOldClass(record);
         setArmorSelectionEnabled(!isBestiaryArmorBlocked(record));
+      };
+
+      // --- Obsługa checkboxa ukrywającego stare wpisy Bestiariusza / Handle checkbox hiding old Bestiary entries ---
+      const updateBestiaryOldVisibility = () => {
+        state.showOldBestiaryRecords = bestiaryShowOldToggle.checked;
+        const selectedRecord = state.selectedBestiaryIndex === null ? null : state.bestiary[state.selectedBestiaryIndex];
+        const shouldClearOldSelection = selectedRecord && isOldBestiaryRecord(selectedRecord) && !state.showOldBestiaryRecords;
+        refreshBestiaryOptions();
+        if (shouldClearOldSelection) {
+          bestiarySelect.value = "";
+          state.selectedBestiaryIndex = null;
+          resetBestiaryOverrides();
+          renderBestiaryTable(null);
+          updateBestiarySelectOldClass(null);
+          setArmorSelectionEnabled(true);
+        } else {
+          updateBestiarySelectOldClass(selectedRecord);
+        }
       };
 
       const splitEntries = (raw) => {
@@ -2306,6 +2371,11 @@ const translations = {
         if (Number.isNaN(index) || !state.bestiary[index]) {
           alert("Nie znaleziono rekordu bestiariusza dla tego wpisu.");
           return;
+        }
+        if (isOldBestiaryRecord(state.bestiary[index]) && !state.showOldBestiaryRecords) {
+          bestiaryShowOldToggle.checked = true;
+          state.showOldBestiaryRecords = true;
+          refreshBestiaryOptions();
         }
         bestiarySelect.value = String(index);
         updateBestiarySelection();
@@ -2882,6 +2952,7 @@ const translations = {
 
       const attachListeners = () => {
         bestiarySelect.addEventListener("change", updateBestiarySelection);
+        bestiaryShowOldToggle.addEventListener("change", updateBestiaryOldVisibility);
         armorSelect.addEventListener("change", renderArmorTable);
         weaponSelect.addEventListener("change", renderWeaponTable);
         augmentationsSelect.addEventListener("change", renderAugmentationsTable);
@@ -2893,8 +2964,12 @@ const translations = {
           toggle.addEventListener("change", updateModuleVisibility);
         });
         resetButton.addEventListener("click", () => {
+          bestiaryShowOldToggle.checked = false;
+          state.showOldBestiaryRecords = false;
+          refreshBestiaryOptions();
           bestiarySelect.selectedIndex = 0;
           state.selectedBestiaryIndex = null;
+          updateBestiarySelectOldClass(null);
           Array.from(armorSelect.options).forEach((option) => {
             option.selected = false;
           });
@@ -3069,7 +3144,7 @@ const translations = {
         state.talents = sortByName(getRequiredCollection(data, "Talenty"));
         state.psionics = sortByTypeThenName(getRequiredCollection(data, "Psionika"), { typeDescending: true });
         state.prayers = sortByName(getRequiredCollection(data, "Modlitwy"));
-        setSelectOptions(bestiarySelect, state.bestiary, translations[currentLanguage].messages.selectBestiary);
+        refreshBestiaryOptions();
         setSelectOptions(armorSelect, state.armor, translations[currentLanguage].messages.selectArmor, { disableOption: isArmorBlocked, disabledTitle: translations[currentLanguage].messages.armorDisabledTitle });
         setSelectOptions(weaponSelect, state.weapons, translations[currentLanguage].messages.selectWeapon);
         setSelectOptions(augmentationsSelect, state.augmentations, translations[currentLanguage].messages.selectAugmentations);

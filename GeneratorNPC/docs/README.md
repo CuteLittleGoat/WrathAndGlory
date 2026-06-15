@@ -10,15 +10,16 @@
 2. Poczekaj, aż sekcja **Źródło danych** pokaże, że dane zostały załadowane.
 
 ### Tworzenie NPC krok po kroku
-1. W sekcji **Wybór bazowy** wybierz rekord z listy **Bestiariusz · Nazwa**.
-2. (Opcjonalnie) dopisz własne notatki w polu **Uwagi do rekordu**.
-3. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość). Przy wierszach **Umiejętności** i **Słowa Kluczowe** użyj przycisku **Edytuj**, aby przejść do pola tekstowego, a potem kliknij **Zapisz**.
-4. W sekcji **Moduły aktywne** zaznacz, które bloki mają być pokazane na finalnej karcie (np. Broń, Talenty, Psionika).
-5. W aktywnych modułach wybierz konkretne elementy z list.
-6. Kliknij **Generuj kartę**.
-7. Karta otworzy się w nowej karcie przeglądarki.
-8. W górnym wierszu karty zobaczysz zawsze kolumny **Poziom 1, 2, 3, 4, 5**.
-9. Wiersz **Zagrożenie** uzupełnia te kolumny od lewej:
+1. W sekcji **Wybór bazowy** wybierz rekord z listy **Bestiariusz · Nazwa**. Domyślnie lista ukrywa zdezaktualizowane wpisy bestiariusza.
+2. Jeżeli chcesz zobaczyć także zdezaktualizowane wpisy, zaznacz pole **Czy wyświetlić zdezaktualizowane wpisy?**. Takie wpisy są pokazane przygaszonym kolorem. Po odznaczeniu pola zdezaktualizowane wpisy znikają; jeśli jeden z nich był wybrany, wybór zostanie wyczyszczony, a podgląd wróci do stanu braku wyboru.
+3. (Opcjonalnie) dopisz własne notatki w polu **Uwagi do rekordu**.
+4. W tabeli **Podgląd bazowy** popraw wartości, które chcesz zmienić (np. Żywotność, Obrona, Szybkość). Przy wierszach **Umiejętności** i **Słowa Kluczowe** użyj przycisku **Edytuj**, aby przejść do pola tekstowego, a potem kliknij **Zapisz**.
+5. W sekcji **Moduły aktywne** zaznacz, które bloki mają być pokazane na finalnej karcie (np. Broń, Talenty, Psionika).
+6. W aktywnych modułach wybierz konkretne elementy z list.
+7. Kliknij **Generuj kartę**.
+8. Karta otworzy się w nowej karcie przeglądarki.
+9. W górnym wierszu karty zobaczysz zawsze kolumny **Poziom 1, 2, 3, 4, 5**.
+10. Wiersz **Zagrożenie** uzupełnia te kolumny od lewej:
    - gdy rekord ma 5 znaków (np. `PPPPP`) — wszystkie kolumny 1–5 będą wypełnione,
    - gdy rekord ma mniej znaków (np. `?`) — znak trafi do pierwszej kolumny, a pozostałe zostaną puste.
 
@@ -99,15 +100,16 @@ The language switcher is intentionally hidden; the place to enable it is marked 
 2. Wait until **Data source** confirms the data is loaded.
 
 ### Build an NPC step by step
-1. In **Base selection**, choose an entry from **Bestiary · Name**.
-2. (Optional) add custom notes in **Record notes**.
-3. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed). For **Skills** and **Keywords**, click **Edit** to open a text field, then click **Save**.
-4. In **Active modules**, enable blocks that should appear on final card (e.g., Weapons, Talents, Psionics).
-5. In active blocks, select specific items.
-6. Click **Generate card**.
-7. The final card opens in a new browser tab.
-8. The top card row always shows **Level 1, 2, 3, 4, 5** columns.
-9. The **Threat** row fills those columns from left to right:
+1. In **Base selection**, choose an entry from **Bestiary · Name**. By default, the list hides outdated bestiary entries.
+2. To see outdated entries too, tick **Show outdated entries?**. Those entries appear in a dimmed color. When you untick the field, outdated entries disappear; if one of them was selected, the selection is cleared and the preview returns to the no-selection state.
+3. (Optional) add custom notes in **Record notes**.
+4. In **Base preview**, adjust values you want to change (e.g., Wounds, Defense, Speed). For **Skills** and **Keywords**, click **Edit** to open a text field, then click **Save**.
+5. In **Active modules**, enable blocks that should appear on final card (e.g., Weapons, Talents, Psionics).
+6. In active blocks, select specific items.
+7. Click **Generate card**.
+8. The final card opens in a new browser tab.
+9. The top card row always shows **Level 1, 2, 3, 4, 5** columns.
+10. The **Threat** row fills those columns from left to right:
    - if an entry has 5 symbols (for example `PPPPP`), all 1–5 columns are filled,
    - if an entry has fewer symbols (for example `?`), only the first column is filled and the rest stay empty.
 

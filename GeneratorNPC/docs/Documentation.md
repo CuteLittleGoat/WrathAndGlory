@@ -84,7 +84,7 @@ Jeżeli Firestore nie jest dostępny albo konfiguracja nie istnieje, moduł prze
 ### 7.2. Panel boczny (`.sidebar`)
 Składa się z trzech sekcji:
 1. **Źródło danych** — informuje o prywatnym źródle DataVault i statusie wczytywania (`#data-status`). Sekcja używa klas `panel-data-source` i `data-source-text`; status ładowania danych jest wyświetlany w `#data-status`. Interfejs nie eksponuje publicznego linku do statycznego pliku JSON.
-2. **Wybór bazowy** — wybór rekordu bestiariusza (`#bestiary`) + notatki (`#bestiary-notes`).
+2. **Wybór bazowy** — wybór rekordu bestiariusza (`#bestiary`), checkbox widoczności zdezaktualizowanych wpisów (`#bestiary-show-old`) + notatki (`#bestiary-notes`).
 3. **Moduły aktywne** — checkboxy włączające/wyłączające karty modułów:
    - Broń, Pancerz, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy.
 4. **Ulubione** — panel zapisu i odczytu zapisanych konfiguracji:
@@ -335,7 +335,9 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 ### 8.13. UI i renderowanie tabel
 - `setStatus(message)` — ustawia tekst statusu w panelu danych.
 - `updateModuleVisibility()` — ukrywa/pokazuje moduły według checkboxów.
-- `setSelectOptions(select, items, placeholder, { disableOption, disabledTitle })` — wypełnia select opcjami.
+- `setSelectOptions(select, items, placeholder, { disableOption, disabledTitle })` — wypełnia standardowe selecty opcjami; mechanizm `disableOption` pozostaje używany m.in. przez listę pancerzy.
+- `refreshBestiaryOptions()` — przebudowuje wyłącznie opcje widoczne w `#bestiary`. Nie filtruje ani nie modyfikuje `state.bestiary`; każda opcja ma `value` równe oryginalnemu indeksowi rekordu w `state.bestiary`. Gdy `state.showOldBestiaryRecords` jest `false`, funkcja pomija rekordy rozpoznane przez `isOldBestiaryRecord(record)`.
+- `updateBestiarySelectOldClass(record)` — dodaje lub usuwa klasę `.bestiary-select-old` na zamkniętym selectcie Bestiariusza zależnie od tego, czy wybrany rekord jest `old`.
 - `clearTableBody(tbody, message, colSpan)` — czyści tabelę i wstawia komunikat.
 - `createTag(traitName)` — tworzy element `.tag` dla cechy.
 - `renderTraitsCell(value, columnClass)` — renderuje komórkę cech jako zestaw tagów.
@@ -353,7 +355,8 @@ Style te są wbudowane w HTML karty do druku (`buildPrintableCardHTML`):
 - `getSelectedIndices(select)` — zwraca indeksy zaznaczonych opcji.
 - `renderWeaponTable()`, `renderArmorTable()`, `renderAugmentationsTable()`, `renderEquipmentTable()`, `renderTalentsTable()`, `renderPsionicsTable()`, `renderPrayersTable()` — renderują odpowiednie tabele według aktualnego wyboru.
 - `setArmorSelectionEnabled(enabled)` — włącza/wyłącza select pancerzy.
-- `updateBestiarySelection()` — aktualizuje podgląd bestiariusza i stan pancerzy, resetuje nadpisania przy zmianie rekordu.
+- `updateBestiarySelection()` — aktualizuje podgląd bestiariusza i stan pancerzy, resetuje nadpisania przy zmianie rekordu oraz synchronizuje klasę `.bestiary-select-old`.
+- `updateBestiaryOldVisibility()` — obsługuje checkbox `#bestiary-show-old`; po odznaczeniu ukrywa opcje `old`, a jeśli aktualnie wybrany rekord jest `old`, czyści wybór, usuwa klasę `.bestiary-select-old`, przywraca pusty podgląd i bezpiecznie odblokowuje wybór pancerzy.
 
 ### 8.13. Formatowanie sekcji na karcie
 - `splitEntries(raw)` — dzieli wpisy na sekcje wg heurystyki (np. `Nazwa — ...`, `Etykieta: ...`, `*[n]`, `[n]`).
@@ -447,6 +450,10 @@ Helper `shouldGrayBestiaryKey(key, record)` działa dla rekordów oznaczonych ja
 - `Typ`.
 
 W tabeli podglądu bazowego pole techniczne `Stan` nie jest pokazywane jako zwykły wiersz danych. Dla rekordów `old` komórki klucza i wartości pól `LP`, `Nazwa` i `Typ` otrzymują klasę `.bestiary-old-key`.
+
+Checkbox `#bestiary-show-old` przechowuje stan UI w `state.showOldBestiaryRecords`. Domyślnie jest odznaczony, więc `refreshBestiaryOptions()` ukrywa opcje `old` w selectcie `#bestiary`, ale pozostawia pełną tablicę `state.bestiary` bez zmian. Po zaznaczeniu checkboxa lista pokazuje wszystkie rekordy. Opcje rekordów `old` dostają klasę `.bestiary-option-old`, a zamknięty select z wybranym rekordem `old` dostaje klasę `.bestiary-select-old`; obie klasy korzystają z `var(--text-old)`.
+
+Wczytywanie ulubionych używa `selectedBestiaryIndex` jako oryginalnego indeksu w `state.bestiary`. Jeśli ulubiony profil wskazuje rekord `old`, a checkbox jest odznaczony, aplikacja automatycznie zaznacza `#bestiary-show-old`, przebudowuje opcje i dopiero potem ustawia wartość selecta. Reset odznacza checkbox, przebudowuje listę bez rekordów `old`, czyści klasę `.bestiary-select-old` i przywraca pusty wybór bestiariusza.
 
 ### 13.3. Geometria tabeli podglądu bazowego
 Tabela `.data-table[data-sheet="Bestiariusz"]` używa `table-layout: fixed`.
