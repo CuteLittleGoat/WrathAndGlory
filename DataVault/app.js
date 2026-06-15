@@ -20,6 +20,8 @@ const els = {
   modalBody: document.getElementById("modalBody"),
   modalClose: document.getElementById("modalClose"),
   filterMenu: document.getElementById("filterMenu"),
+  toggleBestiaryOldGroup: document.getElementById("toggleBestiaryOldGroup"),
+  toggleOldBestiaryEntries: document.getElementById("toggleOldBestiaryEntries"),
   toggleCharacterTabs: document.getElementById("toggleCharacterTabs"),
   toggleCombatTabs: document.getElementById("toggleCombatTabs"),
   toggleVehicleTabs: document.getElementById("toggleVehicleTabs"),
@@ -48,6 +50,7 @@ const translations = {
       compareButton: "Porównaj zaznaczone",
       filtersTitle: "FILTRY",
       globalSearchLabel: "Szukaj (globalnie)",
+      toggleOldBestiaryEntries: "Czy wyświetlić zdezaktualizowane wpisy?",
       toggleCharacterTabs: "Czy wyświetlić zakładki dotyczące tworzenia postaci?",
       toggleCombatTabs: "Czy wyświetlić zakładki dotyczące zasad walki?",
       toggleVehicleTabs: "Czy wyświetlić zakładki dotyczące pojazdów?",
@@ -115,6 +118,7 @@ const translations = {
       compareButton: "Compare selected",
       filtersTitle: "FILTERS",
       globalSearchLabel: "Search (global)",
+      toggleOldBestiaryEntries: "Show outdated entries?",
       toggleCharacterTabs: "Show tabs related to character creation?",
       toggleCombatTabs: "Show tabs related to combat rules?",
       toggleVehicleTabs: "Show tabs related to vehicles?",
@@ -248,6 +252,8 @@ const VEHICLE_SHEET_KEYS = new Set([...VEHICLE_SHEETS].map(name => canonKey(name
 
 let DB = null;          // {sheets: {name:{rows, cols}}, _meta:{traits, states, traitIndex, stateIndex}}
 let currentSheet = null;
+// Stan runtime checkboxa Bestiariusza nie trafia do sessionStorage, aby po odświeżeniu zawsze wracał do bezpiecznego ukrycia / Runtime Bestiary checkbox state is not stored in sessionStorage, so refresh always returns to safe hiding
+let showOldBestiaryEntries = false;
 
 const SESSION_VIEW_KEY = "datavault_session_view_v2";
 const DEFAULT_VIEW_CONFIG = {
@@ -407,6 +413,30 @@ function isVehicleSheet(name){
   return VEHICLE_SHEET_KEYS.has(canonKey(name));
 }
 
+function isBestiarySheet(name){
+  return canonKey(name) === canonKey("Bestiariusz");
+}
+
+function shouldShowRowInCurrentSystemView(row, sheetName){
+  // Rekordy old są ukrywane systemowo tylko w Bestiariuszu, zanim zadziałają filtry użytkownika / Old rows are system-hidden only in Bestiary, before user filters run
+  if (isBestiarySheet(sheetName) && isOldStatusRow(row) && !showOldBestiaryEntries) return false;
+  return true;
+}
+
+function getSystemVisibleRows(sheetName){
+  const rows = DB?.sheets?.[sheetName] || [];
+  return rows.filter(row => shouldShowRowInCurrentSystemView(row, sheetName));
+}
+
+function pruneHiddenOldBestiarySelection(){
+  if (!isBestiarySheet(currentSheet) || showOldBestiaryEntries || !view?.selected) return;
+  const rows = DB?.sheets?.[currentSheet] || [];
+  const hiddenOldIds = new Set(rows.filter(isOldStatusRow).map(row => row.__id));
+  for (const id of [...view.selected]){
+    if (hiddenOldIds.has(id)) view.selected.delete(id);
+  }
+}
+
 function createSheetViewState(sheetName = null){
   return {
     sort: sheetName ? getDefaultSort(sheetName) : null,
@@ -480,8 +510,8 @@ function restoreSheetView(sheetName){
 }
 
 function applyDefaultViewForSheet(sheetName){
-  const rows = DB?.sheets?.[sheetName] || [];
-  const cols = inferColumns(rows, sheetName);
+  const rows = getSystemVisibleRows(sheetName);
+  const cols = inferColumns(DB?.sheets?.[sheetName] || [], sheetName);
   const config = getDefaultConfigForSheet(sheetName);
   const next = createSheetViewState(sheetName);
   next.sort = getDefaultSort(sheetName);
@@ -566,7 +596,7 @@ function loadSessionState(){
             continue;
           }
           if (!Array.isArray(rawSet)) continue;
-          const allowed = new Set(uniqueValuesForColumnFromRows(rows, col));
+          const allowed = new Set(uniqueValuesForColumnFromRows(getSystemVisibleRows(sheetName), col));
           const selected = rawSet.map(v => String(v || "")).filter(v => allowed.has(v));
           if (selected.length === allowed.size){
             next.filtersSet[col] = null;
@@ -603,6 +633,11 @@ function applyViewModeToAllSheets(mode){
     if (mode === "default") applyDefaultViewForSheet(sheetName);
     if (mode === "full") applyFullViewForSheet(sheetName);
   }
+  if (mode === "default"){
+    showOldBestiaryEntries = false;
+    if (els.toggleOldBestiaryEntries) els.toggleOldBestiaryEntries.checked = false;
+  }
+  pruneHiddenOldBestiarySelection();
   restoreSheetView(currentSheet);
   if (els.global) els.global.value = view.global || "";
   updateSortMarks();
@@ -1374,6 +1409,12 @@ function initUI(){
     : (visibleOrder.includes(preferredStartSheet) ? preferredStartSheet : fallbackSheet);
   if (nextSheet) selectSheet(nextSheet);
 
+  if (els.toggleBestiaryOldGroup){
+    els.toggleBestiaryOldGroup.hidden = !ADMIN_MODE;
+  }
+  if (els.toggleOldBestiaryEntries){
+    els.toggleOldBestiaryEntries.checked = showOldBestiaryEntries;
+  }
   if (els.toggleCharacterTabs){
     els.toggleCharacterTabs.checked = uiState.showCharacterTabs;
   }
@@ -1553,7 +1594,7 @@ function updateSortMarks(){
 
 /* ---------- Filtering ---------- */
 function uniqueValuesForColumn(col){
-  const rows = DB.sheets[currentSheet] || [];
+  const rows = getSystemVisibleRows(currentSheet);
   const vals = new Set();
   for (const r of rows){
     vals.add(String(r[col] ?? "").trim() || "-");
@@ -1792,8 +1833,9 @@ function updateClampableHints(){...}
 
 function renderBody(){
   if (!DB || !currentSheet || !tbodyEl) return;
-  const rowsAll = DB.sheets[currentSheet] || [];
-  const cols = DB.sheets[currentSheet]._cols || inferColumns(rowsAll, currentSheet);
+  const rowsAll = getSystemVisibleRows(currentSheet);
+  const cols = DB.sheets[currentSheet]._cols || inferColumns(DB.sheets[currentSheet] || [], currentSheet);
+  pruneHiddenOldBestiarySelection();
   updateFilterIndicators();
 
   const filtered = sortRows(rowsAll.filter(r => passesFilters(r, cols)));
@@ -1831,7 +1873,9 @@ function renderBody(){
 function renderRow(r, cols){
   const tr = document.createElement("tr");
   tr.classList.toggle("row-selected", view.selected.has(r.__id));
+  const oldBestiaryRow = isBestiarySheet(currentSheet) && isOldStatusRow(r);
   tr.classList.toggle("row-old", isOldStatusRow(r));
+  tr.classList.toggle("row-old--bestiary", oldBestiaryRow);
 
   const td0 = document.createElement("td");
   const cb = document.createElement("input");
@@ -1848,6 +1892,10 @@ function renderRow(r, cols){
   for (const col of cols){
     const td = document.createElement("td");
     td.dataset.col = col;
+    // W Bestiariuszu wyróżniamy tylko tożsamość starego wpisu: Nazwa i Typ / In Bestiary only the old entry identity is highlighted: Name and Type
+    if (oldBestiaryRow && ["nazwa", "typ"].includes(canonKey(col))){
+      td.classList.add("bestiary-old-identity");
+    }
 
     if (col === "Cechy"){
       td.appendChild(renderTraitsCell(r[col]));
@@ -2099,6 +2147,18 @@ els.global.addEventListener("input", ()=>{
   saveSessionState();
 });
 els.global.addEventListener("keydown", (ev)=>ev.stopPropagation());
+
+if (els.toggleOldBestiaryEntries){
+  els.toggleOldBestiaryEntries.checked = showOldBestiaryEntries;
+  els.toggleOldBestiaryEntries.addEventListener("change", ()=>{
+    showOldBestiaryEntries = ADMIN_MODE && els.toggleOldBestiaryEntries.checked;
+    if (!showOldBestiaryEntries) pruneHiddenOldBestiarySelection();
+    if (isFilterMenuOpen()) closeFilterMenu();
+    renderBody();
+    updateFilterIndicators();
+    saveSessionState();
+  });
+}
 
 if (els.toggleCharacterTabs){
   els.toggleCharacterTabs.addEventListener("change", ()=>{

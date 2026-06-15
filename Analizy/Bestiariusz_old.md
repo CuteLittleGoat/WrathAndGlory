@@ -872,3 +872,93 @@ admin-only checkbox w panelu filtrów
 ```
 
 Zmiana powinna być niewielka, ale wymaga uważnego potraktowania trzech miejsc: renderowania wierszy, menu filtrów oraz zapisu sesji. Najważniejsze jest zachowanie zasady z `Analizy/nazwy_old.md`: nie usuwać rekordów `old` z danych, tylko kontrolować ich widoczność na poziomie UI.
+
+## Zmiany wykonane w kodzie
+
+Data aktualizacji: 2026-06-15
+
+### Plik: `DataVault/index.html`
+
+Lokalizacja: panel `.panelBody`, przed checkboxem `#toggleCharacterTabs`.
+
+Było:
+
+```html
+<label class="checkboxRow">
+  <input type="checkbox" id="toggleCharacterTabs" />
+  <span class="checkboxLabel" data-i18n="toggleCharacterTabs">Czy wyświetlić zakładki dotyczące tworzenia postaci?</span>
+</label>
+```
+
+Jest:
+
+```html
+<label class="checkboxRow checkboxRow--bestiaryOld" id="toggleBestiaryOldGroup" hidden>
+  <input type="checkbox" id="toggleOldBestiaryEntries" />
+  <span class="checkboxLabel" data-i18n="toggleOldBestiaryEntries">Czy wyświetlić zdezaktualizowane wpisy?</span>
+</label>
+```
+
+Nowy checkbox jest pierwszym checkboxem w panelu filtrów i ma wrapper `hidden`, żeby w trybie użytkownika nie zostawiał pustego miejsca.
+
+### Plik: `DataVault/app.js`
+
+Lokalizacja: obiekt `els`, tłumaczenia, stan runtime oraz helpery widoczności systemowej.
+
+Było: aplikacja nie miała osobnego przełącznika widoczności wpisów `old` w `Bestiariuszu`; rekordy `old`, jeśli były widoczne przez aktualny widok tabeli, były traktowane jak pozostałe wiersze.
+
+Jest: dodano referencje `toggleBestiaryOldGroup` i `toggleOldBestiaryEntries`, tłumaczenia PL/EN, runtime stan `showOldBestiaryEntries = false` poza `uiState` oraz helpery `isBestiarySheet`, `shouldShowRowInCurrentSystemView`, `getSystemVisibleRows` i `pruneHiddenOldBestiarySelection`.
+
+### Plik: `DataVault/app.js`
+
+Lokalizacja: `renderBody()` i `uniqueValuesForColumn(col)`.
+
+Było:
+
+```js
+const rowsAll = DB.sheets[currentSheet] || [];
+```
+
+Jest:
+
+```js
+const rowsAll = getSystemVisibleRows(currentSheet);
+```
+
+Filtrowanie globalne, filtry kolumn, sortowanie i menu wartości unikalnych działają na wierszach widocznych po systemowym ukryciu wpisów `old` w `Bestiariuszu`.
+
+### Plik: `DataVault/app.js`
+
+Lokalizacja: `renderRow(r, cols)`.
+
+Było: klasa `row-old` oznaczała cały wiersz każdego rekordu `old`.
+
+Jest: w `Bestiariuszu` rekord `old` dostaje dodatkowo `row-old--bestiary`, a tylko komórki kolumn `Nazwa` i `Typ` dostają klasę `bestiary-old-identity`.
+
+### Plik: `DataVault/app.js`
+
+Lokalizacja: listener `#toggleOldBestiaryEntries` i `applyViewModeToAllSheets(mode)`.
+
+Było: stan widoku nie czyścił zaznaczeń ukrytych rekordów `old`, ponieważ nie istniał filtr systemowy dla `Bestiariusza`.
+
+Jest: odznaczenie checkboxa czyści ukryte rekordy `old` z `view.selected`, zamyka otwarte menu filtra, odświeża tabelę i wskaźniki filtrów. `Widok Domyślny` odznacza checkbox oraz ukrywa wpisy `old`. Stan checkboxa nie jest dopisywany do `uiState`, więc nie jest zapisywany w `sessionStorage`.
+
+### Plik: `DataVault/style.css`
+
+Lokalizacja: reguły `.row-old` oraz nowe reguły `.row-old--bestiary` / `.bestiary-old-identity`.
+
+Było:
+
+```css
+.dataTable tbody tr.row-old{color:var(--text-old)}
+```
+
+Jest: globalne kolorowanie całego wiersza `row-old` nie obejmuje `row-old--bestiary`, a w `Bestiariuszu` kolor `--text-old` i kursywa dotyczą tylko komórek `Nazwa` i `Typ` oznaczonych klasą `bestiary-old-identity`.
+
+### Pliki dokumentacji: `DataVault/docs/README.md`, `DataVault/docs/Documentation.md`, `DataVault/DetaleLayout.md`
+
+Lokalizacja: sekcje opisujące panel filtrów, filtrowanie, renderowanie, stan `old` i checkboxy.
+
+Było: dokumentacja opisywała ogólne checkboxy zakładek oraz globalny styl `row-old`.
+
+Jest: dokumentacja opisuje aktualny adminowy checkbox zdezaktualizowanych wpisów, systemowe filtrowanie `old` tylko w `Bestiariuszu`, brak zapisu stanu checkboxa w sesji, czyszczenie zaznaczeń ukrytych rekordów oraz stylowanie tylko pól `Nazwa` i `Typ`.

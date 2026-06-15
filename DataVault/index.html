@@ -64,6 +64,11 @@
             <div class="fieldLabel" data-i18n="globalSearchLabel">Szukaj (globalnie)</div>
             <input id="globalSearch" class="input" placeholder="np. Pist, Brutalna, IMPERIUM, Zatrucie (5)..." />
           </label>
+          <!-- Checkbox admina steruje wyłącznie widocznością zdezaktualizowanych wpisów Bestiariusza / Admin checkbox controls only outdated Bestiary entry visibility -->
+          <label class="checkboxRow checkboxRow--bestiaryOld" id="toggleBestiaryOldGroup" hidden>
+            <input type="checkbox" id="toggleOldBestiaryEntries" />
+            <span class="checkboxLabel" data-i18n="toggleOldBestiaryEntries">Czy wyświetlić zdezaktualizowane wpisy?</span>
+          </label>
           <label class="checkboxRow">
             <input type="checkbox" id="toggleCharacterTabs" />
             <span class="checkboxLabel" data-i18n="toggleCharacterTabs">Czy wyświetlić zakładki dotyczące tworzenia postaci?</span>

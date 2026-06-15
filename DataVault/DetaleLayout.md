@@ -14,6 +14,7 @@ Specjalne grupy zakładek są oznaczone osobnymi kolorami:
 
 Checkboxy w panelu filtrów używają natywnego `accent-color`:
 
+- checkbox zdezaktualizowanych wpisów Bestiariusza `#toggleOldBestiaryEntries` ma kolor `--text-old`, zgodny z archiwalnym oznaczeniem wpisów;
 - checkbox tworzenia postaci `#toggleCharacterTabs` ma jasny kolor `--code`, zgodny z jasnym tekstem komunikatu;
 - checkbox zasad walki `#toggleCombatTabs` ma czerwony kolor `--red`, zgodny z czerwonym tekstem komunikatu;
 - checkbox pojazdów pozostaje stalowo-szary dzięki `--steel`.
@@ -36,6 +37,7 @@ Special tab groups use separate color coding:
 
 The filter-panel checkboxes use native `accent-color`:
 
+- the outdated-Bestiary checkbox `#toggleOldBestiaryEntries` uses `--text-old`, matching archival entry marking;
 - the character-creation checkbox `#toggleCharacterTabs` uses bright `--code`, matching the bright message text;
 - the combat-rules checkbox `#toggleCombatTabs` uses red `--red`, matching the red message text;
 - the vehicle checkbox stays steel gray through `--steel`.
