@@ -827,3 +827,13 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Domyślna barwa logo: `#ffffff`.
 - W stanie wyłączonego checkboxa **Logo** panel koloru logo przechodzi do stanu nieaktywnego (wyszarzenie + blokada kliknięcia).
 - Podgląd GM i ekran odbiorcy renderują logo jako maskę PNG, a kolor jest kontrolowany przez jednolity fill (bez gradientu).
+
+## DataVault — aktualny wygląd zakładek pojazdów i zasad walki
+
+DataVault używa trzech palet zakładek:
+
+- zwykłe zakładki pozostają zielone i korzystają z dotychczasowych zmiennych `--text`, `--code`, `--b`, `--b2` oraz zielonego aktywnego glow;
+- zakładki zasad walki (`Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST`) mają czerwony tekst, czerwone aktywne obramowanie i czerwony glow;
+- zakładki pojazdów (`Role W Pojeździe`, `Akcje Pojazdu`, `Stany Pojazdów`, `Cechy Pojazdów`, `Pojazdy`, `Bronie Pojazdów`, `Ekwipunek Pojazdów`) mają stalowo-srebrny tekst, stalowo-srebrne aktywne obramowanie i stalowo-srebrny glow.
+
+Paleta pojazdów jest oparta o zmienne CSS: `--steel`, `--steel-bright`, `--steel-muted`, `--steel-border`, `--steel-glow`, `--steel-bg` oraz `--steel-bg-active`. Checkbox widoczności zakładek pojazdów używa stalowo-srebrnego tekstu i `accent-color` dopasowanego do tej palety.

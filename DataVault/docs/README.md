@@ -195,3 +195,15 @@ This module includes a **Strona Główna / Main Page** button. After copying the
 
 ## Reference generator
 The `DataVault/build_json.py` script is the reference path for generating data files from `Repozytorium.xlsx` using the XLSX ZIP/XML parser. Its output should match the files generated in the app by the **Generate data files** button.
+
+# 🇵🇱 Instrukcja dla użytkownika (PL) — zakładki pojazdów
+
+W panelu filtrów znajduje się opcja **Czy wyświetlić zakładki dotyczące pojazdów?**. Domyślnie jest wyłączona, więc zakładki pojazdów są ukryte. Zaznacz checkbox, aby pokazać siedem zakładek pojazdów. Odznacz checkbox, aby je ponownie ukryć. Jeśli ukryjesz zakładkę, na której aktualnie jesteś, DataVault sam przełączy się na bezpieczną dostępną zakładkę.
+
+Zakładki pojazdów zawierają role załogi, akcje pojazdów, stany pojazdów, cechy pojazdów, listę pojazdów, bronie pojazdów i wyposażenie pojazdów. Kliknięcie etykiety cechy w kolumnie `Cechy` otwiera okienko z opisem. Jeśli cecha ma wartość w nawiasie, na przykład `Montowana (Duży)`, okienko pokaże opis odpowiedniej cechy bazowej.
+
+# 🇬🇧 User instructions (EN) — vehicle tabs
+
+The filters panel contains the **Show tabs related to vehicles?** option. It is turned off by default, so vehicle tabs are hidden. Select the checkbox to show all seven vehicle tabs. Clear the checkbox to hide them again. If you hide the tab you are currently viewing, DataVault automatically switches to a safe available tab.
+
+Vehicle tabs contain crew roles, vehicle actions, vehicle states, vehicle traits, vehicles, vehicle weapons, and vehicle wargear. Clicking a trait label in the `Cechy` column opens a popover with its description. If a trait has a value in parentheses, for example `Montowana (Duży)`, the popover shows the matching base trait description.
