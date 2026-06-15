@@ -463,8 +463,10 @@ textarea:focus {
   border: 1px solid var(--div);
   box-shadow: var(--glow);
 }
+/* Bestiariusz używa automatycznego układu tabeli, bo Firefox potrafi błędnie rozdmuchać szerokość przy fixed + max-content.
+   The Bestiary uses automatic table layout because Firefox can over-expand fixed tables combined with max-content. */
 .data-table[data-sheet="Bestiariusz"] {
-  table-layout: fixed;
+  table-layout: auto;
 }
 .data-table[data-sheet="Bestiariusz"] th:first-child,
 .data-table[data-sheet="Bestiariusz"] td:first-child {

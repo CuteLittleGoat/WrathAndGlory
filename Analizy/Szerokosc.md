@@ -529,3 +529,97 @@ Jest:
   flex-wrap: wrap;
 }
 ```
+
+## Aktualizacja 2026-06-15 — Firefox i `table-layout: fixed` w Bestiariuszu
+
+### Oryginalny pełny prompt użytkownika
+
+```text
+Pracujesz w repozytorium CuteLittleGoat/WrathAndGlory.
+
+Problem: w Firefoxie moduł GeneratorNPC nadal pokazuje bardzo długi lokalny poziomy scrollbar w karcie „Podgląd bazowy / Bestiariusz”. Analiza DevTools wykazała, że globalny overflow dokumentu wynosi 0, więc wcześniejsza poprawka layoutu działa. Źródłem absurdalnej szerokości jest reguła CSS:
+
+.data-table[data-sheet="Bestiariusz"] {
+  table-layout: fixed;
+}
+
+W Firefoxie ta reguła powoduje wyliczenie tabeli Bestiariusza na kilkanaście milionów pikseli szerokości. Po tymczasowym wyłączeniu `table-layout: fixed` w DevTools tabela wraca do normalnej szerokości około 2130 px, a `computedTableLayout` wynosi `auto`. `min-width: max-content` może pozostać, bo przy `table-layout: auto` nie powoduje problemu.
+
+Zadanie:
+1. W pliku GeneratorNPC/style.css usuń albo bezpiecznie nadpisz regułę `table-layout: fixed` dla `.data-table[data-sheet="Bestiariusz"]`.
+2. Preferowane rozwiązanie: ustaw dla tabeli Bestiariusza `table-layout: auto` albo usuń cały blok, jeśli domyślne zachowanie wystarczy.
+3. Nie usuwaj globalnego `.data-table { min-width: max-content; }`, chyba że po testach okaże się konieczne.
+4. Zachowaj lokalne przewijanie tabel wewnątrz `.card`.
+5. Nie stosuj `body { overflow-x: hidden; }`.
+6. Sprawdź po zmianie:
+   - pusty Podgląd bazowy Bestiariusza,
+   - Podgląd bazowy po wybraniu realnego rekordu,
+   - moduły Broń, Pancerz, Psionika, Modlitwy,
+   - brak globalnego poziomego overflow dokumentu,
+   - lokalny overflow tabel pozostaje rozsądny.
+7. Zaktualizuj dokumentację, jeśli obecnie opisuje Bestiariusz jako `table-layout: fixed` albo sugeruje, że ta reguła nadal obowiązuje:
+   - GeneratorNPC/docs/Documentation.md
+   - DetaleLayout.md
+   - GeneratorNPC/docs/README.md tylko jeśli opis użytkowy wymaga korekty.
+
+Po realizacji zadania dopisz ten prompt do Analizy/Szerokosc.md oraz co zostało wykonane.
+```
+
+### Zakres wykonanej zmiany
+
+Problem dotyczył wyłącznie lokalnego poziomego przewijania tabeli podglądu bazowego Bestiariusza w module GeneratorNPC. Wcześniejsza poprawka globalnego układu pozostała bez zmian: `.layout`, `.workspace` i `.card` nadal ograniczają szerokość dokumentu, a tabele nadal przewijają się lokalnie wewnątrz kart.
+
+### Zmiany wykonane w kodzie
+
+#### Plik: `GeneratorNPC/style.css`
+
+Lokalizacja: selektor `.data-table[data-sheet="Bestiariusz"]`
+
+Było:
+
+```css
+.data-table[data-sheet="Bestiariusz"] {
+  table-layout: fixed;
+}
+```
+
+Jest:
+
+```css
+/* Bestiariusz używa automatycznego układu tabeli, bo Firefox potrafi błędnie rozdmuchać szerokość przy fixed + max-content.
+   The Bestiary uses automatic table layout because Firefox can over-expand fixed tables combined with max-content. */
+.data-table[data-sheet="Bestiariusz"] {
+  table-layout: auto;
+}
+```
+
+Efekt: Bestiariusz zachowuje globalne `.data-table { min-width: max-content; }`, ale Firefox nie używa już problematycznego `table-layout: fixed`, które powodowało absurdalnie szeroki lokalny scrollbar.
+
+#### Plik: `GeneratorNPC/docs/Documentation.md`
+
+Lokalizacja: sekcja `13.3. Geometria tabeli podglądu bazowego` oraz opis lokalnego przewijania tabel w sekcji integracji/layoutu.
+
+Było: dokumentacja opisywała Bestiariusz jako tabelę z `table-layout: fixed` i drugą kolumną przejmującą pozostałą szerokość.
+
+Jest: dokumentacja opisuje Bestiariusz jako tabelę z `table-layout: auto`, zachowaną szerokością pierwszej kolumny `25ch`, elastyczną drugą kolumną oraz lokalnym przewijaniem w karcie.
+
+#### Plik: `DetaleLayout.md`
+
+Lokalizacja: sekcja `Stała szerokość kolumny „Klucz” (GeneratorNPC)`.
+
+Było: dokumentacja layoutu informowała, że tabela `data-sheet="Bestiariusz"` ma `table-layout: fixed`.
+
+Jest: dokumentacja layoutu informuje, że tabela `data-sheet="Bestiariusz"` ma `table-layout: auto`, a pierwsza kolumna zachowuje stabilną szerokość `25ch`.
+
+### Wyniki sprawdzenia
+
+- Globalna reguła `.data-table { min-width: max-content; }` pozostała bez zmian.
+- Lokalny `overflow-x: auto` na `.card` pozostał bez zmian.
+- Nie dodano ani nie użyto `body { overflow-x: hidden; }`.
+- W statycznej weryfikacji CSS nie ma już reguły ustawiającej `table-layout: fixed` dla `.data-table[data-sheet="Bestiariusz"]`.
+- Dokumentacja techniczna i layoutowa nie opisuje już aktualnego Bestiariusza jako tabeli z `table-layout: fixed`.
+
+### Ryzyka i następne kroki
+
+- Weryfikacja w prawdziwym Firefoxie powinna potwierdzić wartość `computedTableLayout: auto`, rozsądną szerokość tabeli i brak globalnego overflow dokumentu.
+- Jeżeli w przyszłości tabela Bestiariusza otrzyma kolejne bardzo szerokie kolumny, należy najpierw sprawdzać lokalny overflow karty i naturalną szerokość tabeli, a nie przywracać `table-layout: fixed`.
