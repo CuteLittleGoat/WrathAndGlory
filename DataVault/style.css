@@ -963,7 +963,7 @@ td.center{text-align:center}
 
 /* --- Bramka dostępu do prywatnych danych / Private data access gate --- */
 
-/* Zakładki i checkboxy pojazdów używają stalowo-srebrnej palety / Vehicle tabs and checkboxes use a steel-silver palette */
+/* Zakładki i checkboxy grup specjalnych używają końcowych reguł, żeby wygrać z bazową zieloną kaskadą / Special-group tabs and checkboxes use final rules so they override the base green cascade */
 :root{
   --steel:#AEB7C2;
   --steel-bright:#D6DCE2;
@@ -972,10 +972,23 @@ td.center{text-align:center}
   --steel-glow:rgba(174,183,194,.40);
   --steel-bg:rgba(174,183,194,.08);
   --steel-bg-active:rgba(174,183,194,.16);
+  --character-border:rgba(210,250,210,.55);
+  --character-glow:rgba(210,250,210,.30);
+  --character-bg:rgba(210,250,210,.05);
+  --character-bg-active:rgba(210,250,210,.12);
 }
+/* Checkbox tworzenia postaci przejmuje jasny kolor tekstu komunikatu / The character-creation checkbox inherits the bright message text color */
+#toggleCharacterTabs{accent-color:var(--code)}
+/* Checkbox zasad walki pozostaje czerwony mimo wcześniejszej reguły bazowej / The combat-rules checkbox stays red despite the earlier base rule */
+#toggleCombatTabs{accent-color:var(--red)}
 .checkboxRow--vehicle,
 .checkboxRow--vehicle .checkboxLabel{color:var(--steel); opacity:1}
 .checkboxRow--vehicle input{accent-color:var(--steel)}
+/* Zakładki tworzenia postaci mają własne jasne tło, obramowanie i poświatę / Character-creation tabs get their own bright background, border, and glow */
+.tab.tab--character{color:var(--code); background:var(--character-bg); border-color:rgba(210,250,210,.20); opacity:1}
+.tab.tab--character:hover,
+.tab.tab--character:focus{color:var(--code); border-color:rgba(210,250,210,.45); box-shadow:0 0 0 2px rgba(210,250,210,.10)}
+.tab.tab--character.active{color:var(--code); background:var(--character-bg-active); border-color:var(--character-border); box-shadow:0 0 0 2px rgba(210,250,210,.16), 0 0 18px var(--character-glow)}
 .tab.tab--combat.active{border-color:rgba(215,75,75,.55); box-shadow:0 0 0 2px rgba(215,75,75,.18), 0 0 18px rgba(215,75,75,.28); background:rgba(215,75,75,.10)}
 .tab.tab--vehicle{color:var(--steel); background:var(--steel-bg); border-color:rgba(174,183,194,.22)}
 .tab.tab--vehicle:hover,

@@ -401,3 +401,59 @@ Najważniejsze są dwie rzeczy:
 2. dodać pełny aktywny styl `.tab.tab--character.active`, bo obecnie grupa tworzenia postaci ma tylko zmieniony kolor tekstu, ale dziedziczy zielone obramowanie i zielony glow ze zwykłych zakładek.
 
 To rozwiąże wskazany problem wizualny bez zmian w mechanizmach DataVault.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/style.css`
+
+Lokalizacja: końcowa sekcja reguł grup specjalnych, po bazowych regułach `.checkboxRow input` i `.tab.active`.
+
+Było:
+
+```css
+.checkboxRow--vehicle input{accent-color:var(--steel)}
+.tab.tab--combat.active{border-color:rgba(215,75,75,.55); box-shadow:0 0 0 2px rgba(215,75,75,.18), 0 0 18px rgba(215,75,75,.28); background:rgba(215,75,75,.10)}
+.tab.tab--vehicle{color:var(--steel); background:var(--steel-bg); border-color:rgba(174,183,194,.22)}
+```
+
+Jest:
+
+```css
+#toggleCharacterTabs{accent-color:var(--code)}
+#toggleCombatTabs{accent-color:var(--red)}
+.checkboxRow--vehicle input{accent-color:var(--steel)}
+.tab.tab--character{color:var(--code); background:var(--character-bg); border-color:rgba(210,250,210,.20); opacity:1}
+.tab.tab--character:hover,
+.tab.tab--character:focus{color:var(--code); border-color:rgba(210,250,210,.45); box-shadow:0 0 0 2px rgba(210,250,210,.10)}
+.tab.tab--character.active{color:var(--code); background:var(--character-bg-active); border-color:var(--character-border); box-shadow:0 0 0 2px rgba(210,250,210,.16), 0 0 18px var(--character-glow)}
+.tab.tab--combat.active{border-color:rgba(215,75,75,.55); box-shadow:0 0 0 2px rgba(215,75,75,.18), 0 0 18px rgba(215,75,75,.28); background:rgba(215,75,75,.10)}
+.tab.tab--vehicle{color:var(--steel); background:var(--steel-bg); border-color:rgba(174,183,194,.22)}
+```
+
+Opis stanu przed zmianą: checkbox zasad walki mógł przegrywać z bazową zieloną regułą checkboxów, checkbox tworzenia postaci nie miał osobnego końcowego koloru, a aktywna zakładka tworzenia postaci dziedziczyła zielone obramowanie i glow zwykłych zakładek.
+
+Opis stanu po zmianie: checkbox tworzenia postaci używa jasnego `--code`, checkbox zasad walki używa czerwonego `--red`, checkbox pojazdów zachowuje stalowe `--steel`, a zakładki tworzenia postaci mają własne jasne tło, obramowanie hover/focus oraz aktywny jasny glow.
+
+### Plik: `DataVault/docs/Documentation.md`
+
+Lokalizacja: sekcje `3.4 Przyciski i pola` oraz `3.5 Zakładki`.
+
+Było: dokumentacja opisywała checkboxy i zakładki tworzenia postaci jako elementy korzystające głównie z bazowego jasnego tekstu, bez pełnego opisu osobnego aktywnego obramowania i glow.
+
+Jest: dokumentacja opisuje aktualne końcowe reguły `accent-color` dla `#toggleCharacterTabs` i `#toggleCombatTabs`, jasny aktywny styl `.tab--character` oraz zachowanie czerwonego stylu `.tab--combat`.
+
+### Plik: `DataVault/docs/README.md`
+
+Lokalizacja: sekcja „Co znajdziesz na ekranie” / “What you get on screen”.
+
+Było: instrukcja użytkownika informowała, że zakładki przełączają między grupami danych.
+
+Jest: instrukcja użytkownika opisuje aktualne kodowanie kolorami zakładek: zwykłe zielone, walki czerwone, pojazdów stalowo-szare i tworzenia postaci z jasnym obramowaniem oraz jasną poświatą.
+
+### Plik: `DataVault/DetaleLayout.md`
+
+Lokalizacja: cały plik.
+
+Było: plik nie istniał w module.
+
+Jest: plik opisuje aktualną paletę zakładek specjalnych i checkboxów w pełnej wersji polskiej oraz angielskiej.
