@@ -106,7 +106,7 @@ W części zakładek, zwłaszcza przy przedmiotach, ekwipunku albo podobnych ele
 
 `IM` oznacza system TTRPG `Imperium Maledictum`. DataVault pozostaje pomocą do `Wrath & Glory`, ale wybrane rekordy mogą zawierać dodatkową informację z drugiego systemu tego samego wydawcy.
 
-Kolumna `Koszt IM` pokazuje koszt danego przedmiotu w systemie `Imperium Maledictum`. Jest to wartość pomocnicza i porównawcza. Nie zastępuje zasad `Wrath & Glory` i nie oznacza kosztu w `Wrath & Glory`, chyba że opis danego rekordu mówi inaczej.
+Kolumna `Koszt IM` pokazuje koszt danego przedmiotu w systemie `Imperium Maledictum`. Jest to wartość pomocnicza i porównawcza. Służy do używania klasycznego systemu monetarnego dla Mistrzów Gry, którzy wolą takie rozwiązanie.
 
 Jeżeli kolumna `Koszt IM` jest pusta, oznacza to po prostu, że dla danego wpisu nie uzupełniono kosztu z `Imperium Maledictum` albo dana rzecz nie ma takiego odpowiednika w danych.
 
@@ -424,7 +424,7 @@ Some tabs, especially those containing items, equipment, or similar usable recor
 
 `IM` means the `Imperium Maledictum` TTRPG system. DataVault remains a `Wrath & Glory` helper, but selected records may include additional information from another system by the same publisher.
 
-The `Koszt IM` column shows the cost of a given item in `Imperium Maledictum`. It is a helper and comparison value. It does not replace `Wrath & Glory` rules and does not mean a `Wrath & Glory` cost unless the specific record says otherwise.
+The `Koszt IM` column shows the cost of a given item in `Imperium Maledictum`. It is a helper and comparison value. It is intended for using a classic monetary system by Game Masters who prefer that solution.
 
 If the `Koszt IM` column is empty, it simply means that no `Imperium Maledictum` cost has been filled in for that record, or that the item has no such equivalent in the data.
 
