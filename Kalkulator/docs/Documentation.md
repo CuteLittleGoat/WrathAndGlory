@@ -1,522 +1,855 @@
-# Documentation – szczegółowy opis kodu narzędzi Wrath & Glory
+# 🇵🇱 Dokumentacja techniczna — Kalkulator (PL)
 
-## 1. Cel i ogólny opis
-Aplikacja to **zestaw statycznych stron HTML/CSS/JS** do planowania rozwoju postaci w systemie Wrath & Glory. Logika interfejsu i obliczeń działa po stronie przeglądarki, a moduł Tworzenie Postaci korzysta dodatkowo z Firestore do zapisu/odczytu danych postaci między urządzeniami.
+## Cel modułu
 
-Najważniejsze pliki:
-- `index.html` – strona startowa z nawigacją.
-- `KalkulatorXP.html` – kalkulator kosztów XP.
-- `TworzeniePostaci.html` – arkusz tworzenia postaci z walidacjami i przełącznikiem języka.
-- `kalkulatorxp.css` – wspólne style dla kalkulatora i arkusza.
-- `HowToUse/pl.pdf` i `HowToUse/en.pdf` – instrukcje PDF otwierane z poziomu arkusza.
+`Kalkulator` jest zestawem statycznych narzędzi HTML/CSS/JS do planowania rozwoju i tworzenia postaci w systemie `Wrath & Glory`.
 
-## 1.0.1. Tabela „Maksymalne wartości atrybutów”
-Tabela maksymalnych wartości atrybutów jest dostępna w arkuszu tworzenia postaci i prezentuje limity rasowe dla ośmiu atrybutów. Dla wiersza `race_16` i kolumny `attribute_8` renderer pokazuje wartość `14*`, ale źródłowa wartość w `maxAttributeRows` pozostaje liczbą `14`. Przypis jest częścią tłumaczeń `translations.<lang>.maxAttributesFootnotes` i występuje tylko w `TworzeniePostaci.html`; osobny `KalkulatorXP.html` pokazuje Vespid/Vespidów z wartością `14` bez gwiazdki.
+Moduł składa się z trzech głównych widoków:
 
-Wyrównanie pierwszej kolumny z nazwami ras działa w dwóch miejscach:
-- `kalkulatorxp.css`: reguła `.referenceTable tbody th:first-child { text-align: left; }` ustawia lewostronne wyrównanie nazw ras w tabeli referencyjnej.
-- `TworzeniePostaci.html`: reguła `.species-max-table td:first-child` utrzymuje lewostronne wyrównanie pierwszej kolumny oraz `font-weight: 600`.
-- `TworzeniePostaci.html`: reguła `.species-max-footnotes` ustawia mniejszy rozmiar tekstu, kolor `var(--text2)` i niewielki odstęp nad przypisem pod tabelą.
+- strony startowej `index.html`,
+- kalkulatora kosztów PD `KalkulatorXP.html`,
+- arkusza tworzenia postaci `TworzeniePostaci.html`.
 
-Zakres działania obejmuje wyłącznie kolumnę z nazwami ras. Komórki liczbowe pozostają wyrównane centralnie zgodnie z regułami bazowymi tabel.
+Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.html` używa Firebase Firestore do zapisu i wczytywania aktualnego stanu postaci.
 
-## 1.1. Terminologia PL: PD
-Polski interfejs używa skrótu **PD** jako odpowiednika angielskiego **XP**. Dotyczy to etykiet widocznych dla użytkownika, tytułów, opisów puli punktów i komunikatów walidacyjnych.
+## Punkty wejścia
 
-Logika obliczeń, nazwy plików i odnośniki techniczne pozostają oparte na istniejących nazwach modułów, na przykład `KalkulatorXP.html`.
+| Plik | Rola |
+| --- | --- |
+| `Kalkulator/index.html` | Strona startowa `Kozie Liczydła`. Prowadzi do kalkulatora PD i tworzenia postaci. |
+| `Kalkulator/KalkulatorXP.html` | Prosty kalkulator kosztów rozwoju atrybutów i umiejętności. |
+| `Kalkulator/TworzeniePostaci.html` | Pełniejszy arkusz tworzenia postaci z pulą PD, atrybutami, umiejętnościami, talentami, walidacją i zapisem Firebase. |
 
-Warstwa angielska używa skrótu **XP**.
+## Struktura plików modułu
 
-## 1.2. `TworzeniePostaci.html` — Szybkość i tabela maksimów ras
-Arkusz tworzenia postaci obsługuje osiem atrybutów:
+| Plik lub katalog | Odpowiedzialność |
+| --- | --- |
+| `index.html` | Landing modułu, logo, linki do narzędzi i sekretny overlay z GIF-em. |
+| `KalkulatorXP.html` | Kalkulator kosztów PD dla aktualnych i docelowych wartości. |
+| `TworzeniePostaci.html` | Arkusz tworzenia postaci i zapis/wczytanie stanu z Firestore. |
+| `kalkulatorxp.css` | Wspólny styl używany przez `KalkulatorXP.html` oraz bazowo przez `TworzeniePostaci.html`. |
+| `config/firebase-config.js` | Konfiguracja Firebase dla `TworzeniePostaci.html`. |
+| `config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase dla zapisu postaci. |
+| `HowToUse/pl.pdf` | Polska instrukcja otwierana z arkusza tworzenia postaci. |
+| `HowToUse/en.pdf` | Angielska instrukcja otwierana z arkusza tworzenia postaci. |
+| `Skull.png` | Logo strony startowej. |
+| `Koza.gif` | Grafika używana w sekretnym overlayu strony startowej. |
+| `Modal_Icon.png` | Ilustracja modali potwierdzeń w `TworzeniePostaci.html`. |
+| `docs/README.md` | Instrukcja użytkownika. |
+| `docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
+
+## Zależności zewnętrzne
+
+Widoki `index.html` i `KalkulatorXP.html` nie wymagają zewnętrznych bibliotek JavaScript.
+
+`TworzeniePostaci.html` używa Firebase w trybie compat:
+
+- `firebase-app-compat.js`,
+- `firebase-firestore-compat.js`.
+
+Konfiguracja Firebase jest ładowana z:
+
+```text
+Kalkulator/config/firebase-config.js
+```
+
+Moduł używa lokalnego stosu fontów:
+
+```text
+Consolas, Fira Code, Source Code Pro, monospace
+```
+
+## Widok `index.html`
+
+`index.html` jest stroną startową modułu.
+
+Główne elementy:
+
+| Element | Rola |
+| --- | --- |
+| `Skull.png` | Logo startowe. |
+| Link `Kalkulator PD` | Prowadzi do `KalkulatorXP.html`. |
+| Link `Tworzenie Postaci` | Prowadzi do `TworzeniePostaci.html`. |
+| `secretButton` | Otwiera sekretny overlay. |
+| `secretOverlay` | Pełnoekranowa nakładka z `Koza.gif`. |
+| `secretCloseButton` | Zamyka overlay. |
+
+Logika strony startowej jest minimalna. Funkcja `toggleSecretOverlay(forceOpen)` przełącza klasę `is-open` i aktualizuje `aria-hidden`.
+
+Overlay można zamknąć:
+
+- przyciskiem `Zamknij`,
+- kliknięciem tła poza dialogiem,
+- klawiszem `Escape`.
+
+## Widok `KalkulatorXP.html`
+
+`KalkulatorXP.html` służy do szybkiego obliczenia kosztu PD między wartością aktualną i docelową.
+
+Główne elementy UI:
+
+| Element | ID | Rola |
+| --- | --- | --- |
+| Przełącznik języka | `languageSelect` | Przełącza teksty PL/EN. |
+| Strona Główna | `btnMainPage` | Link do `../Main/index.html`. |
+| Resetuj wartości | `btnReset` | Ustawia wszystkie pola atrybutów i umiejętności na `0`. |
+| Całkowity koszt PD | `totalXp` | Suma kosztów atrybutów i umiejętności. |
+| Tabela atrybutów | `attributesTable` | Cztery wiersze z aktualną i docelową wartością atrybutu. |
+| Tabela umiejętności | `skillsTable` | Cztery wiersze z aktualną i docelową wartością umiejętności. |
+| Tabela maksimów ras | `maxAttributesTable` | Referencyjna tabela maksymalnych wartości atrybutów. |
+
+## Koszty w `KalkulatorXP.html`
+
+Koszty atrybutów:
+
+```js
+0: 0, 1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
+```
+
+Koszty umiejętności:
+
+```js
+0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
+```
+
+`calculateRowCost(current, target, costs)` zwraca `0`, jeżeli wartość docelowa jest mniejsza lub równa aktualnej. W przeciwnym razie zwraca różnicę kosztu docelowego i kosztu aktualnego.
+
+`clampValue(value, min, max)` ogranicza wartości:
+
+- atrybuty: `0..12`,
+- umiejętności: `0..8`.
+
+## Tabela maksymalnych wartości atrybutów
+
+`KalkulatorXP.html` i `TworzeniePostaci.html` mają osadzone dane maksymalnych wartości rasowych.
+
+Atrybuty:
+
 - Siła / Strength,
 - Wytrzymałość / Toughness,
 - Zręczność / Agility,
 - Inicjatywa / Initiative,
 - Siła Woli / Willpower,
-- Intelekt / Intellect,
+- Inteligencja / Intellect,
 - Ogłada / Fellowship,
 - Szybkość / Speed.
 
-Atrybut `attr_Speed` jest częścią formularza, resetu danych i przeliczania kosztów. Etykiety atrybutów są obsługiwane przez tłumaczenia PL/EN.
+W `TworzeniePostaci.html` wartość `Vespidzi / Speed = 14` jest renderowana jako `14*`, ale źródłowa wartość pozostaje liczbą `14`. Przypis jest warstwą prezentacji i informuje, że Vespidzi mają stałą Szybkość 14, a pole Szybkość należy ignorować dla obliczeń PD.
 
-Tabela maksymalnych wartości atrybutów jest dostępna z poziomu arkusza tworzenia postaci jako modal. Przycisk otwierający modal używa tego samego stylu wizualnego co przyciski `Instrukcja` / `Manual` i `Strona Główna` / `Main Page`.
+## Widok `TworzeniePostaci.html`
 
-Dane tabeli są osadzone w kodzie modułu i renderowane dynamicznie dla aktualnego języka interfejsu.
+`TworzeniePostaci.html` jest arkuszem tworzenia postaci.
 
-## 1.2.1. Domyślna wartość `Szybkość` = 6
-Pole `#attr_Speed` ma domyślną wartość `6` przy pierwszym wejściu na stronę.
+Główne sekcje:
 
-Funkcja `resetAll()` przywraca wartości formularza do stanu początkowego i ustawia `attr_Speed` na `6`.
+| Sekcja | Rola |
+| --- | --- |
+| Przełącznik języka | Wybór PL/EN. Zmiana języka resetuje dane po potwierdzeniu. |
+| Instrukcja | Otwiera `HowToUse/pl.pdf` albo `HowToUse/en.pdf`. |
+| Strona Główna | Przechodzi do `../Main/index.html`. |
+| Maksymalne wartości atrybutów | Otwiera modal tabeli maksimów rasowych. |
+| Pula PD | Wartość `xpPool`, domyślnie `155`. |
+| Zapisz / Wczytaj | Zapis i odczyt Firestore. |
+| Atrybuty | Osiem pól atrybutów. |
+| Umiejętności | Osiemnaście pól umiejętności w dwóch kolumnach. |
+| Talenty i inne | 20 wpisów nazwa/koszt. |
+| Komunikaty błędów | `errorMessage`, np. przekroczenie PD albo Drzewo Nauki. |
 
-Funkcja `recalcXP()` korzysta z bieżącej wartości wpisanej przez użytkownika, waliduje zakres `1..12`, aktualizuje koszt i stosuje odpowiednie klasy wizualne.
+## Atrybuty w `TworzeniePostaci.html`
 
-## 2. Zależności zewnętrzne i assety
-### 2.1. Fonty
-- Wszystkie strony (`index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`) korzystają z lokalnego stosu fontów, bez zewnętrznych CDN:
-  - `Consolas`, `Fira Code`, `Source Code Pro`, `monospace`.
+Pola atrybutów:
 
-### 2.2. Obraz
-- `Skull.png` – logo na stronie startowej (`index.html`).
-- `Skull.png` ma natywne proporcje `1024 × 1536` i te wartości są jawnie wpisane do znacznika `<img>` (`width` i `height`), żeby przeglądarka mogła zarezerwować miejsce przed pobraniem bitmapy.
-- `Koza.gif` – animacja wyświetlana jako overlay po kliknięciu tajnego przycisku na stronie startowej (`index.html`).
+| ID | PL | EN | Domyślnie | Zakres |
+| --- | --- | --- | --- | --- |
+| `attr_S` | S | S | `1` | `1..12` |
+| `attr_Wt` | Wt | T | `1` | `1..12` |
+| `attr_Zr` | Zr | A | `1` | `1..12` |
+| `attr_I` | I | I | `1` | `1..12` |
+| `attr_SW` | SW | Will | `1` | `1..12` |
+| `attr_Int` | Int | Int | `1` | `1..12` |
+| `attr_Ogd` | Ogd | Fell | `1` | `1..12` |
+| `attr_Speed` | Szybkość | Speed | `6` | `1..12` |
 
-### 2.3. Instrukcje PDF
-- `HowToUse/pl.pdf` oraz `HowToUse/en.pdf` – otwierane przyciskiem **Instrukcja / Manual** w `TworzeniePostaci.html`.
+`recalcXP()` ogranicza atrybuty do zakresu `1..12`, oblicza koszt według `attributeCosts` i dodaje klasę `attribute-high`, gdy wartość jest większa niż `8`.
 
-## 3. `index.html` – strona startowa
-### 3.1. Struktura
-- `<main>` z logo (`.logo`) oraz sekcją przycisków `.actions`.
-- Dwa linki (`.btn`) prowadzą do:
-  - `KalkulatorXP.html`
-  - `TworzeniePostaci.html`
-- Pod siatką `.actions` znajduje się kontener wyrównany do prawej (`.secretCtaWrap`) z przyciskiem:
-  - `<button id="secretButton" class="btn secretCta">Tajny przycisk!</button>`
-- Pod panelem `<main>` znajduje się nakładka:
-  - `<div id="secretOverlay" class="secret-overlay">` z dialogiem `.secret-dialog`,
-  - `<img src="Koza.gif">` oraz przyciskiem zamknięcia `#secretCloseButton`.
-- `<title>` ustawiony na `Kozie Liczydła` (tytuł karty przeglądarki).
+## Umiejętności w `TworzeniePostaci.html`
 
-### 3.2. Style (inline)
-`index.html` ma wbudowany CSS w `<style>`:
-- Zmienne CSS w `:root`:
-  - `--bg`: radial gradients + kolor bazowy `#031605`.
-  - `--panel`: `#000` (tło panelu).
-  - `--border`: `#16c60c` (zielona ramka).
-  - `--text`: `#9cf09c` (zielony tekst).
-  - `--accent`: `#16c60c`.
-  - `--accent-dark`: `#0d7a07`.
-  - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
-  - `--radius`: `10px`.
-- Układ:
-  - `body` – centrowanie zawartości i pełna wysokość ekranu.
-  - `main` – panel z obramowaniem i `box-shadow` (efekt „glow”).
-- Logo `.logo`:
-  - `max-width: clamp(220px, 40vw, 320px)`,
-  - `width: 100%`,
-  - `height: auto` (jawne zachowanie proporcji),
-  - atrybuty HTML: `width="1024"` i `height="1536"` (rezerwacja miejsca i stabilniejszy pierwszy layout).
-- Przyciski `.btn`:
-  - Tło: półprzezroczysta zieleń (`rgba(22, 198, 12, ...)`).
-  - Interakcje: `:hover` podbija cień, `:active` przyciemnia tło.
-- Kontener `.secretCtaWrap`:
-  - `display: flex`, `justify-content: flex-end`, `width: 100%`, `margin-top: 4px` – ustawia „Tajny przycisk!” w prawym dolnym obszarze panelu, analogicznie do CTA push w module Main.
-- Przycisk `.btn.secretCta`:
-  - Styl 1:1 jak przycisk `Włącz powiadomienia` z `Main/index.html`: kompaktowy rozmiar, kształt `pill` (`border-radius: 999px`), szerokość auto, mały padding i font (`11px`).
-  - Czerwona paleta CTA: `#ff3b30`, `rgba(255, 59, 48, ...)`, jasny tekst `#ffe5e3`, dedykowane stany `:hover` i `:active`.
-- Nakładka GIF:
-  - `.secret-overlay` to pełnoekranowa warstwa `position: fixed; inset: 0;` z tłem `rgba(0, 0, 0, 0.8)`.
-  - `.secret-overlay.is-open` przełącza widoczność (`display: flex`).
-  - `.secret-dialog` zachowuje estetykę modułu: zielona ramka, czarne tło i `box-shadow: var(--glow)`.
-  - Obraz ograniczono do `max-height: 70vh` i `max-width: min(92vw, 640px)` dla responsywności.
-  - `.secret-close` ma `margin: 10px 0 0 auto` oraz `width: auto`, dzięki czemu przycisk **Zamknij** jest przypięty do prawego dolnego rogu okna GIF-a (zamiast pełnej szerokości).
+Umiejętności są zapisane jako 18 pól:
 
-### 3.3. Logika
-`index.html` zawiera lekki skrypt JS sterujący overlayem:
-1. **Pobranie referencji DOM**
-   - `#secretButton`, `#secretOverlay`, `#secretCloseButton`.
-2. **`toggleSecretOverlay(forceOpen)`**
-   - Gdy `forceOpen` jest podane (`true/false`), wymusza stan.
-   - W przeciwnym razie działa jako toggle.
-   - Przełącza klasę `.is-open` i aktualizuje `aria-hidden`.
-3. **Zdarzenia zamknięcia/otwarcia**
-   - kliknięcie `#secretButton` → otwórz/zamknij overlay,
-   - kliknięcie `#secretCloseButton` → zamknij,
-   - kliknięcie w tło overlay (poza dialogiem) → zamknij,
-   - klawisz `Escape` przy otwartym overlayu → zamknij.
+```text
+skill_Column1Row1 ... skill_Column1Row9
+skill_Column2Row1 ... skill_Column2Row9
+```
 
-## 4. `kalkulatorxp.css` – wspólne style
-Plik stosowany przez `KalkulatorXP.html` i częściowo przez `TworzeniePostaci.html`.
+Zakres wartości: `0..8`.
 
-### 4.1. Paleta i zmienne CSS
-W `:root` zdefiniowano:
-- Tła i panele:
-  - `--bg: #031605`
-  - `--bg-grad`: radialne gradienty + `#031605`
-  - `--panel: #000`
-  - `--panel2: #000`
-- Kolory tekstu:
-  - `--text: #9cf09c`
-  - `--text2: #4FAF4F`
-  - `--muted: #4a8b4a`
-  - `--code: #D2FAD2`
-  - `--red: #d74b4b`
-- Obramowania i podziały:
-  - `--border: #16c60c`
-  - `--accent: #16c60c`
-  - `--accent-dark: #0d7a07`
-  - `--b: rgba(22,198,12,.35)`
-  - `--b2: rgba(22,198,12,.2)`
-  - `--div: rgba(22,198,12,.18)`
-- Tła pomocnicze:
-  - `--hbg: rgba(22,198,12,.06)`
-  - `--zebra: rgba(22,198,12,.04)`
-  - `--hover: rgba(22,198,12,.08)`
-- Efekty:
-  - `--glow: 0 0 25px rgba(22, 198, 12, 0.45)`
-  - `--glowH: 0 0 18px rgba(22, 198, 12, 0.35)`
-- Układ:
-  - `--header-row-height: 36px`
+Polski układ nazw:
 
-### 4.2. Najważniejsze komponenty
-- **Topbar** (`.topbar`, `.brand`, `.sigil`, `.title`): pasek nagłówka z ikoną „⟦⟧”, gradientowym tłem i konsolowym fontem.
-- **Buttony** (`.btn`, `.btn.primary`, `.btn.secondary`): uppercase, letter-spacing, zielone akcenty, efekty hover.
-- **Panele** (`.panel`, `.panelHeader`, `.panelBody`): obramowane sekcje z nagłówkiem i zawartością.
-- **Tabele** (`.dataTable`): zebra striping, hover, uppercase nagłówki, `box-shadow`.
-- **Komórki kosztu XP** (`.dataTable td.cost`): wartości wyrównane do środka w pionie i poziomie.
-- **Inputy** (`.input`): ciemne tło, jasny tekst, focus ring.
-- **Layout** (`.main`, `.workspace`, `.tableWrap`, `.calcGrid`): dwukolumnowy układ z responsywnością w `@media (max-width: 980px)`.
+- kolumna 1: Analiza, Atletyka, Czujność, Dowodzenie, Intuicja, Korzystanie z technologii, Medycyna, Mistrzostwo psioniczne, Oszukiwanie,
+- kolumna 2: Perswazja, Pilotaż, Przebiegłość, Przetrwanie, Ukrywanie się, Umiejętności strzeleckie, Walka wręcz, Wiedza ogólna, Zastraszanie.
 
-### 4.3. Klasa `attribute-high`
-W `TworzeniePostaci.html` skrypt dodaje klasę `attribute-high` dla wartości atrybutów > 8. Styl nie jest zdefiniowany w CSS – to rezerwa na przyszłe wyróżnienie.
+Angielski układ nazw jest zdefiniowany osobno w `translations.en.skillsColumn1` i `translations.en.skillsColumn2`.
 
-## 5. `KalkulatorXP.html` – kalkulator XP
-### 5.1. Struktura HTML
-- W `div.actions` znajduje się link-przycisk `#btnMainPage` (`<a class="btn secondary" href="../Main/index.html">`). Etykieta jest tłumaczona dynamicznie: `Strona Główna` (PL) / `Main Page` (EN).
-- **Nagłówek** `.topbar` z:
-  - tytułem w `.brand` i `.title`,
-  - przełącznikiem języka (`.language-switcher` + `#languageSelect`),
-  - przyciskiem **Resetuj wartości** (`#btnReset`).
-- **Panel boczny** `.panel` z instrukcją i polem sumy (`#totalXp`).
-- **Część robocza** `.workspace`:
-  - tabela **Atrybuty** (`#attributesTable`),
-  - tabela **Umiejętności** (`#skillsTable`).
+## Talenty i inne koszty
 
-### 5.2. Zakresy i walidacja
-- Atrybuty: `min=0`, `max=12`.
-- Umiejętności: `min=0`, `max=8`.
-- Dodatkowo skrypt wymusza zakresy w funkcji `clampValue`.
+Sekcja talentów ma 20 wpisów.
 
-### 5.3. Słowniki kosztów XP
+Każdy wpis składa się z:
+
+```text
+talent_name_N
+talent_cost_N
+```
+
+gdzie `N` to liczba od `1` do `20`.
+
+`talent_name_N` jest polem tekstowym `textarea`, a `talent_cost_N` jest liczbą nieujemną. Koszty talentów są dodawane bez tabeli progowej, czyli bezpośrednio jako wpisane wartości.
+
+`adjustTalentFontSize(...)` zmniejsza font w polach nazw talentów, jeżeli tekst nie mieści się w polu.
+
+## Obliczanie PD w `TworzeniePostaci.html`
+
+`recalcXP()` wykonuje:
+
+1. Odczyt `xpPool`.
+2. Ograniczenie atrybutów do `1..12`.
+3. Dodanie kosztu każdego atrybutu według `attributeCosts`.
+4. Ograniczenie umiejętności do `0..8`.
+5. Dodanie kosztu każdej umiejętności według `skillCosts`.
+6. Ograniczenie kosztów talentów do wartości nieujemnych.
+7. Dodanie kosztów talentów bezpośrednio.
+8. Obliczenie `xpRemaining = xpPool - xpSpent`.
+9. Aktualizację pola `xpRemaining`.
+10. Pokazanie błędu przekroczenia puli albo sprawdzenie Drzewa Nauki.
+
+## Drzewo Nauki
+
+`checkSkillTree()` sprawdza uproszczoną zasadę Drzewa Nauki.
+
+Logika:
+
+1. Zlicza aktywne umiejętności, czyli takie z wartością większą od `0`.
+2. Dla każdej umiejętności sprawdza, czy jej poziom jest większy niż `1`.
+3. Jeżeli poziom jest większy niż `1`, a liczba aktywnych umiejętności jest mniejsza niż ten poziom, zasada jest naruszona.
+4. Błąd Drzewa Nauki jest pokazywany tylko wtedy, gdy pula PD nie jest przekroczona.
+
+## Reset i domyślne wartości
+
+`resetAll()` ustawia:
+
+- `xpPool` na `155`,
+- wszystkie atrybuty oprócz Szybkości na `1`,
+- `attr_Speed` na `6`,
+- wszystkie umiejętności na `0`,
+- wszystkie nazwy talentów na pusty tekst,
+- wszystkie koszty talentów na `0`.
+
+`attachDefaultOnBlur(...)` przywraca wartości domyślne po utracie fokusu, jeżeli pole jest puste albo nie jest liczbą.
+
+## Zmiana języka
+
+`TworzeniePostaci.html` obsługuje języki:
+
+- `pl`,
+- `en`.
+
+Zmiana języka:
+
+1. Otwiera modal potwierdzenia.
+2. Jeżeli użytkownik potwierdzi, wykonuje `updateLanguage(newLang)` i `resetAll()`.
+3. Jeżeli użytkownik odmówi, select wraca do poprzedniego języka.
+
+To zachowanie jest celowe, ponieważ zmiana języka zmienia etykiety formularza i resetuje dane robocze.
+
+## Modale
+
+`TworzeniePostaci.html` ma dwa typy modali.
+
+### Modal maksymalnych wartości atrybutów
+
+Element:
+
+```text
+speciesMaxModal
+```
+
+Otwierany przyciskiem `showSpeciesMaxButton`. Zamykany przez:
+
+- przycisk zamknięcia,
+- kliknięcie tła,
+- `Escape`.
+
+Przy otwarciu renderuje `speciesMaxTable` i `speciesMaxFootnotes`.
+
+### Modal potwierdzeń i informacji
+
+Element:
+
+```text
+confirmModal
+```
+
+Używany przez:
+
+- zmianę języka,
+- zapis Firestore,
+- wczytanie Firestore,
+- komunikaty sukcesu i błędu.
+
+Funkcje:
+
+- `showConfirmationModal(...)`,
+- `showInfoModal(...)`,
+- `toggleConfirmModal(...)`.
+
+Modal może mieć jeden przycisk informacyjny albo dwa przyciski potwierdzenia.
+
+## Firebase w `TworzeniePostaci.html`
+
+Firebase jest używany tylko do zapisu i wczytania stanu postaci.
+
+Pliki:
+
+```text
+Kalkulator/config/firebase-config.js
+Kalkulator/config/FirebaseREADME.md
+```
+
+Kod inicjalizuje Firebase przez `initializeFirebaseContext()`.
+
+Jeżeli `firebase` albo `window.firebaseConfig` nie istnieją, funkcja zwraca:
+
 ```js
-const attributeCosts = {
-  0: 0, 1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
-};
-const skillCosts = {
-  0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
-};
+{ ready: false, characterRef: null }
 ```
 
-### 5.4. Funkcje JavaScript i przepływ danych
-1. **`clampValue(value, min, max)`**
-   - Konwertuje wejście na liczbę (`parseInt`).
-   - Zastępuje `NaN` wartością minimalną.
-   - Ogranicza zakres do `[min, max]`.
-2. **`calculateRowCost(current, target, costs)`**
-   - Jeśli `target <= current`, koszt = 0.
-   - W przeciwnym razie oblicza różnicę `costs[target] - costs[current]`.
-3. **`recalcTable(tableId, costs, min, max)`**
-   - Iteruje po wierszach tabeli `#attributesTable` lub `#skillsTable`.
-   - Waliduje inputy, uzupełnia poprawione wartości.
-   - Wylicza koszt wiersza i sumuje do `subtotal`.
-4. **`recalcAll()`**
-   - Sumuje koszty z obu tabel.
-   - Aktualizuje `#totalXp`.
+Jeżeli konfiguracja istnieje, kod używa:
 
-### 5.5. Zdarzenia
-- `input` i `change` na wszystkich polach → `recalcAll()`.
-- Kliknięcie `#btnReset` → zeruje pola i przelicza sumę.
+```text
+character_builder/current
+```
 
-## 6. `TworzeniePostaci.html` – arkusz tworzenia postaci
-### 6.1. Struktura HTML
-- W `.language-switcher` znajduje się przycisk `#backToMainButton`, który prowadzi do `../Main/index.html` i jest tłumaczony w `translations.labels.backToMainButton`.
-- **Kontener** `.wrapper` (ustawiony względem, z cieniem i obramowaniem).
-- **Przełącznik języka** `.language-switcher` z:
-  - `<select id="languageSelect">` (PL/EN),
-  - `<button id="manualButton">` (otwiera PDF).
-- Sekcje:
-  - **Pula XP** (`#xpPool`, `#xpRemaining`).
-  - **Atrybuty** – tabela 8 pól (`attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, `attr_Speed`).
-  - **Umiejętności** – 18 pól w 2 kolumnach (`skill_Column1Row1..9`, `skill_Column2Row1..9`).
-  - **Talenty…** – 20 par pól (`talent_name_1..20`, `talent_cost_1..20`), w układzie 2 kolumny po 10 pozycji.
-  - **Komunikaty**: `#errorMessage`.
+Zapis:
 
-### 6.1a. Modal „Maksymalne wartości atrybutów”
-Modal maksymalnych wartości atrybutów znajduje się w `TworzeniePostaci.html`.
-
-Elementy modalu:
-- przycisk `#showSpeciesMaxButton` w obszarze `.language-switcher`,
-- overlay `#speciesMaxModal`,
-- dialog `.species-max-modal__dialog`,
-- nagłówek `#speciesMaxModalTitle`,
-- przycisk zamknięcia `#closeSpeciesMaxButton`,
-- tabela `#speciesMaxTable`,
-- kontener przypisów `#speciesMaxFootnotes` z klasą `.species-max-footnotes`.
-
-Etykieta przycisku jest tłumaczona:
-- PL: „Maksymalne wartości atrybutów”,
-- EN: „Maximum attribute values”.
-
-Renderer `renderSpeciesMaxTable()` buduje `thead`, `tbody` i przypisy dynamicznie dla aktualnego języka. Dane tabeli pochodzą z tablicy `maxAttributeRows` oraz słowników `races` i `maxAttributes` w obiekcie tłumaczeń. Specjalne oznaczenie komórki jest opisane w `maxAttributeFootnotes`: wpis `{ race: 'race_16', attribute: 'attribute_8', marker: '*', noteKey: 'vespidSpeedFixed' }` sprawia, że tylko komórka Vespid/Vespidzi + Speed/Szybkość wyświetla `14*`. Tekst przypisu pochodzi z `translations[currentLanguage].maxAttributesFootnotes.vespidSpeedFixed`, więc kolejne języki mogą dodać własną treść bez przepisywania renderera. Mechanika liczenia PD, `attributeCosts`, `skillCosts` i limity inputów nie używają tego przypisu.
-
-### 6.2. Style inline w pliku
-`TworzeniePostaci.html` rozszerza `kalkulatorxp.css`:
-- `body` – padding `24px 14px`, tło `var(--bg-grad)`, `letter-spacing: .04em` (font dziedziczony z CSS).
-- `.wrapper` – maksymalna szerokość `min(1100px, 96vw)`, obramowanie `1px solid var(--b)`, `box-shadow`.
-- `.language-switcher` – pozycjonowanie absolutne w prawym górnym rogu.
-- `.table` – obramowania, zebra, hover, `box-shadow: var(--glow)`, nagłówki z gradientem `rgba(22,198,12,...)`.
-- `input`, `select`, `textarea` – spójne tło, `border: 1px solid var(--b)`, focus ring.
-- `.footer` – subtelny tekst w stopce, `letter-spacing: .08em`.
-- `.species-max-modal*` – zestaw klas modala: przyciemnione tło, centrowany dialog, przewijanie i responsywne ograniczenie wysokości; tabela dziedziczy istniejące style `.table` (zebra/hover) i wymusza wyśrodkowanie wszystkich komórek.
-- `.species-max-footnotes` – przypis pod tabelą, `margin-top: 8px`, `color: var(--text2)`, `font-size: .9rem`, `line-height: 1.4`.
-
-### 6.3. Słowniki kosztów XP
 ```js
-const attributeCosts = {
-  1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
-};
-const skillCosts = {
-  0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
-};
+firebaseContext.characterRef.set(payload)
 ```
 
-### 6.4. Tłumaczenia i UI (obiekt `translations`)
-- `translations.pl` i `translations.en` zawierają:
-  - etykiety i nagłówki (`labels`),
-  - nazwy atrybutów (`attributes`),
-  - nazwy umiejętności w dwóch kolumnach (`skillsColumn1`, `skillsColumn2`),
-  - komunikaty błędów (`errors`).
-- Komunikat o zmianie języka (`languageChangeWarning`) jest wyświetlany w aktualnym języku przed resetem danych.
+Odczyt:
 
-### 6.5. Funkcje JavaScript i logika działania
-1. **`updateLanguage(lang)`**
-   - Ustawia etykietę przycisku `#btnMainPage` na `Strona Główna` (PL) lub `Main Page` (EN).
-   - Ustawia `currentLanguage`.
-   - Podmienia teksty w UI (`pageTitle`, nagłówki tabel, przycisk manuala, stopka).
-   - Aktualizuje etykiety atrybutów (1..8) i umiejętności w obu kolumnach.
-  - Aktualizuje etykietę przycisku i tytuł modala maksimów ras; jeśli modal jest otwarty, renderuje tabelę ponownie dla nowego języka.
-   - Ustawia `xpRemainingLabel` z wartością `155` w znaczniku `<strong id="xpRemaining">`.
-2. **`resetAll()`**
-   - Ustawia domyślne wartości: `xpPool=155`, atrybuty=1 dla `attr_S`, `attr_Wt`, `attr_Zr`, `attr_I`, `attr_SW`, `attr_Int`, `attr_Ogd`, a następnie nadpisuje `attr_Speed=6`; umiejętności=0, talenty=0.
-   - Czyści nazwy talentów.
-   - Zakres pól talentów jest kontrolowany przez stałą `TALENT_COUNT = 20`.
-   - Wywołuje `recalcXP()`.
-3. **`recalcXP()`**
-   - Waliduje `xpPool` (brak limitu górnego, brak wartości ujemnych).
-   - Dla atrybutów (8 pól, z `attr_Speed`):
-     - zakres `1–12`,
-     - sumuje koszt z `attributeCosts`,
-     - dodaje klasę `attribute-high` przy wartości > 8.
-   - Dla umiejętności:
-     - zakres `0–8`,
-     - sumuje koszt z `skillCosts`.
-   - Dla talentów:
-     - wartości `>= 0`, sumowane bez tabel kosztów.
-   - Oblicza `xpRemaining = xpPool - (attr + skills + talents)`.
-   - Gdy `xpRemaining < 0` → wyświetla błąd o przekroczeniu puli.
-   - Gdy `xpRemaining >= 0` → uruchamia `checkSkillTree()`.
-4. **`displayError(msg)`**
-   - Aktualizuje treść `#errorMessage`.
-5. **`checkSkillTree()`**
-   - Liczy liczbę aktywnych umiejętności (`> 0`).
-   - Weryfikuje zasadę: jeśli jakaś umiejętność ma poziom > 1, liczba aktywnych umiejętności musi być ≥ temu poziomowi.
-   - Gdy zasada nie jest spełniona i XP jest w normie, wyświetla komunikat o „Drzewie Nauki”.
-6. **`attachDefaultOnBlur(selector, defaultValue)`**
-   - Na zdarzeniu `blur` przywraca wartość domyślną, jeśli pole jest puste lub `NaN`.
-   - Używana dla `#xpPool`, atrybutów, umiejętności i kosztów talentów.
-7. **`adjustTalentFontSize(el)`**
-   - Dynamicznie zmniejsza rozmiar czcionki w polach `textarea.talent-name`,
-     aby dłuższy tekst mieścił się w polu (`min 10px`).
-
-### 6.6. Zdarzenia i interakcje
-- Zmiana języka (`#languageSelect`):
-  - wyświetla `confirm()` z ostrzeżeniem,
-  - po potwierdzeniu uruchamia `updateLanguage()` i `resetAll()`;
-  - po anulowaniu przywraca poprzedni wybór.
-- Wszystkie pola `input`:
-  - na `input` i `change` → `recalcXP()`.
-- Pola talentów (`textarea.talent-name`):
-  - na `input` → `adjustTalentFontSize()`.
-- Przycisk `#manualButton`:
-  - otwiera `HowToUse/${currentLanguage}.pdf` w nowej karcie (`window.open` z `noopener`).
-- Modal maksimów ras:
-  - `#showSpeciesMaxButton` otwiera overlay i renderuje tabelę,
-  - `#closeSpeciesMaxButton`, kliknięcie tła overlay lub `Escape` zamyka modal.
-
-### 6.7. Domyślne wartości po starcie
-- `currentLanguage = 'pl'`.
-- `xpPool = 155`.
-- Atrybuty = 1, umiejętności = 0, talenty = 0.
-- `updateLanguage()` + `recalcXP()` uruchamiane po `DOMContentLoaded`.
-
-## 7. Jak odtworzyć aplikację 1:1 (checklista)
-1. Utwórz cztery pliki: `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`, `kalkulatorxp.css`.
-2. Skopiuj wszystkie zmienne CSS i style z `kalkulatorxp.css` oraz inline z `index.html` i `TworzeniePostaci.html`.
-3. Dodaj logo `Skull.png` i folder `HowToUse` z plikami `pl.pdf` i `en.pdf`.
-4. Upewnij się, że w `KalkulatorXP.html` i `TworzeniePostaci.html` znajduje się link do `kalkulatorxp.css` (fonty są lokalne, bez Google Fonts).
-5. Skopiuj identyczne struktury tabel, identyfikatory (`id`) i klasy CSS.
-6. Upewnij się, że skrypty JS działają na tych samych `id` i klasach (`.current`, `.target`, `#totalXp`, `#xpPool`, `#xpRemaining`, itd.).
-7. Zachowaj zakresy `min/max` i wartości domyślne w polach formularzy.
-8. Sprawdź w przeglądarce:
-   - automatyczne przeliczanie kosztów,
-   - resetowanie danych,
-   - poprawne błędy (pula XP / Drzewo Nauki),
-   - działanie przełącznika języka i manuala.
-
-## 8. Struktura katalogów (referencja)
-```
-.
-├── docs/
-│   ├── README.md
-│   └── Documentation.md
-├── HowToUse/
-│   ├── pl.pdf
-│   └── en.pdf
-├── Old/
-│   ├── HowToUse_Org.pdf
-│   └── Kalkulator_Org.html
-├── index.html
-├── KalkulatorXP.html
-├── TworzeniePostaci.html
-└── kalkulatorxp.css
+```js
+firebaseContext.characterRef.get()
 ```
 
-## 9. Sekretny przycisk przejścia do tworzenia postaci
-Ekran startowy zawiera ukryty przycisk `#secretButton`, który po aktywacji przełącza użytkownika do `TworzeniePostaci.html`.
-1. Przycisk **Tajny przycisk!** jest kompaktowym CTA po prawej stronie pod siatką `.actions` i kieruje do widoku tworzenia postaci.
-2. Zawiera modalny overlay z `Koza.gif`.
-3. Zawiera pełną obsługę zamykania (przycisk, kliknięcie tła, `Escape`) i atrybut `aria-hidden`.
-4. Przesunięto przycisk **Zamknij** z lewego dolnego obszaru na prawy dolny róg okna GIF-a (`.secret-close`).
-5. Zachowano pozycję `Kalkulator XP` względem `Tworzenie Postaci` (przyciski pozostają obok siebie w jednej linii).
+Szczegółowy model Firebase jest opisany w `Kalkulator/config/FirebaseREADME.md`.
 
-### Dlaczego to działa
-- Funkcja nie zmienia głównej siatki `.actions`, więc układ podstawowej nawigacji pozostaje stabilny.
-- Overlay działa niezależnie od flow dokumentu (`position: fixed`) i nie wypycha elementów panelu.
-- Ograniczenia rozmiaru obrazu zapobiegają wyjściu GIF-a poza viewport na mniejszych ekranach.
+## Model zapisu postaci
 
-5.5. **Nawigacja do modułu Main**
-   - `#backToMainButton` ma nasłuchiwacz `click`, który wykonuje `window.location.href = "../Main/index.html"`.
+`collectCurrentState()` buduje payload:
 
-## 10. Maksymalne wartości atrybutów ras
+| Pole | Typ | Opis |
+| --- | --- | --- |
+| `schemaVersion` | `number` | Aktualnie `1`. |
+| `module` | `string` | `Kalkulator/TworzeniePostaci`. |
+| `lang` | `string` | Aktualny język: `pl` albo `en`. |
+| `savedAt` | `timestamp` | Firestore server timestamp. |
+| `savedBy` | `string` | `anonymous-web-client`. |
+| `xpPool` | `number` | Pula PD. |
+| `xpTotal` | `number` | Całkowita pula PD, obecnie taka sama jak `xpPool`. |
+| `xpSpent` | `number` | Wydane PD. |
+| `xpAvailable` | `number` | Pozostałe PD. |
+| `hasValidationErrors` | `boolean` | Czy widoczny jest błąd walidacji. |
+| `validationMessages` | `array<string>` | Lista komunikatów walidacji. |
+| `attributes` | `object` | Wartości atrybutów. |
+| `skills` | `object` | Wartości umiejętności. |
+| `talents` | `array<object>` | 20 wpisów talentów. |
+| `formSnapshot` | `object` | Snapshot wszystkich `input`, `textarea` i `select` z ID. |
 
-### 10.1. Zakres funkcjonalny
-Definicje maksymalnych wartości atrybutów ras znajdują się w `KalkulatorXP.html` w tablicy `attributeMaximumRows` i są prezentowane jako tabela referencyjna pod tabelami **Atrybuty** i **Umiejętności**.
+Przy wczytywaniu `applySavedState(data)` odtwarza wartości z `formSnapshot`, ustawia język z `data.lang`, jeżeli jest obsługiwany, i uruchamia `recalcXP()`.
 
-Najważniejsze założenia:
-1. Dane maksimów atrybutów są zaszyte w kodzie JS (brak odczytu z `MaxAttributes.md` i `Labels.md` w runtime).
-2. Nazwy ras i atrybutów są lokalizowane przez ten sam system tłumaczeń PL/EN co pozostałe etykiety kalkulatora.
-3. Nie zawiera osobnej informacji o limicie umiejętności = 8 (zgodnie z bieżącą decyzją funkcjonalną).
-4. Nie ustawiono logiki walidacji pól wejściowych ani algorytmu liczenia XP.
-5. W `KalkulatorXP.html` wartość Szybkości Vespidów pozostaje zwykłą liczbą `14`; ten widok nie renderuje gwiazdki ani przypisu Vespidów.
+## i18n
 
-### 10.2. Zmiany w HTML (`KalkulatorXP.html`)
-W `div.calcGrid` zawiera nową sekcję:
-- `<section class="calcCard referenceCard">`
-- nagłówek `#maxAttributesTitle`
-- kontener `.referenceTableWrap`
-- tabelę `#maxAttributesTable`, której `<thead>` i `<tbody>` są budowane dynamicznie przez JS.
+`KalkulatorXP.html` i `TworzeniePostaci.html` mają osobne obiekty `translations`.
 
-Ta sekcja znajduje się po kartach **Atrybuty** i **Umiejętności**, więc wizualnie trafia dokładnie pod nie.
+W obu widokach dostępne są:
 
-### 10.3. Zmiany w JS (`KalkulatorXP.html`)
-Zawiera nowe struktury danych:
-- `attributeMaximumRows` – 10 rekordów ras (`race_1..race_10`) i tablice 8 wartości (`Attribute_1..Attribute_8`).
-- `attributeKeys` – stabilna lista kluczy `attribute_1..attribute_8` używana do budowy nagłówków kolumn.
+- `pl`,
+- `en`.
 
-Obejmuje `translations`:
-- `labels.maxAttributesTitle`
-- `races.*` (10 etykiet)
-- `attributes.*` (8 etykiet)
+`KalkulatorXP.html` przełącza język bez resetowania danych.
 
-Zawiera funkcję:
-- `renderMaxAttributesTable(lang)`
-  - pobiera słownik tłumaczeń dla aktywnego języka,
-  - buduje dynamicznie `thead` i `tbody` tabeli referencyjnej (pierwsza komórka nagłówka jest celowo pusta, bez etykiety „Rasa/Species”),
-  - wpisuje wynik do `#maxAttributesTable` przez `innerHTML`.
+`TworzeniePostaci.html` wymaga potwierdzenia i resetuje dane po zmianie języka.
 
-Ustawiono `applyLanguage(lang)`:
-- aktualizuje `#maxAttributesTitle`,
-- wywołuje `renderMaxAttributesTable(lang)` po podmianie etykiet, dzięki czemu tabela referencyjna natychmiast przełącza nazwy PL/EN.
+## Fallbacki i błędy
 
-### 10.4. Korekta nazewnictwa
-Zastosowano korektę copywritingu w sekcji referencyjnej `KalkulatorXP.html`:
-1. Tytuł sekcji skrócono z:
-   - `Maksymalne wartości atrybutów (informacyjne)` → `Maksymalne wartości atrybutów`,
-   - `Maximum attribute values (reference)` → `Maximum attribute values`.
-2. Usunięto tłumaczeniowy klucz `labels.raceHeader` i podpis pierwszej kolumny tabeli (`Rasa / Species`), pozostawiając samą listę ras jako wartości wierszy.
+| Sytuacja | Zachowanie |
+| --- | --- |
+| Puste lub błędne pole `xpPool` | Po blur wraca do `155`. |
+| Puste lub błędne pole atrybutu | Po blur wraca do `1`. |
+| Puste lub błędne pole umiejętności | Po blur wraca do `0`. |
+| Puste lub błędne pole kosztu talentu | Po blur wraca do `0`. |
+| Atrybut poza zakresem | `recalcXP()` ogranicza do `1..12`. |
+| Umiejętność poza zakresem | `recalcXP()` ogranicza do `0..8`. |
+| Koszt talentu poniżej zera | `recalcXP()` ustawia `0`. |
+| Wydane PD przekracza pulę | Pokazywany jest błąd `tooMuchXP`. |
+| Naruszone Drzewo Nauki | Pokazywany jest błąd `treeOfLearning`, o ile pula PD nie jest przekroczona. |
+| Brak Firebase | Zapis i wczytanie pokazują błąd w modalu. |
+| Brak dokumentu Firestore | Wczytanie pokazuje błąd w modalu. |
 
-### 10.5. Zmiany w CSS (`kalkulatorxp.css`)
-Dodane klasy:
-- `.referenceCard { grid-column: 1 / -1; }`
-  - wymusza pełną szerokość karty referencyjnej pod dwoma kartami wejściowymi.
-- `.referenceTableWrap { padding: 10px; }`
-  - separuje tabelę od krawędzi karty.
-- `.referenceTable { table-layout: fixed; }`
-  - stabilizuje szerokości kolumn.
-- Wyrównanie centralne:
-  - `.referenceTable thead th`, `.referenceTable tbody th`, `.referenceTable td { text-align: center; vertical-align: middle; }`
-- `.referenceTable tbody th` używa `color: var(--code)` i `font-weight: 600` dla czytelności nazw ras.
+## Procedura odtworzenia modułu
 
-Zebra striping działa przez istniejącą regułę globalną:
-- `.dataTable tbody tr:nth-child(even) { background: var(--zebra); }`
+1. Zachowaj katalog `Kalkulator/`.
+2. Zachowaj `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html` i `kalkulatorxp.css`.
+3. Zachowaj assety `Skull.png`, `Koza.gif`, `Modal_Icon.png`.
+4. Zachowaj katalog `HowToUse/` z `pl.pdf` i `en.pdf`.
+5. Skonfiguruj Firebase zgodnie z `Kalkulator/config/FirebaseREADME.md`, jeżeli zapis/wczytanie postaci ma działać.
+6. Otwórz `Kalkulator/index.html` i sprawdź linki.
+7. Otwórz `KalkulatorXP.html` i sprawdź obliczanie kosztów.
+8. Otwórz `TworzeniePostaci.html` i sprawdź obliczanie PD, walidację, modale, instrukcje PDF oraz zapis/wczytanie.
 
-### 10.6. Spójność i odtwarzalność 1:1
-Aby odtworzyć aktualny interfejs kalkulatora 1:1:
-1. Zachowaj strukturę `calcGrid` z trzema kartami (Atrybuty, Umiejętności, tabela referencyjna).
-2. Skopiuj wartości `attributeMaximumRows` dokładnie w tej samej kolejności ras i atrybutów.
-3. Utrzymaj klucze tłumaczeń (`race_1..race_10`, `attribute_1..attribute_8`) bez lokalizowania kluczy technicznych.
-4. Wywołuj `renderMaxAttributesTable(lang)` zawsze po zmianie języka.
-5. Pozostaw dotychczasowe limity inputów: atrybuty `0..12`, umiejętności `0..8`.
-## 11. Zasady zapisu i odczytu postaci
-Poniżej pełna paleta używana przez trzy strony modułu:
-- `--bg`: `#031605`.
-- `--bg-grad`: radial gradient `rgba(0,255,128,0.06)` + radial gradient `rgba(0,255,128,0.08)` + `#031605`.
-- `--panel`: `#000`; `--panel2`: `#000`.
-- `--text`: `#9cf09c`; `--text2`: `#4FAF4F`; `--muted`: `#4a8b4a`; `--code`: `#D2FAD2`; `--red`: `#d74b4b`.
-- `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`.
-- `--b`: `rgba(22,198,12,.35)`; `--b2`: `rgba(22,198,12,.2)`; `--div`: `rgba(22,198,12,.18)`.
-- `--hbg`: `rgba(22,198,12,.06)`; `--zebra`: `rgba(22,198,12,.04)`; `--hover`: `rgba(22,198,12,.08)`.
-- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)`.
-- Tajny przycisk (CTA czerwone): `#ff3b30`, `rgba(255,59,48,0.2)`, `#ffe5e3`, glow `0 0 14px rgba(255,59,48,0.35)`.
+## Testy kontrolne
 
-## 12. UI tworzenia postaci
-- `index.html`: `toggleSecretOverlay(forceOpen)`.
-- `KalkulatorXP.html`: `clampValue`, `calculateRowCost`, `recalcTable`, `recalcAll`, `renderMaxAttributesTable`, `applyLanguage`.
-- `TworzeniePostaci.html`: `updateLanguage`, `renderSpeciesMaxTable`, `resetAll`, `recalcXP`, `displayError`, `checkSkillTree`, `attachDefaultOnBlur`, `adjustTalentFontSize`, `toggleSpeciesMaxModal`.
+| Test | Kroki | Oczekiwany wynik |
+| --- | --- | --- |
+| Landing | Otwórz `Kalkulator/index.html`. | Widać logo, linki do dwóch narzędzi i sekretny przycisk. |
+| Sekretny overlay | Kliknij `Tajny przycisk!`. | Otwiera się overlay z `Koza.gif`; można go zamknąć kliknięciem tła, przyciskiem albo `Escape`. |
+| Kalkulator PD | Wpisz aktualną i docelową wartość. | Koszt wiersza i `totalXp` aktualizują się automatycznie. |
+| Reset kalkulatora PD | Kliknij `Resetuj wartości`. | Wszystkie pola kalkulatora PD wracają do `0`. |
+| Język kalkulatora PD | Zmień PL/EN. | Teksty i tabela maksimów zmieniają język bez resetu pól. |
+| Tworzenie postaci — PD | Zmień atrybuty, umiejętności i talenty. | `xpRemaining` przelicza się automatycznie. |
+| Przekroczenie PD | Wydaj więcej PD niż pula. | Pojawia się błąd przekroczenia puli. |
+| Drzewo Nauki | Ustaw niezgodne poziomy umiejętności. | Pojawia się błąd Drzewa Nauki. |
+| Modal maksimów | Kliknij `Maksymalne wartości atrybutów`. | Otwiera się tabela maksimów rasowych z przypisem Vespidów. |
+| Instrukcja | Kliknij `Instrukcja` / `Manual`. | Otwiera się PDF dla aktualnego języka. |
+| Zmiana języka arkusza | Zmień język w `TworzeniePostaci.html`. | Pojawia się potwierdzenie; po akceptacji dane resetują się. |
+| Zapis Firebase | Kliknij `Zapisz` i potwierdź. | Stan zapisuje się do `character_builder/current`. |
+| Wczytanie Firebase | Kliknij `Wczytaj` i potwierdź. | Formularz odtwarza wartości z `formSnapshot`. |
 
-## 13. Firebase i aktualizacja konfiguracji
-- W stylach inline sekcji `confirm-modal` ustawiono kontener `.confirm-modal__media` na stałą wysokość `192px` (`height` + `min-height`), aby wymusić rezerwację miejsca na grafikę jeszcze przed pełnym wczytaniem bitmapy.
-- Klasa `.confirm-modal__image` została ustawiona na `height: 192px`, `width: auto`, `max-width: 100%`, `object-fit: contain`; to zachowuje proporcje nowego pliku `Modal_Icon.png` i utrzymuje docelową wysokość zgodną z poprzednią ikoną referencyjną `Modal_Icon_old.png`.
-- W znaczniku `<img id="confirmModalImage">` zawiera atrybuty `width="1980"` i `height="2048"` (natywny rozmiar nowego pliku) oraz `decoding="async"`, aby przeglądarka mogła uprzednio obliczyć proporcje i utrzymać stabilny layout modala podczas ładowania obrazu.
+---
 
-## 14. Detale layoutu ekranu startowego
-- Funkcja zapisu/odczytu postaci w `TworzeniePostaci.html` wymaga poprawnej konfiguracji Firebase (`Kalkulator/config/firebase-config.js`) oraz aktywnej bazy Firestore.
-- Minimalna procedura wdrożeniowa obejmuje: utworzenie projektu Firebase, rejestrację aplikacji web, utworzenie Firestore Database oraz skonfigurowanie reguł dostępu.
-- Przyciski `Strona Główna / Main Page` (w `KalkulatorXP.html` i `TworzeniePostaci.html`) należy w docelowym wdrożeniu aplikacji zweryfikować pod kątem poprawnego `href`/adresu docelowego.
-## 15. Kopia modułu dla nowej grupy
-- `TworzeniePostaci.html` zawiera komentarze `WAŻNE/IMPORTANT` przy:
-  - ładowaniu `config/firebase-config.js`,
-  - nawigacji `window.location.href = '../Main/index.html'`.
-- Wdrożenie:
-  1. osobny Firebase per grupa (Firestore dla zapisu postaci),
-  2. weryfikacja ścieżki powrotu do modułu Main zgodnie z topologią serwera grupy.
+# 🇬🇧 Technical documentation — Kalkulator (EN)
 
+## Module purpose
 
-## 16. Widoczność przełącznika języka
+`Kalkulator` is a set of static HTML/CSS/JS tools for planning character advancement and character creation in `Wrath & Glory`.
 
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
+The module consists of three main views:
 
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+- start page `index.html`,
+- XP cost calculator `KalkulatorXP.html`,
+- character creation sheet `TworzeniePostaci.html`.
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+Most logic runs locally in the browser. Only `TworzeniePostaci.html` uses Firebase Firestore to save and load the current character state.
 
+## Entry points
 
-## 17. Bootstrap Node.js
+| File | Role |
+| --- | --- |
+| `Kalkulator/index.html` | `Kozie Liczydła` start page. Links to the XP calculator and character creation. |
+| `Kalkulator/KalkulatorXP.html` | Simple advancement cost calculator for attributes and skills. |
+| `Kalkulator/TworzeniePostaci.html` | Fuller character creation sheet with XP pool, attributes, skills, talents, validation, and Firebase save/load. |
 
-This is the update map for adding another language (for example FR/DE):
+## Module file structure
 
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
+| File or directory | Responsibility |
+| --- | --- |
+| `index.html` | Module landing page, logo, tool links, and secret GIF overlay. |
+| `KalkulatorXP.html` | XP cost calculator for current and target values. |
+| `TworzeniePostaci.html` | Character creation sheet and Firestore state save/load. |
+| `kalkulatorxp.css` | Shared style used by `KalkulatorXP.html` and as base style by `TworzeniePostaci.html`. |
+| `config/firebase-config.js` | Firebase configuration for `TworzeniePostaci.html`. |
+| `config/FirebaseREADME.md` | Firebase setup guide for character save. |
+| `HowToUse/pl.pdf` | Polish manual opened from the character creation sheet. |
+| `HowToUse/en.pdf` | English manual opened from the character creation sheet. |
+| `Skull.png` | Start page logo. |
+| `Koza.gif` | Image used in the start page secret overlay. |
+| `Modal_Icon.png` | Confirmation modal image in `TworzeniePostaci.html`. |
+| `docs/README.md` | User guide. |
+| `docs/Documentation.md` | This technical documentation. |
 
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+## External dependencies
 
+`index.html` and `KalkulatorXP.html` do not require external JavaScript libraries.
 
-## 18. Konfiguracja multi-tenant
-- Każda grupa powinna używać własnego pliku `Kalkulator/config/firebase-config.js` i własnych reguł dostępu do danych.
+`TworzeniePostaci.html` uses Firebase compat:
+
+- `firebase-app-compat.js`,
+- `firebase-firestore-compat.js`.
+
+Firebase configuration is loaded from:
+
+```text
+Kalkulator/config/firebase-config.js
+```
+
+The module uses the local font stack:
+
+```text
+Consolas, Fira Code, Source Code Pro, monospace
+```
+
+## `index.html` view
+
+`index.html` is the module start page.
+
+Main elements:
+
+| Element | Role |
+| --- | --- |
+| `Skull.png` | Start logo. |
+| `Kalkulator PD` link | Opens `KalkulatorXP.html`. |
+| `Tworzenie Postaci` link | Opens `TworzeniePostaci.html`. |
+| `secretButton` | Opens the secret overlay. |
+| `secretOverlay` | Fullscreen overlay with `Koza.gif`. |
+| `secretCloseButton` | Closes the overlay. |
+
+Start page logic is minimal. `toggleSecretOverlay(forceOpen)` toggles the `is-open` class and updates `aria-hidden`.
+
+The overlay can be closed by:
+
+- `Zamknij` button,
+- clicking the background outside the dialog,
+- pressing `Escape`.
+
+## `KalkulatorXP.html` view
+
+`KalkulatorXP.html` calculates XP cost between current and target values.
+
+Main UI elements:
+
+| Element | ID | Role |
+| --- | --- | --- |
+| Language switcher | `languageSelect` | Switches PL/EN texts. |
+| Main Page | `btnMainPage` | Link to `../Main/index.html`. |
+| Reset values | `btnReset` | Sets all attribute and skill fields to `0`. |
+| Total XP cost | `totalXp` | Sum of attribute and skill costs. |
+| Attributes table | `attributesTable` | Four rows with current and target attribute value. |
+| Skills table | `skillsTable` | Four rows with current and target skill value. |
+| Species maximum table | `maxAttributesTable` | Reference table of maximum attribute values. |
+
+## Costs in `KalkulatorXP.html`
+
+Attribute costs:
+
+```js
+0: 0, 1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
+```
+
+Skill costs:
+
+```js
+0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
+```
+
+`calculateRowCost(current, target, costs)` returns `0` when target is less than or equal to current. Otherwise it returns target cost minus current cost.
+
+`clampValue(value, min, max)` restricts values:
+
+- attributes: `0..12`,
+- skills: `0..8`.
+
+## Maximum attribute values table
+
+`KalkulatorXP.html` and `TworzeniePostaci.html` both embed species maximum attribute data.
+
+Attributes:
+
+- Strength,
+- Toughness,
+- Agility,
+- Initiative,
+- Willpower,
+- Intellect,
+- Fellowship,
+- Speed.
+
+In `TworzeniePostaci.html`, `Vespid / Speed = 14` is rendered as `14*`, but the source value remains numeric `14`. The footnote is presentation-only and states that Vespids have fixed Speed 14 and the Speed field should be ignored for XP calculation.
+
+## `TworzeniePostaci.html` view
+
+`TworzeniePostaci.html` is the character creation sheet.
+
+Main sections:
+
+| Section | Role |
+| --- | --- |
+| Language switcher | PL/EN selection. Changing language resets data after confirmation. |
+| Manual | Opens `HowToUse/pl.pdf` or `HowToUse/en.pdf`. |
+| Main Page | Goes to `../Main/index.html`. |
+| Maximum attribute values | Opens species maximum table modal. |
+| XP pool | `xpPool`, default `155`. |
+| Save / Load | Firestore save and load. |
+| Attributes | Eight attribute fields. |
+| Skills | Eighteen skill fields in two columns. |
+| Talents and others | 20 name/cost entries. |
+| Error messages | `errorMessage`, such as XP overflow or Tree of Learning. |
+
+## Attributes in `TworzeniePostaci.html`
+
+Attribute fields:
+
+| ID | PL | EN | Default | Range |
+| --- | --- | --- | --- | --- |
+| `attr_S` | S | S | `1` | `1..12` |
+| `attr_Wt` | Wt | T | `1` | `1..12` |
+| `attr_Zr` | Zr | A | `1` | `1..12` |
+| `attr_I` | I | I | `1` | `1..12` |
+| `attr_SW` | SW | Will | `1` | `1..12` |
+| `attr_Int` | Int | Int | `1` | `1..12` |
+| `attr_Ogd` | Ogd | Fell | `1` | `1..12` |
+| `attr_Speed` | Szybkość | Speed | `6` | `1..12` |
+
+`recalcXP()` clamps attributes to `1..12`, calculates cost using `attributeCosts`, and adds class `attribute-high` when value is greater than `8`.
+
+## Skills in `TworzeniePostaci.html`
+
+Skills are stored as 18 fields:
+
+```text
+skill_Column1Row1 ... skill_Column1Row9
+skill_Column2Row1 ... skill_Column2Row9
+```
+
+Value range: `0..8`.
+
+Polish skill layout:
+
+- column 1: Analiza, Atletyka, Czujność, Dowodzenie, Intuicja, Korzystanie z technologii, Medycyna, Mistrzostwo psioniczne, Oszukiwanie,
+- column 2: Perswazja, Pilotaż, Przebiegłość, Przetrwanie, Ukrywanie się, Umiejętności strzeleckie, Walka wręcz, Wiedza ogólna, Zastraszanie.
+
+English skill layout is defined separately in `translations.en.skillsColumn1` and `translations.en.skillsColumn2`.
+
+## Talents and other costs
+
+The talents section has 20 entries.
+
+Each entry consists of:
+
+```text
+talent_name_N
+talent_cost_N
+```
+
+where `N` is a number from `1` to `20`.
+
+`talent_name_N` is a `textarea`, and `talent_cost_N` is a non-negative number. Talent costs are added directly, without a cost progression table.
+
+`adjustTalentFontSize(...)` decreases font size in talent name fields when text does not fit.
+
+## XP calculation in `TworzeniePostaci.html`
+
+`recalcXP()` performs:
+
+1. Reads `xpPool`.
+2. Clamps attributes to `1..12`.
+3. Adds each attribute cost using `attributeCosts`.
+4. Clamps skills to `0..8`.
+5. Adds each skill cost using `skillCosts`.
+6. Clamps talent costs to non-negative values.
+7. Adds talent costs directly.
+8. Calculates `xpRemaining = xpPool - xpSpent`.
+9. Updates `xpRemaining` field.
+10. Shows XP overflow error or checks Tree of Learning.
+
+## Tree of Learning
+
+`checkSkillTree()` checks a simplified Tree of Learning rule.
+
+Logic:
+
+1. Counts active skills, meaning skills with value greater than `0`.
+2. Checks each skill with level greater than `1`.
+3. If level is greater than `1` and the number of active skills is smaller than that level, the rule is broken.
+4. Tree of Learning error is shown only when XP pool is not exceeded.
+
+## Reset and default values
+
+`resetAll()` sets:
+
+- `xpPool` to `155`,
+- all attributes except Speed to `1`,
+- `attr_Speed` to `6`,
+- all skills to `0`,
+- all talent names to empty text,
+- all talent costs to `0`.
+
+`attachDefaultOnBlur(...)` restores default values on blur when a field is empty or not numeric.
+
+## Language change
+
+`TworzeniePostaci.html` supports languages:
+
+- `pl`,
+- `en`.
+
+Changing language:
+
+1. Opens a confirmation modal.
+2. If confirmed, runs `updateLanguage(newLang)` and `resetAll()`.
+3. If declined, the select returns to the previous language.
+
+This is intentional, because language change updates form labels and resets working data.
+
+## Modals
+
+`TworzeniePostaci.html` has two modal types.
+
+### Maximum attribute values modal
+
+Element:
+
+```text
+speciesMaxModal
+```
+
+Opened by `showSpeciesMaxButton`. Closed by:
+
+- close button,
+- background click,
+- `Escape`.
+
+On open it renders `speciesMaxTable` and `speciesMaxFootnotes`.
+
+### Confirmation and information modal
+
+Element:
+
+```text
+confirmModal
+```
+
+Used by:
+
+- language changes,
+- Firestore save,
+- Firestore load,
+- success and error messages.
+
+Functions:
+
+- `showConfirmationModal(...)`,
+- `showInfoModal(...)`,
+- `toggleConfirmModal(...)`.
+
+The modal can have one information button or two confirmation buttons.
+
+## Firebase in `TworzeniePostaci.html`
+
+Firebase is used only for character state save and load.
+
+Files:
+
+```text
+Kalkulator/config/firebase-config.js
+Kalkulator/config/FirebaseREADME.md
+```
+
+The code initializes Firebase through `initializeFirebaseContext()`.
+
+If `firebase` or `window.firebaseConfig` do not exist, the function returns:
+
+```js
+{ ready: false, characterRef: null }
+```
+
+If configuration exists, the code uses:
+
+```text
+character_builder/current
+```
+
+Save:
+
+```js
+firebaseContext.characterRef.set(payload)
+```
+
+Load:
+
+```js
+firebaseContext.characterRef.get()
+```
+
+The detailed Firebase model is documented in `Kalkulator/config/FirebaseREADME.md`.
+
+## Character save model
+
+`collectCurrentState()` builds this payload:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `schemaVersion` | `number` | Currently `1`. |
+| `module` | `string` | `Kalkulator/TworzeniePostaci`. |
+| `lang` | `string` | Current language: `pl` or `en`. |
+| `savedAt` | `timestamp` | Firestore server timestamp. |
+| `savedBy` | `string` | `anonymous-web-client`. |
+| `xpPool` | `number` | XP pool. |
+| `xpTotal` | `number` | Total XP pool, currently the same as `xpPool`. |
+| `xpSpent` | `number` | Spent XP. |
+| `xpAvailable` | `number` | Remaining XP. |
+| `hasValidationErrors` | `boolean` | Whether a validation error is visible. |
+| `validationMessages` | `array<string>` | Validation message list. |
+| `attributes` | `object` | Attribute values. |
+| `skills` | `object` | Skill values. |
+| `talents` | `array<object>` | 20 talent entries. |
+| `formSnapshot` | `object` | Snapshot of all `input`, `textarea`, and `select` elements with IDs. |
+
+On load, `applySavedState(data)` restores values from `formSnapshot`, sets language from `data.lang` when supported, and runs `recalcXP()`.
+
+## i18n
+
+`KalkulatorXP.html` and `TworzeniePostaci.html` have separate `translations` objects.
+
+Both views support:
+
+- `pl`,
+- `en`.
+
+`KalkulatorXP.html` switches language without resetting data.
+
+`TworzeniePostaci.html` requires confirmation and resets data after language change.
+
+## Fallbacks and errors
+
+| Situation | Behavior |
+| --- | --- |
+| Empty or invalid `xpPool` | On blur, returns to `155`. |
+| Empty or invalid attribute field | On blur, returns to `1`. |
+| Empty or invalid skill field | On blur, returns to `0`. |
+| Empty or invalid talent cost field | On blur, returns to `0`. |
+| Attribute outside range | `recalcXP()` clamps to `1..12`. |
+| Skill outside range | `recalcXP()` clamps to `0..8`. |
+| Talent cost below zero | `recalcXP()` sets `0`. |
+| Spent XP exceeds pool | `tooMuchXP` error is shown. |
+| Tree of Learning is broken | `treeOfLearning` error is shown unless XP pool is exceeded. |
+| Missing Firebase | Save and load show an error modal. |
+| Missing Firestore document | Load shows an error modal. |
+
+## Module recreation procedure
+
+1. Preserve the `Kalkulator/` directory.
+2. Preserve `index.html`, `KalkulatorXP.html`, `TworzeniePostaci.html`, and `kalkulatorxp.css`.
+3. Preserve assets `Skull.png`, `Koza.gif`, and `Modal_Icon.png`.
+4. Preserve `HowToUse/` with `pl.pdf` and `en.pdf`.
+5. Configure Firebase according to `Kalkulator/config/FirebaseREADME.md` if character save/load should work.
+6. Open `Kalkulator/index.html` and check links.
+7. Open `KalkulatorXP.html` and check cost calculation.
+8. Open `TworzeniePostaci.html` and check XP calculation, validation, modals, PDF manuals, and save/load.
+
+## Control tests
+
+| Test | Steps | Expected result |
+| --- | --- | --- |
+| Landing | Open `Kalkulator/index.html`. | Logo, links to two tools, and secret button are visible. |
+| Secret overlay | Click `Tajny przycisk!`. | Overlay with `Koza.gif` opens; it can be closed by background click, button, or `Escape`. |
+| XP calculator | Enter current and target value. | Row cost and `totalXp` update automatically. |
+| XP calculator reset | Click `Reset values`. | All XP calculator fields return to `0`. |
+| XP calculator language | Switch PL/EN. | Texts and maximum values table change language without field reset. |
+| Character creation XP | Change attributes, skills, and talents. | `xpRemaining` recalculates automatically. |
+| XP overflow | Spend more XP than pool. | XP overflow error appears. |
+| Tree of Learning | Set invalid skill levels. | Tree of Learning error appears. |
+| Maximum values modal | Click `Maximum attribute values`. | Species maximum table opens with Vespid footnote. |
+| Manual | Click `Instrukcja` / `Manual`. | PDF for current language opens. |
+| Sheet language change | Change language in `TworzeniePostaci.html`. | Confirmation appears; after acceptance, data resets. |
+| Firebase save | Click `Save` and confirm. | State is saved to `character_builder/current`. |
+| Firebase load | Click `Load` and confirm. | Form restores values from `formSnapshot`. |
