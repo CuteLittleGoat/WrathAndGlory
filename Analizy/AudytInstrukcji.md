@@ -2277,3 +2277,284 @@ Na podstawie listy plików z audytu:
 - dodatkowo rekomendowane pozostaje utworzenie root `README.md`.
 
 Wniosek: prace dokumentacyjne są zaawansowane. Najważniejsze ryzyka wskazane w audycie, czyli brak pełnej dwujęzyczności, brak dokumentów Firebase i mieszanie README z dokumentacją techniczną, zostały w dużych modułach znacząco ograniczone.
+
+---
+
+## 18. Aktualizacja po zakończeniu prac nad prostszymi modułami
+
+**Data aktualizacji:** 2026-06-16  
+**Zakres aktualizacji:** opis wykonanych poprawek dokumentacji po decyzji użytkownika  
+**Status ogólny:** podstawowy zakres audytu dokumentacji modułowej został zamknięty; root `README.md` nie jest realizowany zgodnie z decyzją użytkownika.
+
+Po wcześniejszym sprawdzeniu aktualnego stanu repozytorium użytkownik zdecydował, że root `README.md` nie będzie tworzony.
+
+Następnie wykonano poprawki pięciu plików wskazanych jako pozostałe do uporządkowania:
+
+1. `GeneratorNazw/docs/README.md`
+2. `GeneratorNazw/docs/Documentation.md`
+3. `DiceRoller/docs/README.md`
+4. `DiceRoller/docs/Documentation.md`
+5. `DataVault/docs/ZasadyFormatowania.md`
+
+---
+
+### 18.1. Decyzja dotycząca root `README.md`
+
+Użytkownik wskazał:
+
+> root README.md nie robimy.
+
+W związku z tym root `README.md` należy usunąć z listy rekomendowanych dalszych prac.
+
+Nie jest to już zadanie oczekujące ani rekomendowany kolejny krok w ramach tego audytu.
+
+---
+
+### 18.2. Poprawione pliki
+
+#### `GeneratorNazw/docs/README.md`
+
+Commit:
+
+`9aaa3aac3181f9d7a35e9cac3dd0ec3b54fcc247`
+
+Zakres poprawki:
+
+- przepisano plik jako instrukcję użytkownika,
+- przygotowano pełną wersję polską,
+- przygotowano pełną wersję angielską,
+- usunięto z instrukcji użytkownika techniczne sekcje o dodawaniu języków,
+- opisano cel modułu,
+- opisano uruchamianie modułu,
+- opisano widok po otwarciu,
+- opisano podstawową obsługę,
+- opisano kategorie i opcje,
+- opisano przyciski i akcje,
+- opisano pola formularza,
+- opisano działanie seeda,
+- opisano wyniki,
+- opisano brak trybu admina,
+- opisano brak zapisu danych,
+- opisano komunikaty i typowe problemy.
+
+Status: wykonane.
+
+---
+
+#### `GeneratorNazw/docs/Documentation.md`
+
+Commit:
+
+`7240f7dab32570523e38b9bce69771a2d6078b90`
+
+Zakres poprawki:
+
+- przepisano plik jako dokumentację techniczną,
+- przygotowano pełną wersję polską,
+- przygotowano pełną wersję angielską,
+- opisano cel modułu,
+- opisano punkty wejścia,
+- opisano tryby działania,
+- opisano strukturę plików,
+- opisano brak Firebase i brak zapisu danych,
+- opisano strukturę HTML,
+- opisano strukturę CSS,
+- opisano zmienne motywu,
+- opisano dane generatora `DATA`,
+- opisano kategorie i opcje,
+- opisano RNG,
+- opisano seed i tryb losowy,
+- opisano funkcje pomocnicze,
+- opisano generatory domenowe,
+- opisano warstwę i18n,
+- opisano obsługę UI,
+- opisano event listenery,
+- opisano inicjalizację,
+- opisano fallbacki i błędy,
+- dodano procedurę odtworzenia modułu,
+- dodano testy kontrolne.
+
+Status: wykonane.
+
+---
+
+#### `DiceRoller/docs/README.md`
+
+Commit:
+
+`135758a60ccf7d581d841a6c1163bff610f64d22`
+
+Zakres poprawki:
+
+- przepisano plik jako instrukcję użytkownika,
+- przygotowano pełną wersję polską,
+- przygotowano pełną wersję angielską,
+- usunięto z instrukcji użytkownika techniczne sekcje o dodawaniu języków,
+- opisano cel modułu,
+- opisano uruchamianie modułu,
+- opisano widok po otwarciu,
+- opisano podstawową obsługę rzutu,
+- opisano przyciski i akcje,
+- opisano pola formularza,
+- opisano domyślne wartości pól,
+- opisano sposób czytania wyniku,
+- opisano punktację kości,
+- opisano Kości Furii,
+- opisano Przeniesienie,
+- opisano brak trybu admina,
+- opisano brak zapisywania wyników,
+- opisano komunikaty i typowe problemy.
+
+Status: wykonane.
+
+---
+
+#### `DiceRoller/docs/Documentation.md`
+
+Commit:
+
+`7bb48fb3eac59deb2ba3a0cf8f65ad7dcae5ae43`
+
+Zakres poprawki:
+
+- przepisano plik jako dokumentację techniczną,
+- przygotowano pełną wersję polską,
+- przygotowano pełną wersję angielską,
+- opisano cel modułu,
+- opisano punkty wejścia,
+- opisano tryby działania,
+- opisano strukturę plików,
+- opisano brak Firebase i brak zapisu historii,
+- opisano strukturę HTML,
+- opisano strukturę CSS,
+- opisano renderowanie kości,
+- opisano klasy CSS kości,
+- opisano stałe JavaScript,
+- opisano warstwę i18n,
+- opisano walidację pól,
+- opisano synchronizację Puli Kości i Kości Furii,
+- opisano losowanie i punktację,
+- opisano główną logikę rzutu,
+- opisano logikę Kości Furii,
+- opisano logikę Przeniesienia,
+- opisano budowanie podsumowania,
+- opisano event listenery,
+- opisano inicjalizację,
+- opisano fallbacki i ograniczenia,
+- dodano procedurę odtworzenia modułu,
+- dodano testy kontrolne.
+
+Status: wykonane.
+
+---
+
+#### `DataVault/docs/ZasadyFormatowania.md`
+
+Commit:
+
+`bf98525d5e118c3908ce9f0aab47e967e060a547`
+
+Zakres poprawki:
+
+- przepisano plik jako specjalistyczny dokument techniczny,
+- przygotowano pełną wersję polską,
+- przygotowano pełną wersję angielską,
+- jasno oznaczono, że dokument opisuje wyłącznie zasady formatowania tekstu,
+- opisano pipeline `Repozytorium.xlsx` → markery → dane → HTML → CSS,
+- opisano markery inline,
+- opisano zagnieżdżanie markerów,
+- opisano rich text z XLSX,
+- opisano rozpoznawanie czerwonego koloru,
+- opisano referencje stron,
+- opisano linie specjalne `*[n]`,
+- opisano zachowanie podziałów linii,
+- opisano formatowanie arkusza `Słowa Kluczowe`,
+- opisano arkusze z neutralnymi przecinkami,
+- opisano wyjątek `Pakiety Wyniesienia`,
+- opisano formatowanie `Słowa Kluczowe Frakcji`,
+- opisano kolumnę `Zasięg`,
+- opisano scalanie `Zasięg N`,
+- opisano scalanie `Cecha N`,
+- opisano clamp i podgląd wieloliniowy,
+- opisano wiersze archiwalne i status `old`,
+- opisano priorytety kolorów w wierszach archiwalnych,
+- opisano klasy CSS używane przez formatowanie,
+- dodano zasady przygotowywania `Repozytorium.xlsx`,
+- dodano typowe błędy danych źródłowych,
+- dodano testy kontrolne.
+
+Status: wykonane.
+
+---
+
+### 18.3. Aktualny status listy „do poprawy”
+
+Po wykonaniu powyższych prac lista plików z sekcji 17.5 jest nieaktualna.
+
+Poprawione zostały:
+
+1. `GeneratorNazw/docs/README.md`
+2. `GeneratorNazw/docs/Documentation.md`
+3. `DiceRoller/docs/README.md`
+4. `DiceRoller/docs/Documentation.md`
+5. `DataVault/docs/ZasadyFormatowania.md`
+
+Plik `Main/docs/Documentation.md` został wcześniej sprawdzony i nie powinien pozostawać na liście „do poprawy”, ponieważ aktualna wersja zawiera już pełny układ PL/EN oraz opisuje działanie launchera, tryb `?admin=1`, dynamiczne linki, Service Workery, fallbacki, procedurę odtworzenia i testy kontrolne.
+
+Root `README.md` nie jest wykonywany zgodnie z decyzją użytkownika.
+
+---
+
+### 18.4. Zaktualizowana lista plików uznanych za poprawione
+
+Na tym etapie za poprawione można uznać:
+
+1. `docs-standard.md`
+2. `Infoczytnik/config/FirebaseREADME.md`
+3. `Infoczytnik/docs/Documentation.md`
+4. `Kalkulator/config/FirebaseREADME.md`
+5. `GeneratorNPC/config/FirebaseREADME.md`
+6. `DataVault/config/FirebaseREADME.md`
+7. `DataVault/docs/Documentation.md`
+8. `GeneratorNPC/docs/Documentation.md`
+9. `Kalkulator/docs/Documentation.md`
+10. `Audio/docs/Documentation.md`
+11. `shared/FirebaseREADME.md`
+12. `DataVault/docs/README.md`
+13. `GeneratorNPC/docs/README.md`
+14. `Kalkulator/docs/README.md`
+15. `Audio/docs/README.md`
+16. `Infoczytnik/docs/README.md`
+17. `Audio/config/FirebaseREADME.md`
+18. `Main/docs/README.md`
+19. `Main/docs/Documentation.md`
+20. `GeneratorNazw/docs/README.md`
+21. `GeneratorNazw/docs/Documentation.md`
+22. `DiceRoller/docs/README.md`
+23. `DiceRoller/docs/Documentation.md`
+24. `DataVault/docs/ZasadyFormatowania.md`
+
+---
+
+### 18.5. Aktualna lista plików pozostałych do poprawy
+
+Na podstawie obecnej decyzji użytkownika i wykonanych poprawek nie pozostaje żaden plik z listy 17.5 wymagający dalszej poprawy w ramach tego etapu.
+
+Root `README.md` nie jest zadaniem do wykonania.
+
+---
+
+### 18.6. Podsumowanie statusu
+
+W ramach prac po audycie:
+
+- utworzono standard dokumentacji,
+- uporządkowano dokumenty Firebase,
+- utworzono brakujący `DataVault/config/FirebaseREADME.md`,
+- poprawiono dokumentacje techniczne dużych modułów,
+- poprawiono instrukcje użytkownika dużych modułów,
+- poprawiono dokumentację prostszych modułów,
+- poprawiono specjalistyczny dokument formatowania DataVault,
+- usunięto root `README.md` z dalszego planu prac zgodnie z decyzją użytkownika.
+
+Wniosek: zakres dokumentacyjny wynikający z audytu można uznać za zamknięty w obecnie ustalonym zakresie.
