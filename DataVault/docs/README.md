@@ -1,214 +1,613 @@
-# 🇵🇱 Instrukcja dla użytkownika (PL)
+# 🇵🇱 Instrukcja użytkownika — DataVault (PL)
 
 ## Do czego służy DataVault
-**DataVault** to wyszukiwarka wiedzy do Wrath & Glory. W jednym miejscu przeglądasz tabele, zasady i opisy potrzebne podczas gry.
 
-## Jak otworzyć
-- Widok standardowy: `DataVault/index.html`
-- Widok rozszerzony (admin): `DataVault/index.html?admin=1`
+`DataVault` to prywatna przeglądarka danych do `Wrath & Glory`.
 
-## Co znajdziesz na ekranie
-- **Zakładki** – przełączają między grupami danych. Zwykłe zakładki są zielone, zakładki zasad walki są czerwone, zakładki pojazdów są stalowo-szare, a zakładki tworzenia postaci mają jasne obramowanie i jasną poświatę.
-- **Szukaj (globalnie)** – szuka wpisów w aktualnym obszarze.
-- **Filtry kolumnowe** – zawężają wyniki w konkretnych kolumnach; aktywny filtr jest oznaczony jasnoczerwonym podświetleniem i kropką przy ikonie filtra.
-- **Pełen Widok** – czyści filtry/sortowanie i pokazuje pełną listę widoczną dla aktualnych ustawień systemowych. W zakładce **Bestiariusz** nie pokazuje zdezaktualizowanych wpisów samodzielnie.
-- **Widok Domyślny** – przywraca domyślny układ danych i bezpiecznie ukrywa zdezaktualizowane wpisy Bestiariusza.
-- **Porównaj zaznaczone** – otwiera porównanie wybranych pozycji.
-- **Ikona DataVault w nagłówku** – w lewym górnym rogu widzisz ikonę `Icon.png` osadzoną w stałym zielonym polu 48×48 px (ikona wypełnia całe pole bez ucinania), dzięki czemu nagłówek nie „skacze” podczas ładowania.
-- **Oznaczenia odnośników stron** – zapisy w nawiasach typu `str. 123`, `strona 123`, `page 123` i `p. 123` są automatycznie wyróżniane.
+Służy do szybkiego sprawdzania:
 
-## Jak pracować krok po kroku
-1. Wejdź do modułu i wybierz zakładkę odpowiadającą tematowi, którego szukasz.
-2. Wpisz słowo kluczowe w polu wyszukiwania.
-3. Jeśli wyników jest dużo, ustaw filtry tylko na interesujących kolumnach.
-4. Zaznacz 2 lub więcej wierszy.
-5. Kliknij **Porównaj zaznaczone**, aby zobaczyć dane obok siebie.
-6. Po zakończeniu kliknij **Pełen Widok**, aby wrócić do pełnych danych.
+- broni,
+- pancerzy,
+- ekwipunku,
+- talentów,
+- psioniki,
+- modlitw,
+- archetypów i elementów tworzenia postaci,
+- skrótów zasad,
+- zasad walki,
+- pojazdów,
+- przeciwników i danych administracyjnych dostępnych tylko w trybie admina.
 
-## Różnice: użytkownik vs admin
-- **Użytkownik**: widzi zestaw najczęściej używanych danych na sesji.
-- **Admin**: ma dodatkowe zakładki i przycisk utrzymaniowy.
-- W trybie admina w panelu filtrów pojawia się checkbox **„Czy wyświetlić zdezaktualizowane wpisy?”**. Jest domyślnie odznaczony i dotyczy tylko zakładki **Bestiariusz**. Po zaznaczeniu pokazuje wpisy oznaczone w danych jako `old`; po odznaczeniu ukrywa je ponownie i usuwa ich zaznaczenia z porównania.
-- Domyślna zakładka po wejściu:
-  - użytkownik: **Bronie**,
-  - admin: **Notatki**.
+Moduł działa jak wyszukiwalna baza wiedzy: wybierasz zakładkę, filtrujesz dane, rozwijasz dłuższe opisy i możesz porównać kilka rekordów obok siebie.
 
-## Przycisk „Generuj pliki danych” (tylko admin)
-Używaj go, gdy chcesz odświeżyć dane modułu po aktualizacji pliku źródłowego. Po kliknięciu wybierasz lokalny plik **`Repozytorium.xlsx`** z dysku (plik nie musi być zapisany w repozytorium), a system przygotowuje nowe pliki danych dla aplikacji.
+## Jak otworzyć moduł
 
-## Wymagania dla pliku XLSX
-- Wskazywany plik wejściowy powinien mieć nazwę **`Repozytorium.xlsx`**.
-- Plik wybierasz w oknie systemowym po kliknięciu **Generuj pliki danych**; nie ma wymogu trzymania go stale w folderze `DataVault` ani commitowania do repozytorium.
-- W praktyce używane są zakładki widoczne w interfejsie DataVault (np. `Bronie`, `Archetypy`, `Bestiariusz`, `Skrót Zasad`, `Pakiety Wyniesienia`). Brak zakładki oznacza brak tej tabeli w aplikacji.
-- Każda zakładka powinna zachować stałe nazwy kolumn. Najważniejsze kolumny wspólne dla wielu zakładek to m.in. `Nazwa`, `Opis`, `Podręcznik`, `Strona`, `Słowa Kluczowe`.
-- Kolorowanie i styl tekstu są czytane z formatowania komórek (rich text):
-  - czerwony tekst -> podświetlenie czerwone w aplikacji,
-  - pogrubienie/kursywa/przekreślenie -> zachowane 1:1 w aplikacji.
-- Odnośniki stron w nawiasach (np. `(str. 123)`, `(strona 45)`, `(page 88)`, `(p. 12)`) są automatycznie wyświetlane jaśniejszym kolorem.
-- W kolumnach `Słowa Kluczowe` obowiązują dodatkowe reguły renderowania (np. neutralny przecinek, wyjątek dla `Pakiety Wyniesienia`), opisane szczegółowo w `docs/ZasadyFormatowania.md`.
+Standardowy widok użytkownika:
 
-## Aktualne źródło danych
-Kliknij **Generuj pliki danych**, aby wskazać lokalny plik `Repozytorium.xlsx`. Aplikacja wygeneruje dwa pliki:
+```text
+DataVault/index.html
+```
 
-- `data.json` — lokalny backup i plik pomocniczy do sprawdzenia danych;
-- `firebase-import.json` — plik gotowy do importu z poziomu **root** Firebase Realtime Database.
+Widok admina:
 
-Importuj `firebase-import.json` na głównym poziomie bazy Firebase Realtime Database. Po imporcie Firebase utworzy dane pod ścieżką `/datavault/live`. Nie importuj tego pliku bezpośrednio do `/datavault/live`, ponieważ wtedy powstałaby zła, podwójna ścieżka `/datavault/live/datavault/live`.
+```text
+DataVault/index.html?admin=1
+```
 
-## Runtime danych
-Runtime pochodzi z Firebase Realtime Database (ścieżka `/datavault/live`) przez Firebase Auth i wspólny loader `shared/firebase-data-loader.js`. Publiczny `data.json` nie jest używany jako runtime. W `firebase-import.json` właściwe dane pozostają zapisane w polu `dataJson` jako string JSON, a payload pod `/datavault/live` ma `schemaVersion` równy `datavault-firebase-import-v1`.
+Widok użytkownika jest przeznaczony do normalnego używania podczas gry. Widok admina służy do obsługi dodatkowych danych i odświeżania źródła danych.
 
-## Logowanie do prywatnych danych Firebase
-- W oknie logowania wyświetla się ikona `IkonaPowiadomien2.png` w stałym polu (72×72 px), więc karta logowania nie zmienia rozmiaru podczas doczytywania zasobów.
-- Po wpisaniu poprawnego hasła bramka zamyka się, a dane ładują się od razu z prywatnej bazy.
-- Jeżeli sesja logowania nie zostanie wykryta po wpisaniu hasła, zobaczysz dokładny komunikat z informacją, że problem dotyczy sesji Auth, a niekoniecznie samego hasła.
+## Dostęp do prywatnych danych K.O.Z.A.
 
-## Aktualny dostęp do danych
-- DataVault i GeneratorNPC używają wspólnego logowania Firebase. Zalogowanie w jednym module odblokowuje drugi bez ponownego wpisywania hasła w tej samej przeglądarce.
-- Przycisk „WYLOGUJ / ZABLOKUJ DANE” nie jest dostępny w interfejsie.
+Po wejściu do modułu może pojawić się ekran dostępu do danych z klauzulą tajności K.O.Z.A.
+
+Na ekranie zobaczysz:
+
+- tytuł dostępu do danych K.O.Z.A.,
+- opis Rytuału Uwierzytelnienia,
+- pole `Litania Dostępu`,
+- przycisk rozpoczęcia rytuału.
+
+Wpisz hasło i zatwierdź. Po poprawnym logowaniu bramka zniknie, a DataVault załaduje dane z prywatnej bazy.
+
+Sesja może zostać zapamiętana w tej samej przeglądarce. Dzięki temu po odświeżeniu strony albo przejściu do `GeneratorNPC` ponowne wpisywanie hasła może nie być potrzebne.
+
+## Główne elementy ekranu
+
+### Nagłówek
+
+W nagłówku znajduje się:
+
+- ikona DataVault,
+- nazwa modułu,
+- przyciski widoku,
+- w trybie admina także przycisk generowania plików danych.
+
+### Zakładki
+
+Zakładki przełączają między arkuszami danych. Każda zakładka pokazuje inną tabelę.
+
+Przykładowe zakładki:
+
+- `Bronie`,
+- `Pancerze`,
+- `Ekwipunek`,
+- `Talenty`,
+- `Psionika`,
+- `Modlitwy`,
+- `Archetypy`,
+- `Skrót Zasad`,
+- `Pojazdy`.
+
+Niektóre zakładki są ukryte w zwykłym widoku i dostępne tylko dla admina.
+
+### Panel filtrów
+
+Panel filtrów zawiera:
+
+- wyszukiwarkę globalną,
+- przełączniki grup zakładek,
+- w trybie admina checkbox starych wpisów Bestiariusza,
+- krótkie podpowiedzi dotyczące sortowania, filtrów i porównywania.
+
+### Tabela danych
+
+Tabela pokazuje rekordy z aktywnej zakładki. Możesz:
+
+- przewijać tabelę,
+- sortować po kolumnach,
+- filtrować tekstem,
+- filtrować wartościami z listy,
+- rozwijać długie komórki,
+- zaznaczać wiersze do porównania.
+
+## Wyszukiwanie globalne
+
+Pole wyszukiwania globalnego filtruje aktualną zakładkę.
+
+Używaj go, gdy chcesz szybko znaleźć słowo, nazwę, typ, cechę lub fragment opisu.
+
+Przykład:
+
+```text
+plasma
+```
+
+albo:
+
+```text
+ognia
+```
+
+Wyszukiwanie działa na danych widocznych w aktualnej zakładce.
+
+## Filtry kolumnowe
+
+Pod nagłówkami kolumn znajdują się pola i przyciski filtrów.
+
+Możesz użyć:
+
+- filtra tekstowego pod konkretną kolumną,
+- filtra listowego z wartościami występującymi w kolumnie.
+
+Filtr kolumnowy jest przydatny, gdy chcesz zawęzić wyniki tylko do jednej kategorii, typu, frakcji, podręcznika albo zakresu danych.
+
+Aktywny filtr jest wyróżniony wizualnie.
+
+## Sortowanie
+
+Kliknij nagłówek kolumny, aby posortować tabelę.
+
+Kolejne kliknięcia zmieniają kierunek sortowania albo zdejmują sortowanie, zależnie od aktualnego stanu widoku.
+
+W części zakładek moduł może stosować sortowanie domyślne, np. po kolejności z danych źródłowych.
+
+## Rozwijanie długich komórek
+
+Niektóre komórki mają długie opisy. DataVault może je skracać, żeby tabela pozostała czytelna.
+
+Kliknięcie rozwijanego pola pokazuje więcej treści. Ponowne kliknięcie może przywrócić krótszy widok.
+
+## Odnośniki i specjalne wyróżnienia
+
+DataVault automatycznie wyróżnia część tekstu z danych.
+
+Przykłady:
+
+- odnośniki do stron, np. `(str. 123)`, `(strona 45)`, `(page 88)`, `(p. 12)`,
+- czerwony tekst zapisany w źródle jako czerwony,
+- pogrubienie,
+- kursywę,
+- przekreślenie,
+- specjalne oznaczenia przypisów.
+
+Szczegółowe zasady formatowania są opisane w osobnym pliku `DataVault/docs/ZasadyFormatowania.md`.
+
+## Porównywanie rekordów
+
+Aby porównać wpisy:
+
+1. Wybierz zakładkę.
+2. Odszukaj interesujące rekordy.
+3. Zaznacz co najmniej dwa wiersze.
+4. Kliknij `Porównaj zaznaczone`.
+5. Przejrzyj dane w modalu porównania.
+6. Zamknij modal po zakończeniu.
+
+Porównywanie jest szczególnie przydatne przy broniach, pancerzach, archetypach, talentach i pojazdach.
+
+## Pełen Widok
+
+Przycisk `Pełen Widok` zdejmuje filtry i sortowanie ustawione w bieżącym widoku.
+
+Używaj go, gdy tabela pokazuje zbyt mało wyników albo nie pamiętasz, jakie filtry były aktywne.
+
+Ważne: `Pełen Widok` nie pokazuje samodzielnie starych wpisów Bestiariusza. Te wpisy są kontrolowane osobnym checkboxem w trybie admina.
+
+## Widok Domyślny
+
+Przycisk `Widok Domyślny` przywraca bezpieczny, domyślny układ danych.
+
+Może ponownie włączyć domyślne filtry, sortowanie i ukrycia.
+
+Używaj go, gdy chcesz wrócić do podstawowego widoku przygotowanego do normalnej gry.
+
+## Przełączniki grup zakładek
+
+Panel filtrów może zawierać przełączniki grup zakładek, np.:
+
+- tworzenie postaci,
+- zasady walki,
+- pojazdy.
+
+Odznaczenie grupy ukrywa jej zakładki. Zaznaczenie pokazuje je ponownie.
+
+To nie usuwa danych, tylko zmienia widoczność zakładek w interfejsie.
+
+## Tryb użytkownika i tryb admina
+
+### Tryb użytkownika
+
+Tryb użytkownika pokazuje dane przeznaczone do normalnego używania podczas sesji.
+
+Domyślna zakładka użytkownika to zwykle `Bronie`.
+
+W tym trybie część zakładek administracyjnych jest ukryta.
+
+### Tryb admina
+
+Tryb admina pokazuje dodatkowe zakładki i narzędzia.
+
+Domyślna zakładka admina to zwykle `Notatki`.
+
+W trybie admina dostępne są między innymi:
+
+- dodatkowe zakładki administracyjne,
+- checkbox starych wpisów Bestiariusza,
+- przycisk `Generuj pliki danych`.
+
+## Stare wpisy Bestiariusza
+
+W trybie admina dostępny jest checkbox:
+
+```text
+Czy wyświetlić zdezaktualizowane wpisy?
+```
+
+Dotyczy tylko zakładki `Bestiariusz`.
+
+Gdy checkbox jest wyłączony, wpisy oznaczone w danych jako `old` są ukryte.
+
+Gdy checkbox jest włączony, stare wpisy są widoczne.
+
+Po ponownym ukryciu starych wpisów moduł usuwa je również z zaznaczenia do porównania.
+
+## Generowanie plików danych — tylko admin
+
+Przycisk `Generuj pliki danych` służy do przygotowania nowych danych po aktualizacji pliku źródłowego.
+
+Po kliknięciu:
+
+1. wybierz lokalny plik `Repozytorium.xlsx`,
+2. aplikacja odczyta arkusz,
+3. przeglądarka pobierze `data.json`,
+4. przeglądarka pobierze `firebase-import.json`,
+5. widok roboczy zostanie odświeżony danymi z wybranego pliku.
+
+`data.json` jest lokalnym backupem i plikiem pomocniczym.
+
+`firebase-import.json` jest plikiem przeznaczonym do importu w Firebase Realtime Database.
+
+## Import danych do Firebase — tylko admin techniczny
+
+Po wygenerowaniu `firebase-import.json` zaimportuj go w Firebase Console na poziomie root Realtime Database, czyli `/`.
+
+Po imporcie dane powinny znaleźć się pod ścieżką:
+
+```text
+datavault/live
+```
+
+Nie importuj tego pliku bezpośrednio do `datavault/live`, ponieważ powstanie błędna podwójna ścieżka:
+
+```text
+datavault/live/datavault/live
+```
 
 ## Wspólna sesja z GeneratorNPC
-DataVault i GeneratorNPC korzystają z tej samej nazwanej aplikacji prywatnych danych (`wh40k-data-slate-private-data`), więc logowanie wykonane w jednym module działa też w drugim.
 
-## Okno dostępu K.O.Z.A.
-Okno hasła używa narracji K.O.Z.A. i Ducha Maszyny:
-- tytuł: **„Dostęp do danych z klauzulą tajności K.O.Z.A.”**,
-- opis: **Rytuał Uwierzytelnienia**,
-- etykieta pola: **„Litania Dostępu”**,
-- przycisk: **„Rozpocznij Rytuał”**.
+`DataVault` i `GeneratorNPC` korzystają z tej samej wspólnej warstwy prywatnych danych Firebase.
 
-## Układ pola „Litania Dostępu”
-W oknie dostępu etykieta **„Litania Dostępu”** jest ustawiona po lewej stronie, a pole hasła po prawej. Przycisk **„Rozpocznij Rytuał”** znajduje się pod polem hasła, po prawej stronie. Na wąskich ekranach (telefon) elementy mają wymuszoną kolejność pionową: wiersz 1 etykieta, wiersz 2 pole hasła, wiersz 3 przycisk, a komunikat błędu pozostaje pod formularzem.
+Oznacza to, że po zalogowaniu do jednego z tych modułów drugi moduł może być odblokowany w tej samej przeglądarce bez ponownego wpisywania hasła.
 
-## Dodawanie nowej wersji językowej
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+## Typowe komunikaty i co zrobić
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+| Komunikat lub sytuacja | Co oznacza | Co zrobić |
+| --- | --- | --- |
+| Bramka K.O.Z.A. nie znika | Hasło jest błędne albo Firebase Auth nie przyjął logowania. | Sprawdź hasło. Jeżeli problem trwa, zgłoś adminowi. |
+| Komunikat o braku konfiguracji Firebase | Moduł nie widzi wymaganych danych konfiguracji. | Zgłoś adminowi technicznemu. |
+| Brak technicznego e-maila | Nie ustawiono e-maila użytkownika dostępowego. | Zgłoś adminowi technicznemu. |
+| Brak danych w Firebase | Pod `datavault/live` nie ma danych. | Admin powinien zaimportować `firebase-import.json`. |
+| Brak uprawnień do odczytu | Reguły Firebase blokują dostęp. | Zgłoś adminowi technicznemu. |
+| Dane nie mają struktury `sheets` | Import jest uszkodzony albo nie pochodzi z DataVault. | Wygeneruj i zaimportuj nowy plik. |
+| Tabela jest pusta | Filtry ukryły wyniki albo arkusz nie ma danych. | Kliknij `Pełen Widok` albo wyczyść filtry. |
+| Nie widać zakładki | Grupa zakładek jest ukryta albo zakładka jest admin-only. | Włącz grupę w panelu filtrów albo użyj trybu admina. |
 
-Przełącznik języka jest domyślnie ukryty; dokładne miejsce zmiany widoczności opisuje komentarz w `index.html` obok `.language-switcher--hidden`.
+## Krótki workflow podczas sesji
 
-## Ważne przy kopiowaniu modułu
-W module jest przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji (inna domena, inny katalog) **zaktualizuj jego hiperłącze**, żeby poprawnie wracał do strony startowej.
-
-## Generator referencyjny
-Skrypt `DataVault/build_json.py` jest referencyjną ścieżką generowania plików danych z `Repozytorium.xlsx` przy użyciu parsera XLSX ZIP/XML. Wynik powinien odpowiadać plikom tworzonym w aplikacji przez przycisk **Generuj pliki danych**.
+1. Otwórz `DataVault/index.html`.
+2. Przejdź bramkę K.O.Z.A., jeżeli się pojawi.
+3. Wybierz zakładkę.
+4. Wpisz frazę w wyszukiwarce globalnej.
+5. Użyj filtrów kolumnowych, jeżeli wyników jest za dużo.
+6. Kliknij nagłówek kolumny, aby posortować.
+7. Zaznacz kilka rekordów i użyj porównania, jeżeli chcesz je zestawić.
+8. Kliknij `Pełen Widok`, gdy chcesz wyczyścić widok.
+9. Kliknij `Widok Domyślny`, gdy chcesz wrócić do podstawowego układu.
 
 ---
 
-# 🇬🇧 User instructions (EN)
+# 🇬🇧 User guide — DataVault (EN)
 
 ## What DataVault is for
-**DataVault** is a Wrath & Glory knowledge browser. It keeps rules, tables, and references in one searchable place.
 
-## How to open
-- Standard view: `DataVault/index.html`
-- Extended admin view: `DataVault/index.html?admin=1`
+`DataVault` is a private data browser for `Wrath & Glory`.
 
-## What you get on screen
-- **Tabs** – switch between data groups. Standard tabs are green, combat-rules tabs are red, vehicle tabs are steel gray, and character-creation tabs use a bright border and bright glow.
-- **Global search** – finds entries in the current area.
-- **Column filters** – narrow results per column; an active filter is marked with a bright red highlight and a dot next to the filter icon.
-- **Full View** – clears filters/sorting and restores the full list allowed by current system visibility. In **Bestiariusz**, it does not reveal outdated entries by itself.
-- **Default View** – restores default data layout and safely hides outdated Bestiary entries.
-- **Compare selected** – opens side-by-side comparison.
-- **DataVault header icon** – the top-left corner shows `Icon.png` inside a fixed 48×48 px green slot (the icon fills the whole slot with no clipping), so the header stays stable while assets load.
-- **Page-reference highlights** – bracketed references such as `str. 123`, `strona 123`, `page 123`, and `p. 123` are automatically highlighted.
+It is used to quickly check:
 
-## Step-by-step workflow
-1. Open the module and choose a tab related to your topic.
-2. Enter a keyword in search.
-3. If results are too broad, apply filters to specific columns.
-4. Select 2 or more rows.
-5. Click **Compare selected** to inspect entries side by side.
-6. Click **Full View** when done to return to complete data.
+- weapons,
+- armor,
+- equipment,
+- talents,
+- psionics,
+- prayers,
+- archetypes and character creation data,
+- rules summaries,
+- combat rules,
+- vehicles,
+- enemies and administrative data available only in admin mode.
 
-## User vs admin differences
-- **User mode**: core session-focused content.
-- **Admin mode**: extra tabs plus maintenance control.
-- In admin mode the filter panel includes **“Show outdated entries?”**. It is unchecked by default and affects only the **Bestiariusz** tab. When enabled, it shows entries marked as `old`; when disabled, it hides them again and removes their comparison selections.
-- Default opening tab:
-  - user: **Bronie**,
-  - admin: **Notatki**.
+The module works like a searchable knowledge base: choose a tab, filter data, expand longer descriptions, and compare several records side by side.
 
-## Outdated Bestiary entries in admin mode
-In admin mode the filter panel contains **“Show outdated entries?”**. It is unchecked by default and affects only the **Bestiariusz** tab. When enabled, entries marked in the data as `old` become visible; when disabled, they are hidden again and removed from the comparison selection. Only the **Nazwa** and **Typ** fields of those outdated Bestiary entries use the archival italic style.
+## How to open the module
 
-## “Generate data files” button (admin only)
-Use it when module data needs refreshing after source updates. After clicking it, you select a local **`Repozytorium.xlsx`** file from disk (the file does not need to be stored in the repository), and the app builds refreshed data files.
+Standard user view:
 
-## XLSX file requirements
-- The selected input file should be named **`Repozytorium.xlsx`**.
-- You choose the file via a system file picker after clicking **Generate data files**; it does not need to permanently exist in the `DataVault` folder and does not need to be committed to the repository.
-- In practice, DataVault uses worksheet tabs that are visible in the UI (for example: `Bronie`, `Archetypy`, `Bestiariusz`, `Skrót Zasad`, `Pakiety Wyniesienia`). If a tab is missing, that table is missing in the app.
-- Each tab should keep stable column names. Key columns reused across many tabs include `Nazwa`, `Opis`, `Podręcznik`, `Strona`, and `Słowa Kluczowe`.
-- Text colors/styles are read from cell formatting (rich text):
-  - red text -> red highlight in the app,
-  - bold/italic/strikethrough -> preserved 1:1 in the app.
-- Page references in parentheses (for example `(str. 123)`, `(strona 45)`, `(page 88)`, `(p. 12)`) are automatically shown in a lighter color.
-- `Słowa Kluczowe` columns use extra rendering rules (for example neutral commas and the `Pakiety Wyniesienia` exception), documented in detail in `docs/ZasadyFormatowania.md`.
+```text
+DataVault/index.html
+```
 
-## Current data source
-Click **Generate data files** to choose a local `Repozytorium.xlsx` file. The app generates two files:
+Admin view:
 
-- `data.json` — a local backup and helper file for data checks;
-- `firebase-import.json` — a file ready to import at the Firebase Realtime Database **root**.
+```text
+DataVault/index.html?admin=1
+```
 
-Import `firebase-import.json` at the top/root level of Firebase Realtime Database. After import, Firebase creates the data under `/datavault/live`. Do not import this file directly into `/datavault/live`, because that would create the wrong double path `/datavault/live/datavault/live`.
+User view is meant for normal use during play. Admin view is for extra data access and data source maintenance.
 
-## Data runtime
-Runtime is loaded from Firebase Realtime Database (`/datavault/live`) through Firebase Auth and shared loader `shared/firebase-data-loader.js`. Public `data.json` is not used as runtime. In `firebase-import.json`, the actual data remains stored in the `dataJson` field as a JSON string, and the payload under `/datavault/live` keeps `schemaVersion` equal to `datavault-firebase-import-v1`.
+## K.O.Z.A. private data access
 
-## Firebase private data sign-in
-- The login window shows `IkonaPowiadomien2.png` in a fixed 72×72 px slot, so the login card keeps a stable size while assets load.
-- After entering the correct password, the gate closes and data is loaded immediately from the private database.
-- If the sign-in session is not detected after login, you get a precise message saying the issue is with Auth session detection, not necessarily the password itself.
+After opening the module, you may see the K.O.Z.A. classified data access screen.
 
-## Current data access
-- DataVault and GeneratorNPC share the same Firebase login. Signing in once unlocks the other module in the same browser session.
-- The “LOG OUT / LOCK DATA” button is not available in the interface.
+The screen contains:
+
+- K.O.Z.A. data access title,
+- Rite of Authentication description,
+- `Litany of Access` password field,
+- ritual start button.
+
+Enter the password and confirm. After successful login, the gate closes and DataVault loads data from the private database.
+
+The session may be remembered in the same browser. This means refreshing the page or opening `GeneratorNPC` may not require entering the password again.
+
+## Main screen elements
+
+### Header
+
+The header contains:
+
+- DataVault icon,
+- module name,
+- view buttons,
+- in admin mode, the data generation button.
+
+### Tabs
+
+Tabs switch between data sheets. Each tab shows a different table.
+
+Example tabs:
+
+- `Bronie`,
+- `Pancerze`,
+- `Ekwipunek`,
+- `Talenty`,
+- `Psionika`,
+- `Modlitwy`,
+- `Archetypy`,
+- `Skrót Zasad`,
+- `Pojazdy`.
+
+Some tabs are hidden in regular view and available only to admin.
+
+### Filter panel
+
+The filter panel contains:
+
+- global search,
+- sheet group toggles,
+- old Bestiary entries checkbox in admin mode,
+- short hints for sorting, filters, and comparison.
+
+### Data table
+
+The table shows records from the active tab. You can:
+
+- scroll the table,
+- sort by columns,
+- filter by text,
+- filter by value lists,
+- expand long cells,
+- select rows for comparison.
+
+## Global search
+
+The global search field filters the current tab.
+
+Use it when you want to quickly find a word, name, type, trait, or description fragment.
+
+Example:
+
+```text
+plasma
+```
+
+or:
+
+```text
+fire
+```
+
+Search works on data visible in the current tab.
+
+## Column filters
+
+There are filter fields and buttons below column headers.
+
+You can use:
+
+- text filter under a specific column,
+- list filter with values present in the column.
+
+Column filters are useful when you want to narrow results to one category, type, faction, book, or data range.
+
+Active filters are visually highlighted.
+
+## Sorting
+
+Click a column header to sort the table.
+
+Repeated clicks change the sort direction or remove sorting, depending on the current view state.
+
+Some tabs may use default sorting, for example by source data order.
+
+## Expanding long cells
+
+Some cells contain long descriptions. DataVault may shorten them to keep the table readable.
+
+Clicking an expandable field shows more content. Clicking again may return to the shorter view.
+
+## References and special highlights
+
+DataVault automatically highlights parts of the source text.
+
+Examples:
+
+- page references such as `(str. 123)`, `(strona 45)`, `(page 88)`, `(p. 12)`,
+- red text stored as red in the source,
+- bold,
+- italics,
+- strikethrough,
+- special footnote markers.
+
+Detailed formatting rules are described in `DataVault/docs/ZasadyFormatowania.md`.
+
+## Comparing records
+
+To compare entries:
+
+1. Choose a tab.
+2. Find the records you need.
+3. Select at least two rows.
+4. Click `Compare selected`.
+5. Review data in the comparison modal.
+6. Close the modal when done.
+
+Comparison is especially useful for weapons, armor, archetypes, talents, and vehicles.
+
+## Full View
+
+`Full View` removes filters and sorting from the current view.
+
+Use it when the table shows too few results or you do not remember which filters are active.
+
+Important: `Full View` does not reveal old Bestiary entries by itself. Those entries are controlled by a separate checkbox in admin mode.
+
+## Default View
+
+`Default View` restores the safe default data layout.
+
+It may re-enable default filters, sorting, and hidden entries.
+
+Use it when you want to return to the basic view prepared for regular play.
+
+## Sheet group toggles
+
+The filter panel may contain sheet group toggles, for example:
+
+- character creation,
+- combat rules,
+- vehicles.
+
+Disabling a group hides its tabs. Enabling it shows them again.
+
+This does not delete data; it only changes tab visibility in the interface.
+
+## User mode and admin mode
+
+### User mode
+
+User mode shows data intended for normal play.
+
+The default user tab is usually `Bronie`.
+
+Some administrative tabs are hidden in this mode.
+
+### Admin mode
+
+Admin mode shows additional tabs and tools.
+
+The default admin tab is usually `Notatki`.
+
+Admin mode includes:
+
+- additional administrative tabs,
+- old Bestiary entries checkbox,
+- `Generate data files` button.
+
+## Old Bestiary entries
+
+In admin mode there is a checkbox:
+
+```text
+Show outdated entries?
+```
+
+It affects only the `Bestiariusz` tab.
+
+When disabled, records marked in data as `old` are hidden.
+
+When enabled, old records are visible.
+
+When old records are hidden again, the module also removes them from comparison selection.
+
+## Generating data files — admin only
+
+`Generate data files` prepares new data after the source file is updated.
+
+After clicking it:
+
+1. select local file `Repozytorium.xlsx`,
+2. the app reads the workbook,
+3. the browser downloads `data.json`,
+4. the browser downloads `firebase-import.json`,
+5. the working view refreshes with data from the selected file.
+
+`data.json` is a local backup and helper file.
+
+`firebase-import.json` is meant for import into Firebase Realtime Database.
+
+## Importing data into Firebase — technical admin only
+
+After generating `firebase-import.json`, import it in Firebase Console at the Realtime Database root, `/`.
+
+After import, data should appear under:
+
+```text
+datavault/live
+```
+
+Do not import this file directly into `datavault/live`, because it will create an incorrect double path:
+
+```text
+datavault/live/datavault/live
+```
 
 ## Shared session with GeneratorNPC
-DataVault and GeneratorNPC use the same named private-data app (`wh40k-data-slate-private-data`), so sign-in in one module is reused in the other.
 
-## K.O.Z.A. access window
-The password gate uses K.O.Z.A./Machine Spirit wording:
-- title: **“Access to K.O.Z.A. Classified Data”**,
-- description: **Rite of Authentication**,
-- field label: **“Litany of Access”**,
-- button: **“Begin Rite”**.
+`DataVault` and `GeneratorNPC` use the same shared private data Firebase layer.
 
-## “Litany of Access” field layout
-In the access window, the **“Litany of Access”** label is on the left and the password field is on the right. The **“Begin Rite”** button is below the password field on the right side. On narrow screens (mobile), the order is explicitly vertical: row 1 label, row 2 password field, row 3 button, while the error message remains below the form.
+This means that after logging into one of these modules, the other module may unlock in the same browser without entering the password again.
 
-## Adding a new language version
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
+## Common messages and what to do
 
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+| Message or situation | Meaning | What to do |
+| --- | --- | --- |
+| K.O.Z.A. gate does not close | Password is wrong or Firebase Auth rejected login. | Check the password. If the problem continues, contact admin. |
+| Missing Firebase configuration message | The module cannot see required configuration. | Contact technical admin. |
+| Missing technical e-mail | Access user e-mail is not configured. | Contact technical admin. |
+| No data in Firebase | There is no data under `datavault/live`. | Admin should import `firebase-import.json`. |
+| No read permission | Firebase rules block access. | Contact technical admin. |
+| Data has no `sheets` structure | Import is damaged or does not come from DataVault. | Generate and import a new file. |
+| Table is empty | Filters hide results or the sheet has no data. | Click `Full View` or clear filters. |
+| Tab is not visible | Sheet group is hidden or tab is admin-only. | Enable the group in filter panel or use admin mode. |
 
-The language switcher is hidden by default; the exact visibility change point is documented by a comment in `index.html` next to `.language-switcher--hidden`.
+## Quick session workflow
 
-## Important when copying the module
-This module includes a **Strona Główna / Main Page** button. After copying the app to another location (different domain or folder), **update its hyperlink** so it returns to the launcher correctly.
-
-## Reference generator
-The `DataVault/build_json.py` script is the reference path for generating data files from `Repozytorium.xlsx` using the XLSX ZIP/XML parser. Its output should match the files generated in the app by the **Generate data files** button.
-
-# 🇵🇱 Instrukcja dla użytkownika (PL) — zakładki pojazdów
-
-W panelu filtrów znajduje się opcja **Czy wyświetlić zakładki dotyczące pojazdów?**. Domyślnie jest wyłączona, więc zakładki pojazdów są ukryte. Zaznacz checkbox, aby pokazać siedem zakładek pojazdów. Odznacz checkbox, aby je ponownie ukryć. Jeśli ukryjesz zakładkę, na której aktualnie jesteś, DataVault sam przełączy się na bezpieczną dostępną zakładkę.
-
-Zakładki pojazdów zawierają role załogi, akcje pojazdów, stany pojazdów, cechy pojazdów, listę pojazdów, bronie pojazdów i wyposażenie pojazdów. Kliknięcie etykiety cechy w kolumnie `Cechy` otwiera okienko z opisem. Jeśli cecha ma wartość w nawiasie, na przykład `Montowana (Duży)`, okienko pokaże opis odpowiedniej cechy bazowej.
-
-# 🇬🇧 User instructions (EN) — vehicle tabs
-
-The filters panel contains the **Show tabs related to vehicles?** option. It is turned off by default, so vehicle tabs are hidden. Select the checkbox to show all seven vehicle tabs. Clear the checkbox to hide them again. If you hide the tab you are currently viewing, DataVault automatically switches to a safe available tab.
-
-Vehicle tabs contain crew roles, vehicle actions, vehicle states, vehicle traits, vehicles, vehicle weapons, and vehicle wargear. Clicking a trait label in the `Cechy` column opens a popover with its description. If a trait has a value in parentheses, for example `Montowana (Duży)`, the popover shows the matching base trait description.
+1. Open `DataVault/index.html`.
+2. Pass the K.O.Z.A. gate if it appears.
+3. Choose a tab.
+4. Enter a phrase in global search.
+5. Use column filters if there are too many results.
+6. Click a column header to sort.
+7. Select several records and use comparison if you want to inspect them side by side.
+8. Click `Full View` when you want to clear the view.
+9. Click `Default View` when you want to return to the basic layout.
