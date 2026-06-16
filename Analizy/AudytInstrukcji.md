@@ -1348,3 +1348,196 @@ Rozważyć utworzenie root `README.md` jako mapy repozytorium:
 6. Dodać pełne wersje EN do wszystkich dokumentacji technicznych.
 7. Uporządkować dokumenty prostszych modułów.
 8. Rozważyć root `README.md`.
+
+---
+
+## 15. Aktualizacja po rozpoczęciu prac nad dokumentacją
+
+**Data aktualizacji:** 2026-06-16  
+**Zakres aktualizacji:** opis wykonanych prac po audycie  
+**Status:** rozpoczęto realizację planu napraw dokumentacji  
+
+Po przygotowaniu audytu rozpoczęto właściwe prace porządkujące dokumentację repozytorium. Pierwsze działania nie polegały jeszcze na masowej poprawie wszystkich plików modułów, tylko na przygotowaniu wspólnego standardu oraz rozpoczęciu pracy od dokumentów krytycznych wskazanych w audycie.
+
+---
+
+### 15.1. Utworzenie pliku `docs-standard.md`
+
+Utworzono nowy plik: `docs-standard.md`.
+
+Commit: `c983190800cf62c518f4ecbf4ee4975beee9c70c`.
+
+Plik `docs-standard.md` został utworzony jako wspólny standard dokumentacji modułów w repozytorium `WrathAndGlory`.
+
+Celem tego pliku jest ujednolicenie dalszych prac nad dokumentacją, tak aby każdy moduł był opisywany według tego samego schematu i z tym samym poziomem szczegółowości.
+
+Plik zawiera standard dla:
+
+- `docs/README.md`,
+- `docs/Documentation.md`,
+- `config/FirebaseREADME.md`.
+
+W `docs-standard.md` zapisano między innymi:
+
+- zasady ogólne dokumentacji,
+- wymóg opisywania aktualnego stanu modułu,
+- zakaz traktowania dokumentacji jako changeloga,
+- wymóg pełnej wersji polskiej i pełnej wersji angielskiej,
+- zalecany układ językowy,
+- standard instrukcji użytkownika `README.md`,
+- standard dokumentacji technicznej `Documentation.md`,
+- standard instrukcji konfiguracji `FirebaseREADME.md`,
+- checklistę przed zatwierdzeniem dokumentacji,
+- zalecaną kolejność dalszych prac.
+
+Użytkownik zaakceptował przygotowany szablon.
+
+Wniosek: Etap 1 planu napraw, czyli przyjęcie wspólnego standardu dokumentacji, został rozpoczęty i praktycznie wykonany.
+
+---
+
+### 15.2. Sprawdzenie pliku `AGENTS.md`
+
+Przed dalszymi pracami sprawdzono plik `AGENTS.md`.
+
+Celem sprawdzenia było ustalenie:
+
+- czy jego treść jest zgodna z obecnym projektem,
+- czy nadrzędne instrukcje nie blokują poprawiania dokumentacji,
+- czy są w nim ograniczenia, które trzeba uwzględniać podczas dalszych prac.
+
+Wniosek ze sprawdzenia:
+
+- `AGENTS.md` jest zasadniczo zgodny z obecnym projektem,
+- nie blokuje prac nad poprawą dokumentacji,
+- wspiera przyjęty kierunek prac,
+- potwierdza rolę `README.md` jako instrukcji użytkownika,
+- potwierdza rolę `Documentation.md` jako dokumentacji technicznej,
+- potwierdza wymóg pełnego układu PL/EN,
+- potwierdza zasadę, że dokumentacja ma opisywać aktualny stan, a nie historię zmian.
+
+Zidentyfikowano jednak ważne ograniczenia organizacyjne:
+
+1. Nie wolno edytować żadnych plików `AGENTS.md`.
+2. Nie należy commitować zmian bez wyraźnej prośby użytkownika.
+3. Przy module `DataVault` trzeba zachować szczególną ostrożność, zwłaszcza przy zmianach parserów, generatorów i fallbacków.
+4. Przy zmianach wyglądu aplikacji trzeba aktualizować `DetaleLayout.md`.
+5. Przed edycją konkretnego folderu warto sprawdzić, czy nie ma lokalnego `AGENTS.md`.
+
+Wniosek: można kontynuować prace nad dokumentacją, ale nie należy modyfikować `AGENTS.md`.
+
+---
+
+### 15.3. Aktualizacja `Infoczytnik/config/FirebaseREADME.md`
+
+Zgodnie z priorytetami wskazanymi w audycie rozpoczęto prace od dokumentów krytycznych Firebase.
+
+Zaktualizowano plik `Infoczytnik/config/FirebaseREADME.md`.
+
+Commit: `5e9add68a4280c960c3f3f6d8087025442564024`.
+
+Powód wyboru tego pliku jako pierwszego:
+
+- audyt oznaczył dokumentację Firebase modułu `Infoczytnik` jako krytyczną,
+- stary `FirebaseREADME.md` nie opisywał pełnego aktualnego modelu `dataslate/current`,
+- aktualny kod `GM.html` zapisuje znacznie więcej pól niż opisywała poprzednia wersja dokumentacji,
+- ekran gracza `Infoczytnik.html` zależy od aktualnego payloadu Firestore.
+
+W ramach aktualizacji opisano:
+
+- do czego `Infoczytnik` używa Firebase,
+- że moduł korzysta z Firestore,
+- że aktualny kod nie używa Realtime Database, Authentication ani Storage,
+- że Firebase jest wymagany do komunikacji GM-gracz,
+- że moduł nie ma pełnego fallbacku offline dla tej komunikacji,
+- plik konfiguracyjny `Infoczytnik/config/firebase-config.js`,
+- sposób uzyskania danych z Firebase Console,
+- strukturę Firestore `dataslate/current`,
+- typy akcji w polu `type`: `message`, `ping`, `clear`,
+- pełny model danych dokumentu `dataslate/current`,
+- skrypt Node.js inicjalizujący dokument,
+- sposób uruchomienia skryptu,
+- przykładowe reguły Firestore,
+- test połączenia,
+- typowe błędy i ich rozwiązania.
+
+Dokument został przygotowany zgodnie z przyjętym standardem:
+
+- pełna wersja polska,
+- pełna wersja angielska,
+- brak realnych prywatnych wartości konfiguracyjnych,
+- użycie placeholderów,
+- opis aktualnego stanu modułu,
+- brak formy changeloga.
+
+Wniosek: pierwszy krytyczny dokument Firebase został poprawiony.
+
+---
+
+### 15.4. Zmiana statusu planu napraw
+
+Po wykonaniu powyższych prac status etapów z sekcji „Rekomendowany plan napraw” wygląda następująco.
+
+#### Etap 1 — standard dokumentacji
+
+Status: wykonany w wersji roboczej i zaakceptowany przez użytkownika.
+
+Wykonano:
+
+- utworzono `docs-standard.md`,
+- opisano standard dla `README.md`,
+- opisano standard dla `Documentation.md`,
+- opisano standard dla `FirebaseREADME.md`,
+- dodano checklistę akceptacji dokumentacji.
+
+#### Etap 2 — dokumenty Firebase i błędy krytyczne
+
+Status: rozpoczęty.
+
+Wykonano:
+
+- zaktualizowano `Infoczytnik/config/FirebaseREADME.md`.
+
+Pozostało:
+
+- `Infoczytnik/docs/Documentation.md`,
+- `Kalkulator/config/FirebaseREADME.md`,
+- `GeneratorNPC/config/FirebaseREADME.md`,
+- brakujący `DataVault/config/FirebaseREADME.md`.
+
+---
+
+### 15.5. Rekomendowany następny krok
+
+Następnym krokiem powinno być przygotowanie `Infoczytnik/docs/Documentation.md`.
+
+Uzasadnienie:
+
+- audyt wskazuje `Infoczytnik/docs/Documentation.md` jako dokument krytyczny,
+- `Infoczytnik/config/FirebaseREADME.md` został już dopasowany do aktualnego modelu Firestore,
+- naturalnym kolejnym krokiem jest opisanie pełnej technicznej dokumentacji modułu względem aktualnych plików produkcyjnych i testowych,
+- dokumentacja techniczna `Infoczytnik` powinna jasno rozdzielać `GM.html`, `Infoczytnik.html`, `GM_test.html`, `Infoczytnik_test.html` oraz zasady wynikające z lokalnego `Infoczytnik/AGENTS.md`.
+
+Po ukończeniu `Infoczytnik/docs/Documentation.md` należy przejść do kolejnych dokumentów Firebase:
+
+1. `Kalkulator/config/FirebaseREADME.md`,
+2. `GeneratorNPC/config/FirebaseREADME.md`,
+3. `DataVault/config/FirebaseREADME.md`.
+
+---
+
+### 15.6. Zaktualizowana lista wykonanych prac
+
+Wykonano:
+
+- utworzono `docs-standard.md`,
+- zaakceptowano standard dokumentacji,
+- sprawdzono zgodność `AGENTS.md` z obecnym celem projektu,
+- potwierdzono, że `AGENTS.md` nie blokuje prac nad dokumentacją,
+- zaktualizowano `Infoczytnik/config/FirebaseREADME.md`.
+
+Do wykonania w najbliższej kolejności:
+
+- przygotować `Infoczytnik/docs/Documentation.md`,
+- następnie poprawić pozostałe krytyczne dokumenty Firebase,
+- następnie przejść do README dużych modułów.
