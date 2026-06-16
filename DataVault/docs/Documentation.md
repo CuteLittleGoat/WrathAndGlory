@@ -350,9 +350,10 @@ Kolumny ustawiane 1:1 według selektorów `table[data-sheet=...]`:
 
 - **Notatki**
   - `LP`: kolumna ukryta (używana do sortowania domyślnego)
-  - `Co`: min-width 20ch, max-width auto, wyrównanie do lewej, standardowe łamanie
-  - `Podręcznik`: min-width auto, max-width bez limitu, wyrównanie do lewej, standardowe łamanie
-  - `Strona`: min-width 6ch, max-width auto, wyrównanie do lewej, standardowe łamanie
+  - `Nazwa`: min-width 26ch, max-width auto, wyrównanie do lewej, standardowe łamanie
+  - `Opis`: min-width 56ch, max-width auto, wyrównanie do lewej, standardowe łamanie
+  - `Podręcznik`: min-width 17ch, max-width bez limitu, wyrównanie do lewej, standardowe łamanie
+  - `Strona`: min-width 6ch, max-width auto, wyrównanie do środka, standardowe łamanie
 
 - **Kary do ST**
   - tabela ma `table-layout: fixed` i `width: max-content`, aby nie rozciągać kolumn na szerokość okna.
@@ -910,7 +911,7 @@ Po uproszczeniu `docs/README.md` (wersja użytkowa) przeniesiono i utrwalono tut
 1. **Szerokości i układ kolumn**
    - `Talenty/Typ` i `Modlitwy/Typ` mają te same parametry jak `Bronie/Typ` (w tym `min-width: 14ch`, wyrównanie do lewej).
    - W zakładce `Kary do ST` kolumny `Ile celów/akcji` i `Kara do ST` mają stały rozmiar (`20ch`), a tabela działa w układzie stałym (`table-layout: fixed`, `width: max-content`).
-   - Dla zakładki `Notatki` (admin) utrzymano opis technicznych reguł szerokości i wyrównań kolumn (`Co`, `Podręcznik`, `Strona`).
+   - Dla zakładki `Notatki` (admin) opisane są techniczne reguły szerokości i wyrównań kolumn (`Nazwa`, `Opis`, `Podręcznik`, `Strona`).
 
 2. **Stan UI i pamięć sesji**
    - Filtry oraz sortowanie są przechowywane per sesja przeglądarki (`sessionStorage`), aby przełączanie zakładek nie zerowało bieżącej pracy.

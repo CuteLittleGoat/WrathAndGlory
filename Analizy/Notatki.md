@@ -159,3 +159,68 @@ Sortowanie domyślne `Notatek` powinno pozostać oparte o ukrytą kolumnę `LP`.
 Zmiana jest bezpieczna i ma sens porządkujący. W logice danych nie widać potrzeby specjalnej migracji w JavaScript, bo kolumny są dynamiczne i pochodzą z nagłówków XLSX oraz `_meta.columnOrder`. Wymagana będzie natomiast aktualizacja arkusza źródłowego, ponowne wygenerowanie/import danych, zmiana selektorów CSS dla zakładki `Notatki` oraz aktualizacja dokumentacji szerokości kolumn.
 
 Rekomenduję przyjąć układ: `LP` → `Nazwa` → `Opis` → `Podręcznik` → `Strona`, z szerokościami `Nazwa: 26ch`, `Opis: 56ch`, `Podręcznik: 17ch`, `Strona: 6ch`.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/style.css`
+
+Lokalizacja: blok CSS `Notatki — szerokości aktualnych kolumn arkusza / Notes — widths for current sheet columns`
+
+Było:
+
+```css
+.tableWrap table[data-sheet="Notatki"] th[data-col="Co"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Co"]{
+  min-width:20ch;
+}
+```
+
+Jest:
+
+```css
+.tableWrap table[data-sheet="Notatki"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Nazwa"]{
+  min-width:26ch;
+}
+.tableWrap table[data-sheet="Notatki"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Opis"]{
+  min-width:56ch;
+}
+```
+
+### Plik: `Kolumny.md`
+
+Lokalizacja: sekcja `## Notatki`
+
+Było:
+
+```markdown
+| Co | 20ch | auto | lewo | standard |
+| Podręcznik | auto | brak | lewo | standard |
+| Strona | 6ch | auto | lewo | standard |
+```
+
+Jest:
+
+```markdown
+| Nazwa | 26ch | auto | lewo | standard |
+| Opis | 56ch | auto | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | auto | środek | standard |
+```
+
+### Plik: `DataVault/docs/Documentation.md`
+
+Lokalizacja: techniczny opis szerokości kolumn zakładki `Notatki`
+
+Było: dokumentacja techniczna opisywała kolumny `Co`, `Podręcznik`, `Strona` dla zakładki `Notatki`.
+
+Jest: dokumentacja techniczna opisuje aktualne kolumny `Nazwa`, `Opis`, `Podręcznik`, `Strona`, ukrytą kolumnę techniczną `LP` oraz wyrównanie `Strona` do środka.
+
+### Plik: `DetaleLayout.md`
+
+Lokalizacja: sekcja `3) Zasady formatowania tekstu i wyjątki`
+
+Było: globalny opis kolumn `Podręcznik` i `Strona` nie wyszczególniał aktualnego wyjątku dla zakładki `Notatki`.
+
+Jest: opis layoutu wskazuje aktualne szerokości zakładki `Notatki`: `Nazwa` 26ch, `Opis` 56ch, `Podręcznik` 17ch, `Strona` 6ch ze środkiem oraz dopuszczalnym zawijaniem długich wartości.

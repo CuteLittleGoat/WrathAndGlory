@@ -875,17 +875,24 @@ td.center{text-align:center}
   color:var(--code);
 }
 
-/* Notatki — override względem globalnych reguł Podręcznik/Strona */
-.tableWrap table[data-sheet="Notatki"] th[data-col="Co"],
-.tableWrap table[data-sheet="Notatki"] td[data-col="Co"]{
-  min-width:20ch;
+/* Notatki — szerokości aktualnych kolumn arkusza / Notes — widths for current sheet columns */
+.tableWrap table[data-sheet="Notatki"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Nazwa"]{
+  min-width:26ch;
+  max-width:auto;
+  text-align:left;
+  white-space:normal;
+}
+.tableWrap table[data-sheet="Notatki"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Notatki"] td[data-col="Opis"]{
+  min-width:56ch;
   max-width:auto;
   text-align:left;
   white-space:normal;
 }
 .tableWrap table[data-sheet="Notatki"] th[data-col="Podręcznik"],
 .tableWrap table[data-sheet="Notatki"] td[data-col="Podręcznik"]{
-  min-width:auto;
+  min-width:17ch;
   max-width:none;
   text-align:left;
   white-space:normal;
@@ -894,7 +901,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Notatki"] td[data-col="Strona"]{
   min-width:6ch;
   max-width:auto;
-  text-align:left;
+  text-align:center;
   white-space:normal;
 }
 .slash{color:var(--code)}
