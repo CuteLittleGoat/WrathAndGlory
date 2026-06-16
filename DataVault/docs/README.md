@@ -100,6 +100,16 @@ Tabela pokazuje rekordy z aktywnej zakładki. Możesz:
 - rozwijać długie komórki,
 - zaznaczać wiersze do porównania.
 
+### Kolumna `Koszt IM`
+
+W części zakładek, zwłaszcza przy przedmiotach, ekwipunku albo podobnych elementach użytkowych, może pojawić się kolumna `Koszt IM`.
+
+`IM` oznacza system TTRPG `Imperium Maledictum`. DataVault pozostaje pomocą do `Wrath & Glory`, ale wybrane rekordy mogą zawierać dodatkową informację z drugiego systemu tego samego wydawcy.
+
+Kolumna `Koszt IM` pokazuje koszt danego przedmiotu w systemie `Imperium Maledictum`. Jest to wartość pomocnicza i porównawcza. Nie zastępuje zasad `Wrath & Glory` i nie oznacza kosztu w `Wrath & Glory`, chyba że opis danego rekordu mówi inaczej.
+
+Jeżeli kolumna `Koszt IM` jest pusta, oznacza to po prostu, że dla danego wpisu nie uzupełniono kosztu z `Imperium Maledictum` albo dana rzecz nie ma takiego odpowiednika w danych.
+
 ## Wyszukiwanie globalne
 
 Pole wyszukiwania globalnego filtruje aktualną zakładkę.
@@ -407,6 +417,16 @@ The table shows records from the active tab. You can:
 - filter by value lists,
 - expand long cells,
 - select rows for comparison.
+
+### `Koszt IM` column
+
+Some tabs, especially those containing items, equipment, or similar usable records, may contain a `Koszt IM` column.
+
+`IM` means the `Imperium Maledictum` TTRPG system. DataVault remains a `Wrath & Glory` helper, but selected records may include additional information from another system by the same publisher.
+
+The `Koszt IM` column shows the cost of a given item in `Imperium Maledictum`. It is a helper and comparison value. It does not replace `Wrath & Glory` rules and does not mean a `Wrath & Glory` cost unless the specific record says otherwise.
+
+If the `Koszt IM` column is empty, it simply means that no `Imperium Maledictum` cost has been filled in for that record, or that the item has no such equivalent in the data.
 
 ## Global search
 
