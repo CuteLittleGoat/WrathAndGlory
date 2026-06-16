@@ -1,202 +1,635 @@
-# Audio — instrukcja użytkownika / User Guide
+# 🇵🇱 Instrukcja użytkownika — Audio (PL)
 
-## 🇵🇱 Instrukcja dla użytkownika (PL)
+## Do czego służy Audio
 
-### Do czego służy moduł
-Moduł **Audio** służy do szybkiego odtwarzania efektów dźwiękowych (SFX) podczas sesji. Możesz korzystać z gotowego widoku gracza albo z rozszerzonego widoku prowadzącego (admina), w którym ustawiasz listy i kolejność dźwięków.
+`Audio` to panel do szybkiego odtwarzania efektów dźwiękowych podczas sesji.
 
-### Jak otworzyć moduł
-Przełącznik języka jest obecnie ukryty w interfejsie użytkownika. Moduł ma przygotowaną obsługę tekstów PL/EN, ale użytkownik korzysta z aktualnie widocznej wersji interfejsu bez ręcznej zmiany języka.
+Moduł pozwala:
+
+- odtwarzać przygotowane dźwięki,
+- uruchamiać dźwięki w pętli,
+- regulować głośność pojedynczych kafelków,
+- korzystać z widoku głównego przygotowanego przez prowadzącego,
+- przełączać się między listami ulubionych,
+- w trybie admina tworzyć listy dźwięków,
+- dodawać aliasy do dźwięków,
+- filtrować dźwięki po tagach,
+- zapisać ustawienia lokalnie albo przez Firebase, jeżeli synchronizacja jest skonfigurowana.
+
+## Jak otworzyć moduł
+
+Widok użytkownika:
+
+```text
+Audio/index.html
+```
+
+Widok admina:
+
+```text
+Audio/index.html?admin=1
+```
+
+Widok użytkownika służy do prostego odtwarzania gotowych list.
+
+Widok admina służy do przygotowania widoku głównego, list ulubionych, aliasów i kolejności dźwięków.
+
+## Widok użytkownika
+
+W zwykłym widoku bez `?admin=1` zobaczysz:
+
+- panel z dźwiękami,
+- nawigację po prawej stronie,
+- przycisk `Widok główny`,
+- przyciski list ulubionych,
+- kafelki dźwięków,
+- suwaki głośności,
+- przyciski `Loop`.
+
+Widok użytkownika jest najlepszy do prowadzenia sesji na żywo, kiedy chcesz szybko odpalić przygotowane dźwięki.
+
+## Nawigacja użytkownika
+
+Po prawej stronie znajduje się panel nawigacji.
+
+Możesz przełączać się między:
+
+- `Widokiem głównym`,
+- listami ulubionych przygotowanymi w trybie admina.
+
+Kliknięcie pozycji w nawigacji zmienia zestaw kafelków widoczny po lewej stronie.
+
+## Kafelek dźwięku
+
+Kafelek dźwięku może zawierać:
+
+- nazwę dźwięku,
+- alias w nawiasie, jeżeli został ustawiony,
+- tag lub nazwę grupy,
+- suwak głośności,
+- przycisk `Loop` w widoku użytkownika.
+
+Kliknięcie nazwy dźwięku uruchamia odtwarzanie. Ponowne kliknięcie aktywnego dźwięku zatrzymuje go.
+
+## Odtwarzanie dźwięku
+
+Aby odtworzyć dźwięk:
 
 1. Otwórz `Audio/index.html`.
-2. Jeśli chcesz zwykły widok odtwarzania, pozostaw adres bez zmian.
-3. Jeśli chcesz pełny panel zarządzania, dopisz w adresie: `?admin=1`.
+2. Wybierz `Widok główny` albo listę ulubionych.
+3. Kliknij nazwę dźwięku.
+4. Kliknij ponownie, jeżeli chcesz go zatrzymać.
 
-### Co zobaczysz w widoku użytkownika (bez `?admin=1`)
-- Panel **dźwięków** (po lewej) z przyciskami odtwarzania.
-- Panel **Nawigacja** (po prawej) z wyborem widoku głównego i list ulubionych.
+Możesz odtwarzać kilka dźwięków jednocześnie.
 
-### Jak odtwarzać dźwięki (widok użytkownika)
-1. W panelu nawigacji kliknij **Widok główny** albo wybraną listę ulubionych.
-2. Kliknij nazwę dźwięku, aby uruchomić pojedyncze odtworzenie.
-3. Kliknij nazwę ponownie, aby zatrzymać aktualne odtworzenie.
-4. Kliknij **Loop**, aby od razu uruchomić dźwięk w pętli.
-5. Gdy **Loop** jest aktywny, przycisk jest czerwony. Po zakończeniu pliku moduł automatycznie uruchamia następne odtworzenie tego samego dźwięku.
-6. Jeżeli dźwięk ma kilka podpiętych plików, kolejne odtworzenia w pętli są wybierane losowo, a aplikacja unika natychmiastowego powtórzenia tego samego pliku, gdy ma inną możliwość.
-7. Kliknij czerwony **Loop** ponownie, aby wyłączyć pętlę i zatrzymać aktualny dźwięk.
-8. Możesz uruchomić kilka dźwięków równocześnie.
-9. Suwakiem na kafelku ustaw głośność konkretnego dźwięku; aktywna pętla używa bieżącej wartości suwaka także przy kolejnych odtworzeniach.
+## Głośność
 
-### Co oznaczają elementy na kafelku dźwięku
-- **Nazwa dźwięku** – główny przycisk odtwarzania.
-- **Tag pod nazwą** – informacja, z jakiej grupy/folderu pochodzi dźwięk.
-- **Alias w nawiasie** (jeśli ustawiony) – dodatkowa pomocnicza nazwa.
-- **Loop** – przełącznik pętli. Zwykły zielony stan oznacza, że pętla jest wyłączona, a czerwony stan oznacza aktywne zapętlenie.
-- **Suwak głośności** – indywidualna głośność tego dźwięku.
+Każdy kafelek ma własny suwak głośności.
 
-### Jak korzystać z panelu administratora (`?admin=1`)
-1. Kliknij **Wczytaj manifest**, aby załadować bazę dźwięków.
-2. Użyj filtrów tagów, aby zawęzić listę widocznych SFX.
-3. W polu wyszukiwarki wpisz fragment nazwy, aby szybciej znaleźć konkretny dźwięk.
-4. Kliknij **Nowa lista ulubionych**, aby utworzyć nową listę.
-5. Przy wybranym dźwięku wybierz listę docelową i kliknij **Dodaj do listy**.
-6. W sekcji list możesz:
-   - zmieniać kolejność list,
-   - zmieniać nazwy list,
-   - usuwać listy,
-   - zmieniać kolejność dźwięków w liście.
+Suwak wpływa tylko na dany kafelek.
 
-### Przyciski specjalne
-- **Wyczyść wszystkie aliasy** – usuwa wszystkie aliasy dźwięków jednocześnie (po potwierdzeniu).
-- **Odtwórz / Zatrzymaj** – szybki odsłuch pojedynczego dźwięku z panelu admina.
-- W panelu admina przycisk **Loop** nie jest wyświetlany. Pętla jest dostępna tylko w zwykłym widoku użytkownika otwartym bez `?admin=1`.
-- **Wyczyść** (przy polu aliasu) – usuwa alias tylko dla jednego dźwięku.
+Jeżeli dźwięk gra w pętli, kolejne powtórzenia używają aktualnej wartości suwaka.
 
-### Dobre praktyki podczas sesji
-- Przed sesją przygotuj 1 listę „główną” i 2–3 listy tematyczne.
-- Nadawaj aliasy dźwiękom trudnym do rozpoznania po samej nazwie.
-- Ustaw głośność każdego kluczowego dźwięku wcześniej, żeby nie poprawiać tego w trakcie sceny.
-- Długie tła ambientowe uruchamiaj przyciskiem **Loop** w zwykłym widoku użytkownika, a krótkie efekty jednorazowe kliknięciem nazwy albo przyciskiem **Odtwórz** w panelu admina.
+## Loop
+
+`Loop` uruchamia dźwięk w pętli.
+
+Zachowanie:
+
+- kliknięcie `Loop` uruchamia pętlę,
+- aktywny przycisk `Loop` jest wyróżniony,
+- po zakończeniu pliku moduł uruchamia kolejne odtworzenie,
+- ponowne kliknięcie aktywnego `Loop` zatrzymuje pętlę,
+- jeżeli dźwięk ma kilka wariantów, kolejne odtworzenia są losowane.
+
+Pętla jest dostępna w prawdziwym widoku użytkownika. W adminowym podglądzie użytkownika przycisk `Loop` nie jest pokazywany.
+
+## Warianty dźwięku
+
+Niektóre dźwięki mogą mieć kilka wariantów.
+
+Wtedy moduł pokazuje licznik wariantów przy nazwie dźwięku.
+
+Podczas odtwarzania wybierany jest jeden wariant. W trybie pętli moduł próbuje unikać natychmiastowego powtórzenia tego samego pliku, jeśli ma inną możliwość.
+
+## Widok admina
+
+Otwórz:
+
+```text
+Audio/index.html?admin=1
+```
+
+W widoku admina możesz:
+
+- wczytać manifest dźwięków,
+- filtrować listę SFX,
+- tworzyć listy ulubionych,
+- zmieniać nazwy list,
+- usuwać listy,
+- zmieniać kolejność list,
+- dodawać dźwięki do list,
+- dodawać dźwięki do widoku głównego,
+- zmieniać kolejność dźwięków w widoku głównym,
+- usuwać dźwięki z widoku głównego,
+- nadawać aliasy,
+- czyścić aliasy.
+
+## Wczytanie manifestu
+
+Przycisk `Wczytaj manifest` ładuje bazę dźwięków z pliku:
+
+```text
+AudioManifest.xlsx
+```
+
+Po poprawnym wczytaniu status manifestu pokazuje liczbę pozycji.
+
+Jeżeli manifestu nie uda się wczytać, panel pokaże komunikat błędu.
+
+## Lista SFX w adminie
+
+Po wczytaniu manifestu zobaczysz listę dźwięków.
+
+Każdy wpis może pokazywać:
+
+- nazwę dźwięku,
+- alias,
+- tag,
+- nazwę pliku,
+- przycisk odtwarzania,
+- pole aliasu,
+- przycisk czyszczenia aliasu,
+- wybór listy docelowej,
+- przycisk dodania do listy.
+
+## Wyszukiwanie SFX
+
+Pole wyszukiwania SFX filtruje listę po nazwie.
+
+Używaj go, gdy znasz fragment nazwy dźwięku albo aliasu.
+
+## Filtrowanie tagów
+
+Panel tagów pozwala zawęzić listę dźwięków po grupach wynikających z folderów.
+
+Możesz:
+
+- zaznaczać i odznaczać tagi,
+- zwinąć panel tagów,
+- otworzyć popup filtra,
+- wyszukiwać tagi w popupie,
+- zaznaczyć wszystkie tagi,
+- wyczyścić zaznaczenie tagów.
+
+Filtry tagów wpływają tylko na listę SFX w panelu admina. Nie zmieniają widoku użytkownika ani zapisanych list.
+
+## Widok główny
+
+`Widok główny` to podstawowa lista dźwięków widoczna dla użytkownika po wejściu do modułu.
+
+Aby dodać dźwięk do widoku głównego:
+
+1. Wczytaj manifest.
+2. Znajdź dźwięk na liście SFX.
+3. W polu wyboru listy wybierz `Widok główny`.
+4. Kliknij `Dodaj do listy`.
+
+W panelu widoku głównego możesz później:
+
+- zmienić kolejność dźwięków,
+- usunąć dźwięk,
+- odsłuchać dźwięk,
+- ustawić jego głośność.
+
+## Listy ulubionych
+
+Listy ulubionych pozwalają przygotować zestawy dźwięków na konkretne sceny, lokacje albo sytuacje.
+
+Przykłady:
+
+- walka,
+- horror,
+- miasto,
+- ruiny,
+- statek,
+- tło ambientowe.
+
+Aby utworzyć listę:
+
+1. Kliknij `Nowa lista ulubionych`.
+2. Wpisz nazwę listy.
+3. Dodaj dźwięki z listy SFX.
+
+Listy można przesuwać, zmieniać ich nazwy i usuwać.
+
+## Dodawanie dźwięku do listy
+
+1. Znajdź dźwięk na liście SFX.
+2. Wybierz listę docelową z menu przy kafelku.
+3. Kliknij `Dodaj do listy`.
+4. Sprawdź panel list ulubionych.
+
+Ten sam dźwięk może występować w różnych listach.
+
+## Alias dźwięku
+
+Alias to własna nazwa pomocnicza.
+
+Przydaje się, gdy oryginalna nazwa pliku albo sampla jest mało czytelna.
+
+Przykłady aliasów:
+
+- `alarm świątyni`,
+- `korytarz techniczny`,
+- `zombie blisko`,
+- `wybuch daleko`.
+
+Alias pojawia się przy nazwie dźwięku w nawiasie.
+
+## Czyszczenie aliasów
+
+Możesz wyczyścić:
+
+- pojedynczy alias przy danym dźwięku,
+- wszystkie aliasy jednocześnie.
+
+Przycisk `Wyczyść wszystkie aliasy` usuwa wszystkie aliasy w module Audio po potwierdzeniu.
+
+## Zapis ustawień
+
+Ustawienia obejmują:
+
+- listy ulubionych,
+- widok główny,
+- aliasy.
+
+Jeżeli Firebase jest skonfigurowany i działa, ustawienia są synchronizowane przez Firestore.
+
+Jeżeli Firebase nie jest skonfigurowany albo nie działa, ustawienia zapisują się lokalnie w przeglądarce.
+
+Zapis lokalny działa tylko na tym urządzeniu i w tej przeglądarce.
+
+## Statusy
+
+W adminie widoczne są statusy:
+
+| Status | Znaczenie |
+| --- | --- |
+| Manifest | Informuje, czy plik `AudioManifest.xlsx` został wczytany. |
+| Firebase | Informuje, czy moduł używa synchronizacji, czy ustawień lokalnych. |
+| Ulubione | Pokazuje liczbę list ulubionych. |
+
+## Dobre praktyki podczas sesji
+
+- Przed sesją przygotuj `Widok główny` z najczęściej używanymi dźwiękami.
+- Przygotuj kilka list tematycznych zamiast jednej bardzo długiej listy.
+- Nadawaj aliasy dźwiękom o mało czytelnych nazwach.
+- Przetestuj głośność najważniejszych dźwięków przed sesją.
+- Długie tła ambientowe uruchamiaj przez `Loop`.
+- Krótkie efekty odpalaj pojedynczym kliknięciem nazwy.
+- Nie zostawiaj zbyt wielu aktywnych pętli naraz, jeśli gracze mają rozumieć dialog.
+
+## Typowe komunikaty i co zrobić
+
+| Komunikat lub sytuacja | Co oznacza | Co zrobić |
+| --- | --- | --- |
+| Manifest: brak danych | Manifest nie został jeszcze wczytany albo nie zawiera pozycji. | Kliknij `Wczytaj manifest`. |
+| Manifest: błąd wczytywania | Nie udało się pobrać lub odczytać `AudioManifest.xlsx`. | Sprawdź obecność pliku i odśwież stronę. |
+| Firebase: lokalne ustawienia | Moduł działa bez synchronizacji Firestore. | To normalne w trybie lokalnym; ustawienia zostaną w tej przeglądarce. |
+| Firebase: brak konfiguracji | Brakuje konfiguracji Firebase. | Zgłoś adminowi technicznemu, jeżeli potrzebna jest synchronizacja. |
+| Brak linku do pliku audio | Manifest nie ma poprawnego linku do pliku. | Sprawdź dany wpis w manifeście. |
+| Brak wyników po filtrze | Filtry ukryły wszystkie dźwięki. | Wyczyść wyszukiwarkę albo zaznacz tagi ponownie. |
+| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera ID, którego nie ma w aktualnym manifeście. | Usuń wpis z listy albo odśwież manifest. |
+
+## Krótki workflow — przygotowanie sesji
+
+1. Otwórz `Audio/index.html?admin=1`.
+2. Kliknij `Wczytaj manifest`.
+3. Znajdź najważniejsze dźwięki przez wyszukiwarkę i tagi.
+4. Dodaj najczęstsze dźwięki do `Widoku głównego`.
+5. Utwórz listy tematyczne.
+6. Dodaj dźwięki do list.
+7. Nadaj aliasy trudnym nazwom.
+8. Sprawdź głośność.
+9. Otwórz `Audio/index.html` do prowadzenia sesji.
+10. Używaj `Loop` dla tła i kliknięć jednorazowych dla efektów.
 
 ---
 
-### Integracja Firebase — wymagana dla współdzielonych list
-Aby listy ulubionych i ustawienia były wspólne dla wielu urządzeń/użytkowników, moduł **Audio** wymaga integracji z Firebase (Firestore). Bez niej działa tylko lokalnie na jednym urządzeniu.
+# 🇬🇧 User guide — Audio (EN)
 
-#### Krok po kroku — konfiguracja bazy
-1. Wejdź na [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Kliknij **Utwórz projekt**.
-3. Wpisz nazwę projektu i kliknij **Dalej**.
-4. Wybierz ustawienia Analytics (opcjonalnie) i zakończ tworzenie.
-5. Kliknij ikonę **Web** (`</>`) i zarejestruj aplikację webową.
-6. Skopiuj obiekt `firebaseConfig`.
-7. Wklej dane do `Audio/config/firebase-config.js`.
-8. Otwórz **Firestore Database** w menu Firebase.
-9. Kliknij **Utwórz bazę danych**.
-10. Wybierz tryb startowy, kliknij **Dalej**, wybierz region i kliknij **Włącz**.
-11. W zakładce **Reguły** ustaw dostęp tak, aby uprawnieni użytkownicy mogli czytać i zapisywać ustawienia.
-12. Otwórz `Audio/index.html?admin=1` i sprawdź status Firebase.
-13. Utwórz testową listę ulubionych i odśwież stronę — lista powinna pozostać.
+## What Audio is for
 
----
+`Audio` is a panel for quickly playing sound effects during a session.
 
-## Kopia modułu dla nowej grupy
-- Przed pierwszym użyciem na nowym serwerze podmień `Audio/config/firebase-config.js` na dane Firebase tej grupy.
-- Po uruchomieniu `Audio/index.html?admin=1` sprawdź status „Firebase” — ma wskazywać połączenie z właściwym projektem.
-- Dzięki osobnym konfiguracjom grupy nie nadpisują sobie danych list i widoków.
+The module lets you:
 
----
+- play prepared sounds,
+- loop sounds,
+- adjust volume per tile,
+- use the main view prepared by the GM,
+- switch between favorite lists,
+- create sound lists in admin mode,
+- add aliases to sounds,
+- filter sounds by tags,
+- save settings locally or through Firebase when synchronization is configured.
 
-## Dodawanie nowej wersji językowej (PL)
+## How to open the module
 
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
+User view:
 
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+```text
+Audio/index.html
+```
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+Admin view:
 
-Przełącznik języka jest obecnie ukryty; miejsce jego ujawnienia jest oznaczone komentarzem w kodzie HTML przy elementach `.language-switcher--hidden`.
+```text
+Audio/index.html?admin=1
+```
 
-## 🇬🇧 User instructions (EN)
+User view is for simple playback of prepared lists.
 
-The language switcher is currently hidden; the place to reveal it is marked with an HTML code comment next to `.language-switcher--hidden` elements.
+Admin view is for preparing the main view, favorite lists, aliases, and sound order.
 
-### What this module is for
-The **Audio** module lets you quickly play sound effects (SFX) during sessions. You can use a simple player view or the extended admin view to manage lists and ordering.
+## User view
 
-### How to open the module
-The language switcher is currently hidden in the user interface. The module contains prepared PL/EN text support, but the user works with the currently visible interface without manually switching language.
+In normal view without `?admin=1`, you will see:
+
+- sound panel,
+- navigation on the right,
+- `Main view` button,
+- favorite list buttons,
+- sound tiles,
+- volume sliders,
+- `Loop` buttons.
+
+User view is best for live play when you want to trigger prepared sounds quickly.
+
+## User navigation
+
+The navigation panel is on the right.
+
+You can switch between:
+
+- `Main view`,
+- favorite lists prepared in admin mode.
+
+Clicking a navigation item changes the tile set visible on the left.
+
+## Sound tile
+
+A sound tile can contain:
+
+- sound name,
+- alias in parentheses when set,
+- tag or group name,
+- volume slider,
+- `Loop` button in user view.
+
+Clicking the sound name starts playback. Clicking the active sound again stops it.
+
+## Playing a sound
+
+To play a sound:
 
 1. Open `Audio/index.html`.
-2. For standard playback mode, keep the URL as is.
-3. For the full management panel, append: `?admin=1`.
+2. Choose `Main view` or a favorite list.
+3. Click the sound name.
+4. Click again if you want to stop it.
 
-### What you see in user view (without `?admin=1`)
-- **Sound grid** panel (left) with playable SFX tiles.
-- **Navigation** panel (right) to choose the main view or a favorites list.
-- The language switcher is intentionally hidden; the UI uses the currently visible language version.
+Several sounds can play at the same time.
 
-### How to play sounds (user view)
-1. In navigation, click **Main view** or a selected favorites list.
-2. Click a sound name to start one playback.
-3. Click the sound name again to stop the current playback.
-4. Click **Loop** to start the sound in loop mode immediately.
-5. When **Loop** is active, the button is red. After the file ends, the module automatically starts the next playback of the same sound.
-6. If the sound has several connected files, loop playback chooses later files randomly and avoids repeating the same file immediately when another option exists.
-7. Click the red **Loop** again to turn loop mode off and stop the current sound.
-8. Multiple sounds can play at the same time.
-9. Use the tile slider to adjust volume for that sound; an active loop uses the current slider value for later iterations too.
+## Volume
 
-### What each sound tile element means
-- **Sound name** – main play/stop button.
-- **Tag below name** – source group/folder hint.
-- **Alias in parentheses** (if set) – extra custom label.
-- **Loop** – loop switch. The normal green state means loop mode is off, and the red state means looping is active.
-- **Volume slider** – per-sound volume control.
+Each tile has its own volume slider.
 
-### How to use admin mode (`?admin=1`)
-1. Click **Wczytaj manifest** to load the SFX database.
-2. Use tag filters to narrow visible sounds.
-3. Use search to quickly find a sound by name fragment.
-4. Click **Nowa lista ulubionych** to create a favorites list.
-5. On a sound tile, choose destination list and click **Dodaj do listy**.
-6. In list management you can:
-   - reorder lists,
-   - rename lists,
-   - delete lists,
-   - reorder items inside a list.
+The slider affects only that tile.
 
-### Special buttons
-- **Wyczyść wszystkie aliasy** – removes all aliases at once (with confirmation).
-- **Odtwórz / Zatrzymaj** – quick preview from admin panel.
-- In admin mode, the **Loop** button is not displayed. Looping is available only in the normal user view opened without `?admin=1`.
-- **Wyczyść** (next to alias field) – clears alias for one sound.
+If a sound is looping, later loop iterations use the current slider value.
 
-### Session best practices
-- Prepare 1 main list and 2–3 scene-based lists before play.
+## Loop
+
+`Loop` starts a sound in loop mode.
+
+Behavior:
+
+- clicking `Loop` starts looping,
+- active `Loop` button is highlighted,
+- after the file ends, the module starts another playback,
+- clicking active `Loop` again stops the loop,
+- if the sound has several variants, later playbacks are randomized.
+
+Loop is available in the real user view. It is not shown in the admin user-preview panel.
+
+## Sound variants
+
+Some sounds can have several variants.
+
+The module then shows a variant counter next to the sound name.
+
+During playback, one variant is selected. In loop mode, the module tries to avoid immediately repeating the same file when another option exists.
+
+## Admin view
+
+Open:
+
+```text
+Audio/index.html?admin=1
+```
+
+In admin view you can:
+
+- load the sound manifest,
+- filter the SFX list,
+- create favorite lists,
+- rename lists,
+- remove lists,
+- reorder lists,
+- add sounds to lists,
+- add sounds to the main view,
+- reorder sounds in the main view,
+- remove sounds from the main view,
+- assign aliases,
+- clear aliases.
+
+## Loading the manifest
+
+`Load manifest` loads the sound database from:
+
+```text
+AudioManifest.xlsx
+```
+
+After successful loading, manifest status shows item count.
+
+If the manifest cannot be loaded, the panel shows an error message.
+
+## Admin SFX list
+
+After loading the manifest, you will see the sound list.
+
+Each entry can show:
+
+- sound name,
+- alias,
+- tag,
+- filename,
+- play button,
+- alias field,
+- clear alias button,
+- target list selector,
+- add-to-list button.
+
+## Searching SFX
+
+The SFX search field filters the list by name.
+
+Use it when you know part of the sound name or alias.
+
+## Tag filtering
+
+The tag panel narrows sounds by folder-derived groups.
+
+You can:
+
+- check and uncheck tags,
+- collapse the tag panel,
+- open the filter popup,
+- search tags in the popup,
+- select all tags,
+- clear tag selection.
+
+Tag filters affect only the admin SFX list. They do not change user view or saved lists.
+
+## Main view
+
+`Main view` is the basic sound list visible to the user after opening the module.
+
+To add a sound to the main view:
+
+1. Load manifest.
+2. Find the sound in the SFX list.
+3. In the target list selector, choose `Main view`.
+4. Click `Add to list`.
+
+In the main view panel you can later:
+
+- reorder sounds,
+- remove sound,
+- preview sound,
+- set its volume.
+
+## Favorite lists
+
+Favorite lists let you prepare sound sets for specific scenes, locations, or situations.
+
+Examples:
+
+- combat,
+- horror,
+- city,
+- ruins,
+- ship,
+- ambient background.
+
+To create a list:
+
+1. Click `New favorites list`.
+2. Enter list name.
+3. Add sounds from the SFX list.
+
+Lists can be reordered, renamed, and removed.
+
+## Adding sound to a list
+
+1. Find a sound in the SFX list.
+2. Choose target list from the menu on the tile.
+3. Click `Add to list`.
+4. Check the favorite list panel.
+
+The same sound can appear in multiple lists.
+
+## Sound alias
+
+Alias is your own helper name.
+
+It is useful when the original file or sample name is hard to read.
+
+Alias examples:
+
+- `temple alarm`,
+- `technical corridor`,
+- `zombie nearby`,
+- `distant explosion`.
+
+Alias appears next to the sound name in parentheses.
+
+## Clearing aliases
+
+You can clear:
+
+- one alias for one sound,
+- all aliases at once.
+
+`Clear all aliases` removes all aliases in the Audio module after confirmation.
+
+## Saving settings
+
+Settings include:
+
+- favorite lists,
+- main view,
+- aliases.
+
+If Firebase is configured and works, settings are synchronized through Firestore.
+
+If Firebase is not configured or does not work, settings are saved locally in the browser.
+
+Local save works only on that device and in that browser.
+
+## Statuses
+
+Admin view shows statuses:
+
+| Status | Meaning |
+| --- | --- |
+| Manifest | Whether `AudioManifest.xlsx` has loaded. |
+| Firebase | Whether the module uses synchronization or local settings. |
+| Favorites | Number of favorite lists. |
+
+## Session best practices
+
+- Before the session, prepare `Main view` with the most commonly used sounds.
+- Prepare several thematic lists instead of one very long list.
 - Use aliases for sounds with unclear names.
-- Pre-check key sound volumes before the session starts.
-- Use **Loop** for long ambient backgrounds in the normal user view, and use the sound name or admin **Odtwórz** button for short one-shot effects.
+- Test key sound volumes before play starts.
+- Use `Loop` for long ambient backgrounds.
+- Use one-click playback for short effects.
+- Do not leave too many loops running if players need to hear dialogue.
 
-### Firebase integration — required for shared lists
-To share favorites and settings across multiple devices/users, **Audio** requires Firebase (Firestore). Without it, settings work only locally on one device.
+## Common messages and what to do
 
-#### Step by step — database setup
-1. Open [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Click **Create a project**.
-3. Enter project name and click **Continue**.
-4. Choose Analytics settings (optional) and finish creation.
-5. Click the **Web** icon (`</>`) and register a web app.
-6. Copy the `firebaseConfig` object.
-7. Paste values into `Audio/config/firebase-config.js`.
-8. Open **Firestore Database** in Firebase menu.
-9. Click **Create database**.
-10. Choose initial mode, click **Next**, pick region, click **Enable**.
-11. In **Rules** set read/write access for authorized users.
-12. Open `Audio/index.html?admin=1` and verify Firebase status.
-13. Create a test favorites list and refresh page — it should persist.
-## Copying module for a new group
-- Before first use on a new server, replace `Audio/config/firebase-config.js` with that group’s Firebase credentials.
-- After opening `Audio/index.html?admin=1`, verify the “Firebase” status points to the intended project.
-- Separate configurations prevent groups from overwriting each other’s lists and views.
+| Message or situation | Meaning | What to do |
+| --- | --- | --- |
+| Manifest: no data | Manifest has not loaded yet or contains no entries. | Click `Load manifest`. |
+| Manifest: failed to load | `AudioManifest.xlsx` could not be fetched or read. | Check file presence and refresh the page. |
+| Firebase: local settings | Module works without Firestore synchronization. | This is normal in local mode; settings stay in this browser. |
+| Firebase: missing configuration | Firebase configuration is missing. | Contact technical admin if synchronization is needed. |
+| Missing audio file link | Manifest has no valid audio file link. | Check that manifest row. |
+| No results after filter | Filters hide all sounds. | Clear search or select tags again. |
+| Sound from list is marked missing | The list contains an ID that does not exist in current manifest. | Remove the entry or refresh manifest. |
 
-## Adding a new language version (EN)
+## Quick workflow — preparing a session
 
-This is the update map for adding another language (for example FR/DE):
-
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
-
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
-
-
-## Widoczność przełącznika języka / Language switch visibility
-- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie. Kod tłumaczeń pozostaje aktywny, a miejsce zmiany widoczności jest oznaczone komentarzem przy `.language-switcher--hidden`.
-- EN: The language selector is intentionally hidden in the UI. Translation code remains active, and the visibility change point is marked by a comment next to `.language-switcher--hidden`.
+1. Open `Audio/index.html?admin=1`.
+2. Click `Load manifest`.
+3. Find key sounds with search and tags.
+4. Add common sounds to `Main view`.
+5. Create thematic lists.
+6. Add sounds to lists.
+7. Assign aliases to unclear names.
+8. Check volume.
+9. Open `Audio/index.html` for live play.
+10. Use `Loop` for backgrounds and one-click playback for effects.
