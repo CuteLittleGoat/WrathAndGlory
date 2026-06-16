@@ -330,17 +330,6 @@ The start page contains:
 - module logo,
 - `XP Calculator` button,
 - `Character Creation` button,
-- secret button with hidden animation.
-
-Click the tool you want to use.
-
-## Secret button
-
-The start page contains an easter egg button.
-
-After clicking it, an overlay with animation opens.
-
-You can close it with:
 
 - `Close` button,
 - background click outside the dialog,
