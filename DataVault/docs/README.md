@@ -102,7 +102,7 @@ Tabela pokazuje rekordy z aktywnej zakładki. Możesz:
 
 ### Kolumna `Koszt IM`
 
-W części zakładek, zwłaszcza przy przedmiotach, ekwipunku albo podobnych elementach użytkowych, może pojawić się kolumna `Koszt IM`.
+W części zakładek, zwłaszcza przy przedmiotach, ekwipunku, pojazdach albo podobnych elementach użytkowych, może pojawić się kolumna `Koszt IM`.
 
 `IM` oznacza system TTRPG `Imperium Maledictum`. DataVault pozostaje pomocą do `Wrath & Glory`, ale wybrane rekordy mogą zawierać dodatkową informację z drugiego systemu tego samego wydawcy.
 
@@ -420,7 +420,7 @@ The table shows records from the active tab. You can:
 
 ### `Koszt IM` column
 
-Some tabs, especially those containing items, equipment, or similar usable records, may contain a `Koszt IM` column.
+Some tabs, especially those containing items, equipment, vehicles, or similar usable records, may contain a `Koszt IM` column.
 
 `IM` means the `Imperium Maledictum` TTRPG system. DataVault remains a `Wrath & Glory` helper, but selected records may include additional information from another system by the same publisher.
 

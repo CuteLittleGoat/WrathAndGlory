@@ -844,3 +844,11 @@ DataVault używa trzech palet zakładek:
 - zakładki pojazdów (`Role W Pojeździe`, `Akcje Pojazdu`, `Stany Pojazdów`, `Cechy Pojazdów`, `Pojazdy`, `Bronie Pojazdów`, `Ekwipunek Pojazdów`) mają stalowo-srebrny tekst, stalowo-srebrne aktywne obramowanie i stalowo-srebrny glow.
 
 Paleta pojazdów jest oparta o zmienne CSS: `--steel`, `--steel-bright`, `--steel-muted`, `--steel-border`, `--steel-glow`, `--steel-bg` oraz `--steel-bg-active`. Checkbox widoczności zakładek pojazdów używa stalowo-srebrnego tekstu i `accent-color` dopasowanego do tej palety.
+
+## DataVault — szerokości kolumn pojazdów
+
+W arkuszu `Pojazdy` kolumna `Koszt IM` jest zwykłą widoczną kolumną kosztową. Ma minimalną szerokość **8ch**, tekst wyśrodkowany i standardowe łamanie tekstu. Nie wymusza `white-space: nowrap` i nie ma osobnego `max-width`.
+
+## DataVault — vehicle column widths
+
+In the `Pojazdy` sheet, the `Koszt IM` column is a normal visible cost column. It has a **8ch** minimum width, centered text, and standard text wrapping. It does not force `white-space: nowrap` and has no separate `max-width`.

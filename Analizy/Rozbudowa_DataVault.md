@@ -908,6 +908,7 @@ Wartości poniżej są punktem startowym. Po wdrożeniu można je korygować na 
 | `Cechy`          |                            32ch | lewo       | standardowe |
 | `Uzbrojenie`     |                            36ch | lewo       | standardowe |
 | `Wyposażenie`    |                            32ch | lewo       | standardowe |
+| `Koszt IM`       |                             8ch | środek     | standardowe |
 | `Podręcznik`     | zgodnie ze standardem globalnym | lewo       | standardowe |
 | `Strona`         | zgodnie ze standardem globalnym | środek     | standardowe |
 
@@ -1368,3 +1369,45 @@ W sekcji testów kolumn i widoków należy dopisać:
 * `Koszt IM` w `Pojazdy` pojawia się w tabeli, porównaniu rekordów, `Widoku Domyślnym` i `Pełnym Widoku`;
 * dodanie `Koszt IM` do `Pojazdy` nie wpływa na scalanie `Cecha N` do `Cechy`;
 * dodanie `Koszt IM` do `Pojazdy` nie wpływa na GeneratorNPC.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/style.css`
+
+Lokalizacja: reguła konfiguracji kolumn arkuszy pojazdów dla kolumn kosztowych.
+
+Było:
+
+```css
+.tableWrap table[data-sheet="Bronie Pojazdów"] th[data-col="Koszt IM"], .tableWrap table[data-sheet="Bronie Pojazdów"] td[data-col="Koszt IM"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] th[data-col="Koszt IM"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] td[data-col="Koszt IM"]{min-width:8ch;text-align:center}
+```
+
+Jest:
+
+```css
+.tableWrap table[data-sheet="Pojazdy"] th[data-col="Koszt IM"], .tableWrap table[data-sheet="Pojazdy"] td[data-col="Koszt IM"], .tableWrap table[data-sheet="Bronie Pojazdów"] th[data-col="Koszt IM"], .tableWrap table[data-sheet="Bronie Pojazdów"] td[data-col="Koszt IM"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] th[data-col="Koszt IM"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] td[data-col="Koszt IM"]{min-width:8ch;text-align:center}
+```
+
+### Plik: `Kolumny.md`
+
+Lokalizacja: sekcja `Pojazdy`, po wpisie `Wyposażenie` i przed wpisem `Podręcznik`.
+
+Było: sekcja `Pojazdy` nie zawierała osobnego wpisu dla kolumny `Koszt IM`.
+
+Jest:
+
+```markdown
+- `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
+```
+
+### Plik: `Analizy/Rozbudowa_DataVault.md`
+
+Lokalizacja: sekcja `20.5. Pojazdy`, tabela konfiguracji kolumn.
+
+Było: tabela konfiguracji kolumn `Pojazdy` przechodziła z `Wyposażenie` bezpośrednio do `Podręcznik`.
+
+Jest:
+
+```markdown
+| `Koszt IM`       |                             8ch | środek     | standardowe |
+```
