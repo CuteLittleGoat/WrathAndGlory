@@ -1999,3 +1999,281 @@ Po zakończeniu `DataVault/docs/Documentation.md` zalecana kolejność to:
 4. `shared/FirebaseREADME.md`
 5. README dużych modułów
 6. dokumentacja prostszych modułów
+
+---
+
+## 17. Aktualizacja statusu prac po kolejnych poprawkach dokumentacji
+
+**Data aktualizacji:** 2026-06-16  
+**Zakres aktualizacji:** podsumowanie plików poprawionych po audycie oraz lista plików pozostałych do poprawy  
+**Status ogólny:** większość dużych modułów została uporządkowana; do poprawy pozostały głównie prostsze moduły oraz dokument szczegółowych zasad formatowania DataVault.
+
+Po wcześniejszych etapach prac kontynuowano porządkowanie dokumentacji zgodnie z przyjętym standardem `docs-standard.md`.
+
+W ramach prac:
+- zamknięto dokumenty Firebase wskazane jako krytyczne,
+- poprawiono dokumentacje techniczne dużych modułów,
+- przepisano instrukcje użytkownika dużych modułów,
+- rozpoczęto porządkowanie prostszych modułów od `Main/docs/README.md`.
+
+---
+
+### 17.1. Pliki poprawione
+
+#### Standard dokumentacji
+
+| Plik | Status | Commit |
+| --- | --- | --- |
+| `docs-standard.md` | utworzono i zaakceptowano jako wspólny standard dokumentacji | `c983190800cf62c518f4ecbf4ee4975beee9c70c` |
+
+---
+
+#### Dokumenty Firebase i konfiguracji
+
+| Plik | Status | Commit |
+| --- | --- | --- |
+| `Infoczytnik/config/FirebaseREADME.md` | poprawiono | `5e9add68a4280c960c3f3f6d8087025442564024` |
+| `Kalkulator/config/FirebaseREADME.md` | poprawiono | `0da3d1b161ae86d2c15e31932c8d5279b95886a2` |
+| `GeneratorNPC/config/FirebaseREADME.md` | poprawiono | `031a9144c262c2fc85c2d6a9eb2cb2752e49c6c2` |
+| `DataVault/config/FirebaseREADME.md` | utworzono brakujący dokument i uzupełniono | `c9702db493b9497921c7a2d4ea2fe17af0c336cc` |
+| `shared/FirebaseREADME.md` | poprawiono | `9afc401700f1da228c53df477ebb7da2f86cb2fa` |
+| `Audio/config/FirebaseREADME.md` | poprawiono | `405812b7194bcc303ea08294b84a872ab33de03d` |
+
+Wniosek: dokumenty Firebase wskazane w audycie jako krytyczne zostały poprawione. Dodatkowo poprawiono `Audio/config/FirebaseREADME.md`, który wymagał dopasowania do obecnego modelu `audio/favorites`, `mainView`, `aliases` oraz fallbacku `localStorage`.
+
+---
+
+#### Dokumentacje techniczne dużych modułów
+
+| Plik | Status | Commit |
+| --- | --- | --- |
+| `Infoczytnik/docs/Documentation.md` | poprawiono | `c1ec57dd81dbf096d7df410201f6ce8072460870` |
+| `DataVault/docs/Documentation.md` | poprawiono | `ef23d79e97897001b3e429f27e5b2a97daed8549` |
+| `GeneratorNPC/docs/Documentation.md` | poprawiono | `aad12a3dbfc60fda0089dba597c4ef893e27eedc` |
+| `Kalkulator/docs/Documentation.md` | poprawiono | `785ef708c35f114dcc53023b312735f8c3e31c8b` |
+| `Audio/docs/Documentation.md` | poprawiono | `2a5a016837a2cc07fe94a8ebdb3648ccbdb99613` |
+
+Wniosek: dokumentacje techniczne dużych modułów zostały przepisane zgodnie ze standardem. Każda z nich ma pełną część polską i pełną część angielską oraz opisuje aktualny stan modułu, a nie historię zmian.
+
+---
+
+#### Instrukcje użytkownika dużych modułów
+
+| Plik | Status | Commit |
+| --- | --- | --- |
+| `DataVault/docs/README.md` | poprawiono | `44993b3c2c6d66482186af19fb919273c3d6593c` |
+| `GeneratorNPC/docs/README.md` | poprawiono | `a78a234b8d9cf0af49786680045bb44ece138ec1` |
+| `Kalkulator/docs/README.md` | poprawiono | `773e35a20f8c67f95249b3041974cc4a9eb1b000` |
+| `Audio/docs/README.md` | poprawiono | `07ce3c68ac79cffdec1a1c45919d3f2548e390aa` |
+| `Infoczytnik/docs/README.md` | poprawiono | `dd67afa25d735b2f6f7ef90c00ef6c4d8832eb21` |
+
+Wniosek: instrukcje użytkownika dużych modułów zostały oddzielone od dokumentacji technicznej. Usunięto z nich instrukcje konfiguracyjne Firebase, mapy dodawania języków i notatki techniczne, a treść skupiono na praktycznym użyciu modułów.
+
+---
+
+#### Prostsze moduły — rozpoczęte porządkowanie
+
+| Plik | Status | Commit |
+| --- | --- | --- |
+| `Main/docs/README.md` | poprawiono | `198ca3e105d639e58075741cbebdd9aec2b81272` |
+
+Wniosek: rozpoczęto Etap 5, czyli porządkowanie prostszych modułów. Na ten moment poprawiono instrukcję użytkownika modułu `Main`.
+
+---
+
+### 17.2. Aktualny status etapów z planu napraw
+
+#### Etap 1 — standard dokumentacji
+
+Status: **wykonany**.
+
+Wykonano:
+- utworzono `docs-standard.md`,
+- zaakceptowano wspólny układ dokumentacji,
+- przyjęto rozdział na:
+  - `README.md` jako instrukcję użytkownika,
+  - `Documentation.md` jako dokumentację techniczną,
+  - `FirebaseREADME.md` jako instrukcję konfiguracji Firebase,
+- przyjęto wymóg pełnej wersji PL i pełnej wersji EN.
+
+---
+
+#### Etap 2 — dokumenty Firebase i błędy krytyczne
+
+Status: **wykonany**.
+
+Wykonano:
+- `Infoczytnik/config/FirebaseREADME.md`,
+- `Kalkulator/config/FirebaseREADME.md`,
+- `GeneratorNPC/config/FirebaseREADME.md`,
+- `DataVault/config/FirebaseREADME.md`,
+- dodatkowo `shared/FirebaseREADME.md`,
+- dodatkowo `Audio/config/FirebaseREADME.md`.
+
+Wniosek: nie ma już brakującego `DataVault/config/FirebaseREADME.md`. Dokumenty Firebase wymagające poprawy zostały uzupełnione.
+
+---
+
+#### Etap 3 — README dużych modułów
+
+Status: **wykonany**.
+
+Wykonano:
+- `DataVault/docs/README.md`,
+- `GeneratorNPC/docs/README.md`,
+- `Infoczytnik/docs/README.md`,
+- `Kalkulator/docs/README.md`,
+- `Audio/docs/README.md`.
+
+Wniosek: instrukcje użytkownika dużych modułów zostały przepisane jako praktyczne przewodniki użytkownika.
+
+---
+
+#### Etap 4 — Documentation dużych modułów
+
+Status: **wykonany**.
+
+Wykonano:
+- `DataVault/docs/Documentation.md`,
+- `GeneratorNPC/docs/Documentation.md`,
+- `Kalkulator/docs/Documentation.md`,
+- `Audio/docs/Documentation.md`,
+- `Infoczytnik/docs/Documentation.md`.
+
+Wniosek: dokumentacje techniczne dużych modułów zostały dopasowane do aktualnego kodu i standardu dokumentacji.
+
+---
+
+#### Etap 5 — prostsze moduły
+
+Status: **w toku**.
+
+Wykonano:
+- `Main/docs/README.md`.
+
+Pozostało:
+- `Main/docs/Documentation.md`,
+- `GeneratorNazw/docs/README.md`,
+- `GeneratorNazw/docs/Documentation.md`,
+- `DiceRoller/docs/README.md`,
+- `DiceRoller/docs/Documentation.md`.
+
+Wniosek: należy kontynuować od dokumentacji technicznej `Main`, a następnie przejść do `GeneratorNazw` i `DiceRoller`.
+
+---
+
+#### Etap 6 — root README
+
+Status: **nierozpoczęty / opcjonalny, rekomendowany**.
+
+W repozytorium nadal nie ma głównego root `README.md`.
+
+Nie było to błędem krytycznym audytu, ponieważ pierwotne założenie brzmiało „jeżeli istnieje”, ale nadal rekomendowane jest utworzenie root `README.md` jako mapy repozytorium.
+
+---
+
+### 17.3. Pliki pozostałe do poprawy
+
+#### Priorytet 1 — zakończenie prostszych modułów
+
+| Plik | Rodzaj dokumentu | Co należy zrobić |
+| --- | --- | --- |
+| `Main/docs/Documentation.md` | dokumentacja techniczna | Opisać aktualne działanie launchera, tryb `?admin=1`, dynamiczne linki `Mapa`/`Obrazki`, usuwanie elementów admin-only, czyszczenie Service Workerów i procedurę odtworzenia modułu. |
+| `GeneratorNazw/docs/README.md` | instrukcja użytkownika | Przepisać jako prosty przewodnik użytkownika: wybór kategorii, opcji, liczby wyników, seed, generowanie, kopiowanie i typowe problemy. |
+| `GeneratorNazw/docs/Documentation.md` | dokumentacja techniczna | Opisać dane, kategorie, opcje, RNG, seed, limity, renderowanie wyników, kopiowanie i procedurę odtworzenia. |
+| `DiceRoller/docs/README.md` | instrukcja użytkownika | Przepisać jako przewodnik użytkownika: pula kości, ST, kość Gniewu, wynik, sukcesy, komplikacje, krytyczna kość Gniewu, reset/zmiana języka. |
+| `DiceRoller/docs/Documentation.md` | dokumentacja techniczna | Opisać logikę rzutów, walidację pól, animacje, klasy wyników, liczenie sukcesów, komplikacji, krytyków, przesunięć i i18n. |
+
+---
+
+#### Priorytet 2 — dokument specjalny DataVault
+
+| Plik | Rodzaj dokumentu | Co należy zrobić |
+| --- | --- | --- |
+| `DataVault/docs/ZasadyFormatowania.md` | dokument zasad formatowania danych | Zweryfikować zgodność z aktualnym parserem i renderowaniem DataVault. Uzupełnić pełny układ PL/EN albo jasno oznaczyć dokument jako techniczny standard formatowania danych. Opisać markery formatowania, czerwony tekst, pogrubienie, kursywę, przekreślenie, odnośniki do stron, przypisy i zasady zapisu danych źródłowych. |
+
+---
+
+#### Priorytet 3 — root README
+
+| Plik | Rodzaj dokumentu | Co należy zrobić |
+| --- | --- | --- |
+| `README.md` w katalogu głównym repozytorium | indeks repozytorium | Utworzyć opcjonalny, ale rekomendowany indeks repozytorium: lista modułów, krótkie opisy, linki do README, Documentation i FirebaseREADME, informacja o `docs-standard.md` i zasadach `AGENTS.md`. |
+
+---
+
+### 17.4. Aktualna lista plików uznanych za poprawione
+
+Na tym etapie za poprawione można uznać:
+
+1. `docs-standard.md`
+2. `Infoczytnik/config/FirebaseREADME.md`
+3. `Infoczytnik/docs/Documentation.md`
+4. `Kalkulator/config/FirebaseREADME.md`
+5. `GeneratorNPC/config/FirebaseREADME.md`
+6. `DataVault/config/FirebaseREADME.md`
+7. `DataVault/docs/Documentation.md`
+8. `GeneratorNPC/docs/Documentation.md`
+9. `Kalkulator/docs/Documentation.md`
+10. `Audio/docs/Documentation.md`
+11. `shared/FirebaseREADME.md`
+12. `DataVault/docs/README.md`
+13. `GeneratorNPC/docs/README.md`
+14. `Kalkulator/docs/README.md`
+15. `Audio/docs/README.md`
+16. `Infoczytnik/docs/README.md`
+17. `Audio/config/FirebaseREADME.md`
+18. `Main/docs/README.md`
+
+Z tej listy `docs-standard.md` nie był plikiem audytowanym jako dokument modułu, ale został utworzony jako standard pracy i powinien pozostać częścią podsumowania.
+
+---
+
+### 17.5. Aktualna lista plików pozostałych do poprawy
+
+Pozostały:
+
+1. `Main/docs/Documentation.md`
+2. `GeneratorNazw/docs/README.md`
+3. `GeneratorNazw/docs/Documentation.md`
+4. `DiceRoller/docs/README.md`
+5. `DiceRoller/docs/Documentation.md`
+6. `DataVault/docs/ZasadyFormatowania.md`
+
+Dodatkowo rekomendowane, ale nie krytyczne:
+
+7. root `README.md`
+
+---
+
+### 17.6. Zaktualizowana rekomendowana kolejność dalszych prac
+
+1. `Main/docs/Documentation.md`
+2. `GeneratorNazw/docs/README.md`
+3. `GeneratorNazw/docs/Documentation.md`
+4. `DiceRoller/docs/README.md`
+5. `DiceRoller/docs/Documentation.md`
+6. `DataVault/docs/ZasadyFormatowania.md`
+7. root `README.md`, jeżeli użytkownik zdecyduje o jego utworzeniu.
+
+Uzasadnienie kolejności:
+
+- `Main/docs/README.md` został już poprawiony, więc naturalnym kolejnym krokiem jest domknięcie `Main/docs/Documentation.md`.
+- `GeneratorNazw` i `DiceRoller` są prostszymi modułami, więc powinny zostać uporządkowane po dużych modułach.
+- `DataVault/docs/ZasadyFormatowania.md` jest dokumentem specjalistycznym i warto poprawić go po zamknięciu podstawowych par `README.md` / `Documentation.md`.
+- Root `README.md` warto utworzyć na końcu, gdy lista modułów i dokumentów będzie już uporządkowana.
+
+---
+
+### 17.7. Podsumowanie statusu
+
+Na podstawie listy plików z audytu:
+
+- poprawiono większość dokumentów dużych modułów,
+- zamknięto krytyczne dokumenty Firebase,
+- utworzono brakujący `DataVault/config/FirebaseREADME.md`,
+- rozpoczęto etap prostszych modułów,
+- do poprawy pozostało 6 plików z pierwotnego zakresu audytu,
+- dodatkowo rekomendowane pozostaje utworzenie root `README.md`.
+
+Wniosek: prace dokumentacyjne są zaawansowane. Najważniejsze ryzyka wskazane w audycie, czyli brak pełnej dwujęzyczności, brak dokumentów Firebase i mieszanie README z dokumentacją techniczną, zostały w dużych modułach znacząco ograniczone.
