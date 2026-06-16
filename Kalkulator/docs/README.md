@@ -1,182 +1,609 @@
-# Kalkulator Wrath & Glory — instrukcja użytkownika / User Guide
+# 🇵🇱 Instrukcja użytkownika — Kalkulator (PL)
 
-## 🇵🇱 Instrukcja dla użytkownika (PL)
+## Do czego służy Kalkulator
 
-### Co znajdziesz w module
-Moduł **Kalkulator** ma dwie główne części:
-1. **Kalkulator PD** – szybkie liczenie kosztu rozwoju.
-2. **Tworzenie Postaci** – pełny panel budowy postaci.
+`Kalkulator` to zestaw narzędzi do liczenia kosztów rozwoju i tworzenia postaci w `Wrath & Glory`.
 
-Na stronie startowej znajduje się też **Tajny przycisk!** (easter egg).
+Moduł zawiera trzy widoki:
 
-### Jak rozpocząć
-1. Otwórz `Kalkulator/index.html`.
-2. Wybierz, czy chcesz wejść do:
-   - **Kalkulator PD**,
-   - **Tworzenie Postaci**.
+- stronę startową `Kozie Liczydła`,
+- `Kalkulator PD`,
+- `Tworzenie Postaci`.
 
-### 1) Kalkulator PD — krok po kroku
-1. Ustaw język w prawym górnym rogu.
-2. Wpisz wartości bieżące i docelowe dla atrybutów i umiejętności.
-3. Obserwuj koszty w wierszach i sumę całkowitą (liczy się automatycznie).
-4. Jeśli chcesz zacząć od nowa, kliknij **Resetuj wartości**.
-5. Aby wrócić do menu głównego modułów, kliknij **Strona Główna**.
+Strona startowa pozwala wybrać narzędzie. `Kalkulator PD` służy do szybkiego liczenia kosztu podniesienia atrybutów i umiejętności. `Tworzenie Postaci` służy do planowania całej postaci z pulą PD, talentami, walidacją i opcjonalnym zapisem.
 
-### 2) Tworzenie Postaci — krok po kroku
-1. Ustaw pulę punktów (domyślnie 155).
-2. Uzupełnij atrybuty.
-3. Uzupełnij umiejętności i koszty dodatkowe (np. talenty/archetyp/moce).
-   - Sekcja talentów ma 20 pozycji (2 kolumny po 10 wpisów: nazwa + koszt).
-4. Obserwuj komunikaty ostrzegawcze:
-   - przekroczenie puli punktów,
-   - zasada „Tree of Learning”.
-5. Przycisk **Instrukcja / Manual** otwiera plik PDF pomocy.
-6. Przycisk **Maksymalne wartości atrybutów** pokazuje limity ras. W tej tabeli Vespidzi mają wartość **Szybkość 14\***; przypis pod tabelą wyjaśnia, że przy obliczaniu PD dla Vespidów należy ręcznie zignorować pole Szybkość.
-7. **Reset** przywraca wartości początkowe.
+## Jak otworzyć moduł
 
-### 3) Tajny przycisk
-1. Na stronie startowej kliknij **Tajny przycisk!**.
-2. Otworzy się okno z animacją.
-3. Zamkniesz je przez:
-   - przycisk **Zamknij**,
-   - kliknięcie tła,
-   - klawisz `Escape`.
+Strona startowa:
 
-### Ważne informacje
-- W języku polskim moduł używa skrótu **PD**.
-- W języku angielskim używa skrótu **XP**.
-- Tabele limitów ras są podpowiedzią i nie wpisują wartości automatycznie.
-- Przypis **Szybkość 14\*** dla Vespidów występuje tylko w części **Tworzenie Postaci**. Osobny **Kalkulator PD** pokazuje wartość 14 bez gwiazdki i bez przypisu.
+```text
+Kalkulator/index.html
+```
+
+Bezpośrednio Kalkulator PD:
+
+```text
+Kalkulator/KalkulatorXP.html
+```
+
+Bezpośrednio Tworzenie Postaci:
+
+```text
+Kalkulator/TworzeniePostaci.html
+```
+
+## Strona startowa
+
+Na stronie startowej znajdziesz:
+
+- logo modułu,
+- przycisk `Kalkulator PD`,
+- przycisk `Tworzenie Postaci`,
+- tajny przycisk z ukrytą animacją.
+
+Kliknij nazwę narzędzia, którego chcesz użyć.
+
+## Tajny przycisk
+
+Na stronie startowej znajduje się przycisk typu easter egg.
+
+Po kliknięciu otwiera się nakładka z animacją.
+
+Możesz ją zamknąć:
+
+- przyciskiem `Zamknij`,
+- kliknięciem tła poza oknem,
+- klawiszem `Escape`.
+
+## Kalkulator PD — do czego służy
+
+`Kalkulator PD` służy do szybkiego sprawdzenia, ile kosztuje podniesienie atrybutu albo umiejętności z wartości aktualnej do docelowej.
+
+Przykład użycia:
+
+- aktualna wartość atrybutu: `3`,
+- docelowa wartość atrybutu: `5`,
+- kalkulator pokazuje koszt różnicy.
+
+To narzędzie jest pomocnicze. Nie zapisuje pełnej postaci.
+
+## Kalkulator PD — krok po kroku
+
+1. Otwórz `Kalkulator/KalkulatorXP.html`.
+2. Wybierz język, jeżeli potrzebujesz wersji EN zamiast PL.
+3. W tabeli atrybutów wpisz wartości aktualne i docelowe.
+4. W tabeli umiejętności wpisz wartości aktualne i docelowe.
+5. Sprawdź koszt w poszczególnych wierszach.
+6. Sprawdź całkowity koszt PD na górze widoku.
+7. Kliknij `Resetuj wartości`, jeśli chcesz zacząć od nowa.
+8. Kliknij `Strona Główna`, aby wrócić do głównego menu aplikacji.
+
+## Zakresy wartości w Kalkulatorze PD
+
+Kalkulator ogranicza wartości do bezpiecznych zakresów:
+
+| Typ | Zakres |
+| --- | --- |
+| Atrybuty | `0..12` |
+| Umiejętności | `0..8` |
+
+Jeżeli wpiszesz wartość spoza zakresu, zostanie ograniczona do dozwolonej wartości.
+
+Jeżeli wartość docelowa jest taka sama albo niższa od aktualnej, koszt wynosi `0`.
+
+## Tabela maksymalnych wartości atrybutów
+
+W `Kalkulatorze PD` znajduje się tabela maksymalnych wartości atrybutów dla gatunków.
+
+Tabela ma charakter referencyjny. Nie uzupełnia pól automatycznie.
+
+## Tworzenie Postaci — do czego służy
+
+`Tworzenie Postaci` to większy arkusz do planowania wydatków PD dla jednej postaci.
+
+Pozwala ustawić:
+
+- pulę PD,
+- atrybuty,
+- umiejętności,
+- talenty i inne koszty,
+- język interfejsu,
+- zapis i wczytanie aktualnego stanu postaci.
+
+## Tworzenie Postaci — krok po kroku
+
+1. Otwórz `Kalkulator/TworzeniePostaci.html`.
+2. Ustaw pulę PD w polu `Pula PD`. Domyślnie jest to `155`.
+3. Ustaw wartości atrybutów.
+4. Ustaw wartości umiejętności.
+5. Wpisz talenty albo inne wydatki w sekcji talentów.
+6. Obserwuj pole pozostałych PD.
+7. Sprawdź, czy nie pojawia się komunikat błędu.
+8. Otwórz instrukcję PDF, jeżeli potrzebujesz pomocy.
+9. Otwórz tabelę maksymalnych wartości atrybutów, jeżeli chcesz sprawdzić limity gatunku.
+10. Zapisz postać, jeżeli chcesz wrócić do niej później.
+
+## Pula PD
+
+Pole `Pula PD` określa, ile punktów masz do wydania.
+
+Domyślna wartość to:
+
+```text
+155
+```
+
+Jeżeli wydasz więcej punktów, niż masz w puli, moduł pokaże błąd przekroczenia PD.
+
+## Atrybuty
+
+W arkuszu tworzenia postaci dostępne są atrybuty:
+
+- `S`,
+- `Wt`,
+- `Zr`,
+- `I`,
+- `SW`,
+- `Int`,
+- `Ogd`,
+- `Szybkość`.
+
+Większość atrybutów domyślnie zaczyna od `1`.
+
+`Szybkość` domyślnie zaczyna od `6`.
+
+Dopuszczalny zakres atrybutów to `1..12`.
+
+## Umiejętności
+
+Umiejętności mają zakres:
+
+```text
+0..8
+```
+
+Wartość `0` oznacza brak wykupionego poziomu.
+
+Moduł automatycznie dolicza koszt każdej umiejętności do całkowitego wydatku PD.
+
+## Talenty i inne wydatki
+
+Sekcja talentów ma 20 pól.
+
+Każdy wpis ma:
+
+- nazwę,
+- koszt.
+
+Możesz używać tej sekcji nie tylko do talentów, ale też do innych kosztów, które chcesz ręcznie doliczyć do postaci.
+
+Koszt wpisany w polu kosztu jest dodawany bezpośrednio do wydanych PD.
+
+## Pozostałe PD i komunikaty błędów
+
+Arkusz automatycznie oblicza:
+
+- wydane PD,
+- pozostałe PD,
+- błędy walidacji.
+
+Najważniejsze komunikaty:
+
+| Komunikat | Znaczenie |
+| --- | --- |
+| Przekroczenie puli PD | Wydano więcej punktów, niż jest dostępne w puli. |
+| Drzewo Nauki / Tree of Learning | Układ poziomów umiejętności narusza zasadę wymaganą przez arkusz. |
+
+Błąd Drzewa Nauki jest pokazywany tylko wtedy, gdy pula PD nie jest przekroczona.
+
+## Drzewo Nauki
+
+Arkusz sprawdza uproszczoną zasadę Drzewa Nauki.
+
+W praktyce oznacza to, że bardzo wysoki poziom pojedynczej umiejętności wymaga odpowiedniej liczby aktywnych umiejętności.
+
+Jeżeli zobaczysz błąd Drzewa Nauki, obniż poziom najwyższej umiejętności albo dodaj poziomy w innych umiejętnościach.
+
+## Tabela maksymalnych wartości atrybutów
+
+W `Tworzenie Postaci` przycisk `Maksymalne wartości atrybutów` otwiera modal z limitami gatunków.
+
+Tabela jest podpowiedzią. Nie zmienia automatycznie pól formularza.
+
+Przy Vespidach wartość `Szybkość 14*` ma przypis. Oznacza, że Vespidzi mają stałą Szybkość 14, a pole Szybkość należy ręcznie pominąć przy liczeniu PD.
+
+## Instrukcja PDF
+
+Przycisk `Instrukcja` albo `Manual` otwiera plik pomocy dla aktualnego języka.
+
+Dla języka polskiego otwierany jest:
+
+```text
+HowToUse/pl.pdf
+```
+
+Dla języka angielskiego otwierany jest:
+
+```text
+HowToUse/en.pdf
+```
+
+## Zmiana języka
+
+`Kalkulator PD` pozwala zmienić język bez resetowania wpisanych wartości.
+
+`Tworzenie Postaci` prosi o potwierdzenie zmiany języka. Po potwierdzeniu dane robocze zostają zresetowane.
+
+Przed zmianą języka w arkuszu tworzenia postaci upewnij się, że nie stracisz potrzebnych danych.
+
+## Reset
+
+W `Kalkulatorze PD` reset ustawia pola na `0`.
+
+W `Tworzeniu Postaci` reset przywraca wartości startowe:
+
+- pula PD: `155`,
+- atrybuty: wartości domyślne,
+- umiejętności: `0`,
+- talenty i koszty: puste lub `0`.
+
+## Zapis i wczytanie postaci
+
+W `Tworzeniu Postaci` dostępne są przyciski zapisu i wczytania.
+
+Zapis zachowuje aktualny stan formularza.
+
+Wczytanie przywraca zapisany stan.
+
+Ta funkcja wymaga poprawnej konfiguracji Firebase. Jeżeli konfiguracja nie działa, moduł pokaże komunikat błędu w modalu.
+
+## Co jest zapisywane
+
+Zapis obejmuje między innymi:
+
+- język,
+- pulę PD,
+- wydane PD,
+- pozostałe PD,
+- atrybuty,
+- umiejętności,
+- talenty,
+- stan pól formularza,
+- widoczne komunikaty walidacji.
+
+## Typowe komunikaty i co zrobić
+
+| Komunikat lub sytuacja | Co oznacza | Co zrobić |
+| --- | --- | --- |
+| Pozostałe PD jest ujemne | Wydano za dużo PD. | Zmniejsz wartości albo zwiększ pulę PD. |
+| Błąd Drzewa Nauki | Układ umiejętności narusza regułę arkusza. | Dodaj inne aktywne umiejętności albo obniż najwyższy poziom. |
+| Pole wraca do wartości domyślnej | Wpis był pusty albo nieprawidłowy. | Wpisz liczbę z dozwolonego zakresu. |
+| Nie działa zapis | Firebase nie jest skonfigurowany albo jest niedostępny. | Zgłoś adminowi technicznemu. |
+| Nie działa wczytanie | Brak zapisanego dokumentu albo Firebase jest niedostępny. | Najpierw zapisz postać albo zgłoś adminowi. |
+| Zmiana języka resetuje arkusz | To celowe zachowanie `Tworzenia Postaci`. | Zmień język tylko po zapisaniu lub spisaniu danych. |
+| PDF instrukcji się nie otwiera | Brakuje pliku albo przeglądarka blokuje otwarcie. | Sprawdź popupy i obecność plików `HowToUse`. |
+
+## Krótki workflow — Kalkulator PD
+
+1. Otwórz `Kalkulator/KalkulatorXP.html`.
+2. Wpisz aktualne i docelowe wartości.
+3. Sprawdź koszt wiersza i sumę całkowitą.
+4. Zmień wartości, aż uzyskasz potrzebny koszt.
+5. Kliknij reset, jeżeli chcesz zacząć od nowa.
+
+## Krótki workflow — Tworzenie Postaci
+
+1. Otwórz `Kalkulator/TworzeniePostaci.html`.
+2. Ustaw pulę PD.
+3. Ustaw atrybuty.
+4. Ustaw umiejętności.
+5. Dopisz talenty i inne koszty.
+6. Sprawdź pozostałe PD i komunikaty błędów.
+7. Sprawdź limity gatunku w modalu, jeżeli potrzeba.
+8. Zapisz postać, jeżeli chcesz wrócić do niej później.
 
 ---
 
-### Integracja Firebase — wymagana dla pełnego zapisu postaci
-Aby funkcja zapisu/odczytu postaci w części **Tworzenie Postaci** działała poprawnie między urządzeniami, musisz mieć aktywny projekt Firebase i bazę Firestore.
+# 🇬🇧 User guide — Kalkulator (EN)
 
-#### Krok po kroku (Firebase Console)
-1. Wejdź na stronę [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Kliknij **Utwórz projekt**.
-3. Wpisz nazwę projektu i kliknij **Dalej**.
-4. (Opcjonalnie) wyłącz Google Analytics, jeśli nie jest potrzebne, i kliknij **Utwórz projekt**.
-5. Po utworzeniu projektu kliknij ikonę **Web** (`</>`) aby dodać aplikację webową.
-6. Podaj nazwę aplikacji i kliknij **Zarejestruj aplikację**.
-7. Skopiuj dane konfiguracyjne `firebaseConfig`.
-8. Otwórz plik `Kalkulator/config/firebase-config.js` i wklej tam skopiowane wartości.
-9. W lewym menu Firebase kliknij **Firestore Database**.
-10. Kliknij **Utwórz bazę danych**.
-11. Wybierz tryb startowy (na start testowy, potem reguły produkcyjne) i kliknij **Dalej**.
-12. Wybierz region najbliższy użytkownikom i kliknij **Włącz**.
-13. W zakładce **Reguły** ustaw reguły dostępu odpowiednie do Twojej grupy.
-14. Zapisz reguły i odśwież `Kalkulator/TworzeniePostaci.html`.
-15. Wykonaj próbny zapis postaci i sprawdź, czy dane wracają po ponownym wczytaniu.
+## What Kalkulator is for
 
-### Ważne przy kopiowaniu modułu
-W Kalkulatorze występuje przycisk **Strona Główna / Main Page**. Po skopiowaniu aplikacji do innej lokalizacji **musisz edytować hiperłącze**, aby wskazywało poprawny adres modułu Main.
+`Kalkulator` is a set of tools for calculating advancement costs and creating characters in `Wrath & Glory`.
 
----
+The module contains three views:
 
-## Kopia modułu dla nowej grupy
-- Ustaw osobny `Kalkulator/config/firebase-config.js` dla serwera grupy.
-- Sprawdź przycisk **Strona Główna / Main Page** w `TworzeniePostaci`, aby wracał do właściwego `Main` na tym serwerze.
-- Wykonaj test: zapisz postać i odczytaj ją ponownie.
+- `Kozie Liczydła` start page,
+- `XP Calculator`,
+- `Character Creation`.
 
----
+The start page lets you choose a tool. `XP Calculator` quickly calculates the cost of raising attributes and skills. `Character Creation` is used to plan a whole character with XP pool, talents, validation, and optional save.
 
-## Dodawanie nowej wersji językowej (PL)
+## How to open the module
 
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
+Start page:
 
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+```text
+Kalkulator/index.html
+```
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+Directly open XP Calculator:
 
-## 🇬🇧 User instructions (EN)
+```text
+Kalkulator/KalkulatorXP.html
+```
 
-### What this module includes
-The **Calculator** module has two main parts:
-1. **XP Calculator** – quick progression cost counting.
-2. **Character Creation** – full character building panel.
+Directly open Character Creation:
 
-The landing page also includes a **Secret button!** (easter egg).
+```text
+Kalkulator/TworzeniePostaci.html
+```
 
-### Getting started
-1. Open `Kalkulator/index.html`.
-2. Choose one section:
-   - **XP Calculator**,
-   - **Character Creation**.
+## Start page
 
-### 1) XP Calculator — step by step
-1. Set language in top-right corner.
-2. Enter current and target values for attributes and skills.
-3. Read row costs and total (updated automatically).
-4. Click **Reset values** to clear editable fields.
-5. Click **Main Page** to return to module launcher.
+The start page contains:
 
-### 2) Character Creation — step by step
-1. Set point pool (default 155).
-2. Fill attribute values.
-3. Fill skills and extra costs (talents/archetype/powers).
-   - The talents section has 20 entries (2 columns × 10 rows: name + cost).
-4. Watch warning messages:
-   - pool exceeded,
-   - Tree of Learning rule.
-5. **Instruction / Manual** opens help PDF.
-6. **Maximum attribute values** opens species limits. In this table, Vespids have **Speed 14\***; the footnote below the table explains that the Speed field should be manually ignored for Vespid XP calculations.
-7. **Reset** returns defaults.
+- module logo,
+- `XP Calculator` button,
+- `Character Creation` button,
+- secret button with hidden animation.
 
-### 3) Secret button
-1. Click **Secret button!** on landing page.
-2. An overlay animation opens.
-3. Close it with:
-   - **Close** button,
-   - background click,
-   - `Escape` key.
+Click the tool you want to use.
 
-### Important notes
-- Polish language uses **PD** label.
-- English language uses **XP** label.
-- Species limit tables are reference-only and do not auto-fill fields.
-- The **Speed 14\*** footnote for Vespids appears only in **Character Creation**. The separate **XP Calculator** shows value 14 without an asterisk and without a footnote.
+## Secret button
 
-### Firebase integration — required for full character save
-To use cross-device save/load in **Character Creation**, you need an active Firebase project and Firestore database.
+The start page contains an easter egg button.
 
-#### Step by step (Firebase Console)
-1. Go to [https://console.firebase.google.com](https://console.firebase.google.com).
-2. Click **Create a project**.
-3. Enter project name and click **Continue**.
-4. (Optional) disable Google Analytics if not needed, then click **Create project**.
-5. After project creation, click the **Web** icon (`</>`) to add a web app.
-6. Enter app nickname and click **Register app**.
-7. Copy the `firebaseConfig` values.
-8. Open `Kalkulator/config/firebase-config.js` and paste those values.
-9. In Firebase left menu, open **Firestore Database**.
-10. Click **Create database**.
-11. Choose initial mode (test first, production rules later) and click **Next**.
-12. Select region closest to users and click **Enable**.
-13. In **Rules** tab set access rules for your group.
-14. Save rules and refresh `Kalkulator/TworzeniePostaci.html`.
-15. Perform a test character save and verify data loads again.
+After clicking it, an overlay with animation opens.
 
-### Important when copying the module
-Calculator contains a **Strona Główna / Main Page** button. After moving the app to another location, **edit its hyperlink** to point to the correct Main module path.
-## Copying module for a new group
-- Set a separate `Kalkulator/config/firebase-config.js` for the group server.
-- Verify the **Strona Główna / Main Page** button in `TworzeniePostaci` returns to the correct `Main` on that server.
-- Run a test: save a character and load it back.
+You can close it with:
 
-## Adding a new language version (EN)
+- `Close` button,
+- background click outside the dialog,
+- `Escape` key.
 
-This is the update map for adding another language (for example FR/DE):
+## XP Calculator — purpose
 
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
+`XP Calculator` quickly checks how much it costs to raise an attribute or skill from current value to target value.
 
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+Example:
+
+- current attribute value: `3`,
+- target attribute value: `5`,
+- the calculator shows the difference cost.
+
+This tool is a helper. It does not save a full character.
+
+## XP Calculator — step by step
+
+1. Open `Kalkulator/KalkulatorXP.html`.
+2. Choose language if you need EN instead of PL.
+3. In the attributes table, enter current and target values.
+4. In the skills table, enter current and target values.
+5. Check costs in individual rows.
+6. Check total XP cost at the top of the view.
+7. Click `Reset values` if you want to start over.
+8. Click `Main Page` to return to the main application menu.
+
+## XP Calculator value ranges
+
+The calculator keeps values within safe ranges:
+
+| Type | Range |
+| --- | --- |
+| Attributes | `0..12` |
+| Skills | `0..8` |
+
+If you enter a value outside the range, it is clamped to an allowed value.
+
+If target value is equal to or lower than current value, cost is `0`.
+
+## Maximum attribute values table
+
+`XP Calculator` contains a species maximum attribute table.
+
+The table is only a reference. It does not fill fields automatically.
+
+## Character Creation — purpose
+
+`Character Creation` is a larger sheet for planning XP spending for one character.
+
+It lets you set:
+
+- XP pool,
+- attributes,
+- skills,
+- talents and other costs,
+- interface language,
+- save and load current character state.
+
+## Character Creation — step by step
+
+1. Open `Kalkulator/TworzeniePostaci.html`.
+2. Set XP pool in `XP pool`. Default is `155`.
+3. Set attribute values.
+4. Set skill values.
+5. Enter talents or other spending in the talents section.
+6. Watch remaining XP field.
+7. Check whether an error message appears.
+8. Open PDF manual if you need help.
+9. Open maximum attribute values table if you want to check species limits.
+10. Save the character if you want to return to it later.
+
+## XP pool
+
+`XP pool` defines how many points you have to spend.
+
+Default value:
+
+```text
+155
+```
+
+If you spend more points than available, the module shows an XP overflow error.
+
+## Attributes
+
+Character creation includes attributes:
+
+- `S`,
+- `T`,
+- `A`,
+- `I`,
+- `Will`,
+- `Int`,
+- `Fell`,
+- `Speed`.
+
+Most attributes start at `1`.
+
+`Speed` starts at `6`.
+
+Allowed attribute range is `1..12`.
+
+## Skills
+
+Skills have range:
+
+```text
+0..8
+```
+
+Value `0` means no purchased level.
+
+The module automatically adds each skill cost to total XP spent.
+
+## Talents and other spending
+
+The talents section has 20 fields.
+
+Each entry has:
+
+- name,
+- cost.
+
+You can use this section not only for talents, but also for other manually added costs.
+
+The entered cost is added directly to spent XP.
+
+## Remaining XP and errors
+
+The sheet automatically calculates:
+
+- spent XP,
+- remaining XP,
+- validation errors.
+
+Main messages:
+
+| Message | Meaning |
+| --- | --- |
+| XP pool exceeded | More points were spent than available. |
+| Tree of Learning | Skill level layout breaks the rule checked by the sheet. |
+
+Tree of Learning error is shown only when XP pool is not exceeded.
+
+## Tree of Learning
+
+The sheet checks a simplified Tree of Learning rule.
+
+In practice, a very high level in one skill requires a suitable number of active skills.
+
+If you see Tree of Learning error, lower the highest skill level or add levels in other skills.
+
+## Maximum attribute values table
+
+In `Character Creation`, `Maximum attribute values` opens a modal with species limits.
+
+The table is a reference. It does not automatically change form fields.
+
+For Vespids, `Speed 14*` has a footnote. It means Vespids have fixed Speed 14 and the Speed field should be manually ignored when calculating XP.
+
+## PDF manual
+
+`Instrukcja` or `Manual` opens a help file for the current language.
+
+For Polish:
+
+```text
+HowToUse/pl.pdf
+```
+
+For English:
+
+```text
+HowToUse/en.pdf
+```
+
+## Language change
+
+`XP Calculator` can switch language without resetting entered values.
+
+`Character Creation` asks for confirmation before changing language. After confirmation, working data is reset.
+
+Before changing language in character creation, make sure you will not lose needed data.
+
+## Reset
+
+In `XP Calculator`, reset sets fields to `0`.
+
+In `Character Creation`, reset restores start values:
+
+- XP pool: `155`,
+- attributes: defaults,
+- skills: `0`,
+- talents and costs: empty or `0`.
+
+## Save and load character
+
+`Character Creation` has save and load buttons.
+
+Save stores the current form state.
+
+Load restores saved state.
+
+This feature requires valid Firebase configuration. If configuration does not work, the module shows an error message in a modal.
+
+## What is saved
+
+Save includes, among others:
+
+- language,
+- XP pool,
+- spent XP,
+- remaining XP,
+- attributes,
+- skills,
+- talents,
+- form field state,
+- visible validation messages.
+
+## Common messages and what to do
+
+| Message or situation | Meaning | What to do |
+| --- | --- | --- |
+| Remaining XP is negative | Too much XP was spent. | Reduce values or increase XP pool. |
+| Tree of Learning error | Skill layout breaks the sheet rule. | Add other active skills or lower the highest level. |
+| Field returns to default value | The entry was empty or invalid. | Enter a number in the allowed range. |
+| Save does not work | Firebase is not configured or unavailable. | Contact technical admin. |
+| Load does not work | No saved document exists or Firebase is unavailable. | Save character first or contact admin. |
+| Language change resets sheet | This is intended in `Character Creation`. | Change language only after saving or writing down data. |
+| PDF manual does not open | File is missing or browser blocks opening. | Check popups and presence of `HowToUse` files. |
+
+## Quick workflow — XP Calculator
+
+1. Open `Kalkulator/KalkulatorXP.html`.
+2. Enter current and target values.
+3. Check row cost and total cost.
+4. Change values until you get the needed cost.
+5. Click reset if you want to start over.
+
+## Quick workflow — Character Creation
+
+1. Open `Kalkulator/TworzeniePostaci.html`.
+2. Set XP pool.
+3. Set attributes.
+4. Set skills.
+5. Add talents and other costs.
+6. Check remaining XP and error messages.
+7. Check species limits in modal if needed.
+8. Save character if you want to return to it later.
