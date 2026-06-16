@@ -1,46 +1,277 @@
-# Dokumentacja techniczna modułu Audio (opis 1:1)
+# 🇵🇱 Dokumentacja techniczna — Audio (PL)
 
-> Ten dokument opisuje **dokładny** wygląd i logikę modułu Audio: strukturę HTML, style CSS, zasady działania, mapowanie danych z `AudioManifest.xlsx`, integrację Firebase oraz wszystkie kluczowe funkcje. Celem jest umożliwienie wiernego odtworzenia aplikacji 1:1.
+## Cel modułu
 
-## 1. Architektura i przepływ danych
-- **Model aplikacji:** pojedyncza strona `Audio/index.html` z dwoma trybami:
-  - **Widok użytkownika** (domyślny) — pokazuje panel odtwarzania oraz boczną nawigację między „Widokiem głównym” i listami „Ulubione”.
-  - **Widok admina** — aktywowany przez `?admin=1`, umożliwia konfigurację manifestu, list ulubionych oraz kolejności „Głównego widoku”, a także zawiera w pełni działający podgląd widoku użytkownika (dane i nawigacja są identyczne jak u użytkownika).
-- **Źródło danych audio:** plik `AudioManifest.xlsx` wczytywany bezpośrednio w przeglądarce przez bibliotekę XLSX (SheetJS).
-- **Ustawienia:** ulubione, „Główny widok” oraz aliasy SFX są przechowywane w Firestore w dokumencie `audio/favorites`. W przypadku braku konfiguracji Firebase używany jest `localStorage` (`audio.settings`).
-- **Synchronizacja aliasów:** mapa `aliases` jest synchronizowana do obiektów SFX po wczytaniu manifestu i po każdej aktualizacji z Firestore/lokalnego zapisu, aby alias był widoczny w obu trybach.
-- **Odtwarzanie:** kliknięcie nazwy SFX lub taga (druga linia pod nazwą) uruchamia/wyłącza pojedyncze odtworzenie dla danej karty; równoległe odtwarzanie wielu SFX jest możliwe. Podczas odtwarzania nazwa oraz tag są czerwone, a w widoku użytkownika i adminowym panelu „Główny widok” dostępny jest suwak głośności (domyślnie 0, zakres -100% do +100%). Przycisk **Loop** działa tylko w prawdziwym widoku użytkownika bez `?admin=1`: uruchamia dźwięk od razu, po zdarzeniu `ended` startuje kolejny losowy wariant i zatrzymuje całość po ponownym kliknięciu.
+`Audio` jest przeglądarkowym panelem do odtwarzania efektów dźwiękowych i zarządzania listami dźwięków używanymi podczas gry.
 
-## 2. Struktura repozytorium (pliki i katalogi)
-- `Audio/index.html` — główny panel (HTML + CSS + JS).
-- `Audio/AudioManifest.xlsx` — źródłowy manifest SFX (kolumny: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`).
-- `Audio/config/firebase-config.js` — konfiguracja Firebase (globalna zmienna `window.firebaseConfig`).
-- `Audio/config/firebase-config.template.js` — szablon konfiguracji.
-- `Audio/docs/README.md` — instrukcja użytkownika.
-- `Audio/docs/Documentation.md` — ten dokument.
+Moduł pozwala:
 
-## 3. Zasoby zewnętrzne
-### 3.1. Google Fonts
-- `Fira Code` (wagi 400, 600) z:
+- wczytać manifest SFX z `AudioManifest.xlsx`,
+- pogrupować warianty tego samego dźwięku,
+- filtrować dźwięki po tagach wynikających ze ścieżki folderu,
+- dodawać dźwięki do widoku głównego,
+- tworzyć listy ulubionych,
+- nadawać aliasy SFX,
+- synchronizować konfigurację przez Firestore,
+- działać lokalnie przez `localStorage`, gdy Firebase nie jest skonfigurowany,
+- odtwarzać dźwięki jednorazowo albo w pętli w widoku użytkownika.
+
+Moduł jest pojedynczą stroną HTML z osadzonym CSS i JavaScriptem modułowym.
+
+## Punkty wejścia
+
+| Plik | Rola |
+| --- | --- |
+| `Audio/index.html` | Widok użytkownika. Pokazuje tylko przygotowany widok główny i listy ulubionych. |
+| `Audio/index.html?admin=1` | Widok admina. Pokazuje zarządzanie manifestem, filtrami, listami, aliasami i podgląd widoku użytkownika. |
+
+Tryb admina jest wykrywany przez parametr URL:
+
+```text
+?admin=1
 ```
-https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap
+
+## Struktura plików modułu
+
+| Plik lub katalog | Odpowiedzialność |
+| --- | --- |
+| `Audio/index.html` | Pełna aplikacja: HTML, CSS, JS, import SheetJS, import konfiguracji Firebase i import modułów Firebase. |
+| `Audio/AudioManifest.xlsx` | Źródłowy manifest dźwięków. |
+| `Audio/config/firebase-config.js` | Konfiguracja Firebase dla ustawień Audio. |
+| `Audio/config/firebase-config.template.js` | Szablon konfiguracji Firebase. |
+| `Audio/config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase modułu Audio. |
+| `Audio/docs/README.md` | Instrukcja użytkownika. |
+| `Audio/docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
+
+## Zależności zewnętrzne
+
+`Audio/index.html` ładuje:
+
+- Google Fonts `Fira Code`,
+- SheetJS `xlsx.full.min.js 0.18.5`,
+- `config/firebase-config.js`,
+- Firebase modular SDK `12.6.0`:
+  - `firebase-app.js`,
+  - `firebase-firestore.js`.
+
+## Tryby widoku
+
+### Widok użytkownika
+
+Widok bez `?admin=1`:
+
+- usuwa elementy `admin-only`,
+- pokazuje tylko interfejs użytkownika,
+- pokazuje nawigację po widoku głównym i listach ulubionych,
+- pozwala odtwarzać dźwięki z kart,
+- pokazuje suwaki głośności,
+- renderuje przycisk `Loop`.
+
+### Widok admina
+
+Widok z `?admin=1`:
+
+- usuwa elementy `user-only`,
+- pokazuje nagłówek, statusy i toolbar,
+- pokazuje panel filtrów tagów,
+- pokazuje listę wszystkich SFX z manifestu,
+- pozwala dodawać dźwięki do widoku głównego lub list ulubionych,
+- pozwala tworzyć, zmieniać nazwę, usuwać i porządkować listy ulubionych,
+- pozwala porządkować widok główny,
+- pokazuje podgląd widoku użytkownika,
+- nie renderuje przycisku `Loop` w adminowym podglądzie.
+
+## Główne sekcje UI
+
+### Nagłówek admina
+
+Nagłówek admina zawiera:
+
+- tytuł,
+- opis,
+- przełącznik języka `languageSelect`,
+- status manifestu `manifestStatus`,
+- status Firebase `firebaseStatus`,
+- status ulubionych `favoritesStatus`.
+
+### Toolbar admina
+
+Toolbar zawiera:
+
+- `reloadManifest` — ponowne wczytanie `AudioManifest.xlsx`,
+- `addList` — utworzenie nowej listy ulubionych,
+- `refreshFavorites` — ręczne odświeżenie widoków ulubionych.
+
+### Panel filtrów tagów
+
+Panel tagów zawiera:
+
+- `toggleTagPanel` — zwija lub rozwija panel,
+- `tagSearchInput` — pole wyszukiwania tagów,
+- `tagFilterMenuButton` — otwiera popup filtra,
+- `tagFilter` — drzewo checkboxów tagów,
+- `tagFilterMenu` — popup z wyszukiwarką, checkboxami i akcjami zbiorczymi,
+- `tagMenuSelectAll` — zaznacza wszystkie widoczne tagi,
+- `tagMenuClearAll` — odznacza wszystkie widoczne tagi.
+
+Filtry tagów wpływają tylko na listę SFX w panelu admina. Nie zmieniają widoku głównego ani list ulubionych użytkownika.
+
+### Lista SFX admina
+
+Lista SFX używa `samplesGrid`.
+
+Każda karta pokazuje:
+
+- nazwę SFX,
+- alias w nawiasie, jeżeli istnieje,
+- liczbę zgrupowanych wariantów, jeżeli dźwięk ma wiele wariantów,
+- `tag2`, czyli drugi poziom tagów,
+- nazwę pliku albo nazwę pierwszego pliku i licznik wariantów,
+- pole aliasu,
+- przycisk czyszczenia aliasu,
+- przycisk odtwarzania,
+- select wyboru listy docelowej,
+- przycisk dodania do listy.
+
+### Panel ulubionych admina
+
+Panel `favoritesPanel` pokazuje listy ulubionych.
+
+Dla list można:
+
+- przenieść listę w górę lub dół,
+- zmienić nazwę listy,
+- usunąć listę,
+- odtworzyć dźwięk z listy,
+- przenieść pozycję w górę lub dół,
+- usunąć pozycję z listy.
+
+### Panel widoku głównego admina
+
+Panel `mainViewPanel` pokazuje kolejność dźwięków widoku głównego.
+
+Dla pozycji można:
+
+- odtworzyć dźwięk kliknięciem nazwy lub tagu,
+- ustawić głośność suwakiem,
+- przesunąć pozycję w górę lub dół,
+- usunąć pozycję z widoku głównego.
+
+### Widok użytkownika
+
+Widok użytkownika zawiera:
+
+- `userMainView` — aktualny widok główny,
+- `userFavoritesView` — aktywna lista ulubionych,
+- `userNav` — nawigacja między widokiem głównym i listami,
+- `languageSelectUser` — przełącznik języka, obecnie ukryty klasą `language-switcher--hidden`.
+
+## Stan aplikacji
+
+Główny obiekt `state` zawiera:
+
+| Pole | Typ | Opis |
+| --- | --- | --- |
+| `items` | `array` | Lista SFX po parsowaniu manifestu. |
+| `itemsById` | `Map` | Mapa SFX po `id`. |
+| `favorites` | `object` | Listy ulubionych. |
+| `mainView` | `object` | Lista ID widoku głównego. |
+| `aliases` | `object` | Alias per `itemId`. |
+| `firestore` | `object|null` | Instancja Firestore, jeżeli działa Firebase. |
+| `favoritesDoc` | `object|null` | Referencja dokumentu `audio/favorites`. |
+| `usingFirestore` | `boolean` | Czy aktywna jest synchronizacja Firestore. |
+| `manifestReady` | `boolean` | Czy manifest został poprawnie wczytany. |
+| `userView` | `string` | Aktualny widok użytkownika: `main` albo lista. |
+| `activeFavoritesListId` | `string|null` | Aktywna lista ulubionych w widoku użytkownika. |
+| `tagTree` | `array` | Drzewo tagów zbudowane z manifestu. |
+| `tagSelection` | `Map` | Zaznaczenia tagów. |
+| `tagPanelVisible` | `boolean` | Czy panel tagów jest rozwinięty. |
+| `tagMenuOpen` | `boolean` | Czy popup tagów jest otwarty. |
+| `tagMenuSearchTerm` | `string` | Fraza wyszukiwania tagów w popupie. |
+
+Aktywne odtwarzacze są przechowywane poza `state` w:
+
+```text
+activePlayers: Map
 ```
 
-### 3.2. XLSX (SheetJS)
-- Biblioteka do parsowania plików `.xlsx`:
-```
-https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js
+## Manifest `AudioManifest.xlsx`
+
+Moduł pobiera manifest przez:
+
+```js
+fetch("AudioManifest.xlsx", { cache: "no-store" })
 ```
 
-### 3.3. Firebase SDK
-- Modułowe SDK Firebase v12.6.0:
-  - `https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js`
-  - `https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js`
+Wymagane kolumny:
 
-## 4. Konfiguracja Firebase
-### 4.1. Plik `config/firebase-config.js`
-- Plik musi ustawiać `window.firebaseConfig` (bez eksportów ES).
-- Format:
+| Kolumna | Opis |
+| --- | --- |
+| `NazwaSampla` | Nazwa dźwięku widoczna w UI. |
+| `NazwaPliku` | Nazwa pliku audio. |
+| `LinkDoFolderu` | Link lub ścieżka folderu, z której budowane są URL i tagi. |
+
+Parser używa SheetJS:
+
+```js
+XLSX.read(data, { type: "array" })
+XLSX.utils.sheet_to_json(sheet, { defval: "" })
+```
+
+## Model SFX po parsowaniu manifestu
+
+Po parsowaniu każdy SFX ma strukturę logiczną:
+
+| Pole | Opis |
+| --- | --- |
+| `id` | Stabilizowany slug z nazwy i indeksu wiersza. |
+| `label` | Nazwa dźwięku widoczna w UI. |
+| `groupCount` | Liczba wariantów, jeżeli zgrupowano kilka plików. |
+| `alias` | Alias z `state.aliases[item.id]`. |
+| `filename` | Nazwa pliku albo pierwszy plik z licznikiem `(+N)`. |
+| `folderUrl` | Źródłowa ścieżka folderu. |
+| `tags` | Lista tagów wyciągnięta ze ścieżki folderu. |
+| `tag2` | Drugi poziom tagów, używany jako krótki opis. |
+| `tagPaths` | Ścieżki tagów do filtrowania hierarchicznego. |
+| `variants` | Lista wariantów `{ filename, fullUrl }`. |
+
+## Grupowanie wariantów
+
+Jeżeli nazwa sampla kończy się numerem, np. `Explosion 1`, `Explosion 2`, kod próbuje wyznaczyć bazową nazwę przez `getGroupingBaseLabel(...)`.
+
+Warianty są grupowane, jeżeli:
+
+- mają ten sam folder,
+- mają tę samą nazwę bazową,
+- wykryto więcej niż jeden wariant.
+
+Dla grupowanego dźwięku `variants` zawiera wszystkie URL-e, a UI pokazuje nazwę bazową oraz licznik wariantów.
+
+## Tagi
+
+Tagi są wyciągane z `LinkDoFolderu` przez `extractTags(...)`.
+
+Przetwarzanie tagów:
+
+- normalizuje separatory `/`,
+- obsługuje URL przez `new URL(...).pathname`,
+- ignoruje segmenty z `TAG_IGNORE_SEGMENTS`, np. `AudioRPG`,
+- usuwa fragmenty z `TAG_IGNORE_FRAGMENTS`, np. `SoundPad`, `_Siege_SoundPad`, `Patreon`,
+- zamienia `_` i `-` na spacje,
+- usuwa nadmiarowe białe znaki.
+
+Z tagów budowane jest drzewo `tagTree`, a potem spłaszczona lista dla popupu filtra.
+
+## Firebase i model ustawień
+
+Konfiguracja Firebase znajduje się w:
+
+```text
+Audio/config/firebase-config.js
+```
+
+Plik musi ustawić:
+
 ```js
 window.firebaseConfig = {
   apiKey: "...",
@@ -52,299 +283,707 @@ window.firebaseConfig = {
 };
 ```
 
-**Ważne:** Firebase dla modułu **Audio** nie wymaga oddzielnego konta Google od modułu **Infoczytnik**. Oba moduły mogą korzystać z tego samego konta/projektu, jeśli konfiguracje i reguły są rozdzielone; rozdzielenie projektów to wyłącznie wygoda organizacyjna, a nie wymóg techniczny.
+Kod używa Firestore dokumentu:
 
-### 4.2. Firestore
-- Kolekcja: `audio`
-- Dokument: `favorites`
-- Dokument tworzony automatycznie, jeśli nie istnieje. Zawiera `favorites`, `mainView` oraz `aliases` (mapa aliasów po `itemId`).
+```text
+audio/favorites
+```
 
-## 5. `index.html` — layout i HTML
-- `<title>` ustawiony na `Kozie Audio` (tytuł karty przeglądarki).
-- Główny kontener `.page` zawiera:
-  1. **Nagłówek** `header` z tytułem, opisem, przełącznikiem języka (`#languageSelect`) i paskiem statusów (cały nagłówek jest widoczny tylko w trybie admina).
-  2. **Toolbar** `.toolbar` (tylko admin): przycisk wczytywania manifestu oraz przyciski zarządzania listami.
-  3. **Belka filtrów tagów** `.tag-filter-bar` (tylko admin):
-     - nagłówek z przyciskiem **Ukryj/Pokaż panel**,
-     - pole „Szukaj tagu...” oraz przycisk **Filtruj ▾**,
-     - drzewo checkboxów generowane z tagów folderów,
-     - wyskakujące okienko filtra listowego z wyszukiwarką tagów, checkboxami oraz akcjami „Zaznacz wszystko” / „Odznacz wszystko”,
-     - filtrowanie wpływa wyłącznie na listę SFX w panelu admina (nie zmienia głównego widoku ani ulubionych).
-  4. **Toolbar z wyszukiwarką SFX** `.toolbar` (tylko admin): pole „Szukaj SFX...” oraz przycisk **Wyczyść wszystkie aliasy**, umieszczone **pod** panelami tagów.
-     - Przycisk **Wyczyść wszystkie aliasy** usuwa globalnie całą mapę aliasów `aliases` dla wszystkich SFX (także niewidocznych przez filtry tagów i nieobecnych na aktualnie otwartych listach).
-  5. **Layout admina** `.layout` (tylko admin) w dwóch kolumnach:
-     - Lewy panel: lista SFX (`.samples-grid`) z akcjami dodania do listy (select: **Widok Główny** lub lista „Ulubione”).
-       - Każda karta SFX pokazuje: nazwę SFX (z aliasem w nawiasie, jeśli ustawiono), `tag2` (drugi poziom folderu) oraz nazwę pliku.
-       - Pod metadanymi znajduje się pole tekstowe **Alias (opcjonalny)**, a **bezpośrednio pod nim** przycisk **Wyczyść** (powyżej **Odtwórz**), który usuwa alias dla danego SFX.
-     - Prawa kolumna `.side-stack`:
-       - panel „Ulubione” (`#favoritesPanel`) z pełnymi kontrolkami (rename, move, remove),
-       - panel „Główny widok” (`#mainViewPanel`) do ustawiania kolejności nadrzędnej listy.
-  6. **Widok użytkownika** `.user-view` (pokazywany także w adminie jako podgląd):
-     - układ `.user-layout` w dwóch kolumnach,
-     - lewy panel z przełącznikiem języka `#languageSelectUser` (tylko w trybie user) oraz kontenerami `#userMainView` i `#userFavoritesView`,
-     - każda karta w prawdziwym widoku użytkownika bez `?admin=1` pokazuje nazwę SFX i `tag2` (bez nazwy pliku), suwak głośności oraz przycisk **Loop**; w adminowym podglądzie tego widoku przycisk **Loop** nie jest renderowany,
-     - prawy panel z nawigacją `#userNav` (przycisk „Widok główny” + lista ulubionych),
-     - brak dodatkowych sekcji (nagłówek jest ukryty w trybie użytkownika).
+Model dokumentu:
 
-## 6. Style CSS (dokładne wartości)
-**Zmienne w `:root`:**
-- `--bg`: radialne gradienty + `#031605` (tło).
-- `--panel`: `#000`.
-- `--panel-alt`: `#041b08`.
-- `--border`: `#16c60c`.
-- `--text`: `#9cf09c`.
-- `--accent`: `#16c60c`.
-- `--accent-dark`: `#0d7a07`.
-- `--accent-strong`: `#1ee616`.
-- `--muted`: `rgba(156, 240, 156, 0.7)`.
-- `--danger`: `#ff5f5f`.
-- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
-- `--radius`: `12px`.
-- `--shadow`: `0 8px 24px rgba(0, 0, 0, 0.45)`.
-- `--font`: `"Fira Code", "Consolas", "Source Code Pro", monospace`.
+| Pole | Typ | Opis |
+| --- | --- | --- |
+| `favorites` | `object` | Obiekt list ulubionych. |
+| `mainView` | `object` | Obiekt widoku głównego. |
+| `aliases` | `object` | Mapa aliasów per `itemId`. |
+| `updatedAt` | `timestamp` | Firestore server timestamp ustawiany przy zapisie. |
 
-**Kluczowe elementy:**
-- `header`: ramka `2px solid --border`, `box-shadow: --glow`.
-- `.toolbar`: `border: 1px solid rgba(22, 198, 12, 0.7)`, `box-shadow: --shadow`.
-- `.tag-filter-bar`: tło `--panel`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `padding: 14px 16px`, `box-shadow: --shadow`.
-- `.tag-filter-header`: układ nagłówka filtrów (flex, space-between).
-- `.tag-filter-controls`: pole wyszukiwania tagów, układ flex z odstępami.
-- `.tag-filter-menu`: popup filtra listowego (`position: fixed`, `width: min(320px, 90vw)`, `border-radius: 10px`, `box-shadow: --shadow`).
-- `.tag-menu-list`: scrollowana lista checkboxów tagów (`max-height: 280px`).
-- `.tag-filter-bar.is-collapsed .tag-filter-body`: ukrywa panel checkboxów tagów (`display: none`).
-- `.tag-tree`: kolumnowe drzewko checkboxów, `gap: 6px`.
-- `.tag-children.is-hidden`: ukrywanie podfolderów po odznaczeniu rodzica (`display: none`).
-- `.user-language`: pasek z przełącznikiem języka w widoku użytkownika (`display: flex`, `justify-content: flex-end`, `margin-bottom: 12px`).
-- `.group-count`: kolor `var(--danger)` dla liczby zgrupowanych plików audio.
-- `.sample-alias`: kolor `#d2fad2`, jaśniejsza czcionka dla aliasu w nawiasie.
-- `.side-stack`: prawa kolumna w adminie, `display: flex`, `flex-direction: column`, `gap: 22px`.
-- `.samples-grid`: domyślnie `grid-template-columns: repeat(4, minmax(0, 1fr))` (desktop — 4 kafle w jednym wierszu).
-- Responsywność `.samples-grid`: poniżej `980px` przejście do `repeat(2, minmax(0, 1fr))`, a poniżej `680px` do `1fr`.
-- `.sample-card`: tło `--panel-alt`, `border: 1px solid rgba(22, 198, 12, 0.4)`, `border-radius: 10px`.
-- `.alias-controls`: układ kolumnowy (flex) dla pola aliasu, `gap: 6px` (przycisk „Wyczyść” znajduje się pod polem aliasu).
-- `.alias-input`: pole tekstowe aliasu (`background: #031806`, `border: 1px solid rgba(22, 198, 12, 0.6)`, `font-size: 12px`).
-- `.fav-list`: `border: 1px solid rgba(22, 198, 12, 0.5)`, tło `#031206`.
-- Przyciski `.btn`: `border: 1px solid --border`, tło `#031806`, uppercase, `letter-spacing: 0.06em`.
-- `.sample-trigger`: elementy klikalne (nazwa SFX oraz tag), `cursor: pointer` i łagodne przejście koloru.
-- `.sample-card.is-playing .sample-trigger` oraz `.fav-item.is-playing .sample-trigger`: aktywne odtwarzanie podświetla nazwę i tag na `--danger`.
-- `.loop-btn.is-looping` oraz `.loop-btn[aria-pressed="true"]`: aktywny przycisk pętli używa czerwonego tła `rgba(255, 95, 95, 0.22)`, obramowania `--danger`, tekstu `#ffd6d6` i cienia `0 0 12px rgba(255, 95, 95, 0.35)`.
-- `.volume-slider`: suwak głośności (`input[type="range"]`) o szerokości 100% i `accent-color: --accent`.
-- `.user-view`: kolumna usera, `display: flex`, `flex-direction: column`, `gap: 16px`.
-- `.user-layout`: siatka 2-kolumnowa (`minmax(0, 1.7fr)` + `minmax(240px, 0.7fr)`).
-- `.user-nav`: panel boczny w widoku użytkownika, układ kolumnowy z `gap: 12px`.
-- `.user-nav-group`: grupowanie przycisków nawigacji, `flex-direction: column`, `gap: 8px`.
-- `.user-nav .btn.is-active`: wzmocniony stan aktywny (zielone tło i glow).
-- `.user-panel`: kontener list w widoku użytkownika, domyślnie `display: none`; klasa `.is-visible` ustawia `display: flex`.
-- Responsywność: poniżej `980px` układ główny (`.layout`, `.user-layout`) przechodzi do jednej kolumny, a siatka SFX do 2 kolumn; poniżej `680px` siatka SFX przechodzi do 1 kolumny.
+## Model `favorites`
 
-## 7. Mapowanie danych z `AudioManifest.xlsx`
-- Plik jest wczytywany przez `fetch` i parsowany przez `XLSX.read`.
-- Pierwszy arkusz jest konwertowany przez `XLSX.utils.sheet_to_json`.
-- Wymagane kolumny:
-  - `NazwaSampla` → `label`.
-  - `NazwaPliku` → `filename`.
-  - `LinkDoFolderu` → `folderUrl`.
-- Dodatkowe kolumny (w tym kolory) są ignorowane.
-- **ID SFX**: tworzony przez `slugify` (lowercase + zamiana znaków nie-alfanumerycznych na `-`).
-- **Pełny URL**: `folderUrl + "/" + filename` (bez podwójnych `/`).
-- **Grupowanie nazw z cyfrą (tylko w obrębie jednego `folderUrl`):**
-  - Jeśli nazwy różnią się **numerem na końcu** (`Assault Weapon1`, `Assault Weapon2`, `Rats 1`, `Rats 2`), tworzone jest **jedno** zgrupowanie.
-  - Jeśli numer występuje **w środku** nazwy (`Blaster 1 Burst`, `Blaster 2 Burst`), pozycje **nie są grupowane** i powstają dwa oddzielne przyciski.
-  - Etykieta grupy zawiera liczebność w nawiasie (np. `Assault Weapon (4)`), a sama liczba jest renderowana na czerwono (`.group-count`).
-  - Kliknięcie przycisku losuje dźwięk z listy `variants`.
-  - Dla zgrupowanych pozycji przy nazwie pliku pojawia się sufiks `(+N)` informujący o liczbie wariantów.
-- **Tagi folderów:** z `folderUrl` wyciągane są segmenty ścieżki, z których tworzone są tagi hierarchiczne. Segment `AudioRPG` jest pomijany jako folder bazowy. Z pozostałych segmentów usuwane są fragmenty: `SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`. Segmenty są dekodowane z `%20` na spacje, a końcowe spacje usuwane. Drugi tag z hierarchii (`tag2`) jest wyświetlany w panelu admina i w widoku użytkownika pod nazwą SFX.
-
-## 8. Logika JS (wszystkie funkcje)
-### 8.1. Utility
-- `slugify(value, index)` — tworzy stabilny identyfikator z nazwy.
-- `normalizeUrl(folderUrl, filename)` — składa pełny URL do pliku audio.
-- `escapeRegExp(value)` — ucieka znaki specjalne do użycia w RegExp.
-- `cleanTagSegment(segment)` — dekoduje `%20` na spacje, usuwa fragmenty ignorowane (`SoundPad`, `SoundPad Patreon Version`, `_Siege_SoundPad`, `Patreon`) i normalizuje spacje.
-- `extractTags(folderUrl)` — zwraca tablicę tagów na podstawie segmentów ścieżki `folderUrl`.
-- `getGroupingBaseLabel(label)` — wyznacza bazową etykietę grupowania wyłącznie dla numeru na końcu nazwy; numer w środku pozostawia etykietę bez zmian.
-- `formatSampleLabel(item)` — zwraca HTML etykiety z aliasem w nawiasie (jeśli ustawiony) oraz czerwonym licznikiem wariantów.
-- `buildTagTree(items)` — buduje drzewo tagów (hierarchia) z listy SFX.
-- `flattenTagTree(nodes, depth)` — spłaszcza drzewo tagów do listy z poziomem zagnieżdżenia.
-- `ensureTagSelection(nodes)` — inicjalizuje mapę zaznaczeń tagów domyślnie na `true`.
-- `setAllTagSelection(value)` — masowo zaznacza/odznacza wszystkie tagi.
-- `updateStatus()` — aktualizuje paski statusów (manifest, firebase, liczba list).
-- `updateTagPanelVisibility()` — przełącza ukrycie/odkrycie panelu checkboxów tagów bez zmiany ich zaznaczeń.
-- `renderTagMenu()` — renderuje okienko filtra listowego tagów z wyszukiwarką i checkboxami.
-- `positionTagMenu()` — pozycjonuje popup filtra listowego przy przycisku.
-- `openTagMenu()` / `closeTagMenu()` — otwiera i zamyka popup filtra tagów.
-
-### 8.2. Ustawienia (ulubione + główny widok + aliasy)
-- `saveSettings()` — zapisuje `favorites`, `mainView` i `aliases` do Firestore lub `localStorage` (`audio.settings`). W trybie Firestore zapis wykonuje pełne nadpisanie dokumentu (`setDoc` bez `merge`) dokumentu `audio/favorites`, co gwarantuje poprawne usuwanie kluczy z mapy `aliases` (alias usunięty przyciskiem **Wyczyść** nie wraca po `onSnapshot`).
-- `defaultFavorites()` — tworzy domyślną listę „Ulubione”.
-- `defaultMainView()` — zwraca pusty „Główny widok”.
-- `defaultAliases()` — zwraca pustą mapę aliasów.
-- `normalizeFavorites(raw)` — normalizuje strukturę list ulubionych.
-- `normalizeMainView(raw)` — normalizuje listę `itemIds` głównego widoku.
-- `normalizeAliases(raw)` — normalizuje mapę aliasów (usuwa puste wartości, trimuje tekst).
-- `applyAliasesToItems()` — przypisuje wartości z `aliases` do obiektów SFX (`item.alias`), aby aliasy były widoczne po odczycie ustawień.
-- `normalizeSettings(raw)` — akceptuje zarówno nowy format (`favorites`, `mainView`, `aliases`) jak i stary (`lists`).
-- `loadSettingsLocal()` — wczytuje lokalny zapis (`audio.settings`) lub migruje z `audio.favorites`.
-- `setItemAlias(itemId, alias)` — zapisuje/usuwa alias i odświeża wszystkie widoki.
-- `clearAllAliases()` — najpierw wyświetla potwierdzenie (`confirmClearAllAliases`), a następnie zeruje globalną mapę `aliases`, czyści `item.alias` dla wszystkich pozycji i zapisuje ustawienia. Operacja jest ograniczona do przestrzeni danych Audio (`audio/favorites` i `audio.settings`), dzięki czemu nie wpływa na inne moduły.
-
-### 8.3. Firebase
-- `initFirebase()`:
-  1. Sprawdza `window.firebaseConfig`.
-  2. Inicjalizuje aplikację i Firestore.
-  3. Ustawia referencję `doc(db, "audio", "favorites")`.
-  4. Subskrybuje `onSnapshot`, aby synchronizować listy w czasie rzeczywistym oraz przepisać aliasy do obiektów SFX.
-
-### 8.4. Renderowanie
-- `renderTagFilter()` — rysuje drzewko checkboxów tagów (tylko admin).
-- `renderSamples()` — rysuje siatkę SFX (tylko admin) z selektorem listy (domyślnie „Widok Główny”), przyciskiem dodania, przyciskiem **Odtwórz** oraz polem aliasu z przyciskiem „Wyczyść”; lista jest filtrowana przez wyszukiwarkę SFX **oraz** aktywne tagi.
-- Klik przycisku `#clearAllAliases` wywołuje `clearAllAliases()`, które po potwierdzeniu czyści aliasy globalnie (bez ograniczenia do aktualnie wyrenderowanych kart), ale tylko w module Audio.
-- `renderFavorites()` — rysuje listy „Ulubione” w trybie admina wraz z kontrolkami (rename, remove, move) oraz przyciskiem **Odtwórz** przy każdym elemencie; przycisk **Loop** nie jest renderowany w panelu admina.
-- `renderMainViewAdmin()` — rysuje panel „Główny widok” w trybie admina (nazwa/tag klikalne + suwak głośności + reorder + remove), bez przycisku **Loop**.
-- `renderUserMainView()` — rysuje „Widok główny” użytkownika (klikana nazwa + tag, suwak głośności oraz **Loop** tylko poza `?admin=1`); w podglądzie admina pozostaje bez przycisku **Loop**.
-- `renderUserFavorites()` — rysuje listę ulubionych użytkownika (klikana nazwa + tag, suwak głośności oraz **Loop** tylko poza `?admin=1`) dla aktualnie wybranej listy; w podglądzie admina pozostaje bez przycisku **Loop**.
-- `renderUserNavigation()` — rysuje panel boczny z przyciskiem „Widok główny” oraz listami ulubionych w obu trybach.
-- `renderAllViews()` — odświeża statusy oraz wszystkie panele odpowiednie dla trybu, w tym widoczność panelu tagów.
-- `syncUserViewButtons()` — przełącza widoczne panele i aktualizuje aktywny stan w nawigacji (działa także w podglądzie admina).
-
-### 8.5. Akcje użytkownika
-- `pickRandomVariant(item, previousUrl = "")` — losuje plik z `variants` dla zgrupowanych SFX; przy wielu wariantach i podanym `previousUrl` próbuje uniknąć natychmiastowego powtórzenia tego samego adresu.
-- `getAudioContext()` — inicjalizuje `AudioContext` (jeśli dostępny), aby obsłużyć wzmocnienie głośności powyżej 100%.
-- `volumeToGain(value)` — mapuje zakres `-100..100` na gain `0..2`.
-- `startPlayback(item, playbackRoot, options = {})` — tworzy nowe `Audio()` i podpina `GainNode`, ustawia głośność wg suwaka, dodaje klasę `.is-playing`, zapisuje w `activePlayers` pola `item`, `audio`, `gainNode`, `loop` i `lastUrl`; jeśli `options.loop` jest aktywne, obsługa `ended` uruchamia kolejną iterację zamiast kończyć odtwarzanie.
-- `stopPlayback(playbackRoot)` — zatrzymuje aktywny dźwięk, usuwa klasę `.is-playing`, resetuje etykietę Play/Stop i wyłącza wizualny stan Loop.
-- `togglePlayback(itemId, playbackRoot)` — przełącza zwykłe odtwarzanie/stop dla wskazanego elementu sterującego.
-- `toggleLoop(itemId, playbackRoot)` — uruchamia pętlę, zamienia trwające zwykłe odtwarzanie w pętlę bez restartu albo zatrzymuje aktywną pętlę po kolejnym kliknięciu.
-- `updateLoopButtonState(playbackRoot, isLooping)` — synchronizuje klasę `.is-looping` i atrybut `aria-pressed`, dzięki czemu czerwony stan przycisku jest spójny z semantyką przełącznika.
-- `applyPlayerVolume(player, value)` — aktualizuje głośność aktywnie odtwarzanego SFX po zmianie suwaka; kolejne iteracje Loop tworzą nowy `GainNode`, ale odczytują aktualną wartość suwaka z tego samego `playbackRoot`.
-- Zmiana checkboxa w `#tagFilter` aktualizuje mapę `tagSelection`, ukrywa/pokazuje podfoldery (`.tag-children.is-hidden`) i odświeża listę SFX.
-- Pole `#tagSearchInput` otwiera popup filtra listowego, a wyszukiwanie odbywa się w okienku `#tagMenuSearchInput`.
-- Kliknięcie `#toggleTagPanel` ukrywa lub odsłania cały panel checkboxów tagów bez resetowania stanu zaznaczeń.
-- Popup filtra tagów zawiera checkboxy oraz przyciski **Zaznacz wszystko** / **Odznacz wszystko**; zmiany odświeżają drzewko i listę SFX.
-- `addFavoriteList()` — tworzy nową listę.
-- `addItemToFavorites(listId, itemId)` — dodaje SFX do listy.
-- `moveList(listId, direction)` — przesuwa listę w górę/dół.
-- `renameList(listId)` — zmienia nazwę listy.
-- `removeList(listId)` — usuwa listę (z potwierdzeniem).
-- `moveItem(listId, itemId, direction)` — przesuwa element w obrębie listy.
-- `removeItem(listId, itemId)` — usuwa element z listy.
-- `addItemToMainView(itemId)` — dodaje SFX do „Głównego widoku” (wybierane w selektorze jako „Widok Główny”).
-- Kliknięcie **Dodaj do listy** sprawdza wartość selektora: jeśli to `main`, element trafia do „Głównego widoku”; w przeciwnym razie trafia do wskazanej listy ulubionych.
-- `moveMainViewItem(itemId, direction)` — przesuwa element w głównym widoku.
-- `removeMainViewItem(itemId)` — usuwa element z głównego widoku.
-- `parseManifest()` — wczytuje i mapuje `AudioManifest.xlsx`.
-- `setModeVisibility()` — ukrywa/pokazuje elementy `.admin-only` (w tym nagłówek admina) oraz ustawia opis nagłówka; widok użytkownika jest zawsze obecny, a w adminie działa jako podgląd.
-- `setUserView(view)` — przełącza widok w user mode (główny vs ulubione).
-- **Nawigacja usera**: kliknięcia w panelu `#userNav` przełączają `state.userView` oraz aktywną listę ulubionych.
-
-## 9. Struktura danych Firestore (`audio/favorites`)
-
-> Uwaga implementacyjna: dokument jest zapisywany jako pełny snapshot ustawień (bez merge), aby operacje usuwania aliasów poprawnie kasowały klucze w mapie `aliases`.
-```json
+```text
 {
-  "favorites": {
-    "lists": [
-      {
-        "id": "uuid",
-        "name": "Ulubione",
-        "itemIds": ["sample-1", "sample-2"]
-      }
-    ]
-  },
-  "mainView": {
-    "itemIds": ["sample-1", "sample-3"]
-  },
-  "aliases": {
-    "sample-1": "Test",
-    "sample-3": "Alias"
-  },
-  "updatedAt": "serverTimestamp"
+  lists: [
+    {
+      id: string,
+      name: string,
+      itemIds: string[]
+    }
+  ]
 }
 ```
 
-## 10. Checklist odtworzenia 1:1
-1. Skopiuj strukturę plików z katalogu `Audio/`.
-2. Dodaj `config/firebase-config.js` z własnymi danymi.
-3. Wgraj `AudioManifest.xlsx` z kolumnami `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`.
-4. Załaduj stronę `Audio/index.html` na serwerze statycznym.
-5. Wejdź na `Audio/index.html?admin=1` i potwierdź, że manifest ładuje się poprawnie (status „Manifest: X pozycji”).
-6. Dodaj kilka SFX do „Głównego widoku” i do list ulubionych — sprawdź zapis w Firestore.
-7. Wejdź na `Audio/index.html` (bez parametru) i zweryfikuj, że użytkownik widzi panel odtwarzania z boczną nawigacją „Widok główny” + listy „Ulubione”.
+Jeżeli lista ulubionych nie istnieje albo jest uszkodzona, `normalizeFavorites(...)` tworzy listę domyślną.
 
-## 11. Troubleshooting
-- **Manifest nie wczytuje się:** sprawdź nazwę pliku (`AudioManifest.xlsx`) i dostępność z serwera statycznego.
-- **Brak połączenia z Firebase:** sprawdź `config/firebase-config.js` i reguły Firestore.
-- **Brak dźwięku:** zweryfikuj poprawność `LinkDoFolderu` i `NazwaPliku` w manifestie.
+## Model `mainView`
 
-## 12. Dokument referencyjny Firebase
-- Pełna specyfikacja konfiguracji Firebase dla modułu Audio została wydzielona do pliku: `Audio/config/Firebase-config.md`.
-- Dokument zawiera:
-  1. Template `firebase-config.js`.
-  2. Oczekiwaną strukturę `audio/favorites` (kolekcja/dokument/pola).
-  3. Skrypt Node.js do inicjalizacji dokumentu.
-  4. Instrukcję konfiguracji krok-po-kroku w języku polskim i angielskim.
+```text
+{
+  itemIds: string[]
+}
+```
 
-## 13. Uzupełnienie: precyzyjne kolory i wartości UI (bez opisów ogólnych)
-- `--bg`: radialne gradienty (`rgba(0,255,128,0.06)` + `rgba(0,255,128,0.08)`) i baza `#031605`.
-- `--panel`: `#000`; `--panel-alt`: `#041b08`.
-- `--border`: `#16c60c`; `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`; `--accent-strong`: `#1ee616`.
-- `--text`: `#9cf09c`; `--muted`: `rgba(156, 240, 156, 0.7)`.
-- `--danger`: `#ff5f5f` (aktywnie odtwarzane SFX i liczniki grup).
-- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`; `--shadow`: `0 8px 24px rgba(0, 0, 0, 0.45)`.
-- `.sample-alias`: `#d2fad2`.
-- Border toolbarów/paneli filtrów: `rgba(22, 198, 12, 0.6)` do `rgba(22, 198, 12, 0.7)` (w zależności od sekcji).
-- Focus ring pól i selectów: zielone obwódki oparte o `rgba(22, 198, 12, 0.25)`.
+`itemIds` przechowuje kolejność dźwięków w widoku głównym użytkownika.
 
-## 14. Uzupełnienie: logika funkcjonalna (pełny przepływ)
-1. Import manifestu XLSX -> normalizacja rekordów -> budowa listy SFX i drzewa tagów.
-2. Nadpisanie aliasów z zapisanych ustawień (`aliases`) po `itemId`.
-3. Render widoku admina i widoku użytkownika z tego samego źródła stanu.
-4. Operacje na listach (`favorites`, `mainView`) z zachowaniem kolejności ręcznej.
-5. Odtwarzanie audio per karta (toggle), niezależne kanały, suwak gain -100%..+100% oraz przełącznik Loop w zwykłym widoku użytkownika, losujący kolejne warianty po zakończeniu pliku.
-6. Zapis zmian do Firestore (`audio/favorites`) lub fallback do `localStorage` (`audio.settings`).
-7. Przełączanie języka równolegle aktualizuje etykiety obu widoków (admin + user preview).
+## Model `aliases`
 
-## 15. Wymagalność Firebase w instrukcji użytkownika
-- `docs/README.md` modułu Audio musi zawierać jasną informację, że Firebase/Firestore jest wymagane do współdzielonych list i ustawień między urządzeniami.
-- Instrukcja użytkowa powinna prowadzić przez pełny proces konsoli Firebase: projekt → aplikacja web → `config/firebase-config.js` → Firestore Database → reguły → test trwałości list.
-## 16. Wdrożenie wielu niezależnych grup
-- W `Audio/index.html` dodano komentarze `WAŻNE/IMPORTANT` przy ładowaniu `config/firebase-config.js` oraz przy walidacji `window.firebaseConfig`.
-- Mechanika:
-  - brak klucza `apiKey` -> moduł przechodzi w tryb lokalny,
-  - poprawny config -> aktywacja Firestore (`audio/favorites`).
-- Dla każdej grupy wymagany jest własny `Audio/config/firebase-config.js`. Może on wskazywać osobny projekt Firebase albo ten sam projekt z odpowiednio rozdzielonymi regułami i przestrzenią danych. Jeżeli grupy mają być w pełni odizolowane bez dodatkowych zmian w ścieżkach danych, najprostsze jest użycie osobnego projektu Firebase.
+```text
+{
+  "item-id": "Alias"
+}
+```
 
+Alias jest przypisywany do SFX po wczytaniu ustawień przez `applyAliasesToItems()`.
 
-W `index.html` oba ukryte przełączniki języka (`#languageSelect` i `#languageSelectUser`) mają komentarz „MIEJSCE ZMIANY WIDOCZNOŚCI…”, który wskazuje dokładny punkt usunięcia klasy `.language-switcher--hidden`.
+Przycisk `Wyczyść wszystkie aliasy` usuwa całą mapę `aliases`, także aliasy dźwięków niewidocznych przez obecny filtr.
 
-## Dodawanie nowej wersji językowej (PL)
+## LocalStorage fallback
 
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
+Jeżeli `window.firebaseConfig` albo `apiKey` nie są dostępne, moduł przechodzi w tryb lokalny.
 
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+Klucz aktualny:
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+```text
+audio.settings
+```
 
+Klucz legacy:
 
-In `index.html`, both hidden language switchers (`#languageSelect` and `#languageSelectUser`) include the “LANGUAGE SWITCHER VISIBILITY CHANGE POINT…” comment indicating the exact place to remove `.language-switcher--hidden`.
+```text
+audio.favorites
+```
 
-## Adding a new language version (EN)
+`loadSettingsLocal()` próbuje wczytać `audio.settings`. Jeżeli go nie ma, próbuje stary klucz `audio.favorites`. W razie błędu tworzy domyślne ustawienia.
 
-This is the update map for adding another language (for example FR/DE):
+## Odtwarzanie audio
 
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
+Odtwarzanie jest zarządzane przez:
 
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+- `activePlayers`,
+- `getAudioContext()`,
+- `pickRandomVariant(...)`,
+- `startPlayback(...)`,
+- `stopPlayback(...)`,
+- `togglePlayback(...)`,
+- `toggleLoop(...)`.
 
+Dźwięk jest odtwarzany przez obiekt `Audio`. Jeżeli przeglądarka obsługuje `AudioContext`, kod tworzy `MediaElementSource` i `GainNode`. Jeżeli nie, używa `audio.volume`.
 
-## Widoczność przełącznika języka / Language switch visibility
-- PL: Przełącznik wyboru języka jest celowo ukryty w interfejsie, ale cały kod tłumaczeń (słowniki, logika `applyLanguage`/`updateLanguage`, aktualizacja etykiet i komunikatów) pozostaje aktywny. Aby ponownie go odkryć, usuń klasę `language-switcher--hidden` z elementu `<div class="language-switcher ...">` w pliku `index.html` tego modułu.
-- EN: The language selector is intentionally hidden in the UI, but all translation code (dictionaries, `applyLanguage`/`updateLanguage` logic, labels/messages refresh) remains active. To reveal it again, remove the `language-switcher--hidden` class from `<div class="language-switcher ...">` in this module's `index.html`.
+## Głośność
+
+Suwak głośności ma zakres:
+
+```text
+-100 .. 100
+```
+
+`volumeToGain(value)` mapuje go na zakres:
+
+```text
+0 .. 2
+```
+
+W trybie WebAudio ta wartość trafia do `gainNode.gain.value`. Bez WebAudio wartość jest ograniczana do zakresu `0..1` i ustawiana jako `audio.volume`.
+
+## Losowanie wariantów
+
+`pickRandomVariant(item, previousUrl)` wybiera losowy URL z `item.variants`.
+
+Jeżeli dźwięk ma więcej niż jeden wariant, funkcja próbuje uniknąć natychmiastowego powtórzenia poprzedniego URL. Po kilku próbach używa fallbacku do dowolnego innego wariantu albo do ostatnio wylosowanej wartości.
+
+## Loop
+
+Przycisk `Loop` jest renderowany tylko w prawdziwym widoku użytkownika bez `?admin=1`.
+
+Zachowanie:
+
+- kliknięcie `Loop` uruchamia dźwięk od razu w trybie pętli,
+- po zdarzeniu `ended` startuje kolejny losowy wariant,
+- ponowne kliknięcie aktywnego `Loop` zatrzymuje pętlę,
+- jeżeli trwa zwykłe odtwarzanie, kliknięcie `Loop` przełącza je w tryb pętli.
+
+Aktywny stan pętli jest oznaczany klasą `is-looping` i `aria-pressed="true"`.
+
+## Renderowanie widoków
+
+`renderAllViews()` odświeża:
+
+- statusy,
+- panel filtrów tagów,
+- widoczność panelu tagów,
+- listę SFX admina,
+- listy ulubionych admina,
+- widok główny admina,
+- widok główny użytkownika,
+- listy ulubionych użytkownika,
+- nawigację użytkownika,
+- aktywne przyciski nawigacji,
+- popup tagów, jeżeli jest otwarty.
+
+## i18n
+
+`translations` zawiera języki:
+
+- `pl`,
+- `en`.
+
+`applyLanguage(lang)` aktualizuje:
+
+- `document.documentElement.lang`,
+- selecty języka admina i użytkownika,
+- tytuły,
+- opisy,
+- placeholdery,
+- przyciski,
+- statusy,
+- puste stany,
+- widoki renderowane dynamicznie.
+
+Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher--hidden`.
+
+## Fallbacki i błędy
+
+| Sytuacja | Zachowanie |
+| --- | --- |
+| Brak `window.firebaseConfig` albo `apiKey` | Moduł używa `localStorage` i pokazuje status lokalnych ustawień. |
+| Brak dokumentu Firestore | Kod tworzy domyślne ustawienia i zapisuje je przez `saveSettings()`. |
+| Uszkodzone ustawienia Firestore/localStorage | Normalizatory tworzą bezpieczne wartości domyślne. |
+| Brak `AudioManifest.xlsx` | Manifest przechodzi w błąd wczytywania. |
+| Pusty manifest | Pokazywany jest błąd braku danych manifestu. |
+| Brak URL audio | Próba odtworzenia pokazuje alert o brakującym linku. |
+| Brak WebAudio | Moduł używa `audio.volume`. |
+| Brak wyników tagów | Pokazywany jest pusty stan filtra tagów. |
+| Brak wyników SFX | Pokazywany jest pusty stan listy SFX. |
+| Dźwięk z listy nie istnieje w manifeście | UI pokazuje tekst `(brak w manifeście)`. |
+
+## Procedura odtworzenia modułu
+
+1. Zachowaj `Audio/index.html`.
+2. Zachowaj `Audio/AudioManifest.xlsx` z wymaganymi kolumnami.
+3. Zachowaj `Audio/config/firebase-config.js`, jeżeli ustawienia mają synchronizować się przez Firebase.
+4. Skonfiguruj Firestore zgodnie z `Audio/config/FirebaseREADME.md`.
+5. Otwórz `Audio/index.html?admin=1`.
+6. Sprawdź wczytanie manifestu.
+7. Dodaj kilka dźwięków do widoku głównego.
+8. Utwórz listę ulubionych i dodaj do niej dźwięki.
+9. Nadaj alias wybranemu SFX.
+10. Otwórz `Audio/index.html`.
+11. Sprawdź widok główny, nawigację, listy i odtwarzanie.
+12. Sprawdź tryb lokalny przez usunięcie albo wyłączenie konfiguracji Firebase.
+
+## Testy kontrolne
+
+| Test | Kroki | Oczekiwany wynik |
+| --- | --- | --- |
+| Start admina | Otwórz `Audio/index.html?admin=1`. | Widać nagłówek, statusy, toolbar, panel tagów, listę SFX, ulubione i widok główny. |
+| Start użytkownika | Otwórz `Audio/index.html`. | Widać tylko widok użytkownika i nawigację. |
+| Manifest | Kliknij `Wczytaj manifest`. | Status pokazuje liczbę pozycji z manifestu. |
+| Filtr SFX | Wpisz frazę w `searchInput`. | Lista SFX admina jest filtrowana. |
+| Filtr tagów | Odznacz tag. | Lista SFX admina ukrywa dźwięki z tym tagiem. |
+| Popup tagów | Kliknij `Filtruj ▾`. | Otwiera się popup z wyszukiwarką i checkboxami. |
+| Widok główny | Dodaj SFX do `Widok Główny`. | Pozycja pojawia się w panelu widoku głównego i w widoku użytkownika. |
+| Lista ulubionych | Utwórz listę i dodaj SFX. | Lista pojawia się w adminie i w nawigacji użytkownika. |
+| Alias | Wpisz alias i opuść pole. | Alias pojawia się przy nazwie SFX. |
+| Wyczyść alias | Kliknij `Wyczyść`. | Alias danego SFX znika. |
+| Wyczyść wszystkie aliasy | Kliknij `Wyczyść wszystkie aliasy` i potwierdź. | Cała mapa aliasów zostaje usunięta. |
+| Odtwarzanie | Kliknij nazwę albo `Odtwórz`. | Dźwięk startuje, a karta dostaje stan odtwarzania. |
+| Zatrzymanie | Kliknij ponownie aktywny dźwięk. | Dźwięk zostaje zatrzymany. |
+| Głośność | Przesuń suwak. | Zmienia się gain lub volume danego odtwarzacza. |
+| Loop | W widoku użytkownika kliknij `Loop`. | Dźwięk gra w pętli z losowaniem wariantów. |
+| Firestore | Skonfiguruj Firebase i zmień listy. | Dokument `audio/favorites` zapisuje `favorites`, `mainView` i `aliases`. |
+| LocalStorage | Usuń konfigurację Firebase i zmień listy. | Ustawienia zapisują się w `audio.settings`. |
+
+---
+
+# 🇬🇧 Technical documentation — Audio (EN)
+
+## Module purpose
+
+`Audio` is a browser-based panel for playing sound effects and managing sound lists used during play.
+
+The module allows the user to:
+
+- load an SFX manifest from `AudioManifest.xlsx`,
+- group variants of the same sound,
+- filter sounds by tags derived from folder paths,
+- add sounds to the main view,
+- create favorite lists,
+- assign SFX aliases,
+- synchronize configuration through Firestore,
+- work locally through `localStorage` when Firebase is not configured,
+- play sounds once or loop them in user view.
+
+The module is a single HTML page with embedded CSS and module JavaScript.
+
+## Entry points
+
+| File | Role |
+| --- | --- |
+| `Audio/index.html` | User view. Shows only the prepared main view and favorite lists. |
+| `Audio/index.html?admin=1` | Admin view. Shows manifest management, filters, lists, aliases, and user-view preview. |
+
+Admin mode is detected through the URL parameter:
+
+```text
+?admin=1
+```
+
+## Module file structure
+
+| File or directory | Responsibility |
+| --- | --- |
+| `Audio/index.html` | Full application: HTML, CSS, JS, SheetJS import, Firebase config import, and Firebase module imports. |
+| `Audio/AudioManifest.xlsx` | Source sound manifest. |
+| `Audio/config/firebase-config.js` | Firebase configuration for Audio settings. |
+| `Audio/config/firebase-config.template.js` | Firebase configuration template. |
+| `Audio/config/FirebaseREADME.md` | Firebase setup guide for Audio. |
+| `Audio/docs/README.md` | User guide. |
+| `Audio/docs/Documentation.md` | This technical documentation. |
+
+## External dependencies
+
+`Audio/index.html` loads:
+
+- Google Fonts `Fira Code`,
+- SheetJS `xlsx.full.min.js 0.18.5`,
+- `config/firebase-config.js`,
+- Firebase modular SDK `12.6.0`:
+  - `firebase-app.js`,
+  - `firebase-firestore.js`.
+
+## View modes
+
+### User view
+
+View without `?admin=1`:
+
+- removes `admin-only` elements,
+- shows only the user interface,
+- shows navigation for main view and favorite lists,
+- allows playback from cards,
+- shows volume sliders,
+- renders the `Loop` button.
+
+### Admin view
+
+View with `?admin=1`:
+
+- removes `user-only` elements,
+- shows header, statuses, and toolbar,
+- shows tag filter panel,
+- shows all SFX from the manifest,
+- allows adding sounds to the main view or favorite lists,
+- allows creating, renaming, deleting, and reordering favorite lists,
+- allows reordering the main view,
+- shows user view preview,
+- does not render `Loop` in the admin preview.
+
+## Main UI sections
+
+### Admin header
+
+Admin header contains:
+
+- title,
+- subtitle,
+- language switcher `languageSelect`,
+- manifest status `manifestStatus`,
+- Firebase status `firebaseStatus`,
+- favorites status `favoritesStatus`.
+
+### Admin toolbar
+
+Toolbar contains:
+
+- `reloadManifest` — reloads `AudioManifest.xlsx`,
+- `addList` — creates a new favorite list,
+- `refreshFavorites` — manually refreshes favorite views.
+
+### Tag filter panel
+
+Tag panel contains:
+
+- `toggleTagPanel` — collapses or expands the panel,
+- `tagSearchInput` — tag search field,
+- `tagFilterMenuButton` — opens filter popup,
+- `tagFilter` — checkbox tag tree,
+- `tagFilterMenu` — popup with search, checkboxes, and bulk actions,
+- `tagMenuSelectAll` — selects all visible tags,
+- `tagMenuClearAll` — clears all visible tags.
+
+Tag filters affect only the admin SFX list. They do not change the user main view or favorite lists.
+
+### Admin SFX list
+
+Admin SFX list uses `samplesGrid`.
+
+Each card shows:
+
+- SFX name,
+- alias in parentheses when present,
+- grouped variant count when the sound has multiple variants,
+- `tag2`, the second tag level,
+- filename or first filename with variant counter,
+- alias input,
+- clear alias button,
+- play button,
+- target list select,
+- add-to-list button.
+
+### Admin favorites panel
+
+`favoritesPanel` shows favorite lists.
+
+For lists, the admin can:
+
+- move the list up or down,
+- rename the list,
+- delete the list,
+- play a sound from the list,
+- move an item up or down,
+- remove an item from the list.
+
+### Admin main view panel
+
+`mainViewPanel` shows the order of sounds in the main view.
+
+For items, the admin can:
+
+- play sound by clicking name or tag,
+- set volume with a slider,
+- move item up or down,
+- remove item from the main view.
+
+### User view
+
+User view contains:
+
+- `userMainView` — current main view,
+- `userFavoritesView` — active favorite list,
+- `userNav` — navigation between main view and lists,
+- `languageSelectUser` — language switcher, currently hidden with `language-switcher--hidden`.
+
+## Application state
+
+Main `state` object contains:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `items` | `array` | SFX list after manifest parsing. |
+| `itemsById` | `Map` | SFX map by `id`. |
+| `favorites` | `object` | Favorite lists. |
+| `mainView` | `object` | Main view ID list. |
+| `aliases` | `object` | Alias per `itemId`. |
+| `firestore` | `object|null` | Firestore instance when Firebase works. |
+| `favoritesDoc` | `object|null` | Reference to `audio/favorites`. |
+| `usingFirestore` | `boolean` | Whether Firestore synchronization is active. |
+| `manifestReady` | `boolean` | Whether manifest loaded successfully. |
+| `userView` | `string` | Current user view: `main` or list. |
+| `activeFavoritesListId` | `string|null` | Active favorite list in user view. |
+| `tagTree` | `array` | Tag tree built from manifest. |
+| `tagSelection` | `Map` | Tag selections. |
+| `tagPanelVisible` | `boolean` | Whether tag panel is expanded. |
+| `tagMenuOpen` | `boolean` | Whether tag popup is open. |
+| `tagMenuSearchTerm` | `string` | Tag popup search phrase. |
+
+Active players are stored outside `state` in:
+
+```text
+activePlayers: Map
+```
+
+## Manifest `AudioManifest.xlsx`
+
+The module fetches manifest with:
+
+```js
+fetch("AudioManifest.xlsx", { cache: "no-store" })
+```
+
+Required columns:
+
+| Column | Description |
+| --- | --- |
+| `NazwaSampla` | Sound name visible in UI. |
+| `NazwaPliku` | Audio filename. |
+| `LinkDoFolderu` | Folder link or path used to build URL and tags. |
+
+Parser uses SheetJS:
+
+```js
+XLSX.read(data, { type: "array" })
+XLSX.utils.sheet_to_json(sheet, { defval: "" })
+```
+
+## SFX model after manifest parsing
+
+After parsing, each SFX has this logical structure:
+
+| Field | Description |
+| --- | --- |
+| `id` | Stabilized slug from name and row index. |
+| `label` | Sound name visible in UI. |
+| `groupCount` | Variant count when several files were grouped. |
+| `alias` | Alias from `state.aliases[item.id]`. |
+| `filename` | Filename or first filename with `(+N)` counter. |
+| `folderUrl` | Source folder path. |
+| `tags` | Tag list extracted from folder path. |
+| `tag2` | Second tag level used as short description. |
+| `tagPaths` | Tag paths used for hierarchical filtering. |
+| `variants` | List of variants `{ filename, fullUrl }`. |
+
+## Variant grouping
+
+If sample name ends with a number, for example `Explosion 1`, `Explosion 2`, the code tries to get a base name through `getGroupingBaseLabel(...)`.
+
+Variants are grouped when:
+
+- they have the same folder,
+- they have the same base name,
+- more than one variant was detected.
+
+For a grouped sound, `variants` stores all URLs and UI shows base name plus variant count.
+
+## Tags
+
+Tags are extracted from `LinkDoFolderu` by `extractTags(...)`.
+
+Tag processing:
+
+- normalizes `/` separators,
+- supports URLs through `new URL(...).pathname`,
+- ignores segments from `TAG_IGNORE_SEGMENTS`, such as `AudioRPG`,
+- removes fragments from `TAG_IGNORE_FRAGMENTS`, such as `SoundPad`, `_Siege_SoundPad`, `Patreon`,
+- converts `_` and `-` to spaces,
+- removes extra whitespace.
+
+Tags are used to build `tagTree`, then a flattened list for the filter popup.
+
+## Firebase and settings model
+
+Firebase configuration is stored in:
+
+```text
+Audio/config/firebase-config.js
+```
+
+The file must define:
+
+```js
+window.firebaseConfig = {
+  apiKey: "...",
+  authDomain: "...",
+  projectId: "...",
+  storageBucket: "...",
+  messagingSenderId: "...",
+  appId: "..."
+};
+```
+
+The code uses Firestore document:
+
+```text
+audio/favorites
+```
+
+Document model:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `favorites` | `object` | Favorite lists object. |
+| `mainView` | `object` | Main view object. |
+| `aliases` | `object` | Alias map per `itemId`. |
+| `updatedAt` | `timestamp` | Firestore server timestamp set on save. |
+
+## `favorites` model
+
+```text
+{
+  lists: [
+    {
+      id: string,
+      name: string,
+      itemIds: string[]
+    }
+  ]
+}
+```
+
+If favorite lists are missing or invalid, `normalizeFavorites(...)` creates a default list.
+
+## `mainView` model
+
+```text
+{
+  itemIds: string[]
+}
+```
+
+`itemIds` stores order of sounds in the user main view.
+
+## `aliases` model
+
+```text
+{
+  "item-id": "Alias"
+}
+```
+
+Alias is assigned to SFX after settings load by `applyAliasesToItems()`.
+
+`Clear all aliases` removes the whole `aliases` map, including aliases for sounds hidden by current filters.
+
+## LocalStorage fallback
+
+If `window.firebaseConfig` or `apiKey` are not available, the module switches to local mode.
+
+Current key:
+
+```text
+audio.settings
+```
+
+Legacy key:
+
+```text
+audio.favorites
+```
+
+`loadSettingsLocal()` tries `audio.settings`. If missing, it tries old key `audio.favorites`. On error it creates default settings.
+
+## Audio playback
+
+Playback is managed by:
+
+- `activePlayers`,
+- `getAudioContext()`,
+- `pickRandomVariant(...)`,
+- `startPlayback(...)`,
+- `stopPlayback(...)`,
+- `togglePlayback(...)`,
+- `toggleLoop(...)`.
+
+Sound is played through an `Audio` object. If the browser supports `AudioContext`, the code creates `MediaElementSource` and `GainNode`. Otherwise it uses `audio.volume`.
+
+## Volume
+
+Volume slider range:
+
+```text
+-100 .. 100
+```
+
+`volumeToGain(value)` maps it to:
+
+```text
+0 .. 2
+```
+
+In WebAudio mode this value is assigned to `gainNode.gain.value`. Without WebAudio, it is clamped to `0..1` and assigned as `audio.volume`.
+
+## Variant randomization
+
+`pickRandomVariant(item, previousUrl)` selects a random URL from `item.variants`.
+
+If a sound has more than one variant, the function tries to avoid immediately repeating the previous URL. After several attempts it falls back to any other variant or the last selected value.
+
+## Loop
+
+`Loop` button is rendered only in real user view without `?admin=1`.
+
+Behavior:
+
+- clicking `Loop` starts sound immediately in loop mode,
+- after `ended`, another random variant starts,
+- clicking active `Loop` again stops the loop,
+- if normal playback is active, clicking `Loop` converts it into loop mode.
+
+Active loop state is marked with class `is-looping` and `aria-pressed="true"`.
+
+## View rendering
+
+`renderAllViews()` refreshes:
+
+- statuses,
+- tag filter panel,
+- tag panel visibility,
+- admin SFX list,
+- admin favorites lists,
+- admin main view,
+- user main view,
+- user favorite lists,
+- user navigation,
+- active navigation buttons,
+- tag popup when open.
+
+## i18n
+
+`translations` contains languages:
+
+- `pl`,
+- `en`.
+
+`applyLanguage(lang)` updates:
+
+- `document.documentElement.lang`,
+- admin and user language selects,
+- titles,
+- subtitles,
+- placeholders,
+- buttons,
+- statuses,
+- empty states,
+- dynamically rendered views.
+
+User language switcher is currently hidden with `language-switcher--hidden`.
+
+## Fallbacks and errors
+
+| Situation | Behavior |
+| --- | --- |
+| Missing `window.firebaseConfig` or `apiKey` | Module uses `localStorage` and displays local settings status. |
+| Missing Firestore document | Code creates default settings and saves them through `saveSettings()`. |
+| Damaged Firestore/localStorage settings | Normalizers create safe defaults. |
+| Missing `AudioManifest.xlsx` | Manifest status switches to load error. |
+| Empty manifest | No-data manifest error is shown. |
+| Missing audio URL | Playback attempt shows missing-link alert. |
+| No WebAudio | Module uses `audio.volume`. |
+| No tag results | Tag filter empty state is shown. |
+| No SFX results | SFX list empty state is shown. |
+| Sound from a list does not exist in manifest | UI displays `(missing in manifest)`. |
+
+## Module recreation procedure
+
+1. Preserve `Audio/index.html`.
+2. Preserve `Audio/AudioManifest.xlsx` with required columns.
+3. Preserve `Audio/config/firebase-config.js` if settings should sync through Firebase.
+4. Configure Firestore according to `Audio/config/FirebaseREADME.md`.
+5. Open `Audio/index.html?admin=1`.
+6. Check manifest loading.
+7. Add several sounds to the main view.
+8. Create a favorite list and add sounds to it.
+9. Assign an alias to selected SFX.
+10. Open `Audio/index.html`.
+11. Check main view, navigation, lists, and playback.
+12. Check local mode by removing or disabling Firebase configuration.
+
+## Control tests
+
+| Test | Steps | Expected result |
+| --- | --- | --- |
+| Admin start | Open `Audio/index.html?admin=1`. | Header, statuses, toolbar, tag panel, SFX list, favorites, and main view are visible. |
+| User start | Open `Audio/index.html`. | Only user view and navigation are visible. |
+| Manifest | Click `Load manifest`. | Status shows manifest item count. |
+| SFX filter | Type phrase in `searchInput`. | Admin SFX list is filtered. |
+| Tag filter | Uncheck a tag. | Admin SFX list hides sounds with that tag. |
+| Tag popup | Click `Filter ▾`. | Popup opens with search and checkboxes. |
+| Main view | Add SFX to `Main view`. | Item appears in admin main view and user view. |
+| Favorite list | Create list and add SFX. | List appears in admin and user navigation. |
+| Alias | Enter alias and leave field. | Alias appears next to SFX name. |
+| Clear alias | Click `Clear`. | Alias for that SFX disappears. |
+| Clear all aliases | Click `Clear all aliases` and confirm. | Whole alias map is removed. |
+| Playback | Click name or `Play`. | Sound starts and card enters playing state. |
+| Stop | Click active sound again. | Sound stops. |
+| Volume | Move slider. | Gain or volume changes for that player. |
+| Loop | In user view, click `Loop`. | Sound loops with randomized variants. |
+| Firestore | Configure Firebase and change lists. | `audio/favorites` saves `favorites`, `mainView`, and `aliases`. |
+| LocalStorage | Remove Firebase config and change lists. | Settings are saved in `audio.settings`. |
