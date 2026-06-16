@@ -1,210 +1,635 @@
-# DiceRoller — dokumentacja techniczna
+# 🇵🇱 Dokumentacja techniczna — DiceRoller (PL)
 
-## 1. Cel modułu
-`DiceRoller` to frontendowy moduł do symulowania testów kości w systemie Wrath & Glory. Aplikacja:
-- pobiera trzy wartości wejściowe od użytkownika,
-- wykonuje losowanie wyników kości (1–6),
-- przelicza punkty sukcesu,
-- wyznacza status testu (sukces/porażka),
-- oblicza możliwe przeniesienie (shift),
-- wyświetla podsumowanie w języku PL lub EN.
+## Cel modułu
 
-## 2. Zakres technologiczny
-- HTML + CSS + JavaScript (bez frameworków).
-- Brak backendu.
-- Brak integracji z Firebase/Firestore/Auth.
-- Brak lokalnej bazy danych (brak `localStorage`/`sessionStorage` dla wyników).
+`DiceRoller` jest statycznym modułem frontendowym do wykonywania rzutów kośćmi dla testów Wrath & Glory.
 
-> Odtworzenie 1:1 wymaga wyłącznie odtworzenia trzech plików modułu i ich wzajemnych odwołań.
+Moduł odpowiada za:
 
-## 3. Struktura plików
-- `DiceRoller/index.html` — struktura widoku i kontenery na dane.
-- `DiceRoller/style.css` — layout, motyw, style pól/przycisków, kości i animacje.
-- `DiceRoller/script.js` — logika walidacji, tłumaczeń, rzutu i podsumowania.
-- `DiceRoller/docs/README.md` — instrukcja użytkownika (PL/EN).
-- `DiceRoller/docs/Documentation.md` — niniejsza dokumentacja techniczna.
+- pobranie od użytkownika Stopnia Trudności, Puli Kości i liczby Kości Furii,
+- walidację i ograniczenie wartości pól,
+- wyrenderowanie kości białych i czerwonych,
+- animację rzutu,
+- losowanie wyników `1..6`,
+- przeliczenie punktów sukcesu,
+- określenie sukcesu albo porażki,
+- wykrycie Komplikacji Furii albo Krytycznej Furii,
+- obliczenie możliwego Przeniesienia,
+- prezentację podsumowania w języku PL albo EN.
 
-## 4. HTML — architektura widoku (`index.html`)
-### 4.1 Kluczowe sekcje
-- `main.app` — główny kontener modułu.
-- `.language-switcher` — przełącznik języka + przycisk powrotu do modułu Main.
-- `header.app__header` — tytuł i podtytuł.
-- `section.panel` — trzy pola liczbowe + przycisk rzutu.
-- `section.results` — kontener kości i panel podsumowania.
+Moduł działa wyłącznie po stronie przeglądarki.
 
-### 4.2 Wejścia użytkownika
-Pola typu `number`:
-- `#difficulty` — stopień trudności,
-- `#pool` — pula kości,
-- `#wrath` — liczba kości furii.
+## Punkty wejścia
 
-Wszystkie pola mają ograniczenia 1–99 i są dodatkowo walidowane w JS.
+Główny plik modułu:
 
-## 5. CSS — layout i styl (`style.css`)
-### 5.1 Motyw
-Moduł używa zielonego motywu terminalowego spójnego z resztą projektu:
-- ciemne tło,
-- zielone obramowania i akcenty,
-- monospace’owe fonty,
-- glow na aktywnych elementach.
+```text
+DiceRoller/index.html
+```
 
-### 5.2 Układ
-- Kontener `.app` ma centralne pozycjonowanie i stałą maksymalną szerokość.
-- Panel `.panel` działa jako responsywny grid.
-- Na ekranach mobilnych przełącznik języka przechodzi do układu statycznego.
+Plik ładuje:
 
-### 5.3 Kości i animacja
-- Kość (`.die`) ma wariant biały i czerwony.
-- Każda kość renderuje 7 punktów (`.pip`) + znak zapytania (`.die__question`).
-- Klasy `face-1` … `face-6` sterują widocznymi punktami.
-- W trakcie `rolling` punkty są ukryte, a widoczny jest znak zapytania.
+```html
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+```
 
-## 6. JavaScript — logika aplikacji (`script.js`)
-### 6.1 Stałe i stan
-Najważniejsze stałe:
-- zakres wejść: 1–99,
-- domyślne wartości: `difficulty=3`, `pool=2`, `wrath=1`,
-- czas animacji rzutu: ~900 ms.
+## Tryby działania
 
-Stan obejmuje:
-- aktualny język,
-- bieżące wartości pól,
-- wynik ostatniego rzutu (prezentowany w DOM).
+Moduł ma jeden tryb użytkownika.
 
-### 6.2 Warstwa i18n
-Obiekt tłumaczeń zawiera etykiety i komunikaty dla PL/EN.
-Zmiana języka:
-1. aktualizuje teksty interfejsu,
-2. ustawia `lang` dokumentu,
-3. resetuje pola i panel wyników.
+Nie posiada:
 
-### 6.3 Walidacja danych wejściowych
-- Funkcje pomocnicze „clamp/sanitize” wymuszają zakres 1–99.
-- Reguła relacyjna: `wrath <= pool`.
-- Walidacja wywoływana przy zmianie pól oraz przed wykonaniem rzutu.
+- trybu admina,
+- logowania,
+- Firebase,
+- backendu,
+- zapisu historii rzutów,
+- importu ani eksportu danych.
 
-### 6.4 Algorytm rzutu
-1. Tworzenie `pool` elementów kości w DOM.
-2. Oznaczenie pierwszych `wrath` kości jako czerwone.
-3. Start animacji.
-4. Po zakończeniu animacji losowanie wartości 1–6 dla każdej kości.
-5. Obliczenie punktów:
-   - 1–3 => 0 pkt,
-   - 4–5 => 1 pkt,
-   - 6 => 2 pkt.
-6. Obliczenie sukcesu: `totalPoints >= difficulty`.
-7. Obliczenie przeniesienia:
-   - `margin = totalPoints - difficulty`,
-   - `totalSixes = liczba wyrzuconych 6`,
-   - `possibleShift = min(totalSixes, floor(margin / 2))`, ale nie mniej niż 0.
-8. Render podsumowania tekstowego.
+Język interfejsu jest wybierany przez `#languageSelect`.
 
-### 6.5 Logika kości furii
-- **Komplikacja Furii**: występuje, gdy przynajmniej jedna czerwona kość ma wynik 1.
-- **Krytyczna Furia**: występuje, gdy wszystkie czerwone kości mają wynik 6.
-- Jeśli czerwonych kości brak, komunikaty furii nie są wyświetlane.
+## Struktura plików
 
-## 7. Integracje zewnętrzne
-- Brak komunikacji HTTP do API biznesowego.
-- Brak Firebase.
-- Brak plików konfiguracyjnych środowiska.
+| Plik | Rola |
+| --- | --- |
+| `DiceRoller/index.html` | Struktura widoku: przełącznik języka, przycisk powrotu, pola, przycisk rzutu i wyniki. |
+| `DiceRoller/style.css` | Motyw terminalowy, layout, style pól, przycisków, kości, animacji i panelu wyniku. |
+| `DiceRoller/script.js` | Stałe, tłumaczenia, walidacja, losowanie, render kości, logika wyniku i event listenery. |
+| `DiceRoller/docs/README.md` | Instrukcja użytkownika PL/EN. |
+| `DiceRoller/docs/Documentation.md` | Niniejsza dokumentacja techniczna PL/EN. |
 
-## 8. Odtworzenie modułu 1:1 (checklista)
-1. Odtwórz strukturę katalogu `DiceRoller/`.
-2. Wstaw pliki `index.html`, `style.css`, `script.js` z tymi samymi selektorami i identyfikatorami.
-3. Zachowaj:
-   - trzy pola wejściowe (difficulty/pool/wrath),
-   - przycisk rzutu,
-   - kontener kości,
-   - kontener podsumowania,
-   - przełącznik języka i przycisk powrotu.
-4. Odwzoruj mapowanie punktów i wzór przeniesienia.
-5. Odwzoruj animację z ukryciem punktów i widocznym `?`.
-6. Zweryfikuj działanie w PL i EN.
+## Zależności
 
-## 9. Test regresji po zmianach
-Minimalny zestaw testów manualnych:
-1. Ustaw `difficulty=3`, `pool=2`, `wrath=1`, wykonaj rzut — brak błędów w konsoli.
-2. Ustaw `pool=2`, wpisz `wrath=5` — wartość furii zostaje skorygowana do 2.
-3. Zmień język PL -> EN — etykiety zmieniają się i formularz resetuje.
-4. Sprawdź mobilnie (<600 px) — układ pozostaje czytelny i responsywny.
+Moduł korzysta wyłącznie ze standardowych API przeglądarki:
 
-## 10. Firebase / Node.js bootstrap
-Dla tego modułu **nie dotyczy**:
-- brak Firebase,
-- brak wymaganej struktury kolekcji,
-- brak skryptu Node.js do bootstrapu danych.
-## 11. Specyfikacja wizualna 1:1 (dokładne wartości, bez skrótów)
-Poniższa sekcja zastępuje ogólne opisy typu „ciemne tło / zielone akcenty” konkretnymi parametrami:
+- DOM API,
+- `Math.random`,
+- `setTimeout`,
+- CSS animations.
 
-### 11.1. Kolory i efekty
-- Tło strony (`--bg`) to 3 warstwy:
-  `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),`
-  `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),`
-  `#031605`.
-- Tło panelu: `#000`.
-- Główna ramka i akcent: `#16c60c`.
-- Ciemniejszy akcent focus/active: `#0d7a07`.
-- Tekst podstawowy: `#9cf09c`.
-- Tekst pomocniczy (`--muted`): `rgba(156, 240, 156, 0.7)`.
-- Glow panelu: `0 0 25px rgba(22, 198, 12, 0.45)`.
-- Focus ring pól/selectów: `0 0 0 2px rgba(22, 198, 12, 0.25)`.
-- Hover przycisku rzutu: `background: rgba(22, 198, 12, 0.14)`, cień `0 0 18px rgba(22, 198, 12, 0.3)`.
-- Active przycisku rzutu: `background: rgba(22, 198, 12, 0.22)`.
+Moduł nie używa:
 
-### 11.2. Kolory kości
-- Kość zwykła: tło `#f6f6f6`, oczka `#111111`, obramowanie `#1c1c1c`.
-- Kość furii: tło `#c01717`, oczka `#ffffff`, obramowanie `#650909`.
-- Cień kości: `inset 0 0 10px rgba(0, 0, 0, 0.2), 0 6px 14px rgba(0, 0, 0, 0.35)`.
+- Firebase,
+- Firestore,
+- Realtime Database,
+- `localStorage`,
+- `sessionStorage`,
+- zewnętrznych bibliotek JavaScript,
+- frameworków frontendowych.
 
-### 11.3. Typografia i rozmiary
-- Globalny stos fontów: `"Consolas", "Fira Code", "Source Code Pro", monospace`.
-- `h1`: `30px`, uppercase, `letter-spacing: 0.05em`.
-- Label pól: `13px`, `font-weight: 600`, uppercase.
-- Wejścia liczbowe: `16px`.
-- Przycisk rzutu: `15px`, `font-weight: 600`, uppercase.
+## Struktura HTML
 
-## 12. Mapa funkcji JS (pełna lista odpowiedzialności)
-- `clampValue(value, min, max)` – ogranicza liczby do zakresu 1..99.
-- `sanitizeField(input)` – normalizuje pojedyncze pole (`parseInt` + clamp + zapis do DOM).
-- `syncPoolAndWrath()` – pilnuje reguły `wrath <= pool`.
-- `createDieElement(isWrath)` – buduje strukturę DOM pojedynczej kości (7 oczek + znak `?`).
-- `setDieFace(die, value)` – przełącza klasę `face-1..face-6`.
-- `rollDie()` – zwraca liczbę losową 1..6.
-- `scoreValue(value)` – mapuje wynik kości na punkty (1-3=0, 4-5=1, 6=2).
-- `buildSummary(payload)` – renderuje pełne podsumowanie testu (nagłówek, furia, shift, lista kości).
-- `resetState()` – resetuje formularz i panel wyników do wartości domyślnych.
-- `updateLanguage(lang)` – podmienia wszystkie etykiety PL/EN i resetuje stan.
-- `handleRoll()` – orkiestracja całego rzutu: walidacja, animacja, losowanie, obliczenia, render.
+Główny kontener:
 
+```html
+<main class="app">
+  ...
+</main>
+```
 
-## 13. Nawigacja „Strona Główna”
-- Przycisk `#mainPageButton` zawiera hiperłącze do `../Main/index.html`.
-- Przy zmianie struktury katalogów lub hosta trzeba zaktualizować `href`, aby zachować poprawny powrót do launchera.
+Najważniejsze elementy DOM:
 
+| Element | Rola |
+| --- | --- |
+| `.app` | Główna karta aplikacji. |
+| `.language-switcher` | Kontener selektora języka i linku do strony głównej. |
+| `#languageSelect` | Selektor języka `pl` / `en`. |
+| `#mainPageButton` | Link do `../Main/index.html`. |
+| `#pageTitle` | Tytuł modułu. |
+| `#subtitle` | Podtytuł modułu. |
+| `.panel` | Grid pól wejściowych i przycisku rzutu. |
+| `#difficulty` | Pole Stopnia Trudności. |
+| `#pool` | Pole Puli Kości. |
+| `#wrath` | Pole liczby Kości Furii. |
+| `#wrathHint` | Podpowiedź przy polu Kości Furii. |
+| `#roll` | Przycisk rzutu. |
+| `.results` | Sekcja wyników. |
+| `#dice` | Kontener wyrenderowanych kości. |
+| `#summary` | Kontener podsumowania testu. |
 
+## Struktura CSS
 
-## Dodawanie nowej wersji językowej (PL)
+### Zmienne motywu
 
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
+| Zmienna | Znaczenie |
+| --- | --- |
+| `--bg` | Tło z radialnymi poświatami i kolorem `#031605`. |
+| `--panel` | Czarne tło panelu. |
+| `--border` | Zielona ramka. |
+| `--text` | Zielony tekst. |
+| `--accent` | Zielony akcent. |
+| `--accent-dark` | Ciemniejszy zielony akcent. |
+| `--muted` | Przygaszony tekst. |
+| `--glow` | Zielona poświata. |
+| `--radius` | Promień zaokrągleń. |
+| `--white-die` | Kolor białej kości. |
+| `--white-pip` | Kolor oczek białej kości. |
+| `--red-die` | Kolor czerwonej kości Furii. |
+| `--red-pip` | Kolor oczek czerwonej kości. |
 
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+Globalny font-stack:
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+```text
+"Consolas", "Fira Code", "Source Code Pro", monospace
+```
 
+Najważniejsze zasady layoutu:
 
-## Adding a new language version (EN)
+- `body` centruje moduł pionowo i poziomo,
+- `.app` ma szerokość `min(860px, 100%)`, czarne tło, zieloną ramkę i poświatę,
+- `.language-switcher` jest pozycjonowany absolutnie w prawym górnym rogu,
+- `.panel` używa `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`,
+- `.dice` używa `flex-wrap`, aby kości zawijały się w wielu wierszach,
+- przy szerokości do `600px` przełącznik języka przechodzi do pozycji statycznej, a kości zmniejszają się z `68px` do `58px`.
 
-This is the update map for adding another language (for example FR/DE):
+## Kości i klasy CSS
 
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
+Każda kość jest tworzona dynamicznie jako:
 
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+```html
+<div class="die white face-1">...</div>
+```
+
+albo:
+
+```html
+<div class="die red face-1">...</div>
+```
+
+Element kości zawiera:
+
+- `.die__question` z symbolem `?`,
+- siedem elementów `.pip` z klasami `pos-1` do `pos-7`.
+
+Klasy `face-1` do `face-6` kontrolują widoczność oczek.
+
+Klasa `rolling`:
+
+- uruchamia animację `roll`,
+- ukrywa oczka,
+- pokazuje znak zapytania.
+
+## Stałe JavaScript
+
+| Stała | Wartość | Znaczenie |
+| --- | --- | --- |
+| `MIN_VALUE` | `1` | Minimalna wartość pól liczbowych. |
+| `MAX_VALUE` | `99` | Maksymalna wartość pól liczbowych. |
+| `DEFAULT_DIFFICULTY` | `3` | Domyślny Stopień Trudności. |
+| `DEFAULT_POOL` | `2` | Domyślna Pula Kości. |
+| `DEFAULT_WRATH` | `1` | Domyślna liczba Kości Furii. |
+| `ROLL_DURATION` | `900` | Czas oczekiwania przed pokazaniem finalnego wyniku. |
+
+## Warstwa i18n
+
+Obiekt `translations` ma klucze:
+
+```js
+translations.pl
+translations.en
+```
+
+Każdy język zawiera:
+
+- `labels` — etykiety interfejsu,
+- `messages` — teksty podsumowania wyniku.
+
+Funkcja `updateLanguage(lang)`:
+
+1. ustawia `currentLanguage`,
+2. aktualizuje `document.documentElement.lang`,
+3. synchronizuje wartość `#languageSelect`,
+4. aktualizuje tytuł, podtytuł, etykiety pól, podpowiedź i przycisk rzutu,
+5. aktualizuje tekst przycisku `#mainPageButton`,
+6. wywołuje `resetState()`.
+
+Zmiana języka zawsze resetuje pola i wynik.
+
+## Walidacja pól
+
+### `clampValue(value, min, max)`
+
+Zwraca wartość ograniczoną do zakresu `min..max`. Jeżeli `value` jest `NaN`, zwraca `min`.
+
+### `sanitizeField(input)`
+
+1. Parsuje wartość pola jako liczbę całkowitą.
+2. Ogranicza ją do zakresu `1..99`.
+3. Nadpisuje wartość pola oczyszczoną liczbą.
+4. Zwraca oczyszczoną wartość.
+
+### `syncPoolAndWrath()`
+
+1. Oczyszcza `#pool`.
+2. Oczyszcza `#wrath`.
+3. Jeżeli `wrath > pool`, ustawia `wrath = pool`.
+4. Zwraca `{ pool, wrath }`.
+
+Dzięki temu liczba Kości Furii nigdy nie przekracza Puli Kości.
+
+## Funkcje renderujące kości
+
+### `createDieElement(isWrath)`
+
+Tworzy element `.die`. Jeżeli `isWrath` jest prawdziwe, kość dostaje klasę `red`. W przeciwnym razie dostaje klasę `white`.
+
+Funkcja dodaje `.die__question` oraz siedem `.pip`.
+
+### `setDieFace(die, value)`
+
+Usuwa klasy `face-1` do `face-6`, a następnie dodaje klasę odpowiadającą finalnemu wynikowi kości.
+
+## Losowanie i punktacja
+
+`rollDie()` zwraca losową liczbę całkowitą od 1 do 6:
+
+```js
+Math.floor(Math.random() * 6) + 1
+```
+
+`scoreValue(value)` przelicza wynik kości na punkty sukcesu:
+
+| Wynik | Punkty |
+| --- | --- |
+| `1..3` | `0` |
+| `4..5` | `1` |
+| `6` | `2` |
+
+## Główna logika rzutu
+
+Funkcja `handleRoll()` wykonuje pełny przebieg rzutu:
+
+1. Oczyszcza `#difficulty`.
+2. Synchronizuje `#pool` i `#wrath`.
+3. Czyści `#dice`.
+4. Ustawia w `#summary` komunikat `Rzut w toku...` / `Rolling the dice...`.
+5. Tworzy tyle elementów kości, ile wynosi `pool`.
+6. Pierwsze `wrath` kości oznacza jako czerwone.
+7. Dodaje każdej kości klasę `rolling`.
+8. Ustawia tymczasowe ściany kości.
+9. Losuje finalne wyniki do tablicy `results`.
+10. Po `ROLL_DURATION` usuwa klasę `rolling`.
+11. Ustawia finalne ściany kości.
+12. Sumuje punkty sukcesu.
+13. Sprawdza sukces przez `totalPoints >= difficulty`.
+14. Analizuje kości Furii.
+15. Oblicza możliwe Przeniesienie.
+16. Wywołuje `buildSummary(...)`.
+
+## Logika Kości Furii
+
+Kości Furii to pierwsze `wrath` wyników z tablicy `results`:
+
+```js
+const wrathResults = results.slice(0, wrath);
+```
+
+Logika:
+
+1. Jeżeli istnieją Kości Furii i wszystkie mają wynik `6`, pojawia się `Krytyczna Furia` / `Wrath Critical`.
+2. W przeciwnym razie, jeżeli którakolwiek Kość Furii ma wynik `1`, pojawia się `Komplikacja Furii` / `Wrath Complication`.
+3. W innych przypadkach `wrathMessage` pozostaje pusty.
+
+## Logika Przeniesienia
+
+Przeniesienie jest liczone tylko przy sukcesie.
+
+```js
+const totalSixes = results.filter((value) => value === 6).length;
+const margin = totalPoints - difficulty;
+const transferable = success
+  ? Math.min(totalSixes, Math.floor(margin / 2))
+  : 0;
+```
+
+Oznacza to, że możliwe Przeniesienie jest ograniczone zarówno liczbą wszystkich szóstek, jak i nadwyżką punktów ponad Stopień Trudności.
+
+## Podsumowanie wyniku
+
+`buildSummary(...)` czyści `#summary` i tworzy:
+
+- nagłówek `Sukces!` albo `Porażka!`,
+- opcjonalny komunikat Furii,
+- opcjonalny komunikat Przeniesienia,
+- szczegóły punktów i Stopnia Trudności,
+- listę wyników każdej kości.
+
+Lista kości ma format:
+
+```text
+Kość 1: 6 (punkty 2)
+```
+
+albo w wersji EN:
+
+```text
+Die 1: 6 (points 2)
+```
+
+## Reset stanu
+
+`resetState()`:
+
+1. ustawia pola na wartości domyślne,
+2. czyści `#dice`,
+3. wstawia placeholder do `#summary`.
+
+Reset jest wykonywany przy zmianie języka.
+
+## Event listenery
+
+| Element | Zdarzenie | Reakcja |
+| --- | --- | --- |
+| `#difficulty` | `change`, `blur` | Oczyszcza wartość do zakresu `1..99`. |
+| `#pool` | `change`, `blur` | Oczyszcza wartość i synchronizuje Kości Furii. |
+| `#wrath` | `change`, `blur` | Oczyszcza wartość i synchronizuje z Pulą Kości. |
+| `#roll` | `click` | Uruchamia `handleRoll()`. |
+| `#languageSelect` | `change` | Uruchamia `updateLanguage(...)`. |
+
+## Inicjalizacja
+
+Na końcu `script.js` wykonywane jest:
+
+```js
+updateLanguage(currentLanguage);
+```
+
+Początkowa wartość:
+
+```js
+let currentLanguage = "pl";
+```
+
+## Fallbacki i ograniczenia
+
+| Sytuacja | Zachowanie |
+| --- | --- |
+| Puste albo niepoprawne pole | Wartość zostaje ustawiona na `1`. |
+| Wartość poniżej `1` | Wartość zostaje ustawiona na `1`. |
+| Wartość powyżej `99` | Wartość zostaje ustawiona na `99`. |
+| `wrath > pool` | `wrath` zostaje zmniejszone do wartości `pool`. |
+| Zmiana języka | Wynik zostaje wyczyszczony, pola wracają do wartości domyślnych. |
+| Brak zapisu historii | Wyniki istnieją tylko w DOM do czasu resetu lub odświeżenia. |
+
+## Procedura odtworzenia modułu
+
+1. Utwórz `DiceRoller/index.html`.
+2. Dodaj kontener `.app`.
+3. Dodaj `.language-switcher` z `#languageSelect` i `#mainPageButton`.
+4. Dodaj nagłówek z `#pageTitle` i `#subtitle`.
+5. Dodaj panel `.panel` z polami `#difficulty`, `#pool`, `#wrath`.
+6. Dodaj przycisk `#roll`.
+7. Dodaj sekcję `.results` z `#dice` i `#summary`.
+8. Utwórz `style.css` z motywem terminalowym, stylem kości i animacją `roll`.
+9. Utwórz `script.js`.
+10. Zdefiniuj stałe zakresów, wartości domyślnych i czasu animacji.
+11. Zdefiniuj `translations.pl` i `translations.en`.
+12. Zaimplementuj walidację pól.
+13. Zaimplementuj tworzenie kości i ustawianie ścian.
+14. Zaimplementuj losowanie i punktację.
+15. Zaimplementuj logikę Furii i Przeniesienia.
+16. Zaimplementuj `buildSummary`.
+17. Podepnij event listenery.
+18. Uruchom testy kontrolne.
+
+## Testy kontrolne
+
+| Test | Kroki | Oczekiwany wynik |
+| --- | --- | --- |
+| Start modułu | Otwórz `DiceRoller/index.html`. | Widoczne są pola startowe i placeholder podsumowania. |
+| Prosty rzut | Kliknij `Rzuć Kośćmi!`. | Pojawiają się kości, animacja i podsumowanie. |
+| Zakres pól | Wpisz `0`, liczbę ujemną albo tekst i opuść pole. | Pole zostaje ustawione na wartość z zakresu, minimum `1`. |
+| Maksimum pól | Wpisz wartość większą niż `99`. | Pole zostaje ustawione na `99`. |
+| Synchronizacja Furii | Ustaw `Pula Kości = 2`, `Ilość Kości Furii = 9`. | Liczba Kości Furii spada do `2`. |
+| Zmiana języka | Zmień język w selektorze. | Teksty zmieniają język, wynik zostaje wyczyszczony. |
+| Kości czerwone | Ustaw kilka Kości Furii. | Pierwsze kości w puli są czerwone. |
+| Przycisk strony głównej | Kliknij `Strona Główna`. | Przeglądarka otwiera `../Main/index.html`. |
+
+---
+
+# 🇬🇧 Technical documentation — DiceRoller (EN)
+
+## Module purpose
+
+`DiceRoller` is a static frontend module for resolving Wrath & Glory dice tests.
+
+The module is responsible for:
+
+- reading Difficulty Number, Dice Pool, and Wrath Dice count from the user,
+- validating and clamping field values,
+- rendering white and red dice,
+- animating the roll,
+- rolling results from `1..6`,
+- converting dice into success points,
+- determining success or failure,
+- detecting Wrath Complication or Wrath Critical,
+- calculating possible Shift,
+- displaying the summary in PL or EN.
+
+The module runs entirely in the browser.
+
+## Entry points
+
+Main module file:
+
+```text
+DiceRoller/index.html
+```
+
+The file loads:
+
+```html
+<link rel="stylesheet" href="style.css">
+<script src="script.js"></script>
+```
+
+## Operating modes
+
+The module has one user mode.
+
+It has no admin mode, login, Firebase, backend, roll history saving, data import, or data export.
+
+Interface language is selected through `#languageSelect`.
+
+## File structure
+
+| File | Role |
+| --- | --- |
+| `DiceRoller/index.html` | View structure: language selector, return button, fields, roll button, and results. |
+| `DiceRoller/style.css` | Terminal theme, layout, field styles, button styles, dice styles, animation, and result panel. |
+| `DiceRoller/script.js` | Constants, translations, validation, rolling, dice rendering, result logic, and event listeners. |
+| `DiceRoller/docs/README.md` | PL/EN user guide. |
+| `DiceRoller/docs/Documentation.md` | This PL/EN technical documentation. |
+
+## Dependencies
+
+The module uses only standard browser APIs:
+
+- DOM API,
+- `Math.random`,
+- `setTimeout`,
+- CSS animations.
+
+The module does not use Firebase, Firestore, Realtime Database, `localStorage`, `sessionStorage`, external JavaScript libraries, or frontend frameworks.
+
+## HTML structure
+
+Main container:
+
+```html
+<main class="app">
+  ...
+</main>
+```
+
+Important DOM elements:
+
+| Element | Role |
+| --- | --- |
+| `.app` | Main application card. |
+| `.language-switcher` | Container for language selector and main page link. |
+| `#languageSelect` | `pl` / `en` language selector. |
+| `#mainPageButton` | Link to `../Main/index.html`. |
+| `#pageTitle` | Module title. |
+| `#subtitle` | Module subtitle. |
+| `.panel` | Grid containing input fields and roll button. |
+| `#difficulty` | Difficulty Number field. |
+| `#pool` | Dice Pool field. |
+| `#wrath` | Wrath Dice count field. |
+| `#wrathHint` | Hint for Wrath Dice field. |
+| `#roll` | Roll button. |
+| `.results` | Result section. |
+| `#dice` | Rendered dice container. |
+| `#summary` | Test summary container. |
+
+## CSS structure
+
+Theme variables define the dark green terminal style, black panel, green borders and text, muted text, glow, dice colors, and responsive sizing.
+
+Global font stack:
+
+```text
+"Consolas", "Fira Code", "Source Code Pro", monospace
+```
+
+Important layout rules:
+
+- `body` centers the module vertically and horizontally,
+- `.app` uses `width: min(860px, 100%)`, black background, green border, and glow,
+- `.language-switcher` is absolutely positioned in the top-right corner,
+- `.panel` uses `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`,
+- `.dice` uses `flex-wrap` so dice wrap across rows,
+- at widths up to `600px`, the language switcher becomes static and dice shrink from `68px` to `58px`.
+
+## Dice rendering
+
+Each die is dynamically created as `.die.white` or `.die.red` with one `.die__question` element and seven `.pip` elements.
+
+Classes `face-1` to `face-6` control visible pips. Class `rolling` starts the `roll` animation, hides pips, and shows the question mark.
+
+## JavaScript constants
+
+| Constant | Value | Meaning |
+| --- | --- | --- |
+| `MIN_VALUE` | `1` | Minimum numeric field value. |
+| `MAX_VALUE` | `99` | Maximum numeric field value. |
+| `DEFAULT_DIFFICULTY` | `3` | Default Difficulty Number. |
+| `DEFAULT_POOL` | `2` | Default Dice Pool. |
+| `DEFAULT_WRATH` | `1` | Default Wrath Dice count. |
+| `ROLL_DURATION` | `900` | Delay before final result is shown. |
+
+## i18n layer
+
+The `translations` object has `pl` and `en` keys. Each language contains `labels` for the interface and `messages` for the summary.
+
+`updateLanguage(lang)` sets the current language, updates `document.documentElement.lang`, updates all visible labels, updates `#mainPageButton`, and calls `resetState()`.
+
+Changing language always resets fields and result.
+
+## Field validation
+
+`clampValue(value, min, max)` returns a value clamped to the `min..max` range. If `value` is `NaN`, it returns `min`.
+
+`sanitizeField(input)` parses an input value as an integer, clamps it to `1..99`, writes it back to the field, and returns it.
+
+`syncPoolAndWrath()` sanitizes `#pool` and `#wrath`, then lowers `wrath` to `pool` when `wrath > pool`.
+
+## Rolling and scoring
+
+`rollDie()` returns a random integer from 1 to 6:
+
+```js
+Math.floor(Math.random() * 6) + 1
+```
+
+`scoreValue(value)` converts dice into points:
+
+| Result | Points |
+| --- | --- |
+| `1..3` | `0` |
+| `4..5` | `1` |
+| `6` | `2` |
+
+## Main roll logic
+
+`handleRoll()` sanitizes fields, creates die elements, marks first `wrath` dice as red, starts animation, rolls final results, waits `ROLL_DURATION`, sets final die faces, sums success points, checks success, analyzes Wrath Dice, calculates Shift, and calls `buildSummary(...)`.
+
+## Wrath Dice logic
+
+Wrath Dice are the first `wrath` results:
+
+```js
+const wrathResults = results.slice(0, wrath);
+```
+
+If all Wrath Dice are `6`, the module shows `Wrath Critical`. Otherwise, if any Wrath Die is `1`, it shows `Wrath Complication`.
+
+## Shift logic
+
+Shift is calculated only on success:
+
+```js
+const totalSixes = results.filter((value) => value === 6).length;
+const margin = totalPoints - difficulty;
+const transferable = success
+  ? Math.min(totalSixes, Math.floor(margin / 2))
+  : 0;
+```
+
+The result is limited by both the number of all sixes and the point margin above Difficulty Number.
+
+## Result summary
+
+`buildSummary(...)` clears `#summary` and creates a success/failure heading, optional Wrath message, optional Shift message, point details, and a list of every die result.
+
+## Event listeners
+
+| Element | Event | Reaction |
+| --- | --- | --- |
+| `#difficulty` | `change`, `blur` | Sanitizes value to `1..99`. |
+| `#pool` | `change`, `blur` | Sanitizes value and synchronizes Wrath Dice. |
+| `#wrath` | `change`, `blur` | Sanitizes value and synchronizes with Dice Pool. |
+| `#roll` | `click` | Runs `handleRoll()`. |
+| `#languageSelect` | `change` | Runs `updateLanguage(...)`. |
+
+## Module reconstruction procedure
+
+1. Create `DiceRoller/index.html`.
+2. Add `.app`, `.language-switcher`, `#languageSelect`, `#mainPageButton`, inputs, `#roll`, `#dice`, and `#summary`.
+3. Create `style.css` with terminal theme, die styles, and the `roll` animation.
+4. Create `script.js` with constants, translations, validation, die rendering, rolling, scoring, Wrath logic, Shift logic, summary rendering, and event listeners.
+5. Run control tests.
+
+## Control tests
+
+| Test | Steps | Expected result |
+| --- | --- | --- |
+| Module start | Open `DiceRoller/index.html`. | Starting fields and summary placeholder are visible. |
+| Simple roll | Click `Roll the dice!`. | Dice, animation, and summary appear. |
+| Field range | Enter `0`, a negative number, or text and leave the field. | Field is set to a valid value, minimum `1`. |
+| Field maximum | Enter a value greater than `99`. | Field is set to `99`. |
+| Wrath synchronization | Set `Dice Pool = 2`, `Number of Wrath Dice = 9`. | Wrath Dice count drops to `2`. |
+| Language change | Change language in the selector. | Text changes language and result is cleared. |
+| Red dice | Set multiple Wrath Dice. | First dice in the pool are red. |
+| Main page button | Click `Main Page`. | Browser opens `../Main/index.html`. |
