@@ -1287,3 +1287,84 @@ Jest: kolekcje GeneratorNPC są pobierane wyłącznie z dokładnych nazw arkuszy
 ### Pliki dokumentacji i artefaktów
 
 Zaktualizowano dokumentację DataVault, GeneratorNPC, `Kolumny.md`, `DetaleLayout.md` i `DataVault/docs/ZasadyFormatowania.md`. Wygenerowano `Analizy/data.json` i `Analizy/firebase-import.json` na podstawie `Analizy/Repozytorium.xlsx`.
+
+## Aktualizacja — kolumna `Koszt IM` w arkuszu `Pojazdy`
+
+W arkuszu `Pojazdy` dodano kolumnę:
+
+| Kolumna | Znaczenie |
+| --- | --- |
+| `Koszt IM` | Koszt w punktach Majątku / Influence, analogiczny do istniejącej kolumny `Koszt IM` w arkuszach ekwipunku, pancerzy, broni oraz nowych arkuszach pojazdów. |
+
+Kolumna `Koszt IM` w `Pojazdy` ma być traktowana jako zwykła kolumna danych:
+
+* ma zostać zachowana podczas generowania `data.json`;
+* ma zostać zachowana podczas generowania `firebase-import.json`;
+* ma pojawić się w `_meta.columnOrder` dla arkusza `Pojazdy`;
+* ma być widoczna w tabeli DataVault;
+* ma być widoczna w porównaniu rekordów;
+* ma być widoczna w `Widoku Domyślnym` i `Pełnym Widoku`;
+* nie jest kolumną techniczną;
+* nie podlega scalaniu;
+* nie jest klikalna;
+* nie wymaga popovera ani dodatkowego resolvera.
+
+Docelowa kolejność kolumny w arkuszu `Pojazdy`:
+
+| Przed | Nowa kolumna | Po |
+| --- | --- | --- |
+| `Wyposażenie` | `Koszt IM` | `Podręcznik` |
+
+### Konfiguracja wizualna
+
+Kolumna `Koszt IM` w arkuszu `Pojazdy` ma używać tej samej konfiguracji co inne kolumny `Koszt IM` w module.
+
+| Arkusz | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | ---: | --- | --- | --- |
+| `Pojazdy` | `Koszt IM` | `8ch` | brak | środek | standardowe |
+
+Uzasadnienie:
+
+* `Koszt IM` jest krótką wartością kosztową, zwykle liczbową albo `-`;
+* istniejące kolumny `Koszt IM` w module używają szerokości `8ch`;
+* wartości kosztowe są zgodnie z ogólną zasadą wyśrodkowane;
+* nie ma potrzeby wymuszania `white-space: nowrap`, bo wartości są krótkie;
+* nie należy jej grupować z parametrami pojazdu ustawionymi na `10ch`, ponieważ `Koszt IM` powinien pozostać spójny z pozostałymi kolumnami `Koszt IM`.
+
+### Aktualizacja sekcji 20.5. `Pojazdy`
+
+W tabeli konfiguracji kolumn arkusza `Pojazdy` należy dodać wiersz:
+
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | ---: | --- | --- |
+| `Koszt IM` | `8ch` | środek | standardowe |
+
+Rekomendowane miejsce w tabeli: po `Wyposażenie`, przed `Podręcznik`.
+
+### Aktualizacja `Kolumny.md`
+
+W sekcji `Pojazdy` należy dodać punkt:
+
+* `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
+
+Rekomendowane miejsce: po punkcie dotyczącym `Wyposażenie`, przed `Podręcznik`.
+
+### Aktualizacja `DataVault/style.css`
+
+Należy dodać `Pojazdy/Koszt IM` do reguły kolumn kosztowych pojazdów ustawionych na `min-width: 8ch` i `text-align: center`.
+
+Docelowo `Koszt IM` dla `Pojazdy` powinien być objęty tą samą logiką wizualną co:
+
+* `Bronie Pojazdów` → `Koszt IM`;
+* `Ekwipunek Pojazdów` → `Koszt IM`.
+
+### Aktualizacja testów po wdrożeniu
+
+W sekcji testów kolumn i widoków należy dopisać:
+
+* `Koszt IM` w `Pojazdy` jest widoczne po wygenerowaniu danych z XLSX;
+* `Koszt IM` w `Pojazdy` znajduje się w `_meta.columnOrder`;
+* `Koszt IM` w `Pojazdy` ma min. `8ch`, tekst wyśrodkowany i standardowe łamanie;
+* `Koszt IM` w `Pojazdy` pojawia się w tabeli, porównaniu rekordów, `Widoku Domyślnym` i `Pełnym Widoku`;
+* dodanie `Koszt IM` do `Pojazdy` nie wpływa na scalanie `Cecha N` do `Cechy`;
+* dodanie `Koszt IM` do `Pojazdy` nie wpływa na GeneratorNPC.
