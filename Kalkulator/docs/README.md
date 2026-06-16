@@ -39,21 +39,6 @@ Na stronie startowej znajdziesz:
 - logo modułu,
 - przycisk `Kalkulator PD`,
 - przycisk `Tworzenie Postaci`,
-- tajny przycisk z ukrytą animacją.
-
-Kliknij nazwę narzędzia, którego chcesz użyć.
-
-## Tajny przycisk
-
-Na stronie startowej znajduje się przycisk typu easter egg.
-
-Po kliknięciu otwiera się nakładka z animacją.
-
-Możesz ją zamknąć:
-
-- przyciskiem `Zamknij`,
-- kliknięciem tła poza oknem,
-- klawiszem `Escape`.
 
 ## Kalkulator PD — do czego służy
 
