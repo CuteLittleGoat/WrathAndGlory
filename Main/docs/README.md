@@ -1,142 +1,299 @@
-# Main — instrukcja użytkownika / User Guide
+# 🇵🇱 Instrukcja użytkownika — Main (PL)
 
-## 🇵🇱 Instrukcja dla użytkownika (PL)
+## Do czego służy Main
 
-### Do czego służy strona Main
-Moduł **Main** to ekran startowy całego pakietu Wrath & Glory. Z tego miejsca uruchamiasz pozostałe moduły jednym kliknięciem.
+`Main` to strona startowa całego pakietu narzędzi `Wrath & Glory`.
 
-### Jak otworzyć
+Służy jako centrum uruchamiania pozostałych modułów. Z jednego miejsca możesz przejść do:
+
+- Infoczytnika,
+- Skarbca Danych,
+- Kalkulatora,
+- Rzutu kośćmi,
+- Mapy,
+- Obrazków,
+- a w trybie admina także do Generatora Nazw, Generatora NPC i Audio.
+
+## Jak otworzyć
+
+Widok standardowy:
+
+```text
+Main/index.html
+```
+
+Widok admina:
+
+```text
+Main/index.html?admin=1
+```
+
+Widok standardowy jest przeznaczony do zwykłego używania podczas sesji.
+
+Widok admina pokazuje dodatkowe narzędzia i linkuje wybrane moduły w ich trybach rozszerzonych.
+
+## Widok standardowy
+
+W trybie standardowym zobaczysz:
+
+- logo aplikacji,
+- przycisk `Infoczytnik`,
+- przycisk `Skarbiec Danych`,
+- przycisk `Obrazki`,
+- przycisk `Mapa`,
+- przycisk `Kalkulator`,
+- przycisk `Rzut kośćmi`.
+
+To jest najprostszy widok dla gracza albo prowadzącego, który nie potrzebuje paneli administracyjnych.
+
+## Widok admina
+
+W trybie admina zobaczysz dodatkowo:
+
+- `Generator Nazw`,
+- `Generator NPC`,
+- `Audio`,
+- krótkie notatki o wejściu do paneli admina w obsługiwanych modułach.
+
+W trybie admina link `Infoczytnik` prowadzi do strony wyboru wersji produkcyjnej/testowej Infoczytnika.
+
+W trybie admina link `Skarbiec Danych` otwiera DataVault z parametrem:
+
+```text
+?admin=1
+```
+
+## Co robią przyciski
+
+| Przycisk | Działanie |
+| --- | --- |
+| `Infoczytnik` | Otwiera ekran komunikatów fabularnych albo stronę wyboru Infoczytnika w trybie admina. |
+| `Skarbiec Danych` | Otwiera DataVault, czyli przeglądarkę prywatnych danych. |
+| `Generator Nazw` | Otwiera generator nazw. Widoczny tylko w trybie admina. |
+| `Generator NPC` | Otwiera generator kart NPC. Widoczny tylko w trybie admina. |
+| `Audio` | Otwiera panel dźwięków. Widoczny tylko w trybie admina. |
+| `Obrazki` | Otwiera zewnętrzny link do obrazków w nowej karcie. |
+| `Mapa` | Otwiera zewnętrzny link do mapy w nowej karcie. |
+| `Kalkulator` | Otwiera moduł kalkulatorów. |
+| `Rzut kośćmi` | Otwiera DiceRoller. |
+
+## Linki zewnętrzne: Mapa i Obrazki
+
+Przyciski `Mapa` i `Obrazki` są linkami zewnętrznymi.
+
+Otwierają się w nowej karcie.
+
+Ich adresy są pobierane dynamicznie z pliku:
+
+```text
+Main/ZmienneHiperlacza.md
+```
+
+Jeżeli linki nie działają, prawdopodobnie ten plik jest niedostępny albo nie zawiera poprawnych adresów.
+
+## Praca podczas sesji
+
+Najprostszy sposób użycia:
+
 1. Otwórz `Main/index.html`.
-2. Jeśli potrzebujesz trybu rozszerzonego, dopisz do adresu `?admin=1`.
+2. Zostaw Main jako centrum sterowania.
+3. Otwieraj potrzebne moduły kliknięciem.
+4. Do Mapy i Obrazków przechodź w osobnych kartach.
+5. Wracaj do Main, gdy chcesz zmienić narzędzie.
 
-### Co zobaczysz w trybie standardowym
-- Logo aplikacji.
-- Siatkę przycisków modułów podstawowych.
+W trybie prowadzącego możesz zamiast tego otworzyć:
 
-### Co dodatkowo zobaczysz w trybie admin (`?admin=1`)
-- Dodatkowe przyciski modułów: **Generator Nazw**, **Generator NPC**, **Audio**.
-- Linki do modułów otwierają wersje rozszerzone tam, gdzie to obsługiwane.
+```text
+Main/index.html?admin=1
+```
 
-### Co robi każdy przycisk
-- **Infoczytnik** – przejście do modułu komunikatów.
-- **Skarbiec Danych** – otwiera DataVault.
-- **Generator Nazw** (admin) – uruchamia generator nazw.
-- **Generator NPC** (admin) – uruchamia generator kart NPC.
-- **Audio** (admin) – uruchamia moduł dźwięków.
-- **Obrazki** – otwiera zewnętrzny link do kanału obrazków.
-- **Mapa** – otwiera zewnętrzny link do mapy.
-- **Kalkulator** – otwiera moduł kalkulatora.
-- **Rzut kośćmi** – otwiera DiceRoller.
+Dzięki temu masz szybki dostęp do narzędzi administracyjnych.
 
-### Jak korzystać podczas sesji
-1. Otwórz Main jako „centrum sterowania”.
-2. Wejdź do potrzebnego modułu jednym kliknięciem.
-3. Wracaj do Main, gdy przełączasz się między narzędziami.
-4. Korzystaj z przycisków modułów, aby przejść do odpowiednich narzędzi.
+## Różnica między przejściami lokalnymi i nową kartą
 
-### Wskazówki
-- **Mapa** i **Obrazki** otwierają się w nowej karcie.
-- Pozostałe moduły działają jak zwykłe przejścia w ramach aplikacji.
-- Gdy potrzebujesz opcji administracyjnych, zawsze sprawdź, czy adres kończy się na `?admin=1`.
+Większość modułów otwiera się w tej samej karcie.
+
+`Mapa` i `Obrazki` otwierają się w nowej karcie, ponieważ są linkami zewnętrznymi.
+
+## Czyszczenie starych Service Workerów
+
+Strona Main automatycznie próbuje wyrejestrować stare Service Workery.
+
+Dzięki temu pakiet narzędzi działa jako aplikacja online i nie powinien korzystać z przestarzałej wersji zapisanej w cache przeglądarki.
+
+Jeżeli mimo tego widzisz starą wersję strony, odśwież ją ręcznie skrótem:
+
+```text
+Ctrl + F5
+```
+
+albo wyczyść dane strony w przeglądarce.
+
+## Typowe problemy i co zrobić
+
+| Problem | Możliwa przyczyna | Co zrobić |
+| --- | --- | --- |
+| Nie widać `Generator Nazw`, `Generator NPC` albo `Audio` | Otwarty jest widok standardowy. | Dopisz do adresu `?admin=1`. |
+| `Mapa` albo `Obrazki` nie otwierają poprawnej strony | Brak albo błędna konfiguracja w `ZmienneHiperlacza.md`. | Zgłoś adminowi albo popraw konfigurację linków. |
+| Przycisk prowadzi do starej wersji modułu | Przeglądarka trzyma cache. | Odśwież przez `Ctrl + F5`. |
+| Infoczytnik otwiera inny ekran niż oczekiwano | Tryb standardowy i admin prowadzą do innych punktów Infoczytnika. | Użyj `Main/index.html?admin=1`, jeśli potrzebujesz wyboru GM/test/produkcja. |
+| Skarbiec Danych nie pokazuje panelu admina | Otwarty jest zwykły link DataVault. | Otwórz Main w trybie admina albo dopisz `?admin=1` w DataVault. |
+
+## Krótki workflow
+
+1. Otwórz `Main/index.html`.
+2. Kliknij potrzebny moduł.
+3. Użyj nowej karty dla Mapy albo Obrazków.
+4. Wróć do Main, aby uruchomić kolejne narzędzie.
+5. Otwórz `Main/index.html?admin=1`, gdy potrzebujesz dodatkowych narzędzi.
 
 ---
 
-### Ważne przy kopiowaniu modułu Main na inny serwer
-Jeżeli kopiujesz aplikację dla innej grupy lub na inną domenę/serwer, **musisz zaktualizować linki zewnętrzne** używane przez przyciski **Mapa** i **Obrazki**.
+# 🇬🇧 User guide — Main (EN)
 
-Kroki:
-1. Otwórz plik `Main/ZmienneHiperlacza.md`.
-2. Podmień adresy URL dla pozycji odpowiadających mapie i obrazkom na nowe adresy docelowe.
-3. Zapisz plik.
-4. Odśwież `Main/index.html` i kliknij **Mapa** oraz **Obrazki**.
-5. Sprawdź, czy otwierają właściwe strony dla nowej grupy.
+## What Main is for
 
----
+`Main` is the start page for the whole `Wrath & Glory` toolkit.
 
-## Konfiguracja dla wielu grup (oddzielne serwery)
-Przy kopiowaniu modułu **Main** dla nowej grupy:
-- Ustaw własne adresy dla **Mapa** i **Obrazki** w pliku `Main/ZmienneHiperlacza.md`.
-- Sprawdź w `Main/index.html`, czy wszystkie odnośniki do modułów wskazują poprawne lokalizacje na nowym serwerze.
-- Po zmianach odśwież stronę i kliknij każdy przycisk, aby potwierdzić poprawną nawigację.
+It is the launch center for other modules. From one place you can open:
 
----
+- Infoczytnik,
+- DataVault,
+- Calculator,
+- DiceRoller,
+- Map,
+- Images,
+- and, in admin mode, Name Generator, NPC Generator, and Audio.
 
-## Dodawanie nowej wersji językowej (PL)
+## How to open
 
-To jest mapa miejsc, które trzeba zaktualizować przy dodaniu kolejnego języka (np. FR/DE):
+Standard view:
 
-1. **Kod modułu**: znajdź obiekt/słownik tłumaczeń (`translations`) oraz funkcję przełączającą język (`applyLanguage` / `updateLanguage`).
-2. **Selektor języka**: jeśli moduł ma menu języka, dopisz nową opcję w `<select>` i upewnij się, że po zmianie języka odświeżane są wszystkie etykiety oraz komunikaty.
-3. **Treści stałe bez przełącznika**: w modułach bez menu językowego (np. Main) ręcznie zaktualizuj napisy przycisków i opisy.
-4. **Instrukcje/PDF**: jeśli moduł otwiera instrukcję zależną od języka, dodaj odpowiedni plik dla nowego języka.
-5. **Test użytkownika**: przejdź cały moduł po zmianie języka i sprawdź: przyciski, statusy, błędy, komunikaty potwierdzeń, puste stany, eksport/druk.
+```text
+Main/index.html
+```
 
-Miejsca w kodzie zostały oznaczone komentarzem: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+Admin view:
 
-## 🇬🇧 User instructions (EN)
+```text
+Main/index.html?admin=1
+```
 
-### What Main is for
-The **Main** module is the launcher for the whole Wrath & Glory toolkit. Open other modules from here with one click.
+Standard view is meant for normal session use.
 
-### How to open
+Admin view shows additional tools and links selected modules in their extended modes.
+
+## Standard view
+
+In standard mode you will see:
+
+- application logo,
+- `Infoczytnik` button,
+- `DataVault` button,
+- `Images` button,
+- `Map` button,
+- `Calculator` button,
+- `DiceRoller` button.
+
+This is the simplest view for a player or GM who does not need administrative panels.
+
+## Admin view
+
+In admin mode you will additionally see:
+
+- `Name Generator`,
+- `NPC Generator`,
+- `Audio`,
+- short notes about opening admin panels in supported modules.
+
+In admin mode, `Infoczytnik` opens the Infoczytnik production/test selection page.
+
+In admin mode, `DataVault` opens DataVault with parameter:
+
+```text
+?admin=1
+```
+
+## Button actions
+
+| Button | Action |
+| --- | --- |
+| `Infoczytnik` | Opens the narrative message screen or Infoczytnik selection page in admin mode. |
+| `DataVault` | Opens DataVault, the private data browser. |
+| `Name Generator` | Opens the name generator. Visible only in admin mode. |
+| `NPC Generator` | Opens the NPC card generator. Visible only in admin mode. |
+| `Audio` | Opens the sound panel. Visible only in admin mode. |
+| `Images` | Opens an external images link in a new tab. |
+| `Map` | Opens an external map link in a new tab. |
+| `Calculator` | Opens calculator module. |
+| `DiceRoller` | Opens DiceRoller. |
+
+## External links: Map and Images
+
+`Map` and `Images` are external links.
+
+They open in a new tab.
+
+Their URLs are loaded dynamically from:
+
+```text
+Main/ZmienneHiperlacza.md
+```
+
+If these links do not work, this file is probably missing or does not contain valid URLs.
+
+## Session use
+
+Simplest usage:
+
 1. Open `Main/index.html`.
-2. For extended mode, append `?admin=1`.
+2. Keep Main as your control center.
+3. Open needed modules with one click.
+4. Use separate tabs for Map and Images.
+5. Return to Main when switching tools.
 
-### What you see in standard mode
-- App logo.
-- Grid of core module buttons.
+For GM/admin work, open instead:
 
-### Extra in admin mode (`?admin=1`)
-- Additional module buttons: **Name Generator**, **NPC Generator**, **Audio**.
-- Where supported, links open extended/admin-capable module entry points.
+```text
+Main/index.html?admin=1
+```
 
-### What each button does
-- **Infoczytnik** – opens message display module.
-- **DataVault** – opens knowledge/data browser.
-- **Name Generator** (admin) – opens naming tool.
-- **NPC Generator** (admin) – opens NPC card builder.
-- **Audio** (admin) – opens sound effects module.
-- **Images** – opens external images channel.
-- **Map** – opens external map room.
-- **Calculator** – opens calculator module.
-- **DiceRoller** – opens dice module.
+This gives quick access to administrative tools.
 
-### Session workflow suggestion
-1. Keep Main open as your control center.
-2. Open modules as needed with single clicks.
-3. Return to Main when switching tools.
-4. Use module buttons to move quickly between tools during the session.
+## Difference between local navigation and new tab
 
-### Tips
-- **Map** and **Images** open in a new tab.
-- Other modules open as standard in-app navigation.
-- For admin-only options, verify URL includes `?admin=1`.
+Most modules open in the same tab.
 
-### Important when copying Main to another server
-If you copy the app for a different group or another domain/server, you **must update external links** used by **Map** and **Images** buttons.
+`Map` and `Images` open in a new tab because they are external links.
 
-Steps:
-1. Open `Main/ZmienneHiperlacza.md`.
-2. Replace URLs for map/images entries with new target links.
-3. Save the file.
-4. Refresh `Main/index.html` and click **Map** and **Images**.
-5. Confirm they open correct destinations for the new group.
-## Multi-group setup (separate servers)
-When copying the **Main** module for a new group:
-- Set group-specific **Map** and **Images** URLs in `Main/ZmienneHiperlacza.md`.
-- Verify in `Main/index.html` that all module links point to valid locations on the new server.
-- Refresh the page and click every button to confirm navigation works correctly.
+## Old Service Worker cleanup
 
+Main automatically tries to unregister old Service Workers.
 
-## Adding a new language version (EN)
+This helps the toolkit work as an online application and avoid stale versions cached by the browser.
 
-This is the update map for adding another language (for example FR/DE):
+If you still see an old page version, hard-refresh it with:
 
-1. **Module code**: find the translation dictionary/object (`translations`) and language switch function (`applyLanguage` / `updateLanguage`).
-2. **Language selector**: if the module has a language menu, add a new `<select>` option and make sure all labels/messages refresh after switching.
-3. **Static texts without selector**: in modules without a language menu (for example Main), manually update button and description texts.
-4. **Manuals/PDF files**: if the module opens language-specific manuals, add the matching file for the new language.
-5. **User flow check**: test the whole module after switching language: buttons, statuses, errors, confirmations, empty states, export/print.
+```text
+Ctrl + F5
+```
 
-Code locations are marked with the comment: **`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`**.
+or clear site data in the browser.
 
+## Common problems and what to do
+
+| Problem | Possible cause | What to do |
+| --- | --- | --- |
+| `Name Generator`, `NPC Generator`, or `Audio` are not visible | Standard view is open. | Add `?admin=1` to the URL. |
+| `Map` or `Images` opens the wrong page | Missing or wrong configuration in `ZmienneHiperlacza.md`. | Contact admin or fix link configuration. |
+| A button opens an old module version | Browser cache is stale. | Refresh with `Ctrl + F5`. |
+| Infoczytnik opens a different screen than expected | Standard and admin modes link to different Infoczytnik entry points. | Use `Main/index.html?admin=1` if you need GM/test/production selection. |
+| DataVault does not show admin panel | Normal DataVault link is open. | Open Main in admin mode or add `?admin=1` in DataVault. |
+
+## Quick workflow
+
+1. Open `Main/index.html`.
+2. Click the module you need.
+3. Use a new tab for Map or Images.
+4. Return to Main to open another tool.
+5. Open `Main/index.html?admin=1` when you need additional tools.
