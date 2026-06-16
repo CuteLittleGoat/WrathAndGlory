@@ -209,6 +209,8 @@ Kod dzieli arkusze na grupy logiczne.
 - `Bronie Pojazdów`,
 - `Ekwipunek Pojazdów`.
 
+W konfiguracji CSS arkuszy pojazdów kolumna `Koszt IM` arkusza `Pojazdy` jest zwykłą, widoczną kolumną danych. Używa szerokości `min-width: 8ch`, wyrównania do środka i standardowego łamania tekstu, tak jak kosztowe kolumny `Koszt IM` w `Bronie Pojazdów` oraz `Ekwipunek Pojazdów`. Nie ma reguły `white-space: nowrap`, nie jest ukrywana, nie jest scalana i nie wymaga osobnego resolvera popovera.
+
 ## Stan aplikacji
 
 Najważniejsze zmienne stanu:
@@ -760,6 +762,8 @@ The code divides sheets into logical groups.
 - `Pojazdy`,
 - `Bronie Pojazdów`,
 - `Ekwipunek Pojazdów`.
+
+In the vehicle-sheet CSS configuration, the `Koszt IM` column in the `Pojazdy` sheet is a regular visible data column. It uses `min-width: 8ch`, centered text, and standard wrapping, like the `Koszt IM` cost columns in `Bronie Pojazdów` and `Ekwipunek Pojazdów`. It has no `white-space: nowrap` rule, is not hidden, is not merged, and does not require a separate popover resolver.
 
 ## Application state
 

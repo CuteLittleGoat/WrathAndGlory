@@ -362,6 +362,7 @@ Kolumna `LP` pozostaje w danych jako kolejność techniczna, ale nie jest render
 - `Cechy`: min. `32ch`, tekst do lewej, wartości z `Cecha N` scalone separatorem `; `.
 - `Uzbrojenie`: min. `36ch`, tekst do lewej.
 - `Wyposażenie`: min. `32ch`, tekst do lewej.
+- `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
 - `Podręcznik`: standard globalny, tekst do lewej.
 - `Strona`: standard globalny, tekst wyśrodkowany.
 
