@@ -179,6 +179,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 
 ### 3) Zasady formatowania tekstu i wyjątki
 - We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, lewo, standardowe łamanie, brak max-width).
+- Zakładka DataVault `Notatki` ma własne szerokości kolumn: `Nazwa` min 26ch, `Opis` min 56ch, `Podręcznik` min 17ch oraz `Strona` min 6ch z wyrównaniem do środka; długie wartości w tych kolumnach mogą zawijać się do kolejnych linii.
 - Wartości kolumny `Strona` mają kolor `--code` (`#D2FAD2`), taki sam jak referencje `(str.)` (`.ref`).
 #### 3.1 Zwykły tekst i łamanie linii
 - Komórki używają `.celltext`:

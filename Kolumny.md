@@ -12,9 +12,10 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 ## Notatki
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Co | 20ch | auto | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | 6ch | auto | lewo | standard |
+| Nazwa | 26ch | auto | lewo | standard |
+| Opis | 56ch | auto | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | auto | środek | standard |
 
 ## Bestiariusz
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
