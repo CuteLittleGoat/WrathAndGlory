@@ -1541,3 +1541,330 @@ Do wykonania w najbliższej kolejności:
 - przygotować `Infoczytnik/docs/Documentation.md`,
 - następnie poprawić pozostałe krytyczne dokumenty Firebase,
 - następnie przejść do README dużych modułów.
+
+---
+
+## 16. Aktualizacja statusu prac nad dokumentacją
+
+**Data aktualizacji:** 2026-06-16  
+**Zakres aktualizacji:** podsumowanie wykonanych poprawek dokumentacji i aktualna lista zadań  
+**Status:** Etap 2 — dokumenty Firebase i błędy krytyczne jest w toku  
+
+Po przyjęciu standardu dokumentacji rozpoczęto realizację planu napraw wskazanego w audycie. Prace są prowadzone zgodnie z zasadą: najpierw dokumenty krytyczne i dokumenty Firebase, następnie dokumentacja techniczna dużych modułów, a dopiero potem instrukcje użytkownika `README.md`.
+
+---
+
+### 16.1. Przyjęty standard dokumentacji
+
+Utworzono i zaakceptowano plik:
+
+`docs-standard.md`
+
+Commit:
+
+`c983190800cf62c518f4ecbf4ee4975beee9c70c`
+
+Plik definiuje wspólny standard dla:
+
+- `docs/README.md`,
+- `docs/Documentation.md`,
+- `config/FirebaseREADME.md`.
+
+Standard określa między innymi:
+
+- obowiązek opisywania aktualnego stanu modułu,
+- zakaz tworzenia dokumentacji w formie changeloga,
+- pełny układ PL/EN,
+- rolę `README.md` jako instrukcji użytkownika,
+- rolę `Documentation.md` jako dokumentacji technicznej,
+- rolę `FirebaseREADME.md` jako instrukcji konfiguracji Firebase,
+- checklistę akceptacji dokumentacji.
+
+Status: wykonane.
+
+---
+
+### 16.2. Sprawdzenie `AGENTS.md`
+
+Sprawdzono główny plik:
+
+`AGENTS.md`
+
+Wniosek:
+
+- plik jest zgodny z obecnym celem projektu,
+- nie blokuje prac nad poprawą dokumentacji,
+- potwierdza wymóg pełnej dokumentacji PL/EN,
+- potwierdza podział na instrukcje użytkownika i dokumentację techniczną,
+- zabrania edycji plików `AGENTS.md`,
+- wymaga ostrożności przy lokalnych instrukcjach w podfolderach.
+
+Status: wykonane.
+
+---
+
+### 16.3. Poprawione pliki
+
+#### `Infoczytnik/config/FirebaseREADME.md`
+
+Commit:
+
+`5e9add68a4280c960c3f3f6d8087025442564024`
+
+Poprawiono dokumentację Firebase modułu `Infoczytnik`.
+
+Najważniejsze zmiany:
+
+- opisano aktualne użycie Firestore,
+- opisano dokument `dataslate/current`,
+- opisano typy akcji `message`, `ping`, `clear`,
+- opisano pełny model danych zapisywany przez panel GM,
+- opisano plik `Infoczytnik/config/firebase-config.js`,
+- dodano skrypt inicjalizujący Firestore,
+- dodano reguły Firestore,
+- dodano test połączenia,
+- dodano typowe błędy,
+- przygotowano pełną wersję PL i pełną wersję EN.
+
+Status: wykonane.
+
+---
+
+#### `Infoczytnik/docs/Documentation.md`
+
+Commit:
+
+`c1ec57dd81dbf096d7df410201f6ce8072460870`
+
+Poprawiono dokumentację techniczną modułu `Infoczytnik`.
+
+Najważniejsze zmiany:
+
+- dokument został przepisany zgodnie ze standardem `docs-standard.md`,
+- opisano aktualne punkty wejścia: `index.html`, `GM.html`, `Infoczytnik.html`, `GM_test.html`, `Infoczytnik_test.html`,
+- opisano lokalne zasady z `Infoczytnik/AGENTS.md`,
+- jasno rozdzielono pliki produkcyjne i testowe,
+- opisano strukturę plików i katalogów modułu,
+- opisano panel GM,
+- opisano ekran gracza,
+- opisano manifest `assets/data/data.json`,
+- opisano import XLSX,
+- opisano payload Firestore `dataslate/current`,
+- opisano audio,
+- opisano cache-busting i `INF_VERSION`,
+- opisano fallbacki i zachowanie awaryjne,
+- dodano procedurę odtworzenia modułu,
+- dodano testy kontrolne,
+- przygotowano pełną wersję PL i pełną wersję EN.
+
+Status: wykonane.
+
+---
+
+#### `Kalkulator/config/FirebaseREADME.md`
+
+Commit:
+
+`0da3d1b161ae86d2c15e31932c8d5279b95886a2`
+
+Poprawiono dokumentację Firebase modułu `Kalkulator`.
+
+Najważniejsze zmiany:
+
+- opisano aktualne użycie Firebase w `Kalkulator/TworzeniePostaci.html`,
+- wskazano, że Firebase jest wymagany tylko dla funkcji `Zapisz` i `Wczytaj`,
+- opisano Firestore `character_builder/current`,
+- dopasowano model danych do aktualnej funkcji `collectCurrentState()`,
+- opisano pola `schemaVersion`, `module`, `lang`, `savedAt`, `savedBy`, `xpPool`, `xpTotal`, `xpSpent`, `xpAvailable`, `hasValidationErrors`, `validationMessages`, `attributes`, `skills`, `talents` i `formSnapshot`,
+- opisano model atrybutów,
+- opisano model umiejętności,
+- opisano model talentów,
+- opisano pełny `formSnapshot`,
+- dodano aktualny skrypt Node.js inicjalizujący dokument,
+- dodano reguły Firestore,
+- dodano test zapisu i wczytania,
+- dodano typowe błędy,
+- przygotowano pełną wersję PL i pełną wersję EN.
+
+Status: wykonane.
+
+---
+
+#### `GeneratorNPC/config/FirebaseREADME.md`
+
+Commit:
+
+`031a9144c262c2fc85c2d6a9eb2cb2752e49c6c2`
+
+Poprawiono dokumentację Firebase modułu `GeneratorNPC`.
+
+Najważniejsze zmiany:
+
+- dokument nie opisuje już wyłącznie ulubionych NPC,
+- rozdzielono dwie warstwy Firebase używane przez moduł:
+  - prywatne dane DataVault,
+  - ulubione NPC,
+- opisano zależność od `shared/firebase-config.js`,
+- opisano zależność od `shared/firebase-data-loader.js`,
+- opisano użycie `window.DataVaultFirebaseReady`,
+- opisano odczyt prywatnych danych ze ścieżki `datavault/live`,
+- opisano wymagane arkusze DataVault:
+  - `Bestiariusz`,
+  - `Pancerze`,
+  - `Bronie`,
+  - `Augumentacje`,
+  - `Ekwipunek`,
+  - `Talenty`,
+  - `Psionika`,
+  - `Modlitwy`,
+- opisano zależność od `data._meta.traits`,
+- opisano osobną konfigurację ulubionych w `GeneratorNPC/config/firebase-config.js`,
+- opisano Firestore `generatorNpc/favorites`,
+- opisano model `favorites`,
+- opisano model `payload`,
+- opisano `bestiaryOverrides`,
+- opisano `modules`,
+- opisano `toggles`,
+- opisano fallback do `localStorage` pod kluczem `generatorNpcFavorites`,
+- dodano skrypt inicjalizujący Firestore dla ulubionych,
+- dodano reguły Firestore dla ulubionych,
+- dodano test prywatnych danych DataVault,
+- dodano test ulubionych NPC,
+- dodano typowe błędy,
+- przygotowano pełną wersję PL i pełną wersję EN.
+
+Status: wykonane.
+
+---
+
+### 16.4. Aktualny status Etapu 2
+
+Etap 2 obejmuje dokumenty Firebase i błędy krytyczne.
+
+Wykonane:
+
+- `Infoczytnik/config/FirebaseREADME.md`,
+- `Infoczytnik/docs/Documentation.md`,
+- `Kalkulator/config/FirebaseREADME.md`,
+- `GeneratorNPC/config/FirebaseREADME.md`.
+
+Pozostało:
+
+- utworzyć `DataVault/config/FirebaseREADME.md`.
+
+Wniosek: większość Etapu 2 została wykonana. Do zamknięcia tego etapu pozostał przede wszystkim brakujący dokument Firebase dla `DataVault`.
+
+---
+
+### 16.5. Co zostało do poprawy po Etapie 2
+
+Po utworzeniu `DataVault/config/FirebaseREADME.md` należy przejść do dalszych prac nad dokumentacją modułów.
+
+#### Priorytet 1 — zamknięcie dokumentów Firebase
+
+Pozostało:
+
+- `DataVault/config/FirebaseREADME.md`.
+
+Zakres oczekiwanej poprawy:
+
+- opis prywatnych danych DataVault,
+- opis wspólnego loadera Firebase,
+- opis `shared/firebase-config.js`,
+- opis `shared/firebase-data-loader.js`,
+- opis Authentication,
+- opis Realtime Database,
+- opis ścieżki `datavault/live`,
+- opis wrappera `firebase-import.json` / `dataJson`,
+- opis wymaganej struktury `sheets`,
+- opis reguł RTDB,
+- opis testu połączenia,
+- opis typowych błędów dostępu i importu.
+
+---
+
+#### Priorytet 2 — dokumentacje techniczne dużych modułów
+
+Do poprawy po dokumentach Firebase:
+
+- `DataVault/docs/Documentation.md`,
+- `GeneratorNPC/docs/Documentation.md`,
+- `Kalkulator/docs/Documentation.md`,
+- `Audio/docs/Documentation.md`.
+
+Zakres oczekiwanej poprawy:
+
+- pełne PL/EN,
+- opis aktualnego stanu kodu,
+- brak formy changeloga,
+- opis struktury plików,
+- opis logiki JavaScript,
+- opis danych wejściowych i wyjściowych,
+- opis Firebase albo braku Firebase,
+- opis fallbacków,
+- opis testów kontrolnych,
+- procedura odtworzenia modułu.
+
+---
+
+#### Priorytet 3 — instrukcje użytkownika dużych modułów
+
+Do poprawy:
+
+- `DataVault/docs/README.md`,
+- `GeneratorNPC/docs/README.md`,
+- `Infoczytnik/docs/README.md`,
+- `Kalkulator/docs/README.md`,
+- `Audio/docs/README.md`.
+
+Zakres oczekiwanej poprawy:
+
+- prosty język użytkownika,
+- opis do czego służy moduł,
+- opis jak go uruchomić,
+- opis wszystkich głównych sekcji ekranu,
+- opis przycisków i skutków kliknięcia,
+- opis pól, checkboxów, filtrów i modalów,
+- opis komunikatów,
+- opis błędów,
+- opis pustych stanów,
+- pełne PL/EN.
+
+---
+
+#### Priorytet 4 — prostsze moduły
+
+Do poprawy po większych modułach:
+
+- `Main/docs/README.md`,
+- `Main/docs/Documentation.md`,
+- `GeneratorNazw/docs/README.md`,
+- `GeneratorNazw/docs/Documentation.md`,
+- `DiceRoller/docs/README.md`,
+- `DiceRoller/docs/Documentation.md`.
+
+Zakres oczekiwanej poprawy:
+
+- dopasowanie do `docs-standard.md`,
+- pełne PL/EN,
+- uzupełnienie brakujących opisów UI,
+- uzupełnienie brakujących opisów technicznych,
+- usunięcie treści nieaktualnych albo changelogowych.
+
+---
+
+### 16.6. Rekomendowany następny krok
+
+Następnym krokiem powinno być utworzenie brakującego pliku:
+
+`DataVault/config/FirebaseREADME.md`
+
+Uzasadnienie:
+
+- brak tego pliku był wskazany w audycie jako błąd krytyczny,
+- `DataVault` jest źródłem prywatnych danych dla innych modułów,
+- `GeneratorNPC` zależy od danych DataVault,
+- `shared/FirebaseREADME.md` opisuje warstwę wspólną, ale `DataVault` powinien mieć własny modułowy dokument konfiguracyjny albo bardzo wyraźne odesłanie do dokumentu wspólnego,
+- zamknięcie tego pliku pozwoli uznać Etap 2 za praktycznie wykonany.
+
+Po utworzeniu `DataVault/config/FirebaseREADME.md` należy przejść do dokumentacji technicznej `DataVault/docs/Documentation.md`.
