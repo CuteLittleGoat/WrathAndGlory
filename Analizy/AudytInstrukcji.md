@@ -1868,3 +1868,134 @@ Uzasadnienie:
 - zamknięcie tego pliku pozwoli uznać Etap 2 za praktycznie wykonany.
 
 Po utworzeniu `DataVault/config/FirebaseREADME.md` należy przejść do dokumentacji technicznej `DataVault/docs/Documentation.md`.
+---
+
+## 17. Krótka aktualizacja statusu prac nad dokumentacją
+
+**Data aktualizacji:** 2026-06-16  
+**Zakres aktualizacji:** krótka lista plików poprawionych i plików pozostałych do poprawy  
+**Status:** Etap 2 — dokumenty Firebase i błędy krytyczne został zamknięty w głównej części  
+
+Po przyjęciu `docs-standard.md` rozpoczęto naprawę dokumentacji zgodnie z priorytetami wskazanymi w audycie. W pierwszej kolejności poprawiono dokumenty krytyczne związane z Firebase oraz najważniejszą dokumentację techniczną `Infoczytnika`.
+
+---
+
+### 17.1. Pliki już poprawione
+
+Poprawiono lub utworzono następujące pliki:
+
+- `docs-standard.md`
+- `Infoczytnik/config/FirebaseREADME.md`
+- `Infoczytnik/docs/Documentation.md`
+- `Kalkulator/config/FirebaseREADME.md`
+- `GeneratorNPC/config/FirebaseREADME.md`
+- `DataVault/config/FirebaseREADME.md`
+
+---
+
+### 17.2. Status etapu Firebase
+
+Etap obejmujący dokumenty Firebase i błędy krytyczne można uznać za wykonany w podstawowym zakresie.
+
+Wykonano:
+
+- poprawienie dokumentacji Firebase `Infoczytnika`,
+- poprawienie dokumentacji Firebase `Kalkulatora`,
+- poprawienie dokumentacji Firebase `GeneratorNPC`,
+- utworzenie brakującego dokumentu Firebase dla `DataVault`,
+- doprecyzowanie zależności `DataVault` i `GeneratorNPC` od wspólnej konfiguracji Firebase w `shared/`.
+
+Do późniejszego sprawdzenia pozostaje jeszcze:
+
+- `shared/FirebaseREADME.md`
+
+Powód: dokument wspólny powinien zostać zweryfikowany po poprawkach modułowych, aby był spójny z tym, co opisano w `DataVault/config/FirebaseREADME.md` i `GeneratorNPC/config/FirebaseREADME.md`.
+
+---
+
+### 17.3. Pliki pozostałe do poprawy
+
+#### Dokumentacje techniczne dużych modułów
+
+Do poprawy:
+
+- `DataVault/docs/Documentation.md`
+- `GeneratorNPC/docs/Documentation.md`
+- `Kalkulator/docs/Documentation.md`
+- `Audio/docs/Documentation.md`
+- `Infoczytnik/docs/README.md`
+
+Uwaga: `Infoczytnik/docs/Documentation.md` został już poprawiony, ale jego `README.md` nadal pozostaje do aktualizacji jako instrukcja użytkownika.
+
+---
+
+#### Instrukcje użytkownika dużych modułów
+
+Do poprawy:
+
+- `DataVault/docs/README.md`
+- `GeneratorNPC/docs/README.md`
+- `Kalkulator/docs/README.md`
+- `Audio/docs/README.md`
+- `Infoczytnik/docs/README.md`
+
+---
+
+#### Pozostałe dokumenty Firebase
+
+Do sprawdzenia lub poprawy:
+
+- `shared/FirebaseREADME.md`
+- `Audio/config/FirebaseREADME.md`
+- `Infoczytnik/config/FirebaseREADME.md` — wykonane, ewentualnie tylko końcowy przegląd po poprawie `shared/FirebaseREADME.md`
+- `Kalkulator/config/FirebaseREADME.md` — wykonane, ewentualnie tylko końcowy przegląd
+- `GeneratorNPC/config/FirebaseREADME.md` — wykonane, ewentualnie tylko końcowy przegląd
+- `DataVault/config/FirebaseREADME.md` — utworzone, ewentualnie tylko końcowy przegląd
+
+---
+
+#### Prostsze moduły
+
+Do poprawy po dużych modułach:
+
+- `Main/docs/README.md`
+- `Main/docs/Documentation.md`
+- `GeneratorNazw/docs/README.md`
+- `GeneratorNazw/docs/Documentation.md`
+- `DiceRoller/docs/README.md`
+- `DiceRoller/docs/Documentation.md`
+
+---
+
+#### Pozostałe pliki dokumentacyjne
+
+Do późniejszego sprawdzenia:
+
+- `DataVault/docs/ZasadyFormatowania.md`
+- ewentualny główny `README.md` repozytorium, jeżeli zostanie podjęta decyzja o jego utworzeniu jako indeksu modułów
+
+---
+
+### 17.4. Rekomendowany następny krok
+
+Następnym krokiem powinno być przejście do dokumentacji technicznej dużych modułów.
+
+Rekomendowany pierwszy plik:
+
+- `DataVault/docs/Documentation.md`
+
+Uzasadnienie:
+
+- `DataVault` jest źródłem prywatnych danych dla innych modułów,
+- `GeneratorNPC` zależy od danych DataVault,
+- dokument Firebase DataVault został już utworzony,
+- naturalnym następnym krokiem jest uporządkowanie pełnej dokumentacji technicznej modułu DataVault zgodnie z `docs-standard.md`.
+
+Po zakończeniu `DataVault/docs/Documentation.md` zalecana kolejność to:
+
+1. `GeneratorNPC/docs/Documentation.md`
+2. `Kalkulator/docs/Documentation.md`
+3. `Audio/docs/Documentation.md`
+4. `shared/FirebaseREADME.md`
+5. README dużych modułów
+6. dokumentacja prostszych modułów
