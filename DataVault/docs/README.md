@@ -78,7 +78,7 @@ Przykładowe zakładki:
 - `Skrót Zasad`,
 - `Pojazdy`.
 
-Niektóre zakładki są ukryte w zwykłym widoku i dostępne tylko dla admina.
+Niektóre zakładki są ukryte w zwykłym widoku i dostępne tylko dla admina. Zakładki `Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` są zakładkami pojazdowymi tylko dla admina: zobaczysz je wyłącznie po wejściu z adresem zawierającym `?admin=1` i po zaznaczeniu przełącznika zakładek pojazdów.
 
 ### Panel filtrów
 
@@ -396,7 +396,7 @@ Example tabs:
 - `Skrót Zasad`,
 - `Pojazdy`.
 
-Some tabs are hidden in regular view and available only to admin.
+Some tabs are hidden in regular view and available only to admin. The `Uszkodzenia Pojazdów` and `Eksplozje Pojazdów` tabs are admin-only vehicle tabs: you see them only when the address contains `?admin=1` and the vehicle-tabs toggle is checked.
 
 ### Filter panel
 

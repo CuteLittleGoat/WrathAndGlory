@@ -456,3 +456,62 @@ Nie ma jednak technicznej konieczności, aby zostały osobno. Dla trwałego, czy
 - decyzje o widoczności zakładek do `DataVault/app.js`.
 
 Najważniejsza rzecz do potwierdzenia przed takim refaktorem: czy `Eksplozje Pojazdów` mają pozostać admin-only, bo obecne rozszerzenie właśnie tak je traktuje.
+
+## Zmiany wykonane w kodzie
+
+### Plik: `DataVault/app.js`
+
+Lokalizacja: stałe `ADMIN_ONLY_SHEETS` i `VEHICLE_SHEETS`
+
+Było:
+
+```js
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki"]);
+const VEHICLE_SHEETS = new Set(["Role W Pojeździe", "Akcje Pojazdu", "Stany Pojazdów", "Cechy Pojazdów", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów"]);
+```
+
+Jest:
+
+```js
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki", "Uszkodzenia Pojazdów", "Eksplozje Pojazdów"]);
+const VEHICLE_SHEETS = new Set(["Role W Pojeździe", "Akcje Pojazdu", "Stany Pojazdów", "Cechy Pojazdów", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów", "Uszkodzenia Pojazdów", "Eksplozje Pojazdów"]);
+```
+
+### Plik: `DataVault/style.css`
+
+Lokalizacja: sekcja konfiguracji kolumn arkuszy pojazdów
+
+Było:
+
+Reguły kolumn dla `Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` znajdowały się w osobnym pliku `DataVault/vehicle-extra.css`.
+
+Jest:
+
+Reguły kolumn dla `Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` znajdują się w głównym `DataVault/style.css`, przy pozostałych regułach arkuszy pojazdów.
+
+### Plik: `DataVault/index.html`
+
+Lokalizacja: sekcja zasobów CSS i końcowa sekcja skryptów
+
+Było:
+
+```html
+<link rel="stylesheet" href="vehicle-extra.css"/>
+<script src="vehicle-tabs-extension.js"></script>
+```
+
+Jest:
+
+Osobne ładowanie `vehicle-extra.css` i `vehicle-tabs-extension.js` zostało usunięte. Moduł nadal ładuje główne pliki `style.css` i `app.js`.
+
+### Pliki: `DataVault/vehicle-extra.css` i `DataVault/vehicle-tabs-extension.js`
+
+Lokalizacja: folder `DataVault/`
+
+Było:
+
+Dwa osobne pliki-nakładki rozszerzały style kolumn i widoczność zakładek pojazdowych.
+
+Jest:
+
+Pliki zostały usunięte, ponieważ ich potrzebna funkcjonalność została przeniesiona do `DataVault/style.css` i `DataVault/app.js`.

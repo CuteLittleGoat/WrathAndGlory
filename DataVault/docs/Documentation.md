@@ -31,7 +31,7 @@ Nie ma osobnego pliku HTML dla admina. Tryb admina jest wykrywany przez parametr
 | --- | --- |
 | `DataVault/index.html` | Szkielet UI: bramka dostępu, topbar, panel filtrów, workspace, zakładki, tabela, popover, modal i import skryptów. |
 | `DataVault/app.js` | Główna logika modułu: i18n, Firebase flow, stan UI, normalizacja danych, filtry, sortowanie, render tabel, porównanie, import XLSX. |
-| `DataVault/style.css` | Style widoku: layout, topbar, panel filtrów, tabela, zakładki, modal, popover, menu filtrów, kolory i responsywność. |
+| `DataVault/style.css` | Style widoku: layout, topbar, panel filtrów, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym arkuszy pojazdowych. |
 | `DataVault/xlsxCanonicalParser.js` | Kanoniczny parser XLSX w przeglądarce oparty o JSZip i pliki XML pakietu XLSX. |
 | `DataVault/config/FirebaseREADME.md` | Modułowa instrukcja konfiguracji Firebase dla DataVault. |
 | `DataVault/docs/README.md` | Instrukcja użytkownika. |
@@ -128,7 +128,7 @@ Różnice:
 | Checkbox starych wpisów Bestiariusza | Ukryty. | Widoczny. |
 | Preferowana zakładka startowa | `Bronie`. | `Notatki`. |
 
-Zakładki admin-only są zdefiniowane w `ADMIN_ONLY_SHEETS` i obejmują między innymi `Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, `Notatki`.
+Zakładki admin-only są zdefiniowane w `ADMIN_ONLY_SHEETS` i obejmują między innymi `Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, `Notatki`, `Uszkodzenia Pojazdów` oraz `Eksplozje Pojazdów`. Arkusze `Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` są jednocześnie arkuszami pojazdowymi, dlatego w praktyce pojawiają się wyłącznie wtedy, gdy URL zawiera `?admin=1` i checkbox `toggleVehicleTabs` jest zaznaczony.
 
 ## UI — główne sekcje
 
@@ -207,7 +207,11 @@ Kod dzieli arkusze na grupy logiczne.
 - `Cechy Pojazdów`,
 - `Pojazdy`,
 - `Bronie Pojazdów`,
-- `Ekwipunek Pojazdów`.
+- `Ekwipunek Pojazdów`,
+- `Uszkodzenia Pojazdów`,
+- `Eksplozje Pojazdów`.
+
+`Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` są także wpisane do `ADMIN_ONLY_SHEETS`. `initUI()` filtruje je najpierw przez tryb admina, a następnie przez stan checkboxa `toggleVehicleTabs`, więc w zwykłym widoku użytkownika pozostają ukryte nawet po zaznaczeniu checkboxa pojazdów. W trybie `?admin=1` pojawiają się dopiero po zaznaczeniu checkboxa i otrzymują klasę `tab--vehicle`. Ich style kolumn są zintegrowane w `style.css`; moduł nie ładuje osobnych plików `vehicle-extra.css` ani `vehicle-tabs-extension.js`, ponieważ konfiguracja kolumn i logika zakładek są częścią głównych plików `style.css` i `app.js`.
 
 W konfiguracji CSS arkuszy pojazdów kolumna `Koszt IM` arkusza `Pojazdy` jest zwykłą, widoczną kolumną danych. Używa szerokości `min-width: 8ch`, wyrównania do środka i standardowego łamania tekstu, tak jak kosztowe kolumny `Koszt IM` w `Bronie Pojazdów` oraz `Ekwipunek Pojazdów`. Nie ma reguły `white-space: nowrap`, nie jest ukrywana, nie jest scalana i nie wymaga osobnego resolvera popovera.
 
@@ -682,7 +686,7 @@ Differences:
 | Old Bestiary records checkbox | Hidden. | Visible. |
 | Preferred startup tab | `Bronie`. | `Notatki`. |
 
-Admin-only sheets are defined in `ADMIN_ONLY_SHEETS` and include, among others, `Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, and `Notatki`.
+Admin-only sheets are defined in `ADMIN_ONLY_SHEETS` and include, among others, `Bestiariusz`, `Trafienia Krytyczne`, `Groza Osnowy`, `Hordy`, `Specjalne Bonusy Wrogów`, `Notatki`, `Uszkodzenia Pojazdów`, and `Eksplozje Pojazdów`. The `Uszkodzenia Pojazdów` and `Eksplozje Pojazdów` sheets are also vehicle sheets, so in practice they appear only when the URL contains `?admin=1` and the `toggleVehicleTabs` checkbox is checked.
 
 ## UI — main sections
 
@@ -761,7 +765,11 @@ The code divides sheets into logical groups.
 - `Cechy Pojazdów`,
 - `Pojazdy`,
 - `Bronie Pojazdów`,
-- `Ekwipunek Pojazdów`.
+- `Ekwipunek Pojazdów`,
+- `Uszkodzenia Pojazdów`,
+- `Eksplozje Pojazdów`.
+
+`Uszkodzenia Pojazdów` and `Eksplozje Pojazdów` are also listed in `ADMIN_ONLY_SHEETS`. `initUI()` filters them first by admin mode and then by the `toggleVehicleTabs` checkbox state, so they remain hidden in the regular user view even if the vehicle checkbox is checked. In `?admin=1` mode they appear only after the checkbox is checked and receive the `tab--vehicle` class. Their column styles are integrated in `style.css`; the module does not load separate `vehicle-extra.css` or `vehicle-tabs-extension.js` files because column configuration and tab logic are part of the main `style.css` and `app.js` files.
 
 In the vehicle-sheet CSS configuration, the `Koszt IM` column in the `Pojazdy` sheet is a regular visible data column. It uses `min-width: 8ch`, centered text, and standard wrapping, like the `Koszt IM` cost columns in `Bronie Pojazdów` and `Ekwipunek Pojazdów`. It has no `white-space: nowrap` rule, is not hidden, is not merged, and does not require a separate popover resolver.
 
