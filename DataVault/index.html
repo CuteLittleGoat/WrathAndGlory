@@ -8,6 +8,19 @@
   <title>Administratum Data Vault</title>
   <link rel="stylesheet" href="style.css"/>
   <link rel="stylesheet" href="../shared/access-gate.css"/>
+  <style>
+    /* Kolumny eksplozji pojazdów mają mieć identyczną szerokość jak kolumny arkusza Kary do ST / Vehicle explosion columns match Kary do ST widths */
+    .tableWrap table[data-sheet="Eksplozje Pojazdów"] th[data-col="Zasięg Rażenia"],
+    .tableWrap table[data-sheet="Eksplozje Pojazdów"] td[data-col="Zasięg Rażenia"],
+    .tableWrap table[data-sheet="Eksplozje Pojazdów"] th[data-col="Obrażenia"],
+    .tableWrap table[data-sheet="Eksplozje Pojazdów"] td[data-col="Obrażenia"]{
+      min-width:20ch;
+      max-width:20ch;
+      width:20ch;
+      text-align:center;
+      white-space:normal;
+    }
+  </style>
 </head>
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
