@@ -1,6 +1,6 @@
 # Kolumny — szerokości, wyrównania i łamanie linii
 
-Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`, `style.css`) oraz aktualnego `data.json`.
+Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`, `style.css`, `index.html`) oraz aktualnego `data.json`.
 
 - Kolejność zakładek pochodzi z `_meta.sheetOrder` w `data.json`.
 - Kolejność kolumn pochodzi z `_meta.columnOrder` (z fallbackiem do realnych kluczy rekordów).
@@ -398,8 +398,11 @@ Układ odpowiada zakładce `Groza Osnowy`.
 
 ### `Eksplozje Pojazdów`
 
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| `Rozmiar Pojazdu` | `18ch` | lewo | standard |
-| `Zasięg Rażenia` | `14ch` | środek | brak zawijania |
-| `Obrażenia` | `14ch` | środek | brak zawijania |
+| Kolumna | Min-width | Max-width | Width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- | --- |
+| `Rozmiar Pojazdu` | `18ch` | brak | auto | lewo | standard |
+| `Zasięg Rażenia` | `20ch` | `20ch` | `20ch` | środek | standard |
+| `Obrażenia` | `20ch` | `20ch` | `20ch` | środek | standard |
+
+## Aktualizacja 2026-06-17
+- W zakładce `Eksplozje Pojazdów` kolumny `Zasięg Rażenia` i `Obrażenia` ustawiono tak samo jak kolumny `Ile celów/akcji` i `Kara do ST` w zakładce `Kary do ST`: `min-width`, `max-width` i `width` po `20ch`, wyrównanie do środka oraz standardowe łamanie tekstu.
