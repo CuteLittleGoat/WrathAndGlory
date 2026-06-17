@@ -232,7 +232,7 @@ const applyLanguage = (lang) => {
 // Otherwise some default filters/behaviors (keywords, default view, sorting) will stop working.
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie", "Pakiety Wyniesienia", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
-const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki"]);
+const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki", "Uszkodzenia Pojazdów", "Eksplozje Pojazdów"]);
 const CHARACTER_CREATION_SHEETS = new Set([
   "Tabela Rozmiarów",
   "Gatunki",
@@ -245,7 +245,7 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Zakony Pierwszego Powołania",
 ]);
 const COMBAT_RULES_SHEETS = new Set(["Trafienia Krytyczne", "Groza Osnowy", "Skrót Zasad", "Tryby Ognia", "Kary do ST"]);
-const VEHICLE_SHEETS = new Set(["Role W Pojeździe", "Akcje Pojazdu", "Stany Pojazdów", "Cechy Pojazdów", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów"]);
+const VEHICLE_SHEETS = new Set(["Role W Pojeździe", "Akcje Pojazdu", "Stany Pojazdów", "Cechy Pojazdów", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów", "Uszkodzenia Pojazdów", "Eksplozje Pojazdów"]);
 const CHARACTER_CREATION_SHEET_KEYS = new Set([...CHARACTER_CREATION_SHEETS].map(name => canonKey(name)));
 const COMBAT_RULES_SHEET_KEYS = new Set([...COMBAT_RULES_SHEETS].map(name => canonKey(name)));
 const VEHICLE_SHEET_KEYS = new Set([...VEHICLE_SHEETS].map(name => canonKey(name)));
