@@ -1,7 +1,7 @@
 // Rozszerzenie UI dla dodatkowych arkuszy pojazdów / UI extension for additional vehicle sheets
 (function(){
   const EXTRA_VEHICLE_SHEETS = ["Uszkodzenia Pojazdów", "Eksplozje Pojazdów"];
-  const ADMIN_ONLY_EXTRA_SHEETS = new Set(["Uszkodzenia Pojazdów"]);
+  const ADMIN_ONLY_EXTRA_SHEETS = new Set(["Uszkodzenia Pojazdów", "Eksplozje Pojazdów"]);
   const EXTRA_BY_TAB_LABEL = new Map(EXTRA_VEHICLE_SHEETS.map((name)=>[name.toUpperCase(), name]));
   const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 
