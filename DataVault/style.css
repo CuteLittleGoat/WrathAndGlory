@@ -1047,7 +1047,10 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Eksplozje Pojazdów"] th[data-col="Rozmiar Pojazdu"],
 .tableWrap table[data-sheet="Eksplozje Pojazdów"] td[data-col="Rozmiar Pojazdu"]{min-width:20ch;max-width:20ch;width:20ch;text-align:left}
 .tableWrap table[data-sheet="Eksplozje Pojazdów"] th[data-col="Zasięg Rażenia"],
-.tableWrap table[data-sheet="Eksplozje Pojazdów"] td[data-col="Zasięg Rażenia"]{min-width:20ch;max-width:20ch;width:20ch;text-align:center}
+.tableWrap table[data-sheet="Eksplozje Pojazdów"] td[data-col="Zasięg Rażenia"]{min-width:14ch;max-width:14ch;width:14ch;text-align:center}
 .tableWrap table[data-sheet="Eksplozje Pojazdów"] th[data-col="Obrażenia"],
-.tableWrap table[data-sheet="Eksplozje Pojazdów"] td[data-col="Obrażenia"]{min-width:20ch;max-width:20ch;width:20ch;text-align:center}
-
+.tableWrap table[data-sheet="Eksplozje Pojazdów"] td[data-col="Obrażenia"]{min-width:14ch;max-width:14ch;width:14ch;text-align:center}
+.tableWrap table[data-sheet="Eksplozje Pojazdów"]{
+  table-layout:fixed;
+  width:max-content;
+}
