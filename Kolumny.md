@@ -385,3 +385,21 @@ Kolumna `LP` pozostaje w danych jako kolejność techniczna, ale nie jest render
 - `Koszt`, `Dostępność`, `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
 - `Podręcznik`: standard globalny, tekst do lewej.
 - `Strona`: standard globalny, tekst wyśrodkowany.
+
+
+### `Uszkodzenia Pojazdów`
+
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| `Rzut k66` | `6ch` | środek | brak zawijania |
+| `Efekt` | `56ch` | lewo | standard |
+
+Układ odpowiada zakładce `Groza Osnowy`.
+
+### `Eksplozje Pojazdów`
+
+| Kolumna | Min-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- |
+| `Rozmiar Pojazdu` | `18ch` | lewo | standard |
+| `Zasięg Rażenia` | `14ch` | środek | brak zawijania |
+| `Obrażenia` | `14ch` | środek | brak zawijania |
