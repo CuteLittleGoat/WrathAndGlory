@@ -401,7 +401,7 @@ Aktualny zestaw opcji:
 <option value="none" selected>Brak — tylko opis</option>
 <option value="wounds">Żywotność</option>
 <option value="shock">Odporność Psychiczna</option>
-<option value="determination">Determininacja</option>
+<option value="determination">Determinacja</option>
 <option value="defence">Obrona</option>
 <option value="resilience">Odporność</option>
 <option value="resolve">Upór</option>
