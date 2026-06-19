@@ -190,7 +190,51 @@ Eksport:
 
 ---
 
-## 8. Wartości ujemne
+## 8. Suma umiejętności
+
+Kolumna `Suma` w sekcji `Umiejętności` PDF nie zostaje pusta.
+
+Dla każdej umiejętności obowiązuje wzór:
+
+```text
+Suma umiejętności = wartość umiejętności + wartość powiązanego atrybutu
+```
+
+Przykład:
+
+```text
+Czujność (Int) -> Czujność + Int
+```
+
+Jeżeli:
+
+```text
+Int = 1, Czujność = 0 -> Suma Czujności = 1
+Int = 1, Czujność = 1 -> Suma Czujności = 2
+Int = 2, Czujność = 1 -> Suma Czujności = 3
+Int = 2, Czujność = 3 -> Suma Czujności = 5
+```
+
+Atrybut `Szybkość` nie jest powiązany z żadną umiejętnością i nie bierze udziału w obliczaniu sum umiejętności.
+
+Ta sama zasada obowiązuje w wersji EN. Różnią się tylko nazwy i położenie pól na PDF oraz w kalkulatorze.
+
+---
+
+## 9. Pasywna Czujność
+
+`Pasywna Czujność` jest liczona z sumy umiejętności `Czujność`.
+
+Wzór równoważny:
+
+```js
+PasywnaCzujnosc = Math.ceil((Inteligencja + Czujnosc) / 2);
+PasywnaCzujnosc = Math.ceil(SumaCzujnosci / 2);
+```
+
+---
+
+## 10. Wartości ujemne
 
 Kolumna `Wartość` musi dopuszczać wartości ujemne.
 
@@ -205,7 +249,7 @@ Wartości ujemne muszą wpływać na obliczenia tak samo jak dodatnie. Kalkulato
 
 ---
 
-## 9. Ostrzeżenia dla wartości obliczalnych
+## 11. Ostrzeżenia dla wartości obliczalnych
 
 Kalkulator nadal stosuje minima:
 
@@ -214,7 +258,7 @@ Kalkulator nadal stosuje minima:
 
 Jednocześnie należy dodać ostrzeżenia, żeby użytkownik widział, że suma bonusów obniżyła wartość poniżej bezpiecznego poziomu.
 
-### 9.1. Cechy poza Spaczeniem
+### 11.1. Cechy poza Spaczeniem
 
 Dla każdej cechy obliczalnej poza `Spaczenie` pokazywać ostrzeżenie, jeżeli surowa wartość po uwzględnieniu bonusów, ale przed wymuszeniem minimum, wynosi:
 
@@ -230,7 +274,7 @@ Odwaga = SW - 1 + bonusy = 0
 
 Wartość wyświetlana może nadal zostać podniesiona do minimum `1`, ale ostrzeżenie powinno poinformować, że obliczenia sprowadziły cechę do `0` albo niżej.
 
-### 9.2. Spaczenie
+### 11.2. Spaczenie
 
 Dla `Spaczenie` pokazywać ostrzeżenie, jeżeli surowa wartość po uwzględnieniu bonusów wynosi:
 
@@ -250,7 +294,7 @@ Dodać także osobne ostrzeżenie, jeżeli wartość `Spaczenie` po obliczeniach
 
 ---
 
-## 10. Proponowana funkcja agregująca teksty do PDF
+## 12. Proponowana funkcja agregująca teksty do PDF
 
 Szkic logiczny:
 
@@ -298,7 +342,7 @@ function buildExportTextBuckets(talentRows, specialRules) {
 
 ---
 
-## 11. Co użytkownik musi wskazać ręcznie, a co można odczytać technicznie
+## 13. Co użytkownik musi wskazać ręcznie, a co można odczytać technicznie
 
 Asystent / implementujący może technicznie odczytać rzeczywiste nazwy pól formularza PDF z plików `pl.pdf` i `en.pdf`, jeżeli ma dostęp do samych plików PDF jako danych binarnych albo lokalnych plików.
 
