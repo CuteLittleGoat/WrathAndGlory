@@ -237,7 +237,7 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Tabela Rozmiarów",
   "Gatunki",
   "Archetypy",
-  "Premie Frakcji",
+  "Premie z Przeszłości Frakcji",
   "Słowa Kluczowe Frakcji",
   "Pakiety Wyniesienia",
   "Specjalne Bonusy Frakcji",
@@ -260,7 +260,7 @@ const DEFAULT_VIEW_CONFIG = {
   "Archetypy": {
     "Gatunek": ["Człowiek"]
   },
-  "Premie Frakcji": { "Frakcja": ["Adepta Sororitas", "Adeptus Astartes", "Adeptus Astra Telepathica", "Adeptus Mechanicus", "Adeptus Ministorum", "Astra Militarum", "Chaos", "Dynastie Wolnych Kupców", "Inkwizycja", "Ogryn", "Szczurak", "Szumowiny"] },
+  "Premie z Przeszłości Frakcji": { "Frakcja": ["Adepta Sororitas", "Adeptus Astartes", "Adeptus Astra Telepathica", "Adeptus Mechanicus", "Adeptus Ministorum", "Astra Militarum", "Chaos", "Dynastie Wolnych Kupców", "Inkwizycja", "Ogryn", "Szczurak", "Szumowiny"] },
   "Psionika": { "Typ": ["Uniwersalne Zdolności Psioniczne", "Pomniejsze Moce Psioniczne", "Uniwersalna Dyscyplina Psioniczna", "Dyscyplina Biomancji", "Dyscyplina Dywinacji", "Dyscyplina Piromancji", "Dyscyplina Telekinezy", "Dyscyplina Telepatii"] },
   "Augumentacje": { "Typ": ["Ulepszenia", "Wszczepy", "Mechadendryt"] },
   "Ekwipunek": { "Typ": ["Ulepszenia Broni", "Amunicja", "Ekwipunek Imperium"] },
