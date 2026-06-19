@@ -49,6 +49,7 @@
     .table tr:nth-child(even){background:var(--zebra)}
     .table tr:hover{background:var(--hover)}
     .table td:first-child,.table td:nth-child(3){text-align:left}
+    #speciesMaxTable td:first-child{font-weight:700;color:var(--text)}
     input[type="number"],input[type="text"],select,textarea{width:100%;padding:9px 10px;border-radius:6px;border:1px solid var(--b);background:var(--bg);color:var(--text);outline:none}
     input[type="number"],select{text-align:center}
     textarea{resize:vertical;text-align:left;min-height:46px}
@@ -115,6 +116,7 @@ let pdfAppearanceFont=null;
 let talentCount=2;
 
 const attributes=[{key:'S',label:'S'},{key:'Wt',label:'Wt'},{key:'Zr',label:'Zr'},{key:'I',label:'I'},{key:'SW',label:'SW'},{key:'Int',label:'Int'},{key:'Ogd',label:'Ogd'},{key:'Speed',label:'Szybkość'}];
+const speciesMaxHeaders=['SIŁA','WYTRZYMAŁOŚĆ','ZRĘCZNOŚĆ','INICJATYWA','SIŁA WOLI','INTELIGENCJA','OGŁADA','SZYBKOŚĆ'];
 const skills=[
   {key:'analysis',label:'Analiza (Int)',attr:'Int',pdf:'Analiza',sum:'AnalizaSuma'},
   {key:'athletics',label:'Atletyka (S)',attr:'S',pdf:'Atletyka',sum:'AtletykaSuma'},
@@ -349,7 +351,7 @@ async function showPdfFields(){
   if(!window.PDFLib||!window.PDFLib.PDFDocument){const msg='Missing PDFLib. Add local file Kalkulator/vendor/pdf-lib.min.js.';output.textContent=msg;setPdfLog(msg,'error');return}
   try{const response=await fetch('./pdf/pl.pdf'),pdfDoc=await PDFLib.PDFDocument.load(await response.arrayBuffer()),form=pdfDoc.getForm();output.textContent=form.getFields().map(field=>`${field.getName()} — ${field.constructor?field.constructor.name:'field'}`).join('\n');setPdfLog('PDF fields read. List is visible in the diagnostics modal.','ok')}catch(error){output.textContent=error.stack||error.message;setPdfLog(error.stack||error.message,'error')}
 }
-function renderSpeciesMax(){const rows=[['Człowiek',8,8,8,8,8,8,8,8],['Ork',12,12,7,7,8,7,7,7],['Aeldari',8,7,12,12,12,10,6,10],['Adeptus Astartes',10,10,9,9,10,10,8,9],['Primaris Astartes',12,12,9,9,10,10,8,9],['Ogryn',12,12,7,4,8,1,4,8],['Szczurak',6,6,10,10,8,8,10,7],['Kroot',12,12,12,12,10,6,6,10],['Drukhari',8,8,12,12,10,10,6,10],['Konstrukt Upiorytowy',12,12,8,8,12,10,4,8],['Kasta powietrza',4,4,10,8,8,8,8,8],['Kasta ziemi',6,6,8,8,8,10,8,6],['Kasta ognia',7,7,8,8,8,8,8,8],['Kasta wody',6,6,8,8,8,8,10,6],['Niebianie',6,6,8,8,10,8,8,6],['Vespidzi',8,8,12,8,8,8,5,'14*']];$('speciesMaxTable').innerHTML='<tr><th></th>'+attributes.map(a=>`<th>${a.label}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('')}
+function renderSpeciesMax(){const rows=[['Człowiek',8,8,8,8,8,8,8,8],['Ork',12,12,7,7,8,7,7,7],['Aeldari',8,7,12,12,12,10,6,10],['Adeptus Astartes',10,10,9,9,10,10,8,9],['Primaris Astartes',12,12,9,9,10,10,8,9],['Ogryn',12,12,7,4,8,1,4,8],['Szczurak',6,6,10,10,8,8,10,7],['Kroot',12,12,12,12,10,6,6,10],['Drukhari',8,8,12,12,10,10,6,10],['Konstrukt Upiorytowy',12,12,8,8,12,10,4,8],['Kasta powietrza',4,4,10,8,8,8,8,8],['Kasta ziemi',6,6,8,8,8,10,8,6],['Kasta ognia',7,7,8,8,8,8,8,8],['Kasta wody',6,6,8,8,8,8,10,6],['Niebianie',6,6,8,8,10,8,8,6],['Vespidzi',8,8,12,8,8,8,5,'14*']];$('speciesMaxTable').innerHTML='<tr><th></th>'+speciesMaxHeaders.map(label=>`<th>${label}</th>`).join('')+'</tr>'+rows.map(r=>'<tr>'+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('')}
 function openModal(id){$(id).classList.add('is-open');$(id).setAttribute('aria-hidden','false')}
 function closeModal(id){$(id).classList.remove('is-open');$(id).setAttribute('aria-hidden','true')}
 function resetAll(){$('xpPool').value=155;attributes.forEach(a=>$(`attr_${a.key}`).value=a.key==='Speed'?6:1);skills.forEach(s=>$(`skill_${s.key}`).value=0);talentCount=2;renderTalents();applyState({character:{gameTier:1,size:'Średni'},talentCount:2,talents:[],specialRules:[]})}
