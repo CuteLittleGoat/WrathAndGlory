@@ -52,6 +52,7 @@
     input[type="number"],input[type="text"],select,textarea{width:100%;padding:9px 10px;border-radius:6px;border:1px solid var(--b);background:var(--bg);color:var(--text);outline:none}
     input[type="number"],select{text-align:center}
     textarea{resize:vertical;text-align:left;min-height:46px}
+    #specialRulesTable textarea::placeholder{font-size:.84rem;line-height:1.25;letter-spacing:.02em}
     input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(22,198,12,.18)}
     .xp-section #xpPool{width:19ch}
     .error-message,.warning-message{min-height:20px;margin:6px 0 2px;white-space:pre-line}
@@ -143,6 +144,13 @@ const rulePlaceholders={
   specialFactionBonus:'np. Ścieżki Asuryani (Ścieżka przebudzenia), Mutacja Krootów (Ludojad)',
   other:'np. Zakony Pierwszego Powołania, Homebrew'
 };
+const defaultSpecialRules=[
+  {type:'speciesAbility',name:'',target:'none',value:0},
+  {type:'archetypeAbility',name:'',target:'none',value:0},
+  {type:'backgroundBonus',name:'',target:'none',value:0},
+  {type:'keywordBonus',name:'',target:'none',value:0},
+  {type:'other',name:'',target:'none',value:0}
+];
 const modifyTargets=[['none','Brak — tylko opis'],['woundsMax','Żywotność'],['shock','Odporność Psychiczna'],['determination','Determinacja'],['defence','Obrona'],['resilience','Odporność'],['resolve','Upór'],['conviction','Odwaga'],['speed','Szybkość'],['influence','Wpływy'],['wealth','Majątek'],['corruption','Spaczenie']].map(([value,label])=>({value,label}));
 const sizeDefenceBonus={'Malutki':2,'Mały':1,'Średni':0,'Duży':0,'Ogromny':0,'Monstrualny':0};
 const corruptionSlots=Array.from({length:25},(_,i)=>`Check Box ${i+1}`);
@@ -193,7 +201,7 @@ function createRuleRow(i,data){
 }
 function getSpecialRulesFromDom(){return Array.from(document.querySelectorAll('#specialRulesTable tr[data-rule-index]')).map(row=>{const i=row.dataset.ruleIndex;return{type:$(`rule_type_${i}`).value,name:$(`rule_name_${i}`).value,target:$(`rule_target_${i}`).value,value:toInt($(`rule_value_${i}`).value,0)}})}
 function renderSpecialRules(rules){
-  const data=(rules&&rules.length?rules:Array.from({length:5},()=>({type:'speciesAbility',name:'',target:'none',value:0})));
+  const data=(rules&&rules.length?rules:defaultSpecialRules.map(rule=>({...rule})));
   $('specialRulesTable').innerHTML='<tr><th>Typ / źródło</th><th>Nazwa</th><th>Modyfikuje</th><th>Wartość</th></tr>'+data.map((rule,i)=>createRuleRow(i,rule)).join('');
   $('specialRulesTable').querySelectorAll('select,input,textarea').forEach(el=>el.addEventListener('input',recalcAll));
   updateRulePlaceholders();
