@@ -119,7 +119,38 @@ Preferowane miejsce ostrzeżeń:
 
 ---
 
-## 7. Inspekcja PDF — aktualny status
+## 7. Umiejętności — kolumna Suma
+
+W sekcji `Umiejętności` PDF należy uzupełniać:
+
+- kolumnę `Wartość`,
+- kolumnę `Suma`.
+
+Kolumna `Suma` jest obliczana według wzoru:
+
+```text
+Suma umiejętności = wartość umiejętności + wartość powiązanego atrybutu
+```
+
+Przykład:
+
+```text
+Czujność (Int): Suma = Czujność + Int
+```
+
+Ta sama zasada obowiązuje dla każdej umiejętności.
+
+`Szybkość` nie jest powiązana z żadną umiejętnością.
+
+Szczegółowa tabela powiązań została zapisana w:
+
+```text
+Analizy/Kalkulator-mapowanie-pol-pdf-2026-06-19.md
+```
+
+---
+
+## 8. Inspekcja PDF — aktualny status
 
 Do poprawnego eksportu PDF trzeba odczytać rzeczywiste techniczne nazwy pól formularza z:
 
@@ -145,7 +176,7 @@ Nadal do wykonania technicznie:
 
 ---
 
-## 8. Pierwszy etap przyszłej implementacji
+## 9. Pierwszy etap przyszłej implementacji
 
 Po wykonaniu backupu pierwszy etap powinien obejmować:
 
@@ -156,4 +187,5 @@ Po wykonaniu backupu pierwszy etap powinien obejmować:
 5. eksport danych zgodnie z `Analizy/Kalkulator-mapowanie-pol-pdf-2026-06-19.md`,
 6. spłaszczanie wynikowego PDF,
 7. ostrzeżenia w UI,
-8. przygotowanie mechanizmu zmniejszania fontu dla długich pól tekstowych.
+8. przygotowanie mechanizmu zmniejszania fontu dla długich pól tekstowych,
+9. uzupełnianie kolumny `Wartość` i `Suma` w sekcji `Umiejętności` PDF.
