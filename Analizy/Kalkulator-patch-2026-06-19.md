@@ -3,6 +3,12 @@
 Data: 2026-06-19
 Cel: roboczy opis zmian do wdrożenia w `Kalkulator/TworzeniePostaci.html` oraz materiał przenośny do późniejszego użycia w innym repozytorium.
 
+Uzupełnienie szczegółowe:
+
+```text
+Analizy/Kalkulator-logika-eksportu-pdf-2026-06-19.md
+```
+
 ---
 
 ## 1. Zakres patcha
@@ -24,9 +30,9 @@ Główne elementy:
 5. dodać obliczanie cech pochodnych,
 6. rozszerzyć zapis/wczytanie,
 7. przygotować eksport PDF przez `pdf-lib`,
-8. spłaszczać wynikowy PDF.
-
-Uwaga: główny dokument `Analizy/Kalkulator.md` również został zaktualizowany zgodnie z tym patchem, żeby pierwotna specyfikacja nie była sprzeczna z notatkami przenośnymi.
+8. spłaszczać wynikowy PDF,
+9. eksportować teksty do bucketów `Zdolności i Talenty`, `Notatki`, `Przeszłość`,
+10. dodać ostrzeżenia dla zbyt niskich wartości surowych.
 
 ---
 
@@ -146,7 +152,25 @@ Zaokrąglać w górę.
 
 ---
 
-## 6. Zasady specjalne — typy i eksport
+## 6. Wartości ujemne i ostrzeżenia
+
+Kolumna `Wartość` musi dopuszczać liczby ujemne.
+
+Obliczenia mają wykonywać się zawsze, gdy wpis modyfikuje cechę, także dla wartości ujemnych.
+
+Dodać ostrzeżenia na podstawie wartości surowej po bonusach, ale przed wymuszeniem minimum:
+
+- dla wszystkich cech poza `Spaczenie`: ostrzeżenie, jeśli wartość wynosi `0` lub mniej,
+- dla `Spaczenie`: ostrzeżenie, jeśli wartość wynosi mniej niż `0`.
+
+Minimum nadal obowiązuje:
+
+- `1` dla cech poza `Spaczenie`,
+- `0` dla `Spaczenie`.
+
+---
+
+## 7. Zasady specjalne — typy i eksport
 
 Typy:
 
@@ -159,32 +183,27 @@ Typy:
 
 Eksport tekstu z pola `Nazwa`:
 
-| Typ | Eksport tekstu |
-| --- | --- |
-| `Premia z przeszłości` | `Przeszłość` |
-| `Zdolności Gatunkowe` | `Notatki` |
-| `Zdolność Archetypu` | do ustalenia po zmianie tego typu; tymczasowo nie zamykać logiki na stałe |
-| `Bonusy Słów Kluczowych` | `Notatki` |
-| `Specjalne Bonusy Frakcji` | `Notatki` |
-| `Inne` | `Notatki` |
+| Typ / źródło | Warunek | Eksport tekstu |
+| --- | --- | --- |
+| Główna sekcja talentów | dowolny wpis z nazwą | `Zdolności i Talenty` |
+| `Zdolność Archetypu` | `Opis` / `Brak — tylko opis` / `none` | `Zdolności i Talenty` |
+| `Zdolność Archetypu` | modyfikuje cechę | `Notatki` |
+| `Premia z przeszłości` | dowolny wpis | `Przeszłość` |
+| `Zdolności Gatunkowe` | dowolny wpis | `Notatki` |
+| `Bonusy Słów Kluczowych` | dowolny wpis | `Notatki` |
+| `Specjalne Bonusy Frakcji` | dowolny wpis | `Notatki` |
+| `Inne` | dowolny wpis | `Notatki` |
 
-`Premia z przeszłości`:
+Eksportować same nazwy, bez etykiet i bez kosztów.
 
-- może być bonusem mechanicznym, np. `+1 do Majątku`,
-- może być opisowa, np. `Nowe słowo kluczowe`,
-- zawsze trafia do `Przeszłość`,
-- nie trafia do `Notatek`.
+Kolejność w polu `Zdolności i Talenty`:
 
-`Zdolność Archetypu`:
-
-- będzie zmieniona względem wcześniejszej specyfikacji,
-- zostawić typ w UI,
-- dodać w kodzie `TODO` do doprecyzowania,
-- nie hardkodować finalnego zachowania w sposób trudny do zmiany.
+1. najpierw nazwy z głównej sekcji talentów,
+2. potem opisowe wpisy typu `Zdolność Archetypu`.
 
 ---
 
-## 7. Stan i zapis/wczytanie
+## 8. Stan i zapis/wczytanie
 
 Stan rozszerzyć o:
 
@@ -212,7 +231,7 @@ Zamykanie modala przez `X` ma synchronizować dane ze stanem kalkulatora. Ponown
 
 ---
 
-## 8. PDF — biblioteka
+## 9. PDF — biblioteka
 
 Użyć `pdf-lib`.
 
@@ -226,7 +245,7 @@ Powód: mniej zależności od internetu, lepsze działanie lokalne/offline.
 
 ---
 
-## 9. PDF — profile PL/EN
+## 10. PDF — profile PL/EN
 
 PDF-y znajdują się w:
 
@@ -262,6 +281,7 @@ const pdfProfiles = {
       influence: "...",
       wealth: "...",
       corruption: "...",
+      abilitiesAndTalents: "...",
       notes: "...",
       background: "..."
     }
@@ -284,6 +304,7 @@ const pdfProfiles = {
       influence: "...",
       wealth: "...",
       corruption: "...",
+      abilitiesAndTalents: "...",
       notes: "...",
       background: "..."
     }
@@ -295,7 +316,7 @@ Nie mapować pól pozycyjnie. Mapować po logicznych kluczach i realnych nazwach
 
 ---
 
-## 10. PDF — spłaszczenie
+## 11. PDF — spłaszczenie
 
 Po wypełnieniu pól wykonać:
 
@@ -313,40 +334,53 @@ Wynikowy PDF ma być gotowym, spłaszczonym dokumentem.
 
 ---
 
-## 11. Minimalny pseudokod eksportu
+## 12. Minimalny pseudokod eksportu tekstów
 
 ```js
-async function exportCharacterPdf() {
-  syncCharacterRulesModalState();
+function buildExportTextBuckets(talentRows, specialRules) {
+  const buckets = {
+    abilitiesAndTalents: [],
+    notes: [],
+    background: []
+  };
 
-  const profile = pdfProfiles[currentLang] || pdfProfiles.pl;
-  const existingPdfBytes = await fetch(profile.templatePath).then((res) => res.arrayBuffer());
-  const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
-  const form = pdfDoc.getForm();
-  const data = buildPdfDataFromCalculator();
-
-  Object.entries(profile.fields).forEach(([key, fieldName]) => {
-    if (!fieldName) return;
-    const value = data[key];
-    if (value === undefined || value === null) return;
-
-    try {
-      form.getTextField(fieldName).setText(String(value));
-    } catch (error) {
-      console.warn("Brak pola PDF:", key, fieldName, error);
-    }
+  talentRows.forEach((talent) => {
+    const name = String(talent.name || "").trim();
+    if (name) buckets.abilitiesAndTalents.push(name);
   });
 
-  form.flatten();
+  specialRules.forEach((rule) => {
+    const name = String(rule.name || "").trim();
+    if (!name) return;
 
-  const pdfBytes = await pdfDoc.save();
-  downloadBlob(pdfBytes, "karta-postaci.pdf", "application/pdf");
+    if (rule.type === "backgroundBonus") {
+      buckets.background.push(name);
+      return;
+    }
+
+    if (rule.type === "archetypeAbility") {
+      if (rule.target === "none") {
+        buckets.abilitiesAndTalents.push(name);
+      } else {
+        buckets.notes.push(name);
+      }
+      return;
+    }
+
+    buckets.notes.push(name);
+  });
+
+  return {
+    abilitiesAndTalents: buckets.abilitiesAndTalents.join("\n"),
+    notes: buckets.notes.join("\n"),
+    background: buckets.background.join("\n")
+  };
 }
 ```
 
 ---
 
-## 12. Testy regresji
+## 13. Testy regresji
 
 Po wdrożeniu sprawdzić:
 
@@ -355,8 +389,14 @@ Po wdrożeniu sprawdzić:
 - czy modal otwiera się i zamyka,
 - czy dane modala nie znikają po zamknięciu,
 - czy zapis/wczytanie obejmuje dane modala,
+- czy główna sekcja talentów trafia do `Zdolności i Talenty`, bez kosztów,
+- czy opisowa `Zdolność Archetypu` trafia do `Zdolności i Talenty`,
+- czy modyfikująca `Zdolność Archetypu` trafia do `Notatki` i wpływa na obliczenia,
 - czy `Premia z przeszłości` trafia do `Przeszłość`,
+- czy `Zdolności Gatunkowe` trafiają do `Notatki`,
 - czy `Specjalne Bonusy Frakcji` trafiają do `Notatki`,
+- czy wartości ujemne działają w obliczeniach,
+- czy ostrzeżenie pojawia się przy surowej wartości 0 lub mniej, a dla `Spaczenie` poniżej 0,
 - czy PDF generuje się dla PL i EN,
 - czy PDF jest spłaszczony,
 - czy w konsoli nie ma błędów.
