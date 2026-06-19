@@ -232,12 +232,19 @@ PDF-y znajdują się w:
 Kalkulator/pdf/
 ```
 
-Po potwierdzeniu rzeczywistych nazw plików ustawić:
+Potwierdzone pliki:
+
+```text
+Kalkulator/pdf/pl.pdf
+Kalkulator/pdf/en.pdf
+```
+
+Ustawić:
 
 ```js
 const pdfProfiles = {
   pl: {
-    templatePath: "./pdf/<NAZWA_POLSKIEGO_PDF>.pdf",
+    templatePath: "./pdf/pl.pdf",
     fields: {
       species: "...",
       faction: "...",
@@ -258,7 +265,7 @@ const pdfProfiles = {
     }
   },
   en: {
-    templatePath: "./pdf/<NAZWA_ANGIELSKIEGO_PDF>.pdf",
+    templatePath: "./pdf/en.pdf",
     fields: {
       species: "...",
       size: "...",
