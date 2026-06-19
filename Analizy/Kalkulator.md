@@ -1,6 +1,7 @@
 # Analiza modułu Kalkulator — Tworzenie Postaci i eksport PDF
 
 Data przygotowania: 2026-06-18
+Aktualizacja: 2026-06-19
 
 Dokument zbiera aktualne ustalenia dotyczące rozbudowy pliku `Kalkulator/TworzeniePostaci.html` o modal **Cechy i zasady specjalne** oraz funkcję **Eksportuj PDF**.
 
@@ -208,49 +209,6 @@ Uzasadnienie:
 - Ranga nie wpływa na obliczenia i zmienia się w trakcie gry.
 - Imię gracza i imię postaci nie są potrzebne w tym module obliczeniowym.
 
-Szkic HTML:
-
-```html
-<h3 class="section-title">Dane postaci do obliczeń i eksportu</h3>
-
-<table class="table character-details-table">
-  <tr>
-    <th>Poziom Gry</th>
-    <th>Gatunek</th>
-    <th>Rozmiar</th>
-  </tr>
-  <tr>
-    <td>
-      <input id="gameTier" type="number" min="1" max="5" step="1" value="1" data-save-key="character.gameTier">
-    </td>
-    <td>
-      <textarea id="speciesName" data-save-key="character.speciesName" data-pdf-key="species" placeholder="np. Człowiek, Adeptus Astartes, Kroot, gatunek homebrew..."></textarea>
-    </td>
-    <td>
-      <select id="characterSize" data-save-key="character.size">
-        <option value="tiny" data-defense-mod="2">Malutki (+2 Obrona)</option>
-        <option value="small" data-defense-mod="1">Mały (+1 Obrona)</option>
-        <option value="medium" data-defense-mod="0" selected>Średni</option>
-        <option value="large" data-defense-mod="0">Duży</option>
-        <option value="huge" data-defense-mod="0">Wielki</option>
-        <option value="massive" data-defense-mod="0">Masywny</option>
-        <option value="monstrous" data-defense-mod="0">Monstrualny</option>
-      </select>
-    </td>
-  </tr>
-  <tr>
-    <th>Frakcja</th>
-    <th>Archetyp</th>
-    <th>Słowa Kluczowe</th>
-  </tr>
-  <tr>
-    <td><textarea id="factionName" data-save-key="character.factionName" data-pdf-key="faction"></textarea></td>
-    <td><textarea id="archetypeName" data-save-key="character.archetypeName" data-pdf-key="archetype"></textarea></td>
-    <td><textarea id="keywords" data-save-key="character.keywords" data-pdf-key="keywords"></textarea></td>
-  </tr>
-</table>
-```
-
 ---
 
 ## 6. Poziom Gry i pula PD
@@ -348,8 +306,6 @@ Wpływy normalnie bazują na Ogładzie:
 Wpływy = Ogłada - 1 + bonusy
 ```
 
-Jednak w systemie istnieją wyjątki, np. sytuacje, w których inny atrybut może być używany do testów Wpływów. Część wyjątków dotyczy tylko testów w trakcie gry i nie powinna automatycznie zmieniać wartości startowej.
-
 Ustalony kompromis:
 
 - w modalu zostaje dropdown **Atrybut bazowy Wpływów**,
@@ -357,33 +313,13 @@ Ustalony kompromis:
 - pozostałe opcje: Siła, Wytrzymałość, Zręczność, Inicjatywa, Siła Woli, Inteligencja — każda jako `atrybut - 1`,
 - użytkownik zmienia podstawę tylko wtedy, gdy zasada gatunku, frakcji, słowa kluczowego albo homebrew zmienia stałą podstawę Wpływów.
 
-Szkic:
-
-```html
-<select id="influenceAttribute" data-save-key="derived.influenceAttribute">
-  <option value="attr_ogd" selected>Ogłada - 1</option>
-  <option value="attr_s">Siła - 1</option>
-  <option value="attr_wt">Wytrzymałość - 1</option>
-  <option value="attr_zr">Zręczność - 1</option>
-  <option value="attr_i">Inicjatywa - 1</option>
-  <option value="attr_sw">Siła Woli - 1</option>
-  <option value="attr_int">Inteligencja - 1</option>
-</select>
-```
-
 ---
 
 ## 10. Majątek i Wpływy w PDF
 
-Na wcześniejszym etapie rozważano drukowanie `start: X`, ponieważ Majątek i Wpływy mogą zmieniać się w trakcie gry.
+Wygenerowana karta PDF nie jest docelową kartą do gry; gracz przepisze wartości na swoją kartę.
 
-Aktualna koncepcja zmieniła się:
-
-- wygenerowana karta PDF nie jest docelową kartą do gry,
-- gracz przepisze wartości na swoją kartę,
-- kalkulator i PDF służą do początkowych obliczeń.
-
-W związku z tym eksport PDF może wpisywać obliczone wartości startowe, bez specjalnej logiki `start: X`, chyba że później użytkownik wróci do pomysłu drukowania karty.
+Eksport PDF może wpisywać obliczone wartości startowe, bez specjalnej logiki `start: X`, chyba że później użytkownik wróci do pomysłu drukowania karty.
 
 ---
 
@@ -433,55 +369,15 @@ Aktualny zestaw wartości dla pola **Typ / źródło**:
 5. **Specjalne Bonusy Frakcji**
 6. **Inne**
 
-Konfiguracja typów:
-
-```js
-const ruleTypeConfig = {
-  speciesAbility: {
-    label: "Zdolności Gatunkowe",
-    placeholder: "np. Honor Zakonu, Orczy, Łasuch, Intensywne emocje",
-    allowModifier: true,
-    exportTarget: "notes"
-  },
-  archetypeAbility: {
-    label: "Zdolność Archetypu",
-    placeholder: "np. Oddane współczucie, Płomienna zachęta, Na ziemię!",
-    allowModifier: false,
-    exportTarget: "notes"
-  },
-  backgroundBonus: {
-    label: "Premia z przeszłości",
-    placeholder: "np. +1 do Żywotności, Słowo Kluczowe [DOWOLNE]",
-    allowModifier: true,
-    exportTarget: "background"
-  },
-  keywordBonus: {
-    label: "Bonusy Słów Kluczowych",
-    placeholder: "np. Stalowy Legion Armageddonu, Ordo Hereticus, Zakon Uświęconej Tarczy",
-    allowModifier: true,
-    exportTarget: "notes"
-  },
-  specialFactionBonus: {
-    label: "Specjalne Bonusy Frakcji",
-    placeholder: "np. Ścieżki Asuryani (Ścieżka przebudzenia), Mutacja Krootów (Ludojad)",
-    allowModifier: true,
-    exportTarget: "notes"
-  },
-  other: {
-    label: "Inne",
-    placeholder: "np. Zakony Pierwszego Powołania, Homebrew",
-    allowModifier: true,
-    exportTarget: "notes"
-  }
-};
-```
+Konfiguracja typów musi wspierać eksport tekstu z pola **Nazwa** do właściwych bucketów PDF.
 
 Dodatkowe ustalenie:
 
 - `Premia z przeszłości` może być opisowa albo modyfikować cechę.
 - `Premia z przeszłości` eksportuje tekst z pola **Nazwa** do pola **Przeszłość**.
-- Pozostałe typy eksportują tekst z pola **Nazwa** do **Notatek**, chyba że później ustalimy inne zachowanie dla `Specjalne Bonusy Frakcji`.
-- `Zdolność Archetypu` jest tylko opisowa: `Modyfikuje = Brak — tylko opis`, `Wartość = 0`, oba pola zablokowane.
+- `Specjalne Bonusy Frakcji` eksportują tekst z pola **Nazwa** do pola **Notatki**.
+- Pozostałe typy eksportują tekst z pola **Nazwa** do **Notatek**, z wyjątkiem `Zdolność Archetypu`, której zachowanie będzie jeszcze zmienione.
+- `Zdolność Archetypu` pozostaje w UI, ale nie należy zamykać jej logiki na stałe jako wyłącznie opisowej, dopóki zmiana nie zostanie doprecyzowana.
 
 ---
 
@@ -493,39 +389,7 @@ Zmiana pola **Typ / źródło** w danym wierszu ma automatycznie zmieniać:
 - dostępność pola **Modyfikuje**,
 - dostępność pola **Wartość**.
 
-Dla `Zdolność Archetypu`:
-
-- `Modyfikuje` ustawia się na `Brak — tylko opis`,
-- `Modyfikuje` zostaje zablokowane,
-- `Wartość` ustawia się na `0`,
-- `Wartość` zostaje zablokowana.
-
-Szkic:
-
-```js
-function updateRuleRowByType(row) {
-  const typeSelect = row.querySelector(".special-rule-type");
-  const nameField = row.querySelector(".special-rule-name");
-  const targetSelect = row.querySelector(".special-rule-target");
-  const valueInput = row.querySelector(".special-rule-value");
-
-  const config = ruleTypeConfig[typeSelect.value] || ruleTypeConfig.speciesAbility;
-
-  nameField.placeholder = config.placeholder;
-
-  if (!config.allowModifier) {
-    targetSelect.value = "none";
-    targetSelect.disabled = true;
-    valueInput.value = 0;
-    valueInput.disabled = true;
-  } else {
-    targetSelect.disabled = false;
-    valueInput.disabled = false;
-  }
-
-  recalcSpecialRuleBonuses();
-}
-```
+Dla `Zdolność Archetypu` dodać komentarz `TODO` i nie hardkodować finalnego zachowania w sposób trudny do zmiany, ponieważ typ ten będzie zmieniany względem wcześniejszej specyfikacji.
 
 ---
 
@@ -579,21 +443,6 @@ const calculatorState = {
 };
 ```
 
-Szkic zamykania:
-
-```js
-function closeCharacterRulesModal() {
-  calculatorState.character = collectCharacterDetailsFromModal();
-  calculatorState.derived = collectDerivedSettingsFromModal();
-  calculatorState.specialRules = collectSpecialRulesFromModal();
-
-  recalcDerivedStats();
-
-  characterRulesModal.classList.remove("is-open");
-  characterRulesModal.setAttribute("aria-hidden", "true");
-}
-```
-
 ---
 
 ## 16. Zapis / Wczytaj
@@ -613,39 +462,6 @@ Do zapisu muszą trafić:
 - `specialRules[]`,
 - dynamiczne wiersze zasad,
 - dynamiczne wiersze talentów, jeśli później zostaną przerobione.
-
-Szkic struktury zapisu:
-
-```js
-const payload = {
-  version: 2,
-  language: currentLang,
-  xpPool,
-  attributes,
-  skills,
-  talents,
-  character: {
-    gameTier,
-    speciesName,
-    size,
-    factionName,
-    archetypeName,
-    keywords
-  },
-  derived: {
-    influenceAttribute,
-    corruptionBase
-  },
-  specialRules: [
-    {
-      type: "speciesAbility",
-      name: "Honor Zakonu",
-      target: "conviction",
-      value: 1
-    }
-  ]
-};
-```
 
 Przy wczytywaniu starszych zapisów należy przyjąć bezpieczne wartości domyślne.
 
@@ -671,25 +487,23 @@ To nie jest zakres bieżącego modala.
 W folderze repozytorium istnieją edytowalne PDF-y:
 
 ```text
-Kalkulator/pdf/
+Kalkulator/pdf/pl.pdf
+Kalkulator/pdf/en.pdf
 ```
-
-Jeden plik dla języka polskiego i jeden dla angielskiego.
 
 Z poziomu `Kalkulator/TworzeniePostaci.html` ścieżki powinny być względne:
 
 ```js
-"./pdf/nazwa-pliku-polskiego.pdf"
-"./pdf/nazwa-pliku-angielskiego.pdf"
+"./pdf/pl.pdf"
+"./pdf/en.pdf"
 ```
-
-Do implementacji trzeba ustalić dokładne nazwy plików.
 
 Eksport PDF powinien:
 
 - wybrać profil na podstawie języka UI albo osobnego ustawienia eksportu,
 - pobrać właściwy PDF przez `fetch`,
 - wypełnić pola formularza,
+- spłaszczyć formularz PDF,
 - wygenerować plik do pobrania.
 
 Nie należy hardkodować mapowania pozycyjnego. Trzeba mapować po logicznych kluczach i profilach PDF.
@@ -705,7 +519,7 @@ Szkic:
 ```js
 const pdfProfiles = {
   pl: {
-    templatePath: "./pdf/karta-postaci-pl.pdf",
+    templatePath: "./pdf/pl.pdf",
     fields: {
       species: "...",
       faction: "...",
@@ -726,7 +540,7 @@ const pdfProfiles = {
     }
   },
   en: {
-    templatePath: "./pdf/character-sheet-en.pdf",
+    templatePath: "./pdf/en.pdf",
     fields: {
       species: "...",
       size: "...",
@@ -772,36 +586,9 @@ Ustalenia z rozmowy:
 Teksty z tabeli zasad:
 
 - `Premia z przeszłości` -> tekst z pola **Nazwa** trafia do pola **Przeszłość**.
-- `Zdolności Gatunkowe`, `Zdolność Archetypu`, `Bonusy Słów Kluczowych`, `Specjalne Bonusy Frakcji`, `Inne` -> tekst z pola **Nazwa** trafia do **Notatek**, chyba że zostanie ustalone inaczej.
-
-Przykład agregacji:
-
-```js
-function buildExportTextBuckets(specialRules) {
-  const buckets = {
-    notes: [],
-    background: []
-  };
-
-  specialRules.forEach((rule) => {
-    const config = ruleTypeConfig[rule.type];
-    const text = String(rule.name || "").trim();
-
-    if (!text || !config) return;
-
-    if (config.exportTarget === "background") {
-      buckets.background.push(text);
-    } else {
-      buckets.notes.push(text);
-    }
-  });
-
-  return {
-    notes: buckets.notes.join("\n"),
-    background: buckets.background.join("\n")
-  };
-}
-```
+- `Specjalne Bonusy Frakcji` -> tekst z pola **Nazwa** trafia do **Notatek**.
+- `Zdolności Gatunkowe`, `Bonusy Słów Kluczowych`, `Inne` -> tekst z pola **Nazwa** trafia do **Notatek**.
+- `Zdolność Archetypu` -> zachowanie do doprecyzowania po zapowiedzianej zmianie.
 
 ---
 
@@ -866,6 +653,8 @@ async function exportCharacterPdf() {
     }
   });
 
+  form.flatten();
+
   const pdfBytes = await pdfDoc.save();
   downloadBlob(pdfBytes, "karta-postaci.pdf", "application/pdf");
 }
@@ -897,6 +686,10 @@ async function exportCharacterPdf() {
 6. **Pancerz**
    - Nie obliczać WP Pancerza.
    - Nie obliczać Odporność suma.
+
+7. **Zdolność Archetypu**
+   - Zachowanie tego typu będzie zmieniane.
+   - Nie należy opierać finalnej implementacji na założeniu, że zawsze jest wyłącznie opisowa.
 
 ---
 
@@ -939,7 +732,7 @@ async function exportCharacterPdf() {
 
 ### Etap 5 — Przygotowanie PDF
 
-- Ustalić dokładne nazwy plików w `Kalkulator/pdf`.
+- Użyć plików `Kalkulator/pdf/pl.pdf` i `Kalkulator/pdf/en.pdf`.
 - Dodać lokalną bibliotekę `pdf-lib` albo zdecydować o CDN.
 - Odczytać nazwy pól formularza z PL i EN PDF.
 - Zbudować `pdfProfiles.pl` i `pdfProfiles.en`.
@@ -949,6 +742,7 @@ async function exportCharacterPdf() {
 - Zbudować `buildPdfDataFromCalculator()`.
 - Zbudować agregację tekstów do `notes` i `background`.
 - Wypełnić pola PDF.
+- Spłaszczyć PDF przez `form.flatten()`.
 - Dodać pobieranie pliku.
 - Przetestować PL i EN.
 
@@ -1007,16 +801,17 @@ async function exportCharacterPdf() {
 - Nie dodawać przycisku `Usuń puste wiersze`.
 - Źródłem opisu do PDF jest pole `Nazwa`.
 - `Premia z przeszłości` trafia do `Przeszłość`.
+- `Specjalne Bonusy Frakcji` trafiają do `Notatki`.
 - Pozostałe wpisy trafiają do `Notatek`, chyba że później zostanie ustalone inaczej.
 - Kalkulator nie ma pobierać danych z DataVault.
 - PDF-y są w `Kalkulator/pdf`.
+- Potwierdzone nazwy PDF: `pl.pdf` i `en.pdf`.
+- Wygenerowany PDF ma być spłaszczony.
 
 ---
 
 ## 27. Otwarte kwestie techniczne
 
-- Dokładne nazwy plików PDF w `Kalkulator/pdf`.
 - Rzeczywiste nazwy pól formularza PDF dla PL i EN.
-- Decyzja: lokalny `pdf-lib.min.js` czy CDN.
-- Czy `Specjalne Bonusy Frakcji` na pewno trafiają do Notatek, czy część z nich powinna mieć osobny bucket eksportowy.
-- Czy eksport PDF ma automatycznie flattenować formularz, czy pozostawiać pola edytowalne.
+- Decyzja wykonawcza: lokalny `pdf-lib.min.js` czy CDN. Rekomendacja: lokalny plik vendor.
+- Finalne zachowanie `Zdolność Archetypu` po zapowiedzianej zmianie.
