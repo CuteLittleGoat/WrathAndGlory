@@ -7,7 +7,14 @@ Ten dokument uzupełnia:
 
 - `Analizy/Kalkulator.md`,
 - `Analizy/Kalkulator-changelog-2026-06-19.md`,
-- `Analizy/Kalkulator-patch-2026-06-19.md`.
+- `Analizy/Kalkulator-patch-2026-06-19.md`,
+- `Analizy/Kalkulator-mapowanie-pol-pdf-2026-06-19.md`.
+
+Szczegółowe mapowanie widocznych pól karty PDF znajduje się w:
+
+```text
+Analizy/Kalkulator-mapowanie-pol-pdf-2026-06-19.md
+```
 
 ---
 
@@ -239,6 +246,8 @@ Spaczenie = wartość ręczna + bonusy = -1
 
 Wartość wyświetlana może nadal zostać podniesiona do minimum `0`, ale ostrzeżenie powinno pozostać widoczne.
 
+Dodać także osobne ostrzeżenie, jeżeli wartość `Spaczenie` po obliczeniach przekracza liczbę dostępnych slotów czaszek na karcie PDF.
+
 ---
 
 ## 10. Proponowana funkcja agregująca teksty do PDF
@@ -295,20 +304,10 @@ Asystent / implementujący może technicznie odczytać rzeczywiste nazwy pól fo
 
 Użytkownik nie musi ręcznie przepisywać technicznych nazw pól formularza, o ile narzędzie do inspekcji PDF może je wypisać.
 
-Użytkownik powinien natomiast potwierdzić znaczenie widocznych pól, gdy istnieje ryzyko niejednoznaczności, np. które widoczne pole na karcie ma być traktowane jako:
+Użytkownik powinien natomiast potwierdzić znaczenie widocznych pól, gdy istnieje ryzyko niejednoznaczności. Aktualne znaczenie widocznych pól zostało rozpisane w:
 
-- `Zdolności i Talenty`,
-- `Przeszłość`,
-- `Notatki`,
-- `Żywotność maksymalna`,
-- `Odporność Psychiczna`,
-- `Determinacja`,
-- `Obrona`,
-- `Odporność`,
-- `Upór`,
-- `Odwaga`,
-- `Wpływy`,
-- `Majątek`,
-- `Spaczenie`.
+```text
+Analizy/Kalkulator-mapowanie-pol-pdf-2026-06-19.md
+```
 
 Na poziomie projektu aktualnie przyjęto, że mapowanie ma być wykonywane po rzeczywistych nazwach pól formularza PDF, a nie po pozycji pola na stronie.
