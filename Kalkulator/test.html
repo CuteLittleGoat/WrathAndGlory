@@ -119,6 +119,10 @@
     .muted{color:var(--muted);font-size:.9rem;}
     .narrow{max-width:120px;}
     .diagnostic-output{white-space:pre-wrap;text-align:left;max-height:420px;overflow:auto;border:1px solid var(--b2);padding:10px;border-radius:8px;background:rgba(0,0,0,.35);}
+    .pdf-log-panel{margin-top:24px;border-top:1px solid var(--div);padding-top:14px;}
+    .pdf-log-message{white-space:pre-wrap;text-align:left;min-height:42px;border:1px solid var(--b2);padding:10px;border-radius:8px;background:rgba(0,0,0,.35);color:var(--yellow);}
+    .pdf-log-message.is-ok{color:var(--text);}
+    .pdf-log-message.is-error{color:var(--red);}
   </style>
   <script src="./vendor/pdf-lib.min.js"></script>
 </head>
@@ -161,12 +165,21 @@
     <div class="table-wrap">
       <table class="table" id="talentsTable"></table>
     </div>
+    <div class="data-actions talent-actions">
+      <button type="button" id="addTalentRowButton">Dodaj pola talentów</button>
+      <button type="button" id="removeTalentRowButton">Usuń pola talentów</button>
+    </div>
 
     <div class="data-actions character-creation-actions">
       <button type="button" id="openCharacterRulesModalButton">Cechy i zasady specjalne</button>
       <button type="button" id="exportCharacterPdfButton">Eksportuj PDF</button>
       <button type="button" id="showPdfFieldsButton">Pokaż pola PDF</button>
     </div>
+
+    <section class="pdf-log-panel" aria-labelledby="pdfLogTitle">
+      <h2 class="section-title" id="pdfLogTitle">Log eksportu PDF</h2>
+      <div id="pdfLogMessage" class="pdf-log-message is-ok">Brak komunikatów PDF.</div>
+    </section>
 
     <div class="footer">Wykonane przez Spaczoną Inteligencję</div>
   </div>
@@ -308,7 +321,7 @@
 
   const sizeDefenceBonus = {'Malutki':2,'Mały':1,'Średni':0,'Duży':0,'Ogromny':0,'Monstrualny':0};
   const corruptionSlotLimit = 25;
-  const talentCount = 20;
+  let talentCount = 20;
 
   const pdfProfiles = {
     pl: {
@@ -327,8 +340,8 @@
         resolve:['Upór','Upor','Resolve'],
         conviction:['Odwaga','Conviction'],
         defence:['Obrona','Defence','Defense'],
-        resilienceBase:['Odporność Bazowa','Odporność/Bazowa','Odpornosc Bazowa','Resilience Base'],
-        woundsMax:['Żywotność Maksymalna','Zywotnosc Maksymalna','Wounds Max'],
+        resilienceBase:['Odporność Bazowa','Odporność/Bazowa','Odporność','Odpornosc Bazowa','Resilience Base'],
+        woundsMax:['Żywotność Maksymalna','Zywotnosc Maksymalna','Maksymalna','Wounds Max'],
         shock:['Odporność Psychiczna','Odpornosc Psychiczna','Shock'],
         determination:['Determinacja','Determination'],
         influence:['Wpływy','Wplywy','Influence'],
@@ -353,7 +366,6 @@
   function minOne(value){return Math.max(1,Math.ceil(Number(value)||0));}
   function minZero(value){return Math.max(0,Math.ceil(Number(value)||0));}
   function norm(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');}
-  function escapeHtml(text){return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
   function renderAttributes(){
     const table = $('attributesTable');
@@ -378,13 +390,18 @@
     table.innerHTML = html;
   }
 
-  function renderTalents(){
+  function renderTalents(talentsData){
     const table = $('talentsTable');
+    const existing = Array.isArray(talentsData)
+      ? talentsData
+      : (document.getElementById('talent_name_1') ? getTalents() : []);
     let html = '<tr><th>Nazwa</th><th>Koszt</th><th>Nazwa</th><th>Koszt</th></tr>';
     for(let i=1;i<=talentCount;i+=2){
+      const left = existing[i-1] || {name:'', cost:0};
+      const right = existing[i] || {name:'', cost:0};
       html += `<tr>
-        <td><textarea id="talent_name_${i}" class="talent-name"></textarea></td><td><input type="number" id="talent_cost_${i}" value="0" min="0"></td>
-        <td><textarea id="talent_name_${i+1}" class="talent-name"></textarea></td><td><input type="number" id="talent_cost_${i+1}" value="0" min="0"></td>
+        <td><textarea id="talent_name_${i}" class="talent-name">${escapeHtml(left.name || '')}</textarea></td><td><input type="number" id="talent_cost_${i}" value="${Math.max(0,toInt(left.cost,0))}" min="0"></td>
+        <td><textarea id="talent_name_${i+1}" class="talent-name">${escapeHtml(right.name || '')}</textarea></td><td><input type="number" id="talent_cost_${i+1}" value="${Math.max(0,toInt(right.cost,0))}" min="0"></td>
       </tr>`;
     }
     table.innerHTML = html;
@@ -400,6 +417,8 @@
       <td><input type="number" id="rule_value_${index}" data-rule-field="value" value="${Number(data.value)||0}"></td>
     </tr>`;
   }
+
+  function escapeHtml(text){return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
   function getSpecialRulesFromDom(){
     return Array.from(document.querySelectorAll('#specialRulesTable tr[data-rule-index]')).map(row => {
@@ -601,6 +620,7 @@
   function collectState(){
     return {
       xpPool:$('xpPool').value,
+      talentCount,
       attributes:Object.fromEntries(attributes.map(a=>[a.key,$(`attr_${a.key}`).value])),
       skills:Object.fromEntries(skills.map(s=>[s.key,$(`skill_${s.key}`).value])),
       talents:getTalents(),
@@ -615,11 +635,9 @@
     if(state.xpPool !== undefined) $('xpPool').value = state.xpPool;
     Object.entries(state.attributes||{}).forEach(([key,value]) => { if($(`attr_${key}`)) $(`attr_${key}`).value = value; });
     Object.entries(state.skills||{}).forEach(([key,value]) => { if($(`skill_${key}`)) $(`skill_${key}`).value = value; });
-    (state.talents||[]).forEach((talent,index) => {
-      const i = index + 1;
-      if($(`talent_name_${i}`)) $(`talent_name_${i}`).value = talent.name || '';
-      if($(`talent_cost_${i}`)) $(`talent_cost_${i}`).value = talent.cost || 0;
-    });
+    const loadedTalentCount = Math.max(2, toInt(state.talentCount || (state.talents || []).length || 20, 20));
+    talentCount = loadedTalentCount % 2 === 0 ? loadedTalentCount : loadedTalentCount + 1;
+    renderTalents(state.talents || []);
     const c = state.character || {};
     $('character_gameTier').value = c.gameTier || 1;
     $('character_speciesName').value = c.speciesName || '';
@@ -669,8 +687,7 @@
     const wanted = candidates.map(norm).filter(Boolean);
     let found = fields.find(f => wanted.includes(f.n) && (!preferredType || f.type.includes(preferredType)));
     if(found) return found.field;
-    const longWanted = wanted.filter(w => w.length > 2);
-    found = fields.find(f => longWanted.some(w => f.n.includes(w) || w.includes(f.n)) && (!preferredType || f.type.includes(preferredType)));
+    found = fields.find(f => wanted.some(w => f.n.includes(w) || w.includes(f.n)) && (!preferredType || f.type.includes(preferredType)));
     if(found) return found.field;
     return null;
   }
@@ -707,10 +724,19 @@
     });
   }
 
+  function setPdfLog(message, level){
+    const el = $('pdfLogMessage');
+    if(!el) return;
+    el.textContent = message || 'Brak komunikatów PDF.';
+    el.classList.remove('is-ok','is-error');
+    if(level === 'error') el.classList.add('is-error');
+    else if(level === 'ok') el.classList.add('is-ok');
+  }
+
   async function exportPdf(){
     const warnings = [];
     if(!window.PDFLib || !window.PDFLib.PDFDocument){
-      $('errorMessage').textContent = 'Brak biblioteki PDFLib. Dodaj lokalny plik Kalkulator/vendor/pdf-lib.min.js.';
+      setPdfLog('Brak biblioteki PDFLib. Dodaj lokalny plik Kalkulator/vendor/pdf-lib.min.js.', 'error');
       return;
     }
     const data = buildPdfData();
@@ -731,7 +757,7 @@
     fillText(form, fields, profile.fields.abilitiesAndTalents, data.text.abilitiesAndTalents, warnings);
     fillText(form, fields, profile.fields.notes, data.text.notes, warnings);
     fillText(form, fields, profile.fields.size, data.character.size, warnings);
-    fillText(form, fields, profile.fields.speed, data.speed, warnings);
+    fillText(form, fields, profile.fields.speed, data.values?.speed || data.speed, warnings);
 
     Object.entries(profile.attributes).forEach(([key,candidates]) => fillText(form, fields, candidates, data.attrs[key], warnings));
     skills.forEach(skill => {
@@ -762,20 +788,26 @@
     a.click();
     a.remove();
     URL.revokeObjectURL(url);
-    $('warningMessage').textContent = warnings.join('\n');
+    setPdfLog(warnings.length ? warnings.join('\n') : 'PDF wygenerowany. Brak ostrzeżeń mapowania.', warnings.length ? 'warn' : 'ok');
   }
 
   async function showPdfFields(){
     const output = $('diagnosticOutput');
     output.textContent = 'Odczyt pól PDF...';
     openModal('diagnosticModal');
-    if(!window.PDFLib || !window.PDFLib.PDFDocument){ output.textContent = 'Brak biblioteki PDFLib. Dodaj lokalny plik Kalkulator/vendor/pdf-lib.min.js.'; return; }
+    if(!window.PDFLib || !window.PDFLib.PDFDocument){
+      const message = 'Brak biblioteki PDFLib. Dodaj lokalny plik Kalkulator/vendor/pdf-lib.min.js.';
+      output.textContent = message;
+      setPdfLog(message, 'error');
+      return;
+    }
     try{
       const response = await fetch('./pdf/pl.pdf');
       const pdfDoc = await PDFLib.PDFDocument.load(await response.arrayBuffer());
       const form = pdfDoc.getForm();
       output.textContent = form.getFields().map(field => `${field.getName()} — ${field.constructor ? field.constructor.name : 'field'}`).join('\n');
-    }catch(error){ output.textContent = error.stack || error.message; }
+      setPdfLog('Odczytano pola PDF. Lista jest widoczna w oknie diagnostycznym.', 'ok');
+    }catch(error){ output.textContent = error.stack || error.message; setPdfLog(error.stack || error.message, 'error'); }
   }
 
   function renderSpeciesMax(){
@@ -795,8 +827,9 @@
     $('xpPool').value = 155;
     attributes.forEach(a => $(`attr_${a.key}`).value = a.key === 'Speed' ? 6 : 1);
     skills.forEach(s => $(`skill_${s.key}`).value = 0);
-    for(let i=1;i<=talentCount;i++){ $(`talent_name_${i}`).value=''; $(`talent_cost_${i}`).value=0; }
-    applyState({character:{gameTier:1,size:'Średni'}, specialRules:[]});
+    talentCount = 20;
+    renderTalents();
+    applyState({character:{gameTier:1,size:'Średni'}, talentCount:20, talents:[], specialRules:[]});
   }
 
   function init(){
@@ -816,10 +849,18 @@
     $('closeDiagnosticButton').addEventListener('click', () => closeModal('diagnosticModal'));
     $('addSpecialRuleButton').addEventListener('click', () => { const rules = getSpecialRulesFromDom(); rules.push({type:'other',name:'',target:'none',value:0}); renderSpecialRules(rules); recalcAll(); });
     $('removeSpecialRuleButton').addEventListener('click', () => { const rules = getSpecialRulesFromDom(); if(rules.length>1) rules.pop(); renderSpecialRules(rules); recalcAll(); });
+    $('addTalentRowButton').addEventListener('click', () => { const talents = getTalents(); talentCount += 2; renderTalents(talents); recalcAll(); });
+    $('removeTalentRowButton').addEventListener('click', () => {
+      if(talentCount <= 2) return;
+      const talents = getTalents().slice(0, talentCount - 2);
+      talentCount -= 2;
+      renderTalents(talents);
+      recalcAll();
+    });
     $('saveButton').addEventListener('click', () => { localStorage.setItem(storageKey, JSON.stringify(collectState())); $('warningMessage').textContent='Zapisano lokalnie.'; });
     $('loadButton').addEventListener('click', () => { const raw = localStorage.getItem(storageKey); if(raw) applyState(JSON.parse(raw)); else $('warningMessage').textContent='Brak lokalnego zapisu.'; });
     $('resetButton').addEventListener('click', resetAll);
-    $('exportCharacterPdfButton').addEventListener('click', () => exportPdf().catch(error => {$('errorMessage').textContent = error.stack || error.message;}));
+    $('exportCharacterPdfButton').addEventListener('click', () => exportPdf().catch(error => {setPdfLog(error.stack || error.message, 'error');}));
     $('showPdfFieldsButton').addEventListener('click', showPdfFields);
     $('manualButton').addEventListener('click', () => { window.location.href = './Instrukcja.html'; });
     $('backToMainButton').addEventListener('click', () => { window.location.href = '../index.html'; });
