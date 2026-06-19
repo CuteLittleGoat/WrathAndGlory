@@ -20,24 +20,29 @@ Dotyczy to modala `Cechy i zasady specjalne`. Modal pozostaje narzędziem oblicz
 
 ### 1.2. PDF-y w repozytorium
 
-PDF-y zostały dodane w repozytorium i powinny być używane z katalogu:
+PDF-y zostały dodane w repozytorium i znajdują się w katalogu:
 
 ```text
 Kalkulator/pdf/
 ```
 
-Uwaga techniczna: w trakcie przygotowania tej notatki nie udało się wypisać zawartości katalogu przez dostępne narzędzie `fetch_file`, ponieważ ścieżka katalogowa zwraca błąd `path points to a directory, not a file`. Nazwy plików trzeba potwierdzić przez listing katalogu albo bezpośrednie wskazanie nazw plików.
+Potwierdzone nazwy plików:
 
-Po potwierdzeniu nazw należy zaktualizować profile PDF:
+```text
+Kalkulator/pdf/pl.pdf
+Kalkulator/pdf/en.pdf
+```
+
+Profile PDF powinny używać ścieżek względnych z poziomu `Kalkulator/TworzeniePostaci.html`:
 
 ```js
 const pdfProfiles = {
   pl: {
-    templatePath: "./pdf/<NAZWA_POLSKIEGO_PDF>.pdf",
+    templatePath: "./pdf/pl.pdf",
     fields: {}
   },
   en: {
-    templatePath: "./pdf/<NAZWA_ANGIELSKIEGO_PDF>.pdf",
+    templatePath: "./pdf/en.pdf",
     fields: {}
   }
 };
@@ -108,7 +113,7 @@ Następujące otwarte kwestie z końca `Analizy/Kalkulator.md` otrzymują nowy s
 
 | Kwestia | Status po decyzji 2026-06-19 |
 | --- | --- |
-| Dokładne nazwy plików PDF w `Kalkulator/pdf` | PDF-y są dodane, ale nazwy trzeba jeszcze technicznie wypisać/potwierdzić |
+| Dokładne nazwy plików PDF w `Kalkulator/pdf` | Potwierdzone: `pl.pdf` i `en.pdf` |
 | Lokalny `pdf-lib.min.js` czy CDN | Rekomendowany lokalny `Kalkulator/vendor/pdf-lib.min.js` |
 | Czy `Specjalne Bonusy Frakcji` trafiają do Notatek | Tak, trafiają do Notatek |
 | Czy PDF ma być flattenowany | Tak, PDF ma być spłaszczony |
@@ -126,6 +131,7 @@ Przy przenoszeniu podobnej zmiany do innego repozytorium należy skopiować nie 
 - eksportować `Premia z przeszłości` do `Przeszłość`,
 - eksportować `Specjalne Bonusy Frakcji` do `Notatki`,
 - używać profili PDF osobno dla PL i EN,
+- używać ścieżek `./pdf/pl.pdf` oraz `./pdf/en.pdf`, jeśli w docelowym repo pliki mają takie same nazwy,
 - wypełnić PDF po nazwach pól formularza, nie po pozycjach,
 - spłaszczać finalny PDF,
 - pozostawić decyzję dotyczącą `Zdolność Archetypu` jako punkt wymagający aktualizacji zgodnie z finalnym ustaleniem.
