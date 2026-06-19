@@ -1,14 +1,35 @@
 <!DOCTYPE html>
-<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
 <html lang="pl">
-<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Wrath & Glory</title>
+  <title>Wrath & Glory — test eksportu PDF</title>
   <link rel="stylesheet" href="kalkulatorxp.css">
-  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
-<style>
+  <style>
+    :root{
+      --bg:#031605;
+      --bg-grad:radial-gradient(circle at top, #063b09 0%, #031605 42%, #000 100%);
+      --panel:#000;
+      --panel2:#020902;
+      --text:#9cf09c;
+      --text2:#4FAF4F;
+      --muted:#4a8b4a;
+      --code:#D2FAD2;
+      --red:#d74b4b;
+      --yellow:#e0c35a;
+      --border:#16c60c;
+      --accent:#16c60c;
+      --accent-dark:#0d7a07;
+      --b:rgba(22,198,12,.35);
+      --b2:rgba(22,198,12,.2);
+      --div:rgba(22,198,12,.18);
+      --hbg:rgba(22,198,12,.06);
+      --zebra:rgba(22,198,12,.04);
+      --hover:rgba(22,198,12,.08);
+      --glow:0 0 25px rgba(22,198,12,.45);
+      --glowH:0 0 18px rgba(22,198,12,.35);
+    }
+    *{box-sizing:border-box;}
     body{
       margin:0;
       padding:24px 14px;
@@ -16,9 +37,10 @@
       color:var(--text);
       line-height:1.5;
       letter-spacing:.04em;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     }
     .wrapper{
-      width:min(1100px, 96vw);
+      width:min(1120px,96vw);
       margin:0 auto;
       padding:22px;
       background:var(--panel);
@@ -27,37 +49,12 @@
       box-shadow:var(--glow);
       position:relative;
     }
-    h1{
-      margin:0 0 12px;
-      text-transform:uppercase;
-      letter-spacing:.16em;
-      font-weight:600;
-      color:var(--code);
-      text-shadow:var(--glowH);
-    }
-    .subtitle{margin:0 0 20px; color:var(--text2);}
-    .section-title{
-      margin:24px 0 12px;
-      padding-bottom:8px;
-      border-bottom:1px solid var(--div);
-      text-transform:uppercase;
-      letter-spacing:.14em;
-      color:var(--code);
-    }
-    .xp-section{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      flex-wrap:wrap;
-      margin-bottom:8px;
-    }
-    .data-actions{
-      display:flex;
-      gap:10px;
-      margin:0 0 12px;
-      flex-wrap:wrap;
-    }
-    .data-actions button{
+    h1{margin:0 0 12px;text-transform:uppercase;letter-spacing:.16em;font-weight:600;color:var(--code);text-shadow:var(--glowH);}
+    .subtitle{margin:0 0 20px;color:var(--text2);}
+    .section-title{margin:24px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--div);text-transform:uppercase;letter-spacing:.14em;color:var(--code);}
+    .top-actions,.data-actions,.xp-section{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0 0 12px;}
+    .top-actions{justify-content:flex-end;}
+    button{
       width:auto;
       padding:8px 12px;
       border-radius:6px;
@@ -67,70 +64,33 @@
       letter-spacing:.06em;
       cursor:pointer;
     }
-    .data-actions button:hover{background:var(--hover);}
-    .language-switcher{
-      position:absolute;
-      top:16px;
-      right:16px;
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      align-items:flex-end;
-    }
-    .language-switcher select{min-width:120px;}
-    .language-switcher button{
-      padding:8px 12px;
-      border-radius:6px;
-      border:1px solid var(--b);
-      background:var(--panel2);
-      color:var(--text);
-      letter-spacing:.06em;
-      cursor:pointer;
-    }
-    .language-switcher button:hover{background:var(--hover);}
-    .table{
-      width:100%;
-      border-collapse:collapse;
-      border:1px solid var(--div);
-      background:var(--panel2);
-      box-shadow:var(--glow);
-      margin-bottom:16px;
-    }
-    .table th,
-    .table td{
-      border-bottom:1px solid var(--div);
-      padding:9px 8px;
-      text-align:center;
-    }
-    .table th{
-      background:linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03));
-      color:var(--code);
-      letter-spacing:.1em;
-      text-transform:uppercase;
-    }
+    button:hover{background:var(--hover);}
+    button:disabled{opacity:.55;cursor:not-allowed;}
+    .table{width:100%;border-collapse:collapse;border:1px solid var(--div);background:var(--panel2);box-shadow:var(--glow);margin-bottom:16px;}
+    .table th,.table td{border-bottom:1px solid var(--div);padding:9px 8px;text-align:center;vertical-align:middle;}
+    .table th{background:linear-gradient(180deg,rgba(22,198,12,.08),rgba(22,198,12,.03));color:var(--code);letter-spacing:.1em;text-transform:uppercase;}
     .table tr:nth-child(even){background:var(--zebra);}
     .table tr:hover{background:var(--hover);}
-    input[type="number"],
-    select,
-    textarea{
+    .table td:first-child,.table td:nth-child(3){text-align:left;}
+    input[type="number"],input[type="text"],select,textarea{
       width:100%;
       padding:9px 10px;
       border-radius:6px;
       border:1px solid var(--b);
       background:var(--bg);
       color:var(--text);
-      text-align:center;
       outline:none;
     }
-    textarea{resize:none; text-align:left; height:46px;}
-    input[type="number"]:focus,
-    select:focus,
-    textarea:focus{box-shadow:0 0 0 3px rgba(22,198,12,.18);}
+    input[type="number"],select{text-align:center;}
+    textarea{resize:vertical;text-align:left;min-height:46px;}
+    input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(22,198,12,.18);}
     .xp-section #xpPool{width:19ch;}
-    .error-message{min-height:20px; color:var(--red); margin:6px 0 2px;}
-    .footer{margin-top:18px; color:var(--muted); text-align:center; letter-spacing:.08em;}
-
-    .species-max-modal{
+    .error-message,.warning-message{min-height:20px;margin:6px 0 2px;white-space:pre-line;}
+    .error-message{color:var(--red);}
+    .warning-message{color:var(--yellow);}
+    .footer{margin-top:18px;color:var(--muted);text-align:center;letter-spacing:.08em;}
+    .character-creation-actions{margin-top:18px;}
+    .modal{
       position:fixed;
       inset:0;
       display:none;
@@ -140,9 +100,9 @@
       background:rgba(0,0,0,.75);
       z-index:1000;
     }
-    .species-max-modal.is-open{display:flex;}
-    .species-max-modal__dialog{
-      width:min(1100px, 96vw);
+    .modal.is-open{display:flex;}
+    .modal__dialog{
+      width:min(1120px,96vw);
       max-height:88vh;
       background:var(--panel);
       border:1px solid var(--b);
@@ -151,1113 +111,724 @@
       padding:14px;
       overflow:auto;
     }
-    .species-max-modal__header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:10px;
-      margin-bottom:10px;
-    }
-    .species-max-modal__header h2{
-      margin:0;
-      color:var(--code);
-      text-transform:uppercase;
-      letter-spacing:.1em;
-      font-size:1rem;
-    }
-    .species-max-modal__close{
-      width:auto;
-      padding:4px 10px;
-      font-size:20px;
-      line-height:1;
-      border-radius:6px;
-      border:1px solid var(--b);
-      background:var(--panel2);
-      color:var(--text);
-      cursor:pointer;
-    }
-    .species-max-modal__close:hover{background:var(--hover);}
-    .species-max-modal__table-wrap{overflow-x:auto;}
-    .species-max-table th, .species-max-table td{
-      text-align:center;
-      white-space:nowrap;
-    }
-    .species-max-table td:first-child{
-      font-weight:600;
-      text-align:left;
-    }
-    .species-max-footnotes{
-      margin-top:8px;
-      color:var(--text2);
-      font-size:.9rem;
-      line-height:1.4;
-    }
-    .confirm-modal{
-      position:fixed;
-      inset:0;
-      display:none;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      background:rgba(0,0,0,.75);
-      z-index:1010;
-    }
-    .confirm-modal.is-open{display:flex;}
-    .confirm-modal__dialog{
-      width:min(520px, 95vw);
-      min-height:420px;
-      background:var(--panel);
-      border:1px solid var(--b);
-      border-radius:10px;
-      box-shadow:var(--glow);
-      padding:14px;
-      display:flex;
-      flex-direction:column;
-    }
-    .confirm-modal__title{
-      margin:0 0 8px;
-      color:var(--code);
-      text-transform:uppercase;
-      letter-spacing:.08em;
-    }
-    .confirm-modal__media{
-      width:100%;
-      height:192px;
-      min-height:192px;
-      border:1px solid var(--b2);
-      border-radius:8px;
-      margin:8px 0 12px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:rgba(0,0,0,.35);
-      overflow:hidden;
-      flex-shrink:0;
-    }
-    .confirm-modal__image{
-      width:auto;
-      height:192px;
-      max-width:100%;
-      object-fit:contain;
-      display:block;
-    }
-    .confirm-modal__image.is-hidden{visibility:hidden;}
-    .confirm-modal__actions{
-      display:flex;
-      justify-content:flex-end;
-      gap:8px;
-      margin-top:auto;
-    }
-    .confirm-modal__actions button{
-      width:auto;
-      padding:8px 12px;
-      border-radius:6px;
-      border:1px solid var(--b);
-      background:var(--panel2);
-      color:var(--text);
-      cursor:pointer;
-    }
-    #confirmModalYesButton{
-      border-color:rgba(190,40,40,.75);
-      background:rgba(110,20,20,.7);
-      color:#ffdada;
-    }
-    #confirmModalYesButton:hover{
-      background:rgba(150,28,28,.8);
-    }
-
+    .modal__header{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+    .modal__header h2{margin:0;color:var(--code);text-transform:uppercase;letter-spacing:.1em;font-size:1rem;}
+    .modal__close{padding:4px 10px;font-size:20px;line-height:1;}
+    .table-wrap{overflow-x:auto;}
+    .derived-value{font-weight:700;color:var(--code);}
+    .muted{color:var(--muted);font-size:.9rem;}
+    .narrow{max-width:120px;}
+    .diagnostic-output{white-space:pre-wrap;text-align:left;max-height:420px;overflow:auto;border:1px solid var(--b2);padding:10px;border-radius:8px;background:rgba(0,0,0,.35);}
   </style>
+  <script src="./vendor/pdf-lib.min.js"></script>
 </head>
-<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
-  <!-- Główny kontener strony / Main page container -->
   <div class="wrapper">
-    <!-- Przełącznik języka w prawym górnym rogu / Language switcher in the top right corner -->
-    <div class="language-switcher">
-      <select id="languageSelect">
-        <option value="pl">Polski</option>
-        <option value="en">English</option>
-      </select>
+    <div class="top-actions">
       <button type="button" id="manualButton">Instrukcja</button>
       <button type="button" id="backToMainButton">Strona Główna</button>
       <button type="button" id="showSpeciesMaxButton">Maksymalne wartości atrybutów</button>
     </div>
 
-    <h1 id="pageTitle">Tworzenie Postaci</h1>
+    <h1>Tworzenie Postaci — test</h1>
+    <p class="subtitle">Wersja testowa pierwszego etapu: modal cech, obliczenia, sumy umiejętności i eksport PDF PL.</p>
 
-    <!-- Sekcja XP / XP Section -->
     <div class="xp-section">
-      <label id="xpPoolLabel">Pula PD do wydania:</label>
+      <label for="xpPool">Pula PD do wydania:</label>
       <input type="number" id="xpPool" value="155" min="0">
-      <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">155</strong></span>
+      <span>Pozostało PD: <strong id="xpRemaining">155</strong></span>
     </div>
     <div class="data-actions">
-      <button type="button" id="saveToFirebaseButton">Zapisz</button>
-      <button type="button" id="loadFromFirebaseButton">Wczytaj</button>
+      <button type="button" id="saveButton">Zapisz lokalnie</button>
+      <button type="button" id="loadButton">Wczytaj lokalnie</button>
+      <button type="button" id="resetButton">Reset</button>
     </div>
 
-    <!-- Obszar komunikatów o błędach / Error message area -->
-    <div class="error-message" id="errorMessage"> </div>
+    <div class="error-message" id="errorMessage"></div>
+    <div class="warning-message" id="warningMessage"></div>
 
-    <!-- Sekcja Atrybutów / Attributes Section -->
-    <h2 class="section-title" id="attributesHeader">Atrybuty</h2>
-    <table class="attributes-table table">
-      <tr>
-        <th id="attrLabel1">S</th>
-        <th id="attrLabel2">Wt</th>
-        <th id="attrLabel3">Zr</th>
-        <th id="attrLabel4">I</th>
-        <th id="attrLabel5">SW</th>
-        <th id="attrLabel6">Int</th>
-        <th id="attrLabel7">Ogd</th>
-        <th id="attrLabel8">Szybkość</th>
-      </tr>
-      <tr>
-        <td><input type="number" id="attr_S" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_Wt" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_Zr" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_I" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_SW" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_Int" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_Ogd" value="1" min="1" max="12"></td>
-        <td><input type="number" id="attr_Speed" value="6" min="1" max="12"></td>
-      </tr>
-    </table>
-
-    <!-- Sekcja Umiejętności / Skills Section -->
-    <h2 class="section-title" id="skillsHeader">Umiejętności</h2>
-    <table class="skills-table table">
-      <tr>
-        <th id="skillHeader1">Umiejętność</th>
-        <th id="skillHeader2">Wartość</th>
-        <th id="skillHeader3">Umiejętność</th>
-        <th id="skillHeader4">Wartość</th>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row1">Analiza (Int)</td>
-        <td><input type="number" id="skill_Column1Row1" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row1">Perswazja (Ogd)</td>
-        <td><input type="number" id="skill_Column2Row1" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row2">Atletyka (S)</td>
-        <td><input type="number" id="skill_Column1Row2" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row2">Pilotaż (Zr)</td>
-        <td><input type="number" id="skill_Column2Row2" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row3">Czujność (Int)</td>
-        <td><input type="number" id="skill_Column1Row3" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row3">Przebiegłość (Ogd)</td>
-        <td><input type="number" id="skill_Column2Row3" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row4">Dowodzenie (SW)</td>
-        <td><input type="number" id="skill_Column1Row4" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row4">Przetrwanie (SW)</td>
-        <td><input type="number" id="skill_Column2Row4" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row5">Intuicja (Ogd)</td>
-        <td><input type="number" id="skill_Column1Row5" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row5">Ukrywanie się (Zr)</td>
-        <td><input type="number" id="skill_Column2Row5" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row6">Korzystanie z technologii (Int)</td>
-        <td><input type="number" id="skill_Column1Row6" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row6">Umiejętności strzeleckie (Zr)</td>
-        <td><input type="number" id="skill_Column2Row6" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row7">Medycyna (Int)</td>
-        <td><input type="number" id="skill_Column1Row7" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row7">Walka wręcz (I)</td>
-        <td><input type="number" id="skill_Column2Row7" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row8">Mistrzostwo psioniczne (SW)</td>
-        <td><input type="number" id="skill_Column1Row8" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row8">Wiedza ogólna (Int)</td>
-        <td><input type="number" id="skill_Column2Row8" value="0" min="0" max="8"></td>
-      </tr>
-      <tr>
-        <td id="skillLabelColumn1Row9">Oszukiwanie (Ogd)</td>
-        <td><input type="number" id="skill_Column1Row9" value="0" min="0" max="8"></td>
-        <td id="skillLabelColumn2Row9">Zastraszanie (SW)</td>
-        <td><input type="number" id="skill_Column2Row9" value="0" min="0" max="8"></td>
-      </tr>
-    </table>
-
-    <!-- Sekcja Talentów / Talents Section -->
-    <h2 class="section-title" id="talentsHeader">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2>
-    <table class="talents-table table">
-      <tr>
-        <th id="talentHeader1">Nazwa</th>
-        <th id="talentHeader2">Koszt</th>
-        <th id="talentHeader3">Nazwa</th>
-        <th id="talentHeader4">Koszt</th>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_1" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_1" value="0" min="0"></td>
-        <td><textarea id="talent_name_2" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_2" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_3" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_3" value="0" min="0"></td>
-        <td><textarea id="talent_name_4" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_4" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_5" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_5" value="0" min="0"></td>
-        <td><textarea id="talent_name_6" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_6" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_7" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_7" value="0" min="0"></td>
-        <td><textarea id="talent_name_8" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_8" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_9" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_9" value="0" min="0"></td>
-        <td><textarea id="talent_name_10" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_10" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_11" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_11" value="0" min="0"></td>
-        <td><textarea id="talent_name_12" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_12" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_13" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_13" value="0" min="0"></td>
-        <td><textarea id="talent_name_14" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_14" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_15" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_15" value="0" min="0"></td>
-        <td><textarea id="talent_name_16" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_16" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_17" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_17" value="0" min="0"></td>
-        <td><textarea id="talent_name_18" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_18" value="0" min="0"></td>
-      </tr>
-      <tr>
-        <td><textarea id="talent_name_19" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_19" value="0" min="0"></td>
-        <td><textarea id="talent_name_20" class="talent-name"></textarea></td>
-        <td><input type="number" id="talent_cost_20" value="0" min="0"></td>
-      </tr>
-    </table>
-
-    <!-- Stopka / Footer -->
-    <div class="footer" id="footerText">Wykonane przez Spaczoną Inteligencję</div>
-  </div>
-
-
-
-  <div id="speciesMaxModal" class="species-max-modal" aria-hidden="true">
-    <div class="species-max-modal__dialog">
-      <div class="species-max-modal__header">
-        <h2 id="speciesMaxModalTitle">Maksymalne wartości atrybutów</h2>
-        <button type="button" id="closeSpeciesMaxButton" class="species-max-modal__close" aria-label="Zamknij">×</button>
-      </div>
-      <div class="species-max-modal__table-wrap">
-        <table class="table species-max-table" id="speciesMaxTable"></table>
-      </div>
-      <div id="speciesMaxFootnotes" class="species-max-footnotes"></div>
+    <h2 class="section-title">Atrybuty</h2>
+    <div class="table-wrap">
+      <table class="table" id="attributesTable"></table>
     </div>
+
+    <h2 class="section-title">Umiejętności</h2>
+    <div class="table-wrap">
+      <table class="table" id="skillsTable"></table>
+    </div>
+
+    <h2 class="section-title">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2>
+    <div class="table-wrap">
+      <table class="table" id="talentsTable"></table>
+    </div>
+
+    <div class="data-actions character-creation-actions">
+      <button type="button" id="openCharacterRulesModalButton">Cechy i zasady specjalne</button>
+      <button type="button" id="exportCharacterPdfButton">Eksportuj PDF</button>
+      <button type="button" id="showPdfFieldsButton">Pokaż pola PDF</button>
+    </div>
+
+    <div class="footer">Wykonane przez Spaczoną Inteligencję</div>
   </div>
 
-  <div id="confirmModal" class="confirm-modal" aria-hidden="true">
-    <div class="confirm-modal__dialog">
-      <h2 class="confirm-modal__title" id="confirmModalTitle">Potwierdzenie</h2>
-      <p id="confirmModalMessage"></p>
-      <div class="confirm-modal__media">
-        <img id="confirmModalImage" class="confirm-modal__image is-hidden" alt="modal image" width="1980" height="2048" decoding="async">
+  <div id="characterRulesModal" class="modal" aria-hidden="true">
+    <div class="modal__dialog" role="dialog" aria-modal="true" aria-labelledby="characterRulesModalTitle">
+      <div class="modal__header">
+        <h2 id="characterRulesModalTitle">Cechy i zasady specjalne</h2>
+        <button type="button" id="closeCharacterRulesModalButton" class="modal__close" aria-label="Zamknij">×</button>
       </div>
-      <div class="confirm-modal__actions">
-        <button type="button" id="confirmModalYesButton">OK</button>
-        <button type="button" id="confirmModalNoButton">Nie</button>
+
+      <h3 class="section-title">Dane postaci do obliczeń i eksportu</h3>
+      <div class="table-wrap">
+        <table class="table">
+          <tr>
+            <th>Poziom Gry</th><th>Gatunek</th><th>Rozmiar</th><th>Frakcja</th><th>Archetyp</th><th>Słowa Kluczowe</th>
+          </tr>
+          <tr>
+            <td><input id="character_gameTier" type="number" min="1" max="5" value="1"></td>
+            <td><input id="character_speciesName" type="text"></td>
+            <td>
+              <select id="character_size">
+                <option>Malutki</option>
+                <option>Mały</option>
+                <option selected>Średni</option>
+                <option>Duży</option>
+                <option>Ogromny</option>
+                <option>Monstrualny</option>
+              </select>
+            </td>
+            <td><input id="character_factionName" type="text"></td>
+            <td><input id="character_archetypeName" type="text"></td>
+            <td><textarea id="character_keywords"></textarea></td>
+          </tr>
+        </table>
+      </div>
+
+      <h3 class="section-title">Cechy obliczalne</h3>
+      <div class="table-wrap">
+        <table class="table" id="derivedStatsTable"></table>
+      </div>
+      <div class="warning-message" id="derivedWarnings"></div>
+
+      <h3 class="section-title">Cechy i zasady specjalne</h3>
+      <div class="table-wrap">
+        <table class="table" id="specialRulesTable"></table>
+      </div>
+      <div class="data-actions">
+        <button type="button" id="addSpecialRuleButton">Dodaj zasadę</button>
+        <button type="button" id="removeSpecialRuleButton">Usuń zasadę</button>
       </div>
     </div>
   </div>
 
-<!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
-<script src="config/firebase-config.js"></script>
-<!-- Sekcja JavaScript / JavaScript Section -->
+  <div id="speciesMaxModal" class="modal" aria-hidden="true">
+    <div class="modal__dialog">
+      <div class="modal__header">
+        <h2>Maksymalne wartości atrybutów</h2>
+        <button type="button" id="closeSpeciesMaxButton" class="modal__close" aria-label="Zamknij">×</button>
+      </div>
+      <div class="table-wrap"><table class="table" id="speciesMaxTable"></table></div>
+      <p class="muted">* Vespidzi mają stałą Szybkość równą 14. Na potrzeby obliczeń PD zignoruj pole Szybkość.</p>
+    </div>
+  </div>
+
+  <div id="diagnosticModal" class="modal" aria-hidden="true">
+    <div class="modal__dialog">
+      <div class="modal__header">
+        <h2>Diagnostyka pól PDF</h2>
+        <button type="button" id="closeDiagnosticButton" class="modal__close" aria-label="Zamknij">×</button>
+      </div>
+      <div id="diagnosticOutput" class="diagnostic-output"></div>
+    </div>
+  </div>
+
 <script>
-    /* Inicjalizacja po załadowaniu strony / Initialization after page load */
-    document.addEventListener('DOMContentLoaded', function() {
-      // --- Obiekt tłumaczeń dla obsługi wielu języków / Translation object for multi-language support ---
-            // --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
-      // Dodanie nowego języka wymaga rozszerzenia translations oraz wszystkich etykiet pól, błędów i przycisków dialogowych.
-      // Adding a new language requires extending translations and all field labels, errors, and dialog button captions.
-const translations = {
-        pl: {
-          labels: {
-            pageTitle: 'Tworzenie Postaci',
-            xpPool: 'Pula PD do wydania:',
-            remainingXP: 'Pozostało PD:',
-            attributesHeader: 'Atrybuty',
-            skillsHeader: 'Umiejętności',
-            talentsHeader: 'Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne',
-            skillsTableHeaders: ['Umiejętność', 'Wartość', 'Umiejętność', 'Wartość'],
-            talentsTableHeaders: ['Nazwa', 'Koszt', 'Nazwa', 'Koszt'],
-            footerText: 'Wykonane przez Spaczoną Inteligencję',
-            manualButton: 'Instrukcja',
-            backToMainButton: 'Strona Główna',
-            showSpeciesMaxButton: 'Maksymalne wartości atrybutów',
-            speciesMaxModalTitle: 'Maksymalne wartości atrybutów',
-            saveButton: 'Zapisz',
-            loadButton: 'Wczytaj',
-            confirmYes: 'Tak',
-            confirmNo: 'Nie',
-            confirmSaveTitle: 'Potwierdzenie zapisu',
-            confirmSaveMessage: 'Czy na pewno chcesz zapisać aktualny stan postaci?',
-            confirmLoadTitle: 'Potwierdzenie wczytania',
-            confirmLoadMessage: 'Czy na pewno chcesz wczytać zapisany stan postaci?',
-            modalImageAlt: 'Ilustracja potwierdzenia',
-            infoOk: 'OK'
-          },
-          attributes: ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Szybkość'],
-          races: {
-            race_1: 'Człowiek', race_2: 'Ork', race_3: 'Aeldari', race_4: 'Adeptus Astartes', race_5: 'Primaris Astartes',
-            race_6: 'Ogryn', race_7: 'Szczurak', race_8: 'Kroot', race_9: 'Drukhari', race_10: 'Konstrukt Upiorytowy',
-            race_11: 'Kasta powietrza', race_12: 'Kasta ziemi', race_13: 'Kasta ognia', race_14: 'Kasta wody',
-            race_15: 'Niebianie', race_16: 'Vespidzi'
-          },
-          maxAttributes: {
-            attribute_1: 'Siła', attribute_2: 'Wytrzymałość', attribute_3: 'Zręczność', attribute_4: 'Inicjatywa',
-            attribute_5: 'Siła Woli', attribute_6: 'Inteligencja', attribute_7: 'Ogłada', attribute_8: 'Szybkość'
-          },
-          maxAttributesFootnotes: {
-            vespidSpeedFixed: '* Vespidzi mają stałą Szybkość równą 14. Na potrzeby obliczeń PD zignoruj pole Szybkość.'
-          },
-          skillsColumn1: [
-            'Analiza (Int)', 'Atletyka (S)', 'Czujność (Int)', 'Dowodzenie (SW)', 'Intuicja (Ogd)',
-            'Korzystanie z technologii (Int)', 'Medycyna (Int)', 'Mistrzostwo psioniczne (SW)', 'Oszukiwanie (Ogd)'
-          ],
-          skillsColumn2: [
-            'Perswazja (Ogd)', 'Pilotaż (Zr)', 'Przebiegłość (Ogd)', 'Przetrwanie (SW)', 'Ukrywanie się (Zr)',
-            'Umiejętności strzeleckie (Zr)', 'Walka wręcz (I)', 'Wiedza ogólna (Int)', 'Zastraszanie (SW)'
-          ],
-          errors: {
-            tooMuchXP: 'Przekroczono dostępną pulę PD!',
-            treeOfLearning: 'Niezgodność z zasadą Drzewa Nauki (str. 26)',
-            languageChangeWarning: 'Zmiana języka spowoduje zresetowanie wszystkich danych. Czy na pewno chcesz kontynuować?',
-            saveSuccess: 'Stan postaci został zapisany.',
-            saveError: 'Nie udało się zapisać stanu postaci.',
-            loadSuccess: 'Stan postaci został wczytany.',
-            loadError: 'Nie udało się wczytać stanu postaci.'
-          }
-        },
-        en: {
-          labels: {
-            pageTitle: 'Character Creation',
-            xpPool: 'XP Pool:',
-            remainingXP: 'Remaining XP:',
-            attributesHeader: 'Attributes',
-            skillsHeader: 'Skills',
-            talentsHeader: 'Talents, Faith, Psionic Powers, Archetypes, Ascension Packages, and Others',
-            skillsTableHeaders: ['Skill', 'Value', 'Skill', 'Value'],
-            talentsTableHeaders: ['Name', 'Cost', 'Name', 'Cost'],
-            footerText: 'Made by Abominable Intelligence',
-            manualButton: 'Manual',
-            backToMainButton: 'Main Page',
-            showSpeciesMaxButton: 'Maximum attribute values',
-            speciesMaxModalTitle: 'Maximum attribute values',
-            saveButton: 'Save',
-            loadButton: 'Load',
-            confirmYes: 'Yes',
-            confirmNo: 'No',
-            confirmSaveTitle: 'Save confirmation',
-            confirmSaveMessage: 'Do you want to save the current character state?',
-            confirmLoadTitle: 'Load confirmation',
-            confirmLoadMessage: 'Do you want to load the saved character state?',
-            modalImageAlt: 'Confirmation image',
-            infoOk: 'OK'
-          },
-          attributes: ['S', 'T', 'A', 'I', 'Will', 'Int', 'Fell', 'Speed'],
-          races: {
-            race_1: 'Human', race_2: 'Ork', race_3: 'Aeldari', race_4: 'Adeptus Astartes', race_5: 'Primaris Astartes',
-            race_6: 'Ogryn', race_7: 'Ratling', race_8: 'Kroot', race_9: 'Drukhari', race_10: 'Wraith Construct',
-            race_11: 'Air Caste', race_12: 'Earth Caste', race_13: 'Fire Caste', race_14: 'Water Caste',
-            race_15: 'Ethereal Caste', race_16: 'Vespid'
-          },
-          maxAttributes: {
-            attribute_1: 'Strength', attribute_2: 'Toughness', attribute_3: 'Agility', attribute_4: 'Initiative',
-            attribute_5: 'Willpower', attribute_6: 'Intellect', attribute_7: 'Fellowship', attribute_8: 'Speed'
-          },
-          maxAttributesFootnotes: {
-            vespidSpeedFixed: '* Vespids have a fixed Speed value of 14. For XP calculation purposes, ignore the Speed field.'
-          },
-          skillsColumn1: [
-            'Athletics (S)', 'Awareness (Int)', 'Ballistic Skill (A)', 'Cunning (Fel)', 'Deception (Fel)',
-            'Insight (Fel)', 'Intimidation (Will)', 'Investigation (Int)', 'Leadership (Will)'
-          ],
-          skillsColumn2: [
-            'Medicae (Int)', 'Persuasion (Fel)', 'Pilot (A)', 'Psychic Mastery (Will)', 'Scholar (Int)',
-            'Stealth (A)', 'Survival (Will)', 'Tech (Int)', 'Weapon Skill (I)'
-          ],
-          errors: {
-            tooMuchXP: 'Too much XP spent!',
-            treeOfLearning: '"Tree of Learning" rule broken (page 26)',
-            languageChangeWarning: 'Changing the language will reset all data. Are you sure you want to continue?',
-            saveSuccess: 'Character state has been saved.',
-            saveError: 'Failed to save character state.',
-            loadSuccess: 'Character state has been loaded.',
-            loadError: 'Failed to load character state.'
-          }
-        }
+(function(){
+  'use strict';
+
+  const attributeCosts = {1:0,2:4,3:10,4:20,5:35,6:55,7:80,8:110,9:145,10:185,11:230,12:280};
+  const skillCosts = {0:0,1:2,2:6,3:12,4:20,5:30,6:42,7:56,8:72};
+  const storageKey = 'wng-test-character-calculator-v1';
+
+  const attributes = [
+    {key:'S', label:'S', pdf:'attributeStrength'},
+    {key:'Wt', label:'Wt', pdf:'attributeToughness'},
+    {key:'Zr', label:'Zr', pdf:'attributeAgility'},
+    {key:'I', label:'I', pdf:'attributeInitiative'},
+    {key:'SW', label:'SW', pdf:'attributeWillpower'},
+    {key:'Int', label:'Int', pdf:'attributeIntellect'},
+    {key:'Ogd', label:'Ogd', pdf:'attributeFellowship'},
+    {key:'Speed', label:'Szybkość', pdf:'speed'}
+  ];
+
+  const skills = [
+    {key:'analysis', label:'Analiza (Int)', short:'Analiza', attr:'Int'},
+    {key:'athletics', label:'Atletyka (S)', short:'Atletyka', attr:'S'},
+    {key:'awareness', label:'Czujność (Int)', short:'Czujność', attr:'Int'},
+    {key:'leadership', label:'Dowodzenie (SW)', short:'Dowodzenie', attr:'SW'},
+    {key:'insight', label:'Intuicja (Ogd)', short:'Intuicja', attr:'Ogd'},
+    {key:'tech', label:'Korzystanie z technologii (Int)', short:'Korzystanie z technologii', attr:'Int'},
+    {key:'medicae', label:'Medycyna (Int)', short:'Medycyna', attr:'Int'},
+    {key:'psychicMastery', label:'Mistrzostwo psioniczne (SW)', short:'Mistrzostwo psioniczne', attr:'SW'},
+    {key:'deception', label:'Oszukiwanie (Ogd)', short:'Oszukiwanie', attr:'Ogd'},
+    {key:'persuasion', label:'Perswazja (Ogd)', short:'Perswazja', attr:'Ogd'},
+    {key:'pilot', label:'Pilotaż (Zr)', short:'Pilotaż', attr:'Zr'},
+    {key:'cunning', label:'Przebiegłość (Ogd)', short:'Przebiegłość', attr:'Ogd'},
+    {key:'survival', label:'Przetrwanie (SW)', short:'Przetrwanie', attr:'SW'},
+    {key:'stealth', label:'Ukrywanie się (Zr)', short:'Ukrywanie się', attr:'Zr'},
+    {key:'ballisticSkill', label:'Umiejętności strzeleckie (Zr)', short:'Umiejętności strzeleckie', attr:'Zr'},
+    {key:'weaponSkill', label:'Walka wręcz (I)', short:'Walka wręcz', attr:'I'},
+    {key:'scholar', label:'Wiedza ogólna (Int)', short:'Wiedza ogólna', attr:'Int'},
+    {key:'intimidation', label:'Zastraszanie (SW)', short:'Zastraszanie', attr:'SW'}
+  ];
+
+  const ruleTypes = [
+    {value:'speciesAbility', label:'Zdolności Gatunkowe'},
+    {value:'archetypeAbility', label:'Zdolność Archetypu'},
+    {value:'backgroundBonus', label:'Premia z przeszłości'},
+    {value:'keywordBonus', label:'Bonusy Słów Kluczowych'},
+    {value:'specialFactionBonus', label:'Specjalne Bonusy Frakcji'},
+    {value:'other', label:'Inne'}
+  ];
+
+  const modifyTargets = [
+    {value:'none', label:'Brak — tylko opis'},
+    {value:'woundsMax', label:'Żywotność'},
+    {value:'shock', label:'Odporność Psychiczna'},
+    {value:'determination', label:'Determinacja'},
+    {value:'defence', label:'Obrona'},
+    {value:'resilience', label:'Odporność'},
+    {value:'resolve', label:'Upór'},
+    {value:'conviction', label:'Odwaga'},
+    {value:'speed', label:'Szybkość'},
+    {value:'influence', label:'Wpływy'},
+    {value:'wealth', label:'Majątek'},
+    {value:'corruption', label:'Spaczenie'}
+  ];
+
+  const sizeDefenceBonus = {'Malutki':2,'Mały':1,'Średni':0,'Duży':0,'Ogromny':0,'Monstrualny':0};
+  const corruptionSlotLimit = 25;
+  const talentCount = 20;
+
+  const pdfProfiles = {
+    pl: {
+      templatePath:'./pdf/pl.pdf',
+      fields: {
+        tier:['Poziom','Tier'],
+        species:['Gatunek','Species'],
+        archetype:['Archetyp','Archetype'],
+        faction:['Frakcja','Faction'],
+        keywords:['Słowa Kluczowe','Slowa Kluczowe','Keywords'],
+        background:['Przeszłość','Przeszlosc','Background'],
+        abilitiesAndTalents:['Zdolności i Talenty','Zdolnosci i Talenty','Abilities and Talents'],
+        notes:['Notatki','Notes'],
+        size:['Rozmiar','Size'],
+        speed:['Szybkość','Szybkosc','Speed'],
+        resolve:['Upór','Upor','Resolve'],
+        conviction:['Odwaga','Conviction'],
+        defence:['Obrona','Defence','Defense'],
+        resilienceBase:['Odporność Bazowa','Odporność/Bazowa','Odpornosc Bazowa','Resilience Base'],
+        woundsMax:['Żywotność Maksymalna','Zywotnosc Maksymalna','Wounds Max'],
+        shock:['Odporność Psychiczna','Odpornosc Psychiczna','Shock'],
+        determination:['Determinacja','Determination'],
+        influence:['Wpływy','Wplywy','Influence'],
+        wealth:['Majątek','Majatek','Wealth'],
+        passiveAwareness:['Pasywna Czujność','Pasywna Czujnosc','Passive Awareness']
+      },
+      attributes: {
+        S:['S','Siła','Sila','Strength'],
+        Wt:['Wt','Wytrzymałość','Wytrzymalosc','Toughness'],
+        Zr:['Zr','Zręczność','Zrecznosc','Agility'],
+        I:['I','Inicjatywa','Initiative'],
+        SW:['SW','Siła Woli','Sila Woli','Willpower'],
+        Int:['Int','Inteligencja','Intellect'],
+        Ogd:['Ogd','Ogłada','Oglada','Fellowship']
+      }
+    }
+  };
+
+  function $(id){return document.getElementById(id);}
+  function toInt(value, fallback){const n=parseInt(value,10); return Number.isFinite(n)?n:fallback;}
+  function clamp(value,min,max){return Math.max(min,Math.min(max,value));}
+  function minOne(value){return Math.max(1,Math.ceil(Number(value)||0));}
+  function minZero(value){return Math.max(0,Math.ceil(Number(value)||0));}
+  function norm(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'');}
+  function escapeHtml(text){return String(text).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+
+  function renderAttributes(){
+    const table = $('attributesTable');
+    table.innerHTML = '<tr>' + attributes.map(a => `<th>${a.label}</th>`).join('') + '</tr>' +
+      '<tr>' + attributes.map(a => {
+        const value = a.key === 'Speed' ? 6 : 1;
+        return `<td><input type="number" id="attr_${a.key}" value="${value}" min="1" max="12"></td>`;
+      }).join('') + '</tr>';
+  }
+
+  function renderSkills(){
+    const table = $('skillsTable');
+    let html = '<tr><th>Umiejętność</th><th>Wartość</th><th>Umiejętność</th><th>Wartość</th></tr>';
+    for(let i=0;i<9;i++){
+      const left = skills[i];
+      const right = skills[i+9];
+      html += `<tr>
+        <td>${left.label}</td><td><input type="number" id="skill_${left.key}" value="0" min="0" max="8"></td>
+        <td>${right.label}</td><td><input type="number" id="skill_${right.key}" value="0" min="0" max="8"></td>
+      </tr>`;
+    }
+    table.innerHTML = html;
+  }
+
+  function renderTalents(){
+    const table = $('talentsTable');
+    let html = '<tr><th>Nazwa</th><th>Koszt</th><th>Nazwa</th><th>Koszt</th></tr>';
+    for(let i=1;i<=talentCount;i+=2){
+      html += `<tr>
+        <td><textarea id="talent_name_${i}" class="talent-name"></textarea></td><td><input type="number" id="talent_cost_${i}" value="0" min="0"></td>
+        <td><textarea id="talent_name_${i+1}" class="talent-name"></textarea></td><td><input type="number" id="talent_cost_${i+1}" value="0" min="0"></td>
+      </tr>`;
+    }
+    table.innerHTML = html;
+  }
+
+  function createRuleRow(index, data){
+    const typeOptions = ruleTypes.map(t => `<option value="${t.value}" ${data.type===t.value?'selected':''}>${t.label}</option>`).join('');
+    const targetOptions = modifyTargets.map(t => `<option value="${t.value}" ${data.target===t.value?'selected':''}>${t.label}</option>`).join('');
+    return `<tr data-rule-index="${index}">
+      <td><select id="rule_type_${index}" data-rule-field="type">${typeOptions}</select></td>
+      <td><textarea id="rule_name_${index}" data-rule-field="name" placeholder="np. +1 do Majątku">${escapeHtml(data.name||'')}</textarea></td>
+      <td><select id="rule_target_${index}" data-rule-field="target">${targetOptions}</select></td>
+      <td><input type="number" id="rule_value_${index}" data-rule-field="value" value="${Number(data.value)||0}"></td>
+    </tr>`;
+  }
+
+  function getSpecialRulesFromDom(){
+    return Array.from(document.querySelectorAll('#specialRulesTable tr[data-rule-index]')).map(row => {
+      const index = row.dataset.ruleIndex;
+      return {
+        type: $(`rule_type_${index}`).value,
+        name: $(`rule_name_${index}`).value,
+        target: $(`rule_target_${index}`).value,
+        value: toInt($(`rule_value_${index}`).value, 0)
       };
-
-      // --- Domyślny język (polski) / Default language (Polish) ---
-      let currentLanguage = 'pl';
-
-      const maxAttributeRows = [
-        { race: 'race_1', values: [8, 8, 8, 8, 8, 8, 8, 8] },
-        { race: 'race_2', values: [12, 12, 7, 7, 8, 7, 7, 7] },
-        { race: 'race_3', values: [8, 7, 12, 12, 12, 10, 6, 10] },
-        { race: 'race_4', values: [10, 10, 9, 9, 10, 10, 8, 9] },
-        { race: 'race_5', values: [12, 12, 9, 9, 10, 10, 8, 9] },
-        { race: 'race_6', values: [12, 12, 7, 4, 8, 1, 4, 8] },
-        { race: 'race_7', values: [6, 6, 10, 10, 8, 8, 10, 7] },
-        { race: 'race_8', values: [12, 12, 12, 12, 10, 6, 6, 10] },
-        { race: 'race_9', values: [8, 8, 12, 12, 10, 10, 6, 10] },
-        { race: 'race_10', values: [12, 12, 8, 8, 12, 10, 4, 8] },
-        { race: 'race_11', values: [4, 4, 10, 8, 8, 8, 8, 8] },
-        { race: 'race_12', values: [6, 6, 8, 8, 8, 10, 8, 6] },
-        { race: 'race_13', values: [7, 7, 8, 8, 8, 8, 8, 8] },
-        { race: 'race_14', values: [6, 6, 8, 8, 8, 8, 10, 6] },
-        { race: 'race_15', values: [6, 6, 8, 8, 10, 8, 8, 6] },
-        { race: 'race_16', values: [8, 8, 12, 8, 8, 8, 5, 14] }
-      ];
-
-      const maxAttributeKeys = ['attribute_1','attribute_2','attribute_3','attribute_4','attribute_5','attribute_6','attribute_7','attribute_8'];
-      // --- Przypisy specjalne są opisane osobno, aby dane liczbowe tabeli pozostały liczbami. / Special footnotes are described separately so table numeric data stays numeric. ---
-      const maxAttributeFootnotes = [
-        { race: 'race_16', attribute: 'attribute_8', marker: '*', noteKey: 'vespidSpeedFixed' }
-      ];
-      const modalImageUrl = './Modal_Icon.png';
-      const firebaseContext = initializeFirebaseContext();
-
-
-      // --- Koszty atrybutów i umiejętności / Attribute and skill costs ---
-      const attributeCosts = {
-        1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
-      };
-      const skillCosts = {
-        0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
-      };
-
-      // --- Funkcja aktualizująca teksty w wybranym języku / Function to update texts in the selected language ---
-      function updateLanguage(lang) {
-        currentLanguage = lang;
-        const t = translations[lang];
-        document.getElementById('pageTitle').innerText = t.labels.pageTitle;
-        document.getElementById('xpPoolLabel').innerText = t.labels.xpPool;
-        document.getElementById('xpRemainingLabel').innerHTML = `${t.labels.remainingXP} <strong id="xpRemaining">155</strong>`;
-        document.getElementById('attributesHeader').innerText = t.labels.attributesHeader;
-        document.getElementById('skillsHeader').innerText = t.labels.skillsHeader;
-        document.getElementById('talentsHeader').innerText = t.labels.talentsHeader;
-        document.getElementById('skillHeader1').innerText = t.labels.skillsTableHeaders[0];
-        document.getElementById('skillHeader2').innerText = t.labels.skillsTableHeaders[1];
-        document.getElementById('skillHeader3').innerText = t.labels.skillsTableHeaders[2];
-        document.getElementById('skillHeader4').innerText = t.labels.skillsTableHeaders[3];
-        document.getElementById('talentHeader1').innerText = t.labels.talentsTableHeaders[0];
-        document.getElementById('talentHeader2').innerText = t.labels.talentsTableHeaders[1];
-        document.getElementById('talentHeader3').innerText = t.labels.talentsTableHeaders[2];
-        document.getElementById('talentHeader4').innerText = t.labels.talentsTableHeaders[3];
-        document.getElementById('footerText').innerText = t.labels.footerText;
-        document.getElementById('manualButton').innerText = t.labels.manualButton;
-        document.getElementById('backToMainButton').innerText = t.labels.backToMainButton;
-        document.getElementById('showSpeciesMaxButton').innerText = t.labels.showSpeciesMaxButton;
-        document.getElementById('speciesMaxModalTitle').innerText = t.labels.speciesMaxModalTitle;
-        document.getElementById('saveToFirebaseButton').innerText = t.labels.saveButton;
-        document.getElementById('loadFromFirebaseButton').innerText = t.labels.loadButton;
-        document.getElementById('confirmModalYesButton').innerText = t.labels.confirmYes;
-        document.getElementById('confirmModalNoButton').innerText = t.labels.confirmNo;
-        document.getElementById('confirmModalImage').alt = t.labels.modalImageAlt;
-
-        // Aktualizacja etykiet atrybutów / Update attribute labels
-        for (let i = 1; i <= 8; i++) {
-          document.getElementById(`attrLabel${i}`).innerText = t.attributes[i - 1];
-        }
-
-        // Aktualizacja etykiet umiejętności w kolumnie 1 / Update skill labels in column 1
-        for (let i = 1; i <= 9; i++) {
-          document.getElementById(`skillLabelColumn1Row${i}`).innerText = t.skillsColumn1[i - 1];
-        }
-
-        // Aktualizacja etykiet umiejętności w kolumnie 2 / Update skill labels in column 2
-        for (let i = 1; i <= 9; i++) {
-          document.getElementById(`skillLabelColumn2Row${i}`).innerText = t.skillsColumn2[i - 1];
-        }
-
-        if (document.getElementById('speciesMaxModal').classList.contains('is-open')) {
-          renderSpeciesMaxTable();
-        }
-      }
-
-
-
-      function renderSpeciesMaxTable() {
-        const t = translations[currentLanguage];
-        const table = document.getElementById('speciesMaxTable');
-        const footnotes = document.getElementById('speciesMaxFootnotes');
-        const renderedFootnoteKeys = new Set();
-
-        const thead = document.createElement('thead');
-        const headerRow = document.createElement('tr');
-        const raceHeader = document.createElement('th');
-        raceHeader.innerText = '';
-        headerRow.appendChild(raceHeader);
-
-        maxAttributeKeys.forEach(key => {
-          const th = document.createElement('th');
-          th.innerText = t.maxAttributes[key];
-          headerRow.appendChild(th);
-        });
-        thead.appendChild(headerRow);
-
-        const tbody = document.createElement('tbody');
-        maxAttributeRows.forEach((row) => {
-          const tr = document.createElement('tr');
-          const raceCell = document.createElement('td');
-          raceCell.innerText = t.races[row.race];
-          tr.appendChild(raceCell);
-
-          row.values.forEach((value, index) => {
-            const td = document.createElement('td');
-            const attribute = maxAttributeKeys[index];
-            const footnote = maxAttributeFootnotes.find(item => item.race === row.race && item.attribute === attribute);
-            // Gwiazdka jest wyłącznie warstwą prezentacji tej komórki, bez zmiany wartości 14 w danych. / The asterisk is only the presentation layer for this cell and does not change the numeric value 14 in data.
-            td.innerText = footnote ? `${value}${footnote.marker}` : String(value);
-            if (footnote) {
-              renderedFootnoteKeys.add(footnote.noteKey);
-            }
-            tr.appendChild(td);
-          });
-          tbody.appendChild(tr);
-        });
-
-        table.replaceChildren(thead, tbody);
-        const noteTexts = Array.from(renderedFootnoteKeys)
-          .map(key => (t.maxAttributesFootnotes || {})[key])
-          .filter(Boolean);
-        footnotes.replaceChildren(...noteTexts.map((text) => {
-          const note = document.createElement('p');
-          note.innerText = text;
-          return note;
-        }));
-      }
-
-      // --- Funkcja resetująca wszystkie pola do wartości domyślnych / Function to reset all fields to default values ---
-      // Stała określająca liczbę pól talentów (2 kolumny po 10 pozycji) / Constant defining number of talent fields (2 columns with 10 entries each)
-      const TALENT_COUNT = 20;
-
-      function resetAll() {
-        document.getElementById('xpPool').value = 155;
-        ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach(id => {
-          document.getElementById(`attr_${id}`).value = 1;
-        });
-        document.getElementById('attr_Speed').value = 6;
-        for (let i = 1; i <= 9; i++) {
-          document.getElementById(`skill_Column1Row${i}`).value = 0;
-          document.getElementById(`skill_Column2Row${i}`).value = 0;
-        }
-        for (let i = 1; i <= TALENT_COUNT; i++) {
-          document.getElementById(`talent_name_${i}`).value = '';
-          document.getElementById(`talent_cost_${i}`).value = 0;
-        }
-        recalcXP();
-      }
-
-      // --- Funkcja przeliczająca zużycie XP / Function to recalculate XP usage ---
-      function recalcXP() {
-        let xpPool = parseInt(document.getElementById('xpPool').value) || 0;
-        let totalAttrCost = 0;
-        const attrIds = ['attr_S', 'attr_Wt', 'attr_Zr', 'attr_I', 'attr_SW', 'attr_Int', 'attr_Ogd', 'attr_Speed'];
-        attrIds.forEach(id => {
-          let inp = document.getElementById(id);
-          let val = parseInt(inp.value) || 1;
-          if (val < 1) val = 1;
-          if (val > 12) val = 12;
-          inp.value = val;
-          totalAttrCost += attributeCosts[val];
-          inp.classList.toggle('attribute-high', val > 8);
-        });
-
-        let totalSkillCost = 0;
-        const skillIds = [];
-        for (let i = 1; i <= 9; i++) {
-          skillIds.push(`skill_Column1Row${i}`);
-          skillIds.push(`skill_Column2Row${i}`);
-        }
-        skillIds.forEach(id => {
-          let inp = document.getElementById(id);
-          let val = parseInt(inp.value) || 0;
-          if (val < 0) val = 0;
-          if (val > 8) val = 8;
-          inp.value = val;
-          totalSkillCost += skillCosts[val];
-        });
-
-        let totalTalentCost = 0;
-        for (let i = 1; i <= TALENT_COUNT; i++) {
-          let inp = document.getElementById(`talent_cost_${i}`);
-          let val = parseInt(inp.value) || 0;
-          if (val < 0) val = 0;
-          inp.value = val;
-          totalTalentCost += val;
-        }
-
-        let xpSpent = totalAttrCost + totalSkillCost + totalTalentCost;
-        let xpRemaining = xpPool - xpSpent;
-        document.getElementById('xpRemaining').innerText = xpRemaining;
-
-        // Sprawdzenie przekroczenia puli XP / Check for exceeding XP pool
-        if (xpRemaining < 0) {
-          displayError(translations[currentLanguage].errors.tooMuchXP);
-        } else {
-          // Jeśli XP jest w normie, sprawdzamy "Drzewo Nauki" / If XP is fine, check "Tree of Learning"
-          checkSkillTree();
-        }
-      }
-
-      function initializeFirebaseContext() {
-        if (typeof firebase === 'undefined' || !window.firebaseConfig) {
-          return { ready: false, characterRef: null };
-        }
-
-        if (!firebase.apps.length) {
-          firebase.initializeApp(window.firebaseConfig);
-        }
-        const db = firebase.firestore();
-        return {
-          ready: true,
-          characterRef: db.collection('character_builder').doc('current')
-        };
-      }
-
-      function collectCurrentState() {
-        const attributes = {};
-        ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach((key) => {
-          attributes[key] = parseInt(document.getElementById(`attr_${key}`).value, 10) || 1;
-        });
-
-        const skills = {};
-        for (let i = 1; i <= 9; i++) {
-          skills[`Column1Row${i}`] = parseInt(document.getElementById(`skill_Column1Row${i}`).value, 10) || 0;
-          skills[`Column2Row${i}`] = parseInt(document.getElementById(`skill_Column2Row${i}`).value, 10) || 0;
-        }
-
-        const talents = [];
-        for (let i = 1; i <= TALENT_COUNT; i++) {
-          talents.push({
-            name: document.getElementById(`talent_name_${i}`).value || '',
-            cost: parseInt(document.getElementById(`talent_cost_${i}`).value, 10) || 0
-          });
-        }
-
-        const formSnapshot = {};
-        document.querySelectorAll('input, textarea, select').forEach((field) => {
-          if (field.id) {
-            formSnapshot[field.id] = field.value;
-          }
-        });
-
-        const errorMessage = document.getElementById('errorMessage').innerText.trim();
-        const xpPool = parseInt(document.getElementById('xpPool').value, 10) || 0;
-        const xpAvailable = parseInt(document.getElementById('xpRemaining').innerText, 10) || 0;
-        const xpTotal = xpPool;
-        const xpSpent = xpTotal - xpAvailable;
-
-        return {
-          schemaVersion: 1,
-          module: 'Kalkulator/TworzeniePostaci',
-          lang: currentLanguage,
-          savedAt: firebase.firestore.FieldValue.serverTimestamp(),
-          savedBy: 'anonymous-web-client',
-          xpPool,
-          xpTotal,
-          xpSpent,
-          xpAvailable,
-          hasValidationErrors: errorMessage.length > 0,
-          validationMessages: errorMessage ? [errorMessage] : [],
-          attributes,
-          skills,
-          talents,
-          formSnapshot
-        };
-      }
-
-      function applySavedState(data) {
-        const snapshot = data.formSnapshot || {};
-        Object.entries(snapshot).forEach(([id, value]) => {
-          const element = document.getElementById(id);
-          if (element) {
-            element.value = value;
-          }
-        });
-
-        if (data.lang && translations[data.lang]) {
-          document.getElementById('languageSelect').value = data.lang;
-          updateLanguage(data.lang);
-        }
-
-        recalcXP();
-      }
-
-      function toggleConfirmModal(forceOpen, config = {}) {
-        const modal = document.getElementById('confirmModal');
-        const title = document.getElementById('confirmModalTitle');
-        const message = document.getElementById('confirmModalMessage');
-        const image = document.getElementById('confirmModalImage');
-        const yesButton = document.getElementById('confirmModalYesButton');
-        const noButton = document.getElementById('confirmModalNoButton');
-        const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !modal.classList.contains('is-open');
-
-        if (shouldOpen) {
-          title.innerText = config.title || '';
-          message.innerText = config.message || '';
-          yesButton.innerText = config.yesText || translations[currentLanguage].labels.confirmYes;
-          noButton.innerText = config.noText || translations[currentLanguage].labels.confirmNo;
-          noButton.style.display = config.singleAction ? 'none' : '';
-          if (config.imageUrl) {
-            image.src = config.imageUrl;
-            image.classList.remove('is-hidden');
-          } else {
-            image.removeAttribute('src');
-            image.classList.add('is-hidden');
-          }
-        }
-
-        modal.classList.toggle('is-open', shouldOpen);
-        modal.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
-      }
-
-      function showConfirmationModal(config) {
-        return new Promise((resolve) => {
-          const yesButton = document.getElementById('confirmModalYesButton');
-          const noButton = document.getElementById('confirmModalNoButton');
-          const modal = document.getElementById('confirmModal');
-
-          const cleanup = () => {
-            yesButton.removeEventListener('click', onYes);
-            noButton.removeEventListener('click', onNo);
-            modal.removeEventListener('click', onOverlay);
-            document.removeEventListener('keydown', onEsc);
-            toggleConfirmModal(false);
-          };
-
-          const onYes = () => {
-            cleanup();
-            resolve(true);
-          };
-
-          const onNo = () => {
-            cleanup();
-            resolve(false);
-          };
-
-          const onOverlay = (event) => {
-            if (event.target === modal) {
-              onNo();
-            }
-          };
-
-          const onEsc = (event) => {
-            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
-              onNo();
-            }
-          };
-
-          yesButton.addEventListener('click', onYes);
-          noButton.addEventListener('click', onNo);
-          modal.addEventListener('click', onOverlay);
-          document.addEventListener('keydown', onEsc);
-          toggleConfirmModal(true, config);
-        });
-      }
-
-      function showInfoModal(config) {
-        return new Promise((resolve) => {
-          const okButton = document.getElementById('confirmModalYesButton');
-          const modal = document.getElementById('confirmModal');
-
-          const cleanup = () => {
-            okButton.removeEventListener('click', onOk);
-            modal.removeEventListener('click', onOverlay);
-            document.removeEventListener('keydown', onEsc);
-            toggleConfirmModal(false);
-          };
-
-          const onOk = () => {
-            cleanup();
-            resolve();
-          };
-
-          const onOverlay = (event) => {
-            if (event.target === modal) {
-              onOk();
-            }
-          };
-
-          const onEsc = (event) => {
-            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
-              onOk();
-            }
-          };
-
-          okButton.addEventListener('click', onOk);
-          modal.addEventListener('click', onOverlay);
-          document.addEventListener('keydown', onEsc);
-          toggleConfirmModal(true, {
-            ...config,
-            singleAction: true,
-            yesText: translations[currentLanguage].labels.infoOk
-          });
-        });
-      }
-
-      async function saveStateToFirebase() {
-        const t = translations[currentLanguage];
-        const confirmed = await showConfirmationModal({
-          title: t.labels.confirmSaveTitle,
-          message: t.labels.confirmSaveMessage,
-          imageUrl: modalImageUrl
-        });
-        if (!confirmed) return;
-        if (!firebaseContext.ready) {
-          await showInfoModal({
-            title: t.labels.confirmSaveTitle,
-            message: t.errors.saveError,
-            imageUrl: modalImageUrl
-          });
-          return;
-        }
-        try {
-          const payload = collectCurrentState();
-          await firebaseContext.characterRef.set(payload);
-          await showInfoModal({
-            title: t.labels.confirmSaveTitle,
-            message: t.errors.saveSuccess,
-            imageUrl: modalImageUrl
-          });
-        } catch (error) {
-          console.error(error);
-          await showInfoModal({
-            title: t.labels.confirmSaveTitle,
-            message: t.errors.saveError,
-            imageUrl: modalImageUrl
-          });
-        }
-      }
-
-      async function loadStateFromFirebase() {
-        const t = translations[currentLanguage];
-        const confirmed = await showConfirmationModal({
-          title: t.labels.confirmLoadTitle,
-          message: t.labels.confirmLoadMessage,
-          imageUrl: modalImageUrl
-        });
-        if (!confirmed) return;
-        if (!firebaseContext.ready) {
-          await showInfoModal({
-            title: t.labels.confirmLoadTitle,
-            message: t.errors.loadError,
-            imageUrl: modalImageUrl
-          });
-          return;
-        }
-        try {
-          const snapshot = await firebaseContext.characterRef.get();
-          if (snapshot.exists) {
-            applySavedState(snapshot.data());
-            await showInfoModal({
-              title: t.labels.confirmLoadTitle,
-              message: translations[currentLanguage].errors.loadSuccess,
-              imageUrl: modalImageUrl
-            });
-          } else {
-            await showInfoModal({
-              title: t.labels.confirmLoadTitle,
-              message: translations[currentLanguage].errors.loadError,
-              imageUrl: modalImageUrl
-            });
-          }
-        } catch (error) {
-          console.error(error);
-          await showInfoModal({
-            title: t.labels.confirmLoadTitle,
-            message: translations[currentLanguage].errors.loadError,
-            imageUrl: modalImageUrl
-          });
-        }
-      }
-
-      // --- Funkcja wyświetlająca komunikaty o błędach / Function to display error messages ---
-      function displayError(msg) {
-        document.getElementById('errorMessage').innerText = msg;
-      }
-
-      // --- Funkcja sprawdzająca zasadę "Drzewa Nauki" / Function to check the "Tree of Learning" rule ---
-      function checkSkillTree() {
-        const skillIds = [];
-        for (let i = 1; i <= 9; i++) {
-          skillIds.push(`skill_Column1Row${i}`);
-          skillIds.push(`skill_Column2Row${i}`);
-        }
-
-        // Liczenie aktywnych umiejętności / Counting active skills
-        let totalActiveSkills = 0;
-        skillIds.forEach(id => {
-          let val = parseInt(document.getElementById(id).value) || 0;
-          if (val > 0) totalActiveSkills++;
-        });
-
-        // Sprawdzanie zasady "Drzewa Nauki" / Checking the "Tree of Learning" rule
-        let valid = true;
-        for (let id of skillIds) {
-          let level = parseInt(document.getElementById(id).value) || 0;
-          if (level > 1 && totalActiveSkills < level) {
-            valid = false;
-            break;
-          }
-        }
-
-        // Jeśli XP jest w normie, pokazujemy błąd "Drzewa Nauki" tylko jeśli zasada nie jest spełniona
-        // If XP is fine, show "Tree of Learning" error only if the rule is broken
-        let xpRemaining = parseInt(document.getElementById('xpRemaining').innerText) || 0;
-        if (xpRemaining >= 0) {
-          if (!valid) {
-            displayError(translations[currentLanguage].errors.treeOfLearning);
-          } else {
-            displayError(""); // Kasowanie komunikatu, jeśli wszystko jest poprawne / Clear message if everything is correct
-          }
-        }
-      }
-
-      // --- Funkcja ustawiająca domyślne wartości po utracie fokusu / Function to set default values on blur ---
-      function attachDefaultOnBlur(selector, defaultValue) {
-        document.querySelectorAll(selector).forEach(inp => {
-          inp.addEventListener('blur', () => {
-            if (!inp.value || isNaN(inp.value)) {
-              inp.value = defaultValue;
-              recalcXP();
-            }
-          });
-        });
-      }
-
-      // --- Funkcja dostosowująca rozmiar czcionki w polach talentów / Function to adjust font size in talent fields ---
-      function adjustTalentFontSize(el) {
-        el.style.fontSize = '16px';
-        let fontSize = 16;
-        while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > 10) {
-          fontSize -= 1;
-          el.style.fontSize = `${fontSize}px`;
-        }
-      }
-
-      // --- Logika przełącznika języka z ostrzeżeniem / Language switcher logic with warning ---
-      document.getElementById('languageSelect').addEventListener('change', async function(e) {
-        const newLang = e.target.value;
-        const t = translations[currentLanguage];
-        const confirmed = await showConfirmationModal({
-          title: t.labels.pageTitle,
-          message: t.errors.languageChangeWarning,
-          imageUrl: modalImageUrl
-        });
-        if (confirmed) {
-          updateLanguage(newLang);
-          resetAll();
-        } else {
-          e.target.value = currentLanguage; // Powrót do poprzedniego języka / Revert to previous language
-        }
-      });
-
-      // --- Podpinanie zdarzeń do pól wejściowych / Attaching events to input fields ---
-      document.querySelectorAll('input').forEach(inp => {
-        inp.addEventListener('input', recalcXP);
-        inp.addEventListener('change', recalcXP);
-      });
-
-      // --- Podpinanie zdarzeń do pól tekstowych talentów / Attaching events to talent text fields ---
-      document.querySelectorAll('textarea.talent-name').forEach(ta => {
-        ta.addEventListener('input', () => adjustTalentFontSize(ta));
-      });
-
-
-
-      const speciesMaxModal = document.getElementById('speciesMaxModal');
-
-      function toggleSpeciesMaxModal(forceOpen) {
-        const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !speciesMaxModal.classList.contains('is-open');
-        speciesMaxModal.classList.toggle('is-open', shouldOpen);
-        speciesMaxModal.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
-        if (shouldOpen) {
-          renderSpeciesMaxTable();
-        }
-      }
-
-      document.getElementById('showSpeciesMaxButton').addEventListener('click', () => {
-        toggleSpeciesMaxModal(true);
-      });
-
-      document.getElementById('closeSpeciesMaxButton').addEventListener('click', () => {
-        toggleSpeciesMaxModal(false);
-      });
-
-      speciesMaxModal.addEventListener('click', (event) => {
-        if (event.target === speciesMaxModal) {
-          toggleSpeciesMaxModal(false);
-        }
-      });
-
-      document.getElementById('manualButton').addEventListener('click', () => {
-        const manualPath = `HowToUse/${currentLanguage}.pdf`;
-        window.open(manualPath, '_blank', 'noopener');
-      });
-      document.getElementById('saveToFirebaseButton').addEventListener('click', saveStateToFirebase);
-      document.getElementById('loadFromFirebaseButton').addEventListener('click', loadStateFromFirebase);
-
-      document.getElementById('backToMainButton').addEventListener('click', () => {
-        // --- WAŻNE: Po wdrożeniu na inny serwer zaktualizuj ścieżkę powrotu do modułu Main zgodnie ze strukturą grupy. / IMPORTANT: After deployment to another server, update the return path to the Main module based on that group's structure. ---
-        window.location.href = '../Main/index.html';
-      });
-
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && speciesMaxModal.classList.contains('is-open')) {
-          toggleSpeciesMaxModal(false);
-        }
-      });
-
-      // --- Inicjalizacja domyślnych wartości / Initialization of default values ---
-      attachDefaultOnBlur('#xpPool', 155);
-      attachDefaultOnBlur("input[id^='attr_']", 1);
-      attachDefaultOnBlur("input[id^='skill_Column']", 0);
-      attachDefaultOnBlur("input[id^='talent_cost_']", 0);
-
-      // --- Inicjalna konfiguracja / Initial setup ---
-      updateLanguage(currentLanguage);
-      recalcXP();
     });
-  </script>
+  }
+
+  function renderSpecialRules(rules){
+    const table = $('specialRulesTable');
+    const data = (rules && rules.length ? rules : Array.from({length:5}, () => ({type:'speciesAbility', name:'', target:'none', value:0})));
+    table.innerHTML = '<tr><th>Typ / źródło</th><th>Nazwa</th><th>Modyfikuje</th><th>Wartość</th></tr>' + data.map((rule, index) => createRuleRow(index, rule)).join('');
+    table.querySelectorAll('select,input,textarea').forEach(el => el.addEventListener('input', recalcAll));
+    updateRulePlaceholders();
+  }
+
+  function updateRulePlaceholders(){
+    getSpecialRulesFromDom().forEach((rule, index) => {
+      const name = $(`rule_name_${index}`);
+      const value = $(`rule_value_${index}`);
+      const target = $(`rule_target_${index}`);
+      const type = $(`rule_type_${index}`);
+      if(rule.type === 'backgroundBonus') name.placeholder = 'np. +1 do Majątku albo Nowe słowo kluczowe';
+      else if(rule.type === 'archetypeAbility') name.placeholder = 'np. Zdolność archetypu';
+      else name.placeholder = 'Nazwa zasady lub bonusu';
+      const isDescription = target.value === 'none';
+      value.disabled = isDescription;
+      if(isDescription) value.value = 0;
+      type.onchange = function(){updateRulePlaceholders(); recalcAll();};
+      target.onchange = function(){updateRulePlaceholders(); recalcAll();};
+    });
+  }
+
+  function getAttributes(){
+    const result = {};
+    attributes.forEach(a => {
+      const input = $(`attr_${a.key}`);
+      let value = clamp(toInt(input.value, a.key === 'Speed' ? 6 : 1), 1, 12);
+      input.value = value;
+      result[a.key] = value;
+    });
+    return result;
+  }
+
+  function getSkills(){
+    const result = {};
+    skills.forEach(skill => {
+      const input = $(`skill_${skill.key}`);
+      let value = clamp(toInt(input.value,0),0,8);
+      input.value = value;
+      result[skill.key] = value;
+    });
+    return result;
+  }
+
+  function getSkillTotals(attrs, skillValues){
+    const result = {};
+    skills.forEach(skill => {result[skill.key] = (skillValues[skill.key] || 0) + (attrs[skill.attr] || 0);});
+    return result;
+  }
+
+  function getTalents(){
+    const talents = [];
+    for(let i=1;i<=talentCount;i++){
+      talents.push({name:$(`talent_name_${i}`).value.trim(), cost:Math.max(0,toInt($(`talent_cost_${i}`).value,0))});
+    }
+    return talents;
+  }
+
+  function getCharacter(){
+    return {
+      gameTier: clamp(toInt($('character_gameTier').value,1),1,5),
+      speciesName: $('character_speciesName').value.trim(),
+      size: $('character_size').value,
+      factionName: $('character_factionName').value.trim(),
+      archetypeName: $('character_archetypeName').value.trim(),
+      keywords: $('character_keywords').value.trim()
+    };
+  }
+
+  function getBonusByTarget(rules){
+    const bonus = {};
+    modifyTargets.forEach(t => bonus[t.value]=0);
+    rules.forEach(rule => {
+      if(rule.target && rule.target !== 'none') bonus[rule.target] = (bonus[rule.target] || 0) + (Number(rule.value) || 0);
+    });
+    return bonus;
+  }
+
+  function computeDerived(){
+    const attrs = getAttributes();
+    const skillValues = getSkills();
+    const skillTotals = getSkillTotals(attrs, skillValues);
+    const character = getCharacter();
+    const rules = getSpecialRulesFromDom();
+    const bonus = getBonusByTarget(rules);
+    const sizeBonus = sizeDefenceBonus[character.size] || 0;
+    const influenceBase = $('derived_influenceAttribute') ? $('derived_influenceAttribute').value : 'Ogd';
+    const corruptionBase = $('derived_corruptionBase') ? toInt($('derived_corruptionBase').value,0) : 0;
+    const raw = {
+      woundsMax: attrs.Wt + (2 * character.gameTier) + (bonus.woundsMax || 0),
+      shock: attrs.SW + character.gameTier + (bonus.shock || 0),
+      determination: attrs.Wt + (bonus.determination || 0),
+      defence: attrs.I - 1 + sizeBonus + (bonus.defence || 0),
+      resilience: attrs.Wt + 1 + (bonus.resilience || 0),
+      resolve: attrs.SW + (bonus.resolve || 0),
+      conviction: attrs.SW - 1 + (bonus.conviction || 0),
+      influence: (attrs[influenceBase] || attrs.Ogd) - 1 + (bonus.influence || 0),
+      wealth: character.gameTier + (bonus.wealth || 0),
+      corruption: corruptionBase + (bonus.corruption || 0),
+      speed: attrs.Speed + (bonus.speed || 0),
+      passiveAwareness: Math.ceil((skillTotals.awareness || 0) / 2)
+    };
+    return {
+      raw,
+      values: {
+        woundsMax:minOne(raw.woundsMax), shock:minOne(raw.shock), determination:minOne(raw.determination),
+        defence:minOne(raw.defence), resilience:minOne(raw.resilience), resolve:minOne(raw.resolve), conviction:minOne(raw.conviction),
+        influence:minOne(raw.influence), wealth:minOne(raw.wealth), corruption:minZero(raw.corruption), speed:minOne(raw.speed),
+        passiveAwareness:minOne(raw.passiveAwareness)
+      },
+      attrs, skillValues, skillTotals, character, rules, bonus
+    };
+  }
+
+  function renderDerivedTable(){
+    const existingInfluence = $('derived_influenceAttribute') ? $('derived_influenceAttribute').value : 'Ogd';
+    const existingCorruption = $('derived_corruptionBase') ? $('derived_corruptionBase').value : '0';
+    const table = $('derivedStatsTable');
+    table.innerHTML = `<tr><th>Cecha</th><th>Wartość</th><th>Ustawienie / wzór</th></tr>
+      <tr><td>Żywotność maksymalna</td><td class="derived-value" id="derived_woundsMax">0</td><td>Wt + 2 × Poziom Gry + bonusy</td></tr>
+      <tr><td>Odporność Psychiczna</td><td class="derived-value" id="derived_shock">0</td><td>SW + Poziom Gry + bonusy</td></tr>
+      <tr><td>Determinacja</td><td class="derived-value" id="derived_determination">0</td><td>Wt + bonusy</td></tr>
+      <tr><td>Obrona</td><td class="derived-value" id="derived_defence">0</td><td>I - 1 + Rozmiar + bonusy</td></tr>
+      <tr><td>Odporność</td><td class="derived-value" id="derived_resilience">0</td><td>Wt + 1 + bonusy</td></tr>
+      <tr><td>Upór</td><td class="derived-value" id="derived_resolve">0</td><td>SW + bonusy</td></tr>
+      <tr><td>Odwaga</td><td class="derived-value" id="derived_conviction">0</td><td>SW - 1 + bonusy</td></tr>
+      <tr><td>Wpływy</td><td class="derived-value" id="derived_influence">0</td><td><select id="derived_influenceAttribute" class="narrow">${attributes.filter(a=>a.key!=='Speed').map(a=>`<option value="${a.key}" ${a.key===existingInfluence?'selected':''}>${a.label}</option>`).join('')}</select> - 1 + bonusy</td></tr>
+      <tr><td>Majątek</td><td class="derived-value" id="derived_wealth">0</td><td>Poziom Gry + bonusy</td></tr>
+      <tr><td>Spaczenie</td><td class="derived-value" id="derived_corruption">0</td><td><input id="derived_corruptionBase" type="number" class="narrow" value="${escapeHtml(existingCorruption)}"> + bonusy</td></tr>
+      <tr><td>Pasywna Czujność</td><td class="derived-value" id="derived_passiveAwareness">0</td><td>ceil((Int + Czujność) / 2)</td></tr>`;
+    $('derived_influenceAttribute').addEventListener('input', recalcAll);
+    $('derived_corruptionBase').addEventListener('input', recalcAll);
+  }
+
+  function updateDerivedDisplay(computed){
+    Object.entries(computed.values).forEach(([key,value]) => {
+      const cell = $(`derived_${key}`);
+      if(cell) cell.textContent = value;
+    });
+    const warnings = [];
+    const labels = {woundsMax:'Żywotność maksymalna', shock:'Odporność Psychiczna', determination:'Determinacja', defence:'Obrona', resilience:'Odporność', resolve:'Upór', conviction:'Odwaga', influence:'Wpływy', wealth:'Majątek'};
+    Object.entries(labels).forEach(([key,label]) => { if(computed.raw[key] <= 0) warnings.push(`${label}: wartość surowa wynosi ${computed.raw[key]}, na karcie zostanie wymuszone minimum 1.`); });
+    if(computed.raw.corruption < 0) warnings.push(`Spaczenie: wartość surowa wynosi ${computed.raw.corruption}, na karcie zostanie wymuszone minimum 0.`);
+    if(computed.values.corruption > corruptionSlotLimit) warnings.push(`Spaczenie: wartość ${computed.values.corruption} przekracza liczbę slotów czaszek na PDF (${corruptionSlotLimit}).`);
+    $('derivedWarnings').textContent = warnings.join('\n');
+    $('warningMessage').textContent = warnings.join('\n');
+  }
+
+  function recalcXP(){
+    const xpPool = Math.max(0,toInt($('xpPool').value,0));
+    $('xpPool').value = xpPool;
+    const attrs = getAttributes();
+    const skillValues = getSkills();
+    const talents = getTalents();
+    const attrCost = attributes.reduce((sum,a)=>sum+(attributeCosts[attrs[a.key]]||0),0);
+    const skillCost = skills.reduce((sum,s)=>sum+(skillCosts[skillValues[s.key]]||0),0);
+    const talentCost = talents.reduce((sum,t)=>sum+Math.max(0,toInt(t.cost,0)),0);
+    const remaining = xpPool - attrCost - skillCost - talentCost;
+    $('xpRemaining').textContent = remaining;
+    const errors = [];
+    if(remaining < 0) errors.push('Przekroczono dostępną pulę PD!');
+    errors.push(...checkSkillTree(skillValues));
+    $('errorMessage').textContent = errors.join('\n');
+  }
+
+  function checkSkillTree(skillValues){
+    const counts = {1:0,2:0,3:0,4:0,5:0,6:0,7:0,8:0};
+    Object.values(skillValues).forEach(v => { for(let level=1; level<=v; level++) counts[level]++; });
+    const errors = [];
+    for(let level=2; level<=8; level++){
+      if(counts[level] > counts[level-1]) errors.push('Niezgodność z zasadą Drzewa Nauki (str. 26).');
+    }
+    return [...new Set(errors)];
+  }
+
+  function recalcAll(){
+    updateRulePlaceholders();
+    recalcXP();
+    const computed = computeDerived();
+    updateDerivedDisplay(computed);
+  }
+
+  function collectState(){
+    return {
+      xpPool:$('xpPool').value,
+      attributes:Object.fromEntries(attributes.map(a=>[a.key,$(`attr_${a.key}`).value])),
+      skills:Object.fromEntries(skills.map(s=>[s.key,$(`skill_${s.key}`).value])),
+      talents:getTalents(),
+      character:getCharacter(),
+      derived:{influenceAttribute:$('derived_influenceAttribute')?.value || 'Ogd', corruptionBase:$('derived_corruptionBase')?.value || '0'},
+      specialRules:getSpecialRulesFromDom()
+    };
+  }
+
+  function applyState(state){
+    if(!state) return;
+    if(state.xpPool !== undefined) $('xpPool').value = state.xpPool;
+    Object.entries(state.attributes||{}).forEach(([key,value]) => { if($(`attr_${key}`)) $(`attr_${key}`).value = value; });
+    Object.entries(state.skills||{}).forEach(([key,value]) => { if($(`skill_${key}`)) $(`skill_${key}`).value = value; });
+    (state.talents||[]).forEach((talent,index) => {
+      const i = index + 1;
+      if($(`talent_name_${i}`)) $(`talent_name_${i}`).value = talent.name || '';
+      if($(`talent_cost_${i}`)) $(`talent_cost_${i}`).value = talent.cost || 0;
+    });
+    const c = state.character || {};
+    $('character_gameTier').value = c.gameTier || 1;
+    $('character_speciesName').value = c.speciesName || '';
+    $('character_size').value = c.size || 'Średni';
+    $('character_factionName').value = c.factionName || '';
+    $('character_archetypeName').value = c.archetypeName || '';
+    $('character_keywords').value = c.keywords || '';
+    renderDerivedTable();
+    if($('derived_influenceAttribute')) $('derived_influenceAttribute').value = (state.derived||{}).influenceAttribute || 'Ogd';
+    if($('derived_corruptionBase')) $('derived_corruptionBase').value = (state.derived||{}).corruptionBase || 0;
+    renderSpecialRules(state.specialRules || []);
+    recalcAll();
+  }
+
+  function buildExportTextBuckets(computed){
+    const buckets = {abilitiesAndTalents:[], notes:[], background:[]};
+    getTalents().forEach(t => { if(t.name) buckets.abilitiesAndTalents.push(t.name); });
+    computed.rules.forEach(rule => {
+      const name = String(rule.name || '').trim();
+      if(!name) return;
+      if(rule.type === 'backgroundBonus') { buckets.background.push(name); return; }
+      if(rule.type === 'archetypeAbility') {
+        if(rule.target === 'none') buckets.abilitiesAndTalents.push(name);
+        else buckets.notes.push(name);
+        return;
+      }
+      buckets.notes.push(name);
+    });
+    return {
+      abilitiesAndTalents:buckets.abilitiesAndTalents.join('\n'),
+      notes:buckets.notes.join('\n'),
+      background:buckets.background.join('\n')
+    };
+  }
+
+  function buildPdfData(){
+    const computed = computeDerived();
+    const text = buildExportTextBuckets(computed);
+    return {...computed.values, character:computed.character, attrs:computed.attrs, skills:computed.skillValues, skillTotals:computed.skillTotals, text};
+  }
+
+  function getFieldMap(form){
+    return form.getFields().map(field => ({name:field.getName(), field, n:norm(field.getName()), type:field.constructor ? field.constructor.name : ''}));
+  }
+
+  function findField(fields, candidates, preferredType){
+    const wanted = candidates.map(norm).filter(Boolean);
+    let found = fields.find(f => wanted.includes(f.n) && (!preferredType || f.type.includes(preferredType)));
+    if(found) return found.field;
+    const longWanted = wanted.filter(w => w.length > 2);
+    found = fields.find(f => longWanted.some(w => f.n.includes(w) || w.includes(f.n)) && (!preferredType || f.type.includes(preferredType)));
+    if(found) return found.field;
+    return null;
+  }
+
+  function fitTextField(field, value, warnings){
+    const text = String(value ?? '');
+    if(typeof field.setText === 'function') field.setText(text);
+    if(typeof field.setFontSize === 'function') {
+      const len = text.length;
+      const size = len > 900 ? 5 : len > 650 ? 6 : len > 420 ? 7 : len > 240 ? 8 : 10;
+      try { field.setFontSize(size); } catch (_) {}
+      if(len > 900) warnings.push(`Pole "${field.getName()}" ma bardzo długi tekst. Font został zmniejszony, ale treść może się nie mieścić.`);
+    }
+  }
+
+  function fillText(form, fields, candidates, value, warnings){
+    if(value === undefined || value === null || String(value).trim() === '') return;
+    const field = findField(fields, Array.isArray(candidates) ? candidates : [candidates], 'Text');
+    if(!field){ warnings.push(`Nie znaleziono pola PDF: ${Array.isArray(candidates) ? candidates[0] : candidates}`); return; }
+    try { fitTextField(field, value, warnings); } catch(error) { warnings.push(`Nie udało się wypełnić pola ${field.getName()}: ${error.message}`); }
+  }
+
+  function fillCorruption(form, fields, value, warnings){
+    const checkboxes = fields.filter(f => f.type.includes('CheckBox') && (f.n.includes('spaczenie') || f.n.includes('corruption') || f.n.includes('czasz')));
+    const usable = checkboxes.filter(f => !f.n.includes('poziom') && !f.n.includes('level'));
+    usable.sort((a,b) => a.name.localeCompare(b.name, 'pl', {numeric:true}));
+    if(!usable.length){ warnings.push('Nie znaleziono checkboxów Spaczenia w PDF.'); return; }
+    if(value > usable.length) warnings.push(`Spaczenie ${value} przekracza liczbę pól czaszek w PDF (${usable.length}).`);
+    usable.forEach((item,index) => {
+      try {
+        if(index < value) item.field.check();
+        else item.field.uncheck();
+      } catch(error) { warnings.push(`Nie udało się ustawić pola Spaczenia ${item.name}: ${error.message}`); }
+    });
+  }
+
+  async function exportPdf(){
+    const warnings = [];
+    if(!window.PDFLib || !window.PDFLib.PDFDocument){
+      $('errorMessage').textContent = 'Brak biblioteki PDFLib. Dodaj lokalny plik Kalkulator/vendor/pdf-lib.min.js.';
+      return;
+    }
+    const data = buildPdfData();
+    const profile = pdfProfiles.pl;
+    const response = await fetch(profile.templatePath);
+    if(!response.ok) throw new Error(`Nie udało się pobrać ${profile.templatePath}`);
+    const pdfBytes = await response.arrayBuffer();
+    const pdfDoc = await PDFLib.PDFDocument.load(pdfBytes);
+    const form = pdfDoc.getForm();
+    const fields = getFieldMap(form);
+
+    fillText(form, fields, profile.fields.tier, data.character.gameTier, warnings);
+    fillText(form, fields, profile.fields.species, data.character.speciesName, warnings);
+    fillText(form, fields, profile.fields.archetype, data.character.archetypeName, warnings);
+    fillText(form, fields, profile.fields.faction, data.character.factionName, warnings);
+    fillText(form, fields, profile.fields.keywords, data.character.keywords, warnings);
+    fillText(form, fields, profile.fields.background, data.text.background, warnings);
+    fillText(form, fields, profile.fields.abilitiesAndTalents, data.text.abilitiesAndTalents, warnings);
+    fillText(form, fields, profile.fields.notes, data.text.notes, warnings);
+    fillText(form, fields, profile.fields.size, data.character.size, warnings);
+    fillText(form, fields, profile.fields.speed, data.speed, warnings);
+
+    Object.entries(profile.attributes).forEach(([key,candidates]) => fillText(form, fields, candidates, data.attrs[key], warnings));
+    skills.forEach(skill => {
+      fillText(form, fields, [`${skill.short} Wartość`, `${skill.short}Wartość`, `${skill.short} Wartosc`, `${skill.short}`], data.skills[skill.key], warnings);
+      fillText(form, fields, [`${skill.short} Suma`, `${skill.short}Suma`, `${skill.short} Total`], data.skillTotals[skill.key], warnings);
+    });
+
+    fillText(form, fields, profile.fields.resolve, data.resolve, warnings);
+    fillText(form, fields, profile.fields.conviction, data.conviction, warnings);
+    fillText(form, fields, profile.fields.defence, data.defence, warnings);
+    fillText(form, fields, profile.fields.resilienceBase, data.resilience, warnings);
+    fillText(form, fields, profile.fields.woundsMax, data.woundsMax, warnings);
+    fillText(form, fields, profile.fields.shock, data.shock, warnings);
+    fillText(form, fields, profile.fields.determination, data.determination, warnings);
+    fillText(form, fields, profile.fields.influence, data.influence, warnings);
+    fillText(form, fields, profile.fields.wealth, data.wealth, warnings);
+    fillText(form, fields, profile.fields.passiveAwareness, data.passiveAwareness, warnings);
+    fillCorruption(form, fields, data.corruption, warnings);
+
+    try { form.flatten(); } catch(error) { warnings.push(`Nie udało się spłaszczyć PDF: ${error.message}`); }
+    const out = await pdfDoc.save();
+    const blob = new Blob([out], {type:'application/pdf'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'karta-postaci-pl-test.pdf';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    $('warningMessage').textContent = warnings.join('\n');
+  }
+
+  async function showPdfFields(){
+    const output = $('diagnosticOutput');
+    output.textContent = 'Odczyt pól PDF...';
+    openModal('diagnosticModal');
+    if(!window.PDFLib || !window.PDFLib.PDFDocument){ output.textContent = 'Brak biblioteki PDFLib. Dodaj lokalny plik Kalkulator/vendor/pdf-lib.min.js.'; return; }
+    try{
+      const response = await fetch('./pdf/pl.pdf');
+      const pdfDoc = await PDFLib.PDFDocument.load(await response.arrayBuffer());
+      const form = pdfDoc.getForm();
+      output.textContent = form.getFields().map(field => `${field.getName()} — ${field.constructor ? field.constructor.name : 'field'}`).join('\n');
+    }catch(error){ output.textContent = error.stack || error.message; }
+  }
+
+  function renderSpeciesMax(){
+    const rows = [
+      ['Człowiek',8,8,8,8,8,8,8,8],['Ork',12,12,7,7,8,7,7,7],['Aeldari',8,7,12,12,12,10,6,10],['Adeptus Astartes',10,10,9,9,10,10,8,9],
+      ['Primaris Astartes',12,12,9,9,10,10,8,9],['Ogryn',12,12,7,4,8,1,4,8],['Szczurak',6,6,10,10,8,8,10,7],['Kroot',12,12,12,12,10,6,6,10],
+      ['Drukhari',8,8,12,12,10,10,6,10],['Konstrukt Upiorytowy',12,12,8,8,12,10,4,8],['Kasta powietrza',4,4,10,8,8,8,8,8],['Kasta ziemi',6,6,8,8,8,10,8,6],
+      ['Kasta ognia',7,7,8,8,8,8,8,8],['Kasta wody',6,6,8,8,8,8,10,6],['Niebianie',6,6,8,8,10,8,8,6],['Vespidzi',8,8,12,8,8,8,5,'14*']
+    ];
+    $('speciesMaxTable').innerHTML = '<tr><th></th>' + attributes.map(a=>`<th>${a.label}</th>`).join('') + '</tr>' + rows.map(r => '<tr>' + r.map(c=>`<td>${c}</td>`).join('') + '</tr>').join('');
+  }
+
+  function openModal(id){$(id).classList.add('is-open');$(id).setAttribute('aria-hidden','false');}
+  function closeModal(id){$(id).classList.remove('is-open');$(id).setAttribute('aria-hidden','true');}
+
+  function resetAll(){
+    $('xpPool').value = 155;
+    attributes.forEach(a => $(`attr_${a.key}`).value = a.key === 'Speed' ? 6 : 1);
+    skills.forEach(s => $(`skill_${s.key}`).value = 0);
+    for(let i=1;i<=talentCount;i++){ $(`talent_name_${i}`).value=''; $(`talent_cost_${i}`).value=0; }
+    applyState({character:{gameTier:1,size:'Średni'}, specialRules:[]});
+  }
+
+  function init(){
+    renderAttributes();
+    renderSkills();
+    renderTalents();
+    renderDerivedTable();
+    renderSpecialRules();
+    renderSpeciesMax();
+    document.body.addEventListener('input', event => {
+      if(event.target.matches('input,textarea,select')) recalcAll();
+    });
+    $('openCharacterRulesModalButton').addEventListener('click', () => {recalcAll(); openModal('characterRulesModal');});
+    $('closeCharacterRulesModalButton').addEventListener('click', () => {recalcAll(); closeModal('characterRulesModal');});
+    $('showSpeciesMaxButton').addEventListener('click', () => openModal('speciesMaxModal'));
+    $('closeSpeciesMaxButton').addEventListener('click', () => closeModal('speciesMaxModal'));
+    $('closeDiagnosticButton').addEventListener('click', () => closeModal('diagnosticModal'));
+    $('addSpecialRuleButton').addEventListener('click', () => { const rules = getSpecialRulesFromDom(); rules.push({type:'other',name:'',target:'none',value:0}); renderSpecialRules(rules); recalcAll(); });
+    $('removeSpecialRuleButton').addEventListener('click', () => { const rules = getSpecialRulesFromDom(); if(rules.length>1) rules.pop(); renderSpecialRules(rules); recalcAll(); });
+    $('saveButton').addEventListener('click', () => { localStorage.setItem(storageKey, JSON.stringify(collectState())); $('warningMessage').textContent='Zapisano lokalnie.'; });
+    $('loadButton').addEventListener('click', () => { const raw = localStorage.getItem(storageKey); if(raw) applyState(JSON.parse(raw)); else $('warningMessage').textContent='Brak lokalnego zapisu.'; });
+    $('resetButton').addEventListener('click', resetAll);
+    $('exportCharacterPdfButton').addEventListener('click', () => exportPdf().catch(error => {$('errorMessage').textContent = error.stack || error.message;}));
+    $('showPdfFieldsButton').addEventListener('click', showPdfFields);
+    $('manualButton').addEventListener('click', () => { window.location.href = './Instrukcja.html'; });
+    $('backToMainButton').addEventListener('click', () => { window.location.href = '../index.html'; });
+    document.querySelectorAll('.modal').forEach(modal => modal.addEventListener('click', event => { if(event.target === modal) closeModal(modal.id); }));
+    recalcAll();
+  }
+
+  init();
+})();
+</script>
 </body>
 </html>
