@@ -26,6 +26,8 @@ Główne elementy:
 7. przygotować eksport PDF przez `pdf-lib`,
 8. spłaszczać wynikowy PDF.
 
+Uwaga: główny dokument `Analizy/Kalkulator.md` również został zaktualizowany zgodnie z tym patchem, żeby pierwotna specyfikacja nie była sprzeczna z notatkami przenośnymi.
+
 ---
 
 ## 2. Przyciski na głównej stronie
