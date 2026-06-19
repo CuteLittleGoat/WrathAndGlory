@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<!-- Plik interfejsu modułu: struktura sekcji i elementy interaktywne / Module UI file: section structure and interactive elements -->
+<html lang="pl">
+<!-- Sekcja konfiguracji dokumentu i zasobów / Document configuration and asset section -->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wrath & Glory</title>
+  <link rel="stylesheet" href="kalkulatorxp.css">
+  <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
+<style>
+    body{
+      margin:0;
+      padding:24px 14px;
+      background:var(--bg-grad);
+      color:var(--text);
+      line-height:1.5;
+      letter-spacing:.04em;
+    }
+    .wrapper{
+      width:min(1100px, 96vw);
+      margin:0 auto;
+      padding:22px;
+      background:var(--panel);
+      border:1px solid var(--b);
+      border-radius:10px;
+      box-shadow:var(--glow);
+      position:relative;
+    }
+    h1{
+      margin:0 0 12px;
+      text-transform:uppercase;
+      letter-spacing:.16em;
+      font-weight:600;
+      color:var(--code);
+      text-shadow:var(--glowH);
+    }
+    .subtitle{margin:0 0 20px; color:var(--text2);}
+    .section-title{
+      margin:24px 0 12px;
+      padding-bottom:8px;
+      border-bottom:1px solid var(--div);
+      text-transform:uppercase;
+      letter-spacing:.14em;
+      color:var(--code);
+    }
+    .xp-section{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-bottom:8px;
+    }
+    .data-actions{
+      display:flex;
+      gap:10px;
+      margin:0 0 12px;
+      flex-wrap:wrap;
+    }
+    .data-actions button{
+      width:auto;
+      padding:8px 12px;
+      border-radius:6px;
+      border:1px solid var(--b);
+      background:var(--panel2);
+      color:var(--text);
+      letter-spacing:.06em;
+      cursor:pointer;
+    }
+    .data-actions button:hover{background:var(--hover);}
+    .language-switcher{
+      position:absolute;
+      top:16px;
+      right:16px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:flex-end;
+    }
+    .language-switcher select{min-width:120px;}
+    .language-switcher button{
+      padding:8px 12px;
+      border-radius:6px;
+      border:1px solid var(--b);
+      background:var(--panel2);
+      color:var(--text);
+      letter-spacing:.06em;
+      cursor:pointer;
+    }
+    .language-switcher button:hover{background:var(--hover);}
+    .table{
+      width:100%;
+      border-collapse:collapse;
+      border:1px solid var(--div);
+      background:var(--panel2);
+      box-shadow:var(--glow);
+      margin-bottom:16px;
+    }
+    .table th,
+    .table td{
+      border-bottom:1px solid var(--div);
+      padding:9px 8px;
+      text-align:center;
+    }
+    .table th{
+      background:linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03));
+      color:var(--code);
+      letter-spacing:.1em;
+      text-transform:uppercase;
+    }
+    .table tr:nth-child(even){background:var(--zebra);}
+    .table tr:hover{background:var(--hover);}
+    input[type="number"],
+    select,
+    textarea{
+      width:100%;
+      padding:9px 10px;
+      border-radius:6px;
+      border:1px solid var(--b);
+      background:var(--bg);
+      color:var(--text);
+      text-align:center;
+      outline:none;
+    }
+    textarea{resize:none; text-align:left; height:46px;}
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus{box-shadow:0 0 0 3px rgba(22,198,12,.18);}
+    .xp-section #xpPool{width:19ch;}
+    .error-message{min-height:20px; color:var(--red); margin:6px 0 2px;}
+    .footer{margin-top:18px; color:var(--muted); text-align:center; letter-spacing:.08em;}
+
+    .species-max-modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,.75);
+      z-index:1000;
+    }
+    .species-max-modal.is-open{display:flex;}
+    .species-max-modal__dialog{
+      width:min(1100px, 96vw);
+      max-height:88vh;
+      background:var(--panel);
+      border:1px solid var(--b);
+      border-radius:10px;
+      box-shadow:var(--glow);
+      padding:14px;
+      overflow:auto;
+    }
+    .species-max-modal__header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .species-max-modal__header h2{
+      margin:0;
+      color:var(--code);
+      text-transform:uppercase;
+      letter-spacing:.1em;
+      font-size:1rem;
+    }
+    .species-max-modal__close{
+      width:auto;
+      padding:4px 10px;
+      font-size:20px;
+      line-height:1;
+      border-radius:6px;
+      border:1px solid var(--b);
+      background:var(--panel2);
+      color:var(--text);
+      cursor:pointer;
+    }
+    .species-max-modal__close:hover{background:var(--hover);}
+    .species-max-modal__table-wrap{overflow-x:auto;}
+    .species-max-table th, .species-max-table td{
+      text-align:center;
+      white-space:nowrap;
+    }
+    .species-max-table td:first-child{
+      font-weight:600;
+      text-align:left;
+    }
+    .species-max-footnotes{
+      margin-top:8px;
+      color:var(--text2);
+      font-size:.9rem;
+      line-height:1.4;
+    }
+    .confirm-modal{
+      position:fixed;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(0,0,0,.75);
+      z-index:1010;
+    }
+    .confirm-modal.is-open{display:flex;}
+    .confirm-modal__dialog{
+      width:min(520px, 95vw);
+      min-height:420px;
+      background:var(--panel);
+      border:1px solid var(--b);
+      border-radius:10px;
+      box-shadow:var(--glow);
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+    }
+    .confirm-modal__title{
+      margin:0 0 8px;
+      color:var(--code);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+    }
+    .confirm-modal__media{
+      width:100%;
+      height:192px;
+      min-height:192px;
+      border:1px solid var(--b2);
+      border-radius:8px;
+      margin:8px 0 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.35);
+      overflow:hidden;
+      flex-shrink:0;
+    }
+    .confirm-modal__image{
+      width:auto;
+      height:192px;
+      max-width:100%;
+      object-fit:contain;
+      display:block;
+    }
+    .confirm-modal__image.is-hidden{visibility:hidden;}
+    .confirm-modal__actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:8px;
+      margin-top:auto;
+    }
+    .confirm-modal__actions button{
+      width:auto;
+      padding:8px 12px;
+      border-radius:6px;
+      border:1px solid var(--b);
+      background:var(--panel2);
+      color:var(--text);
+      cursor:pointer;
+    }
+    #confirmModalYesButton{
+      border-color:rgba(190,40,40,.75);
+      background:rgba(110,20,20,.7);
+      color:#ffdada;
+    }
+    #confirmModalYesButton:hover{
+      background:rgba(150,28,28,.8);
+    }
+
+  </style>
+</head>
+<!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
+<body>
+  <!-- Główny kontener strony / Main page container -->
+  <div class="wrapper">
+    <!-- Przełącznik języka w prawym górnym rogu / Language switcher in the top right corner -->
+    <div class="language-switcher">
+      <select id="languageSelect">
+        <option value="pl">Polski</option>
+        <option value="en">English</option>
+      </select>
+      <button type="button" id="manualButton">Instrukcja</button>
+      <button type="button" id="backToMainButton">Strona Główna</button>
+      <button type="button" id="showSpeciesMaxButton">Maksymalne wartości atrybutów</button>
+    </div>
+
+    <h1 id="pageTitle">Tworzenie Postaci</h1>
+
+    <!-- Sekcja XP / XP Section -->
+    <div class="xp-section">
+      <label id="xpPoolLabel">Pula PD do wydania:</label>
+      <input type="number" id="xpPool" value="155" min="0">
+      <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">155</strong></span>
+    </div>
+    <div class="data-actions">
+      <button type="button" id="saveToFirebaseButton">Zapisz</button>
+      <button type="button" id="loadFromFirebaseButton">Wczytaj</button>
+    </div>
+
+    <!-- Obszar komunikatów o błędach / Error message area -->
+    <div class="error-message" id="errorMessage"> </div>
+
+    <!-- Sekcja Atrybutów / Attributes Section -->
+    <h2 class="section-title" id="attributesHeader">Atrybuty</h2>
+    <table class="attributes-table table">
+      <tr>
+        <th id="attrLabel1">S</th>
+        <th id="attrLabel2">Wt</th>
+        <th id="attrLabel3">Zr</th>
+        <th id="attrLabel4">I</th>
+        <th id="attrLabel5">SW</th>
+        <th id="attrLabel6">Int</th>
+        <th id="attrLabel7">Ogd</th>
+        <th id="attrLabel8">Szybkość</th>
+      </tr>
+      <tr>
+        <td><input type="number" id="attr_S" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Wt" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Zr" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_I" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_SW" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Int" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Ogd" value="1" min="1" max="12"></td>
+        <td><input type="number" id="attr_Speed" value="6" min="1" max="12"></td>
+      </tr>
+    </table>
+
+    <!-- Sekcja Umiejętności / Skills Section -->
+    <h2 class="section-title" id="skillsHeader">Umiejętności</h2>
+    <table class="skills-table table">
+      <tr>
+        <th id="skillHeader1">Umiejętność</th>
+        <th id="skillHeader2">Wartość</th>
+        <th id="skillHeader3">Umiejętność</th>
+        <th id="skillHeader4">Wartość</th>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row1">Analiza (Int)</td>
+        <td><input type="number" id="skill_Column1Row1" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row1">Perswazja (Ogd)</td>
+        <td><input type="number" id="skill_Column2Row1" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row2">Atletyka (S)</td>
+        <td><input type="number" id="skill_Column1Row2" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row2">Pilotaż (Zr)</td>
+        <td><input type="number" id="skill_Column2Row2" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row3">Czujność (Int)</td>
+        <td><input type="number" id="skill_Column1Row3" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row3">Przebiegłość (Ogd)</td>
+        <td><input type="number" id="skill_Column2Row3" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row4">Dowodzenie (SW)</td>
+        <td><input type="number" id="skill_Column1Row4" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row4">Przetrwanie (SW)</td>
+        <td><input type="number" id="skill_Column2Row4" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row5">Intuicja (Ogd)</td>
+        <td><input type="number" id="skill_Column1Row5" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row5">Ukrywanie się (Zr)</td>
+        <td><input type="number" id="skill_Column2Row5" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row6">Korzystanie z technologii (Int)</td>
+        <td><input type="number" id="skill_Column1Row6" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row6">Umiejętności strzeleckie (Zr)</td>
+        <td><input type="number" id="skill_Column2Row6" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row7">Medycyna (Int)</td>
+        <td><input type="number" id="skill_Column1Row7" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row7">Walka wręcz (I)</td>
+        <td><input type="number" id="skill_Column2Row7" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row8">Mistrzostwo psioniczne (SW)</td>
+        <td><input type="number" id="skill_Column1Row8" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row8">Wiedza ogólna (Int)</td>
+        <td><input type="number" id="skill_Column2Row8" value="0" min="0" max="8"></td>
+      </tr>
+      <tr>
+        <td id="skillLabelColumn1Row9">Oszukiwanie (Ogd)</td>
+        <td><input type="number" id="skill_Column1Row9" value="0" min="0" max="8"></td>
+        <td id="skillLabelColumn2Row9">Zastraszanie (SW)</td>
+        <td><input type="number" id="skill_Column2Row9" value="0" min="0" max="8"></td>
+      </tr>
+    </table>
+
+    <!-- Sekcja Talentów / Talents Section -->
+    <h2 class="section-title" id="talentsHeader">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2>
+    <table class="talents-table table">
+      <tr>
+        <th id="talentHeader1">Nazwa</th>
+        <th id="talentHeader2">Koszt</th>
+        <th id="talentHeader3">Nazwa</th>
+        <th id="talentHeader4">Koszt</th>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_1" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_1" value="0" min="0"></td>
+        <td><textarea id="talent_name_2" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_2" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_3" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_3" value="0" min="0"></td>
+        <td><textarea id="talent_name_4" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_4" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_5" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_5" value="0" min="0"></td>
+        <td><textarea id="talent_name_6" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_6" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_7" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_7" value="0" min="0"></td>
+        <td><textarea id="talent_name_8" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_8" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_9" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_9" value="0" min="0"></td>
+        <td><textarea id="talent_name_10" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_10" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_11" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_11" value="0" min="0"></td>
+        <td><textarea id="talent_name_12" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_12" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_13" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_13" value="0" min="0"></td>
+        <td><textarea id="talent_name_14" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_14" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_15" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_15" value="0" min="0"></td>
+        <td><textarea id="talent_name_16" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_16" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_17" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_17" value="0" min="0"></td>
+        <td><textarea id="talent_name_18" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_18" value="0" min="0"></td>
+      </tr>
+      <tr>
+        <td><textarea id="talent_name_19" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_19" value="0" min="0"></td>
+        <td><textarea id="talent_name_20" class="talent-name"></textarea></td>
+        <td><input type="number" id="talent_cost_20" value="0" min="0"></td>
+      </tr>
+    </table>
+
+    <!-- Stopka / Footer -->
+    <div class="footer" id="footerText">Wykonane przez Spaczoną Inteligencję</div>
+  </div>
+
+
+
+  <div id="speciesMaxModal" class="species-max-modal" aria-hidden="true">
+    <div class="species-max-modal__dialog">
+      <div class="species-max-modal__header">
+        <h2 id="speciesMaxModalTitle">Maksymalne wartości atrybutów</h2>
+        <button type="button" id="closeSpeciesMaxButton" class="species-max-modal__close" aria-label="Zamknij">×</button>
+      </div>
+      <div class="species-max-modal__table-wrap">
+        <table class="table species-max-table" id="speciesMaxTable"></table>
+      </div>
+      <div id="speciesMaxFootnotes" class="species-max-footnotes"></div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="confirm-modal" aria-hidden="true">
+    <div class="confirm-modal__dialog">
+      <h2 class="confirm-modal__title" id="confirmModalTitle">Potwierdzenie</h2>
+      <p id="confirmModalMessage"></p>
+      <div class="confirm-modal__media">
+        <img id="confirmModalImage" class="confirm-modal__image is-hidden" alt="modal image" width="1980" height="2048" decoding="async">
+      </div>
+      <div class="confirm-modal__actions">
+        <button type="button" id="confirmModalYesButton">OK</button>
+        <button type="button" id="confirmModalNoButton">Nie</button>
+      </div>
+    </div>
+  </div>
+
+<!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
+<script src="config/firebase-config.js"></script>
+<!-- Sekcja JavaScript / JavaScript Section -->
+<script>
+    /* Inicjalizacja po załadowaniu strony / Initialization after page load */
+    document.addEventListener('DOMContentLoaded', function() {
+      // --- Obiekt tłumaczeń dla obsługi wielu języków / Translation object for multi-language support ---
+            // --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
+      // Dodanie nowego języka wymaga rozszerzenia translations oraz wszystkich etykiet pól, błędów i przycisków dialogowych.
+      // Adding a new language requires extending translations and all field labels, errors, and dialog button captions.
+const translations = {
+        pl: {
+          labels: {
+            pageTitle: 'Tworzenie Postaci',
+            xpPool: 'Pula PD do wydania:',
+            remainingXP: 'Pozostało PD:',
+            attributesHeader: 'Atrybuty',
+            skillsHeader: 'Umiejętności',
+            talentsHeader: 'Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne',
+            skillsTableHeaders: ['Umiejętność', 'Wartość', 'Umiejętność', 'Wartość'],
+            talentsTableHeaders: ['Nazwa', 'Koszt', 'Nazwa', 'Koszt'],
+            footerText: 'Wykonane przez Spaczoną Inteligencję',
+            manualButton: 'Instrukcja',
+            backToMainButton: 'Strona Główna',
+            showSpeciesMaxButton: 'Maksymalne wartości atrybutów',
+            speciesMaxModalTitle: 'Maksymalne wartości atrybutów',
+            saveButton: 'Zapisz',
+            loadButton: 'Wczytaj',
+            confirmYes: 'Tak',
+            confirmNo: 'Nie',
+            confirmSaveTitle: 'Potwierdzenie zapisu',
+            confirmSaveMessage: 'Czy na pewno chcesz zapisać aktualny stan postaci?',
+            confirmLoadTitle: 'Potwierdzenie wczytania',
+            confirmLoadMessage: 'Czy na pewno chcesz wczytać zapisany stan postaci?',
+            modalImageAlt: 'Ilustracja potwierdzenia',
+            infoOk: 'OK'
+          },
+          attributes: ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Szybkość'],
+          races: {
+            race_1: 'Człowiek', race_2: 'Ork', race_3: 'Aeldari', race_4: 'Adeptus Astartes', race_5: 'Primaris Astartes',
+            race_6: 'Ogryn', race_7: 'Szczurak', race_8: 'Kroot', race_9: 'Drukhari', race_10: 'Konstrukt Upiorytowy',
+            race_11: 'Kasta powietrza', race_12: 'Kasta ziemi', race_13: 'Kasta ognia', race_14: 'Kasta wody',
+            race_15: 'Niebianie', race_16: 'Vespidzi'
+          },
+          maxAttributes: {
+            attribute_1: 'Siła', attribute_2: 'Wytrzymałość', attribute_3: 'Zręczność', attribute_4: 'Inicjatywa',
+            attribute_5: 'Siła Woli', attribute_6: 'Inteligencja', attribute_7: 'Ogłada', attribute_8: 'Szybkość'
+          },
+          maxAttributesFootnotes: {
+            vespidSpeedFixed: '* Vespidzi mają stałą Szybkość równą 14. Na potrzeby obliczeń PD zignoruj pole Szybkość.'
+          },
+          skillsColumn1: [
+            'Analiza (Int)', 'Atletyka (S)', 'Czujność (Int)', 'Dowodzenie (SW)', 'Intuicja (Ogd)',
+            'Korzystanie z technologii (Int)', 'Medycyna (Int)', 'Mistrzostwo psioniczne (SW)', 'Oszukiwanie (Ogd)'
+          ],
+          skillsColumn2: [
+            'Perswazja (Ogd)', 'Pilotaż (Zr)', 'Przebiegłość (Ogd)', 'Przetrwanie (SW)', 'Ukrywanie się (Zr)',
+            'Umiejętności strzeleckie (Zr)', 'Walka wręcz (I)', 'Wiedza ogólna (Int)', 'Zastraszanie (SW)'
+          ],
+          errors: {
+            tooMuchXP: 'Przekroczono dostępną pulę PD!',
+            treeOfLearning: 'Niezgodność z zasadą Drzewa Nauki (str. 26)',
+            languageChangeWarning: 'Zmiana języka spowoduje zresetowanie wszystkich danych. Czy na pewno chcesz kontynuować?',
+            saveSuccess: 'Stan postaci został zapisany.',
+            saveError: 'Nie udało się zapisać stanu postaci.',
+            loadSuccess: 'Stan postaci został wczytany.',
+            loadError: 'Nie udało się wczytać stanu postaci.'
+          }
+        },
+        en: {
+          labels: {
+            pageTitle: 'Character Creation',
+            xpPool: 'XP Pool:',
+            remainingXP: 'Remaining XP:',
+            attributesHeader: 'Attributes',
+            skillsHeader: 'Skills',
+            talentsHeader: 'Talents, Faith, Psionic Powers, Archetypes, Ascension Packages, and Others',
+            skillsTableHeaders: ['Skill', 'Value', 'Skill', 'Value'],
+            talentsTableHeaders: ['Name', 'Cost', 'Name', 'Cost'],
+            footerText: 'Made by Abominable Intelligence',
+            manualButton: 'Manual',
+            backToMainButton: 'Main Page',
+            showSpeciesMaxButton: 'Maximum attribute values',
+            speciesMaxModalTitle: 'Maximum attribute values',
+            saveButton: 'Save',
+            loadButton: 'Load',
+            confirmYes: 'Yes',
+            confirmNo: 'No',
+            confirmSaveTitle: 'Save confirmation',
+            confirmSaveMessage: 'Do you want to save the current character state?',
+            confirmLoadTitle: 'Load confirmation',
+            confirmLoadMessage: 'Do you want to load the saved character state?',
+            modalImageAlt: 'Confirmation image',
+            infoOk: 'OK'
+          },
+          attributes: ['S', 'T', 'A', 'I', 'Will', 'Int', 'Fell', 'Speed'],
+          races: {
+            race_1: 'Human', race_2: 'Ork', race_3: 'Aeldari', race_4: 'Adeptus Astartes', race_5: 'Primaris Astartes',
+            race_6: 'Ogryn', race_7: 'Ratling', race_8: 'Kroot', race_9: 'Drukhari', race_10: 'Wraith Construct',
+            race_11: 'Air Caste', race_12: 'Earth Caste', race_13: 'Fire Caste', race_14: 'Water Caste',
+            race_15: 'Ethereal Caste', race_16: 'Vespid'
+          },
+          maxAttributes: {
+            attribute_1: 'Strength', attribute_2: 'Toughness', attribute_3: 'Agility', attribute_4: 'Initiative',
+            attribute_5: 'Willpower', attribute_6: 'Intellect', attribute_7: 'Fellowship', attribute_8: 'Speed'
+          },
+          maxAttributesFootnotes: {
+            vespidSpeedFixed: '* Vespids have a fixed Speed value of 14. For XP calculation purposes, ignore the Speed field.'
+          },
+          skillsColumn1: [
+            'Athletics (S)', 'Awareness (Int)', 'Ballistic Skill (A)', 'Cunning (Fel)', 'Deception (Fel)',
+            'Insight (Fel)', 'Intimidation (Will)', 'Investigation (Int)', 'Leadership (Will)'
+          ],
+          skillsColumn2: [
+            'Medicae (Int)', 'Persuasion (Fel)', 'Pilot (A)', 'Psychic Mastery (Will)', 'Scholar (Int)',
+            'Stealth (A)', 'Survival (Will)', 'Tech (Int)', 'Weapon Skill (I)'
+          ],
+          errors: {
+            tooMuchXP: 'Too much XP spent!',
+            treeOfLearning: '"Tree of Learning" rule broken (page 26)',
+            languageChangeWarning: 'Changing the language will reset all data. Are you sure you want to continue?',
+            saveSuccess: 'Character state has been saved.',
+            saveError: 'Failed to save character state.',
+            loadSuccess: 'Character state has been loaded.',
+            loadError: 'Failed to load character state.'
+          }
+        }
+      };
+
+      // --- Domyślny język (polski) / Default language (Polish) ---
+      let currentLanguage = 'pl';
+
+      const maxAttributeRows = [
+        { race: 'race_1', values: [8, 8, 8, 8, 8, 8, 8, 8] },
+        { race: 'race_2', values: [12, 12, 7, 7, 8, 7, 7, 7] },
+        { race: 'race_3', values: [8, 7, 12, 12, 12, 10, 6, 10] },
+        { race: 'race_4', values: [10, 10, 9, 9, 10, 10, 8, 9] },
+        { race: 'race_5', values: [12, 12, 9, 9, 10, 10, 8, 9] },
+        { race: 'race_6', values: [12, 12, 7, 4, 8, 1, 4, 8] },
+        { race: 'race_7', values: [6, 6, 10, 10, 8, 8, 10, 7] },
+        { race: 'race_8', values: [12, 12, 12, 12, 10, 6, 6, 10] },
+        { race: 'race_9', values: [8, 8, 12, 12, 10, 10, 6, 10] },
+        { race: 'race_10', values: [12, 12, 8, 8, 12, 10, 4, 8] },
+        { race: 'race_11', values: [4, 4, 10, 8, 8, 8, 8, 8] },
+        { race: 'race_12', values: [6, 6, 8, 8, 8, 10, 8, 6] },
+        { race: 'race_13', values: [7, 7, 8, 8, 8, 8, 8, 8] },
+        { race: 'race_14', values: [6, 6, 8, 8, 8, 8, 10, 6] },
+        { race: 'race_15', values: [6, 6, 8, 8, 10, 8, 8, 6] },
+        { race: 'race_16', values: [8, 8, 12, 8, 8, 8, 5, 14] }
+      ];
+
+      const maxAttributeKeys = ['attribute_1','attribute_2','attribute_3','attribute_4','attribute_5','attribute_6','attribute_7','attribute_8'];
+      // --- Przypisy specjalne są opisane osobno, aby dane liczbowe tabeli pozostały liczbami. / Special footnotes are described separately so table numeric data stays numeric. ---
+      const maxAttributeFootnotes = [
+        { race: 'race_16', attribute: 'attribute_8', marker: '*', noteKey: 'vespidSpeedFixed' }
+      ];
+      const modalImageUrl = './Modal_Icon.png';
+      const firebaseContext = initializeFirebaseContext();
+
+
+      // --- Koszty atrybutów i umiejętności / Attribute and skill costs ---
+      const attributeCosts = {
+        1: 0, 2: 4, 3: 10, 4: 20, 5: 35, 6: 55, 7: 80, 8: 110, 9: 145, 10: 185, 11: 230, 12: 280
+      };
+      const skillCosts = {
+        0: 0, 1: 2, 2: 6, 3: 12, 4: 20, 5: 30, 6: 42, 7: 56, 8: 72
+      };
+
+      // --- Funkcja aktualizująca teksty w wybranym języku / Function to update texts in the selected language ---
+      function updateLanguage(lang) {
+        currentLanguage = lang;
+        const t = translations[lang];
+        document.getElementById('pageTitle').innerText = t.labels.pageTitle;
+        document.getElementById('xpPoolLabel').innerText = t.labels.xpPool;
+        document.getElementById('xpRemainingLabel').innerHTML = `${t.labels.remainingXP} <strong id="xpRemaining">155</strong>`;
+        document.getElementById('attributesHeader').innerText = t.labels.attributesHeader;
+        document.getElementById('skillsHeader').innerText = t.labels.skillsHeader;
+        document.getElementById('talentsHeader').innerText = t.labels.talentsHeader;
+        document.getElementById('skillHeader1').innerText = t.labels.skillsTableHeaders[0];
+        document.getElementById('skillHeader2').innerText = t.labels.skillsTableHeaders[1];
+        document.getElementById('skillHeader3').innerText = t.labels.skillsTableHeaders[2];
+        document.getElementById('skillHeader4').innerText = t.labels.skillsTableHeaders[3];
+        document.getElementById('talentHeader1').innerText = t.labels.talentsTableHeaders[0];
+        document.getElementById('talentHeader2').innerText = t.labels.talentsTableHeaders[1];
+        document.getElementById('talentHeader3').innerText = t.labels.talentsTableHeaders[2];
+        document.getElementById('talentHeader4').innerText = t.labels.talentsTableHeaders[3];
+        document.getElementById('footerText').innerText = t.labels.footerText;
+        document.getElementById('manualButton').innerText = t.labels.manualButton;
+        document.getElementById('backToMainButton').innerText = t.labels.backToMainButton;
+        document.getElementById('showSpeciesMaxButton').innerText = t.labels.showSpeciesMaxButton;
+        document.getElementById('speciesMaxModalTitle').innerText = t.labels.speciesMaxModalTitle;
+        document.getElementById('saveToFirebaseButton').innerText = t.labels.saveButton;
+        document.getElementById('loadFromFirebaseButton').innerText = t.labels.loadButton;
+        document.getElementById('confirmModalYesButton').innerText = t.labels.confirmYes;
+        document.getElementById('confirmModalNoButton').innerText = t.labels.confirmNo;
+        document.getElementById('confirmModalImage').alt = t.labels.modalImageAlt;
+
+        // Aktualizacja etykiet atrybutów / Update attribute labels
+        for (let i = 1; i <= 8; i++) {
+          document.getElementById(`attrLabel${i}`).innerText = t.attributes[i - 1];
+        }
+
+        // Aktualizacja etykiet umiejętności w kolumnie 1 / Update skill labels in column 1
+        for (let i = 1; i <= 9; i++) {
+          document.getElementById(`skillLabelColumn1Row${i}`).innerText = t.skillsColumn1[i - 1];
+        }
+
+        // Aktualizacja etykiet umiejętności w kolumnie 2 / Update skill labels in column 2
+        for (let i = 1; i <= 9; i++) {
+          document.getElementById(`skillLabelColumn2Row${i}`).innerText = t.skillsColumn2[i - 1];
+        }
+
+        if (document.getElementById('speciesMaxModal').classList.contains('is-open')) {
+          renderSpeciesMaxTable();
+        }
+      }
+
+
+
+      function renderSpeciesMaxTable() {
+        const t = translations[currentLanguage];
+        const table = document.getElementById('speciesMaxTable');
+        const footnotes = document.getElementById('speciesMaxFootnotes');
+        const renderedFootnoteKeys = new Set();
+
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+        const raceHeader = document.createElement('th');
+        raceHeader.innerText = '';
+        headerRow.appendChild(raceHeader);
+
+        maxAttributeKeys.forEach(key => {
+          const th = document.createElement('th');
+          th.innerText = t.maxAttributes[key];
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+
+        const tbody = document.createElement('tbody');
+        maxAttributeRows.forEach((row) => {
+          const tr = document.createElement('tr');
+          const raceCell = document.createElement('td');
+          raceCell.innerText = t.races[row.race];
+          tr.appendChild(raceCell);
+
+          row.values.forEach((value, index) => {
+            const td = document.createElement('td');
+            const attribute = maxAttributeKeys[index];
+            const footnote = maxAttributeFootnotes.find(item => item.race === row.race && item.attribute === attribute);
+            // Gwiazdka jest wyłącznie warstwą prezentacji tej komórki, bez zmiany wartości 14 w danych. / The asterisk is only the presentation layer for this cell and does not change the numeric value 14 in data.
+            td.innerText = footnote ? `${value}${footnote.marker}` : String(value);
+            if (footnote) {
+              renderedFootnoteKeys.add(footnote.noteKey);
+            }
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+
+        table.replaceChildren(thead, tbody);
+        const noteTexts = Array.from(renderedFootnoteKeys)
+          .map(key => (t.maxAttributesFootnotes || {})[key])
+          .filter(Boolean);
+        footnotes.replaceChildren(...noteTexts.map((text) => {
+          const note = document.createElement('p');
+          note.innerText = text;
+          return note;
+        }));
+      }
+
+      // --- Funkcja resetująca wszystkie pola do wartości domyślnych / Function to reset all fields to default values ---
+      // Stała określająca liczbę pól talentów (2 kolumny po 10 pozycji) / Constant defining number of talent fields (2 columns with 10 entries each)
+      const TALENT_COUNT = 20;
+
+      function resetAll() {
+        document.getElementById('xpPool').value = 155;
+        ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach(id => {
+          document.getElementById(`attr_${id}`).value = 1;
+        });
+        document.getElementById('attr_Speed').value = 6;
+        for (let i = 1; i <= 9; i++) {
+          document.getElementById(`skill_Column1Row${i}`).value = 0;
+          document.getElementById(`skill_Column2Row${i}`).value = 0;
+        }
+        for (let i = 1; i <= TALENT_COUNT; i++) {
+          document.getElementById(`talent_name_${i}`).value = '';
+          document.getElementById(`talent_cost_${i}`).value = 0;
+        }
+        recalcXP();
+      }
+
+      // --- Funkcja przeliczająca zużycie XP / Function to recalculate XP usage ---
+      function recalcXP() {
+        let xpPool = parseInt(document.getElementById('xpPool').value) || 0;
+        let totalAttrCost = 0;
+        const attrIds = ['attr_S', 'attr_Wt', 'attr_Zr', 'attr_I', 'attr_SW', 'attr_Int', 'attr_Ogd', 'attr_Speed'];
+        attrIds.forEach(id => {
+          let inp = document.getElementById(id);
+          let val = parseInt(inp.value) || 1;
+          if (val < 1) val = 1;
+          if (val > 12) val = 12;
+          inp.value = val;
+          totalAttrCost += attributeCosts[val];
+          inp.classList.toggle('attribute-high', val > 8);
+        });
+
+        let totalSkillCost = 0;
+        const skillIds = [];
+        for (let i = 1; i <= 9; i++) {
+          skillIds.push(`skill_Column1Row${i}`);
+          skillIds.push(`skill_Column2Row${i}`);
+        }
+        skillIds.forEach(id => {
+          let inp = document.getElementById(id);
+          let val = parseInt(inp.value) || 0;
+          if (val < 0) val = 0;
+          if (val > 8) val = 8;
+          inp.value = val;
+          totalSkillCost += skillCosts[val];
+        });
+
+        let totalTalentCost = 0;
+        for (let i = 1; i <= TALENT_COUNT; i++) {
+          let inp = document.getElementById(`talent_cost_${i}`);
+          let val = parseInt(inp.value) || 0;
+          if (val < 0) val = 0;
+          inp.value = val;
+          totalTalentCost += val;
+        }
+
+        let xpSpent = totalAttrCost + totalSkillCost + totalTalentCost;
+        let xpRemaining = xpPool - xpSpent;
+        document.getElementById('xpRemaining').innerText = xpRemaining;
+
+        // Sprawdzenie przekroczenia puli XP / Check for exceeding XP pool
+        if (xpRemaining < 0) {
+          displayError(translations[currentLanguage].errors.tooMuchXP);
+        } else {
+          // Jeśli XP jest w normie, sprawdzamy "Drzewo Nauki" / If XP is fine, check "Tree of Learning"
+          checkSkillTree();
+        }
+      }
+
+      function initializeFirebaseContext() {
+        if (typeof firebase === 'undefined' || !window.firebaseConfig) {
+          return { ready: false, characterRef: null };
+        }
+
+        if (!firebase.apps.length) {
+          firebase.initializeApp(window.firebaseConfig);
+        }
+        const db = firebase.firestore();
+        return {
+          ready: true,
+          characterRef: db.collection('character_builder').doc('current')
+        };
+      }
+
+      function collectCurrentState() {
+        const attributes = {};
+        ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach((key) => {
+          attributes[key] = parseInt(document.getElementById(`attr_${key}`).value, 10) || 1;
+        });
+
+        const skills = {};
+        for (let i = 1; i <= 9; i++) {
+          skills[`Column1Row${i}`] = parseInt(document.getElementById(`skill_Column1Row${i}`).value, 10) || 0;
+          skills[`Column2Row${i}`] = parseInt(document.getElementById(`skill_Column2Row${i}`).value, 10) || 0;
+        }
+
+        const talents = [];
+        for (let i = 1; i <= TALENT_COUNT; i++) {
+          talents.push({
+            name: document.getElementById(`talent_name_${i}`).value || '',
+            cost: parseInt(document.getElementById(`talent_cost_${i}`).value, 10) || 0
+          });
+        }
+
+        const formSnapshot = {};
+        document.querySelectorAll('input, textarea, select').forEach((field) => {
+          if (field.id) {
+            formSnapshot[field.id] = field.value;
+          }
+        });
+
+        const errorMessage = document.getElementById('errorMessage').innerText.trim();
+        const xpPool = parseInt(document.getElementById('xpPool').value, 10) || 0;
+        const xpAvailable = parseInt(document.getElementById('xpRemaining').innerText, 10) || 0;
+        const xpTotal = xpPool;
+        const xpSpent = xpTotal - xpAvailable;
+
+        return {
+          schemaVersion: 1,
+          module: 'Kalkulator/TworzeniePostaci',
+          lang: currentLanguage,
+          savedAt: firebase.firestore.FieldValue.serverTimestamp(),
+          savedBy: 'anonymous-web-client',
+          xpPool,
+          xpTotal,
+          xpSpent,
+          xpAvailable,
+          hasValidationErrors: errorMessage.length > 0,
+          validationMessages: errorMessage ? [errorMessage] : [],
+          attributes,
+          skills,
+          talents,
+          formSnapshot
+        };
+      }
+
+      function applySavedState(data) {
+        const snapshot = data.formSnapshot || {};
+        Object.entries(snapshot).forEach(([id, value]) => {
+          const element = document.getElementById(id);
+          if (element) {
+            element.value = value;
+          }
+        });
+
+        if (data.lang && translations[data.lang]) {
+          document.getElementById('languageSelect').value = data.lang;
+          updateLanguage(data.lang);
+        }
+
+        recalcXP();
+      }
+
+      function toggleConfirmModal(forceOpen, config = {}) {
+        const modal = document.getElementById('confirmModal');
+        const title = document.getElementById('confirmModalTitle');
+        const message = document.getElementById('confirmModalMessage');
+        const image = document.getElementById('confirmModalImage');
+        const yesButton = document.getElementById('confirmModalYesButton');
+        const noButton = document.getElementById('confirmModalNoButton');
+        const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !modal.classList.contains('is-open');
+
+        if (shouldOpen) {
+          title.innerText = config.title || '';
+          message.innerText = config.message || '';
+          yesButton.innerText = config.yesText || translations[currentLanguage].labels.confirmYes;
+          noButton.innerText = config.noText || translations[currentLanguage].labels.confirmNo;
+          noButton.style.display = config.singleAction ? 'none' : '';
+          if (config.imageUrl) {
+            image.src = config.imageUrl;
+            image.classList.remove('is-hidden');
+          } else {
+            image.removeAttribute('src');
+            image.classList.add('is-hidden');
+          }
+        }
+
+        modal.classList.toggle('is-open', shouldOpen);
+        modal.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+      }
+
+      function showConfirmationModal(config) {
+        return new Promise((resolve) => {
+          const yesButton = document.getElementById('confirmModalYesButton');
+          const noButton = document.getElementById('confirmModalNoButton');
+          const modal = document.getElementById('confirmModal');
+
+          const cleanup = () => {
+            yesButton.removeEventListener('click', onYes);
+            noButton.removeEventListener('click', onNo);
+            modal.removeEventListener('click', onOverlay);
+            document.removeEventListener('keydown', onEsc);
+            toggleConfirmModal(false);
+          };
+
+          const onYes = () => {
+            cleanup();
+            resolve(true);
+          };
+
+          const onNo = () => {
+            cleanup();
+            resolve(false);
+          };
+
+          const onOverlay = (event) => {
+            if (event.target === modal) {
+              onNo();
+            }
+          };
+
+          const onEsc = (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+              onNo();
+            }
+          };
+
+          yesButton.addEventListener('click', onYes);
+          noButton.addEventListener('click', onNo);
+          modal.addEventListener('click', onOverlay);
+          document.addEventListener('keydown', onEsc);
+          toggleConfirmModal(true, config);
+        });
+      }
+
+      function showInfoModal(config) {
+        return new Promise((resolve) => {
+          const okButton = document.getElementById('confirmModalYesButton');
+          const modal = document.getElementById('confirmModal');
+
+          const cleanup = () => {
+            okButton.removeEventListener('click', onOk);
+            modal.removeEventListener('click', onOverlay);
+            document.removeEventListener('keydown', onEsc);
+            toggleConfirmModal(false);
+          };
+
+          const onOk = () => {
+            cleanup();
+            resolve();
+          };
+
+          const onOverlay = (event) => {
+            if (event.target === modal) {
+              onOk();
+            }
+          };
+
+          const onEsc = (event) => {
+            if (event.key === 'Escape' && modal.classList.contains('is-open')) {
+              onOk();
+            }
+          };
+
+          okButton.addEventListener('click', onOk);
+          modal.addEventListener('click', onOverlay);
+          document.addEventListener('keydown', onEsc);
+          toggleConfirmModal(true, {
+            ...config,
+            singleAction: true,
+            yesText: translations[currentLanguage].labels.infoOk
+          });
+        });
+      }
+
+      async function saveStateToFirebase() {
+        const t = translations[currentLanguage];
+        const confirmed = await showConfirmationModal({
+          title: t.labels.confirmSaveTitle,
+          message: t.labels.confirmSaveMessage,
+          imageUrl: modalImageUrl
+        });
+        if (!confirmed) return;
+        if (!firebaseContext.ready) {
+          await showInfoModal({
+            title: t.labels.confirmSaveTitle,
+            message: t.errors.saveError,
+            imageUrl: modalImageUrl
+          });
+          return;
+        }
+        try {
+          const payload = collectCurrentState();
+          await firebaseContext.characterRef.set(payload);
+          await showInfoModal({
+            title: t.labels.confirmSaveTitle,
+            message: t.errors.saveSuccess,
+            imageUrl: modalImageUrl
+          });
+        } catch (error) {
+          console.error(error);
+          await showInfoModal({
+            title: t.labels.confirmSaveTitle,
+            message: t.errors.saveError,
+            imageUrl: modalImageUrl
+          });
+        }
+      }
+
+      async function loadStateFromFirebase() {
+        const t = translations[currentLanguage];
+        const confirmed = await showConfirmationModal({
+          title: t.labels.confirmLoadTitle,
+          message: t.labels.confirmLoadMessage,
+          imageUrl: modalImageUrl
+        });
+        if (!confirmed) return;
+        if (!firebaseContext.ready) {
+          await showInfoModal({
+            title: t.labels.confirmLoadTitle,
+            message: t.errors.loadError,
+            imageUrl: modalImageUrl
+          });
+          return;
+        }
+        try {
+          const snapshot = await firebaseContext.characterRef.get();
+          if (snapshot.exists) {
+            applySavedState(snapshot.data());
+            await showInfoModal({
+              title: t.labels.confirmLoadTitle,
+              message: translations[currentLanguage].errors.loadSuccess,
+              imageUrl: modalImageUrl
+            });
+          } else {
+            await showInfoModal({
+              title: t.labels.confirmLoadTitle,
+              message: translations[currentLanguage].errors.loadError,
+              imageUrl: modalImageUrl
+            });
+          }
+        } catch (error) {
+          console.error(error);
+          await showInfoModal({
+            title: t.labels.confirmLoadTitle,
+            message: translations[currentLanguage].errors.loadError,
+            imageUrl: modalImageUrl
+          });
+        }
+      }
+
+      // --- Funkcja wyświetlająca komunikaty o błędach / Function to display error messages ---
+      function displayError(msg) {
+        document.getElementById('errorMessage').innerText = msg;
+      }
+
+      // --- Funkcja sprawdzająca zasadę "Drzewa Nauki" / Function to check the "Tree of Learning" rule ---
+      function checkSkillTree() {
+        const skillIds = [];
+        for (let i = 1; i <= 9; i++) {
+          skillIds.push(`skill_Column1Row${i}`);
+          skillIds.push(`skill_Column2Row${i}`);
+        }
+
+        // Liczenie aktywnych umiejętności / Counting active skills
+        let totalActiveSkills = 0;
+        skillIds.forEach(id => {
+          let val = parseInt(document.getElementById(id).value) || 0;
+          if (val > 0) totalActiveSkills++;
+        });
+
+        // Sprawdzanie zasady "Drzewa Nauki" / Checking the "Tree of Learning" rule
+        let valid = true;
+        for (let id of skillIds) {
+          let level = parseInt(document.getElementById(id).value) || 0;
+          if (level > 1 && totalActiveSkills < level) {
+            valid = false;
+            break;
+          }
+        }
+
+        // Jeśli XP jest w normie, pokazujemy błąd "Drzewa Nauki" tylko jeśli zasada nie jest spełniona
+        // If XP is fine, show "Tree of Learning" error only if the rule is broken
+        let xpRemaining = parseInt(document.getElementById('xpRemaining').innerText) || 0;
+        if (xpRemaining >= 0) {
+          if (!valid) {
+            displayError(translations[currentLanguage].errors.treeOfLearning);
+          } else {
+            displayError(""); // Kasowanie komunikatu, jeśli wszystko jest poprawne / Clear message if everything is correct
+          }
+        }
+      }
+
+      // --- Funkcja ustawiająca domyślne wartości po utracie fokusu / Function to set default values on blur ---
+      function attachDefaultOnBlur(selector, defaultValue) {
+        document.querySelectorAll(selector).forEach(inp => {
+          inp.addEventListener('blur', () => {
+            if (!inp.value || isNaN(inp.value)) {
+              inp.value = defaultValue;
+              recalcXP();
+            }
+          });
+        });
+      }
+
+      // --- Funkcja dostosowująca rozmiar czcionki w polach talentów / Function to adjust font size in talent fields ---
+      function adjustTalentFontSize(el) {
+        el.style.fontSize = '16px';
+        let fontSize = 16;
+        while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > 10) {
+          fontSize -= 1;
+          el.style.fontSize = `${fontSize}px`;
+        }
+      }
+
+      // --- Logika przełącznika języka z ostrzeżeniem / Language switcher logic with warning ---
+      document.getElementById('languageSelect').addEventListener('change', async function(e) {
+        const newLang = e.target.value;
+        const t = translations[currentLanguage];
+        const confirmed = await showConfirmationModal({
+          title: t.labels.pageTitle,
+          message: t.errors.languageChangeWarning,
+          imageUrl: modalImageUrl
+        });
+        if (confirmed) {
+          updateLanguage(newLang);
+          resetAll();
+        } else {
+          e.target.value = currentLanguage; // Powrót do poprzedniego języka / Revert to previous language
+        }
+      });
+
+      // --- Podpinanie zdarzeń do pól wejściowych / Attaching events to input fields ---
+      document.querySelectorAll('input').forEach(inp => {
+        inp.addEventListener('input', recalcXP);
+        inp.addEventListener('change', recalcXP);
+      });
+
+      // --- Podpinanie zdarzeń do pól tekstowych talentów / Attaching events to talent text fields ---
+      document.querySelectorAll('textarea.talent-name').forEach(ta => {
+        ta.addEventListener('input', () => adjustTalentFontSize(ta));
+      });
+
+
+
+      const speciesMaxModal = document.getElementById('speciesMaxModal');
+
+      function toggleSpeciesMaxModal(forceOpen) {
+        const shouldOpen = typeof forceOpen === 'boolean' ? forceOpen : !speciesMaxModal.classList.contains('is-open');
+        speciesMaxModal.classList.toggle('is-open', shouldOpen);
+        speciesMaxModal.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+        if (shouldOpen) {
+          renderSpeciesMaxTable();
+        }
+      }
+
+      document.getElementById('showSpeciesMaxButton').addEventListener('click', () => {
+        toggleSpeciesMaxModal(true);
+      });
+
+      document.getElementById('closeSpeciesMaxButton').addEventListener('click', () => {
+        toggleSpeciesMaxModal(false);
+      });
+
+      speciesMaxModal.addEventListener('click', (event) => {
+        if (event.target === speciesMaxModal) {
+          toggleSpeciesMaxModal(false);
+        }
+      });
+
+      document.getElementById('manualButton').addEventListener('click', () => {
+        const manualPath = `HowToUse/${currentLanguage}.pdf`;
+        window.open(manualPath, '_blank', 'noopener');
+      });
+      document.getElementById('saveToFirebaseButton').addEventListener('click', saveStateToFirebase);
+      document.getElementById('loadFromFirebaseButton').addEventListener('click', loadStateFromFirebase);
+
+      document.getElementById('backToMainButton').addEventListener('click', () => {
+        // --- WAŻNE: Po wdrożeniu na inny serwer zaktualizuj ścieżkę powrotu do modułu Main zgodnie ze strukturą grupy. / IMPORTANT: After deployment to another server, update the return path to the Main module based on that group's structure. ---
+        window.location.href = '../Main/index.html';
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && speciesMaxModal.classList.contains('is-open')) {
+          toggleSpeciesMaxModal(false);
+        }
+      });
+
+      // --- Inicjalizacja domyślnych wartości / Initialization of default values ---
+      attachDefaultOnBlur('#xpPool', 155);
+      attachDefaultOnBlur("input[id^='attr_']", 1);
+      attachDefaultOnBlur("input[id^='skill_Column']", 0);
+      attachDefaultOnBlur("input[id^='talent_cost_']", 0);
+
+      // --- Inicjalna konfiguracja / Initial setup ---
+      updateLanguage(currentLanguage);
+      recalcXP();
+    });
+  </script>
+</body>
+</html>
