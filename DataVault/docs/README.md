@@ -75,6 +75,7 @@ Przykładowe zakładki:
 - `Psionika`,
 - `Modlitwy`,
 - `Archetypy`,
+- `Premie z Przeszłości Frakcji`,
 - `Skrót Zasad`,
 - `Pojazdy`.
 
@@ -393,6 +394,7 @@ Example tabs:
 - `Psionika`,
 - `Modlitwy`,
 - `Archetypy`,
+- `Premie z Przeszłości Frakcji`,
 - `Skrót Zasad`,
 - `Pojazdy`.
 

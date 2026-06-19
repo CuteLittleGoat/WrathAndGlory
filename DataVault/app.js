@@ -178,6 +178,24 @@ const translations = {
 
 let currentLanguage = "pl";
 
+// --- Mapowanie etykiet zakładek zmienia wyłącznie tekst widoczny w interfejsie, bez zmiany kluczy arkuszy i reguł danych.
+// --- Tab label mapping changes only the text visible in the interface, without changing sheet keys or data rules.
+const SHEET_LABELS = {
+  pl: {
+    "Premie Frakcji": "Premie z Przeszłości Frakcji",
+  },
+};
+
+function getSheetDisplayName(sheetName){
+  return SHEET_LABELS[currentLanguage]?.[sheetName] || sheetName;
+}
+
+function refreshTabLabels(){
+  document.querySelectorAll(".tab[data-sheet-name]").forEach((tab) => {
+    tab.textContent = getSheetDisplayName(tab.dataset.sheetName).toUpperCase();
+  });
+}
+
 const applyLanguage = (lang) => {
   currentLanguage = lang;
   const t = translations[lang];
@@ -216,6 +234,7 @@ const applyLanguage = (lang) => {
   document.querySelectorAll(".filterBtn").forEach((button) => {
     button.title = t.messages.filterButtonTitle;
   });
+  refreshTabLabels();
   if (tbodyEl && currentSheet) {
     renderBody();
   }
@@ -1388,7 +1407,8 @@ function initUI(){
   for (const name of visibleOrder){
     const b = document.createElement("button");
     b.className = "tab";
-    b.textContent = name.toUpperCase();
+    b.dataset.sheetName = name;
+    b.textContent = getSheetDisplayName(name).toUpperCase();
     if (isCharacterCreationSheet(name)){
       b.classList.add("tab--character");
     }
