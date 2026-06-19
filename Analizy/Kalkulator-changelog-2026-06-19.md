@@ -119,6 +119,8 @@ Następujące otwarte kwestie z końca `Analizy/Kalkulator.md` otrzymują nowy s
 | Czy PDF ma być flattenowany | Tak, PDF ma być spłaszczony |
 | Zachowanie `Zdolność Archetypu` | Do zmiany; szczegóły jeszcze do doprecyzowania |
 
+Dodatkowo główny dokument `Analizy/Kalkulator.md` został zaktualizowany, żeby zawierał potwierdzone ścieżki `./pdf/pl.pdf` i `./pdf/en.pdf`, decyzję o spłaszczaniu PDF oraz aktualny status `Zdolność Archetypu`.
+
 ---
 
 ## 3. Uwagi do przenoszenia do innego repozytorium
