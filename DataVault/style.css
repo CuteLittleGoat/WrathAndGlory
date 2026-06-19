@@ -584,15 +584,15 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Strona"],
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 
-/* Premie Frakcji */
-.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Frakcja"],
-.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Frakcja"]{min-width:26ch}
-.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Premia 1"],
-.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Premia 1"],
-.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Premia 2"],
-.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Premia 2"],
-.tableWrap table[data-sheet="Premie Frakcji"] th[data-col="Premia 3"],
-.tableWrap table[data-sheet="Premie Frakcji"] td[data-col="Premia 3"]{min-width:56ch}
+/* Premie z Przeszłości Frakcji */
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] th[data-col="Frakcja"],
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] td[data-col="Frakcja"]{min-width:26ch}
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] th[data-col="Premia 1"],
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] td[data-col="Premia 1"],
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] th[data-col="Premia 2"],
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] td[data-col="Premia 2"],
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] th[data-col="Premia 3"],
+.tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] td[data-col="Premia 3"]{min-width:56ch}
 
 /* Gatunki */
 .tableWrap table[data-sheet="Gatunki"] th[data-col="Gatunek"],
