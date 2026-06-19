@@ -89,28 +89,48 @@ Rzędy `Premia` i `Suma` w sekcji Atrybuty zostają puste.
 
 Sekcja `UMIEJĘTNOŚCI` w PDF ma dla każdej umiejętności kolumnę `Wartość` i `Suma`.
 
-Wypełniana jest tylko kolumna `Wartość`. Kolumny `Suma` zostają puste.
+Wypełniane są obie kolumny:
 
-| Umiejętność w kalkulatorze | Pole PDF |
-| --- | --- |
-| `Analiza (Int)` | `UMIEJĘTNOŚCI / Analiza / Wartość` |
-| `Atletyka (S)` | `UMIEJĘTNOŚCI / Atletyka / Wartość` |
-| `Czujność (Int)` | `UMIEJĘTNOŚCI / Czujność / Wartość` |
-| `Dowodzenie (SW)` | `UMIEJĘTNOŚCI / Dowodzenie / Wartość` |
-| `Intuicja (Ogd)` | `UMIEJĘTNOŚCI / Intuicja / Wartość` |
-| `Korzystanie z technologii (Int)` | `UMIEJĘTNOŚCI / Korzystanie z technologii / Wartość` |
-| `Medycyna (Int)` | `UMIEJĘTNOŚCI / Medycyna / Wartość` |
-| `Mistrzostwo psioniczne (SW)` | `UMIEJĘTNOŚCI / Mistrzostwo psioniczne / Wartość` |
-| `Oszukiwanie (Ogd)` | `UMIEJĘTNOŚCI / Oszukiwanie / Wartość` |
-| `Perswazja (Ogd)` | `UMIEJĘTNOŚCI / Perswazja / Wartość` |
-| `Pilotaż (Zr)` | `UMIEJĘTNOŚCI / Pilotaż / Wartość` |
-| `Przebiegłość (Ogd)` | `UMIEJĘTNOŚCI / Przebiegłość / Wartość` |
-| `Przetrwanie (SW)` | `UMIEJĘTNOŚCI / Przetrwanie / Wartość` |
-| `Ukrywanie się (Zr)` | `UMIEJĘTNOŚCI / Ukrywanie się / Wartość` |
-| `Umiejętności strzeleckie (Zr)` | `UMIEJĘTNOŚCI / Umiejętności strzeleckie / Wartość` |
-| `Walka wręcz (I)` | `UMIEJĘTNOŚCI / Walka wręcz / Wartość` |
-| `Wiedza ogólna (Int)` | `UMIEJĘTNOŚCI / Wiedza ogólna / Wartość` |
-| `Zastraszanie (SW)` | `UMIEJĘTNOŚCI / Zastraszanie / Wartość` |
+- `Wartość` — bezpośrednia wartość danej umiejętności z kalkulatora,
+- `Suma` — wartość umiejętności z kalkulatora + wartość powiązanego atrybutu z kalkulatora.
+
+Atrybut `Szybkość` nie jest powiązany z żadną umiejętnością i nie bierze udziału w obliczaniu kolumny `Suma`.
+
+Przykład dla `Czujność (Int)`:
+
+| Int | Czujność (Int) | Suma przy Czujność |
+| ---: | ---: | ---: |
+| 1 | 0 | 1 |
+| 1 | 1 | 2 |
+| 2 | 1 | 3 |
+| 2 | 3 | 5 |
+
+Uwaga: jeżeli w notatkach pojawi się przykład `Int = 2`, `Czujność = 3`, `Suma = 4`, należy traktować to jako literówkę. Zgodnie z zasadą sumowania wynik wynosi `5`.
+
+Mapowanie PL:
+
+| Umiejętność w kalkulatorze | Powiązany atrybut | Pole PDF `Wartość` | Pole PDF `Suma` |
+| --- | --- | --- | --- |
+| `Analiza (Int)` | `Int` | `UMIEJĘTNOŚCI / Analiza / Wartość` | `Analiza + Int` |
+| `Atletyka (S)` | `S` | `UMIEJĘTNOŚCI / Atletyka / Wartość` | `Atletyka + S` |
+| `Czujność (Int)` | `Int` | `UMIEJĘTNOŚCI / Czujność / Wartość` | `Czujność + Int` |
+| `Dowodzenie (SW)` | `SW` | `UMIEJĘTNOŚCI / Dowodzenie / Wartość` | `Dowodzenie + SW` |
+| `Intuicja (Ogd)` | `Ogd` | `UMIEJĘTNOŚCI / Intuicja / Wartość` | `Intuicja + Ogd` |
+| `Korzystanie z technologii (Int)` | `Int` | `UMIEJĘTNOŚCI / Korzystanie z technologii / Wartość` | `Korzystanie z technologii + Int` |
+| `Medycyna (Int)` | `Int` | `UMIEJĘTNOŚCI / Medycyna / Wartość` | `Medycyna + Int` |
+| `Mistrzostwo psioniczne (SW)` | `SW` | `UMIEJĘTNOŚCI / Mistrzostwo psioniczne / Wartość` | `Mistrzostwo psioniczne + SW` |
+| `Oszukiwanie (Ogd)` | `Ogd` | `UMIEJĘTNOŚCI / Oszukiwanie / Wartość` | `Oszukiwanie + Ogd` |
+| `Perswazja (Ogd)` | `Ogd` | `UMIEJĘTNOŚCI / Perswazja / Wartość` | `Perswazja + Ogd` |
+| `Pilotaż (Zr)` | `Zr` | `UMIEJĘTNOŚCI / Pilotaż / Wartość` | `Pilotaż + Zr` |
+| `Przebiegłość (Ogd)` | `Ogd` | `UMIEJĘTNOŚCI / Przebiegłość / Wartość` | `Przebiegłość + Ogd` |
+| `Przetrwanie (SW)` | `SW` | `UMIEJĘTNOŚCI / Przetrwanie / Wartość` | `Przetrwanie + SW` |
+| `Ukrywanie się (Zr)` | `Zr` | `UMIEJĘTNOŚCI / Ukrywanie się / Wartość` | `Ukrywanie się + Zr` |
+| `Umiejętności strzeleckie (Zr)` | `Zr` | `UMIEJĘTNOŚCI / Umiejętności strzeleckie / Wartość` | `Umiejętności strzeleckie + Zr` |
+| `Walka wręcz (I)` | `I` | `UMIEJĘTNOŚCI / Walka wręcz / Wartość` | `Walka wręcz + I` |
+| `Wiedza ogólna (Int)` | `Int` | `UMIEJĘTNOŚCI / Wiedza ogólna / Wartość` | `Wiedza ogólna + Int` |
+| `Zastraszanie (SW)` | `SW` | `UMIEJĘTNOŚCI / Zastraszanie / Wartość` | `Zastraszanie + SW` |
+
+W wersji EN obowiązuje ta sama zasada, ale kolejność i nazwy pól na PDF oraz w kalkulatorze mogą być inne. Profil `pdfProfiles.en` musi osobno zmapować angielskie pola `Rating` i `Total`.
 
 ---
 
@@ -287,11 +307,18 @@ Wzór:
 PasywnaCzujnosc = Math.ceil((Inteligencja + Czujnosc) / 2);
 ```
 
+Równoważnie:
+
+```js
+PasywnaCzujnosc = Math.ceil(SumaCzujnosci / 2);
+```
+
 Gdzie:
 
 ```text
 Inteligencja = wartość atrybutu Int z głównej strony kalkulatora
 Czujność = wartość umiejętności Czujność (Int) z głównej strony kalkulatora
+SumaCzujnosci = Inteligencja + Czujność
 ```
 
 Przykłady:
@@ -353,7 +380,14 @@ const pdfProfiles = {
       attributeIntellect: "...",
       attributeFellowship: "...",
 
-      skillAwareness: "...",
+      skillRatings: {
+        awareness: "...",
+        athletics: "..."
+      },
+      skillTotals: {
+        awareness: "...",
+        athletics: "..."
+      },
       passiveAwareness: "...",
 
       speed: "...",
