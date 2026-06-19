@@ -76,18 +76,105 @@ Nie tworzyć osobnego bucketu eksportowego dla tego typu.
 
 ### 1.5. Zdolność Archetypu
 
-Dla `Zdolność Archetypu` będzie wprowadzona zmiana względem wcześniejszej specyfikacji.
+`Zdolność Archetypu` ma zachowanie zależne od pola `Modyfikuje`.
 
-Na moment tej notatki szczegóły zmiany nie są jeszcze opisane. Implementacja nie powinna traktować wcześniejszego zachowania `Zdolność Archetypu` jako ostatecznego, dopóki ta zmiana nie zostanie doprecyzowana.
+Jeżeli użytkownik wybierze wariant opisowy, np.:
 
-Aktualny bezpieczny status:
+```text
+Opis
+Brak — tylko opis
+none
+```
 
-- pozostawić typ `Zdolność Archetypu` w konfiguracji,
-- nie usuwać go z UI,
-- nie zamykać logiki na stałe jako wyłącznie opisowej, jeśli późniejsza zmiana ma dopuścić modyfikator lub inny eksport,
-- oznaczyć ten fragment w kodzie komentarzem `TODO` do doprecyzowania.
+wtedy nazwa wpisu trafia do pola:
 
-### 1.6. Eksport PDF — spłaszczenie formularza
+```text
+Zdolności i Talenty
+```
+
+Jeżeli użytkownik wybierze inną opcję, np. zwiększenie albo zmniejszenie `Majątku`, wtedy:
+
+- wartość wpływa na obliczenia,
+- nazwa wpisu trafia do pola `Notatki`,
+- nazwa wpisu nie trafia do `Zdolności i Talenty`.
+
+W PDF ma pojawić się sama nazwa wpisu, bez etykiety źródła.
+
+### 1.6. Główna sekcja talentów
+
+Nazwy wpisane w głównej sekcji:
+
+```text
+Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne
+```
+
+trafiają do pola:
+
+```text
+Zdolności i Talenty
+```
+
+Eksportować tylko nazwę, bez kosztu.
+
+Kolejność w polu `Zdolności i Talenty`:
+
+1. najpierw wpisy z głównej sekcji talentów,
+2. potem opisowe wpisy typu `Zdolność Archetypu`.
+
+Nie dodawać etykiet typu `Talent:` ani `Zdolność Archetypu:`.
+
+### 1.7. Premia z przeszłości
+
+`Premia z przeszłości` zawsze trafia do pola:
+
+```text
+Przeszłość
+```
+
+Dotyczy to wpisów opisowych i mechanicznych.
+
+### 1.8. Zdolności Gatunkowe
+
+`Zdolności Gatunkowe` trafiają do pola:
+
+```text
+Notatki
+```
+
+Jeżeli wpis modyfikuje cechę, jego wartość nadal wpływa na obliczenia.
+
+### 1.9. Obliczenia i wartości ujemne
+
+Obliczenia mają wykonywać się zawsze dla wpisów, które modyfikują cechę. Dotyczy to także wartości ujemnych.
+
+Kolumna `Wartość` musi dopuszczać wartości ujemne, np.:
+
+```text
+-1
+```
+
+### 1.10. Ostrzeżenia dla wartości obliczalnych
+
+Dodać ostrzeżenie, jeżeli surowa wartość po uwzględnieniu bonusów, ale przed wymuszeniem minimum, spadnie do niebezpiecznego zakresu.
+
+Dla wszystkich cech poza `Spaczenie` ostrzeżenie pojawia się, gdy wartość wynosi:
+
+```text
+0 lub mniej
+```
+
+Dla `Spaczenie` ostrzeżenie pojawia się, gdy wartość wynosi:
+
+```text
+mniej niż 0
+```
+
+Minimum nadal pozostaje:
+
+- `1` dla cech poza `Spaczenie`,
+- `0` dla `Spaczenie`.
+
+### 1.11. Eksport PDF — spłaszczenie formularza
 
 Wygenerowany PDF ma być spłaszczony.
 
@@ -117,9 +204,16 @@ Następujące otwarte kwestie z końca `Analizy/Kalkulator.md` otrzymują nowy s
 | Lokalny `pdf-lib.min.js` czy CDN | Rekomendowany lokalny `Kalkulator/vendor/pdf-lib.min.js` |
 | Czy `Specjalne Bonusy Frakcji` trafiają do Notatek | Tak, trafiają do Notatek |
 | Czy PDF ma być flattenowany | Tak, PDF ma być spłaszczony |
-| Zachowanie `Zdolność Archetypu` | Do zmiany; szczegóły jeszcze do doprecyzowania |
+| Zachowanie `Zdolność Archetypu` | Doprecyzowane: opis do `Zdolności i Talenty`, modyfikator do `Notatki` |
+| Główna sekcja talentów | Eksportuje tylko nazwy do `Zdolności i Talenty` |
+| Wartości ujemne | Dopuszczone i uwzględniane w obliczeniach |
+| Ostrzeżenia przy niskich wartościach | Dodać ostrzeżenia dla wartości surowych 0 lub mniej; dla `Spaczenie` mniej niż 0 |
 
-Dodatkowo główny dokument `Analizy/Kalkulator.md` został zaktualizowany, żeby zawierał potwierdzone ścieżki `./pdf/pl.pdf` i `./pdf/en.pdf`, decyzję o spłaszczaniu PDF oraz aktualny status `Zdolność Archetypu`.
+Dodatkowo dodano osobny dokument:
+
+```text
+Analizy/Kalkulator-logika-eksportu-pdf-2026-06-19.md
+```
 
 ---
 
@@ -130,10 +224,15 @@ Przy przenoszeniu podobnej zmiany do innego repozytorium należy skopiować nie 
 - nie dodawać pól imienia gracza/postaci do modala obliczeniowego,
 - zachować jeden modal `Cechy i zasady specjalne`,
 - trzymać eksport PDF poza modalem,
+- eksportować główną sekcję talentów do `Zdolności i Talenty`, tylko nazwy, bez kosztów,
+- eksportować opisowe `Zdolność Archetypu` do `Zdolności i Talenty`,
+- eksportować modyfikujące `Zdolność Archetypu` do `Notatki`,
 - eksportować `Premia z przeszłości` do `Przeszłość`,
+- eksportować `Zdolności Gatunkowe` do `Notatki`,
 - eksportować `Specjalne Bonusy Frakcji` do `Notatki`,
 - używać profili PDF osobno dla PL i EN,
 - używać ścieżek `./pdf/pl.pdf` oraz `./pdf/en.pdf`, jeśli w docelowym repo pliki mają takie same nazwy,
 - wypełnić PDF po nazwach pól formularza, nie po pozycjach,
-- spłaszczać finalny PDF,
-- pozostawić decyzję dotyczącą `Zdolność Archetypu` jako punkt wymagający aktualizacji zgodnie z finalnym ustaleniem.
+- dopuszczać wartości ujemne w modyfikatorach,
+- ostrzegać o surowych wartościach 0 lub mniej, a dla `Spaczenie` poniżej 0,
+- spłaszczać finalny PDF.
