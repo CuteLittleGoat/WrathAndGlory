@@ -146,6 +146,7 @@ const rulePlaceholders={
 const modifyTargets=[['none','Brak — tylko opis'],['woundsMax','Żywotność'],['shock','Odporność Psychiczna'],['determination','Determinacja'],['defence','Obrona'],['resilience','Odporność'],['resolve','Upór'],['conviction','Odwaga'],['speed','Szybkość'],['influence','Wpływy'],['wealth','Majątek'],['corruption','Spaczenie']].map(([value,label])=>({value,label}));
 const sizeDefenceBonus={'Malutki':2,'Mały':1,'Średni':0,'Duży':0,'Ogromny':0,'Monstrualny':0};
 const corruptionSlots=Array.from({length:25},(_,i)=>`Check Box ${i+1}`);
+const corruptionLevelSlots=['Check Box 30','Check Box 29','Check Box 28','Check Box 27','Check Box 26'];
 
 function $(id){return document.getElementById(id)}
 function toInt(value,fallback){const n=parseInt(value,10);return Number.isFinite(n)?n:fallback}
@@ -155,6 +156,7 @@ function minZero(value){return Math.max(0,Math.ceil(Number(value)||0))}
 function esc(text){return String(text).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function pad2(value){return String(value).padStart(2,'0')}
 function buildPdfFileName(languageCode){const d=new Date();return `${languageCode}-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}-${pad2(d.getHours())}${pad2(d.getMinutes())}.pdf`}
+function getCorruptionLevelMarkCount(corruptionValue){return Math.max(0,Math.min(4,Math.ceil((Number(corruptionValue)||0)-5)/5))}
 
 function renderAttributes(){
   $('attributesTable').innerHTML='<tr>'+attributes.map(a=>`<th>${a.label}</th>`).join('')+'</tr><tr>'+attributes.map(a=>`<td><input type="number" id="attr_${a.key}" value="${a.key==='Speed'?6:1}" min="1" max="12"></td>`).join('')+'</tr>';
@@ -320,6 +322,8 @@ async function exportPdf(){
     textField(form,'Majątek',data.wealth,warnings,false);
     textField(form,'Pasywna Czujność',data.passiveAwareness,warnings,false);
     corruptionSlots.forEach((name,i)=>checkBox(form,name,i<data.corruption,warnings));
+    const levelMarks=getCorruptionLevelMarkCount(data.corruption);
+    corruptionLevelSlots.forEach((name,i)=>checkBox(form,name,i<levelMarks,warnings));
   }finally{pdfAppearanceFont=null}
   const out=await pdfDoc.save({updateFieldAppearances:false}),blob=new Blob([out],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');
   a.href=url;
