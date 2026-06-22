@@ -339,7 +339,7 @@
   function openPreview() {
     const preview = window.open('', '_blank');
     if (preview) {
-      preview.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Generowanie PDF…</title></head><body style="margin:24px;background:#000;color:#9cf09c;font-family:Consolas,monospace">Kantyk Maszyny przygotowuje podgląd PDF…</body></html>');
+      preview.document.write('<!doctype html><html><head><meta charset="utf-8"><title>Generowanie PDF…</title></head><body style="margin:24px;background:#000;color:#9cf09c;font-family:Consolas,monospace">Trwa rytuał transkrypcji danych dokumentu…</body></html>');
       preview.document.close();
     }
     return preview;
