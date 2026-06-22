@@ -1,0 +1,22 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Istniejący dokument produkcyjny TworzeniePostaci.html.
+    match /character_builder/current {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Izolowany dokument Kalkulator/test.html.
+    match /character_builder/test-v2 {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Brak dostępu do pozostałych dokumentów przez te reguły.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
