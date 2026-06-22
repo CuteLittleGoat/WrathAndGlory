@@ -138,7 +138,7 @@ W `TworzeniePostaci.html` wartość `Vespidzi / Speed = 14` jest renderowana jak
 
 ## Widok `TworzeniePostaci.html`
 
-`TworzeniePostaci.html` jest arkuszem tworzenia postaci.
+`TworzeniePostaci.html` jest arkuszem tworzenia postaci. Element `<title>` w sekcji `<head>` ustawia tytuł karty przeglądarki na `Prosty Kreator Postaci`.
 
 Główne sekcje:
 
@@ -567,7 +567,7 @@ In `TworzeniePostaci.html`, `Vespid / Speed = 14` is rendered as `14*`, but the 
 
 ## `TworzeniePostaci.html` view
 
-`TworzeniePostaci.html` is the character creation sheet.
+`TworzeniePostaci.html` is the character creation sheet. The `<title>` element in the `<head>` section sets the browser tab title to `Prosty Kreator Postaci`.
 
 Main sections:
 
