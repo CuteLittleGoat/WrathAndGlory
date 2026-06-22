@@ -229,9 +229,7 @@ HowToUse/en.pdf
 
 `Kalkulator PD` pozwala zmienić język bez resetowania wpisanych wartości.
 
-`Prosty Kreator Postaci` prosi o potwierdzenie zmiany języka. Po potwierdzeniu dane robocze zostają zresetowane.
-
-Przed zmianą języka w arkuszu tworzenia postaci upewnij się, że nie stracisz potrzebnych danych.
+`Tworzenie Postaci` nie pokazuje rozwijanego menu zmiany języka. Arkusz otwiera się w domyślnym języku, a widoczne przyciski w prawym górnym rogu służą do otwarcia instrukcji, powrotu do strony głównej i sprawdzenia maksymalnych wartości atrybutów.
 
 ## Reset
 
@@ -277,7 +275,7 @@ Zapis obejmuje między innymi:
 | Pole wraca do wartości domyślnej | Wpis był pusty albo nieprawidłowy. | Wpisz liczbę z dozwolonego zakresu. |
 | Nie działa zapis | Firebase nie jest skonfigurowany albo jest niedostępny. | Zgłoś adminowi technicznemu. |
 | Nie działa wczytanie | Brak zapisanego dokumentu albo Firebase jest niedostępny. | Najpierw zapisz postać albo zgłoś adminowi. |
-| Zmiana języka resetuje arkusz | To celowe zachowanie `Tworzenia Postaci`. | Zmień język tylko po zapisaniu lub spisaniu danych. |
+| Nie widzę zmiany języka w arkuszu tworzenia postaci | To prawidłowe zachowanie. | Korzystaj z arkusza w domyślnym języku; widoczne przyciski służą do instrukcji, powrotu i tabeli maksimów. |
 | PDF instrukcji się nie otwiera | Brakuje pliku albo przeglądarka blokuje otwarcie. | Sprawdź popupy i obecność plików `HowToUse`. |
 
 ## Krótki workflow — Kalkulator PD
@@ -536,9 +534,7 @@ HowToUse/en.pdf
 
 `XP Calculator` can switch language without resetting entered values.
 
-`Simple Character Creator` asks for confirmation before changing language. After confirmation, working data is reset.
-
-Before changing language in character creation, make sure you will not lose needed data.
+`Character Creation` does not show a language dropdown. The sheet opens in the default language, and the visible top-right buttons open the manual, return to the main page, and show maximum attribute values.
 
 ## Reset
 
@@ -584,7 +580,7 @@ Save includes, among others:
 | Field returns to default value | The entry was empty or invalid. | Enter a number in the allowed range. |
 | Save does not work | Firebase is not configured or unavailable. | Contact technical admin. |
 | Load does not work | No saved document exists or Firebase is unavailable. | Save character first or contact admin. |
-| Language change resets sheet | This is intended in `Simple Character Creator`. | Change language only after saving or writing down data. |
+| I do not see language change in character creation | This is expected. | Use the sheet in the default language; the visible buttons are for the manual, return, and maximum-values table. |
 | PDF manual does not open | File is missing or browser blocks opening. | Check popups and presence of `HowToUse` files. |
 
 ## Quick workflow — XP Calculator

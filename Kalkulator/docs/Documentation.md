@@ -148,7 +148,7 @@ Główne sekcje:
 
 | Sekcja | Rola |
 | --- | --- |
-| Przełącznik języka | Wybór PL/EN. Zmiana języka resetuje dane po potwierdzeniu. |
+| Techniczny wybór języka | Ukryty element `languageSelect`; widok startuje z domyślnym językiem i nie pokazuje użytkownikowi rozwijanego menu zmiany języka. |
 | Instrukcja | Otwiera `HowToUse/pl.pdf` albo `HowToUse/en.pdf`. |
 | Strona Główna | Przechodzi do `../Main/index.html`. |
 | Maksymalne wartości atrybutów | Otwiera modal tabeli maksimów rasowych. |
@@ -252,18 +252,12 @@ Logika:
 
 ## Zmiana języka
 
-`TworzeniePostaci.html` obsługuje języki:
+`TworzeniePostaci.html` zawiera tłumaczenia dla języków:
 
 - `pl`,
 - `en`.
 
-Zmiana języka:
-
-1. Otwiera modal potwierdzenia.
-2. Jeżeli użytkownik potwierdzi, wykonuje `updateLanguage(newLang)` i `resetAll()`.
-3. Jeżeli użytkownik odmówi, select wraca do poprzedniego języka.
-
-To zachowanie jest celowe, ponieważ zmiana języka zmienia etykiety formularza i resetuje dane robocze.
+Element `languageSelect` pozostaje w strukturze DOM jako techniczny punkt integracji z funkcją `updateLanguage(lang)`, zapisem stanu i odtwarzaniem danych. Select jest ukryty za pomocą CSS (`display: none`), oznaczony `aria-hidden="true"` i wyłączony z kolejności klawiatury przez `tabindex="-1"`, dlatego użytkownik nie widzi rozwijanego menu zmiany języka w arkuszu tworzenia postaci.
 
 ## Modale
 
@@ -382,7 +376,7 @@ W obu widokach dostępne są:
 
 `KalkulatorXP.html` przełącza język bez resetowania danych.
 
-`TworzeniePostaci.html` wymaga potwierdzenia i resetuje dane po zmianie języka.
+`TworzeniePostaci.html` nie pokazuje użytkownikowi rozwijanego menu zmiany języka; ukryty `languageSelect` pozostaje wyłącznie technicznym elementem używanym przez logikę tłumaczeń i odtwarzania zapisu.
 
 ## Fallbacki i błędy
 
@@ -425,7 +419,7 @@ W obu widokach dostępne są:
 | Drzewo Nauki | Ustaw niezgodne poziomy umiejętności. | Pojawia się błąd Drzewa Nauki. |
 | Modal maksimów | Kliknij `Maksymalne wartości atrybutów`. | Otwiera się tabela maksimów rasowych z przypisem Vespidów. |
 | Instrukcja | Kliknij `Instrukcja` / `Manual`. | Otwiera się PDF dla aktualnego języka. |
-| Zmiana języka arkusza | Zmień język w `TworzeniePostaci.html`. | Pojawia się potwierdzenie; po akceptacji dane resetują się. |
+| Język arkusza | Otwórz `TworzeniePostaci.html`. | Arkusz używa domyślnego języka; rozwijane menu zmiany języka nie jest widoczne dla użytkownika. |
 | Zapis Firebase | Kliknij `Zapisz` i potwierdź. | Stan zapisuje się do `character_builder/current`. |
 | Wczytanie Firebase | Kliknij `Wczytaj` i potwierdź. | Formularz odtwarza wartości z `formSnapshot`. |
 
@@ -579,7 +573,7 @@ Main sections:
 
 | Section | Role |
 | --- | --- |
-| Language switcher | PL/EN selection. Changing language resets data after confirmation. |
+| Technical language selector | Hidden `languageSelect` element; the view starts with the default language and does not show the user a language dropdown. |
 | Manual | Opens `HowToUse/pl.pdf` or `HowToUse/en.pdf`. |
 | Main Page | Goes to `../Main/index.html`. |
 | Maximum attribute values | Opens species maximum table modal. |
@@ -683,18 +677,12 @@ Logic:
 
 ## Language change
 
-`TworzeniePostaci.html` supports languages:
+`TworzeniePostaci.html` contains translations for languages:
 
 - `pl`,
 - `en`.
 
-Changing language:
-
-1. Opens a confirmation modal.
-2. If confirmed, runs `updateLanguage(newLang)` and `resetAll()`.
-3. If declined, the select returns to the previous language.
-
-This is intentional, because language change updates form labels and resets working data.
+The `languageSelect` element remains in the DOM as a technical integration point for `updateLanguage(lang)`, state saving, and data restoration. The select is hidden with CSS (`display: none`), marked `aria-hidden="true"`, and removed from keyboard order with `tabindex="-1"`, so the user does not see a language dropdown in the character creation sheet.
 
 ## Modals
 
@@ -813,7 +801,7 @@ Both views support:
 
 `KalkulatorXP.html` switches language without resetting data.
 
-`TworzeniePostaci.html` requires confirmation and resets data after language change.
+`TworzeniePostaci.html` does not show the user a language dropdown; the hidden `languageSelect` remains only as a technical element used by translation and save-restoration logic.
 
 ## Fallbacks and errors
 
@@ -856,6 +844,6 @@ Both views support:
 | Tree of Learning | Set invalid skill levels. | Tree of Learning error appears. |
 | Maximum values modal | Click `Maximum attribute values`. | Species maximum table opens with Vespid footnote. |
 | Manual | Click `Instrukcja` / `Manual`. | PDF for current language opens. |
-| Sheet language change | Change language in `TworzeniePostaci.html`. | Confirmation appears; after acceptance, data resets. |
+| Sheet language | Open `TworzeniePostaci.html`. | The sheet uses the default language; the language dropdown is not visible to the user. |
 | Firebase save | Click `Save` and confirm. | State is saved to `character_builder/current`. |
 | Firebase load | Click `Load` and confirm. | Form restores values from `formSnapshot`. |

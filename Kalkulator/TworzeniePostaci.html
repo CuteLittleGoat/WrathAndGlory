@@ -77,7 +77,8 @@
       gap:8px;
       align-items:flex-end;
     }
-    .language-switcher select{min-width:120px;}
+    /* Ukrywa techniczny wybór języka w arkuszu tworzenia postaci; język pozostaje ustawiony domyślnie. / Hides the technical language selector in the character creation sheet; the language remains set to the default. */
+    .language-switcher select{display:none; min-width:120px;}
     .language-switcher button{
       padding:8px 12px;
       border-radius:6px;
@@ -272,9 +273,9 @@
 <body>
   <!-- Główny kontener strony / Main page container -->
   <div class="wrapper">
-    <!-- Przełącznik języka w prawym górnym rogu / Language switcher in the top right corner -->
+    <!-- Panel akcji w prawym górnym rogu; techniczny select języka jest ukryty przed użytkownikiem. / Top-right action panel; the technical language select is hidden from the user. -->
     <div class="language-switcher">
-      <select id="languageSelect">
+      <select id="languageSelect" aria-hidden="true" tabindex="-1">
         <option value="pl">Polski</option>
         <option value="en">English</option>
       </select>
