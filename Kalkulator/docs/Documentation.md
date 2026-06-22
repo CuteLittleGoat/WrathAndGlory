@@ -4,11 +4,12 @@
 
 `Kalkulator` jest zestawem statycznych narzędzi HTML/CSS/JS do planowania rozwoju i tworzenia postaci w systemie `Wrath & Glory`.
 
-Moduł składa się z trzech głównych widoków:
+Moduł składa się ze strony startowej oraz narzędzi otwieranych przyciskami:
 
 - strony startowej `index.html`,
 - kalkulatora kosztów PD `KalkulatorXP.html`,
-- arkusza tworzenia postaci `TworzeniePostaci.html`.
+- prostego kreatora postaci `TworzeniePostaci.html`,
+- zaawansowanego kreatora postaci `TworzeniePostaci_v2.html`.
 
 Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.html` używa Firebase Firestore do zapisu i wczytywania aktualnego stanu postaci.
 
@@ -16,9 +17,10 @@ Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.ht
 
 | Plik | Rola |
 | --- | --- |
-| `Kalkulator/index.html` | Strona startowa `Kozie Liczydła`. Prowadzi do kalkulatora PD i tworzenia postaci. |
+| `Kalkulator/index.html` | Strona startowa `Kozie Liczydła`. Prowadzi do kalkulatora PD, prostego kreatora postaci i zaawansowanego kreatora postaci. |
 | `Kalkulator/KalkulatorXP.html` | Prosty kalkulator kosztów rozwoju atrybutów i umiejętności. |
-| `Kalkulator/TworzeniePostaci.html` | Pełniejszy arkusz tworzenia postaci z pulą PD, atrybutami, umiejętnościami, talentami, walidacją i zapisem Firebase. |
+| `Kalkulator/TworzeniePostaci.html` | Prosty kreator postaci z pulą PD, atrybutami, umiejętnościami, talentami, walidacją i zapisem Firebase. |
+| `Kalkulator/TworzeniePostaci_v2.html` | Docelowy zaawansowany kreator postaci otwierany z landingu; plik może zostać uzupełniony później. |
 
 ## Struktura plików modułu
 
@@ -26,7 +28,8 @@ Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.ht
 | --- | --- |
 | `index.html` | Landing modułu, logo, linki do narzędzi i sekretny overlay z GIF-em. |
 | `KalkulatorXP.html` | Kalkulator kosztów PD dla aktualnych i docelowych wartości. |
-| `TworzeniePostaci.html` | Arkusz tworzenia postaci i zapis/wczytanie stanu z Firestore. |
+| `TworzeniePostaci.html` | Prosty kreator postaci i zapis/wczytanie stanu z Firestore. |
+| `TworzeniePostaci_v2.html` | Ścieżka zaawansowanego kreatora postaci wskazana przez landing. |
 | `kalkulatorxp.css` | Wspólny styl używany przez `KalkulatorXP.html` oraz bazowo przez `TworzeniePostaci.html`. |
 | `config/firebase-config.js` | Konfiguracja Firebase dla `TworzeniePostaci.html`. |
 | `config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase dla zapisu postaci. |
@@ -69,7 +72,8 @@ Główne elementy:
 | --- | --- |
 | `Skull.png` | Logo startowe. |
 | Link `Kalkulator PD` | Prowadzi do `KalkulatorXP.html`. |
-| Link `Tworzenie Postaci` | Prowadzi do `TworzeniePostaci.html`. |
+| Link `Prosty Kreator Postaci` | Prowadzi do `TworzeniePostaci.html` i znajduje się w prawej kolumnie pierwszego wiersza. |
+| Link `Zaawansowany Kreator Postaci` | Prowadzi do `TworzeniePostaci_v2.html` i znajduje się bezpośrednio pod prostym kreatorem. |
 | `secretButton` | Otwiera sekretny overlay. |
 | `secretOverlay` | Pełnoekranowa nakładka z `Koza.gif`. |
 | `secretCloseButton` | Zamyka overlay. |
@@ -138,7 +142,7 @@ W `TworzeniePostaci.html` wartość `Vespidzi / Speed = 14` jest renderowana jak
 
 ## Widok `TworzeniePostaci.html`
 
-`TworzeniePostaci.html` jest arkuszem tworzenia postaci. Element `<title>` w sekcji `<head>` ustawia tytuł karty przeglądarki na `Prosty Kreator Postaci`.
+`TworzeniePostaci.html` jest prostym kreatorem postaci. Element `<title>` w sekcji `<head>` ustawia tytuł karty przeglądarki na `Prosty Kreator Postaci`.
 
 Główne sekcje:
 
@@ -411,7 +415,7 @@ W obu widokach dostępne są:
 
 | Test | Kroki | Oczekiwany wynik |
 | --- | --- | --- |
-| Landing | Otwórz `Kalkulator/index.html`. | Widać logo, linki do dwóch narzędzi i sekretny przycisk. |
+| Landing | Otwórz `Kalkulator/index.html`. | Widać logo, linki do kalkulatora PD, prostego kreatora, zaawansowanego kreatora i sekretny przycisk. |
 | Sekretny overlay | Kliknij `Tajny przycisk!`. | Otwiera się overlay z `Koza.gif`; można go zamknąć kliknięciem tła, przyciskiem albo `Escape`. |
 | Kalkulator PD | Wpisz aktualną i docelową wartość. | Koszt wiersza i `totalXp` aktualizują się automatycznie. |
 | Reset kalkulatora PD | Kliknij `Resetuj wartości`. | Wszystkie pola kalkulatora PD wracają do `0`. |
@@ -433,11 +437,12 @@ W obu widokach dostępne są:
 
 `Kalkulator` is a set of static HTML/CSS/JS tools for planning character advancement and character creation in `Wrath & Glory`.
 
-The module consists of three main views:
+The module consists of a start page and tools opened from buttons:
 
 - start page `index.html`,
 - XP cost calculator `KalkulatorXP.html`,
-- character creation sheet `TworzeniePostaci.html`.
+- simple character creator `TworzeniePostaci.html`,
+- advanced character creator `TworzeniePostaci_v2.html`.
 
 Most logic runs locally in the browser. Only `TworzeniePostaci.html` uses Firebase Firestore to save and load the current character state.
 
@@ -498,7 +503,8 @@ Main elements:
 | --- | --- |
 | `Skull.png` | Start logo. |
 | `Kalkulator PD` link | Opens `KalkulatorXP.html`. |
-| `Tworzenie Postaci` link | Opens `TworzeniePostaci.html`. |
+| `Prosty Kreator Postaci` link | Opens `TworzeniePostaci.html` and sits in the right column of the first row. |
+| `Zaawansowany Kreator Postaci` link | Opens `TworzeniePostaci_v2.html` and sits directly below the simple creator. |
 | `secretButton` | Opens the secret overlay. |
 | `secretOverlay` | Fullscreen overlay with `Koza.gif`. |
 | `secretCloseButton` | Closes the overlay. |
@@ -567,7 +573,7 @@ In `TworzeniePostaci.html`, `Vespid / Speed = 14` is rendered as `14*`, but the 
 
 ## `TworzeniePostaci.html` view
 
-`TworzeniePostaci.html` is the character creation sheet. The `<title>` element in the `<head>` section sets the browser tab title to `Prosty Kreator Postaci`.
+`TworzeniePostaci.html` is the simple character creator sheet. The `<title>` element in the `<head>` section sets the browser tab title to `Prosty Kreator Postaci`.
 
 Main sections:
 
@@ -840,7 +846,7 @@ Both views support:
 
 | Test | Steps | Expected result |
 | --- | --- | --- |
-| Landing | Open `Kalkulator/index.html`. | Logo, links to two tools, and secret button are visible. |
+| Landing | Open `Kalkulator/index.html`. | Logo, XP calculator link, simple creator link, advanced creator link, and secret button are visible. |
 | Secret overlay | Click `Tajny przycisk!`. | Overlay with `Koza.gif` opens; it can be closed by background click, button, or `Escape`. |
 | XP calculator | Enter current and target value. | Row cost and `totalXp` update automatically. |
 | XP calculator reset | Click `Reset values`. | All XP calculator fields return to `0`. |
