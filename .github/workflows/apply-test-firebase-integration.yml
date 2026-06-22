@@ -1,15 +1,15 @@
 name: Apply test Firebase integration
 
 on:
-  push:
-    paths:
-      - '.github/workflows/apply-test-firebase-integration.yml'
+  issues:
+    types: [opened]
 
 permissions:
   contents: write
 
 jobs:
   patch:
+    if: github.event.issue.title == 'APPLY TEST FIREBASE INTEGRATION'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
