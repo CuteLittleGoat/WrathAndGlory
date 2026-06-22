@@ -1,0 +1,73 @@
+name: Apply test Firebase integration
+
+on:
+  push:
+    paths:
+      - '.github/workflows/apply-test-firebase-integration.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Patch test.html safely
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path('Kalkulator/test.html')
+          text = path.read_text(encoding='utf-8')
+
+          old_scripts = '  <script src="./vendor/pdf-lib.min.js"></script>'
+          new_scripts = '''  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+  <script src="./config/firebase-config.js"></script>
+  <script src="./vendor/pdf-lib.min.js"></script>'''
+
+          old_buttons = '<div class="data-actions"><button type="button" id="saveButton">Zapisz lokalnie</button><button type="button" id="loadButton">Wczytaj lokalnie</button><button type="button" id="resetButton">Reset</button></div>'
+          new_buttons = '<div class="data-actions"><button type="button" id="saveFirebaseButton">Zapisz w Firebase (test-v2)</button><button type="button" id="loadFirebaseButton">Wczytaj z Firebase (test-v2)</button><button type="button" id="saveButton">Zapisz lokalnie</button><button type="button" id="loadButton">Wczytaj lokalnie</button><button type="button" id="resetButton">Reset</button></div>'
+
+          old_end = '</script>\n</body>'
+          new_end = '</script>\n<script src="./test-firebase.js"></script>\n</body>'
+
+          replacements = [
+              ('Firebase script block', old_scripts, new_scripts),
+              ('data action buttons', old_buttons, new_buttons),
+              ('test integration script', old_end, new_end),
+          ]
+
+          for label, old, new in replacements:
+              count = text.count(old)
+              if count != 1:
+                  raise SystemExit(f'{label}: expected exactly one match, found {count}')
+              text = text.replace(old, new, 1)
+
+          path.write_text(text, encoding='utf-8')
+          PY
+
+      - name: Validate integration
+        shell: bash
+        run: |
+          node --check Kalkulator/test-firebase.js
+          grep -Fq 'id="saveFirebaseButton"' Kalkulator/test.html
+          grep -Fq 'id="loadFirebaseButton"' Kalkulator/test.html
+          grep -Fq 'src="./test-firebase.js"' Kalkulator/test.html
+          grep -Fq 'src="./config/firebase-config.js"' Kalkulator/test.html
+          grep -Fq "const DOCUMENT_NAME = 'test-v2';" Kalkulator/test-firebase.js
+          grep -Fq "const MODULE_NAME = 'Kalkulator/test';" Kalkulator/test-firebase.js
+
+      - name: Commit patch and remove temporary workflow
+        shell: bash
+        run: |
+          rm .github/workflows/apply-test-firebase-integration.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Kalkulator/test.html .github/workflows/apply-test-firebase-integration.yml
+          git commit -m "Podłącz test.html do izolowanego dokumentu Firebase test-v2"
+          git push
