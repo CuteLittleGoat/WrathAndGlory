@@ -493,6 +493,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - `.wrapper`: max szerokość `1100px`, panel z `border-radius: 10px`.
   - `.table`: gradient w nagłówkach i zebra w wierszach.
   - `textarea` bez możliwości zmiany rozmiaru (`resize: none`).
+  - `.language-switcher`: prawy górny panel akcji ustawiony absolutnie; zawiera przyciski instrukcji, powrotu i tabeli maksimów. Select języka w tym panelu jest ukryty (`display: none`) oraz wyłączony z kolejności klawiatury, więc nie zajmuje miejsca w layoucie.
   - `.species-max-footnotes`: subtelny przypis pod tabelą maksymalnych wartości atrybutów, `margin-top: 8px`, `color: var(--text2)`, `font-size: .9rem`, `line-height: 1.4`; element nie zmienia układu modalu poza dodaniem krótkiego tekstu pod tabelą.
 
 ### 4) Zwijanie/rozwijanie > 9 linii
