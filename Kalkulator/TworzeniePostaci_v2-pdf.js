@@ -352,17 +352,6 @@
       : new Blob([bytes], options);
   }
 
-  function downloadPdf(url, name) {
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = name;
-    link.rel = 'noopener';
-    link.hidden = true;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-  }
-
   async function exportPdf() {
     const preview = openPreview();
     const warnings = [];
@@ -405,9 +394,6 @@
       const name = fileName();
       const pdfFile = createNamedPdf(bytes, name);
       const url = URL.createObjectURL(pdfFile);
-
-      // Pobranie przez a[download] nadaje nazwę pliku niezależnie od technicznego identyfikatora blob URL.
-      downloadPdf(url, name);
 
       if (preview && !preview.closed) {
         preview.document.title = name;
