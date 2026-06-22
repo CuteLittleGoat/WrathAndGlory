@@ -26,7 +26,6 @@
     return `PL-${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}-${pad2(date.getHours())}${pad2(date.getMinutes())}.pdf`;
   };
 
-  // Ładuje zależność tylko raz. / Loads a dependency only once.
   const loadScript = src => new Promise((resolve, reject) => {
     const existing = document.querySelector(`script[data-pdf-src="${src}"]`);
     if (existing) {
@@ -47,7 +46,6 @@
     document.head.appendChild(script);
   });
 
-  // Biblioteki PDF są pobierane dopiero po kliknięciu eksportu. / PDF libraries are fetched only after export is clicked.
   async function ensureDependencies() {
     if (dependenciesPromise) return dependenciesPromise;
     dependenciesPromise = (async () => {
@@ -347,6 +345,24 @@
     return preview;
   }
 
+  function createNamedPdf(bytes, name) {
+    const options = { type: 'application/pdf' };
+    return typeof File === 'function'
+      ? new File([bytes], name, options)
+      : new Blob([bytes], options);
+  }
+
+  function downloadPdf(url, name) {
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    link.rel = 'noopener';
+    link.hidden = true;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }
+
   async function exportPdf() {
     const preview = openPreview();
     const warnings = [];
@@ -386,17 +402,22 @@
       }, font, warnings);
 
       const bytes = await pdfDoc.save({ updateFieldAppearances: false });
-      const blob = new Blob([bytes], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
       const name = fileName();
+      const pdfFile = createNamedPdf(bytes, name);
+      const url = URL.createObjectURL(pdfFile);
+
+      // Pobranie przez a[download] nadaje nazwę pliku niezależnie od technicznego identyfikatora blob URL.
+      downloadPdf(url, name);
+
       if (preview && !preview.closed) {
         preview.document.title = name;
         preview.location.replace(url);
       } else {
         window.open(url, '_blank');
       }
+
       setTimeout(() => URL.revokeObjectURL(url), 300000);
-      setLog(warnings.length ? warnings.join('\n') : 'PDF został wygenerowany.');
+      setLog(warnings.length ? warnings.join('\n') : `PDF został wygenerowany jako ${name}.`);
     } catch (error) {
       console.error('[TworzeniePostaci_v2 PDF]', error);
       setLog(error.stack || error.message, true);
