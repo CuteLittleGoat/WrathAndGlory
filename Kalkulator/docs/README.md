@@ -4,13 +4,14 @@
 
 `Kalkulator` to zestaw narzędzi do liczenia kosztów rozwoju i tworzenia postaci w `Wrath & Glory`.
 
-Moduł zawiera trzy widoki:
+Moduł zawiera stronę startową oraz narzędzia dostępne z przycisków:
 
 - stronę startową `Kozie Liczydła`,
 - `Kalkulator PD`,
-- `Tworzenie Postaci`.
+- `Prosty Kreator Postaci`,
+- `Zaawansowany Kreator Postaci`.
 
-Strona startowa pozwala wybrać narzędzie. `Kalkulator PD` służy do szybkiego liczenia kosztu podniesienia atrybutów i umiejętności. `Tworzenie Postaci` służy do planowania całej postaci z pulą PD, talentami, walidacją i opcjonalnym zapisem.
+Strona startowa pozwala wybrać narzędzie. `Kalkulator PD` służy do szybkiego liczenia kosztu podniesienia atrybutów i umiejętności. `Prosty Kreator Postaci` służy do planowania całej postaci z pulą PD, talentami, walidacją i opcjonalnym zapisem. `Zaawansowany Kreator Postaci` prowadzi do osobnej strony `Kalkulator/TworzeniePostaci_v2.html`, która może zostać przygotowana jako rozbudowany kreator.
 
 ## Jak otworzyć moduł
 
@@ -26,21 +27,30 @@ Bezpośrednio Kalkulator PD:
 Kalkulator/KalkulatorXP.html
 ```
 
-Bezpośrednio Tworzenie Postaci:
+Bezpośrednio Prosty Kreator Postaci:
 
 ```text
 Kalkulator/TworzeniePostaci.html
 ```
 
-Po otwarciu widoku `Tworzenie Postaci` karta przeglądarki ma tytuł `Prosty Kreator Postaci`.
+Po otwarciu widoku `Prosty Kreator Postaci` karta przeglądarki ma tytuł `Prosty Kreator Postaci`.
+
+Bezpośrednio Zaawansowany Kreator Postaci:
+
+```text
+Kalkulator/TworzeniePostaci_v2.html
+```
+
+Przycisk zaawansowanego kreatora prowadzi do tej ścieżki, nawet jeżeli plik zostanie uzupełniony później.
 
 ## Strona startowa
 
 Na stronie startowej znajdziesz:
 
 - logo modułu,
-- przycisk `Kalkulator PD`,
-- przycisk `Tworzenie Postaci`,
+- przycisk `Kalkulator PD` w lewej kolumnie,
+- przycisk `Prosty Kreator Postaci` w prawej kolumnie,
+- przycisk `Zaawansowany Kreator Postaci` bezpośrednio pod prostym kreatorem,
 
 ## Kalkulator PD — do czego służy
 
@@ -84,9 +94,9 @@ W `Kalkulatorze PD` znajduje się tabela maksymalnych wartości atrybutów dla g
 
 Tabela ma charakter referencyjny. Nie uzupełnia pól automatycznie.
 
-## Tworzenie Postaci — do czego służy
+## Prosty Kreator Postaci — do czego służy
 
-`Tworzenie Postaci` to większy arkusz do planowania wydatków PD dla jednej postaci.
+`Prosty Kreator Postaci` to większy arkusz do planowania wydatków PD dla jednej postaci.
 
 Pozwala ustawić:
 
@@ -97,7 +107,7 @@ Pozwala ustawić:
 - język interfejsu,
 - zapis i wczytanie aktualnego stanu postaci.
 
-## Tworzenie Postaci — krok po kroku
+## Prosty Kreator Postaci — krok po kroku
 
 1. Otwórz `Kalkulator/TworzeniePostaci.html`.
 2. Ustaw pulę PD w polu `Pula PD`. Domyślnie jest to `155`.
@@ -193,7 +203,7 @@ Jeżeli zobaczysz błąd Drzewa Nauki, obniż poziom najwyższej umiejętności 
 
 ## Tabela maksymalnych wartości atrybutów
 
-W `Tworzenie Postaci` przycisk `Maksymalne wartości atrybutów` otwiera modal z limitami gatunków.
+W `Prosty Kreator Postaci` przycisk `Maksymalne wartości atrybutów` otwiera modal z limitami gatunków.
 
 Tabela jest podpowiedzią. Nie zmienia automatycznie pól formularza.
 
@@ -276,7 +286,7 @@ Zapis obejmuje między innymi:
 4. Zmień wartości, aż uzyskasz potrzebny koszt.
 5. Kliknij reset, jeżeli chcesz zacząć od nowa.
 
-## Krótki workflow — Tworzenie Postaci
+## Krótki workflow — Prosty Kreator Postaci
 
 1. Otwórz `Kalkulator/TworzeniePostaci.html`.
 2. Ustaw pulę PD.
@@ -295,13 +305,14 @@ Zapis obejmuje między innymi:
 
 `Kalkulator` is a set of tools for calculating advancement costs and creating characters in `Wrath & Glory`.
 
-The module contains three views:
+The module contains a start page and tools available from buttons:
 
 - `Kozie Liczydła` start page,
 - `XP Calculator`,
-- `Character Creation`.
+- `Simple Character Creator`,
+- `Advanced Character Creator`.
 
-The start page lets you choose a tool. `XP Calculator` quickly calculates the cost of raising attributes and skills. `Character Creation` is used to plan a whole character with XP pool, talents, validation, and optional save.
+The start page lets you choose a tool. `XP Calculator` quickly calculates the cost of raising attributes and skills. `Simple Character Creator` is used to plan a whole character with XP pool, talents, validation, and optional save. `Advanced Character Creator` opens a separate `Kalkulator/TworzeniePostaci_v2.html` page that can be prepared as an expanded creator.
 
 ## How to open the module
 
@@ -317,21 +328,30 @@ Directly open XP Calculator:
 Kalkulator/KalkulatorXP.html
 ```
 
-Directly open Character Creation:
+Directly open Simple Character Creator:
 
 ```text
 Kalkulator/TworzeniePostaci.html
 ```
 
-After opening the `Character Creation` view, the browser tab title is `Prosty Kreator Postaci`.
+After opening the `Simple Character Creator` view, the browser tab title is `Prosty Kreator Postaci`.
+
+Directly open Advanced Character Creator:
+
+```text
+Kalkulator/TworzeniePostaci_v2.html
+```
+
+The advanced creator button points to this path even if the file is completed later.
 
 ## Start page
 
 The start page contains:
 
 - module logo,
-- `XP Calculator` button,
-- `Character Creation` button,
+- `XP Calculator` button in the left column,
+- `Simple Character Creator` button in the right column,
+- `Advanced Character Creator` button directly below the simple creator,
 
 - `Close` button,
 - background click outside the dialog,
@@ -379,9 +399,9 @@ If target value is equal to or lower than current value, cost is `0`.
 
 The table is only a reference. It does not fill fields automatically.
 
-## Character Creation — purpose
+## Simple Character Creator — purpose
 
-`Character Creation` is a larger sheet for planning XP spending for one character.
+`Simple Character Creator` is a larger sheet for planning XP spending for one character.
 
 It lets you set:
 
@@ -392,7 +412,7 @@ It lets you set:
 - interface language,
 - save and load current character state.
 
-## Character Creation — step by step
+## Simple Character Creator — step by step
 
 1. Open `Kalkulator/TworzeniePostaci.html`.
 2. Set XP pool in `XP pool`. Default is `155`.
@@ -488,7 +508,7 @@ If you see Tree of Learning error, lower the highest skill level or add levels i
 
 ## Maximum attribute values table
 
-In `Character Creation`, `Maximum attribute values` opens a modal with species limits.
+In `Simple Character Creator`, `Maximum attribute values` opens a modal with species limits.
 
 The table is a reference. It does not automatically change form fields.
 
@@ -520,7 +540,7 @@ HowToUse/en.pdf
 
 In `XP Calculator`, reset sets fields to `0`.
 
-In `Character Creation`, reset restores start values:
+In `Simple Character Creator`, reset restores start values:
 
 - XP pool: `155`,
 - attributes: defaults,
@@ -529,7 +549,7 @@ In `Character Creation`, reset restores start values:
 
 ## Save and load character
 
-`Character Creation` has save and load buttons.
+`Simple Character Creator` has save and load buttons.
 
 Save stores the current form state.
 
@@ -571,7 +591,7 @@ Save includes, among others:
 4. Change values until you get the needed cost.
 5. Click reset if you want to start over.
 
-## Quick workflow — Character Creation
+## Quick workflow — Simple Character Creator
 
 1. Open `Kalkulator/TworzeniePostaci.html`.
 2. Set XP pool.

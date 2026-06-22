@@ -438,10 +438,11 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 
 ## Moduł — Kalkulator
 
-Moduł składa się z trzech stron:
+Moduł składa się ze strony startowej oraz narzędzi otwieranych z przycisków:
 - `index.html` (landing),
 - `KalkulatorXP.html` (kalkulator XP),
-- `TworzeniePostaci.html` (generator postaci).  
+- `TworzeniePostaci.html` (prosty kreator postaci),
+- `TworzeniePostaci_v2.html` (zaawansowany kreator postaci wskazywany przez landing).
 Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są w `index.html` i `TworzeniePostaci.html`.
 
 ### 1) Fonty i typografia
@@ -484,7 +485,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Cień hover: `0 0 18px rgba(22, 198, 12, 0.3)`.
 
 ### 3) Layout i elementy UI
-- `index.html`: identyczny layout jak Main (karta centralna, grid przycisków).
+- `index.html`: identyczny układ bazowy jak Main (karta centralna, grid przycisków); w lewej kolumnie pierwszego wiersza jest `Kalkulator PD`, a w prawej kolumnie pionowy stos zawiera `Prosty Kreator Postaci` oraz bezpośrednio pod nim `Zaawansowany Kreator Postaci`.
 - `KalkulatorXP.html`:
   - `.main`: grid `360px` + `1fr`.
   - `.panel`, `.workspace`: ramki `1px solid var(--b)` + `box-shadow` z inset.
