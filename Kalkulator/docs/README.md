@@ -32,6 +32,8 @@ Bezpośrednio Tworzenie Postaci:
 Kalkulator/TworzeniePostaci.html
 ```
 
+Po otwarciu widoku `Tworzenie Postaci` karta przeglądarki ma tytuł `Prosty Kreator Postaci`.
+
 ## Strona startowa
 
 Na stronie startowej znajdziesz:
@@ -322,6 +324,8 @@ Directly open Character Creation:
 ```text
 Kalkulator/TworzeniePostaci.html
 ```
+
+After opening the `Character Creation` view, the browser tab title is `Prosty Kreator Postaci`.
 
 ## Start page
 
