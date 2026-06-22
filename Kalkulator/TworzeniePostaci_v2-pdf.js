@@ -1,10 +1,11 @@
-/* Eksport polskiej karty PDF ładowany dopiero na żądanie. / Polish PDF export loaded only on demand. */
+/* Eksport polskiej karty PDF z buforowaniem zależności i zasobów statycznych. / Polish PDF export with cached dependencies and static assets. */
 (function installAdvancedCreatorPdfExport() {
   'use strict';
 
   const PDF_LIB_URL = 'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';
   const FONTKIT_URL = 'https://cdn.jsdelivr.net/npm/@pdf-lib/fontkit@1.1.1/dist/fontkit.umd.min.js';
   const FONT_URL = 'https://cdn.jsdelivr.net/gh/notofonts/noto-fonts@main/hinted/ttf/NotoSans/NotoSans-Regular.ttf';
+  const TEMPLATE_URL = './pdf/pl.pdf';
   const KEYWORDS_AREA = {
     page: 0,
     firstField: 'Słowa Kluczowe',
@@ -17,10 +18,12 @@
     minFont: 4
   };
   let dependenciesPromise = null;
+  let warmupPromise = null;
 
   const byId = id => document.getElementById(id);
   const compact = text => String(text || '').split('\n').map(line => line.trim()).filter(Boolean).join(' / ');
   const pad2 = value => String(value).padStart(2, '0');
+  const now = () => (typeof performance !== 'undefined' && typeof performance.now === 'function' ? performance.now() : Date.now());
   const fileName = () => {
     const date = new Date();
     return `PL-${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}-${pad2(date.getHours())}${pad2(date.getMinutes())}.pdf`;
@@ -30,7 +33,10 @@
     const existing = document.querySelector(`script[data-pdf-src="${src}"]`);
     if (existing) {
       if (existing.dataset.loaded === 'true') resolve();
-      else existing.addEventListener('load', resolve, { once: true });
+      else {
+        existing.addEventListener('load', resolve, { once: true });
+        existing.addEventListener('error', () => reject(new Error(`Nie udało się załadować ${src}.`)), { once: true });
+      }
       return;
     }
 
@@ -46,11 +52,34 @@
     document.head.appendChild(script);
   });
 
+  const createArrayBufferLoader = (url, errorMessage) => {
+    let promise = null;
+    return async () => {
+      if (!promise) {
+        promise = fetch(url)
+          .then(response => {
+            if (!response.ok) throw new Error(errorMessage);
+            return response.arrayBuffer();
+          })
+          .catch(error => {
+            promise = null;
+            throw error;
+          });
+      }
+      return promise;
+    };
+  };
+
+  const loadTemplateBytes = createArrayBufferLoader(TEMPLATE_URL, `Nie udało się pobrać ${TEMPLATE_URL}.`);
+  const loadFontBytes = createArrayBufferLoader(FONT_URL, 'Nie udało się pobrać fontu Noto Sans.');
+
   async function ensureDependencies() {
     if (dependenciesPromise) return dependenciesPromise;
     dependenciesPromise = (async () => {
-      if (!window.PDFLib) await loadScript(PDF_LIB_URL);
-      if (!window.fontkit) await loadScript(FONTKIT_URL);
+      const pending = [];
+      if (!window.PDFLib) pending.push(loadScript(PDF_LIB_URL));
+      if (!window.fontkit) pending.push(loadScript(FONTKIT_URL));
+      if (pending.length) await Promise.all(pending);
       if (!window.PDFLib || !window.fontkit) throw new Error('Biblioteki PDF nie zostały załadowane.');
     })();
 
@@ -62,6 +91,19 @@
     }
   }
 
+  function warmPdfExport() {
+    if (warmupPromise) return warmupPromise;
+    warmupPromise = Promise.all([
+      ensureDependencies(),
+      loadTemplateBytes(),
+      loadFontBytes()
+    ]).catch(error => {
+      warmupPromise = null;
+      console.warn('[TworzeniePostaci_v2 PDF] Wstępne ładowanie nie powiodło się.', error);
+    });
+    return warmupPromise;
+  }
+
   function setLog(message, error = false) {
     const node = byId('pdfLogMessage');
     if (!node) return;
@@ -69,11 +111,9 @@
     node.classList.toggle('is-error', error);
   }
 
-  async function embedFont(pdfDoc) {
+  async function embedFont(pdfDoc, fontBytes) {
     pdfDoc.registerFontkit(window.fontkit);
-    const response = await fetch(FONT_URL);
-    if (!response.ok) throw new Error('Nie udało się pobrać fontu Noto Sans.');
-    return pdfDoc.embedFont(await response.arrayBuffer(), { subset: false });
+    return pdfDoc.embedFont(fontBytes, { subset: true });
   }
 
   function setText(form, name, value, font, warnings, skipBlank = true) {
@@ -106,24 +146,22 @@
     }
   }
 
-  function removeTextField(form, name, font) {
+  function removeTextField(form, name) {
     try {
-      const field = form.getTextField(name);
-      try {
-        field.setText('');
-        field.updateAppearances(font);
-      } catch (_) {}
-      try {
-        form.removeField(field);
-      } catch (_) {}
+      form.removeField(form.getTextField(name));
     } catch (_) {}
   }
 
-  function wrap(text, font, size, width, prefix = '- ', hanging = '  ') {
+  function wrap(text, font, size, width, prefix = '- ', hanging = '  ', widthCache = null) {
     const words = String(text || '').split(/\s+/).filter(Boolean);
     const lines = [];
     let line = prefix;
-    const measure = value => font.widthOfTextAtSize(value, size);
+    const measure = value => {
+      if (!widthCache) return font.widthOfTextAtSize(value, size);
+      const key = `${size}\u0000${value}`;
+      if (!widthCache.has(key)) widthCache.set(key, font.widthOfTextAtSize(value, size));
+      return widthCache.get(key);
+    };
     const flush = () => {
       if (line.trim()) lines.push(line);
       line = hanging;
@@ -157,17 +195,28 @@
     return lines;
   }
 
+  function wrapEntries(entries, font, size, width, widthCache, limit = Infinity) {
+    const lines = [];
+    for (const entry of entries) {
+      lines.push(...wrap(entry, font, size, width, '- ', '  ', widthCache));
+      if (lines.length > limit) break;
+    }
+    return lines;
+  }
+
   function layout(entries, area, font) {
     const normalized = entries.map(compact).filter(Boolean);
     const gutter = 10;
+    const widthCache = new Map();
 
     for (let columns = area.minColumns; columns <= area.maxColumns; columns += 1) {
       for (let size = area.maxFont; size >= area.minFont; size -= 1) {
         const colWidth = (area.width - gutter * (columns - 1)) / columns;
         const lineHeight = size * 1.18;
         const perColumn = Math.floor(area.height / lineHeight);
-        const lines = normalized.flatMap(entry => wrap(entry, font, size, colWidth));
-        if (lines.length <= perColumn * columns) {
+        const capacity = perColumn * columns;
+        const lines = wrapEntries(normalized, font, size, colWidth, widthCache, capacity);
+        if (lines.length <= capacity) {
           return { columns, size, colWidth, lineHeight, perColumn, lines, omitted: 0 };
         }
       }
@@ -178,7 +227,7 @@
     const colWidth = (area.width - gutter * (columns - 1)) / columns;
     const lineHeight = size * 1.18;
     const perColumn = Math.floor(area.height / lineHeight);
-    const all = normalized.flatMap(entry => wrap(entry, font, size, colWidth));
+    const all = wrapEntries(normalized, font, size, colWidth, widthCache);
     const capacity = perColumn * columns;
     return {
       columns,
@@ -238,14 +287,15 @@
   function fitKeywords(text, font, warnings) {
     const normalized = compact(text).replace(/\s*\/\s*/g, ', ');
     if (!normalized) return { lines: [], fontSize: KEYWORDS_AREA.maxFont };
+    const widthCache = new Map();
 
     for (let fontSize = KEYWORDS_AREA.maxFont; fontSize >= KEYWORDS_AREA.minFont; fontSize -= 1) {
-      const lines = wrap(normalized, font, fontSize, KEYWORDS_AREA.width, '', '');
+      const lines = wrap(normalized, font, fontSize, KEYWORDS_AREA.width, '', '', widthCache);
       if (lines.length <= 2) return { lines, fontSize };
     }
 
     const fontSize = KEYWORDS_AREA.minFont;
-    const lines = wrap(normalized, font, fontSize, KEYWORDS_AREA.width, '', '');
+    const lines = wrap(normalized, font, fontSize, KEYWORDS_AREA.width, '', '', widthCache);
     warnings.push('Słowa Kluczowe: tekst przekracza dwie linie. Nadmiar został pominięty.');
     return { lines: lines.slice(0, 2), fontSize };
   }
@@ -356,23 +406,42 @@
     const preview = openPreview();
     const warnings = [];
     const button = byId('exportCharacterPdfButton');
+    const timings = {};
+    const totalStarted = now();
     button.disabled = true;
 
     try {
-      await ensureDependencies();
-      const response = await fetch('./pdf/pl.pdf', { cache: 'no-store' });
-      if (!response.ok) throw new Error('Nie udało się pobrać ./pdf/pl.pdf.');
+      const dependenciesStarted = now();
+      const dependenciesTask = ensureDependencies().then(() => {
+        timings.dependencies = now() - dependenciesStarted;
+      });
+      const assetsStarted = now();
+      const assetsTask = Promise.all([
+        loadTemplateBytes(),
+        loadFontBytes()
+      ]).then(result => {
+        timings.assets = now() - assetsStarted;
+        return result;
+      });
+      const [, [templateBytes, fontBytes]] = await Promise.all([dependenciesTask, assetsTask]);
 
-      const pdfDoc = await window.PDFLib.PDFDocument.load(await response.arrayBuffer());
-      const font = await embedFont(pdfDoc);
+      let started = now();
+      const pdfDoc = await window.PDFLib.PDFDocument.load(templateBytes);
+      timings.loadTemplate = now() - started;
+
+      started = now();
+      const font = await embedFont(pdfDoc, fontBytes);
+      timings.embedFont = now() - started;
+
       const form = pdfDoc.getForm();
       const data = window.WNGCreatorV2.getComputedData();
       const entries = buildEntries(data);
 
+      started = now();
       fillStandard(pdfDoc, form, data, font, warnings);
-      Array.from({ length: 8 }, (_, index) => `Zdolności i talenty ${index + 1}`).forEach(name => removeTextField(form, name, font));
-      removeTextField(form, 'Notatki 1', font);
-      removeTextField(form, 'Przeszłość', font);
+      Array.from({ length: 8 }, (_, index) => `Zdolności i talenty ${index + 1}`).forEach(name => removeTextField(form, name));
+      removeTextField(form, 'Notatki 1');
+      removeTextField(form, 'Przeszłość');
 
       drawArea(pdfDoc, entries.abilities, {
         page: 1, x: 40, y: 578, width: 530, height: 118,
@@ -389,8 +458,12 @@
         minColumns: 1, maxColumns: 3, maxFont: 8, minFont: 4,
         label: 'Przeszłość'
       }, font, warnings);
+      timings.populate = now() - started;
 
+      started = now();
       const bytes = await pdfDoc.save({ updateFieldAppearances: false });
+      timings.save = now() - started;
+
       const name = fileName();
       const pdfFile = createNamedPdf(bytes, name);
       const url = URL.createObjectURL(pdfFile);
@@ -403,6 +476,10 @@
       }
 
       setTimeout(() => URL.revokeObjectURL(url), 300000);
+      timings.total = now() - totalStarted;
+      console.info('[TworzeniePostaci_v2 PDF] Czasy generowania [ms]', Object.fromEntries(
+        Object.entries(timings).map(([key, value]) => [key, Math.round(value)])
+      ));
       setLog(warnings.length ? warnings.join('\n') : `PDF został wygenerowany jako ${name}.`);
     } catch (error) {
       console.error('[TworzeniePostaci_v2 PDF]', error);
@@ -416,7 +493,12 @@
   }
 
   function initialize() {
-    byId('exportCharacterPdfButton')?.addEventListener('click', exportPdf);
+    const button = byId('exportCharacterPdfButton');
+    if (!button) return;
+    button.addEventListener('click', exportPdf);
+    button.addEventListener('pointerenter', warmPdfExport, { once: true });
+    button.addEventListener('focus', warmPdfExport, { once: true });
+    button.addEventListener('touchstart', warmPdfExport, { once: true, passive: true });
   }
 
   if (document.readyState === 'loading') {
