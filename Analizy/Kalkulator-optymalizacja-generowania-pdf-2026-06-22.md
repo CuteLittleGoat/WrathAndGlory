@@ -1,179 +1,225 @@
 # Optymalizacja czasu generowania PDF — moduł Kalkulator
 
-Data: 2026-06-22  
-Zakres analizy: dokumentacja w `Analizy/` oraz aktualny kod eksportu PDF w `Kalkulator/TworzeniePostaci_v2-pdf.js`.
+Data analizy: 2026-06-22  
+Data wdrożenia: 2026-06-22  
+Zakres: `Kalkulator/TworzeniePostaci_v2-pdf.js` oraz dokumentacja techniczna w `Analizy/`.
 
-## 1. Cel i ograniczenia analizy
+## 1. Status
 
-Celem było sprawdzenie, czy czas potrzebny aplikacji na wygenerowanie PDF można skrócić bez zmiany działania kalkulatora i bez pogorszenia poprawności eksportu.
+Analiza została zakończona, a rekomendowane optymalizacje o najlepszej relacji zysku do ryzyka zostały wdrożone w pliku:
 
-W ramach tej analizy:
+```text
+Kalkulator/TworzeniePostaci_v2-pdf.js
+```
 
-- nie zmieniono żadnego pliku kodu,
-- nie przeprowadzono wdrożenia optymalizacji,
-- nie zmieniono szablonu `Kalkulator/pdf/pl.pdf`,
-- nie zmieniono mapowania pól ani wyglądu wynikowego dokumentu.
+Nie zmieniono:
 
-## 2. Wniosek główny
+- szablonu `Kalkulator/pdf/pl.pdf`,
+- mapowania pól PDF,
+- zasad obliczeń kalkulatora,
+- struktury danych postaci,
+- integracji Firebase,
+- wyglądu interfejsu,
+- sposobu aktualizacji wyglądu wypełnianych pól tekstowych,
+- logiki checkboxów Spaczenia.
 
-Generowanie PDF da się przyspieszyć. Największe prawdopodobne źródła opóźnienia nie znajdują się w obliczeniach kalkulatora, lecz w operacjach związanych z przygotowaniem dokumentu PDF:
+Commit wdrażający optymalizację kodu:
 
-1. ponownym pobieraniu szablonu `pl.pdf`,
-2. ponownym pobieraniu fontu Noto Sans,
-3. osadzaniu całego fontu z ustawieniem `subset: false`,
-4. generowaniu wyglądu wielu pól formularza pojedynczo,
-5. zapisie rozbudowanego dokumentu przez `pdfDoc.save()`.
+```text
+c3109fa48a318efbd2b645f23eecd0a94455005c
+```
 
-Najbardziej obiecujący kierunek to połączenie cache zasobów z ponownym sprawdzeniem możliwości użycia `subset: true`.
+## 2. Pierwotnie zidentyfikowane wąskie gardła
 
-## 3. Aktualna ścieżka generowania PDF
+Przed wdrożeniem eksport wykonywał kolejno między innymi:
 
-Po kliknięciu przycisku eksportu kod wykonuje kolejno:
+1. ładowanie `pdf-lib`,
+2. ładowanie `fontkit`,
+3. pobieranie `pl.pdf` z `cache: 'no-store'`,
+4. ładowanie szablonu przez `PDFDocument.load()`,
+5. ponowne pobieranie fontu Noto Sans,
+6. osadzanie pełnego fontu z `subset: false`,
+7. aktualizację wyglądu wielu pól formularza,
+8. czyszczenie i aktualizację wyglądu pól, które następnie były usuwane,
+9. wielokrotne pomiary tych samych fragmentów tekstu podczas szukania układu kolumn,
+10. zapis dokumentu przez `pdfDoc.save()`.
 
-1. otwarcie pustej karty pod podgląd,
-2. załadowanie `pdf-lib` i `fontkit`, jeśli nie są jeszcze dostępne,
-3. pobranie `./pdf/pl.pdf`,
-4. załadowanie szablonu przez `PDFDocument.load()`,
-5. pobranie fontu Noto Sans,
-6. rejestrację `fontkit`,
-7. osadzenie fontu w dokumencie,
-8. pobranie danych z kalkulatora,
-9. wypełnienie pól tekstowych i checkboxów,
-10. usunięcie wybranych pól formularza,
-11. rozrysowanie sekcji tekstowych bezpośrednio na stronach,
-12. zapis dokumentu przez `pdfDoc.save()`,
-13. utworzenie obiektu `Blob` lub `File`,
-14. otwarcie wyniku w nowej karcie.
+Największy potencjalny koszt stanowiły operacje sieciowe, analiza i osadzanie pełnego fontu oraz serializacja wynikowego dokumentu.
 
-## 4. Zidentyfikowane wąskie gardła
+## 3. Changelog wdrożenia
 
-### 4.1. Szablon `pl.pdf` jest pobierany z `cache: 'no-store'`
+### 2026-06-22 — optymalizacja eksportu PDF
 
-Aktualny kod używa:
+Zmodyfikowany plik:
+
+```text
+Kalkulator/TworzeniePostaci_v2-pdf.js
+```
+
+Wdrożono:
+
+- cache bajtów szablonu `pl.pdf`,
+- cache bajtów fontu Noto Sans,
+- usunięcie `cache: 'no-store'`,
+- równoległe ładowanie `pdf-lib` i `fontkit`,
+- równoległe pobieranie zależności, szablonu i fontu,
+- wstępne ładowanie zasobów po interakcji z przyciskiem eksportu,
+- osadzanie fontu jako podzbioru przez `subset: true`,
+- usuwanie pól formularza bez wcześniejszego generowania pustego wyglądu,
+- cache pomiarów szerokości tekstu,
+- wcześniejsze przerywanie nieudanych prób układu tekstu,
+- pomiary czasu poszczególnych etapów generowania PDF w konsoli przeglądarki.
+
+## 4. Dokładny opis zmian
+
+### 4.1. Wspólna stała ścieżki szablonu
+
+Dodano:
+
+```js
+const TEMPLATE_URL = './pdf/pl.pdf';
+```
+
+Ścieżka szablonu nie jest już powtarzana bezpośrednio w funkcji eksportu. Ułatwia to cache, obsługę błędów i późniejsze utrzymanie kodu.
+
+### 4.2. Cache bajtów szablonu i fontu
+
+Dodano fabrykę loaderów:
+
+```js
+const createArrayBufferLoader = (url, errorMessage) => {
+  let promise = null;
+  return async () => {
+    if (!promise) {
+      promise = fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error(errorMessage);
+          return response.arrayBuffer();
+        })
+        .catch(error => {
+          promise = null;
+          throw error;
+        });
+    }
+    return promise;
+  };
+};
+```
+
+Na jej podstawie utworzono:
+
+```js
+const loadTemplateBytes = createArrayBufferLoader(TEMPLATE_URL, ...);
+const loadFontBytes = createArrayBufferLoader(FONT_URL, ...);
+```
+
+Działanie:
+
+- pierwsze wywołanie pobiera zasób i zapisuje Promise,
+- kolejne wywołania w tej samej karcie korzystają z tego samego wyniku,
+- `ArrayBuffer` szablonu i fontu nie jest ponownie pobierany przy każdym eksporcie,
+- jeżeli pobranie zakończy się błędem, Promise jest zerowany i następna próba może ponowić żądanie.
+
+To oznacza, że drugi i kolejne eksporty w tej samej karcie nie powinny ponownie pobierać `pl.pdf` ani Noto Sans.
+
+### 4.3. Usunięcie `cache: 'no-store'`
+
+Usunięto wcześniejsze wywołanie:
 
 ```js
 fetch('./pdf/pl.pdf', { cache: 'no-store' })
 ```
 
-To wymusza ponowne pobranie statycznego szablonu przy każdym eksporcie, zamiast pozwolić przeglądarce użyć cache.
+Szablon jest teraz pobierany zwykłym `fetch()`, dzięki czemu:
 
-Konsekwencje:
+- przeglądarka może korzystać ze standardowego cache HTTP,
+- dodatkowo działa cache `ArrayBuffer` w pamięci modułu,
+- każde kliknięcie eksportu nie wymusza nowego żądania do serwera.
 
-- każde generowanie wykonuje nowe żądanie HTTP,
-- czas eksportu zależy od połączenia i odpowiedzi serwera,
-- kolejne eksporty nie korzystają w pełni z wcześniej pobranego pliku.
+### 4.4. Równoległe ładowanie bibliotek
 
-Możliwe usprawnienie:
-
-- usunięcie `cache: 'no-store'`,
-- albo pobranie szablonu tylko raz i zachowanie jego `ArrayBuffer` w pamięci modułu.
-
-Przy każdym eksporcie nadal trzeba utworzyć nowy `PDFDocument`, ale nie ma potrzeby ponownego pobierania tych samych bajtów.
-
-Ryzyko: niskie.
-
-### 4.2. Font Noto Sans jest pobierany przy każdym eksporcie
-
-Funkcja `embedFont(pdfDoc)` każdorazowo wykonuje:
+Wcześniej `pdf-lib` i `fontkit` były ładowane sekwencyjnie:
 
 ```js
-const response = await fetch(FONT_URL);
-const bytes = await response.arrayBuffer();
-return pdfDoc.embedFont(bytes, { subset: false });
+if (!window.PDFLib) await loadScript(PDF_LIB_URL);
+if (!window.fontkit) await loadScript(FONTKIT_URL);
 ```
 
-Nawet jeżeli przeglądarka ma font w cache HTTP, kod nadal:
-
-- tworzy nową odpowiedź,
-- odczytuje ją do nowego `ArrayBuffer`,
-- przekazuje font do ponownej analizy przez `fontkit`.
-
-Możliwe usprawnienie:
-
-- zachowanie bajtów fontu w zmiennej modułu, np. jako `fontBytesPromise`,
-- pobieranie fontu tylko podczas pierwszego eksportu,
-- ponowne używanie jego bajtów w kolejnych eksportach.
-
-Nie można współdzielić gotowego obiektu fontu pomiędzy różnymi instancjami `PDFDocument`, ale można uniknąć ponownego pobierania pliku.
-
-Ryzyko: niskie.
-
-### 4.3. Osadzany jest pełny font: `subset: false`
-
-Aktualny kod używa:
+Aktualnie brakujące biblioteki są zbierane do tablicy i ładowane równolegle:
 
 ```js
-pdfDoc.embedFont(fontBytes, { subset: false })
+const pending = [];
+if (!window.PDFLib) pending.push(loadScript(PDF_LIB_URL));
+if (!window.fontkit) pending.push(loadScript(FONTKIT_URL));
+if (pending.length) await Promise.all(pending);
 ```
 
-Oznacza to osadzanie pełnego fontu Noto Sans, a nie tylko znaków rzeczywiście użytych w dokumencie.
+Pierwszy eksport nie musi czekać na zakończenie pobierania jednej biblioteki, zanim rozpocznie pobieranie drugiej.
 
-Możliwe skutki:
+### 4.5. Równoległe pobieranie zależności i zasobów
 
-- więcej danych przetwarzanych przez `fontkit`,
-- większy dokument wynikowy,
-- dłuższy etap `embedFont()`,
-- dłuższy etap `pdfDoc.save()`.
+Eksport uruchamia równocześnie:
 
-W starszej dokumentacji projektu rozwiązanie z polskimi znakami przewidywało:
+- `ensureDependencies()`,
+- `loadTemplateBytes()`,
+- `loadFontBytes()`.
+
+Kod czeka na wszystkie zadania przez `Promise.all()`.
+
+Dzięki temu podczas pierwszego eksportu pobieranie bibliotek, szablonu i fontu może odbywać się jednocześnie, zamiast w pełni sekwencyjnie.
+
+### 4.6. Wstępne ładowanie po interakcji z przyciskiem
+
+Dodano funkcję:
+
+```js
+warmPdfExport()
+```
+
+Jest uruchamiana jednokrotnie po:
+
+- `pointerenter`,
+- `focus`,
+- `touchstart`.
+
+Zasoby mogą zacząć się ładować jeszcze przed właściwym kliknięciem przycisku eksportu.
+
+Rozwiązanie nie pobiera zasobów automatycznie natychmiast po otwarciu strony. Wstępne ładowanie zaczyna się dopiero po interakcji użytkownika związanej z przyciskiem PDF.
+
+### 4.7. Osadzanie podzbioru fontu
+
+Zmieniono:
+
+```js
+{ subset: false }
+```
+
+na:
 
 ```js
 { subset: true }
 ```
 
-Dotychczasowe problemy z WinAnsi były związane przede wszystkim z globalnym `form.updateFieldAppearances()`, a nie jednoznacznie z tworzeniem podzbioru fontu. Aktualny kod aktualizuje wygląd pól osobno, dlatego warto ponownie przetestować `subset: true` na obecnej wersji eksportera.
+Do dokumentu powinny trafiać tylko glify rzeczywiście użyte w wygenerowanym PDF, zamiast całego fontu Noto Sans.
 
-Test musi obejmować co najmniej:
+Oczekiwane skutki:
 
-- wszystkie polskie znaki,
-- długie dane tekstowe,
-- pola formularza,
-- tekst rysowany przez `page.drawText()`,
-- drugą linię słów kluczowych,
-- kilka eksportów wykonywanych kolejno.
+- mniej danych przetwarzanych podczas osadzania fontu,
+- krótszy zapis dokumentu,
+- mniejszy wynikowy PDF,
+- mniejsze zużycie pamięci podczas serializacji.
 
-Ryzyko: średnie.  
-Potencjalny zysk: wysoki.
-
-### 4.4. Wygląd każdego pola tekstowego jest generowany osobno
-
-Dla każdego wypełnianego pola wykonywane jest:
+Pozostawiono aktualizację wyglądu osobno dla każdego wypełnianego pola:
 
 ```js
-field.setText(text);
 field.updateAppearances(font);
 ```
 
-Dotyczy to między innymi:
+Nie przywrócono globalnego `form.updateFieldAppearances(font)`, ponieważ wcześniejsza dokumentacja projektu wskazuje na problemy WinAnsi przy takim podejściu.
 
-- danych postaci,
-- atrybutów,
-- wartości umiejętności,
-- sum umiejętności,
-- cech pochodnych,
-- słów kluczowych.
+### 4.8. Usuwanie pól bez generowania pustego wyglądu
 
-Takie podejście zostało przyjęte celowo, ponieważ wcześniejsza globalna aktualizacja formularza powodowała błędy WinAnsi dla polskich znaków.
-
-Nie należy bez testów wracać do:
-
-```js
-form.updateFieldAppearances(font)
-```
-
-Możliwe usprawnienia bez zmiany przyjętej architektury:
-
-- pomijanie pustych pól,
-- niewykonywanie aktualizacji dla pól, które zaraz zostaną usunięte,
-- sprawdzenie, czy niektóre pola liczbowe mogą pozostać przy wyglądzie ze wzorca PDF.
-
-Ostatnia opcja wymaga ostrożności, ponieważ może zmienić wygląd albo sposób kodowania pól.
-
-Ryzyko: od niskiego do średniego, zależnie od wariantu.
-
-### 4.5. Pola przeznaczone do usunięcia są wcześniej czyszczone i odświeżane
-
-Funkcja `removeTextField()` wykonuje obecnie:
+Wcześniej `removeTextField()` wykonywało:
 
 ```js
 field.setText('');
@@ -181,190 +227,243 @@ field.updateAppearances(font);
 form.removeField(field);
 ```
 
-Eksporter stosuje ją do:
+Aktualnie funkcja wykonuje wyłącznie:
+
+```js
+form.removeField(form.getTextField(name));
+```
+
+Dotyczy to:
 
 - ośmiu pól `Zdolności i talenty`,
 - pola `Notatki 1`,
 - pola `Przeszłość`.
 
-Generowanie pustego wyglądu pola bezpośrednio przed jego usunięciem prawdopodobnie jest zbędne.
+Kod nie generuje już pustych strumieni wyglądu dla pól, które natychmiast potem są usuwane.
 
-Do sprawdzenia:
+### 4.9. Cache pomiarów szerokości tekstu
 
-```js
-form.removeField(field)
-```
+Funkcja `wrap()` może otrzymać `widthCache`.
 
-bez wcześniejszego `setText('')` i `updateAppearances(font)`.
+Klucz cache składa się z:
 
-Ryzyko: niskie, ale wymagany test wynikowego PDF.
-
-### 4.6. Wszystkie checkboxy są każdorazowo aktualizowane
-
-Eksporter zawsze przechodzi przez 30 checkboxów i dla każdego wykonuje:
-
-```js
-field.check();
-// albo
-field.uncheck();
-field.updateAppearances();
-```
-
-Jeżeli szablon `pl.pdf` ma wszystkie checkboxy domyślnie odznaczone, można rozważyć aktualizowanie tylko tych pól, które mają zostać zaznaczone.
-
-Przed taką zmianą należy potwierdzić:
-
-- domyślny stan każdego checkboxa w szablonie,
-- czy nowy dokument zawsze powstaje z czystego szablonu,
-- czy pominięcie `uncheck()` nie pozostawia starego wyglądu pola.
-
-Ryzyko: średnie.  
-Przewidywany zysk: mały lub umiarkowany.
-
-### 4.7. Algorytm dopasowania tekstu wykonuje wiele powtarzalnych pomiarów
-
-Funkcje `layout()` i `wrap()` wielokrotnie sprawdzają różne kombinacje:
-
-- liczby kolumn,
 - rozmiaru fontu,
-- szerokości tekstu.
+- mierzonego tekstu.
 
-Dla każdej kombinacji tekst jest ponownie zawijany, a `font.widthOfTextAtSize()` wywoływane wielokrotnie dla tych samych lub podobnych fragmentów.
+Przykład:
 
-Możliwe usprawnienia:
+```js
+const key = `${size}\u0000${value}`;
+```
 
-- cache wyników pomiarów tekstu,
-- cache zawinięcia tekstu dla pary `rozmiar fontu + szerokość`,
-- ograniczenie liczby pełnych prób układu,
-- wcześniejsze przerwanie obliczeń po przekroczeniu pojemności obszaru.
+Jeżeli ten sam fragment tekstu jest mierzony ponownie dla tego samego rozmiaru fontu, wynik `font.widthOfTextAtSize()` jest pobierany z `Map`, zamiast obliczany od nowa.
 
-Ryzyko: średnie, ponieważ nie można zmienić końcowego układu treści.  
-Przewidywany zysk: mniejszy niż w przypadku fontu i cache zasobów.
+Cache jest lokalny dla pojedynczego procesu dopasowania obszaru, dzięki czemu nie rośnie między kolejnymi eksportami.
 
-### 4.8. Biblioteki są ładowane dopiero po kliknięciu eksportu
+### 4.10. Wcześniejsze przerwanie nieudanej próby układu
 
-`pdf-lib` i `fontkit` są ładowane na żądanie. Pierwszy eksport ponosi koszt pobrania i uruchomienia bibliotek, natomiast kolejne eksporty w tej samej karcie korzystają z `dependenciesPromise` i nie ładują ich ponownie.
+Dodano funkcję:
 
-To rozwiązanie jest poprawne z punktu widzenia czasu startu aplikacji, ale oznacza wolniejszy pierwszy eksport.
+```js
+wrapEntries(entries, font, size, width, widthCache, limit)
+```
 
-Możliwe warianty:
+Podczas sprawdzania konkretnej liczby kolumn i rozmiaru fontu znana jest maksymalna pojemność obszaru.
 
-- pozostawić obecne zachowanie,
-- rozpocząć ładowanie bibliotek po zakończeniu inicjalizacji strony,
-- rozpocząć ładowanie po pierwszej interakcji użytkownika z kalkulatorem,
-- rozpocząć ładowanie po najechaniu lub uzyskaniu fokusu przez przycisk eksportu.
+Jeżeli liczba przygotowanych linii przekroczy tę pojemność, dalsze zawijanie pozostałych wpisów nie jest potrzebne dla tej próby. Algorytm przerywa ją wcześniej i przechodzi do kolejnego wariantu.
 
-Takie wstępne ładowanie nie skraca całkowitej pracy, ale przenosi jej część przed kliknięcie przycisku, dzięki czemu użytkownik krócej czeka po rozpoczęciu eksportu.
+Nie zmieniono:
 
-Ryzyko: niskie.  
-Wpływ: przede wszystkim na odczuwalny czas pierwszego eksportu.
+- kolejności wpisów,
+- minimalnego i maksymalnego rozmiaru fontu,
+- liczby dozwolonych kolumn,
+- położenia obszarów na stronie,
+- sposobu obcinania nadmiarowych linii w wariancie końcowym.
 
-## 5. Elementy, które prawdopodobnie nie są główną przyczyną
+### 4.11. Pomiary czasu generowania
 
-### 5.1. Obliczenia kalkulatora
+Dodano pomiary oparte o `performance.now()`, z awaryjnym użyciem `Date.now()`.
 
-`window.WNGCreatorV2.getComputedData()` wykonuje standardowe obliczenia na niewielkiej liczbie pól. W porównaniu z analizą fontu, aktualizacją pól PDF i serializacją dokumentu koszt tej operacji powinien być mały.
+Po udanym eksporcie konsola przeglądarki otrzymuje wpis:
 
-### 5.2. Budowanie bucketów eksportowych
+```text
+[TworzeniePostaci_v2 PDF] Czasy generowania [ms]
+```
 
-`buildEntries(data)` przechodzi jedynie po talentach i zasadach specjalnych. Liczba elementów jest niewielka i nie powinna powodować zauważalnego opóźnienia.
+Raport obejmuje:
 
-### 5.3. Tworzenie obiektu `Blob` lub `File`
+| Pole | Znaczenie |
+| --- | --- |
+| `dependencies` | przygotowanie `pdf-lib` i `fontkit` |
+| `assets` | uzyskanie bajtów szablonu i fontu |
+| `loadTemplate` | `PDFDocument.load()` |
+| `embedFont` | rejestracja i osadzenie Noto Sans |
+| `populate` | wypełnianie pól, usuwanie pól i rysowanie obszarów |
+| `save` | `pdfDoc.save()` |
+| `total` | cały czas od rozpoczęcia eksportu do utworzenia wyniku |
 
-Utworzenie pliku z gotowych bajtów oraz `URL.createObjectURL()` powinno być szybkie w porównaniu z wcześniejszym etapem generowania PDF.
+Przy drugim eksporcie wartości `dependencies` i `assets` powinny być znacznie niższe, ponieważ Promise i bajty zasobów pozostają w pamięci.
 
-## 6. Zalecana kolejność optymalizacji
+## 5. Elementy celowo pozostawione bez zmian
 
-### Etap 1 — pomiary bez zmiany zachowania
+### 5.1. Checkboxy
 
-Dodać tymczasowe pomiary czasu dla:
+Nie ograniczono aktualizacji checkboxów tylko do zaznaczonych pól.
 
-1. `ensureDependencies()`,
-2. pobrania `pl.pdf`,
-3. `PDFDocument.load()`,
-4. pobrania fontu,
-5. `embedFont()`,
-6. `fillStandard()`,
-7. usuwania pól,
-8. `drawArea()`,
-9. `pdfDoc.save()`.
+Powód:
 
-Najprostszy wariant może użyć `performance.now()` albo `console.time()`.
+- poprawność wymaga potwierdzenia stanu domyślnego każdego checkboxa w `pl.pdf`,
+- zysk wydajnościowy byłby prawdopodobnie niewielki,
+- pełne `check()` albo `uncheck()` gwarantuje jednoznaczny wynik każdego nowego dokumentu.
 
-Pomiary powinny rozróżniać:
+### 5.2. Globalna aktualizacja wyglądu formularza
 
-- pierwszy eksport po otwarciu strony,
-- drugi eksport w tej samej karcie,
-- eksport po odświeżeniu strony.
+Nie zastosowano:
 
-### Etap 2 — cache zasobów
+```js
+form.updateFieldAppearances(font)
+```
 
-Wprowadzić:
+Pozostawiono aktualizację per pole, aby nie przywrócić wcześniejszych błędów kodowania polskich znaków.
 
-- cache bajtów `pl.pdf`,
-- cache bajtów fontu,
-- rezygnację z `cache: 'no-store'` dla statycznego szablonu.
+### 5.3. Lokalny font i lokalny `fontkit`
 
-Jest to najbezpieczniejszy zestaw zmian i powinien szczególnie przyspieszyć drugi oraz kolejne eksporty.
+Nie przeniesiono zależności CDN do katalogu `vendor`.
 
-### Etap 3 — test `subset: true`
+Jest to osobne zagadnienie dotyczące pracy offline i niezależności od CDN. Aktualne wdrożenie przyspiesza ponowne użycie zasobów w tej samej karcie, ale pierwszy eksport nadal może zależeć od czasu odpowiedzi CDN.
 
-Przetestować osadzanie podzbioru fontu na aktualnym kodzie.
+### 5.4. Szablon PDF
 
-Należy porównać:
+Nie spłaszczono ani nie przebudowano `pl.pdf`. Nie zmieniono jego pól, grafiki ani zawartości.
 
-- czas `embedFont()`,
-- czas `pdfDoc.save()`,
-- rozmiar pliku wynikowego,
-- poprawność polskich znaków,
-- wygląd wszystkich pól.
+## 6. Walidacja techniczna
 
-### Etap 4 — usunięcie zbędnych aktualizacji pól
+Wykonano:
 
-Sprawdzić możliwość:
+### 6.1. Kontrola składni JavaScript
 
-- usuwania pól bez wcześniejszego generowania pustego wyglądu,
-- ograniczenia liczby aktualizowanych checkboxów,
-- pomijania zbędnych wywołań `updateAppearances()`.
+```text
+node --check Kalkulator/TworzeniePostaci_v2-pdf.js
+```
 
-### Etap 5 — optymalizacja układu tekstu
+Wynik:
 
-Dopiero po wykonaniu wcześniejszych kroków warto optymalizować `wrap()` i `layout()`, ponieważ najprawdopodobniej nie są one głównym źródłem opóźnienia.
+```text
+OK — brak błędów składni.
+```
 
-## 7. Priorytety według relacji zysku do ryzyka
+### 6.2. Test inicjalizacji i cache w środowisku mock
 
-| Priorytet | Zmiana | Ryzyko | Potencjalny zysk |
-| --- | --- | --- | --- |
-| 1 | Cache bajtów szablonu `pl.pdf` | niskie | umiarkowany, szczególnie przy kolejnych eksportach |
-| 2 | Cache bajtów fontu | niskie | umiarkowany |
-| 3 | Usunięcie `cache: 'no-store'` | niskie | umiarkowany, zależny od środowiska |
-| 4 | `subset: true` | średnie | wysoki |
-| 5 | Usuwanie pól bez `updateAppearances()` | niskie | mały lub umiarkowany |
-| 6 | Wstępne ładowanie bibliotek | niskie | poprawa odczuwalnego czasu pierwszego eksportu |
-| 7 | Ograniczenie aktualizacji checkboxów | średnie | mały |
-| 8 | Cache pomiarów tekstu w `wrap()` i `layout()` | średnie | mały lub umiarkowany |
+Uruchomiono skrypt z atrapami:
 
-## 8. Zalecany zakres testów regresji
+- `window`,
+- `document`,
+- przycisku eksportu,
+- `fetch()`,
+- dostępnych `PDFLib` i `fontkit`.
 
-Po każdej optymalizacji należy sprawdzić:
+Sprawdzono:
 
-- eksport z pustymi i domyślnymi danymi,
-- eksport z polskimi znakami: `Ś`, `Ż`, `Ź`, `Ć`, `Ń`, `Ł`, `Ó`, `Ą`, `Ę`,
-- długie nazwy gatunku, archetypu i frakcji,
-- długą listę słów kluczowych,
-- maksymalną liczbę talentów i zasad specjalnych,
-- wszystkie poziomy Spaczenia i odpowiadające checkboxy,
-- przepełnienie sekcji `Zdolności i Talenty`, `Notatki` i `Przeszłość`,
-- drugi eksport wykonany bez odświeżania strony,
-- kilka kolejnych eksportów z różnymi danymi,
-- brak przenikania danych z poprzedniego eksportu,
-- poprawne otwieranie podglądu w nowej karcie,
-- rozmiar wygenerowanego pliku PDF.
+- rejestrację listenerów `click`, `pointerenter`, `focus` i `touchstart`,
+- jednokrotne pobranie dwóch zasobów podczas wielokrotnego wywołania rozgrzewania,
+- działanie cache Promise.
 
-## 9. Rekomendacja końcowa
+Wynik:
 
-Najpierw należy dodać dokładne pomiary etapów eksportu, a następnie wdrożyć cache bajtów szablonu i fontu. Są to zmiany o niskim ryzyku, które nie powinny wpływać na wynikowy dokument.
+```text
+Mock initialization/cache test: OK
+```
 
-Następnie warto przetestować `subset: true`, ponieważ może ono istotnie skrócić osadzanie fontu i zapis dokumentu oraz zmniejszyć rozmiar pliku. Ta zmiana wymaga jednak pełnego testu regresji obsługi polskich znaków i wyglądu pól formularza.
+### 6.3. Weryfikacja pliku po zapisie do repozytorium
 
-Nie zaleca się zaczynania od przebudowy algorytmu układania tekstu ani od powrotu do globalnego `form.updateFieldAppearances()`. Pierwsze prawdopodobnie daje mniejszy zysk, a drugie może ponownie wywołać udokumentowane problemy z kodowaniem WinAnsi.
+Po commicie ponownie odczytano plik z gałęzi `main` i potwierdzono obecność:
+
+- `TEMPLATE_URL`,
+- loaderów `ArrayBuffer`,
+- `subset: true`,
+- uproszczonego `removeTextField()`,
+- cache szerokości tekstu,
+- pomiarów czasu,
+- listenerów rozgrzewających.
+
+Blob SHA aktualnego pliku:
+
+```text
+7cc015845483718a00338ab2530a79a4bcace2c7
+```
+
+## 7. Testy wymagane w przeglądarce
+
+W tym środowisku nie wykonano pełnego eksportu z rzeczywistym `pl.pdf`, `pdf-lib`, `fontkit` i podglądem przeglądarkowym. Przed uznaniem zmiany za w pełni zweryfikowaną wizualnie należy wykonać test ręczny.
+
+Minimalny zestaw:
+
+1. Otworzyć `TworzeniePostaci_v2.html` po `Ctrl+F5`.
+2. Wygenerować PDF z danymi domyślnymi.
+3. Sprawdzić polskie znaki, między innymi:
+   - `Średni`,
+   - `Zakon Żeński`,
+   - `Czujność`,
+   - `Umiejętności`,
+   - `Przeszłość`,
+   - `Ź`, `Ć`, `Ń`, `Ł`, `Ó`, `Ą`, `Ę`.
+4. Sprawdzić wszystkie wartości atrybutów i sum umiejętności.
+5. Sprawdzić checkboxy dla kilku wartości Spaczenia.
+6. Sprawdzić jedną i dwie linie słów kluczowych.
+7. Wygenerować dokument z dużą liczbą talentów i zasad.
+8. Wygenerować drugi PDF bez odświeżania strony.
+9. Porównać dane pierwszego i drugiego pliku, aby wykluczyć przenikanie danych.
+10. Otworzyć konsolę i porównać raporty czasów pierwszego i drugiego eksportu.
+
+Szczególnie ważny jest test `subset: true`, ponieważ jest to zmiana o największym potencjale wydajnościowym, ale również jedyna z wdrożonych zmian wymagająca pełnego sprawdzenia wyglądu wszystkich polskich znaków w rzeczywistym PDF.
+
+## 8. Oczekiwany efekt wydajnościowy
+
+### Pierwszy eksport
+
+Powinien skorzystać z:
+
+- równoległego ładowania bibliotek,
+- równoległego pobierania szablonu i fontu,
+- wcześniejszego rozpoczęcia ładowania po najechaniu, fokusie lub dotknięciu przycisku,
+- mniejszego podzbioru fontu,
+- mniejszej liczby zbędnych aktualizacji formularza,
+- szybszego dopasowania długich sekcji tekstowych.
+
+### Drugi i kolejne eksporty w tej samej karcie
+
+Powinny dodatkowo skorzystać z:
+
+- gotowych bibliotek,
+- gotowego `ArrayBuffer` szablonu,
+- gotowego `ArrayBuffer` fontu,
+- braku kolejnych żądań o te zasoby.
+
+Największa różnica pomiędzy pierwszym a kolejnym eksportem powinna być widoczna w polach:
+
+```text
+dependencies
+assets
+```
+
+Największy wpływ `subset: true` powinien być widoczny przede wszystkim w:
+
+```text
+embedFont
+save
+```
+
+## 9. Podsumowanie
+
+Wdrożono wszystkie rekomendowane zmiany o niskim ryzyku oraz dwie kontrolowane optymalizacje algorytmiczne:
+
+- cache zasobów,
+- równoległość pobierania,
+- interakcyjne rozgrzewanie eksportera,
+- podzbiór fontu,
+- usunięcie zbędnych aktualizacji pól,
+- cache pomiarów tekstu,
+- wcześniejsze odrzucanie niepasujących wariantów układu,
+- diagnostykę czasów.
+
+Nie zmieniono logiki danych ani mapowania PDF. Pełny test wizualny wygenerowanego dokumentu pozostaje wymagany w prawdziwej przeglądarce, przede wszystkim dla `subset: true` i polskich znaków.
