@@ -29,12 +29,6 @@ Commit wdrażający optymalizację kodu:
 c3109fa48a318efbd2b645f23eecd0a94455005c
 ```
 
-Commit aktualizujący dokumentację:
-
-```text
-cf18270a1be09d5b2959c9067a4318f57f9d7f18
-```
-
 ## 2. Pierwotnie zidentyfikowane wąskie gardła
 
 Przed wdrożeniem eksport wykonywał kolejno między innymi:
