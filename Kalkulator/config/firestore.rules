@@ -2,19 +2,29 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Istniejący dokument produkcyjny TworzeniePostaci.html.
+    // Istniejący dokument produkcyjny prostego kreatora.
+    // Existing production document used by the simple creator.
     match /character_builder/current {
       allow read: if true;
       allow write: if true;
     }
 
-    // Izolowany dokument Kalkulator/test.html.
+    // Docelowy dokument Zaawansowanego Kreatora Postaci.
+    // Target document used by the Advanced Character Creator.
+    match /character_builder/v2 {
+      allow read: if true;
+      allow write: if true;
+    }
+
+    // Tymczasowy odczyt starego dokumentu testowego umożliwia jednorazową migrację do v2.
+    // Temporary access to the former test document enables one-time migration to v2.
     match /character_builder/test-v2 {
       allow read: if true;
       allow write: if true;
     }
 
     // Brak dostępu do pozostałych dokumentów przez te reguły.
+    // All other documents remain inaccessible through these rules.
     match /{document=**} {
       allow read, write: if false;
     }
