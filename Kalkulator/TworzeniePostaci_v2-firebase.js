@@ -2,17 +2,14 @@
 (function installAdvancedCreatorFirebase() {
   'use strict';
 
-  const SCHEMA_VERSION = 2;
+  const SCHEMA_VERSION = 3;
   const MODULE_NAME = 'Kalkulator/TworzeniePostaci_v2';
-  const LEGACY_MODULE_NAME = 'Kalkulator/test';
   const COLLECTION_NAME = 'character_builder';
   const DOCUMENT_NAME = 'v2';
-  const LEGACY_DOCUMENT_NAME = 'test-v2';
   let dependenciesPromise = null;
 
   const byId = id => document.getElementById(id);
 
-  // Ładuje pojedynczy skrypt tylko raz. / Loads a single script only once.
   const loadScript = src => new Promise((resolve, reject) => {
     const existing = document.querySelector(`script[data-v2-src="${src}"]`);
     if (existing) {
@@ -33,7 +30,6 @@
     document.head.appendChild(script);
   });
 
-  // Firebase jest pobierane dopiero przy pierwszym zapisie lub odczycie. / Firebase is fetched only on the first save or load.
   async function ensureFirebase() {
     if (dependenciesPromise) return dependenciesPromise;
 
@@ -50,11 +46,7 @@
       if (!window.firebaseConfig) throw new Error('Brak konfiguracji Firebase.');
       if (!window.firebase.apps.length) window.firebase.initializeApp(window.firebaseConfig);
 
-      const db = window.firebase.firestore();
-      return {
-        current: db.collection(COLLECTION_NAME).doc(DOCUMENT_NAME),
-        legacy: db.collection(COLLECTION_NAME).doc(LEGACY_DOCUMENT_NAME)
-      };
+      return window.firebase.firestore().collection(COLLECTION_NAME).doc(DOCUMENT_NAME);
     })();
 
     try {
@@ -83,54 +75,9 @@
     if (payload.schemaVersion !== SCHEMA_VERSION) {
       throw new Error(`Nieobsługiwana wersja schematu: ${String(payload.schemaVersion)}.`);
     }
-    if (payload.module !== MODULE_NAME && payload.module !== LEGACY_MODULE_NAME) {
+    if (payload.module !== MODULE_NAME) {
       throw new Error(`Nieprawidłowy moduł dokumentu: ${String(payload.module)}.`);
     }
-  }
-
-  function normalizeLegacyPayload(payload) {
-    if (payload.data) return payload;
-    return {
-      xpPool: payload.xpPool,
-      talentCount: payload.talentCount,
-      data: {
-        attrs: payload.attributes,
-        skills: payload.skills,
-        talents: payload.talents,
-        character: payload.character,
-        influenceAttribute: payload.derived?.influenceAttribute,
-        corruptionBase: payload.derived?.corruptionBase,
-        rules: payload.specialRules
-      }
-    };
-  }
-
-  const isPermissionError = error => error?.code === 'permission-denied' || /permission/i.test(String(error?.message || ''));
-
-  // Do czasu wdrożenia nowych reguł zapis może użyć starego, odizolowanego dokumentu test-v2. / Until new rules are deployed, saving can use the old isolated test-v2 document.
-  async function writeWithMigrationFallback(refs, payload) {
-    try {
-      await refs.current.set(payload, { merge: false });
-      return { usedLegacy: false };
-    } catch (error) {
-      if (!isPermissionError(error)) throw error;
-      console.warn('[TworzeniePostaci_v2 Firebase] Brak dostępu do character_builder/v2; użyto tymczasowego test-v2.', error);
-      await refs.legacy.set(payload, { merge: false });
-      return { usedLegacy: true };
-    }
-  }
-
-  async function readWithMigrationFallback(refs) {
-    try {
-      const currentSnapshot = await refs.current.get();
-      if (currentSnapshot.exists) return { snapshot: currentSnapshot, usedLegacy: false };
-    } catch (error) {
-      if (!isPermissionError(error)) throw error;
-      console.warn('[TworzeniePostaci_v2 Firebase] Brak dostępu do character_builder/v2; sprawdzono test-v2.', error);
-    }
-
-    const legacySnapshot = await refs.legacy.get();
-    return { snapshot: legacySnapshot, usedLegacy: legacySnapshot.exists };
   }
 
   async function save() {
@@ -143,8 +90,8 @@
     const button = byId('saveFirebaseButton');
     button.disabled = true;
     try {
-      const refs = await ensureFirebase();
-      await writeWithMigrationFallback(refs, buildPayload());
+      const documentRef = await ensureFirebase();
+      await documentRef.set(buildPayload(), { merge: false });
       await window.WNGCreatorV2.showInfo({
         title: 'Potwierdzenie zapisu',
         message: 'Stan postaci został zapisany.'
@@ -170,23 +117,13 @@
     const button = byId('loadFirebaseButton');
     button.disabled = true;
     try {
-      const refs = await ensureFirebase();
-      const { snapshot, usedLegacy } = await readWithMigrationFallback(refs);
+      const documentRef = await ensureFirebase();
+      const snapshot = await documentRef.get();
       if (!snapshot.exists) throw new Error('Brak zapisanego stanu postaci.');
 
       const payload = snapshot.data();
       validatePayload(payload);
-      window.WNGCreatorV2.applyState(normalizeLegacyPayload(payload));
-
-      // Próba migracji jest bezpieczna; brak nowych reguł nie blokuje samego odczytu. / Migration is best-effort; missing new rules do not block the load itself.
-      if (usedLegacy) {
-        try {
-          await refs.current.set(buildPayload(), { merge: false });
-        } catch (error) {
-          if (!isPermissionError(error)) throw error;
-          console.info('[TworzeniePostaci_v2 Firebase] Migracja do character_builder/v2 zaczeka na wdrożenie reguł.');
-        }
-      }
+      window.WNGCreatorV2.applyState(payload);
 
       await window.WNGCreatorV2.showInfo({
         title: 'Potwierdzenie wczytania',
