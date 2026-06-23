@@ -52,7 +52,7 @@
     {type:'other',name:'',target:'none',value:0}
   ];
   const RULE_TARGETS = [
-    ['none','Opis / brak modyfikatora'],['woundsMax','Żywotność maksymalna'],['shock','Odporność Psychiczna'],
+    ['none','Opis / brak modyfikatora'],['woundsMax','Żywotność'],['shock','Odporność Psychiczna'],
     ['determination','Determinacja'],['defence','Obrona'],['resilience','Odporność'],['resolve','Upór'],
     ['conviction','Odwaga'],['influence','Wpływy'],['wealth','Majątek'],['corruption','Spaczenie'],['speed','Szybkość']
   ];
@@ -64,6 +64,7 @@
   const toInt = (value,fallback=0) => { const parsed=parseInt(value,10); return Number.isFinite(parsed)?parsed:fallback; };
   const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char]));
   const optionHtml = (items,current) => items.map(([value,label]) => `<option value="${value}"${value===current?' selected':''}>${label}</option>`).join('');
+  const formatSigned = value => value>0?`+${value}`:String(value);
 
   function renderAttributes() {
     byId('attributesTable').innerHTML = `<thead><tr>${ATTRIBUTES.map(item=>`<th>${item.label}</th>`).join('')}</tr></thead><tbody><tr>${ATTRIBUTES.map(item=>`<td><input type="number" id="attr_${item.key}" value="${item.key==='Speed'?6:1}" min="1" max="12"></td>`).join('')}</tr></tbody>`;
@@ -140,59 +141,72 @@
       archetypeName:(byId('character_archetypeName')?.value||'').trim(),
       keywords:(byId('character_keywords')?.value||'').trim()
     };
-    const rules=collectSpecialRules(), bonus={};
-    rules.forEach(rule=>{if(rule.target&&rule.target!=='none')bonus[rule.target]=(bonus[rule.target]||0)+Number(rule.value||0);});
+    const rules=collectSpecialRules(), ruleBonuses={};
+    rules.forEach(rule=>{if(rule.target&&rule.target!=='none')ruleBonuses[rule.target]=(ruleBonuses[rule.target]||0)+Number(rule.value||0);});
     const influenceAttribute=byId('derived_influenceAttribute')?.value||'Ogd';
-    const corruptionBase=toInt(byId('derived_corruptionBase')?.value,0);
+    const bonuses={
+      woundsMax:ruleBonuses.woundsMax||0,
+      shock:ruleBonuses.shock||0,
+      determination:ruleBonuses.determination||0,
+      defence:(SIZE_DEFENCE_BONUS[character.size]||0)+(ruleBonuses.defence||0),
+      resilience:ruleBonuses.resilience||0,
+      resolve:ruleBonuses.resolve||0,
+      conviction:ruleBonuses.conviction||0,
+      influence:ruleBonuses.influence||0,
+      wealth:ruleBonuses.wealth||0,
+      corruption:ruleBonuses.corruption||0,
+      speed:ruleBonuses.speed||0,
+      passiveAwareness:0
+    };
     const raw={
-      woundsMax:attrs.Wt+2*character.gameTier+(bonus.woundsMax||0),
-      shock:attrs.SW+character.gameTier+(bonus.shock||0),
-      determination:attrs.Wt+(bonus.determination||0),
-      defence:attrs.I-1+(SIZE_DEFENCE_BONUS[character.size]||0)+(bonus.defence||0),
-      resilience:attrs.Wt+1+(bonus.resilience||0),
-      resolve:attrs.SW+(bonus.resolve||0),
-      conviction:attrs.SW-1+(bonus.conviction||0),
-      influence:(attrs[influenceAttribute]||attrs.Ogd)-1+(bonus.influence||0),
-      wealth:character.gameTier+(bonus.wealth||0),
-      corruption:corruptionBase+(bonus.corruption||0),
-      speed:attrs.Speed+(bonus.speed||0),
+      woundsMax:attrs.Wt+2*character.gameTier+bonuses.woundsMax,
+      shock:attrs.SW+character.gameTier+bonuses.shock,
+      determination:attrs.Wt+bonuses.determination,
+      defence:attrs.I-1+bonuses.defence,
+      resilience:attrs.Wt+1+bonuses.resilience,
+      resolve:attrs.SW+bonuses.resolve,
+      conviction:attrs.SW-1+bonuses.conviction,
+      influence:(attrs[influenceAttribute]||attrs.Ogd)-1+bonuses.influence,
+      wealth:character.gameTier+bonuses.wealth,
+      corruption:bonuses.corruption,
+      speed:attrs.Speed+bonuses.speed,
       passiveAwareness:Math.ceil(skillTotals.awareness/2)
     };
     const values={};
     Object.entries(raw).forEach(([key,value])=>values[key]=key==='corruption'?Math.max(0,Math.ceil(value)):Math.max(1,Math.ceil(value)));
-    return {attrs,skills,skillTotals,character,rules,raw,values,influenceAttribute,corruptionBase,talents:collectTalents()};
+    return {attrs,skills,skillTotals,character,rules,bonuses,raw,values,influenceAttribute,talents:collectTalents()};
+  }
+
+  function influenceFormula() {
+    return '<span class="derived-formula"><select id="derived_influenceAttribute" aria-label="Atrybut Wpływów"><option value="S">S</option><option value="Wt">Wt</option><option value="Zr">Zr</option><option value="I">I</option><option value="SW">SW</option><option value="Int">Int</option><option value="Ogd" selected>Ogd</option></select><span>- 1</span></span>';
   }
 
   function renderDerivedStats() {
     const rows=[
-      ['Żywotność maksymalna','Wt + (2 × Poziom Gry) + bonusy','woundsMax'],
-      ['Odporność Psychiczna','SW + Poziom Gry + bonusy','shock'],
-      ['Determinacja','Wt + bonusy','determination'],
-      ['Obrona','I - 1 + Rozmiar + bonusy','defence'],
-      ['Odporność','Wt + 1 + bonusy','resilience'],
-      ['Upór','SW + bonusy','resolve'],
-      ['Odwaga','SW - 1 + bonusy','conviction'],
-      ['Wpływy','Wybrany atrybut - 1 + bonusy','influence'],
-      ['Majątek','Poziom Gry + bonusy','wealth'],
-      ['Spaczenie','Wartość ręczna + bonusy','corruption'],
-      ['Szybkość','Szybkość + bonusy','speed'],
+      ['Żywotność','Wt + (2 × Poziom Gry)','woundsMax'],
+      ['Odporność Psychiczna','SW + Poziom Gry','shock'],
+      ['Determinacja','Wt','determination'],
+      ['Obrona','I - 1','defence'],
+      ['Odporność','Wt + 1','resilience'],
+      ['Upór','SW','resolve'],
+      ['Odwaga','SW - 1','conviction'],
+      ['Wpływy',influenceFormula(),'influence'],
+      ['Majątek','Poziom Gry','wealth'],
+      ['Spaczenie','0','corruption'],
+      ['Szybkość','Szybkość','speed'],
       ['Pasywna Czujność','Suma Czujność (Int) / 2','passiveAwareness']
     ];
-    byId('derivedStatsTable').innerHTML=`<thead><tr><th>Cecha</th><th>Podstawa</th><th>Ustawienie</th><th>Wynik</th></tr></thead><tbody>${rows.map(([label,formula,key])=>{
-      let setting='—';
-      if(key==='influence')setting='<select id="derived_influenceAttribute"><option value="S">S</option><option value="Wt">Wt</option><option value="Zr">Zr</option><option value="I">I</option><option value="SW">SW</option><option value="Int">Int</option><option value="Ogd" selected>Ogd</option></select>';
-      if(key==='corruption')setting='<input type="number" id="derived_corruptionBase" value="0" min="0">';
-      return `<tr><td>${label}</td><td>${formula}</td><td>${setting}</td><td class="derived-value" id="derived_value_${key}">1</td></tr>`;
-    }).join('')}</tbody>`;
+    byId('derivedStatsTable').innerHTML=`<thead><tr><th>Cecha</th><th>Podstawa</th><th>Premia</th><th>Wynik</th></tr></thead><tbody>${rows.map(([label,formula,key])=>`<tr><td>${label}</td><td>${formula}</td><td class="derived-bonus" id="derived_bonus_${key}">0</td><td class="derived-value" id="derived_value_${key}">${key==='corruption'?0:1}</td></tr>`).join('')}</tbody>`;
   }
 
   function derivedLabel(key) {
-    return ({woundsMax:'Żywotność maksymalna',shock:'Odporność Psychiczna',determination:'Determinacja',defence:'Obrona',resilience:'Odporność',resolve:'Upór',conviction:'Odwaga',influence:'Wpływy',wealth:'Majątek',speed:'Szybkość',passiveAwareness:'Pasywna Czujność'})[key]||key;
+    return ({woundsMax:'Żywotność',shock:'Odporność Psychiczna',determination:'Determinacja',defence:'Obrona',resilience:'Odporność',resolve:'Upór',conviction:'Odwaga',influence:'Wpływy',wealth:'Majątek',speed:'Szybkość',passiveAwareness:'Pasywna Czujność'})[key]||key;
   }
 
   function refreshDerivedStats() {
     if(!byId('derived_value_woundsMax'))return;
     const data=computeData();
+    Object.entries(data.bonuses).forEach(([key,value])=>{const cell=byId(`derived_bonus_${key}`);if(cell)cell.textContent=formatSigned(value);});
     Object.entries(data.values).forEach(([key,value])=>{const cell=byId(`derived_value_${key}`);if(cell)cell.textContent=String(value);});
     const warnings=[];
     Object.entries(data.raw).forEach(([key,value])=>{
@@ -255,7 +269,6 @@
     [['character_gameTier',character.gameTier],['character_speciesName',character.speciesName],['character_size',character.size],['character_factionName',character.factionName],['character_archetypeName',character.archetypeName],['character_keywords',character.keywords]].forEach(([id,value])=>{if(value!==undefined&&byId(id))byId(id).value=value;});
     renderSpecialRules(Array.isArray(data.rules)?data.rules:Array.isArray(data.specialRules)?data.specialRules:[]);
     if(data.influenceAttribute&&byId('derived_influenceAttribute'))byId('derived_influenceAttribute').value=data.influenceAttribute;
-    if(data.corruptionBase!==undefined&&byId('derived_corruptionBase'))byId('derived_corruptionBase').value=data.corruptionBase;
     recalcXP();
   }
 
