@@ -230,10 +230,10 @@
     const warnings=[];
     Object.entries(data.raw).forEach(([key,value])=>{
       if(key==='corruption'){
-        if(value<0)warnings.push('Spaczenie: wartość surowa jest mniejsza niż 0.');
+        if(value<0)warnings.push('Spaczenie: obliczony wynik jest mniejszy niż 0. Przyjęto minimalną wartość 0.');
         if(data.values.corruption>25)warnings.push('Spaczenie przekracza 25 pól na karcie PDF.');
       } else if(value<=0) {
-        warnings.push(`${derivedLabel(key)}: wartość surowa wynosi ${value}. Zastosowano minimum 1.`);
+        warnings.push(`${derivedLabel(key)}: obliczony wynik to ${value}. Przyjęto minimalną wartość 1.`);
       }
     });
     byId('derivedWarnings').textContent=warnings.join('\n');
