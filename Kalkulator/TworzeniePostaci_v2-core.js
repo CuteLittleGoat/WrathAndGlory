@@ -94,7 +94,10 @@
   }
 
   function specialRuleRow(index,rule) {
-    return `<tr data-rule-index="${index}"><td><select id="rule_type_${index}">${optionHtml(RULE_TYPES,rule.type||'other')}</select></td><td><textarea id="rule_name_${index}">${escapeHtml(rule.name||'')}</textarea></td><td><select id="rule_target_${index}">${optionHtml(RULE_TARGETS,rule.target||'none')}</select></td><td><input type="number" id="rule_value_${index}" value="${toInt(rule.value,0)}"></td></tr>`;
+    const target=rule.target||'none';
+    const disabled=target==='none';
+    const value=disabled?0:toInt(rule.value,0);
+    return `<tr data-rule-index="${index}"><td><select id="rule_type_${index}">${optionHtml(RULE_TYPES,rule.type||'other')}</select></td><td><textarea id="rule_name_${index}">${escapeHtml(rule.name||'')}</textarea></td><td><select id="rule_target_${index}">${optionHtml(RULE_TARGETS,target)}</select></td><td><input type="number" id="rule_value_${index}" value="${value}"${disabled?' disabled':''} aria-disabled="${String(disabled)}"></td></tr>`;
   }
 
   function renderSpecialRules(existing=[]) {
@@ -102,16 +105,18 @@
     byId('specialRulesTable').innerHTML=`<thead><tr><th>Typ</th><th>Nazwa / opis</th><th>Modyfikuje</th><th>Wartość</th></tr></thead><tbody>${rules.slice(0,100).map((rule,index)=>specialRuleRow(index,rule)).join('')}</tbody>`;
     byId('removeSpecialRuleButton').hidden=rules.length<=1;
     updateRulePlaceholders();
+    updateRuleValueStates();
   }
 
   function collectSpecialRules() {
     return Array.from(document.querySelectorAll('#specialRulesTable tr[data-rule-index]')).map(row=>{
       const i=row.dataset.ruleIndex;
+      const target=byId(`rule_target_${i}`)?.value||'none';
       return {
         type:byId(`rule_type_${i}`)?.value||'other',
         name:byId(`rule_name_${i}`)?.value||'',
-        target:byId(`rule_target_${i}`)?.value||'none',
-        value:toInt(byId(`rule_value_${i}`)?.value,0)
+        target,
+        value:target==='none'?0:toInt(byId(`rule_value_${i}`)?.value,0)
       };
     });
   }
@@ -123,6 +128,20 @@
       const textarea=byId(`rule_name_${i}`);
       if(textarea) textarea.placeholder=definition?.[2]||'';
     });
+  }
+
+  function updateRuleValueState(index) {
+    const target=byId(`rule_target_${index}`);
+    const input=byId(`rule_value_${index}`);
+    if(!target||!input)return;
+    const disabled=target.value==='none';
+    if(disabled)input.value='0';
+    input.disabled=disabled;
+    input.setAttribute('aria-disabled',String(disabled));
+  }
+
+  function updateRuleValueStates() {
+    document.querySelectorAll('#specialRulesTable tr[data-rule-index]').forEach(row=>updateRuleValueState(row.dataset.ruleIndex));
   }
 
   function computeData() {
@@ -320,7 +339,11 @@
     renderSpeciesMax();
 
     document.addEventListener('input',event=>{if(event.target.matches('input,textarea,select'))recalcXP();});
-    document.addEventListener('change',event=>{if(event.target.id.startsWith('rule_type_'))updateRulePlaceholders();recalcXP();});
+    document.addEventListener('change',event=>{
+      if(event.target.id.startsWith('rule_type_'))updateRulePlaceholders();
+      if(event.target.id.startsWith('rule_target_'))updateRuleValueState(event.target.id.slice('rule_target_'.length));
+      recalcXP();
+    });
     byId('addTalentRowButton').addEventListener('click',()=>{const current=collectTalents();current.push({name:'',cost:0},{name:'',cost:0});renderTalents(current);recalcXP();});
     byId('removeTalentRowButton').addEventListener('click',()=>{const current=collectTalents();if(current.length>2)current.splice(-2);renderTalents(current);recalcXP();});
     byId('addSpecialRuleButton').addEventListener('click',()=>{const rules=collectSpecialRules();rules.push({type:'other',name:'',target:'none',value:0});renderSpecialRules(rules);refreshDerivedStats();});
