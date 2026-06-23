@@ -1,0 +1,50 @@
+name: Update derived warning messages
+
+on:
+  push:
+    paths:
+      - '.github/workflows/update-derived-warning-messages.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  update-messages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Update warning messages
+        shell: python
+        run: |
+          from pathlib import Path
+
+          path = Path('Kalkulator/TworzeniePostaci_v2-core.js')
+          text = path.read_text(encoding='utf-8')
+
+          replacements = {
+              "if(value<0)warnings.push('Spaczenie: wartość surowa jest mniejsza niż 0.');":
+                  "if(value<0)warnings.push('Spaczenie: obliczony wynik jest mniejszy niż 0. Przyjęto minimalną wartość 0.');",
+              "warnings.push(`${derivedLabel(key)}: wartość surowa wynosi ${value}. Zastosowano minimum 1.`);":
+                  "warnings.push(`${derivedLabel(key)}: obliczony wynik to ${value}. Przyjęto minimalną wartość 1.`);",
+          }
+
+          for old, new in replacements.items():
+              count = text.count(old)
+              if count != 1:
+                  raise RuntimeError(f'Expected exactly one occurrence, found {count}: {old}')
+              text = text.replace(old, new)
+
+          path.write_text(text, encoding='utf-8')
+
+      - name: Commit the update and remove this workflow
+        run: |
+          rm .github/workflows/update-derived-warning-messages.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Kalkulator/TworzeniePostaci_v2-core.js .github/workflows/update-derived-warning-messages.yml
+          git commit -m "Zmień komunikaty cech obliczalnych [skip ci]"
+          git push origin HEAD:main
