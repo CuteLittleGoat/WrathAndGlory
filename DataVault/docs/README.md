@@ -74,6 +74,7 @@ Przykładowe zakładki:
 - `Talenty`,
 - `Psionika`,
 - `Modlitwy`,
+- `Obrzędy`,
 - `Archetypy`,
 - `Skrót Zasad`,
 - `Pojazdy`.
@@ -392,6 +393,7 @@ Example tabs:
 - `Talenty`,
 - `Psionika`,
 - `Modlitwy`,
+- `Obrzędy`,
 - `Archetypy`,
 - `Skrót Zasad`,
 - `Pojazdy`.
