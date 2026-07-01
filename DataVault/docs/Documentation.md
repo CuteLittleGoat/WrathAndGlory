@@ -31,7 +31,7 @@ Nie ma osobnego pliku HTML dla admina. Tryb admina jest wykrywany przez parametr
 | --- | --- |
 | `DataVault/index.html` | Szkielet UI: bramka dostępu, topbar, panel filtrów, workspace, zakładki, tabela, popover, modal i import skryptów. |
 | `DataVault/app.js` | Główna logika modułu: i18n, Firebase flow, stan UI, normalizacja danych, filtry, sortowanie, render tabel, porównanie, import XLSX. |
-| `DataVault/style.css` | Style widoku: layout, topbar, panel filtrów, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym arkuszy pojazdowych. |
+| `DataVault/style.css` | Style widoku: layout, topbar, panel filtrów, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym zakładki `Obrzędy` i arkuszy pojazdowych. |
 | `DataVault/xlsxCanonicalParser.js` | Kanoniczny parser XLSX w przeglądarce oparty o JSZip i pliki XML pakietu XLSX. |
 | `DataVault/config/FirebaseREADME.md` | Modułowa instrukcja konfiguracji Firebase dla DataVault. |
 | `DataVault/docs/README.md` | Instrukcja użytkownika. |
@@ -211,7 +211,7 @@ Kod dzieli arkusze na grupy logiczne.
 - `Uszkodzenia Pojazdów`,
 - `Eksplozje Pojazdów`.
 
-`Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` są także wpisane do `ADMIN_ONLY_SHEETS`. `initUI()` filtruje je najpierw przez tryb admina, a następnie przez stan checkboxa `toggleVehicleTabs`, więc w zwykłym widoku użytkownika pozostają ukryte nawet po zaznaczeniu checkboxa pojazdów. W trybie `?admin=1` pojawiają się dopiero po zaznaczeniu checkboxa i otrzymują klasę `tab--vehicle`. Ich style kolumn są zintegrowane w `style.css`; moduł nie ładuje osobnych plików `vehicle-extra.css` ani `vehicle-tabs-extension.js`, ponieważ konfiguracja kolumn i logika zakładek są częścią głównych plików `style.css` i `app.js`.
+`Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` są także wpisane do `ADMIN_ONLY_SHEETS`. `initUI()` filtruje je najpierw przez tryb admina, a następnie przez stan checkboxa `toggleVehicleTabs`, więc w zwykłym widoku użytkownika pozostają ukryte nawet po zaznaczeniu checkboxa pojazdów. W trybie `?admin=1` pojawiają się dopiero po zaznaczeniu checkboxa i otrzymują klasę `tab--vehicle`. Ich style kolumn są zintegrowane w `style.css`; style kolumn zakładki `Obrzędy` także są częścią tego samego pliku; moduł nie ładuje osobnych plików `vehicle-extra.css` ani `vehicle-tabs-extension.js`, ponieważ konfiguracja kolumn i logika zakładek są częścią głównych plików `style.css` i `app.js`.
 
 W konfiguracji CSS arkuszy pojazdów kolumna `Koszt IM` arkusza `Pojazdy` jest zwykłą, widoczną kolumną danych. Używa szerokości `min-width: 8ch`, wyrównania do środka i standardowego łamania tekstu, tak jak kosztowe kolumny `Koszt IM` w `Bronie Pojazdów` oraz `Ekwipunek Pojazdów`. Nie ma reguły `white-space: nowrap`, nie jest ukrywana, nie jest scalana i nie wymaga osobnego resolvera popovera.
 
@@ -589,7 +589,7 @@ There is no separate admin HTML file. Admin mode is detected through the `admin=
 | --- | --- |
 | `DataVault/index.html` | UI skeleton: access gate, topbar, filter panel, workspace, tabs, table, popover, modal, and script imports. |
 | `DataVault/app.js` | Main module logic: i18n, Firebase flow, UI state, data normalization, filters, sorting, table rendering, comparison, XLSX import. |
-| `DataVault/style.css` | View styles: layout, topbar, filters panel, table, tabs, modal, popover, filter menu, colors, responsiveness. |
+| `DataVault/style.css` | View styles: layout, topbar, filters panel, table, tabs, modal, popover, filter menu, colors, responsiveness, and sheet column configuration, including the `Obrzędy` tab. |
 | `DataVault/xlsxCanonicalParser.js` | Browser-side canonical XLSX parser based on JSZip and XLSX package XML files. |
 | `DataVault/config/FirebaseREADME.md` | Module Firebase setup guide for DataVault. |
 | `DataVault/docs/README.md` | User guide. |
@@ -769,7 +769,7 @@ The code divides sheets into logical groups.
 - `Uszkodzenia Pojazdów`,
 - `Eksplozje Pojazdów`.
 
-`Uszkodzenia Pojazdów` and `Eksplozje Pojazdów` are also listed in `ADMIN_ONLY_SHEETS`. `initUI()` filters them first by admin mode and then by the `toggleVehicleTabs` checkbox state, so they remain hidden in the regular user view even if the vehicle checkbox is checked. In `?admin=1` mode they appear only after the checkbox is checked and receive the `tab--vehicle` class. Their column styles are integrated in `style.css`; the module does not load separate `vehicle-extra.css` or `vehicle-tabs-extension.js` files because column configuration and tab logic are part of the main `style.css` and `app.js` files.
+`Uszkodzenia Pojazdów` and `Eksplozje Pojazdów` are also listed in `ADMIN_ONLY_SHEETS`. `initUI()` filters them first by admin mode and then by the `toggleVehicleTabs` checkbox state, so they remain hidden in the regular user view even if the vehicle checkbox is checked. In `?admin=1` mode they appear only after the checkbox is checked and receive the `tab--vehicle` class. Their column styles are integrated in `style.css`; the `Obrzędy` tab column styles are also part of the same file; the module does not load separate `vehicle-extra.css` or `vehicle-tabs-extension.js` files because column configuration and tab logic are part of the main `style.css` and `app.js` files.
 
 In the vehicle-sheet CSS configuration, the `Koszt IM` column in the `Pojazdy` sheet is a regular visible data column. It uses `min-width: 8ch`, centered text, and standard wrapping, like the `Koszt IM` cost columns in `Bronie Pojazdów` and `Ekwipunek Pojazdów`. It has no `white-space: nowrap` rule, is not hidden, is not merged, and does not require a separate popover resolver.
 

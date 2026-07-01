@@ -751,6 +751,64 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Modlitwy"] th[data-col="Efekt"],
 .tableWrap table[data-sheet="Modlitwy"] td[data-col="Efekt"]{min-width:56ch}
 
+
+/* Obrzędy — szerokości i wyrównania kolumn zakładki / Rites — tab column widths and alignments */
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Rodzaj"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Rodzaj"]{
+  min-width:14ch;
+  text-align:left;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Typ"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Typ"]{
+  min-width:18ch;
+  text-align:left;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Nazwa"]{
+  min-width:26ch;
+  text-align:left;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Opis"]{
+  min-width:56ch;
+  text-align:left;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Efekt"]{
+  min-width:56ch;
+  text-align:left;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Koszt"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Koszt"],
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Dostępność"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Dostępność"]{
+  min-width:4ch;
+  text-align:center;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Koszt IM"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Koszt IM"]{
+  min-width:8ch;
+  text-align:center;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Podręcznik"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Podręcznik"]{
+  min-width:17ch;
+  text-align:left;
+}
+
+.tableWrap table[data-sheet="Obrzędy"] th[data-col="Strona"],
+.tableWrap table[data-sheet="Obrzędy"] td[data-col="Strona"]{
+  min-width:6ch;
+  text-align:center;
+}
+
 /* Talenty */
 .tableWrap table[data-sheet="Talenty"] th[data-col="Typ"],
 .tableWrap table[data-sheet="Talenty"] td[data-col="Typ"]{min-width:14ch}

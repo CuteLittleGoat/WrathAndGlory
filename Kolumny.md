@@ -1,6 +1,6 @@
 # Kolumny — szerokości, wyrównania i łamanie linii
 
-Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`, `style.css`, `obrzedy.css`) oraz aktualnego `data.json`.
+Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`, `style.css`) oraz aktualnego `data.json`.
 
 - Kolejność zakładek pochodzi z `_meta.sheetOrder` w `data.json`.
 - Kolejność kolumn pochodzi z `_meta.columnOrder` (z fallbackiem do realnych kluczy rekordów).
@@ -427,4 +427,4 @@ Tabela ma stały układ: `table-layout: fixed` oraz `width: max-content`.
 ## Aktualizacja 2026-07-01
 - Dodano konfigurację kolumn zakładki `Obrzędy` zgodną z arkuszem `Repozytorium.xlsx`.
 - `LP` pozostaje kolumną techniczną ukrywaną przez DataVault i służy do domyślnego sortowania wpisów.
-- Reguły CSS zakładki `Obrzędy` są utrzymywane w `DataVault/obrzedy.css`, ładowanym po głównym `DataVault/style.css`.
+- Konfiguracja kolumn zakładki `Obrzędy` jest utrzymywana w `DataVault/style.css` razem z pozostałymi regułami kolumn.
