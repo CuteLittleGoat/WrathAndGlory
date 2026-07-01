@@ -1,6 +1,6 @@
 # Kolumny — szerokości, wyrównania i łamanie linii
 
-Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`, `style.css`) oraz aktualnego `data.json`.
+Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`, `style.css`, `obrzedy.css`) oraz aktualnego `data.json`.
 
 - Kolejność zakładek pochodzi z `_meta.sheetOrder` w `data.json`.
 - Kolejność kolumn pochodzi z `_meta.columnOrder` (z fallbackiem do realnych kluczy rekordów).
@@ -277,6 +277,20 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Podręcznik | auto | brak | lewo | standard |
 | Strona | 6ch | brak | lewo | standard |
 
+## Obrzędy
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Rodzaj | 14ch | brak | lewo | standard |
+| Typ | 18ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Efekt | 56ch | brak | lewo | standard |
+| Koszt | 4ch | brak | środek | standard |
+| Dostępność | 4ch | brak | środek | standard |
+| Koszt IM | 8ch | brak | środek | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
 ## Trafienia Krytyczne
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
@@ -409,3 +423,8 @@ Tabela ma stały układ: `table-layout: fixed` oraz `width: max-content`.
 ## Aktualizacja 2026-06-17
 - W zakładce `Eksplozje Pojazdów` aktualna konfiguracja kolumn jest zgodna z `DataVault/style.css`: `Rozmiar Pojazdu` ma `min-width`, `max-width` i `width` po `20ch`, a `Zasięg Rażenia` oraz `Obrażenia` mają `min-width`, `max-width` i `width` po `14ch`.
 - Tabela `Eksplozje Pojazdów` ma stały układ (`table-layout: fixed`) oraz szerokość wynikającą z kolumn (`width: max-content`).
+
+## Aktualizacja 2026-07-01
+- Dodano konfigurację kolumn zakładki `Obrzędy` zgodną z arkuszem `Repozytorium.xlsx`.
+- `LP` pozostaje kolumną techniczną ukrywaną przez DataVault i służy do domyślnego sortowania wpisów.
+- Reguły CSS zakładki `Obrzędy` są utrzymywane w `DataVault/obrzedy.css`, ładowanym po głównym `DataVault/style.css`.
