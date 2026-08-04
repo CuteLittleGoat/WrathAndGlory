@@ -12,6 +12,7 @@ Służy jako centrum uruchamiania pozostałych modułów. Z jednego miejsca moż
 - Rzutu kośćmi,
 - Mapy,
 - Obrazków,
+- Rejestru światów systemu Gilead,
 - a w trybie admina także do Generatora Nazw, Generatora NPC i Audio.
 
 ## Jak otworzyć
@@ -42,7 +43,8 @@ W trybie standardowym zobaczysz:
 - przycisk `Obrazki`,
 - przycisk `Mapa`,
 - przycisk `Kalkulator`,
-- przycisk `Rzut kośćmi`.
+- przycisk `Rzut kośćmi`,
+- mały czerwony przycisk `Gilead` w prawym dolnym rogu panelu.
 
 To jest najprostszy widok dla gracza albo prowadzącego, który nie potrzebuje paneli administracyjnych.
 
@@ -76,6 +78,23 @@ W trybie admina link `Skarbiec Danych` otwiera DataVault z parametrem:
 | `Mapa` | Otwiera zewnętrzny link do mapy w nowej karcie. |
 | `Kalkulator` | Otwiera moduł kalkulatorów. |
 | `Rzut kośćmi` | Otwiera DiceRoller. |
+| `Gilead` | Otwiera w nowej karcie stronę `Main/Gilead.html` z rejestrem światów systemu Gilead. |
+
+## Przycisk Gilead
+
+W prawym dolnym rogu panelu znajduje się mały czerwony przycisk `Gilead`.
+
+Jest widoczny zarówno w widoku standardowym, jak i w widoku admina.
+
+Po kliknięciu otwiera się **nowa karta przeglądarki** ze stroną:
+
+```text
+Main/Gilead.html
+```
+
+Jest to rejestr światów systemu Gilead. Karta z Main pozostaje otwarta, więc możesz do niej wrócić bez ponownego uruchamiania launchera.
+
+Jeżeli po kliknięciu nic się nie dzieje, prawdopodobnie przeglądarka zablokowała nową kartę — zezwól na wyskakujące okna dla tej strony albo kliknij przycisk prawym przyciskiem myszy i wybierz otwarcie w nowej karcie.
 
 ## Linki zewnętrzne: Mapa i Obrazki
 
@@ -115,6 +134,8 @@ Większość modułów otwiera się w tej samej karcie.
 
 `Mapa` i `Obrazki` otwierają się w nowej karcie, ponieważ są linkami zewnętrznymi.
 
+`Gilead` również otwiera się w nowej karcie, aby launcher pozostał dostępny podczas przeglądania rejestru światów.
+
 ## Czyszczenie starych Service Workerów
 
 Strona Main automatycznie próbuje wyrejestrować stare Service Workery.
@@ -138,6 +159,7 @@ albo wyczyść dane strony w przeglądarce.
 | Przycisk prowadzi do starej wersji modułu | Przeglądarka trzyma cache. | Odśwież przez `Ctrl + F5`. |
 | Infoczytnik otwiera inny ekran niż oczekiwano | Tryb standardowy i admin prowadzą do innych punktów Infoczytnika. | Użyj `Main/index.html?admin=1`, jeśli potrzebujesz wyboru GM/test/produkcja. |
 | Skarbiec Danych nie pokazuje panelu admina | Otwarty jest zwykły link DataVault. | Otwórz Main w trybie admina albo dopisz `?admin=1` w DataVault. |
+| `Gilead` nie otwiera nowej karty | Przeglądarka blokuje otwieranie nowych kart. | Zezwól na wyskakujące okna dla strony albo otwórz link ręcznie w nowej karcie. |
 
 ## Krótki workflow
 
@@ -163,6 +185,7 @@ It is the launch center for other modules. From one place you can open:
 - DiceRoller,
 - Map,
 - Images,
+- Gilead system world registry,
 - and, in admin mode, Name Generator, NPC Generator, and Audio.
 
 ## How to open
@@ -193,7 +216,8 @@ In standard mode you will see:
 - `Images` button,
 - `Map` button,
 - `Calculator` button,
-- `DiceRoller` button.
+- `DiceRoller` button,
+- small red `Gilead` button in the bottom-right corner of the panel.
 
 This is the simplest view for a player or GM who does not need administrative panels.
 
@@ -227,6 +251,23 @@ In admin mode, `DataVault` opens DataVault with parameter:
 | `Map` | Opens an external map link in a new tab. |
 | `Calculator` | Opens calculator module. |
 | `DiceRoller` | Opens DiceRoller. |
+| `Gilead` | Opens `Main/Gilead.html`, the Gilead system world registry, in a new tab. |
+
+## Gilead button
+
+A small red `Gilead` button sits in the bottom-right corner of the panel.
+
+It is visible both in standard view and in admin view.
+
+Clicking it opens a **new browser tab** with page:
+
+```text
+Main/Gilead.html
+```
+
+This is the Gilead system world registry. The Main tab stays open, so you can return to it without restarting the launcher.
+
+If nothing happens after clicking, the browser probably blocked the new tab — allow pop-ups for this page, or right-click the button and open it in a new tab manually.
 
 ## External links: Map and Images
 
@@ -266,6 +307,8 @@ Most modules open in the same tab.
 
 `Map` and `Images` open in a new tab because they are external links.
 
+`Gilead` also opens in a new tab, so the launcher stays available while you browse the world registry.
+
 ## Old Service Worker cleanup
 
 Main automatically tries to unregister old Service Workers.
@@ -289,6 +332,7 @@ or clear site data in the browser.
 | A button opens an old module version | Browser cache is stale. | Refresh with `Ctrl + F5`. |
 | Infoczytnik opens a different screen than expected | Standard and admin modes link to different Infoczytnik entry points. | Use `Main/index.html?admin=1` if you need GM/test/production selection. |
 | DataVault does not show admin panel | Normal DataVault link is open. | Open Main in admin mode or add `?admin=1` in DataVault. |
+| `Gilead` does not open a new tab | Browser blocks new tabs. | Allow pop-ups for the page or open the link manually in a new tab. |
 
 ## Quick workflow
 

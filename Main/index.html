@@ -114,6 +114,40 @@
       background: rgba(22, 198, 12, 0.22);
     }
 
+    /* Pasek pod siatką modułów, dosuwający przycisk "Gilead" do prawego dolnego rogu panelu /
+       Bar below the module grid that pins the "Gilead" button to the bottom-right corner of the panel */
+    .secretCtaWrap {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 4px;
+    }
+
+    /* Czerwony wariant CTA "pill" — wyjątek kolorystyczny wyróżniający przycisk na tle zielonej nawigacji /
+       Red "pill" CTA variant — color exception that highlights the button against the green navigation */
+    .btn.secretCta {
+      width: auto;
+      border-color: #ff3b30;
+      background: rgba(255, 59, 48, 0.2);
+      color: #ffe5e3;
+      box-shadow: 0 0 14px rgba(255, 59, 48, 0.35);
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 11px;
+      line-height: 1.1;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+
+    .btn.secretCta:hover {
+      box-shadow: 0 0 16px rgba(255, 59, 48, 0.45);
+      background: rgba(255, 59, 48, 0.28);
+    }
+
+    .btn.secretCta:active {
+      background: rgba(255, 59, 48, 0.36);
+    }
+
     .note {
       margin: 0;
       color: var(--text);
@@ -170,6 +204,11 @@
       <div class="stack">
         <a class="btn" href="../DiceRoller/index.html">Rzut kośćmi</a>
       </div>
+    </div>
+    <!-- Przycisk "Gilead" w prawym dolnym rogu panelu: otwiera rejestr światów Main/Gilead.html w nowej karcie /
+         "Gilead" button in the bottom-right corner of the panel: opens the world registry Main/Gilead.html in a new tab -->
+    <div class="secretCtaWrap">
+      <a class="btn secretCta" href="Gilead.html" target="_blank" rel="noopener noreferrer">Gilead</a>
     </div>
   </main>
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->

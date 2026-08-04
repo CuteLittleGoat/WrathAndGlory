@@ -42,6 +42,7 @@ Tryb admina jest wykrywany po parametrze `admin=1` w query stringu.
 | Plik | Rola |
 | --- | --- |
 | `Main/index.html` | Pełna aplikacja Main: HTML, CSS i JavaScript. |
+| `Main/Gilead.html` | Samodzielna strona z rejestrem światów systemu Gilead, otwierana przyciskiem `Gilead`. |
 | `Main/ZmienneHiperlacza.md` | Źródło dynamicznych linków `Mapa` i `Obrazki`. |
 | `Main/wrath-glory-logo-warhammer.png` | Logo wyświetlane na stronie startowej. |
 | `Main/docs/README.md` | Instrukcja użytkownika. |
@@ -78,6 +79,8 @@ Najważniejsze elementy:
 | `.actions` | Siatka przycisków modułów. |
 | `.stack` | Kontener pojedynczego przycisku i opcjonalnej notatki. |
 | `.btn` | Wspólna klasa przycisków/linków. |
+| `.secretCtaWrap` | Pasek pod siatką `.actions`, wyrównujący CTA do prawej krawędzi panelu. |
+| `.btn.secretCta` | Czerwony wariant CTA typu „pill” użyty przez link `Gilead`. |
 | `.note` | Krótka notatka pomocnicza. |
 | `[data-admin-only="true"]` | Element widoczny tylko w trybie admina. |
 | `[data-infoczytnik-link]` | Link Infoczytnika przełączany zależnie od trybu. |
@@ -97,6 +100,7 @@ Najważniejsze elementy:
 | `Mapa` | Link dynamiczny z `Main/ZmienneHiperlacza.md`. |
 | `Kalkulator` | `../Kalkulator/`. |
 | `Rzut kośćmi` | `../DiceRoller/index.html`. |
+| `Gilead` | `Gilead.html` otwierany w nowej karcie (`target="_blank"`). |
 
 ### Przyciski widoczne tylko w trybie admina
 
@@ -223,6 +227,41 @@ rel="noopener noreferrer"
 ```
 
 Otwierają się w nowej karcie i nie przekazują kontroli przez `window.opener`.
+
+## Przycisk `Gilead`
+
+Pod siatką `.actions`, jako ostatni element kontenera `main`, znajduje się osobny pasek CTA:
+
+```html
+<div class="secretCtaWrap">
+  <a class="btn secretCta" href="Gilead.html" target="_blank" rel="noopener noreferrer">Gilead</a>
+</div>
+```
+
+Charakterystyka:
+
+- jest to zwykły link `<a>`, bez obsługi w JavaScript,
+- cel `Gilead.html` jest ścieżką względną wewnątrz katalogu `Main/`,
+- `target="_blank"` wymusza otwarcie w nowej karcie,
+- `rel="noopener noreferrer"` odcina dostęp przez `window.opener`,
+- link nie ma atrybutu `data-admin-only`, więc jest widoczny w trybie standardowym i w trybie admina,
+- kontener `.secretCtaWrap` używa `display: flex` z `justify-content: flex-end`, co dosuwa przycisk do prawego dolnego rogu panelu.
+
+Styl `.btn.secretCta` jest wariantem wspólnej klasy `.btn` i odpowiada wizualnie przyciskowi `Tajny przycisk!` z `Kalkulator/index.html`:
+
+| Właściwość | Wartość |
+| --- | --- |
+| `border-color` | `#ff3b30` |
+| `background` | `rgba(255, 59, 48, 0.2)` (normal), `rgba(255, 59, 48, 0.28)` (hover), `rgba(255, 59, 48, 0.36)` (active) |
+| `color` | `#ffe5e3` |
+| `box-shadow` | `0 0 14px rgba(255, 59, 48, 0.35)`, hover `0 0 16px rgba(255, 59, 48, 0.45)` |
+| `border-radius` | `999px` |
+| `width` | `auto` |
+| `padding` | `6px 10px` |
+| `font-size` | `11px`, `line-height: 1.1` |
+| `font-weight` | `700`, `letter-spacing: 0.2px` |
+
+W przeciwieństwie do Kalkulatora, Main nie używa overlaya — kliknięcie prowadzi bezpośrednio do osobnej strony.
 
 ## Styl i layout
 
@@ -356,10 +395,11 @@ Main tylko prowadzi do tych modułów.
 6. Dodaj link Infoczytnika z `data-infoczytnik-link`.
 7. Dodaj link DataVault z `data-datavault-link`.
 8. Dodaj linki `Mapa` i `Obrazki` z `data-map-link` i `data-images-link`.
-9. Dodaj parser `ZmienneHiperlacza.md`.
-10. Dodaj przełączanie `Infoczytnik` i `DataVault` zależnie od `?admin=1`.
-11. Dodaj skrypt usuwający stare Service Workery.
-12. Sprawdź tryb standardowy i admin.
+9. Dodaj pod siatką `.actions` kontener `.secretCtaWrap` z linkiem `.btn.secretCta` do `Gilead.html` (`target="_blank"`, `rel="noopener noreferrer"`).
+10. Dodaj parser `ZmienneHiperlacza.md`.
+11. Dodaj przełączanie `Infoczytnik` i `DataVault` zależnie od `?admin=1`.
+12. Dodaj skrypt usuwający stare Service Workery.
+13. Sprawdź tryb standardowy i admin.
 
 ## Testy kontrolne
 
@@ -374,6 +414,8 @@ Main tylko prowadzi do tych modułów.
 | Linki dynamiczne | Ustaw `Mapa:` i `Obrazki:` w `ZmienneHiperlacza.md`. | Przyciski dostają właściwe `href`. |
 | Brak linków dynamicznych | Usuń lub zepsuj `ZmienneHiperlacza.md`. | Strona działa, a błąd pojawia się w konsoli. |
 | Service Worker cleanup | Otwórz stronę w przeglądarce z dawnym SW. | Skrypt próbuje wyrejestrować stare rejestracje. |
+| Przycisk `Gilead` | Kliknij `Gilead` w prawym dolnym rogu panelu. | W nowej karcie otwiera się `Main/Gilead.html`, a karta z Main pozostaje otwarta. |
+| Widoczność `Gilead` | Otwórz Main w trybie standardowym i w trybie admina. | Przycisk `Gilead` jest widoczny w obu trybach. |
 
 ---
 
@@ -421,6 +463,7 @@ Admin mode is detected by `admin=1` query string parameter.
 | File | Role |
 | --- | --- |
 | `Main/index.html` | Full Main application: HTML, CSS, and JavaScript. |
+| `Main/Gilead.html` | Standalone Gilead system world registry page opened by the `Gilead` button. |
 | `Main/ZmienneHiperlacza.md` | Source of dynamic `Map` and `Images` links. |
 | `Main/wrath-glory-logo-warhammer.png` | Logo displayed on the start page. |
 | `Main/docs/README.md` | User guide. |
@@ -457,6 +500,8 @@ Important elements:
 | `.actions` | Module button grid. |
 | `.stack` | Container for one button and optional note. |
 | `.btn` | Shared button/link class. |
+| `.secretCtaWrap` | Bar below the `.actions` grid aligning the CTA to the right panel edge. |
+| `.btn.secretCta` | Red "pill" CTA variant used by the `Gilead` link. |
 | `.note` | Short helper note. |
 | `[data-admin-only="true"]` | Element visible only in admin mode. |
 | `[data-infoczytnik-link]` | Infoczytnik link switched by mode. |
@@ -476,6 +521,7 @@ Important elements:
 | `Mapa` | Dynamic link from `Main/ZmienneHiperlacza.md`. |
 | `Kalkulator` | `../Kalkulator/`. |
 | `Rzut kośćmi` | `../DiceRoller/index.html`. |
+| `Gilead` | `Gilead.html` opened in a new tab (`target="_blank"`). |
 
 ### Buttons visible only in admin mode
 
@@ -602,6 +648,41 @@ rel="noopener noreferrer"
 ```
 
 They open in a new tab and do not pass control through `window.opener`.
+
+## `Gilead` button
+
+Below the `.actions` grid, as the last element of the `main` container, there is a separate CTA bar:
+
+```html
+<div class="secretCtaWrap">
+  <a class="btn secretCta" href="Gilead.html" target="_blank" rel="noopener noreferrer">Gilead</a>
+</div>
+```
+
+Characteristics:
+
+- it is a plain `<a>` link with no JavaScript handling,
+- the `Gilead.html` target is a relative path inside the `Main/` directory,
+- `target="_blank"` forces opening in a new tab,
+- `rel="noopener noreferrer"` cuts off access through `window.opener`,
+- the link has no `data-admin-only` attribute, so it is visible in both standard and admin mode,
+- the `.secretCtaWrap` container uses `display: flex` with `justify-content: flex-end`, which pins the button to the bottom-right corner of the panel.
+
+The `.btn.secretCta` style is a variant of the shared `.btn` class and visually matches the `Tajny przycisk!` button from `Kalkulator/index.html`:
+
+| Property | Value |
+| --- | --- |
+| `border-color` | `#ff3b30` |
+| `background` | `rgba(255, 59, 48, 0.2)` (normal), `rgba(255, 59, 48, 0.28)` (hover), `rgba(255, 59, 48, 0.36)` (active) |
+| `color` | `#ffe5e3` |
+| `box-shadow` | `0 0 14px rgba(255, 59, 48, 0.35)`, hover `0 0 16px rgba(255, 59, 48, 0.45)` |
+| `border-radius` | `999px` |
+| `width` | `auto` |
+| `padding` | `6px 10px` |
+| `font-size` | `11px`, `line-height: 1.1` |
+| `font-weight` | `700`, `letter-spacing: 0.2px` |
+
+Unlike the Calculator, Main uses no overlay — the click leads directly to a separate page.
 
 ## Style and layout
 
@@ -735,10 +816,11 @@ Main only links to those modules.
 6. Add Infoczytnik link with `data-infoczytnik-link`.
 7. Add DataVault link with `data-datavault-link`.
 8. Add `Map` and `Images` links with `data-map-link` and `data-images-link`.
-9. Add `ZmienneHiperlacza.md` parser.
-10. Add Infoczytnik and DataVault switching by `?admin=1`.
-11. Add script removing old Service Workers.
-12. Test standard and admin modes.
+9. Add a `.secretCtaWrap` container below the `.actions` grid with a `.btn.secretCta` link to `Gilead.html` (`target="_blank"`, `rel="noopener noreferrer"`).
+10. Add `ZmienneHiperlacza.md` parser.
+11. Add Infoczytnik and DataVault switching by `?admin=1`.
+12. Add script removing old Service Workers.
+13. Test standard and admin modes.
 
 ## Control tests
 
@@ -753,3 +835,5 @@ Main only links to those modules.
 | Dynamic links | Set `Mapa:` and `Obrazki:` in `ZmienneHiperlacza.md`. | Buttons receive correct `href`. |
 | Missing dynamic links | Remove or break `ZmienneHiperlacza.md`. | Page still works and error appears in console. |
 | Service Worker cleanup | Open page in browser with old SW. | Script attempts to unregister old registrations. |
+| `Gilead` button | Click `Gilead` in the bottom-right corner of the panel. | `Main/Gilead.html` opens in a new tab and the Main tab stays open. |
+| `Gilead` visibility | Open Main in standard and admin mode. | The `Gilead` button is visible in both modes. |

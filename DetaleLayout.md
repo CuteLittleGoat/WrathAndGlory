@@ -45,17 +45,25 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 #### 2.2 Dodatkowe wartości kolorów (literalne)
 - Tła przycisków: `rgba(22, 198, 12, 0.08)` (normal), `rgba(22, 198, 12, 0.14)` (hover), `rgba(22, 198, 12, 0.22)` (active).
 - Cień hover na przycisku: `0 0 18px rgba(22, 198, 12, 0.3)`.
+- Czerwony wariant CTA `.btn.secretCta` (przycisk `Gilead`):
+  - obramowanie: `#ff3b30`,
+  - tło: `rgba(255, 59, 48, 0.2)` (normal), `rgba(255, 59, 48, 0.28)` (hover), `rgba(255, 59, 48, 0.36)` (active),
+  - tekst: `#ffe5e3`,
+  - poświata: `0 0 14px rgba(255, 59, 48, 0.35)` (normal), `0 0 16px rgba(255, 59, 48, 0.45)` (hover).
 
 ### 3) Layout i elementy UI
 - `body`: flex, centrowanie w pionie i poziomie, padding `24px`.
 - `main`: karta o szerokości `min(860px, 100%)`, tło `--panel`, ramka `2px` `--border`, cień `--glow`, zaokrąglenia `--radius`, padding `32px 32px 28px`.
 - `.actions`: grid z kolumnami `repeat(auto-fit, minmax(220px, 1fr))` i odstępem `18px 20px`.
 - `.btn`: blokowy przycisk z animacją `transform` i `background` przy hover/active.
+- `.secretCtaWrap`: pasek pod siatką `.actions`, `width: 100%`, `display: flex`, `justify-content: flex-end`, `margin-top: 4px`; dosuwa CTA do prawego dolnego rogu karty.
+- `.btn.secretCta`: kompaktowy „pill” — `width: auto`, `border-radius: 999px`, `padding: 6px 10px`, `font-size: 11px`, `line-height: 1.1`, `font-weight: 700`, `letter-spacing: 0.2px`.
 
 ### 4) Zwijanie/rozwijanie > 9 linii
 - Brak funkcjonalności clamp w module Main.
 
 ### 5) Wyjątki i formatowanie specjalne
+- W `Main/index.html` przycisk `Gilead` (`.btn.secretCta`) jest wyjątkiem kolorystycznym: używa czerwonej palety CTA zamiast zielonej palety nawigacyjnej i jest jedynym elementem wyrównanym do prawej krawędzi karty pod siatką modułów.
 - W `Kalkulator/index.html` dodano wyjątek kolorystyczny:
   - przycisk `.btn.secret` celowo używa czerwonej palety, aby odróżniał się od zielonych przycisków nawigacyjnych.
   - wartości kolorów:
