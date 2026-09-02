@@ -861,6 +861,49 @@ Jest: `accessTitle`, `accessDescription`, `accessPasswordLabel`, `accessUnlockBu
 | Testy w przeglądarce | 22 przypadki w Chromium (Playwright) na realnie serwowanym module. | 22/22 |
 | Spójność danych | Porównanie 1551 ścieżek z manifestu z zawartością sklonowanego repozytorium `AudioRPG`. | 1551/1551, zero braków, zero plików osieroconych |
 
+### Korekta z 2 września 2026 — język komunikatów i paleta kolorów
+
+Na uwagę użytkownika, że `DetaleLayout.md` jest repozytorium używanych kolorów, a panel `?admin=1` jest narzędziem czysto technicznym, wprowadzono dwie poprawki.
+
+#### Kolory — wyłącznie z palety modułu
+
+Pierwsza wersja wprowadzała cztery kolory spoza palety: `#6b4a1f`, `#e0b877`, `#24503a`, `#7fd6a1` dla pastylki statusu oraz `#04140a` dla tekstu przycisku. Było to naruszenie zasady spójności.
+
+| Element | Było | Jest |
+| --- | --- | --- |
+| Pastylka, stan poprawny | `border-color: #24503a`, `color: #7fd6a1` (zielony wariant) oraz `#6b4a1f` / `#e0b877` (bursztynowy przy zablokowaniu) | Domyślny wygląd `.status-pill`, bez klasy modyfikującej. Zielony w obu stanach poprawnych. |
+| Pastylka, błąd | brak osobnego stanu | `.status-pill.is-error`: `border-color: var(--danger)`, `color: #ffd6d6`, `background: rgba(255, 95, 95, 0.12)` |
+| Tekst `.btn.primary` | `#04140a` | `#031605` — baza gradientu `--bg` modułu, ta sama wartość, której DataVault używa w `--bg` |
+
+Zasada, którą przyjęto: **czerwień wyłącznie dla błędów**. Zablokowane archiwum to stan poprawny, a nie awaria, więc pozostaje zielone. Wszystkie użyte wartości są udokumentowane w sekcji „Moduł — Audio" w `DetaleLayout.md`; `#ffd6d6` i `rgba(255, 95, 95, α)` figurują tam już wcześniej przy aktywnym `.loop-btn`.
+
+#### Język komunikatów — podział na dwie warstwy
+
+Panel administracyjny służy do zarządzania listami ulubionych i jest narzędziem technicznym, więc statusy oraz diagnostyka mówią wprost, co się stało i co sprawdzić. Językiem lore pozostaje wyłącznie okno bramki, które ma wyglądać i brzmieć identycznie jak w `DataVault`.
+
+| Zakres | Język | Przykład |
+| --- | --- | --- |
+| Okno bramki: tytuł, opis, etykieta, przycisk | lore, identycznie jak DataVault | „Dostęp do danych z klauzulą tajności K.O.Z.A." |
+| Komunikaty o samym haśle | lore, identycznie jak DataVault | „Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona." |
+| Statusy i etykiety przycisków | techniczny | „Archiwum: zablokowane", „Odblokuj archiwum" |
+| Diagnostyka infrastruktury | techniczny | „Bramka nie znalazła manifestu archiwum (HTTP 404). Sprawdź, czy plik audio-manifest.json leży w katalogu głównym prywatnego repozytorium AudioRPG." |
+
+Uzasadnienie podziału: komunikat o błędnym haśle jest częścią doświadczenia użytkownika i klimat mu nie szkodzi. Komunikat o brakującym pliku służy wyłącznie do naprawy usterki, a ozdobny wstęp opóźnia dotarcie do informacji, która ma znaczenie.
+
+Zmienione etykiety:
+
+| Klucz | Było | Jest |
+| --- | --- | --- |
+| `unlockLibrary` | Rytuał Dostępu | Odblokuj archiwum |
+| `lockLibrary` | Zapieczętuj dane | Zablokuj archiwum |
+| `libraryDemoOnly` | Archiwum: zapieczętowane | Archiwum: zablokowane |
+| `libraryUnlocked` | Archiwum: odpieczętowane | Archiwum: odblokowane |
+| `accessSilent` | Duch Maszyny milczy… | Brak połączenia z bramką dostępu. Sprawdź internet oraz adres bramki w stałej AUDIO_GATE_BASE. |
+| `accessExpired` | Duch Maszyny odmawia dostępu… | Sesja wygasła. Podaj hasło ponownie. |
+| `accessManifestMissing` | Duch Maszyny wykrył pusty relikwiarz danych… | Bramka nie znalazła manifestu archiwum (HTTP {status})… |
+
+Dodano też osobny klucz `alertPlaybackFailed` dla nieudanego odtworzenia, wcześniej korzystającego z `accessSilent`. Funkcję `sealArchive()` przemianowano na `lockArchive()`.
+
 ### Zaktualizowana dokumentacja
 
 - `Audio/docs/README.md` — instrukcja użytkownika, obie wersje językowe: dwie warstwy biblioteki, Rytuał Dostępu, komunikaty, statusy.

@@ -299,9 +299,11 @@
     /* --- Przycisk podstawowy bramki dostępu, zgodny z modułem DataVault / Primary access-gate button, matching the DataVault module --- */
     .btn.primary {
       background: var(--text);
-      /* Ciemny tekst na jasnej zieleni; --bg w tym module jest gradientem, więc nie nadaje się na kolor tekstu */
-      /* Dark text on light green; --bg is a gradient here, so it cannot be used as a text colour */
-      color: #04140a;
+      /* Ciemny tekst na jasnej zieleni. --bg w tym module jest gradientem, więc jako kolor
+         tekstu bierzemy jego bazę #031605 — tę samą, której DataVault używa w --bg. */
+      /* Dark text on light green. --bg is a gradient here, so the text colour uses its
+         base #031605 — the same value DataVault uses for --bg. */
+      color: #031605;
       border-color: rgba(22, 198, 12, 0.35);
     }
 
@@ -559,9 +561,17 @@
       }
     }
 
-    /* --- Statusy zapieczętowania biblioteki / Library seal status pills --- */
-    .status-pill.is-locked { border-color: #6b4a1f; color: #e0b877; }
-    .status-pill.is-unlocked { border-color: #24503a; color: #7fd6a1; }
+    /* --- Statusy dostępu do archiwum / Archive access status pills --- */
+    /* Stan poprawny korzysta z domyslnego zielonego wygladu .status-pill.
+       Czerwony jest zarezerwowany wylacznie dla bledow i uzywa kolorow modulu:
+       --danger, #ffd6d6 oraz rgba(255, 95, 95, a) - tych samych co aktywny .loop-btn.
+       The healthy state keeps the default green pill. Red is reserved for errors only
+       and reuses the module palette shared with the active .loop-btn. */
+    .status-pill.is-error {
+      border-color: var(--danger);
+      color: #ffd6d6;
+      background: rgba(255, 95, 95, 0.12);
+    }
   </style>
 </head>
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
@@ -582,7 +592,7 @@
         <span class="status-pill" id="manifestStatus">Manifest: brak danych</span>
         <span class="status-pill" id="firebaseStatus">Firebase: oczekiwanie</span>
         <span class="status-pill" id="favoritesStatus">Ulubione: 0 list</span>
-        <span class="status-pill is-locked" id="libraryStatus">Biblioteka: tylko demo</span>
+        <span class="status-pill" id="libraryStatus">Archiwum: zablokowane</span>
       </div>
     </header>
 
@@ -827,8 +837,8 @@ const translations = {
           manifestFetchError: "Nie udało się pobrać manifestu.",
           manifestNoData: "Manifest nie zawiera danych.",
           defaultListName: "Ulubione",
-          unlockLibrary: "Rytuał Dostępu",
-          lockLibrary: "Zapieczętuj dane",
+          unlockLibrary: "Odblokuj archiwum",
+          lockLibrary: "Zablokuj archiwum",
           accessTitle: "Dostęp do danych z klauzulą tajności K.O.Z.A.",
           accessDescription: "Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.",
           accessPasswordLabel: "Litania Dostępu",
@@ -836,11 +846,12 @@ const translations = {
           accessWorking: "Trwa Rytuał Uwierzytelnienia...",
           accessEmpty: "Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana.",
           accessRejected: "Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona.",
-          accessSilent: "Duch Maszyny milczy: nie udało się załadować prywatnych danych.",
-          accessExpired: "Duch Maszyny odmawia dostępu: Rytuał Uwierzytelnienia nie został ukończony.",
-          accessManifestMissing: "Duch Maszyny wykrył pusty relikwiarz danych: bramka nie odnalazła manifestu archiwum (błąd {status}). Sprawdź, czy plik audio-manifest.json leży w katalogu głównym repozytorium prywatnego.",
-          libraryDemoOnly: "Archiwum: zapieczętowane",
-          libraryUnlocked: "Archiwum: odpieczętowane",
+          accessSilent: "Brak połączenia z bramką dostępu. Sprawdź internet oraz adres bramki w stałej AUDIO_GATE_BASE.",
+          accessExpired: "Sesja wygasła. Podaj hasło ponownie.",
+          accessManifestMissing: "Bramka nie znalazła manifestu archiwum (HTTP {status}). Sprawdź, czy plik audio-manifest.json leży w katalogu głównym prywatnego repozytorium AudioRPG.",
+          alertPlaybackFailed: "Nie udało się odtworzyć dźwięku. Bramka nie wydała pliku.",
+          libraryDemoOnly: "Archiwum: zablokowane",
+          libraryUnlocked: "Archiwum: odblokowane",
           libraryError: "Archiwum: błąd wczytywania",
         },
         placeholders: {
@@ -911,8 +922,8 @@ const translations = {
           manifestFetchError: "Failed to fetch the manifest.",
           manifestNoData: "The manifest contains no data.",
           defaultListName: "Favorites",
-          unlockLibrary: "Rite of Access",
-          lockLibrary: "Seal the data",
+          unlockLibrary: "Unlock archive",
+          lockLibrary: "Lock archive",
           accessTitle: "Access to data classified under the K.O.Z.A. seal",
           accessDescription: "The data is sealed by Machine Spirit protocols. Recite the Litany of Access to begin the Rite of Authentication.",
           accessPasswordLabel: "Litany of Access",
@@ -920,11 +931,12 @@ const translations = {
           accessWorking: "The Rite of Authentication is under way...",
           accessEmpty: "The angered Machine Spirit replies: the Litany of Access has not been recited.",
           accessRejected: "The angered Machine Spirit replies: the Litany of Access was rejected.",
-          accessSilent: "The Machine Spirit is silent: could not load private data.",
-          accessExpired: "The Machine Spirit denies access: the Rite of Authentication has not been completed.",
-          accessManifestMissing: "The Machine Spirit found an empty data reliquary: the gateway could not find the archive manifest (error {status}). Check that audio-manifest.json sits in the root of the private repository.",
-          libraryDemoOnly: "Archive: sealed",
-          libraryUnlocked: "Archive: unsealed",
+          accessSilent: "Cannot reach the access gateway. Check your connection and the gateway address in the AUDIO_GATE_BASE constant.",
+          accessExpired: "Session expired. Enter the password again.",
+          accessManifestMissing: "The gateway could not find the archive manifest (HTTP {status}). Check that audio-manifest.json sits in the root of the private AudioRPG repository.",
+          alertPlaybackFailed: "Could not play the sound. The gateway did not return the file.",
+          libraryDemoOnly: "Archive: locked",
+          libraryUnlocked: "Archive: unlocked",
           libraryError: "Archive: load error",
         },
         placeholders: {
@@ -1193,7 +1205,7 @@ const translations = {
       // Status biblioteki informuje, czy warstwa chroniona jest dostępna
       // The library status shows whether the protected tier is available
       if (libraryStatus) {
-        // Trzy stany zamiast dwóch: odpieczętowane, zapieczętowane oraz błąd wczytywania.
+        // Trzy stany zamiast dwóch: odblokowane, zablokowane oraz błąd wczytywania.
         // Bez trzeciego stanu awaria bramki wyglądała jak normalnie zamknięte archiwum.
         // Three states instead of two: unsealed, sealed, and load error. Without the third
         // one a gateway failure looked exactly like a normally closed archive.
@@ -1204,8 +1216,9 @@ const translations = {
           libraryStatus.textContent = state.libraryUnlocked ? t.libraryUnlocked : t.libraryDemoOnly;
           libraryStatus.title = "";
         }
-        libraryStatus.classList.toggle("is-unlocked", state.libraryUnlocked && !state.libraryError);
-        libraryStatus.classList.toggle("is-locked", !state.libraryUnlocked || Boolean(state.libraryError));
+        // Czerwień tylko przy błędzie. Zablokowane archiwum to stan poprawny, więc zostaje zielone.
+        // Red only on error. A locked archive is a healthy state, so it stays green.
+        libraryStatus.classList.toggle("is-error", Boolean(state.libraryError));
       }
       const unlockLabel = state.libraryUnlocked ? t.lockLibrary : t.unlockLibrary;
       if (unlockLibrary) unlockLibrary.textContent = unlockLabel;
@@ -1572,7 +1585,7 @@ const translations = {
           showAccessGate(labels.accessExpired);
           return;
         }
-        alert(labels.accessSilent);
+        alert(labels.alertPlaybackFailed);
         return;
       }
 
@@ -1643,7 +1656,7 @@ const translations = {
         if (current?.audio !== audio) {
           return;
         }
-        alert(translations[currentLanguage].labels.accessSilent);
+        alert(translations[currentLanguage].labels.alertPlaybackFailed);
         stopPlayback(playbackRoot);
       });
       audio.play().catch(() => {
@@ -1651,7 +1664,7 @@ const translations = {
         if (current?.audio !== audio) {
           return;
         }
-        alert(translations[currentLanguage].labels.accessSilent);
+        alert(translations[currentLanguage].labels.alertPlaybackFailed);
         stopPlayback(playbackRoot);
       });
     };
@@ -2358,7 +2371,7 @@ const translations = {
         } catch (error) {
           // Brak dostępu do warstwy chronionej nie może zablokować warstwy demo,
           // ale musi być widoczny. Wcześniej ten błąd trafiał tylko do konsoli,
-          // przez co awaria wyglądała identycznie jak zwykłe zapieczętowanie.
+          // przez co awaria wyglądała identycznie jak zwykłe zablokowanie archiwum.
           // Losing the protected tier must not take the demo tier down, but it must be
           // visible. This error used to go to the console only, so a real failure looked
           // exactly like a normally sealed archive.
@@ -2801,10 +2814,10 @@ const translations = {
       }
     };
 
-    // --- Zapieczętowanie archiwum / Sealing the archive ---
+    // --- Zablokowanie archiwum / Locking the archive ---
     // Kasuje sesję na tym urządzeniu i przeładowuje manifesty do samej warstwy demo.
     // Clears the session on this device and reloads manifests down to the demo tier only.
-    const sealArchive = async () => {
+    const lockArchive = async () => {
       storeSession(null);
       signedUrlCache.clear();
       await loadManifests();
@@ -2813,7 +2826,7 @@ const translations = {
 
     const handleUnlockClick = () => {
       if (state.libraryUnlocked) {
-        sealArchive().catch((error) => console.error(error));
+        lockArchive().catch((error) => console.error(error));
         return;
       }
       showAccessGate();

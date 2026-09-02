@@ -46,11 +46,11 @@ Biblioteka dźwięków składa się z dwóch części i widać je na jednej wsp�
 
 Po odblokowaniu archiwum obie warstwy mieszają się w jedną alfabetyczną listę. Nie musisz pamiętać, który dźwięk skąd pochodzi — po prostu klikasz.
 
-Dopóki archiwum jest zapieczętowane, widzisz wyłącznie warstwę demo. Jeżeli masz listy ulubionych zawierające dźwięki z archiwum, ich pozycje będą oznaczone jako „(brak w manifeście)” do czasu odblokowania.
+Dopóki archiwum jest zablokowane, widzisz wyłącznie warstwę demo. Jeżeli masz listy ulubionych zawierające dźwięki z archiwum, ich pozycje będą oznaczone jako „(brak w manifeście)” do czasu odblokowania.
 
-## Odblokowanie archiwum — Rytuał Dostępu
+## Odblokowanie archiwum
 
-Kliknij `Rytuał Dostępu`. Przycisk znajdziesz:
+Kliknij `Odblokuj archiwum`. Przycisk znajdziesz:
 
 - w widoku użytkownika — pod nawigacją po prawej stronie,
 - w widoku admina — na pasku narzędzi u góry.
@@ -61,18 +61,21 @@ Pojawi się okno „Dostęp do danych z klauzulą tajności K.O.Z.A.” — to s
 2. Kliknij `Rozpocznij Rytuał`.
 3. Okno zniknie, a lista dźwięków uzupełni się o całe archiwum.
 
-**Hasło podajesz raz na 30 dni na danym urządzeniu.** Nie pojawia się przy każdym odtworzeniu dźwięku. Możesz zamknąć przeglądarkę i wrócić następnego dnia — archiwum nadal będzie odpieczętowane.
+**Hasło podajesz raz na 30 dni na danym urządzeniu.** Nie pojawia się przy każdym odtworzeniu dźwięku. Możesz zamknąć przeglądarkę i wrócić następnego dnia — archiwum nadal będzie odblokowane.
 
-Aby zamknąć dostęp wcześniej, kliknij ten sam przycisk, który po odblokowaniu nosi napis `Zapieczętuj dane`. Sesja zostanie skasowana na tym urządzeniu.
+Aby zamknąć dostęp wcześniej, kliknij ten sam przycisk, który po odblokowaniu nosi napis `Zablokuj archiwum`. Sesja zostanie skasowana na tym urządzeniu.
 
-### Komunikaty w oknie Rytuału
+### Komunikaty w oknie bramki
 
 | Komunikat | Znaczenie | Co zrobić |
 | --- | --- | --- |
 | Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana. | Pole hasła było puste. | Wpisz hasło. |
 | Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona. | Hasło jest nieprawidłowe. | Sprawdź pisownię i spróbuj ponownie. |
-| Duch Maszyny milczy: nie udało się załadować prywatnych danych. | Brak połączenia z bramką dostępu. | Sprawdź internet. Jeżeli problem się powtarza, zgłoś adminowi technicznemu. |
-| Duch Maszyny odmawia dostępu: Rytuał Uwierzytelnienia nie został ukończony. | Sesja wygasła po 30 dniach. | Wpisz hasło ponownie. |
+| Brak połączenia z bramką dostępu. Sprawdź internet oraz adres bramki w stałej AUDIO\_GATE\_BASE. | Bramka nie odpowiada. | Sprawdź internet. Jeżeli problem się powtarza, zgłoś adminowi technicznemu. |
+| Sesja wygasła. Podaj hasło ponownie. | Minęło 30 dni od ostatniego logowania. | Wpisz hasło ponownie. |
+| Bramka nie znalazła manifestu archiwum (HTTP 404)… | Hasło było poprawne, ale bramka nie widzi pliku manifestu. | Sprawdź, czy `audio-manifest.json` leży w katalogu głównym prywatnego repozytorium `AudioRPG` i czy nazwa zgadza się co do znaku. |
+
+Dwa pierwsze komunikaty dotyczą samego hasła i są napisane językiem lore, tak samo jak w module `DataVault`. Pozostałe to diagnostyka techniczna i mówią wprost, co sprawdzić.
 
 ## Widok użytkownika
 
@@ -182,7 +185,7 @@ Przycisk `Wczytaj manifest` ponownie ładuje bazę dźwięków.
 Moduł pobiera wtedy dwie listy:
 
 - listę warstwy demo z pliku `AudioManifestDemo.json` — zawsze,
-- listę archiwum z bramki dostępu — tylko jeżeli archiwum jest odpieczętowane.
+- listę archiwum z bramki dostępu — tylko jeżeli archiwum jest odblokowane.
 
 Po poprawnym wczytaniu status manifestu pokazuje łączną liczbę pozycji.
 
@@ -320,7 +323,9 @@ W adminie widoczne są statusy:
 | Manifest | Informuje, ile pozycji zostało wczytanych. |
 | Firebase | Informuje, czy moduł używa synchronizacji, czy ustawień lokalnych. |
 | Ulubione | Pokazuje liczbę list ulubionych. |
-| Archiwum | `zapieczętowane` — widać tylko warstwę demo. `odpieczętowane` — widać całą bibliotekę. |
+| Archiwum | `zablokowane` — widać tylko warstwę demo. `odblokowane` — widać całą bibliotekę. `błąd wczytywania` — coś nie zadziałało; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
+
+Pastylki statusów są zielone, gdy wszystko jest w porządku. Czerwona pastylka oznacza wyłącznie błąd. Zablokowane archiwum **nie** jest błędem, więc pozostaje zielone.
 
 ## Dobre praktyki podczas sesji
 
@@ -342,12 +347,12 @@ W adminie widoczne są statusy:
 | Firebase: brak konfiguracji | Brakuje konfiguracji Firebase. | Zgłoś adminowi technicznemu, jeżeli potrzebna jest synchronizacja. |
 | Brak linku do pliku audio | Manifest nie ma poprawnego linku do pliku. | Sprawdź dany wpis w manifeście. |
 | Brak wyników po filtrze | Filtry ukryły wszystkie dźwięki. | Wyczyść wyszukiwarkę albo zaznacz tagi ponownie. |
-| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zapieczętowanym dostępie — kliknij `Rytuał Dostępu`. Jeżeli archiwum jest odpieczętowane, usuń wpis z listy. |
+| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zablokowanym dostępie — kliknij `Odblokuj archiwum`. Jeżeli archiwum jest odblokowane, usuń wpis z listy. |
 
 ## Krótki workflow — przygotowanie sesji
 
 1. Otwórz `Audio/index.html?admin=1`.
-2. Kliknij `Rytuał Dostępu` i wpisz Litanię Dostępu, żeby odpieczętować archiwum.
+2. Kliknij `Odblokuj archiwum` i wpisz hasło grupy.
 3. Znajdź najważniejsze dźwięki przez wyszukiwarkę i tagi.
 4. Dodaj najczęstsze dźwięki do `Widoku głównego`.
 5. Utwórz listy tematyczne.
@@ -405,13 +410,13 @@ The sound library has two parts and both appear in one shared list:
 | Demo | Free sounds available publicly. | No. Works as soon as the module opens. |
 | Archive | Copyright-protected sounds. | Yes. One Litany of Access. |
 
-Once the archive is unsealed, both tiers merge into a single alphabetical list. You do not have to remember which sound comes from where — you just click.
+Once the archive is unlocked, both tiers merge into a single alphabetical list. You do not have to remember which sound comes from where — you just click.
 
-While the archive stays sealed, only the demo tier is visible. Favorite lists containing archive sounds will show those entries as "missing from the manifest" until you unlock it.
+While the archive stays locked, only the demo tier is visible. Favorite lists containing archive sounds will show those entries as "missing from the manifest" until you unlock it.
 
-## Unlocking the archive — the Rite of Access
+## Unlocking the archive
 
-Click `Rite of Access`. You will find the button:
+Click `Unlock archive`. You will find the button:
 
 - in user view — below the navigation on the right,
 - in admin view — on the toolbar at the top.
@@ -422,9 +427,9 @@ A window titled "Access to data classified under the K.O.Z.A. seal" appears — 
 2. Click `Begin the Rite`.
 3. The window closes and the sound list fills up with the whole archive.
 
-**You enter the password once per 30 days per device.** It never appears while playing sounds. You can close the browser and come back the next day — the archive stays unsealed.
+**You enter the password once per 30 days per device.** It never appears while playing sounds. You can close the browser and come back the next day — the archive stays unlocked.
 
-To close access earlier, click the same button, which now reads `Seal the data`. The session is cleared on that device.
+To close access earlier, click the same button, which now reads `Lock archive`. The session is cleared on that device.
 
 ### Messages in the Rite window
 
@@ -432,8 +437,11 @@ To close access earlier, click the same button, which now reads `Seal the data`.
 | --- | --- | --- |
 | The angered Machine Spirit replies: the Litany of Access has not been recited. | The password field was empty. | Type the password. |
 | The angered Machine Spirit replies: the Litany of Access was rejected. | The password is wrong. | Check the spelling and try again. |
-| The Machine Spirit is silent: could not load private data. | The access gateway cannot be reached. | Check your internet connection. If it keeps happening, contact your technical admin. |
-| The Machine Spirit denies access: the Rite of Authentication has not been completed. | The session expired after 30 days. | Enter the password again. |
+| Cannot reach the access gateway. Check your connection and the gateway address in the AUDIO\_GATE\_BASE constant. | The gateway is not responding. | Check your internet connection. If it keeps happening, contact your technical admin. |
+| Session expired. Enter the password again. | 30 days have passed since the last login. | Enter the password again. |
+| The gateway could not find the archive manifest (HTTP 404)… | The password was correct but the gateway cannot see the manifest file. | Check that `audio-manifest.json` sits in the root of the private `AudioRPG` repository under exactly that name. |
+
+The first two messages concern the password itself and keep the lore wording, exactly as in the `DataVault` module. The rest are technical diagnostics and say plainly what to check.
 
 ## User view
 
@@ -543,7 +551,7 @@ In admin view you can:
 The module then fetches two lists:
 
 - the demo tier list from `AudioManifestDemo.json` — always,
-- the archive list from the access gateway — only when the archive is unsealed.
+- the archive list from the access gateway — only when the archive is unlocked.
 
 After successful loading, manifest status shows the total item count.
 
@@ -681,7 +689,9 @@ Admin view shows statuses:
 | Manifest | How many items have been loaded. |
 | Firebase | Whether the module uses synchronization or local settings. |
 | Favorites | Number of favorite lists. |
-| Archive | `sealed` — only the demo tier is visible. `unsealed` — the whole library is visible. |
+| Archive | `locked` — only the demo tier is visible. `unlocked` — the whole library is visible. `load error` — something failed; hover the pill for the detail. |
+
+Status pills are green when everything is fine. A red pill means an error and nothing else. A locked archive is **not** an error, so it stays green.
 
 ## Session best practices
 

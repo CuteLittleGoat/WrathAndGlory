@@ -604,15 +604,24 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Moduł korzysta ze wspólnego arkusza `shared/access-gate.css`, tego samego co `DataVault` i `GeneratorNPC` — podpiętego w `<head>` przez `<link rel="stylesheet" href="../shared/access-gate.css">`.
 - Znaczniki bramki są zgodne ze wzorcem DataVault: `#accessGate` → `.accessGate__card` → `.accessGate__iconSlot` (ikona `../IkonaPowiadomien2.png`, 72×72) → nagłówek → opis → `#accessForm` z siatką `.accessGate__credentials` → `.accessGate__error`.
 - Widoczność sterowana atrybutem `hidden` (`.accessGate[hidden] { display: none; }`), a nie klasą.
-- Do arkusza modułu dodano klasę `.btn.primary`, której Audio wcześniej nie miało: `background: var(--text)`, `color: #04140a`, `border-color: rgba(22, 198, 12, 0.35)`, `:hover` z `filter: brightness(1.08)`. Bez niej przycisk „Rozpocznij Rytuał” byłby obrysowany zamiast wypełnionego i odbiegałby od DataVault.
-- Kolor tekstu przycisku podany literalnie, ponieważ `--bg` w tym module jest gradientem i nie nadaje się na wartość `color`.
+- Do arkusza modułu dodano klasę `.btn.primary`, której Audio wcześniej nie miało: `background: var(--text)`, `color: #031605`, `border-color: rgba(22, 198, 12, 0.35)`, `:hover` z `filter: brightness(1.08)`. Bez niej przycisk „Rozpocznij Rytuał” byłby obrysowany zamiast wypełnionego i odbiegałby od DataVault.
+- Kolor tekstu przycisku podany literalnie jako `#031605`, ponieważ `--bg` w tym module jest gradientem i nie nadaje się na wartość `color`. Wartość `#031605` to baza tego gradientu, ta sama, której DataVault używa w `--bg`.
 
-### 7) Status zapieczętowania archiwum
+### 7) Status dostępu do archiwum
 - W pasku statusów admina doszedł `#libraryStatus` obok `#manifestStatus`, `#firebaseStatus` i `#favoritesStatus`.
-- Dwa stany klasowe:
-  - `.status-pill.is-locked` — `border-color: #6b4a1f`, `color: #e0b877` (archiwum zapieczętowane),
-  - `.status-pill.is-unlocked` — `border-color: #24503a`, `color: #7fd6a1` (archiwum odpieczętowane).
-- Przycisk `#unlockLibrary` w toolbarze admina oraz `#unlockLibraryUser` w panelu nawigacji widoku użytkownika; oba używają standardowej klasy `.btn` i zmieniają etykietę zależnie od stanu („Rytuał Dostępu” ↔ „Zapieczętuj dane”).
+- **Zasada kolorystyczna: czerwień wyłącznie dla błędów.** Stan poprawny — zarówno „Archiwum: zablokowane”, jak i „Archiwum: odblokowane” — korzysta z domyślnego zielonego wyglądu `.status-pill`, bez klasy modyfikującej. Zablokowane archiwum jest stanem poprawnym, a nie awarią.
+- Jedyny stan wyróżniony to `.status-pill.is-error`, używany przy „Archiwum: błąd wczytywania”:
+  - `border-color: var(--danger)` (`#ff5f5f`),
+  - `color: #ffd6d6`,
+  - `background: rgba(255, 95, 95, 0.12)`.
+- Wszystkie trzy wartości pochodzą z palety modułu Audio udokumentowanej wyżej — tej samej, której używa aktywny `.loop-btn`. Do bramki nie wprowadzono żadnego koloru spoza tej palety.
+- Szczegół błędu trafia do atrybutu `title` pastylki, więc jest dostępny po najechaniu kursorem, bez zaśmiecania paska statusów.
+- Przycisk `#unlockLibrary` w toolbarze admina oraz `#unlockLibraryUser` w panelu nawigacji widoku użytkownika; oba używają standardowej klasy `.btn` i zmieniają etykietę zależnie od stanu („Odblokuj archiwum” ↔ „Zablokuj archiwum”).
+
+### 8) Podział języka komunikatów
+- Panel `?admin=1` jest narzędziem technicznym, dlatego statusy, etykiety przycisków i komunikaty diagnostyczne są napisane językiem zwykłym i konkretnym: „Archiwum: zablokowane”, „Odblokuj archiwum”, „Bramka nie znalazła manifestu archiwum (HTTP 404)…”.
+- Językiem lore Warhammera 40k pozostaje wyłącznie **okno bramki dostępu** — tytuł, opis, etykieta „Litania Dostępu”, przycisk „Rozpocznij Rytuał” oraz dwa komunikaty dotyczące samego hasła (nie wypowiedziano Litanii, Litania odrzucona). Jest to celowe: okno jest wspólne z modułem `DataVault` i ma wyglądać oraz brzmieć identycznie.
+- Komunikaty o awarii infrastruktury (brak manifestu, brak połączenia z bramką, wygaśnięcie sesji) są techniczne również w oknie bramki, ponieważ służą do diagnozy, a nie do budowania klimatu.
 
 ---
 

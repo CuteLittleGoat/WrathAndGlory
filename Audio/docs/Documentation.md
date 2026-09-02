@@ -345,7 +345,7 @@ Element `<audio>` nie pozwala dołożyć własnych nagłówków, dlatego autoryz
 | `resolveVariantUrl(item, variant)` | Zwraca gotowy adres: z manifestu dla `public`, z bramki dla `protected`. |
 | `showAccessGate()` / `hideAccessGate()` | Pokazanie i ukrycie nakładki `#accessGate` atrybutem `hidden`. |
 | `submitAccessLitany()` | Wymiana hasła na token, po czym przeładowanie manifestów. |
-| `sealArchive()` | Kasowanie sesji i powrót do samej warstwy demo. |
+| `lockArchive()` | Kasowanie sesji i powrót do samej warstwy demo. |
 
 ## Model SFX po parsowaniu manifestu
 
@@ -602,7 +602,7 @@ Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher
 | Brak dokumentu Firestore | Kod tworzy domyślne ustawienia i zapisuje je przez `saveSettings()`. |
 | Uszkodzone ustawienia Firestore/localStorage | Normalizatory tworzą bezpieczne wartości domyślne. |
 | Brak `AudioManifestDemo.json` | Manifest przechodzi w błąd wczytywania. |
-| Bramka niedostępna przy ważnej sesji | Warstwa demo ładuje się mimo to; archiwum pozostaje zapieczętowane. |
+| Bramka niedostępna przy ważnej sesji | Warstwa demo ładuje się mimo to; archiwum pozostaje zablokowane. |
 | `401` z bramki | Sesja jest kasowana, pojawia się nakładka z komunikatem o nieukończonym Rytuale. |
 | Wyjątek z SDK Firebase | Moduł przechodzi na ustawienia lokalne i **kontynuuje** wczytywanie manifestów. |
 | Pusty manifest | Pokazywany jest błąd braku danych manifestu. |
@@ -638,12 +638,12 @@ Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher
 | Start admina | Otwórz `Audio/index.html?admin=1`. | Widać nagłówek, statusy, toolbar, panel tagów, listę SFX, ulubione i widok główny. |
 | Start użytkownika | Otwórz `Audio/index.html`. | Widać tylko widok użytkownika i nawigację. |
 | Manifest | Kliknij `Wczytaj manifest`. | Status pokazuje liczbę pozycji z manifestu. |
-| Start bez logowania | Otwórz moduł bez ważnej sesji. | Widać wyłącznie warstwę demo, bramka się nie pokazuje, status: `Archiwum: zapieczętowane`. |
+| Start bez logowania | Otwórz moduł bez ważnej sesji. | Widać wyłącznie warstwę demo, bramka się nie pokazuje, status: `Archiwum: zablokowane`. |
 | Puste hasło | Kliknij `Rozpocznij Rytuał` z pustym polem. | Komunikat o niewypowiedzianej Litanii Dostępu. |
 | Złe hasło | Wpisz błędne hasło. | Komunikat o odrzuconej Litanii Dostępu. |
-| Poprawne hasło | Wpisz hasło grupy. | Nakładka znika, lista uzupełnia się o archiwum, status: `Archiwum: odpieczętowane`. |
-| Trwałość sesji | Przeładuj stronę po odblokowaniu. | Archiwum nadal odpieczętowane, bez pytania o hasło. |
-| Zapieczętowanie | Kliknij `Zapieczętuj dane`. | Lista wraca do samej warstwy demo. |
+| Poprawne hasło | Wpisz hasło grupy. | Nakładka znika, lista uzupełnia się o archiwum, status: `Archiwum: odblokowane`. |
+| Trwałość sesji | Przeładuj stronę po odblokowaniu. | Archiwum nadal odblokowane, bez pytania o hasło. |
+| Zablokowanie | Kliknij `Zablokuj archiwum`. | Lista wraca do samej warstwy demo. |
 | Dźwięk chroniony | Odtwórz pozycję z archiwum. | Moduł pobiera podpis z `/sign`, dźwięk gra, suwak głośności działa. |
 | Awaria Firebase | Zablokuj dostęp do Firestore. | Moduł przechodzi na ustawienia lokalne, ale manifesty i tak się wczytują. |
 | Filtr SFX | Wpisz frazę w `searchInput`. | Lista SFX admina jest filtrowana. |
@@ -1010,7 +1010,7 @@ An `<audio>` element cannot carry custom headers, so file authorisation travels 
 | `resolveVariantUrl(item, variant)` | Returns the final URL: from the manifest for `public`, from the gateway for `protected`. |
 | `showAccessGate()` / `hideAccessGate()` | Shows and hides the `#accessGate` overlay via the `hidden` attribute. |
 | `submitAccessLitany()` | Exchanges the password for a token, then reloads the manifests. |
-| `sealArchive()` | Clears the session and returns to the demo tier only. |
+| `lockArchive()` | Clears the session and returns to the demo tier only. |
 
 ## SFX model after manifest parsing
 
@@ -1267,7 +1267,7 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 | Missing Firestore document | Code creates default settings and saves them through `saveSettings()`. |
 | Damaged Firestore/localStorage settings | Normalizers create safe defaults. |
 | Missing `AudioManifestDemo.json` | Manifest status switches to load error. |
-| Gateway unreachable with a valid session | The demo tier still loads; the archive stays sealed. |
+| Gateway unreachable with a valid session | The demo tier still loads; the archive stays locked. |
 | `401` from the gateway | The session is cleared and the overlay appears with the incomplete-Rite message. |
 | Exception from the Firebase SDK | The module falls back to local settings and **continues** loading the manifests. |
 | Empty manifest | No-data manifest error is shown. |
@@ -1288,7 +1288,7 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 7. Preserve `Audio/config/firebase-config.js` if settings should sync through Firebase.
 8. Configure Firestore according to `Audio/config/FirebaseREADME.md`.
 9. Open `Audio/index.html?admin=1`.
-10. Check that the demo manifest loads, and that the whole library loads after the Rite of Access.
+10. Check that the demo manifest loads, and that the whole library loads after unlocking the archive.
 7. Add several sounds to the main view.
 8. Create a favorite list and add sounds to it.
 9. Assign an alias to selected SFX.
@@ -1303,12 +1303,12 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 | Admin start | Open `Audio/index.html?admin=1`. | Header, statuses, toolbar, tag panel, SFX list, favorites, and main view are visible. |
 | User start | Open `Audio/index.html`. | Only user view and navigation are visible. |
 | Manifest | Click `Load manifest`. | Status shows manifest item count. |
-| Start without login | Open the module with no valid session. | Only the demo tier is visible, the gate does not appear, status: `Archive: sealed`. |
+| Start without login | Open the module with no valid session. | Only the demo tier is visible, the gate does not appear, status: `Archive: locked`. |
 | Empty password | Click `Begin the Rite` with an empty field. | Message about the Litany of Access not being recited. |
 | Wrong password | Enter a wrong password. | Message about the Litany of Access being rejected. |
-| Correct password | Enter the group password. | Overlay closes, the list fills with the archive, status: `Archive: unsealed`. |
-| Session persistence | Reload the page after unlocking. | The archive is still unsealed, with no password prompt. |
-| Sealing | Click `Seal the data`. | The list returns to the demo tier only. |
+| Correct password | Enter the group password. | Overlay closes, the list fills with the archive, status: `Archive: unlocked`. |
+| Session persistence | Reload the page after unlocking. | The archive is still unlocked, with no password prompt. |
+| Locking | Click `Lock archive`. | The list returns to the demo tier only. |
 | Protected sound | Play an archive item. | The module fetches a signature from `/sign`, the sound plays, the volume slider works. |
 | Firebase failure | Block access to Firestore. | The module falls back to local settings but still loads the manifests. |
 | SFX filter | Type phrase in `searchInput`. | Admin SFX list is filtered. |
