@@ -34,6 +34,9 @@ Poniżej pełna, nieskrócona treść polecenia oraz doprecyzowań przekazanych 
 
 > Obecnie suma plików Audio to ok 400 MB. Zakładam, ze powyżej 5GB nie będzie.
 
+> Część plików audio (WH40k_Boltgun) celowo są dostępne publicznie. To darmowe pliki używane jako "Demo" do bliźniaczej aplikacji.
+> Pozostałe pliki są obecnie w repo prywatnym. Dlatego jest zwracany błąd. Jak zmieniam na publiczny to pliki audio się odtwarzają - ale to rozwiązanie mnie nie satysfakcjonuje - zwłaszcza jak będę dodawać chronione i płatne pliki.
+
 ### 1.3. Pytania zadane użytkownikowi i udzielone odpowiedzi
 
 | Pytanie | Odpowiedź użytkownika |
@@ -130,33 +133,61 @@ Podział na zbiory treści:
 
 ### 3.3. Co jest dziś realnie dostępne publicznie — weryfikacja
 
-Wykonano zapytania HTTP (`HEAD` oraz `GET` z nagłówkiem `Range`) na losowej próbce adresów z manifestu:
+Wykonano zapytania HTTP (`HEAD` oraz `GET` z nagłówkiem `Range`) na losowej próbce adresów z manifestu, a następnie zapytania o katalogi główne:
 
-| Zbiór | Wynik HTTP | Interpretacja |
+| Adres | Wynik HTTP | Interpretacja |
 | --- | --- | --- |
-| `/AudioRPG/TabletopAudio/...` | `404` | Pliki **nie są** publicznie dostępne. |
-| `/AudioRPG/GrimdarkAudio/...` | `404` | Pliki **nie są** publicznie dostępne. |
-| `/AudioExample/WH40k_Boltgun/...` | `200` / `206` | Pliki **są publicznie dostępne**, serwer obsługuje `Range`. |
+| `/AudioExample/` | `200` | Opublikowana strona projektu — repozytorium **publiczne**. |
+| `/AudioExample/WH40k_Boltgun/...` | `200` / `206` | Pliki dostępne publicznie, serwer obsługuje `Range`. |
+| `/AudioRPG/` | `404` | Brak opublikowanej strony — repozytorium **prywatne**. |
+| `/AudioRPG/TabletopAudio/...` | `404` | Pliki niedostępne, bo strona nie jest opublikowana. |
+| `/AudioRPG/GrimdarkAudio/...` | `404` | Jak wyżej. |
+| `/` (katalog główny) | `404` | Brak repozytorium strony użytkownika — każdy zbiór to osobna strona projektu. |
 
 Zmierzone rozmiary przykładowych plików Boltgun: od 7,5 kB do ok. 302 kB.
 
-Zapytania o katalogi (`/AudioRPG/`, katalogi soundpadów) zwracają `404` — GitHub Pages nie generuje listingu katalogów.
+Żadne zapytanie o katalog nie zwraca listingu — GitHub Pages go nie generuje.
 
-**Wnioski z weryfikacji:**
+#### Biblioteka składa się z dwóch warstw
 
-1. Zbiór 242 plików `WH40k_Boltgun` jest **dziś dostępny publicznie dla każdego, kto zna adres**. Adresy te są w publicznym repozytorium, w pliku `Audio/AudioManifest.xlsx`. To wymaga oddzielnej decyzji, niezależnie od docelowej architektury.
-2. Pozostałe 1551 wpisów to dziś **martwe linki** — moduł na nich nie zagra. Migracja nie ma więc kosztu regresji dla tej części biblioteki.
-3. Brak listingu katalogów oznacza, że dziś ochroną jest wyłącznie nieznajomość ścieżki — a ścieżki są opublikowane w manifeście.
+Wynik `404` dla `AudioRPG` **nie oznacza martwych linków**. Oznacza, że repozytorium jest prywatne, więc GitHub Pages nie publikuje strony. Biblioteka nie jest jednorodna — to dwa zbiory o różnym przeznaczeniu, w dwóch osobnych repozytoriach:
+
+| Warstwa | Repozytorium | Wpisów | Folderów | Status | Przeznaczenie |
+| --- | --- | --- | --- | --- | --- |
+| **Demo** | `AudioExample` (publiczne) | 242 | 83 | publiczne **celowo** | darmowe pliki, materiał demonstracyjny dla bliźniaczej aplikacji |
+| **Chroniona** | `AudioRPG` (prywatne) | 1551 | 45 | niedostępne | materiały objęte prawami autorskimi, docelowo także płatne |
+
+Publiczna dostępność warstwy demo jest **zamierzona i musi zostać zachowana** — korzysta z niej druga aplikacja. Nie jest to przeoczenie ani wyciek i nie wymaga żadnego działania naprawczego.
+
+#### Kluczowa obserwacja: GitHub Pages daje wyłącznie przełącznik dwustanowy
+
+Po przełączeniu repozytorium `AudioRPG` na publiczne pliki zaczynają się odtwarzać. To znaczy, że dziś osiągalne są dokładnie dwa stany — i żaden nie jest zadowalający:
+
+| Stan repozytorium `AudioRPG` | Strona Pages | Pliki chronione | Ocena |
+| --- | --- | --- | --- |
+| prywatne | nie istnieje | nie odtworzy ich nikt — **także uprawniona grupa** | moduł nie działa |
+| publiczne | opublikowana | odtworzy je **każdy**, kto zna adres | zerowa ochrona |
+
+Stanu pośredniego nie da się uzyskać także w planach płatnych: publikowanie Pages z repozytorium prywatnego (dostępne od planu Pro) **nie czyni opublikowanej strony prywatną**, a kontrola dostępu do Pages istnieje wyłącznie w GitHub Enterprise Cloud.
+
+To jest sedno problemu i uzasadnienie całej dalszej analizy. Potrzebny jest **trzeci stan — „dostępne wyłącznie dla uprawnionych”** — którego GitHub Pages nie zapewni na żadnym planie realnym w tym projekcie. Musi go dostarczyć warstwa pośrednicząca opisana w sekcji 6. Przełączanie repozytorium na publiczne na czas sesji jest obejściem, które przy plikach płatnych oznacza ich pełne upublicznienie na ten czas — łącznie z możliwością zindeksowania i pobrania hurtem.
 
 ### 3.4. Wyciek metadanych przez manifest
 
-`Audio/AudioManifest.xlsx` znajduje się w publicznym repozytorium. Zawiera:
+`Audio/AudioManifest.xlsx` znajduje się w publicznym repozytorium `WrathAndGlory`. Zawiera wpisy obu warstw naraz — i tylko jedna z nich stanowi problem:
 
-- pełną listę 1793 nazw sampli,
-- pełną listę 1793 nazw plików,
-- pełną strukturę 128 folderów źródłowych, w tym nazwy pakietów płatnych (`... SoundPad Patreon`, `Cthulhu SoundPad Patreon Version`, `Vikings SoundPad Patreon`).
+| Zakres | Wpisów | Ocena |
+| --- | --- | --- |
+| Warstwa demo (`AudioExample`) | 242 | Bez zastrzeżeń. Pliki są publiczne celowo, więc jawność ich adresów niczego nie ujawnia. |
+| Warstwa chroniona (`AudioRPG`) | 1551 | **Wyciek metadanych.** |
 
-Nawet gdyby wszystkie pliki były niedostępne, manifest sam w sobie publikuje kompletny katalog posiadanych materiałów chronionych prawem autorskim wraz ze wskazaniem ich płatnego pochodzenia. To jest dokładnie ten „wyciek danych o plikach”, który polecenie każe wyeliminować.
+W części dotyczącej warstwy chronionej manifest publikuje:
+
+- 1551 nazw sampli,
+- 1551 nazw plików,
+- strukturę 45 folderów źródłowych, w tym nazwy pakietów płatnych (`... SoundPad Patreon`, `Cthulhu SoundPad Patreon Version`, `Vikings SoundPad Patreon`).
+
+Nawet przy repozytorium `AudioRPG` ustawionym jako prywatne manifest sam w sobie publikuje kompletny katalog posiadanych materiałów chronionych prawem autorskim wraz ze wskazaniem ich płatnego pochodzenia — a także gotowe adresy, które zadziałają w momencie przełączenia repozytorium na publiczne. To jest dokładnie ten „wyciek danych o plikach”, który polecenie każe wyeliminować.
 
 ### 3.5. Ograniczenia GitHub Pages
 
@@ -171,8 +202,9 @@ Dodatkowo regulamin GitHub Pages zastrzega, że usługa nie jest przeznaczona do
 Konsekwencje:
 
 - 400 MB mieści się w limicie 1 GB, ale docelowe 5 GB **już nie**.
-- Opublikowanie Pages z repozytorium prywatnego (dostępne od planu Pro) **nie czyni strony prywatną** — strona pozostaje publiczna. Kontrola dostępu do Pages istnieje wyłącznie w Enterprise Cloud.
-- GitHub Pages jest więc odpowiedni dla **aplikacji**, ale nie dla **chronionych plików audio**.
+- Warstwa demo (242 pliki) mieści się w tych limitach bez zastrzeżeń i **może zostać na GitHub Pages** w obecnej formie.
+- Dla warstwy chronionej GitHub Pages nie oferuje żadnego stanu pośredniego między „wszystko publiczne” a „nic nie działa” (sekcja 3.3).
+- GitHub Pages jest więc odpowiedni dla **aplikacji** oraz dla **warstwy demo**, ale nie dla **plików chronionych**.
 
 ---
 
@@ -216,6 +248,7 @@ To jest dokładnie ta różnica, której zabrakło w poprzedniej próbie, i jest
 | W6 | Aplikacja pozostaje na GitHub Pages. | odpowiedź na pytanie o hosting |
 | W7 | Dane o plikach (nazwy, ścieżki) ukryte, nie w publicznym repo. | polecenie główne |
 | W8 | Skala: ok. 400 MB / 1793 pliki dziś, docelowo ≤ 5 GB. | doprecyzowanie użytkownika |
+| W9 | Warstwa demo (242 pliki `WH40k_Boltgun`) pozostaje publiczna i działa bez logowania — korzysta z niej bliźniacza aplikacja. | doprecyzowanie użytkownika |
 
 Wymaganie **W3 jest rozstrzygające**. Wyklucza ono rozwiązania oparte na „nieodgadywalnym adresie” (zahaszowane ścieżki, `unlisted` hosting), ponieważ tam posiadanie linku **jest** równoznaczne z dostępem. Wymusza więc jedno z dwóch:
 
@@ -223,6 +256,8 @@ Wymaganie **W3 jest rozstrzygające**. Wyklucza ono rozwiązania oparte na „ni
 - **plik jest zaszyfrowany i sam link jest bezużyteczny bez klucza**.
 
 Wymaganie W3 w praktycznej wersji oznacza: link może istnieć, ale musi **wygasać**. Podpisany URL ważny 60–300 sekund spełnia W3 w sposób operacyjnie sensowny — po tym czasie skopiowany link jest martwy.
+
+Wymaganie **W9 zmienia kształt rozwiązania**: docelowa architektura nie może traktować biblioteki jednorodnie. Musi obsłużyć jednocześnie zbiór publiczny (bez logowania, bez podpisów, bez zmian) i zbiór chroniony (za bramką). Szczegóły w sekcji 6.3.
 
 ---
 
@@ -262,6 +297,28 @@ Wszystkie sensowne warianty mają tę samą architekturę trójwarstwową. Róż
 - Autoryzacja pliku jedzie w **query stringu** podpisanego URL-a — nie ma ciasteczka, nie ma nagłówka `WWW-Authenticate`, nie ma przekierowania na logowanie.
 - Third-party cookies są całkowicie poza obiegiem, więc blokady przeglądarek nie mają na co zadziałać.
 
+### 6.3. Obsługa dwóch warstw biblioteki
+
+Wymaganie W9 oznacza, że manifest wydawany przez bramkę musi rozróżniać typ wpisu. Najprostsza forma to jedno dodatkowe pole:
+
+| Pole | Warstwa demo | Warstwa chroniona |
+| --- | --- | --- |
+| `access` | `"public"` | `"protected"` |
+| adres pliku | gotowy, stały URL do `AudioExample` na GitHub Pages | brak — klient musi poprosić bramkę o podpis |
+
+Zachowanie klienta:
+
+- wpis `public` → moduł odtwarza bezpośrednio, **bez** wywołania `/sign`, dokładnie tak jak dziś,
+- wpis `protected` → moduł pobiera podpisany URL z bramki.
+
+Konsekwencje takiego podziału:
+
+1. **Bliźniacza aplikacja pozostaje nietknięta.** Repozytorium `AudioExample` i jego adresy nie zmieniają się w ogóle.
+2. **Oszczędność limitu żądań.** 242 pliki demo w ogóle nie obciążają limitu 100 000 żądań na dobę w Workerze.
+3. **Warstwa demo nie wymaga CORS.** Pozostaje na `cutelittlegoat.github.io`, czyli na tym samym origin co aplikacja — Web Audio działa tam bez `crossOrigin` i bez nagłówków (sekcja 8 dotyczy wyłącznie warstwy chronionej).
+4. **Możliwy tryb bez logowania.** Moduł może wystartować na samej warstwie demo i poprosić o hasło dopiero przy pierwszej próbie odtworzenia pliku chronionego. Dla osoby postronnej moduł wygląda wtedy jak działające demo, a nie jak ekran logowania.
+5. **Manifest publiczny może zostać rozdzielony.** Część demo (242 wpisy) może pozostać w repozytorium jako plik statyczny, skoro niczego nie ujawnia; z repozytorium znika wyłącznie część chroniona (1551 wpisów). To upraszcza wdrożenie i ogranicza zakres zmian w `parseManifest()`.
+
 ---
 
 ## 7. Warianty rozwiązania
@@ -274,7 +331,7 @@ Wszystkie sensowne warianty mają tę samą architekturę trójwarstwową. Róż
 
 | Limit | Wartość | Nasza sytuacja |
 | --- | --- | --- |
-| Liczba plików statycznych na wersję Workera | 20 000 | 1793 pliki — zapas ponad 11× |
+| Liczba plików statycznych na wersję Workera | 20 000 | 1551 plików chronionych — zapas ponad 12× |
 | Maksymalny rozmiar pojedynczego pliku | 25 MiB | największy zmierzony sampel ~302 kB |
 | Koszt przechowywania assetów | brak dodatkowego kosztu | — |
 | Żądania do Workera | 100 000 / dzień | patrz niżej |
@@ -291,7 +348,7 @@ Wszystkie sensowne warianty mają tę samą architekturę trójwarstwową. Róż
 - Zero karty płatniczej, twardy limit 0 zł.
 - Jedno wdrożenie = magazyn + bramka. Najmniej ruchomych części.
 - Pełna kontrola nagłówków odpowiedzi → można ustawić `Access-Control-Allow-Origin: https://cutelittlegoat.github.io`, co jest **konieczne** dla Web Audio (sekcja 8).
-- 400 MB i 1793 pliki mieszczą się z bardzo dużym zapasem.
+- Warstwa chroniona (1551 plików, podzbiór 400 MB) mieści się z bardzo dużym zapasem.
 
 **Wady i ograniczenia:**
 
@@ -331,7 +388,7 @@ Wszystkie sensowne warianty mają tę samą architekturę trójwarstwową. Róż
 
 ### 7.3. Wariant C — prywatne repozytorium GitHub + Worker jako bramka
 
-**Idea:** pliki zostają tam, gdzie są dziś — w prywatnym repozytorium GitHub. Worker przechowuje fine-grained PAT (uprawnienia: tylko odczyt `Contents`, tylko to jedno repo) i pośredniczy w dostępie.
+**Idea:** pliki zostają dokładnie tam, gdzie są dziś — w prywatnym repozytorium `AudioRPG`, które pozostaje prywatne **na stałe**. Worker przechowuje fine-grained PAT (uprawnienia: tylko odczyt `Contents`, tylko to jedno repo) i pośredniczy w dostępie. Zamiast przełącznika „prywatne / publiczne” z sekcji 3.3 pojawia się brakujący trzeci stan: repozytorium zostaje prywatne, a dostęp dostaje wyłącznie bramka.
 
 Dwa podwarianty:
 
@@ -370,7 +427,8 @@ Konsekwencja jest twarda: w wariancie C2 `createMediaElementSource()` **skazi gr
 
 **Zalety:**
 
-- **Zero migracji plików** — są już w prywatnym repo.
+- **Zero migracji plików** — są już w prywatnym repozytorium `AudioRPG`, a struktura folderów z manifestu pozostaje aktualna.
+- Znika potrzeba przełączania repozytorium na publiczne przed sesją — obecne obejście przestaje być potrzebne.
 - Zero karty, twardy limit 0 zł z definicji (brak konta rozliczeniowego = brak możliwości naliczenia opłaty).
 - Release assets nie liczą się do rozmiaru repozytorium i nie mają limitu sumy — jedyna z analizowanych opcji, która skaluje się powyżej 10 GB bez żadnej opłaty.
 
@@ -479,7 +537,8 @@ Uzasadnienie punkt po punkcie:
 | W5 — twarde 0 zł | Plan Workers Free nie nalicza nadpłat — zwraca `429`. Bez karty płatniczej. |
 | W6 — aplikacja na Pages | Aplikacja zostaje bez zmian; Worker jest wyłącznie źródłem danych i plików. |
 | W7 — ukryte dane | `AudioManifest.xlsx` wypada z publicznego repozytorium; bramka wydaje manifest bez ścieżek. |
-| W8 — skala | 1793 z 20 000 plików, 400 MB przy limicie 25 MiB/plik. Zapas rzędu 10×. |
+| W8 — skala | Do bramki trafia 1551 plików chronionych z limitu 20 000; 400 MB przy limicie 25 MiB/plik. Zapas rzędu 10×. |
+| W9 — warstwa demo | Wpisy `public` w manifeście omijają bramkę. `AudioExample` i bliźniacza aplikacja bez zmian. |
 
 ### 10.2. Plan awaryjny
 
@@ -511,7 +570,8 @@ Poniższa lista jest **inwentaryzacją**, nie zestawem wykonanych zmian. Zgodnie
 | `Audio/index.html:1972` — `parseManifest()` | `fetch("AudioManifest.xlsx")` + parsowanie SheetJS | `fetch("<worker>/manifest")` z nagłówkiem `Authorization`; JSON zamiast XLSX. Import SheetJS staje się zbędny w ścieżce produkcyjnej. |
 | `Audio/index.html:943` — `normalizeUrl()` | Skleja `folder + "/" + plik` | Zastąpić rozwiązywaniem `id` → podpisany URL z bramki. |
 | `Audio/index.html:1988-1990` | Odczyt `NazwaSampla` / `NazwaPliku` / `LinkDoFolderu` | Odczyt pól z JSON-a bramki; pola ze ścieżkami znikają. |
-| `Audio/index.html:970` — `extractTags()` | Wyprowadza tagi ze ścieżki folderu | Tagi muszą przyjść gotowe z bramki — inaczej ścieżki wracają do klienta i W7 jest złamane. |
+| `Audio/index.html:970` — `extractTags()` | Wyprowadza tagi ze ścieżki folderu | Tagi muszą przyjść gotowe z bramki — inaczej ścieżki wracają do klienta i W7 jest złamane. Dotyczy wyłącznie warstwy chronionej; dla wpisów `public` ścieżka może zostać. |
+| `Audio/index.html:1205` / `1311` — rozgałęzienie po typie wpisu | Brak — wszystkie wpisy traktowane jednakowo | Dodać obsługę pola `access`: `public` → URL wprost z manifestu, `protected` → URL z `/sign` (sekcja 6.3). |
 | `Audio/index.html:1322` — `new Audio(fullUrl)` | Konstruktor przypisuje `src` od razu | Rozdzielić: `new Audio()` → `audio.crossOrigin = "anonymous"` → `audio.src = url`. **Bez tego Web Audio da ciszę** (sekcja 8). |
 | `Audio/index.html:1311` — `startPlayback()` | URL statyczny, ważny bezterminowo | URL wygasa — potrzebny cache podpisów z czasem `exp` i odświeżanie przed użyciem. |
 | `Audio/index.html:1345` — obsługa `ended` w pętli | Kolejna iteracja bierze URL z manifestu | Kolejna iteracja musi mieć ważny podpis; przy 300 s ważności i pętli ambientowej to oznacza odświeżanie w trakcie. |
@@ -529,7 +589,8 @@ Poniższa lista jest **inwentaryzacją**, nie zestawem wykonanych zmian. Zgodnie
 
 | Ryzyko | Opis | Zalecane działanie |
 | --- | --- | --- |
-| **242 pliki dostępne publicznie już teraz** | Zbiór `AudioExample/WH40k_Boltgun/` zwraca `200`/`206` dla każdego, kto zna adres — a adresy są w publicznym manifeście. | Sprawdzić status prawny tego zbioru i zdecydować o jego losie osobno, nie czekając na wdrożenie docelowej architektury. |
+| **Przełączanie `AudioRPG` na publiczne** | Obejście stosowane dziś, żeby moduł zagrał, upublicznia na ten czas **całą** warstwę chronioną — z możliwością zindeksowania i pobrania hurtem. Przy plikach płatnych ryzyko rośnie nieproporcjonalnie. | Traktować jako rozwiązanie tymczasowe i zaprzestać go po wdrożeniu bramki. Nie dodawać plików płatnych, dopóki obejście jest w użyciu. |
+| **Regresja warstwy demo** | Zmiany w module mogą przypadkiem skierować wpisy `WH40k_Boltgun` przez bramkę albo naruszyć adresy, z których korzysta bliźniacza aplikacja. | Objąć testem odbiorczym: warstwa demo działa **bez zalogowania**, a repozytorium `AudioExample` pozostaje nietknięte. |
 | **Historia gita** | Usunięcie `AudioManifest.xlsx` z HEAD **nie usuwa go z historii repozytorium**, z forków ani z pamięci podręcznych wyszukiwarek. | Świadoma decyzja: albo przepisanie historii (`git filter-repo`) z konsekwencjami dla klonów, albo akceptacja, że dotychczasowy katalog pozostaje ujawniony. Warto pamiętać, że i tak wskazuje on na adresy, które przestaną działać. |
 | **Prawa autorskie** | Mechanizm techniczny ogranicza krąg odbiorców, ale **nie tworzy licencji**. Nazwy folderów wskazują na materiały z płatnych pakietów (Patreon). | Zweryfikować warunki licencji każdego pakietu. Prywatny użytek grupowy bywa dozwolony, redystrybucja — zwykle nie. |
 
@@ -537,7 +598,7 @@ Poniższa lista jest **inwentaryzacją**, nie zestawem wykonanych zmian. Zgodnie
 
 | Ryzyko | Wpływ | Ograniczenie |
 | --- | --- | --- |
-| Cisza zamiast dźwięku po migracji | Wysoki — objaw mylący, trudny do diagnozy | Sekcja 8. Przetestować `crossOrigin` + CORS na **jednym** pliku, zanim przeniesie się 1793. |
+| Cisza zamiast dźwięku po migracji | Wysoki — objaw mylący, trudny do diagnozy | Sekcja 8. Przetestować `crossOrigin` + CORS na **jednym** pliku, zanim przeniesie się całą warstwę chronioną. |
 | Sekret w repozytorium | Krytyczny | Wyłącznie `wrangler secret put`. Zgodnie z §13 `AGENTS.md`. |
 | Token w `localStorage` | Średni | Kto ma odblokowane urządzenie, ma dostęp. Akceptowalne dla grupy RPG; ograniczyć ważność do 30 dni. |
 | Zmiana hasła grupy | Niski | Rotacja klucza HMAC unieważnia **wszystkie** sesje — każdy loguje się ponownie. Zaplanować poza sesją. |
@@ -553,7 +614,7 @@ Poniższa lista jest **inwentaryzacją**, nie zestawem wykonanych zmian. Zgodnie
 ### Etap 0 — decyzje (przed jakimkolwiek kodem)
 
 1. Zatwierdzić wariant: **A** (rekomendowany), **B**, **C1** lub **D**.
-2. Rozstrzygnąć los 242 publicznie dostępnych plików `WH40k_Boltgun`.
+2. Potwierdzić podział na warstwy z sekcji 6.3 i to, że warstwa demo ma działać bez logowania.
 3. Rozstrzygnąć kwestię historii gita dla `AudioManifest.xlsx`.
 4. Ustalić model logowania: jedno wspólne hasło grupy (prostsze) czy kody per osoba (możliwość odebrania dostępu pojedynczej osobie).
 
@@ -569,8 +630,8 @@ Dopiero pozytywny wynik kroków 7–9 uzasadnia przejście dalej.
 
 ### Etap 2 — migracja
 
-10. Przygotować skrypt generujący z `AudioManifest.xlsx`: manifest JSON dla bramki + mapowanie `id` → ścieżka pliku.
-11. Wgrać bibliotekę (400 MB / 1793 pliki).
+10. Przygotować skrypt generujący z `AudioManifest.xlsx`: manifest JSON z polem `access` (`public` / `protected`, sekcja 6.3) + mapowanie `id` → ścieżka pliku dla warstwy chronionej.
+11. Wgrać **wyłącznie warstwę chronioną** (1551 plików). Warstwa demo zostaje w `AudioExample` bez zmian.
 12. Zmierzyć czas deployu i potwierdzić brak problemów z limitem sumarycznym.
 
 ### Etap 3 — zmiany w module
@@ -584,6 +645,8 @@ Dopiero pozytywny wynik kroków 7–9 uzasadnia przejście dalej.
 
 17. Przeprowadzić próbną sesję: widok główny, listy ulubionych, pętle ambientowe, kilka dźwięków równocześnie.
 18. Sprawdzić zużycie żądań Workera względem limitu 100 000/dobę.
+19. **Test regresji warstwy demo:** otworzyć moduł bez zalogowania i potwierdzić, że pliki `WH40k_Boltgun` grają. Potwierdzić, że bliźniacza aplikacja działa bez zmian.
+20. Po potwierdzeniu, że bramka działa, **zaprzestać przełączania `AudioRPG` na publiczne** i pozostawić to repozytorium prywatnym na stałe.
 
 ---
 
