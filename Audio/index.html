@@ -9,6 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Wspólna bramka dostępu, ta sama co w modułach DataVault i GeneratorNPC / Shared access gate, the same one used by DataVault and GeneratorNPC -->
+  <link rel="stylesheet" href="../shared/access-gate.css"/>
   <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
 <style>
     :root {
@@ -294,6 +296,20 @@
       cursor: not-allowed;
     }
 
+    /* --- Przycisk podstawowy bramki dostępu, zgodny z modułem DataVault / Primary access-gate button, matching the DataVault module --- */
+    .btn.primary {
+      background: var(--text);
+      /* Ciemny tekst na jasnej zieleni; --bg w tym module jest gradientem, więc nie nadaje się na kolor tekstu */
+      /* Dark text on light green; --bg is a gradient here, so it cannot be used as a text colour */
+      color: #04140a;
+      border-color: rgba(22, 198, 12, 0.35);
+    }
+
+    .btn.primary:hover {
+      filter: brightness(1.08);
+      background: var(--text);
+    }
+
     .btn-danger {
       border-color: var(--danger);
       color: #ffd6d6;
@@ -542,6 +558,10 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* --- Statusy zapieczętowania biblioteki / Library seal status pills --- */
+    .status-pill.is-locked { border-color: #6b4a1f; color: #e0b877; }
+    .status-pill.is-unlocked { border-color: #24503a; color: #7fd6a1; }
   </style>
 </head>
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
@@ -562,6 +582,7 @@
         <span class="status-pill" id="manifestStatus">Manifest: brak danych</span>
         <span class="status-pill" id="firebaseStatus">Firebase: oczekiwanie</span>
         <span class="status-pill" id="favoritesStatus">Ulubione: 0 list</span>
+        <span class="status-pill is-locked" id="libraryStatus">Biblioteka: tylko demo</span>
       </div>
     </header>
 
@@ -569,6 +590,7 @@
 <section class="toolbar admin-only">
       <div class="left">
         <button class="btn" id="reloadManifest">Wczytaj manifest</button>
+        <button class="btn" id="unlockLibrary">Odblokuj bibliotekę</button>
       </div>
       <div class="right">
         <button class="btn" id="addList">Nowa lista ulubionych</button>
@@ -646,13 +668,35 @@
         <aside class="panel">
           <h2 id="navigationTitle">Nawigacja</h2>
           <div class="user-nav" id="userNav"></div>
+          <!-- Odblokowanie biblioteki chronionej także w widoku użytkownika / Protected library unlock, also in user view -->
+          <button class="btn user-only" id="unlockLibraryUser">Odblokuj bibliotekę</button>
         </aside>
       </div>
     </section>
   </div>
 
+  <!-- Bramka dostępu do archiwum dźwiękowego, układ wspólny z modułem DataVault / Audio archive access gate, layout shared with the DataVault module -->
+  <div id="accessGate" class="accessGate" hidden>
+    <div class="accessGate__card">
+      <!-- Stałe miejsce na ikonę, aby karta nie zmieniała rozmiaru podczas ładowania / Fixed icon slot so card size does not jump while loading -->
+      <div class="accessGate__iconSlot" aria-hidden="true">
+        <img class="accessGate__icon" src="../IkonaPowiadomien2.png" alt="" width="72" height="72" decoding="async">
+      </div>
+      <h2 id="accessTitle">Dostęp do danych z klauzulą tajności K.O.Z.A.</h2>
+      <p id="accessDescription">Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.</p>
+      <form id="accessForm">
+        <div class="accessGate__credentials">
+          <!-- Etykieta po lewej + pole hasła i przycisk po prawej / Left label + password field and button on the right -->
+          <label class="field accessGate__label" for="accessPassword"><span id="accessPasswordLabel">Litania Dostępu</span></label>
+          <input id="accessPassword" class="accessGate__password" type="password" autocomplete="current-password">
+          <button class="btn primary accessGate__submit" type="submit" id="accessSubmit">Rozpocznij Rytuał</button>
+        </div>
+      </form>
+      <div id="accessError" class="accessGate__error" aria-live="polite"></div>
+    </div>
+  </div>
+
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
   <script src="config/firebase-config.js"></script>
   <script type="module">
@@ -668,6 +712,17 @@
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
     const manifestStatus = document.getElementById("manifestStatus");
+    const libraryStatus = document.getElementById("libraryStatus");
+    const unlockLibrary = document.getElementById("unlockLibrary");
+    const unlockLibraryUser = document.getElementById("unlockLibraryUser");
+    const accessGate = document.getElementById("accessGate");
+    const accessTitle = document.getElementById("accessTitle");
+    const accessDescription = document.getElementById("accessDescription");
+    const accessPasswordLabel = document.getElementById("accessPasswordLabel");
+    const accessPassword = document.getElementById("accessPassword");
+    const accessError = document.getElementById("accessError");
+    const accessForm = document.getElementById("accessForm");
+    const accessSubmit = document.getElementById("accessSubmit");
     const firebaseStatus = document.getElementById("firebaseStatus");
     const favoritesStatus = document.getElementById("favoritesStatus");
     const samplesGrid = document.getElementById("samplesGrid");
@@ -772,6 +827,19 @@ const translations = {
           manifestFetchError: "Nie udało się pobrać manifestu.",
           manifestNoData: "Manifest nie zawiera danych.",
           defaultListName: "Ulubione",
+          unlockLibrary: "Rytuał Dostępu",
+          lockLibrary: "Zapieczętuj dane",
+          accessTitle: "Dostęp do danych z klauzulą tajności K.O.Z.A.",
+          accessDescription: "Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.",
+          accessPasswordLabel: "Litania Dostępu",
+          accessUnlockButton: "Rozpocznij Rytuał",
+          accessWorking: "Trwa Rytuał Uwierzytelnienia...",
+          accessEmpty: "Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana.",
+          accessRejected: "Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona.",
+          accessSilent: "Duch Maszyny milczy: nie udało się załadować prywatnych danych.",
+          accessExpired: "Duch Maszyny odmawia dostępu: Rytuał Uwierzytelnienia nie został ukończony.",
+          libraryDemoOnly: "Archiwum: zapieczętowane",
+          libraryUnlocked: "Archiwum: odpieczętowane",
         },
         placeholders: {
           tagSearch: "Szukaj tagu...",
@@ -841,6 +909,19 @@ const translations = {
           manifestFetchError: "Failed to fetch the manifest.",
           manifestNoData: "The manifest contains no data.",
           defaultListName: "Favorites",
+          unlockLibrary: "Rite of Access",
+          lockLibrary: "Seal the data",
+          accessTitle: "Access to data classified under the K.O.Z.A. seal",
+          accessDescription: "The data is sealed by Machine Spirit protocols. Recite the Litany of Access to begin the Rite of Authentication.",
+          accessPasswordLabel: "Litany of Access",
+          accessUnlockButton: "Begin the Rite",
+          accessWorking: "The Rite of Authentication is under way...",
+          accessEmpty: "The angered Machine Spirit replies: the Litany of Access has not been recited.",
+          accessRejected: "The angered Machine Spirit replies: the Litany of Access was rejected.",
+          accessSilent: "The Machine Spirit is silent: could not load private data.",
+          accessExpired: "The Machine Spirit denies access: the Rite of Authentication has not been completed.",
+          libraryDemoOnly: "Archive: sealed",
+          libraryUnlocked: "Archive: unsealed",
         },
         placeholders: {
           tagSearch: "Search tag...",
@@ -872,6 +953,10 @@ const translations = {
         headerSubtitle.textContent = ADMIN_MODE ? t.labels.headerSubtitleAdmin : t.labels.headerSubtitleUser;
       }
       if (reloadManifest) reloadManifest.textContent = t.labels.reloadManifest;
+      if (accessTitle) accessTitle.textContent = t.labels.accessTitle;
+      if (accessDescription) accessDescription.textContent = t.labels.accessDescription;
+      if (accessPasswordLabel) accessPasswordLabel.textContent = t.labels.accessPasswordLabel;
+      if (accessSubmit) accessSubmit.textContent = t.labels.accessUnlockButton;
       if (addListButton) addListButton.textContent = t.labels.addList;
       if (refreshFavoritesButton) refreshFavoritesButton.textContent = t.labels.refreshFavorites;
       if (tagFiltersTitle) tagFiltersTitle.textContent = t.labels.tagFiltersTitle;
@@ -906,6 +991,10 @@ const translations = {
       favoritesDoc: null,
       usingFirestore: false,
       manifestReady: false,
+      // Token sesji bramki wraz z czasem wygaśnięcia / Gateway session token with its expiry
+      session: null,
+      // Czy warstwa chroniona została wczytana / Whether the protected tier is loaded
+      libraryUnlocked: false,
       userView: "main",
       activeFavoritesListId: null,
       tagTree: [],
@@ -930,6 +1019,19 @@ const translations = {
       "Patreon"
     ];
     const TAG_IGNORE_SEGMENTS = ["AudioRPG"];
+
+    // --- Konfiguracja bramki dostępowej / Access gateway configuration ---
+    // MIEJSCE ZMIANY ADRESU BRAMKI / GATEWAY ADDRESS CHANGE POINT
+    // Bramka to Cloudflare Worker, który wydaje manifest warstwy chronionej i podpisane,
+    // wygasające adresy plików. Kod bramki: Audio/worker/audio-gate.js
+    // The gateway is a Cloudflare Worker serving the protected manifest and signed,
+    // expiring file URLs. Gateway source: Audio/worker/audio-gate.js
+    const AUDIO_GATE_BASE = "https://audio-gate.tarczynski-pawel.workers.dev";
+    // Manifest warstwy publicznej leży w tym repozytorium — te pliki są jawne celowo
+    // The public tier manifest lives in this repository: those files are public on purpose
+    const DEMO_MANIFEST_URL = "AudioManifestDemo.json";
+    // Klucz sesji w localStorage / Session key in localStorage
+    const AUDIO_SESSION_STORAGE_KEY = "audio.session";
 
     const slugify = (value, index) => {
       const base = value
@@ -1082,6 +1184,16 @@ const translations = {
         : t.manifestMissing;
       firebaseStatus.textContent = state.usingFirestore ? t.firebaseConnected : t.firebaseLocal;
       favoritesStatus.textContent = formatText(t.favoritesStatus, { count: state.favorites.lists.length });
+      // Status biblioteki informuje, czy warstwa chroniona jest dostępna
+      // The library status shows whether the protected tier is available
+      if (libraryStatus) {
+        libraryStatus.textContent = state.libraryUnlocked ? t.libraryUnlocked : t.libraryDemoOnly;
+        libraryStatus.classList.toggle("is-unlocked", state.libraryUnlocked);
+        libraryStatus.classList.toggle("is-locked", !state.libraryUnlocked);
+      }
+      const unlockLabel = state.libraryUnlocked ? t.lockLibrary : t.unlockLibrary;
+      if (unlockLibrary) unlockLibrary.textContent = unlockLabel;
+      if (unlockLibraryUser) unlockLibraryUser.textContent = unlockLabel;
     };
 
     const renderTagFilter = () => {
@@ -1201,24 +1313,120 @@ const translations = {
       tagFilterMenu.setAttribute("aria-hidden", "true");
     };
 
+    // --- Klucz wariantu: adres dla warstwy publicznej, ścieżka dla chronionej ---
+    // --- Variant key: URL for the public tier, repository path for the protected one ---
+    const getVariantKey = (variant) => variant?.url || variant?.path || "";
+
     // --- Losowanie wariantu z ochroną przed natychmiastową powtórką w pętli / Variant picker with protection against immediate repeats in loop mode ---
-    const pickRandomVariant = (item, previousUrl = "") => {
+    // Zwraca obiekt wariantu, a nie gotowy adres, bo adres warstwy chronionej powstaje
+    // dopiero po podpisaniu przez bramkę i musi być pobierany asynchronicznie.
+    // Returns the variant object rather than a ready URL, because protected URLs are
+    // produced by the gateway and have to be fetched asynchronously.
+    const pickRandomVariant = (item, previousKey = "") => {
       if (!item?.variants?.length) {
-        return "";
+        return null;
       }
       if (item.variants.length === 1) {
-        return item.variants[0]?.fullUrl || "";
+        return item.variants[0] || null;
       }
-      let selectedUrl = "";
+      let selected = null;
       for (let attempt = 0; attempt < 8; attempt += 1) {
         const index = Math.floor(Math.random() * item.variants.length);
-        selectedUrl = item.variants[index]?.fullUrl || "";
-        if (selectedUrl && selectedUrl !== previousUrl) {
-          return selectedUrl;
+        selected = item.variants[index] || null;
+        const key = getVariantKey(selected);
+        if (key && key !== previousKey) {
+          return selected;
         }
       }
-      const fallback = item.variants.find((variant) => variant.fullUrl && variant.fullUrl !== previousUrl);
-      return fallback?.fullUrl || selectedUrl;
+      const fallback = item.variants.find(
+        (variant) => getVariantKey(variant) && getVariantKey(variant) !== previousKey
+      );
+      return fallback || selected;
+    };
+
+    // --- Obsługa sesji bramki / Gateway session handling ---
+    // Sesja to podpisany token trzymany w localStorage. Dzięki temu hasło podaje się raz
+    // na 30 dni, a nie przy każdym odtworzeniu — token jedzie w nagłówku Authorization,
+    // nigdy w ciasteczku, więc przeglądarka nie ma czego blokować.
+    // The session is a signed token kept in localStorage, so the password is entered once
+    // per 30 days. It travels in the Authorization header, never in a cookie.
+    const loadSession = () => {
+      try {
+        const raw = localStorage.getItem(AUDIO_SESSION_STORAGE_KEY);
+        if (!raw) {
+          return null;
+        }
+        const parsed = JSON.parse(raw);
+        if (!parsed?.token || Number(parsed.exp) * 1000 <= Date.now()) {
+          localStorage.removeItem(AUDIO_SESSION_STORAGE_KEY);
+          return null;
+        }
+        return parsed;
+      } catch (error) {
+        return null;
+      }
+    };
+
+    const storeSession = (session) => {
+      state.session = session;
+      try {
+        if (session) {
+          localStorage.setItem(AUDIO_SESSION_STORAGE_KEY, JSON.stringify(session));
+        } else {
+          localStorage.removeItem(AUDIO_SESSION_STORAGE_KEY);
+        }
+      } catch (error) {
+        // Brak localStorage nie może psuć odtwarzania / Missing localStorage must not break playback
+      }
+    };
+
+    const hasValidSession = () =>
+      Boolean(state.session?.token) && Number(state.session.exp) * 1000 > Date.now();
+
+    // --- Pamięć podpisanych adresów / Signed URL cache ---
+    // Bramka wyrównuje wygaśnięcie do pełnej godziny, więc w obrębie godziny zwraca
+    // ten sam adres. Trzymamy go u siebie, żeby nie pytać o podpis przy każdym kliknięciu.
+    // The gateway aligns expiry to a full hour, so it returns the same URL within an hour.
+    const signedUrlCache = new Map();
+
+    const requestSignedUrl = async (path) => {
+      const cached = signedUrlCache.get(path);
+      if (cached && cached.exp * 1000 > Date.now() + 5000) {
+        return cached.url;
+      }
+      const response = await fetch(
+        `${AUDIO_GATE_BASE}/sign?p=${encodeURIComponent(path)}`,
+        { headers: { Authorization: `Bearer ${state.session?.token || ""}` } }
+      );
+      if (response.status === 401) {
+        // Token przestał być ważny — czyścimy sesję i prosimy o hasło
+        // The token is no longer valid: clear the session and ask for the password again
+        storeSession(null);
+        state.libraryUnlocked = false;
+        throw new Error("gate_unauthorized");
+      }
+      if (!response.ok) {
+        throw new Error("gate_error");
+      }
+      const data = await response.json();
+      signedUrlCache.set(path, { url: data.url, exp: Number(data.exp) });
+      return data.url;
+    };
+
+    // --- Wyznaczenie adresu do odtworzenia / Resolving the URL to play ---
+    // Warstwa publiczna ma gotowy adres w manifeście. Warstwa chroniona wymaga podpisu.
+    // The public tier carries a ready URL. The protected tier needs a signature.
+    const resolveVariantUrl = async (item, variant) => {
+      if (!variant) {
+        return "";
+      }
+      if (item?.access === "public") {
+        return variant.url || "";
+      }
+      if (!variant.path) {
+        return "";
+      }
+      return requestSignedUrl(variant.path);
     };
 
     const getAudioContext = () => {
@@ -1305,21 +1513,78 @@ const translations = {
       updatePlaybackLabel(playbackRoot, false);
       updateLoopButtonState(playbackRoot, false);
       playbackRoot.classList.remove("is-playing");
+      // Unieważniamy ewentualny start czekający na podpis / Cancel any start still awaiting a signature
+      bumpGeneration(playbackRoot);
+    };
+
+    // --- Licznik pokoleń chroni przed wyścigiem przy asynchronicznym starcie ---
+    // --- Generation counter guards against races during asynchronous start ---
+    // Adres warstwy chronionej pobieramy z bramki, więc między kliknięciem a startem
+    // mija chwila. Gdyby użytkownik kliknął w międzyczasie coś innego, stare żądanie
+    // nie może już przejąć kafelka.
+    // Protected URLs come from the gateway, so a moment passes between the click and the
+    // start. If the user clicks something else meanwhile, the stale request must not win.
+    const playbackGeneration = new Map();
+
+    const bumpGeneration = (playbackRoot) => {
+      const next = (playbackGeneration.get(playbackRoot) || 0) + 1;
+      playbackGeneration.set(playbackRoot, next);
+      return next;
     };
 
     // --- Start odtwarzania obsługuje zwykłe Play i Loop, a po zakończeniu pętli tworzy nowy element Audio. / Playback start supports normal Play and Loop, and creates a new Audio element after each loop iteration. ---
-    const startPlayback = (item, playbackRoot, options = {}) => {
+    const startPlayback = async (item, playbackRoot, options = {}) => {
+      const generation = bumpGeneration(playbackRoot);
       const previous = activePlayers.get(playbackRoot);
-      const fullUrl = pickRandomVariant(item, options.previousUrl || previous?.lastUrl || "");
+      const variant = pickRandomVariant(item, options.previousKey || previous?.lastKey || "");
+      if (!variant) {
+        alert(translations[currentLanguage].labels.alertMissingAudio);
+        return;
+      }
+
+      let fullUrl = "";
+      try {
+        fullUrl = await resolveVariantUrl(item, variant);
+      } catch (error) {
+        if (playbackGeneration.get(playbackRoot) !== generation) {
+          return;
+        }
+        stopPlayback(playbackRoot);
+        const labels = translations[currentLanguage].labels;
+        if (error?.message === "gate_unauthorized") {
+          updateStatus();
+          showAccessGate(labels.accessExpired);
+          return;
+        }
+        alert(labels.accessSilent);
+        return;
+      }
+
+      // Ktoś w międzyczasie kliknął coś innego na tym kafelku / Something else took this tile meanwhile
+      if (playbackGeneration.get(playbackRoot) !== generation) {
+        return;
+      }
       if (!fullUrl) {
         alert(translations[currentLanguage].labels.alertMissingAudio);
         return;
       }
+
       if (previous?.audio && !previous.audio.ended) {
         previous.audio.pause();
         previous.audio.currentTime = 0;
       }
-      const audio = new Audio(fullUrl);
+
+      const audio = new Audio();
+      // KRYTYCZNE: crossOrigin musi być ustawione PRZED przypisaniem src.
+      // Bez tego createMediaElementSource „skazi” graf Web Audio i dźwięk z bramki
+      // będzie cichy, mimo że plik pobierze się poprawnie.
+      // CRITICAL: crossOrigin must be set BEFORE assigning src. Without it,
+      // createMediaElementSource taints the Web Audio graph and gateway audio plays silent.
+      if (item?.access !== "public") {
+        audio.crossOrigin = "anonymous";
+      }
+      audio.src = fullUrl;
+
       const context = getAudioContext();
       let gainNode = null;
       if (context) {
@@ -1337,7 +1602,7 @@ const translations = {
         audio,
         gainNode,
         loop: Boolean(options.loop),
-        lastUrl: fullUrl,
+        lastKey: getVariantKey(variant),
       };
       applyPlayerVolume(player, volumeValue);
       activePlayers.set(playbackRoot, player);
@@ -1350,7 +1615,9 @@ const translations = {
           return;
         }
         if (current.loop) {
-          startPlayback(current.item, playbackRoot, { loop: true, previousUrl: current.lastUrl });
+          // Kolejne okrążenie pętli pobiera świeży podpis, jeżeli poprzedni zdążył wygasnąć
+          // The next loop iteration fetches a fresh signature if the previous one expired
+          startPlayback(current.item, playbackRoot, { loop: true, previousKey: current.lastKey });
           return;
         }
         stopPlayback(playbackRoot);
@@ -1360,7 +1627,7 @@ const translations = {
         if (current?.audio !== audio) {
           return;
         }
-        alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+        alert(translations[currentLanguage].labels.accessSilent);
         stopPlayback(playbackRoot);
       });
       audio.play().catch(() => {
@@ -1368,7 +1635,7 @@ const translations = {
         if (current?.audio !== audio) {
           return;
         }
-        alert("Nie można odtworzyć dźwięku. Sprawdź link.");
+        alert(translations[currentLanguage].labels.accessSilent);
         stopPlayback(playbackRoot);
       });
     };
@@ -1382,7 +1649,7 @@ const translations = {
         stopPlayback(playbackRoot);
         return;
       }
-      startPlayback(item, playbackRoot);
+      startPlayback(item, playbackRoot).catch((error) => console.error(error));
     };
 
     // --- Przycisk Loop uruchamia pętlę, przełącza trwające Play w tryb pętli albo zatrzymuje aktywną pętlę. / The Loop button starts a loop, converts current Play into loop mode, or stops an active loop. ---
@@ -1402,7 +1669,7 @@ const translations = {
         updateLoopButtonState(playbackRoot, true);
         return;
       }
-      startPlayback(item, playbackRoot, { loop: true });
+      startPlayback(item, playbackRoot, { loop: true }).catch((error) => console.error(error));
     };
 
     const saveSettings = async () => {
@@ -1531,13 +1798,31 @@ const translations = {
         renderAllViews();
         return;
       }
-      const app = initializeApp(window.firebaseConfig);
-      const db = getFirestore(app);
+      // Awaria Firebase nie może zatrzymać całego modułu: bez tego zabezpieczenia wyjątek
+      // z SDK (brak sieci, blokada w przeglądarce, zła konfiguracja) przerywał start
+      // i manifest nigdy się nie wczytywał, więc panel zostawał pusty.
+      // A Firebase failure must not stop the whole module: without this guard an SDK
+      // exception (no network, browser blocking, bad config) aborted start-up and the
+      // manifest was never loaded, leaving the panel empty.
+      let app;
+      let db;
+      try {
+        app = initializeApp(window.firebaseConfig);
+        db = getFirestore(app);
+      } catch (error) {
+        console.error(error);
+        state.usingFirestore = false;
+        firebaseStatus.textContent = translations[currentLanguage].labels.firebaseLocal;
+        loadSettingsLocal();
+        renderAllViews();
+        return;
+      }
       state.firestore = db;
       state.favoritesDoc = doc(db, AUDIO_SETTINGS_COLLECTION, AUDIO_SETTINGS_DOC_ID);
       state.usingFirestore = true;
 
-      onSnapshot(state.favoritesDoc, (snapshot) => {
+      try {
+        onSnapshot(state.favoritesDoc, (snapshot) => {
         if (!snapshot.exists()) {
           const defaults = normalizeSettings(null);
           state.favorites = defaults.favorites;
@@ -1553,7 +1838,16 @@ const translations = {
         state.aliases = settings.aliases;
         applyAliasesToItems();
         renderAllViews();
-      });
+        });
+      } catch (error) {
+        // Nasłuch Firestore nie wystartował — pracujemy na ustawieniach lokalnych
+        // The Firestore listener did not start: fall back to local settings
+        console.error(error);
+        state.usingFirestore = false;
+        firebaseStatus.textContent = translations[currentLanguage].labels.firebaseLocal;
+        loadSettingsLocal();
+        renderAllViews();
+      }
     };
 
     const renderSamples = () => {
@@ -1967,100 +2261,79 @@ const translations = {
       renderAllViews();
     };
 
-    const parseManifest = async () => {
-      manifestStatus.textContent = translations[currentLanguage].labels.manifestLoading;
-      const response = await fetch("AudioManifest.xlsx", { cache: "no-store" });
+    // --- Wczytanie manifestów obu warstw / Loading manifests of both tiers ---
+    // Warstwa publiczna (demo) leży w tym repozytorium jako gotowy JSON i działa bez
+    // logowania. Warstwa chroniona przychodzi z bramki i wymaga ważnej sesji.
+    // Manifesty są już pogrupowane i mają wyliczone identyfikatory — generuje je
+    // Audio/tools/build-manifests.mjs, który powiela logikę identyfikatorów tego modułu,
+    // żeby zapisane listy ulubionych i aliasy nadal wskazywały na te same dźwięki.
+    // The public (demo) tier is a ready JSON in this repository and works without login.
+    // The protected tier comes from the gateway and needs a valid session. Both manifests
+    // arrive pre-grouped with ids produced by Audio/tools/build-manifests.mjs, which mirrors
+    // this module's id logic so saved favourites and aliases keep matching their sounds.
+    const fetchDemoManifest = async () => {
+      const response = await fetch(DEMO_MANIFEST_URL, { cache: "no-store" });
       if (!response.ok) {
         throw new Error(translations[currentLanguage].labels.manifestFetchError);
       }
-      const data = await response.arrayBuffer();
-      const workbook = XLSX.read(data, { type: "array" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, { defval: "" });
+      const data = await response.json();
+      return Array.isArray(data?.items) ? data.items : [];
+    };
 
-      if (!rows.length) {
-        throw new Error(translations[currentLanguage].labels.manifestNoData);
+    const fetchProtectedManifest = async () => {
+      const response = await fetch(`${AUDIO_GATE_BASE}/manifest`, {
+        headers: { Authorization: `Bearer ${state.session?.token || ""}` }
+      });
+      if (response.status === 401) {
+        storeSession(null);
+        throw new Error("gate_unauthorized");
       }
+      if (!response.ok) {
+        throw new Error("gate_error");
+      }
+      const data = await response.json();
+      return Array.isArray(data?.items) ? data.items : [];
+    };
 
-      const entries = [];
-      const groupedCounts = new Map();
-      rows.forEach((row, index) => {
-        const label = String(row.NazwaSampla || "").trim();
-        const filename = String(row.NazwaPliku || "").trim();
-        const folderUrl = String(row.LinkDoFolderu || "").trim();
-        if (!label) {
-          return;
-        }
-        const grouping = getGroupingBaseLabel(label);
-        const baseLabel = grouping.baseLabel || label;
-        const isGroupCandidate = grouping.changed;
-        const fullUrl = normalizeUrl(folderUrl, filename);
-        entries.push({
-          label,
-          baseLabel,
-          isGroupCandidate,
-          filename,
-          folderUrl,
-          fullUrl,
-          rowIndex: index + 1
-        });
-        if (isGroupCandidate) {
-          const key = `${folderUrl}||${baseLabel}`;
-          groupedCounts.set(key, (groupedCounts.get(key) || 0) + 1);
-        }
-      });
-
-      const groupMap = new Map();
-      const seen = new Set();
-      entries.forEach((entry) => {
-        const groupKeyBase = `${entry.folderUrl}||${entry.baseLabel}`;
-        const groupSize = groupedCounts.get(groupKeyBase) || 0;
-        const shouldGroup = entry.isGroupCandidate && groupSize > 1;
-        const groupKey = shouldGroup ? groupKeyBase : `${entry.folderUrl}||${entry.label}||${entry.filename}||${entry.rowIndex}`;
-        if (!groupMap.has(groupKey)) {
-          const tags = extractTags(entry.folderUrl);
-          const tag2 = tags[1] || "";
-          const tagPaths = tags.map((_, index) => tags.slice(0, index + 1).join(" / "));
-          let id = slugify(shouldGroup ? entry.baseLabel : entry.label, entry.rowIndex);
-          if (seen.has(id)) {
-            id = `${id}-${entry.rowIndex}`;
-          }
-          seen.add(id);
-          groupMap.set(groupKey, {
-            id,
-            label: shouldGroup ? entry.baseLabel : entry.label,
-            groupCount: shouldGroup ? groupSize : 0,
-            alias: state.aliases[id] || "",
-            filename: entry.filename,
-            folderUrl: entry.folderUrl,
-            tags,
-            tag2,
-            tagPaths,
-            variants: []
-          });
-        }
-        const group = groupMap.get(groupKey);
-        group.variants.push({
-          filename: entry.filename,
-          fullUrl: entry.fullUrl
-        });
-      });
-
-      const items = Array.from(groupMap.values()).map((item) => {
-        if (item.variants.length > 1) {
-          const suffix = item.variants.length - 1;
-          const first = item.variants[0]?.filename || "";
-          item.filename = suffix > 0 ? `${first} (+${suffix})` : first;
-        }
-        return item;
-      });
-
-      state.items = items.sort((a, b) => a.label.localeCompare(b.label));
+    // --- Złożenie obu warstw w jedną listę / Merging both tiers into one list ---
+    // Kolejność sortowania musi odpowiadać generatorowi, żeby lista wyglądała tak samo
+    // niezależnie od tego, czy biblioteka jest odblokowana.
+    // The sort order must match the generator so the list looks the same whether or not
+    // the library is unlocked.
+    const applyItems = (items) => {
+      state.items = items.slice().sort((a, b) => a.label.localeCompare(b.label));
       state.itemsById = new Map(state.items.map((item) => [item.id, item]));
       applyAliasesToItems();
-      state.manifestReady = true;
       state.tagTree = buildTagTree(state.items);
       ensureTagSelection(state.tagTree);
+    };
+
+    const loadManifests = async () => {
+      if (manifestStatus) {
+        manifestStatus.textContent = translations[currentLanguage].labels.manifestLoading;
+      }
+      const demoItems = await fetchDemoManifest();
+      let protectedItems = [];
+      state.libraryUnlocked = false;
+
+      if (hasValidSession()) {
+        try {
+          protectedItems = await fetchProtectedManifest();
+          state.libraryUnlocked = true;
+        } catch (error) {
+          // Brak dostępu do warstwy chronionej nie może zablokować warstwy demo
+          // Losing the protected tier must not take the demo tier down with it
+          console.error(error);
+        }
+      }
+
+      const items = demoItems.concat(protectedItems);
+      if (!items.length) {
+        throw new Error(translations[currentLanguage].labels.manifestNoData);
+      }
+      applyItems(items);
+      state.manifestReady = true;
+      signedUrlCache.clear();
       renderAllViews();
     };
 
@@ -2249,7 +2522,7 @@ const translations = {
 
     searchInput.addEventListener("input", renderSamples);
     reloadManifest.addEventListener("click", () => {
-      parseManifest().catch((error) => {
+      loadManifests().catch((error) => {
         alert(error.message);
         manifestStatus.textContent = translations[currentLanguage].labels.manifestError;
       });
@@ -2400,11 +2673,124 @@ const translations = {
       }
     });
 
+    // --- Bramka dostępu do archiwum / Archive access gate ---
+    // Układ i komunikaty są wspólne z modułem DataVault (shared/access-gate.css), żeby
+    // Rytuał Uwierzytelnienia wyglądał tak samo w całym Przyborniku.
+    // Celowo własne okno, a nie natywne okienko przeglądarki: natywne pojawiałoby się
+    // przy każdym pliku i to właśnie ono uniemożliwiało korzystanie z poprzedniego
+    // rozwiązania opartego na Cloudflare Access.
+    // Layout and wording are shared with the DataVault module (shared/access-gate.css).
+    // Deliberately a custom dialog rather than the browser's native prompt: the native one
+    // would reappear for every single file, which is what made the earlier attempt unusable.
+    const showAccessGate = (message = "") => {
+      if (!accessGate) {
+        return;
+      }
+      if (accessError) accessError.textContent = message;
+      if (accessPassword) accessPassword.value = "";
+      accessGate.hidden = false;
+      if (accessPassword) accessPassword.focus();
+    };
+
+    const hideAccessGate = () => {
+      if (!accessGate) {
+        return;
+      }
+      accessGate.hidden = true;
+      if (accessError) accessError.textContent = "";
+      if (accessPassword) accessPassword.value = "";
+    };
+
+    // --- Wymiana Litanii Dostępu na token sesji / Exchanging the Litany of Access for a session token ---
+    const submitAccessLitany = async () => {
+      const labels = translations[currentLanguage].labels;
+      const password = accessPassword?.value || "";
+      if (!password) {
+        if (accessError) accessError.textContent = labels.accessEmpty;
+        return;
+      }
+      if (accessSubmit) {
+        accessSubmit.disabled = true;
+        accessSubmit.textContent = labels.accessWorking;
+      }
+      if (accessError) accessError.textContent = "";
+      try {
+        const response = await fetch(`${AUDIO_GATE_BASE}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ password })
+        });
+        if (response.status === 401) {
+          if (accessError) accessError.textContent = labels.accessRejected;
+          return;
+        }
+        if (!response.ok) {
+          if (accessError) accessError.textContent = labels.accessSilent;
+          return;
+        }
+        const data = await response.json();
+        storeSession({ token: data.token, exp: Number(data.exp) });
+        hideAccessGate();
+        await loadManifests();
+        updateStatus();
+      } catch (error) {
+        console.error(error);
+        if (accessError) accessError.textContent = labels.accessSilent;
+      } finally {
+        if (accessSubmit) {
+          accessSubmit.disabled = false;
+          accessSubmit.textContent = labels.accessUnlockButton;
+        }
+      }
+    };
+
+    // --- Zapieczętowanie archiwum / Sealing the archive ---
+    // Kasuje sesję na tym urządzeniu i przeładowuje manifesty do samej warstwy demo.
+    // Clears the session on this device and reloads manifests down to the demo tier only.
+    const sealArchive = async () => {
+      storeSession(null);
+      signedUrlCache.clear();
+      await loadManifests();
+      updateStatus();
+    };
+
+    const handleUnlockClick = () => {
+      if (state.libraryUnlocked) {
+        sealArchive().catch((error) => console.error(error));
+        return;
+      }
+      showAccessGate();
+    };
+
+    if (unlockLibrary) unlockLibrary.addEventListener("click", handleUnlockClick);
+    if (unlockLibraryUser) unlockLibraryUser.addEventListener("click", handleUnlockClick);
+    if (accessForm) {
+      accessForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        submitAccessLitany().catch((error) => console.error(error));
+      });
+    }
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && accessGate && !accessGate.hidden) {
+        hideAccessGate();
+      }
+    });
+
     setModeVisibility();
+    // Sesja z poprzedniej wizyty pozwala pominąć pytanie o hasło / A stored session skips the password prompt
+    state.session = loadSession();
     loadSettingsLocal();
     renderAllViews();
-    initFirebase();
-    parseManifest().catch((error) => {
+    // Start Firebase jest odizolowany od wczytywania manifestów: nawet gdyby wywalił się
+    // mimo powyższych zabezpieczeń, dźwięki mają się wczytać.
+    // Firebase start-up is isolated from manifest loading: even if it failed despite the
+    // guards above, the sounds must still load.
+    try {
+      initFirebase();
+    } catch (error) {
+      console.error(error);
+    }
+    loadManifests().catch((error) => {
       manifestStatus.textContent = translations[currentLanguage].labels.manifestError;
       console.error(error);
     });

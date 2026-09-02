@@ -1,0 +1,3438 @@
+{
+  "version": 1,
+  "access": "public",
+  "items": [
+    {
+      "id": "bolter-ammo-upgrade-hammer-cock",
+      "label": "Bolter Ammo Upgrade Hammer Cock",
+      "groupCount": 0,
+      "filename": "BolterAmmoUpgradeHammerCock.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadSpecial"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadSpecial"
+      ],
+      "variants": [
+        {
+          "filename": "BolterAmmoUpgradeHammerCock.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadSpecial/BolterAmmoUpgradeHammerCock.ogg"
+        }
+      ]
+    },
+    {
+      "id": "bolter-projectile-impact-rock",
+      "label": "Bolter Projectile Impact Rock",
+      "groupCount": 5,
+      "filename": "BolterProjectileImpactRock01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BolterProjectileImpactRock"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BolterProjectileImpactRock"
+      ],
+      "variants": [
+        {
+          "filename": "BolterProjectileImpactRock01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BolterProjectileImpactRock/BolterProjectileImpactRock01.ogg"
+        },
+        {
+          "filename": "BolterProjectileImpactRock02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BolterProjectileImpactRock/BolterProjectileImpactRock02.ogg"
+        },
+        {
+          "filename": "BolterProjectileImpactRock03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BolterProjectileImpactRock/BolterProjectileImpactRock03.ogg"
+        },
+        {
+          "filename": "BolterProjectileImpactRock04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BolterProjectileImpactRock/BolterProjectileImpactRock04.ogg"
+        },
+        {
+          "filename": "BolterProjectileImpactRock05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BolterProjectileImpactRock/BolterProjectileImpactRock05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-ammo-type-01-dragonfire",
+      "label": "Boltgun Ammo Type 01 Dragonfire",
+      "groupCount": 0,
+      "filename": "BoltgunAmmoType01Dragonfire.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunAmmoType01Dragonfire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunAmmoType01Dragonfire"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunAmmoType01Dragonfire.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunAmmoType01Dragonfire/BoltgunAmmoType01Dragonfire.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-ammo-type-02-kraken",
+      "label": "Boltgun Ammo Type 02 Kraken",
+      "groupCount": 0,
+      "filename": "BoltgunAmmoType02Kraken.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunAmmoType02Kraken"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunAmmoType02Kraken"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunAmmoType02Kraken.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunAmmoType02Kraken/BoltgunAmmoType02Kraken.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-ammo-type-03-vengeance",
+      "label": "Boltgun Ammo Type 03 Vengeance",
+      "groupCount": 0,
+      "filename": "BoltgunAmmoType03Vengeance.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunAmmoType03Vengeance"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunAmmoType03Vengeance"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunAmmoType03Vengeance.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunAmmoType03Vengeance/BoltgunAmmoType03Vengeance.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-fire",
+      "label": "Boltgun Fire",
+      "groupCount": 5,
+      "filename": "BoltgunFire01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunFire"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunFire01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire01.ogg"
+        },
+        {
+          "filename": "BoltgunFire02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire02.ogg"
+        },
+        {
+          "filename": "BoltgunFire03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire03.ogg"
+        },
+        {
+          "filename": "BoltgunFire04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire04.ogg"
+        },
+        {
+          "filename": "BoltgunFire05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-fire-01-test",
+      "label": "Boltgun Fire 01 test",
+      "groupCount": 0,
+      "filename": "BoltgunFire01test.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunFire"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunFire01test.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire01test.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-fire-02-test",
+      "label": "Boltgun Fire 02 test",
+      "groupCount": 0,
+      "filename": "BoltgunFire02test.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunFire"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunFire02test.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire02test.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-fire-03-test",
+      "label": "Boltgun Fire 03 test",
+      "groupCount": 0,
+      "filename": "BoltgunFire03test.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunFire"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunFire03test.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire03test.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-fire-04-test",
+      "label": "Boltgun Fire 04 test",
+      "groupCount": 0,
+      "filename": "BoltgunFire04test.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunFire"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunFire04test.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire04test.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-fire-05-test",
+      "label": "Boltgun Fire 05 test",
+      "groupCount": 0,
+      "filename": "BoltgunFire05test.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunFire"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunFire05test.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunFire/BoltgunFire05test.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-low-ammo-click",
+      "label": "Boltgun Low Ammo Click",
+      "groupCount": 0,
+      "filename": "BoltgunLowAmmoClick.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunLowAmmoClick"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunLowAmmoClick"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunLowAmmoClick.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunLowAmmoClick/BoltgunLowAmmoClick.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-projectile-impact",
+      "label": "Boltgun Projectile Impact",
+      "groupCount": 6,
+      "filename": "BoltgunProjectileImpact01.ogg (+5)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunProjectileImpactSurface01"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunProjectileImpactSurface01"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunProjectileImpact01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunProjectileImpactSurface01/BoltgunProjectileImpact01.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunProjectileImpactSurface01/BoltgunProjectileImpact02.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunProjectileImpactSurface01/BoltgunProjectileImpact03.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunProjectileImpactSurface01/BoltgunProjectileImpact04.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunProjectileImpactSurface01/BoltgunProjectileImpact05.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact06.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunProjectileImpactSurface01/BoltgunProjectileImpact06.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-projectile-impact-1676",
+      "label": "Boltgun Projectile Impact",
+      "groupCount": 6,
+      "filename": "BoltgunProjectileImpact01.ogg (+5)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterImpact"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunProjectileImpact01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterImpact/BoltgunProjectileImpact01.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterImpact/BoltgunProjectileImpact02.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterImpact/BoltgunProjectileImpact03.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterImpact/BoltgunProjectileImpact04.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterImpact/BoltgunProjectileImpact05.ogg"
+        },
+        {
+          "filename": "BoltgunProjectileImpact06.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterImpact/BoltgunProjectileImpact06.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-projectile-impact-flesh",
+      "label": "Boltgun Projectile Impact Flesh",
+      "groupCount": 0,
+      "filename": "BoltgunProjectileImpactFlesh.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunProjectileImpactFlesh"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunProjectileImpactFlesh"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunProjectileImpactFlesh.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunProjectileImpactFlesh/BoltgunProjectileImpactFlesh.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-reload-full",
+      "label": "Boltgun Reload Full",
+      "groupCount": 0,
+      "filename": "BoltgunReloadFull.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadFull"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadFull"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunReloadFull.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadFull/BoltgunReloadFull.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-reload-full-1581",
+      "label": "Boltgun Reload Full",
+      "groupCount": 0,
+      "filename": "BoltgunReloadFull.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadSpecial"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadSpecial"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunReloadFull.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadSpecial/BoltgunReloadFull.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-reload-partial",
+      "label": "Boltgun Reload Partial",
+      "groupCount": 0,
+      "filename": "BoltgunReloadPartial.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadPartial"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadPartial"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunReloadPartial.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadPartial/BoltgunReloadPartial.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-reload-special",
+      "label": "Boltgun Reload Special",
+      "groupCount": 0,
+      "filename": "BoltgunReloadSpecial.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadSpecial"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadSpecial"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunReloadSpecial.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadSpecial/BoltgunReloadSpecial.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-reload-special-dragonfire",
+      "label": "Boltgun Reload Special Dragonfire",
+      "groupCount": 0,
+      "filename": "BoltgunReloadSpecialDragonfire.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadSpecial"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadSpecial"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunReloadSpecialDragonfire.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadSpecial/BoltgunReloadSpecialDragonfire.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-reload-special-kraken",
+      "label": "Boltgun Reload Special Kraken",
+      "groupCount": 0,
+      "filename": "BoltgunReloadSpecialKraken.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadSpecial"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadSpecial"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunReloadSpecialKraken.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadSpecial/BoltgunReloadSpecialKraken.ogg"
+        }
+      ]
+    },
+    {
+      "id": "boltgun-reload-special-vengeance",
+      "label": "Boltgun Reload Special Vengeance",
+      "groupCount": 0,
+      "filename": "BoltgunReloadSpecialVengeance.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "BoltgunReloadSpecial"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / BoltgunReloadSpecial"
+      ],
+      "variants": [
+        {
+          "filename": "BoltgunReloadSpecialVengeance.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/BoltgunReloadSpecial/BoltgunReloadSpecialVengeance.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-follow-through-swing-01-missed",
+      "label": "Chainsword Follow Through Swing 01 Missed",
+      "groupCount": 0,
+      "filename": "ChainswordFollowThroughSwing01Missed.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordFollowThroughSwing01Missed"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordFollowThroughSwing01Missed"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordFollowThroughSwing01Missed.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordFollowThroughSwing01Missed/ChainswordFollowThroughSwing01Missed.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-follow-through-swing-02-cut",
+      "label": "Chainsword Follow Through Swing 02 Cut",
+      "groupCount": 0,
+      "filename": "ChainswordFollowThroughSwing02Cut.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordFollowThroughSwing02Cut"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordFollowThroughSwing02Cut"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordFollowThroughSwing02Cut.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordFollowThroughSwing02Cut/ChainswordFollowThroughSwing02Cut.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-idle",
+      "label": "Chainsword Idle",
+      "groupCount": 0,
+      "filename": "ChainswordIdle.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordIdle"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordIdle"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordIdle.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordIdle/ChainswordIdle.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-impact-cut",
+      "label": "Chainsword Impact Cut",
+      "groupCount": 0,
+      "filename": "ChainswordImpactCut.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordImpactCut"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordImpactCut"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordImpactCut.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordImpactCut/ChainswordImpactCut.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-impact-surface-generic",
+      "label": "Chainsword Impact Surface Generic",
+      "groupCount": 0,
+      "filename": "ChainswordImpactSurfaceGeneric.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordImpactSurfaceGeneric"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordImpactSurfaceGeneric"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordImpactSurfaceGeneric.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordImpactSurfaceGeneric/ChainswordImpactSurfaceGeneric.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-impact-surface-generic-cut",
+      "label": "Chainsword Impact Surface Generic Cut",
+      "groupCount": 0,
+      "filename": "ChainswordImpactSurfaceGenericCut.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordImpactSurfaceGenericCut"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordImpactSurfaceGenericCut"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordImpactSurfaceGenericCut.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordImpactSurfaceGenericCut/ChainswordImpactSurfaceGenericCut.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-lunge-rev",
+      "label": "Chainsword Lunge Rev",
+      "groupCount": 0,
+      "filename": "ChainswordLungeRev.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordLungeRev"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordLungeRev"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordLungeRev.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordLungeRev/ChainswordLungeRev.ogg"
+        }
+      ]
+    },
+    {
+      "id": "chainsword-strike",
+      "label": "Chainsword Strike",
+      "groupCount": 0,
+      "filename": "ChainswordStrike.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordStrike"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordStrike"
+      ],
+      "variants": [
+        {
+          "filename": "ChainswordStrike.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordStrike/ChainswordStrike.ogg"
+        }
+      ]
+    },
+    {
+      "id": "frag-grenade-explosion",
+      "label": "Frag Grenade Explosion",
+      "groupCount": 0,
+      "filename": "FragGrenadeExplosion.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeExplosion"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeExplosion"
+      ],
+      "variants": [
+        {
+          "filename": "FragGrenadeExplosion.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeExplosion/FragGrenadeExplosion.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-beam-activate",
+      "label": "Graviton Beam Activate",
+      "groupCount": 0,
+      "filename": "GravitonBeamActivate.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonBeamActivate"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonBeamActivate"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonBeamActivate.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonBeamActivate/GravitonBeamActivate.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-beam-deactivate",
+      "label": "Graviton Beam Deactivate",
+      "groupCount": 0,
+      "filename": "GravitonBeamDeactivate.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonBeamDeactivate"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonBeamDeactivate"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonBeamDeactivate.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonBeamDeactivate/GravitonBeamDeactivate.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-firing-loop",
+      "label": "Graviton Firing Loop",
+      "groupCount": 2,
+      "filename": "GravitonFiringLoop01.ogg (+1)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonFiringLoop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonFiringLoop"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonFiringLoop01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonFiringLoop/GravitonFiringLoop01.ogg"
+        },
+        {
+          "filename": "GravitonFiringLoop02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonFiringLoop/GravitonFiringLoop02.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-firing-start",
+      "label": "Graviton Firing Start",
+      "groupCount": 0,
+      "filename": "GravitonFiringStart.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonFiringLoop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonFiringLoop"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonFiringStart.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonFiringLoop/GravitonFiringStart.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-gun-charging",
+      "label": "Graviton Gun Charging",
+      "groupCount": 0,
+      "filename": "GravitonGunCharging.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonGunCharging"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonGunCharging"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonGunCharging.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonGunCharging/GravitonGunCharging.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-gun-idle",
+      "label": "Graviton Gun Idle",
+      "groupCount": 0,
+      "filename": "GravitonGunIdle.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonGunIdle"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonGunIdle"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonGunIdle.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonGunIdle/GravitonGunIdle.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-gun-pickup-reload",
+      "label": "Graviton Gun Pickup Reload",
+      "groupCount": 0,
+      "filename": "GravitonGunPickupReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonGunPickupReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonGunPickupReload"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonGunPickupReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonGunPickupReload/GravitonGunPickupReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-gun-projectile-loop",
+      "label": "Graviton Gun Projectile Loop",
+      "groupCount": 0,
+      "filename": "GravitonGunProjectileLoop.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonGunProjectileLoop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonGunProjectileLoop"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonGunProjectileLoop.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonGunProjectileLoop/GravitonGunProjectileLoop.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-gun-reload",
+      "label": "Graviton Gun Reload",
+      "groupCount": 0,
+      "filename": "GravitonGunReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonGunReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonGunReload"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonGunReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonGunReload/GravitonGunReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-projectile-firing-shot",
+      "label": "Graviton Projectile Firing Shot",
+      "groupCount": 0,
+      "filename": "GravitonProjectileFiringShot.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonProjectileFiringShot"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonProjectileFiringShot"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonProjectileFiringShot.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonProjectileFiringShot/GravitonProjectileFiringShot.ogg"
+        }
+      ]
+    },
+    {
+      "id": "graviton-projectile-impact",
+      "label": "Graviton Projectile Impact",
+      "groupCount": 0,
+      "filename": "GravitonProjectileImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "GravitonGun",
+        "GravitonProjectileImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / GravitonGun",
+        "AudioExample / WH40k Boltgun / GravitonGun / GravitonProjectileImpact"
+      ],
+      "variants": [
+        {
+          "filename": "GravitonProjectileImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/GravitonGun/GravitonProjectileImpact/GravitonProjectileImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-firing",
+      "label": "Heavy Bolter Firing",
+      "groupCount": 10,
+      "filename": "HeavyBolterFiring01.ogg (+9)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterFiring"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterFiring"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterFiring01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring01.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring02.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring03.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring04.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring05.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring06.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring06.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring07.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring07.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring08.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring08.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring09.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring09.ogg"
+        },
+        {
+          "filename": "HeavyBolterFiring10.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterFiring10.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-in",
+      "label": "Heavy Bolter In",
+      "groupCount": 5,
+      "filename": "HeavyBolterIn01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterIn"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterIn"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterIn01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterIn/HeavyBolterIn01.ogg"
+        },
+        {
+          "filename": "HeavyBolterIn02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterIn/HeavyBolterIn02.ogg"
+        },
+        {
+          "filename": "HeavyBolterIn03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterIn/HeavyBolterIn03.ogg"
+        },
+        {
+          "filename": "HeavyBolterIn04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterIn/HeavyBolterIn04.ogg"
+        },
+        {
+          "filename": "HeavyBolterIn05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterIn/HeavyBolterIn05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-magazine-eject-impact",
+      "label": "Heavy Bolter Magazine Eject Impact",
+      "groupCount": 0,
+      "filename": "HeavyBolterMagazineEjectImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterMagazineEjectImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterMagazineEjectImpact"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterMagazineEjectImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterMagazineEjectImpact/HeavyBolterMagazineEjectImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-magazine-eject-impact-1785",
+      "label": "Heavy Bolter Magazine Eject Impact",
+      "groupCount": 0,
+      "filename": "HeavyBolterMagazineEjectImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteCaliverMagazineEject"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteCaliverMagazineEject"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterMagazineEjectImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteCaliverMagazineEject/HeavyBolterMagazineEjectImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-mech-foley-loop",
+      "label": "Heavy Bolter Mech Foley Loop",
+      "groupCount": 0,
+      "filename": "HeavyBolterMechFoleyLoop.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterMechFoleyLoop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterMechFoleyLoop"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterMechFoleyLoop.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterMechFoleyLoop/HeavyBolterMechFoleyLoop.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-out",
+      "label": "Heavy Bolter Out",
+      "groupCount": 5,
+      "filename": "HeavyBolterOut01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterOut"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterOut"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterOut01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterOut/HeavyBolterOut01.ogg"
+        },
+        {
+          "filename": "HeavyBolterOut02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterOut/HeavyBolterOut02.ogg"
+        },
+        {
+          "filename": "HeavyBolterOut03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterOut/HeavyBolterOut03.ogg"
+        },
+        {
+          "filename": "HeavyBolterOut04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterOut/HeavyBolterOut04.ogg"
+        },
+        {
+          "filename": "HeavyBolterOut05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterOut/HeavyBolterOut05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-pickup-reload",
+      "label": "Heavy Bolter Pickup Reload",
+      "groupCount": 0,
+      "filename": "HeavyBolterPickupReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterPickupReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterPickupReload"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterPickupReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterPickupReload/HeavyBolterPickupReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-shell-case-eject-impact",
+      "label": "Heavy Bolter Shell Case Eject Impact",
+      "groupCount": 15,
+      "filename": "HeavyBolterShellCaseEjectImpact01.ogg (+14)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterFiring"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterFiring"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact01.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact02.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact03.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact04.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact05.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact06.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact06.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact07.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact07.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact08.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact08.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact09.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact09.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact10.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact10.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact11.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact11.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact12.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact12.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact13.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact13.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact14.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact14.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact15.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolterShellCaseEjectImpact15.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-shell-case-eject-impact-1695",
+      "label": "Heavy Bolter Shell Case Eject Impact",
+      "groupCount": 15,
+      "filename": "HeavyBolterShellCaseEjectImpact01.ogg (+14)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterShellCaseEjectImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterShellCaseEjectImpact"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact01.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact02.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact03.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact04.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact05.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact06.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact06.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact07.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact07.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact08.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact08.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact09.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact09.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact10.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact10.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact11.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact11.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact12.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact12.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact13.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact13.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact14.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact14.ogg"
+        },
+        {
+          "filename": "HeavyBolterShellCaseEjectImpact15.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterShellCaseEjectImpact/HeavyBolterShellCaseEjectImpact15.ogg"
+        }
+      ]
+    },
+    {
+      "id": "heavy-bolter-high-mech-layer",
+      "label": "Heavy Bolter_ High Mech Layer",
+      "groupCount": 5,
+      "filename": "HeavyBolter_HighMechLayer01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "HeavyBolter",
+        "HeavyBolterFiring"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / HeavyBolter",
+        "AudioExample / WH40k Boltgun / HeavyBolter / HeavyBolterFiring"
+      ],
+      "variants": [
+        {
+          "filename": "HeavyBolter_HighMechLayer01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolter_HighMechLayer01.ogg"
+        },
+        {
+          "filename": "HeavyBolter_HighMechLayer02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolter_HighMechLayer02.ogg"
+        },
+        {
+          "filename": "HeavyBolter_HighMechLayer03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolter_HighMechLayer03.ogg"
+        },
+        {
+          "filename": "HeavyBolter_HighMechLayer04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolter_HighMechLayer04.ogg"
+        },
+        {
+          "filename": "HeavyBolter_HighMechLayer05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/HeavyBolter/HeavyBolterFiring/HeavyBolter_HighMechLayer05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "low-rev",
+      "label": "Low Rev",
+      "groupCount": 0,
+      "filename": "LowRev.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordStrike"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordStrike"
+      ],
+      "variants": [
+        {
+          "filename": "LowRev.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordStrike/LowRev.ogg"
+        }
+      ]
+    },
+    {
+      "id": "magazine-ejected-drop",
+      "label": "Magazine Ejected Drop",
+      "groupCount": 0,
+      "filename": "MagazineEjectedDrop.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "MagazineEjectedDrop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / MagazineEjectedDrop"
+      ],
+      "variants": [
+        {
+          "filename": "MagazineEjectedDrop.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/MagazineEjectedDrop/MagazineEjectedDrop.ogg"
+        }
+      ]
+    },
+    {
+      "id": "meltagun-charge",
+      "label": "Meltagun Charge",
+      "groupCount": 0,
+      "filename": "MeltagunCharge.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunCharge"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunCharge"
+      ],
+      "variants": [
+        {
+          "filename": "MeltagunCharge.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunCharge/MeltagunCharge.ogg"
+        }
+      ]
+    },
+    {
+      "id": "meltagun-charge-lesser",
+      "label": "Meltagun Charge Lesser",
+      "groupCount": 0,
+      "filename": "MeltagunChargeLesser.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunChargeLesser"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunChargeLesser"
+      ],
+      "variants": [
+        {
+          "filename": "MeltagunChargeLesser.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunChargeLesser/MeltagunChargeLesser.ogg"
+        }
+      ]
+    },
+    {
+      "id": "meltagun-high-approved",
+      "label": "Meltagun High Approved",
+      "groupCount": 0,
+      "filename": "MeltagunHighApproved.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunHigh",
+        "OldMeltagunFirringSFX"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunHigh",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunHigh / OldMeltagunFirringSFX"
+      ],
+      "variants": [
+        {
+          "filename": "MeltagunHighApproved.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunHigh/OldMeltagunFirringSFX/MeltagunHighApproved.ogg"
+        }
+      ]
+    },
+    {
+      "id": "meltagun-low",
+      "label": "Meltagun Low",
+      "groupCount": 0,
+      "filename": "MeltagunLow.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunLow"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunLow"
+      ],
+      "variants": [
+        {
+          "filename": "MeltagunLow.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunLow/MeltagunLow.ogg"
+        }
+      ]
+    },
+    {
+      "id": "meltagun-projectile-impact",
+      "label": "Meltagun Projectile Impact",
+      "groupCount": 0,
+      "filename": "MeltagunProjectileImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunProjectileImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunProjectileImpact"
+      ],
+      "variants": [
+        {
+          "filename": "MeltagunProjectileImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunProjectileImpact/MeltagunProjectileImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "meltagun-reload",
+      "label": "Meltagun Reload",
+      "groupCount": 0,
+      "filename": "MeltagunReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunReload"
+      ],
+      "variants": [
+        {
+          "filename": "MeltagunReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunReload/MeltagunReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "meltagun-reset",
+      "label": "Meltagun Reset",
+      "groupCount": 0,
+      "filename": "MeltagunReset.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunReset"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunReset"
+      ],
+      "variants": [
+        {
+          "filename": "MeltagunReset.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunReset/MeltagunReset.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-firing-overheated",
+      "label": "Plasma Gun Firing Overheated",
+      "groupCount": 0,
+      "filename": "PlasmaGunFiringOverheated.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunFiringOverheated.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/PlasmaGunFiringOverheated.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-firing-overheated-zap-long",
+      "label": "Plasma Gun Firing Overheated_ Zap Long",
+      "groupCount": 0,
+      "filename": "PlasmaGunFiringOverheated_ZapLong.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunFiringOverheated_ZapLong.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/PlasmaGunFiringOverheated_ZapLong.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-firing-overheated-zap-medium",
+      "label": "Plasma Gun Firing Overheated_ Zap Medium",
+      "groupCount": 0,
+      "filename": "PlasmaGunFiringOverheated_ZapMedium.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunFiringOverheated_ZapMedium.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/PlasmaGunFiringOverheated_ZapMedium.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-firing-standard",
+      "label": "Plasma Gun Firing Standard",
+      "groupCount": 0,
+      "filename": "PlasmaGunFiringStandard.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunFiringStandard.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/PlasmaGunFiringStandard.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-firing-standard-1733",
+      "label": "Plasma Gun Firing Standard",
+      "groupCount": 0,
+      "filename": "PlasmaGunFiringStandard.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringStandard"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringStandard"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunFiringStandard.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringStandard/PlasmaGunFiringStandard.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-firing-standard-1738",
+      "label": "Plasma Gun Firing Standard",
+      "groupCount": 0,
+      "filename": "PlasmaGunFiringStandard.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunProjectileImpactOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunProjectileImpactOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunFiringStandard.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunProjectileImpactOverheated/PlasmaGunFiringStandard.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-heat-dump-recoil",
+      "label": "Plasma Gun Heat Dump Recoil",
+      "groupCount": 0,
+      "filename": "PlasmaGunHeatDumpRecoil.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunHeatDumpRecoil"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunHeatDumpRecoil"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunHeatDumpRecoil.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunHeatDumpRecoil/PlasmaGunHeatDumpRecoil.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-overheat-self-damage",
+      "label": "Plasma Gun Overheat Self Damage",
+      "groupCount": 0,
+      "filename": "PlasmaGunOverheatSelfDamage.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunOverheatSelfDamage"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunOverheatSelfDamage"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunOverheatSelfDamage.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunOverheatSelfDamage/PlasmaGunOverheatSelfDamage.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-overheat-warning-sound",
+      "label": "Plasma Gun Overheat Warning Sound",
+      "groupCount": 0,
+      "filename": "PlasmaGunOverheatWarningSound.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunOverheatWarningSound"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunOverheatWarningSound"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunOverheatWarningSound.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunOverheatWarningSound/PlasmaGunOverheatWarningSound.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-projectile-impact",
+      "label": "Plasma Gun Projectile Impact",
+      "groupCount": 0,
+      "filename": "PlasmaGunProjectileImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunProjectileImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunProjectileImpact"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunProjectileImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunProjectileImpact/PlasmaGunProjectileImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-projectile-impact-1739",
+      "label": "Plasma Gun Projectile Impact",
+      "groupCount": 0,
+      "filename": "PlasmaGunProjectileImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunProjectileImpactOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunProjectileImpactOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunProjectileImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunProjectileImpactOverheated/PlasmaGunProjectileImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "plasma-gun-reload",
+      "label": "Plasma Gun Reload",
+      "groupCount": 0,
+      "filename": "PlasmaGunReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunReload"
+      ],
+      "variants": [
+        {
+          "filename": "PlasmaGunReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunReload/PlasmaGunReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "projectile-ejected-shell-drop",
+      "label": "Projectile Ejected Shell Drop",
+      "groupCount": 15,
+      "filename": "ProjectileEjectedShellDrop01.ogg (+14)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "ProjectileEjectedShellDrop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / ProjectileEjectedShellDrop"
+      ],
+      "variants": [
+        {
+          "filename": "ProjectileEjectedShellDrop01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop01.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop02.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop03.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop04.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop05.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop06.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop06.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop07.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop07.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop08.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop08.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop09.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop09.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop10.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop10.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop11.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop11.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop12.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop12.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop13.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop13.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop14.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop14.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDrop15.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDrop/ProjectileEjectedShellDrop15.ogg"
+        }
+      ]
+    },
+    {
+      "id": "projectile-ejected-shell-drop-dirt",
+      "label": "Projectile Ejected Shell Drop Dirt",
+      "groupCount": 5,
+      "filename": "ProjectileEjectedShellDropDirt01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "ProjectileEjectedShellDropDirt"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / ProjectileEjectedShellDropDirt"
+      ],
+      "variants": [
+        {
+          "filename": "ProjectileEjectedShellDropDirt01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropDirt/ProjectileEjectedShellDropDirt01.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropDirt02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropDirt/ProjectileEjectedShellDropDirt02.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropDirt03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropDirt/ProjectileEjectedShellDropDirt03.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropDirt04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropDirt/ProjectileEjectedShellDropDirt04.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropDirt05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropDirt/ProjectileEjectedShellDropDirt05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "projectile-ejected-shell-drop-gravel",
+      "label": "Projectile Ejected Shell Drop Gravel",
+      "groupCount": 5,
+      "filename": "ProjectileEjectedShellDropGravel01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "ProjectileEjectedShellDropGravel"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / ProjectileEjectedShellDropGravel"
+      ],
+      "variants": [
+        {
+          "filename": "ProjectileEjectedShellDropGravel01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropGravel/ProjectileEjectedShellDropGravel01.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropGravel02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropGravel/ProjectileEjectedShellDropGravel02.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropGravel03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropGravel/ProjectileEjectedShellDropGravel03.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropGravel04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropGravel/ProjectileEjectedShellDropGravel04.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropGravel05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropGravel/ProjectileEjectedShellDropGravel05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "projectile-ejected-shell-drop-hard-surface",
+      "label": "Projectile Ejected Shell Drop Hard Surface",
+      "groupCount": 5,
+      "filename": "ProjectileEjectedShellDropHardSurface01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "ProjectileEjectedShellDropHardSurface"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / ProjectileEjectedShellDropHardSurface"
+      ],
+      "variants": [
+        {
+          "filename": "ProjectileEjectedShellDropHardSurface01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropHardSurface/ProjectileEjectedShellDropHardSurface01.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropHardSurface02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropHardSurface/ProjectileEjectedShellDropHardSurface02.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropHardSurface03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropHardSurface/ProjectileEjectedShellDropHardSurface03.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropHardSurface04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropHardSurface/ProjectileEjectedShellDropHardSurface04.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropHardSurface05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropHardSurface/ProjectileEjectedShellDropHardSurface05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "projectile-ejected-shell-drop-metal",
+      "label": "Projectile Ejected Shell Drop Metal",
+      "groupCount": 5,
+      "filename": "ProjectileEjectedShellDropMetal01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Boltgun",
+        "ProjectileEjectedShellDropMetal"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun",
+        "AudioExample / WH40k Boltgun / Boltgun / ProjectileEjectedShellDropMetal"
+      ],
+      "variants": [
+        {
+          "filename": "ProjectileEjectedShellDropMetal01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropMetal/ProjectileEjectedShellDropMetal01.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropMetal02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropMetal/ProjectileEjectedShellDropMetal02.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropMetal03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropMetal/ProjectileEjectedShellDropMetal03.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropMetal04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropMetal/ProjectileEjectedShellDropMetal04.ogg"
+        },
+        {
+          "filename": "ProjectileEjectedShellDropMetal05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun/ProjectileEjectedShellDropMetal/ProjectileEjectedShellDropMetal05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-blast",
+      "label": "Shotgun Blast",
+      "groupCount": 0,
+      "filename": "ShotgunBlast.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunFiring"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunFiring"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunBlast.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunFiring/ShotgunBlast.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-firing",
+      "label": "Shotgun Firing",
+      "groupCount": 0,
+      "filename": "ShotgunFiring.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Meltagun",
+        "MeltagunHigh"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Meltagun",
+        "AudioExample / WH40k Boltgun / Meltagun / MeltagunHigh"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunFiring.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Meltagun/MeltagunHigh/ShotgunFiring.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-firing-handling",
+      "label": "Shotgun Firing Handling",
+      "groupCount": 0,
+      "filename": "ShotgunFiringHandling.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunFiring"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunFiring"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunFiringHandling.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunFiring/ShotgunFiringHandling.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-impact",
+      "label": "Shotgun Impact",
+      "groupCount": 5,
+      "filename": "ShotgunImpact1.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunProjectileImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunProjectileImpact"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunImpact1.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunImpact1.ogg"
+        },
+        {
+          "filename": "ShotgunImpact2.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunImpact2.ogg"
+        },
+        {
+          "filename": "ShotgunImpact3.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunImpact3.ogg"
+        },
+        {
+          "filename": "ShotgunImpact4.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunImpact4.ogg"
+        },
+        {
+          "filename": "ShotgunImpact5.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunImpact5.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-impact-1751",
+      "label": "Shotgun Impact",
+      "groupCount": 5,
+      "filename": "ShotgunImpact1.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunProjectileImpactLarge"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunProjectileImpactLarge"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunImpact1.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunImpact1.ogg"
+        },
+        {
+          "filename": "ShotgunImpact2.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunImpact2.ogg"
+        },
+        {
+          "filename": "ShotgunImpact3.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunImpact3.ogg"
+        },
+        {
+          "filename": "ShotgunImpact4.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunImpact4.ogg"
+        },
+        {
+          "filename": "ShotgunImpact5.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunImpact5.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-projectile-impact-ricochet",
+      "label": "Shotgun Projectile Impact Ricochet",
+      "groupCount": 3,
+      "filename": "ShotgunProjectileImpactRicochet01.ogg (+2)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunProjectileImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunProjectileImpact"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunProjectileImpactRicochet01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunProjectileImpactRicochet01.ogg"
+        },
+        {
+          "filename": "ShotgunProjectileImpactRicochet02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunProjectileImpactRicochet02.ogg"
+        },
+        {
+          "filename": "ShotgunProjectileImpactRicochet03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpact/ShotgunProjectileImpactRicochet03.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-projectile-impact-ricochet-1756",
+      "label": "Shotgun Projectile Impact Ricochet",
+      "groupCount": 3,
+      "filename": "ShotgunProjectileImpactRicochet01.ogg (+2)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunProjectileImpactLarge"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunProjectileImpactLarge"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunProjectileImpactRicochet01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunProjectileImpactRicochet01.ogg"
+        },
+        {
+          "filename": "ShotgunProjectileImpactRicochet02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunProjectileImpactRicochet02.ogg"
+        },
+        {
+          "filename": "ShotgunProjectileImpactRicochet03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactLarge/ShotgunProjectileImpactRicochet03.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-projectile-impact-ricochet-1759",
+      "label": "Shotgun Projectile Impact Ricochet",
+      "groupCount": 3,
+      "filename": "ShotgunProjectileImpactRicochet01.ogg (+2)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunProjectileImpactRicochet"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunProjectileImpactRicochet"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunProjectileImpactRicochet01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactRicochet/ShotgunProjectileImpactRicochet01.ogg"
+        },
+        {
+          "filename": "ShotgunProjectileImpactRicochet02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactRicochet/ShotgunProjectileImpactRicochet02.ogg"
+        },
+        {
+          "filename": "ShotgunProjectileImpactRicochet03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunProjectileImpactRicochet/ShotgunProjectileImpactRicochet03.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-pump-action",
+      "label": "Shotgun Pump Action",
+      "groupCount": 0,
+      "filename": "ShotgunPumpAction.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunPumpAction"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunPumpAction"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunPumpAction.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunPumpAction/ShotgunPumpAction.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-reload",
+      "label": "Shotgun Reload",
+      "groupCount": 0,
+      "filename": "ShotgunReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunReloading"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunReloading"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunReloading/ShotgunReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-reload-end",
+      "label": "Shotgun Reload End",
+      "groupCount": 0,
+      "filename": "ShotgunReloadEnd.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunReloadEnd"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunReloadEnd"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunReloadEnd.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunReloadEnd/ShotgunReloadEnd.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-reload-loop",
+      "label": "Shotgun Reload Loop",
+      "groupCount": 0,
+      "filename": "ShotgunReloadLoop.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunReloadLoop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunReloadLoop"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunReloadLoop.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunReloadLoop/ShotgunReloadLoop.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-reload-start",
+      "label": "Shotgun Reload Start",
+      "groupCount": 0,
+      "filename": "ShotgunReloadStart.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunReloadStart"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunReloadStart"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunReloadStart.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunReloadStart/ShotgunReloadStart.ogg"
+        }
+      ]
+    },
+    {
+      "id": "shotgun-shell-eject-impact",
+      "label": "Shotgun Shell Eject Impact",
+      "groupCount": 5,
+      "filename": "ShotgunShellEjectImpact01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Shotgun",
+        "ShotgunShellEjectImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Shotgun",
+        "AudioExample / WH40k Boltgun / Shotgun / ShotgunShellEjectImpact"
+      ],
+      "variants": [
+        {
+          "filename": "ShotgunShellEjectImpact01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunShellEjectImpact/ShotgunShellEjectImpact01.ogg"
+        },
+        {
+          "filename": "ShotgunShellEjectImpact02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunShellEjectImpact/ShotgunShellEjectImpact02.ogg"
+        },
+        {
+          "filename": "ShotgunShellEjectImpact03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunShellEjectImpact/ShotgunShellEjectImpact03.ogg"
+        },
+        {
+          "filename": "ShotgunShellEjectImpact04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunShellEjectImpact/ShotgunShellEjectImpact04.ogg"
+        },
+        {
+          "filename": "ShotgunShellEjectImpact05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Shotgun/ShotgunShellEjectImpact/ShotgunShellEjectImpact05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "swoosh",
+      "label": "Swoosh",
+      "groupCount": 3,
+      "filename": "Swoosh01.ogg (+2)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "Chainsword",
+        "ChainswordStrike"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / Chainsword",
+        "AudioExample / WH40k Boltgun / Chainsword / ChainswordStrike"
+      ],
+      "variants": [
+        {
+          "filename": "Swoosh01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordStrike/Swoosh01.ogg"
+        },
+        {
+          "filename": "Swoosh02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordStrike/Swoosh02.ogg"
+        },
+        {
+          "filename": "Swoosh03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Chainsword/ChainswordStrike/Swoosh03.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-impact",
+      "label": "Vengeance Grenade Impact",
+      "groupCount": 0,
+      "filename": "VengeanceGrenadeImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeImpactChargeUp"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeImpactChargeUp"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeImpactChargeUp/VengeanceGrenadeImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-impact-charge-up",
+      "label": "Vengeance Grenade Impact Charge Up",
+      "groupCount": 0,
+      "filename": "VengeanceGrenadeImpactChargeUp.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeImpactChargeUp"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeImpactChargeUp"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeImpactChargeUp.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeImpactChargeUp/VengeanceGrenadeImpactChargeUp.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-launcher-fire",
+      "label": "Vengeance Grenade Launcher Fire",
+      "groupCount": 0,
+      "filename": "VengeanceGrenadeLauncherFire.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeLauncherFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeLauncherFire"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeLauncherFire.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherFire/VengeanceGrenadeLauncherFire.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-launcher-impact",
+      "label": "Vengeance Grenade Launcher Impact",
+      "groupCount": 0,
+      "filename": "VengeanceGrenadeLauncherImpact.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeLauncherImpact"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeLauncherImpact"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeLauncherImpact.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherImpact/VengeanceGrenadeLauncherImpact.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-launcher-reload",
+      "label": "Vengeance Grenade Launcher Reload",
+      "groupCount": 0,
+      "filename": "VengeanceGrenadeLauncherReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeLauncherReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeLauncherReload"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeLauncherReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-launcher-reload-metal",
+      "label": "Vengeance Grenade Launcher Reload Metal",
+      "groupCount": 0,
+      "filename": "VengeanceGrenadeLauncherReloadMetal.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeLauncherReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeLauncherReload"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeLauncherReloadMetal.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReloadMetal.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-launcher-reload-shell-eject",
+      "label": "Vengeance Grenade Launcher Reload Shell Eject",
+      "groupCount": 5,
+      "filename": "VengeanceGrenadeLauncherReloadShellEject01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeLauncherReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeLauncherReload"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeLauncherReloadShellEject01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReloadShellEject01.ogg"
+        },
+        {
+          "filename": "VengeanceGrenadeLauncherReloadShellEject02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReloadShellEject02.ogg"
+        },
+        {
+          "filename": "VengeanceGrenadeLauncherReloadShellEject03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReloadShellEject03.ogg"
+        },
+        {
+          "filename": "VengeanceGrenadeLauncherReloadShellEject04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReloadShellEject04.ogg"
+        },
+        {
+          "filename": "VengeanceGrenadeLauncherReloadShellEject05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReloadShellEject05.ogg"
+        }
+      ]
+    },
+    {
+      "id": "vengeance-grenade-launcher-reload-thud",
+      "label": "Vengeance Grenade Launcher Reload Thud",
+      "groupCount": 0,
+      "filename": "VengeanceGrenadeLauncherReloadThud.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VengeanceGrenadeLauncher",
+        "VengeanceGrenadeLauncherReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher",
+        "AudioExample / WH40k Boltgun / VengeanceGrenadeLauncher / VengeanceGrenadeLauncherReload"
+      ],
+      "variants": [
+        {
+          "filename": "VengeanceGrenadeLauncherReloadThud.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VengeanceGrenadeLauncher/VengeanceGrenadeLauncherReload/VengeanceGrenadeLauncherReloadThud.ogg"
+        }
+      ]
+    },
+    {
+      "id": "volkite-caliver-reload",
+      "label": "Volkite Caliver Reload",
+      "groupCount": 0,
+      "filename": "VolkiteCaliverReload.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteCaliverReload"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteCaliverReload"
+      ],
+      "variants": [
+        {
+          "filename": "VolkiteCaliverReload.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteCaliverReload/VolkiteCaliverReload.ogg"
+        }
+      ]
+    },
+    {
+      "id": "volkite-charging-up",
+      "label": "Volkite Charging Up",
+      "groupCount": 0,
+      "filename": "VolkiteChargingUp.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteChargingUp"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteChargingUp"
+      ],
+      "variants": [
+        {
+          "filename": "VolkiteChargingUp.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteChargingUp/VolkiteChargingUp.ogg"
+        }
+      ]
+    },
+    {
+      "id": "volkite-cooling-off",
+      "label": "Volkite Cooling Off",
+      "groupCount": 0,
+      "filename": "VolkiteCoolingOff.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteCoolingOff"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteCoolingOff"
+      ],
+      "variants": [
+        {
+          "filename": "VolkiteCoolingOff.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteCoolingOff/VolkiteCoolingOff.ogg"
+        }
+      ]
+    },
+    {
+      "id": "volkite-explosive-burn",
+      "label": "Volkite Explosive Burn",
+      "groupCount": 0,
+      "filename": "VolkiteExplosiveBurn.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteExplosiveBurn"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteExplosiveBurn"
+      ],
+      "variants": [
+        {
+          "filename": "VolkiteExplosiveBurn.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteExplosiveBurn/VolkiteExplosiveBurn.ogg"
+        }
+      ]
+    },
+    {
+      "id": "volkite-firing-loop",
+      "label": "Volkite Firing Loop",
+      "groupCount": 0,
+      "filename": "VolkiteFiringLoop.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteFiringLoop"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteFiringLoop"
+      ],
+      "variants": [
+        {
+          "filename": "VolkiteFiringLoop.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteFiringLoop/VolkiteFiringLoop.ogg"
+        }
+      ]
+    },
+    {
+      "id": "volkite-firing-start",
+      "label": "Volkite Firing Start",
+      "groupCount": 0,
+      "filename": "VolkiteFiringStart.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteFiringStart"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteFiringStart"
+      ],
+      "variants": [
+        {
+          "filename": "VolkiteFiringStart.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteFiringStart/VolkiteFiringStart.ogg"
+        }
+      ]
+    },
+    {
+      "id": "volkite-idle",
+      "label": "Volkite Idle",
+      "groupCount": 0,
+      "filename": "VolkiteIdle.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "VolkiteCaliver",
+        "VolkiteIdle"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver",
+        "AudioExample / WH40k Boltgun / VolkiteCaliver / VolkiteIdle"
+      ],
+      "variants": [
+        {
+          "filename": "VolkiteIdle.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/VolkiteCaliver/VolkiteIdle/VolkiteIdle.ogg"
+        }
+      ]
+    },
+    {
+      "id": "weapon-dry-fire",
+      "label": "Weapon Dry Fire",
+      "groupCount": 0,
+      "filename": "WeaponDryFire.ogg",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "WeaponDryFire"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / WeaponDryFire"
+      ],
+      "variants": [
+        {
+          "filename": "WeaponDryFire.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/WeaponDryFire/WeaponDryFire.ogg"
+        }
+      ]
+    },
+    {
+      "id": "welding-impulses-medium-heavy",
+      "label": "Welding Impulses Medium Heavy",
+      "groupCount": 3,
+      "filename": "WeldingImpulsesMediumHeavy01.ogg (+2)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "WeldingImpulsesMediumHeavy01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesMediumHeavy01.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesMediumHeavy02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesMediumHeavy02.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesMediumHeavy03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesMediumHeavy03.ogg"
+        }
+      ]
+    },
+    {
+      "id": "welding-impulses-medium-light",
+      "label": "Welding Impulses Medium Light",
+      "groupCount": 3,
+      "filename": "WeldingImpulsesMediumLight01.ogg (+2)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "WeldingImpulsesMediumLight01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesMediumLight01.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesMediumLight02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesMediumLight02.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesMediumLight03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesMediumLight03.ogg"
+        }
+      ]
+    },
+    {
+      "id": "welding-impulses-short",
+      "label": "Welding Impulses Short",
+      "groupCount": 5,
+      "filename": "WeldingImpulsesShort01.ogg (+4)",
+      "access": "public",
+      "tags": [
+        "AudioExample",
+        "WH40k Boltgun",
+        "PlasmaGun",
+        "PlasmaGunFiringOverheated"
+      ],
+      "tag2": "WH40k Boltgun",
+      "tagPaths": [
+        "AudioExample",
+        "AudioExample / WH40k Boltgun",
+        "AudioExample / WH40k Boltgun / PlasmaGun",
+        "AudioExample / WH40k Boltgun / PlasmaGun / PlasmaGunFiringOverheated"
+      ],
+      "variants": [
+        {
+          "filename": "WeldingImpulsesShort01.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesShort01.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesShort02.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesShort02.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesShort03.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesShort03.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesShort04.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesShort04.ogg"
+        },
+        {
+          "filename": "WeldingImpulsesShort05.ogg",
+          "url": "https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/PlasmaGun/PlasmaGunFiringOverheated/WeldingImpulsesShort05.ogg"
+        }
+      ]
+    }
+  ]
+}

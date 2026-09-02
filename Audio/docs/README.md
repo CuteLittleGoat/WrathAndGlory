@@ -11,6 +11,7 @@ Moduł pozwala:
 - regulować głośność pojedynczych kafelków,
 - korzystać z widoku głównego przygotowanego przez prowadzącego,
 - przełączać się między listami ulubionych,
+- odblokować archiwum dźwięków chronionych jedną Litanią Dostępu,
 - w trybie admina tworzyć listy dźwięków,
 - dodawać aliasy do dźwięków,
 - filtrować dźwięki po tagach,
@@ -33,6 +34,45 @@ Audio/index.html?admin=1
 Widok użytkownika służy do prostego odtwarzania gotowych list.
 
 Widok admina służy do przygotowania widoku głównego, list ulubionych, aliasów i kolejności dźwięków.
+
+## Dwie warstwy biblioteki
+
+Biblioteka dźwięków składa się z dwóch części i widać je na jednej wspólnej liście:
+
+| Warstwa | Co zawiera | Czy wymaga hasła |
+| --- | --- | --- |
+| Demo | Darmowe dźwięki dostępne publicznie. | Nie. Działa od razu po otwarciu modułu. |
+| Archiwum | Dźwięki chronione prawami autorskimi. | Tak. Jednorazowa Litania Dostępu. |
+
+Po odblokowaniu archiwum obie warstwy mieszają się w jedną alfabetyczną listę. Nie musisz pamiętać, który dźwięk skąd pochodzi — po prostu klikasz.
+
+Dopóki archiwum jest zapieczętowane, widzisz wyłącznie warstwę demo. Jeżeli masz listy ulubionych zawierające dźwięki z archiwum, ich pozycje będą oznaczone jako „(brak w manifeście)” do czasu odblokowania.
+
+## Odblokowanie archiwum — Rytuał Dostępu
+
+Kliknij `Rytuał Dostępu`. Przycisk znajdziesz:
+
+- w widoku użytkownika — pod nawigacją po prawej stronie,
+- w widoku admina — na pasku narzędzi u góry.
+
+Pojawi się okno „Dostęp do danych z klauzulą tajności K.O.Z.A.” — to samo, które znasz z modułu `DataVault`.
+
+1. Wpisz Litanię Dostępu, czyli hasło grupy.
+2. Kliknij `Rozpocznij Rytuał`.
+3. Okno zniknie, a lista dźwięków uzupełni się o całe archiwum.
+
+**Hasło podajesz raz na 30 dni na danym urządzeniu.** Nie pojawia się przy każdym odtworzeniu dźwięku. Możesz zamknąć przeglądarkę i wrócić następnego dnia — archiwum nadal będzie odpieczętowane.
+
+Aby zamknąć dostęp wcześniej, kliknij ten sam przycisk, który po odblokowaniu nosi napis `Zapieczętuj dane`. Sesja zostanie skasowana na tym urządzeniu.
+
+### Komunikaty w oknie Rytuału
+
+| Komunikat | Znaczenie | Co zrobić |
+| --- | --- | --- |
+| Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana. | Pole hasła było puste. | Wpisz hasło. |
+| Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona. | Hasło jest nieprawidłowe. | Sprawdź pisownię i spróbuj ponownie. |
+| Duch Maszyny milczy: nie udało się załadować prywatnych danych. | Brak połączenia z bramką dostępu. | Sprawdź internet. Jeżeli problem się powtarza, zgłoś adminowi technicznemu. |
+| Duch Maszyny odmawia dostępu: Rytuał Uwierzytelnienia nie został ukończony. | Sesja wygasła po 30 dniach. | Wpisz hasło ponownie. |
 
 ## Widok użytkownika
 
@@ -137,15 +177,16 @@ W widoku admina możesz:
 
 ## Wczytanie manifestu
 
-Przycisk `Wczytaj manifest` ładuje bazę dźwięków z pliku:
+Przycisk `Wczytaj manifest` ponownie ładuje bazę dźwięków.
 
-```text
-AudioManifest.xlsx
-```
+Moduł pobiera wtedy dwie listy:
 
-Po poprawnym wczytaniu status manifestu pokazuje liczbę pozycji.
+- listę warstwy demo z pliku `AudioManifestDemo.json` — zawsze,
+- listę archiwum z bramki dostępu — tylko jeżeli archiwum jest odpieczętowane.
 
-Jeżeli manifestu nie uda się wczytać, panel pokaże komunikat błędu.
+Po poprawnym wczytaniu status manifestu pokazuje łączną liczbę pozycji.
+
+Jeżeli manifestu nie uda się wczytać, panel pokaże komunikat błędu. Gdy zawiedzie samo archiwum, warstwa demo i tak się załaduje — moduł nigdy nie zostaje całkiem pusty z powodu problemów z bramką.
 
 ## Lista SFX w adminie
 
@@ -276,9 +317,10 @@ W adminie widoczne są statusy:
 
 | Status | Znaczenie |
 | --- | --- |
-| Manifest | Informuje, czy plik `AudioManifest.xlsx` został wczytany. |
+| Manifest | Informuje, ile pozycji zostało wczytanych. |
 | Firebase | Informuje, czy moduł używa synchronizacji, czy ustawień lokalnych. |
 | Ulubione | Pokazuje liczbę list ulubionych. |
+| Archiwum | `zapieczętowane` — widać tylko warstwę demo. `odpieczętowane` — widać całą bibliotekę. |
 
 ## Dobre praktyki podczas sesji
 
@@ -295,17 +337,17 @@ W adminie widoczne są statusy:
 | Komunikat lub sytuacja | Co oznacza | Co zrobić |
 | --- | --- | --- |
 | Manifest: brak danych | Manifest nie został jeszcze wczytany albo nie zawiera pozycji. | Kliknij `Wczytaj manifest`. |
-| Manifest: błąd wczytywania | Nie udało się pobrać lub odczytać `AudioManifest.xlsx`. | Sprawdź obecność pliku i odśwież stronę. |
+| Manifest: błąd wczytywania | Nie udało się pobrać listy dźwięków. | Odśwież stronę. Jeżeli błąd wraca, zgłoś adminowi technicznemu. |
 | Firebase: lokalne ustawienia | Moduł działa bez synchronizacji Firestore. | To normalne w trybie lokalnym; ustawienia zostaną w tej przeglądarce. |
 | Firebase: brak konfiguracji | Brakuje konfiguracji Firebase. | Zgłoś adminowi technicznemu, jeżeli potrzebna jest synchronizacja. |
 | Brak linku do pliku audio | Manifest nie ma poprawnego linku do pliku. | Sprawdź dany wpis w manifeście. |
 | Brak wyników po filtrze | Filtry ukryły wszystkie dźwięki. | Wyczyść wyszukiwarkę albo zaznacz tagi ponownie. |
-| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera ID, którego nie ma w aktualnym manifeście. | Usuń wpis z listy albo odśwież manifest. |
+| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zapieczętowanym dostępie — kliknij `Rytuał Dostępu`. Jeżeli archiwum jest odpieczętowane, usuń wpis z listy. |
 
 ## Krótki workflow — przygotowanie sesji
 
 1. Otwórz `Audio/index.html?admin=1`.
-2. Kliknij `Wczytaj manifest`.
+2. Kliknij `Rytuał Dostępu` i wpisz Litanię Dostępu, żeby odpieczętować archiwum.
 3. Znajdź najważniejsze dźwięki przez wyszukiwarkę i tagi.
 4. Dodaj najczęstsze dźwięki do `Widoku głównego`.
 5. Utwórz listy tematyczne.
@@ -330,6 +372,7 @@ The module lets you:
 - adjust volume per tile,
 - use the main view prepared by the GM,
 - switch between favorite lists,
+- unlock the protected sound archive with a single Litany of Access,
 - create sound lists in admin mode,
 - add aliases to sounds,
 - filter sounds by tags,
@@ -352,6 +395,45 @@ Audio/index.html?admin=1
 User view is for simple playback of prepared lists.
 
 Admin view is for preparing the main view, favorite lists, aliases, and sound order.
+
+## Two library tiers
+
+The sound library has two parts and both appear in one shared list:
+
+| Tier | Contents | Password required |
+| --- | --- | --- |
+| Demo | Free sounds available publicly. | No. Works as soon as the module opens. |
+| Archive | Copyright-protected sounds. | Yes. One Litany of Access. |
+
+Once the archive is unsealed, both tiers merge into a single alphabetical list. You do not have to remember which sound comes from where — you just click.
+
+While the archive stays sealed, only the demo tier is visible. Favorite lists containing archive sounds will show those entries as "missing from the manifest" until you unlock it.
+
+## Unlocking the archive — the Rite of Access
+
+Click `Rite of Access`. You will find the button:
+
+- in user view — below the navigation on the right,
+- in admin view — on the toolbar at the top.
+
+A window titled "Access to data classified under the K.O.Z.A. seal" appears — the same one you know from the `DataVault` module.
+
+1. Enter the Litany of Access, that is the group password.
+2. Click `Begin the Rite`.
+3. The window closes and the sound list fills up with the whole archive.
+
+**You enter the password once per 30 days per device.** It never appears while playing sounds. You can close the browser and come back the next day — the archive stays unsealed.
+
+To close access earlier, click the same button, which now reads `Seal the data`. The session is cleared on that device.
+
+### Messages in the Rite window
+
+| Message | Meaning | What to do |
+| --- | --- | --- |
+| The angered Machine Spirit replies: the Litany of Access has not been recited. | The password field was empty. | Type the password. |
+| The angered Machine Spirit replies: the Litany of Access was rejected. | The password is wrong. | Check the spelling and try again. |
+| The Machine Spirit is silent: could not load private data. | The access gateway cannot be reached. | Check your internet connection. If it keeps happening, contact your technical admin. |
+| The Machine Spirit denies access: the Rite of Authentication has not been completed. | The session expired after 30 days. | Enter the password again. |
 
 ## User view
 
@@ -456,15 +538,16 @@ In admin view you can:
 
 ## Loading the manifest
 
-`Load manifest` loads the sound database from:
+`Load manifest` reloads the sound database.
 
-```text
-AudioManifest.xlsx
-```
+The module then fetches two lists:
 
-After successful loading, manifest status shows item count.
+- the demo tier list from `AudioManifestDemo.json` — always,
+- the archive list from the access gateway — only when the archive is unsealed.
 
-If the manifest cannot be loaded, the panel shows an error message.
+After successful loading, manifest status shows the total item count.
+
+If the manifest cannot be loaded, the panel shows an error message. When only the archive fails, the demo tier still loads — the module never goes completely empty because of gateway trouble.
 
 ## Admin SFX list
 
@@ -595,9 +678,10 @@ Admin view shows statuses:
 
 | Status | Meaning |
 | --- | --- |
-| Manifest | Whether `AudioManifest.xlsx` has loaded. |
+| Manifest | How many items have been loaded. |
 | Firebase | Whether the module uses synchronization or local settings. |
 | Favorites | Number of favorite lists. |
+| Archive | `sealed` — only the demo tier is visible. `unsealed` — the whole library is visible. |
 
 ## Session best practices
 
@@ -614,7 +698,7 @@ Admin view shows statuses:
 | Message or situation | Meaning | What to do |
 | --- | --- | --- |
 | Manifest: no data | Manifest has not loaded yet or contains no entries. | Click `Load manifest`. |
-| Manifest: failed to load | `AudioManifest.xlsx` could not be fetched or read. | Check file presence and refresh the page. |
+| Manifest: failed to load | The sound list could not be fetched. | Refresh the page. If the error persists, contact your technical admin. |
 | Firebase: local settings | Module works without Firestore synchronization. | This is normal in local mode; settings stay in this browser. |
 | Firebase: missing configuration | Firebase configuration is missing. | Contact technical admin if synchronization is needed. |
 | Missing audio file link | Manifest has no valid audio file link. | Check that manifest row. |

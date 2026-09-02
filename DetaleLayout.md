@@ -600,6 +600,20 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - `.group-count`: czerwony licznik w nawiasie dla zgrupowanych plików audio (`color: var(--danger)`).
 - `.sample-alias`: alias w nawiasie ma jaśniejszy kolor `#D2FAD2`.
 
+### 6) Bramka dostępu do archiwum
+- Moduł korzysta ze wspólnego arkusza `shared/access-gate.css`, tego samego co `DataVault` i `GeneratorNPC` — podpiętego w `<head>` przez `<link rel="stylesheet" href="../shared/access-gate.css">`.
+- Znaczniki bramki są zgodne ze wzorcem DataVault: `#accessGate` → `.accessGate__card` → `.accessGate__iconSlot` (ikona `../IkonaPowiadomien2.png`, 72×72) → nagłówek → opis → `#accessForm` z siatką `.accessGate__credentials` → `.accessGate__error`.
+- Widoczność sterowana atrybutem `hidden` (`.accessGate[hidden] { display: none; }`), a nie klasą.
+- Do arkusza modułu dodano klasę `.btn.primary`, której Audio wcześniej nie miało: `background: var(--text)`, `color: #04140a`, `border-color: rgba(22, 198, 12, 0.35)`, `:hover` z `filter: brightness(1.08)`. Bez niej przycisk „Rozpocznij Rytuał” byłby obrysowany zamiast wypełnionego i odbiegałby od DataVault.
+- Kolor tekstu przycisku podany literalnie, ponieważ `--bg` w tym module jest gradientem i nie nadaje się na wartość `color`.
+
+### 7) Status zapieczętowania archiwum
+- W pasku statusów admina doszedł `#libraryStatus` obok `#manifestStatus`, `#firebaseStatus` i `#favoritesStatus`.
+- Dwa stany klasowe:
+  - `.status-pill.is-locked` — `border-color: #6b4a1f`, `color: #e0b877` (archiwum zapieczętowane),
+  - `.status-pill.is-unlocked` — `border-color: #24503a`, `color: #7fd6a1` (archiwum odpieczętowane).
+- Przycisk `#unlockLibrary` w toolbarze admina oraz `#unlockLibraryUser` w panelu nawigacji widoku użytkownika; oba używają standardowej klasy `.btn` i zmieniają etykietę zależnie od stanu („Rytuał Dostępu” ↔ „Zapieczętuj dane”).
+
 ---
 
 ## Moduł — Infoczytnik
@@ -827,6 +841,7 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 
 ## 🇵🇱 Okno hasła — Litania Dostępu
 - Wspólny overlay hasła (`shared/access-gate.css`) używa siatki 2-kolumnowej.
+- Arkusz jest współdzielony przez moduły `DataVault`, `GeneratorNPC` oraz `Audio`.
 - Lewa kolumna: etykieta „Litania Dostępu” (wyrównanie do lewej).
 - Prawa kolumna: pole hasła, a pod nim przycisk zatwierdzenia wyrównany do prawej.
 - Breakpoint mobilny: `max-width: 640px`, układ jednokolumnowy.
@@ -834,6 +849,7 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 
 ## 🇬🇧 Password window — Litany of Access
 - Shared password overlay (`shared/access-gate.css`) uses a 2-column grid.
+- The stylesheet is shared by the `DataVault`, `GeneratorNPC` and `Audio` modules.
 - Left column: “Litany of Access” label (left-aligned).
 - Right column: password field, with submit button below aligned to the right.
 - Mobile breakpoint: `max-width: 640px`, single-column layout.

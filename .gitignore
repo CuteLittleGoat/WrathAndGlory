@@ -1,0 +1,5 @@
+
+# Manifest zrodlowy trzymany poza publicznym repozytorium / Source manifest kept outside the public repository
+# Zawiera pelny katalog plikow chronionych - jego miejsce jest w prywatnym repo AudioRPG
+# It lists the whole protected catalogue - it belongs in the private AudioRPG repository
+Audio/AudioManifest.xlsx

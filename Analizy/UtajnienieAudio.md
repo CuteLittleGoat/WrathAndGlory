@@ -675,3 +675,200 @@ Stan na 2 września 2026.
 - [Google Drive API — Usage limits](https://developers.google.com/workspace/drive/api/guides/limits)
 
 Pomiary własne wykonane w ramach analizy (zapytania HTTP do `cutelittlegoat.github.io` oraz `github.com/*/releases/download/*`, parsowanie `Audio/AudioManifest.xlsx`) opisano w sekcjach 3.2, 3.3 i 7.3.
+
+---
+
+## Zmiany wykonane w kodzie
+
+Wdrożenie z 2 września 2026. Zrealizowano **wariant C** (pliki pozostają w prywatnym repozytorium `AudioRPG`, bramka Cloudflare Worker), zgodnie z decyzją użytkownika. Ustalenia: sesja 30 dni, ważność podpisanego linku 1 godzina (wyrównana do pełnej godziny), start modułu bez logowania.
+
+### Pliki nowe
+
+| Plik | Rola |
+| --- | --- |
+| `Audio/worker/audio-gate.js` | Kod bramki dostępu (430 linii). Endpointy `/health`, `/login`, `/manifest`, `/sign`, `/a`. |
+| `Audio/tools/build-manifests.mjs` | Generator manifestów (270 linii). Powiela logikę identyfikatorów modułu. |
+| `Audio/AudioManifestDemo.json` | Manifest warstwy publicznej, 112 pozycji / 242 warianty. |
+
+### Pliki usunięte z repozytorium
+
+| Plik | Powód |
+| --- | --- |
+| `Audio/AudioManifest.xlsx` | Zawierał pełny katalog materiałów chronionych. Przeniesiony poza repozytorium, dodany do `.gitignore`. |
+
+### Plik: `Audio/index.html`
+
+Lokalizacja: `<head>`, po arkuszu Google Fonts
+
+Było: brak.
+
+Jest: `<link rel="stylesheet" href="../shared/access-gate.css"/>` — podpięcie wspólnego arkusza bramki, tego samego co w `DataVault` i `GeneratorNPC`.
+
+---
+
+Lokalizacja: sekcja `<style>`, przed `.btn-danger`
+
+Było: brak klasy `.btn.primary`.
+
+Jest: `.btn.primary` z `background: var(--text)`, `color: #04140a`, `border-color: rgba(22, 198, 12, 0.35)` oraz `:hover` z `filter: brightness(1.08)`. Bez tej klasy przycisk „Rozpocznij Rytuał" byłby obrysowany zamiast wypełnionego i odbiegałby wyglądem od DataVault.
+
+---
+
+Lokalizacja: znaczniki, przed skryptem modułu
+
+Było: brak.
+
+Jest: blok `#accessGate` odwzorowujący układ z `DataVault/index.html` — `.accessGate__card`, `.accessGate__iconSlot` z ikoną `../IkonaPowiadomien2.png`, nagłówek, opis, `#accessForm` z siatką `.accessGate__credentials`, `.accessGate__error`.
+
+---
+
+Lokalizacja: znaczniki, pasek statusów i toolbar
+
+Było: trzy statusy (`manifestStatus`, `firebaseStatus`, `favoritesStatus`), toolbar z `reloadManifest`.
+
+Jest: dodatkowo `#libraryStatus` oraz przyciski `#unlockLibrary` (toolbar admina) i `#unlockLibraryUser` (panel nawigacji widoku użytkownika).
+
+---
+
+Lokalizacja: znaczniki, przed skryptem modułu
+
+Było: `<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>`
+
+Jest: usunięte. Moduł nie parsuje już arkusza XLSX, więc zależność od SheetJS zniknęła.
+
+---
+
+Lokalizacja: linia 1029, po `TAG_IGNORE_SEGMENTS`
+
+Było: brak.
+
+Jest: stałe konfiguracyjne bramki:
+
+```js
+const AUDIO_GATE_BASE = "https://audio-gate.tarczynski-pawel.workers.dev";
+const DEMO_MANIFEST_URL = "AudioManifestDemo.json";
+const AUDIO_SESSION_STORAGE_KEY = "audio.session";
+```
+
+---
+
+Lokalizacja: obiekt `state`
+
+Było: bez pól sesji.
+
+Jest: dodane `session: null` oraz `libraryUnlocked: false`.
+
+---
+
+Lokalizacja: linia 1325, funkcja `pickRandomVariant`
+
+Było:
+
+```js
+const pickRandomVariant = (item, previousUrl = "") => {
+  ...
+  return item.variants[0]?.fullUrl || "";
+```
+
+Jest: funkcja zwraca **obiekt wariantu**, nie gotowy adres, i porównuje warianty przez `getVariantKey()` zamiast przez URL. Adres warstwy chronionej powstaje dopiero po podpisaniu przez bramkę, więc musi być pobierany asynchronicznie.
+
+---
+
+Lokalizacja: linia 1419, nowe funkcje po `pickRandomVariant`
+
+Było: brak.
+
+Jest: obsługa sesji (`loadSession`, `storeSession`, `hasValidSession`), pamięć podpisów `signedUrlCache`, `requestSignedUrl(path)` oraz `resolveVariantUrl(item, variant)`.
+
+---
+
+Lokalizacja: linia 1527
+
+Było: brak.
+
+Jest: mapa `playbackGeneration` i funkcja `bumpGeneration`. Zabezpieczenie przed wyścigiem: adres warstwy chronionej pobierany jest asynchronicznie, więc między kliknięciem a startem użytkownik może kliknąć coś innego na tym samym kafelku. `stopPlayback` również zwiększa numer pokolenia, żeby unieważnić trwające przygotowanie.
+
+---
+
+Lokalizacja: linia 1536, funkcja `startPlayback`
+
+Było: funkcja synchroniczna, tworząca `new Audio(fullUrl)`.
+
+Jest: funkcja asynchroniczna. Pobiera adres przez `resolveVariantUrl`, sprawdza numer pokolenia, obsługuje `gate_unauthorized` pokazaniem bramki.
+
+---
+
+Lokalizacja: linia 1584, w `startPlayback`
+
+Było:
+
+```js
+const audio = new Audio(fullUrl);
+```
+
+Jest:
+
+```js
+const audio = new Audio();
+if (item?.access !== "public") {
+  audio.crossOrigin = "anonymous";
+}
+audio.src = fullUrl;
+```
+
+To najważniejsza zmiana z punktu widzenia działania. Konstruktor `new Audio(url)` przypisuje `src` natychmiast, a atrybut `crossOrigin` musi być ustawiony **przed** przypisaniem. Bez tego `createMediaElementSource` skaziłby graf Web Audio i dźwięk z bramki byłby cichy — bez żadnego błędu w konsoli.
+
+---
+
+Lokalizacja: linia 1807, funkcja `initFirebase`
+
+Było: wywołania `initializeApp`, `getFirestore` i `onSnapshot` bez `try/catch`.
+
+Jest: oba bloki opakowane w `try/catch` z przejściem na ustawienia lokalne, a wywołanie `initFirebase()` w bootstrapie także objęte `try/catch`.
+
+Uzasadnienie: wykryte podczas testu w przeglądarce. Wyjątek z SDK Firebase (brak sieci, blokada w przeglądarce, zła konfiguracja) przerywał bootstrap **przed** wczytaniem manifestu, więc moduł zostawał całkiem pusty ze statusem „Manifest: brak danych". Błąd istniał przed tą zmianą.
+
+---
+
+Lokalizacja: linia 2311, dawniej `parseManifest`
+
+Było: `parseManifest()` — pobranie `AudioManifest.xlsx`, parsowanie SheetJS, grupowanie wariantów, budowa tagów i identyfikatorów w przeglądarce (96 linii).
+
+Jest: `loadManifests()` wraz z `fetchDemoManifest()`, `fetchProtectedManifest()` i `applyItems()`. Manifesty przychodzą gotowe, pogrupowane, z wyliczonymi identyfikatorami. Awaria warstwy chronionej nie blokuje warstwy demo.
+
+---
+
+Lokalizacja: linia 2685, przed bootstrapem
+
+Było: brak.
+
+Jest: logika bramki — `showAccessGate`, `hideAccessGate`, `submitAccessLitany`, `sealArchive`, `handleUnlockClick` oraz podpięcie zdarzeń.
+
+---
+
+Lokalizacja: obiekt `translations`, obie wersje językowe
+
+Było: brak etykiet bramki.
+
+Jest: `accessTitle`, `accessDescription`, `accessPasswordLabel`, `accessUnlockButton`, `accessWorking`, `accessEmpty`, `accessRejected`, `accessSilent`, `accessExpired`, `unlockLibrary`, `lockLibrary`, `libraryDemoOnly`, `libraryUnlocked`. Komunikaty błędów przeniesione dosłownie z `shared/firebase-data-loader.js`, żeby brzmiały identycznie jak w DataVault.
+
+### Weryfikacja
+
+| Test | Zakres | Wynik |
+| --- | --- | --- |
+| Zgodność identyfikatorów | Porównanie 1346 pozycji wygenerowanych przez generator z wynikiem oryginalnych funkcji wyciągniętych z `index.html`. | **0 różnic** w `id`, `label`, `groupCount`, `filename`, `tags`, `tagPaths`, `tag2` i liczbie wariantów. Zapisane listy ulubionych i aliasy zachowują powiązanie. |
+| Testy bramki | 35 przypadków w Node z zaślepionym GitHubem: logowanie, ochrona endpointów, walidacja ścieżek, podpisy, wygasanie, `Range`, cache. | 35/35 |
+| Testy w przeglądarce | 22 przypadki w Chromium (Playwright) na realnie serwowanym module. | 22/22 |
+| Spójność danych | Porównanie 1551 ścieżek z manifestu z zawartością sklonowanego repozytorium `AudioRPG`. | 1551/1551, zero braków, zero plików osieroconych |
+
+### Zaktualizowana dokumentacja
+
+- `Audio/docs/README.md` — instrukcja użytkownika, obie wersje językowe: dwie warstwy biblioteki, Rytuał Dostępu, komunikaty, statusy.
+- `Audio/docs/Documentation.md` — dokumentacja techniczna, obie wersje językowe: architektura bramki, endpointy, podpisy, pułapka `crossOrigin`, generowanie manifestów, procedura odtworzenia.
+- `DetaleLayout.md` — sekcja bramki i statusów w module Audio, klasa `.btn.primary`, dopisanie modułu Audio do listy korzystających ze wspólnego arkusza.
+
+### Do wykonania poza repozytorium
+
+1. Wgranie `audio-manifest.json` do katalogu głównego prywatnego repozytorium `AudioRPG`.
+2. Wklejenie `Audio/worker/audio-gate.js` do Workera `audio-gate` i wdrożenie.
+3. Test na żywo zgodnie z sekcją „Testy kontrolne" w `Audio/docs/Documentation.md`.
