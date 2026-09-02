@@ -838,8 +838,10 @@ const translations = {
           accessRejected: "Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona.",
           accessSilent: "Duch Maszyny milczy: nie udało się załadować prywatnych danych.",
           accessExpired: "Duch Maszyny odmawia dostępu: Rytuał Uwierzytelnienia nie został ukończony.",
+          accessManifestMissing: "Duch Maszyny wykrył pusty relikwiarz danych: bramka nie odnalazła manifestu archiwum (błąd {status}). Sprawdź, czy plik audio-manifest.json leży w katalogu głównym repozytorium prywatnego.",
           libraryDemoOnly: "Archiwum: zapieczętowane",
           libraryUnlocked: "Archiwum: odpieczętowane",
+          libraryError: "Archiwum: błąd wczytywania",
         },
         placeholders: {
           tagSearch: "Szukaj tagu...",
@@ -920,8 +922,10 @@ const translations = {
           accessRejected: "The angered Machine Spirit replies: the Litany of Access was rejected.",
           accessSilent: "The Machine Spirit is silent: could not load private data.",
           accessExpired: "The Machine Spirit denies access: the Rite of Authentication has not been completed.",
+          accessManifestMissing: "The Machine Spirit found an empty data reliquary: the gateway could not find the archive manifest (error {status}). Check that audio-manifest.json sits in the root of the private repository.",
           libraryDemoOnly: "Archive: sealed",
           libraryUnlocked: "Archive: unsealed",
+          libraryError: "Archive: load error",
         },
         placeholders: {
           tagSearch: "Search tag...",
@@ -995,6 +999,8 @@ const translations = {
       session: null,
       // Czy warstwa chroniona została wczytana / Whether the protected tier is loaded
       libraryUnlocked: false,
+      // Powód, dla którego archiwum się nie wczytało / Why the archive failed to load
+      libraryError: null,
       userView: "main",
       activeFavoritesListId: null,
       tagTree: [],
@@ -1187,9 +1193,19 @@ const translations = {
       // Status biblioteki informuje, czy warstwa chroniona jest dostępna
       // The library status shows whether the protected tier is available
       if (libraryStatus) {
-        libraryStatus.textContent = state.libraryUnlocked ? t.libraryUnlocked : t.libraryDemoOnly;
-        libraryStatus.classList.toggle("is-unlocked", state.libraryUnlocked);
-        libraryStatus.classList.toggle("is-locked", !state.libraryUnlocked);
+        // Trzy stany zamiast dwóch: odpieczętowane, zapieczętowane oraz błąd wczytywania.
+        // Bez trzeciego stanu awaria bramki wyglądała jak normalnie zamknięte archiwum.
+        // Three states instead of two: unsealed, sealed, and load error. Without the third
+        // one a gateway failure looked exactly like a normally closed archive.
+        if (state.libraryError) {
+          libraryStatus.textContent = t.libraryError;
+          libraryStatus.title = state.libraryError;
+        } else {
+          libraryStatus.textContent = state.libraryUnlocked ? t.libraryUnlocked : t.libraryDemoOnly;
+          libraryStatus.title = "";
+        }
+        libraryStatus.classList.toggle("is-unlocked", state.libraryUnlocked && !state.libraryError);
+        libraryStatus.classList.toggle("is-locked", !state.libraryUnlocked || Boolean(state.libraryError));
       }
       const unlockLabel = state.libraryUnlocked ? t.lockLibrary : t.unlockLibrary;
       if (unlockLibrary) unlockLibrary.textContent = unlockLabel;
@@ -2289,6 +2305,24 @@ const translations = {
         throw new Error("gate_unauthorized");
       }
       if (!response.ok) {
+        // Rozróżniamy brak manifestu w repozytorium od innych awarii, bo to zupełnie
+        // inna naprawa: jedno to plik w złym miejscu, drugie to problem z bramką.
+        // We distinguish a missing manifest from other failures because the fix differs:
+        // one is a misplaced file, the other is a gateway problem.
+        let detail = "";
+        try {
+          const payload = await response.json();
+          detail = payload?.error === "manifest_unavailable" ? String(payload.status || "") : "";
+          if (payload?.error === "manifest_unavailable") {
+            const error = new Error("manifest_unavailable");
+            error.detail = detail;
+            throw error;
+          }
+        } catch (parseError) {
+          if (parseError?.message === "manifest_unavailable") {
+            throw parseError;
+          }
+        }
         throw new Error("gate_error");
       }
       const data = await response.json();
@@ -2315,15 +2349,30 @@ const translations = {
       const demoItems = await fetchDemoManifest();
       let protectedItems = [];
       state.libraryUnlocked = false;
+      state.libraryError = null;
 
       if (hasValidSession()) {
         try {
           protectedItems = await fetchProtectedManifest();
           state.libraryUnlocked = true;
         } catch (error) {
-          // Brak dostępu do warstwy chronionej nie może zablokować warstwy demo
-          // Losing the protected tier must not take the demo tier down with it
+          // Brak dostępu do warstwy chronionej nie może zablokować warstwy demo,
+          // ale musi być widoczny. Wcześniej ten błąd trafiał tylko do konsoli,
+          // przez co awaria wyglądała identycznie jak zwykłe zapieczętowanie.
+          // Losing the protected tier must not take the demo tier down, but it must be
+          // visible. This error used to go to the console only, so a real failure looked
+          // exactly like a normally sealed archive.
           console.error(error);
+          const labels = translations[currentLanguage].labels;
+          if (error?.message === "gate_unauthorized") {
+            state.libraryError = labels.accessExpired;
+          } else if (error?.message === "manifest_unavailable") {
+            state.libraryError = formatText(labels.accessManifestMissing, {
+              status: error.detail || "?"
+            });
+          } else {
+            state.libraryError = labels.accessSilent;
+          }
         }
       }
 
@@ -2730,9 +2779,17 @@ const translations = {
         }
         const data = await response.json();
         storeSession({ token: data.token, exp: Number(data.exp) });
-        hideAccessGate();
         await loadManifests();
         updateStatus();
+        // Hasło było poprawne, ale archiwum i tak się nie wczytało — nakładka zostaje
+        // otwarta z konkretnym powodem, zamiast zamknąć się i udawać, że wszystko gra.
+        // The password was correct but the archive still failed to load: keep the overlay
+        // open with the actual reason instead of closing it and pretending all is well.
+        if (state.libraryError) {
+          if (accessError) accessError.textContent = state.libraryError;
+          return;
+        }
+        hideAccessGate();
       } catch (error) {
         console.error(error);
         if (accessError) accessError.textContent = labels.accessSilent;
