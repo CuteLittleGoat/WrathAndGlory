@@ -872,3 +872,157 @@ Jest: `accessTitle`, `accessDescription`, `accessPasswordLabel`, `accessUnlockBu
 1. Wgranie `audio-manifest.json` do katalogu głównego prywatnego repozytorium `AudioRPG`.
 2. Wklejenie `Audio/worker/audio-gate.js` do Workera `audio-gate` i wdrożenie.
 3. Test na żywo zgodnie z sekcją „Testy kontrolne" w `Audio/docs/Documentation.md`.
+
+---
+
+## Pytania uzupełniające — 2 września 2026
+
+### Prompt użytkownika
+
+> Mam też dodatkowe pytania. Rozbuduj o nie analizę Analizy/UtajnienieAudio.md
+>
+> 1. Czy przycisk "Rytuał Dostępu" jest potrzebny? Czy bramka nie może się pojawiać automatycznie i mieć jakiś termin ważności podobnie jak w DataVault?
+> 2. Jeżeli rezygnujemy z pliku xlsx z linkami to potrzebuję mechanizmu do tworzenia json z pliku xlsx podobnie jak to jest w module DataVault.
+
+---
+
+## Pytanie 1 — czy przycisk „Rytuał Dostępu" jest potrzebny
+
+### Jak to działa w DataVault
+
+Sprawdzono `DataVault/app.js` oraz `shared/firebase-data-loader.js`.
+
+Funkcja `startPrivateDataFlow()` uruchamia się przy starcie modułu:
+
+```js
+const user = await firebaseApi.waitForAuthReady();
+if (!user) { clearRuntimeData(); showAccessGate(); return; }
+hideAccessGate();
+await loadPrivateDataFromFirebase();
+```
+
+Czyli: brak zalogowanego użytkownika → bramka pokazuje się **automatycznie**. Nie ma żadnego przycisku „odblokuj".
+
+Trwałość sesji ustawia `setPersistence(auth, browserLocalPersistence)`. To oznacza, że sesja Firebase Auth przeżywa zamknięcie przeglądarki i **nie ma ustalonego terminu ważności** — trwa aż do wylogowania albo unieważnienia po stronie Firebase.
+
+> Uwaga na marginesie: w pytaniu pada „mieć jakiś termin ważności podobnie jak w DataVault". W rzeczywistości DataVault nie ma terminu ważności — sesja jest bezterminowa. Nasze 30 dni jest **bardziej** restrykcyjne, nie mniej.
+
+### Dlaczego w module Audio zrobiono inaczej
+
+Różnica jest jedna, ale istotna: **DataVault nie ma czego pokazać bez logowania, a Audio ma.**
+
+| | DataVault | Audio |
+| --- | --- | --- |
+| Zawartość dostępna bez hasła | brak | 112 pozycji warstwy demo |
+| Koszt automatycznej bramki | zerowy — i tak nie ma co pokazać | zasłania działającą warstwę demo |
+
+Stąd wzięło się ustalenie „start bez logowania" i przycisk zamiast automatycznej nakładki.
+
+### Problem, który to ustalenie stworzyło
+
+Zrzut ekranu z widoku użytkownika pokazuje realny koszt tej decyzji: przy zapieczętowanym archiwum listy ulubionych zapisane w Firebase składają się z kafelków „(brak w manifeście)". Widok główny wygląda na zepsuty, mimo że wszystko działa poprawnie — po prostu brakuje dźwięków, które są za bramką.
+
+Dla prowadzącego, który ma trzy listy tematyczne złożone głównie z materiału chronionego, to zły pierwszy ekran. Argument za automatyczną bramką jest więc mocniejszy, niż wynikało z pierwotnego ustalenia.
+
+### Warianty do wyboru
+
+| Wariant | Zachowanie | Zalety | Wady |
+| --- | --- | --- | --- |
+| **A. Bez zmian** | Przycisk `Rytuał Dostępu`, brak automatycznej nakładki. | Demo dostępne natychmiast. Zero przeszkód dla osoby, która chce tylko demo. | Ekran „(brak w manifeście)" przy każdym wygaśnięciu sesji. Prowadzący musi wiedzieć, że ma kliknąć przycisk. |
+| **B. Jak w DataVault** | Bramka pokazuje się automatycznie, gdy brak ważnej sesji. Bez możliwości pominięcia. | Spójne z resztą Przybornika. Zero zaskoczeń. | Zasłania działające demo. Osoba, która chce tylko demo, musi zamknąć okno hasła, którego nie zna. |
+| **C. Automat z pominięciem** *(rekomendowany)* | Bramka pokazuje się automatycznie przy starcie bez ważnej sesji, ale ma przycisk `Pomiń`. Pominięcie zapamiętywane w `sessionStorage` — do zamknięcia karty. Przycisk zostaje jako droga powrotna i do zapieczętowania. | Prowadzący dostaje hasło od razu i nie ogląda pustych kafelków. Demo nadal osiągalne jednym kliknięciem. Zgodne z DataVault w domyślnej ścieżce. | Nieco więcej kodu niż A i B. |
+| **D. Bramka na żądanie dźwięku** | Dodatkowo: kliknięcie kafelka „(brak w manifeście)" otwiera bramkę. | Naturalne: chcesz zagrać dźwięk zza bramki, dostajesz bramkę. Rozwiązuje dokładnie problem ze zrzutu. | Sam w sobie nie wystarczy — nie pomaga, gdy prowadzący dopiero otwiera moduł. |
+
+### Rekomendacja
+
+**Wariant C uzupełniony o D.**
+
+Uzasadnienie: automatyczna bramka rozwiązuje realny problem widoczny na zrzucie i ujednolica zachowanie z DataVault, a przycisk `Pomiń` zachowuje jedyną przewagę modułu Audio nad DataVault, czyli sensowną zawartość bez logowania. Zapamiętanie pominięcia w `sessionStorage`, a nie `localStorage`, sprawia, że przy następnym otwarciu modułu bramka znowu się pokaże — czyli domyślnie prowadzący jest prowadzony do odblokowania, a nie od niego odwodzony.
+
+Punkt D to kilkanaście linii i usuwa najbardziej mylący element interfejsu: kafelek, który nic nie robi po kliknięciu.
+
+### Kwestia terminu ważności
+
+Obecne 30 dni to świadomy wybór, nie ograniczenie techniczne. Możliwości:
+
+| Ustawienie | Skutek |
+| --- | --- |
+| 30 dni *(obecne)* | Raz na miesiąc trzeba wpisać hasło. Skradziony token przestaje działać po miesiącu. |
+| 90 dni albo rok | Rzadsze wpisywanie hasła. Dłużej działa token, który wyciekł. |
+| Bezterminowo, jak w DataVault | Hasło raz na urządzenie. Unieważnienie wyłącznie przez zmianę `SIGNING_KEY`, co wylogowuje wszystkich naraz. |
+
+Zmiana to jedna stała `SESSION_TTL_SECONDS` w kodzie bramki. Warto pamiętać, że przy każdym ustawieniu dostępna jest natychmiastowa „awaryjna" ścieżka: zmiana `SIGNING_KEY` unieważnia wszystkie sesje w kilka sekund.
+
+**Sugestia:** zostawić 30 dni. Jedno okno hasła na miesiąc to znikomy koszt, a jest to jedyny mechanizm, który sam z siebie zamyka dostęp na urządzeniu, o którym się zapomniało.
+
+---
+
+## Pytanie 2 — mechanizm generowania JSON z XLSX
+
+### Stan obecny — i dlaczego jest niewystarczający
+
+`Audio/tools/build-manifests.mjs` wymaga pliku pośredniego `rows.json`:
+
+```text
+node Audio/tools/build-manifests.mjs <rows.json> <katalog-wyjsciowy>
+```
+
+Wytworzenie `rows.json` z arkusza wymaga osobnego kroku, który nie jest częścią repozytorium. To realna luka: przy każdej zmianie biblioteki potrzebna jest osoba techniczna. Pytanie użytkownika jest w pełni zasadne.
+
+### Jak to rozwiązano w DataVault
+
+DataVault ma **dwie** ścieżki generowania i to jest wzorzec wart skopiowania:
+
+| Plik | Środowisko | Rola |
+| --- | --- | --- |
+| `DataVault/build_json.py` | Python 3, 356 linii | Generuje `data.json` z `Repozytorium.xlsx` poza przeglądarką. |
+| `DataVault/xlsxCanonicalParser.js` | przeglądarka, 227 linii | Parsuje ten sam arkusz po stronie klienta. |
+
+Warte odnotowania: `build_json.py` **nie ma żadnych zależności** — czyta XLSX przez `zipfile` i `xml.etree`, bez `openpyxl` ani `pandas`. To celowe i słuszne.
+
+`AGENTS.md` §15 wprost wymaga, żeby wyniki obu ścieżek pozostawały identyczne.
+
+### Warianty dla modułu Audio
+
+| Wariant | Co trzeba mieć | Zalety | Wady |
+| --- | --- | --- | --- |
+| **A. Skrypt Python** `Audio/build_manifests.py` | Python 3 | Dokładnie wzorzec DataVault. Bez zależności. | Wymaga Pythona. **Trzecia kopia logiki identyfikatorów** — poważne ryzyko rozjazdu. Python nie ma odpowiednika `\p{L}` w standardowym `re`, więc slug trzeba odtworzyć przez `unicodedata`. |
+| **B. Rozbudowa generatora Node** o czytanie XLSX | Node.js | Jedna kopia logiki. Bez pliku pośredniego. | Wymaga Node.js. Trzeba napisać czytnik ZIP na `zlib` (~60 linii). |
+| **C. Generowanie w przeglądarce** *(rekomendowany)* | nic | **Zero instalacji.** Logika identyfikatorów to dosłownie funkcje modułu, więc rozjazd jest niemożliwy. Zgodne z `xlsxCanonicalParser.js` z DataVault. | Wraca zależność od SheetJS, ładowana tylko w trybie admina. |
+
+### Rekomendacja: wariant C
+
+Przycisk w panelu admina, np. `Zbuduj manifesty z XLSX`:
+
+1. Prowadzący klika przycisk i wybiera swój `AudioManifest.xlsx`.
+2. Moduł parsuje arkusz biblioteką SheetJS ładowaną dynamicznie (`import()`), wyłącznie w trybie admina.
+3. Do grupowania, tagów i identyfikatorów używa **tych samych funkcji, które już są w module** — `slugify`, `getGroupingBaseLabel`, `extractTags`, `normalizeUrl`.
+4. Przeglądarka pobiera dwa pliki: `AudioManifestDemo.json` oraz `audio-manifest.json`.
+5. Prowadzący wrzuca pierwszy do repozytorium `WrathAndGlory`, drugi do `AudioRPG`.
+
+Dlaczego to jest lepsze niż skrypt:
+
+- **Nie wymaga niczego instalować.** Prowadzący robi wszystko w przeglądarce, której i tak używa.
+- **Usuwa najpoważniejsze ryzyko z tego wdrożenia.** Dokumentacja techniczna zawiera dziś ostrzeżenie, że generator powiela logikę identyfikatorów modułu i rozjazd zerwałby powiązanie zapisanych list z dźwiękami. Wariant C likwiduje ten problem u źródła: jest jedna kopia logiki, ta w module.
+- **Zgodne z wzorcem DataVault**, który też ma ścieżkę przeglądarkową.
+
+Koszt: powrót SheetJS, ale ładowany dynamicznie i wyłącznie w trybie admina, więc widok użytkownika nie płaci za to nic.
+
+### Co zrobić z istniejącym generatorem
+
+`Audio/tools/build-manifests.mjs` warto zachować jako ścieżkę zapasową i punkt odniesienia przy weryfikacji — analogicznie do tego, jak `build_json.py` współistnieje z `xlsxCanonicalParser.js` w DataVault. Wymaga to jednak dopisania testu porównującego wynik obu ścieżek, zgodnie z duchem §15 `AGENTS.md`.
+
+Alternatywnie, jeżeli zależy na jednej ścieżce zamiast dwóch, generator można usunąć po wdrożeniu wariantu C.
+
+### Uzupełnienie: gdzie trzymać arkusz źródłowy
+
+Niezależnie od wybranego wariantu `AudioManifest.xlsx` nie może wrócić do publicznego repozytorium — zawiera pełny katalog materiałów chronionych. Jego miejsce to repozytorium prywatne `AudioRPG` albo dysk lokalny prowadzącego. Wpis w `.gitignore` już to zabezpiecza przed przypadkowym dodaniem.
+
+---
+
+## Następne kroki po pytaniach uzupełniających
+
+1. Decyzja co do pytania 1: wariant A, B, C czy C+D.
+2. Decyzja co do terminu ważności sesji: zostawić 30 dni czy zmienić.
+3. Decyzja co do pytania 2: wariant A, B czy C.
+4. Po decyzjach — implementacja, aktualizacja dokumentacji modułu i dopisanie zmian do tego pliku.
