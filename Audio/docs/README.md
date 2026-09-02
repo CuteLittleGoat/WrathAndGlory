@@ -46,24 +46,27 @@ Biblioteka dźwięków składa się z dwóch części i widać je na jednej wsp�
 
 Po odblokowaniu archiwum obie warstwy mieszają się w jedną alfabetyczną listę. Nie musisz pamiętać, który dźwięk skąd pochodzi — po prostu klikasz.
 
-Dopóki archiwum jest zablokowane, widzisz wyłącznie warstwę demo. Jeżeli masz listy ulubionych zawierające dźwięki z archiwum, ich pozycje będą oznaczone jako „(brak w manifeście)” do czasu odblokowania.
+Dopóki archiwum jest zablokowane, widzisz wyłącznie warstwę demo. Jeżeli masz listy ulubionych zawierające dźwięki z archiwum, ich pozycje będą oznaczone jako „(brak w manifeście)” do czasu odblokowania. Kliknięcie takiej pozycji otwiera okno hasła.
 
 ## Odblokowanie archiwum
 
-Kliknij `Odblokuj archiwum`. Przycisk znajdziesz:
+Okno „Dostęp do danych z klauzulą tajności K.O.Z.A.” **pojawia się samo po otwarciu modułu**, jeżeli archiwum nie zostało jeszcze odblokowane na tym urządzeniu. To ta sama bramka, którą znasz z modułu `DataVault`.
+
+Masz dwie możliwości:
+
+1. **Wpisz Litanię Dostępu** (hasło grupy) i kliknij `Rozpocznij Rytuał`. Okno zniknie, a lista dźwięków uzupełni się o całe archiwum.
+2. **Kliknij `Pomiń`.** Okno zniknie, a moduł będzie działał na samej warstwie demo. Nic się nie psuje — po prostu nie widzisz dźwięków chronionych.
+
+**Hasło podajesz tylko raz na danym urządzeniu i sesja nie wygasa.** Nie pojawia się przy każdym odtworzeniu dźwięku. Możesz zamknąć przeglądarkę i wrócić za miesiąc — archiwum nadal będzie odblokowane. Dostęp znika dopiero wtedy, gdy wyczyścisz dane przeglądarki.
+
+Jeżeli klikniesz `Pomiń`, bramka nie wróci aż do zamknięcia karty. Gdy zmienisz zdanie w trakcie sesji, kliknij `Odblokuj archiwum`:
 
 - w widoku użytkownika — pod nawigacją po prawej stronie,
 - w widoku admina — na pasku narzędzi u góry.
 
-Pojawi się okno „Dostęp do danych z klauzulą tajności K.O.Z.A.” — to samo, które znasz z modułu `DataVault`.
+Przycisk `Odblokuj archiwum` znika, gdy archiwum jest już odblokowane — nie ma czego odblokowywać. Nie ma osobnego przycisku blokowania: żeby zamknąć dostęp na danym urządzeniu, wyczyść dane witryny w przeglądarce.
 
-1. Wpisz Litanię Dostępu, czyli hasło grupy.
-2. Kliknij `Rozpocznij Rytuał`.
-3. Okno zniknie, a lista dźwięków uzupełni się o całe archiwum.
-
-**Hasło podajesz raz na 30 dni na danym urządzeniu.** Nie pojawia się przy każdym odtworzeniu dźwięku. Możesz zamknąć przeglądarkę i wrócić następnego dnia — archiwum nadal będzie odblokowane.
-
-Aby zamknąć dostęp wcześniej, kliknij ten sam przycisk, który po odblokowaniu nosi napis `Zablokuj archiwum`. Sesja zostanie skasowana na tym urządzeniu.
+Bramka otwiera się też sama, gdy klikniesz na liście pozycję opisaną jako „(brak w manifeście)”. Taki wpis to prawie zawsze dźwięk z archiwum, więc zamiast milczeć, moduł od razu pyta o hasło i wyjaśnia, dlaczego.
 
 ### Komunikaty w oknie bramki
 
@@ -72,7 +75,8 @@ Aby zamknąć dostęp wcześniej, kliknij ten sam przycisk, który po odblokowan
 | Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana. | Pole hasła było puste. | Wpisz hasło. |
 | Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona. | Hasło jest nieprawidłowe. | Sprawdź pisownię i spróbuj ponownie. |
 | Brak połączenia z bramką dostępu. Sprawdź internet oraz adres bramki w stałej AUDIO\_GATE\_BASE. | Bramka nie odpowiada. | Sprawdź internet. Jeżeli problem się powtarza, zgłoś adminowi technicznemu. |
-| Sesja wygasła. Podaj hasło ponownie. | Minęło 30 dni od ostatniego logowania. | Wpisz hasło ponownie. |
+| Sesja wygasła. Podaj hasło ponownie. | Bramka odrzuciła zapisany dostęp — najczęściej dlatego, że admin techniczny zmienił klucz podpisu. | Wpisz hasło ponownie. |
+| Ten dźwięk nie należy do warstwy publicznej. Odblokuj archiwum, aby go wczytać. | Kliknięto pozycję opisaną jako „(brak w manifeście)” przy zablokowanym archiwum. | Wpisz hasło albo kliknij `Pomiń`, jeżeli nie masz dostępu do archiwum. |
 | Bramka nie znalazła manifestu archiwum (HTTP 404)… | Hasło było poprawne, ale bramka nie widzi pliku manifestu. | Sprawdź, czy `audio-manifest.json` leży w katalogu głównym prywatnego repozytorium `AudioRPG` i czy nazwa zgadza się co do znaku. |
 
 Dwa pierwsze komunikaty dotyczą samego hasła i są napisane językiem lore, tak samo jak w module `DataVault`. Pozostałe to diagnostyka techniczna i mówią wprost, co sprawdzić.
@@ -184,12 +188,68 @@ Przycisk `Wczytaj manifest` ponownie ładuje bazę dźwięków.
 
 Moduł pobiera wtedy dwie listy:
 
-- listę warstwy demo z pliku `AudioManifestDemo.json` — zawsze,
+- listę warstwy demo z pliku `AudioManifest.json` — zawsze,
 - listę archiwum z bramki dostępu — tylko jeżeli archiwum jest odblokowane.
 
 Po poprawnym wczytaniu status manifestu pokazuje łączną liczbę pozycji.
 
 Jeżeli manifestu nie uda się wczytać, panel pokaże komunikat błędu. Gdy zawiedzie samo archiwum, warstwa demo i tak się załaduje — moduł nigdy nie zostaje całkiem pusty z powodu problemów z bramką.
+
+## Budowanie manifestów z pliku XLSX
+
+Lista dźwięków powstaje ze skoroszytu Excela `AudioManifest.xlsx`. Przycisk `Zbuduj manifesty z XLSX` na pasku narzędzi admina zamienia ten skoroszyt na dwa gotowe pliki JSON. Przebieg jest taki sam jak aktualizacja danych w module `DataVault`.
+
+### Jak to zrobić krok po kroku
+
+1. Otwórz moduł w widoku admina (adres z dopiskiem `?admin=1`).
+2. Zamknij okno hasła przyciskiem `Pomiń` albo wpisz Litanię Dostępu — dopóki okno jest otwarte, zasłania pasek narzędzi.
+3. Kliknij `Zbuduj manifesty z XLSX`.
+4. Otworzy się zwykłe okno wyboru pliku. Wskaż swój plik `AudioManifest.xlsx`.
+5. Poczekaj chwilę. Przeglądarka zapisze **dwa pliki** w Twoim katalogu pobierania (zwykle `C:\Users\<Ty>\Downloads`):
+   - `AudioManifest.json` — lista warstwy demo,
+   - `audio-manifest.json` — lista archiwum.
+6. Pojawi się okienko z podsumowaniem: ile pozycji trafiło do każdej z list.
+
+Nic nie jest nigdzie wysyłane. Cała zamiana odbywa się w Twojej przeglądarce, na Twoim komputerze.
+
+### Co zrobić z tymi plikami
+
+| Plik | Dokąd go skopiować |
+| --- | --- |
+| `AudioManifest.json` | Do folderu `Audio` w repozytorium `WrathAndGlory` (tam, gdzie leży `index.html`). |
+| `audio-manifest.json` | Do katalogu głównego prywatnego repozytorium `AudioRPG`. Nazwa musi się zgadzać co do znaku. |
+
+Po skopiowaniu i wysłaniu zmian moduł zobaczy nową listę dźwięków.
+
+### Jak musi wyglądać arkusz
+
+Arkusz musi mieć w pierwszym wierszu trzy nagłówki kolumn:
+
+| Kolumna | Co zawiera |
+| --- | --- |
+| `NazwaSampla` | Nazwa dźwięku pokazywana w module. |
+| `NazwaPliku` | Nazwa pliku audio, na przykład `Age_of_Sail-beat_to_quarters.ogg`. |
+| `LinkDoFolderu` | Adres folderu, w którym leży plik. |
+
+Zasady:
+
+- **Kolejność kolumn nie ma znaczenia.**
+- **Dodatkowe kolumny są ignorowane.** Możesz trzymać w arkuszu własne notatki, kolumny robocze i formuły — generator ich nie czyta.
+- **Każda z trzech wymaganych kolumn może wystąpić tylko raz.** Dwie kolumny `NazwaSampla` to błąd, bo generator nie wie, którą wziąć.
+- O tym, czy dźwięk trafi do warstwy demo, czy do archiwum, decyduje adres w kolumnie `LinkDoFolderu`: adresy zawierające `/AudioExample/` idą do warstwy demo, pozostałe do archiwum.
+
+### Komunikaty generatora
+
+| Komunikat | Co oznacza | Co zrobić |
+| --- | --- | --- |
+| Brak wymaganych kolumn: … | W pierwszym wierszu arkusza brakuje którejś z trzech kolumn. | Sprawdź pisownię nagłówków. Muszą brzmieć dokładnie `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`. |
+| Kolumny występujące więcej niż raz: … | Wymagana kolumna pojawia się w arkuszu dwa razy lub więcej. | Usuń albo przemianuj nadmiarową kolumnę. |
+| Arkusz nie zawiera żadnego wiersza z danymi. | W arkuszu jest sam nagłówek. | Uzupełnij dane. |
+| Wariantów warstwy chronionej bez ścieżki w repozytorium AudioRPG: N | Adres w kolumnie `LinkDoFolderu` nie prowadzi do repozytorium `AudioRPG`. | Popraw adresy w arkuszu. Żaden plik nie został zapisany. |
+| Nie udało się odczytać pliku XLSX… | Wskazany plik nie jest poprawnym skoroszytem. | Otwórz plik w Excelu i zapisz go ponownie jako `.xlsx`. |
+| Nie udało się wczytać biblioteki JSZip z sieci CDN… | Generator potrzebuje jednorazowo pobrać z internetu bibliotekę do rozpakowania skoroszytu. | Sprawdź połączenie z internetem i kliknij przycisk ponownie. |
+
+Gdy pojawi się którykolwiek z tych błędów, **żaden plik nie zostaje zapisany**. Nie ma ryzyka, że nadpiszesz dobrą listę uszkodzoną.
 
 ## Lista SFX w adminie
 
@@ -324,6 +384,7 @@ W adminie widoczne są statusy:
 | Firebase | Informuje, czy moduł używa synchronizacji, czy ustawień lokalnych. |
 | Ulubione | Pokazuje liczbę list ulubionych. |
 | Archiwum | `zablokowane` — widać tylko warstwę demo. `odblokowane` — widać całą bibliotekę. `błąd wczytywania` — coś nie zadziałało; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
+| Generator | `gotowy` — generator manifestów czeka na plik. `przetwarzanie pliku` — trwa czytanie skoroszytu. `N publicznych / M chronionych` — manifesty zostały zbudowane. `błąd` — coś było nie tak z plikiem; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
 
 Pastylki statusów są zielone, gdy wszystko jest w porządku. Czerwona pastylka oznacza wyłącznie błąd. Zablokowane archiwum **nie** jest błędem, więc pozostaje zielone.
 
@@ -347,7 +408,7 @@ Pastylki statusów są zielone, gdy wszystko jest w porządku. Czerwona pastylka
 | Firebase: brak konfiguracji | Brakuje konfiguracji Firebase. | Zgłoś adminowi technicznemu, jeżeli potrzebna jest synchronizacja. |
 | Brak linku do pliku audio | Manifest nie ma poprawnego linku do pliku. | Sprawdź dany wpis w manifeście. |
 | Brak wyników po filtrze | Filtry ukryły wszystkie dźwięki. | Wyczyść wyszukiwarkę albo zaznacz tagi ponownie. |
-| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zablokowanym dostępie — kliknij `Odblokuj archiwum`. Jeżeli archiwum jest odblokowane, usuń wpis z listy. |
+| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zablokowanym dostępie — kliknij tę pozycję, a moduł sam otworzy okno hasła. Jeżeli archiwum jest odblokowane, usuń wpis z listy. |
 
 ## Krótki workflow — przygotowanie sesji
 
@@ -412,24 +473,27 @@ The sound library has two parts and both appear in one shared list:
 
 Once the archive is unlocked, both tiers merge into a single alphabetical list. You do not have to remember which sound comes from where — you just click.
 
-While the archive stays locked, only the demo tier is visible. Favorite lists containing archive sounds will show those entries as "missing from the manifest" until you unlock it.
+While the archive stays locked, only the demo tier is visible. Favorite lists containing archive sounds will show those entries as "missing from the manifest" until you unlock it. Clicking such an entry opens the password window.
 
 ## Unlocking the archive
 
-Click `Unlock archive`. You will find the button:
+The window titled "Access to data classified under the K.O.Z.A. seal" **appears on its own when the module opens**, provided the archive has not been unlocked on this device yet. It is the same gate you know from the `DataVault` module.
+
+You have two options:
+
+1. **Enter the Litany of Access** (the group password) and click `Begin the Rite`. The window closes and the sound list fills up with the whole archive.
+2. **Click `Skip`.** The window closes and the module runs on the demo tier alone. Nothing breaks — you simply do not see the protected sounds.
+
+**You enter the password only once per device and the session never expires.** It never appears while playing sounds. You can close the browser and come back a month later — the archive stays unlocked. Access disappears only when you clear your browser data.
+
+If you click `Skip`, the gate will not come back until you close the tab. Should you change your mind during a session, click `Unlock archive`:
 
 - in user view — below the navigation on the right,
 - in admin view — on the toolbar at the top.
 
-A window titled "Access to data classified under the K.O.Z.A. seal" appears — the same one you know from the `DataVault` module.
+The `Unlock archive` button disappears once the archive is unlocked — there is nothing left to unlock. There is no separate lock button: to close access on a device, clear the site data in your browser.
 
-1. Enter the Litany of Access, that is the group password.
-2. Click `Begin the Rite`.
-3. The window closes and the sound list fills up with the whole archive.
-
-**You enter the password once per 30 days per device.** It never appears while playing sounds. You can close the browser and come back the next day — the archive stays unlocked.
-
-To close access earlier, click the same button, which now reads `Lock archive`. The session is cleared on that device.
+The gate also opens on its own when you click a list entry described as "missing from the manifest". Such an entry is almost always an archive sound, so instead of staying silent the module asks for the password straight away and explains why.
 
 ### Messages in the Rite window
 
@@ -438,7 +502,8 @@ To close access earlier, click the same button, which now reads `Lock archive`. 
 | The angered Machine Spirit replies: the Litany of Access has not been recited. | The password field was empty. | Type the password. |
 | The angered Machine Spirit replies: the Litany of Access was rejected. | The password is wrong. | Check the spelling and try again. |
 | Cannot reach the access gateway. Check your connection and the gateway address in the AUDIO\_GATE\_BASE constant. | The gateway is not responding. | Check your internet connection. If it keeps happening, contact your technical admin. |
-| Session expired. Enter the password again. | 30 days have passed since the last login. | Enter the password again. |
+| Session expired. Enter the password again. | The gateway rejected the stored access — usually because the technical admin rotated the signing key. | Enter the password again. |
+| This sound is not part of the public tier. Unlock the archive to load it. | You clicked an entry marked "missing from the manifest" while the archive was locked. | Enter the password, or click `Skip` if you have no archive access. |
 | The gateway could not find the archive manifest (HTTP 404)… | The password was correct but the gateway cannot see the manifest file. | Check that `audio-manifest.json` sits in the root of the private `AudioRPG` repository under exactly that name. |
 
 The first two messages concern the password itself and keep the lore wording, exactly as in the `DataVault` module. The rest are technical diagnostics and say plainly what to check.
@@ -550,12 +615,68 @@ In admin view you can:
 
 The module then fetches two lists:
 
-- the demo tier list from `AudioManifestDemo.json` — always,
+- the demo tier list from `AudioManifest.json` — always,
 - the archive list from the access gateway — only when the archive is unlocked.
 
 After successful loading, manifest status shows the total item count.
 
 If the manifest cannot be loaded, the panel shows an error message. When only the archive fails, the demo tier still loads — the module never goes completely empty because of gateway trouble.
+
+## Building the manifests from an XLSX file
+
+The sound list is produced from the `AudioManifest.xlsx` Excel workbook. The `Build manifests from XLSX` button on the admin toolbar turns that workbook into two ready JSON files. The flow matches the data update in the `DataVault` module.
+
+### Step by step
+
+1. Open the module in admin view (the address with `?admin=1`).
+2. Close the password window with `Skip`, or enter the Litany of Access — while the window is open it covers the toolbar.
+3. Click `Build manifests from XLSX`.
+4. A normal file picker opens. Point it at your `AudioManifest.xlsx` file.
+5. Wait a moment. The browser saves **two files** into your downloads folder (usually `C:\Users\<You>\Downloads`):
+   - `AudioManifest.json` — the demo tier list,
+   - `audio-manifest.json` — the archive list.
+6. A summary box appears telling you how many items went into each list.
+
+Nothing is uploaded anywhere. The whole conversion happens in your browser, on your computer.
+
+### What to do with those files
+
+| File | Where to copy it |
+| --- | --- |
+| `AudioManifest.json` | Into the `Audio` folder of the `WrathAndGlory` repository (next to `index.html`). |
+| `audio-manifest.json` | Into the root of the private `AudioRPG` repository, under exactly that name. |
+
+Once copied and pushed, the module will see the new sound list.
+
+### What the sheet must look like
+
+The first row of the sheet must contain three column headers:
+
+| Column | What it holds |
+| --- | --- |
+| `NazwaSampla` | The sound name shown in the module. |
+| `NazwaPliku` | The audio file name, for example `Age_of_Sail-beat_to_quarters.ogg`. |
+| `LinkDoFolderu` | The address of the folder holding the file. |
+
+Rules:
+
+- **Column order does not matter.**
+- **Extra columns are ignored.** You can keep your own notes, working columns and formulas in the sheet — the builder does not read them.
+- **Each of the three required columns may appear only once.** Two `NazwaSampla` columns is an error, because the builder cannot tell which one to use.
+- Whether a sound lands in the demo tier or the archive is decided by the address in `LinkDoFolderu`: addresses containing `/AudioExample/` go to the demo tier, everything else to the archive.
+
+### Builder messages
+
+| Message | Meaning | What to do |
+| --- | --- | --- |
+| Missing required columns: … | One of the three columns is absent from the sheet's first row. | Check the header spelling. They must read exactly `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`. |
+| Columns present more than once: … | A required column appears twice or more. | Remove or rename the duplicate column. |
+| The sheet contains no data rows. | The sheet holds only a header. | Fill in the data. |
+| Protected tier variants without a path in the AudioRPG repository: N | An address in `LinkDoFolderu` does not point at the `AudioRPG` repository. | Fix the addresses in the sheet. No file was saved. |
+| Could not read the XLSX file… | The selected file is not a valid workbook. | Open it in Excel and save it again as `.xlsx`. |
+| Could not load the JSZip library from the CDN… | The builder needs a one-off download of the library that unpacks the workbook. | Check your internet connection and click the button again. |
+
+When any of these errors appears, **no file is saved**. There is no risk of overwriting a good list with a broken one.
 
 ## Admin SFX list
 
@@ -713,7 +834,7 @@ Status pills are green when everything is fine. A red pill means an error and no
 | Firebase: missing configuration | Firebase configuration is missing. | Contact technical admin if synchronization is needed. |
 | Missing audio file link | Manifest has no valid audio file link. | Check that manifest row. |
 | No results after filter | Filters hide all sounds. | Clear search or select tags again. |
-| Sound from list is marked missing | The list contains an ID that does not exist in current manifest. | Remove the entry or refresh manifest. |
+| Sound from list is marked missing | The list contains an ID that does not exist in the currently loaded library. | Usually an archive sound while access is locked — click that entry and the module opens the password window for you. If the archive is unlocked, remove the entry from the list. |
 
 ## Quick workflow — preparing a session
 

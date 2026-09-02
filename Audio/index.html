@@ -312,6 +312,33 @@
       background: var(--text);
     }
 
+    /* Przycisk „Pomiń” zajmuje lewą kolumnę drugiego wiersza siatki bramki, naprzeciwko
+       przycisku zatwierdzenia. Reguła stoi w module, a nie w shared/access-gate.css,
+       bo tylko moduł Audio ma bramkę możliwą do pominięcia. */
+    /* The "Skip" button takes the left cell of the gate grid's second row, opposite the
+       submit button. The rule lives in the module rather than shared/access-gate.css
+       because only the Audio module has a gate that may be skipped. */
+    .accessGate__skip {
+      grid-column: 1;
+      grid-row: 2;
+      justify-self: start;
+      align-self: center;
+    }
+
+    /* Mobilnie bramka wspólna zwija się do jednej kolumny (wiersze 1-3), więc „Pomiń”
+       dostaje wiersz 4 pod przyciskiem zatwierdzenia. Punkt łamania musi być ten sam
+       co w shared/access-gate.css, inaczej przy 521-640 px przyciski nachodzą na siebie. */
+    /* On mobile the shared gate collapses to a single column (rows 1-3), so "Skip" takes
+       row 4 below the submit button. The breakpoint must match shared/access-gate.css,
+       otherwise the buttons would overlap between 521 and 640 px. */
+    @media (max-width: 640px) {
+      .accessGate__skip {
+        grid-column: 1;
+        grid-row: 4;
+        justify-self: stretch;
+      }
+    }
+
     .btn-danger {
       border-color: var(--danger);
       color: #ffd6d6;
@@ -593,6 +620,7 @@
         <span class="status-pill" id="firebaseStatus">Firebase: oczekiwanie</span>
         <span class="status-pill" id="favoritesStatus">Ulubione: 0 list</span>
         <span class="status-pill" id="libraryStatus">Archiwum: zablokowane</span>
+        <span class="status-pill" id="builderStatus">Generator: gotowy</span>
       </div>
     </header>
 
@@ -600,7 +628,9 @@
 <section class="toolbar admin-only">
       <div class="left">
         <button class="btn" id="reloadManifest">Wczytaj manifest</button>
-        <button class="btn" id="unlockLibrary">Odblokuj bibliotekę</button>
+        <button class="btn" id="unlockLibrary">Odblokuj archiwum</button>
+        <!-- Generator manifestów działa wyłącznie w panelu admina / The manifest builder runs in the admin panel only -->
+        <button class="btn" id="buildManifests">Zbuduj manifesty z XLSX</button>
       </div>
       <div class="right">
         <button class="btn" id="addList">Nowa lista ulubionych</button>
@@ -679,7 +709,7 @@
           <h2 id="navigationTitle">Nawigacja</h2>
           <div class="user-nav" id="userNav"></div>
           <!-- Odblokowanie biblioteki chronionej także w widoku użytkownika / Protected library unlock, also in user view -->
-          <button class="btn user-only" id="unlockLibraryUser">Odblokuj bibliotekę</button>
+          <button class="btn user-only" id="unlockLibraryUser">Odblokuj archiwum</button>
         </aside>
       </div>
     </section>
@@ -699,6 +729,8 @@
           <!-- Etykieta po lewej + pole hasła i przycisk po prawej / Left label + password field and button on the right -->
           <label class="field accessGate__label" for="accessPassword"><span id="accessPasswordLabel">Litania Dostępu</span></label>
           <input id="accessPassword" class="accessGate__password" type="password" autocomplete="current-password">
+          <!-- „Pomiń” zamyka bramkę bez hasła: warstwa publiczna działa bez logowania / "Skip" closes the gate without a password: the public tier works without login -->
+          <button class="btn accessGate__skip" type="button" id="accessSkip">Pomiń</button>
           <button class="btn primary accessGate__submit" type="submit" id="accessSubmit">Rozpocznij Rytuał</button>
         </div>
       </form>
@@ -733,6 +765,9 @@
     const accessError = document.getElementById("accessError");
     const accessForm = document.getElementById("accessForm");
     const accessSubmit = document.getElementById("accessSubmit");
+    const accessSkip = document.getElementById("accessSkip");
+    const builderStatus = document.getElementById("builderStatus");
+    const buildManifestsButton = document.getElementById("buildManifests");
     const firebaseStatus = document.getElementById("firebaseStatus");
     const favoritesStatus = document.getElementById("favoritesStatus");
     const samplesGrid = document.getElementById("samplesGrid");
@@ -838,7 +873,6 @@ const translations = {
           manifestNoData: "Manifest nie zawiera danych.",
           defaultListName: "Ulubione",
           unlockLibrary: "Odblokuj archiwum",
-          lockLibrary: "Zablokuj archiwum",
           accessTitle: "Dostęp do danych z klauzulą tajności K.O.Z.A.",
           accessDescription: "Dane są zapieczętowane protokołami Ducha Maszyny. Wprowadź Litanię Dostępu, aby rozpocząć Rytuał Uwierzytelnienia.",
           accessPasswordLabel: "Litania Dostępu",
@@ -853,6 +887,21 @@ const translations = {
           libraryDemoOnly: "Archiwum: zablokowane",
           libraryUnlocked: "Archiwum: odblokowane",
           libraryError: "Archiwum: błąd wczytywania",
+          accessSkipButton: "Pomiń",
+          accessMissingItem: "Ten dźwięk nie należy do warstwy publicznej. Odblokuj archiwum, aby go wczytać.",
+          buildManifests: "Zbuduj manifesty z XLSX",
+          builderIdle: "Generator: gotowy",
+          builderWorking: "Generator: przetwarzanie pliku",
+          builderReady: "Generator: {publicCount} publicznych / {protectedCount} chronionych",
+          builderError: "Generator: błąd",
+          builderErrorLibrary: "Nie udało się wczytać biblioteki JSZip z sieci CDN. Sprawdź połączenie z internetem i spróbuj ponownie.",
+          builderErrorRead: "Nie udało się odczytać pliku XLSX. Upewnij się, że wskazany plik jest poprawnym skoroszytem programu Excel.",
+          builderErrorNoSheet: "Plik XLSX nie zawiera arkusza z danymi.",
+          builderErrorMissingColumns: "Brak wymaganych kolumn: {columns}. Arkusz musi zawierać kolumny NazwaSampla, NazwaPliku oraz LinkDoFolderu.",
+          builderErrorDuplicateColumns: "Kolumny występujące więcej niż raz: {columns}. Każda wymagana kolumna może wystąpić w arkuszu tylko jeden raz.",
+          builderErrorNoRows: "Arkusz nie zawiera żadnego wiersza z danymi.",
+          builderErrorNoPaths: "Wariantów warstwy chronionej bez ścieżki w repozytorium AudioRPG: {count}. Sprawdź kolumnę LinkDoFolderu.",
+          builderDone: "Zbudowano manifesty. Pozycje publiczne: {publicCount}, pozycje chronione: {protectedCount}.\n\nPrzeglądarka zapisała dwa pliki w katalogu pobierania:\n• {publicFile} — skopiuj do folderu Audio w repozytorium WrathAndGlory,\n• {protectedFile} — skopiuj do katalogu głównego prywatnego repozytorium AudioRPG.",
         },
         placeholders: {
           tagSearch: "Szukaj tagu...",
@@ -923,7 +972,6 @@ const translations = {
           manifestNoData: "The manifest contains no data.",
           defaultListName: "Favorites",
           unlockLibrary: "Unlock archive",
-          lockLibrary: "Lock archive",
           accessTitle: "Access to data classified under the K.O.Z.A. seal",
           accessDescription: "The data is sealed by Machine Spirit protocols. Recite the Litany of Access to begin the Rite of Authentication.",
           accessPasswordLabel: "Litany of Access",
@@ -938,6 +986,21 @@ const translations = {
           libraryDemoOnly: "Archive: locked",
           libraryUnlocked: "Archive: unlocked",
           libraryError: "Archive: load error",
+          accessSkipButton: "Skip",
+          accessMissingItem: "This sound is not part of the public tier. Unlock the archive to load it.",
+          buildManifests: "Build manifests from XLSX",
+          builderIdle: "Builder: ready",
+          builderWorking: "Builder: processing file",
+          builderReady: "Builder: {publicCount} public / {protectedCount} protected",
+          builderError: "Builder: error",
+          builderErrorLibrary: "Could not load the JSZip library from the CDN. Check your internet connection and try again.",
+          builderErrorRead: "Could not read the XLSX file. Make sure the selected file is a valid Excel workbook.",
+          builderErrorNoSheet: "The XLSX file contains no data sheet.",
+          builderErrorMissingColumns: "Missing required columns: {columns}. The sheet must contain NazwaSampla, NazwaPliku and LinkDoFolderu.",
+          builderErrorDuplicateColumns: "Columns present more than once: {columns}. Each required column may appear in the sheet only once.",
+          builderErrorNoRows: "The sheet contains no data rows.",
+          builderErrorNoPaths: "Protected tier variants without a path in the AudioRPG repository: {count}. Check the LinkDoFolderu column.",
+          builderDone: "Manifests built. Public items: {publicCount}, protected items: {protectedCount}.\n\nThe browser saved two files in your downloads folder:\n• {publicFile} — copy it into the Audio folder of the WrathAndGlory repository,\n• {protectedFile} — copy it into the root of the private AudioRPG repository.",
         },
         placeholders: {
           tagSearch: "Search tag...",
@@ -973,6 +1036,8 @@ const translations = {
       if (accessDescription) accessDescription.textContent = t.labels.accessDescription;
       if (accessPasswordLabel) accessPasswordLabel.textContent = t.labels.accessPasswordLabel;
       if (accessSubmit) accessSubmit.textContent = t.labels.accessUnlockButton;
+      if (accessSkip) accessSkip.textContent = t.labels.accessSkipButton;
+      if (buildManifestsButton) buildManifestsButton.textContent = t.labels.buildManifests;
       if (addListButton) addListButton.textContent = t.labels.addList;
       if (refreshFavoritesButton) refreshFavoritesButton.textContent = t.labels.refreshFavorites;
       if (tagFiltersTitle) tagFiltersTitle.textContent = t.labels.tagFiltersTitle;
@@ -1013,6 +1078,8 @@ const translations = {
       libraryUnlocked: false,
       // Powód, dla którego archiwum się nie wczytało / Why the archive failed to load
       libraryError: null,
+      // Stan generatora manifestów w panelu admina / Manifest builder state in the admin panel
+      builder: { status: "idle", publicCount: 0, protectedCount: 0, message: "" },
       userView: "main",
       activeFavoritesListId: null,
       tagTree: [],
@@ -1047,9 +1114,14 @@ const translations = {
     const AUDIO_GATE_BASE = "https://audio-gate.tarczynski-pawel.workers.dev";
     // Manifest warstwy publicznej leży w tym repozytorium — te pliki są jawne celowo
     // The public tier manifest lives in this repository: those files are public on purpose
-    const DEMO_MANIFEST_URL = "AudioManifestDemo.json";
+    const PUBLIC_MANIFEST_URL = "AudioManifest.json";
+    // Nazwa manifestu warstwy chronionej, oczekiwana przez bramkę w repozytorium prywatnym
+    // Protected tier manifest name, expected by the gateway in the private repository
+    const PROTECTED_MANIFEST_FILENAME = "audio-manifest.json";
     // Klucz sesji w localStorage / Session key in localStorage
     const AUDIO_SESSION_STORAGE_KEY = "audio.session";
+    // Klucz pominięcia bramki w sessionStorage / Gate skip key in sessionStorage
+    const AUDIO_GATE_SKIPPED_KEY = "audio.gateSkipped";
 
     const slugify = (value, index) => {
       const base = value
@@ -1220,9 +1292,40 @@ const translations = {
         // Red only on error. A locked archive is a healthy state, so it stays green.
         libraryStatus.classList.toggle("is-error", Boolean(state.libraryError));
       }
-      const unlockLabel = state.libraryUnlocked ? t.lockLibrary : t.unlockLibrary;
-      if (unlockLibrary) unlockLibrary.textContent = unlockLabel;
-      if (unlockLibraryUser) unlockLibraryUser.textContent = unlockLabel;
+      // Przycisk służy wyłącznie do odblokowania. Blokowanie było funkcją zbędną:
+      // odblokowane archiwum jest stanem docelowym, więc po odblokowaniu przycisk znika.
+      // The button only unlocks. Locking was redundant: an unlocked archive is the target
+      // state, so once it is unlocked the button disappears.
+      [unlockLibrary, unlockLibraryUser].forEach((button) => {
+        if (!button) {
+          return;
+        }
+        button.textContent = t.unlockLibrary;
+        button.hidden = state.libraryUnlocked;
+      });
+      // Status generatora manifestów / Manifest builder status
+      if (builderStatus) {
+        const builder = state.builder;
+        if (builder.status === "working") {
+          builderStatus.textContent = t.builderWorking;
+          builderStatus.title = "";
+        } else if (builder.status === "error") {
+          builderStatus.textContent = t.builderError;
+          builderStatus.title = builder.message || "";
+        } else if (builder.status === "ready") {
+          builderStatus.textContent = formatText(t.builderReady, {
+            publicCount: builder.publicCount,
+            protectedCount: builder.protectedCount
+          });
+          builderStatus.title = "";
+        } else {
+          builderStatus.textContent = t.builderIdle;
+          builderStatus.title = "";
+        }
+        // Czerwień tylko przy błędzie, zgodnie z zasadą pastylek w tym module.
+        // Red only on error, following this module's status pill rule.
+        builderStatus.classList.toggle("is-error", builder.status === "error");
+      }
     };
 
     const renderTagFilter = () => {
@@ -1379,6 +1482,23 @@ const translations = {
     // nigdy w ciasteczku, więc przeglądarka nie ma czego blokować.
     // The session is a signed token kept in localStorage, so the password is entered once
     // per 30 days. It travels in the Authorization header, never in a cookie.
+    // --- Ważność sesji / Session validity ---
+    // Sesja jest bezterminowa, tak samo jak w module DataVault: bramka wydaje token bez
+    // pola `exp`. Starsze tokeny 30-dniowe nadal mają `exp` i nadal wygasają — dlatego
+    // reguła sprawdza datę tylko wtedy, gdy w ogóle została zapisana.
+    // The session never expires, exactly like in DataVault: the gateway issues a token
+    // without an `exp` field. Older 30-day tokens still carry `exp` and still expire, so
+    // the rule checks the date only when one was stored at all.
+    const isSessionUsable = (session) => {
+      if (!session?.token) {
+        return false;
+      }
+      if (session.exp === undefined || session.exp === null || session.exp === "") {
+        return true;
+      }
+      return Number(session.exp) * 1000 > Date.now();
+    };
+
     const loadSession = () => {
       try {
         const raw = localStorage.getItem(AUDIO_SESSION_STORAGE_KEY);
@@ -1386,7 +1506,7 @@ const translations = {
           return null;
         }
         const parsed = JSON.parse(raw);
-        if (!parsed?.token || Number(parsed.exp) * 1000 <= Date.now()) {
+        if (!isSessionUsable(parsed)) {
           localStorage.removeItem(AUDIO_SESSION_STORAGE_KEY);
           return null;
         }
@@ -1409,8 +1529,7 @@ const translations = {
       }
     };
 
-    const hasValidSession = () =>
-      Boolean(state.session?.token) && Number(state.session.exp) * 1000 > Date.now();
+    const hasValidSession = () => isSessionUsable(state.session);
 
     // --- Pamięć podpisanych adresów / Signed URL cache ---
     // Bramka wyrównuje wygaśnięcie do pełnej godziny, więc w obrębie godziny zwraca
@@ -1671,7 +1790,19 @@ const translations = {
 
     const togglePlayback = (itemId, playbackRoot) => {
       const item = state.itemsById.get(itemId);
-      if (!item || !playbackRoot) {
+      if (!item) {
+        // Pozycja zapisana w ulubionych, ale nieobecna w manifeście. Przy zablokowanym
+        // archiwum to niemal zawsze dźwięk z warstwy chronionej, więc zamiast milczeć
+        // otwieramy bramkę — kafelek „(brak w manifeście)” staje się drogą do hasła.
+        // An entry saved in favourites but absent from the manifest. With the archive
+        // locked this is almost always a protected-tier sound, so instead of doing nothing
+        // we open the gate: the "(missing in manifest)" tile becomes the way to the password.
+        if (!state.libraryUnlocked) {
+          handleUnlockClick(translations[currentLanguage].labels.accessMissingItem);
+        }
+        return;
+      }
+      if (!playbackRoot) {
         return;
       }
       if (activePlayers.has(playbackRoot)) {
@@ -2301,7 +2432,7 @@ const translations = {
     // arrive pre-grouped with ids produced by Audio/tools/build-manifests.mjs, which mirrors
     // this module's id logic so saved favourites and aliases keep matching their sounds.
     const fetchDemoManifest = async () => {
-      const response = await fetch(DEMO_MANIFEST_URL, { cache: "no-store" });
+      const response = await fetch(PUBLIC_MANIFEST_URL, { cache: "no-store" });
       if (!response.ok) {
         throw new Error(translations[currentLanguage].labels.manifestFetchError);
       }
@@ -2397,6 +2528,504 @@ const translations = {
       state.manifestReady = true;
       signedUrlCache.clear();
       renderAllViews();
+    };
+
+    // =====================================================================================
+    // --- Generator manifestów z pliku XLSX / Manifest builder from an XLSX file ---
+    // =====================================================================================
+    // Przebieg jest taki sam jak w module DataVault: przycisk w panelu admina otwiera
+    // systemowe okno wyboru pliku, a przeglądarka zapisuje gotowe pliki JSON w katalogu
+    // pobierania. Nic nie jest wysyłane na żaden serwer — cała zamiana dzieje się lokalnie.
+    //
+    // Dlaczego generator działa w przeglądarce, a nie jako osobny skrypt: identyfikatory
+    // `id` muszą powstawać dokładnie tą samą logiką co reszta modułu, bo listy ulubionych,
+    // widok główny i aliasy zapisane w Firebase wskazują właśnie na `id`. Generator używa
+    // tu tych samych funkcji slugify/getGroupingBaseLabel/extractTags/normalizeUrl, których
+    // używa moduł, więc obie ścieżki nie mogą się rozjechać.
+    //
+    // The flow mirrors the DataVault module: a button in the admin panel opens the system
+    // file picker and the browser saves the finished JSON files into the downloads folder.
+    // Nothing is uploaded anywhere — the whole conversion happens locally.
+    //
+    // Why the builder runs in the browser rather than as a separate script: the `id` values
+    // must be produced by exactly the same logic as the rest of the module, because saved
+    // favourites, the main view and aliases in Firebase all point at `id`. The builder reuses
+    // the very same slugify/getGroupingBaseLabel/extractTags/normalizeUrl functions the
+    // module uses, so the two paths cannot drift apart.
+
+    // Kolumny wymagane w arkuszu / Columns required in the sheet
+    const BUILDER_REQUIRED_COLUMNS = ["NazwaSampla", "NazwaPliku", "LinkDoFolderu"];
+    // Fragment adresu rozpoznający warstwę publiczną / URL fragment identifying the public tier
+    const BUILDER_PUBLIC_PREFIX = "/AudioExample/";
+    // Fragment adresu rozpoznający warstwę chronioną / URL fragment identifying the protected tier
+    const BUILDER_PROTECTED_PREFIX = "/AudioRPG/";
+    // Adres biblioteki do rozpakowania XLSX; ten sam, którego używa DataVault
+    // XLSX unzip library address; the same one DataVault uses
+    const BUILDER_JSZIP_URL = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js";
+    const XLSX_MAIN_NS = "http://schemas.openxmlformats.org/spreadsheetml/2006/main";
+    const XLSX_REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships";
+
+    // --- Doładowanie biblioteki JSZip na żądanie / Loading JSZip on demand ---
+    // Biblioteka waży kilkadziesiąt kilobajtów i jest potrzebna tylko przy budowaniu
+    // manifestów, więc nie ładuje się w widoku użytkownika.
+    // The library weighs tens of kilobytes and is needed only when building manifests,
+    // so it never loads in the user view.
+    let jsZipPromise = null;
+    const ensureJSZip = () => {
+      if (window.JSZip) {
+        return Promise.resolve(window.JSZip);
+      }
+      if (jsZipPromise) {
+        return jsZipPromise;
+      }
+      jsZipPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = BUILDER_JSZIP_URL;
+        script.onload = () => {
+          if (window.JSZip) {
+            resolve(window.JSZip);
+          } else {
+            reject(new Error("builder_library"));
+          }
+        };
+        script.onerror = () => reject(new Error("builder_library"));
+        document.head.appendChild(script);
+      }).catch((error) => {
+        // Nieudana próba nie może zablokować kolejnych / A failed attempt must not block later ones
+        jsZipPromise = null;
+        throw error;
+      });
+      return jsZipPromise;
+    };
+
+    // --- Wybór lokalnego pliku XLSX / Selecting a local XLSX file ---
+    const pickLocalWorkbookFile = () =>
+      new Promise((resolve) => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".xlsx";
+        input.style.display = "none";
+        input.addEventListener(
+          "change",
+          async () => {
+            const file = input.files && input.files[0];
+            input.remove();
+            if (!file) {
+              resolve(null);
+              return;
+            }
+            resolve({ name: file.name, buffer: await file.arrayBuffer() });
+          },
+          { once: true }
+        );
+        // Zamknięcie okna krzyżykiem nie wywołuje zdarzenia change w starszych przeglądarkach,
+        // dlatego dodatkowo nasłuchujemy zdarzenia cancel, jeśli przeglądarka je wspiera.
+        // Closing the dialog with the X does not fire change in older browsers, so we also
+        // listen for the cancel event where the browser supports it.
+        input.addEventListener(
+          "cancel",
+          () => {
+            input.remove();
+            resolve(null);
+          },
+          { once: true }
+        );
+        document.body.appendChild(input);
+        input.click();
+      });
+
+    // --- Minimalny czytnik XLSX / Minimal XLSX reader ---
+    // Czytamy wyłącznie to, czego potrzebuje manifest: nagłówek i wartości tekstowe.
+    // Formatowanie, kolory i formuły są nieistotne, więc ich nie analizujemy.
+    // We read only what the manifest needs: the header row and text values. Formatting,
+    // colours and formulas are irrelevant here, so they are not parsed at all.
+    const columnRefToIndex = (ref) => {
+      let index = 0;
+      for (const character of ref) {
+        if (!/[A-Za-z]/.test(character)) {
+          break;
+        }
+        index = index * 26 + (character.toUpperCase().charCodeAt(0) - 64);
+      }
+      return index - 1;
+    };
+
+    const readXlsxSheet = async (arrayBuffer) => {
+      const JSZipLib = await ensureJSZip();
+      let zip = null;
+      try {
+        zip = await JSZipLib.loadAsync(arrayBuffer);
+      } catch (error) {
+        throw new Error("builder_read");
+      }
+      const parseXml = (text) => new DOMParser().parseFromString(text, "application/xml");
+      const nodes = (root, tag) => Array.from(root.getElementsByTagNameNS(XLSX_MAIN_NS, tag));
+
+      // Tabela wspólnych tekstów: w XLSX komórki tekstowe trzymają tylko indeks do tej tabeli.
+      // Shared string table: text cells in XLSX store only an index into this table.
+      const sharedStrings = [];
+      const sharedFile = zip.file("xl/sharedStrings.xml");
+      if (sharedFile) {
+        const sharedXml = parseXml(await sharedFile.async("string"));
+        for (const si of nodes(sharedXml, "si")) {
+          sharedStrings.push(nodes(si, "t").map((node) => node.textContent || "").join(""));
+        }
+      }
+
+      const workbookFile = zip.file("xl/workbook.xml");
+      const relsFile = zip.file("xl/_rels/workbook.xml.rels");
+      if (!workbookFile || !relsFile) {
+        throw new Error("builder_read");
+      }
+      const workbookXml = parseXml(await workbookFile.async("string"));
+      const relsXml = parseXml(await relsFile.async("string"));
+
+      const relationById = new Map();
+      for (const relation of Array.from(relsXml.getElementsByTagName("Relationship"))) {
+        relationById.set(relation.getAttribute("Id"), relation.getAttribute("Target"));
+      }
+
+      // Bierzemy pierwszy arkusz skoroszytu — przykładowy plik ma dokładnie jeden.
+      // We take the workbook's first sheet: the reference file has exactly one.
+      const sheetNode = nodes(workbookXml, "sheet")[0];
+      if (!sheetNode) {
+        throw new Error("builder_no_sheet");
+      }
+      const relationId =
+        sheetNode.getAttributeNS(XLSX_REL_NS, "id") || sheetNode.getAttribute("r:id");
+      const target = relationById.get(relationId);
+      const sheetFile = target
+        ? zip.file(target.startsWith("/") ? target.slice(1) : `xl/${target.replace(/^\.\//, "")}`)
+        : null;
+      if (!sheetFile) {
+        throw new Error("builder_no_sheet");
+      }
+
+      const sheetXml = parseXml(await sheetFile.async("string"));
+      const rows = [];
+      let widestRow = 0;
+      for (const rowNode of nodes(sheetXml, "row")) {
+        const cells = new Map();
+        for (const cellNode of nodes(rowNode, "c")) {
+          const reference = cellNode.getAttribute("r") || "";
+          const match = reference.match(/^([A-Za-z]+)/);
+          const columnIndex = match ? columnRefToIndex(match[1]) : cells.size;
+          const cellType = cellNode.getAttribute("t");
+          let value = "";
+          if (cellType === "inlineStr") {
+            value = nodes(cellNode, "t").map((node) => node.textContent || "").join("");
+          } else {
+            const valueNode = nodes(cellNode, "v")[0];
+            const raw = valueNode ? valueNode.textContent || "" : "";
+            if (cellType === "s") {
+              const index = Number(raw);
+              value = Number.isNaN(index) ? "" : sharedStrings[index] || "";
+            } else {
+              value = raw;
+            }
+          }
+          cells.set(columnIndex, value);
+          widestRow = Math.max(widestRow, columnIndex + 1);
+        }
+        rows.push(cells);
+      }
+
+      const asArray = (cells) =>
+        Array.from({ length: widestRow }, (_, index) => String(cells.get(index) ?? "").trim());
+      const header = rows.length ? asArray(rows[0]) : [];
+      return { header, rows: rows.slice(1).map(asArray) };
+    };
+
+    // --- Sprawdzenie nagłówka arkusza / Validating the sheet header ---
+    // Reguły: brak którejkolwiek wymaganej kolumny to błąd, powtórzona wymagana kolumna to
+    // błąd, a kolumny nadmiarowe są po prostu pomijane.
+    // Rules: a missing required column is an error, a repeated required column is an error,
+    // and any extra columns are simply ignored.
+    const resolveRequiredColumns = (header) => {
+      const missing = [];
+      const duplicated = [];
+      const indexByColumn = new Map();
+      BUILDER_REQUIRED_COLUMNS.forEach((column) => {
+        const positions = [];
+        header.forEach((cell, index) => {
+          if (cell === column) {
+            positions.push(index);
+          }
+        });
+        if (!positions.length) {
+          missing.push(column);
+          return;
+        }
+        if (positions.length > 1) {
+          duplicated.push(column);
+          return;
+        }
+        indexByColumn.set(column, positions[0]);
+      });
+      if (missing.length) {
+        const error = new Error("builder_missing_columns");
+        error.columns = missing;
+        throw error;
+      }
+      if (duplicated.length) {
+        const error = new Error("builder_duplicate_columns");
+        error.columns = duplicated;
+        throw error;
+      }
+      return indexByColumn;
+    };
+
+    // --- Ścieżka w repozytorium prywatnym / Path inside the private repository ---
+    // Z pełnego adresu https://host/AudioRPG/TabletopAudio/... zostaje TabletopAudio/...
+    // A full https://host/AudioRPG/TabletopAudio/... URL becomes TabletopAudio/...
+    const toProtectedRepoPath = (folderUrl, filename) => {
+      const full = normalizeUrl(folderUrl, filename);
+      const index = full.indexOf(BUILDER_PROTECTED_PREFIX);
+      if (index === -1) {
+        return "";
+      }
+      try {
+        return decodeURIComponent(full.slice(index + BUILDER_PROTECTED_PREFIX.length));
+      } catch (error) {
+        return full.slice(index + BUILDER_PROTECTED_PREFIX.length);
+      }
+    };
+
+    // --- Złożenie wierszy w pozycje manifestu / Folding rows into manifest items ---
+    // Logika grupowania wariantów jest identyczna z tą, której moduł używa przy czytaniu
+    // manifestu: dźwięki różniące się wyłącznie numerem na końcu nazwy tworzą jedną pozycję
+    // z wieloma wariantami.
+    // The variant grouping logic matches what the module does when reading a manifest:
+    // sounds differing only by a trailing number become one item with several variants.
+    const buildManifestItems = (rows) => {
+      const entries = [];
+      const groupedCounts = new Map();
+
+      rows.forEach((row, index) => {
+        const label = String(row.label || "").trim();
+        if (!label) {
+          return;
+        }
+        const filename = String(row.filename || "").trim();
+        const folderUrl = String(row.folderUrl || "").trim();
+        const grouping = getGroupingBaseLabel(label);
+        const baseLabel = grouping.baseLabel || label;
+        entries.push({
+          label,
+          baseLabel,
+          isGroupCandidate: grouping.changed,
+          filename,
+          folderUrl,
+          fullUrl: normalizeUrl(folderUrl, filename),
+          repoPath: toProtectedRepoPath(folderUrl, filename),
+          rowIndex: index + 1
+        });
+        if (grouping.changed) {
+          const key = `${folderUrl}||${baseLabel}`;
+          groupedCounts.set(key, (groupedCounts.get(key) || 0) + 1);
+        }
+      });
+
+      const groupMap = new Map();
+      const usedIds = new Set();
+
+      entries.forEach((entry) => {
+        const groupKeyBase = `${entry.folderUrl}||${entry.baseLabel}`;
+        const groupSize = groupedCounts.get(groupKeyBase) || 0;
+        const shouldGroup = entry.isGroupCandidate && groupSize > 1;
+        const groupKey = shouldGroup
+          ? groupKeyBase
+          : `${entry.folderUrl}||${entry.label}||${entry.filename}||${entry.rowIndex}`;
+
+        if (!groupMap.has(groupKey)) {
+          const tags = extractTags(entry.folderUrl);
+          let id = slugify(shouldGroup ? entry.baseLabel : entry.label, entry.rowIndex);
+          if (usedIds.has(id)) {
+            id = `${id}-${entry.rowIndex}`;
+          }
+          usedIds.add(id);
+          groupMap.set(groupKey, {
+            id,
+            label: shouldGroup ? entry.baseLabel : entry.label,
+            groupCount: shouldGroup ? groupSize : 0,
+            filename: entry.filename,
+            access: entry.folderUrl.includes(BUILDER_PUBLIC_PREFIX) ? "public" : "protected",
+            tags,
+            tag2: tags[1] || "",
+            tagPaths: tags.map((_, index) => tags.slice(0, index + 1).join(" / ")),
+            variants: []
+          });
+        }
+
+        groupMap.get(groupKey).variants.push({
+          filename: entry.filename,
+          fullUrl: entry.fullUrl,
+          path: entry.repoPath
+        });
+      });
+
+      return Array.from(groupMap.values()).map((item) => {
+        if (item.variants.length > 1) {
+          const first = item.variants[0]?.filename || "";
+          item.filename = `${first} (+${item.variants.length - 1})`;
+        }
+        return item;
+      });
+    };
+
+    // --- Zapis pliku JSON na dysku / Saving a JSON file to disk ---
+    const downloadJsonFile = (filename, payload, pretty) => {
+      const text = pretty ? JSON.stringify(payload, null, 2) : JSON.stringify(payload);
+      const blob = new Blob([`${text}\n`], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    };
+
+    const setBuilderState = (status, extra = {}) => {
+      state.builder = { status, publicCount: 0, protectedCount: 0, message: "", ...extra };
+      updateStatus();
+    };
+
+    // --- Obsługa przycisku „Zbuduj manifesty z XLSX” / "Build manifests from XLSX" button ---
+    const handleBuildManifests = async () => {
+      const labels = translations[currentLanguage].labels;
+      const selection = await pickLocalWorkbookFile();
+      if (!selection) {
+        // Rezygnacja z wyboru pliku nie jest błędem / Cancelling the file picker is not an error
+        return;
+      }
+      setBuilderState("working");
+      try {
+        const sheet = await readXlsxSheet(selection.buffer);
+        const columnIndex = resolveRequiredColumns(sheet.header);
+        const labelColumn = columnIndex.get("NazwaSampla");
+        const filenameColumn = columnIndex.get("NazwaPliku");
+        const folderColumn = columnIndex.get("LinkDoFolderu");
+
+        // Kolumny spoza listy wymaganych są pomijane: czytamy wyłącznie trzy potrzebne indeksy.
+        // Columns outside the required list are ignored: we read only the three needed indices.
+        const rows = sheet.rows
+          .map((cells) => ({
+            label: cells[labelColumn] || "",
+            filename: cells[filenameColumn] || "",
+            folderUrl: cells[folderColumn] || ""
+          }))
+          .filter((row) => row.label || row.filename || row.folderUrl);
+
+        if (!rows.length) {
+          throw new Error("builder_no_rows");
+        }
+
+        // Kolejność sortowania musi odpowiadać modułowi, żeby lista wyglądała tak samo
+        // niezależnie od tego, czy archiwum jest odblokowane.
+        // The sort order must match the module so the list looks the same whether or not
+        // the archive is unlocked.
+        const items = buildManifestItems(rows).sort((a, b) => a.label.localeCompare(b.label));
+
+        const publicItems = items
+          .filter((item) => item.access === "public")
+          .map(({ id, label, groupCount, filename, tags, tag2, tagPaths, variants }) => ({
+            id,
+            label,
+            groupCount,
+            filename,
+            access: "public",
+            tags,
+            tag2,
+            tagPaths,
+            variants: variants.map((variant) => ({
+              filename: variant.filename,
+              url: variant.fullUrl
+            }))
+          }));
+
+        const protectedItems = items
+          .filter((item) => item.access === "protected")
+          .map(({ id, label, groupCount, filename, tags, tag2, tagPaths, variants }) => ({
+            id,
+            label,
+            groupCount,
+            filename,
+            access: "protected",
+            tags,
+            tag2,
+            tagPaths,
+            variants: variants.map((variant) => ({
+              filename: variant.filename,
+              path: variant.path
+            }))
+          }));
+
+        // Wariant chroniony bez ścieżki byłby dźwiękiem nie do odtworzenia, więc lepiej
+        // zatrzymać się tutaj niż wypuścić uszkodzony manifest do repozytorium prywatnego.
+        // A protected variant without a path would be an unplayable sound, so stopping here
+        // beats shipping a broken manifest into the private repository.
+        const withoutPath = protectedItems.reduce(
+          (total, item) => total + item.variants.filter((variant) => !variant.path).length,
+          0
+        );
+        if (withoutPath) {
+          const error = new Error("builder_no_paths");
+          error.count = withoutPath;
+          throw error;
+        }
+
+        downloadJsonFile(
+          PUBLIC_MANIFEST_URL,
+          { version: 1, access: "public", items: publicItems },
+          true
+        );
+        // Krótka przerwa: część przeglądarek pomija drugie pobranie uruchomione w tej samej chwili.
+        // A short pause: some browsers drop a second download started in the same instant.
+        window.setTimeout(() => {
+          downloadJsonFile(
+            PROTECTED_MANIFEST_FILENAME,
+            { version: 1, access: "protected", items: protectedItems },
+            false
+          );
+        }, 150);
+
+        setBuilderState("ready", {
+          publicCount: publicItems.length,
+          protectedCount: protectedItems.length
+        });
+        alert(
+          formatText(labels.builderDone, {
+            publicCount: publicItems.length,
+            protectedCount: protectedItems.length,
+            publicFile: PUBLIC_MANIFEST_URL,
+            protectedFile: PROTECTED_MANIFEST_FILENAME
+          })
+        );
+      } catch (error) {
+        console.error(error);
+        let message = labels.builderErrorRead;
+        if (error?.message === "builder_library") {
+          message = labels.builderErrorLibrary;
+        } else if (error?.message === "builder_no_sheet") {
+          message = labels.builderErrorNoSheet;
+        } else if (error?.message === "builder_missing_columns") {
+          message = formatText(labels.builderErrorMissingColumns, {
+            columns: (error.columns || []).join(", ")
+          });
+        } else if (error?.message === "builder_duplicate_columns") {
+          message = formatText(labels.builderErrorDuplicateColumns, {
+            columns: (error.columns || []).join(", ")
+          });
+        } else if (error?.message === "builder_no_rows") {
+          message = labels.builderErrorNoRows;
+        } else if (error?.message === "builder_no_paths") {
+          message = formatText(labels.builderErrorNoPaths, { count: error.count || 0 });
+        }
+        setBuilderState("error", { message });
+        alert(message);
+      }
     };
 
     samplesGrid.addEventListener("click", (event) => {
@@ -2763,6 +3392,43 @@ const translations = {
       if (accessPassword) accessPassword.value = "";
     };
 
+    // --- Pominięcie bramki / Skipping the gate ---
+    // Decyzja żyje w sessionStorage, a nie w localStorage: przy następnym otwarciu karty
+    // bramka pojawia się znowu, więc pominięcie nie zamyka drogi do archiwum na stałe,
+    // a jednocześnie nie wraca po każdym kliknięciu w obrębie tej samej wizyty.
+    // The decision lives in sessionStorage rather than localStorage: the gate reappears in
+    // the next browser tab, so skipping never locks the archive away for good, yet it does
+    // not come back after every click within the same visit.
+    const isGateSkipped = () => {
+      try {
+        return sessionStorage.getItem(AUDIO_GATE_SKIPPED_KEY) === "1";
+      } catch (error) {
+        return false;
+      }
+    };
+
+    const markGateSkipped = () => {
+      try {
+        sessionStorage.setItem(AUDIO_GATE_SKIPPED_KEY, "1");
+      } catch (error) {
+        // Brak sessionStorage nie może blokować zamknięcia bramki / Missing sessionStorage must not block closing the gate
+      }
+    };
+
+    const skipAccessGate = () => {
+      markGateSkipped();
+      hideAccessGate();
+    };
+
+    // Bramka pokazuje się sama, gdy nie ma ważnej sesji i użytkownik jej jeszcze nie pominął.
+    // The gate shows itself when there is no valid session and the user has not skipped it yet.
+    const maybeShowAccessGate = () => {
+      if (hasValidSession() || isGateSkipped()) {
+        return;
+      }
+      showAccessGate(state.libraryError || "");
+    };
+
     // --- Wymiana Litanii Dostępu na token sesji / Exchanging the Litany of Access for a session token ---
     const submitAccessLitany = async () => {
       const labels = translations[currentLanguage].labels;
@@ -2791,7 +3457,14 @@ const translations = {
           return;
         }
         const data = await response.json();
-        storeSession({ token: data.token, exp: Number(data.exp) });
+        // Bramka bezterminowa zwraca `exp: null`; nie zamieniamy tego na 0, bo zero
+        // znaczyłoby „wygasł w 1970 roku” i sesja byłaby odrzucona przy pierwszym użyciu.
+        // The unlimited gateway returns `exp: null`; we must not coerce that to 0, which
+        // would read as "expired in 1970" and make the session unusable straight away.
+        storeSession({
+          token: data.token,
+          exp: data.exp === null || data.exp === undefined ? null : Number(data.exp)
+        });
         await loadManifests();
         updateStatus();
         // Hasło było poprawne, ale archiwum i tak się nie wczytało — nakładka zostaje
@@ -2814,26 +3487,27 @@ const translations = {
       }
     };
 
-    // --- Zablokowanie archiwum / Locking the archive ---
-    // Kasuje sesję na tym urządzeniu i przeładowuje manifesty do samej warstwy demo.
-    // Clears the session on this device and reloads manifests down to the demo tier only.
-    const lockArchive = async () => {
-      storeSession(null);
-      signedUrlCache.clear();
-      await loadManifests();
-      updateStatus();
-    };
-
-    const handleUnlockClick = () => {
-      if (state.libraryUnlocked) {
-        lockArchive().catch((error) => console.error(error));
-        return;
+    // Przycisk tylko otwiera bramkę. Ponowne kliknięcie po pominięciu bramki musi ją
+    // przywrócić, więc kasujemy tu znacznik pominięcia.
+    // The button only opens the gate. Clicking it after a skip has to bring the gate back,
+    // so the skip marker is cleared here.
+    const handleUnlockClick = (message = "") => {
+      try {
+        sessionStorage.removeItem(AUDIO_GATE_SKIPPED_KEY);
+      } catch (error) {
+        // Brak sessionStorage nie może blokować otwarcia bramki / Missing sessionStorage must not block opening the gate
       }
-      showAccessGate();
+      showAccessGate(message || state.libraryError || "");
     };
 
-    if (unlockLibrary) unlockLibrary.addEventListener("click", handleUnlockClick);
-    if (unlockLibraryUser) unlockLibraryUser.addEventListener("click", handleUnlockClick);
+    if (unlockLibrary) unlockLibrary.addEventListener("click", () => handleUnlockClick());
+    if (unlockLibraryUser) unlockLibraryUser.addEventListener("click", () => handleUnlockClick());
+    if (accessSkip) accessSkip.addEventListener("click", skipAccessGate);
+    if (buildManifestsButton) {
+      buildManifestsButton.addEventListener("click", () => {
+        handleBuildManifests().catch((error) => console.error(error));
+      });
+    }
     if (accessForm) {
       accessForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -2842,7 +3516,9 @@ const translations = {
     }
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && accessGate && !accessGate.hidden) {
-        hideAccessGate();
+        // Escape działa tak samo jak „Pomiń”, inaczej bramka wracałaby po każdym renderze.
+        // Escape behaves exactly like "Skip", otherwise the gate would return on every render.
+        skipAccessGate();
       }
     });
 
@@ -2860,10 +3536,18 @@ const translations = {
     } catch (error) {
       console.error(error);
     }
-    loadManifests().catch((error) => {
-      manifestStatus.textContent = translations[currentLanguage].labels.manifestError;
-      console.error(error);
-    });
+    loadManifests()
+      .catch((error) => {
+        manifestStatus.textContent = translations[currentLanguage].labels.manifestError;
+        console.error(error);
+      })
+      // Bramka otwiera się dopiero po wczytaniu manifestów: dzięki temu przy ważnej sesji
+      // w ogóle się nie pokazuje, a przy nieudanym wczytaniu od razu niesie powód błędu.
+      // The gate opens only after the manifests load: with a valid session it never shows
+      // at all, and after a failed load it carries the reason straight away.
+      .finally(() => {
+        maybeShowAccessGate();
+      });
     updateStatus();
     applyLanguage(currentLanguage);
     if (languageSelect) {

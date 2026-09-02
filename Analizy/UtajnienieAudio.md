@@ -1063,9 +1063,68 @@ Niezależnie od wybranego wariantu `AudioManifest.xlsx` nie może wrócić do pu
 
 ---
 
-## Następne kroki po pytaniach uzupełniających
+## Decyzje użytkownika — 2 września 2026
 
-1. Decyzja co do pytania 1: wariant A, B, C czy C+D.
-2. Decyzja co do terminu ważności sesji: zostawić 30 dni czy zmienić.
-3. Decyzja co do pytania 2: wariant A, B czy C.
-4. Po decyzjach — implementacja, aktualizacja dokumentacji modułu i dopisanie zmian do tego pliku.
+Pełna treść polecenia:
+
+> Dwie rzeczy:
+> 1. Zmieniłem nazwę na audio-manifest.json - aplikacja już działa poprawnie.
+> 2. Przycisk "Zablokuj archiwum" jest zbędny.
+> Pytanie 1 — czy przycisk „Rytuał Dostępu" jest potrzebny — Wariant C+D. Kwestia terminu ważności = zróbmy bezterminowo jak w DataVault.
+> Pytanie 2 — mechanizm generowania JSON z XLSX — Wariant C, ale zmień nazwę AudioManifestDemo.json na AudioManifest.json. Chcę, żeby przebieg wyglądał tak samo jak w DataVault. Z poziomu admina https://cutelittlegoat.github.io/WrathAndGlory/Audio/index.html?admin=1 mam przycisk do generowanie json. Wskazuję plik xlsx. Aplikacja zapisuje mi na dysku C dwa pliki json. Załączam przykładowy plik xlsx. Aplikacja ma sprawdzać czy plik zawiera kolumny:
+> NazwaSampla
+> NazwaPliku
+> LinkDoFolderu
+> Jeżeli je zawiera to ma przygotować pliku json. Jeżeli ich nie ma to ma zwrócić błąd. Jeżeli są dodatkowe kolumny to ma je zignorować. Jeżeli jest kilka wymaganych kolumn (np. dwie kolumny NazwaSampla) to ma zwrócić błąd.
+
+Dwa późniejsze doprecyzowania:
+
+> nie musisz w analizie dopisywać co dokłądnie zrobiłeś i jaki kod zmieniłeś - pozwalam na zignorowanie tej instrukcji Agents.
+
+> aktualizacja dokumentacji dalej pozostaje jako obowiązkowy punkt.
+
+### Rozstrzygnięcia
+
+| Pytanie | Decyzja |
+| --- | --- |
+| Pytanie 1 — przycisk „Rytuał Dostępu” | **Wariant C+D**: bramka pokazuje się automatycznie po starcie, z przyciskiem „Pomiń”, a dodatkowo otwiera się po kliknięciu pozycji „(brak w manifeście)”. |
+| Termin ważności sesji | **Bezterminowo**, jak w `DataVault`. Zamiast 30 dni token nie ma pola `exp`. |
+| Przycisk „Zablokuj archiwum” | **Usunięty.** |
+| Pytanie 2 — generator JSON z XLSX | **Wariant C** — generowanie w przeglądarce, w panelu admina. |
+| Nazwa manifestu publicznego | `AudioManifestDemo.json` → **`AudioManifest.json`**. |
+
+### Rozstrzygnięcie pytania otwartego z sekcji „Co zrobić z istniejącym generatorem”
+
+Analiza zostawiała wybór: zachować `Audio/tools/build-manifests.mjs` jako ścieżkę zapasową (z testem porównawczym w duchu §15 `AGENTS.md`) albo usunąć go po wdrożeniu wariantu C.
+
+**Wybrano usunięcie.** Powód jest ten sam, który przemawiał za wariantem C: generator w Node trzymał własne kopie funkcji `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` i `normalizeUrl`. Utrzymywanie go obok generatora przeglądarkowego przywracałoby dokładnie to ryzyko rozjazdu, którego wariant C miał się pozbyć — tyle że pod pozorem zabezpieczenia. Zostaje jedno źródło logiki identyfikatorów: funkcje modułu.
+
+### Odstępstwo od pierwotnej rekomendacji: JSZip zamiast SheetJS
+
+Sekcja „Rekomendacja: wariant C” zakładała parsowanie arkusza biblioteką SheetJS. Wdrożono zamiast tego **JSZip plus własny minimalny czytnik XLSX**, tak jak robi to `DataVault/xlsxCanonicalParser.js`.
+
+Powód jest merytoryczny, nie estetyczny. Wymaganie „dwie kolumny `NazwaSampla` to błąd” wymaga dostępu do **surowego wiersza nagłówka**. Wysokopoziomowe API, które zamienia arkusz na tablicę obiektów kluczowanych nazwą kolumny, po cichu zjada duplikaty — druga kolumna `NazwaSampla` nadpisuje pierwszą i błąd nigdy nie zostaje wykryty. Czytnik zwraca `{ header, rows }` jako tablice pozycyjne, więc duplikat jest widoczny.
+
+Efekt uboczny jest korzystny: JSZip to ta sama biblioteka i ten sam adres CDN, których używa już `DataVault`, więc repozytorium nie zyskuje nowej zależności.
+
+### Weryfikacja
+
+| Zestaw | Wynik |
+| --- | --- |
+| Testy bramki (Cloudflare Worker, uruchomione lokalnie) | 39/39 |
+| Testy przeglądarkowe modułu (Playwright + Chromium) | 42/42 |
+| Testy generatora manifestów (Playwright + Chromium) | 29/29 |
+
+Najważniejszy pojedynczy wynik: generator przeglądarkowy, uruchomiony na oryginalnym `AudioManifest.xlsx`, wyprodukował pliki **identyczne co do bajta** z manifestem leżącym w repozytorium i z manifestem wgranym do `AudioRPG`. To dowód, że identyfikatory `id` się nie zmieniły, a więc listy ulubionych, widok główny i aliasy zapisane w Firestore nadal wskazują te same dźwięki.
+
+Testy negatywne generatora obejmują: brak jednej wymaganej kolumny, brak wszystkich trzech, powtórzoną kolumnę `NazwaSampla`, kolumny nadmiarowe w zmienionej kolejności, arkusz z samym nagłówkiem oraz wiersz chroniony bez ścieżki w `AudioRPG`. W każdym przypadku błędu **nie powstaje żaden plik**.
+
+Testy bramki obejmują też zgodność wsteczną: stary token 30-dniowy z ważną datą nadal działa, a wygasły nadal jest odrzucany.
+
+---
+
+## Następne kroki
+
+1. **Wgrać nową wersję Workera.** Zmiana ważności sesji na bezterminową jest zmianą w kodzie bramki, a nie w module. Do czasu wklejenia nowej wersji `Audio/worker/audio-gate.js` w panelu Cloudflare i kliknięcia `Deploy` bramka nadal będzie wydawać tokeny 30-dniowe. Moduł obsługuje oba rodzaje tokenów, więc nic się nie zepsuje — sesje po prostu będą jeszcze wygasać.
+2. Przy najbliższej aktualizacji listy dźwięków użyć przycisku `Zbuduj manifesty z XLSX` i sprawdzić, czy oba pliki trafiają tam, gdzie trzeba.
+3. Arkusz `AudioManifest.xlsx` nadal trzymać poza publicznym repozytorium.

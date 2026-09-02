@@ -606,6 +606,10 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Widoczność sterowana atrybutem `hidden` (`.accessGate[hidden] { display: none; }`), a nie klasą.
 - Do arkusza modułu dodano klasę `.btn.primary`, której Audio wcześniej nie miało: `background: var(--text)`, `color: #031605`, `border-color: rgba(22, 198, 12, 0.35)`, `:hover` z `filter: brightness(1.08)`. Bez niej przycisk „Rozpocznij Rytuał” byłby obrysowany zamiast wypełnionego i odbiegałby od DataVault.
 - Kolor tekstu przycisku podany literalnie jako `#031605`, ponieważ `--bg` w tym module jest gradientem i nie nadaje się na wartość `color`. Wartość `#031605` to baza tego gradientu, ta sama, której DataVault używa w `--bg`.
+- Bramka pojawia się **automatycznie** po otwarciu modułu, gdy nie ma ważnej sesji. Jako nakładka `position: fixed` z `z-index: 9999` zasłania wtedy pasek narzędzi admina — zachowanie identyczne jak w `DataVault`.
+- Audio ma w bramce dodatkowy przycisk `#accessSkip` („Pomiń”), którego `DataVault` nie ma. Klasa `.accessGate__skip` jest zdefiniowana **w arkuszu modułu, nie w `shared/access-gate.css`**, właśnie dlatego, że tylko Audio ma bramkę możliwą do pominięcia.
+- Przycisk „Pomiń” używa zwykłej klasy `.btn` (obrys), w kontraście do wypełnionego `.btn.primary` przycisku zatwierdzenia — akcja podstawowa pozostaje wizualnie ważniejsza.
+- Rozmieszczenie w siatce `.accessGate__credentials`: „Pomiń” w `grid-column: 1; grid-row: 2; justify-self: start`, naprzeciwko `.accessGate__submit` w kolumnie 2. Poniżej `640px` (ten sam punkt łamania co w `shared/access-gate.css`, gdzie siatka zwija się do jednej kolumny) przycisk przechodzi na `grid-row: 4` pod przyciskiem zatwierdzenia i rozciąga się na całą szerokość. Użycie innego punktu łamania powodowałoby nachodzenie przycisków w zakresie 521–640 px.
 
 ### 7) Status dostępu do archiwum
 - W pasku statusów admina doszedł `#libraryStatus` obok `#manifestStatus`, `#firebaseStatus` i `#favoritesStatus`.
@@ -616,12 +620,16 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - `background: rgba(255, 95, 95, 0.12)`.
 - Wszystkie trzy wartości pochodzą z palety modułu Audio udokumentowanej wyżej — tej samej, której używa aktywny `.loop-btn`. Do bramki nie wprowadzono żadnego koloru spoza tej palety.
 - Szczegół błędu trafia do atrybutu `title` pastylki, więc jest dostępny po najechaniu kursorem, bez zaśmiecania paska statusów.
-- Przycisk `#unlockLibrary` w toolbarze admina oraz `#unlockLibraryUser` w panelu nawigacji widoku użytkownika; oba używają standardowej klasy `.btn` i zmieniają etykietę zależnie od stanu („Odblokuj archiwum” ↔ „Zablokuj archiwum”).
+- W pasku statusów admina jest też `#builderStatus` — stan generatora manifestów. Obowiązuje ta sama zasada kolorystyczna: zielono dla „gotowy”, „przetwarzanie pliku” i wyniku „N publicznych / M chronionych”, `.status-pill.is-error` wyłącznie dla stanu „Generator: błąd”. Pełna treść błędu trafia do atrybutu `title`.
+- Przycisk `#unlockLibrary` w toolbarze admina oraz `#unlockLibraryUser` w panelu nawigacji widoku użytkownika; oba używają standardowej klasy `.btn` i mają jedną, stałą etykietę „Odblokuj archiwum”.
+- **Przycisku blokowania nie ma.** Po odblokowaniu archiwum oba przyciski są ukrywane atrybutem `hidden`, zamiast zmieniać etykietę na „Zablokuj archiwum”. Odblokowane archiwum jest stanem docelowym, więc przycisk, który do niego prowadzi, przestaje być potrzebny.
+- Przycisk `#buildManifests` w toolbarze admina (generator manifestów z XLSX) używa standardowej klasy `.btn` i istnieje wyłącznie w widoku `?admin=1` — w widoku użytkownika jest usuwany razem z całą sekcją `admin-only`.
 
 ### 8) Podział języka komunikatów
 - Panel `?admin=1` jest narzędziem technicznym, dlatego statusy, etykiety przycisków i komunikaty diagnostyczne są napisane językiem zwykłym i konkretnym: „Archiwum: zablokowane”, „Odblokuj archiwum”, „Bramka nie znalazła manifestu archiwum (HTTP 404)…”.
 - Językiem lore Warhammera 40k pozostaje wyłącznie **okno bramki dostępu** — tytuł, opis, etykieta „Litania Dostępu”, przycisk „Rozpocznij Rytuał” oraz dwa komunikaty dotyczące samego hasła (nie wypowiedziano Litanii, Litania odrzucona). Jest to celowe: okno jest wspólne z modułem `DataVault` i ma wyglądać oraz brzmieć identycznie.
 - Komunikaty o awarii infrastruktury (brak manifestu, brak połączenia z bramką, wygaśnięcie sesji) są techniczne również w oknie bramki, ponieważ służą do diagnozy, a nie do budowania klimatu.
+- Do tej samej kategorii należą etykieta „Pomiń”, komunikat wyjaśniający otwarcie bramki po kliknięciu pozycji „(brak w manifeście)” oraz wszystkie komunikaty generatora manifestów (brak kolumn, duplikat kolumny, brak wierszy). Mówią wprost, co zrobić z plikiem, i nie używają języka lore.
 
 ---
 
@@ -855,6 +863,7 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Prawa kolumna: pole hasła, a pod nim przycisk zatwierdzenia wyrównany do prawej.
 - Breakpoint mobilny: `max-width: 640px`, układ jednokolumnowy.
 - Kolor etykiety „Litania Dostępu” jest celowo ciemniejszy niż treść komunikatu: `var(--muted, #4a8b4a)`.
+- Wyjątek modułu `Audio`: bramka ma dodatkowy przycisk „Pomiń” (`.accessGate__skip`) w lewej kolumnie drugiego wiersza, naprzeciwko przycisku zatwierdzenia. Klasa jest zdefiniowana w arkuszu modułu `Audio`, a nie we wspólnym arkuszu, ponieważ tylko tam bramkę można pominąć. Mobilnie przycisk przechodzi na czwarty wiersz siatki, przy tym samym punkcie łamania `640px`.
 
 ## 🇬🇧 Password window — Litany of Access
 - Shared password overlay (`shared/access-gate.css`) uses a 2-column grid.
@@ -863,6 +872,7 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Right column: password field, with submit button below aligned to the right.
 - Mobile breakpoint: `max-width: 640px`, single-column layout.
 - The “Litany of Access” label is intentionally darker than the message body text: `var(--muted, #4a8b4a)`.
+- `Audio` module exception: its gate carries an extra “Skip” button (`.accessGate__skip`) in the left cell of the second row, opposite the submit button. The class is defined in the `Audio` module stylesheet rather than the shared one, because only there may the gate be skipped. On mobile the button moves to the grid's fourth row, at the same `640px` breakpoint.
 
 ## Moduł — Infoczytnik (aktualizacja 2026-05-28)
 - W panelu GM (`Infoczytnik/GM_test.html`) dodano blok **Kolor logo** pomiędzy polami **Logo** i **Zestaw fillerów**.

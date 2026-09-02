@@ -35,8 +35,12 @@ const REF = "main";
 // Nazwa pliku manifestu w repozytorium prywatnym / Manifest file name in the private repo
 const MANIFEST_PATH = "audio-manifest.json";
 
-// Ważność tokenu sesji: 30 dni / Session token lifetime: 30 days
-const SESSION_TTL_SECONDS = 30 * 24 * 60 * 60;
+// Sesja jest bezterminowa, tak samo jak w module DataVault: raz podana Litania Dostępu
+// zostaje na tym urządzeniu, dopóki użytkownik nie wyczyści danych przeglądarki.
+// Unieważnienie wszystkich sesji naraz robi się przez zmianę sekretu SIGNING_KEY.
+// The session never expires, exactly like in the DataVault module: the Litany of Access
+// entered once stays on this device until the user clears browser data. Rotating the
+// SIGNING_KEY secret invalidates every session at once.
 // Ważność podpisanego adresu, wyrównana do pełnej godziny / Signed URL lifetime, hour-aligned
 // Adres jest identyczny przez całą godzinę zegarową, dzięki czemu przeglądarka
 // nie pobiera tego samego pliku wielokrotnie. Realna ważność: od 1 do 2 godzin.
@@ -150,15 +154,16 @@ const jsonResponse = (data, status, env) =>
   });
 
 // --- Token sesji / Session token ---
-// Format: base64url(JSON) + "." + base64url(HMAC). Bez bazy danych — ważność i podpis
-// wystarczą, a unieważnienie wszystkich sesji naraz robi się przez zmianę SIGNING_KEY.
-// No database needed: expiry plus signature is enough, and rotating SIGNING_KEY
-// invalidates every session at once.
+// Format: base64url(JSON) + "." + base64url(HMAC). Bez bazy danych — sam podpis
+// wystarczy, bo token nie ma terminu ważności.
+// No database needed: the signature alone is enough because the token has no expiry.
 const createSessionToken = async (env, nowSeconds) => {
-  const payload = { exp: nowSeconds + SESSION_TTL_SECONDS };
+  // `iat` jest tylko znacznikiem czasu wydania; nie jest sprawdzany przy weryfikacji.
+  // `iat` is an issue-time marker only; it is not checked during verification.
+  const payload = { iat: nowSeconds };
   const encoded = toBase64Url(textEncoder.encode(JSON.stringify(payload)));
   const signature = await sign(env.SIGNING_KEY, encoded);
-  return { token: `${encoded}.${signature}`, exp: payload.exp };
+  return { token: `${encoded}.${signature}`, exp: null };
 };
 
 const verifySessionToken = async (env, token, nowSeconds) => {
@@ -175,6 +180,13 @@ const verifySessionToken = async (env, token, nowSeconds) => {
   }
   try {
     const payload = JSON.parse(new TextDecoder().decode(fromBase64Url(encoded)));
+    // Tokeny bezterminowe nie mają pola `exp`. Starsze tokeny 30-dniowe nadal je mają
+    // i nadal honorujemy ich datę wygaśnięcia, żeby nie przedłużyć ich w nieskończoność.
+    // Unlimited tokens carry no `exp` field. Older 30-day tokens still do, and we keep
+    // honouring their expiry instead of silently extending them forever.
+    if (payload.exp === undefined || payload.exp === null) {
+      return true;
+    }
     return Number(payload.exp) > nowSeconds;
   } catch (error) {
     return false;

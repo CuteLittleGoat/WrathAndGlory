@@ -36,9 +36,8 @@ Tryb admina jest wykrywany przez parametr URL:
 | Plik lub katalog | Odpowiedzialność |
 | --- | --- |
 | `Audio/index.html` | Pełna aplikacja: HTML, CSS, JS, import konfiguracji Firebase i import modułów Firebase. |
-| `Audio/AudioManifestDemo.json` | Manifest warstwy publicznej (demo). Zawiera gotowe adresy plików jawnie dostępnych. |
+| `Audio/AudioManifest.json` | Manifest warstwy publicznej (demo). Zawiera gotowe adresy plików jawnie dostępnych. |
 | `Audio/worker/audio-gate.js` | Kod bramki dostępu (Cloudflare Worker) wydającej manifest warstwy chronionej i podpisane adresy plików. |
-| `Audio/tools/build-manifests.mjs` | Generator obu manifestów z arkusza źródłowego. Powiela logikę identyfikatorów modułu. |
 | `Audio/config/firebase-config.js` | Konfiguracja Firebase dla ustawień Audio. |
 | `../shared/access-gate.css` | Wspólny arkusz bramki dostępu, ten sam co w `DataVault` i `GeneratorNPC`. |
 | `Audio/config/firebase-config.template.js` | Szablon konfiguracji Firebase. |
@@ -102,6 +101,8 @@ Nagłówek admina zawiera:
 Toolbar zawiera:
 
 - `reloadManifest` — ponowne wczytanie obu manifestów,
+- `unlockLibrary` — otwarcie bramki dostępu; przycisk jest ukrywany (`hidden`), gdy `state.libraryUnlocked` jest prawdziwe,
+- `buildManifests` — generator manifestów z arkusza XLSX (wyłącznie w widoku admina),
 - `addList` — utworzenie nowej listy ulubionych,
 - `refreshFavorites` — ręczne odświeżenie widoków ulubionych.
 
@@ -184,8 +185,10 @@ Główny obiekt `state` zawiera:
 | `favoritesDoc` | `object|null` | Referencja dokumentu `audio/favorites`. |
 | `usingFirestore` | `boolean` | Czy aktywna jest synchronizacja Firestore. |
 | `manifestReady` | `boolean` | Czy manifest został poprawnie wczytany. |
-| `session` | `object\|null` | Token bramki i jego czas wygaśnięcia. |
+| `session` | `object\|null` | Token bramki. `exp` ma wartość `null` dla tokenu bezterminowego. |
 | `libraryUnlocked` | `boolean` | Czy warstwa chroniona jest wczytana. |
+| `libraryError` | `string\|null` | Powód, dla którego warstwa chroniona się nie wczytała. |
+| `builder` | `object` | Stan generatora manifestów: `{ status, publicCount, protectedCount, message }`. `status` przyjmuje `idle`, `working`, `ready` albo `error`. |
 | `userView` | `string` | Aktualny widok użytkownika: `main` albo lista. |
 | `activeFavoritesListId` | `string|null` | Aktywna lista ulubionych w widoku użytkownika. |
 | `tagTree` | `array` | Drzewo tagów zbudowane z manifestu. |
@@ -206,7 +209,7 @@ Biblioteka jest podzielona na dwie warstwy o różnym trybie dostępu. Podział 
 
 | Warstwa | `access` | Źródło manifestu | Źródło plików | Logowanie |
 | --- | --- | --- | --- | --- |
-| Publiczna (demo) | `"public"` | `AudioManifestDemo.json` w tym repozytorium | publiczne repozytorium `AudioExample` na GitHub Pages | nie |
+| Publiczna (demo) | `"public"` | `AudioManifest.json` w tym repozytorium | publiczne repozytorium `AudioExample` na GitHub Pages | nie |
 | Chroniona (archiwum) | `"protected"` | endpoint `/manifest` bramki | prywatne repozytorium `AudioRPG` przez bramkę | tak |
 
 Obie listy są łączone w `loadManifests()` i sortowane wspólnie po `label`, więc użytkownik widzi jedną listę.
@@ -219,12 +222,12 @@ Bramka dodaje brakujący trzeci stan: repozytorium `AudioRPG` zostaje prywatne n
 
 ## Manifesty
 
-### `AudioManifestDemo.json`
+### `AudioManifest.json`
 
 Manifest warstwy publicznej, wczytywany zawsze:
 
 ```js
-fetch(DEMO_MANIFEST_URL, { cache: "no-store" })
+fetch(PUBLIC_MANIFEST_URL, { cache: "no-store" })
 ```
 
 Struktura:
@@ -259,18 +262,45 @@ Struktura identyczna, z dwiema różnicami: `access` ma wartość `"protected"`,
 
 Oba pliki powstają ze źródłowego arkusza `AudioManifest.xlsx`, który **nie znajduje się w tym repozytorium** — jego miejsce jest w repozytorium prywatnym, ponieważ zawiera pełny katalog materiałów chronionych. W `.gitignore` jest wpis blokujący jego przypadkowe dodanie.
 
-```text
-node Audio/tools/build-manifests.mjs <rows.json> <katalog-wyjsciowy>
-```
+Generator działa **w przeglądarce, w panelu admina**, przyciskiem `buildManifests`. Przebieg odpowiada aktualizacji danych w module `DataVault`: `<input type="file">` tworzony w locie, konwersja lokalna, dwa pobrania przez `Blob` i `URL.createObjectURL`.
 
-`rows.json` to tablica obiektów `{ NazwaSampla, NazwaPliku, LinkDoFolderu }` odczytana z arkusza.
+Kluczowa decyzja projektowa: generator nie jest osobnym skryptem, tylko fragmentem `index.html` i **używa tych samych funkcji `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` i `normalizeUrl`, których używa reszta modułu**. Identyfikator `id` powstaje ze slugu etykiety, a listy ulubionych, widok główny i aliasy w Firestore przechowują właśnie `id`. Wcześniejszy generator w Node (`Audio/tools/build-manifests.mjs`) trzymał kopie tych funkcji i mógł się z modułem rozjechać, co zerwałoby powiązanie zapisanych list z dźwiękami. Został usunięty właśnie dlatego — jedno źródło logiki identyfikatorów zamiast dwóch.
+
+Krok po kroku:
+
+1. `pickLocalWorkbookFile()` — tworzy ukryty `<input type="file" accept=".xlsx">` i zwraca `ArrayBuffer`. Zwraca `null`, gdy użytkownik zrezygnował (zdarzenia `change` bez pliku oraz `cancel`).
+2. `ensureJSZip()` — doładowuje JSZip z `cdn.jsdelivr.net` przy pierwszym użyciu. Biblioteka nie jest ładowana w widoku użytkownika. Nieudana próba zeruje `jsZipPromise`, żeby kolejne kliknięcie mogło spróbować ponownie.
+3. `readXlsxSheet()` — minimalny czytnik XLSX: rozpakowuje `xl/sharedStrings.xml`, `xl/workbook.xml`, `xl/_rels/workbook.xml.rels` i arkusz wskazany relacją pierwszego `<sheet>`. Obsługuje typy komórek `s` (shared string), `inlineStr` i wartości surowe. Zwraca `{ header, rows }` jako tablice pozycyjne, **bez sklejania kolumn po nazwie** — to warunek konieczny do wykrycia duplikatów nagłówka.
+4. `resolveRequiredColumns()` — walidacja nagłówka.
+5. `buildManifestItems()` — grupowanie wariantów, identyczne z logiką manifestu.
+6. `downloadJsonFile()` — zapis pliku; drugie pobranie jest opóźnione o 150 ms, bo część przeglądarek pomija dwa pobrania uruchomione w tej samej chwili.
+
+#### Walidacja nagłówka
+
+Wymagane kolumny: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu` (stała `BUILDER_REQUIRED_COLUMNS`).
+
+| Sytuacja | Zachowanie |
+| --- | --- |
+| Brak którejkolwiek wymaganej kolumny | Błąd `builder_missing_columns`, lista brakujących nazw w komunikacie. Żaden plik nie powstaje. |
+| Wymagana kolumna występuje więcej niż raz | Błąd `builder_duplicate_columns`. Generator celowo nie zgaduje, którą kolumnę wziąć. |
+| Kolumny spoza listy wymaganych | Ignorowane. Czytane są wyłącznie trzy indeksy zwrócone przez `resolveRequiredColumns()`. |
+| Dowolna kolejność kolumn | Obsługiwana — wiązanie idzie po nazwie nagłówka, nie po pozycji. |
+| Arkusz zawiera sam nagłówek | Błąd `builder_no_rows`. |
+| Wariant chroniony bez ścieżki w `/AudioRPG/` | Błąd `builder_no_paths` z liczbą wariantów. Zapobiega wypuszczeniu manifestu z niegrywalnymi pozycjami. |
+
+Każdy błąd ustawia `state.builder.status = "error"`, zapala pastylkę `builderStatus` na czerwono i pokazuje `alert()` z pełną treścią. **Przy błędzie nie powstaje żaden plik.**
+
+#### Podział na warstwy
+
+O przypisaniu decyduje adres w kolumnie `LinkDoFolderu`:
+
+- zawiera `/AudioExample/` (stała `BUILDER_PUBLIC_PREFIX`) → `access: "public"`, wariant dostaje `url`,
+- w przeciwnym razie → `access: "protected"`, wariant dostaje `path` powstałe przez odcięcie wszystkiego do `/AudioRPG/` włącznie i `decodeURIComponent`.
 
 Generator produkuje:
 
-- `AudioManifestDemo.json` → do tego repozytorium,
-- `audio-manifest.json` → do katalogu głównego repozytorium prywatnego `AudioRPG`.
-
-**Krytyczne ograniczenie:** generator zawiera kopie funkcji `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` i `normalizeUrl` z `index.html`. Identyfikator `id` powstaje ze slugu etykiety, a listy ulubionych, widok główny i aliasy przechowują właśnie `id`. Rozjechanie tych funkcji z modułem zerwałoby powiązanie zapisanych list z dźwiękami. Przy każdej zmianie logiki identyfikatorów należy zmienić oba miejsca naraz i porównać wynik ze stanem sprzed zmiany.
+- `AudioManifest.json` (z wcięciami, czytelny w diffie) → do folderu `Audio` tego repozytorium,
+- `audio-manifest.json` (bez wcięć, mniejszy transfer przez bramkę) → do katalogu głównego repozytorium prywatnego `AudioRPG`.
 
 ## Bramka dostępu (Cloudflare Worker)
 
@@ -299,9 +329,11 @@ Sekrety nie mogą trafić do repozytorium. Ustawia się je w panelu Cloudflare a
 
 ### Token sesji
 
-Format: `base64url(JSON) + "." + base64url(HMAC-SHA256)`. Ładunek zawiera wyłącznie `exp`. Nie ma bazy danych — ważność i podpis wystarczą, a zmiana `SIGNING_KEY` unieważnia wszystkie sesje naraz.
+Format: `base64url(JSON) + "." + base64url(HMAC-SHA256)`. Ładunek zawiera wyłącznie `iat` — znacznik czasu wydania, nieweryfikowany. Nie ma bazy danych; sam podpis wystarczy.
 
-Ważność: 30 dni. Token trafia do `localStorage` pod kluczem `audio.session`.
+**Sesja jest bezterminowa**, tak samo jak w module `DataVault`. Token nie ma pola `exp`, a `/login` zwraca `exp: null`. Token trafia do `localStorage` pod kluczem `audio.session` i żyje do wyczyszczenia danych przeglądarki. Jedynym sposobem unieważnienia wszystkich sesji naraz jest zmiana sekretu `SIGNING_KEY` w Workerze.
+
+Zgodność wsteczna: tokeny wydane przed tą zmianą mają pole `exp` z ważnością 30 dni. `verifySessionToken()` nadal honoruje ich datę wygaśnięcia — stary token wygasa zgodnie z pierwotnym terminem, zamiast zostać po cichu przedłużony w nieskończoność. Po jego wygaśnięciu użytkownik podaje hasło raz i dostaje token bezterminowy.
 
 ### Podpisywanie adresów
 
@@ -339,13 +371,33 @@ Element `<audio>` nie pozwala dołożyć własnych nagłówków, dlatego autoryz
 | --- | --- |
 | `AUDIO_GATE_BASE` | Adres bramki. Miejsce zmiany przy przenoszeniu Workera. |
 | `AUDIO_SESSION_STORAGE_KEY` | Klucz `audio.session` w `localStorage`. |
-| `loadSession()` / `storeSession()` / `hasValidSession()` | Odczyt, zapis i sprawdzenie ważności tokenu. |
+| `AUDIO_GATE_SKIPPED_KEY` | Klucz `audio.gateSkipped` w `sessionStorage`. Pamięta kliknięcie `Pomiń` na czas jednej karty przeglądarki. |
+| `loadSession()` / `storeSession()` | Odczyt i zapis tokenu w `localStorage`. |
+| `isSessionUsable(session)` / `hasValidSession()` | Sesja jest ważna, gdy ma token oraz nie ma `exp` (token bezterminowy) albo `exp` jest w przyszłości (stary token 30-dniowy). |
 | `signedUrlCache` | Mapa `ścieżka → { url, exp }`. Ogranicza liczbę wywołań `/sign`. |
 | `requestSignedUrl(path)` | Pobiera podpis; przy `401` czyści sesję i rzuca `gate_unauthorized`. |
 | `resolveVariantUrl(item, variant)` | Zwraca gotowy adres: z manifestu dla `public`, z bramki dla `protected`. |
 | `showAccessGate()` / `hideAccessGate()` | Pokazanie i ukrycie nakładki `#accessGate` atrybutem `hidden`. |
-| `submitAccessLitany()` | Wymiana hasła na token, po czym przeładowanie manifestów. |
-| `lockArchive()` | Kasowanie sesji i powrót do samej warstwy demo. |
+| `submitAccessLitany()` | Wymiana hasła na token, po czym przeładowanie manifestów. Przy `state.libraryError` nakładka zostaje otwarta z powodem błędu. |
+| `maybeShowAccessGate()` | Otwiera bramkę po starcie, gdy nie ma ważnej sesji i nie kliknięto `Pomiń`. Wywoływane w `.finally()` po `loadManifests()`. |
+| `isGateSkipped()` / `markGateSkipped()` / `skipAccessGate()` | Obsługa przycisku `Pomiń` i klawisza `Escape`. |
+| `handleUnlockClick(message)` | Kasuje znacznik pominięcia i otwiera bramkę, opcjonalnie z własnym komunikatem. |
+
+Nie ma funkcji blokującej archiwum. Przycisk blokowania został usunięty jako zbędny: odblokowane archiwum jest stanem docelowym, a dostęp na urządzeniu kasuje się przez wyczyszczenie danych witryny.
+
+### Zachowanie bramki
+
+| Zdarzenie | Reakcja |
+| --- | --- |
+| Start modułu bez ważnej sesji, `Pomiń` niekliknięte | Bramka otwiera się sama po wczytaniu manifestów. |
+| Kliknięcie `Pomiń` lub `Escape` | Bramka znika, w `sessionStorage` zapisuje się `audio.gateSkipped=1`. |
+| Przeładowanie strony po `Pomiń` | Bramka nie wraca — `sessionStorage` przeżywa przeładowanie. |
+| Nowa karta przeglądarki | Bramka wraca — `sessionStorage` jest osobny dla każdej karty. |
+| Kliknięcie `Odblokuj archiwum` | Kasuje `audio.gateSkipped` i otwiera bramkę. |
+| Kliknięcie pozycji `(brak w manifeście)` przy zablokowanym archiwum | `togglePlayback()` otwiera bramkę z komunikatem `accessMissingItem`. |
+| Wygaśnięcie sesji w trakcie odtwarzania | `startPlayback()` otwiera bramkę z komunikatem `accessExpired`. |
+
+Bramka jest nakładką `position: fixed` o `z-index: 9999`, więc dopóki jest otwarta, zasłania pasek narzędzi admina. To zachowanie celowe — dokładnie tak działa bramka w module `DataVault`.
 
 ## Model SFX po parsowaniu manifestu
 
@@ -601,7 +653,7 @@ Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher
 | Brak `window.firebaseConfig` albo `apiKey` | Moduł używa `localStorage` i pokazuje status lokalnych ustawień. |
 | Brak dokumentu Firestore | Kod tworzy domyślne ustawienia i zapisuje je przez `saveSettings()`. |
 | Uszkodzone ustawienia Firestore/localStorage | Normalizatory tworzą bezpieczne wartości domyślne. |
-| Brak `AudioManifestDemo.json` | Manifest przechodzi w błąd wczytywania. |
+| Brak `AudioManifest.json` | Manifest przechodzi w błąd wczytywania. |
 | Bramka niedostępna przy ważnej sesji | Warstwa demo ładuje się mimo to; archiwum pozostaje zablokowane. |
 | `401` z bramki | Sesja jest kasowana, pojawia się nakładka z komunikatem o nieukończonym Rytuale. |
 | Wyjątek z SDK Firebase | Moduł przechodzi na ustawienia lokalne i **kontynuuje** wczytywanie manifestów. |
@@ -614,9 +666,9 @@ Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher
 
 ## Procedura odtworzenia modułu
 
-1. Zachowaj `Audio/index.html`, `Audio/AudioManifestDemo.json`, `Audio/worker/audio-gate.js` oraz `Audio/tools/build-manifests.mjs`.
+1. Zachowaj `Audio/index.html`, `Audio/AudioManifest.json` oraz `Audio/worker/audio-gate.js`.
 2. Zachowaj `../shared/access-gate.css`.
-3. Zachowaj arkusz źródłowy `AudioManifest.xlsx` **poza tym repozytorium** i wygeneruj z niego oba manifesty generatorem.
+3. Zachowaj arkusz źródłowy `AudioManifest.xlsx` **poza tym repozytorium** i wygeneruj z niego oba manifesty przyciskiem `Zbuduj manifesty z XLSX` w widoku admina.
 4. Wgraj `audio-manifest.json` do katalogu głównego prywatnego repozytorium `AudioRPG`.
 5. Wdroż `Audio/worker/audio-gate.js` jako Worker `audio-gate` i ustaw cztery zmienne środowiskowe.
 6. Wpisz adres Workera do stałej `AUDIO_GATE_BASE` w `index.html`.
@@ -638,12 +690,21 @@ Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher
 | Start admina | Otwórz `Audio/index.html?admin=1`. | Widać nagłówek, statusy, toolbar, panel tagów, listę SFX, ulubione i widok główny. |
 | Start użytkownika | Otwórz `Audio/index.html`. | Widać tylko widok użytkownika i nawigację. |
 | Manifest | Kliknij `Wczytaj manifest`. | Status pokazuje liczbę pozycji z manifestu. |
-| Start bez logowania | Otwórz moduł bez ważnej sesji. | Widać wyłącznie warstwę demo, bramka się nie pokazuje, status: `Archiwum: zablokowane`. |
+| Start bez logowania | Otwórz moduł bez ważnej sesji. | Bramka otwiera się sama, z przyciskami `Pomiń` i `Rozpocznij Rytuał`. |
+| Pominięcie bramki | Kliknij `Pomiń`. | Nakładka znika, widać wyłącznie warstwę demo, status: `Archiwum: zablokowane` (pastylka zielona). |
+| Trwałość pominięcia | Po `Pomiń` przeładuj stronę. | Bramka nie wraca. W nowej karcie przeglądarki wraca. |
 | Puste hasło | Kliknij `Rozpocznij Rytuał` z pustym polem. | Komunikat o niewypowiedzianej Litanii Dostępu. |
 | Złe hasło | Wpisz błędne hasło. | Komunikat o odrzuconej Litanii Dostępu. |
 | Poprawne hasło | Wpisz hasło grupy. | Nakładka znika, lista uzupełnia się o archiwum, status: `Archiwum: odblokowane`. |
-| Trwałość sesji | Przeładuj stronę po odblokowaniu. | Archiwum nadal odblokowane, bez pytania o hasło. |
-| Zablokowanie | Kliknij `Zablokuj archiwum`. | Lista wraca do samej warstwy demo. |
+| Znikający przycisk | Odblokuj archiwum. | Przycisk `Odblokuj archiwum` znika. Nigdzie nie ma przycisku blokowania. |
+| Trwałość sesji | Przeładuj stronę po odblokowaniu. | Archiwum nadal odblokowane, bez pytania o hasło. Zapisana sesja nie ma pola `exp`. |
+| Kafelek spoza manifestu | Przy zablokowanym archiwum kliknij pozycję `(brak w manifeście)`. | Bramka otwiera się z komunikatem `Ten dźwięk nie należy do warstwy publicznej…`. |
+| Nieosiągalny manifest archiwum | Podaj poprawne hasło, gdy bramka nie widzi `audio-manifest.json`. | Nakładka zostaje otwarta z kodem HTTP, status: `Archiwum: błąd wczytywania` (pastylka czerwona). |
+| Generator: poprawny arkusz | W adminie kliknij `Zbuduj manifesty z XLSX` i wskaż `AudioManifest.xlsx`. | Przeglądarka zapisuje `AudioManifest.json` i `audio-manifest.json`, pastylka pokazuje liczby pozycji. |
+| Generator: brak kolumny | Wskaż arkusz bez kolumny `LinkDoFolderu`. | Komunikat `Brak wymaganych kolumn: LinkDoFolderu`, żaden plik nie powstaje, pastylka czerwona. |
+| Generator: duplikat kolumny | Wskaż arkusz z dwiema kolumnami `NazwaSampla`. | Komunikat o kolumnie występującej więcej niż raz, żaden plik nie powstaje. |
+| Generator: kolumny nadmiarowe | Wskaż arkusz z dodatkowymi kolumnami i inną ich kolejnością. | Manifesty powstają poprawnie, kolumny nadmiarowe są pominięte. |
+| Generator: stabilność `id` | Zbuduj manifesty z niezmienionego arkusza. | Pliki są identyczne z tymi w repozytorium — zapisane listy ulubionych nadal wskazują te same dźwięki. |
 | Dźwięk chroniony | Odtwórz pozycję z archiwum. | Moduł pobiera podpis z `/sign`, dźwięk gra, suwak głośności działa. |
 | Awaria Firebase | Zablokuj dostęp do Firestore. | Moduł przechodzi na ustawienia lokalne, ale manifesty i tak się wczytują. |
 | Filtr SFX | Wpisz frazę w `searchInput`. | Lista SFX admina jest filtrowana. |
@@ -701,9 +762,8 @@ Admin mode is detected through the URL parameter:
 | File or directory | Responsibility |
 | --- | --- |
 | `Audio/index.html` | Full application: HTML, CSS, JS, Firebase config import, and Firebase module imports. |
-| `Audio/AudioManifestDemo.json` | Public (demo) tier manifest with ready URLs to intentionally public files. |
+| `Audio/AudioManifest.json` | Public (demo) tier manifest with ready URLs to intentionally public files. |
 | `Audio/worker/audio-gate.js` | Access gateway source (Cloudflare Worker) serving the protected manifest and signed file URLs. |
-| `Audio/tools/build-manifests.mjs` | Generator producing both manifests from the source spreadsheet. Mirrors the module's id logic. |
 | `Audio/config/firebase-config.js` | Firebase configuration for Audio settings. |
 | `../shared/access-gate.css` | Shared access-gate stylesheet, the same one used by `DataVault` and `GeneratorNPC`. |
 | `Audio/config/firebase-config.template.js` | Firebase configuration template. |
@@ -767,6 +827,8 @@ Admin header contains:
 Toolbar contains:
 
 - `reloadManifest` — reloads both manifests,
+- `unlockLibrary` — opens the access gate; the button is hidden (`hidden`) once `state.libraryUnlocked` is true,
+- `buildManifests` — the XLSX manifest builder (admin view only),
 - `addList` — creates a new favorite list,
 - `refreshFavorites` — manually refreshes favorite views.
 
@@ -849,8 +911,10 @@ Main `state` object contains:
 | `favoritesDoc` | `object|null` | Reference to `audio/favorites`. |
 | `usingFirestore` | `boolean` | Whether Firestore synchronization is active. |
 | `manifestReady` | `boolean` | Whether manifest loaded successfully. |
-| `session` | `object\|null` | Gateway token and its expiry. |
+| `session` | `object\|null` | Gateway token. `exp` is `null` for an unlimited token. |
 | `libraryUnlocked` | `boolean` | Whether the protected tier is loaded. |
+| `libraryError` | `string\|null` | Why the protected tier failed to load. |
+| `builder` | `object` | Manifest builder state: `{ status, publicCount, protectedCount, message }`. `status` is `idle`, `working`, `ready` or `error`. |
 | `userView` | `string` | Current user view: `main` or list. |
 | `activeFavoritesListId` | `string|null` | Active favorite list in user view. |
 | `tagTree` | `array` | Tag tree built from manifest. |
@@ -871,7 +935,7 @@ The library is split into two tiers with different access modes. Part of the mat
 
 | Tier | `access` | Manifest source | File source | Login |
 | --- | --- | --- | --- | --- |
-| Public (demo) | `"public"` | `AudioManifestDemo.json` in this repository | public `AudioExample` repository on GitHub Pages | no |
+| Public (demo) | `"public"` | `AudioManifest.json` in this repository | public `AudioExample` repository on GitHub Pages | no |
 | Protected (archive) | `"protected"` | gateway `/manifest` endpoint | private `AudioRPG` repository through the gateway | yes |
 
 Both lists are merged in `loadManifests()` and sorted together by `label`, so the user sees a single list.
@@ -884,12 +948,12 @@ The gateway adds the missing third state: the `AudioRPG` repository stays privat
 
 ## Manifests
 
-### `AudioManifestDemo.json`
+### `AudioManifest.json`
 
 The public tier manifest, always loaded:
 
 ```js
-fetch(DEMO_MANIFEST_URL, { cache: "no-store" })
+fetch(PUBLIC_MANIFEST_URL, { cache: "no-store" })
 ```
 
 Structure:
@@ -924,18 +988,45 @@ Same structure with two differences: `access` is `"protected"`, and variants car
 
 Both files are produced from the source spreadsheet `AudioManifest.xlsx`, which is **not part of this repository** — it belongs in the private repository because it lists the whole protected catalogue. A `.gitignore` entry blocks it from being added by accident.
 
-```text
-node Audio/tools/build-manifests.mjs <rows.json> <output-directory>
-```
+The builder runs **in the browser, in the admin panel**, behind the `buildManifests` button. The flow matches the data update in the `DataVault` module: an `<input type="file">` created on the fly, a local conversion, and two downloads through `Blob` and `URL.createObjectURL`.
 
-`rows.json` is an array of `{ NazwaSampla, NazwaPliku, LinkDoFolderu }` objects read from the spreadsheet.
+The key design decision: the builder is not a separate script but part of `index.html`, and it **uses the very same `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` and `normalizeUrl` functions the rest of the module uses**. The `id` is a slug of the label, and favourite lists, the main view and aliases in Firestore all store `id`. The earlier Node generator (`Audio/tools/build-manifests.mjs`) held copies of those functions and could drift from the module, which would break the link between saved lists and their sounds. It was removed for exactly that reason — one source of id logic instead of two.
 
-The generator produces:
+Step by step:
 
-- `AudioManifestDemo.json` → into this repository,
-- `audio-manifest.json` → into the root of the private `AudioRPG` repository.
+1. `pickLocalWorkbookFile()` — creates a hidden `<input type="file" accept=".xlsx">` and returns an `ArrayBuffer`. Returns `null` when the user cancels (both a `change` with no file and the `cancel` event).
+2. `ensureJSZip()` — loads JSZip from `cdn.jsdelivr.net` on first use. The library never loads in the user view. A failed attempt resets `jsZipPromise` so a later click can retry.
+3. `readXlsxSheet()` — a minimal XLSX reader: it unpacks `xl/sharedStrings.xml`, `xl/workbook.xml`, `xl/_rels/workbook.xml.rels` and the sheet named by the first `<sheet>` relationship. It handles cell types `s` (shared string), `inlineStr` and raw values. It returns `{ header, rows }` as positional arrays, **without collapsing columns by name** — a prerequisite for detecting duplicate headers.
+4. `resolveRequiredColumns()` — header validation.
+5. `buildManifestItems()` — variant grouping, identical to the manifest logic.
+6. `downloadJsonFile()` — writes the file; the second download is delayed by 150 ms because some browsers drop two downloads started in the same instant.
 
-**Critical constraint:** the generator carries copies of `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` and `normalizeUrl` from `index.html`. The `id` is a slug of the label, and favourite lists, the main view and aliases all store `id`. Letting these functions drift apart would break the link between saved lists and their sounds. Any change to the id logic must be made in both places at once and the result compared against the previous state.
+#### Header validation
+
+Required columns: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu` (the `BUILDER_REQUIRED_COLUMNS` constant).
+
+| Situation | Behaviour |
+| --- | --- |
+| Any required column absent | Error `builder_missing_columns`, the message names the missing columns. No file is produced. |
+| A required column present more than once | Error `builder_duplicate_columns`. The builder deliberately refuses to guess which column to use. |
+| Columns outside the required list | Ignored. Only the three indices returned by `resolveRequiredColumns()` are read. |
+| Any column order | Supported — binding goes by header name, not position. |
+| Sheet holds only a header | Error `builder_no_rows`. |
+| Protected variant without a path under `/AudioRPG/` | Error `builder_no_paths` with the variant count. Prevents shipping a manifest with unplayable entries. |
+
+Every error sets `state.builder.status = "error"`, turns the `builderStatus` pill red and shows an `alert()` with the full text. **No file is written on error.**
+
+#### Tier split
+
+The address in the `LinkDoFolderu` column decides:
+
+- contains `/AudioExample/` (the `BUILDER_PUBLIC_PREFIX` constant) → `access: "public"`, the variant gets a `url`,
+- otherwise → `access: "protected"`, the variant gets a `path` produced by cutting everything up to and including `/AudioRPG/`, then `decodeURIComponent`.
+
+The builder produces:
+
+- `AudioManifest.json` (indented, readable in a diff) → into the `Audio` folder of this repository,
+- `audio-manifest.json` (unindented, smaller transfer through the gateway) → into the root of the private `AudioRPG` repository.
 
 ## Access gateway (Cloudflare Worker)
 
@@ -964,9 +1055,11 @@ Secrets must never enter the repository. Set them in the Cloudflare dashboard or
 
 ### Session token
 
-Format: `base64url(JSON) + "." + base64url(HMAC-SHA256)`. The payload holds only `exp`. No database is needed — expiry plus signature is enough, and rotating `SIGNING_KEY` invalidates every session at once.
+Format: `base64url(JSON) + "." + base64url(HMAC-SHA256)`. The payload holds only `iat` — an issue-time marker that is never verified. No database is needed; the signature alone is enough.
 
-Lifetime: 30 days. The token is stored in `localStorage` under `audio.session`.
+**The session never expires**, exactly like in the `DataVault` module. The token carries no `exp` field and `/login` returns `exp: null`. The token is stored in `localStorage` under `audio.session` and lives until the browser data is cleared. The only way to invalidate every session at once is rotating the `SIGNING_KEY` secret in the Worker.
+
+Backwards compatibility: tokens issued before this change carry an `exp` field with a 30-day lifetime. `verifySessionToken()` still honours their expiry — an old token expires on its original schedule instead of being silently extended forever. Once it expires, the user enters the password once and receives an unlimited token.
 
 ### URL signing
 
@@ -1004,13 +1097,33 @@ An `<audio>` element cannot carry custom headers, so file authorisation travels 
 | --- | --- |
 | `AUDIO_GATE_BASE` | Gateway address. The place to change when the Worker moves. |
 | `AUDIO_SESSION_STORAGE_KEY` | The `audio.session` key in `localStorage`. |
-| `loadSession()` / `storeSession()` / `hasValidSession()` | Reading, writing and validating the token. |
+| `AUDIO_GATE_SKIPPED_KEY` | The `audio.gateSkipped` key in `sessionStorage`. Remembers a `Skip` click for the lifetime of one browser tab. |
+| `loadSession()` / `storeSession()` | Reading and writing the token in `localStorage`. |
+| `isSessionUsable(session)` / `hasValidSession()` | A session is valid when it has a token and either no `exp` (unlimited token) or an `exp` in the future (legacy 30-day token). |
 | `signedUrlCache` | Map of `path → { url, exp }`. Limits the number of `/sign` calls. |
 | `requestSignedUrl(path)` | Fetches a signature; on `401` clears the session and throws `gate_unauthorized`. |
 | `resolveVariantUrl(item, variant)` | Returns the final URL: from the manifest for `public`, from the gateway for `protected`. |
 | `showAccessGate()` / `hideAccessGate()` | Shows and hides the `#accessGate` overlay via the `hidden` attribute. |
-| `submitAccessLitany()` | Exchanges the password for a token, then reloads the manifests. |
-| `lockArchive()` | Clears the session and returns to the demo tier only. |
+| `submitAccessLitany()` | Exchanges the password for a token, then reloads the manifests. On `state.libraryError` the overlay stays open showing the reason. |
+| `maybeShowAccessGate()` | Opens the gate after start-up when there is no valid session and `Skip` was not clicked. Called from `.finally()` after `loadManifests()`. |
+| `isGateSkipped()` / `markGateSkipped()` / `skipAccessGate()` | Handling of the `Skip` button and the `Escape` key. |
+| `handleUnlockClick(message)` | Clears the skip marker and opens the gate, optionally with a custom message. |
+
+There is no archive-locking function. The lock button was removed as redundant: an unlocked archive is the target state, and access on a device is cleared by clearing the site data.
+
+### Gate behaviour
+
+| Event | Reaction |
+| --- | --- |
+| Module start without a valid session, `Skip` not clicked | The gate opens by itself once the manifests have loaded. |
+| `Skip` clicked or `Escape` pressed | The gate closes and `audio.gateSkipped=1` is written to `sessionStorage`. |
+| Page reload after `Skip` | The gate does not return — `sessionStorage` survives a reload. |
+| New browser tab | The gate returns — `sessionStorage` is per-tab. |
+| `Unlock archive` clicked | Clears `audio.gateSkipped` and opens the gate. |
+| A `(missing in manifest)` entry clicked while the archive is locked | `togglePlayback()` opens the gate with the `accessMissingItem` message. |
+| Session dies during playback | `startPlayback()` opens the gate with the `accessExpired` message. |
+
+The gate is a `position: fixed` overlay at `z-index: 9999`, so while it is open it covers the admin toolbar. That is deliberate — it is exactly how the gate behaves in the `DataVault` module.
 
 ## SFX model after manifest parsing
 
@@ -1266,7 +1379,7 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 | Missing `window.firebaseConfig` or `apiKey` | Module uses `localStorage` and displays local settings status. |
 | Missing Firestore document | Code creates default settings and saves them through `saveSettings()`. |
 | Damaged Firestore/localStorage settings | Normalizers create safe defaults. |
-| Missing `AudioManifestDemo.json` | Manifest status switches to load error. |
+| Missing `AudioManifest.json` | Manifest status switches to load error. |
 | Gateway unreachable with a valid session | The demo tier still loads; the archive stays locked. |
 | `401` from the gateway | The session is cleared and the overlay appears with the incomplete-Rite message. |
 | Exception from the Firebase SDK | The module falls back to local settings and **continues** loading the manifests. |
@@ -1279,7 +1392,7 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 
 ## Module recreation procedure
 
-1. Preserve `Audio/index.html`, `Audio/AudioManifestDemo.json`, `Audio/worker/audio-gate.js` and `Audio/tools/build-manifests.mjs`.
+1. Preserve `Audio/index.html`, `Audio/AudioManifest.json` and `Audio/worker/audio-gate.js`.
 2. Preserve `../shared/access-gate.css`.
 3. Keep the source spreadsheet `AudioManifest.xlsx` **outside this repository** and regenerate both manifests from it with the generator.
 4. Upload `audio-manifest.json` to the root of the private `AudioRPG` repository.
@@ -1303,12 +1416,21 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 | Admin start | Open `Audio/index.html?admin=1`. | Header, statuses, toolbar, tag panel, SFX list, favorites, and main view are visible. |
 | User start | Open `Audio/index.html`. | Only user view and navigation are visible. |
 | Manifest | Click `Load manifest`. | Status shows manifest item count. |
-| Start without login | Open the module with no valid session. | Only the demo tier is visible, the gate does not appear, status: `Archive: locked`. |
+| Start without login | Open the module with no valid session. | The gate opens by itself, showing `Skip` and `Begin the Rite`. |
+| Skipping the gate | Click `Skip`. | The overlay closes, only the demo tier is visible, status: `Archive: locked` (green pill). |
+| Skip persistence | Reload the page after `Skip`. | The gate does not return. It does return in a new browser tab. |
 | Empty password | Click `Begin the Rite` with an empty field. | Message about the Litany of Access not being recited. |
 | Wrong password | Enter a wrong password. | Message about the Litany of Access being rejected. |
 | Correct password | Enter the group password. | Overlay closes, the list fills with the archive, status: `Archive: unlocked`. |
-| Session persistence | Reload the page after unlocking. | The archive is still unlocked, with no password prompt. |
-| Locking | Click `Lock archive`. | The list returns to the demo tier only. |
+| Disappearing button | Unlock the archive. | The `Unlock archive` button disappears. There is no lock button anywhere. |
+| Session persistence | Reload the page after unlocking. | The archive is still unlocked, with no password prompt. The stored session has no `exp` field. |
+| Entry outside the manifest | With the archive locked, click a `(missing in manifest)` entry. | The gate opens with the `This sound is not part of the public tier…` message. |
+| Archive manifest unreachable | Enter the correct password while the gateway cannot see `audio-manifest.json`. | The overlay stays open showing the HTTP code, status: `Archive: load error` (red pill). |
+| Builder: valid workbook | In admin view click `Build manifests from XLSX` and select `AudioManifest.xlsx`. | The browser saves `AudioManifest.json` and `audio-manifest.json`, the pill shows the item counts. |
+| Builder: missing column | Select a workbook without the `LinkDoFolderu` column. | Message `Missing required columns: LinkDoFolderu`, no file is produced, the pill turns red. |
+| Builder: duplicate column | Select a workbook with two `NazwaSampla` columns. | Message about a column present more than once, no file is produced. |
+| Builder: extra columns | Select a workbook with extra columns in a different order. | The manifests are built correctly and the extra columns are ignored. |
+| Builder: id stability | Build the manifests from an unchanged workbook. | The files are identical to the ones in the repository — saved favourite lists still point at the same sounds. |
 | Protected sound | Play an archive item. | The module fetches a signature from `/sign`, the sound plays, the volume slider works. |
 | Firebase failure | Block access to Firestore. | The module falls back to local settings but still loads the manifests. |
 | SFX filter | Type phrase in `searchInput`. | Admin SFX list is filtered. |
