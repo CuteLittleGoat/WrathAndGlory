@@ -74,12 +74,17 @@ Bramka otwiera się też sama, gdy klikniesz na liście pozycję opisaną jako �
 | --- | --- | --- |
 | Rozgniewany Duch Maszyny odpowiada: Litania Dostępu nie została wypowiedziana. | Pole hasła było puste. | Wpisz hasło. |
 | Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona. | Hasło jest nieprawidłowe. | Sprawdź pisownię i spróbuj ponownie. |
-| Brak połączenia z bramką dostępu. Sprawdź internet oraz adres bramki w stałej AUDIO\_GATE\_BASE. | Bramka nie odpowiada. | Sprawdź internet. Jeżeli problem się powtarza, zgłoś adminowi technicznemu. |
+| Brak połączenia z bramką dostępu. Sprawdź internet oraz adres bramki w stałej AUDIO\_GATE\_BASE. | Przeglądarka w ogóle nie dodzwoniła się do bramki. | Sprawdź internet. Jeżeli problem się powtarza, zgłoś adminowi technicznemu. |
 | Sesja wygasła. Podaj hasło ponownie. | Bramka odrzuciła zapisany dostęp — najczęściej dlatego, że admin techniczny zmienił klucz podpisu. | Wpisz hasło ponownie. |
 | Ten dźwięk nie należy do warstwy publicznej. Odblokuj archiwum, aby go wczytać. | Kliknięto pozycję opisaną jako „(brak w manifeście)” przy zablokowanym archiwum. | Wpisz hasło albo kliknij `Pomiń`, jeżeli nie masz dostępu do archiwum. |
 | Bramka nie znalazła manifestu archiwum (HTTP 404)… | Hasło było poprawne, ale bramka nie widzi pliku manifestu. | Sprawdź, czy `audio-manifest.json` leży w katalogu głównym prywatnego repozytorium `AudioRPG` i czy nazwa zgadza się co do znaku. |
+| Nie udało się wczytać listy publicznej (HTTP 404)… | Hasło było poprawne, ale nie udało się pobrać pliku `AudioManifest.json`. **Najczęstsza przyczyna: przeglądarka trzyma starą wersję strony**, która szuka pliku pod nieaktualną nazwą. | Odśwież stronę z pominięciem pamięci podręcznej: `Ctrl+F5` (Windows) albo `Cmd+Shift+R` (Mac). Jeżeli to nie pomoże, sprawdź, czy `AudioManifest.json` jest w folderze `Audio`. |
+| Bramka dostępu odpowiedziała nieoczekiwanym kodem HTTP … | Bramka działa i odpowiedziała, ale odrzuciła samo logowanie. | Zgłoś adminowi technicznemu razem z kodem HTTP z komunikatu. |
+| Bramka dostępu odpowiedziała kodem HTTP … przy pobieraniu manifestu archiwum | Logowanie się udało, ale pobranie listy archiwum zwróciło błąd. | Zgłoś adminowi technicznemu razem z kodem HTTP z komunikatu. |
 
 Dwa pierwsze komunikaty dotyczą samego hasła i są napisane językiem lore, tak samo jak w module `DataVault`. Pozostałe to diagnostyka techniczna i mówią wprost, co sprawdzić.
+
+Komunikat „Brak połączenia z bramką dostępu” pojawia się **wyłącznie wtedy, gdy przeglądarka w ogóle nie dodzwoniła się do bramki**. Jeżeli bramka odpowiedziała, ale coś innego poszło nie tak, zobaczysz komunikat opisujący tę konkretną rzecz razem z kodem HTTP. Nie musisz więc zgadywać, czy problem jest w internecie, w bramce, czy w plikach.
 
 ## Widok użytkownika
 
@@ -484,7 +489,7 @@ W adminie widoczne są statusy:
 
 | Status | Znaczenie |
 | --- | --- |
-| Manifest | Informuje, ile pozycji zostało wczytanych. |
+| Manifest | Informuje, ile pozycji zostało wczytanych. Wartość `błąd listy publicznej` oznacza, że nie udało się pobrać pliku `AudioManifest.json`; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
 | Firebase | Informuje, czy moduł używa synchronizacji, czy ustawień lokalnych. |
 | Ulubione | Pokazuje liczbę list ulubionych. |
 | Archiwum | `zablokowane` — widać tylko warstwę demo. `odblokowane` — widać całą bibliotekę. `błąd wczytywania` — coś nie zadziałało; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
@@ -609,8 +614,13 @@ The gate also opens on its own when you click a list entry described as "missing
 | Session expired. Enter the password again. | The gateway rejected the stored access — usually because the technical admin rotated the signing key. | Enter the password again. |
 | This sound is not part of the public tier. Unlock the archive to load it. | You clicked an entry marked "missing from the manifest" while the archive was locked. | Enter the password, or click `Skip` if you have no archive access. |
 | The gateway could not find the archive manifest (HTTP 404)… | The password was correct but the gateway cannot see the manifest file. | Check that `audio-manifest.json` sits in the root of the private `AudioRPG` repository under exactly that name. |
+| Could not load the public list (HTTP 404)… | The password was correct but `AudioManifest.json` could not be fetched. **The most common cause: the browser is holding an old version of the page** that looks for the file under its previous name. | Reload the page bypassing the cache: `Ctrl+F5` (Windows) or `Cmd+Shift+R` (Mac). If that does not help, check that `AudioManifest.json` is in the `Audio` folder. |
+| The access gateway answered with an unexpected HTTP … | The gateway is running and answered, but it rejected the login itself. | Report it to your technical admin together with the HTTP code from the message. |
+| The access gateway answered with HTTP … while fetching the archive manifest | The login succeeded but fetching the archive list returned an error. | Report it to your technical admin together with the HTTP code from the message. |
 
 The first two messages concern the password itself and keep the lore wording, exactly as in the `DataVault` module. The rest are technical diagnostics and say plainly what to check.
+
+The "Cannot reach the access gateway" message appears **only when the browser failed to reach the gateway at all**. If the gateway answered but something else went wrong, you get a message describing that specific thing together with its HTTP code. You never have to guess whether the problem is your connection, the gateway, or the files.
 
 ## User view
 
@@ -1015,7 +1025,7 @@ Admin view shows statuses:
 
 | Status | Meaning |
 | --- | --- |
-| Manifest | How many items have been loaded. |
+| Manifest | How many items have been loaded. A `public list error` value means `AudioManifest.json` could not be fetched; hover the pill for the detail. |
 | Firebase | Whether the module uses synchronization or local settings. |
 | Favorites | Number of favorite lists. |
 | Archive | `locked` — only the demo tier is visible. `unlocked` — the whole library is visible. `load error` — something failed; hover the pill for the detail. |

@@ -620,6 +620,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - `background: rgba(255, 95, 95, 0.12)`.
 - Wszystkie trzy wartości pochodzą z palety modułu Audio udokumentowanej wyżej — tej samej, której używa aktywny `.loop-btn`. Do bramki nie wprowadzono żadnego koloru spoza tej palety.
 - Szczegół błędu trafia do atrybutu `title` pastylki, więc jest dostępny po najechaniu kursorem, bez zaśmiecania paska statusów.
+- Pastylka `#manifestStatus` również ma stan błędu: przy nieudanym pobraniu `AudioManifest.json` dostaje klasę `.status-pill.is-error` i tekst „Manifest: błąd listy publicznej”, a pełny komunikat trafia do atrybutu `title`. Zasada „czerwień wyłącznie dla błędów” jest zachowana — nieudane pobranie pliku jest awarią, a nie stanem poprawnym.
 - W pasku statusów admina jest też `#builderStatus` — stan generatora manifestów. Obowiązuje ta sama zasada kolorystyczna: zielono dla „gotowy”, „przetwarzanie pliku” i wyniku „N publicznych / M chronionych”, `.status-pill.is-error` wyłącznie dla stanu „Generator: błąd”. Pełna treść błędu trafia do atrybutu `title`.
 - Przycisk `#unlockLibrary` w toolbarze admina oraz `#unlockLibraryUser` w panelu nawigacji widoku użytkownika; oba używają standardowej klasy `.btn` i mają jedną, stałą etykietę „Odblokuj archiwum”.
 - **Przycisku blokowania nie ma.** Po odblokowaniu archiwum oba przyciski są ukrywane atrybutem `hidden`, zamiast zmieniać etykietę na „Zablokuj archiwum”. Odblokowane archiwum jest stanem docelowym, więc przycisk, który do niego prowadzi, przestaje być potrzebny.

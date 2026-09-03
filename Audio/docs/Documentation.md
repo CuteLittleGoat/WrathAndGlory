@@ -188,6 +188,7 @@ Główny obiekt `state` zawiera:
 | `session` | `object\|null` | Token bramki. `exp` ma wartość `null` dla tokenu bezterminowego. |
 | `libraryUnlocked` | `boolean` | Czy warstwa chroniona jest wczytana. |
 | `libraryError` | `string\|null` | Powód, dla którego warstwa chroniona się nie wczytała. |
+| `publicError` | `string\|null` | Powód, dla którego warstwa publiczna się nie wczytała. |
 | `builder` | `object` | Stan generatora manifestów: `{ status, publicCount, protectedCount, message }`. `status` przyjmuje `idle`, `working`, `ready` albo `error`. |
 | `userView` | `string` | Aktualny widok użytkownika: `main` albo lista. |
 | `activeFavoritesListId` | `string|null` | Aktywna lista ulubionych w widoku użytkownika. |
@@ -393,7 +394,7 @@ Element `<audio>` nie pozwala dołożyć własnych nagłówków, dlatego autoryz
 | `requestSignedUrl(path)` | Pobiera podpis; przy `401` czyści sesję i rzuca `gate_unauthorized`. |
 | `resolveVariantUrl(item, variant)` | Zwraca gotowy adres: z manifestu dla `public`, z bramki dla `protected`. |
 | `showAccessGate()` / `hideAccessGate()` | Pokazanie i ukrycie nakładki `#accessGate` atrybutem `hidden`. |
-| `submitAccessLitany()` | Wymiana hasła na token, po czym przeładowanie manifestów. Przy `state.libraryError` nakładka zostaje otwarta z powodem błędu. |
+| `submitAccessLitany()` | Wymiana hasła na token, po czym przeładowanie manifestów. Ma **dwa rozłączne bloki `try`**: pierwszy obejmuje wyłącznie żądanie `/login`, drugi wyłącznie `loadManifests()`. Przy `state.libraryError` albo `state.publicError` nakładka zostaje otwarta z powodem błędu. |
 | `maybeShowAccessGate()` | Otwiera bramkę po starcie, gdy nie ma ważnej sesji i nie kliknięto `Pomiń`. Wywoływane w `.finally()` po `loadManifests()`. |
 | `isGateSkipped()` / `markGateSkipped()` / `skipAccessGate()` | Obsługa przycisku `Pomiń` i klawisza `Escape`. |
 | `handleUnlockClick(message)` | Kasuje znacznik pominięcia i otwiera bramkę, opcjonalnie z własnym komunikatem. |
@@ -413,6 +414,36 @@ Nie ma funkcji blokującej archiwum. Przycisk blokowania został usunięty jako 
 | Wygaśnięcie sesji w trakcie odtwarzania | `startPlayback()` otwiera bramkę z komunikatem `accessExpired`. |
 
 Bramka jest nakładką `position: fixed` o `z-index: 9999`, więc dopóki jest otwarta, zasłania pasek narzędzi admina. To zachowanie celowe — dokładnie tak działa bramka w module `DataVault`.
+
+### Rozdział odpowiedzialności w komunikatach błędów
+
+Zasada: **komunikat musi wskazywać warstwę, która faktycznie zawiodła.** Wcześniej `submitAccessLitany()` miało jeden szeroki blok `try` obejmujący zarówno `fetch("/login")`, jak i `await loadManifests()`. Każdy wyjątek z wczytywania manifestów lądował w tej samej klauzuli `catch` i był raportowany jako `accessSilent`, czyli „brak połączenia z bramką dostępu, sprawdź adres w stałej AUDIO_GATE_BASE”. W efekcie awaria pliku `AudioManifest.json` kierowała diagnozę na bramkę, mimo że bramka odpowiadała bez zarzutu.
+
+Obecny podział:
+
+| Co zawiodło | Komunikat | Etykieta |
+| --- | --- | --- |
+| `fetch("/login")` rzucił wyjątek (sieć, CORS, zły adres) | „Brak połączenia z bramką dostępu…” | `accessSilent` |
+| `/login` odpowiedziało `401` | „…Litania Dostępu została odrzucona.” | `accessRejected` |
+| `/login` odpowiedziało innym kodem niż 200 i 401 | „Bramka odpowiedziała nieoczekiwanym kodem HTTP {status}…” | `accessLoginStatus` |
+| `/manifest` odpowiedziało `401` | „Sesja wygasła…” | `accessExpired` |
+| `/manifest` zwróciło `502 manifest_unavailable` | „Bramka nie znalazła manifestu archiwum (HTTP {status})…” | `accessManifestMissing` |
+| `/manifest` zwróciło inny błąd | „Bramka odpowiedziała kodem HTTP {status} przy pobieraniu manifestu archiwum.” | `accessGateStatus` |
+| `AudioManifest.json` nie dał się pobrać | „Nie udało się wczytać listy publicznej (HTTP {status})…” | `publicManifestMissing` |
+
+Każdy błąd HTTP niesie swój kod aż do komunikatu (pole `detail` na obiekcie `Error`), bo to właśnie kod odróżnia „plik pod złą nazwą” od „bramka padła”.
+
+### Niezależność warstw
+
+`loadManifests()` opakowuje **obie** warstwy we własne bloki `try`. Awaria którejkolwiek nie przerywa wczytywania drugiej:
+
+| Stan | Wynik |
+| --- | --- |
+| Warstwa publiczna padła, chroniona działa | Widać archiwum, `state.publicError` opisuje awarię, pastylka manifestu jest czerwona. |
+| Warstwa chroniona padła, publiczna działa | Widać warstwę demo, `state.libraryError` opisuje awarię, pastylka archiwum jest czerwona. |
+| Obie padły | `loadManifests()` rzuca wyjątek z konkretnym powodem zamiast ogólnego „brak danych”. |
+
+Wcześniej `fetchDemoManifest()` był wywoływany bez `try`, więc jego awaria wyrzucała wyjątek z `loadManifests()` i zabierała ze sobą całą bibliotekę — łącznie z archiwum, które wczytałoby się bez problemu.
 
 ## Model SFX po parsowaniu manifestu
 
@@ -668,7 +699,7 @@ Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher
 | Brak `window.firebaseConfig` albo `apiKey` | Moduł używa `localStorage` i pokazuje status lokalnych ustawień. |
 | Brak dokumentu Firestore | Kod tworzy domyślne ustawienia i zapisuje je przez `saveSettings()`. |
 | Uszkodzone ustawienia Firestore/localStorage | Normalizatory tworzą bezpieczne wartości domyślne. |
-| Brak `AudioManifest.json` | Manifest przechodzi w błąd wczytywania. |
+| Brak `AudioManifest.json` | `state.publicError` dostaje komunikat z kodem HTTP, pastylka manifestu przechodzi w stan błędu, a warstwa chroniona wczytuje się mimo to. |
 | Bramka niedostępna przy ważnej sesji | Warstwa demo ładuje się mimo to; archiwum pozostaje zablokowane. |
 | `401` z bramki | Sesja jest kasowana, pojawia się nakładka z komunikatem o nieukończonym Rytuale. |
 | Wyjątek z SDK Firebase | Moduł przechodzi na ustawienia lokalne i **kontynuuje** wczytywanie manifestów. |
@@ -715,6 +746,8 @@ Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher
 | Trwałość sesji | Przeładuj stronę po odblokowaniu. | Archiwum nadal odblokowane, bez pytania o hasło. Zapisana sesja nie ma pola `exp`. |
 | Kafelek spoza manifestu | Przy zablokowanym archiwum kliknij pozycję `(brak w manifeście)`. | Bramka otwiera się z komunikatem `Ten dźwięk nie należy do warstwy publicznej…`. |
 | Nieosiągalny manifest archiwum | Podaj poprawne hasło, gdy bramka nie widzi `audio-manifest.json`. | Nakładka zostaje otwarta z kodem HTTP, status: `Archiwum: błąd wczytywania` (pastylka czerwona). |
+| Nieosiągalna lista publiczna | Podaj poprawne hasło, gdy `AudioManifest.json` zwraca 404. | Komunikat mówi o **liście publicznej** i podpowiada `Ctrl+F5`; **nie** wspomina o bramce ani o `AUDIO_GATE_BASE`. Archiwum wczytuje się mimo to. |
+| Bramka odpowiada 500 przy logowaniu | Zasymuluj kod 500 na `/login`. | Komunikat podaje kod HTTP i mówi, że bramka działa, ale odrzuciła logowanie. |
 | Generator: poprawny arkusz | W adminie kliknij `Zbuduj manifesty z XLSX` i wskaż `AudioManifest.xlsx`. | Przeglądarka zapisuje `AudioManifest.json` i `audio-manifest.json`, pastylka pokazuje liczby pozycji. |
 | Generator: brak kolumny | Wskaż arkusz bez kolumny `LinkDoFolderu`. | Komunikat `Brak wymaganych kolumn: LinkDoFolderu`, żaden plik nie powstaje, pastylka czerwona. |
 | Generator: duplikat kolumny | Wskaż arkusz z dwiema kolumnami `NazwaSampla`. | Komunikat o kolumnie występującej więcej niż raz, żaden plik nie powstaje. |
@@ -929,6 +962,7 @@ Main `state` object contains:
 | `session` | `object\|null` | Gateway token. `exp` is `null` for an unlimited token. |
 | `libraryUnlocked` | `boolean` | Whether the protected tier is loaded. |
 | `libraryError` | `string\|null` | Why the protected tier failed to load. |
+| `publicError` | `string\|null` | Why the public tier failed to load. |
 | `builder` | `object` | Manifest builder state: `{ status, publicCount, protectedCount, message }`. `status` is `idle`, `working`, `ready` or `error`. |
 | `userView` | `string` | Current user view: `main` or list. |
 | `activeFavoritesListId` | `string|null` | Active favorite list in user view. |
@@ -1134,7 +1168,7 @@ An `<audio>` element cannot carry custom headers, so file authorisation travels 
 | `requestSignedUrl(path)` | Fetches a signature; on `401` clears the session and throws `gate_unauthorized`. |
 | `resolveVariantUrl(item, variant)` | Returns the final URL: from the manifest for `public`, from the gateway for `protected`. |
 | `showAccessGate()` / `hideAccessGate()` | Shows and hides the `#accessGate` overlay via the `hidden` attribute. |
-| `submitAccessLitany()` | Exchanges the password for a token, then reloads the manifests. On `state.libraryError` the overlay stays open showing the reason. |
+| `submitAccessLitany()` | Exchanges the password for a token, then reloads the manifests. It has **two disjoint `try` blocks**: the first covers only the `/login` request, the second only `loadManifests()`. On `state.libraryError` or `state.publicError` the overlay stays open showing the reason. |
 | `maybeShowAccessGate()` | Opens the gate after start-up when there is no valid session and `Skip` was not clicked. Called from `.finally()` after `loadManifests()`. |
 | `isGateSkipped()` / `markGateSkipped()` / `skipAccessGate()` | Handling of the `Skip` button and the `Escape` key. |
 | `handleUnlockClick(message)` | Clears the skip marker and opens the gate, optionally with a custom message. |
@@ -1154,6 +1188,36 @@ There is no archive-locking function. The lock button was removed as redundant: 
 | Session dies during playback | `startPlayback()` opens the gate with the `accessExpired` message. |
 
 The gate is a `position: fixed` overlay at `z-index: 9999`, so while it is open it covers the admin toolbar. That is deliberate — it is exactly how the gate behaves in the `DataVault` module.
+
+### Separation of concerns in error messages
+
+The rule: **a message must name the layer that actually failed.** `submitAccessLitany()` used to have a single wide `try` block covering both `fetch("/login")` and `await loadManifests()`. Any exception from manifest loading landed in that same `catch` clause and was reported as `accessSilent` — "cannot reach the access gateway, check the AUDIO_GATE_BASE constant". A failure of `AudioManifest.json` therefore pointed the diagnosis at the gateway even though the gateway was answering perfectly.
+
+The current split:
+
+| What failed | Message | Label |
+| --- | --- | --- |
+| `fetch("/login")` threw (network, CORS, wrong address) | "Cannot reach the access gateway…" | `accessSilent` |
+| `/login` answered `401` | "…the Litany of Access was rejected." | `accessRejected` |
+| `/login` answered with a status other than 200 and 401 | "The gateway answered with an unexpected HTTP {status}…" | `accessLoginStatus` |
+| `/manifest` answered `401` | "Session expired…" | `accessExpired` |
+| `/manifest` returned `502 manifest_unavailable` | "The gateway could not find the archive manifest (HTTP {status})…" | `accessManifestMissing` |
+| `/manifest` returned another error | "The gateway answered with HTTP {status} while fetching the archive manifest." | `accessGateStatus` |
+| `AudioManifest.json` could not be fetched | "Could not load the public list (HTTP {status})…" | `publicManifestMissing` |
+
+Every HTTP error carries its status all the way into the message (the `detail` field on the `Error` object), because the status is precisely what separates "file under the wrong name" from "the gateway is down".
+
+### Tier independence
+
+`loadManifests()` wraps **both** tiers in their own `try` blocks. A failure of either does not interrupt loading the other:
+
+| State | Result |
+| --- | --- |
+| Public tier failed, protected tier fine | The archive shows, `state.publicError` describes the failure, the manifest pill turns red. |
+| Protected tier failed, public tier fine | The demo tier shows, `state.libraryError` describes the failure, the archive pill turns red. |
+| Both failed | `loadManifests()` throws with the specific reason rather than a generic "no data". |
+
+Previously `fetchDemoManifest()` was called without a `try`, so its failure threw out of `loadManifests()` and took the whole library down with it — including the archive, which would have loaded fine.
 
 ## SFX model after manifest parsing
 
@@ -1409,7 +1473,7 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 | Missing `window.firebaseConfig` or `apiKey` | Module uses `localStorage` and displays local settings status. |
 | Missing Firestore document | Code creates default settings and saves them through `saveSettings()`. |
 | Damaged Firestore/localStorage settings | Normalizers create safe defaults. |
-| Missing `AudioManifest.json` | Manifest status switches to load error. |
+| Missing `AudioManifest.json` | `state.publicError` receives a message carrying the HTTP status, the manifest pill switches to its error state, and the protected tier still loads. |
 | Gateway unreachable with a valid session | The demo tier still loads; the archive stays locked. |
 | `401` from the gateway | The session is cleared and the overlay appears with the incomplete-Rite message. |
 | Exception from the Firebase SDK | The module falls back to local settings and **continues** loading the manifests. |
@@ -1456,6 +1520,8 @@ User language switcher is currently hidden with `language-switcher--hidden`.
 | Session persistence | Reload the page after unlocking. | The archive is still unlocked, with no password prompt. The stored session has no `exp` field. |
 | Entry outside the manifest | With the archive locked, click a `(missing in manifest)` entry. | The gate opens with the `This sound is not part of the public tier…` message. |
 | Archive manifest unreachable | Enter the correct password while the gateway cannot see `audio-manifest.json`. | The overlay stays open showing the HTTP code, status: `Archive: load error` (red pill). |
+| Public list unreachable | Enter the correct password while `AudioManifest.json` returns 404. | The message names the **public list** and suggests `Ctrl+F5`; it does **not** mention the gateway or `AUDIO_GATE_BASE`. The archive still loads. |
+| Gateway answers 500 on login | Simulate a 500 on `/login`. | The message carries the HTTP status and says the gateway is running but rejected the login. |
 | Builder: valid workbook | In admin view click `Build manifests from XLSX` and select `AudioManifest.xlsx`. | The browser saves `AudioManifest.json` and `audio-manifest.json`, the pill shows the item counts. |
 | Builder: missing column | Select a workbook without the `LinkDoFolderu` column. | Message `Missing required columns: LinkDoFolderu`, no file is produced, the pill turns red. |
 | Builder: duplicate column | Select a workbook with two `NazwaSampla` columns. | Message about a column present more than once, no file is produced. |

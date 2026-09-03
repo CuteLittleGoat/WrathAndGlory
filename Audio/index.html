@@ -888,6 +888,10 @@ const translations = {
           libraryUnlocked: "Archiwum: odblokowane",
           libraryError: "Archiwum: błąd wczytywania",
           accessSkipButton: "Pomiń",
+          manifestPublicError: "Manifest: błąd listy publicznej",
+          accessLoginStatus: "Bramka dostępu odpowiedziała nieoczekiwanym kodem HTTP {status}. Bramka działa, ale odrzuciła żądanie logowania.",
+          accessGateStatus: "Bramka dostępu odpowiedziała kodem HTTP {status} przy pobieraniu manifestu archiwum.",
+          publicManifestMissing: "Nie udało się wczytać listy publicznej (HTTP {status}). Sprawdź, czy plik {file} leży w folderze Audio. Jeżeli plik tam jest, odśwież stronę z pominięciem pamięci podręcznej (Ctrl+F5).",
           accessMissingItem: "Ten dźwięk nie należy do warstwy publicznej. Odblokuj archiwum, aby go wczytać.",
           buildManifests: "Zbuduj manifesty z XLSX",
           builderIdle: "Generator: gotowy",
@@ -987,6 +991,10 @@ const translations = {
           libraryUnlocked: "Archive: unlocked",
           libraryError: "Archive: load error",
           accessSkipButton: "Skip",
+          manifestPublicError: "Manifest: public list error",
+          accessLoginStatus: "The access gateway answered with an unexpected HTTP {status}. The gateway is running but rejected the login request.",
+          accessGateStatus: "The access gateway answered with HTTP {status} while fetching the archive manifest.",
+          publicManifestMissing: "Could not load the public list (HTTP {status}). Check that {file} sits in the Audio folder. If it does, reload the page bypassing the cache (Ctrl+F5).",
           accessMissingItem: "This sound is not part of the public tier. Unlock the archive to load it.",
           buildManifests: "Build manifests from XLSX",
           builderIdle: "Builder: ready",
@@ -1078,6 +1086,8 @@ const translations = {
       libraryUnlocked: false,
       // Powód, dla którego archiwum się nie wczytało / Why the archive failed to load
       libraryError: null,
+      // Powód, dla którego nie wczytała się warstwa publiczna / Why the public tier failed to load
+      publicError: null,
       // Stan generatora manifestów w panelu admina / Manifest builder state in the admin panel
       builder: { status: "idle", publicCount: 0, protectedCount: 0, message: "" },
       userView: "main",
@@ -1269,9 +1279,20 @@ const translations = {
 
     const updateStatus = () => {
       const t = translations[currentLanguage].labels;
-      manifestStatus.textContent = state.manifestReady
-        ? formatText(t.manifestReady, { count: state.items.length })
-        : t.manifestMissing;
+      // Awaria warstwy publicznej musi być widoczna nawet wtedy, gdy archiwum wczytało się
+      // poprawnie — inaczej brakujące 112 pozycji wyglądałoby jak normalny stan.
+      // A public tier failure must stay visible even when the archive loaded fine,
+      // otherwise 112 missing entries would look like a normal state.
+      if (state.publicError) {
+        manifestStatus.textContent = t.manifestPublicError;
+        manifestStatus.title = state.publicError;
+      } else {
+        manifestStatus.textContent = state.manifestReady
+          ? formatText(t.manifestReady, { count: state.items.length })
+          : t.manifestMissing;
+        manifestStatus.title = "";
+      }
+      manifestStatus.classList.toggle("is-error", Boolean(state.publicError));
       firebaseStatus.textContent = state.usingFirestore ? t.firebaseConnected : t.firebaseLocal;
       favoritesStatus.textContent = formatText(t.favoritesStatus, { count: state.favorites.lists.length });
       // Status biblioteki informuje, czy warstwa chroniona jest dostępna
@@ -2434,7 +2455,13 @@ const translations = {
     const fetchDemoManifest = async () => {
       const response = await fetch(PUBLIC_MANIFEST_URL, { cache: "no-store" });
       if (!response.ok) {
-        throw new Error(translations[currentLanguage].labels.manifestFetchError);
+        // Kod HTTP jedzie razem z błędem, bo to on mówi, co się stało: 404 znaczy,
+        // że plik leży pod inną nazwą albo jeszcze nie opublikował się na GitHub Pages.
+        // The HTTP status travels with the error because it names the cause: a 404 means
+        // the file sits under a different name or has not been published yet.
+        const error = new Error("public_manifest_unavailable");
+        error.detail = String(response.status);
+        throw error;
       }
       const data = await response.json();
       return Array.isArray(data?.items) ? data.items : [];
@@ -2467,7 +2494,9 @@ const translations = {
             throw parseError;
           }
         }
-        throw new Error("gate_error");
+        const error = new Error("gate_error");
+        error.detail = String(response.status);
+        throw error;
       }
       const data = await response.json();
       return Array.isArray(data?.items) ? data.items : [];
@@ -2490,7 +2519,24 @@ const translations = {
       if (manifestStatus) {
         manifestStatus.textContent = translations[currentLanguage].labels.manifestLoading;
       }
-      const demoItems = await fetchDemoManifest();
+      // Warstwa publiczna nie może już przewrócić całego wczytywania. Wcześniej jej
+      // awaria wylatywała wyjątkiem z loadManifests() i była raportowana jako awaria
+      // bramki, co kierowało diagnozę na zupełnie zły trop.
+      // The public tier can no longer take the whole load down. Its failure used to escape
+      // loadManifests() as an exception and got reported as a gateway failure, which sent
+      // the diagnosis down entirely the wrong path.
+      let demoItems = [];
+      state.publicError = null;
+      try {
+        demoItems = await fetchDemoManifest();
+      } catch (error) {
+        console.error(error);
+        const labels = translations[currentLanguage].labels;
+        state.publicError = error?.message === "public_manifest_unavailable"
+          ? formatText(labels.publicManifestMissing, { status: error.detail || "?", file: PUBLIC_MANIFEST_URL })
+          : labels.manifestFetchError;
+      }
+
       let protectedItems = [];
       state.libraryUnlocked = false;
       state.libraryError = null;
@@ -2514,6 +2560,8 @@ const translations = {
             state.libraryError = formatText(labels.accessManifestMissing, {
               status: error.detail || "?"
             });
+          } else if (error?.message === "gate_error") {
+            state.libraryError = formatText(labels.accessGateStatus, { status: error.detail || "?" });
           } else {
             state.libraryError = labels.accessSilent;
           }
@@ -2522,7 +2570,10 @@ const translations = {
 
       const items = demoItems.concat(protectedItems);
       if (!items.length) {
-        throw new Error(translations[currentLanguage].labels.manifestNoData);
+        // Jeżeli znamy powód, podajemy go zamiast ogólnego „brak danych”.
+        // When the reason is known, report it instead of a generic "no data".
+        const reason = state.publicError || state.libraryError;
+        throw new Error(reason || translations[currentLanguage].labels.manifestNoData);
       }
       applyItems(items);
       state.manifestReady = true;
@@ -3443,20 +3494,42 @@ const translations = {
       }
       if (accessError) accessError.textContent = "";
       try {
-        const response = await fetch(`${AUDIO_GATE_BASE}/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ password })
-        });
-        if (response.status === 401) {
-          if (accessError) accessError.textContent = labels.accessRejected;
-          return;
-        }
-        if (!response.ok) {
+        // KROK 1: samo logowanie. Ten blok obejmuje wyłącznie rozmowę z bramką, więc
+        // komunikat „brak połączenia z bramką” może się pojawić tylko wtedy, gdy bramka
+        // naprawdę zawiodła. Wcześniej ta sama klauzula catch łapała także błędy
+        // wczytywania manifestów i obwiniała za nie bramkę, przez co diagnoza szła
+        // w stronę stałej AUDIO_GATE_BASE, mimo że bramka działała bez zarzutu.
+        // STEP 1: the login itself. This block covers only the conversation with the
+        // gateway, so the "cannot reach the gateway" message can appear only when the
+        // gateway really failed. This same catch clause used to swallow manifest loading
+        // errors too and blamed the gateway for them, pointing the diagnosis at the
+        // AUDIO_GATE_BASE constant while the gateway was working perfectly well.
+        let data = null;
+        try {
+          const response = await fetch(`${AUDIO_GATE_BASE}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ password })
+          });
+          if (response.status === 401) {
+            if (accessError) accessError.textContent = labels.accessRejected;
+            return;
+          }
+          if (!response.ok) {
+            if (accessError) {
+              accessError.textContent = formatText(labels.accessLoginStatus, {
+                status: String(response.status)
+              });
+            }
+            return;
+          }
+          data = await response.json();
+        } catch (networkError) {
+          console.error(networkError);
           if (accessError) accessError.textContent = labels.accessSilent;
           return;
         }
-        const data = await response.json();
+
         // Bramka bezterminowa zwraca `exp: null`; nie zamieniamy tego na 0, bo zero
         // znaczyłoby „wygasł w 1970 roku” i sesja byłaby odrzucona przy pierwszym użyciu.
         // The unlimited gateway returns `exp: null`; we must not coerce that to 0, which
@@ -3465,20 +3538,34 @@ const translations = {
           token: data.token,
           exp: data.exp === null || data.exp === undefined ? null : Number(data.exp)
         });
-        await loadManifests();
+        // KROK 2: wczytanie list. Hasło jest już przyjęte, więc każdy błąd od tego
+        // miejsca dotyczy manifestów, a nie bramki.
+        // STEP 2: loading the lists. The password has been accepted, so every error from
+        // here on concerns the manifests rather than the gateway.
+        try {
+          await loadManifests();
+        } catch (manifestError) {
+          console.error(manifestError);
+          updateStatus();
+          if (accessError) {
+            accessError.textContent = state.publicError
+              || state.libraryError
+              || manifestError?.message
+              || labels.manifestNoData;
+          }
+          return;
+        }
         updateStatus();
-        // Hasło było poprawne, ale archiwum i tak się nie wczytało — nakładka zostaje
+        // Hasło było poprawne, ale któraś z list i tak się nie wczytała — nakładka zostaje
         // otwarta z konkretnym powodem, zamiast zamknąć się i udawać, że wszystko gra.
-        // The password was correct but the archive still failed to load: keep the overlay
-        // open with the actual reason instead of closing it and pretending all is well.
-        if (state.libraryError) {
-          if (accessError) accessError.textContent = state.libraryError;
+        // The password was correct but one of the lists still failed to load: keep the
+        // overlay open with the actual reason instead of pretending all is well.
+        const loadProblem = state.libraryError || state.publicError;
+        if (loadProblem) {
+          if (accessError) accessError.textContent = loadProblem;
           return;
         }
         hideAccessGate();
-      } catch (error) {
-        console.error(error);
-        if (accessError) accessError.textContent = labels.accessSilent;
       } finally {
         if (accessSubmit) {
           accessSubmit.disabled = false;
