@@ -26,6 +26,16 @@
 
 ## 2. Wniosek w jednym zdaniu
 
+> **Aktualizacja z 3 września 2026, po otrzymaniu zrzutu z zakładki „Sieć".**
+>
+> Przyczyna została ustalona: żądanie do `/login` jest przechwytywane przez filtr treści **Blue Coat / Symantec**, który zwraca własną stronę blokady z kodem **403** i komunikatem „bardzo wysoki poziom zagrożenia" wraz z odnośnikiem do `sitereview.bluecoat.com`. Strona blokady nie ma nagłówka `Access-Control-Allow-Origin`, więc przeglądarka odrzuca odpowiedź, `fetch()` rzuca wyjątkiem i moduł pokazuje komunikat o braku połączenia z bramką.
+>
+> Że to nie jest odpowiedź bramki, wiadomo na pewno: funkcja `handleLogin()` może zwrócić wyłącznie **200**, **400** albo **401**. Jedyne kody 403 w całym workerze znajdują się w `handleAudio()` i dotyczą wygasłego lub podrobionego podpisu pliku. Kod 403 na `/login` nie może więc pochodzić z bramki.
+>
+> Filtry klasy Blue Coat, Zscaler czy Netskope często blokują całą domenę `workers.dev`, ponieważ darmowe subdomeny Cloudflare bywają nadużywane do phishingu. Blokada dotyczy nazwy hosta, nie zawartości — nie da się jej obejść po stronie kodu strony.
+>
+> **Trafna okazała się hipoteza numer 2 z sekcji 5, a nie numer 1.** Sekcje 3–6 zachowuję w pierwotnym brzmieniu jako zapis toku diagnozy. Dalsza analiza wariantów naprawy została wstrzymana na prośbę użytkownika.
+
 Bramka, worker, sekrety, manifesty i kod modułu są sprawne — dowodzi tego działający telefon z kompletem 1346 pozycji — a błąd na PC oznacza, że **żądanie do bramki nie wychodzi z tej konkretnej przeglądarki**; najbardziej prawdopodobną przyczyną jest otwieranie strony spod innego adresu niż `https://cutelittlegoat.github.io` (kopia lokalna, `file://`, Live Server), na drugim miejscu blokada przez rozszerzenie lub antywirusa.
 
 Hasło **nie musi mieć 12 znaków** — w kodzie nie ma żadnej walidacji długości. Liczba 12 to moja rekomendacja z wcześniejszego przewodnika, nie wymóg techniczny.
