@@ -302,6 +302,21 @@ Generator produkuje:
 - `AudioManifest.json` (z wcięciami, czytelny w diffie) → do folderu `Audio` tego repozytorium,
 - `audio-manifest.json` (bez wcięć, mniejszy transfer przez bramkę) → do katalogu głównego repozytorium prywatnego `AudioRPG`.
 
+#### Stabilność identyfikatorów a kolejność wierszy
+
+`id` powstaje jako slug etykiety. Przy kolizji — ta sama etykieta w innym folderze — do slugu dopisywany jest **numer wiersza w arkuszu** (`${id}-${entry.rowIndex}`). W obecnym arkuszu dotyczy to 133 pozycji.
+
+Konsekwencja jest praktyczna i łatwa do przeoczenia: **wstawienie wiersza w środku arkusza przesuwa `rowIndex` wszystkich wierszy poniżej, a więc zmienia wszystkie identyfikatory kolizyjne poniżej punktu wstawienia.** Zapisane listy ulubionych, widok główny i aliasy przestają wtedy wskazywać te dźwięki.
+
+Pomiar na rzeczywistym arkuszu (1793 wiersze):
+
+| Operacja | Zmienione identyfikatory |
+| --- | --- |
+| Dopisanie wiersza na końcu | 0 |
+| Wstawienie tego samego wiersza w środku | 123 |
+
+Dlatego `README.md` instruuje, żeby nowe wiersze dopisywać wyłącznie na końcu arkusza. Gdyby kiedyś trzeba było znieść to ograniczenie, sufiks kolizyjny musiałby być wyznaczany z czegoś niezależnego od pozycji wiersza — na przykład ze ścieżki folderu.
+
 ## Bramka dostępu (Cloudflare Worker)
 
 Kod: `Audio/worker/audio-gate.js`. Wdrożenie: Worker `audio-gate` na koncie Cloudflare.
@@ -1027,6 +1042,21 @@ The builder produces:
 
 - `AudioManifest.json` (indented, readable in a diff) → into the `Audio` folder of this repository,
 - `audio-manifest.json` (unindented, smaller transfer through the gateway) → into the root of the private `AudioRPG` repository.
+
+#### Id stability and row order
+
+An `id` is a slug of the label. On a collision — the same label in a different folder — the **spreadsheet row number** is appended to the slug (`${id}-${entry.rowIndex}`). In the current spreadsheet this affects 133 entries.
+
+The consequence is practical and easy to miss: **inserting a row in the middle of the spreadsheet shifts the `rowIndex` of every row below it, and therefore changes every collision id below the insertion point.** Saved favourite lists, the main view and aliases then stop pointing at those sounds.
+
+Measured on the real spreadsheet (1793 rows):
+
+| Operation | Identifiers changed |
+| --- | --- |
+| Appending a row at the end | 0 |
+| Inserting the same row in the middle | 123 |
+
+This is why `README.md` instructs the user to append new rows only at the end. Should this constraint ever need lifting, the collision suffix would have to be derived from something independent of row position — the folder path, for instance.
 
 ## Access gateway (Cloudflare Worker)
 

@@ -251,6 +251,110 @@ Zasady:
 
 Gdy pojawi się którykolwiek z tych błędów, **żaden plik nie zostaje zapisany**. Nie ma ryzyka, że nadpiszesz dobrą listę uszkodzoną.
 
+## Dodawanie nowego dźwięku
+
+Dodanie dźwięku to zawsze te same cztery kroki. Jedyna różnica między dźwiękiem chronionym a publicznym to miejsce, w które wgrywasz plik, i adres, który wpisujesz w kolumnie `LinkDoFolderu`.
+
+### Dwie zasady, których złamanie boli
+
+Przeczytaj to zanim otworzysz arkusz.
+
+**1. Nowe wiersze dopisuj na samym końcu arkusza. Nigdy w środku.**
+
+Listy ulubionych, główny widok i aliasy zapisane w Firebase nie pamiętają nazw dźwięków, tylko ich identyfikatory. Gdy ta sama nazwa dźwięku powtarza się w różnych folderach, identyfikator jest rozróżniany numerem wiersza w arkuszu — w obecnej bibliotece dotyczy to **133 pozycji**. Wstawienie jednego wiersza w środku przesuwa numery wszystkich wierszy poniżej, a razem z nimi te identyfikatory.
+
+Sprawdzone na Twoim arkuszu: dopisanie wiersza na końcu zmienia **0** identyfikatorów, a wstawienie tego samego wiersza w środku zmienia **123**. Każdy z tych 123 dźwięków wypadłby z zapisanych list i pokazałby się jako „(brak w manifeście)”.
+
+**2. Nie zmieniaj `NazwaSampla` istniejącego dźwięku.**
+
+Identyfikator powstaje z tej nazwy, więc jej zmiana odwiązuje dźwięk od zapisanych list dokładnie tak samo. Jeżeli chcesz, żeby dźwięk wyświetlał się pod inną nazwą, użyj **aliasu** w panelu admina — alias zmienia to, co widać, i nie rusza identyfikatora.
+
+Zmiana `NazwaPliku` albo `LinkDoFolderu` istniejącego wiersza jest bezpieczna dla identyfikatora (zmienia tylko to, skąd moduł bierze plik i jakie dostaje tagi).
+
+### Krok 1 — wgraj plik audio
+
+Format: **`.ogg` albo `.mp3`**. Innych bramka nie wyda — plik w innym formacie po prostu się nie odtworzy.
+
+#### Wariant A — dźwięk chroniony
+
+Wgraj plik do **prywatnego repozytorium `AudioRPG`**, do folderu tematycznego, na przykład `TabletopAudio/Alien Starship SoundPad/`.
+
+#### Wariant B — dźwięk publiczny
+
+Wgraj plik do **publicznego repozytorium `AudioExample`**, na przykład do `WH40k_Boltgun/Boltgun/`.
+
+> **Dźwięki publiczne muszą leżeć właśnie w `AudioExample`, a nie na dowolnej innej stronie.** Są ku temu dwa niezależne powody. Po pierwsze, generator rozpoznaje warstwę publiczną po fragmencie `/AudioExample/` w adresie — plik spod innego adresu zostanie uznany za chroniony i budowanie manifestów zakończy się błędem. Po drugie, `AudioExample` leży pod tą samą domeną co sama aplikacja (`cutelittlegoat.github.io`), a plik audio z obcej domeny odtwarzałby się **bezgłośnie**, bez żadnego komunikatu o błędzie — to znana pułapka przeglądarek opisana w dokumentacji technicznej. Jeżeli kiedyś będziesz chciał hostować dźwięki publiczne gdzie indziej, daj znać: wymaga to zmiany w kodzie, a nie tylko w arkuszu.
+
+### Krok 2 — dopisz wiersz do `AudioManifest.xlsx`
+
+Otwórz arkusz i dopisz **na samym końcu** jeden wiersz na każdy plik audio.
+
+| Kolumna | Wariant A (chroniony) | Wariant B (publiczny) |
+| --- | --- | --- |
+| `NazwaSampla` | `Acid Attack` | `Bolter Reload Fast` |
+| `NazwaPliku` | `Alien_Starship-acid_attack.ogg` | `BolterReloadFast.ogg` |
+| `LinkDoFolderu` | `https://cutelittlegoat.github.io/AudioRPG/TabletopAudio/Alien Starship SoundPad` | `https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun` |
+
+Uwagi do kolumn:
+
+- `NazwaSampla` to nazwa, którą zobaczysz w module. Może zawierać spacje i polskie znaki.
+- `NazwaPliku` musi się zgadzać z nazwą pliku **co do znaku**, razem z rozszerzeniem i wielkością liter.
+- `LinkDoFolderu` to adres **folderu**, bez nazwy pliku na końcu. Bez ukośnika na końcu (choć nadmiarowy ukośnik nie zaszkodzi).
+
+> Przy wariancie A adres z kolumny `LinkDoFolderu` nigdzie nie prowadzi — repozytorium `AudioRPG` jest prywatne i nie ma opublikowanej strony. Ten adres służy wyłącznie generatorowi: wycina z niego ścieżkę do pliku wewnątrz repozytorium i buduje tagi. Wpisujesz go w tej formie tylko dlatego, że tak wygląda cały arkusz.
+
+Kolumny nadmiarowe w arkuszu możesz zostawić — generator ich nie czyta.
+
+### Krok 3 — zbuduj manifesty
+
+Otwórz moduł w widoku admina, kliknij `Zbuduj manifesty z XLSX` i wskaż zapisany arkusz. Szczegóły opisuje sekcja [Budowanie manifestów z pliku XLSX](#budowanie-manifestów-z-pliku-xlsx).
+
+W okienku podsumowania sprawdź liczby: powinny wzrosnąć dokładnie o tyle pozycji, ile dodałeś.
+
+### Krok 4 — skopiuj wygenerowane pliki
+
+| Plik | Dokąd |
+| --- | --- |
+| `AudioManifest.json` | do folderu `Audio` w repozytorium `WrathAndGlory` |
+| `audio-manifest.json` | do katalogu głównego prywatnego repozytorium `AudioRPG` |
+
+**Kopiuj zawsze oba pliki**, nawet jeżeli dodałeś dźwięk tylko do jednej warstwy. Generator za każdym razem buduje obie listy od zera z całego arkusza, więc podmiana tylko jednego pliku rozjechałaby je względem siebie.
+
+Po wysłaniu zmian odśwież moduł. Nowy dźwięk powinien być widoczny na liście.
+
+### Skąd się biorą tagi
+
+Tagów nie wpisujesz ręcznie — powstają automatycznie ze ścieżki folderu w kolumnie `LinkDoFolderu`. Każdy fragment ścieżki to jeden poziom drzewa tagów.
+
+Przykład wariantu B: adres `.../AudioExample/WH40k_Boltgun/Boltgun` daje tagi `AudioExample` → `WH40k Boltgun` → `Boltgun`.
+
+Trzy reguły przy zamianie ścieżki na tagi:
+
+- fragment `AudioRPG` jest pomijany — dlatego dźwięki chronione zaczynają drzewo od `TabletopAudio`, a nie od nazwy repozytorium,
+- z nazw folderów wycinane są słowa `SoundPad` i `Patreon` (stąd `Alien Starship SoundPad` daje tag `Alien Starship`),
+- podkreślniki i myślniki zamieniają się w spacje (stąd `WH40k_Boltgun` daje tag `WH40k Boltgun`).
+
+Praktyczny wniosek: **jeżeli chcesz, żeby nowy dźwięk trafił pod istniejący tag, wgraj go do folderu, który już istnieje.** Nowy folder to nowy tag.
+
+### Kilka plików jako jedna pozycja
+
+Jeżeli chcesz, żeby kilka plików było jednym dźwiękiem, z którego moduł losuje przy każdym odtworzeniu (na przykład pięć wersji uderzenia), nadaj im **tę samą nazwę zakończoną numerem** i umieść w **tym samym folderze**:
+
+```text
+Bolter Projectile Impact Rock 01
+Bolter Projectile Impact Rock 02
+Bolter Projectile Impact Rock 03
+```
+
+Generator złoży je w jedną pozycję `Bolter Projectile Impact Rock` z licznikiem `(3)`. Warunek: co najmniej dwa takie wiersze w tym samym folderze. Pojedynczy dźwięk z numerem na końcu nazwy zostanie osobną pozycją i zachowa numer w nazwie.
+
+### Sprawdzenie po dodaniu
+
+1. Odśwież moduł i kliknij `Wczytaj manifest` — status powinien pokazać większą liczbę pozycji.
+2. Znajdź nowy dźwięk wyszukiwarką i odtwórz go.
+3. Przy dźwięku chronionym: jeżeli nie gra, sprawdź, czy plik naprawdę leży w `AudioRPG` pod ścieżką wynikającą z `LinkDoFolderu` i `NazwaPliku`, i czy rozszerzenie to `.ogg` albo `.mp3`.
+4. Sprawdź, czy Twoje dotychczasowe listy ulubionych wyglądają normalnie. Gdyby pojawiło się w nich dużo pozycji „(brak w manifeście)”, to znak, że wiersz trafił w środek arkusza zamiast na koniec — cofnij zmianę w arkuszu, przenieś wiersz na koniec i zbuduj manifesty ponownie.
+
 ## Lista SFX w adminie
 
 Po wczytaniu manifestu zobaczysz listę dźwięków.
@@ -677,6 +781,110 @@ Rules:
 | Could not load the JSZip library from the CDN… | The builder needs a one-off download of the library that unpacks the workbook. | Check your internet connection and click the button again. |
 
 When any of these errors appears, **no file is saved**. There is no risk of overwriting a good list with a broken one.
+
+## Adding a new sound
+
+Adding a sound is always the same four steps. The only difference between a protected and a public sound is where you upload the file and what you write in the `LinkDoFolderu` column.
+
+### Two rules worth reading first
+
+Read these before you open the spreadsheet.
+
+**1. Add new rows at the very end of the sheet. Never in the middle.**
+
+Favorite lists, the main view and aliases saved in Firebase do not remember sound names, only their identifiers. When the same sound name repeats across different folders, the identifier is disambiguated by the row number in the spreadsheet — in the current library that affects **133 entries**. Inserting one row in the middle shifts the numbering of every row below it, and those identifiers along with it.
+
+Verified on your own spreadsheet: appending a row at the end changes **0** identifiers, while inserting the same row in the middle changes **123**. Each of those 123 sounds would drop out of saved lists and show up as "(missing in manifest)".
+
+**2. Do not change the `NazwaSampla` of an existing sound.**
+
+The identifier is derived from that name, so changing it unbinds the sound from saved lists in exactly the same way. If you want a sound displayed under a different name, use an **alias** in the admin panel — an alias changes what you see and leaves the identifier alone.
+
+Changing `NazwaPliku` or `LinkDoFolderu` on an existing row is safe for the identifier (it only changes where the module fetches the file from and which tags it gets).
+
+### Step 1 — upload the audio file
+
+Format: **`.ogg` or `.mp3`**. The gateway serves nothing else — a file in another format simply will not play.
+
+#### Option A — protected sound
+
+Upload the file to the **private `AudioRPG` repository**, into a thematic folder, for example `TabletopAudio/Alien Starship SoundPad/`.
+
+#### Option B — public sound
+
+Upload the file to the **public `AudioExample` repository**, for example into `WH40k_Boltgun/Boltgun/`.
+
+> **Public sounds must live in `AudioExample` and not on some other website.** There are two independent reasons. First, the builder recognises the public tier by the `/AudioExample/` fragment in the address — a file from any other address is treated as protected and the build fails with an error. Second, `AudioExample` sits on the same domain as the application itself (`cutelittlegoat.github.io`), and an audio file from a foreign domain would play **silently**, with no error message at all — a known browser trap described in the technical documentation. If you ever want to host public sounds elsewhere, say so: that needs a code change, not just a spreadsheet change.
+
+### Step 2 — add a row to `AudioManifest.xlsx`
+
+Open the spreadsheet and add **at the very end** one row per audio file.
+
+| Column | Option A (protected) | Option B (public) |
+| --- | --- | --- |
+| `NazwaSampla` | `Acid Attack` | `Bolter Reload Fast` |
+| `NazwaPliku` | `Alien_Starship-acid_attack.ogg` | `BolterReloadFast.ogg` |
+| `LinkDoFolderu` | `https://cutelittlegoat.github.io/AudioRPG/TabletopAudio/Alien Starship SoundPad` | `https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun` |
+
+Notes on the columns:
+
+- `NazwaSampla` is the name you will see in the module. Spaces and non-ASCII characters are fine.
+- `NazwaPliku` must match the file name **character for character**, including the extension and letter case.
+- `LinkDoFolderu` is the address of the **folder**, without the file name at the end. No trailing slash (though a stray one does no harm).
+
+> With Option A the address in `LinkDoFolderu` leads nowhere — the `AudioRPG` repository is private and has no published site. That address serves the builder only: it cuts the in-repository file path out of it and builds the tags from it. You write it in this form purely because that is how the whole spreadsheet looks.
+
+You can leave any extra columns in the sheet — the builder does not read them.
+
+### Step 3 — build the manifests
+
+Open the module in admin view, click `Build manifests from XLSX` and select the saved spreadsheet. The details are in [Building the manifests from an XLSX file](#building-the-manifests-from-an-xlsx-file).
+
+Check the counts in the summary box: they should grow by exactly the number of entries you added.
+
+### Step 4 — copy the generated files
+
+| File | Where |
+| --- | --- |
+| `AudioManifest.json` | into the `Audio` folder of the `WrathAndGlory` repository |
+| `audio-manifest.json` | into the root of the private `AudioRPG` repository |
+
+**Always copy both files**, even when you added a sound to only one tier. The builder rebuilds both lists from scratch out of the whole spreadsheet every time, so replacing just one of them would leave the two out of step.
+
+After pushing the changes, refresh the module. The new sound should appear in the list.
+
+### Where the tags come from
+
+You never type tags — they are derived automatically from the folder path in `LinkDoFolderu`. Each path segment becomes one level of the tag tree.
+
+Option B example: the address `.../AudioExample/WH40k_Boltgun/Boltgun` yields the tags `AudioExample` → `WH40k Boltgun` → `Boltgun`.
+
+Three rules apply when turning a path into tags:
+
+- the `AudioRPG` segment is dropped — which is why protected sounds start their tree at `TabletopAudio` rather than at the repository name,
+- the words `SoundPad` and `Patreon` are stripped from folder names (so `Alien Starship SoundPad` yields the tag `Alien Starship`),
+- underscores and hyphens turn into spaces (so `WH40k_Boltgun` yields the tag `WH40k Boltgun`).
+
+The practical consequence: **if you want a new sound to land under an existing tag, upload it into a folder that already exists.** A new folder means a new tag.
+
+### Several files as one entry
+
+If you want several files to act as a single sound the module picks from at random on each playback (five versions of an impact, say), give them **the same name ending in a number** and put them in **the same folder**:
+
+```text
+Bolter Projectile Impact Rock 01
+Bolter Projectile Impact Rock 02
+Bolter Projectile Impact Rock 03
+```
+
+The builder folds them into one entry, `Bolter Projectile Impact Rock`, with a `(3)` counter. The condition is at least two such rows in the same folder. A single sound with a trailing number stays its own entry and keeps the number in its name.
+
+### Checking your work
+
+1. Refresh the module and click `Load manifest` — the status should show a higher item count.
+2. Find the new sound with the search box and play it.
+3. For a protected sound: if it does not play, check that the file really sits in `AudioRPG` under the path implied by `LinkDoFolderu` and `NazwaPliku`, and that the extension is `.ogg` or `.mp3`.
+4. Check that your existing favorite lists still look normal. If a lot of "(missing in manifest)" entries appear in them, the row landed in the middle of the spreadsheet instead of at the end — undo the spreadsheet change, move the row to the end and build the manifests again.
 
 ## Admin SFX list
 
