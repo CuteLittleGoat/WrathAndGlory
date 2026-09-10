@@ -13,6 +13,7 @@ Służy jako centrum uruchamiania pozostałych modułów. Z jednego miejsca moż
 - Mapy,
 - Obrazków,
 - Rejestru światów systemu Gilead,
+- Interaktywnej mapy galaktyki,
 - a w trybie admina także do Generatora Nazw, Generatora NPC i Audio.
 
 ## Jak otworzyć
@@ -44,6 +45,7 @@ W trybie standardowym zobaczysz:
 - przycisk `Mapa`,
 - przycisk `Kalkulator`,
 - przycisk `Rzut kośćmi`,
+- mały czerwony przycisk `Galaktyka` w lewym dolnym rogu panelu,
 - mały czerwony przycisk `Gilead` w prawym dolnym rogu panelu.
 
 To jest najprostszy widok dla gracza albo prowadzącego, który nie potrzebuje paneli administracyjnych.
@@ -78,6 +80,7 @@ W trybie admina link `Skarbiec Danych` otwiera DataVault z parametrem:
 | `Mapa` | Otwiera zewnętrzny link do mapy w nowej karcie. |
 | `Kalkulator` | Otwiera moduł kalkulatorów. |
 | `Rzut kośćmi` | Otwiera DiceRoller. |
+| `Galaktyka` | Otwiera w nowej karcie stronę `Main/Galaktyka.html` z interaktywną mapą galaktyki. |
 | `Gilead` | Otwiera w nowej karcie stronę `Main/Gilead.html` z rejestrem światów systemu Gilead. |
 
 ## Przycisk Gilead
@@ -93,6 +96,24 @@ Main/Gilead.html
 ```
 
 Jest to rejestr światów systemu Gilead. Karta z Main pozostaje otwarta, więc możesz do niej wrócić bez ponownego uruchamiania launchera.
+
+Jeżeli po kliknięciu nic się nie dzieje, prawdopodobnie przeglądarka zablokowała nową kartę — zezwól na wyskakujące okna dla tej strony albo kliknij przycisk prawym przyciskiem myszy i wybierz otwarcie w nowej karcie.
+
+## Przycisk Galaktyka
+
+W lewym dolnym rogu panelu, naprzeciwko przycisku `Gilead`, znajduje się mały czerwony przycisk `Galaktyka`.
+
+Oba przyciski wyglądają tak samo i leżą w tej samej linii, przy przeciwległych krawędziach panelu.
+
+Jest widoczny zarówno w widoku standardowym, jak i w widoku admina.
+
+Po kliknięciu otwiera się **nowa karta przeglądarki** ze stroną:
+
+```text
+Main/Galaktyka.html
+```
+
+Jest to interaktywna mapa galaktyki. Karta z Main pozostaje otwarta, więc możesz do niej wrócić bez ponownego uruchamiania launchera.
 
 Jeżeli po kliknięciu nic się nie dzieje, prawdopodobnie przeglądarka zablokowała nową kartę — zezwól na wyskakujące okna dla tej strony albo kliknij przycisk prawym przyciskiem myszy i wybierz otwarcie w nowej karcie.
 
@@ -134,7 +155,7 @@ Większość modułów otwiera się w tej samej karcie.
 
 `Mapa` i `Obrazki` otwierają się w nowej karcie, ponieważ są linkami zewnętrznymi.
 
-`Gilead` również otwiera się w nowej karcie, aby launcher pozostał dostępny podczas przeglądania rejestru światów.
+`Gilead` i `Galaktyka` również otwierają się w nowej karcie, aby launcher pozostał dostępny podczas przeglądania rejestru światów i mapy galaktyki.
 
 ## Czyszczenie starych Service Workerów
 
@@ -160,6 +181,7 @@ albo wyczyść dane strony w przeglądarce.
 | Infoczytnik otwiera inny ekran niż oczekiwano | Tryb standardowy i admin prowadzą do innych punktów Infoczytnika. | Użyj `Main/index.html?admin=1`, jeśli potrzebujesz wyboru GM/test/produkcja. |
 | Skarbiec Danych nie pokazuje panelu admina | Otwarty jest zwykły link DataVault. | Otwórz Main w trybie admina albo dopisz `?admin=1` w DataVault. |
 | `Gilead` nie otwiera nowej karty | Przeglądarka blokuje otwieranie nowych kart. | Zezwól na wyskakujące okna dla strony albo otwórz link ręcznie w nowej karcie. |
+| `Galaktyka` nie otwiera nowej karty | Przeglądarka blokuje otwieranie nowych kart. | Zezwól na wyskakujące okna dla strony albo otwórz link ręcznie w nowej karcie. |
 
 ## Krótki workflow
 
@@ -186,6 +208,7 @@ It is the launch center for other modules. From one place you can open:
 - Map,
 - Images,
 - Gilead system world registry,
+- interactive galaxy map,
 - and, in admin mode, Name Generator, NPC Generator, and Audio.
 
 ## How to open
@@ -217,6 +240,7 @@ In standard mode you will see:
 - `Map` button,
 - `Calculator` button,
 - `DiceRoller` button,
+- small red `Galaktyka` button in the bottom-left corner of the panel,
 - small red `Gilead` button in the bottom-right corner of the panel.
 
 This is the simplest view for a player or GM who does not need administrative panels.
@@ -251,6 +275,7 @@ In admin mode, `DataVault` opens DataVault with parameter:
 | `Map` | Opens an external map link in a new tab. |
 | `Calculator` | Opens calculator module. |
 | `DiceRoller` | Opens DiceRoller. |
+| `Galaktyka` | Opens `Main/Galaktyka.html`, the interactive galaxy map, in a new tab. |
 | `Gilead` | Opens `Main/Gilead.html`, the Gilead system world registry, in a new tab. |
 
 ## Gilead button
@@ -266,6 +291,24 @@ Main/Gilead.html
 ```
 
 This is the Gilead system world registry. The Main tab stays open, so you can return to it without restarting the launcher.
+
+If nothing happens after clicking, the browser probably blocked the new tab — allow pop-ups for this page, or right-click the button and open it in a new tab manually.
+
+## Galaktyka button
+
+A small red `Galaktyka` button sits in the bottom-left corner of the panel, opposite the `Gilead` button.
+
+Both buttons look the same and share one line, each at its own edge of the panel.
+
+It is visible both in standard view and in admin view.
+
+Clicking it opens a **new browser tab** with page:
+
+```text
+Main/Galaktyka.html
+```
+
+This is the interactive galaxy map. The Main tab stays open, so you can return to it without restarting the launcher.
 
 If nothing happens after clicking, the browser probably blocked the new tab — allow pop-ups for this page, or right-click the button and open it in a new tab manually.
 
@@ -307,7 +350,7 @@ Most modules open in the same tab.
 
 `Map` and `Images` open in a new tab because they are external links.
 
-`Gilead` also opens in a new tab, so the launcher stays available while you browse the world registry.
+`Gilead` and `Galaktyka` also open in a new tab, so the launcher stays available while you browse the world registry and the galaxy map.
 
 ## Old Service Worker cleanup
 
@@ -333,6 +376,7 @@ or clear site data in the browser.
 | Infoczytnik opens a different screen than expected | Standard and admin modes link to different Infoczytnik entry points. | Use `Main/index.html?admin=1` if you need GM/test/production selection. |
 | DataVault does not show admin panel | Normal DataVault link is open. | Open Main in admin mode or add `?admin=1` in DataVault. |
 | `Gilead` does not open a new tab | Browser blocks new tabs. | Allow pop-ups for the page or open the link manually in a new tab. |
+| `Galaktyka` does not open a new tab | Browser blocks new tabs. | Allow pop-ups for the page or open the link manually in a new tab. |
 
 ## Quick workflow
 

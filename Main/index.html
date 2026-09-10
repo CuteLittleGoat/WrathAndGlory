@@ -114,17 +114,23 @@
       background: rgba(22, 198, 12, 0.22);
     }
 
-    /* Pasek pod siatką modułów, dosuwający przycisk "Gilead" do prawego dolnego rogu panelu /
-       Bar below the module grid that pins the "Gilead" button to the bottom-right corner of the panel */
+    /* Pasek pod siatką modułów rozsuwający dwa przyciski CTA do przeciwległych dolnych rogów panelu:
+       "Galaktyka" do lewego, "Gilead" do prawego (układ lustrzany) /
+       Bar below the module grid that pushes the two CTA buttons to opposite bottom corners of the panel:
+       "Galaktyka" to the left one, "Gilead" to the right one (mirrored layout) */
     .secretCtaWrap {
       width: 100%;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
       margin-top: 4px;
     }
 
-    /* Czerwony wariant CTA "pill" — wyjątek kolorystyczny wyróżniający przycisk na tle zielonej nawigacji /
-       Red "pill" CTA variant — color exception that highlights the button against the green navigation */
+    /* Czerwony wariant CTA "pill" wspólny dla przycisków "Galaktyka" i "Gilead" — wyjątek kolorystyczny
+       wyróżniający je na tle zielonej nawigacji /
+       Red "pill" CTA variant shared by the "Galaktyka" and "Gilead" buttons — color exception that
+       highlights them against the green navigation */
     .btn.secretCta {
       width: auto;
       border-color: #ff3b30;
@@ -205,9 +211,14 @@
         <a class="btn" href="../DiceRoller/index.html">Rzut kośćmi</a>
       </div>
     </div>
-    <!-- Przycisk "Gilead" w prawym dolnym rogu panelu: otwiera rejestr światów Main/Gilead.html w nowej karcie /
-         "Gilead" button in the bottom-right corner of the panel: opens the world registry Main/Gilead.html in a new tab -->
+    <!-- Para przycisków w dolnych rogach panelu, oba otwierane w nowej karcie:
+         "Galaktyka" (lewy róg) otwiera mapę galaktyki Main/Galaktyka.html,
+         "Gilead" (prawy róg) otwiera rejestr światów Main/Gilead.html /
+         Pair of buttons in the bottom corners of the panel, both opened in a new tab:
+         "Galaktyka" (left corner) opens the galaxy map Main/Galaktyka.html,
+         "Gilead" (right corner) opens the world registry Main/Gilead.html -->
     <div class="secretCtaWrap">
+      <a class="btn secretCta" href="Galaktyka.html" target="_blank" rel="noopener noreferrer">Galaktyka</a>
       <a class="btn secretCta" href="Gilead.html" target="_blank" rel="noopener noreferrer">Gilead</a>
     </div>
   </main>

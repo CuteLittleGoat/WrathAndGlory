@@ -43,6 +43,7 @@ Tryb admina jest wykrywany po parametrze `admin=1` w query stringu.
 | --- | --- |
 | `Main/index.html` | Pełna aplikacja Main: HTML, CSS i JavaScript. |
 | `Main/Gilead.html` | Samodzielna strona z rejestrem światów systemu Gilead, otwierana przyciskiem `Gilead`. |
+| `Main/Galaktyka.html` | Samodzielna strona z interaktywną mapą galaktyki, otwierana przyciskiem `Galaktyka`. |
 | `Main/ZmienneHiperlacza.md` | Źródło dynamicznych linków `Mapa` i `Obrazki`. |
 | `Main/wrath-glory-logo-warhammer.png` | Logo wyświetlane na stronie startowej. |
 | `Main/docs/README.md` | Instrukcja użytkownika. |
@@ -79,8 +80,8 @@ Najważniejsze elementy:
 | `.actions` | Siatka przycisków modułów. |
 | `.stack` | Kontener pojedynczego przycisku i opcjonalnej notatki. |
 | `.btn` | Wspólna klasa przycisków/linków. |
-| `.secretCtaWrap` | Pasek pod siatką `.actions`, wyrównujący CTA do prawej krawędzi panelu. |
-| `.btn.secretCta` | Czerwony wariant CTA typu „pill” użyty przez link `Gilead`. |
+| `.secretCtaWrap` | Pasek pod siatką `.actions`, rozsuwający dwa przyciski CTA do lewej i prawej krawędzi panelu. |
+| `.btn.secretCta` | Czerwony wariant CTA typu „pill” użyty przez linki `Galaktyka` i `Gilead`. |
 | `.note` | Krótka notatka pomocnicza. |
 | `[data-admin-only="true"]` | Element widoczny tylko w trybie admina. |
 | `[data-infoczytnik-link]` | Link Infoczytnika przełączany zależnie od trybu. |
@@ -100,6 +101,7 @@ Najważniejsze elementy:
 | `Mapa` | Link dynamiczny z `Main/ZmienneHiperlacza.md`. |
 | `Kalkulator` | `../Kalkulator/`. |
 | `Rzut kośćmi` | `../DiceRoller/index.html`. |
+| `Galaktyka` | `Galaktyka.html` otwierany w nowej karcie (`target="_blank"`). |
 | `Gilead` | `Gilead.html` otwierany w nowej karcie (`target="_blank"`). |
 
 ### Przyciski widoczne tylko w trybie admina
@@ -228,24 +230,26 @@ rel="noopener noreferrer"
 
 Otwierają się w nowej karcie i nie przekazują kontroli przez `window.opener`.
 
-## Przycisk `Gilead`
+## Przyciski `Galaktyka` i `Gilead`
 
-Pod siatką `.actions`, jako ostatni element kontenera `main`, znajduje się osobny pasek CTA:
+Pod siatką `.actions`, jako ostatni element kontenera `main`, znajduje się osobny pasek CTA z dwoma linkami:
 
 ```html
 <div class="secretCtaWrap">
+  <a class="btn secretCta" href="Galaktyka.html" target="_blank" rel="noopener noreferrer">Galaktyka</a>
   <a class="btn secretCta" href="Gilead.html" target="_blank" rel="noopener noreferrer">Gilead</a>
 </div>
 ```
 
 Charakterystyka:
 
-- jest to zwykły link `<a>`, bez obsługi w JavaScript,
-- cel `Gilead.html` jest ścieżką względną wewnątrz katalogu `Main/`,
+- oba elementy to zwykłe linki `<a>`, bez obsługi w JavaScript,
+- cele `Galaktyka.html` i `Gilead.html` są ścieżkami względnymi wewnątrz katalogu `Main/`,
 - `target="_blank"` wymusza otwarcie w nowej karcie,
 - `rel="noopener noreferrer"` odcina dostęp przez `window.opener`,
-- link nie ma atrybutu `data-admin-only`, więc jest widoczny w trybie standardowym i w trybie admina,
-- kontener `.secretCtaWrap` używa `display: flex` z `justify-content: flex-end`, co dosuwa przycisk do prawego dolnego rogu panelu.
+- żaden z linków nie ma atrybutu `data-admin-only`, więc oba są widoczne w trybie standardowym i w trybie admina,
+- kontener `.secretCtaWrap` używa `display: flex` z `justify-content: space-between`, `align-items: center` i `gap: 10px`, co dosuwa `Galaktyka` do lewego, a `Gilead` do prawego dolnego rogu panelu (układ lustrzany),
+- oba linki używają tej samej klasy `.btn.secretCta`, więc mają identyczny wygląd i różnią się wyłącznie etykietą, celem i pozycją.
 
 Styl `.btn.secretCta` jest wariantem wspólnej klasy `.btn` i odpowiada wizualnie przyciskowi `Tajny przycisk!` z `Kalkulator/index.html`:
 
@@ -395,7 +399,7 @@ Main tylko prowadzi do tych modułów.
 6. Dodaj link Infoczytnika z `data-infoczytnik-link`.
 7. Dodaj link DataVault z `data-datavault-link`.
 8. Dodaj linki `Mapa` i `Obrazki` z `data-map-link` i `data-images-link`.
-9. Dodaj pod siatką `.actions` kontener `.secretCtaWrap` z linkiem `.btn.secretCta` do `Gilead.html` (`target="_blank"`, `rel="noopener noreferrer"`).
+9. Dodaj pod siatką `.actions` kontener `.secretCtaWrap` (`display: flex`, `justify-content: space-between`) z dwoma linkami `.btn.secretCta`: `Galaktyka.html` jako pierwszy i `Gilead.html` jako drugi (oba `target="_blank"`, `rel="noopener noreferrer"`).
 10. Dodaj parser `ZmienneHiperlacza.md`.
 11. Dodaj przełączanie `Infoczytnik` i `DataVault` zależnie od `?admin=1`.
 12. Dodaj skrypt usuwający stare Service Workery.
@@ -415,7 +419,10 @@ Main tylko prowadzi do tych modułów.
 | Brak linków dynamicznych | Usuń lub zepsuj `ZmienneHiperlacza.md`. | Strona działa, a błąd pojawia się w konsoli. |
 | Service Worker cleanup | Otwórz stronę w przeglądarce z dawnym SW. | Skrypt próbuje wyrejestrować stare rejestracje. |
 | Przycisk `Gilead` | Kliknij `Gilead` w prawym dolnym rogu panelu. | W nowej karcie otwiera się `Main/Gilead.html`, a karta z Main pozostaje otwarta. |
+| Przycisk `Galaktyka` | Kliknij `Galaktyka` w lewym dolnym rogu panelu. | W nowej karcie otwiera się `Main/Galaktyka.html`, a karta z Main pozostaje otwarta. |
 | Widoczność `Gilead` | Otwórz Main w trybie standardowym i w trybie admina. | Przycisk `Gilead` jest widoczny w obu trybach. |
+| Widoczność `Galaktyka` | Otwórz Main w trybie standardowym i w trybie admina. | Przycisk `Galaktyka` jest widoczny w obu trybach. |
+| Układ paska CTA | Porównaj położenie obu przycisków. | `Galaktyka` przylega do lewej, a `Gilead` do prawej krawędzi panelu, oba w tej samej linii. |
 
 ---
 
@@ -464,6 +471,7 @@ Admin mode is detected by `admin=1` query string parameter.
 | --- | --- |
 | `Main/index.html` | Full Main application: HTML, CSS, and JavaScript. |
 | `Main/Gilead.html` | Standalone Gilead system world registry page opened by the `Gilead` button. |
+| `Main/Galaktyka.html` | Standalone interactive galaxy map page opened by the `Galaktyka` button. |
 | `Main/ZmienneHiperlacza.md` | Source of dynamic `Map` and `Images` links. |
 | `Main/wrath-glory-logo-warhammer.png` | Logo displayed on the start page. |
 | `Main/docs/README.md` | User guide. |
@@ -500,8 +508,8 @@ Important elements:
 | `.actions` | Module button grid. |
 | `.stack` | Container for one button and optional note. |
 | `.btn` | Shared button/link class. |
-| `.secretCtaWrap` | Bar below the `.actions` grid aligning the CTA to the right panel edge. |
-| `.btn.secretCta` | Red "pill" CTA variant used by the `Gilead` link. |
+| `.secretCtaWrap` | Bar below the `.actions` grid spreading two CTA buttons to the left and right panel edges. |
+| `.btn.secretCta` | Red "pill" CTA variant used by the `Galaktyka` and `Gilead` links. |
 | `.note` | Short helper note. |
 | `[data-admin-only="true"]` | Element visible only in admin mode. |
 | `[data-infoczytnik-link]` | Infoczytnik link switched by mode. |
@@ -521,6 +529,7 @@ Important elements:
 | `Mapa` | Dynamic link from `Main/ZmienneHiperlacza.md`. |
 | `Kalkulator` | `../Kalkulator/`. |
 | `Rzut kośćmi` | `../DiceRoller/index.html`. |
+| `Galaktyka` | `Galaktyka.html` opened in a new tab (`target="_blank"`). |
 | `Gilead` | `Gilead.html` opened in a new tab (`target="_blank"`). |
 
 ### Buttons visible only in admin mode
@@ -649,24 +658,26 @@ rel="noopener noreferrer"
 
 They open in a new tab and do not pass control through `window.opener`.
 
-## `Gilead` button
+## `Galaktyka` and `Gilead` buttons
 
-Below the `.actions` grid, as the last element of the `main` container, there is a separate CTA bar:
+Below the `.actions` grid, as the last element of the `main` container, there is a separate CTA bar holding two links:
 
 ```html
 <div class="secretCtaWrap">
+  <a class="btn secretCta" href="Galaktyka.html" target="_blank" rel="noopener noreferrer">Galaktyka</a>
   <a class="btn secretCta" href="Gilead.html" target="_blank" rel="noopener noreferrer">Gilead</a>
 </div>
 ```
 
 Characteristics:
 
-- it is a plain `<a>` link with no JavaScript handling,
-- the `Gilead.html` target is a relative path inside the `Main/` directory,
+- both elements are plain `<a>` links with no JavaScript handling,
+- the `Galaktyka.html` and `Gilead.html` targets are relative paths inside the `Main/` directory,
 - `target="_blank"` forces opening in a new tab,
 - `rel="noopener noreferrer"` cuts off access through `window.opener`,
-- the link has no `data-admin-only` attribute, so it is visible in both standard and admin mode,
-- the `.secretCtaWrap` container uses `display: flex` with `justify-content: flex-end`, which pins the button to the bottom-right corner of the panel.
+- neither link has a `data-admin-only` attribute, so both are visible in standard and admin mode,
+- the `.secretCtaWrap` container uses `display: flex` with `justify-content: space-between`, `align-items: center` and `gap: 10px`, which pins `Galaktyka` to the bottom-left and `Gilead` to the bottom-right corner of the panel (mirrored layout),
+- both links use the same `.btn.secretCta` class, so they look identical and differ only in label, target and position.
 
 The `.btn.secretCta` style is a variant of the shared `.btn` class and visually matches the `Tajny przycisk!` button from `Kalkulator/index.html`:
 
@@ -816,7 +827,7 @@ Main only links to those modules.
 6. Add Infoczytnik link with `data-infoczytnik-link`.
 7. Add DataVault link with `data-datavault-link`.
 8. Add `Map` and `Images` links with `data-map-link` and `data-images-link`.
-9. Add a `.secretCtaWrap` container below the `.actions` grid with a `.btn.secretCta` link to `Gilead.html` (`target="_blank"`, `rel="noopener noreferrer"`).
+9. Add a `.secretCtaWrap` container (`display: flex`, `justify-content: space-between`) below the `.actions` grid with two `.btn.secretCta` links: `Galaktyka.html` first and `Gilead.html` second (both `target="_blank"`, `rel="noopener noreferrer"`).
 10. Add `ZmienneHiperlacza.md` parser.
 11. Add Infoczytnik and DataVault switching by `?admin=1`.
 12. Add script removing old Service Workers.
@@ -836,4 +847,7 @@ Main only links to those modules.
 | Missing dynamic links | Remove or break `ZmienneHiperlacza.md`. | Page still works and error appears in console. |
 | Service Worker cleanup | Open page in browser with old SW. | Script attempts to unregister old registrations. |
 | `Gilead` button | Click `Gilead` in the bottom-right corner of the panel. | `Main/Gilead.html` opens in a new tab and the Main tab stays open. |
+| `Galaktyka` button | Click `Galaktyka` in the bottom-left corner of the panel. | `Main/Galaktyka.html` opens in a new tab and the Main tab stays open. |
 | `Gilead` visibility | Open Main in standard and admin mode. | The `Gilead` button is visible in both modes. |
+| `Galaktyka` visibility | Open Main in standard and admin mode. | The `Galaktyka` button is visible in both modes. |
+| CTA bar layout | Compare the position of both buttons. | `Galaktyka` sits at the left and `Gilead` at the right panel edge, both on the same line. |
