@@ -299,10 +299,6 @@ Nie należy zakładać, że wcześniejsza analiza nadal jest aktualna, jeżeli u
 
 Nie należy commitować zmian bez wyraźnej prośby użytkownika.
 
-Jeżeli użytkownik prosi o przygotowanie treści pliku, należy podać treść w odpowiedzi albo zapisać plik lokalnie w rozmowie, zgodnie z poleceniem użytkownika.
-
-Jeżeli użytkownik wyraźnie prosi o zapisanie pliku „tutaj”, nie należy tworzyć commita w repozytorium.
-
 ---
 
 ## 14. Zasady bezpieczeństwa przy module `DataVault`
