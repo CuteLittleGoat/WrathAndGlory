@@ -13,5 +13,6 @@
    b. rpg-dataslate-relay - responsywność i listy ulubionych
    c. WnG_Tools - responsywność i poprawa kodu. W przypadku kalkulatora nie robimy wersji zaawansowanej.
 7. Sprawdzić jeszcze raz czy repo z demo aplikacji zawierają najnowszą i najbardziej aktualną wersję modułów (poza zaawansowanym kalkulatorem z generacją PDF - to zostaje tylko w repo WrathAndGlory).
-8. W repo WrathAndGlory we wszystkich modułach ukryć przełącznik zmiany języka. W repo dotyczących demo aplikacji (pkt6) przełącznik wersji językowej ma być widoczny i domyślnie angielski.
-9. W repo dotyczących demo aplikacji dopisać do dokumentacji, że reguły dotyczące RULES są ustawione bez żadnych zabezpieczeń w ramach demonstracji. Jak ktoś chce skopiować kod to jest zalecane wprowadzenie jakiejś formy zabezpieczenia, np App Check lub jakieś bardziej rozbudowane np. login i hasło.
+8. Przyciski "Gilead" i "Galaktyka" w module Main zostają tylko w repo WrathAndGlory. W repo z demo aplikacji nie dodajemy tych przycisków.
+9. W repo WrathAndGlory we wszystkich modułach ukryć przełącznik zmiany języka. W repo dotyczących demo aplikacji (pkt6) przełącznik wersji językowej ma być widoczny i domyślnie angielski.
+10. W repo dotyczących demo aplikacji dopisać do dokumentacji, że reguły dotyczące RULES są ustawione bez żadnych zabezpieczeń w ramach demonstracji. Jak ktoś chce skopiować kod to jest zalecane wprowadzenie jakiejś formy zabezpieczenia, np App Check lub jakieś bardziej rozbudowane np. login i hasło.
