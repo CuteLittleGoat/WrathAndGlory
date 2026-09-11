@@ -264,46 +264,7 @@ Wyjątek: można odwołać się do konkretnej analizy tylko wtedy, gdy użytkown
 
 ---
 
-## 12. Zmiany kodu wykonywane na podstawie pliku analitycznego
-
-Jeżeli polecenie użytkownika dotyczy zmiany kodu na podstawie pliku z analizą, po realizacji zadania należy zaktualizować ten plik analityczny.
-
-Do pliku należy dopisać sekcję opisującą wszystkie wykonane zmiany w kodzie.
-
-Sekcja musi zawierać:
-
-- nazwę zmienionego pliku;
-- numer linii lub możliwie dokładną lokalizację;
-- opis stanu przed zmianą;
-- opis stanu po zmianie.
-
-Format zapisu:
-
-````markdown
-## Zmiany wykonane w kodzie
-
-### Plik: `Second/app.js`
-
-Lokalizacja: linia 24
-
-Było:
-
-```js
-return false;
-```
-
-Jest:
-
-```js
-return true;
-```
-````
-
-Jeżeli numer linii nie jest stabilny albo nie można go jednoznacznie ustalić, należy podać najbliższą nazwę funkcji, selektora lub sekcji kodu.
-
----
-
-## 13. Ochrona danych wrażliwych
+## 12. Ochrona danych wrażliwych
 
 Nie wolno zapisywać w repozytorium danych wrażliwych.
 
@@ -330,7 +291,7 @@ Jeżeli sekret został przypadkowo zapisany w repozytorium, należy go usunąć 
 
 ---
 
-## 14. Zasady pracy z repozytorium
+## 13. Zasady pracy z repozytorium
 
 Przed zmianami należy sprawdzić aktualny stan plików.
 
@@ -344,7 +305,7 @@ Jeżeli użytkownik wyraźnie prosi o zapisanie pliku „tutaj”, nie należy t
 
 ---
 
-## 15. Zasady bezpieczeństwa przy module `DataVault`
+## 14. Zasady bezpieczeństwa przy module `DataVault`
 
 Moduł `DataVault` jest szczególnie wrażliwy, ponieważ odpowiada za generowanie i przetwarzanie danych używanych przez inne moduły.
 
@@ -368,7 +329,7 @@ Szczególnie ważne jest zachowanie zgodności między:
 
 ---
 
-## 16. Priorytet aktualności nad historią
+## 15. Priorytet aktualności nad historią
 
 Wszystkie pliki instrukcji i dokumentacji mają opisywać aktualny stan repozytorium.
 
@@ -388,7 +349,7 @@ Dotyczy to w szczególności folderu:
 
 - `WebView_FCM_Cloudflare_Worker/`
 
-## 18. Modyfikowanie plików AGENTS.md
+## 16. Modyfikowanie plików AGENTS.md
 
 Agent AI nie może wykonywać żadnych zmian w plikach `AGENTS.md` znajdujących się w repozytorium.
 
