@@ -16,7 +16,7 @@
 | **Data analizy** | 10 września 2026 · **uzupełnione 13 września** o Twoje odpowiedzi na pytania, prawdziwe reguły Firebase i sprostowanie rozdz. 9.2 |
 | **Temat** | Audyt kodu: błędy, martwy kod, pozostałości po przeróbkach, duplikacja, bezpieczeństwo bazy danych |
 | **Zakres** | Wszystkie moduły: `Main`, `DataVault`, `GeneratorNPC`, `Kalkulator`, `DiceRoller`, `GeneratorNazw`, `Infoczytnik`, `Audio`, `shared/` |
-| **Poza zakresem** | `Main/Gilead.html` i `Main/Galaktyka.html` — pliki powstały poza tym projektem i decyzją właściciela repozytorium nie podlegają analizie. `WebView_FCM_Cloudflare_Worker/` (folder chroniony przed edycją wg `AGENTS.md` §17), `Kalkulator/Old/`, `WebView_FCM_Cloudflare_Worker/Archiwalne/`. Literówki w danych źródłowych (`DoZrobienia.md` poz. 2) — poprawiane ręcznie w `Repozytorium.xlsx`, patrz rozdz. 8 |
+| **Poza zakresem** | `Main/Gilead.html` i `Main/Galaktyka.html` — pliki powstały poza tym projektem i decyzją właściciela repozytorium nie podlegają analizie. `WebView_FCM_Cloudflare_Worker/` (folder chroniony przed edycją wg `AGENTS.md` §16), `Kalkulator/Old/`, `WebView_FCM_Cloudflare_Worker/Archiwalne/`. Literówki w danych źródłowych (`DoZrobienia.md` poz. 2) — poprawiane ręcznie w `Repozytorium.xlsx`, patrz rozdz. 8 |
 | **Metoda** | Odczyt kodu, analiza statyczna (ESLint 9 z regułami poprawnościowymi na wszystkich plikach `.js` oraz na skryptach osadzonych w HTML), skanowanie nieużywanych klas CSS, porównanie dwóch niezależnych implementacji parsera XLSX, sondowanie reguł dostępu do bazy oraz — za zgodą właściciela — jeden kontrolowany test zapisu do osobnego dokumentu, po którym nie została żadna pozostałość (rozdz. 9.2) |
 | **Dane wejściowe** | `Repozytorium.xlsx`, `data.json`, `firebase-import.json` (przesłane 10 września) — użyte do porównania obu ścieżek generowania danych, rozdz. 7 |
 | **Zmiany w kodzie** | **Żadne.** Ten dokument tylko opisuje i proponuje. |
@@ -840,7 +840,7 @@ Punkt odniesienia dla kroku 5 mam już policzony: **38 arkuszy, 1531 wierszy** (
 
 ---
 
-> **Drobiazg zauważony 13 września — numeracja w `AGENTS.md`.** Po Twojej porządkowej zmianie z 13 września sekcje idą w kolejności: … 14, 15, **17**, **16**. Punkt „Foldery chronione przed edycją" zachował dawny numer 17, a „Modyfikowanie plików AGENTS.md" dostał 16 — więc dwa ostatnie punkty są zamienione miejscami i jeden numer (17) wypada poza kolejnością. Nie ma to żadnego wpływu na działanie aplikacji i **nie mogę tego poprawić sam** (§16 zabrania mi edytowania `AGENTS.md`), ale zgłaszam, bo w `DoZrobienia.md` masz już pozycję 4 o sprawdzeniu tego pliku. W tym dokumencie odwołuję się do numerów tak, jak są dziś zapisane.
+> **Numeracja w `AGENTS.md` — zgłoszone i poprawione tego samego dnia.** Po pierwszej porządkowej zmianie z 13 września dwa ostatnie punkty były zamienione miejscami (… 14, 15, **17**, **16**). Zgłosiłem to, bo sam nie mogę edytować `AGENTS.md` (§17), a Ty poprawiłeś to od razu. Odwołania w tym dokumencie są zgodne z obecną numeracją: **§14** — bezpieczeństwo DataVault, **§16** — foldery chronione przed edycją, **§17** — zakaz modyfikowania `AGENTS.md`.
 
 ---
 
@@ -1222,7 +1222,7 @@ Praktyczny wniosek jest prosty i dotyczy każdego sekretu, który kiedykolwiek t
 
 To samo dotyczy pliku `WebView_FCM_Cloudflare_Worker/google-services.json`, który jest śledzony przez gita. W jego przypadku nie ma powodu do niepokoju: zawiera te same jawne z założenia identyfikatory projektu co `firebase-config.js` (patrz 9.7) — nie jest to sekret.
 
-> **Zastrzeżenie.** Folder `WebView_FCM_Cloudflare_Worker/` jest oznaczony w `AGENTS.md` §17 jako chroniony przed edycją, więc niczego w nim nie zmieniałem ani nie proponuję zmieniać. Powyższe to wyłącznie informacja.
+> **Zastrzeżenie.** Folder `WebView_FCM_Cloudflare_Worker/` jest oznaczony w `AGENTS.md` §16 jako chroniony przed edycją, więc niczego w nim nie zmieniałem ani nie proponuję zmieniać. Powyższe to wyłącznie informacja.
 
 ### 9.12. Podsumowanie rozdziału prostym językiem
 
