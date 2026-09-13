@@ -1064,7 +1064,9 @@ W `Karty` był kłopot z dwiema bliźniaczymi aplikacjami `Karty-Web` i trzeba b
 | `1:382792444120:web:9eb27e2…` | DataVault, Kalkulator (oba kreatory), Infoczytnik |
 | `1:848367463263:web:500bdf5…` | GeneratorNPC, Audio |
 
-Czyli **rejestrujesz dokładnie dwie aplikacje webowe — po jednej na projekt** — a to automatycznie obejmuje wszystkie sześć modułów.
+Czyli **rejestrujesz dokładnie dwie aplikacje webowe — po jednej na projekt** — a to automatycznie obejmuje wszystkie sześć modułów. *(Zrobione 13 września — obie mają status „Registered".)*
+
+> **Uzupełnienie z 13 września.** W projekcie `wh40k-data-slate` jest jeszcze **trzecia** aplikacja, ale nie webowa: `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) — Android, z folderu `WebView_FCM_Cloudflare_Worker/`. Nie rejestrujemy jej: klient nie jest zaimplementowany, służy do powiadomień push, a nie do bazy, i wymagałaby innego dostawcy (Play Integrity). Szczegóły i moment, w którym trzeba do tego wrócić: rozdz. 12.4.
 
 #### Różnica 3 — trzeba objąć także Realtime Database
 
@@ -1390,12 +1392,30 @@ Najpierw poprawka zgłoszona przez Ciebie (zawijanie tekstu w GeneratorNPC), a s
 
 > **Uwaga do punktu 13 z `DoZrobienia.md`.** Zapowiadasz ukrycie przełącznika języka we wszystkich modułach tego repozytorium. Ma to wpływ na dwie pozycje tego audytu: pytanie 3 (komunikat „Brak danych") i rozdz. 5.5 (napisy niezgodne między HTML a tłumaczeniami). Jeżeli w tym repozytorium zostaje wyłącznie polski, to **rozbieżności w tłumaczeniach angielskich przestają być widoczne dla użytkownika** — ale nadal będą widoczne w repozytoriach z wersją demo, gdzie przełącznik ma być domyślnie po angielsku (poz. 13). Czyli: poprawić warto, ale priorytet przenosi się z tego repozytorium na tamte.
 
-### 12.4. Kwestie nadal otwarte
+### 12.4. Stan na 13 września — po Twoich działaniach w Firebase
 
-Zostały **dwie**, obie wymagające tylko Twojej decyzji, nie dodatkowych ustaleń:
+**Zrobione przez Ciebie:**
 
-1. **Wariant A czy B dla opisu kolumn w DataVault** — rozpisany na Twoją prośbę w `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdz. 12.6. To decyzja, która wpływa na kolejność prac przed dodatkiem.
-2. **Czy zawęzić reguły Firestore od razu, czy dopiero razem z App Check** — zawężenie (`{document=**}` → konkretne dokumenty, skasowanie `DS2/progress`) można zrobić dziś, bez ryzyka i bez zmian w kodzie. Dopisanie `request.app != null` musi poczekać na kroki 1–5 z instrukcji. Szczegóły w rozdz. 9.8.
+| Co | Projekt `wh40k-data-slate` | Projekt `audiorpg-2eb6f` |
+|---|---|---|
+| Klucz reCAPTCHA Enterprise | ✅ `WrathAndGlory-DataSlate`, typ WEB, domena `cutelittlegoat.github.io` | ✅ `WrathAndGlory-AudioRPG`, typ WEB, ta sama domena |
+| Rejestracja aplikacji webowej w App Check | ✅ `DataSlate` — *Registered* | ✅ `AudioRPG` — *Registered* |
+
+Czyli **kroki 1 i 2 z instrukcji są za nami.** Znaczniki App Check nie są jeszcze przez nic sprawdzane — to zgodne z planem, wymuszanie włącza się dopiero w kroku 5.
+
+**Rozstrzygnięte:** reguły Firestore **zawężamy od razu**, bez czekania na App Check. Gotowy tekst do wklejenia dla obu projektów jest w `Analizy/instrukcja-appcheck-2026-09-13.md`, rozdz. 4a. Zawężenie nie wymaga żadnych zmian w kodzie i nie może niczego zepsuć — sprawdziłem w kodzie, że aplikacja korzysta z dokładnie pięciu dokumentów: `dataslate/current`, `character_builder/current`, `character_builder/v2`, `generatorNpc/favorites`, `audio/favorites`.
+
+**Nowe ustalenie — druga aplikacja w projekcie `wh40k-data-slate`.** Na liście *Apps* poza zarejestrowaną aplikacją webową jest `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) — aplikacja **Android** z folderu `WebView_FCM_Cloudflare_Worker/`, nierejestrowana w App Check. W pierwszej wersji tego audytu napisałem „po jednej aplikacji webowej na projekt" i to nadal jest prawdą, ale przeoczyłem, że obok jest aplikacja mobilna. Nie zmienia to planu:
+
+- klient Android **nie jest jeszcze zaimplementowany** (`Analiza_10_3_Gotowosc_Android_Studio_2026-03-15.md`, `fcmTokens: 0`),
+- służy do **powiadomień push**, a nie do czytania bazy — wymuszanie dla Firestore i Realtime Database jej nie dotyczy,
+- rejestracja aplikacji Android wymaga innego dostawcy (**Play Integrity**), więc klucz reCAPTCHA i tak by się nie nadał.
+
+Wniosek: **nie rejestrować jej teraz**, ale zapamiętać na moment, gdy powstanie aplikacja mobilna otwierająca stronę w oknie WebView — reCAPTCHA w WebView bywa zawodna i wtedy właściwą drogą jest Play Integrity. Szczegóły w rozdz. 6 instrukcji.
+
+**Kwestia nadal otwarta — jedna:**
+
+1. **Wariant A czy B dla opisu kolumn w DataVault** — rozpisany na Twoją prośbę w `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdz. 12.6. To jedyna decyzja, która wpływa na kolejność prac przed dodatkiem, i **jedyna, która czeka.**
 
 ---
 

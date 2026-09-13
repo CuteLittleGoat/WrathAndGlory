@@ -79,6 +79,77 @@ Masz dwa osobne projekty Firebase, a klucz reCAPTCHA należy do konkretnego proj
 
 ---
 
+## 4a. KROK 0 — zawężenie reguł, do zrobienia od razu
+
+> **Stan na 13 września: kroki 1 i 2 masz już wykonane** (klucze reCAPTCHA `WrathAndGlory-DataSlate` i `WrathAndGlory-AudioRPG` utworzone dla domeny `cutelittlegoat.github.io`, obie aplikacje webowe zarejestrowane w App Check ze statusem *Registered*). Zdecydowałeś też, że reguły zawężamy od razu — poniżej gotowy tekst do wklejenia.
+
+Ten krok **nie wymaga żadnych zmian w kodzie i nie może niczego zepsuć.** Nie dopisujemy jeszcze warunku `request.app != null` (ten czeka na krok 6). Zmieniamy wyłącznie **ścieżki**: z „cała kolekcja" na „te konkretne dokumenty, których aplikacja naprawdę używa".
+
+**Sprawdziłem w kodzie, że aplikacja korzysta dokładnie z pięciu dokumentów** — i z niczego więcej:
+
+| Projekt | Dokument | Kto go używa |
+|---|---|---|
+| `wh40k-data-slate` | `dataslate/current` | panel GM ↔ ekran Infoczytnika |
+| `wh40k-data-slate` | `character_builder/current` | Prosty Kreator Postaci |
+| `wh40k-data-slate` | `character_builder/v2` | Zaawansowany Kreator Postaci |
+| `audiorpg-2eb6f` | `generatorNpc/favorites` | ulubione zestawy GeneratorNPC |
+| `audiorpg-2eb6f` | `audio/favorites` | ustawienia modułu Audio |
+
+Ścieżka: Firebase Console → **Firestore Database** → zakładka **Rules** → zaznacz całość, wklej poniższe → **Publish**.
+
+**Projekt `wh40k-data-slate`:**
+
+```
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Kanał panelu GM -> ekran Infoczytnika / GM panel -> reader screen channel
+    match /dataslate/current { allow read, write: if true; }
+
+    // Prosty Kreator Postaci / Simple character creator
+    match /character_builder/current { allow read, write: if true; }
+
+    // Zaawansowany Kreator Postaci / Advanced character creator
+    match /character_builder/v2 { allow read, write: if true; }
+
+    // Wszystko inne niedostępne / Everything else inaccessible
+    match /{document=**} { allow read, write: if false; }
+  }
+}
+```
+
+**Projekt `audiorpg-2eb6f`:**
+
+```
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Ulubione zestawy GeneratorNPC / GeneratorNPC favourite sets
+    match /generatorNpc/favorites { allow read, write: if true; }
+
+    // Ustawienia modułu Audio / Audio module settings
+    match /audio/favorites { allow read, write: if true; }
+
+    // Regula dla DS2/progress usunieta - projekt zakonczony, kolekcja skasowana
+    // The DS2/progress rule is gone - project finished, collection deleted
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}
+```
+
+**Co to daje już teraz.** Obcy nadal może czytać i nadpisywać te pięć dokumentów — na to dopiero App Check. Ale **przestaje móc tworzyć w Twojej bazie dowolne nowe dokumenty**, a to jest dokładnie to, co udało mi się zrobić w teście z rozdz. 9.2 audytu. Znika też martwa reguła po Dark Souls II.
+
+**Jak sprawdzić, że nic nie ucierpiało.** Po kliknięciu *Publish* otwórz z adresu internetowego: Infoczytnik (panel GM wyślij testową wiadomość), oba Kreatory Postaci, GeneratorNPC (dodaj i usuń ulubiony zestaw) i moduł Audio. Jeśli któryś przestanie działać — w zakładce **Rules** jest historia i powrót to jedno kliknięcie.
+
+> ⚠️ **Do zapamiętania przy rozbudowie Infoczytnika o listy ulubionych** (`DoZrobienia.md` poz. 5). Listy będą kolejnymi dokumentami w kolekcji `dataslate`, a powyższa reguła wpuszcza wyłącznie `current`. Przy tamtej pracy trzeba więc dopisać drugą regułę — na przykład `match /dataslate/ulubione/{id}` — inaczej zapis nowej listy zostanie odrzucony. To jedna linia, ale łatwo o niej zapomnieć i objawi się jako „nie da się zapisać ulubionych".
+
+---
+
 ## 5. KROK 1 — utwórz klucz reCAPTCHA (dla każdego projektu osobno)
 
 Robisz to w **Google Cloud**, nie w Firebase. To ta sama firma i to samo logowanie, tylko inna strona.
@@ -112,6 +183,15 @@ Robisz to w **Google Cloud**, nie w Firebase. To ta sama firma i to samo logowan
 > **Czy ten klucz to sekret?** Nie. To tzw. *klucz witryny* i jest jawny z założenia — dokładnie tak samo jak `apiKey`, który już jest w repozytorium. Może spokojnie trafić do kodu. W wariancie Enterprise nie ma żadnego „klucza tajnego", więc nie da się ich pomylić.
 
 ---
+
+> 🔶 **Uwaga do projektu `wh40k-data-slate` — jest tam druga aplikacja.** Na liście *Apps* obok zarejestrowanej `DataSlate (Web App)` stoi `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) z przyciskiem **Register** i statusem „–". To aplikacja **Android** z folderu `WebView_FCM_Cloudflare_Worker/`.
+>
+> **Nie rejestruj jej teraz i nie klikaj tam „Register".** Powody:
+> - Według `Analiza_10_3_Gotowosc_Android_Studio_2026-03-15.md` klient Android **nie jest jeszcze zaimplementowany** (health pokazywał `fcmTokens: 0`), więc nie ma czego rejestrować.
+> - Ta aplikacja służy do **powiadomień push (FCM)**, a nie do czytania bazy. W kroku 5 wymuszamy tylko **Cloud Firestore** i **Realtime Database** — powiadomień to nie dotyczy i nic się nie zepsuje.
+> - Rejestracja aplikacji Android wymaga innego dostawcy niż reCAPTCHA (**Play Integrity**), więc nie da się użyć klucza, który właśnie utworzyłeś.
+>
+> **Do czego wrócić w przyszłości:** kiedy powstanie aplikacja Android otwierająca stronę w oknie WebView, strona w środku będzie musiała zdobyć znacznik reCAPTCHA — a reCAPTCHA w oknie WebView bywa zawodna. Wtedy właściwym rozwiązaniem jest zarejestrowanie aplikacji Android przez Play Integrity, a nie omijanie App Check. Odnotowuję to jako rzecz do sprawdzenia przed wydaniem aplikacji mobilnej, nie jako przeszkodę dzisiaj.
 
 ## 6. KROK 2 — zarejestruj aplikację w App Check (dla każdego projektu osobno)
 
@@ -202,6 +282,8 @@ To jest moment, w którym baza faktycznie zaczyna odrzucać obce programy.
 
 Po każdym kliknięciu **sprawdź aplikację**: otwórz DataVault i GeneratorNPC z adresu internetowego i zobacz, czy dane się ładują. Jeśli nie — **Unenforce** i wracamy do diagnozy.
 
+> ⚠️ **Wymuszaj tylko te dwie pozycje.** W zakładce *APIs* będą też inne usługi, m.in. **Firebase Cloud Messaging**. Nie włączaj przy nich wymuszania — FCM obsługuje powiadomienia push planowanej aplikacji Android, która nie ma jeszcze rejestracji w App Check.
+
 ### Krok 6 — zawężenie reguł bazy
 
 Dopiero **po** kroku 5. Reguły z warunkiem `request.app != null` same w sobie są wymuszaniem, więc wgranie ich wcześniej wyłączyłoby aplikację.
@@ -247,25 +329,29 @@ Po kroku 5 otwarcie pliku HTML **bezpośrednio z dysku przestanie działać** �
 
 ## 12. Lista kontrolna
 
-Odhaczaj po kolei. Kroki 1–2 możesz zrobić już dziś.
+Stan na 13 września. Kroki 1 i 2 masz zrobione w obu projektach.
 
 **Projekt 1 — `wh40k-data-slate`**
-- [ ] Klucz reCAPTCHA utworzony, domena `cutelittlegoat.github.io`, klucz zapisany w notatniku
-- [ ] Aplikacja webowa (`…838fad`) zarejestrowana w App Check z dostawcą reCAPTCHA Enterprise
-- [ ] TTL ustawione na `1` + `days`
-- [ ] *(wstrzymane)* Kod czterech modułów wysyła znaczniki
+- [x] Klucz reCAPTCHA `WrathAndGlory-DataSlate` utworzony, typ WEB, domena `cutelittlegoat.github.io`
+- [x] Aplikacja webowa `DataSlate` zarejestrowana w App Check — dostawca reCAPTCHA Enterprise, status *Registered*
+- [ ] Sprawdzić, czy TTL jest ustawione na `1` + `days` (widoczne po kliknięciu **⋮** przy aplikacji)
+- [ ] **KROK 0** — zawężone reguły Firestore wgrane (rozdz. 4a) ← *do zrobienia teraz, bez ryzyka*
+- [ ] *(czeka na zmiany w kodzie)* Kod czterech modułów wysyła znaczniki
 - [ ] Kilka dni obserwacji zakładki APIs — ruch zweryfikowany
 - [ ] Wymuszanie włączone dla **Cloud Firestore**
 - [ ] Wymuszanie włączone dla **Realtime Database**
-- [ ] Nowe reguły Firestore wgrane
+- [ ] Reguły uzupełnione o `request.app != null`
+- [ ] *(świadomie pominięte)* Aplikacja Android `Kozi Przybornik` — nierejestrowana, patrz uwaga w rozdz. 6
 
 **Projekt 2 — `audiorpg-2eb6f`**
-- [ ] Osobny klucz reCAPTCHA utworzony, ta sama domena
-- [ ] Aplikacja webowa (`…e2e4ea`) zarejestrowana, TTL `1 days`
-- [ ] *(wstrzymane)* Kod dwóch modułów wysyła znaczniki
+- [x] Osobny klucz reCAPTCHA `WrathAndGlory-AudioRPG` utworzony, typ WEB, ta sama domena
+- [x] Aplikacja webowa `AudioRPG` zarejestrowana — reCAPTCHA Enterprise, status *Registered*
+- [ ] Sprawdzić TTL `1 days`
+- [ ] **KROK 0** — zawężone reguły Firestore wgrane, bez `DS2/progress` (rozdz. 4a) ← *do zrobienia teraz*
+- [ ] *(czeka na zmiany w kodzie)* Kod dwóch modułów wysyła znaczniki
 - [ ] Kilka dni obserwacji
 - [ ] Wymuszanie włączone dla **Cloud Firestore** (Realtime Database nieużywana)
-- [ ] Nowe reguły Firestore wgrane, bez `DS2/progress`
+- [ ] Reguły uzupełnione o `request.app != null`
 
 **Po wszystkim**
 - [ ] Pliki produkcyjne Infoczytnika (`GM.html`, `Infoczytnik.html`) zaktualizowane ręcznie
