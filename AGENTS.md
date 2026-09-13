@@ -333,7 +333,7 @@ Jeżeli repozytorium zostało ręcznie uporządkowane, usunięto foldery albo pr
 
 Nie wolno zostawiać w dokumentacji informacji o plikach, folderach lub mechanikach, które już nie istnieją.
 
-## 17. Foldery chronione przed edycją
+## 16. Foldery chronione przed edycją
 
 Jeżeli w repozytorium istnieje lokalny plik `AGENTS.md`, jego instrukcje obowiązują dla folderu, w którym się znajduje, oraz dla wszystkich jego podfolderów.
 
@@ -345,7 +345,7 @@ Dotyczy to w szczególności folderu:
 
 - `WebView_FCM_Cloudflare_Worker/`
 
-## 16. Modyfikowanie plików AGENTS.md
+## 17. Modyfikowanie plików AGENTS.md
 
 Agent AI nie może wykonywać żadnych zmian w plikach `AGENTS.md` znajdujących się w repozytorium.
 
