@@ -5,7 +5,7 @@
 > Dlatego w rozdziale 9 (bezpieczeństwo bazy danych) **świadomie nie ma** gotowych poleceń, skryptów ani przykładów „jak to wykorzystać".
 > Opisuję **co** jest odsłonięte i **jak to naprawić**, bez instrukcji nadużycia.
 > Wszystkie fakty i tak wynikają wprost z plików, które w tym repozytorium są już jawne.
-> Patrz pytanie 7 w rozdziale 12 — do rozważenia, czy ten dokument ma zostać w repozytorium publicznym.
+> Rozstrzygnięte 13 września (pytanie 6 w rozdz. 12.2): dokument zostaje w repozytorium publicznym.
 
 ---
 
@@ -13,13 +13,14 @@
 
 | | |
 |---|---|
-| **Data analizy** | 10 września 2026 |
+| **Data analizy** | 10 września 2026 · **uzupełnione 13 września** o Twoje odpowiedzi na pytania, prawdziwe reguły Firebase i sprostowanie rozdz. 9.2 |
 | **Temat** | Audyt kodu: błędy, martwy kod, pozostałości po przeróbkach, duplikacja, bezpieczeństwo bazy danych |
 | **Zakres** | Wszystkie moduły: `Main`, `DataVault`, `GeneratorNPC`, `Kalkulator`, `DiceRoller`, `GeneratorNazw`, `Infoczytnik`, `Audio`, `shared/` |
 | **Poza zakresem** | `Main/Gilead.html` i `Main/Galaktyka.html` — pliki powstały poza tym projektem i decyzją właściciela repozytorium nie podlegają analizie. `WebView_FCM_Cloudflare_Worker/` (folder chroniony przed edycją wg `AGENTS.md` §17), `Kalkulator/Old/`, `WebView_FCM_Cloudflare_Worker/Archiwalne/`. Literówki w danych źródłowych (`DoZrobienia.md` poz. 2) — poprawiane ręcznie w `Repozytorium.xlsx`, patrz rozdz. 8 |
-| **Metoda** | Odczyt kodu, analiza statyczna (ESLint 9 z regułami poprawnościowymi na wszystkich plikach `.js` oraz na skryptach osadzonych w HTML), skanowanie nieużywanych klas CSS, porównanie dwóch niezależnych implementacji parsera XLSX, nieinwazyjne sondowanie reguł dostępu do bazy |
+| **Metoda** | Odczyt kodu, analiza statyczna (ESLint 9 z regułami poprawnościowymi na wszystkich plikach `.js` oraz na skryptach osadzonych w HTML), skanowanie nieużywanych klas CSS, porównanie dwóch niezależnych implementacji parsera XLSX, sondowanie reguł dostępu do bazy oraz — za zgodą właściciela — jeden kontrolowany test zapisu do osobnego dokumentu, po którym nie została żadna pozostałość (rozdz. 9.2) |
 | **Dane wejściowe** | `Repozytorium.xlsx`, `data.json`, `firebase-import.json` (przesłane 10 września) — użyte do porównania obu ścieżek generowania danych, rozdz. 7 |
 | **Zmiany w kodzie** | **Żadne.** Ten dokument tylko opisuje i proponuje. |
+| **Instrukcja wykonawcza** | `Analizy/instrukcja-appcheck-2026-09-13.md` — App Check krok po kroku, dla obu projektów Firebase |
 | **Analiza siostrzana** | `Analizy/responsywnosc-aplikacji-2026-09-10.html` (responsywność, wygląd) |
 
 ### Główny wniosek
@@ -31,7 +32,7 @@ Potwierdzam Twoją obserwację: **aplikacja działa**. Nie znalazłem żadnego b
 - **ok. 510 linii martwego kodu i martwego CSS**, w tym całą nieużywaną ścieżkę parsowania XLSX (rozdz. 4),
 - **wyraźne pozostałości po przeróbkach**, w tym blok bramki dostępu wklejony przez pomyłkę do szablonu karty NPC do druku (rozdz. 5),
 - **jeden potwierdzony rozjazd między dwiema implementacjami parsera** — zweryfikowany na Twoich prawdziwych plikach (rozdz. 7),
-- **realny problem bezpieczeństwa bazy danych** — częściowo inny, niż zakładałeś (rozdz. 9).
+- **realny problem bezpieczeństwa bazy danych** — po otrzymaniu prawdziwych reguł okazał się **szerszy**, niż opisałem w pierwszej wersji: otwarte są oba projekty Firebase, a nie jeden, i potwierdziłem to nie tylko odczytem, ale i zapisem (rozdz. 9).
 
 ---
 
@@ -115,6 +116,54 @@ Zapisany bez skracania, zgodnie z zasadą 10 z `AGENTS.md`. Prompt przyszedł w 
 >
 > Plik z analizą Analizy/responsywnosc-aplikacji-2026-09-10.html nie musi trzymać kolorystyki reszty aplikacji (zielona).
 
+> **Wiadomość 11** (13 września — odpowiedzi na pytania z rozdz. 12)
+>
+> Poniżej moje odpowiedzi na pytania z Analizy/audyt-kodu-aplikacji-2026-09-10.md. Zapisz je w analizie, ale jeszcze bez zmian w kodzie.
+>
+> 1. [wklejona treść reguł wgranych w obu projektach Firebase — odtworzona poniżej co do struktury i uprawnień]
+>
+>    Projekt `wh40k-data-slate`:
+>
+>        rules_version = '2';
+>        service cloud.firestore {
+>          match /databases/{database}/documents {
+>            match /dataslate/{document=**}         { allow read, write: if true; }
+>            match /character_builder/{document=**} { allow read, write: if true; }
+>            match /{document=**}                   { allow read, write: if false; }
+>          }
+>        }
+>
+>    Projekt `audiorpg-2eb6f`:
+>
+>        rules_version = '2';
+>        service cloud.firestore {
+>          match /databases/{database}/documents {
+>            match /audio/favorites        { allow read, write: if true; }
+>            match /generatorNpc/favorites { allow read, write: if true; }
+>            match /DS2/progress           { allow read, write: if true; }
+>            match /{document=**}          { allow read, write: if false; }
+>          }
+>        }
+>
+>    Projekt Dark Souls II został zakończony. Kolekcja została usunięta. Można to skasować w nowej wersji Rules.
+> 2. Mam wątpliwości do wyróżniania różnic. Dwa talenty czy dwie psioniki zawsze będą się różnić pełnym tekstem. Może przy statystykach broni to ma sens, ale nie jestem przekonany — raczej skłaniam się ku usunięciu tej funkcjonalności, ale sprawdź to jeszcze raz.
+> 3. Zgoda.
+> 4. Zrobione.
+> 5. Możesz robić testowe zapisy w Infoczytniku. Testowymi wpisami nic mi nie zepsujesz. W przyszłości planuję rozbudowę modułu o listę ulubionych.
+> 6. Zostaw.
+> 7. Ulubione w GeneratorNPC to dane testowe. Listy ulubionych są odtwarzalne, tylko czasochłonne.
+> 8. Zgodnie z rekomendacją.
+>
+> Zmiany w kodzie będziemy wprowadzać dopiero jak odpowiem na wszystkie pytania i rozwiążemy wszystkie kwestie sporne z obu analiz.
+>
+> Zmodyfikowałem AGENTS.md — nie musisz już wrzucać plików do rozmowy ani pisać w analizie sekcji o zmianach w kodzie.
+>
+> Potrzebuję jeszcze pliku MD w Analizy/ z instrukcją krok po kroku, co i gdzie kliknąć, żeby ustawić App Check. Na obu kontach Firebase zakładka App Check jest pusta.
+
+> **Wiadomość 12**
+>
+> Nie robimy jeszcze zmian w kodzie. Tylko analizy i przygotowanie app check.
+
 **Uwaga do wiadomości 6 i 7.** Hasła nie zostały zapisane w żadnym pliku w repozytorium. Próbowałem użyć ich do pobrania prawdziwych danych, żeby oprzeć analizę na realnym zbiorze — środowisko, w którym pracuję, zablokowało logowanie hasłem, więc **nie udało się i nie korzystałem z prawdziwych danych.** Wszystkie wnioski w tym dokumencie opierają się wyłącznie na kodzie w repozytorium. Niezależnie od tego rekomenduję zmianę obu haseł po zakończeniu prac, tak jak zapowiedziałeś.
 
 ---
@@ -147,7 +196,7 @@ Wersja `0.19.3` **nigdy nie została opublikowana w npm** — SheetJS po 0.18.5 
 
 **Rekomendacja:** usunąć linię 138 wraz z komentarzem. Zero wpływu na działanie, minus jedno nieudane żądanie sieciowe przy każdym wejściu.
 
-> **Ostrożnie — `AGENTS.md` §15.** Ta zmiana dotyczy modułu DataVault i pliku związanego z parsowaniem XLSX. Formalnie wymaga porównania wyniku generowania danych przed i po. W praktyce ryzyko jest zerowe (usuwamy skrypt, który i tak zwraca 404), ale warto wykonać jedno kontrolne generowanie `data.json` z `Repozytorium.xlsx` i porównać z poprzednim plikiem.
+> **Ostrożnie — `AGENTS.md` §14.** Ta zmiana dotyczy modułu DataVault i pliku związanego z parsowaniem XLSX. Formalnie wymaga porównania wyniku generowania danych przed i po. W praktyce ryzyko jest zerowe (usuwamy skrypt, który i tak zwraca 404), ale warto wykonać jedno kontrolne generowanie `data.json` z `Repozytorium.xlsx` i porównać z poprzednim plikiem.
 
 ### 3.2. 🟠 UTAJONY — zmienna `m` bez deklaracji w DataVault
 
@@ -243,13 +292,53 @@ const html = `<div style="overflow:auto; max-height:70vh"><table> ... </table></
 
 **Skutek:** tabela porównania rysuje się w stylu domyślnym przeglądarki (bez ramek, bez naprzemiennych tł), a **pola, które się różnią, nie są w żaden sposób wyróżnione** — mimo że to jest cały sens funkcji „Porównaj zaznaczone".
 
-**To jest jedyne miejsce w audycie, gdzie poprawka ZMIENI wygląd widoczny dla użytkownika.** Zaznaczam to wyraźnie, bo prosiłeś, żeby nie zmieniać działania widocznego z zewnątrz. Masz trzy możliwości:
+**To jest jedyne miejsce w audycie, gdzie poprawka ZMIENI wygląd widoczny dla użytkownika.** Zaznaczam to wyraźnie, bo prosiłeś, żeby nie zmieniać działania widocznego z zewnątrz.
 
-- **(a)** Dopisać klasy do generowanego HTML (`class="compareTable"`, `class="compareDiff"`) — okno porównania zacznie wyglądać jak reszta aplikacji, a różnice się podświetlą. **To był najwyraźniej pierwotny zamiar.**
-- **(b)** Usunąć siedem nieużywanych reguł z CSS — wygląd bez zmian, mniej martwego kodu.
-- **(c)** Zostawić bez zmian.
+#### Rozstrzygnięcie po Twojej odpowiedzi (pytanie 2) — sprawdzone pomiarem
 
-*Rekomendacja: (a).* To wygląda na niedokończoną przeróbkę, a nie na świadomą decyzję.
+Napisałeś, że masz wątpliwość do podświetlania różnic (*„dwa talenty czy dwie psioniki zawsze będą się różnić pełnym tekstem […] raczej skłaniam się ku usunięciu tej funkcjonalności — ale sprawdź to jeszcze raz"*). Sprawdziłem na Twoich danych. **Okazuje się, że to są dwie osobne sprawy i mają dwie różne odpowiedzi.**
+
+**Sprawa pierwsza — brak stylów. To jest usterka i trzeba ją naprawić niezależnie od decyzji o podświetlaniu.**
+
+Zmierzyłem, jak okno wygląda dziś, na prawdziwym porównaniu dwóch broni boltowych:
+
+| | Dziś (brak klasy `compareTable`) | Po nadaniu klasy |
+|---|---|---|
+| Odstęp wewnętrzny komórki | **1 px** (wartość domyślna przeglądarki) | 8 px |
+| Odstęp między treścią sąsiednich kolumn | **2 px** | 16 px |
+| Linia oddzielająca wiersze | **brak** | 1 px |
+| Naprzemienne tła wierszy | brak | tak |
+
+Skutek jest taki, że **treść sąsiednich kolumn skleja się w jeden ciąg znaków** — w zrzucie, który zrobiłem, w jednym wierszu widać „Szybkostrzelność1", a w drugim „PistoletBrutalna". To nie jest kwestia gustu, tylko nieczytelność. **Nadanie klasy `compareTable` naprawia to i nie ma nic wspólnego z podświetlaniem różnic.**
+
+**Sprawa druga — podświetlanie różnic. Twoja intuicja jest trafna dla kolumn tekstowych i nietrafna dla kolumn liczbowych.**
+
+Wziąłem 2258 realistycznych par do porównania — czyli takich, które ktoś rzeczywiście może chcieć zestawić: dwa wpisy z tej samej zakładki i tego samego `Typ`/`Rodzaj`. Policzyłem, jaki procent kolumn faktycznie się różni:
+
+| Zakładka | Par | Kolumn różnych — ogółem | Kolumny krótkie (parametry) | Kolumny tekstowe (Opis, Efekt) |
+|---|---:|---:|---:|---:|
+| Bronie | 399 | 56% | **47%** | 81% |
+| Pancerze | 76 | 57% | **44%** | 86% |
+| Psionika | 216 | 57% | **39%** | 69% |
+| Pojazdy | 753 | 65% | **49%** | 80% |
+| Ekwipunek | 454 | 70% | **53%** | 94% |
+| Talenty | 360 | 73% | **52%** | 94% |
+
+Jak to czytać:
+
+- **Miałeś rację co do talentów i psionik.** W kolumnach opisowych różni się 69–94% treści. Podświetlenie zapaliłoby prawie całą tabelę, więc nie niosłoby żadnej informacji — świecąca się cała kolumna mówi dokładnie tyle samo, co niepodświetlona.
+- **Ale w kolumnach parametrycznych jest odwrotnie, niż zakładałeś.** Przy broniach różni się tylko 47% parametrów — czyli **ponad połowa jest identyczna**. Konkretny przykład z Twoich danych: pistolet boltowy i karabin boltowy mają identyczne *Rodzaj*, *Typ*, *Obrażenia* i *DK*, a różnią się zasięgiem, szybkostrzelnością i cechami. Tu podświetlenie mówiłoby dokładnie to, czego się szuka: „te cztery parametry są takie same, tymi trzema się różnią".
+- **W żadnej z 2258 par nie różniły się wszystkie kolumny naraz.** Sytuacja „i tak wszystko będzie się różnić" nie wystąpiła ani razu.
+
+#### Rekomendacja — trzy poziomy do wyboru
+
+| Wariant | Co obejmuje | Uwaga |
+|---|---|---|
+| **(a) Minimum — zalecane bezwzględnie** | Nadać klasę `compareTable`. Usunąć nieużywaną regułę `.compareDiff` i klasę `diff` z generowanego HTML | Naprawia sklejone kolumny. Podświetlania nie ma — zgodnie z Twoją skłonnością. Ubywa martwego kodu |
+| **(b) Minimum + podświetlanie tylko parametrów** | To co wyżej, plus podświetlenie różnic **wyłącznie w kolumnach krótkich** (bez *Opis*, *Efekt*, *Przykład*) | Wykorzystuje jedyny przypadek, w którym podświetlanie realnie pomaga — porównywanie broni i pojazdów |
+| **(c) Wszystko jak było zamierzone** | Podświetlanie we wszystkich kolumnach | **Nie polecam** — w Talentach i Ekwipunku zapala 94% tabeli |
+
+*Moja rekomendacja: **(a)**, bo to jest zgodne z Twoją decyzją i naprawia realną usterkę. Wariant (b) proponuję odłożyć jako osobny, drobny pomysł na później — nie jest to poprawka błędu, tylko nowa funkcja, a Ty świadomie zdecydowałeś, że tego nie chcesz.*
 
 ### 3.6. 🟡 UTAJONY — DataVault: obserwatory rozmiaru tworzone bez ograniczenia
 
@@ -315,7 +404,7 @@ To jest kompletna, spójna, **odcięta od reszty programu** implementacja czytan
 
 Razem z martwym znacznikiem `<script>` z rozdz. 3.1 to **~170 linii kodu plus jedna nieistniejąca zależność zewnętrzna**.
 
-> **Ostrożnie — `AGENTS.md` §15** wymienia parsery XLSX jako obszar szczególnie wrażliwy i zabrania upraszczania ich „bez sprawdzenia, czy wynik generowania danych pozostaje identyczny". Dlatego **nie rekomenduję usunięcia tego bloku bez wykonania procedury z rozdz. 7.7**: wygenerować `data.json` z `Repozytorium.xlsx` przed zmianą, wykonać zmianę, wygenerować ponownie i porównać oba pliki bajt po bajcie. Jeśli są identyczne — usunięcie jest bezpieczne.
+> **Ostrożnie — `AGENTS.md` §14** wymienia parsery XLSX jako obszar szczególnie wrażliwy i zabrania upraszczania ich „bez sprawdzenia, czy wynik generowania danych pozostaje identyczny". Dlatego **nie rekomenduję usunięcia tego bloku bez wykonania procedury z rozdz. 7.7**: wygenerować `data.json` z `Repozytorium.xlsx` przed zmianą, wykonać zmianę, wygenerować ponownie i porównać oba pliki bajt po bajcie. Jeśli są identyczne — usunięcie jest bezpieczne.
 
 ### 4.2. DataVault — pojedyncze nieużywane elementy
 
@@ -525,7 +614,7 @@ albo w trybie admina wygeneruj pliki danych i zaimportuj firebase-import.json do
 
 Wersja angielska odpowiada treści w HTML, a **polska jest krótsza i pomija informację o logowaniu** — czyli akurat tę, która jest najbardziej potrzebna zwykłemu graczowi widzącemu pusty ekran. Ponieważ `applyLanguage("pl")` uruchamia się przy starcie, użytkownik zawsze widzi wersję krótszą.
 
-Rekomendacja: ujednolicić polską wersję z angielską i z HTML. To zmiana widocznego napisu, więc wymaga Twojej decyzji (pytanie 3 w rozdz. 12).
+Rekomendacja: ujednolicić polską wersję z angielską i z HTML. **Zgoda otrzymana** (pytanie 3, rozdz. 12.2).
 
 ### 5.6. Nieużywane zmienne po uproszczeniach
 
@@ -614,7 +703,7 @@ Warto też odnotować niespójność: `DataVault/config/FirebaseREADME.md` opisu
 
 ## 7. Porównanie dwóch implementacji parsera XLSX
 
-`AGENTS.md` §15 wymaga zgodności między generowaniem przez `build_json.py`, generowaniem przez aplikację w przeglądarce i strukturą importowaną do Firebase. Najpierw porównałem obie implementacje linia po linii w kodzie i sformułowałem trzy przewidywania. Po otrzymaniu Twoich plików **sprawdziłem je praktycznie**: uruchomiłem `build_json.py` na Twoim `Repozytorium.xlsx` i porównałem wynik z Twoim `data.json` (wygenerowanym przez aplikację w przeglądarce).
+`AGENTS.md` §14 wymaga zgodności między generowaniem przez `build_json.py`, generowaniem przez aplikację w przeglądarce i strukturą importowaną do Firebase. Najpierw porównałem obie implementacje linia po linii w kodzie i sformułowałem trzy przewidywania. Po otrzymaniu Twoich plików **sprawdziłem je praktycznie**: uruchomiłem `build_json.py` na Twoim `Repozytorium.xlsx` i porównałem wynik z Twoim `data.json` (wygenerowanym przez aplikację w przeglądarce).
 
 ### 7.1. Wynik w skrócie
 
@@ -657,7 +746,7 @@ Obie operacje usuwają swoje kolumny źródłowe (`Zasięg 1..3`, `Cecha 1..N`) 
 
 **Wpływ na aplikację: żaden.** Kolejność wyświetlania kolumn bierze się z `_meta.columnOrder`, a ta jest w obu ścieżkach identyczna (sprawdzone dla wszystkich 38 arkuszy).
 
-**Wpływ na możliwość sprawdzania: duży.** Dwa pliki `data.json` wygenerowane różnymi drogami nigdy nie będą identyczne, więc **nie da się użyć zwykłego porównania plików jako testu zgodności** — a właśnie takiego testu wymaga `AGENTS.md` §15. To jedyna rzecz, która dziś stoi na przeszkodzie, żeby taki test wprowadzić.
+**Wpływ na możliwość sprawdzania: duży.** Dwa pliki `data.json` wygenerowane różnymi drogami nigdy nie będą identyczne, więc **nie da się użyć zwykłego porównania plików jako testu zgodności** — a właśnie takiego testu wymaga `AGENTS.md` §14. To jedyna rzecz, która dziś stoi na przeszkodzie, żeby taki test wprowadzić.
 
 **Rekomendacja:** ujednolicić kolejność — proponuję dopasować JavaScript do Pythona, bo `build_json.py` jest w komentarzu opisany jako ścieżka referencyjna. To zmiana jednego wyrażenia w jednym miejscu:
 
@@ -751,6 +840,10 @@ Punkt odniesienia dla kroku 5 mam już policzony: **38 arkuszy, 1531 wierszy** (
 
 ---
 
+> **Drobiazg zauważony 13 września — numeracja w `AGENTS.md`.** Po Twojej porządkowej zmianie z 13 września sekcje idą w kolejności: … 14, 15, **17**, **16**. Punkt „Foldery chronione przed edycją" zachował dawny numer 17, a „Modyfikowanie plików AGENTS.md" dostał 16 — więc dwa ostatnie punkty są zamienione miejscami i jeden numer (17) wypada poza kolejnością. Nie ma to żadnego wpływu na działanie aplikacji i **nie mogę tego poprawić sam** (§16 zabrania mi edytowania `AGENTS.md`), ale zgłaszam, bo w `DoZrobienia.md` masz już pozycję 4 o sprawdzeniu tego pliku. W tym dokumencie odwołuję się do numerów tak, jak są dziś zapisane.
+
+---
+
 ## 9. Bezpieczeństwo bazy danych (Firestore i Realtime Database)
 
 To jest odpowiedź na wiadomości 4 i 5 z rozdziału 2.
@@ -768,7 +861,21 @@ Aplikacja korzysta z **dwóch osobnych projektów Firebase**, a nie z jednego:
 | `wh40k-data-slate` | DataVault, Kalkulator (oba kreatory), Infoczytnik | Realtime Database + Firestore + Authentication |
 | `audiorpg-2eb6f` | GeneratorNPC, Audio | Firestore |
 
-### 9.2. Jak to sprawdziłem — i czego celowo nie sprawdzałem
+> **Aktualizacja z 13 września.** Przysłałeś treść reguł wgranych w obu projektach, więc ten rozdział nie opiera się już na wnioskowaniu z zewnątrz. Reguły potwierdziły część moich ustaleń i **obaliły jedno**, które opisałem błędnie — sprostowanie jest w 9.2. Poniżej to, co jest naprawdę wgrane, w skrócie:
+>
+> | Projekt | Ścieżka w regułach | Uprawnienia |
+> |---|---|---|
+> | `wh40k-data-slate` | `dataslate/{document=**}` | `allow read, write: if true` |
+> | `wh40k-data-slate` | `character_builder/{document=**}` | `allow read, write: if true` |
+> | `wh40k-data-slate` | wszystko pozostałe | odmowa |
+> | `audiorpg-2eb6f` | `audio/favorites` | `allow read, write: if true` |
+> | `audiorpg-2eb6f` | `generatorNpc/favorites` | `allow read, write: if true` |
+> | `audiorpg-2eb6f` | `DS2/progress` | `allow read, write: if true` — projekt Dark Souls II zakończony, kolekcja skasowana |
+> | `audiorpg-2eb6f` | wszystko pozostałe | odmowa |
+>
+> Czyli Twoje pierwotne zdanie — *„wszystkie »Rules« mam ustawione jako allow write wszędzie"* — było **trafne co do istoty**: wszystkie ścieżki, z których aplikacja faktycznie korzysta, są otwarte dla każdego. Nietrafne było tylko słowo „wszędzie": poza tymi ścieżkami reguły odmawiają dostępu, i **Realtime Database, w której leży cały DataVault, jest zamknięta naprawdę**.
+
+### 9.2. Jak to sprawdziłem — metoda, sprostowanie i test zapisu
 
 Nie poprzestałem na przeczytaniu pliku z regułami, bo plik w repozytorium może się różnić od tego, co jest naprawdę wgrane do Firebase. Wykonałem test praktyczny.
 
@@ -779,21 +886,48 @@ Nie poprzestałem na przeczytaniu pliku z regułami, bo plik w repozytorium moż
 
 Dzięki temu odpowiedź jest jednoznaczna, a **żadne prawdziwe dane nie zostały pobrane**.
 
-**Wyniki:**
+#### 🔺 Sprostowanie mojego wcześniejszego błędu
 
-| Projekt | Zapytanie o nieistniejący dokument | Odpowiedź | Wniosek |
+W pierwszej wersji tego rozdziału napisałem, że projekt `audiorpg-2eb6f` **odrzuca zapytania z zewnątrz**, i podałem dwa możliwe wyjaśnienia (wymóg logowania albo ograniczenie klucza API). **To było błędne** i chcę wprost powiedzieć, na czym polegał mój błąd, bo prowadził do zaniżenia wagi problemu.
+
+Metoda z pytaniem o *nieistniejący* dokument ma pułapkę, której wtedy nie uwzględniłem: **działa tylko wtedy, gdy reguła obejmuje całą kolekcję.** Reguły w projekcie `audiorpg-2eb6f` są napisane pod **konkretne dokumenty** (`match /audio/favorites`), a nie pod kolekcję (`match /audio/{document=**}`). Zapytanie o `audio/cokolwiek-innego` nie pasuje więc do żadnej reguły i dostaje `403` — nie dlatego, że dostęp wymaga logowania, tylko dlatego, że pytałem o dokument, którego żadna reguła nie opisuje.
+
+Gdy zapytałem o **prawdziwe** ścieżki, odpowiedź była jednoznaczna.
+
+**Wyniki — stan zweryfikowany 13 września, bez żadnego logowania:**
+
+| Projekt | Zapytanie | Odpowiedź | Wniosek |
 |---|---|---|---|
-| `wh40k-data-slate` | w `character_builder` | `404` | dostęp **przyznany** |
-| `wh40k-data-slate` | w `dataslate` | `404` | dostęp **przyznany** |
-| `wh40k-data-slate` | w kolekcji spoza reguł (test kontrolny) | `403` | **zabroniony** — test działa poprawnie |
-| `audiorpg-2eb6f` | w `generatorNpc` | `403` | dostęp **zabroniony** |
-| `audiorpg-2eb6f` | w `audio` | `403` | dostęp **zabroniony** |
-| `audiorpg-2eb6f` | w kolekcji spoza reguł (test kontrolny) | `403` | zabroniony |
-| `wh40k-data-slate` — **Realtime Database** | ścieżka nieistniejąca, bez logowania | `401` | **wymaga zalogowania** |
+| `wh40k-data-slate` | `dataslate/current` | `200` | **odczyt otwarty dla każdego** |
+| `wh40k-data-slate` | `character_builder/current` | `200` | **odczyt otwarty dla każdego** |
+| `wh40k-data-slate` | `character_builder/v2` | `200` | **odczyt otwarty dla każdego** |
+| `wh40k-data-slate` | `dataslate/dokument-nieistniejący` | `404` | reguła obejmuje całą kolekcję — dostęp przyznany |
+| `wh40k-data-slate` | kolekcja spoza reguł (test kontrolny) | `403` | zabroniony — metoda działa poprawnie |
+| `audiorpg-2eb6f` | `audio/favorites` | **`200`** | **odczyt otwarty dla każdego** |
+| `audiorpg-2eb6f` | `generatorNpc/favorites` | **`200`** | **odczyt otwarty dla każdego** |
+| `audiorpg-2eb6f` | `DS2/progress` | `404` | reguła nadal jest, ale dokument już skasowany |
+| `audiorpg-2eb6f` | `audio/dokument-nieistniejący` | `403` | ← **to jest ten wynik, który mnie wcześniej zmylił** |
+| `wh40k-data-slate` — **Realtime Database** | `datavault/live` | `401` „Permission denied" | **wymaga zalogowania — zamknięte poprawnie** |
 
-Test kontrolny jest tu istotny: dowodzi, że metoda faktycznie rozróżnia „wolno" od „nie wolno", więc wyniki `404` nie są przypadkiem.
+**Czyli oba projekty są otwarte, nie jeden.** Ulubione zestawy GeneratorNPC i ustawienia modułu Audio są dziś dostępne dla każdego, kto zna identyfikator projektu.
 
-**Czego celowo NIE zrobiłem.** Nie testowałem zapisu. Zapis oznaczałby zmodyfikowanie Twojej produkcyjnej bazy, a Infoczytnik nasłuchuje zmian na żywo — testowy wpis mógłby się komuś wyświetlić na ekranie w trakcie sesji. Uprawnienie do zapisu jest w regułach zapisane **w tej samej sekcji** co odczyt, więc skoro odczyt działa, zapis niemal na pewno też. Gdybyś chciał mieć na to twardy dowód, mogę wykonać kontrolowany zapis do specjalnie utworzonej, nieużywanej nazwy kolekcji i natychmiast po nim posprzątać — ale potrzebuję na to wyraźnej zgody (pytanie 5).
+#### Test zapisu — wykonany, bo pozwoliłeś (pytanie 5)
+
+W pierwszej wersji zapisałem, że zapisu nie testuję i że „skoro odczyt działa, zapis niemal na pewno też". Zgodziłeś się na kontrolowany test, więc zamieniłem to przypuszczenie na dowód.
+
+**Co dokładnie zrobiłem — bez logowania, z zewnątrz:**
+
+| Krok | Operacja | Odpowiedź |
+|---|---|---|
+| 1 | Utworzenie dokumentu `dataslate/audyt-test-2026-09-13` | `200` — **utworzony** |
+| 2 | Odczytanie go z powrotem | `200` — treść zgodna z zapisaną |
+| 3 | Skasowanie go | `200` — **skasowany** |
+| 4 | Sprawdzenie, że zniknął | `404` — potwierdzone |
+| 5 | Sprawdzenie, że `dataslate/current` jest nietknięty | `200`, data ostatniej zmiany nadal 6 czerwca 2026 |
+
+**Wniosek jest teraz twardy, a nie prawdopodobny: dowolna osoba z internetu może w Twojej bazie utworzyć, odczytać, nadpisać i skasować dokument — bez logowania i bez żadnej przeszkody.**
+
+Test celowo dotyczył **osobnej nazwy dokumentu**, z której aplikacja nie korzysta. Infoczytnik nasłuchuje wyłącznie `dataslate/current`, więc na żadnym ekranie nic się nie pojawiło, a produkcyjny dokument nie został dotknięty — potwierdza to niezmieniona data jego ostatniej modyfikacji. Po teście nie została żadna pozostałość.
 
 ### 9.3. Co z tego wynika
 
@@ -801,32 +935,29 @@ Test kontrolny jest tu istotny: dowodzi, że metoda faktycznie rozróżnia „wo
 
 Baza Realtime Database, w której leży cały `datavault/live` (czyli wszystkie arkusze z `Repozytorium.xlsx`), **odrzuca odczyt bez zalogowania** (`401`). Mechanizm „Litanii Dostępu" nie jest ozdobą — to prawdziwa bramka oparta na Firebase Authentication. Ten kawałek jest zrobiony dobrze i nie wymaga zmian.
 
-#### 🟢 Dobra wiadomość — projekt `audiorpg-2eb6f` też odrzuca obcych
+#### 🟠 Zła wiadomość — projekt `audiorpg-2eb6f` jest otwarty tak samo
 
-Ulubione z GeneratorNPC i ustawienia z Audio odrzucają zapytania bez uwierzytelnienia.
+**To jest miejsce, w którym się wcześniej pomyliłem** (sprostowanie w 9.2). Ulubione zestawy GeneratorNPC (`generatorNpc/favorites`) i ustawienia modułu Audio (`audio/favorites`) odpowiadają `200` bez żadnego logowania — czyli są otwarte dla każdego do odczytu i zapisu, dokładnie tak jak dokumenty w drugim projekcie.
 
-**Ale tu potrzebuję Twojego potwierdzenia**, bo odpowiedź `403` ma dwa możliwe wyjaśnienia i z zewnątrz nie da się ich odróżnić:
+Rozwiązuje się przy okazji zagadka, którą wtedy zgłosiłem: pytałem, jak GeneratorNPC loguje się do tego projektu, skoro w kodzie nie widać żadnego logowania. Odpowiedź brzmi: **nie loguje się wcale i nie musi** — reguły nikogo o to nie pytają.
 
-- **(a)** reguły w tym projekcie wymagają zalogowania (np. `if request.auth != null`), albo
-- **(b)** klucz API tego projektu ma ograniczenie do domeny `cutelittlegoat.github.io` i odrzuca zapytania spoza niej.
-
-Ma to znaczenie praktyczne: jeżeli zachodzi **(a)**, to warto sprawdzić, jak GeneratorNPC się loguje, bo w kodzie tego modułu **nie widzę żadnego logowania** do projektu `audiorpg-2eb6f` — a mimo to ulubione działają. Jeżeli zachodzi **(b)**, to reguły mogą być otwarte, a chroni je tylko ograniczenie klucza, które nie jest zabezpieczeniem (patrz 9.7). **Proszę o zajrzenie do Firebase Console → Firestore → Rules w projekcie `audiorpg-2eb6f`** (pytanie 4).
+Waga jest tu niższa niż przy Infoczytniku, bo chodzi o listy ulubionych, a nie o treść wyświetlaną graczom na żywo — i potwierdziłeś, że ulubione w GeneratorNPC to dane testowe, a listy da się odtworzyć (pytanie 7). Ale rozwiązanie jest to samo i wykonuje się je równolegle: **App Check w obu projektach**.
 
 #### 🔴 Zła wiadomość — kanał Infoczytnika jest otwarty dla każdego
 
-Kolekcja `dataslate` w projekcie `wh40k-data-slate` odpowiada `404`, czyli **wpuszcza każdego, bez logowania**.
+Reguła `match /dataslate/{document=**} { allow read, write: if true; }` **wpuszcza każdego, bez logowania** — potwierdzone i odczytem (`200`), i zapisem (rozdz. 9.2).
 
 Co to jest: `dataslate/current` to jeden dokument, przez który panel GM przekazuje treść na ekran Infoczytnika. Panel zapisuje (`GM_test.html:508` — `currentRef.set(getPayload(type), {merge:false})`), a ekran gracza nasłuchuje na żywo (`Infoczytnik_test.html:223` — `ref.onSnapshot(...)`).
 
 Konsekwencje, uszeregowane wg wagi:
 
-1. **🔴 Podszycie się pod MG.** Skoro odczyt jest otwarty, a zapis jest w tej samej regule, to osoba z zewnątrz może nadpisać ten dokument. Ponieważ ekran gracza nasłuchuje na żywo, dowolna treść pojawiłaby się **natychmiast na ekranie w trakcie sesji**. Zapis używa `{merge:false}`, czyli nadpisuje całość — więc równie dobrze można wyczyścić to, co MG właśnie wysłał.
+1. **🔴 Podszycie się pod MG.** Osoba z zewnątrz może nadpisać ten dokument — **to nie jest już przypuszczenie, tylko rzecz sprawdzona** (test zapisu w 9.2). Ponieważ ekran gracza nasłuchuje na żywo, dowolna treść pojawiłaby się **natychmiast na ekranie w trakcie sesji**. Zapis używa `{merge:false}`, czyli nadpisuje całość — więc równie dobrze można wyczyścić to, co MG właśnie wysłał.
 2. **🟠 Podgląd tego, co MG wysyła.** Każdy, kto zna identyfikator projektu (a jest on jawny w repozytorium — i tak być musi), może odczytywać treści przekazywane graczom.
 3. **🟡 Koszty.** Otwarta kolekcja pozwala dowolnej osobie generować odczyty i zapisy bez ograniczenia. Na darmowym planie skończy się to zablokowaniem po przekroczeniu limitu.
 
 #### 🟠 Kreatory postaci są otwarte dla każdego
 
-`character_builder/current` (Prosty Kreator) i `character_builder/v2` (Zaawansowany Kreator) odpowiadają `404` — czyli reguły z pliku `Kalkulator/config/firestore.rules` (`allow read, write: if true`) są faktycznie wgrane i działają dokładnie tak, jak napisano.
+`character_builder/current` (Prosty Kreator) i `character_builder/v2` (Zaawansowany Kreator) odpowiadają `200` — wgrana reguła obejmuje całą kolekcję `character_builder` i brzmi `allow read, write: if true`.
 
 Zawartość to arkusz postaci: atrybuty, umiejętności, talenty, słowa kluczowe, nazwa gatunku i archetypu. Nie ma tam haseł ani danych osobowych, więc waga jest niższa niż przy Infoczytniku — ale **każdy może to odczytać, nadpisać i skasować**.
 
@@ -886,13 +1017,15 @@ Ostatni wiersz nie jest wadą App Check, tylko granicą tego, co ten mechanizm w
 
 ### 9.6. Plik reguł w repozytorium nie odpowiada temu, co jest wgrane
 
-`Kalkulator/config/firestore.rules` opisuje trzy dokumenty `character_builder/*` i kończy regułą odmowy dla wszystkiego pozostałego:
+**Potwierdzone po otrzymaniu prawdziwych reguł.** Rozbieżności są trzy i idą w obie strony:
 
-```
-match /{document=**} { allow read, write: if false; }
-```
+| Co | W repozytorium (`Kalkulator/config/firestore.rules`) | Naprawdę wgrane |
+|---|---|---|
+| Kreatory postaci | trzy osobne dokumenty: `character_builder/current`, `character_builder/v2`, `character_builder/test-v2` | **cała kolekcja**: `character_builder/{document=**}` — czyli szerzej, niż mówi plik |
+| Kanał Infoczytnika | **brak jakiejkolwiek wzmianki** | `dataslate/{document=**}`, otwarte dla każdego |
+| Drugi projekt (`audiorpg-2eb6f`) | **brak pliku w ogóle** | trzy reguły dokumentowe, w tym jedna po skasowanym projekcie Dark Souls II |
 
-Gdyby to były wszystkie wgrane reguły, kolekcja `dataslate` musiałaby zwrócić `403`. Zwraca `404`. **Wniosek: we wgranych regułach jest co najmniej jeszcze jedna sekcja, której nie ma w repozytorium.**
+Najgroźniejszy jest wiersz drugi: **najbardziej wrażliwa reguła w całej aplikacji nie istnieje w żadnym pliku w repozytorium.** Ktoś, kto chciałby sprawdzić stan zabezpieczeń, czytając kod, dostałby obraz bezpieczniejszy niż rzeczywisty.
 
 To jest problem sam w sobie, niezależny od bezpieczeństwa: nie ma jednego, wersjonowanego, kompletnego pliku reguł. Nie da się przejrzeć historii zmian ani odtworzyć stanu po pomyłce. Rekomendacja: przenieść **pełny, aktualny** zestaw reguł obu projektów do repozytorium (proponowane miejsca: `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules`) i od tej pory zmieniać je tylko przez ten plik.
 
@@ -908,6 +1041,8 @@ Nie. Ograniczenie sprawdza nagłówek `Referer`, który wysyła przeglądarka �
 Nie. Nawet w prywatnym repozytorium `apiKey` i identyfikator projektu byłyby widoczne w kodzie strony u każdego użytkownika. Publiczne repozytorium **ułatwia** znalezienie projektu i pokazuje strukturę bazy, ale **nie jest przyczyną**. Przyczyną są reguły.
 
 ### 9.8. Co dokładnie zrobić — plan
+
+> **Instrukcja krok po kroku jest w osobnym pliku:** `Analizy/instrukcja-appcheck-2026-09-13.md`. Ten rozdział mówi *co* i *dlaczego*; tamten plik mówi *gdzie kliknąć*, ekran po ekranie, dla obu projektów.
 
 Twój cel brzmiał: *„żeby modyfikacja Firestore była możliwa tylko poprzez aplikację WrathAndGlory"*. To jest dokładnie zadanie dla **App Check** — tego samego mechanizmu, który wdrożyłeś w projekcie `Karty` i który masz opisany w `Instrukcja_AppCheck_20260907.md`. Poniżej to, co w tej aplikacji jest **inne** niż tam.
 
@@ -933,7 +1068,7 @@ Czyli **rejestrujesz dokładnie dwie aplikacje webowe — po jednej na projekt**
 
 #### Różnica 3 — trzeba objąć także Realtime Database
 
-DataVault czyta dane z **Realtime Database**, nie z Firestore. App Check ma dla niej osobny przełącznik wymuszania. Jeżeli włączysz wymuszanie tylko dla Firestore, DataVault zostanie poza ochroną. W zakładce **App Check → APIs** trzeba więc włączyć wymuszanie dla **obu**: `Cloud Firestore` i `Realtime Database`.
+DataVault czyta dane z **Realtime Database**, nie z Firestore. App Check ma dla niej osobny przełącznik wymuszania. Jeżeli włączysz wymuszanie tylko dla Firestore, DataVault zostanie poza ochroną. W zakładce **App Check → APIs** trzeba więc włączyć wymuszanie dla `Cloud Firestore` **i** `Realtime Database` — ale **tylko w projekcie `wh40k-data-slate`**. Projekt `audiorpg-2eb6f` nie ma Realtime Database i pozycja ta się tam nie pojawi; to nie jest usterka.
 
 #### Różnica 4 — kod trzeba dopisać w sześciu miejscach
 
@@ -989,7 +1124,7 @@ service cloud.firestore {
 }
 ```
 
-Dla projektu **`audiorpg-2eb6f`** — do uzupełnienia po sprawdzeniu, co jest tam wgrane dziś (pytanie 4); szkielet:
+Dla projektu **`audiorpg-2eb6f`** — teraz już nie szkielet, tylko komplet, bo znam wgrane reguły:
 
 ```
 rules_version = '2';
@@ -1005,6 +1140,11 @@ service cloud.firestore {
     // Ustawienia modułu Audio / Audio module settings
     match /audio/favorites        { allow read, write: if zAplikacji(); }
 
+    // Reguła dla DS2/progress usunięta — projekt Dark Souls II zakończony,
+    // kolekcja skasowana (potwierdzone: dokument zwraca 404).
+    // The DS2/progress rule is gone — the Dark Souls II project is finished
+    // and its collection was deleted (verified: the document returns 404).
+
     match /{document=**} { allow read, write: if false; }
   }
 }
@@ -1012,8 +1152,12 @@ service cloud.firestore {
 
 Zmiany wobec dzisiejszego stanu, poza samym App Check:
 
-- **usunięta reguła dla `character_builder/test-v2`** — migracja dawno się odbyła, a w kodzie nie ma śladu po tym dokumencie (rozdz. 8),
-- **`dataslate` zawężone do konkretnego dokumentu `current`** zamiast całej kolekcji — to jedyny dokument, którego aplikacja używa.
+- **`dataslate` zawężone do dokumentu `current`** zamiast całej kolekcji — to jedyny dokument, którego aplikacja używa. Warto zrobić to od razu: mój test zapisu z rozdz. 9.2 utworzył dokument o innej nazwie w tej samej kolekcji właśnie dlatego, że dzisiejsza reguła na to pozwala.
+- **`character_builder` zawężone do dwóch konkretnych dokumentów** (`current` i `v2`) zamiast całej kolekcji. Reguła dla `character_builder/test-v2` z pliku w repozytorium nie jest w ogóle wgrana i nie ma po niej śladu w kodzie (rozdz. 8) — nie przenoszę jej.
+- **`DS2/progress` usunięte** — zgodnie z Twoją informacją, że projekt Dark Souls II został zakończony, a kolekcja skasowana. Sprawdziłem: dokument zwraca `404`, więc reguła nie ma już czego chronić.
+- **Realtime Database bez zmian w regułach** — jest zamknięta poprawnie (wymaga zalogowania). Dochodzi jej tylko wymuszanie App Check, i to **wyłącznie w projekcie `wh40k-data-slate`**, bo tylko on ma tę bazę.
+
+> **Uwaga o kolejności zawężania.** Zawężenie reguł można zrobić **od razu, przed App Check** — samo w sobie niczego nie psuje, bo aplikacja i tak korzysta wyłącznie z tych trzech dokumentów. Dopiero dopisanie `request.app != null` musi poczekać na kroki 1–5 poniżej. Jeżeli chcesz zmniejszyć ryzyko już dziś, jednym ruchem: zamień `{document=**}` na konkretne nazwy dokumentów i skasuj `DS2/progress`, zostawiając na razie `if true`.
 
 #### 🔴 Kolejność jest krytyczna
 
@@ -1044,6 +1188,8 @@ Hamulec bezpieczeństwa: w tym samym miejscu, gdzie klikasz **Enforce**, jest **
 
 ### 9.10. Kwestia, której nie ma w `Karty` — brak kopii zapasowej
 
+> **Zamknięte 13 września (pytanie 7).** Potwierdziłeś, że ulubione w GeneratorNPC to dane testowe, a listy ulubionych są odtwarzalne — tylko czasochłonne. Rozdział zostaje jako opis stanu, ale **nie proponuję tu żadnego działania**.
+
 Odnotowuję, bo w analizie dla `Karty` uznałeś ochronę przed przypadkowym skasowaniem za cel nadrzędny, a tutaj sytuacja jest inna:
 
 | Dane | Czy da się je odtworzyć po skasowaniu |
@@ -1054,9 +1200,11 @@ Odnotowuję, bo w analizie dla `Karty` uznałeś ochronę przed przypadkowym ska
 | `audio/favorites` | **NIE** |
 | `dataslate/current` | nieistotne — to bufor bieżącej wiadomości |
 
-Czyli największa i najcenniejsza część danych (DataVault) **jest odtwarzalna z pliku XLSX** — i to jest bardzo dobra własność tej architektury, warta świadomego utrzymania. Nieodtwarzalne są arkusze postaci i ulubione. Czy warto dla nich budować przycisk kopii zapasowej — pytanie 9.
+Czyli największa i najcenniejsza część danych (DataVault) **jest odtwarzalna z pliku XLSX** — i to jest bardzo dobra własność tej architektury, warta świadomego utrzymania. Nieodtwarzalne są arkusze postaci i ulubione, ale potwierdziłeś, że są to dane testowe i odtwarzalne ręcznie — więc przycisku kopii zapasowej nie proponuję.
 
 ### 9.11. Uwaga na marginesie — sekret usunięty z plików, ale nie z historii
+
+> **Zamknięte 13 września (pytanie 4).** Potwierdziłeś, że `TRIGGER_TOKEN` został zmieniony w panelu Cloudflare. Stara wartość w historii repozytorium przestała cokolwiek otwierać. Rozdział zostaje jako opis mechanizmu, ale **nie jest już zadaniem do wykonania**.
 
 Przy okazji przeglądania repozytorium sprawdziłem stan pliku `WebView_FCM_Cloudflare_Worker/TRIGGER_TOKEN`, o którym mowa w starszej analizie `Analizy/KonfiguracjaCloudflareAudio.md`.
 
@@ -1068,7 +1216,7 @@ Praktyczny wniosek jest prosty i dotyczy każdego sekretu, który kiedykolwiek t
 
 > **Jedyne, co naprawdę pomaga, to zmiana wartości sekretu po stronie usługi.** Sprzątanie pliku jest potrzebne, żeby nie powielać błędu, ale samo z siebie nic nie odwraca.
 
-Jeżeli `TRIGGER_TOKEN` został już zmieniony w panelu Cloudflare (starsza analiza przewidywała to w sekcji 4) — sprawa jest zamknięta i ten akapit jest tylko potwierdzeniem. Jeżeli **nie** został zmieniony, to jest to najpilniejsza rzecz z całego tego dokumentu, pilniejsza niż App Check. **Nie potrafię tego sprawdzić z zewnątrz** — panel Cloudflare jest chroniony Twoim logowaniem (pytanie 10).
+`TRIGGER_TOKEN` **został zmieniony w panelu Cloudflare** — potwierdziłeś to 13 września. Stara wartość zapisana w historii repozytorium przestała więc cokolwiek otwierać i sprawa jest zamknięta. Ten akapit zostaje jako opis mechanizmu: usunięcie sekretu z pliku nigdy nie usuwa go z przeszłości repozytorium — jedyne, co naprawdę zamyka sprawę, to nadanie nowej wartości po stronie usługi.
 
 To samo dotyczy pliku `WebView_FCM_Cloudflare_Worker/google-services.json`, który jest śledzony przez gita. W jego przypadku nie ma powodu do niepokoju: zawiera te same jawne z założenia identyfikatory projektu co `firebase-config.js` (patrz 9.7) — nie jest to sekret.
 
@@ -1081,11 +1229,11 @@ Baza danych ma dwa wejścia. Pierwsze to panel Firebase Console, do którego wch
 Sprawdziłem, co się dzieje, gdy ktoś podejdzie do tego drugiego wejścia bez logowania:
 
 - do **danych DataVault** (arkusze z Repozytorium) — **nie wejdzie**, bramka działa,
-- do **ulubionych GeneratorNPC i ustawień Audio** — **nie wejdzie** (choć nie wiem, czy dzięki regułom, czy dzięki ograniczeniu klucza — stąd pytanie 5),
+- do **ulubionych GeneratorNPC i ustawień Audio** — **wejdzie bez przeszkód**; wcześniej napisałem tu odwrotnie i była to pomyłka, którą prostuję w rozdz. 9.2,
 - do **arkuszy postaci z obu kreatorów** — **wejdzie i może je zmienić**,
-- do **kanału, przez który MG wysyła treść na ekran Infoczytnika** — **wejdzie, może podejrzeć, a najprawdopodobniej także wysłać graczom dowolną treść w trakcie sesji**.
+- do **kanału, przez który MG wysyła treść na ekran Infoczytnika** — **wejdzie, może podejrzeć i może wysłać graczom dowolną treść w trakcie sesji**.
 
-To ostatnie jest jedynym miejscem, które uważam za wymagające reakcji. Reszta to porządki.
+Ostatni punkt nie jest już przypuszczeniem: wykonałem kontrolowany test zapisu (za Twoją zgodą) i **utworzenie, odczytanie i skasowanie dokumentu w tej bazie z zewnątrz, bez logowania, udało się w całości** (rozdz. 9.2). To jest jedyne miejsce, które uważam za wymagające reakcji. Reszta to porządki.
 
 Rozwiązanie, o które pytasz — App Check — jest właściwe i wystarczające dla tego zastosowania. Trzeba je tylko wdrożyć w **odpowiedniej kolejności**, bo zrobione odwrotnie wyłączy całą aplikację wszystkim naraz.
 
@@ -1096,10 +1244,10 @@ Rozwiązanie, o które pytasz — App Check — jest właściwe i wystarczające
 | Ryzyko | Waga | Jak je ograniczyć |
 |---|---|---|
 | **Włączenie App Check w złej kolejności wyłączy całą aplikację** wszystkim naraz | 🔴 wysoka | Trzymać się kolejności z rozdz. 9.8. Zapamiętać ścieżkę do przycisku **Unenforce** — to hamulec bezpieczeństwa całej operacji |
-| **Usunięcie ścieżki SheetJS bez porównania wyniku** narusza `AGENTS.md` §15 | 🟠 średnia | Wykonać procedurę z rozdz. 7.7 — pliki wejściowe są już dostępne, punkt odniesienia policzony |
+| **Usunięcie ścieżki SheetJS bez porównania wyniku** narusza `AGENTS.md` §14 | 🟠 średnia | Wykonać procedurę z rozdz. 7.7 — pliki wejściowe są już dostępne, punkt odniesienia policzony |
 | **Wydzielenie wspólnych funkcji formatujących** zmieni wygląd tekstu w dwóch modułach naraz — trzy udokumentowane rozjazdy trzeba świadomie rozstrzygnąć | 🟠 średnia | Najpierw ustalić, która wersja jest właściwa (rozdz. 6.1), potem porównać wynik na kilkunastu rekordach przed i po |
-| **Poprawka okna porównania (3.5) zmieni wygląd widoczny dla użytkownika** | 🟡 niska | Decyzja należy do Ciebie — pytanie 2 |
-| **Ujednolicenie napisu „Brak danych" (5.5) zmieni widoczny tekst** | 🟡 niska | Decyzja należy do Ciebie — pytanie 3 |
+| **Poprawka okna porównania (3.5) zmieni wygląd widoczny dla użytkownika** | 🟡 niska | **Ustalone:** style naprawiamy (sklejone kolumny to usterka), podświetlania różnic nie dodajemy — rozdz. 3.5 |
+| **Ujednolicenie napisu „Brak danych" (5.5) zmieni widoczny tekst** | 🟡 niska | **Ustalone:** zgoda otrzymana |
 | **Zmiany w Infoczytniku wykonane w niewłaściwych plikach** | 🟡 niska | `Infoczytnik/AGENTS.md`: wyłącznie `*_test.html` + aktualizacja `INF_VERSION` w obu |
 | **Normalizacja zakończeń wierszy w `Infoczytnik.html`** pokaże w historii zmianę wszystkich 237 linii | 🟡 niska | Zrobić to osobnym zatwierdzeniem, opisanym jako sama zmiana zakończeń wierszy |
 | **Przesłany `Repozytorium.xlsx` jest starszy niż przesłany `data.json`** (rozdz. 7.5) | 🟡 niska | Przed generowaniem danych upewnić się, że pracujesz na najnowszej wersji arkusza — inaczej cofniesz jedną cechę |
@@ -1131,7 +1279,7 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 
 ### Etap B — sprzątanie wymagające sprawdzenia (~4 h)
 
-> **Odblokowane.** Pliki `Repozytorium.xlsx` i `data.json` otrzymałem 10 września, porównanie obu ścieżek generowania jest wykonane (rozdz. 7). Warunek z `AGENTS.md` §15 da się teraz spełnić.
+> **Odblokowane.** Pliki `Repozytorium.xlsx` i `data.json` otrzymałem 10 września, porównanie obu ścieżek generowania jest wykonane (rozdz. 7). Warunek z `AGENTS.md` §14 da się teraz spełnić.
 
 | # | Co | Warunek |
 |---|---|---|
@@ -1144,7 +1292,7 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 
 | # | Co | Uwaga |
 |---|---|---|
-| C1 | Sprawdzić w Firebase Console faktyczne reguły **obu** projektów i przenieść je do repozytorium | pytanie 4; to jest warunek wstępny dla całej reszty |
+| C1 | ✅ **Zrobione** — reguły obu projektów otrzymane 13 września (rozdz. 9.1). Zostaje przeniesienie ich do repozytorium jako kompletnych plików | warunek wstępny spełniony |
 | C2 | Utworzyć dwa klucze reCAPTCHA Enterprise | rozdz. 9.8 |
 | C3 | Zarejestrować po jednej aplikacji webowej w App Check w każdym projekcie, TTL `1 days` | rozdz. 9.8 |
 | C4 | Dodać inicjalizację App Check w sześciu modułach (dwie odmiany: nowoczesna i zgodnościowa) | rozdz. 9.8, różnica 4 |
@@ -1180,44 +1328,74 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 | 6 | Kolorystyka pliku z analizą responsywności | Nie musi być zgodna z zieloną paletą aplikacji |
 | 7 | Zmiany w kodzie aplikacji | **Wstrzymane** do czasu ustalenia całości. Na razie zmieniane są wyłącznie pliki analiz |
 
-### 12.2. Pytania otwarte
+Uzupełnienia z 13 września są w rozdz. 12.3.
 
-Napisane bez języka technicznego. Przy każdym podaję, co zrobię, jeśli nie odpowiesz.
+### 12.2. Odpowiedzi na pytania — stan na 13 września
 
-**Pytanie 1 — czy możesz zajrzeć do Firebase Console i sprawdzić reguły obu projektów?**
-Potrzebuję zobaczyć, co jest **naprawdę wgrane** w projektach `wh40k-data-slate` i `audiorpg-2eb6f` (Firestore → Rules oraz Realtime Database → Rules). Powód: reguły zapisane w repozytorium nie odpowiadają temu, co zmierzyłem, a dla drugiego projektu w repozytorium w ogóle nie ma pliku z regułami. Bez tego nie napiszę kompletnego zestawu reguł — mogę tylko zgadywać.
-*Domyślnie: **czekam z etapem C** do czasu otrzymania obecnych reguł. Wystarczy skopiować tekst z okna i wkleić do czatu.*
+Wszystkie osiem pytań ma odpowiedź. Poniżej Twoja decyzja i to, co zrobiłem albo zrobię w konsekwencji.
 
-**Pytanie 2 — czy okno „Porównaj zaznaczone" ma zacząć wyróżniać różnice?**
-Dziś, gdy porównujesz dwa wpisy, tabela wyświetla się bez ramek i bez kolorów, a pola, które się różnią, **nie są w żaden sposób oznaczone** — mimo że w kodzie są przygotowane style, żeby świeciły na pomarańczowo. Wygląda to na niedokończoną przeróbkę. Poprawka sprawi, że okno zacznie wyglądać jak reszta aplikacji, a różnice będą widoczne na pierwszy rzut oka. **To jedyna poprawka w tym audycie, która zmieni wygląd.**
-*Domyślnie: **tak, poprawiam** — wygląda na przeoczenie, a nie na decyzję.*
+**Pytanie 1 — reguły obu projektów Firebase → ✅ ODPOWIEDZIANE**
 
-**Pytanie 3 — czy poprawić polski komunikat „Brak danych" w DataVault?**
-Gdy nie ma danych do pokazania, po polsku wyświetla się krótszy komunikat niż po angielsku — brakuje w nim informacji, że trzeba się zalogować. Czyli akurat tej najbardziej potrzebnej.
-*Domyślnie: **tak, ujednolicam z wersją angielską**.*
+Przysłałeś pełną treść reguł z obu projektów. To zmieniło ten rozdział istotnie:
 
-**Pytanie 4 — czy token `TRIGGER_TOKEN` został już zmieniony w panelu Cloudflare?**
-W repozytorium plik z tym tokenem zawiera dziś wartość zastępczą — to jest zrobione dobrze. Ale poprzednia, prawdziwa wartość nadal jest zapisana w historii zmian repozytorium, a repozytorium jest publiczne. Usunięcie z pliku nie usuwa z przeszłości. Jedyne, co naprawdę zamyka sprawę, to nadanie nowej wartości w panelu Cloudflare. Nie mam jak tego sprawdzić — panel jest chroniony Twoim logowaniem.
-*Domyślnie: **zakładam, że zostało zmienione** (starsza analiza to przewidywała). Jeśli nie — to jest najpilniejsza rzecz z całego dokumentu.*
+- potwierdziło otwarty kanał Infoczytnika i otwarte kreatory postaci,
+- **obaliło moje twierdzenie**, że projekt `audiorpg-2eb6f` odrzuca obcych — jest otwarty tak samo (sprostowanie i przyczyna mojej pomyłki: rozdz. 9.2),
+- pozwoliło napisać **kompletne** proponowane reguły dla obu projektów zamiast szkieletu (rozdz. 9.8),
+- ujawniło trzecią rozbieżność między repozytorium a stanem wgranym (rozdz. 9.6).
 
-**Pytanie 5 — czy mogę wykonać kontrolowany test zapisu do bazy?**
-Potwierdziłem, że dane da się z bazy **odczytać** bez logowania. Nie sprawdzałem, czy da się je **zmienić**, bo to znaczyłoby ruszanie Twoich prawdziwych danych, a Infoczytnik pokazuje zmiany na żywo — testowy wpis mógłby się komuś wyświetlić na ekranie. Gdybyś chciał mieć pewność, mogę zapisać jeden wpis do specjalnie utworzonej, nieużywanej nazwy i natychmiast go skasować. Nic z tego nie pojawi się w aplikacji.
-*Domyślnie: **nie robię tego** bez wyraźnej zgody.*
+Dopisałeś też: *„Projekt Dark Souls II został zakończony. Kolekcja została usunięta. Można to skasować w nowej wersji Rules."* — sprawdziłem, `DS2/progress` zwraca `404`, więc reguła nie ma już czego chronić. Usunięta z propozycji w 9.8.
 
-**Pytanie 6 — czy ten dokument ma zostać w publicznym repozytorium?**
-Repozytorium `CuteLittleGoat/WrathAndGlory` jest publiczne. Ten plik opisuje, które elementy bazy są otwarte. Celowo nie ma tu żadnych gotowych poleceń ani instrukcji, jak to wykorzystać — ale sama informacja też ma pewną wartość dla kogoś niepożądanego. Jednocześnie wszystko, co tu napisałem, wynika wprost z plików, które w tym repozytorium już są jawne.
-- **(a)** Zostawić — po wykonaniu etapu C problem i tak przestanie istnieć.
-- **(b)** Trzymać analizy bezpieczeństwa poza repozytorium publicznym.
-- **(c)** Zmienić repozytorium na prywatne. **Uwaga: to prawdopodobnie wyłączy stronę**, bo aplikacja jest publikowana przez GitHub Pages, a to na darmowym koncie wymaga repozytorium publicznego.
-*Domyślnie: **(a) zostawiam**, ale zwracam uwagę i decyzja należy do Ciebie.*
+**Pytanie 2 — okno „Porównaj zaznaczone" → ✅ ODPOWIEDZIANE, z jednym uściśleniem**
 
-**Pytanie 7 — czy potrzebna jest kopia zapasowa danych z bazy?**
-Największa część danych (arkusze z Repozytorium) **jest bezpieczna** — odtworzysz je w każdej chwili z pliku `Repozytorium.xlsx`; potwierdziłem to praktycznie, generując `data.json` z Twojego pliku (rozdz. 7.5). Nie da się natomiast odtworzyć zapisanych arkuszy postaci i ulubionych zestawów z GeneratorNPC. W projekcie `Karty` zdecydowałeś się na przycisk kopii zapasowej.
-*Domyślnie: **nie proponuję tego tutaj** — zakres nieodtwarzalnych danych jest mały, a najcenniejsze dane masz w pliku XLSX na dysku. Ale jeśli zapisane postacie są dla Ciebie ważne, można to dorobić.*
+Skłaniałeś się ku usunięciu podświetlania różnic i poprosiłeś, żebym sprawdził to jeszcze raz. Sprawdziłem na 2258 realistycznych parach z Twoich danych. Wynik: **Twoja intuicja jest trafna dla kolumn opisowych** (w Talentach i Ekwipunku różni się 94% treści, więc podświetlenie zapaliłoby prawie całą tabelę), **ale nietrafna dla kolumn parametrycznych** (przy broniach ponad połowa parametrów jest identyczna).
 
-**Pytanie 8 — czy sprzątanie ma iść przed poprawkami responsywności, czy po?**
-Etap A tego audytu i pierwsze etapy analizy responsywności nie kolidują ze sobą i mogą iść równolegle. Jest jednak jeden punkt styku: 51 martwych reguł szerokości kolumn w GeneratorNPC leży w tym samym pliku, który poprawiamy przy zawijaniu tekstu.
-*Domyślnie: **najpierw poprawka zgłoszona przez Ciebie** (zawijanie tekstu w GeneratorNPC), a sprzątanie martwych reguł od razu po niej, w tym samym pliku.*
+Osobno wyszło coś, o czym wcześniej nie wiedziałem: **okno ma dziś realną usterkę czytelności niezależną od podświetlania** — treść sąsiednich kolumn dzieli 2 px i nie ma żadnej linii, więc napisy się sklejają („Szybkostrzelność1", „PistoletBrutalna"). Pełne wyliczenia, tabela z pomiarami i trzy warianty do wyboru: rozdz. 3.5. **Rekomendacja zgodna z Twoją decyzją: naprawić style, podświetlanie usunąć.**
+
+**Pytanie 3 — komunikat „Brak danych" w DataVault → ✅ ZGODA**
+
+Ujednolicam polski komunikat z angielskim, czyli dopisuję informację o konieczności zalogowania. Zmiana wyłącznie w treści napisu.
+
+**Pytanie 4 — token `TRIGGER_TOKEN` → ✅ ZROBIONE**
+
+Potwierdziłeś, że token został zmieniony w panelu Cloudflare. To zamyka najpilniejszą pozycję z całego dokumentu. Rozdz. 9.11 zostaje jako opis stanu, ale nie jest już zadaniem do wykonania.
+
+**Pytanie 5 — test zapisu do bazy → ✅ ZGODA, TEST WYKONANY**
+
+Napisałeś: *„Możesz robić testowe zapisy w Infoczytniku. […] testowymi wpisami nic mi nie zepsujesz."* Wykonałem test w minimalnej możliwej formie: utworzenie osobnego dokumentu, odczyt, skasowanie, sprawdzenie, że zniknął, i sprawdzenie, że produkcyjny `dataslate/current` jest nietknięty. **Wszystkie cztery operacje udały się bez logowania.** Przebieg i wyniki: rozdz. 9.2.
+
+Test celowo nie dotknął dokumentu `current`, więc na ekranie Infoczytnika nic się nie pojawiło. Po teście nie została żadna pozostałość.
+
+Wspomniałeś też o planach rozbudowy Infoczytnika o listę ulubionych (jest to teraz punkt 5 w `DoZrobienia.md`). Uwaga do tamtej pracy, wynikająca z tego audytu: **listy ulubionych będą kolejnymi dokumentami w kolekcji `dataslate`** — warto zaprojektować dla nich nazwy zanim zawęzimy reguły do samego `current`, żeby nie trzeba było wracać do reguł dwa razy.
+
+**Pytanie 6 — czy dokument ma zostać w publicznym repozytorium → ✅ ZOSTAJE**
+
+Wybrałeś wariant (a). Odnotowuję jedno: dokument opisuje teraz nie tylko *że* baza jest otwarta, ale też *sprawdzony* sposób, w jaki to potwierdziłem. Celowo nie ma tu gotowych poleceń do skopiowania. Po wykonaniu etapu C problem i tak przestaje istnieć — a to jest argument, żeby etapu C nie odkładać.
+
+**Pytanie 7 — kopia zapasowa danych → ✅ NIEPOTRZEBNA**
+
+Potwierdziłeś, że ulubione w GeneratorNPC to dane testowe, a listy ulubionych są odtwarzalne — tylko czasochłonne. Zamykam temat: **nie proponuję przycisku kopii zapasowej.** Rozdz. 9.10 zostaje jako informacja, że taka luka istnieje, ale bez rekomendacji działania.
+
+**Pytanie 8 — kolejność prac → ✅ ZGODNIE Z REKOMENDACJĄ**
+
+Najpierw poprawka zgłoszona przez Ciebie (zawijanie tekstu w GeneratorNPC), a sprzątanie 51 martwych reguł szerokości kolumn od razu po niej, w tym samym pliku.
+
+### 12.3. Ustalenia dodatkowe z 13 września
+
+| # | Sprawa | Ustalenie |
+|---|---|---|
+| 8 | Moment rozpoczęcia zmian w kodzie | *„Zmiany w kodzie będziemy wprowadzać dopiero jak odpowiem na wszystkie pytania i rozwiążemy wszystkie kwestie sporne z obu analiz."* — **nadal wstrzymane** |
+| 9 | `AGENTS.md` — dawna zasada 12 | **Usunięta.** Nie dopisuję już do plików analiz sekcji „Zmiany wykonane w kodzie". Usunięta też zasada o zapisywaniu plików „w rozmowie" |
+| 10 | Instrukcja App Check | Utworzona jako osobny plik: `Analizy/instrukcja-appcheck-2026-09-13.md` — krok po kroku, dla obu projektów, bo w obu kontach zakładka App Check jest pusta |
+| 11 | `DoZrobienia.md` | Rozszerzony o punkty 4–14, w tym listy ulubionych w Infoczytniku (poz. 5), audyt trzech repozytoriów z wersją demo (poz. 6 i 8) oraz ukrycie przełącznika języka (poz. 13) |
+
+> **Uwaga do punktu 13 z `DoZrobienia.md`.** Zapowiadasz ukrycie przełącznika języka we wszystkich modułach tego repozytorium. Ma to wpływ na dwie pozycje tego audytu: pytanie 3 (komunikat „Brak danych") i rozdz. 5.5 (napisy niezgodne między HTML a tłumaczeniami). Jeżeli w tym repozytorium zostaje wyłącznie polski, to **rozbieżności w tłumaczeniach angielskich przestają być widoczne dla użytkownika** — ale nadal będą widoczne w repozytoriach z wersją demo, gdzie przełącznik ma być domyślnie po angielsku (poz. 13). Czyli: poprawić warto, ale priorytet przenosi się z tego repozytorium na tamte.
+
+### 12.4. Kwestie nadal otwarte
+
+Zostały **dwie**, obie wymagające tylko Twojej decyzji, nie dodatkowych ustaleń:
+
+1. **Wariant A czy B dla opisu kolumn w DataVault** — rozpisany na Twoją prośbę w `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdz. 12.6. To decyzja, która wpływa na kolejność prac przed dodatkiem.
+2. **Czy zawęzić reguły Firestore od razu, czy dopiero razem z App Check** — zawężenie (`{document=**}` → konkretne dokumenty, skasowanie `DS2/progress`) można zrobić dziś, bez ryzyka i bez zmian w kodzie. Dopisanie `request.app != null` musi poczekać na kroki 1–5 z instrukcji. Szczegóły w rozdz. 9.8.
 
 ---
 
@@ -1232,15 +1410,27 @@ Etap A tego audytu i pierwsze etapy analizy responsywności nie kolidują ze sob
 
 **Najpilniejsze trzy rzeczy:**
 
-1. **Kanał Infoczytnika jest otwarty dla każdego** (rozdz. 9.3). To jedyne miejsce, gdzie widzę realną możliwość zaszkodzenia — ktoś z zewnątrz mógłby wysłać graczom dowolną treść w trakcie sesji. App Check to zamyka i jest to jedyne zabezpieczenie, jakiego tu potrzeba (rozdz. 9.4).
+1. **Kanał Infoczytnika jest otwarty dla każdego** (rozdz. 9.3) — i po teście zapisu z 13 września nie jest to już przypuszczenie, tylko rzecz sprawdzona: z zewnątrz, bez logowania, udało się w tej bazie utworzyć, odczytać i skasować dokument. To jedyne miejsce, gdzie widzę realną możliwość zaszkodzenia — ktoś z zewnątrz może wysłać graczom dowolną treść w trakcie sesji. App Check to zamyka i jest to jedyne zabezpieczenie, jakiego tu potrzeba (rozdz. 9.4), a kroki wykonawcze są w `Analizy/instrukcja-appcheck-2026-09-13.md`.
 2. **DataVault przy każdym uruchomieniu próbuje pobrać bibliotekę, której nie ma** (rozdz. 3.1). Nieszkodliwe, ale to jednolinijkowa poprawka.
 3. **Blok bramki dostępu wkleił się do szablonu karty NPC do druku** (rozdz. 5.1). Też jedna linia.
 
 **Co do „śmieci po przeróbkach" — tak, jest ich sporo:** około 510 linii martwego kodu i martwego CSS, w tym cała nieużywana ścieżka czytania plików XLSX oraz 51 z 81 reguł szerokości kolumn w GeneratorNPC, które nie mają czego dotyczyć. Nic z tego nie szkodzi, ale wszystko utrudnia czytanie kodu i sprzyja przyszłym pomyłkom.
 
-**Jedna rzecz, którą uważam za ważniejszą, niż wygląda:** dwie implementacje parsera XLSX **rozjeżdżają się w kolejności pól** dla arkuszy `Bronie` i `Bronie Pojazdów` — potwierdzone pomiarem. Różnica nie zmienia niczego, co widzi użytkownik, ale sprawia, że nie da się użyć zwykłego porównania obu plików jako testu zgodności — a właśnie takiego testu wymaga zasada 15 z `AGENTS.md`. To zmiana jednego wyrażenia w jednym miejscu i warto ją zrobić przed zapowiedzianym dodatkiem, bo dopiero wtedy sprzątanie w parserze da się sprawdzić automatycznie.
+**Jedna rzecz, którą uważam za ważniejszą, niż wygląda:** dwie implementacje parsera XLSX **rozjeżdżają się w kolejności pól** dla arkuszy `Bronie` i `Bronie Pojazdów` — potwierdzone pomiarem. Różnica nie zmienia niczego, co widzi użytkownik, ale sprawia, że nie da się użyć zwykłego porównania obu plików jako testu zgodności — a właśnie takiego testu wymaga zasada 14 z `AGENTS.md`. To zmiana jednego wyrażenia w jednym miejscu i warto ją zrobić przed zapowiedzianym dodatkiem, bo dopiero wtedy sprzątanie w parserze da się sprawdzić automatycznie.
 
 ---
 
-*Analiza wykonana 10 września 2026, uzupełniona o wyniki na prawdziwych danych po przesłaniu plików wsadowych. W kodzie aplikacji nie wprowadzono żadnych zmian.*
-*Analiza siostrzana: `Analizy/responsywnosc-aplikacji-2026-09-10.html`*
+**Co się zmieniło 13 września.** Otrzymałem Twoje odpowiedzi na wszystkie osiem pytań oraz prawdziwą treść reguł obu projektów Firebase. Skutki dla tego dokumentu:
+
+- **sprostowałem błąd**: napisałem wcześniej, że projekt `audiorpg-2eb6f` odrzuca obcych — nie odrzuca; przyczyna mojej pomyłki jest opisana w rozdz. 9.2,
+- **zamieniłem przypuszczenie na dowód**: wykonałem za Twoją zgodą kontrolowany test zapisu i po nim posprzątałem (rozdz. 9.2),
+- **rozstrzygnąłem pomiarem** kwestię okna „Porównaj zaznaczone" — Twoja intuicja okazała się trafna dla kolumn opisowych, ale przy okazji wyszła osobna, realna usterka czytelności (rozdz. 3.5),
+- **domknąłem** pytania o `TRIGGER_TOKEN` i o kopię zapasową — oba przestały być zadaniami,
+- **napisałem kompletne reguły** dla obu projektów zamiast szkieletu i dodałem osobną instrukcję krok po kroku dla App Check.
+
+**Otwarte zostały dwie decyzje**, obie wypisane w rozdz. 12.4.
+
+---
+
+*Analiza wykonana 10 września 2026, uzupełniona 13 września o odpowiedzi użytkownika, prawdziwe reguły Firebase i wynik kontrolowanego testu zapisu. W kodzie aplikacji nie wprowadzono żadnych zmian.*
+*Analiza siostrzana: `Analizy/responsywnosc-aplikacji-2026-09-10.html` · Instrukcja wykonawcza: `Analizy/instrukcja-appcheck-2026-09-13.md`*
