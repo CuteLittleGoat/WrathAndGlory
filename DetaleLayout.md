@@ -1126,3 +1126,80 @@ A table row becomes a card. The page scrolls and the header is hidden.
 | Header background | transparent | opaque |
 | Horizontal overflow on a 390 px phone | 1621 px | 0 px |
 | Selection column width | 63 px | 39 px |
+
+## Poprawki responsywności pozostałych modułów
+
+### Prosty Kreator Postaci (`Kalkulator/TworzeniePostaci.html`)
+
+- `.wrapper`: `width: min(1100px, 100%)`. Zapis `96vw` odnosił się do szerokości ekranu, a nie do
+  miejsca pozostałego po marginesie wewnętrznym `body`, więc na wąskim ekranie strona się rozjeżdżała;
+- każda z trzech tabel (atrybuty, umiejętności, talenty) jest w `<div class="table-wrap">`
+  z `overflow-x: auto` — ten sam układ, który działa w Zaawansowanym Kreatorze;
+- punkt łamania `max-width: 760px`: `body` dostaje `padding: 12px 8px`, `.wrapper` `padding: 14px`,
+  `.language-switcher` przechodzi z `position: absolute` na `static` i układa przyciski w wiersz nad
+  tytułem, a tabele dostają `min-width` (atrybuty 560 px, umiejętności i talenty po 520 px).
+
+Zmierzone: nadmiar szerokości strony **187 px przy 320 px ekranu, 147 px przy 360 px i 117 px przy
+390 px spada do 0 px**. Pionowe nachodzenie bloku przycisków na tytuł: **96 px → 0 px**. Przy 768 px
+i szerzej układ jest bez zmian.
+
+### Kalkulator PD (`Kalkulator/KalkulatorXP.html`)
+
+Poprawka dotyczy **tabeli maksymalnych wartości atrybutów**, a nie siatki `.calcGrid` — siatka
+zostaje nietknięta.
+
+- `.referenceTableWrap`: `overflow-x: auto`,
+- `.referenceTable`: `min-width: 520px`,
+- `.referenceTable thead th`: `overflow-wrap: anywhere`.
+
+Zmierzone przepełnienie nagłówków (tekst szerszy od komórki): przy 360 px `Wytrzymałość`
+i `Inteligencja` przekraczały komórkę o **82 px** przy dostępnych 33 px, a przy 1440 px o **4 px**.
+Po zmianie **żaden nagłówek nie wychodzi poza swoją komórkę na żadnej z badanych szerokości**
+(320, 360, 390, 768, 1440 px).
+
+### Główne siatki przycisków — Main, menu Kalkulatora, DiceRoller, panel testowy Infoczytnika
+
+`repeat(auto-fit, minmax(220px, 1fr))` zamienione na `repeat(auto-fit, minmax(min(220px, 100%), 1fr))`
+(w panelu testowym Infoczytnika: 200 px).
+
+Zmierzone przy 320 px: element siatki szerszy od pojemnika o **16 px → 0 px** (Main, menu
+Kalkulatora, DiceRoller). **Od 360 px w górę zrzuty ekranu przed i po są identyczne co do bajtu**
+przy 360, 390, 768, 1024 i 1440 px.
+
+### Panel testowy Infoczytnika (`Infoczytnik/index.html`)
+
+`.note code` dostaje `overflow-wrap: anywhere`. Adres strony to jeden ciąg bez spacji i był
+największym pojedynczym źródłem nadmiaru w całej aplikacji.
+
+Zmierzone: nadmiar szerokości strony **200 px przy 320 px, 160 px przy 360 px i 130 px przy 390 px
+spada do 0 px**.
+
+### Panel GM Infoczytnika (`Infoczytnik/GM_test.html`)
+
+- `.col`: `min-width: min(280px, 100%)`,
+- `.importRow`: dochodzi `flex-wrap: wrap`,
+- `.pair`: `minmax(0, 1fr) minmax(0, 1fr)`.
+
+Zmierzone przy 320 px: kolumna szersza od wiersza o **26 px → 0 px**. Przy 360 px i wyżej bez zmian.
+
+### GeneratorNazw
+
+- `.grid`: `minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 140px`,
+- `.results`: dochodzi `overflow-wrap: anywhere`.
+
+Zmierzone szerokości kolumn siatki przy 360, 390, 960, 1024, 1100 i 1440 px są identyczne przed
+i po — obie reguły są zabezpieczeniem na wypadek dłuższej zawartości, a nie zmianą dzisiejszego układu.
+
+### Dymek z opisem cechy — DataVault i GeneratorNPC
+
+Poniżej 720 px dymek jest panelem wysuwanym od dolnej krawędzi: `left: 0; right: 0; bottom: 0`,
+`width: 100%`, `max-height: 50dvh`, `border-radius: 12px 12px 0 0` oraz dolny margines wewnętrzny
+powiększony o `env(safe-area-inset-bottom)`.
+
+W GeneratorNPC dochodzi nagłówek dymka z przyciskiem zamknięcia (`.popover__header`,
+`.popover__close`) — wcześniej dymka nie dało się zamknąć inaczej niż stuknięciem obok. Klawisz
+Escape też go zamyka, tak jak w DataVault.
+
+Zmierzone przy 390 px: wysokość dymka **77% → 50% wysokości ekranu** w GeneratorNPC i **51% → 46%**
+w DataVault; w obu dymek przylega do dolnej krawędzi zamiast wisieć nad wierszem, którego dotyczy.
+Przy 1440 px geometria dymka jest identyczna przed i po.

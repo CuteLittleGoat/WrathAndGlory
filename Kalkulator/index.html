@@ -60,7 +60,13 @@
     .actions {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      /* minmax(220px, 1fr) nie potrafi zejść poniżej 220 px, więc przy 320 px ekranu kolumna jest
+         szersza od pojemnika o 16 px. min(220px, 100%) znosi to ograniczenie tylko wtedy, gdy
+         miejsca naprawdę brakuje — od 360 px w górę układ jest identyczny co do setnej piksela.
+         minmax(220px, 1fr) cannot go below 220 px, so on a 320 px screen the column is 16 px wider
+         than its container. min(220px, 100%) lifts that limit only when space is genuinely short —
+         from 360 px up the layout is identical to the hundredth of a pixel. */
+      grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
       gap: 18px 20px;
       align-items: start;
     }

@@ -18,7 +18,13 @@
       letter-spacing:.04em;
     }
     .wrapper{
-      width:min(1100px, 96vw);
+      /* 96vw to 96% szerokosci EKRANU, a nie miejsca, ktore zostalo po marginesach body.
+         Przy 320 px ekranu wychodzilo 307 px na 292 px dostepnych. 100% odnosi sie do rodzica
+         po odjeciu jego marginesow wewnetrznych, wiec nadmiar znika sam.
+         96vw is 96% of the SCREEN width, not of the space left after the body padding. On a 320 px
+         screen that asked for 307 px out of 292 px available. 100% refers to the parent minus its
+         own padding, so the overflow disappears on its own. */
+      width:min(1100px, 100%);
       margin:0 auto;
       padding:22px;
       background:var(--panel);
@@ -127,6 +133,8 @@
     select:focus,
     textarea:focus{box-shadow:0 0 0 3px rgba(22,198,12,.18);}
     .xp-section #xpPool{width:19ch;}
+    /* --- Kazda tabela przewija sie lokalnie zamiast rozpychac cala strone / Each table scrolls locally instead of widening the whole page --- */
+    .table-wrap{overflow-x:auto;}
     .error-message{min-height:20px; color:var(--red); margin:6px 0 2px;}
     .footer{margin-top:18px; color:var(--muted); text-align:center; letter-spacing:.08em;}
 
@@ -266,6 +274,28 @@
       background:rgba(150,28,28,.8);
     }
 
+    /* --- Telefon i waski tablet / Phone and narrow tablet ---
+       Przyciski wracaja do normalnego przeplywu strony, bo jako element pozycjonowany bezwzglednie
+       nachodzily na zawiniety tytul. Tabele dostaja minimalna szerokosc i przewijaja sie same,
+       zamiast rozpychac strone. Ten sam uklad dziala juz w Zaawansowanym Kreatorze.
+       The buttons return to the normal page flow, because as an absolutely positioned element they
+       overlapped the wrapped title. The tables get a minimum width and scroll on their own instead of
+       widening the page. The same layout is already in use in the Advanced Creator. */
+    @media (max-width: 760px){
+      body{padding:12px 8px;}
+      .wrapper{padding:14px;}
+      .language-switcher{
+        position:static;
+        flex-direction:row;
+        flex-wrap:wrap;
+        justify-content:flex-end;
+        margin-bottom:14px;
+      }
+      .attributes-table{min-width:560px;}
+      .skills-table,
+      .talents-table{min-width:520px;}
+    }
+
   </style>
 </head>
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
@@ -301,6 +331,7 @@
 
     <!-- Sekcja Atrybutów / Attributes Section -->
     <h2 class="section-title" id="attributesHeader">Atrybuty</h2>
+    <div class="table-wrap">
     <table class="attributes-table table">
       <tr>
         <th id="attrLabel1">S</th>
@@ -323,9 +354,11 @@
         <td><input type="number" id="attr_Speed" value="6" min="1" max="12"></td>
       </tr>
     </table>
+    </div>
 
     <!-- Sekcja Umiejętności / Skills Section -->
     <h2 class="section-title" id="skillsHeader">Umiejętności</h2>
+    <div class="table-wrap">
     <table class="skills-table table">
       <tr>
         <th id="skillHeader1">Umiejętność</th>
@@ -388,9 +421,11 @@
         <td><input type="number" id="skill_Column2Row9" value="0" min="0" max="8"></td>
       </tr>
     </table>
+    </div>
 
     <!-- Sekcja Talentów / Talents Section -->
     <h2 class="section-title" id="talentsHeader">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2>
+    <div class="table-wrap">
     <table class="talents-table table">
       <tr>
         <th id="talentHeader1">Nazwa</th>
@@ -459,6 +494,7 @@
         <td><input type="number" id="talent_cost_20" value="0" min="0"></td>
       </tr>
     </table>
+    </div>
 
     <!-- Stopka / Footer -->
     <div class="footer" id="footerText">Wykonane przez Spaczoną Inteligencję</div>

@@ -93,7 +93,13 @@
     .row {
       display: grid;
       gap: 12px 14px;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      /* minmax(200px, 1fr) nie potrafi zejść poniżej 200 px, więc przy 320 px ekranu kolumna jest
+         szersza od pojemnika o 28 px. min(200px, 100%) znosi to ograniczenie tylko wtedy, gdy
+         miejsca naprawdę brakuje — od 360 px w górę układ jest identyczny co do setnej piksela.
+         minmax(200px, 1fr) cannot go below 200 px, so on a 320 px screen the column is 28 px wider
+         than its container. min(200px, 100%) lifts that limit only when space is genuinely short —
+         from 360 px up the layout is identical to the hundredth of a pixel. */
+      grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
       align-items: stretch;
     }
 
@@ -135,6 +141,11 @@
 
     .note code {
       color: #b6ffb6;
+      /* Adres strony to jeden ciąg bez spacji i bez tej reguły przeglądarka nie ma gdzie go złamać,
+         więc wypycha całą stronę — zmierzone 130 px nadmiaru przy 390 px ekranu.
+         The page address is a single unbroken string; without this rule the browser has nowhere to
+         break it and it widens the whole page — measured 130 px of overflow on a 390 px screen. */
+      overflow-wrap: anywhere;
     }
   </style>
 </head>

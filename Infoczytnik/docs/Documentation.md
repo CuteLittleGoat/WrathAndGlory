@@ -134,6 +134,15 @@ Najważniejsze elementy UI:
 | Log importu | `importLog` | Pokazuje błędy i ostrzeżenia importu. |
 | Status | `status` | Pokazuje aktualny stan operacji panelu. |
 
+### Zachowanie na wąskim ekranie
+
+- `.col` ma `min-width: min(280px, 100%)`, więc kolumna nigdy nie jest szersza od wiersza,
+- `.importRow` ma `flex-wrap: wrap`, bo przycisk aktualizacji danych ma własne minimum 210 px
+  i bez zawijania nie zostawało miejsca na pole logu,
+- `.pair` używa `minmax(0, 1fr) minmax(0, 1fr)`, żeby pole tekstowe koloru nie rozpychało siatki,
+- panel ulubionych wiadomości układa się elastycznie: przy wąskim ekranie pole nazwy schodzi pod
+  listę wyboru, a przyciski zawijają się do kolejnych rzędów.
+
 ## Panel GM — stan aplikacji
 
 Najważniejsze stałe i zmienne:
@@ -654,6 +663,15 @@ Key UI elements:
 | Favourites hint | `favHint` | Shows the list state or the error text of a favourites operation. |
 | Import log | `importLog` | Shows import errors and warnings. |
 | Status | `status` | Shows the current operation status. |
+
+### Behaviour on a narrow screen
+
+- `.col` has `min-width: min(280px, 100%)`, so a column is never wider than its row,
+- `.importRow` has `flex-wrap: wrap`, because the data update button has its own 210 px minimum and
+  without wrapping there was no room left for the log field,
+- `.pair` uses `minmax(0, 1fr) minmax(0, 1fr)` so the colour text field cannot stretch the grid,
+- the favourite messages panel lays out flexibly: on a narrow screen the name field drops below the
+  select and the buttons wrap onto further rows.
 
 ## GM panel — application state
 

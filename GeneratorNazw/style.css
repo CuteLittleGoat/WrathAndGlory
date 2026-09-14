@@ -113,7 +113,11 @@ input:focus {
 
 .grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr 1fr 140px;
+  /* Kolumna 1fr nie potrafi zejść poniżej szerokości swojej zawartości, więc lista rozwijana
+     z długą nazwą kategorii rozpychała siatkę. minmax(0, …) zdejmuje tę dolną granicę.
+     A 1fr column cannot go below the width of its content, so a select with a long category name
+     stretched the grid. minmax(0, …) removes that lower bound. */
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 140px;
   gap: 12px;
 }
 
@@ -168,6 +172,9 @@ input:focus {
 
 .results {
   white-space: pre-wrap;
+  /* Wygenerowana nazwa bywa długim ciągiem bez spacji i bez tej reguły wystawałaby poza panel.
+     A generated name can be a long unbroken string and without this rule it would spill out of the panel. */
+  overflow-wrap: anywhere;
   line-height: 1.55;
   font-size: 15px;
 }

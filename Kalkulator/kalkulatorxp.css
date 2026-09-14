@@ -181,9 +181,27 @@ body{
 }
 .referenceTableWrap{
   padding:10px;
+  /* --- Tabela przewija się we własnej karcie / The table scrolls inside its own card ---
+     Tabela ma dziewięć kolumn o narzuconej równej szerokości, a nagłówki to długie, niepodzielne
+     słowa. Przy 360 px na kolumnę wypada 33 px, a nagłówek "Wytrzymałość" potrzebuje 115 px.
+     Zamiast przycinać napisy, karta pozwala przesunąć tabelę w bok.
+     The table has nine columns of imposed equal width and its headers are long, unbreakable words.
+     At 360 px a column gets 33 px while the "Wytrzymałość" header needs 115 px. Instead of clipping
+     the labels, the card lets the table be moved sideways. */
+  overflow-x:auto;
 }
 .referenceTable{
   table-layout:fixed;
+  /* Minimum, przy którym nagłówki mieszczą się w dwóch liniach zamiast być przycięte.
+     The minimum at which the headers fit on two lines instead of being clipped. */
+  min-width:520px;
+}
+.referenceTable thead th{
+  /* Ostatnia linia obrony: gdyby kolumna była jeszcze węższa, nazwa łamie się w środku wyrazu,
+     zamiast wychodzić poza komórkę.
+     Last line of defence: should a column get even narrower, the name breaks mid-word instead of
+     spilling out of its cell. */
+  overflow-wrap:anywhere;
 }
 .referenceTable thead th,
 .referenceTable tbody th,

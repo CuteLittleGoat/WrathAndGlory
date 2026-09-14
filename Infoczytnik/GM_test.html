@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-09-14_05-35-46";
+      const INF_VERSION = "2026-09-14_08-30-14";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -28,7 +28,7 @@
     .wrap{max-width:1080px;margin:0 auto}.card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px}
     h1{margin:0 0 10px;color:var(--accent)} label{display:block;margin:10px 0 6px;color:var(--muted);font-size:13px}
     select,textarea,input{width:100%;background:#0f0f0f;color:var(--text);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
-    textarea{min-height:120px;resize:vertical}.row{display:flex;gap:12px;flex-wrap:wrap}.col{flex:1;min-width:280px}
+    textarea{min-height:120px;resize:vertical}.row{display:flex;gap:12px;flex-wrap:wrap}.col{flex:1;min-width:min(280px,100%)}
     .inline{display:flex;gap:10px;align-items:center}.toggles{display:flex;gap:16px;flex-wrap:wrap;margin:8px 0}
     .btnrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}button{flex:1;min-width:160px;padding:12px;border-radius:12px;border:1px solid var(--border);background:#1d1d1d;color:var(--text);cursor:pointer}
     button.primary{background:linear-gradient(180deg,#3a2a12,#1c1408);color:var(--accent)} button.warn{background:linear-gradient(180deg,#1c0c0c,#120606);color:#ffb3b3}
@@ -44,13 +44,21 @@
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
     .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
-    .importRow{display:flex;gap:10px;align-items:center}
+    /* Wiersz musi umieć się złamać: przycisk ma własne minimum 210 px, więc przy wąskim ekranie
+       na pole logu zostawało kilkadziesiąt pikseli.
+       The row has to be able to wrap: the button has its own 210 px minimum, so on a narrow screen
+       only a few dozen pixels were left for the log field. */
+    .importRow{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
     .importRow .importLog{flex:1;min-width:0}
     .importUpdateBtn{flex:0 0 clamp(210px,32%,320px);min-width:210px;align-self:center}
     .chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
     .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap}
     .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
-    .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    /* minmax(0, 1fr) pozwala kolumnie zejść poniżej szerokości zawartości — bez tego pole tekstowe
+       koloru mogło rozepchnąć siatkę.
+       minmax(0, 1fr) lets a column go below its content width — without it the colour text field
+       could stretch the grid. */
+    .pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
     /* --- Panel ulubionych wiadomości / Favourite messages panel --- */
     .favRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .favRow select{flex:2 1 240px;min-width:0}

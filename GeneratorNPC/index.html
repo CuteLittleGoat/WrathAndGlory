@@ -370,7 +370,13 @@
     </main>
 
     <aside class="popover" id="trait-popover">
-      <h4 id="trait-title" data-i18n="traitPopoverTitle">Opis cechy</h4>
+      <!-- Przycisk zamknięcia jest konieczny na telefonie: tam dymek jest panelem przy dolnej krawędzi
+           i zamknięcie go stuknięciem obok bywa trudne. / A close button is required on a phone: there
+           the popover is a panel at the bottom edge and tapping outside it to close can be awkward. -->
+      <div class="popover__header">
+        <h4 id="trait-title" data-i18n="traitPopoverTitle">Opis cechy</h4>
+        <button type="button" class="popover__close" id="trait-popover-close" aria-label="Zamknij" data-i18n-aria="traitPopoverClose">✕</button>
+      </div>
       <p id="trait-description" data-i18n="traitPopoverDescription">Kliknij tag, aby zobaczyć opis cechy.</p>
     </aside>
 
@@ -545,6 +551,7 @@ const translations = {
             prayersHeaderName: "Nazwa",
             prayersHeaderEffect: "Efekt",
             traitPopoverTitle: "Opis cechy",
+            traitPopoverClose: "Zamknij opis cechy",
             traitPopoverDescription: "Kliknij tag, aby zobaczyć opis cechy.",
           },
           card: {
@@ -711,6 +718,7 @@ const translations = {
             prayersHeaderName: "Name",
             prayersHeaderEffect: "Effect",
             traitPopoverTitle: "Trait description",
+            traitPopoverClose: "Close trait description",
             traitPopoverDescription: "Click a tag to see its trait description.",
           },
           card: {
@@ -807,6 +815,14 @@ const translations = {
           const key = el.getAttribute("data-i18n-placeholder");
           if (key in t.labels) {
             el.setAttribute("placeholder", t.labels[key]);
+          }
+        });
+        // Etykiety dla czytników ekranu na elementach bez widocznego tekstu, np. przycisku z symbolem.
+        // Labels for screen readers on elements without visible text, such as a symbol-only button.
+        document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
+          const key = el.getAttribute("data-i18n-aria");
+          if (key in t.labels) {
+            el.setAttribute("aria-label", t.labels[key]);
           }
         });
         const updatePlaceholder = (select, placeholder) => {
@@ -3089,6 +3105,13 @@ const translations = {
           accessError.textContent = message;
         }
       };
+
+      const popoverClose = document.querySelector("#trait-popover-close");
+      popoverClose?.addEventListener("click", () => popover.classList.remove("active"));
+      // Escape zamyka dymek tak samo jak w DataVault / Escape closes the popover just as in DataVault
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") popover.classList.remove("active");
+      });
 
       document.addEventListener("click", (event) => {
         const tag = event.target.closest(".tag");

@@ -1211,3 +1211,23 @@ td.center{text-align:center}
     margin-bottom:4px;
   }
 }
+
+/* --- Telefon: dymek z opisem staje się panelem wysuwanym od dołu / Phone: the description popover becomes a bottom sheet ---
+   Na wąskim ekranie dymek zajmował niemal całą szerokość i do 70% wysokości, zasłaniając wiersz,
+   którego dotyczy — a użytkownik kliknął cechę właśnie po to, żeby zestawić opis z wierszem.
+   Panel przy dolnej krawędzi, na najwyżej połowę wysokości ekranu, zostawia wiersz widoczny.
+   On a narrow screen the popover took up nearly the full width and up to 70% of the height, covering
+   the very row it describes — and the user tapped the trait precisely to read the description next to
+   that row. A panel at the bottom edge, at most half the screen height, keeps the row visible. */
+@media (max-width: 720px){
+  .popover{
+    left:0;
+    right:0;
+    bottom:0;
+    width:100%;
+    max-width:100%;
+    max-height:50dvh;
+    border-radius:12px 12px 0 0;
+    padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
+  }
+}
