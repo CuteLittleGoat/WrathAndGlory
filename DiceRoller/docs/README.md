@@ -70,15 +70,55 @@ Domyślne wartości startowe:
 
 ## Jak czytać wynik
 
-Po rzucie moduł pokazuje:
+Ramka podsumowania ma zawsze cztery wiersze, w stałej kolejności:
 
-- wynik testu: `Sukces!` albo `Porażka!`,
-- ewentualną `Komplikację Furii`,
-- ewentualną `Krytyczną Furię`,
-- możliwe `Przeniesienie`,
-- łączną liczbę punktów,
-- stopień trudności,
-- listę wszystkich kości i liczbę punktów z każdej z nich.
+1. wynik testu: `Sukces!` albo `Porażka!`,
+2. komunikat Furii: `Krytyczna Furia` albo `Komplikacja Furii`,
+3. `Możliwe Przeniesienie`,
+4. łączna liczba punktów i stopień trudności.
+
+Pełny wynik wygląda tak:
+
+```text
+Sukces!
+Krytyczna Furia 🙂
+Możliwe Przeniesienie: 1
+Łączne punkty: 5 (Stopień Trudności: 2)
+```
+
+Jeżeli dany rzut nie ma komunikatu Furii albo Przeniesienia, jego wiersz zostaje pusty:
+
+```text
+Sukces!
+
+Możliwe Przeniesienie: 1
+Łączne punkty: 4 (Stopień Trudności: 2)
+```
+
+Puste wiersze są celowe. Dzięki nim ramka ma zawsze tę samą wysokość i strona nie skacze w pionie,
+kiedy jednoliniowy komunikat startowy ustępuje miejsca kilkuliniowemu wynikowi.
+
+## Detale rzutu
+
+Pod podsumowaniem jest blok `Detale rzutu`. Jest **domyślnie zwinięty** — kliknięcie go rozwija,
+kliknięcie jeszcze raz zwija.
+
+W środku jest tabela z trzema kolumnami:
+
+| Kolumna | Znaczenie |
+| --- | --- |
+| `Kość` | Numer kości w puli. Kości Furii mają dopisek `(Furia)`. |
+| `Wynik` | Liczba oczek, którą wyrzuciła ta kość. |
+| `Punkty` | Ile punktów daje ten wynik. |
+
+Wiersze Kości Furii są napisane **czerwonym fontem**, tak samo jak czerwone są same te kości nad
+podsumowaniem.
+
+Przy puli powyżej pięciu kości tabela dzieli się na kilka kolumn obok siebie, żeby nie powstawała
+jedna bardzo długa lista. Na telefonie kolumny schodzą jedna pod drugą.
+
+Każdy nowy rzut zwija blok z powrotem, żeby detale poprzedniego rzutu nie wyglądały na dotyczące
+bieżącego wyniku.
 
 ## Punkty z kości
 
@@ -253,15 +293,54 @@ Starting values:
 
 ## How to read the result
 
-After a roll, the module shows:
+The summary box always has four rows, in a fixed order:
 
-- the test result: `Success!` or `Failure!`,
-- possible `Wrath Complication`,
-- possible `Wrath Critical`,
-- possible `Possible Shift`,
-- total points,
-- difficulty number,
-- a list of all dice and points from each die.
+1. the test result: `Success!` or `Failure!`,
+2. the Wrath message: `Wrath Critical` or `Wrath Complication`,
+3. `Possible Shift`,
+4. total points and the difficulty number.
+
+A full result looks like this:
+
+```text
+Success!
+Wrath Critical 🙂
+Possible Shift: 1
+Total points: 5 (Difficulty Number: 2)
+```
+
+When a roll has no Wrath or Shift message, its row simply stays empty:
+
+```text
+Success!
+
+Possible Shift: 1
+Total points: 4 (Difficulty Number: 2)
+```
+
+The empty rows are deliberate. They keep the box at one height, so the page does not jump vertically
+when the one-line starting message gives way to a multi-line result.
+
+## Roll details
+
+Below the summary there is a `Roll details` block. It is **collapsed by default** — click it to
+expand, click again to collapse.
+
+Inside is a table with three columns:
+
+| Column | Meaning |
+| --- | --- |
+| `Die` | The die number in the pool. Wrath dice carry a `(Wrath)` suffix. |
+| `Result` | The number of pips this die rolled. |
+| `Points` | How many points that result is worth. |
+
+Wrath dice rows are written in a **red font**, matching the red dice above the summary.
+
+With a pool of more than five dice, the table splits into several side-by-side columns so it does not
+become one very long list. On a phone the columns stack one under another.
+
+Every new roll collapses the block again, so the previous roll's details cannot look like they belong
+to the current result.
 
 ## Points from dice
 

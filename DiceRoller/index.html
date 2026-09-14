@@ -46,9 +46,20 @@
 
     <section class="results">
       <div class="dice" id="dice"></div>
+      <!-- PL: Podsumowanie ma zawsze cztery wiersze, także puste. Dzięki temu strona nie skacze
+               w pionie, gdy po jednoliniowym komunikacie pojawia się kilkuliniowy wynik.
+           EN: The summary always has four rows, empty ones included. That keeps the page from
+               jumping vertically when a one-line message is replaced by a multi-line result. -->
       <div class="summary" id="summary">
-        <p class="summary__placeholder" id="summaryPlaceholder">Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.</p>
+        <p class="summary__line summary__placeholder" id="summaryPlaceholder">Wpisz parametry i rzuć kośćmi, aby zobaczyć wynik.</p>
+        <p class="summary__line"></p>
+        <p class="summary__line"></p>
+        <p class="summary__line"></p>
       </div>
+      <details class="rollDetails" id="rollDetails">
+        <summary class="rollDetails__toggle" id="rollDetailsToggle">Detale rzutu</summary>
+        <div class="rollDetails__body" id="rollDetailsBody"></div>
+      </details>
     </section>
   </main>
 

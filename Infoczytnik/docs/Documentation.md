@@ -151,6 +151,56 @@ Najważniejsze elementy UI:
 - panel ulubionych wiadomości układa się elastycznie: przy wąskim ekranie pole nazwy schodzi pod
   listę wyboru, a przyciski zawijają się do kolejnych rzędów.
 
+## Panel GM — warstwa językowa
+
+Panel GM ma komplet tekstów po polsku i po angielsku. **Domyślnym językiem jest polski**,
+a przełącznik `#languageSelect` w nagłówku `.pageHead` jest ukryty klasą `language-switcher--hidden`
+(reguła `display: none !important` w bloku `<style>` pliku) — tak samo jak w pozostałych modułach.
+
+Aby przełącznik był widoczny, wystarczy usunąć tę klasę z kontenera
+`<div class="language-switcher language-switcher--hidden">` w `Infoczytnik/GM_test.html`; nad
+elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
+
+### Jak to jest zbudowane
+
+| Element | Rola |
+| --- | --- |
+| `translations` | Obiekt z kluczami `pl` i `en`; oba zestawy są kompletne. |
+| `DEFAULT_LANGUAGE` | `'pl'` — język, od którego panel startuje. |
+| `t(key, params)` | Zwraca tekst dla bieżącego języka. Brakujący klucz spada do polskiego, a potem do samej nazwy klucza. Wartości podstawia się przez `{nazwa}` w tekście. |
+| `applyTranslations()` | Przepisuje cały interfejs: `data-i18n`, `data-i18n-placeholder`, `document.title`, `documentElement.lang` oraz teksty odtwarzane ze stanu. |
+| `updateLanguage(lang)` | Ustawia `currentLanguage`, synchronizuje przełącznik i wywołuje `applyTranslations()`. Nieznany język spada do `DEFAULT_LANGUAGE`. |
+
+Teksty statyczne niosą w HTML atrybut `data-i18n` (albo `data-i18n-placeholder` dla pól
+tekstowych), więc `applyTranslations()` znajduje je bez listy identyfikatorów.
+
+### Teksty powstające w trakcie pracy panelu
+
+Statusy, podpowiedzi i log importu nie są zapamiętywane jako gotowy tekst, tylko jako **klucz plus
+wartości**. Dzięki temu zmiana języka przepisuje również napis, który akurat wisi na ekranie, zamiast
+zostawić go w poprzednim języku.
+
+| Stan | Funkcja ustawiająca | Funkcja rysująca |
+| --- | --- | --- |
+| `statusState` | `setStatus(key, params)` | `renderStatus()` |
+| `importLogState` | `writeImportLog(entries)` — lista wpisów `{key, params}` | `renderImportLog()` |
+| `favoriteHintState` | `setFavoriteHint(key, params)` | `renderFavoriteHint()` |
+
+Pomocnik `logTekst(tekst)` pakuje tekst spoza tłumaczeń (np. komunikat błędu przeglądarki) we wpis
+`{key:'rawText', params:{text}}`; klucz `rawText` to w obu językach samo `{text}`.
+
+Lista ulubionych wiadomości jest przerysowywana przez `renderFavorites()` wywoływane z
+`applyTranslations()`, więc pozycja domyślna („bieżąca wiadomość”) i zastępcza nazwa „(bez nazwy)”
+również zmieniają język.
+
+Nazwy w listach wyboru tła, logo, fillerów, fontów i audio pochodzą z manifestu i **nie są
+tłumaczone** — to dane, a nie teksty interfejsu.
+
+### Ekran gracza
+
+`Infoczytnik_test.html` nie ma warstwy językowej, bo nie ma własnych tekstów interfejsu: wyświetla
+wyłącznie treść, kolory i fonty przysłane z panelu GM.
+
 ## Panel GM — stan aplikacji
 
 Najważniejsze stałe i zmienne:
@@ -688,6 +738,57 @@ Key UI elements:
 - `.pair` uses `minmax(0, 1fr) minmax(0, 1fr)` so the colour text field cannot stretch the grid,
 - the favourite messages panel lays out flexibly: on a narrow screen the name field drops below the
   select and the buttons wrap onto further rows.
+
+## GM panel — language layer
+
+The GM panel carries a full set of Polish and English texts. **Polish is the default language**, and
+the `#languageSelect` switcher in the `.pageHead` header is hidden with the
+`language-switcher--hidden` class (a `display: none !important` rule in the file's `<style>` block) —
+exactly as in the other modules.
+
+To make the switcher visible, remove that class from the
+`<div class="language-switcher language-switcher--hidden">` container in `Infoczytnik/GM_test.html`;
+a comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the element.
+
+### How it is built
+
+| Element | Role |
+| --- | --- |
+| `translations` | Object with `pl` and `en` keys; both sets are complete. |
+| `DEFAULT_LANGUAGE` | `'pl'` — the language the panel starts in. |
+| `t(key, params)` | Returns the text for the current language. A missing key falls back to Polish and then to the key name itself. Values are substituted through `{name}` inside the text. |
+| `applyTranslations()` | Rewrites the whole interface: `data-i18n`, `data-i18n-placeholder`, `document.title`, `documentElement.lang`, and the texts replayed from state. |
+| `updateLanguage(lang)` | Sets `currentLanguage`, syncs the switcher, and calls `applyTranslations()`. An unknown language falls back to `DEFAULT_LANGUAGE`. |
+
+Static texts carry a `data-i18n` attribute in the HTML (or `data-i18n-placeholder` for text fields),
+so `applyTranslations()` finds them without a list of identifiers.
+
+### Texts produced while the panel runs
+
+Statuses, hints and the import log are not remembered as finished text but as a **key plus values**.
+That way a language change also rewrites the line currently on screen instead of leaving it in the
+previous language.
+
+| State | Setter | Renderer |
+| --- | --- | --- |
+| `statusState` | `setStatus(key, params)` | `renderStatus()` |
+| `importLogState` | `writeImportLog(entries)` — a list of `{key, params}` entries | `renderImportLog()` |
+| `favoriteHintState` | `setFavoriteHint(key, params)` | `renderFavoriteHint()` |
+
+The `logTekst(text)` helper wraps text that does not come from the translations (e.g. a browser error
+message) into a `{key:'rawText', params:{text}}` entry; the `rawText` key is just `{text}` in both
+languages.
+
+The favourite messages list is redrawn by `renderFavorites()` called from `applyTranslations()`, so
+the default entry ("current message") and the "(unnamed)" fallback change language as well.
+
+The names in the background, logo, filler, font and audio selectors come from the manifest and are
+**not translated** — they are data, not interface text.
+
+### Player display
+
+`Infoczytnik_test.html` has no language layer because it has no interface text of its own: it shows
+only the content, colours and fonts sent from the GM panel.
 
 ## GM panel — application state
 

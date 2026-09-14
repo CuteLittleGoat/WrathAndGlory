@@ -293,6 +293,24 @@ Jeżeli po zapisaniu wiadomości zaktualizujesz dane przyciskiem `Aktualizuj dan
 pliki tła albo loga, stare zapisy nadal działają. Gdyby jakaś pozycja z listy przestała istnieć, przy
 wczytaniu zostanie wybrana pierwsza dostępna.
 
+## Język interfejsu
+
+Panel GM działa po polsku. Wszystkie etykiety, przyciski, podpowiedzi, statusy i log importu mają
+również pełną wersję angielską — przełącznik języka istnieje w kodzie, ale jest ukryty i zwykły
+użytkownik go nie widzi.
+
+Aby go pokazać, wystarczy w pliku `Infoczytnik/GM_test.html` usunąć klasę
+`language-switcher--hidden` z kontenera `<div class="language-switcher language-switcher--hidden">`
+w nagłówku strony. Nad tym elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`,
+żeby łatwo było trafić we właściwe miejsce. Nic więcej nie trzeba zmieniać.
+
+Po przełączeniu zmienia się cały panel, łącznie z napisem, który akurat wisi w polu `Status`,
+z podpowiedzią pod listą ulubionych i z logiem importu. Nie zmieniają się tylko nazwy teł, logo,
+fillerów, fontów i plików audio — te pochodzą z arkusza XLSX i są danymi, a nie tekstem interfejsu.
+
+Ekran gracza nie ma przełącznika, bo nie ma własnych napisów: pokazuje wyłącznie to, co wyślesz
+z panelu GM.
+
 ## Typowe problemy i co zrobić
 
 | Problem | Możliwa przyczyna | Co zrobić |
@@ -616,6 +634,25 @@ windows, a change in one shows up in the other.
 If you update the data with `Aktualizuj dane z XLSX` after saving messages and the background or logo
 files change, the old entries still work. Should an item from a list no longer exist, the first
 available one is picked on load.
+
+## Interface language
+
+The GM panel runs in Polish. Every label, button, hint, status and the import log also have a full
+English version — the language switcher exists in the code but is hidden, so a regular user never
+sees it.
+
+To reveal it, remove the `language-switcher--hidden` class from the
+`<div class="language-switcher language-switcher--hidden">` container in the page header of
+`Infoczytnik/GM_test.html`. A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above
+that element, so the spot is easy to find. Nothing else needs to change.
+
+Switching changes the whole panel, including the line currently sitting in the `Status` field, the
+hint below the favourites list, and the import log. The only things that do not change are the names
+of backgrounds, logos, fillers, fonts and audio files — those come from the XLSX sheet and are data,
+not interface text.
+
+The player display has no switcher because it has no wording of its own: it shows only what you send
+from the GM panel.
 
 ## Common problems and what to do
 

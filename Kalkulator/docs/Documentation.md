@@ -311,7 +311,7 @@ wyłącznie sam tekst (`#footerText` w prostym kreatorze), więc obie wersje ję
 tego linia stałaby się czytelna na telefonie.
 
 W obu kreatorach stopka jest wyrównana do prawej (`text-align: right`), do prawej krawędzi treści
-kontenera `.wrapper`. Kursywa (`font-style: italic`) występuje wyłącznie w kreatorze zaawansowanym.
+kontenera `.wrapper`, i pisana kursywą (`font-style: italic`).
 
 Zmiana rozmiaru podpisu to zmiana jednej wartości `font-size` w regule `.footer` w obu plikach.
 
@@ -844,7 +844,7 @@ small. `text-size-adjust: none` switches off the small-text inflation phone brow
 it the line would become readable on a phone.
 
 In both creators the footer is right-aligned (`text-align: right`) to the right content edge of the
-`.wrapper` container. The italic (`font-style: italic`) appears only in the advanced creator.
+`.wrapper` container and set in italics (`font-style: italic`).
 
 Changing the credit size means changing a single `font-size` value in the `.footer` rule in both
 files.

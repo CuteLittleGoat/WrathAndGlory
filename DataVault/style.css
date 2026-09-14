@@ -107,6 +107,26 @@ code{color:var(--code)}
   width:min(640px, calc(100vw - 40px));
 }
 .actionsNote{font-size:11px; color:var(--text2); letter-spacing:.02em; text-transform:none}
+/* PL: Przycisk generowania plików danych jest elementem kolumnowej siatki `.actionsGroup`, a taki
+       element domyślnie rozciąga się na całą jej szerokość — stąd przycisk długi jak cała
+       podpowiedź pod nim. `align-self:flex-start` zdejmuje to rozciąganie: przycisk ma szerokość
+       własnego napisu i zaczyna się dokładnie tam, gdzie zaczyna się tekst podpowiedzi.
+       Kolor jest ten sam, którego używa etykieta „Czy wyświetlić zdezaktualizowane wpisy?”
+       (zmienna --text-old); obramowanie i tło to ten sam odcień w niskiej przezroczystości,
+       żeby przycisk czytał się jako jedna całość.
+   EN: The data-file button is an item of the column flex container `.actionsGroup`, and such an item
+       stretches to its full width by default — hence a button as long as the whole hint below it.
+       `align-self:flex-start` removes that stretch: the button is as wide as its own label and
+       starts exactly where the hint text starts. The colour is the one the "Czy wyświetlić
+       zdezaktualizowane wpisy?" label uses (the --text-old variable); border and background are the
+       same shade at low opacity so the button reads as one piece. */
+#btnUpdateData{
+  align-self:flex-start;
+  color:var(--text-old);
+  border-color:rgba(127,155,127,.45);
+  background:rgba(127,155,127,.10);
+}
+#btnUpdateData:hover{background:rgba(127,155,127,.18)}
 .actionsGroup--view{
   max-width:none;
   width:auto;
@@ -316,7 +336,18 @@ code{color:var(--code)}
 /* --- Aktywny filtr kolumny: jasna czerwień + glow dla nagłówka / Active column filter: bright red + glow for header --- */
 .dataTable thead tr:first-child th.filter-active{
   box-shadow: inset 0 -2px 0 rgba(255,85,85,.40);
-  background:linear-gradient(180deg, rgba(255,70,70,.18), rgba(255,70,70,.07));
+  /* PL: Rozdzielone na kolor i obraz tła celowo. Skrót `background` kasuje wszystkie składowe,
+         których nie wymienia — w tym nieprzezroczysty `background-color` z reguły wyżej. Sam
+         gradient jest półprzezroczysty (rgba), więc przy przewijaniu przez przyklejony nagłówek
+         prześwitywał tekst wierszy. Kolor bazowy jest ten sam, którego i tak używa tło pod tabelą,
+         więc wygląd nieprzewiniętej tabeli się nie zmienia.
+     EN: Split into colour and image on purpose. The `background` shorthand resets every component
+         it does not name — including the opaque `background-color` from the rule above. The gradient
+         alone is semi-transparent (rgba), so while scrolling the row text showed through the sticky
+         header. The base colour is the same one the surface under the table already uses, so an
+         unscrolled table looks exactly as before. */
+  background-color:var(--panel);
+  background-image:linear-gradient(180deg, rgba(255,70,70,.18), rgba(255,70,70,.07));
 }
 .dataTable tbody tr:nth-child(odd){background:var(--zebra-odd)}
 .dataTable tbody tr:nth-child(even){background:var(--zebra-even)}

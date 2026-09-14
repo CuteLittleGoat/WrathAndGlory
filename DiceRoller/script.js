@@ -5,6 +5,9 @@ const wrathInput = document.getElementById("wrath");
 const rollButton = document.getElementById("roll");
 const diceContainer = document.getElementById("dice");
 const summary = document.getElementById("summary");
+const rollDetails = document.getElementById("rollDetails");
+const rollDetailsToggle = document.getElementById("rollDetailsToggle");
+const rollDetailsBody = document.getElementById("rollDetailsBody");
 const subtitle = document.getElementById("subtitle");
 const pageTitle = document.getElementById("pageTitle");
 const difficultyLabel = document.getElementById("difficultyLabel");
@@ -20,6 +23,12 @@ const DEFAULT_DIFFICULTY = 3;
 const DEFAULT_POOL = 2;
 const DEFAULT_WRATH = 1;
 const ROLL_DURATION = 900;
+// Podsumowanie ma stałą liczbę wierszy, żeby wynik nie przesuwał strony w pionie.
+// The summary has a fixed number of rows so a result does not shift the page vertically.
+const SUMMARY_LINES = 4;
+// Ile kości mieści jedna kolumna tabeli detali; przy większej puli powstają kolejne kolumny.
+// How many dice fit one details-table column; a larger pool produces further columns.
+const DETAILS_ROWS_PER_COLUMN = 5;
 
 // --- MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT ---
 // Nowy język wymaga dopisania pełnego zestawu labels/messages w translations oraz aktualizacji opcji selecta języka w HTML.
@@ -38,6 +47,7 @@ const translations = {
       placeholderRolling: "Rzut w toku...",
       languageSelect: "Wersja językowa",
       mainPageButton: "Strona Główna",
+      rollDetails: "Detale rzutu",
     },
     messages: {
       success: "Sukces!",
@@ -49,6 +59,11 @@ const translations = {
       difficultyNumber: "Stopień Trudności",
       dieLabel: "Kość",
       pointsLabel: "punkty",
+      detailsDie: "Kość",
+      detailsResult: "Wynik",
+      detailsPoints: "Punkty",
+      detailsWrathMark: "Furia",
+      detailsEmpty: "Rzuć kośćmi, aby zobaczyć szczegóły poszczególnych kości.",
     },
   },
   en: {
@@ -64,6 +79,7 @@ const translations = {
       placeholderRolling: "Rolling the dice...",
       languageSelect: "Language version",
       mainPageButton: "Main Page",
+      rollDetails: "Roll details",
     },
     messages: {
       success: "Success!",
@@ -75,6 +91,11 @@ const translations = {
       difficultyNumber: "Difficulty Number",
       dieLabel: "Die",
       pointsLabel: "points",
+      detailsDie: "Die",
+      detailsResult: "Result",
+      detailsPoints: "Points",
+      detailsWrathMark: "Wrath",
+      detailsEmpty: "Roll the dice to see the individual dice details.",
     },
   },
 };
@@ -142,6 +163,103 @@ const scoreValue = (value) => {
   return 2;
 };
 
+// Podsumowanie zawsze składa się z SUMMARY_LINES wierszy. Wiersz bez treści zostaje pusty, więc
+// wysokość ramki jest stała niezależnie od tego, ile informacji ma dany rzut.
+// The summary always consists of SUMMARY_LINES rows. A row with no content stays empty, so the box
+// height is constant no matter how much information a given roll carries.
+const renderSummaryLines = (lines) => {
+  summary.innerHTML = "";
+  for (let i = 0; i < SUMMARY_LINES; i += 1) {
+    const line = lines[i];
+    const node = document.createElement("p");
+    node.className = "summary__line";
+    if (line) {
+      if (line.className) {
+        node.className += ` ${line.className}`;
+      }
+      node.textContent = line.text;
+    }
+    summary.appendChild(node);
+  }
+};
+
+// Komunikat startowy zajmuje jeden akapit rozciągnięty na wszystkie cztery wiersze siatki. Dzięki
+// temu ramka ma dokładnie tę samą wysokość co przy pełnym wyniku, nawet gdy na wąskim ekranie
+// komunikat złamie się na kilka linii.
+// The starting message is a single paragraph stretched across all four grid rows. That gives the box
+// exactly the same height as a full result, even when the message wraps onto several lines on a
+// narrow screen.
+const showSummaryPlaceholder = (text) => {
+  summary.innerHTML = "";
+  const node = document.createElement("p");
+  node.className = "summary__line summary__placeholder";
+  node.textContent = text;
+  summary.appendChild(node);
+};
+
+// Tabela detali dzieli kości na kolumny po DETAILS_ROWS_PER_COLUMN wierszy, żeby przy dużej puli
+// nie powstawała jedna bardzo długa lista. Wiersze Kości Furii mają czerwony font.
+// The details table splits the dice into columns of DETAILS_ROWS_PER_COLUMN rows so that a large
+// pool does not produce one very long list. Wrath dice rows use a red font.
+const buildRollDetails = (results, wrathCount) => {
+  const t = translations[currentLanguage].messages;
+  rollDetailsBody.innerHTML = "";
+
+  if (!results.length) {
+    const empty = document.createElement("p");
+    empty.className = "rollDetails__empty";
+    empty.textContent = t.detailsEmpty;
+    rollDetailsBody.appendChild(empty);
+    return;
+  }
+
+  for (let start = 0; start < results.length; start += DETAILS_ROWS_PER_COLUMN) {
+    const chunk = results.slice(start, start + DETAILS_ROWS_PER_COLUMN);
+    const table = document.createElement("table");
+    table.className = "rollDetails__table";
+
+    const head = document.createElement("thead");
+    const headRow = document.createElement("tr");
+    [t.detailsDie, t.detailsResult, t.detailsPoints].forEach((label) => {
+      const cell = document.createElement("th");
+      cell.scope = "col";
+      cell.textContent = label;
+      headRow.appendChild(cell);
+    });
+    head.appendChild(headRow);
+    table.appendChild(head);
+
+    const body = document.createElement("tbody");
+    chunk.forEach((value, offset) => {
+      const index = start + offset;
+      const isWrath = index < wrathCount;
+      const row = document.createElement("tr");
+      if (isWrath) {
+        row.classList.add("rollDetails__row--wrath");
+      }
+
+      const name = document.createElement("th");
+      name.scope = "row";
+      name.textContent = isWrath
+        ? `${t.dieLabel} ${index + 1} (${t.detailsWrathMark})`
+        : `${t.dieLabel} ${index + 1}`;
+      row.appendChild(name);
+
+      const result = document.createElement("td");
+      result.textContent = String(value);
+      row.appendChild(result);
+
+      const points = document.createElement("td");
+      points.textContent = String(scoreValue(value));
+      row.appendChild(points);
+
+      body.appendChild(row);
+    });
+    table.appendChild(body);
+    rollDetailsBody.appendChild(table);
+  }
+};
+
 const buildSummary = ({
   totalPoints,
   difficulty,
@@ -149,45 +267,16 @@ const buildSummary = ({
   wrathMessage,
   transferable,
   results,
+  wrathCount,
 }) => {
   const t = translations[currentLanguage].messages;
-  summary.innerHTML = "";
-
-  const heading = document.createElement("h2");
-  heading.classList.add("summary__headline");
-  heading.textContent = success ? t.success : t.failure;
-  summary.appendChild(heading);
-
-  if (wrathMessage) {
-    const wrath = document.createElement("p");
-    wrath.classList.add("summary__headline", "summary__headline--secondary");
-    wrath.textContent = wrathMessage;
-    summary.appendChild(wrath);
-  }
-
-  if (transferable > 0) {
-    const transfer = document.createElement("p");
-    transfer.classList.add("summary__transfer");
-    transfer.textContent = `${t.possibleShift}: ${transferable}`;
-    summary.appendChild(transfer);
-
-    const spacer = document.createElement("div");
-    spacer.classList.add("summary__spacer");
-    summary.appendChild(spacer);
-  }
-
-  const points = document.createElement("p");
-  points.classList.add("summary__detail");
-  points.textContent = `${t.totalPoints}: ${totalPoints} (${t.difficultyNumber}: ${difficulty})`;
-  summary.appendChild(points);
-
-  const list = document.createElement("ul");
-  results.forEach((value, index) => {
-    const item = document.createElement("li");
-    item.textContent = `${t.dieLabel} ${index + 1}: ${value} (${t.pointsLabel} ${scoreValue(value)})`;
-    list.appendChild(item);
-  });
-  summary.appendChild(list);
+  renderSummaryLines([
+    { text: success ? t.success : t.failure, className: "summary__headline" },
+    wrathMessage ? { text: wrathMessage, className: "summary__headline summary__headline--secondary" } : null,
+    transferable > 0 ? { text: `${t.possibleShift}: ${transferable}`, className: "summary__transfer" } : null,
+    { text: `${t.totalPoints}: ${totalPoints} (${t.difficultyNumber}: ${difficulty})`, className: "summary__detail" },
+  ]);
+  buildRollDetails(results, wrathCount);
 };
 
 const resetState = () => {
@@ -195,7 +284,9 @@ const resetState = () => {
   poolInput.value = DEFAULT_POOL;
   wrathInput.value = DEFAULT_WRATH;
   diceContainer.innerHTML = "";
-  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].labels.placeholderIdle}</p>`;
+  showSummaryPlaceholder(translations[currentLanguage].labels.placeholderIdle);
+  rollDetails.open = false;
+  buildRollDetails([], 0);
 };
 
 const updateLanguage = (lang) => {
@@ -212,6 +303,7 @@ const updateLanguage = (lang) => {
   wrathHint.textContent = t.labels.wrathHint;
   rollButton.textContent = t.labels.roll;
   mainPageButton.textContent = t.labels.mainPageButton;
+  rollDetailsToggle.textContent = t.labels.rollDetails;
   resetState();
 };
 
@@ -221,7 +313,11 @@ const handleRoll = () => {
   const t = translations[currentLanguage].messages;
 
   diceContainer.innerHTML = "";
-  summary.innerHTML = `<p class="summary__placeholder">${translations[currentLanguage].labels.placeholderRolling}</p>`;
+  showSummaryPlaceholder(translations[currentLanguage].labels.placeholderRolling);
+  // Nowy rzut zawsze zwija detale poprzedniego, żeby nie sugerowały, że dotyczą bieżącego wyniku.
+  // A new roll always collapses the previous details, so they cannot look like the current result.
+  rollDetails.open = false;
+  buildRollDetails([], 0);
 
   const diceElements = [];
   for (let i = 0; i < pool; i += 1) {
@@ -266,6 +362,7 @@ const handleRoll = () => {
       wrathMessage,
       transferable,
       results,
+      wrathCount: wrath,
     });
   }, ROLL_DURATION);
 };

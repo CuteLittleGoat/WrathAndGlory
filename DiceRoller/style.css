@@ -15,6 +15,11 @@
   --white-pip: #111111;
   --red-die: #c01717;
   --red-pip: #ffffff;
+  /* Czerwień do pisania na ciemnym tle. Kolor samej kości (#c01717) jest na czarnym za ciemny,
+     żeby dało się nim wygodnie czytać tekst tabeli. */
+  /* Red for text on a dark background. The die colour (#c01717) is too dark on black to read
+     table text comfortably. */
+  --red-text: #ff6b6b;
 }
 
 * {
@@ -323,11 +328,33 @@ input[type="number"]:focus {
   border-radius: 10px;
   padding: 16px 18px;
   width: 100%;
+  /* PL: Cztery wiersze o stałej wysokości. Komunikat startowy zajmuje jeden wiersz, a pełny wynik
+         cztery — bez tej siatki ramka rosła z 1 do 4 wierszy i cała strona skakała w pionie.
+         `minmax(..., auto)` pozwala wierszowi urosnąć, gdy na wąskim ekranie tekst się złamie,
+         więc nic nie zostaje ucięte.
+     EN: Four rows of fixed height. The starting message occupies one row and a full result four —
+         without this grid the box grew from 1 to 4 rows and the whole page jumped vertically.
+         `minmax(..., auto)` lets a row grow when the text wraps on a narrow screen, so nothing
+         gets clipped. */
+  --summaryLine: 26px;
+  display: grid;
+  grid-template-rows: repeat(4, minmax(var(--summaryLine), auto));
+  align-content: start;
+}
+
+.summary__line {
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .summary__placeholder {
   margin: 0;
   color: var(--muted);
+  /* Rozciągnięty na całą siatkę, więc nie dokłada wysokości ponad zarezerwowane cztery wiersze. */
+  /* Stretched over the whole grid, so it adds no height beyond the four reserved rows. */
+  grid-row: 1 / -1;
+  align-items: flex-start;
 }
 
 .summary__headline {
@@ -338,35 +365,138 @@ input[type="number"]:focus {
 }
 
 .summary__headline--secondary {
-  margin-top: 6px;
+  font-size: 16px;
 }
 
 .summary__transfer {
-  margin: 6px 0 0;
   font-size: 15px;
 }
 
 .summary__detail {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* --- Rozwijane detale rzutu / Collapsible roll details --- */
+.rollDetails {
+  width: 100%;
+  border: 1px solid rgba(22, 198, 12, 0.32);
+  border-radius: 10px;
+  background: rgba(22, 198, 12, 0.04);
+}
+
+.rollDetails__toggle {
+  cursor: pointer;
+  padding: 12px 16px;
+  list-style: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 14px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Strzałka rysowana samodzielnie, bo domyślny znacznik rozwijania wygląda inaczej w każdej przeglądarce. */
+/* The arrow is drawn here, because the default disclosure marker looks different in every browser. */
+.rollDetails__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.rollDetails__toggle::before {
+  content: "▸";
+  transition: transform 0.15s ease;
+}
+
+.rollDetails[open] > .rollDetails__toggle::before {
+  transform: rotate(90deg);
+}
+
+.rollDetails__toggle:hover {
+  background: rgba(22, 198, 12, 0.08);
+}
+
+.rollDetails__toggle:focus-visible {
+  outline: 2px solid rgba(22, 198, 12, 0.6);
+  outline-offset: -2px;
+}
+
+/* Kolumny powstają same: każda tabela to jedna kolumna, a przy wąskim ekranie schodzą pod siebie. */
+/* The columns build themselves: every table is one column, and on a narrow screen they stack. */
+.rollDetails__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr));
+  gap: 12px 16px;
+  padding: 0 16px 14px;
+  /* Bez tego tabela z mniejszą liczbą wierszy rozciąga się na wysokość sąsiedniej i rozjeżdża
+     odstępy między wierszami. */
+  /* Without this, a table with fewer rows stretches to the height of its neighbour and its row
+     spacing drifts apart. */
+  align-items: start;
+}
+
+.rollDetails__empty {
   margin: 0;
   color: var(--muted);
   font-size: 14px;
 }
 
-.summary__spacer {
-  height: 12px;
-}
-
-.summary ul {
-  list-style: none;
-  padding: 0;
-  margin: 8px 0 0;
-  display: grid;
-  gap: 4px;
-  color: var(--muted);
+.rollDetails__table {
+  width: 100%;
+  border-collapse: collapse;
   font-size: 14px;
 }
 
+.rollDetails__table th,
+.rollDetails__table td {
+  padding: 5px 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(22, 198, 12, 0.16);
+}
+
+.rollDetails__table thead th {
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.rollDetails__table tbody th {
+  font-weight: 400;
+  color: var(--text);
+}
+
+.rollDetails__table td {
+  text-align: center;
+  color: var(--text);
+}
+
+/* Kości Furii są na górze czerwone, więc ich wiersze w tabeli też. */
+/* The Wrath dice are red above, so their rows in the table are red as well. */
+.rollDetails__row--wrath th,
+.rollDetails__row--wrath td {
+  color: var(--red-text);
+}
+
 @media (max-width: 600px) {
+  /* PL: Na wąskim ekranie ostatni wiersz („Łączne punkty…”) bywa za długi i łamie się na dwie
+         linie — przy dużych wartościach Stopnia Trudności zawsze. Rezerwujemy mu dwie linie na
+         stałe, więc ramka ma jedną wysokość niezależnie od tego, czy tekst się złamał.
+     EN: On a narrow screen the last row ("Total points…") is sometimes too long and wraps onto two
+         lines — with large Difficulty Numbers, always. Two lines are reserved for it permanently,
+         so the box keeps one height whether the text wrapped or not. */
+  .summary {
+    grid-template-rows:
+      repeat(3, minmax(var(--summaryLine), auto))
+      minmax(calc(var(--summaryLine) * 2), auto);
+  }
+
+  .summary__line {
+    align-items: flex-start;
+  }
+
   .language-switcher {
     position: static;
     align-self: flex-end;

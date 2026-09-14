@@ -53,7 +53,7 @@ Język interfejsu jest wybierany przez `#languageSelect`.
 
 | Plik | Rola |
 | --- | --- |
-| `DiceRoller/index.html` | Struktura widoku: ukryty przełącznik języka, przycisk powrotu, pola, przycisk rzutu i wyniki. |
+| `DiceRoller/index.html` | Struktura widoku: ukryty przełącznik języka, przycisk powrotu, pola, przycisk rzutu, podsumowanie i rozwijany blok `Detale rzutu`. |
 | `DiceRoller/style.css` | Motyw terminalowy, layout, style pól, przycisków, kości, animacji i panelu wyniku. |
 | `DiceRoller/script.js` | Stałe, tłumaczenia, walidacja, losowanie, render kości, logika wyniku i event listenery. |
 | `DiceRoller/docs/README.md` | Instrukcja użytkownika PL/EN. |
@@ -106,7 +106,10 @@ Najważniejsze elementy DOM:
 | `#roll` | Przycisk rzutu. |
 | `.results` | Sekcja wyników. |
 | `#dice` | Kontener wyrenderowanych kości. |
-| `#summary` | Kontener podsumowania testu. |
+| `#summary` | Kontener podsumowania testu; zawsze cztery wiersze `.summary__line`. |
+| `#rollDetails` | Rozwijany blok `Detale rzutu` (`<details>`), domyślnie zwinięty. |
+| `#rollDetailsToggle` | Nagłówek bloku, który go rozwija i zwija. |
+| `#rollDetailsBody` | Pojemnik z tabelami wyników poszczególnych kości. |
 
 ## Struktura CSS
 
@@ -127,6 +130,7 @@ Najważniejsze elementy DOM:
 | `--white-pip` | Kolor oczek białej kości. |
 | `--red-die` | Kolor czerwonej kości Furii. |
 | `--red-pip` | Kolor oczek czerwonej kości. |
+| `--red-text` | Czerwień do pisania na ciemnym tle (wiersze Kości Furii w tabeli detali). |
 
 Globalny font-stack:
 
@@ -142,6 +146,38 @@ Najważniejsze zasady layoutu:
 - `.panel` używa `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`,
 - `.dice` używa `flex-wrap`, aby kości zawijały się w wielu wierszach,
 - przy szerokości do `600px` kontener przełącznika przechodzi do pozycji statycznej, a kości zmniejszają się z `68px` do `58px`.
+
+### Stała wysokość podsumowania
+
+`.summary` jest siatką `grid-template-rows: repeat(4, minmax(var(--summaryLine), auto))`
+(`--summaryLine: 26px`). Cztery wiersze są zawsze obecne, także puste, więc ramka ma jedną wysokość
+niezależnie od tego, ile informacji niesie dany rzut — bez tego strona skakała w pionie, kiedy
+jednoliniowy komunikat startowy ustępował miejsca kilkuliniowemu wynikowi.
+
+- `.summary__placeholder` ma `grid-row: 1 / -1`, czyli rozciąga się na wszystkie cztery wiersze.
+  Dzięki temu długi komunikat startowy, który na wąskim ekranie łamie się na trzy linie, nie dokłada
+  wysokości ponad zarezerwowane cztery wiersze.
+- Przy `max-width: 600px` czwarty wiersz ma zarezerwowane dwie linie
+  (`minmax(calc(var(--summaryLine) * 2), auto)`), bo najdłuższa linia („Łączne punkty: …”) na wąskim
+  ekranie się łamie; rezerwacja utrzymuje jedną wysokość niezależnie od tego, czy tekst się złamał.
+
+Zmierzone w dziewięciu stanach (komunikat startowy oraz osiem rzutów o różnych pulach i liczbach
+Kości Furii): wysokość ramki podsumowania **140 px przy 1440 px i 166 px przy 390 px, rozrzut 0 px**
+w obu szerokościach. Zmienia się jeszcze wysokość pojemnika kości (przy 390 px **92 px dla jednej
+kości i 502 px dla dwudziestu**), bo dwadzieścia kości zwyczajnie zajmuje więcej wierszy.
+
+### Blok `Detale rzutu`
+
+`#rollDetails` to element `<details>` — zwinięty jest domyślnie i nie renderuje swojej zawartości,
+więc niezależnie od liczby kości nie wpływa na wysokość strony, dopóki użytkownik go nie rozwinie.
+
+- `.rollDetails__body` to siatka `repeat(auto-fit, minmax(min(210px, 100%), 1fr))` z `align-items: start`.
+  Każda tabela jest jedną kolumną; na wąskim ekranie kolumny schodzą pod siebie. Bez `align-items: start`
+  tabela z mniejszą liczbą wierszy rozciągałaby się na wysokość sąsiedniej i rozjeżdżały jej odstępy.
+- `.rollDetails__row--wrath th`, `.rollDetails__row--wrath td`: `color: var(--red-text)` — wiersze
+  Kości Furii są czerwone, tak jak same kości nad tabelą.
+- Znacznik rozwijania jest rysowany własną regułą (`.rollDetails__toggle::before` z `▸`, obracaną
+  o 90° w stanie `[open]`), bo domyślny znacznik `<summary>` wygląda inaczej w każdej przeglądarce.
 
 ### Siatka a wąski ekran
 
@@ -207,7 +243,8 @@ Funkcja `updateLanguage(lang)`:
 1. ustawia `currentLanguage`,
 2. aktualizuje `document.documentElement.lang`,
 3. synchronizuje wartość `#languageSelect`,
-4. aktualizuje tytuł, podtytuł, etykiety pól, podpowiedź i przycisk rzutu,
+4. aktualizuje tytuł, podtytuł, etykiety pól, podpowiedź, przycisk rzutu i nagłówek bloku
+   `Detale rzutu` (`labels.rollDetails`),
 5. aktualizuje tekst przycisku `#mainPageButton`,
 6. wywołuje `resetState()`.
 
@@ -327,25 +364,52 @@ Oznacza to, że możliwe Przeniesienie jest ograniczone zarówno liczbą wszystk
 
 ## Podsumowanie wyniku
 
-`buildSummary(...)` czyści `#summary` i tworzy:
+`buildSummary(...)` wywołuje `renderSummaryLines(...)` z czterema pozycjami, w stałej kolejności:
 
-- nagłówek `Sukces!` albo `Porażka!`,
-- opcjonalny komunikat Furii,
-- opcjonalny komunikat Przeniesienia,
-- szczegóły punktów i Stopnia Trudności,
-- listę wyników każdej kości.
+1. nagłówek `Sukces!` albo `Porażka!`,
+2. komunikat Furii — albo `null`,
+3. komunikat Przeniesienia — albo `null`,
+4. punkty i Stopień Trudności.
 
-Lista kości ma format:
-
-```text
-Kość 1: 6 (punkty 2)
-```
-
-albo w wersji EN:
+`renderSummaryLines(lines)` zawsze tworzy `SUMMARY_LINES` (cztery) akapity `.summary__line`. Pozycja
+`null` daje akapit pusty, a nie brak akapitu — stąd stała wysokość ramki. Pełny wynik wygląda tak:
 
 ```text
-Die 1: 6 (points 2)
+Sukces!
+Krytyczna Furia 🙂
+Możliwe Przeniesienie: 1
+Łączne punkty: 5 (Stopień Trudności: 2)
 ```
+
+Rzut bez komunikatu Furii zostawia drugi wiersz pusty:
+
+```text
+Sukces!
+
+Możliwe Przeniesienie: 1
+Łączne punkty: 4 (Stopień Trudności: 2)
+```
+
+`showSummaryPlaceholder(text)` jest osobną ścieżką: tworzy **jeden** akapit z klasą
+`.summary__placeholder`, rozciągnięty regułą CSS na wszystkie cztery wiersze siatki. Używają go
+`resetState()` (komunikat startowy) i `handleRoll()` (komunikat `Rzut w toku...`).
+
+## Detale rzutu
+
+`buildRollDetails(results, wrathCount)` wypełnia `#rollDetailsBody`:
+
+- przy pustej liście wyników wstawia akapit `.rollDetails__empty` z tekstem `detailsEmpty`,
+- w przeciwnym razie dzieli wyniki na porcje po `DETAILS_ROWS_PER_COLUMN` (pięć) i dla każdej porcji
+  tworzy osobną tabelę `.rollDetails__table` z nagłówkiem `Kość / Wynik / Punkty`,
+- wiersz kości o indeksie mniejszym niż `wrathCount` dostaje klasę `.rollDetails__row--wrath`
+  (czerwony font) oraz dopisek `(Furia)` przy nazwie kości, żeby oznaczenie nie opierało się wyłącznie
+  na kolorze.
+
+Blok jest zwijany w dwóch miejscach:
+
+- `resetState()` — ustawia `rollDetails.open = false` i czyści tabelę,
+- `handleRoll()` — ustawia `rollDetails.open = false` na starcie rzutu, żeby detale poprzedniego rzutu
+  nie wyglądały na dotyczące bieżącego wyniku.
 
 ## Reset stanu
 
@@ -353,7 +417,8 @@ Die 1: 6 (points 2)
 
 1. ustawia pola na wartości domyślne,
 2. czyści `#dice`,
-3. wstawia placeholder do `#summary`.
+3. wstawia komunikat startowy do `#summary`,
+4. zwija `#rollDetails` i czyści jego zawartość.
 
 Reset jest wykonywany przy zmianie języka.
 
@@ -425,6 +490,11 @@ let currentLanguage = "pl";
 | Ukryty przełącznik | Otwórz moduł. | Selektor języka nie jest widoczny — działa klasa `language-switcher--hidden`. |
 | Zmiana języka | Usuń klasę `language-switcher--hidden` z `#languageSelect` i zmień język w selektorze. | Selektor jest widoczny, teksty zmieniają język, wynik zostaje wyczyszczony. |
 | Kości czerwone | Ustaw kilka Kości Furii. | Pierwsze kości w puli są czerwone. |
+| Stała wysokość podsumowania | Wykonaj kilka rzutów o różnych pulach i różnej liczbie Kości Furii. | Ramka podsumowania ma tę samą wysokość przy każdym wyniku; brakujące komunikaty zostawiają pusty wiersz. |
+| Detale zwinięte | Wykonaj rzut. | Blok `Detale rzutu` jest zwinięty. |
+| Detale rozwinięte | Kliknij `Detale rzutu`. | Pojawia się tabela `Kość / Wynik / Punkty`; przy puli powyżej pięciu kości powstaje kilka kolumn. |
+| Czerwone wiersze Furii | Ustaw kilka Kości Furii i rozwiń detale. | Wiersze Kości Furii mają czerwony font i dopisek `(Furia)`. |
+| Zwijanie po rzucie | Rozwiń detale i kliknij `Rzuć Kośćmi!`. | Blok zwija się sam. |
 | Przycisk strony głównej | Kliknij `Strona Główna`. | Przeglądarka otwiera `../Main/index.html`. |
 
 ---
@@ -477,7 +547,7 @@ Interface language is selected through `#languageSelect`.
 
 | File | Role |
 | --- | --- |
-| `DiceRoller/index.html` | View structure: hidden language selector, return button, fields, roll button, and results. |
+| `DiceRoller/index.html` | View structure: hidden language selector, return button, fields, roll button, summary, and the collapsible `Roll details` block. |
 | `DiceRoller/style.css` | Terminal theme, layout, field styles, button styles, dice styles, animation, and result panel. |
 | `DiceRoller/script.js` | Constants, translations, validation, rolling, dice rendering, result logic, and event listeners. |
 | `DiceRoller/docs/README.md` | PL/EN user guide. |
@@ -522,7 +592,10 @@ Important DOM elements:
 | `#roll` | Roll button. |
 | `.results` | Result section. |
 | `#dice` | Rendered dice container. |
-| `#summary` | Test summary container. |
+| `#summary` | Test summary container; always four `.summary__line` rows. |
+| `#rollDetails` | Collapsible `Roll details` block (`<details>`), collapsed by default. |
+| `#rollDetailsToggle` | The block header that expands and collapses it. |
+| `#rollDetailsBody` | Container holding the per-die result tables. |
 
 ### The grid on a narrow screen
 
@@ -643,7 +716,39 @@ The result is limited by both the number of all sixes and the point margin above
 
 ## Result summary
 
-`buildSummary(...)` clears `#summary` and creates a success/failure heading, optional Wrath message, optional Shift message, point details, and a list of every die result.
+`buildSummary(...)` calls `renderSummaryLines(...)` with four entries in a fixed order: the
+success/failure heading, the Wrath message (or `null`), the Shift message (or `null`), and the point
+details. `renderSummaryLines(lines)` always creates `SUMMARY_LINES` (four) `.summary__line`
+paragraphs — a `null` entry produces an empty paragraph rather than no paragraph, which is what keeps
+the box height constant.
+
+`showSummaryPlaceholder(text)` is a separate path: it creates a **single** `.summary__placeholder`
+paragraph stretched by CSS across all four grid rows, so a long starting message that wraps onto
+three lines on a narrow screen adds no height beyond the four reserved rows.
+
+`.summary` is a `grid-template-rows: repeat(4, minmax(var(--summaryLine), auto))` grid
+(`--summaryLine: 26px`). Below `600px` the fourth row reserves two lines, because the longest line
+("Total points: …") wraps on a narrow screen. Measured across nine states (the starting message plus
+eight rolls with varying pools and Wrath dice counts): the summary box height is **140 px at 1440 px
+and 166 px at 390 px, with a 0 px spread** at both widths.
+
+## Roll details
+
+`buildRollDetails(results, wrathCount)` fills `#rollDetailsBody`:
+
+- with an empty result list it inserts a `.rollDetails__empty` paragraph carrying the `detailsEmpty`
+  text,
+- otherwise it splits the results into chunks of `DETAILS_ROWS_PER_COLUMN` (five) and builds one
+  `.rollDetails__table` per chunk, each with a `Die / Result / Points` header,
+- a die whose index is below `wrathCount` gets the `.rollDetails__row--wrath` class (red font, from
+  `--red-text`) and a `(Wrath)` suffix on the die name, so the marking does not rely on colour alone.
+
+`.rollDetails__body` is a `repeat(auto-fit, minmax(min(210px, 100%), 1fr))` grid with
+`align-items: start`, so each table is one column and the columns stack on a narrow screen.
+
+The block is collapsed in two places: `resetState()` and `handleRoll()`, the latter so the previous
+roll's details cannot look like they belong to the current result. Being a collapsed `<details>`, it
+renders none of its content and therefore adds no page height until the user opens it.
 
 ## Event listeners
 

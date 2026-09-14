@@ -8,7 +8,7 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 
 Przełącznik języka (select PL/EN) istnieje w modułach: **GeneratorNazw**, **GeneratorNPC**,
 **DataVault**, **Kalkulator PD (KalkulatorXP)**, **Prosty Kreator Postaci**, **Zaawansowany Kreator
-Postaci**, **Audio** oraz **DiceRoller**.
+Postaci**, **Audio**, **DiceRoller** oraz **Infoczytnik (panel GM)**.
 
 **We wszystkich tych modułach przełącznik jest ukryty w interfejsie.** Ukrywa go jedna wspólna klasa
 CSS `language-switcher--hidden` z regułą `display: none !important`. Cała warstwa tłumaczeń pozostaje
@@ -31,6 +31,7 @@ VISIBILITY CHANGE POINT`.
 | Zaawansowany Kreator Postaci | `Kalkulator/TworzeniePostaci_v2.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
 | Audio | `Audio/index.html` | dwa kontenery `<div class="language-switcher language-switcher--hidden">` — panel użytkownika i panel admina; trzeba usunąć klasę w obu miejscach, jeśli oba przełączniki mają być widoczne |
 | DiceRoller | `DiceRoller/index.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
+| Infoczytnik — panel GM | `Infoczytnik/GM_test.html` | `<div class="language-switcher language-switcher--hidden">` w nagłówku `.pageHead` |
 
 Klasa stoi na kontenerze tam, gdzie kontener zawiera wyłącznie select, a na samym `<select>` tam,
 gdzie kontener trzyma także przyciski nawigacyjne lub link do strony głównej — dzięki temu ukrycie
@@ -43,8 +44,8 @@ przełącznika nie zabiera tych przycisków i nie zostawia po sobie pustego odst
 - tekst: `--text` (zielony),
 - focus: delikatny glow (`box-shadow` w zieleni).
 
-Panel GM Infoczytnika (`Infoczytnik/GM_test.html`) ma własny wybór języka wiadomości i nie korzysta
-z tej klasy — jest widoczny.
+Ekran gracza Infoczytnika (`Infoczytnik/Infoczytnik_test.html`) nie ma przełącznika, bo nie ma
+własnych tekstów interfejsu — wyświetla wyłącznie to, co wyśle Mistrz Gry z panelu GM.
 
 ---
 
@@ -257,6 +258,10 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 - Aktywny filtr (tekstowy lub listowy) oznacza:
   - podświetlenie nagłówka kolumny (`thead tr:first-child th.filter-active`) z jasnoczerwoną linią dolną (`inset 0 -2px 0 rgba(255,85,85,.40)`) i czerwonym gradientem tła (`rgba(255,70,70,.18)` → `rgba(255,70,70,.07)`),
   - aktywny stan przycisku filtra (`.filterBtn.filter-active`) z kropką `●`.
+- Nagłówek z aktywnym filtrem ustawia **osobno** `background-color: var(--panel)` i
+  `background-image` z czerwonym gradientem. Skrót `background` kasowałby nieprzezroczysty kolor
+  bazowy z reguły `thead th`, a sam gradient jest półprzezroczysty — przez przyklejony nagłówek
+  prześwitywałaby wtedy treść przewijanych wierszy.
 - W drugim wierszu nagłówka komórka odpowiadająca kolumnie wyboru `✓` (`th.noFilterCell`) jest celowo pusta — usunięto placeholder „filtr...”, bo ta kolumna nie posiada filtra.
 
 #### 3.7 Specjalne formatowanie kolumny `Zasięg`
@@ -468,6 +473,13 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 
 ### 5) Layout i elementy UI
 - Górny pasek (`.topbar`) sticky, z `flex-wrap: wrap` i odstępem `12px 18px`; kontener przycisków `.actions` również może zawijać przyciski.
+- Przycisk `Generuj pliki danych` (`#btnUpdateData`, tylko widok admina) ma `align-self: flex-start`,
+  więc nie rozciąga się na szerokość kolumnowej grupy `.actionsGroup`, tylko ma szerokość własnego
+  napisu i zaczyna się dokładnie tam, gdzie zaczyna się tekst podpowiedzi pod nim. Kolor napisu to
+  `var(--text-old)` — ten sam, którego używa etykieta „Czy wyświetlić zdezaktualizowane wpisy?”;
+  obramowanie `rgba(127,155,127,.45)` i tło `rgba(127,155,127,.10)` (`.18` przy najechaniu) to ten
+  sam odcień w niskiej przezroczystości. Zmierzone: szerokość **640 px → 204 px**, lewe krawędzie
+  przycisku i podpowiedzi pokrywają się co do piksela.
 - Panele boczne i workspace działają w układzie `grid` (`360px` + `minmax(0, 1fr)`). `.layout` ma `width: 100%` i `max-width: 100%`, `.workspace` ma `min-width: 0`, a `.card` ma `min-width: 0`, `max-width: 100%` i `overflow-x: auto`, dlatego szerokie tabele przewijają się lokalnie wewnątrz kart zamiast rozszerzać cały dokument.
 - Panele z `box-shadow: var(--glow)` i `border: 1px solid var(--div)`.
 - Tabele: zebra i hover oparte o `--zebra` i `--hover`.
@@ -557,8 +569,8 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - Stopka jest wyrównana do prawej (`text-align: right`) w obu kreatorach, do prawej krawędzi
     treści kontenera `.wrapper`. Zmierzone przy 1440 px i 390 px: odstęp prawej krawędzi tekstu od
     prawej krawędzi treści wynosi `0 px` w obu plikach.
-  - Pozostałe właściwości stopki: kolor `var(--muted)`, `letter-spacing: .08em` oraz kursywa,
-    która występuje wyłącznie w kreatorze zaawansowanym.
+  - Pozostałe właściwości stopki są w obu kreatorach identyczne: kolor `var(--muted)`,
+    `letter-spacing: .08em` i kursywa (`font-style: italic`).
 
 ---
 
@@ -588,6 +600,8 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Kolory kości:
   - `--white-die`: `#f6f6f6`, `--white-pip`: `#111111`.
   - `--red-die`: `#c01717`, `--red-pip`: `#ffffff`.
+- `--red-text`: `#ff6b6b` — czerwień do pisania na ciemnym tle, używana w wierszach Kości Furii
+  w tabeli `Detale rzutu`. Kolor samej kości (`#c01717`) jest na czarnym tle za ciemny na tekst.
 
 #### 2.2 Dodatkowe wartości kolorów (literalne)
 - Cienie kości: `rgba(0, 0, 0, 0.2)` i `rgba(0, 0, 0, 0.35)`.
@@ -601,6 +615,25 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Aplikacja centrowana jak w Main (`body` flex + padding `24px`).
 - `.panel`: grid z `repeat(auto-fit, minmax(220px, 1fr))`.
 - Kości: kwadraty `68px` (mobile `58px`), animacja `@keyframes roll`.
+- **Podsumowanie o stałej wysokości.** `.summary` jest siatką
+  `grid-template-rows: repeat(4, minmax(var(--summaryLine), auto))` przy `--summaryLine: 26px`.
+  Cztery wiersze `.summary__line` są zawsze obecne, także puste, więc ramka nie rośnie ani nie maleje
+  między rzutami. Komunikat startowy (`.summary__placeholder`) ma `grid-row: 1 / -1`, czyli rozciąga
+  się na całą siatkę i nie dokłada wysokości, nawet gdy na wąskim ekranie złamie się na trzy linie.
+  Przy `max-width: 600px` czwarty wiersz ma zarezerwowane dwie linie, bo najdłuższy napis
+  („Łączne punkty: …”) na telefonie się łamie.
+  Zmierzone w dziewięciu stanach: wysokość ramki **140 px przy 1440 px i 166 px przy 390 px,
+  rozrzut 0 px** w obu szerokościach.
+- **Blok `Detale rzutu`** (`.rollDetails`) — element `<details>`, domyślnie zwinięty, ramka
+  `1px solid rgba(22,198,12,.32)`, tło `rgba(22,198,12,.04)`, promień `10px`. Nagłówek
+  `.rollDetails__toggle` ma wersaliki, `letter-spacing: .05em` i własny znacznik `▸`
+  (`::before`), obracany o 90° w stanie `[open]`; domyślny znacznik `<summary>` jest ukryty, bo
+  w każdej przeglądarce wygląda inaczej.
+  Zawartość (`.rollDetails__body`) to siatka `repeat(auto-fit, minmax(min(210px, 100%), 1fr))`
+  z `align-items: start` — każda tabela to jedna kolumna, a na wąskim ekranie kolumny schodzą pod
+  siebie. Tabela ma nagłówki w kolorze `--muted`, wersaliki `12px`, wiersze rozdzielone linią
+  `1px solid rgba(22,198,12,.16)`. Wiersze Kości Furii (`.rollDetails__row--wrath`) są pisane
+  kolorem `--red-text`.
 
 ### 4) Zwijanie/rozwijanie > 9 linii
 - Brak clampowania treści w module DiceRoller.
@@ -1130,6 +1163,7 @@ Wiersz tabeli staje się kartą. Przewija się cała strona, nagłówek jest ukr
 | Nagłówek widoczny po przewinięciu o 400 px (1440 px) | nie, −242 px poza ekranem | tak, 158 px od góry |
 | Nachodzenie filtrów na nagłówek | 23 px | 0 px |
 | Tło nagłówka | przezroczyste | nieprzezroczyste |
+| Tło nagłówka kolumny z aktywnym filtrem | przezroczyste (treść wierszy prześwitywała) | nieprzezroczyste |
 | Nadmiar poziomy na telefonie 390 px | 1621 px | 0 px |
 | Szerokość kolumny zaznaczania | 63 px | 39 px |
 
@@ -1173,6 +1207,7 @@ A table row becomes a card. The page scrolls and the header is hidden.
 | Header visible after a 400 px scroll (1440 px) | no, −242 px off screen | yes, 158 px from the top |
 | Filter row overlapping the header | 23 px | 0 px |
 | Header background | transparent | opaque |
+| Background of a header with an active filter | transparent (row content showed through) | opaque |
 | Horizontal overflow on a 390 px phone | 1621 px | 0 px |
 | Selection column width | 63 px | 39 px |
 

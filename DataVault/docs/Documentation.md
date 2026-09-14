@@ -612,6 +612,16 @@ Język wpływa na:
 - aria-labels,
 - puste stany.
 
+Nagłówek kolumny z aktywnym filtrem (`thead tr:first-child th.filter-active`) ustawia osobno
+`background-color: var(--panel)` i `background-image` z czerwonym gradientem. Skrót `background`
+kasuje wszystkie składowe, których nie wymienia, więc zdejmowałby nieprzezroczysty kolor bazowy
+z reguły `thead th` — a sam gradient jest półprzezroczysty i przez przyklejony nagłówek
+prześwitywałaby treść przewijanych wierszy.
+
+Przycisk `Generuj pliki danych` (`#btnUpdateData`) ma `align-self: flex-start`, więc nie rozciąga się
+na szerokość kolumnowej grupy `.actionsGroup`. Kolor napisu to `var(--text-old)` — ten sam, którego
+używa etykieta „Czy wyświetlić zdezaktualizowane wpisy?”.
+
 Przełącznik języka istnieje w HTML, ale ma klasę `language-switcher--hidden`, a reguła
 `.language-switcher--hidden { display: none !important; }` w `DataVault/style.css` chowa go
 z interfejsu. Warstwa tłumaczeń pozostaje aktywna, a domyślnym językiem jest polski.
@@ -1287,6 +1297,16 @@ Language affects:
 - error messages,
 - aria labels,
 - empty states.
+
+A header of a column with an active filter (`thead tr:first-child th.filter-active`) sets
+`background-color: var(--panel)` and the red gradient `background-image` separately. The `background`
+shorthand resets every component it does not name, so it would strip the opaque base colour coming
+from the `thead th` rule — and the gradient alone is semi-transparent, which let the scrolling row
+content show through the sticky header.
+
+The `Generuj pliki danych` button (`#btnUpdateData`) uses `align-self: flex-start`, so it does not
+stretch to the width of the `.actionsGroup` column container. Its text colour is `var(--text-old)` —
+the same one the "Czy wyświetlić zdezaktualizowane wpisy?" label uses.
 
 The language switcher exists in HTML but carries the `language-switcher--hidden` class, and the
 rule `.language-switcher--hidden { display: none !important; }` in `DataVault/style.css` removes it

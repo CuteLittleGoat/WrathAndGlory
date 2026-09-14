@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-09-14_08-30-14";
+      const INF_VERSION = "2026-09-14_11-12-07";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -43,6 +43,12 @@
     .previewLogo{position:absolute;top:10px;right:10px;width:84px;height:84px;background:var(--logoPreviewColor,#d4af37);opacity:.9;display:none;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain;mask-repeat:no-repeat;mask-position:center;mask-size:contain}
     .previewText{position:relative;z-index:2;white-space:pre-line;text-shadow:0 1px 2px rgba(0,0,0,.8)}
     .disabled-note{opacity:.6}
+    .pageHead{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 10px}
+    .pageHead h1{margin:0}
+    .language-switcher select{width:auto;min-width:150px}
+    /* Ukrywa przełącznik języka, ale zostawia całą warstwę tłumaczeń aktywną; aby przywrócić przełącznik usuń klasę .language-switcher--hidden z HTML. */
+    /* Hides the language switcher while keeping the whole translation layer active; to restore it remove .language-switcher--hidden from HTML. */
+    .language-switcher--hidden{display:none !important}
     .importLog{min-height:120px;font-family:Consolas,monospace;white-space:pre}
     /* Wiersz musi umieć się złamać: przycisk ma własne minimum 210 px, więc przy wąskim ekranie
        na pole logu zostawało kilkadziesiąt pikseli.
@@ -68,62 +74,73 @@
 </head>
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
-<div class="wrap"><h1>Infoczytnik - panel GM</h1><div class="card">
+<div class="wrap">
+<div class="pageHead">
+  <h1 data-i18n="pageTitle">Infoczytnik - panel GM</h1>
+  <div class="language-switcher language-switcher--hidden">
+    <!-- MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA / LANGUAGE SWITCHER VISIBILITY CHANGE POINT: usuń klasę language-switcher--hidden, aby pokazać przełącznik / remove language-switcher--hidden to make the switcher visible -->
+    <select id="languageSelect" aria-label="Wersja językowa">
+      <option value="pl">Polski</option>
+      <option value="en">English</option>
+    </select>
+  </div>
+</div>
+<div class="card">
   <div class="row">
     <div class="col">
-      <label>Tło</label><select id="backgroundSelect"></select>
-      <label>Logo</label><select id="logoSelect"></select>
-      <label>Kolor logo</label>
+      <label data-i18n="labelBackground">Tło</label><select id="backgroundSelect"></select>
+      <label data-i18n="labelLogo">Logo</label><select id="logoSelect"></select>
+      <label data-i18n="labelLogoColor">Kolor logo</label>
       <div id="logoColorPanel">
         <div class="pair"><input type="text" id="logoColorText" value="#d4af37" placeholder="#RRGGBB"><input type="color" id="logoColorPicker" value="#d4af37"></div>
         <div class="chips" id="logoColorChips">
-          <div class="chip" data-target="logo" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span>Biały</span></div>
-          <div class="chip" data-target="logo" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span>Zielony</span></div>
-          <div class="chip" data-target="logo" data-color="#000000"><span class="swatch" style="background:#000000"></span><span>Czarny</span></div>
-          <div class="chip" data-target="logo" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span>Złoty</span></div>
+          <div class="chip" data-target="logo" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
+          <div class="chip" data-target="logo" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+          <div class="chip" data-target="logo" data-color="#000000"><span class="swatch" style="background:#000000"></span><span data-i18n="colorBlack">Czarny</span></div>
+          <div class="chip" data-target="logo" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
         </div>
       </div>
-      <label>Zestaw fillerów</label><select id="fillerSelect"></select>
-      <label>Font</label><select id="fontSelect"></select>
-      <label>Audio wiadomości</label><select id="audioSelect"></select>
+      <label data-i18n="labelFillerSet">Zestaw fillerów</label><select id="fillerSelect"></select>
+      <label data-i18n="labelFont">Font</label><select id="fontSelect"></select>
+      <label data-i18n="labelAudio">Audio wiadomości</label><select id="audioSelect"></select>
       <div class="toggles">
-        <label class="inline"><input type="checkbox" id="showLogo" checked style="width:auto"> Logo</label>
-        <label class="inline"><input type="checkbox" id="movingOverlay" checked style="width:auto"> Prostokąt cienia</label>
-        <label class="inline"><input type="checkbox" id="flicker" checked style="width:auto"> Flicker</label>
-        <label class="inline"><input type="checkbox" id="fillersEnabled" checked style="width:auto"> Fillery</label>
-        <label class="inline"><input type="checkbox" id="audioEnabled" checked style="width:auto"> Audio</label>
+        <label class="inline"><input type="checkbox" id="showLogo" checked style="width:auto"> <span data-i18n="toggleLogo">Logo</span></label>
+        <label class="inline"><input type="checkbox" id="movingOverlay" checked style="width:auto"> <span data-i18n="toggleShadowRect">Prostokąt cienia</span></label>
+        <label class="inline"><input type="checkbox" id="flicker" checked style="width:auto"> <span data-i18n="toggleFlicker">Flicker</span></label>
+        <label class="inline"><input type="checkbox" id="fillersEnabled" checked style="width:auto"> <span data-i18n="toggleFillers">Fillery</span></label>
+        <label class="inline"><input type="checkbox" id="audioEnabled" checked style="width:auto"> <span data-i18n="toggleAudio">Audio</span></label>
       </div>
       <div id="flickerHint" class="small"></div>
-      <label>Ilość linii fillerów</label><input type="number" id="fillerLineCount" min="1" max="5" value="3">
-      <label>Wysokość stref Prefix/Suffix (linie)</label><input type="number" id="fillerBandLines" min="1" max="6" value="2">
+      <label data-i18n="labelFillerLineCount">Ilość linii fillerów</label><input type="number" id="fillerLineCount" min="1" max="5" value="3">
+      <label data-i18n="labelFillerBandLines">Wysokość stref Prefix/Suffix (linie)</label><input type="number" id="fillerBandLines" min="1" max="6" value="2">
       <div id="fillersHint" class="small">Fillery aktywne.</div>
     </div>
     <div class="col">
-      <label>Kolor fontu (treść wiadomości)</label>
+      <label data-i18n="labelMessageColor">Kolor fontu (treść wiadomości)</label>
       <div class="pair"><input type="text" id="messageColorText" value="#00ff66" placeholder="#RRGGBB"><input type="color" id="messageColorPicker" value="#00ff66"></div>
       <div class="chips" id="messageColorChips">
-        <div class="chip" data-target="msg" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span>Zielony</span></div>
-        <div class="chip" data-target="msg" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span>Czerwony</span></div>
-        <div class="chip" data-target="msg" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span>Złoty</span></div>
-        <div class="chip" data-target="msg" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span>Biały</span></div>
+        <div class="chip" data-target="msg" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+        <div class="chip" data-target="msg" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+        <div class="chip" data-target="msg" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+        <div class="chip" data-target="msg" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
       </div>
-      <label>Wielkość fontu (treść) px</label><input type="number" id="msgFontSize" min="12" max="80" value="20">
-      <label>Kolor Prefix + Suffix (wspólny)</label>
+      <label data-i18n="labelMsgFontSize">Wielkość fontu (treść) px</label><input type="number" id="msgFontSize" min="12" max="80" value="20">
+      <label data-i18n="labelPsColor">Kolor Prefix + Suffix (wspólny)</label>
       <div class="pair"><input type="text" id="psColorText" value="#ffffff" placeholder="#RRGGBB"><input type="color" id="psColorPicker" value="#ffffff"></div>
       <div class="chips" id="psColorChips">
-        <div class="chip" data-target="ps" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span>Zielony</span></div>
-        <div class="chip" data-target="ps" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span>Czerwony</span></div>
-        <div class="chip" data-target="ps" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span>Złoty</span></div>
-        <div class="chip" data-target="ps" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span>Biały</span></div>
+        <div class="chip" data-target="ps" data-color="#00ff66"><span class="swatch" style="background:#00ff66"></span><span data-i18n="colorGreen">Zielony</span></div>
+        <div class="chip" data-target="ps" data-color="#ff3333"><span class="swatch" style="background:#ff3333"></span><span data-i18n="colorRed">Czerwony</span></div>
+        <div class="chip" data-target="ps" data-color="#d4af37"><span class="swatch" style="background:#d4af37"></span><span data-i18n="colorGold">Złoty</span></div>
+        <div class="chip" data-target="ps" data-color="#ffffff"><span class="swatch" style="background:#ffffff"></span><span data-i18n="colorWhite">Biały</span></div>
       </div>
-      <label>Wielkość fontu Prefix + Suffix px</label><input type="number" id="psFontSize" min="10" max="60" value="12">
+      <label data-i18n="labelPsFontSize">Wielkość fontu Prefix + Suffix px</label><input type="number" id="psFontSize" min="10" max="60" value="12">
 
       <div class="previewModeRow">
-        <span class="small">Podgląd:</span>
-        <label class="inline"><input type="radio" name="previewMode" id="previewModeContent" value="content" checked style="width:auto"> Treść</label>
-        <label class="inline"><input type="radio" name="previewMode" id="previewModeBackground" value="background" style="width:auto"> Tło</label>
+        <span class="small" data-i18n="previewLabel">Podgląd:</span>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeContent" value="content" checked style="width:auto"> <span data-i18n="previewModeContent">Treść</span></label>
+        <label class="inline"><input type="radio" name="previewMode" id="previewModeBackground" value="background" style="width:auto"> <span data-i18n="previewModeBackground">Tło</span></label>
       </div>
-      <div class="small">Treść = warstwa tekstowa bez grafiki tła • Tło = pojedyncza miniatura wybranego pliku tła.</div>
+      <div class="small" data-i18n="previewModeNote">Treść = warstwa tekstowa bez grafiki tła • Tło = pojedyncza miniatura wybranego pliku tła.</div>
       <div class="livePreviewBox" id="livePreview">
         <img id="previewBackgroundThumb" class="previewBackgroundThumb" alt="background thumbnail">
         <div id="previewLogo" class="previewLogo" aria-hidden="true"></div>
@@ -134,41 +151,41 @@
     </div>
   </div>
 
-  <label>Treść komunikatu</label>
-  <textarea id="message" placeholder="Wpisz komunikat dla graczy..."></textarea>
+  <label data-i18n="labelMessage">Treść komunikatu</label>
+  <textarea id="message" placeholder="Wpisz komunikat dla graczy..." data-i18n-placeholder="messagePlaceholder"></textarea>
 
   <div class="btnrow">
-    <button class="primary" id="sendBtn">Wyślij</button>
-    <button class="warn" id="pingBtn">Ping</button>
-    <button id="clearMessageBtn">Wyczyść komunikat</button>
-    <button id="restoreDefaultsBtn">Przywróć domyślne</button>
-    <button id="rerollFillersBtn">Wylosuj fillery</button>
+    <button class="primary" id="sendBtn" data-i18n="btnSend">Wyślij</button>
+    <button class="warn" id="pingBtn" data-i18n="btnPing">Ping</button>
+    <button id="clearMessageBtn" data-i18n="btnClearMessage">Wyczyść komunikat</button>
+    <button id="restoreDefaultsBtn" data-i18n="btnRestoreDefaults">Przywróć domyślne</button>
+    <button id="rerollFillersBtn" data-i18n="btnRerollFillers">Wylosuj fillery</button>
   </div>
 
   <!-- Ulubione wiadomości: przygotowanie kilku gotowych wiadomości przed sesją / Favourite messages: preparing several ready messages before a session -->
-  <label for="favSelect">Ulubione wiadomości</label>
+  <label for="favSelect" data-i18n="labelFavorites">Ulubione wiadomości</label>
   <div class="favRow">
     <select id="favSelect"></select>
-    <input type="text" id="favName" placeholder="Nazwa zapisu" maxlength="80">
+    <input type="text" id="favName" placeholder="Nazwa zapisu" maxlength="80" data-i18n-placeholder="favNamePlaceholder">
   </div>
   <div class="btnrow favBtnRow">
-    <button id="favLoadBtn" type="button">Wczytaj</button>
-    <button id="favSaveNewBtn" type="button">Zapisz jako nową</button>
-    <button id="favOverwriteBtn" type="button">Nadpisz zaznaczoną</button>
-    <button id="favRenameBtn" type="button">Zmień nazwę</button>
-    <button id="favUpBtn" type="button">W górę</button>
-    <button id="favDownBtn" type="button">W dół</button>
-    <button class="warn" id="favDeleteBtn" type="button">Usuń</button>
+    <button id="favLoadBtn" type="button" data-i18n="btnFavLoad">Wczytaj</button>
+    <button id="favSaveNewBtn" type="button" data-i18n="btnFavSaveNew">Zapisz jako nową</button>
+    <button id="favOverwriteBtn" type="button" data-i18n="btnFavOverwrite">Nadpisz zaznaczoną</button>
+    <button id="favRenameBtn" type="button" data-i18n="btnFavRename">Zmień nazwę</button>
+    <button id="favUpBtn" type="button" data-i18n="btnFavUp">W górę</button>
+    <button id="favDownBtn" type="button" data-i18n="btnFavDown">W dół</button>
+    <button class="warn" id="favDeleteBtn" type="button" data-i18n="btnFavDelete">Usuń</button>
   </div>
   <div class="small" id="favHint">Wczytanie ulubionej wiadomości tylko wypełnia formularz. Wysyłka zawsze idzie przyciskiem „Wyślij”.</div>
 
-  <label>Log importu</label>
+  <label data-i18n="labelImportLog">Log importu</label>
   <div class="importRow">
     <textarea id="importLog" class="importLog" readonly></textarea>
-    <button id="updateDataBtn" class="primary importUpdateBtn" type="button">Aktualizuj dane z XLSX</button>
+    <button id="updateDataBtn" class="primary importUpdateBtn" type="button" data-i18n="btnUpdateData">Aktualizuj dane z XLSX</button>
   </div>
 
-  <div class="small">Status: <span class="status" id="status">…</span></div>
+  <div class="small"><span data-i18n="statusLabel">Status:</span> <span class="status" id="status">…</span></div>
 </div></div>
 
 <!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
@@ -193,7 +210,7 @@ const PING_URL = 'assets/audios/ping/Ping.mp3?v=' + encodeURIComponent(window.__
 const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
 
 // --- WAŻNE: Każda grupa musi mieć własny Firebase, inaczej dane będą współdzielone między serwerami. / IMPORTANT: Each group must have its own Firebase, otherwise data will be shared across servers. ---
-if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
+if(!window.firebaseConfig){ alert('Brak window.firebaseConfig / Missing window.firebaseConfig'); throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
 // --- App Check tuż po utworzeniu aplikacji, przed pierwszym użyciem Firestore / App Check right after the app is created, before Firestore is first used ---
 // PL: Wywołanie nie jest krytyczne — bez reCAPTCHA strona działa tak jak dotąd.
@@ -210,7 +227,225 @@ const currentRef = db.collection('dataslate').doc('current');
 //     it down to that one name. One document here = one saved message.
 const favoritesRef = db.collection('dataslate_favorites');
 
+
+// --- Warstwa tłumaczeń / Translation layer ---
+// PL: Panel ma komplet tekstów po polsku i po angielsku. Domyślnym językiem jest polski, a przełącznik
+//     w nagłówku jest ukryty klasą `language-switcher--hidden` — tak samo jak w pozostałych modułach.
+//     Teksty statyczne niosą atrybut `data-i18n` (albo `data-i18n-placeholder`), a teksty powstające
+//     w trakcie pracy panelu — statusy, podpowiedzi, log importu — są zapamiętywane jako klucz plus
+//     wartości, więc po zmianie języka przerysowują się na nowo zamiast zostać w poprzednim języku.
+// EN: The panel carries a full set of Polish and English texts. Polish is the default language and the
+//     switcher in the header is hidden with `language-switcher--hidden`, exactly as in the other
+//     modules. Static texts carry a `data-i18n` (or `data-i18n-placeholder`) attribute, while texts
+//     produced while the panel runs — statuses, hints, the import log — are remembered as a key plus
+//     values, so a language change redraws them instead of leaving them in the previous language.
+const translations = {
+  pl: {
+    documentTitle:'Infoczytnik - panel GM',
+    pageTitle:'Infoczytnik - panel GM',
+    labelBackground:'Tło',
+    labelLogo:'Logo',
+    labelLogoColor:'Kolor logo',
+    labelFillerSet:'Zestaw fillerów',
+    labelFont:'Font',
+    labelAudio:'Audio wiadomości',
+    labelFillerLineCount:'Ilość linii fillerów',
+    labelFillerBandLines:'Wysokość stref Prefix/Suffix (linie)',
+    labelMessageColor:'Kolor fontu (treść wiadomości)',
+    labelMsgFontSize:'Wielkość fontu (treść) px',
+    labelPsColor:'Kolor Prefix + Suffix (wspólny)',
+    labelPsFontSize:'Wielkość fontu Prefix + Suffix px',
+    labelMessage:'Treść komunikatu',
+    labelFavorites:'Ulubione wiadomości',
+    labelImportLog:'Log importu',
+    statusLabel:'Status:',
+    colorWhite:'Biały',
+    colorGreen:'Zielony',
+    colorBlack:'Czarny',
+    colorGold:'Złoty',
+    colorRed:'Czerwony',
+    toggleLogo:'Logo',
+    toggleShadowRect:'Prostokąt cienia',
+    toggleFlicker:'Flicker',
+    toggleFillers:'Fillery',
+    toggleAudio:'Audio',
+    previewLabel:'Podgląd:',
+    previewModeContent:'Treść',
+    previewModeBackground:'Tło',
+    previewModeNote:'Treść = warstwa tekstowa bez grafiki tła • Tło = pojedyncza miniatura wybranego pliku tła.',
+    messagePlaceholder:'Wpisz komunikat dla graczy...',
+    favNamePlaceholder:'Nazwa zapisu',
+    btnSend:'Wyślij',
+    btnPing:'Ping',
+    btnClearMessage:'Wyczyść komunikat',
+    btnRestoreDefaults:'Przywróć domyślne',
+    btnRerollFillers:'Wylosuj fillery',
+    btnFavLoad:'Wczytaj',
+    btnFavSaveNew:'Zapisz jako nową',
+    btnFavOverwrite:'Nadpisz zaznaczoną',
+    btnFavRename:'Zmień nazwę',
+    btnFavUp:'W górę',
+    btnFavDown:'W dół',
+    btnFavDelete:'Usuń',
+    btnUpdateData:'Aktualizuj dane z XLSX',
+    btnUpdateDataBusy:'Aktualizacja...',
+    fillersOn:'Fillery aktywne.',
+    fillersOff:'Fillery wyłączone — pole nieaktywne.',
+    flickerNeedsShadow:'Flicker wymaga włączonego prostokąta cienia.',
+    favHintDefault:'Wczytanie ulubionej wiadomości tylko wypełnia formularz. Wysyłka zawsze idzie przyciskiem „Wyślij”.',
+    favHintEmpty:'Brak zapisanych wiadomości. Ustaw formularz i naciśnij „Zapisz jako nową”.',
+    favHintLoadError:'Nie udało się wczytać zapisanych wiadomości: {error}',
+    favBlankOption:'— bieżąca wiadomość (bez zapisu) —',
+    favNoName:'(bez nazwy)',
+    favDefaultName:'Wiadomość {n}',
+    favDeleteConfirm:'Usunąć zapisaną wiadomość „{name}”?',
+    importNoErrors:'Brak błędów importu.',
+    importIncompleteRecord:'{sheet}: niepełny rekord ID {id}',
+    importUpdateError:'Błąd aktualizacji: {error}',
+    rawText:'{text}',
+    errorManifestFetch:'Nie udało się pobrać DataSlate_manifest.xlsx',
+    errorDataJson:'Nie udało się wczytać assets/data/data.json',
+    statusPlaceholder:'…',
+    statusReady:'gotowe',
+    statusSending:'wysyłam…',
+    statusSent:'wysłano',
+    statusCleared:'wyczyszczono',
+    statusPinging:'ping…',
+    statusPingSent:'ping wysłany',
+    statusXlsxMissing:'Błąd: biblioteka XLSX niedostępna',
+    statusUpdating:'Aktualizacja data.json z DataSlate_manifest.xlsx...',
+    statusUpdateDone:'Gotowe: wygenerowano nowy data.json (plik pobrany).',
+    statusUpdateError:'Błąd aktualizacji danych',
+    statusFavSaving:'zapisuję ulubioną…',
+    statusFavSaved:'zapisano ulubioną',
+    statusFavOverwriting:'nadpisuję ulubioną…',
+    statusFavOverwritten:'nadpisano ulubioną',
+    statusFavRenaming:'zmieniam nazwę…',
+    statusFavRenamed:'zmieniono nazwę',
+    statusFavReordering:'zmieniam kolejność…',
+    statusFavReordered:'zmieniono kolejność',
+    statusFavDeleting:'usuwam ulubioną…',
+    statusFavDeleted:'usunięto ulubioną',
+    statusError:'BŁĄD',
+    statusPingError:'BŁĄD ping',
+    statusFavSaveError:'BŁĄD zapisu ulubionej',
+    statusFavOverwriteError:'BŁĄD nadpisania',
+    statusFavRenameError:'BŁĄD zmiany nazwy',
+    statusFavOrderError:'BŁĄD kolejności',
+    statusFavDeleteError:'BŁĄD usuwania'
+  },
+  en: {
+    documentTitle:'Infoczytnik - GM panel',
+    pageTitle:'Infoczytnik - GM panel',
+    labelBackground:'Background',
+    labelLogo:'Logo',
+    labelLogoColor:'Logo colour',
+    labelFillerSet:'Filler set',
+    labelFont:'Font',
+    labelAudio:'Message audio',
+    labelFillerLineCount:'Number of filler lines',
+    labelFillerBandLines:'Prefix/Suffix band height (lines)',
+    labelMessageColor:'Font colour (message body)',
+    labelMsgFontSize:'Font size (body) px',
+    labelPsColor:'Prefix + Suffix colour (shared)',
+    labelPsFontSize:'Prefix + Suffix font size px',
+    labelMessage:'Message body',
+    labelFavorites:'Favourite messages',
+    labelImportLog:'Import log',
+    statusLabel:'Status:',
+    colorWhite:'White',
+    colorGreen:'Green',
+    colorBlack:'Black',
+    colorGold:'Gold',
+    colorRed:'Red',
+    toggleLogo:'Logo',
+    toggleShadowRect:'Shadow rectangle',
+    toggleFlicker:'Flicker',
+    toggleFillers:'Fillers',
+    toggleAudio:'Audio',
+    previewLabel:'Preview:',
+    previewModeContent:'Content',
+    previewModeBackground:'Background',
+    previewModeNote:'Content = the text layer without the background graphic • Background = a single thumbnail of the chosen background file.',
+    messagePlaceholder:'Type the message for the players...',
+    favNamePlaceholder:'Entry name',
+    btnSend:'Send',
+    btnPing:'Ping',
+    btnClearMessage:'Clear message',
+    btnRestoreDefaults:'Restore defaults',
+    btnRerollFillers:'Reroll fillers',
+    btnFavLoad:'Load',
+    btnFavSaveNew:'Save as new',
+    btnFavOverwrite:'Overwrite selected',
+    btnFavRename:'Rename',
+    btnFavUp:'Move up',
+    btnFavDown:'Move down',
+    btnFavDelete:'Delete',
+    btnUpdateData:'Update data from XLSX',
+    btnUpdateDataBusy:'Updating...',
+    fillersOn:'Fillers active.',
+    fillersOff:'Fillers off — field inactive.',
+    flickerNeedsShadow:'Flicker requires the shadow rectangle to be on.',
+    favHintDefault:'Loading a favourite message only fills the form. Sending always goes through the "Send" button.',
+    favHintEmpty:'No saved messages. Set up the form and press "Save as new".',
+    favHintLoadError:'Could not load the saved messages: {error}',
+    favBlankOption:'— current message (not saved) —',
+    favNoName:'(unnamed)',
+    favDefaultName:'Message {n}',
+    favDeleteConfirm:'Delete the saved message "{name}"?',
+    importNoErrors:'No import errors.',
+    importIncompleteRecord:'{sheet}: incomplete record ID {id}',
+    importUpdateError:'Update error: {error}',
+    rawText:'{text}',
+    errorManifestFetch:'Could not download DataSlate_manifest.xlsx',
+    errorDataJson:'Could not load assets/data/data.json',
+    statusPlaceholder:'…',
+    statusReady:'ready',
+    statusSending:'sending…',
+    statusSent:'sent',
+    statusCleared:'cleared',
+    statusPinging:'ping…',
+    statusPingSent:'ping sent',
+    statusXlsxMissing:'Error: XLSX library unavailable',
+    statusUpdating:'Updating data.json from DataSlate_manifest.xlsx...',
+    statusUpdateDone:'Done: a new data.json was generated (file downloaded).',
+    statusUpdateError:'Data update error',
+    statusFavSaving:'saving favourite…',
+    statusFavSaved:'favourite saved',
+    statusFavOverwriting:'overwriting favourite…',
+    statusFavOverwritten:'favourite overwritten',
+    statusFavRenaming:'renaming…',
+    statusFavRenamed:'renamed',
+    statusFavReordering:'reordering…',
+    statusFavReordered:'reordered',
+    statusFavDeleting:'deleting favourite…',
+    statusFavDeleted:'favourite deleted',
+    statusError:'ERROR',
+    statusPingError:'ping ERROR',
+    statusFavSaveError:'favourite save ERROR',
+    statusFavOverwriteError:'overwrite ERROR',
+    statusFavRenameError:'rename ERROR',
+    statusFavOrderError:'order ERROR',
+    statusFavDeleteError:'delete ERROR'
+  }
+};
+const DEFAULT_LANGUAGE = 'pl';
+let currentLanguage = DEFAULT_LANGUAGE;
+
+function t(key, params){
+  const slownik = translations[currentLanguage] || translations[DEFAULT_LANGUAGE];
+  let tekst = slownik[key];
+  if(tekst === undefined) tekst = translations[DEFAULT_LANGUAGE][key];
+  if(tekst === undefined) return key;
+  if(params){ Object.keys(params).forEach(nazwa=>{ tekst = tekst.split('{'+nazwa+'}').join(String(params[nazwa])); }); }
+  return tekst;
+}
+// PL: Skrót dla logu importu: tekst, który nie pochodzi z tłumaczeń (np. komunikat błędu przeglądarki).
+// EN: Shorthand for the import log: text that does not come from the translations (e.g. a browser error).
+function logTekst(tekst){ return {key:'rawText', params:{text:String(tekst)}}; }
+
 const el = {
+  languageSelect:document.getElementById('languageSelect'),
   backgroundSelect:document.getElementById('backgroundSelect'), logoSelect:document.getElementById('logoSelect'), fillerSelect:document.getElementById('fillerSelect'), fontSelect:document.getElementById('fontSelect'), audioSelect:document.getElementById('audioSelect'),
   showLogo:document.getElementById('showLogo'), movingOverlay:document.getElementById('movingOverlay'), flicker:document.getElementById('flicker'), fillersEnabled:document.getElementById('fillersEnabled'), audioEnabled:document.getElementById('audioEnabled'),
   fillerLineCount:document.getElementById('fillerLineCount'), fillerBandLines:document.getElementById('fillerBandLines'), fillersHint:document.getElementById('fillersHint'), flickerHint:document.getElementById('flickerHint'), messageColorText:document.getElementById('messageColorText'), messageColorPicker:document.getElementById('messageColorPicker'), msgFontSize:document.getElementById('msgFontSize'),
@@ -236,7 +471,13 @@ let favorites = [];
 let favSelectedId = '';
 let favoritesReady = false;
 
-function setStatus(t){ el.status.textContent = t; }
+// PL: Status pamięta klucz i wartości, a nie gotowy tekst — dzięki temu zmiana języka przerysowuje
+//     również napis, który akurat wisi na ekranie.
+// EN: The status remembers a key and its values rather than finished text, so a language change also
+//     redraws the line currently on screen.
+let statusState = {key:'statusPlaceholder', params:null};
+function setStatus(key, params){ statusState = {key, params: params || null}; renderStatus(); }
+function renderStatus(){ el.status.textContent = t(statusState.key, statusState.params); }
 function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
 function safeGet(list,id){ return list.find(x=>x.id===Number(id)) || list[0] || null; }
 function getSelectedFont(){ return safeGet(manifest?.fonts || [], el.fontSelect?.value); }
@@ -275,7 +516,17 @@ function fillSelect(select,list,labelKey){
   });
 }
 
-function writeImportLog(lines){ el.importLog.value = (lines||[]).length ? lines.join('\n') : 'Brak błędów importu.'; }
+// PL: Log importu trzymamy jako listę wpisów {klucz, wartości}, żeby po zmianie języka przepisał się
+//     w całości zamiast zostać w języku, w którym powstał.
+// EN: The import log is kept as a list of {key, values} entries so that a language change rewrites it
+//     in full instead of leaving it in the language it was produced in.
+let importLogState = [];
+function writeImportLog(entries){ importLogState = Array.isArray(entries) ? entries : []; renderImportLog(); }
+function renderImportLog(){
+  el.importLog.value = importLogState.length
+    ? importLogState.map(wpis => t(wpis.key, wpis.params)).join('\n')
+    : t('importNoErrors');
+}
 
 const MANIFEST_XLSX_PATH = 'assets/data/DataSlate_manifest.xlsx';
 
@@ -341,7 +592,7 @@ function buildManifestFromWorkbook(workbook){
       const file = toStr(pickValue(row,['file','plik','url']));
       const item = {id, name};
       item[cfg.thirdKey] = cfg.thirdKey === 'font' ? toStr(pickValue(row,['font','czcionka'])) : file;
-      if(!item.name || !item[cfg.thirdKey]) logs.push(`${sheetName}: niepełny rekord ID ${id}`);
+      if(!item.name || !item[cfg.thirdKey]) logs.push({key:'importIncompleteRecord', params:{sheet:sheetName, id}});
       return item;
     });
   };
@@ -365,7 +616,7 @@ function buildManifestFromWorkbook(workbook){
 
   manifestData.fillers.forEach(item=>{
     if(!item.name || !item.prefixes.length || !item.suffixes.length){
-      logs.push(`fillers: niepełny rekord ID ${item.id}`);
+      logs.push({key:'importIncompleteRecord', params:{sheet:'fillers', id:item.id}});
     }
   });
 
@@ -386,17 +637,16 @@ function downloadJson(filename, data){
 
 async function updateDataFromXlsx(){
   if(typeof XLSX === 'undefined'){
-    setStatus('Błąd: biblioteka XLSX niedostępna');
+    setStatus('statusXlsxMissing');
     return;
   }
   const btn = el.updateDataBtn;
-  const previousLabel = btn.textContent;
   btn.disabled = true;
-  btn.textContent = 'Aktualizacja...';
-  setStatus('Aktualizacja data.json z DataSlate_manifest.xlsx...');
+  btn.textContent = t('btnUpdateDataBusy');
+  setStatus('statusUpdating');
   try{
     const response = await fetch(`${MANIFEST_XLSX_PATH}?v=${encodeURIComponent(window.__dsVersion || '')}`, {cache:'no-store'});
-    if(!response.ok) throw new Error('Nie udało się pobrać DataSlate_manifest.xlsx');
+    if(!response.ok) throw new Error(t('errorManifestFetch'));
     const bytes = await response.arrayBuffer();
     const workbook = XLSX.read(bytes, {type:'array'});
     const nextManifest = buildManifestFromWorkbook(workbook);
@@ -409,20 +659,20 @@ async function updateDataFromXlsx(){
     writeImportLog(manifest.importLog || []);
     restoreDefaults(false);
     downloadJson('data.json', nextManifest);
-    setStatus('Gotowe: wygenerowano nowy data.json (plik pobrany).');
+    setStatus('statusUpdateDone');
   }catch(err){
     console.error(err);
-    setStatus('Błąd aktualizacji danych');
-    writeImportLog([`Błąd aktualizacji: ${err.message || err}`]);
+    setStatus('statusUpdateError');
+    writeImportLog([{key:'importUpdateError', params:{error: err.message || err}}]);
   }finally{
     btn.disabled = false;
-    btn.textContent = previousLabel;
+    btn.textContent = t('btnUpdateData');
   }
 }
 
 async function loadManifest(){
   const res = await fetch(`assets/data/data.json?v=${encodeURIComponent(window.__dsVersion || '')}`);
-  if(!res.ok) throw new Error('Nie udało się wczytać assets/data/data.json');
+  if(!res.ok) throw new Error(t('errorDataJson'));
   manifest = await res.json();
   fillSelect(el.backgroundSelect, manifest.backgrounds || []);
   fillSelect(el.logoSelect, manifest.logos || []);
@@ -446,7 +696,7 @@ function syncFlickerDependency(){
   if(!el.movingOverlay.checked){
     el.flicker.checked = false;
     el.flicker.disabled = true;
-    el.flickerHint.textContent = 'Flicker wymaga włączonego prostokąta cienia.';
+    el.flickerHint.textContent = t('flickerNeedsShadow');
     el.flickerHint.className = 'small disabled-note';
   } else {
     el.flicker.disabled = false;
@@ -529,7 +779,7 @@ function renderPreview(){
   if(!isBackgroundMode && el.showLogo.checked && logo){ el.previewLogo.style.display='block'; el.previewLogo.style.webkitMaskImage = `url(${logo.file})`; el.previewLogo.style.maskImage = `url(${logo.file})`; } else { el.previewLogo.style.display='none'; el.previewLogo.style.webkitMaskImage = 'none'; el.previewLogo.style.maskImage = 'none'; }
   const fillersOff = !el.fillersEnabled.checked;
   el.fillerLineCount.disabled = fillersOff;
-  el.fillersHint.textContent = fillersOff ? 'Fillery wyłączone — pole nieaktywne.' : 'Fillery aktywne.';
+  el.fillersHint.textContent = fillersOff ? t('fillersOff') : t('fillersOn');
   el.fillersHint.className = 'small' + (fillersOff ? ' disabled-note' : '');
 }
 
@@ -569,16 +819,16 @@ function getPayload(type){
 }
 
 async function send(type){
-  setStatus('wysyłam…');
+  setStatus('statusSending');
   await currentRef.set(getPayload(type), {merge:false});
-  setStatus(type === 'clear' ? 'wyczyszczono' : 'wysłano');
+  setStatus(type === 'clear' ? 'statusCleared' : 'statusSent');
 }
 
 async function ping(){
-  setStatus('ping…');
+  setStatus('statusPinging');
   // --- Ping zapisujemy pełnym obiektem bez wartości `undefined`, bo Firestore odrzuca takie pola / Save ping as a full object without `undefined`, because Firestore rejects such fields ---
   await currentRef.set(getPayload('ping'), {merge:false});
-  setStatus('ping wysłany');
+  setStatus('statusPingSent');
 }
 
 function restoreDefaults(sendReset=true){
@@ -598,7 +848,7 @@ function restoreDefaults(sendReset=true){
   el.message.value = '';
   setPreviewMode(DEFAULT_FORM_STATE.previewMode);
   rerollFillers();
-  if(sendReset){ send('clear').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}); }
+  if(sendReset){ send('clear').catch(e=>{setStatus('statusError'); alert(e.message||e);}); }
 }
 
 ['input','change'].forEach(evt=>{
@@ -725,7 +975,9 @@ function applyFormState(state){
   renderPreview();
 }
 
-function setFavoriteHint(text){ el.favHint.textContent = text; }
+let favoriteHintState = {key:'favHintDefault', params:null};
+function setFavoriteHint(key, params){ favoriteHintState = {key, params: params || null}; renderFavoriteHint(); }
+function renderFavoriteHint(){ el.favHint.textContent = t(favoriteHintState.key, favoriteHintState.params); }
 
 function findFavorite(id){ return favorites.find(item=>item.id===id) || null; }
 
@@ -738,12 +990,12 @@ function renderFavorites(){
   el.favSelect.innerHTML = '';
   const blank = document.createElement('option');
   blank.value = '';
-  blank.textContent = '— bieżąca wiadomość (bez zapisu) —';
+  blank.textContent = t('favBlankOption');
   el.favSelect.appendChild(blank);
   favorites.forEach((item, index)=>{
     const opt = document.createElement('option');
     opt.value = item.id;
-    opt.textContent = `${index+1}. ${item.nazwa || '(bez nazwy)'}`;
+    opt.textContent = `${index+1}. ${item.nazwa || t('favNoName')}`;
     el.favSelect.appendChild(opt);
   });
   if(favSelectedId && !findFavorite(favSelectedId)) favSelectedId = '';
@@ -799,15 +1051,13 @@ function subscribeFavorites(){
       favorites.sort((a,b)=> (a.kolejnosc - b.kolejnosc) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
       favoritesReady = true;
       renderFavorites();
-      setFavoriteHint(favorites.length
-        ? 'Wczytanie ulubionej wiadomości tylko wypełnia formularz. Wysyłka zawsze idzie przyciskiem „Wyślij”.'
-        : 'Brak zapisanych wiadomości. Ustaw formularz i naciśnij „Zapisz jako nową”.');
+      setFavoriteHint(favorites.length ? 'favHintDefault' : 'favHintEmpty');
     },
     (error)=>{
       console.error(error);
       favoritesReady = false;
       updateFavoriteButtons();
-      setFavoriteHint('Nie udało się wczytać zapisanych wiadomości: ' + (error.message || error));
+      setFavoriteHint('favHintLoadError', {error: error.message || error});
     }
   );
 }
@@ -822,8 +1072,8 @@ function readFavoriteNameInput(fallback){
 }
 
 async function saveFavoriteAsNew(){
-  const nazwa = readFavoriteNameInput(`Wiadomość ${favorites.length + 1}`);
-  setStatus('zapisuję ulubioną…');
+  const nazwa = readFavoriteNameInput(t('favDefaultName', {n: favorites.length + 1}));
+  setStatus('statusFavSaving');
   const doc = favoritesRef.doc();
   await doc.set({
     nazwa,
@@ -833,18 +1083,18 @@ async function saveFavoriteAsNew(){
   });
   favSelectedId = doc.id;
   el.favName.value = nazwa;
-  setStatus('zapisano ulubioną');
+  setStatus('statusFavSaved');
 }
 
 async function overwriteFavorite(){
   const selected = findFavorite(favSelectedId);
   if(!selected) return;
-  setStatus('nadpisuję ulubioną…');
+  setStatus('statusFavOverwriting');
   await favoritesRef.doc(selected.id).update({
     ustawienia: getFormState(),
     zaktualizowano: firebase.firestore.FieldValue.serverTimestamp()
   });
-  setStatus('nadpisano ulubioną');
+  setStatus('statusFavOverwritten');
 }
 
 async function renameFavorite(){
@@ -852,12 +1102,12 @@ async function renameFavorite(){
   if(!selected) return;
   const nazwa = readFavoriteNameInput(selected.nazwa);
   if(nazwa === selected.nazwa) return;
-  setStatus('zmieniam nazwę…');
+  setStatus('statusFavRenaming');
   await favoritesRef.doc(selected.id).update({
     nazwa,
     zaktualizowano: firebase.firestore.FieldValue.serverTimestamp()
   });
-  setStatus('zmieniono nazwę');
+  setStatus('statusFavRenamed');
 }
 
 // --- Przesuwanie pozycji na liście / Moving an entry on the list ---
@@ -872,23 +1122,23 @@ async function moveFavorite(delta){
   const targetIndex = index + delta;
   if(targetIndex < 0 || targetIndex >= favorites.length) return;
   const other = favorites[targetIndex];
-  setStatus('zmieniam kolejność…');
+  setStatus('statusFavReordering');
   const batch = db.batch();
   batch.update(favoritesRef.doc(selected.id), {kolejnosc: other.kolejnosc});
   batch.update(favoritesRef.doc(other.id), {kolejnosc: selected.kolejnosc});
   await batch.commit();
-  setStatus('zmieniono kolejność');
+  setStatus('statusFavReordered');
 }
 
 async function deleteFavorite(){
   const selected = findFavorite(favSelectedId);
   if(!selected) return;
-  if(!confirm(`Usunąć zapisaną wiadomość „${selected.nazwa || '(bez nazwy)'}”?`)) return;
-  setStatus('usuwam ulubioną…');
+  if(!confirm(t('favDeleteConfirm', {name: selected.nazwa || t('favNoName')}))) return;
+  setStatus('statusFavDeleting');
   await favoritesRef.doc(selected.id).delete();
   favSelectedId = '';
   el.favName.value = '';
-  setStatus('usunięto ulubioną');
+  setStatus('statusFavDeleted');
 }
 
 function loadSelectedFavorite(){
@@ -906,7 +1156,7 @@ function wireFavoriteButton(button, action, errorStatus){
   button.addEventListener('click', ()=>{
     Promise.resolve()
       .then(action)
-      .catch(e=>{ console.error(e); setStatus(errorStatus); setFavoriteHint(String(e.message || e)); });
+      .catch(e=>{ console.error(e); setStatus(errorStatus); setFavoriteHint('rawText', {text: String(e.message || e)}); });
   });
 }
 
@@ -917,22 +1167,49 @@ el.favSelect.addEventListener('change', ()=>{
   updateFavoriteButtons();
 });
 el.favLoadBtn.addEventListener('click', loadSelectedFavorite);
-wireFavoriteButton(el.favSaveNewBtn, saveFavoriteAsNew, 'BŁĄD zapisu ulubionej');
-wireFavoriteButton(el.favOverwriteBtn, overwriteFavorite, 'BŁĄD nadpisania');
-wireFavoriteButton(el.favRenameBtn, renameFavorite, 'BŁĄD zmiany nazwy');
-wireFavoriteButton(el.favUpBtn, ()=>moveFavorite(-1), 'BŁĄD kolejności');
-wireFavoriteButton(el.favDownBtn, ()=>moveFavorite(1), 'BŁĄD kolejności');
-wireFavoriteButton(el.favDeleteBtn, deleteFavorite, 'BŁĄD usuwania');
+wireFavoriteButton(el.favSaveNewBtn, saveFavoriteAsNew, 'statusFavSaveError');
+wireFavoriteButton(el.favOverwriteBtn, overwriteFavorite, 'statusFavOverwriteError');
+wireFavoriteButton(el.favRenameBtn, renameFavorite, 'statusFavRenameError');
+wireFavoriteButton(el.favUpBtn, ()=>moveFavorite(-1), 'statusFavOrderError');
+wireFavoriteButton(el.favDownBtn, ()=>moveFavorite(1), 'statusFavOrderError');
+wireFavoriteButton(el.favDeleteBtn, deleteFavorite, 'statusFavDeleteError');
 
-el.sendBtn.addEventListener('click',()=>send('message').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}));
+el.sendBtn.addEventListener('click',()=>send('message').catch(e=>{setStatus('statusError'); alert(e.message||e);}));
 el.clearMessageBtn.addEventListener('click',()=>{el.message.value=''; el.message.focus();});
 el.restoreDefaultsBtn.addEventListener('click',()=>restoreDefaults(true));
-el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'); alert(e.message||e);}));
+el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('statusPingError'); alert(e.message||e);}));
 el.updateDataBtn.addEventListener('click',()=>updateDataFromXlsx());
 
+// --- Przepisanie interfejsu na wybrany język / Rewriting the interface into the chosen language ---
+function applyTranslations(){
+  document.documentElement.lang = currentLanguage;
+  document.title = t('documentTitle');
+  document.querySelectorAll('[data-i18n]').forEach(node=>{ node.textContent = t(node.dataset.i18n); });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(node=>{ node.placeholder = t(node.dataset.i18nPlaceholder); });
+  renderStatus();
+  renderImportLog();
+  renderFavoriteHint();
+  renderFavorites();
+  syncFlickerDependency();
+  // PL: Podgląd przerysowujemy dopiero, gdy manifest jest wczytany — inaczej nie ma z czego.
+  // EN: The preview is redrawn only once the manifest is loaded — otherwise there is nothing to draw.
+  if(manifest) renderPreview();
+}
+
+function updateLanguage(lang){
+  currentLanguage = translations[lang] ? lang : DEFAULT_LANGUAGE;
+  if(el.languageSelect) el.languageSelect.value = currentLanguage;
+  applyTranslations();
+}
+
+if(el.languageSelect){
+  el.languageSelect.addEventListener('change', ()=>updateLanguage(el.languageSelect.value));
+}
+
 (async()=>{
-  try{ loadSavedPreviewMode(); await loadManifest(); await preloadManifestFonts(); renderPreview(); renderFavorites(); subscribeFavorites(); setStatus('gotowe'); }
-  catch(e){ setStatus('BŁĄD'); writeImportLog([String(e.message||e)]); alert(e.message||e); }
+  updateLanguage(DEFAULT_LANGUAGE);
+  try{ loadSavedPreviewMode(); await loadManifest(); await preloadManifestFonts(); renderPreview(); renderFavorites(); subscribeFavorites(); setStatus('statusReady'); }
+  catch(e){ setStatus('statusError'); writeImportLog([logTekst(e.message||e)]); alert(e.message||e); }
 })();
 </script>
 </body>
