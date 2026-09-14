@@ -254,8 +254,8 @@ Po zapisaniu przy aplikacji pojawi się status **Registered**. Na tym etapie **n
 
 > ⚠️ **Przeczytaj najpierw sprostowanie na końcu tego rozdziału** — moduły nie są w tej sprawie równe i dwa z nich wymagają dodatkowej pracy.
 
-> ### ⏸️ Ten krok jest na razie WSTRZYMANY
-> Zgodnie z Twoją decyzją nie wprowadzamy jeszcze żadnych zmian w kodzie. Ten rozdział opisuje, co będzie do zrobienia, żebyś wiedział, jaki to zakres pracy — ale **kroki 1 i 2 możesz wykonać już teraz** i nic się nie stanie, jeśli krok 3 poczeka.
+> ### ▶️ Ten krok jest ODBLOKOWANY od 14 września
+> Wstrzymanie zostało zdjęte: wszystkie pytania mają odpowiedzi, a ostatnia decyzja techniczna — wersja Firebase w Kreatorach Postaci — zapadła (wariant **W3**, patrz rozstrzygnięcie na końcu tego rozdziału). Kroki 1 i 2 są wykonane, krok 0 też. Ten rozdział opisuje zakres pracy w kodzie.
 
 Do każdego modułu, który łączy się z Firebase, trzeba dopisać kilka linii uruchamiających App Check. Modułów jest sześć:
 
@@ -264,18 +264,20 @@ Do każdego modułu, który łączy się z Firebase, trzeba dopisać kilka linii
 | DataVault | `shared/firebase-data-loader.js` | nowoczesna (12.6.0) |
 | GeneratorNPC | `GeneratorNPC/index.html` | nowoczesna (12.6.0) |
 | Audio | `Audio/index.html` | nowoczesna (12.6.0) |
-| Infoczytnik — panel GM | `Infoczytnik/GM_test.html` | zgodnościowa (8.x) |
-| Infoczytnik — ekran gracza | `Infoczytnik/Infoczytnik_test.html` | zgodnościowa (8.x) |
-| Kalkulator — Prosty Kreator | `Kalkulator/TworzeniePostaci.html` | zgodnościowa (8.10.1) |
-| Kalkulator — Zaawansowany Kreator | `Kalkulator/TworzeniePostaci_v2-firebase.js` | zgodnościowa (8.10.1) |
+| Infoczytnik — panel GM | `Infoczytnik/GM_test.html` | zgodnościowa **9.6.8** — bez zmiany wersji |
+| Infoczytnik — ekran gracza | `Infoczytnik/Infoczytnik_test.html` | zgodnościowa **9.6.8** — bez zmiany wersji |
+| Kalkulator — Prosty Kreator | `Kalkulator/TworzeniePostaci.html` | zgodnościowa 8.10.1 → **12.6.0 compat** |
+| Kalkulator — Zaawansowany Kreator | `Kalkulator/TworzeniePostaci_v2-firebase.js` | zgodnościowa 8.10.1 → **12.6.0 compat** |
 
 **Ważne dwie rzeczy:**
 
-1. **Aplikacja używa dwóch różnych generacji biblioteki Firebase.** Obsługę App Check trzeba więc napisać w dwóch odmianach. To nie jest trudne, ale podwaja pracę i podwaja liczbę miejsc do sprawdzenia.
+1. **Aplikacja używa trzech różnych wersji biblioteki Firebase** — 12.6.0 w zapisie nowoczesnym, 9.6.8 w zgodnościowym i 8.10.1 w zgodnościowym. Obsługę App Check trzeba więc napisać w dwóch odmianach (nowoczesnej i zgodnościowej), a w dwóch plikach Kreatorów dodatkowo podnieść wersję. To nie jest trudne, ale podwaja pracę i podwaja liczbę miejsc do sprawdzenia.
 2. **Infoczytnik ma własną zasadę pracy** (`Infoczytnik/AGENTS.md`): zmiany wolno robić **wyłącznie** w plikach `GM_test.html` i `Infoczytnik_test.html`, z aktualizacją `INF_VERSION` w obu na ten sam znacznik czasu. Pliki produkcyjne (`GM.html`, `Infoczytnik.html`) aktualizujesz ręcznie Ty.
    **Jeśli o tym zapomnisz, po włączeniu wymuszania produkcyjny Infoczytnik przestanie działać, a testowy będzie działał** — i to jest dokładnie ten rodzaj usterki, który najtrudniej zdiagnozować.
 
-Klucze witryny trafią do plików konfiguracyjnych: klucz projektu 1 do `shared/firebase-config.js`, klucz projektu 2 do `GeneratorNPC/config/firebase-config.js` i `Audio/config/firebase-config.js`.
+**Gdzie trafią klucze witryny — ustalone 14 września.** Oba klucze idą do **jednego pliku w `shared/`**, wspólnego dla całej aplikacji, a nie do plików konfiguracyjnych poszczególnych modułów. Powód jest praktyczny: klucz jest przypisany do projektu Firebase, a projekty są dwa i korzysta z nich sześć modułów. Przy powieleniu kluczy po modułach każda przyszła zmiana klucza albo domeny wymagałaby edycji pięciu plików i pamiętania, który należy do której pary — a to jest dokładnie ten sam problem, który audyt opisuje w rozdz. 6.2 dla plików `firebase-config.js`. Nie powielamy go przy okazji App Check.
+
+*(Wcześniejsza wersja tego akapitu mówiła o dopisaniu kluczy do `shared/firebase-config.js`, `GeneratorNPC/config/firebase-config.js` i `Audio/config/firebase-config.js`. Nie obowiązuje.)*
 
 ---
 
@@ -290,6 +292,28 @@ Klucze witryny trafią do plików konfiguracyjnych: klucz projektu 1 do `shared/
 > Czyli cztery z sześciu modułów są gotowe na App Check od ręki. **Oba Kreatory Postaci wymagają najpierw podniesienia wersji biblioteki** — bez tego nie da się w nich użyć Twoich kluczy. Sprawdziłem, że całe API, którego te pliki używają, działa tak samo w 9.6.8 i w 12.6.0, więc podniesienie jest wykonalne; wybór wersji i ocena ryzyka są w audycie, rozdz. 9.8, sprostowanie z 14 września.
 >
 > **Dla Ciebie w praktyce:** krok 3 nie jest jednym zadaniem, tylko trzema, i Kreatory Postaci wejdą do obserwacji później niż reszta. Nie włączaj wymuszania (krok 5), dopóki **wszystkie sześć** modułów nie będzie wysyłać znaczników — inaczej Kreatory przestaną działać.
+
+---
+
+> 🔻 **Rozstrzygnięcie z 14 września — Kreatory Postaci idą na 12.6.0 compat (wariant W3).**
+>
+> Weryfikacja została powtórzona niezależnie i pokazała, że **możliwości są trzy, nie dwie**. Wersja 12.6.0 ma — obok plików w zapisie nowoczesnym — także pliki w zapisie zgodnościowym, czyli dokładnie takim, jakiego oba Kreatory używają dziś. Sprawdzone uruchomieniem: obsługują reCAPTCHA Enterprise i przyjmują ten sam zapis co dotąd.
+>
+> **Co to znaczy w praktyce:** podniesienie wersji **nie wymaga przepisywania** sposobu zapisu i odczytu postaci. Zmieniają się nazwy i wersja wczytywanych plików biblioteki, i tyle. Sposób działania obu Kreatorów pozostaje bez zmian.
+>
+> **Wybrałeś ten wariant**, uzasadniając to tym, że masz backup całego repozytorium: *„Jak coś przestanie działać to będziemy porównywać z backupem."*
+>
+> | | Dziś | Po zmianie |
+> |---|---|---|
+> | Wersja | 8.10.1 | **12.6.0** |
+> | Plik z podstawą biblioteki | `firebase-app.js` | `firebase-app-compat.js` |
+> | Plik z obsługą bazy | `firebase-firestore.js` | `firebase-firestore-compat.js` |
+> | Plik z App Check | — | `firebase-app-check-compat.js` *(nowy)* |
+>
+> ⚠️ **Uwaga, która ratuje przed najłatwiejszym błędem:** samo podmienienie numeru wersji w adresie **nie zadziała**. Od wersji 9 plik `firebase-app.js` to zupełnie inny rodzaj pliku — sprawdziłem, wczytany po staremu daje błąd w konsoli i przyciski zapisu oraz wczytania postaci przestają cokolwiek robić. Muszą się zmienić także nazwy plików, tak jak w tabeli wyżej.
+>
+> Pełne wyniki sprawdzenia — łącznie z testem zapisu i odczytu obu dokumentów postaci we wszystkich trzech wersjach — są w audycie, rozdz. 9.8, „Rozstrzygnięcie z 14 września".
+
 
 ## 8. KROK 4 — obserwacja (kilka dni)
 
@@ -371,14 +395,16 @@ Po kroku 5 otwarcie pliku HTML **bezpośrednio z dysku przestanie działać** �
 
 ## 12. Lista kontrolna
 
-Stan na 13 września. Kroki 1 i 2 masz zrobione w obu projektach.
+Stan na 14 września. Kroki 0, 1 i 2 masz zrobione w obu projektach. Krok 3 (kod) jest odblokowany i w toku.
 
 **Projekt 1 — `wh40k-data-slate`**
 - [x] Klucz reCAPTCHA `WrathAndGlory-DataSlate` utworzony, typ WEB, domena `cutelittlegoat.github.io`
 - [x] Aplikacja webowa `DataSlate` zarejestrowana w App Check — dostawca reCAPTCHA Enterprise, status *Registered*
 - [ ] Sprawdzić, czy TTL jest ustawione na `1` + `days` (widoczne po kliknięciu **⋮** przy aplikacji)
-- [ ] **KROK 0** — zawężone reguły Firestore wgrane (rozdz. 4a) ← *do zrobienia teraz, bez ryzyka*
-- [ ] *(czeka na zmiany w kodzie)* Kod czterech modułów wysyła znaczniki
+- [x] **KROK 0** — zawężone reguły Firestore wgrane (rozdz. 4a), nadal z `if true` — sprawdzone, wszystkie dokumenty odpowiadają `200`
+- [ ] **KROK 3a** — App Check w DataVault (SDK 12.6.0, zapis nowoczesny)
+- [ ] **KROK 3b** — App Check w Infoczytniku (`GM_test.html`, `Infoczytnik_test.html`, compat 9.6.8, bez zmiany wersji) + `INF_VERSION` w obu
+- [ ] **KROK 3c** — Kreatory Postaci: 8.10.1 → **12.6.0 compat** (wariant W3) + App Check
 - [ ] Kilka dni obserwacji zakładki APIs — ruch zweryfikowany
 - [ ] Wymuszanie włączone dla **Cloud Firestore**
 - [ ] Wymuszanie włączone dla **Realtime Database**
@@ -389,8 +415,8 @@ Stan na 13 września. Kroki 1 i 2 masz zrobione w obu projektach.
 - [x] Osobny klucz reCAPTCHA `WrathAndGlory-AudioRPG` utworzony, typ WEB, ta sama domena
 - [x] Aplikacja webowa `AudioRPG` zarejestrowana — reCAPTCHA Enterprise, status *Registered*
 - [ ] Sprawdzić TTL `1 days`
-- [ ] **KROK 0** — zawężone reguły Firestore wgrane, bez `DS2/progress` (rozdz. 4a) ← *do zrobienia teraz*
-- [ ] *(czeka na zmiany w kodzie)* Kod dwóch modułów wysyła znaczniki
+- [x] **KROK 0** — zawężone reguły Firestore wgrane, bez `DS2/progress` (rozdz. 4a)
+- [ ] **KROK 3a** — App Check w GeneratorNPC i w module Audio (SDK 12.6.0, zapis nowoczesny)
 - [ ] Kilka dni obserwacji
 - [ ] Wymuszanie włączone dla **Cloud Firestore** (Realtime Database nieużywana)
 - [ ] Reguły uzupełnione o `request.app != null`
@@ -399,6 +425,7 @@ Stan na 13 września. Kroki 1 i 2 masz zrobione w obu projektach.
 - [ ] Pliki produkcyjne Infoczytnika (`GM.html`, `Infoczytnik.html`) zaktualizowane ręcznie
 - [ ] Sprawdzone z telefonu, tabletu i komputera, że wszystko działa
 - [ ] Kompletne reguły obu projektów zapisane w repozytorium (patrz audyt, rozdz. 9.6)
+- [ ] Oba klucze witryny w **jednym** pliku w `shared/` — sprawdzone, że nie są powielone po modułach
 
 ---
 

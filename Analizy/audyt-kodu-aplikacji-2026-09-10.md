@@ -1113,16 +1113,79 @@ W pliku `firebase-app-check.js` w wersji 8.10.1 słowo „enterprise" **nie wyst
 - **Problem dotyczy dwóch plików, nie czterech:** `Kalkulator/TworzeniePostaci.html` i `Kalkulator/TworzeniePostaci_v2-firebase.js`. W nich **nie da się** włączyć App Check bez podniesienia wersji.
 - **Podniesienie jest mniejsze, niż się wydaje.** Oba pliki używają dokładnie sześciu elementów API i wszystkie sześć istnieje w 9.6.8 i 12.6.0 — sprawdzone uruchomieniem, łącznie z łańcuchem `collection().doc()` i metodami `.get()`/`.set()`.
 
-**Do rozstrzygnięcia przed pracą w kodzie — dwa warianty:**
+**Do rozstrzygnięcia przed pracą w kodzie — warianty:**
 
 | | Cel podniesienia | Za | Przeciw |
 |---|---|---|---|
 | **W1** | 8.10.1 → **9.6.8** | Najmniejszy możliwy skok. Ta wersja **jest już używana w tej aplikacji** (Infoczytnik), więc jest sprawdzona w tym kodzie. Repozytorium schodzi z trzech generacji do dwóch | Nie rozwiązuje docelowo pozycji D3 (ujednolicenie wersji) |
 | **W2** | 8.10.1 → **12.6.0** | Repozytorium schodzi do jednej generacji compat + jednej modularnej; zamyka D3 przy okazji | Większy skok wersji naraz, więcej do sprawdzenia w Kreatorach |
+| **W3** | 8.10.1 → **12.6.0 compat** | Zmiana w kodzie dokładnie tak mała jak w W1 — zapis pozostaje ten sam, zmieniają się wyłącznie nazwy i wersja wczytywanych plików. Kreatory trafiają na tę samą wersję, na której są już DataVault, GeneratorNPC i Audio | Brak drugiego miejsca w repozytorium na tej wersji compat, więc nie ma do czego porównać przy diagnozie. Pliki ważą o 51 KB więcej niż w W1 |
 
 *Rekomendacja: **W1**.* Priorytetem jest teraz uruchomienie App Check, a nie porządki w wersjach — a 9.6.8 to jedyny wariant, w którym podniesienie idzie na wersję **już działającą w tej aplikacji**. Ujednolicenie do 12.6.0 warto zrobić osobno, jako pozycję D3, kiedy App Check będzie już działać i będzie się na czym oprzeć przy porównaniu.
 
 > **Wpływ na wycenę.** Odmiany kodu są **dwie** (modularna i compat), tak jak pisałem — ale dochodzi do nich **podniesienie wersji w dwóch plikach Kreatorów**, czego nie przewidziałem. To jest praca do sprawdzenia w przeglądarce, nie do „dopisania kilku linii".
+
+#### 🔻 Rozstrzygnięcie z 14 września — wybrany wariant **W3** (12.6.0 compat)
+
+Powyższa rekomendacja **W1 nie obowiązuje**. Przed podjęciem decyzji weryfikacja została powtórzona niezależnie, od zera, i wykazała dwie rzeczy, których w sprostowaniu wyżej nie było.
+
+**Rzecz pierwsza — wariantów jest trzy, nie dwa.** Wersja 12.6.0 ma, obok plików modularnych, także pliki zgodnościowe (`firebase-app-compat.js`, `firebase-firestore-compat.js`, `firebase-app-check-compat.js`). Pobrałem je i sprawdziłem: obsługują `ReCaptchaEnterpriseProvider` i przyjmują dokładnie ten sam zapis, którego oba Kreatory używają dziś. Czyli „podniesienie do 12.6.0" **nie musi** oznaczać przepisania kodu na styl modularny — to było milczące założenie wariantu W2 i było ono błędne.
+
+**Rzecz druga — sprawdzenie było mocniejsze niż porównanie nazw funkcji.** W każdej z trzech wersji, w prawdziwej przeglądarce, wykonany został pełny łańcuch zapisu i odczytu obu dokumentów Kreatorów. Baza nie została przy tym dotknięta: połączenie sieciowe zostało jawnie wyłączone (`disableNetwork()`), więc zapis trafiał wyłącznie do pamięci podręcznej przeglądarki.
+
+| Sprawdzenie | 8.10.1 (dziś) | 9.6.8 compat | 12.6.0 compat |
+|---|:---:|:---:|:---:|
+| `firebase.initializeApp(config)` | ✅ | ✅ | ✅ |
+| `firebase.firestore()` | ✅ | ✅ | ✅ |
+| `collection('character_builder').doc('current')` → ścieżka | ✅ | ✅ | ✅ |
+| `collection('character_builder').doc('v2')` → ścieżka | ✅ | ✅ | ✅ |
+| `.set(payload)` — zapis odczytany z powrotem co do wartości | ✅ | ✅ | ✅ |
+| `.set(payload, { merge: false })` — wariant Zaawansowanego Kreatora | ✅ | ✅ | ✅ |
+| `.get()` → `snapshot.exists` **jako wartość prawda/fałsz** | ✅ | ✅ | ✅ |
+| `FieldValue.serverTimestamp()` | ✅ | ✅ | ✅ |
+| `ReCaptchaEnterpriseProvider` | ❌ **brak** | ✅ | ✅ |
+| Dostawcy obecni w App Check | `ReCaptchaV3Provider`, `CustomProvider` | + `ReCaptchaEnterpriseProvider` | + `ReCaptchaEnterpriseProvider` |
+
+Wiersz `snapshot.exists` jest tu najważniejszy i został sprawdzony osobno, bo to jedyne miejsce, w którym przejście na wersję 12 mogłoby **po cichu** zepsuć wczytywanie postaci. W zapisie modularnym `exists` jest funkcją (`snap.exists()`), a w kodzie obu Kreatorów użyte jest jako zwykła wartość (`if (snapshot.exists)`). Gdyby ktoś podniósł wersję i przy okazji przeszedł na zapis modularny, `if` byłby zawsze prawdziwy i wczytywanie nieistniejącej postaci zgłaszałoby fałszywy sukces zamiast komunikatu „brak zapisanego stanu". W obu wariantach zgodnościowych — 9.6.8 i 12.6.0 — `exists` pozostaje wartością prawda/fałsz i zachowanie nie zmienia się w niczym.
+
+**Waga plików do pobrania** (suma trzech plików wczytywanych przez stronę):
+
+| Wariant | Suma | Względem dzisiejszego stanu |
+|---|---:|---|
+| 8.10.1 — dziś, bez App Check | 359 067 B | — |
+| W1 — 9.6.8 compat + App Check | 351 017 B | −8 050 B |
+| **W3 — 12.6.0 compat + App Check** | 401 958 B | **+42 891 B** |
+
+#### 🔴 Pułapka: podniesienie wersji to **nie** podmiana cyfry w adresie
+
+Sprawdzone uruchomieniem, bo to najłatwiejszy do popełnienia błąd w całej tej operacji. Od wersji 9 plik o nazwie `firebase-app.js` przestał być tym, czym był w wersji 8 — jest to dziś plik w zapisie modularnym. Wczytany tak jak dotąd, zwykłym znacznikiem `<script src=…>`, daje w konsoli `SyntaxError: Unexpected token 'export'`, a obiekt `firebase` **w ogóle nie powstaje**. Skutek dla użytkownika: oba przyciski zapisu i wczytania postaci przestają cokolwiek robić.
+
+Dlatego przy wariancie W3 zmieniają się **nazwy plików, nie tylko numer wersji**:
+
+| Dziś (8.10.1) | Po zmianie (12.6.0 compat) |
+|---|---|
+| `…/8.10.1/firebase-app.js` | `…/12.6.0/firebase-app-compat.js` |
+| `…/8.10.1/firebase-firestore.js` | `…/12.6.0/firebase-firestore-compat.js` |
+| — | `…/12.6.0/firebase-app-check-compat.js` *(nowy)* |
+
+Dotyczy to obu plików Kreatorów: znaczników `<script>` w `Kalkulator/TworzeniePostaci.html` oraz adresów w funkcji `ensureFirebase()` w `Kalkulator/TworzeniePostaci_v2-firebase.js`, gdzie pliki wczytywane są w trakcie działania strony.
+
+#### Decyzja i jej uzasadnienie
+
+**Wybrany wariant: W3.** Uzasadnienie właściciela repozytorium: *„Mam backup całego repo, więc zróbmy wersję W3. Jak coś przestanie działać to będziemy porównywać z backupem."*
+
+To znosi jedyny realny argument, jaki przemawiał za W1 — brak drugiego miejsca w repozytorium na tej samej wersji, z którym można by porównać zachowanie przy diagnozie. Rolę punktu odniesienia przejmuje kopia zapasowa całego repozytorium.
+
+Co z tej decyzji wynika dla planu prac:
+
+| Pozycja | Stan po decyzji |
+|---|---|
+| C4b — podniesienie wersji w Kreatorach | Odblokowane. Wariant W3: 8.10.1 → 12.6.0 compat, ze zmianą nazw plików |
+| Zakres zmian w kodzie Kreatorów | Wyłącznie nazwy i wersja wczytywanych plików oraz dopisanie App Check. **Sposób zapisu i odczytu postaci nie jest ruszany** |
+| D3 — ujednolicenie wersji Firebase | Zostaje **jedna** rozbieżność zamiast dwóch: Infoczytnik na 9.6.8, cała reszta na 12.6.0 |
+| Infoczytnik | Bez zmian — zostaje na 9.6.8, zgodnie z punktem 2 kolejności prac |
+| Warunek zgłoszenia jako gotowe | Sprawdzenie w przeglądarce, że oba Kreatory nadal zapisują i wczytują postać oraz że wysyłany jest znacznik App Check |
+
 
 #### Różnica 5 — Infoczytnik ma własną zasadę pracy z plikami
 
@@ -1352,7 +1415,7 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 | **C3a** | **Wgrać zawężone reguły — nadal z `if true`** (konkretne ścieżki zamiast całych kolekcji, bez `DS2/progress`, z gotowym miejscem na listy ulubionych Infoczytnika) | **do zrobienia od razu**, nie wymaga kodu; gotowy tekst: instrukcja rozdz. 4a |
 | C4 | Dodać inicjalizację App Check w trzech modułach na SDK 12.6.0 (DataVault, GeneratorNPC, Audio) | rozdz. 9.8, różnica 4 — **to jest teraz ścieżka krytyczna** |
 | C4a | Dodać inicjalizację App Check w Infoczytniku (compat 9.6.8 — bez podnoszenia wersji) | tylko pliki `*_test.html` + `INF_VERSION` |
-| C4b | Podnieść Firebase w dwóch plikach Kreatorów Postaci z 8.10.1 i dodać App Check | **wymaga decyzji W1/W2**, rozdz. 9.8, sprostowanie z 14 września |
+| C4b | Podnieść Firebase w dwóch plikach Kreatorów Postaci z 8.10.1 do **12.6.0 compat** i dodać App Check | **Decyzja podjęta: wariant W3**, rozdz. 9.8, rozstrzygnięcie z 14 września. Zmieniają się nazwy plików, nie tylko numer wersji |
 | C5 | **Odczekać kilka dni** i obserwować zakładkę APIs | krok, którego nie wolno pominąć |
 | C6 | Włączyć wymuszanie dla Firestore **i** Realtime Database (RTDB tylko w `wh40k-data-slate`) | rozdz. 9.8, różnica 3 |
 | C7 | Uzupełnić reguły o `request.app != null` | dopiero po C6 |
@@ -1363,7 +1426,7 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 |---|---|---|
 | D1 | Wydzielić wspólne funkcje formatujące do `shared/text-format.js` | rozdz. 6.1; wymaga rozstrzygnięcia trzech rozjazdów |
 | D2 | Ujednolicić pliki konfiguracji Firebase (5 plików → 2) | rozdz. 6.2 |
-| D3 | Ujednolicić wersję Firebase — dziś **trzy** generacje równolegle: 9.6.8, 12.6.0 i 8.10.1 | rozdz. 9.8, sprostowanie z 14 września. Po wykonaniu C4 zostaną dwie |
+| D3 | Ujednolicić wersję Firebase — dziś **trzy** generacje równolegle: 9.6.8, 12.6.0 i 8.10.1 | rozdz. 9.8, sprostowanie z 14 września. Po wykonaniu C4b w wariancie W3 zostaje jedna rozbieżność: Infoczytnik na 9.6.8, reszta na 12.6.0 |
 | D4 | Jeden wspólny `ResizeObserver` w DataVault, jak w GeneratorNPC | rozdz. 3.6 |
 | ~~D5~~ | ~~Przejść na typy kolumn w DataVault~~ | **Wykreślone 13 września** — wybrany wariant A, zostajemy przy dzisiejszym opisie kolumn (analiza responsywności, rozdz. 12.8) |
 
@@ -1452,6 +1515,9 @@ Najpierw poprawka zgłoszona przez Ciebie (zawijanie tekstu w GeneratorNPC), a s
 | 15 | Zawężone reguły Firestore | **Wgrane 14 września w obu projektach**, na razie z `if true`. Sprawdzone: wszystkie pięć dokumentów odpowiada `200`, kolekcja `dataslate_favorites` czeka gotowa |
 | 16 | Reguły z `request.app != null` | Wgrane przedwcześnie 14 września i **cofnięte** — wyłączyły całą aplikację poza DataVault. Wracamy do nich dopiero po kroku C6. Opis zdarzenia: rozdz. 9.8, „Kolejność jest krytyczna" |
 | 17 | Klucze reCAPTCHA Enterprise | Utworzone w obu projektach. Identyfikatory kluczy (site key) są jawne z założenia i trafią do kodu strony — celowo nie zapisuję ich w plikach analiz, żeby jedynym ich miejscem był kod |
+| 18 | Wersja Firebase w Kreatorach Postaci (W1/W2) | **Rozstrzygnięte 14 września: wariant W3** — 8.10.1 → **12.6.0 compat**. Wariant odkryty przy powtórnej weryfikacji; nie było go w pierwotnym zestawieniu, bo założono, że 12.6.0 wymaga zapisu modularnego. Uzasadnienie właściciela: istnieje backup całego repozytorium jako punkt odniesienia przy diagnozie. Pomiary i pułapka z nazwami plików: rozdz. 9.8, rozstrzygnięcie z 14 września |
+| 19 | Miejsce na klucze reCAPTCHA w kodzie | **Jeden plik w `shared/`** dla obu projektów. Kluczy nie powiela się po modułach — ustalone razem z kolejnością prac |
+| 20 | Zachowanie przy niedostępnej reCAPTCHA | Inicjalizacja App Check **nie może być krytyczna**: jeżeli biblioteka reCAPTCHA się nie załaduje, moduł ma działać dalej tak jak dziś |
 
 > **Uwaga do punktu 13 z `DoZrobienia.md`.** Zapowiadasz ukrycie przełącznika języka we wszystkich modułach tego repozytorium. Ma to wpływ na dwie pozycje tego audytu: pytanie 3 (komunikat „Brak danych") i rozdz. 5.5 (napisy niezgodne między HTML a tłumaczeniami). Jeżeli w tym repozytorium zostaje wyłącznie polski, to **rozbieżności w tłumaczeniach angielskich przestają być widoczne dla użytkownika** — ale nadal będą widoczne w repozytoriach z wersją demo, gdzie przełącznik ma być domyślnie po angielsku (poz. 13). Czyli: poprawić warto, ale priorytet przenosi się z tego repozytorium na tamte.
 
@@ -1474,7 +1540,7 @@ Wniosek: **nie rejestrujemy jej w App Check — ani teraz, ani później.** Wymu
 
 **Rozstrzygnięte — wariant A dla DataVault.** Wybrałeś wariant A, czyli **zostajemy przy dzisiejszym sposobie opisywania kolumn**. Nie przebudowujemy 455 linii CSS na słownik typów. Skutki dla planu prac są rozpisane w `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdz. 12.8.
 
-**Kwestii spornych nie ma już żadnych.** Wszystkie osiem pytań z tego audytu i wszystkie sześć z analizy responsywności mają odpowiedzi, a obie decyzje, które czekały (zawężenie reguł, wariant A/B), są podjęte.
+**Kwestii spornych nie ma już żadnych.** Wszystkie osiem pytań z tego audytu i wszystkie sześć z analizy responsywności mają odpowiedzi, a wszystkie trzy decyzje, które czekały — zawężenie reguł, wariant A/B dla opisu kolumn oraz wersja Firebase w Kreatorach — są podjęte. Ostatnia z nich zapadła 14 września: **wariant W3**, rozdz. 9.8.
 
 ---
 
@@ -1509,7 +1575,7 @@ Wniosek: **nie rejestrujemy jej w App Check — ani teraz, ani później.** Wymu
 
 **Otwartych kwestii spornych nie ma.** Wszystkie osiem pytań z tego audytu i wszystkie sześć z analizy responsywności mają odpowiedzi; obie decyzje, które czekały — zawężenie reguł Firestore i wybór wariantu A dla DataVault — są podjęte (rozdz. 12.4). Zawężone reguły są wgrane w obu projektach.
 
-**Do rozstrzygnięcia przed pracą w kodzie została jedna rzecz techniczna:** czy Firebase w dwóch plikach Kreatorów Postaci podnosimy z 8.10.1 do 9.6.8, czy od razu do 12.6.0 (warianty W1 i W2 w rozdz. 9.8). Bez podniesienia nie da się w nich włączyć App Check, bo 8.10.1 nie zna reCAPTCHA Enterprise.
+**Ostatnia rzecz techniczna do rozstrzygnięcia została rozstrzygnięta 14 września:** Firebase w dwóch plikach Kreatorów Postaci idzie z 8.10.1 na **12.6.0 w zapisie zgodnościowym (compat)** — wariant **W3**, rozdz. 9.8. Bez podniesienia nie da się w nich włączyć App Check, bo 8.10.1 nie zna reCAPTCHA Enterprise. Wybrany wariant nie rusza sposobu zapisu i odczytu postaci — zmienia wyłącznie nazwy i wersję wczytywanych plików biblioteki. **Otwartych kwestii do rozstrzygnięcia nie ma już żadnych.**
 
 Najpilniejsza pozycja kodowa to **C4** — App Check w trzech modułach na SDK 12.6.0. Bez niego nie da się włączyć wymuszania, a dopóki wymuszania nie ma, baza pozostaje otwarta dla każdego.
 
