@@ -962,3 +962,55 @@ variables and classes already present in the panel — it introduces no new colo
 - the hint below the buttons uses the existing `.small` class in the `--muted` colour;
 - disabled buttons (no entry selected) use the browser's default `:disabled` look — there is no
   separate rule for them.
+
+## GeneratorNPC — „Podgląd bazowy" mieści się na szerokość ekranu
+
+Karta `Podgląd bazowy` (tabela klucz/wartość z arkusza Bestiariusz) nie ma poziomego paska
+przewijania na żadnej szerokości ekranu. Tekst w kolumnie `Wartość` zawija się w komórce.
+
+Aktualny stan reguł w `GeneratorNPC/style.css`:
+
+- `.data-table` nadal ma `min-width: max-content` — to jest zachowanie szerokich tabel
+  wielokolumnowych (`Wybór Broni`: 10 kolumn, `Wybór Psioniki`: 8 kolumn), gdzie przewijanie w bok
+  wewnątrz karty jest potrzebne i zostaje;
+- `.data-table[data-sheet="Bestiariusz"]` ma `min-width: 0` i `width: 100%`, więc podgląd bazowy
+  dopasowuje się do karty;
+- `.celltext` ma `overflow-wrap: break-word` przy `word-break: normal` — łamią się tylko bardzo
+  długie pojedyncze wyrazy, zwykłe słowa nadal łamią się po spacjach;
+- przy `max-width: 640px` wiersze i komórki podglądu bazowego stają się blokami: klucz ląduje nad
+  wartością jako mała etykieta (`0.75rem`, wersaliki, `letter-spacing: 0.08em`, kolor `--text2`),
+  a wartość zajmuje całą szerokość. Nagłówek tabeli jest wtedy ukryty, a wiersze rozdziela
+  `1px solid var(--div)`.
+
+Pionowe zwijanie komórek powyżej dziewięciu linii wraz z podpowiedzią „kliknij aby rozwinąć"
+działa bez zmian.
+
+Zmierzony nadmiar szerokości karty (treść szersza niż karta) przy najdłuższej pojedynczej linii
+z Bestiariusza: **4482 px przy 360 px szerokości ekranu, 3402 px przy 1440 px i 2922 px przy 1920 px
+spada do 0 px na każdej z tych szerokości.** Szerokie tabele wielokolumnowe mają po zmianie
+identyczne szerokości kolumn i identyczne przewijanie jak wcześniej.
+
+## GeneratorNPC — the "base preview" fits the screen width
+
+The `Podgląd bazowy` card (the key/value table from the Bestiary sheet) has no horizontal scrollbar
+at any screen width. Text in the `Wartość` column wraps inside its cell.
+
+Current state of the rules in `GeneratorNPC/style.css`:
+
+- `.data-table` still has `min-width: max-content` — that is the behaviour of the wide multi-column
+  tables (weapon picker: 10 columns, psychic picker: 8 columns), where sideways scrolling inside the
+  card is needed and stays;
+- `.data-table[data-sheet="Bestiariusz"]` has `min-width: 0` and `width: 100%`, so the base preview
+  fits its card;
+- `.celltext` has `overflow-wrap: break-word` with `word-break: normal` — only very long single words
+  break, ordinary words still break at spaces;
+- at `max-width: 640px` the base preview rows and cells become blocks: the key lands above the value
+  as a small label (`0.75rem`, uppercase, `letter-spacing: 0.08em`, colour `--text2`) and the value
+  takes the full width. The table header is hidden and rows are separated by `1px solid var(--div)`.
+
+Vertical clamping of cells above nine lines, together with the "click to expand" hint, is unchanged.
+
+Measured card overflow (content wider than the card) for the longest single Bestiary line:
+**4482 px at a 360 px screen, 3402 px at 1440 px and 2922 px at 1920 px drops to 0 px at every one of
+those widths.** After the change the wide multi-column tables have identical column widths and
+identical scrolling.

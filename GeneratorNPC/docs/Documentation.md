@@ -271,6 +271,42 @@ Widocznością modułów sterują checkboxy z atrybutem `data-module-toggle`.
 
 Po wybraniu rekordu Bestiariusza `updateBestiarySelection()` renderuje tabelę bazową.
 
+### Szerokość i zawijanie tekstu
+
+Podgląd bazowy jest tabelą klucz/wartość i mieści się na szerokość ekranu na każdej rozdzielczości.
+Odpowiadają za to trzy reguły w `GeneratorNPC/style.css`:
+
+| Reguła | Po co |
+| --- | --- |
+| `.data-table[data-sheet="Bestiariusz"] { min-width: 0; width: 100% }` | Zdejmuje odziedziczone z `.data-table` `min-width: max-content`, które kazało tabeli nigdy nie być węższą niż jej najdłuższa pojedyncza linia tekstu. |
+| `.celltext { overflow-wrap: break-word }` | Łamie bardzo długie pojedyncze wyrazy (na przykład wklejony adres) zamiast pozwolić im wystawać poza komórkę. `word-break` zostaje `normal`, więc zwykłe wyrazy nadal łamią się po spacjach. |
+| `@media (max-width: 640px)` — wiersze i komórki jako bloki | Na telefonie klucz staje nad wartością, a wartość dostaje całą szerokość. Kolumna „Klucz" ma stałe 25 znaków i przy wąskim ekranie zabierałaby większość miejsca. |
+
+Zakaz zwężania dotyczy **wyłącznie** tego arkusza. Szerokie tabele wielokolumnowe modułu — `Wybór Broni`
+(10 kolumn) i `Wybór Psioniki` (8 kolumn) — zachowują `min-width: max-content` i przewijanie w bok
+wewnątrz swojej karty, bo ścisnąć ich sensownie się nie da.
+
+Pionowe zwijanie długich komórek działa niezależnie: `createClampCell` zwija zawartość powyżej
+`CLAMP_LINES = 9` linii i pokazuje podpowiedź „kliknij aby rozwinąć".
+
+### Reguły `min-col-*`
+
+`getColumnClass(label)` buduje nazwę klasy z etykiety kolumny: zamienia na małe litery, rozkłada
+znaki diakrytyczne przez `normalize("NFD")`, usuwa je, a pozostałe znaki spoza `[a-z0-9]` zamienia na
+myślnik. Klasę nadaje wyłącznie `renderOrderedTable` przez piąty argument `createClampCell`.
+
+Dwie konsekwencje, o których trzeba wiedzieć przy dopisywaniu reguł:
+
+- **Podgląd bazowy nie dostaje tych klas w ogóle.** `renderBestiaryTable` woła `createClampCell` bez
+  piątego argumentu, więc reguły `.data-table[data-sheet="Bestiariusz"] .min-col-*` nie mają czego
+  dotyczyć. Szerokość kolumn tego arkusza ustawiają reguły `td:first-child` / `td:last-child`.
+- **Litera „ł" nie jest znakiem diakrytycznym w rozumieniu `normalize("NFD")`.** Nie rozkłada się na
+  „l" plus znak, więc zostaje i wpada w zamianę na myślnik. Etykieta `Słowa Kluczowe` daje klasę
+  `min-col-s-owa-kluczowe`, a nie `min-col-slowa-kluczowe`. Regułę dla takiej kolumny trzeba zapisać
+  pod nazwą, którą kod naprawdę generuje.
+
+W pliku są wyłącznie reguły dla par „arkusz + kolumna", które moduł faktycznie rysuje.
+
 Część pól liczbowych jest edytowalna. Dotyczy między innymi:
 
 - `S`,
@@ -832,6 +868,43 @@ Module visibility is controlled by checkboxes with `data-module-toggle`.
 `updateModuleVisibility()` hides or shows elements with `data-module-section`.
 
 ## Base Bestiary preview
+
+### Width and text wrapping
+
+The base preview is a key/value table and fits the screen width at every resolution. Three rules in
+`GeneratorNPC/style.css` are responsible:
+
+| Rule | What it is for |
+| --- | --- |
+| `.data-table[data-sheet="Bestiariusz"] { min-width: 0; width: 100% }` | Drops the `min-width: max-content` inherited from `.data-table`, which told the table never to be narrower than its longest single line of text. |
+| `.celltext { overflow-wrap: break-word }` | Breaks very long single words (a pasted URL, say) instead of letting them overflow the cell. `word-break` stays `normal`, so ordinary words still break at spaces. |
+| `@media (max-width: 640px)` — rows and cells as blocks | On a phone the key moves above the value and the value gets the full width. The "key" column is a fixed 25 characters and would take most of a narrow screen. |
+
+The narrowing applies to **this sheet only**. The module's wide multi-column tables — the weapon
+picker (10 columns) and the psychic picker (8 columns) — keep `min-width: max-content` and their
+sideways scrolling inside their own card, because they cannot be squeezed sensibly.
+
+Vertical clamping of long cells works independently: `createClampCell` collapses content above
+`CLAMP_LINES = 9` lines and shows a "click to expand" hint.
+
+### The `min-col-*` rules
+
+`getColumnClass(label)` builds a class name from the column label: lowercases it, decomposes
+diacritics with `normalize("NFD")`, strips them, and turns every remaining character outside
+`[a-z0-9]` into a hyphen. Only `renderOrderedTable` assigns the class, through the fifth argument of
+`createClampCell`.
+
+Two consequences worth knowing before adding rules:
+
+- **The base preview never gets these classes.** `renderBestiaryTable` calls `createClampCell` without
+  the fifth argument, so `.data-table[data-sheet="Bestiariusz"] .min-col-*` rules have nothing to
+  apply to. Column widths for that sheet come from the `td:first-child` / `td:last-child` rules.
+- **The letter "ł" is not a diacritic as far as `normalize("NFD")` is concerned.** It does not
+  decompose into "l" plus a mark, so it survives and gets hyphenated. The label `Słowa Kluczowe`
+  yields the class `min-col-s-owa-kluczowe`, not `min-col-slowa-kluczowe`. A rule for such a column
+  has to be written under the name the code actually generates.
+
+The file contains rules only for "sheet + column" pairs the module actually renders.
 
 After selecting a Bestiary record, `updateBestiarySelection()` renders the base table.
 
