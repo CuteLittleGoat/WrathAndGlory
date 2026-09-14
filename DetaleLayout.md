@@ -632,8 +632,8 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   Zawartość (`.rollDetails__body`) to siatka `repeat(auto-fit, minmax(min(210px, 100%), 1fr))`
   z `align-items: start` — każda tabela to jedna kolumna, a na wąskim ekranie kolumny schodzą pod
   siebie. Tabela ma nagłówki w kolorze `--muted`, wersaliki `12px`, wiersze rozdzielone linią
-  `1px solid rgba(22,198,12,.16)`. Wiersze Kości Furii (`.rollDetails__row--wrath`) są pisane
-  kolorem `--red-text`.
+  `1px solid rgba(22,198,12,.16)`. Wiersze Kości Furii (`.rollDetails__row--wrath`) są w całości
+  pisane kolorem `--red-text` — razem z nazwą `Kość 1 (Furia)` w pierwszej kolumnie.
 
 ### 4) Zwijanie/rozwijanie > 9 linii
 - Brak clampowania treści w module DiceRoller.

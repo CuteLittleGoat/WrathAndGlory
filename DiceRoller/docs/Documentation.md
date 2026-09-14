@@ -174,8 +174,11 @@ więc niezależnie od liczby kości nie wpływa na wysokość strony, dopóki u�
 - `.rollDetails__body` to siatka `repeat(auto-fit, minmax(min(210px, 100%), 1fr))` z `align-items: start`.
   Każda tabela jest jedną kolumną; na wąskim ekranie kolumny schodzą pod siebie. Bez `align-items: start`
   tabela z mniejszą liczbą wierszy rozciągałaby się na wysokość sąsiedniej i rozjeżdżały jej odstępy.
-- `.rollDetails__row--wrath th`, `.rollDetails__row--wrath td`: `color: var(--red-text)` — wiersze
-  Kości Furii są czerwone, tak jak same kości nad tabelą.
+- `.rollDetails__table .rollDetails__row--wrath th`, `… td`: `color: var(--red-text)` — **cały**
+  wiersz Kości Furii jest czerwony, razem z nazwą `Kość 1 (Furia)`, tak jak czerwone są same te
+  kości nad tabelą. Selektor musi zawierać `.rollDetails__table`: reguła `.rollDetails__table tbody th`
+  ustawia kolor nazwy kości i ma wyższą szczegółowość, więc bez tego członu przykrywałaby czerwień
+  w pierwszej komórce wiersza.
 - Znacznik rozwijania jest rysowany własną regułą (`.rollDetails__toggle::before` z `▸`, obracaną
   o 90° w stanie `[open]`), bo domyślny znacznik `<summary>` wygląda inaczej w każdej przeglądarce.
 

@@ -473,10 +473,14 @@ input[type="number"]:focus {
   color: var(--text);
 }
 
-/* Kości Furii są na górze czerwone, więc ich wiersze w tabeli też. */
-/* The Wrath dice are red above, so their rows in the table are red as well. */
-.rollDetails__row--wrath th,
-.rollDetails__row--wrath td {
+/* PL: Kości Furii są na górze czerwone, więc cały ich wiersz w tabeli też — razem z nazwą
+       „Kość 1 (Furia)”. Selektor musi zawierać `.rollDetails__table`, bo reguła `tbody th` wyżej
+       ma wyższą szczegółowość i bez tego przykrywałaby czerwień w komórce z nazwą kości.
+   EN: The Wrath dice are red above, so their whole table row is red too — the "Die 1 (Wrath)" name
+       included. The selector has to carry `.rollDetails__table`, because the `tbody th` rule above
+       is more specific and would otherwise override the red in the die-name cell. */
+.rollDetails__table .rollDetails__row--wrath th,
+.rollDetails__table .rollDetails__row--wrath td {
   color: var(--red-text);
 }
 
