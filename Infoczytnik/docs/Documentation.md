@@ -72,6 +72,10 @@ Moduł korzysta z zależności ładowanych bezpośrednio w HTML:
 - Google Fonts — rodziny fontów używane przez panel i ekran gracza,
 - Firebase App Compat `9.6.8`,
 - Firebase Firestore Compat `9.6.8`,
+- Firebase App Check Compat `9.6.8`,
+- reCAPTCHA Enterprise (`https://www.google.com/recaptcha/enterprise.js`),
+- `../shared/appcheck-config.js` — klucze witryny App Check dla obu projektów Firebase,
+- `../shared/firebase-app-check-compat.js` — wspólne uruchamianie App Check dla zapisu zgodnościowego,
 - SheetJS/XLSX `0.20.3` w panelu GM do odczytu `DataSlate_manifest.xlsx`.
 
 Moduł nie ma oddzielnego backendu aplikacyjnego. Współdzielony stan między GM i ekranem gracza znajduje się w Firestore.
@@ -118,6 +122,15 @@ Najważniejsze elementy UI:
 | Przywróć domyślne | `restoreDefaultsBtn` | Przywraca ustawienia domyślne i wysyła `clear` do Firestore. |
 | Wylosuj fillery | `rerollFillersBtn` | Losuje nowe linie prefix/suffix z wybranego zestawu. |
 | Aktualizuj dane z XLSX | `updateDataBtn` | Wczytuje `DataSlate_manifest.xlsx`, buduje manifest i pobiera nowy `data.json`. |
+| Ulubione wiadomości | `favSelect` | Lista zapisanych wiadomości. Pierwsza pozycja jest pusta i oznacza „bieżąca wiadomość". |
+| Nazwa zapisu | `favName` | Pole nazwy używane przy zapisie nowej pozycji i przy zmianie nazwy. |
+| Wczytaj | `favLoadBtn` | Wypełnia formularz ustawieniami zaznaczonego zapisu. Nic nie wysyła. |
+| Zapisz jako nową | `favSaveNewBtn` | Tworzy nowy dokument w `dataslate_favorites` ze stanem formularza. |
+| Nadpisz zaznaczoną | `favOverwriteBtn` | Zapisuje bieżący stan formularza do zaznaczonego dokumentu, nie ruszając nazwy ani kolejności. |
+| Zmień nazwę | `favRenameBtn` | Zapisuje treść pola `favName` jako nową nazwę zaznaczonego zapisu. |
+| W górę / W dół | `favUpBtn`, `favDownBtn` | Zamienia wartości pola `kolejnosc` z sąsiadem, jednym zapisem wsadowym. |
+| Usuń | `favDeleteBtn` | Usuwa zaznaczony dokument po potwierdzeniu. |
+| Podpowiedź ulubionych | `favHint` | Pokazuje stan listy albo treść błędu operacji na ulubionych. |
 | Log importu | `importLog` | Pokazuje błędy i ostrzeżenia importu. |
 | Status | `status` | Pokazuje aktualny stan operacji panelu. |
 
@@ -294,6 +307,10 @@ Moduł korzysta z Firebase w trybie kompatybilnościowym:
 <script src="config/firebase-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-check-compat.js"></script>
+<script src="../shared/appcheck-config.js"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js"></script>
+<script src="../shared/firebase-app-check-compat.js"></script>
 ```
 
 `config/firebase-config.js` musi ustawiać globalne `window.firebaseConfig`. Nie używa się `export`.
@@ -302,8 +319,10 @@ Panel GM wykonuje:
 
 ```js
 firebase.initializeApp(window.firebaseConfig);
+window.WG_activateAppCheckCompat(firebase);
 const db = firebase.firestore();
 const currentRef = db.collection('dataslate').doc('current');
+const favoritesRef = db.collection('dataslate_favorites');
 ```
 
 Ekran gracza wykonuje analogiczną inicjalizację i nasłuchuje:
@@ -312,6 +331,61 @@ Ekran gracza wykonuje analogiczną inicjalizację i nasłuchuje:
 const ref = db.collection('dataslate').doc('current');
 ref.onSnapshot((snap) => { ... });
 ```
+
+### App Check
+
+Obie strony uruchamiają App Check oparty o reCAPTCHA Enterprise, dzięki czemu każde zapytanie do
+Firestore niesie znacznik potwierdzający, że przyszło z zarejestrowanej aplikacji WrathAndGlory.
+
+- klucze witryny są w `shared/appcheck-config.js`, wspólnie dla obu projektów Firebase; moduł nie
+  trzyma własnej kopii klucza,
+- uruchomienie realizuje `window.WG_activateAppCheckCompat(firebase)` z
+  `shared/firebase-app-check-compat.js`, wywoływane zaraz po `firebase.initializeApp(...)`, a przed
+  pierwszym użyciem `firebase.firestore()`,
+- bibliotekę reCAPTCHA Enterprise wczytuje sama strona zwykłym znacznikiem `<script>` umieszczonym
+  przed skryptem uruchamiającym. Nie wolno zostawiać tego SDK: Firebase dokłada własny znacznik
+  wyłącznie z obsługą poprawnego wczytania, bez obsługi błędu, więc przy zablokowanym adresie czeka
+  bez końca i blokuje każde zapytanie do Firestore,
+- wywołanie nie jest krytyczne: przy braku klucza albo biblioteki funkcja zapisuje ostrzeżenie
+  w konsoli i pomija App Check, a obie strony działają tak jak przed jego wprowadzeniem.
+
+Wersja biblioteki Firebase pozostaje `9.6.8` — ta wersja obsługuje reCAPTCHA Enterprise i nie
+wymagała podnoszenia.
+
+## Ulubione wiadomości — kolekcja `dataslate_favorites`
+
+Panel GM pozwala przygotować przed sesją komplet gotowych wiadomości razem z tłem, logiem, fontem,
+kolorami i rozmiarami. Ekran gracza nie korzysta z tej kolekcji i nie zmienia się w niczym.
+
+Struktura jednego dokumentu:
+
+| Pole | Typ | Opis |
+| --- | --- | --- |
+| `nazwa` | `string` | Nazwa zapisu widoczna na liście, maksymalnie 80 znaków. |
+| `kolejnosc` | `number` | Pozycja na liście. Nowy zapis dostaje `max(kolejnosc) + 1`. |
+| `ustawienia` | `map` | Pełny stan formularza panelu GM — patrz niżej. |
+| `zaktualizowano` | `timestamp` | Znacznik czasu serwera ustawiany przy każdym zapisie. |
+
+Pola `ustawienia`: `backgroundId`, `logoId`, `fillerId`, `fontId`, `audioId`, `showLogo`,
+`movingOverlay`, `flicker`, `fillersEnabled`, `audioEnabled`, `fillerLineCount`, `fillerBandLines`,
+`messageColor`, `prefixSuffixColor`, `logoColor`, `msgFontSize`, `psFontSize`, `message`,
+`prefixLines`, `suffixLines`.
+
+Zapisywany jest **stan formularza, a nie gotowy payload**. Dzięki temu po aktualizacji danych z pliku
+XLSX — gdy zmienią się ścieżki plików tła albo logo — stare zapisy nadal działają, bo payload
+wysyłkowy powstaje na nowo z bieżącego manifestu. Identyfikatory spoza bieżącego manifestu wracają
+przy wczytaniu do pierwszej dostępnej pozycji, więc lista wyboru nigdy nie zostaje pusta.
+
+Kolejność listy bierze się z pola `kolejnosc`, a przy równych wartościach rozstrzyga identyfikator
+dokumentu. Bez tego drugiego klucza dwa zapisy utworzone zanim dotrze potwierdzenie pierwszego mogłyby
+się przestawiać między odświeżeniami — sprawdzone uruchomieniem, właśnie tak się działo.
+
+Przesunięcie pozycji zamienia wartości `kolejnosc` dwóch sąsiadów jednym zapisem wsadowym
+(`db.batch()`), więc albo wchodzą obie zmiany, albo żadna.
+
+Wysyłka nie zmienia się w niczym: przycisk „Wyślij" zapisuje payload do `dataslate/current` tak jak
+dotąd. Gdy na liście nie jest nic zaznaczone, panel zachowuje się dokładnie jak przed dodaniem
+ulubionych i nic nie trafia do `dataslate_favorites`.
 
 Szczegółowa konfiguracja Firebase, skrypt inicjalizujący Firestore, reguły oraz test połączenia są opisane w `Infoczytnik/config/FirebaseREADME.md`.
 
@@ -519,6 +593,10 @@ The module loads dependencies directly in HTML:
 - Google Fonts — font families used by the panel and display,
 - Firebase App Compat `9.6.8`,
 - Firebase Firestore Compat `9.6.8`,
+- Firebase App Check Compat `9.6.8`,
+- reCAPTCHA Enterprise (`https://www.google.com/recaptcha/enterprise.js`),
+- `../shared/appcheck-config.js` — App Check site keys for both Firebase projects,
+- `../shared/firebase-app-check-compat.js` — shared App Check activation for the compat form,
 - SheetJS/XLSX `0.20.3` in the GM panel for reading `DataSlate_manifest.xlsx`.
 
 The module has no separate application backend. The shared state between the GM and player display is stored in Firestore.
@@ -565,6 +643,15 @@ Key UI elements:
 | Restore defaults | `restoreDefaultsBtn` | Restores defaults and sends `clear` to Firestore. |
 | Reroll fillers | `rerollFillersBtn` | Randomizes new prefix/suffix lines from the selected set. |
 | Update data from XLSX | `updateDataBtn` | Reads `DataSlate_manifest.xlsx`, builds the manifest, and downloads a new `data.json`. |
+| Favourite messages | `favSelect` | The list of saved messages. The first entry is empty and means "current message". |
+| Entry name | `favName` | Name field used when saving a new entry and when renaming one. |
+| Load | `favLoadBtn` | Fills the form with the selected entry's settings. Sends nothing. |
+| Save as new | `favSaveNewBtn` | Creates a new document in `dataslate_favorites` holding the form state. |
+| Overwrite selected | `favOverwriteBtn` | Writes the current form state to the selected document, leaving its name and order untouched. |
+| Rename | `favRenameBtn` | Stores the `favName` field contents as the selected entry's new name. |
+| Up / Down | `favUpBtn`, `favDownBtn` | Swaps the `kolejnosc` field with a neighbour in a single batched write. |
+| Delete | `favDeleteBtn` | Deletes the selected document after confirmation. |
+| Favourites hint | `favHint` | Shows the list state or the error text of a favourites operation. |
 | Import log | `importLog` | Shows import errors and warnings. |
 | Status | `status` | Shows the current operation status. |
 
@@ -741,6 +828,10 @@ The module uses Firebase compatibility builds:
 <script src="config/firebase-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-check-compat.js"></script>
+<script src="../shared/appcheck-config.js"></script>
+<script src="https://www.google.com/recaptcha/enterprise.js"></script>
+<script src="../shared/firebase-app-check-compat.js"></script>
 ```
 
 `config/firebase-config.js` must define global `window.firebaseConfig`. It must not use `export`.
@@ -749,8 +840,10 @@ The GM panel initializes:
 
 ```js
 firebase.initializeApp(window.firebaseConfig);
+window.WG_activateAppCheckCompat(firebase);
 const db = firebase.firestore();
 const currentRef = db.collection('dataslate').doc('current');
+const favoritesRef = db.collection('dataslate_favorites');
 ```
 
 The player display initializes similarly and listens with:
@@ -759,6 +852,61 @@ The player display initializes similarly and listens with:
 const ref = db.collection('dataslate').doc('current');
 ref.onSnapshot((snap) => { ... });
 ```
+
+### App Check
+
+Both pages activate App Check backed by reCAPTCHA Enterprise, so that every Firestore request carries
+a token proving it came from the registered WrathAndGlory application.
+
+- the site keys live in `shared/appcheck-config.js`, shared by both Firebase projects; the module
+  keeps no local copy of a key,
+- activation is done by `window.WG_activateAppCheckCompat(firebase)` from
+  `shared/firebase-app-check-compat.js`, called right after `firebase.initializeApp(...)` and before
+  `firebase.firestore()` is first used,
+- the reCAPTCHA Enterprise library is loaded by the page itself with a plain `<script>` tag placed
+  before the activation script. It must not be left to the SDK: Firebase appends its own tag with an
+  onload handler only and no error handler, so with a blocked address it waits forever and stalls
+  every Firestore request,
+- the call is not critical: with a missing key or library the function logs a console warning and
+  skips App Check, and both pages work as they did before it was introduced.
+
+The Firebase library stays at `9.6.8` — that version supports reCAPTCHA Enterprise and needed no
+upgrade.
+
+## Favourite messages — the `dataslate_favorites` collection
+
+The GM panel can prepare a set of ready messages before a session, complete with background, logo,
+font, colours and sizes. The player display does not use this collection and does not change at all.
+
+Structure of a single document:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `nazwa` | `string` | Entry name shown on the list, at most 80 characters. |
+| `kolejnosc` | `number` | Position on the list. A new entry gets `max(kolejnosc) + 1`. |
+| `ustawienia` | `map` | The full GM panel form state — see below. |
+| `zaktualizowano` | `timestamp` | Server timestamp set on every write. |
+
+Fields inside `ustawienia`: `backgroundId`, `logoId`, `fillerId`, `fontId`, `audioId`, `showLogo`,
+`movingOverlay`, `flicker`, `fillersEnabled`, `audioEnabled`, `fillerLineCount`, `fillerBandLines`,
+`messageColor`, `prefixSuffixColor`, `logoColor`, `msgFontSize`, `psFontSize`, `message`,
+`prefixLines`, `suffixLines`.
+
+What is stored is **the form state, not a ready payload**. Thanks to that, after the data is updated
+from the XLSX file — when background or logo file paths change — old entries still work, because the
+outgoing payload is rebuilt from the current manifest. Ids outside the current manifest fall back on
+load to the first available entry, so a select never ends up empty.
+
+The list order comes from the `kolejnosc` field, with the document id breaking ties. Without that
+second key, two entries created before the first one is confirmed could swap places between
+refreshes — verified by running it, that is exactly what happened.
+
+Moving an entry swaps the `kolejnosc` values of two neighbours in a single batched write
+(`db.batch()`), so either both changes apply or neither.
+
+Sending does not change at all: the "Send" button writes the payload to `dataslate/current` as
+before. When nothing is selected on the list, the panel behaves exactly as it did before favourites
+existed and nothing is written to `dataslate_favorites`.
 
 Full Firebase setup, Firestore initialization script, rules, and connection tests are documented in `Infoczytnik/config/FirebaseREADME.md`.
 

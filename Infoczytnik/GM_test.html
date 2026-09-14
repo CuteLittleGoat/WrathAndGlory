@@ -9,7 +9,7 @@
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script>
     (function autoCacheBust(){
-      const INF_VERSION = "2026-05-28_14-50-22";
+      const INF_VERSION = "2026-09-14_05-35-46";
       window.__dsVersion = INF_VERSION;
       const url = new URL(window.location.href);
       if (url.searchParams.get("v") !== INF_VERSION) {
@@ -51,6 +51,11 @@
     .chip{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.18);cursor:pointer;user-select:none;font-size:13px;color:#eaeaea;white-space:nowrap}
     .chip .swatch{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-2px;border:1px solid rgba(0,0,0,.25);flex:0 0 12px}
     .pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    /* --- Panel ulubionych wiadomości / Favourite messages panel --- */
+    .favRow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .favRow select{flex:2 1 240px;min-width:0}
+    .favRow input{flex:1 1 180px;min-width:0}
+    .favBtnRow button{flex:1 1 130px;min-width:130px}
   </style>
 </head>
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
@@ -132,6 +137,23 @@
     <button id="rerollFillersBtn">Wylosuj fillery</button>
   </div>
 
+  <!-- Ulubione wiadomości: przygotowanie kilku gotowych wiadomości przed sesją / Favourite messages: preparing several ready messages before a session -->
+  <label for="favSelect">Ulubione wiadomości</label>
+  <div class="favRow">
+    <select id="favSelect"></select>
+    <input type="text" id="favName" placeholder="Nazwa zapisu" maxlength="80">
+  </div>
+  <div class="btnrow favBtnRow">
+    <button id="favLoadBtn" type="button">Wczytaj</button>
+    <button id="favSaveNewBtn" type="button">Zapisz jako nową</button>
+    <button id="favOverwriteBtn" type="button">Nadpisz zaznaczoną</button>
+    <button id="favRenameBtn" type="button">Zmień nazwę</button>
+    <button id="favUpBtn" type="button">W górę</button>
+    <button id="favDownBtn" type="button">W dół</button>
+    <button class="warn" id="favDeleteBtn" type="button">Usuń</button>
+  </div>
+  <div class="small" id="favHint">Wczytanie ulubionej wiadomości tylko wypełnia formularz. Wysyłka zawsze idzie przyciskiem „Wyślij”.</div>
+
   <label>Log importu</label>
   <div class="importRow">
     <textarea id="importLog" class="importLog" readonly></textarea>
@@ -145,6 +167,16 @@
 <script src="config/firebase-config.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.8/firebase-app-check-compat.js"></script>
+<!-- Klucze witryny App Check dla obu projektów Firebase / App Check site keys for both Firebase projects -->
+<script src="../shared/appcheck-config.js"></script>
+<!-- PL: Biblioteka reCAPTCHA Enterprise. Wczytuje ją strona, a nie SDK, bo SDK dokłada swój znacznik
+     bez obsługi błędu wczytania i przy zablokowanym adresie czeka bez końca, blokując Firestore.
+     EN: The reCAPTCHA Enterprise library. The page loads it instead of the SDK, because the SDK
+     appends its own tag with no load-error handler and, if the address is blocked, waits forever
+     and stalls Firestore. -->
+<script src="https://www.google.com/recaptcha/enterprise.js"></script>
+<script src="../shared/firebase-app-check-compat.js"></script>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 <script>
 const DEFAULT_FORM_STATE = { backgroundId:10, logoId:3, fillerId:1, fontId:1, audioId:1, showLogo:false, movingOverlay:false, flicker:false, fillersEnabled:true, audioEnabled:true, fillerLineCount:3, fillerBandLines:2, messageColor:'#00ff66', prefixSuffixColor:'#ffffff', logoColor:'#d4af37', msgFontSize:20, psFontSize:12, previewMode:'content' };
@@ -155,8 +187,20 @@ const PREVIEW_MODE_KEY = 'infoczytnik.gm.previewMode';
 // --- WAŻNE: Każda grupa musi mieć własny Firebase, inaczej dane będą współdzielone między serwerami. / IMPORTANT: Each group must have its own Firebase, otherwise data will be shared across servers. ---
 if(!window.firebaseConfig){ alert('Brak window.firebaseConfig'); throw new Error('Missing firebase config'); }
 firebase.initializeApp(window.firebaseConfig);
+// --- App Check tuż po utworzeniu aplikacji, przed pierwszym użyciem Firestore / App Check right after the app is created, before Firestore is first used ---
+// PL: Wywołanie nie jest krytyczne — bez reCAPTCHA strona działa tak jak dotąd.
+// EN: The call is not critical — without reCAPTCHA the page works as before.
+if(typeof window.WG_activateAppCheckCompat === 'function'){ window.WG_activateAppCheckCompat(firebase); }
 const db = firebase.firestore();
 const currentRef = db.collection('dataslate').doc('current');
+// --- Kolekcja zapisanych wiadomości / Saved messages collection ---
+// PL: Osobna kolekcja, a nie kolejne dokumenty w `dataslate`. Dzięki temu kanał na żywo pozostaje
+//     ściśle jednym dokumentem `dataslate/current`, a reguły Firestore mogą go zawęzić do tej jednej
+//     nazwy. Jeden dokument tutaj = jedna zapisana wiadomość.
+// EN: A separate collection rather than more documents inside `dataslate`. This keeps the live
+//     channel strictly to the single `dataslate/current` document, so the Firestore rules can narrow
+//     it down to that one name. One document here = one saved message.
+const favoritesRef = db.collection('dataslate_favorites');
 
 const el = {
   backgroundSelect:document.getElementById('backgroundSelect'), logoSelect:document.getElementById('logoSelect'), fillerSelect:document.getElementById('fillerSelect'), fontSelect:document.getElementById('fontSelect'), audioSelect:document.getElementById('audioSelect'),
@@ -165,11 +209,24 @@ const el = {
   psColorText:document.getElementById('psColorText'), psColorPicker:document.getElementById('psColorPicker'), psFontSize:document.getElementById('psFontSize'), logoColorPanel:document.getElementById('logoColorPanel'), logoColorText:document.getElementById('logoColorText'), logoColorPicker:document.getElementById('logoColorPicker'),
   previewModeContent:document.getElementById('previewModeContent'), previewModeBackground:document.getElementById('previewModeBackground'),
   previewPrefix:document.getElementById('previewPrefix'), previewMsg:document.getElementById('previewMsg'), previewSuffix:document.getElementById('previewSuffix'), livePreview:document.getElementById('livePreview'), previewBackgroundThumb:document.getElementById('previewBackgroundThumb'), previewLogo:document.getElementById('previewLogo'),
+  favSelect:document.getElementById('favSelect'), favName:document.getElementById('favName'), favHint:document.getElementById('favHint'),
+  favLoadBtn:document.getElementById('favLoadBtn'), favSaveNewBtn:document.getElementById('favSaveNewBtn'), favOverwriteBtn:document.getElementById('favOverwriteBtn'),
+  favRenameBtn:document.getElementById('favRenameBtn'), favUpBtn:document.getElementById('favUpBtn'), favDownBtn:document.getElementById('favDownBtn'), favDeleteBtn:document.getElementById('favDeleteBtn'),
   message:document.getElementById('message'), importLog:document.getElementById('importLog'), updateDataBtn:document.getElementById('updateDataBtn'), status:document.getElementById('status'), sendBtn:document.getElementById('sendBtn'), pingBtn:document.getElementById('pingBtn'), clearMessageBtn:document.getElementById('clearMessageBtn'), restoreDefaultsBtn:document.getElementById('restoreDefaultsBtn'), rerollFillersBtn:document.getElementById('rerollFillersBtn')
 };
 
 let manifest = null;
 let fillerState = {prefixLines:[], suffixLines:[]};
+// --- Stan panelu ulubionych / Favourites panel state ---
+// PL: `favorites` to lista zapisanych wiadomości posortowana po polu `kolejnosc`, odświeżana na żywo
+//     przez nasłuch Firestore. `favSelectedId` to identyfikator zaznaczonej pozycji albo pusty tekst,
+//     gdy wybrana jest pozycja domyślna „bieżąca wiadomość”.
+// EN: `favorites` is the list of saved messages sorted by the `kolejnosc` field, refreshed live by a
+//     Firestore listener. `favSelectedId` is the id of the selected entry, or an empty string when the
+//     default "current message" entry is selected.
+let favorites = [];
+let favSelectedId = '';
+let favoritesReady = false;
 
 function setStatus(t){ el.status.textContent = t; }
 function clamp(v,min,max,d){ const n=Number(v); if(!Number.isFinite(n)) return d; return Math.min(max,Math.max(min,Math.floor(n))); }
@@ -569,6 +626,296 @@ document.querySelectorAll('.chip[data-target]').forEach(chip=>{
     renderPreview();
   });
 });
+// --- Ulubione wiadomości / Favourite messages ---------------------------------------------------
+// PL: Cel tej sekcji: przed sesją da się przygotować kilka gotowych wiadomości razem z tłem, logiem,
+//     fontem, kolorami i rozmiarami, żeby przy stole wystarczyło wybrać zapis i nacisnąć „Wyślij”.
+//     Wysyłka nie zmienia się w niczym — nadal idzie do dokumentu `dataslate/current`, a wczytanie
+//     ulubionej wiadomości wyłącznie wypełnia formularz i niczego nie wysyła ani nie zapisuje.
+// EN: Purpose of this section: before a session several ready messages can be prepared together with
+//     background, logo, font, colours and sizes, so that at the table it is enough to pick an entry
+//     and press "Send". Sending does not change at all — it still goes to the `dataslate/current`
+//     document, and loading a favourite only fills the form, sending and saving nothing.
+
+const FAVORITE_NAME_MAX_LENGTH = 80;
+
+// --- Odczyt całego stanu formularza / Reading the whole form state ---
+// PL: Zapisujemy stan formularza, a nie gotowy ładunek wysyłkowy. Dzięki temu po aktualizacji danych
+//     z pliku XLSX (nowe ścieżki plików tła czy logo) stare zapisy nadal działają — przy wysyłce
+//     ładunek powstaje na nowo z bieżącego manifestu.
+// EN: We store the form state, not the ready payload. Thanks to that, after the data is updated from
+//     the XLSX file (new background or logo file paths) old entries still work — on send the payload
+//     is rebuilt from the current manifest.
+function getFormState(){
+  return {
+    backgroundId: toInt(el.backgroundSelect.value, DEFAULT_FORM_STATE.backgroundId),
+    logoId: toInt(el.logoSelect.value, DEFAULT_FORM_STATE.logoId),
+    fillerId: toInt(el.fillerSelect.value, DEFAULT_FORM_STATE.fillerId),
+    fontId: toInt(el.fontSelect.value, DEFAULT_FORM_STATE.fontId),
+    audioId: toInt(el.audioSelect.value, DEFAULT_FORM_STATE.audioId),
+    showLogo: !!el.showLogo.checked,
+    movingOverlay: !!el.movingOverlay.checked,
+    flicker: !!el.flicker.checked,
+    fillersEnabled: !!el.fillersEnabled.checked,
+    audioEnabled: !!el.audioEnabled.checked,
+    fillerLineCount: clamp(el.fillerLineCount.value,1,5,DEFAULT_FORM_STATE.fillerLineCount),
+    fillerBandLines: clamp(el.fillerBandLines.value,1,6,DEFAULT_FORM_STATE.fillerBandLines),
+    messageColor: resolveHexColor(el.messageColorText.value, el.messageColorPicker.value, DEFAULT_FORM_STATE.messageColor),
+    prefixSuffixColor: resolveHexColor(el.psColorText.value, el.psColorPicker.value, DEFAULT_FORM_STATE.prefixSuffixColor),
+    logoColor: resolveHexColor(el.logoColorText.value, el.logoColorPicker.value, DEFAULT_FORM_STATE.logoColor),
+    msgFontSize: clamp(el.msgFontSize.value,12,80,DEFAULT_FORM_STATE.msgFontSize),
+    psFontSize: clamp(el.psFontSize.value,10,60,DEFAULT_FORM_STATE.psFontSize),
+    message: String(el.message.value || ''),
+    // PL: Wylosowane linie fillerów zapisujemy razem z resztą, żeby wczytany zapis wyglądał dokładnie
+    //     tak, jak w chwili zapisania. Przycisk „Wylosuj fillery” nadal działa i losuje od nowa.
+    // EN: The drawn filler lines are stored with the rest so a loaded entry looks exactly as it did
+    //     when saved. The "Draw fillers" button still works and draws again.
+    prefixLines: [...fillerState.prefixLines],
+    suffixLines: [...fillerState.suffixLines]
+  };
+}
+
+// --- Ustawienie formularza ze stanu zapisu / Applying a stored state to the form ---
+// PL: Brakujące pola zastępujemy wartościami domyślnymi, a identyfikatory spoza bieżącego manifestu
+//     cofamy do pierwszej dostępnej pozycji — inaczej zapis zrobiony przed aktualizacją danych
+//     zostawiłby puste pole wyboru.
+// EN: Missing fields fall back to defaults, and ids outside the current manifest fall back to the
+//     first available entry — otherwise an entry saved before a data update would leave an empty
+//     select.
+function applyFormState(state){
+  const src = state && typeof state === 'object' ? state : {};
+  const pick = (list, wanted, fallback) => {
+    const items = list || [];
+    const wantedNumber = toInt(wanted, fallback);
+    if(items.some(x=>x.id===wantedNumber)) return wantedNumber;
+    if(items.some(x=>x.id===fallback)) return fallback;
+    return items[0]?.id ?? '';
+  };
+  el.backgroundSelect.value = String(pick(manifest?.backgrounds, src.backgroundId, DEFAULT_FORM_STATE.backgroundId));
+  el.logoSelect.value = String(pick(manifest?.logos, src.logoId, DEFAULT_FORM_STATE.logoId));
+  el.fillerSelect.value = String(pick(manifest?.fillers, src.fillerId, DEFAULT_FORM_STATE.fillerId));
+  el.fontSelect.value = String(pick(manifest?.fonts, src.fontId, DEFAULT_FORM_STATE.fontId));
+  el.audioSelect.value = String(pick(manifest?.audios, src.audioId, DEFAULT_FORM_STATE.audioId));
+  el.showLogo.checked = src.showLogo ?? DEFAULT_FORM_STATE.showLogo;
+  el.movingOverlay.checked = src.movingOverlay ?? DEFAULT_FORM_STATE.movingOverlay;
+  el.flicker.checked = (src.flicker ?? DEFAULT_FORM_STATE.flicker) && (src.movingOverlay ?? DEFAULT_FORM_STATE.movingOverlay);
+  el.fillersEnabled.checked = src.fillersEnabled ?? DEFAULT_FORM_STATE.fillersEnabled;
+  el.audioEnabled.checked = src.audioEnabled ?? DEFAULT_FORM_STATE.audioEnabled;
+  el.fillerLineCount.value = String(clamp(src.fillerLineCount,1,5,DEFAULT_FORM_STATE.fillerLineCount));
+  el.fillerBandLines.value = String(clamp(src.fillerBandLines,1,6,DEFAULT_FORM_STATE.fillerBandLines));
+  const messageColor = normalizeHexColor(src.messageColor, DEFAULT_FORM_STATE.messageColor);
+  const psColor = normalizeHexColor(src.prefixSuffixColor, DEFAULT_FORM_STATE.prefixSuffixColor);
+  const logoColor = normalizeHexColor(src.logoColor, DEFAULT_FORM_STATE.logoColor);
+  el.messageColorText.value = messageColor; el.messageColorPicker.value = messageColor;
+  el.psColorText.value = psColor; el.psColorPicker.value = psColor;
+  el.logoColorText.value = logoColor; el.logoColorPicker.value = logoColor;
+  el.msgFontSize.value = String(clamp(src.msgFontSize,12,80,DEFAULT_FORM_STATE.msgFontSize));
+  el.psFontSize.value = String(clamp(src.psFontSize,10,60,DEFAULT_FORM_STATE.psFontSize));
+  el.message.value = String(src.message ?? '');
+  fillerState.prefixLines = Array.isArray(src.prefixLines) ? src.prefixLines.map(String) : [];
+  fillerState.suffixLines = Array.isArray(src.suffixLines) ? src.suffixLines.map(String) : [];
+  applySelectedFontToPreview();
+  renderPreview();
+}
+
+function setFavoriteHint(text){ el.favHint.textContent = text; }
+
+function findFavorite(id){ return favorites.find(item=>item.id===id) || null; }
+
+// --- Rysowanie listy wyboru / Rendering the select list ---
+// PL: Pierwsza pozycja jest zawsze pusta i oznacza „bieżąca wiadomość”. Zgodnie z ustaleniem, gdy nic
+//     nie jest wybrane, wysyłka działa dokładnie jak dotąd i nic nie trafia do ulubionych.
+// EN: The first entry is always empty and means "current message". As agreed, when nothing is
+//     selected, sending works exactly as before and nothing is written to favourites.
+function renderFavorites(){
+  el.favSelect.innerHTML = '';
+  const blank = document.createElement('option');
+  blank.value = '';
+  blank.textContent = '— bieżąca wiadomość (bez zapisu) —';
+  el.favSelect.appendChild(blank);
+  favorites.forEach((item, index)=>{
+    const opt = document.createElement('option');
+    opt.value = item.id;
+    opt.textContent = `${index+1}. ${item.nazwa || '(bez nazwy)'}`;
+    el.favSelect.appendChild(opt);
+  });
+  if(favSelectedId && !findFavorite(favSelectedId)) favSelectedId = '';
+  el.favSelect.value = favSelectedId;
+  // PL: Gdyby przeglądarka z jakiegoś powodu nie przyjęła tej wartości, wracamy do pozycji domyślnej,
+  //     żeby zaznaczenie w polu wyboru i zmienna `favSelectedId` nigdy nie pokazywały czegoś innego.
+  // EN: Should the browser not accept that value for any reason, fall back to the default entry so
+  //     that the select and the `favSelectedId` variable never point at different things.
+  if(el.favSelect.value !== favSelectedId){ favSelectedId = ''; el.favSelect.value = ''; }
+  updateFavoriteButtons();
+}
+
+// --- Włączanie i wyłączanie przycisków / Enabling and disabling the buttons ---
+function updateFavoriteButtons(){
+  const selected = findFavorite(favSelectedId);
+  const index = selected ? favorites.indexOf(selected) : -1;
+  const hasSelection = !!selected;
+  el.favLoadBtn.disabled = !hasSelection;
+  el.favOverwriteBtn.disabled = !hasSelection;
+  el.favRenameBtn.disabled = !hasSelection;
+  el.favDeleteBtn.disabled = !hasSelection;
+  el.favUpBtn.disabled = !hasSelection || index <= 0;
+  el.favDownBtn.disabled = !hasSelection || index < 0 || index >= favorites.length - 1;
+  el.favSaveNewBtn.disabled = !favoritesReady;
+}
+
+// --- Nasłuch zapisanych wiadomości / Saved messages listener ---
+// PL: Kolejność bierze się z pola `kolejnosc` zapisanego w każdym dokumencie, więc nie ma osobnego
+//     dokumentu z indeksem i nie ma czego synchronizować.
+// EN: The order comes from the `kolejnosc` field stored in every document, so there is no separate
+//     index document and nothing to keep in sync.
+function subscribeFavorites(){
+  favoritesRef.orderBy('kolejnosc').onSnapshot(
+    (snapshot)=>{
+      favorites = snapshot.docs.map(doc=>{
+        const data = doc.data() || {};
+        return {
+          id: doc.id,
+          nazwa: String(data.nazwa || ''),
+          kolejnosc: Number(data.kolejnosc) || 0,
+          ustawienia: data.ustawienia || {}
+        };
+      });
+      // --- Rozstrzyganie remisów w kolejności / Breaking ties in the ordering ---
+      // PL: Gdyby dwa zapisy dostały tę samą wartość `kolejnosc` (możliwe, gdy dwa zapisy powstaną,
+      //     zanim dotrze potwierdzenie pierwszego), samo `orderBy` nie gwarantuje stałej kolejności
+      //     i pozycje mogłyby się przestawiać między odświeżeniami. Identyfikator dokumentu jest
+      //     niezmienny, więc jako drugi klucz daje kolejność raz na zawsze ustaloną.
+      // EN: Should two entries end up with the same `kolejnosc` (possible when two saves happen before
+      //     the first one is confirmed), `orderBy` alone does not guarantee a stable order and entries
+      //     could swap places between refreshes. The document id never changes, so as a second key it
+      //     fixes the order once and for all.
+      favorites.sort((a,b)=> (a.kolejnosc - b.kolejnosc) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0));
+      favoritesReady = true;
+      renderFavorites();
+      setFavoriteHint(favorites.length
+        ? 'Wczytanie ulubionej wiadomości tylko wypełnia formularz. Wysyłka zawsze idzie przyciskiem „Wyślij”.'
+        : 'Brak zapisanych wiadomości. Ustaw formularz i naciśnij „Zapisz jako nową”.');
+    },
+    (error)=>{
+      console.error(error);
+      favoritesReady = false;
+      updateFavoriteButtons();
+      setFavoriteHint('Nie udało się wczytać zapisanych wiadomości: ' + (error.message || error));
+    }
+  );
+}
+
+function nextFavoriteOrder(){
+  return favorites.reduce((max,item)=>Math.max(max, Number(item.kolejnosc) || 0), 0) + 1;
+}
+
+function readFavoriteNameInput(fallback){
+  const typed = String(el.favName.value || '').trim().slice(0, FAVORITE_NAME_MAX_LENGTH);
+  return typed || fallback;
+}
+
+async function saveFavoriteAsNew(){
+  const nazwa = readFavoriteNameInput(`Wiadomość ${favorites.length + 1}`);
+  setStatus('zapisuję ulubioną…');
+  const doc = favoritesRef.doc();
+  await doc.set({
+    nazwa,
+    kolejnosc: nextFavoriteOrder(),
+    ustawienia: getFormState(),
+    zaktualizowano: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  favSelectedId = doc.id;
+  el.favName.value = nazwa;
+  setStatus('zapisano ulubioną');
+}
+
+async function overwriteFavorite(){
+  const selected = findFavorite(favSelectedId);
+  if(!selected) return;
+  setStatus('nadpisuję ulubioną…');
+  await favoritesRef.doc(selected.id).update({
+    ustawienia: getFormState(),
+    zaktualizowano: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  setStatus('nadpisano ulubioną');
+}
+
+async function renameFavorite(){
+  const selected = findFavorite(favSelectedId);
+  if(!selected) return;
+  const nazwa = readFavoriteNameInput(selected.nazwa);
+  if(nazwa === selected.nazwa) return;
+  setStatus('zmieniam nazwę…');
+  await favoritesRef.doc(selected.id).update({
+    nazwa,
+    zaktualizowano: firebase.firestore.FieldValue.serverTimestamp()
+  });
+  setStatus('zmieniono nazwę');
+}
+
+// --- Przesuwanie pozycji na liście / Moving an entry on the list ---
+// PL: Zamieniamy miejscami wartości pola `kolejnosc` dwóch sąsiadów. Obie zmiany idą jednym zapisem
+//     wsadowym, więc albo obie wejdą, albo żadna — lista nie może się rozjechać w połowie operacji.
+// EN: We swap the `kolejnosc` values of two neighbours. Both changes go in a single batched write, so
+//     either both apply or neither — the list cannot end up half-updated.
+async function moveFavorite(delta){
+  const selected = findFavorite(favSelectedId);
+  if(!selected) return;
+  const index = favorites.indexOf(selected);
+  const targetIndex = index + delta;
+  if(targetIndex < 0 || targetIndex >= favorites.length) return;
+  const other = favorites[targetIndex];
+  setStatus('zmieniam kolejność…');
+  const batch = db.batch();
+  batch.update(favoritesRef.doc(selected.id), {kolejnosc: other.kolejnosc});
+  batch.update(favoritesRef.doc(other.id), {kolejnosc: selected.kolejnosc});
+  await batch.commit();
+  setStatus('zmieniono kolejność');
+}
+
+async function deleteFavorite(){
+  const selected = findFavorite(favSelectedId);
+  if(!selected) return;
+  if(!confirm(`Usunąć zapisaną wiadomość „${selected.nazwa || '(bez nazwy)'}”?`)) return;
+  setStatus('usuwam ulubioną…');
+  await favoritesRef.doc(selected.id).delete();
+  favSelectedId = '';
+  el.favName.value = '';
+  setStatus('usunięto ulubioną');
+}
+
+function loadSelectedFavorite(){
+  const selected = findFavorite(favSelectedId);
+  if(!selected) return;
+  applyFormState(selected.ustawienia);
+  el.favName.value = selected.nazwa;
+  setStatus(`wczytano: ${selected.nazwa || '(bez nazwy)'}`);
+}
+
+// --- Podpięcie zdarzeń panelu ulubionych / Wiring the favourites panel events ---
+// PL: Każda operacja sieciowa ma własną obsługę błędu, żeby nieudany zapis nie zatrzymał panelu.
+// EN: Every network operation has its own error handling so that a failed write does not stop the panel.
+function wireFavoriteButton(button, action, errorStatus){
+  button.addEventListener('click', ()=>{
+    Promise.resolve()
+      .then(action)
+      .catch(e=>{ console.error(e); setStatus(errorStatus); setFavoriteHint(String(e.message || e)); });
+  });
+}
+
+el.favSelect.addEventListener('change', ()=>{
+  favSelectedId = el.favSelect.value;
+  const selected = findFavorite(favSelectedId);
+  el.favName.value = selected ? selected.nazwa : '';
+  updateFavoriteButtons();
+});
+el.favLoadBtn.addEventListener('click', loadSelectedFavorite);
+wireFavoriteButton(el.favSaveNewBtn, saveFavoriteAsNew, 'BŁĄD zapisu ulubionej');
+wireFavoriteButton(el.favOverwriteBtn, overwriteFavorite, 'BŁĄD nadpisania');
+wireFavoriteButton(el.favRenameBtn, renameFavorite, 'BŁĄD zmiany nazwy');
+wireFavoriteButton(el.favUpBtn, ()=>moveFavorite(-1), 'BŁĄD kolejności');
+wireFavoriteButton(el.favDownBtn, ()=>moveFavorite(1), 'BŁĄD kolejności');
+wireFavoriteButton(el.favDeleteBtn, deleteFavorite, 'BŁĄD usuwania');
+
 el.sendBtn.addEventListener('click',()=>send('message').catch(e=>{setStatus('BŁĄD'); alert(e.message||e);}));
 el.clearMessageBtn.addEventListener('click',()=>{el.message.value=''; el.message.focus();});
 el.restoreDefaultsBtn.addEventListener('click',()=>restoreDefaults(true));
@@ -576,7 +923,7 @@ el.pingBtn.addEventListener('click',()=>ping().catch(e=>{setStatus('BŁĄD ping'
 el.updateDataBtn.addEventListener('click',()=>updateDataFromXlsx());
 
 (async()=>{
-  try{ loadSavedPreviewMode(); await loadManifest(); await preloadManifestFonts(); renderPreview(); setStatus('gotowe'); }
+  try{ loadSavedPreviewMode(); await loadManifest(); await preloadManifestFonts(); renderPreview(); renderFavorites(); subscribeFavorites(); setStatus('gotowe'); }
   catch(e){ setStatus('BŁĄD'); writeImportLog([String(e.message||e)]); alert(e.message||e); }
 })();
 </script>

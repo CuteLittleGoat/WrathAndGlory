@@ -2,7 +2,7 @@
 2. Poprawić brak polskich liter w "Repozytorium"
 3. Sprawdzić efekt Flicker w Infoczytniku
 4. Sprawdzić poprawność pliku AGENTS.md - zwłaszcza punkt 14 (czy lokalizacje są nadal aktualne?)
-5. Zmodyfikować plik Infoczytnik/GM.html dodając obsługę list ulubionych:
+5. [WYKONANE w plikach testowych — GM.html do ręcznej aktualizacji] Zmodyfikować plik Infoczytnik/GM.html dodając obsługę list ulubionych:
    a. Musi być lista ulubionych
    b. Lista musi być zapisywana w Firebase
    c. Użytkownik musi mieć opcję edycji list ulubionych (nazwy, kolejność na liście, itd)

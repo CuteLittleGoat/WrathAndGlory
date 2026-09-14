@@ -99,6 +99,8 @@ Jeżeli wiadomość się nie pojawia, odśwież oba ekrany i wyślij ją ponowni
 | `Wyczyść komunikat` | Czyści pole wpisywania tekstu w panelu GM. |
 | `Przywróć domyślne` | Przywraca domyślne ustawienia panelu. |
 | `Aktualizuj dane z XLSX` | Odświeża dane źródłowe modułu z przygotowanego manifestu. |
+| `Wczytaj` | Wypełnia formularz zaznaczoną zapisaną wiadomością. Niczego nie wysyła. |
+| `Zapisz jako nową` | Zapisuje bieżące ustawienia jako nową pozycję na liście ulubionych. |
 
 ## Pole komunikatu
 
@@ -245,6 +247,52 @@ Użyj jej przed sesją albo podczas testów, jeżeli zasoby zostały zmienione.
 7. Zmieniaj tło i logo przy zmianie rodzaju transmisji.
 8. Przy dłuższych tekstach wyłącz mocne efekty, które utrudniają czytanie.
 
+## Ulubione wiadomości
+
+To jest odpowiedź na najczęstszy kłopot przy stole: ustawianie tła, loga, fontu, kolorów i rozmiarów
+w trakcie gry zajmuje czas i rozprasza. Panel GM pozwala przygotować kilka gotowych wiadomości
+wcześniej, a przy stole tylko je wybrać.
+
+**Najważniejsze na początek:** dopóki niczego nie wybierzesz z listy, panel działa dokładnie tak jak
+dotąd. Pierwsza pozycja na liście to „— bieżąca wiadomość (bez zapisu) —" i jest wybrana od początku.
+Przycisk `Wyślij` zawsze wysyła to, co widzisz w formularzu, i nigdy sam niczego nie zapisuje do
+ulubionych.
+
+Jak przygotować wiadomość przed sesją:
+
+1. Ustaw wszystko tak, jak ma wyglądać: tło, logo, kolor logo, font, kolory, rozmiary, fillery
+   i treść komunikatu.
+2. Wpisz nazwę w polu `Nazwa zapisu` — na przykład „Wezwanie Inkwizycji".
+3. Naciśnij `Zapisz jako nową`. Pozycja pojawi się na liście.
+4. Powtórz dla kolejnych wiadomości.
+
+Jak użyć przygotowanej wiadomości przy stole:
+
+1. Wybierz ją z listy `Ulubione wiadomości`.
+2. Naciśnij `Wczytaj`. Cały formularz wypełni się tak, jak w chwili zapisu — **nic jeszcze nie idzie
+   na ekran graczy**.
+3. Jeżeli chcesz, popraw treść albo cokolwiek innego.
+4. Naciśnij `Wyślij`.
+
+Co robią pozostałe przyciski:
+
+| Przycisk | Działanie |
+| --- | --- |
+| `Wczytaj` | Wypełnia formularz zaznaczonym zapisem. Niczego nie wysyła graczom. |
+| `Zapisz jako nową` | Dodaje nową pozycję na koniec listy, z bieżącym stanem formularza. |
+| `Nadpisz zaznaczoną` | Zapisuje bieżący stan formularza pod zaznaczoną pozycją. Nazwa i miejsce na liście zostają bez zmian. |
+| `Zmień nazwę` | Nadaje zaznaczonej pozycji nazwę wpisaną w polu `Nazwa zapisu`. |
+| `W górę` / `W dół` | Przesuwa zaznaczoną pozycję na liście. |
+| `Usuń` | Kasuje zaznaczoną pozycję. Pojawi się pytanie o potwierdzenie. |
+
+Zapisy trzymane są w bazie, nie w przeglądarce, więc zobaczysz je także na innym komputerze i po
+wyczyszczeniu danych przeglądarki. Lista odświeża się sama — jeżeli masz panel otwarty w dwóch
+oknach, zmiana w jednym pojawi się w drugim.
+
+Jeżeli po zapisaniu wiadomości zaktualizujesz dane przyciskiem `Aktualizuj dane z XLSX` i zmienią się
+pliki tła albo loga, stare zapisy nadal działają. Gdyby jakaś pozycja z listy przestała istnieć, przy
+wczytaniu zostanie wybrana pierwsza dostępna.
+
 ## Typowe problemy i co zrobić
 
 | Problem | Możliwa przyczyna | Co zrobić |
@@ -257,6 +305,8 @@ Użyj jej przed sesją albo podczas testów, jeżeli zasoby zostały zmienione.
 | Wygląd różni się na projektorze | Inna rozdzielczość albo skalowanie przeglądarki. | Przetestuj ekran przed sesją i używaj krótszych tekstów. |
 | Panel nie reaguje po długim czasie | Strona lub połączenie mogły się zawiesić. | Odśwież panel GM i ekran graczy. |
 | Zasób z listy nie wygląda poprawnie | Dane źródłowe mogły być nieaktualne. | Użyj `Aktualizuj dane z XLSX` przed sesją albo zgłoś adminowi. |
+| Lista ulubionych jest pusta albo pokazuje błąd | Brak połączenia z bazą. | Odśwież panel. Wysyłanie wiadomości działa niezależnie od listy ulubionych. |
+| Nacisnąłem `Wczytaj`, a na ekranie graczy nic się nie zmieniło | Tak ma być — wczytanie tylko wypełnia formularz. | Naciśnij `Wyślij`. |
 
 ## Krótki workflow podczas sesji
 
@@ -373,6 +423,8 @@ If the message does not appear, refresh both screens and send it again.
 | `Clear message` | Clears the text input in the GM panel. |
 | `Restore defaults` | Restores default panel settings. |
 | `Update data from XLSX` | Refreshes module source data from the prepared manifest. |
+| `Wczytaj` (load) | Fills the form from the selected saved message. Sends nothing. |
+| `Zapisz jako nową` (save as new) | Saves the current settings as a new favourites entry. |
 
 ## Message field
 
@@ -519,6 +571,52 @@ Use it before a session or during tests if assets have changed.
 7. Change background and logo when the type of transmission changes.
 8. For longer texts, disable strong effects that make reading harder.
 
+## Favourite messages
+
+This answers the most common nuisance at the table: setting the background, logo, font, colours and
+sizes during play takes time and breaks the flow. The GM panel lets you prepare several ready
+messages in advance and simply pick one at the table.
+
+**The most important thing first:** as long as you select nothing from the list, the panel works
+exactly as it did before. The first list entry is "— bieżąca wiadomość (bez zapisu) —" (current
+message, not saved) and it is selected from the start. The `Send` button always sends what you see in
+the form, and never saves anything to favourites on its own.
+
+How to prepare a message before a session:
+
+1. Set everything the way it should look: background, logo, logo colour, font, colours, sizes,
+   fillers and the message text.
+2. Type a name in the `Nazwa zapisu` (entry name) field — for example "Inquisition summons".
+3. Press `Zapisz jako nową` (save as new). The entry appears on the list.
+4. Repeat for further messages.
+
+How to use a prepared message at the table:
+
+1. Pick it from the `Ulubione wiadomości` (favourite messages) list.
+2. Press `Wczytaj` (load). The whole form fills in exactly as it was when saved — **nothing goes to
+   the player screen yet**.
+3. Adjust the text or anything else if you want to.
+4. Press `Wyślij` (send).
+
+What the remaining buttons do:
+
+| Button | Action |
+| --- | --- |
+| `Wczytaj` (load) | Fills the form from the selected entry. Sends nothing to the players. |
+| `Zapisz jako nową` (save as new) | Adds a new entry at the end of the list with the current form state. |
+| `Nadpisz zaznaczoną` (overwrite selected) | Stores the current form state under the selected entry. Its name and place on the list stay unchanged. |
+| `Zmień nazwę` (rename) | Gives the selected entry the name typed in the entry name field. |
+| `W górę` / `W dół` (up / down) | Moves the selected entry on the list. |
+| `Usuń` (delete) | Removes the selected entry. A confirmation is shown. |
+
+Entries are kept in the database, not in the browser, so you will see them on another computer too
+and after clearing browser data. The list refreshes itself — if you have the panel open in two
+windows, a change in one shows up in the other.
+
+If you update the data with `Aktualizuj dane z XLSX` after saving messages and the background or logo
+files change, the old entries still work. Should an item from a list no longer exist, the first
+available one is picked on load.
+
 ## Common problems and what to do
 
 | Problem | Possible cause | What to do |
@@ -531,6 +629,8 @@ Use it before a session or during tests if assets have changed.
 | Appearance differs on projector | Different resolution or browser scaling. | Test the screen before play and use shorter texts. |
 | Panel stops responding after a long time | Page or connection may have stalled. | Refresh GM panel and player screen. |
 | A listed asset looks wrong | Source data may be outdated. | Use `Update data from XLSX` before play or contact admin. |
+| The favourites list is empty or shows an error | No database connection. | Refresh the panel. Sending messages works independently of the favourites list. |
+| I pressed `Wczytaj` (load) and nothing changed on the player screen | That is intended — loading only fills the form. | Press `Wyślij` (send). |
 
 ## Quick session workflow
 

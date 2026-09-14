@@ -931,3 +931,34 @@ exactly the same as they did without App Check**:
 
 Verified by measurement: screenshots of all three modules at 1440 × 900 px before and after the
 change are byte-identical — including the case where the reCAPTCHA library is blocked.
+
+## Infoczytnik — panel GM: sekcja „Ulubione wiadomości"
+
+Sekcja stoi pod rzędem przycisków wysyłki, a nad polem `Log importu`, i korzysta wyłącznie ze
+zmiennych oraz klas już obecnych w panelu — nie wprowadza nowych kolorów ani fontów.
+
+- pierwszy wiersz (`.favRow`) to elastyczny układ z odstępem 10 px: lista wyboru zajmuje dwa razy
+  więcej miejsca niż pole nazwy (`flex: 2 1 240px` wobec `flex: 1 1 180px`), a przy wąskim ekranie
+  pole nazwy schodzi pod listę;
+- drugi wiersz to zwykły `.btnrow` z dodatkową klasą `.favBtnRow`, która zmniejsza minimalną
+  szerokość przycisku ze 160 px do 130 px — siedem przycisków mieści się wtedy w dwóch rzędach na
+  komputerze zamiast w trzech;
+- przycisk `Usuń` używa istniejącej klasy `warn` (czerwonawy gradient), pozostałe są neutralne;
+- podpowiedź pod przyciskami to istniejąca klasa `.small` w kolorze `--muted`;
+- przyciski nieczynne (brak zaznaczonej pozycji) korzystają z domyślnego wyglądu `:disabled`
+  przeglądarki — nie ma dla nich osobnej reguły.
+
+## Infoczytnik — GM panel: the "Ulubione wiadomości" section
+
+The section sits below the send button row and above the `Log importu` field, and uses only
+variables and classes already present in the panel — it introduces no new colours or fonts.
+
+- the first row (`.favRow`) is a flexible layout with a 10 px gap: the select takes twice the space
+  of the name field (`flex: 2 1 240px` against `flex: 1 1 180px`), and on a narrow screen the name
+  field drops below the select;
+- the second row is a plain `.btnrow` with an extra `.favBtnRow` class that lowers the minimum button
+  width from 160 px to 130 px — seven buttons then fit in two rows on a computer instead of three;
+- the `Usuń` button uses the existing `warn` class (reddish gradient), the rest are neutral;
+- the hint below the buttons uses the existing `.small` class in the `--muted` colour;
+- disabled buttons (no entry selected) use the browser's default `:disabled` look — there is no
+  separate rule for them.
