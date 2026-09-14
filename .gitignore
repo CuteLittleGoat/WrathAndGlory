@@ -3,3 +3,7 @@
 # Zawiera pelny katalog plikow chronionych - jego miejsce jest w prywatnym repo AudioRPG
 # It lists the whole protected catalogue - it belongs in the private AudioRPG repository
 Audio/AudioManifest.xlsx
+
+# Pliki podreczne interpretera Pythona, powstaja przy uruchomieniu build_json.py / Python interpreter cache files, created when build_json.py runs
+__pycache__/
+*.pyc

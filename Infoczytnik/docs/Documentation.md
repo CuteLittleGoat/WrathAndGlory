@@ -89,6 +89,14 @@ Moduł nie ma oddzielnego backendu aplikacyjnego. Współdzielony stan między G
 
 Na stronie znajduje się także informacja, że na ekranie Infoczytnika trzeba kliknąć raz ekran, żeby odblokować audio. Jest to wymóg przeglądarek, które blokują automatyczne odtwarzanie dźwięku przed interakcją użytkownika.
 
+### Zachowanie na wąskim ekranie
+
+- siatka `.row` używa zapisu `repeat(auto-fit, minmax(min(200px, 100%), 1fr))`. Człon
+  `min(200px, 100%)` jest konieczny: samo `minmax(200px, 1fr)` nie potrafi zejść poniżej 200 px,
+  więc przy 320 px ekranu kolumna wychodziła poza swój pojemnik o 28 px;
+- `.note code` ma `overflow-wrap: anywhere`. Adres strony jest jednym ciągiem bez spacji i bez tej
+  reguły przeglądarka nie ma gdzie go złamać, więc rozpychał całą stronę.
+
 ## Panel GM — struktura UI
 
 Panel GM zawiera dwie główne kolumny ustawień oraz sekcje akcji.
@@ -618,6 +626,14 @@ The module has no separate application backend. The shared state between the GM 
 - test versions: `GM_test.html`, `Infoczytnik_test.html`.
 
 The page also notes that the player display must be clicked once to unlock audio. This is a browser requirement because browsers block automatic audio playback before user interaction.
+
+### Behavior on a narrow screen
+
+- the `.row` grid uses `repeat(auto-fit, minmax(min(200px, 100%), 1fr))`. The `min(200px, 100%)` part
+  is required: plain `minmax(200px, 1fr)` cannot go below 200 px, so on a 320 px screen the column
+  overflowed its container by 28 px;
+- `.note code` has `overflow-wrap: anywhere`. The page address is a single unbroken string and
+  without this rule the browser has nowhere to break it, so it widened the whole page.
 
 ## GM panel — UI structure
 

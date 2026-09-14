@@ -97,6 +97,11 @@ Overlay można zamknąć:
 - kliknięciem tła poza dialogiem,
 - klawiszem `Escape`.
 
+Siatka kafelków `.actions` używa zapisu `repeat(auto-fit, minmax(min(220px, 100%), 1fr))`. Człon
+`min(220px, 100%)` jest konieczny: samo `minmax(220px, 1fr)` nie potrafi zejść poniżej 220 px, więc
+przy 320 px ekranu kolumna wychodziła poza swój pojemnik o 16 px. Od 360 px w górę oba zapisy dają
+identyczny układ.
+
 ## Widok `KalkulatorXP.html`
 
 `KalkulatorXP.html` służy do szybkiego obliczenia kosztu PD między wartością aktualną i docelową.
@@ -622,6 +627,11 @@ The overlay can be closed by:
 - `Zamknij` button,
 - clicking the background outside the dialog,
 - pressing `Escape`.
+
+The `.actions` tile grid uses `repeat(auto-fit, minmax(min(220px, 100%), 1fr))`. The
+`min(220px, 100%)` part is required: plain `minmax(220px, 1fr)` cannot go below 220 px, so on
+a 320 px screen the column overflowed its container by 16 px. From 360 px up both forms produce an
+identical layout.
 
 ## `KalkulatorXP.html` view
 

@@ -422,7 +422,8 @@ let currentLanguage = "pl";
 | Zakres pól | Wpisz `0`, liczbę ujemną albo tekst i opuść pole. | Pole zostaje ustawione na wartość z zakresu, minimum `1`. |
 | Maksimum pól | Wpisz wartość większą niż `99`. | Pole zostaje ustawione na `99`. |
 | Synchronizacja Furii | Ustaw `Pula Kości = 2`, `Ilość Kości Furii = 9`. | Liczba Kości Furii spada do `2`. |
-| Zmiana języka | Zmień język w selektorze. | Teksty zmieniają język, wynik zostaje wyczyszczony. |
+| Ukryty przełącznik | Otwórz moduł. | Selektor języka nie jest widoczny — działa klasa `language-switcher--hidden`. |
+| Zmiana języka | Usuń klasę `language-switcher--hidden` z `#languageSelect` i zmień język w selektorze. | Selektor jest widoczny, teksty zmieniają język, wynik zostaje wyczyszczony. |
 | Kości czerwone | Ustaw kilka Kości Furii. | Pierwsze kości w puli są czerwone. |
 | Przycisk strony głównej | Kliknij `Strona Główna`. | Przeglądarka otwiera `../Main/index.html`. |
 
@@ -476,7 +477,7 @@ Interface language is selected through `#languageSelect`.
 
 | File | Role |
 | --- | --- |
-| `DiceRoller/index.html` | View structure: language selector, return button, fields, roll button, and results. |
+| `DiceRoller/index.html` | View structure: hidden language selector, return button, fields, roll button, and results. |
 | `DiceRoller/style.css` | Terminal theme, layout, field styles, button styles, dice styles, animation, and result panel. |
 | `DiceRoller/script.js` | Constants, translations, validation, rolling, dice rendering, result logic, and event listeners. |
 | `DiceRoller/docs/README.md` | PL/EN user guide. |
@@ -671,6 +672,7 @@ The result is limited by both the number of all sixes and the point margin above
 | Field range | Enter `0`, a negative number, or text and leave the field. | Field is set to a valid value, minimum `1`. |
 | Field maximum | Enter a value greater than `99`. | Field is set to `99`. |
 | Wrath synchronization | Set `Dice Pool = 2`, `Number of Wrath Dice = 9`. | Wrath Dice count drops to `2`. |
-| Language change | Change language in the selector. | Text changes language and result is cleared. |
+| Hidden selector | Open the module. | The language selector is not visible — `language-switcher--hidden` is in effect. |
+| Language change | Remove `language-switcher--hidden` from `#languageSelect` and change language in the selector. | The selector is visible, text changes language and result is cleared. |
 | Red dice | Set multiple Wrath Dice. | First dice in the pool are red. |
 | Main page button | Click `Main Page`. | Browser opens `../Main/index.html`. |
