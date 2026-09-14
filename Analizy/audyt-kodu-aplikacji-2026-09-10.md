@@ -13,7 +13,7 @@
 
 | | |
 |---|---|
-| **Data analizy** | 10 września 2026 · **uzupełnione 13–14 września** o Twoje odpowiedzi na pytania, prawdziwe reguły Firebase, sprostowanie rozdz. 9.2 oraz decyzje wykonawcze (rozdz. 12.4) |
+| **Data analizy** | 10 września 2026 · **uzupełnione 13–14 września** o odpowiedzi na pytania, prawdziwe reguły Firebase, dwa sprostowania (rozdz. 9.2 i 9.8) oraz decyzje wykonawcze (rozdz. 12.3–12.4) |
 | **Temat** | Audyt kodu: błędy, martwy kod, pozostałości po przeróbkach, duplikacja, bezpieczeństwo bazy danych |
 | **Zakres** | Wszystkie moduły: `Main`, `DataVault`, `GeneratorNPC`, `Kalkulator`, `DiceRoller`, `GeneratorNazw`, `Infoczytnik`, `Audio`, `shared/` |
 | **Poza zakresem** | `Main/Gilead.html` i `Main/Galaktyka.html` — pliki powstały poza tym projektem i decyzją właściciela repozytorium nie podlegają analizie. `WebView_FCM_Cloudflare_Worker/` (folder chroniony przed edycją wg `AGENTS.md` §16), `Kalkulator/Old/`, `WebView_FCM_Cloudflare_Worker/Archiwalne/`. Literówki w danych źródłowych (`DoZrobienia.md` poz. 2) — poprawiane ręcznie w `Repozytorium.xlsx`, patrz rozdz. 8 |
@@ -1078,14 +1078,51 @@ W `Karty` kod był już przygotowany. Tutaj **nie ma jeszcze żadnej obsługi Ap
 
 | Moduł | Plik | Sposób ładowania Firebase |
 |---|---|---|
-| DataVault | `shared/firebase-data-loader.js` | moduł ES, wersja 12.6.0 |
-| GeneratorNPC | `GeneratorNPC/index.html` | moduł ES, wersja 12.6.0 |
-| Audio | `Audio/index.html` | moduł ES, wersja 12.6.0 |
-| Infoczytnik | `Infoczytnik/GM_test.html`, `Infoczytnik_test.html` | wersja zgodnościowa (compat) 8.x |
-| Kalkulator — Prosty Kreator | `Kalkulator/TworzeniePostaci.html` | wersja zgodnościowa 8.10.1 |
-| Kalkulator — Zaawansowany Kreator | `Kalkulator/TworzeniePostaci_v2-firebase.js` | wersja zgodnościowa 8.10.1 |
+| DataVault | `shared/firebase-data-loader.js` | moduł ES, wersja **12.6.0** |
+| GeneratorNPC | `GeneratorNPC/index.html` | moduł ES, wersja **12.6.0** |
+| Audio | `Audio/index.html` | moduł ES, wersja **12.6.0** |
+| Infoczytnik | `Infoczytnik/GM_test.html`, `Infoczytnik/Infoczytnik_test.html` | zgodnościowa (compat) **9.6.8** |
+| Kalkulator — Prosty Kreator | `Kalkulator/TworzeniePostaci.html` | zgodnościowa **8.10.1** |
+| Kalkulator — Zaawansowany Kreator | `Kalkulator/TworzeniePostaci_v2-firebase.js` | zgodnościowa **8.10.1** (ładowana dynamicznie w `ensureFirebase`) |
 
-> **Uwaga techniczna, ważna dla wyceny.** Cztery moduły używają Firebase w wersji zgodnościowej **8.10.1**, a trzy w nowoczesnej **12.6.0**. Obsługa App Check wygląda w nich inaczej i trzeba ją napisać dwa razy, w dwóch odmianach. To warto uwzględnić w planowaniu — a przy okazji rozważyć ujednolicenie wersji Firebase w całej aplikacji, bo dziś przeglądarka pobiera dwie różne generacje tej samej biblioteki.
+#### 🔺 Sprostowanie z 14 września — wersji są trzy, nie dwie, i jedna z nich blokuje App Check
+
+W pierwszej wersji napisałem, że „cztery moduły używają 8.10.1, a trzy 12.6.0" i że obsługę App Check trzeba napisać „dwa razy, w dwóch odmianach". **Obie te rzeczy były nieprawdziwe.** Policzyłem odwołania do Firebase w całym repozytorium:
+
+| Wersja | Ile odwołań | Gdzie |
+|---|---:|---|
+| 9.6.8 (compat) | 14 | Infoczytnik — wszystkie warianty plików |
+| 12.6.0 (modularna) | 9 | DataVault, GeneratorNPC, Audio |
+| 8.10.1 (compat) | 4 | oba Kreatory Postaci |
+
+Czyli **równolegle działają trzy generacje tej samej biblioteki**, a nie dwie.
+
+**Rzecz istotniejsza: klucze, które utworzyłeś, to reCAPTCHA _Enterprise_, a nie reCAPTCHA v3.** Nie każda wersja Firebase to obsługuje. Pobrałem biblioteki z CDN Google i sprawdziłem je w przeglądarce — nie na podstawie dokumentacji, tylko realnym uruchomieniem:
+
+| Wersja Firebase | `ReCaptchaEnterpriseProvider` | API używane dziś przez Kreatory<br>(`initializeApp`, `firestore()`, `collection().doc()`, `.set()`, `.get()`, `FieldValue.serverTimestamp()`) |
+|---|:---:|:---:|
+| **8.10.1** | ❌ **nie istnieje** | ✅ wszystko obecne |
+| **9.6.8** | ✅ jest, dostawca tworzy się poprawnie | ✅ wszystko obecne |
+| **12.6.0** | ✅ jest, dostawca tworzy się poprawnie | ✅ wszystko obecne |
+
+W pliku `firebase-app-check.js` w wersji 8.10.1 słowo „enterprise" **nie występuje ani razu** — ta wersja zna wyłącznie reCAPTCHA v3.
+
+**Co z tego wynika:**
+
+- **Infoczytnik nie jest problemem.** Jest na 9.6.8, które obsługuje Enterprise. Wystarczy dołożyć `firebase-app-check-compat.js` w tej samej wersji — żadnego podnoszenia biblioteki.
+- **Problem dotyczy dwóch plików, nie czterech:** `Kalkulator/TworzeniePostaci.html` i `Kalkulator/TworzeniePostaci_v2-firebase.js`. W nich **nie da się** włączyć App Check bez podniesienia wersji.
+- **Podniesienie jest mniejsze, niż się wydaje.** Oba pliki używają dokładnie sześciu elementów API i wszystkie sześć istnieje w 9.6.8 i 12.6.0 — sprawdzone uruchomieniem, łącznie z łańcuchem `collection().doc()` i metodami `.get()`/`.set()`.
+
+**Do rozstrzygnięcia przed pracą w kodzie — dwa warianty:**
+
+| | Cel podniesienia | Za | Przeciw |
+|---|---|---|---|
+| **W1** | 8.10.1 → **9.6.8** | Najmniejszy możliwy skok. Ta wersja **jest już używana w tej aplikacji** (Infoczytnik), więc jest sprawdzona w tym kodzie. Repozytorium schodzi z trzech generacji do dwóch | Nie rozwiązuje docelowo pozycji D3 (ujednolicenie wersji) |
+| **W2** | 8.10.1 → **12.6.0** | Repozytorium schodzi do jednej generacji compat + jednej modularnej; zamyka D3 przy okazji | Większy skok wersji naraz, więcej do sprawdzenia w Kreatorach |
+
+*Rekomendacja: **W1**.* Priorytetem jest teraz uruchomienie App Check, a nie porządki w wersjach — a 9.6.8 to jedyny wariant, w którym podniesienie idzie na wersję **już działającą w tej aplikacji**. Ujednolicenie do 12.6.0 warto zrobić osobno, jako pozycję D3, kiedy App Check będzie już działać i będzie się na czym oprzeć przy porównaniu.
+
+> **Wpływ na wycenę.** Odmiany kodu są **dwie** (modularna i compat), tak jak pisałem — ale dochodzi do nich **podniesienie wersji w dwóch plikach Kreatorów**, czego nie przewidziałem. To jest praca do sprawdzenia w przeglądarce, nie do „dopisania kilku linii".
 
 #### Różnica 5 — Infoczytnik ma własną zasadę pracy z plikami
 
@@ -1169,6 +1206,14 @@ Zmiany wobec dzisiejszego stanu, poza samym App Check:
 > **Uwaga o kolejności zawężania.** Zawężenie reguł można zrobić **od razu, przed App Check** — samo w sobie niczego nie psuje, bo aplikacja i tak korzysta wyłącznie z tych trzech dokumentów. Dopiero dopisanie `request.app != null` musi poczekać na kroki 1–5 poniżej. Jeżeli chcesz zmniejszyć ryzyko już dziś, jednym ruchem: zamień `{document=**}` na konkretne nazwy dokumentów i skasuj `DS2/progress`, zostawiając na razie `if true`.
 
 #### 🔴 Kolejność jest krytyczna
+
+> **To ostrzeżenie potwierdziło się w praktyce 14 września.** Reguły z warunkiem `request.app != null` zostały wgrane do obu projektów, zanim kod zaczął wysyłać znaczniki App Check. Skutek był natychmiastowy i dokładnie taki, jak opisany niżej: **wszystkie pięć dokumentów zaczęło zwracać `403`** — Infoczytnik (panel GM i ekran gracza), oba Kreatory Postaci, ulubione GeneratorNPC i ustawienia Audio przestały działać. Jedynym modułem, który działał dalej, był **DataVault**, bo czyta z Realtime Database, której te reguły nie obejmują.
+>
+> Naprawa zajęła jedno kliknięcie — przywrócenie poprzedniej wersji z historii reguł w Firebase Console — i po nim wszystkie dokumenty wróciły do `200`.
+>
+> **Dwa wnioski warte zapamiętania.** Po pierwsze: *wymuszanie (Enforce) nie ma z tym nic wspólnego* — przełącznik był wyłączony, a reguły i tak blokowały, bo `request.app` jest pusty zawsze wtedy, gdy zapytanie nie niesie znacznika. Sama reguła **jest** wymuszaniem. Po drugie: historia reguł w Firebase Console działa i jest realnym hamulcem bezpieczeństwa — warto wiedzieć, gdzie jest, **zanim** będzie potrzebna.
+
+
 
 To jest najważniejszy akapit w tym rozdziale.
 
@@ -1305,7 +1350,9 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 | C2 | ✅ **Zrobione 13 września** — dwa klucze reCAPTCHA Enterprise utworzone dla domeny `cutelittlegoat.github.io` | `WrathAndGlory-DataSlate`, `WrathAndGlory-AudioRPG` |
 | C3 | ✅ **Zrobione 13 września** — po jednej aplikacji webowej zarejestrowanej w App Check w każdym projekcie, status *Registered* | zostaje sprawdzić TTL `1 days` |
 | **C3a** | **Wgrać zawężone reguły — nadal z `if true`** (konkretne ścieżki zamiast całych kolekcji, bez `DS2/progress`, z gotowym miejscem na listy ulubionych Infoczytnika) | **do zrobienia od razu**, nie wymaga kodu; gotowy tekst: instrukcja rozdz. 4a |
-| C4 | Dodać inicjalizację App Check w sześciu modułach (dwie odmiany: nowoczesna i zgodnościowa) | rozdz. 9.8, różnica 4 — **to jest teraz ścieżka krytyczna** |
+| C4 | Dodać inicjalizację App Check w trzech modułach na SDK 12.6.0 (DataVault, GeneratorNPC, Audio) | rozdz. 9.8, różnica 4 — **to jest teraz ścieżka krytyczna** |
+| C4a | Dodać inicjalizację App Check w Infoczytniku (compat 9.6.8 — bez podnoszenia wersji) | tylko pliki `*_test.html` + `INF_VERSION` |
+| C4b | Podnieść Firebase w dwóch plikach Kreatorów Postaci z 8.10.1 i dodać App Check | **wymaga decyzji W1/W2**, rozdz. 9.8, sprostowanie z 14 września |
 | C5 | **Odczekać kilka dni** i obserwować zakładkę APIs | krok, którego nie wolno pominąć |
 | C6 | Włączyć wymuszanie dla Firestore **i** Realtime Database (RTDB tylko w `wh40k-data-slate`) | rozdz. 9.8, różnica 3 |
 | C7 | Uzupełnić reguły o `request.app != null` | dopiero po C6 |
@@ -1316,7 +1363,7 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 |---|---|---|
 | D1 | Wydzielić wspólne funkcje formatujące do `shared/text-format.js` | rozdz. 6.1; wymaga rozstrzygnięcia trzech rozjazdów |
 | D2 | Ujednolicić pliki konfiguracji Firebase (5 plików → 2) | rozdz. 6.2 |
-| D3 | Ujednolicić wersję Firebase (dziś 8.10.1 i 12.6.0 równolegle) | rozdz. 9.8, uwaga techniczna |
+| D3 | Ujednolicić wersję Firebase — dziś **trzy** generacje równolegle: 9.6.8, 12.6.0 i 8.10.1 | rozdz. 9.8, sprostowanie z 14 września. Po wykonaniu C4 zostaną dwie |
 | D4 | Jeden wspólny `ResizeObserver` w DataVault, jak w GeneratorNPC | rozdz. 3.6 |
 | ~~D5~~ | ~~Przejść na typy kolumn w DataVault~~ | **Wykreślone 13 września** — wybrany wariant A, zostajemy przy dzisiejszym opisie kolumn (analiza responsywności, rozdz. 12.8) |
 
@@ -1402,6 +1449,9 @@ Najpierw poprawka zgłoszona przez Ciebie (zawijanie tekstu w GeneratorNPC), a s
 | 12 | Listy ulubionych w Infoczytniku (`DoZrobienia.md` poz. 5) | **Miejsce w bazie przygotowane z góry.** Kolekcja `dataslate_favorites` ma już gotową regułę, więc przy programowaniu tej funkcji nie trzeba wracać do reguł Firestore. Ustalenia dotyczące struktury: instrukcja App Check, rozdz. 4a |
 | 13 | Aplikacja Android `Kozi Przybornik` | Pozostałość po **zamkniętym** projekcie powiadomień push. Nie rejestrujemy jej w App Check ani teraz, ani w przyszłości |
 | 14 | Wariant A / B dla opisu kolumn w DataVault | **Wariant A** — zostajemy przy dzisiejszym rozwiązaniu (analiza responsywności, rozdz. 12.8) |
+| 15 | Zawężone reguły Firestore | **Wgrane 14 września w obu projektach**, na razie z `if true`. Sprawdzone: wszystkie pięć dokumentów odpowiada `200`, kolekcja `dataslate_favorites` czeka gotowa |
+| 16 | Reguły z `request.app != null` | Wgrane przedwcześnie 14 września i **cofnięte** — wyłączyły całą aplikację poza DataVault. Wracamy do nich dopiero po kroku C6. Opis zdarzenia: rozdz. 9.8, „Kolejność jest krytyczna" |
+| 17 | Klucze reCAPTCHA Enterprise | Utworzone w obu projektach. Identyfikatory kluczy (site key) są jawne z założenia i trafią do kodu strony — celowo nie zapisuję ich w plikach analiz, żeby jedynym ich miejscem był kod |
 
 > **Uwaga do punktu 13 z `DoZrobienia.md`.** Zapowiadasz ukrycie przełącznika języka we wszystkich modułach tego repozytorium. Ma to wpływ na dwie pozycje tego audytu: pytanie 3 (komunikat „Brak danych") i rozdz. 5.5 (napisy niezgodne między HTML a tłumaczeniami). Jeżeli w tym repozytorium zostaje wyłącznie polski, to **rozbieżności w tłumaczeniach angielskich przestają być widoczne dla użytkownika** — ale nadal będą widoczne w repozytoriach z wersją demo, gdzie przełącznik ma być domyślnie po angielsku (poz. 13). Czyli: poprawić warto, ale priorytet przenosi się z tego repozytorium na tamte.
 
@@ -1457,9 +1507,13 @@ Wniosek: **nie rejestrujemy jej w App Check — ani teraz, ani później.** Wymu
 - **domknąłem** pytania o `TRIGGER_TOKEN` i o kopię zapasową — oba przestały być zadaniami,
 - **napisałem kompletne reguły** dla obu projektów zamiast szkieletu i dodałem osobną instrukcję krok po kroku dla App Check.
 
-**Otwartych kwestii spornych nie ma.** Wszystkie osiem pytań z tego audytu i wszystkie sześć z analizy responsywności mają odpowiedzi; obie decyzje, które czekały — zawężenie reguł Firestore i wybór wariantu A dla DataVault — są podjęte (rozdz. 12.4). Prace nad kodem mogą się zacząć na Twoje polecenie; najpilniejsza pozycja to **C4** — dopisanie App Check do kodu sześciu modułów, bo bez niego nie da się włączyć wymuszania i baza pozostaje otwarta.
+**Otwartych kwestii spornych nie ma.** Wszystkie osiem pytań z tego audytu i wszystkie sześć z analizy responsywności mają odpowiedzi; obie decyzje, które czekały — zawężenie reguł Firestore i wybór wariantu A dla DataVault — są podjęte (rozdz. 12.4). Zawężone reguły są wgrane w obu projektach.
+
+**Do rozstrzygnięcia przed pracą w kodzie została jedna rzecz techniczna:** czy Firebase w dwóch plikach Kreatorów Postaci podnosimy z 8.10.1 do 9.6.8, czy od razu do 12.6.0 (warianty W1 i W2 w rozdz. 9.8). Bez podniesienia nie da się w nich włączyć App Check, bo 8.10.1 nie zna reCAPTCHA Enterprise.
+
+Najpilniejsza pozycja kodowa to **C4** — App Check w trzech modułach na SDK 12.6.0. Bez niego nie da się włączyć wymuszania, a dopóki wymuszania nie ma, baza pozostaje otwarta dla każdego.
 
 ---
 
-*Analiza wykonana 10 września 2026, uzupełniona 13–14 września o odpowiedzi użytkownika, prawdziwe reguły Firebase, wynik kontrolowanego testu zapisu oraz podjęte decyzje wykonawcze. W kodzie aplikacji nie wprowadzono żadnych zmian.*
+*Analiza wykonana 10 września 2026, uzupełniona 13–14 września o odpowiedzi użytkownika, prawdziwe reguły Firebase, wynik kontrolowanego testu zapisu, sprostowanie dotyczące wersji Firebase oraz podjęte decyzje wykonawcze. W kodzie aplikacji nie wprowadzono żadnych zmian.*
 *Analiza siostrzana: `Analizy/responsywnosc-aplikacji-2026-09-10.html` · Instrukcja wykonawcza: `Analizy/instrukcja-appcheck-2026-09-13.md`*

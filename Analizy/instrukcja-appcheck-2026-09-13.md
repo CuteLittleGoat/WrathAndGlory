@@ -252,6 +252,8 @@ Po zapisaniu przy aplikacji pojawi się status **Registered**. Na tym etapie **n
 
 ## 7. KROK 3 — zmiany w kodzie aplikacji
 
+> ⚠️ **Przeczytaj najpierw sprostowanie na końcu tego rozdziału** — moduły nie są w tej sprawie równe i dwa z nich wymagają dodatkowej pracy.
+
 > ### ⏸️ Ten krok jest na razie WSTRZYMANY
 > Zgodnie z Twoją decyzją nie wprowadzamy jeszcze żadnych zmian w kodzie. Ten rozdział opisuje, co będzie do zrobienia, żebyś wiedział, jaki to zakres pracy — ale **kroki 1 i 2 możesz wykonać już teraz** i nic się nie stanie, jeśli krok 3 poczeka.
 
@@ -276,6 +278,18 @@ Do każdego modułu, który łączy się z Firebase, trzeba dopisać kilka linii
 Klucze witryny trafią do plików konfiguracyjnych: klucz projektu 1 do `shared/firebase-config.js`, klucz projektu 2 do `GeneratorNPC/config/firebase-config.js` i `Audio/config/firebase-config.js`.
 
 ---
+
+> 🔺 **Sprostowanie z 14 września — jeden z modułów wymaga więcej niż dopisania kodu.** Twoje klucze to reCAPTCHA **Enterprise**, a nie reCAPTCHA v3, i nie każda wersja Firebase to obsługuje. Sprawdziłem trzy wersje realnym uruchomieniem w przeglądarce:
+>
+> | Wersja Firebase | Obsługa reCAPTCHA Enterprise | Kto jej używa |
+> |---|:---:|---|
+> | 12.6.0 | ✅ | DataVault, GeneratorNPC, Audio |
+> | 9.6.8 | ✅ | Infoczytnik |
+> | 8.10.1 | ❌ | **oba Kreatory Postaci** |
+>
+> Czyli cztery z sześciu modułów są gotowe na App Check od ręki. **Oba Kreatory Postaci wymagają najpierw podniesienia wersji biblioteki** — bez tego nie da się w nich użyć Twoich kluczy. Sprawdziłem, że całe API, którego te pliki używają, działa tak samo w 9.6.8 i w 12.6.0, więc podniesienie jest wykonalne; wybór wersji i ocena ryzyka są w audycie, rozdz. 9.8, sprostowanie z 14 września.
+>
+> **Dla Ciebie w praktyce:** krok 3 nie jest jednym zadaniem, tylko trzema, i Kreatory Postaci wejdą do obserwacji później niż reszta. Nie włączaj wymuszania (krok 5), dopóki **wszystkie sześć** modułów nie będzie wysyłać znaczników — inaczej Kreatory przestaną działać.
 
 ## 8. KROK 4 — obserwacja (kilka dni)
 
