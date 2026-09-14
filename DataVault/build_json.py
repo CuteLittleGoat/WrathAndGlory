@@ -26,7 +26,18 @@ def replace_polish_quotes(text: str) -> str:
   return text.replace("„", "\"").replace("”", "\"")
 
 def norm(s) -> str:
-  return replace_polish_quotes(re.sub(r"\s+", " ", str(s or "").strip()))
+  """Normalizacja tekstu, wspolna dla wszystkich trzech sciezek generowania danych.
+
+  Ta sama kolejnosc krokow co w DataVault/app.js i DataVault/xlsxCanonicalParser.js:
+  zamiana polskich cudzyslowow, scalenie bialych znakow, przyciecie. Wszystkie trzy musza
+  robic dokladnie to samo, bo z tej funkcji powstaja klucze slownikow _meta.traits i _meta.states.
+
+  Text normalisation shared by all three data-generation paths. The same step order as in
+  DataVault/app.js and DataVault/xlsxCanonicalParser.js: replace Polish quotes, collapse
+  whitespace, trim. All three must behave identically, because this function produces the keys
+  of the _meta.traits and _meta.states dictionaries.
+  """
+  return re.sub(r"\s+", " ", replace_polish_quotes(str(s if s is not None else ""))).strip()
 
 def derive_column_order(header):
   order = []
@@ -221,7 +232,13 @@ def _load_rows_from_xml(z: ZipFile, path: str, shared_strings, styles):
           text = _wrap_with_markers(text, red=True)
         val = text
       elif cell_type == "inlineStr":
-        is_node = cell.find("main:is", ns) or cell
+        # Element ElementTree bez elementow potomnych jest falszywy w kontekscie logicznym, wiec zapis
+        # "a or b" wybieral tu galaz zapasowa takze dla poprawnego, ale pustego wezla <is>.
+        # Od Pythona 3.12 taki zapis zglasza DeprecationWarning.
+        # An ElementTree element without children is falsy, so "a or b" picked the fallback branch even
+        # for a valid but empty <is> node. Since Python 3.12 that form raises a DeprecationWarning.
+        is_found = cell.find("main:is", ns)
+        is_node = is_found if is_found is not None else cell
         text, has_runs = _rich_text_to_string(is_node, ns)
         if is_red_style and not has_runs and "{{RED}}" not in text:
           text = _wrap_with_markers(text, red=True)

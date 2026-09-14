@@ -52,10 +52,11 @@ Moduł ładuje zależności bezpośrednio w HTML:
 - `shared/appcheck-config.js` — klucze witryny App Check dla obu projektów Firebase,
 - `https://www.google.com/recaptcha/enterprise.js` — biblioteka reCAPTCHA Enterprise wczytywana ze znacznikiem `defer`,
 - `shared/firebase-data-loader.js` — modułowy loader Firebase,
-- `app.js` — główna logika DataVault,
-- `xlsx.full.min.js 0.19.3` — opcjonalna/legacy ścieżka SheetJS ładowana na końcu HTML.
+- `app.js` — główna logika DataVault.
 
-`app.js` ma także funkcje awaryjnego doładowania JSZip albo SheetJS z CDN, jeżeli dana biblioteka nie jest dostępna w momencie użycia.
+`app.js` ma także funkcję awaryjnego doładowania JSZip z CDN, jeżeli biblioteka nie jest dostępna
+w momencie użycia. Moduł **nie korzysta z SheetJS** — cały odczyt XLSX idzie przez własny parser
+`xlsxCanonicalParser.js` oparty na JSZip i bezpośrednim czytaniu plików XML pakietu XLSX.
 
 ## Firebase i dane prywatne
 
@@ -345,6 +346,35 @@ Przepływ:
 9. Przeglądarka pobiera `data.json`.
 10. Po krótkim opóźnieniu pobiera `firebase-import.json`.
 11. Widok roboczy jest aktualizowany na podstawie nowych danych.
+
+## Zgodność trzech ścieżek generowania danych
+
+`data.json` powstaje dwiema drogami: przez `DataVault/build_json.py` uruchamiany z wiersza poleceń
+i przez aplikację w przeglądarce (`xlsxCanonicalParser.js` + `buildDataJsonFromSheets()`). Zgodnie
+z `AGENTS.md` §14 obie muszą dawać ten sam wynik, a trzecią ścieżką jest struktura importowana do
+Firebase.
+
+Dwie rzeczy muszą być pilnowane ręcznie, bo język nie wymusi ich sam:
+
+**Kolejność scalania kolumn.** Dla arkuszy `Bronie` i `Bronie Pojazdów` scalane są dwie grupy kolumn:
+`Zasięg 1..3` → `Zasięg` oraz `Cecha 1..N` → `Cechy`. Obie operacje usuwają swoje kolumny źródłowe
+i dopisują scaloną **na końcu** rekordu, więc kolejność wywołań decyduje o kolejności pól w zapisanym
+rekordzie. W obu ścieżkach jest to `mergeTraits(mergeRange(r))`, czyli najpierw zasięg, potem cechy —
+tak jak w `build_json.py`.
+
+**Normalizacja tekstu.** Funkcja `norm()` istnieje w trzech plikach (`app.js`,
+`xlsxCanonicalParser.js`, `build_json.py`) i we wszystkich wykonuje te same kroki w tej samej
+kolejności: zamiana polskich cudzysłowów, scalenie białych znaków, przycięcie. To z niej powstają
+klucze słowników `_meta.traits` i `_meta.states`, więc rozjazd oznaczałby, że kliknięcie tagu cechy
+przestaje odnajdywać jej opis — i to tylko dla niektórych nazw, czyli po cichu.
+
+Dzięki tym dwóm rzeczom sprawdzenie zgodności jest zwykłym porównaniem plików:
+
+```text
+python DataVault/build_json.py Repozytorium.xlsx data-python.json
+# oraz: tryb admina w przeglądarce -> data.json
+# oba pliki muszą być identyczne co do bajtu
+```
 
 ## Kanoniczny parser XLSX
 
@@ -689,10 +719,11 @@ The module loads dependencies directly in HTML:
 - `shared/appcheck-config.js` — App Check site keys for both Firebase projects,
 - `https://www.google.com/recaptcha/enterprise.js` — the reCAPTCHA Enterprise library loaded with `defer`,
 - `shared/firebase-data-loader.js` — Firebase module loader,
-- `app.js` — main DataVault logic,
-- `xlsx.full.min.js 0.19.3` — optional/legacy SheetJS path loaded at the end of HTML.
+- `app.js` — main DataVault logic.
 
-`app.js` also has fallback functions for loading JSZip or SheetJS from CDN if a library is missing at the time of use.
+`app.js` also has a fallback for loading JSZip from a CDN if the library is missing at the time of
+use. The module does **not** use SheetJS — all XLSX reading goes through its own
+`xlsxCanonicalParser.js`, based on JSZip and direct reading of the XLSX package XML files.
 
 ## Firebase and private data
 
@@ -982,6 +1013,35 @@ Flow:
 9. The browser downloads `data.json`.
 10. After a short delay, the browser downloads `firebase-import.json`.
 11. The working view is updated from the new data.
+
+## Consistency of the three data-generation paths
+
+`data.json` is produced two ways: by `DataVault/build_json.py` run from the command line and by the
+application in the browser (`xlsxCanonicalParser.js` + `buildDataJsonFromSheets()`). Under
+`AGENTS.md` §14 both must produce the same result, and the third path is the structure imported into
+Firebase.
+
+Two things have to be watched by hand, because the language will not enforce them:
+
+**The column merge order.** For the `Bronie` and `Bronie Pojazdów` sheets two column groups are
+merged: `Zasięg 1..3` → `Zasięg` and `Cecha 1..N` → `Cechy`. Both operations remove their source
+columns and append the merged one **at the end** of the record, so the call order decides the field
+order in the stored record. In both paths it is `mergeTraits(mergeRange(r))` — range first, then
+traits, as in `build_json.py`.
+
+**Text normalisation.** The `norm()` function exists in three files (`app.js`,
+`xlsxCanonicalParser.js`, `build_json.py`) and all three perform the same steps in the same order:
+replace Polish quotes, collapse whitespace, trim. It produces the keys of the `_meta.traits` and
+`_meta.states` dictionaries, so drift would mean that clicking a trait tag stops finding its
+description — and only for some names, that is, silently.
+
+Because of those two things, checking consistency is a plain file comparison:
+
+```text
+python DataVault/build_json.py Repozytorium.xlsx data-python.json
+# and: admin mode in the browser -> data.json
+# both files must be byte-identical
+```
 
 ## Canonical XLSX parser
 

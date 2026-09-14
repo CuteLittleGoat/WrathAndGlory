@@ -10,11 +10,15 @@
   function qa(node, selector){ return Array.from(node.querySelectorAll(selector)); }
 
   function replacePolishQuotes(text){
-    return String(text || "").replace(/„/g, '"').replace(/”/g, '"');
+    return String(text ?? "").replace(/„/g, '"').replace(/”/g, '"');
   }
 
+  // Ta sama kolejnosc krokow co w DataVault/app.js i DataVault/build_json.py: zamiana polskich
+  // cudzyslowow, scalenie bialych znakow, przyciecie.
+  // The same step order as in DataVault/app.js and DataVault/build_json.py: replace Polish quotes,
+  // collapse whitespace, trim.
   function norm(value){
-    return replacePolishQuotes(String(value ?? "").trim().replace(/\s+/g, " "));
+    return replacePolishQuotes(value).replace(/\s+/g, " ").trim();
   }
 
   function deriveColumnOrder(header){

@@ -295,8 +295,23 @@ const HIDDEN_COLUMNS = new Set(["lp", "stan"]);
 const STATUS_OLD_VALUE = "old";
 
 /* ---------- Utilities ---------- */
+// --- Normalizacja tekstu, wspólna dla wszystkich trzech ścieżek generowania danych / Text normalisation, shared by all three data-generation paths ---
+// PL: Ta sama kolejność kroków co w DataVault/xlsxCanonicalParser.js i w DataVault/build_json.py:
+//     zamiana polskich cudzysłowów, scalenie białych znaków, przycięcie. Wszystkie trzy muszą robić
+//     dokładnie to samo, bo z tej funkcji powstają klucze słowników `_meta.traits` i `_meta.states`.
+//     Gdyby się rozjechały, kliknięcie tagu cechy przestałoby odnajdywać jej opis — ale dopiero dla
+//     tych nazw, które trafią na różnicę, więc błąd byłby cichy i trudny do namierzenia.
+// EN: The same step order as in DataVault/xlsxCanonicalParser.js and DataVault/build_json.py:
+//     replace Polish quotes, collapse whitespace, trim. All three must do exactly the same thing,
+//     because this function produces the keys of the `_meta.traits` and `_meta.states` dictionaries.
+//     Should they drift apart, clicking a trait tag would stop finding its description — but only for
+//     the names that hit the difference, so the fault would be silent and hard to track down.
+function replacePolishQuotes(text){
+  return String(text ?? "").replace(/„/g, '"').replace(/”/g, '"');
+}
+
 function norm(s){
-  return String(s ?? "").replace(/\s+/g, " ").trim().replace(" :", ":");
+  return replacePolishQuotes(s).replace(/\s+/g, " ").trim();
 }
 
 function isHiddenColumn(name){
@@ -898,7 +913,15 @@ function mergeRange(row){
 function transformSheet(name, rows){
   let out = rows.map(stripPrivateFields);
   if (name === "Bronie" || name === "Bronie Pojazdów"){
-    out = out.map(r => mergeRange(mergeTraits(r)));
+    // Kolejnosc scalania musi byc taka sama jak w build_json.py: najpierw zasieg, potem cechy.
+    // Obie operacje usuwaja swoje kolumny zrodlowe i dopisuja scalona na koncu rekordu, wiec kolejnosc
+    // wywolan decyduje o kolejnosci pol w zapisanym rekordzie. Bez tego oba sposoby generowania
+    // data.json daja pliki, ktorych nie da sie porownac zwyklym porownaniem plikow.
+    // The merge order must match build_json.py: range first, then traits. Both operations remove their
+    // source columns and append the merged one at the end of the record, so the call order decides the
+    // field order in the stored record. Without this, the two ways of generating data.json produce files
+    // that cannot be compared with a plain file diff.
+    out = out.map(r => mergeTraits(mergeRange(r)));
   }
   if (name === "Pancerze" || name === "Pojazdy"){
     out = out.map(r => mergeTraits(r));
@@ -1004,7 +1027,7 @@ function buildDataJsonFromSheets(rawSheets, opts = {}){
 
     let processed = rows.map(r => ({...r}));
     if (name === "Bronie" || name === "Bronie Pojazdów"){
-      processed = processed.map(r => mergeRange(mergeTraits(r)));
+      processed = processed.map(r => mergeTraits(mergeRange(r)));
     } else if (name === "Pancerze" || name === "Pojazdy"){
       processed = processed.map(r => mergeTraits(r));
     }
@@ -1014,18 +1037,6 @@ function buildDataJsonFromSheets(rawSheets, opts = {}){
   const resolvedSheetOrder = Array.isArray(sheetOrder) ? sheetOrder : Object.keys(rawSheets);
   const resolvedColumnOrder = columnOrder && typeof columnOrder === "object" ? columnOrder : {};
   return {sheets, _meta:{traits, states, vehicleTraits, vehicleWeaponTraits, vehicleStates, sheetOrder: resolvedSheetOrder, columnOrder: resolvedColumnOrder}};
-}
-
-function ensureSheetJS(cb){
-  if (window.XLSX) return cb();
-  const s = document.createElement("script");
-  s.src = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
-  s.onload = cb;
-  s.onerror = () => {
-    setStatus(translations[currentLanguage].messages.statusXlsxError);
-    logLine("BŁĄD: nie udało się załadować biblioteki XLSX (CDN).", true);
-  };
-  document.head.appendChild(s);
 }
 
 // --- Funkcja pobierająca dowolny plik JSON jako bezpieczny artefakt roboczy / Function that downloads any JSON file as a safe working artifact ---
@@ -1100,145 +1111,6 @@ function validateFirebaseImportObject(firebaseImportObject, originalData){
     throw new Error("firebase-import.json round-trip validation failed");
   }
 }
-
-function isRedColorValue(colorValue){
-  const value = String(colorValue || "").replace(/\s+/g, "").toLowerCase();
-  if (!value) return false;
-  return value === "red"
-    || value === "#f00"
-    || value === "#ff0000"
-    || value === "#ffff0000"
-    || value === "rgb(255,0,0)"
-    || value === "rgba(255,0,0,1)";
-}
-
-function htmlToStyleMarkers(html){
-  if (!html || !String(html).trim()) return "";
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(`<div>${html}</div>`, "text/html");
-  const root = doc.body.firstElementChild;
-  if (!root) return "";
-
-  const chunks = [];
-  const walk = (node, state) => {
-    if (!node) return;
-    if (node.nodeType === Node.TEXT_NODE){
-      const text = node.textContent ?? "";
-      if (!text) return;
-      let marked = text;
-      if (state.red) marked = `{{RED}}${marked}{{/RED}}`;
-      if (state.bold) marked = `{{B}}${marked}{{/B}}`;
-      if (state.italic) marked = `{{I}}${marked}{{/I}}`;
-      if (state.strike) marked = `{{S}}${marked}{{/S}}`;
-      chunks.push(marked);
-      return;
-    }
-    if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-    const tag = node.tagName.toLowerCase();
-    const styleAttr = node.getAttribute("style") || "";
-    const inlineColor = styleAttr.match(/color\s*:\s*([^;]+)/i)?.[1] || "";
-    const hasTextDecorationStrike =
-      /text-decoration(?:-line)?\s*:\s*[^;]*line-through/i.test(styleAttr);
-    const nextState = {
-      bold: state.bold || tag === "b" || tag === "strong",
-      italic: state.italic || tag === "i" || tag === "em",
-      red: state.red || isRedColorValue(inlineColor),
-      strike: state.strike || tag === "s" || tag === "strike" || tag === "del" || hasTextDecorationStrike,
-    };
-
-    if (tag === "br"){
-      chunks.push("\n");
-      return;
-    }
-    for (const child of node.childNodes){
-      walk(child, nextState);
-    }
-  };
-
-  walk(root, {bold: false, italic: false, red: false, strike: false});
-  return chunks.join("");
-}
-
-function isCellStyledRed(cell){
-  const colorCandidates = [
-    cell?.s?.fgColor?.rgb,
-    cell?.s?.font?.color?.rgb,
-    cell?.s?.font?.color?.theme,
-    cell?.s?.font?.color?.indexed,
-    cell?.style?.font?.color?.rgb,
-  ];
-  for (const candidate of colorCandidates){
-    if (isRedColorValue(candidate)){
-      return true;
-    }
-  }
-  return false;
-}
-
-function hasInlineFormattingRuns(html){
-  if (typeof html !== "string" || !html.trim()){
-    return false;
-  }
-  return /<\/?(?:span|font|b|strong|i|em)\b|<br\s*\/?>/i.test(html);
-}
-
-function getCellTextWithMarkers(ws, addr){
-  const cell = ws?.[addr];
-  if (!cell) return "";
-  const styleIsRed = isCellStyledRed(cell);
-
-  if (typeof cell.h === "string" && cell.h.trim()){
-    const withMarkers = htmlToStyleMarkers(cell.h).trim();
-    if (styleIsRed && withMarkers && !withMarkers.includes("{{RED}}") && !hasInlineFormattingRuns(cell.h)){
-      return `{{RED}}${withMarkers}{{/RED}}`;
-    }
-    return withMarkers;
-  }
-  const raw = cell.w ?? cell.v ?? "";
-  const text = String(raw).trim();
-  if (styleIsRed && text && !text.includes("{{RED}}")){
-    return `{{RED}}${text}{{/RED}}`;
-  }
-  return text;
-}
-
-function extractSheetRowsWithFormatting(ws){
-  const ref = ws?.["!ref"];
-  if (!ref){
-    return {header: [], rows: []};
-  }
-  const range = XLSX.utils.decode_range(ref);
-  const headersByColumn = new Map();
-  const header = [];
-
-  for (let c = range.s.c; c <= range.e.c; c += 1){
-    const addr = XLSX.utils.encode_cell({r: range.s.r, c});
-    const key = norm(getCellTextWithMarkers(ws, addr));
-    if (!key) continue;
-    headersByColumn.set(c, key);
-    header.push(key);
-  }
-
-  const rows = [];
-  for (let r = range.s.r + 1; r <= range.e.r; r += 1){
-    const row = {};
-    let hasData = false;
-    for (let c = range.s.c; c <= range.e.c; c += 1){
-      const key = headersByColumn.get(c);
-      if (!key) continue;
-      const addr = XLSX.utils.encode_cell({r, c});
-      const value = getCellTextWithMarkers(ws, addr);
-      if (value !== "") hasData = true;
-      row[key] = value;
-    }
-    if (hasData){
-      rows.push(row);
-    }
-  }
-  return {header, rows};
-}
-
 
 // --- Wybór lokalnego pliku XLSX przez systemowe okno dialogowe / Select local XLSX file through a system file picker ---
 async function pickLocalWorkbookFile(){
