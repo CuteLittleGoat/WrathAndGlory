@@ -310,6 +310,9 @@ wyłącznie sam tekst (`#footerText` w prostym kreatorze), więc obie wersje ję
 `text-size-adjust: none` wyłącza powiększanie drobnego tekstu przez przeglądarki telefonów — bez
 tego linia stałaby się czytelna na telefonie.
 
+W obu kreatorach stopka jest wyrównana do prawej (`text-align: right`), do prawej krawędzi treści
+kontenera `.wrapper`. Kursywa (`font-style: italic`) występuje wyłącznie w kreatorze zaawansowanym.
+
 Zmiana rozmiaru podpisu to zmiana jednej wartości `font-size` w regule `.footer` w obu plikach.
 
 ## Modale
@@ -839,6 +842,9 @@ screen it stays an unreadable smudge. The size lives in CSS while `updateLanguag
 only the text itself (`#footerText` in the simple creator), so both language versions are equally
 small. `text-size-adjust: none` switches off the small-text inflation phone browsers apply — without
 it the line would become readable on a phone.
+
+In both creators the footer is right-aligned (`text-align: right`) to the right content edge of the
+`.wrapper` container. The italic (`font-style: italic`) appears only in the advanced creator.
 
 Changing the credit size means changing a single `font-size` value in the `.footer` rule in both
 files.

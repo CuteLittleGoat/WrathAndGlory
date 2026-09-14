@@ -554,8 +554,11 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
     rozmiar nie zależy od języka.
   - `text-size-adjust: none` jest tu konieczny: bez niego przeglądarki telefonów powiększają małe
     teksty i linia stałaby się czytelna dokładnie tam, gdzie ma pozostać ukryta.
-  - Pozostałe właściwości stopki (kolor `var(--muted)`, kursywa w kreatorze zaawansowanym,
-    `letter-spacing: .08em`, wyrównanie) zostają bez zmian — zmieniony jest tylko rozmiar.
+  - Stopka jest wyrównana do prawej (`text-align: right`) w obu kreatorach, do prawej krawędzi
+    treści kontenera `.wrapper`. Zmierzone przy 1440 px i 390 px: odstęp prawej krawędzi tekstu od
+    prawej krawędzi treści wynosi `0 px` w obu plikach.
+  - Pozostałe właściwości stopki: kolor `var(--muted)`, `letter-spacing: .08em` oraz kursywa,
+    która występuje wyłącznie w kreatorze zaawansowanym.
 
 ---
 
