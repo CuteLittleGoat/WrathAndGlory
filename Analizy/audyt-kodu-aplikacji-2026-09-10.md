@@ -13,7 +13,7 @@
 
 | | |
 |---|---|
-| **Data analizy** | 10 września 2026 · **uzupełnione 13 września** o Twoje odpowiedzi na pytania, prawdziwe reguły Firebase i sprostowanie rozdz. 9.2 |
+| **Data analizy** | 10 września 2026 · **uzupełnione 13–14 września** o Twoje odpowiedzi na pytania, prawdziwe reguły Firebase, sprostowanie rozdz. 9.2 oraz decyzje wykonawcze (rozdz. 12.4) |
 | **Temat** | Audyt kodu: błędy, martwy kod, pozostałości po przeróbkach, duplikacja, bezpieczeństwo bazy danych |
 | **Zakres** | Wszystkie moduły: `Main`, `DataVault`, `GeneratorNPC`, `Kalkulator`, `DiceRoller`, `GeneratorNazw`, `Infoczytnik`, `Audio`, `shared/` |
 | **Poza zakresem** | `Main/Gilead.html` i `Main/Galaktyka.html` — pliki powstały poza tym projektem i decyzją właściciela repozytorium nie podlegają analizie. `WebView_FCM_Cloudflare_Worker/` (folder chroniony przed edycją wg `AGENTS.md` §16), `Kalkulator/Old/`, `WebView_FCM_Cloudflare_Worker/Archiwalne/`. Literówki w danych źródłowych (`DoZrobienia.md` poz. 2) — poprawiane ręcznie w `Repozytorium.xlsx`, patrz rozdz. 8 |
@@ -1066,7 +1066,7 @@ W `Karty` był kłopot z dwiema bliźniaczymi aplikacjami `Karty-Web` i trzeba b
 
 Czyli **rejestrujesz dokładnie dwie aplikacje webowe — po jednej na projekt** — a to automatycznie obejmuje wszystkie sześć modułów. *(Zrobione 13 września — obie mają status „Registered".)*
 
-> **Uzupełnienie z 13 września.** W projekcie `wh40k-data-slate` jest jeszcze **trzecia** aplikacja, ale nie webowa: `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) — Android, z folderu `WebView_FCM_Cloudflare_Worker/`. Nie rejestrujemy jej: klient nie jest zaimplementowany, służy do powiadomień push, a nie do bazy, i wymagałaby innego dostawcy (Play Integrity). Szczegóły i moment, w którym trzeba do tego wrócić: rozdz. 12.4.
+> **Uzupełnienie z 13 września.** W projekcie `wh40k-data-slate` jest jeszcze **trzecia** aplikacja, ale nie webowa: `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) — Android, pozostałość po **zamkniętym projekcie powiadomień push** (`WebView_FCM_Cloudflare_Worker/`). Potwierdziłeś, że projekt nie będzie kontynuowany, więc **nie rejestrujemy jej w App Check ani teraz, ani w przyszłości**. Szczegóły: rozdz. 12.4.
 
 #### Różnica 3 — trzeba objąć także Realtime Database
 
@@ -1111,14 +1111,20 @@ service cloud.firestore {
       return request.app != null;
     }
 
+    // Kanał panelu GM -> ekran Infoczytnika / GM panel -> reader screen channel
+    match /dataslate/current { allow read, write: if zAplikacji(); }
+
+    // Zapisane wiadomości Infoczytnika (listy ulubionych) — miejsce przygotowane
+    // z góry pod DoZrobienia poz. 5, żeby nie wracać tu przy rozbudowie modułu.
+    // Saved reader messages (favourite lists) — reserved in advance so that
+    // building that feature needs no rules change.
+    match /dataslate_favorites/{document=**} { allow read, write: if zAplikacji(); }
+
     // Prosty Kreator Postaci / Simple character creator
     match /character_builder/current { allow read, write: if zAplikacji(); }
 
     // Zaawansowany Kreator Postaci / Advanced character creator
-    match /character_builder/v2      { allow read, write: if zAplikacji(); }
-
-    // Kanał panelu GM -> ekran Infoczytnika / GM panel -> reader screen channel
-    match /dataslate/current         { allow read, write: if zAplikacji(); }
+    match /character_builder/v2 { allow read, write: if zAplikacji(); }
 
     // Wszystko inne pozostaje niedostępne / Everything else stays inaccessible
     match /{document=**} { allow read, write: if false; }
@@ -1155,6 +1161,7 @@ service cloud.firestore {
 Zmiany wobec dzisiejszego stanu, poza samym App Check:
 
 - **`dataslate` zawężone do dokumentu `current`** zamiast całej kolekcji — to jedyny dokument, którego aplikacja używa. Warto zrobić to od razu: mój test zapisu z rozdz. 9.2 utworzył dokument o innej nazwie w tej samej kolekcji właśnie dlatego, że dzisiejsza reguła na to pozwala.
+- **dołożona z góry kolekcja `dataslate_favorites`** na listy ulubionych Infoczytnika (`DoZrobienia.md` poz. 5). Nie istnieje jeszcze, ale reguła już czeka — dzięki temu przy programowaniu tamtej funkcji nie trzeba będzie wracać do reguł ani do konsoli Firebase. Uzasadnienie doboru nazwy i zakresu: rozdz. 4a instrukcji.
 - **`character_builder` zawężone do dwóch konkretnych dokumentów** (`current` i `v2`) zamiast całej kolekcji. Reguła dla `character_builder/test-v2` z pliku w repozytorium nie jest w ogóle wgrana i nie ma po niej śladu w kodzie (rozdz. 8) — nie przenoszę jej.
 - **`DS2/progress` usunięte** — zgodnie z Twoją informacją, że projekt Dark Souls II został zakończony, a kolekcja skasowana. Sprawdziłem: dokument zwraca `404`, więc reguła nie ma już czego chronić.
 - **Realtime Database bez zmian w regułach** — jest zamknięta poprawnie (wymaga zalogowania). Dochodzi jej tylko wymuszanie App Check, i to **wyłącznie w projekcie `wh40k-data-slate`**, bo tylko on ma tę bazę.
@@ -1294,13 +1301,14 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 
 | # | Co | Uwaga |
 |---|---|---|
-| C1 | ✅ **Zrobione** — reguły obu projektów otrzymane 13 września (rozdz. 9.1). Zostaje przeniesienie ich do repozytorium jako kompletnych plików | warunek wstępny spełniony |
-| C2 | Utworzyć dwa klucze reCAPTCHA Enterprise | rozdz. 9.8 |
-| C3 | Zarejestrować po jednej aplikacji webowej w App Check w każdym projekcie, TTL `1 days` | rozdz. 9.8 |
-| C4 | Dodać inicjalizację App Check w sześciu modułach (dwie odmiany: nowoczesna i zgodnościowa) | rozdz. 9.8, różnica 4 |
+| C1 | ✅ **Zrobione 13 września** — reguły obu projektów otrzymane (rozdz. 9.1). Zostaje przeniesienie ich do repozytorium jako kompletnych plików | warunek wstępny spełniony |
+| C2 | ✅ **Zrobione 13 września** — dwa klucze reCAPTCHA Enterprise utworzone dla domeny `cutelittlegoat.github.io` | `WrathAndGlory-DataSlate`, `WrathAndGlory-AudioRPG` |
+| C3 | ✅ **Zrobione 13 września** — po jednej aplikacji webowej zarejestrowanej w App Check w każdym projekcie, status *Registered* | zostaje sprawdzić TTL `1 days` |
+| **C3a** | **Wgrać zawężone reguły — nadal z `if true`** (konkretne ścieżki zamiast całych kolekcji, bez `DS2/progress`, z gotowym miejscem na listy ulubionych Infoczytnika) | **do zrobienia od razu**, nie wymaga kodu; gotowy tekst: instrukcja rozdz. 4a |
+| C4 | Dodać inicjalizację App Check w sześciu modułach (dwie odmiany: nowoczesna i zgodnościowa) | rozdz. 9.8, różnica 4 — **to jest teraz ścieżka krytyczna** |
 | C5 | **Odczekać kilka dni** i obserwować zakładkę APIs | krok, którego nie wolno pominąć |
-| C6 | Włączyć wymuszanie dla Firestore **i** Realtime Database w obu projektach | rozdz. 9.8, różnica 3 |
-| C7 | Wgrać zawężone reguły z `request.app != null` | dopiero po C6 |
+| C6 | Włączyć wymuszanie dla Firestore **i** Realtime Database (RTDB tylko w `wh40k-data-slate`) | rozdz. 9.8, różnica 3 |
+| C7 | Uzupełnić reguły o `request.app != null` | dopiero po C6 |
 
 ### Etap D — porządki architektoniczne (osobny temat)
 
@@ -1310,9 +1318,11 @@ Zmiany, po których nie da się zauważyć różnicy w działaniu.
 | D2 | Ujednolicić pliki konfiguracji Firebase (5 plików → 2) | rozdz. 6.2 |
 | D3 | Ujednolicić wersję Firebase (dziś 8.10.1 i 12.6.0 równolegle) | rozdz. 9.8, uwaga techniczna |
 | D4 | Jeden wspólny `ResizeObserver` w DataVault, jak w GeneratorNPC | rozdz. 3.6 |
-| D5 | Przejść na typy kolumn w DataVault | analiza responsywności, rozdz. 8 — **przed dodatkiem** |
+| ~~D5~~ | ~~Przejść na typy kolumn w DataVault~~ | **Wykreślone 13 września** — wybrany wariant A, zostajemy przy dzisiejszym opisie kolumn (analiza responsywności, rozdz. 12.8) |
 
-**Kolejność względem analizy responsywności.** Etap A tego audytu i etapy 1–3 analizy responsywności są niezależne i można je robić równolegle. Etap B4 warto połączyć z etapem 1 analizy responsywności (ten sam plik). Etap C jest niezależny od wszystkiego i można go zacząć w dowolnym momencie — ale ze względu na krok C5 („odczekać kilka dni") warto zacząć wcześniej niż później.
+**Kolejność względem analizy responsywności.** Etap A tego audytu i etapy 1–3 analizy responsywności są niezależne i można je robić równolegle. Etap B4 warto połączyć z etapem 1 analizy responsywności (ten sam plik). Etap C jest niezależny od wszystkiego.
+
+**Co się zmieniło po 13 września.** Kroki C1–C3 są wykonane, więc **etap C stoi teraz na kroku C4 — dopisaniu App Check do kodu sześciu modułów.** Dopóki to nie powstanie, nie da się przejść do obserwacji (C5) ani do wymuszania (C6), a dopiero wymuszanie faktycznie zamyka bazę. Ze względu na kilkudniową przerwę w kroku C5 **C4 warto zrobić jako pierwszą pozycję kodową w ogóle** — wtedy obserwacja biegnie w tle, podczas gdy realizowane są etapy A, B i poprawki responsywności. Krok C3a (zawężenie reguł) nie wymaga kodu i można go wykonać natychmiast.
 
 ---
 
@@ -1389,10 +1399,13 @@ Najpierw poprawka zgłoszona przez Ciebie (zawijanie tekstu w GeneratorNPC), a s
 | 9 | `AGENTS.md` — dawna zasada 12 | **Usunięta.** Nie dopisuję już do plików analiz sekcji „Zmiany wykonane w kodzie". Usunięta też zasada o zapisywaniu plików „w rozmowie" |
 | 10 | Instrukcja App Check | Utworzona jako osobny plik: `Analizy/instrukcja-appcheck-2026-09-13.md` — krok po kroku, dla obu projektów, bo w obu kontach zakładka App Check jest pusta |
 | 11 | `DoZrobienia.md` | Rozszerzony o punkty 4–14, w tym listy ulubionych w Infoczytniku (poz. 5), audyt trzech repozytoriów z wersją demo (poz. 6 i 8) oraz ukrycie przełącznika języka (poz. 13) |
+| 12 | Listy ulubionych w Infoczytniku (`DoZrobienia.md` poz. 5) | **Miejsce w bazie przygotowane z góry.** Kolekcja `dataslate_favorites` ma już gotową regułę, więc przy programowaniu tej funkcji nie trzeba wracać do reguł Firestore. Ustalenia dotyczące struktury: instrukcja App Check, rozdz. 4a |
+| 13 | Aplikacja Android `Kozi Przybornik` | Pozostałość po **zamkniętym** projekcie powiadomień push. Nie rejestrujemy jej w App Check ani teraz, ani w przyszłości |
+| 14 | Wariant A / B dla opisu kolumn w DataVault | **Wariant A** — zostajemy przy dzisiejszym rozwiązaniu (analiza responsywności, rozdz. 12.8) |
 
 > **Uwaga do punktu 13 z `DoZrobienia.md`.** Zapowiadasz ukrycie przełącznika języka we wszystkich modułach tego repozytorium. Ma to wpływ na dwie pozycje tego audytu: pytanie 3 (komunikat „Brak danych") i rozdz. 5.5 (napisy niezgodne między HTML a tłumaczeniami). Jeżeli w tym repozytorium zostaje wyłącznie polski, to **rozbieżności w tłumaczeniach angielskich przestają być widoczne dla użytkownika** — ale nadal będą widoczne w repozytoriach z wersją demo, gdzie przełącznik ma być domyślnie po angielsku (poz. 13). Czyli: poprawić warto, ale priorytet przenosi się z tego repozytorium na tamte.
 
-### 12.4. Stan na 13 września — po Twoich działaniach w Firebase
+### 12.4. Stan na 13 września — po Twoich działaniach i decyzjach
 
 **Zrobione przez Ciebie:**
 
@@ -1405,17 +1418,13 @@ Czyli **kroki 1 i 2 z instrukcji są za nami.** Znaczniki App Check nie są jesz
 
 **Rozstrzygnięte:** reguły Firestore **zawężamy od razu**, bez czekania na App Check. Gotowy tekst do wklejenia dla obu projektów jest w `Analizy/instrukcja-appcheck-2026-09-13.md`, rozdz. 4a. Zawężenie nie wymaga żadnych zmian w kodzie i nie może niczego zepsuć — sprawdziłem w kodzie, że aplikacja korzysta z dokładnie pięciu dokumentów: `dataslate/current`, `character_builder/current`, `character_builder/v2`, `generatorNpc/favorites`, `audio/favorites`.
 
-**Nowe ustalenie — druga aplikacja w projekcie `wh40k-data-slate`.** Na liście *Apps* poza zarejestrowaną aplikacją webową jest `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) — aplikacja **Android** z folderu `WebView_FCM_Cloudflare_Worker/`, nierejestrowana w App Check. W pierwszej wersji tego audytu napisałem „po jednej aplikacji webowej na projekt" i to nadal jest prawdą, ale przeoczyłem, że obok jest aplikacja mobilna. Nie zmienia to planu:
+**Druga aplikacja w projekcie `wh40k-data-slate` — sprawa zamknięta.** Na liście *Apps* poza zarejestrowaną aplikacją webową stoi `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) z przyciskiem *Register*. Zgłosiłem to jako rzecz do wyjaśnienia; wyjaśniłeś, że jest to **pozostałość po projekcie powiadomień push, który nie będzie kontynuowany** (dokumentacja w `WebView_FCM_Cloudflare_Worker/`, folder chroniony przed edycją wg `AGENTS.md` §16).
 
-- klient Android **nie jest jeszcze zaimplementowany** (`Analiza_10_3_Gotowosc_Android_Studio_2026-03-15.md`, `fcmTokens: 0`),
-- służy do **powiadomień push**, a nie do czytania bazy — wymuszanie dla Firestore i Realtime Database jej nie dotyczy,
-- rejestracja aplikacji Android wymaga innego dostawcy (**Play Integrity**), więc klucz reCAPTCHA i tak by się nie nadał.
+Wniosek: **nie rejestrujemy jej w App Check — ani teraz, ani później.** Wymuszanie z kroku 5 obejmuje wyłącznie Cloud Firestore i Realtime Database, więc ta aplikacja nie ma z nim nic wspólnego. Jedyny skutek jej obecności to napis „Register remaining apps…" na ekranie App Check, który można zamknąć przyciskiem *Dismiss*. Gdybyś kiedyś chciał się go pozbyć na stałe, aplikację da się usunąć z Firebase (Ustawienia projektu → Twoje aplikacje) — to nie wpływa na nic w WrathAndGlory, ale jest to Twoja decyzja i nie proponuję jej jako zadania.
 
-Wniosek: **nie rejestrować jej teraz**, ale zapamiętać na moment, gdy powstanie aplikacja mobilna otwierająca stronę w oknie WebView — reCAPTCHA w WebView bywa zawodna i wtedy właściwą drogą jest Play Integrity. Szczegóły w rozdz. 6 instrukcji.
+**Rozstrzygnięte — wariant A dla DataVault.** Wybrałeś wariant A, czyli **zostajemy przy dzisiejszym sposobie opisywania kolumn**. Nie przebudowujemy 455 linii CSS na słownik typów. Skutki dla planu prac są rozpisane w `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdz. 12.8.
 
-**Kwestia nadal otwarta — jedna:**
-
-1. **Wariant A czy B dla opisu kolumn w DataVault** — rozpisany na Twoją prośbę w `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdz. 12.6. To jedyna decyzja, która wpływa na kolejność prac przed dodatkiem, i **jedyna, która czeka.**
+**Kwestii spornych nie ma już żadnych.** Wszystkie osiem pytań z tego audytu i wszystkie sześć z analizy responsywności mają odpowiedzi, a obie decyzje, które czekały (zawężenie reguł, wariant A/B), są podjęte.
 
 ---
 
@@ -1448,9 +1457,9 @@ Wniosek: **nie rejestrować jej teraz**, ale zapamiętać na moment, gdy powstan
 - **domknąłem** pytania o `TRIGGER_TOKEN` i o kopię zapasową — oba przestały być zadaniami,
 - **napisałem kompletne reguły** dla obu projektów zamiast szkieletu i dodałem osobną instrukcję krok po kroku dla App Check.
 
-**Otwarte zostały dwie decyzje**, obie wypisane w rozdz. 12.4.
+**Otwartych kwestii spornych nie ma.** Wszystkie osiem pytań z tego audytu i wszystkie sześć z analizy responsywności mają odpowiedzi; obie decyzje, które czekały — zawężenie reguł Firestore i wybór wariantu A dla DataVault — są podjęte (rozdz. 12.4). Prace nad kodem mogą się zacząć na Twoje polecenie; najpilniejsza pozycja to **C4** — dopisanie App Check do kodu sześciu modułów, bo bez niego nie da się włączyć wymuszania i baza pozostaje otwarta.
 
 ---
 
-*Analiza wykonana 10 września 2026, uzupełniona 13 września o odpowiedzi użytkownika, prawdziwe reguły Firebase i wynik kontrolowanego testu zapisu. W kodzie aplikacji nie wprowadzono żadnych zmian.*
+*Analiza wykonana 10 września 2026, uzupełniona 13–14 września o odpowiedzi użytkownika, prawdziwe reguły Firebase, wynik kontrolowanego testu zapisu oraz podjęte decyzje wykonawcze. W kodzie aplikacji nie wprowadzono żadnych zmian.*
 *Analiza siostrzana: `Analizy/responsywnosc-aplikacji-2026-09-10.html` · Instrukcja wykonawcza: `Analizy/instrukcja-appcheck-2026-09-13.md`*

@@ -85,7 +85,7 @@ Masz dwa osobne projekty Firebase, a klucz reCAPTCHA należy do konkretnego proj
 
 Ten krok **nie wymaga żadnych zmian w kodzie i nie może niczego zepsuć.** Nie dopisujemy jeszcze warunku `request.app != null` (ten czeka na krok 6). Zmieniamy wyłącznie **ścieżki**: z „cała kolekcja" na „te konkretne dokumenty, których aplikacja naprawdę używa".
 
-**Sprawdziłem w kodzie, że aplikacja korzysta dokładnie z pięciu dokumentów** — i z niczego więcej:
+**Sprawdziłem w kodzie, że aplikacja korzysta dziś dokładnie z pięciu dokumentów** — i z niczego więcej:
 
 | Projekt | Dokument | Kto go używa |
 |---|---|---|
@@ -94,6 +94,8 @@ Ten krok **nie wymaga żadnych zmian w kodzie i nie może niczego zepsuć.** Nie
 | `wh40k-data-slate` | `character_builder/v2` | Zaawansowany Kreator Postaci |
 | `audiorpg-2eb6f` | `generatorNpc/favorites` | ulubione zestawy GeneratorNPC |
 | `audiorpg-2eb6f` | `audio/favorites` | ustawienia modułu Audio |
+
+**Do tego dokładamy z góry miejsce na listy ulubionych Infoczytnika** (`DoZrobienia.md` poz. 5), żeby nie trzeba było wracać do reguł przy tamtej pracy. Szczegóły i uzasadnienie doboru nazwy są pod tabelą z regułami.
 
 Ścieżka: Firebase Console → **Firestore Database** → zakładka **Rules** → zaznacz całość, wklej poniższe → **Publish**.
 
@@ -105,8 +107,19 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Kanał panelu GM -> ekran Infoczytnika / GM panel -> reader screen channel
+    // --- Infoczytnik ---
+
+    // Kanał panelu GM -> ekran Infoczytnika. Jeden dokument, nadpisywany na żywo.
+    // GM panel -> reader screen channel. A single document, overwritten live.
     match /dataslate/current { allow read, write: if true; }
+
+    // Zapisane wiadomości (listy ulubionych). Kolekcja jeszcze nie istnieje —
+    // regula jest przygotowana z góry, żeby nie wracać tu przy rozbudowie modułu.
+    // Saved messages (favourite lists). The collection does not exist yet —
+    // the rule is prepared in advance so this file needs no edit later.
+    match /dataslate_favorites/{document=**} { allow read, write: if true; }
+
+    // --- Kreatory postaci / Character creators ---
 
     // Prosty Kreator Postaci / Simple character creator
     match /character_builder/current { allow read, write: if true; }
@@ -114,11 +127,27 @@ service cloud.firestore {
     // Zaawansowany Kreator Postaci / Advanced character creator
     match /character_builder/v2 { allow read, write: if true; }
 
-    // Wszystko inne niedostępne / Everything else inaccessible
+    // --- Wszystko inne niedostępne / Everything else inaccessible ---
     match /{document=**} { allow read, write: if false; }
   }
 }
 ```
+
+#### Dlaczego akurat `dataslate_favorites` i dlaczego `{document=**}` tylko tam
+
+Rozważyłem trzy układy i wybrałem ten, bo jest najprostszy do zaprogramowania i najtrudniejszy do zepsucia:
+
+| Układ | Jak wygląda ścieżka | Ocena |
+|---|---|---|
+| **Osobna kolekcja** (wybrany) | `dataslate_favorites/{id}` | Najprostszy w kodzie: `collection(db, 'dataslate_favorites')`. Nazwa w stylu istniejącego `character_builder`. Kanał na żywo zostaje ściśle jednym dokumentem |
+| Podkolekcja pod `dataslate` | `dataslate/favorites/items/{id}` | Ładniej grupuje, ale tworzy „pusty" dokument-rodzica, który w konsoli wyświetla się szarym kursywą i bywa mylący |
+| Kolejne dokumenty w `dataslate` | `dataslate/ulubione-1`, `-2`, … | **Odrzucone** — wymagałoby otwarcia całej kolekcji `dataslate`, czyli cofnięcia tego, co właśnie zawężamy |
+
+**Dlaczego `{document=**}`, skoro w tym kroku właśnie usuwamy takie zapisy?** Bo to nie to samo miejsce. `{document=**}` na kolekcji `dataslate` było groźne, bo w tej kolekcji leży kanał na żywo — i faktycznie udało mi się dopisać tam obcy dokument (rozdz. 9.2 audytu). Kolekcja `dataslate_favorites` jeszcze nie istnieje, będzie zawierać wyłącznie Twoje zapisane wiadomości i nic poza modułem Infoczytnika nie będzie z niej korzystać. Zapis z gwiazdką oznacza tu: *„cokolwiek zbudujesz w środku tej jednej szuflady, reguła to obejmie"* — więc przy programowaniu list ulubionych **nie będziesz musiał w ogóle wracać do reguł**, także jeśli struktura okaże się zagnieżdżona.
+
+Jeżeli wolisz wariant maksymalnie ścisły, zamień tę jedną linię na `match /dataslate_favorites/{id}` — obsłuży płaską listę dokumentów, ale przy zagnieżdżeniu trzeba będzie regułę poprawić.
+
+> **Co przekazać przy programowaniu list ulubionych:** kolekcja nazywa się `dataslate_favorites`, jeden dokument = jedna zapisana wiadomość, a pola nazwy i kolejności (`nazwa`, `kolejnosc`) trzymamy w samym dokumencie — dzięki temu nie potrzeba osobnego dokumentu z indeksem i nie ma czego synchronizować. Dokument `dataslate/current` zostaje bez zmian i nadal działa tak jak dziś, zgodnie z punktem 5d z `DoZrobienia.md`.
 
 **Projekt `audiorpg-2eb6f`:**
 
@@ -146,7 +175,7 @@ service cloud.firestore {
 
 **Jak sprawdzić, że nic nie ucierpiało.** Po kliknięciu *Publish* otwórz z adresu internetowego: Infoczytnik (panel GM wyślij testową wiadomość), oba Kreatory Postaci, GeneratorNPC (dodaj i usuń ulubiony zestaw) i moduł Audio. Jeśli któryś przestanie działać — w zakładce **Rules** jest historia i powrót to jedno kliknięcie.
 
-> ⚠️ **Do zapamiętania przy rozbudowie Infoczytnika o listy ulubionych** (`DoZrobienia.md` poz. 5). Listy będą kolejnymi dokumentami w kolekcji `dataslate`, a powyższa reguła wpuszcza wyłącznie `current`. Przy tamtej pracy trzeba więc dopisać drugą regułę — na przykład `match /dataslate/ulubione/{id}` — inaczej zapis nowej listy zostanie odrzucony. To jedna linia, ale łatwo o niej zapomnieć i objawi się jako „nie da się zapisać ulubionych".
+> ✅ **Rozbudowa Infoczytnika o listy ulubionych jest już uwzględniona.** Reguła dla `dataslate_favorites` czeka gotowa, więc przy tamtej pracy nie trzeba wracać do tego pliku ani do konsoli Firebase. Jedyne, o czym trzeba pamiętać, to trzymać się tej nazwy kolekcji.
 
 ---
 
@@ -184,14 +213,13 @@ Robisz to w **Google Cloud**, nie w Firebase. To ta sama firma i to samo logowan
 
 ---
 
-> 🔶 **Uwaga do projektu `wh40k-data-slate` — jest tam druga aplikacja.** Na liście *Apps* obok zarejestrowanej `DataSlate (Web App)` stoi `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) z przyciskiem **Register** i statusem „–". To aplikacja **Android** z folderu `WebView_FCM_Cloudflare_Worker/`.
+> 🔶 **W projekcie `wh40k-data-slate` jest druga aplikacja — zignoruj ją.** Na liście *Apps* obok zarejestrowanej `DataSlate (Web App)` stoi `Kozi Przybornik` (`com.cutelittlegoat.wrathandglory`) z przyciskiem **Register** i statusem „–".
 >
-> **Nie rejestruj jej teraz i nie klikaj tam „Register".** Powody:
-> - Według `Analiza_10_3_Gotowosc_Android_Studio_2026-03-15.md` klient Android **nie jest jeszcze zaimplementowany** (health pokazywał `fcmTokens: 0`), więc nie ma czego rejestrować.
-> - Ta aplikacja służy do **powiadomień push (FCM)**, a nie do czytania bazy. W kroku 5 wymuszamy tylko **Cloud Firestore** i **Realtime Database** — powiadomień to nie dotyczy i nic się nie zepsuje.
-> - Rejestracja aplikacji Android wymaga innego dostawcy niż reCAPTCHA (**Play Integrity**), więc nie da się użyć klucza, który właśnie utworzyłeś.
+> To pozostałość po **zamkniętym projekcie powiadomień push** (dokumentacja: `WebView_FCM_Cloudflare_Worker/`). Potwierdziłeś, że projekt nie będzie kontynuowany. **Nigdy nie klikaj tam „Register"** — nie ma czego rejestrować, a rejestracja aplikacji Android i tak wymagałaby innego dostawcy niż reCAPTCHA (Play Integrity).
 >
-> **Do czego wrócić w przyszłości:** kiedy powstanie aplikacja Android otwierająca stronę w oknie WebView, strona w środku będzie musiała zdobyć znacznik reCAPTCHA — a reCAPTCHA w oknie WebView bywa zawodna. Wtedy właściwym rozwiązaniem jest zarejestrowanie aplikacji Android przez Play Integrity, a nie omijanie App Check. Odnotowuję to jako rzecz do sprawdzenia przed wydaniem aplikacji mobilnej, nie jako przeszkodę dzisiaj.
+> Wymuszanie z kroku 5 dotyczy wyłącznie **Cloud Firestore** i **Realtime Database**, więc ta aplikacja nie ma z nim żadnego związku. Napis „Register remaining apps to get all the benefits of App Check" u góry ekranu możesz spokojnie zamknąć przyciskiem **Dismiss** — nie zniknie sam, dopóki jakaś aplikacja jest niezarejestrowana.
+>
+> *Opcjonalnie, kiedyś:* skoro projekt jest zamknięty, tę aplikację można w ogóle usunąć z Firebase (Ustawienia projektu → Twoje aplikacje → **⋮** → Usuń aplikację). Zniknie wtedy i z listy App Check, i z ostrzeżenia. To nie jest konieczne i nie wpływa na nic w WrathAndGlory — decyzja należy do Ciebie, a folder `WebView_FCM_Cloudflare_Worker/` jest chroniony i niczego w nim nie ruszam.
 
 ## 6. KROK 2 — zarejestruj aplikację w App Check (dla każdego projektu osobno)
 
@@ -282,7 +310,7 @@ To jest moment, w którym baza faktycznie zaczyna odrzucać obce programy.
 
 Po każdym kliknięciu **sprawdź aplikację**: otwórz DataVault i GeneratorNPC z adresu internetowego i zobacz, czy dane się ładują. Jeśli nie — **Unenforce** i wracamy do diagnozy.
 
-> ⚠️ **Wymuszaj tylko te dwie pozycje.** W zakładce *APIs* będą też inne usługi, m.in. **Firebase Cloud Messaging**. Nie włączaj przy nich wymuszania — FCM obsługuje powiadomienia push planowanej aplikacji Android, która nie ma jeszcze rejestracji w App Check.
+> ⚠️ **Wymuszaj tylko te dwie pozycje.** W zakładce *APIs* będą też inne usługi, m.in. **Firebase Cloud Messaging**. Zostaw je bez wymuszania — nie korzysta z nich żaden moduł WrathAndGlory, a włączanie ochrony tam, gdzie nie ma czego chronić, tylko utrudnia późniejszą diagnozę.
 
 ### Krok 6 — zawężenie reguł bazy
 
@@ -341,7 +369,7 @@ Stan na 13 września. Kroki 1 i 2 masz zrobione w obu projektach.
 - [ ] Wymuszanie włączone dla **Cloud Firestore**
 - [ ] Wymuszanie włączone dla **Realtime Database**
 - [ ] Reguły uzupełnione o `request.app != null`
-- [ ] *(świadomie pominięte)* Aplikacja Android `Kozi Przybornik` — nierejestrowana, patrz uwaga w rozdz. 6
+- [x] *(świadomie pominięte na stałe)* Aplikacja Android `Kozi Przybornik` — pozostałość po zamkniętym projekcie push, nie rejestrujemy jej nigdy (rozdz. 6)
 
 **Projekt 2 — `audiorpg-2eb6f`**
 - [x] Osobny klucz reCAPTCHA `WrathAndGlory-AudioRPG` utworzony, typ WEB, ta sama domena

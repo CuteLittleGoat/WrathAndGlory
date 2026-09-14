@@ -181,7 +181,7 @@ figure.po figcaption{color:var(--dobre); background:var(--dobre-tlo)}
     <li><a href="#ryzyka">Ryzyka</a></li>
     <li><a href="#kolejnosc">Proponowana kolejność prac</a></li>
     <li><a href="#pytania">Pytania do Ciebie</a></li>
-    <li><a href="#ustalenia">Ustalenia — Twoje odpowiedzi</a></li>
+    <li><a href="#ustalenia">Ustalenia — Twoje odpowiedzi i decyzje</a></li>
   </ol>
 </div>
 
@@ -907,7 +907,10 @@ td.dataset.coltype = typKolumny(col);   // obok istniejącego td.dataset.col = c
 </div>
 
 <h3>8.3. Kiedy to zrobić</h3>
-<p><strong>Przed dodatkiem, nie po.</strong> Po dodaniu kilkudziesięciu pozycji do arkuszy archetypów, ekwipunku i umiejętności trzeba będzie i tak przejrzeć te zakładki. Jeśli opis kolumn będzie już oparty na typach, ten przegląd zajmie kilkanaście minut zamiast kilku godzin — i nie będzie ryzyka, że któraś nowa kolumna zostanie pominięta po cichu.</p>
+<div class="karta uwaga">
+<p style="margin:0"><strong>Rozstrzygnięte 13 września: nie robimy tego.</strong> Wybrałeś wariant A, czyli pozostajemy przy dzisiejszym opisie kolumn. Rozdziały 8.1–8.3 zostają jako zapis analizy i jako miejsce, do którego można zajrzeć przy dodatku — nie jako rekomendacja do wykonania. Co z tej decyzji wynika i co można zrobić <em>wewnątrz</em> wariantu A: <a href="#wariant-a">rozdział 12.8</a>.</p>
+</div>
+<p>Pierwotna rekomendacja brzmiała: <em>przed dodatkiem, nie po</em> — bo po dodaniu kilkudziesięciu pozycji do arkuszy archetypów, ekwipunku i umiejętności trzeba będzie i tak przejrzeć te zakładki, a przy opisie opartym na typach ten przegląd zająłby kilkanaście minut zamiast kilku godzin. Zostawiam to zdanie w oryginalnym brzmieniu, żeby było wiadomo, co odrzucałeś.</p>
 
 <h2 id="ryzyka">9. Ryzyka</h2>
 <div class="tabela-otoczka">
@@ -1095,6 +1098,7 @@ td.dataset.coltype = typKolumny(col);   // obok istniejącego td.dataset.col = c
 <p><strong>Panel GM</strong> — tu też pomyliłem przyczynę, choć bez konsekwencji: nadmiar 26&nbsp;px przy 320&nbsp;px nie bierze się z minimum kolumn, tylko z wiersza z polem logu i przyciskiem, który nie umie się złamać na dwie linie. Przy 360&nbsp;px i wyżej nadmiaru nie ma w ogóle. Zgodnie z Twoją zasadą ten punkt zostaje na końcu listy jako opcjonalny — zmierzę go osobno i wejdzie tylko wtedy, gdy okaże się równie obojętny jak trzy pierwsze.</p>
 
 <h3>12.6. Pytanie 6 — jak będzie wyglądał rozwój aplikacji: wariant A i wariant B</h3>
+<div class="karta dobra"><p style="margin:0"><strong>Decyzja zapadła: wariant A.</strong> Ten rozdział zostaje jako zapis podstaw, na których ją podjąłeś. Co z niej wynika dla dalszych prac — w <a href="#wariant-a">rozdziale 12.8</a>.</p></div>
 
 <p>Poniżej to samo zadanie wykonane dwa razy: raz w dzisiejszym stanie aplikacji (<strong>wariant A</strong>), raz po zaakceptowaniu propozycji z rozdziału 8.2 (<strong>wariant B</strong>). Wszystkie liczby pochodzą z pomiarów na Twoich danych — nie z szacunków.</p>
 
@@ -1217,6 +1221,65 @@ td.dataset.coltype = typKolumny(col);   // obok istniejącego td.dataset.col = c
 <p style="margin-bottom:0">Drugi argument jest terminowy: te 42 decyzje trzeba podjąć raz, i lepiej podjąć je na 265 dzisiejszych parach niż na 350 po dodatku. Jeżeli jednak dodatek jest bliżej niż praca nad kodem, to wariant A też nie jest katastrofą — jest po prostu wyraźnie droższy w utrzymaniu i wymaga po każdej zmianie przejrzenia wszystkich zakładek zamiast żadnej.</p>
 </div>
 
+<h3 id="wariant-a">12.8. Decyzja: wariant A</h3>
+
+<div class="karta dobra">
+<p style="margin:0"><strong>Wybrałeś wariant A — zostajemy przy dzisiejszym sposobie opisywania kolumn.</strong> Nie przebudowujemy 455 linii CSS na słownik typów. Poniżej co to konkretnie oznacza dla dalszych prac, bez wracania do dyskusji.</p>
+</div>
+
+<h4>Co to zmienia w planie</h4>
+<div class="tabela-otoczka">
+<table>
+<thead><tr><th>Pozycja</th><th>Stan</th></tr></thead>
+<tbody>
+<tr><td>Przebudowa opisu kolumn na typy</td><td><span class="znacznik z-nis">Wykreślone</span> — nie robimy</td></tr>
+<tr><td>Układ kart na telefonie, wszystkie 38 zakładek</td><td><span class="znacznik z-ok">Bez zmian</span> — ruszamy od razu, nie zależał od tej decyzji</td></tr>
+<tr><td>Przyklejone nagłówki i filtry w DataVault</td><td><span class="znacznik z-ok">Bez zmian</span></td></tr>
+<tr><td>455 linii opisu kolumn w <code>DataVault/style.css</code></td><td>zostaje</td></tr>
+<tr><td><code>Kolumny.md</code> utrzymywany ręcznie</td><td>zostaje</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Jedna rzecz warta odnotowania: <strong>decyzja o wariancie A nie opóźnia niczego innego.</strong> Układ kart na telefonie opiera się na nazwach kolumn, które kod nadaje niezależnie od tego, jak opisane są szerokości — więc może iść od razu, w pełnym zakresie 38 zakładek, tak jak ustaliliśmy w punkcie 1.</p>
+
+<h4>Koszt utrzymania, który tym samym przyjmujemy</h4>
+<p>Wypisuję to jeden raz, żeby było gdzie zajrzeć przy dodatku — nie jako argument za zmianą zdania.</p>
+<div class="tabela-otoczka">
+<table>
+<thead><tr><th>Czynność przy dodatku</th><th>Co trzeba zrobić ręcznie</th></tr></thead>
+<tbody>
+<tr><td>Kilkadziesiąt nowych wierszy w istniejących zakładkach</td><td>nic — arkusz, <code>data.json</code>, Firebase</td></tr>
+<tr><td>Nowa kolumna w istniejącej zakładce</td><td>2 linie w <code>DataVault/style.css</code> + wiersz w <code>Kolumny.md</code></td></tr>
+<tr><td>Nowa zakładka</td><td>8–12 linii CSS + sekcja w <code>Kolumny.md</code> + przypisanie do grup w <code>app.js</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>Skutek pominięcia jest taki, jak zmierzyłem w rozdziale 12.6: pominięta kolumna daje wiersz o 67% wyższy, pominięta zakładka — tabelę 2,1 raza wyższą z polami filtrów szerokości kilku liter. Nic nie sygnalizuje błędu, więc wykrycie wymaga obejrzenia zakładki.</p>
+
+<h4>Trzy rzeczy, które można zrobić <em>wewnątrz</em> wariantu A — do rozważenia, nie do decyzji teraz</h4>
+<p>Skoro zostajemy przy ręcznym opisie, warto przynajmniej zamienić „trzeba pamiętać" na „dostaniesz sygnał". Żadna z tych trzech <strong>nie rusza kodu aplikacji</strong> — to narzędzia obok niej albo dokumentacja. Wypisuję je jako propozycje; nic z tego nie jest zaplanowane.</p>
+
+<div class="karta">
+<h4 style="margin-top:0">Propozycja 1 — skrypt sprawdzający pokrycie kolumn</h4>
+<p>Mały program uruchamiany ręcznie, który zestawia zakładki i kolumny z <code>data.json</code> z regułami w <code>DataVault/style.css</code> i wypisuje każdą parę bez własnej reguły. Uruchamiasz go po wgraniu dodatku i w kilka sekund wiesz, czy czegoś nie brakuje — zamiast oglądać 38 zakładek po kolei.</p>
+<p style="margin-bottom:0"><strong>To nie jest pomysł teoretyczny:</strong> takiego skryptu użyłem, żeby policzyć liczby z rozdziału 8.1 (38 zakładek, 265 par, 0 pominięć). Trzeba go tylko doprowadzić do porządku i zapisać w repozytorium. To jest jedyna z trzech propozycji, którą uważam za realnie wartą zachodu.</p>
+</div>
+
+<div class="karta">
+<h4 style="margin-top:0">Propozycja 2 — <code>Kolumny.md</code> generowany zamiast pisanego ręcznie</h4>
+<p style="margin-bottom:0">Dziś ta sama wiedza jest zapisana dwa razy: raz w CSS, raz w <code>Kolumny.md</code>. Ten sam skrypt, co wyżej, mógłby wypisywać <code>Kolumny.md</code> wprost z CSS i danych. Znika jedno miejsce do zapominania i jedno źródło rozbieżności. Sensowne tylko razem z propozycją 1.</p>
+</div>
+
+<div class="karta">
+<h4 style="margin-top:0">Propozycja 3 — krótka lista kontrolna w <code>DetaleLayout.md</code></h4>
+<p style="margin-bottom:0">Pięć linijek: „dodajesz kolumnę → dopisz 2 linie tutaj, wiersz tam, obejrzyj zakładkę na telefonie". Najtańsza z trzech i jedyna, która nie wymaga żadnego programu — ale też najsłabsza, bo nadal opiera się na tym, że ktoś do niej zajrzy.</p>
+</div>
+
+<div class="karta uwaga">
+<p style="margin:0"><strong>Do zapamiętania na moment dodatku.</strong> Jeżeli dojdą nowe zakładki, ich reguły trzeba dopisać <em>przed</em> pokazaniem aplikacji graczom — nowa zakładka bez reguł nie wygląda na zepsutą, więc łatwo ją przeoczyć i zostawić na dłużej. Najprościej: po każdym wgraniu nowych danych otworzyć każdą nową zakładkę na telefonie i na komputerze.</p>
+</div>
+
 <h3>12.7. Co się zmienia w planie prac z rozdziału 10</h3>
 <div class="tabela-otoczka">
 <table>
@@ -1232,7 +1295,7 @@ td.dataset.coltype = typKolumny(col);   // obok istniejącego td.dataset.col = c
 <tr><td>Main, Kalkulator (menu), DiceRoller — 320&nbsp;px</td><td>zostają — dowiedzione jako obojętne od 360&nbsp;px w górę</td></tr>
 <tr><td>Panel GM — 320&nbsp;px</td><td>opcjonalny, na końcu, po osobnym pomiarze</td></tr>
 <tr><td>Dymek z opisem cechy</td><td>bez zmian</td></tr>
-<tr><td>DataVault — typy kolumn (wariant B)</td><td>czeka na Twoją decyzję po przeczytaniu 12.6</td></tr>
+<tr><td>DataVault — typy kolumn (wariant B)</td><td><strong>wykreślone</strong> — wybrałeś wariant A (rozdz. 12.8)</td></tr>
 </tbody>
 </table>
 </div>
@@ -1244,11 +1307,11 @@ td.dataset.coltype = typKolumny(col);   // obok istniejącego td.dataset.col = c
 <p>Aplikacja jest w większości przygotowana na różne ekrany dobrze — moduły <code>Audio</code> i <code>Zaawansowany Kreator v2</code> oraz wspólna bramka dostępu <code>shared/access-gate.css</code> mają responsywność zrobioną wzorowo i to z nich brałem wzorce do wszystkich propozycji.</p>
 <p>Zgłoszony przez Ciebie pasek przewijania w GeneratorNPC ma <strong>jedną, konkretną przyczynę</strong>: linię <code>min-width: max-content</code>, która mówi tabeli „nigdy nie bądź węższa niż twój najdłuższy wiersz tekstu”. Usunięcie jej dla tej jednej tabeli likwiduje problem na wszystkich szerokościach ekranu, od 320 do 1920&nbsp;px, i nie rusza szerokich tabel wielokolumnowych, w których przesuwanie w bok jest potrzebne.</p>
 <p>Poza tym najpoważniejsza rzecz to <strong>DataVault</strong>: nagłówki kolumn miały zostawać na wierzchu przy przewijaniu, ale nie zostają — i to nie tylko na telefonie, ale też na komputerze. Kryje to jeszcze dwie usterki, które ujawnią się dopiero po naprawieniu pierwszej, więc trzeba je poprawić w jednym ruchu.</p>
-<p style="margin-bottom:0">I jedna rzecz na przyszłość: <strong>opis kolumn w DataVault nie skaluje się</strong>. Warto go przebudować, zanim dojdzie zapowiedziany dodatek — potem ta sama praca będzie większa.</p>
+<p style="margin-bottom:0">Została jeszcze kwestia, którą zgłosiłem na przyszłość: <strong>opis kolumn w DataVault nie skaluje się</strong> — każda nowa kolumna i każda nowa zakładka wymaga ręcznego dopisania reguł. Zaproponowałem przebudowę i <strong>wybrałeś wariant A, czyli pozostanie przy dzisiejszym rozwiązaniu</strong> (rozdz. 12.8). Decyzja niczego nie blokuje: układ kart na telefonie i poprawki nagłówków idą normalnie. Zostaje tylko koszt utrzymania przy dodatku — wypisany w 12.8 wraz z trzema propozycjami, które ten koszt zmniejszają bez przebudowy.</p>
 </div>
 
 <div class="stopka">
-  Analiza wykonana 10 września 2026 · Ustalenia dopisane 13 września 2026 · Repozytorium <code>CuteLittleGoat/WrathAndGlory</code><br>
+  Analiza wykonana 10 września 2026 · Ustalenia i decyzje dopisane 13–14 września 2026 · Repozytorium <code>CuteLittleGoat/WrathAndGlory</code><br>
   Analiza kodu aplikacji (druga część zadania): <code>Analizy/audyt-kodu-aplikacji-2026-09-10.md</code><br>
   Pomiary wykonane w Chromium 141 na szerokościach 320–1920&nbsp;px · W kodzie aplikacji nie wprowadzono żadnych zmian
 </div>
