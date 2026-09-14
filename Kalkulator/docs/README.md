@@ -252,6 +252,12 @@ Wczytanie przywraca zapisany stan.
 
 Ta funkcja wymaga poprawnej konfiguracji Firebase. Jeżeli konfiguracja nie działa, moduł pokaże komunikat błędu w modalu.
 
+Przy zapisie i wczytaniu kreator potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym
+programem podszywającym się pod nią. Korzysta do tego z mechanizmu Google o nazwie reCAPTCHA. Nie
+trzeba nic klikać — nie pojawiają się żadne obrazki ani pytania „czy jesteś robotem". Jeżeli to
+potwierdzenie nie dojdzie do skutku, na przykład przez dodatek blokujący reklamy, zapis i wczytanie
+działają dalej normalnie.
+
 ## Co jest zapisywane
 
 Zapis obejmuje między innymi:
@@ -275,6 +281,7 @@ Zapis obejmuje między innymi:
 | Pole wraca do wartości domyślnej | Wpis był pusty albo nieprawidłowy. | Wpisz liczbę z dozwolonego zakresu. |
 | Nie działa zapis | Firebase nie jest skonfigurowany albo jest niedostępny. | Zgłoś adminowi technicznemu. |
 | Nie działa wczytanie | Brak zapisanego dokumentu albo Firebase jest niedostępny. | Najpierw zapisz postać albo zgłoś adminowi. |
+| W narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, zapis i wczytanie działają. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
 | Nie widzę zmiany języka w arkuszu tworzenia postaci | To prawidłowe zachowanie. | Korzystaj z arkusza w domyślnym języku; widoczne przyciski służą do instrukcji, powrotu i tabeli maksimów. |
 | PDF instrukcji się nie otwiera | Brakuje pliku albo przeglądarka blokuje otwarcie. | Sprawdź popupy i obecność plików `HowToUse`. |
 
@@ -557,6 +564,11 @@ Load restores saved state.
 
 This feature requires valid Firebase configuration. If configuration does not work, the module shows an error message in a modal.
 
+When saving and loading, the creator confirms in the background that it is the application you know
+and not a foreign program impersonating it. It uses a Google mechanism called reCAPTCHA for that.
+There is nothing to click — no images and no "are you a robot" questions appear. If the confirmation
+does not go through, for example because of an ad blocker, saving and loading keep working normally.
+
 ## What is saved
 
 Save includes, among others:
@@ -580,6 +592,7 @@ Save includes, among others:
 | Field returns to default value | The entry was empty or invalid. | Enter a number in the allowed range. |
 | Save does not work | Firebase is not configured or unavailable. | Contact technical admin. |
 | Load does not work | No saved document exists or Firebase is unavailable. | Save character first or contact admin. |
+| Developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, saving and loading work. To clear it, disable the ad blocker for this page. |
 | I do not see language change in character creation | This is expected. | Use the sheet in the default language; the visible buttons are for the manual, return, and maximum-values table. |
 | PDF manual does not open | File is missing or browser blocks opening. | Check popups and presence of `HowToUse` files. |
 

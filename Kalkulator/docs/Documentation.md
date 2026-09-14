@@ -45,10 +45,21 @@ Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.ht
 
 Widoki `index.html` i `KalkulatorXP.html` nie wymagają zewnętrznych bibliotek JavaScript.
 
-`TworzeniePostaci.html` używa Firebase w trybie compat:
+`TworzeniePostaci.html` używa Firebase w trybie zgodnościowym (compat), w wersji **12.6.0**:
 
 - `firebase-app-compat.js`,
-- `firebase-firestore-compat.js`.
+- `firebase-firestore-compat.js`,
+- `firebase-app-check-compat.js`.
+
+Do tego:
+
+- `../shared/appcheck-config.js` — klucze witryny App Check dla obu projektów Firebase,
+- `https://www.google.com/recaptcha/enterprise.js` — biblioteka reCAPTCHA Enterprise,
+- `../shared/firebase-app-check-compat.js` — wspólne uruchamianie App Check.
+
+Nazwy plików biblioteki **muszą** kończyć się na `-compat`. Od wersji 9 plik `firebase-app.js` jest
+plikiem modułowym i wczytany zwykłym znacznikiem `<script>` zgłasza `SyntaxError`, przez co obiekt
+`firebase` w ogóle nie powstaje, a przyciski zapisu i wczytania postaci przestają cokolwiek robić.
 
 Konfiguracja Firebase jest ładowana z:
 
@@ -313,7 +324,9 @@ Kalkulator/config/firebase-config.js
 Kalkulator/config/FirebaseREADME.md
 ```
 
-Kod inicjalizuje Firebase przez `initializeFirebaseContext()`.
+Kod inicjalizuje Firebase przez `initializeFirebaseContext()`. Zaraz po `firebase.initializeApp(...)`,
+a przed `firebase.firestore()`, wywoływane jest `window.WG_activateAppCheckCompat(firebase)` — patrz
+sekcja o App Check niżej.
 
 Jeżeli `firebase` albo `window.firebaseConfig` nie istnieją, funkcja zwraca:
 
@@ -338,6 +351,35 @@ Odczyt:
 ```js
 firebaseContext.characterRef.get()
 ```
+
+### App Check w obu kreatorach
+
+Oba kreatory wysyłają przy każdym zapytaniu do Firestore znacznik App Check, czyli potwierdzenie, że
+zapytanie pochodzi z zarejestrowanej aplikacji WrathAndGlory.
+
+| | Prosty Kreator (`TworzeniePostaci.html`) | Zaawansowany Kreator (`TworzeniePostaci_v2-firebase.js`) |
+| --- | --- | --- |
+| Sposób wczytania biblioteki | znaczniki `<script>` w HTML | `loadScript()` w trakcie działania strony, w `ensureAppCheck()` |
+| Moment uruchomienia | w `initializeFirebaseContext()`, po `initializeApp`, przed `firestore()` | w `ensureFirebase()`, po `initializeApp`, przed `firestore()` |
+| Klucz witryny | `shared/appcheck-config.js` | `shared/appcheck-config.js` |
+
+Bibliotekę reCAPTCHA Enterprise wczytuje strona (Prosty Kreator) albo `ensureAppCheck()`
+(Zaawansowany Kreator), a nie SDK Firebase. Powód: SDK dokłada własny znacznik `<script>` wyłącznie
+z obsługą poprawnego wczytania, bez obsługi błędu, więc przy zablokowanym adresie czeka bez końca
+i blokuje wszystkie zapytania do bazy.
+
+Uruchomienie App Check nie jest krytyczne. Przy braku klucza, biblioteki reCAPTCHA albo obsługi
+reCAPTCHA Enterprise w bibliotece funkcja zapisuje ostrzeżenie w konsoli i pomija App Check —
+zapis i wczytanie postaci działają wtedy tak jak przed jego wprowadzeniem.
+
+### Dlaczego wersja zgodnościowa, a nie modularna
+
+Sposób zapisu i odczytu postaci nie został zmieniony przy podniesieniu wersji. Kluczowy szczegół:
+w obu kreatorach `snapshot.exists` jest używane jako **wartość prawda/fałsz** (`if (snapshot.exists)`).
+W zapisie modularnym `exists` jest funkcją, więc warunek byłby zawsze prawdziwy i wczytanie
+nieistniejącej postaci zgłaszałoby fałszywy sukces zamiast komunikatu „brak zapisanego stanu".
+W zapisie zgodnościowym `exists` pozostaje wartością logiczną — sprawdzone uruchomieniem na
+wersji 12.6.0.
 
 Szczegółowy model Firebase jest opisany w `Kalkulator/config/FirebaseREADME.md`.
 
@@ -470,10 +512,21 @@ Most logic runs locally in the browser. Only `TworzeniePostaci.html` uses Fireba
 
 `index.html` and `KalkulatorXP.html` do not require external JavaScript libraries.
 
-`TworzeniePostaci.html` uses Firebase compat:
+`TworzeniePostaci.html` uses Firebase in compatibility (compat) form, version **12.6.0**:
 
 - `firebase-app-compat.js`,
-- `firebase-firestore-compat.js`.
+- `firebase-firestore-compat.js`,
+- `firebase-app-check-compat.js`.
+
+Plus:
+
+- `../shared/appcheck-config.js` — App Check site keys for both Firebase projects,
+- `https://www.google.com/recaptcha/enterprise.js` — the reCAPTCHA Enterprise library,
+- `../shared/firebase-app-check-compat.js` — shared App Check activation.
+
+The library file names **must** end with `-compat`. Since version 9 `firebase-app.js` is a module
+file and, loaded with a plain `<script>` tag, raises a `SyntaxError`, so the `firebase` object is
+never created and the character save and load buttons stop doing anything.
 
 Firebase configuration is loaded from:
 
@@ -738,7 +791,9 @@ Kalkulator/config/firebase-config.js
 Kalkulator/config/FirebaseREADME.md
 ```
 
-The code initializes Firebase through `initializeFirebaseContext()`.
+The code initializes Firebase through `initializeFirebaseContext()`. Right after
+`firebase.initializeApp(...)` and before `firebase.firestore()`, it calls
+`window.WG_activateAppCheckCompat(firebase)` — see the App Check section below.
 
 If `firebase` or `window.firebaseConfig` do not exist, the function returns:
 
@@ -763,6 +818,34 @@ Load:
 ```js
 firebaseContext.characterRef.get()
 ```
+
+### App Check in both creators
+
+Both creators attach an App Check token to every Firestore request, proving the request comes from
+the registered WrathAndGlory application.
+
+| | Simple creator (`TworzeniePostaci.html`) | Advanced creator (`TworzeniePostaci_v2-firebase.js`) |
+| --- | --- | --- |
+| How the library is loaded | `<script>` tags in the HTML | `loadScript()` at runtime, inside `ensureAppCheck()` |
+| When it is activated | in `initializeFirebaseContext()`, after `initializeApp`, before `firestore()` | in `ensureFirebase()`, after `initializeApp`, before `firestore()` |
+| Site key | `shared/appcheck-config.js` | `shared/appcheck-config.js` |
+
+The reCAPTCHA Enterprise library is loaded by the page (simple creator) or by `ensureAppCheck()`
+(advanced creator), not by the Firebase SDK. The reason: the SDK appends its own `<script>` tag with
+an onload handler only and no error handler, so with a blocked address it waits forever and stalls
+every database request.
+
+App Check activation is not critical. With a missing key, a missing reCAPTCHA library, or a library
+without reCAPTCHA Enterprise support, the function logs a console warning and skips App Check — the
+character save and load then work as they did before it was introduced.
+
+### Why the compat form and not the modular one
+
+The way characters are saved and read was not changed when the version was raised. The key detail:
+both creators use `snapshot.exists` as a **boolean value** (`if (snapshot.exists)`). In the modular
+form `exists` is a function, so the condition would always be true and loading a non-existent
+character would report a false success instead of the "no saved state" message. In the compat form
+`exists` stays a boolean — verified by running it on version 12.6.0.
 
 The detailed Firebase model is documented in `Kalkulator/config/FirebaseREADME.md`.
 

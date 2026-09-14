@@ -690,10 +690,34 @@ Przypis w interfejsie informuje, że Vespidzi mają stałą Szybkość `14`, a p
 Firebase jest ładowane dopiero przy pierwszym zapisie lub odczycie:
 
 ```text
-https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js
-https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js
+https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js
+https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js
 ./config/firebase-config.js
 ```
+
+Nazwy plików muszą kończyć się na `-compat`. Od wersji 9 plik `firebase-app.js` jest plikiem
+modułowym i wczytany zwykłym znacznikiem `<script>` nie tworzy obiektu `firebase` — przyciski zapisu
+i wczytania postaci przestałyby wtedy cokolwiek robić. Zapis i odczyt postaci korzystają wyłącznie
+z zapisu zgodnościowego: `firebase.firestore().collection(...).doc(...)`, `.set()`, `.get()`,
+`snapshot.exists` jako wartość logiczna oraz `FieldValue.serverTimestamp()`.
+
+Osobno, w funkcji `ensureAppCheck()`, ładowane są zależności App Check:
+
+```text
+https://www.gstatic.com/firebasejs/12.6.0/firebase-app-check-compat.js
+../shared/appcheck-config.js
+https://www.google.com/recaptcha/enterprise.js
+../shared/firebase-app-check-compat.js
+```
+
+`ensureAppCheck()` jest wywoływane wewnątrz `ensureFirebase()`, po `initializeApp`, a przed
+`firebase.firestore()`. Cała funkcja jest opakowana w `try`/`catch`: gdy którykolwiek składnik się nie
+wczyta — na przykład dodatek blokujący reklamy zatrzyma adres reCAPTCHA — zapisywane jest ostrzeżenie
+w konsoli, App Check zostaje pominięty, a zapis i odczyt postaci działają tak jak wcześniej.
+
+Bibliotekę reCAPTCHA ładujemy sami, a nie zostawiamy tego SDK, ponieważ Firebase dokłada własny
+znacznik `<script>` wyłącznie z obsługą poprawnego wczytania, bez obsługi błędu — przy zablokowanym
+adresie SDK czekałby bez końca i zablokowałby wszystkie zapytania do bazy.
 
 Skrypty są oznaczane `data-v2-src`, aby nie wstawiać tej samej zależności ponownie.
 
@@ -1288,7 +1312,26 @@ Save uses `set(payload, { merge:false })`, so it creates a missing document or f
 
 Load requires the exact schema version and module name. There is no `test-v2` fallback and no schema-2 migration.
 
-Firebase App and Firestore version `8.10.1` are loaded lazily. Authentication is not loaded; the static `savedBy` value is not a user identity.
+Firebase App and Firestore version `12.6.0` in compatibility (compat) form are loaded lazily. The file
+names must end with `-compat`: since version 9 `firebase-app.js` is a module file and, loaded with a
+plain `<script>` tag, does not create the `firebase` object, which would leave the character save and
+load buttons doing nothing. Saving and reading a character uses the compat form only:
+`firebase.firestore().collection(...).doc(...)`, `.set()`, `.get()`, `snapshot.exists` as a boolean,
+and `FieldValue.serverTimestamp()`.
+
+App Check dependencies are loaded separately in `ensureAppCheck()`:
+`firebase-app-check-compat.js` (12.6.0), `../shared/appcheck-config.js`,
+`https://www.google.com/recaptcha/enterprise.js` and `../shared/firebase-app-check-compat.js`.
+`ensureAppCheck()` runs inside `ensureFirebase()`, after `initializeApp` and before
+`firebase.firestore()`. The whole function is wrapped in `try`/`catch`: when any piece fails to load —
+for example an ad blocker stopping the reCAPTCHA address — a console warning is logged, App Check is
+skipped, and character save and load work as before.
+
+We load the reCAPTCHA library ourselves instead of leaving it to the SDK, because Firebase appends its
+own `<script>` tag with an onload handler only and no error handler — with a blocked address the SDK
+would wait forever and stall every database request.
+
+Authentication is not loaded; the static `savedBy` value is not a user identity.
 
 ## PDF export
 

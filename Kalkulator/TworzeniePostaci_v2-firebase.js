@@ -30,21 +30,59 @@
     document.head.appendChild(script);
   });
 
+  // --- Uruchomienie App Check / Starting App Check ---
+  // Wywołanie nie jest krytyczne: gdy którykolwiek składnik się nie wczyta, kreator zapisuje
+  // i wczytuje postać dokładnie tak jak przed wprowadzeniem App Check.
+  // The call is not critical: when any piece fails to load, the creator saves and reads a character
+  // exactly as it did before App Check was introduced.
+  async function ensureAppCheck() {
+    try {
+      if (!window.firebase?.appCheck) {
+        await loadScript('https://www.gstatic.com/firebasejs/12.6.0/firebase-app-check-compat.js');
+      }
+      if (!window.WG_APPCHECK_SITE_KEYS) {
+        await loadScript('../shared/appcheck-config.js');
+      }
+      // Bibliotekę reCAPTCHA wczytujemy sami, bo SDK dokłada swój znacznik bez obsługi błędu
+      // wczytania i przy zablokowanym adresie czeka bez końca, blokując wszystkie zapytania.
+      // We load the reCAPTCHA library ourselves, because the SDK appends its own tag with no
+      // load-error handler and, with a blocked address, waits forever, stalling every request.
+      if (!window.grecaptcha?.enterprise) {
+        await loadScript('https://www.google.com/recaptcha/enterprise.js');
+      }
+      if (typeof window.WG_activateAppCheckCompat !== 'function') {
+        await loadScript('../shared/firebase-app-check-compat.js');
+      }
+      if (typeof window.WG_activateAppCheckCompat === 'function') {
+        window.WG_activateAppCheckCompat(window.firebase);
+      }
+    } catch (error) {
+      console.warn('[AppCheck] Pominięto App Check / App Check skipped:', error);
+    }
+  }
+
   async function ensureFirebase() {
     if (dependenciesPromise) return dependenciesPromise;
 
     dependenciesPromise = (async () => {
+      // Nazwy plików kończą się na "-compat", bo od wersji 9 plik firebase-app.js jest plikiem
+      // modułowym i wczytany znacznikiem <script> nie tworzy obiektu "firebase".
+      // The file names end with "-compat" because since version 9 firebase-app.js is a module file
+      // and, loaded with a <script> tag, does not create the "firebase" object.
       if (typeof window.firebase === 'undefined') {
-        await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js');
+        await loadScript('https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js');
       }
       if (!window.firebase?.firestore) {
-        await loadScript('https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js');
+        await loadScript('https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js');
       }
       if (!window.firebaseConfig) {
         await loadScript('./config/firebase-config.js');
       }
       if (!window.firebaseConfig) throw new Error('Brak konfiguracji Firebase.');
       if (!window.firebase.apps.length) window.firebase.initializeApp(window.firebaseConfig);
+      // App Check zaraz po utworzeniu aplikacji, a przed pierwszym użyciem Firestore.
+      // App Check right after the app is created and before Firestore is first used.
+      await ensureAppCheck();
 
       return window.firebase.firestore().collection(COLLECTION_NAME).doc(DOCUMENT_NAME);
     })();
