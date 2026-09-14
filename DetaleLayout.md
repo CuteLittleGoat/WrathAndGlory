@@ -1040,3 +1040,89 @@ The table in the comparison window uses the `compareTable` class:
 
 Measured gap between the contents of neighbouring columns: **4 px → 16 px**. The window does not
 colour-highlight fields that differ.
+
+## DataVault — przyklejone nagłówki i układ kart na telefonie
+
+### Komputer i tablet (powyżej 720 px)
+
+Przewija się **panel tabeli**, nie cała strona. Nazwy kolumn i pola filtrów zostają na wierzchu.
+
+- `.app`: `height: 100dvh; min-height: 100dvh`,
+- `.main`, `.workspace`, `.tableWrap`, `.tableFrame`: `min-height: 0`,
+- `.tableViewport`: `flex: 1; overflow: auto` — to jest jedyny przewijany pojemnik,
+- `.dataTable thead th`: `background-color: var(--panel)` pod gradientem
+  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))`, `z-index: 3`,
+- `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` pod jednolitym
+  `rgba(22,198,12,.05)`, `z-index: 2`, `top: var(--header-row-height)`,
+- `--header-row-height`: wpisywana pomiarem na element tabeli przez `buildTableSkeleton()`. Wartość
+  `36px` w `:root` jest tylko zapasem przed pierwszym pomiarem. Zmierzone wysokości: **40 px** przy
+  nazwach w jednej linii, **59 px** przy dwóch, **78 px** przy trzech,
+- kolumna zaznaczania: `5ch` zamiast `8ch` — odzyskane 23 px idzie do kolumn z treścią.
+
+### Telefon (720 px i mniej)
+
+Wiersz tabeli staje się kartą. Przewija się cała strona, nagłówek jest ukryty.
+
+- `.app`: `height: auto; min-height: 100dvh`,
+- `.tableViewport`: `overflow-x: hidden; padding: 8px`,
+- `.dataTable`: bez ramki i bez cienia; `thead` ukryty,
+- karta (`tbody tr`): `1px solid var(--div)`, `border-radius: 6px`, `margin-bottom: 10px`,
+  `padding: 8px 10px`, `box-shadow: 0 0 10px rgba(22,198,12,.10)`,
+- komórka: siatka `minmax(8ch, 30%) minmax(0, 1fr)` z odstępem 10 px; etykieta z `attr(data-col)`
+  w kolorze `--text2`, `0.72rem`, wersaliki, `letter-spacing: .08em`,
+- komórka zaznaczania: na górze karty, wyrównana do prawej, oddzielona linią `1px solid var(--div)`.
+
+### Zmierzony efekt
+
+| Co | Przed | Po |
+| --- | --- | --- |
+| Panel tabeli przewija się (1440 px) | nie | tak |
+| Przewija się cała strona (1440 px) | tak | nie |
+| Nagłówek widoczny po przewinięciu o 400 px (1440 px) | nie, −242 px poza ekranem | tak, 158 px od góry |
+| Nachodzenie filtrów na nagłówek | 23 px | 0 px |
+| Tło nagłówka | przezroczyste | nieprzezroczyste |
+| Nadmiar poziomy na telefonie 390 px | 1621 px | 0 px |
+| Szerokość kolumny zaznaczania | 63 px | 39 px |
+
+## DataVault — sticky headers and the phone card layout
+
+### Computer and tablet (above 720 px)
+
+The **table panel** scrolls, not the whole page. Column names and filter fields stay on top.
+
+- `.app`: `height: 100dvh; min-height: 100dvh`,
+- `.main`, `.workspace`, `.tableWrap`, `.tableFrame`: `min-height: 0`,
+- `.tableViewport`: `flex: 1; overflow: auto` — the only scrolling container,
+- `.dataTable thead th`: `background-color: var(--panel)` under the
+  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))` gradient, `z-index: 3`,
+- `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` under a flat
+  `rgba(22,198,12,.05)`, `z-index: 2`, `top: var(--header-row-height)`,
+- `--header-row-height`: written by measurement onto the table element by `buildTableSkeleton()`. The
+  `36px` value in `:root` is only a fallback before the first measurement. Measured heights: **40 px**
+  with names on one line, **59 px** on two, **78 px** on three,
+- selection column: `5ch` instead of `8ch` — the reclaimed 23 px go to the content columns.
+
+### Phone (720 px and below)
+
+A table row becomes a card. The page scrolls and the header is hidden.
+
+- `.app`: `height: auto; min-height: 100dvh`,
+- `.tableViewport`: `overflow-x: hidden; padding: 8px`,
+- `.dataTable`: no border and no shadow; `thead` hidden,
+- the card (`tbody tr`): `1px solid var(--div)`, `border-radius: 6px`, `margin-bottom: 10px`,
+  `padding: 8px 10px`, `box-shadow: 0 0 10px rgba(22,198,12,.10)`,
+- the cell: a `minmax(8ch, 30%) minmax(0, 1fr)` grid with a 10 px gap; the label from
+  `attr(data-col)` in `--text2`, `0.72rem`, uppercase, `letter-spacing: .08em`,
+- the selection cell: at the top of the card, right-aligned, separated by a `1px solid var(--div)` line.
+
+### Measured effect
+
+| What | Before | After |
+| --- | --- | --- |
+| Table panel scrolls (1440 px) | no | yes |
+| Whole page scrolls (1440 px) | yes | no |
+| Header visible after a 400 px scroll (1440 px) | no, −242 px off screen | yes, 158 px from the top |
+| Filter row overlapping the header | 23 px | 0 px |
+| Header background | transparent | opaque |
+| Horizontal overflow on a 390 px phone | 1621 px | 0 px |
+| Selection column width | 63 px | 39 px |

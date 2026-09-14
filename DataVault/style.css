@@ -48,7 +48,18 @@ body{
   letter-spacing:.03em;
 }
 code{color:var(--code)}
-.app{min-height:100%; display:flex; flex-direction:column}
+/* --- Łańcuch wysokości dla przyklejanych nagłówków / Height chain for the sticky headers ---
+   Nagłówek przykleja się względem najbliższego przewijanego pojemnika, czyli .tableViewport. Ten
+   pojemnik musi mieć ograniczoną wysokość, inaczej nigdy się nie przewija, przewija się cała strona,
+   a nagłówek wyjeżdża do góry razem z nią. Dlatego .app dostaje konkretną wysokość okna, a każdy
+   pojemnik po drodze min-height:0 — bez tego element w układzie flex nie potrafi być niższy od swojej
+   zawartości, nawet przy flex:1.
+   The header sticks relative to the nearest scrolling container, which is .tableViewport. That
+   container must have a bounded height, otherwise it never scrolls, the whole page scrolls instead
+   and the header travels off the top with it. Hence .app gets a concrete viewport height, and every
+   container along the way gets min-height:0 — without it a flex item cannot be shorter than its
+   content, even with flex:1. */
+.app{height:100dvh; min-height:100dvh; display:flex; flex-direction:column}
 .topbar{
   padding:14px 16px;
   border-bottom:1px solid var(--div);
@@ -129,7 +140,7 @@ code{color:var(--code)}
 .btn.secondary:hover{background:rgba(22,198,12,.12)}
 .btn.primary:hover{filter:brightness(1.08)}
 
-.main{flex:1; display:grid; grid-template-columns:180px 1fr; gap:12px; padding:12px}
+.main{flex:1; min-height:0; display:grid; grid-template-columns:180px 1fr; gap:12px; padding:12px}
 .panel{
   border:1px solid var(--b);
   background:var(--panel);
@@ -197,6 +208,7 @@ code{color:var(--code)}
   box-shadow: inset 0 0 0 1px rgba(22,198,12,.08);
   border-radius:4px;
   overflow:hidden;
+  min-height:0;
   display:flex; flex-direction:column;
 }
 .tabs{
@@ -237,6 +249,7 @@ code{color:var(--code)}
 /* Nowy układ tabeli */
 .tableWrap{
   flex:1;
+  min-height:0;
   display:flex;
   flex-direction:column;
   position:relative;
@@ -244,6 +257,7 @@ code{color:var(--code)}
 }
 .tableFrame{
   flex:1;
+  min-height:0;
   border-top:1px solid var(--div);
   border-bottom:1px solid var(--div);
   background:var(--panel);
@@ -274,7 +288,13 @@ code{color:var(--code)}
 .dataTable thead th{
   position:sticky;
   top:0;
-  background:linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03));
+  /* Element przyklejony musi mieć tło nieprzezroczyste, inaczej przewijane wiersze danych
+     prześwitują przez nagłówek. Kolor bazowy pod gradientem załatwia to bez zmiany wyglądu.
+     A sticky element needs an opaque background, otherwise the scrolling data rows show through the
+     header. A base colour under the gradient does that without changing the look. */
+  background-color:var(--panel);
+  background-image:linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03));
+  z-index:3;
   color:var(--code);
   padding:10px 9px;
   letter-spacing:.08em;
@@ -282,8 +302,16 @@ code{color:var(--code)}
   border-bottom:1px solid var(--div);
 }
 .dataTable thead tr:nth-child(2) th{
+  /* Wysokość pierwszego wiersza zależy od tego, czy nazwy kolumn się zawinęły, więc wpisuje ją
+     pomiarem buildTableSkeleton(). Wartość ze zmiennej :root jest tylko zapasem na czas przed
+     pierwszym pomiarem.
+     The first row height depends on whether the column names wrapped, so buildTableSkeleton() writes
+     it in by measurement. The :root value is only a fallback for the moment before the first
+     measurement. */
   top:var(--header-row-height);
-  background:rgba(22,198,12,.05);
+  background-color:var(--panel);
+  background-image:linear-gradient(180deg, rgba(22,198,12,.05), rgba(22,198,12,.05));
+  z-index:2;
 }
 /* --- Aktywny filtr kolumny: jasna czerwień + glow dla nagłówka / Active column filter: bright red + glow for header --- */
 .dataTable thead tr:first-child th.filter-active{
@@ -421,11 +449,15 @@ td.center{text-align:center}
 
 /* Column tweaks */
 /* Kolumna wyboru (pierwsza, ✓) — stała szerokość we wszystkich zakładkach */
+/* Kolumna zaznaczania mieści sam znacznik wyboru, więc nie potrzebuje ośmiu znaków szerokości.
+   Odzyskane miejsce dostają kolumny z treścią.
+   The selection column holds just the tick box, so it does not need eight characters of width.
+   The reclaimed space goes to the content columns. */
 .tableWrap table th:first-child,
 .tableWrap table td:first-child{
-  min-width:8ch;
-  max-width:8ch;
-  width:8ch;
+  min-width:5ch;
+  max-width:5ch;
+  width:5ch;
   text-align:center;
 }
 /* Bestiariusz */
@@ -1109,4 +1141,73 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Eksplozje Pojazdów"]{
   table-layout:fixed;
   width:max-content;
+}
+
+/* --- Telefon: wiersz tabeli staje się kartą / Phone: a table row becomes a card ---
+   Każda z 38 zakładek jest szersza niż telefon — najszersza, Bestiariusz, ponad trzynaście razy.
+   Przewijanie w bok przy czytaniu jednego wiersza oznacza kilkanaście ruchów tam i z powrotem, więc
+   poniżej 720 px wiersz zamienia się w kartę: nazwa kolumny po lewej, wartość po prawej.
+   Etykiety biorą się z atrybutu data-col, który kod nadaje każdej komórce niezależnie od zakładki,
+   więc nowe zakładki obsłużą się same, bez dopisywania czegokolwiek.
+   Every one of the 38 tabs is wider than a phone — the widest, the Bestiary, over thirteen times so.
+   Scrolling sideways to read one row means a dozen moves back and forth, so below 720 px a row turns
+   into a card: the column name on the left, the value on the right.
+   The labels come from the data-col attribute the code sets on every cell regardless of the tab, so
+   new tabs are handled automatically, with nothing to add. */
+@media (max-width: 720px){
+  /* Na telefonie nie ma przyklejanych nagłówków — nie ma ich do czego przykleić, bo tabela jest
+     listą kart. Przewija się cała strona.
+     On a phone there are no sticky headers — there is nothing to stick, because the table is a list
+     of cards. The page itself scrolls. */
+  .app{height:auto; min-height:100dvh}
+  .tableViewport{overflow-x:hidden; padding:8px}
+  .dataTable{border:none; box-shadow:none}
+  .dataTable,
+  .dataTable tbody,
+  .dataTable tr,
+  .dataTable td{display:block; width:auto}
+  .dataTable thead{display:none}
+  .dataTable tbody tr{
+    border:1px solid var(--div);
+    border-radius:6px;
+    margin:0 0 10px;
+    padding:8px 10px;
+    box-shadow:0 0 10px rgba(22,198,12,.10);
+  }
+  /* Selektor jest celowo bardziej szczegółowy niż reguły opisujące pojedyncze kolumny, dzięki czemu
+     znosi ich sztywne szerokości bez użycia !important.
+     The selector is deliberately more specific than the per-column rules, so it overrides their fixed
+     widths without resorting to !important. */
+  .tableWrap .dataTable[data-sheet] tbody td[data-col]{
+    min-width:0;
+    max-width:none;
+    width:auto;
+    text-align:left;
+    border-bottom:none;
+    padding:3px 0;
+    display:grid;
+    grid-template-columns:minmax(8ch, 30%) minmax(0, 1fr);
+    gap:10px;
+    align-items:start;
+  }
+  .tableWrap .dataTable[data-sheet] tbody td[data-col]::before{
+    content:attr(data-col);
+    color:var(--text2);
+    font-size:.72rem;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    line-height:1.65;
+  }
+  /* Kolumna zaznaczania zostaje na górze karty, wyrównana do prawej.
+     The selection column stays at the top of the card, aligned to the right. */
+  .tableWrap .dataTable tbody td:first-child{
+    min-width:0;
+    max-width:none;
+    width:auto;
+    display:flex;
+    justify-content:flex-end;
+    padding:0 0 6px;
+    border-bottom:1px solid var(--div);
+    margin-bottom:4px;
+  }
 }

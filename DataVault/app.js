@@ -1438,6 +1438,12 @@ function selectSheet(name){
   saveSessionState();
 }
 
+// Jeden obserwator na całą aplikację: przy zmianie zakładki tabela powstaje od nowa, więc stary
+// obserwator zostaje odpięty zamiast się odkładać.
+// A single observer for the whole application: switching tabs rebuilds the table, so the previous
+// observer is disconnected instead of piling up.
+let headerRowObserver = null;
+
 function buildTableSkeleton(){
   const rows = DB.sheets[currentSheet] || [];
   const cols = inferColumns(rows, currentSheet);
@@ -1530,6 +1536,27 @@ function buildTableSkeleton(){
   viewport.appendChild(tableEl);
   frame.appendChild(viewport);
   els.wrap.appendChild(frame);
+
+  // --- Pomiar wysokości pierwszego wiersza nagłówka / Measuring the first header row height ---
+  // Drugi wiersz nagłówka (pola filtrów) przykleja się na wysokości pierwszego. Ta wysokość zależy
+  // od tego, czy nazwy kolumn zawinęły się na dwie albo trzy linie, więc nie da się jej wpisać na
+  // stałe — przy każdej zakładce wychodzi inna. Mierzymy ją i wpisujemy do zmiennej CSS tabeli.
+  // ResizeObserver powtarza pomiar po zmianie szerokości okna, bo zawijanie nazw wtedy się zmienia.
+  // The second header row (the filter fields) sticks at the height of the first one. That height
+  // depends on whether the column names wrapped onto two or three lines, so it cannot be hard-coded —
+  // every tab comes out different. We measure it and write it into the table's CSS variable.
+  // The ResizeObserver repeats the measurement after a window resize, because wrapping changes then.
+  const headerRow = tableEl.querySelector("thead tr:first-child");
+  if (headerRow){
+    const measureHeaderRow = () => {
+      const height = Math.round(headerRow.getBoundingClientRect().height);
+      if (height > 0) tableEl.style.setProperty("--header-row-height", `${height}px`);
+    };
+    if (headerRowObserver) headerRowObserver.disconnect();
+    headerRowObserver = new ResizeObserver(measureHeaderRow);
+    headerRowObserver.observe(headerRow);
+    requestAnimationFrame(measureHeaderRow);
+  }
 
   updateSortMarks();
   updateFilterIndicators();

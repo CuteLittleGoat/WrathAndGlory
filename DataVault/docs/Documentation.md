@@ -453,6 +453,46 @@ Dla aktywnego arkusza `selectSheet(name)`:
 - input tekstowy filtra per kolumna,
 - przycisk menu listowego filtra per kolumna.
 
+### Przyklejone nagłówki na komputerze i tablecie
+
+Oba wiersze nagłówka — nazwy kolumn i pola filtrów — zostają na wierzchu przy przewijaniu tabeli.
+Działa to na trzech rzeczach naraz i żadnej z nich nie da się pominąć:
+
+**1. Łańcuch wysokości.** `position: sticky` przykleja element względem najbliższego przewijanego
+pojemnika, czyli `.tableViewport`. Ten pojemnik musi mieć ograniczoną wysokość, bo inaczej nigdy się
+nie przewija — przewija się wtedy cała strona i nagłówek wyjeżdża do góry razem z nią. Dlatego
+`.app` ma `height: 100dvh`, a `.main`, `.workspace`, `.tableWrap` i `.tableFrame` mają `min-height: 0`.
+Bez `min-height: 0` element w układzie flex nie potrafi być niższy od swojej zawartości, nawet przy
+`flex: 1`.
+
+**2. Zmierzona wysokość pierwszego wiersza.** Drugi wiersz nagłówka przykleja się na wysokości
+pierwszego, przez `top: var(--header-row-height)`. Ta wysokość zależy od tego, czy nazwy kolumn
+zawinęły się na dwie albo trzy linie, a to jest różne dla każdej zakładki i zmienia się przy zmianie
+szerokości okna. `buildTableSkeleton()` mierzy więc wiersz i wpisuje wynik do zmiennej CSS **na
+elemencie tabeli**, a `ResizeObserver` powtarza pomiar po zmianie rozmiaru. Wartość `36px` ze
+zmiennej w `:root` jest wyłącznie zapasem na moment przed pierwszym pomiarem.
+
+**3. Nieprzezroczyste tło.** Element przyklejony musi mieć tło nieprzezroczyste, inaczej przewijane
+wiersze danych prześwitują przez nagłówek. Oba wiersze nagłówka mają `background-color: var(--panel)`
+pod swoim gradientem oraz `z-index` (3 dla nazw kolumn, 2 dla filtrów).
+
+### Układ kart na telefonie
+
+Poniżej 720 px tabela zamienia się w listę kart: wiersz staje się kartą, nazwa kolumny jest etykietą
+po lewej, wartość po prawej. Przyklejanie jest wtedy wyłączone (`thead` ma `display: none`), a
+przewija się cała strona — `.app` wraca do `height: auto`.
+
+Etykiety biorą się z atrybutu `data-col`, który `renderRow()` nadaje każdej komórce niezależnie od
+zakładki (`td.dataset.col = col`), przez `content: attr(data-col)`. **Nie wymaga to żadnej zmiany
+w JavaScript i obejmuje wszystkie zakładki, także te, które dopiero powstaną.**
+
+Selektor `.tableWrap .dataTable[data-sheet] tbody td[data-col]` jest celowo bardziej szczegółowy niż
+reguły opisujące pojedyncze kolumny, dzięki czemu znosi ich sztywne szerokości bez `!important`.
+
+Reguły `white-space: nowrap` dla kolumny `Zasięg` w arkuszach `Bronie` i `Bronie Pojazdów` pozostają
+nietknięte i działają także w układzie kart.
+
+
 Render ciała tabeli wykorzystuje progressive rendering porcjami po `RENDER_CHUNK_SIZE`.
 
 ## Filtrowanie i sortowanie
@@ -1049,6 +1089,44 @@ For the active sheet, `selectSheet(name)`:
 - selection column `✓`,
 - text filter input per column,
 - list-filter menu button per column.
+
+### Sticky headers on computer and tablet
+
+Both header rows — the column names and the filter fields — stay on top while the table scrolls. This
+rests on three things at once and none of them can be skipped:
+
+**1. The height chain.** `position: sticky` sticks an element relative to the nearest scrolling
+container, which is `.tableViewport`. That container must have a bounded height, otherwise it never
+scrolls — the whole page scrolls instead and the header travels off the top with it. Hence `.app` has
+`height: 100dvh`, and `.main`, `.workspace`, `.tableWrap` and `.tableFrame` have `min-height: 0`.
+Without `min-height: 0` a flex item cannot be shorter than its content, even with `flex: 1`.
+
+**2. The measured height of the first row.** The second header row sticks at the height of the first
+one, through `top: var(--header-row-height)`. That height depends on whether the column names wrapped
+onto two or three lines, which differs per tab and changes when the window is resized. So
+`buildTableSkeleton()` measures the row and writes the result into a CSS variable **on the table
+element**, and a `ResizeObserver` repeats the measurement after a resize. The `36px` value in the
+`:root` variable is only a fallback for the moment before the first measurement.
+
+**3. An opaque background.** A sticky element needs an opaque background, otherwise the scrolling data
+rows show through the header. Both header rows carry `background-color: var(--panel)` under their
+gradient plus a `z-index` (3 for the column names, 2 for the filters).
+
+### Card layout on a phone
+
+Below 720 px the table turns into a list of cards: a row becomes a card, the column name is the label
+on the left and the value sits on the right. Sticking is then switched off (`thead` gets
+`display: none`) and the page itself scrolls — `.app` returns to `height: auto`.
+
+The labels come from the `data-col` attribute that `renderRow()` sets on every cell regardless of the
+tab (`td.dataset.col = col`), via `content: attr(data-col)`. **This requires no JavaScript change and
+covers every tab, including those yet to be created.**
+
+The `.tableWrap .dataTable[data-sheet] tbody td[data-col]` selector is deliberately more specific than
+the per-column rules, so it overrides their fixed widths without `!important`.
+
+The `white-space: nowrap` rules for the `Zasięg` column in the `Bronie` and `Bronie Pojazdów` sheets
+are untouched and apply in the card layout too.
 
 Table body rendering uses progressive chunks of `RENDER_CHUNK_SIZE`.
 

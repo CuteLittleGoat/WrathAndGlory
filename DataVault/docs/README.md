@@ -111,6 +111,23 @@ Kolumna `Koszt IM` pokazuje koszt danego przedmiotu w systemie `Imperium Maledic
 
 Jeżeli kolumna `Koszt IM` jest pusta, oznacza to po prostu, że dla danego wpisu nie uzupełniono kosztu z `Imperium Maledictum` albo dana rzecz nie ma takiego odpowiednika w danych.
 
+## Na telefonie tabela wygląda inaczej
+
+Na wąskim ekranie (poniżej 720 px) tabela nie jest tabelą, tylko **listą kart**. Każdy wpis to jedna
+karta, a w niej po lewej nazwa kolumny, po prawej wartość. Nie trzeba przesuwać ekranu w bok — cała
+treść mieści się na szerokość.
+
+Powód jest prosty: najszersza zakładka (Bestiariusz) jest ponad trzynaście razy szersza niż telefon.
+Przeczytanie jednego wiersza wymagałoby kilkunastu ruchów w bok i z powrotem.
+
+Wszystko działa tak samo jak na komputerze: pole wyboru do porównania jest u góry karty, filtry
+i wyszukiwanie po lewej, sortowanie przez nagłówek — z tym że na telefonie nagłówka nie ma, bo nazwy
+kolumn są przy każdej wartości.
+
+Na komputerze i tablecie tabela zostaje tabelą, a **nazwy kolumn i pola filtrów zostają na wierzchu**
+podczas przewijania. Wcześniej znikały po pierwszym ruchu kółkiem i przy zakładce Bronie nie dało się
+odróżnić kolumn `Obrażenia`, `DK` i `PP`.
+
 ## Wyszukiwanie globalne
 
 Pole wyszukiwania globalnego filtruje aktualną zakładkę.
@@ -443,6 +460,23 @@ Some tabs, especially those containing items, equipment, vehicles, or similar us
 The `Koszt IM` column shows the cost of a given item in `Imperium Maledictum`. It is a helper and comparison value. It is intended for using a classic monetary system by Game Masters who prefer that solution.
 
 If the `Koszt IM` column is empty, it simply means that no `Imperium Maledictum` cost has been filled in for that record, or that the item has no such equivalent in the data.
+
+## The table looks different on a phone
+
+On a narrow screen (below 720 px) the table is not a table but a **list of cards**. Every entry is one
+card, with the column name on the left and the value on the right. There is no need to drag the screen
+sideways — all the content fits the width.
+
+The reason is simple: the widest tab (the Bestiary) is over thirteen times wider than a phone. Reading
+a single row would take a dozen moves sideways and back.
+
+Everything works as it does on a computer: the comparison checkbox is at the top of the card, filters
+and search are on the left, sorting is done from the header — except that on a phone there is no
+header, because the column names sit next to every value.
+
+On a computer and a tablet the table stays a table, and **the column names and filter fields stay on
+top** while scrolling. They used to disappear after the first scroll, and on the weapons tab there was
+no way to tell the `Obrażenia`, `DK` and `PP` columns apart.
 
 ## Global search
 
