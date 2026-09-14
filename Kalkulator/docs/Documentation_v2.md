@@ -82,9 +82,27 @@ Każdy skrypt używa własnej funkcji `initialize()` i uruchamia ją:
 
 ### Ukryty przełącznik języka
 
-Element `languageSelect` nadal istnieje w DOM, ale ma `display:none!important`, `aria-hidden="true"` oraz `tabindex="-1"`.
+Element `languageSelect` nadal istnieje w DOM, ale ma klasę `language-switcher--hidden`
+(reguła `display:none!important` w bloku `<style>` tego pliku), `aria-hidden="true"`
+oraz `tabindex="-1"`.
 
 Opcje `Polski` i `English` są zachowane technicznie, lecz aktualna wersja v2 nie przełącza języka. Instrukcja i eksport są polskie.
+
+Aby przełącznik był widoczny, wystarczy usunąć klasę `language-switcher--hidden` z elementu
+`<select id="languageSelect">` w `Kalkulator/TworzeniePostaci_v2.html`; regułę CSS można zostawić.
+Nad elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`. Klasa stoi na samym
+`<select>`, a nie na kontenerze `.language-switcher`, bo kontener trzyma także przyciski
+`Instrukcja`, `Strona Główna` i `Maksymalne wartości atrybutów`.
+
+### Podpis w stopce — celowo nieczytelny
+
+Stopka `.footer` z tekstem `Wykonane przez Spaczoną Inteligencję` ma `font-size:1px`,
+`line-height:1` oraz `-webkit-text-size-adjust:none` i `text-size-adjust:none`.
+
+Jest to zamierzone: tekst istnieje w treści strony i da się go zaznaczyć oraz skopiować do notatnika,
+ale na ekranie pozostaje nieczytelną smużką. `text-size-adjust: none` wyłącza powiększanie drobnego
+tekstu przez przeglądarki telefonów. Zmiana rozmiaru to zmiana jednej wartości `font-size`
+w regule `.footer`.
 
 ### Sekcje główne
 
@@ -1373,6 +1391,14 @@ The page uses the shared monospace stack and a black/green terminal aesthetic. I
 The computed-stat table uses `25% / 47% / 14% / 14%` columns. Bonus and Result are equally wide and centered.
 
 At widths up to 760px, large tables retain minimum widths and scroll horizontally inside their wrappers.
+
+The `languageSelect` element carries the `language-switcher--hidden` class
+(`display:none!important`), so the selector is hidden; removing that class from
+`<select id="languageSelect">` in `Kalkulator/TworzeniePostaci_v2.html` makes it visible again.
+A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the element.
+
+The `.footer` credit uses `font-size:1px`, `line-height:1` and `text-size-adjust:none` on purpose:
+the text stays in the page content and can be selected and copied, but it is unreadable on screen.
 
 ## Important limitations
 

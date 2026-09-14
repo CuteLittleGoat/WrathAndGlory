@@ -507,6 +507,18 @@ Pastylki statusów są zielone, gdy wszystko jest w porządku. Czerwona pastylka
 - Krótkie efekty odpalaj pojedynczym kliknięciem nazwy.
 - Nie zostawiaj zbyt wielu aktywnych pętli naraz, jeśli gracze mają rozumieć dialog.
 
+## Język interfejsu
+
+Moduł jest po polsku. Przełącznik języka polski/angielski istnieje w kodzie, ale jest ukryty
+i zwykły użytkownik go nie widzi. Cała warstwa tłumaczeń pozostaje aktywna.
+
+Aby pokazać przełącznik, wystarczy usunąć klasę `language-switcher--hidden` z kontenera `<div class="language-switcher language-switcher--hidden">` w pliku `Audio/index.html`.
+Nad tym elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`, żeby łatwo było
+trafić we właściwe miejsce. Nic więcej nie trzeba zmieniać.
+
+W module Audio są **dwa** takie kontenery: jeden w widoku użytkownika i jeden w panelu admina.
+Jeżeli oba przełączniki mają być widoczne, klasę trzeba usunąć w obu miejscach.
+
 ## Potwierdzanie, że dane otwiera Twoja aplikacja
 
 Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym programem
@@ -1055,6 +1067,18 @@ Status pills are green when everything is fine. A red pill means an error and no
 - Use `Loop` for long ambient backgrounds.
 - Use one-click playback for short effects.
 - Do not leave too many loops running if players need to hear dialogue.
+
+## Interface language
+
+The module runs in Polish. A Polish/English language selector exists in the code but is hidden, so
+a regular user never sees it. The whole translation layer stays active.
+
+To reveal the selector, remove the `language-switcher--hidden` class from the `<div class="language-switcher language-switcher--hidden">` container in `Audio/index.html`.
+A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits right above that element, so the
+spot is easy to find. Nothing else needs to change.
+
+The Audio module has **two** such containers: one in the user view and one in the admin panel.
+If both selectors are to be visible, the class has to be removed in both places.
 
 ## Confirming that your application is the one opening the data
 

@@ -54,7 +54,6 @@ W kodzie istnieje przełącznik języka `#languageSelect`, ale jego kontener ma 
 | `GeneratorNazw/script.js` | RNG, dane generatorów, funkcje generujące nazwy, obsługa UI i kopiowania. |
 | `GeneratorNazw/docs/README.md` | Instrukcja użytkownika PL/EN. |
 | `GeneratorNazw/docs/Documentation.md` | Niniejsza dokumentacja techniczna PL/EN. |
-| `GeneratorNazw/docs/Logika.md` | Dodatkowy opis logiki segmentów i składania nazw. |
 
 ## Zależności
 
@@ -157,7 +156,10 @@ Przełącznik języka jest ukrywany przez:
 }
 ```
 
-Usunięcie tej klasy z HTML ponownie pokaże selektor języka.
+Usunięcie klasy `language-switcher--hidden` z kontenera
+`<div class="language-switcher language-switcher--hidden">` w `GeneratorNazw/index.html` ponownie
+pokaże selektor języka. Regułę CSS można zostawić, bo bez klasy nie ma na co działać. Nad elementem
+stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
 
 ### Siatka i wyniki na wąskim ekranie
 
@@ -477,7 +479,6 @@ The code contains a `#languageSelect` language selector, but its container has t
 | `GeneratorNazw/script.js` | RNG, generator data, name generator functions, UI wiring, and copying. |
 | `GeneratorNazw/docs/README.md` | PL/EN user guide. |
 | `GeneratorNazw/docs/Documentation.md` | This PL/EN technical documentation. |
-| `GeneratorNazw/docs/Logika.md` | Additional description of segment logic and name composition. |
 
 ## Dependencies
 
@@ -589,7 +590,10 @@ The language selector is hidden by:
 }
 ```
 
-Removing this class from HTML reveals the selector again.
+Removing the `language-switcher--hidden` class from the
+`<div class="language-switcher language-switcher--hidden">` container in `GeneratorNazw/index.html`
+reveals the selector again. The CSS rule can stay, because without the class it has nothing to act
+on. A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the element.
 
 ## Generator data
 

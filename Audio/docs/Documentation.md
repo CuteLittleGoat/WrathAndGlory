@@ -40,7 +40,6 @@ Tryb admina jest wykrywany przez parametr URL:
 | `Audio/worker/audio-gate.js` | Kod bramki dostępu (Cloudflare Worker) wydającej manifest warstwy chronionej i podpisane adresy plików. |
 | `Audio/config/firebase-config.js` | Konfiguracja Firebase dla ustawień Audio. |
 | `../shared/access-gate.css` | Wspólny arkusz bramki dostępu, ten sam co w `DataVault` i `GeneratorNPC`. |
-| `Audio/config/firebase-config.template.js` | Szablon konfiguracji Firebase. |
 | `Audio/config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase modułu Audio. |
 | `../shared/appcheck-config.js` | Jedyne miejsce z kluczami witryny App Check (reCAPTCHA Enterprise) dla obu projektów Firebase. |
 | `../shared/firebase-app-check.js` | Wspólne uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0). |
@@ -96,7 +95,7 @@ Nagłówek admina zawiera:
 
 - tytuł,
 - opis,
-- przełącznik języka `languageSelect`,
+- przełącznik języka `languageSelect`, ukryty klasą `language-switcher--hidden`,
 - status manifestu `manifestStatus`,
 - status Firebase `firebaseStatus`,
 - status ulubionych `favoritesStatus`.
@@ -712,7 +711,16 @@ Aktywny stan pętli jest oznaczany klasą `is-looping` i `aria-pressed="true"`.
 - puste stany,
 - widoki renderowane dynamicznie.
 
-Przełącznik języka użytkownika jest obecnie ukryty klasą `language-switcher--hidden`.
+Oba przełączniki języka — użytkownika (`languageSelectUser`) i admina (`languageSelect`) — są
+ukryte klasą `language-switcher--hidden`. Reguła `.language-switcher--hidden { display: none
+!important; }` leży w bloku `<style>` pliku `Audio/index.html`. Warstwa tłumaczeń pozostaje aktywna,
+a domyślnym językiem jest polski.
+
+Aby pokazać przełącznik, wystarczy usunąć klasę `language-switcher--hidden` z kontenera
+`<div class="language-switcher language-switcher--hidden">`. W `Audio/index.html` są **dwa** takie
+kontenery: jeden w widoku użytkownika i jeden w panelu admina — jeżeli oba przełączniki mają być
+widoczne, klasę trzeba usunąć w obu miejscach. Nad każdym z nich stoi komentarz
+`MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
 
 ## Fallbacki i błędy
 
@@ -836,7 +844,6 @@ Admin mode is detected through the URL parameter:
 | `Audio/worker/audio-gate.js` | Access gateway source (Cloudflare Worker) serving the protected manifest and signed file URLs. |
 | `Audio/config/firebase-config.js` | Firebase configuration for Audio settings. |
 | `../shared/access-gate.css` | Shared access-gate stylesheet, the same one used by `DataVault` and `GeneratorNPC`. |
-| `Audio/config/firebase-config.template.js` | Firebase configuration template. |
 | `Audio/config/FirebaseREADME.md` | Firebase setup guide for Audio. |
 | `../shared/appcheck-config.js` | The only place holding App Check site keys (reCAPTCHA Enterprise) for both Firebase projects. |
 | `../shared/firebase-app-check.js` | Shared App Check activation for Firebase apps in modular form (SDK 12.6.0). |
@@ -892,7 +899,7 @@ Admin header contains:
 
 - title,
 - subtitle,
-- language switcher `languageSelect`,
+- language switcher `languageSelect`, hidden with `language-switcher--hidden`,
 - manifest status `manifestStatus`,
 - Firebase status `firebaseStatus`,
 - favorites status `favoritesStatus`.
@@ -1508,7 +1515,16 @@ Active loop state is marked with class `is-looping` and `aria-pressed="true"`.
 - empty states,
 - dynamically rendered views.
 
-User language switcher is currently hidden with `language-switcher--hidden`.
+Both language switchers — the user one (`languageSelectUser`) and the admin one
+(`languageSelect`) — are hidden with the `language-switcher--hidden` class. The rule
+`.language-switcher--hidden { display: none !important; }` lives in the `<style>` block of
+`Audio/index.html`. The translation layer stays active and Polish is the default language.
+
+To reveal a switcher, remove the `language-switcher--hidden` class from its
+`<div class="language-switcher language-switcher--hidden">` container. `Audio/index.html` has **two**
+such containers: one in the user view and one in the admin panel — if both switchers are to be
+visible, the class has to be removed in both places. A comment marked
+`LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above each of them.
 
 ## Fallbacks and errors
 

@@ -82,8 +82,17 @@
       gap:8px;
       align-items:flex-end;
     }
-    /* Ukrywa techniczny wybór języka w arkuszu tworzenia postaci; język pozostaje ustawiony domyślnie. / Hides the technical language selector in the character creation sheet; the language remains set to the default. */
-    .language-switcher select{display:none; min-width:120px;}
+/* --- Ukrycie przełącznika języka / Hiding the language switcher ---
+       PL: Przełącznik istnieje i działa, jest tylko niewidoczny. Cała warstwa tłumaczeń zostaje
+           czynna, a językiem domyślnym jest polski. Żeby przełącznik pokazać, usuń klasę
+           language-switcher--hidden z elementu <select id="languageSelect"> niżej w tym pliku —
+           nic więcej nie trzeba zmieniać.
+       EN: The switcher exists and works, it is merely invisible. The whole translation layer stays
+           active and the default language is Polish. To show the switcher, remove the
+           language-switcher--hidden class from the <select id="languageSelect"> element further
+           down this file — nothing else needs changing. */
+    .language-switcher--hidden{display:none !important}
+    .language-switcher select{min-width:120px;}
     .language-switcher button{
       padding:8px 12px;
       border-radius:6px;
@@ -136,7 +145,31 @@
     /* --- Kazda tabela przewija sie lokalnie zamiast rozpychac cala strone / Each table scrolls locally instead of widening the whole page --- */
     .table-wrap{overflow-x:auto;}
     .error-message{min-height:20px; color:var(--red); margin:6px 0 2px;}
-    .footer{margin-top:18px; color:var(--muted); text-align:center; letter-spacing:.08em;}
+    /* --- Podpis autora: celowo nieczytelny / Author credit: deliberately unreadable ---
+       PL: Rozmiar 1 px sprawia, że napis jest na ekranie tylko smużką, ale nadal istnieje w treści
+           strony — da się go zaznaczyć, skopiować i wkleić do notatnika, żeby przeczytać. To jest
+           zamierzone: mały żart dla tych, którzy zaznaczą całą stronę.
+           Rozmiar jest ustawiony w stylach, a przełącznik języka podmienia wyłącznie treść napisu,
+           więc wersja polska i angielska są tak samo małe.
+           text-size-adjust wyłącza powiększanie drobnego tekstu przez przeglądarki na telefonach,
+           bez którego napis stałby się czytelny akurat tam, gdzie ma pozostać ukryty.
+       EN: A 1 px size leaves the line as a mere smudge on screen while it still exists in the page
+           content — it can be selected, copied and pasted into a notepad to be read. That is
+           intended: a small joke for anyone who selects the whole page.
+           The size lives in the stylesheet and the language switcher replaces only the text, so the
+           Polish and English versions are equally small.
+           text-size-adjust switches off the small-text inflation that phone browsers apply, without
+           which the line would become readable exactly where it is meant to stay hidden. */
+    .footer{
+      margin-top:18px;
+      color:var(--muted);
+      text-align:center;
+      letter-spacing:.08em;
+      font-size:1px;
+      line-height:1;
+      -webkit-text-size-adjust:none;
+      text-size-adjust:none;
+    }
 
     .species-max-modal{
       position:fixed;
@@ -304,7 +337,8 @@
   <div class="wrapper">
     <!-- Panel akcji w prawym górnym rogu; techniczny select języka jest ukryty przed użytkownikiem. / Top-right action panel; the technical language select is hidden from the user. -->
     <div class="language-switcher">
-      <select id="languageSelect" aria-hidden="true" tabindex="-1">
+      <!-- MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA / LANGUAGE SWITCHER VISIBILITY CHANGE POINT: usuń klasę language-switcher--hidden, aby pokazać przełącznik / remove language-switcher--hidden to make the switcher visible -->
+      <select id="languageSelect" class="language-switcher--hidden" aria-hidden="true" tabindex="-1">
         <option value="pl">Polski</option>
         <option value="en">English</option>
       </select>

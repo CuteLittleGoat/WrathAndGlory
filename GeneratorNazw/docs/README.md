@@ -177,7 +177,12 @@ Sprawdź pole `Ile`. Minimalna sensowna wartość to 1, a maksymalna obsługiwan
 
 ### Nie widzę przełącznika języka
 
-To normalne. Przełącznik języka jest obecnie ukryty w interfejsie.
+To normalne. Przełącznik języka jest ukryty w interfejsie, a moduł działa po polsku.
+
+Aby go pokazać, wystarczy w pliku `GeneratorNazw/index.html` usunąć klasę
+`language-switcher--hidden` z kontenera `<div class="language-switcher language-switcher--hidden">`.
+Nad tym elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`. Nic więcej nie
+trzeba zmieniać.
 
 ---
 
@@ -360,4 +365,9 @@ Check the `How many` field. The minimum meaningful value is 1, and the maximum s
 
 ### I do not see the language switcher
 
-This is expected. The language switcher is currently hidden in the interface.
+That is expected. The language selector is hidden in the interface and the module runs in Polish.
+
+To reveal it, remove the `language-switcher--hidden` class from the
+`<div class="language-switcher language-switcher--hidden">` container in `GeneratorNazw/index.html`.
+A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above that element. Nothing else
+needs to change.

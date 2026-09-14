@@ -111,6 +111,15 @@ Kolumna `Koszt IM` pokazuje koszt danego przedmiotu w systemie `Imperium Maledic
 
 Jeżeli kolumna `Koszt IM` jest pusta, oznacza to po prostu, że dla danego wpisu nie uzupełniono kosztu z `Imperium Maledictum` albo dana rzecz nie ma takiego odpowiednika w danych.
 
+## Język interfejsu
+
+Moduł jest po polsku. Przełącznik języka polski/angielski istnieje w kodzie, ale jest ukryty
+i zwykły użytkownik go nie widzi. Cała warstwa tłumaczeń pozostaje aktywna.
+
+Aby pokazać przełącznik, wystarczy usunąć klasę `language-switcher--hidden` z kontenera `<div class="language-switcher language-switcher--hidden">` w pliku `DataVault/index.html`.
+Nad tym elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`, żeby łatwo było
+trafić we właściwe miejsce. Nic więcej nie trzeba zmieniać.
+
 ## Na telefonie tabela wygląda inaczej
 
 Na wąskim ekranie (poniżej 720 px) tabela nie jest tabelą, tylko **listą kart**. Każdy wpis to jedna
@@ -468,6 +477,15 @@ Some tabs, especially those containing items, equipment, vehicles, or similar us
 The `Koszt IM` column shows the cost of a given item in `Imperium Maledictum`. It is a helper and comparison value. It is intended for using a classic monetary system by Game Masters who prefer that solution.
 
 If the `Koszt IM` column is empty, it simply means that no `Imperium Maledictum` cost has been filled in for that record, or that the item has no such equivalent in the data.
+
+## Interface language
+
+The module runs in Polish. A Polish/English language selector exists in the code but is hidden, so
+a regular user never sees it. The whole translation layer stays active.
+
+To reveal the selector, remove the `language-switcher--hidden` class from the `<div class="language-switcher language-switcher--hidden">` container in `DataVault/index.html`.
+A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits right above that element, so the
+spot is easy to find. Nothing else needs to change.
 
 ## The table looks different on a phone
 

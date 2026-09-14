@@ -13,7 +13,8 @@
   <!-- Główna zawartość modułu / Main module content -->
 <main class="app">
     <div class="language-switcher">
-      <select id="languageSelect" aria-label="Wersja językowa">
+      <!-- MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA / LANGUAGE SWITCHER VISIBILITY CHANGE POINT: usuń klasę language-switcher--hidden, aby pokazać przełącznik / remove language-switcher--hidden to make the switcher visible -->
+      <select id="languageSelect" class="language-switcher--hidden" aria-label="Wersja językowa">
         <option value="pl">Polski</option>
         <option value="en">English</option>
       </select>

@@ -53,7 +53,7 @@ Język interfejsu jest wybierany przez `#languageSelect`.
 
 | Plik | Rola |
 | --- | --- |
-| `DiceRoller/index.html` | Struktura widoku: przełącznik języka, przycisk powrotu, pola, przycisk rzutu i wyniki. |
+| `DiceRoller/index.html` | Struktura widoku: ukryty przełącznik języka, przycisk powrotu, pola, przycisk rzutu i wyniki. |
 | `DiceRoller/style.css` | Motyw terminalowy, layout, style pól, przycisków, kości, animacji i panelu wyniku. |
 | `DiceRoller/script.js` | Stałe, tłumaczenia, walidacja, losowanie, render kości, logika wyniku i event listenery. |
 | `DiceRoller/docs/README.md` | Instrukcja użytkownika PL/EN. |
@@ -94,7 +94,7 @@ Najważniejsze elementy DOM:
 | --- | --- |
 | `.app` | Główna karta aplikacji. |
 | `.language-switcher` | Kontener selektora języka i linku do strony głównej. |
-| `#languageSelect` | Selektor języka `pl` / `en`. |
+| `#languageSelect` | Selektor języka `pl` / `en`, ukryty klasą `language-switcher--hidden`. |
 | `#mainPageButton` | Link do `../Main/index.html`. |
 | `#pageTitle` | Tytuł modułu. |
 | `#subtitle` | Podtytuł modułu. |
@@ -141,7 +141,7 @@ Najważniejsze zasady layoutu:
 - `.language-switcher` jest pozycjonowany absolutnie w prawym górnym rogu,
 - `.panel` używa `grid-template-columns: repeat(auto-fit, minmax(220px, 1fr))`,
 - `.dice` używa `flex-wrap`, aby kości zawijały się w wielu wierszach,
-- przy szerokości do `600px` przełącznik języka przechodzi do pozycji statycznej, a kości zmniejszają się z `68px` do `58px`.
+- przy szerokości do `600px` kontener przełącznika przechodzi do pozycji statycznej, a kości zmniejszają się z `68px` do `58px`.
 
 ### Siatka a wąski ekran
 
@@ -212,6 +212,19 @@ Funkcja `updateLanguage(lang)`:
 6. wywołuje `resetState()`.
 
 Zmiana języka zawsze resetuje pola i wynik.
+
+### Ukryty przełącznik języka
+
+Element `<select id="languageSelect">` ma klasę `language-switcher--hidden`, a reguła
+`.language-switcher--hidden { display: none !important; }` w `DiceRoller/style.css` chowa go
+z interfejsu. Cała warstwa `translations` pozostaje aktywna, a domyślnym językiem jest polski.
+
+Aby przełącznik był ponownie widoczny, należy usunąć klasę `language-switcher--hidden` z tego
+elementu w `DiceRoller/index.html` — regułę CSS można zostawić, bo bez klasy nie ma na co działać.
+Nad elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
+
+Klasa stoi na samym `<select>`, a nie na kontenerze `.language-switcher`, ponieważ kontener trzyma
+także link `#mainPageButton` — ukrycie kontenera zabrałoby przycisk `Strona Główna`.
 
 ## Walidacja pól
 
@@ -496,7 +509,7 @@ Important DOM elements:
 | --- | --- |
 | `.app` | Main application card. |
 | `.language-switcher` | Container for language selector and main page link. |
-| `#languageSelect` | `pl` / `en` language selector. |
+| `#languageSelect` | `pl` / `en` language selector, hidden with `language-switcher--hidden`. |
 | `#mainPageButton` | Link to `../Main/index.html`. |
 | `#pageTitle` | Module title. |
 | `#subtitle` | Module subtitle. |
@@ -560,6 +573,20 @@ The `translations` object has `pl` and `en` keys. Each language contains `labels
 `updateLanguage(lang)` sets the current language, updates `document.documentElement.lang`, updates all visible labels, updates `#mainPageButton`, and calls `resetState()`.
 
 Changing language always resets fields and result.
+
+### Hidden language selector
+
+The `<select id="languageSelect">` element carries the `language-switcher--hidden` class, and the
+rule `.language-switcher--hidden { display: none !important; }` in `DiceRoller/style.css` removes it
+from the interface. The whole `translations` layer stays active and Polish is the default language.
+
+To make the selector visible again, remove the `language-switcher--hidden` class from that element
+in `DiceRoller/index.html` — the CSS rule can stay, because without the class it has nothing to act
+on. A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the element.
+
+The class sits on the `<select>` itself rather than on the `.language-switcher` container, because
+the container also holds the `#mainPageButton` link — hiding the container would remove the
+`Main Page` button.
 
 ## Field validation
 

@@ -77,6 +77,41 @@ zablokowanym adresie czeka bez końca i blokuje wszystkie zapytania do bazy.
 Uruchomienie App Check nie jest krytyczne. Brak klucza albo brak biblioteki reCAPTCHA kończą się
 ostrzeżeniem w konsoli i pominięciem App Check — moduł pracuje wtedy tak jak bez niego.
 
+### Wersja zgodnościowa (compat)
+
+Moduły, które wczytują Firebase w zapisie zgodnościowym — oba Kreatory Postaci (SDK 12.6.0)
+i Infoczytnik (SDK 9.6.8) — używają pliku:
+
+```text
+shared/firebase-app-check-compat.js
+```
+
+Plik udostępnia `window.WG_activateAppCheckCompat(firebase)`. Wywołanie dobiera klucz z tej samej
+mapy `WG_APPCHECK_SITE_KEYS`, sprawdza obecność `firebase.appCheck.ReCaptchaEnterpriseProvider`
+oraz `window.grecaptcha.enterprise`, a każdą aplikację uruchamia najwyżej raz. Tak jak w wersji
+modularnej, niepowodzenie kończy się ostrzeżeniem w konsoli, a nie zatrzymaniem modułu.
+
+Strona musi wczytać `https://www.gstatic.com/firebasejs/<wersja>/firebase-app-check-compat.js`,
+`shared/appcheck-config.js`, bibliotekę reCAPTCHA Enterprise i dopiero potem ten plik.
+
+## Odwzorowanie reguł Firestore w repozytorium
+
+W `shared/` leżą dwa pliki z regułami Firestore:
+
+```text
+shared/firestore-wh40k-data-slate.rules
+shared/firestore-audiorpg.rules
+```
+
+Są to **odwzorowania reguł wgranych w konsoli Firebase**, trzymane w repozytorium po to, żeby stan
+zabezpieczeń obu baz dało się przejrzeć i porównać, czytając samo repozytorium. Zapisanie tych
+plików **nie zmienia niczego w Firebase** — reguły publikuje się w konsoli albo przez Firebase CLI.
+
+Każdy plik zaczyna się ostrzeżeniem o kolejności prac: warunek `request.app != null` jest sam w sobie
+wymuszaniem App Check i działa niezależnie od przełącznika `Enforce`, więc nie wolno go wgrywać,
+zanim wszystkie moduły zaczną wysyłać znaczniki. Docelowa treść reguł i właściwa kolejność kroków
+są w `Analizy/audyt-kodu-aplikacji-2026-09-10.md`, rozdz. 9.8.
+
 ## Plik konfiguracyjny
 
 Konfigurację należy umieścić w:
@@ -501,6 +536,42 @@ every database request.
 
 App Check activation is not critical. A missing key or a missing reCAPTCHA library results in a
 console warning and App Check being skipped — the module then works as it does without it.
+
+### Compatibility (compat) form
+
+Modules that load Firebase in compatibility form — both character creators (SDK 12.6.0) and
+Infoczytnik (SDK 9.6.8) — use the file:
+
+```text
+shared/firebase-app-check-compat.js
+```
+
+It exposes `window.WG_activateAppCheckCompat(firebase)`. The call picks the key from the same
+`WG_APPCHECK_SITE_KEYS` map, checks that `firebase.appCheck.ReCaptchaEnterpriseProvider` and
+`window.grecaptcha.enterprise` exist, and activates each app at most once. As in the modular form,
+a failure ends with a console warning rather than a stopped module.
+
+The page has to load `https://www.gstatic.com/firebasejs/<version>/firebase-app-check-compat.js`,
+`shared/appcheck-config.js`, the reCAPTCHA Enterprise library, and only then this file.
+
+## Firestore rules mirrored in the repository
+
+Two Firestore rule files live in `shared/`:
+
+```text
+shared/firestore-wh40k-data-slate.rules
+shared/firestore-audiorpg.rules
+```
+
+They **mirror the rules deployed in the Firebase Console** and are kept in the repository so that the
+security state of both databases can be reviewed and compared from the repository alone. Saving these
+files **changes nothing in Firebase** — rules are published from the console or through the Firebase
+CLI.
+
+Each file opens with a warning about ordering: the `request.app != null` condition is App Check
+enforcement in itself and works regardless of the `Enforce` switch, so it must not be deployed before
+every module sends tokens. The final rule text and the correct step order are in
+`Analizy/audyt-kodu-aplikacji-2026-09-10.md`, chapter 9.8.
 
 ## Configuration file
 

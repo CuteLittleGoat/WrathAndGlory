@@ -57,6 +57,17 @@ body {
   align-items: flex-end;
 }
 
+/* --- Ukrycie przełącznika języka / Hiding the language switcher ---
+   PL: Przełącznik istnieje i działa, jest tylko niewidoczny. Cała warstwa tłumaczeń zostaje czynna,
+       a językiem domyślnym jest polski. Żeby przełącznik pokazać, usuń klasę
+       language-switcher--hidden z odpowiedniego elementu w pliku HTML tego modułu — nic więcej nie
+       trzeba zmieniać.
+   EN: The switcher exists and works, it is merely invisible. The whole translation layer stays
+       active and the default language is Polish. To show the switcher, remove the
+       language-switcher--hidden class from the matching element in this module's HTML file —
+       nothing else needs changing. */
+.language-switcher--hidden{display:none !important}
+
 .language-switcher select {
   background: var(--bg);
   color: var(--text);

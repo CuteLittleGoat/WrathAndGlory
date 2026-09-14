@@ -64,6 +64,20 @@
       gap: 10px;
     }
 
+    /* --- Ukrycie przełącznika języka / Hiding the language switcher ---
+       PL: Przełącznik istnieje i działa, jest tylko niewidoczny. Cała warstwa tłumaczeń zostaje
+           czynna, a językiem domyślnym jest polski. Żeby przełącznik pokazać, usuń klasę
+           language-switcher--hidden z elementu w pliku HTML tego modułu — w module Audio są takie
+           dwa miejsca: przełącznik w nagłówku admina i przełącznik w widoku użytkownika.
+       EN: The switcher exists and works, it is merely invisible. The whole translation layer stays
+           active and the default language is Polish. To show the switcher, remove the
+           language-switcher--hidden class from the element in this module's HTML file — in the Audio
+           module there are two such places: the switcher in the admin header and the one in the user
+           view. */
+    .language-switcher--hidden {
+      display: none !important;
+    }
+
     .language-switcher select {
       min-width: 160px;
       padding: 8px 12px;

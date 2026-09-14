@@ -612,7 +612,17 @@ Język wpływa na:
 - aria-labels,
 - puste stany.
 
-Przełącznik języka istnieje w HTML, ale ma klasę `language-switcher--hidden`. Aby go pokazać, trzeba usunąć tę klasę oraz upewnić się, że wszystkie teksty są kompletne.
+Przełącznik języka istnieje w HTML, ale ma klasę `language-switcher--hidden`, a reguła
+`.language-switcher--hidden { display: none !important; }` w `DataVault/style.css` chowa go
+z interfejsu. Warstwa tłumaczeń pozostaje aktywna, a domyślnym językiem jest polski.
+
+Aby go pokazać, wystarczy usunąć klasę `language-switcher--hidden` z kontenera
+`<div class="language-switcher language-switcher--hidden">` w pliku `DataVault/index.html` — regułę CSS
+można zostawić, bo bez klasy nie ma na co działać. Nad elementem stoi komentarz
+`MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
+
+Klasa stoi na kontenerze, bo kontener zawiera wyłącznie select — pozostałe przyciski nagłówka leżą
+poza nim i ukrycie przełącznika ich nie dotyczy.
 
 ## Fallbacki i błędy
 
@@ -1278,7 +1288,17 @@ Language affects:
 - aria labels,
 - empty states.
 
-The language switcher exists in HTML but has class `language-switcher--hidden`. To show it, remove that class and ensure all texts are complete.
+The language switcher exists in HTML but carries the `language-switcher--hidden` class, and the
+rule `.language-switcher--hidden { display: none !important; }` in `DataVault/style.css` removes it
+from the interface. The translation layer stays active and Polish is the default language.
+
+To make it visible, remove the `language-switcher--hidden` class from the
+`<div class="language-switcher language-switcher--hidden">` container in `DataVault/index.html` — the CSS
+rule can stay, because without the class it has nothing to act on. A comment marked
+`LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the element.
+
+The class sits on the container, because the container holds only the select — the other header
+buttons live outside it, so hiding the selector does not affect them.
 
 ## Fallbacks and errors
 

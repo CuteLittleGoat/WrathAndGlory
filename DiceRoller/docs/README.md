@@ -26,7 +26,6 @@ Moduł działa w przeglądarce. Nie wymaga logowania, Firebase ani połączenia 
 
 Po otwarciu modułu widać:
 
-- przełącznik języka w prawym górnym rogu,
 - przycisk `Strona Główna`,
 - tytuł `DiceRoller`,
 - trzy pola liczbowe,
@@ -49,7 +48,7 @@ Po otwarciu modułu widać:
 | --- | --- |
 | `Rzuć Kośćmi!` | Losuje wyniki kości i pokazuje podsumowanie testu. |
 | `Strona Główna` | Przenosi do modułu `Main` pod adresem `../Main/index.html`. |
-| Przełącznik języka | Zmienia język interfejsu między polskim i angielskim. Zmiana języka resetuje pola i czyści aktualny wynik. |
+| Przełącznik języka | Ukryty w interfejsie. Po odkryciu zmienia język interfejsu między polskim i angielskim; zmiana języka resetuje pola i czyści aktualny wynik. |
 
 ## Pola formularza
 
@@ -142,6 +141,16 @@ Po odświeżeniu strony albo zmianie języka wynik zostaje wyczyszczony, a pola 
 | `Komplikacja Furii` | Co najmniej jedna kość Furii wyrzuciła `1`, a nie wystąpiła Krytyczna Furia. | Zastosuj komplikację zgodnie z sytuacją w grze. |
 | `Możliwe Przeniesienie` | Test zdał z nadwyżką. | Gracz może wykorzystać wskazaną liczbę przeniesień, jeżeli zasady i sytuacja na to pozwalają. |
 
+## Język interfejsu
+
+Moduł jest po polsku. Przełącznik języka polski/angielski istnieje w kodzie, ale jest ukryty
+i zwykły użytkownik go nie widzi. Tłumaczenia angielskie są kompletne i gotowe do użycia.
+
+Aby pokazać przełącznik, wystarczy w pliku `DiceRoller/index.html` usunąć klasę
+`language-switcher--hidden` z elementu `<select id="languageSelect">`. Nad tym elementem stoi
+komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`, żeby łatwo było trafić we właściwe
+miejsce. Nic więcej nie trzeba zmieniać.
+
 ## Na telefonie
 
 Moduł mieści się na szerokość ekranu telefonu — nie trzeba przesuwać strony w bok.
@@ -156,9 +165,15 @@ Jeżeli `Ilość Kości Furii` jest większa niż `Pula Kości`, moduł automaty
 
 To aktualne zachowanie modułu. Wszystkie pola mają zakres od 1 do 99.
 
+### Nie widzę przełącznika języka
+
+Tak ma być. Przełącznik jest ukryty, a moduł działa po polsku. Sposób na jego odkrycie opisuje
+sekcja `Język interfejsu`.
+
 ### Wynik zniknął po zmianie języka
 
-Zmiana języka resetuje pola i czyści wynik. Najpierw wybierz język, a dopiero potem wykonaj rzut.
+Dotyczy tylko odkrytego przełącznika. Zmiana języka resetuje pola i czyści wynik — najpierw wybierz
+język, a dopiero potem wykonaj rzut.
 
 ### Przycisk `Strona Główna` nie prowadzi do menu
 
@@ -194,7 +209,6 @@ The module runs in the browser. It does not require login, Firebase, or database
 
 After opening the module, you see:
 
-- a language selector in the upper-right corner,
 - the `Main Page` button,
 - the `DiceRoller` title,
 - three numeric fields,
@@ -217,7 +231,7 @@ After opening the module, you see:
 | --- | --- |
 | `Roll the dice!` | Rolls the dice and shows the test summary. |
 | `Main Page` | Opens the `Main` module at `../Main/index.html`. |
-| Language selector | Switches the interface between Polish and English. Changing language resets the fields and clears the current result. |
+| Language selector | Hidden in the interface. Once revealed it switches the interface between Polish and English; changing language resets the fields and clears the current result. |
 
 ## Form fields
 
@@ -310,6 +324,16 @@ After refreshing the page or changing language, the result is cleared and fields
 | `Wrath Complication` | At least one Wrath die rolled `1`, and no Wrath Critical occurred. | Apply a complication fitting the game situation. |
 | `Possible Shift` | The test passed with extra margin. | The player can use the displayed number of shifts if the rules and situation allow it. |
 
+## Interface language
+
+The module is in Polish. A Polish/English language selector exists in the code but is hidden, so
+a regular user never sees it. The English translations are complete and ready to use.
+
+To reveal the selector, remove the `language-switcher--hidden` class from the
+`<select id="languageSelect">` element in `DiceRoller/index.html`. A comment marked
+`LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits right above that element so the spot is easy to
+find. Nothing else needs to change.
+
 ## On a phone
 
 The module fits the width of a phone screen — there is no need to drag the page sideways.
@@ -324,9 +348,15 @@ If `Number of Wrath Dice` is greater than `Dice Pool`, the module automatically 
 
 This is the current module behavior. All fields use the range from 1 to 99.
 
+### I do not see the language selector
+
+That is expected. The selector is hidden and the module runs in Polish. The `Interface language`
+section explains how to reveal it.
+
 ### The result disappeared after changing language
 
-Changing language resets fields and clears the result. Choose the language first, then roll.
+This applies only to a revealed selector. Changing language resets fields and clears the result —
+choose the language first, then roll.
 
 ### The `Main Page` button does not open the menu
 

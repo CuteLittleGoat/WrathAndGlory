@@ -5,13 +5,46 @@ Ten plik jest **głównym źródłem prawdy** dla całego projektu: zawiera komp
 ---
 
 ## Wspólny komponent — przełącznik języka
-- W modułach: **GeneratorNazw**, **GeneratorNPC**, **DataVault**, **KalkulatorXP**, **Audio**, **Infoczytnik (GM_test)** oraz **DiceRoller** dodano przełącznik języka (select PL/EN).
-- Styl selecta:
-  - tło: **#0b0b0b** (ciemne, spójne z motywem konsolowym),
-  - obramowanie: `1px solid --b` / `--border` (zależnie od modułu),
-  - tekst: `--text` (zielony),
-  - focus: delikatny glow (`box-shadow` w zieleni).
-- Domyślny wybór języka to **Polski**.
+
+Przełącznik języka (select PL/EN) istnieje w modułach: **GeneratorNazw**, **GeneratorNPC**,
+**DataVault**, **Kalkulator PD (KalkulatorXP)**, **Prosty Kreator Postaci**, **Zaawansowany Kreator
+Postaci**, **Audio** oraz **DiceRoller**.
+
+**We wszystkich tych modułach przełącznik jest ukryty w interfejsie.** Ukrywa go jedna wspólna klasa
+CSS `language-switcher--hidden` z regułą `display: none !important`. Cała warstwa tłumaczeń pozostaje
+aktywna, a domyślnym językiem interfejsu jest **polski**.
+
+### Jak pokazać przełącznik
+
+Wystarczy usunąć klasę `language-switcher--hidden` z elementu wskazanego niżej. Nic więcej nie trzeba
+zmieniać — reguła CSS może zostać w pliku, bo bez tej klasy nie ma na co działać. W każdym pliku HTML
+nad tym elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA / LANGUAGE SWITCHER
+VISIBILITY CHANGE POINT`.
+
+| Moduł | Plik | Element z klasą do usunięcia |
+| --- | --- | --- |
+| GeneratorNazw | `GeneratorNazw/index.html` | `<div class="language-switcher language-switcher--hidden">` |
+| GeneratorNPC | `GeneratorNPC/index.html` | `<div class="language-switcher language-switcher--hidden">` |
+| DataVault | `DataVault/index.html` | `<div class="language-switcher language-switcher--hidden">` |
+| Kalkulator PD | `Kalkulator/KalkulatorXP.html` | `<div class="language-switcher language-switcher--hidden">` |
+| Prosty Kreator Postaci | `Kalkulator/TworzeniePostaci.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
+| Zaawansowany Kreator Postaci | `Kalkulator/TworzeniePostaci_v2.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
+| Audio | `Audio/index.html` | dwa kontenery `<div class="language-switcher language-switcher--hidden">` — panel użytkownika i panel admina; trzeba usunąć klasę w obu miejscach, jeśli oba przełączniki mają być widoczne |
+| DiceRoller | `DiceRoller/index.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
+
+Klasa stoi na kontenerze tam, gdzie kontener zawiera wyłącznie select, a na samym `<select>` tam,
+gdzie kontener trzyma także przyciski nawigacyjne lub link do strony głównej — dzięki temu ukrycie
+przełącznika nie zabiera tych przycisków i nie zostawia po sobie pustego odstępu.
+
+### Styl selecta, gdy jest widoczny
+
+- tło: **#0b0b0b** (ciemne, spójne z motywem konsolowym),
+- obramowanie: `1px solid --b` / `--border` (zależnie od modułu),
+- tekst: `--text` (zielony),
+- focus: delikatny glow (`box-shadow` w zieleni).
+
+Panel GM Infoczytnika (`Infoczytnik/GM_test.html`) ma własny wybór języka wiadomości i nie korzysta
+z tej klasy — jest widoczny.
 
 ---
 
@@ -510,6 +543,19 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 
 ### 5) Wyjątki i formatowanie specjalne
 - `.error-message` w `TworzeniePostaci.html` używa koloru `var(--red)`.
+- **Podpis autora w stopce obu kreatorów to celowy easter egg.** Reguła `.footer`
+  w `Kalkulator/TworzeniePostaci.html` i `Kalkulator/TworzeniePostaci_v2.html` ma
+  `font-size: 1px`, `line-height: 1` oraz `-webkit-text-size-adjust: none` i `text-size-adjust: none`.
+  Na ekranie linia „Wykonane przez Spaczoną Inteligencję” jest tylko smużką i nie da się jej
+  przeczytać, ale tekst nadal istnieje w treści strony: można go zaznaczyć, skopiować i wkleić
+  do notatnika, gdzie odczytuje się go normalnie.
+  - Rozmiar jest ustawiony w arkuszu stylów, a przełącznik języka podmienia wyłącznie sam tekst,
+    więc wersja polska i angielska („Made by Abominable Intelligence”) są tak samo małe —
+    rozmiar nie zależy od języka.
+  - `text-size-adjust: none` jest tu konieczny: bez niego przeglądarki telefonów powiększają małe
+    teksty i linia stałaby się czytelna dokładnie tam, gdzie ma pozostać ukryta.
+  - Pozostałe właściwości stopki (kolor `var(--muted)`, kursywa w kreatorze zaawansowanym,
+    `letter-spacing: .08em`, wyrównanie) zostają bez zmian — zmieniony jest tylko rozmiar.
 
 ---
 
@@ -1150,7 +1196,12 @@ zostaje nietknięta.
 
 - `.referenceTableWrap`: `overflow-x: auto`,
 - `.referenceTable`: `min-width: 520px`,
-- `.referenceTable thead th`: `overflow-wrap: anywhere`.
+- `.referenceTable thead th`: `overflow-wrap: anywhere`, `padding: 10px 4px`, `letter-spacing: .03em`.
+
+Wąski padding i mniejszy odstęp między literami dają nagłówkom więcej miejsca w komórce o narzuconej
+szerokości. Przy 1440 px sześć z ośmiu nazw atrybutów mieści się w jednym wierszu; `Wytrzymałość`
+i `Inteligencja` nadal się zawijają, bo brakuje im około 14 px, ale żaden nagłówek nie wychodzi poza
+swoją komórkę.
 
 Zmierzone przepełnienie nagłówków (tekst szerszy od komórki): przy 360 px `Wytrzymałość`
 i `Inteligencja` przekraczały komórkę o **82 px** przy dostępnych 33 px, a przy 1440 px o **4 px**.

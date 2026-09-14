@@ -20,5 +20,5 @@
 10. Przyciski "Gilead" i "Galaktyka" w module Main zostają tylko w repo WrathAndGlory. W repo z demo aplikacji nie dodajemy tych przycisków.
 11. W demo aplikacji moduł Audio opiera się na jawnym pliku XLSX Audio/AudioManifest.xlsx - tę zasadę dla demo zostawiamy. W demie nie ma prywatnych danych i nie ma potrzeby robienia bramki z hasłem.
 12. W demo aplikacji istnieje przykładowe pliki w DataVault/SampleFiles - pliki te nie zawierają chronionych danych. To tylko template do późniejszego uzupełnienia.
-13. W repo WrathAndGlory we wszystkich modułach ukryć przełącznik zmiany języka. W repo dotyczących demo aplikacji (pkt6) przełącznik wersji językowej ma być widoczny i domyślnie angielski.
+13. [WYKONANE w repo WrathAndGlory — pozostaje część dotycząca repo z demo] W repo WrathAndGlory we wszystkich modułach ukryć przełącznik zmiany języka. W repo dotyczących demo aplikacji (pkt6) przełącznik wersji językowej ma być widoczny i domyślnie angielski.
 14. W repo dotyczących demo aplikacji dopisać do dokumentacji, że reguły dotyczące RULES są ustawione bez żadnych zabezpieczeń w ramach demonstracji. Jak ktoś chce skopiować kod to jest zalecane wprowadzenie jakiejś formy zabezpieczenia, np App Check lub jakieś bardziej rozbudowane np. login i hasło.

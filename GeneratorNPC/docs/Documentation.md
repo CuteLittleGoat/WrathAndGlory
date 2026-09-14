@@ -225,7 +225,17 @@ Topbar zawiera:
 - przycisk `Reset`,
 - przycisk `Generuj kartę`.
 
-Przełącznik języka istnieje w HTML, ale ma klasę `language-switcher--hidden`.
+Przełącznik języka istnieje w HTML, ale ma klasę `language-switcher--hidden`, a reguła
+`.language-switcher--hidden { display: none !important; }` w `GeneratorNPC/style.css` chowa go
+z interfejsu. Warstwa tłumaczeń pozostaje aktywna, a domyślnym językiem jest polski.
+
+Aby go pokazać, wystarczy usunąć klasę `language-switcher--hidden` z kontenera
+`<div class="language-switcher language-switcher--hidden">` w pliku `GeneratorNPC/index.html` — regułę CSS
+można zostawić, bo bez klasy nie ma na co działać. Nad elementem stoi komentarz
+`MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
+
+Klasa stoi na kontenerze, bo kontener zawiera wyłącznie select — przyciski `Reset` i `Generuj kartę`
+leżą poza nim.
 
 ### Sidebar
 
@@ -489,7 +499,13 @@ Po kliknięciu tagu:
 1. kod pobiera nazwę cechy,
 2. szuka opisu przez `resolveTraitDescription(...)`,
 3. pokazuje `trait-popover`,
-4. kliknięcie poza popoverem zamyka go.
+4. popover ma nagłówek `.popover__header` z przyciskiem zamknięcia
+   `#trait-popover-close` (`.popover__close`, `aria-label` z klucza i18n `traitPopoverClose`),
+5. popover zamyka: kliknięcie przycisku zamknięcia, kliknięcie poza popoverem oraz klawisz `Escape`.
+
+Poniżej `720px` popover jest panelem wysuwanym od dolnej krawędzi ekranu (`left: 0; right: 0;
+bottom: 0`, `width: 100%`, `max-height: 50dvh`, `border-radius: 12px 12px 0 0`, dolny padding
+powiększony o `env(safe-area-inset-bottom)`), więc na telefonie nie zasłania wiersza, którego dotyczy.
 
 Opisy są pobierane z `_meta.traits`. Nazwy cech są kanonizowane tak, aby warianty z wartością liczbową, np. `(3)`, mogły pasować do wzorca `(X)`.
 
@@ -542,7 +558,8 @@ Karta do druku zawiera między innymi:
 - statusy,
 - etykiety i komunikaty karty.
 
-Przełącznik języka istnieje, ale jest ukryty klasą `language-switcher--hidden`.
+Przełącznik języka istnieje, ale jest ukryty klasą `language-switcher--hidden`. Sposób jego
+odkrycia opisuje sekcja o strukturze HTML nagłówka.
 
 ## Fallbacki i błędy
 
@@ -825,7 +842,17 @@ The topbar contains:
 - `Reset` button,
 - `Generate card` button.
 
-The language switcher exists in HTML but has class `language-switcher--hidden`.
+The language switcher exists in HTML but carries the `language-switcher--hidden` class, and the
+rule `.language-switcher--hidden { display: none !important; }` in `GeneratorNPC/style.css` removes
+it from the interface. The translation layer stays active and Polish is the default language.
+
+To make it visible, remove the `language-switcher--hidden` class from the
+`<div class="language-switcher language-switcher--hidden">` container in `GeneratorNPC/index.html` — the CSS
+rule can stay, because without the class it has nothing to act on. A comment marked
+`LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the element.
+
+The class sits on the container, because the container holds only the select — the `Reset` and
+`Generate card` buttons live outside it.
 
 ### Sidebar
 
@@ -1090,7 +1117,13 @@ After a tag is clicked:
 1. the code reads the trait name,
 2. looks up the description through `resolveTraitDescription(...)`,
 3. shows `trait-popover`,
-4. clicking outside the popover closes it.
+4. the popover has a `.popover__header` header with a close button `#trait-popover-close`
+   (`.popover__close`, `aria-label` from the `traitPopoverClose` i18n key),
+5. the popover is closed by the close button, by a click outside it, and by the `Escape` key.
+
+Below `720px` the popover is a sheet anchored to the bottom edge (`left: 0; right: 0; bottom: 0`,
+`width: 100%`, `max-height: 50dvh`, `border-radius: 12px 12px 0 0`, bottom padding increased by
+`env(safe-area-inset-bottom)`), so on a phone it does not cover the row it describes.
 
 Descriptions are loaded from `_meta.traits`. Trait names are canonicalized so that numeric variants like `(3)` can match the `(X)` pattern.
 
@@ -1143,7 +1176,8 @@ The printable card includes, among others:
 - statuses,
 - labels and printable card messages.
 
-The language switcher exists but is hidden with `language-switcher--hidden`.
+The language switcher exists but is hidden with `language-switcher--hidden`. The header HTML
+structure section explains how to reveal it.
 
 ## Fallbacks and errors
 

@@ -225,11 +225,37 @@ Dla języka angielskiego otwierany jest:
 HowToUse/en.pdf
 ```
 
-## Zmiana języka
+## Język interfejsu
 
-`Kalkulator PD` pozwala zmienić język bez resetowania wpisanych wartości.
+Wszystkie widoki Kalkulatora są po polsku. Przełącznik języka polski/angielski istnieje w kodzie
+każdego widoku, ale jest ukryty i zwykły użytkownik go nie widzi. W `Kalkulatorze PD` tłumaczenia
+angielskie są kompletne; oba kreatory postaci są obecnie tylko po polsku, a ich instrukcja PDF
+i eksport PDF też są polskie.
 
-`Tworzenie Postaci` nie pokazuje rozwijanego menu zmiany języka. Arkusz otwiera się w domyślnym języku, a widoczne przyciski w prawym górnym rogu służą do otwarcia instrukcji, powrotu do strony głównej i sprawdzenia maksymalnych wartości atrybutów.
+Widoczne przyciski w prawym górnym rogu kreatorów służą do otwarcia instrukcji, powrotu do strony
+głównej i sprawdzenia maksymalnych wartości atrybutów — ukrycie przełącznika języka ich nie dotyczy.
+
+Aby pokazać przełącznik, wystarczy usunąć klasę `language-switcher--hidden` z jednego elementu
+w pliku danego widoku:
+
+| Widok | Plik | Element |
+| --- | --- | --- |
+| Kalkulator PD | `Kalkulator/KalkulatorXP.html` | `<div class="language-switcher language-switcher--hidden">` |
+| Prosty Kreator Postaci | `Kalkulator/TworzeniePostaci.html` | `<select id="languageSelect">` |
+| Zaawansowany Kreator Postaci | `Kalkulator/TworzeniePostaci_v2.html` | `<select id="languageSelect">` |
+
+W każdym z tych plików nad wskazanym elementem stoi komentarz
+`MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`, żeby łatwo było trafić we właściwe miejsce.
+Nic więcej nie trzeba zmieniać.
+
+Gdy przełącznik jest widoczny, `Kalkulator PD` zmienia język bez resetowania wpisanych wartości.
+
+## Ukryty podpis w stopce kreatorów
+
+Na dole obu kreatorów postaci jest podpis autora. Jest celowo wydrukowany rozmiarem 1 px, więc na
+ekranie wygląda jak cienka kreska i nie da się go przeczytać. Tekst nadal jest częścią strony:
+jeśli zaznaczysz zawartość strony i skopiujesz ją do notatnika, podpis będzie tam widoczny
+normalnym rozmiarem. To zamierzony żart, a nie usterka.
 
 ## Reset
 
@@ -549,11 +575,36 @@ For English:
 HowToUse/en.pdf
 ```
 
-## Language change
+## Interface language
 
-`XP Calculator` can switch language without resetting entered values.
+All Kalkulator views run in Polish. A Polish/English selector exists in the code of every view but is
+hidden, so a regular user never sees it. In `XP Calculator` the English translations are complete;
+both character creators are currently Polish-only, and their PDF manual and PDF export are Polish
+as well.
 
-`Character Creation` does not show a language dropdown. The sheet opens in the default language, and the visible top-right buttons open the manual, return to the main page, and show maximum attribute values.
+The visible top-right buttons in the creators open the manual, return to the main page and show
+maximum attribute values — hiding the language selector does not affect them.
+
+To reveal the selector, remove the `language-switcher--hidden` class from a single element in that
+view's file:
+
+| View | File | Element |
+| --- | --- | --- |
+| XP Calculator | `Kalkulator/KalkulatorXP.html` | `<div class="language-switcher language-switcher--hidden">` |
+| Simple Character Creator | `Kalkulator/TworzeniePostaci.html` | `<select id="languageSelect">` |
+| Advanced Character Creator | `Kalkulator/TworzeniePostaci_v2.html` | `<select id="languageSelect">` |
+
+In each of these files a comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the
+element, so the spot is easy to find. Nothing else needs to change.
+
+With the selector visible, `XP Calculator` switches language without resetting entered values.
+
+## The hidden footer credit in the creators
+
+At the bottom of both character creators there is an author credit. It is deliberately printed at
+1 px, so on screen it looks like a thin line and cannot be read. The text is still part of the page:
+select the page content, paste it into a notepad, and the credit appears there at normal size.
+This is an intended joke, not a defect.
 
 ## Reset
 

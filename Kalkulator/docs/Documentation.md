@@ -105,7 +105,7 @@ Główne elementy UI:
 
 | Element | ID | Rola |
 | --- | --- | --- |
-| Przełącznik języka | `languageSelect` | Przełącza teksty PL/EN. |
+| Przełącznik języka | `languageSelect` | Przełącza teksty PL/EN. Ukryty klasą `language-switcher--hidden`. |
 | Strona Główna | `btnMainPage` | Link do `../Main/index.html`. |
 | Resetuj wartości | `btnReset` | Ustawia wszystkie pola atrybutów i umiejętności na `0`. |
 | Całkowity koszt PD | `totalXp` | Suma kosztów atrybutów i umiejętności. |
@@ -159,7 +159,7 @@ Główne sekcje:
 
 | Sekcja | Rola |
 | --- | --- |
-| Techniczny wybór języka | Ukryty element `languageSelect`; widok startuje z domyślnym językiem i nie pokazuje użytkownikowi rozwijanego menu zmiany języka. |
+| Techniczny wybór języka | Element `languageSelect` z klasą `language-switcher--hidden`; widok startuje z domyślnym językiem i nie pokazuje użytkownikowi rozwijanego menu zmiany języka. |
 | Instrukcja | Otwiera `HowToUse/pl.pdf` albo `HowToUse/en.pdf`. |
 | Strona Główna | Przechodzi do `../Main/index.html`. |
 | Maksymalne wartości atrybutów | Otwiera modal tabeli maksimów rasowych. |
@@ -263,12 +263,49 @@ Logika:
 
 ## Zmiana języka
 
-`TworzeniePostaci.html` zawiera tłumaczenia dla języków:
+`KalkulatorXP.html` i `TworzeniePostaci.html` zawierają tłumaczenia dla języków:
 
 - `pl`,
 - `en`.
 
-Element `languageSelect` pozostaje w strukturze DOM jako techniczny punkt integracji z funkcją `updateLanguage(lang)`, zapisem stanu i odtwarzaniem danych. Select jest ukryty za pomocą CSS (`display: none`), oznaczony `aria-hidden="true"` i wyłączony z kolejności klawiatury przez `tabindex="-1"`, dlatego użytkownik nie widzi rozwijanego menu zmiany języka w arkuszu tworzenia postaci.
+**W obu widokach przełącznik języka jest ukryty.** Chowa go wspólna klasa
+`language-switcher--hidden` z regułą `display: none !important`. Warstwa tłumaczeń pozostaje
+aktywna, a widoki startują z językiem polskim.
+
+| Plik | Element z klasą | Gdzie leży reguła CSS |
+| --- | --- | --- |
+| `Kalkulator/KalkulatorXP.html` | `<div class="language-switcher language-switcher--hidden">` | `Kalkulator/kalkulatorxp.css` |
+| `Kalkulator/TworzeniePostaci.html` | `<select id="languageSelect" class="language-switcher--hidden">` | blok `<style>` w tym samym pliku |
+| `Kalkulator/TworzeniePostaci_v2.html` | `<select id="languageSelect" class="language-switcher--hidden">` | blok `<style>` w tym samym pliku |
+
+Aby przełącznik był ponownie widoczny, wystarczy usunąć klasę `language-switcher--hidden`
+z elementu wskazanego w tabeli — regułę CSS można zostawić, bo bez klasy nie ma na co działać.
+W każdym z tych plików nad elementem stoi komentarz
+`MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
+
+W `KalkulatorXP.html` klasa stoi na kontenerze, bo kontener zawiera wyłącznie select.
+W obu kreatorach stoi na samym `<select>`, bo kontener `.language-switcher` trzyma także przyciski
+`Instrukcja`, `Strona Główna` i `Maksymalne wartości atrybutów` — ukrycie kontenera zabrałoby
+te przyciski.
+
+W obu kreatorach `languageSelect` pozostaje w DOM jako techniczny punkt integracji z funkcją
+`updateLanguage(lang)`, zapisem stanu i odtwarzaniem danych. Ma dodatkowo `aria-hidden="true"`
+i `tabindex="-1"`, więc nie trafia do kolejności klawiatury ani do czytnika ekranu.
+
+## Podpis w stopce kreatorów — celowo nieczytelny
+
+`TworzeniePostaci.html` i `TworzeniePostaci_v2.html` mają w stopce podpis autora
+(`Wykonane przez Spaczoną Inteligencję` / `Made by Abominable Intelligence`). Reguła `.footer`
+ustawia `font-size: 1px`, `line-height: 1` oraz `-webkit-text-size-adjust: none`
+i `text-size-adjust: none`.
+
+Jest to zamierzone: tekst istnieje w treści strony, jest zaznaczalny i kopiowalny, ale na ekranie
+pozostaje nieczytelną smużką. Rozmiar jest zapisany w CSS, a `updateLanguage(lang)` podmienia
+wyłącznie sam tekst (`#footerText` w prostym kreatorze), więc obie wersje językowe są tak samo małe.
+`text-size-adjust: none` wyłącza powiększanie drobnego tekstu przez przeglądarki telefonów — bez
+tego linia stałaby się czytelna na telefonie.
+
+Zmiana rozmiaru podpisu to zmiana jednej wartości `font-size` w regule `.footer` w obu plikach.
 
 ## Modale
 
@@ -332,7 +369,8 @@ o narzuconej równej szerokości, a jej nagłówki to długie, niepodzielne sło
 
 - `.referenceTableWrap` ma `overflow-x: auto`,
 - `.referenceTable` ma `min-width: 520px`,
-- `.referenceTable thead th` ma `overflow-wrap: anywhere`.
+- `.referenceTable thead th` ma `overflow-wrap: anywhere`, `padding: 10px 4px` i `letter-spacing: .03em`,
+  żeby długie nazwy atrybutów miały w komórce więcej miejsca na tekst.
 
 ## Firebase w `TworzeniePostaci.html`
 
@@ -439,7 +477,7 @@ W obu widokach dostępne są:
 
 `KalkulatorXP.html` przełącza język bez resetowania danych.
 
-`TworzeniePostaci.html` nie pokazuje użytkownikowi rozwijanego menu zmiany języka; ukryty `languageSelect` pozostaje wyłącznie technicznym elementem używanym przez logikę tłumaczeń i odtwarzania zapisu.
+W obu widokach `languageSelect` jest ukryty klasą `language-switcher--hidden` i pozostaje wyłącznie technicznym elementem używanym przez logikę tłumaczeń i odtwarzania zapisu. Sposób odkrycia przełącznika opisuje sekcja `Zmiana języka`.
 
 ## Fallbacki i błędy
 
@@ -593,7 +631,7 @@ Main UI elements:
 
 | Element | ID | Role |
 | --- | --- | --- |
-| Language switcher | `languageSelect` | Switches PL/EN texts. |
+| Language switcher | `languageSelect` | Switches PL/EN texts. Hidden with `language-switcher--hidden`. |
 | Main Page | `btnMainPage` | Link to `../Main/index.html`. |
 | Reset values | `btnReset` | Sets all attribute and skill fields to `0`. |
 | Total XP cost | `totalXp` | Sum of attribute and skill costs. |
@@ -647,7 +685,7 @@ Main sections:
 
 | Section | Role |
 | --- | --- |
-| Technical language selector | Hidden `languageSelect` element; the view starts with the default language and does not show the user a language dropdown. |
+| Technical language selector | The `languageSelect` element with the `language-switcher--hidden` class; the view starts with the default language and does not show the user a language dropdown. |
 | Manual | Opens `HowToUse/pl.pdf` or `HowToUse/en.pdf`. |
 | Main Page | Goes to `../Main/index.html`. |
 | Maximum attribute values | Opens species maximum table modal. |
@@ -751,12 +789,49 @@ Logic:
 
 ## Language change
 
-`TworzeniePostaci.html` contains translations for languages:
+`KalkulatorXP.html` and `TworzeniePostaci.html` contain translations for languages:
 
 - `pl`,
 - `en`.
 
-The `languageSelect` element remains in the DOM as a technical integration point for `updateLanguage(lang)`, state saving, and data restoration. The select is hidden with CSS (`display: none`), marked `aria-hidden="true"`, and removed from keyboard order with `tabindex="-1"`, so the user does not see a language dropdown in the character creation sheet.
+**In both views the language selector is hidden.** It is hidden by the shared
+`language-switcher--hidden` class with a `display: none !important` rule. The translation layer stays
+active and the views start in Polish.
+
+| File | Element carrying the class | Where the CSS rule lives |
+| --- | --- | --- |
+| `Kalkulator/KalkulatorXP.html` | `<div class="language-switcher language-switcher--hidden">` | `Kalkulator/kalkulatorxp.css` |
+| `Kalkulator/TworzeniePostaci.html` | `<select id="languageSelect" class="language-switcher--hidden">` | the `<style>` block in the same file |
+| `Kalkulator/TworzeniePostaci_v2.html` | `<select id="languageSelect" class="language-switcher--hidden">` | the `<style>` block in the same file |
+
+To make the selector visible again, remove the `language-switcher--hidden` class from the element
+listed in the table — the CSS rule can stay, because without the class it has nothing to act on.
+In each of these files a comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the
+element.
+
+In `KalkulatorXP.html` the class sits on the container, because the container holds only the select.
+In both creators it sits on the `<select>` itself, because the `.language-switcher` container also
+holds the `Instrukcja`, `Strona Główna` and `Maksymalne wartości atrybutów` buttons — hiding the
+container would remove those buttons.
+
+In both creators `languageSelect` remains in the DOM as a technical integration point for
+`updateLanguage(lang)`, state saving and data restoration. It also carries `aria-hidden="true"` and
+`tabindex="-1"`, so it reaches neither keyboard order nor a screen reader.
+
+## The creators' footer credit — deliberately unreadable
+
+`TworzeniePostaci.html` and `TworzeniePostaci_v2.html` carry an author credit in the footer
+(`Wykonane przez Spaczoną Inteligencję` / `Made by Abominable Intelligence`). The `.footer` rule sets
+`font-size: 1px`, `line-height: 1`, `-webkit-text-size-adjust: none` and `text-size-adjust: none`.
+
+This is intentional: the text exists in the page content, it can be selected and copied, but on
+screen it stays an unreadable smudge. The size lives in CSS while `updateLanguage(lang)` replaces
+only the text itself (`#footerText` in the simple creator), so both language versions are equally
+small. `text-size-adjust: none` switches off the small-text inflation phone browsers apply — without
+it the line would become readable on a phone.
+
+Changing the credit size means changing a single `font-size` value in the `.footer` rule in both
+files.
 
 ## Modals
 
@@ -821,7 +896,8 @@ while its headers are long, unbreakable words:
 
 - `.referenceTableWrap` has `overflow-x: auto`,
 - `.referenceTable` has `min-width: 520px`,
-- `.referenceTable thead th` has `overflow-wrap: anywhere`.
+- `.referenceTable thead th` has `overflow-wrap: anywhere`, `padding: 10px 4px` and
+  `letter-spacing: .03em`, so long attribute names get more room for text inside the cell.
 
 ## Firebase in `TworzeniePostaci.html`
 
@@ -927,7 +1003,7 @@ Both views support:
 
 `KalkulatorXP.html` switches language without resetting data.
 
-`TworzeniePostaci.html` does not show the user a language dropdown; the hidden `languageSelect` remains only as a technical element used by translation and save-restoration logic.
+In both views `languageSelect` is hidden with the `language-switcher--hidden` class and remains only a technical element used by translation and save-restoration logic. The `Language change` section explains how to reveal the selector.
 
 ## Fallbacks and errors
 

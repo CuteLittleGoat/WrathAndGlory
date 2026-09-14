@@ -319,6 +319,15 @@ Przycisk `Reset` czyści aktualną konfigurację i wraca do stanu początkowego.
 
 Użyj go, gdy chcesz zacząć budować nowego NPC od zera.
 
+## Język interfejsu
+
+Moduł jest po polsku. Przełącznik języka polski/angielski istnieje w kodzie, ale jest ukryty
+i zwykły użytkownik go nie widzi. Cała warstwa tłumaczeń pozostaje aktywna.
+
+Aby pokazać przełącznik, wystarczy usunąć klasę `language-switcher--hidden` z kontenera `<div class="language-switcher language-switcher--hidden">` w pliku `GeneratorNPC/index.html`.
+Nad tym elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`, żeby łatwo było
+trafić we właściwe miejsce. Nic więcej nie trzeba zmieniać.
+
 ## Potwierdzanie, że dane otwiera Twoja aplikacja
 
 Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym programem
@@ -680,6 +689,15 @@ Before printing, check whether all needed modules are visible and whether the ca
 `Reset` clears the current configuration and returns to the initial state.
 
 Use it when you want to start building a new NPC from scratch.
+
+## Interface language
+
+The module runs in Polish. A Polish/English language selector exists in the code but is hidden, so
+a regular user never sees it. The whole translation layer stays active.
+
+To reveal the selector, remove the `language-switcher--hidden` class from the `<div class="language-switcher language-switcher--hidden">` container in `GeneratorNPC/index.html`.
+A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits right above that element, so the
+spot is easy to find. Nothing else needs to change.
 
 ## Confirming that your application is the one opening the data
 
