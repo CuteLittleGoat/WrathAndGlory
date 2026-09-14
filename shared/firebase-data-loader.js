@@ -2,6 +2,7 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, setPersistence, browserLocalPersistence, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-database.js";
+import { activateAppCheck } from "./firebase-app-check.js";
 
 const FIREBASE_IMPORT_SCHEMA_VERSION = "datavault-firebase-import-v1";
 const DATA_PATH = "datavault/live";
@@ -50,6 +51,12 @@ function initFirebaseDataAccess(){
   if(!app){
     assertFirebaseRuntimeConfig();
     app = getPrivateDataApp();
+    // --- App Check przed pierwszym użyciem Auth i bazy / App Check before Auth and the database are first used ---
+    // PL: Uruchamiane tuż po utworzeniu aplikacji, żeby wszystkie zapytania niosły już znacznik.
+    //     Wywołanie nie jest krytyczne — przy braku reCAPTCHA moduł działa jak dotąd.
+    // EN: Activated right after the app is created so that every request already carries a token.
+    //     The call is not critical — without reCAPTCHA the module keeps working as before.
+    activateAppCheck(app);
     auth = getAuth(app);
     database = getDatabase(app);
     authReadyPromise = setPersistence(auth, browserLocalPersistence)

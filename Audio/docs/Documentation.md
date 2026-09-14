@@ -42,6 +42,8 @@ Tryb admina jest wykrywany przez parametr URL:
 | `../shared/access-gate.css` | Wspólny arkusz bramki dostępu, ten sam co w `DataVault` i `GeneratorNPC`. |
 | `Audio/config/firebase-config.template.js` | Szablon konfiguracji Firebase. |
 | `Audio/config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase modułu Audio. |
+| `../shared/appcheck-config.js` | Jedyne miejsce z kluczami witryny App Check (reCAPTCHA Enterprise) dla obu projektów Firebase. |
+| `../shared/firebase-app-check.js` | Wspólne uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0). |
 | `Audio/docs/README.md` | Instrukcja użytkownika. |
 | `Audio/docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
 
@@ -52,9 +54,12 @@ Tryb admina jest wykrywany przez parametr URL:
 - Google Fonts `Fira Code`,
 - `../shared/access-gate.css`,
 - `config/firebase-config.js`,
+- `../shared/appcheck-config.js`,
+- `https://www.google.com/recaptcha/enterprise.js` ze znacznikiem `defer`,
 - Firebase modular SDK `12.6.0`:
   - `firebase-app.js`,
-  - `firebase-firestore.js`.
+  - `firebase-firestore.js`,
+  - `firebase-app-check.js` (przez `../shared/firebase-app-check.js`).
 
 ## Tryby widoku
 
@@ -517,6 +522,23 @@ Kod używa Firestore dokumentu:
 audio/favorites
 ```
 
+### App Check
+
+`initFirebase()` wywołuje `activateAppCheck(app)` z `shared/firebase-app-check.js` bezpośrednio po
+`initializeApp()`, a przed `getFirestore()`. Dzięki temu każde zapytanie do dokumentu
+`audio/favorites` niesie znacznik App Check, czyli potwierdzenie, że przyszło z zarejestrowanej
+aplikacji WrathAndGlory.
+
+Klucz witryny reCAPTCHA Enterprise dla projektu `audiorpg-2eb6f` jest w `shared/appcheck-config.js`,
+razem z kluczem drugiego projektu. Moduł nie trzyma własnej kopii klucza.
+
+Bibliotekę reCAPTCHA Enterprise wczytuje sama strona znacznikiem `<script defer>`, a nie SDK
+Firebase — SDK dokłada własny znacznik bez obsługi błędu wczytania i przy zablokowanym adresie
+czeka bez końca, a razem z nim czeka Firestore. Sprawdzone uruchomieniem: bez tego zabezpieczenia
+moduł zostawał na ekranie wczytywania i po 10 sekundach przechodził w tryb bez połączenia.
+Gdy biblioteki nie ma, `activateAppCheck()` zapisuje ostrzeżenie w konsoli i pomija App Check, a
+moduł działa tak jak przed jego wprowadzeniem, łącznie z zapasem w `localStorage`.
+
 Model dokumentu:
 
 | Pole | Typ | Opis |
@@ -816,6 +838,8 @@ Admin mode is detected through the URL parameter:
 | `../shared/access-gate.css` | Shared access-gate stylesheet, the same one used by `DataVault` and `GeneratorNPC`. |
 | `Audio/config/firebase-config.template.js` | Firebase configuration template. |
 | `Audio/config/FirebaseREADME.md` | Firebase setup guide for Audio. |
+| `../shared/appcheck-config.js` | The only place holding App Check site keys (reCAPTCHA Enterprise) for both Firebase projects. |
+| `../shared/firebase-app-check.js` | Shared App Check activation for Firebase apps in modular form (SDK 12.6.0). |
 | `Audio/docs/README.md` | User guide. |
 | `Audio/docs/Documentation.md` | This technical documentation. |
 
@@ -826,9 +850,12 @@ Admin mode is detected through the URL parameter:
 - Google Fonts `Fira Code`,
 - `../shared/access-gate.css`,
 - `config/firebase-config.js`,
+- `../shared/appcheck-config.js`,
+- `https://www.google.com/recaptcha/enterprise.js` with the `defer` attribute,
 - Firebase modular SDK `12.6.0`:
   - `firebase-app.js`,
-  - `firebase-firestore.js`.
+  - `firebase-firestore.js`,
+  - `firebase-app-check.js` (through `../shared/firebase-app-check.js`).
 
 ## View modes
 
@@ -1290,6 +1317,23 @@ The code uses Firestore document:
 ```text
 audio/favorites
 ```
+
+### App Check
+
+`initFirebase()` calls `activateAppCheck(app)` from `shared/firebase-app-check.js` right after
+`initializeApp()` and before `getFirestore()`. Because of that every request to the
+`audio/favorites` document carries an App Check token, proving it came from the registered
+WrathAndGlory application.
+
+The reCAPTCHA Enterprise site key for the `audiorpg-2eb6f` project lives in
+`shared/appcheck-config.js` together with the other project's key. The module keeps no local copy.
+
+The reCAPTCHA Enterprise library is loaded by the page itself with a `<script defer>` tag rather
+than by the Firebase SDK — the SDK appends its own tag with no load-error handler and, with a
+blocked address, waits forever, and Firestore waits with it. Verified by running it: without this
+safeguard the module stayed on its loading screen and after 10 seconds fell back to offline mode.
+When the library is absent, `activateAppCheck()` logs a console warning and skips App Check, and the
+module works as it did before App Check existed, including the `localStorage` fallback.
 
 Document model:
 

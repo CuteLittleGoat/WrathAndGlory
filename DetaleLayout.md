@@ -898,3 +898,36 @@ W arkuszu `Pojazdy` kolumna `Koszt IM` jest zwykłą widoczną kolumną kosztow�
 ## DataVault — vehicle column widths
 
 In the `Pojazdy` sheet, the `Koszt IM` column is a normal visible cost column. It has a **8ch** minimum width, centered text, and standard text wrapping. It does not force `white-space: nowrap` and has no separate `max-width`.
+
+## App Check — brak wpływu na wygląd (DataVault, GeneratorNPC, Audio)
+
+Moduły `DataVault`, `GeneratorNPC` i `Audio` uruchamiają App Check w oparciu o reCAPTCHA Enterprise.
+Odnotowuję to tutaj wyłącznie po to, żeby było gdzie sprawdzić, że **wygląd tych modułów jest
+dokładnie taki sam jak bez App Check**:
+
+- reCAPTCHA działa w trybie niewidocznym — nie pojawia się ani plakietka „protected by reCAPTCHA”,
+  ani żadne okno z obrazkami czy pytaniem „czy jesteś robotem”;
+- SDK Firebase dokłada do `<body>` pojedynczy pusty kontener `div#fire_app_check_<nazwa-aplikacji>`
+  z ustawionym na sztywno `display: none`. Element nie zajmuje miejsca, nie ma stylów w arkuszach
+  modułów i nie wpływa na układ;
+- biblioteka reCAPTCHA jest wczytywana znacznikiem `<script defer>`, więc nie wstrzymuje rysowania
+  strony.
+
+Sprawdzone pomiarem: zrzuty ekranu wszystkich trzech modułów przy 1440 × 900 px przed zmianą i po
+zmianie są identyczne co do bajtu — również wtedy, gdy biblioteka reCAPTCHA jest zablokowana.
+
+## App Check — no visual impact (DataVault, GeneratorNPC, Audio)
+
+The `DataVault`, `GeneratorNPC` and `Audio` modules activate App Check backed by reCAPTCHA
+Enterprise. This is recorded here only so there is a place to confirm that **these modules look
+exactly the same as they did without App Check**:
+
+- reCAPTCHA runs in invisible mode — there is no "protected by reCAPTCHA" badge and no image
+  challenge or "are you a robot" dialog;
+- the Firebase SDK appends a single empty `div#fire_app_check_<app-name>` container to `<body>`
+  with a hard-coded `display: none`. It takes no space, has no styles in the module stylesheets and
+  does not affect layout;
+- the reCAPTCHA library is loaded with a `<script defer>` tag, so it does not block page rendering.
+
+Verified by measurement: screenshots of all three modules at 1440 × 900 px before and after the
+change are byte-identical — including the case where the reCAPTCHA library is blocked.

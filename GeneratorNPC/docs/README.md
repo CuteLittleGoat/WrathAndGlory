@@ -313,6 +313,19 @@ Przycisk `Reset` czyści aktualną konfigurację i wraca do stanu początkowego.
 
 Użyj go, gdy chcesz zacząć budować nowego NPC od zera.
 
+## Potwierdzanie, że dane otwiera Twoja aplikacja
+
+Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym programem
+podszywającym się pod nią. Korzysta do tego z mechanizmu Google o nazwie reCAPTCHA.
+
+Dla Ciebie oznacza to dokładnie nic do zrobienia: nie pojawiają się żadne obrazki, żadne pytania
+„czy jesteś robotem" i żaden dodatkowy przycisk. Potwierdzenie odbywa się bez Twojego udziału.
+
+Jeżeli to potwierdzenie z jakiegoś powodu nie dojdzie do skutku — na przykład dodatek blokujący
+reklamy zatrzyma połączenie z Google albo sieć go nie przepuści — **moduł działa dalej normalnie**,
+dokładnie tak jak wcześniej. Ślad zostaje wyłącznie w oknie narzędzi dla programistów, jako
+informacja, że potwierdzenie zostało pominięte.
+
 ## Typowe komunikaty i co zrobić
 
 | Komunikat lub sytuacja | Co oznacza | Co zrobić |
@@ -325,6 +338,7 @@ Użyj go, gdy chcesz zacząć budować nowego NPC od zera.
 | Ulubione nie synchronizują się między urządzeniami | Moduł używa lokalnego zapisu zamiast Firestore. | Sprawdź konfigurację ulubionych albo używaj tego samego urządzenia. |
 | Ulubiony wpis wczytuje inne elementy niż wcześniej | Dane DataVault zmieniły kolejność albo zawartość. | Sprawdź konfigurację ręcznie i zapisz nowy ulubiony wpis. |
 | Brak opisu cechy | W danych nie ma opisu dla tej cechy. | Możesz nadal używać karty; brakuje tylko podpowiedzi. |
+| Moduł działa, ale w narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, moduł działa. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
 
 ## Krótki workflow podczas sesji
 
@@ -656,6 +670,19 @@ Before printing, check whether all needed modules are visible and whether the ca
 
 Use it when you want to start building a new NPC from scratch.
 
+## Confirming that your application is the one opening the data
+
+On start-up the module confirms in the background that it is the application you know and not a
+foreign program impersonating it. It uses a Google mechanism called reCAPTCHA for that.
+
+For you this means exactly nothing to do: no images appear, no "are you a robot" questions and no
+extra button. The confirmation happens without your involvement.
+
+If for some reason the confirmation does not go through — for example an ad blocker stops the
+connection to Google, or the network does not let it through — **the module keeps working
+normally**, exactly as before. The only trace is a note in the browser developer tools saying the
+confirmation was skipped.
+
 ## Common messages and what to do
 
 | Message or situation | Meaning | What to do |
@@ -668,6 +695,7 @@ Use it when you want to start building a new NPC from scratch.
 | Favorites do not sync between devices | The module is using local storage instead of Firestore. | Check favorites configuration or use the same device. |
 | Favorite loads different elements than before | DataVault order or content changed. | Check configuration manually and save a new favorite. |
 | Trait description is missing | The data has no description for that trait. | You can still use the card; only the hint is missing. |
+| The module works but developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, the module works. To clear it, disable the ad blocker for this page. |
 
 ## Quick session workflow
 

@@ -290,6 +290,19 @@ datavault/live/datavault/live
 
 Oznacza to, że po zalogowaniu do jednego z tych modułów drugi moduł może być odblokowany w tej samej przeglądarce bez ponownego wpisywania hasła.
 
+## Potwierdzanie, że dane otwiera Twoja aplikacja
+
+Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym programem
+podszywającym się pod nią. Korzysta do tego z mechanizmu Google o nazwie reCAPTCHA.
+
+Dla Ciebie oznacza to dokładnie nic do zrobienia: nie pojawiają się żadne obrazki, żadne pytania
+„czy jesteś robotem" i żaden dodatkowy przycisk. Potwierdzenie odbywa się bez Twojego udziału.
+
+Jeżeli to potwierdzenie z jakiegoś powodu nie dojdzie do skutku — na przykład dodatek blokujący
+reklamy zatrzyma połączenie z Google albo sieć go nie przepuści — **moduł działa dalej normalnie**,
+dokładnie tak jak wcześniej. Ślad zostaje wyłącznie w oknie narzędzi dla programistów, jako
+informacja, że potwierdzenie zostało pominięte.
+
 ## Typowe komunikaty i co zrobić
 
 | Komunikat lub sytuacja | Co oznacza | Co zrobić |
@@ -302,6 +315,7 @@ Oznacza to, że po zalogowaniu do jednego z tych modułów drugi moduł może by
 | Dane nie mają struktury `sheets` | Import jest uszkodzony albo nie pochodzi z DataVault. | Wygeneruj i zaimportuj nowy plik. |
 | Tabela jest pusta | Filtry ukryły wyniki albo arkusz nie ma danych. | Kliknij `Pełen Widok` albo wyczyść filtry. |
 | Nie widać zakładki | Grupa zakładek jest ukryta albo zakładka jest admin-only. | Włącz grupę w panelu filtrów albo użyj trybu admina. |
+| Moduł działa, ale w narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, moduł działa. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
 
 ## Krótki workflow podczas sesji
 
@@ -609,6 +623,19 @@ datavault/live/datavault/live
 
 This means that after logging into one of these modules, the other module may unlock in the same browser without entering the password again.
 
+## Confirming that your application is the one opening the data
+
+On start-up the module confirms in the background that it is the application you know and not a
+foreign program impersonating it. It uses a Google mechanism called reCAPTCHA for that.
+
+For you this means exactly nothing to do: no images appear, no "are you a robot" questions and no
+extra button. The confirmation happens without your involvement.
+
+If for some reason the confirmation does not go through — for example an ad blocker stops the
+connection to Google, or the network does not let it through — **the module keeps working
+normally**, exactly as before. The only trace is a note in the browser developer tools saying the
+confirmation was skipped.
+
 ## Common messages and what to do
 
 | Message or situation | Meaning | What to do |
@@ -621,6 +648,7 @@ This means that after logging into one of these modules, the other module may un
 | Data has no `sheets` structure | Import is damaged or does not come from DataVault. | Generate and import a new file. |
 | Table is empty | Filters hide results or the sheet has no data. | Click `Full View` or clear filters. |
 | Tab is not visible | Sheet group is hidden or tab is admin-only. | Enable the group in filter panel or use admin mode. |
+| The module works but developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, the module works. To clear it, disable the ad blocker for this page. |
 
 ## Quick session workflow
 

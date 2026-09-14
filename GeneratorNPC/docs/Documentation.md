@@ -37,6 +37,8 @@ Moduł nie ma osobnego widoku admina. Dostęp do prywatnych danych odbywa się p
 | `GeneratorNPC/docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
 | `shared/firebase-config.js` | Wspólna konfiguracja Firebase dla prywatnych danych DataVault. |
 | `shared/firebase-data-loader.js` | Wspólny loader prywatnych danych DataVault. |
+| `shared/appcheck-config.js` | Jedyne miejsce z kluczami witryny App Check (reCAPTCHA Enterprise) dla obu projektów Firebase. |
+| `shared/firebase-app-check.js` | Wspólne uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0). |
 | `shared/access-gate.css` | Wspólne style bramki dostępu K.O.Z.A. |
 
 ## Zależności zewnętrzne
@@ -47,10 +49,13 @@ Moduł nie ma osobnego widoku admina. Dostęp do prywatnych danych odbywa się p
 - `../shared/access-gate.css`,
 - `config/firebase-config.js`,
 - `../shared/firebase-config.js`,
+- `../shared/appcheck-config.js`,
+- `https://www.google.com/recaptcha/enterprise.js` ze znacznikiem `defer`,
 - `../shared/firebase-data-loader.js`,
 - moduły Firebase z CDN w wersji `12.6.0`:
   - `firebase-app.js`,
-  - `firebase-firestore.js`.
+  - `firebase-firestore.js`,
+  - `firebase-app-check.js` (przez `../shared/firebase-app-check.js`).
 
 Wspólny loader `shared/firebase-data-loader.js` ładuje i używa także:
 
@@ -101,6 +106,24 @@ Ta warstwa jest opcjonalna. Jeżeli Firestore ulubionych nie działa, moduł zap
 
 Szczegóły konfiguracji obu warstw są opisane w `GeneratorNPC/config/FirebaseREADME.md`.
 
+### App Check w obu warstwach
+
+Moduł jest jedynym miejscem w aplikacji, które łączy się z **dwoma** projektami Firebase naraz:
+`wh40k-data-slate` (prywatne dane DataVault) i `audiorpg-2eb6f` (ulubione NPC). Każdy projekt ma
+własny klucz witryny reCAPTCHA Enterprise, dlatego klucze są w `shared/appcheck-config.js` spisane
+pod identyfikatorem projektu, a `activateAppCheck(app)` z `shared/firebase-app-check.js` sam
+dobiera właściwy klucz na podstawie `app.options.projectId`.
+
+- warstwa ulubionych: `getOrCreateNamedFirebaseApp()` wywołuje `activateAppCheck()` bezpośrednio po
+  `initializeApp()`, przed `getFirestore()`,
+- warstwa prywatnych danych: App Check uruchamia `shared/firebase-data-loader.js`.
+
+Bibliotekę reCAPTCHA Enterprise wczytuje sama strona znacznikiem `<script defer>`, a nie SDK
+Firebase — SDK dokłada własny znacznik bez obsługi błędu wczytania i przy zablokowanym adresie
+czeka bez końca, blokując wszystkie zapytania do bazy. Gdy biblioteki nie ma, `activateAppCheck()`
+zapisuje ostrzeżenie w konsoli i pomija App Check; moduł działa wtedy tak jak przed jego
+wprowadzeniem, łącznie z zapasem w `localStorage`.
+
 ## Przepływ startowy aplikacji
 
 Po załadowaniu strony aplikacja wykonuje logicznie następujący przepływ:
@@ -108,7 +131,7 @@ Po załadowaniu strony aplikacja wykonuje logicznie następujący przepływ:
 1. Ustawia domyślny język `pl`.
 2. Podpina event listenery do elementów UI.
 3. Aktualizuje widoczność modułów według checkboxów `data-module-toggle`.
-4. Inicjalizuje magazyn ulubionych przez `initFavoritesStore()`.
+4. Inicjalizuje magazyn ulubionych przez `initFavoritesStore()`, który tworzy aplikację `generator-npc-favorites` i uruchamia dla niej App Check.
 5. Uruchamia `startPrivateDataFlow()`.
 6. Czeka na `window.DataVaultFirebaseReady` albo event `datavault-firebase-loader-ready`.
 7. Inicjalizuje wspólny Firebase private data loader.
@@ -578,6 +601,8 @@ The module has no separate admin view. Private data access is handled by the K.O
 | `GeneratorNPC/docs/Documentation.md` | This technical documentation. |
 | `shared/firebase-config.js` | Shared Firebase configuration for private DataVault data. |
 | `shared/firebase-data-loader.js` | Shared private DataVault data loader. |
+| `shared/appcheck-config.js` | The only place holding App Check site keys (reCAPTCHA Enterprise) for both Firebase projects. |
+| `shared/firebase-app-check.js` | Shared App Check activation for Firebase apps in modular form (SDK 12.6.0). |
 | `shared/access-gate.css` | Shared K.O.Z.A. access gate styles. |
 
 ## External dependencies
@@ -588,10 +613,13 @@ The module has no separate admin view. Private data access is handled by the K.O
 - `../shared/access-gate.css`,
 - `config/firebase-config.js`,
 - `../shared/firebase-config.js`,
+- `../shared/appcheck-config.js`,
+- `https://www.google.com/recaptcha/enterprise.js` with the `defer` attribute,
 - `../shared/firebase-data-loader.js`,
 - Firebase modules from CDN version `12.6.0`:
   - `firebase-app.js`,
-  - `firebase-firestore.js`.
+  - `firebase-firestore.js`,
+  - `firebase-app-check.js` (through `../shared/firebase-app-check.js`).
 
 The shared `shared/firebase-data-loader.js` also loads and uses:
 
@@ -642,6 +670,24 @@ This layer is optional. If favorites Firestore does not work, the module stores 
 
 Configuration details for both layers are documented in `GeneratorNPC/config/FirebaseREADME.md`.
 
+### App Check in both layers
+
+This module is the only place in the application that connects to **two** Firebase projects at once:
+`wh40k-data-slate` (private DataVault data) and `audiorpg-2eb6f` (NPC favorites). Each project has
+its own reCAPTCHA Enterprise site key, which is why `shared/appcheck-config.js` lists the keys by
+project id and `activateAppCheck(app)` from `shared/firebase-app-check.js` picks the right key from
+`app.options.projectId`.
+
+- favorites layer: `getOrCreateNamedFirebaseApp()` calls `activateAppCheck()` right after
+  `initializeApp()` and before `getFirestore()`,
+- private data layer: App Check is activated by `shared/firebase-data-loader.js`.
+
+The reCAPTCHA Enterprise library is loaded by the page itself with a `<script defer>` tag rather
+than by the Firebase SDK — the SDK appends its own tag with no load-error handler and, with a
+blocked address, waits forever, stalling every database request. When the library is absent,
+`activateAppCheck()` logs a console warning and skips App Check; the module then behaves as it did
+before App Check existed, including the `localStorage` fallback.
+
 ## Application startup flow
 
 After the page loads, the application logically performs this flow:
@@ -649,7 +695,7 @@ After the page loads, the application logically performs this flow:
 1. Sets default language `pl`.
 2. Attaches event listeners to UI elements.
 3. Updates module visibility based on `data-module-toggle` checkboxes.
-4. Initializes favorites storage through `initFavoritesStore()`.
+4. Initializes favorites storage through `initFavoritesStore()`, which creates the `generator-npc-favorites` app and activates App Check for it.
 5. Starts `startPrivateDataFlow()`.
 6. Waits for `window.DataVaultFirebaseReady` or event `datavault-firebase-loader-ready`.
 7. Initializes the shared private data Firebase loader.

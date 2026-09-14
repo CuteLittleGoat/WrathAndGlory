@@ -507,6 +507,19 @@ Pastylki statusów są zielone, gdy wszystko jest w porządku. Czerwona pastylka
 - Krótkie efekty odpalaj pojedynczym kliknięciem nazwy.
 - Nie zostawiaj zbyt wielu aktywnych pętli naraz, jeśli gracze mają rozumieć dialog.
 
+## Potwierdzanie, że dane otwiera Twoja aplikacja
+
+Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym programem
+podszywającym się pod nią. Korzysta do tego z mechanizmu Google o nazwie reCAPTCHA.
+
+Dla Ciebie oznacza to dokładnie nic do zrobienia: nie pojawiają się żadne obrazki, żadne pytania
+„czy jesteś robotem" i żaden dodatkowy przycisk. Potwierdzenie odbywa się bez Twojego udziału.
+
+Jeżeli to potwierdzenie z jakiegoś powodu nie dojdzie do skutku — na przykład dodatek blokujący
+reklamy zatrzyma połączenie z Google albo sieć go nie przepuści — **moduł działa dalej normalnie**,
+dokładnie tak jak wcześniej. Ślad zostaje wyłącznie w oknie narzędzi dla programistów, jako
+informacja, że potwierdzenie zostało pominięte.
+
 ## Typowe komunikaty i co zrobić
 
 | Komunikat lub sytuacja | Co oznacza | Co zrobić |
@@ -518,6 +531,7 @@ Pastylki statusów są zielone, gdy wszystko jest w porządku. Czerwona pastylka
 | Brak linku do pliku audio | Manifest nie ma poprawnego linku do pliku. | Sprawdź dany wpis w manifeście. |
 | Brak wyników po filtrze | Filtry ukryły wszystkie dźwięki. | Wyczyść wyszukiwarkę albo zaznacz tagi ponownie. |
 | Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zablokowanym dostępie — kliknij tę pozycję, a moduł sam otworzy okno hasła. Jeżeli archiwum jest odblokowane, usuń wpis z listy. |
+| Moduł działa, ale w narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, moduł działa. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
 
 ## Krótki workflow — przygotowanie sesji
 
@@ -1042,6 +1056,19 @@ Status pills are green when everything is fine. A red pill means an error and no
 - Use one-click playback for short effects.
 - Do not leave too many loops running if players need to hear dialogue.
 
+## Confirming that your application is the one opening the data
+
+On start-up the module confirms in the background that it is the application you know and not a
+foreign program impersonating it. It uses a Google mechanism called reCAPTCHA for that.
+
+For you this means exactly nothing to do: no images appear, no "are you a robot" questions and no
+extra button. The confirmation happens without your involvement.
+
+If for some reason the confirmation does not go through — for example an ad blocker stops the
+connection to Google, or the network does not let it through — **the module keeps working
+normally**, exactly as before. The only trace is a note in the browser developer tools saying the
+confirmation was skipped.
+
 ## Common messages and what to do
 
 | Message or situation | Meaning | What to do |
@@ -1053,6 +1080,7 @@ Status pills are green when everything is fine. A red pill means an error and no
 | Missing audio file link | Manifest has no valid audio file link. | Check that manifest row. |
 | No results after filter | Filters hide all sounds. | Clear search or select tags again. |
 | Sound from list is marked missing | The list contains an ID that does not exist in the currently loaded library. | Usually an archive sound while access is locked — click that entry and the module opens the password window for you. If the archive is unlocked, remove the entry from the list. |
+| The module works but developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, the module works. To clear it, disable the ad blocker for this page. |
 
 ## Quick workflow — preparing a session
 

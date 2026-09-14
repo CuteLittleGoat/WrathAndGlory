@@ -378,6 +378,17 @@
 <!-- WAŻNE: Po skopiowaniu modułu na inny serwer każda grupa musi podmienić config/firebase-config.js na własny projekt Firebase. / IMPORTANT: After copying this module to another server, each group must replace config/firebase-config.js with its own Firebase project. -->
 <script src="config/firebase-config.js"></script>
 <script src="../shared/firebase-config.js"></script>
+<!-- Klucze witryny App Check dla obu projektów Firebase / App Check site keys for both Firebase projects -->
+<script src="../shared/appcheck-config.js"></script>
+<!-- PL: Biblioteka reCAPTCHA Enterprise dla App Check. Wczytujemy ją tutaj, a nie zostawiamy
+     tego Firebase, bo SDK dokłada swój znacznik bez obsługi błędu wczytania: gdy adres zostanie
+     zablokowany, SDK czeka bez końca i blokuje wszystkie zapytania do bazy. Znacznik "defer"
+     gwarantuje wykonanie przed skryptami modularnymi poniżej, a nie wstrzymuje wczytywania strony.
+     EN: The reCAPTCHA Enterprise library for App Check. We load it here instead of leaving it to
+     Firebase, because the SDK appends its own tag with no error handler: if the address is blocked
+     the SDK waits forever and stalls every database request. "defer" guarantees execution before
+     the module scripts below while not blocking page load. -->
+<script defer src="https://www.google.com/recaptcha/enterprise.js"></script>
 <script type="module" src="../shared/firebase-data-loader.js"></script>
     <script type="module">
       import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
@@ -389,6 +400,7 @@
         serverTimestamp,
         getDoc,
       } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+      import { activateAppCheck } from "../shared/firebase-app-check.js";
 
       // --- WAŻNE: DATA_URL wskazuje wspólny DataVault. Dla niezależnych grup podmień adres na własny serwer grupy. / IMPORTANT: DATA_URL points to a shared DataVault. For independent groups, change it to that group's own server URL. ---
       const accessGate = document.querySelector("#accessGate");
@@ -850,7 +862,14 @@ const translations = {
         if (existing) {
           return existing;
         }
-        return initializeApp(config, name);
+        const created = initializeApp(config, name);
+        // --- App Check tuż po utworzeniu aplikacji / App Check right after the app is created ---
+        // PL: Znacznik App Check ma towarzyszyć już pierwszemu zapytaniu do Firestore.
+        //     Wywołanie nie jest krytyczne — brak reCAPTCHA nie zatrzymuje modułu.
+        // EN: The App Check token must accompany the very first Firestore request.
+        //     The call is not critical — a missing reCAPTCHA does not stop the module.
+        activateAppCheck(created);
+        return created;
       };
 
       const state = {

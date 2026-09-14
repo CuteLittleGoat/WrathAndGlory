@@ -39,6 +39,8 @@ Nie ma osobnego pliku HTML dla admina. Tryb admina jest wykrywany przez parametr
 | `DataVault/docs/ZasadyFormatowania.md` | Zasady formatowania danych i specjalnych markerów. |
 | `shared/firebase-config.js` | Wspólna konfiguracja Firebase dla prywatnych danych DataVault. |
 | `shared/firebase-data-loader.js` | Wspólny loader prywatnych danych Firebase. |
+| `shared/appcheck-config.js` | Jedyne miejsce z kluczami witryny App Check (reCAPTCHA Enterprise) dla obu projektów Firebase. |
+| `shared/firebase-app-check.js` | Wspólne uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0). |
 
 ## Zależności zewnętrzne
 
@@ -47,6 +49,8 @@ Moduł ładuje zależności bezpośrednio w HTML:
 - `JSZip 3.10.1` — wymagany przez `xlsxCanonicalParser.js`,
 - `xlsxCanonicalParser.js` — lokalny parser kanoniczny,
 - `shared/firebase-config.js` — wspólna konfiguracja prywatnych danych,
+- `shared/appcheck-config.js` — klucze witryny App Check dla obu projektów Firebase,
+- `https://www.google.com/recaptcha/enterprise.js` — biblioteka reCAPTCHA Enterprise wczytywana ze znacznikiem `defer`,
 - `shared/firebase-data-loader.js` — modułowy loader Firebase,
 - `app.js` — główna logika DataVault,
 - `xlsx.full.min.js 0.19.3` — opcjonalna/legacy ścieżka SheetJS ładowana na końcu HTML.
@@ -59,6 +63,8 @@ DataVault korzysta ze wspólnej warstwy Firebase:
 
 ```text
 shared/firebase-config.js
+shared/appcheck-config.js
+shared/firebase-app-check.js
 shared/firebase-data-loader.js
 ```
 
@@ -77,6 +83,31 @@ Warstwa Firebase obsługuje:
 
 Szczegóły konfiguracji są opisane w `DataVault/config/FirebaseREADME.md` oraz powinny być spójne ze wspólnym `shared/FirebaseREADME.md`.
 
+## App Check
+
+Każde zapytanie do Firebase Authentication i do Realtime Database niesie znacznik App Check, czyli
+krótkotrwałe potwierdzenie, że zapytanie pochodzi z zarejestrowanej aplikacji WrathAndGlory.
+
+Elementy układanki:
+
+- `shared/appcheck-config.js` — klasyczny skrypt ustawiający `window.WG_APPCHECK_SITE_KEYS`
+  (mapa `projectId` → klucz witryny) oraz `window.WG_getAppCheckSiteKey(projectId)`.
+  To jedyne miejsce w repozytorium z kluczami; moduły ich nie powielają.
+- `<script defer src="https://www.google.com/recaptcha/enterprise.js">` w `index.html` —
+  biblioteka reCAPTCHA Enterprise. Wczytuje ją strona, a nie SDK Firebase. Powód jest praktyczny:
+  SDK dokłada własny znacznik `<script>` wyłącznie z obsługą poprawnego wczytania, bez obsługi
+  błędu, więc przy zablokowanym adresie czeka bez końca i wraz z nim czekają wszystkie zapytania
+  do bazy. Atrybut `defer` gwarantuje wykonanie przed skryptami modularnymi.
+- `shared/firebase-app-check.js` — funkcja `activateAppCheck(app)`. Sprawdza klucz dla projektu
+  aplikacji, sprawdza obecność `window.grecaptcha.enterprise` i dopiero wtedy wywołuje
+  `initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(klucz), isTokenAutoRefreshEnabled: true })`.
+  Powtórne wywołanie dla tej samej aplikacji jest bezpieczne (`WeakSet` obsłużonych aplikacji).
+- `shared/firebase-data-loader.js` — wywołuje `activateAppCheck(app)` w `initFirebaseDataAccess()`
+  bezpośrednio po utworzeniu nazwanej aplikacji, a przed `getAuth()` i `getDatabase()`.
+
+Uruchomienie App Check nie jest krytyczne. Brak klucza albo niedostępna reCAPTCHA kończą się
+ostrzeżeniem w konsoli i pominięciem App Check — moduł pracuje wtedy dokładnie tak jak bez niego.
+
 ## Przepływ startowy aplikacji
 
 Po załadowaniu strony moduł wykonuje logicznie następujący przepływ:
@@ -85,7 +116,7 @@ Po załadowaniu strony moduł wykonuje logicznie następujący przepływ:
 2. Podpina event listenery do UI.
 3. Próbuje pobrać wspólne API Firebase przez `getFirebaseApi()`.
 4. Czeka na `window.DataVaultFirebaseReady` albo event `datavault-firebase-loader-ready`.
-5. Wywołuje `initFirebaseDataAccess()`.
+5. Wywołuje `initFirebaseDataAccess()`, które tworzy nazwaną aplikację Firebase i uruchamia dla niej App Check.
 6. Czeka na `waitForAuthReady()`.
 7. Jeżeli użytkownik nie jest zalogowany, pokazuje bramkę K.O.Z.A.
 8. Po poprawnym logowaniu wywołuje `loadPrivateDataFromFirebase()`.
@@ -597,6 +628,8 @@ There is no separate admin HTML file. Admin mode is detected through the `admin=
 | `DataVault/docs/ZasadyFormatowania.md` | Data formatting and special marker rules. |
 | `shared/firebase-config.js` | Shared Firebase configuration for private data. |
 | `shared/firebase-data-loader.js` | Shared Firebase private data loader. |
+| `shared/appcheck-config.js` | The only place holding App Check site keys (reCAPTCHA Enterprise) for both Firebase projects. |
+| `shared/firebase-app-check.js` | Shared App Check activation for Firebase apps in modular form (SDK 12.6.0). |
 
 ## External dependencies
 
@@ -605,6 +638,8 @@ The module loads dependencies directly in HTML:
 - `JSZip 3.10.1` — required by `xlsxCanonicalParser.js`,
 - `xlsxCanonicalParser.js` — local canonical parser,
 - `shared/firebase-config.js` — shared private data configuration,
+- `shared/appcheck-config.js` — App Check site keys for both Firebase projects,
+- `https://www.google.com/recaptcha/enterprise.js` — the reCAPTCHA Enterprise library loaded with `defer`,
 - `shared/firebase-data-loader.js` — Firebase module loader,
 - `app.js` — main DataVault logic,
 - `xlsx.full.min.js 0.19.3` — optional/legacy SheetJS path loaded at the end of HTML.
@@ -617,6 +652,8 @@ DataVault uses the shared Firebase layer:
 
 ```text
 shared/firebase-config.js
+shared/appcheck-config.js
+shared/firebase-app-check.js
 shared/firebase-data-loader.js
 ```
 
@@ -635,6 +672,31 @@ The Firebase layer handles:
 
 Configuration details are documented in `DataVault/config/FirebaseREADME.md` and should stay consistent with the shared `shared/FirebaseREADME.md`.
 
+## App Check
+
+Every request to Firebase Authentication and to the Realtime Database carries an App Check token,
+a short-lived proof that the request originates from the registered WrathAndGlory application.
+
+The pieces:
+
+- `shared/appcheck-config.js` — a classic script setting `window.WG_APPCHECK_SITE_KEYS`
+  (a `projectId` → site key map) and `window.WG_getAppCheckSiteKey(projectId)`.
+  This is the only place in the repository holding the keys; modules never duplicate them.
+- `<script defer src="https://www.google.com/recaptcha/enterprise.js">` in `index.html` —
+  the reCAPTCHA Enterprise library. The page loads it, not the Firebase SDK. The reason is
+  practical: the SDK appends its own `<script>` tag with an onload handler only and no error
+  handler, so with a blocked address it waits forever and every database request waits with it.
+  The `defer` attribute guarantees execution before the module scripts.
+- `shared/firebase-app-check.js` — the `activateAppCheck(app)` function. It looks up the key for
+  the app's project, checks that `window.grecaptcha.enterprise` is present and only then calls
+  `initializeAppCheck(app, { provider: new ReCaptchaEnterpriseProvider(key), isTokenAutoRefreshEnabled: true })`.
+  Calling it again for the same app is safe (a `WeakSet` of handled apps).
+- `shared/firebase-data-loader.js` — calls `activateAppCheck(app)` inside `initFirebaseDataAccess()`
+  right after the named app is created and before `getAuth()` and `getDatabase()`.
+
+App Check activation is not critical. A missing key or an unavailable reCAPTCHA results in a console
+warning and App Check being skipped — the module then works exactly as it does without it.
+
 ## Application startup flow
 
 After the page loads, the module logically performs this flow:
@@ -643,7 +705,7 @@ After the page loads, the module logically performs this flow:
 2. Attaches UI event listeners.
 3. Tries to get the shared Firebase API through `getFirebaseApi()`.
 4. Waits for `window.DataVaultFirebaseReady` or event `datavault-firebase-loader-ready`.
-5. Calls `initFirebaseDataAccess()`.
+5. Calls `initFirebaseDataAccess()`, which creates the named Firebase app and activates App Check for it.
 6. Waits for `waitForAuthReady()`.
 7. If the user is not signed in, shows the K.O.Z.A. access gate.
 8. After successful sign-in, calls `loadPrivateDataFromFirebase()`.

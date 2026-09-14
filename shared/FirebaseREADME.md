@@ -46,6 +46,36 @@ Te moduły mają własne pliki `config/FirebaseREADME.md`.
 - Realtime Database: tak.
 - Firestore: nie w tej warstwie.
 - Storage: nie.
+- App Check (reCAPTCHA Enterprise): tak.
+
+## App Check i klucze witryny
+
+Aplikacja korzysta z **dwóch** projektów Firebase, a klucz reCAPTCHA Enterprise należy do
+konkretnego projektu. Oba klucze są zapisane w jednym pliku:
+
+```text
+shared/appcheck-config.js
+```
+
+Plik ustawia mapę `window.WG_APPCHECK_SITE_KEYS` (`projectId` → klucz witryny) oraz pomocniczą
+funkcję `window.WG_getAppCheckSiteKey(projectId)`. Moduły **nie** trzymają własnych kopii kluczy —
+przy zmianie klucza albo domeny poprawia się wyłącznie ten jeden plik.
+
+Uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0) jest we wspólnym
+pliku `shared/firebase-app-check.js`, w funkcji `activateAppCheck(app)`. Funkcja dobiera klucz na
+podstawie `app.options.projectId`, więc to samo wywołanie obsługuje oba projekty.
+
+Klucz witryny nie jest sekretem — tak samo jak `apiKey` musi trafić do kodu strony.
+
+**Warunek konieczny:** biblioteka reCAPTCHA Enterprise musi być wczytana, zanim `activateAppCheck()`
+zostanie wywołane. Każda strona korzystająca z App Check ma dlatego znacznik
+`<script defer src="https://www.google.com/recaptcha/enterprise.js">` umieszczony przed skryptami
+modularnymi. Nie wolno zostawiać wczytywania tej biblioteki samemu SDK: Firebase dokłada własny
+znacznik `<script>` wyłącznie z obsługą poprawnego wczytania, bez obsługi błędu, więc przy
+zablokowanym adresie czeka bez końca i blokuje wszystkie zapytania do bazy.
+
+Uruchomienie App Check nie jest krytyczne. Brak klucza albo brak biblioteki reCAPTCHA kończą się
+ostrzeżeniem w konsoli i pominięciem App Check — moduł pracuje wtedy tak jak bez niego.
 
 ## Plik konfiguracyjny
 
@@ -441,6 +471,36 @@ Those modules have their own `config/FirebaseREADME.md` files.
 - Realtime Database: yes.
 - Firestore: not in this layer.
 - Storage: no.
+- App Check (reCAPTCHA Enterprise): yes.
+
+## App Check and site keys
+
+The application uses **two** Firebase projects, and a reCAPTCHA Enterprise key belongs to one
+specific project. Both keys live in a single file:
+
+```text
+shared/appcheck-config.js
+```
+
+The file sets the `window.WG_APPCHECK_SITE_KEYS` map (`projectId` → site key) and the helper
+`window.WG_getAppCheckSiteKey(projectId)`. Modules do **not** keep their own copies of the keys —
+changing a key or a domain means editing this one file only.
+
+App Check activation for Firebase apps in modular form (SDK 12.6.0) lives in the shared
+`shared/firebase-app-check.js`, in the `activateAppCheck(app)` function. It picks the key from
+`app.options.projectId`, so the same call serves both projects.
+
+A site key is not a secret — like `apiKey` it has to be present in the page source.
+
+**Hard precondition:** the reCAPTCHA Enterprise library must be loaded before `activateAppCheck()`
+is called. Every page using App Check therefore carries a
+`<script defer src="https://www.google.com/recaptcha/enterprise.js">` tag placed before the module
+scripts. Never leave that library for the SDK to load: Firebase appends its own `<script>` tag with
+an onload handler only and no error handler, so with a blocked address it waits forever and stalls
+every database request.
+
+App Check activation is not critical. A missing key or a missing reCAPTCHA library results in a
+console warning and App Check being skipped — the module then works as it does without it.
 
 ## Configuration file
 
