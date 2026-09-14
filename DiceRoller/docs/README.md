@@ -142,6 +142,10 @@ Po odświeżeniu strony albo zmianie języka wynik zostaje wyczyszczony, a pola 
 | `Komplikacja Furii` | Co najmniej jedna kość Furii wyrzuciła `1`, a nie wystąpiła Krytyczna Furia. | Zastosuj komplikację zgodnie z sytuacją w grze. |
 | `Możliwe Przeniesienie` | Test zdał z nadwyżką. | Gracz może wykorzystać wskazaną liczbę przeniesień, jeżeli zasady i sytuacja na to pozwalają. |
 
+## Na telefonie
+
+Moduł mieści się na szerokość ekranu telefonu — nie trzeba przesuwać strony w bok.
+
 ## Typowe problemy
 
 ### Liczba kości Furii sama się zmienia
@@ -305,6 +309,10 @@ After refreshing the page or changing language, the result is cleared and fields
 | `Wrath Critical` | All Wrath dice rolled `6`. | Apply the appropriate table effect. |
 | `Wrath Complication` | At least one Wrath die rolled `1`, and no Wrath Critical occurred. | Apply a complication fitting the game situation. |
 | `Possible Shift` | The test passed with extra margin. | The player can use the displayed number of shifts if the rules and situation allow it. |
+
+## On a phone
+
+The module fits the width of a phone screen — there is no need to drag the page sideways.
 
 ## Common problems
 

@@ -89,6 +89,13 @@ Najważniejsze elementy:
 | `[data-images-link]` | Link `Obrazki`, uzupełniany z `ZmienneHiperlacza.md`. |
 | `[data-map-link]` | Link `Mapa`, uzupełniany z `ZmienneHiperlacza.md`. |
 
+### Siatka przycisków a wąski ekran
+
+Siatka używa zapisu `repeat(auto-fit, minmax(min(220px, 100%), 1fr))`. Człon `min(220px, 100%)` jest
+tu konieczny: samo `minmax(220px, 1fr)` nie potrafi zejść poniżej 220 px, więc przy 320 px ekranu
+kolumna wychodziła poza swój pojemnik o 16 px. Powyżej tej szerokości oba zapisy dają identyczny
+układ, co do setnej części piksela.
+
 ## Przyciski modułów
 
 ### Przyciski widoczne zawsze
@@ -516,6 +523,13 @@ Important elements:
 | `[data-datavault-link]` | DataVault link switched by mode. |
 | `[data-images-link]` | `Images` link filled from `ZmienneHiperlacza.md`. |
 | `[data-map-link]` | `Map` link filled from `ZmienneHiperlacza.md`. |
+
+### The button grid on a narrow screen
+
+The grid uses `repeat(auto-fit, minmax(min(220px, 100%), 1fr))`. The `min(220px, 100%)` part is
+required here: plain `minmax(220px, 1fr)` cannot go below 220 px, so on a 320 px screen the column
+overflowed its container by 16 px. Above that width both forms produce an identical layout, to the
+hundredth of a pixel.
 
 ## Module buttons
 

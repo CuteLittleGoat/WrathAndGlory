@@ -228,6 +228,12 @@ Kliknięcie cechy pokazuje krótki opis w małym oknie podpowiedzi.
 
 Jeżeli opis nie istnieje w danych, zobaczysz informację, że nie znaleziono opisu cechy.
 
+Okno podpowiedzi zamkniesz krzyżykiem w jego prawym górnym rogu, klawiszem `Esc` albo stuknięciem
+poza nim.
+
+Na telefonie (poniżej 720 px szerokości) podpowiedź wysuwa się od dolnej krawędzi ekranu i zajmuje
+najwyżej połowę jego wysokości, dzięki czemu wiersz, którego dotyczy, zostaje widoczny.
+
 ## Ulubione
 
 Panel `Ulubione` pozwala zapisać gotową konfigurację NPC.
@@ -584,6 +590,11 @@ Traits may appear as clickable tags.
 Clicking a trait shows a short description in a small popover.
 
 If no description exists in the data, you will see a message that the trait description was not found.
+
+Close the popover with the cross in its top-right corner, the `Esc` key, or by tapping outside it.
+
+On a phone (below 720 px wide) the popover slides in from the bottom edge of the screen and takes up
+at most half its height, so the row it refers to stays visible.
 
 ## Favorites
 

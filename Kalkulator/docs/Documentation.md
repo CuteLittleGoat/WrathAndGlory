@@ -313,6 +313,27 @@ Funkcje:
 
 Modal może mieć jeden przycisk informacyjny albo dwa przyciski potwierdzenia.
 
+## Responsywność `TworzeniePostaci.html`
+
+- `.wrapper` ma `width: min(1100px, 100%)`. Zapis `96vw` odnosiłby się do szerokości ekranu, a nie do
+  miejsca pozostałego po marginesie wewnętrznym `body`;
+- każda z trzech tabel (atrybuty, umiejętności, talenty) jest w `<div class="table-wrap">`
+  z `overflow-x: auto`, więc przewija się sama zamiast rozpychać stronę;
+- przy `max-width: 760px` `.language-switcher` przechodzi z `position: absolute` na `static` i układa
+  przyciski w wiersz nad tytułem, a tabele dostają `min-width` (atrybuty 560 px, pozostałe po 520 px).
+
+To ten sam układ, który `TworzeniePostaci_v2.html` ma od początku.
+
+## Responsywność `KalkulatorXP.html`
+
+Siatka `.calcGrid` pozostaje bez zmian. Poprawki dotyczą wyłącznie tabeli
+`#maxAttributesTable` (`.referenceTable`), która ma `table-layout: fixed` i dziewięć kolumn
+o narzuconej równej szerokości, a jej nagłówki to długie, niepodzielne słowa:
+
+- `.referenceTableWrap` ma `overflow-x: auto`,
+- `.referenceTable` ma `min-width: 520px`,
+- `.referenceTable thead th` ma `overflow-wrap: anywhere`.
+
 ## Firebase w `TworzeniePostaci.html`
 
 Firebase jest używany tylko do zapisu i wczytania stanu postaci.
@@ -779,6 +800,28 @@ Functions:
 - `toggleConfirmModal(...)`.
 
 The modal can have one information button or two confirmation buttons.
+
+## Responsiveness of `TworzeniePostaci.html`
+
+- `.wrapper` has `width: min(1100px, 100%)`. The `96vw` form would refer to the screen width rather
+  than to the space left after the `body` padding;
+- each of the three tables (attributes, skills, talents) sits in a `<div class="table-wrap">` with
+  `overflow-x: auto`, so it scrolls on its own instead of widening the page;
+- at `max-width: 760px` `.language-switcher` moves from `position: absolute` to `static` and lays the
+  buttons out in a row above the title, and the tables get a `min-width` (attributes 560 px, the rest
+  520 px each).
+
+This is the same layout `TworzeniePostaci_v2.html` has had from the start.
+
+## Responsiveness of `KalkulatorXP.html`
+
+The `.calcGrid` grid is left untouched. The fixes concern only the `#maxAttributesTable`
+(`.referenceTable`) table, which has `table-layout: fixed` and nine columns of imposed equal width
+while its headers are long, unbreakable words:
+
+- `.referenceTableWrap` has `overflow-x: auto`,
+- `.referenceTable` has `min-width: 520px`,
+- `.referenceTable thead th` has `overflow-wrap: anywhere`.
 
 ## Firebase in `TworzeniePostaci.html`
 

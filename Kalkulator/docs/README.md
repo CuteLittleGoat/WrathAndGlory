@@ -272,6 +272,18 @@ Zapis obejmuje między innymi:
 - stan pól formularza,
 - widoczne komunikaty walidacji.
 
+## Na telefonie
+
+**Prosty Kreator Postaci.** Cała strona mieści się na szerokość ekranu. Przyciski `Instrukcja`,
+`Strona Główna` i `Maksymalne wartości atrybutów` stoją nad tytułem, a nie na nim. Trzy tabele
+(atrybuty, umiejętności, talenty) przewijają się w bok **same w sobie** — ośmiu kolumn z polami
+liczbowymi nie da się sensownie ścisnąć do szerokości telefonu, więc przewija się tabela, a nie cała
+strona.
+
+**Kalkulator PD.** Tabela `Maksymalne wartości atrybutów` przewija się w bok wewnątrz swojej karty,
+a nazwy atrybutów łamią się zamiast być przycinane. Wcześniej napisy `Wytrzymałość` i `Inteligencja`
+nachodziły na sąsiednie kolumny.
+
 ## Typowe komunikaty i co zrobić
 
 | Komunikat lub sytuacja | Co oznacza | Co zrobić |
@@ -582,6 +594,17 @@ Save includes, among others:
 - talents,
 - form field state,
 - visible validation messages.
+
+## On a phone
+
+**Simple character creator.** The whole page fits the screen width. The `Instrukcja`, `Strona Główna`
+and `Maksymalne wartości atrybutów` buttons sit above the title rather than on top of it. The three
+tables (attributes, skills, talents) scroll sideways **inside themselves** — eight columns of number
+fields cannot be squeezed sensibly into a phone width, so the table scrolls instead of the whole page.
+
+**XP calculator.** The `Maksymalne wartości atrybutów` table scrolls sideways inside its own card and
+the attribute names wrap instead of being clipped. The `Wytrzymałość` and `Inteligencja` labels used
+to run into the neighbouring columns.
 
 ## Common messages and what to do
 

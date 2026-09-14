@@ -159,6 +159,15 @@ Przełącznik języka jest ukrywany przez:
 
 Usunięcie tej klasy z HTML ponownie pokaże selektor języka.
 
+### Siatka i wyniki na wąskim ekranie
+
+`.grid` używa `minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 140px`. Bez `minmax(0, …)` kolumna
+`1fr` nie potrafi zejść poniżej szerokości swojej zawartości, więc lista rozwijana z długą nazwą
+kategorii mogłaby rozepchnąć siatkę.
+
+`.results` ma `overflow-wrap: anywhere` przy `white-space: pre-wrap`, dzięki czemu długa wygenerowana
+nazwa bez spacji łamie się w panelu zamiast z niego wystawać.
+
 ## Dane generatora
 
 Główna tablica danych to `DATA`.
@@ -520,6 +529,15 @@ Important DOM elements:
 | `#modePill` | Random mode indicator. |
 | `#res` | Result container. |
 | `#seedHint` | Seed explanation hint. |
+
+### The grid and results on a narrow screen
+
+`.grid` uses `minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) 140px`. Without `minmax(0, …)` a `1fr`
+column cannot go below the width of its content, so a select holding a long category name could
+stretch the grid.
+
+`.results` has `overflow-wrap: anywhere` alongside `white-space: pre-wrap`, so a long generated name
+without spaces wraps inside the panel instead of spilling out of it.
 
 ## CSS structure
 

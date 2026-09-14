@@ -171,6 +171,10 @@ Ctrl + F5
 
 albo wyczyść dane strony w przeglądarce.
 
+## Na telefonie
+
+Moduł mieści się na szerokość ekranu telefonu — nie trzeba przesuwać strony w bok.
+
 ## Typowe problemy i co zrobić
 
 | Problem | Możliwa przyczyna | Co zrobić |
@@ -365,6 +369,10 @@ Ctrl + F5
 ```
 
 or clear site data in the browser.
+
+## On a phone
+
+The module fits the width of a phone screen — there is no need to drag the page sideways.
 
 ## Common problems and what to do
 

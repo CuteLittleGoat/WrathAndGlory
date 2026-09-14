@@ -143,6 +143,13 @@ Najważniejsze zasady layoutu:
 - `.dice` używa `flex-wrap`, aby kości zawijały się w wielu wierszach,
 - przy szerokości do `600px` przełącznik języka przechodzi do pozycji statycznej, a kości zmniejszają się z `68px` do `58px`.
 
+### Siatka a wąski ekran
+
+Siatka panelu używa zapisu `repeat(auto-fit, minmax(min(220px, 100%), 1fr))`. Człon `min(220px, 100%)`
+jest tu konieczny: samo `minmax(220px, 1fr)` nie potrafi zejść poniżej 220 px, więc przy 320 px ekranu
+kolumna wychodziła poza swój pojemnik o 16 px. Powyżej tej szerokości oba zapisy dają identyczny
+układ, co do setnej części piksela.
+
 ## Kości i klasy CSS
 
 Każda kość jest tworzona dynamicznie jako:
@@ -502,6 +509,13 @@ Important DOM elements:
 | `.results` | Result section. |
 | `#dice` | Rendered dice container. |
 | `#summary` | Test summary container. |
+
+### The grid on a narrow screen
+
+The panel grid uses `repeat(auto-fit, minmax(min(220px, 100%), 1fr))`. The `min(220px, 100%)` part is
+required here: plain `minmax(220px, 1fr)` cannot go below 220 px, so on a 320 px screen the column
+overflowed its container by 16 px. Above that width both forms produce an identical layout, to the
+hundredth of a pixel.
 
 ## CSS structure
 

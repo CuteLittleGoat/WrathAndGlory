@@ -156,6 +156,11 @@ Po odświeżeniu strony wracają ustawienia startowe.
 | `skopiowano` | Wyniki zostały skopiowane do schowka. | Możesz wkleić listę w innym miejscu. |
 | `Nie mogę skopiować...` | Przeglądarka zablokowała dostęp do schowka. | Zaznacz wyniki ręcznie i skopiuj je skrótem klawiaturowym. |
 
+## Na telefonie
+
+Moduł mieści się na szerokość ekranu telefonu. Bardzo długa wygenerowana nazwa bez spacji łamie się
+w polu wyników, zamiast wychodzić poza panel.
+
 ## Typowe problemy
 
 ### Wyniki zmieniają się po każdym kliknięciu
@@ -333,6 +338,11 @@ After refreshing the page, the module returns to its starting state.
 | `Random: SEED` | The generator uses the entered seed. | Keep the same seed if you want to reproduce the result. |
 | `copied` | Results were copied to the clipboard. | Paste the list where you need it. |
 | `Cannot copy...` | The browser blocked clipboard access. | Select the results manually and copy them with a keyboard shortcut. |
+
+## On a phone
+
+The module fits the width of a phone screen. A very long generated name without spaces wraps inside
+the results field instead of spilling out of the panel.
 
 ## Common problems
 

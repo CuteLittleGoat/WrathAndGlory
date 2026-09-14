@@ -175,6 +175,14 @@ Niektóre komórki mają długie opisy. DataVault może je skracać, żeby tabel
 
 Kliknięcie rozwijanego pola pokazuje więcej treści. Ponowne kliknięcie może przywrócić krótszy widok.
 
+## Dymek z opisem cechy
+
+Kliknięcie tagu cechy pokazuje jej opis w małym oknie w rogu ekranu. Zamkniesz je krzyżykiem albo
+klawiszem `Esc`.
+
+Na telefonie (poniżej 720 px szerokości) okno wysuwa się od dolnej krawędzi i zajmuje najwyżej
+połowę wysokości ekranu, dzięki czemu wiersz, którego dotyczy, zostaje widoczny.
+
 ## Odnośniki i specjalne wyróżnienia
 
 DataVault automatycznie wyróżnia część tekstu z danych.
@@ -524,6 +532,14 @@ Some tabs may use default sorting, for example by source data order.
 Some cells contain long descriptions. DataVault may shorten them to keep the table readable.
 
 Clicking an expandable field shows more content. Clicking again may return to the shorter view.
+
+## Trait description popover
+
+Clicking a trait tag shows its description in a small window in the corner of the screen. Close it
+with the cross or the `Esc` key.
+
+On a phone (below 720 px wide) the window slides in from the bottom edge and takes up at most half
+the screen height, so the row it refers to stays visible.
 
 ## References and special highlights
 
