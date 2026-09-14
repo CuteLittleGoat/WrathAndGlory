@@ -1,0 +1,57 @@
+// --- Reguły Firestore dla projektu wh40k-data-slate / Firestore rules for the wh40k-data-slate project ---
+//
+// PL: Ten plik jest odwzorowaniem reguł WGRANYCH DZIŚ w Firebase Console. Trzyma go tu po to, żeby
+//     stan zabezpieczeń bazy dało się przejrzeć i porównać, czytając samo repozytorium.
+//     Zapisanie pliku NIE zmienia niczego w Firebase — reguły publikuje się w konsoli albo przez
+//     Firebase CLI.
+// EN: This file mirrors the rules CURRENTLY DEPLOYED in the Firebase Console. It lives here so that
+//     the database's security state can be reviewed and compared from the repository alone.
+//     Saving the file changes NOTHING in Firebase — rules are published from the console or the
+//     Firebase CLI.
+//
+// PL: Z tego projektu korzystają: DataVault, oba Kreatory Postaci i Infoczytnik.
+//     DataVault czyta dane z Realtime Database, nie z Firestore, więc nie ma go poniżej. Tamta baza
+//     wymaga zalogowania i jest zamknięta osobnym kompletem reguł.
+// EN: This project serves: DataVault, both character creators and Infoczytnik.
+//     DataVault reads its data from the Realtime Database, not Firestore, so it does not appear
+//     below. That database requires sign-in and is closed by its own separate rule set.
+//
+// PL: 🔴 KOLEJNOŚĆ JEST KRYTYCZNA. Docelowo każda reguła poniżej ma mieć warunek
+//     `request.app != null`, czyli „wpuść tylko zapytanie niosące ważny znacznik App Check".
+//     Ten warunek SAM W SOBIE jest wymuszaniem i działa niezależnie od przełącznika Enforce.
+//     Wgranie go, zanim wszystkie moduły zaczną wysyłać znaczniki, odcina całą aplikację wszystkim
+//     naraz. Gotowa treść docelowa i właściwa kolejność kroków są w
+//     Analizy/audyt-kodu-aplikacji-2026-09-10.md, rozdz. 9.8.
+// EN: 🔴 ORDER IS CRITICAL. Eventually every rule below is to carry the `request.app != null`
+//     condition, i.e. "admit only requests carrying a valid App Check token". That condition IS
+//     enforcement in itself and works regardless of the Enforce switch. Deploying it before every
+//     module sends tokens cuts the whole application off for everyone at once. The final text and
+//     the correct step order are in Analizy/audyt-kodu-aplikacji-2026-09-10.md, chapter 9.8.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Infoczytnik ---
+
+    // PL: Kanał panelu GM -> ekran gracza. Jeden dokument, nadpisywany na żywo.
+    // EN: GM panel -> player screen channel. A single document, overwritten live.
+    match /dataslate/current { allow read, write: if true; }
+
+    // PL: Zapisane wiadomości panelu GM (listy ulubionych). Jeden dokument = jedna wiadomość.
+    // EN: Saved GM panel messages (favourite lists). One document = one message.
+    match /dataslate_favorites/{document=**} { allow read, write: if true; }
+
+    // --- Kreatory Postaci / Character creators ---
+
+    // PL: Prosty Kreator Postaci / EN: Simple character creator
+    match /character_builder/current { allow read, write: if true; }
+
+    // PL: Zaawansowany Kreator Postaci / EN: Advanced character creator
+    match /character_builder/v2 { allow read, write: if true; }
+
+    // --- Wszystko inne niedostępne / Everything else inaccessible ---
+    match /{document=**} { allow read, write: if false; }
+  }
+}

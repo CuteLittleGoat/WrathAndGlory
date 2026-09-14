@@ -504,6 +504,14 @@ Użytkownik może zaznaczyć co najmniej dwa wiersze. Wtedy przycisk `Porównaj 
 
 Modal porównania pokazuje wartości pól dla zaznaczonych rekordów obok siebie. Porównanie działa na aktualnym arkuszu i wykorzystuje dane z bieżącej tabeli.
 
+Tabela w oknie porównania ma klasę `compareTable`, która daje jej odstępy wewnętrzne komórek 8 px,
+linię `1px solid var(--div)` między wierszami, naprzemienne tła i podświetlenie wiersza pod kursorem.
+Bez tej klasy treść sąsiednich kolumn dzieliłyby 4 px i napisy sklejałyby się w jeden ciąg znaków.
+
+Okno nie wyróżnia pól, które się różnią. Dwa wpisy z tej samej zakładki różnią się w kolumnach
+opisowych praktycznie zawsze, więc podświetlenie zapalałoby niemal całą tabelę i nie niosłoby
+informacji.
+
 ## Popover cech i stanów
 
 Kliknięcie odpowiednich tagów albo elementów specjalnych może otworzyć `popover`.
@@ -1092,6 +1100,15 @@ Hiding operates on several levels:
 The user can select at least two rows. Then the `Compare selected` button becomes active.
 
 The comparison modal shows field values for selected records side by side. Comparison works within the current sheet and uses current table data.
+
+The table in the comparison window carries the `compareTable` class, which gives it 8 px cell
+padding, a `1px solid var(--div)` line between rows, alternating backgrounds and a hover highlight.
+Without that class the contents of neighbouring columns would be 4 px apart and their texts would run
+together into a single string.
+
+The window does not highlight fields that differ. Two entries from the same tab differ in the
+descriptive columns practically always, so highlighting would light up nearly the whole table and
+carry no information.
 
 ## Trait and state popover
 

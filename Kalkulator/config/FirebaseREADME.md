@@ -353,6 +353,17 @@ service cloud.firestore {
 
 Uwaga: powyższe reguły pozwalają każdemu, kto zna projekt Firebase, odczytać i nadpisać `character_builder/current`. Dla większego bezpieczeństwa należy dodać uwierzytelnianie albo inny mechanizm kontroli zapisu i odpowiednio zmienić kod modułu.
 
+Powyższy przykład dotyczy izolowanego projektu z jednym modułem. **Komplet reguł projektu
+`wh40k-data-slate`**, z którego korzystają oba Kreatory Postaci, Infoczytnik i DataVault, jest
+w jednym pliku:
+
+```text
+shared/firestore-wh40k-data-slate.rules
+```
+
+Moduł wysyła do Firestore znacznik App Check. Klucze witryny są w `shared/appcheck-config.js`,
+a uruchamianie w `shared/firebase-app-check-compat.js`.
+
 ## Test połączenia
 
 1. Otwórz `Kalkulator/TworzeniePostaci.html`.
@@ -732,6 +743,17 @@ service cloud.firestore {
 ```
 
 Warning: these rules allow anyone who knows the Firebase project to read and overwrite `character_builder/current`. For stronger security, add authentication or another write-control mechanism and update the module code accordingly.
+
+The example above covers an isolated single-module project. **The complete rule set of the
+`wh40k-data-slate` project**, used by both character creators, Infoczytnik and DataVault, lives in a
+single file:
+
+```text
+shared/firestore-wh40k-data-slate.rules
+```
+
+The module sends an App Check token to Firestore. The site keys are in `shared/appcheck-config.js`
+and the activation code in `shared/firebase-app-check-compat.js`.
 
 ## Connection test
 

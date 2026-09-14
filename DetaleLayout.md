@@ -1014,3 +1014,29 @@ Measured card overflow (content wider than the card) for the longest single Best
 **4482 px at a 360 px screen, 3402 px at 1440 px and 2922 px at 1920 px drops to 0 px at every one of
 those widths.** After the change the wide multi-column tables have identical column widths and
 identical scrolling.
+
+## DataVault — okno „Porównaj zaznaczone"
+
+Tabela w oknie porównania korzysta z klasy `compareTable`:
+
+- odstęp wewnętrzny komórki: **8 px** (wcześniej tabela rysowała się w stylu domyślnym przeglądarki),
+- linia rozdzielająca wiersze: `1px solid var(--div)`,
+- nagłówki: kolor `--code` na tle `rgba(22, 198, 12, .04)`,
+- tła naprzemienne: `--zebra-odd` i `--zebra-even`, wiersz pod kursorem: `--hover`,
+- zawartość komórek wyrównana do góry (`vertical-align: top`).
+
+Zmierzony odstęp między treścią sąsiednich kolumn: **4 px → 16 px**. Okno nie wyróżnia kolorem pól,
+które się różnią.
+
+## DataVault — the "Compare selected" window
+
+The table in the comparison window uses the `compareTable` class:
+
+- cell padding: **8 px** (previously the table fell back to the browser default styling),
+- row separator: `1px solid var(--div)`,
+- headers: `--code` colour on an `rgba(22, 198, 12, .04)` background,
+- alternating backgrounds: `--zebra-odd` and `--zebra-even`, hovered row: `--hover`,
+- cell content aligned to the top (`vertical-align: top`).
+
+Measured gap between the contents of neighbouring columns: **4 px → 16 px**. The window does not
+colour-highlight fields that differ.

@@ -35,7 +35,6 @@
       color:var(--code);
       text-shadow:var(--glowH);
     }
-    .subtitle{margin:0 0 20px; color:var(--text2);}
     .section-title{
       margin:24px 0 12px;
       padding-bottom:8px;
@@ -290,7 +289,7 @@
     <div class="xp-section">
       <label id="xpPoolLabel">Pula PD do wydania:</label>
       <input type="number" id="xpPool" value="155" min="0">
-      <span id="xpRemainingLabel">Pozostało: <strong id="xpRemaining">155</strong></span>
+      <span id="xpRemainingLabel"><span id="xpRemainingText">Pozostało PD:</span> <strong id="xpRemaining">155</strong></span>
     </div>
     <div class="data-actions">
       <button type="button" id="saveToFirebaseButton">Zapisz</button>
@@ -688,7 +687,11 @@ const translations = {
         const t = translations[lang];
         document.getElementById('pageTitle').innerText = t.labels.pageTitle;
         document.getElementById('xpPoolLabel').innerText = t.labels.xpPool;
-        document.getElementById('xpRemainingLabel').innerHTML = `${t.labels.remainingXP} <strong id="xpRemaining">155</strong>`;
+        // Podmieniamy wyłącznie tekst etykiety. Wcześniej przebudowywany był cały wiersz razem
+        // z elementem #xpRemaining, co kasowało wyliczoną liczbę PD i niszczyło ten element.
+        // Only the label text is replaced. Rebuilding the whole line together with the #xpRemaining
+        // element wiped the calculated XP figure and destroyed that element.
+        document.getElementById('xpRemainingText').innerText = t.labels.remainingXP;
         document.getElementById('attributesHeader').innerText = t.labels.attributesHeader;
         document.getElementById('skillsHeader').innerText = t.labels.skillsHeader;
         document.getElementById('talentsHeader').innerText = t.labels.talentsHeader;

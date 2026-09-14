@@ -45,17 +45,11 @@ Przyciski lokalne nie korzystają z Firebase.
 
 ## Reguły Firestore
 
-Plik:
+Komplet reguł projektu `wh40k-data-slate` — czyli tego, z którego korzystają oba Kreatory Postaci,
+Infoczytnik i DataVault — jest w jednym pliku:
 
 ```text
-Kalkulator/config/firestore.rules
-```
-
-zawiera reguły dopuszczające dokładnie dwa dokumenty:
-
-```text
-character_builder/current
-character_builder/test-v2
+shared/firestore-wh40k-data-slate.rules
 ```
 
 Reguły trzeba opublikować w Firebase Console albo przez Firebase CLI. Samo zapisanie pliku w repozytorium nie zmienia aktywnych reguł projektu Firebase.
@@ -66,7 +60,6 @@ Aby zamknąć rozwój wersji testowej bez wpływu na produkcję:
 
 1. usuń lub wycofaj `Kalkulator/test.html` i `Kalkulator/test-firebase.js`,
 2. opcjonalnie usuń dokument `character_builder/test-v2`,
-3. usuń regułę dla `character_builder/test-v2`,
-4. pozostaw bez zmian `TworzeniePostaci.html` i `character_builder/current`.
+3. pozostaw bez zmian `TworzeniePostaci.html` i `character_builder/current`.
 
 Dokument produkcyjny nie wymaga migracji ani modyfikacji.

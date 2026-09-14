@@ -128,7 +128,6 @@ code{color:var(--code)}
 .btn:disabled{opacity:.45; cursor:not-allowed}
 .btn.secondary:hover{background:rgba(22,198,12,.12)}
 .btn.primary:hover{filter:brightness(1.08)}
-.filebtn input{display:none}
 
 .main{flex:1; display:grid; grid-template-columns:180px 1fr; gap:12px; padding:12px}
 .panel{
@@ -413,7 +412,6 @@ td.center{text-align:center}
 .compareTable tbody tr:nth-child(odd){background:var(--zebra-odd)}
 .compareTable tbody tr:nth-child(even){background:var(--zebra-even)}
 .compareTable tbody tr:hover{background:var(--hover)}
-.compareDiff{color:#E6B35C}
 
 /* Responsive */
 @media (max-width: 980px){

@@ -214,11 +214,6 @@ a.link:hover {
   line-height: 1.55;
 }
 
-.panel-data-source .data-source-link {
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
 .field {
   display: flex;
   flex-direction: column;
@@ -428,41 +423,6 @@ textarea:focus {
 .checkbox.checkbox-inline {
   align-items: center;
   gap: 8px;
-}
-
-.card-features {
-  margin-bottom: 14px;
-  padding: 12px 14px;
-  border: 1px solid var(--div);
-  border-radius: 6px;
-  background: rgba(22, 198, 12, 0.04);
-}
-
-.card-features h4 {
-  margin: 0 0 8px;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--text2);
-}
-
-.feature-list {
-  margin: 0;
-  padding-left: 18px;
-  color: var(--text);
-  font-size: 0.82rem;
-}
-
-.feature-list li {
-  margin-bottom: 4px;
-}
-
-.notice {
-  padding: 12px 14px;
-  border-left: 3px solid var(--text2);
-  background: rgba(22, 198, 12, 0.05);
-  border-radius: 4px;
-  color: var(--code);
 }
 
 .data-table {

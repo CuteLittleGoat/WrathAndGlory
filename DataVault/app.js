@@ -296,7 +296,7 @@ const STATUS_OLD_VALUE = "old";
 
 /* ---------- Utilities ---------- */
 function norm(s){
-  return String(s ?? "").replace(/\s+/g, " ").trim().replace(" :", ":").replace(": ",": ");
+  return String(s ?? "").replace(/\s+/g, " ").trim().replace(" :", ":");
 }
 
 function isHiddenColumn(name){
@@ -312,33 +312,6 @@ function resolveLpKey(rows){
     }
   }
   return null;
-}
-
-function deriveColumnOrderFromHeader(header){
-  const order = [];
-  let hasRange = false;
-  let hasTraits = false;
-  for (const raw of header || []){
-    const col = norm(raw);
-    if (!col) continue;
-    if (isHiddenColumn(col)) continue;
-    if (/^Zasi[eę]g\s*\d+$/i.test(col)){
-      if (!hasRange){
-        order.push("Zasięg");
-        hasRange = true;
-      }
-      continue;
-    }
-    if (/^Cecha\s*\d+$/i.test(col)){
-      if (!hasTraits){
-        order.push("Cechy");
-        hasTraits = true;
-      }
-      continue;
-    }
-    order.push(col);
-  }
-  return order;
 }
 
 function getSheetOrder(available){
@@ -667,6 +640,11 @@ function formatInlineHTML(raw){
   }
 
   const refs = [];
+  // Zmienna wyniku dopasowania musi być zadeklarowana, inaczej w trybie swobodnym powstaje zmienna
+  // globalna, a w module ES ten sam zapis rzuca ReferenceError i formatowanie komórek przestaje działać.
+  // The match variable must be declared; in sloppy mode it would silently become a global, and in an
+  // ES module the same code throws a ReferenceError and cell formatting stops working.
+  let m;
   reRefParen.lastIndex = 0;
   while ((m = reRefParen.exec(combined))){
     refs.push({start: m.index, end: m.index + m[0].length});
@@ -1444,12 +1422,6 @@ let filterMenuDocHandler = null;
 function isFilterMenuOpen(){
   return els.filterMenu.getAttribute("aria-hidden") !== "true";
 }
-let headerBuiltFor = null;
-
-/* Legacy renderer (z przewijaniem i klamrowaniem) — zostawiony do wglądu
-function buildTableSkeleton(){...}
-*/
-
 function selectSheet(name){
   persistCurrentSheetView();
   currentSheet = name;
@@ -1824,13 +1796,6 @@ function sortRows(rows){
 /* ---------- Rendering body ---------- */
 let renderToken = 0;
 
-/* Legacy renderer (z klamrowaniem i rozwijaniem) — pozostawiony w komentarzu
-function renderBody(){...}
-function renderRow(){...}
-function measureRenderedLines(){...}
-function updateClampableHints(){...}
-*/
-
 function renderBody(){
   if (!DB || !currentSheet || !tbodyEl) return;
   const rowsAll = getSystemVisibleRows(currentSheet);
@@ -1904,8 +1869,6 @@ function renderRow(r, cols){
     } else {
       const div = document.createElement("div");
       div.className = "celltext";
-
-      const key = `${currentSheet}|${r.__id}|${col}`;
 
       div.innerHTML = formatDataCellHTML(r, col, currentSheet);
 
@@ -2088,8 +2051,7 @@ function closePopover(){ els.pop.setAttribute("aria-hidden","true"); }
 els.popClose.addEventListener("click", closePopover);
 
 /* ---------- Modal ---------- */
-function openModal(title, html){
-  void title;
+function openModal(html){
   els.modalBody.innerHTML = html;
   els.modal.setAttribute("aria-hidden","false");
 }
@@ -2109,24 +2071,25 @@ function openCompareModal(rows){
   const cols = DB.sheets[currentSheet]._cols || inferColumns(DB.sheets[currentSheet] || [], currentSheet);
   const htmlRows = [];
   for (const col of cols){
-    const vals = rows.map(r => r[col] ?? "");
-    const uniq = new Set(vals.map(v => String(v)));
-    const diff = uniq.size > 1;
     htmlRows.push(`
-      <tr class="${diff ? "diff" : ""}">
+      <tr>
         <th>${escapeHtml(col)}</th>
         ${rows.map(r => `<td>${col==="Cechy" ? escapeHtml(String(r[col]||"")) : formatDataCellHTML(r, col, currentSheet)}</td>`).join("")}
       </tr>`);
   }
+  // Klasa compareTable daje tabeli odstępy wewnętrzne, linie między wierszami i naprzemienne tła.
+  // Bez niej sąsiednie kolumny dzieli domyślne 2 px i napisy sklejają się w jeden ciąg znaków.
+  // The compareTable class gives the table cell padding, row separators and alternating backgrounds.
+  // Without it neighbouring columns are 2 px apart by default and their texts run together.
   const html = `<div style="overflow:auto; max-height:70vh">
-    <table>
+    <table class="compareTable">
       <thead><tr><th>${translations[currentLanguage].labels.comparisonField}</th>${rows
         .map((_, i) => `<th>${translations[currentLanguage].labels.comparisonRecord} ${i + 1}</th>`)
         .join("")}</tr></thead>
       <tbody>${htmlRows.join("")}</tbody>
     </table>
   </div>`;
-  openModal(translations[currentLanguage].labels.comparisonTitle.toUpperCase(), html);
+  openModal(html);
 }
 
 /* ---------- View presets ---------- */

@@ -1,0 +1,32 @@
+// --- Reguły Firestore dla projektu audiorpg-2eb6f / Firestore rules for the audiorpg-2eb6f project ---
+//
+// PL: Ten plik jest odwzorowaniem reguł WGRANYCH DZIŚ w Firebase Console. Zapisanie pliku NIE zmienia
+//     niczego w Firebase — reguły publikuje się w konsoli albo przez Firebase CLI.
+// EN: This file mirrors the rules CURRENTLY DEPLOYED in the Firebase Console. Saving the file changes
+//     NOTHING in Firebase — rules are published from the console or the Firebase CLI.
+//
+// PL: Z tego projektu korzystają: GeneratorNPC i moduł Audio. Projekt nie ma Realtime Database.
+// EN: This project serves: GeneratorNPC and the Audio module. It has no Realtime Database.
+//
+// PL: 🔴 KOLEJNOŚĆ JEST KRYTYCZNA — tak samo jak w drugim projekcie. Warunek `request.app != null`
+//     dopisuje się dopiero po włączeniu wymuszania. Szczegóły:
+//     Analizy/audyt-kodu-aplikacji-2026-09-10.md, rozdz. 9.8.
+// EN: 🔴 ORDER IS CRITICAL — just as in the other project. The `request.app != null` condition is
+//     added only after enforcement is switched on. Details:
+//     Analizy/audyt-kodu-aplikacji-2026-09-10.md, chapter 9.8.
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // PL: Ulubione zestawy GeneratorNPC / EN: GeneratorNPC favourite sets
+    match /generatorNpc/favorites { allow read, write: if true; }
+
+    // PL: Ustawienia modułu Audio / EN: Audio module settings
+    match /audio/favorites { allow read, write: if true; }
+
+    // --- Wszystko inne niedostępne / Everything else inaccessible ---
+    match /{document=**} { allow read, write: if false; }
+  }
+}
