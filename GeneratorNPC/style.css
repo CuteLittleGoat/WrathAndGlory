@@ -78,7 +78,12 @@ a.link:hover {
   border-bottom: 1px solid var(--div);
   background: var(--panel);
   position: sticky;
-  top: 0;
+  /* --- Nagłówek przykleja się pod paskiem komunikatu, a nie pod nim / The header sticks below the message bar, not underneath it --- */
+  /* PL: Zmienną ustawia wspólny moduł shared/firebase-write-status.js. Gdy paska nie ma, wynosi
+         0 px i nagłówek zachowuje się dokładnie tak jak dotąd.
+     EN: The variable is set by the shared module shared/firebase-write-status.js. With no bar it is
+         0 px and the header behaves exactly as before. */
+  top: var(--wg-write-status-height, 0px);
   z-index: 10;
 }
 
@@ -287,6 +292,22 @@ textarea:focus {
 .checkbox-list {
   display: grid;
   gap: 10px;
+}
+
+/* --- Miejsce na znacznik trybu pracy z danymi / Slot for the data working-mode badge --- */
+/* PL: Sam znacznik ma styl w shared/firebase-write-status.css, wspólny z modułem Audio.
+       Tutaj ustalamy wyłącznie jego miejsce w panelu ulubionych: osobny wiersz pod linią
+       statusu, nad polem aliasu.
+   EN: The badge itself is styled in shared/firebase-write-status.css, shared with the Audio
+       module. Here we only set its place in the favourites panel: a separate row below the
+       status line and above the alias field. */
+.favorites-mode {
+  display: flex;
+  margin-bottom: 12px;
+}
+
+.favorites-mode:empty {
+  display: none;
 }
 
 .favorites-actions {

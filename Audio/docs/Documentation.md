@@ -43,6 +43,8 @@ Tryb admina jest wykrywany przez parametr URL:
 | `Audio/config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase modułu Audio. |
 | `../shared/appcheck-config.js` | Jedyne miejsce z kluczami witryny App Check (reCAPTCHA Enterprise) dla obu projektów Firebase. |
 | `../shared/firebase-app-check.js` | Wspólne uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0). |
+| `../shared/firebase-write-status.js` | Wspólny moduł komunikatów o nieudanym zapisie i odczycie Firestore. Rozpoznaje kod błędu, trzyma teksty PL/EN i rysuje pasek oraz znacznik trybu pracy. Ten sam plik obsługuje moduł GeneratorNPC. |
+| `../shared/firebase-write-status.css` | Wspólne style paska komunikatu i znacznika trybu pracy. |
 | `Audio/docs/README.md` | Instrukcja użytkownika. |
 | `Audio/docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
 
@@ -52,6 +54,7 @@ Tryb admina jest wykrywany przez parametr URL:
 
 - Google Fonts `Fira Code`,
 - `../shared/access-gate.css`,
+- `../shared/firebase-write-status.css`,
 - `config/firebase-config.js`,
 - `../shared/appcheck-config.js`,
 - `https://www.google.com/recaptcha/enterprise.js` ze znacznikiem `defer`,
@@ -547,6 +550,86 @@ Model dokumentu:
 | `aliases` | `object` | Mapa aliasów per `itemId`. |
 | `updatedAt` | `timestamp` | Firestore server timestamp ustawiany przy zapisie. |
 
+## Komunikaty o nieudanym zapisie i odczycie
+
+Moduł nie ma własnych tekstów o awarii bazy. Obsługę przejmuje wspólny moduł
+`shared/firebase-write-status.js`, ten sam, którego używa GeneratorNPC. Instancja powstaje raz, przy
+starcie skryptu:
+
+```js
+const writeStatus = createFirebaseWriteStatus({
+  mount: document.body,
+  modeMount: document.getElementById("writeStatusMode"),
+  language: currentLanguage,
+  scopeKey: AUDIO_SETTINGS_STORAGE_KEY,
+  moduleName: "Audio"
+});
+```
+
+`modeMount` wskazuje slot `#writeStatusMode` — pusty `<div class="write-status-slot">` będący
+pierwszym elementem `.page`. Slot leży **poza** sekcjami `admin-only` i `user-only`, ponieważ
+`setModeVisibility()` usuwa jedną z nich przy starcie, a znacznik trybu ma być widoczny w obu
+trybach modułu. Pastylka `Firebase: …` w nagłówku jest widoczna wyłącznie w panelu admina i nie
+zastępuje znacznika.
+
+### Wywołania w module
+
+| Miejsce w kodzie | Wywołanie | Efekt |
+| --- | --- | --- |
+| `saveSettings()` — udany `setDoc` | `reportSaveSuccess()` | Pasek znika, znacznik trybu wraca na „dane wspólne", znacznik zmian lokalnych jest kasowany. |
+| `saveSettings()` — odmowa `setDoc` | `reportSaveError(error, { savedLocally })` | Moduł schodzi na pamięć lokalną, pasek pokazuje „zapisano tylko na tym urządzeniu" albo „nie zapisano nic". |
+| `saveSettings()` — zapis lokalny przy skonfigurowanej bazie | `noteLocalOnlyChange()` | Zakłada znacznik zmian lokalnych bez pokazywania paska drugi raz. |
+| `onSnapshot` — trzeci argument | `reportReadError(error)` | Pasek pokazuje „nie udało się wczytać danych z bazy", moduł wczytuje `audio.settings`. |
+| `onSnapshot` — dane wczytane | `warnLocalOverwritten()` | Jeżeli istnieje znacznik zmian lokalnych, pasek ostrzega, że dane z bazy właśnie je zastąpiły. |
+| `initFirebase()` — brak konfiguracji | `reportLocalMode("no-config")` | Pasek w łagodnym tonie informuje o pracy bez bazy. |
+| `initFirebase()` — wyjątek z SDK | `reportLocalMode("init-failed")` | To samo, z inną przyczyną. |
+| `updateStatus()` | `setMode("shared")` albo `setMode("local")` | Znacznik trybu pracy jest odświeżany razem z pastylkami statusu. |
+| `applyLanguage(lang)` | `setLanguage(lang)` | Pasek i znacznik trybu przepisują się na wybrany język bez czekania na kolejny błąd. |
+
+### Sytuacje rozróżniane przez wspólny moduł
+
+| Sytuacja | Kiedy powstaje | Ton paska |
+| --- | --- | --- |
+| `nothing-saved` | Zapis nie powiódł się nigdzie — ani w bazie, ani w `localStorage`. | czerwony |
+| `local-only` | Zapis powiódł się wyłącznie w pamięci przeglądarki. | żółty |
+| `read-failed` | Nie udało się wczytać danych z bazy. | czerwony (żółty przy `unavailable`) |
+| `local-mode` | Moduł świadomie pracuje bez bazy: brak konfiguracji albo nieudany start SDK. | żółty |
+| `local-overwritten` | Dane z bazy zastąpiły zmiany zapisane wyłącznie na tym urządzeniu. | żółty |
+
+### Mapowanie kodów błędów Firestore
+
+Przyczyna jest brana z pola `error.code`, po obcięciu prefiksu `firestore/`.
+
+| Kod | Treść podpowiedzi |
+| --- | --- |
+| `permission-denied` | Baza odrzuciła operację; najpierw podejrzewaj zablokowany adres `google.com/recaptcha` (dodatek blokujący reklamy, filtr sieci), potem uprawnienia bazy. |
+| `unauthenticated` | Sesja wygasła; odświeżyć stronę i zalogować się ponownie. |
+| `unavailable` | Brak połączenia z bazą; powtórzyć zmianę, gdy połączenie wróci. |
+| `deadline-exceeded` | Baza nie odpowiedziała na czas. |
+| `resource-exhausted` | Przekroczony limit zapytań do bazy. |
+| `failed-precondition` | Odmowa z powodu stanu dokumentu. |
+| pozostałe | Komunikat ogólny z kodem błędu do przekazania w zgłoszeniu. |
+
+Kody `unavailable` i `deadline-exceeded` dostają żółty ton nawet przy nieudanym zapisie. Chwilowy
+brak sieci zdarza się przy zwykłym korzystaniu i nie może wyglądać jak awaria bazy — inaczej
+użytkownik przestanie czytać paski.
+
+### Rezerwacja miejsca na pasek
+
+Pasek jest `position: fixed`, więc sam z siebie zasłaniałby pierwszy element strony. Wspólny moduł
+podaje jego wysokość do zmiennej CSS `--wg-write-status-height` na elemencie `<html>`, a arkusz
+`shared/firebase-write-status.css` przesuwa o tyle `body`. Przy schowanym pasku wysokość wynosi
+`0px` i układ jest dokładnie taki jak przed wprowadzeniem paska. Wysokość pilnuje `ResizeObserver`,
+bo komunikat zmienia liczbę wierszy przy obrocie telefonu.
+
+### Czego moduł celowo nie robi
+
+Ustawienia zapisane w pamięci przeglądarki nie są odsyłane do bazy po odzyskaniu dostępu. Moduł
+zapisuje cały dokument jednym `setDoc`, więc odesłanie stanu lokalnego skasowałoby zmiany zapisane
+w międzyczasie z drugiego urządzenia. Zamiast cichego scalania moduł pokazuje ostrzeżenie
+`local-overwritten`. Bezpieczne scalanie wymaga zmiany struktury danych na poziomie pojedynczych
+list i pozycji i jest osobnym zadaniem.
+
 ## Model `favorites`
 
 ```text
@@ -602,6 +685,52 @@ audio.favorites
 ```
 
 `loadSettingsLocal()` próbuje wczytać `audio.settings`. Jeżeli go nie ma, próbuje stary klucz `audio.favorites`. W razie błędu tworzy domyślne ustawienia.
+
+`saveSettingsLocal()` zapisuje `audio.settings` i zwraca `true` albo `false`. Wynik rozstrzyga treść
+komunikatu: `true` znaczy „zapisano tylko na tym urządzeniu", `false` — „nie zapisano nic".
+
+Trzeci klucz to znacznik zmian zapisanych wyłącznie lokalnie:
+
+```text
+wgLocalOnlyChange:audio.settings
+```
+
+Znacznik zakłada wspólny moduł komunikatów przy każdym zapisie, który trafił tylko do przeglądarki
+mimo skonfigurowanej bazy. Trzyma jedną wartość: `{"at":"<ISO 8601>"}`. Kasuje go pierwszy udany
+zapis do Firestore albo pokazanie ostrzeżenia o nadpisaniu.
+
+### `persistAndRender()`
+
+Wszystkie dwanaście funkcji obsługi zdarzeń zmieniających ustawienia — dodanie i usunięcie listy,
+dodanie, przesunięcie i usunięcie pozycji, zmiana nazwy listy, przesunięcie listy, dodanie,
+przesunięcie i usunięcie w widoku głównym, zmiana aliasu oraz wyczyszczenie wszystkich aliasów —
+kończą się jednym wywołaniem `await persistAndRender()` zamiast pary `await saveSettings()` i
+`renderAllViews()`.
+
+Funkcja rysuje widok **przed** zapisem:
+
+```js
+const persistAndRender = async () => {
+  renderAllViews();
+  try {
+    return await saveSettings();
+  } catch (error) {
+    console.error("[Audio] Nieoczekiwany błąd zapisu ustawień / Unexpected settings save error:", error);
+    return { ok: false, target: "none", error };
+  }
+};
+```
+
+Kolejność jest celowa. Stan modułu jest zmieniony przed wywołaniem, więc widok nie ma na co czekać,
+a czekanie na bazę miało dwa złe skutki:
+
+- odrzucenie zapisu przerywało funkcję obsługi zdarzenia **przed** `renderAllViews()`;
+- przy braku sieci obietnica z `setDoc` w ogóle się nie rozstrzyga, bo Firestore trzyma zapis
+  w kolejce do czasu potwierdzenia przez serwer.
+
+W obu przypadkach interfejs zostawał w stanie sprzed operacji, choć dane w module były już zmienione.
+Wynik zapisu zmienia wyłącznie pasek komunikatu i znacznik trybu pracy, a te wspólny moduł
+aktualizuje sam, niezależnie od `renderAllViews()`.
 
 ## Odtwarzanie audio
 
@@ -711,6 +840,11 @@ Aktywny stan pętli jest oznaczany klasą `is-looping` i `aria-pressed="true"`.
 - puste stany,
 - widoki renderowane dynamicznie.
 
+Teksty komunikatów o awarii bazy są wyjątkiem: nie ma ich w `translations`. Trzyma je
+`shared/firebase-write-status.js` w obu językach, a `applyLanguage()` przekazuje do niego wybrany
+język wywołaniem `writeStatus.setLanguage(lang)`. Dzięki temu ten sam komunikat nie powstaje drugi
+raz w słowniku modułu i nie rozjeżdża się z modułem GeneratorNPC.
+
 Oba przełączniki języka — użytkownika (`languageSelectUser`) i admina (`languageSelect`) — są
 ukryte klasą `language-switcher--hidden`. Reguła `.language-switcher--hidden { display: none
 !important; }` leży w bloku `<style>` pliku `Audio/index.html`. Warstwa tłumaczeń pozostaje aktywna,
@@ -726,8 +860,12 @@ widoczne, klasę trzeba usunąć w obu miejscach. Nad każdym z nich stoi koment
 
 | Sytuacja | Zachowanie |
 | --- | --- |
-| Brak `window.firebaseConfig` albo `apiKey` | Moduł używa `localStorage` i pokazuje status lokalnych ustawień. |
-| Brak dokumentu Firestore | Kod tworzy domyślne ustawienia i zapisuje je przez `saveSettings()`. |
+| Brak `window.firebaseConfig` albo `apiKey` | Moduł używa `localStorage`, pokazuje status lokalnych ustawień, a pasek w łagodnym tonie informuje o pracy bez bazy. |
+| Brak dokumentu Firestore | Kod tworzy domyślne ustawienia i zapisuje je przez `persistAndRender()`. |
+| Odmowa zapisu do Firestore | `saveSettings()` schodzi na `localStorage`, ustawia `state.usingFirestore = false` i pokazuje pasek „zapisano tylko na tym urządzeniu". Obietnica **nie** jest odrzucana, a `persistAndRender()` rysuje widok jeszcze przed zapisem, więc interfejs zawsze pokazuje aktualny stan. |
+| Nieudany zapis również lokalnie | Pasek w tonie błędu mówi, że nie zapisano nic. |
+| Odmowa dostępu przy nasłuchu Firestore | Trzeci argument `onSnapshot` przełącza moduł na ustawienia lokalne, pokazuje pasek z przyczyną i odświeża widoki. |
+| Powrót dostępu przy zmianach lokalnych | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu. |
 | Uszkodzone ustawienia Firestore/localStorage | Normalizatory tworzą bezpieczne wartości domyślne. |
 | Brak `AudioManifest.json` | `state.publicError` dostaje komunikat z kodem HTTP, pastylka manifestu przechodzi w stan błędu, a warstwa chroniona wczytuje się mimo to. |
 | Bramka niedostępna przy ważnej sesji | Warstwa demo ładuje się mimo to; archiwum pozostaje zablokowane. |
@@ -743,7 +881,7 @@ widoczne, klasę trzeba usunąć w obu miejscach. Nad każdym z nich stoi koment
 ## Procedura odtworzenia modułu
 
 1. Zachowaj `Audio/index.html`, `Audio/AudioManifest.json` oraz `Audio/worker/audio-gate.js`.
-2. Zachowaj `../shared/access-gate.css`.
+2. Zachowaj `../shared/access-gate.css`, `../shared/firebase-write-status.js` i `../shared/firebase-write-status.css`.
 3. Zachowaj arkusz źródłowy `AudioManifest.xlsx` **poza tym repozytorium** i wygeneruj z niego oba manifesty przyciskiem `Zbuduj manifesty z XLSX` w widoku admina.
 4. Wgraj `audio-manifest.json` do katalogu głównego prywatnego repozytorium `AudioRPG`.
 5. Wdroż `Audio/worker/audio-gate.js` jako Worker `audio-gate` i ustaw cztery zmienne środowiskowe.
@@ -785,6 +923,12 @@ widoczne, klasę trzeba usunąć w obu miejscach. Nad każdym z nich stoi koment
 | Generator: stabilność `id` | Zbuduj manifesty z niezmienionego arkusza. | Pliki są identyczne z tymi w repozytorium — zapisane listy ulubionych nadal wskazują te same dźwięki. |
 | Dźwięk chroniony | Odtwórz pozycję z archiwum. | Moduł pobiera podpis z `/sign`, dźwięk gra, suwak głośności działa. |
 | Awaria Firebase | Zablokuj dostęp do Firestore. | Moduł przechodzi na ustawienia lokalne, ale manifesty i tak się wczytują. |
+| Nieudany odczyt ustawień | Zablokuj `firestore.googleapis.com` przed otwarciem modułu. | U góry pojawia się pasek „Nie udało się wczytać danych z bazy" z podpowiedzią o blokadzie reCAPTCHA, znacznik trybu pokazuje „Tylko to urządzenie", a listy wczytują się z `audio.settings`. |
+| Nieudany zapis ustawień | Przy zablokowanej bazie dodaj listę ulubionych. | Pasek mówi „Zapisano tylko na tym urządzeniu", lista pojawia się w interfejsie, a dane trafiają do `audio.settings`. |
+| Dwanaście funkcji obsługi przy nieudanym zapisie | Przy zablokowanej bazie wykonaj po kolei: dodanie listy, dodanie pozycji, przesunięcie pozycji, usunięcie pozycji, zmianę nazwy listy, przesunięcie listy, usunięcie listy, dodanie do widoku głównego, przesunięcie i usunięcie w widoku głównym, zmianę aliasu oraz wyczyszczenie wszystkich aliasów. | Każda operacja odświeża widok i zapisuje stan w `audio.settings`; w konsoli nie ma nieobsłużonych odrzuceń obietnic. |
+| Zapis bez odpowiedzi bazy | Odetnij sieć (Offline w narzędziach deweloperskich) i dodaj listę ulubionych. | Lista pojawia się w interfejsie od razu, mimo że zapis czeka w kolejce Firestore i obietnica z `setDoc` nie jest rozstrzygnięta. |
+| Ostrzeżenie o nadpisaniu | Po nieudanym zapisie odblokuj bazę i otwórz moduł ponownie. | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu; znacznik trybu wraca na „Dane wspólne". |
+| Znacznik trybu w widoku użytkownika | Otwórz `Audio/index.html` bez `?admin=1` przy zablokowanej bazie. | Znacznik „Tylko to urządzenie" jest widoczny mimo usunięcia sekcji `admin-only` wraz z pastylkami statusu. |
 | Filtr SFX | Wpisz frazę w `searchInput`. | Lista SFX admina jest filtrowana. |
 | Filtr tagów | Odznacz tag. | Lista SFX admina ukrywa dźwięki z tym tagiem. |
 | Popup tagów | Kliknij `Filtruj ▾`. | Otwiera się popup z wyszukiwarką i checkboxami. |
@@ -847,6 +991,8 @@ Admin mode is detected through the URL parameter:
 | `Audio/config/FirebaseREADME.md` | Firebase setup guide for Audio. |
 | `../shared/appcheck-config.js` | The only place holding App Check site keys (reCAPTCHA Enterprise) for both Firebase projects. |
 | `../shared/firebase-app-check.js` | Shared App Check activation for Firebase apps in modular form (SDK 12.6.0). |
+| `../shared/firebase-write-status.js` | Shared module for failed Firestore write and read messages. It recognises the error code, holds the PL/EN texts, and draws the bar and the working-mode badge. The same file serves the GeneratorNPC module. |
+| `../shared/firebase-write-status.css` | Shared styles for the message bar and the working-mode badge. |
 | `Audio/docs/README.md` | User guide. |
 | `Audio/docs/Documentation.md` | This technical documentation. |
 
@@ -856,6 +1002,7 @@ Admin mode is detected through the URL parameter:
 
 - Google Fonts `Fira Code`,
 - `../shared/access-gate.css`,
+- `../shared/firebase-write-status.css`,
 - `config/firebase-config.js`,
 - `../shared/appcheck-config.js`,
 - `https://www.google.com/recaptcha/enterprise.js` with the `defer` attribute,
@@ -1351,6 +1498,85 @@ Document model:
 | `aliases` | `object` | Alias map per `itemId`. |
 | `updatedAt` | `timestamp` | Firestore server timestamp set on save. |
 
+## Failed write and read messages
+
+The module has no failure texts of its own. The shared module `shared/firebase-write-status.js`
+takes over — the same one GeneratorNPC uses. The instance is created once, at script start:
+
+```js
+const writeStatus = createFirebaseWriteStatus({
+  mount: document.body,
+  modeMount: document.getElementById("writeStatusMode"),
+  language: currentLanguage,
+  scopeKey: AUDIO_SETTINGS_STORAGE_KEY,
+  moduleName: "Audio"
+});
+```
+
+`modeMount` points at the `#writeStatusMode` slot — an empty `<div class="write-status-slot">` that
+is the first element of `.page`. The slot sits **outside** the `admin-only` and `user-only`
+sections, because `setModeVisibility()` removes one of them at start-up while the mode badge must
+stay visible in both module modes. The `Firebase: …` pill in the header is visible in the admin
+panel only and does not replace the badge.
+
+### Calls made by the module
+
+| Place in the code | Call | Effect |
+| --- | --- | --- |
+| `saveSettings()` — successful `setDoc` | `reportSaveSuccess()` | The bar disappears, the mode badge returns to "shared data", the local-change marker is cleared. |
+| `saveSettings()` — refused `setDoc` | `reportSaveError(error, { savedLocally })` | The module falls back to local storage, the bar shows "saved on this device only" or "nothing was saved". |
+| `saveSettings()` — local write with the database configured | `noteLocalOnlyChange()` | Sets the local-change marker without showing the bar a second time. |
+| `onSnapshot` — third argument | `reportReadError(error)` | The bar shows "data could not be loaded from the database", the module loads `audio.settings`. |
+| `onSnapshot` — data received | `warnLocalOverwritten()` | If a local-change marker exists, the bar warns that database data has just replaced it. |
+| `initFirebase()` — missing configuration | `reportLocalMode("no-config")` | The bar reports running without the database in a gentle tone. |
+| `initFirebase()` — SDK exception | `reportLocalMode("init-failed")` | The same, with a different cause. |
+| `updateStatus()` | `setMode("shared")` or `setMode("local")` | The working-mode badge is refreshed together with the status pills. |
+| `applyLanguage(lang)` | `setLanguage(lang)` | The bar and the mode badge rewrite themselves in the selected language without waiting for the next error. |
+
+### Situations distinguished by the shared module
+
+| Situation | When it arises | Bar tone |
+| --- | --- | --- |
+| `nothing-saved` | The write failed everywhere — neither the database nor `localStorage`. | red |
+| `local-only` | The write succeeded in browser storage only. | amber |
+| `read-failed` | Data could not be loaded from the database. | red (amber for `unavailable`) |
+| `local-mode` | The module deliberately runs without the database: missing configuration or a failed SDK start. | amber |
+| `local-overwritten` | Database data replaced changes saved on this device only. | amber |
+
+### Firestore error code mapping
+
+The cause is taken from the `error.code` field, after stripping the `firestore/` prefix.
+
+| Code | Hint content |
+| --- | --- |
+| `permission-denied` | The database refused the operation; suspect a blocked `google.com/recaptcha` address first (ad blocker, network filter), then database permissions. |
+| `unauthenticated` | The session expired; reload the page and sign in again. |
+| `unavailable` | No connection to the database; repeat the change once it is back. |
+| `deadline-exceeded` | The database did not answer in time. |
+| `resource-exhausted` | The database request limit has been exceeded. |
+| `failed-precondition` | Refused because of the document state. |
+| other | A general message with the error code to quote in a report. |
+
+The `unavailable` and `deadline-exceeded` codes get the amber tone even on a failed write. A brief
+network outage happens during normal use and must not look like a database failure — otherwise the
+user stops reading the bars.
+
+### Reserving space for the bar
+
+The bar is `position: fixed`, so on its own it would cover the first element of the page. The shared
+module publishes its height into the `--wg-write-status-height` CSS variable on the `<html>` element,
+and `shared/firebase-write-status.css` pushes `body` down by that much. With the bar hidden the
+height is `0px` and the layout is exactly what it was before the bar existed. A `ResizeObserver`
+watches the height, because the message changes its number of lines on a phone rotation.
+
+### What the module deliberately does not do
+
+Settings stored in browser memory are not pushed back to the database once access returns. The module
+writes the whole document with one `setDoc`, so pushing the local state back would erase changes
+saved from another device in the meantime. Instead of silent merging, the module shows the
+`local-overwritten` warning. Safe merging requires changing the data structure at the level of
+individual lists and entries and is a separate task.
+
 ## `favorites` model
 
 ```text
@@ -1406,6 +1632,51 @@ audio.favorites
 ```
 
 `loadSettingsLocal()` tries `audio.settings`. If missing, it tries old key `audio.favorites`. On error it creates default settings.
+
+`saveSettingsLocal()` writes `audio.settings` and returns `true` or `false`. The result decides the
+message: `true` means "saved on this device only", `false` means "nothing was saved".
+
+The third key is the marker of changes saved locally only:
+
+```text
+wgLocalOnlyChange:audio.settings
+```
+
+The shared message module writes the marker on every save that reached the browser only despite a
+configured database. It holds a single value: `{"at":"<ISO 8601>"}`. It is cleared by the first
+successful Firestore write or by showing the overwrite warning.
+
+### `persistAndRender()`
+
+All twelve event handlers that change settings — add and remove list, add, move and remove entry,
+rename list, move list, add, move and remove in the main view, change alias, and clear all aliases —
+end with a single `await persistAndRender()` call instead of the `await saveSettings()` plus
+`renderAllViews()` pair.
+
+The function draws the view **before** the save:
+
+```js
+const persistAndRender = async () => {
+  renderAllViews();
+  try {
+    return await saveSettings();
+  } catch (error) {
+    console.error("[Audio] Nieoczekiwany błąd zapisu ustawień / Unexpected settings save error:", error);
+    return { ok: false, target: "none", error };
+  }
+};
+```
+
+The order is deliberate. The module state is changed before the call, so the view has nothing to
+wait for, and waiting for the database had two bad effects:
+
+- a refused write aborted the event handler **before** `renderAllViews()`;
+- with no network the `setDoc` promise never settles at all, because Firestore keeps the write
+  queued until the server acknowledges it.
+
+In both cases the interface stayed in its pre-operation state even though the module data had
+already changed. The write outcome changes only the message bar and the working-mode badge, and the
+shared module updates those on its own, independently of `renderAllViews()`.
 
 ## Audio playback
 
@@ -1515,6 +1786,11 @@ Active loop state is marked with class `is-looping` and `aria-pressed="true"`.
 - empty states,
 - dynamically rendered views.
 
+Database failure messages are an exception: they are not part of `translations`. They live in
+`shared/firebase-write-status.js` in both languages, and `applyLanguage()` passes the selected
+language to it with `writeStatus.setLanguage(lang)`. This way the same message is not written a
+second time in the module dictionary and cannot drift apart from the GeneratorNPC module.
+
 Both language switchers — the user one (`languageSelectUser`) and the admin one
 (`languageSelect`) — are hidden with the `language-switcher--hidden` class. The rule
 `.language-switcher--hidden { display: none !important; }` lives in the `<style>` block of
@@ -1530,8 +1806,12 @@ visible, the class has to be removed in both places. A comment marked
 
 | Situation | Behavior |
 | --- | --- |
-| Missing `window.firebaseConfig` or `apiKey` | Module uses `localStorage` and displays local settings status. |
-| Missing Firestore document | Code creates default settings and saves them through `saveSettings()`. |
+| Missing `window.firebaseConfig` or `apiKey` | Module uses `localStorage`, displays local settings status, and the bar reports running without the database in a gentle tone. |
+| Missing Firestore document | Code creates default settings and saves them through `persistAndRender()`. |
+| Firestore write refused | `saveSettings()` falls back to `localStorage`, sets `state.usingFirestore = false` and shows the "saved on this device only" bar. The promise does **not** reject, and `persistAndRender()` draws the view before the save, so the interface always shows the current state. |
+| Local write failed as well | The bar, in the error tone, says nothing was saved. |
+| Permission denied on the Firestore listener | The third `onSnapshot` argument switches the module to local settings, shows the bar with the cause, and refreshes the views. |
+| Access restored with local changes pending | The bar warns that database data replaced the changes saved on this device. |
 | Damaged Firestore/localStorage settings | Normalizers create safe defaults. |
 | Missing `AudioManifest.json` | `state.publicError` receives a message carrying the HTTP status, the manifest pill switches to its error state, and the protected tier still loads. |
 | Gateway unreachable with a valid session | The demo tier still loads; the archive stays locked. |
@@ -1547,7 +1827,7 @@ visible, the class has to be removed in both places. A comment marked
 ## Module recreation procedure
 
 1. Preserve `Audio/index.html`, `Audio/AudioManifest.json` and `Audio/worker/audio-gate.js`.
-2. Preserve `../shared/access-gate.css`.
+2. Preserve `../shared/access-gate.css`, `../shared/firebase-write-status.js`, and `../shared/firebase-write-status.css`.
 3. Keep the source spreadsheet `AudioManifest.xlsx` **outside this repository** and regenerate both manifests from it with the generator.
 4. Upload `audio-manifest.json` to the root of the private `AudioRPG` repository.
 5. Deploy `Audio/worker/audio-gate.js` as the `audio-gate` Worker and set the four environment variables.
@@ -1589,6 +1869,12 @@ visible, the class has to be removed in both places. A comment marked
 | Builder: id stability | Build the manifests from an unchanged workbook. | The files are identical to the ones in the repository — saved favourite lists still point at the same sounds. |
 | Protected sound | Play an archive item. | The module fetches a signature from `/sign`, the sound plays, the volume slider works. |
 | Firebase failure | Block access to Firestore. | The module falls back to local settings but still loads the manifests. |
+| Failed settings read | Block `firestore.googleapis.com` before opening the module. | A "Data could not be loaded from the database" bar appears at the top with the reCAPTCHA blocking hint, the mode badge shows "This device only", and the lists load from `audio.settings`. |
+| Failed settings write | With the database blocked, add a favorites list. | The bar says "Saved on this device only", the list appears in the interface, and the data lands in `audio.settings`. |
+| Twelve event handlers under a failed write | With the database blocked, perform in turn: add list, add entry, move entry, remove entry, rename list, move list, remove list, add to main view, move and remove in main view, change alias, and clear all aliases. | Every operation refreshes the view and stores the state in `audio.settings`; the console shows no unhandled promise rejections. |
+| Write with no database answer | Cut the network (Offline in developer tools) and add a favorites list. | The list appears in the interface immediately, even though the write waits in the Firestore queue and the `setDoc` promise has not settled. |
+| Overwrite warning | After a failed write, unblock the database and open the module again. | The bar warns that database data replaced the changes saved on this device; the mode badge returns to "Shared data". |
+| Mode badge in the user view | Open `Audio/index.html` without `?admin=1` with the database blocked. | The "This device only" badge is visible despite the `admin-only` section, with its status pills, being removed. |
 | SFX filter | Type phrase in `searchInput`. | Admin SFX list is filtered. |
 | Tag filter | Uncheck a tag. | Admin SFX list hides sounds with that tag. |
 | Tag popup | Click `Filter ▾`. | Popup opens with search and checkboxes. |

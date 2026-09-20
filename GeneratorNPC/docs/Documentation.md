@@ -40,6 +40,8 @@ Moduł nie ma osobnego widoku admina. Dostęp do prywatnych danych odbywa się p
 | `shared/appcheck-config.js` | Jedyne miejsce z kluczami witryny App Check (reCAPTCHA Enterprise) dla obu projektów Firebase. |
 | `shared/firebase-app-check.js` | Wspólne uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0). |
 | `shared/access-gate.css` | Wspólne style bramki dostępu K.O.Z.A. |
+| `shared/firebase-write-status.js` | Wspólny moduł komunikatów o nieudanym zapisie i odczycie Firestore. Rozpoznaje kod błędu, trzyma teksty PL/EN i rysuje pasek oraz znacznik trybu pracy. |
+| `shared/firebase-write-status.css` | Wspólne style paska komunikatu i znacznika trybu pracy. |
 
 ## Zależności zewnętrzne
 
@@ -47,6 +49,7 @@ Moduł nie ma osobnego widoku admina. Dostęp do prywatnych danych odbywa się p
 
 - `style.css`,
 - `../shared/access-gate.css`,
+- `../shared/firebase-write-status.css`,
 - `config/firebase-config.js`,
 - `../shared/firebase-config.js`,
 - `../shared/appcheck-config.js`,
@@ -407,10 +410,10 @@ Główne funkcje:
 
 | Funkcja | Rola |
 | --- | --- |
-| `initFavoritesStore()` | Próbuje uruchomić Firestore ulubionych albo przechodzi na localStorage. |
-| `saveFavorites()` | Zapisuje ulubione do Firestore albo localStorage. |
+| `initFavoritesStore()` | Próbuje uruchomić Firestore ulubionych albo przechodzi na localStorage. Przy niepowodzeniu zgłasza sytuację do wspólnego paska komunikatów. |
+| `saveFavorites()` | Zapisuje ulubione do Firestore, a przy odmowie przełącza moduł na localStorage i pokazuje pasek komunikatu. |
 | `loadFavoritesFromLocal()` | Wczytuje lokalny fallback. |
-| `saveFavoritesToLocal()` | Zapisuje lokalny fallback. |
+| `saveFavoritesToLocal()` | Zapisuje lokalny fallback. Zwraca `true` albo `false` — wynik rozstrzyga, czy pasek powie „zapisano tylko tutaj”, czy „nie zapisano nic”. |
 | `buildFavoritePayload()` | Serializuje aktualną konfigurację NPC. |
 | `addFavorite()` | Dodaje nowy ulubiony wpis. |
 | `removeFavorite()` | Usuwa wpis. |
@@ -463,6 +466,69 @@ generatorNpcFavorites
 ```
 
 Fallback działa tylko w bieżącej przeglądarce i nie synchronizuje danych między urządzeniami.
+
+Obok danych moduł używa drugiego klucza — znacznika zmian zapisanych wyłącznie lokalnie:
+
+```text
+wgLocalOnlyChange:generatorNpcFavorites
+```
+
+Znacznik zakłada wspólny moduł komunikatów przy każdym zapisie, który trafił tylko do przeglądarki
+mimo skonfigurowanej bazy. Trzyma jedną wartość: `{"at":"<ISO 8601>"}`. Kasuje go pierwszy udany
+zapis do Firestore albo pokazanie ostrzeżenia o nadpisaniu.
+
+## Komunikaty o nieudanym zapisie i odczycie
+
+Moduł nie ma własnych tekstów o awarii bazy. Obsługę przejmuje wspólny moduł
+`shared/firebase-write-status.js`, ten sam, którego używa moduł Audio. Instancja powstaje raz, przy
+starcie skryptu:
+
+```js
+const favoritesWriteStatus = createFirebaseWriteStatus({
+  mount: document.body,
+  modeMount: document.querySelector("#favorites-mode"),
+  language: currentLanguage,
+  scopeKey: FAVORITES_STORAGE_KEY,
+  moduleName: "GeneratorNPC"
+});
+```
+
+`mount` wskazuje, gdzie wstawić pasek (jest `position: fixed`, więc miejsce w drzewie nie wpływa na
+wygląd). `modeMount` to kontener `#favorites-mode` w panelu ulubionych, w którym stoi stały znacznik
+trybu pracy. `scopeKey` jest kluczem localStorage modułu i po nim wspólny moduł rozpoznaje zmiany
+zapisane wyłącznie na tym urządzeniu.
+
+### Wywołania w module
+
+| Miejsce w kodzie | Wywołanie | Efekt |
+| --- | --- | --- |
+| `saveFavorites()` — udany `setDoc` | `reportSaveSuccess()` | Pasek znika, znacznik trybu wraca na „dane wspólne”, znacznik zmian lokalnych jest kasowany. |
+| `saveFavorites()` — odmowa `setDoc` | `reportSaveError(error, { savedLocally })` | Pasek pokazuje „zapisano tylko na tym urządzeniu” albo „nie zapisano nic”, zależnie od wyniku zapisu lokalnego. |
+| `saveFavorites()` — zapis lokalny przy skonfigurowanej bazie | `noteLocalOnlyChange()` | Zakłada znacznik zmian lokalnych bez pokazywania paska drugi raz. |
+| `onSnapshot` — obsługa błędu | `reportReadError(error)` | Pasek pokazuje „nie udało się wczytać danych z bazy”. |
+| `onSnapshot` — dane wczytane | `warnLocalOverwritten()` | Jeżeli istnieje znacznik zmian lokalnych, pasek ostrzega, że dane z bazy właśnie je zastąpiły. |
+| `initFavoritesStore()` — brak konfiguracji lub nieudany start | `reportLocalMode("no-config")` albo `reportLocalMode("init-failed")` | Pasek w łagodnym tonie informuje o pracy bez bazy. |
+| `applyLanguage(lang)` | `setLanguage(lang)` | Pasek i znacznik trybu przepisują się na wybrany język bez czekania na kolejny błąd. |
+| Przycisk `Odśwież` — nieudany `getDoc` | `reportReadError(error)` | Linia statusu nazywa czynność, pasek podaje przyczynę. |
+
+Metody `report*` zwracają obiekt z polami `title`, `hint`, `message`, `code` i `tone`. Moduł wstawia
+`title` do linii statusu `#favorites-status`, dzięki czemu linia statusu i pasek nigdy nie mówią
+dwóch różnych rzeczy.
+
+### Sytuacje i kody błędów
+
+Wspólny moduł rozróżnia pięć sytuacji: `nothing-saved`, `local-only`, `read-failed`, `local-mode`
+oraz `local-overwritten`. Przyczynę bierze z pola `error.code` Firestore, obcinając prefiks
+`firestore/`. Pełne mapowanie kodów na teksty i tonacje opisuje dokumentacja modułu Audio w sekcji
+o tym samym tytule — oba moduły korzystają z jednego pliku i jednego słownika.
+
+### Czego moduł celowo nie robi
+
+Zmiany zapisane w pamięci przeglądarki nie są odsyłane do bazy po odzyskaniu dostępu. Moduł zapisuje
+całą tablicę `favorites` jednym `setDoc`, więc odesłanie stanu lokalnego skasowałoby wpisy dodane
+w międzyczasie z drugiego urządzenia. Zamiast cichego scalania moduł pokazuje ostrzeżenie
+`local-overwritten`. Bezpieczne scalanie wymaga zmiany struktury danych na poziomie pojedynczych
+wpisów i jest osobnym zadaniem.
 
 ## Formatowanie tabel
 
@@ -558,6 +624,11 @@ Karta do druku zawiera między innymi:
 - statusy,
 - etykiety i komunikaty karty.
 
+Teksty komunikatów o awarii bazy są wyjątkiem: nie ma ich w `translations`. Trzyma je
+`shared/firebase-write-status.js` w obu językach, a `applyLanguage()` przekazuje do niego wybrany
+język wywołaniem `favoritesWriteStatus.setLanguage(lang)`. Dzięki temu ten sam komunikat nie powstaje
+drugi raz w słowniku modułu i nie rozjeżdża się z modułem Audio.
+
 Przełącznik języka istnieje, ale jest ukryty klasą `language-switcher--hidden`. Sposób jego
 odkrycia opisuje sekcja o strukturze HTML nagłówka.
 
@@ -571,8 +642,11 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Brak `data.sheets` | Pokazywany jest błąd struktury danych. |
 | Brak wymaganego arkusza | Pokazywany jest komunikat z nazwą brakującego arkusza. |
 | Pusty wymagany arkusz | Pokazywany jest komunikat z nazwą pustego arkusza. |
-| Brak Firestore ulubionych | Moduł przechodzi na `localStorage`. |
-| Błąd zapisu Firestore | Status ulubionych pokazuje błąd i moduł przełącza się na lokalny zapis. |
+| Brak konfiguracji Firestore ulubionych | Moduł przechodzi na `localStorage`, pasek informuje o pracy bez bazy, znacznik trybu pokazuje „Tylko to urządzenie”. |
+| Błąd zapisu Firestore | Dane trafiają do `localStorage`, moduł przełącza się na tryb lokalny, pasek mówi wprost, że zapis został tylko na tym urządzeniu, a linia statusu powtarza tę samą treść. |
+| Nieudany zapis również lokalnie | Pasek w tonie błędu mówi, że nie zapisano nic. |
+| Odmowa dostępu przy nasłuchu Firestore | Pasek pokazuje przyczynę i podpowiedź, moduł wczytuje ulubione z `localStorage`. |
+| Powrót dostępu przy zmianach lokalnych | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu. |
 | Brak opisu cechy | Popover pokazuje komunikat o braku opisu. |
 | Brak wybranego rekordu przy generowaniu | Pokazywany jest alert. |
 | Ulubiony wskazuje nieistniejący rekord | Pokazywany jest alert. |
@@ -580,7 +654,7 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 ## Procedura odtworzenia modułu
 
 1. Zachowaj katalog `GeneratorNPC/` z `index.html`, `style.css`, `config/` i `docs/`.
-2. Zachowaj `shared/firebase-config.js`, `shared/firebase-data-loader.js` i `shared/access-gate.css`.
+2. Zachowaj `shared/firebase-config.js`, `shared/firebase-data-loader.js`, `shared/access-gate.css`, `shared/firebase-write-status.js` i `shared/firebase-write-status.css`.
 3. Skonfiguruj prywatne dane DataVault zgodnie ze wspólną konfiguracją Firebase.
 4. Upewnij się, że `datavault/live` zawiera dane z wymaganymi arkuszami.
 5. Skonfiguruj `GeneratorNPC/config/firebase-config.js`, jeżeli ulubione mają działać przez Firestore.
@@ -612,6 +686,9 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Ulubione localStorage | Usuń konfigurację Firestore ulubionych i dodaj wpis. | Wpis zapisuje się lokalnie w `generatorNpcFavorites`. |
 | Odtworzenie ulubionego | Kliknij `Wczytaj` przy ulubionym. | UI odtwarza rekord, moduły, notatki, nadpisania i toggles. |
 | Reset | Kliknij `Reset`. | Wybory i nadpisania wracają do stanu domyślnego. |
+| Nieudany zapis ulubionych | Zablokuj `firestore.googleapis.com` w narzędziach deweloperskich i dodaj ulubiony wpis. | U góry pojawia się pasek „Zapisano tylko na tym urządzeniu”, znacznik przy ulubionych zmienia się na „Tylko to urządzenie”, a wpis trafia do `generatorNpcFavorites`. |
+| Nieudany odczyt ulubionych | Zablokuj adres bazy przed otwarciem modułu. | Pasek pokazuje „Nie udało się wczytać danych z bazy” wraz z podpowiedzią o blokadzie reCAPTCHA. |
+| Ostrzeżenie o nadpisaniu | Po nieudanym zapisie odblokuj adres i otwórz moduł ponownie. | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu; znacznik wraca na „Dane wspólne”. |
 
 ---
 
@@ -657,6 +734,8 @@ The module has no separate admin view. Private data access is handled by the K.O
 | `shared/appcheck-config.js` | The only place holding App Check site keys (reCAPTCHA Enterprise) for both Firebase projects. |
 | `shared/firebase-app-check.js` | Shared App Check activation for Firebase apps in modular form (SDK 12.6.0). |
 | `shared/access-gate.css` | Shared K.O.Z.A. access gate styles. |
+| `shared/firebase-write-status.js` | Shared module for failed Firestore write and read messages. It recognises the error code, holds the PL/EN texts, and draws the bar and the working-mode badge. |
+| `shared/firebase-write-status.css` | Shared styles for the message bar and the working-mode badge. |
 
 ## External dependencies
 
@@ -664,6 +743,7 @@ The module has no separate admin view. Private data access is handled by the K.O
 
 - `style.css`,
 - `../shared/access-gate.css`,
+- `../shared/firebase-write-status.css`,
 - `config/firebase-config.js`,
 - `../shared/firebase-config.js`,
 - `../shared/appcheck-config.js`,
@@ -1025,10 +1105,10 @@ Main functions:
 
 | Function | Role |
 | --- | --- |
-| `initFavoritesStore()` | Tries to start favorites Firestore or falls back to localStorage. |
-| `saveFavorites()` | Saves favorites to Firestore or localStorage. |
+| `initFavoritesStore()` | Tries to start favorites Firestore or falls back to localStorage. On failure it reports the situation to the shared message bar. |
+| `saveFavorites()` | Saves favorites to Firestore; when the write is refused it switches the module to localStorage and shows the message bar. |
 | `loadFavoritesFromLocal()` | Loads local fallback. |
-| `saveFavoritesToLocal()` | Saves local fallback. |
+| `saveFavoritesToLocal()` | Saves local fallback. Returns `true` or `false` — the result decides whether the bar says "saved here only" or "nothing was saved". |
 | `buildFavoritePayload()` | Serializes current NPC configuration. |
 | `addFavorite()` | Adds a new favorite. |
 | `removeFavorite()` | Removes a favorite. |
@@ -1081,6 +1161,68 @@ generatorNpcFavorites
 ```
 
 The fallback works only in the current browser and does not synchronize data across devices.
+
+Alongside the data the module uses a second key — the marker of changes saved locally only:
+
+```text
+wgLocalOnlyChange:generatorNpcFavorites
+```
+
+The shared message module writes the marker on every save that reached the browser only despite a
+configured database. It holds a single value: `{"at":"<ISO 8601>"}`. It is cleared by the first
+successful Firestore write or by showing the overwrite warning.
+
+## Failed write and read messages
+
+The module has no failure texts of its own. The shared module `shared/firebase-write-status.js`
+takes over — the same one the Audio module uses. The instance is created once, at script start:
+
+```js
+const favoritesWriteStatus = createFirebaseWriteStatus({
+  mount: document.body,
+  modeMount: document.querySelector("#favorites-mode"),
+  language: currentLanguage,
+  scopeKey: FAVORITES_STORAGE_KEY,
+  moduleName: "GeneratorNPC"
+});
+```
+
+`mount` points at where the bar is inserted (it is `position: fixed`, so its place in the tree does
+not affect the appearance). `modeMount` is the `#favorites-mode` container in the favorites panel,
+holding the permanent working-mode badge. `scopeKey` is the module's localStorage key, and the
+shared module uses it to recognise changes saved on this device only.
+
+### Calls made by the module
+
+| Place in the code | Call | Effect |
+| --- | --- | --- |
+| `saveFavorites()` — successful `setDoc` | `reportSaveSuccess()` | The bar disappears, the mode badge returns to "shared data", the local-change marker is cleared. |
+| `saveFavorites()` — refused `setDoc` | `reportSaveError(error, { savedLocally })` | The bar shows "saved on this device only" or "nothing was saved", depending on the local write result. |
+| `saveFavorites()` — local write with the database configured | `noteLocalOnlyChange()` | Sets the local-change marker without showing the bar a second time. |
+| `onSnapshot` — error handler | `reportReadError(error)` | The bar shows "data could not be loaded from the database". |
+| `onSnapshot` — data received | `warnLocalOverwritten()` | If a local-change marker exists, the bar warns that database data has just replaced it. |
+| `initFavoritesStore()` — missing configuration or failed start | `reportLocalMode("no-config")` or `reportLocalMode("init-failed")` | The bar reports running without the database in a gentle tone. |
+| `applyLanguage(lang)` | `setLanguage(lang)` | The bar and the mode badge rewrite themselves in the selected language without waiting for the next error. |
+| `Odśwież` button — failed `getDoc` | `reportReadError(error)` | The status line names the action, the bar gives the cause. |
+
+The `report*` methods return an object with `title`, `hint`, `message`, `code`, and `tone`. The
+module puts `title` into the `#favorites-status` status line, so the status line and the bar can
+never say two different things.
+
+### Situations and error codes
+
+The shared module distinguishes five situations: `nothing-saved`, `local-only`, `read-failed`,
+`local-mode`, and `local-overwritten`. It takes the cause from the Firestore `error.code` field,
+stripping the `firestore/` prefix. The full mapping of codes to texts and tones is documented in the
+Audio module documentation under the same heading — both modules use one file and one dictionary.
+
+### What the module deliberately does not do
+
+Changes stored in browser memory are not pushed back to the database once access returns. The module
+writes the whole `favorites` array with one `setDoc`, so pushing the local state back would erase
+entries added from another device in the meantime. Instead of silent merging, the module shows the
+`local-overwritten` warning. Safe merging requires changing the data structure at the level of
+individual entries and is a separate task.
 
 ## Table formatting
 
@@ -1176,6 +1318,11 @@ The printable card includes, among others:
 - statuses,
 - labels and printable card messages.
 
+Database failure messages are an exception: they are not part of `translations`. They live in
+`shared/firebase-write-status.js` in both languages, and `applyLanguage()` passes the selected
+language to it with `favoritesWriteStatus.setLanguage(lang)`. This way the same message is not
+written a second time in the module dictionary and cannot drift apart from the Audio module.
+
 The language switcher exists but is hidden with `language-switcher--hidden`. The header HTML
 structure section explains how to reveal it.
 
@@ -1189,8 +1336,11 @@ structure section explains how to reveal it.
 | Missing `data.sheets` | Data structure error is shown. |
 | Missing required sheet | Message includes missing sheet name. |
 | Empty required sheet | Message includes empty sheet name. |
-| Missing favorites Firestore | Module falls back to `localStorage`. |
-| Firestore save error | Favorites status shows error and module switches to local save. |
+| Missing favorites Firestore configuration | Module falls back to `localStorage`, the bar reports running without the database, the mode badge shows "This device only". |
+| Firestore save error | Data goes to `localStorage`, the module switches to local mode, the bar states plainly that the write stayed on this device only, and the status line repeats the same wording. |
+| Local write failed as well | The bar, in the error tone, says nothing was saved. |
+| Permission denied on the Firestore listener | The bar shows the cause and a hint, the module loads favorites from `localStorage`. |
+| Access restored with local changes pending | The bar warns that database data replaced the changes saved on this device. |
 | Missing trait description | Popover shows unavailable-description message. |
 | No selected record when generating | Alert is shown. |
 | Favorite points to missing record | Alert is shown. |
@@ -1198,7 +1348,7 @@ structure section explains how to reveal it.
 ## Module recreation procedure
 
 1. Preserve `GeneratorNPC/` with `index.html`, `style.css`, `config/`, and `docs/`.
-2. Preserve `shared/firebase-config.js`, `shared/firebase-data-loader.js`, and `shared/access-gate.css`.
+2. Preserve `shared/firebase-config.js`, `shared/firebase-data-loader.js`, `shared/access-gate.css`, `shared/firebase-write-status.js`, and `shared/firebase-write-status.css`.
 3. Configure private DataVault data according to the shared Firebase setup.
 4. Ensure `datavault/live` contains data with all required sheets.
 5. Configure `GeneratorNPC/config/firebase-config.js` if favorites should use Firestore.
@@ -1230,3 +1380,6 @@ structure section explains how to reveal it.
 | localStorage favorites | Remove favorites Firestore config and add entry. | Entry is saved locally in `generatorNpcFavorites`. |
 | Favorite restore | Click `Wczytaj` on a favorite. | UI restores record, modules, notes, overrides, and toggles. |
 | Reset | Click `Reset`. | Selections and overrides return to default state. |
+| Failed favorites write | Block `firestore.googleapis.com` in developer tools and add a favorite. | A "saved on this device only" bar appears at the top, the badge next to favorites switches to "This device only", and the entry lands in `generatorNpcFavorites`. |
+| Failed favorites read | Block the database address before opening the module. | The bar shows "Data could not be loaded from the database" together with the reCAPTCHA blocking hint. |
+| Overwrite warning | After a failed write, unblock the address and open the module again. | The bar warns that database data replaced the changes saved on this device; the badge returns to "Shared data". |

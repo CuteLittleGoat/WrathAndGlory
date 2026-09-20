@@ -11,6 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
   <!-- Wspólna bramka dostępu, ta sama co w modułach DataVault i GeneratorNPC / Shared access gate, the same one used by DataVault and GeneratorNPC -->
   <link rel="stylesheet" href="../shared/access-gate.css"/>
+  <!-- Wspólny pasek komunikatów o nieudanym zapisie, ten sam co w module GeneratorNPC / Shared failed-write message bar, the same one used by the GeneratorNPC module -->
+  <link rel="stylesheet" href="../shared/firebase-write-status.css"/>
   <!-- Lokalna sekcja stylów dla bieżącego widoku / Local style section for current view -->
 <style>
     :root {
@@ -112,6 +114,18 @@
       gap: 12px;
       font-size: 13px;
       color: var(--muted);
+    }
+
+    /* --- Miejsce na znacznik trybu pracy z danymi / Slot for the data working-mode badge --- */
+    /* PL: Slot jest pusty do czasu uruchomienia skryptu, a sam znacznik ma styl w
+           shared/firebase-write-status.css. Marginesu ujemnego ani wysokości nie ustawiamy,
+           żeby pusty slot nie zostawiał dziury w układzie.
+       EN: The slot stays empty until the script runs, and the badge itself is styled in
+           shared/firebase-write-status.css. No negative margin or height is set, so an empty
+           slot leaves no gap in the layout. */
+    .write-status-slot {
+      display: flex;
+      justify-content: flex-end;
     }
 
     .status-pill {
@@ -618,6 +632,13 @@
 <!-- Główna sekcja widoczna dla użytkownika / Main section visible to the user -->
 <body>
   <div class="page">
+    <!-- Stały znacznik trybu pracy z danymi: wspólne albo tylko to urządzenie. Slot leży poza
+         sekcjami admin-only i user-only, bo obie są usuwane przy starcie w zależności od trybu,
+         a znacznik ma być widoczny dla każdego. / Permanent data working-mode badge: shared or
+         this device only. The slot sits outside the admin-only and user-only sections, because
+         both are removed at start-up depending on the mode, while the badge must stay visible
+         for everyone. -->
+    <div class="write-status-slot" id="writeStatusMode"></div>
     <!-- Nagłówek nawigacyjny lub informacyjny / Navigation or information header -->
 <header class="admin-only">
       <h1 id="headerTitle">Audio — panel dźwięków</h1>
@@ -778,6 +799,10 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
     import { activateAppCheck } from "../shared/firebase-app-check.js";
+    // --- Wspólna obsługa komunikatów o nieudanym zapisie / Shared handling of failed-write messages ---
+    // PL: Ten sam moduł obsługuje GeneratorNPC, więc oba moduły mówią o awarii bazy jednym głosem.
+    // EN: The same module serves GeneratorNPC, so both modules speak about a database failure with one voice.
+    import { createFirebaseWriteStatus } from "../shared/firebase-write-status.js";
 
     const manifestStatus = document.getElementById("manifestStatus");
     const libraryStatus = document.getElementById("libraryStatus");
@@ -1092,6 +1117,11 @@ const translations = {
       if (tagMenuSearchInput) tagMenuSearchInput.placeholder = t.placeholders.tagMenuSearch;
       if (searchInput) searchInput.placeholder = t.placeholders.sampleSearch;
       if (clearAllAliasesButton) clearAllAliasesButton.textContent = t.labels.buttonClearAllAliases;
+      // PL: Wspólny pasek ma własne teksty, więc przy zmianie języka przepisuje się sam —
+      //     razem z komunikatem, który akurat jest na ekranie.
+      // EN: The shared bar keeps its own texts, so it rewrites itself on a language change —
+      //     together with whatever message is currently on screen.
+      writeStatus.setLanguage(lang);
       updateStatus();
       renderAllViews();
     };
@@ -1140,6 +1170,21 @@ const translations = {
       "Patreon"
     ];
     const TAG_IGNORE_SEGMENTS = ["AudioRPG"];
+
+    // --- Pasek i znacznik trybu pracy z danymi / The data working-mode bar and badge ---
+    // PL: Obiekt powstaje raz, zaraz po wczytaniu skryptu, żeby był gotowy zanim pierwszy zapis
+    //     albo odczyt zdąży się nie powieść. `scopeKey` wskazuje klucz pamięci lokalnej modułu —
+    //     po nim wspólny moduł rozpoznaje, że na tym urządzeniu leżą zmiany, których baza nie zna.
+    // EN: The object is created once, right after the script loads, so it is ready before the first
+    //     write or read can fail. `scopeKey` points at the module's local storage key — the shared
+    //     module uses it to recognise that this device holds changes the database never received.
+    const writeStatus = createFirebaseWriteStatus({
+      mount: document.body,
+      modeMount: document.getElementById("writeStatusMode"),
+      language: currentLanguage,
+      scopeKey: AUDIO_SETTINGS_STORAGE_KEY,
+      moduleName: "Audio"
+    });
 
     // --- Konfiguracja bramki dostępowej / Access gateway configuration ---
     // MIEJSCE ZMIANY ADRESU BRAMKI / GATEWAY ADDRESS CHANGE POINT
@@ -1320,6 +1365,11 @@ const translations = {
       }
       manifestStatus.classList.toggle("is-error", Boolean(state.publicError));
       firebaseStatus.textContent = state.usingFirestore ? t.firebaseConnected : t.firebaseLocal;
+      // PL: Pasek statusów w nagłówku jest widoczny tylko w panelu admina, dlatego tryb pracy
+      //     z danymi dostaje własny znacznik, widoczny w obu trybach modułu.
+      // EN: The header status bar is visible in the admin panel only, so the data working mode gets
+      //     its own badge, visible in both modes of the module.
+      writeStatus.setMode(state.usingFirestore ? "shared" : "local");
       favoritesStatus.textContent = formatText(t.favoritesStatus, { count: state.favorites.lists.length });
       // Status biblioteki informuje, czy warstwa chroniona jest dostępna
       // The library status shows whether the protected tier is available
@@ -1879,6 +1929,50 @@ const translations = {
       startPlayback(item, playbackRoot, { loop: true }).catch((error) => console.error(error));
     };
 
+    // --- Zapis ustawień do pamięci tej przeglądarki / Saving settings to this browser's storage ---
+    //
+    // PL: Wydzielone z saveSettings, bo ta sama ścieżka służy teraz dwóm sytuacjom: pracy bez bazy
+    //     oraz ratowaniu danych po odmowie zapisu do bazy. Zwracana wartość mówi prawdę o wyniku —
+    //     wspólny pasek na jej podstawie rozstrzyga między „zapisano tylko tutaj” a „nie zapisano nic”,
+    //     a to są dla użytkownika dwa zupełnie różne komunikaty.
+    // EN: Extracted from saveSettings, because the same path now serves two situations: running
+    //     without the database, and rescuing data after the database refused the write. The return
+    //     value states the truth about the outcome — the shared bar uses it to decide between
+    //     "saved here only" and "nothing was saved", which are two completely different messages
+    //     for the user.
+    const saveSettingsLocal = () => {
+      try {
+        localStorage.setItem(AUDIO_SETTINGS_STORAGE_KEY, JSON.stringify({
+          favorites: state.favorites,
+          mainView: state.mainView,
+          aliases: state.aliases
+        }));
+        return true;
+      } catch (error) {
+        console.error("[Audio] Nie udało się zapisać ustawień lokalnie / Could not save settings locally:", error);
+        return false;
+      }
+    };
+
+    // --- Zapis ustawień: najpierw baza, a gdy odmówi — pamięć tego urządzenia / Saving settings: the database first, and this device's storage when it refuses ---
+    //
+    // PL: Funkcja NIE odrzuca obietnicy. To jest jej najważniejsza właściwość i powód, dla którego
+    //     wygląda tak, a nie inaczej. Wcześniej odrzucenie z setDoc przerywało funkcję obsługi
+    //     zdarzenia przed renderAllViews(), więc widok zostawał w stanie sprzed operacji, a dane
+    //     nie trafiały nigdzie: ani do bazy, ani do pamięci lokalnej, bo druga gałąź nigdy się nie
+    //     wykonywała. Dwanaście miejsc wywołujących `await saveSettings()` nie miało własnej obsługi
+    //     błędu, więc odrzucona obietnica kończyła się wyłącznie wpisem w konsoli.
+    //     Teraz każdy błąd jest tu obsłużony: moduł schodzi na pamięć lokalną (state.usingFirestore
+    //     = false), pokazuje pasek i zwraca wynik, a widok zawsze zdąży się odświeżyć.
+    // EN: The function does NOT reject. That is its most important property and the reason it looks
+    //     the way it does. Previously a rejection from setDoc aborted the event handler before
+    //     renderAllViews(), so the view stayed in its pre-operation state and the data went nowhere:
+    //     neither to the database nor to local storage, because the second branch never ran. Twelve
+    //     places calling `await saveSettings()` had no error handling of their own, so the rejected
+    //     promise ended as a console entry and nothing more.
+    //     Now every error is handled here: the module falls back to local storage
+    //     (state.usingFirestore = false), shows the bar and returns the outcome, and the view always
+    //     gets its chance to refresh.
     const saveSettings = async () => {
       const payload = {
         favorites: state.favorites,
@@ -1887,14 +1981,67 @@ const translations = {
         updatedAt: serverTimestamp()
       };
       if (state.usingFirestore && state.favoritesDoc) {
-        await setDoc(state.favoritesDoc, payload);
-        return;
+        try {
+          await setDoc(state.favoritesDoc, payload);
+          writeStatus.reportSaveSuccess();
+          return { ok: true, target: "firestore" };
+        } catch (error) {
+          // PL: Zejście na pamięć lokalną jest tu nowe: bez niego odmowa zapisu kasowała pracę
+          //     natychmiast, bo dane nie lądowały nawet w przeglądarce.
+          // EN: The fallback to local storage is new here: without it a refused write destroyed the
+          //     work immediately, because the data did not even land in the browser.
+          state.usingFirestore = false;
+          const savedLocally = saveSettingsLocal();
+          writeStatus.reportSaveError(error, { savedLocally });
+          updateStatus();
+          return { ok: false, target: savedLocally ? "local" : "none", error };
+        }
       }
-      localStorage.setItem(AUDIO_SETTINGS_STORAGE_KEY, JSON.stringify({
-        favorites: state.favorites,
-        mainView: state.mainView,
-        aliases: state.aliases
-      }));
+      const savedLocally = saveSettingsLocal();
+      if (!savedLocally) {
+        writeStatus.reportSaveError(null, { savedLocally: false });
+      } else if (state.favoritesDoc) {
+        // PL: Baza jest skonfigurowana, a mimo to zapis poszedł tylko tutaj — znaczy, że moduł
+        //     zszedł wcześniej na pamięć lokalną. Znacznik przeżyje zamknięcie karty i pozwoli
+        //     ostrzec użytkownika, zanim dane z bazy zastąpią te zmiany.
+        // EN: The database is configured, yet the write went here only — meaning the module fell
+        //     back to local storage earlier. The marker survives closing the tab and makes it
+        //     possible to warn the user before database data replaces those changes.
+        writeStatus.noteLocalOnlyChange();
+      }
+      return { ok: savedLocally, target: savedLocally ? "local" : "none" };
+    };
+
+    // --- Zapis wraz z odświeżeniem widoku / Saving together with a view refresh ---
+    //
+    // PL: Jedno miejsce zamiast dwunastu powtórzeń pary „zapisz, odśwież”.
+    //     Kolejność jest odwrócona względem poprzedniej wersji i to jest sedno poprawki: widok
+    //     pokazuje stan modułu, a ten jest zmieniony **przed** wywołaniem tej funkcji, więc nie ma
+    //     na co czekać. Czekanie na bazę przed narysowaniem widoku miało dwa złe skutki:
+    //     odrzucenie zapisu przerywało funkcję obsługi zdarzenia przed renderAllViews(), a przy
+    //     braku sieci obietnica z setDoc w ogóle się nie rozstrzyga — Firestore trzyma zapis
+    //     w kolejce do czasu potwierdzenia przez serwer. W obu przypadkach interfejs zostawał
+    //     w stanie sprzed operacji, choć dane w module były już zmienione.
+    //     Wynik zapisu zmienia wyłącznie pasek komunikatu i znacznik trybu pracy, a te elementy
+    //     wspólny moduł aktualizuje sam, niezależnie od renderAllViews().
+    // EN: One place instead of twelve repetitions of the "save, refresh" pair.
+    //     The order is reversed compared to the previous version, and that is the heart of the fix:
+    //     the view shows the module state, and that state is changed **before** this function is
+    //     called, so there is nothing to wait for. Waiting for the database before drawing the view
+    //     had two bad effects: a refused write aborted the event handler before renderAllViews(),
+    //     and with no network the setDoc promise never settles at all — Firestore keeps the write
+    //     queued until the server acknowledges it. In both cases the interface stayed in its
+    //     pre-operation state even though the module data had already changed.
+    //     The write outcome changes only the message bar and the working-mode badge, and the shared
+    //     module updates those on its own, independently of renderAllViews().
+    const persistAndRender = async () => {
+      renderAllViews();
+      try {
+        return await saveSettings();
+      } catch (error) {
+        console.error("[Audio] Nieoczekiwany błąd zapisu ustawień / Unexpected settings save error:", error);
+        return { ok: false, target: "none", error };
+      }
     };
 
     const defaultFavorites = () => ({
@@ -2001,6 +2148,11 @@ const translations = {
       // --- WAŻNE: Brak poprawnej konfiguracji oznacza pracę lokalną; dla niezależnych grup konieczne jest użycie osobnego firebase-config.js. / IMPORTANT: Missing config means local mode; independent groups must use their own firebase-config.js. ---
       if (!window.firebaseConfig || !window.firebaseConfig.apiKey) {
         firebaseStatus.textContent = translations[currentLanguage].labels.firebaseMissing;
+        // PL: Brak konfiguracji to ustawienie tej kopii modułu, nie awaria — pasek mówi o tym
+        //     łagodnym tonem, ale znacznik trybu zostaje na „tylko to urządzenie”.
+        // EN: A missing configuration is a setting of this module copy, not a failure — the bar says
+        //     so in a gentle tone, while the mode badge stays on "this device only".
+        writeStatus.reportLocalMode("no-config");
         loadSettingsLocal();
         renderAllViews();
         return;
@@ -2024,6 +2176,7 @@ const translations = {
         console.error(error);
         state.usingFirestore = false;
         firebaseStatus.textContent = translations[currentLanguage].labels.firebaseLocal;
+        writeStatus.reportLocalMode("init-failed");
         loadSettingsLocal();
         renderAllViews();
         return;
@@ -2033,29 +2186,60 @@ const translations = {
       state.usingFirestore = true;
 
       try {
-        onSnapshot(state.favoritesDoc, (snapshot) => {
-        if (!snapshot.exists()) {
-          const defaults = normalizeSettings(null);
-          state.favorites = defaults.favorites;
-          state.mainView = defaults.mainView;
-          state.aliases = defaults.aliases;
-          saveSettings().catch(console.error);
-          renderAllViews();
-          return;
-        }
-        const settings = normalizeSettings(snapshot.data());
-        state.favorites = settings.favorites;
-        state.mainView = settings.mainView;
-        state.aliases = settings.aliases;
-        applyAliasesToItems();
-        renderAllViews();
-        });
+        onSnapshot(
+          state.favoritesDoc,
+          (snapshot) => {
+            if (!snapshot.exists()) {
+              const defaults = normalizeSettings(null);
+              state.favorites = defaults.favorites;
+              state.mainView = defaults.mainView;
+              state.aliases = defaults.aliases;
+              persistAndRender();
+              return;
+            }
+            const settings = normalizeSettings(snapshot.data());
+            state.favorites = settings.favorites;
+            state.mainView = settings.mainView;
+            state.aliases = settings.aliases;
+            applyAliasesToItems();
+            // PL: Dane z bazy właśnie zastąpiły stan modułu. Jeżeli na tym urządzeniu leżą zmiany
+            //     zapisane w czasie awarii, to jest dokładnie ten moment, w którym przepadają —
+            //     i jedyny moment, w którym da się o tym powiedzieć. Scalania nie robimy: moduł
+            //     zapisuje cały dokument naraz, więc odesłanie stanu lokalnego skasowałoby to,
+            //     co w międzyczasie zapisał ktoś inny albo ten sam użytkownik z drugiego urządzenia.
+            // EN: Database data has just replaced the module state. If this device holds changes
+            //     saved during an outage, this is exactly the moment they are lost — and the only
+            //     moment when it can be said out loud. No merging is done: the module writes the
+            //     whole document at once, so pushing the local state back would erase whatever
+            //     someone else, or the same user on another device, saved in the meantime.
+            writeStatus.warnLocalOverwritten();
+            renderAllViews();
+          },
+          // --- Trzeci argument: obsługa błędu nasłuchu / The third argument: the listener error handler ---
+          // PL: Bez niego odmowa dostępu przychodząca już po założeniu nasłuchu nie robiła nic
+          //     poza wpisem w konsoli: interfejs zostawał z pustym stanem początkowym, bez list
+          //     ulubionych i bez jakiegokolwiek śladu dla użytkownika. Otaczający try/catch tego
+          //     nie łapie, bo łapie wyłącznie błędy synchroniczne przy zakładaniu nasłuchu.
+          // EN: Without it a permission denial arriving after the listener was attached did nothing
+          //     beyond a console entry: the interface stayed in its empty initial state, with no
+          //     favourite lists and no trace for the user. The surrounding try/catch does not catch
+          //     it, because it only catches synchronous errors raised while attaching the listener.
+          (error) => {
+            console.error(error);
+            state.usingFirestore = false;
+            firebaseStatus.textContent = translations[currentLanguage].labels.firebaseLocal;
+            writeStatus.reportReadError(error);
+            loadSettingsLocal();
+            renderAllViews();
+          }
+        );
       } catch (error) {
         // Nasłuch Firestore nie wystartował — pracujemy na ustawieniach lokalnych
         // The Firestore listener did not start: fall back to local settings
         console.error(error);
         state.usingFirestore = false;
         firebaseStatus.textContent = translations[currentLanguage].labels.firebaseLocal;
+        writeStatus.reportReadError(error);
         loadSettingsLocal();
         renderAllViews();
       }
@@ -2330,8 +2514,7 @@ const translations = {
         name: name.trim(),
         itemIds: []
       });
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const addItemToFavorites = async (listId, itemId) => {
@@ -2341,8 +2524,7 @@ const translations = {
       }
       if (!list.itemIds.includes(itemId)) {
         list.itemIds.push(itemId);
-        await saveSettings();
-        renderAllViews();
+        await persistAndRender();
       }
     };
 
@@ -2357,8 +2539,7 @@ const translations = {
       }
       const [removed] = state.favorites.lists.splice(index, 1);
       state.favorites.lists.splice(targetIndex, 0, removed);
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const renameList = async (listId) => {
@@ -2371,8 +2552,7 @@ const translations = {
         return;
       }
       list.name = name.trim();
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const removeList = async (listId) => {
@@ -2386,8 +2566,7 @@ const translations = {
       if (state.activeFavoritesListId === listId) {
         state.activeFavoritesListId = state.favorites.lists[0]?.id || null;
       }
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const moveItem = async (listId, itemId, direction) => {
@@ -2402,8 +2581,7 @@ const translations = {
       }
       const [removed] = list.itemIds.splice(index, 1);
       list.itemIds.splice(target, 0, removed);
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const removeItem = async (listId, itemId) => {
@@ -2412,15 +2590,13 @@ const translations = {
         return;
       }
       list.itemIds = list.itemIds.filter((id) => id !== itemId);
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const addItemToMainView = async (itemId) => {
       if (!state.mainView.itemIds.includes(itemId)) {
         state.mainView.itemIds.push(itemId);
-        await saveSettings();
-        renderAllViews();
+        await persistAndRender();
       }
     };
 
@@ -2437,8 +2613,7 @@ const translations = {
       if (item) {
         item.alias = normalized;
       }
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const clearAllAliases = async () => {
@@ -2450,8 +2625,7 @@ const translations = {
       state.items.forEach((item) => {
         item.alias = "";
       });
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const moveMainViewItem = async (itemId, direction) => {
@@ -2462,14 +2636,12 @@ const translations = {
       }
       const [removed] = state.mainView.itemIds.splice(index, 1);
       state.mainView.itemIds.splice(target, 0, removed);
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     const removeMainViewItem = async (itemId) => {
       state.mainView.itemIds = state.mainView.itemIds.filter((id) => id !== itemId);
-      await saveSettings();
-      renderAllViews();
+      await persistAndRender();
     };
 
     // --- Wczytanie manifestów obu warstw / Loading manifests of both tiers ---

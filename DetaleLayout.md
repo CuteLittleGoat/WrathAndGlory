@@ -49,6 +49,88 @@ własnych tekstów interfejsu — wyświetla wyłącznie to, co wyśle Mistrz Gr
 
 ---
 
+## Wspólny komponent — pasek komunikatu o nieudanym zapisie i znacznik trybu pracy
+
+Pasek istnieje w modułach **GeneratorNPC** i **Audio**. Oba moduły korzystają z jednego arkusza
+`shared/firebase-write-status.css` i jednego skryptu `shared/firebase-write-status.js`, podpiętych
+w `<head>` przez `<link rel="stylesheet" href="../shared/firebase-write-status.css">`. Powód jest ten
+sam co przy `shared/access-gate.css`: komponent ma wyglądać identycznie w obu modułach, a poprawka
+koloru albo odstępu ma się odbyć raz.
+
+Komponent składa się z **dwóch osobnych elementów**: szerokiego paska pokazywanego tylko wtedy, gdy
+jest o czym mówić, oraz małej plakietki trybu pracy widocznej zawsze.
+
+### Pasek `.wgWriteStatus`
+
+- `position: fixed; top: 0; left: 0; right: 0;`, `z-index: 9000` — warstwa poniżej bramki dostępu
+  (`9999`), żeby nigdy jej nie przesłonić.
+- Domyślnie `display: none`; klasa `.is-visible` przełącza na `display: flex`.
+- Odstępy: `padding: 10px 14px`, `gap: 12px`; poniżej `640px` → `padding: 8px 10px`, `gap: 8px`.
+- Typografia: `font-size: 14px` (na telefonie `13px`), `line-height: 1.4`, `letter-spacing: 0.02em`;
+  font dziedziczony z modułu, czyli konsolowy monospace w obu przypadkach.
+- Dolna krawędź: `border-bottom: 2px solid var(--wgws-accent)`, cień `0 6px 18px rgba(0, 0, 0, 0.55)`.
+- Twardy limit wysokości: `max-height: 40vh` z `overflow-y: auto`. Najdłuższy komunikat
+  (`permission-denied`) zajmuje na ekranie `360 × 740 px` około **221 px**, czyli 30 % wysokości.
+  Bez limitu pasek z ostrzeżenia zmieniałby się w przeszkodę.
+
+#### Dwa tony
+
+| Ton | Akcent | Tło | Tekst | Kiedy |
+| --- | --- | --- | --- | --- |
+| `data-tone="error"` | `var(--danger, var(--red, #d74b4b))` | `#2a0606` | `#ffd6d6` | Dane nie trafiły do bazy i mogą przepaść. |
+| `data-tone="warning"` | `#e0a500` | `#2a2205` | `#ffe9a8` | Praca trwa dalej, ale nie wspólnie. |
+
+Żółć `#e0a500` jest jedynym nowym kolorem wprowadzonym przez ten komponent. Czerwień korzysta
+z `--danger` modułu Audio (`#ff5f5f`) albo `--red` modułu GeneratorNPC (`#d74b4b`) — wartości są
+podane jako łańcuch zapasowy `var(--danger, var(--red, #d74b4b))`, więc każdy moduł bierze własny
+odcień bez dopisywania czegokolwiek do swojego arkusza.
+
+#### Elementy wewnętrzne
+
+- `.wgWriteStatus__title` — `font-weight: 700`, jedno zdanie o tym, co się stało z danymi;
+- `.wgWriteStatus__hint` — `opacity: 0.92`, przyczyna i co zrobić;
+- `.wgWriteStatus__code` — `font-size: 12px`, `opacity: 0.7`, `white-space: nowrap` (na telefonie
+  `normal`), ukrywany regułą `:empty { display: none; }`;
+- `.wgWriteStatus__close` — kwadrat `28 × 28 px`, `border-radius: 6px`, obrys w kolorze akcentu, tło
+  przezroczyste, `:hover` `rgba(255, 255, 255, 0.1)`, `:focus-visible` z obrysem `2px` i odstępem
+  `2px`. Pasek **nie znika sam** — to jest decyzja, nie przeoczenie.
+
+#### Rezerwacja miejsca zamiast zasłaniania
+
+Pasek jest przyklejony do okna, więc sam z siebie zasłoniłby pierwszy element modułu — w GeneratorNPC
+przyciski `Reset` i `Generuj kartę`. Skrypt podaje jego wysokość do zmiennej
+`--wg-write-status-height` na elemencie `<html>`, a arkusz wspólny ustawia
+`body { padding-top: var(--wg-write-status-height, 0px); }`. Przy schowanym pasku wartość wynosi
+`0px` i układ jest dokładnie taki jak przed wprowadzeniem komponentu. W GeneratorNPC tej samej
+zmiennej używa sticky `.topbar` (`top: var(--wg-write-status-height, 0px)`), żeby nagłówek przyklejał
+się pod paskiem, a nie pod nim. Wysokości pilnuje `ResizeObserver`, bo komunikat zmienia liczbę
+wierszy przy obrocie telefonu.
+
+### Plakietka trybu pracy `.wgWriteMode`
+
+- `display: inline-flex`, `padding: 3px 10px` (telefon `2px 8px`), `border-radius: 999px`,
+  `font-size: 12px` (telefon `11px`), `letter-spacing: 0.04em`, `white-space: nowrap`.
+- Przed tekstem stoi kropka `::before` o rozmiarze `8 × 8 px` w kolorze akcentu.
+
+| `data-mode` | Akcent | Tło | Tekst | Napis |
+| --- | --- | --- | --- | --- |
+| `shared` | `var(--accent, #16c60c)` | `rgba(22, 198, 12, 0.08)` | `var(--muted, #4a8b4a)` | „Dane wspólne” |
+| `local` | `#e0a500` | `rgba(224, 165, 0, 0.12)` | `#ffe9a8` | „Tylko to urządzenie” |
+| `unknown` | `var(--muted, #4a8b4a)` | przezroczyste | `var(--muted, #4a8b4a)` | „Sprawdzanie połączenia” |
+
+Stan poprawny (`shared`) jest celowo wyciszony: zielony obrys i przygaszony tekst `--muted`, żeby
+plakietka widoczna stale nie krzyczała przy sprawnej bazie. Uwagę przyciąga dopiero żółć trybu
+lokalnego.
+
+### Gdzie stoi plakietka
+
+| Moduł | Kontener | Miejsce w układzie |
+| --- | --- | --- |
+| GeneratorNPC | `<div class="favorites-mode" id="favorites-mode">` | Panel „Ulubione”, osobny wiersz pod linią statusu i nad polem aliasu. `display: flex`, `margin-bottom: 12px`, reguła `:empty { display: none; }` nie zostawia dziury przed uruchomieniem skryptu. |
+| Audio | `<div class="write-status-slot" id="writeStatusMode">` | Pierwszy element `.page`, `display: flex`, `justify-content: flex-end`. Slot leży poza sekcjami `admin-only` i `user-only`, bo jedna z nich jest usuwana przy starcie, a plakietka ma być widoczna w obu trybach. |
+
+---
+
 ## Moduł — Main
 
 ### 1) Fonty i typografia
@@ -485,6 +567,10 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - Tabele: zebra i hover oparte o `--zebra` i `--hover`.
 - Przyciski **Edytuj/Zapisz** przy edytowalnych polach tekstowych podglądu bazowego (`Umiejętności`, `Słowa Kluczowe`) używają klasy `.editable-text-button`: tekst i obramowanie mają `var(--code)` / `#D2FAD2`, czyli ten sam kolor co numery stron w DataVault, z pełną nieprzezroczystością `opacity: 1`; reguła nie zmienia pozostałych przycisków pobocznych.
 - Kontrolka „Czy wyświetlić zdezaktualizowane wpisy?” w GeneratorNPC jest celowo zsynchronizowana wizualnie z analogiczną kontrolką DataVault. Selektory `.bestiary-show-old-toggle` i `.bestiary-show-old-toggle span` ustawiają tekst na `var(--text-old)` / `#7f9b7f` oraz `opacity: 1`, a selektor `#bestiary-show-old` ustawia zaznaczony checkbox przez `accent-color: var(--text-old)` / `#7f9b7f`. Reguły są zawężone do tej jednej kontrolki i nie zmieniają checkboxów modułów aktywnych, selecta Bestiariusza ani koloru zdezaktualizowanych opcji.
+- Panel „Ulubione” zawiera kontener `.favorites-mode` na plakietkę trybu pracy z danymi — opis
+  komponentu jest w rozdziale „Wspólny komponent — pasek komunikatu o nieudanym zapisie i znacznik
+  trybu pracy”. Sticky `.topbar` ma `top: var(--wg-write-status-height, 0px)`, czyli przykleja się
+  pod paskiem komunikatu, gdy ten jest widoczny, i pod górną krawędzią okna, gdy paska nie ma.
 - Sekcja „Źródło danych” w panelu bocznym (`.panel-data-source`) ma celowo mniejszą typografię (`.data-source-text`: `font-size: 0.82rem`, `line-height: 1.55`) i wymuszone zawijanie długiego linku (`.data-source-link`: `overflow-wrap: anywhere`, `word-break: break-word`), aby URL `data.json` nie wychodził poza ramkę.
 
 ---
@@ -673,6 +759,7 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - nazwa i tag mają klasę `.sample-trigger` (kursor `pointer`),
   - aktywne odtwarzanie dodaje `.is-playing`, co barwi `.sample-trigger` na `--danger`,
   - suwak głośności to `.volume-slider` (`width: 100%`, `accent-color: --accent`).
+- Pierwszym elementem `.page` jest `.write-status-slot` (`display: flex`, `justify-content: flex-end`) — miejsce na plakietkę trybu pracy z danymi, opisaną w rozdziale „Wspólny komponent — pasek komunikatu o nieudanym zapisie i znacznik trybu pracy”. Slot jest pusty do czasu uruchomienia skryptu i nie ma własnej wysokości, więc nie zostawia dziury w układzie.
 - Przycisk `.loop-btn` znajduje się wyłącznie w zwykłym widoku użytkownika uruchomionym bez `?admin=1`; aktywny stan pętli ma klasę `.is-looping` i `aria-pressed="true"`, czerwone tło `rgba(255, 95, 95, 0.22)`, obramowanie `--danger`, tekst `#ffd6d6` oraz cień `0 0 12px rgba(255, 95, 95, 0.35)`.
 
 ### 4) Zwijanie/rozwijanie > 9 linii

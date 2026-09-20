@@ -260,6 +260,34 @@ Jeżeli Firestore ulubionych nie działa albo nie jest skonfigurowany, moduł u�
 
 Lokalny zapis działa tylko na tym urządzeniu i w tej przeglądarce.
 
+## Skąd wiesz, gdzie trafiają Twoje ulubione
+
+W panelu `Ulubione`, pod linią statusu, stoi mała plakietka z kropką. Mówi ona jedno: gdzie trafiają
+zmiany, które właśnie robisz. Plakietka jest widoczna zawsze, także wtedy, gdy wszystko działa.
+
+| Plakietka | Kolor | Co oznacza |
+| --- | --- | --- |
+| `Dane wspólne` | zielona | Ulubione trafiają do wspólnej bazy. Zobaczysz je na telefonie, na drugim komputerze i zobaczą je inni, którzy używają tej samej bazy. |
+| `Tylko to urządzenie` | żółta | Ulubione zostają w tej przeglądarce. Na innym urządzeniu ich nie będzie. |
+| `Sprawdzanie połączenia` | szara | Moduł dopiero sprawdza łączność z bazą. Stan przejściowy, trwa chwilę po otwarciu modułu. |
+
+Jeżeli plakietka pokazuje `Tylko to urządzenie`, nie znaczy to, że Twoja praca przepadła — znaczy, że
+została na tym komputerze i nie pojechała dalej.
+
+## Pasek u góry ekranu
+
+Kiedy zapis do bazy się nie uda, u góry ekranu pojawia się szeroki pasek. Pasek nie znika sam:
+zamykasz go krzyżykiem albo znika, gdy zapis wreszcie się powiedzie. To jest celowe — jednolinijkowy
+komunikat w rogu panelu zbyt łatwo przeoczyć.
+
+Pasek ma dwa kolory:
+
+- **żółty** — pracujesz dalej, ale nie wspólnie. Zmiany zostają na tym urządzeniu;
+- **czerwony** — coś nie zostało zapisane albo nie udało się wczytać danych.
+
+Pasek zawsze mówi trzy rzeczy: co się stało z danymi, dlaczego i co z tym zrobić. Na dole jest kod
+błędu — przyda się, gdybyś zgłaszał problem.
+
 ## Wczytywanie ulubionego
 
 Kliknięcie `Wczytaj` przy ulubionym wpisie odtwarza konfigurację.
@@ -351,6 +379,11 @@ informacja, że potwierdzenie zostało pominięte.
 | Lista Bestiariusza jest pusta | Brak danych albo dane nie zostały załadowane. | Sprawdź panel `Źródło danych`. |
 | Nie można wygenerować karty | Nie wybrano bazowego NPC. | Wybierz wpis z Bestiariusza. |
 | Ulubione nie synchronizują się między urządzeniami | Moduł używa lokalnego zapisu zamiast Firestore. | Sprawdź konfigurację ulubionych albo używaj tego samego urządzenia. |
+| Żółty pasek „Zapisano tylko na tym urządzeniu" | Baza odrzuciła zapis, więc ulubiony wpis został zapisany w tej przeglądarce. | Najczęstsza przyczyna to dodatek blokujący reklamy, który blokuje adres `google.com/recaptcha`. Wyłącz blokowanie dla tej strony i odśwież moduł. |
+| Czerwony pasek „Zmiana nie została zapisana" | Nie udało się zapisać nigdzie — ani w bazie, ani w przeglądarce. | Odśwież stronę i powtórz zmianę. Jeżeli to nie pomoże, zgłoś adminowi kod błędu z paska. |
+| Czerwony pasek „Nie udało się wczytać danych z bazy" | Moduł nie dostał listy ulubionych i pokazuje to, co ma zapisane w tej przeglądarce. | Jak wyżej: sprawdź dodatek blokujący, potem odśwież stronę. |
+| Żółty pasek „Zmiany (...) zostały właśnie zastąpione danymi z bazy" | Wcześniej pracowałeś bez połączenia z bazą, a teraz baza wróciła i nadpisała stan modułu. | Sprawdź listę ulubionych. Czego brakuje, dodaj ponownie — moduł celowo nie scala takich zmian sam, żeby nie skasować pracy z drugiego urządzenia. |
+| Żółty pasek „Moduł pracuje na pamięci tego urządzenia" | Ta kopia modułu nie ma konfiguracji bazy. | To ustawienie, a nie awaria. Jeżeli ulubione mają być wspólne, poproś admina o konfigurację. |
 | Ulubiony wpis wczytuje inne elementy niż wcześniej | Dane DataVault zmieniły kolejność albo zawartość. | Sprawdź konfigurację ręcznie i zapisz nowy ulubiony wpis. |
 | Brak opisu cechy | W danych nie ma opisu dla tej cechy. | Możesz nadal używać karty; brakuje tylko podpowiedzi. |
 | Moduł działa, ale w narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, moduł działa. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
@@ -631,6 +664,35 @@ If favorites Firestore does not work or is not configured, the module uses local
 
 Local storage works only on that device and in that browser.
 
+## How you know where your favorites go
+
+In the `Ulubione` panel, below the status line, there is a small badge with a dot. It says one
+thing: where the changes you are making right now are going. The badge is always visible, including
+when everything works.
+
+| Badge | Colour | Meaning |
+| --- | --- | --- |
+| `Shared data` | green | Favorites go to the shared database. You will see them on your phone, on a second computer, and so will everyone else using the same database. |
+| `This device only` | amber | Favorites stay in this browser. They will not be on another device. |
+| `Checking connection` | grey | The module is still checking the database connection. A transient state lasting a moment after the module opens. |
+
+If the badge shows `This device only`, it does not mean your work is gone — it means it stayed on
+this computer and went no further.
+
+## The bar at the top of the screen
+
+When a write to the database fails, a wide bar appears at the top of the screen. The bar never
+disappears on its own: you close it with the cross, or it disappears once a write finally succeeds.
+That is deliberate — a one-line message in a panel corner is far too easy to miss.
+
+The bar comes in two colours:
+
+- **amber** — you can keep working, but not together. Changes stay on this device;
+- **red** — something was not saved, or data could not be loaded.
+
+The bar always says three things: what happened to the data, why, and what to do about it. At the
+bottom there is an error code — useful if you report the problem.
+
 ## Loading a favorite
 
 Clicking `Load` on a favorite restores the configuration.
@@ -722,6 +784,11 @@ confirmation was skipped.
 | Bestiary list is empty | Data is missing or has not loaded. | Check the `Data source` panel. |
 | Card cannot be generated | No base NPC is selected. | Select a Bestiary entry. |
 | Favorites do not sync between devices | The module is using local storage instead of Firestore. | Check favorites configuration or use the same device. |
+| Amber bar "Saved on this device only" | The database refused the write, so the favorite was saved in this browser. | The most common cause is an ad blocker blocking the `google.com/recaptcha` address. Disable blocking for this page and reload the module. |
+| Red bar "The change was not saved" | Nothing was saved anywhere — neither in the database nor in the browser. | Reload the page and repeat the change. If that does not help, report the error code from the bar to the admin. |
+| Red bar "Data could not be loaded from the database" | The module did not receive the favorites list and shows what it has stored in this browser. | Same as above: check the ad blocker, then reload the page. |
+| Amber bar "Changes (...) have just been replaced by database data" | You were working without a database connection earlier, and now the database is back and has overwritten the module state. | Check the favorites list. Add back whatever is missing — the module deliberately does not merge such changes by itself, so it cannot erase work done on another device. |
+| Amber bar "The module runs on this device's storage" | This copy of the module has no database configuration. | That is a setting, not a failure. If favorites are meant to be shared, ask the admin for the configuration. |
 | Favorite loads different elements than before | DataVault order or content changed. | Check configuration manually and save a new favorite. |
 | Trait description is missing | The data has no description for that trait. | You can still use the card; only the hint is missing. |
 | The module works but developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, the module works. To clear it, disable the ad blocker for this page. |

@@ -483,6 +483,35 @@ Jeżeli Firebase nie jest skonfigurowany albo nie działa, ustawienia zapisują 
 
 Zapis lokalny działa tylko na tym urządzeniu i w tej przeglądarce.
 
+## Skąd wiesz, gdzie trafiają Twoje ustawienia
+
+U góry strony, po prawej stronie, stoi mała plakietka z kropką. Mówi ona jedno: gdzie trafiają
+zmiany, które właśnie robisz. Plakietka jest widoczna zawsze — i w widoku użytkownika, i w panelu
+admina — także wtedy, gdy wszystko działa.
+
+| Plakietka | Kolor | Co oznacza |
+| --- | --- | --- |
+| `Dane wspólne` | zielona | Listy, widok główny i aliasy trafiają do wspólnej bazy. Zobaczysz je na telefonie, na drugim komputerze i zobaczą je inni, którzy używają tej samej bazy. |
+| `Tylko to urządzenie` | żółta | Ustawienia zostają w tej przeglądarce. Na innym urządzeniu ich nie będzie. |
+| `Sprawdzanie połączenia` | szara | Moduł dopiero sprawdza łączność z bazą. Stan przejściowy, trwa chwilę po otwarciu modułu. |
+
+Jeżeli plakietka pokazuje `Tylko to urządzenie`, nie znaczy to, że Twoja praca przepadła — znaczy, że
+została na tym komputerze i nie pojechała dalej.
+
+## Pasek u góry ekranu
+
+Kiedy zapis do bazy się nie uda, u góry ekranu pojawia się szeroki pasek. Pasek nie znika sam:
+zamykasz go krzyżykiem albo znika, gdy zapis wreszcie się powiedzie. To jest celowe — pastylka
+`Firebase: …` w nagłówku jest widoczna wyłącznie w panelu admina i zbyt łatwo ją przeoczyć.
+
+Pasek ma dwa kolory:
+
+- **żółty** — pracujesz dalej, ale nie wspólnie. Zmiany zostają na tym urządzeniu;
+- **czerwony** — coś nie zostało zapisane albo nie udało się wczytać ustawień.
+
+Pasek zawsze mówi trzy rzeczy: co się stało z danymi, dlaczego i co z tym zrobić. Na dole jest kod
+błędu — przyda się, gdybyś zgłaszał problem.
+
 ## Statusy
 
 W adminie widoczne są statusy:
@@ -540,6 +569,11 @@ informacja, że potwierdzenie zostało pominięte.
 | Manifest: błąd wczytywania | Nie udało się pobrać listy dźwięków. | Odśwież stronę. Jeżeli błąd wraca, zgłoś adminowi technicznemu. |
 | Firebase: lokalne ustawienia | Moduł działa bez synchronizacji Firestore. | To normalne w trybie lokalnym; ustawienia zostaną w tej przeglądarce. |
 | Firebase: brak konfiguracji | Brakuje konfiguracji Firebase. | Zgłoś adminowi technicznemu, jeżeli potrzebna jest synchronizacja. |
+| Żółty pasek „Zapisano tylko na tym urządzeniu" | Baza odrzuciła zapis, więc zmiana została zapisana w tej przeglądarce. | Najczęstsza przyczyna to dodatek blokujący reklamy, który blokuje adres `google.com/recaptcha`. Wyłącz blokowanie dla tej strony i odśwież moduł. |
+| Czerwony pasek „Zmiana nie została zapisana" | Nie udało się zapisać nigdzie — ani w bazie, ani w przeglądarce. | Odśwież stronę i powtórz zmianę. Jeżeli to nie pomoże, zgłoś adminowi kod błędu z paska. |
+| Czerwony pasek „Nie udało się wczytać danych z bazy" | Moduł nie dostał ustawień i pokazuje to, co ma zapisane w tej przeglądarce. Wcześniej w takiej sytuacji listy ulubionych po prostu znikały bez słowa. | Jak wyżej: sprawdź dodatek blokujący, potem odśwież stronę. |
+| Żółty pasek „Zmiany (...) zostały właśnie zastąpione danymi z bazy" | Wcześniej pracowałeś bez połączenia z bazą, a teraz baza wróciła i nadpisała ustawienia. | Sprawdź listy i aliasy. Czego brakuje, dodaj ponownie — moduł celowo nie scala takich zmian sam, żeby nie skasować pracy z drugiego urządzenia. |
+| Żółty pasek „Moduł pracuje na pamięci tego urządzenia" | Ta kopia modułu nie ma konfiguracji bazy. | To ustawienie, a nie awaria. Jeżeli ustawienia mają być wspólne, poproś admina o konfigurację. |
 | Brak linku do pliku audio | Manifest nie ma poprawnego linku do pliku. | Sprawdź dany wpis w manifeście. |
 | Brak wyników po filtrze | Filtry ukryły wszystkie dźwięki. | Wyczyść wyszukiwarkę albo zaznacz tagi ponownie. |
 | Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zablokowanym dostępie — kliknij tę pozycję, a moduł sam otworzy okno hasła. Jeżeli archiwum jest odblokowane, usuń wpis z listy. |
@@ -1045,6 +1079,36 @@ If Firebase is not configured or does not work, settings are saved locally in th
 
 Local save works only on that device and in that browser.
 
+## How you know where your settings go
+
+At the top of the page, on the right, there is a small badge with a dot. It says one thing: where
+the changes you are making right now are going. The badge is always visible — both in the user view
+and in the admin panel — including when everything works.
+
+| Badge | Colour | Meaning |
+| --- | --- | --- |
+| `Shared data` | green | Lists, main view, and aliases go to the shared database. You will see them on your phone, on a second computer, and so will everyone else using the same database. |
+| `This device only` | amber | Settings stay in this browser. They will not be on another device. |
+| `Checking connection` | grey | The module is still checking the database connection. A transient state lasting a moment after the module opens. |
+
+If the badge shows `This device only`, it does not mean your work is gone — it means it stayed on
+this computer and went no further.
+
+## The bar at the top of the screen
+
+When a write to the database fails, a wide bar appears at the top of the screen. The bar never
+disappears on its own: you close it with the cross, or it disappears once a write finally succeeds.
+That is deliberate — the `Firebase: …` pill in the header is visible in the admin panel only and is
+far too easy to miss.
+
+The bar comes in two colours:
+
+- **amber** — you can keep working, but not together. Changes stay on this device;
+- **red** — something was not saved, or settings could not be loaded.
+
+The bar always says three things: what happened to the data, why, and what to do about it. At the
+bottom there is an error code — useful if you report the problem.
+
 ## Statuses
 
 Admin view shows statuses:
@@ -1101,6 +1165,11 @@ confirmation was skipped.
 | Manifest: failed to load | The sound list could not be fetched. | Refresh the page. If the error persists, contact your technical admin. |
 | Firebase: local settings | Module works without Firestore synchronization. | This is normal in local mode; settings stay in this browser. |
 | Firebase: missing configuration | Firebase configuration is missing. | Contact technical admin if synchronization is needed. |
+| Amber bar "Saved on this device only" | The database refused the write, so the change was saved in this browser. | The most common cause is an ad blocker blocking the `google.com/recaptcha` address. Disable blocking for this page and reload the module. |
+| Red bar "The change was not saved" | Nothing was saved anywhere — neither in the database nor in the browser. | Reload the page and repeat the change. If that does not help, report the error code from the bar to the admin. |
+| Red bar "Data could not be loaded from the database" | The module did not receive its settings and shows what it has stored in this browser. Previously, in this situation, the favorite lists simply vanished without a word. | Same as above: check the ad blocker, then reload the page. |
+| Amber bar "Changes (...) have just been replaced by database data" | You were working without a database connection earlier, and now the database is back and has overwritten the settings. | Check the lists and aliases. Add back whatever is missing — the module deliberately does not merge such changes by itself, so it cannot erase work done on another device. |
+| Amber bar "The module runs on this device's storage" | This copy of the module has no database configuration. | That is a setting, not a failure. If settings are meant to be shared, ask the admin for the configuration. |
 | Missing audio file link | Manifest has no valid audio file link. | Check that manifest row. |
 | No results after filter | Filters hide all sounds. | Clear search or select tags again. |
 | Sound from list is marked missing | The list contains an ID that does not exist in the currently loaded library. | Usually an archive sound while access is locked — click that entry and the module opens the password window for you. If the archive is unlocked, remove the entry from the list. |
