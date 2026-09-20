@@ -1,0 +1,47 @@
+// --- Reguły Realtime Database dla projektu wh40k-data-slate / Realtime Database rules for the wh40k-data-slate project ---
+//
+// PL: Ten plik jest odwzorowaniem reguł WGRANYCH DZIŚ w Firebase Console (odczyt: 20 września 2026).
+//     Zapisanie pliku NIE zmienia niczego w Firebase — reguły publikuje się w konsoli albo przez Firebase CLI.
+// EN: This file mirrors the rules CURRENTLY DEPLOYED in the Firebase Console (read on 20 September 2026).
+//     Saving the file changes NOTHING in Firebase — rules are published from the console or the Firebase CLI.
+//
+// PL: Z tej bazy korzysta wyłącznie DataVault, przez shared/firebase-data-loader.js. Ścieżka datavault/live
+//     odpowiada stałej DATA_PATH w tym pliku, a moduł wykonuje na niej wyłącznie odczyt.
+// EN: This database serves DataVault only, through shared/firebase-data-loader.js. The datavault/live path
+//     matches the DATA_PATH constant in that file, and the module only ever reads from it.
+//
+// PL: 🔴 TE REGUŁY NIE ZMIENIAJĄ SIĘ W KROKU 6. Język reguł Realtime Database nie ma odpowiednika
+//     warunku `request.app != null` — App Check włącza się dla tej bazy wyłącznie przełącznikiem
+//     w konsoli (App Check -> APIs -> Realtime Database -> Enforce), a ten jest włączony od 20 września.
+// EN: 🔴 THESE RULES DO NOT CHANGE IN STEP 6. The Realtime Database rules language has no equivalent of
+//     the `request.app != null` condition — App Check is switched on for this database solely through the
+//     console toggle (App Check -> APIs -> Realtime Database -> Enforce), enabled since 20 September.
+//
+// PL: ⚠️ uid poniżej jest wpisany na sztywno. Gdyby konto Litanii Dostępu zostało skasowane i założone
+//     na nowo, dostanie inny uid, a DataVault przestanie czytać dane mimo poprawnego hasła. Wtedy trzeba
+//     podmienić uid w tej regule. Objaw wygląda wtedy na awarię bazy, a nie na problem z kontem.
+// EN: ⚠️ The uid below is hard-coded. Should the Litania Dostępu account ever be deleted and recreated, it
+//     would get a different uid and DataVault would stop reading data despite a correct password. The uid
+//     in this rule must then be replaced. The symptom looks like a database outage, not an account problem.
+//
+// PL: Edytor reguł w Firebase Console przyjmuje komentarze `//`. Gdyby jakieś narzędzie ich nie przyjęło,
+//     wklej wyłącznie część od nawiasu klamrowego w dół.
+// EN: The Firebase Console rules editor accepts `//` comments. Should any tool reject them, paste only the
+//     part starting at the opening brace.
+{
+  "rules": {
+    // PL: Dane DataVault: odczyt wyłącznie dla jednego konta (Litania Dostępu), zapis zablokowany
+    //     całkowicie — import danych robi się z konsoli Firebase, która regułom nie podlega.
+    // EN: DataVault data: read access for one single account (Litania Dostępu) only, writing disabled
+    //     entirely — data import is done from the Firebase Console, which is not subject to rules.
+    "datavault": {
+      "live": {
+        ".read": "auth != null && auth.uid === 'raCylxrrJ8YbOtgqXpvH6ygGkn72'",
+        ".write": false
+      }
+    },
+    // PL: Wszystko inne niedostępne / EN: Everything else inaccessible
+    ".read": false,
+    ".write": false
+  }
+}

@@ -3,7 +3,7 @@
 > **Data:** 13 września 2026 — *ostatnia aktualizacja: 20 września 2026*
 > **Dla kogo:** dla Ciebie, do klikania w przeglądarce. Nie trzeba nic umieć programować.
 > **Stan pierwotny (13 września):** w obu projektach Firebase zakładka **App Check** jest pusta — widać w niej tylko ekran powitalny z przyciskiem **Get started**. Czyli zaczynamy od zera.
-> **✅ Stan na 20 września:** ochrona jest **włączona**. Wymuszanie działa w trzech miejscach: w projekcie `wh40k-data-slate` dla **Realtime Database** i **Cloud Firestore**, w projekcie `audiorpg-2eb6f` dla **Cloud Firestore**. Usługa **Authentication** została świadomie zostawiona w trybie *Monitoring* — uzasadnienie i plan w rozdz. 9a. Do zrobienia został już tylko **krok 6**, czyli dopisanie `request.app != null` do reguł Firestore w obu projektach.
+> **✅ Stan na 20 września:** ochrona jest **włączona**. Wymuszanie działa w trzech miejscach: w projekcie `wh40k-data-slate` dla **Realtime Database** i **Cloud Firestore**, w projekcie `audiorpg-2eb6f` dla **Cloud Firestore**. Wszystkie moduły zostały po wymuszeniu sprawdzone i działają. TTL znaczników potwierdzone jako `1 days`. Usługa **Authentication** została świadomie zostawiona w trybie *Monitoring* — uzasadnienie i plan w rozdz. 9a. Do zrobienia został już tylko **krok 6**, czyli dopisanie `request.app != null` do reguł Firestore w obu projektach.
 > **Analizy powiązane:** `Analizy/audyt-kodu-aplikacji-2026-09-10.md` (rozdz. 9 — dlaczego to robimy), `Analizy/responsywnosc-aplikacji-2026-09-10.html`
 
 ---
@@ -399,6 +399,8 @@ Po każdym kliknięciu **sprawdź aplikację**: otwórz DataVault i GeneratorNPC
 > | **Audio** | zmień i zapisz ustawienia modułu | Firestore, `audiorpg-2eb6f` |
 >
 > Infoczytnik sprawdzaj w wersji **produkcyjnej** (`GM.html`, `Infoczytnik.html`), a nie testowej — to jest ta pułapka z rozdz. 7. Na 20 września pliki produkcyjne i testowe są identyczne i mają to samo `INF_VERSION = 2026-09-14_11-12-07`, ale sprawdzenie i tak rób na produkcyjnych.
+>
+> **✅ Runda wykonana 20 września — wszystkie moduły działają po wymuszeniu.** GeneratorNPC i moduł Audio, czyli te z projektu `audiorpg-2eb6f`, zostały sprawdzone osobno i również działają. Tym samym ryzyko opisane wyżej — wymuszenie w tym projekcie bez odczytania okna 24-godzinnego — zostało zamknięte sprawdzeniem w praktyce, a nie metryką.
 
 > ⚠️ **Wymuszaj tylko te dwie pozycje.** W zakładce *APIs* będą też inne usługi, m.in. **Firebase Cloud Messaging**, **Storage**, **Firebase AI Logic** i **SQL Connect**. Zostaw je bez wymuszania — nie korzysta z nich żaden moduł WrathAndGlory, a włączanie ochrony tam, gdzie nie ma czego chronić, tylko utrudnia późniejszą diagnozę. Przy nieużywanych usługach konsola i tak nie pokazuje przycisku, tylko napis *„Start using … to enable App Check"*.
 >
@@ -407,6 +409,45 @@ Po każdym kliknięciu **sprawdź aplikację**: otwórz DataVault i GeneratorNPC
 ### Krok 6 — zawężenie reguł bazy
 
 Dopiero **po** kroku 5. Reguły z warunkiem `request.app != null` same w sobie są wymuszaniem, więc wgranie ich wcześniej wyłączyłoby aplikację.
+
+#### Stan reguł odczytany 20 września — punkt wyjścia do kroku 6
+
+| Baza | Projekt | Stan | Co z tego wynika |
+|---|---|---|---|
+| Realtime Database | `wh40k-data-slate` | zamknięta na konto i tylko do odczytu | **nic do zrobienia** — patrz niżej |
+| Cloud Firestore | `audiorpg-2eb6f` | reguły z kroku 0, nadal `if true` | do podmiany w kroku 6 |
+| Cloud Firestore | `wh40k-data-slate` | *nie odczytano 20 września* | do podmiany w kroku 6, po sprawdzeniu, co jest wgrane |
+
+**Realtime Database (`wh40k-data-slate`) — stan faktyczny:**
+
+```
+{
+  "rules": {
+    "datavault": {
+      "live": {
+        ".read": "auth != null && auth.uid === 'raCylxrrJ8YbOtgqXpvH6ygGkn72'",
+        ".write": false
+      }
+    },
+    ".read": false,
+    ".write": false
+  }
+}
+```
+
+Te reguły są **ostrzejsze, niż zakładał audyt**, który mówił po prostu „wymaga zalogowania". W rzeczywistości są tu trzy zamki jeden na drugim:
+
+1. **`.read` tylko dla jednego konkretnego konta** — nie „dla każdego zalogowanego", lecz dla jednego `uid`. Litania Dostępu loguje na to jedno wspólne konto.
+2. **`.write: false` na danych DataVault** — z aplikacji **nie da się nic zapisać**, nawet będąc zalogowanym. To zgadza się z kodem: `shared/firebase-data-loader.js` wykonuje wyłącznie odczyt (`get(ref(database, "datavault/live"))`, linie 8 i 130). Import danych robisz z konsoli Firebase, a konsola regułom nie podlega.
+3. **Wymuszanie App Check od 20 września** — dochodzi jako trzeci zamek, niezależny od dwóch poprzednich.
+
+Ścieżka `datavault/live` w regułach zgadza się co do znaku ze stałą `DATA_PATH` w kodzie — sprawdzone 20 września.
+
+> ⚠️ **Jedyna pułapka w tych regułach: `uid` jest wpisany na sztywno.** Gdyby konto Litanii Dostępu zostało kiedyś skasowane i założone na nowo, dostanie **inny** `uid`, a DataVault przestanie czytać dane — mimo poprawnego hasła i mimo działającego App Check. Objaw będzie wyglądał na awarię bazy. Przy takiej operacji trzeba podmienić `uid` w regułach Realtime Database.
+
+**Cloud Firestore (`audiorpg-2eb6f`) — stan faktyczny:** reguły z kroku 0, czyli `generatorNpc/favorites` i `audio/favorites` z warunkiem `if true`, reszta zamknięta. Zgadza się z kopią w repozytorium (`shared/firestore-audiorpg.rules`). To właśnie te trzy linie podmienia krok 6.
+
+**Cloud Firestore (`wh40k-data-slate`):** treści nie odczytano 20 września. Zakładamy wersję z kroku 0 (kopia: `shared/firestore-wh40k-data-slate.rules`), ale **przed wklejeniem reguł z kroku 6 zerknij, co jest naprawdę wgrane** — zwłaszcza czy jest tam reguła dla `dataslate_favorites`, bo przygotowano ją z góry pod listy ulubionych Infoczytnika.
 
 Ścieżka: Firebase Console → **Firestore Database** → zakładka **Rules** → wklej → **Publish**.
 
@@ -418,7 +459,7 @@ Gotowe reguły są w `Analizy/audyt-kodu-aplikacji-2026-09-10.md`, rozdz. 9.8. W
 
 > Firebase trzyma historię reguł, więc powrót do poprzedniej wersji to jedno kliknięcie w zakładce **Rules**.
 
-> 🔻 **Uzupełnienie z 20 września — krok 6 dotyczy wyłącznie Firestore, i to jest w porządku.** Reguły Realtime Database to osobny język, w którym **nie istnieje odpowiednik `request.app`**. Dla RTDB App Check włącza się wyłącznie przełącznikiem w konsoli — a ten jest już włączony. Czyli po stronie Realtime Database **nie ma nic więcej do zrobienia**: temat jest domknięty przełącznikiem z kroku 5. Krok 6 zostaje do wykonania w dwóch miejscach: reguły Firestore w `wh40k-data-slate` i reguły Firestore w `audiorpg-2eb6f`.
+> 🔻 **Uzupełnienie z 20 września — krok 6 dotyczy wyłącznie Firestore, i to jest w porządku.** Reguły Realtime Database to osobny język, w którym **nie istnieje odpowiednik `request.app`**. Dla RTDB App Check włącza się wyłącznie przełącznikiem w konsoli — a ten jest już włączony. Czyli po stronie Realtime Database **nie ma nic więcej do zrobienia**: temat jest domknięty przełącznikiem z kroku 5, a same reguły tej bazy są już ostrzejsze niż to, co krok 6 wprowadza w Firestore (stan odczytany 20 września — wyżej w tym rozdziale). Krok 6 zostaje do wykonania w dwóch miejscach: reguły Firestore w `wh40k-data-slate` i reguły Firestore w `audiorpg-2eb6f`.
 
 > ### ▶️ Od 20 września to jest **jedyny pozostały krok** — i wreszcie wolno go zrobić
 >
@@ -575,7 +616,7 @@ Pozycje oznaczone *(sprawdzone w kodzie)* zostały potwierdzone odczytem repozyt
 **Projekt 1 — `wh40k-data-slate`**
 - [x] Klucz reCAPTCHA `WrathAndGlory-DataSlate` utworzony, typ WEB, domena `cutelittlegoat.github.io`
 - [x] Aplikacja webowa `DataSlate` zarejestrowana w App Check — dostawca reCAPTCHA Enterprise, status *Registered*
-- [ ] Sprawdzić, czy TTL jest ustawione na `1` + `days` (widoczne po kliknięciu **⋮** przy aplikacji) — **wciąż niesprawdzone**
+- [x] TTL ustawione na `1` + `days` — potwierdzone 20 września
 - [x] **KROK 0** — zawężone reguły Firestore wgrane (rozdz. 4a), nadal z `if true` — sprawdzone, wszystkie dokumenty odpowiadają `200`
 - [x] **KROK 3a** — App Check w DataVault *(sprawdzone w kodzie: `shared/firebase-data-loader.js`, `activateAppCheck` przed `getAuth` i `getDatabase`)*
 - [x] **KROK 3b** — App Check w Infoczytniku, compat 9.6.8 bez zmiany wersji *(sprawdzone w kodzie: `INF_VERSION = 2026-09-14_11-12-07` zgodne w plikach testowych i produkcyjnych)*
@@ -590,17 +631,19 @@ Pozycje oznaczone *(sprawdzone w kodzie)* zostały potwierdzone odczytem repozyt
 **Projekt 2 — `audiorpg-2eb6f`**
 - [x] Osobny klucz reCAPTCHA `WrathAndGlory-AudioRPG` utworzony, typ WEB, ta sama domena
 - [x] Aplikacja webowa `AudioRPG` zarejestrowana — reCAPTCHA Enterprise, status *Registered*
-- [ ] Sprawdzić TTL `1 days` — **wciąż niesprawdzone**
+- [x] TTL `1 days` — potwierdzone 20 września
 - [x] **KROK 0** — zawężone reguły Firestore wgrane, bez `DS2/progress` (rozdz. 4a)
 - [x] **KROK 3a** — App Check w GeneratorNPC i w module Audio *(sprawdzone w kodzie: oba pliki wczytują `shared/appcheck-config.js` i bibliotekę reCAPTCHA)*
 - [x] **KROK 5** — wymuszanie włączone dla **Cloud Firestore** (Realtime Database nieużywana)
-- [ ] **Runda sprawdzająca po wymuszeniu — GeneratorNPC i Audio** (rozdz. 9). W tym projekcie nie odczytano metryki 24-godzinnej przed kliknięciem *Enforce*, więc sprawdzenie jest tu ważniejsze niż gdzie indziej
+- [x] **Runda sprawdzająca po wymuszeniu — GeneratorNPC i Audio** (rozdz. 9). Sprawdzone 20 września, oba moduły działają. Metryki 24-godzinnej w tym projekcie nie odczytano, więc podstawą jest sprawdzenie w praktyce
 - [ ] **KROK 6** — reguły Firestore uzupełnione o `request.app != null` (gotowy tekst w rozdz. 9)
 
 **Po wszystkim**
 - [x] Pliki produkcyjne Infoczytnika (`GM.html`, `Infoczytnik.html`) zaktualizowane ręcznie *(sprawdzone w kodzie 20 września: identyczne z testowymi, różnią się wyłącznie zakończeniami wierszy)*
 - [ ] Sprawdzone z telefonu, tabletu i komputera, że wszystko działa — **po włączeniu wymuszania to sprawdzenie jest ważniejsze niż przed**
-- [ ] Kompletne reguły obu projektów zapisane w repozytorium (patrz audyt, rozdz. 9.6). Pliki `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules` istnieją, ale zawierają wersję z kroku 0 — do poprawienia razem z krokiem 6
+- [ ] Kompletne reguły obu projektów zapisane w repozytorium (patrz audyt, rozdz. 9.6):
+  - [x] Realtime Database — `shared/rtdb-wh40k-data-slate.rules.json`, zapisane 20 września ze stanu faktycznego, **aktualne i kompletne** (ta baza nie zmienia się w kroku 6)
+  - [ ] Firestore — `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules` zawierają wersję z kroku 0, do poprawienia razem z krokiem 6
 - [x] Oba klucze witryny w **jednym** pliku w `shared/` *(sprawdzone w kodzie: klucze występują wyłącznie w `shared/appcheck-config.js`, nie są powielone po modułach)*
 
 ---
