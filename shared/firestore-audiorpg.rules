@@ -8,30 +8,31 @@
 // PL: Z tego projektu korzystają: GeneratorNPC i moduł Audio. Projekt nie ma Realtime Database.
 // EN: This project serves: GeneratorNPC and the Audio module. It has no Realtime Database.
 //
-// PL: ✅ STAN NA 20 WRZEŚNIA 2026 — wersja docelowa. Kolejność, która była tu krytyczna, została
-//     zachowana: najpierw znaczniki App Check w kodzie (14 września), potem wymuszanie dla Cloud
-//     Firestore w Firebase Console (20 września), na końcu poniższy warunek `zAplikacji()`.
-//     Szczegóły i opis nieudanej próby z 14 września: Analizy/audyt-kodu-aplikacji-2026-09-10.md,
-//     rozdz. 9.8, oraz Analizy/instrukcja-appcheck-2026-09-13.md, rozdz. 9.
-// EN: ✅ STATE ON 20 SEPTEMBER 2026 — the final version. The order that mattered here was respected:
-//     App Check tokens in the code first (14 September), then enforcement for Cloud Firestore in the
-//     Firebase Console (20 September), and the `zAplikacji()` condition below last. Details, and the
-//     account of the failed attempt on 14 September: Analizy/audyt-kodu-aplikacji-2026-09-10.md
-//     chapter 9.8 and Analizy/instrukcja-appcheck-2026-09-13.md chapter 9.
+// PL: 🔴 WARUNKU `request.app != null` NIE DOPISUJEMY. Został wgrany 20 września o 18:03 i odciął
+//     GeneratorNPC oraz moduł Audio, mimo poprawnie działającego App Check i mimo włączonego
+//     wymuszania. W GeneratorNPC awaria była cicha: moduł przyjmował zapis bez komunikatu, a dane
+//     nie trafiały do bazy. Reguły cofnięto o 18:41.
+//     Pełna diagnoza: Analizy/awaria-regul-appcheck-2026-09-20.md.
+// EN: 🔴 DO NOT ADD the `request.app != null` condition. It was deployed on 20 September at 18:03 and
+//     cut off GeneratorNPC and the Audio module, despite a correctly working App Check and despite
+//     enforcement being on. In GeneratorNPC the failure was silent: the module accepted a save with no
+//     message while the data never reached the database. The rules were rolled back at 18:41.
+//     Full diagnosis: Analizy/awaria-regul-appcheck-2026-09-20.md.
+//
+// PL: Ochronę przed obcymi programami daje przełącznik wymuszania App Check, włączony 20 września.
+// EN: Protection against foreign programs comes from the App Check enforcement switch, enabled on
+//     20 September.
 
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // PL: Zapytanie musi nieść ważny znacznik App Check / EN: The request must carry a valid App Check token
-    function zAplikacji() { return request.app != null; }
-
     // PL: Ulubione zestawy GeneratorNPC / EN: GeneratorNPC favourite sets
-    match /generatorNpc/favorites { allow read, write: if zAplikacji(); }
+    match /generatorNpc/favorites { allow read, write: if true; }
 
     // PL: Ustawienia modułu Audio / EN: Audio module settings
-    match /audio/favorites { allow read, write: if zAplikacji(); }
+    match /audio/favorites { allow read, write: if true; }
 
     // PL: Reguła dla DS2/progress usunięta w kroku 0 — projekt Dark Souls II zakończony, kolekcja skasowana.
     // EN: The DS2/progress rule was removed in step 0 — the Dark Souls II project is finished, its collection deleted.

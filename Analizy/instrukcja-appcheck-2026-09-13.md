@@ -3,8 +3,9 @@
 > **Data:** 13 września 2026 — *ostatnia aktualizacja: 20 września 2026*
 > **Dla kogo:** dla Ciebie, do klikania w przeglądarce. Nie trzeba nic umieć programować.
 > **Stan pierwotny (13 września):** w obu projektach Firebase zakładka **App Check** jest pusta — widać w niej tylko ekran powitalny z przyciskiem **Get started**. Czyli zaczynamy od zera.
-> **✅ Stan na 20 września: TEMAT ZAMKNIĘTY — kroki 0–6 wykonane w obu projektach.**
-> Wymuszanie App Check działa w trzech miejscach: w projekcie `wh40k-data-slate` dla **Realtime Database** i **Cloud Firestore**, w projekcie `audiorpg-2eb6f` dla **Cloud Firestore**. Reguły Firestore w obu projektach niosą warunek `request.app != null` (krok 6). Wszystkie moduły sprawdzone po wymuszeniu, TTL znaczników potwierdzone jako `1 days`.
+> **✅ Stan na 20 września: TEMAT ZAMKNIĘTY — kroki 0–5 wykonane w obu projektach. Krok 6 został ODRZUCONY.**
+> Wymuszanie App Check działa w trzech miejscach: w projekcie `wh40k-data-slate` dla **Realtime Database** i **Cloud Firestore**, w projekcie `audiorpg-2eb6f` dla **Cloud Firestore**. Reguły Firestore w obu projektach mają zawężone ścieżki z kroku 0 i warunek `if true`. Wszystkie moduły sprawdzone po wymuszeniu, TTL znaczników potwierdzone jako `1 days`.
+> 🔴 **Krok 6 nie obowiązuje.** Warunek `request.app != null` wgrany 20 września odciął wszystkie moduły korzystające z Firestore i został cofnięty tego samego wieczora. Powód i dowody: `Analizy/awaria-regul-appcheck-2026-09-20.md`. Ochronę daje przełącznik wymuszania z kroku 5 — warunek w regułach nie dokładał niczego poza awarią.
 > Otwarta została **jedna świadoma decyzja**: usługa **Authentication** zostaje w trybie *Monitoring* — uzasadnienie i plan na później w rozdz. 9a.
 > **Analizy powiązane:** `Analizy/audyt-kodu-aplikacji-2026-09-10.md` (rozdz. 9 — dlaczego to robimy), `Analizy/responsywnosc-aplikacji-2026-09-10.html`
 
@@ -51,8 +52,10 @@ KROK 2  Rejestracja aplikacji (Firebase)        — nic nie przestaje działać
 KROK 3  Kod aplikacji wysyła znaczniki          — nic nie przestaje działać
 KROK 4  Obserwacja przez kilka dni              — nic nie przestaje działać
 KROK 5  Włączenie wymuszania                    — OD TEGO MOMENTU obce programy są odcinane
-KROK 6  Zawężenie reguł bazy                    — domknięcie tematu
+KROK 6  request.app != null w regułach          — ODRZUCONY, nie wykonywać (rozdz. 9)
 ```
+
+> 🔴 **Krok 6 został odrzucony 20 września.** Zawężenie ścieżek zrobiono już w kroku 0, a samego warunku `request.app != null` nie wgrywamy — położył całą aplikację. Ochronę daje krok 5. Szczegóły w rozdz. 9 i w `Analizy/awaria-regul-appcheck-2026-09-20.md`.
 
 **Dlaczego to takie ważne:** jeśli włączysz wymuszanie (krok 5) zanim aplikacja zacznie wysyłać znaczniki (krok 3), **aplikacja przestanie działać wszystkim naraz** — Tobie i graczom. Kroki 1–4 są całkowicie bezpieczne i możesz je robić bez pośpiechu.
 
@@ -408,17 +411,27 @@ Po każdym kliknięciu **sprawdź aplikację**: otwórz DataVault i GeneratorNPC
 >
 > **Jeden wyjątek wymaga osobnego namysłu: Authentication.** To jedyna z pozostałych pozycji, z której aplikacja **naprawdę korzysta** (Litania Dostępu w DataVault), więc argument „nie ma czego chronić" jej nie dotyczy. Dlatego dostała własny rozdział — **9a**.
 
-### Krok 6 — zawężenie reguł bazy
+### Krok 6 — ODRZUCONY
 
-Dopiero **po** kroku 5. Reguły z warunkiem `request.app != null` same w sobie są wymuszaniem, więc wgranie ich wcześniej wyłączyłoby aplikację.
+> ### 🔴 Tego kroku NIE wykonujemy. Zachowany jako ostrzeżenie, nie jako instrukcja.
+>
+> Warunek `request.app != null` został wgrany 20 września o 18:03 (`audiorpg-2eb6f`) i 18:04 (`wh40k-data-slate`). **Odciął wszystkie moduły korzystające z Firestore** — Infoczytnik zwrócił `Missing or insufficient permissions`, a GeneratorNPC i moduł Audio przestały czytać i zapisywać, przy czym GeneratorNPC robił to **bez żadnego komunikatu**: przyjmował zapis, który nie trafiał do bazy. Reguły cofnięto o 18:19 i 18:41.
+>
+> **Dlaczego to nie była kwestia kolejności.** Ostrzeżenie poniżej mówiło, żeby nie wgrywać tego warunku przed włączeniem wymuszania. Kolejność została zachowana — kod wysyłał znaczniki od 14 września, wymuszanie działało, metryki pokazywały 100% zweryfikowanych — a mimo to warunek odciął aplikację. Test rozstrzygający: przy **włączonym** wymuszaniu i regułach `if true` moduły działają, czyli ich zapytania niosą ważny znacznik. Te same zapytania warunek `request.app != null` odrzuca. `request.app` pozostaje puste i warunek zachowuje się jak `if false`.
+>
+> **Ochrona nie ucierpiała.** To, co ten krok miał dać, daje już przełącznik wymuszania z kroku 5: usługa odrzuca zapytania bez ważnego znacznika, zanim dojdzie do reguł. Warunek w regułach nie dokładał trzeciej warstwy, tylko dublował drugą — w sposób, który w tej aplikacji nie działa.
+>
+> **Pełna diagnoza wraz z osią czasu, dowodami i tym, czego nie udało się ustalić:** `Analizy/awaria-regul-appcheck-2026-09-20.md`.
+
+Poniżej zachowany jest stan reguł i opis, co w kroku 6 zmieniano — jako zapis tego, co się wydarzyło i dlaczego tam nie wracamy.
 
 #### Stan reguł wszystkich trzech baz na koniec 20 września
 
 | Baza | Projekt | Stan na koniec 20 września | Kopia w repozytorium |
 |---|---|---|---|
 | Realtime Database | `wh40k-data-slate` | zamknięta na jedno konto i tylko do odczytu, **bez zmian w kroku 6** | `shared/rtdb-wh40k-data-slate.rules.json` |
-| Cloud Firestore | `wh40k-data-slate` | ✅ krok 6 wgrany — `zAplikacji()` na wszystkich czterech ścieżkach | `shared/firestore-wh40k-data-slate.rules` |
-| Cloud Firestore | `audiorpg-2eb6f` | ✅ krok 6 wgrany — `zAplikacji()` na obu ścieżkach | `shared/firestore-audiorpg.rules` |
+| Cloud Firestore | `wh40k-data-slate` | zawężone ścieżki z kroku 0, warunek `if true` (po cofnięciu o 18:19) | `shared/firestore-wh40k-data-slate.rules` |
+| Cloud Firestore | `audiorpg-2eb6f` | zawężone ścieżki z kroku 0, warunek `if true` (po cofnięciu o 18:41) | `shared/firestore-audiorpg.rules` |
 
 Poniżej stan Realtime Database, bo jako jedyny nie zmienia się w kroku 6 i wymaga osobnego wyjaśnienia.
 
@@ -449,25 +462,23 @@ Te reguły są **ostrzejsze, niż zakładał audyt**, który mówił po prostu �
 
 > ⚠️ **Jedyna pułapka w tych regułach: `uid` jest wpisany na sztywno.** Gdyby konto Litanii Dostępu zostało kiedyś skasowane i założone na nowo, dostanie **inny** `uid`, a DataVault przestanie czytać dane — mimo poprawnego hasła i mimo działającego App Check. Objaw będzie wyglądał na awarię bazy. Przy takiej operacji trzeba podmienić `uid` w regułach Realtime Database.
 
-**Cloud Firestore w obu projektach** przeszedł krok 6 tego samego dnia — treść wgranych reguł i sprawdzenie ścieżek wobec kodu są niżej w tym rozdziale. Obie kopie w repozytorium zostały zaktualizowane i porównane znak w znak z tym, co jest w konsoli.
+**Cloud Firestore w obu projektach** przeszedł krok 6 o 18:03 i 18:04, a o 18:41 i 18:19 wrócił do stanu z kroku 0. Obie kopie w repozytorium odpowiadają temu, co jest dziś w konsoli — porównane znak w znak.
 
-Ścieżka: Firebase Console → **Firestore Database** → zakładka **Rules** → wklej → **Publish**.
+Z trzech zmian, jakie krok 6 miał wprowadzić, **dwie są już zrobione i zostają**, a trzecia odpadła:
 
-Gotowe reguły są w `Analizy/audyt-kodu-aplikacji-2026-09-10.md`, rozdz. 9.8. W skrócie zmieniają się trzy rzeczy:
-
-- warunek `if true` (wpuść każdego) zamienia się na `if request.app != null` (wpuść tylko moją aplikację),
-- reguły dla `dataslate` i `character_builder` zawężają się z całych kolekcji do konkretnych dokumentów, z których aplikacja naprawdę korzysta,
-- z drugiego projektu znika reguła dla `DS2/progress` — projekt Dark Souls II jest zakończony, kolekcja usunięta, a w kodzie WrathAndGlory nie ma do niej żadnego odwołania (sprawdzone).
+- ✅ reguły dla `dataslate` i `character_builder` zawężone z całych kolekcji do konkretnych dokumentów (zrobione w kroku 0, rozdz. 4a),
+- ✅ z drugiego projektu zniknęła reguła dla `DS2/progress` (też krok 0),
+- 🔴 zamiana `if true` na `if request.app != null` — **odrzucona**, powód wyżej.
 
 > Firebase trzyma historię reguł, więc powrót do poprzedniej wersji to jedno kliknięcie w zakładce **Rules**.
 
-> 🔻 **Uzupełnienie z 20 września — krok 6 dotyczy wyłącznie Firestore, i to jest w porządku.** Reguły Realtime Database to osobny język, w którym **nie istnieje odpowiednik `request.app`**. Dla RTDB App Check włącza się wyłącznie przełącznikiem w konsoli — a ten jest już włączony. Czyli po stronie Realtime Database **nie ma nic więcej do zrobienia**: temat jest domknięty przełącznikiem z kroku 5, a same reguły tej bazy są już ostrzejsze niż to, co krok 6 wprowadza w Firestore (stan odczytany 20 września — wyżej w tym rozdziale). Krok 6 zostaje do wykonania w dwóch miejscach: reguły Firestore w `wh40k-data-slate` i reguły Firestore w `audiorpg-2eb6f`.
+> 🔻 **Realtime Database wyszła z tego bez szwanku — i to nie przypadek.** Reguły tej bazy to osobny język, w którym **nie istnieje odpowiednik `request.app`**, więc nie było jak wgrać tam feralnego warunku. App Check działa dla niej wyłącznie przełącznikiem z kroku 5. To zarazem podpowiedź, jak wygląda docelowy układ dla całej aplikacji: **ochrona przez przełącznik, zawężenie przez ścieżki, i nic więcej w regułach**.
 
-> ### ✅ WYKONANE 20 września — krok 6 zamknięty w obu projektach
+> ### 🔴 Treść, której NIE wgrywamy — zachowana, żeby dało się ją rozpoznać
 >
-> Blokada, która wywróciła próbę z 14 września, zniknęła. Wtedy reguły z `request.app != null` zostały wgrane, **zanim** kod zaczął wysyłać znaczniki, i wszystkie pięć dokumentów zaczęło zwracać `403` (opis zdarzenia: audyt, rozdz. 9.8). Tym razem kolejność została zachowana: najpierw znaczniki w kodzie (14 września), potem wymuszanie w konsoli (20 września), a dopiero na końcu poniższe reguły.
+> Poniższe reguły były wgrane 20 września między 18:03 a 18:19 (odpowiednio 18:41) i to one położyły aplikację. Zostają tu **wyłącznie po to, żeby dało się je rozpoznać**, gdyby kiedyś trafiły do konsoli z innego źródła — na przykład z rozdz. 9.8 audytu, gdzie nadal figurują jako docelowe.
 >
-> Zawężenie ścieżek i skasowanie `DS2/progress` zostało zrobione w kroku 0, więc krok 6 sprowadził się do podmiany `if true` na wywołanie `zAplikacji()`. **Poniższy tekst jest tym, co jest wgrane** — kopie w repozytorium: `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules`, sprawdzone znak w znak 20 września.
+> Ta sama treść wywróciła też wcześniejszą próbę z 14 września, wtedy z powodu odwrotnej kolejności (reguły przed znacznikami w kodzie). Za drugim razem kolejność była poprawna i **skutek był identyczny** — to właśnie ta powtarzalność przesądziła, że problem nie leży w kolejności, tylko w samym warunku.
 >
 > **`wh40k-data-slate`** → Firestore Database → Rules → zaznacz całość → wklej → **Publish**:
 >
@@ -523,9 +534,9 @@ Gotowe reguły są w `Analizy/audyt-kodu-aplikacji-2026-09-10.md`, rozdz. 9.8. W
 > }
 > ```
 >
-> ### Sprawdzenie ścieżek wobec kodu — wykonane 20 września
+> ### Sprawdzenie ścieżek wobec kodu — wykonane 20 września, **nadal aktualne**
 >
-> Reguła odcina to, czego nie wymienia, więc po wgraniu porównano każdą ścieżkę z tym, czego kod naprawdę dotyka. Wszystkie się zgadzają:
+> Ta część kroku 6 zachowuje ważność, bo dotyczy ścieżek, a nie warunku. Reguła odcina to, czego nie wymienia, więc porównano każdą ścieżkę z tym, czego kod naprawdę dotyka. Wszystkie się zgadzają:
 >
 > | Ścieżka w regułach | Gdzie w kodzie |
 > |---|---|
@@ -538,9 +549,9 @@ Gotowe reguły są w `Analizy/audyt-kodu-aplikacji-2026-09-10.md`, rozdz. 9.8. W
 >
 > Reguła `dataslate_favorites/{document=**}` obejmuje też odczyt całej kolekcji (listowanie), a nie tylko pojedyncze dokumenty — panel GM tego potrzebuje, bo czyta listę zapisanych wiadomości.
 >
-> **Po wgraniu reguł przejdź rundę sprawdzającą z rozdz. 9.** To jest zmiana o największym zasięgu z całej operacji: dotyczy pięciu dokumentów w czterech modułach, a błąd objawia się odmową zapisu, nie białą stroną — więc nie zobaczysz go, dopóki czegoś nie zapiszesz.
+> **Każdą zmianę reguł kończ rundą sprawdzającą z rozdz. 9.** Reguły to zmiana o największym zasięgu z całej operacji: dotyczą pięciu dokumentów w czterech modułach, a błąd objawia się **odmową zapisu, nie białą stroną** — więc nie zobaczysz go, dopóki czegoś nie zapiszesz. Dokładnie tak przebiegła awaria z 20 września: moduły otwierały się normalnie.
 
-> 💡 **Dwie z tych trzech zmian możesz zrobić choćby dziś, przed całą resztą.** Zawężenie reguł do konkretnych dokumentów i skasowanie `DS2/progress` **nie psuje niczego** — aplikacja i tak korzysta wyłącznie z `dataslate/current`, `character_builder/current`, `character_builder/v2`, `generatorNpc/favorites` i `audio/favorites`. Zostawiasz na razie `if true` i zmieniasz tylko ścieżki. Zyskujesz tyle, że obcy nie może już tworzyć w Twojej bazie dowolnych nowych dokumentów — a że może, jest sprawdzone (rozdz. 9.2 audytu). Warunek `request.app != null` dopisujesz dopiero tutaj, w kroku 6.
+> 💡 **Z perspektywy czasu: wartościowa była tylko pierwsza połowa tego kroku.** Zawężenie reguł do konkretnych dokumentów i skasowanie `DS2/progress` dało realny zysk — obcy nie może już tworzyć w bazie dowolnych dokumentów, a że mógł, jest sprawdzone (rozdz. 9.2 audytu). I nic przy tym nie zepsuło, bo aplikacja korzysta wyłącznie z `dataslate/current`, `dataslate_favorites`, `character_builder/current`, `character_builder/v2`, `generatorNpc/favorites` i `audio/favorites`. To zostało zrobione w kroku 0 i zostaje na stałe. Druga połowa — warunek `request.app != null` — dała wyłącznie awarię.
 
 ---
 
@@ -639,7 +650,7 @@ Pozycje oznaczone *(sprawdzone w kodzie)* zostały potwierdzone odczytem repozyt
 - [x] **KROK 4** — obserwacja 14–20 września, ruch zweryfikowany (metryki w rozdz. 9)
 - [x] **KROK 5** — wymuszanie włączone dla **Cloud Firestore**
 - [x] **KROK 5** — wymuszanie włączone dla **Realtime Database**
-- [x] **KROK 6** — reguły Firestore uzupełnione o `request.app != null`, wgrane 20 września (treść w rozdz. 9)
+- [x] **KROK 6 — ODRZUCONY.** Warunek `request.app != null` wgrany 20 września o 18:04, odciął Infoczytnik i oba Kreatory, cofnięty o 18:19. Nie wracamy do niego (rozdz. 9, `Analizy/awaria-regul-appcheck-2026-09-20.md`)
 - [x] *(świadomie zostawione na `Monitoring`)* **Authentication** — decyzja z 20 września wraz z planem na później, rozdz. 9a
 - [x] *(świadomie pominięte na stałe)* Aplikacja Android `Kozi Przybornik` — pozostałość po zamkniętym projekcie push, nie rejestrujemy jej nigdy (rozdz. 6)
 
@@ -651,23 +662,23 @@ Pozycje oznaczone *(sprawdzone w kodzie)* zostały potwierdzone odczytem repozyt
 - [x] **KROK 3a** — App Check w GeneratorNPC i w module Audio *(sprawdzone w kodzie: oba pliki wczytują `shared/appcheck-config.js` i bibliotekę reCAPTCHA)*
 - [x] **KROK 5** — wymuszanie włączone dla **Cloud Firestore** (Realtime Database nieużywana)
 - [x] **Runda sprawdzająca po wymuszeniu — GeneratorNPC i Audio** (rozdz. 9). Sprawdzone 20 września, oba moduły działają. Metryki 24-godzinnej w tym projekcie nie odczytano, więc podstawą jest sprawdzenie w praktyce
-- [x] **KROK 6** — reguły Firestore uzupełnione o `request.app != null`, wgrane 20 września (treść w rozdz. 9)
+- [x] **KROK 6 — ODRZUCONY.** Warunek wgrany 20 września o 18:03, odciął GeneratorNPC i moduł Audio (w GeneratorNPC bez żadnego komunikatu), cofnięty o 18:41. Nie wracamy do niego
 
 **Po wszystkim**
 - [x] Pliki produkcyjne Infoczytnika (`GM.html`, `Infoczytnik.html`) zaktualizowane ręcznie *(sprawdzone w kodzie 20 września: identyczne z testowymi, różnią się wyłącznie zakończeniami wierszy)*
-- [ ] Sprawdzone z telefonu, tabletu i komputera, że wszystko działa — **to jedyna pozycja wykonawcza, która została.** Po kroku 6 warto ją powtórzyć, bo reguły są ostatnią zmianą i jedyną, która obejmuje wszystkie cztery moduły Firestore naraz
+- [x] Sprawdzone z komputera i telefonu, że wszystko działa — runda z 20 września po cofnięciu reguł: Infoczytnik (wiadomość i ulubione), GeneratorNPC (ulubiony potwór widoczny na drugim urządzeniu), moduł Audio (listy ulubionych). Tabletu nie sprawdzano
 - [x] Kompletne reguły obu projektów zapisane w repozytorium (patrz audyt, rozdz. 9.6):
   - [x] Realtime Database — `shared/rtdb-wh40k-data-slate.rules.json`, zapisane 20 września ze stanu faktycznego, **aktualne i kompletne** (ta baza nie zmienia się w kroku 6)
-  - [x] Firestore — `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules` zaktualizowane 20 września po kroku 6 i porównane z konsolą
+  - [x] Firestore — `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules` odpowiadają stanowi po cofnięciu kroku 6, porównane z konsolą znak w znak
 - [x] Oba klucze witryny w **jednym** pliku w `shared/` *(sprawdzone w kodzie: klucze występują wyłącznie w `shared/appcheck-config.js`, nie są powielone po modułach)*
 
 ---
 
 ## 13. Podsumowanie w trzech zdaniach
 
-> **Stan na 20 września:** poniższy opis jest **wykonany w całości, od pierwszego do ostatniego zdania**. Otwarta została jedna świadoma decyzja — Authentication zostaje na `Monitoring` (rozdz. 9a) — i jedno sprawdzenie do powtórzenia: przejście przez aplikację z telefonu, tabletu i komputera po wgraniu reguł.
+> **Stan na 20 września:** opis jest wykonany **poza ostatnim członem ostatniego zdania**. Zawężone reguły są wgrane od kroku 0, ale warunku `request.app != null` nie ma i nie będzie — po awarii z tego samego wieczora krok 6 został odrzucony (rozdz. 9). Otwarta została jedna świadoma decyzja: Authentication zostaje na `Monitoring` (rozdz. 9a).
 
-Zakładasz **dwa klucze reCAPTCHA Enterprise** — po jednym w każdym projekcie Google Cloud, oba dla domeny `cutelittlegoat.github.io`. Wklejasz każdy klucz w Firebase Console → App Check przy jedynej aplikacji webowej danego projektu, ustawiając TTL na 1 dzień. Potem dopisujemy kilka linii do kodu sześciu modułów, obserwujesz przez kilka dni zakładkę APIs, a gdy ruch jest zweryfikowany — klikasz **Enforce** (Firestore w obu projektach, dodatkowo Realtime Database w pierwszym) i na koniec wgrywasz zawężone reguły.
+Zakładasz **dwa klucze reCAPTCHA Enterprise** — po jednym w każdym projekcie Google Cloud, oba dla domeny `cutelittlegoat.github.io`. Wklejasz każdy klucz w Firebase Console → App Check przy jedynej aplikacji webowej danego projektu, ustawiając TTL na 1 dzień. Potem dopisujemy kilka linii do kodu sześciu modułów, obserwujesz przez kilka dni zakładkę APIs, a gdy ruch jest zweryfikowany — klikasz **Enforce** (Firestore w obu projektach, dodatkowo Realtime Database w pierwszym). Zawężone reguły wgrywasz w kroku 0, na samym początku, i na tym koniec — warunku `request.app != null` nie dopisujesz nigdy.
 
 ---
 

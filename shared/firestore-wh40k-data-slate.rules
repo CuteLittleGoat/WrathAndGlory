@@ -17,52 +17,48 @@
 //     below. That database is closed by its own separate rule set — copy:
 //     shared/rtdb-wh40k-data-slate.rules.json.
 //
-// PL: ✅ STAN NA 20 WRZEŚNIA 2026 — komplet zabezpieczeń jest już włączony i to jest wersja docelowa.
-//     Kolejność, która była tu krytyczna, została zachowana: najpierw kod zaczął wysyłać znaczniki
-//     App Check (14 września), potem włączono wymuszanie w Firebase Console dla Cloud Firestore
-//     i Realtime Database (20 września), a dopiero na końcu wgrano poniższy warunek `zAplikacji()`.
-//     Warunek `request.app != null` SAM W SOBIE jest wymuszaniem i działa niezależnie od przełącznika
-//     Enforce — dlatego wgranie go za wcześnie odcina całą aplikację wszystkim naraz. Zdarzyło się to
-//     14 września i zostało cofnięte; opis zdarzenia: Analizy/audyt-kodu-aplikacji-2026-09-10.md,
-//     rozdz. 9.8, oraz Analizy/instrukcja-appcheck-2026-09-13.md, rozdz. 9.
-// EN: ✅ STATE ON 20 SEPTEMBER 2026 — the full protection is switched on and this is the final version.
-//     The order that mattered here was respected: first the code began sending App Check tokens
-//     (14 September), then enforcement was enabled in the Firebase Console for Cloud Firestore and
-//     the Realtime Database (20 September), and only then the `zAplikacji()` condition below was
-//     published. The `request.app != null` condition IS enforcement in itself and works regardless of
-//     the Enforce switch — deploying it too early cuts the whole application off for everyone at once.
-//     That happened on 14 September and was rolled back; see
-//     Analizy/audyt-kodu-aplikacji-2026-09-10.md chapter 9.8 and
-//     Analizy/instrukcja-appcheck-2026-09-13.md chapter 9.
+// PL: 🔴 WARUNKU `request.app != null` NIE DOPISUJEMY. Został wgrany 20 września o 18:04 i odciął
+//     wszystkie moduły korzystające z Firestore, mimo poprawnie działającego App Check i mimo
+//     włączonego wymuszania. Reguły cofnięto o 18:19. Sprawdzone doświadczalnie: przy włączonym
+//     wymuszaniu i regułach `if true` moduły działają, czyli ich zapytania niosą ważny znacznik —
+//     a mimo to `request.app` pozostaje puste i warunek zachowuje się jak `if false`.
+//     Pełna diagnoza: Analizy/awaria-regul-appcheck-2026-09-20.md.
+// EN: 🔴 DO NOT ADD the `request.app != null` condition. It was deployed on 20 September at 18:04 and
+//     cut off every module using Firestore, despite a correctly working App Check and despite
+//     enforcement being on. The rules were rolled back at 18:19. Verified by experiment: with
+//     enforcement on and `if true` rules the modules work, so their requests do carry a valid token —
+//     yet `request.app` stays empty and the condition behaves like `if false`.
+//     Full diagnosis: Analizy/awaria-regul-appcheck-2026-09-20.md.
+//
+// PL: Ochronę przed obcymi programami daje przełącznik wymuszania App Check (Firebase Console →
+//     App Check → APIs → Cloud Firestore → Enforce), włączony 20 września. Reguły poniżej dokładają
+//     do tego zawężenie do konkretnych dokumentów, przez co obcy nie może tworzyć w bazie nowych.
+// EN: Protection against foreign programs comes from the App Check enforcement switch (Firebase
+//     Console → App Check → APIs → Cloud Firestore → Enforce), enabled on 20 September. The rules
+//     below add path narrowing on top of it, so a stranger cannot create new documents.
 
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // PL: Zapytanie musi nieść ważny znacznik App Check, czyli musi pochodzić
-    //     z zarejestrowanej aplikacji WrathAndGlory.
-    // EN: The request must carry a valid App Check token, i.e. it must originate
-    //     from the registered WrathAndGlory application.
-    function zAplikacji() { return request.app != null; }
-
     // --- Infoczytnik ---
 
     // PL: Kanał panelu GM -> ekran gracza. Jeden dokument, nadpisywany na żywo.
     // EN: GM panel -> player screen channel. A single document, overwritten live.
-    match /dataslate/current { allow read, write: if zAplikacji(); }
+    match /dataslate/current { allow read, write: if true; }
 
     // PL: Zapisane wiadomości panelu GM (listy ulubionych). Jeden dokument = jedna wiadomość.
     // EN: Saved GM panel messages (favourite lists). One document = one message.
-    match /dataslate_favorites/{document=**} { allow read, write: if zAplikacji(); }
+    match /dataslate_favorites/{document=**} { allow read, write: if true; }
 
     // --- Kreatory Postaci / Character creators ---
 
     // PL: Prosty Kreator Postaci / EN: Simple character creator
-    match /character_builder/current { allow read, write: if zAplikacji(); }
+    match /character_builder/current { allow read, write: if true; }
 
     // PL: Zaawansowany Kreator Postaci / EN: Advanced character creator
-    match /character_builder/v2 { allow read, write: if zAplikacji(); }
+    match /character_builder/v2 { allow read, write: if true; }
 
     // --- Wszystko inne niedostępne / Everything else inaccessible ---
     match /{document=**} { allow read, write: if false; }

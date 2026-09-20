@@ -1193,6 +1193,16 @@ Zmiany w tym module wolno robić wyłącznie w `GM_test.html` i `Infoczytnik_tes
 
 #### Proponowane reguły — po włączeniu App Check
 
+> ### 🔴 SPROSTOWANIE Z 20 WRZEŚNIA — poniższych reguł NIE WGRYWAMY
+>
+> Ta część rozdziału jest **nieaktualna i szkodliwa**. Warunek `request.app != null` został wgrany 20 września, już po prawidłowo wykonanych krokach 1–5, i **odciął wszystkie moduły korzystające z Firestore**. Reguły cofnięto tego samego wieczora.
+>
+> Zdanie pod tym blokiem — *„warunek jest spełniony wtedy i tylko wtedy, gdy zapytanie przyszło z zarejestrowanej aplikacji"* — **nie potwierdziło się w praktyce**. Test rozstrzygający: przy włączonym wymuszaniu i regułach `if true` moduły działają, czyli ich zapytania niosą ważny znacznik App Check. Te same zapytania warunek `request.app != null` odrzuca. W tej aplikacji `request.app` pozostaje puste, a warunek zachowuje się jak `if false`.
+>
+> **Cel rozdziału 9 jest osiągnięty bez tego warunku.** Robi to przełącznik wymuszania (krok 5) wraz z zawężeniem ścieżek. Sprawdzone 20 września próbą z zewnątrz: odczyt `dataslate/current` i `audio/favorites` przez REST API kończy się `403 PERMISSION_DENIED`, próba utworzenia obcego dokumentu w `dataslate` — również `403`, a Realtime Database odpowiada wprost `401 Missing appcheck token`. To jest dokładnie ta ochrona, o którą chodziło, i działa **przy regułach `if true`**.
+>
+> **Pełna diagnoza:** `Analizy/awaria-regul-appcheck-2026-09-20.md`. Poniższa treść zostaje wyłącznie jako zapis tego, co proponowano, żeby dało się ją rozpoznać, gdyby kiedyś trafiła do konsoli.
+
 Poniższe reguły mówią: *„wpuść tylko zapytania niosące ważny znacznik App Check i tylko do tych trzech dokumentów; wszystko inne — odmowa"*. Warunek `request.app != null` jest spełniony wtedy i tylko wtedy, gdy zapytanie przyszło z zarejestrowanej aplikacji.
 
 Dla projektu **`wh40k-data-slate`**:
@@ -1274,7 +1284,9 @@ Zmiany wobec dzisiejszego stanu, poza samym App Check:
 >
 > Naprawa zajęła jedno kliknięcie — przywrócenie poprzedniej wersji z historii reguł w Firebase Console — i po nim wszystkie dokumenty wróciły do `200`.
 >
-> **Dwa wnioski warte zapamiętania.** Po pierwsze: *wymuszanie (Enforce) nie ma z tym nic wspólnego* — przełącznik był wyłączony, a reguły i tak blokowały, bo `request.app` jest pusty zawsze wtedy, gdy zapytanie nie niesie znacznika. Sama reguła **jest** wymuszaniem. Po drugie: historia reguł w Firebase Console działa i jest realnym hamulcem bezpieczeństwa — warto wiedzieć, gdzie jest, **zanim** będzie potrzebna.
+> **Dwa wnioski warte zapamiętania.** Po pierwsze: *wymuszanie (Enforce) nie ma z tym nic wspólnego* — przełącznik był wyłączony, a reguły i tak blokowały. Sama reguła **jest** wymuszaniem. Po drugie: historia reguł w Firebase Console działa i jest realnym hamulcem bezpieczeństwa — warto wiedzieć, gdzie jest, **zanim** będzie potrzebna.
+>
+> 🔴 **Uzupełnienie z 20 września.** Wyjaśnienie podane wyżej — *„`request.app` jest pusty zawsze wtedy, gdy zapytanie nie niesie znacznika"* — okazało się niepełne i przez to mylące. Sugerowało, że po dodaniu znaczników w kodzie warunek zacznie przepuszczać. Nie zaczął: 20 września, przy znacznikach wysyłanych od 14 września i przy włączonym wymuszaniu, ten sam warunek odciął aplikację po raz drugi. **`request.app` pozostaje puste również wtedy, gdy zapytanie niesie ważny znacznik.** Powtarzalność mimo odwrotnej kolejności przesądza, że problem nie leży w kolejności, tylko w samym warunku.
 
 
 
@@ -1291,7 +1303,7 @@ Właściwa kolejność:
 | 3 | Dodaj inicjalizację App Check w sześciu modułach i wypchnij na `main` | nie — aplikacja wysyła znaczniki, ale nic ich jeszcze nie sprawdza |
 | 4 | **Obserwuj przez kilka dni** zakładkę App Check → APIs, aż ruch będzie „zweryfikowany" | nie |
 | 5 | Dopiero teraz: włącz wymuszanie dla `Cloud Firestore` **i** `Realtime Database` w obu projektach | **tak** — od tego momentu obce narzędzia są odcinane |
-| 6 | Dopiero teraz: wgraj powyższe reguły z `request.app != null` | **tak** |
+| 6 | ~~Dopiero teraz: wgraj powyższe reguły z `request.app != null`~~ **KROK ODRZUCONY 20 września — nie wykonywać** | — |
 
 Hamulec bezpieczeństwa: w tym samym miejscu, gdzie klikasz **Enforce**, jest **Unenforce**. Działa natychmiast i nie wymaga zmian w kodzie. Firebase trzyma też historię reguł, więc powrót do poprzedniej wersji to jedno kliknięcie.
 
