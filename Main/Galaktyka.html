@@ -1857,22 +1857,6 @@ body.arrival-chrome-revealing
 
 
 /* --------------------------------------------------------------------------
-   P13 -- poprawka kopii, nie ma jej w oryginale.
-
-   Wariant pod stol nie niesie ilustracji teczek. Przycisk podgladu nie ma
-   wiec czego otworzyc i przestaje udawac, ze ma: znika podpowiedz i reakcja
-   na kursor. Sam kanwas zostaje -- rysuje na nim proceduralny portret
-   planety, ten sam, ktory kopia pokazywala przed ta wersja serwisu.
-   -------------------------------------------------------------------------- */
-button.artwork-trigger {
-  cursor: default;
-}
-button.artwork-trigger .artwork-trigger-hint {
-  display: none;
-}
-
-
-/* --------------------------------------------------------------------------
    P10 -- poprawka kopii, nie ma jej w oryginale.
 
    .panel-head ma justify-content: space-between, a regula
@@ -5438,32 +5422,6 @@ summary:focus-visible,
 .dossier-sources .source-kind { display: block; font-size: .85em; opacity: .8; }
 .dossier-sources .source-books, .dossier-sources .source-access { font-size: .9em; }
 </style>
-<style>
-.controls .chapter-placeholder {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 3px;
-  min-height: 38px;
-  padding: 4px 10px;
-  border: 1px dashed #635b45;
-  border-radius: 0;
-  background: #14170f;
-  color: #b9ae95;
-  font: 11px/1.15 var(--instrument, "Segoe UI", sans-serif);
-  text-transform: none;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-.chapter-placeholder small {
-  color: #b5a17a;
-  font-size: 8px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-</style>
 </head>
 <body class="booting">
   <div id="app" data-chart-room="imperial" data-chart-desk="composition">
@@ -5486,7 +5444,7 @@ summary:focus-visible,
         <button id="routesToggle" class="toggle" aria-pressed="true" title="Toggle routes"><svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="m8 16 8-8M6 6h4M18 18h-4"/></svg>Routes</button>
         <button id="labelsToggle" class="toggle" aria-pressed="true" title="Toggle segmentum labels"><svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m5 19 7-14 7 14M8 13h8"/></svg>Labels</button>
         <button id="riftToggle" class="toggle" aria-pressed="true" title="Toggle rift"><svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m14 3-8 10h6l-2 8 8-11h-6z"/></svg>Rift</button>
-        <button id="overlayToggle" class="toggle" aria-pressed="true" title="Toggle HD overlay"><svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m3 9 9-5 9 5-9 5zM3 14l9 5 9-5"/></svg>Overlay</button>
+        <button id="qualityToggle" class="toggle" type="button"><svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M4 17a8 8 0 1 1 16 0"/><path d="m12 17 4.2-5.6"/><path d="M6.5 11.5h1M16.5 11.5h1M11.5 7h1"/></svg><span id="qualityLabel"></span></button><button id="overlayToggle" class="toggle" aria-pressed="true" title="Toggle HD overlay"><svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="m3 9 9-5 9 5-9 5zM3 14l9 5 9-5"/></svg>Overlay</button>
         <input id="overlayOpacity" class="range-field dev-only" type="range" min="0" max="100" value="72" title="Overlay opacity" aria-label="Overlay opacity">
         <button id="bakeOverlay" class="icon-button dev-only" title="Bake current overlay into HTML">Bake</button>
         <span class="ctrl-divider" aria-hidden="true"></span>
@@ -5510,7 +5468,6 @@ summary:focus-visible,
           </div></details>
         </div>
         <div class="index-note">Wszystkie naniesione pozycje są przybliżone</div>
-        <div class="chapter-slot"><button type="button" class="chapter-placeholder" disabled title="Wkrótce" aria-label="Spersonalizowane planety zakonów — wkrótce"><span>Spersonalizowane planety zakonów</span><small>Wkrótce</small></button></div>
         <p id="resultCount" class="result-count" role="status" aria-live="polite"></p>
         <div id="archiveList" class="row-list">
           <!-- STATIC_WORLD_LINKS_START -->
@@ -5679,6 +5636,12 @@ const LOCALE_COPY = {
    "bakeOverlayTitle": "Wypiecz bieżącą nakładkę w HTML",
    "reset": "Zeruj kamerę",
    "motion": "Ruch",
+   "quality": "Jakość",
+   "qualityHint": "Jakość renderowania mapy — kliknij, aby zmienić",
+   "qualityAuto": "automatyczna",
+   "qualityHigh": "wysoka",
+   "qualityMedium": "średnia",
+   "qualityLow": "niska",
    "galaxyAnimation": "Animacja galaktyki",
    "playGalaxyAnimation": "Odtwórz animację galaktyki",
    "pauseGalaxyAnimation": "Wstrzymaj animację galaktyki",
@@ -15364,6 +15327,122 @@ function advanceGalaxyMotion(time) {
   return clock.elapsed * 1000;
 }
 
+// --------------------------------------------------------------------------
+// P18 -- recznie wybierana jakosc renderowania.
+// Poprawka kopii offline; w oryginale tego nie ma.
+//
+// Aplikacja adaptuje jakosc sama, ale nie pozwala powiedziec "ta maszyna jest
+// slaba". Do tego jej drabina opiera sie na EXT_disjoint_timer_query_webgl2,
+// ktorego przegladarki powszechnie nie udostepniaja (sprawdzone: brak
+// w Chromium i w Firefoksie). Bez tego rozszerzenia recordFrameTime() wchodzi
+// w sciezke zapasowa, ktora potrzebuje 90 klatek pod rzad wolniejszych niz
+// 22 ms, zeruje licznik przy pierwszej szybszej klatce i TAK CZY OWAK
+// zatrzymuje sie na poziomie 2 z 4. Na sprzecie, ktory faktycznie nie wyrabia,
+// aplikacja nie potrafi wiec siegnac po wlasne najnizsze ustawienie.
+//
+// Ten przelacznik daje prowadzacemu dzwignie, ktora dziala od razu i jest
+// pamietana miedzy sesjami. Cykl: automatyczna -> wysoka -> srednia -> niska.
+//
+// ZASADA, ktora trzymamy: tryb "automatyczna" liczy DOKLADNIE to, co liczyl
+// oryginal w kazdym z tych miejsc. Reczny wybor moze tylko dolozyc
+// uproszczenie, nigdy go zdjac. Dzieki temu domyslne zachowanie kopii jest
+// nieodroznialne od oryginalu, a rozjazd zaczyna sie wylacznie tam, gdzie
+// uzytkownik sam o niego poprosil.
+// --------------------------------------------------------------------------
+const QUALITY_KEY = "cartographia-quality";
+const QUALITY_MODES = ["auto", "high", "medium", "low"];
+const QUALITY_LEVELS = { auto: null, high: 0, medium: 2, low: 3 };
+let qualityMode = "auto";
+
+// Poziom obowiazujacy. W trybie recznym wartosc wybrana przez uzytkownika jest
+// nadrzedna wobec drabiny -- takze po odzyskaniu kontekstu WebGL, ktore
+// przebudowuje performanceQuality od zera.
+function qualityLevel() {
+  if (qualityMode !== "auto") return QUALITY_LEVELS[qualityMode];
+  return renderer.performanceQuality?.level ?? (LOW_POWER_RENDER_BUDGET ? 2 : 1);
+}
+
+// Reczny wybor dolozy uproszczenie dopiero od poziomu sredniego.
+function qualityForced() {
+  return qualityMode !== "auto" && QUALITY_LEVELS[qualityMode] >= 2;
+}
+
+// Odpowiednik oryginalnego `reduced` z drawGalaxySurface().
+function qualitySurfaceReduced() {
+  return LOW_POWER_RENDER_BUDGET
+    || renderer.currentParticleCount < INITIAL_PARTICLE_COUNT
+    || qualityForced();
+}
+
+// Odpowiednik oryginalnego `reduced` z drawRift(), ktory dodatkowo patrzyl
+// na poziom drabiny.
+function qualityRiftReduced() {
+  return qualitySurfaceReduced() || qualityLevel() >= 2;
+}
+
+function qualityDprCap() {
+  const budzet = MOBILE_RENDER_BUDGET ? 1.25 : LOW_POWER_RENDER_BUDGET ? 1.45 : 1.6;
+  if (qualityMode === "auto") return budzet;
+  return Math.min(budzet, [1.6, 1.45, 1.25, 1.0][QUALITY_LEVELS[qualityMode]]);
+}
+
+function qualityText() {
+  const nazwa = qualityMode === "auto" ? copy("qualityAuto", "automatyczna")
+    : qualityMode === "high" ? copy("qualityHigh", "wysoka")
+    : qualityMode === "medium" ? copy("qualityMedium", "\u015brednia")
+    : copy("qualityLow", "niska");
+  return copy("quality", "Jako\u015b\u0107") + ": " + nazwa;
+}
+
+function applyQualityMode(mode, remember = false) {
+  qualityMode = QUALITY_MODES.includes(mode) ? mode : "auto";
+  const quality = renderer.performanceQuality;
+  if (quality) {
+    // `suspended` to mechanizm autora: wstrzymuje drabine, zamiast walczyc
+    // z nia o ten sam licznik. Poprawnosc i tak nie zalezy od tej linii --
+    // qualityLevel() jest nadrzedne -- ale dzieki niej drabina nie miele
+    // w tle na darmo.
+    quality.suspended = qualityMode !== "auto";
+    if (qualityMode !== "auto") quality.level = QUALITY_LEVELS[qualityMode];
+    quality.slowSamples = 0;
+    quality.fastSamples = 0;
+    quality.slowFrames = 0;
+  }
+  const label = document.getElementById("qualityLabel");
+  const button = document.getElementById("qualityToggle");
+  if (label) label.textContent = qualityText();
+  if (button) {
+    button.title = copy("qualityHint", "Jako\u015b\u0107 renderowania mapy");
+    button.setAttribute("aria-label", qualityText());
+  }
+  dom.app.dataset.renderQuality = qualityMode;
+  // Limitu DPR nie wymuszamy: resize() i tak liczy go w kazdej klatce i sam
+  // przemierzy kanwe, gdy wartosc sie zmieni.
+  if (remember) {
+    try {
+      localStorage.setItem(QUALITY_KEY, qualityMode);
+    } catch {
+      // Wybor obowiazuje w biezacej sesji takze bez trwalego magazynu.
+    }
+  }
+}
+
+function initQualityControls() {
+  const button = document.getElementById("qualityToggle");
+  if (!button) return;
+  let zapamietany = null;
+  try {
+    zapamietany = localStorage.getItem(QUALITY_KEY);
+  } catch {
+    // Przelacznik dziala takze, gdy magazyn przegladarki jest niedostepny.
+  }
+  applyQualityMode(zapamietany || "auto");
+  button.addEventListener("click", () => {
+    const next = QUALITY_MODES[(QUALITY_MODES.indexOf(qualityMode) + 1) % QUALITY_MODES.length];
+    applyQualityMode(next, true);
+  });
+}
+
 function initGalaxyMotionControls() {
   const button = document.getElementById("motionToggle");
   const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -15395,12 +15474,12 @@ function initGalaxyMotionControls() {
     if (renderer.galaxySurface) renderer.galaxySurface.animation.lastFrame = null;
   };
   // An explicit click can opt into motion, but reduced-motion always starts still.
-  setPlaying(!media.matches && preference !== "paused");
+  setPlaying(preference === "playing" && !media.matches);  // P15: domyslnie zatrzymana
   button.addEventListener("click", () => {
     setPlaying(!renderer.galaxySurface.animation.enabled, true);
   });
   media.addEventListener("change", () => {
-    setPlaying(!media.matches && preference !== "paused");
+    setPlaying(preference === "playing" && !media.matches);  // P15: domyslnie zatrzymana
   });
   document.addEventListener("visibilitychange", resetFrame);
   window.addEventListener("pageshow", resetFrame);
@@ -15860,7 +15939,7 @@ function endPerformanceFrame() {
 
 function prepareGalaxyVolumeTarget(destination) {
   const surface = renderer.galaxySurface;
-  const scale = [0.8, 0.65, 0.5, 0.4][renderer.performanceQuality?.level ?? 1];
+  const scale = [0.8, 0.65, 0.5, 0.4][qualityLevel()];  // P18
   const width = Math.max(
     1,
     Math.floor((destination?.width ?? renderer.pixelWidth) * scale),
@@ -16008,8 +16087,7 @@ function drawGalaxySurface(destination = renderer.post?.scene ?? null) {
   if (!surface?.ready) return;
   const clock = surface.animation;
   const phase = clock.elapsed * clock.speed;
-  const reduced =
-    LOW_POWER_RENDER_BUDGET || renderer.currentParticleCount < INITIAL_PARTICLE_COUNT;
+  const reduced = qualitySurfaceReduced();  // P18
   const zoomDetail = 1 - smoothstep(220, 650, camera.distance);
   const volumeTarget = prepareGalaxyVolumeTarget(destination);
   gl.bindFramebuffer(gl.FRAMEBUFFER, volumeTarget.fbo);
@@ -16022,7 +16100,11 @@ function drawGalaxySurface(destination = renderer.post?.scene ?? null) {
   gl.uniform1i(surface.detail, reduced ? 3 : 5);
   gl.uniform1f(surface.zoomDetail, zoomDetail);
   const closeView = camera.distance < 340 || camera.pitch < 28 * DEG;
-  gl.uniform1i(surface.slices, reduced ? (closeView ? 40 : 28) : (closeView ? 72 : 48));
+  // P18: najnizszy poziom dostaje tez mniej krokow raymarchu. W trybie
+  // automatycznym poziom 3 jest osiagalny tylko przez drabine z licznikiem GPU.
+  gl.uniform1i(surface.slices, qualityLevel() >= 3
+    ? (closeView ? 28 : 20)
+    : reduced ? (closeView ? 40 : 28) : (closeView ? 72 : 48));
   gl.uniform1f(surface.phase, phase);
   gl.uniform4fv(surface.layers, surface.layerWeights);
   gl.bindVertexArray(surface.vao);
@@ -18710,10 +18792,6 @@ function renderDossier() {
       <strong>${escapeHtml(world.name)}</strong>
     </div>
     <div class="doc-bar">Adeptus Administratum // ${copy("clearance", "Clearance")}: Vermillion</div>
-    <button type="button" class="doc-banner artwork-trigger" data-action="view-artwork" aria-haspopup="dialog" aria-label="${copy("viewArtwork", "View artwork")} ${escapeHtml(world.name)}" title="${copy("viewArtwork", "View artwork")}">
-      <canvas id="dossierPortrait" width="480" height="300" aria-hidden="true"></canvas>
-      <span class="artwork-trigger-hint" aria-hidden="true">${copy("viewArtwork", "View artwork")} ↗</span>
-    </button>
     <div class="doc-identity">
       <h2>${escapeHtml(world.name)}</h2><span class="badge" title="${copy("approximatePositions", "All charted positions are approximate")}">${copy("approximate", "Approximate")}</span>
     </div>
@@ -18739,7 +18817,7 @@ function renderDossier() {
       <span class="share-status" role="status" aria-live="polite"></span>
     </div>
   `;
-  paintDossierPortrait(world);
+  // kopia offline (P16): baner z proceduralnym portretem planety zdjety z teczki
   if (tab === "relations") paintRelationChart(world, relatedWorlds(world.id));
   if (state.transcribePending) {
     state.transcribePending = false;
@@ -18989,7 +19067,7 @@ function createProgram(vertexSource, fragmentSource) {
 
 function resize() {
   const rect = dom.glCanvas.getBoundingClientRect();
-  const dprCap = MOBILE_RENDER_BUDGET ? 1.25 : LOW_POWER_RENDER_BUDGET ? 1.45 : 1.6;
+  const dprCap = qualityDprCap();  // P18 (w trybie auto: wartosc oryginalu)
   const dpr = Math.min(window.devicePixelRatio || 1, dprCap);
   const width = Math.max(1, Math.floor(rect.width * dpr));
   const height = Math.max(1, Math.floor(rect.height * dpr));
@@ -19297,10 +19375,7 @@ function drawGalaxy(time) {
 
 function drawRift(time, destination = renderer.post?.scene ?? null) {
   if (!isRiftVisible() || !renderer.rift) return;
-  const reduced =
-    LOW_POWER_RENDER_BUDGET ||
-    renderer.currentParticleCount < INITIAL_PARTICLE_COUNT ||
-    (renderer.performanceQuality?.level ?? 0) >= 2;
+  const reduced = qualityRiftReduced();  // P18
   const rift = renderer.rift;
   const width = destination?.width ?? renderer.pixelWidth;
   const height = destination?.height ?? renderer.pixelHeight;
@@ -19330,7 +19405,8 @@ function drawRift(time, destination = renderer.post?.scene ?? null) {
       renderer.cameraPosition,
     );
     bindRiftStarUniforms(renderer.riftProgram);
-    gl.uniform1i(uniformLocation(renderer.riftProgram, "uSteps"), reduced ? 128 : 192);
+    gl.uniform1i(uniformLocation(renderer.riftProgram, "uSteps"),
+      qualityLevel() >= 3 ? 96 : reduced ? 128 : 192);  // P18
     gl.uniform1i(uniformLocation(renderer.riftProgram, "uFine"), reduced ? 0 : 1);
     gl.bindVertexArray(rift.vao);
     gl.disable(gl.BLEND);
@@ -21180,10 +21256,17 @@ try {
 }
 initUi();
 initGalaxyMotionControls();
+initQualityControls();  // P18
 // On phones (<=620px) the panels are bottom sheets, so start the archive minimized
 // (peeking as a tap-to-open handle) to keep the map fully visible on load. Desktop keeps
 // the archive open in its side rail.
 if (window.innerWidth <= 620) dom.leftPanel.classList.add("collapsed");
+// kopia offline (P14): wariant pod stol otwiera sie w M42 Indomitus.
+// setEra() synchronizuje przelacznik, filtry, archiwum i teczke -- sama
+// podmiana state.era zostawilaby interfejs przy M41 bez bledu w konsoli.
+// Idzie PRZED initPermalinks(), zeby odnosnik z ?era=m41 nadal dzialal.
+setEra("m42", false);
+state.nihilusMix = 1;
 // Resolve direct links before deciding whether to play the first-visit opening.
 initPermalinks();
 initBootSequence();
@@ -21211,7 +21294,7 @@ requestAnimationFrame(render);
     || (location.pathname.match(/^\/(de|es|ru|zh-tw)(?:\/|$)/i)?.[1] || "en").toLowerCase();
   // These nodes keep their identity/listeners; nothing is copied or re-rendered.
   const launcher = document.getElementById("customPlanetsLauncher");
-  if (launcher) slot.append(launcher);
+  if (launcher) slot?.append(launcher);  // P17: kafelka juz nie ma
   const serviceLinks = document.createElement("div");
   serviceLinks.className = "mobile-service-links";
   document
