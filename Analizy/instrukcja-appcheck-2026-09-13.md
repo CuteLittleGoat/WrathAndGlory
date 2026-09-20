@@ -1,8 +1,9 @@
 # App Check — instrukcja krok po kroku dla aplikacji WrathAndGlory
 
-> **Data:** 13 września 2026
+> **Data:** 13 września 2026 — *ostatnia aktualizacja: 20 września 2026*
 > **Dla kogo:** dla Ciebie, do klikania w przeglądarce. Nie trzeba nic umieć programować.
-> **Stan na dziś:** w obu projektach Firebase zakładka **App Check** jest pusta — widać w niej tylko ekran powitalny z przyciskiem **Get started**. Czyli zaczynamy od zera.
+> **Stan pierwotny (13 września):** w obu projektach Firebase zakładka **App Check** jest pusta — widać w niej tylko ekran powitalny z przyciskiem **Get started**. Czyli zaczynamy od zera.
+> **✅ Stan na 20 września:** ochrona jest **włączona**. Wymuszanie działa w trzech miejscach: w projekcie `wh40k-data-slate` dla **Realtime Database** i **Cloud Firestore**, w projekcie `audiorpg-2eb6f` dla **Cloud Firestore**. Usługa **Authentication** została świadomie zostawiona w trybie *Monitoring* — uzasadnienie i plan w rozdz. 9a. Do zrobienia został już tylko **krok 6**, czyli dopisanie `request.app != null` do reguł Firestore w obu projektach.
 > **Analizy powiązane:** `Analizy/audyt-kodu-aplikacji-2026-09-10.md` (rozdz. 9 — dlaczego to robimy), `Analizy/responsywnosc-aplikacji-2026-09-10.html`
 
 ---
@@ -330,11 +331,47 @@ Ten krok polega głównie na czekaniu, ale **nie wolno go pominąć**.
 
 **Daj temu działać kilka dni normalnego użytkowania**, żeby wszyscy gracze zdążyli wejść na nową wersję strony. Dopiero gdy praktycznie cały ruch jest zweryfikowany, przechodzisz dalej.
 
+### 8a. Jak czytać wykres — cztery kategorie nie są równoważne *(dopisane 20 września)*
+
+Na ekranie metryk są cztery pozycje i **każda znaczy co innego**. Przy podejmowaniu decyzji o wymuszaniu to jest ważniejsze niż sam procent zweryfikowanych.
+
+| Kategoria | Co dokładnie znaczy | Jak to traktować |
+|---|---|---|
+| **Verified** (niebieski) | Zapytanie przyszło z poprawnym znacznikiem | To, do czego dążysz |
+| **Outdated client** (pomarańczowy) | Znacznika brak, ale zapytanie wygląda na wysłane przez bibliotekę Firebase | Zwykle strona z pamięci podręcznej przeglądarki, sprzed wgrania App Check. Najłagodniejsza z trzech — mija sama, gdy ludzie odświeżą stronę |
+| **Unknown origin** (różowy) | Znacznika brak i zapytanie nie wygląda na wysłane przez bibliotekę Firebase | Obcy program albo zapytanie wysłane „ręcznie". Dokładnie to, co App Check ma odcinać |
+| **Invalid** (turkusowy) | Znacznik **był wysłany, ale został odrzucony** | Najważniejsza do zrozumienia. Nie jest przypadkowa: ktoś miał klucz i dostał znacznik, tylko ten znacznik nie pasował |
+
+> 🔍 **Najważniejsza zasada przy czytaniu wykresu: patrz na datę, nie na sumę.** Okno *Last 7 days* obejmuje też dni **sprzed** wgrania kodu, więc pokazuje historię, a nie stan bieżący. Zanim zdecydujesz, przestaw zakres dat na **Last 24 hours** — dopiero to mówi, jak jest teraz. Przy Firestore w projekcie `wh40k-data-slate` różnica wyniosła 80% w oknie 7-dniowym wobec **100% w oknie 24-godzinnym**, a cały kolorowy ruch okazał się garbem z 14–16 września, czyli z okna wdrożenia kodu.
+
+> ⚠️ **Kategoria *invalid* po włączeniu wymuszania znaczy co innego niż przed.** Przed wymuszaniem, w trakcie wdrożenia, jest niegroźna: najczęstsza przyczyna to otwieranie strony **z pliku na dysku** albo z adresu spoza domeny wpisanej do klucza (rozdz. 10) — reCAPTCHA wystawia wtedy znacznik, którego App Check nie uznaje. Ale jeśli *invalid* pojawi się **po** wymuszeniu, przy normalnym korzystaniu z adresu internetowego, to nie jest przypadek, tylko sygnał, że coś jest nie tak **z kluczem albo z domeną** — i wtedy szukasz w Google Cloud, a nie w regułach bazy.
+
 ---
 
 ## 9. KROK 5 i 6 — włączenie ochrony
 
 ### Krok 5 — wymuszanie
+
+> ### ✅ WYKONANE 20 września — wymuszanie włączone w trzech miejscach
+>
+> | Projekt | Usługa | Status |
+> |---|---|---|
+> | `wh40k-data-slate` | **Realtime Database** | ✅ *Enforced* |
+> | `wh40k-data-slate` | **Cloud Firestore** | ✅ *Enforced* |
+> | `wh40k-data-slate` | Authentication *(PREVIEW)* | ⏸️ *Monitoring* — świadomie, rozdz. 9a |
+> | `audiorpg-2eb6f` | **Cloud Firestore** | ✅ *Enforced* |
+> | `audiorpg-2eb6f` | Realtime Database | — nieużywana, nic do wymuszania |
+>
+> **Metryki, na podstawie których zapadła decyzja** (odczyt z 20 września; okno 7-dniowe obejmuje dni sprzed wgrania kodu, dlatego liczy się kolumna 24-godzinna):
+>
+> | Usługa | Ostatnie 7 dni | Ostatnie 24 h | Rozbicie niezweryfikowanych w oknie 7-dniowym |
+> |---|---|---|---|
+> | RTDB, `wh40k-data-slate` | 96% (45/47) | — | outdated client 2, unknown origin 0, invalid 0 |
+> | Firestore, `wh40k-data-slate` | 80% (141/177) | **100% (17/17)** | outdated client 7, unknown origin 15, invalid 14 |
+> | Authentication, `wh40k-data-slate` | 96% (27/28) | — | unknown origin 1, reszta 0 |
+> | Firestore, `audiorpg-2eb6f` | 84% | *nie odczytano* | *nie odczytano — ekran APIs pokazuje tylko sumę* |
+>
+> Cały kolorowy ruch na wykresach mieści się w garbie **14–16 września**, czyli w oknie wdrażania kodu. Od 17 września jest czysto, a okno 24-godzinne dla Firestore pokazało 100% zweryfikowanych przy zerze w każdej z trzech pozostałych kategorii. Jak czytać te kategorie — rozdz. 8a.
 
 To jest moment, w którym baza faktycznie zaczyna odrzucać obce programy.
 
@@ -348,7 +385,24 @@ To jest moment, w którym baza faktycznie zaczyna odrzucać obce programy.
 
 Po każdym kliknięciu **sprawdź aplikację**: otwórz DataVault i GeneratorNPC z adresu internetowego i zobacz, czy dane się ładują. Jeśli nie — **Unenforce** i wracamy do diagnozy.
 
-> ⚠️ **Wymuszaj tylko te dwie pozycje.** W zakładce *APIs* będą też inne usługi, m.in. **Firebase Cloud Messaging**. Zostaw je bez wymuszania — nie korzysta z nich żaden moduł WrathAndGlory, a włączanie ochrony tam, gdzie nie ma czego chronić, tylko utrudnia późniejszą diagnozę.
+> ### 🔻 Runda sprawdzająca po włączeniu wymuszania *(dopisane 20 września)*
+>
+> Dwa moduły — **GeneratorNPC** i **Audio** — należą do projektu `audiorpg-2eb6f`, którego metryki 24-godzinnej nie odczytano przed kliknięciem *Enforce*. Dlatego pierwsza runda po wymuszeniu jest tam ważniejsza niż gdzie indziej. Wszystko z **adresu internetowego**, nie z dysku:
+>
+> | Moduł | Co zrobić | Czego dotyczy |
+> |---|---|---|
+> | DataVault | zaloguj się Litanią Dostępu, otwórz kilka zakładek z danymi | RTDB + Auth, `wh40k-data-slate` |
+> | Infoczytnik | wyślij wiadomość z panelu GM i sprawdź, czy pojawia się na ekranie gracza | Firestore, `wh40k-data-slate` |
+> | Prosty Kreator Postaci | zapisz postać i wczytaj ją z powrotem | Firestore, `wh40k-data-slate` |
+> | Zaawansowany Kreator Postaci | to samo — zapis i wczytanie | Firestore, `wh40k-data-slate` |
+> | **GeneratorNPC** | dodaj i usuń ulubiony zestaw | Firestore, `audiorpg-2eb6f` |
+> | **Audio** | zmień i zapisz ustawienia modułu | Firestore, `audiorpg-2eb6f` |
+>
+> Infoczytnik sprawdzaj w wersji **produkcyjnej** (`GM.html`, `Infoczytnik.html`), a nie testowej — to jest ta pułapka z rozdz. 7. Na 20 września pliki produkcyjne i testowe są identyczne i mają to samo `INF_VERSION = 2026-09-14_11-12-07`, ale sprawdzenie i tak rób na produkcyjnych.
+
+> ⚠️ **Wymuszaj tylko te dwie pozycje.** W zakładce *APIs* będą też inne usługi, m.in. **Firebase Cloud Messaging**, **Storage**, **Firebase AI Logic** i **SQL Connect**. Zostaw je bez wymuszania — nie korzysta z nich żaden moduł WrathAndGlory, a włączanie ochrony tam, gdzie nie ma czego chronić, tylko utrudnia późniejszą diagnozę. Przy nieużywanych usługach konsola i tak nie pokazuje przycisku, tylko napis *„Start using … to enable App Check"*.
+>
+> **Jeden wyjątek wymaga osobnego namysłu: Authentication.** To jedyna z pozostałych pozycji, z której aplikacja **naprawdę korzysta** (Litania Dostępu w DataVault), więc argument „nie ma czego chronić" jej nie dotyczy. Dlatego dostała własny rozdział — **9a**.
 
 ### Krok 6 — zawężenie reguł bazy
 
@@ -364,7 +418,103 @@ Gotowe reguły są w `Analizy/audyt-kodu-aplikacji-2026-09-10.md`, rozdz. 9.8. W
 
 > Firebase trzyma historię reguł, więc powrót do poprzedniej wersji to jedno kliknięcie w zakładce **Rules**.
 
+> 🔻 **Uzupełnienie z 20 września — krok 6 dotyczy wyłącznie Firestore, i to jest w porządku.** Reguły Realtime Database to osobny język, w którym **nie istnieje odpowiednik `request.app`**. Dla RTDB App Check włącza się wyłącznie przełącznikiem w konsoli — a ten jest już włączony. Czyli po stronie Realtime Database **nie ma nic więcej do zrobienia**: temat jest domknięty przełącznikiem z kroku 5. Krok 6 zostaje do wykonania w dwóch miejscach: reguły Firestore w `wh40k-data-slate` i reguły Firestore w `audiorpg-2eb6f`.
+
+> ### ▶️ Od 20 września to jest **jedyny pozostały krok** — i wreszcie wolno go zrobić
+>
+> Blokada, która wywróciła próbę z 14 września, zniknęła. Wtedy reguły z `request.app != null` zostały wgrane, **zanim** kod zaczął wysyłać znaczniki, i wszystkie pięć dokumentów zaczęło zwracać `403` (opis zdarzenia: audyt, rozdz. 9.8). Dziś kod wysyła znaczniki, wymuszanie jest włączone, a metryki pokazują 100% zweryfikowanych — czyli warunek, którego wtedy brakowało, jest spełniony.
+>
+> Zawężenie ścieżek i skasowanie `DS2/progress` masz już zrobione w kroku 0. **Do wykonania zostaje wyłącznie podmiana `if true` na wywołanie `zAplikacji()`** w dwóch miejscach. Gotowy tekst do wklejenia:
+>
+> **`wh40k-data-slate`** → Firestore Database → Rules → zaznacz całość → wklej → **Publish**:
+>
+> ```
+> rules_version = '2';
+>
+> service cloud.firestore {
+>   match /databases/{database}/documents {
+>
+>     // Zapytanie musi nieść ważny znacznik App Check, czyli musi pochodzić
+>     // z zarejestrowanej aplikacji WrathAndGlory.
+>     // The request must carry a valid App Check token, i.e. it must originate
+>     // from the registered WrathAndGlory application.
+>     function zAplikacji() { return request.app != null; }
+>
+>     // Kanał panelu GM -> ekran Infoczytnika / GM panel -> reader screen channel
+>     match /dataslate/current { allow read, write: if zAplikacji(); }
+>
+>     // Zapisane wiadomości Infoczytnika (listy ulubionych), przygotowane z góry
+>     // Saved reader messages (favourite lists), reserved in advance
+>     match /dataslate_favorites/{document=**} { allow read, write: if zAplikacji(); }
+>
+>     // Prosty Kreator Postaci / Simple character creator
+>     match /character_builder/current { allow read, write: if zAplikacji(); }
+>
+>     // Zaawansowany Kreator Postaci / Advanced character creator
+>     match /character_builder/v2 { allow read, write: if zAplikacji(); }
+>
+>     // Wszystko inne pozostaje niedostępne / Everything else stays inaccessible
+>     match /{document=**} { allow read, write: if false; }
+>   }
+> }
+> ```
+>
+> **`audiorpg-2eb6f`** → to samo miejsce:
+>
+> ```
+> rules_version = '2';
+>
+> service cloud.firestore {
+>   match /databases/{database}/documents {
+>
+>     function zAplikacji() { return request.app != null; }
+>
+>     // Ulubione zestawy GeneratorNPC / GeneratorNPC favourite sets
+>     match /generatorNpc/favorites { allow read, write: if zAplikacji(); }
+>
+>     // Ustawienia modułu Audio / Audio module settings
+>     match /audio/favorites        { allow read, write: if zAplikacji(); }
+>
+>     match /{document=**} { allow read, write: if false; }
+>   }
+> }
+> ```
+>
+> **Po wklejeniu przejdź rundę sprawdzającą z rozdz. 9** — te reguły dotyczą pięciu dokumentów w czterech modułach, a błąd w nich objawia się odmową zapisu, nie białą stroną.
+>
+> 🔻 **Nie zapomnij o kopiach w repozytorium.** Pliki `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules` zawierają dziś wersję z kroku 0, czyli z `if true`. Po wgraniu nowych reguł w konsoli **trzeba poprawić oba pliki**, inaczej repozytorium będzie pokazywać nieaktualny stan bazy — a to jest dokładnie ten rodzaj rozjazdu, który później myli przy diagnozie.
+
 > 💡 **Dwie z tych trzech zmian możesz zrobić choćby dziś, przed całą resztą.** Zawężenie reguł do konkretnych dokumentów i skasowanie `DS2/progress` **nie psuje niczego** — aplikacja i tak korzysta wyłącznie z `dataslate/current`, `character_builder/current`, `character_builder/v2`, `generatorNpc/favorites` i `audio/favorites`. Zostawiasz na razie `if true` i zmieniasz tylko ścieżki. Zyskujesz tyle, że obcy nie może już tworzyć w Twojej bazie dowolnych nowych dokumentów — a że może, jest sprawdzone (rozdz. 9.2 audytu). Warunek `request.app != null` dopisujesz dopiero tutaj, w kroku 6.
+
+---
+
+## 9a. Authentication — dlaczego zostaje na *Monitoring* *(dopisane 20 września)*
+
+W zakładce *APIs* projektu `wh40k-data-slate` jest też pozycja **Authentication** z etykietą `PREVIEW`. Jej metryki wyglądają dobrze — 27/28 zweryfikowanych, zero *invalid*, jeden *unknown origin* z 15 września, czyli z tego samego garbu wdrożeniowego co reszta. Mimo to **20 września świadomie jej nie wymuszono.** Poniżej powód, żeby za pół roku nie zastanawiać się, czy to przeoczenie.
+
+### To nie jest ten sam przypadek co Cloud Messaging
+
+Instrukcja mówi „zostaw pozostałe usługi w spokoju", ale uzasadnia to tym, że **nic z nich nie korzysta**. Z Authentication aplikacja korzysta naprawdę: Firebase Auth występuje w całym repozytorium w dokładnie jednym miejscu — `shared/firebase-data-loader.js` (`signInWithEmailAndPassword`), czyli **Litania Dostępu w DataVault**. Nie ma go w żadnym innym module.
+
+Wymuszanie na Authentication dałoby więc realną korzyść: **ochronę przed zgadywaniem hasła do Litanii przez obcy skrypt.** Tego nie załatwia ani wymuszanie na Firestore, ani zawężone reguły bazy. Więc to jest „kiedyś tak", a nie „nigdy".
+
+### Cztery powody, dla których to osobny termin, a nie ten sam klik
+
+1. **Awaria byłaby całkowita, nie częściowa.** Gdy wymuszanie na Firestore coś zepsuje, przestaje działać zapis postaci albo wiadomość w Infoczytniku — ale widzisz aplikację i widzisz błąd. Gdy zepsuje się Authentication, **nie wejdziesz do DataVault w ogóle**, bo nie ma się gdzie zalogować.
+2. **Trzy przyciski naraz to zgadywanka przy diagnozie.** Gdy po kliknięciu wszystkich trzech coś przestaje działać, nie wiadomo, który z nich odpowiada.
+3. **Skutek może być opóźniony — i to jest najważniejszy powód.** Kod ustawia `browserLocalPersistence`, czyli raz zalogowany zostaje zalogowany. Po kliknięciu *Enforce* otworzyłbyś DataVault, zobaczył, że działa, i uznał temat za zamknięty — bo Twoja sesja już trwa i nikt nie pyta o hasło. Usterka ujawniłaby się dopiero **przy następnym prawdziwym logowaniu**, u kogoś innego i kilka godzin później. *(Czy wymuszanie obejmuje też odnawianie trwającej sesji, czy wyłącznie samo logowanie — nie zostało sprawdzone. W wersji `PREVIEW` nie ma sensu tego zgadywać.)*
+4. **Etykieta `PREVIEW`.** Wersja zapoznawcza — zachowanie może się zmienić bez uprzedzenia.
+
+### Jak to zrobić, kiedy już przyjdzie pora
+
+Najwcześniej kilka dni po tym, jak Firestore i RTDB okażą się stabilne, i **w momencie, w którym masz kwadrans na sprawdzenie** — nie przed wyjściem z domu.
+
+1. Firebase Console → App Check → APIs → **Authentication** → **Enforce**.
+2. Sprawdź logowanie **w oknie prywatnym przeglądarki**. To jedyny sposób, żeby wymusić prawdziwe logowanie zamiast odtworzenia sesji, która już trwa — zwykłe okno nic nie udowodni.
+3. Sprawdź też z telefonu, gdzie masz osobną sesję.
+4. Pamiętaj, że od tego momentu logowanie ze strony otwartej z dysku przestanie działać tak samo jak reszta (rozdz. 10).
+
+Odwrót jest ten sam co wszędzie: **Unenforce** działa natychmiast.
 
 ---
 
@@ -390,46 +540,74 @@ Po kroku 5 otwarcie pliku HTML **bezpośrednio z dysku przestanie działać** �
 | **Klucz w repozytorium** | To nie jest wyciek. Klucz witryny jest jawny z założenia, tak samo jak `apiKey` |
 | **Własne skrypty pomocnicze** | Po włączeniu wymuszania każde narzędzie spoza aplikacji przestanie działać — łącznie z ewentualnymi Twoimi skryptami sięgającymi do bazy |
 | **Generowanie danych DataVault** | Bez zmian. Tryb admina czyta plik XLSX z dysku i tworzy pliki lokalnie — nie dotyka bazy. Import do Firebase robisz z konsoli, a konsola nie podlega App Check |
+| **Strona z pamięci podręcznej** | Kto ma otwartą starą wersję strony sprzed 14 września, zostanie odcięty do czasu odświeżenia. Lekarstwo: **Ctrl+F5**. Infoczytnik radzi sobie z tym sam (`INF_VERSION`), DataVault nie ma takiego mechanizmu |
+| **Blokada reCAPTCHA w przeglądarce** | Dodatek blokujący reklamy albo filtr w sieci może zablokować adres `google.com/recaptcha`. Skutek po wymuszaniu: moduł przestaje zapisywać dane, choć wygląda na sprawny. Szczegóły w rozdz. 11a |
+
+---
+
+## 11a. Gdy coś przestanie działać — pierwszy podejrzany *(dopisane 20 września)*
+
+**App Check jest w kodzie celowo „niekrytyczny".** Gdy biblioteka reCAPTCHA się nie wczyta, kod zapisuje ostrzeżenie w konsoli i **uruchamia moduł dalej, bez znacznika** — tak to jest napisane w `shared/firebase-app-check.js` i w `Kalkulator/TworzeniePostaci_v2-firebase.js`. Zrobiono to świadomie: dopóki wymuszanie było wyłączone, brak znacznika niczego nie psuł, a moduł miał działać jak dotąd.
+
+**Od 20 września ta sama właściwość ma drugą stronę.** Przy włączonym wymuszaniu moduł, który nie zdobył znacznika, wystartuje normalnie, pokaże interfejs i **dopiero przy zapisie albo odczycie dostanie odmowę uprawnień**. Czyli objaw wygląda na awarię bazy albo błąd reguł, a przyczyna jest w przeglądarce.
+
+> 🔍 **Przy zgłoszeniu „przestało mi działać zapisywanie" pierwszym podejrzanym jest blokada `google.com/recaptcha` w przeglądarce — dodatek blokujący reklamy, filtr rodzinny albo firmowa sieć.** Nie baza, nie reguły, nie klucz.
+
+**Jak to rozstrzygnąć w pół minuty.** F12 → zakładka **Console** i szukasz ostrzeżenia zaczynającego się od `[AppCheck]`:
+
+| Co widać w konsoli | Co to znaczy |
+|---|---|
+| `[AppCheck] reCAPTCHA Enterprise nie jest wczytana` | Biblioteka zablokowana lub niedostępna → to jest ta przyczyna. Wyłącz dodatek blokujący dla tej strony albo spróbuj z innej sieci |
+| `[AppCheck] Brak klucza witryny dla projektu` | Do modułu nie dotarł plik `shared/appcheck-config.js` — problem po stronie kodu, nie przeglądarki |
+| `[AppCheck] Pominięto App Check` (Zaawansowany Kreator) | To samo co wyżej, tylko z drugiej ścieżki ładowania |
+| brak jakiegokolwiek `[AppCheck]`, a mimo to odmowa zapisu | Znacznik poszedł i został odrzucony — szukaj w metrykach kategorii *invalid* (rozdz. 8a), czyli sprawdzaj klucz i domenę w Google Cloud |
+
+W ostateczności zawsze zostaje **Unenforce** — działa natychmiast i przywraca stan sprzed wymuszania, bez zmian w kodzie.
 
 ---
 
 ## 12. Lista kontrolna
 
-Stan na 14 września. Kroki 0, 1 i 2 masz zrobione w obu projektach. Krok 3 (kod) jest odblokowany i w toku.
+**Stan na 20 września. Kroki 0–5 są wykonane w obu projektach. Do zrobienia został krok 6 i kilka drobiazgów kontrolnych.**
+
+Pozycje oznaczone *(sprawdzone w kodzie)* zostały potwierdzone odczytem repozytorium 20 września, a nie tylko odhaczone z pamięci.
 
 **Projekt 1 — `wh40k-data-slate`**
 - [x] Klucz reCAPTCHA `WrathAndGlory-DataSlate` utworzony, typ WEB, domena `cutelittlegoat.github.io`
 - [x] Aplikacja webowa `DataSlate` zarejestrowana w App Check — dostawca reCAPTCHA Enterprise, status *Registered*
-- [ ] Sprawdzić, czy TTL jest ustawione na `1` + `days` (widoczne po kliknięciu **⋮** przy aplikacji)
+- [ ] Sprawdzić, czy TTL jest ustawione na `1` + `days` (widoczne po kliknięciu **⋮** przy aplikacji) — **wciąż niesprawdzone**
 - [x] **KROK 0** — zawężone reguły Firestore wgrane (rozdz. 4a), nadal z `if true` — sprawdzone, wszystkie dokumenty odpowiadają `200`
-- [ ] **KROK 3a** — App Check w DataVault (SDK 12.6.0, zapis nowoczesny)
-- [ ] **KROK 3b** — App Check w Infoczytniku (`GM_test.html`, `Infoczytnik_test.html`, compat 9.6.8, bez zmiany wersji) + `INF_VERSION` w obu
-- [ ] **KROK 3c** — Kreatory Postaci: 8.10.1 → **12.6.0 compat** (wariant W3) + App Check
-- [ ] Kilka dni obserwacji zakładki APIs — ruch zweryfikowany
-- [ ] Wymuszanie włączone dla **Cloud Firestore**
-- [ ] Wymuszanie włączone dla **Realtime Database**
-- [ ] Reguły uzupełnione o `request.app != null`
+- [x] **KROK 3a** — App Check w DataVault *(sprawdzone w kodzie: `shared/firebase-data-loader.js`, `activateAppCheck` przed `getAuth` i `getDatabase`)*
+- [x] **KROK 3b** — App Check w Infoczytniku, compat 9.6.8 bez zmiany wersji *(sprawdzone w kodzie: `INF_VERSION = 2026-09-14_11-12-07` zgodne w plikach testowych i produkcyjnych)*
+- [x] **KROK 3c** — Kreatory Postaci: 8.10.1 → **12.6.0 compat** (wariant W3) + App Check *(sprawdzone w kodzie: `firebase-app-compat.js`, `firebase-firestore-compat.js`, `firebase-app-check-compat.js` w wersji 12.6.0)*
+- [x] **KROK 4** — obserwacja 14–20 września, ruch zweryfikowany (metryki w rozdz. 9)
+- [x] **KROK 5** — wymuszanie włączone dla **Cloud Firestore**
+- [x] **KROK 5** — wymuszanie włączone dla **Realtime Database**
+- [ ] **KROK 6** — reguły Firestore uzupełnione o `request.app != null` (gotowy tekst w rozdz. 9)
+- [x] *(świadomie zostawione na `Monitoring`)* **Authentication** — decyzja z 20 września wraz z planem na później, rozdz. 9a
 - [x] *(świadomie pominięte na stałe)* Aplikacja Android `Kozi Przybornik` — pozostałość po zamkniętym projekcie push, nie rejestrujemy jej nigdy (rozdz. 6)
 
 **Projekt 2 — `audiorpg-2eb6f`**
 - [x] Osobny klucz reCAPTCHA `WrathAndGlory-AudioRPG` utworzony, typ WEB, ta sama domena
 - [x] Aplikacja webowa `AudioRPG` zarejestrowana — reCAPTCHA Enterprise, status *Registered*
-- [ ] Sprawdzić TTL `1 days`
+- [ ] Sprawdzić TTL `1 days` — **wciąż niesprawdzone**
 - [x] **KROK 0** — zawężone reguły Firestore wgrane, bez `DS2/progress` (rozdz. 4a)
-- [ ] **KROK 3a** — App Check w GeneratorNPC i w module Audio (SDK 12.6.0, zapis nowoczesny)
-- [ ] Kilka dni obserwacji
-- [ ] Wymuszanie włączone dla **Cloud Firestore** (Realtime Database nieużywana)
-- [ ] Reguły uzupełnione o `request.app != null`
+- [x] **KROK 3a** — App Check w GeneratorNPC i w module Audio *(sprawdzone w kodzie: oba pliki wczytują `shared/appcheck-config.js` i bibliotekę reCAPTCHA)*
+- [x] **KROK 5** — wymuszanie włączone dla **Cloud Firestore** (Realtime Database nieużywana)
+- [ ] **Runda sprawdzająca po wymuszeniu — GeneratorNPC i Audio** (rozdz. 9). W tym projekcie nie odczytano metryki 24-godzinnej przed kliknięciem *Enforce*, więc sprawdzenie jest tu ważniejsze niż gdzie indziej
+- [ ] **KROK 6** — reguły Firestore uzupełnione o `request.app != null` (gotowy tekst w rozdz. 9)
 
 **Po wszystkim**
-- [ ] Pliki produkcyjne Infoczytnika (`GM.html`, `Infoczytnik.html`) zaktualizowane ręcznie
-- [ ] Sprawdzone z telefonu, tabletu i komputera, że wszystko działa
-- [ ] Kompletne reguły obu projektów zapisane w repozytorium (patrz audyt, rozdz. 9.6)
-- [ ] Oba klucze witryny w **jednym** pliku w `shared/` — sprawdzone, że nie są powielone po modułach
+- [x] Pliki produkcyjne Infoczytnika (`GM.html`, `Infoczytnik.html`) zaktualizowane ręcznie *(sprawdzone w kodzie 20 września: identyczne z testowymi, różnią się wyłącznie zakończeniami wierszy)*
+- [ ] Sprawdzone z telefonu, tabletu i komputera, że wszystko działa — **po włączeniu wymuszania to sprawdzenie jest ważniejsze niż przed**
+- [ ] Kompletne reguły obu projektów zapisane w repozytorium (patrz audyt, rozdz. 9.6). Pliki `shared/firestore-wh40k-data-slate.rules` i `shared/firestore-audiorpg.rules` istnieją, ale zawierają wersję z kroku 0 — do poprawienia razem z krokiem 6
+- [x] Oba klucze witryny w **jednym** pliku w `shared/` *(sprawdzone w kodzie: klucze występują wyłącznie w `shared/appcheck-config.js`, nie są powielone po modułach)*
 
 ---
 
 ## 13. Podsumowanie w trzech zdaniach
+
+> **Stan na 20 września:** poniższy opis jest już wykonany aż do kliknięcia **Enforce** włącznie. Zostało ostatnie zdanie — wgranie zawężonych reguł z `request.app != null` w obu projektach (rozdz. 9) — oraz decyzja o Authentication, świadomie odłożona na później (rozdz. 9a).
 
 Zakładasz **dwa klucze reCAPTCHA Enterprise** — po jednym w każdym projekcie Google Cloud, oba dla domeny `cutelittlegoat.github.io`. Wklejasz każdy klucz w Firebase Console → App Check przy jedynej aplikacji webowej danego projektu, ustawiając TTL na 1 dzień. Potem dopisujemy kilka linii do kodu sześciu modułów, obserwujesz przez kilka dni zakładkę APIs, a gdy ruch jest zweryfikowany — klikasz **Enforce** (Firestore w obu projektach, dodatkowo Realtime Database w pierwszym) i na koniec wgrywasz zawężone reguły.
 
