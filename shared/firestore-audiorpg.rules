@@ -8,23 +8,33 @@
 // PL: Z tego projektu korzystają: GeneratorNPC i moduł Audio. Projekt nie ma Realtime Database.
 // EN: This project serves: GeneratorNPC and the Audio module. It has no Realtime Database.
 //
-// PL: 🔴 KOLEJNOŚĆ JEST KRYTYCZNA — tak samo jak w drugim projekcie. Warunek `request.app != null`
-//     dopisuje się dopiero po włączeniu wymuszania. Szczegóły:
-//     Analizy/audyt-kodu-aplikacji-2026-09-10.md, rozdz. 9.8.
-// EN: 🔴 ORDER IS CRITICAL — just as in the other project. The `request.app != null` condition is
-//     added only after enforcement is switched on. Details:
-//     Analizy/audyt-kodu-aplikacji-2026-09-10.md, chapter 9.8.
+// PL: ✅ STAN NA 20 WRZEŚNIA 2026 — wersja docelowa. Kolejność, która była tu krytyczna, została
+//     zachowana: najpierw znaczniki App Check w kodzie (14 września), potem wymuszanie dla Cloud
+//     Firestore w Firebase Console (20 września), na końcu poniższy warunek `zAplikacji()`.
+//     Szczegóły i opis nieudanej próby z 14 września: Analizy/audyt-kodu-aplikacji-2026-09-10.md,
+//     rozdz. 9.8, oraz Analizy/instrukcja-appcheck-2026-09-13.md, rozdz. 9.
+// EN: ✅ STATE ON 20 SEPTEMBER 2026 — the final version. The order that mattered here was respected:
+//     App Check tokens in the code first (14 September), then enforcement for Cloud Firestore in the
+//     Firebase Console (20 September), and the `zAplikacji()` condition below last. Details, and the
+//     account of the failed attempt on 14 September: Analizy/audyt-kodu-aplikacji-2026-09-10.md
+//     chapter 9.8 and Analizy/instrukcja-appcheck-2026-09-13.md chapter 9.
 
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // PL: Zapytanie musi nieść ważny znacznik App Check / EN: The request must carry a valid App Check token
+    function zAplikacji() { return request.app != null; }
+
     // PL: Ulubione zestawy GeneratorNPC / EN: GeneratorNPC favourite sets
-    match /generatorNpc/favorites { allow read, write: if true; }
+    match /generatorNpc/favorites { allow read, write: if zAplikacji(); }
 
     // PL: Ustawienia modułu Audio / EN: Audio module settings
-    match /audio/favorites { allow read, write: if true; }
+    match /audio/favorites { allow read, write: if zAplikacji(); }
+
+    // PL: Reguła dla DS2/progress usunięta w kroku 0 — projekt Dark Souls II zakończony, kolekcja skasowana.
+    // EN: The DS2/progress rule was removed in step 0 — the Dark Souls II project is finished, its collection deleted.
 
     // --- Wszystko inne niedostępne / Everything else inaccessible ---
     match /{document=**} { allow read, write: if false; }
