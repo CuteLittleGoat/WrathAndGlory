@@ -69,10 +69,177 @@ pre code{background:none; border:none; padding:0; font-size:inherit; color:var(-
 
 .lead{color:var(--tekst2); font-size:17px}
 
-/* Makiety ekranów rysowane znakami — ciaśniejsza interlinia, żeby ramki tworzyły spójny rysunek.
-   ASCII screen mock-ups — tighter line height so the frames read as one drawing. */
-pre.makieta{font-size:12.5px; line-height:1.28; letter-spacing:0}
-@media (max-width:700px){ pre.makieta{font-size:10.5px} }
+/* --- Makiety ekranów: prototypy zbudowane z HTML w kolorystyce modułu DataVault.
+       Wszystkie klasy mają przedrostek .mk, żeby style makiet nie mieszały się ze stylami
+       dokumentu analitycznego, który ma własny tryb jasny i ciemny.
+       Screen mock-ups: live HTML prototypes in the DataVault colour scheme. Every class is
+       prefixed with .mk so the mock-up styles never leak into the analysis document, which
+       has its own light and dark themes. --- */
+.mk{
+  --mk-text:#9cf09c; --mk-text2:#4FAF4F; --mk-code:#D2FAD2; --mk-muted:#4a8b4a;
+  --mk-b:rgba(22,198,12,.35); --mk-b2:rgba(22,198,12,.20); --mk-div:rgba(22,198,12,.18);
+  --mk-accent:#16c60c; --mk-red:#d74b4b; --mk-old:#7f9b7f;
+  font-family:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  font-size:10.5px; line-height:1.35; letter-spacing:.02em;
+  color:var(--mk-text);
+  background:radial-gradient(circle at 20% 15%, rgba(0,255,128,.07), transparent 30%), #031605;
+  display:block; position:relative; overflow:hidden;
+}
+.mk *{box-sizing:border-box}
+figure > .mk{border-radius:0}
+.mk-scroll{overflow-x:auto}
+
+/* pasek górny */
+.mk-top{padding:7px 9px; border-bottom:1px solid var(--mk-div);
+        background:linear-gradient(180deg, rgba(22,198,12,.05), transparent); position:relative}
+.mk-brand{display:flex; align-items:center; gap:7px}
+.mk-sig{width:18px; height:18px; flex:0 0 18px; border:1px solid var(--mk-b);
+        background:rgba(22,198,12,.05); border-radius:2px}
+.mk-name{text-transform:uppercase; letter-spacing:.15em; font-weight:700; font-size:10px; color:var(--mk-text)}
+.mk-btns{display:flex; flex-wrap:wrap; gap:5px; align-items:center; margin-top:6px}
+.mk-btn{border:1px solid var(--mk-b); background:rgba(22,198,12,.08); color:var(--mk-text);
+        border-radius:3px; padding:4px 6px; text-transform:uppercase; letter-spacing:.10em;
+        font-size:8.5px; white-space:nowrap; display:inline-block}
+.mk-btn.is-primary{background:var(--mk-text); color:#031605}
+.mk-btn.is-ghost{color:var(--mk-old); border-color:rgba(127,155,127,.45); background:rgba(127,155,127,.10)}
+.mk-hint{color:var(--mk-text2); font-size:8.5px; margin-top:4px; letter-spacing:0; text-transform:none}
+
+/* układ główny */
+.mk-main{display:grid; gap:7px; padding:7px}
+.mk-main.is-two{grid-template-columns:96px minmax(0,1fr)}
+.mk-box{border:1px solid var(--mk-b); background:#000; border-radius:3px; overflow:hidden; min-width:0}
+
+/* panel filtrów */
+.mk-ph{padding:5px 7px; background:rgba(22,198,12,.04); border-bottom:1px solid var(--mk-div);
+       text-transform:uppercase; letter-spacing:.14em; color:var(--mk-code); font-size:9px}
+.mk-pb{padding:7px; position:relative}
+.mk-lab{font-size:8px; color:var(--mk-text2); text-transform:uppercase; letter-spacing:.09em; margin-bottom:3px}
+.mk-input{border:1px solid var(--mk-b); background:#031605; border-radius:3px; padding:4px 5px;
+          color:var(--mk-muted); font-size:9px}
+.mk-cb{display:flex; gap:5px; align-items:flex-start; margin-top:7px; font-size:8.5px;
+       text-transform:uppercase; letter-spacing:.06em; color:var(--mk-code)}
+.mk-cb i{width:9px; height:9px; flex:0 0 9px; border:1px solid var(--mk-b); border-radius:2px; margin-top:1px}
+.mk-cb.is-red{color:var(--mk-red)} .mk-cb.is-red i{border-color:var(--mk-red)}
+
+/* zakładki */
+.mk-tabs{display:flex; flex-wrap:wrap; gap:4px; padding:6px; border-bottom:1px solid var(--mk-div);
+         background:rgba(22,198,12,.03)}
+.mk-tab{border:1px solid var(--mk-b2); background:rgba(22,198,12,.05); border-radius:3px;
+        padding:3px 5px; font-size:8px; text-transform:uppercase; letter-spacing:.09em; white-space:nowrap}
+.mk-tab.is-active{background:rgba(22,198,12,.12); border-color:var(--mk-b); color:var(--mk-code)}
+
+/* tabela */
+.mk-tbl{width:100%; border-collapse:collapse; font-size:9px}
+.mk-tbl th,.mk-tbl td{border-bottom:1px solid var(--mk-div); padding:4px 5px; text-align:left; white-space:nowrap}
+.mk-tbl thead th{color:var(--mk-code); text-transform:uppercase; letter-spacing:.07em; font-size:8.5px;
+                 background:#000; background-image:linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))}
+.mk-tbl tbody tr:nth-child(even){background:rgba(22,198,12,.07)}
+.mk-fin{border:1px solid var(--mk-b2); border-radius:2px; padding:2px 4px; color:var(--mk-muted); font-size:8px;
+        display:inline-block; min-width:42px}
+.mk-caret{color:var(--mk-text2)}
+
+/* oznaczenia usterek */
+.mk-slit{position:relative; height:9px; border-top:1px dashed var(--mk-red); border-bottom:1px dashed var(--mk-red);
+         background:repeating-linear-gradient(90deg, rgba(215,75,75,.30) 0 5px, transparent 5px 10px);
+         overflow:hidden; color:rgba(156,240,156,.55); font-size:7.5px; white-space:nowrap; padding-left:5px}
+.mk-cut{border-top:1px dashed var(--mk-red); color:#efa6a6; font-size:8px; padding:5px 7px; letter-spacing:0;
+        background:repeating-linear-gradient(45deg, rgba(215,75,75,.16) 0 5px, transparent 5px 10px)}
+.mk-black{background:#000; border:1px solid var(--mk-b); border-radius:3px}
+
+/* etykieta wysokości przy prawej krawędzi pasma */
+.mk-px{position:absolute; right:5px; top:4px; font-size:8px; color:var(--mk-text2);
+       background:rgba(3,22,5,.82); padding:1px 4px; border-radius:2px; letter-spacing:0}
+
+/* pasek narzędzi zakładki (propozycja z rozdz. 15.5) */
+.mk-tools{padding:6px; border-bottom:1px solid var(--mk-div); background:#000; position:relative;
+          box-shadow:0 4px 10px rgba(0,0,0,.6)}
+.mk-tools .mk-input{display:block; width:100%; margin-bottom:5px}
+.mk-trow{display:flex; gap:5px; align-items:center; flex-wrap:wrap}
+.mk-badge{display:inline-grid; place-items:center; min-width:13px; height:13px; margin-left:5px; padding:0 3px;
+          border-radius:99px; background:var(--mk-accent); color:#031605; font-size:8px; font-weight:700}
+.mk-count{margin-left:auto; color:var(--mk-text2); font-size:8.5px; letter-spacing:0}
+.mk-chips{display:flex; flex-wrap:wrap; gap:4px; margin-top:5px}
+.mk-chip{display:inline-flex; align-items:center; gap:5px; padding:2px 6px; border:1px solid var(--mk-b);
+         border-radius:99px; background:rgba(22,198,12,.08); color:var(--mk-code); font-size:8px;
+         text-transform:uppercase; letter-spacing:.05em}
+.mk-chip.is-default{border-color:rgba(127,155,127,.55); background:rgba(127,155,127,.10); color:var(--mk-old)}
+.mk-chip b{font-weight:400; color:var(--mk-text2)}
+
+/* karty i grupy */
+.mk-list{padding:6px}
+.mk-card{border:1px solid var(--mk-div); border-radius:4px; padding:5px 7px; margin-bottom:6px;
+         box-shadow:0 0 8px rgba(22,198,12,.08)}
+.mk-card.is-nested{margin-left:10px}
+.mk-card-sel{display:flex; justify-content:flex-end; border-bottom:1px solid var(--mk-div);
+             padding-bottom:4px; margin-bottom:4px}
+.mk-card-sel i{width:10px; height:10px; border:1px solid var(--mk-b); border-radius:2px; display:block}
+.mk-f{display:grid; grid-template-columns:minmax(58px,38%) minmax(0,1fr); gap:6px; padding:1px 0}
+.mk-f span{color:var(--mk-text2); font-size:8px; text-transform:uppercase; letter-spacing:.06em}
+.mk-f b{font-weight:400; color:var(--mk-text)}
+.mk-more{color:var(--mk-muted); font-size:8.5px; padding:2px 0}
+.mk-grp{display:flex; align-items:center; gap:8px; border:1px solid var(--mk-b); border-radius:4px;
+        padding:6px 7px; margin-bottom:6px; background:rgba(22,198,12,.06); color:var(--mk-code);
+        font-size:9px; text-transform:uppercase; letter-spacing:.08em}
+.mk-grp.is-open{background:rgba(22,198,12,.13)}
+.mk-grp em{margin-left:auto; font-style:normal; color:var(--mk-text2); text-transform:none; letter-spacing:0}
+
+/* arkusz wysuwany od dołu */
+.mk-dim{background:rgba(0,0,0,.62); padding:10px 6px 0}
+.mk-sheet{border:1px solid var(--mk-b); border-top-width:2px; border-radius:8px 8px 0 0; background:#000; padding:7px}
+.mk-sheet-h{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:6px}
+.mk-sheet-t{color:var(--mk-code); text-transform:uppercase; letter-spacing:.12em; font-size:9px}
+.mk-crow{display:flex; align-items:center; gap:8px; padding:5px 2px; border-bottom:1px solid var(--mk-div)}
+.mk-crow:last-child{border-bottom:none}
+.mk-crow div{min-width:0}
+.mk-cname{font-size:9px; text-transform:uppercase; letter-spacing:.07em}
+.mk-cstate{font-size:8px; color:var(--mk-text2); letter-spacing:0}
+.mk-cstate.is-on{color:var(--mk-code)}
+.mk-go{margin-left:auto; color:var(--mk-text2)}
+.mk-vrow{display:flex; align-items:center; gap:7px; padding:4px 2px; font-size:9px}
+.mk-vrow i{width:10px; height:10px; flex:0 0 10px; border:1px solid var(--mk-b); border-radius:2px}
+.mk-vrow i.is-on{background:var(--mk-accent)}
+.mk-vrow em{margin-left:auto; font-style:normal; color:var(--mk-text2); font-size:8px}
+
+/* przekrój nagłówka */
+.mk-xs{padding:10px}
+.mk-band{padding:5px 8px; font-size:9px; letter-spacing:.06em}
+.mk-band.is-head{background:#000; background-image:linear-gradient(180deg, rgba(22,198,12,.10), rgba(22,198,12,.03));
+                 color:var(--mk-code); text-transform:uppercase}
+.mk-band.is-rows{color:var(--mk-text)}
+.mk-frame-top{border-top:1px solid var(--mk-b)}
+
+/* pasek proporcji */
+.mk-prop{display:flex; height:22px; border:1px solid var(--mk-b); border-radius:3px; overflow:hidden; font-size:8px}
+.mk-prop div{display:grid; place-items:center; white-space:nowrap; overflow:hidden; color:#031605; font-weight:700}
+
+/* scena dla makiet telefonu — makieta ma stałą szerokość, żeby proporcje ekranu były wiarygodne */
+.mk-stage{padding:10px; display:flex; justify-content:center; background:#07110a}
+.mk-stage .mk{width:262px; max-width:100%; border:1px solid rgba(22,198,12,.45); border-radius:10px}
+/* W parach „przed / po” makiety mają różną wysokość — scena rozciąga się na całą wysokość
+   ramki, żeby pod krótszą makietą nie zostawało jasne pole.
+   In before/after pairs the mock-ups differ in height — the stage stretches to the full figure
+   height so no light gap is left under the shorter one. */
+figure:has(> .mk-stage){display:flex; flex-direction:column}
+figure:has(> .mk-stage) > .mk-stage{flex:1 1 auto; align-items:flex-start}
+
+/* panel fizycznie ucięty: makieta pokazuje to samo obcięcie, które robi overflow:hidden */
+.mk-clip{position:relative; overflow:hidden}
+.mk-clip::after{content:""; position:absolute; left:0; right:0; bottom:14px; height:22px;
+  background:linear-gradient(180deg, transparent, rgba(215,75,75,.20)); pointer-events:none}
+.mk-cutlab{position:absolute; left:0; right:0; bottom:0; font-size:7.5px; color:#efa6a6;
+  text-align:center; letter-spacing:0; padding:2px 0 3px; background:rgba(3,22,5,.94);
+  border-top:1px dashed var(--mk-red)}
+/* cienka szczelina z etykietą przy prawej krawędzi */
+.mk-slit{position:relative; height:5px; border:none; padding:0;
+  background:repeating-linear-gradient(90deg, rgba(215,75,75,.55) 0 4px, rgba(215,75,75,.15) 4px 8px)}
+.mk-slitlab{position:absolute; right:4px; top:-1px; font-size:7.5px; color:#efa6a6;
+  background:rgba(3,22,5,.9); padding:0 3px; border-radius:2px; letter-spacing:0; line-height:1.1}
+/* pasek przewijania panelu */
+.mk-sb{position:absolute; right:2px; top:5px; bottom:5px; width:3px; border-radius:3px;
+  background:rgba(22,198,12,.18)}
+.mk-sb::after{content:""; position:absolute; left:0; right:0; top:28%; height:44%;
+  border-radius:3px; background:rgba(22,198,12,.65)}
+
 
 .meta{
   border:1px solid var(--kresk); border-radius:10px; background:var(--tlo2);
@@ -2394,317 +2561,70 @@ function kolumnaGrupujaca(sheetName, cols){
 
 <h2 id="makiety">16. Makiety ekranów — jak to będzie wyglądać</h2>
 
-<p class="lead">Rysunki tekstowe wszystkich ekranów, których dotyczą poprawki z rozdziałów 13, 14 i 15 — stan dzisiejszy zestawiony ze stanem po zmianie. Proporcje i liczby przy każdej makiecie pochodzą z pomiarów opisanych w tych rozdziałach, więc rysunek pokazuje nie tylko układ, ale też realne wysokości.</p>
+<p class="lead">Prototypy wszystkich ekranów, których dotyczą poprawki z rozdziałów 13, 14 i 15 — stan dzisiejszy zestawiony ze stanem po zmianie. To nie są zrzuty ani obrazki: każda makieta jest zbudowana z HTML i stylów w tym dokumencie, w kolorystyce i foncie modułu <code>DataVault</code>, więc skaluje się razem z tekstem i pozostaje ostra przy każdym powiększeniu.</p>
 
-<div class="karta">
-<h4 style="margin-top:0">Legenda</h4>
-<div class="tabela-otoczka" style="margin-bottom:0">
-<table>
-<tbody>
-<tr><td><code>▓</code></td><td>obszar <strong>ucięty</strong> albo ściśnięty do kilku pikseli — treść jest tam niedostępna</td></tr>
-<tr><td><code>░</code></td><td><strong>szczelina</strong>, przez którą widać przewijane wiersze, albo przyciemnione tło pod wysuniętym arkuszem</td></tr>
-<tr><td><code>█</code></td><td>nieprzezroczyste pasmo nagłówka — nic przez nie nie przechodzi</td></tr>
-<tr><td><code>▒</code></td><td>element <strong>przyklejony</strong> — zostaje na ekranie, kiedy reszta się przewija</td></tr>
-<tr><td><code>#</code></td><td>pasek przewijania</td></tr>
-<tr><td><code>[ ]</code> <code>[x]</code></td><td>pole wyboru: puste i zaznaczone</td></tr>
-<tr><td><code>&gt;</code> <code>v</code></td><td>strzałka: grupa zwinięta i rozwinięta; <code>v</code> to także przycisk listy wartości przy kolumnie</td></tr>
-<tr><td><code>^ | v</code></td><td>klamra po prawej stronie makiety, opisująca wysokość danego pasma w pikselach</td></tr>
-</tbody>
-</table>
-</div>
+<div class="karta uwaga">
+<p style="margin:0"><strong>Jak czytać te makiety.</strong> Czerwona przerywana linia oznacza krawędź obcięcia albo szczelinę — czyli usterkę. Wysokości pasm podaję w podpisach pod rysunkami, bo pochodzą z pomiarów z rozdziałów 13–15. Proporcje między pasmami są przybliżone: makieta ma pokazać układ i kolejność elementów, a nie zastąpić projekt graficzny.</p>
 </div>
 
 <h3 id="mak-pc">16.1. Komputer — panel filtrów i pasek górny (rozdz. 13 i 14)</h3>
-<p>Laptop 1366 × 768 w trybie admina, czyli najtrudniejszy przypadek z rozdziału 13.4: to tu znika czwarty checkbox.</p>
-<pre class="makieta"><code>KOMPUTER 1366 × 768, TRYB ADMINA — DZISIAJ
+<p>Laptop 1366 × 768 w trybie admina — najtrudniejszy przypadek z rozdziału 13.4, bo to tu znika czwarty checkbox.</p>
 
-┌────────────────────────────────────────────────────────────────────────────────────┐
-│ ADMINISTRATUM DATA VAULT      [GENERUJ PLIKI DANYCH]                               │  ^
-│   Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja                    │  | pasek górny
-│   wygeneruje data.json jako backup oraz firebase-import.json...                    │  | 179 px
-│   [PEŁEN WIDOK] [WIDOK DOMYŚLNY]     [PORÓWNAJ ZAZNACZONE]                         │  v
-├────────────────────┬───────────────────────────────────────────────────────────────┤
-│ &gt; FILTRY           │ [NOTATKI] [BESTIARIUSZ] [HORDY] [CECHY] [STANY]               │
-│                    │ [TALENTY] [BRONIE] [PANCERZE] [PSIONIKA] [OBRZĘDY] ...        │
-│ SZUKAJ (GLOB.)     │ ░░░░░░░░░░░ szczelina 4 px ░░░░░░░░░░░░░░░░░░░░░░░░░░░        │  &lt;-- tu prześwitują
-│ [____________]     │ [v]│ RODZAJ   │ TYP        │ NAZWA         │ OBRAŻENIA        │      wiersze
-│                    │ ───┼──────────┼────────────┼───────────────┼──────────        │
-│ [ ] CZY WYŚWIE     │ ░░░░░░░ szczelina 0,3 px ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░        │
-│     TLIĆ ZDEZ-     │    │ [filtr] v│ [filtr]  v │ [filtr...] v  │ [filtr] v        │
-│     AKTUALIZO-     │ ───┴──────────┴────────────┴───────────────┴──────────        │
-│     WANE WPISY     │ [ ]│ Bezpośr. │ Broń biała │ Nóż           │ S+2              │
-│                    │ [ ]│ Bezpośr. │ Broń biała │ Nóż bojowy    │ S+3              │
-│ [ ] CZY WYŚWIE     │ [ ]│ Dystans. │ Boltowa    │ Bolter        │ 10+1ED           │
-│     TLIĆ ZAK-      │ [ ]│ Dystans. │ Boltowa    │ Bolter Ciężki │ 12+2ED           │
-│     ŁADKI TWO-     │                                                               │
-│     RZENIA PO-     │        tabela 340 px - mieszczą się 4 wiersze                 │
-│     STACI?         │                                                               │
-│                    │                                                               │
-│ [ ] CZY WYŚWIE     │                                                               │
-│     TLIĆ ZAK-      │                                                               │
-│     ŁADKI ZA-      │                                                               │
-│     SAD WALKI?     │                                                               │
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓     │                                                               │  &lt;-- krawędź obcięcia
-└────────────────────┴───────────────────────────────────────────────────────────────┘
+<figure class="przed"><figcaption>PRZED — pasek górny zjada 179 px, panel jest ucięty, a w nagłówku tabeli są dwie szczeliny</figcaption><div class="mk mk-scroll"><div class="mk-top"><div class="mk-brand"><div class="mk-sig"></div><div class="mk-name">Administratum Data Vault</div></div><div class="mk-btns"><span class="mk-btn is-ghost">Generuj pliki danych</span></div><div class="mk-hint">Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja wygeneruje data.json jako backup oraz firebase-import.json — plik gotowy do importu w root Firebase Realtime Database.</div><div class="mk-btns"><span class="mk-btn ">Pełen widok</span><span class="mk-btn ">Widok domyślny</span><span class="mk-btn is-primary">Porównaj zaznaczone</span></div><div class="mk-hint">Część danych jest domyślnie ukryta.</div></div><div class="mk-main is-two"><div class="mk-box"><div class="mk-ph">▸ Filtry</div><div class="mk-pb mk-clip" style="height:200px"><div class="mk-lab">Szukaj (globalnie)</div><div class="mk-input">np. Pist, Brutalna, IMPERIUM…</div><div class="mk-cb"><i></i><span>Czy wyświetlić zdezaktualizowane wpisy?</span></div><div class="mk-cb"><i></i><span>Czy wyświetlić zakładki dotyczące tworzenia postaci?</span></div><div class="mk-cb is-red"><i></i><span>Czy wyświetlić zakładki dotyczące zasad walki?</span></div><div class="mk-hint" style="margin-top:8px">▸ Kliknij nagłówek, aby sortować.<br>▸ Drugi wiersz nagłówka: filtry per kolumna.<br>▸ Zaznacz 2+ wiersze, aby porównać.</div><div class="mk-cutlab">▲ tu kończy się panel — reszta jest ucięta</div></div></div><div class="mk-box"><div class="mk-tabs"><span class="mk-tab">Notatki</span><span class="mk-tab">Bestiariusz</span><span class="mk-tab">Hordy</span><span class="mk-tab">Cechy</span><span class="mk-tab">Stany</span><span class="mk-tab">Talenty</span><span class="mk-tab is-active">Bronie</span><span class="mk-tab">Pancerze</span><span class="mk-tab">Psionika</span><span class="mk-tab">Ekwipunek</span><span class="mk-tab">Obrzędy</span></div><div class="mk-slit"><span class="mk-slitlab">szczelina 4 px</span></div><table class="mk-tbl"><thead><tr><th>✓</th><th>Rodzaj</th><th>Typ</th><th>Nazwa</th><th>Obrażenia</th><th>DK</th></tr></thead></table><div class="mk-slit" style="height:3px"><span class="mk-slitlab">szczelina 0,3 px</span></div><table class="mk-tbl"><tbody><tr><td></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń biała</td><td>Nóż</td><td>S+2</td><td>2</td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń biała</td><td>Nóż bojowy Astartes</td><td>S+3</td><td>2</td></tr><tr><td>☐</td><td>Dystans.</td><td>Boltowa</td><td>Bolter</td><td>10+1ED</td><td>2</td></tr><tr><td>☐</td><td>Dystans.</td><td>Boltowa</td><td>Bolter Ciężki</td><td>12+2ED</td><td>3</td></tr></tbody></table><div class="mk-hint" style="padding:8px">Tabela 340 px — mieszczą się 4 wiersze.</div></div></div></div></figure>
+<p class="podpis">Panel filtrów kończy się w połowie etykiety: 283 px treści — checkbox „zakładki dotyczące pojazdów?” i cała podpowiedź — jest poza zasięgiem. Nie ma paska przewijania ani w panelu, ani na stronie, więc kółko myszy nad panelem nic nie robi. Czerwone pasy w nagłówku to szczeliny 4 px i 0,3 px, przez które przy przewijaniu widać przejeżdżające wiersze.</p>
 
-▓ = 283 px treści UCIĘTE i nieosiągalne: czwarty checkbox (&quot;zakładki dotyczące pojazdów?&quot;)
-    oraz cała podpowiedź. Panel nie ma paska przewijania, strona też nie - kółko myszy
-    nad panelem nie robi nic. Jedyne wyjście: Ctrl+scroll do 67%.
-░ = szczeliny w przyklejonym nagłówku, przez które widać przejeżdżające wiersze.</code></pre>
-<pre class="makieta"><code>KOMPUTER 1366 × 768, TRYB ADMINA — PO POPRAWKACH 1-3 (rozdz. 13) I 2a (rozdz. 14)
-
-┌────────────────────────────────────────────────────────────────────────────────────┐
-│ ADMINISTRATUM DATA VAULT   [GENERUJ PLIKI DANYCH](i)                               │  ^ 87 px
-│ [PEŁEN WIDOK] [WIDOK DOMYŚLNY](i)   [PORÓWNAJ ZAZNACZONE]                          │  v
-├────────────────────┬───────────────────────────────────────────────────────────────┤
-│ &gt; FILTRY           │ [NOTATKI] [BESTIARIUSZ] [HORDY] [CECHY] [STANY]               │
-│                    │ [TALENTY] [BRONIE] [PANCERZE] [PSIONIKA] [OBRZĘDY] ...        │
-│ SZUKAJ (GLOB)^     │ [v]│ RODZAJ   │ TYP        │ NAZWA         │ OBRAŻENIA        │  &lt;-- nagłówek przylega
-│ [___________]#     │ ───┼──────────┼────────────┼───────────────┼──────────        │      do krawędzi
-│              #     │    │ [filtr] v│ [filtr]  v │ [filtr...] v  │ [filtr] v        │
-│ [ ] CZY WYŚWI#     │ ───┴──────────┴────────────┴───────────────┴──────────        │
-│     ETLIĆ ZDE#     │ [ ]│ Bezpośr. │ Broń biała │ Nóż           │ S+2              │
-│     ZAKTUALIZ#     │ [ ]│ Bezpośr. │ Broń biała │ Nóż bojowy    │ S+3              │
-│     OWANE WPI#     │ [ ]│ Dystans. │ Boltowa    │ Bolter        │ 10+1ED           │
-│     SY?      #     │ [ ]│ Dystans. │ Boltowa    │ Bolter Ciężki │ 12+2ED           │
-│              #     │ [ ]│ Bezpośr. │ Łańcuchowa │ Topór łańc.   │ S+5              │
-│ [ ] CZY WYŚWI#     │ [ ]│ Bezpośr. │ Łańcuchowa │ Miecz łańc.   │ S+5              │
-│     ETLIĆ ZAKv     │ [ ]│ Dystans. │ Laserowa   │ Karabin las.  │ 7+1ED            │
-└────────────────────┴───────────────────────────────────────────────────────────────┘
-
-# = panel ma własny pasek przewijania: kółko myszy nad nim działa, nic nie przepada.
-(i) = opis przeniesiony do dymka (atrybut title) - pasek górny 179 px -&gt; 87 px.
-      Odzyskane 92 px trafia do tabeli: 4 widoczne wiersze -&gt; 7.
-      Nagłówek przylega do krawędzi obszaru przewijania - nic już nie prześwituje.</code></pre>
+<figure class="po"><figcaption>PO — kompaktowy pasek górny (87 px), panel z własnym przewijaniem, nagłówek bez szczelin</figcaption><div class="mk mk-scroll"><div class="mk-top"><div class="mk-brand"><div class="mk-sig"></div><div class="mk-name">Administratum Data Vault</div></div><div class="mk-btns"><span class="mk-btn is-ghost">Generuj pliki danych ⓘ</span><span class="mk-btn ">Pełen widok</span><span class="mk-btn ">Widok domyślny ⓘ</span><span class="mk-btn is-primary">Porównaj zaznaczone</span></div></div><div class="mk-main is-two"><div class="mk-box"><div class="mk-ph">▸ Filtry</div><div class="mk-pb" style="height:200px; overflow:hidden; position:relative"><div class="mk-sb"></div><div style="margin-top:-96px"><div class="mk-lab">Szukaj (globalnie)</div><div class="mk-input">np. Pist, Brutalna, IMPERIUM…</div><div class="mk-cb"><i></i><span>Czy wyświetlić zdezaktualizowane wpisy?</span></div><div class="mk-cb"><i></i><span>Czy wyświetlić zakładki dotyczące tworzenia postaci?</span></div><div class="mk-cb is-red"><i></i><span>Czy wyświetlić zakładki dotyczące zasad walki?</span></div><div class="mk-cb"><i></i><span>Czy wyświetlić zakładki dotyczące pojazdów?</span></div><div class="mk-hint" style="margin-top:8px">▸ Kliknij nagłówek, aby sortować.<br>▸ Drugi wiersz nagłówka: filtry per kolumna.<br>▸ Zaznacz 2+ wiersze, aby porównać.</div></div></div></div><div class="mk-box"><div class="mk-tabs"><span class="mk-tab">Notatki</span><span class="mk-tab">Bestiariusz</span><span class="mk-tab">Hordy</span><span class="mk-tab">Cechy</span><span class="mk-tab">Stany</span><span class="mk-tab">Talenty</span><span class="mk-tab is-active">Bronie</span><span class="mk-tab">Pancerze</span><span class="mk-tab">Psionika</span><span class="mk-tab">Ekwipunek</span><span class="mk-tab">Obrzędy</span></div><table class="mk-tbl"><thead><tr><th>✓</th><th>Rodzaj</th><th>Typ</th><th>Nazwa</th><th>Obrażenia</th><th>DK</th></tr></thead></table><table class="mk-tbl"><tbody><tr><td></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń biała</td><td>Nóż</td><td>S+2</td><td>2</td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń biała</td><td>Nóż bojowy Astartes</td><td>S+3</td><td>2</td></tr><tr><td>☐</td><td>Dystans.</td><td>Boltowa</td><td>Bolter</td><td>10+1ED</td><td>2</td></tr><tr><td>☐</td><td>Dystans.</td><td>Boltowa</td><td>Bolter Ciężki</td><td>12+2ED</td><td>3</td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń łańcuchowa</td><td>Topór łańcuchowy</td><td>S+5</td><td>5</td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń łańcuchowa</td><td>Miecz łańcuchowy</td><td>S+5</td><td>4</td></tr><tr><td>☐</td><td>Dystans.</td><td>Laserowa</td><td>Karabin laserowy</td><td>7+1ED</td><td>1</td></tr></tbody></table><div class="mk-hint" style="padding:8px">Tabela 432 px — mieszczą się 7 wierszy.</div></div></div></div></figure>
+<p class="podpis">Panel jest przewinięty do końca: czwarty checkbox i podpowiedzi są dostępne kółkiem myszy. Opisy spod przycisków przeniesione do dymka (oznaczone ⓘ) oddają tabeli 92 px — z czterech widocznych wierszy robi się siedem. Nagłówek przylega do krawędzi obszaru przewijania.</p>
 
 <h3 id="mak-naglowek">16.2. Przekrój przyklejonego nagłówka (rozdz. 14)</h3>
-<p>Powiększenie górnej krawędzi tabeli w trakcie przewijania. Tu widać, dlaczego dodanie nieprzezroczystego tła nic by nie dało: w miejscach oznaczonych <code>░</code> nie ma żadnego elementu nagłówka, któremu można by to tło przypisać.</p>
-<pre class="makieta"><code>PRZEKRÓJ PIONOWY GÓRNEJ KRAWĘDZI TABELI (rozdz. 14) — 1 znak = ok. 1 px wysokości
-
-   DZISIAJ                                 PO POPRAWCE
-   ══════════════════════════════           ══════════════════════════════   ramka tabeli
-   ░░░░░░░ szczelina 4 px ░░░░░░░           ██████████████████████████████
-   ███ [v]  RODZAJ  TYP  NAZWA ██           ███ [v]  RODZAJ  TYP  NAZWA ███   wiersz nazw
-   ███                         ██           ███                         ███   kolumn
-   ░░░ szczelina 0,3 px ░░░░░░░░░           ██████████████████████████████
-   ███ [filtr] [filtr] [filtr] ██           ███ [filtr] [filtr] [filtr] ███   wiersz filtrów
-   ──────────────────────────────           ──────────────────────────────
-     Bezpośrednia  Broń biała  Nóż            Bezpośrednia  Broń biała  Nóż   wiersze danych
-     Bezpośrednia  Boltowa  Bolter            Bezpośrednia  Boltowa  Bolter   (przewijają się)
-             ^                                         ^
-             &#x27;-- przez oba pasma ░ widać               &#x27;-- pasmo nagłówka jest
-                 przejeżdżające wiersze                    jednolite od krawędzi
-
-█ = nieprzezroczyste pasmo nagłówka.   ░ = szczelina, w której nie ma żadnego elementu
-    nagłówka, więc przewijany wiersz jest widoczny bezpośrednio. Żadne tło tego nie zakryje -
-    trzeba zlikwidować samą szczelinę.</code></pre>
+<p>Powiększenie górnej krawędzi tabeli w trakcie przewijania. Tu widać, dlaczego samo dodanie nieprzezroczystego tła nic by nie dało: w miejscach oznaczonych na czerwono nie ma żadnego elementu nagłówka, któremu można by to tło przypisać.</p>
+<div class="para">
+<figure class="przed"><figcaption>PRZED — dwa pasma, przez które przechodzą wiersze</figcaption><div class="mk mk-scroll"><div class="mk-xs"><div class="mk-frame-top"></div><div class="mk-slit"><span class="mk-slitlab">4 px</span></div><div class="mk-band is-head">✓ &nbsp; Rodzaj &nbsp; Typ &nbsp; Nazwa &nbsp; Obrażenia</div><div class="mk-slit" style="height:3px"><span class="mk-slitlab">0,3 px</span></div><div class="mk-band is-head" style="text-transform:none"><span class="mk-fin">filtr…</span> <span class="mk-fin">filtr…</span> <span class="mk-fin">filtr…</span></div><div class="mk-band is-rows">Bezpośrednia &nbsp; Broń biała &nbsp; Nóż</div><div class="mk-band is-rows">Dystansowa &nbsp; Boltowa &nbsp; Bolter</div></div></div></figure>
+<figure class="po"><figcaption>PO — pasmo nagłówka jednolite od krawędzi</figcaption><div class="mk mk-scroll"><div class="mk-xs"><div class="mk-frame-top"></div><div class="mk-band is-head">✓ &nbsp; Rodzaj &nbsp; Typ &nbsp; Nazwa &nbsp; Obrażenia</div><div class="mk-band is-head" style="text-transform:none"><span class="mk-fin">filtr…</span> <span class="mk-fin">filtr…</span> <span class="mk-fin">filtr…</span></div><div class="mk-band is-rows">Bezpośrednia &nbsp; Broń biała &nbsp; Nóż</div><div class="mk-band is-rows">Dystansowa &nbsp; Boltowa &nbsp; Bolter</div></div></div></figure>
+</div>
+<p class="podpis">Górna szczelina ma 4 px i bierze się z <code>padding: 4px</code> na obszarze przewijania; dolna ma 0,3 px i bierze się z zaokrąglenia zmierzonej wysokości wiersza nagłówka. Obie zamyka ta sama poprawka: przyklejenie całego <code>&lt;thead&gt;</code> jako jednego bloku.</p>
 
 <h3 id="mak-poziom">16.3. Telefon w poziomie (rozdz. 13, poprawka 2)</h3>
 <p>Odtworzenie Twojego zrzutu z trybu admina i stan po przywróceniu zwykłego przewijania strony przy niskim oknie.</p>
-<pre class="makieta"><code>TELEFON W POZIOMIE 869 × 329, TRYB ADMINA — DZISIAJ
 
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ADMINISTRATUM DATA VAULT                 [GENERUJ PLIKI DANYCH]          │  ^
-│   Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja wyge-    │  | pasek górny
-│   neruje data.json jako backup oraz firebase-import.json - plik go...    │  | 247 px
-│   [PEŁEN WIDOK] [WIDOK DOMYŚLNY]       [PORÓWNAJ ZAZNACZONE]             │  v = 75% ekranu
-├──────────────────────────────────────────────────────────────────────────┤
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   │  &lt;-- panel: 23 px
-│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   │  &lt;-- tabela: 8 px
-└──────────────────────────────────────────────────────────────────────────┘
+<figure class="przed"><figcaption>PRZED — pasek górny zabiera 75% ekranu, z reszty zostają dwa czarne paski</figcaption><div class="mk mk-scroll"><div class="mk-top"><div class="mk-brand"><div class="mk-sig"></div><div class="mk-name">Administratum Data Vault</div></div><div class="mk-btns"><span class="mk-btn is-ghost">Generuj pliki danych</span></div><div class="mk-hint">Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja wygeneruje data.json jako backup oraz firebase-import.json — plik gotowy do importu w root Firebase Realtime Database.</div><div class="mk-btns"><span class="mk-btn ">Pełen widok</span><span class="mk-btn ">Widok domyślny</span><span class="mk-btn is-primary">Porównaj zaznaczone</span></div><div class="mk-hint">Część danych jest domyślnie ukryta.</div></div><div class="mk-main"><div class="mk-black" style="height:13px; position:relative"><span class="mk-slitlab" style="right:6px; top:2px">panel filtrów — 23 px z 352</span></div><div class="mk-black" style="height:8px; position:relative"><span class="mk-slitlab" style="right:6px; top:-1px">tabela — 8 px</span></div></div></div></figure>
+<p class="podpis">Okno ma 329 px wysokości, a sam pasek górny 247 px. Panel filtrów dostaje 23 px z potrzebnych 352, tabela 8 px. Wszystkie 15 zakładek jest poniżej krawędzi obcięcia i nie da się do nich dojechać, bo strona nie ma paska przewijania.</p>
 
-▓ = czarne paski. Panel filtrów ściśnięty do 23 px z 352, tabela do 8 px.
-    Wszystkie 15 zakładek jest poniżej krawędzi obcięcia i nie da się do nich dojechać:
-    strona nie ma paska przewijania, bo .app ma sztywne height:100dvh.</code></pre>
-<pre class="makieta"><code>TELEFON W POZIOMIE 869 × 329, TRYB ADMINA - PO POPRAWCE 2 (rozdz. 13)
-
-┌──────────────────────────────────────────────────────────────────────────┐
-│ ADMINISTRATUM DATA VAULT  [GENERUJ PLIKI DANYCH](i)                      │  ^ 87 px
-│ [PEŁEN WIDOK] [WIDOK DOMYŚLNY](i)      [PORÓWNAJ ZAZNACZONE]             │  v
-├──────────────────────────────────────────────────────────────────────────┤
-│ &gt; FILTRY                                                                 │
-│ SZUKAJ (GLOBALNIE)   [_____________________________________]             │
-│ [ ] Czy wyświetlić zakładki dotyczące tworzenia postaci?                 │
-│ [ ] Czy wyświetlić zakładki dotyczące zasad walki?                       │
-├──────────────────────────────────────────────────────────────────────────┤
-│ [NOTATKI] [BESTIARIUSZ] [HORDY] [CECHY] [STANY] [TALENTY] [BRONIE]       │
-│ [PANCERZE] [PSIONIKA] [EKWIPUNEK] [OBRZĘDY] [AUGUMENTACJE] ...           │
-├──────────────────────────────────────────────────────────────────────────┤
-│ [v]│ RODZAJ    │ TYP        │ NAZWA          │ OBRAŻENIA │ DK │ PP       │
-│ ───┼───────────┼────────────┼────────────────┼───────────┼────┼────      │
-│ [ ]│ Bezpośr.  │ Broń biała │ Nóż            │ S+2       │ 2  │ -        │
-│ [ ]│ Dystans.  │ Boltowa    │ Bolter         │ 10+1ED    │ 2  │ -1       │
-│                                                          v  v  v         │  &lt;-- strona przewija się
-└──────────────────────────────────────────────────────────────────────────┘
-
-Poniżej 520 px wysokości okna wraca zwykłe przewijanie strony - to samo, które już dziś
-dobrze działa w pionie. Panel filtrów ma pełne 354 px, tabela 2704 px, wszystkie zakładki
-sa dostępne. Tabela przewija się w bok, bo w poziomie jest na nią dość szerokości.</code></pre>
+<figure class="po"><figcaption>PO — poniżej 520 px wysokości okna wraca zwykłe przewijanie strony</figcaption><div class="mk mk-scroll"><div class="mk-top"><div class="mk-brand"><div class="mk-sig"></div><div class="mk-name">Administratum Data Vault</div></div><div class="mk-btns"><span class="mk-btn is-ghost">Generuj pliki danych ⓘ</span><span class="mk-btn ">Pełen widok</span><span class="mk-btn ">Widok domyślny ⓘ</span><span class="mk-btn is-primary">Porównaj zaznaczone</span></div></div><div class="mk-main"><div class="mk-box"><div class="mk-ph">▸ Filtry</div><div class="mk-pb"><div class="mk-lab">Szukaj (globalnie)</div><div class="mk-input">np. Pist, Brutalna, IMPERIUM…</div><div class="mk-cb"><i></i><span>Czy wyświetlić zakładki dotyczące tworzenia postaci?</span></div></div></div><div class="mk-box"><div class="mk-tabs"><span class="mk-tab">Notatki</span><span class="mk-tab">Bestiariusz</span><span class="mk-tab">Hordy</span><span class="mk-tab">Cechy</span><span class="mk-tab">Stany</span><span class="mk-tab">Talenty</span><span class="mk-tab is-active">Bronie</span><span class="mk-tab">Pancerze</span><span class="mk-tab">Psionika</span><span class="mk-tab">Ekwipunek</span><span class="mk-tab">Obrzędy</span></div><table class="mk-tbl"><thead><tr><th>✓</th><th>Rodzaj</th><th>Typ</th><th>Nazwa</th><th>Obrażenia</th><th>DK</th></tr></thead></table><table class="mk-tbl"><tbody><tr><td></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td><td><span class="mk-fin">filtr…</span> <span class="mk-caret">▾</span></td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń biała</td><td>Nóż</td><td>S+2</td><td>2</td></tr><tr><td>☐</td><td>Bezpośr.</td><td>Broń biała</td><td>Nóż bojowy Astartes</td><td>S+3</td><td>2</td></tr><tr><td>☐</td><td>Dystans.</td><td>Boltowa</td><td>Bolter</td><td>10+1ED</td><td>2</td></tr></tbody></table></div><div class="mk-hint" style="text-align:center">▼ strona przewija się dalej ▼</div></div></div></figure>
+<p class="podpis">Panel ma pełne 354 px, tabela 2704 px, wszystkie zakładki są dostępne. Tabela przewija się w bok, bo w poziomie jest na nią dość szerokości — kart tu nie potrzeba.</p>
 
 <h3 id="mak-pion">16.4. Telefon w pionie — zakładka „Bronie” (rozdz. 15)</h3>
-<p>Zakładka startowa gracza: 130 rekordów, karta 687 px. Po lewej stan dzisiejszy, niżej stan po dołożeniu paska narzędzi i zwiniętego grupowania.</p>
-<pre class="makieta"><code>TELEFON 390 × 800, WIDOK GRACZA, ZAKŁADKA &quot;BRONIE&quot; — DZISIAJ
+<p>Zakładka startowa gracza: 130 rekordów, karta 687 px.</p>
+<div class="para">
+<figure class="przed"><figcaption>PRZED — 833 px interfejsu przed pierwszą kartą, dalej płaska lista 130 kart</figcaption><div class="mk-stage"><div class="mk"><div class="mk-top"><div class="mk-brand"><div class="mk-sig"></div><div class="mk-name">Administratum Data Vault</div></div><div class="mk-btns"><span class="mk-btn ">Strona główna</span><span class="mk-btn ">Pełen widok</span><span class="mk-btn ">Widok domyślny</span></div><div class="mk-btns"><span class="mk-btn is-primary">Porównaj zaznaczone</span></div></div><div class="mk-main"><div class="mk-box"><div class="mk-ph">▸ Filtry</div><div class="mk-pb"><div class="mk-lab">Szukaj (globalnie)</div><div class="mk-input">np. Pist, Brutalna, IMPERIUM…</div><div class="mk-cb"><i></i><span>Czy wyświetlić zdezaktualizowane wpisy?</span></div><div class="mk-cb"><i></i><span>Czy wyświetlić zakładki dotyczące tworzenia postaci?</span></div><div class="mk-cb is-red"><i></i><span>Czy wyświetlić zakładki dotyczące zasad walki?</span></div><div class="mk-cb"><i></i><span>Czy wyświetlić zakładki dotyczące pojazdów?</span></div><div class="mk-hint" style="margin-top:8px">▸ Kliknij nagłówek, aby sortować.<br>▸ Drugi wiersz nagłówka: filtry per kolumna.<br>▸ Zaznacz 2+ wiersze, aby porównać.</div></div></div><div class="mk-box"><div class="mk-tabs"><span class="mk-tab">Cechy</span><span class="mk-tab">Stany</span><span class="mk-tab">Słowa kluczowe</span><span class="mk-tab">Talenty</span><span class="mk-tab">Modlitwy</span><span class="mk-tab">Psionika</span><span class="mk-tab">Augumentacje</span><span class="mk-tab">Ekwipunek</span><span class="mk-tab">Pancerze</span><span class="mk-tab is-active">Bronie</span><span class="mk-tab">Obrzędy</span></div></div><div class="mk-list" style="position:relative;padding:0"><div class="mk-card"><div class="mk-card-sel"><i></i></div><div class="mk-f"><span>Rodzaj</span><b>Bezpośrednia</b></div><div class="mk-f"><span>Typ</span><b>Broń biała</b></div><div class="mk-f"><span>Nazwa</span><b>Nóż</b></div><div class="mk-f"><span>Obrażenia</span><b>S+2</b></div><div class="mk-f"><span>DK</span><b>2</b></div><div class="mk-more">… jeszcze 11 pól …</div></div><div class="mk-card"><div class="mk-card-sel"><i></i></div><div class="mk-f"><span>Rodzaj</span><b>Bezpośrednia</b></div><div class="mk-f"><span>Typ</span><b>Broń biała</b></div><div class="mk-f"><span>Nazwa</span><b>Nóż bojowy Astartes</b></div><div class="mk-f"><span>Obrażenia</span><b>S+3</b></div><div class="mk-f"><span>DK</span><b>2</b></div><div class="mk-more">… jeszcze 11 pól …</div></div></div></div></div></div></figure>
+<figure class="po"><figcaption>PO — przyklejony pasek narzędzi i zwinięte grupy</figcaption><div class="mk-stage"><div class="mk"><div class="mk-top"><div class="mk-brand"><div class="mk-sig"></div><div class="mk-name">Administratum Data Vault</div></div><div class="mk-btns"><span class="mk-btn ">Strona główna</span><span class="mk-btn ">Pełen widok</span><span class="mk-btn ">Widok domyślny</span></div><div class="mk-btns"><span class="mk-btn is-primary">Porównaj zaznaczone</span></div></div><div class="mk-main"><div class="mk-box"><div class="mk-ph">▸ Filtry</div><div class="mk-pb"><div class="mk-cb"><i></i><span>Czy wyświetlić zakładki dotyczące tworzenia postaci?</span></div></div></div><div class="mk-box"><div class="mk-tabs"><span class="mk-tab">Cechy</span><span class="mk-tab">Stany</span><span class="mk-tab">Słowa kluczowe</span><span class="mk-tab">Talenty</span><span class="mk-tab">Modlitwy</span><span class="mk-tab">Psionika</span><span class="mk-tab">Augumentacje</span><span class="mk-tab">Ekwipunek</span><span class="mk-tab">Pancerze</span><span class="mk-tab is-active">Bronie</span><span class="mk-tab">Obrzędy</span></div></div><div class="mk-box"><div class="mk-tools"><div class="mk-input">Szukaj w tej zakładce…</div><div class="mk-trow"><span class="mk-btn ">Filtry<span class="mk-badge">1</span></span><span class="mk-btn ">Sortuj</span><span class="mk-count">Pokazano 130 z 130</span></div><div class="mk-chips"><span class="mk-chip is-default">Widok domyślny: Typ — 3 z 19 <b>✕</b></span></div></div><div class="mk-list"><div class="mk-grp"><span>▸</span><span>Boltowa</span><em>12 poz.</em></div><div class="mk-grp"><span>▸</span><span>Broń biała</span><em>11 poz.</em></div><div class="mk-grp"><span>▸</span><span>Broń łańcuchowa</span><em>10 poz.</em></div><div class="mk-grp"><span>▸</span><span>Broń dystansowa</span><em>10 poz.</em></div><div class="mk-grp"><span>▸</span><span>Broń energetyczna</span><em>9 poz.</em></div><div class="mk-more">… jeszcze 14 kategorii …</div></div></div></div></div></div></figure>
+</div>
+<p class="podpis">Po lewej: pasek górny 239 px, panel filtrów 393 px, zakładki 167 px — i dopiero potem pierwsza karta. Pole wyszukiwania odjeżdża razem z treścią. Po prawej: panel filtrów skrócony do samych przełączników, nad listą przyklejony pasek (132 px) z wyszukiwaniem, filtrami, sortowaniem, licznikiem i żetonem widoku domyślnego, a lista to 19 nagłówków kategorii zamiast 130 kart — 2,5 ekranu zamiast 112.</p>
 
-┌──────────────────────────────────────────────┐
-│ ADMINISTRATUM DATA VAULT                     │  ^
-│ [STRONA GŁÓWNA]  [PEŁEN WIDOK]               │  | 239 px
-│ [WIDOK DOMYŚLNY] [PORÓWNAJ ZAZNACZONE]       │  v
-├──────────────────────────────────────────────┤
-│ &gt; FILTRY                                     │  ^
-│ SZUKAJ (GLOBALNIE)                           │  | 393 px
-│ [__________________________________]         │  | &lt;-- jedyne pole
-│ [ ] Czy wyświetlić zakładki tworzenia?       │  |     wyszukiwania
-│ [ ] Czy wyświetlić zakładki zasad walki?     │  |
-│ [ ] Czy wyświetlić zakładki pojazdów?        │  |
-│ &gt; Kliknij nagłówek, aby sortować.            │  v
-├──────────────────────────────────────────────┤
-│ [CECHY] [STANY] [SŁOWA KLUCZOWE]             │  ^
-│ [TALENTY] [MODLITWY] [PSIONIKA]              │  | 167 px
-│ [AUGUMENTACJE] [EKWIPUNEK] [PANCERZE]        │  |
-│ [BRONIE] [OBRZĘDY]                           │  v
-├──────────────────────────────────────────────┤
-│ ┌──────────────────────────────────┐         │  === 833 px od góry strony
-│ │                            [ ]   │         │  ^
-│ │ RODZAJ       Bezpośrednia        │         │  |
-│ │ TYP          Broń biała          │         │  | karta 1 z 130
-│ │ NAZWA        Nóż                 │         │  | 687 px
-│ │ OBRAŻENIA    S+2                 │         │  |
-│ │ ... jeszcze 11 pól ...           │         │  v
-│ └──────────────────────────────────┘         │
-│ ┌──────────────────────────────────┐         │
-│ │ ...                karta 2 z 130 │         │
-└──────────────────────────────────────────────┘
+<h3 id="mak-grupa">16.5. Rozwinięta grupa i działające wyszukiwanie</h3>
+<div class="para">
+<figure class="po"><figcaption>Wpisana fraza zawęża listę, a grupa z trafieniami rozwija się sama</figcaption><div class="mk-stage"><div class="mk"><div class="mk-box" style="border:none"><div class="mk-tools"><div class="mk-input">łańcuchow</div><div class="mk-trow"><span class="mk-btn ">Filtry<span class="mk-badge">2</span></span><span class="mk-btn ">Sortuj</span><span class="mk-count">Pokazano 16 z 130</span></div><div class="mk-chips"><span class="mk-chip">Szukaj: „łańcuchow” <b>✕</b></span><span class="mk-chip is-default">Typ — 3 z 19 <b>✕</b></span></div></div><div class="mk-list"><div class="mk-grp"><span>▸</span><span>Boltowa</span><em>12 poz.</em></div><div class="mk-grp is-open"><span>▾</span><span>Broń łańcuchowa</span><em>10 poz.</em></div><div class="mk-card is-nested"><div class="mk-card-sel"><i></i></div><div class="mk-f"><span>Rodzaj</span><b>Bezpośrednia</b></div><div class="mk-f"><span>Typ</span><b>Broń łańcuchowa</b></div><div class="mk-f"><span>Nazwa</span><b>Topór łańcuchowy</b></div><div class="mk-f"><span>Obrażenia</span><b>S+5</b></div><div class="mk-f"><span>DK</span><b>5</b></div><div class="mk-more">… jeszcze 9 pól …</div></div><div class="mk-card is-nested"><div class="mk-card-sel"><i></i></div><div class="mk-f"><span>Rodzaj</span><b>Bezpośrednia</b></div><div class="mk-f"><span>Typ</span><b>Broń łańcuchowa</b></div><div class="mk-f"><span>Nazwa</span><b>Miecz łańcuchowy</b></div><div class="mk-f"><span>Obrażenia</span><b>S+5</b></div><div class="mk-f"><span>DK</span><b>4</b></div><div class="mk-more">… jeszcze 9 pól …</div></div><div class="mk-grp"><span>▸</span><span>Broń dystansowa</span><em>10 poz.</em></div></div></div></div></div></figure>
+<figure class="po"><figcaption>Co się dzieje w tym stanie</figcaption><div style="padding:14px 16px">
+<ul style="margin:0">
+<li>Licznik pokazuje <strong>16 ze 130</strong> — zawężenie jest widoczne, a nie domyślane.</li>
+<li>Dwa żetony: wpisana fraza i filtr widoku domyślnego. Każdy z osobnym <strong>✕</strong>, więc zdejmuje się je pojedynczo, bez kasowania reszty.</li>
+<li>Odznaka przy „Filtry” liczy aktywne filtry — tu dwa.</li>
+<li><strong>Karta pozostaje pełna</strong>, zgodnie z Twoim ustaleniem z rozdziału 15.13. Zmienia się tylko to, ile kart trzeba minąć, zanim dojdzie się do właściwej.</li>
+<li>Zwinięcie grupy z powrotem to jedno stuknięcie w jej nagłówek.</li>
+</ul>
+</div></figure>
+</div>
 
-130 kart × 687 px = 89 310 px = 112 ekranów przewijania. Pole wyszukiwania zostaje
-833 px nad pierwszą kartą i odjeżdża razem z treścią - przy dwudziestej karcie dzieli
-Cię od niego ok. 9000 px. Filtrów kolumn i sortowania nie ma wcale.</code></pre>
-<pre class="makieta"><code>TELEFON 390 × 800, ZAKŁADKA &quot;BRONIE&quot; — PO POPRAWKACH (rozdz. 15.5 + 15.13)
-
-┌──────────────────────────────────────────────┐
-│ ADMINISTRATUM DATA VAULT                     │  ^ 239 px
-│ [STRONA GŁÓWNA]  [PEŁEN WIDOK]               │  | (przewija się
-│ [WIDOK DOMYŚLNY] [PORÓWNAJ ZAZNACZONE]       │  v  razem ze stroną)
-├──────────────────────────────────────────────┤
-│ &gt; FILTRY  [ ] tworzenie postaci              │  ^ 393 px
-│           [ ] zasady walki [ ] pojazdy       │  v
-├──────────────────────────────────────────────┤
-│ [CECHY] [STANY] [SŁOWA KLUCZOWE] ...         │  ^ 167 px
-│ [BRONIE] [OBRZĘDY]                           │  v
-├──────────────────────────────────────────────┤
-│ ▒ [Szukaj w tej zakładce...          ]       │  ^ PASEK PRZYKLEJONY
-│ ▒ [FILTRY 1] [SORTUJ]  Pokazano 130/130      │  | 132 px - zostaje
-│ ▒ ( Widok domyślny: Typ - 3 z 19  x )        │  v na ekranie zawsze
-├──────────────────────────────────────────────┤
-│ ┌──────────────────────────────────┐ &gt;       │  ^
-│ │ BOLTOWA                  12 poz. │         │  |
-│ └──────────────────────────────────┘         │  |
-│ ┌──────────────────────────────────┐ &gt;       │  |
-│ │ BROŃ BIAŁA               11 poz. │         │  | 19 nagłówków grup
-│ └──────────────────────────────────┘         │  | 2040 px = 2,5 ekranu
-│ ┌──────────────────────────────────┐ &gt;       │  |
-│ │ BROŃ ŁAŃCUCHOWA          10 poz. │         │  | zero rysowanych
-│ └──────────────────────────────────┘         │  | kart
-│ ┌──────────────────────────────────┐ &gt;       │  |
-│ │ BROŃ DYSTANSOWA          10 poz. │         │  |
-│ └──────────────────────────────────┘         │  |
-│ ... jeszcze 15 kategorii ...                 │  v
-└──────────────────────────────────────────────┘
-
-Cała zakładka mieści się na 2,5 ekranu zamiast na 112. Widać rozkład danych bez otwierania
-czegokolwiek, a żeton &quot;Widok domyślny: Typ - 3 z 19 x&quot; mówi wprost, że część rekordów jest
-odfiltrowana, i pozwala zdjąć ten jeden filtr bez kasowania reszty.</code></pre>
-
-<h3 id="mak-grupa">16.5. Telefon w pionie — rozwinięta grupa i działające wyszukiwanie</h3>
-<p>Karta pozostaje pełna, zgodnie z Twoim ustaleniem z rozdziału 15.13 — zmienia się tylko to, ile kart naraz trzeba mijać.</p>
-<pre class="makieta"><code>TELEFON 390 × 800 — JEDNA GRUPA ROZWINIĘTA, W TLE DZIAŁA WYSZUKIWANIE
-
-┌──────────────────────────────────────────────┐
-│ ▒ [łańcuchow                         ]       │  ^ pasek przyklejony
-│ ▒ [FILTRY 2] [SORTUJ]   Pokazano 16/130      │  | 132 px
-│ ▒ ( Szukaj: &quot;łańcuchow&quot; x ) ( Typ x )        │  v
-├──────────────────────────────────────────────┤
-│ ┌──────────────────────────────────┐ &gt;       │
-│ │ BOLTOWA                  12 poz. │         │
-│ └──────────────────────────────────┘         │
-│ ┌──────────────────────────────────┐ v       │  &lt;-- rozwinięta
-│ │ BROŃ ŁAŃCUCHOWA          10 poz. │         │
-│ └──────────────────────────────────┘         │
-│   ┌────────────────────────────────┐         │
-│   │                          [ ]   │         │  ^
-│   │ RODZAJ      Bezpośrednia       │         │  |
-│   │ TYP         Broń łańcuchowa    │         │  | pełna karta
-│   │ NAZWA       Topór łańcuchowy   │         │  | 687 px - bez
-│   │ OBRAŻENIA   S+5                │         │  | zmian, zgodnie
-│   │ DK          5                  │         │  | z ustaleniem
-│   │ ... jeszcze 9 pól ...          │         │  v z 15.13
-│   └────────────────────────────────┘         │
-│   ┌────────────────────────────────┐         │
-│   │ ...         Miecz łańcuchowy   │         │
-│   └────────────────────────────────┘         │
-│ ┌──────────────────────────────────┐ &gt;       │
-│ │ BROŃ DYSTANSOWA          10 poz. │         │
-│ └──────────────────────────────────┘         │
-└──────────────────────────────────────────────┘
-
-Karty pojawiają się tylko tam, gdzie ich szukasz. Rozwinięta grupa ma jaśniejszy nagłówek
-i strzałkę w dół. Po wpisaniu frazy grupy z trafieniami rozwijają się same, a puste znikają;
-licznik pokazuje 16 ze 130. Zwinięcie grupy z powrotem to jedno stuknięcie.</code></pre>
-
-<h3 id="mak-arkusze">16.6. Telefon — arkusze filtrów i wyboru wartości (rozdz. 15.5)</h3>
-<p>Dwa poziomy: lista kolumn zakładki ze stanem każdego filtra, a pod nią wybór konkretnych wartości — ten drugi ekran buduje funkcja <code>openFilterMenu()</code>, która już istnieje i działa na komputerze.</p>
-<pre class="makieta"><code>TELEFON — ARKUSZ FILTRÓW PO STUKNIĘCIU W &quot;FILTRY&quot; (rozdz. 15.5)
-
-┌──────────────────────────────────────────────┐
-│ ▒ [Szukaj w tej zakładce...          ]       │
-│ ▒ [FILTRY 1] [SORTUJ]  Pokazano 130/130      │
-├──────────────────────────────────────────────┤
-│ ┌──────────────────────────────────┐ &gt;       │
-│ │ BOLTOWA                  12 poz. │         │
-│ └──────────────────────────────────┘         │
-│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░         │  &lt;-- tło przyciemnione
-├──────────────────────────────────────────────┤
-│ FILTRY KOLUMN - BRONIE     [ZAMKNIJ]         │  ^ arkusz wysuwa się
-│ ────────────────────────────────────         │  | od dołu, do 70%
-│ RODZAJ                             &gt;         │  | wysokości ekranu
-│   wszystkie wartości                         │  |
-│ ────────────────────────────────────         │  |
-│ TYP                                &gt;         │  | &lt;-- stan filtra
-│   3 z 19 wartości                            │  |     widoczny od razu
-│ ────────────────────────────────────         │  |
-│ NAZWA                              &gt;         │  |
-│   [______________________________]           │  | &lt;-- filtr tekstowy
-│ ────────────────────────────────────         │  |
-│ OBRAŻENIA                          &gt;         │  |
-│   wszystkie wartości                         │  |
-│ ────────────────────────────────────         │  |
-│ ... jeszcze 11 kolumn ...                    │  v
-└──────────────────────────────────────────────┘
-
-Lista kolumn zakładki ze stanem każdego filtra. Stuknięcie kolumny otwiera wybór wartości -
-ten sam, który na komputerze otwiera przycisk v, budowany istniejącą funkcją openFilterMenu().
-Arkusz wysuwa się od dołu, tak jak dymek z opisem cechy po poprawce z rozdziału 6.6.</code></pre>
-<pre class="makieta"><code>TELEFON — WYBÓR WARTOŚCI KOLUMNY (istniejąca funkcja openFilterMenu)
-
-┌──────────────────────────────────────────────┐
-│ TYP - WYBIERZ WARTOŚCI     [ZAMKNIJ]         │  ^
-│ [filtruj wartości...                ]        │  |
-│ [ZAZNACZ WSZYSTKO]  [WYCZYŚĆ]                │  |
-│ ────────────────────────────────────         │  |
-│ [x] Boltowa                  12 poz.         │  | ta sama lista,
-│ [x] Broń biała               11 poz.         │  | która na komputerze
-│ [x] Broń łańcuchowa          10 poz.         │  | otwiera przycisk v
-│ [ ] Broń dystansowa          10 poz.         │  |
-│ [ ] Broń energetyczna         9 poz.         │  |
-│ [ ] Laserowa                  9 poz.         │  |
-│ [ ] Ogniowa                   8 poz.         │  |
-│ ... jeszcze 12 wartości ...                  │  v
-└──────────────────────────────────────────────┘
-
-Odznaczenie wartości usuwa całą grupę z listy - to ta sama operacja, która dziś po cichu
-wykonuje widok domyślny. Po zamknięciu arkusza licznik i żetony w pasku od razu to pokazują.</code></pre>
+<h3 id="mak-arkusze">16.6. Arkusze filtrów i wyboru wartości (rozdz. 15.5)</h3>
+<p>Dwa poziomy. Pierwszy to lista kolumn zakładki ze stanem każdego filtra, drugi — wybór konkretnych wartości. Ten drugi ekran buduje funkcja <code>openFilterMenu()</code>, która już istnieje i działa na komputerze pod przyciskiem <code>▾</code>.</p>
+<div class="para">
+<figure class="po"><figcaption>Arkusz filtrów — lista kolumn ze stanem każdego filtra</figcaption><div class="mk-stage"><div class="mk"><div class="mk-box" style="border:none"><div class="mk-tools"><div class="mk-input">Szukaj w tej zakładce…</div><div class="mk-trow"><span class="mk-btn ">Filtry<span class="mk-badge">1</span></span><span class="mk-btn ">Sortuj</span><span class="mk-count">Pokazano 130 z 130</span></div><div class="mk-chips"><span class="mk-chip is-default">Widok domyślny: Typ — 3 z 19 <b>✕</b></span></div></div><div class="mk-list" style="padding:6px 6px 0"><div class="mk-grp"><span>▸</span><span>Boltowa</span><em>12 poz.</em></div></div><div class="mk-dim"><div class="mk-sheet"><div class="mk-sheet-h"><div class="mk-sheet-t">Filtry kolumn — Bronie</div><span class="mk-btn ">Zamknij</span></div><div class="mk-crow"><div><div class="mk-cname">Rodzaj</div><div class="mk-cstate">wszystkie wartości</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Typ</div><div class="mk-cstate is-on">3 z 19 wartości</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Nazwa</div><div class="mk-input" style="margin-top:2px">wpisz fragment…</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Obrażenia</div><div class="mk-cstate">wszystkie wartości</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Zasięg</div><div class="mk-cstate">wszystkie wartości</div></div><span class="mk-go">▸</span></div><div class="mk-more">… jeszcze 10 kolumn …</div></div></div></div></div></div></figure>
+<figure class="po"><figcaption>Wybór wartości jednej kolumny — istniejący komponent</figcaption><div class="mk-stage"><div class="mk"><div class="mk-box" style="border:none"><div class="mk-tools"><div class="mk-input">Szukaj w tej zakładce…</div><div class="mk-trow"><span class="mk-btn ">Filtry<span class="mk-badge">1</span></span><span class="mk-btn ">Sortuj</span><span class="mk-count">Pokazano 130 z 130</span></div><div class="mk-chips"><span class="mk-chip is-default">Widok domyślny: Typ — 3 z 19 <b>✕</b></span></div></div><div class="mk-list" style="padding:6px 6px 0"><div class="mk-grp"><span>▸</span><span>Boltowa</span><em>12 poz.</em></div></div><div class="mk-dim"><div class="mk-sheet"><div class="mk-sheet-h"><div class="mk-sheet-t">Typ — wybierz wartości</div><span class="mk-btn ">Zamknij</span></div><div class="mk-input" style="margin-bottom:6px">filtruj wartości…</div><div class="mk-trow" style="margin-bottom:6px"><span class="mk-btn ">Zaznacz wszystko</span><span class="mk-btn ">Wyczyść</span></div><div class="mk-vrow"><i class="is-on"></i><span>Boltowa</span><em>12 poz.</em></div><div class="mk-vrow"><i class="is-on"></i><span>Broń biała</span><em>11 poz.</em></div><div class="mk-vrow"><i class="is-on"></i><span>Broń łańcuchowa</span><em>10 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Broń dystansowa</span><em>10 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Broń energetyczna</span><em>9 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Laserowa</span><em>9 poz.</em></div><div class="mk-more">… jeszcze 13 wartości …</div></div></div></div></div></div></figure>
+</div>
+<p class="podpis">Arkusz wysuwa się od dołu i zajmuje najwyżej 70% wysokości ekranu — to ten sam wzorzec, który moduł przyjął dla dymka z opisem cechy w poprawce z rozdziału 6.6. Odznaczenie wartości usuwa całą grupę z listy; po zamknięciu arkusza licznik i żetony w pasku od razu to pokazują.</p>
 
 <div class="karta uwaga">
-<p style="margin:0"><strong>Czego te makiety nie pokazują.</strong> To są szkice układu, a nie projekt graficzny: kolory, odstępy, zaokrąglenia i fonty zostają takie, jakie moduł ma dziś. Nie pokazują też animacji wysuwania arkusza ani zachowania przy obracaniu telefonu w trakcie pracy. Proporcje pionowe są zachowane tam, gdzie podałem wysokości w pikselach; szerokości są umowne, bo rysunek tekstowy ma stałą szerokość znaku.</p>
+<p style="margin:0"><strong>Czego te makiety nie pokazują.</strong> To szkice układu, nie projekt graficzny — dobór kolorów, odstępów i zaokrągleń zostaje taki, jaki moduł ma dziś. Nie pokazują animacji wysuwania arkusza, zachowania przy obracaniu telefonu w trakcie pracy ani stanów pustych („brak wyników”). Treść komórek jest przykładowa, bo <code>data.json</code> nie jest częścią repozytorium; liczby rekordów i wysokości pasm pochodzą z pomiarów opisanych w rozdziałach 13–15.</p>
 </div>
 
 <hr>
