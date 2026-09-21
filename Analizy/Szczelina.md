@@ -12,7 +12,8 @@
 | **Metoda** | Pomiar geometrii (`getBoundingClientRect`) oraz sonda pikselowa: zrzut pasma nagłówka i odczyt średniej barwy każdego wiersza device-pikseli; kontrolowane wyłączanie pojedynczych deklaracji CSS i kolorowanie poszczególnych elementów, żeby ustalić, który element maluje który piksel; test przecieku z wierszami przemalowanymi na jaskrawą czerwień |
 | **Konfiguracje testowe** | 8 rozmiarów okna od 1280×610 do 1920×1080, skalowanie 100%, 125%, 150% i 200%, 4–5 pozycji przewinięcia |
 | **Stan repozytorium w chwili diagnozy** | `HEAD` = `38d7668` (gałąź `claude/charming-meitner-45xuh7`, zsynchronizowana z `main`) |
-| **Zmiany w kodzie** | **Wdrożone.** Rekomendacja z rozdz. 8.1 została zatwierdzona przez użytkownika (wiadomość 5) i wprowadzona w `DataVault/style.css`. Przebieg i weryfikacja: rozdz. 11 |
+| **Status** | **Zamknięty.** Użytkownik potwierdził wynik na własnym sprzęcie w obu trybach wyświetlania i uznał temat za zakończony (wiadomości 6 i 7). Podsumowanie: rozdz. 13 |
+| **Zmiany w kodzie** | **Wdrożone** w `DataVault/style.css`, w dwóch etapach: rozdz. 11 (szczelina C i przeskok nagłówka) oraz rozdz. 12 (szczelina D) |
 | **Analiza siostrzana** | `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdział 14 — pierwszy opis szczelin w przyklejonym nagłówku |
 
 ### Główny wniosek
@@ -28,7 +29,7 @@ Rekomendowane rozwiązanie (rozdz. 8) usuwa **oba** objawy jednocześnie, bo lik
 
 Rekomendacja ma swoją cenę: nad nazwami kolumn zostają dwie poziome linie zamiast trzech. Cena została policzona w rozdz. 8.3, a w **rozdz. 8.4 opisana prostym językiem, bez żargonu**.
 
-> **Stan na dziś: rekomendacja została zatwierdzona przez użytkownika i wdrożona.** Rozdziały 3–7 opisują diagnozę i stan sprzed wdrożenia — są zapisem tego, jak ustalono przyczynę, i celowo zostają w dokumencie. Aktualny stan kodu wraz z pomiarami kontrolnymi opisuje **rozdz. 11**.
+> **Stan na dziś: temat zamknięty.** Wszystkie zgłoszone objawy zostały usunięte i potwierdzone przez użytkownika na jego sprzęcie. Rozdziały 3–7 opisują diagnozę i stan sprzed wdrożenia — są zapisem tego, jak ustalono przyczynę, i celowo zostają w dokumencie. Aktualny stan kodu opisują **rozdz. 11 i 12**, a podsumowanie całości **rozdz. 13**.
 
 ---
 
@@ -70,6 +71,10 @@ Zapisane bez skracania, zgodnie z zasadą 10 z `AGENTS.md`.
 > Jest jednak kolejna szczelina do załatania. Pomiędzy nagłówkiem kolumny a polem do wpisania filtra. Załączam screena z widocznym czerwonym fragmentem.
 >
 > *(Do wiadomości dołączony zrzut ekranu: kolumna „SŁOWA KLUCZOWE", pod nazwą kolumny widoczny czerwony fragment treści wiersza, poniżej pole filtra, a jeszcze niżej wiersz z czerwonym tekstem „IMPERIUM, OSTRZE, SZUMOWINY".)*
+
+> **Wiadomość 7 — potwierdzenie i zamknięcie tematu**
+>
+> Na moje oko jest już ok. Przy przewijaniu, jeżeli jest luka po bokach, to jest niewidoczna przy użytkowaniu. Zaktualizuj analizę i uznajemy problem za zakończony.
 
 ### Materiał dowodowy od użytkownika
 
@@ -510,7 +515,7 @@ Jeżeli tak — wdrażane jest rozwiązanie z rozdziału 8.1. Jeżeli nie — zo
 1. ~~**Decyzja użytkownika** co do kosztu wizualnego z rozdz. 8.3.~~ **Wykonane** — zgoda udzielona w wiadomości 5.
 2. ~~Wdrożenie zmiany z rozdz. 8.1.~~ **Wykonane** — patrz rozdz. 11.
 3. ~~Aktualizacja `DetaleLayout.md`.~~ **Wykonane** — patrz rozdz. 11.3.
-4. Sprawdzenie na sprzęcie użytkownika w obu trybach — pełny ekran i okno — bo próg zapytania medialnego `max-height: 760px` wypada w innym miejscu przy każdym ustawieniu skalowania w Windows.
+4. ~~Sprawdzenie na sprzęcie użytkownika w obu trybach — pełny ekran i okno.~~ **Wykonane** — użytkownik potwierdził w wiadomości 6: „Nic teraz nie drga. Zarówno w trybie pełnoekranowym jak i w oknie”.
 5. Do rozważenia niezależnie od powyższego: próg `max-height: 760px` przełącza pasek górny skokowo i to on odpowiada za to, że układ raz wypada na pełnym pikselu, a raz na ułamku. Nie jest to błąd, ale warto o tym pamiętać przy każdej przyszłej zmianie wysokości paska górnego — przesunięcie progu przesunie też granicę, na której zmienia się zachowanie subpikselowe.
 
 ---
@@ -592,9 +597,9 @@ Warto zauważyć wiersz `1536×864` i `1920×864`: tam przed zmianą ciemnej szc
 
 ### 11.4 Co zostało do sprawdzenia po stronie użytkownika
 
-Pomiary wykonano na silniku Chromium w środowisku bezgłowym. Zostają dwie rzeczy, których nie da się sprawdzić zdalnie:
+Pomiary wykonano na silniku Chromium w środowisku bezgłowym. Były dwie rzeczy, których nie dało się sprawdzić zdalnie:
 
-1. **Obejrzenie wyniku na sprzęcie użytkownika w obu trybach** — pełny ekran i okno. Próg zapytania medialnego `max-height: 760px` wypada w innym miejscu przy każdym ustawieniu skalowania w Windows, a to właśnie ten próg decydował o tym, czy szczelina była widoczna (rozdz. 5.1).
+1. ~~**Obejrzenie wyniku na sprzęcie użytkownika w obu trybach** — pełny ekran i okno.~~ **Zamknięte** — potwierdzone w wiadomości 6, w obu trybach.
 2. **Firefox**, jeżeli jest używany. Model scalonych obramowań jest w standardzie CSS, więc zachowanie powinno być takie samo, ale zaokrąglanie subpikselowe bywa różne między silnikami (rozdz. 9).
 
 Punkt 5 z rozdziału 10 — uwaga o progu `max-height: 760px` przy przyszłych zmianach wysokości paska górnego — pozostaje aktualny niezależnie od tej poprawki.
@@ -706,8 +711,62 @@ Wartość „88 px" jest **identyczna we wszystkich trzech przypadkach**, także
 | Przeniesienie bocznych linii na `.tableFrame` (`border-left`/`border-right`) | Linie przesuwają się o 4 px na zewnątrz, bo `.tableViewport` ma `padding: 0 4px 4px`. Ramka staje się domkniętym prostokątem |
 | Zostawić bez zmian | Przy przewijaniu na prawej krawędzi nagłówka widać 1-pikselową pionową linię przejeżdżającej treści |
 
-Decyzja należy do użytkownika i nie została jeszcze podjęta.
+**Decyzja użytkownika (wiadomość 7): zostaje bez zmian.** Uzasadnienie użytkownika: „Przy przewijaniu, jeżeli jest luka po bokach, to jest niewidoczna przy użytkowaniu". Jest to świadomie przyjęta resztka, a nie przeoczenie — opisana tutaj po to, żeby przy przyszłej pracy nad tabelą nie została zdiagnozowana od zera jako nowa usterka. Gdyby kiedyś zaczęła przeszkadzać, pierwszy wariant z tabeli wyżej jest gotowy do wdrożenia i jest dokładną analogią poprawki z rozdz. 8.1.
 
 ### 12.6 Wniosek metodyczny
 
 Szczelina D nie została wykryta wcześniej, mimo trzech rund pomiarów, bo każdy dotychczasowy test przecieku patrzył **tylko na pasmo nad nagłówkiem**. Kolejne testy w tym module powinny skanować **cały** obszar przyklejonego elementu, z rozbiciem na wiersze i kolumny pikseli, oraz zawsze mieć kontrolę negatywną — pomiar w warunkach, w których przeciek jest niemożliwy. To właśnie ta kontrola pozwoliła odróżnić prawdziwą linię przecieku od antyaliasingu tekstu w rozdziale 12.5.
+
+---
+
+## 13. Podsumowanie — stan zamknięcia
+
+Temat zamknięty 21 września 2026 na podstawie wiadomości 7. Poniżej komplet w jednym miejscu, żeby przy przyszłej pracy nad nagłówkiem `DataVault` nie trzeba było odtwarzać ustaleń od zera.
+
+### 13.1 Cztery szczeliny i ich losy
+
+| Szczelina | Objaw | Przyczyna | Rozstrzygnięcie |
+|---|---|---|---|
+| **A** | Pasmo przewijanych wierszy pod paskiem zakładek | Górny margines wewnętrzny `.tableViewport` — element przyklejony zatrzymuje się na wewnętrznej krawędzi treści | `padding: 0 4px 4px`, bez marginesu u góry (rozdz. 4.1) |
+| **B** | Włos między wierszem nazw kolumn a wierszem filtrów | Oba wiersze przyklejane niezależnie, jeden według zaokrąglonej liczby pikseli, drugi według rzeczywistej wysokości | Przyklejenie całego `<thead>` jako jednego bloku; usunięte `--header-row-height` i `ResizeObserver` (rozdz. 4.2) |
+| **C** | Ciemna rysa nad nazwami kolumn oraz przeskok nagłówka o 1,5 px przy przewijaniu | Scalone obramowanie górnej krawędzi tabeli przesuwa `<thead>` o pół piksela | `.dataTable{border-top:0}` plus `thead{top:0}` (rozdz. 8.1, 11) |
+| **D** | Treść wiersza prześwitująca przez linie rozdzielające nagłówka | Obramowanie malowane w warstwie tabeli, pod przyklejonym `<thead>`; tło komórki nie sięga pod nie | `thead th{border-bottom:0}` plus `box-shadow: inset 0 -1px 0 var(--div)` (rozdz. 12) |
+
+Wspólny mianownik C i D: **obie wynikały z `border-collapse: collapse`**, przy którym obramowanie należy do tabeli, a nie do komórki. Za każdym razem rozwiązaniem okazało się zabranie obramowania z tego miejsca, a nie maskowanie objawu.
+
+### 13.2 Stan końcowy — zmierzony
+
+Osiem konfiguracji okna od 1280×610 do 1920×1080, skalowanie 100%, 125%, 150% i 200%:
+
+| Wielkość | Wartość |
+|---|---|
+| Górna krawędź `<thead>` względem krawędzi obszaru przewijania | 0,00 px |
+| Przesunięcie nagłówka w chwili przyklejenia | 0,00 px |
+| Przeciek nad nagłówkiem | 0 px |
+| Przeciek na styku wierszy nagłówka | 0 px |
+| Przeciek na dolnej krawędzi nagłówka | 0 px |
+| Szczelina między wierszami nagłówka | 0,000 px |
+| Przeciek na prawej krawędzi tabeli | 104 px — **przyjęty świadomie** (rozdz. 12.5) |
+
+Potwierdzenie użytkownika: brak drgania nagłówka w trybie pełnoekranowym i w oknie (wiadomość 6), brak widocznej luki przy normalnym użytkowaniu (wiadomość 7).
+
+### 13.3 Czego nie wolno ruszać bez ponownego pomiaru
+
+Cztery deklaracje w `DataVault/style.css` trzymają się nawzajem. Zmiana którejkolwiek w pojedynkę otwiera jedną ze szczelin z powrotem:
+
+| Deklaracja | Co się stanie po cofnięciu |
+|---|---|
+| `.tableViewport{padding:0 4px 4px}` — brak marginesu u góry | Wraca szczelina A |
+| `.dataTable thead{position:sticky}` na całym `<thead>`, komórki `position:static` | Wraca szczelina B |
+| `.dataTable{border-top:0}` razem z `thead{top:0}` | Wraca szczelina C — obu nie wolno rozdzielać |
+| `.dataTable thead th{border-bottom:0}` razem z `box-shadow:inset 0 -1px 0 var(--div)` | Wraca szczelina D — obu nie wolno rozdzielać |
+
+Każda z nich ma w pliku komentarz dwujęzyczny wyjaśniający powód. Komentarze są częścią zabezpieczenia, nie ozdobą.
+
+### 13.4 Wnioski metodyczne na przyszłość
+
+1. **Test przecieku musi skanować cały obszar elementu przyklejonego**, a nie tylko pasmo nad nim. Szczelina D przetrwała trzy rundy pomiarów wyłącznie dlatego, że nikt nie zajrzał do wnętrza nagłówka (rozdz. 12.1).
+2. **Kontrola negatywna jest obowiązkowa.** Pomiar w warunkach, w których usterka jest niemożliwa, odróżnia prawdziwy przeciek od artefaktu — w rozdz. 12.5 pozwolił oddzielić realną linię na prawej krawędzi od antyaliasingu podpikselowego tekstu nagłówka, który dawał identyczny odczyt.
+3. **Kontrola na kodzie sprzed zmiany jest równie obowiązkowa.** Sam wynik „zero" nic nie znaczy, dopóki nie wiadomo, że narzędzie w ogóle potrafi wykryć usterkę (rozdz. 11.2 i 12.1).
+4. **Szczelina zerowa geometrycznie nadal może być widoczna.** Szczeliny A, B i C były wymiarowe, D była szczeliną przezroczystości przy idealnym styku 0,000 px. Sam pomiar geometrii jej nie wykrywa — potrzebna jest sonda pikselowa.
+5. Próg `max-height: 760px` przełącza pasek górny skokowo i decyduje o tym, czy układ wypada na pełnym pikselu, czy na ułamku. Nie jest to błąd, ale każda przyszła zmiana wysokości paska górnego przesunie granicę, na której zmienia się zachowanie subpikselowe.
