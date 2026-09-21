@@ -69,6 +69,11 @@ pre code{background:none; border:none; padding:0; font-size:inherit; color:var(-
 
 .lead{color:var(--tekst2); font-size:17px}
 
+/* Makiety ekranów rysowane znakami — ciaśniejsza interlinia, żeby ramki tworzyły spójny rysunek.
+   ASCII screen mock-ups — tighter line height so the frames read as one drawing. */
+pre.makieta{font-size:12.5px; line-height:1.28; letter-spacing:0}
+@media (max-width:700px){ pre.makieta{font-size:10.5px} }
+
 .meta{
   border:1px solid var(--kresk); border-radius:10px; background:var(--tlo2);
   padding:18px 20px; box-shadow:var(--cien); margin:22px 0 10px;
@@ -189,6 +194,7 @@ figure.po figcaption{color:var(--dobre); background:var(--dobre-tlo)}
     <li><a href="#zgloszenie-datavault">Zgłoszenie z 20 września — DataVault: panel, przewijanie, telefon w poziomie</a></li>
     <li><a href="#szczeliny-naglowka">Zgłoszenie z 21 września — DataVault: szczeliny w nagłówku tabeli</a></li>
     <li><a href="#filtry-mobilne">Zgłoszenie z 21 września — DataVault: filtry w widoku kart na telefonie</a></li>
+    <li><a href="#makiety">Makiety ekranów — jak to będzie wyglądać</a></li>
   </ol>
 </div>
 
@@ -2386,6 +2392,323 @@ function kolumnaGrupujaca(sheetName, cols){
 
 <hr>
 
+<h2 id="makiety">16. Makiety ekranów — jak to będzie wyglądać</h2>
+
+<p class="lead">Rysunki tekstowe wszystkich ekranów, których dotyczą poprawki z rozdziałów 13, 14 i 15 — stan dzisiejszy zestawiony ze stanem po zmianie. Proporcje i liczby przy każdej makiecie pochodzą z pomiarów opisanych w tych rozdziałach, więc rysunek pokazuje nie tylko układ, ale też realne wysokości.</p>
+
+<div class="karta">
+<h4 style="margin-top:0">Legenda</h4>
+<div class="tabela-otoczka" style="margin-bottom:0">
+<table>
+<tbody>
+<tr><td><code>▓</code></td><td>obszar <strong>ucięty</strong> albo ściśnięty do kilku pikseli — treść jest tam niedostępna</td></tr>
+<tr><td><code>░</code></td><td><strong>szczelina</strong>, przez którą widać przewijane wiersze, albo przyciemnione tło pod wysuniętym arkuszem</td></tr>
+<tr><td><code>█</code></td><td>nieprzezroczyste pasmo nagłówka — nic przez nie nie przechodzi</td></tr>
+<tr><td><code>▒</code></td><td>element <strong>przyklejony</strong> — zostaje na ekranie, kiedy reszta się przewija</td></tr>
+<tr><td><code>#</code></td><td>pasek przewijania</td></tr>
+<tr><td><code>[ ]</code> <code>[x]</code></td><td>pole wyboru: puste i zaznaczone</td></tr>
+<tr><td><code>&gt;</code> <code>v</code></td><td>strzałka: grupa zwinięta i rozwinięta; <code>v</code> to także przycisk listy wartości przy kolumnie</td></tr>
+<tr><td><code>^ | v</code></td><td>klamra po prawej stronie makiety, opisująca wysokość danego pasma w pikselach</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<h3 id="mak-pc">16.1. Komputer — panel filtrów i pasek górny (rozdz. 13 i 14)</h3>
+<p>Laptop 1366 × 768 w trybie admina, czyli najtrudniejszy przypadek z rozdziału 13.4: to tu znika czwarty checkbox.</p>
+<pre class="makieta"><code>KOMPUTER 1366 × 768, TRYB ADMINA — DZISIAJ
+
+┌────────────────────────────────────────────────────────────────────────────────────┐
+│ ADMINISTRATUM DATA VAULT      [GENERUJ PLIKI DANYCH]                               │  ^
+│   Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja                    │  | pasek górny
+│   wygeneruje data.json jako backup oraz firebase-import.json...                    │  | 179 px
+│   [PEŁEN WIDOK] [WIDOK DOMYŚLNY]     [PORÓWNAJ ZAZNACZONE]                         │  v
+├────────────────────┬───────────────────────────────────────────────────────────────┤
+│ &gt; FILTRY           │ [NOTATKI] [BESTIARIUSZ] [HORDY] [CECHY] [STANY]               │
+│                    │ [TALENTY] [BRONIE] [PANCERZE] [PSIONIKA] [OBRZĘDY] ...        │
+│ SZUKAJ (GLOB.)     │ ░░░░░░░░░░░ szczelina 4 px ░░░░░░░░░░░░░░░░░░░░░░░░░░░        │  &lt;-- tu prześwitują
+│ [____________]     │ [v]│ RODZAJ   │ TYP        │ NAZWA         │ OBRAŻENIA        │      wiersze
+│                    │ ───┼──────────┼────────────┼───────────────┼──────────        │
+│ [ ] CZY WYŚWIE     │ ░░░░░░░ szczelina 0,3 px ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░        │
+│     TLIĆ ZDEZ-     │    │ [filtr] v│ [filtr]  v │ [filtr...] v  │ [filtr] v        │
+│     AKTUALIZO-     │ ───┴──────────┴────────────┴───────────────┴──────────        │
+│     WANE WPISY     │ [ ]│ Bezpośr. │ Broń biała │ Nóż           │ S+2              │
+│                    │ [ ]│ Bezpośr. │ Broń biała │ Nóż bojowy    │ S+3              │
+│ [ ] CZY WYŚWIE     │ [ ]│ Dystans. │ Boltowa    │ Bolter        │ 10+1ED           │
+│     TLIĆ ZAK-      │ [ ]│ Dystans. │ Boltowa    │ Bolter Ciężki │ 12+2ED           │
+│     ŁADKI TWO-     │                                                               │
+│     RZENIA PO-     │        tabela 340 px - mieszczą się 4 wiersze                 │
+│     STACI?         │                                                               │
+│                    │                                                               │
+│ [ ] CZY WYŚWIE     │                                                               │
+│     TLIĆ ZAK-      │                                                               │
+│     ŁADKI ZA-      │                                                               │
+│     SAD WALKI?     │                                                               │
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓     │                                                               │  &lt;-- krawędź obcięcia
+└────────────────────┴───────────────────────────────────────────────────────────────┘
+
+▓ = 283 px treści UCIĘTE i nieosiągalne: czwarty checkbox (&quot;zakładki dotyczące pojazdów?&quot;)
+    oraz cała podpowiedź. Panel nie ma paska przewijania, strona też nie - kółko myszy
+    nad panelem nie robi nic. Jedyne wyjście: Ctrl+scroll do 67%.
+░ = szczeliny w przyklejonym nagłówku, przez które widać przejeżdżające wiersze.</code></pre>
+<pre class="makieta"><code>KOMPUTER 1366 × 768, TRYB ADMINA — PO POPRAWKACH 1-3 (rozdz. 13) I 2a (rozdz. 14)
+
+┌────────────────────────────────────────────────────────────────────────────────────┐
+│ ADMINISTRATUM DATA VAULT   [GENERUJ PLIKI DANYCH](i)                               │  ^ 87 px
+│ [PEŁEN WIDOK] [WIDOK DOMYŚLNY](i)   [PORÓWNAJ ZAZNACZONE]                          │  v
+├────────────────────┬───────────────────────────────────────────────────────────────┤
+│ &gt; FILTRY           │ [NOTATKI] [BESTIARIUSZ] [HORDY] [CECHY] [STANY]               │
+│                    │ [TALENTY] [BRONIE] [PANCERZE] [PSIONIKA] [OBRZĘDY] ...        │
+│ SZUKAJ (GLOB)^     │ [v]│ RODZAJ   │ TYP        │ NAZWA         │ OBRAŻENIA        │  &lt;-- nagłówek przylega
+│ [___________]#     │ ───┼──────────┼────────────┼───────────────┼──────────        │      do krawędzi
+│              #     │    │ [filtr] v│ [filtr]  v │ [filtr...] v  │ [filtr] v        │
+│ [ ] CZY WYŚWI#     │ ───┴──────────┴────────────┴───────────────┴──────────        │
+│     ETLIĆ ZDE#     │ [ ]│ Bezpośr. │ Broń biała │ Nóż           │ S+2              │
+│     ZAKTUALIZ#     │ [ ]│ Bezpośr. │ Broń biała │ Nóż bojowy    │ S+3              │
+│     OWANE WPI#     │ [ ]│ Dystans. │ Boltowa    │ Bolter        │ 10+1ED           │
+│     SY?      #     │ [ ]│ Dystans. │ Boltowa    │ Bolter Ciężki │ 12+2ED           │
+│              #     │ [ ]│ Bezpośr. │ Łańcuchowa │ Topór łańc.   │ S+5              │
+│ [ ] CZY WYŚWI#     │ [ ]│ Bezpośr. │ Łańcuchowa │ Miecz łańc.   │ S+5              │
+│     ETLIĆ ZAKv     │ [ ]│ Dystans. │ Laserowa   │ Karabin las.  │ 7+1ED            │
+└────────────────────┴───────────────────────────────────────────────────────────────┘
+
+# = panel ma własny pasek przewijania: kółko myszy nad nim działa, nic nie przepada.
+(i) = opis przeniesiony do dymka (atrybut title) - pasek górny 179 px -&gt; 87 px.
+      Odzyskane 92 px trafia do tabeli: 4 widoczne wiersze -&gt; 7.
+      Nagłówek przylega do krawędzi obszaru przewijania - nic już nie prześwituje.</code></pre>
+
+<h3 id="mak-naglowek">16.2. Przekrój przyklejonego nagłówka (rozdz. 14)</h3>
+<p>Powiększenie górnej krawędzi tabeli w trakcie przewijania. Tu widać, dlaczego dodanie nieprzezroczystego tła nic by nie dało: w miejscach oznaczonych <code>░</code> nie ma żadnego elementu nagłówka, któremu można by to tło przypisać.</p>
+<pre class="makieta"><code>PRZEKRÓJ PIONOWY GÓRNEJ KRAWĘDZI TABELI (rozdz. 14) — 1 znak = ok. 1 px wysokości
+
+   DZISIAJ                                 PO POPRAWCE
+   ══════════════════════════════           ══════════════════════════════   ramka tabeli
+   ░░░░░░░ szczelina 4 px ░░░░░░░           ██████████████████████████████
+   ███ [v]  RODZAJ  TYP  NAZWA ██           ███ [v]  RODZAJ  TYP  NAZWA ███   wiersz nazw
+   ███                         ██           ███                         ███   kolumn
+   ░░░ szczelina 0,3 px ░░░░░░░░░           ██████████████████████████████
+   ███ [filtr] [filtr] [filtr] ██           ███ [filtr] [filtr] [filtr] ███   wiersz filtrów
+   ──────────────────────────────           ──────────────────────────────
+     Bezpośrednia  Broń biała  Nóż            Bezpośrednia  Broń biała  Nóż   wiersze danych
+     Bezpośrednia  Boltowa  Bolter            Bezpośrednia  Boltowa  Bolter   (przewijają się)
+             ^                                         ^
+             &#x27;-- przez oba pasma ░ widać               &#x27;-- pasmo nagłówka jest
+                 przejeżdżające wiersze                    jednolite od krawędzi
+
+█ = nieprzezroczyste pasmo nagłówka.   ░ = szczelina, w której nie ma żadnego elementu
+    nagłówka, więc przewijany wiersz jest widoczny bezpośrednio. Żadne tło tego nie zakryje -
+    trzeba zlikwidować samą szczelinę.</code></pre>
+
+<h3 id="mak-poziom">16.3. Telefon w poziomie (rozdz. 13, poprawka 2)</h3>
+<p>Odtworzenie Twojego zrzutu z trybu admina i stan po przywróceniu zwykłego przewijania strony przy niskim oknie.</p>
+<pre class="makieta"><code>TELEFON W POZIOMIE 869 × 329, TRYB ADMINA — DZISIAJ
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ADMINISTRATUM DATA VAULT                 [GENERUJ PLIKI DANYCH]          │  ^
+│   Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja wyge-    │  | pasek górny
+│   neruje data.json jako backup oraz firebase-import.json - plik go...    │  | 247 px
+│   [PEŁEN WIDOK] [WIDOK DOMYŚLNY]       [PORÓWNAJ ZAZNACZONE]             │  v = 75% ekranu
+├──────────────────────────────────────────────────────────────────────────┤
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   │  &lt;-- panel: 23 px
+│ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓   │  &lt;-- tabela: 8 px
+└──────────────────────────────────────────────────────────────────────────┘
+
+▓ = czarne paski. Panel filtrów ściśnięty do 23 px z 352, tabela do 8 px.
+    Wszystkie 15 zakładek jest poniżej krawędzi obcięcia i nie da się do nich dojechać:
+    strona nie ma paska przewijania, bo .app ma sztywne height:100dvh.</code></pre>
+<pre class="makieta"><code>TELEFON W POZIOMIE 869 × 329, TRYB ADMINA - PO POPRAWCE 2 (rozdz. 13)
+
+┌──────────────────────────────────────────────────────────────────────────┐
+│ ADMINISTRATUM DATA VAULT  [GENERUJ PLIKI DANYCH](i)                      │  ^ 87 px
+│ [PEŁEN WIDOK] [WIDOK DOMYŚLNY](i)      [PORÓWNAJ ZAZNACZONE]             │  v
+├──────────────────────────────────────────────────────────────────────────┤
+│ &gt; FILTRY                                                                 │
+│ SZUKAJ (GLOBALNIE)   [_____________________________________]             │
+│ [ ] Czy wyświetlić zakładki dotyczące tworzenia postaci?                 │
+│ [ ] Czy wyświetlić zakładki dotyczące zasad walki?                       │
+├──────────────────────────────────────────────────────────────────────────┤
+│ [NOTATKI] [BESTIARIUSZ] [HORDY] [CECHY] [STANY] [TALENTY] [BRONIE]       │
+│ [PANCERZE] [PSIONIKA] [EKWIPUNEK] [OBRZĘDY] [AUGUMENTACJE] ...           │
+├──────────────────────────────────────────────────────────────────────────┤
+│ [v]│ RODZAJ    │ TYP        │ NAZWA          │ OBRAŻENIA │ DK │ PP       │
+│ ───┼───────────┼────────────┼────────────────┼───────────┼────┼────      │
+│ [ ]│ Bezpośr.  │ Broń biała │ Nóż            │ S+2       │ 2  │ -        │
+│ [ ]│ Dystans.  │ Boltowa    │ Bolter         │ 10+1ED    │ 2  │ -1       │
+│                                                          v  v  v         │  &lt;-- strona przewija się
+└──────────────────────────────────────────────────────────────────────────┘
+
+Poniżej 520 px wysokości okna wraca zwykłe przewijanie strony - to samo, które już dziś
+dobrze działa w pionie. Panel filtrów ma pełne 354 px, tabela 2704 px, wszystkie zakładki
+sa dostępne. Tabela przewija się w bok, bo w poziomie jest na nią dość szerokości.</code></pre>
+
+<h3 id="mak-pion">16.4. Telefon w pionie — zakładka „Bronie” (rozdz. 15)</h3>
+<p>Zakładka startowa gracza: 130 rekordów, karta 687 px. Po lewej stan dzisiejszy, niżej stan po dołożeniu paska narzędzi i zwiniętego grupowania.</p>
+<pre class="makieta"><code>TELEFON 390 × 800, WIDOK GRACZA, ZAKŁADKA &quot;BRONIE&quot; — DZISIAJ
+
+┌──────────────────────────────────────────────┐
+│ ADMINISTRATUM DATA VAULT                     │  ^
+│ [STRONA GŁÓWNA]  [PEŁEN WIDOK]               │  | 239 px
+│ [WIDOK DOMYŚLNY] [PORÓWNAJ ZAZNACZONE]       │  v
+├──────────────────────────────────────────────┤
+│ &gt; FILTRY                                     │  ^
+│ SZUKAJ (GLOBALNIE)                           │  | 393 px
+│ [__________________________________]         │  | &lt;-- jedyne pole
+│ [ ] Czy wyświetlić zakładki tworzenia?       │  |     wyszukiwania
+│ [ ] Czy wyświetlić zakładki zasad walki?     │  |
+│ [ ] Czy wyświetlić zakładki pojazdów?        │  |
+│ &gt; Kliknij nagłówek, aby sortować.            │  v
+├──────────────────────────────────────────────┤
+│ [CECHY] [STANY] [SŁOWA KLUCZOWE]             │  ^
+│ [TALENTY] [MODLITWY] [PSIONIKA]              │  | 167 px
+│ [AUGUMENTACJE] [EKWIPUNEK] [PANCERZE]        │  |
+│ [BRONIE] [OBRZĘDY]                           │  v
+├──────────────────────────────────────────────┤
+│ ┌──────────────────────────────────┐         │  === 833 px od góry strony
+│ │                            [ ]   │         │  ^
+│ │ RODZAJ       Bezpośrednia        │         │  |
+│ │ TYP          Broń biała          │         │  | karta 1 z 130
+│ │ NAZWA        Nóż                 │         │  | 687 px
+│ │ OBRAŻENIA    S+2                 │         │  |
+│ │ ... jeszcze 11 pól ...           │         │  v
+│ └──────────────────────────────────┘         │
+│ ┌──────────────────────────────────┐         │
+│ │ ...                karta 2 z 130 │         │
+└──────────────────────────────────────────────┘
+
+130 kart × 687 px = 89 310 px = 112 ekranów przewijania. Pole wyszukiwania zostaje
+833 px nad pierwszą kartą i odjeżdża razem z treścią - przy dwudziestej karcie dzieli
+Cię od niego ok. 9000 px. Filtrów kolumn i sortowania nie ma wcale.</code></pre>
+<pre class="makieta"><code>TELEFON 390 × 800, ZAKŁADKA &quot;BRONIE&quot; — PO POPRAWKACH (rozdz. 15.5 + 15.13)
+
+┌──────────────────────────────────────────────┐
+│ ADMINISTRATUM DATA VAULT                     │  ^ 239 px
+│ [STRONA GŁÓWNA]  [PEŁEN WIDOK]               │  | (przewija się
+│ [WIDOK DOMYŚLNY] [PORÓWNAJ ZAZNACZONE]       │  v  razem ze stroną)
+├──────────────────────────────────────────────┤
+│ &gt; FILTRY  [ ] tworzenie postaci              │  ^ 393 px
+│           [ ] zasady walki [ ] pojazdy       │  v
+├──────────────────────────────────────────────┤
+│ [CECHY] [STANY] [SŁOWA KLUCZOWE] ...         │  ^ 167 px
+│ [BRONIE] [OBRZĘDY]                           │  v
+├──────────────────────────────────────────────┤
+│ ▒ [Szukaj w tej zakładce...          ]       │  ^ PASEK PRZYKLEJONY
+│ ▒ [FILTRY 1] [SORTUJ]  Pokazano 130/130      │  | 132 px - zostaje
+│ ▒ ( Widok domyślny: Typ - 3 z 19  x )        │  v na ekranie zawsze
+├──────────────────────────────────────────────┤
+│ ┌──────────────────────────────────┐ &gt;       │  ^
+│ │ BOLTOWA                  12 poz. │         │  |
+│ └──────────────────────────────────┘         │  |
+│ ┌──────────────────────────────────┐ &gt;       │  |
+│ │ BROŃ BIAŁA               11 poz. │         │  | 19 nagłówków grup
+│ └──────────────────────────────────┘         │  | 2040 px = 2,5 ekranu
+│ ┌──────────────────────────────────┐ &gt;       │  |
+│ │ BROŃ ŁAŃCUCHOWA          10 poz. │         │  | zero rysowanych
+│ └──────────────────────────────────┘         │  | kart
+│ ┌──────────────────────────────────┐ &gt;       │  |
+│ │ BROŃ DYSTANSOWA          10 poz. │         │  |
+│ └──────────────────────────────────┘         │  |
+│ ... jeszcze 15 kategorii ...                 │  v
+└──────────────────────────────────────────────┘
+
+Cała zakładka mieści się na 2,5 ekranu zamiast na 112. Widać rozkład danych bez otwierania
+czegokolwiek, a żeton &quot;Widok domyślny: Typ - 3 z 19 x&quot; mówi wprost, że część rekordów jest
+odfiltrowana, i pozwala zdjąć ten jeden filtr bez kasowania reszty.</code></pre>
+
+<h3 id="mak-grupa">16.5. Telefon w pionie — rozwinięta grupa i działające wyszukiwanie</h3>
+<p>Karta pozostaje pełna, zgodnie z Twoim ustaleniem z rozdziału 15.13 — zmienia się tylko to, ile kart naraz trzeba mijać.</p>
+<pre class="makieta"><code>TELEFON 390 × 800 — JEDNA GRUPA ROZWINIĘTA, W TLE DZIAŁA WYSZUKIWANIE
+
+┌──────────────────────────────────────────────┐
+│ ▒ [łańcuchow                         ]       │  ^ pasek przyklejony
+│ ▒ [FILTRY 2] [SORTUJ]   Pokazano 16/130      │  | 132 px
+│ ▒ ( Szukaj: &quot;łańcuchow&quot; x ) ( Typ x )        │  v
+├──────────────────────────────────────────────┤
+│ ┌──────────────────────────────────┐ &gt;       │
+│ │ BOLTOWA                  12 poz. │         │
+│ └──────────────────────────────────┘         │
+│ ┌──────────────────────────────────┐ v       │  &lt;-- rozwinięta
+│ │ BROŃ ŁAŃCUCHOWA          10 poz. │         │
+│ └──────────────────────────────────┘         │
+│   ┌────────────────────────────────┐         │
+│   │                          [ ]   │         │  ^
+│   │ RODZAJ      Bezpośrednia       │         │  |
+│   │ TYP         Broń łańcuchowa    │         │  | pełna karta
+│   │ NAZWA       Topór łańcuchowy   │         │  | 687 px - bez
+│   │ OBRAŻENIA   S+5                │         │  | zmian, zgodnie
+│   │ DK          5                  │         │  | z ustaleniem
+│   │ ... jeszcze 9 pól ...          │         │  v z 15.13
+│   └────────────────────────────────┘         │
+│   ┌────────────────────────────────┐         │
+│   │ ...         Miecz łańcuchowy   │         │
+│   └────────────────────────────────┘         │
+│ ┌──────────────────────────────────┐ &gt;       │
+│ │ BROŃ DYSTANSOWA          10 poz. │         │
+│ └──────────────────────────────────┘         │
+└──────────────────────────────────────────────┘
+
+Karty pojawiają się tylko tam, gdzie ich szukasz. Rozwinięta grupa ma jaśniejszy nagłówek
+i strzałkę w dół. Po wpisaniu frazy grupy z trafieniami rozwijają się same, a puste znikają;
+licznik pokazuje 16 ze 130. Zwinięcie grupy z powrotem to jedno stuknięcie.</code></pre>
+
+<h3 id="mak-arkusze">16.6. Telefon — arkusze filtrów i wyboru wartości (rozdz. 15.5)</h3>
+<p>Dwa poziomy: lista kolumn zakładki ze stanem każdego filtra, a pod nią wybór konkretnych wartości — ten drugi ekran buduje funkcja <code>openFilterMenu()</code>, która już istnieje i działa na komputerze.</p>
+<pre class="makieta"><code>TELEFON — ARKUSZ FILTRÓW PO STUKNIĘCIU W &quot;FILTRY&quot; (rozdz. 15.5)
+
+┌──────────────────────────────────────────────┐
+│ ▒ [Szukaj w tej zakładce...          ]       │
+│ ▒ [FILTRY 1] [SORTUJ]  Pokazano 130/130      │
+├──────────────────────────────────────────────┤
+│ ┌──────────────────────────────────┐ &gt;       │
+│ │ BOLTOWA                  12 poz. │         │
+│ └──────────────────────────────────┘         │
+│ ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░         │  &lt;-- tło przyciemnione
+├──────────────────────────────────────────────┤
+│ FILTRY KOLUMN - BRONIE     [ZAMKNIJ]         │  ^ arkusz wysuwa się
+│ ────────────────────────────────────         │  | od dołu, do 70%
+│ RODZAJ                             &gt;         │  | wysokości ekranu
+│   wszystkie wartości                         │  |
+│ ────────────────────────────────────         │  |
+│ TYP                                &gt;         │  | &lt;-- stan filtra
+│   3 z 19 wartości                            │  |     widoczny od razu
+│ ────────────────────────────────────         │  |
+│ NAZWA                              &gt;         │  |
+│   [______________________________]           │  | &lt;-- filtr tekstowy
+│ ────────────────────────────────────         │  |
+│ OBRAŻENIA                          &gt;         │  |
+│   wszystkie wartości                         │  |
+│ ────────────────────────────────────         │  |
+│ ... jeszcze 11 kolumn ...                    │  v
+└──────────────────────────────────────────────┘
+
+Lista kolumn zakładki ze stanem każdego filtra. Stuknięcie kolumny otwiera wybór wartości -
+ten sam, który na komputerze otwiera przycisk v, budowany istniejącą funkcją openFilterMenu().
+Arkusz wysuwa się od dołu, tak jak dymek z opisem cechy po poprawce z rozdziału 6.6.</code></pre>
+<pre class="makieta"><code>TELEFON — WYBÓR WARTOŚCI KOLUMNY (istniejąca funkcja openFilterMenu)
+
+┌──────────────────────────────────────────────┐
+│ TYP - WYBIERZ WARTOŚCI     [ZAMKNIJ]         │  ^
+│ [filtruj wartości...                ]        │  |
+│ [ZAZNACZ WSZYSTKO]  [WYCZYŚĆ]                │  |
+│ ────────────────────────────────────         │  |
+│ [x] Boltowa                  12 poz.         │  | ta sama lista,
+│ [x] Broń biała               11 poz.         │  | która na komputerze
+│ [x] Broń łańcuchowa          10 poz.         │  | otwiera przycisk v
+│ [ ] Broń dystansowa          10 poz.         │  |
+│ [ ] Broń energetyczna         9 poz.         │  |
+│ [ ] Laserowa                  9 poz.         │  |
+│ [ ] Ogniowa                   8 poz.         │  |
+│ ... jeszcze 12 wartości ...                  │  v
+└──────────────────────────────────────────────┘
+
+Odznaczenie wartości usuwa całą grupę z listy - to ta sama operacja, która dziś po cichu
+wykonuje widok domyślny. Po zamknięciu arkusza licznik i żetony w pasku od razu to pokazują.</code></pre>
+
+<div class="karta uwaga">
+<p style="margin:0"><strong>Czego te makiety nie pokazują.</strong> To są szkice układu, a nie projekt graficzny: kolory, odstępy, zaokrąglenia i fonty zostają takie, jakie moduł ma dziś. Nie pokazują też animacji wysuwania arkusza ani zachowania przy obracaniu telefonu w trakcie pracy. Proporcje pionowe są zachowane tam, gdzie podałem wysokości w pikselach; szerokości są umowne, bo rysunek tekstowy ma stałą szerokość znaku.</p>
+</div>
+
+<hr>
+
 <h2>Podsumowanie w kilku zdaniach</h2>
 <div class="karta dobra">
 <p>Aplikacja jest w większości przygotowana na różne ekrany dobrze — moduły <code>Audio</code> i <code>Zaawansowany Kreator v2</code> oraz wspólna bramka dostępu <code>shared/access-gate.css</code> mają responsywność zrobioną wzorowo i to z nich brałem wzorce do wszystkich propozycji.</p>
@@ -2395,7 +2718,7 @@ function kolumnaGrupujaca(sheetName, cols){
 </div>
 
 <div class="stopka">
-  Analiza wykonana 10 września 2026 · Ustalenia i decyzje dopisane 13–14 września 2026 · Rozdziały 13–15 dopisane 21 września 2026 · Repozytorium <code>CuteLittleGoat/WrathAndGlory</code><br>
+  Analiza wykonana 10 września 2026 · Ustalenia i decyzje dopisane 13–14 września 2026 · Rozdziały 13–16 dopisane 21 września 2026 · Repozytorium <code>CuteLittleGoat/WrathAndGlory</code><br>
   Analiza kodu aplikacji (druga część zadania): <code>Analizy/audyt-kodu-aplikacji-2026-09-10.md</code><br>
   Pomiary wykonane w Chromium na szerokościach 320–2560&nbsp;px i wysokościach okna 320–1310&nbsp;px · W kodzie aplikacji nie wprowadzono żadnych zmian
 </div>
