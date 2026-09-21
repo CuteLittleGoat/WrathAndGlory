@@ -1229,7 +1229,7 @@ Do promptu dołączone były trzy zrzuty ekranu: pole wyboru z niebieskim wypeł
 
 ### Uwaga do zrzutu nr 1
 
-Etykieta „Typy przeciwników" nie występuje w kodzie tego repozytorium (sprawdzone pełnym przeszukaniem). Zrzut pochodzi spoza bieżącego stanu `DataVault` — z innego modułu albo z wersji nieobecnej w repozytorium. Nie wpływa to na ustalenia: niebieskie pole wyboru w `DataVault` jest jednoznacznie zidentyfikowane w rozdz. 27, a polecenie użytkownika jest niezależne od pochodzenia zrzutu.
+Etykieta „Typy przeciwników" to **wartość danych**, a nie tekst z kodu: wiersz zakładki `Notatki`, widocznej wyłącznie w trybie admina (`Notatki` należy do `ADMIN_ONLY_SHEETS`). Dane modułu nie są trzymane w repozytorium — powstają z `Repozytorium.xlsx` i są wczytywane z Firebase — dlatego przeszukanie plików repozytorium tej etykiety nie znajduje. Zrzut przedstawia zatem zwykłe pole wyboru wiersza do porównania, dokładnie to, które opisuje rozdz. 27.
 
 ---
 

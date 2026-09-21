@@ -81,14 +81,43 @@ Przykładowe zakładki:
 
 Niektóre zakładki są ukryte w zwykłym widoku i dostępne tylko dla admina. Zakładki `Uszkodzenia Pojazdów` i `Eksplozje Pojazdów` są zakładkami pojazdowymi tylko dla admina: zobaczysz je wyłącznie po wejściu z adresem zawierającym `?admin=1` i po zaznaczeniu przełącznika zakładek pojazdów.
 
-### Panel filtrów
+### Panel narzędzi
 
-Panel filtrów zawiera:
+Panel po lewej stronie ma nagłówek `NARZĘDZIA` i zawiera:
 
-- wyszukiwarkę globalną,
+- pole `FILTR GLOBALNY`,
 - przełączniki grup zakładek,
 - w trybie admina checkbox starych wpisów Bestiariusza,
 - krótkie podpowiedzi dotyczące sortowania, filtrów i porównywania.
+
+### Filtr globalny
+
+To pole wyszukuje **we wszystkich zakładkach naraz**. Wpisz fragment nazwy albo opisu, a tabela
+pokaże tylko te wiersze, w których ten fragment występuje.
+
+Najważniejsze: **wpisana fraza zostaje w polu, gdy przełączasz zakładki.** Jeśli wpiszesz `Egzo` i
+klikniesz kolejno kilka zakładek, słowo `Egzo` cały czas będzie w polu, a każda z tych zakładek
+pokaże tylko pasujące wiersze.
+
+Żeby było wiadomo, że filtr działa, **napis `FILTR GLOBALNY` zmienia barwę na błękitną**. Dopóki
+świeci, część wierszy jest ukryta — także na zakładkach, których jeszcze nie otwierałeś. Po najechaniu
+myszą na ten napis pojawia się dymek z wpisaną frazą.
+
+Co warto wiedzieć:
+
+- **Wielkość liter nie ma znaczenia.** `egzo`, `Egzo` i `EGZO` działają tak samo.
+- **Nie trzeba pisać polskich znaków.** `bron` znajdzie `Broń`, a `lancuchowa` znajdzie
+  `łańcuchowa`. Pisanie z ogonkami też oczywiście działa.
+- **Cała wpisana treść jest szukana jako jedna całość.** `pisto bolt` szuka dokładnie takiego
+  ciągu, a nie dwóch osobnych słów.
+- **Przeszukiwane są tylko kolumny, które widzisz.** Jeśli fraza występuje wyłącznie w kolumnie
+  ukrytej, wiersz się nie pojawi.
+- **Filtr globalny łączy się z filtrami kolumn.** Możesz wpisać `Pisto`, a potem w zakładce
+  `Bronie` w kolumnie `Typ` wybrać `Boltowa` — zobaczysz wtedy tylko pistolety boltowe. Filtr
+  kolumny zostaje przy swojej zakładce, a fraza działa wszędzie.
+
+Filtr wyłączysz na trzy sposoby: kasując treść pola, stukając `✕` na żetonie filtra (na telefonie)
+albo klikając `Pełen Widok` lub `Widok Domyślny` — oba przyciski czyszczą też filtr globalny.
 
 ### Tabela danych
 
@@ -154,7 +183,7 @@ Nad listą kart jest pasek, który **zostaje na ekranie także podczas przewijan
 
 | Element | Do czego służy |
 | --- | --- |
-| Pole `Szukaj w tej zakładce` | To samo wyszukiwanie co pole `Szukaj (globalnie)` w panelu filtrów — obie wpisują to samo, więc nie trzeba wracać na górę strony. Po zawężeniu listy kategorie z trafieniami rozwijają się same. |
+| Pole `Szukaj w tej zakładce` | To samo wyszukiwanie co pole `FILTR GLOBALNY` w panelu narzędzi — obie kontrolki wpisują tę samą frazę, więc nie trzeba wracać na górę strony, a fraza działa na wszystkich zakładkach. Po zawężeniu listy kategorie z trafieniami rozwijają się same. |
 | `Filtry` | Otwiera okno filtrów opisane niżej. Zielona liczba na przycisku mówi, ile filtrów jest aktywnych. |
 | `Sortuj` | Otwiera listę kolumn. Pierwsze stuknięcie sortuje rosnąco, drugie malejąco, trzecie zdejmuje sortowanie. |
 | `Pokazano N z M` | Ile wpisów widać po filtrach i ile jest ich w sumie. |
@@ -271,12 +300,25 @@ Aby porównać wpisy:
 
 1. Wybierz zakładkę.
 2. Odszukaj interesujące rekordy.
-3. Zaznacz co najmniej dwa wiersze.
+3. Zaznacz co najmniej dwa wiersze — zaznaczony wiersz dostaje jasnozielony znacznik `✓`.
 4. Kliknij `Porównaj zaznaczone`.
 5. Przejrzyj dane w modalu porównania.
 6. Zamknij modal po zakończeniu.
 
 Porównywanie jest szczególnie przydatne przy broniach, pancerzach, archetypach, talentach i pojazdach.
+
+### Zdejmowanie zaznaczeń
+
+Obok przycisku `Porównaj zaznaczone` jest przycisk `Wyczyść zaznaczone`. Dopóki nic nie jest
+zaznaczone, przycisk jest wyszarzony i nie da się go nacisnąć. Uaktywnia się już przy **jednym**
+zaznaczonym wierszu — wcześniej niż `Porównaj zaznaczone`, który wymaga dwóch — bo pojedyncze
+zaznaczenie też trzeba umieć wycofać.
+
+Kliknięcie zdejmuje wszystkie zaznaczenia **w bieżącej zakładce**. Zaznaczenia z innych zakładek
+zostają nietknięte.
+
+Zaznaczenia **nie znikają przy zmianie filtrów**. Jeśli zaznaczysz wiersz, a potem wpiszesz frazę,
+która go ukryje, zaznaczenie wróci razem z wierszem po zdjęciu filtru.
 
 ## Pełen Widok
 
@@ -306,7 +348,7 @@ Używaj go, gdy chcesz wrócić do podstawowego widoku przygotowanego do normaln
 
 ## Przełączniki grup zakładek
 
-Panel filtrów może zawierać przełączniki grup zakładek, np.:
+Panel narzędzi może zawierać przełączniki grup zakładek, np.:
 
 - tworzenie postaci,
 - zasady walki,
@@ -416,7 +458,7 @@ informacja, że potwierdzenie zostało pominięte.
 | Brak uprawnień do odczytu | Reguły Firebase blokują dostęp. | Zgłoś adminowi technicznemu. |
 | Dane nie mają struktury `sheets` | Import jest uszkodzony albo nie pochodzi z DataVault. | Wygeneruj i zaimportuj nowy plik. |
 | Tabela jest pusta | Filtry ukryły wyniki albo arkusz nie ma danych. | Kliknij `Pełen Widok` albo wyczyść filtry. |
-| Nie widać zakładki | Grupa zakładek jest ukryta albo zakładka jest admin-only. | Włącz grupę w panelu filtrów albo użyj trybu admina. |
+| Nie widać zakładki | Grupa zakładek jest ukryta albo zakładka jest admin-only. | Włącz grupę w panelu narzędzi albo użyj trybu admina. |
 | Moduł działa, ale w narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, moduł działa. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
 
 ## Krótki workflow podczas sesji
@@ -516,14 +558,43 @@ Example tabs:
 
 Some tabs are hidden in regular view and available only to admin. The `Uszkodzenia Pojazdów` and `Eksplozje Pojazdów` tabs are admin-only vehicle tabs: you see them only when the address contains `?admin=1` and the vehicle-tabs toggle is checked.
 
-### Filter panel
+### Tools panel
 
-The filter panel contains:
+The panel on the left is headed `TOOLS` and contains:
 
-- global search,
+- the `GLOBAL FILTER` field,
 - sheet group toggles,
 - old Bestiary entries checkbox in admin mode,
 - short hints for sorting, filters, and comparison.
+
+### Global filter
+
+This field searches **every sheet at once**. Type a fragment of a name or a description and the
+table shows only the rows containing that fragment.
+
+Most importantly: **the typed phrase stays in the field while you switch sheets.** Type `Egzo`, then
+click through several tabs, and `Egzo` remains in the field while each of those tabs shows only the
+matching rows.
+
+So that you can tell the filter is working, **the `GLOBAL FILTER` caption turns blue**. While it is
+lit, some rows are hidden — including on sheets you have not opened yet. Hovering the caption shows
+a tooltip carrying the typed phrase.
+
+Worth knowing:
+
+- **Letter case does not matter.** `egzo`, `Egzo` and `EGZO` behave identically.
+- **Polish accented characters are optional.** `bron` finds `Broń` and `lancuchowa` finds
+  `łańcuchowa`. Typing the accents works just as well.
+- **Everything you type is searched as one whole.** `pisto bolt` looks for exactly that string, not
+  for two separate words.
+- **Only the columns you can see are searched.** If the phrase appears solely in a hidden column,
+  the row will not show up.
+- **The global filter combines with the column filters.** You can type `Pisto` and then, in the
+  `Bronie` sheet, pick `Boltowa` in the `Typ` column — you will see bolt pistols only. A column
+  filter stays with its own sheet while the phrase works everywhere.
+
+There are three ways to switch the filter off: clear the field, tap `✕` on the filter chip (on a
+phone), or click `Full View` or `Default View` — both buttons clear the global filter too.
 
 ### Data table
 
@@ -589,7 +660,7 @@ Above the card list there is a bar that **stays on screen while you scroll**. It
 
 | Element | What it does |
 | --- | --- |
-| `Szukaj w tej zakładce` field | The same search as the `Szukaj (globalnie)` field in the filter panel — both write the same value, so there is no need to scroll back to the top. Once the list is narrowed, the categories holding matches expand on their own. |
+| `Szukaj w tej zakładce` field | The same search as the `GLOBAL FILTER` field in the tools panel — both controls write the same phrase, so there is no need to scroll back to the top and the phrase applies to every sheet. Once the list is narrowed, the categories holding matches expand on their own. |
 | `Filtry` | Opens the filter window described below. The green number on the button says how many filters are active. |
 | `Sortuj` | Opens the list of columns. The first tap sorts ascending, the second descending, the third removes the sorting. |
 | `Pokazano N z M` | How many entries are visible after filtering and how many there are in total. |
@@ -712,7 +783,21 @@ To compare entries:
 5. Review data in the comparison modal.
 6. Close the modal when done.
 
+A selected row is marked with a light green `✓`.
+
 Comparison is especially useful for weapons, armor, archetypes, talents, and vehicles.
+
+### Clearing the selection
+
+Next to `Compare selected` there is a `Clear selection` button. While nothing is selected the button
+is greyed out and cannot be pressed. It becomes active at **one** selected row — earlier than
+`Compare selected`, which needs two — because a single selection has to be revocable too.
+
+Clicking it drops every selection **in the current sheet**. Selections made in other sheets are left
+untouched.
+
+Selections **do not disappear when the filters change**. If you select a row and then type a phrase
+that hides it, the selection comes back with the row once the filter is dropped.
 
 ## Full View
 
@@ -740,7 +825,7 @@ Use it when you want to return to the basic view prepared for regular play.
 
 ## Sheet group toggles
 
-The filter panel may contain sheet group toggles, for example:
+The tools panel may contain sheet group toggles, for example:
 
 - character creation,
 - combat rules,
@@ -850,7 +935,7 @@ confirmation was skipped.
 | No read permission | Firebase rules block access. | Contact technical admin. |
 | Data has no `sheets` structure | Import is damaged or does not come from DataVault. | Generate and import a new file. |
 | Table is empty | Filters hide results or the sheet has no data. | Click `Full View` or clear filters. |
-| Tab is not visible | Sheet group is hidden or tab is admin-only. | Enable the group in filter panel or use admin mode. |
+| Tab is not visible | Sheet group is hidden or tab is admin-only. | Enable the group in the tools panel or use admin mode. |
 | The module works but developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, the module works. To clear it, disable the ad blocker for this page. |
 
 ## Quick session workflow

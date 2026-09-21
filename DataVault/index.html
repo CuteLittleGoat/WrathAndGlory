@@ -52,6 +52,13 @@
           </div>
         </div>
         <button class="btn primary" id="btnCompare" disabled data-i18n="compareButton">Porównaj zaznaczone</button>
+        <!-- Zdejmuje wszystkie zaznaczenia w bieżącej zakładce. Uaktywnia się już przy jednym
+             zaznaczonym wierszu, czyli wcześniej niż "Porównaj zaznaczone", które wymaga dwóch —
+             pojedyncze zaznaczenie też trzeba umieć wycofać.
+             Drops every selection in the current sheet. It becomes active at one selected row,
+             earlier than "Compare selected", which needs two — a single selection has to be
+             revocable too. -->
+        <button class="btn secondary" id="btnClearSelection" disabled data-i18n="clearSelectionButton">Wyczyść zaznaczone</button>
       </div>
     </header>
 
@@ -59,11 +66,21 @@
 <main class="main">
       <aside class="panel">
         <div class="panelHeader">
-          <span class="caret">▸</span><span class="panelTitle" data-i18n="filtersTitle">FILTRY</span>
+          <!-- Panel mieści filtr globalny oraz przełączniki widoczności zakładek, dlatego nagłówek
+               nazywa całą zawartość, a nie sam filtr. Sygnał aktywnego filtru siedzi niżej, przy
+               polu, którego dotyczy.
+               The panel holds the global filter as well as the tab-visibility toggles, so the header
+               names the whole content rather than the filter alone. The active-filter signal sits
+               below, next to the field it refers to. -->
+          <span class="panelTitle" data-i18n="filtersTitle">NARZĘDZIA</span>
         </div>
         <div class="panelBody">
           <label class="field">
-            <div class="fieldLabel" data-i18n="globalSearchLabel">Szukaj (globalnie)</div>
+            <!-- Etykieta zmienia barwę, gdy filtr faktycznie zawęża widok — to jedyna informacja o
+                 tym, że fraza działa na wszystkich zakładkach naraz.
+                 The label changes colour when the filter actually narrows the view — the only sign
+                 that the phrase applies to every sheet at once. -->
+            <div class="fieldLabel" id="globalFilterLabel" data-i18n="globalSearchLabel">FILTR GLOBALNY</div>
             <input id="globalSearch" class="input" placeholder="np. Pist, Brutalna, IMPERIUM, Zatrucie (5)..." />
           </label>
           <!-- Checkbox admina steruje wyłącznie widocznością zdezaktualizowanych wpisów Bestiariusza / Admin checkbox controls only outdated Bestiary entry visibility -->

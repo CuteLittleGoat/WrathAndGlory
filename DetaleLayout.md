@@ -266,10 +266,26 @@ lokalnego.
 - `--text2`: `#4FAF4F` (tekst drugorzędny: hinty, opisy).
 - `--muted`: `#4a8b4a` (tekst przygaszony).
 - `--code`: `#D2FAD2` (wyróżnienia i „jaśniejsze” elementy).
-- `--red`: `#d74b4b` (kolor ostrzeżeń/akcentów na czerwono).
+- `--red`: `#d74b4b` — **zarezerwowany dla zakładek i kontrolki zasad walki**. Nie oznacza filtrów ani żadnego innego stanu.
 - `--border`: `#16c60c` (ramki i akcenty).
 - `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
-- `--text-old`: `#7f9b7f` — kolor archiwalny dla starych wpisów i kontrolki widoczności starych wpisów Bestiariusza.
+- `--text-old`: `#7f9b7f` — kolor archiwalny dla starych wpisów, kontrolki widoczności starych wpisów Bestiariusza oraz nieaktywnego przycisku `Wyczyść zaznaczone`.
+- Rodzina barwy aktywnego filtru — jedna barwa na wszystkie sygnały „filtr jest założony":
+  - `--filter-on`: `#3D8FC4` — tekst etykiety `FILTR GLOBALNY` i barwa bazowa rodziny,
+  - `--filter-on-bright`: `#6FB3E0` — znacznik `●` na przycisku filtra kolumny,
+  - `--filter-on-border`: `rgba(61,143,196,.55)` — obwódki,
+  - `--filter-on-glow`: `rgba(61,143,196,.40)` — poświaty i linia pod nagłówkiem kolumny,
+  - `--filter-on-bg`: `rgba(61,143,196,.10)` — tło (na czerni daje `#060E14`),
+  - `--filter-on-bg-active`: `rgba(61,143,196,.20)` — tło mocniejsze (na czerni `#0C1D27`).
+
+  Uzasadnienie doboru: błękit to jedyny obszar koła barw wolny od znaczeń już przypisanych — czerwień
+  należy do zasad walki, zieleń jest barwą wiodącą modułu, bursztyn `#E6B35C` oznacza różnice w oknie
+  porównania. Odcień sąsiaduje ze stalowym `--steel` (H213), ale stalowy ma nasycenie 14 % i czyta się
+  jako szarość, a `--filter-on` ma 53 % i czyta się jako błękit; pracują też w rozłącznych miejscach
+  interfejsu (stalowy na zakładkach pojazdów, błękit na etykiecie filtru i nagłówkach kolumn).
+  Kontrast `--filter-on` na `--panel` wynosi 5,92 : 1, czyli powyżej progu WCAG AA. Ciemne odcienie
+  rodziny idą na tła, jaśniejsze na tekst — na czarnym podłożu barwa nie może być jednocześnie ciemna
+  i dobrze widoczna.
 
 #### 2.2 Obwódki, cienie i tła pomocnicze
 - `--b`: `rgba(22,198,12,.35)` — obwódki aktywne.
@@ -289,9 +305,23 @@ lokalnego.
 - `rgba(0,0,0,.55)` — tło overlay w modalach.
 - `#E6B35C` — kolor `.compareDiff` (wyróżnienia w porównaniach).
 - Aktywny przycisk filtra kolumny (`.filterBtn.filter-active`) używa:
-  - tła `rgba(255,70,70,.20)`,
-  - czerwonej zewnętrznej poświaty `0 0 10px rgba(255,85,85,.40)` + obwódki `0 0 0 1px rgba(255,85,85,.30)`,
-  - dodatkowego znacznika `●` (`::after`) w kolorze `rgb(255,120,120)`.
+  - tła `var(--filter-on-bg-active)`,
+  - poświaty `0 0 10px var(--filter-on-glow)` + obwódki `0 0 0 1px var(--filter-on-border)`,
+  - dodatkowego znacznika `●` (`::after`) w kolorze `var(--filter-on-bright)`.
+- Etykieta pola filtru globalnego w stanie aktywnym (`.fieldLabel--active`): kolor `var(--filter-on)`
+  oraz `text-shadow: 0 0 10px var(--filter-on-glow)`. W stanie spoczynku etykieta ma zwykły
+  `var(--text2)`.
+- Nieaktywny przycisk `Wyczyść zaznaczone` (`#btnClearSelection:disabled`): `opacity: 1` znoszące
+  regułę bazową `.btn:disabled`, tekst `var(--text-old)`, obwódka `rgba(127,155,127,.35)`, tło
+  `rgba(127,155,127,.08)`. Ma być czytelnie wyszarzony, a nie przygaszony półprzezroczystością.
+- Pole wyboru wiersza do porównania (`.dataTable tbody td:first-child input[type="checkbox"]`):
+  `appearance: none`, rozmiar `16×16 px`, obwódka `1px solid var(--b)`, `border-radius: 3px`, tło
+  `transparent`. Znacznik to pseudoelement `::after` z treścią `✓` w kolorze `var(--code)`,
+  przełączany `opacity` `0`/`1`. Pole zaznaczone dostaje obwódkę `var(--accent)`, a `:focus-visible`
+  pierścień `0 0 0 3px rgba(22,198,12,.18)`. Tło jest przezroczyste celowo: pole przyjmuje wtedy
+  barwę wiersza, na którym leży (pasy zebry oraz podświetlenie wiersza zaznaczonego), zamiast
+  odcinać się prostokątem o stałym odcieniu. `accent-color` nie wystarcza, bo steruje wyłącznie
+  wypełnieniem pola, a barwę znacznika dobiera przeglądarka.
 - Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
 - Kontrolka DataVault „Czy wyświetlić zdezaktualizowane wpisy?” dla starych wpisów Bestiariusza używa koloru archiwalnego `var(--text-old)` / `#7f9b7f`: kontener i etykieta mają pełną nieprzezroczystość (`opacity: 1`), a zaznaczony checkbox używa `accent-color: var(--text-old)`.
@@ -336,9 +366,19 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 #### 3.6 Formatowanie wierszy specjalnych
 - Linie zaczynające się od `*[n]` (np. `*[3]`) są wyróżniane klasą `.caretref` i jaśniejszym kolorem `var(--code)`.
 
-#### 3.6a Sygnalizacja aktywnych filtrów kolumnowych
-- Aktywny filtr (tekstowy lub listowy) oznacza:
-  - podświetlenie nagłówka kolumny (`thead tr:first-child th.filter-active`) z jasnoczerwoną linią dolną (`inset 0 -2px 0 rgba(255,85,85,.40)`) i czerwonym gradientem tła (`rgba(255,70,70,.18)` → `rgba(255,70,70,.07)`),
+#### 3.6a Sygnalizacja aktywnych filtrów
+- Wszystkie sygnały „filtr jest założony" używają jednej rodziny barw `--filter-on*`, niezależnie od
+  poziomu filtru. Dzięki temu błękit znaczy dla użytkownika zawsze to samo, a czerwień pozostaje
+  wyłącznie barwą zasad walki.
+- Aktywny **filtr globalny** oznacza zmiana barwy etykiety `FILTR GLOBALNY` na `var(--filter-on)`
+  (klasa `.fieldLabel--active`) wraz z poświatą. Etykieta dostaje też atrybut `title` z wpisaną
+  frazą, bo sama barwa jest sygnałem słabym przy ślepocie barw i w trybie wysokiego kontrastu.
+  Sygnał zapala się wyłącznie wtedy, gdy fraza po obcięciu białych znaków jest niepusta — ten sam
+  warunek stosuje funkcja filtrująca, więc sama spacja nie zapala etykiety.
+- Aktywny **filtr kolumny** (tekstowy lub listowy) oznacza:
+  - podświetlenie nagłówka kolumny (`thead tr:first-child th.filter-active`) z linią dolną
+    (`inset 0 -2px 0 var(--filter-on-glow)`) i gradientem tła
+    (`var(--filter-on-bg-active)` → `var(--filter-on-bg)`),
   - aktywny stan przycisku filtra (`.filterBtn.filter-active`) z kropką `●`.
 - Nagłówek z aktywnym filtrem ustawia **osobno** `background-color: var(--panel)` i
   `background-image` z czerwonym gradientem. Skrót `background` kasowałby nieprzezroczysty kolor
@@ -1238,7 +1278,7 @@ według zaokrąglonej liczby pikseli, a drugi według rzeczywistej wysokości. P
 ### Panel filtrów
 
 - `.panel`: `display: flex; flex-direction: column; min-height: 0; overflow: hidden`,
-- `.panelHeader`: `flex: 0 0 auto` — nagłówek „FILTRY” zostaje na miejscu,
+- `.panelHeader`: `flex: 0 0 auto` — nagłówek „NARZĘDZIA” zostaje na miejscu,
 - `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin` — treść
   przewija się zamiast być ucinana.
 
@@ -1364,7 +1404,7 @@ the `--header-row-height` variable and the `ResizeObserver` measuring it are no 
 ### Filter panel
 
 - `.panel`: `display: flex; flex-direction: column; min-height: 0; overflow: hidden`,
-- `.panelHeader`: `flex: 0 0 auto` — the "FILTRY" header stays put,
+- `.panelHeader`: `flex: 0 0 auto` — the "NARZĘDZIA" header stays put,
 - `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin` — the
   content scrolls instead of being clipped.
 

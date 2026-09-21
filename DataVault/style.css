@@ -27,6 +27,30 @@
   --hover:rgba(22,198,12,.16);
   --row-selected:rgba(22,198,12,.16);
 
+  /* --- Rodzina barwy aktywnego filtru / Active-filter colour family ---
+     PL: Osobna barwa dla sygnału "filtr jest założony" — na etykiecie filtru globalnego, na
+     nagłówku kolumny z filtrem i na przycisku filtra. Czerwień jest zarezerwowana wyłącznie dla
+     zakładek zasad walki i nie oznacza już filtrów. Błękit to jedyny obszar koła barw wolny od
+     znaczeń już przypisanych: zieleń jest barwą wiodącą modułu, bursztyn oznacza różnice w oknie
+     porównania. Odcień sąsiaduje ze stalowym kolorem pojazdów, ale stalowy jest niemal odbarwiony
+     i czyta się jako szarość, a ta barwa jest nasycona i czyta się jako błękit; pracują też w
+     rozłącznych miejscach interfejsu. Ciemne odcienie rodziny idą na tła, jaśniejsze na tekst —
+     na czarnym podłożu ciemna barwa nie może być jednocześnie dobrze widoczna.
+     EN: A separate colour for the "a filter is on" signal — on the global filter label, on a
+     filtered column header and on the filter button. Red is reserved for the combat-rules tabs
+     alone and no longer marks filters. Blue is the only region of the colour wheel free of meanings
+     already taken: green is the module's leading colour, amber marks differences in the comparison
+     window. The hue neighbours the steel of the vehicles, but steel is nearly desaturated and reads
+     as grey while this colour is saturated and reads as blue; they also work in separate parts of
+     the interface. The dark tones of the family go on backgrounds and the lighter ones on text — on
+     a black surface a dark colour cannot be clearly visible at the same time. */
+  --filter-on:#3D8FC4;
+  --filter-on-bright:#6FB3E0;
+  --filter-on-border:rgba(61,143,196,.55);
+  --filter-on-glow:rgba(61,143,196,.40);
+  --filter-on-bg:rgba(61,143,196,.10);
+  --filter-on-bg-active:rgba(61,143,196,.20);
+
   --glow:0 0 25px rgba(22, 198, 12, 0.45);
   --glowH:0 0 18px rgba(22, 198, 12, 0.35);
   --head:"Consolas","Fira Code","Source Code Pro",monospace;
@@ -156,6 +180,18 @@ code{color:var(--code)}
   border-color:rgba(22,198,12,.35);
 }
 .btn:disabled{opacity:.45; cursor:not-allowed}
+/* PL: Przycisk zdejmujący zaznaczenia ma być czytelnie wyszarzony, a nie przygaszony
+   półprzezroczystością, dlatego znosi opacity z reguły wyżej i bierze kolor archiwalny — ten sam,
+   którym oznaczone są zdezaktualizowane wpisy Bestiariusza.
+   EN: The clear-selection button should read as greyed out rather than faded, so it overrides the
+   opacity from the rule above and takes the archival colour — the same one marking outdated
+   Bestiary entries. */
+#btnClearSelection:disabled{
+  opacity:1;
+  color:var(--text-old);
+  border-color:rgba(127,155,127,.35);
+  background:rgba(127,155,127,.08);
+}
 .btn.secondary:hover{background:rgba(22,198,12,.12)}
 .btn.primary:hover{filter:brightness(1.08)}
 
@@ -164,10 +200,10 @@ code{color:var(--code)}
    PL: Wysokość panelu narzuca .app{height:100dvh}, więc jego treść musi mieć dokąd się schować.
    Bez tego nadmiar był po prostu ucinany i nie dawało się do niego dojechać: panel nie miał paska
    przewijania, strona też nie, a kółko myszy nad panelem nie robiło nic. Przewija się sama treść,
-   nagłówek „FILTRY” zostaje na miejscu.
+   nagłówek „NARZĘDZIA” zostaje na miejscu.
    EN: The panel height is imposed by .app{height:100dvh}, so its content needs somewhere to go.
    Without this the overflow was simply clipped and unreachable: the panel had no scrollbar, neither
-   did the page, and the mouse wheel over the panel did nothing. The body scrolls; the "FILTRY"
+   did the page, and the mouse wheel over the panel did nothing. The body scrolls; the "NARZĘDZIA"
    header stays put. */
 .panel{
   border:1px solid var(--b);
@@ -203,9 +239,20 @@ code{color:var(--code)}
      the page does not scroll, so there is nowhere to pass the gesture to. */
   scrollbar-width:thin;
 }
-.caret{color:rgba(22,198,12,.65)}
 .panelTitle{color:var(--code)}
 .fieldLabel{font-size:12px; color:var(--text2); margin-bottom:6px; letter-spacing:.10em; text-transform:uppercase}
+/* PL: Etykieta pola filtru globalnego zapala się, gdy wpisana fraza faktycznie zawęża widok. To
+   jedyna informacja o tym, że filtr działa na WSZYSTKICH zakładkach, także tych, na które
+   użytkownik dopiero wejdzie. Barwa jest ta sama, którą oznaczane są filtry kolumnowe, więc oba
+   sygnały znaczą dla użytkownika to samo.
+   EN: The global filter's field label lights up when the typed phrase actually narrows the view. It
+   is the only sign that the filter applies to EVERY sheet, including the ones the user has not
+   opened yet. The colour matches the one marking column filters, so both signals mean the same
+   thing to the user. */
+.fieldLabel--active{
+  color:var(--filter-on);
+  text-shadow:0 0 10px var(--filter-on-glow);
+}
 .input{
   width:100%;
   padding:10px 10px;
@@ -372,7 +419,7 @@ code{color:var(--code)}
 }
 /* --- Aktywny filtr kolumny: jasna czerwień + glow dla nagłówka / Active column filter: bright red + glow for header --- */
 .dataTable thead tr:first-child th.filter-active{
-  box-shadow: inset 0 -2px 0 rgba(255,85,85,.40);
+  box-shadow: inset 0 -2px 0 var(--filter-on-glow);
   /* PL: Rozdzielone na kolor i obraz tła celowo. Skrót `background` kasuje wszystkie składowe,
          których nie wymienia — w tym nieprzezroczysty `background-color` z reguły wyżej. Sam
          gradient jest półprzezroczysty (rgba), więc przy przewijaniu przez przyklejony nagłówek
@@ -384,7 +431,7 @@ code{color:var(--code)}
          header. The base colour is the same one the surface under the table already uses, so an
          unscrolled table looks exactly as before. */
   background-color:var(--panel);
-  background-image:linear-gradient(180deg, rgba(255,70,70,.18), rgba(255,70,70,.07));
+  background-image:linear-gradient(180deg, var(--filter-on-bg-active), var(--filter-on-bg));
 }
 .dataTable tbody tr:nth-child(odd){background:var(--zebra-odd)}
 .dataTable tbody tr:nth-child(even){background:var(--zebra-even)}
@@ -559,6 +606,46 @@ td.center{text-align:center}
      freely downwards and still scrolls sideways as before. */
 }
 
+
+/* --- Pole wyboru wiersza do porównania / Row-selection checkbox ---
+   PL: Rysujemy je sami, bo `accent-color` steruje wyłącznie wypełnieniem pola, a barwę znacznika
+   dobiera wtedy przeglądarka — stąd domyślny niebieski, obcy palecie modułu. Po zmianie pole
+   zostaje przezroczyste, więc przyjmuje tło wiersza, na którym leży: pasy zebry i podświetlenie
+   wiersza zaznaczonego. Znacznik jest jasnozielony, dokładnie jak tekst nagłówka kolumny.
+   Selektor celuje tylko w pierwszą komórkę ciała tabeli, więc nie rusza przełączników panelu
+   bocznego ani list wartości w menu i modalu filtrów — te zostają wypełniane na zielono.
+   EN: It is drawn by hand, because `accent-color` only controls the box fill and the browser then
+   picks the tick colour — hence the default blue, foreign to the module palette. After the change
+   the box stays transparent, so it takes the background of the row it sits on: the zebra stripes
+   and the selected-row highlight. The tick is light green, exactly like the column header text.
+   The selector targets only the first cell of the table body, so it leaves the side-panel toggles
+   and the value lists in the filter menu and modal alone — those keep their green fill. */
+.dataTable tbody td:first-child input[type="checkbox"]{
+  appearance:none;
+  -webkit-appearance:none;
+  width:16px;
+  height:16px;
+  margin:0;
+  border:1px solid var(--b);
+  border-radius:3px;
+  background:transparent;
+  cursor:pointer;
+  display:grid;
+  place-content:center;
+}
+.dataTable tbody td:first-child input[type="checkbox"]::after{
+  content:"✓";
+  font-size:12px;
+  line-height:1;
+  color:var(--code);
+  opacity:0;
+}
+.dataTable tbody td:first-child input[type="checkbox"]:checked{border-color:var(--accent)}
+.dataTable tbody td:first-child input[type="checkbox"]:checked::after{opacity:1}
+.dataTable tbody td:first-child input[type="checkbox"]:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(22,198,12,.18);
+}
 
 /* Column tweaks */
 /* Kolumna wyboru (pierwsza, ✓) — stała szerokość we wszystkich zakładkach */
@@ -1140,15 +1227,15 @@ td.center{text-align:center}
 .filterBtn:hover{background:rgba(22,198,12,.08)}
 /* --- Aktywny przycisk filtra: jasna czerwień + glow / Active filter button: bright red + glow --- */
 .filterBtn.filter-active{
-  border-color:rgba(255,85,85,.40);
-  background:rgba(255,70,70,.20);
-  box-shadow:0 0 0 1px rgba(255,85,85,.30), 0 0 10px rgba(255,85,85,.40);
+  border-color:var(--filter-on-border);
+  background:var(--filter-on-bg-active);
+  box-shadow:0 0 0 1px var(--filter-on-border), 0 0 10px var(--filter-on-glow);
   position:relative;
 }
 .filterBtn.filter-active::after{
   content:"●";
   font-size:9px;
-  color:rgb(255,120,120);
+  color:var(--filter-on-bright);
   position:absolute;
   top:-4px;
   right:-2px;

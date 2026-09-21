@@ -31,7 +31,7 @@ Nie ma osobnego pliku HTML dla admina. Tryb admina jest wykrywany przez parametr
 | --- | --- |
 | `DataVault/index.html` | Szkielet UI: bramka dostępu, topbar, panel filtrów, workspace, zakładki, tabela, popover, modal i import skryptów. |
 | `DataVault/app.js` | Główna logika modułu: i18n, Firebase flow, stan UI, normalizacja danych, filtry, sortowanie, render tabel, porównanie, import XLSX. |
-| `DataVault/style.css` | Style widoku: layout, topbar, panel filtrów, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym zakładki `Obrzędy` i arkuszy pojazdowych. |
+| `DataVault/style.css` | Style widoku: layout, topbar, panel narzędzi, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym zakładki `Obrzędy` i arkuszy pojazdowych. |
 | `DataVault/xlsxCanonicalParser.js` | Kanoniczny parser XLSX w przeglądarce oparty o JSZip i pliki XML pakietu XLSX. |
 | `DataVault/config/FirebaseREADME.md` | Modułowa instrukcja konfiguracji Firebase dla DataVault. |
 | `DataVault/docs/README.md` | Instrukcja użytkownika. |
@@ -177,16 +177,98 @@ Topbar zawiera:
 - `Widok Domyślny`,
 - `Porównaj zaznaczone`.
 
-### Panel filtrów
+### Panel narzędzi
 
-Panel filtrów zawiera:
+Panel po lewej stronie ma nagłówek `NARZĘDZIA` (klucz `labels.filtersTitle`) i zawiera:
 
+- etykietę `FILTR GLOBALNY` (`globalFilterLabel`, klucz `labels.globalSearchLabel`),
 - globalne pole wyszukiwania `globalSearch`,
 - checkbox starych wpisów Bestiariusza `toggleOldBestiaryEntries`,
 - checkbox zakładek tworzenia postaci `toggleCharacterTabs`,
 - checkbox zakładek walki `toggleCombatTabs`,
 - checkbox zakładek pojazdów `toggleVehicleTabs`,
 - podpowiedzi o sortowaniu, filtrach kolumn i porównywaniu.
+
+### Filtr globalny
+
+Filtr globalny jest **stanem całej aplikacji**, a nie stanem pojedynczej zakładki. Jego wartość
+trzyma zmienna modułu `globalFilter`, zadeklarowana obok `viewBySheet`. Stan widoku zakładki
+(`sort`, `filtersText`, `filtersSet`, `selected`, `expandedCells`) nie ma pola na frazę, dlatego
+przełączenie zakładki nie ma czego nadpisać — wpisana fraza zostaje w polu i zawęża każdą kolejną
+otwieraną zakładkę.
+
+| Funkcja | Rola |
+| --- | --- |
+| `setGlobalFilter(value, {rerender})` | Jedyna droga zmiany wartości. Ustawia `globalFilter`, lustrzanie odświeża `globalSearch` i `quickSearch`, woła `updateGlobalFilterIndicator()`, przerysowuje listę i zapisuje sesję. `rerender: false` służy ścieżkom, w których tabeli jeszcze nie ma albo przerysowanie następuje zaraz potem. |
+| `isGlobalFilterActive()` | `true`, gdy `globalFilter.trim()` jest niepuste. Ten sam warunek stosuje `passesFilters()`, więc sama spacja nie zawęża widoku i nie zapala sygnału. |
+| `updateGlobalFilterIndicator()` | Przełącza klasę `fieldLabel--active` na etykiecie `FILTR GLOBALNY` i ustawia dymek `messages.globalFilterActive` z wpisaną frazą. |
+| `foldPolish(text)` | Składa polskie znaki diakrytyczne na potrzeby porównania. |
+
+Wartość trafia do `sessionStorage` jako pole `globalFilter` obiektu zapisywanego pod kluczem
+`datavault_session_view_v2`, obok `sheetViews`, `toggles` i `language`. `loadSessionState()` czyta
+to pole, a gdy go nie ma, bierze pierwszą niepustą frazę ze `sheetViews[*].global` — to ścieżka
+zgodności z sesjami zapisanymi wcześniej, gdy fraza była trzymana osobno w każdej zakładce.
+
+Oba przyciski widoku (`btnReset`, `btnDefaultView`) przez `applyViewModeToAllSheets()` czyszczą
+również filtr globalny. Są dla użytkownika wyjściem awaryjnym „pokaż mi wszystko", więc nie mogą
+zostawić założonej frazy.
+
+#### Składanie polskich znaków (`foldPolish`)
+
+```js
+function foldPolish(text){
+  return String(text ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/ł/g, "l");
+}
+```
+
+Funkcja jest używana **po obu stronach** porównania w `passesFilters()`: na frazie i na sklejonej
+treści widocznych kolumn wiersza. Dzięki temu `lancuchowa` znajduje `Broń łańcuchowa`, a wielkość
+liter nie ma znaczenia.
+
+`normalize("NFD")` rozkłada `ą ć ę ń ó ś ź ż` na literę bazową i znak łączący, usuwany zakresem
+`U+0300-U+036F`. **Nie rozkłada natomiast `ł` ani `Ł`** — te znaki nie mają rozkładu kanonicznego w
+Unicode, dlatego konieczna jest jawna podmiana wykonywana po `toLowerCase()`, co jedną regułą
+obsługuje obie wielkości litery.
+
+**Uwaga językowa:** reguła jest napisana pod **polską** wersję językową modułu. Przy dodaniu innego
+języka wymaga własnego zestawu podmian znaków nierozkładalnych przez `normalize("NFD")` — na
+przykład `ß`, `ø` albo `ı`. Adnotacja o tym znajduje się także przy samej funkcji w `app.js` oraz w
+bloku `MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`.
+
+Filtry kolumnowe (`filtersText`) **nie** korzystają z `foldPolish()` — porównują dosłownie. Filtry
+listowe (`filtersSet`) operują na dokładnych wartościach ze słownika i składania znaków nie
+potrzebują.
+
+Fraza jest szukana jako **jeden ciąg**: `pisto bolt` nie jest dzielone po spacjach.
+
+### Zaznaczanie wierszy do porównania
+
+Zaznaczenia (`view.selected`) są **osobne dla każdej zakładki** i **nie zależą od filtrów** — ani od
+globalnego, ani od kolumnowych. Wiersz odfiltrowany zachowuje zaznaczenie i odzyskuje je po
+zdjęciu filtru. Jedynym wyjątkiem jest `pruneHiddenOldBestiarySelection()`, które zdejmuje
+zaznaczenie z wierszy Bestiariusza ukrywanych systemowo.
+
+Stanem obu przycisków steruje jedna funkcja:
+
+```js
+function updateSelectionButtons(){
+  const count = view?.selected?.size || 0;
+  if (els.btnCompare) els.btnCompare.disabled = count < 2;
+  if (els.btnClearSelection) els.btnClearSelection.disabled = count < 1;
+}
+```
+
+Progi są różne, bo porównanie wymaga dwóch wierszy, a wycofanie zaznaczenia ma sens już przy
+jednym. Funkcja jest wołana z `selectSheet()`, z `renderBody()` (pusty wynik i koniec renderowania),
+ze zdarzenia `change` pola wyboru w wierszu oraz z `pruneHiddenOldBestiarySelection()`.
+
+`btnClearSelection` czyści `view.selected` **bieżącej zakładki** i przerysowuje listę. Pełne
+przerysowanie jest konieczne, bo w układzie kart nagłówek grupy pokazuje znacznik zaznaczenia i na
+grupach zwiniętych pozostałby nieaktualny.
 
 ### Workspace
 
@@ -205,7 +287,7 @@ i `DEFAULT_VIEW_CONFIG` pozostają nietknięte.
 
 | Element | Rola |
 | --- | --- |
-| `quickSearch` | Pole wyszukiwania zapisujące do `view.global`; dwukierunkowo zsynchronizowane z `globalSearch` w panelu filtrów. |
+| `quickSearch` | Pole wyszukiwania wołające `setGlobalFilter()`; dwukierunkowo zsynchronizowane z `globalSearch` w panelu narzędzi, bo obie kontrolki opisują tę samą wartość `globalFilter`. |
 | `btnSheetFilters` + `filtersBadge` | Otwiera modal filtrów; odznaka pokazuje liczbę aktywnych filtrów. |
 | `btnSheetSort` | Otwiera arkusz sortowania. |
 | `rowCount` | Licznik `Pokazano N z M`, uzupełniany przez `updateSheetTools()` przy każdym renderowaniu. |
@@ -755,7 +837,9 @@ poza nim i ukrycie przełącznika ich nie dotyczy.
 | Import Firebase | Zaimportuj `firebase-import.json` w root RTDB. | Dane trafiają pod `datavault/live`. |
 | Widok domyślny | Kliknij `Widok Domyślny`. | Zostają zastosowane domyślne filtry i ukrycia. |
 | Pełen widok | Kliknij `Pełen Widok`. | Filtry i ukrycia widoku domyślnego są zdjęte. |
-| Filtr globalny | Wpisz frazę w `globalSearch`. | Tabela pokazuje pasujące rekordy. |
+| Filtr globalny | Wpisz frazę w `globalSearch`. | Tabela pokazuje pasujące rekordy we wszystkich zakładkach; etykieta `FILTR GLOBALNY` zmienia barwę. |
+| Zdjęcie filtru globalnego | Wyczyść pole, stuknij `✕` na żetonie albo kliknij przycisk widoku. | Fraza znika, etykieta wraca do barwy zwykłej. |
+| Wyczyszczenie zaznaczeń | Kliknij `Wyczyść zaznaczone`. | Znikają wszystkie zaznaczenia bieżącej zakładki. |
 | Filtr kolumny | Wpisz filtr w polu pod nagłówkiem. | Tabela filtruje po tej kolumnie. |
 | Filtr listowy | Otwórz menu filtra kolumny. | Można wybrać wartości z listy. |
 | Sortowanie | Kliknij nagłówek kolumny. | Tabela sortuje dane po tej kolumnie. |
@@ -797,7 +881,7 @@ There is no separate admin HTML file. Admin mode is detected through the `admin=
 | --- | --- |
 | `DataVault/index.html` | UI skeleton: access gate, topbar, filter panel, workspace, tabs, table, popover, modal, and script imports. |
 | `DataVault/app.js` | Main module logic: i18n, Firebase flow, UI state, data normalization, filters, sorting, table rendering, comparison, XLSX import. |
-| `DataVault/style.css` | View styles: layout, topbar, filters panel, table, tabs, modal, popover, filter menu, colors, responsiveness, and sheet column configuration, including the `Obrzędy` tab. |
+| `DataVault/style.css` | View styles: layout, topbar, tools panel, table, tabs, modal, popover, filter menu, colors, responsiveness, and sheet column configuration, including the `Obrzędy` tab. |
 | `DataVault/xlsxCanonicalParser.js` | Browser-side canonical XLSX parser based on JSZip and XLSX package XML files. |
 | `DataVault/config/FirebaseREADME.md` | Module Firebase setup guide for DataVault. |
 | `DataVault/docs/README.md` | User guide. |
@@ -943,16 +1027,99 @@ The topbar contains:
 - `Default View`,
 - `Compare selected`.
 
-### Filter panel
+### Tools panel
 
-The filter panel contains:
+The panel on the left is headed `TOOLS` (key `labels.filtersTitle`) and contains:
 
+- the `GLOBAL FILTER` label (`globalFilterLabel`, key `labels.globalSearchLabel`),
 - global search field `globalSearch`,
 - old Bestiary entries checkbox `toggleOldBestiaryEntries`,
 - character creation tabs checkbox `toggleCharacterTabs`,
 - combat rules tabs checkbox `toggleCombatTabs`,
 - vehicle tabs checkbox `toggleVehicleTabs`,
 - hints for sorting, column filters, and comparison.
+
+### Global filter
+
+The global filter is **application-wide state**, not the state of a single sheet. Its value is held
+by the module variable `globalFilter`, declared next to `viewBySheet`. A sheet's view state (`sort`,
+`filtersText`, `filtersSet`, `selected`, `expandedCells`) has no field for the phrase, so switching
+sheets has nothing to overwrite — the typed phrase stays in the field and narrows every sheet
+opened afterwards.
+
+| Function | Role |
+| --- | --- |
+| `setGlobalFilter(value, {rerender})` | The only path for changing the value. It sets `globalFilter`, mirrors `globalSearch` and `quickSearch`, calls `updateGlobalFilterIndicator()`, redraws the list and saves the session. `rerender: false` serves the paths where the table does not exist yet or a redraw follows immediately. |
+| `isGlobalFilterActive()` | `true` when `globalFilter.trim()` is non-empty. `passesFilters()` applies the same condition, so a lone space neither narrows the view nor lights the signal. |
+| `updateGlobalFilterIndicator()` | Toggles the `fieldLabel--active` class on the `GLOBAL FILTER` label and sets the `messages.globalFilterActive` tooltip carrying the typed phrase. |
+| `foldPolish(text)` | Folds Polish diacritics for the comparison. |
+
+The value goes into `sessionStorage` as the `globalFilter` field of the object stored under the
+`datavault_session_view_v2` key, next to `sheetViews`, `toggles` and `language`. `loadSessionState()`
+reads that field and, when it is missing, takes the first non-empty phrase from
+`sheetViews[*].global` — the compatibility path for sessions saved earlier, when the phrase was kept
+separately per sheet.
+
+Both view buttons (`btnReset`, `btnDefaultView`) also clear the global filter through
+`applyViewModeToAllSheets()`. They are the user's "show me everything" escape hatch, so they must
+not leave a phrase in place.
+
+#### Folding Polish diacritics (`foldPolish`)
+
+```js
+function foldPolish(text){
+  return String(text ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/ł/g, "l");
+}
+```
+
+The function is applied to **both sides** of the comparison in `passesFilters()`: to the phrase and
+to the joined content of the row's visible columns. That is what makes `lancuchowa` find
+`Broń łańcuchowa`, with letter case being irrelevant.
+
+`normalize("NFD")` decomposes `ą ć ę ń ó ś ź ż` into a base letter and a combining mark, stripped by
+the `U+0300-U+036F` range. It **does not decompose `ł` or `Ł`** — those characters have no canonical
+decomposition in Unicode, hence the explicit replacement performed after `toLowerCase()`, which
+handles both letter cases with a single rule.
+
+**Language note:** the rule is written for the **Polish** version of the module. Adding another
+language requires its own replacements for characters that `normalize("NFD")` does not decompose —
+for example `ß`, `ø` or `ı`. The same note is attached to the function itself in `app.js` and to the
+`MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT` block.
+
+Column filters (`filtersText`) do **not** use `foldPolish()` — they compare literally. List filters
+(`filtersSet`) work on exact dictionary values and need no folding.
+
+The phrase is searched as a **single string**: `pisto bolt` is not split on spaces.
+
+### Selecting rows for comparison
+
+Selections (`view.selected`) are **separate for each sheet** and **independent of the filters** —
+both the global one and the column ones. A filtered-out row keeps its selection and regains it once
+the filter is dropped. The only exception is `pruneHiddenOldBestiarySelection()`, which drops the
+selection from Bestiary rows hidden systemically.
+
+A single function drives the state of both buttons:
+
+```js
+function updateSelectionButtons(){
+  const count = view?.selected?.size || 0;
+  if (els.btnCompare) els.btnCompare.disabled = count < 2;
+  if (els.btnClearSelection) els.btnClearSelection.disabled = count < 1;
+}
+```
+
+The thresholds differ because comparing needs two rows while revoking a selection makes sense from
+one. The function is called from `selectSheet()`, from `renderBody()` (empty result and end of
+rendering), from the `change` event of a row's checkbox and from
+`pruneHiddenOldBestiarySelection()`.
+
+`btnClearSelection` clears `view.selected` of the **current sheet** and redraws the list. The full
+redraw is required because in the card layout a group header shows a selection marker that would go
+stale on collapsed groups.
 
 ### Workspace
 
@@ -971,7 +1138,7 @@ filtering, sorting and the active-filter markers. The toolbar is a second entry 
 
 | Element | Role |
 | --- | --- |
-| `quickSearch` | Search field writing into `view.global`; kept in two-way sync with `globalSearch` in the filter panel. |
+| `quickSearch` | Search field calling `setGlobalFilter()`; kept in two-way sync with `globalSearch` in the tools panel, because both controls describe the same `globalFilter` value. |
 | `btnSheetFilters` + `filtersBadge` | Opens the filter modal; the badge shows the number of active filters. |
 | `btnSheetSort` | Opens the sort sheet. |
 | `rowCount` | The `Pokazano N z M` counter, filled by `updateSheetTools()` on every render. |
@@ -1518,7 +1685,9 @@ buttons live outside it, so hiding the selector does not affect them.
 | Firebase import | Import `firebase-import.json` at RTDB root. | Data is placed under `datavault/live`. |
 | Default view | Click `Default View`. | Default filters and hiding are applied. |
 | Full view | Click `Full View`. | Default filters and hiding are removed. |
-| Global filter | Type a phrase in `globalSearch`. | Table shows matching records. |
+| Global filter | Type a phrase in `globalSearch`. | Every sheet shows matching records; the `GLOBAL FILTER` label changes colour. |
+| Dropping the global filter | Clear the field, tap `✕` on the chip or click a view button. | The phrase disappears and the label returns to its normal colour. |
+| Clearing the selection | Click `Clear selection`. | Every selection in the current sheet disappears. |
 | Column filter | Type a filter under a header. | Table filters by that column. |
 | List filter | Open a column filter menu. | Values can be selected from the list. |
 | Sorting | Click a column header. | Table sorts by that column. |

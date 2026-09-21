@@ -9,6 +9,8 @@ const els = {
   btnUpdateData: document.getElementById("btnUpdateData"),
   updateDataGroup: document.getElementById("updateDataGroup"),
   btnCompare: document.getElementById("btnCompare"),
+  btnClearSelection: document.getElementById("btnClearSelection"),
+  globalFilterLabel: document.getElementById("globalFilterLabel"),
   btnMainPage: document.getElementById("btnMainPage"),
   btnReset: document.getElementById("btnReset"),
   btnDefaultView: document.getElementById("btnDefaultView"),
@@ -66,8 +68,9 @@ const translations = {
       defaultViewButton: "Widok Domyślny",
       viewButtonsNote: "Część danych jest domyślnie ukryta.",
       compareButton: "Porównaj zaznaczone",
-      filtersTitle: "FILTRY",
-      globalSearchLabel: "Szukaj (globalnie)",
+      clearSelectionButton: "Wyczyść zaznaczone",
+      filtersTitle: "NARZĘDZIA",
+      globalSearchLabel: "FILTR GLOBALNY",
       toggleOldBestiaryEntries: "Czy wyświetlić zdezaktualizowane wpisy?",
       toggleCharacterTabs: "Czy wyświetlić zakładki dotyczące tworzenia postaci?",
       toggleCombatTabs: "Czy wyświetlić zakładki dotyczące zasad walki?",
@@ -109,6 +112,7 @@ const translations = {
     },
     messages: {
       filterTitle: "FILTR",
+      globalFilterActive: "Filtr globalny jest aktywny i działa na wszystkich zakładkach: {text}",
       selectAll: "Zaznacz wszystko",
       clearAll: "Wyczyść",
       filterButtonTitle: "Filtr listy",
@@ -163,8 +167,9 @@ const translations = {
       defaultViewButton: "Default View",
       viewButtonsNote: "Some data is hidden by default.",
       compareButton: "Compare selected",
-      filtersTitle: "FILTERS",
-      globalSearchLabel: "Search (global)",
+      clearSelectionButton: "Clear selection",
+      filtersTitle: "TOOLS",
+      globalSearchLabel: "GLOBAL FILTER",
       toggleOldBestiaryEntries: "Show outdated entries?",
       toggleCharacterTabs: "Show tabs related to character creation?",
       toggleCombatTabs: "Show tabs related to combat rules?",
@@ -206,6 +211,7 @@ const translations = {
     },
     messages: {
       filterTitle: "FILTER",
+      globalFilterActive: "The global filter is active and applies to every sheet: {text}",
       selectAll: "Select all",
       clearAll: "Clear",
       filterButtonTitle: "Filter list",
@@ -290,6 +296,9 @@ const applyLanguage = (lang) => {
   if (els.quickSearch) {
     els.quickSearch.placeholder = t.placeholders.quickSearch;
   }
+  // Dymek etykiety filtru jest tłumaczony, więc musi zostać przebudowany razem z resztą tekstów
+  // The filter label tooltip is translated, so it has to be rebuilt along with the rest of the texts
+  updateGlobalFilterIndicator();
   document.querySelectorAll(".tableFilters .input").forEach((input) => {
     input.placeholder = t.placeholders.columnFilter;
   });
@@ -310,6 +319,12 @@ const applyLanguage = (lang) => {
 // If you add a new language (e.g., fr/de), provide mapping from localized tab names to current canonical keys
 // (for example via canonKey + alias dictionary) or update every set/condition that depends on tab names.
 // Otherwise some default filters/behaviors (keywords, default view, sorting) will stop working.
+// Dotyczy to także funkcji foldPolish(), która składa polskie znaki diakrytyczne na potrzeby filtru
+// globalnego. Jest napisana pod polski zestaw znaków i przy nowym języku wymaga własnych podmian
+// znaków nierozkładalnych przez normalize("NFD") — na przykład ß, ø albo ı.
+// This also covers foldPolish(), which folds Polish diacritics for the global filter. It is written
+// for the Polish character set and a new language needs its own replacements for characters that
+// normalize("NFD") does not decompose — for example ß, ø or ı.
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie", "Pakiety Wyniesienia", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
 const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki", "Uszkodzenia Pojazdów", "Eksplozje Pojazdów"]);
@@ -359,6 +374,14 @@ const uiState = {
 };
 const viewBySheet = {};
 let view = createSheetViewState();
+// --- Filtr globalny / Global filter ---
+// PL: Filtr globalny nie należy do stanu pojedynczej zakładki — to jedna fraza działająca na całej
+// aplikacji, dlatego żyje obok viewBySheet i nie jest kopiowany przy przełączaniu zakładek. Dzięki
+// temu wpisana fraza zostaje w polu i zawęża każdą zakładkę, na którą użytkownik wejdzie.
+// EN: The global filter does not belong to a single sheet's state — it is one phrase acting on the
+// whole application, so it lives next to viewBySheet and is not copied when sheets are switched.
+// This is what keeps the typed phrase in the field, narrowing every sheet the user opens.
+let globalFilter = "";
 
 const RENDER_CHUNK_SIZE = 80; // liczba wierszy renderowanych w jednym kroku (progressive rendering)
 
@@ -503,12 +526,94 @@ function pruneHiddenOldBestiarySelection(){
   for (const id of [...view.selected]){
     if (hiddenOldIds.has(id)) view.selected.delete(id);
   }
+  // PL: Zdjęcie zaznaczeń systemowo może zejść poniżej progu obu przycisków, więc trzeba je
+  // odświeżyć — inaczej "Porównaj zaznaczone" zostałby aktywny mimo braku dwóch wierszy.
+  // EN: Dropping selections systemically can fall below either button's threshold, so they have to
+  // be refreshed — otherwise "Compare selected" would stay enabled without two rows.
+  updateSelectionButtons();
+}
+
+// --- Składanie polskich znaków diakrytycznych na potrzeby wyszukiwania / Folding Polish diacritics for search ---
+// PL: Dzięki temu fraza "lancuchowa" znajduje "Broń łańcuchowa", a "zywotnosc" znajduje "Żywotność".
+// normalize("NFD") rozkłada ą, ć, ę, ń, ó, ś, ź, ż na literę bazową i znak łączący, który usuwamy
+// zakresem U+0300-U+036F. NIE rozkłada jednak ł ani Ł — te znaki nie mają rozkładu kanonicznego w
+// Unicode, więc podmieniamy je wprost, już po sprowadzeniu tekstu do małych liter.
+// UWAGA JĘZYKOWA: reguła jest napisana pod polską wersję językową modułu. Inny język będzie wymagał
+// własnego zestawu podmian znaków nierozkładalnych (np. niemieckie ß, duńskie ø, tureckie ı).
+// EN: This makes the phrase "lancuchowa" find "Broń łańcuchowa" and "zywotnosc" find "Żywotność".
+// normalize("NFD") splits ą, ć, ę, ń, ó, ś, ź, ż into a base letter and a combining mark, which we
+// strip with the U+0300-U+036F range. It does NOT decompose ł or Ł — those characters have no
+// canonical decomposition in Unicode, so they are replaced explicitly, after lowercasing.
+// LANGUAGE NOTE: the rule is written for the Polish version of the module. Another language will
+// need its own replacements for non-decomposable characters (e.g. German ß, Danish ø, Turkish ı).
+function foldPolish(text){
+  return String(text ?? "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/ł/g, "l");
+}
+
+// PL: Fraza sprowadzona do postaci, w której faktycznie jest porównywana. Filtrowanie i sygnał na
+// etykiecie muszą czytać dokładnie to samo, inaczej etykieta potrafiłaby świecić, choć widok nie
+// jest zawężony — tak byłoby przy samej spacji albo przy samym znaku diakrytycznym łączącym, który
+// składanie usuwa bez reszty.
+// EN: The phrase reduced to the form it is actually compared in. The filtering and the label signal
+// must read exactly the same value, otherwise the label could light up while the view is not
+// narrowed — as with a lone space, or a lone combining diacritic, which folding removes entirely.
+function globalFilterNeedle(){
+  return foldPolish(globalFilter).trim();
+}
+
+function isGlobalFilterActive(){
+  return Boolean(globalFilterNeedle());
+}
+
+// PL: Sygnał barwny na etykiecie to jedyna informacja o tym, że filtr globalny zawęża WSZYSTKIE
+// zakładki, także te, na które użytkownik dopiero wejdzie. Dymek podaje wpisaną frazę, bo sama
+// barwa jest sygnałem słabym (ślepota barw, tryb wysokiego kontrastu).
+// EN: The signal on the label is the only sign that the global filter narrows EVERY sheet,
+// including the ones the user has not opened yet. The tooltip repeats the typed phrase, because
+// colour alone is a weak signal (colour blindness, high-contrast mode).
+function updateGlobalFilterIndicator(){
+  if (!els.globalFilterLabel) return;
+  const active = isGlobalFilterActive();
+  els.globalFilterLabel.classList.toggle("fieldLabel--active", active);
+  els.globalFilterLabel.title = active
+    ? formatMessage(translations[currentLanguage].messages.globalFilterActive, {text: globalFilter.trim()})
+    : "";
+}
+
+// PL: Jedyna droga zmiany filtru globalnego: ustawia wartość, lustrzanie odświeża oba pola (panel
+// boczny i pasek zakładki na telefonie), zapala lub gasi sygnał na etykiecie i przerysowuje bieżącą
+// zakładkę. Trzymanie tego w jednym miejscu jest tym, co uniemożliwia rozjazd między polami.
+// EN: The only path for changing the global filter: it sets the value, mirrors both fields (the
+// side panel and the per-sheet toolbar on a phone), turns the label signal on or off and redraws
+// the current sheet. Keeping it in one place is what makes the two fields unable to drift apart.
+function setGlobalFilter(value, {rerender = true} = {}){
+  globalFilter = String(value ?? "");
+  if (els.global && els.global.value !== globalFilter) els.global.value = globalFilter;
+  if (els.quickSearch && els.quickSearch.value !== globalFilter) els.quickSearch.value = globalFilter;
+  updateGlobalFilterIndicator();
+  if (rerender && tbodyEl && currentSheet) renderBody();
+  saveSessionState();
+}
+
+// PL: Oba przyciski zależą od tego samego zbioru zaznaczeń, tylko od innych progów: porównanie
+// wymaga dwóch wierszy, czyszczenie ma sens już przy jednym. Jedna funkcja sprawia, że żadna
+// ścieżka zmieniająca zaznaczenia nie zapomni odświeżyć któregoś z nich.
+// EN: Both buttons depend on the same selection set, only at different thresholds: comparing needs
+// two rows, clearing makes sense from one. A single function means no path that changes the
+// selection can forget to refresh either button.
+function updateSelectionButtons(){
+  const count = view?.selected?.size || 0;
+  if (els.btnCompare) els.btnCompare.disabled = count < 2;
+  if (els.btnClearSelection) els.btnClearSelection.disabled = count < 1;
 }
 
 function createSheetViewState(sheetName = null){
   return {
     sort: sheetName ? getDefaultSort(sheetName) : null,
-    global: "",
     filtersText: {},
     filtersSet: {},
     selected: new Set(),
@@ -532,7 +637,6 @@ function getDefaultConfigForSheet(sheetName){
 function setCurrentSheetView(state){
   view = {
     sort: state.sort ? {...state.sort} : null,
-    global: state.global || "",
     filtersText: {...(state.filtersText || {})},
     filtersSet: Object.fromEntries(
       Object.entries(state.filtersSet || {}).map(([col, set]) => [col, set instanceof Set ? new Set(set) : null])
@@ -546,7 +650,6 @@ function persistCurrentSheetView(){
   if (!currentSheet) return;
   viewBySheet[currentSheet] = {
     sort: view.sort ? {...view.sort} : null,
-    global: view.global || "",
     filtersText: {...view.filtersText},
     filtersSet: Object.fromEntries(Object.entries(view.filtersSet).map(([col, set]) => [col, set instanceof Set ? [...set] : null])),
     selected: [...view.selected],
@@ -569,7 +672,6 @@ function restoreSheetView(sheetName){
   }
   setCurrentSheetView({
     sort: stored.sort,
-    global: stored.global,
     filtersText: stored.filtersText,
     filtersSet: Object.fromEntries(Object.entries(stored.filtersSet || {}).map(([col, set]) => [col, Array.isArray(set) ? new Set(set) : null])),
     selected: new Set(stored.selected || []),
@@ -596,7 +698,6 @@ function applyDefaultViewForSheet(sheetName){
   }
   viewBySheet[sheetName] = {
     sort: next.sort,
-    global: "",
     filtersText: {},
     filtersSet: Object.fromEntries(Object.entries(next.filtersSet).map(([col, set]) => [col, set instanceof Set ? [...set] : null])),
     selected: [],
@@ -609,7 +710,6 @@ function applyFullViewForSheet(sheetName){
   next.sort = null;
   viewBySheet[sheetName] = {
     sort: next.sort,
-    global: "",
     filtersText: {},
     filtersSet: {},
     selected: [],
@@ -622,6 +722,7 @@ function saveSessionState(){
   persistCurrentSheetView();
   const payload = {
     sheetViews: viewBySheet,
+    globalFilter,
     toggles: {...uiState},
     language: currentLanguage,
   };
@@ -652,7 +753,6 @@ function loadSessionState(){
               : null,
           };
         }
-        next.global = String(state.global || "");
         for (const [col, txt] of Object.entries(state.filtersText || {})){
           if (!cols.includes(col)) continue;
           next.filtersText[col] = String(txt || "");
@@ -675,13 +775,22 @@ function loadSessionState(){
       }
       viewBySheet[sheetName] = {
         sort: next.sort,
-        global: next.global,
         filtersText: next.filtersText,
         filtersSet: Object.fromEntries(Object.entries(next.filtersSet).map(([col, set]) => [col, set instanceof Set ? [...set] : null])),
         selected: [],
         expandedCells: [],
       };
     }
+    // PL: Sesje zapisane, zanim filtr globalny stał się wartością wspólną, trzymały frazę osobno w
+    // każdej zakładce. Bierzemy pierwszą niepustą, żeby po wczytaniu takiej sesji fraza nie zniknęła
+    // użytkownikowi z pola w trakcie pracy. Bez przerysowania, bo tabeli jeszcze nie ma.
+    // EN: Sessions saved before the global filter became a shared value kept the phrase separately
+    // per sheet. We take the first non-empty one, so that loading such a session does not make the
+    // phrase vanish from the field mid-work. No redraw, because the table does not exist yet.
+    const legacyGlobal = Object.values(parsed.sheetViews || {})
+      .map(state => String(state?.global || ""))
+      .find(text => text.trim()) || "";
+    setGlobalFilter(String(parsed.globalFilter ?? legacyGlobal), {rerender: false});
     if (parsed.toggles){
       uiState.showCharacterTabs = Boolean(parsed.toggles.showCharacterTabs);
       uiState.showCombatTabs = Boolean(parsed.toggles.showCombatTabs);
@@ -707,9 +816,14 @@ function applyViewModeToAllSheets(mode){
   }
   pruneHiddenOldBestiarySelection();
   restoreSheetView(currentSheet);
-  if (els.global) els.global.value = view.global || "";
+  // PL: Oba przyciski widoku są dla użytkownika wyjściem awaryjnym "pokaż mi wszystko", więc
+  // zdejmują także filtr globalny. Bez tego kliknięcie "Pełen Widok" mogłoby zostawić pustą tabelę.
+  // EN: Both view buttons are the user's "show me everything" escape hatch, so they drop the global
+  // filter as well. Without that, clicking "Full View" could leave the table empty.
+  setGlobalFilter("", {rerender: false});
   updateSortMarks();
   renderBody();
+  updateSelectionButtons();
   saveSessionState();
 }
 
@@ -1378,10 +1492,14 @@ function selectSheet(name){
   persistCurrentSheetView();
   currentSheet = name;
   restoreSheetView(name);
-  els.btnCompare.disabled = true;
-  if (els.global){
-    els.global.value = view.global || "";
-  }
+  // PL: Pole filtru globalnego celowo nie jest tu nadpisywane — fraza jest wspólna dla wszystkich
+  // zakładek, więc przełączenie zakładki nie ma powodu jej zmieniać. Odświeżamy tylko sygnał na
+  // etykiecie i stan przycisków, bo zaznaczenia są już zaznaczeniami nowej zakładki.
+  // EN: The global filter field is deliberately not overwritten here — the phrase is shared by every
+  // sheet, so switching sheets has no reason to change it. Only the label signal and the button
+  // state are refreshed, because the selection is now the new sheet's selection.
+  updateGlobalFilterIndicator();
+  updateSelectionButtons();
 
   [...els.tabs.querySelectorAll(".tab")].forEach(t => t.classList.toggle("active", t.textContent === name.toUpperCase()));
 
@@ -1709,10 +1827,15 @@ function compareByColumn(a, b, col){
 }
 
 function passesFilters(row, cols){
-  // global
-  const g = (view.global || "").toLowerCase().trim();
+  // PL: Filtr globalny jest wspólny dla wszystkich zakładek. Obie strony porównania przechodzą
+  // przez foldPolish(), więc dopasowanie nie zależy ani od wielkości liter, ani od polskich znaków
+  // diakrytycznych. Fraza jest szukana jako jeden ciąg — "pisto bolt" nie jest dzielone po spacjach.
+  // EN: The global filter is shared by every sheet. Both sides of the comparison go through
+  // foldPolish(), so matching depends on neither letter case nor Polish diacritics. The phrase is
+  // searched as a single string — "pisto bolt" is not split on spaces.
+  const g = globalFilterNeedle();
   if (g){
-    const hay = cols.map(c => String(row[c] ?? "")).join(" | ").toLowerCase();
+    const hay = foldPolish(cols.map(c => String(row[c] ?? "")).join(" | "));
     if (!hay.includes(g)) return false;
   }
   // per-column text contains
@@ -1766,7 +1889,7 @@ function renderBody(){
 
   if (!filtered.length){
     tbodyEl.innerHTML = `<tr><td colspan="${cols.length + 1}" class="emptyState"><div class="emptyTitle">${translations[currentLanguage].labels.resultsEmptyTitle}</div><div class="emptyText">${translations[currentLanguage].labels.resultsEmptyText}</div></td></tr>`;
-    els.btnCompare.disabled = true;
+    updateSelectionButtons();
     return;
   }
 
@@ -1793,7 +1916,7 @@ function renderBody(){
     if (idx < plan.length){
       requestAnimationFrame(renderChunk);
     } else {
-      els.btnCompare.disabled = view.selected.size < 2;
+      updateSelectionButtons();
     }
   }
 
@@ -1815,7 +1938,7 @@ function renderRow(r, cols, inGroup = false){
   cb.addEventListener("change", ()=>{
     if (cb.checked) view.selected.add(r.__id); else view.selected.delete(r.__id);
     tr.classList.toggle("row-selected", cb.checked);
-    els.btnCompare.disabled = view.selected.size < 2;
+    updateSelectionButtons();
   });
   td0.appendChild(cb);
   tr.appendChild(td0);
@@ -2026,6 +2149,22 @@ els.modalClose.addEventListener("click", closeModal);
 document.addEventListener("keydown", (e)=>{ if(e.key==="Escape") { closePopover(); closeModal(); closeFilterMenu(); } });
 
 /* ---------- Compare ---------- */
+if (els.btnClearSelection){
+  els.btnClearSelection.addEventListener("click", ()=>{
+    if (!view?.selected?.size) return;
+    view.selected.clear();
+    updateSelectionButtons();
+    // PL: Pełne przerysowanie, a nie odznaczenie samych widocznych pól wyboru: w układzie kart
+    // nagłówek grupy pokazuje ptaszek, gdy grupa zawiera zaznaczony wiersz, więc bez przerysowania
+    // ten znacznik zostałby nieaktualny na grupach zwiniętych.
+    // EN: A full redraw rather than unticking the visible checkboxes: in the card layout a group
+    // header shows a tick when the group holds a selected row, so without a redraw that marker
+    // would go stale on collapsed groups.
+    renderBody();
+    saveSessionState();
+  });
+}
+
 els.btnCompare.addEventListener("click", () => {
   if (view.selected.size < 2) return;
   const rowsAll = DB.sheets[currentSheet] || [];
@@ -2071,9 +2210,7 @@ if (els.btnDefaultView){
 
 /* ---------- Global search ---------- */
 els.global.addEventListener("input", ()=>{
-  view.global = els.global.value;
-  renderBody();
-  saveSessionState();
+  setGlobalFilter(els.global.value);
 });
 els.global.addEventListener("keydown", (ev)=>ev.stopPropagation());
 
@@ -2210,7 +2347,7 @@ function buildRenderPlan(filtered, cols){
   if (groups.size < 2) return flat;
 
   const expanded = expandedGroupsFor(currentSheet);
-  const searching = Boolean(String(view.global || "").trim());
+  const searching = isGlobalFilterActive();
   const autoExpand = searching && filtered.length <= GROUPING_AUTO_EXPAND_MAX;
   const plan = [];
   for (const [name, rows] of groups){
@@ -2282,7 +2419,7 @@ function renderGroupHeader(group, cols){
 function updateSheetTools(shown, total){
   const messages = translations[currentLanguage].messages;
   if (els.rowCount) els.rowCount.textContent = formatMessage(messages.rowCount, {shown, total});
-  if (els.quickSearch && els.quickSearch.value !== (view.global || "")) els.quickSearch.value = view.global || "";
+  if (els.quickSearch && els.quickSearch.value !== globalFilter) els.quickSearch.value = globalFilter;
   renderActiveChips();
 }
 
@@ -2321,14 +2458,10 @@ function renderActiveChips(){
   const defaults = getDefaultConfigForSheet(currentSheet);
   let activeFilters = 0;
 
-  const search = String(view.global || "").trim();
+  const search = globalFilter.trim();
   if (search){
     els.activeChips.appendChild(makeChip(formatMessage(messages.chipSearch, {text: search}), false, ()=>{
-      view.global = "";
-      if (els.global) els.global.value = "";
-      if (els.quickSearch) els.quickSearch.value = "";
-      renderBody();
-      saveSessionState();
+      setGlobalFilter("");
     }));
   }
 
@@ -2667,10 +2800,7 @@ function buildSortSheetBody(){
 
 if (els.quickSearch){
   els.quickSearch.addEventListener("input", ()=>{
-    view.global = els.quickSearch.value;
-    if (els.global) els.global.value = view.global;
-    renderBody();
-    saveSessionState();
+    setGlobalFilter(els.quickSearch.value);
   });
   els.quickSearch.addEventListener("keydown", event => event.stopPropagation());
 }
