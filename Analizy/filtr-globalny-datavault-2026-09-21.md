@@ -4,7 +4,7 @@
 > **Temat:** zmiana nazwy panelu bocznego z „▸FILTRY" na „FILTR", utrwalenie wpisanej frazy przy przełączaniu zakładek, czerwona sygnalizacja aktywnego filtru oraz potwierdzenie niezależności filtru globalnego od filtrów kolumnowych i widoku domyślnego
 > **Moduł:** `DataVault`
 > **Charakter dokumentu:** analiza przedwdrożeniowa. Opisuje stan kodu **sprzed** zmian i projekt docelowego zachowania. Żaden plik modułu nie został w ramach tej analizy zmieniony.
-> **Stan na dziś:** użytkownik rozstrzygnął decyzje D1-D4 oraz propozycje Z1-Z7 — rozdz. 17-24. Otwarta pozostaje **jedna** kwestia: D5 (rozdz. 18). Kod modułu nadal nietknięty.
+> **Stan na dziś:** użytkownik rozstrzygnął D1-D5 oraz propozycje Z1-Z7 i zlecił dwie dodatkowe zmiany wyglądu — rozdz. 17-30. Otwarte pozostają **dwie** kwestie kolorystyczne: D6 (zasięg nowego koloru) i D7 (wybór barwy). Kod modułu nadal nietknięty.
 
 ---
 
@@ -34,6 +34,12 @@
 22. [Zaktualizowany plan testów](#22-zaktualizowany-plan-testów)
 23. [Zaktualizowane ryzyka](#23-zaktualizowane-ryzyka)
 24. [Gotowość do wdrożenia](#24-gotowość-do-wdrożenia)
+25. [Decyzje z 21 września 2026 — druga tura](#25-decyzje-z-21-września-2026--druga-tura)
+26. [Nowy kolor sygnalizacji aktywnych filtrów](#26-nowy-kolor-sygnalizacji-aktywnych-filtrów)
+27. [Checkbox zaznaczenia wiersza do porównania](#27-checkbox-zaznaczenia-wiersza-do-porównania)
+28. [Uzupełnienie zakresu prac](#28-uzupełnienie-zakresu-prac)
+29. [Uzupełnienie planu testów](#29-uzupełnienie-planu-testów)
+30. [Zaktualizowana gotowość do wdrożenia](#30-zaktualizowana-gotowość-do-wdrożenia)
 
 ---
 
@@ -1180,3 +1186,345 @@ To jedyna przeszkoda. Jest drobna technicznie (identyfikator elementu, nazwa kla
 5. Dokumentacja: `Documentation.md`, `README.md` (obie wersje językowe), `DetaleLayout.md`.
 
 Kroki 3 i 4 są od siebie i od kroku 1 niezależne — dają się wdrożyć i odebrać osobno, gdyby zaszła potrzeba podziału na etapy.
+
+---
+
+# CZĘŚĆ III — KOLORYSTYKA SYGNAŁÓW I POLE WYBORU WIERSZA
+
+---
+
+## 25. Decyzje z 21 września 2026 — druga tura
+
+### Prompt użytkownika (zachowany w całości)
+
+> 18. D5 — kolizja nazw FILTR i NARZĘDZIA (do rozstrzygnięcia)
+> Zgodnie z rekomendacją wariant A. Zmieniamy nazwę "Szukaj (globalnie)" i to ten napis zmienia się na czerwony*.
+>
+> *trzeba dodać nowy kolor.
+> Czerwony zostawimy na potrzeby zakładki dotyczącej zasad walki.
+> Aktywne filtry oznaczymy inną barwą. Trzeba będzie ją dodać do DetaleLayout.md
+> Może jakiś ciemny odcień niebieskiego? Taki stonowany, ale żeby był widoczny i się wyróżniał.
+>
+> Dodatkowo zmień kolor checkboxa jaki się wyświetla przy zaznaczeniu wiersza do porównania. Obecnie jest niebieski. W panelu bocznym są kolory zależne od koloru tekstu/zakładki.
+>
+> Niech przy zaznaczaniu do porównania checkbox będzie w kolorze tła a "ptaszek" w jasno zielony. Tak jak nagłówek kolumny.
+>
+> Rozbuduj analizę o te ustalenia.
+
+Wiadomości dosłane w trakcie opracowania:
+
+> to może jakiś odcień pomarańczowego?
+
+> jeżeli z niebieskim są problemy
+
+Do promptu dołączone były trzy zrzuty ekranu: pole wyboru z niebieskim wypełnieniem i etykietą „Typy przeciwników", panel boczny z kolorowanymi przełącznikami (archiwalny, jasnozielony, czerwony, stalowy) oraz jasnozielony znacznik „✓" na ciemnym tle jako wzór docelowy.
+
+### Rozstrzygnięcia
+
+| Punkt | Decyzja | Skutek |
+|---|---|---|
+| **D5** | Wariant **A** potwierdzony | Nagłówek panelu `NARZĘDZIA`, etykieta nad polem z `Szukaj (globalnie)` na `FILTR GLOBALNY`, sygnał kolorystyczny na etykiecie |
+| **Kolor sygnału** | **Nie czerwony.** Czerwień zarezerwowana dla zakładek zasad walki. Potrzebna nowa barwa, dopisana do `DetaleLayout.md` | Unieważnia rekomendację `rgb(255,120,120)` z rozdz. 7 i 18. Nowa paleta: rozdz. 26 |
+| **Checkbox porównania** | Pole w kolorze tła, znacznik jasnozielony jak nagłówek kolumny | Rozdz. 27 |
+
+### Uwaga do zrzutu nr 1
+
+Etykieta „Typy przeciwników" nie występuje w kodzie tego repozytorium (sprawdzone pełnym przeszukaniem). Zrzut pochodzi spoza bieżącego stanu `DataVault` — z innego modułu albo z wersji nieobecnej w repozytorium. Nie wpływa to na ustalenia: niebieskie pole wyboru w `DataVault` jest jednoznacznie zidentyfikowane w rozdz. 27, a polecenie użytkownika jest niezależne od pochodzenia zrzutu.
+
+---
+
+## 26. Nowy kolor sygnalizacji aktywnych filtrów
+
+### Co jest dziś zajęte
+
+| Rola | Wartość | Odcień (HSL) | Kontrast na `--panel` |
+|---|---|---|---|
+| Zieleń wiodąca `--accent` | `#16c60c` | H117 S89 L41 | 9,12 : 1 |
+| Tekst nagłówków `--code` | `#D2FAD2` | H120 S80 L90 | 18,35 : 1 |
+| **Zasady walki `--red`** | `#d74b4b` | **H0** S64 L57 | 5,00 : 1 |
+| **Pojazdy `--steel`** | `#AEB7C2` | **H213** S14 L72 | 10,35 : 1 |
+| Różnice w porównaniach `.compareDiff` | `#E6B35C` | **H38** S73 L63 | — |
+| Wpisy archiwalne `--text-old` | `#7f9b7f` | H120 S11 L55 | — |
+
+Wolne pozostają dwa obszary koła barw: **niebieski** (H200-210, sąsiaduje ze stalowym) i **pomarańczowy** (H25-35, sąsiaduje z czerwienią walki i z bursztynem porównań).
+
+### Napięcie w sformułowaniu „ciemny, ale widoczny"
+
+Tło modułu to `--bg: #031605` i `--panel: #000`. Na takim podłożu **ciemna barwa nie może być dobrze widoczna** — to sprzeczność wprost. Ciemny niebieski `#2E5E8C` daje kontrast 3,10 : 1, a `#35719E` — 4,01 : 1; oba **nie przechodzą** progu WCAG AA (4,5 : 1), a etykieta `FILTR GLOBALNY` jest pisana wersalikami fontem 12 px z rozstrzeleniem `.10em`, czyli tekstem trudniejszym do odczytania niż zwykły.
+
+Rozwiązanie stosuje sam moduł przy rodzinach `--red` i `--steel`: **ciemny odcień idzie na tła i poświaty, jaśniejszy na tekst i obwódki**. Tło `rgba(61,143,196,.10)` na czerni to realnie `#060E14` — ciemny granat. Tekst w tej samej rodzinie musi być jaśniejszy, żeby dało się go przeczytać. Tak zbudowana rodzina spełnia oba życzenia naraz: jest ciemna tam, gdzie wypełnia, i widoczna tam, gdzie pisze.
+
+### Wariant N — niebieski (rekomendowany)
+
+```css
+/* --- Rodzina barwy aktywnego filtru / Active-filter colour family --- */
+/* PL: Niebieski jest jedynym obszarem koła barw wolnym od znaczeń już przypisanych: czerwień należy
+   do zasad walki, zieleń jest barwą wiodącą modułu, bursztyn oznacza różnice w porównaniach.
+   Odcień sąsiaduje ze stalowym kolorem pojazdów (H213), ale stalowy jest niemal odbarwiony (S14) i
+   czyta się jako szarość, podczas gdy ta barwa ma S53 i czyta się jako błękit. Dodatkowo obie
+   występują w innych częściach interfejsu: stalowy na zakładkach, ta barwa na etykiecie filtru i
+   nagłówkach kolumn.
+   EN: Blue is the only region of the colour wheel free of meanings already taken: red belongs to the
+   combat rules, green is the module's leading colour, amber marks differences in comparisons. The
+   hue neighbours the steel of the vehicles (H213), but steel is nearly desaturated (S14) and reads
+   as grey, whereas this colour has S53 and reads as blue. They also live in different parts of the
+   interface: steel on the tabs, this colour on the filter label and the column headers. */
+--filter-on:#3D8FC4;
+--filter-on-bright:#6FB3E0;
+--filter-on-border:rgba(61,143,196,.55);
+--filter-on-glow:rgba(61,143,196,.40);
+--filter-on-bg:rgba(61,143,196,.10);
+--filter-on-bg-active:rgba(61,143,196,.20);
+```
+
+| Miara | Wartość | Ocena |
+|---|---|---|
+| Kontrast `#3D8FC4` na `--panel` | **5,92 : 1** | przechodzi AA z zapasem; porównywalny z dzisiejszą czerwienią walki (5,00 : 1) |
+| Kontrast na `--bg` | 5,29 : 1 | przechodzi AA |
+| Nasycenie | S53 | stonowane — poniżej `--accent` (S89) i `--red` (S64) |
+| Tło `--filter-on-bg` na czerni | `#060E14` | ciemny granat, zgodnie z życzeniem „ciemny odcień" |
+| Tło `--filter-on-bg-active` | `#0C1D27` | ciemny granat, mocniejszy |
+| Odległość od `--red` | ΔH 204° | maksymalna możliwa separacja |
+| Odległość od `--steel` | ΔH 9°, ale ΔS 39 i ΔL 22 | rozróżnialne nasyceniem, nie odcieniem — **jedyne zastrzeżenie tego wariantu** |
+
+### Wariant P — pomarańczowy (alternatywa zgłoszona przez użytkownika)
+
+```css
+--filter-on:#E0913A;
+--filter-on-bright:#F0AE62;
+--filter-on-border:rgba(224,145,58,.55);
+--filter-on-glow:rgba(224,145,58,.40);
+--filter-on-bg:rgba(224,145,58,.10);
+--filter-on-bg-active:rgba(224,145,58,.20);
+```
+
+| Miara | Wartość | Ocena |
+|---|---|---|
+| Kontrast na `--panel` | ok. **8,2 : 1** | przechodzi AA z dużym zapasem |
+| Nasycenie | S73 | wyraźnie mocniejsze niż wariant N — mniej „stonowane" |
+| Odległość od `--red` (zasady walki) | **ΔH 31°** | niewielka |
+| Odległość od `.compareDiff` (bursztyn) | **ΔH 7°** | bardzo mała — praktycznie ta sama rodzina |
+
+### Dlaczego rekomenduję niebieski
+
+Cel zmiany jest jeden: **uwolnić czerwień na wyłączność zasad walki**. Pomarańcz realizuje ten cel słabiej, i to mierzalnie.
+
+**Sąsiedztwo z czerwienią.** Pomarańcz leży 31° od czerwieni walki. Zakładka zasad walki (czerwony tekst) i odfiltrowana kolumna (pomarańczowy nagłówek) potrafią być widoczne w tym samym kadrze. Niebieski leży 204° od czerwieni — dalej się nie da.
+
+**Ślepota barw.** W symulacji deuteranopii (najczęstsza postać, ok. 6 % mężczyzn) pomarańcz `#E0913A` i czerwień `#d74b4b` schodzą się do praktycznie jednej barwy — rozróżnialność **1,33**. Niebieski wobec tej samej czerwieni: **2,51**, czyli niemal dwukrotnie lepiej. Dla użytkownika z deuteranopią wariant P oznacza, że sygnał „filtr założony" i oznaczenie „zasady walki" wyglądają tak samo — a to jest dokładnie ta pomyłka, którą ta zmiana ma wyeliminować.
+
+**Drugie sąsiedztwo.** Pomarańcz ma ΔH 7° do bursztynu `.compareDiff`. To okoliczność łagodniejsza, bo bursztyn żyje wyłącznie w oknie porównania, które przykrywa resztę interfejsu — ale to jednak druga zajęta okolica, podczas gdy niebieski ma tylko jedną.
+
+**Zastrzeżenie wobec niebieskiego jest słabsze, niż wygląda.** Sąsiedztwo ze stalowym dotyczy samego odcienia; rozróżnienie niesie nasycenie (S53 wobec S14) i jasność (L50 wobec L72). Barwa nasycona obok niemal odbarwionej szarości czyta się jednoznacznie. Do tego obie pracują w rozłącznych miejscach interfejsu: stalowy na zakładkach pojazdów, nowa barwa na etykiecie filtru i nagłówkach kolumn.
+
+**Semantyka.** Barwa chłodna czyta się jako informacja („coś jest włączone"), ciepła jako ostrzeżenie. Filtr to stan, nie alarm.
+
+### D7 — decyzja do podjęcia
+
+| Wariant | Kiedy wybrać |
+|---|---|
+| **N — niebieski `#3D8FC4` (rekomendowany)** | Gdy priorytetem jest jednoznaczne odróżnienie sygnału filtru od czerwieni zasad walki, także dla osób ze ślepotą barw |
+| P — pomarańczowy `#E0913A` | Gdy przeważy preferencja wizualna wobec ciepłej barwy; wtedy w `DetaleLayout.md` należy odnotować świadomie przyjęte sąsiedztwo z czerwienią i bursztynem |
+
+Wybór wariantu **nie zmienia niczego w kodzie poza sześcioma wartościami zmiennych CSS** — wszystkie reguły niżej odwołują się do nazw `--filter-on*`, nie do literałów. Zamiana jednego wariantu na drugi to edycja jednego bloku w `:root`.
+
+### D6 — zasięg nowej barwy
+
+Decyzja „czerwony zostawiamy dla zasad walki" ma konsekwencję, o której prompt nie mówi wprost. **Aktywne filtry kolumnowe są dziś czerwone**: nagłówek kolumny (`thead th.filter-active`) dostaje czerwony gradient `rgba(255,70,70,.18)` → `rgba(255,70,70,.07)` i linię `rgba(255,85,85,.40)`, a przycisk filtra (`.filterBtn.filter-active`) czerwone tło, poświatę i znacznik `●` w `rgb(255,120,120)` (`DetaleLayout.md`, rozdz. 2.3 i 3.6a).
+
+| Wariant | Zachowanie | Ocena |
+|---|---|---|
+| **D6-A (rekomendowany)** | Nowa barwa obejmuje **wszystkie** sygnały aktywnego filtru: etykietę `FILTR GLOBALNY`, nagłówek kolumny z filtrem i przycisk filtra | Jedyny wariant, w którym zdanie „czerwony zostaje dla zasad walki" jest prawdziwe. Jedno pojęcie — „filtr jest założony" — dostaje jedną barwę na wszystkich poziomach. Koszt: cztery reguły CSS. |
+| D6-B | Nowa barwa tylko na etykiecie filtru globalnego; filtry kolumnowe zostają czerwone | Czerwień nadal oznaczałaby filtry, czyli cel zmiany zostaje zrealizowany połowicznie. Użytkownik dostaje dwie różne barwy na to samo znaczenie: niebieską na panelu i czerwoną w nagłówku kolumny. |
+
+Rekomendacja: **D6-A**. Ujednolicenie jest tanie, a bez niego zmiana nie osiąga swojego celu.
+
+### Reguły CSS po D6-A
+
+```css
+/* PL: Etykieta pola filtru globalnego zapala się, gdy fraza faktycznie zawęża widok.
+   EN: The global filter's field label lights up when the phrase actually narrows the view. */
+.fieldLabel--active{
+  color:var(--filter-on);
+  text-shadow:0 0 10px var(--filter-on-glow);
+}
+
+/* PL: Nagłówek kolumny z aktywnym filtrem. Kolor bazowy tła i gradient ustawiane są osobno —
+   skrót `background` skasowałby nieprzezroczysty `--panel` z reguły `thead th`, a sam gradient
+   jest półprzezroczysty, więc przez przyklejony nagłówek prześwitywałyby przewijane wiersze.
+   EN: A column header with an active filter. The base background colour and the gradient are set
+   separately — the `background` shorthand would wipe the opaque `--panel` from the `thead th` rule,
+   and the gradient alone is semi-transparent, so scrolling rows would show through the sticky
+   header. */
+.dataTable thead tr:first-child th.filter-active{
+  background-color:var(--panel);
+  background-image:linear-gradient(180deg, var(--filter-on-bg-active), var(--filter-on-bg));
+  box-shadow:inset 0 -2px 0 var(--filter-on-glow);
+}
+.filterBtn.filter-active{
+  background:var(--filter-on-bg-active);
+  box-shadow:0 0 10px var(--filter-on-glow), 0 0 0 1px var(--filter-on-border);
+}
+.filterBtn.filter-active::after{color:var(--filter-on-bright)}
+```
+
+---
+
+## 27. Checkbox zaznaczenia wiersza do porównania
+
+### Skąd bierze się niebieski
+
+Pole wyboru w pierwszej kolumnie tabeli powstaje w `renderRow()` (`app.js:1810-1819`) jako zwykły `<input type="checkbox">` i **nie ma w arkuszu stylów ani jednej reguły**. Sprawdzone: wszystkie siedem deklaracji `accent-color` w `style.css` dotyczy innych pól (przełączniki panelu bocznego w liniach 241, 246, 1203, 1205, 1207, 1210 oraz listy wartości filtra w linii 1503). Reguły `.tableWrap table td:first-child` (570) i `.tableWrap .dataTable tbody td:first-child` (1330) stylują **komórkę**, nie pole wyboru.
+
+Pole korzysta więc z domyślnego wyglądu przeglądarki, a ten jest niebieski — barwa spoza palety modułu.
+
+### Dlaczego nie wystarczy `accent-color`
+
+`accent-color` steruje wyłącznie **wypełnieniem** pola; barwę znacznika przeglądarka dobiera sama (biel albo czerń, zależnie od jasności wypełnienia). Życzenie użytkownika jest odwrotne: **tło ma zostać tłem, a kolorowy ma być znacznik**. Tego `accent-color` nie potrafi wyrazić — konieczne jest `appearance: none` i narysowanie znacznika samodzielnie.
+
+### Wzorzec docelowy
+
+Ze zrzutu nr 3 oraz z polecenia „tak jak nagłówek kolumny": nagłówki kolumn mają `color: var(--code)` (`style.css:363`), czyli `#D2FAD2`. To ta sama jasna zieleń, w której rysowane są już `✓` w nagłówku kolumny wyboru oraz znacznik zaznaczenia przy nagłówku grupy kart (`.groupMark`). Nowy wygląd pola wyboru wpisuje się zatem w istniejący zestaw znaczników, zamiast wprowadzać ósmy wariant.
+
+### Proponowane reguły
+
+```css
+/* --- Pole wyboru wiersza do porównania / Row-selection checkbox --- */
+/* PL: Rysujemy je sami, bo accent-color steruje tylko wypełnieniem pola, a barwę znacznika dobiera
+   wtedy przeglądarka — stąd dzisiejszy niebieski, obcy palecie modułu. Po zmianie pole zostaje
+   przezroczyste, więc przyjmuje tło wiersza (pasy zebry i podświetlenie zaznaczenia), a znacznik
+   jest jasnozielony, dokładnie jak tekst nagłówka kolumny.
+   EN: It is drawn by hand, because accent-color only controls the box fill and the browser then
+   picks the tick colour — hence today's blue, foreign to the module palette. After the change the
+   box stays transparent, so it takes the row's own background (the zebra stripes and the selection
+   highlight), and the tick is light green, exactly like the column header text. */
+.dataTable tbody td:first-child input[type="checkbox"]{
+  appearance:none;
+  -webkit-appearance:none;
+  width:16px;
+  height:16px;
+  margin:0;
+  border:1px solid var(--b);
+  border-radius:3px;
+  background:transparent;
+  cursor:pointer;
+  display:grid;
+  place-content:center;
+}
+.dataTable tbody td:first-child input[type="checkbox"]::after{
+  content:"✓";
+  font-size:12px;
+  line-height:1;
+  color:var(--code);
+  opacity:0;
+}
+.dataTable tbody td:first-child input[type="checkbox"]:checked{border-color:var(--accent)}
+.dataTable tbody td:first-child input[type="checkbox"]:checked::after{opacity:1}
+.dataTable tbody td:first-child input[type="checkbox"]:focus-visible{
+  outline:none;
+  box-shadow:0 0 0 3px rgba(22,198,12,.18);
+}
+```
+
+### Dlaczego `transparent`, a nie `var(--bg)`
+
+Polecenie mówi „checkbox w kolorze tła". Wpisanie `var(--bg)` na sztywno dałoby jedną, stałą ciemność — a wiersze tabeli mają **pasy zebry** (`--zebra-odd`, `--zebra-even`) i osobne podświetlenie wiersza zaznaczonego (`--row-selected`). Pole wyboru odcinałoby się wtedy prostokątem o innym odcieniu niż wiersz, na którym leży. `transparent` realizuje życzenie ściślej: pole **przyjmuje** tło wiersza, jakiekolwiek ono w danym momencie jest.
+
+### Zakres oddziaływania
+
+Selektor celuje wyłącznie w pierwszą komórkę ciała tabeli. **Nie zmienia**: przełączników panelu bocznego (zachowują swoje `accent-color` zależne od kategorii), list wartości w menu filtra i w modalu filtrów (`.filterValue input`, zieleń `--accent`), ani pól wyboru w oknie porównania.
+
+Powstaje przez to świadome rozróżnienie: pola **filtrujące** są wypełniane na zielono, pole **zaznaczające wiersz** jest obrysem ze znacznikiem. Dwie różne czynności dostają dwa różne kształty — to ułatwia odczyt, a nie zaciemnia.
+
+### Ryzyko techniczne
+
+Pseudoelement na `<input>` działa dlatego, że `appearance: none` odbiera polu charakter elementu zastępowanego. Technika jest powszechna i obsługiwana przez Chrome, Firefox i Safari, ale **wymaga sprawdzenia na docelowych przeglądarkach** — testy T38-T39. Gdyby gdziekolwiek zawiodła, zamiennikiem bez pseudoelementu jest znacznik w tle:
+
+```css
+.dataTable tbody td:first-child input[type="checkbox"]:checked{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3 8.5l3.5 3.5L13 5' fill='none' stroke='%23D2FAD2' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:center;
+}
+```
+
+---
+
+## 28. Uzupełnienie zakresu prac
+
+Uzupełnia rozdz. 21. Zakłada **D5-A, D6-A** oraz wariant barwy wybrany w **D7**.
+
+### `DataVault/style.css`
+
+- [ ] `:root` — dodać sześć zmiennych rodziny `--filter-on*` z komentarzem PL/EN (rozdz. 26).
+- [ ] `.fieldLabel--active` — **zamiast** czerwieni z rozdz. 18 użyć `var(--filter-on)` i `var(--filter-on-glow)`.
+- [ ] `.dataTable thead tr:first-child th.filter-active` — przepiąć czerwony gradient i linię na rodzinę `--filter-on*` (D6-A).
+- [ ] `.filterBtn.filter-active` oraz `::after` — przepiąć tło, poświatę, obwódkę i znacznik `●` na rodzinę `--filter-on*` (D6-A).
+- [ ] pole wyboru wiersza — pięć reguł z rozdz. 27.
+- [ ] pozycje z rozdz. 21 bez zmian: usunięcie `.caret`, dodanie `#btnClearSelection:disabled`.
+
+### `DetaleLayout.md`
+
+- [ ] rozdz. 2.1 (zmienne CSS `DataVault`) — dopisać rodzinę `--filter-on*` wraz z wartościami literalnymi i z informacją, **do czego służy**: sygnalizacja aktywnego filtru na wszystkich poziomach.
+- [ ] rozdz. 2.2/2.3 — odnotować, że `--red` jest **zarezerwowany dla zakładek zasad walki** i nie jest już używany do oznaczania filtrów.
+- [ ] rozdz. 3.6a — przepisać opis sygnalizacji aktywnych filtrów kolumnowych na nowe wartości i dopisać sygnalizację filtru globalnego na etykiecie `FILTR GLOBALNY`.
+- [ ] nowa pozycja — wygląd pola wyboru wiersza do porównania: obrys `var(--b)`, tło przezroczyste, znacznik `✓` w `var(--code)`, obwódka zaznaczonego w `var(--accent)`.
+- [ ] jeżeli wybrany zostanie wariant **P**, dopisać notkę o świadomie przyjętym sąsiedztwie z `--red` i `.compareDiff`.
+
+### `DataVault/docs/Documentation.md`
+
+- [ ] obie wersje językowe — opisać rodzinę `--filter-on*`, powód jej wprowadzenia (uwolnienie czerwieni) i miejsca użycia; opisać własny wygląd pola wyboru wiersza wraz z powodem rezygnacji z `accent-color`.
+
+### `DataVault/docs/README.md`
+
+- [ ] obie wersje językowe — napisać, że etykieta `FILTR GLOBALNY` **zmienia barwę**, gdy filtr działa (bez podawania wartości szesnastkowych); że tak samo oznaczane są kolumny z własnym filtrem; że zaznaczony wiersz ma jasnozielony znacznik.
+
+---
+
+## 29. Uzupełnienie planu testów
+
+Testy **T1-T35** obowiązują, z jedną korektą: wszędzie, gdzie mowa o „czerwonej" etykiecie, obowiązuje teraz barwa wybrana w D7.
+
+| # | Kroki | Oczekiwany wynik |
+|---|---|---|
+| T36 | Wpisz frazę w filtr globalny | Etykieta `FILTR GLOBALNY` zmienia barwę na `--filter-on`; **żaden element nie staje się czerwony** |
+| T37 | Ustaw filtr w kolumnie, obejrzyj nagłówek i przycisk filtra | Oznaczenia w rodzinie `--filter-on*`; czerwień nie występuje (weryfikacja D6-A) |
+| T38 | Zaznacz wiersz do porównania | Pole wyboru: obrys zielony, tło takie jak wiersz, znacznik `✓` jasnozielony; **nigdzie niebieskiego wypełnienia** |
+| T39 | Powtórz T38 w Chrome, Firefoksie i Safari | Znacznik rysuje się w każdej przeglądarce; przy braku — wariant zapasowy z tłem SVG (rozdz. 27) |
+| T40 | Zaznacz wiersz w pasie zebry jasnym i ciemnym oraz w wierszu już zaznaczonym | Pole wyboru przyjmuje tło wiersza, nie odcina się prostokątem |
+| T41 | Włącz zakładki zasad walki i ustaw filtr w kolumnie na tej zakładce | Czerwień zakładki i barwa filtru są od siebie odróżnialne w jednym kadrze |
+| T42 | Włącz zakładki pojazdów i ustaw filtr w kolumnie na zakładce pojazdu | Stalowy zakładki i barwa filtru są od siebie odróżnialne (weryfikacja zastrzeżenia z rozdz. 26) |
+| T43 | Przejdź polem wyboru przy użyciu klawisza Tab | Widoczny pierścień ogniskowania (`:focus-visible`); pole daje się przełączyć spacją |
+| T44 | Otwórz okno porównania przy aktywnym filtrze | Bursztyn `.compareDiff` jest odróżnialny od barwy filtru (istotne zwłaszcza przy wariancie P) |
+
+---
+
+## 30. Zaktualizowana gotowość do wdrożenia
+
+### Rozstrzygnięte
+
+Wszystko z rozdz. 24 pozostaje w mocy, a dodatkowo zamknięte są:
+
+- **D5** — wariant A potwierdzony: nagłówek `NARZĘDZIA`, etykieta `FILTR GLOBALNY`, sygnał na etykiecie.
+- **Rezygnacja z czerwieni** jako barwy sygnału filtru; czerwień zarezerwowana dla zasad walki.
+- **Wygląd pola wyboru wiersza** — w pełni określony w rozdz. 27, łącznie z wariantem zapasowym.
+
+### Otwarte — dwie decyzje kolorystyczne
+
+| # | Pytanie | Rekomendacja |
+|---|---|---|
+| **D6** | Czy nowa barwa obejmuje także filtry kolumnowe, czy tylko etykietę filtru globalnego? | **D6-A — obejmuje wszystko.** Bez tego czerwień nadal oznaczałaby filtry, więc cel zmiany zostałby zrealizowany połowicznie. |
+| **D7** | Niebieski `#3D8FC4` czy pomarańczowy `#E0913A`? | **Wariant N — niebieski.** Pomarańcz leży 31° od czerwieni zasad walki, a przy deuteranopii jest od niej praktycznie nieodróżnialny (1,33 wobec 2,51 dla niebieskiego). Zastrzeżenie wobec niebieskiego — sąsiedztwo ze stalowym kolorem pojazdów — znoszone jest różnicą nasycenia (S53 wobec S14) i rozdzielnością miejsc użycia. |
+
+Obie decyzje są **tanie do zmiany po wdrożeniu**: D7 to sześć wartości w jednym bloku `:root`, D6 to cztery reguły CSS. Żadna nie blokuje prac nad trzonem zmiany (rozdz. 21), nad składaniem polskich znaków (rozdz. 19) ani nad przyciskiem czyszczenia zaznaczeń (rozdz. 20) — te trzy obszary są od kolorystyki niezależne i mogą ruszyć od razu.
+
+### Kolejność prac po rozstrzygnięciu D6 i D7
+
+1. Trzon: `globalFilter`, `setGlobalFilter()`, sygnał aktywności, nazwy `NARZĘDZIA` / `FILTR GLOBALNY` (rozdz. 21). Kryterium odbioru: `grep -n "view\.global" DataVault/app.js` bez trafień; testy T1-T20.
+2. Z1: `foldPolish()` wraz z adnotacjami językowymi (rozdz. 19); testy T21-T27.
+3. Z6: `updateSelectionButtons()` i przycisk `Wyczyść zaznaczone` (rozdz. 20); testy T28-T35.
+4. Kolorystyka: rodzina `--filter-on*` i przepięcie sygnałów filtrów (rozdz. 26); testy T36-T37, T41-T42, T44.
+5. Pole wyboru wiersza (rozdz. 27); testy T38-T40, T43.
+6. Dokumentacja: `Documentation.md`, `README.md` (obie wersje językowe), `DetaleLayout.md` — w tym nowa pozycja o rodzinie `--filter-on*` i o rezerwacji czerwieni.
+
+Kroki 1-3 są od siebie niezależne i niezależne od kroków 4-5. Kroki 4 i 5 dotyczą wyłącznie arkusza stylów i dokumentacji layoutu — nie ruszają `app.js` poza dodaniem klasy `fieldLabel--active`, która i tak powstaje w kroku 1.
