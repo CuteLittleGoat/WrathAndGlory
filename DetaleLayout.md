@@ -1277,7 +1277,13 @@ Przewija się **panel tabeli**, nie cała strona. Nazwy kolumn i pola filtrów z
   nie drgają przy przewijaniu. Obu deklaracji nie wolno rozdzielać: `top: 0` bez `border-top: 0`
   otwiera z powrotem półpikselowe pasemko, przez które widać przejeżdżający wiersz,
 - `.dataTable thead th`: `position: static`, `background-color: var(--panel)` pod gradientem
-  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))`,
+  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))`, `border-bottom: 0` oraz
+  `box-shadow: inset 0 -1px 0 var(--div)` — linia pod komórką nagłówka jest rysowana cieniem
+  wewnętrznym, nie obramowaniem. Przy `border-collapse: collapse` obramowanie należy do tabeli i jest
+  malowane w warstwie tabeli, czyli pod przyklejonym `<thead>`, a tło komórki nie sięga pod nie. W tym
+  jednopikselowym pasemku nie ma więc nic nieprzezroczystego i przy przewijaniu prześwitywał przez nie
+  wiersz — zarówno na styku wiersza nazw kolumn z wierszem filtrów, jak i na dolnej krawędzi nagłówka.
+  Cień wewnętrzny maluje się wewnątrz komórki, na jej własnym tle i w tej samej warstwie,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` pod jednolitym
   `rgba(22,198,12,.05)`,
 - kolumna zaznaczania: `5ch` zamiast `8ch` — odzyskane 23 px idzie do kolumn z treścią.
@@ -1381,6 +1387,7 @@ tabeli obejmującego całą listę kart.
 | Pasmo przewijanego wiersza widoczne pod paskiem zakładek | 1 px (1,3 px przy skalowaniu 150%) | brak |
 | Ciemny wiersz o częściowym pokryciu nad nazwami kolumn (nieprzewinięta tabela) | 1 px przy oknie wysokości do 760 px | brak przy każdej wysokości okna |
 | Przesunięcie nagłówka w chwili przyklejenia | 1,5 px w górę | 0,00 px |
+| Treść wiersza prześwitująca przez linie rozdzielające nagłówka | 1 px na styku wierszy nagłówka i 1 px na jego dolnej krawędzi | brak |
 | Szczelina między wierszem nazw a wierszem filtrów | 0,31 px | 0,00 px |
 | Treść panelu filtrów poza widokiem (1366 × 638, admin) | 283 px, nieosiągalne | osiągalne paskiem przewijania panelu |
 | Pasek górny w trybie admina przy niskim oknie | 179 px | 87 px |
@@ -1419,7 +1426,13 @@ The **table panel** scrolls, not the whole page. Column names and filter fields 
   jitter on scroll. The two declarations must not be separated: `top: 0` without `border-top: 0`
   reopens the half-pixel strip that lets the passing row show through,
 - `.dataTable thead th`: `position: static`, `background-color: var(--panel)` under the
-  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))` gradient,
+  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))` gradient, `border-bottom: 0` and
+  `box-shadow: inset 0 -1px 0 var(--div)` — the line under a header cell is drawn with an inset shadow,
+  not with a border. With `border-collapse: collapse` the border belongs to the table and is painted in
+  the table's layer, that is below the sticky `<thead>`, and the cell's background does not reach under
+  it. That one-pixel strip therefore holds nothing opaque and let a row show through while scrolling —
+  both at the seam between the column-name row and the filter row, and at the bottom edge of the
+  header. An inset shadow paints inside the cell, over its own background and in the same layer,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` under a flat
   `rgba(22,198,12,.05)`,
 - selection column: `5ch` instead of `8ch` — the reclaimed 23 px go to the content columns.
@@ -1522,6 +1535,7 @@ dead area halfway down the screen) and the table area spanning the whole card li
 | Strip of a scrolling row visible under the tab bar | 1 px (1.3 px at 150% scaling) | none |
 | Partially covered darker row above the column names (unscrolled table) | 1 px on windows up to 760 px tall | none at any window height |
 | Header shift at the moment it sticks | 1.5 px upwards | 0.00 px |
+| Row content showing through the header's separator lines | 1 px at the seam between the header rows and 1 px at its bottom edge | none |
 | Slit between the column-name row and the filter row | 0.31 px | 0.00 px |
 | Filter panel content out of view (1366 × 638, admin) | 283 px, unreachable | reachable with the panel scrollbar |
 | Admin top bar on a short window | 179 px | 87 px |

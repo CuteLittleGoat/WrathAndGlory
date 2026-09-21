@@ -5,7 +5,7 @@
 | | |
 |---|---|
 | **Data analizy** | 21 września 2026 |
-| **Temat** | Szczelina (prześwit) w pasmie między paskiem zakładek a nagłówkiem tabeli w module `DataVault`; przesuwanie się tekstów nagłówka przy przewijaniu |
+| **Temat** | Szczeliny (prześwity) w paśmie nagłówka tabeli w module `DataVault`: między paskiem zakładek a nagłówkiem, między wierszem nazw kolumn a wierszem filtrów oraz na krawędziach nagłówka; przesuwanie się tekstów nagłówka przy przewijaniu |
 | **Moduł** | `DataVault` |
 | **Zakres** | `DataVault/style.css` — reguły `.tabs`, `.tableWrap`, `.tableFrame`, `.tableViewport`, `.dataTable`, `.dataTable thead`, `.dataTable thead th`; zachowanie przyklejonego nagłówka przy przewijaniu; wpływ wysokości okna i skalowania ekranu |
 | **Poza zakresem** | Zmiany z commita `409cde3` (filtr globalny, barwy sygnałów, własne pole wyboru) — użytkownik wyraźnie zastrzegł, żeby ich nie ruszać. Widok kart na telefonie (`@media (max-width: 720px)`) — tam `thead` jest ukryty, więc problem nie występuje |
@@ -61,6 +61,15 @@ Zapisane bez skracania, zgodnie z zasadą 10 z `AGENTS.md`.
 > czy zgoda na to, żeby zielona linia nad nazwami kolumn była cieńsza o jeden punkt ekranu — w zamian za trwałe zniknięcie ciemnej szczeliny i za to, żeby nazwy kolumn przestały drgać przy przewijaniu?
 >
 > * Masz moją zgodę. Wprowadź zmiany w kodzie. Zaktualizuj analizę i dokumentację.
+
+> **Wiadomość 6 — zgłoszenie kolejnej szczeliny**
+>
+> Poprawka dotycząca "skakania nagłówka" zadziałała.
+> Nic teraz nie drga. Zarówno w trybie pełnoekranowym jak i w oknie.
+>
+> Jest jednak kolejna szczelina do załatania. Pomiędzy nagłówkiem kolumny a polem do wpisania filtra. Załączam screena z widocznym czerwonym fragmentem.
+>
+> *(Do wiadomości dołączony zrzut ekranu: kolumna „SŁOWA KLUCZOWE", pod nazwą kolumny widoczny czerwony fragment treści wiersza, poniżej pole filtra, a jeszcze niżej wiersz z czerwonym tekstem „IMPERIUM, OSTRZE, SZUMOWINY".)*
 
 ### Materiał dowodowy od użytkownika
 
@@ -589,3 +598,116 @@ Pomiary wykonano na silniku Chromium w środowisku bezgłowym. Zostają dwie rze
 2. **Firefox**, jeżeli jest używany. Model scalonych obramowań jest w standardzie CSS, więc zachowanie powinno być takie samo, ale zaokrąglanie subpikselowe bywa różne między silnikami (rozdz. 9).
 
 Punkt 5 z rozdziału 10 — uwaga o progu `max-height: 760px` przy przyszłych zmianach wysokości paska górnego — pozostaje aktualny niezależnie od tej poprawki.
+
+---
+
+## 12. Szczelina D — prześwit na styku wiersza nazw kolumn z wierszem filtrów
+
+Po wdrożeniu rozdziału 11 użytkownik zgłosił kolejny prześwit (wiadomość 6), tym razem **wewnątrz** nagłówka: między nazwą kolumny a polem filtra widać przejeżdżającą treść wiersza.
+
+### 12.1 Czy to regresja po poprawce z rozdz. 11
+
+**Nie.** Sprawdzono wprost: ten sam pomiar uruchomiony na kodzie sprzed zmiany z rozdz. 11 (commit `423d0bc`) daje przeciek co do piksela taki sam, a przy skalowaniu 150% nawet dwa razy większy.
+
+| Okno | Skalowanie | Przeciek na styku — przed rozdz. 11 | Przeciek na styku — po rozdz. 11 |
+|---|---|---|---|
+| 1536×730 | 100% | 220 px | 220 px |
+| 1536×864 | 100% | 220 px | 220 px |
+| 1920×1080 | 100% | 220 px | 220 px |
+| 1366×768 | 100% | 220 px | 220 px |
+| 1536×864 | 125% | 275 px | 275 px |
+| 1536×864 | 150% | **660 px** | 330 px |
+| 1280×610 | 100% | 220 px | 220 px |
+| 1280×720 | 200% | 880 px | 880 px |
+
+Usterka istniała więc od początku. Nie wyszła wcześniej, bo **test przecieku z rozdziałów 7 i 11 mierzył wyłącznie pasmo *nad* nagłówkiem** — nigdy nie zaglądał do jego wnętrza. To jest błąd metody, nie kodu, i został naprawiony: obecny test skanuje całe pasmo `<thead>`.
+
+### 12.2 Przyczyna
+
+Styk jest **geometrycznie idealny**: dolna krawędź wiersza nazw kolumn i górna krawędź wiersza filtrów wypadają na tej samej wartości, szczelina `0,000 px` we wszystkich ośmiu konfiguracjach. To nie jest więc szczelina wymiarowa jak A, B czy C. To **szczelina przezroczystości**.
+
+Winne jest obramowanie rozdzielające oba wiersze nagłówka:
+
+```css
+.dataTable thead th{ border-bottom:1px solid var(--div); }   /* var(--div) = rgba(22,198,12,.18) */
+```
+
+Składają się na to trzy fakty, każdy sprawdzony pomiarem:
+
+1. Przy `border-collapse: collapse` obramowanie **należy do tabeli**, nie do komórki.
+2. Przeglądarka maluje je w **warstwie tabeli**. Przyklejony `<thead>` ma własną warstwę (`position: sticky` plus `z-index: 3`), więc leży **nad** nią — a obramowanie zostaje pod spodem, razem z przewijanymi wierszami.
+3. Tło komórki kończy się na krawędzi jej pudełka i **nie sięga pod takie obramowanie**.
+
+W efekcie w tym jednopikselowym pasemku nie ma nic nieprzezroczystego z warstwy nagłówka, a jedyne, co je maluje, to półprzezroczysta linia o kryciu 18%. Pozostałe 82% to przejeżdżający wiersz.
+
+**Test rozstrzygający** — cztery warianty, ten sam pomiar:
+
+| Wariant | Przeciek na styku |
+|---|---|
+| Stan wyjściowy | **220 px** |
+| Usunięcie `border-bottom` z wiersza nazw kolumn | 0 |
+| Nieprzezroczyste tło na `thead tr` | **220 px** — bez zmiany |
+| Zamiana obramowania na `box-shadow: inset` | 0 |
+| Pokolorowanie obramowania na w pełni nieprzezroczyste | **220 px** — bez zmiany |
+
+Dwa ostatnie wiersze są kluczowe. Gdyby problemem była sama półprzezroczystość barwy, pomogłoby jej skasowanie — nie pomaga. Gdyby problemem było tło wiersza, pomogłoby tło na `tr` — nie pomaga. Pomaga wyłącznie to, co **przestaje malować w warstwie tabeli**.
+
+### 12.3 Poprawka
+
+```css
+.dataTable thead th{
+  border-bottom:0;                        /* było: 1px solid var(--div) */
+  box-shadow:inset 0 -1px 0 var(--div);   /* ta sama linia, malowana wewnątrz komórki */
+}
+```
+
+Cień wewnętrzny maluje się wewnątrz komórki, na jej własnym nieprzezroczystym tle i w **tej samej warstwie** co ono, więc niczego nie przepuszcza. Idiom nie jest nowy w tym pliku — reguła `thead tr:first-child th.filter-active` od dawna rysuje tak akcent aktywnego filtra (`box-shadow: inset 0 -2px 0 var(--filter-on-glow)`). Ta reguła nadpisuje cień z reguły nadrzędnej, co jest poprawne: grubszy akcent zastępuje cienką linię w tym samym miejscu.
+
+Poprawka zamyka **dwie** linie naraz, bo `thead th` obejmuje oba wiersze nagłówka: styk zgłoszony przez użytkownika oraz dolną krawędź nagłówka, która przeciekała tak samo.
+
+### 12.4 Pomiary po poprawce
+
+| Okno | Skalowanie | Styk wiersz nazw / wiersz filtrów | Przeciek na styku | Przesunięcie nagłówka | Przeciek nad nagłówkiem |
+|---|---|---|---|---|---|
+| 1536×730 | 100% | 0,000 px | **0** | 0,00 px | 0 |
+| 1536×864 | 100% | 0,000 px | **0** | 0,00 px | 0 |
+| 1920×1080 | 100% | 0,000 px | **0** | 0,00 px | 0 |
+| 1366×768 | 100% | 0,000 px | **0** | 0,00 px | 0 |
+| 1536×864 | 125% | 0,000 px | **0** | 0,00 px | 0 |
+| 1536×864 | 150% | 0,000 px | **0** | 0,00 px | 0 |
+| 1280×610 | 100% | 0,000 px | **0** | 0,00 px | 0 |
+| 1280×720 | 200% | 0,000 px | **0** | 0,00 px | 0 |
+
+Trzy ostatnie kolumny potwierdzają brak regresji poprawki z rozdziału 11.
+
+**Koszt wizualny: brak.** Linia rozdzielająca ma tę samą barwę i tę samą grubość, stoi tylko o pół piksela wyżej, bo cień wewnętrzny leży wewnątrz komórki, a obramowanie leżało na jej krawędzi. Całe pasmo nagłówka jest przez to niższe o 1,5 px. Porównanie powiększonych zrzutów nieprzewiniętej tabeli nie pokazuje różnicy.
+
+### 12.5 Resztka nierozwiązana — prawa krawędź nagłówka
+
+Skan **całego** pasma nagłówka po poprawce wykazał jeszcze jeden przeciek tej samej klasy, którego ta zmiana nie obejmuje: **pionowa linia 1 px na prawej krawędzi tabeli**, na całej wysokości nagłówka.
+
+Źródłem jest prawe obramowanie tabeli (`.dataTable{border:1px solid var(--div)}`) — dokładnie ten sam mechanizm co w 12.2, tyle że w pionie.
+
+Pomiar kontrolny rozdziela to od artefaktów pomiaru:
+
+| Warunki | Prawa krawędź | Wnętrze pasma |
+|---|---|---|
+| Wiersze przemalowane na czerwień, nagłówek przewinięty | **104 px** | 88 px |
+| Wiersze przemalowane na czerwień, tabela nieprzewinięta | 0 px | 88 px |
+| Wiersze w zwykłych barwach, nagłówek przewinięty | 0 px | 88 px |
+
+Wartość „88 px" jest **identyczna we wszystkich trzech przypadkach**, także tam, gdzie nic nie może przeciekać — to antyaliasing podpikselowy tekstu samego nagłówka, nie usterka. Natomiast „104 px" pojawia się wyłącznie przy przewijaniu i odpowiada dokładnie wysokości nagłówka, czyli jest ciągłą linią.
+
+**Dlaczego nie naprawiono tego od razu:** każdy znany sposób zamknięcia tej linii dotyka bocznych obramowań tabeli, a więc jest zmianą wyglądu wymagającą decyzji użytkownika — tak jak zmiana z rozdz. 8.1. Warianty do rozważenia:
+
+| Wariant | Koszt |
+|---|---|
+| `.dataTable{border-right:0}` (analogicznie do `border-top:0` z rozdz. 8.1) | Znika pionowa linia na prawej krawędzi tabeli. Tuż obok biegnie krawędź `.tableFrame`, więc sytuacja jest taka sama jak przy górnej krawędzi: zostaje jedna linia zamiast dwóch |
+| Przeniesienie bocznych linii na `.tableFrame` (`border-left`/`border-right`) | Linie przesuwają się o 4 px na zewnątrz, bo `.tableViewport` ma `padding: 0 4px 4px`. Ramka staje się domkniętym prostokątem |
+| Zostawić bez zmian | Przy przewijaniu na prawej krawędzi nagłówka widać 1-pikselową pionową linię przejeżdżającej treści |
+
+Decyzja należy do użytkownika i nie została jeszcze podjęta.
+
+### 12.6 Wniosek metodyczny
+
+Szczelina D nie została wykryta wcześniej, mimo trzech rund pomiarów, bo każdy dotychczasowy test przecieku patrzył **tylko na pasmo nad nagłówkiem**. Kolejne testy w tym module powinny skanować **cały** obszar przyklejonego elementu, z rozbiciem na wiersze i kolumny pikseli, oraz zawsze mieć kontrolę negatywną — pomiar w warunkach, w których przeciek jest niemożliwy. To właśnie ta kontrola pozwoliła odróżnić prawdziwą linię przecieku od antyaliasingu tekstu w rozdziale 12.5.

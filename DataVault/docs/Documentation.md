@@ -596,7 +596,7 @@ Dla aktywnego arkusza `selectSheet(name)`:
 ### Przyklejone nagłówki na komputerze i tablecie
 
 Oba wiersze nagłówka — nazwy kolumn i pola filtrów — zostają na wierzchu przy przewijaniu tabeli.
-Działa to na czterech rzeczach naraz i żadnej z nich nie da się pominąć:
+Działa to na pięciu rzeczach naraz i żadnej z nich nie da się pominąć:
 
 **1. Łańcuch wysokości.** `position: sticky` przykleja element względem najbliższego przewijanego
 pojemnika, czyli `.tableViewport`. Ten pojemnik musi mieć ograniczoną wysokość, bo inaczej nigdy się
@@ -631,6 +631,18 @@ więc margines górny odsuwałby nagłówek o swoją wysokość.
 wiersze danych prześwitują przez nagłówek. `<thead>` ma `background-color: var(--panel)`, a oba
 wiersze nagłówka mają ten sam kolor pod swoim gradientem oraz `z-index` (3 dla nazw kolumn, 2 dla
 filtrów).
+
+**5. Linie rozdzielające rysowane cieniem, nie obramowaniem.** `.dataTable thead th` ma
+`border-bottom: 0` i `box-shadow: inset 0 -1px 0 var(--div)`. Samo nieprzezroczyste tło z punktu 4 nie
+wystarcza, bo nie obejmuje obramowań. Przy `border-collapse: collapse` obramowanie należy do tabeli,
+nie do komórki, i jest malowane w warstwie tabeli — a więc pod przyklejonym `<thead>`, który ma własną
+warstwę. Tło komórki kończy się na krawędzi jej pudełka i nie sięga pod takie obramowanie, więc w tym
+jednopikselowym pasemku nie ma nic nieprzezroczystego i przy przewijaniu widać przez nie przejeżdżający
+wiersz. Dotyczyło to obu linii poziomych nagłówka: styku między wierszem nazw kolumn a wierszem filtrów
+oraz dolnej krawędzi nagłówka. Cień wewnętrzny jest malowany wewnątrz komórki, na jej własnym tle i w
+tej samej warstwie co ono, więc niczego nie przepuszcza. Pokolorowanie obramowania na nieprzezroczyste
+nie pomaga, bo dalej maluje się w złej warstwie. Tego samego idiomu używa reguła
+`thead tr:first-child th.filter-active`, która zastępuje tę linię grubszym akcentem aktywnego filtra.
 
 ### Układ kart na telefonie
 
@@ -1462,7 +1474,7 @@ For the active sheet, `selectSheet(name)`:
 ### Sticky headers on computer and tablet
 
 Both header rows — the column names and the filter fields — stay on top while the table scrolls. This
-rests on four things at once and none of them can be skipped:
+rests on five things at once and none of them can be skipped:
 
 **1. The height chain.** `position: sticky` sticks an element relative to the nearest scrolling
 container, which is `.tableViewport`. That container must have a bounded height, otherwise it never
@@ -1496,6 +1508,19 @@ height.
 rows show through the header. `<thead>` carries `background-color: var(--panel)`, and both header rows
 carry the same colour under their gradient plus a `z-index` (3 for the column names, 2 for the
 filters).
+
+**5. Separator lines drawn with a shadow, not a border.** `.dataTable thead th` carries
+`border-bottom: 0` and `box-shadow: inset 0 -1px 0 var(--div)`. The opaque background from point 4 is
+not enough on its own, because it does not cover borders. With `border-collapse: collapse` the border
+belongs to the table, not to the cell, and is painted in the table's layer — that is, below the sticky
+`<thead>`, which has a layer of its own. A cell's background stops at its box edge and does not reach
+under such a border, so that one-pixel strip holds nothing opaque and lets the passing row show through
+while scrolling. This affected both horizontal lines of the header: the seam between the column-name
+row and the filter row, and the bottom edge of the header. An inset shadow is painted inside the cell,
+over its own background and in the same layer as it, so nothing shows through. Making the border colour
+opaque does not help, because it still paints in the wrong layer. The
+`thead tr:first-child th.filter-active` rule uses the same idiom, replacing this line with the thicker
+active-filter accent.
 
 ### Card layout on a phone
 

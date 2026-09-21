@@ -446,7 +446,28 @@ code{color:var(--code)}
   padding:10px 9px;
   letter-spacing:.08em;
   text-transform:uppercase;
-  border-bottom:1px solid var(--div);
+  /* --- Linie rozdzielające wiersze nagłówka / The header's row separator lines ---
+     PL: Linia pod komórką nagłówka jest rysowana cieniem wewnętrznym, a nie obramowaniem. Przy
+     `border-collapse: collapse` obramowanie należy do tabeli, nie do komórki, i jest malowane w
+     warstwie tabeli — czyli POD przyklejonym `<thead>`, który ma własną warstwę (`position: sticky`
+     plus `z-index`). Tło komórki kończy się na krawędzi jej pudełka i nie sięga pod takie
+     obramowanie, więc w tym jednopikselowym pasemku nie ma nic nieprzezroczystego i przy przewijaniu
+     widać przez nie przejeżdżający wiersz. Dotyczyło to obu linii: styku między wierszem nazw kolumn
+     a wierszem filtrów oraz dolnej krawędzi nagłówka. Cień wewnętrzny jest malowany wewnątrz komórki,
+     na jej własnym nieprzezroczystym tle i w tej samej warstwie co ono, więc niczego nie przepuszcza.
+     Samo pokolorowanie obramowania na nieprzezroczyste nie pomaga — zmierzone, bo maluje się dalej w
+     złej warstwie.
+     EN: The line under a header cell is drawn with an inset shadow, not with a border. With
+     `border-collapse: collapse` the border belongs to the table, not to the cell, and is painted in
+     the table's layer — that is, BELOW the sticky `<thead>`, which has a layer of its own
+     (`position: sticky` plus `z-index`). A cell's background stops at its box edge and does not reach
+     under such a border, so that one-pixel strip holds nothing opaque and lets the passing row show
+     through while scrolling. This affected both lines: the seam between the column-name row and the
+     filter row, and the bottom edge of the header. An inset shadow is painted inside the cell, over
+     its own opaque background and in the same layer as it, so nothing shows through. Making the
+     border colour opaque does not help — measured, because it still paints in the wrong layer. */
+  border-bottom:0;
+  box-shadow:inset 0 -1px 0 var(--div);
 }
 .dataTable thead tr:nth-child(2) th{
   background-color:var(--panel);
