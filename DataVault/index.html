@@ -34,7 +34,9 @@
           </select>
         </div>
         <div class="actionsGroup" id="updateDataGroup">
-          <button class="btn secondary" id="btnUpdateData" data-i18n="updateDataButton">Generuj pliki danych</button>
+          <button class="btn secondary" id="btnUpdateData" data-i18n="updateDataButton"
+                  data-i18n-title="updateDataTitle"
+                  title="Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja wygeneruje data.json jako backup oraz firebase-import.json — plik gotowy do importu w root Firebase Realtime Database. Po imporcie dane zostaną umieszczone pod /datavault/live.">Generuj pliki danych</button>
           <div class="actionsNote">
             <span data-i18n="updateNoteFull">Kliknij, aby wybrać lokalny plik <code>Repozytorium.xlsx</code>. Aplikacja wygeneruje <code>data.json</code> jako backup oraz <code>firebase-import.json</code> — plik gotowy do importu w root Firebase Realtime Database. Po imporcie dane zostaną umieszczone pod <code>/datavault/live</code>.</span>
           </div>
@@ -96,6 +98,21 @@
 <section class="workspace">
         <!-- Sekcja nawigacji i przełączania widoków / Navigation and view-switching section -->
 <nav class="tabs" id="tabs"></nav>
+        <!-- Pasek narzędzi zakładki: widoczny wyłącznie w układzie kart na telefonie, gdzie nagłówek
+             tabeli jest ukryty i nie ma skąd sięgnąć po filtry, sortowanie ani informację o tym,
+             co jest odfiltrowane. Sterują tym samym stanem widoku co nagłówek na komputerze.
+             Per-sheet toolbar: shown only in the phone card layout, where the table header is hidden
+             and there is no way to reach the filters, the sorting or the information about what is
+             filtered out. It drives the same view state the desktop header does. -->
+        <div class="sheetTools" id="sheetTools">
+          <input id="quickSearch" class="input" type="search" placeholder="Szukaj w tej zakładce..." />
+          <button class="btn secondary" id="btnSheetFilters">
+            <span data-i18n="filtersButton">Filtry</span><span class="toolsBadge" id="filtersBadge"></span>
+          </button>
+          <button class="btn secondary" id="btnSheetSort" data-i18n="sortButton">Sortuj</button>
+          <div class="toolsCount" id="rowCount" aria-live="polite"></div>
+          <div class="chips" id="activeChips"></div>
+        </div>
         <div class="tableWrap" id="tableWrap">
           <div class="emptyState">
             <div class="emptyTitle" data-i18n="emptyTitle">Brak danych</div>
@@ -126,6 +143,48 @@
   </div>
 
   <div id="filterMenu" class="filterMenu" aria-hidden="true"></div>
+
+  <!-- Modal filtrów: wszystkie kolumny zakładki w jednej pionowej liście. Zmiany trafiają do kopii
+       roboczej i dopiero przycisk zatwierdzenia przepisuje je do stanu widoku, przerysowując listę
+       jeden raz zamiast po każdym stuknięciu.
+       Filter modal: every column of the sheet in one vertical list. Changes go into a working copy;
+       only the apply button writes them into the view state, redrawing the list once instead of
+       after every tap. -->
+  <div id="filterModal" class="sheetModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="filterModalTitle">
+    <div class="sheetModalCard">
+      <div class="sheetModalHeader">
+        <div class="sheetModalTitle" id="filterModalTitle"></div>
+        <button class="btn secondary" id="filterModalCancel" data-i18n="cancelButton">Anuluj</button>
+      </div>
+      <!-- Presety działają na kopii roboczej i tylko na bieżącej zakładce, dlatego mają inne nazwy
+           niż przyciski w pasku górnym, które resetują wszystkie zakładki naraz.
+           The presets act on the working copy and on the current sheet only, hence names different
+           from the top-bar buttons, which reset every sheet at once. -->
+      <div class="sheetModalPresets">
+        <button class="btn secondary" id="filterModalDefaults" data-i18n="restoreDefaultsButton">Przywróć domyślne</button>
+        <button class="btn secondary" id="filterModalClear" data-i18n="clearFiltersButton">Wyczyść filtry</button>
+        <span class="sheetModalScope" id="filterModalScope"></span>
+      </div>
+      <div class="sheetModalBody" id="filterModalBody"></div>
+      <div class="sheetModalFoot">
+        <button class="btn primary" id="filterModalApply"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Arkusz sortowania: lista kolumn zakładki; kolejne stuknięcia przełączają rosnąco, malejąco
+       i brak sortowania, dokładnie jak kliknięcie w nagłówek kolumny na komputerze.
+       Sort sheet: the sheet's columns; repeated taps cycle ascending, descending and no sorting,
+       exactly like clicking a column header on a desktop. -->
+  <div id="sortSheet" class="sheetModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="sortSheetTitle">
+    <div class="sheetModalCard">
+      <div class="sheetModalHeader">
+        <div class="sheetModalTitle" id="sortSheetTitle" data-i18n="sortTitle">Sortowanie</div>
+        <button class="btn secondary" id="sortSheetClose" data-i18n="closeButton">Zamknij</button>
+      </div>
+      <div class="sheetModalBody" id="sortSheetBody"></div>
+    </div>
+  </div>
 
   <!-- Skrypt odpowiedzialny za interakcję strony / Script responsible for page interactions -->
 <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>

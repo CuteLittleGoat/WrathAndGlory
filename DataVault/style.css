@@ -31,7 +31,6 @@
   --glowH:0 0 18px rgba(22, 198, 12, 0.35);
   --head:"Consolas","Fira Code","Source Code Pro",monospace;
 
-  --header-row-height:36px;
 }
 *{
   box-sizing:border-box;
@@ -161,13 +160,26 @@ code{color:var(--code)}
 .btn.primary:hover{filter:brightness(1.08)}
 
 .main{flex:1; min-height:0; display:grid; grid-template-columns:180px 1fr; gap:12px; padding:12px}
+/* --- Panel filtrów z własnym przewijaniem / The filters panel scrolls on its own ---
+   PL: Wysokość panelu narzuca .app{height:100dvh}, więc jego treść musi mieć dokąd się schować.
+   Bez tego nadmiar był po prostu ucinany i nie dawało się do niego dojechać: panel nie miał paska
+   przewijania, strona też nie, a kółko myszy nad panelem nie robiło nic. Przewija się sama treść,
+   nagłówek „FILTRY” zostaje na miejscu.
+   EN: The panel height is imposed by .app{height:100dvh}, so its content needs somewhere to go.
+   Without this the overflow was simply clipped and unreachable: the panel had no scrollbar, neither
+   did the page, and the mouse wheel over the panel did nothing. The body scrolls; the "FILTRY"
+   header stays put. */
 .panel{
   border:1px solid var(--b);
   background:var(--panel);
   box-shadow: inset 0 0 0 1px rgba(22,198,12,.08);
   border-radius:4px;
   overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
 }
+.panelHeader{flex:0 0 auto}
 .panelHeader{
   padding:10px 12px;
   background:rgba(22,198,12,.04);
@@ -176,7 +188,14 @@ code{color:var(--code)}
   letter-spacing:.16em;
   display:flex; gap:10px; align-items:center;
 }
-.panelBody{padding:12px}
+.panelBody{
+  padding:12px;
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-width:thin;
+}
 .caret{color:rgba(22,198,12,.65)}
 .panelTitle{color:var(--code)}
 .fieldLabel{font-size:12px; color:var(--text2); margin-bottom:6px; letter-spacing:.10em; text-transform:uppercase}
@@ -291,7 +310,13 @@ code{color:var(--code)}
   flex:1;
   overflow:auto;
   scrollbar-width:thin;
-  padding:4px;
+  /* PL: Brak marginesu u góry jest celowy. Element przyklejony zatrzymuje się na wewnętrznej
+     krawędzi treści pojemnika, a nie na jego widocznym brzegu — margines górny odsuwałby nagłówek
+     o swoją wysokość i zostawiał szczelinę, przez którą widać przewijane wiersze.
+     EN: The missing top padding is deliberate. A sticky element stops at the container's inner
+     content edge, not at its visible border — top padding would push the header down by its own
+     height and leave a slit that lets the scrolling rows show through. */
+  padding:0 4px 4px;
 }
 .emptyState{padding:28px}
 .emptyTitle{letter-spacing:.16em; text-transform:uppercase; color:var(--code)}
@@ -305,16 +330,29 @@ code{color:var(--code)}
   border:1px solid var(--div);
   box-shadow:var(--glow);
 }
-.dataTable thead th{
+/* --- Przyklejony nagłówek jako jeden blok / The sticky header as a single block ---
+   PL: Przykleja się cały <thead>, a nie każdy wiersz z osobna. Dwa wiersze przyklejane niezależnie
+   nigdy nie zetkną się idealnie, bo jeden ustawia się według zaokrąglonej liczby pikseli, a drugi
+   według rzeczywistej wysokości — między nimi zostaje włos, przez który widać przewijaną treść.
+   Nieprzezroczyste tło na <thead> zamyka całe pasmo nagłówka, łącznie z obszarem scalonych
+   obramowań tabeli.
+   EN: The whole <thead> is sticky instead of each row separately. Two independently stuck rows never
+   meet exactly, because one is placed by a rounded pixel count and the other by its real height,
+   leaving a hairline that lets the scrolling content through. An opaque background on <thead> seals
+   the entire header band, including the area of the table's collapsed borders. */
+.dataTable thead{
   position:sticky;
   top:0;
-  /* Element przyklejony musi mieć tło nieprzezroczyste, inaczej przewijane wiersze danych
-     prześwitują przez nagłówek. Kolor bazowy pod gradientem załatwia to bez zmiany wyglądu.
-     A sticky element needs an opaque background, otherwise the scrolling data rows show through the
-     header. A base colour under the gradient does that without changing the look. */
+  z-index:3;
+  background-color:var(--panel);
+}
+.dataTable thead th{
+  /* Komórki nie mogą mieć własnego przyklejania — przyklejałyby się względem <thead> i cała zmiana
+     nic by nie dała. / Cells must not be sticky themselves: they would stick relative to <thead>
+     and the change above would have no effect. */
+  position:static;
   background-color:var(--panel);
   background-image:linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03));
-  z-index:3;
   color:var(--code);
   padding:10px 9px;
   letter-spacing:.08em;
@@ -322,16 +360,8 @@ code{color:var(--code)}
   border-bottom:1px solid var(--div);
 }
 .dataTable thead tr:nth-child(2) th{
-  /* Wysokość pierwszego wiersza zależy od tego, czy nazwy kolumn się zawinęły, więc wpisuje ją
-     pomiarem buildTableSkeleton(). Wartość ze zmiennej :root jest tylko zapasem na czas przed
-     pierwszym pomiarem.
-     The first row height depends on whether the column names wrapped, so buildTableSkeleton() writes
-     it in by measurement. The :root value is only a fallback for the moment before the first
-     measurement. */
-  top:var(--header-row-height);
   background-color:var(--panel);
   background-image:linear-gradient(180deg, rgba(22,198,12,.05), rgba(22,198,12,.05));
-  z-index:2;
 }
 /* --- Aktywny filtr kolumny: jasna czerwień + glow dla nagłówka / Active column filter: bright red + glow for header --- */
 .dataTable thead tr:first-child th.filter-active{
@@ -475,6 +505,51 @@ td.center{text-align:center}
 /* Responsive */
 @media (max-width: 980px){
   .main{grid-template-columns:1fr}
+}
+
+/* --- Niskie okno: kompaktowy pasek górny / Short window: a compact top bar ---
+   PL: Pasek górny ma stałą wysokość niezależnie od tego, ile miejsca zostaje pod nim — w trybie
+   admina 179 px na laptopie. Przy niskim oknie każdy jego piksel to piksel zabrany tabeli, więc
+   opisy pod przyciskami chowamy do dymków (atrybut title w index.html), a ikonę i przyciski
+   zmniejszamy. Przy wysokim oknie wszystko wygląda jak wcześniej.
+   EN: The top bar keeps a fixed height no matter how little room is left below it — 179 px in admin
+   mode on a laptop. On a short window every pixel of it is a pixel taken from the table, so the
+   notes under the buttons move into tooltips (the title attribute in index.html) and the icon and
+   buttons shrink. On a tall window everything looks as before. */
+@media (max-height: 760px){
+  .topbar{padding:8px 16px; gap:8px}
+  .actionsNote{display:none}
+  .sigil{width:32px; height:32px}
+  .btn{padding:7px 10px}
+}
+
+/* --- Bardzo niskie okno: powrót do przewijania strony / Very short window: back to page scrolling ---
+   PL: Model „aplikacja na pełen ekran” (sztywna wysokość okna i przyklejone nagłówki) ma sens tylko
+   wtedy, gdy okno jest dość wysokie. Telefon w orientacji poziomej ma 320–420 px wysokości i przy
+   szerokości powyżej 720 px trafiał dotąd na model komputerowy: panel filtrów i obszar roboczy
+   ściskały się do kilkunastu pikseli, a zakładki i tabela stawały się nieosiągalne, bo strona nie
+   miała paska przewijania. Próg 520 px leży powyżej najwyższego telefonu w poziomie i wyraźnie
+   poniżej najniższego okna na laptopie (590 px przy skalowaniu Windows 150%), więc komputery
+   zachowują przyklejone nagłówki.
+   EN: The full-screen app model (fixed window height and sticky headers) only makes sense when the
+   window is tall enough. A phone in landscape is 320–420 px tall and, being wider than 720 px, used
+   to get the desktop model: the filters panel and the workspace were squeezed to a dozen pixels and
+   the tabs and the table became unreachable, because the page had no scrollbar. The 520 px
+   threshold sits above the tallest phone in landscape and well below the shortest laptop window
+   (590 px at 150% Windows scaling), so desktops keep their sticky headers. */
+@media (max-height: 520px){
+  .app{height:auto; min-height:100dvh}
+  .main{grid-template-columns:1fr}
+  .panel{display:block; overflow:visible}
+  .panelBody{overflow:visible; min-height:auto}
+  /* Obszar roboczy i ramka tabeli zachowują overflow:hidden. To ono sprawia, że szeroka tabela nie
+     rozpycha strony w poziomie — bez niego element siatki musiałby pomieścić całą jej szerokość.
+     Wysokości nic tu nie ogranicza, bo .app jest już wysokie na tyle, ile ma treści, więc tabela
+     rośnie swobodnie w dół, a w bok przewija się tak jak wcześniej.
+     The workspace and the table frame keep overflow:hidden. That is what stops a wide table from
+     pushing the page sideways — without it the grid item would have to fit its full width. Nothing
+     constrains the height here, because .app is now as tall as its content, so the table grows
+     freely downwards and still scrolls sideways as before. */
 }
 
 
@@ -1262,3 +1337,158 @@ td.center{text-align:center}
     padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
   }
 }
+
+/* ===================================================================================
+   PASEK NARZĘDZI ZAKŁADKI, GRUPOWANIE KART I MODAL FILTRÓW — WIDOK TELEFONU
+   PER-SHEET TOOLBAR, CARD GROUPING AND THE FILTER MODAL — PHONE VIEW
+   PL: W układzie kart nagłówek tabeli jest ukryty, a razem z nim znikały jedyne sterowniki
+   filtrów, sortowania i oznaczenia aktywnych filtrów. Pasek poniżej jest drugim wejściem do
+   tego samego stanu widoku, którego na komputerze używa nagłówek kolumn — nie powstaje żadna
+   druga ścieżka filtrowania.
+   EN: In the card layout the table header is hidden, and with it went the only controls for
+   filtering, sorting and the active-filter markers. The toolbar below is a second entry point to
+   the very same view state the column header drives on a desktop — no second filtering path is
+   created.
+   =================================================================================== */
+
+.sheetTools{display:none}
+
+@media (max-width: 720px){
+  /* Przyklejony pasek wymaga, żeby żaden przodek nie obcinał przewijania: pojemnik z
+     overflow:hidden staje się własnym obszarem przewijania i pasek „przykleja się” do czegoś,
+     co się nie przewija.
+     A sticky bar needs no ancestor to clip scrolling: a container with overflow:hidden becomes its
+     own scrollport and the bar would stick to something that never scrolls. */
+  .workspace{overflow:visible}
+  .tableFrame{overflow:visible}
+
+  .sheetTools{
+    display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+    position:sticky; top:0; z-index:5;
+    padding:8px 10px;
+    background:var(--panel);
+    border-bottom:1px solid var(--div);
+    box-shadow:0 6px 14px rgba(0,0,0,.55);
+  }
+  .sheetTools .input{flex:1 1 100%; padding:9px 10px}
+  .sheetTools .btn{flex:0 0 auto; padding:9px 12px}
+  .toolsCount{flex:1 1 auto; text-align:right; font-size:11.5px; color:var(--text2); letter-spacing:.04em}
+  .toolsBadge{
+    display:none; place-items:center; min-width:18px; height:18px; margin-left:8px; padding:0 5px;
+    border-radius:999px; background:var(--accent); color:var(--bg); font-size:11px; font-weight:700;
+  }
+  .toolsBadge.is-on{display:inline-grid}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; flex:1 1 100%}
+  .chips:empty{display:none}
+  .chip{
+    display:inline-flex; align-items:center; gap:7px;
+    padding:4px 9px; border:1px solid var(--b); border-radius:999px;
+    background:rgba(22,198,12,.08); color:var(--code);
+    font-size:11px; letter-spacing:.05em; text-transform:uppercase;
+  }
+  /* Żeton widoku domyślnego w kolorze archiwalnym, żeby odróżniał się od filtrów użytkownika.
+     The default-view chip uses the archival colour so it reads apart from the user's own filters. */
+  .chip--default{border-color:rgba(127,155,127,.55); background:rgba(127,155,127,.10); color:var(--text-old)}
+  .chipDrop{all:unset; cursor:pointer; color:var(--text2); font-size:13px; line-height:1; padding:0 2px}
+  .chipDrop:hover{color:var(--code)}
+
+  /* --- Nagłówek grupy kart / Card group header ---
+     Wiersz nagłówka grupy nie jest kartą, więc zdejmujemy z niego stylowanie karty.
+     A group header row is not a card, so the card styling is removed from it. */
+  .dataTable tbody tr.groupRow{
+    border:none; border-radius:0; margin:0; padding:0; box-shadow:none;
+  }
+  .dataTable .groupRow td,
+  .tableWrap .dataTable[data-sheet] .groupRow td{
+    display:block; padding:0; border:none; margin:0;
+  }
+  .groupHead{
+    display:flex; align-items:center; gap:10px; width:100%;
+    margin:0 0 8px; padding:11px 12px;
+    border:1px solid var(--b); border-radius:6px;
+    background:rgba(22,198,12,.06); color:var(--code);
+    font-family:var(--head); font-size:12.5px; letter-spacing:.10em; text-transform:uppercase;
+    cursor:pointer; text-align:left;
+  }
+  .groupHead:hover{background:rgba(22,198,12,.10)}
+  .groupHead[aria-expanded="true"]{background:rgba(22,198,12,.13)}
+  .groupCaret{color:rgba(22,198,12,.65)}
+  .groupCount{margin-left:auto; color:var(--text2); letter-spacing:.02em; text-transform:none}
+  .groupMark{color:var(--code)}
+  /* Karty w rozwiniętej grupie są wcięte, żeby widać było, do czego należą.
+     Cards inside an expanded group are indented so it is clear what they belong to. */
+  .dataTable tbody tr.inGroup{margin-left:10px}
+}
+
+/* --- Modal filtrów i arkusz sortowania / The filter modal and the sort sheet ---
+   PL: Modal zmienia wyłącznie kopię roboczą filtrów. Dopiero „Zatwierdź” przepisuje ją do stanu
+   widoku i jeden raz przerysowuje listę — przy filtrowaniu na żywo każde stuknięcie kosztowało
+   pełną przebudowę wszystkich wierszy.
+   EN: The modal edits a working copy of the filters only. "Apply" writes it back into the view
+   state and redraws the list once — with live filtering every tap cost a full rebuild of all rows.
+   --- */
+.sheetModal{
+  position:fixed; inset:0; z-index:70;
+  display:flex; align-items:flex-end; justify-content:center;
+  background:rgba(0,0,0,.66);
+}
+.sheetModal[aria-hidden="true"]{display:none}
+.sheetModalCard{
+  width:min(560px, 100%); max-height:88dvh; display:flex; flex-direction:column;
+  background:var(--panel); border:1px solid var(--b); border-bottom:none;
+  border-radius:12px 12px 0 0; box-shadow:0 -12px 34px rgba(0,0,0,.65);
+}
+@media (min-width: 721px){
+  .sheetModal{align-items:center}
+  .sheetModalCard{border-bottom:1px solid var(--b); border-radius:12px; max-height:84dvh}
+}
+.sheetModalHeader{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding:12px 14px; border-bottom:1px solid var(--div); background:rgba(22,198,12,.04);
+}
+.sheetModalTitle{color:var(--code); text-transform:uppercase; letter-spacing:.14em; font-size:13px}
+.sheetModalPresets{
+  display:flex; flex-wrap:wrap; gap:8px; align-items:center;
+  padding:10px 14px; border-bottom:1px solid var(--div);
+}
+.sheetModalScope{margin-left:auto; font-size:11px; color:var(--text2); letter-spacing:.02em}
+.sheetModalBody{flex:1 1 auto; min-height:0; overflow-y:auto; overscroll-behavior:contain; padding:0 14px}
+.sheetModalFoot{
+  display:flex; gap:8px; align-items:center; padding:12px 14px;
+  border-top:1px solid var(--b); background:rgba(22,198,12,.05);
+  padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));
+}
+.sheetModalFoot .btn.primary{flex:1 1 auto; text-align:center}
+
+.filterCol{padding:12px 0; border-bottom:1px solid var(--div)}
+.filterCol:last-child{border-bottom:none}
+.filterColName{
+  color:var(--code); font-size:12px; letter-spacing:.09em; text-transform:uppercase; margin-bottom:6px;
+}
+.filterColValues{
+  all:unset; cursor:pointer; display:flex; align-items:center; gap:8px; width:100%;
+  margin-top:6px; font-size:11.5px; color:var(--text2); letter-spacing:.02em;
+}
+.filterColValues:hover{color:var(--code)}
+.filterColValues.is-on{color:var(--code)}
+.filterColValues .groupCaret{margin-left:auto}
+.filterColList{
+  margin-top:8px; padding:8px 10px; border:1px solid var(--b2); border-radius:4px;
+  background:rgba(22,198,12,.03); max-height:260px; overflow-y:auto; overscroll-behavior:contain;
+}
+.filterColList[hidden]{display:none}
+.filterColActions{display:flex; gap:8px; margin-bottom:8px}
+.filterValue{display:flex; align-items:center; gap:9px; padding:5px 2px; font-size:12px; cursor:pointer}
+.filterValue input{width:15px; height:15px; accent-color:var(--accent); cursor:pointer}
+.filterValue span{min-width:0; overflow-wrap:anywhere}
+.filterValue em{margin-left:auto; font-style:normal; color:var(--text2); font-size:11px; white-space:nowrap}
+
+.sortOption{
+  all:unset; cursor:pointer; display:flex; align-items:center; gap:10px; width:100%;
+  padding:11px 2px; border-bottom:1px solid var(--div); font-size:12.5px;
+  letter-spacing:.06em; text-transform:uppercase; color:var(--text);
+}
+.sortOption:last-child{border-bottom:none}
+.sortOption:hover{color:var(--code)}
+.sortOption.is-on{color:var(--code)}
+.sortOption em{margin-left:auto; font-style:normal; color:var(--text2); text-transform:none; letter-spacing:0}

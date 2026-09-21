@@ -1210,29 +1210,65 @@ The table in the comparison window uses the `compareTable` class:
 Measured gap between the contents of neighbouring columns: **4 px → 16 px**. The window does not
 colour-highlight fields that differ.
 
-## DataVault — przyklejone nagłówki i układ kart na telefonie
+## DataVault — przyklejone nagłówki, progi wysokości okna i układ kart na telefonie
 
-### Komputer i tablet (powyżej 720 px)
+### Komputer i tablet (szerokość powyżej 720 px, wysokość okna powyżej 520 px)
 
 Przewija się **panel tabeli**, nie cała strona. Nazwy kolumn i pola filtrów zostają na wierzchu.
 
 - `.app`: `height: 100dvh; min-height: 100dvh`,
 - `.main`, `.workspace`, `.tableWrap`, `.tableFrame`: `min-height: 0`,
-- `.tableViewport`: `flex: 1; overflow: auto` — to jest jedyny przewijany pojemnik,
-- `.dataTable thead th`: `background-color: var(--panel)` pod gradientem
-  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))`, `z-index: 3`,
+- `.tableViewport`: `flex: 1; overflow: auto; padding: 0 4px 4px` — to jest jedyny przewijany
+  pojemnik. Brak marginesu u góry jest celowy: element przyklejony zatrzymuje się na wewnętrznej
+  krawędzi treści pojemnika, więc margines górny odsuwałby nagłówek o swoją wysokość i zostawiał
+  szczelinę, przez którą widać przewijane wiersze,
+- `.dataTable thead`: `position: sticky; top: 0; z-index: 3; background-color: var(--panel)` —
+  przykleja się **cały nagłówek jako jeden blok**,
+- `.dataTable thead th`: `position: static`, `background-color: var(--panel)` pod gradientem
+  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))`,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` pod jednolitym
-  `rgba(22,198,12,.05)`, `z-index: 2`, `top: var(--header-row-height)`,
-- `--header-row-height`: wpisywana pomiarem na element tabeli przez `buildTableSkeleton()`. Wartość
-  `36px` w `:root` jest tylko zapasem przed pierwszym pomiarem. Zmierzone wysokości: **40 px** przy
-  nazwach w jednej linii, **59 px** przy dwóch, **78 px** przy trzech,
+  `rgba(22,198,12,.05)`,
 - kolumna zaznaczania: `5ch` zamiast `8ch` — odzyskane 23 px idzie do kolumn z treścią.
 
-### Telefon (720 px i mniej)
+Dwa wiersze nagłówka przyklejane niezależnie nigdy nie stykały się idealnie, bo jeden ustawiał się
+według zaokrąglonej liczby pikseli, a drugi według rzeczywistej wysokości. Przyklejenie całego
+`<thead>` usuwa ten styk z definicji, więc zmienna `--header-row-height` i mierzący ją
+`ResizeObserver` nie są już potrzebne.
 
-Wiersz tabeli staje się kartą. Przewija się cała strona, nagłówek jest ukryty.
+### Panel filtrów
+
+- `.panel`: `display: flex; flex-direction: column; min-height: 0; overflow: hidden`,
+- `.panelHeader`: `flex: 0 0 auto` — nagłówek „FILTRY” zostaje na miejscu,
+- `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin` — treść przewija się zamiast być ucinana.
+
+### Niskie okno (wysokość 760 px i mniej) — kompaktowy pasek górny
+
+- `.topbar`: `padding: 8px 16px; gap: 8px`,
+- `.actionsNote`: `display: none` — opisy przenoszą się do dymków (atrybut `title` w `index.html`),
+- `.sigil`: `32px × 32px`,
+- `.btn`: `padding: 7px 10px`.
+
+Zmierzone: pasek górny w trybie admina **179 px → 87 px**, tabela z 4 widocznych wierszy na 7.
+
+### Bardzo niskie okno (wysokość 520 px i mniej) — powrót do przewijania strony
 
 - `.app`: `height: auto; min-height: 100dvh`,
+- `.main`: `grid-template-columns: 1fr`,
+- `.panel`: `display: block; overflow: visible`,
+- `.panelBody`: `overflow: visible; min-height: auto`.
+
+`.workspace` i `.tableFrame` zachowują `overflow: hidden` — to ono nie pozwala szerokiej tabeli
+rozpychać strony w poziomie. Próg 520 px leży powyżej najwyższego telefonu w poziomie (ok. 420 px)
+i wyraźnie poniżej najniższego okna na laptopie (590 px przy skalowaniu Windows 150%).
+
+### Telefon (szerokość 720 px i mniej)
+
+Wiersz tabeli staje się kartą. Przewija się cała strona, nagłówek tabeli jest ukryty.
+
+- `.app`: `height: auto; min-height: 100dvh`,
+- `.workspace`, `.tableFrame`: `overflow: visible` — bez tego przyklejony pasek narzędzi nie działa,
+  bo pojemnik z `overflow: hidden` staje się własnym obszarem przewijania,
 - `.tableViewport`: `overflow-x: hidden; padding: 8px`,
 - `.dataTable`: bez ramki i bez cienia; `thead` ukryty,
 - karta (`tbody tr`): `1px solid var(--div)`, `border-radius: 6px`, `margin-bottom: 10px`,
@@ -1241,42 +1277,111 @@ Wiersz tabeli staje się kartą. Przewija się cała strona, nagłówek jest ukr
   w kolorze `--text2`, `0.72rem`, wersaliki, `letter-spacing: .08em`,
 - komórka zaznaczania: na górze karty, wyrównana do prawej, oddzielona linią `1px solid var(--div)`.
 
+### Pasek narzędzi zakładki (`.sheetTools`, tylko telefon)
+
+- `position: sticky; top: 0; z-index: 5`, `padding: 8px 10px`, tło `var(--panel)`,
+  `border-bottom: 1px solid var(--div)`, `box-shadow: 0 6px 14px rgba(0,0,0,.55)`,
+- pole wyszukiwania: `flex: 1 1 100%`, `padding: 9px 10px`,
+- odznaka liczby filtrów `.toolsBadge`: koło `18 px`, tło `var(--accent)`, tekst `var(--bg)`,
+- licznik `.toolsCount`: `11.5px`, kolor `var(--text2)`, wyrównany do prawej,
+- żeton `.chip`: `border-radius: 999px`, `1px solid var(--b)`, tło `rgba(22,198,12,.08)`,
+  tekst `var(--code)`, `11px`, wersaliki,
+- żeton widoku domyślnego `.chip--default`: obramowanie `rgba(127,155,127,.55)`, tło
+  `rgba(127,155,127,.10)`, tekst `var(--text-old)` — ten sam kolor archiwalny, co wpisy „old”.
+
+### Nagłówek grupy kart (`.groupHead`, tylko telefon)
+
+- `1px solid var(--b)`, `border-radius: 6px`, `padding: 11px 12px`, `margin-bottom: 8px`,
+- tło `rgba(22,198,12,.06)`, po rozwinięciu `rgba(22,198,12,.13)`, tekst `var(--code)`,
+  font `var(--head)`, `12.5px`, wersaliki, `letter-spacing: .10em`,
+- strzałka `.groupCaret` w `rgba(22,198,12,.65)`: `▸` zwinięta, `▾` rozwinięta,
+- licznik pozycji `.groupCount` po prawej, w `var(--text2)`,
+- karty w rozwiniętej grupie: `margin-left: 10px`.
+
+### Modal filtrów i arkusz sortowania (`.sheetModal`)
+
+- tło przyciemniające: `rgba(0,0,0,.66)`, `position: fixed; inset: 0; z-index: 70`,
+- karta `.sheetModalCard`: `width: min(560px, 100%)`, `max-height: 88dvh`,
+  `border-radius: 12px 12px 0 0`, wysuwana od dołu; powyżej 720 px wyśrodkowana
+  z `border-radius: 12px` i `max-height: 84dvh`,
+- pasek zatwierdzania `.sheetModalFoot`: `border-top: 1px solid var(--b)`, tło
+  `rgba(22,198,12,.05)`, `padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px))`,
+- lista wartości kolumny `.filterColList`: `max-height: 260px; overflow-y: auto`.
+
 ### Zmierzony efekt
 
 | Co | Przed | Po |
 | --- | --- | --- |
-| Panel tabeli przewija się (1440 px) | nie | tak |
-| Przewija się cała strona (1440 px) | tak | nie |
-| Nagłówek widoczny po przewinięciu o 400 px (1440 px) | nie, −242 px poza ekranem | tak, 158 px od góry |
-| Nachodzenie filtrów na nagłówek | 23 px | 0 px |
-| Tło nagłówka | przezroczyste | nieprzezroczyste |
-| Tło nagłówka kolumny z aktywnym filtrem | przezroczyste (treść wierszy prześwitywała) | nieprzezroczyste |
-| Nadmiar poziomy na telefonie 390 px | 1621 px | 0 px |
+| Szczelina nad przyklejonym nagłówkiem (przewinięta tabela) | 4,00 px | 0,00 px |
+| Szczelina między wierszem nazw a wierszem filtrów | 0,31 px | 0,00 px |
+| Treść panelu filtrów poza widokiem (1366 × 638, admin) | 283 px, nieosiągalne | osiągalne paskiem przewijania panelu |
+| Pasek górny w trybie admina przy niskim oknie | 179 px | 87 px |
+| Widocznych wierszy tabeli (1366 × 638, admin) | 4 | 7 |
+| Telefon w poziomie 869 × 329: panel filtrów | 23 px z 352 | 354 px, pełny |
+| Telefon w poziomie 869 × 329: zakładki poza zasięgiem | 15 z 15 | 0 |
+| Telefon w poziomie 869 × 329: przewijanie strony | brak | jest |
+| Nadmiar poziomy strony (320–1920 px) | do 1621 px | 0 px |
 | Szerokość kolumny zaznaczania | 63 px | 39 px |
 
-## DataVault — sticky headers and the phone card layout
+## DataVault — sticky headers, window-height thresholds and the phone card layout
 
-### Computer and tablet (above 720 px)
+### Computer and tablet (wider than 720 px, window taller than 520 px)
 
 The **table panel** scrolls, not the whole page. Column names and filter fields stay on top.
 
 - `.app`: `height: 100dvh; min-height: 100dvh`,
 - `.main`, `.workspace`, `.tableWrap`, `.tableFrame`: `min-height: 0`,
-- `.tableViewport`: `flex: 1; overflow: auto` — the only scrolling container,
-- `.dataTable thead th`: `background-color: var(--panel)` under the
-  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))` gradient, `z-index: 3`,
+- `.tableViewport`: `flex: 1; overflow: auto; padding: 0 4px 4px` — the only scrolling container. The
+  missing top padding is deliberate: a sticky element stops at the container's inner content edge, so
+  top padding would push the header down by its own height and leave a slit that lets the scrolling
+  rows show through,
+- `.dataTable thead`: `position: sticky; top: 0; z-index: 3; background-color: var(--panel)` — the
+  **whole header sticks as one block**,
+- `.dataTable thead th`: `position: static`, `background-color: var(--panel)` under the
+  `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))` gradient,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` under a flat
-  `rgba(22,198,12,.05)`, `z-index: 2`, `top: var(--header-row-height)`,
-- `--header-row-height`: written by measurement onto the table element by `buildTableSkeleton()`. The
-  `36px` value in `:root` is only a fallback before the first measurement. Measured heights: **40 px**
-  with names on one line, **59 px** on two, **78 px** on three,
+  `rgba(22,198,12,.05)`,
 - selection column: `5ch` instead of `8ch` — the reclaimed 23 px go to the content columns.
 
-### Phone (720 px and below)
+Two independently stuck header rows never met exactly, because one was placed by a rounded pixel count
+and the other by its real height. Sticking the whole `<thead>` removes that seam by construction, so
+the `--header-row-height` variable and the `ResizeObserver` measuring it are no longer needed.
 
-A table row becomes a card. The page scrolls and the header is hidden.
+### Filter panel
+
+- `.panel`: `display: flex; flex-direction: column; min-height: 0; overflow: hidden`,
+- `.panelHeader`: `flex: 0 0 auto` — the "FILTRY" header stays put,
+- `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  scrollbar-width: thin` — the content scrolls instead of being clipped.
+
+### Short window (height 760 px and below) — a compact top bar
+
+- `.topbar`: `padding: 8px 16px; gap: 8px`,
+- `.actionsNote`: `display: none` — the notes move into tooltips (the `title` attribute in
+  `index.html`),
+- `.sigil`: `32px × 32px`,
+- `.btn`: `padding: 7px 10px`.
+
+Measured: the admin top bar goes from **179 px to 87 px**, and the table from 4 visible rows to 7.
+
+### Very short window (height 520 px and below) — back to page scrolling
 
 - `.app`: `height: auto; min-height: 100dvh`,
+- `.main`: `grid-template-columns: 1fr`,
+- `.panel`: `display: block; overflow: visible`,
+- `.panelBody`: `overflow: visible; min-height: auto`.
+
+`.workspace` and `.tableFrame` keep `overflow: hidden` — that is what stops a wide table from pushing
+the page sideways. The 520 px threshold sits above the tallest phone in landscape (about 420 px) and
+well below the shortest laptop window (590 px at 150% Windows scaling).
+
+### Phone (720 px wide and below)
+
+A table row becomes a card. The page scrolls and the table header is hidden.
+
+- `.app`: `height: auto; min-height: 100dvh`,
+- `.workspace`, `.tableFrame`: `overflow: visible` — without it the sticky toolbar does not work,
+  because a container with `overflow: hidden` becomes its own scrollport,
 - `.tableViewport`: `overflow-x: hidden; padding: 8px`,
 - `.dataTable`: no border and no shadow; `thead` hidden,
 - the card (`tbody tr`): `1px solid var(--div)`, `border-radius: 6px`, `margin-bottom: 10px`,
@@ -1285,17 +1390,50 @@ A table row becomes a card. The page scrolls and the header is hidden.
   `attr(data-col)` in `--text2`, `0.72rem`, uppercase, `letter-spacing: .08em`,
 - the selection cell: at the top of the card, right-aligned, separated by a `1px solid var(--div)` line.
 
+### Per-sheet toolbar (`.sheetTools`, phone only)
+
+- `position: sticky; top: 0; z-index: 5`, `padding: 8px 10px`, `var(--panel)` background,
+  `border-bottom: 1px solid var(--div)`, `box-shadow: 0 6px 14px rgba(0,0,0,.55)`,
+- the search field: `flex: 1 1 100%`, `padding: 9px 10px`,
+- the filter-count badge `.toolsBadge`: an `18 px` circle, `var(--accent)` background, `var(--bg)` text,
+- the counter `.toolsCount`: `11.5px`, `var(--text2)`, right-aligned,
+- the chip `.chip`: `border-radius: 999px`, `1px solid var(--b)`, `rgba(22,198,12,.08)` background,
+  `var(--code)` text, `11px`, uppercase,
+- the default-view chip `.chip--default`: `rgba(127,155,127,.55)` border, `rgba(127,155,127,.10)`
+  background, `var(--text-old)` text — the same archival colour the "old" entries use.
+
+### Card group header (`.groupHead`, phone only)
+
+- `1px solid var(--b)`, `border-radius: 6px`, `padding: 11px 12px`, `margin-bottom: 8px`,
+- `rgba(22,198,12,.06)` background, `rgba(22,198,12,.13)` when expanded, `var(--code)` text,
+  `var(--head)` font, `12.5px`, uppercase, `letter-spacing: .10em`,
+- the `.groupCaret` arrow in `rgba(22,198,12,.65)`: `▸` collapsed, `▾` expanded,
+- the `.groupCount` item counter on the right, in `var(--text2)`,
+- cards inside an expanded group: `margin-left: 10px`.
+
+### Filter modal and sort sheet (`.sheetModal`)
+
+- the dimming backdrop: `rgba(0,0,0,.66)`, `position: fixed; inset: 0; z-index: 70`,
+- the `.sheetModalCard`: `width: min(560px, 100%)`, `max-height: 88dvh`,
+  `border-radius: 12px 12px 0 0`, sliding up from the bottom; above 720 px it is centred with
+  `border-radius: 12px` and `max-height: 84dvh`,
+- the apply bar `.sheetModalFoot`: `border-top: 1px solid var(--b)`, `rgba(22,198,12,.05)` background,
+  `padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px))`,
+- the column value list `.filterColList`: `max-height: 260px; overflow-y: auto`.
+
 ### Measured effect
 
 | What | Before | After |
 | --- | --- | --- |
-| Table panel scrolls (1440 px) | no | yes |
-| Whole page scrolls (1440 px) | yes | no |
-| Header visible after a 400 px scroll (1440 px) | no, −242 px off screen | yes, 158 px from the top |
-| Filter row overlapping the header | 23 px | 0 px |
-| Header background | transparent | opaque |
-| Background of a header with an active filter | transparent (row content showed through) | opaque |
-| Horizontal overflow on a 390 px phone | 1621 px | 0 px |
+| Slit above the sticky header (scrolled table) | 4.00 px | 0.00 px |
+| Slit between the column-name row and the filter row | 0.31 px | 0.00 px |
+| Filter panel content out of view (1366 × 638, admin) | 283 px, unreachable | reachable with the panel scrollbar |
+| Admin top bar on a short window | 179 px | 87 px |
+| Visible table rows (1366 × 638, admin) | 4 | 7 |
+| Phone in landscape 869 × 329: filter panel | 23 px of 352 | 354 px, complete |
+| Phone in landscape 869 × 329: tabs out of reach | 15 of 15 | 0 |
+| Phone in landscape 869 × 329: page scrolling | none | present |
+| Horizontal page overflow (320–1920 px) | up to 1621 px | 0 px |
 | Selection column width | 63 px | 39 px |
 
 ## Poprawki responsywności pozostałych modułów

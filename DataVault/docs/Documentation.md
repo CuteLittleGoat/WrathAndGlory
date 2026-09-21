@@ -193,13 +193,35 @@ Panel filtrów zawiera:
 Workspace zawiera:
 
 - `tabs` — dynamiczne zakładki arkuszy,
+- `sheetTools` — pasek narzędzi zakładki, widoczny wyłącznie w układzie kart (`max-width: 720px`),
 - `tableWrap` — aktualna tabela albo pusty stan.
 
-### Popover i modal
+### Pasek narzędzi zakładki (`sheetTools`)
+
+W układzie kart `<thead>` jest ukryty (`display:none`), a razem z nim znikają jedyne sterowniki
+filtrów, sortowania i oznaczenia aktywnych filtrów. Pasek jest drugim wejściem do tego samego stanu
+`view`, którego na komputerze używa nagłówek kolumn — `passesFilters()`, `sortRows()`
+i `DEFAULT_VIEW_CONFIG` pozostają nietknięte.
+
+| Element | Rola |
+| --- | --- |
+| `quickSearch` | Pole wyszukiwania zapisujące do `view.global`; dwukierunkowo zsynchronizowane z `globalSearch` w panelu filtrów. |
+| `btnSheetFilters` + `filtersBadge` | Otwiera modal filtrów; odznaka pokazuje liczbę aktywnych filtrów. |
+| `btnSheetSort` | Otwiera arkusz sortowania. |
+| `rowCount` | Licznik `Pokazano N z M`, uzupełniany przez `updateSheetTools()` przy każdym renderowaniu. |
+| `activeChips` | Żetony aktywnych filtrów; każdy ma przycisk zdejmujący ten jeden filtr. |
+
+Pasek ma `position: sticky`. Wymaga to, by żaden przodek nie obcinał przewijania, dlatego w regule
+`max-width: 720px` `.workspace` i `.tableFrame` dostają `overflow: visible`.
+
+### Popover i modale
 
 - `popover` pokazuje opisy cech, stanów i podobnych odwołań.
 - `modal` pokazuje porównanie zaznaczonych rekordów.
-- `filterMenu` jest dynamicznym menu filtrów listowych dla kolumn.
+- `filterMenu` jest dynamicznym menu filtrów listowych dla kolumn (nagłówek tabeli na komputerze).
+- `filterModal` jest modalem filtrów dla układu kart: wszystkie kolumny arkusza w jednej pionowej
+  liście, z zatwierdzaniem.
+- `sortSheet` jest arkuszem sortowania dla układu kart.
 
 ## Grupy zakładek
 
@@ -525,6 +547,25 @@ nietknięte i działają także w układzie kart.
 
 Render ciała tabeli wykorzystuje progressive rendering porcjami po `RENDER_CHUNK_SIZE`.
 
+## Grupowanie kart w układzie telefonu
+
+W układzie kart `renderBody()` nie renderuje płaskiej listy wierszy, tylko plan zbudowany przez
+`buildRenderPlan(filtered, cols)`. Plan przeplata nagłówki grup z wierszami rozwiniętych grup, więc
+zwinięta grupa nie generuje żadnych węzłów DOM.
+
+| Funkcja / stała | Rola |
+| --- | --- |
+| `isCardLayout()` | Sprawdza `matchMedia("(max-width: 720px)")`. |
+| `groupingColumnFor(sheetName, cols)` | Kolumna grupująca: najpierw kolumna z `DEFAULT_VIEW_CONFIG` dla arkusza, potem `Typ`, potem `Rodzaj`, w ostateczności `null`. |
+| `buildRenderPlan(filtered, cols)` | Buduje plan renderowania; grupy powstają po filtrowaniu i sortowaniu, więc kolejność grup idzie za sortowaniem. |
+| `renderGroupHeader(group, cols)` | Wiersz `tr.groupRow` z przyciskiem `.groupHead`, nazwą, licznikiem pozycji i znacznikiem zaznaczenia. |
+| `expandedGroupsFor(sheetName)` | Zbiór rozwiniętych grup arkusza; **nie** trafia do `sessionStorage`, więc po odświeżeniu lista startuje zwinięta. |
+| `GROUPING_MIN_ROWS` | Minimalna liczba wierszy, poniżej której grupowanie się nie włącza (12). |
+| `GROUPING_AUTO_EXPAND_MAX` | Gdy wyszukiwanie zawęzi listę do tylu wierszy (40), grupy z trafieniami rozwijają się same. |
+
+Grupowanie nie włącza się, gdy nie ma kolumny grupującej albo gdy wyszłaby jedna grupa — nowe zakładki
+obsługują się przez to same, bez dopisywania konfiguracji.
+
 ## Filtrowanie i sortowanie
 
 Moduł obsługuje:
@@ -537,6 +578,38 @@ Moduł obsługuje:
 - specjalne sortowanie `Archetypy` po `Poziom` i wtórnie po `Frakcja`.
 
 Filtry listowe bazują na unikalnych wartościach kolumny z aktualnie systemowo widocznych rekordów.
+
+### Modal filtrów w układzie kart
+
+`openFilterModal()` tworzy kopię roboczą `filterDraft` przez `draftFromView()` i buduje listę
+wszystkich kolumn arkusza. Modal zmienia wyłącznie kopię roboczą:
+
+| Funkcja | Rola |
+| --- | --- |
+| `draftFromView()` | Głęboka kopia `filtersText` i `filtersSet` ze stanu widoku. |
+| `buildFilterModalBody()` | Buduje listę kolumn; dla każdej pole tekstowe i zwiniętą listę wartości. |
+| `buildFilterModalColumn(col)` | Jedna kolumna: pole tekstowe, podsumowanie stanu, rozwijana lista wartości z `Zaznacz wszystko` i `Wyczyść`. |
+| `countDraftMatches()` | Liczy trafienia kopii roboczej bez dotykania DOM: podmienia filtry w `view` na czas jednego przebiegu `passesFilters()` i przywraca poprzednie. |
+| `refreshApplyLabel()` | Aktualizuje napis przycisku zatwierdzania na `Zatwierdź — pokaż N z M`. |
+| `applyFilterModal()` | Przepisuje kopię roboczą do `view`, synchronizuje pola w nagłówku tabeli, zamyka modal i renderuje listę **jeden raz**. |
+| `closeFilterModal()` | Wyrzuca kopię roboczą bez żadnego renderowania. |
+| `defaultFiltersForSheet(sheetName)` | Filtry widoku domyślnego dla jednego arkusza, bez ruszania sortowania, zaznaczeń i wyszukiwania. |
+
+Zatwierdzanie zamiast filtrowania na żywo jest decyzją wydajnościową: `renderBody()` przebudowuje
+wszystkie wiersze, co przy zakładce z kilkuset rekordami kosztuje setki milisekund, a w trakcie pracy
+w modalu lista i tak jest zasłonięta. `countDraftMatches()` kosztuje ułamek milisekundy, więc podgląd
+wyniku może się odświeżać po każdym stuknięciu.
+
+Presety w modalu (`filterModalDefaults`, `filterModalClear`) działają na kopii roboczej i tylko na
+bieżącym arkuszu, w odróżnieniu od `btnDefaultView` i `btnReset` w topbarze, które przez
+`applyViewModeToAllSheets()` resetują wszystkie arkusze łącznie z wyszukiwaniem, sortowaniem
+i zaznaczeniami. Stąd inne nazwy przycisków: `Przywróć domyślne` i `Wyczyść filtry`.
+
+### Arkusz sortowania
+
+`openSortSheet()` buduje listę kolumn arkusza. Każda pozycja wywołuje `toggleSort(col)`, czyli tę samą
+funkcję, którą uruchamia kliknięcie w nagłówek kolumny na komputerze: rosnąco, malejąco, brak
+sortowania.
 
 ## Formatowanie tekstu
 
@@ -880,13 +953,35 @@ The filter panel contains:
 The workspace contains:
 
 - `tabs` — dynamic sheet tabs,
+- `sheetTools` — the per-sheet toolbar, shown only in the card layout (`max-width: 720px`),
 - `tableWrap` — the current table or empty state.
 
-### Popover and modal
+### Per-sheet toolbar (`sheetTools`)
+
+In the card layout `<thead>` is hidden (`display:none`), and with it go the only controls for
+filtering, sorting and the active-filter markers. The toolbar is a second entry point into the same
+`view` state the column header drives on a desktop — `passesFilters()`, `sortRows()` and
+`DEFAULT_VIEW_CONFIG` stay untouched.
+
+| Element | Role |
+| --- | --- |
+| `quickSearch` | Search field writing into `view.global`; kept in two-way sync with `globalSearch` in the filter panel. |
+| `btnSheetFilters` + `filtersBadge` | Opens the filter modal; the badge shows the number of active filters. |
+| `btnSheetSort` | Opens the sort sheet. |
+| `rowCount` | The `Pokazano N z M` counter, filled by `updateSheetTools()` on every render. |
+| `activeChips` | Chips for the active filters; each has a button removing that one filter. |
+
+The toolbar uses `position: sticky`. That requires no ancestor to clip scrolling, so in the
+`max-width: 720px` rule `.workspace` and `.tableFrame` get `overflow: visible`.
+
+### Popover and modals
 
 - `popover` shows trait, state, and similar reference descriptions.
 - `modal` shows selected record comparison.
-- `filterMenu` is the dynamic list-filter menu for columns.
+- `filterMenu` is the dynamic list-filter menu for columns (the desktop table header).
+- `filterModal` is the filter modal for the card layout: every column of the sheet in one vertical
+  list, with a confirmation step.
+- `sortSheet` is the sort sheet for the card layout.
 
 ## Sheet groups
 
@@ -1210,6 +1305,25 @@ are untouched and apply in the card layout too.
 
 Table body rendering uses progressive chunks of `RENDER_CHUNK_SIZE`.
 
+## Card grouping in the phone layout
+
+In the card layout `renderBody()` does not render a flat list of rows but a plan built by
+`buildRenderPlan(filtered, cols)`. The plan interleaves group headers with the rows of expanded groups,
+so a collapsed group produces no DOM nodes at all.
+
+| Function / constant | Role |
+| --- | --- |
+| `isCardLayout()` | Checks `matchMedia("(max-width: 720px)")`. |
+| `groupingColumnFor(sheetName, cols)` | The grouping column: first the column from `DEFAULT_VIEW_CONFIG` for the sheet, then `Typ`, then `Rodzaj`, otherwise `null`. |
+| `buildRenderPlan(filtered, cols)` | Builds the render plan; groups are formed after filtering and sorting, so their order follows the sorting. |
+| `renderGroupHeader(group, cols)` | A `tr.groupRow` row with a `.groupHead` button, the name, the item count and a selection mark. |
+| `expandedGroupsFor(sheetName)` | The set of expanded groups of a sheet; **not** persisted to `sessionStorage`, so the list starts collapsed after a refresh. |
+| `GROUPING_MIN_ROWS` | The minimum number of rows below which grouping does not kick in (12). |
+| `GROUPING_AUTO_EXPAND_MAX` | When the search narrows the list to at most this many rows (40), the groups holding matches expand on their own. |
+
+Grouping does not kick in when there is no grouping column or when a single group would come out — new
+sheets are therefore handled automatically, with no configuration to add.
+
 ## Filtering and sorting
 
 The module supports:
@@ -1222,6 +1336,37 @@ The module supports:
 - special `Archetypy` sorting by `Poziom` and secondarily by `Frakcja`.
 
 List filters use unique column values from currently system-visible records.
+
+### The filter modal in the card layout
+
+`openFilterModal()` creates a working copy `filterDraft` through `draftFromView()` and builds the list
+of all columns of the sheet. The modal edits the working copy only:
+
+| Function | Role |
+| --- | --- |
+| `draftFromView()` | A deep copy of `filtersText` and `filtersSet` from the view state. |
+| `buildFilterModalBody()` | Builds the column list; a text field and a collapsed value list for each. |
+| `buildFilterModalColumn(col)` | One column: text field, state summary, expandable value list with `Zaznacz wszystko` and `Wyczyść`. |
+| `countDraftMatches()` | Counts the working copy's matches without touching the DOM: it swaps the filters in `view` for a single `passesFilters()` pass and restores the previous ones. |
+| `refreshApplyLabel()` | Updates the apply button caption to `Zatwierdź — pokaż N z M`. |
+| `applyFilterModal()` | Writes the working copy into `view`, syncs the table-header fields, closes the modal and renders the list **once**. |
+| `closeFilterModal()` | Discards the working copy without any rendering. |
+| `defaultFiltersForSheet(sheetName)` | The default-view filters for one sheet, without touching sorting, selection or the search. |
+
+Confirming instead of filtering live is a performance decision: `renderBody()` rebuilds every row,
+which costs hundreds of milliseconds on a sheet with a few hundred records, and while the modal is
+open the list is covered anyway. `countDraftMatches()` costs a fraction of a millisecond, so the
+result preview can refresh on every tap.
+
+The presets in the modal (`filterModalDefaults`, `filterModalClear`) act on the working copy and on the
+current sheet only, unlike `btnDefaultView` and `btnReset` in the top bar, which go through
+`applyViewModeToAllSheets()` and reset every sheet including the search, the sorting and the selection.
+Hence the different button names: `Przywróć domyślne` and `Wyczyść filtry`.
+
+### The sort sheet
+
+`openSortSheet()` builds the list of the sheet's columns. Every entry calls `toggleSort(col)`, the same
+function a click on a column header triggers on a desktop: ascending, descending, no sorting.
 
 ## Text formatting
 

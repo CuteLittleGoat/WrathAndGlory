@@ -20,6 +20,24 @@ const els = {
   modalBody: document.getElementById("modalBody"),
   modalClose: document.getElementById("modalClose"),
   filterMenu: document.getElementById("filterMenu"),
+  sheetTools: document.getElementById("sheetTools"),
+  quickSearch: document.getElementById("quickSearch"),
+  btnSheetFilters: document.getElementById("btnSheetFilters"),
+  filtersBadge: document.getElementById("filtersBadge"),
+  btnSheetSort: document.getElementById("btnSheetSort"),
+  rowCount: document.getElementById("rowCount"),
+  activeChips: document.getElementById("activeChips"),
+  filterModal: document.getElementById("filterModal"),
+  filterModalTitle: document.getElementById("filterModalTitle"),
+  filterModalScope: document.getElementById("filterModalScope"),
+  filterModalBody: document.getElementById("filterModalBody"),
+  filterModalApply: document.getElementById("filterModalApply"),
+  filterModalCancel: document.getElementById("filterModalCancel"),
+  filterModalDefaults: document.getElementById("filterModalDefaults"),
+  filterModalClear: document.getElementById("filterModalClear"),
+  sortSheet: document.getElementById("sortSheet"),
+  sortSheetBody: document.getElementById("sortSheetBody"),
+  sortSheetClose: document.getElementById("sortSheetClose"),
   toggleBestiaryOldGroup: document.getElementById("toggleBestiaryOldGroup"),
   toggleOldBestiaryEntries: document.getElementById("toggleOldBestiaryEntries"),
   toggleCharacterTabs: document.getElementById("toggleCharacterTabs"),
@@ -65,15 +83,25 @@ const translations = {
       comparisonTitle: "Porównanie",
       comparisonField: "Pole",
       comparisonRecord: "Rekord",
+      filtersButton: "Filtry",
+      sortButton: "Sortuj",
+      cancelButton: "Anuluj",
+      closeButton: "Zamknij",
+      restoreDefaultsButton: "Przywróć domyślne",
+      clearFiltersButton: "Wyczyść filtry",
+      sortTitle: "Sortowanie",
     },
     placeholders: {
       globalSearch: "np. Pist, Brutalna, IMPERIUM, Zatrucie (5)...",
       columnFilter: "filtr...",
       filterSearch: "Szukaj na liście…",
+      quickSearch: "Szukaj w tej zakładce...",
+      columnTextFilter: "wpisz fragment...",
     },
     titles: {
-      fullView: "Pokaż pełny widok danych (bez ukryć domyślnych)",
-      defaultView: "Przywróć domyślny widok danych (z ukryciami)",
+      fullView: "Pokaż pełny widok danych (bez ukryć domyślnych). Działa na wszystkich zakładkach. Część danych jest domyślnie ukryta.",
+      defaultView: "Przywróć domyślny widok danych (z ukryciami). Działa na wszystkich zakładkach. Część danych jest domyślnie ukryta.",
+      updateData: "Kliknij, aby wybrać lokalny plik Repozytorium.xlsx. Aplikacja wygeneruje data.json jako backup oraz firebase-import.json — plik gotowy do importu w root Firebase Realtime Database. Po imporcie dane zostaną umieszczone pod /datavault/live.",
     },
     aria: {
       close: "Zamknij",
@@ -104,6 +132,25 @@ const translations = {
       noDescriptionLabel: "BRAK OPISU",
       traitNotFound: "Nie znaleziono tej cechy w zakładce Cechy.",
       stateNotFound: "Nie znaleziono tego stanu w zakładce Stany.",
+      filterModalTitle: "Filtry",
+      filterModalScope: "kolumn: {count}",
+      applyFilters: "Zatwierdź — pokaż {shown} z {total}",
+      rowCount: "Pokazano {shown} z {total}",
+      allValues: "wszystkie wartości",
+      someValues: "{shown} z {total} wartości",
+      chipSearch: "Szukaj: „{text}”",
+      chipText: "{col}: „{text}”",
+      chipValues: "{col} — {shown} z {total}",
+      chipDefault: "Widok domyślny: {col} — {shown} z {total}",
+      dropFilter: "Zdejmij ten filtr",
+      sortAsc: "rosnąco",
+      sortDesc: "malejąco",
+      sortNone: "bez sortowania",
+      groupEmpty: "—",
+      groupCount: "{count} poz.",
+      groupSelected: "zaznaczone",
+      expandGroup: "Rozwiń grupę",
+      collapseGroup: "Zwiń grupę",
     },
   },
   en: {
@@ -133,15 +180,25 @@ const translations = {
       comparisonTitle: "Comparison",
       comparisonField: "Field",
       comparisonRecord: "Record",
+      filtersButton: "Filters",
+      sortButton: "Sort",
+      cancelButton: "Cancel",
+      closeButton: "Close",
+      restoreDefaultsButton: "Restore defaults",
+      clearFiltersButton: "Clear filters",
+      sortTitle: "Sorting",
     },
     placeholders: {
       globalSearch: "e.g. Pist, Brutal, IMPERIUM, Poison (5)...",
       columnFilter: "filter...",
       filterSearch: "Search the list…",
+      quickSearch: "Search this sheet...",
+      columnTextFilter: "type a fragment...",
     },
     titles: {
-      fullView: "Show the full data view (without default hiding)",
-      defaultView: "Restore the default data view (with hidden values)",
+      fullView: "Show the full data view (without default hiding). Applies to every sheet. Some data is hidden by default.",
+      defaultView: "Restore the default data view (with hidden values). Applies to every sheet. Some data is hidden by default.",
+      updateData: "Click to pick a local Repozytorium.xlsx file. The application generates data.json as a backup and firebase-import.json, ready to import into the Firebase Realtime Database root. After the import the data lands under /datavault/live.",
     },
     aria: {
       close: "Close",
@@ -172,6 +229,25 @@ const translations = {
       noDescriptionLabel: "NO DESCRIPTION",
       traitNotFound: "Trait not found in the Traits sheet.",
       stateNotFound: "State not found in the States sheet.",
+      filterModalTitle: "Filters",
+      filterModalScope: "columns: {count}",
+      applyFilters: "Apply — show {shown} of {total}",
+      rowCount: "Showing {shown} of {total}",
+      allValues: "all values",
+      someValues: "{shown} of {total} values",
+      chipSearch: "Search: \u201c{text}\u201d",
+      chipText: "{col}: \u201c{text}\u201d",
+      chipValues: "{col} — {shown} of {total}",
+      chipDefault: "Default view: {col} — {shown} of {total}",
+      dropFilter: "Remove this filter",
+      sortAsc: "ascending",
+      sortDesc: "descending",
+      sortNone: "no sorting",
+      groupEmpty: "—",
+      groupCount: "{count} items",
+      groupSelected: "selected",
+      expandGroup: "Expand group",
+      collapseGroup: "Collapse group",
     },
   },
 };
@@ -200,6 +276,7 @@ const applyLanguage = (lang) => {
     const key = el.getAttribute("data-i18n-title");
     if (key === "fullViewTitle") el.setAttribute("title", t.titles.fullView);
     if (key === "defaultViewTitle") el.setAttribute("title", t.titles.defaultView);
+    if (key === "updateDataTitle") el.setAttribute("title", t.titles.updateData);
   });
   document.querySelectorAll("[data-i18n-aria]").forEach((el) => {
     const key = el.getAttribute("data-i18n-aria");
@@ -209,6 +286,9 @@ const applyLanguage = (lang) => {
   });
   if (els.global) {
     els.global.placeholder = t.placeholders.globalSearch;
+  }
+  if (els.quickSearch) {
+    els.quickSearch.placeholder = t.placeholders.quickSearch;
   }
   document.querySelectorAll(".tableFilters .input").forEach((input) => {
     input.placeholder = t.placeholders.columnFilter;
@@ -1310,12 +1390,6 @@ function selectSheet(name){
   saveSessionState();
 }
 
-// Jeden obserwator na całą aplikację: przy zmianie zakładki tabela powstaje od nowa, więc stary
-// obserwator zostaje odpięty zamiast się odkładać.
-// A single observer for the whole application: switching tabs rebuilds the table, so the previous
-// observer is disconnected instead of piling up.
-let headerRowObserver = null;
-
 function buildTableSkeleton(){
   const rows = DB.sheets[currentSheet] || [];
   const cols = inferColumns(rows, currentSheet);
@@ -1375,6 +1449,10 @@ function buildTableSkeleton(){
     input.className = "input";
     input.placeholder = translations[currentLanguage].placeholders.columnFilter;
     input.dataset.col = col;
+    // Pole odtwarza zapisany filtr, inaczej po powrocie na zakładkę filtr działa, ale pole jest puste.
+    // The field restores the saved filter; otherwise the filter works after returning to a sheet
+    // while the field looks empty.
+    input.value = String(view.filtersText?.[col] ?? "");
     input.addEventListener("input", ()=>{
       view.filtersText[col] = input.value;
       renderBody();
@@ -1408,27 +1486,6 @@ function buildTableSkeleton(){
   viewport.appendChild(tableEl);
   frame.appendChild(viewport);
   els.wrap.appendChild(frame);
-
-  // --- Pomiar wysokości pierwszego wiersza nagłówka / Measuring the first header row height ---
-  // Drugi wiersz nagłówka (pola filtrów) przykleja się na wysokości pierwszego. Ta wysokość zależy
-  // od tego, czy nazwy kolumn zawinęły się na dwie albo trzy linie, więc nie da się jej wpisać na
-  // stałe — przy każdej zakładce wychodzi inna. Mierzymy ją i wpisujemy do zmiennej CSS tabeli.
-  // ResizeObserver powtarza pomiar po zmianie szerokości okna, bo zawijanie nazw wtedy się zmienia.
-  // The second header row (the filter fields) sticks at the height of the first one. That height
-  // depends on whether the column names wrapped onto two or three lines, so it cannot be hard-coded —
-  // every tab comes out different. We measure it and write it into the table's CSS variable.
-  // The ResizeObserver repeats the measurement after a window resize, because wrapping changes then.
-  const headerRow = tableEl.querySelector("thead tr:first-child");
-  if (headerRow){
-    const measureHeaderRow = () => {
-      const height = Math.round(headerRow.getBoundingClientRect().height);
-      if (height > 0) tableEl.style.setProperty("--header-row-height", `${height}px`);
-    };
-    if (headerRowObserver) headerRowObserver.disconnect();
-    headerRowObserver = new ResizeObserver(measureHeaderRow);
-    headerRowObserver.observe(headerRow);
-    requestAnimationFrame(measureHeaderRow);
-  }
 
   updateSortMarks();
   updateFilterIndicators();
@@ -1705,11 +1762,19 @@ function renderBody(){
   const filtered = sortRows(rowsAll.filter(r => passesFilters(r, cols)));
   const token = ++renderToken;
 
+  updateSheetTools(filtered.length, rowsAll.length);
+
   if (!filtered.length){
     tbodyEl.innerHTML = `<tr><td colspan="${cols.length + 1}" class="emptyState"><div class="emptyTitle">${translations[currentLanguage].labels.resultsEmptyTitle}</div><div class="emptyText">${translations[currentLanguage].labels.resultsEmptyText}</div></td></tr>`;
     els.btnCompare.disabled = true;
     return;
   }
+
+  // Plan rysowania: na telefonie lista kart jest podzielona na zwijane grupy, więc zamiast samych
+  // wierszy przechodzimy po elementach, z których część to nagłówki grup.
+  // Render plan: on a phone the card list is split into collapsible groups, so instead of plain rows
+  // we walk a list of items, some of which are group headers.
+  const plan = buildRenderPlan(filtered, cols);
 
   tbodyEl.innerHTML = "";
   let idx = 0;
@@ -1718,13 +1783,14 @@ function renderBody(){
     if (token !== renderToken) return;
     const frag = document.createDocumentFragment();
 
-    for (let n = 0; n < RENDER_CHUNK_SIZE && idx < filtered.length; n++, idx++){
-      frag.appendChild(renderRow(filtered[idx], cols));
+    for (let n = 0; n < RENDER_CHUNK_SIZE && idx < plan.length; n++, idx++){
+      const item = plan[idx];
+      frag.appendChild(item.group ? renderGroupHeader(item.group, cols) : renderRow(item.row, cols, item.inGroup));
     }
 
     tbodyEl.appendChild(frag);
 
-    if (idx < filtered.length){
+    if (idx < plan.length){
       requestAnimationFrame(renderChunk);
     } else {
       els.btnCompare.disabled = view.selected.size < 2;
@@ -1734,8 +1800,9 @@ function renderBody(){
   renderChunk();
 }
 
-function renderRow(r, cols){
+function renderRow(r, cols, inGroup = false){
   const tr = document.createElement("tr");
+  tr.classList.toggle("inGroup", Boolean(inGroup));
   tr.classList.toggle("row-selected", view.selected.has(r.__id));
   const oldBestiaryRow = isBestiarySheet(currentSheet) && isOldStatusRow(r);
   tr.classList.toggle("row-old", isOldStatusRow(r));
@@ -2055,6 +2122,608 @@ if (els.languageSelect){
 }
 
 applyLanguage(currentLanguage);
+
+
+/* ===================================================================================
+   PASEK NARZĘDZI ZAKŁADKI, GRUPOWANIE KART, MODAL FILTRÓW I ARKUSZ SORTOWANIA
+   PER-SHEET TOOLBAR, CARD GROUPING, FILTER MODAL AND SORT SHEET
+
+   PL: W układzie kart (telefon, szerokość do 720 px) nagłówek tabeli jest ukryty, a razem z nim
+   znikają jedyne sterowniki filtrów i sortowania. Wszystko poniżej jest drugim wejściem do tego
+   samego stanu `view`, z którego korzysta nagłówek na komputerze — funkcje passesFilters(),
+   sortRows() i konfiguracja DEFAULT_VIEW_CONFIG pozostają nietknięte, więc nie powstaje druga,
+   rozjeżdżająca się ścieżka filtrowania.
+   EN: In the card layout (phone, up to 720 px wide) the table header is hidden, and with it the only
+   filter and sort controls. Everything below is a second entry point into the same `view` state the
+   desktop header uses — passesFilters(), sortRows() and the DEFAULT_VIEW_CONFIG stay untouched, so
+   no second, diverging filtering path is created.
+   =================================================================================== */
+
+const CARD_LAYOUT_QUERY = "(max-width: 720px)";
+// Poniżej tylu wierszy grupowanie nic nie daje i tylko dokłada klikania.
+// Below this many rows grouping gains nothing and only adds taps.
+const GROUPING_MIN_ROWS = 12;
+// Gdy wyszukiwanie zawęzi listę do tylu wierszy, grupy z trafieniami rozwijają się same — po to się
+// szuka. Przy szerokim zapytaniu, które niczego nie zawęża, zostaje przegląd kategorii.
+// When the search narrows the list to at most this many rows, the groups holding matches expand on
+// their own — that is the point of searching. A broad query that narrows nothing keeps the overview.
+const GROUPING_AUTO_EXPAND_MAX = 40;
+
+// Rozwinięte grupy nie trafiają do sessionStorage: po odświeżeniu zakładka ma zacząć od zwiniętej
+// listy kategorii, bo to jest cel grupowania.
+// Expanded groups are not persisted: after a refresh a sheet should start from the collapsed list of
+// categories, which is the whole point of grouping.
+const expandedGroupsBySheet = {};
+
+function isCardLayout(){
+  return window.matchMedia(CARD_LAYOUT_QUERY).matches;
+}
+
+function expandedGroupsFor(sheetName){
+  if (!expandedGroupsBySheet[sheetName]) expandedGroupsBySheet[sheetName] = new Set();
+  return expandedGroupsBySheet[sheetName];
+}
+
+// Podstawianie wartości w komunikatach słownika: "{shown} z {total}" -> "16 z 130".
+// Value substitution in dictionary messages: "{shown} of {total}" -> "16 of 130".
+function formatMessage(template, values){
+  return String(template).replace(/\{(\w+)\}/g, (match, key) => (key in values ? String(values[key]) : match));
+}
+
+/* ---------- Grupowanie kart / Card grouping ---------- */
+
+// Kolumny grupującej nie trzeba konfigurować osobno: DEFAULT_VIEW_CONFIG już wskazuje po jednej
+// kolumnie na zakładkę — tę, na której działa widok domyślny, czyli tę dzielącą dane na kategorie.
+// Zakładki bez wpisu w konfiguracji dostają "Typ" albo "Rodzaj", jeżeli takie kolumny mają.
+// The grouping column needs no separate configuration: DEFAULT_VIEW_CONFIG already designates one
+// column per sheet — the one the default view filters on, i.e. the one splitting the data into
+// categories. Sheets with no entry fall back to "Typ" or "Rodzaj" when they have such a column.
+function groupingColumnFor(sheetName, cols){
+  const config = getDefaultConfigForSheet(sheetName);
+  if (config){
+    const configured = cols.find(col => canonKey(col) in config);
+    if (configured) return configured;
+  }
+  return cols.find(col => canonKey(col) === canonKey("Typ"))
+      || cols.find(col => canonKey(col) === canonKey("Rodzaj"))
+      || null;
+}
+
+function buildRenderPlan(filtered, cols){
+  const flat = filtered.map(row => ({row}));
+  if (!isCardLayout() || filtered.length < GROUPING_MIN_ROWS) return flat;
+
+  const groupCol = groupingColumnFor(currentSheet, cols);
+  if (!groupCol) return flat;
+
+  // Grupy powstają PO przefiltrowaniu i posortowaniu, więc kolejność grup idzie za sortowaniem,
+  // a wiersze wewnątrz grupy zachowują kolejność z sortRows().
+  // Groups are built AFTER filtering and sorting, so their order follows the sorting and the rows
+  // inside a group keep the order sortRows() gave them.
+  const emptyLabel = translations[currentLanguage].messages.groupEmpty;
+  const groups = new Map();
+  for (const row of filtered){
+    const key = String(row[groupCol] ?? "").trim() || emptyLabel;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(row);
+  }
+  if (groups.size < 2) return flat;
+
+  const expanded = expandedGroupsFor(currentSheet);
+  const searching = Boolean(String(view.global || "").trim());
+  const autoExpand = searching && filtered.length <= GROUPING_AUTO_EXPAND_MAX;
+  const plan = [];
+  for (const [name, rows] of groups){
+    const open = autoExpand || expanded.has(name);
+    plan.push({group:{
+      name,
+      rows: rows.length,
+      open,
+      hasSelection: rows.some(row => view.selected.has(row.__id)),
+    }});
+    if (open){
+      for (const row of rows) plan.push({row, inGroup:true});
+    }
+  }
+  return plan;
+}
+
+function renderGroupHeader(group, cols){
+  const messages = translations[currentLanguage].messages;
+  const tr = document.createElement("tr");
+  tr.className = "groupRow";
+
+  const td = document.createElement("td");
+  td.colSpan = cols.length + 1;
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "groupHead";
+  button.setAttribute("aria-expanded", group.open ? "true" : "false");
+  button.title = group.open ? messages.collapseGroup : messages.expandGroup;
+
+  const caret = document.createElement("span");
+  caret.className = "groupCaret";
+  caret.textContent = group.open ? "▾" : "▸";
+  button.appendChild(caret);
+
+  const name = document.createElement("span");
+  name.textContent = stripMarkers(group.name);
+  button.appendChild(name);
+
+  // Zwinięta grupa ukrywa zaznaczone wiersze, więc nagłówek musi o nich powiedzieć.
+  // A collapsed group hides selected rows, so the header has to say they are there.
+  if (group.hasSelection){
+    const mark = document.createElement("span");
+    mark.className = "groupMark";
+    mark.textContent = "✓";
+    mark.title = messages.groupSelected;
+    button.appendChild(mark);
+  }
+
+  const count = document.createElement("span");
+  count.className = "groupCount";
+  count.textContent = formatMessage(messages.groupCount, {count: group.rows});
+  button.appendChild(count);
+
+  button.addEventListener("click", ()=>{
+    const expanded = expandedGroupsFor(currentSheet);
+    if (expanded.has(group.name)) expanded.delete(group.name); else expanded.add(group.name);
+    renderBody();
+  });
+
+  td.appendChild(button);
+  tr.appendChild(td);
+  return tr;
+}
+
+/* ---------- Pasek narzędzi zakładki / Per-sheet toolbar ---------- */
+
+function updateSheetTools(shown, total){
+  const messages = translations[currentLanguage].messages;
+  if (els.rowCount) els.rowCount.textContent = formatMessage(messages.rowCount, {shown, total});
+  if (els.quickSearch && els.quickSearch.value !== (view.global || "")) els.quickSearch.value = view.global || "";
+  renderActiveChips();
+}
+
+function makeChip(label, isDefault, onDrop){
+  const messages = translations[currentLanguage].messages;
+  const chip = document.createElement("span");
+  chip.className = isDefault ? "chip chip--default" : "chip";
+  const text = document.createElement("span");
+  text.textContent = label;
+  chip.appendChild(text);
+  const drop = document.createElement("button");
+  drop.type = "button";
+  drop.className = "chipDrop";
+  drop.textContent = "✕";
+  drop.title = messages.dropFilter;
+  drop.setAttribute("aria-label", `${messages.dropFilter}: ${label}`);
+  drop.addEventListener("click", onDrop);
+  chip.appendChild(drop);
+  return chip;
+}
+
+// Żetony są jedyną informacją o tym, co jest odfiltrowane, gdy nagłówek tabeli jest ukryty —
+// i jedynym sposobem, żeby zdjąć pojedynczy filtr bez kasowania reszty widoku.
+// The chips are the only sign of what is filtered out while the table header is hidden — and the
+// only way to drop a single filter without wiping the rest of the view.
+function renderActiveChips(){
+  if (!els.activeChips) return;
+  const messages = translations[currentLanguage].messages;
+  els.activeChips.innerHTML = "";
+  if (!DB || !currentSheet){
+    if (els.filtersBadge){ els.filtersBadge.textContent = ""; els.filtersBadge.classList.remove("is-on"); }
+    return;
+  }
+
+  const cols = DB.sheets[currentSheet]?._cols || [];
+  const defaults = getDefaultConfigForSheet(currentSheet);
+  let activeFilters = 0;
+
+  const search = String(view.global || "").trim();
+  if (search){
+    els.activeChips.appendChild(makeChip(formatMessage(messages.chipSearch, {text: search}), false, ()=>{
+      view.global = "";
+      if (els.global) els.global.value = "";
+      if (els.quickSearch) els.quickSearch.value = "";
+      renderBody();
+      saveSessionState();
+    }));
+  }
+
+  for (const col of cols){
+    const text = String(view.filtersText?.[col] ?? "").trim();
+    if (text){
+      activeFilters++;
+      els.activeChips.appendChild(makeChip(formatMessage(messages.chipText, {col, text}), false, ()=>{
+        view.filtersText[col] = "";
+        syncColumnFilterInput(col, "");
+        renderBody();
+        saveSessionState();
+      }));
+    }
+    const set = view.filtersSet?.[col];
+    if (!(set instanceof Set)) continue;
+    const total = uniqueValuesForColumn(col).length;
+    if (set.size >= total) continue;
+    activeFilters++;
+    const fromDefaults = Boolean(defaults && canonKey(col) in defaults);
+    els.activeChips.appendChild(makeChip(
+      formatMessage(fromDefaults ? messages.chipDefault : messages.chipValues, {col, shown:set.size, total}),
+      fromDefaults,
+      ()=>{
+        view.filtersSet[col] = null;
+        renderBody();
+        saveSessionState();
+      }));
+  }
+
+  if (els.filtersBadge){
+    els.filtersBadge.textContent = activeFilters ? String(activeFilters) : "";
+    els.filtersBadge.classList.toggle("is-on", activeFilters > 0);
+  }
+}
+
+// Zdjęcie filtra żetonem musi być widoczne także w polu w nagłówku tabeli.
+// Dropping a filter with a chip has to show in the field in the table header too.
+function syncColumnFilterInput(col, value){
+  if (!tableEl) return;
+  const input = tableEl.querySelector(`thead tr:nth-child(2) th[data-col="${CSS.escape(col)}"] .input`);
+  if (input) input.value = value;
+}
+
+/* ---------- Modal filtrów / Filter modal ---------- */
+
+// Kopia robocza filtrów. Modal zmienia wyłącznie ją; dopiero „Zatwierdź” przepisuje ją do stanu
+// widoku i jeden raz przerysowuje listę. Przy filtrowaniu na żywo każde stuknięcie kosztowało pełną
+// przebudowę wszystkich wierszy — na Bestiariuszu setki milisekund, mimo że lista i tak jest wtedy
+// zasłonięta przez modal.
+// A working copy of the filters. The modal edits only this; "Apply" writes it into the view state and
+// redraws the list once. With live filtering every tap cost a full rebuild of all rows — hundreds of
+// milliseconds on the Bestiary, even though the list is covered by the modal at that moment.
+let filterDraft = null;
+
+function draftFromView(){
+  return {
+    filtersText: {...view.filtersText},
+    filtersSet: Object.fromEntries(
+      Object.entries(view.filtersSet).map(([col, set]) => [col, set instanceof Set ? new Set(set) : null])
+    ),
+  };
+}
+
+// Widok domyślny w postaci samych filtrów — ta sama reguła, którą stosuje applyDefaultViewForSheet(),
+// ale bez ruszania sortowania, zaznaczeń i wyszukiwania.
+// The default view expressed as filters only — the same rule applyDefaultViewForSheet() applies, but
+// without touching sorting, selection or the search.
+function defaultFiltersForSheet(sheetName){
+  const rows = getSystemVisibleRows(sheetName);
+  const cols = inferColumns(DB?.sheets?.[sheetName] || [], sheetName);
+  const config = getDefaultConfigForSheet(sheetName);
+  const filtersSet = {};
+  for (const col of cols){
+    const cfg = config?.[canonKey(col)];
+    if (!cfg) continue;
+    const allValues = uniqueValuesForColumnFromRows(rows, col);
+    const allowed = allValues.filter(value => cfg.includes(value));
+    filtersSet[col] = allowed.length === allValues.length ? null : new Set(allowed);
+  }
+  return filtersSet;
+}
+
+// Policzenie trafień bez dotykania DOM: podmieniamy filtry na czas jednego przebiegu i zaraz
+// przywracamy. To kosztuje ułamek milisekundy, więc podgląd może się odświeżać po każdym stuknięciu.
+// Counting matches without touching the DOM: the filters are swapped for a single pass and restored
+// right away. It costs a fraction of a millisecond, so the preview can refresh on every tap.
+function countDraftMatches(){
+  if (!DB || !currentSheet || !filterDraft) return {shown:0, total:0};
+  const cols = DB.sheets[currentSheet]?._cols || [];
+  const rows = getSystemVisibleRows(currentSheet);
+  const previousText = view.filtersText;
+  const previousSet = view.filtersSet;
+  view.filtersText = filterDraft.filtersText;
+  view.filtersSet = filterDraft.filtersSet;
+  let shown = 0;
+  for (const row of rows) if (passesFilters(row, cols)) shown++;
+  view.filtersText = previousText;
+  view.filtersSet = previousSet;
+  return {shown, total: rows.length};
+}
+
+function refreshApplyLabel(){
+  if (!els.filterModalApply) return;
+  const {shown, total} = countDraftMatches();
+  els.filterModalApply.textContent =
+    formatMessage(translations[currentLanguage].messages.applyFilters, {shown, total});
+}
+
+function isFilterModalOpen(){
+  return els.filterModal?.getAttribute("aria-hidden") === "false";
+}
+
+function openFilterModal(){
+  if (!DB || !currentSheet || !els.filterModal) return;
+  filterDraft = draftFromView();
+  buildFilterModalBody();
+  els.filterModal.setAttribute("aria-hidden", "false");
+}
+
+function closeFilterModal(){
+  filterDraft = null;
+  if (els.filterModal) els.filterModal.setAttribute("aria-hidden", "true");
+  if (els.filterModalBody) els.filterModalBody.innerHTML = "";
+}
+
+function applyFilterModal(){
+  if (!filterDraft) return closeFilterModal();
+  view.filtersText = filterDraft.filtersText;
+  view.filtersSet = filterDraft.filtersSet;
+  // Pola w nagłówku tabeli muszą pokazać to, co ustawiono w modalu.
+  // The fields in the table header have to show what the modal set.
+  const cols = DB?.sheets?.[currentSheet]?._cols || [];
+  for (const col of cols) syncColumnFilterInput(col, String(view.filtersText[col] ?? ""));
+  closeFilterModal();
+  renderBody();
+  saveSessionState();
+}
+
+function buildFilterModalBody(){
+  if (!els.filterModalBody) return;
+  const t = translations[currentLanguage];
+  const cols = DB.sheets[currentSheet]?._cols || [];
+
+  if (els.filterModalTitle){
+    els.filterModalTitle.textContent = `${t.messages.filterModalTitle} — ${currentSheet}`;
+  }
+  if (els.filterModalScope){
+    els.filterModalScope.textContent = formatMessage(t.messages.filterModalScope, {count: cols.length});
+  }
+
+  els.filterModalBody.innerHTML = "";
+  for (const col of cols) els.filterModalBody.appendChild(buildFilterModalColumn(col));
+  refreshApplyLabel();
+}
+
+function buildFilterModalColumn(col){
+  const t = translations[currentLanguage];
+  const allValues = uniqueValuesForColumn(col);
+
+  const box = document.createElement("div");
+  box.className = "filterCol";
+
+  const name = document.createElement("div");
+  name.className = "filterColName";
+  name.textContent = col;
+  box.appendChild(name);
+
+  const input = document.createElement("input");
+  input.className = "input";
+  input.placeholder = t.placeholders.columnTextFilter;
+  input.value = String(filterDraft.filtersText[col] ?? "");
+  input.addEventListener("input", ()=>{
+    filterDraft.filtersText[col] = input.value;
+    refreshApplyLabel();
+  });
+  input.addEventListener("keydown", event => event.stopPropagation());
+  box.appendChild(input);
+
+  // Listy wartości są zwinięte. Sama kolumna „Typ” w Broniach ma 19 wartości; wszystkie listy
+  // rozwinięte naraz zrobiłyby z modalu listę dłuższą niż ta, którą filtrujemy.
+  // The value lists start collapsed. The "Typ" column in Weapons alone has 19 values; every list
+  // expanded at once would make the modal longer than the list being filtered.
+  const summary = document.createElement("button");
+  summary.type = "button";
+  summary.className = "filterColValues";
+  const summaryText = document.createElement("span");
+  const caret = document.createElement("span");
+  caret.className = "groupCaret";
+  caret.textContent = "▸";
+  summary.appendChild(summaryText);
+  summary.appendChild(caret);
+  box.appendChild(summary);
+
+  const list = document.createElement("div");
+  list.className = "filterColList";
+  list.hidden = true;
+  box.appendChild(list);
+
+  function selectedValues(){
+    const set = filterDraft.filtersSet[col];
+    return set instanceof Set ? set : new Set(allValues);
+  }
+
+  function refreshSummary(){
+    const selected = selectedValues();
+    const isOn = selected.size < allValues.length;
+    summaryText.textContent = isOn
+      ? formatMessage(t.messages.someValues, {shown: selected.size, total: allValues.length})
+      : t.messages.allValues;
+    summary.classList.toggle("is-on", isOn);
+  }
+
+  function setSelection(next){
+    filterDraft.filtersSet[col] = next.size === allValues.length ? null : new Set(next);
+    refreshSummary();
+    refreshApplyLabel();
+  }
+
+  function buildList(){
+    list.innerHTML = "";
+    const actions = document.createElement("div");
+    actions.className = "filterColActions";
+    const all = document.createElement("button");
+    all.type = "button";
+    all.className = "btn secondary";
+    all.textContent = t.messages.selectAll;
+    all.addEventListener("click", ()=>{ setSelection(new Set(allValues)); buildList(); });
+    const none = document.createElement("button");
+    none.type = "button";
+    none.className = "btn secondary";
+    none.textContent = t.messages.clearAll;
+    none.addEventListener("click", ()=>{ setSelection(new Set()); buildList(); });
+    actions.appendChild(all);
+    actions.appendChild(none);
+    list.appendChild(actions);
+
+    const selected = selectedValues();
+    const counts = valueCountsForColumn(col);
+    for (const value of allValues){
+      const row = document.createElement("label");
+      row.className = "filterValue";
+      const box2 = document.createElement("input");
+      box2.type = "checkbox";
+      box2.checked = selected.has(value);
+      box2.addEventListener("change", ()=>{
+        const next = selectedValues();
+        if (box2.checked) next.add(value); else next.delete(value);
+        setSelection(next);
+      });
+      const label = document.createElement("span");
+      label.textContent = stripMarkers(value);
+      const count = document.createElement("em");
+      count.textContent = formatMessage(t.messages.groupCount, {count: counts.get(value) || 0});
+      row.appendChild(box2);
+      row.appendChild(label);
+      row.appendChild(count);
+      list.appendChild(row);
+    }
+  }
+
+  summary.addEventListener("click", ()=>{
+    const open = list.hidden;
+    if (open) buildList();
+    list.hidden = !open;
+    caret.textContent = open ? "▾" : "▸";
+  });
+
+  refreshSummary();
+  return box;
+}
+
+function valueCountsForColumn(col){
+  const counts = new Map();
+  for (const row of getSystemVisibleRows(currentSheet)){
+    const key = String(row[col] ?? "").trim() || "-";
+    counts.set(key, (counts.get(key) || 0) + 1);
+  }
+  return counts;
+}
+
+/* ---------- Arkusz sortowania / Sort sheet ---------- */
+
+function isSortSheetOpen(){
+  return els.sortSheet?.getAttribute("aria-hidden") === "false";
+}
+
+function openSortSheet(){
+  if (!DB || !currentSheet || !els.sortSheet) return;
+  buildSortSheetBody();
+  els.sortSheet.setAttribute("aria-hidden", "false");
+}
+
+function closeSortSheet(){
+  if (els.sortSheet) els.sortSheet.setAttribute("aria-hidden", "true");
+  if (els.sortSheetBody) els.sortSheetBody.innerHTML = "";
+}
+
+function buildSortSheetBody(){
+  if (!els.sortSheetBody) return;
+  const messages = translations[currentLanguage].messages;
+  const cols = DB.sheets[currentSheet]?._cols || [];
+  els.sortSheetBody.innerHTML = "";
+
+  for (const col of cols){
+    const option = document.createElement("button");
+    option.type = "button";
+    option.className = "sortOption";
+    const active = view.sort?.col === col;
+    option.classList.toggle("is-on", active);
+
+    const name = document.createElement("span");
+    name.textContent = col;
+    option.appendChild(name);
+
+    const state = document.createElement("em");
+    state.textContent = active
+      ? (view.sort.dir === "desc" ? messages.sortDesc : messages.sortAsc)
+      : messages.sortNone;
+    option.appendChild(state);
+
+    // toggleSort() cyklicznie przełącza rosnąco, malejąco i brak sortowania — dokładnie tak samo,
+    // jak kliknięcie w nagłówek kolumny na komputerze.
+    // toggleSort() cycles ascending, descending and no sorting — exactly like clicking a column
+    // header on a desktop.
+    option.addEventListener("click", ()=>{
+      toggleSort(col);
+      buildSortSheetBody();
+    });
+
+    els.sortSheetBody.appendChild(option);
+  }
+}
+
+/* ---------- Podpięcie zdarzeń / Event wiring ---------- */
+
+if (els.quickSearch){
+  els.quickSearch.addEventListener("input", ()=>{
+    view.global = els.quickSearch.value;
+    if (els.global) els.global.value = view.global;
+    renderBody();
+    saveSessionState();
+  });
+  els.quickSearch.addEventListener("keydown", event => event.stopPropagation());
+}
+
+if (els.btnSheetFilters) els.btnSheetFilters.addEventListener("click", openFilterModal);
+if (els.btnSheetSort) els.btnSheetSort.addEventListener("click", openSortSheet);
+if (els.filterModalCancel) els.filterModalCancel.addEventListener("click", closeFilterModal);
+if (els.filterModalApply) els.filterModalApply.addEventListener("click", applyFilterModal);
+if (els.sortSheetClose) els.sortSheetClose.addEventListener("click", closeSortSheet);
+
+if (els.filterModalDefaults){
+  els.filterModalDefaults.addEventListener("click", ()=>{
+    if (!filterDraft) return;
+    filterDraft.filtersText = {};
+    filterDraft.filtersSet = defaultFiltersForSheet(currentSheet);
+    buildFilterModalBody();
+  });
+}
+
+if (els.filterModalClear){
+  els.filterModalClear.addEventListener("click", ()=>{
+    if (!filterDraft) return;
+    filterDraft.filtersText = {};
+    filterDraft.filtersSet = {};
+    buildFilterModalBody();
+  });
+}
+
+// Stuknięcie w przyciemnione tło zamyka okno bez zatwierdzania — tak samo jak „Anuluj”.
+// Tapping the dimmed backdrop closes the window without applying — the same as "Cancel".
+if (els.filterModal){
+  els.filterModal.addEventListener("click", event => { if (event.target === els.filterModal) closeFilterModal(); });
+}
+if (els.sortSheet){
+  els.sortSheet.addEventListener("click", event => { if (event.target === els.sortSheet) closeSortSheet(); });
+}
+
+document.addEventListener("keydown", (event)=>{
+  if (event.key !== "Escape") return;
+  if (isFilterModalOpen()) closeFilterModal();
+  if (isSortSheetOpen()) closeSortSheet();
+});
+
+// Przejście między układem tabeli a układem kart zmienia to, czy grupowanie w ogóle działa,
+// więc lista musi powstać od nowa.
+// Switching between the table layout and the card layout changes whether grouping applies at all,
+// so the list has to be rebuilt.
+if (window.matchMedia){
+  const cardLayoutWatcher = window.matchMedia(CARD_LAYOUT_QUERY);
+  const onLayoutChange = ()=>{ if (tbodyEl && currentSheet) renderBody(); };
+  if (cardLayoutWatcher.addEventListener) cardLayoutWatcher.addEventListener("change", onLayoutChange);
+  else if (cardLayoutWatcher.addListener) cardLayoutWatcher.addListener(onLayoutChange);
+}
 
 /* ---------- Loaders ---------- */
 els.btnUpdateData.addEventListener("click", loadXlsxFromRepo);

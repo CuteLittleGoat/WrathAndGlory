@@ -129,13 +129,71 @@ treść mieści się na szerokość.
 Powód jest prosty: najszersza zakładka (Bestiariusz) jest ponad trzynaście razy szersza niż telefon.
 Przeczytanie jednego wiersza wymagałoby kilkunastu ruchów w bok i z powrotem.
 
-Wszystko działa tak samo jak na komputerze: pole wyboru do porównania jest u góry karty, filtry
-i wyszukiwanie po lewej, sortowanie przez nagłówek — z tym że na telefonie nagłówka nie ma, bo nazwy
-kolumn są przy każdej wartości.
+Karta pokazuje wszystkie pola wpisu, więc bywa wysoka i trzeba ją przewinąć. Tak ma być — po to, żeby
+nie trzeba było niczego rozwijać, aby zobaczyć komplet danych.
+
+### Wpisy są pogrupowane w kategorie
+
+Zamiast jednej długiej listy wszystkich kart zakładka otwiera się jako lista **zwiniętych kategorii**.
+Przy każdej widać nazwę i liczbę pozycji, na przykład `BROŃ ŁAŃCUCHOWA — 10 poz.`. Stuknięcie
+w kategorię rozwija ją i pokazuje karty; kolejne stuknięcie zwija ją z powrotem.
+
+Dzięki temu cała zakładka mieści się na dwóch–trzech ekranach zamiast na kilkudziesięciu, a od razu
+widać, jak dane są rozłożone. Kategorie biorą się z kolumny, która dla danej zakładki dzieli dane na
+grupy — zwykle jest to `Typ` albo `Rodzaj`.
+
+Grupowanie włącza się tylko wtedy, gdy ma sens: potrzeba przynajmniej kilkunastu wpisów i co najmniej
+dwóch kategorii. Krótkie zakładki zostają zwykłą listą kart.
+
+Jeśli w kategorii jest zaznaczony jakiś wpis do porównania, przy nazwie kategorii pojawia się ptaszek,
+nawet gdy jest zwinięta — żeby zaznaczenie nie zginęło z oczu.
+
+### Pasek narzędzi nad listą
+
+Nad listą kart jest pasek, który **zostaje na ekranie także podczas przewijania**. Zawiera:
+
+| Element | Do czego służy |
+| --- | --- |
+| Pole `Szukaj w tej zakładce` | To samo wyszukiwanie co pole `Szukaj (globalnie)` w panelu filtrów — obie wpisują to samo, więc nie trzeba wracać na górę strony. Po zawężeniu listy kategorie z trafieniami rozwijają się same. |
+| `Filtry` | Otwiera okno filtrów opisane niżej. Zielona liczba na przycisku mówi, ile filtrów jest aktywnych. |
+| `Sortuj` | Otwiera listę kolumn. Pierwsze stuknięcie sortuje rosnąco, drugie malejąco, trzecie zdejmuje sortowanie. |
+| `Pokazano N z M` | Ile wpisów widać po filtrach i ile jest ich w sumie. |
+| Żetony filtrów | Po jednym na każdy działający filtr. Stuknięcie `✕` zdejmuje **ten jeden** filtr i nie rusza pozostałych. |
+
+Żeton w kolorze przygaszonym, na przykład `WIDOK DOMYŚLNY: TYP — 19 Z 21`, oznacza filtr nałożony
+przez widok domyślny. To odpowiedź na pytanie „dlaczego nie widzę jakiegoś wpisu?” — widać wprost, co
+jest odfiltrowane, i można to zdjąć jednym stuknięciem.
+
+### Okno filtrów
+
+Przycisk `Filtry` otwiera okno z **wszystkimi kolumnami zakładki, jedna pod drugą**. Przy każdej
+kolumnie jest pole tekstowe (wpisz fragment, żeby zawęzić) oraz zwinięta lista wartości z liczbą
+pozycji przy każdej. Listę rozwija się stuknięciem; ma też przyciski `Zaznacz wszystko` i `Wyczyść`.
+
+Filtry **nie działają od razu** — zmiany czekają na zatwierdzenie:
+
+| Przycisk | Co robi |
+| --- | --- |
+| `Zatwierdź — pokaż N z M` | Nakłada ustawione filtry. Liczba na przycisku aktualizuje się na bieżąco, więc przed zatwierdzeniem wiadomo, ile wpisów zostanie. |
+| `Anuluj` | Zamyka okno i przywraca stan sprzed jego otwarcia. To samo robi stuknięcie w przyciemnione tło lub klawisz `Esc`. |
+| `Przywróć domyślne` | Ustawia filtry widoku domyślnego **tylko dla tej zakładki** i tylko w oknie — dopóki nie zatwierdzisz, nic się nie dzieje. |
+| `Wyczyść filtry` | Zdejmuje wszystkie filtry **tej zakładki** w oknie — również do zatwierdzenia. |
+
+Zatwierdzanie nie jest kaprysem: bez niego każde zaznaczenie wartości przebudowywałoby całą listę pod
+spodem, której i tak w tym momencie nie widać. Przy zatwierdzaniu lista przeliczana jest raz.
+
+Po zamknięciu okna wynik widać w pasku: zmienia się licznik `Pokazano N z M` i pojawiają się żetony
+nałożonych filtrów.
+
+### Telefon obrócony poziomo
+
+Po obróceniu telefonu strona przewija się normalnie, tak jak w pionie, a tabela wraca do zwykłej
+postaci z nagłówkiem kolumn i przewijaniem w bok — w poziomie jest na nią dość szerokości. Pasek
+narzędzi znika, bo filtry i sortowanie są wtedy dostępne z nagłówka tabeli.
 
 Na komputerze i tablecie tabela zostaje tabelą, a **nazwy kolumn i pola filtrów zostają na wierzchu**
-podczas przewijania. Wcześniej znikały po pierwszym ruchu kółkiem i przy zakładce Bronie nie dało się
-odróżnić kolumn `Obrażenia`, `DK` i `PP`.
+podczas przewijania. Przy przewijaniu nic nie prześwituje między paskiem zakładek a nagłówkiem ani
+między wierszem nazw kolumn a wierszem filtrów.
 
 ## Wyszukiwanie globalne
 
@@ -222,17 +280,27 @@ Porównywanie jest szczególnie przydatne przy broniach, pancerzach, archetypach
 
 ## Pełen Widok
 
-Przycisk `Pełen Widok` zdejmuje filtry i sortowanie ustawione w bieżącym widoku.
+Przycisk `Pełen Widok` zdejmuje filtry i sortowanie — a także wyszukiwanie i zaznaczenia — **na
+wszystkich zakładkach naraz**.
 
 Używaj go, gdy tabela pokazuje zbyt mało wyników albo nie pamiętasz, jakie filtry były aktywne.
+
+Jeżeli chcesz wyczyścić filtry tylko na jednej zakładce i nie stracić przy tym wpisanego
+wyszukiwania, użyj przycisku `Wyczyść filtry` w oknie filtrów na telefonie albo zdejmij pojedynczy
+filtr żetonem. Przyciski w oknie filtrów mają celowo inne nazwy, bo działają na jednej zakładce
+i tylko na filtrach.
 
 Ważne: `Pełen Widok` nie pokazuje samodzielnie starych wpisów Bestiariusza. Te wpisy są kontrolowane osobnym checkboxem w trybie admina.
 
 ## Widok Domyślny
 
-Przycisk `Widok Domyślny` przywraca bezpieczny, domyślny układ danych.
+Przycisk `Widok Domyślny` przywraca bezpieczny, domyślny układ danych **na wszystkich zakładkach
+naraz** i przy okazji czyści wyszukiwanie oraz zaznaczenia.
 
 Może ponownie włączyć domyślne filtry, sortowanie i ukrycia.
+
+Odpowiednikiem działającym tylko na bieżącej zakładce jest `Przywróć domyślne` w oknie filtrów na
+telefonie.
 
 Używaj go, gdy chcesz wrócić do podstawowego widoku przygotowanego do normalnej gry.
 
@@ -496,13 +564,72 @@ sideways — all the content fits the width.
 The reason is simple: the widest tab (the Bestiary) is over thirteen times wider than a phone. Reading
 a single row would take a dozen moves sideways and back.
 
-Everything works as it does on a computer: the comparison checkbox is at the top of the card, filters
-and search are on the left, sorting is done from the header — except that on a phone there is no
-header, because the column names sit next to every value.
+A card shows every field of an entry, so it can be tall and needs scrolling. That is intended: nothing
+has to be expanded to see the complete data.
+
+### Entries are grouped into categories
+
+Instead of one long list of all the cards, a sheet opens as a list of **collapsed categories**. Each
+one shows its name and the number of items, for example `BROŃ ŁAŃCUCHOWA — 10 poz.`. Tapping a category
+expands it and shows the cards; tapping again collapses it.
+
+This makes a whole sheet fit into two or three screens instead of dozens, and the spread of the data is
+visible at a glance. The categories come from the column that splits the data for a given sheet —
+usually `Typ` or `Rodzaj`.
+
+Grouping only kicks in where it helps: at least a dozen entries and at least two categories are needed.
+Short sheets stay a plain list of cards.
+
+If an entry inside a category is selected for comparison, a tick appears next to the category name even
+while it is collapsed, so the selection does not go unnoticed.
+
+### The toolbar above the list
+
+Above the card list there is a bar that **stays on screen while you scroll**. It holds:
+
+| Element | What it does |
+| --- | --- |
+| `Szukaj w tej zakładce` field | The same search as the `Szukaj (globalnie)` field in the filter panel — both write the same value, so there is no need to scroll back to the top. Once the list is narrowed, the categories holding matches expand on their own. |
+| `Filtry` | Opens the filter window described below. The green number on the button says how many filters are active. |
+| `Sortuj` | Opens the list of columns. The first tap sorts ascending, the second descending, the third removes the sorting. |
+| `Pokazano N z M` | How many entries are visible after filtering and how many there are in total. |
+| Filter chips | One per active filter. Tapping `✕` removes **that one** filter and leaves the rest alone. |
+
+A chip in a muted colour, for example `WIDOK DOMYŚLNY: TYP — 19 Z 21`, marks a filter applied by the
+default view. It answers the question "why can I not see a given entry?" — what is filtered out is
+stated outright and can be removed with a single tap.
+
+### The filter window
+
+The `Filtry` button opens a window with **every column of the sheet, one below another**. Each column
+has a text field (type a fragment to narrow it down) and a collapsed list of values with the number of
+items next to each. The list expands on tap and has `Zaznacz wszystko` and `Wyczyść` buttons.
+
+The filters **do not apply immediately** — the changes wait to be confirmed:
+
+| Button | What it does |
+| --- | --- |
+| `Zatwierdź — pokaż N z M` | Applies the filters. The number on the button updates as you go, so you know how many entries will be left before confirming. |
+| `Anuluj` | Closes the window and restores the state from before it was opened. Tapping the dimmed backdrop or pressing `Esc` does the same. |
+| `Przywróć domyślne` | Sets the default-view filters **for this sheet only** and only inside the window — nothing happens until you confirm. |
+| `Wyczyść filtry` | Removes all filters of **this sheet** inside the window — also subject to confirmation. |
+
+The confirmation step is not a whim: without it every value you tick would rebuild the whole list
+underneath, which is covered by the window at that moment anyway. With confirmation the list is
+recomputed once.
+
+After the window closes the result shows in the toolbar: the `Pokazano N z M` counter changes and chips
+for the applied filters appear.
+
+### The phone turned to landscape
+
+After turning the phone the page scrolls normally, just as in portrait, and the table returns to its
+usual form with a column header and sideways scrolling — in landscape there is enough width for it. The
+toolbar disappears, because filters and sorting are then available from the table header.
 
 On a computer and a tablet the table stays a table, and **the column names and filter fields stay on
-top** while scrolling. They used to disappear after the first scroll, and on the weapons tab there was
-no way to tell the `Obrażenia`, `DK` and `PP` columns apart.
+top** while scrolling. Nothing shows through between the tab strip and the header, or between the
+column-name row and the filter row.
 
 ## Global search
 
@@ -589,17 +716,25 @@ Comparison is especially useful for weapons, armor, archetypes, talents, and veh
 
 ## Full View
 
-`Full View` removes filters and sorting from the current view.
+`Full View` removes filters and sorting — and the search and the selection as well — **on every sheet
+at once**.
 
 Use it when the table shows too few results or you do not remember which filters are active.
+
+To clear the filters of a single sheet without losing the search you typed, use `Wyczyść filtry` in
+the phone filter window, or drop a single filter with its chip. The buttons in the filter window carry
+different names on purpose, because they act on one sheet and on the filters only.
 
 Important: `Full View` does not reveal old Bestiary entries by itself. Those entries are controlled by a separate checkbox in admin mode.
 
 ## Default View
 
-`Default View` restores the safe default data layout.
+`Default View` restores the safe default data layout **on every sheet at once** and clears the search
+and the selection along the way.
 
 It may re-enable default filters, sorting, and hidden entries.
+
+Its single-sheet counterpart is `Przywróć domyślne` in the phone filter window.
 
 Use it when you want to return to the basic view prepared for regular play.
 
