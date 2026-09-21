@@ -596,7 +596,7 @@ Dla aktywnego arkusza `selectSheet(name)`:
 ### Przyklejone nagłówki na komputerze i tablecie
 
 Oba wiersze nagłówka — nazwy kolumn i pola filtrów — zostają na wierzchu przy przewijaniu tabeli.
-Działa to na trzech rzeczach naraz i żadnej z nich nie da się pominąć:
+Działa to na czterech rzeczach naraz i żadnej z nich nie da się pominąć:
 
 **1. Łańcuch wysokości.** `position: sticky` przykleja element względem najbliższego przewijanego
 pojemnika, czyli `.tableViewport`. Ten pojemnik musi mieć ograniczoną wysokość, bo inaczej nigdy się
@@ -605,16 +605,32 @@ nie przewija — przewija się wtedy cała strona i nagłówek wyjeżdża do gó
 Bez `min-height: 0` element w układzie flex nie potrafi być niższy od swojej zawartości, nawet przy
 `flex: 1`.
 
-**2. Zmierzona wysokość pierwszego wiersza.** Drugi wiersz nagłówka przykleja się na wysokości
-pierwszego, przez `top: var(--header-row-height)`. Ta wysokość zależy od tego, czy nazwy kolumn
-zawinęły się na dwie albo trzy linie, a to jest różne dla każdej zakładki i zmienia się przy zmianie
-szerokości okna. `buildTableSkeleton()` mierzy więc wiersz i wpisuje wynik do zmiennej CSS **na
-elemencie tabeli**, a `ResizeObserver` powtarza pomiar po zmianie rozmiaru. Wartość `36px` ze
-zmiennej w `:root` jest wyłącznie zapasem na moment przed pierwszym pomiarem.
+**2. Przyklejanie całego `<thead>` jako jednego bloku.** Przykleja się `<thead>`
+(`position: sticky; top: 0; z-index: 3`), a nie każdy wiersz nagłówka z osobna — komórki mają wprost
+`position: static`, bo przyklejone przykleiłyby się względem `<thead>` i cała reguła nic by nie dała.
+Dwa wiersze przyklejane niezależnie nigdy nie stykają się idealnie: jeden ustawia się według
+zaokrąglonej liczby pikseli, drugi według rzeczywistej wysokości, a między nimi zostaje włos, przez
+który widać przewijaną treść. Przyklejenie całego bloku usuwa ten styk z definicji, więc wiersze
+poruszają się razem i nie ma czego mierzyć w JavaScripcie.
 
-**3. Nieprzezroczyste tło.** Element przyklejony musi mieć tło nieprzezroczyste, inaczej przewijane
-wiersze danych prześwitują przez nagłówek. Oba wiersze nagłówka mają `background-color: var(--panel)`
-pod swoim gradientem oraz `z-index` (3 dla nazw kolumn, 2 dla filtrów).
+**3. Brak górnej krawędzi tabeli.** `.dataTable` ma `border: 1px solid var(--div)`, a zaraz po nim
+`border-top: 0`. Jest to konieczne, żeby `top: 0` na `<thead>` działało dokładnie. Przy
+`border-collapse: collapse` obramowanie zewnętrzne należy do tabeli, nie do komórek, a przeglądarka
+rysuje je wyśrodkowane na granicy pudełka tabeli — połowa grubości wypada nad pierwszym wierszem.
+To pół piksela przesuwałoby górną krawędź `<thead>` w dół względem krawędzi obszaru przewijania i
+dawało dwie usterki naraz: ciemniejszy wiersz o częściowym pokryciu tuż nad nazwami kolumn w stanie
+nieprzewiniętym oraz przeskok napisów nagłówka o 1,5 px w chwili przyklejenia. Obu deklaracji nie
+wolno rozdzielać: `top: 0` bez `border-top: 0` otwiera z powrotem półpikselowe pasemko, przez które
+widać przejeżdżający wiersz. Górną krawędź tabeli zamykają zamiast tego dwie stykające się linie tej
+samej barwy `var(--div)`: `.tabs{border-bottom}` i `.tableFrame{border-top}`. Boki i dół tabeli mają
+obramowanie bez zmian. Z tego samego powodu `.tableViewport` nie ma górnego marginesu wewnętrznego
+(`padding: 0 4px 4px`) — element przyklejony zatrzymuje się na wewnętrznej krawędzi treści pojemnika,
+więc margines górny odsuwałby nagłówek o swoją wysokość.
+
+**4. Nieprzezroczyste tło.** Element przyklejony musi mieć tło nieprzezroczyste, inaczej przewijane
+wiersze danych prześwitują przez nagłówek. `<thead>` ma `background-color: var(--panel)`, a oba
+wiersze nagłówka mają ten sam kolor pod swoim gradientem oraz `z-index` (3 dla nazw kolumn, 2 dla
+filtrów).
 
 ### Układ kart na telefonie
 
@@ -1446,7 +1462,7 @@ For the active sheet, `selectSheet(name)`:
 ### Sticky headers on computer and tablet
 
 Both header rows — the column names and the filter fields — stay on top while the table scrolls. This
-rests on three things at once and none of them can be skipped:
+rests on four things at once and none of them can be skipped:
 
 **1. The height chain.** `position: sticky` sticks an element relative to the nearest scrolling
 container, which is `.tableViewport`. That container must have a bounded height, otherwise it never
@@ -1454,16 +1470,32 @@ scrolls — the whole page scrolls instead and the header travels off the top wi
 `height: 100dvh`, and `.main`, `.workspace`, `.tableWrap` and `.tableFrame` have `min-height: 0`.
 Without `min-height: 0` a flex item cannot be shorter than its content, even with `flex: 1`.
 
-**2. The measured height of the first row.** The second header row sticks at the height of the first
-one, through `top: var(--header-row-height)`. That height depends on whether the column names wrapped
-onto two or three lines, which differs per tab and changes when the window is resized. So
-`buildTableSkeleton()` measures the row and writes the result into a CSS variable **on the table
-element**, and a `ResizeObserver` repeats the measurement after a resize. The `36px` value in the
-`:root` variable is only a fallback for the moment before the first measurement.
+**2. Sticking the whole `<thead>` as one block.** It is `<thead>` that sticks
+(`position: sticky; top: 0; z-index: 3`), not each header row separately — the cells are explicitly
+`position: static`, because sticky cells would stick relative to `<thead>` and the rule would have no
+effect. Two independently stuck rows never meet exactly: one is placed by a rounded pixel count and
+the other by its real height, leaving a hairline that lets the scrolling content through. Sticking the
+whole block removes that seam by construction, so the rows move together and there is nothing to
+measure in JavaScript.
 
-**3. An opaque background.** A sticky element needs an opaque background, otherwise the scrolling data
-rows show through the header. Both header rows carry `background-color: var(--panel)` under their
-gradient plus a `z-index` (3 for the column names, 2 for the filters).
+**3. No top border on the table.** `.dataTable` carries `border: 1px solid var(--div)` immediately
+followed by `border-top: 0`. This is what makes `top: 0` on `<thead>` exact. With
+`border-collapse: collapse` the outer border belongs to the table, not to the cells, and the browser
+paints it centred on the table's box edge — half its width falls above the first row. That half pixel
+would push the top edge of `<thead>` below the edge of the scrollport and produce two defects at once:
+a partially covered, darker row right above the column names while the table is unscrolled, and a
+1.5 px jump of the header text at the moment it sticks. The two declarations must not be separated:
+`top: 0` without `border-top: 0` reopens the half-pixel strip that lets the passing row show through.
+The table's top edge is closed instead by two adjacent lines of the same `var(--div)` colour:
+`.tabs{border-bottom}` and `.tableFrame{border-top}`. The table's sides and bottom keep their border.
+For the same reason `.tableViewport` has no top padding (`padding: 0 4px 4px`) — a sticky element
+stops at the container's inner content edge, so top padding would push the header down by its own
+height.
+
+**4. An opaque background.** A sticky element needs an opaque background, otherwise the scrolling data
+rows show through the header. `<thead>` carries `background-color: var(--panel)`, and both header rows
+carry the same colour under their gradient plus a `z-index` (3 for the column names, 2 for the
+filters).
 
 ### Card layout on a phone
 

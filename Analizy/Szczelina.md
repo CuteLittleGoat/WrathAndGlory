@@ -11,8 +11,8 @@
 | **Poza zakresem** | Zmiany z commita `409cde3` (filtr globalny, barwy sygnałów, własne pole wyboru) — użytkownik wyraźnie zastrzegł, żeby ich nie ruszać. Widok kart na telefonie (`@media (max-width: 720px)`) — tam `thead` jest ukryty, więc problem nie występuje |
 | **Metoda** | Pomiar geometrii (`getBoundingClientRect`) oraz sonda pikselowa: zrzut pasma nagłówka i odczyt średniej barwy każdego wiersza device-pikseli; kontrolowane wyłączanie pojedynczych deklaracji CSS i kolorowanie poszczególnych elementów, żeby ustalić, który element maluje który piksel; test przecieku z wierszami przemalowanymi na jaskrawą czerwień |
 | **Konfiguracje testowe** | 8 rozmiarów okna od 1280×610 do 1920×1080, skalowanie 100%, 125%, 150% i 200%, 4–5 pozycji przewinięcia |
-| **Stan repozytorium** | `HEAD` = `38d7668` (gałąź `claude/charming-meitner-45xuh7`, zsynchronizowana z `main`) |
-| **Zmiany w kodzie** | **Żadne.** Ten dokument tylko opisuje i proponuje. Użytkownik wyraźnie zastrzegł, żeby nie ruszać kodu aplikacji do czasu omówienia wszystkich wątpliwości (wiadomość 4) |
+| **Stan repozytorium w chwili diagnozy** | `HEAD` = `38d7668` (gałąź `claude/charming-meitner-45xuh7`, zsynchronizowana z `main`) |
+| **Zmiany w kodzie** | **Wdrożone.** Rekomendacja z rozdz. 8.1 została zatwierdzona przez użytkownika (wiadomość 5) i wprowadzona w `DataVault/style.css`. Przebieg i weryfikacja: rozdz. 11 |
 | **Analiza siostrzana** | `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdział 14 — pierwszy opis szczelin w przyklejonym nagłówku |
 
 ### Główny wniosek
@@ -26,7 +26,9 @@ Zostały dwa objawy, oba mające **to samo źródło**: górne obramowanie tabel
 
 Rekomendowane rozwiązanie (rozdz. 8) usuwa **oba** objawy jednocześnie, bo likwiduje półpikselowe przesunięcie zamiast je maskować. Zmierzone: przesunięcie nagłówka 0,00 px i zero przeciekających pikseli we wszystkich 8 konfiguracjach.
 
-Rekomendacja ma swoją cenę: nad nazwami kolumn zostaną dwie poziome linie zamiast trzech. Cena została policzona w rozdz. 8.3, a w **rozdz. 8.4 opisana prostym językiem, bez żargonu** — razem z pytaniem, na które użytkownik musi odpowiedzieć przed wdrożeniem.
+Rekomendacja ma swoją cenę: nad nazwami kolumn zostają dwie poziome linie zamiast trzech. Cena została policzona w rozdz. 8.3, a w **rozdz. 8.4 opisana prostym językiem, bez żargonu**.
+
+> **Stan na dziś: rekomendacja została zatwierdzona przez użytkownika i wdrożona.** Rozdziały 3–7 opisują diagnozę i stan sprzed wdrożenia — są zapisem tego, jak ustalono przyczynę, i celowo zostają w dokumencie. Aktualny stan kodu wraz z pomiarami kontrolnymi opisuje **rozdz. 11**.
 
 ---
 
@@ -53,6 +55,12 @@ Zapisane bez skracania, zgodnie z zasadą 10 z `AGENTS.md`.
 > Wyjaśnij mi co dokładnie znaczy "Zmiana wyglądu nieprzewiniętej tabeli" oraz o co dokładnie chodzi z kosztem wizualnym w 8.3
 > Napisz to prostym językiem dla osoby bez wiedzy informatycznej.
 > Zaktualizuj analizę (pisz tylko po polsku). Nie zmieniaj jeszcze kodu aplikacji póki wszystkiego nie wyjaśnimy.
+
+> **Wiadomość 5 — zgoda na wdrożenie**
+>
+> czy zgoda na to, żeby zielona linia nad nazwami kolumn była cieńsza o jeden punkt ekranu — w zamian za trwałe zniknięcie ciemnej szczeliny i za to, żeby nazwy kolumn przestały drgać przy przewijaniu?
+>
+> * Masz moją zgodę. Wprowadź zmiany w kodzie. Zaktualizuj analizę i dokumentację.
 
 ### Materiał dowodowy od użytkownika
 
@@ -288,7 +296,7 @@ Widać tu ten sam wzór co w rozdziale 5: przeciek pojawiał się tylko przy wys
 
 Przeciek zamknięty w komplecie, ale przesunięcie nagłówka urosło trzykrotnie i występuje wszędzie.
 
-**Wariant F — propozycja** (`.dataTable{border-top:0}` + `thead{top:0}`):
+**Wariant F — wdrożony** (`.dataTable{border-top:0}` + `thead{top:0}`):
 
 | Okno | Skalowanie | Przesunięcie nagłówka | Przeciek |
 |---|---|---|---|
@@ -490,8 +498,94 @@ Jeżeli tak — wdrażane jest rozwiązanie z rozdziału 8.1. Jeżeli nie — zo
 
 ## 10. Następne kroki
 
-1. **Decyzja użytkownika** co do kosztu wizualnego z rozdz. 8.3 — pytanie postawione prostym językiem znajduje się w rozdz. 8.4.6: czy zgoda na to, żeby nad nagłówkiem były dwie linie poziome zamiast trzech, w zamian za brak szczeliny i brak przeskoku nagłówka.
-2. Po akceptacji: wdrożenie zmiany z rozdz. 8.1 (dwie deklaracje w `DataVault/style.css` plus wymiana komentarza dwujęzycznego przy `thead{top}`).
-3. Aktualizacja `DetaleLayout.md` — obecnie opisuje rozwiązanie z `top:-1px` i zawiera dwa wiersze w tabelach „Zmierzony efekt" dotyczące tej poprawki. Zgodnie z zasadami 8 i 15 z `AGENTS.md` musi opisywać stan aktualny, nie historię.
+1. ~~**Decyzja użytkownika** co do kosztu wizualnego z rozdz. 8.3.~~ **Wykonane** — zgoda udzielona w wiadomości 5.
+2. ~~Wdrożenie zmiany z rozdz. 8.1.~~ **Wykonane** — patrz rozdz. 11.
+3. ~~Aktualizacja `DetaleLayout.md`.~~ **Wykonane** — patrz rozdz. 11.3.
 4. Sprawdzenie na sprzęcie użytkownika w obu trybach — pełny ekran i okno — bo próg zapytania medialnego `max-height: 760px` wypada w innym miejscu przy każdym ustawieniu skalowania w Windows.
 5. Do rozważenia niezależnie od powyższego: próg `max-height: 760px` przełącza pasek górny skokowo i to on odpowiada za to, że układ raz wypada na pełnym pikselu, a raz na ułamku. Nie jest to błąd, ale warto o tym pamiętać przy każdej przyszłej zmianie wysokości paska górnego — przesunięcie progu przesunie też granicę, na której zmienia się zachowanie subpikselowe.
+
+---
+
+## 11. Wdrożenie i weryfikacja
+
+Użytkownik zatwierdził koszt wizualny z rozdz. 8.3 (wiadomość 5), więc rekomendacja z rozdz. 8.1 została wprowadzona.
+
+### 11.1 Co zmieniono w kodzie
+
+Jeden plik: `DataVault/style.css`, dwie deklaracje.
+
+```css
+.dataTable{
+  border:1px solid var(--div);
+  border-top:0;              /* DODANE — kasuje przyczynę półpikselowego przesunięcia */
+  ...
+}
+
+.dataTable thead{
+  position:sticky;
+  top:0;                     /* ZMIENIONE z -1px */
+  z-index:3;
+  background-color:var(--panel);
+}
+```
+
+Kolejność ma znaczenie: `border-top:0` musi stać **po** skrócie `border`, bo inaczej skrót przywróci górną krawędź.
+
+Wymieniono też komentarze dwujęzyczne, zgodnie z zasadą 7 z `AGENTS.md`:
+
+- przy `.dataTable` dodano komentarz wyjaśniający, dlaczego brak górnej krawędzi jest celowy i czego nie wolno zrobić (przywrócić jej ani rozdzielić obu deklaracji);
+- przy `.dataTable thead{top}` zastąpiono opis rozwiązania z `-1px` opisem stanu aktualnego;
+- w komentarzu blokowym nad `.dataTable thead` poprawiono zdanie o „obszarze scalonych obramowań tabeli", bo scalonego obramowania na górnej krawędzi już nie ma.
+
+### 11.2 Pomiary kontrolne
+
+Pomiar powtórzono tą samą metodą co w rozdziale 7, na silniku Chromium, na strukturze DOM identycznej z tą, którą buduje `buildTableSkeleton()`. Dla każdej konfiguracji zmierzono trzy rzeczy: położenie górnej krawędzi `<thead>` względem krawędzi treści obszaru przewijania, przesunięcie nagłówka przy pięciu pozycjach przewinięcia (1, 37, 120, 400, 900 px) oraz przeciek (liczba czerwonych pikseli nad nagłówkiem po przemalowaniu wierszy na jaskrawą czerwień, zsumowana z czterech pozycji przewinięcia).
+
+| Okno | Skalowanie | `thead` vs krawędź — przed | `thead` vs krawędź — po | Przesunięcie — przed | Przesunięcie — po | Przeciek po |
+|---|---|---|---|---|---|---|
+| 1536×730 | 100% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+| 1536×864 | 100% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+| 1920×1080 | 100% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+| 1366×768 | 100% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+| 1536×864 | 125% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+| 1536×864 | 150% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+| 1280×610 | 100% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+| 1280×720 | 200% | 0,50 px | **0,00 px** | −1 · −1,5 · −1,5 · −1,5 · −1,5 px | **0 · 0 · 0 · 0 · 0 px** | 0 |
+
+Kolumna „przed" jest tu istotna jako **kontrola negatywna**: ten sam harness uruchomiony na kodzie sprzed zmiany odtworzył półpikselowe przesunięcie i przeskok −1,5 px co do liczby, zgodnie z rozdziałami 3 i 6.2. Gdyby harness był na te zjawiska ślepy, zera w kolumnie „po" nic by nie znaczyły.
+
+Profil barwny pasma nagłówka (średnia kanału zielonego w kolejnych wierszach device-pikseli, licząc od tła nad paskiem zakładek):
+
+| Okno | Ułamek krawędzi | Przed, `scrollTop = 0` | Przed, `scrollTop = 400` | Po, `scrollTop = 0` | Po, `scrollTop = 400` |
+|---|---|---|---|---|---|
+| 1536×700 | 0,000 | 6 · 40 · 36 · 45 · **11** · 15 | 6 · 40 · 36 · 15 · 15 · 15 | 6 · 40 · 36 · 16 · 15 · 15 | 6 · 40 · 36 · 16 · 15 · 15 |
+| 1366×700 | 0,000 | 6 · 40 · 36 · 45 · **11** · 15 | 6 · 40 · 36 · 15 · 15 · 15 | 6 · 40 · 36 · 16 · 15 · 15 | 6 · 40 · 36 · 16 · 15 · 15 |
+| 1920×700 | 0,000 | 6 · 40 · 36 · 45 · **11** · 15 | 6 · 40 · 36 · 15 · 15 · 15 | 6 · 40 · 36 · 16 · 15 · 15 | 6 · 40 · 36 · 16 · 15 · 15 |
+| 1536×864 | 0,813 | 6 · 40 · 36 · 45 · 15 · 15 | 6 · 40 · 36 · 15 · 15 · 15 | 6 · 40 · 36 · 15 · 15 · 15 | 6 · 40 · 36 · 15 · 15 · 15 |
+| 1920×864 | 0,813 | 6 · 40 · 36 · 45 · 15 · 15 | 6 · 40 · 36 · 15 · 15 · 15 | 6 · 40 · 36 · 15 · 15 · 15 | 6 · 40 · 36 · 15 · 15 · 15 |
+
+Trzy rzeczy do odczytania z tej tabeli:
+
+1. **Ciemny wiersz `11` zniknął** przy każdej wysokości okna, w której wcześniej występował. To objaw 1 z rozdziału 5.
+2. **Profil „po" jest identyczny w stanie nieprzewiniętym i po przewinięciu**, w każdej konfiguracji. Wcześniej te dwa profile różniły się od siebie — to właśnie migotanie linii opisane w rozdziale 6.3.
+3. **Koszt wizualny wypadł dokładnie tak, jak policzono w rozdz. 8.3**: wartość `45` (własne obramowanie tabeli) zmieniła się na `16`, czyli na praktycznie nieodróżnialną od tła nagłówka o wartości `15`. Nic poza tą jedną wartością się nie zmieniło.
+
+Warto zauważyć wiersz `1536×864` i `1920×864`: tam przed zmianą ciemnej szczeliny nie było, a linia `45` i tak znika. To są konfiguracje, w których użytkownik płaci koszt wizualny, nie odbierając w zamian zniknięcia szczeliny — ale nadal odbiera brak przeskoku nagłówka i brak migotania linii przy przewijaniu. Argument z rozdz. 8.4.5 pozostaje w mocy: wartość `45` znikała tam i tak po pierwszym ruchu kółka.
+
+### 11.3 Zaktualizowana dokumentacja
+
+| Plik | Co zmieniono |
+|---|---|
+| `DataVault/style.css` | Sama zmiana plus trzy komentarze dwujęzyczne (rozdz. 11.1) |
+| `DetaleLayout.md` | Opis reguł `.dataTable` i `.dataTable thead` w sekcji „Komputer i tablet", w obu wersjach językowych. Do tabel „Zmierzony efekt" / „Measured effect" dopisano dwa wiersze: ciemny wiersz nad nazwami kolumn i przesunięcie nagłówka |
+| `DataVault/docs/Documentation.md` | Sekcja „Przyklejone nagłówki na komputerze i tablecie" w obu wersjach językowych. Przy okazji usunięto opis mechanizmu, którego w kodzie już nie ma: punkt o zmiennej `--header-row-height` i mierzącym ją `ResizeObserverze` opisywał rozwiązanie zastąpione przy szczelinie B (rozdz. 4.2). Sekcja ma teraz cztery punkty zamiast trzech: łańcuch wysokości, przyklejanie całego `<thead>`, brak górnej krawędzi tabeli, nieprzezroczyste tło |
+| `DataVault/docs/README.md` | Opis zachowania tabeli przy przewijaniu w obu wersjach językowych — dopisano, że nazwy kolumn stoją nieruchomo, i opisano, co użytkownik widzi nad nagłówkiem |
+
+### 11.4 Co zostało do sprawdzenia po stronie użytkownika
+
+Pomiary wykonano na silniku Chromium w środowisku bezgłowym. Zostają dwie rzeczy, których nie da się sprawdzić zdalnie:
+
+1. **Obejrzenie wyniku na sprzęcie użytkownika w obu trybach** — pełny ekran i okno. Próg zapytania medialnego `max-height: 760px` wypada w innym miejscu przy każdym ustawieniu skalowania w Windows, a to właśnie ten próg decydował o tym, czy szczelina była widoczna (rozdz. 5.1).
+2. **Firefox**, jeżeli jest używany. Model scalonych obramowań jest w standardzie CSS, więc zachowanie powinno być takie samo, ale zaokrąglanie subpikselowe bywa różne między silnikami (rozdz. 9).
+
+Punkt 5 z rozdziału 10 — uwaga o progu `max-height: 760px` przy przyszłych zmianach wysokości paska górnego — pozostaje aktualny niezależnie od tej poprawki.

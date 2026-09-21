@@ -222,7 +222,10 @@ narzędzi znika, bo filtry i sortowanie są wtedy dostępne z nagłówka tabeli.
 
 Na komputerze i tablecie tabela zostaje tabelą, a **nazwy kolumn i pola filtrów zostają na wierzchu**
 podczas przewijania. Przy przewijaniu nic nie prześwituje między paskiem zakładek a nagłówkiem ani
-między wierszem nazw kolumn a wierszem filtrów.
+między wierszem nazw kolumn a wierszem filtrów, a same nazwy kolumn stoją nieruchomo — nie drgają ani
+nie przesuwają się w chwili, gdy zaczynasz przewijać. Nad nazwami kolumn widać dwie stykające się,
+cienkie zielone linie: dolną krawędź paska zakładek i górną krawędź ramki tabeli. Wyglądają jak jedna
+nieco grubsza linia i wyglądają tak samo niezależnie od tego, czy tabela jest przewinięta.
 
 ## Wyszukiwanie globalne
 
@@ -700,7 +703,10 @@ toolbar disappears, because filters and sorting are then available from the tabl
 
 On a computer and a tablet the table stays a table, and **the column names and filter fields stay on
 top** while scrolling. Nothing shows through between the tab strip and the header, or between the
-column-name row and the filter row.
+column-name row and the filter row, and the column names themselves hold still — they do not jitter or
+shift at the moment you start scrolling. Above the column names you can see two adjacent thin green
+lines: the bottom edge of the tab strip and the top edge of the table frame. They read as one slightly
+thicker line, and they look the same whether or not the table is scrolled.
 
 ## Global search
 

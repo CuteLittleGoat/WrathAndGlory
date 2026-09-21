@@ -382,33 +382,56 @@ code{color:var(--code)}
   border-collapse:collapse;
   font-size:13px;
   border:1px solid var(--div);
+  /* --- Brak górnej krawędzi tabeli / No top border on the table ---
+     PL: `border-top:0` jest celowy i jest to jedyne miejsce, w którym da się usunąć przyczynę
+     szczeliny w paśmie nagłówka. Przy `border-collapse: collapse` obramowanie zewnętrzne należy do
+     tabeli, nie do komórek, a przeglądarka rysuje je wyśrodkowane na granicy pudełka tabeli — połowa
+     grubości wypada nad pierwszym wierszem, połowa pod nim. To pół piksela przesuwa górną krawędź
+     <thead> względem krawędzi obszaru przewijania i daje dwie usterki naraz: ciemny wiersz o
+     częściowym pokryciu tuż nad nazwami kolumn oraz przeskok napisów nagłówka w chwili przyklejenia.
+     Bez górnej krawędzi nie ma scalonego obramowania do podzielenia na pół, więc nagłówek stoi
+     dokładnie na krawędzi obszaru przewijania i obie usterki znikają u źródła, a nie pod maską.
+     Tabela jest nadal domknięta od góry dwiema stykającymi się liniami tej samej barwy `var(--div)`:
+     `.tabs{border-bottom}` i `.tableFrame{border-top}`. Deklaracja musi stać PO skrócie `border`,
+     bo inaczej skrót przywróci górną krawędź. Boki i dół tabeli zostają bez zmian.
+     EN: `border-top:0` is deliberate and is the only place where the cause of the slit in the header
+     band can be removed. With `border-collapse: collapse` the outer border belongs to the table, not
+     to the cells, and the browser paints it centred on the table's box edge — half its width falls
+     above the first row, half below. That half pixel offsets the top edge of <thead> from the edge of
+     the scrollport and produces two defects at once: a partially covered, darker row right above the
+     column names, and a jump of the header text at the moment it sticks. With no top border there is
+     no collapsed border to halve, so the header sits exactly on the scrollport edge and both defects
+     disappear at the source rather than under a cover. The table is still closed at the top by two
+     adjacent lines of the same `var(--div)` colour: `.tabs{border-bottom}` and
+     `.tableFrame{border-top}`. The declaration must come AFTER the `border` shorthand, otherwise the
+     shorthand puts the top border back. The table's sides and bottom are unchanged. */
+  border-top:0;
   box-shadow:var(--glow);
 }
 /* --- Przyklejony nagłówek jako jeden blok / The sticky header as a single block ---
    PL: Przykleja się cały <thead>, a nie każdy wiersz z osobna. Dwa wiersze przyklejane niezależnie
    nigdy nie zetkną się idealnie, bo jeden ustawia się według zaokrąglonej liczby pikseli, a drugi
    według rzeczywistej wysokości — między nimi zostaje włos, przez który widać przewijaną treść.
-   Nieprzezroczyste tło na <thead> zamyka całe pasmo nagłówka, łącznie z obszarem scalonych
-   obramowań tabeli.
+   Nieprzezroczyste tło na <thead> zamyka całe pasmo nagłówka od jego górnej krawędzi w dół.
    EN: The whole <thead> is sticky instead of each row separately. Two independently stuck rows never
    meet exactly, because one is placed by a rounded pixel count and the other by its real height,
    leaving a hairline that lets the scrolling content through. An opaque background on <thead> seals
-   the entire header band, including the area of the table's collapsed borders. */
+   the entire header band from its top edge downwards. */
 .dataTable thead{
   position:sticky;
-  /* PL: -1px, a nie 0. Przy `border-collapse: collapse` obramowanie górnej krawędzi tabeli należy do
-     tabeli, nie do komórek, więc tło nagłówka zaczyna się o jego grubość niżej niż krawędź obszaru
-     przewijania. W tym jednopikselowym pasemku widać przejeżdżający wiersz. Przyklejenie nagłówka
-     o piksel wyżej zasłania je jego własnym, nieprzezroczystym tłem. Traci się przy tym 1 px
-     górnego marginesu wewnętrznego komórek (mają go 10 px), więc nie widać żadnej różnicy, a w
-     stanie nieprzewiniętym reguła nie działa w ogóle.
-     EN: -1px, not 0. With `border-collapse: collapse` the table's top border belongs to the table,
-     not to the cells, so the header background starts one border-width below the edge of the
-     scrollport. That one-pixel strip shows the row passing underneath. Sticking the header a pixel
-     higher covers it with the header's own opaque background. It costs 1 px of the cells' top
-     padding (they have 10 px), so nothing looks different, and while the table is unscrolled the
-     rule does not apply at all. */
-  top:-1px;
+  /* PL: `top:0`, czyli nagłówek zatrzymuje się dokładnie na krawędzi obszaru przewijania. Wartość
+     ujemna nie jest tu potrzebna, bo `border-top:0` na `.dataTable` (patrz komentarz przy tej regule)
+     sprawia, że górna krawędź <thead> już w stanie nieprzewiniętym pokrywa się z tą krawędzią co do
+     piksela. Dzięki temu przyklejenie nie przesuwa nagłówka ani o ułamek piksela i napisy nie drgają
+     przy przewijaniu. Obu deklaracji nie wolno rozdzielać: `top:0` bez `border-top:0` otwiera z
+     powrotem półpikselowe pasemko, przez które widać przejeżdżający wiersz.
+     EN: `top:0`, so the header stops exactly at the edge of the scrollport. A negative value is not
+     needed here, because `border-top:0` on `.dataTable` (see the comment on that rule) makes the top
+     edge of <thead> coincide with that edge to the pixel even while the table is unscrolled. Sticking
+     therefore moves the header by not even a fraction of a pixel, and its text does not jitter on
+     scroll. The two declarations must not be separated: `top:0` without `border-top:0` reopens the
+     half-pixel strip that lets the passing row show through. */
+  top:0;
   z-index:3;
   background-color:var(--panel);
 }

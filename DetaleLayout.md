@@ -515,7 +515,7 @@ Poniżej pełna lista **1:1**.
 ### 6) Wymagania układu (layout)
 - **Siatka główna**: `main` jest gridem z kolumnami `360px` (panel filtrów) i `1fr` (workspace).
 - **Responsywność**: poniżej `980px` layout przechodzi na jedną kolumnę (panel nad tabelą).
-- **Sticky nagłówki**: nagłówki tabeli są sticky (`position: sticky`) z offsetem drugiego wiersza `top: var(--header-row-height)`.
+- **Sticky nagłówki**: przykleja się cały `<thead>` (`position: sticky; top: 0`), a nie każdy wiersz nagłówka z osobna — komórki mają `position: static`. Wymaga to `border-top: 0` na `.dataTable`, inaczej scalone obramowanie górnej krawędzi przesuwa nagłówek o pół piksela.
 - **Checkbox w panelu filtrów**: `.checkboxRow` ma uppercase i kolor bazowy `--text2`, natomiast opis `.checkboxLabel` jest jaśniejszy (`color: var(--code)`, `opacity: .9`). Wariant `.checkboxRow--combat` wymusza czerwony tekst `--red` i czerwony akcent (`accent-color: var(--red)`).
 
 ### 7) Stosowanie tych zasad w innych zakładkach
@@ -1262,13 +1262,20 @@ Przewija się **panel tabeli**, nie cała strona. Nazwy kolumn i pola filtrów z
   pojemnik. Brak marginesu u góry jest celowy: element przyklejony zatrzymuje się na wewnętrznej
   krawędzi treści pojemnika, więc margines górny odsuwałby nagłówek o swoją wysokość i zostawiał
   szczelinę, przez którą widać przewijane wiersze,
-- `.dataTable thead`: `position: sticky; top: -1px; z-index: 3; background-color: var(--panel)` —
-  przykleja się **cały nagłówek jako jeden blok**. `-1px`, a nie `0`, bo przy
-  `border-collapse: collapse` obramowanie górnej krawędzi tabeli należy do tabeli, nie do komórek,
-  więc tło nagłówka zaczynałoby się o jego grubość niżej niż krawędź obszaru przewijania — i w tym
-  jednopikselowym pasemku, tuż pod paskiem zakładek, widać było przejeżdżający wiersz. Kosztem jest
-  1 px górnego marginesu wewnętrznego komórek, które mają go 10 px; w stanie nieprzewiniętym reguła
-  nie działa w ogóle,
+- `.dataTable`: `border: 1px solid var(--div)` z następującym po nim `border-top: 0` — tabela nie ma
+  własnej górnej krawędzi. Przy `border-collapse: collapse` obramowanie zewnętrzne należy do tabeli,
+  nie do komórek, a przeglądarka rysuje je wyśrodkowane na granicy pudełka, więc połowa grubości
+  wypada nad pierwszym wierszem. To pół piksela przesuwałoby górną krawędź `<thead>` względem krawędzi
+  obszaru przewijania i dawało dwie usterki naraz: ciemniejszy wiersz o częściowym pokryciu tuż nad
+  nazwami kolumn oraz przeskok napisów nagłówka w chwili przyklejenia. Górną krawędź tabeli zamykają
+  zamiast tego dwie stykające się linie tej samej barwy `var(--div)`: `.tabs{border-bottom}` i
+  `.tableFrame{border-top}`. Boki i dół tabeli mają obramowanie bez zmian,
+- `.dataTable thead`: `position: sticky; top: 0; z-index: 3; background-color: var(--panel)` —
+  przykleja się **cały nagłówek jako jeden blok**, zatrzymując się dokładnie na krawędzi obszaru
+  przewijania. Dzięki `border-top: 0` górna krawędź `<thead>` pokrywa się z tą krawędzią co do piksela
+  już w stanie nieprzewiniętym, więc przyklejenie nie przesuwa nagłówka ani o ułamek piksela i napisy
+  nie drgają przy przewijaniu. Obu deklaracji nie wolno rozdzielać: `top: 0` bez `border-top: 0`
+  otwiera z powrotem półpikselowe pasemko, przez które widać przejeżdżający wiersz,
 - `.dataTable thead th`: `position: static`, `background-color: var(--panel)` pod gradientem
   `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))`,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` pod jednolitym
@@ -1372,6 +1379,8 @@ tabeli obejmującego całą listę kart.
 | --- | --- | --- |
 | Szczelina nad przyklejonym nagłówkiem (przewinięta tabela) | 4,00 px | 0,00 px |
 | Pasmo przewijanego wiersza widoczne pod paskiem zakładek | 1 px (1,3 px przy skalowaniu 150%) | brak |
+| Ciemny wiersz o częściowym pokryciu nad nazwami kolumn (nieprzewinięta tabela) | 1 px przy oknie wysokości do 760 px | brak przy każdej wysokości okna |
+| Przesunięcie nagłówka w chwili przyklejenia | 1,5 px w górę | 0,00 px |
 | Szczelina między wierszem nazw a wierszem filtrów | 0,31 px | 0,00 px |
 | Treść panelu filtrów poza widokiem (1366 × 638, admin) | 283 px, nieosiągalne | osiągalne paskiem przewijania panelu |
 | Pasek górny w trybie admina przy niskim oknie | 179 px | 87 px |
@@ -1395,13 +1404,20 @@ The **table panel** scrolls, not the whole page. Column names and filter fields 
   missing top padding is deliberate: a sticky element stops at the container's inner content edge, so
   top padding would push the header down by its own height and leave a slit that lets the scrolling
   rows show through,
-- `.dataTable thead`: `position: sticky; top: -1px; z-index: 3; background-color: var(--panel)` — the
-  **whole header sticks as one block**. `-1px` rather than `0`, because with
-  `border-collapse: collapse` the table's top border belongs to the table, not to the cells, so the
-  header background would start one border-width below the edge of the scrollport — and that
-  one-pixel strip, right under the tab bar, showed the row passing underneath. It costs 1 px of the
-  cells' top padding, of which they have 10 px; while the table is unscrolled the rule does not apply
-  at all,
+- `.dataTable`: `border: 1px solid var(--div)` followed by `border-top: 0` — the table has no top
+  border of its own. With `border-collapse: collapse` the outer border belongs to the table, not to
+  the cells, and the browser paints it centred on the box edge, so half its width falls above the
+  first row. That half pixel would offset the top edge of `<thead>` from the edge of the scrollport
+  and produce two defects at once: a partially covered, darker row right above the column names, and a
+  jump of the header text at the moment it sticks. The table's top edge is closed instead by two
+  adjacent lines of the same `var(--div)` colour: `.tabs{border-bottom}` and `.tableFrame{border-top}`.
+  The table's sides and bottom keep their border,
+- `.dataTable thead`: `position: sticky; top: 0; z-index: 3; background-color: var(--panel)` — the
+  **whole header sticks as one block**, stopping exactly at the edge of the scrollport. Thanks to
+  `border-top: 0` the top edge of `<thead>` coincides with that edge to the pixel even while the table
+  is unscrolled, so sticking moves the header by not even a fraction of a pixel and its text does not
+  jitter on scroll. The two declarations must not be separated: `top: 0` without `border-top: 0`
+  reopens the half-pixel strip that lets the passing row show through,
 - `.dataTable thead th`: `position: static`, `background-color: var(--panel)` under the
   `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))` gradient,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` under a flat
@@ -1504,6 +1520,8 @@ dead area halfway down the screen) and the table area spanning the whole card li
 | --- | --- | --- |
 | Slit above the sticky header (scrolled table) | 4.00 px | 0.00 px |
 | Strip of a scrolling row visible under the tab bar | 1 px (1.3 px at 150% scaling) | none |
+| Partially covered darker row above the column names (unscrolled table) | 1 px on windows up to 760 px tall | none at any window height |
+| Header shift at the moment it sticks | 1.5 px upwards | 0.00 px |
 | Slit between the column-name row and the filter row | 0.31 px | 0.00 px |
 | Filter panel content out of view (1366 × 638, admin) | 283 px, unreachable | reachable with the panel scrollbar |
 | Admin top bar on a short window | 179 px | 87 px |
