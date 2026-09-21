@@ -396,7 +396,19 @@ code{color:var(--code)}
    the entire header band, including the area of the table's collapsed borders. */
 .dataTable thead{
   position:sticky;
-  top:0;
+  /* PL: -1px, a nie 0. Przy `border-collapse: collapse` obramowanie górnej krawędzi tabeli należy do
+     tabeli, nie do komórek, więc tło nagłówka zaczyna się o jego grubość niżej niż krawędź obszaru
+     przewijania. W tym jednopikselowym pasemku widać przejeżdżający wiersz. Przyklejenie nagłówka
+     o piksel wyżej zasłania je jego własnym, nieprzezroczystym tłem. Traci się przy tym 1 px
+     górnego marginesu wewnętrznego komórek (mają go 10 px), więc nie widać żadnej różnicy, a w
+     stanie nieprzewiniętym reguła nie działa w ogóle.
+     EN: -1px, not 0. With `border-collapse: collapse` the table's top border belongs to the table,
+     not to the cells, so the header background starts one border-width below the edge of the
+     scrollport. That one-pixel strip shows the row passing underneath. Sticking the header a pixel
+     higher covers it with the header's own opaque background. It costs 1 px of the cells' top
+     padding (they have 10 px), so nothing looks different, and while the table is unscrolled the
+     rule does not apply at all. */
+  top:-1px;
   z-index:3;
   background-color:var(--panel);
 }

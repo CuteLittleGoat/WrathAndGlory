@@ -1262,8 +1262,13 @@ Przewija się **panel tabeli**, nie cała strona. Nazwy kolumn i pola filtrów z
   pojemnik. Brak marginesu u góry jest celowy: element przyklejony zatrzymuje się na wewnętrznej
   krawędzi treści pojemnika, więc margines górny odsuwałby nagłówek o swoją wysokość i zostawiał
   szczelinę, przez którą widać przewijane wiersze,
-- `.dataTable thead`: `position: sticky; top: 0; z-index: 3; background-color: var(--panel)` —
-  przykleja się **cały nagłówek jako jeden blok**,
+- `.dataTable thead`: `position: sticky; top: -1px; z-index: 3; background-color: var(--panel)` —
+  przykleja się **cały nagłówek jako jeden blok**. `-1px`, a nie `0`, bo przy
+  `border-collapse: collapse` obramowanie górnej krawędzi tabeli należy do tabeli, nie do komórek,
+  więc tło nagłówka zaczynałoby się o jego grubość niżej niż krawędź obszaru przewijania — i w tym
+  jednopikselowym pasemku, tuż pod paskiem zakładek, widać było przejeżdżający wiersz. Kosztem jest
+  1 px górnego marginesu wewnętrznego komórek, które mają go 10 px; w stanie nieprzewiniętym reguła
+  nie działa w ogóle,
 - `.dataTable thead th`: `position: static`, `background-color: var(--panel)` pod gradientem
   `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))`,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` pod jednolitym
@@ -1366,6 +1371,7 @@ tabeli obejmującego całą listę kart.
 | Co | Przed | Po |
 | --- | --- | --- |
 | Szczelina nad przyklejonym nagłówkiem (przewinięta tabela) | 4,00 px | 0,00 px |
+| Pasmo przewijanego wiersza widoczne pod paskiem zakładek | 1 px (1,3 px przy skalowaniu 150%) | brak |
 | Szczelina między wierszem nazw a wierszem filtrów | 0,31 px | 0,00 px |
 | Treść panelu filtrów poza widokiem (1366 × 638, admin) | 283 px, nieosiągalne | osiągalne paskiem przewijania panelu |
 | Pasek górny w trybie admina przy niskim oknie | 179 px | 87 px |
@@ -1389,8 +1395,13 @@ The **table panel** scrolls, not the whole page. Column names and filter fields 
   missing top padding is deliberate: a sticky element stops at the container's inner content edge, so
   top padding would push the header down by its own height and leave a slit that lets the scrolling
   rows show through,
-- `.dataTable thead`: `position: sticky; top: 0; z-index: 3; background-color: var(--panel)` — the
-  **whole header sticks as one block**,
+- `.dataTable thead`: `position: sticky; top: -1px; z-index: 3; background-color: var(--panel)` — the
+  **whole header sticks as one block**. `-1px` rather than `0`, because with
+  `border-collapse: collapse` the table's top border belongs to the table, not to the cells, so the
+  header background would start one border-width below the edge of the scrollport — and that
+  one-pixel strip, right under the tab bar, showed the row passing underneath. It costs 1 px of the
+  cells' top padding, of which they have 10 px; while the table is unscrolled the rule does not apply
+  at all,
 - `.dataTable thead th`: `position: static`, `background-color: var(--panel)` under the
   `linear-gradient(180deg, rgba(22,198,12,.08), rgba(22,198,12,.03))` gradient,
 - `.dataTable thead tr:nth-child(2) th`: `background-color: var(--panel)` under a flat
@@ -1492,6 +1503,7 @@ dead area halfway down the screen) and the table area spanning the whole card li
 | What | Before | After |
 | --- | --- | --- |
 | Slit above the sticky header (scrolled table) | 4.00 px | 0.00 px |
+| Strip of a scrolling row visible under the tab bar | 1 px (1.3 px at 150% scaling) | none |
 | Slit between the column-name row and the filter row | 0.31 px | 0.00 px |
 | Filter panel content out of view (1366 × 638, admin) | 283 px, unreachable | reachable with the panel scrollbar |
 | Admin top bar on a short window | 179 px | 87 px |
