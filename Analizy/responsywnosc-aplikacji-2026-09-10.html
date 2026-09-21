@@ -222,6 +222,28 @@ figure > .mk{border-radius:0}
 figure:has(> .mk-stage){display:flex; flex-direction:column}
 figure:has(> .mk-stage) > .mk-stage{flex:1 1 auto; align-items:flex-start}
 
+/* modal filtrów: wszystkie kolumny w pionie, z zatwierdzaniem */
+.mk-modal{position:relative; background:#000; border:1px solid var(--mk-b); border-radius:8px; overflow:hidden}
+.mk-mh{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 8px;
+       border-bottom:1px solid var(--mk-div); background:rgba(22,198,12,.05)}
+.mk-mt{color:var(--mk-code); text-transform:uppercase; letter-spacing:.12em; font-size:9.5px}
+.mk-presets{display:flex; gap:5px; align-items:center; padding:6px 8px; border-bottom:1px solid var(--mk-div)}
+.mk-mbody{padding:0 8px}
+.mk-col{padding:7px 0; border-bottom:1px solid var(--mk-div)}
+.mk-col:last-child{border-bottom:none}
+.mk-colname{font-size:9px; text-transform:uppercase; letter-spacing:.08em; color:var(--mk-code)}
+.mk-colsum{display:flex; align-items:center; gap:6px; margin-top:4px; font-size:8.5px; color:var(--mk-text2)}
+.mk-colsum.is-on{color:var(--mk-code)}
+.mk-colsum span:last-child{margin-left:auto; color:var(--mk-text2)}
+.mk-vals{margin-top:5px; padding:5px 6px; border:1px solid var(--mk-b2); border-radius:3px;
+         background:rgba(22,198,12,.03)}
+.mk-mfoot{position:relative; padding:7px 8px; border-top:1px solid var(--mk-b);
+          background:rgba(22,198,12,.06); display:flex; gap:6px; align-items:center}
+.mk-apply{flex:1; text-align:center; background:var(--mk-text); color:#031605; border:1px solid var(--mk-b);
+          border-radius:3px; padding:6px; text-transform:uppercase; letter-spacing:.10em; font-size:9px; font-weight:700}
+.mk-modal .mk-input{display:block}
+
+
 /* panel fizycznie ucięty: makieta pokazuje to samo obcięcie, które robi overflow:hidden */
 .mk-clip{position:relative; overflow:hidden}
 .mk-clip::after{content:""; position:absolute; left:0; right:0; bottom:14px; height:22px;
@@ -2264,6 +2286,7 @@ Dodatkowo bez filtrów jest utrudnione wyszukiwanie danych w tabelach. Zaproponu
 </div>
 
 <h4>Arkusz filtrów</h4>
+<p><em>Uwaga: ten dwupoziomowy arkusz zastąpiła propozycja z <a href="#fm-modal">rozdziału 15.14</a> — jeden modal ze wszystkimi kolumnami i zatwierdzaniem. Opis niżej zostaje dla kontekstu decyzji.</em></p>
 <p>Przycisk „FILTRY” wysuwa od dołu arkusz z listą kolumn zakładki. Przy każdej kolumnie widać jej stan („wszystkie wartości” / „3 z 19 wartości” / wpisany tekst), a stuknięcie otwiera <strong>istniejący już</strong> wybór wartości — ten sam, który na komputerze otwiera przycisk <code>▾</code>. Funkcja <code>openFilterMenu(col, anchor)</code> buduje tam komplet: tytuł, pole szukania wartości, przyciski „zaznacz wszystko” i „wyczyść”, oraz listę wartości z polami wyboru. Nic z tego nie trzeba pisać od nowa.</p>
 
 <h4>Szkic kodu</h4>
@@ -2406,7 +2429,7 @@ function renderActiveChips(){
 <tr><td class="num">1</td><td>DataVault — panel przewijalny + próg wysokości</td><td>rozdz. 13.8</td><td><span class="znacznik z-kryt">Krytyczna</span></td></tr>
 <tr><td class="num">2</td><td>DataVault — kompaktowy pasek górny</td><td>rozdz. 13.8</td><td><span class="znacznik z-wys">Wysoka</span></td></tr>
 <tr><td class="num">2a</td><td>DataVault — szczeliny w przyklejonym nagłówku</td><td>rozdz. 14.4</td><td><span class="znacznik z-sre">Średnia</span></td></tr>
-<tr><td class="num"><strong>2b</strong></td><td><strong>DataVault — pasek narzędzi zakładki na telefonie</strong> (wariant A)</td><td>rozdz. 15.5 — nowe</td><td><span class="znacznik z-wys">Wysoka</span></td></tr>
+<tr><td class="num"><strong>2b</strong></td><td><strong>DataVault — pasek narzędzi zakładki na telefonie</strong> (wariant A) <strong>+ modal filtrów z zatwierdzaniem</strong></td><td>rozdz. 15.5 i 15.14 — nowe</td><td><span class="znacznik z-wys">Wysoka</span></td></tr>
 <tr><td class="num"><strong>2c</strong></td><td><strong>DataVault — zwinięte grupowanie kart na telefonie</strong></td><td>rozdz. 15.13 — nowe</td><td><span class="znacznik z-wys">Wysoka</span></td></tr>
 <tr><td class="num">3</td><td>Prosty Kreator Postaci — szerokość strony i nachodzące przyciski</td><td>rozdz. 5</td><td><span class="znacznik z-wys">Wysoka</span></td></tr>
 <tr><td class="num">…</td><td>dalej bez zmian względem rozdziałów 13.13 i 14.9</td><td>—</td><td>—</td></tr>
@@ -2557,6 +2580,114 @@ function kolumnaGrupujaca(sheetName, cols){
 </ol>
 <p>Obie zmiany dotykają tej samej reguły <code>max-width: 720px</code> i tego samego <code>renderBody()</code>, więc opłaca się zrobić je jednym podejściem. Łączny koszt szacuję na ok. 180 linii JavaScriptu i ok. 80 linii CSS — grupowanie dokłada do wariantu A mniej więcej połowę tego, co on sam.</p>
 
+
+<h3 id="fm-modal">15.14. Wariant zgłoszony 21 września: jeden modal ze wszystkimi kolumnami</h3>
+
+<blockquote class="prompt"><span class="kto">Twoje pytanie</span>Dodatkowo do rozważenia - czy jest opcja, żeby po naciśnięciu przycisku "Filtr" pojawiał się dodatkowy modal ze wszystkimi kolumnami (ułożonymi w pionie). Użytkownik by w tym nowym oknie wybierał filtry i je zatwierdzał. Przyciski "Widok Domyślny" i "Pełen Widok" by automatycznie zdejmowały i zakładały filtry. Informacja o założonych filtrach by była wyświetlana podobnie jak na Twoich prototypach po zamknięciu okna.</blockquote>
+
+<div class="karta dobra">
+<p style="margin:0"><strong>Tak, jest taka opcja — i jest lepsza od mojej.</strong> Proponowałem arkusz dwupoziomowy: najpierw lista kolumn, potem osobny ekran z wartościami wybranej kolumny. Twój wariant spłaszcza to do jednego ekranu i dokłada zatwierdzanie. Poniżej trzy powody, dla których go rekomenduję — jeden z nich jest zmierzony i przesądza sprawę.</p>
+</div>
+
+<h4>Powód 1 — wydajność. Dziś każde stuknięcie przebudowuje całą listę</h4>
+<p>Obecny mechanizm filtruje <em>na żywo</em>: każde zaznaczenie wartości wywołuje <code>applySetFilter()</code>, a ta <code>renderBody()</code>, czyli budowę wszystkich wierszy od nowa. Zmierzyłem koszt jednej takiej przebudowy — budowa węzłów komórek wraz z polami wyboru, tak jak robi to kod modułu:</p>
+
+<div class="tabela-otoczka">
+<table>
+<thead><tr><th>Zakładka</th><th class="num">Rekordów × kolumn</th><th class="num">Jedno przerysowanie listy</th><th class="num">Samo policzenie trafień</th><th class="num">Stosunek</th></tr></thead>
+<tbody>
+<tr><td><strong>Bronie</strong></td><td class="num">130 × 15</td><td class="num"><strong>137 ms</strong></td><td class="num">0,26 ms</td><td class="num">530×</td></tr>
+<tr><td><strong>Bestiariusz</strong></td><td class="num">217 × 22</td><td class="num"><strong>361 ms</strong></td><td class="num">0,62 ms</td><td class="num">580×</td></tr>
+</tbody>
+</table>
+</div>
+<p class="podpis">Pomiar w Chromium na procesorze komputerowym; telefon jest pod tym względem kilkukrotnie wolniejszy, więc realne wartości są wyższe. Pomiar nie obejmuje formatowania tekstu bogatego (odnośniki do stron, tagi cech), które <code>renderBody()</code> też wykonuje — czyli jest zaniżony, a nie zawyżony.</p>
+
+<p>Przy filtrowaniu na żywo <strong>każde</strong> stuknięcie w wartość kosztuje tyle, ile cała przebudowa. Odznaczenie sześciu wartości w kolumnie <em>Typ</em> to sześć przebudów — na Bestiariuszu ponad dwie sekundy pracy telefonu, w trakcie której lista pod arkuszem i tak jest zasłonięta i nikt jej nie widzi. Przy zatwierdzaniu przebudowa następuje <strong>raz</strong>, po kliknięciu „Zatwierdź”.</p>
+<p>To jest też argument za tym, żeby licznik na przycisku zatwierdzania był liczony, a nie renderowany: policzenie trafień przez <code>passesFilters()</code> bez dotykania DOM kosztuje ułamek milisekundy, więc podgląd „pokaż 16 z 130” może się odświeżać po każdym stuknięciu bez żadnego kosztu.</p>
+
+<h4>Powód 2 — jeden poziom zamiast dwóch</h4>
+<p>W moim wariancie zmiana filtrów w dwóch kolumnach to: <em>Filtry → kolumna → wartości → wstecz → druga kolumna → wartości → wstecz</em>. W Twoim wszystko jest na jednej przewijanej liście. Przy 15 kolumnach Broni to różnica między siedmioma stuknięciami nawigacyjnymi a zerem.</p>
+
+<h4>Powód 3 — wycofanie jednym ruchem</h4>
+<p>„Anuluj” przywraca stan sprzed otwarcia okna. Dziś, po serii stuknięć w filtry, jedynym powrotem jest „Pełen Widok” — który kasuje także wyszukiwanie, sortowanie i zaznaczenia, i to na <strong>wszystkich 38 zakładkach</strong> (rozdz. 15.4).</p>
+
+<h4>Co trzeba dołożyć w kodzie: kopia robocza filtrów</h4>
+<p>Zatwierdzanie wymaga stanu roboczego, oddzielonego od <code>view</code>. To jedyna nowa mechanika w całej propozycji — i moduł ma już dokładnie taki wzorzec w funkcjach <code>setCurrentSheetView()</code> i <code>persistCurrentSheetView()</code>, które kopiują ten sam zestaw pól:</p>
+<pre><code>// PL: Kopia robocza filtrów. Modal zmienia wyłącznie ją; dopiero „Zatwierdź” przepisuje ją
+//     do view i jeden raz przerysowuje listę. „Anuluj” po prostu ją wyrzuca.
+// EN: A working copy of the filters. The modal edits only this; "Apply" writes it back into view
+//     and redraws the list once. "Cancel" simply throws it away.
+let filtrRoboczy = null;
+
+function otworzModalFiltrow(){
+  filtrRoboczy = {
+    filtersText: {...view.filtersText},
+    filtersSet: Object.fromEntries(Object.entries(view.filtersSet)
+      .map(([col, zbior]) =&gt; [col, zbior instanceof Set ? new Set(zbior) : null])),
+  };
+  // …budowa listy kolumn z DB.sheets[currentSheet]._cols
+}
+
+function policzTrafienia(){            // podgląd na przycisku — bez dotykania DOM
+  const cols = DB.sheets[currentSheet]._cols;
+  const poprzedni = {tekst: view.filtersText, zbiory: view.filtersSet};
+  view.filtersText = filtrRoboczy.filtersText;
+  view.filtersSet  = filtrRoboczy.filtersSet;
+  const n = getSystemVisibleRows(currentSheet).filter(r =&gt; passesFilters(r, cols)).length;
+  view.filtersText = poprzedni.tekst; view.filtersSet = poprzedni.zbiory;
+  return n;
+}
+
+function zatwierdzFiltry(){
+  view.filtersText = filtrRoboczy.filtersText;
+  view.filtersSet  = filtrRoboczy.filtersSet;
+  renderBody();                        // jedyna przebudowa listy w całej operacji
+  saveSessionState();
+  zamknijModalFiltrow();
+}</code></pre>
+<p><code>passesFilters()</code>, <code>sortRows()</code> i <code>DEFAULT_VIEW_CONFIG</code> pozostają nietknięte — modal nadal tylko zapisuje do tego samego stanu, co nagłówek tabeli na komputerze.</p>
+
+<h4>Ile ma wysokości lista wszystkich kolumn</h4>
+<div class="tabela-otoczka">
+<table>
+<thead><tr><th>Zakładka</th><th class="num">Kolumn</th><th class="num">Wysokość listy w modalu</th><th class="num">Ekranów (telefon 800 px)</th></tr></thead>
+<tbody>
+<tr><td>Bronie</td><td class="num">15</td><td class="num">1200 px</td><td class="num">1,5</td></tr>
+<tr><td>Bestiariusz</td><td class="num">22</td><td class="num">1760 px</td><td class="num">2,2</td></tr>
+<tr><td>Bestiariusz — pełen zestaw kolumn</td><td class="num">28</td><td class="num">2240 px</td><td class="num">2,8</td></tr>
+</tbody>
+</table>
+</div>
+<p>To jest do przyjęcia — ale <strong>tylko pod warunkiem, że listy wartości są domyślnie zwinięte</strong> i rozwijają się w miejscu po stuknięciu. Sama kolumna <em>Typ</em> w Broniach ma 19 wartości; rozwinięta na stałe dołożyłaby do modalu około 500 px, a wszystkie kolumny rozwinięte naraz zrobiłyby z niego listę dłuższą niż ta, którą filtrujemy.</p>
+
+<div class="karta uwaga">
+<h4 style="margin-top:0">Jedna rzecz wymaga Twojej decyzji: dwa przyciski o tych samych nazwach</h4>
+<p>Dzisiejsze „Widok Domyślny” i „Pełen Widok” w pasku górnym robią więcej, niż sugerują nazwy (rozdz. 15.4): działają na <strong>wszystkich 38 zakładkach naraz</strong> i kasują nie tylko filtry, ale też wyszukiwanie globalne, sortowanie, zaznaczenia i rozwinięte komórki.</p>
+<p style="margin-bottom:0">Wewnątrz modalu takie zachowanie nie miałoby sensu — tam naturalne jest działanie na <em>tej jednej zakładce</em>, <em>tylko na filtrach</em> i <em>tylko na kopii roboczej</em>, czyli z możliwością cofnięcia przez „Anuluj”. Dwa przyciski o identycznych nazwach i różnym zasięgu to pułapka. Proponuję nazwać je w modalu <strong>„Przywróć domyślne”</strong> i <strong>„Wyczyść filtry”</strong>, a w pasku górnym zostawić dzisiejsze nazwy jako globalny reset. Alternatywa: ujednolicić zasięg obu par, ale to zmiana zachowania, do której potrzebuję Twojej zgody.</p>
+</div>
+
+<h4>Ryzyko: użytkownik zapomni zatwierdzić</h4>
+<p>To realne ryzyko każdego okna z zatwierdzaniem. Ogranicza je sam przycisk: zamiast neutralnego „OK” nosi wynik operacji — <strong>„Zatwierdź — pokaż 16 z 130”</strong> — i liczba odświeża się po każdym stuknięciu. Widać wtedy, że coś czeka na zatwierdzenie, i widać, co dokładnie się stanie. Po zamknięciu okna żetony i licznik w pasku pokazują stan tak samo jak w makietach z rozdziału 16.4.</p>
+
+<h4>Co to zmienia w propozycji z rozdziału 15.5</h4>
+<div class="tabela-otoczka">
+<table>
+<thead><tr><th>Element</th><th>Stan</th></tr></thead>
+<tbody>
+<tr><td>Przyklejony pasek narzędzi (szukanie, „Filtry”, „Sortuj”, licznik, żetony)</td><td><span class="znacznik z-ok">bez zmian</span></td></tr>
+<tr><td>Arkusz dwupoziomowy: lista kolumn → osobny ekran wartości</td><td><strong>zastąpiony</strong> modalem z kolumnami w pionie</td></tr>
+<tr><td>Ponowne użycie <code>openFilterMenu()</code> bez zmian</td><td>odpada — listy wartości powstają teraz wewnątrz modalu; wykorzystane zostają za to <code>uniqueValuesForColumn()</code> i logika „zaznacz wszystko / wyczyść”</td></tr>
+<tr><td>Filtrowanie na żywo</td><td><strong>zastąpione</strong> zatwierdzaniem z kopii roboczej</td></tr>
+<tr><td>Zwinięte grupowanie kart (rozdz. 15.13)</td><td><span class="znacznik z-ok">bez zmian</span> — działa niezależnie</td></tr>
+<tr><td>Szacowany koszt</td><td>ok. 160 linii JavaScriptu zamiast 120 — modal jest nieco droższy od arkusza, bo dochodzi kopia robocza i podgląd licznika</td></tr>
+</tbody>
+</table>
+</div>
+
+<h4>Czy to samo na komputerze?</h4>
+<p>Kusi, bo na Bestiariuszu wiersz filtrów ma 28 pól rozrzuconych na 4763 px szerokości i trzeba do nich przewijać w bok. Ale na komputerze filtrowanie na żywo nie boli tak samo (jedno przerysowanie to tam ułamek sekundy, a lista jest widoczna obok), a nagłówek z filtrami jest sprawdzonym mechanizmem. Proponuję <strong>nie ruszać komputera w tym kroku</strong> i wrócić do tematu, jeżeli po wdrożeniu na telefonie uznasz modal za wygodniejszy także tam — przycisk otwierający go można wtedy dołożyć obok „Pełen Widok” bez żadnej zmiany w samej tabeli.</p>
+
 <hr>
 
 <h2 id="makiety">16. Makiety ekranów — jak to będzie wyglądać</h2>
@@ -2615,13 +2746,31 @@ function kolumnaGrupujaca(sheetName, cols){
 </div></figure>
 </div>
 
-<h3 id="mak-arkusze">16.6. Arkusze filtrów i wyboru wartości (rozdz. 15.5)</h3>
+<h3 id="mak-arkusze">16.6. Arkusze filtrów i wyboru wartości — wariant dwupoziomowy (rozdz. 15.5)</h3>
+<div class="karta uwaga"><p style="margin:0">Ten wariant został <strong>zastąpiony</strong> modalem z rozdziału 15.14, pokazanym niżej jako makieta 16.7. Zostawiam go w dokumencie, bo pokazuje, z czego rezygnujemy i dlaczego.</p></div>
 <p>Dwa poziomy. Pierwszy to lista kolumn zakładki ze stanem każdego filtra, drugi — wybór konkretnych wartości. Ten drugi ekran buduje funkcja <code>openFilterMenu()</code>, która już istnieje i działa na komputerze pod przyciskiem <code>▾</code>.</p>
 <div class="para">
 <figure class="po"><figcaption>Arkusz filtrów — lista kolumn ze stanem każdego filtra</figcaption><div class="mk-stage"><div class="mk"><div class="mk-box" style="border:none"><div class="mk-tools"><div class="mk-input">Szukaj w tej zakładce…</div><div class="mk-trow"><span class="mk-btn ">Filtry<span class="mk-badge">1</span></span><span class="mk-btn ">Sortuj</span><span class="mk-count">Pokazano 130 z 130</span></div><div class="mk-chips"><span class="mk-chip is-default">Widok domyślny: Typ — 3 z 19 <b>✕</b></span></div></div><div class="mk-list" style="padding:6px 6px 0"><div class="mk-grp"><span>▸</span><span>Boltowa</span><em>12 poz.</em></div></div><div class="mk-dim"><div class="mk-sheet"><div class="mk-sheet-h"><div class="mk-sheet-t">Filtry kolumn — Bronie</div><span class="mk-btn ">Zamknij</span></div><div class="mk-crow"><div><div class="mk-cname">Rodzaj</div><div class="mk-cstate">wszystkie wartości</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Typ</div><div class="mk-cstate is-on">3 z 19 wartości</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Nazwa</div><div class="mk-input" style="margin-top:2px">wpisz fragment…</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Obrażenia</div><div class="mk-cstate">wszystkie wartości</div></div><span class="mk-go">▸</span></div><div class="mk-crow"><div><div class="mk-cname">Zasięg</div><div class="mk-cstate">wszystkie wartości</div></div><span class="mk-go">▸</span></div><div class="mk-more">… jeszcze 10 kolumn …</div></div></div></div></div></div></figure>
 <figure class="po"><figcaption>Wybór wartości jednej kolumny — istniejący komponent</figcaption><div class="mk-stage"><div class="mk"><div class="mk-box" style="border:none"><div class="mk-tools"><div class="mk-input">Szukaj w tej zakładce…</div><div class="mk-trow"><span class="mk-btn ">Filtry<span class="mk-badge">1</span></span><span class="mk-btn ">Sortuj</span><span class="mk-count">Pokazano 130 z 130</span></div><div class="mk-chips"><span class="mk-chip is-default">Widok domyślny: Typ — 3 z 19 <b>✕</b></span></div></div><div class="mk-list" style="padding:6px 6px 0"><div class="mk-grp"><span>▸</span><span>Boltowa</span><em>12 poz.</em></div></div><div class="mk-dim"><div class="mk-sheet"><div class="mk-sheet-h"><div class="mk-sheet-t">Typ — wybierz wartości</div><span class="mk-btn ">Zamknij</span></div><div class="mk-input" style="margin-bottom:6px">filtruj wartości…</div><div class="mk-trow" style="margin-bottom:6px"><span class="mk-btn ">Zaznacz wszystko</span><span class="mk-btn ">Wyczyść</span></div><div class="mk-vrow"><i class="is-on"></i><span>Boltowa</span><em>12 poz.</em></div><div class="mk-vrow"><i class="is-on"></i><span>Broń biała</span><em>11 poz.</em></div><div class="mk-vrow"><i class="is-on"></i><span>Broń łańcuchowa</span><em>10 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Broń dystansowa</span><em>10 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Broń energetyczna</span><em>9 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Laserowa</span><em>9 poz.</em></div><div class="mk-more">… jeszcze 13 wartości …</div></div></div></div></div></div></figure>
 </div>
 <p class="podpis">Arkusz wysuwa się od dołu i zajmuje najwyżej 70% wysokości ekranu — to ten sam wzorzec, który moduł przyjął dla dymka z opisem cechy w poprawce z rozdziału 6.6. Odznaczenie wartości usuwa całą grupę z listy; po zamknięciu arkusza licznik i żetony w pasku od razu to pokazują.</p>
+
+
+<h3 id="mak-modal">16.7. Modal filtrów — wariant rekomendowany (rozdz. 15.14)</h3>
+<p>Wszystkie kolumny zakładki w jednej pionowej liście. Każda kolumna ma pole tekstowe i zwiniętą listę wartości, która rozwija się w miejscu — tu rozwinięta jest kolumna <em>Typ</em>. U góry presety, na dole pasek zatwierdzania z podglądem wyniku.</p>
+<div class="para">
+<figure class="po"><figcaption>Modal filtrów po stuknięciu w „Filtry”</figcaption><div class="mk-stage"><div class="mk"><div class="mk-modal"><div class="mk-mh"><div class="mk-mt">Filtry — Bronie</div><span class="mk-btn ">Anuluj</span></div><div class="mk-presets"><span class="mk-btn ">Widok domyślny</span><span class="mk-btn ">Pełen widok</span><span class="mk-count" style="margin-left:auto">15 kolumn</span></div><div class="mk-mbody"><div class="mk-col"><div class="mk-colname">Rodzaj</div><div class="mk-input" style="margin-top:4px">wpisz fragment…</div><div class="mk-colsum"><span>wszystkie wartości</span><span>▸</span></div></div><div class="mk-col"><div class="mk-colname">Typ</div><div class="mk-input" style="margin-top:4px">wpisz fragment…</div><div class="mk-colsum is-on"><span>3 z 19 wartości</span><span>▾</span></div><div class="mk-vals"><div class="mk-vrow"><i class="is-on"></i><span>Boltowa</span><em>12 poz.</em></div><div class="mk-vrow"><i class="is-on"></i><span>Broń biała</span><em>11 poz.</em></div><div class="mk-vrow"><i class="is-on"></i><span>Broń łańcuchowa</span><em>10 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Broń dystansowa</span><em>10 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Broń energetyczna</span><em>9 poz.</em></div><div class="mk-vrow"><i class=""></i><span>Laserowa</span><em>9 poz.</em></div><div class="mk-more">… jeszcze 13 wartości …</div></div></div><div class="mk-col"><div class="mk-colname">Nazwa</div><div class="mk-input" style="margin-top:4px">łańcuchow</div><div class="mk-colsum"><span>wszystkie wartości</span><span>▸</span></div></div><div class="mk-col"><div class="mk-colname">Obrażenia</div><div class="mk-input" style="margin-top:4px">wpisz fragment…</div><div class="mk-colsum"><span>wszystkie wartości</span><span>▸</span></div></div><div class="mk-more" style="padding:6px 0">… jeszcze 11 kolumn — przewiń w dół …</div></div><div class="mk-mfoot"><span class="mk-btn ">Wyczyść</span><span class="mk-apply">Zatwierdź — pokaż 16 z 130</span></div></div></div></div></figure>
+<figure class="po"><figcaption>Na co zwrócić uwagę</figcaption><div style="padding:14px 16px">
+<ul style="margin:0">
+<li><strong>Zatwierdź — pokaż 16 z 130.</strong> Przycisk nosi wynik operacji, a nie neutralne „OK”. Liczba odświeża się po każdym stuknięciu i kosztuje ułamek milisekundy, bo jest liczona, a nie renderowana.</li>
+<li><strong>Listy wartości zwinięte.</strong> Rozwija się je w miejscu. Bez tego modal miałby kilka tysięcy pikseli — sama kolumna <em>Typ</em> to 19 wartości.</li>
+<li><strong>Presety na górze</strong> działają na kopii roboczej i tylko na tej zakładce, więc „Anuluj” cofa także ich użycie. To nie są te same przyciski, co w pasku górnym — patrz uwaga o nazwach w rozdz. 15.14.</li>
+<li><strong>Anuluj</strong> wyrzuca kopię roboczą i nie przerysowuje listy ani razu.</li>
+<li>Po zamknięciu okna stan filtrów pokazują żetony i licznik w pasku narzędzi — tak jak na makietach z rozdziału 16.4.</li>
+</ul>
+</div></figure>
+</div>
+<p class="podpis">Modal ma 15 kolumn Broni, czyli około 1200 px — półtora ekranu telefonu. Dla Bestiariusza z 28 kolumnami wyjdzie 2240 px, czyli niecałe trzy ekrany.</p>
 
 <div class="karta uwaga">
 <p style="margin:0"><strong>Czego te makiety nie pokazują.</strong> To szkice układu, nie projekt graficzny — dobór kolorów, odstępów i zaokrągleń zostaje taki, jaki moduł ma dziś. Nie pokazują animacji wysuwania arkusza, zachowania przy obracaniu telefonu w trakcie pracy ani stanów pustych („brak wyników”). Treść komórek jest przykładowa, bo <code>data.json</code> nie jest częścią repozytorium; liczby rekordów i wysokości pasm pochodzą z pomiarów opisanych w rozdziałach 13–15.</p>
