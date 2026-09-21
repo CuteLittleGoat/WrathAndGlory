@@ -2003,21 +2003,35 @@ Dodatkowo bez filtrów jest utrudnione wyszukiwanie danych w tabelach. Zaproponu
 
 <h3 id="fm-koszt">15.3. Ile to kosztuje w praktyce — pomiary</h3>
 
-<p>Karta zajmuje tyle miejsca, ile ma kolumn: każda kolumna to osobny wiersz „nazwa — wartość”. Zmierzone na telefonie 390 × 800 px:</p>
+<div class="karta wazne">
+<h4 style="margin-top:0">Ustalenie priorytetu z 21 września 2026</h4>
+<p style="margin:0"><strong>Twoja uwaga:</strong> priorytetem są zakładki widoczne w widoku gracza; admin pracuje głównie na komputerze. To ważna korekta, bo <code>Bestiariusz</code> jest na liście <code>ADMIN_ONLY_SHEETS</code> — gracz go nigdy nie widzi, na żadnym urządzeniu. Poniższe pomiary są więc uporządkowane według tego priorytetu, a zakładki admina podaję tylko dla tła. Wniosek po przeliczeniu jest jednak <em>mocniejszy</em>, a nie słabszy: <strong>najgorzej wypadają zakładki, które gracz widzi domyślnie.</strong></p>
+</div>
+
+<p>Gracz widzi <strong>30 z 38 zakładek</strong> (osiem jest zarezerwowanych dla admina), z czego <strong>11 od razu po otwarciu</strong>, a pozostałe po włączeniu przełączników „tworzenie postaci”, „zasady walki” i „pojazdy”. Karta zajmuje tyle miejsca, ile ma kolumn: każda kolumna to osobny wiersz „nazwa — wartość”. Zmierzone na telefonie 390 × 800 px, na prawdziwych listach kolumn z <code>Kolumny.md</code>:</p>
 
 <div class="tabela-otoczka">
 <table>
-<thead><tr><th>Zakładka</th><th class="num">Kolumn</th><th class="num">Wysokość jednej karty</th><th class="num">Kart na ekran</th><th class="num">Rekordów</th><th class="num">Długość listy</th><th class="num">Ekranów przewijania</th></tr></thead>
+<thead><tr><th>Zakładka gracza</th><th class="num">Kolumn</th><th class="num">Karta:<br>krótkie</th><th class="num">Karta:<br>z opisami</th><th class="num">Kart<br>/ ekran</th><th class="num">Rekordów</th><th class="num">Ekranów</th></tr></thead>
 <tbody>
-<tr><td>Bronie</td><td class="num">15</td><td class="num">442 px</td><td class="num">1,8</td><td class="num">60</td><td class="num">28&nbsp;106 px</td><td class="num">35</td></tr>
-<tr><td>Bestiariusz</td><td class="num">22</td><td class="num"><strong>674 px</strong></td><td class="num"><strong>1,2</strong></td><td class="num">217</td><td class="num"><strong>149&nbsp;283 px</strong></td><td class="num"><strong>187</strong></td></tr>
+<tr><td><strong>Bronie</strong> — zakładka startowa gracza</td><td class="num">15</td><td class="num">442 px</td><td class="num"><strong>687 px</strong></td><td class="num">1,16</td><td class="num">130</td><td class="num"><strong>112</strong></td></tr>
+<tr><td><strong>Talenty</strong></td><td class="num">8</td><td class="num">248 px</td><td class="num">643 px</td><td class="num">1,24</td><td class="num">119</td><td class="num"><strong>96</strong></td></tr>
+<tr><td><strong>Psionika</strong></td><td class="num">13</td><td class="num">392 px</td><td class="num"><strong>900 px</strong></td><td class="num"><strong>0,89</strong></td><td class="num">71</td><td class="num"><strong>80</strong></td></tr>
+<tr><td><strong>Ekwipunek</strong></td><td class="num">10</td><td class="num">317 px</td><td class="num">693 px</td><td class="num">1,15</td><td class="num">78</td><td class="num"><strong>68</strong></td></tr>
+<tr><td>Augumentacje</td><td class="num">10</td><td class="num">317 px</td><td class="num">693 px</td><td class="num">1,15</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>Pancerze</td><td class="num">10</td><td class="num">317 px</td><td class="num">562 px</td><td class="num">1,42</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>Obrzędy</td><td class="num">10</td><td class="num">298 px</td><td class="num">562 px</td><td class="num">1,42</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>Modlitwy</td><td class="num">7</td><td class="num">223 px</td><td class="num">487 px</td><td class="num">1,64</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td>Cechy, Stany, Słowa Kluczowe</td><td class="num">3</td><td class="num">123 px</td><td class="num">255 px</td><td class="num">3,14</td><td class="num">—</td><td class="num">—</td></tr>
+<tr><td colspan="7" style="background:var(--tlo3); font-weight:650">Dla tła — zakładka niewidoczna dla gracza</td></tr>
+<tr><td>Bestiariusz <span class="znacznik z-nis">tylko admin</span></td><td class="num">28</td><td class="num">674 px<sup>*</sup></td><td class="num">—</td><td class="num">1,19<sup>*</sup></td><td class="num">217</td><td class="num">187<sup>*</sup></td></tr>
 </tbody>
 </table>
 </div>
-<p class="podpis">Bestiariusz zmierzony na odtworzeniu z 22 kolumnami; prawdziwy arkusz ma ich 28, więc karta jest w rzeczywistości jeszcze wyższa, a lista dłuższa.</p>
+<p class="podpis">Kolumna „same krótkie wartości” to zmierzona podłoga: każde pole mieści się w jednej linii. Kolumna „z opisami” zakłada ok. 200 znaków w polach opisowych (<em>Opis</em>, <em>Efekt</em>, <em>Wymagania</em>, <em>Cechy</em>, <em>Słowa Kluczowe</em>, <em>Wzmocnienie</em>) — to modelowana wartość, bo <code>data.json</code> nie jest częścią repozytorium; przy dłuższych opisach karty są wyższe. Liczby rekordów pochodzą z pomiarów na Twoich danych z rozdziału 4.5. <sup>*</sup>Bestiariusz zmierzony na odtworzeniu z 22 kolumnami z krótkimi wartościami.</p>
 
 <div class="karta wazne">
-<p style="margin:0"><strong>To jest właśnie Twoje „utrudnione wyszukiwanie”, wyrażone liczbą.</strong> Żeby znaleźć jednego przeciwnika w Bestiariuszu bez filtra, trzeba przewinąć do <strong>187 ekranów</strong> treści, oglądając po jednej karcie naraz. Na komputerze ta sama zakładka to jedna tabela, w której filtr kolumny „Nazwa” załatwia sprawę jednym słowem.</p>
+<p style="margin:0"><strong>To jest właśnie Twoje „utrudnione wyszukiwanie”, wyrażone liczbą — i to na zakładkach gracza.</strong> Żeby znaleźć jedną broń w zakładce, która otwiera się graczowi jako pierwsza, trzeba przewinąć do <strong>112 ekranów</strong> treści, oglądając nieco ponad jedną kartę naraz. W Psionice karta jest wyższa niż ekran telefonu (900 px przy 800 px wysokości), więc <strong>nie da się zobaczyć całego rekordu bez przewijania</strong>. Na komputerze te same zakładki to jedna tabela, w której filtr kolumny „Nazwa” załatwia sprawę jednym słowem.</p>
 </div>
 
 <p>Do tego dochodzi droga do samego pola wyszukiwania:</p>
@@ -2150,7 +2164,7 @@ function renderActiveChips(){
 </table>
 </div>
 
-<p>Rekomenduję <strong>wariant A</strong>. Argument jest prosty: zapowiadany dodatek doda kilkadziesiąt pozycji archetypów, ekwipunku i umiejętności, czyli wydłuży dokładnie te listy, po których dziś przewija się 187 ekranów. Im większa baza, tym mniej opłaca się półśrodek.</p>
+<p>Rekomenduję <strong>wariant A</strong>. Argument jest prosty: zapowiadany dodatek doda kilkadziesiąt pozycji archetypów, ekwipunku i umiejętności, czyli wydłuży dokładnie te zakładki gracza, po których dziś przewija się 68–112 ekranów. Im większa baza, tym mniej opłaca się półśrodek.</p>
 
 <h3 id="fm-zrzuty">15.7. Zrzuty ekranu: przed i po</h3>
 <p>Telefon 390 × 800 px, zakładka „Bronie”, lista przewinięta do pierwszych kart. Stan „PO” to działający prototyp: wyszukiwanie w nim faktycznie filtruje listę (wpisanie „łańcuchow” zawęża 60 rekordów do 16). Kliknij zrzut, aby powiększyć.</p>
@@ -2241,7 +2255,7 @@ function renderActiveChips(){
 </div>
 <div class="karta">
 <h4 style="margin-top:0">Pytanie 4 — czy skrócić kartę na telefonie?</h4>
-<p style="margin-bottom:0">Karta Bestiariusza ma 674 px, bo pokazuje wszystkie 22 kolumny naraz. Można pokazywać na karcie 4–5 najważniejszych pól, a resztę rozwijać stuknięciem — lista skróciłaby się wtedy kilkukrotnie. To osobny temat od filtrowania, ale dotyczy tego samego problemu „za dużo przewijania”. Zająć się tym teraz, czy zostawić na później?</p>
+<p style="margin-bottom:0">Karta Psioniki ma 900 px, czyli więcej niż wysokość ekranu telefonu, a karta Broni 687 px — bo obie pokazują wszystkie kolumny naraz, razem z długimi opisami. Można pokazywać na karcie 4–5 najważniejszych pól (np. <em>Nazwa</em>, <em>Typ</em>, <em>Koszt</em>, <em>Obrażenia</em>), a resztę rozwijać stuknięciem — lista skróciłaby się wtedy kilkukrotnie i mieściłaby po 5–6 rekordów na ekran zamiast jednego. To osobny temat od filtrowania, ale dotyczy tego samego problemu „za dużo przewijania” i tych samych zakładek gracza. Zająć się tym teraz, czy zostawić na później?</p>
 </div>
 
 <hr>
