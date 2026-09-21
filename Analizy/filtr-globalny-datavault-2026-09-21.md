@@ -4,6 +4,7 @@
 > **Temat:** zmiana nazwy panelu bocznego z „▸FILTRY" na „FILTR", utrwalenie wpisanej frazy przy przełączaniu zakładek, czerwona sygnalizacja aktywnego filtru oraz potwierdzenie niezależności filtru globalnego od filtrów kolumnowych i widoku domyślnego
 > **Moduł:** `DataVault`
 > **Charakter dokumentu:** analiza przedwdrożeniowa. Opisuje stan kodu **sprzed** zmian i projekt docelowego zachowania. Żaden plik modułu nie został w ramach tej analizy zmieniony.
+> **Stan na dziś:** użytkownik rozstrzygnął decyzje D1-D4 oraz propozycje Z1-Z7 — rozdz. 17-24. Otwarta pozostaje **jedna** kwestia: D5 (rozdz. 18). Kod modułu nadal nietknięty.
 
 ---
 
@@ -25,6 +26,14 @@
 14. [Znalezione przy okazji](#14-znalezione-przy-okazji)
 15. [Rekomendacje](#15-rekomendacje)
 16. [Następne kroki](#16-następne-kroki)
+17. [Decyzje użytkownika z 21 września 2026](#17-decyzje-użytkownika-z-21-września-2026)
+18. [D5 — kolizja nazw `FILTR` i `NARZĘDZIA` (do rozstrzygnięcia)](#18-d5--kolizja-nazw-filtr-i-narzędzia-do-rozstrzygnięcia)
+19. [Z1 — wyszukiwanie niewrażliwe na polskie znaki](#19-z1--wyszukiwanie-niewrażliwe-na-polskie-znaki)
+20. [Z6 — przycisk czyszczenia zaznaczeń](#20-z6--przycisk-czyszczenia-zaznaczeń)
+21. [Zaktualizowany zakres prac](#21-zaktualizowany-zakres-prac)
+22. [Zaktualizowany plan testów](#22-zaktualizowany-plan-testów)
+23. [Zaktualizowane ryzyka](#23-zaktualizowane-ryzyka)
+24. [Gotowość do wdrożenia](#24-gotowość-do-wdrożenia)
 
 ---
 
@@ -660,3 +669,514 @@ Obserwacje spoza zakresu promptu. **Żadna nie jest potrzebna do wykonania zadan
 5. Wykonać testy **T1-T20** z punktu 12, w tym potwierdzić liczbę trafień `pisto` w zakładce `Ekwipunek` na żywych danych.
 6. Zaktualizować `DataVault/docs/Documentation.md`, `DataVault/docs/README.md` (obie wersje językowe) oraz `DetaleLayout.md`.
 7. Zgłosić użytkownikowi do akceptacji wybraną czerwień i zachowanie przycisków widoku — to dwa punkty, w których analiza proponuje rozstrzygnięcie, a nie odtwarza wprost treści promptu.
+
+---
+
+# CZĘŚĆ II — DECYZJE I PROJEKT WDROŻENIA
+
+> Poniższe rozdziały powstały **po** rozstrzygnięciach użytkownika z 21 września 2026. Rozdziały 1-16 opisują stan sprzed decyzji i zostają bez zmian, bo to one uzasadniają podjęte wybory.
+
+---
+
+## 17. Decyzje użytkownika z 21 września 2026
+
+### Prompt z decyzjami (zachowany w całości)
+
+> Moje decyzje:
+>
+> D1 - zgodnie z rekomendacją wariant A
+> D2 - zgodnie z rekomendacją wariant A
+> D3 - zgodnie z rekomendacją wariant A
+> D4 - zgodnie z rekomendacją.
+>
+> Z1 - Wprowadź poprawkę. Odnotuj jednak w dokumentacji, że to rozwiązanie pod polską wersję językową. W przypadku modyfikacji modułu pod inny język będzie wymagana korekta.
+> Z2 - zostawiamy jak jest. "pisto bolt" ma być szukane jako jedna fraza.
+> Z3 - skoro nie modyfikujemy Z2 to nieistotne.
+> Z4 - na PC można zaznaczyć tekst i nacisnąć Backspace. Nie trzeba specjalnego przycisku. Dodatkowy przycisk tylko zaśmieci widok
+> Z5 - nie ma potrzeby dodawania tego. Wystarczy feedback, że jest założony filtr. Ilość ukrytych wierszy nie jest istotna dla użytkownika.
+> Z6 - Zaznaczenie do porównania niech przetrwa zmianę filtrów.
+> Z7 - Nie chcę rozbijać lewego panelu. Możesz zmienić nazwę "FILTR" na "NARZĘDZIA".
+>
+> Odnośnie Z6 - obecnie jak jest możliwość porównania wierszy to przycisk "PORÓWNAJ ZAZNACZONE" się podświetla. To dobre rozwiązanie. Jednak w związku z modyfikacjami będzie potrzeby dodatkowy przycisk, który usuwa wszystkie zaznaczenia do porównania. Może on być obok i być domyślnie "wyszarzony"/"nieaktywny" (kolor jak "Czy wyświetlić zdezaktualizowane wpisy?"). Dopiero jak się zaznaczy przynajmniej jedno pole do porównania to się uaktywnia i można go nacisnąć.
+>
+> "Dwie rzeczy wymagają Twojej decyzji"
+> 1. Czerwień - zgadzam się na Twoją rekomendację
+> 2. Czy „Pełen Widok" i „Widok Domyślny" mają nadal czyścić filtr globalny? zgodnie z D1 - tak, mają czyścić.
+>
+> Dopisz to wszystko do analizy. Czy jesteśmy gotowi do wdrożenia, czy trzeba jeszcze coś wyjaśnić?
+
+### Rozstrzygnięcia — tabela zbiorcza
+
+| Punkt | Decyzja | Skutek dla zakresu prac |
+|---|---|---|
+| **D1** | Wariant **A** — „Pełen Widok" i „Widok Domyślny" **nadal czyszczą** filtr globalny | `applyViewModeToAllSheets()` woła `setGlobalFilter("")`. Dymki obu przycisków zostają bez zmian, bo nadal mówią prawdę. |
+| **D2** | Wariant **A** — klucz `datavault_session_view_v2` **zostaje**, z migracją starej frazy | `loadSessionState()` czyta `parsed.globalFilter`, a przy jego braku bierze pierwszą niepustą frazę ze starych `sheetViews[*].global`. Nikt nic nie traci przy wdrożeniu. |
+| **D3** | Wariant **A** — tytuł menu filtra kolumny zostaje `FILTR: <kolumna>` | Brak prac. Patrz jednak rozdz. 18: pod wariantem D5-A kolizja i tak słabnie. |
+| **D4** | Zgodnie z rekomendacją — `clearRuntimeData()` **nie czyści** filtru globalnego | Brak prac. |
+| **Z1** | **Wdrożyć** wyszukiwanie niewrażliwe na polskie znaki, z adnotacją w dokumentacji, że jest pisane pod polską wersję językową | Nowa funkcja `foldPolish()` + zmiana w `passesFilters()` + adnotacje w `Documentation.md`, `README.md` i przy punkcie rozszerzania języków w `app.js`. Szczegóły: rozdz. 19. |
+| **Z2** | **Bez zmian** — `"pisto bolt"` ma być szukane jako jedna fraza | Brak prac. |
+| **Z3** | Bezprzedmiotowe wobec decyzji Z2 | Brak prac. |
+| **Z4** | **Odrzucone** — na komputerze wystarczy zaznaczenie tekstu i `Backspace`; dodatkowy przycisk zaśmieca widok | Brak prac. Pole `#globalSearch` zostaje zwykłym `type="text"`. |
+| **Z5** | **Odrzucone** — liczba ukrytych wierszy nie jest istotna; wystarczy informacja, że filtr jest założony | Brak prac. Licznik `Pokazano N z M` zostaje tam, gdzie jest dziś, czyli wyłącznie w pasku telefonu. |
+| **Z6** | Zaznaczenia **przeżywają** zmianę filtrów (stan dzisiejszy) **+ nowy przycisk czyszczący zaznaczenia** | Nowy przycisk obok `Porównaj zaznaczone`. Szczegóły: rozdz. 20. |
+| **Z7** | Panelu **nie rozbijamy**. Nazwa `FILTR` może zostać zmieniona na `NARZĘDZIA` | **Wymaga rozstrzygnięcia** — koliduje z wymaganiem 1 i 3 z pierwotnego promptu. Szczegóły i warianty: rozdz. 18. |
+| **Czerwień** | Zgoda na rekomendację — `rgb(255,120,120)` z poświatą `rgba(255,85,85,.35)` | Jak w rozdz. 7. |
+
+### Co z tego wynika dla zakresu
+
+Trzy decyzje **zdejmują** pracę z pierwotnego szkicu: Z2, Z4 i Z5 zostają bez zmian, więc pole wyszukiwania i pasek narzędzi nie są ruszane poza tym, co wynika z utrwalenia frazy.
+
+Dwie decyzje **dokładają** pracę: Z1 (składanie polskich znaków) i Z6 (nowy przycisk). Obie są niezależne od trzonu zmiany — można je wdrożyć osobno, gdyby zaszła potrzeba podziału na etapy.
+
+Jedna decyzja **otwiera nowe pytanie**: Z7. Opisane niżej.
+
+---
+
+## 18. D5 — kolizja nazw `FILTR` i `NARZĘDZIA` (do rozstrzygnięcia)
+
+### Na czym polega problem
+
+Pierwotny prompt zawiera dwa powiązane wymagania:
+
+> Po pierwsze trzeba zmienić nazwę z "▸FILTRY" na "FILTR".
+>
+> Jeżeli filtr globalny jest aktywny to **nazwa "FILTR" na panelu bocznym ma być czerwona**, żeby użytkownik miał feedback, że coś wpisał.
+
+Decyzja Z7 mówi natomiast:
+
+> Nie chcę rozbijać lewego panelu. Możesz zmienić nazwę "FILTR" na "NARZĘDZIA".
+
+Jeżeli nagłówek panelu otrzyma nazwę `NARZĘDZIA`, to **na panelu bocznym nie ma już napisu `FILTR`, który miałby się czerwienić**. Sygnalizacja z wymagania 3 traci swoje zaczepienie. Dlatego potrzebna jest jedna dodatkowa decyzja.
+
+Słowo „Możesz" odczytuję jako propozycję rozwiązania niespójności podniesionej w Z7 (panel mieści filtr **oraz** przełączniki widoczności zakładek, więc nazwa w liczbie pojedynczej opisuje tylko pierwszy element), a nie jako polecenie zrezygnowania z czerwonego sygnału. Poniższe warianty wychodzą z tego założenia.
+
+### Warianty
+
+| Wariant | Nagłówek panelu | Co się czerwieni | Ocena |
+|---|---|---|---|
+| **D5-A (rekomendowany)** | `NARZĘDZIA` | Etykieta nad polem wyszukiwania, zmieniona z `Szukaj (globalnie)` na **`FILTR GLOBALNY`** | Spełnia **jednocześnie** wymaganie 3 i decyzję Z7. Nagłówek uczciwie nazywa całą zawartość panelu, a napis `FILTR GLOBALNY` istnieje na panelu bocznym, czerwieni się i stoi **bezpośrednio nad polem, którego dotyczy** — czyli bliżej przyczyny niż nagłówek dwa wiersze wyżej. Zachowuje też informację „globalnie", która jest tu najważniejsza: mówi, że filtr działa na wszystkich zakładkach. |
+| D5-B | `NARZĘDZIA` | Nagłówek `NARZĘDZIA` | Najmniej pracy, ale sygnał kłamie: na czerwono świeci się słowo opisujące **cały panel**, w tym przełączniki zakładek, które z filtrem nie mają nic wspólnego. Użytkownik widzi „coś w narzędziach jest włączone", a nie „filtr jest założony". |
+| D5-C | `FILTR` | Nagłówek `FILTR` | Dosłownie zgodne z pierwotnym promptem, zerowa niejednoznaczność. Zostawia jednak niespójność z Z7: nagłówek w liczbie pojedynczej nadal opisuje panel, w którym są też trzy przełączniki i blok podpowiedzi. |
+
+### Dlaczego D5-A
+
+1. **Nic nie ginie.** Nagłówek `NARZĘDZIA` rozwiązuje to, co użytkownik chciał rozwiązać w Z7, a napis `FILTR GLOBALNY` realizuje wymaganie 3 z pierwotnego promptu. Żadne z dwóch poleceń nie jest poświęcone na rzecz drugiego.
+2. **Sygnał trafia we właściwe miejsce.** Czerwień pojawia się przy polu, w które użytkownik wpisał frazę, a nie przy nagłówku obejmującym też checkboxy.
+3. **Etykieta zyskuje na treści.** `Szukaj (globalnie)` opisuje czynność, `FILTR GLOBALNY` opisuje **stan**, który może być włączony — a to jest dokładnie to, co ma sygnalizować kolor.
+4. **Słabnie kolizja z D3.** `FILTR GLOBALNY` obok `FILTR: Typ` czyta się jednoznacznie: pierwszy ma przymiotnik zakresu, drugi nazwę kolumny. Decyzja D3-A (nie ruszać menu kolumny) pozostaje słuszna.
+
+### Co zmienia D5-A względem projektu z rozdz. 7
+
+| Element | Rozdz. 7 (przed decyzjami) | Po D5-A |
+|---|---|---|
+| Zaczepienie sygnału | `<span class="panelTitle" id="filtersPanelTitle">` | `<div class="fieldLabel" id="globalFilterLabel">` |
+| Klasa stanu | `.panelTitle--active` | `.fieldLabel--active` |
+| Klucz i18n nagłówka | `filtersTitle: "FILTR" / "FILTER"` | `filtersTitle: "NARZĘDZIA" / "TOOLS"` |
+| Klucz i18n etykiety | `globalSearchLabel: "Szukaj (globalnie)"` bez zmian | `globalSearchLabel: "FILTR GLOBALNY" / "GLOBAL FILTER"` |
+| Reszta mechaniki | — | bez zmian: `isGlobalFilterActive()`, `updateGlobalFilterIndicator()`, kolor, dymek |
+
+Szkic HTML pod D5-A:
+
+```html
+<div class="panelHeader">
+  <span class="panelTitle" data-i18n="filtersTitle">NARZĘDZIA</span>
+</div>
+<div class="panelBody">
+  <label class="field">
+    <div class="fieldLabel" id="globalFilterLabel" data-i18n="globalSearchLabel">FILTR GLOBALNY</div>
+    <input id="globalSearch" class="input" placeholder="np. Pist, Brutalna, IMPERIUM, Zatrucie (5)..." />
+  </label>
+```
+
+Szkic CSS pod D5-A:
+
+```css
+/* PL: Aktywny filtr globalny zapala etykietę pola na czerwono — tą samą czerwienią, którą moduł
+   oznacza aktywne filtry kolumnowe, żeby oba sygnały znaczyły dla użytkownika to samo. Etykieta,
+   a nie nagłówek panelu, bo sygnał ma wskazywać konkretne pole, a nie cały panel narzędzi.
+   EN: An active global filter turns the field label red — the same red the module uses for active
+   column filters, so both signals mean the same thing to the user. The label rather than the panel
+   header, because the signal must point at one field, not at the whole tools panel. */
+.fieldLabel--active{
+  color:rgb(255,120,120);
+  text-shadow:0 0 10px rgba(255,85,85,.35);
+}
+```
+
+**To jedyna otwarta kwestia przed wdrożeniem.** Pozostałe rozdziały zakładają wariant D5-A; przejście na D5-B albo D5-C to zmiana trzech linii (identyfikator elementu, nazwa klasy, wartości kluczy i18n) i nie rusza niczego innego.
+
+---
+
+## 19. Z1 — wyszukiwanie niewrażliwe na polskie znaki
+
+### Pułapka: `normalize("NFD")` nie rozkłada `ł`
+
+Szkic z rozdz. 14 („`normalize("NFD").replace(/\p{Diacritic}/gu, "")`") jest **niekompletny dla języka polskiego**. Sprawdzone w środowisku Node:
+
+```
+wejście        : ąćęłńóśźż ĄĆĘŁŃÓŚŹŻ Broń łańcuchowa
+po samym NFD   : acełnoszz ACEŁNOSZZ Bron łancuchowa
+                    ^                        ^
+"ł".normalize("NFD").length === 1   → brak rozkładu
+"ą".normalize("NFD").length === 2   → rozłożone na "a" + ogonek
+```
+
+Powód: `ą`, `ć`, `ę`, `ń`, `ó`, `ś`, `ź`, `ż` to w Unicode litera bazowa plus znak łączący, więc `NFD` je rozdziela i znak łączący daje się usunąć. Natomiast `ł` (U+0142) i `Ł` (U+0141) to **osobne litery bez rozkładu kanonicznego** — `NFD` ich nie rusza. Bez jawnej podmiany fraza `lancuchowa` nadal nie znalazłaby `Broń łańcuchowa`, czyli poprawka nie zadziałałaby w najczęstszym polskim przypadku.
+
+### Proponowana funkcja
+
+```js
+// --- Składanie polskich znaków diakrytycznych na potrzeby wyszukiwania / Folding Polish diacritics for search ---
+// PL: Dzięki temu fraza "lancuchowa" znajduje "Broń łańcuchowa", a "zywotnosc" znajduje "Żywotność".
+// normalize("NFD") rozkłada ą, ć, ę, ń, ó, ś, ź, ż na literę bazową i znak łączący, który następnie
+// usuwamy zakresem U+0300-U+036F. NIE rozkłada jednak ł ani Ł — te znaki nie mają rozkładu
+// kanonicznego w Unicode, więc podmieniamy je wprost, już po sprowadzeniu tekstu do małych liter.
+// UWAGA JĘZYKOWA: reguła jest napisana pod polską wersję językową modułu. Inny język będzie wymagał
+// własnego zestawu podmian znaków nierozkładalnych (np. niemieckie ß, duńskie ø, tureckie ı).
+// EN: This makes the phrase "lancuchowa" find "Broń łańcuchowa" and "zywotnosc" find "Żywotność".
+// normalize("NFD") splits ą, ć, ę, ń, ó, ś, ź, ż into a base letter and a combining mark, which we
+// then strip with the U+0300-U+036F range. It does NOT decompose ł or Ł — those characters have no
+// canonical decomposition in Unicode, so they are replaced explicitly, after lowercasing.
+// LANGUAGE NOTE: the rule is written for the Polish version of the module. Another language will
+// need its own replacements for non-decomposable characters (e.g. German ß, Danish ø, Turkish ı).
+function foldPolish(text){
+  return String(text ?? "")
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/ł/g, "l");
+}
+```
+
+Zakres `[̀-ͯ]` zamiast `\p{Diacritic}` jest celowy: obejmuje dokładnie te znaki łączące, o które chodzi, i nie wymaga flagi `u` ani wsparcia dla właściwości Unicode w wyrażeniach regularnych.
+
+Kolejność operacji ma znaczenie: `toLowerCase()` **przed** podmianą `ł`, dzięki czemu jedna reguła obsługuje `Ł` i `ł` naraz.
+
+### Zastosowanie w `passesFilters()`
+
+```js
+function passesFilters(row, cols){
+  // PL: Filtr globalny jest wspólny dla wszystkich zakładek i niewrażliwy na wielkość liter oraz na
+  // polskie znaki diakrytyczne — obie strony porównania przechodzą przez foldPolish().
+  // EN: The global filter is shared by every sheet and insensitive to letter case and to Polish
+  // diacritics — both sides of the comparison go through foldPolish().
+  const g = foldPolish(globalFilter).trim();
+  if (g){
+    const hay = foldPolish(cols.map(c => String(row[c] ?? "")).join(" | "));
+    if (!hay.includes(g)) return false;
+  }
+  ...
+}
+```
+
+Zgodnie z decyzją Z2 fraza pozostaje **jednym ciągiem** — `"pisto bolt"` szukane jest dosłownie, bez rozbijania po spacjach.
+
+### Weryfikacja
+
+Funkcja sprawdzona w Node na ośmiu próbkach, w obie strony (użytkownik pisze z ogonkami i bez):
+
+| Fraza wpisana | Szukany tekst | Wynik |
+|---|---|---|
+| `lancuchowa` | `Broń łańcuchowa Astartes` | znajduje |
+| `LANCUCHOWA` | `Broń łańcuchowa Astartes` | znajduje |
+| `łańcuchowa` | `Broń łańcuchowa Astartes` | znajduje |
+| `bron` | `Broń biała` | znajduje |
+| `egzo` | `Egzotyczna broń biała` | znajduje |
+| `zywotnosc` | `Żywotność` | znajduje |
+| `swiatlo` | `Światło` | znajduje |
+| `pisto` | `Pistolet bolterowy` | znajduje |
+
+### Czy filtry kolumnowe też mają składać znaki?
+
+**Rekomendacja: nie w tym wdrożeniu.** Decyzja użytkownika dotyczy filtru globalnego. Objęcie `view.filtersText` tą samą regułą byłoby spójne, ale to zmiana zachowania filtrów kolumnowych, o którą nikt nie prosił, a filtry listowe (`view.filtersSet`) operują na **dokładnych wartościach** ze słownika i składania znaków nie potrzebują. Do rozważenia osobno, jeśli okaże się potrzebne w praktyce.
+
+### Koszt wydajnościowy i co z nim zrobić
+
+`foldPolish()` jest droższe od dzisiejszego `toLowerCase()` — dokłada `normalize("NFD")` i dwa przejścia podmieniające. Koszt ponoszony jest **dla każdego wiersza przy każdym naciśnięciu klawisza**.
+
+Rekomendacja: **wdrożyć wersję prostą i zmierzyć na zakładce `Bestiariusz`**, która ma najwięcej wierszy i najdłuższe teksty. Jeżeli pisanie w polu zacznie zauważalnie zacinać, dołożyć pamięć podręczną na wiersz:
+
+```js
+// PL: Złożona postać wiersza liczona jest raz i odkładana pod kluczem z prefiksem "__", który
+// getColumnOrder() pomija, więc nie pojawi się jako kolumna. Dane w wierszu się nie zmieniają,
+// a DB powstaje od nowa przy każdym wczytaniu, więc pamięć podręczna nie wymaga unieważniania.
+// EN: The folded form of a row is computed once and cached under a "__"-prefixed key, which
+// getColumnOrder() skips, so it never shows up as a column. Row data does not change and DB is
+// rebuilt on every load, so the cache needs no invalidation.
+function foldedRow(row, cols){
+  if (typeof row.__fold !== "string"){
+    row.__fold = foldPolish(cols.map(c => String(row[c] ?? "")).join(" | "));
+  }
+  return row.__fold;
+}
+```
+
+Warunek poprawności tej pamięci podręcznej: wiersz należy zawsze do jednej zakładki, a `cols` dla zakładki jest stałe w obrębie wczytanych danych. Oba warunki są dziś spełnione (`DB.sheets[nazwa]._cols` wyliczane raz w `buildTableSkeleton()`). Gdyby kiedyś powstała możliwość zmiany zestawu kolumn bez przeładowania danych, pamięć podręczną trzeba będzie czyścić.
+
+### Adnotacje wymagane decyzją użytkownika
+
+Użytkownik prosi wprost o odnotowanie, że rozwiązanie jest pisane pod język polski. Adnotacja musi trafić w **trzy** miejsca:
+
+1. **Komentarz PL/EN przy samej funkcji** `foldPolish()` — powyżej, sekcja „UWAGA JĘZYKOWA / LANGUAGE NOTE".
+2. **Blok `MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT`** w `app.js` (istnieje dziś w dwóch miejscach, m.in. nad `translations` i nad `KEYWORD_SHEETS_COMMA_NEUTRAL`) — dopisać `foldPolish()` do listy rzeczy wymagających korekty przy dodaniu nowego języka.
+3. **`DataVault/docs/Documentation.md`**, w obu wersjach językowych — osobny akapit o tym, że składanie znaków obejmuje polski zestaw diakrytyków i że `ł`/`Ł` wymagają jawnej podmiany, bo `NFD` ich nie rozkłada.
+
+W `README.md` adnotacja techniczna nie jest potrzebna — instrukcja użytkownika ma powiedzieć tylko tyle, że *„nie trzeba pisać polskich znaków: `bron` znajdzie `Broń`"*.
+
+---
+
+## 20. Z6 — przycisk czyszczenia zaznaczeń
+
+### Część pierwsza: zaznaczenia przeżywają zmianę filtrów
+
+**Brak prac.** To jest dzisiejsze zachowanie: `view.selected` jest niezależne od `view.filtersText`, `view.filtersSet` i filtru globalnego, a `passesFilters()` nie zagląda do zaznaczeń. Ryzyko R5 z rozdz. 13 zostaje zatem **świadomie zaakceptowane** i przestaje być ryzykiem — staje się decyzją projektową, której nowy przycisk jest przeciwwagą.
+
+Jedyny wyjątek pozostaje bez zmian: `pruneHiddenOldBestiarySelection()` (`app.js:499`) zdejmuje zaznaczenie z wierszy Bestiariusza ukrytych **systemowo** (stare wpisy przy wyłączonym checkboxie admina). To ukrycie systemowe, nie filtr użytkownika, więc nie koliduje z decyzją Z6.
+
+### Część druga: nowy przycisk
+
+#### Stan dzisiejszy
+
+| Element | Zachowanie |
+|---|---|
+| `#btnCompare` | `disabled` dopóki `view.selected.size < 2` (`app.js:1795`, `1818`) |
+| Zaznaczenia | `view.selected` — zbiór `__id`, **osobny dla każdej zakładki** |
+| Porównanie | `openCompareModal()` działa wyłącznie na `currentSheet` (`app.js:2031`) |
+| Ustawianie stanu przycisku | **cztery** rozproszone przypisania: `app.js:1381`, `1769`, `1795`, `1818` |
+
+#### Projekt
+
+| Cecha | Ustalenie |
+|---|---|
+| Identyfikator | `btnClearSelection` |
+| Położenie | w `.actions`, **bezpośrednio za** `#btnCompare` |
+| Etykieta | PL `Wyczyść zaznaczone`, EN `Clear selection` (nowy klucz `clearSelectionButton`) |
+| Stan nieaktywny | `disabled` dopóki `view.selected.size < 1` |
+| Stan aktywny | od **pierwszego** zaznaczonego wiersza — niżej niż próg `Porównaj zaznaczone`, który wymaga dwóch |
+| Wygląd nieaktywny | kolor archiwalny `var(--text-old)` / `#7f9b7f`, jak kontrolka „Czy wyświetlić zdezaktualizowane wpisy?" |
+| Zasięg działania | **bieżąca zakładka** — patrz uzasadnienie niżej |
+
+#### Zasięg — dlaczego bieżąca zakładka
+
+Przycisk stoi obok `Porównaj zaznaczone` i lustrzanie odbija jego stan. Skoro porównanie działa wyłącznie na bieżącej zakładce, czyszczenie obejmujące wszystkie zakładki byłoby niespójne: przycisk zapalałby się od zaznaczeń w **tej** zakładce, a kasował zaznaczenia w **każdej**, także takie, których użytkownik w tej chwili nie widzi i o których mógł zapomnieć. To zachowanie zaskakujące i nieodwracalne.
+
+Jeżeli jednak intencją było „wyczyść wszystko wszędzie", wystarczy pętla po `viewBySheet` zamiast jednego `view.selected.clear()` — zmiana czterech linii. **Do potwierdzenia przy odbiorze**, jeśli zasięg na bieżącą zakładkę okaże się niewystarczający.
+
+#### Szkic HTML
+
+```html
+<button class="btn primary" id="btnCompare" disabled data-i18n="compareButton">Porównaj zaznaczone</button>
+<!-- Przycisk zdejmujący wszystkie zaznaczenia w bieżącej zakładce. Uaktywnia się już przy jednym
+     zaznaczonym wierszu, czyli wcześniej niż "Porównaj zaznaczone", które wymaga dwóch — bo
+     pojedyncze zaznaczenie też trzeba umieć wycofać.
+     A button that drops every selection in the current sheet. It becomes active at one selected
+     row, earlier than "Compare selected", which needs two — because a single selection has to be
+     revocable too. -->
+<button class="btn secondary" id="btnClearSelection" disabled data-i18n="clearSelectionButton">Wyczyść zaznaczone</button>
+```
+
+#### Szkic CSS
+
+```css
+/* PL: Nieaktywny przycisk czyszczenia zaznaczeń używa koloru archiwalnego, tego samego co kontrolka
+   zdezaktualizowanych wpisów Bestiariusza — ma być czytelnie wyszarzony, a nie przygaszony
+   półprzezroczystością, dlatego znosimy opacity z reguły bazowej .btn:disabled.
+   EN: The disabled clear-selection button uses the archival colour, the same as the outdated-Bestiary
+   control — it should read as greyed out rather than faded, hence opacity from the base
+   .btn:disabled rule is overridden. */
+#btnClearSelection:disabled{
+  opacity:1;
+  color:var(--text-old);
+  border-color:rgba(127,155,127,.35);
+  background:rgba(127,155,127,.08);
+}
+```
+
+#### Szkic JS — jedno miejsce zamiast czterech
+
+```js
+// PL: Oba przyciski zależą od tego samego zbioru zaznaczeń, tylko od innych progów: porównanie
+// wymaga dwóch wierszy, czyszczenie ma sens już przy jednym. Trzymamy to w jednej funkcji, żeby
+// żadna ścieżka zmieniająca zaznaczenia nie zapomniała odświeżyć któregoś z nich.
+// EN: Both buttons depend on the same selection set, only at different thresholds: comparing needs
+// two rows, clearing makes sense from one. Keeping it in a single function means no path that
+// changes the selection can forget to refresh either button.
+function updateSelectionButtons(){
+  const count = view?.selected?.size || 0;
+  if (els.btnCompare) els.btnCompare.disabled = count < 2;
+  if (els.btnClearSelection) els.btnClearSelection.disabled = count < 1;
+}
+
+if (els.btnClearSelection){
+  els.btnClearSelection.addEventListener("click", ()=>{
+    if (!view?.selected?.size) return;
+    view.selected.clear();
+    updateSelectionButtons();
+    // Pełne przerysowanie, a nie odznaczenie samych widocznych pól wyboru: w układzie kart nagłówek
+    // grupy pokazuje ptaszek, gdy grupa zawiera zaznaczony wiersz, więc bez przerysowania ten
+    // znacznik zostałby nieaktualny na zwiniętych grupach.
+    // A full redraw rather than unticking the visible checkboxes: in the card layout a group header
+    // shows a tick when the group holds a selected row, so without a redraw that marker would go
+    // stale on collapsed groups.
+    renderBody();
+    saveSessionState();
+  });
+}
+```
+
+Cztery dotychczasowe przypisania `els.btnCompare.disabled = ...` (`app.js:1381`, `1769`, `1795`, `1818`) zastępuje wywołanie `updateSelectionButtons()`. Piąte miejsce wymagające wywołania to `pruneHiddenOldBestiarySelection()` — dziś nie odświeża przycisku po zdjęciu zaznaczeń, co jest **istniejącym drobnym defektem**: po ukryciu starych wpisów Bestiariusza `Porównaj zaznaczone` może zostać aktywny mimo spadku liczby zaznaczeń poniżej dwóch. Przy okazji tej zmiany warto to naprawić.
+
+---
+
+## 21. Zaktualizowany zakres prac
+
+Zastępuje rozdz. 11. Zakłada warianty **D1-A, D2-A, D3-A, D4 bez zmian, D5-A**.
+
+### `DataVault/index.html`
+
+- [ ] linia 62 — usunąć `<span class="caret">▸</span>`; treść `panelTitle` na `NARZĘDZIA`.
+- [ ] linia 66 — `fieldLabel` dostaje `id="globalFilterLabel"`, treść domyślna `FILTR GLOBALNY`.
+- [ ] po `#btnCompare` — dodać `#btnClearSelection` z komentarzem PL/EN.
+
+### `DataVault/app.js`
+
+**Trzon zmiany (filtr globalny)**
+
+- [ ] `els` — dodać `globalFilterLabel` i `btnClearSelection`.
+- [ ] `labels.filtersTitle` — PL `"NARZĘDZIA"`, EN `"TOOLS"`.
+- [ ] `labels.globalSearchLabel` — PL `"FILTR GLOBALNY"`, EN `"GLOBAL FILTER"`.
+- [ ] `labels.clearSelectionButton` — PL `"Wyczyść zaznaczone"`, EN `"Clear selection"`.
+- [ ] `messages.globalFilterActive` — nowy klucz w obu językach.
+- [ ] nowa zmienna modułu `globalFilter` obok `viewBySheet` / `view` (linie 360-361).
+- [ ] usunąć pole `global` z: `createSheetViewState()` (511), `setCurrentSheetView()` (535), `persistCurrentSheetView()` (549), `restoreSheetView()` (572), `applyDefaultViewForSheet()` (599), `applyFullViewForSheet()` (612).
+- [ ] `saveSessionState()` (620) — dopisać `globalFilter` do `payload`.
+- [ ] `loadSessionState()` (631) — czytać `parsed.globalFilter` z migracją ze starych `sheetViews[*].global`; usunąć `next.global` (655) i `global` w zapisie (678).
+- [ ] `applyViewModeToAllSheets()` (699) — `setGlobalFilter("")` zgodnie z D1-A.
+- [ ] `applyLanguage()` — wołać `updateGlobalFilterIndicator()`.
+- [ ] nowe funkcje: `isGlobalFilterActive()`, `setGlobalFilter()`, `updateGlobalFilterIndicator()`.
+- [ ] `selectSheet()` (1377) — usunąć nadpisywanie `els.global.value`; dodać `updateGlobalFilterIndicator()`.
+- [ ] nasłuch `#globalSearch` (2073) → `setGlobalFilter(els.global.value)`.
+- [ ] nasłuch `#quickSearch` (2668) → `setGlobalFilter(els.quickSearch.value)`.
+- [ ] `buildRenderPlan()` (2213) — `searching` z `globalFilter`.
+- [ ] `updateSheetTools()` (2285) — synchronizacja `#quickSearch` z `globalFilter`.
+- [ ] `renderActiveChips()` (2324-2333) — żeton `✕` woła `setGlobalFilter("")`.
+
+**Z1 — składanie polskich znaków**
+
+- [ ] nowa funkcja `foldPolish()` z komentarzem PL/EN i adnotacją językową.
+- [ ] `passesFilters()` (1713) — użyć `foldPolish()` po obu stronach porównania frazy globalnej.
+- [ ] bloki `MIEJSCE ROZSZERZENIA JĘZYKÓW / LANGUAGE EXTENSION POINT` — dopisać `foldPolish()`.
+
+**Z6 — przycisk czyszczenia zaznaczeń**
+
+- [ ] nowa funkcja `updateSelectionButtons()`.
+- [ ] zastąpić nią przypisania `els.btnCompare.disabled` w liniach 1381, 1769, 1795, 1818.
+- [ ] `pruneHiddenOldBestiarySelection()` (499) — dołożyć wywołanie `updateSelectionButtons()` (naprawa istniejącego drobnego defektu).
+- [ ] nasłuch `#btnClearSelection`.
+
+### `DataVault/style.css`
+
+- [ ] linia 206 — usunąć osieroconą regułę `.caret`.
+- [ ] dodać `.fieldLabel--active` (czerwień `rgb(255,120,120)` + poświata).
+- [ ] dodać `#btnClearSelection:disabled` (kolor archiwalny, `opacity:1`).
+
+### Dokumentacja
+
+- [ ] `DataVault/docs/Documentation.md` — obie wersje językowe: `globalFilter` jako stan globalny; `foldPolish()` wraz z adnotacją o `ł`/`Ł` i o tym, że reguła jest pisana pod polski; `updateSelectionButtons()` i nowy przycisk; zaktualizowana tabela `sheetTools` (208 / 974) i tabela zachowań (758 / 1521).
+- [ ] `DataVault/docs/README.md` — obie wersje językowe: fraza zostaje przy przełączaniu zakładek; czerwony napis `FILTR GLOBALNY` jako sygnał; jak filtr wyłączyć (skasowanie treści pola, żeton `✕` na telefonie, przyciski `Pełen Widok` / `Widok Domyślny`); że nie trzeba pisać polskich znaków; że fraza przeszukuje tylko kolumny widoczne; do czego służy `Wyczyść zaznaczone` i dlaczego bywa wyszarzony.
+- [ ] `DetaleLayout.md` — nazwa panelu w liniach 1241 i 1367; rozdz. 2.3 o kolorze stanu aktywnego i o wyglądzie nieaktywnego `#btnClearSelection`; rozdz. 3.6a o sygnalizacji filtru globalnego obok sygnalizacji filtrów kolumnowych.
+
+Pliki **nietykane**: `build_json.py`, `xlsxCanonicalParser.js`, `config/`, wszystkie pozostałe moduły. Bez wpływu na generowanie `data.json` i `firebase-import.json` (`AGENTS.md`, rozdz. 14).
+
+---
+
+## 22. Zaktualizowany plan testów
+
+Testy **T1-T20** z rozdz. 12 obowiązują bez zmian, z dwoma korektami wynikającymi z D5-A:
+
+- w **T1**, **T4**, **T10**, **T11**, **T12**, **T20** zamiast „nagłówek `FILTR`" czytaj „etykieta `FILTR GLOBALNY` nad polem",
+- w **T12** nagłówek panelu ma się zmienić na `TOOLS`, a etykieta na `GLOBAL FILTER`.
+
+### Nowe testy — Z1 (polskie znaki)
+
+| # | Kroki | Oczekiwany wynik |
+|---|---|---|
+| T21 | Wpisz `lancuchowa` w zakładce `Bronie` | Znalezione wiersze `Broń łańcuchowa` i `Broń łańcuchowa Astartes` |
+| T22 | Wpisz `łańcuchowa` (z polskimi znakami) | Ten sam zestaw wierszy co w T21 |
+| T23 | Wpisz `LANCUCHOWA` wersalikami | Ten sam zestaw wierszy co w T21 |
+| T24 | Wpisz `bron` | Znalezione wiersze zawierające `Broń` |
+| T25 | Wpisz `zywotnosc` w zakładce `Pojazdy` | Znalezione wiersze z kolumną `Żywotność` |
+| T26 | Wpisz frazę w filtrze **kolumnowym** (nie globalnym) bez polskich znaków | Zachowanie **niezmienione** — filtry kolumnowe nie składają znaków (świadoma decyzja z rozdz. 19) |
+| T27 | Wpisz długą frazę w `Bestiariusz`, obserwuj płynność pisania | Brak zauważalnego zacinania; jeśli występuje — wdrożyć pamięć podręczną z rozdz. 19 |
+
+### Nowe testy — Z6 (przycisk czyszczenia)
+
+| # | Kroki | Oczekiwany wynik |
+|---|---|---|
+| T28 | Wejdź na zakładkę bez zaznaczeń | `Wyczyść zaznaczone` nieaktywny, w kolorze archiwalnym `#7f9b7f`, bez przygaszenia półprzezroczystością |
+| T29 | Zaznacz **jeden** wiersz | `Wyczyść zaznaczone` **aktywny**, `Porównaj zaznaczone` nadal nieaktywny |
+| T30 | Zaznacz **drugi** wiersz | Oba przyciski aktywne |
+| T31 | Kliknij `Wyczyść zaznaczone` | Wszystkie zaznaczenia w tej zakładce znikają, oba przyciski wracają do stanu nieaktywnego, wiersze tracą podświetlenie |
+| T32 | Zaznacz wiersze, wpisz frazę ukrywającą je, usuń frazę | Zaznaczenia **przetrwały** (decyzja Z6), przyciski w stanie zgodnym z liczbą zaznaczeń |
+| T33 | Zaznacz wiersze w zakładce A, przejdź do B, wróć do A | Zaznaczenia w A nietknięte; w B przyciski nieaktywne |
+| T34 | Telefon: zaznacz wiersz w zwiniętej grupie, kliknij `Wyczyść zaznaczone` | Ptaszek przy nagłówku grupy znika (wymusza to pełne przerysowanie z rozdz. 20) |
+| T35 | Tryb admina, `Bestiariusz`: zaznacz 2 stare wpisy, odznacz checkbox „Czy wyświetlić zdezaktualizowane wpisy?" | Zaznaczenia zdjęte przez `pruneHiddenOldBestiarySelection()`, **oba przyciski poprawnie wygaszone** (naprawa defektu) |
+
+---
+
+## 23. Zaktualizowane ryzyka
+
+Ryzyka **R1-R4, R6, R7** z rozdz. 13 obowiązują bez zmian. Zmiany i uzupełnienia:
+
+| # | Ryzyko | Status |
+|---|---|---|
+| R5 | Zaznaczenia przeżywają odfiltrowanie | **Zamknięte jako decyzja.** Użytkownik potwierdził, że taki ma być zamysł (Z6), a nowy przycisk `Wyczyść zaznaczone` daje jednoznaczną drogę wycofania. Przestaje być ryzykiem. |
+| **R8** | **Niekompletne składanie polskich znaków.** Użycie samego `normalize("NFD")` bez jawnej podmiany `ł`/`Ł` daje poprawkę, która nie działa w najczęstszym polskim przypadku — a wygląda na wdrożoną. | Prawdopodobieństwo: wysokie bez tej analizy, zerowe z nią. Przeciwdziałanie: funkcja `foldPolish()` z rozdz. 19 oraz testy **T21-T23** jako kryterium odbioru. |
+| **R9** | **Spowolnienie pisania w polu filtru** na zakładce `Bestiariusz` po dołożeniu `normalize()` do ścieżki wykonywanej dla każdego wiersza przy każdym klawiszu. | Prawdopodobieństwo: niskie, ale realne. Przeciwdziałanie: test **T27**; gotowa pamięć podręczna na wiersz w rozdz. 19, do wdrożenia tylko w razie potrzeby. |
+| **R10** | **Przycisk `Wyczyść zaznaczone` kasuje zaznaczenia nieodwracalnie.** Nie ma cofnięcia, a przy zasięgu „wszystkie zakładki" kasowałby też zaznaczenia niewidoczne w danej chwili. | Prawdopodobieństwo: średnie. Przeciwdziałanie: zasięg ograniczony do bieżącej zakładki (rozdz. 20) i próg aktywacji od jednego zaznaczenia, dzięki czemu przycisk nigdy nie jest „aktywny bez powodu". |
+| **R11** | **Rozjazd między nazwą a sygnałem.** Jeżeli wdrożenie zmieni nagłówek na `NARZĘDZIA`, ale zostawi sygnał czerwieni na nagłówku (wariant D5-B), użytkownik dostanie feedback niewskazujący na filtr. | Prawdopodobieństwo: zależne od rozstrzygnięcia D5. Przeciwdziałanie: świadomy wybór wariantu przed rozpoczęciem prac (rozdz. 18). |
+
+---
+
+## 24. Gotowość do wdrożenia
+
+### Gotowe do wykonania bez dalszych ustaleń
+
+| Obszar | Podstawa |
+|---|---|
+| Wyprowadzenie filtru globalnego ze stanu zakładki (R1-R2 z rozdz. 9) | D1-A, D2-A |
+| Zachowanie przycisków `Pełen Widok` / `Widok Domyślny` | D1-A — nadal czyszczą |
+| Klucz `sessionStorage` i migracja starej sesji | D2-A |
+| Tytuł menu filtra kolumny | D3-A — bez zmian |
+| `clearRuntimeData()` | D4 — bez zmian |
+| Odcień czerwieni sygnału | zaakceptowany `rgb(255,120,120)` + poświata `rgba(255,85,85,.35)` |
+| Składanie polskich znaków wraz z adnotacjami językowymi | Z1 + rozdz. 19 (funkcja zweryfikowana) |
+| Fraza jako jeden ciąg | Z2 |
+| Brak przycisku czyszczenia pola, brak licznika ukrytych wierszy | Z4, Z5 |
+| Zaznaczenia przeżywające zmianę filtrów | Z6, część pierwsza — brak prac |
+| Przycisk `Wyczyść zaznaczone` wraz z wyglądem i progami | Z6, część druga + rozdz. 20 |
+| Usunięcie znaku `▸` i osieroconej reguły `.caret` | wymaganie 1 |
+
+### Wymaga jednego rozstrzygnięcia
+
+**D5 — co ma nosić nazwę `FILTR`, a co `NARZĘDZIA`, i który napis ma się czerwienić** (rozdz. 18).
+
+Rekomendacja: **D5-A** — nagłówek panelu `NARZĘDZIA`, etykieta nad polem `FILTR GLOBALNY`, czerwieni się etykieta.
+
+To jedyna przeszkoda. Jest drobna technicznie (identyfikator elementu, nazwa klasy CSS, dwie wartości w tłumaczeniach), ale dotyczy tego, co użytkownik zobaczy na ekranie, więc nie powinna być rozstrzygana domyślnie przez wykonawcę.
+
+### Do potwierdzenia przy odbiorze, nie blokujące
+
+1. **Zasięg przycisku `Wyczyść zaznaczone`** — projekt zakłada bieżącą zakładkę (rozdz. 20). Jeżeli intencją było „wszystkie zakładki naraz", to zmiana czterech linii po wdrożeniu.
+2. **Liczba trafień `pisto` w zakładce `Ekwipunek`** — test T4 na żywych danych; danych nie ma w repozytorium, więc nie dało się tego sprawdzić statycznie.
+3. **Płynność pisania na `Bestiariuszu`** po dołożeniu `foldPolish()` — test T27; pamięć podręczna gotowa w rozdz. 19, do wdrożenia tylko w razie potrzeby.
+
+### Kolejność prac po rozstrzygnięciu D5
+
+1. Trzon: wyprowadzenie `globalFilter`, `setGlobalFilter()`, sygnał aktywności, nazwy (rozdz. 21, sekcja „Trzon zmiany").
+2. Kryterium odbioru trzonu: `grep -n "view\.global" DataVault/app.js` bez trafień; testy T1-T20.
+3. Z1: `foldPolish()` wraz z adnotacjami; testy T21-T27.
+4. Z6: `updateSelectionButtons()` i nowy przycisk; testy T28-T35.
+5. Dokumentacja: `Documentation.md`, `README.md` (obie wersje językowe), `DetaleLayout.md`.
+
+Kroki 3 i 4 są od siebie i od kroku 1 niezależne — dają się wdrożyć i odebrać osobno, gdyby zaszła potrzeba podziału na etapy.
