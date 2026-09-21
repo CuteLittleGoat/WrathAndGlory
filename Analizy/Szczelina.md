@@ -12,7 +12,7 @@
 | **Metoda** | Pomiar geometrii (`getBoundingClientRect`) oraz sonda pikselowa: zrzut pasma nagłówka i odczyt średniej barwy każdego wiersza device-pikseli; kontrolowane wyłączanie pojedynczych deklaracji CSS i kolorowanie poszczególnych elementów, żeby ustalić, który element maluje który piksel; test przecieku z wierszami przemalowanymi na jaskrawą czerwień |
 | **Konfiguracje testowe** | 8 rozmiarów okna od 1280×610 do 1920×1080, skalowanie 100%, 125%, 150% i 200%, 4–5 pozycji przewinięcia |
 | **Stan repozytorium** | `HEAD` = `38d7668` (gałąź `claude/charming-meitner-45xuh7`, zsynchronizowana z `main`) |
-| **Zmiany w kodzie** | **Żadne.** Ten dokument tylko opisuje i proponuje |
+| **Zmiany w kodzie** | **Żadne.** Ten dokument tylko opisuje i proponuje. Użytkownik wyraźnie zastrzegł, żeby nie ruszać kodu aplikacji do czasu omówienia wszystkich wątpliwości (wiadomość 4) |
 | **Analiza siostrzana** | `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdział 14 — pierwszy opis szczelin w przyklejonym nagłówku |
 
 ### Główny wniosek
@@ -25,6 +25,8 @@ Zostały dwa objawy, oba mające **to samo źródło**: górne obramowanie tabel
 2. **Nagłówek przeskakuje o 1,5 px w górę** w chwili przyklejenia. To bezpośredni skutek poprawki `top:-1px` i występuje w **każdej** konfiguracji. To jest dokładnie to, co użytkownik opisał jako „teksty nagłówków delikatnie jakby przesuwały się w górę".
 
 Rekomendowane rozwiązanie (rozdz. 8) usuwa **oba** objawy jednocześnie, bo likwiduje półpikselowe przesunięcie zamiast je maskować. Zmierzone: przesunięcie nagłówka 0,00 px i zero przeciekających pikseli we wszystkich 8 konfiguracjach.
+
+Rekomendacja ma swoją cenę: nad nazwami kolumn zostaną dwie poziome linie zamiast trzech. Cena została policzona w rozdz. 8.3, a w **rozdz. 8.4 opisana prostym językiem, bez żargonu** — razem z pytaniem, na które użytkownik musi odpowiedzieć przed wdrożeniem.
 
 ---
 
@@ -43,6 +45,14 @@ Zapisane bez skracania, zgodnie z zasadą 10 z `AGENTS.md`.
 > **Wiadomość 3 — uzupełnienie obserwacji**
 >
 > Jeszcze jedna uwaga - wygląda, że ta szczelina jest widoczna tylko w na pełnym ekranie przeglądarki. Przy widoku w oknie wygląda ok. Ale wciąż teksty kolumn przesuwają się nieco w górę.
+
+> **Wiadomość 4 — prośba o wyjaśnienie prostym językiem**
+>
+> Zapoznaj się z analizą Analizy/Szczelina.md
+>
+> Wyjaśnij mi co dokładnie znaczy "Zmiana wyglądu nieprzewiniętej tabeli" oraz o co dokładnie chodzi z kosztem wizualnym w 8.3
+> Napisz to prostym językiem dla osoby bez wiedzy informatycznej.
+> Zaktualizuj analizę (pisz tylko po polsku). Nie zmieniaj jeszcze kodu aplikacji póki wszystkiego nie wyjaśnimy.
 
 ### Materiał dowodowy od użytkownika
 
@@ -149,7 +159,7 @@ Usunięto przy tym `--header-row-height` z `:root`, `ResizeObserver` mierzący w
 
 **Weryfikacja poprawki:** wiersze tabeli przemalowano na jaskrawą czerwień i policzono czerwone piksele w paśmie nad nagłówkiem. Przed poprawką: 490 przeciekających pikseli przy skalowaniu 100% i 1468 przy 150%. Po poprawce: **0** przy skalowaniu 100%, 125%, 150% i 200%, przy czterech pozycjach przewinięcia. Szczelina B pozostała na 0,00 px.
 
-**Odrzucony wariant:** rozważano usunięcie górnego obramowania tabeli (`.dataTable{border-top:0}`). Zamykało szczelinę równie skutecznie, ale zmieniało wygląd tabeli nieprzewiniętej, więc odpadło. **Ta decyzja okazała się błędna i rozdział 8 ją odwraca** — patrz rozdz. 8.2, gdzie policzono, jak duża naprawdę jest ta zmiana wyglądu.
+**Odrzucony wariant:** rozważano usunięcie górnego obramowania tabeli (`.dataTable{border-top:0}`). Zamykało szczelinę równie skutecznie, ale zmieniało wygląd tabeli nieprzewiniętej, więc odpadło. **Ta decyzja okazała się błędna i rozdział 8 ją odwraca** — patrz rozdz. 8.3, gdzie policzono, jak duża naprawdę jest ta zmiana wyglądu, oraz rozdz. 8.4, gdzie opisano ją prostym językiem.
 
 ---
 
@@ -363,7 +373,96 @@ Przy skalowaniu 125% i 150%, gdzie trzy zbiegające się linie i tak zlewają si
 
 **Zmiana dotyczy tylko górnej krawędzi.** Boczne i dolne obramowanie tabeli zostaje bez zmian, bo `border-top:0` po `border:1px` kasuje wyłącznie górną krawędź.
 
-### 8.4 Warianty odrzucone
+### 8.4 Wyjaśnienie prostym językiem — co to znaczy „zmiana wyglądu nieprzewiniętej tabeli" i czym jest koszt wizualny
+
+Rozdziały 8.2 i 8.3 są napisane językiem technicznym. Ten rozdział mówi to samo bez żargonu, bo decyzja z rozdziału 10 należy do użytkownika i musi być podjęta ze zrozumieniem, co dokładnie zmieni się na ekranie.
+
+#### 8.4.1 Trzy słowa, które trzeba najpierw wyjaśnić
+
+**Piksel.** Ekran składa się z bardzo małych kwadratowych punktów świetlnych. Jeden taki punkt to piksel. Wszystko, co w tej analizie ma rozmiar „1 px", jest grubości jednego takiego punktu — to najcieńsza linia, jaką ekran w ogóle potrafi narysować. Człowiek widzi ją jako włos.
+
+**Tabela nieprzewinięta.** To tabela w stanie, w jakim widać ją **zaraz po wejściu w zakładkę**, zanim użytkownik ruszy kółkiem myszy — czyli przewinięta maksymalnie do góry. Dokładnie ten stan pokazywał pierwszy ze zrzutów ekranu dołączonych do wiadomości 2.
+
+**Tabela przewinięta.** To ta sama tabela po ruszeniu kółkiem w dół, kiedy wiersze jadą do góry, a nazwy kolumn zostają przyklejone na swoim miejscu.
+
+To rozróżnienie jest tu kluczowe, bo **cała omawiana zmiana wyglądu dotyczy wyłącznie stanu nieprzewiniętego**. W stanie przewiniętym nic się nie zmieni — i to jest najważniejszy argument z całego tego rozdziału, rozwinięty w punkcie 8.4.5.
+
+#### 8.4.2 Co dziś jest nad nazwami kolumn
+
+Między dolną krawędzią przycisków zakładek a pierwszą literą nazwy kolumny jest pasemko o wysokości czterech punktów ekranu. Każdy z nich maluje co innego:
+
+| Który punkt od góry | Co to jest | Jak wygląda |
+|---|---|---|
+| 1. | dolna krawędź panelu z przyciskami zakładek | cienka, przygaszona zielona linia |
+| 2. | górna krawędź ramki, w której siedzi tabela | cienka, przygaszona zielona linia — **tej samej barwy** |
+| 3. | własne obramowanie samej tabeli | cienka, przygaszona zielona linia — **znów tej samej barwy** |
+| 4. | pierwszy punkt tła nagłówka | **ciemna szczelina** — to jest usterka zgłoszona przez użytkownika |
+
+Trzy pierwsze linie mają **identyczny kolor** (w kodzie to jedna wspólna wartość `var(--div)` — przygaszona zieleń) i **stykają się ze sobą bez przerwy**. Oko nie widzi trzech osobnych linii. Oko widzi **jedną linię o grubości trzech punktów**. Sprawdzenie tego na własne oczy wymagałoby powiększenia zrzutu ekranu kilkunastokrotnie.
+
+Czwarty punkt psuje ten obraz: zamiast być jaśniejszy od tła nagłówka (tak wynika z projektu — tło nagłówka jest gradientem od jaśniejszego do ciemniejszego), jest od niego **ciemniejszy**. Przez to wygląda jak cienka czarna rysa biegnąca przez całą szerokość tabeli tuż pod zieloną linią. To jest właśnie „szczelina", którą użytkownik zobaczył i zgłosił.
+
+#### 8.4.3 Co zmieni proponowana poprawka
+
+Poprawka z rozdziału 8.1 kasuje **punkt trzeci** — własne obramowanie tabeli na jej górnej krawędzi. Wraz z nim znika przyczyna ciemnej szczeliny, więc **punkt czwarty też przestaje być ciemny** i staje się normalnym, jednolitym tłem nagłówka.
+
+```
+DZIŚ — tabela nieprzewinięta            PO ZMIANIE — tabela nieprzewinięta
+
+   [ PRZYCISKI ZAKŁADEK ]                  [ PRZYCISKI ZAKŁADEK ]
+ ─────────────────────────  linia 1      ─────────────────────────  linia 1
+ ─────────────────────────  linia 2      ─────────────────────────  linia 2
+ ─────────────────────────  linia 3
+ ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓  ciemna
+                             szczelina
+   NAZWA KOLUMNY                            NAZWA KOLUMNY
+```
+
+Mówiąc jednym zdaniem: **zielona linia nad nazwami kolumn będzie o jeden punkt cieńsza, a ciemna rysa pod nią zniknie**. Tyle. Nic się nie rozjeżdża, nic się nie otwiera, tabela nadal jest domknięta od góry — tyle że dwiema stykającymi się liniami zamiast trzech.
+
+#### 8.4.4 Co oznacza słowo „koszt" i skąd te liczby w tabeli 8.3
+
+„Koszt wizualny" to po prostu **cena, jaką płaci się za naprawę**. Poprawka nie jest całkowicie darmowa: usuwa dwie usterki, ale przy okazji o włos zmienia wygląd. Rozdział 8.3 nazywa tę cenę dokładnie, żeby użytkownik dowiedział się o niej **przed** wdrożeniem, a nie odkrył ją sam po fakcie.
+
+Liczby w tabeli 8.3 („zielony 40", „zielony 45", „zielony 16") to **zmierzona jasność zieleni** w danym punkcie ekranu, w skali od 0 do 255, gdzie 0 to zupełna czerń. Tło nagłówka ma wartość **15**. Stąd czytelna interpretacja:
+
+| Wartość | Co oznacza w praktyce |
+|---|---|
+| **45** | wyraźnie jaśniejsze od tła → widoczna zielona linia |
+| **16** | praktycznie tyle samo co tło (15) → oko nie odróżnia, linia zniknęła |
+| **11** | **ciemniejsze** od tła → widoczna ciemna rysa, czyli szczelina |
+
+Czyli wiersz tabeli 8.3 „własne obramowanie tabeli: 45 → 16" znaczy dokładnie tyle: *jedna z trzech zielonych linii przestaje być widoczna*. A wiersz „pierwszy wiersz tła nagłówka: 11 → 15–16" znaczy: *ciemna rysa przestaje być widoczna*.
+
+**Bilans zmiany:**
+
+| Co się traci | Co się zyskuje |
+|---|---|
+| Zielona linia nad nazwami kolumn jest cieńsza o jeden punkt ekranu (3 → 2) | Znika ciemna rysa pod tą linią — we **wszystkich** rozmiarach okna, także na pełnym ekranie |
+| — | Nazwy kolumn przestają podskakiwać o 1,5 punktu w chwili ruszenia kółkiem (rozdz. 6) |
+| — | Przestaje znikać i pojawiać się jedna z linii nad nagłówkiem przy przewijaniu (rozdz. 6.3) |
+
+**Czego zmiana nie dotyka w ogóle:** boków i dołu tabeli (obramowanie zostaje), linii między wierszami i kolumnami, barw, czcionek, wielkości liter, odstępów, wysokości wierszy, szerokości kolumn, paska zakładek, przycisków, filtrów, widoku kart na telefonie oraz wszystkich zmian z commita `409cde3`, których użytkownik zastrzegł nie ruszać.
+
+#### 8.4.5 Dlaczego ten koszt jest niewielki
+
+Cztery powody, w kolejności od najmocniejszego:
+
+1. **Ten „nowy" wygląd użytkownik już dziś ogląda.** W obecnej wersji, gdy tylko ruszy się kółkiem, nagłówek swoim nieprzezroczystym tłem zasłania trzecią linię — i nad nazwami kolumn zostają **dwie linie zamiast trzech** (zmierzone, rozdz. 6.3). Tabela już teraz wygląda raz tak, raz tak, zależnie od położenia suwaka. Proponowana zmiana niczego nie wymyśla od nowa — ustala na stałe ten wygląd, który tabela i tak przyjmuje po pierwszym ruchu kółka, i **ujednolica oba stany**. Dzisiejsze migotanie linii przy przewijaniu też przez to znika.
+
+2. **Znika jedna z trzech linii identycznego koloru, stykających się ze sobą.** To nie jest usunięcie linii, którą oko rozpoznaje jako osobny element wykończenia. To zmiana grubości jednego pasemka z trzech punktów na dwa. Gdyby to była jedyna zielona linia nad tabelą, sprawa wyglądałaby zupełnie inaczej — ale nie jest.
+
+3. **W zamian znika coś bardziej rzucającego się w oczy.** Ciemna rysa w jasnym pasemku to przerwa w ciągłości — a oko wyłapuje przerwy dużo łatwiej niż to, że jasna linia jest o włos cieńsza. Potwierdza to najlepszy możliwy dowód: **użytkownik sam zauważył i zgłosił ciemną szczelinę**, bez żadnej podpowiedzi. Nikt natomiast nigdy nie zgłosił, że linia nad tabelą jest za cienka.
+
+4. **Przy skalowaniu 125% i 150% różnica jest praktycznie nie do zauważenia.** Przy takim ustawieniu Windows jeden punkt układu jest malowany na 1,25 lub 1,5 punktu ekranu, więc przeglądarka rozmywa linie na sąsiednie punkty. Trzy zbiegające się linie zlewają się wtedy w jedno rozmyte pasmo i odjęcie jednej z nich nie robi widocznej różnicy. Efekt jest w pełni zauważalny tylko przy skalowaniu 100%.
+
+#### 8.4.6 Co dokładnie trzeba zdecydować
+
+Pytanie do użytkownika brzmi: **czy zgoda na to, żeby zielona linia nad nazwami kolumn była cieńsza o jeden punkt ekranu — w zamian za trwałe zniknięcie ciemnej szczeliny i za to, żeby nazwy kolumn przestały drgać przy przewijaniu?**
+
+Jeżeli tak — wdrażane jest rozwiązanie z rozdziału 8.1. Jeżeli nie — zostaje stan obecny z rozdziału 8.4.2, czyli trzy linie, ciemna szczelina przy części wysokości okna i drganie nagłówka przy każdym przewinięciu. Trzeciej możliwości nie ma: wszystkie warianty pośrednie zostały sprawdzone pomiarem i odrzucone (rozdz. 8.5).
+
+### 8.5 Warianty odrzucone
 
 | Wariant | Dlaczego odpada |
 |---|---|
@@ -380,7 +479,7 @@ Przy skalowaniu 125% i 150%, gdzie trzy zbiegające się linie i tak zlewają si
 
 | Ryzyko | Ocena | Uzasadnienie |
 |---|---|---|
-| Zmiana wyglądu nieprzewiniętej tabeli | **Niskie, ale realne** | Znika jedna z trzech sąsiadujących linii poziomych nad nagłówkiem (rozdz. 8.3). Jest to zmiana zauważalna przy skalowaniu 100%, praktycznie niewidoczna przy 125% i 150%. Wymaga akceptacji użytkownika przed wdrożeniem |
+| Zmiana wyglądu nieprzewiniętej tabeli (czyli tabeli przewiniętej maksymalnie do góry, tak jak zaraz po wejściu w zakładkę) | **Niskie, ale realne** | Znika jedna z trzech sąsiadujących linii poziomych nad nagłówkiem, przez co pasemko nad nazwami kolumn jest cieńsze o 1 px (rozdz. 8.3, wyjaśnienie prostym językiem w rozdz. 8.4). Zauważalne przy skalowaniu 100%, praktycznie niewidoczne przy 125% i 150%. Dotyczy wyłącznie stanu nieprzewiniętego — po przewinięciu tabela już dziś wygląda dokładnie tak, jak będzie wyglądać po zmianie (rozdz. 6.3). Wymaga akceptacji użytkownika przed wdrożeniem |
 | Konflikt ze zmianami z commita `409cde3` | **Brak** | Sprawdzone: commit `409cde3` (filtr globalny, barwy sygnałów, pole wyboru) nie dotyka geometrii nagłówka. Zmiana z rozdz. 8.1 obejmuje dwie deklaracje w regułach `.dataTable` i `.dataTable thead`, których tamten commit nie modyfikował |
 | Wpływ na widok kart na telefonie | **Brak** | W `@media (max-width: 720px)` obowiązuje `.dataTable thead{display:none}` — nagłówka nie ma, więc ani `top`, ani `border-top` nie mają tam zastosowania |
 | Wpływ na szczelinę B (między wierszami nagłówka) | **Brak** | Szczelina B wynika z przyklejenia całego `<thead>` jako jednego bloku, co zostaje bez zmian. Zmierzona wartość 0,00 px pozostaje |
@@ -391,7 +490,7 @@ Przy skalowaniu 125% i 150%, gdzie trzy zbiegające się linie i tak zlewają si
 
 ## 10. Następne kroki
 
-1. **Decyzja użytkownika** co do kosztu wizualnego z rozdz. 8.3: czy zgoda na to, żeby nad nagłówkiem były dwie linie poziome zamiast trzech, w zamian za brak szczeliny i brak przeskoku nagłówka.
+1. **Decyzja użytkownika** co do kosztu wizualnego z rozdz. 8.3 — pytanie postawione prostym językiem znajduje się w rozdz. 8.4.6: czy zgoda na to, żeby nad nagłówkiem były dwie linie poziome zamiast trzech, w zamian za brak szczeliny i brak przeskoku nagłówka.
 2. Po akceptacji: wdrożenie zmiany z rozdz. 8.1 (dwie deklaracje w `DataVault/style.css` plus wymiana komentarza dwujęzycznego przy `thead{top}`).
 3. Aktualizacja `DetaleLayout.md` — obecnie opisuje rozwiązanie z `top:-1px` i zawiera dwa wiersze w tabelach „Zmierzony efekt" dotyczące tej poprawki. Zgodnie z zasadami 8 i 15 z `AGENTS.md` musi opisywać stan aktualny, nie historię.
 4. Sprawdzenie na sprzęcie użytkownika w obu trybach — pełny ekran i okno — bo próg zapytania medialnego `max-height: 760px` wypada w innym miejscu przy każdym ustawieniu skalowania w Windows.
