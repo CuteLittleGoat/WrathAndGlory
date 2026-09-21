@@ -214,6 +214,12 @@ i `DEFAULT_VIEW_CONFIG` pozostają nietknięte.
 Pasek ma `position: sticky`. Wymaga to, by żaden przodek nie obcinał przewijania, dlatego w regule
 `max-width: 720px` `.workspace` i `.tableFrame` dostają `overflow: visible`.
 
+W tej samej regule `overflow: visible` dostają też `.panel`, `.panelBody` i `.tableViewport`. W układzie
+kart przewija się cała strona, więc żaden element wewnątrz nie może być pojemnikiem przewijania:
+pojemnik z `overflow: auto`, który nie ma czego przewijać, i tak przechwytuje gest dotknięcia i palec
+położony na takim obszarze nie przewija niczego. Z tego samego powodu `.panelBody` nie ma
+`overscroll-behavior: contain`.
+
 ### Popover i modale
 
 - `popover` pokazuje opisy cech, stanów i podobnych odwołań.
@@ -973,6 +979,11 @@ filtering, sorting and the active-filter markers. The toolbar is a second entry 
 
 The toolbar uses `position: sticky`. That requires no ancestor to clip scrolling, so in the
 `max-width: 720px` rule `.workspace` and `.tableFrame` get `overflow: visible`.
+
+The same rule also gives `overflow: visible` to `.panel`, `.panelBody` and `.tableViewport`. In the card
+layout the page itself scrolls, so no element inside may be a scrollport: a container with
+`overflow: auto` and nothing to scroll still captures the touch gesture, and a finger placed on such an
+area scrolls nothing. For the same reason `.panelBody` has no `overscroll-behavior: contain`.
 
 ### Popover and modals
 

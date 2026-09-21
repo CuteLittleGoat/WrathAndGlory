@@ -1239,8 +1239,13 @@ według zaokrąglonej liczby pikseli, a drugi według rzeczywistej wysokości. P
 
 - `.panel`: `display: flex; flex-direction: column; min-height: 0; overflow: hidden`,
 - `.panelHeader`: `flex: 0 0 auto` — nagłówek „FILTRY” zostaje na miejscu,
-- `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-  scrollbar-width: thin` — treść przewija się zamiast być ucinana.
+- `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin` — treść
+  przewija się zamiast być ucinana.
+
+Panel **nie ma** `overscroll-behavior: contain`, i to jest świadome. Ta własność blokuje przekazanie
+gestu dalej, a na ekranie dotykowym robi to również wtedy, gdy panel nie ma czego przewijać — palec
+położony na panelu nie przewija wtedy niczego. Zysku i tak by nie było, bo w modelu z `height: 100dvh`
+strona się nie przewija i nie ma dokąd gestu przekazać.
 
 ### Niskie okno (wysokość 760 px i mniej) — kompaktowy pasek górny
 
@@ -1269,7 +1274,15 @@ Wiersz tabeli staje się kartą. Przewija się cała strona, nagłówek tabeli j
 - `.app`: `height: auto; min-height: 100dvh`,
 - `.workspace`, `.tableFrame`: `overflow: visible` — bez tego przyklejony pasek narzędzi nie działa,
   bo pojemnik z `overflow: hidden` staje się własnym obszarem przewijania,
-- `.tableViewport`: `overflow-x: hidden; padding: 8px`,
+- `.panel`: `display: block; overflow: visible`,
+- `.panelBody`: `overflow: visible; min-height: auto`,
+- `.tableViewport`: `overflow: visible; padding: 8px`,
+
+W układzie kart przewija się cała strona, więc **żaden element wewnątrz nie jest pojemnikiem
+przewijania**. Pojemnik z `overflow: auto`, który nie ma czego przewijać, i tak przechwytuje gest
+dotknięcia, przez co palec położony na takim obszarze nie przewija niczego. Dotyczyło to panelu
+filtrów (wysokiego na kilkaset pikseli, czyli sporego martwego pola w połowie ekranu) oraz obszaru
+tabeli obejmującego całą listę kart.
 - `.dataTable`: bez ramki i bez cienia; `thead` ukryty,
 - karta (`tbody tr`): `1px solid var(--div)`, `border-radius: 6px`, `margin-bottom: 10px`,
   `padding: 8px 10px`, `box-shadow: 0 0 10px rgba(22,198,12,.10)`,
@@ -1320,6 +1333,7 @@ Wiersz tabeli staje się kartą. Przewija się cała strona, nagłówek tabeli j
 | Telefon w poziomie 869 × 329: panel filtrów | 23 px z 352 | 354 px, pełny |
 | Telefon w poziomie 869 × 329: zakładki poza zasięgiem | 15 z 15 | 0 |
 | Telefon w poziomie 869 × 329: przewijanie strony | brak | jest |
+| Obszary połykające gest dotknięcia w układzie kart | panel filtrów i obszar tabeli | brak |
 | Nadmiar poziomy strony (320–1920 px) | do 1621 px | 0 px |
 | Szerokość kolumny zaznaczania | 63 px | 39 px |
 
@@ -1351,8 +1365,13 @@ the `--header-row-height` variable and the `ResizeObserver` measuring it are no 
 
 - `.panel`: `display: flex; flex-direction: column; min-height: 0; overflow: hidden`,
 - `.panelHeader`: `flex: 0 0 auto` — the "FILTRY" header stays put,
-- `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-  scrollbar-width: thin` — the content scrolls instead of being clipped.
+- `.panelBody`: `flex: 1 1 auto; min-height: 0; overflow-y: auto; scrollbar-width: thin` — the
+  content scrolls instead of being clipped.
+
+The panel deliberately has **no** `overscroll-behavior: contain`. That property blocks the gesture
+from being passed on, and on a touch screen it does so even when the panel has nothing to scroll — a
+finger placed on the panel then scrolls nothing. There would be no gain anyway: in the `height: 100dvh`
+model the page does not scroll, so there is nowhere to pass the gesture to.
 
 ### Short window (height 760 px and below) — a compact top bar
 
@@ -1382,7 +1401,14 @@ A table row becomes a card. The page scrolls and the table header is hidden.
 - `.app`: `height: auto; min-height: 100dvh`,
 - `.workspace`, `.tableFrame`: `overflow: visible` — without it the sticky toolbar does not work,
   because a container with `overflow: hidden` becomes its own scrollport,
-- `.tableViewport`: `overflow-x: hidden; padding: 8px`,
+- `.panel`: `display: block; overflow: visible`,
+- `.panelBody`: `overflow: visible; min-height: auto`,
+- `.tableViewport`: `overflow: visible; padding: 8px`,
+
+In the card layout the page itself scrolls, so **no element inside is a scrollport**. A container with
+`overflow: auto` and nothing to scroll still captures the touch gesture, so a finger placed on such an
+area scrolls nothing. This affected the filters panel (several hundred pixels tall, i.e. a sizeable
+dead area halfway down the screen) and the table area spanning the whole card list.
 - `.dataTable`: no border and no shadow; `thead` hidden,
 - the card (`tbody tr`): `1px solid var(--div)`, `border-radius: 6px`, `margin-bottom: 10px`,
   `padding: 8px 10px`, `box-shadow: 0 0 10px rgba(22,198,12,.10)`,
@@ -1433,6 +1459,7 @@ A table row becomes a card. The page scrolls and the table header is hidden.
 | Phone in landscape 869 × 329: filter panel | 23 px of 352 | 354 px, complete |
 | Phone in landscape 869 × 329: tabs out of reach | 15 of 15 | 0 |
 | Phone in landscape 869 × 329: page scrolling | none | present |
+| Areas swallowing the touch gesture in the card layout | filters panel and table area | none |
 | Horizontal page overflow (320–1920 px) | up to 1621 px | 0 px |
 | Selection column width | 63 px | 39 px |
 

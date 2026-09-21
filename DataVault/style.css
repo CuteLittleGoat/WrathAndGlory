@@ -193,7 +193,14 @@ code{color:var(--code)}
   flex:1 1 auto;
   min-height:0;
   overflow-y:auto;
-  overscroll-behavior:contain;
+  /* PL: Celowo bez `overscroll-behavior: contain`. Ta własność blokuje przekazanie gestu dalej, a na
+     urządzeniu dotykowym robi to także wtedy, gdy panel nie ma czego przewijać — wtedy palec
+     położony na panelu nie przewija niczego. Zysku i tak by nie było: w modelu z `height: 100dvh`
+     strona się nie przewija, więc nie ma dokąd przekazywać gestu.
+     EN: Deliberately without `overscroll-behavior: contain`. It blocks the gesture from being passed
+     on, and on a touch device it does so even when the panel has nothing to scroll — a finger placed
+     on the panel then scrolls nothing. There would be no gain anyway: in the `height: 100dvh` model
+     the page does not scroll, so there is nowhere to pass the gesture to. */
   scrollbar-width:thin;
 }
 .caret{color:rgba(22,198,12,.65)}
@@ -1266,7 +1273,21 @@ td.center{text-align:center}
      On a phone there are no sticky headers — there is nothing to stick, because the table is a list
      of cards. The page itself scrolls. */
   .app{height:auto; min-height:100dvh}
-  .tableViewport{overflow-x:hidden; padding:8px}
+
+  /* --- Żadnych zagnieżdżonych obszarów przewijania / No nested scrollports ---
+     PL: W układzie kart przewija się cała strona, więc panel filtrów i obszar tabeli nie mogą być
+     własnymi pojemnikami przewijania. Pojemnik z `overflow: auto`, który nie ma czego przewijać,
+     i tak przechwytuje gest dotknięcia, a `overscroll-behavior: contain` dodatkowo nie pozwala
+     przekazać go stronie — palec położony na takim obszarze nie przewija niczego. Na komputerze oba
+     przewijania są potrzebne i zostają, bo tam strona ma sztywną wysokość okna.
+     EN: In the card layout the page itself scrolls, so the filters panel and the table area must not
+     be scrollports of their own. A container with `overflow: auto` and nothing to scroll still
+     captures the touch gesture, and `overscroll-behavior: contain` additionally stops it from being
+     passed on to the page — a finger placed on such an area scrolls nothing. On a desktop both
+     scrollports are needed and stay, because there the page has a fixed window height. */
+  .panel{display:block; overflow:visible}
+  .panelBody{overflow:visible; min-height:auto}
+  .tableViewport{overflow:visible; padding:8px}
   .dataTable{border:none; box-shadow:none}
   .dataTable,
   .dataTable tbody,
