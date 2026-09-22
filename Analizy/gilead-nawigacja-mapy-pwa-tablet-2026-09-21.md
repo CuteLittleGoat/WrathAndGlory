@@ -1,12 +1,12 @@
 # Mapa Gilead — nawigacja nie działa w PWA na tablecie
 
-> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27)
+> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28)
 > **Temat:** w aplikacji PWA uruchomionej na tablecie mapa układu Gilead nie daje się przesuwać ani przybliżać/oddalać, natomiast kliknięcia w planety i obszary działają normalnie. W przeglądarce Chrome na tym samym tablecie oraz w PWA na telefonie wszystko działa poprawnie.
 > **Plik, którego dotyczy zgłoszenie:** rejestr światów systemu Gilead — w aplikacji widoczny jako `Main/Gilead.html` (moduł `Main`, repozytorium `WrathAndGlory`). **Jest to kopia wydania.** Plik źródłowy i miejsce nanoszenia poprawek to repozytorium `Scenariusze`, `Warhammer40k/Gilead/` — szczegóły w rozdz. 19.
-> **Charakter dokumentu:** analiza diagnostyczna. Opisuje stan kodu **sprzed** zmian i projekt naprawy. **Żaden plik aplikacji ani skrypt budowania nie został w ramach tej analizy zmieniony** — powstał wyłącznie ten dokument.
-> **Stan na dziś (22 września 2026):** przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6) i **zweryfikowana niezależnym rachunkiem w repozytorium `Scenariusze`** (rozdz. 20). Decyzje D1–D6 podjęte (rozdz. 22). Zakres naprawy dla repozytorium `Scenariusze`: **P1–P6** (rozdz. 23). Zakres dla repozytorium aplikacji: **D5, D6, D7 i rozdz. 24** — pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. Kod czeka na wdrożenie.
+> **Charakter dokumentu:** analiza diagnostyczna wraz z zapisem wykonania. Rozdz. 1–27 opisują stan kodu **sprzed** zmian i projekt naprawy; **rozdz. 28 opisuje naprawę faktycznie wykonaną** w repozytorium `Scenariusze` 22 września 2026.
+> **Stan na dziś (22 września 2026):** **naprawa wykonana.** Przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6), zweryfikowana rachunkiem (rozdz. 20), a na koniec **odtworzona w przeglądarce**: badanie puszczone na pliku sprzed poprawki oblewa z komunikatem `viewBox: Expected number, "NaN NaN NaN NaN"`, czyli tym, który rozdz. 10 podawała jako twardy dowód możliwy tylko na tablecie (rozdz. 28.6). W repozytorium `Scenariusze` wdrożone **P1–P6** (rozdz. 28); kontrola G-6 i G-12 oraz badanie w przeglądarce przechodzą bez zastrzeżeń. Pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. **Zostaje:** testy na tablecie po stronie użytkownika (rozdz. 14) oraz **D5, D6 i D7** po stronie repozytorium aplikacji.
 >
-> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — a potem od rozdz. 27, gdzie są sprawdzenia wykonane już po tej stronie i wykaz decyzji otwartych (27.9).
+> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — potem od rozdz. 27 (sprawdzenia wykonane po tamtej stronie i wykaz decyzji otwartych, 27.9), a na koniec od **rozdz. 28.8**, gdzie jest suma kontrolna wydania do porównania po skopiowaniu pliku.
 
 ---
 
@@ -41,6 +41,14 @@
 24. [Zakres dla drugiego repozytorium (`WrathAndGlory`, moduł `Main`)](#24-zakres-dla-drugiego-repozytorium-wrathandglory-moduł-main)
 25. [Czego ten aneks nie rozstrzyga](#25-czego-ten-aneks-nie-rozstrzyga)
 26. [Następne kroki — stan na 22 września 2026](#26-następne-kroki--stan-na-22-września-2026)
+
+**Uzupełnienie agenta repozytorium `WrathAndGlory`**
+
+27. [Uwagi agenta repozytorium aplikacji](#27-uwagi-agenta-repozytorium-aplikacji)
+
+**Wykonanie — naprawa w repozytorium `Scenariusze`**
+
+28. [Co dokładnie naprawiono](#28-co-dokładnie-naprawiono)
 
 **Uzupełnienie z 22 września 2026 — sprawdzenia w repozytorium `WrathAndGlory`**
 
@@ -1361,7 +1369,7 @@ Jeżeli po wdrożeniu P1–P6 objaw **nadal wystąpi** na tablecie, potrzebne b�
 |---|---|---|
 | 1 | ✔ **wykonane** | Decyzje D1–D6 podjęte (rozdz. 22) |
 | 2 | ✔ **wykonane** | Weryfikacja diagnozy w repozytorium `Scenariusze` (rozdz. 20), ustalenie miejsca naprawy (rozdz. 19), doprecyzowanie P3 (rozdz. 21.6) |
-| 3 | **agent, repo `Scenariusze`** | Wdrożenie P1–P6 w `assemble.py` wraz z przebudową, rozszerzeniem kontroli G-12 i `test_mapy.py` oraz zapisem U-21, G-D63/G-D64 i changelogu — rozdz. 23 |
+| 3 | ✔ **wykonane 22.09** | Wdrożenie P1–P6 w `assemble.py` wraz z przebudową, rozszerzeniem kontroli G-6 o punkt 31 i `test_mapy.py` oraz zapisem U-21, G-D63/G-D64 i changelogu — **rozdz. 28** |
 | 4 | **użytkownik** | Testy 1–8 i 14–15 z rozdz. 14 na tablecie, w aplikacji PWA. Bez tego naprawa pozostaje nieudowodniona |
 | 5 | **agent, repo aplikacji** | D5, D6 i punkty z rozdz. 24 |
 
@@ -1587,3 +1595,238 @@ Rzecz praktyczna na etap 5 z rozdz. 26, bo jeśli to pominąć, wyjdzie fałszyw
 | **D6** | aktualizacja `Main/docs/` | **otwarte** — rekomendacja (a). Zakres większy, niż zapowiadałem: cztery miejsca w dwóch wersjach językowych (rozdz. 27.3) |
 | **D7** | `DetaleLayout.md` | **nowe, otwarte** — rekomendacja (a): nie dopisywać (rozdz. 27.5) |
 | **P8** | metadane PWA rejestru | **zamknięte rekomendacją** — wariant 1 z rozdz. 24.4: nie robić nic (rozdz. 27.4) |
+
+---
+
+# WYKONANIE z 22 września 2026 — naprawa w repozytorium `Scenariusze`
+
+## 28. Co dokładnie naprawiono
+
+### 28.1 Polecenie użytkownika (zachowane w całości)
+
+> Przeczytaj zaktualizowaną analizę Analizy/gilead-nawigacja-mapy-pwa-tablet-2026-09-21.md
+> Agent AI mający dostęp do repo "WrathAndGlory" (czyli tam gdzie siedzi kopia pliku
+> Gilead.html i gdzie jest PWA) dopisał swoje uwagi i spostrzeżenia.
+>
+> Twoim celem teraz jest wykonanie dwóch kroków.
+> 1. Naprawa pliku Gilead.html zgodnie z analizą (poprzez naprawę plików budujących
+> poprzez skrypt).
+> 2. Zaktualizowanie analizy o opis dokładnie dokonanych napraw
+>
+> Ja po swojej stronie skopiuję plik Gilead.html do repo "WrathAndGlory" oraz wkleję tam
+> pełną treść tej analizy.
+> Następnie agent AI mający dostęp do repo "WrathAndGlory" dokona tam korekt w kodzie.
+
+### 28.2 Stan przed naprawą — suma kontrolna zgodna
+
+Pierwsza czynność, zgodnie z rozdz. 27.2:
+
+```
+SHA-256  dbddab910320a614ff8140c6acf0afeba8cbac885a79d03e834050f7fc4849c2
+rozmiar  1045273 B
+plik     Warhammer40k/Gilead/Gilead.html (repozytorium Scenariusze, przed naprawą)
+```
+
+**Jest to co do znaku ta sama suma, którą agent repozytorium aplikacji zmierzył na
+`Main/Gilead.html`.** Kopia wydania nie rozjechała się ze źródłem ani o bajt — pytanie
+z rozdz. 25 pkt 3 jest tym samym zamknięte, już nie poszlaką, tylko dowodem.
+
+### 28.3 Zakres wykonania
+
+Wykonane **P1–P6**, zgodnie z rozdz. 22.1. Wszystko w
+`Warhammer40k/Gilead/scripts/build/gilead/assemble.py` — stałe `CSS` i `JS`.
+`dane.py`, `mapa.py` i `obrazy.py` **nietknięte**.
+
+| | Stan | Uwaga |
+|---|---|---|
+| **P1** bariera przed niepoprawnym kadrem | ✔ wykonane | sprawdza **dodatniość**, nie samą skończoność — patrz 28.4 |
+| **P2** jedna funkcja pomiarowa | ✔ wykonane | wpięta w sześć miejsc, w tym obsługę klawiatury |
+| **P3** przeliczanie po zmianie planszy | ✔ wykonane | `ResizeObserver` plus przeliczenie wprost przy otwarciu i zamknięciu karty |
+| **P4** pierwszy kadr po pierwszej klatce | ✔ wykonane | podwójne `requestAnimationFrame`, `load`, `visibilitychange` |
+| **P5** czyszczenie rejestru palców | ✔ wykonane | `visibilitychange`, `blur`, `lostpointercapture`, trzeci wskaźnik, nasłuch na `window` |
+| **P6** `touch-action` na kontenerze | ✔ wykonane | plus `overscroll-behavior:none` |
+| **P7** przycisk powrotu do widoku | ✘ **nie wykonane** | decyzja D3 (b) użytkownika; zapisane jako G-D64 |
+| **P8** metadane PWA | ✘ **nie wykonane** | poza D1 (b), a w części „manifest” niewykonalne — rozdz. 21.5 i 27.4 |
+| **P9** flaga `ciagniete` | ✘ **nie wykonane** | poza D1 (b); zostaje jako drobiazg |
+
+### 28.4 Zmiany w kodzie — co konkretnie doszło
+
+Numery linii odnoszą się do **nowego** `Gilead.html`.
+
+**P2 — `wymiary()` (`:668`).** Jedno miejsce pomiaru w całym skrypcie. Zwraca prostokąt
+tylko przy `width > 0` **i** `height > 0`, inaczej `null`. Wpięte w `dopasowanie()`,
+`ogranicz()`, `widokDomyslny()`, `naMape()`, `przyblizWokol()` oraz obsługę klawiatury.
+Każda z nich przy `null` wychodzi **bez dotykania `vb`**. `dopasowanie()` przyjmuje teraz
+prostokąt jako argument, więc pomiar nie powtarza się w tym samym wywołaniu.
+
+Klawisz `Home` obsłużono przed sprawdzeniem pomiaru i wyprowadzono z łańcucha `else if` —
+to jedyny klawisz, który ma działać także wtedy, gdy kadr jest policzony źle.
+
+**P1 — `poprawny()` i bariera w `zastosuj()` (`:675`, `:685`).** Do SVG nie trafia kadr,
+z którego nie da się wrócić. Sprawdzana jest skończoność wszystkich czterech liczb **oraz
+dodatniość `w` i `h`** — bo pomiar o zerowej wysokości daje `vb.h = 0`, czyli atrybut
+składniowo poprawny, który wyłącza rysowanie całego SVG. Przy niepowodzeniu `awaria()`
+liczy widok od nowa; blokada `ratujemy` chroni przed kółkiem, gdy plansza nadal nie ma
+wymiarów, a w atrybucie zostaje wtedy ostatni dobry kadr.
+
+**P3 — `przelicz()` (`:749`) i obserwator rozmiaru (`:1031`).** `ResizeObserver` na
+`#plansza` zamiast nasłuchu `resize`, tłumienie 120 ms bez zmian, z zapasowym `resize`
+dla przeglądarek bez obserwatora. `przelicz()` zachowuje **skalę i środek** zgodnie
+z regułą z rozdz. 21.6 i decyzją D2 (a).
+
+**P4 — `domierz()` (`:1001`).** Pierwszy kadr liczony jak dotąd natychmiast — w zwykłej
+przeglądarce plansza ma już wtedy wymiary i mapa nie mruga — a `domierz()` powtarza go
+za podwójnym `requestAnimationFrame`, przy `load` i przy powrocie strony do widoczności.
+Warunkiem jest `skala === null`, a nie `poprawny(vb)`: przy pustym pomiarze `vb` zostaje
+przy wartościach początkowych, które są poprawne liczbowo, tylko nie mają nic wspólnego
+z tym oknem. To rozróżnienie jest istotne — na `poprawny(vb)` sito by nie zadziałało.
+
+**P5 — `zerujGest()` (`:860`).** Rejestr wskaźników czyszczony do zera przy
+`visibilitychange` (strona ukryta), przy `blur` okna, przy `lostpointercapture` i wtedy,
+gdy pojawia się trzeci wskaźnik. `pointerup` i `pointercancel` przeniesione z SVG na
+`window`, z filtrem po `pointerId`, żeby palec podniesiony poza mapą też zamykał gest.
+
+**P6 — CSS (`:21`, `:40`).** `overscroll-behavior:none` na `html,body`;
+`touch-action:none` dopisane do `.cog-plansza`, reguła na `#mapa` zostaje.
+
+### 28.5 Dwie rzeczy, które wyszły dopiero przy badaniu
+
+Żadnej z nich nie dało się zobaczyć, czytając kod — obie wyszły z uruchomienia.
+
+**Skala rozjeżdżała się przy każdym otwarciu karty.** Pierwsza wersja wyprowadzała skalę
+z każdego `zastosuj()`. Tymczasem `pokazPunkt()` woła `zastosuj()` natychmiast po
+odsłonięciu karty: plansza ma już nową, węższą szerokość, a kadr jeszcze starą. Zapisana
+wtedy skala jest zawyżona, a błąd **mnoży się z każdym otwarciem karty**. Pomiar przy
+oknie 1440 × 900:
+
+| | `viewBox` |
+|---|---|
+| start | `-270.0 -71.3 1870.0 1042.7` |
+| po 15 otwarciach karty, pierwsza wersja poprawki | `713.4 206.6 470.8 370.6` — maksymalne przybliżenie |
+| po 15 otwarciach, wersja końcowa | `-270.0 -222.7 1870.0 1042.7` |
+| po 30 otwarciach, wersja końcowa | `-67.0 -222.7 1870.0 1042.7` |
+
+Szerokość kadru stoi na 1870,0; zmienia się wyłącznie położenie, i to za sprawą
+`pokazPunkt()`, który dojeżdża do pozycji dostającej fokus — czyli zachowania sprzed
+naprawy. Stąd `zapamietajSkale()` wołane **wyłącznie w trzech miejscach**, gdzie skala
+powstaje z rozmysłu: `widokDomyslny()`, `przelicz()`, `przyblizWokol()`. Przesuwanie
+i dojazd do pozycji skali nie zmieniają, więc nie mają czego zapisywać. Zapisane jako
+G-D63 w dokumencie sterującym projektu.
+
+**Karta zmienia szerokość planszy, a okno przy tym nie drga.** Tłumienie 120 ms, sensowne
+przy obrocie i dzielonym ekranie, zostawiało przez ten czas kadr policzony dla poprzedniego
+kształtu — i `slice` przycinał mapę. Dla człowieka to mgnienie; badanie klika szybciej
+i potknęło się o to od razu. Zmianę, którą wywołujemy sami, `wybierz()` i `zamknij()`
+przeliczają **natychmiast**; obserwator zostaje jako siatka bezpieczeństwa na wszystko,
+czego sami nie wywołujemy.
+
+### 28.6 Kontrola — punkt 31 i rozszerzone badanie
+
+**Punkt 31 kontroli G-6** (`assemble.py`) sprawdza obecność dziesięciu barier w kodzie
+i dwóch reguł CSS. Wyjątkowo bada **obecność**, a nie skutek, i powód jest zapisany przy
+samym punkcie: usunięcie którejkolwiek z tych linii przy późniejszej edycji niczego by nie
+zepsuło widocznie. Mapa działałaby normalnie na każdym biurku i psuła się wyłącznie tam,
+gdzie plansza bywa mierzona bez wymiarów. Dokładnie tak ta wada powstała za pierwszym razem.
+Punkt sprawdzono wstecz — usunięcie każdej z dwunastu pozycji jest wykrywane.
+
+**`test_mapy.py`** bada skutek. Dopisane:
+
+| Badanie | Co sprawdza |
+|---|---|
+| trzy warianty zerowego pomiaru | `display:none`, `width:0`, `height:0` na `.cog-scena`; po powrocie `viewBox` ma dać się odczytać jako cztery liczby **i** mapa ma reagować na przesunięcie |
+| gest przy zerowym pomiarze | `wheel` w chwili, gdy plansza nie ma wymiarów (rozdz. 21.2) |
+| punkt 5 planu testów | przy otwartej karcie proporcja kadru idzie za proporcją planszy, a skala zostaje bez zmian |
+| punkt 6 planu testów | po zamknięciu karty kadr wraca dokładnie tam, gdzie był |
+
+**Badanie sprawdzone wstecz** na kopii sprzed poprawki — oblewa, i to dokładnie tam,
+gdzie powinno:
+
+```
+BŁĘDY:
+  - U-21 (0x0): kadr nie do odczytania po powrocie: 'NaN NaN NaN NaN'
+  - U-21 (0 x wysokość): kadr niezdrowy już przed badaniem: 'NaN NaN NaN NaN'
+  - U-21 (szerokość x 0): kadr niezdrowy już przed badaniem: 'NaN NaN NaN NaN'
+  - U-21 (gest przy zerowym pomiarze): kadr uszkodzony: 'NaN NaN NaN NaN'
+  - po otwarciu karty proporcja kadru 1.894 wobec planszy 1.273
+  - po otwarciu karty skala 2.1744 wobec 1.4609 jedn./px
+  - błędy konsoli: Error: <svg> attribute viewBox: Expected number, "NaN NaN NaN NaN".
+```
+
+Ostatni wiersz zasługuje na osobne zdanie. To jest **dokładnie ten komunikat**, który
+rozdz. 10 podaje w Teście 7 jako „twardy dowód” możliwy do zdobycia wyłącznie przez
+podłączenie tabletu kablem do komputera. Okazało się, że da się go wywołać w repozytorium,
+bez urządzenia — bo do jego wywołania wystarczy odtworzyć przyczynę, a nie warunki tabletu.
+Diagnoza z rozdz. 6 jest tym samym potwierdzona obserwacją, a nie już tylko wnioskowaniem.
+
+Przy okazji wyszła rzecz osobna: po P3 pomiar celów dotykowych zaczął mierzyć przybliżenie
+przeniesione z poprzedniego kroku badania — 93,1 px przy 1024 px zamiast 44,0 px. Kryterium
+nadal by przechodziło, tylko przestałoby badać to, o czym mówi G-D23. Dopisane `Home` przed
+pomiarem, zgodnie z konwencją, którą badanie stosuje już w dwóch innych miejscach.
+
+### 28.7 Wynik przebiegu kontrolnego
+
+```
+Gilead.html · 1.01 MB (ilustracje 0.89 MB, znaczniki i kod 113 KB)
+pozycji: 15 (8 światów + 7 obszarów) · hotspotów: 20
+pola: poziom 1 = 111 · poziom 2 = 30 · poziom 3 (utajnione) = 39
+kontrola G-6 i G-12: OK
+```
+
+`test_mapy.py` (Chromium z `/opt/pw-browsers`): **BŁĘDY: brak**, **0 wpisów konsoli**.
+Wszystkie badania sprzed naprawy przechodzą bez regresji: 15 pozycji osiągalnych, 6 na 6
+podpisów struktur podświetla właściwy wiersz, 14 kart otwiera się od góry przy 1440 px
+i 390 px, kolejność `tab` zgodna z rejestrową, napisy ramy w kadrze przy czterech
+rozdzielczościach, najmniejszy cel dotykowy **44,0 px** przy 1024 px i przy 390 px.
+
+Plik obejrzany na zrzutach: przy 1440 px rama Wyrwy kompletna z czterech stron i wszystkie
+15 pozycji widoczne, w tym Vulkaris i Trollius; przy 1440 px z otwartą kartą mapa **nie jest
+przeskalowana** — znaczniki mają tę samą wielkość co przy karcie zamkniętej, zmienia się
+wyłącznie wycinek; przy 390 px widok domyślny przybliżony na Światy Centralne zgodnie z G-D23.
+
+Zmiany objęły wyłącznie wielkość kodu: **1,00 → 1,01 MB**, znaczniki i kod **104 → 113 KB**.
+Liczba pozycji, hotspotów i pól bez zmian.
+
+### 28.8 Nowe wydanie — suma kontrolna do przeniesienia
+
+```
+SHA-256  4e5fe8f9c207f5d71570eeef49f324a277915cffef09608c860bd33c3c701df1
+rozmiar  1054214 B
+plik     Warhammer40k/Gilead/Gilead.html (repozytorium Scenariusze, po naprawie)
+```
+
+Zgodnie z rozdz. 27.7 pkt 4: po skopiowaniu wydania do modułu `Main` suma
+`sha256sum Main/Gilead.html` ma dać **tę samą wartość**. Jeżeli na tablecie objaw nie
+zniknie, a suma się zgadza, to znaczy, że na urządzeniu siedzi jeszcze stary plik
+w pamięci podręcznej HTTP — rozdz. 27.7 pkt 2 podaje, jak ją wyczyścić, i **to trzeba
+zrobić przed uznaniem naprawy za nieudaną**.
+
+### 28.9 Dokumentacja projektu — co zapisano
+
+Zgodnie z rozdz. 23.3 planu:
+
+| Miejsce | Wpis |
+|---|---|
+| `ProjektGileadHTML.md`, rozdz. 19 | **U-21** w rejestrze usterek, ze stanem „wykonane 2026-09-22” |
+| `ProjektGileadHTML.md`, rozdz. 10 | **G-D63** — kadr zachowuje skalę i środek, skala zapisywana w trzech miejscach. **G-D64** — brak widocznego przycisku powrotu do widoku, wraz z uzasadnieniem, dlaczego P5 przestaje być poprawką „zalecaną” |
+| `ProjektGileadHTML.md`, rozdz. 9 | **G-26** w changelogu |
+| `ProjektGileadHTML.md`, nowy rozdz. 23 | **Etap VI — nawigacja mapy w oknie PWA (U-21)**: objaw, przyczyna, trzy drogi zepsucia kadru, zakres zmian, dwie rzeczy z badania, kontrola, zastrzeżenia |
+| `ProjektGileadHTML.md`, tabela etapów | wiersz **VI — nawigacja mapy** |
+| `Instrukcja.md`, rozdz. 4.2 | zaktualizowany blok „oczekiwany wynik” (1,01 MB, kod 113 KB) oraz uwaga o ścieżce do Chromium — wzorzec `chromium-*` z instrukcji nie zawsze się rozwija, działająca ścieżka to `/opt/pw-browsers/chromium-1194/chrome-linux/chrome` |
+
+### 28.10 Czego to wykonanie nie rozstrzyga
+
+1. **Nie uruchomiono pliku na tablecie.** Badanie odtwarza **przyczynę** — zerowy pomiar
+   planszy — a nie warunki urządzenia. Playwright nie zrobi okna PWA za ekranem powitalnym,
+   gestów systemowych Androida ani dzielonego ekranu. **Testy 1–8 i 14–15 z rozdz. 14
+   wykonuje użytkownik.** Do tego czasu naprawa jest udowodniona co do przyczyny
+   i nieudowodniona co do objawu na sprzęcie.
+2. **Nie rozstrzygnięto, czy `dblclick` powstaje z dwustuknięcia w oknie PWA**
+   (rozdz. 21.4). Po naprawie ma to znaczenie mniejsze niż przed nią — stan nie do
+   naprawienia przestał być osiągalny — ale dwuklik nadal jest jedynym gestem powrotu
+   do widoku domyślnego i warto przy Teście 11 sprawdzić, czy działa.
+3. **Nie zmieniono niczego poza repozytorium `Scenariusze`.** D5, D6 i D7 czekają
+   po tamtej stronie; rozdz. 24 i 27 opisują ich zakres.
+4. **Nie wiadomo, czy `overscroll-behavior` i `touch-action` na kontenerze cokolwiek
+   zmieniają na tym konkretnym tablecie.** Obie reguły są zabezpieczeniem wziętym
+   z rozdz. 11.2, a nie odpowiedzią na zmierzony objaw — w Chromium na biurku nie dało
+   się pokazać różnicy, bo tam reguła na SVG i tak działa.
