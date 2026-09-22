@@ -1,12 +1,12 @@
 # Mapa Gilead — nawigacja nie działa w PWA na tablecie
 
-> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26)
+> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27)
 > **Temat:** w aplikacji PWA uruchomionej na tablecie mapa układu Gilead nie daje się przesuwać ani przybliżać/oddalać, natomiast kliknięcia w planety i obszary działają normalnie. W przeglądarce Chrome na tym samym tablecie oraz w PWA na telefonie wszystko działa poprawnie.
 > **Plik, którego dotyczy zgłoszenie:** rejestr światów systemu Gilead — w aplikacji widoczny jako `Main/Gilead.html` (moduł `Main`, repozytorium `WrathAndGlory`). **Jest to kopia wydania.** Plik źródłowy i miejsce nanoszenia poprawek to repozytorium `Scenariusze`, `Warhammer40k/Gilead/` — szczegóły w rozdz. 19.
 > **Charakter dokumentu:** analiza diagnostyczna. Opisuje stan kodu **sprzed** zmian i projekt naprawy. **Żaden plik aplikacji ani skrypt budowania nie został w ramach tej analizy zmieniony** — powstał wyłącznie ten dokument.
-> **Stan na dziś (22 września 2026):** przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6) i **zweryfikowana niezależnym rachunkiem w repozytorium `Scenariusze`** (rozdz. 20). Decyzje D1–D6 podjęte (rozdz. 22). Zakres naprawy dla repozytorium `Scenariusze`: **P1–P6** (rozdz. 23). Zakres dla repozytorium aplikacji: **D5, D6 i rozdz. 24**. Kod czeka na wdrożenie.
+> **Stan na dziś (22 września 2026):** przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6) i **zweryfikowana niezależnym rachunkiem w repozytorium `Scenariusze`** (rozdz. 20). Decyzje D1–D6 podjęte (rozdz. 22). Zakres naprawy dla repozytorium `Scenariusze`: **P1–P6** (rozdz. 23). Zakres dla repozytorium aplikacji: **D5, D6, D7 i rozdz. 24** — pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. Kod czeka na wdrożenie.
 >
-> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno.
+> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — a potem od rozdz. 27, gdzie są sprawdzenia wykonane już po tej stronie i wykaz decyzji otwartych (27.9).
 
 ---
 
@@ -41,6 +41,10 @@
 24. [Zakres dla drugiego repozytorium (`WrathAndGlory`, moduł `Main`)](#24-zakres-dla-drugiego-repozytorium-wrathandglory-moduł-main)
 25. [Czego ten aneks nie rozstrzyga](#25-czego-ten-aneks-nie-rozstrzyga)
 26. [Następne kroki — stan na 22 września 2026](#26-następne-kroki--stan-na-22-września-2026)
+
+**Uzupełnienie z 22 września 2026 — sprawdzenia w repozytorium `WrathAndGlory`**
+
+27. [Uwagi agenta repozytorium aplikacji](#27-uwagi-agenta-repozytorium-aplikacji)
 
 > Rozdz. 1–17 to analiza z 21 września. Ich treść **nie została zmieniona** — dopisano
 > jedynie trzy wyróżnione odsyłacze do aneksu, w rozdz. 12, 13 i 17. Wszystko, co po
@@ -501,6 +505,11 @@ byłby dostępną alternatywą gestu dwukliku dla osób, które gestu nie wykona
 
 ### 11.5 `Gilead.html` nie ma metadanych PWA, które ma `Main/index.html`
 
+> **Odsyłacz dopisany 22 września 2026.** Fakt opisany niżej się zgadza, ale **waga jest
+> mniejsza, niż tu napisano**: kolor pasków systemowych w oknie PWA bierze się z manifestu,
+> który rejestr już obejmuje, a `viewport-fit=cover` byłoby tu wręcz ryzykiem. Rozstrzygnięcie
+> i rekomendacja „nie robić nic" — **rozdz. 27.4**.
+
 `Main/index.html` deklaruje `viewport-fit=cover`, komplet `theme-color`, `color-scheme: dark`
 oraz odwołanie do `manifest.webmanifest`. `Main/Gilead.html` ma tylko
 `<meta name="viewport" content="width=device-width,initial-scale=1">` (`:5`) i nic poza tym.
@@ -660,7 +669,9 @@ a na szerokim (tablet, komputer) ściska mapę do 420 jednostek z prawej.
 kodu modułu.
 
 - **(a) Zaktualizować oba pliki `Main/docs/` przy okazji naprawy** *(rekomendacja)* —
-  obecnie nie opisują one mapy Gilead w ogóle.
+  obecnie nie opisują one mapy Gilead w ogóle. **← zdanie nieprawdziwe, sprostowane
+  22 września 2026: opisują ją obszernie, tylko jako plik modułu `Main`. Rekomendacja (a)
+  zostaje, ale zakres prac jest większy — rozdz. 27.3.**
 - **(b) Tylko `Documentation.md`.**
 - **(c) Pominąć** (niezgodne z `AGENTS.md`).
 
@@ -1353,3 +1364,226 @@ Jeżeli po wdrożeniu P1–P6 objaw **nadal wystąpi** na tablecie, potrzebne b�
 | 3 | **agent, repo `Scenariusze`** | Wdrożenie P1–P6 w `assemble.py` wraz z przebudową, rozszerzeniem kontroli G-12 i `test_mapy.py` oraz zapisem U-21, G-D63/G-D64 i changelogu — rozdz. 23 |
 | 4 | **użytkownik** | Testy 1–8 i 14–15 z rozdz. 14 na tablecie, w aplikacji PWA. Bez tego naprawa pozostaje nieudowodniona |
 | 5 | **agent, repo aplikacji** | D5, D6 i punkty z rozdz. 24 |
+
+---
+
+# UZUPEŁNIENIE z 22 września 2026 — sprawdzenia po stronie repozytorium `WrathAndGlory`
+
+## 27. Uwagi agenta repozytorium aplikacji
+
+Aneks z rozdz. 18–26 w dwóch miejscach wprost odsyła pytania do tego repozytorium:
+rozdz. 24.2 („do sprawdzenia tutaj: czy `Gilead.html` mieści się w `scope`") i rozdz. 25
+pkt 3 („nie wiadomo, czy `Main/Gilead.html` jest dziś zgodny z wydaniem budowanym
+w `Scenariusze`"). Oba są poniżej rozstrzygnięte. Do tego dochodzi jedno **sprostowanie
+mojego własnego błędu z rozdz. 13**, doprecyzowanie rozdz. 24.4 i jedna nowa decyzja
+do podjęcia.
+
+**Żaden plik aplikacji nie został zmieniony** — jedyną zmianą jest ten rozdział.
+
+### 27.1 Odpowiedź na pytanie z rozdz. 24.2 — `scope` i `display` manifestu
+
+Sprawdzone w `manifest.webmanifest` (leży w katalogu głównym repozytorium):
+
+```json
+"start_url": "./Main/index.html",
+"scope": "./",
+"display": "standalone",
+"theme_color": "#031605"
+```
+
+Manifest jest podpięty wyłącznie z `Main/index.html` (`:9`, jako `../manifest.webmanifest`),
+więc `scope: "./"` rozwija się względem **adresu manifestu**, czyli katalogu głównego:
+
+| | adres |
+|---|---|
+| zasięg (`scope`) | `https://cutelittlegoat.github.io/WrathAndGlory/` |
+| strona startowa | `https://cutelittlegoat.github.io/WrathAndGlory/Main/index.html` |
+| rejestr Gilead | `https://cutelittlegoat.github.io/WrathAndGlory/Main/Gilead.html` |
+
+**`Main/Gilead.html` mieści się w zasięgu**, a tryb wyświetlania to `standalone`.
+Założenie aneksu jest więc trafne: rejestr otwiera się **w oknie aplikacji**, nie w oknie
+przeglądarki ani w karcie niestandardowej. Przesłanka decyzji D5 („nowe okno aplikacji
+to moment, w którym wymiary bywają zerowe") zostaje w mocy.
+
+Dwie rzeczy warte zapisania, bo łatwo się na nich potknąć:
+
+1. **`Gilead.html` nie podpina manifestu i nie musi.** Zasięg jest własnością manifestu,
+   a nie strony, do której się przechodzi. Brak `<link rel="manifest">` w rejestrze
+   niczego tu nie psuje — i dobrze, bo dopisanie go jest w repozytorium `Scenariusze`
+   niewykonalne (rozdz. 21.5).
+2. **Zrzuty ekranu to potwierdzają.** Na zrzutach z przeglądarki widać dwie karty
+   („Kozi Przybornik" i „Rejestr światów systemu Gi…") — `target="_blank"` otworzył
+   drugą kartę. Na zrzutach z aplikacji nie ma ani paska kart, ani paska adresu —
+   czyli rejestr został w oknie PWA.
+
+### 27.2 Odpowiedź na pytanie z rozdz. 25 pkt 3 — czy kopia wydania jest zgodna
+
+Rozdz. 19.2 podaje, co wypisuje przebudowa w `Scenariusze`. Zmierzyłem te same wielkości
+na kopii leżącej tutaj:
+
+| wielkość | raport budowy (rozdz. 19.2) | `Main/Gilead.html` | |
+|---|---|---|---|
+| rozmiar | 1,00 MB | 1 045 273 B = 1,00 MB | ✔ |
+| pozycji | 15 (8 światów + 7 obszarów) | 15 różnych `data-cel`, 15 kart `#dane-*` | ✔ |
+| hotspotów | 20 | 20 | ✔ |
+| pola poziom 1 | 111 | 111 (180 wierszy `<tr>` minus `p2` i `p3`) | ✔ |
+| pola poziom 2 | 30 | 30 (`tr.p2`) | ✔ |
+| pola poziom 3 (utajnione) | 39 | 39 (`tr.p3`) | ✔ |
+
+Wszystkie sześć wielkości zgadza się co do jednostki. Do porównania bajt po bajcie
+podaję odcisk pliku:
+
+```
+SHA-256  dbddab910320a614ff8140c6acf0afeba8cbac885a79d03e834050f7fc4849c2
+rozmiar  1045273 B
+plik     Main/Gilead.html (repozytorium WrathAndGlory, gałąź main)
+```
+
+**Do wykonania po tamtej stronie:** `sha256sum Warhammer40k/Gilead/Gilead.html` przed
+naniesieniem poprawek. Zgodność sumy zamyka pytanie z rozdz. 25 pkt 3 ostatecznie;
+rozbieżność znaczy, że kopia wydania rozjechała się ze źródłem i trzeba to wyjaśnić
+**przed** naprawą, a nie po niej.
+
+Stan na teraz: **żadnego śladu rozjechania się.** Zgodność sześciu liczników jest mocną
+poszlaką, ale poszlaką — dowodem jest dopiero suma kontrolna z obu stron.
+
+### 27.3 Sprostowanie mojego błędu w rozdz. 13, decyzja D6
+
+W rozdz. 13 napisałem przy wariancie (a): *„obecnie nie opisują one mapy Gilead w ogóle"*.
+**To jest nieprawda.** Sprawdzone: `Main/docs/Documentation.md` wspomina Gilead 22 razy,
+`Main/docs/README.md` — 20 razy.
+
+Rzecz w tym, **jak** go opisują. Dokumentacja traktuje `Main/Gilead.html` jako zwykły
+plik modułu `Main`:
+
+| miejsce | co mówi dziś |
+|---|---|
+| `Documentation.md:45` / `:480` | tabela plików modułu: *„Samodzielna strona z rejestrem światów systemu Gilead"* — bez śladu informacji, że to wydanie z innego repozytorium |
+| `Documentation.md:409` / `:844` | **procedura odtworzenia modułu 1:1** — krok 9 każe dodać linki do `Gilead.html`, ale nie mówi, skąd ten plik wziąć |
+| `Documentation.md:112` / `:547` | *„`Gilead.html` otwierany w nowej karcie (`target="_blank"`)"* — dotyczy D5 |
+| `README.md:95`, `:187` | instrukcja użytkownika i wiersz rozwiązywania problemów *„`Gilead` nie otwiera nowej karty"* |
+
+Najpoważniejszy jest wiersz drugi. `AGENTS.md` rozdz. 3 wymaga, żeby `Documentation.md`
+pozwalał **odtworzyć moduł 1:1 w razie utraty plików**. Dziś procedura odtworzenia
+prowadzi do wniosku, że `Gilead.html` jest czymś, co się w module `Main` pisze — a jest
+czymś, co się do niego **kopiuje z wydania**. Kto pójdzie tą procedurą, albo odtworzy
+pusty plik, albo zacznie go pisać od zera.
+
+**Skutek dla zakresu D6:** to nie jest „dopisanie jednego zdania", jak sugeruje rozdz. 24.3.
+Trzeba ruszyć cztery miejsca (tabelę plików, procedurę odtworzenia, tabelę testów
+i instrukcję użytkownika), w obu wersjach językowych — `AGENTS.md` rozdz. 5 wymaga pełnej
+wersji polskiej i pełnej angielskiej, nie mieszania sekcja po sekcji. Rekomendacja (a)
+z rozdz. 13 pozostaje słuszna, tylko pracy jest więcej, niż zapowiadałem.
+
+### 27.4 Doprecyzowanie rozdz. 24.4 — wariant 3 nie zadziała tak, jak brzmi
+
+Rozdz. 24.4 wymienia jako możliwość: *„objąć plik manifestem od strony modułu `Main` —
+przez `scope` i `start_url`, bez dotykania `<head>` rejestru"*.
+
+**Zasięg manifestu nie wstrzykuje do strony żadnych `<meta>`** — to dwie różne rzeczy.
+Wariant 3 w tym brzmieniu nie da rejestrowi ani `color-scheme`, ani `viewport-fit`.
+Daje natomiast coś innego, o czym warto wiedzieć, bo **to już działa**:
+
+> Rejestr **jest** w zasięgu manifestu (rozdz. 27.1), a manifest niesie
+> `"theme_color": "#031605"`. W oknie aplikacji obszary systemowe biorą kolor
+> z manifestu, dopóki strona nie poda własnego `<meta name="theme-color">`.
+> Czyli **w PWA problem koloru pasków systemowych jest już załatwiony** i brak
+> `theme-color` w `Gilead.html` nie ma tam znaczenia. Ma znaczenie dopiero przy
+> otwarciu pliku w zwykłej karcie przeglądarki.
+
+Z całego P8 zostaje więc realnie:
+
+| brakujący element | gdzie boli | ocena |
+|---|---|---|
+| `theme-color` | tylko w zwykłej karcie przeglądarki, nie w PWA | kosmetyka |
+| `color-scheme: dark` | wygląd paska przewijania panelu karty | kosmetyka |
+| `viewport-fit=cover` | **lepiej go nie dodawać** — patrz niżej | — |
+
+Ostatni wiersz jest ostrzeżeniem, nie brakiem. `Gilead.html` układa całą stronę na
+`.cog{position:fixed;inset:0}` (`:26`) i nigdzie nie używa `env(safe-area-inset-*)`.
+Domyślne `viewport-fit=auto` trzyma treść **wewnątrz** obszaru bezpiecznego — czyli jest
+tu ustawieniem bezpieczniejszym. Dodanie `cover` bez dopisania marginesów
+`safe-area` wsunęłoby nagłówek i stopkę pod paski systemowe. `Main/index.html` może sobie
+na `cover` pozwolić, bo ma dopisany dolny `safe-area` padding (`DetaleLayout.md`, sekcja
+„Aktualizacja layoutu PWA — 2026-03-29"); rejestr takiego zabezpieczenia nie ma.
+
+**Rekomendacja:** wariant 1 z rozdz. 24.4 — **nie robić nic**. Rzecz jest kosmetyczna,
+a jedyny element, który wyglądał na istotny (kolor pasków systemowych), jest już
+obsłużony przez manifest. To koryguje także wagę mojej własnej rozdz. 11.5: fakt się
+zgadza, ale znaczenie jest mniejsze, niż tam napisałem.
+
+### 27.5 Nowa decyzja do podjęcia — D7: `DetaleLayout.md`
+
+`AGENTS.md` rozdz. 8 każe aktualizować `DetaleLayout.md` przy zmianach wyglądu, w tym
+„responsywności" i „układu elementów". Poprawka **P6** dopisuje `touch-action:none`
+do `.cog-plansza` i `overscroll-behavior:none` do `html,body`.
+
+Sprawdzone: `DetaleLayout.md` opisuje dziś z całego rejestru **wyłącznie przyciski
+`Galaktyka` i `Gilead` na stronie głównej** (`:164`, `:175`, `:182`) — czyli element
+`Main/index.html`, a nie wnętrze rejestru. O układzie samej mapy nie ma tam ani słowa.
+
+- **(a) Nie dopisywać nic** *(rekomendacja)* — `touch-action` i `overscroll-behavior`
+  sterują obsługą gestów, a nie wyglądem: nie zmieniają ani jednego piksela. Dodatkowo
+  `DetaleLayout.md` opisywałby wtedy wygląd pliku, którego to repozytorium nie jest
+  właścicielem (rozdz. 24.1), co sprzyja rozjeżdżaniu się opisu ze źródłem.
+- **(b) Dopisać krótką sekcję** o obsłudze gestów mapy — spójne z literalnym brzmieniem
+  `AGENTS.md` rozdz. 8, kosztem duplikowania opisu należącego do `Scenariusze`.
+
+### 27.6 Ograniczenie z `AGENTS.md` przy wykonywaniu D6
+
+Do uwzględnienia przez agenta, który będzie robił D6, bo łatwo tu o odruch:
+
+`AGENTS.md` rozdz. 11 zabrania opisywania folderu `Analizy` w `README.md`,
+`Documentation.md` i w dokumentacji odtworzeniowej. Zdanie proponowane w rozdz. 24.3
+ma więc podać **fakt** („to jest kopia wydania z repozytorium `Scenariusze`,
+`Warhammer40k/Gilead/`; nie edytuje się go tutaj") i **nie** odsyłać do tego dokumentu.
+Wyjątek z rozdz. 11 wymaga wyraźnej zgody użytkownika.
+
+`AGENTS.md` rozdz. 13 zabrania też commitowania bez wyraźnej prośby — wdrożenie D6
+kończy się więc pokazaniem zmian, a nie commitem z automatu.
+
+### 27.7 Jak poprawiony plik dotrze na tablet
+
+Rzecz praktyczna na etap 5 z rozdz. 26, bo jeśli to pominąć, wyjdzie fałszywy wniosek
+„naprawa nie zadziałała":
+
+1. **Nie trzeba przeinstalowywać aplikacji.** `Main/index.html` (`:291`) aktywnie
+   **wyrejestrowuje** wszystkie Service Workery — aplikacja działa wyłącznie online,
+   więc nie ma pamięci podręcznej offline, która trzymałaby starą wersję rejestru.
+2. **Może za to zadziałać zwykła pamięć podręczna HTTP.** `Gilead.html` ma 1 MB;
+   GitHub Pages podaje go z nagłówkami pozwalającymi na buforowanie. Jeżeli po wgraniu
+   poprawionego pliku objaw nie zniknie, **zanim uzna się naprawę za nieudaną** należy
+   wyczyścić dane witryny dla aplikacji (Android: Ustawienia → Aplikacje → *Kozi
+   Przybornik* → Pamięć → Wyczyść dane) albo otworzyć rejestr raz w Chrome z twardym
+   odświeżeniem.
+3. **Najszybsze sprawdzenie, że nowy plik naprawdę się wczytał** — Test 2 z rozdz. 10
+   (kompletność ramy Szczeliny). Jeżeli w aplikacji widać zakreskowane pasy z lewej
+   i z prawej, to znaczy, że kadr jest liczony poprawnie, czyli że działa nowa wersja.
+4. **Do odesłania po wydaniu** (uzupełnia rozdz. 24.5): suma `sha256sum Main/Gilead.html`
+   po skopiowaniu wydania. Porównanie z sumą z rozdz. 27.2 mówi jednoznacznie, czy
+   na tablecie jest już plik po naprawie, czy nadal ten sprzed niej.
+
+### 27.8 Czego nie sprawdziłem po tej stronie
+
+1. **Nie uruchomiłem niczego na tablecie.** Ograniczenie z rozdz. 16 pkt 1 i rozdz. 25
+   pkt 1 zostaje w mocy w całości.
+2. **Nie widziałem repozytorium `Scenariusze`** — `assemble.py`, `Instrukcja.md`,
+   `test_mapy.py` ani dokumentu sterującego projektu. Rozdz. 19–23 przyjmuję jako opis
+   stanu tamtej strony i nie weryfikowałem numerów linii w `assemble.py`.
+3. **Nie sprawdziłem zachowania `target="_blank"` w praktyce** — to, że rejestr został
+   w oknie aplikacji, odczytałem ze zrzutów, a nie z uruchomienia.
+4. **Nie rozstrzygnąłem, czy manifest faktycznie nadaje kolor pasków systemowych
+   w oknie PWA na tym konkretnym tablecie** (rozdz. 27.4). Tak to działa zgodnie
+   ze specyfikacją i tak zachowuje się Chrome, ale bez urządzenia jest to oczekiwanie,
+   nie pomiar. Ma to znaczenie wyłącznie dla kosmetyki i dla oceny wagi P8.
+5. **Nie zmieniłem żadnego pliku aplikacji ani dokumentacji modułu.** D5, D6 i D7 czekają
+   na decyzje i osobne zadanie.
+
+### 27.9 Uzupełniony wykaz decyzji otwartych
+
+| # | Pytanie | Stan |
+|---|---|---|
+| **D5** | `target="_blank"` przy przycisku `Gilead` | **otwarte** — rekomendacja: zostawić. Przesłanka potwierdzona w rozdz. 27.1, warunek („po wdrożeniu P1–P4") spełniony przez zakres z rozdz. 22.1 |
+| **D6** | aktualizacja `Main/docs/` | **otwarte** — rekomendacja (a). Zakres większy, niż zapowiadałem: cztery miejsca w dwóch wersjach językowych (rozdz. 27.3) |
+| **D7** | `DetaleLayout.md` | **nowe, otwarte** — rekomendacja (a): nie dopisywać (rozdz. 27.5) |
+| **P8** | metadane PWA rejestru | **zamknięte rekomendacją** — wariant 1 z rozdz. 24.4: nie robić nic (rozdz. 27.4) |
