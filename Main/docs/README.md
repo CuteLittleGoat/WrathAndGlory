@@ -97,6 +97,24 @@ Main/Gilead.html
 
 Jest to rejestr światów systemu Gilead. Karta z Main pozostaje otwarta, więc możesz do niej wrócić bez ponownego uruchamiania launchera.
 
+### Jak obsługiwać mapę rejestru
+
+Rejestr otwiera się na mapie układu Gilead. Obsługa jest taka sama na telefonie, tablecie i komputerze — różni się tylko tym, czym wykonujesz gest.
+
+| Chcesz | Zrób |
+| --- | --- |
+| przesunąć mapę | przeciągnij ją palcem albo myszą z wciśniętym lewym przyciskiem; na klawiaturze — strzałki |
+| przybliżyć albo oddalić | zsuń lub rozsuń dwa palce; myszą — kółko; na klawiaturze — `+` i `-` |
+| zobaczyć opis planety albo obszaru | dotknij jej lub kliknij. Opis pojawi się na panelu z prawej strony, a na wąskim ekranie na całej szerokości |
+| zamknąć opis | naciśnij `×` na panelu, dotknij pustego miejsca mapy albo naciśnij `Escape` |
+| znaleźć pozycję z listy | naciśnij `INDEKS` w prawym górnym rogu i wybierz nazwę — mapa sama dojedzie do tej pozycji i otworzy jej opis |
+| wrócić do widoku początkowego | stuknij dwa razy w puste miejsce mapy; na klawiaturze — klawisz `Home` |
+| przechodzić między pozycjami bez myszy | klawisz `Tab` przesuwa zaznaczenie, `Enter` albo spacja otwiera opis |
+
+Powrót do widoku początkowego przydaje się wtedy, gdy zgubisz się w przybliżeniu: przywraca taki kadr, jaki mapa pokazuje zaraz po otwarciu. Klikaj w **puste** miejsce mapy, a nie w planetę — dwuklik w planetę otworzy i zamknie jej opis.
+
+Klikalność niesie złoty narożnik przy pozycji. Czerwony znacznik nie oznacza, że czegoś nie można kliknąć — oznacza ostrzeżenie albo zakaz wstępu opisany w karcie.
+
 Jeżeli po kliknięciu nic się nie dzieje, prawdopodobnie przeglądarka zablokowała nową kartę — zezwól na wyskakujące okna dla tej strony albo kliknij przycisk prawym przyciskiem myszy i wybierz otwarcie w nowej karcie.
 
 ## Przycisk Galaktyka
@@ -295,6 +313,24 @@ Main/Gilead.html
 ```
 
 This is the Gilead system world registry. The Main tab stays open, so you can return to it without restarting the launcher.
+
+### How to use the registry map
+
+The registry opens on the map of the Gilead system. It works the same way on a phone, a tablet and a computer — only the way you make the gesture differs.
+
+| You want to | Do this |
+| --- | --- |
+| pan the map | drag it with a finger, or with the left mouse button held down; on a keyboard use the arrow keys |
+| zoom in or out | pinch or spread two fingers; with a mouse use the wheel; on a keyboard use `+` and `-` |
+| see a world or region entry | tap or click it. The entry opens in the panel on the right, and on a narrow screen across the full width |
+| close an entry | press `×` on the panel, tap an empty part of the map, or press `Escape` |
+| find an entry from a list | press `INDEKS` in the top-right corner and pick a name — the map travels to that position and opens its entry |
+| return to the starting view | double-tap an empty part of the map; on a keyboard press `Home` |
+| move between positions without a mouse | `Tab` moves the selection, `Enter` or space opens the entry |
+
+Returning to the starting view helps when you get lost while zoomed in: it restores the framing the map shows right after opening. Tap an **empty** part of the map, not a planet — double-tapping a planet opens and closes its entry instead.
+
+A gold corner bracket marks what can be clicked. A red marker does not mean something cannot be clicked — it means a warning or an entry ban described in the card.
 
 If nothing happens after clicking, the browser probably blocked the new tab — allow pop-ups for this page, or right-click the button and open it in a new tab manually.
 

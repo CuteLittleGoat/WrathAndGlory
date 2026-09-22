@@ -42,7 +42,7 @@ Tryb admina jest wykrywany po parametrze `admin=1` w query stringu.
 | Plik | Rola |
 | --- | --- |
 | `Main/index.html` | Pełna aplikacja Main: HTML, CSS i JavaScript. |
-| `Main/Gilead.html` | Samodzielna strona z rejestrem światów systemu Gilead, otwierana przyciskiem `Gilead`. |
+| `Main/Gilead.html` | Samodzielna strona z rejestrem światów systemu Gilead, otwierana przyciskiem `Gilead`. **Kopia wydania** — plik powstaje poza tym repozytorium i nie jest tutaj edytowany; patrz „Pochodzenie pliku `Main/Gilead.html`”. |
 | `Main/Galaktyka.html` | Samodzielna strona z interaktywną mapą galaktyki, otwierana przyciskiem `Galaktyka`. |
 | `Main/ZmienneHiperlacza.md` | Źródło dynamicznych linków `Mapa` i `Obrazki`. |
 | `Main/wrath-glory-logo-warhammer.png` | Logo wyświetlane na stronie startowej. |
@@ -396,6 +396,29 @@ Main tylko prowadzi do tych modułów.
 | Brak wpisu `Obrazki:` | Link `Obrazki` nie zostanie podmieniony. |
 | Stary Service Worker | Strona próbuje wyrejestrować wszystkie rejestracje SW. |
 
+## Pochodzenie pliku `Main/Gilead.html`
+
+`Main/Gilead.html` jest **kopią wydania**. Nie powstaje w tym repozytorium i nie jest tutaj edytowany.
+
+| | |
+| --- | --- |
+| Repozytorium źródłowe | `Scenariusze` |
+| Katalog projektu | `Warhammer40k/Gilead/` |
+| Generator | `Warhammer40k/Gilead/scripts/build/gilead/assemble.py` |
+| Plik wynikowy | `Warhammer40k/Gilead/Gilead.html` |
+
+Generator składa stronę z osobnych źródeł: treści kart rejestru, geometrii mapy oraz ilustracji osadzonych w `base64`. Wynikiem jest plik samodzielny — nie pobiera żadnych zasobów z sieci i działa również spod `file://`. Do modułu `Main` trafia gotowy plik.
+
+Zasady pracy z tym plikiem w module `Main`:
+
+- **nie edytować go tutaj** — także zmian jednoznakowych i oczywiście słusznych. Przy następnym wydaniu generator odtwarza plik od nowa, więc poprawka naniesiona w module `Main` znika bez śladu i nie wraca do źródła,
+- dotyczy to całej zawartości pliku, w tym bloków `<style>` i `<script>`,
+- usterkę zauważoną w samym rejestrze należy **zgłosić** do projektu rejestru w repozytorium `Scenariusze`, a nie naprawiać na miejscu.
+
+Aktualizacja polega na skopiowaniu nowego wydania w miejsce poprzedniego. Zgodność kopii ze źródłem sprawdza się sumą kontrolną: `sha256sum Main/Gilead.html` ma dać tę samą wartość co `sha256sum` pliku wynikowego w repozytorium `Scenariusze`. Rozbieżność oznacza, że kopia rozjechała się z wydaniem, i należy ją wyjaśnić przed jakąkolwiek dalszą pracą.
+
+Wewnętrzna budowa rejestru — mapa SVG, kadrowanie, obsługa gestów i karty rejestru — jest opisana w dokumentacji projektu rejestru w repozytorium `Scenariusze`. Niniejsza dokumentacja jej nie powtarza, żeby oba opisy nie rozjechały się ze sobą.
+
 ## Procedura odtworzenia modułu
 
 1. Utwórz `Main/index.html`.
@@ -410,7 +433,8 @@ Main tylko prowadzi do tych modułów.
 10. Dodaj parser `ZmienneHiperlacza.md`.
 11. Dodaj przełączanie `Infoczytnik` i `DataVault` zależnie od `?admin=1`.
 12. Dodaj skrypt usuwający stare Service Workery.
-13. Sprawdź tryb standardowy i admin.
+13. Wstaw `Main/Gilead.html`, kopiując bieżące wydanie z repozytorium `Scenariusze` — tego pliku nie odtwarza się ręcznie; patrz „Pochodzenie pliku `Main/Gilead.html`”.
+14. Sprawdź tryb standardowy i admin.
 
 ## Testy kontrolne
 
@@ -477,7 +501,7 @@ Admin mode is detected by `admin=1` query string parameter.
 | File | Role |
 | --- | --- |
 | `Main/index.html` | Full Main application: HTML, CSS, and JavaScript. |
-| `Main/Gilead.html` | Standalone Gilead system world registry page opened by the `Gilead` button. |
+| `Main/Gilead.html` | Standalone Gilead system world registry page opened by the `Gilead` button. **Release copy** — the file is produced outside this repository and is not edited here; see “Where `Main/Gilead.html` comes from”. |
 | `Main/Galaktyka.html` | Standalone interactive galaxy map page opened by the `Galaktyka` button. |
 | `Main/ZmienneHiperlacza.md` | Source of dynamic `Map` and `Images` links. |
 | `Main/wrath-glory-logo-warhammer.png` | Logo displayed on the start page. |
@@ -831,6 +855,29 @@ Main only links to those modules.
 | Missing `Obrazki:` entry | `Images` link is not replaced. |
 | Old Service Worker | Page tries to unregister all SW registrations. |
 
+## Where `Main/Gilead.html` comes from
+
+`Main/Gilead.html` is a **release copy**. It is not produced in this repository and is not edited here.
+
+| | |
+| --- | --- |
+| Source repository | `Scenariusze` |
+| Project directory | `Warhammer40k/Gilead/` |
+| Generator | `Warhammer40k/Gilead/scripts/build/gilead/assemble.py` |
+| Build output | `Warhammer40k/Gilead/Gilead.html` |
+
+The generator assembles the page from separate sources: registry card content, map geometry, and illustrations embedded as `base64`. The result is a self-contained file — it fetches nothing from the network and works from `file://` as well. The finished file is what reaches the `Main` module.
+
+Rules for working with this file inside the `Main` module:
+
+- **do not edit it here** — not even single-character, obviously correct changes. The next release regenerates the file from scratch, so a fix applied in the `Main` module disappears without a trace and never reaches the source,
+- this covers the whole file, including its `<style>` and `<script>` blocks,
+- a defect noticed in the registry itself must be **reported** to the registry project in the `Scenariusze` repository, not fixed in place.
+
+Updating means copying the new release over the previous one. Checksums confirm that the copy matches the source: `sha256sum Main/Gilead.html` must return the same value as `sha256sum` of the build output in the `Scenariusze` repository. A mismatch means the copy has drifted from the release and must be explained before any further work.
+
+The registry internals — the SVG map, view framing, gesture handling, and registry cards — are documented in the registry project documentation in the `Scenariusze` repository. This documentation does not repeat them, so the two descriptions cannot drift apart.
+
 ## Module recreation procedure
 
 1. Create `Main/index.html`.
@@ -845,7 +892,8 @@ Main only links to those modules.
 10. Add `ZmienneHiperlacza.md` parser.
 11. Add Infoczytnik and DataVault switching by `?admin=1`.
 12. Add script removing old Service Workers.
-13. Test standard and admin modes.
+13. Put `Main/Gilead.html` in place by copying the current release from the `Scenariusze` repository — this file is never recreated by hand; see “Where `Main/Gilead.html` comes from”.
+14. Test standard and admin modes.
 
 ## Control tests
 

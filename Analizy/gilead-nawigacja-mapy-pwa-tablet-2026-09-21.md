@@ -1,10 +1,10 @@
 # Mapa Gilead — nawigacja nie działa w PWA na tablecie
 
-> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28)
+> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28) · **zamknięcie:** 22 września 2026 (rozdz. 29)
 > **Temat:** w aplikacji PWA uruchomionej na tablecie mapa układu Gilead nie daje się przesuwać ani przybliżać/oddalać, natomiast kliknięcia w planety i obszary działają normalnie. W przeglądarce Chrome na tym samym tablecie oraz w PWA na telefonie wszystko działa poprawnie.
 > **Plik, którego dotyczy zgłoszenie:** rejestr światów systemu Gilead — w aplikacji widoczny jako `Main/Gilead.html` (moduł `Main`, repozytorium `WrathAndGlory`). **Jest to kopia wydania.** Plik źródłowy i miejsce nanoszenia poprawek to repozytorium `Scenariusze`, `Warhammer40k/Gilead/` — szczegóły w rozdz. 19.
 > **Charakter dokumentu:** analiza diagnostyczna wraz z zapisem wykonania. Rozdz. 1–27 opisują stan kodu **sprzed** zmian i projekt naprawy; **rozdz. 28 opisuje naprawę faktycznie wykonaną** w repozytorium `Scenariusze` 22 września 2026.
-> **Stan na dziś (22 września 2026):** **naprawa wykonana.** Przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6), zweryfikowana rachunkiem (rozdz. 20), a na koniec **odtworzona w przeglądarce**: badanie puszczone na pliku sprzed poprawki oblewa z komunikatem `viewBox: Expected number, "NaN NaN NaN NaN"`, czyli tym, który rozdz. 10 podawała jako twardy dowód możliwy tylko na tablecie (rozdz. 28.6). W repozytorium `Scenariusze` wdrożone **P1–P6** (rozdz. 28); kontrola G-6 i G-12 oraz badanie w przeglądarce przechodzą bez zastrzeżeń. Pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. **Zostaje:** testy na tablecie po stronie użytkownika (rozdz. 14) oraz **D5, D6 i D7** po stronie repozytorium aplikacji.
+> **Stan na dziś (22 września 2026):** **naprawa wykonana.** Przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6), zweryfikowana rachunkiem (rozdz. 20), a na koniec **odtworzona w przeglądarce**: badanie puszczone na pliku sprzed poprawki oblewa z komunikatem `viewBox: Expected number, "NaN NaN NaN NaN"`, czyli tym, który rozdz. 10 podawała jako twardy dowód możliwy tylko na tablecie (rozdz. 28.6). W repozytorium `Scenariusze` wdrożone **P1–P6** (rozdz. 28); kontrola G-6 i G-12 oraz badanie w przeglądarce przechodzą bez zastrzeżeń. Pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. **D5, D6 i D7 wykonane** po stronie repozytorium aplikacji — rozdz. 29; kopia wydania w `Main/Gilead.html` potwierdzona sumą kontrolną co do bajtu (rozdz. 29.1). **Zostaje wyłącznie:** testy na tablecie po stronie użytkownika (rozdz. 14).
 >
 > **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — potem od rozdz. 27 (sprawdzenia wykonane po tamtej stronie i wykaz decyzji otwartych, 27.9), a na koniec od **rozdz. 28.8**, gdzie jest suma kontrolna wydania do porównania po skopiowaniu pliku.
 
@@ -49,6 +49,10 @@
 **Wykonanie — naprawa w repozytorium `Scenariusze`**
 
 28. [Co dokładnie naprawiono](#28-co-dokładnie-naprawiono)
+
+**Zamknięcie — wykonanie D5, D6 i D7 w repozytorium `WrathAndGlory`**
+
+29. [Co zrobiono po stronie aplikacji](#29-co-zrobiono-po-stronie-aplikacji)
 
 **Uzupełnienie z 22 września 2026 — sprawdzenia w repozytorium `WrathAndGlory`**
 
@@ -1371,7 +1375,8 @@ Jeżeli po wdrożeniu P1–P6 objaw **nadal wystąpi** na tablecie, potrzebne b�
 | 2 | ✔ **wykonane** | Weryfikacja diagnozy w repozytorium `Scenariusze` (rozdz. 20), ustalenie miejsca naprawy (rozdz. 19), doprecyzowanie P3 (rozdz. 21.6) |
 | 3 | ✔ **wykonane 22.09** | Wdrożenie P1–P6 w `assemble.py` wraz z przebudową, rozszerzeniem kontroli G-6 o punkt 31 i `test_mapy.py` oraz zapisem U-21, G-D63/G-D64 i changelogu — **rozdz. 28** |
 | 4 | **użytkownik** | Testy 1–8 i 14–15 z rozdz. 14 na tablecie, w aplikacji PWA. Bez tego naprawa pozostaje nieudowodniona |
-| 5 | **agent, repo aplikacji** | D5, D6 i punkty z rozdz. 24 |
+| 5 | ✔ **wykonane 22.09** | D5, D6 i D7 po stronie repozytorium aplikacji — **rozdz. 29** |
+| 6 | **użytkownik** | Testy 1–8 i 14–15 z rozdz. 14 na tablecie — jedyna rzecz otwarta poza drobiazgiem P9 |
 
 ---
 
@@ -1588,6 +1593,9 @@ Rzecz praktyczna na etap 5 z rozdz. 26, bo jeśli to pominąć, wyjdzie fałszyw
    na decyzje i osobne zadanie.
 
 ### 27.9 Uzupełniony wykaz decyzji otwartych
+
+> **Odsyłacz dopisany 22 września 2026.** Wszystkie pozycje tabeli poniżej zostały
+> rozstrzygnięte i wykonane — stan końcowy w **rozdz. 29.7**.
 
 | # | Pytanie | Stan |
 |---|---|---|
@@ -1830,3 +1838,148 @@ Zgodnie z rozdz. 23.3 planu:
    zmieniają na tym konkretnym tablecie.** Obie reguły są zabezpieczeniem wziętym
    z rozdz. 11.2, a nie odpowiedzią na zmierzony objaw — w Chromium na biurku nie dało
    się pokazać różnicy, bo tam reguła na SVG i tak działa.
+
+---
+
+# ZAMKNIĘCIE z 22 września 2026 — wykonanie D5, D6 i D7 w repozytorium `WrathAndGlory`
+
+## 29. Co zrobiono po stronie aplikacji
+
+Decyzje użytkownika: **D5, D6 i D7 zgodnie z rekomendacją.** Dwie z nich są rekomendacjami
+„nie zmieniać", więc realną pracą było wyłącznie D6.
+
+### 29.1 Weryfikacja wydania — kopia zgadza się co do bajtu
+
+Pierwsza czynność, zgodnie z rozdz. 28.8:
+
+```
+oczekiwane (rozdz. 28.8)  4e5fe8f9c207f5d71570eeef49f324a277915cffef09608c860bd33c3c701df1
+Main/Gilead.html          4e5fe8f9c207f5d71570eeef49f324a277915cffef09608c860bd33c3c701df1
+rozmiar                   1 054 214 B — zgodny
+```
+
+**Wklejona kopia jest wydaniem po naprawie, bajt w bajt.** Przy okazji potwierdzone
+w kodzie, że wszystkie sześć poprawek rzeczywiście w nim siedzi: `wymiary()` (`:668`),
+`poprawny()` i `awaria()` (`:675`, `:679`), `zapamietajSkale()` (`:703`), `przelicz()`
+(`:749`), `zerujGest()` (`:860`), `lostpointercapture` (`:937`), `domierz()` z podwójnym
+`requestAnimationFrame` (`:1001`), `visibilitychange` (`:1013`), `ResizeObserver` (`:1031`),
+`overscroll-behavior:none` na `html,body` (`:21`) i `touch-action:none` na `.cog-plansza`
+(`:40`). Bariera w `zastosuj()` sprawdza dodatniość `w` i `h`, nie samą skończoność —
+czyli zamyka także przypadek `1280 × 0` z rozdz. 21.1.
+
+Sprawdzona też obsługa klawiatury, bo dokumentacja użytkownika miała ją opisać: `Home`
+wyprowadzony przed sprawdzenie pomiaru i poza łańcuch `else if`, strzałki przesuwają,
+`+` i `-` przybliżają, `Escape` zamyka kartę.
+
+### 29.2 D5 — `target="_blank"` zostaje
+
+**Bez zmian w kodzie.** Warunek rekomendacji z rozdz. 13 („zostawić po wdrożeniu P1–P4")
+jest spełniony: P1–P6 są w wydaniu, więc przyczyna została zamknięta, a nie objaw.
+Przesłanka potwierdzona w rozdz. 27.1 — rejestr mieści się w zasięgu manifestu i otwiera
+się w oknie aplikacji.
+
+`Main/index.html:228` zostaje w dotychczasowym brzmieniu. Opis w
+`Main/docs/Documentation.md` („`Gilead.html` otwierany w nowej karcie") oraz wiersz
+rozwiązywania problemów w `README.md` były i pozostają zgodne ze stanem faktycznym —
+nie wymagały korekty.
+
+### 29.3 D6 — dokumentacja modułu zaktualizowana
+
+Wariant (a) z rozdz. 13, w zakresie rozpoznanym w rozdz. 27.3. Zmienione dwa pliki,
+każdy w **obu wersjach językowych** — `AGENTS.md` rozdz. 5 wymaga pełnej wersji polskiej
+i pełnej angielskiej, bez mieszania sekcja po sekcji.
+
+**`Main/docs/Documentation.md`**
+
+| Miejsce | Zmiana |
+|---|---|
+| tabela struktury plików (PL i EN) | wiersz `Main/Gilead.html` oznaczony jako **kopia wydania**, z odesłaniem do nowej sekcji |
+| **nowa sekcja** „Pochodzenie pliku `Main/Gilead.html`" / „Where `Main/Gilead.html` comes from" | repozytorium źródłowe, katalog projektu, generator i plik wynikowy; zasada „nie edytować tutaj" wraz z uzasadnieniem, że poprawka znika przy następnym wydaniu; obowiązek zgłaszania usterek do projektu rejestru; sposób aktualizacji i weryfikacji sumą kontrolną |
+| procedura odtworzenia modułu (PL i EN) | dopisany krok 13: rejestr **wstawia się kopiując bieżące wydanie**, nie odtwarza ręcznie. Dotychczasowy krok 13 („sprawdź tryb standardowy i admin") przesunięty na 14 |
+
+Krok w procedurze odtworzenia był najpoważniejszą luką z rozdz. 27.3: `AGENTS.md` rozdz. 3
+wymaga, żeby `Documentation.md` pozwalał odtworzyć moduł 1:1, a dotychczasowa procedura
+kazała dodać link do `Gilead.html`, nie mówiąc, skąd ten plik wziąć.
+
+**`Main/docs/README.md`**
+
+Dopisana sekcja „Jak obsługiwać mapę rejestru" / „How to use the registry map" —
+tabela: przesuwanie, przybliżanie, otwieranie i zamykanie kart, `INDEKS`, powrót do widoku
+początkowego, obsługa klawiaturą. Plus dwa zdania o tym, że złoty narożnik znaczy
+„można kliknąć", a czerwień niesie ostrzeżenie, nie brak klikalności.
+
+Powód, dla którego to dołożono: `AGENTS.md` rozdz. 2 wymaga, żeby `README.md` wyjaśniał
+każdą funkcję i każdą ważną mechanikę dostępną użytkownikowi. Obsługa mapy nie była opisana
+nigdzie — a przy decyzji D3 (b) **dwuklik jest jedynym sposobem powrotu do widoku
+domyślnego** i nie ma widocznego przycisku, który by o nim przypominał. Rozdz. 11.4
+wskazywała to jako brak; skoro przycisku nie będzie, instrukcja jest na to jedyną
+odpowiedzią. Sformułowania sprawdzone wobec kodu wydania, nie wobec pamięci.
+
+**Dwie decyzje redakcyjne warte zapisania:**
+
+1. **Suma kontrolna wydania nie została wpisana do dokumentacji.** Rotowałaby przy każdym
+   wydaniu rejestru i po pierwszym przeoczeniu opisywałaby nieprawdę, co łamie `AGENTS.md`
+   rozdz. 15. W dokumentacji jest **procedura** porównania sum między repozytoriami;
+   konkretne wartości zostają w tej analizie (rozdz. 27.2, 28.2, 28.8, 29.1).
+2. **Dokumentacja nie powtarza wewnętrznej budowy rejestru** — kadrowania, obsługi gestów
+   ani mechaniki kart — tylko odsyła do dokumentacji projektu w repozytorium `Scenariusze`.
+   Powtórzenie tego opisu tutaj oznaczałoby dwa opisy jednego pliku, rozjeżdżające się przy
+   pierwszym wydaniu. Jest to świadome ograniczenie zakresu `Documentation.md`, nie
+   przeoczenie.
+
+Zgodnie z `AGENTS.md` rozdz. 11 żaden z dopisanych fragmentów nie odsyła do folderu
+`Analizy` — podają sam fakt i adres repozytorium źródłowego.
+
+### 29.4 D7 — `DetaleLayout.md` bez zmian
+
+Wariant (a) z rozdz. 27.5. `touch-action` i `overscroll-behavior` sterują obsługą gestów,
+a nie wyglądem — nie zmieniają ani jednego piksela, więc nie podpadają pod `AGENTS.md`
+rozdz. 8. Dodatkowo `DetaleLayout.md` opisywałby wtedy wnętrze pliku, którego to
+repozytorium nie jest właścicielem, co jest dokładnie tym rozjeżdżaniem się opisu ze
+źródłem, przed którym ostrzega rozdz. 24.1.
+
+`DetaleLayout.md` nadal opisuje z całego wątku Gilead wyłącznie przyciski CTA na stronie
+głównej (`:164`, `:175`, `:182`) — czyli elementy `Main/index.html`, które są własnością
+tego repozytorium. To jest stan zamierzony.
+
+### 29.5 Co zostaje po stronie użytkownika
+
+1. **Testy 1–8 i 14–15 z rozdz. 14, na tablecie, w aplikacji PWA.** Do tego czasu naprawa
+   jest udowodniona co do przyczyny (rozdz. 28.6 — komunikat `viewBox: Expected number`
+   odtworzony w przeglądarce) i **nieudowodniona co do objawu na sprzęcie**.
+2. **Gdyby objaw nie zniknął mimo zgodnej sumy kontrolnej** — to nie znaczy, że naprawa
+   zawiodła. Najpierw wyczyścić pamięć podręczną HTTP: rozdz. 27.7 pkt 2. Aplikacji
+   **nie trzeba przeinstalowywać** — `Main/index.html` wyrejestrowuje Service Workery,
+   więc nie ma pamięci offline, która trzymałaby stary rejestr.
+3. **Najszybsze sprawdzenie, że wczytał się nowy plik** — Test 2 z rozdz. 10:
+   rama Szczeliny kompletna z czterech stron, Vulkaris i Trollius widoczne.
+4. **Test 11 (dwuklik)** wart osobnej uwagi mimo naprawy — rozdz. 28.10 pkt 2. Po P1–P6
+   nie jest już ratunkiem, ale pozostaje jedynym gestem powrotu do widoku domyślnego,
+   a `README.md` opisuje go teraz użytkownikowi jako obowiązujący sposób.
+
+### 29.6 Czego nie zrobiono po tej stronie
+
+1. **Nie uruchomiono niczego na tablecie ani w przeglądarce.** Zgodność wydania sprawdzona
+   sumą kontrolną i obecność poprawek — odczytem kodu. Ograniczenie z rozdz. 16 pkt 1,
+   25 pkt 1 i 28.10 pkt 1 zostaje w mocy.
+2. **Nie zmieniono `Main/Gilead.html`** — zgodnie z rozdz. 24.1 plik jest kopią wydania
+   i nie podlega edycji w tym repozytorium. Jedyną operacją na nim było policzenie sumy
+   kontrolnej i odczyt kodu.
+3. **Nie zmieniono `Main/index.html`** — D5 to rekomendacja „zostawić".
+4. **Nie zmieniono `DetaleLayout.md`** — D7 to rekomendacja „nie dopisywać".
+5. **Nie zweryfikowano zastrzeżenia z rozdz. 28.10 pkt 4** — czy `touch-action` na
+   kontenerze i `overscroll-behavior` cokolwiek zmieniają na tym tablecie. Bez urządzenia
+   nie da się tego rozstrzygnąć po żadnej ze stron.
+
+### 29.7 Stan decyzji — zamknięcie
+
+| # | Decyzja | Stan |
+|---|---|---|
+| **D1–D4** | zakres naprawy, zachowanie widoku, przycisk powrotu, karta na tablecie | **zamknięte** — wykonane w `Scenariusze` (rozdz. 28) |
+| **D5** | `target="_blank"` przy przycisku `Gilead` | **zamknięte** — zostawione bez zmian (29.2) |
+| **D6** | aktualizacja `Main/docs/` | **zamknięte** — wykonane (29.3) |
+| **D7** | `DetaleLayout.md` | **zamknięte** — bez zmian (29.4) |
+| **P8** | metadane PWA rejestru | **zamknięte** — nie robić nic (rozdz. 27.4) |
+| **P9** | flaga `ciagniete` | **otwarte** — drobiazg poza zakresem D1 (b), zostaje w rejestrze usterek projektu rejestru |
+
+Jedyne, co pozostaje otwarte poza P9, to **potwierdzenie objawu na tablecie** (29.5 pkt 1).
