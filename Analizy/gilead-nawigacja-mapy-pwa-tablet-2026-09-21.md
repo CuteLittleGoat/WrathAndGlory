@@ -1,10 +1,12 @@
 # Mapa Gilead — nawigacja nie działa w PWA na tablecie
 
-> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28) · **zamknięcie:** 22 września 2026 (rozdz. 29)
+> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28) · **zamknięcie:** 22 września 2026 (rozdz. 29) · **lista dla użytkownika:** rozdz. 30
 > **Temat:** w aplikacji PWA uruchomionej na tablecie mapa układu Gilead nie daje się przesuwać ani przybliżać/oddalać, natomiast kliknięcia w planety i obszary działają normalnie. W przeglądarce Chrome na tym samym tablecie oraz w PWA na telefonie wszystko działa poprawnie.
 > **Plik, którego dotyczy zgłoszenie:** rejestr światów systemu Gilead — w aplikacji widoczny jako `Main/Gilead.html` (moduł `Main`, repozytorium `WrathAndGlory`). **Jest to kopia wydania.** Plik źródłowy i miejsce nanoszenia poprawek to repozytorium `Scenariusze`, `Warhammer40k/Gilead/` — szczegóły w rozdz. 19.
 > **Charakter dokumentu:** analiza diagnostyczna wraz z zapisem wykonania. Rozdz. 1–27 opisują stan kodu **sprzed** zmian i projekt naprawy; **rozdz. 28 opisuje naprawę faktycznie wykonaną** w repozytorium `Scenariusze` 22 września 2026.
 > **Stan na dziś (22 września 2026):** **naprawa wykonana.** Przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6), zweryfikowana rachunkiem (rozdz. 20), a na koniec **odtworzona w przeglądarce**: badanie puszczone na pliku sprzed poprawki oblewa z komunikatem `viewBox: Expected number, "NaN NaN NaN NaN"`, czyli tym, który rozdz. 10 podawała jako twardy dowód możliwy tylko na tablecie (rozdz. 28.6). W repozytorium `Scenariusze` wdrożone **P1–P6** (rozdz. 28); kontrola G-6 i G-12 oraz badanie w przeglądarce przechodzą bez zastrzeżeń. Pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. **D5, D6 i D7 wykonane** po stronie repozytorium aplikacji — rozdz. 29; kopia wydania w `Main/Gilead.html` potwierdzona sumą kontrolną co do bajtu (rozdz. 29.1). **Zostaje wyłącznie:** testy na tablecie po stronie użytkownika (rozdz. 14).
+>
+> **Masz sprawdzić mapę na tablecie?** Przewiń na **sam koniec dokumentu, rozdz. 30** — wszystkie testy i czynności po Twojej stronie są tam zebrane w jednym miejscu i nie wymagają czytania reszty.
 >
 > **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — potem od rozdz. 27 (sprawdzenia wykonane po tamtej stronie i wykaz decyzji otwartych, 27.9), a na koniec od **rozdz. 28.8**, gdzie jest suma kontrolna wydania do porównania po skopiowaniu pliku.
 
@@ -53,6 +55,10 @@
 **Zamknięcie — wykonanie D5, D6 i D7 w repozytorium `WrathAndGlory`**
 
 29. [Co zrobiono po stronie aplikacji](#29-co-zrobiono-po-stronie-aplikacji)
+
+**Dla użytkownika — wszystko do sprawdzenia w jednym miejscu, na samym końcu dokumentu**
+
+30. [**WSZYSTKO, CO MASZ SPRAWDZIĆ — W JEDNYM MIEJSCU**](#30-wszystko-co-masz-sprawdzić--w-jednym-miejscu)
 
 **Uzupełnienie z 22 września 2026 — sprawdzenia w repozytorium `WrathAndGlory`**
 
@@ -360,6 +366,11 @@ a jeśli w międzyczasie tablet przejdzie w tryb dzielonego ekranu, może być k
 ---
 
 ## 10. Co możesz sprawdzić — testy krok po kroku
+
+> **Odsyłacz dopisany 22 września 2026.** Ten rozdział służył **rozpoznaniu** usterki,
+> zanim było wiadomo, co się dzieje. Usterka jest rozpoznana i naprawiona, więc tych
+> testów **już się nie wykonuje**. To, co z nich nadal ma sens, jest przeniesione
+> do **rozdz. 30** na końcu dokumentu.
 
 Napisane tak, żeby dało się je wykonać bez żadnej wiedzy technicznej. Każdy test ma podane,
 co oznacza wynik.
@@ -690,6 +701,10 @@ kodu modułu.
 ---
 
 ## 14. Plan testów po naprawie
+
+> **Odsyłacz dopisany 22 września 2026.** Lista poniżej zostaje jako zapis planu.
+> Wersja do wykonania — rozpisana krok po kroku, z zaznaczeniem, co sprawdzono już
+> maszynowo, i z instrukcją na wypadek niepowodzenia — jest w **rozdz. 30**.
 
 Do wykonania na tablecie w aplikacji PWA — czyli dokładnie tam, gdzie objaw występuje.
 
@@ -1983,3 +1998,184 @@ tego repozytorium. To jest stan zamierzony.
 | **P9** | flaga `ciagniete` | **otwarte** — drobiazg poza zakresem D1 (b), zostaje w rejestrze usterek projektu rejestru |
 
 Jedyne, co pozostaje otwarte poza P9, to **potwierdzenie objawu na tablecie** (29.5 pkt 1).
+
+---
+
+# 30. WSZYSTKO, CO MASZ SPRAWDZIĆ — W JEDNYM MIEJSCU
+
+Ten rozdział jest samowystarczalny. **Nie musisz wracać do reszty dokumentu** — wszystko,
+co trzeba zrobić, jest opisane tutaj od początku do końca, razem z tym, co ma się stać
+i co zrobić, jeśli się nie stanie.
+
+Jeżeli masz mało czasu — zrób sam **rozdz. 30.2**. To pięć minut i rozstrzyga najważniejsze.
+
+> **Uwaga o starszych rozdziałach.** Testy z rozdz. 10 („Co możesz sprawdzić") były
+> pisane po to, żeby **rozpoznać usterkę**, gdy jeszcze nie było wiadomo, co się dzieje.
+> Usterka jest rozpoznana i naprawiona, więc **tamtych testów już nie wykonuj** — to,
+> co z nich nadal ma sens, jest przeniesione niżej.
+
+---
+
+## 30.1 Zanim zaczniesz — jedna rzecz do upewnienia się
+
+Na tablecie może jeszcze siedzieć **stary plik mapy** z pamięci podręcznej. Wtedy testy
+pokażą starą usterkę, choć plik został naprawiony — i wyjdzie fałszywy wniosek, że naprawa
+nie zadziałała.
+
+**Sprawdzenie, że wczytał się nowy plik (15 sekund).** Zrób je na **tablecie trzymanym
+poziomo**, **zaraz po otwarciu mapy** — zanim cokolwiek przesuniesz albo przybliżysz.
+
+Najprostszy wskaźnik jest jeden:
+
+> **Czy u góry mapy widzisz zakreskowaną belkę z napisem „CICARIX MALEDICTUM”?**
+>
+> - **Widzisz ją i da się przeczytać** → ❌ to **stary plik** albo stara usterka.
+>   Przejdź do rozdz. 30.5.
+> - **Nie widzisz jej wcale** → ✅ dobrze. Tak właśnie wygląda poprawnie policzony widok.
+
+Brzmi odwrotnie, niż się wydaje, więc warto wiedzieć dlaczego: napis leży **nad** górną
+krawędzią prawidłowego kadru i przy poprawnym widoku po prostu się w nim nie mieści.
+Widać go dopiero wtedy, gdy mapa rysuje się „jak leci” — czyli w stanie uszkodzonym.
+
+Dwa potwierdzenia dla pewności:
+
+| Sprawdź | Poprawnie | Uszkodzone |
+|---|---|---|
+| Czy widać **VULKARIS** (lewy dół) i **TROLLIUS** (prawy dół)? | obie pozycje widoczne | obu brak |
+| Czy przy **lewej** krawędzi biegnie pionowy zakreskowany pas? | biegnie | nie ma go |
+
+Nie sugeruj się prawą krawędzią — przy szerokości Twojego tabletu prawy pas ramy wypada
+tuż poza kadrem także przy poprawnym widoku. Na telefonie w pionie mapa otwiera się celowo
+przybliżona na Światy Centralne i żaden z tych trzech wskaźników tam nie obowiązuje.
+
+---
+
+## 30.2 Szybki przebieg — 5 minut, najważniejsze
+
+Na **tablecie**, w **aplikacji PWA**, trzymanym **poziomo**.
+
+| # | Co zrobić | Co ma się stać |
+|---|---|---|
+| **A** | Zamknij aplikację całkowicie (usuń z listy ostatnich aplikacji), otwórz od nowa, wejdź w mapę i **od razu** przeciągnij palcem | Mapa się przesuwa |
+| **B** | Zsuń i rozsuń dwa palce | Mapa oddala się i przybliża płynnie, wokół punktu między palcami |
+| **C** | Naciśnij `INDEKS` (prawy górny róg) i wybierz **VULKARIS** | Mapa dojeżdża do Vulkarisa i otwiera jego opis |
+| **D** | Obróć tablet na pion i z powrotem na poziom, potem przeciągnij palcem | Mapa nadal się przesuwa, obraz sensowny w obu orientacjach |
+| **E** | Dotknij planety, żeby otworzyć opis, potem zamknij go krzyżykiem | Mapa zwęża się i rozszerza **bez skoku powiększenia**; po zamknięciu wraca dokładnie tam, gdzie była |
+
+**Wszystkie pięć wyszło?** Naprawa działa na Twoim sprzęcie. Reszta (30.3) to dokładka
+na spokojnie.
+
+**Którykolwiek nie wyszedł?** Nie wyciągaj jeszcze wniosków — przejdź do **rozdz. 30.5**.
+
+---
+
+## 30.3 Pełna lista — 15 testów
+
+Kolumna „kto" mówi, czy coś zostało już sprawdzone maszynowo po stronie repozytorium,
+czy może to sprawdzić wyłącznie człowiek z tabletem w ręku.
+
+| # | Co zrobić | Co ma się stać | Kto |
+|---|---|---|---|
+| 1 | Zimny start aplikacji, wejście w mapę, od razu przesunięcie palcem | Mapa się przesuwa | **tylko Ty** |
+| 2 | Szczypanie dwoma palcami | Mapa przybliża się i oddala płynnie, wokół punktu między palcami | **tylko Ty** |
+| 3 | Popatrz na mapę zaraz po otwarciu | Napisu „CICARIX MALEDICTUM” **nie widać**; widać Vulkaris i Trollius oraz pionowy zakreskowany pas przy lewej krawędzi (szczegóły w 30.1) | sprawdzone maszynowo, potwierdź |
+| 4 | `INDEKS` → VULKARIS | Mapa dojeżdża do Vulkarisa, opis się otwiera | sprawdzone maszynowo, potwierdź |
+| 5 | Otwórz opis planety, tablet poziomo | Mapa zostaje ściśnięta i **poprawnie przeskalowana**, bez przycięcia ramy | sprawdzone maszynowo, potwierdź |
+| 6 | Zamknij opis | Mapa wraca do poprzedniego kadru, **bez skoku** | sprawdzone maszynowo, potwierdź |
+| 7 | Obrót pion ↔ poziom, potem przesunięcie palcem | Mapa nadal się przesuwa, kadr sensowny w obu orientacjach | **tylko Ty** |
+| 8 | Dzielony ekran: zmniejsz okno aplikacji do połowy i z powrotem | Mapa nadal działa | **tylko Ty** |
+| 9 | Przełącz się na inną aplikację **w trakcie trzymania palca na mapie** i wróć | Mapa nadal działa | **tylko Ty** |
+| 10 | Przeciągnij palcem od krawędzi ekranu (gest cofania), wróć do mapy | Mapa nadal się przesuwa | **tylko Ty** |
+| 11 | Stuknij **dwa razy** w puste miejsce mapy | Powrót do widoku początkowego | **tylko Ty** |
+| 12 | Dotknij planety | Opis się otwiera | sprawdzone maszynowo, potwierdź |
+| 13 | Przeciągnij mapę i **zakończ ruch na planecie** | Opis **nie** otwiera się — przeciąganie to nie dotknięcie | sprawdzone maszynowo, potwierdź |
+| 14 | Przejdź testy 1–13 **na telefonie** w PWA | Wszystko jak wcześniej, nic się nie zepsuło | **tylko Ty** |
+| 15 | Przejdź testy 1–13 **w Chrome** na tablecie i na komputerze | Wszystko jak wcześniej, nic się nie zepsuło | **tylko Ty** |
+
+**Testy 8, 9, 10 i 11 są najważniejsze**, bo dotyczą rzeczy, których żadna maszyna nie
+odtworzy: gestów systemowych Androida, dzielonego ekranu i dwustuknięcia w oknie aplikacji.
+Testy 9 i 10 sprawdzają zabezpieczenie przed „zablokowanymi palcami" — usterką, która daje
+**ten sam objaw** co pierwotna (mapa stoi, opisy się otwierają), ale z zupełnie innej
+przyczyny. Jeśli którykolwiek z nich zawiedzie, zapisz dokładnie, co robiłeś.
+
+---
+
+## 30.4 Jedna rzecz, o której warto wiedzieć przy teście 11
+
+Powrót do widoku początkowego robi się **dwustuknięciem w puste miejsce mapy** —
+nie ma na to przycisku, bo sam zdecydowałeś, żeby nie zaśmiecać mapy (decyzja D3).
+
+Dwa zastrzeżenia:
+
+- stukaj w **puste** miejsce, nie w planetę. Dwuklik w planetę otworzy i zamknie jej opis;
+- nie jest w 100 % pewne, czy Android w oknie aplikacji wysyła to zdarzenie tak samo jak
+  przeglądarka. Dlatego test 11 warto wykonać mimo naprawy. Jeśli dwuklik **nie** działa
+  na tablecie, powiedz — to argument, żeby wrócić do pomysłu z widocznym przyciskiem.
+
+Na klawiaturze ten sam skutek daje klawisz `Home`.
+
+---
+
+## 30.5 Coś nie działa — zanim uznasz naprawę za nieudaną
+
+**Kolejność jest ważna.** Najczęstsza przyczyna „nie zadziałało" to stary plik w pamięci
+podręcznej, a nie wada naprawy.
+
+**Krok 1 — wyczyść pamięć podręczną.**
+Android: `Ustawienia` → `Aplikacje` → **Kozi Przybornik** → `Pamięć` → `Wyczyść dane`.
+Potem otwórz aplikację od nowa.
+
+**Aplikacji nie trzeba przeinstalowywać.** Strona główna sama usuwa stare mechanizmy
+działania offline, więc nie ma tam żadnej ukrytej kopii, która trzymałaby starą mapę.
+
+**Krok 2 — powtórz sprawdzenie z rozdz. 30.1** (napis „CICARIX MALEDICTUM” u góry mapy).
+
+**Krok 3 — jeśli napis nadal widać:** na tablet nie dotarł nowy plik. To problem
+z wgraniem albo z serwerem, nie z naprawą.
+
+**Krok 4 — jeśli rama jest kompletna, a mapa mimo to stoi:** to nowa informacja i warto
+ją zebrać. Sprawdź jedną rzecz, która rozróżnia dwie możliwe przyczyny:
+
+> **Czy opis planety zamyka się dotknięciem pustego miejsca mapy?**
+>
+> - **Zamyka się** → kadr mapy jest zdrowy, problem leży gdzie indziej.
+> - **Nie zamyka się** (trzeba użyć krzyżyka albo `Escape`) → to objaw „zablokowanych
+>   palców": w pamięci mapy został ślad po palcu, który nigdy nie został zwolniony.
+
+Ta jedna odpowiedź jest najbardziej wartościową informacją, jaką możesz przekazać.
+
+---
+
+## 30.6 Co mi odesłać
+
+Niezależnie od wyniku — krótko, punktami:
+
+1. **Które testy z 30.3 przeszły, a które nie** (wystarczą numery).
+2. Jeżeli coś nie przeszło: **co dokładnie robiłeś** i **czy przed tym obracałeś tablet,
+   używałeś dzielonego ekranu albo przełączałeś się na inną aplikację**.
+3. Odpowiedź na pytanie z **rozdz. 30.5, krok 4** — czy opis zamyka się dotknięciem tła.
+4. Czy **dwuklik** (test 11) działa na tablecie.
+5. Jeżeli wykonałeś czyszczenie pamięci podręcznej — czy coś to zmieniło.
+
+Jeżeli masz pod ręką komputer i chcesz dać twardy dowód, podłącz tablet kablem, włącz
+`Debugowanie USB`, wejdź w Chrome na komputerze na `chrome://inspect`, znajdź stronę
+Gilead, kliknij `inspect` i zajrzyj w zakładkę `Console`. **Nie jest to konieczne** —
+punkty 1–5 wystarczą. Gdybyś to jednak zrobił: brak komunikatów w konsoli **nie** znaczy,
+że wszystko gra — objaw „zablokowanych palców" nie zostawia w konsoli żadnego śladu.
+
+---
+
+## 30.7 Czego ta naprawa nie obejmuje
+
+Żeby nie było niespodzianek:
+
+1. **Nikt nie uruchomił mapy na Twoim tablecie.** Przyczyna została odtworzona i naprawiona
+   w warunkach laboratoryjnych, z potwierdzeniem w przeglądarce. **Objaw na Twoim sprzęcie
+   pozostaje niepotwierdzony, dopóki nie wykonasz testów z 30.2.** To jedyna rzecz, której
+   nie da się zrobić bez Ciebie.
+2. **Dwa zabezpieczenia dołożono „na wszelki wypadek"** — blokada gestów przewijania na
+   kontenerze mapy i odcięcie „pociągnij, żeby odświeżyć". Nie wiadomo, czy na Twoim
+   tablecie cokolwiek zmieniają; nie szkodzą, a zamykają jedną z możliwych dróg usterki.
+3. **Jeden drobiazg został świadomie nienaprawiony** — sposób kasowania znacznika
+   przeciągania. W najgorszym razie zakończenie przeciągnięcia mogłoby zamknąć otwarty opis.
+   Jeśli to zauważysz, powiedz — jest zapisane jako znana sprawa do rozważenia.
