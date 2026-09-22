@@ -15,7 +15,10 @@
   --klik:#ffd24a;
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;height:100%;overflow:hidden}
+/* `overscroll-behavior` odcina „pociągnij, żeby odświeżyć” i łańcuch przewijania
+   do dokumentu. Bez tego gest w dół na mapie potrafił zostać przejęty przez
+   przeglądarkę, która kwitowała go `pointercancel` w środku przesuwania (U-21). */
+html,body{margin:0;padding:0;height:100%;overflow:hidden;overscroll-behavior:none}
 body{
   background:var(--bg); color:var(--text);
   font-family:"Consolas","Fira Code","Source Code Pro",monospace;
@@ -35,6 +38,11 @@ body{
 .cog-meta b{color:var(--text);font-weight:600}
 .cog-scena{position:relative;flex:1 1 auto;min-height:0;display:flex}
 .cog-plansza{position:relative;flex:1 1 auto;min-width:0;overflow:hidden;
+  /* `touch-action` stoi TAKŻE tutaj, nie tylko na `#mapa`. Obsługa tej własności
+     na elementach SVG bywa w silnikach niepewna; na zwykłym kontenerze HTML jest
+     gwarantowana. Gdy reguła zostanie zignorowana, przeglądarka uznaje gest za
+     przewijanie i przerywa przesuwanie zdarzeniem `pointercancel` (U-21). */
+  touch-action:none;
   /* Ten sam odcień, co zewnętrzny stop gradientu tła mapy. Przesuwanie pozwala
      wyjść pół kadru poza mapę (G-D22); bez tego w tym miejscu prześwitywało
      jaśniejsze tło strony i na krawędzi mapy widać było pionowy szew. */
@@ -643,22 +651,68 @@ do żadnego z opisanych obszarów.</span>
   var indeks=document.getElementById('indeks');
   var wybrany=null;
   var vb={x:X0,y:0,w:SZER,h:WYS};
+  /* Jednostek mapy na piksel planszy przy ostatnim zapisanym kadrze. To ona,
+     a nie szerokość kadru, jest tym, co użytkownik nastawił — i to ją zachowujemy
+     przy zmianie kształtu planszy (G-D63). `null` znaczy „kadru jeszcze nigdy nie
+     policzono z prawdziwego pomiaru”; na tym opiera się `domierz()`. */
+  var skala=null;
 
   /* ── widok ───────────────────────────────────────────────────────────── */
+  /* Pomiar planszy, którego wolno użyć w rachunku (U-21). Okno aplikacji PWA
+     powstaje za ekranem powitalnym i potrafi zgłosić prostokąt bez wymiarów;
+     to samo robi tablet przy wejściu w tryb dzielonego ekranu i przy obrocie.
+     Dzielenie przez taki pomiar dawało `NaN` w całym kadrze, `viewBox` stawał się
+     napisem „NaN NaN NaN NaN”, przeglądarka odrzucała atrybut i rysowała mapę 1:1,
+     a powrotu nie było, bo `ogranicz()` z `NaN` daje `NaN`. Jedno miejsce pomiaru
+     zamyka wszystkie drogi naraz: start, zmianę rozmiaru i gest. */
+  function wymiary(){
+    var r=plansza.getBoundingClientRect();
+    return (r.width>0 && r.height>0) ? r : null;
+  }
+  /* Kadr nadający się do zapisania. Sprawdzamy dodatniość, nie samą skończoność:
+     pomiar o zerowej wysokości daje `vb.h = 0`, czyli atrybut składniowo poprawny,
+     który wyłącza rysowanie całego SVG. */
+  function poprawny(v){
+    return isFinite(v.x)&&isFinite(v.y)&&isFinite(v.w)&&isFinite(v.h)&&v.w>0&&v.h>0;
+  }
+  var ratujemy=false;
+  function awaria(){
+    /* Bez tej blokady wpadlibyśmy w kółko, gdy plansza nadal nie ma wymiarów. */
+    if(ratujemy) return;
+    ratujemy=true;
+    try{ widokDomyslny(); } finally { ratujemy=false; }
+  }
   function zastosuj(){
+    /* Bariera: do SVG nie trafia kadr, z którego nie da się wrócić. Zamiast
+       zapisać „NaN”, liczymy widok od nowa; gdy i to się nie uda, w atrybucie
+       zostaje ostatni dobry kadr, a mapa czeka na pierwszy sensowny pomiar. */
+    if(!poprawny(vb)){ awaria(); return; }
     svg.setAttribute('viewBox',vb.x.toFixed(1)+' '+vb.y.toFixed(1)+' '+
                      vb.w.toFixed(1)+' '+vb.h.toFixed(1));
   }
-  function dopasowanie(){
+  /* Skalę zapisujemy WYŁĄCZNIE tam, gdzie powstaje z rozmysłu: przy widoku
+     domyślnym, przy przeliczeniu po zmianie planszy i przy przybliżaniu.
+
+     Nie wolno jej wyprowadzać z każdego `zastosuj()`. Otwarcie karty planety
+     zwęża planszę natychmiast, a `pokazPunkt()` woła `zastosuj()` w tej samej
+     chwili — jeszcze zanim `przelicz()` pogodzi kadr z nowym pomiarem. Zapisana
+     wtedy skala jest policzona ze starej szerokości kadru i nowej szerokości
+     planszy, czyli zawyżona; każde kolejne otwarcie karty mnożyło błąd i po
+     kilkunastu mapa dojeżdżała do maksymalnego przybliżenia. Przesuwanie
+     i dojazd do pozycji skali nie zmieniają, więc nie mają czego zapisywać. */
+  function zapamietajSkale(){
+    var r=wymiary();
+    if(r&&poprawny(vb)) skala=vb.w/r.width;
+  }
+  function dopasowanie(r){
     /* Szerokość viewBox, przy której mieści się CAŁA mapa — także w pionie.
        Bez tego przy oknie 1920x900 kadr obcinał po 108 jednostek z góry i z dołu,
        czyli więcej niż jakikolwiek margines bezpieczeństwa (U-1). */
-    var r=plansza.getBoundingClientRect();
     return Math.max(SZER, WYS*(r.width/r.height));
   }
   function ogranicz(){
-    var r=plansza.getBoundingClientRect();
-    var maxW=Math.min(dopasowanie(), r.width/SKALA_MIN);
+    var r=wymiary(); if(!r) return;
+    var maxW=Math.min(dopasowanie(r), r.width/SKALA_MIN);
     var minW=SZER/ZOOM_MAX;
     vb.w=Math.max(minW,Math.min(maxW,vb.w));
     vb.h=vb.w*(r.height/r.width);
@@ -667,8 +721,8 @@ do żadnego z opisanych obszarów.</span>
     vb.y=Math.max(-vb.h/2,Math.min(WYS-vb.h/2,vb.y));
   }
   function widokDomyslny(){
-    var r=plansza.getBoundingClientRect();
-    var pelna=dopasowanie();
+    var r=wymiary(); if(!r) return;
+    var pelna=dopasowanie(r);
     vb.w=Math.min(pelna, r.width/SKALA_MIN);
     vb.h=vb.w*(r.height/r.width);
     if(vb.w>=pelna){
@@ -681,18 +735,40 @@ do żadnego z opisanych obszarów.</span>
          Terminal nawigacyjny startuje od tego, co objęte jurysdykcją. */
       vb.x=OGNISKO.x-vb.w/2; vb.y=OGNISKO.y-vb.h/2;
     }
-    ogranicz(); zastosuj();
+    ogranicz(); zastosuj(); zapamietajSkale();
+  }
+  /* Zmiana kształtu planszy: obrót, dzielony ekran, animacja startu okna PWA —
+     a także otwarcie i zamknięcie karty planety, których `resize` nie zgłasza
+     wcale, bo okno wtedy nie drgnie (rozdz. 11.3). Zachowujemy to, co nastawił
+     użytkownik: skalę i środek kadru (G-D63, decyzja D2 a).
+
+     Samo wywołanie `ogranicz()` tu nie wystarcza. Ogranicznik przycina `vb.w`
+     w dół, gdy plansza się zwęża, ale nie rozciąga go z powrotem, gdy plansza
+     się poszerza — zamknięcie karty zostawiałoby mapę przybliżoną. Dlatego
+     szerokość kadru odtwarzamy wprost ze skali. */
+  function przelicz(){
+    var r=wymiary(); if(!r) return;
+    if(skala===null||!poprawny(vb)){ widokDomyslny(); return; }
+    var sx=vb.x+vb.w/2, sy=vb.y+vb.h/2;
+    vb.w=skala*r.width; vb.h=vb.w*(r.height/r.width);
+    vb.x=sx-vb.w/2; vb.y=sy-vb.h/2;
+    ogranicz();
+    /* `ogranicz()` mogło skalę przyciąć — wtedy środek odtwarzamy jeszcze raz,
+       już przy tej szerokości, która naprawdę wyszła. */
+    vb.x=sx-vb.w/2; vb.y=sy-vb.h/2;
+    ogranicz(); zastosuj(); zapamietajSkale();
   }
   function naMape(kx,ky){
-    var r=plansza.getBoundingClientRect();
+    var r=wymiary(); if(!r) return null;
     return {x:vb.x+(kx-r.left)/r.width*vb.w, y:vb.y+(ky-r.top)/r.height*vb.h};
   }
   function przyblizWokol(mnoznik,kx,ky){
-    var p=naMape(kx,ky), przed=vb.w;
+    var p=naMape(kx,ky); if(!p) return;
+    var przed=vb.w;
     vb.w=vb.w*mnoznik; ogranicz();
     var k=vb.w/przed;
     vb.x=p.x-(p.x-vb.x)*k; vb.y=p.y-(p.y-vb.y)*k;
-    ogranicz(); zastosuj();
+    ogranicz(); zastosuj(); zapamietajSkale();
   }
   function pokazPunkt(x,y){
     /* Fokus na pozycji spoza kadru przesuwa mapę — bez tego tab prowadzi
@@ -709,6 +785,11 @@ do żadnego z opisanych obszarów.</span>
   }
   function zamknij(){
     odznacz(); panel.hidden=true; tresc.textContent='';
+    /* Karta zmienia szerokość planszy powyżej 1024 px, a okno przy tym nie
+       drgnie. Obserwator rozmiaru to złapie, ale dopiero po tłumieniu 120 ms —
+       przez ten czas kadr jest policzony dla poprzedniego kształtu i `slice`
+       przycina mapę. Zmianę, którą wywołujemy sami, przeliczamy od razu. */
+    przelicz();
   }
   function wybierz(g){
     var cel=g.getAttribute('data-cel');
@@ -738,6 +819,10 @@ do żadnego z opisanych obszarów.</span>
     panel.scrollTop=0;
     var w=kopia.querySelector('.cog-wskazany');
     if(w&&w.scrollIntoView) w.scrollIntoView({block:'center'});
+    /* Jak w `zamknij()` — kadr przeliczamy od razu, nie po tłumieniu 120 ms.
+       Musi to być PO odsłonięciu panelu, bo dopiero wtedy plansza ma nową
+       szerokość, i po dojeździe do wiersza, żeby nie mieszać się do U-20. */
+    przelicz();
   }
 
   /* ── zdarzenia pozycji ───────────────────────────────────────────────── */
@@ -764,8 +849,29 @@ do żadnego z opisanych obszarów.</span>
   var wskazniki={}, ciagniemy=false, ciagniete=false, ostatni=null, rozstaw=0;
   var start=null, przechwycony=null, PROG=4;
   function liczbaWskaznikow(){var n=0;for(var k in wskazniki)n++;return n;}
+  /* Rejestr palców czyszczony do zera. Gdy zakończenie gestu nie dotrze — bo
+     Android przejął go gestem systemowym, bo aplikacja poszła w tło albo bo
+     okno straciło fokus — wpis zostawał w rejestrze na zawsze. Przy następnym
+     dotknięciu licznik pokazywał 2 zamiast 1, kod wchodził w gałąź szczypania,
+     `ciagniemy` nigdy nie było ustawiane i przesuwanie jednym palcem przestawało
+     działać, a `ciagniete` nie wracało do `false`, więc karta nie zamykała się
+     stuknięciem w tło. Objaw identyczny jak przy uszkodzonym kadrze, ale bez
+     jednego wpisu w konsoli (U-21, rozdz. 21.3). */
+  function zerujGest(){
+    wskazniki={}; ciagniemy=false; ciagniete=false;
+    ostatni=null; start=null; rozstaw=0;
+    svg.classList.remove('cog-ciagniemy');
+    if(przechwycony!==null&&svg.releasePointerCapture){
+      try{svg.releasePointerCapture(przechwycony);}catch(x){}
+    }
+    przechwycony=null;
+  }
 
   svg.addEventListener('pointerdown',function(ev){
+    /* Trzeci wskaźnik znaczy, że w rejestrze siedzi „duch”: dwa palce to
+       maksimum, jakie ta mapa obsługuje. Zaczynamy gest od nowa, zamiast liczyć
+       rozstaw względem punktu, którego na ekranie już nie ma. */
+    if(liczbaWskaznikow()>=2 && !wskazniki[ev.pointerId]) zerujGest();
     wskazniki[ev.pointerId]={x:ev.clientX,y:ev.clientY};
     if(liczbaWskaznikow()===1){
       /* Wskaźnika NIE przechwytujemy tutaj. Przechwycenie przekierowuje
@@ -807,6 +913,9 @@ do żadnego z opisanych obszarów.</span>
     ogranicz(); zastosuj();
   });
   function koniec(ev){
+    /* Filtr po `pointerId`: nasłuch stoi na oknie, więc dochodzą tu również
+       palce, które z mapą nie miały nic wspólnego. */
+    if(!wskazniki[ev.pointerId]) return;
     delete wskazniki[ev.pointerId];
     if(liczbaWskaznikow()<2) rozstaw=0;
     if(liczbaWskaznikow()===0){
@@ -819,8 +928,13 @@ do żadnego z opisanych obszarów.</span>
       setTimeout(function(){ciagniete=false;},0);
     }
   }
-  svg.addEventListener('pointerup',koniec);
-  svg.addEventListener('pointercancel',koniec);
+  /* Na oknie, nie na SVG: palec podniesiony poza mapą — nad kartą, nad nagłówkiem,
+     poza oknem aplikacji — też musi zamknąć gest. */
+  window.addEventListener('pointerup',koniec);
+  window.addEventListener('pointercancel',koniec);
+  /* Przechwycenie odebrane przez przeglądarkę bywa jedynym, co dostaniemy:
+     `pointerup` po geście systemowym Androida potrafi już nie przyjść. */
+  svg.addEventListener('lostpointercapture',koniec);
   svg.addEventListener('wheel',function(ev){
     ev.preventDefault();
     przyblizWokol(ev.deltaY>0?1.16:1/1.16,ev.clientX,ev.clientY);
@@ -836,11 +950,13 @@ do żadnego z opisanych obszarów.</span>
       return;
     }
     if(ev.target&&/^(INPUT|TEXTAREA)$/.test(ev.target.tagName)) return;
-    var r=plansza.getBoundingClientRect();
+    /* `Home` działa zawsze — to on ma wyprowadzić z kadru policzonego źle.
+       Reszta klawiszy operuje na istniejącym kadrze i bez pomiaru nie ma sensu. */
+    if(ev.key==='Home'){widokDomyslny();ev.preventDefault();return;}
+    var r=wymiary(); if(!r) return;
     var krok=vb.w*0.12;
     if(ev.key==='+'||ev.key==='='){przyblizWokol(1/1.25,r.left+r.width/2,r.top+r.height/2);}
     else if(ev.key==='-'||ev.key==='_'){przyblizWokol(1.25,r.left+r.width/2,r.top+r.height/2);}
-    else if(ev.key==='Home'){widokDomyslny();}
     else if(ev.key==='ArrowLeft'){vb.x-=krok;ogranicz();zastosuj();}
     else if(ev.key==='ArrowRight'){vb.x+=krok;ogranicz();zastosuj();}
     else if(ev.key==='ArrowUp'){vb.y-=krok;ogranicz();zastosuj();}
@@ -875,12 +991,47 @@ do żadnego z opisanych obszarów.</span>
     '„'+MYSLI[Math.floor(Math.random()*MYSLI.length)]+'” — THOUGHT FOR THE DAY';
 
   /* ── start ───────────────────────────────────────────────────────────── */
+  /* Pierwszy kadr liczymy od razu — w zwykłej przeglądarce plansza ma już wtedy
+     wymiary i mapa nie mruga. Jeżeli pomiar wypadnie pusty, `widokDomyslny()`
+     nie tknie kadru i policzy go dopiero `domierz()`. */
   widokDomyslny();
-  var czekaj=null;
-  window.addEventListener('resize',function(){
-    clearTimeout(czekaj);
-    czekaj=setTimeout(function(){ogranicz();zastosuj();},120);
+  /* Czy kadr powstał z prawdziwego pomiaru. Sam `poprawny(vb)` tu nie wystarcza:
+     przy pustym pomiarze `vb` zostaje przy wartościach początkowych, które są
+     poprawne liczbowo, tylko nie mają nic wspólnego z tym oknem. */
+  function domierz(){
+    if(skala===null||!poprawny(vb)) widokDomyslny();
+  }
+  /* Okno aplikacji PWA powstaje za ekranem powitalnym, a skrypt wykonuje się
+     natychmiast po wczytaniu treści — i trafiał dokładnie w tę szczelinę (U-21).
+     Podwójne `requestAnimationFrame` przenosi pomiar za pierwsze rozmieszczenie
+     i pierwszą klatkę; `load` i powrót strony do widoczności są sitem na wypadek,
+     gdyby i to wypadło za wcześnie. */
+  if(window.requestAnimationFrame){
+    requestAnimationFrame(function(){requestAnimationFrame(domierz);});
+  }
+  window.addEventListener('load',domierz);
+  document.addEventListener('visibilitychange',function(){
+    /* Strona w tle: zdarzenia zakończenia gestu już nie przyjdą, więc rejestr
+       palców czyścimy od razu, zamiast czekać na „ducha” (P5). */
+    if(document.hidden) zerujGest(); else domierz();
   });
+  window.addEventListener('blur',zerujGest);
+
+  var czekaj=null;
+  function nadzoruj(){
+    clearTimeout(czekaj);
+    czekaj=setTimeout(przelicz,120);
+  }
+  /* Obserwator rozmiaru zamiast nasłuchu `resize`. Łapie wszystkie przypadki
+     naraz: animację startu okna PWA, obrót, dzielony ekran — a także otwarcie
+     i zamknięcie karty planety, przy których okno nie zmienia rozmiaru wcale,
+     więc `resize` milczał i kadr zostawał w złych proporcjach (rozdz. 11.3).
+     Tłumienie 120 ms zostaje takie samo, jak było. */
+  if(window.ResizeObserver){
+    new ResizeObserver(nadzoruj).observe(plansza);
+  }else{
+    window.addEventListener('resize',nadzoruj);
+  }
 })();
 </script>
 </body>
