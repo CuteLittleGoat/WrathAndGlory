@@ -12,7 +12,7 @@
 | **Metoda** | Pomiar geometrii (`getBoundingClientRect`) oraz sonda pikselowa: zrzut pasma nagłówka i odczyt średniej barwy każdego wiersza device-pikseli; kontrolowane wyłączanie pojedynczych deklaracji CSS i kolorowanie poszczególnych elementów, żeby ustalić, który element maluje który piksel; test przecieku z wierszami przemalowanymi na jaskrawą czerwień. W rozdz. 14 dodatkowo: odczyt barw piksel po pikselu z zrzutów ekranu użytkownika oraz próba odtworzenia w prawdziwym Firefoksie, z przewijaniem prawdziwym kółkiem myszy |
 | **Konfiguracje testowe** | Rozdz. 3–13: silnik Chromium, 8 rozmiarów okna od 1280×610 do 1920×1080, skalowanie 100%, 125%, 150% i 200%, 4–5 pozycji przewinięcia. Rozdz. 14: Firefox 156.0.1 (Linux) — 10 położeń krawędzi obszaru przewijania względem pikseli ekranu, skalowanie 100%, 125% i 150%, tryb okna i tryb pełnoekranowy, przewijanie z kodu i prawdziwym kółkiem |
 | **Stan repozytorium w chwili diagnozy** | `HEAD` = `38d7668` (gałąź `claude/charming-meitner-45xuh7`, zsynchronizowana z `main`). Aktualizacja z 25 września: `HEAD` = `801b456` (gałąź `claude/wonderful-ramanujan-0h0dv8`) — kod `DataVault/style.css` bez zmian od rozdz. 12 |
-| **Status** | **Wznowiony 25 września 2026** (wiadomość 8). Część dotycząca przeglądarek na silniku Chromium (Chrome, Edge) pozostaje zamknięta — rozdz. 13. **Otwarte:** szczelina E w Firefoksie na Windows — widoczna na pełnym ekranie i w zmaksymalizowanym oknie (rozdz. 14.2–14.4, 14.7.2). **Rozstrzygnięte:** nagłówek na telefonie w poziomie zostaje bez zmian — decyzja użytkownika z wiadomości 9 (rozdz. 14.5). Test T1 wykonany: geometria nagłówka identyczna w zmaksymalizowanym oknie i na pełnym ekranie, szczelina widoczna w obu; w niezmaksymalizowanym oknie, z dwoma rzędami zakładek, niewidoczna (rozdz. 14.7.2, wiadomości 15 i 16). Naprawa szczeliny E wstrzymana do testów T2 i T3 w Firefoksie oraz testów na tablecie — użytkownik zapowiedział ich wykonanie |
+| **Status** | **Wznowiony 25 września 2026** (wiadomość 8). Część dotycząca przeglądarek na silniku Chromium (Chrome, Edge) pozostaje zamknięta — rozdz. 13. **Otwarte:** szczelina E w Firefoksie na Windows — widoczna na pełnym ekranie i w zmaksymalizowanym oknie (rozdz. 14.2–14.4, 14.7.2). **Rozstrzygnięte:** nagłówek na telefonie w poziomie zostaje bez zmian — decyzja użytkownika z wiadomości 9 (rozdz. 14.5). Test T1 wykonany: geometria nagłówka identyczna w zmaksymalizowanym oknie i na pełnym ekranie, szczelina widoczna w obu; w niezmaksymalizowanym oknie, z dwoma rzędami zakładek i krawędzią na pełnym pikselu, niewidoczna (rozdz. 14.7.2–14.7.3, wiadomości 15–17). Naprawa szczeliny E wstrzymana do testów T2 i T3 w Firefoksie oraz testów na tablecie — użytkownik zapowiedział ich wykonanie |
 | **Zmiany w kodzie** | **Wdrożone** w `DataVault/style.css`, w dwóch etapach: rozdz. 11 (szczelina C i przeskok nagłówka) oraz rozdz. 12 (szczelina D). Etap z rozdz. 14: **bez zmian w kodzie** — zgodnie z wiadomością 8 |
 | **Analiza siostrzana** | `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdział 14 — pierwszy opis szczelin w przyklejonym nagłówku; rozdział 13.7–13.8 — decyzja o progu `max-height: 520px` dla telefonu w poziomie, która tłumaczy obserwację z rozdz. 14.5 |
 
@@ -137,7 +137,13 @@ Wiadomości 10 i 11 omówiono w rozdz. 14.7.1.
 >
 > *(Do wiadomości dołączone dwa zrzuty ekranu. Pierwszy: `DataVault` w niezmaksymalizowanym oknie Firefoksa, zakładka „Notatki”, tabela przewinięta (u góry widać ucięty wiersz z tekstem „…uzyskanych Ikon do Odporności Zagrożenia na tyle Rund, ile wynosi Poziom gry.” i „Kliknij aby rozwinąć”); przyciski zakładek układają się w **dwa rzędy** — „NOTATKI … SŁOWA KLUCZOWE” i „TALENTY … OBRZĘDY”; między paskiem zakładek a nazwami kolumn szczeliny nie widać. Drugi: przyciski okna Windows (minimalizuj, maksymalizuj/przywróć, zamknij) — przycisk maksymalizacji wskazany jako ten, po którego użyciu szczelina się pojawia.)*
 
-Wiadomości 12–16 omówiono w rozdz. 14.7.2, a wnioski z wiadomości 15 i 16 — także w rozdz. 14.4.
+> **Wiadomość 17 — wynik testu T1b (25 września 2026)**
+>
+> Załączam screena z T1b. Test wykonałem jak przeglądarka była w trybie okna. W tym widoku szczeliny nie widziałem.
+>
+> *(Do wiadomości dołączony zrzut konsoli z wynikiem: `{"okno":"1285x727","ekran":"1920x1080","skala":1,"tresc_na_ekranie_od":254,"rzedy_zakladek":2,"pasek_kompaktowy":true,"zakladki_dol":231,"ramka_gora":231,"obszar_gora":232,"naglowek_gora":232,"ulamek":0,"przewiniecie":798}`. Zrzut zawiera dane konta użytkownika — nie zostały tu przepisane, zgodnie z zasadą 12 z `AGENTS.md`.)*
+
+Wiadomości 12–16 omówiono w rozdz. 14.7.2, a wnioski z wiadomości 15 i 16 — także w rozdz. 14.4. Wiadomość 17 omówiono w rozdz. 14.7.3.
 
 ### Materiał dowodowy od użytkownika
 
@@ -859,7 +865,7 @@ Każda z nich ma w pliku komentarz dwujęzyczny wyjaśniający powód. Komentarz
 - **Od kiedy.** Według wiadomości 9 większość wcześniejszych obserwacji powstała w Firefoksie, a ostatnią poprawkę (szczelina D) użytkownik sprawdził w Edge. Szczelina E była więc najpewniej widoczna w Firefoksie przez cały czas, a zamknięcie tematu 21 września zostało potwierdzone tylko na silniku Chromium (rozdz. 14.4).
 - **Telefon w poziomie.** To, że nagłówek się tam nie przykleja, jest skutkiem świadomej decyzji z analizy o responsywności (próg 520 px wysokości okna), a nie nową usterką. Ze szczeliną E nie ma to związku. Użytkownik zdecydował zostawić to bez zmian (wiadomość 9). Szczegóły: rozdz. 14.5.
 - **Nie tylko na pełnym ekranie.** Pomiar na komputerze użytkownika (test T1, rozdz. 14.7.2) pokazał, że w zmaksymalizowanym oknie i na pełnym ekranie nagłówek i ramka stoją na ekranie dokładnie w tym samym miejscu, co do setnej części piksela — i w obu trybach szczelina była widoczna (wiadomość 15). Szczelina nie zależy więc od trybu pełnoekranowego, tylko od tego, w którym miejscu piksela wypada krawędź tabeli. Wcześniejsze wrażenie „tylko na pełnym ekranie” brało się z porównania z mniejszym, niezmaksymalizowanym oknem (wiadomość 16): tam przyciski zakładek układają się w dwa rzędy, krawędź tabeli wypada na innym ułamku piksela i szczeliny nie ma (rozdz. 14.4).
-- **Co dalej.** Bez zmian w kodzie, zgodnie z wiadomością 8. Test T1 jest wykonany (rozdz. 14.7.2). Zostały testy T2 i T3 w Firefoksie (rozdz. 14.7) — T3 jest rozstrzygający — opcjonalny test T1b w mniejszym oknie oraz testy na tablecie (rozdz. 14.6). Potem wybór naprawy (rozdz. 14.8).
+- **Co dalej.** Bez zmian w kodzie, zgodnie z wiadomością 8. Testy T1 i T1b są wykonane (rozdz. 14.7.2 i 14.7.3): przy zmaksymalizowanym oknie krawędź tabeli wypada na ułamku 0,85 piksela i szczelina jest, w mniejszym oknie — na pełnym pikselu i szczeliny nie ma. Zostały testy T2 i T3 w Firefoksie (rozdz. 14.7) — T3 jest rozstrzygający — oraz testy na tablecie (rozdz. 14.6). Potem wybór naprawy (rozdz. 14.8).
 
 ### 14.2 Co pokazują zrzuty ekranu — pomiar piksel po pikselu
 
@@ -952,7 +958,7 @@ Zgodność z dowodami:
 1. **Inne położenie krawędzi.** Wymiary obszaru strony zależą od trybu i od wielkości okna. Na węższym oknie przyciski zakładek mogą się inaczej zawijać, a każdy rząd przycisków przesuwa krawędź obszaru przewijania o wysokość przycisku plus 6 px odstępu. Wysokość przycisku zależy od czcionki: przyciski mają wysokość linii `normal` z arkusza stylów przeglądarki, a nie `1.45` z reguły `body` (zmierzone w Firefoksie: `line-height: normal`), więc ułamek piksela może się zmieniać z każdym rzędem. U użytkownika przycisk ma ok. 32 punkty (rozdz. 14.2). Tak samo działa próg `max-height: 760px` z rozdz. 5.1 dla okna niższego niż 760 px. Według H1 przeciek pojawia się tylko przy części położeń krawędzi, więc zmiana położenia może go włączać i wyłączać.
 2. **Inna droga wyświetlania.** Okno, które zajmuje cały ekran, Windows może wyświetlać inaczej niż zwykłe okno, a Firefox może wtedy składać obraz inną ścieżką.
 
-**Wynik T1 oraz wiadomości 15 i 16: składowa 2 odpada, składowa 1 potwierdzona.** Pomiar w zmaksymalizowanym oknie i na pełnym ekranie dał identyczny układ nad tabelą: 1 rząd zakładek, pełnowymiarowy pasek górny, krawędź obszaru przewijania na 185,85, czyli na ułamku **0,85** piksela ekranu; obszar strony zaczyna się w obu trybach na pełnym pikselu (139 i 0). Użytkownik potwierdził, że **w trakcie obu pomiarów szczelina była widoczna** (wiadomość 15). Szczelina nie jest więc cechą trybu pełnoekranowego — występuje przy danej geometrii niezależnie od trybu. Wiadomość 16 domyka sprawę: „w oknie” oznaczało **niezmaksymalizowane** okno, a szczelina pojawia się w chwili maksymalizacji. Na zrzucie z niezmaksymalizowanego okna przyciski zakładek układają się w **dwa rzędy**, w zmaksymalizowanym — w jeden (pomiar T1). Drugi rząd przesuwa krawędź obszaru przewijania o wysokość przycisku plus 6 px odstępu, czyli na inny ułamek piksela — i przy tym ułamku szczeliny nie ma. Jest to dokładnie składowa 1. Jaki ułamek wypada w niezmaksymalizowanym oknie, pokaże test T1b (rozdz. 14.7). Przewidywanie wynikające z H1: **poniżej 0,5** — wtedy granica przycinania liter i tło nagłówka zaokrąglają się do tego samego rzędu punktów i nie zostaje między nimi żaden rząd. Sam mechanizm przecieku (H1, etap składania obrazu w Firefoksie na Windows) sprawdza nadal test T3.
+**Wynik T1 oraz wiadomości 15 i 16: składowa 2 odpada, składowa 1 potwierdzona.** Pomiar w zmaksymalizowanym oknie i na pełnym ekranie dał identyczny układ nad tabelą: 1 rząd zakładek, pełnowymiarowy pasek górny, krawędź obszaru przewijania na 185,85, czyli na ułamku **0,85** piksela ekranu; obszar strony zaczyna się w obu trybach na pełnym pikselu (139 i 0). Użytkownik potwierdził, że **w trakcie obu pomiarów szczelina była widoczna** (wiadomość 15). Szczelina nie jest więc cechą trybu pełnoekranowego — występuje przy danej geometrii niezależnie od trybu. Wiadomość 16 domyka sprawę: „w oknie” oznaczało **niezmaksymalizowane** okno, a szczelina pojawia się w chwili maksymalizacji. Na zrzucie z niezmaksymalizowanego okna przyciski zakładek układają się w **dwa rzędy**, w zmaksymalizowanym — w jeden (pomiar T1). Drugi rząd przesuwa krawędź obszaru przewijania o wysokość przycisku plus 6 px odstępu, czyli na inny ułamek piksela — i przy tym ułamku szczeliny nie ma. Jest to dokładnie składowa 1. Jaki ułamek wypada w niezmaksymalizowanym oknie, miał pokazać test T1b (rozdz. 14.7). Przewidywanie wynikające z H1 brzmiało: **poniżej 0,5** — wtedy granica przycinania liter i tło nagłówka zaokrąglają się do tego samego rzędu punktów i nie zostaje między nimi żaden rząd. **Wynik T1b (rozdz. 14.7.3): ułamek 0, dwa rzędy zakładek, szczeliny nie widać — przewidywanie potwierdzone.** Sam mechanizm przecieku (H1, etap składania obrazu w Firefoksie na Windows) sprawdza nadal test T3.
 
 **Hipoteza H2 (mało prawdopodobna): coś specyficznego dla tej instalacji Firefoksa** — dodatek, który wstrzykuje własne style, albo ustawienie narzucone przez zasady organizacji. Nic na zrzutach na to nie wskazuje; test T3 rozstrzygnie to przy okazji.
 
@@ -1104,7 +1110,7 @@ Co odczytamy z wyniku:
 | `obszar_gora`, `naglowek_gora` | Górna krawędź obszaru przewijania i nagłówka. Powinny być równe — to potwierdzenie rozdz. 14.3 na sprzęcie użytkownika |
 | `ulamek` | Ułamek piksela, na którym wypada krawędź obszaru przewijania na ekranie — **najważniejsza liczba**. Jeżeli różni się między trybami, a przeciek jest tylko w jednym z nich, składowa 1 z rozdz. 14.4 jest potwierdzona |
 
-**T1b — ten sam pomiar w oknie, w którym szczeliny nie widać (opcjonalny).**
+**T1b — ten sam pomiar w oknie, w którym szczeliny nie widać.** *(Wykonany — wynik w rozdz. 14.7.3.)*
 
 Przywrócić okno Firefoksa do mniejszego rozmiaru (środkowy przycisk w prawym górnym rogu okna) i sprawdzić, że szczeliny nie widać. Potem wykonać T1 dokładnie tak samo jak wyżej. Najważniejsze pola: `rzedy_zakladek` (spodziewane 2), `pasek_kompaktowy` i `ulamek`. Przewidywanie z hipotezy H1: `ulamek` poniżej 0,5. Wynik powyżej 0,5 przy braku szczeliny osłabiłby obecny opis mechanizmu, choć nie zmieniłby kierunku naprawy.
 
@@ -1186,8 +1192,36 @@ Poprawiony fragment z odliczaniem 10 sekund, tryb admina. Pierwsza próba w tryb
 **Znaczenie dla dalszych kroków:**
 
 - **T3 (przyspieszanie sprzętowe) pozostaje testem rozstrzygającym** dla mechanizmu. Można go wykonać w zmaksymalizowanym oknie — F11 nie jest potrzebne. Jeżeli po wyłączeniu przyspieszania szczelina zniknie przy zmaksymalizowanym oknie, hipoteza H1 zostanie potwierdzona.
-- **T1b (opcjonalny)** — ten sam pomiar w niezmaksymalizowanym oknie, w którym szczeliny nie widać — pokaże, na jakim ułamku wypada wtedy krawędź, i sprawdzi przewidywanie z rozdz. 14.4 (poniżej 0,5).
+- **T1b** — ten sam pomiar w niezmaksymalizowanym oknie, w którym szczeliny nie widać — miał pokazać, na jakim ułamku wypada wtedy krawędź, i sprawdzić przewidywanie z rozdz. 14.4 (poniżej 0,5). **Wykonany — rozdz. 14.7.3.**
 - **Kierunek naprawy K1 (rozdz. 14.8) nie zależy od ułamka** — nakładka poza obszarem przewijania zasłania rząd linii ramki przy każdym położeniu krawędzi. Wyniki T3 i T1b są potrzebne, żeby wiedzieć, że usterka leży tam, gdzie zakładamy, a nie do wyboru naprawy. Przy weryfikacji naprawy trzeba obejrzeć oba układy: jeden rząd zakładek (okno zmaksymalizowane) i dwa rzędy (okno mniejsze).
+
+#### 14.7.3 Test T1b — wynik (wiadomość 17)
+
+Pomiar w niezmaksymalizowanym oknie, w którym użytkownik szczeliny nie widział, tryb admina, fragment z odliczaniem 10 sekund. Zestawienie z pomiarem w zmaksymalizowanym oknie z rozdz. 14.7.2:
+
+| Pole | Okno zmaksymalizowane (wiadomość 13) — **szczelina jest** | Okno mniejsze (wiadomość 17) — **szczeliny nie ma** |
+|---|---|---|
+| `okno` | 1920×893 | 1285×727 |
+| `ekran` / `skala` | 1920×1080 / 1 | 1920×1080 / 1 |
+| `tresc_na_ekranie_od` | 139 | 254 |
+| `rzedy_zakladek` | 1 | **2** |
+| `pasek_kompaktowy` | false | **true** |
+| `zakladki_dol` / `ramka_gora` | 184,85 / 184,85 | 231 / 231 |
+| `obszar_gora` / `naglowek_gora` | 185,85 / 185,85 | 232 / 232 |
+| **`ulamek`** | **0,85** | **0** |
+| `przewiniecie` | 1140 | 798 |
+
+**Czy pomiar jest ważny.** Tak. Obszar strony ma 727 px wysokości, czyli więcej niż próg 520 px — nagłówek był przyklejony, a tabela przewinięta (798 px), więc to ten sam stan co przy pomiarach z rozdz. 14.7.2. Mniejsza wysokość niż ekran jest tu zamierzona, bo mierzono niezmaksymalizowane okno.
+
+**Co z tego wynika:**
+
+1. **Przewidywanie z rozdz. 14.4 potwierdzone.** Zakładki układają się w dwa rzędy, a krawędź obszaru przewijania wypada na **pełnym pikselu** (ułamek 0). Przy takim położeniu nie ma czego zaokrąglać: granica przycinania liter, tło nagłówka i linia ramki trafiają dokładnie w granice rzędów punktów ekranu, więc żadna różnica zaokrągleń nie może powstać — i szczeliny nie ma.
+2. **Nagłówek stoi na krawędzi co do piksela także w tym układzie** (232 = 232). Układ strony jest poprawny w obu oknach.
+3. **Zmieniły się dwie rzeczy naraz, obie geometryczne.** Okno ma 727 px wysokości, czyli mniej niż 760 px, więc oprócz drugiego rzędu zakładek włączył się też kompaktowy pasek górny (próg z rozdz. 5.1). Pomiar nie rozdziela, która z tych zmian przesunęła krawędź z ułamka 0,85 na pełny piksel — ale obie dotyczą wyłącznie położenia krawędzi, więc wniosek się nie zmienia. Zgadza się to z rozdz. 5.1: na silniku Chromium kompaktowy pasek górny również dawał krawędź na pełnym pikselu, a pełnowymiarowy — na ułamku.
+4. **Dwa punkty pomiarowe, spójne z H1:** ułamek 0,85 — szczelina jest; ułamek 0 — szczeliny nie ma. To zgodne z opisem mechanizmu (przeciek tylko przy ułamku od ok. 0,5 w górę), choć dwa punkty nie wyznaczają samego progu.
+5. **Szczelina dotyczy najczęstszego ustawienia.** Pojawia się przy zmaksymalizowanym oknie na ekranie 1920×1080 przy skalowaniu 100%, czyli w typowej pracy przy komputerze, a nie w nietypowym rozmiarze okna. To argument za naprawą (rozdz. 14.8, K1), a nie za pozostawieniem usterki (K3).
+
+**Znaczenie dla naprawy:** do weryfikacji K1 są teraz dwa gotowe, zmierzone układy u użytkownika. Okno zmaksymalizowane (ułamek 0,85) pokaże, czy nakładka zamyka szczelinę. Okno 1285×727 (ułamek 0) pokaże, czy nakładka nie zmienia wyglądu tam, gdzie szczeliny nie było.
 
 ### 14.8 Kierunki naprawy — wstępnie, do wyboru po testach
 
@@ -1217,7 +1251,7 @@ Wybór kierunku nastąpi po wynikach T1–T3 i testów na tablecie. Jeżeli T3 p
 Następne kroki:
 
 1. **Testy na tablecie** według rozdz. 14.6 — zapowiedziane przez użytkownika.
-2. **Testy T2 i T3 w Firefoksie** na komputerze według rozdz. 14.7 — zapowiedziane przez użytkownika (wiadomość 9). **T3 jest rozstrzygający**: zniknięcie szczeliny przy zmaksymalizowanym oknie po wyłączeniu przyspieszania sprzętowego potwierdzi hipotezę H1. Opcjonalnie T1b w niezmaksymalizowanym oknie. ~~T1~~ **wykonany** — rozdz. 14.7.1 i 14.7.2; szczelina widoczna w zmaksymalizowanym oknie i na pełnym ekranie, niewidoczna w mniejszym oknie (wiadomości 15 i 16).
+2. **Testy T2 i T3 w Firefoksie** na komputerze według rozdz. 14.7 — zapowiedziane przez użytkownika (wiadomość 9). **T3 jest rozstrzygający**: zniknięcie szczeliny przy zmaksymalizowanym oknie po wyłączeniu przyspieszania sprzętowego potwierdzi hipotezę H1. ~~T1b~~ **wykonany** — rozdz. 14.7.3: w mniejszym oknie krawędź na pełnym pikselu, szczeliny brak. ~~T1~~ **wykonany** — rozdz. 14.7.1 i 14.7.2; szczelina widoczna w zmaksymalizowanym oknie i na pełnym ekranie, niewidoczna w mniejszym oknie (wiadomości 15 i 16).
 3. ~~**Potwierdzenie**, w jakiej przeglądarce powstały obserwacje z wiadomości 3, 6 i 7.~~ **Wykonane** — wiadomość 9; wnioski w rozdz. 14.4.
 4. ~~**Decyzja użytkownika** co do telefonu w poziomie.~~ **Wykonane** — zostaje bez zmian (wiadomość 9, rozdz. 14.5).
 5. Po zebraniu wyników — dopisanie ustaleń do tej analizy i wybór kierunku naprawy z rozdz. 14.8.
