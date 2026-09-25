@@ -12,7 +12,7 @@
 | **Metoda** | Pomiar geometrii (`getBoundingClientRect`) oraz sonda pikselowa: zrzut pasma nagłówka i odczyt średniej barwy każdego wiersza device-pikseli; kontrolowane wyłączanie pojedynczych deklaracji CSS i kolorowanie poszczególnych elementów, żeby ustalić, który element maluje który piksel; test przecieku z wierszami przemalowanymi na jaskrawą czerwień. W rozdz. 14 dodatkowo: odczyt barw piksel po pikselu z zrzutów ekranu użytkownika oraz próba odtworzenia w prawdziwym Firefoksie, z przewijaniem prawdziwym kółkiem myszy |
 | **Konfiguracje testowe** | Rozdz. 3–13: silnik Chromium, 8 rozmiarów okna od 1280×610 do 1920×1080, skalowanie 100%, 125%, 150% i 200%, 4–5 pozycji przewinięcia. Rozdz. 14: Firefox 156.0.1 (Linux) — 10 położeń krawędzi obszaru przewijania względem pikseli ekranu, skalowanie 100%, 125% i 150%, tryb okna i tryb pełnoekranowy, przewijanie z kodu i prawdziwym kółkiem |
 | **Stan repozytorium w chwili diagnozy** | `HEAD` = `38d7668` (gałąź `claude/charming-meitner-45xuh7`, zsynchronizowana z `main`). Aktualizacja z 25 września: `HEAD` = `801b456` (gałąź `claude/wonderful-ramanujan-0h0dv8`) — kod `DataVault/style.css` bez zmian od rozdz. 12 |
-| **Status** | **Wznowiony 25 września 2026** (wiadomość 8). Część dotycząca przeglądarek na silniku Chromium (Chrome, Edge) pozostaje zamknięta — rozdz. 13. **Otwarte:** szczelina E w Firefoksie na Windows w trybie pełnoekranowym (rozdz. 14.2–14.4). **Rozstrzygnięte:** nagłówek na telefonie w poziomie zostaje bez zmian — decyzja użytkownika z wiadomości 9 (rozdz. 14.5). Naprawa szczeliny E wstrzymana do testów na tablecie i testów T1–T3 w Firefoksie — użytkownik zapowiedział ich wykonanie |
+| **Status** | **Wznowiony 25 września 2026** (wiadomość 8). Część dotycząca przeglądarek na silniku Chromium (Chrome, Edge) pozostaje zamknięta — rozdz. 13. **Otwarte:** szczelina E w Firefoksie na Windows w trybie pełnoekranowym (rozdz. 14.2–14.4). **Rozstrzygnięte:** nagłówek na telefonie w poziomie zostaje bez zmian — decyzja użytkownika z wiadomości 9 (rozdz. 14.5). Test T1 wykonany: geometria nagłówka identyczna w oknie i na pełnym ekranie (rozdz. 14.7.2). Naprawa szczeliny E wstrzymana do testów T2 i T3 w Firefoksie oraz testów na tablecie — użytkownik zapowiedział ich wykonanie |
 | **Zmiany w kodzie** | **Wdrożone** w `DataVault/style.css`, w dwóch etapach: rozdz. 11 (szczelina C i przeskok nagłówka) oraz rozdz. 12 (szczelina D). Etap z rozdz. 14: **bez zmian w kodzie** — zgodnie z wiadomością 8 |
 | **Analiza siostrzana** | `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdział 14 — pierwszy opis szczelin w przyklejonym nagłówku; rozdział 13.7–13.8 — decyzja o progu `max-height: 520px` dla telefonu w poziomie, która tłumaczy obserwację z rozdz. 14.5 |
 
@@ -108,6 +108,26 @@ Zapisane bez skracania, zgodnie z zasadą 10 z `AGENTS.md`.
 > *(Do wiadomości dołączony zrzut ekranu: ta sama konsola po przełączeniu na pełny ekran, narzędzia programisty nadal zadokowane na dole; nad nimi widoczne tylko trzy linijki podpowiedzi pod tabelą. Wynik: `{"okno":"1920x378","ekran":"1920x1080","skala":1,"tresc_na_ekranie_od":0,"rzedy_zakladek":1,"pasek_kompaktowy":true,"zakladki_dol":481.2,"ramka_gora":481.2,"obszar_gora":482.2,"naglowek_gora":482.2,"ulamek":0.2,"przewiniecie":0}`.)*
 
 Wiadomości 10 i 11 omówiono w rozdz. 14.7.1.
+
+> **Wiadomość 12 — poprawiony test T1, obie próby (25 września 2026)**
+>
+> "Pomiar1" to pierwszy pomiar. "Pomiar2" to pomiar z F11. Sprawdź czy dobrze wykonałem testy. Jeżeli tak to zapisz je w analizie. Jeżeli nie to napisz mi w czacie i nie aktualizuj analizy. W takim przypadku wykonam pomiar ponownie.
+>
+> *(Do wiadomości dołączone dwa zrzuty konsoli z wierszem `POMIAR SZCZELINY:`. Pomiar 1, tryb okna: `{"okno":"1920x191","ekran":"1920x1080","skala":1,"tresc_na_ekranie_od":139,"rzedy_zakladek":1,"pasek_kompaktowy":true,"zakladki_dol":481.2,"ramka_gora":481.2,"obszar_gora":482.2,"naglowek_gora":482.2,"ulamek":0.2,"przewiniecie":0}`. Pomiar 2, pełny ekran: `{"okno":"1920x1080","ekran":"1920x1080","skala":1,"tresc_na_ekranie_od":0,"rzedy_zakladek":1,"pasek_kompaktowy":false,"zakladki_dol":184.85,"ramka_gora":184.85,"obszar_gora":185.85,"naglowek_gora":185.85,"ulamek":0.85,"przewiniecie":1596}`. Zrzuty zawierają dane konta użytkownika — nie zostały tu przepisane, zgodnie z zasadą 12 z `AGENTS.md`.)*
+>
+> *(Odpowiedź w czacie, zgodnie z prośbą użytkownika — bez aktualizacji analizy: pomiar 2 jest ważny; pomiar 1 trzeba powtórzyć, bo w chwili pomiaru narzędzia programisty były nadal otwarte — wynik jest identyczny z pierwszą próbą z wiadomości 10.)*
+
+> **Wiadomość 13 — powtórzony pomiar w trybie okna (25 września 2026)**
+>
+> Teraz ok?
+>
+> *(Do wiadomości dołączony zrzut konsoli z wynikiem: `{"okno":"1920x893","ekran":"1920x1080","skala":1,"tresc_na_ekranie_od":139,"rzedy_zakladek":1,"pasek_kompaktowy":false,"zakladki_dol":184.85,"ramka_gora":184.85,"obszar_gora":185.85,"naglowek_gora":185.85,"ulamek":0.85,"przewiniecie":1140}`.)*
+
+> **Wiadomość 14 — potwierdzenie widoczności szczeliny (25 września 2026)**
+>
+> i tak - było widać szczelinę w trakcie pomiaru. Jeżeli pomiary zrobiłem dobrze to dopisz je do analizy (na main).
+
+Wiadomości 12–14 omówiono w rozdz. 14.7.2.
 
 ### Materiał dowodowy od użytkownika
 
@@ -828,7 +848,8 @@ Każda z nich ma w pliku komentarz dwujęzyczny wyjaśniający powód. Komentarz
 - **Skąd się bierze (najbardziej prawdopodobne).** Z ostatniego etapu pracy przeglądarki. Kiedy Firefox na Windows skleja gotowe warstwy strony w obraz na ekranie z pomocą karty graficznej, litery przewijanych wierszy są przycinane o jeden punkt ekranu luźniej niż prostokąty (tła wierszy, tło nagłówka). Ten jeden rząd punktów nad nagłówkiem niczym nie jest zasłonięty. W Firefoksie uruchomionym bez karty graficznej nie udało się tego odtworzyć w żadnej z kilkudziesięciu konfiguracji (rozdz. 14.3) — stąd wniosek, że winny jest właśnie ten etap, a nie kod aplikacji. To hipoteza, nie pewność. Rozstrzygną ją trzy proste testy na komputerze użytkownika (rozdz. 14.7).
 - **Od kiedy.** Według wiadomości 9 większość wcześniejszych obserwacji powstała w Firefoksie, a ostatnią poprawkę (szczelina D) użytkownik sprawdził w Edge. Szczelina E była więc najpewniej widoczna w Firefoksie przez cały czas, a zamknięcie tematu 21 września zostało potwierdzone tylko na silniku Chromium (rozdz. 14.4).
 - **Telefon w poziomie.** To, że nagłówek się tam nie przykleja, jest skutkiem świadomej decyzji z analizy o responsywności (próg 520 px wysokości okna), a nie nową usterką. Ze szczeliną E nie ma to związku. Użytkownik zdecydował zostawić to bez zmian (wiadomość 9). Szczegóły: rozdz. 14.5.
-- **Co dalej.** Bez zmian w kodzie, zgodnie z wiadomością 8. Najpierw testy na tablecie (rozdz. 14.6) i trzy krótkie testy w Firefoksie (rozdz. 14.7), potem wybór naprawy (rozdz. 14.8). Pierwsza próba testu T1 została wykonana, ale w warunkach, które nie pokazują szczeliny — rozdz. 14.7.1.
+- **Dlaczego tylko na pełnym ekranie.** Pomiar na komputerze użytkownika (test T1, rozdz. 14.7.2) pokazał, że w oknie i na pełnym ekranie nagłówek i ramka stoją na ekranie dokładnie w tym samym miejscu, co do setnej części piksela. Przeglądarka rysuje więc w obu trybach to samo, a szczelina pojawia się tylko w jednym. Różnica leży w tym, jak Firefox i Windows wyświetlają okno pełnoekranowe — co pasuje do hipotezy o etapie składania obrazu.
+- **Co dalej.** Bez zmian w kodzie, zgodnie z wiadomością 8. Test T1 jest wykonany (rozdz. 14.7.2). Zostały testy T2 i T3 w Firefoksie (rozdz. 14.7) — T3 jest teraz rozstrzygający — oraz testy na tablecie (rozdz. 14.6). Potem wybór naprawy (rozdz. 14.8).
 
 ### 14.2 Co pokazują zrzuty ekranu — pomiar piksel po pikselu
 
@@ -923,7 +944,7 @@ Zgodność z dowodami:
 
 Test T1 z rozdz. 14.7 rozstrzyga składową 1 (pokazuje położenie krawędzi w obu trybach), a test T3 — całą hipotezę H1.
 
-Pierwsza próba T1 (rozdz. 14.7.1) wykluczyła już jedną odmianę składowej 1: obszar strony zaczyna się na ekranie na pełnym pikselu w obu trybach (139 punktów od góry w oknie, 0 na pełnym ekranie). Samo przełączenie trybu nie przesuwa więc strony o ułamek piksela. Jeżeli położenie krawędzi różni się między trybami, to tylko przez inne wymiary obszaru strony — tego pierwsza próba jeszcze nie pokazała.
+**Wynik T1 (rozdz. 14.7.1 i 14.7.2): składowa 1 odpada.** Obszar strony zaczyna się na ekranie na pełnym pikselu w obu trybach (139 punktów od góry w oknie, 0 na pełnym ekranie), a układ nad tabelą jest w obu trybach identyczny: 1 rząd zakładek, pełnowymiarowy pasek górny, krawędź obszaru przewijania na 185,85, czyli na ułamku **0,85** piksela ekranu w oknie i na pełnym ekranie. Przeglądarka dostaje więc w obu trybach tę samą geometrię, a szczelina pojawia się tylko w jednym. **Zostaje składowa 2** — inna droga wyświetlania okna pełnoekranowego — i to ją sprawdza test T3.
 
 **Hipoteza H2 (mało prawdopodobna): coś specyficznego dla tej instalacji Firefoksa** — dodatek, który wstrzykuje własne style, albo ustawienie narzucone przez zasady organizacji. Nic na zrzutach na to nie wskazuje; test T3 rozstrzygnie to przy okazji.
 
@@ -937,6 +958,7 @@ Pierwsza próba T1 (rozdz. 14.7.1) wykluczyła już jedną odmianę składowej 1
 | Powiększenie strony albo skalowanie ekranu inne niż 100% | Wykluczone odczytem szerokości znaków na zrzucie (rozdz. 14.2) i odczytem `skala: 1` w teście T1 (rozdz. 14.7.1) |
 | Stara wersja stylów w pamięci podręcznej Firefoksa | Wykluczone pomiarem pikselowym: brak linii `45` i szczelne wnętrze nagłówka to cechy aktualnego pliku stylów (rozdz. 14.2, ustalenie 6) |
 | Obszar strony położony na ekranie na ułamku piksela w jednym z trybów | Wykluczone testem T1: początek obszaru strony wypada na 139 (okno) i 0 (pełny ekran), czyli na pełnych pikselach (rozdz. 14.7.1) |
+| Inne położenie krawędzi obszaru przewijania na pełnym ekranie (inne zawijanie zakładek, próg 760 px) | Wykluczone testem T1: w obu trybach 1 rząd zakładek, pełnowymiarowy pasek górny, krawędź na 185,85, ułamek 0,85 (rozdz. 14.7.2) |
 
 **Uzupełnienie tabeli z rozdz. 13.1:**
 
@@ -1119,7 +1141,36 @@ Użytkownik uruchomił pierwszą, natychmiastową wersję fragmentu T1 w obu try
 3. **Obszar strony zaczyna się na pełnym pikselu w obu trybach** — 139 punktów od góry ekranu w oknie i 0 na pełnym ekranie. Przełączenie trybu nie przesuwa więc strony o ułamek piksela; ta odmiana składowej 1 z rozdz. 14.4 odpada.
 4. **Panel przeglądarki nad stroną ma w trybie okna 139 punktów.** Na ekranie 1080 punktów obszar strony w oknie ma więc bez narzędzi programisty ok. 1080 − 139 − wysokość paska zadań Windows, czyli wyraźnie ponad 760 px. Próg `max-height: 760px` najpewniej nie przełącza się między trybami — oba powinny mieć pełnowymiarowy pasek górny. Rozstrzygnie to poprawiony T1 (pole `pasek_kompaktowy`).
 
-**Co jest jeszcze potrzebne:** poprawiony T1 w obu trybach, z zamkniętymi narzędziami programisty i przewiniętą tabelą — przede wszystkim pola `rzedy_zakladek`, `obszar_gora` i `ulamek`.
+**Co jest jeszcze potrzebne:** poprawiony T1 w obu trybach, z zamkniętymi narzędziami programisty i przewiniętą tabelą — przede wszystkim pola `rzedy_zakladek`, `obszar_gora` i `ulamek`. **Wykonane — rozdz. 14.7.2.**
+
+#### 14.7.2 Poprawiony T1 — wynik (wiadomości 12 i 13)
+
+Poprawiony fragment z odliczaniem 10 sekund, tryb admina. Pierwsza próba w trybie okna (wiadomość 12, „Pomiar1”) była nieważna — w chwili pomiaru narzędzia programisty były jeszcze otwarte, a wynik powtórzył liczby z rozdz. 14.7.1 co do cyfry. Użytkownik powtórzył ją (wiadomość 13). Poniżej oba ważne pomiary:
+
+| Pole | Tryb okna (wiadomość 13) | Pełny ekran, F11 (wiadomość 12, „Pomiar2”) |
+|---|---|---|
+| `okno` | 1920×893 | 1920×1080 |
+| `ekran` | 1920×1080 | 1920×1080 |
+| `skala` | 1 | 1 |
+| `tresc_na_ekranie_od` | 139 | 0 |
+| `rzedy_zakladek` | 1 | 1 |
+| `pasek_kompaktowy` | false | false |
+| `zakladki_dol` / `ramka_gora` | 184,85 / 184,85 | 184,85 / 184,85 |
+| `obszar_gora` / `naglowek_gora` | 185,85 / 185,85 | 185,85 / 185,85 |
+| **`ulamek`** | **0,85** | **0,85** |
+| `przewiniecie` | 1140 | 1596 |
+
+**Czy pomiary są ważne.** Tak, oba: wysokość obszaru strony jest pełna (893 px w oknie — zgodnie z przewidywaniem z rozdz. 14.7.1, 1080 px na pełnym ekranie), obie leżą powyżej progów 520 i 760 px, a tabela była przewinięta (1140 i 1596 px), więc nagłówek był przyklejony — dokładnie w tym stanie, w którym powstaje szczelina E. Użytkownik potwierdził (wiadomość 14), że w trakcie pomiaru szczelina była widoczna na ekranie. Potwierdzenie było odpowiedzią na pytanie o pomiar pełnoekranowy, więc odnosi się do niego. Dla trybu okna obowiązuje obserwacja z wiadomości 8: w oknie szczeliny nie widać.
+
+**Co z tego wynika:**
+
+1. **Nagłówek stoi na krawędzi obszaru przewijania co do setnej części piksela** (185,85 = 185,85) na sprzęcie użytkownika, w trybie z przyklejonym nagłówkiem. To potwierdza pomiar z rozdz. 14.3 na prawdziwym komputerze: układ strony jest poprawny, a szczelina E nie jest szczeliną wymiarową.
+2. **Pasmo nagłówka ma w obu trybach identyczne położenie na ekranie.** Szerokość (1920), liczba rzędów zakładek (1), pasek górny (pełnowymiarowy), położenie krawędzi w stronie (185,85) — wszystko to samo. Obszar strony zaczyna się w obu trybach na pełnym pikselu (139 i 0), więc na ekranie krawędź wypada na tym samym ułamku: **0,85 piksela**. W oknie i na pełnym ekranie przeglądarka dostaje do narysowania co do punktu tę samą geometrię nagłówka.
+3. **Składowa 1 z rozdz. 14.4 odpada w całości.** Szczelina nie pojawia się na pełnym ekranie dlatego, że krawędź wypada tam gdzie indziej — wypada dokładnie tak samo. Różnica między trybami leży więc poza układem strony: w tym, **jak Firefox i Windows wyświetlają okno pełnoekranowe** (składowa 2). Jedyna inna różnica, wysokość obszaru strony (893 i 1080 px), zmienia tylko położenie dolnej krawędzi tabeli, a obie wypadają na pełnych pikselach.
+4. **Ułamek 0,85 leży w zakresie przebadanym na Linuksie** (rozdz. 14.3: ułamki 0,8 i 0,9 bez przecieku). Ten sam układ w Firefoksie bez przyspieszania sprzętowego i bez kompozytora Windows rysuje się poprawnie. To kolejny argument za tym, że przyczyną jest droga wyświetlania, a nie geometria.
+5. **Ułamek 0,85 zgadza się z mechanizmem z hipotezy H1.** Linia ramki zajmuje w stronie pas od 184,85 do 185,85, czyli na ekranie zaokrągla się do jednego rzędu punktów tuż nad krawędzią 185,85. Rząd, do którego sięgają litery wychodzące o jeden punkt za granicę, to właśnie ten rząd linii ramki — zgodnie z ustaleniami 2 i 5 z rozdz. 14.2.
+
+**Znaczenie dla dalszych kroków:** najważniejszy staje się test T3 (przyspieszanie sprzętowe). Skoro geometria w obu trybach jest identyczna, a szczelina występuje tylko na pełnym ekranie, to jeżeli po wyłączeniu przyspieszania zniknie także na pełnym ekranie, hipoteza H1 zostanie potwierdzona w całości. Kierunek naprawy K1 (rozdz. 14.8) nie zależy od tego, która droga wyświetlania zawodzi — nakładka poza obszarem przewijania zasłania rząd linii ramki w każdym trybie — ale T3 jest potrzebny, żeby wiedzieć, że usterka rzeczywiście leży tam, gdzie zakładamy.
 
 ### 14.8 Kierunki naprawy — wstępnie, do wyboru po testach
 
@@ -1143,13 +1194,13 @@ Wybór kierunku nastąpi po wynikach T1–T3 i testów na tablecie. Jeżeli T3 p
 | Naprawa skuteczna tylko w jednym trybie albo przy jednym położeniu krawędzi | **Średnie** | Szczelina zależy od położenia krawędzi (rozdz. 14.4). Każdą naprawę trzeba obejrzeć w oknie i na pełnym ekranie, a w miarę możliwości także przy innej liczbie rzędów zakładek (np. w węższym oknie) |
 | Nowe szczeliny na tablecie | **Średnie** | Ułamkowa gęstość pikseli razem z trybem „na komputer” to warunki, których dotąd nie mierzono (rozdz. 14.6) |
 | Zmiana zachowania telefonu w poziomie | **Brak** | Użytkownik zdecydował zostawić bez zmian (wiadomość 9, rozdz. 14.5) |
-| Nieważny wynik T1 | **Niskie** po poprawce instrukcji | Pierwsza próba zmierzyła tryb przewijania strony zamiast trybu z przyklejonym nagłówkiem (rozdz. 14.7.1). Poprawiony fragment czeka 10 s, a instrukcja podaje, po czym poznać ważny pomiar |
+| Nieważny wynik T1 | **Brak** — zamknięte | Pierwsza próba zmierzyła tryb przewijania strony zamiast trybu z przyklejonym nagłówkiem (rozdz. 14.7.1). Poprawiony fragment dał ważne pomiary w obu trybach (rozdz. 14.7.2) |
 | Testy zablokowane przez zasady organizacji | **Niskie** | Firefox jest zarządzany przez organizację. Jeżeli T1 lub T3 okażą się niedostępne, diagnoza zostanie oparta na pozostałych testach i zrzutach |
 
 Następne kroki:
 
 1. **Testy na tablecie** według rozdz. 14.6 — zapowiedziane przez użytkownika.
-2. **Testy T1–T3 w Firefoksie** na komputerze według rozdz. 14.7 — zapowiedziane przez użytkownika (wiadomość 9). T1 w poprawionej wersji, z odliczaniem 10 sekund, w obu trybach; pierwsza próba (rozdz. 14.7.1) wymaga powtórzenia.
+2. **Testy T2 i T3 w Firefoksie** na komputerze według rozdz. 14.7 — zapowiedziane przez użytkownika (wiadomość 9). **T3 jest rozstrzygający**: skoro geometria w obu trybach jest identyczna (rozdz. 14.7.2), to zniknięcie szczeliny na pełnym ekranie po wyłączeniu przyspieszania sprzętowego potwierdzi hipotezę H1. ~~T1~~ **wykonany** — rozdz. 14.7.1 i 14.7.2.
 3. ~~**Potwierdzenie**, w jakiej przeglądarce powstały obserwacje z wiadomości 3, 6 i 7.~~ **Wykonane** — wiadomość 9; wnioski w rozdz. 14.4.
 4. ~~**Decyzja użytkownika** co do telefonu w poziomie.~~ **Wykonane** — zostaje bez zmian (wiadomość 9, rozdz. 14.5).
 5. Po zebraniu wyników — dopisanie ustaleń do tej analizy i wybór kierunku naprawy z rozdz. 14.8.
