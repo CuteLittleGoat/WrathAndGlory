@@ -1,14 +1,15 @@
 # Mapa Gilead — nawigacja nie działa w PWA na tablecie
 
-> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28) · **zamknięcie:** 22 września 2026 (rozdz. 29) · **lista dla użytkownika:** rozdz. 30
+> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28) · **zamknięcie:** 22 września 2026 (rozdz. 29) · **lista dla użytkownika:** rozdz. 30 · **wyniki testów na tablecie i nowa usterka przesuwania:** 27 września 2026 (rozdz. 31–37)
 > **Temat:** w aplikacji PWA uruchomionej na tablecie mapa układu Gilead nie daje się przesuwać ani przybliżać/oddalać, natomiast kliknięcia w planety i obszary działają normalnie. W przeglądarce Chrome na tym samym tablecie oraz w PWA na telefonie wszystko działa poprawnie.
 > **Plik, którego dotyczy zgłoszenie:** rejestr światów systemu Gilead — w aplikacji widoczny jako `Main/Gilead.html` (moduł `Main`, repozytorium `WrathAndGlory`). **Jest to kopia wydania.** Plik źródłowy i miejsce nanoszenia poprawek to repozytorium `Scenariusze`, `Warhammer40k/Gilead/` — szczegóły w rozdz. 19.
-> **Charakter dokumentu:** analiza diagnostyczna wraz z zapisem wykonania. Rozdz. 1–27 opisują stan kodu **sprzed** zmian i projekt naprawy; **rozdz. 28 opisuje naprawę faktycznie wykonaną** w repozytorium `Scenariusze` 22 września 2026.
-> **Stan na dziś (22 września 2026):** **naprawa wykonana.** Przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6), zweryfikowana rachunkiem (rozdz. 20), a na koniec **odtworzona w przeglądarce**: badanie puszczone na pliku sprzed poprawki oblewa z komunikatem `viewBox: Expected number, "NaN NaN NaN NaN"`, czyli tym, który rozdz. 10 podawała jako twardy dowód możliwy tylko na tablecie (rozdz. 28.6). W repozytorium `Scenariusze` wdrożone **P1–P6** (rozdz. 28); kontrola G-6 i G-12 oraz badanie w przeglądarce przechodzą bez zastrzeżeń. Pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. **D5, D6 i D7 wykonane** po stronie repozytorium aplikacji — rozdz. 29; kopia wydania w `Main/Gilead.html` potwierdzona sumą kontrolną co do bajtu (rozdz. 29.1). **Zostaje wyłącznie:** testy na tablecie po stronie użytkownika (rozdz. 14).
+> **Charakter dokumentu:** analiza diagnostyczna wraz z zapisem wykonania. Rozdz. 1–27 opisują stan kodu **sprzed** zmian i projekt naprawy; **rozdz. 28 opisuje naprawę faktycznie wykonaną** w repozytorium `Scenariusze` 22 września 2026; **rozdz. 31–37 zapisują wyniki testów na tablecie z 27 września 2026 i przyczynę nowej usterki, którą ta naprawa wprowadziła.**
+> **Stan na dziś (27 września 2026):** **pierwotna usterka usunięta — potwierdzone na tablecie** (zrzut po uruchomieniu zgadza się z poprawnie policzonym kadrem co do piksela, rozdz. 31.4). **Naprawa z 22 września wprowadziła jednak nową usterkę:** na każdym urządzeniu dotykowym — tablet i telefon, aplikacja i przeglądarka — przeciągnięcie jednym palcem przesuwa mapę tylko o próg 4 pikseli i gest się kończy; mysz działa. Przyczyną jest jeden wiersz dopisany w ramach P5 (nasłuch `lostpointercapture`, rozdz. 32). Usterka **odtworzona w przeglądarce z emulacją dotyku**, a poprawka jednowierszowa sprawdzona na kopii pliku — przesuwanie wraca do 100 %, zabezpieczenia P5 zostają (rozdz. 32.3). **Do zrobienia:** N1–N3 w repozytorium `Scenariusze`, nowe wydanie, kopia do `Main/Gilead.html`, ponowny test według **rozdz. 36**.
+> **Stan na 22 września 2026 (zapis z tamtego dnia):** **naprawa wykonana.** Przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6), zweryfikowana rachunkiem (rozdz. 20), a na koniec **odtworzona w przeglądarce**: badanie puszczone na pliku sprzed poprawki oblewa z komunikatem `viewBox: Expected number, "NaN NaN NaN NaN"`, czyli tym, który rozdz. 10 podawała jako twardy dowód możliwy tylko na tablecie (rozdz. 28.6). W repozytorium `Scenariusze` wdrożone **P1–P6** (rozdz. 28); kontrola G-6 i G-12 oraz badanie w przeglądarce przechodzą bez zastrzeżeń. Pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. **D5, D6 i D7 wykonane** po stronie repozytorium aplikacji — rozdz. 29; kopia wydania w `Main/Gilead.html` potwierdzona sumą kontrolną co do bajtu (rozdz. 29.1). **Zostaje wyłącznie:** testy na tablecie po stronie użytkownika (rozdz. 14).
 >
-> **Masz sprawdzić mapę na tablecie?** Przewiń na **sam koniec dokumentu, rozdz. 30** — wszystkie testy i czynności po Twojej stronie są tam zebrane w jednym miejscu i nie wymagają czytania reszty.
+> **Masz sprawdzić mapę na tablecie?** Lista z rozdz. 30 została wykonana 27 września — wyniki są w rozdz. 31. **Po kolejnej poprawce sprawdzasz według rozdz. 36** — krótka, samowystarczalna lista na samym końcu dokumentu.
 >
-> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — potem od rozdz. 27 (sprawdzenia wykonane po tamtej stronie i wykaz decyzji otwartych, 27.9), a na koniec od **rozdz. 28.8**, gdzie jest suma kontrolna wydania do porównania po skopiowaniu pliku.
+> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — potem od rozdz. 27 (sprawdzenia wykonane po tamtej stronie i wykaz decyzji otwartych, 27.9), a na koniec od **rozdz. 28.8**, gdzie jest suma kontrolna wydania do porównania po skopiowaniu pliku. **Nowa usterka przesuwania z 27 września:** przyczyna w rozdz. 32, zakres poprawki i to, co zostaje po tej stronie, w rozdz. 34.
 
 ---
 
@@ -60,9 +61,15 @@
 
 30. [**WSZYSTKO, CO MASZ SPRAWDZIĆ — W JEDNYM MIEJSCU**](#30-wszystko-co-masz-sprawdzić--w-jednym-miejscu)
 
-**Uzupełnienie z 22 września 2026 — sprawdzenia w repozytorium `WrathAndGlory`**
+**Wyniki testów z 27 września 2026 — nowa usterka przesuwania**
 
-27. [Uwagi agenta repozytorium aplikacji](#27-uwagi-agenta-repozytorium-aplikacji)
+31. [Wyniki testów na tablecie — zapis](#31-wyniki-testów-na-tablecie--zapis)
+32. [Dlaczego przesuwanie nie działa — przyczyna](#32-dlaczego-przesuwanie-nie-działa--przyczyna)
+33. [Artefakty przy przybliżaniu (test B) — ocena](#33-artefakty-przy-przybliżaniu-test-b--ocena)
+34. [Co trzeba poprawić — zakres dla repozytorium `Scenariusze`](#34-co-trzeba-poprawić--zakres-dla-repozytorium-scenariusze)
+35. [Decyzja do podjęcia](#35-decyzja-do-podjęcia)
+36. [**CO SPRAWDZIĆ PO POPRAWCE — LISTA DLA CIEBIE**](#36-co-sprawdzić-po-poprawce--lista-dla-ciebie)
+37. [Ryzyka, czego ta część nie rozstrzyga, następne kroki](#37-ryzyka-czego-ta-część-nie-rozstrzyga-następne-kroki)
 
 > Rozdz. 1–17 to analiza z 21 września. Ich treść **nie została zmieniona** — dopisano
 > jedynie trzy wyróżnione odsyłacze do aneksu, w rozdz. 12, 13 i 17. Wszystko, co po
@@ -2009,6 +2016,10 @@ i co zrobić, jeśli się nie stanie.
 
 Jeżeli masz mało czasu — zrób sam **rozdz. 30.2**. To pięć minut i rozstrzyga najważniejsze.
 
+> **Odsyłacz dopisany 27 września 2026.** Ta lista została wykonana — wyniki są
+> w **rozdz. 31**, a przyczyna usterki, którą wykazała, w rozdz. 32. **Nie powtarzaj
+> jej.** Po kolejnej poprawce obowiązuje krótsza lista z **rozdz. 36**.
+
 > **Uwaga o starszych rozdziałach.** Testy z rozdz. 10 („Co możesz sprawdzić") były
 > pisane po to, żeby **rozpoznać usterkę**, gdy jeszcze nie było wiadomo, co się dzieje.
 > Usterka jest rozpoznana i naprawiona, więc **tamtych testów już nie wykonuj** — to,
@@ -2047,6 +2058,14 @@ Dwa potwierdzenia dla pewności:
 Nie sugeruj się prawą krawędzią — przy szerokości Twojego tabletu prawy pas ramy wypada
 tuż poza kadrem także przy poprawnym widoku. Na telefonie w pionie mapa otwiera się celowo
 przybliżona na Światy Centralne i żaden z tych trzech wskaźników tam nie obowiązuje.
+
+> **Sprostowanie dopisane 27 września 2026.** Kryterium „nie widzisz jej wcale” było
+> za ostre. W oknie aplikacji na tym tablecie obszar mapy jest wyższy niż w karcie Chrome,
+> więc przy **poprawnym** widoku u góry widać dolny skrawek belki z uciętymi do połowy
+> literami — zrzut z 27 września pokazuje dokładnie to i zgadza się z poprawnym kadrem
+> co do piksela (rozdz. 31.4). Rozstrzygają dwa pozostałe wskaźniki z tabeli: pionowy
+> pas przy lewej krawędzi oraz widoczne VULKARIS i TROLLIUS. Uszkodzony widok pokazywał
+> belkę **całą**, z napisem czytelnym w całości.
 
 ---
 
@@ -2179,3 +2198,629 @@ punkty 1–5 wystarczą. Gdybyś to jednak zrobił: brak komunikatów w konsoli 
 3. **Jeden drobiazg został świadomie nienaprawiony** — sposób kasowania znacznika
    przeciągania. W najgorszym razie zakończenie przeciągnięcia mogłoby zamknąć otwarty opis.
    Jeśli to zauważysz, powiedz — jest zapisane jako znana sprawa do rozważenia.
+
+---
+
+# WYNIKI TESTÓW z 27 września 2026 — nowa usterka przesuwania
+
+## 31. Wyniki testów na tablecie — zapis
+
+### 31.1 Polecenie użytkownika (zachowane w całości)
+
+> Zapoznaj się z plikiem Analizy/gilead-nawigacja-mapy-pwa-tablet-2026-09-21.md
+> Poniżej moje wyniki testów. Dopisz je do analizy.
+>
+> 30.1 Zanim zaczniesz — jedna rzecz do upewnienia się
+> - Załączam screena jak wygląda aplikacja po uruchomieniu
+>
+> 30.2 Szybki przebieg — 5 minut, najważniejsze
+> A - przesuwa, ale bardzo laguje. W stopniu, który uniemożliwia korzystanie z aplikacji. Na telefonie, przez przeglądarkę też jest taki problem. Mapa działa tylko na PC.
+>
+> B - samo przybliżanie i oddalanie działa. Jest nawet mniej więcej płynnie. Przy powiększaniu i oddalaniu pojawiają się czasem dziwne artefakty graficzne - jakaś pozioma kreska. Dodatkowo przy zoomie pojawia się czerwone wypełnienie pola "Wrakowisko". Załączam screena.
+>
+> C - działa bez zarzutów. Uruchamia się planeta Vulkaris i pojawia się jej opis. Przewijanie informacji na karcie jest płynne.
+>
+> D - sytuacja jak w B. Przybliżanie i oddalanie działa, ale przesuwanie jest niezwykle utrudnione.
+>
+> E - działa bez zarzutów.
+>
+> 30.3 Pełna lista — 15 testów
+>
+> 1 - Mapa przesuwa się odrobinę. O kilka pixeli. Trzeba ponownie palcem przesunąć. Patrz: 30.2 punkty A i D.
+>
+> 2 - Działa.
+>
+> 3 - załączam screena.
+>
+> 4 - działa
+>
+> 5 - działa
+>
+> 6 - O ile dobrze rozumiem to działa
+>
+> 7 - poza błędem z przsuwaniem jest ok.
+>
+> 8 - działa
+>
+> 9 - działa
+>
+> 10 - u mnie są inaczej ustawione gesty
+>
+> 11 - działa
+>
+> Dopisz moje odpowiedzi do analizy a następnie sprawdź czemu nie działa przewijanie. Dopisz swoje wnioski i do analizy.
+
+W trakcie pracy użytkownik dopisał: „Kontynuuj pracę”.
+
+Do polecenia dołączone były trzy zrzuty ekranu z tabletu — aplikacja PWA, układ poziomy,
+1920 × 1200 px, nawigacja systemowa trzema przyciskami:
+
+| zrzut | godzina | co pokazuje |
+|---|---|---|
+| 1 | 16:45 | mapa zaraz po uruchomieniu — do punktu 30.1 i testu 3 |
+| 2 | 16:49 | mapa przybliżona na Gilead Primus i Wrakowisko — do testu B |
+| 3 | 16:50 | mapa przybliżona na Przystanek i Wrakowisko — do testu B |
+
+### 31.2 Zakres i metoda tej części
+
+1. Zapis odpowiedzi użytkownika 1:1 i ocena każdej wobec kryterium z rozdz. 30.
+2. Pomiar zrzutu 1 wobec kadru, który kod wydania liczy dla tego okna — tą samą metodą,
+   co w rozdz. 5.
+3. Porównanie obsługi gestów sprzed naprawy (`git show 5ff6c17:Main/Gilead.html`, SHA-256
+   `dbddab91…` — zgodny z rozdz. 27.2) z obecnym wydaniem (`4e5fe8f9…` — zgodny
+   z rozdz. 28.8).
+4. **Odtworzenie w Chromium z emulacją dotyku.** Playwright 1.56 i Chromium 1194
+   z `/opt/pw-browsers`; dotyk przez polecenie protokołu DevTools `Input.dispatchTouchEvent`.
+   To jest prawdziwe wejście dotykowe przeglądarki, a nie zdarzenia wygenerowane skryptem
+   strony — Chromium traktuje je jak palec, łącznie z niejawnym przechwyceniem (rozdz. 32.2).
+   Trzy pliki: sprzed naprawy, obecne wydanie oraz obecne wydanie z poprawką N1 (kopia
+   robocza poza repozytorium). Dwa okna: „tablet” 1280 × 720 przy gęstości 1,5 i „telefon”
+   390 × 844 przy gęstości 3. Ruch palca krokami co 1 px, jak przy prawdziwym przeciąganiu.
+5. Ocena artefaktów z testu B — pomiar położenia ich granic na zrzutach 2 i 3.
+
+**Żaden plik aplikacji nie został zmieniony.** `Main/Gilead.html` jest kopią wydania
+(rozdz. 19, 24.1), więc poprawka jest opisana do wykonania w repozytorium `Scenariusze`
+(rozdz. 34). Jedyną zmianą w repozytorium jest ten dokument.
+
+### 31.3 Odpowiedzi użytkownika
+
+W poleceniu pada słowo „przewijanie”; z opisu testów wynika, że chodzi o **przesuwanie
+mapy palcem** — i tak jest to rozumiane niżej.
+
+**Szybki przebieg (rozdz. 30.2)**
+
+| # | Co miało się stać | Odpowiedź (dosłownie) | Ocena |
+|---|---|---|---|
+| A | Po zimnym starcie mapa od razu się przesuwa | „przesuwa, ale bardzo laguje. W stopniu, który uniemożliwia korzystanie z aplikacji. Na telefonie, przez przeglądarkę też jest taki problem. Mapa działa tylko na PC.” | ❌ — nowa usterka, rozdz. 32 |
+| B | Szczypanie płynnie oddala i przybliża | „samo przybliżanie i oddalanie działa. Jest nawet mniej więcej płynnie. Przy powiększaniu i oddalaniu pojawiają się czasem dziwne artefakty graficzne - jakaś pozioma kreska. Dodatkowo przy zoomie pojawia się czerwone wypełnienie pola "Wrakowisko". Załączam screena.” | ✅ z uwagą — artefakty, rozdz. 33 |
+| C | `INDEKS` → VULKARIS: dojazd i opis | „działa bez zarzutów. Uruchamia się planeta Vulkaris i pojawia się jej opis. Przewijanie informacji na karcie jest płynne.” | ✅ |
+| D | Obrót pion ↔ poziom, potem przesunięcie | „sytuacja jak w B. Przybliżanie i oddalanie działa, ale przesuwanie jest niezwykle utrudnione.” | ❌ w części „przesunięcie” — ta sama usterka co A; sam obrót niczego nie psuje |
+| E | Otwarcie i zamknięcie opisu bez skoku powiększenia | „działa bez zarzutów.” | ✅ |
+
+**Pełna lista (rozdz. 30.3)**
+
+| # | Test | Odpowiedź (dosłownie) | Ocena |
+|---|---|---|---|
+| 1 | zimny start, od razu przesunięcie | „Mapa przesuwa się odrobinę. O kilka pixeli. Trzeba ponownie palcem przesunąć. Patrz: 30.2 punkty A i D.” | ❌ — rozdz. 32. To zdanie było kluczem do przyczyny: opisuje dokładnie ruch o drogę progu i koniec gestu |
+| 2 | szczypanie | „Działa.” | ✅ |
+| 3 | wygląd zaraz po otwarciu | „załączam screena.” | ✅ — kadr poprawny co do piksela, rozdz. 31.4 |
+| 4 | `INDEKS` → VULKARIS | „działa” | ✅ |
+| 5 | opis planety — mapa ściśnięta i przeskalowana | „działa” | ✅ |
+| 6 | zamknięcie opisu — powrót bez skoku | „O ile dobrze rozumiem to działa” | ✅ |
+| 7 | obrót, potem przesunięcie | „poza błędem z przsuwaniem jest ok.” | ✅ obrót / ❌ przesunięcie (rozdz. 32) |
+| 8 | dzielony ekran | „działa” | ✅ |
+| 9 | przełączenie aplikacji z palcem na mapie | „działa” | ✅ |
+| 10 | gest cofania od krawędzi | „u mnie są inaczej ustawione gesty” | nie dotyczy — na zrzutach widać nawigację trzema przyciskami (☰ ○ ←), więc gestu od krawędzi na tym tablecie nie ma. Zastępnik: test 6 w rozdz. 36.2 |
+| 11 | dwustuknięcie w puste miejsce | „działa” | ✅ — **rozstrzyga pytanie z rozdz. 21.4 i 28.10 pkt 2**: dwustuknięcie w oknie aplikacji daje `dblclick`, powrót do widoku początkowego działa |
+| 12 | stuknięcie w planetę | bez osobnej odpowiedzi | ✅ — potwierdzony testem E |
+| 13 | przeciągnięcie zakończone na planecie | bez odpowiedzi | do sprawdzenia po poprawce (test 4 w rozdz. 36.2) |
+| 14 | wszystko na telefonie | bez osobnej odpowiedzi; z testu A: „Na telefonie, przez przeglądarkę też jest taki problem” | ❌ przesuwanie — ta sama usterka |
+| 15 | wszystko w Chrome na tablecie i na komputerze | bez osobnej odpowiedzi; z testu A: „Mapa działa tylko na PC.” | ✅ komputer / ❌ przesuwanie na tablecie |
+
+Pytanie z rozdz. 30.5 krok 4 (czy opis zamyka się dotknięciem tła) zostało bez odpowiedzi
+i nie jest już potrzebne — przyczyna jest ustalona inną drogą (rozdz. 32).
+
+### 31.4 Zrzut 1 — kadr po uruchomieniu zgadza się co do piksela
+
+Obszar mapy na zrzucie zajmuje y = 160–1028 px przy pełnej szerokości 1920 px. Przy gęstości
+1,5 (rozdz. 5) to 1280 × 578,7 jednostki. Dla takiego okna kod wydania liczy:
+
+- pełny widok wymagałby kadru szerokiego na 1990,8 jednostki, a cel dotykowy 44 px pozwala
+  najwyżej na 1280 / (44/68) = 1978,2 — kadr jest więc minimalnie **węższy niż cała mapa**
+  i `widokDomyslny()` idzie gałęzią „za wąsko na całość”: środek na Światach Centralnych
+  (570 ; 470);
+- kadr: **`viewBox="-419.1 22.8 1978.2 894.3"`**.
+
+| element | wyliczone z kadru (px zrzutu) | odczytane ze zrzutu 1 (px) |
+|---|---|---|
+| czarne tło przy lewej krawędzi (poza mapą) | 0 – 145 | 0 – 145 |
+| lewy zakreskowany pas ramy | 145 – 189 | 145 – 190 |
+| górna belka — widoczny tylko dolny skrawek | 160 – 182 | 160 – 183 |
+| dolna belka | 967 – 1011 | 967 – 1011 |
+| gwiazda | 824 ; 594 | 823 ; 594 |
+| NETHREUS | 645 ; 603 | 645 ; 602 |
+| CHARYBDION | 950 ; 336 | 949 ; 336 |
+| GILEAD PRIMUS | 1154 ; 467 | 1154 ; 467 |
+| VULKARIS | 509 ; 895 | 508 ; 895 |
+| TROLLIUS | 1404 ; 844 | 1404 ; 844 |
+
+Dziesięć pomiarów, błąd najwyżej 1 piksel. Wnioski:
+
+1. **Na tablecie jest nowe wydanie i kadr startowy jest w oknie aplikacji policzony
+   poprawnie.** Pierwotna usterka jest naprawiona na sprzęcie, nie tylko w badaniu.
+   Stan uszkodzony wyglądałby zupełnie inaczej: rysunek 1:1 od lewego górnego rogu,
+   bez lewego pasa, bez Vulkarisa i Trolliusa (rozdz. 5.2–5.3). Potwierdza to też test 1:
+   przy kadrze „NaN” mapa nie drgnęłaby wcale, a teraz przesuwa się o kilka pikseli.
+2. **Napis „CICARIX MALEDICTUM” przy poprawnym kadrze częściowo widać.** Napis stoi na
+   wysokości 29 jednostek, kadr zaczyna się na 22,8 — widać dolne ok. 6 px liter.
+   Kryterium z rozdz. 30.1 było za ostre; sprostowanie dopisane tam.
+3. **Czarny pas przy lewej krawędzi nie jest błędem.** Kadr sięga 149 jednostek na lewo od
+   ramy, bo jest wyśrodkowany na Światach Centralnych, a nie na całej mapie — tak działa
+   reguła celu dotykowego (G-D23) przy tym oknie.
+
+### 31.5 Bilans
+
+| | Stan po testach z 27 września |
+|---|---|
+| pierwotna usterka — kadr „NaN” w oknie aplikacji | **usunięta**, potwierdzone na tablecie (31.4) |
+| przybliżanie, karta planety, `INDEKS`, dzielony ekran, przełączanie aplikacji, obrót, dwustuknięcie | **działają** |
+| **przesuwanie jednym palcem** | **nie działa na żadnym urządzeniu dotykowym** — nowa usterka wprowadzona naprawą, rozdz. 32 |
+| artefakty przy przybliżaniu | kosmetyka, rozdz. 33 |
+
+---
+
+## 32. Dlaczego przesuwanie nie działa — przyczyna
+
+### 32.1 W skrócie — bez języka technicznego
+
+> Kiedy kładziesz palec na mapie, przeglądarka od razu „przypina” go do tego, co jest pod
+> nim — do tła, orbity albo podpisu. Gdy palec przejedzie 4 piksele, mapa uznaje, że to
+> przeciąganie, a nie stuknięcie, i **przejmuje palec na siebie** — żeby dalszy ruch
+> trafiał do niej, nawet gdy palec zjedzie na planetę albo poza mapę. Przejęcie wygląda
+> tak: tło „oddaje” palec, mapa go „bierze”.
+>
+> Naprawa z 22 września dołożyła zabezpieczenie: *„jeśli mapa straci palec, zakończ
+> gest”* — na wypadek, gdyby Android zabrał gest dla siebie. Kłopot w tym, że to
+> zabezpieczenie słyszy również **„oddanie palca” przez tło** i bierze je za utratę palca
+> przez mapę. Gest kończy się dokładnie w chwili, w której miał się naprawdę zacząć.
+> Mapa zdąży przesunąć się o te 4 piksele progu i staje. Żeby przesunąć dalej, trzeba
+> podnieść palec i przeciągnąć od nowa — i znowu tylko kilka pikseli. To właśnie wygląda
+> jak ogromne „lagowanie”.
+>
+> Myszka tego problemu nie ma, bo przeglądarka nie „przypina” kursora myszy do niczego —
+> dlatego na komputerze wszystko działa. Szczypanie działa, bo przy dwóch palcach mapa
+> niczego nie przejmuje. Telefon i przeglądarka są dotknięte tak samo jak aplikacja na
+> tablecie, bo chodzi o dotyk, a nie o PWA.
+
+**Problem leży w pliku mapy, a nie w tablecie, telefonie ani ustawieniach.** Naprawa jest
+jednowierszowa i została już sprawdzona na kopii pliku (32.3).
+
+### 32.2 Mechanizm techniczny
+
+Składają się na niego trzy rzeczy. Dwie istniały przed naprawą, trzecia doszła w P5.
+
+**1. Niejawne przechwycenie dotyku.** Specyfikacja Pointer Events każe przeglądarce przy
+`pointerdown` palca zachować się tak, jakby wywołano `setPointerCapture()` na elemencie
+trafionym pod palcem. W tej mapie to prawie zawsze element **wewnątrz** SVG: tło (`rect`),
+orbita (`ellipse.cog-orbita`), siatka (`line`), pole trafienia (`rect.cog-traf`), podpis.
+Mysz tego nie ma.
+
+**2. Przejęcie po progu** (`Main/Gilead.html:905–907`, było już przed naprawą):
+
+```js
+ciagniete=true;
+svg.classList.add('cog-ciagniemy');
+if(svg.setPointerCapture){svg.setPointerCapture(ev.pointerId);przechwycony=ev.pointerId;}
+```
+
+Przy dotyku nie jest to nadanie przechwycenia, tylko jego **przeniesienie** z elementu pod
+palcem na SVG. Przeglądarka realizuje je przy następnym zdarzeniu tego palca: wysyła
+`lostpointercapture` do dotychczasowego właściciela, potem `gotpointercapture` do SVG.
+
+**3. Nasłuch dopisany w P5** (`:935–937`):
+
+```js
+/* Przechwycenie odebrane przez przeglądarkę bywa jedynym, co dostaniemy:
+   `pointerup` po geście systemowym Androida potrafi już nie przyjść. */
+svg.addEventListener('lostpointercapture',koniec);
+```
+
+`lostpointercapture` **bąbelkuje**. Zdarzenie wysłane do tła wewnątrz SVG dochodzi do tego
+nasłuchu, a `koniec()` nie odróżnia „SVG stracił palec” od „tło oddało palec SVG-owi”.
+Filtr po `pointerId` w `koniec()` (`:918`) nie pomaga — to ten sam palec. `koniec()` usuwa
+palec z rejestru, zeruje `ciagniemy` i zwalnia przechwycenie SVG. Każde następne
+`pointermove` odpada na pierwszym wierszu obsługi (`:890`,
+`if(!wskazniki[ev.pointerId]) return;`).
+
+Kolejność zdarzeń zapisana w badaniu — dotyk, obecne wydanie, start na tle mapy:
+
+```
+pointerdown@rect → gotpointercapture@rect     niejawne przechwycenie dotyku
+pointermove@rect                               próg przekroczony → svg.setPointerCapture();
+                                               mapa przesuwa się o drogę progu — jedyny ruch
+lostpointercapture@rect                        bąbelkuje do SVG → koniec() → rejestr pusty
+gotpointercapture@svg
+pointermove@svg                                ignorowane — palca nie ma w rejestrze
+lostpointercapture@svg                         koniec() sam zwolnił przechwycenie
+pointermove@rect, @circle.cog-traf, @text.cog-etykieta …   ignorowane
+```
+
+Ten sam gest na pliku sprzed naprawy — przeniesienie przebiega identycznie, tylko nikt go
+nie słucha:
+
+```
+pointerdown@rect → gotpointercapture@rect → pointermove@rect → lostpointercapture@rect
+→ gotpointercapture@svg → pointermove@svg ×19 → pointerup@svg
+```
+
+W żadnym z zapisów nie ma `pointercancel` — **przeglądarka niczego nie przejmuje, gest
+kończy sam skrypt mapy.** Dlatego ta usterka nie ma związku z `touch-action`
+ani `overscroll-behavior` (rozdz. 28.10 pkt 4).
+
+**Dlaczego „kilka pikseli”.** Ruch zatrzymuje się po pierwszym zdarzeniu za progiem
+`PROG=4` (`:850`) — czyli po 4 jednostkach CSS z niewielkim naddatkiem. Na tym tablecie to
+ok. 6 pikseli fizycznych, na telefonie o gęstości 3 ok. 12. Dokładnie to opisuje test 1.
+
+**Dlaczego szczypanie działa.** Gałąź dwóch palców (`:893`) kończy się przed kodem
+przejęcia: `setPointerCapture()` nie jest wołane, więc nie ma przeniesienia ani
+`lostpointercapture`. Jednym palcem zaraz po szczypaniu mapa nadal się nie przesuwa
+(badanie: 4 %) — zgodnie z testem D.
+
+**Dlaczego komputer działa.** Przy myszy nie ma niejawnego przechwycenia, więc
+`setPointerCapture()` tylko nadaje przechwycenie: przychodzi `gotpointercapture@svg`,
+bez żadnego `lostpointercapture` na elemencie podrzędnym.
+
+**Dlaczego przed naprawą Chrome na tablecie działał.** Nasłuchu z `:937` nie było. Jest to
+więc **regresja wprowadzona przez P5**, a nie usterka wcześniej ukryta.
+
+**To nie jest kwestia wydajności.** Szczypanie wykonuje przy każdym ruchu palca tę samą
+pracę co przesuwanie (nowy kadr i przerysowanie mapy), a nawet więcej rachunków — i jest
+„mniej więcej płynne”. Wynik badania nie zależy od szybkości urządzenia: ruch kończy się
+zawsze po jednym kroku za progiem.
+
+### 32.3 Odtworzenie w przeglądarce — dowód
+
+Przeciągnięcie palcem o 120 px w 120 krokach po 1 px, z sześciu różnych punktów startu.
+Wynik: przesunięcie kadru jako odsetek drogi palca (100 % = mapa idzie za palcem).
+
+| plik | tablet 1280 × 720, gęstość 1,5 | telefon 390 × 844, gęstość 3 | mysz, 1280 × 800 |
+|---|---|---|---|
+| sprzed naprawy (`dbddab91…`) | 100 % we wszystkich sześciu | 100 % we wszystkich sześciu | 100 % |
+| **obecne wydanie** (`4e5fe8f9…`) | **3 % we wszystkich sześciu** | **3 % we wszystkich sześciu** | 100 % |
+| obecne wydanie + poprawka N1 | 100 % we wszystkich sześciu | 100 % we wszystkich sześciu | 100 % |
+
+Punkty startu trafiały w różne elementy — tło, orbitę, siatkę, pole trafienia planety.
+Wynik od tego nie zależy, bo każdy z nich leży wewnątrz SVG.
+
+Pozostałe sprawdzenia — okno „tablet”. W oknie „telefon” powtórzono szczypanie, przesuwanie
+zaraz po szczypaniu, stuknięcie w planetę i przeciągnięcie zakończone na planecie; wyniki
+są te same.
+
+| sprawdzenie | sprzed naprawy | obecne wydanie | obecne + N1 |
+|---|---|---|---|
+| szczypanie | działa | działa | działa |
+| jeden palec zaraz po szczypaniu | 100 % | **4 %** | 100 % |
+| przesuwanie przy otwartym opisie planety | — | **3 %** | 100 %, opis zostaje otwarty |
+| stuknięcie w planetę otwiera opis | tak | tak | tak |
+| stuknięcie w tło zamyka opis | — | tak | tak |
+| przeciągnięcie zakończone na planecie **nie** otwiera opisu | tak | tak | tak |
+| gest przerwany `touchcancel`, potem nowy gest | 100 % | 4 % | 100 % |
+| gest przerwany utratą fokusu okna (`blur`), potem nowy gest | **0 %** | 4 % | 100 % |
+| gest przerwany zejściem strony w tło, potem nowy gest | **0 %** | 4 % | 100 % |
+| SVG traci przechwycenie w trakcie gestu → gest ma się skończyć | ✘ trwa dalej | ✔ | ✔ |
+| element pod palcem oddaje przechwycenie → gest ma **trwać** | ✔ | ✘ kończy się | ✔ |
+| błędy w konsoli | 0 | 0 | 0 |
+
+Co z tego wynika:
+
+1. **Poprawka N1 przywraca przesuwanie w całości** i niczego nie psuje: szczypanie,
+   stuknięcia, zamykanie opisu stuknięciem w tło i blokada „przeciągnięcie to nie
+   stuknięcie” działają.
+2. **Zabezpieczenia P5 zostają.** Wiersze `blur` i „strona w tle” pokazują przy okazji,
+   po co P5 powstało: plik sprzed naprawy zostawiał w rejestrze „ducha” palca i następny
+   gest jednym palcem szedł w gałąź szczypania (0 %). Z N1 — 100 %.
+3. Dwa przedostatnie wiersze pokazują różnicę wprost: N1 odróżnia **utratę** przechwycenia
+   przez SVG (koniec gestu — zabezpieczenie P5) od jego **przekazania** z elementu pod
+   palcem (początek przeciągania).
+
+Uwaga o metodzie: „utratę przechwycenia przez SVG” sprawdzono zdarzeniem wysłanym wprost do
+SVG w trakcie gestu. Wcześniejsza próba — zwolnienie przechwycenia skryptem przy wciąż
+trzymanym palcu — okazała się niemiarodajna (emulator nie wysyła wtedy żadnego zdarzenia
+dla pierwszego palca, więc następny palec liczy się jako drugi) i nie jest brana pod uwagę.
+
+### 32.4 Dlaczego badania z 22 września tego nie wykryły
+
+Rozdz. 28.6–28.7: `test_mapy.py` przeszedł „bez błędów”, a obecne wydanie przy dotyku oblewa
+za każdym razem. Przeciąganie w tamtym badaniu nie szło więc drogą dotyku zaczynającego się
+na elemencie wewnątrz SVG. Najbardziej prawdopodobnie gesty były prowadzone myszą albo
+zdarzeniami syntetycznymi — żadna z tych dróg nie ma niejawnego przechwycenia, więc
+przeniesienie w ogóle nie zachodzi. **Pliku `test_mapy.py` nie widziałem;** to wniosek
+z wyniku, nie odczyt.
+
+Pomysł P5 był trafny — komentarz przy `:935` dobrze opisuje, po co nasłuch jest potrzebny.
+Zabrakło tylko uwzględnienia, że zdarzenie bąbelkuje i że przy dotyku samo przejęcie palca
+je wywołuje.
+
+To jest dokładnie ryzyko, które rozdz. 28.10 pkt 1 nazywał wprost: „naprawa udowodniona co
+do przyczyny i nieudowodniona co do objawu na sprzęcie”. Test na tablecie zrobił to, czego
+badanie nie mogło. Wniosek na przyszłość jest w N3: badanie gestów musi mieć ścieżkę
+dotykową.
+
+---
+
+## 33. Artefakty przy przybliżaniu (test B) — ocena
+
+### 33.1 Czerwień Wrakowiska jest zamierzona — nierówne pasy nie są
+
+Wrakowisko jest rysowane jako obszar ostrzegawczy: czerwona przerywana obwódka i bardzo
+słabe czerwone wypełnienie (`.cog-wrak`, `Main/Gilead.html:60`:
+`fill:rgba(255,95,95,.05)` przy `opacity:.5`, czyli ok. 2,5 % czerwieni). To wypełnienie
+widać także bez przybliżenia — na zrzucie 1 Wrakowisko, Głębia i Cieśnina Andraste mają
+ciemnobrązowy odcień. Czerwień niesie treść „zakaz wstępu / ostrzeżenie” (G-D15, G-D25)
+i sama w sobie nie jest błędem.
+
+Błędem jest to, co widać na zrzutach 2 i 3: **w obrębie jednego obszaru czerwień jest
+mocniejsza w poziomym pasie** o prostych, poziomych krawędziach, niezwiązanych z kształtem
+obszaru. Kontur obszaru przechodzi przez te krawędzie bez przesunięcia — geometria jest
+ta sama, różni się tylko odcień wypełnienia.
+
+### 33.2 Granice pasów leżą na siatce kafelków rysowania
+
+| zrzut | jaśniejszy pas | granice pasa (px) |
+|---|---|---|
+| 2 | od górnej krawędzi mapy do y ≈ 345 | 345 |
+| 3 | y ≈ 345 – 630 | 345 i 630 |
+
+Granica 345 leży w tym samym miejscu na dwóch różnych zrzutach, przy innym przybliżeniu
+i innym położeniu mapy — nie jest więc związana z treścią mapy, tylko z ekranem. Granice
+są od siebie odległe o 285–286 px, a od górnej krawędzi strony (y ≈ 59, pod paskiem
+systemowym) o 286 i 572 px.
+
+To zgadza się z tym, jak Chrome na Androidzie rysuje stronę przy rasteryzacji na karcie
+graficznej: warstwę dzieli na kafelki szerokości ekranu i wysokości ok. ¼ okna, liczone od
+górnej krawędzi warstwy — tu okno ok. 1051 px daje kafelek 288 px, z czego 2 px to
+zakładka, czyli krok 286 px. Wniosek: **artefakt powstaje przy rysowaniu kafelków przez
+przeglądarkę** — sąsiednie kafelki oddają to samo, bardzo słabe półprzezroczyste
+wypełnienie w różny sposób albo z różnych chwil. Siatka zaczyna się od góry strony, a nie
+od góry mapy, więc mapa jest rysowana w warstwie całej strony i każda zmiana kadru każe
+przerysować wszystkie kafelki. Przemijająca „pozioma kreska” to najpewniej ten sam
+mechanizm w trakcie ruchu: przez ułamek sekundy sąsiednie kafelki pokazują różne klatki.
+
+**Pewność: umiarkowana.** Zgodność liczb jest wyraźna, ale mechanizmu wewnątrz przeglądarki
+nie da się podejrzeć bez urządzenia i narzędzi deweloperskich. Artefaktu nie próbowano
+odtwarzać — Chromium na serwerze rysuje programowo, bez karty graficznej, więc wynik nie
+miałby wartości dowodowej.
+
+### 33.3 Co z tym zrobić
+
+- To jest **kosmetyka**, niezależna od usterki przesuwania. Nie przeszkadza w korzystaniu
+  z mapy i nie jest błędem w danych.
+- **Najpierw naprawa przesuwania.** Po niej przesuwanie zacznie przerysowywać mapę tak samo
+  często jak szczypanie, więc obraz artefaktu może się zmienić. Ocena ma sens dopiero po
+  ponownym teście (rozdz. 36.3).
+- Jeżeli po ponownym teście będzie przeszkadzał — opcja N4 (rozdz. 34): przerysowanie mapy
+  najwyżej raz na klatkę obrazu zamiast przy każdym zdarzeniu palca. Zmniejsza liczbę
+  przerysowań kafelków w trakcie gestu; czy usunie artefakt w całości, nie wiadomo.
+- Mocniejsze środki — przesuwanie mapy transformacją CSS w trakcie gestu z ustawieniem kadru
+  dopiero na końcu albo osobna warstwa kompozycji dla SVG — zmieniają sposób działania
+  nawigacji lub zużycie pamięci. Przy objawie czysto kosmetycznym **nie rekomenduję**.
+
+---
+
+## 34. Co trzeba poprawić — zakres dla repozytorium `Scenariusze`
+
+Miejsce: `Warhammer40k/Gilead/scripts/build/gilead/assemble.py`, stała `JS` (rozdz. 19.3,
+28.3). **Nie w `Main/Gilead.html`** — tam poprawka zniknęłaby przy następnym wydaniu
+(rozdz. 19, 24.1).
+
+### N1 — nasłuch `lostpointercapture` tylko dla samego SVG *(konieczna)*
+
+Obecnie (`Main/Gilead.html:935–937`):
+
+```js
+  /* Przechwycenie odebrane przez przeglądarkę bywa jedynym, co dostaniemy:
+     `pointerup` po geście systemowym Androida potrafi już nie przyjść. */
+  svg.addEventListener('lostpointercapture',koniec);
+```
+
+Proponowane — dokładnie ten wariant, który sprawdzono w badaniu z rozdz. 32.3:
+
+```js
+  /* Przechwycenie odebrane przez przeglądarkę bywa jedynym, co dostaniemy:
+     `pointerup` po geście systemowym Androida potrafi już nie przyjść.
+     Liczy się WYŁĄCZNIE utrata przechwycenia przez samo SVG. Zdarzenie
+     bąbelkuje, a przy dotyku przeglądarka przechwytuje palec niejawnie na
+     elemencie pod nim (tło, orbita, podpis); `setPointerCapture()` po progu
+     przenosi go na SVG i wysyła tamtemu elementowi `lostpointercapture`.
+     To jest przekazanie palca, nie koniec gestu — bez tego warunku
+     przeciąganie palcem kończyło się na progu 4 px. */
+  svg.addEventListener('lostpointercapture',function(ev){
+    if(ev.target===svg) koniec(ev);
+  });
+```
+
+**Co robi:** przepuszcza do `koniec()` tylko zdarzenie, którego celem jest samo SVG.
+**Gdzie działa:** w obsłudze gestów, obok `pointerup` i `pointercancel` nasłuchiwanych na
+`window`. **Dlaczego tak, a nie inaczej:**
+
+- **Usunięcie nasłuchu** (powrót do stanu sprzed P5) też przywróciłoby przesuwanie, ale
+  odebrałoby zabezpieczenie na przypadek, gdy Android zabiera gest bez `pointerup` —
+  wiersz „SVG traci przechwycenie” w tabeli 32.3 znów by oblewał.
+- **Przechwytywanie już przy `pointerdown`** usunęłoby przeniesienie, ale jest powód, dla
+  którego tak nie jest — komentarz przy `:877–881`: przechwycenie przekierowuje `click`
+  i stuknięcie w planetę przestałoby działać.
+- Dodatkowy warunek `ev.pointerId===przechwycony` jest dopuszczalny, ale zbędny: `koniec()`
+  i tak filtruje po rejestrze palców (`:918`).
+
+### N2 — punkt 31 kontroli G-6 ma pilnować warunku *(konieczna)*
+
+Punkt 31 sprawdza obecność barier, bo ich usunięcie nie psuje niczego, co widać na biurku
+(rozdz. 28.6). Warunek z N1 jest przypadkiem tego samego rodzaju: jego **brak** psuje
+wyłącznie urządzenia dotykowe, a na komputerze nie widać nic. Do listy punktu 31 należy
+dopisać obecność warunku `ev.target===svg` w nasłuchu `lostpointercapture` i sprawdzić
+wstecz, że usunięcie warunku jest wykrywane.
+
+### N3 — badanie dotykowe w `test_mapy.py` *(konieczna)*
+
+Bez niego ta sama klasa usterki wróci niezauważona. Wymagania oparte na badaniu
+z rozdz. 32.3:
+
+| # | Badanie | Kryterium |
+|---|---|---|
+| 1 | przeciągnięcie jednym palcem, 120 px w krokach po 1 px, z co najmniej trzech punktów startu trafiających w różne elementy SVG | przesunięcie kadru ≥ 95 % drogi palca |
+| 2 | jak 1, zaraz po szczypaniu | jak 1 |
+| 3 | jak 1, przy otwartym opisie planety | jak 1, a opis zostaje otwarty |
+| 4 | szczypanie dwoma palcami | szerokość kadru maleje |
+| 5 | stuknięcie w planetę | opis się otwiera |
+| 6 | przeciągnięcie zakończone na planecie | opis się **nie** otwiera |
+| 7 | w trakcie gestu `lostpointercapture` wysłane do SVG | gest się kończy — dalszy ruch palca nie przesuwa mapy |
+| 8 | w trakcie gestu `lostpointercapture` wysłane do elementu wewnątrz SVG | gest trwa — dalszy ruch przesuwa mapę w 100 % |
+
+Technika: kontekst przeglądarki z `has_touch=True`, sesja protokołu DevTools
+(`context.new_cdp_session(page)`) i polecenie `Input.dispatchTouchEvent`
+(`touchStart` / `touchMove` / `touchEnd`; przy szczypaniu dwa punkty). Na potrzeby punktów
+1–6 **nie** `page.mouse` i **nie** `dispatchEvent(new PointerEvent(...))` — żadna z tych
+dróg nie wywołuje niejawnego przechwycenia, czyli dokładnie tego, co zepsuło mapę.
+Punkty 7–8 wymagają zdarzenia syntetycznego, bo przejęcia gestu przez Androida emulator
+nie odtworzy.
+
+Sprawdzenie wstecz: na obecnym wydaniu (`4e5fe8f9…`) punkty 1, 2, 3 i 8 mają oblać
+(ok. 3–4 % drogi palca; gest kończy się po przekazaniu przechwycenia).
+
+### N4 — przerysowanie najwyżej raz na klatkę *(opcjonalna, zależna od decyzji D8)*
+
+`pointermove` zapisuje tylko położenie palców i zamawia jedno `requestAnimationFrame`;
+dopiero w nim liczony jest kadr i wołane `zastosuj()`. Dziś kadr jest liczony i wpisywany
+do SVG przy każdym zdarzeniu palca, a tych na nowszych ekranach bywa więcej niż klatek
+obrazu. Zysk: mniej przerysowań w trakcie gestu — płynność i możliwe ograniczenie
+artefaktów z rozdz. 33. Koszt: zmiana w miejscu, które właśnie okazało się delikatne, nowe
+przypadki do badania (gest zakończony między zdarzeniem a klatką), aktualizacja punktu 31
+kontroli. **Rekomendacja: nie robić razem z N1–N3** — rozdz. 35.
+
+### Po stronie repozytorium `WrathAndGlory`
+
+1. Po nowym wydaniu — skopiować plik do `Main/Gilead.html` i porównać sumę `sha256sum`
+   z sumą podaną przez `Scenariusze` (rozdz. 27.7 pkt 4).
+2. **Dokumentacja modułu `Main` nie wymaga zmian.** `Main/docs/README.md` (`:106`) opisuje
+   przesuwanie palcem jako działające — tak ma być po poprawce; opis dotyczy zamierzonego
+   działania, nie usterki. `Main/docs/Documentation.md` celowo nie powtarza wewnętrznej
+   obsługi gestów rejestru (rozdz. 29.3, decyzja redakcyjna 2).
+3. `DetaleLayout.md` bez zmian — N1–N3 nie zmieniają wyglądu.
+
+---
+
+## 35. Decyzja do podjęcia
+
+N1–N3 są konieczne i nie wymagają decyzji — bez nich mapa na urządzeniach dotykowych jest
+nie do używania. Otwarta zostaje jedna sprawa.
+
+### D8 — artefakty przy przybliżaniu
+
+- **(a) Poczekać na ponowny test po N1–N3** *(rekomendacja)*. Artefakt jest kosmetyczny,
+  a po naprawie przesuwania jego obraz może się zmienić. Decyzję podjąć na podstawie tego,
+  co zobaczysz w rozdz. 36.3.
+- **(b) Dołożyć N4 od razu, w tym samym wydaniu co N1–N3.** Szybciej, ale jeśli coś pójdzie
+  źle, trudniej będzie ustalić, która zmiana to spowodowała.
+- **(c) Zostawić artefakt na stałe** — jeśli po ponownym teście okaże się rzadki i nie
+  przeszkadza.
+
+Prostym językiem: *czy dziwne pasy przy przybliżaniu poprawiamy od razu, razem
+z przesuwaniem, czy najpierw naprawiamy przesuwanie i sprawdzamy, czy pasy nadal
+przeszkadzają?* Rekomenduję to drugie.
+
+---
+
+## 36. CO SPRAWDZIĆ PO POPRAWCE — LISTA DLA CIEBIE
+
+Ten rozdział jest samowystarczalny. Wykonaj go **dopiero po nowym wydaniu mapy** — kiedy
+w repozytorium `Scenariusze` zostanie naprawione przesuwanie, a nowy plik trafi do
+aplikacji. Wcześniej wyniki będą takie same jak 27 września.
+
+### 36.1 Zanim zaczniesz
+
+Tablet **poziomo**, aplikacja, mapa **zaraz po otwarciu**. Powinien być widoczny **pionowy
+zakreskowany pas przy lewej krawędzi** oraz **VULKARIS** (lewy dół) i **TROLLIUS** (prawy
+dół). U góry może być widać dolny skrawek belki z uciętym do połowy napisem — to jest
+w porządku.
+
+Tego, czy na tablecie jest już **nowy** plik, z wyglądu nie rozpoznasz — obecna i poprawiona
+wersja wyglądają przy starcie tak samo. Rozpozna to test 1 niżej. Jeżeli mapa znów przesuwa
+się tylko o kilka pikseli, najpierw wyczyść dane aplikacji (`Ustawienia` → `Aplikacje` →
+**Kozi Przybornik** → `Pamięć` → `Wyczyść dane`), otwórz ją od nowa i spróbuj jeszcze raz —
+**zanim** uznasz, że poprawka nie działa. Aplikacji nie trzeba przeinstalowywać.
+
+### 36.2 Testy
+
+| # | Co zrobić | Co ma się stać |
+|---|---|---|
+| 1 | Zamknij aplikację całkowicie, otwórz, wejdź w mapę i przeciągnij palcem przez pół ekranu | Mapa **jedzie za palcem przez całą drogę**, nie zatrzymuje się po kilku pikselach |
+| 2 | Zsuń i rozsuń dwa palce, potem od razu przeciągnij jednym | Przybliżanie działa jak dotąd, potem mapa jedzie za palcem |
+| 3 | Obróć tablet na pion i z powrotem, przeciągnij | Mapa jedzie za palcem w obu orientacjach |
+| 4 | Przeciągnij mapę tak, żeby **zakończyć ruch na planecie** | Opis planety **nie** otwiera się |
+| 5 | Otwórz opis planety i przeciągnij mapę obok niego | Mapa jedzie za palcem, opis zostaje otwarty |
+| 6 | Trzymając palec na mapie, drugą ręką ściągnij z góry ekranu pasek powiadomień, schowaj go i przeciągnij mapę | Mapa jedzie za palcem. Ten test zastępuje test 10 z rozdz. 30 — na Twoim tablecie nie ma gestu cofania od krawędzi |
+| 7 | Przełącz się na inną aplikację z palcem na mapie, wróć, przeciągnij | Mapa jedzie za palcem |
+| 8 | Testy 1 i 2 **na telefonie** — w aplikacji i w przeglądarce | Mapa jedzie za palcem |
+| 9 | Testy 1 i 2 **w Chrome na tablecie** | Mapa jedzie za palcem |
+| 10 | Na komputerze: przeciągnij myszą, pokręć kółkiem | Działa jak dotąd |
+| 11 | Przez kilkanaście sekund przybliżaj, oddalaj i przesuwaj, patrząc na Wrakowisko i Głębię | Tylko obserwacja — rozdz. 36.3 |
+
+Testów, które 27 września przeszły i których ta poprawka nie dotyka — `INDEKS`, zamykanie
+opisu krzyżykiem, dzielony ekran, dwustuknięcie — **nie trzeba powtarzać**.
+
+### 36.3 Artefakty — na co patrzeć
+
+Przy przybliżaniu i przesuwaniu zwróć uwagę, czy pojawiają się **poziome pasy**, w których
+czerwone wypełnienie Wrakowiska (albo Głębi czy Cieśniny Andraste) jest mocniejsze niż
+obok, albo **pozioma kreska** przecinająca mapę. Samo słabe czerwone wypełnienie tych
+obszarów jest zamierzone — oznacza strefę ostrzeżenia.
+
+Odpowiedz jednym z trzech: **nie widać** / **widać rzadko, nie przeszkadza** / **widać
+często albo przeszkadza**. Od tej odpowiedzi zależy decyzja D8 (rozdz. 35).
+
+### 36.4 Co mi odesłać
+
+1. Numery testów z 36.2, które przeszły, i te, które nie.
+2. Przy teście, który nie przeszedł: co dokładnie robiłeś i czy wcześniej czyściłeś dane
+   aplikacji.
+3. Odpowiedź z 36.3 — artefakty.
+4. Decyzję D8, jeżeli już ją masz.
+
+---
+
+## 37. Ryzyka, czego ta część nie rozstrzyga, następne kroki
+
+### 37.1 Ryzyka
+
+| Ryzyko | Ocena |
+|---|---|
+| N1 okaże się niewystarczające na prawdziwym tablecie | **niskie** — emulacja w Chromium odtwarza objaw dokładnie (ruch o drogę progu i koniec gestu), a poprawka usuwa go w 100 %; niejawne przechwycenie dotyku działa tak samo w każdej przeglądarce opartej na Chromium |
+| Przeglądarka spoza rodziny Chromium (Firefox, Safari na iPadzie) zachowa się inaczej | **niskie dla N1** — warunek `ev.target===svg` jest poprawny niezależnie od tego, czy przeglądarka przechwytuje dotyk niejawnie; nie badane |
+| Po naprawie przesuwania artefakty z rozdz. 33 staną się częstsze | **średnie** — przesuwanie będzie przerysowywać mapę tak jak szczypanie; kosmetyka, decyzja D8 |
+| Stary plik w pamięci podręcznej po wydaniu | jak w rozdz. 27.7 — objaw identyczny z nienaprawionym; stąd instrukcja czyszczenia w 36.1 |
+| Kolejna zmiana w obsłudze gestów bez badania dotykowego | **wysokie**, jeżeli N3 nie zostanie zrobione — ta usterka jest tego dowodem |
+
+### 37.2 Czego ta część nie rozstrzyga
+
+1. **Nie uruchomiono niczego na tablecie.** Przyczyna przesuwania jest odtworzona
+   w emulacji dotyku i zgadza się z każdą obserwacją użytkownika, ale potwierdzenie poprawki
+   na sprzęcie da dopiero rozdz. 36.
+2. **Mechanizm artefaktów wewnątrz przeglądarki** to wniosek z położenia granic pasów,
+   nie obserwacja (rozdz. 33.2).
+3. **`test_mapy.py` i `assemble.py` nie były oglądane** — rozdz. 32.4 i 34 opierają się na
+   opisie z rozdz. 19 i 28.
+4. **Zastrzeżenie z rozdz. 28.10 pkt 4** — czy `touch-action` na kontenerze
+   i `overscroll-behavior` coś zmieniają na tym tablecie — nadal otwarte. Z usterką
+   przesuwania nie ma związku: w zapisie zdarzeń nie ma `pointercancel`, gest kończy sam
+   skrypt (rozdz. 32.2).
+
+### 37.3 Następne kroki
+
+| Etap | Kto | Co |
+|---|---|---|
+| 1 | Ty | przekazać tę analizę agentowi repozytorium `Scenariusze`, tak jak przy poprzednich etapach; ewentualnie z decyzją D8 |
+| 2 | agent `Scenariusze` | N1–N3 w `assemble.py` i `test_mapy.py`; sprawdzenie wstecz badania dotykowego na obecnym wydaniu; nowe wydanie i jego suma SHA-256; wpis w dokumencie projektu (rejestr usterek — regresja po U-21) |
+| 3 | Ty | skopiować nowe wydanie do `Main/Gilead.html` |
+| 4 | agent `WrathAndGlory` | porównać sumę kontrolną kopii z sumą wydania; dokumentacja modułu bez zmian (rozdz. 34) |
+| 5 | Ty | testy z rozdz. 36 i odpowiedź według 36.4 |
+| 6 | — | zależnie od wyniku 36.3 i decyzji D8: zamknięcie albo N4 |
