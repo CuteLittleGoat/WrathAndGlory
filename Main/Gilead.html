@@ -933,8 +933,16 @@ do żadnego z opisanych obszarów.</span>
   window.addEventListener('pointerup',koniec);
   window.addEventListener('pointercancel',koniec);
   /* Przechwycenie odebrane przez przeglądarkę bywa jedynym, co dostaniemy:
-     `pointerup` po geście systemowym Androida potrafi już nie przyjść. */
-  svg.addEventListener('lostpointercapture',koniec);
+     `pointerup` po geście systemowym Androida potrafi już nie przyjść.
+     Liczy się WYŁĄCZNIE utrata przechwycenia przez samo SVG. Zdarzenie
+     bąbelkuje, a przy dotyku przeglądarka przechwytuje palec niejawnie na
+     elemencie pod nim (tło, orbita, podpis); `setPointerCapture()` po progu
+     przenosi go na SVG i wysyła tamtemu elementowi `lostpointercapture`.
+     To jest przekazanie palca, nie koniec gestu — bez tego warunku
+     przeciąganie palcem kończyło się na progu 4 px (U-22). */
+  svg.addEventListener('lostpointercapture',function(ev){
+    if(ev.target===svg) koniec(ev);
+  });
   svg.addEventListener('wheel',function(ev){
     ev.preventDefault();
     przyblizWokol(ev.deltaY>0?1.16:1/1.16,ev.clientX,ev.clientY);
