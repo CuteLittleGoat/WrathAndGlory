@@ -4,7 +4,7 @@
 
 | | |
 |---|---|
-| **Data analizy** | 21 września 2026; **aktualizacja 25 września 2026** (rozdz. 14, na podstawie wiadomości 8 i 9) |
+| **Data analizy** | 21 września 2026; **aktualizacja 25 września 2026** (rozdz. 14, na podstawie wiadomości 8–17); **uzupełnienie 26–27 września 2026** — wyniki testów na tablecie (rozdz. 14.6.1, wiadomości 18–19) |
 | **Temat** | Szczeliny (prześwity) w paśmie nagłówka tabeli w module `DataVault`: między paskiem zakładek a nagłówkiem, między wierszem nazw kolumn a wierszem filtrów oraz na krawędziach nagłówka; przesuwanie się tekstów nagłówka przy przewijaniu. Od 25 września także: szczelina widoczna tylko w Firefoksie (zgłoszona jako widoczna tylko na pełnym ekranie, potwierdzona także w zmaksymalizowanym oknie) oraz nagłówek, który nie przykleja się na telefonie w poziomie |
 | **Moduł** | `DataVault` |
 | **Zakres** | `DataVault/style.css` — reguły `.tabs`, `.tableWrap`, `.tableFrame`, `.tableViewport`, `.dataTable`, `.dataTable thead`, `.dataTable thead th`, `@media (max-height: 520px)`; zachowanie przyklejonego nagłówka przy przewijaniu; wpływ wysokości okna i skalowania ekranu; różnice między silnikami przeglądarek (Chromium i Gecko) |
@@ -12,7 +12,7 @@
 | **Metoda** | Pomiar geometrii (`getBoundingClientRect`) oraz sonda pikselowa: zrzut pasma nagłówka i odczyt średniej barwy każdego wiersza device-pikseli; kontrolowane wyłączanie pojedynczych deklaracji CSS i kolorowanie poszczególnych elementów, żeby ustalić, który element maluje który piksel; test przecieku z wierszami przemalowanymi na jaskrawą czerwień. W rozdz. 14 dodatkowo: odczyt barw piksel po pikselu z zrzutów ekranu użytkownika oraz próba odtworzenia w prawdziwym Firefoksie, z przewijaniem prawdziwym kółkiem myszy |
 | **Konfiguracje testowe** | Rozdz. 3–13: silnik Chromium, 8 rozmiarów okna od 1280×610 do 1920×1080, skalowanie 100%, 125%, 150% i 200%, 4–5 pozycji przewinięcia. Rozdz. 14: Firefox 156.0.1 (Linux) — 10 położeń krawędzi obszaru przewijania względem pikseli ekranu, skalowanie 100%, 125% i 150%, tryb okna i tryb pełnoekranowy, przewijanie z kodu i prawdziwym kółkiem |
 | **Stan repozytorium w chwili diagnozy** | `HEAD` = `38d7668` (gałąź `claude/charming-meitner-45xuh7`, zsynchronizowana z `main`). Aktualizacja z 25 września: `HEAD` = `801b456` (gałąź `claude/wonderful-ramanujan-0h0dv8`) — kod `DataVault/style.css` bez zmian od rozdz. 12 |
-| **Status** | **Wznowiony 25 września 2026** (wiadomość 8). Część dotycząca przeglądarek na silniku Chromium (Chrome, Edge) pozostaje zamknięta — rozdz. 13. **Otwarte:** szczelina E w Firefoksie na Windows — widoczna na pełnym ekranie i w zmaksymalizowanym oknie (rozdz. 14.2–14.4, 14.7.2). **Rozstrzygnięte:** nagłówek na telefonie w poziomie zostaje bez zmian — decyzja użytkownika z wiadomości 9 (rozdz. 14.5). Test T1 wykonany: geometria nagłówka identyczna w zmaksymalizowanym oknie i na pełnym ekranie, szczelina widoczna w obu; w niezmaksymalizowanym oknie, z dwoma rzędami zakładek i krawędzią na pełnym pikselu, niewidoczna (rozdz. 14.7.2–14.7.3, wiadomości 15–17). Naprawa szczeliny E wstrzymana do testów T2 i T3 w Firefoksie oraz testów na tablecie — użytkownik zapowiedział ich wykonanie |
+| **Status** | **Wznowiony 25 września 2026** (wiadomość 8). Część dotycząca przeglądarek na silniku Chromium (Chrome, Edge) pozostaje zamknięta — rozdz. 13. **Otwarte:** szczelina E w Firefoksie na Windows — widoczna na pełnym ekranie i w zmaksymalizowanym oknie (rozdz. 14.2–14.4, 14.7.2). **Rozstrzygnięte:** nagłówek na telefonie w poziomie zostaje bez zmian — decyzja użytkownika z wiadomości 9 (rozdz. 14.5). Test T1 wykonany: geometria nagłówka identyczna w zmaksymalizowanym oknie i na pełnym ekranie, szczelina widoczna w obu; w niezmaksymalizowanym oknie, z dwoma rzędami zakładek i krawędzią na pełnym pikselu, niewidoczna (rozdz. 14.7.2–14.7.3, wiadomości 15–17). **Tablet: bez usterek** — aplikacja PWA, Chrome i Chrome w trybie „wersja na komputer”, w poziomie i w pionie (rozdz. 14.6.1, wiadomość 18). Przed naprawą szczeliny E zostały testy T2 i T3 w Firefoksie |
 | **Zmiany w kodzie** | **Wdrożone** w `DataVault/style.css`, w dwóch etapach: rozdz. 11 (szczelina C i przeskok nagłówka) oraz rozdz. 12 (szczelina D). Etap z rozdz. 14: **bez zmian w kodzie** — zgodnie z wiadomością 8 |
 | **Analiza siostrzana** | `Analizy/responsywnosc-aplikacji-2026-09-10.html`, rozdział 14 — pierwszy opis szczelin w przyklejonym nagłówku; rozdział 13.7–13.8 — decyzja o progu `max-height: 520px` dla telefonu w poziomie, która tłumaczy obserwację z rozdz. 14.5 |
 
@@ -29,7 +29,7 @@ Rekomendowane rozwiązanie (rozdz. 8) usuwa **oba** objawy jednocześnie, bo lik
 
 Rekomendacja ma swoją cenę: nad nazwami kolumn zostają dwie poziome linie zamiast trzech. Cena została policzona w rozdz. 8.3, a w **rozdz. 8.4 opisana prostym językiem, bez żargonu**.
 
-> **Stan na dziś (25 września 2026): temat wznowiony.** W przeglądarkach na silniku Chromium (Chrome, Edge) wszystkie zgłoszone objawy są usunięte — użytkownik nie odtworzył tam usterki. **W Firefoksie na Windows nadal widać szczelinę między paskiem zakładek a nazwami kolumn** — na pełnym ekranie i, jak wykazał pomiar, także w zmaksymalizowanym oknie — to szczelina E, opisana w **rozdz. 14**. Jej mechanizm jest inny niż mechanizmy szczelin A–D: układ strony jest poprawny co do piksela, przeciekają wyłącznie litery przewijanych wierszy (bez ich tła), a przeciek powstaje najpewniej dopiero na etapie, w którym Firefox składa gotowy obraz na ekranie. Według wiadomości 9 większość wcześniejszych obserwacji użytkownik robił w Firefoksie, a zamknięcie tematu 21 września opierało się na sprawdzeniu w Edge — szczelina E była więc najpewniej widoczna w Firefoksie przez cały czas (rozdz. 14.4). Osobno opisano, dlaczego na telefonie w poziomie nagłówek się nie przykleja (rozdz. 14.5) — to skutek świadomie przyjętego progu, niezwiązany ze szczeliną E; użytkownik zdecydował zostawić to bez zmian.
+> **Stan na dziś (27 września 2026): temat wznowiony.** W przeglądarkach na silniku Chromium (Chrome, Edge) wszystkie zgłoszone objawy są usunięte — użytkownik nie odtworzył tam usterki. **W Firefoksie na Windows nadal widać szczelinę między paskiem zakładek a nazwami kolumn** — na pełnym ekranie i, jak wykazał pomiar, także w zmaksymalizowanym oknie — to szczelina E, opisana w **rozdz. 14**. Jej mechanizm jest inny niż mechanizmy szczelin A–D: układ strony jest poprawny co do piksela, przeciekają wyłącznie litery przewijanych wierszy (bez ich tła), a przeciek powstaje najpewniej dopiero na etapie, w którym Firefox składa gotowy obraz na ekranie. Według wiadomości 9 większość wcześniejszych obserwacji użytkownik robił w Firefoksie, a zamknięcie tematu 21 września opierało się na sprawdzeniu w Edge — szczelina E była więc najpewniej widoczna w Firefoksie przez cały czas (rozdz. 14.4). Na tablecie — w aplikacji PWA, w Chrome i w Chrome w trybie „wersja na komputer”, w obu orientacjach — usterek nie ma (rozdz. 14.6.1). Osobno opisano, dlaczego na telefonie w poziomie nagłówek się nie przykleja (rozdz. 14.5) — to skutek świadomie przyjętego progu, niezwiązany ze szczeliną E; użytkownik zdecydował zostawić to bez zmian.
 >
 > Rozdziały 3–7 opisują diagnozę i stan sprzed wdrożenia — są zapisem tego, jak ustalono przyczynę, i celowo zostają w dokumencie. Aktualny stan kodu opisują **rozdz. 11 i 12**, podsumowanie etapu zamkniętego 21 września **rozdz. 13**, a ustalenia po wznowieniu **rozdz. 14**.
 
@@ -144,6 +144,16 @@ Wiadomości 10 i 11 omówiono w rozdz. 14.7.1.
 > *(Do wiadomości dołączony zrzut konsoli z wynikiem: `{"okno":"1285x727","ekran":"1920x1080","skala":1,"tresc_na_ekranie_od":254,"rzedy_zakladek":2,"pasek_kompaktowy":true,"zakladki_dol":231,"ramka_gora":231,"obszar_gora":232,"naglowek_gora":232,"ulamek":0,"przewiniecie":798}`. Zrzut zawiera dane konta użytkownika — nie zostały tu przepisane, zgodnie z zasadą 12 z `AGENTS.md`.)*
 
 Wiadomości 12–16 omówiono w rozdz. 14.7.2, a wnioski z wiadomości 15 i 16 — także w rozdz. 14.4. Wiadomość 17 omówiono w rozdz. 14.7.3.
+
+> **Wiadomość 18 — wyniki testów na tablecie (26 września 2026)**
+>
+> Dopisz do analizy, że na tablecie w aplikacji PWA działa ok. Na tablecie przez wbudowaną przeglądarkę Chrome  działa ok.  Na tablecie przez wbudowaną przeglądarkę i trybie "wersja na komputer" działa ok. Sprawdzałem w układzie poziomym i pionowym.
+
+> **Wiadomość 19 — wznowienie przerwanej aktualizacji (27 września 2026)**
+>
+> Kontynuuj pracę.
+
+Wiadomość 18 omówiono w rozdz. 14.6.1.
 
 ### Materiał dowodowy od użytkownika
 
@@ -865,7 +875,7 @@ Każda z nich ma w pliku komentarz dwujęzyczny wyjaśniający powód. Komentarz
 - **Od kiedy.** Według wiadomości 9 większość wcześniejszych obserwacji powstała w Firefoksie, a ostatnią poprawkę (szczelina D) użytkownik sprawdził w Edge. Szczelina E była więc najpewniej widoczna w Firefoksie przez cały czas, a zamknięcie tematu 21 września zostało potwierdzone tylko na silniku Chromium (rozdz. 14.4).
 - **Telefon w poziomie.** To, że nagłówek się tam nie przykleja, jest skutkiem świadomej decyzji z analizy o responsywności (próg 520 px wysokości okna), a nie nową usterką. Ze szczeliną E nie ma to związku. Użytkownik zdecydował zostawić to bez zmian (wiadomość 9). Szczegóły: rozdz. 14.5.
 - **Nie tylko na pełnym ekranie.** Pomiar na komputerze użytkownika (test T1, rozdz. 14.7.2) pokazał, że w zmaksymalizowanym oknie i na pełnym ekranie nagłówek i ramka stoją na ekranie dokładnie w tym samym miejscu, co do setnej części piksela — i w obu trybach szczelina była widoczna (wiadomość 15). Szczelina nie zależy więc od trybu pełnoekranowego, tylko od tego, w którym miejscu piksela wypada krawędź tabeli. Wcześniejsze wrażenie „tylko na pełnym ekranie” brało się z porównania z mniejszym, niezmaksymalizowanym oknem (wiadomość 16): tam przyciski zakładek układają się w dwa rzędy, krawędź tabeli wypada na innym ułamku piksela i szczeliny nie ma (rozdz. 14.4).
-- **Co dalej.** Bez zmian w kodzie, zgodnie z wiadomością 8. Testy T1 i T1b są wykonane (rozdz. 14.7.2 i 14.7.3): przy zmaksymalizowanym oknie krawędź tabeli wypada na ułamku 0,85 piksela i szczelina jest, w mniejszym oknie — na pełnym pikselu i szczeliny nie ma. Zostały testy T2 i T3 w Firefoksie (rozdz. 14.7) — T3 jest rozstrzygający — oraz testy na tablecie (rozdz. 14.6). Potem wybór naprawy (rozdz. 14.8).
+- **Co dalej.** Bez zmian w kodzie, zgodnie z wiadomością 8. Testy T1 i T1b są wykonane (rozdz. 14.7.2 i 14.7.3): przy zmaksymalizowanym oknie krawędź tabeli wypada na ułamku 0,85 piksela i szczelina jest, w mniejszym oknie — na pełnym pikselu i szczeliny nie ma. Testy na tablecie są wykonane i nie wykazały usterek (rozdz. 14.6.1). Zostały testy T2 i T3 w Firefoksie (rozdz. 14.7) — T3 jest rozstrzygający. Potem wybór naprawy (rozdz. 14.8).
 
 ### 14.2 Co pokazują zrzuty ekranu — pomiar piksel po pikselu
 
@@ -1057,6 +1067,27 @@ Co zanotować przy każdym teście:
 
 Jeżeli na tablecie jest też Firefox, warto sprawdzić i jego. Firefox na Androidzie składa obraz inaczej niż Firefox na Windows, więc wynik pomoże ocenić hipotezę H1: przeciek na tablecie osłabiałby tezę, że winny jest kompozytor Windows.
 
+#### 14.6.1 Wyniki testów na tablecie (wiadomość 18)
+
+Użytkownik sprawdził `DataVault` na tablecie w trzech sposobach uruchomienia, każdy w układzie poziomym i pionowym:
+
+| Sposób uruchomienia | Poziomo | Pionowo |
+|---|---|---|
+| Aplikacja PWA (zainstalowana na ekranie głównym) | **działa poprawnie** | **działa poprawnie** |
+| Wbudowana przeglądarka Chrome | **działa poprawnie** | **działa poprawnie** |
+| Wbudowana przeglądarka Chrome w trybie „wersja na komputer” | **działa poprawnie** | **działa poprawnie** |
+
+„Działa poprawnie” to ocena użytkownika z wiadomości 18 („działa ok”), wydana w ramach testów zaplanowanych w rozdz. 14.6 — odnosi się do przyklejanego nagłówka i szczelin opisanych w tej analizie. Nie zanotowano modelu tabletu, wersji systemu ani przeglądarki; nie przesłano zrzutów ekranu. Dla wniosków poniżej nie jest to przeszkodą, bo wszystkie sześć wyników jest takich samych.
+
+**Co z tego wynika:**
+
+1. **Na tablecie nie ma szczelin C, D ani E.** Tablet był pierwszym urządzeniem z warunkami, których dotąd nie mierzono: ułamkową gęstością pikseli ekranu oraz dodatkowym pomniejszeniem strony w trybie „wersja na komputer” (rozdz. 14.6). Te warunki nie otworzyły żadnej nowej szczeliny.
+2. **Wszystkie trzy sposoby uruchomienia to silnik Chromium.** Aplikacja PWA na tablecie z Androidem wyświetla stronę silnikiem przeglądarki, z której ją zainstalowano — przy wbudowanym Chrome jest to silnik Chrome, tak samo jak w samej przeglądarce i w jej trybie „wersja na komputer”. Wynik jest więc spójny z tym, co ustalono wcześniej: na silniku Chromium (Chrome i Edge na komputerze, pomiary z rozdz. 11–12, a teraz Chrome na tablecie) usterki nie ma.
+3. **Szczelina E pozostaje usterką wyłącznie Firefoksa na Windows.** Tablet tego nie zmienia ani nie rozstrzyga hipotezy H1 — Firefoksa na tablecie nie sprawdzano, a to on mógłby pokazać, czy przeciek liter zależy od Windows (rozdz. 14.6, ostatni akapit). Ten test pozostaje opcjonalny.
+4. **Przyklejony nagłówek na tablecie jest zgodny z przewidywaniem z rozdz. 14.5.** Tablet w obu orientacjach ma obszar strony wyższy niż 520 px, więc aplikacja pracuje w modelu z przyklejonym nagłówkiem — inaczej niż telefon w poziomie, gdzie próg 520 px świadomie wyłącza przyklejanie (decyzja użytkownika z wiadomości 9: bez zmian).
+
+**Znaczenie dla naprawy:** zapowiedziane w wiadomości 8 testy na tablecie są wykonane, więc można przejść do kroków w kierunku naprawy szczeliny E. Przyszła poprawka (kierunek K1, rozdz. 14.8) dotyczy wspólnego pliku stylów, więc po jej wdrożeniu tablet trzeba sprawdzić ponownie tymi samymi trzema sposobami — jako kontrolę, że na silniku Chromium nic się nie zmieniło.
+
 ### 14.7 Testy do wykonania w Firefoksie na komputerze — przed naprawą
 
 Trzy krótkie testy, od najważniejszego. Żaden nie zmienia aplikacji ani danych. Zasady organizacji mogą blokować niektóre z nich — wtedy dany test należy pominąć i zanotować, że był zablokowany.
@@ -1243,14 +1274,14 @@ Wybór kierunku nastąpi po wynikach T1–T3 i testów na tablecie. Jeżeli T3 p
 |---|---|---|
 | Błędna diagnoza szczeliny E | **Średnie** | Usterki nie udało się odtworzyć w środowisku analizy; H1 opiera się na zrzutach i na wykluczeniu innych przyczyn. Test T3 obniża to ryzyko do niskiego |
 | Naprawa skuteczna tylko w jednym trybie albo przy jednym położeniu krawędzi | **Średnie** | Szczelina zależy od położenia krawędzi (rozdz. 14.4). Każdą naprawę trzeba obejrzeć przy obu układach zakładek: jeden rząd (okno zmaksymalizowane) i dwa rzędy (okno mniejsze) |
-| Nowe szczeliny na tablecie | **Średnie** | Ułamkowa gęstość pikseli razem z trybem „na komputer” to warunki, których dotąd nie mierzono (rozdz. 14.6) |
+| Nowe szczeliny na tablecie | **Brak** — zamknięte (rozdz. 14.6.1: PWA, Chrome i tryb „wersja na komputer”, poziomo i pionowo, bez usterek) | Ułamkowa gęstość pikseli razem z trybem „na komputer” to warunki, których przed testem nie mierzono (rozdz. 14.6). Tablet użytkownika je sprawdził — bez nowych szczelin. Po wdrożeniu naprawy tablet trzeba sprawdzić ponownie jako kontrolę |
 | Zmiana zachowania telefonu w poziomie | **Brak** | Użytkownik zdecydował zostawić bez zmian (wiadomość 9, rozdz. 14.5) |
 | Nieważny wynik T1 | **Brak** — zamknięte | Pierwsza próba zmierzyła tryb przewijania strony zamiast trybu z przyklejonym nagłówkiem (rozdz. 14.7.1). Poprawiony fragment dał ważne pomiary w obu trybach (rozdz. 14.7.2) |
 | Testy zablokowane przez zasady organizacji | **Niskie** | Firefox jest zarządzany przez organizację. Jeżeli T1 lub T3 okażą się niedostępne, diagnoza zostanie oparta na pozostałych testach i zrzutach |
 
 Następne kroki:
 
-1. **Testy na tablecie** według rozdz. 14.6 — zapowiedziane przez użytkownika.
+1. ~~**Testy na tablecie** według rozdz. 14.6.~~ **Wykonane** — wiadomość 18, rozdz. 14.6.1: bez usterek w aplikacji PWA, w Chrome i w Chrome w trybie „wersja na komputer”, w obu orientacjach. Opcjonalnie pozostaje Firefox na tablecie.
 2. **Testy T2 i T3 w Firefoksie** na komputerze według rozdz. 14.7 — zapowiedziane przez użytkownika (wiadomość 9). **T3 jest rozstrzygający**: zniknięcie szczeliny przy zmaksymalizowanym oknie po wyłączeniu przyspieszania sprzętowego potwierdzi hipotezę H1. ~~T1b~~ **wykonany** — rozdz. 14.7.3: w mniejszym oknie krawędź na pełnym pikselu, szczeliny brak. ~~T1~~ **wykonany** — rozdz. 14.7.1 i 14.7.2; szczelina widoczna w zmaksymalizowanym oknie i na pełnym ekranie, niewidoczna w mniejszym oknie (wiadomości 15 i 16).
 3. ~~**Potwierdzenie**, w jakiej przeglądarce powstały obserwacje z wiadomości 3, 6 i 7.~~ **Wykonane** — wiadomość 9; wnioski w rozdz. 14.4.
 4. ~~**Decyzja użytkownika** co do telefonu w poziomie.~~ **Wykonane** — zostaje bez zmian (wiadomość 9, rozdz. 14.5).
