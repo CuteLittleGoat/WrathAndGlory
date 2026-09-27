@@ -1,15 +1,16 @@
 # Mapa Gilead — nawigacja nie działa w PWA na tablecie
 
-> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28) · **zamknięcie:** 22 września 2026 (rozdz. 29) · **lista dla użytkownika:** rozdz. 30 · **wyniki testów na tablecie i nowa usterka przesuwania:** 27 września 2026 (rozdz. 31–37)
+> **Data:** 21 września 2026 · **aneks:** 22 września 2026 (rozdz. 18–26) · **uzupełnienie:** 22 września 2026 (rozdz. 27) · **wykonanie:** 22 września 2026 (rozdz. 28) · **zamknięcie:** 22 września 2026 (rozdz. 29) · **lista dla użytkownika:** rozdz. 30 · **wyniki testów na tablecie i nowa usterka przesuwania:** 27 września 2026 (rozdz. 31–37) · **wykonanie N1–N3:** 27 września 2026 (rozdz. 38)
 > **Temat:** w aplikacji PWA uruchomionej na tablecie mapa układu Gilead nie daje się przesuwać ani przybliżać/oddalać, natomiast kliknięcia w planety i obszary działają normalnie. W przeglądarce Chrome na tym samym tablecie oraz w PWA na telefonie wszystko działa poprawnie.
 > **Plik, którego dotyczy zgłoszenie:** rejestr światów systemu Gilead — w aplikacji widoczny jako `Main/Gilead.html` (moduł `Main`, repozytorium `WrathAndGlory`). **Jest to kopia wydania.** Plik źródłowy i miejsce nanoszenia poprawek to repozytorium `Scenariusze`, `Warhammer40k/Gilead/` — szczegóły w rozdz. 19.
-> **Charakter dokumentu:** analiza diagnostyczna wraz z zapisem wykonania. Rozdz. 1–27 opisują stan kodu **sprzed** zmian i projekt naprawy; **rozdz. 28 opisuje naprawę faktycznie wykonaną** w repozytorium `Scenariusze` 22 września 2026; **rozdz. 31–37 zapisują wyniki testów na tablecie z 27 września 2026 i przyczynę nowej usterki, którą ta naprawa wprowadziła.**
-> **Stan na dziś (27 września 2026):** **pierwotna usterka usunięta — potwierdzone na tablecie** (zrzut po uruchomieniu zgadza się z poprawnie policzonym kadrem co do piksela, rozdz. 31.4). **Naprawa z 22 września wprowadziła jednak nową usterkę:** na każdym urządzeniu dotykowym — tablet i telefon, aplikacja i przeglądarka — przeciągnięcie jednym palcem przesuwa mapę tylko o próg 4 pikseli i gest się kończy; mysz działa. Przyczyną jest jeden wiersz dopisany w ramach P5 (nasłuch `lostpointercapture`, rozdz. 32). Usterka **odtworzona w przeglądarce z emulacją dotyku**, a poprawka jednowierszowa sprawdzona na kopii pliku — przesuwanie wraca do 100 %, zabezpieczenia P5 zostają (rozdz. 32.3). **Do zrobienia:** N1–N3 w repozytorium `Scenariusze`, nowe wydanie, kopia do `Main/Gilead.html`, ponowny test według **rozdz. 36**.
+> **Charakter dokumentu:** analiza diagnostyczna wraz z zapisem wykonania. Rozdz. 1–27 opisują stan kodu **sprzed** zmian i projekt naprawy; **rozdz. 28 opisuje naprawę faktycznie wykonaną** w repozytorium `Scenariusze` 22 września 2026; **rozdz. 31–37 zapisują wyniki testów na tablecie z 27 września 2026 i przyczynę nowej usterki, którą ta naprawa wprowadziła; rozdz. 38 — poprawkę tej usterki, wykonaną tego samego dnia.**
+> **Stan po wykonaniu N1–N3 (27 września 2026):** **poprawka przesuwania wykonana** w repozytorium `Scenariusze` (rozdz. 38). Badanie prawdziwym dotykiem w oknie tabletu i telefonu: mapa idzie za palcem w **100 %** drogi palca — na wydaniu sprzed poprawki **3 %**; szczypanie, stuknięcia i zabezpieczenia P5 działają. **Nowe wydanie: SHA-256 `3e0d89f5…`** — pełna suma w **rozdz. 38.4**, ta zastępuje sumę z rozdz. 28.8. N4 nie wykonane — czeka na decyzję D8. **Zostaje:** kopia do `Main/Gilead.html`, porównanie sumy, ponowny test według **rozdz. 36**, decyzja D8.
+> **Stan po testach z 27 września 2026 (zapis sprzed wykonania N1–N3):** **pierwotna usterka usunięta — potwierdzone na tablecie** (zrzut po uruchomieniu zgadza się z poprawnie policzonym kadrem co do piksela, rozdz. 31.4). **Naprawa z 22 września wprowadziła jednak nową usterkę:** na każdym urządzeniu dotykowym — tablet i telefon, aplikacja i przeglądarka — przeciągnięcie jednym palcem przesuwa mapę tylko o próg 4 pikseli i gest się kończy; mysz działa. Przyczyną jest jeden wiersz dopisany w ramach P5 (nasłuch `lostpointercapture`, rozdz. 32). Usterka **odtworzona w przeglądarce z emulacją dotyku**, a poprawka jednowierszowa sprawdzona na kopii pliku — przesuwanie wraca do 100 %, zabezpieczenia P5 zostają (rozdz. 32.3). **Do zrobienia:** N1–N3 w repozytorium `Scenariusze`, nowe wydanie, kopia do `Main/Gilead.html`, ponowny test według **rozdz. 36**.
 > **Stan na 22 września 2026 (zapis z tamtego dnia):** **naprawa wykonana.** Przyczyna ustalona, potwierdzona pomiarem zrzutów ekranu (rozdz. 5–6), zweryfikowana rachunkiem (rozdz. 20), a na koniec **odtworzona w przeglądarce**: badanie puszczone na pliku sprzed poprawki oblewa z komunikatem `viewBox: Expected number, "NaN NaN NaN NaN"`, czyli tym, który rozdz. 10 podawała jako twardy dowód możliwy tylko na tablecie (rozdz. 28.6). W repozytorium `Scenariusze` wdrożone **P1–P6** (rozdz. 28); kontrola G-6 i G-12 oraz badanie w przeglądarce przechodzą bez zastrzeżeń. Pytania otwarte z rozdz. 24.2 i 25 pkt 3 rozstrzygnięte w **rozdz. 27**. **D5, D6 i D7 wykonane** po stronie repozytorium aplikacji — rozdz. 29; kopia wydania w `Main/Gilead.html` potwierdzona sumą kontrolną co do bajtu (rozdz. 29.1). **Zostaje wyłącznie:** testy na tablecie po stronie użytkownika (rozdz. 14).
 >
-> **Masz sprawdzić mapę na tablecie?** Lista z rozdz. 30 została wykonana 27 września — wyniki są w rozdz. 31. **Po kolejnej poprawce sprawdzasz według rozdz. 36** — krótka, samowystarczalna lista na samym końcu dokumentu.
+> **Masz sprawdzić mapę na tablecie?** Lista z rozdz. 30 została wykonana 27 września — wyniki są w rozdz. 31. **Po kolejnej poprawce sprawdzasz według rozdz. 36** — krótka, samowystarczalna lista tuż przed zapisem wykonania (rozdz. 38). Poprawka jest już wykonana — rozdz. 36 obowiązuje, gdy tylko nowe wydanie trafi do aplikacji.
 >
-> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — potem od rozdz. 27 (sprawdzenia wykonane po tamtej stronie i wykaz decyzji otwartych, 27.9), a na koniec od **rozdz. 28.8**, gdzie jest suma kontrolna wydania do porównania po skopiowaniu pliku. **Nowa usterka przesuwania z 27 września:** przyczyna w rozdz. 32, zakres poprawki i to, co zostaje po tej stronie, w rozdz. 34.
+> **Czytasz to w repozytorium aplikacji?** Zacznij od rozdz. 19 i 24 — mówią, czego w module `Main` robić **nie** wolno — potem od rozdz. 27 (sprawdzenia wykonane po tamtej stronie i wykaz decyzji otwartych, 27.9), a na koniec od **rozdz. 28.8**, gdzie jest suma kontrolna wydania do porównania po skopiowaniu pliku. **Nowa usterka przesuwania z 27 września:** przyczyna w rozdz. 32, zakres poprawki i to, co zostaje po tej stronie, w rozdz. 34, **suma kontrolna poprawionego wydania w rozdz. 38.4** — to z nią porównuje się kopię, nie z sumą z 28.8.
 
 ---
 
@@ -70,6 +71,10 @@
 35. [Decyzja do podjęcia](#35-decyzja-do-podjęcia)
 36. [**CO SPRAWDZIĆ PO POPRAWCE — LISTA DLA CIEBIE**](#36-co-sprawdzić-po-poprawce--lista-dla-ciebie)
 37. [Ryzyka, czego ta część nie rozstrzyga, następne kroki](#37-ryzyka-czego-ta-część-nie-rozstrzyga-następne-kroki)
+
+**Wykonanie z 27 września 2026 — N1–N3 w repozytorium `Scenariusze`**
+
+38. [Co wykonano — N1–N3](#38-co-wykonano--n1n3)
 
 > Rozdz. 1–17 to analiza z 21 września. Ich treść **nie została zmieniona** — dopisano
 > jedynie trzy wyróżnione odsyłacze do aneksu, w rozdz. 12, 13 i 17. Wszystko, co po
@@ -2736,6 +2741,13 @@ Ten rozdział jest samowystarczalny. Wykonaj go **dopiero po nowym wydaniu mapy*
 w repozytorium `Scenariusze` zostanie naprawione przesuwanie, a nowy plik trafi do
 aplikacji. Wcześniej wyniki będą takie same jak 27 września.
 
+> **Stan na 27 września 2026, po południu: przesuwanie naprawione, nowe wydanie gotowe**
+> (rozdz. 38). Poprawiony `Gilead.html` ma sumę SHA-256
+> `3e0d89f5d216a736c1946df0e9e4c5a924d39b34abeea48929471e8206147d31` (1 054 700 B).
+> Po skopiowaniu do `Main/Gilead.html` suma kopii ma być **dokładnie taka sama** — dopiero
+> wtedy wyniki testów niżej mówią coś o poprawce. Stara suma `4e5fe8f9…` znaczy, że w
+> aplikacji jest jeszcze wydanie z usterką.
+
 ### 36.1 Zanim zaczniesz
 
 Tablet **poziomo**, aplikacja, mapa **zaraz po otwarciu**. Powinien być widoczny **pionowy
@@ -2819,8 +2831,152 @@ często albo przeszkadza**. Od tej odpowiedzi zależy decyzja D8 (rozdz. 35).
 | Etap | Kto | Co |
 |---|---|---|
 | 1 | Ty | przekazać tę analizę agentowi repozytorium `Scenariusze`, tak jak przy poprzednich etapach; ewentualnie z decyzją D8 |
-| 2 | agent `Scenariusze` | N1–N3 w `assemble.py` i `test_mapy.py`; sprawdzenie wstecz badania dotykowego na obecnym wydaniu; nowe wydanie i jego suma SHA-256; wpis w dokumencie projektu (rejestr usterek — regresja po U-21) |
+| 2 | agent `Scenariusze` | N1–N3 w `assemble.py` i `test_mapy.py`; sprawdzenie wstecz badania dotykowego na obecnym wydaniu; nowe wydanie i jego suma SHA-256; wpis w dokumencie projektu (rejestr usterek — regresja po U-21) — **✔ wykonane 27 września 2026, rozdz. 38** |
 | 3 | Ty | skopiować nowe wydanie do `Main/Gilead.html` |
 | 4 | agent `WrathAndGlory` | porównać sumę kontrolną kopii z sumą wydania; dokumentacja modułu bez zmian (rozdz. 34) |
 | 5 | Ty | testy z rozdz. 36 i odpowiedź według 36.4 |
 | 6 | — | zależnie od wyniku 36.3 i decyzji D8: zamknięcie albo N4 |
+
+---
+
+# WYKONANIE z 27 września 2026 — N1–N3 w repozytorium `Scenariusze`
+
+## 38. Co wykonano — N1–N3
+
+### 38.1 Polecenie użytkownika (zachowane w całości)
+
+> Zapoznaj się z analizą Analizy/gilead-nawigacja-mapy-pwa-tablet-2026-09-21.md i wprowadź
+> poprawki do skryptu budującego plik Gilead.html oraz zbuduj nowy i poprawiony plik.
+> Zmiany wrzuć na main. Równolegle w repo są też przeprowadzane inne prace, ale w innych
+> folderach.
+
+W trakcie pracy użytkownik dopisał:
+
+> Po wprowadzeniu zmian zaktualizuj też plik z analizą. Wkleje go do drugiego repo i tam
+> zrobię testy.
+
+oraz dwukrotnie: „Kontynuuj pracę” / „kontynuuj pracę”.
+
+**Gdzie trafiły zmiany:** jeden commit na gałęzi `main` repozytorium `Scenariusze`
+(„Gilead: przesuwanie palcem na ekranach dotykowych (U-22, N1-N3)”), osadzony na bieżącym
+`main` — równoległe prace w `Warhammer40k/Scenariusz_Halloween/` nie dotykały żadnego
+z plików tej poprawki. Zmienione pliki: `Warhammer40k/Gilead/Gilead.html`,
+`Warhammer40k/Gilead/Instrukcja.md`, `Warhammer40k/Gilead/scripts/build/gilead/assemble.py`,
+`Warhammer40k/Gilead/scripts/build/gilead/test_mapy.py`,
+`Analizy/Projekt_Mapa_Gilead/ProjektGileadHTML.md` i ten dokument.
+
+### 38.2 Stan przed poprawką — suma zgodna
+
+`Warhammer40k/Gilead/Gilead.html` przed zmianą: SHA-256 `4e5fe8f9…`, 1 054 214 B — ta sama
+suma co w rozdz. 28.8, czyli to samo wydanie, które użytkownik testował na tablecie.
+`assemble.py` uruchomione przed zmianą odtwarza ten plik **co do bajtu**. Analiza z rozdz.
+32–34 opisuje więc dokładnie ten kod, który wychodzi z generatora.
+
+### 38.3 Zakres wykonania
+
+| | Stan | Gdzie |
+|---|---|---|
+| **N1** warunek `ev.target===svg` w nasłuchu `lostpointercapture` | ✔ wykonane — dokładnie wariant z rozdz. 34 | `assemble.py`, stała `JS`; w wydaniu `Gilead.html:935–945` |
+| **N2** punkt 31 kontroli G-6 pilnuje warunku | ✔ wykonane | `assemble.py`, funkcja `kontrola()` |
+| **N3** badanie dotykowe w `test_mapy.py` | ✔ wykonane — wszystkie osiem punktów z tabeli w rozdz. 34 | `test_mapy.py` |
+| **N4** przerysowanie raz na klatkę | ✘ **nie wykonane** | czeka na decyzję D8 (rozdz. 35); rekomendacja (a) — najpierw ponowny test |
+
+`dane.py`, `mapa.py` i `obrazy.py` nietknięte. Treść rejestru, geometria mapy i ilustracje
+bez zmian.
+
+**N2 — co dokładnie sprawdza.** Dwie rzeczy: że nasłuch ma postać
+`svg.addEventListener('lostpointercapture',function(ev){ if(ev.target===svg) koniec(ev); …`
+oraz że **nigdzie** w pliku nie ma nasłuchu `lostpointercapture` podpiętego wprost pod
+funkcję. Sprawdzone wstecz na pięciu wariantach psujących nowe wydanie — stary nasłuch
+podpięty wprost, warunek usunięty, warunek odwrócony, dodatkowy nasłuch wprost na innym
+elemencie, nasłuch usunięty w całości: każdy wykryty. Na wydaniu `4e5fe8f9…` kontrola
+zgłasza oba błędy.
+
+**N3 — jak zrobione.** Tak, jak opisuje rozdz. 34: kontekst z `has_touch=True`, sesja
+protokołu DevTools, `Input.dispatchTouchEvent`, krok 1 px, droga 120 px. Dwa okna: tablet
+1280 × 720 przy gęstości 1,5 i telefon 390 × 844 przy gęstości 3. Punkty startu badanie
+wyszukuje samo — przeszukuje planszę i bierze pierwszy punkt dla każdego **innego**
+elementu wewnątrz SVG, do sześciu, z wymogiem co najmniej trzech. Planetę do stuknięcia
+i do „przeciągnięcia zakończonego na planecie” też wybiera samo spośród widocznych
+w kadrze, bo na telefonie widok domyślny jest przybliżony. Punkt 3 (przy otwartej karcie)
+tylko w oknie tabletu — poniżej 1024 px karta przykrywa mapę w całości.
+
+**Sprostowanie rozdz. 32.4 i 37.2 pkt 3.** `test_mapy.py` jest już obejrzany. Wniosek
+z rozdz. 32.4 się potwierdza, i to mocniej, niż tam zapisano: dotychczasowe badanie
+**w ogóle nie przeciągało mapy**. Przesunięcie sprawdzało klawiszem `ArrowRight`,
+przybliżanie — zdarzeniem `WheelEvent` wysłanym skryptem, kliknięcia — myszą Playwrighta.
+Ścieżki, na której powstała usterka, nie dotykało żadne z nich.
+
+### 38.4 Kontrola i nowe wydanie
+
+**Badanie sprawdzone wstecz** na wydaniu `4e5fe8f9…` — oblewa punkty 1, 2, 3 i 8, dokładnie
+jak przewidywał rozdz. 34, i w przewidzianym tam przedziale 3–4 % drogi palca (rozdz. 32.3
+podaje 4 % dla jednego palca po szczypaniu; tu wyszło 3 % — o jedno zdarzenie ruchu mniej
+za progiem, co przy tej mierze nie ma znaczenia):
+
+| punkt | tablet — wydanie `4e5fe8f9…` | telefon — wydanie `4e5fe8f9…` | tablet i telefon — nowe wydanie |
+|---|---|---|---|
+| 1 — jeden palec, sześć różnych elementów pod palcem | **3 %** z każdego | **3 %** z każdego | **100 %** z każdego |
+| 2 — jeden palec zaraz po szczypaniu | **3 %** | **3 %** | **100 %** |
+| 3 — przy otwartej karcie | **3 %**, karta otwarta | — | **100 %**, karta otwarta (tablet) |
+| 4 — szczypanie | przybliża | przybliża | przybliża |
+| 5 — stuknięcie w planetę | otwiera kartę | otwiera kartę | otwiera kartę |
+| 6 — przeciągnięcie zakończone na planecie | karta się nie otwiera | karta się nie otwiera | karta się nie otwiera |
+| 7 — SVG traci przechwycenie | gest się kończy (0 %) | gest się kończy (0 %) | gest się kończy (0 %) |
+| 8 — element wewnątrz SVG oddaje przechwycenie | **gest się kończy (0 %)** | **gest się kończy (0 %)** | **gest trwa (100 %)** |
+
+Elementy pod palcem w punkcie 1 — tablet: `rect`, `line`, `path.cog-obszar`,
+`ellipse.cog-pas`, `circle` oraz `path.cog-naroznik` albo `text.cog-etykieta` (szósty
+element zależy od przebiegu: stopka losuje myśl dnia o jednym albo dwóch wierszach, co
+zmienia wysokość planszy i kadr); telefon: `rect`, `circle`, `ellipse.cog-pas`,
+`circle.cog-traf`, `path.cog-naroznik`, `line`.
+
+Wynik budowy:
+
+```
+Gilead.html · 1.01 MB (ilustracje 0.89 MB, znaczniki i kod 114 KB)
+pozycji: 15 (8 światów + 7 obszarów) · hotspotów: 20
+pola: poziom 1 = 111 · poziom 2 = 30 · poziom 3 (utajnione) = 39
+kontrola G-6 i G-12: OK
+```
+
+`test_mapy.py` na nowym wydaniu: **BŁĘDY: brak**, 0 wpisów konsoli. Wszystkie dotychczasowe
+badania — 15 pozycji, podświetlenie wierszy, przewijanie kart, kolejność `tab`, napisy ramy,
+cele dotykowe 44,0 px, trzy warianty zerowego pomiaru z U-21, karta i powrót kadru —
+przechodzą bez zmian. Zrzut przy 1440 px obejrzany: mapa rysuje się tak samo jak przed
+poprawką.
+
+**Nowe wydanie — suma kontrolna do przeniesienia** (zastępuje rozdz. 28.8):
+
+```
+SHA-256  3e0d89f5d216a736c1946df0e9e4c5a924d39b34abeea48929471e8206147d31
+rozmiar  1054700 B
+plik     Warhammer40k/Gilead/Gilead.html (repozytorium Scenariusze, po N1–N3)
+```
+
+Różnica wobec poprzedniego wydania: +486 B — sam komentarz i warunek w nasłuchu.
+
+### 38.5 Dokumentacja projektu
+
+| Miejsce | Wpis |
+|---|---|
+| `ProjektGileadHTML.md`, rozdz. 19 | **U-22** w rejestrze usterek — regresja po U-21, „wykonane 2026-09-27” |
+| `ProjektGileadHTML.md`, rozdz. 9 | **G-27** w changelogu |
+| `ProjektGileadHTML.md`, nowy rozdz. 24 | **Etap VII — przesuwanie palcem na ekranach dotykowych (U-22)**; w rozdz. 23 odsyłacz do niego |
+| `ProjektGileadHTML.md`, tabela etapów | wiersz **VII — przesuwanie palcem** |
+| `Instrukcja.md`, rozdz. 4.2 | blok „oczekiwany wynik” (kod 114 KB, przebieg 2026-09-27) oraz zasada: **gesty mapy bada się dotykiem, nie myszą** |
+
+### 38.6 Co dalej
+
+| Etap | Kto | Co |
+|---|---|---|
+| 1 | Ty | skopiować nowe wydanie do `Main/Gilead.html` w repozytorium `WrathAndGlory` |
+| 2 | agent `WrathAndGlory` | porównać `sha256sum Main/Gilead.html` z sumą z rozdz. 38.4; dokumentacja modułu bez zmian (rozdz. 34) |
+| 3 | Ty | wyczyścić dane aplikacji na tablecie, jeśli mapa nadal przesuwa się o kilka pikseli (rozdz. 36.1), i wykonać testy z **rozdz. 36** |
+| 4 | Ty | odpowiedź według rozdz. 36.4, w tym ocena artefaktów (36.3) i decyzja **D8** |
+| 5 | — | zależnie od D8: zamknięcie albo N4 |
+
+**Czego to wykonanie nie rozstrzyga:** pliku nie uruchomiono na tablecie — emulacja
+dotyku odtwarza objaw i jego usunięcie, potwierdzenie na sprzęcie da dopiero rozdz. 36.
+Artefakty z rozdz. 33 nie były ruszane. Zastrzeżenie z rozdz. 28.10 pkt 4 (`touch-action`
+na kontenerze, `overscroll-behavior`) pozostaje otwarte i z tą usterką nie ma związku.
