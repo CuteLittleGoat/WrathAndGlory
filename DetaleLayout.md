@@ -237,6 +237,9 @@ lokalnego.
 
 ### 5) Wyjątki i formatowanie specjalne
 - Wyniki są prezentowane jako lista wierszy z prefiksem `•`, renderowane w `.results` z `white-space: pre-wrap`.
+- Nazwy maszyn bojowych mają format `Klasyfikator „Nazwa”` z polskimi cudzysłowami `„”` (np. `Czołg Leman Russ „Pięść Zwycięstwa”`); długa linia łamie się w panelu dzięki `overflow-wrap: anywhere`.
+- Pole `Ile` (`#count`) przyjmuje wartości 1–50 (`min="1"`, `max="50"`, `step="1"`, `inputmode="numeric"`); wygląd pola jest taki sam jak pozostałych pól `input`.
+- Po otwarciu modułu wybrane są `Imperium – Ludzie` i opcja `Klasa Niższa` (pierwsza na liście opcji).
 
 ---
 

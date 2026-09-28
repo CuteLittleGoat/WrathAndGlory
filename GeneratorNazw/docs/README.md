@@ -47,6 +47,9 @@ W panelu znajdują się:
 - pole z wynikami,
 - krótka podpowiedź wyjaśniająca seed.
 
+Po otwarciu w polu `Kategoria` jest wybrane `Imperium – Ludzie`, a w polu `Opcja` – `Klasa Niższa`.
+Wystarczy kliknąć `Generuj`, aby od razu dostać listę imion zwykłych mieszkańców Imperium.
+
 Przełącznik języka jest przygotowany w kodzie, ale jest obecnie ukryty w interfejsie. Zwykły użytkownik korzysta z widocznej polskiej wersji strony.
 
 ## Podstawowa obsługa
@@ -65,7 +68,7 @@ Zmiana kategorii albo opcji automatycznie odświeża wyniki.
 
 | Kategoria | Dostępne opcje |
 | --- | --- |
-| `Imperium – Ludzie` | `Klasa Wyższa`, `Klasa Niższa` |
+| `Imperium – Ludzie` | `Klasa Niższa`, `Klasa Wyższa` |
 | `Aeldari` | `Craftworld (Asuryani)`, `Drukhari`, `Harlequins` |
 | `Necroni` | `Wojownicy`, `Lordowie` |
 | `Orkowie` | `Orkowie` |
@@ -77,6 +80,40 @@ Zmiana kategorii albo opcji automatycznie odświeża wyniki.
 | `Okręty gwiezdne` | `Imperium (Navy)`, `Astartes`, `Adeptus Mechanicus`, `Aeldari`, `Drukhari`, `Orkowie`, `Necroni`, `Chaos` |
 | `Kryptonimy oddziałów` | `Kryptonim oddziału` |
 | `Kryptonimy operacji` | `Kryptonim operacji` |
+
+## Jak wyglądają wygenerowane nazwy
+
+Generator podaje same imiona i nazwy – bez tytułów, stopni i zawodów. Nie zobaczysz więc na liście
+dopisków typu „Lord”, „Brat Sierżant”, „Magos”, „Brygadzista” czy „Siostra”. Jeżeli postać ma mieć
+tytuł, dopisz go samodzielnie, np. „Kapitan” + wygenerowane imię.
+
+| Kategoria / opcja | Czego się spodziewać | Przykłady |
+| --- | --- | --- |
+| `Klasa Niższa` | Zwykli ludzie: robotnicy uli, gangerzy, gwardziści. Krótkie, twarde imiona i nazwiska, czasem w stylu słowiańskim, pustynnym albo celtyckim, czasem jedno imię. Bez numerów. | `Dagg Kerrow`, `Ilya Mikhailovich Morozov`, `Malik Sahir`, `Slade` |
+| `Klasa Wyższa` | Szlachta i elity: długie imiona w stylu łacińskim, czasem dwa imiona, „von/van/de” albo nazwisko dwuczłonowe. | `Octavia von Thornwood`, `Hadrian Aldemar-Mordaunt` |
+| `Aeldari` | Płynne, śpiewne imiona; czasem przydomek. Drukhari brzmią ostrzej, Harlequini mają teatralne przydomki. | `Taevanyth`, `Laveniel Shadow-whisper`, `Vrayagh Malkhiss`, `Caewyn Duskstep` |
+| `Necroni` | Imiona brzmiące jak starożytny Egipt, z końcówkami „-ekh”, „-tekh”. Lordowie mają dłuższe imiona, czasem z nazwą swojego świata („z …”). | `Zarekh`, `Nebkatekh`, `Iskakh z Khatun` |
+| `Orkowie` | Gardłowe imiona i przechwałkowe przydomki. | `Gorbash`, `Uzag 'Ead-rippa`, `Doomsplitta` |
+| `Adepta Sororitas` | Imiona świętych i łacińskie; nazwiska o wydźwięku wiary i cierpienia; czasem samo imię. | `Mercia Thornfield`, `Perpetua Ignis` |
+| `Astartes` | Style różnych zakonów: łaciński, nordycki (z przydomkiem), anielski, krzyżowców, z Nokturne (z apostrofem), czogoryjski. | `Evander Tarvos`, `Arnvald Runeaxe`, `Remiel Scaurus`, `Ti'zul Ignar`, `Temur` |
+| `Tech-Kapłani` | Łacińsko-techniczne imiona, oznaczenia literą grecką i numerem. | `Theano Vectris`, `Heronia Lambda-85`, `Draxus-23 Noosar` |
+| `Skitarii` | Oznaczenia literowo-liczbowe albo imię z numerem. | `Sigma-26`, `Castor-23 Zorn`, `Brax-Gamma` |
+| `Chaos` | Mroczne imiona w stylu wybranego bóstwa, często z przydomkiem. | `Morvorath Dreadmaw`, `Mogrulus Filthbloat`, `Rhaessa Paleheart` |
+| `Maszyny bojowe` | Typ maszyny i jej nazwa w cudzysłowie – po polsku albo po łacinie. | `Czołg Leman Russ „Pięść Zwycięstwa”`, `Tytan klasy Warhound „Aquila Terrae”` |
+| `Okręty gwiezdne` | Nazwy po angielsku lub łacinie, w stylu danej frakcji. | `Hammer of the Saints`, `Da Big Kroozer`, `Exquisite Anguish` |
+| `Kryptonimy` | Polskie kryptonimy z poprawną odmianą. | `Żelaźni Bracia`, `Kruki Popiołu`, `Operacja Czarny Świt Sigma` |
+
+### Brak powtórzeń na liście
+
+Na jednej wygenerowanej liście każda nazwa jest inna. Przy kolejnym kliknięciu `Generuj` nazwy mogą się
+powtórzyć, bo każda lista jest losowana od nowa.
+
+### Imiona znanych postaci
+
+Generator nie podaje imion unikatowych bohaterów i złoczyńców z Warhammera (np. „Sebastian Yarrick”,
+„Ciaphas Cain”, „Ghazghkull”, „Imotekh”) ani nazw słynnych okrętów (np. „Vengeful Spirit”). Pojedyncze
+części takich imion mogą się pojawić w innym połączeniu – np. „Sebastian Varro” jest w porządku, bo nie
+jest to imię konkretnej postaci z lore.
 
 ## Przyciski i akcje
 
@@ -95,7 +132,7 @@ Zmiana kategorii albo opcji automatycznie odświeża wyniki.
 | `Kategoria` | Wybiera główną rodzinę nazw. |
 | `Opcja` | Wybiera dokładniejszy wariant w ramach kategorii. Lista opcji zmienia się po zmianie kategorii. |
 | `Seed` | Pozwala uzyskać powtarzalny wynik. Ten sam seed i te same ustawienia dadzą tę samą listę nazw. |
-| `Ile` | Określa liczbę generowanych nazw. Moduł przyjmuje od 1 do 20 wyników. |
+| `Ile` | Określa liczbę generowanych nazw: od 1 do 50. Nie da się wpisać więcej niż 50 – jeśli wpiszesz np. 99, pole od razu pokaże 50. Litery, minus i przecinek nie są przyjmowane. Puste pole albo 0 zmienia się na 1 po kliknięciu obok albo po `Generuj`. |
 
 ## Jak działa seed
 
@@ -173,7 +210,17 @@ Niektóre przeglądarki blokują schowek, szczególnie przy otwieraniu pliku lok
 
 ### Widzę za mało albo za dużo wyników
 
-Sprawdź pole `Ile`. Minimalna sensowna wartość to 1, a maksymalna obsługiwana przez moduł to 20.
+Sprawdź pole `Ile`. Najmniejsza wartość to 1, a największa 50. Wyższej liczby nie da się wpisać – pole samo zmieni ją na 50.
+
+### Chcę imię z tytułem
+
+Generator celowo podaje same imiona. Dopisz tytuł ręcznie przed wygenerowanym imieniem, np. „Inkwizytor
+Octavia von Thornwood” albo „Brat Sierżant Evander Tarvos”.
+
+### Wygenerowane imię kojarzy mi się z kimś znanym
+
+Pełne imiona znanych postaci są blokowane. Jeśli mimo to nazwa kojarzy Ci się z kimś z lore, kliknij
+`Generuj` jeszcze raz albo wybierz inną pozycję z listy.
 
 ### Nie widzę przełącznika języka
 
@@ -235,6 +282,9 @@ The panel contains:
 - the results area,
 - a short hint explaining seed behavior.
 
+When the page opens, `Imperium - Humans` is selected in `Category` and `Lower Class` in `Option`. Just
+click `Generate` to get a list of ordinary Imperial citizens' names straight away.
+
 The language switcher exists in the code but is currently hidden in the interface. A regular user uses the visible Polish page.
 
 ## Basic use
@@ -253,7 +303,7 @@ Changing category or option automatically refreshes the generated results.
 
 | Category | Available options |
 | --- | --- |
-| `Imperium - Humans` | `Higher Class`, `Lower Class` |
+| `Imperium - Humans` | `Lower Class`, `Higher Class` |
 | `Aeldari` | `Craftworld (Asuryani)`, `Drukhari`, `Harlequins` |
 | `Necrons` | `Warriors`, `Lords` |
 | `Orks` | `Orks` |
@@ -265,6 +315,40 @@ Changing category or option automatically refreshes the generated results.
 | `Starships` | `Imperium (Navy)`, `Astartes`, `Adeptus Mechanicus`, `Aeldari`, `Drukhari`, `Orks`, `Necrons`, `Chaos` |
 | `Unit codenames` | `Unit codename` |
 | `Operation codenames` | `Operation codename` |
+
+## What the generated names look like
+
+The generator gives names only – no titles, ranks or jobs. You will not see additions such as "Lord",
+"Brother Sergeant", "Magos", "Foreman" or "Sister" in the list. If a character needs a title, add it
+yourself, e.g. "Captain" + the generated name.
+
+| Category / option | What to expect | Examples |
+| --- | --- | --- |
+| `Lower Class` | Ordinary people: hive workers, gangers, guardsmen. Short, hard given names and surnames, sometimes in a Slavic, desert or Celtic style, sometimes a single name. No numbers. | `Dagg Kerrow`, `Ilya Mikhailovich Morozov`, `Malik Sahir`, `Slade` |
+| `Higher Class` | Nobles and elites: long Latin-style names, sometimes two given names, "von/van/de", or a double-barrelled surname. | `Octavia von Thornwood`, `Hadrian Aldemar-Mordaunt` |
+| `Aeldari` | Flowing, lyrical names; sometimes an epithet. Drukhari sound sharper, Harlequins have theatrical epithets. | `Taevanyth`, `Laveniel Shadow-whisper`, `Vrayagh Malkhiss`, `Caewyn Duskstep` |
+| `Necrons` | Names that sound like ancient Egypt, ending in "-ekh", "-tekh". Lords have longer names, sometimes with their world ("z …"). | `Zarekh`, `Nebkatekh`, `Iskakh z Khatun` |
+| `Orks` | Guttural names and boastful epithets. | `Gorbash`, `Uzag 'Ead-rippa`, `Doomsplitta` |
+| `Adepta Sororitas` | Saintly and Latin given names; surnames evoking faith and suffering; sometimes a given name alone. | `Mercia Thornfield`, `Perpetua Ignis` |
+| `Astartes` | Styles of different Chapters: Latin, Nordic (with an epithet), angelic, crusader, Nocturnean (with an apostrophe), Chogorian. | `Evander Tarvos`, `Arnvald Runeaxe`, `Remiel Scaurus`, `Ti'zul Ignar`, `Temur` |
+| `Tech-Priests` | Latin-technical names, Greek-letter and number designations. | `Theano Vectris`, `Heronia Lambda-85`, `Draxus-23 Noosar` |
+| `Skitarii` | Letter-number designations or a name with a number. | `Sigma-26`, `Castor-23 Zorn`, `Brax-Gamma` |
+| `Chaos` | Dark names in the style of the chosen god, often with an epithet. | `Morvorath Dreadmaw`, `Mogrulus Filthbloat`, `Rhaessa Paleheart` |
+| `War machines` | Machine type and its name in quotes – in Polish or Latin. | `Czołg Leman Russ „Pięść Zwycięstwa”`, `Tytan klasy Warhound „Aquila Terrae”` |
+| `Starships` | English or Latin names in the style of the faction. | `Hammer of the Saints`, `Da Big Kroozer`, `Exquisite Anguish` |
+| `Codenames` | Polish codenames with correct grammar. | `Żelaźni Bracia`, `Kruki Popiołu`, `Operacja Czarny Świt Sigma` |
+
+### No repeats in a list
+
+Within one generated list every name is different. After another click on `Generate` names can repeat,
+because each list is drawn anew.
+
+### Names of famous characters
+
+The generator does not give the names of unique Warhammer heroes and villains (e.g. "Sebastian Yarrick",
+"Ciaphas Cain", "Ghazghkull", "Imotekh") or of famous ships (e.g. "Vengeful Spirit"). Single parts of such
+names may appear in another combination – e.g. "Sebastian Varro" is fine, because it is not the name of a
+specific lore character.
 
 ## Buttons and actions
 
@@ -283,7 +367,7 @@ Changing category or option automatically refreshes the generated results.
 | `Category` | Selects the main name family. |
 | `Option` | Selects a more specific variant inside the category. The option list changes when the category changes. |
 | `Seed` | Makes results repeatable. The same seed and the same settings produce the same name list. |
-| `How many` | Sets how many names are generated. The module supports values from 1 to 20. |
+| `How many` | Sets how many names are generated: from 1 to 50. You cannot enter more than 50 – if you type e.g. 99, the field shows 50 right away. Letters, minus, and comma are not accepted. An empty field or 0 becomes 1 after clicking elsewhere or clicking `Generate`. |
 
 ## How seed works
 
@@ -361,7 +445,17 @@ Some browsers block clipboard access, especially when a file is opened locally. 
 
 ### I see too few or too many results
 
-Check the `How many` field. The minimum meaningful value is 1, and the maximum supported value is 20.
+Check the `How many` field. The smallest value is 1 and the largest is 50. A higher number cannot be entered – the field changes it to 50 by itself.
+
+### I want a name with a title
+
+The generator gives names only on purpose. Add the title yourself in front of the generated name, e.g.
+"Inquisitor Octavia von Thornwood" or "Brother Sergeant Evander Tarvos".
+
+### A generated name reminds me of someone famous
+
+Full names of famous characters are blocked. If a name still reminds you of someone from the lore, click
+`Generate` again or pick another name from the list.
 
 ### I do not see the language switcher
 
