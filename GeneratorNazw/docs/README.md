@@ -47,7 +47,7 @@ W panelu znajdują się:
 - pole z wynikami,
 - krótka podpowiedź wyjaśniająca seed.
 
-Po otwarciu w polu `Kategoria` jest wybrane `Imperium – Ludzie`, a w polu `Opcja` – `Klasa Niższa`.
+Po otwarciu w polu `Kategoria` jest wybrane `Ludzie`, a w polu `Opcja` – `Klasa Niższa`.
 Wystarczy kliknąć `Generuj`, aby od razu dostać listę imion zwykłych mieszkańców Imperium.
 
 Przełącznik języka jest przygotowany w kodzie, ale jest obecnie ukryty w interfejsie. Zwykły użytkownik korzysta z widocznej polskiej wersji strony.
@@ -68,18 +68,18 @@ Zmiana kategorii albo opcji automatycznie odświeża wyniki.
 
 | Kategoria | Dostępne opcje |
 | --- | --- |
-| `Imperium – Ludzie` | `Klasa Niższa`, `Klasa Wyższa` |
-| `Aeldari` | `Craftworld (Asuryani)`, `Drukhari`, `Harlequins` |
-| `Necroni` | `Wojownicy`, `Lordowie` |
-| `Orkowie` | `Orkowie` |
-| `Adepta Sororitas` | `Sororitas` |
-| `Astartes – imię i nazwisko bojowe` | `Astartes` |
+| `Ludzie` | `Klasa Niższa`, `Klasa Wyższa` |
 | `Adeptus Mechanicus` | `Tech-Kapłani`, `Skitarii` |
+| `Adeptus Astartes` | `Ogólne`, `Kodeksowe (Ultramarines)`, `Nordyckie (Kosmiczne Wilki)`, `Anielskie (Mroczne i Krwawe Anioły)`, `Krzyżowcy (Czarni Templariusze)`, `Nokturne (Salamandry)`, `Czogoris (Białe Blizny)` |
+| `Adepta Sororitas` | `Sororitas` |
 | `Chaos` | `Undivided`, `Khorne`, `Nurgle`, `Tzeentch`, `Slaanesh` |
-| `Maszyny bojowe (Imperium)` | `Czołgi`, `Tytany`, `Rycerze`, `Lotnictwo` |
-| `Okręty gwiezdne` | `Imperium (Navy)`, `Astartes`, `Adeptus Mechanicus`, `Aeldari`, `Drukhari`, `Orkowie`, `Necroni`, `Chaos` |
-| `Kryptonimy oddziałów` | `Kryptonim oddziału` |
-| `Kryptonimy operacji` | `Kryptonim operacji` |
+| `Aeldari` | `Craftworld (Asuryani)`, `Drukhari`, `Harlequins` |
+| `Orkowie` | `Orkowie` |
+| `Nekroni` | `Wojownicy`, `Lordowie` |
+| `Okręty Gwiezdne` | `Imperium (Navy)`, `Astartes`, `Adeptus Mechanicus`, `Aeldari`, `Drukhari`, `Orkowie`, `Nekroni`, `Chaos` |
+| `Maszyny Bojowe (Imperium)` | `Czołgi`, `Tytany`, `Rycerze`, `Lotnictwo` |
+| `Kryptonimy Oddziałów` | `Kryptonim oddziału` |
+| `Kryptonimy Operacji` | `Kryptonim operacji` |
 
 ## Jak wyglądają wygenerowane nazwy
 
@@ -92,16 +92,16 @@ tytuł, dopisz go samodzielnie, np. „Kapitan” + wygenerowane imię.
 | `Klasa Niższa` | Zwykli ludzie: robotnicy uli, gangerzy, gwardziści. Krótkie, twarde imiona i nazwiska, czasem w stylu słowiańskim, pustynnym albo celtyckim, czasem jedno imię. Bez numerów. | `Dagg Kerrow`, `Ilya Mikhailovich Morozov`, `Malik Sahir`, `Slade` |
 | `Klasa Wyższa` | Szlachta i elity: długie imiona w stylu łacińskim, czasem dwa imiona, „von/van/de” albo nazwisko dwuczłonowe. | `Octavia von Thornwood`, `Hadrian Aldemar-Mordaunt` |
 | `Aeldari` | Płynne, śpiewne imiona; czasem przydomek. Drukhari brzmią ostrzej, Harlequini mają teatralne przydomki. | `Taevanyth`, `Laveniel Shadow-whisper`, `Vrayagh Malkhiss`, `Caewyn Duskstep` |
-| `Necroni` | Imiona brzmiące jak starożytny Egipt, z końcówkami „-ekh”, „-tekh”. Lordowie mają dłuższe imiona, czasem z nazwą swojego świata („z …”). | `Zarekh`, `Nebkatekh`, `Iskakh z Khatun` |
+| `Nekroni` | Imiona brzmiące jak starożytny Egipt, z końcówkami „-ekh”, „-tekh”. Lordowie mają dłuższe imiona, czasem z nazwą swojego świata („z …”). | `Zarekh`, `Nebkatekh`, `Iskakh z Khatun` |
 | `Orkowie` | Gardłowe imiona i przechwałkowe przydomki. | `Gorbash`, `Uzag 'Ead-rippa`, `Doomsplitta` |
 | `Adepta Sororitas` | Imiona świętych i łacińskie; nazwiska o wydźwięku wiary i cierpienia; czasem samo imię. | `Mercia Thornfield`, `Perpetua Ignis` |
-| `Astartes` | Style różnych zakonów: łaciński, nordycki (z przydomkiem), anielski, krzyżowców, z Nokturne (z apostrofem), czogoryjski. | `Evander Tarvos`, `Arnvald Runeaxe`, `Remiel Scaurus`, `Ti'zul Ignar`, `Temur` |
+| `Adeptus Astartes` | Style różnych zakonów: łaciński, nordycki (z przydomkiem), anielski, krzyżowców, z Nokturne (z apostrofem), czogoryjski. Podkategoria `Ogólne` miesza wszystkie style, pozostałe podkategorie dają imiona tylko w jednym stylu. | `Evander Tarvos`, `Arnvald Runeaxe`, `Remiel Scaurus`, `Ti'zul Ignar`, `Temur` |
 | `Tech-Kapłani` | Łacińsko-techniczne imiona, oznaczenia literą grecką i numerem. | `Theano Vectris`, `Heronia Lambda-85`, `Draxus-23 Noosar` |
 | `Skitarii` | Oznaczenia literowo-liczbowe albo imię z numerem. | `Sigma-26`, `Castor-23 Zorn`, `Brax-Gamma` |
 | `Chaos` | Mroczne imiona w stylu wybranego bóstwa, często z przydomkiem. | `Morvorath Dreadmaw`, `Mogrulus Filthbloat`, `Rhaessa Paleheart` |
-| `Maszyny bojowe` | Typ maszyny i jej nazwa w cudzysłowie – po polsku albo po łacinie. | `Czołg Leman Russ „Pięść Zwycięstwa”`, `Tytan klasy Warhound „Aquila Terrae”` |
-| `Okręty gwiezdne` | Nazwy po angielsku lub łacinie, w stylu danej frakcji. | `Hammer of the Saints`, `Da Big Kroozer`, `Exquisite Anguish` |
-| `Kryptonimy` | Polskie kryptonimy z poprawną odmianą. | `Żelaźni Bracia`, `Kruki Popiołu`, `Operacja Czarny Świt Sigma` |
+| `Maszyny Bojowe` | Sama nazwa maszyny – po polsku albo po łacinie, bez typu maszyny i bez cudzysłowów. | `Pięść Zwycięstwa`, `Nieugięta Tarcza`, `Aquila Terrae` |
+| `Okręty Gwiezdne` | Polskie nazwy w stylu danej frakcji; nazwy łacińskie zostają po łacinie. | `Grom Świętej Terry`, `Wielgachna Łajba Gorka`, `Wykwintna Udręka`, `Ira Throni` |
+| `Kryptonimy` | Same polskie kryptonimy z poprawną odmianą (bez słowa „Operacja”). | `Żelaźni Bracia`, `Kruki Popiołu`, `Czarny Świt Sigma` |
 
 ### Brak powtórzeń na liście
 
@@ -111,7 +111,7 @@ powtórzyć, bo każda lista jest losowana od nowa.
 ### Imiona znanych postaci
 
 Generator nie podaje imion unikatowych bohaterów i złoczyńców z Warhammera (np. „Sebastian Yarrick”,
-„Ciaphas Cain”, „Ghazghkull”, „Imotekh”) ani nazw słynnych okrętów (np. „Vengeful Spirit”). Pojedyncze
+„Ciaphas Cain”, „Ghazghkull”, „Imotekh”) ani nazw słynnych okrętów (np. „Mściwy Duch” / „Vengeful Spirit”). Pojedyncze
 części takich imion mogą się pojawić w innym połączeniu – np. „Sebastian Varro” jest w porządku, bo nie
 jest to imię konkretnej postaci z lore.
 
@@ -282,7 +282,7 @@ The panel contains:
 - the results area,
 - a short hint explaining seed behavior.
 
-When the page opens, `Imperium - Humans` is selected in `Category` and `Lower Class` in `Option`. Just
+When the page opens, `Humans` is selected in `Category` and `Lower Class` in `Option`. Just
 click `Generate` to get a list of ordinary Imperial citizens' names straight away.
 
 The language switcher exists in the code but is currently hidden in the interface. A regular user uses the visible Polish page.
@@ -303,16 +303,16 @@ Changing category or option automatically refreshes the generated results.
 
 | Category | Available options |
 | --- | --- |
-| `Imperium - Humans` | `Lower Class`, `Higher Class` |
-| `Aeldari` | `Craftworld (Asuryani)`, `Drukhari`, `Harlequins` |
-| `Necrons` | `Warriors`, `Lords` |
-| `Orks` | `Orks` |
-| `Adepta Sororitas` | `Sororitas` |
-| `Astartes - battle name and surname` | `Astartes` |
+| `Humans` | `Lower Class`, `Higher Class` |
 | `Adeptus Mechanicus` | `Tech-Priests`, `Skitarii` |
+| `Adeptus Astartes` | `General`, `Codex (Ultramarines)`, `Nordic (Space Wolves)`, `Angelic (Dark and Blood Angels)`, `Crusader (Black Templars)`, `Nocturne (Salamanders)`, `Chogoris (White Scars)` |
+| `Adepta Sororitas` | `Sororitas` |
 | `Chaos` | `Undivided`, `Khorne`, `Nurgle`, `Tzeentch`, `Slaanesh` |
-| `War machines (Imperium)` | `Tanks`, `Titans`, `Knights`, `Air Wing` |
+| `Aeldari` | `Craftworld (Asuryani)`, `Drukhari`, `Harlequins` |
+| `Orks` | `Orks` |
+| `Necrons` | `Warriors`, `Lords` |
 | `Starships` | `Imperium (Navy)`, `Astartes`, `Adeptus Mechanicus`, `Aeldari`, `Drukhari`, `Orks`, `Necrons`, `Chaos` |
+| `War machines (Imperium)` | `Tanks`, `Titans`, `Knights`, `Air Wing` |
 | `Unit codenames` | `Unit codename` |
 | `Operation codenames` | `Operation codename` |
 
@@ -330,13 +330,13 @@ yourself, e.g. "Captain" + the generated name.
 | `Necrons` | Names that sound like ancient Egypt, ending in "-ekh", "-tekh". Lords have longer names, sometimes with their world ("z …"). | `Zarekh`, `Nebkatekh`, `Iskakh z Khatun` |
 | `Orks` | Guttural names and boastful epithets. | `Gorbash`, `Uzag 'Ead-rippa`, `Doomsplitta` |
 | `Adepta Sororitas` | Saintly and Latin given names; surnames evoking faith and suffering; sometimes a given name alone. | `Mercia Thornfield`, `Perpetua Ignis` |
-| `Astartes` | Styles of different Chapters: Latin, Nordic (with an epithet), angelic, crusader, Nocturnean (with an apostrophe), Chogorian. | `Evander Tarvos`, `Arnvald Runeaxe`, `Remiel Scaurus`, `Ti'zul Ignar`, `Temur` |
+| `Adeptus Astartes` | Styles of different Chapters: Latin, Nordic (with an epithet), angelic, crusader, Nocturnean (with an apostrophe), Chogorian. The `General` subcategory mixes all styles, the other subcategories give names in one style only. | `Evander Tarvos`, `Arnvald Runeaxe`, `Remiel Scaurus`, `Ti'zul Ignar`, `Temur` |
 | `Tech-Priests` | Latin-technical names, Greek-letter and number designations. | `Theano Vectris`, `Heronia Lambda-85`, `Draxus-23 Noosar` |
 | `Skitarii` | Letter-number designations or a name with a number. | `Sigma-26`, `Castor-23 Zorn`, `Brax-Gamma` |
 | `Chaos` | Dark names in the style of the chosen god, often with an epithet. | `Morvorath Dreadmaw`, `Mogrulus Filthbloat`, `Rhaessa Paleheart` |
-| `War machines` | Machine type and its name in quotes – in Polish or Latin. | `Czołg Leman Russ „Pięść Zwycięstwa”`, `Tytan klasy Warhound „Aquila Terrae”` |
-| `Starships` | English or Latin names in the style of the faction. | `Hammer of the Saints`, `Da Big Kroozer`, `Exquisite Anguish` |
-| `Codenames` | Polish codenames with correct grammar. | `Żelaźni Bracia`, `Kruki Popiołu`, `Operacja Czarny Świt Sigma` |
+| `War machines` | The machine name only – in Polish or Latin, without the machine type and without quotes. | `Pięść Zwycięstwa`, `Nieugięta Tarcza`, `Aquila Terrae` |
+| `Starships` | Polish names in the style of the faction; Latin names stay in Latin. | `Grom Świętej Terry`, `Wielgachna Łajba Gorka`, `Wykwintna Udręka`, `Ira Throni` |
+| `Codenames` | Polish codenames only, with correct grammar (without the word "Operacja"). | `Żelaźni Bracia`, `Kruki Popiołu`, `Czarny Świt Sigma` |
 
 ### No repeats in a list
 
@@ -346,7 +346,7 @@ because each list is drawn anew.
 ### Names of famous characters
 
 The generator does not give the names of unique Warhammer heroes and villains (e.g. "Sebastian Yarrick",
-"Ciaphas Cain", "Ghazghkull", "Imotekh") or of famous ships (e.g. "Vengeful Spirit"). Single parts of such
+"Ciaphas Cain", "Ghazghkull", "Imotekh") or of famous ships (e.g. "Mściwy Duch" / "Vengeful Spirit"). Single parts of such
 names may appear in another combination – e.g. "Sebastian Varro" is fine, because it is not the name of a
 specific lore character.
 

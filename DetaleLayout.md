@@ -237,9 +237,10 @@ lokalnego.
 
 ### 5) Wyjątki i formatowanie specjalne
 - Wyniki są prezentowane jako lista wierszy z prefiksem `•`, renderowane w `.results` z `white-space: pre-wrap`.
-- Nazwy maszyn bojowych mają format `Klasyfikator „Nazwa”` z polskimi cudzysłowami `„”` (np. `Czołg Leman Russ „Pięść Zwycięstwa”`); długa linia łamie się w panelu dzięki `overflow-wrap: anywhere`.
+- Nazwy maszyn bojowych, okrętów i kryptonimów są wyświetlane jako same nazwy – bez typu maszyny, cudzysłowów i przedrostka „Operacja”; długa linia łamie się w panelu dzięki `overflow-wrap: anywhere`.
 - Pole `Ile` (`#count`) przyjmuje wartości 1–50 (`min="1"`, `max="50"`, `step="1"`, `inputmode="numeric"`); wygląd pola jest taki sam jak pozostałych pól `input`.
-- Po otwarciu modułu wybrane są `Imperium – Ludzie` i opcja `Klasa Niższa` (pierwsza na liście opcji).
+- Po otwarciu modułu wybrane są `Ludzie` i opcja `Klasa Niższa` (pierwsza na liście opcji).
+- Kolejność kategorii na liście: Ludzie, Adeptus Mechanicus, Adeptus Astartes, Adepta Sororitas, Chaos, Aeldari, Orkowie, Nekroni, Okręty Gwiezdne, Maszyny Bojowe (Imperium), Kryptonimy Oddziałów, Kryptonimy Operacji. `Adeptus Astartes` ma 7 podkategorii, domyślnie `Ogólne`.
 
 ---
 

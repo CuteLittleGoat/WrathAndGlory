@@ -197,18 +197,18 @@ Aktualne kategorie:
 
 | `key` | Nazwa PL | Nazwa EN |
 | --- | --- | --- |
-| `humans` | `Imperium – Ludzie` | `Imperium - Humans` |
-| `aeldari` | `Aeldari` | `Aeldari` |
-| `necron` | `Necroni` | `Necrons` |
-| `orks` | `Orkowie` | `Orks` |
-| `sororitas` | `Adepta Sororitas` | `Adepta Sororitas` |
-| `astartes` | `Astartes – imię i nazwisko bojowe` | `Astartes - battle name and surname` |
+| `humans` | `Ludzie` | `Humans` |
 | `admech` | `Adeptus Mechanicus` | `Adeptus Mechanicus` |
+| `astartes` | `Adeptus Astartes` | `Adeptus Astartes` |
+| `sororitas` | `Adepta Sororitas` | `Adepta Sororitas` |
 | `chaos` | `Chaos` | `Chaos` |
-| `warmachines` | `Maszyny bojowe (Imperium)` | `War machines (Imperium)` |
-| `ships` | `Okręty gwiezdne` | `Starships` |
-| `unitcodes` | `Kryptonimy oddziałów` | `Unit codenames` |
-| `opcodes` | `Kryptonimy operacji` | `Operation codenames` |
+| `aeldari` | `Aeldari` | `Aeldari` |
+| `orks` | `Orkowie` | `Orks` |
+| `necron` | `Nekroni` | `Necrons` |
+| `ships` | `Okręty Gwiezdne` | `Starships` |
+| `warmachines` | `Maszyny Bojowe (Imperium)` | `War machines (Imperium)` |
+| `unitcodes` | `Kryptonimy Oddziałów` | `Unit codenames` |
+| `opcodes` | `Kryptonimy Operacji` | `Operation codenames` |
 
 ### Opcje i widok domyślny
 
@@ -218,15 +218,15 @@ wybrana jest pierwsza kategoria (`humans`) i jej pierwsza opcja, czyli `lower` (
 | Kategoria | Opcje w kolejności (`key` → funkcja) |
 | --- | --- |
 | `humans` | `lower` → `genHumanLower`, `upper` → `genHumanUpper` |
-| `aeldari` | `craft` → `genAeldariCraft`, `druk` → `genAeldariDrukhari`, `har` → `genAeldariHarlequin` |
-| `necron` | `warrior` → `genNecronWarrior`, `lord` → `genNecronLord` |
-| `orks` | `boy` → `genOrk` |
-| `sororitas` | `sister` → `genSororitas` |
-| `astartes` | `standard` → `genAstartes` |
 | `admech` | `tp` → `genAdMechTech`, `skit` → `genAdMechSkit` |
+| `astartes` | `standard` → `genAstartes(r)`, `codex`, `nordic`, `angelic`, `crusader`, `salamander`, `scars` → `genAstartes(r, key)` |
+| `sororitas` | `sister` → `genSororitas` |
 | `chaos` | `und`, `kho`, `nur`, `tze`, `sla` → `genChaos(r, "undiv" / "khorne" / "nurgle" / "tzeent" / "slaan")` |
-| `warmachines` | `tank`, `titan`, `knight`, `air` → `genWarMachine(r, kind)` |
+| `aeldari` | `craft` → `genAeldariCraft`, `druk` → `genAeldariDrukhari`, `har` → `genAeldariHarlequin` |
+| `orks` | `boy` → `genOrk` |
+| `necron` | `warrior` → `genNecronWarrior`, `lord` → `genNecronLord` |
 | `ships` | `imp`, `ast`, `mec`, `eld`, `drk`, `ork`, `nec`, `cha` → `genShip(r, "imperial" / "astartes" / "mechanicus" / "eldar" / "drukhari" / "ork" / "necron" / "chaos")` |
+| `warmachines` | `tank`, `titan`, `knight`, `air` → `genWarMachine(r, kind)` |
 | `unitcodes` | `standard` → `genUnitCodename` |
 | `opcodes` | `standard` → `genOperationCodename` |
 
@@ -265,7 +265,7 @@ Efekt: wynik nie jest deterministyczny.
 | `makeRng(seedStr)` | Wybiera RNG seedowany albo automatyczny. |
 | `chance(p, rand)` | Zwraca prawdę z prawdopodobieństwem `p`. |
 | `cap(s)` | Zmienia pierwszą literę tekstu na wielką. |
-| `cleanName(s)` | Usuwa proste cudzysłowy `"`, nawiasy, nadmiar spacji i błędne odstępy. Polskie cudzysłowy `„”` zostają. |
+| `cleanName(s)` | Usuwa proste cudzysłowy `"`, nawiasy, nadmiar spacji i błędne odstępy. |
 | `pick(arr, rand)` | Losuje element tablicy bez wag. |
 | `pickItem(arr, rand)` | Losuje z wagami i zwraca cały element (tekst albo obiekt `{ v, w, g }`). |
 | `pickWeighted(arr, rand)` | Jak `pickItem`, ale zwraca sam tekst (`item.v` albo napis). |
@@ -282,7 +282,6 @@ Efekt: wynik nie jest deterministyczny.
 | `buildReservedIndex(list)` | Zamienia listę nazw zastrzeżonych na tablice słów po normalizacji. |
 | `isReserved(name, index)` | Zwraca prawdę, jeśli nazwa zawiera całą zastrzeżoną sekwencję słów w tej samej kolejności. |
 | `tryGenerate(fn, reservedIndex, tries)` | Do 30 prób: pomija wyniki puste i zastrzeżone, zwraca pierwszy, który przechodzi `looksGood`; w ostateczności pierwszy niezastrzeżony. |
-| `formatNamedThing(classifier, core)` | Tworzy format `Klasyfikator „Nazwa”`. |
 | `genderIndex(g)` | Zamienia rodzaj `m` / `f` / `n` na indeks formy przymiotnika `0` / `1` / `2`. |
 | `latinPhrase(rand, nouns, genitives)` | Łacińska para mianownik + dopełniacz o różnych rdzeniach (`Ira Imperatoris`). |
 | `polishPhrase(rand)` | Polska nazwa niskogotycka: 38% rzeczownik + dopełniacz, 40% przymiotnik + rzeczownik, 10% sam rzeczownik, 12% przymiotnik + rzeczownik + dopełniacz. |
@@ -336,16 +335,19 @@ nazwisko), `doubleBarrel` 15 (imię + `Nazwisko-Nazwisko`, dwa różne człony).
 78% imię + nazwisko, 22% samo imię. Imiona zlatynizowane i świętych, nazwiska gotyckie o wydźwięku cnoty
 lub cierpienia.
 
-### Astartes (`ASTARTES`, `genAstartes`)
+### Adeptus Astartes (`ASTARTES`, `genAstartes`)
 
-| Styl | Waga | Budowa |
-| --- | --- | --- |
-| `codex` | 45 | 65% imię + łaciński przydomek, 20% imię + gotycki przydomek (`gothicPre` + `gothicSuf`), 15% samo imię |
-| `angelic` | 14 | 35% samo imię anielskie, 65% imię + łaciński przydomek |
-| `nordic` | 13 | 25% samo imię, 75% imię + przydomek (`nordicPre` + `nordicSuf`) |
-| `crusader` | 10 | 60% samo imię, 40% imię + gotycki przydomek |
-| `salamander` | 9 | 45% imię z apostrofem (`A'b`), 30% imię z apostrofem + nazwisko, 25% imię + nazwisko |
-| `scars` | 9 | 40% samo imię, 60% imię + nazwa klanu |
+`genAstartes(rand, forcedStyle)`: podkategoria „Ogólne” (`standard`) nie podaje stylu i losuje go z wag
+`ASTARTES.styles`; pozostałe podkategorie przekazują swój `key` jako `forcedStyle`.
+
+| Podkategoria | Styl (`key`) | Waga w „Ogólne” | Budowa |
+| --- | --- | --- | --- |
+| Kodeksowe (Ultramarines) | `codex` | 45 | 65% imię + łaciński przydomek, 20% imię + gotycki przydomek (`gothicPre` + `gothicSuf`), 15% samo imię |
+| Anielskie (Mroczne i Krwawe Anioły) | `angelic` | 14 | 35% samo imię anielskie, 65% imię + łaciński przydomek |
+| Nordyckie (Kosmiczne Wilki) | `nordic` | 13 | 25% samo imię, 75% imię + przydomek (`nordicPre` + `nordicSuf`) |
+| Krzyżowcy (Czarni Templariusze) | `crusader` | 10 | 60% samo imię, 40% imię + gotycki przydomek |
+| Nokturne (Salamandry) | `salamander` | 9 | 45% imię z apostrofem (`A'b`), 30% imię z apostrofem + nazwisko, 25% imię + nazwisko |
+| Czogoris (Białe Blizny) | `scars` | 9 | 40% samo imię, 60% imię + nazwa klanu |
 
 ### Adeptus Mechanicus (`MECH`)
 
@@ -364,7 +366,7 @@ dostają litery `Alpha`, aby oznaczenie nie przypominało stopnia „Alpha”.
   10% `Przedrostek'Imię` (`apostrophePre`).
 - `genAeldariHarlequin`: 55% imię + teatralny przydomek, 25% samo imię, 20% dwa imiona.
 
-### Necroni (`NECRON`)
+### Nekroni (`NECRON`)
 
 - `genNecronWarrior`: `pre` + `end`, 15% z sylabą środkową.
 - `genNecronLord`: 12% forma z apostrofem (`Pre+mid'end`), 15% imię + `z` + nazwa świata-grobowca
@@ -382,31 +384,31 @@ sylabowe, 40% imię + przydomek (`Hexflayer`, `Plaguemother`, `Bloodhewer`).
 
 ### Maszyny bojowe (`WAR`, `PL`, `LATIN`, `genWarMachine`)
 
-Wynik: `Klasyfikator „Nazwa”`. `WAR[kind].classifiers` zawiera typ i wzór (np. `Czołg superciężki
-Baneblade`, `Kanonierka Valkyrie`, `Armiger Warglaive`). Nazwa jest łacińska z prawdopodobieństwem
-`latinChance` (czołgi 0,2; tytany 0,6; rycerze 0,35; lotnictwo 0,25), w przeciwnym razie polska
-(`polishPhrase`). Polskie przymiotniki mają trzy formy `[m, f, n]`, a rzeczowniki pole `g`, dzięki czemu
-powstają formy zgodne gramatycznie (`Nieugięta Tarcza`, `Krwawe Proroctwo`). Filtr nazw zastrzeżonych
-sprawdza tylko nazwę w cudzysłowie, a nie klasyfikator (`Rogal Dorn` jest nazwą podwozia).
+Wynik to sama nazwa własna, bez typu maszyny i bez cudzysłowów (np. `Nieugięta Tarcza`, `Vindex Terrae`).
+Nazwa jest łacińska z prawdopodobieństwem `WAR[kind].latinChance` (czołgi 0,2; tytany 0,6; rycerze 0,35;
+lotnictwo 0,25), w przeciwnym razie polska (`polishPhrase`). Polskie przymiotniki mają trzy formy
+`[m, f, n]`, a rzeczowniki pole `g`, dzięki czemu powstają formy zgodne gramatycznie (`Nieugięta Tarcza`,
+`Krwawe Proroctwo`). Nazwy sprawdza `RESERVED_VESSEL_INDEX`.
 
 ### Okręty (`SHIP`, `genShip`)
 
-Każda frakcja ma `patterns` z wagami i słowniki `adj`, `noun`, `head`, `of`, `owner`, `single`,
-`compoundPre`, `compoundSuf`, `pairA`, `pairB`, `latinNouns`, `latinGenitives` (tylko potrzebne).
+Nazwy są po polsku; łacińskie (wysoki gotyk) zostają po łacinie. Każda frakcja ma `patterns` z wagami i
+słowniki: `nouns` (`{ v, g }`), `adjectives` (`[m, f, n]`), `genitives`, opcjonalnie `single`,
+`latinNouns`, `latinGenitives`. `adjNounPhrase(pool, rand)` buduje frazę „przymiotnik + rzeczownik”.
 
-| Wzorzec | Wynik |
-| --- | --- |
-| `latin` | `latinPhrase` (`Gloria Terrae`) |
-| `mechLatin` | `latinPhrase` ze słownikami Mechanicus (`Machina Veritatis`) |
-| `adjNoun` | `Relentless Vigil` |
-| `nounOf` | `Hammer of the Saints` |
-| `possessive` | `Emperor's Hammer` |
-| `single` | `Indefatigable` |
-| `compound` | `Starwhisper` |
-| `da` | `Da Big Kroozer` |
-| `nounOfNecron` | `Scythe of Nephtar` (50% nazwa sylabowa Necronów, 50% `of`) |
-| `necronPossessive` | `Sekhmar's Reaping` |
-| `pair` | `Malice Gauntlet` albo `Gauntlet of Malice` |
+| Wzorzec | Wynik | Frakcje (waga) |
+| --- | --- | --- |
+| `latin` | `latinPhrase` (`Ira Throni`) | Imperium 30, Astartes 20 |
+| `mechLatin` | `latinPhrase` ze słownikami Mechanicus (`Cognitio Veritatis`) | Mechanicus 35 |
+| `adjNoun` | `Nieubłagany Gniew`, `Wykwintna Udręka` | wszystkie (30–50) |
+| `nounGen` | `Grom Świętej Terry`, `Tęsknota Gasnących Słońc`, `Wiadro Gorka` | wszystkie (30–45) |
+| `nounAdj` | `Sen Odległy` (szyk poetycki) | Aeldari 20, Drukhari 10 |
+| `adjNounGen` | `Łupiący Kadłub Morka` | Orkowie 15 |
+| `nounNecron` | `Cisza Amenekha` (imię z `syllableWord(NECRON)` + „a” jako dopełniacz) | Nekroni 30 |
+| `single` | `Niestrudzony`, `Apostazja` | Imperium 10, Astartes 10, Chaos 12 |
+
+Orkowie używają prostackiego niskiego gotyku po polsku (`Wielgachna Łajba`, `Kupa Złomu`, `Gorka`,
+`Morka`).
 
 ### Kryptonimy oddziałów (`UNIT`, `genUnitCodename`)
 
@@ -416,15 +418,16 @@ Popiołu`), `nounGreek` 15 (`Wilki Sigma`).
 
 ### Kryptonimy operacji (`OPERATION`, `genOperationCodename`)
 
-`Przedrostek` + fraza + opcjonalny znacznik (`tags`, pusty z wagą 10). Wzorce: `adjNoun` 50 (przymiotnik
+Sama fraza + opcjonalny znacznik (`tags`, pusty z wagą 10), bez słowa „Operacja”. Wzorce: `adjNoun` 50 (przymiotnik
 zgodny z rodzajem: `Czarny Świt`, `Martwa Cisza`, `Upadłe Słońce`), `noun` 18, `nounGen` 22 (dopełniacze z
 `UNIT.genitives`), `pair` 10 (`Młot i Kowadło`).
 
 ## Nazwy zastrzeżone
 
 `RESERVED_PERSON_NAMES` zawiera imiona unikatowych postaci z lore (Imperium, Sororitas, prymarchowie i
-Astartes, Mechanicus, Aeldari, Necroni i C'tan, Orkowie, Chaos, imiona bóstw). `RESERVED_VESSEL_NAMES`
-zawiera nazwy okrętów i maszyn z lore (np. `Vengeful Spirit`, `Fortress of Arrogance`, `Dies Irae`).
+Astartes, Mechanicus, Aeldari, Nekroni i C'tan, Orkowie, Chaos, imiona bóstw). `RESERVED_VESSEL_NAMES`
+zawiera nazwy okrętów i maszyn z lore w wersji angielskiej i polskiej (np. `Vengeful Spirit` / `Mściwy Duch`,
+`Fortress of Arrogance` / `Forteca Arogancji`, `Dies Irae`).
 
 Zasada: wpis wielowyrazowy blokuje tylko całą kombinację (`Sebastian Yarrick` jest zablokowany,
 `Sebastian Varro` i samo `Yarrick` są dozwolone). Wpis jednowyrazowy oznacza postać znaną pod jednym
@@ -433,7 +436,7 @@ po `normalizeForCheck`, więc `Khârn`, `Kharn` i `KHARN` są traktowane tak sam
 `Kelbor Hal`.
 
 Generatory osób używają `RESERVED_PERSON_INDEX`. Maszyny, okręty i kryptonimy używają
-`RESERVED_VESSEL_INDEX` (okręt może nosić imię bóstwa, np. `Tear of Lileath`).
+`RESERVED_VESSEL_INDEX` (okręt może nosić imię bóstwa, np. `Łza Ishy`).
 
 Aby zablokować kolejną nazwę, dopisz ją do odpowiedniej tablicy. Indeksy budują się przy starcie skryptu.
 
@@ -592,12 +595,14 @@ let currentLanguage = "pl";
 
 | Test | Kroki | Oczekiwany wynik |
 | --- | --- | --- |
-| Start modułu | Otwórz `GeneratorNazw/index.html`. | Widoczny jest panel generatora i placeholder wyników. Wybrane są `Imperium – Ludzie` i `Klasa Niższa`. |
+| Start modułu | Otwórz `GeneratorNazw/index.html`. | Widoczny jest panel generatora i placeholder wyników. Wybrane są `Ludzie` i `Klasa Niższa`. |
 | Brak tytułów | Wygeneruj po 20 nazw w każdej opcji kategorii osób. | Żadna nazwa nie zaczyna się tytułem, stopniem ani zawodem. |
 | Klasa niższa bez numerów | Wygeneruj 20 nazw `Klasa Niższa`. | Brak cyfr, liczb rzymskich i końcówek typu `-X`. |
 | Nazwy zastrzeżone | W konsoli: `isReserved("Sebastian Yarrick", RESERVED_PERSON_INDEX)` oraz `isReserved("Sebastian Varro", RESERVED_PERSON_INDEX)`. | `true` i `false`. |
 | Brak powtórzeń | Wygeneruj 20 nazw w dowolnej opcji. | Każda linia jest inna. |
-| Maszyny | Wybierz `Maszyny bojowe (Imperium)`. | Każda linia ma format `Klasyfikator „Nazwa”`. |
+| Maszyny i operacje | Wybierz `Maszyny Bojowe (Imperium)`, potem `Kryptonimy Operacji`. | Linie zawierają same nazwy: bez typu maszyny, cudzysłowów i słowa „Operacja”. |
+| Podkategorie Astartes | Wybierz `Adeptus Astartes`. | Lista `Opcja` zawiera 7 pozycji, domyślnie `Ogólne`. |
+| Kolejność kategorii | Otwórz listę `Kategoria`. | Kolejność jak w tabeli „Aktualne kategorie”. |
 | Generowanie bez seeda | Zostaw `Seed` puste i kliknij `Generuj`. | Pojawia się lista nazw, `modePill` pokazuje tryb losowy. |
 | Generowanie z seedem | Wpisz seed, ustaw kategorię i kliknij `Generuj`. | Pojawia się powtarzalna lista nazw. |
 | Powtarzalność seeda | Użyj tego samego seeda i ustawień po odświeżeniu strony. | Lista wyników jest taka sama. |
@@ -808,18 +813,18 @@ Current categories:
 
 | `key` | PL name | EN name |
 | --- | --- | --- |
-| `humans` | `Imperium – Ludzie` | `Imperium - Humans` |
-| `aeldari` | `Aeldari` | `Aeldari` |
-| `necron` | `Necroni` | `Necrons` |
-| `orks` | `Orkowie` | `Orks` |
-| `sororitas` | `Adepta Sororitas` | `Adepta Sororitas` |
-| `astartes` | `Astartes – imię i nazwisko bojowe` | `Astartes - battle name and surname` |
+| `humans` | `Ludzie` | `Humans` |
 | `admech` | `Adeptus Mechanicus` | `Adeptus Mechanicus` |
+| `astartes` | `Adeptus Astartes` | `Adeptus Astartes` |
+| `sororitas` | `Adepta Sororitas` | `Adepta Sororitas` |
 | `chaos` | `Chaos` | `Chaos` |
-| `warmachines` | `Maszyny bojowe (Imperium)` | `War machines (Imperium)` |
-| `ships` | `Okręty gwiezdne` | `Starships` |
-| `unitcodes` | `Kryptonimy oddziałów` | `Unit codenames` |
-| `opcodes` | `Kryptonimy operacji` | `Operation codenames` |
+| `aeldari` | `Aeldari` | `Aeldari` |
+| `orks` | `Orkowie` | `Orks` |
+| `necron` | `Nekroni` | `Necrons` |
+| `ships` | `Okręty Gwiezdne` | `Starships` |
+| `warmachines` | `Maszyny Bojowe (Imperium)` | `War machines (Imperium)` |
+| `unitcodes` | `Kryptonimy Oddziałów` | `Unit codenames` |
+| `opcodes` | `Kryptonimy Operacji` | `Operation codenames` |
 
 ### Options and the default view
 
@@ -829,15 +834,15 @@ first category (`humans`) and its first option are selected, i.e. `lower` ("Klas
 | Category | Options in order (`key` → function) |
 | --- | --- |
 | `humans` | `lower` → `genHumanLower`, `upper` → `genHumanUpper` |
-| `aeldari` | `craft` → `genAeldariCraft`, `druk` → `genAeldariDrukhari`, `har` → `genAeldariHarlequin` |
-| `necron` | `warrior` → `genNecronWarrior`, `lord` → `genNecronLord` |
-| `orks` | `boy` → `genOrk` |
-| `sororitas` | `sister` → `genSororitas` |
-| `astartes` | `standard` → `genAstartes` |
 | `admech` | `tp` → `genAdMechTech`, `skit` → `genAdMechSkit` |
+| `astartes` | `standard` → `genAstartes(r)`, `codex`, `nordic`, `angelic`, `crusader`, `salamander`, `scars` → `genAstartes(r, key)` |
+| `sororitas` | `sister` → `genSororitas` |
 | `chaos` | `und`, `kho`, `nur`, `tze`, `sla` → `genChaos(r, "undiv" / "khorne" / "nurgle" / "tzeent" / "slaan")` |
-| `warmachines` | `tank`, `titan`, `knight`, `air` → `genWarMachine(r, kind)` |
+| `aeldari` | `craft` → `genAeldariCraft`, `druk` → `genAeldariDrukhari`, `har` → `genAeldariHarlequin` |
+| `orks` | `boy` → `genOrk` |
+| `necron` | `warrior` → `genNecronWarrior`, `lord` → `genNecronLord` |
 | `ships` | `imp`, `ast`, `mec`, `eld`, `drk`, `ork`, `nec`, `cha` → `genShip(r, "imperial" / "astartes" / "mechanicus" / "eldar" / "drukhari" / "ork" / "necron" / "chaos")` |
+| `warmachines` | `tank`, `titan`, `knight`, `air` → `genWarMachine(r, kind)` |
 | `unitcodes` | `standard` → `genUnitCodename` |
 | `opcodes` | `standard` → `genOperationCodename` |
 
@@ -876,7 +881,7 @@ Result: output is not deterministic.
 | `makeRng(seedStr)` | Chooses seeded or automatic RNG. |
 | `chance(p, rand)` | Returns true with probability `p`. |
 | `cap(s)` | Capitalizes the first character. |
-| `cleanName(s)` | Removes straight `"` quotes, parentheses, extra spaces, and wrong punctuation spacing. Polish `„”` quotes are kept. |
+| `cleanName(s)` | Removes straight `"` quotes, parentheses, extra spaces, and wrong punctuation spacing. |
 | `pick(arr, rand)` | Picks an array element without weights. |
 | `pickItem(arr, rand)` | Weighted pick that returns the whole item (a string or a `{ v, w, g }` object). |
 | `pickWeighted(arr, rand)` | Like `pickItem`, but returns only the text (`item.v` or the string). |
@@ -893,7 +898,6 @@ Result: output is not deterministic.
 | `buildReservedIndex(list)` | Turns a reserved-name list into normalized word arrays. |
 | `isReserved(name, index)` | Returns true when the name contains a whole reserved word sequence in the same order. |
 | `tryGenerate(fn, reservedIndex, tries)` | Up to 30 attempts: skips empty and reserved results, returns the first that passes `looksGood`; as a last resort the first non-reserved one. |
-| `formatNamedThing(classifier, core)` | Creates the `Classifier „Name”` format. |
 | `genderIndex(g)` | Maps gender `m` / `f` / `n` to adjective form index `0` / `1` / `2`. |
 | `latinPhrase(rand, nouns, genitives)` | Latin nominative + genitive pair with different roots (`Ira Imperatoris`). |
 | `polishPhrase(rand)` | Polish Low Gothic name: 38% noun + genitive, 40% adjective + noun, 10% noun alone, 12% adjective + noun + genitive. |
@@ -947,16 +951,19 @@ Given-name gender is 50/50 (`givenM` / `givenF`). Styles: `plain` 45 (given + su
 78% given name + surname, 22% given name alone. Latinised and saintly given names, Gothic surnames
 evoking virtue or suffering.
 
-### Astartes (`ASTARTES`, `genAstartes`)
+### Adeptus Astartes (`ASTARTES`, `genAstartes`)
 
-| Style | Weight | Structure |
-| --- | --- | --- |
-| `codex` | 45 | 65% given + Latin cognomen, 20% given + Gothic epithet (`gothicPre` + `gothicSuf`), 15% given alone |
-| `angelic` | 14 | 35% angelic given name alone, 65% given + Latin cognomen |
-| `nordic` | 13 | 25% given alone, 75% given + epithet (`nordicPre` + `nordicSuf`) |
-| `crusader` | 10 | 60% given alone, 40% given + Gothic epithet |
-| `salamander` | 9 | 45% apostrophe name (`A'b`), 30% apostrophe name + surname, 25% given + surname |
-| `scars` | 9 | 40% given alone, 60% given + clan name |
+`genAstartes(rand, forcedStyle)`: the "Ogólne" (`standard`) subcategory passes no style and picks one from
+the `ASTARTES.styles` weights; the other subcategories pass their `key` as `forcedStyle`.
+
+| Subcategory | Style (`key`) | Weight in "General" | Structure |
+| --- | --- | --- | --- |
+| Codex (Ultramarines) | `codex` | 45 | 65% given + Latin cognomen, 20% given + Gothic epithet (`gothicPre` + `gothicSuf`), 15% given alone |
+| Angelic (Dark and Blood Angels) | `angelic` | 14 | 35% angelic given name alone, 65% given + Latin cognomen |
+| Nordic (Space Wolves) | `nordic` | 13 | 25% given alone, 75% given + epithet (`nordicPre` + `nordicSuf`) |
+| Crusader (Black Templars) | `crusader` | 10 | 60% given alone, 40% given + Gothic epithet |
+| Nocturne (Salamanders) | `salamander` | 9 | 45% apostrophe name (`A'b`), 30% apostrophe name + surname, 25% given + surname |
+| Chogoris (White Scars) | `scars` | 9 | 40% given alone, 60% given + clan name |
 
 ### Adeptus Mechanicus (`MECH`)
 
@@ -993,31 +1000,30 @@ syllabic words, 40% name + epithet (`Hexflayer`, `Plaguemother`, `Bloodhewer`).
 
 ### War machines (`WAR`, `PL`, `LATIN`, `genWarMachine`)
 
-Output: `Classifier „Name”`. `WAR[kind].classifiers` holds the type and pattern (e.g. `Czołg superciężki
-Baneblade`, `Kanonierka Valkyrie`, `Armiger Warglaive`). The name is Latin with probability `latinChance`
-(tanks 0.2, titans 0.6, knights 0.35, air 0.25), otherwise Polish (`polishPhrase`). Polish adjectives have
-three forms `[m, f, n]` and nouns have a `g` field, which produces grammatically agreeing forms
-(`Nieugięta Tarcza`, `Krwawe Proroctwo`). The reserved-name filter checks only the quoted name, not the
-classifier (`Rogal Dorn` is a chassis name).
+The output is the proper name only, without the machine type and without quotes (e.g. `Nieugięta Tarcza`,
+`Vindex Terrae`). The name is Latin with probability `WAR[kind].latinChance` (tanks 0.2, titans 0.6,
+knights 0.35, air 0.25), otherwise Polish (`polishPhrase`). Polish adjectives have three forms `[m, f, n]`
+and nouns have a `g` field, which produces grammatically agreeing forms (`Nieugięta Tarcza`,
+`Krwawe Proroctwo`). Names are checked against `RESERVED_VESSEL_INDEX`.
 
 ### Ships (`SHIP`, `genShip`)
 
-Each faction has weighted `patterns` and word lists `adj`, `noun`, `head`, `of`, `owner`, `single`,
-`compoundPre`, `compoundSuf`, `pairA`, `pairB`, `latinNouns`, `latinGenitives` (only those it needs).
+Names are Polish; Latin (High Gothic) names stay in Latin. Each faction has weighted `patterns` and word
+lists: `nouns` (`{ v, g }`), `adjectives` (`[m, f, n]`), `genitives`, optionally `single`, `latinNouns`,
+`latinGenitives`. `adjNounPhrase(pool, rand)` builds the "adjective + noun" phrase.
 
-| Pattern | Output |
-| --- | --- |
-| `latin` | `latinPhrase` (`Gloria Terrae`) |
-| `mechLatin` | `latinPhrase` with Mechanicus lists (`Machina Veritatis`) |
-| `adjNoun` | `Relentless Vigil` |
-| `nounOf` | `Hammer of the Saints` |
-| `possessive` | `Emperor's Hammer` |
-| `single` | `Indefatigable` |
-| `compound` | `Starwhisper` |
-| `da` | `Da Big Kroozer` |
-| `nounOfNecron` | `Scythe of Nephtar` (50% Necron syllabic name, 50% `of` list) |
-| `necronPossessive` | `Sekhmar's Reaping` |
-| `pair` | `Malice Gauntlet` or `Gauntlet of Malice` |
+| Pattern | Output | Factions (weight) |
+| --- | --- | --- |
+| `latin` | `latinPhrase` (`Ira Throni`) | Imperium 30, Astartes 20 |
+| `mechLatin` | `latinPhrase` with Mechanicus lists (`Cognitio Veritatis`) | Mechanicus 35 |
+| `adjNoun` | `Nieubłagany Gniew`, `Wykwintna Udręka` | all (30–50) |
+| `nounGen` | `Grom Świętej Terry`, `Tęsknota Gasnących Słońc`, `Wiadro Gorka` | all (30–45) |
+| `nounAdj` | `Sen Odległy` (poetic word order) | Aeldari 20, Drukhari 10 |
+| `adjNounGen` | `Łupiący Kadłub Morka` | Orks 15 |
+| `nounNecron` | `Cisza Amenekha` (name from `syllableWord(NECRON)` + "a" as the genitive) | Necrons 30 |
+| `single` | `Niestrudzony`, `Apostazja` | Imperium 10, Astartes 10, Chaos 12 |
+
+Orks use crude Orkish Low Gothic in Polish (`Wielgachna Łajba`, `Kupa Złomu`, `Gorka`, `Morka`).
 
 ### Unit codenames (`UNIT`, `genUnitCodename`)
 
@@ -1027,7 +1033,7 @@ Popiołu`), `nounGreek` 15 (`Wilki Sigma`).
 
 ### Operation codenames (`OPERATION`, `genOperationCodename`)
 
-`Prefix` + phrase + optional tag (`tags`, empty with weight 10). Patterns: `adjNoun` 50 (gender-agreeing
+Phrase + optional tag only (`tags`, empty with weight 10), without the word "Operacja". Patterns: `adjNoun` 50 (gender-agreeing
 adjective: `Czarny Świt`, `Martwa Cisza`, `Upadłe Słońce`), `noun` 18, `nounGen` 22 (genitives from
 `UNIT.genitives`), `pair` 10 (`Młot i Kowadło`).
 
@@ -1035,7 +1041,8 @@ adjective: `Czarny Świt`, `Martwa Cisza`, `Upadłe Słońce`), `noun` 18, `noun
 
 `RESERVED_PERSON_NAMES` holds the names of unique lore characters (Imperium, Sororitas, Primarchs and
 Astartes, Mechanicus, Aeldari, Necrons and C'tan, Orks, Chaos, god names). `RESERVED_VESSEL_NAMES` holds
-lore ship and war machine names (e.g. `Vengeful Spirit`, `Fortress of Arrogance`, `Dies Irae`).
+lore ship and war machine names in English and Polish (e.g. `Vengeful Spirit` / `Mściwy Duch`,
+`Fortress of Arrogance` / `Forteca Arogancji`, `Dies Irae`).
 
 Rule: a multi-word entry blocks only the whole combination (`Sebastian Yarrick` is blocked, while
 `Sebastian Varro` and `Yarrick` alone are allowed). A single-word entry marks a character known by one name
@@ -1043,7 +1050,7 @@ Rule: a multi-word entry blocks only the whole combination (`Sebastian Yarrick` 
 `normalizeForCheck`, so `Khârn`, `Kharn`, and `KHARN` are equal, and `Kelbor-Hal` matches `Kelbor Hal`.
 
 Person generators use `RESERVED_PERSON_INDEX`. War machines, ships, and codenames use
-`RESERVED_VESSEL_INDEX` (a ship may be named after a god, e.g. `Tear of Lileath`).
+`RESERVED_VESSEL_INDEX` (a ship may be named after a god, e.g. `Łza Ishy`).
 
 To block another name, add it to the matching array. The indexes are built when the script starts.
 
@@ -1200,12 +1207,14 @@ let currentLanguage = "pl";
 
 | Test | Steps | Expected result |
 | --- | --- | --- |
-| Module start | Open `GeneratorNazw/index.html`. | Generator panel and result placeholder are visible. `Imperium – Ludzie` and `Klasa Niższa` are selected. |
+| Module start | Open `GeneratorNazw/index.html`. | Generator panel and result placeholder are visible. `Ludzie` and `Klasa Niższa` are selected. |
 | No titles | Generate 20 names in every option of the person categories. | No name starts with a title, rank, or job. |
 | Lower class without numbers | Generate 20 `Klasa Niższa` names. | No digits, Roman numerals, or `-X` style endings. |
 | Reserved names | In the console: `isReserved("Sebastian Yarrick", RESERVED_PERSON_INDEX)` and `isReserved("Sebastian Varro", RESERVED_PERSON_INDEX)`. | `true` and `false`. |
 | No repeats | Generate 20 names in any option. | Every line is different. |
-| War machines | Choose `Maszyny bojowe (Imperium)`. | Every line has the `Classifier „Name”` format. |
+| War machines and operations | Choose `Maszyny Bojowe (Imperium)`, then `Kryptonimy Operacji`. | Lines contain names only: no machine type, no quotes, and no word "Operacja". |
+| Astartes subcategories | Choose `Adeptus Astartes`. | The `Option` list has 7 entries, `Ogólne` by default. |
+| Category order | Open the `Category` list. | The order matches the "Current categories" table. |
 | Generate without seed | Leave `Seed` empty and click `Generate`. | A name list appears and `modePill` shows random mode. |
 | Generate with seed | Enter a seed, choose settings, and click `Generate`. | A repeatable name list appears. |
 | Seed repeatability | Use the same seed and settings after page refresh. | The result list is the same. |

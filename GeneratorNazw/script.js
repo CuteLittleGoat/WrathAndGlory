@@ -54,7 +54,7 @@ function cap(s) {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 }
 
-// --- Czyści gotową nazwę: proste cudzysłowy, nawiasy, nadmiarowe spacje; zachowuje polskie cudzysłowy „” / Cleans a finished name: straight quotes, parentheses, extra spaces; keeps Polish „” quotes ---
+// --- Czyści gotową nazwę: proste cudzysłowy, nawiasy, nadmiarowe spacje / Cleans a finished name: straight quotes, parentheses, extra spaces ---
 function cleanName(s) {
   return String(s)
     .replace(/"/g, "")
@@ -318,6 +318,10 @@ const RESERVED_VESSEL_NAMES = [
   "Conqueror", "Pride of the Emperor", "Endurance", "Iron Blood", "Covenant of Blood", "Echo of Damnation",
   "Speranza", "Imperius Dominatus", "Dies Irae", "Lupa Capitalina", "Blade of Vengeance", "Fortress of Arrogance",
   "Hand of Steel", "Canis Rex", "Planet Killer", "Solemnace Gallery",
+  // Polskie odpowiedniki nazw z lore / Polish equivalents of lore names
+  "Mściwy Duch", "Falanga", "Honor Macragge", "Wieczny Krzyżowiec", "Niezwyciężony Rozum", "Zdobywca",
+  "Duma Imperatora", "Wytrzymałość", "Żelazna Krew", "Przymierze Krwi", "Echo Potępienia", "Ostrze Zemsty",
+  "Forteca Arogancji", "Stalowa Ręka", "Zabójca Planet",
 ];
 
 // --- Zamienia listę nazw na listę sekwencji słów do szybkiego porównania / Turns a name list into word sequences for fast comparison ---
@@ -359,11 +363,6 @@ function tryGenerate(fn, reservedIndex = RESERVED_PERSON_INDEX, tries = 30) {
     if (!fallback) fallback = candidate;
   }
   return fallback;
-}
-
-// --- Format nazwy maszyny: klasyfikator i nazwa własna w polskim cudzysłowie / War machine format: classifier and proper name in Polish quotes ---
-function formatNamedThing(classifier, core) {
-  return cleanName(`${classifier} „${core}”`);
 }
 
 /* =======================
@@ -592,11 +591,14 @@ const ASTARTES = {
   ],
   scarsGiven: [
     "Batu", "Chagan", "Jochi", "Temur", "Toqta", "Arslan", "Berke", "Chinua", "Dorgon", "Jebe", "Kaidu", "Nogai",
-    "Orda", "Qutlugh", "Tolui", "Sechen", "Ganzorig", "Bayan", "Esen", "Altan", "Buri", "Subai",
+    "Orda", "Qutlugh", "Tolui", "Sechen", "Ganzorig", "Bayan", "Esen", "Altan", "Buri", "Subai", "Mukhali",
+    "Borokhul", "Jelme", "Sorkan", "Boroqai", "Tarkhan", "Yesun", "Ariq", "Khadan", "Nokhai", "Toghrul", "Belgutei",
+    "Bekter", "Shigi", "Munglik", "Daritai",
   ],
   scarsClan: [
     "Bataar", "Chagat", "Ergun", "Khasar", "Sartaq", "Temuge", "Oyrat", "Naiman", "Kerait", "Jalair", "Merkit",
-    "Tayichi", "Borjin", "Qonggir", "Uriankh",
+    "Tayichi", "Borjin", "Qonggir", "Uriankh", "Khongirad", "Olkhunut", "Baarin", "Barulas", "Sunud", "Dorben",
+    "Khatagin", "Saljiut",
   ],
 };
 
@@ -961,123 +963,101 @@ const LATIN = {
    Dane – maszyny bojowe / Data – war machines
    ======================= */
 
-// --- Klasyfikatory (typ i wzór maszyny) oraz proporcje nazw polskich i łacińskich / Classifiers (type and pattern) and the Polish/Latin name ratio ---
+// --- Szansa na łacińską nazwę (wysoki gotyk) dla każdego rodzaju maszyny; reszta nazw jest polska / Chance of a Latin (High Gothic) name per machine kind; the remaining names are Polish ---
 const WAR = {
-  tank: {
-    classifiers: [
-      { v: "Czołg Leman Russ", w: 6 }, { v: "Czołg Leman Russ Demolisher", w: 2 },
-      { v: "Czołg Leman Russ Vanquisher", w: 2 }, { v: "Czołg superciężki Baneblade", w: 2 },
-      { v: "Czołg superciężki Shadowsword", w: 1 }, { v: "Czołg Rogal Dorn", w: 2 },
-      { v: "Transporter Chimera", w: 3 }, { v: "Transporter Taurox", w: 1 }, { v: "Czołg Hellhound", w: 2 },
-      { v: "Działo samobieżne Basilisk", w: 2 }, { v: "Wyrzutnia Manticore", w: 1 },
-    ],
-    latinChance: 0.2,
-  },
-  titan: {
-    classifiers: [
-      { v: "Tytan klasy Warhound", w: 3 }, { v: "Tytan klasy Reaver", w: 3 }, { v: "Tytan klasy Warlord", w: 3 },
-      { v: "Tytan klasy Warbringer", w: 1 }, { v: "Tytan klasy Warmaster", w: 1 }, { v: "Tytan klasy Imperator", w: 1 },
-    ],
-    latinChance: 0.6,
-  },
-  knight: {
-    classifiers: [
-      { v: "Rycerz Paladin", w: 3 }, { v: "Rycerz Errant", w: 3 }, { v: "Rycerz Warden", w: 2 },
-      { v: "Rycerz Crusader", w: 3 }, { v: "Rycerz Gallant", w: 2 }, { v: "Rycerz Preceptor", w: 1 },
-      { v: "Rycerz Castellan", w: 2 }, { v: "Rycerz Valiant", w: 1 }, { v: "Armiger Warglaive", w: 2 },
-      { v: "Armiger Helverin", w: 1 },
-    ],
-    latinChance: 0.35,
-  },
-  air: {
-    classifiers: [
-      { v: "Kanonierka Valkyrie", w: 4 }, { v: "Kanonierka Vendetta", w: 2 }, { v: "Kanonierka Vulture", w: 2 },
-      { v: "Myśliwiec Thunderbolt", w: 2 }, { v: "Myśliwiec Lightning", w: 1 }, { v: "Bombowiec Marauder", w: 1 },
-      { v: "Myśliwiec szturmowy Avenger", w: 1 },
-    ],
-    latinChance: 0.25,
-  },
+  tank: { latinChance: 0.2 },
+  titan: { latinChance: 0.6 },
+  knight: { latinChance: 0.35 },
+  air: { latinChance: 0.25 },
 };
 
 /* =======================
    Dane – okręty gwiezdne / Data – starships
    ======================= */
 
-// --- Dla każdej frakcji: wzorce (patterns) i słowniki; nazwy okrętów są po angielsku lub łacinie jak w lore / Per faction: patterns and word lists; ship names are English or Latin as in lore ---
+// --- Dla każdej frakcji: wzorce (patterns) i polskie słowniki; łacińskie nazwy zostają po łacinie / Per faction: patterns and Polish word lists; Latin names stay in Latin ---
+// Rzeczowniki mają rodzaj (g: m/f/n), przymiotniki trzy formy [m, f, n], dopełniacze odpowiadają na „czego? kogo?”
+// Nouns carry a gender (g: m/f/n), adjectives have three forms [m, f, n], genitives answer "of what? of whom?"
 const SHIP = {
   imperial: {
-    patterns: [
-      { v: "latin", w: 30 }, { v: "adjNoun", w: 25 }, { v: "nounOf", w: 25 }, { v: "possessive", w: 10 },
-      { v: "single", w: 10 },
+    patterns: [{ v: "latin", w: 30 }, { v: "adjNoun", w: 30 }, { v: "nounGen", w: 30 }, { v: "single", w: 10 }],
+    nouns: [
+      { v: "Młot", g: "m" }, { v: "Miecz", g: "m" }, { v: "Gniew", g: "m" }, { v: "Wyrok", g: "m" },
+      { v: "Strażnik", g: "m" }, { v: "Herold", g: "m" }, { v: "Sztandar", g: "m" }, { v: "Grom", g: "m" },
+      { v: "Osąd", g: "m" }, { v: "Bastion", g: "m" }, { v: "Werdykt", g: "m" }, { v: "Płomień", g: "m" },
+      { v: "Głos", g: "m" },
+      { v: "Tarcza", g: "f" }, { v: "Pięść", g: "f" }, { v: "Włócznia", g: "f" }, { v: "Chwała", g: "f" },
+      { v: "Czujność", g: "f" }, { v: "Pokuta", g: "f" }, { v: "Krucjata", g: "f" }, { v: "Pochodnia", g: "f" },
+      { v: "Korona", g: "f" }, { v: "Ręka", g: "f" }, { v: "Przysięga", g: "f" }, { v: "Furia", g: "f" },
+      { v: "Lanca", g: "f" }, { v: "Litania", g: "f" }, { v: "Wiara", g: "f" },
+      { v: "Światło", g: "n" }, { v: "Oko", g: "n" }, { v: "Słowo", g: "n" }, { v: "Ostrze", g: "n" },
+      { v: "Rozgrzeszenie", g: "n" }, { v: "Odkupienie", g: "n" },
     ],
-    adj: [
-      "Relentless", "Righteous", "Unyielding", "Implacable", "Vigilant", "Steadfast", "Merciless", "Unbroken",
-      "Indomitable", "Resolute", "Sanctified", "Glorious", "Faithful", "Eternal", "Crimson", "Silent", "Ceaseless",
-      "Unrepentant", "Holy", "Iron",
+    adjectives: [
+      ["Nieubłagany", "Nieubłagana", "Nieubłagane"], ["Sprawiedliwy", "Sprawiedliwa", "Sprawiedliwe"],
+      ["Nieugięty", "Nieugięta", "Nieugięte"], ["Czujny", "Czujna", "Czujne"], ["Niezłomny", "Niezłomna", "Niezłomne"],
+      ["Bezlitosny", "Bezlitosna", "Bezlitosne"], ["Niezachwiany", "Niezachwiana", "Niezachwiane"],
+      ["Wytrwały", "Wytrwała", "Wytrwałe"], ["Uświęcony", "Uświęcona", "Uświęcone"],
+      ["Chwalebny", "Chwalebna", "Chwalebne"], ["Wierny", "Wierna", "Wierne"], ["Wieczny", "Wieczna", "Wieczne"],
+      ["Szkarłatny", "Szkarłatna", "Szkarłatne"], ["Milczący", "Milcząca", "Milczące"],
+      ["Nieustający", "Nieustająca", "Nieustające"], ["Żelazny", "Żelazna", "Żelazne"], ["Święty", "Święta", "Święte"],
+      ["Nieskruszony", "Nieskruszona", "Nieskruszone"],
     ],
-    noun: [
-      "Vigil", "Fury", "Wrath", "Judgement", "Faith", "Resolve", "Retribution", "Crusade", "Devotion", "Sentinel",
-      "Vengeance", "Justice", "Dominion", "Absolution", "Penance", "Defiance", "Litany", "Guardian", "Hammer", "Sword",
+    genitives: [
+      "Terry", "Tronu", "Imperatora", "Wiary", "Męczenników", "Świętych", "Sprawiedliwości", "Świtu", "Pustki",
+      "Świętej Terry", "Złotego Tronu", "Wiernych", "Odkupienia", "Pokuty",
     ],
-    head: [
-      "Hammer", "Blade", "Light", "Fist", "Wrath", "Shield", "Spear", "Hand", "Voice", "Pride", "Glory", "Fury",
-      "Herald", "Lance", "Crown", "Torch", "Sword", "Eye", "Word", "Oath",
-    ],
-    of: [
-      "Terra", "the Throne", "the Emperor", "Faith", "the Martyrs", "the Saints", "Justice", "Dawn", "the Void",
-      "Holy Terra", "the Golden Throne", "Retribution", "the Faithful", "Sol",
-    ],
-    owner: ["Emperor's", "Throne's", "Martyr's", "Saint's", "Terra's"],
     single: [
-      "Implacable", "Indefatigable", "Incorruptible", "Unconquerable", "Intolerant", "Inexorable", "Sanctity",
-      "Tribulation", "Absolution", "Redemption", "Valorous", "Forbearance", "Contrition", "Abjuration", "Steadfast",
+      "Nieubłagany", "Niestrudzony", "Nieprzekupny", "Niezwyciężony", "Nieugięty", "Niezłomny", "Nieustępliwy",
+      "Mężny", "Wytrwały", "Rozgrzeszenie", "Odkupienie", "Pokuta", "Skrucha", "Wyrzeczenie", "Wytrwałość",
     ],
   },
   astartes: {
-    patterns: [
-      { v: "latin", w: 20 }, { v: "adjNoun", w: 25 }, { v: "nounOf", w: 35 }, { v: "possessive", w: 10 },
-      { v: "single", w: 10 },
+    patterns: [{ v: "latin", w: 20 }, { v: "adjNoun", w: 30 }, { v: "nounGen", w: 40 }, { v: "single", w: 10 }],
+    nouns: [
+      { v: "Honor", g: "m" }, { v: "Gniew", g: "m" }, { v: "Młot", g: "m" }, { v: "Miecz", g: "m" },
+      { v: "Szpon", g: "m" }, { v: "Herold", g: "m" }, { v: "Głos", g: "m" }, { v: "Obowiązek", g: "m" },
+      { v: "Triumf", g: "m" },
+      { v: "Duma", g: "f" }, { v: "Przysięga", g: "f" }, { v: "Tarcza", g: "f" }, { v: "Pięść", g: "f" },
+      { v: "Włócznia", g: "f" }, { v: "Chwała", g: "f" }, { v: "Czujność", g: "f" }, { v: "Lanca", g: "f" },
+      { v: "Rękawica", g: "f" }, { v: "Pamięć", g: "f" }, { v: "Zemsta", g: "f" },
+      { v: "Braterstwo", g: "n" }, { v: "Męstwo", g: "n" }, { v: "Ostrze", g: "n" }, { v: "Poświęcenie", g: "n" },
     ],
-    adj: [
-      "Unbowed", "Iron", "Stoic", "Relentless", "Honoured", "Vigilant", "Unbroken", "Wrathful", "Sworn", "Eternal",
-      "Silent", "Proud", "Grim", "Stalwart", "Steadfast",
+    adjectives: [
+      ["Niezłomny", "Niezłomna", "Niezłomne"], ["Żelazny", "Żelazna", "Żelazne"], ["Stoicki", "Stoicka", "Stoickie"],
+      ["Nieustępliwy", "Nieustępliwa", "Nieustępliwe"], ["Czcigodny", "Czcigodna", "Czcigodne"],
+      ["Czujny", "Czujna", "Czujne"], ["Niezłamany", "Niezłamana", "Niezłamane"], ["Gniewny", "Gniewna", "Gniewne"],
+      ["Zaprzysiężony", "Zaprzysiężona", "Zaprzysiężone"], ["Wieczny", "Wieczna", "Wieczne"],
+      ["Milczący", "Milcząca", "Milczące"], ["Dumny", "Dumna", "Dumne"], ["Ponury", "Ponura", "Ponure"],
+      ["Nieugięty", "Nieugięta", "Nieugięte"], ["Niezachwiany", "Niezachwiana", "Niezachwiane"],
     ],
-    noun: [
-      "Honour", "Oath", "Wrath", "Pride", "Vigil", "Glory", "Resolve", "Duty", "Valour", "Fury", "Aegis",
-      "Retribution", "Remembrance", "Sanction", "Defiance", "Brotherhood",
+    genitives: [
+      "Męstwa", "Prymarchy", "Imperatora", "Terry", "Poświęcenia", "Obowiązku", "Zemsty", "Honoru", "Żelaza", "Stali",
+      "Gromu", "Krucjaty", "Zwycięstwa", "Poległych", "Braterstwa", "Zakonu",
     ],
-    head: [
-      "Blade", "Spear", "Shield", "Hammer", "Fist", "Oath", "Pride", "Wrath", "Herald", "Talon", "Gauntlet", "Sword",
-      "Voice", "Lance",
-    ],
-    of: [
-      "Valour", "the Primarch", "the Emperor", "Terra", "Sacrifice", "Duty", "Vengeance", "Honour", "Iron", "Steel",
-      "Thunder", "the Crusade", "Victory", "the Fallen", "Brotherhood",
-    ],
-    owner: ["Primarch's", "Emperor's", "Martyr's", "Champion's", "Chapter's"],
-    single: ["Unrelenting", "Reclamator", "Adamant", "Implacable", "Vigilance", "Invictus", "Oathkeeper", "Ascendant"],
+    single: ["Niezłomny", "Nieustępliwy", "Niezłamany", "Nieugięty", "Czujność", "Zaprzysiężony", "Niezachwiany"],
   },
   mechanicus: {
-    patterns: [
-      { v: "mechLatin", w: 30 }, { v: "nounOf", w: 30 }, { v: "possessive", w: 20 }, { v: "adjNoun", w: 20 },
+    patterns: [{ v: "mechLatin", w: 35 }, { v: "adjNoun", w: 30 }, { v: "nounGen", w: 35 }],
+    nouns: [
+      { v: "Kantyk", g: "m" }, { v: "Aksjomat", g: "m" }, { v: "Schemat", g: "m" }, { v: "Wektor", g: "m" },
+      { v: "Protokół", g: "m" }, { v: "Teoremat", g: "m" }, { v: "Algorytm", g: "m" }, { v: "Katechizm", g: "m" },
+      { v: "Tygiel", g: "m" }, { v: "Silnik", g: "m" }, { v: "Hymn", g: "m" },
+      { v: "Litania", g: "f" }, { v: "Kuźnia", g: "f" }, { v: "Formuła", g: "f" }, { v: "Maszyna", g: "f" },
+      { v: "Wiedza", g: "f" },
+      { v: "Równanie", g: "n" }, { v: "Przymierze", g: "n" }, { v: "Dominium", g: "n" }, { v: "Kowadło", g: "n" },
     ],
-    adj: [
-      "Sacred", "Blessed", "Immaculate", "Logical", "Perfect", "Binaric", "Sanctified", "Eternal", "Omniscient",
-      "Infallible", "Calculated", "Unceasing",
+    adjectives: [
+      ["Święty", "Święta", "Święte"], ["Błogosławiony", "Błogosławiona", "Błogosławione"],
+      ["Nieskazitelny", "Nieskazitelna", "Nieskazitelne"], ["Logiczny", "Logiczna", "Logiczne"],
+      ["Doskonały", "Doskonała", "Doskonałe"], ["Binarny", "Binarna", "Binarne"], ["Uświęcony", "Uświęcona", "Uświęcone"],
+      ["Wieczny", "Wieczna", "Wieczne"], ["Wszechwiedzący", "Wszechwiedząca", "Wszechwiedzące"],
+      ["Nieomylny", "Nieomylna", "Nieomylne"], ["Nieustanny", "Nieustanna", "Nieustanne"],
     ],
-    noun: [
-      "Canticle", "Litany", "Axiom", "Schema", "Vector", "Protocol", "Theorem", "Algorithm", "Catechism", "Crucible",
-      "Anvil", "Engine", "Covenant", "Dominion", "Equation", "Cogitation",
+    genitives: [
+      "Marsa", "Boga Maszyny", "Żelaza", "Stali", "Rozumu", "Kuźni", "Czystych Danych", "Noosfery",
+      "Poszukiwania Wiedzy", "Świętej Maszyny",
     ],
-    head: [
-      "Canticle", "Litany", "Axiom", "Schema", "Vector", "Protocol", "Theorem", "Algorithm", "Catechism", "Crucible",
-      "Anvil", "Engine", "Covenant", "Hymn",
-    ],
-    of: [
-      "Mars", "the Omnissiah", "the Motive Force", "Iron", "the Machine God", "Steel", "Reason", "the Forge",
-      "the Quest for Knowledge", "Pure Data", "the Noosphere",
-    ],
-    owner: ["Omnissiah's", "Machine God's", "Fabricator's", "Forge's"],
     latinNouns: [
       "Machina", "Cognitio", "Ferrum", "Scientia", "Ratio", "Fabrica", "Motus", "Numerus", "Mensura", "Vis", "Anima",
       "Lex", "Ordo",
@@ -1088,96 +1068,118 @@ const SHIP = {
     ],
   },
   eldar: {
-    patterns: [{ v: "adjNoun", w: 35 }, { v: "nounOf", w: 45 }, { v: "compound", w: 20 }],
-    adj: [
-      "Silent", "Fading", "Eternal", "Distant", "Silver", "Starlit", "Twilight", "Moonlit", "Swift", "Pale", "Hidden",
-      "Wandering", "Lost", "Sorrowful",
+    patterns: [{ v: "adjNoun", w: 35 }, { v: "nounGen", w: 45 }, { v: "nounAdj", w: 20 }],
+    nouns: [
+      { v: "Szept", g: "m" }, { v: "Sen", g: "m" }, { v: "Lament", g: "m" }, { v: "Cień", g: "m" }, { v: "Świt", g: "m" },
+      { v: "Pieśń", g: "f" }, { v: "Łza", g: "f" }, { v: "Mgła", g: "f" }, { v: "Włócznia", g: "f" },
+      { v: "Gwiazda", g: "f" }, { v: "Zasłona", g: "f" }, { v: "Nić", g: "f" }, { v: "Łaska", g: "f" },
+      { v: "Klinga", g: "f" }, { v: "Tęsknota", g: "f" },
+      { v: "Echo", g: "n" }, { v: "Lustro", g: "n" }, { v: "Skrzydło", g: "n" }, { v: "Wspomnienie", g: "n" },
     ],
-    noun: [
-      "Song", "Whisper", "Dream", "Tear", "Lament", "Echo", "Veil", "Blade", "Spear", "Star", "Mist", "Shade", "Dawn",
-      "Thread", "Mirror", "Wing", "Sorrow", "Grace",
+    adjectives: [
+      ["Cichy", "Cicha", "Ciche"], ["Gasnący", "Gasnąca", "Gasnące"], ["Wieczny", "Wieczna", "Wieczne"],
+      ["Odległy", "Odległa", "Odległe"], ["Srebrny", "Srebrna", "Srebrne"], ["Gwiezdny", "Gwiezdna", "Gwiezdne"],
+      ["Księżycowy", "Księżycowa", "Księżycowe"], ["Blady", "Blada", "Blade"], ["Ukryty", "Ukryta", "Ukryte"],
+      ["Wędrowny", "Wędrowna", "Wędrowne"], ["Zagubiony", "Zagubiona", "Zagubione"], ["Żałobny", "Żałobna", "Żałobne"],
+      ["Zmierzchowy", "Zmierzchowa", "Zmierzchowe"],
     ],
-    head: [
-      "Song", "Whisper", "Dream", "Tear", "Lament", "Echo", "Veil", "Blade", "Spear", "Mist", "Shade", "Thread",
-      "Mirror", "Wing", "Sorrow", "Grace",
+    genitives: [
+      "Ishy", "Asuryana", "Zmierzchu", "Zagubionych Gwiazd", "Gasnących Słońc", "Ciszy", "Księżyca",
+      "Dawnych Ścieżek", "Pamięci", "Jesieni", "Odległych Gwiazd",
     ],
-    of: [
-      "Isha", "Asuryan", "Lileath", "the Webway", "Twilight", "Lost Stars", "Fading Suns", "Silence", "Moonlight",
-      "the Old Paths", "Remembrance", "Autumn", "Distant Stars",
-    ],
-    compoundPre: ["Star", "Moon", "Mist", "Dream", "Night", "Silver", "Dusk", "Soul", "Wind", "Dawn"],
-    compoundSuf: ["whisper", "song", "veil", "shadow", "wing", "thread", "gleam", "fall", "sorrow", "strider"],
   },
   drukhari: {
-    patterns: [{ v: "adjNoun", w: 40 }, { v: "nounOf", w: 40 }, { v: "compound", w: 20 }],
-    adj: [
-      "Exquisite", "Black", "Serrated", "Venomous", "Cruel", "Screaming", "Silent", "Endless", "Hungering", "Bitter",
-      "Barbed", "Shadowed", "Midnight", "Poisoned",
+    patterns: [{ v: "adjNoun", w: 45 }, { v: "nounGen", w: 45 }, { v: "nounAdj", w: 10 }],
+    nouns: [
+      { v: "Kolec", g: "m" }, { v: "Hak", g: "m" }, { v: "Nóż", g: "m" }, { v: "Kieł", g: "m" }, { v: "Bicz", g: "m" },
+      { v: "Jad", g: "m" }, { v: "Głód", g: "m" }, { v: "Wrzask", g: "m" }, { v: "Cierń", g: "m" },
+      { v: "Sztylet", g: "m" },
+      { v: "Udręka", g: "f" }, { v: "Męka", g: "f" }, { v: "Brzytwa", g: "f" }, { v: "Złośliwość", g: "f" },
+      { v: "Zawiść", g: "f" }, { v: "Plaga", g: "f" }, { v: "Pajęczyna", g: "f" }, { v: "Agonia", g: "f" },
+      { v: "Okrucieństwo", g: "n" }, { v: "Żądło", g: "n" }, { v: "Cierpienie", g: "n" }, { v: "Ostrze", g: "n" },
     ],
-    noun: [
-      "Agony", "Torment", "Razor", "Barb", "Thorn", "Fang", "Lash", "Scourge", "Hook", "Hunger", "Cruelty", "Spite",
-      "Malice", "Venom", "Sting", "Shriek", "Knife", "Anguish",
+    adjectives: [
+      ["Wykwintny", "Wykwintna", "Wykwintne"], ["Czarny", "Czarna", "Czarne"], ["Ząbkowany", "Ząbkowana", "Ząbkowane"],
+      ["Jadowity", "Jadowita", "Jadowite"], ["Okrutny", "Okrutna", "Okrutne"], ["Krzyczący", "Krzycząca", "Krzyczące"],
+      ["Cichy", "Cicha", "Ciche"], ["Nieskończony", "Nieskończona", "Nieskończone"],
+      ["Łaknący", "Łaknąca", "Łaknące"], ["Gorzki", "Gorzka", "Gorzkie"], ["Kolczasty", "Kolczasta", "Kolczaste"],
+      ["Mroczny", "Mroczna", "Mroczne"], ["Północny", "Północna", "Północne"], ["Zatruty", "Zatruta", "Zatrute"],
     ],
-    head: [
-      "Razor", "Barb", "Thorn", "Fang", "Lash", "Scourge", "Hook", "Knife", "Blade", "Kiss", "Whisper", "Web", "Sting",
+    genitives: [
+      "Mrocznego Miasta", "Bólu", "Krzyku", "Rozpaczy", "Wiecznej Nocy", "Cieni", "Noży", "Cierpienia", "Zawiści",
+      "Pustki", "Agonii",
     ],
-    of: [
-      "Commorragh", "Pain", "Screams", "the Dark City", "Despair", "Endless Night", "Shadows", "Knives", "Suffering",
-      "Spite", "the Void",
-    ],
-    compoundPre: ["Soul", "Pain", "Blood", "Night", "Shadow", "Razor", "Spite", "Venom", "Flesh"],
-    compoundSuf: ["thief", "drinker", "hook", "lash", "fang", "reaper", "harvest", "knife", "weaver", "flayer"],
   },
   ork: {
-    patterns: [{ v: "da", w: 45 }, { v: "adjNoun", w: 25 }, { v: "possessive", w: 30 }],
-    adj: [
-      "Big", "Red", "Mean", "Loud", "Krumpin'", "Smashin'", "Burnin'", "Lootin'", "Stompy", "Killin'", "Ragin'",
-      "Nasty", "Dead 'Ard", "Proppa", "Speedy", "Shooty", "Choppy", "Blasty", "Rokkin'",
+    // Orkowy niski gotyk po polsku: prostackie przymiotniki i „czyja” łajba / Orkish Low Gothic in Polish: crude adjectives and "whose" ship
+    patterns: [{ v: "adjNoun", w: 50 }, { v: "nounGen", w: 35 }, { v: "adjNounGen", w: 15 }],
+    nouns: [
+      { v: "Krążownik", g: "m" }, { v: "Wrak", g: "m" }, { v: "Kadłub", g: "m" }, { v: "Rozwalacz", g: "m" },
+      { v: "Siekacz", g: "m" }, { v: "Tupacz", g: "m" }, { v: "Kieł", g: "m" }, { v: "Złom", g: "m" },
+      { v: "Kopniak", g: "m" }, { v: "Łom", g: "m" },
+      { v: "Łajba", g: "f" }, { v: "Balia", g: "f" }, { v: "Barka", g: "f" }, { v: "Puszka", g: "f" },
+      { v: "Skrzynia", g: "f" }, { v: "Pięść", g: "f" }, { v: "Szczęka", g: "f" }, { v: "Kupa Złomu", g: "f" },
+      { v: "Rozwałka", g: "f" },
+      { v: "Pudło", g: "n" }, { v: "Działo", g: "n" }, { v: "Wiadro", g: "n" },
     ],
-    noun: [
-      "Kroozer", "Hulk", "Rok", "Boat", "Tub", "Barge", "Smasha", "Choppa", "Stompa", "Krate", "Kan", "Skiff",
-      "Gun-Barge", "Dakka-Boat", "Boom-Tub", "Scrap-Ark", "Wagon", "Fist", "Grin", "Toof",
+    adjectives: [
+      ["Wielgachny", "Wielgachna", "Wielgachne"], ["Czerwony", "Czerwona", "Czerwone"], ["Wredny", "Wredna", "Wredne"],
+      ["Głośny", "Głośna", "Głośne"], ["Szybki", "Szybka", "Szybkie"], ["Twardy", "Twarda", "Twarde"],
+      ["Porządny", "Porządna", "Porządne"], ["Rozwalający", "Rozwalająca", "Rozwalające"],
+      ["Tupiący", "Tupiąca", "Tupiące"], ["Łupiący", "Łupiąca", "Łupiące"], ["Wkurzony", "Wkurzona", "Wkurzone"],
+      ["Zardzewiały", "Zardzewiała", "Zardzewiałe"], ["Dakkowy", "Dakkowa", "Dakkowe"],
+      ["Gorkowy", "Gorkowa", "Gorkowe"], ["Morkowy", "Morkowa", "Morkowe"],
     ],
-    owner: ["Gork's", "Mork's", "Da Boss's", "Big Mek's", "Grot's"],
+    genitives: ["Gorka", "Morka", "Szefa", "Wielkiego Meka", "Grota", "Bossa", "Dakki", "Złomu"],
   },
   necron: {
-    patterns: [{ v: "adjNoun", w: 40 }, { v: "nounOfNecron", w: 35 }, { v: "necronPossessive", w: 25 }],
-    adj: [
-      "Eternal", "Silent", "Undying", "Deathless", "Endless", "Ageless", "Sleepless", "Starless", "Pitiless",
-      "Immortal", "Unbroken", "Sepulchral",
+    patterns: [{ v: "adjNoun", w: 40 }, { v: "nounGen", w: 30 }, { v: "nounNecron", w: 30 }],
+    nouns: [
+      { v: "Grobowiec", g: "m" }, { v: "Sarkofag", g: "m" }, { v: "Eon", g: "m" }, { v: "Zastój", g: "m" },
+      { v: "Podbój", g: "m" }, { v: "Wyrok", g: "m" }, { v: "Sąd", g: "m" }, { v: "Monolit", g: "m" },
+      { v: "Obelisk", g: "m" },
+      { v: "Kosa", g: "f" }, { v: "Dynastia", g: "f" }, { v: "Cisza", g: "f" }, { v: "Wieczność", g: "f" },
+      { v: "Korona", g: "f" }, { v: "Władza", g: "f" }, { v: "Niepamięć", g: "f" }, { v: "Nekropolia", g: "f" },
+      { v: "Żniwo", g: "n" }, { v: "Panowanie", g: "n" }, { v: "Odzyskanie", g: "n" }, { v: "Królestwo", g: "n" },
     ],
-    noun: [
-      "Harvest", "Reaping", "Dominion", "Sepulchre", "Dynasty", "Reclamation", "Judgement", "Silence", "Eternity",
-      "Crown", "Scythe", "Aeon", "Sovereignty", "Conquest", "Stasis", "Oblivion",
+    adjectives: [
+      ["Wieczny", "Wieczna", "Wieczne"], ["Cichy", "Cicha", "Ciche"], ["Nieumierający", "Nieumierająca", "Nieumierające"],
+      ["Nieśmiertelny", "Nieśmiertelna", "Nieśmiertelne"], ["Nieskończony", "Nieskończona", "Nieskończone"],
+      ["Odwieczny", "Odwieczna", "Odwieczne"], ["Bezsenny", "Bezsenna", "Bezsenne"],
+      ["Bezgwiezdny", "Bezgwiezdna", "Bezgwiezdne"], ["Bezlitosny", "Bezlitosna", "Bezlitosne"],
+      ["Niezłamany", "Niezłamana", "Niezłamane"], ["Grobowy", "Grobowa", "Grobowe"],
+      ["Ponadczasowy", "Ponadczasowa", "Ponadczasowe"],
     ],
-    of: ["Eternity", "the Dynasty", "the Stars", "Ages", "Stasis", "the Tomb", "Dust", "the Aeons", "Silence"],
+    genitives: ["Wieczności", "Dynastii", "Gwiazd", "Eonów", "Zastoju", "Grobowca", "Pyłu", "Ciszy", "Wieków"],
   },
   chaos: {
-    patterns: [{ v: "adjNoun", w: 35 }, { v: "nounOf", w: 30 }, { v: "pair", w: 35 }],
-    adj: [
-      "Ravening", "Blasphemous", "Accursed", "Profane", "Bleeding", "Howling", "Burning", "Unholy", "Endless",
-      "Screaming", "Treacherous", "Black", "Crimson", "Forsaken", "Rotting",
+    patterns: [{ v: "adjNoun", w: 45 }, { v: "nounGen", w: 43 }, { v: "single", w: 12 }],
+    // Pojedyncze słowa na tyle mocne, by być nazwą okrętu / Single words strong enough to name a ship
+    single: [
+      "Zguba", "Ruina", "Herezja", "Zdrada", "Apostazja", "Anatema", "Potępienie", "Zbezczeszczenie", "Otchłań",
+      "Plaga", "Klątwa", "Bluźnierstwo",
     ],
-    noun: [
-      "Bane", "Ruin", "Blight", "Malice", "Damnation", "Rapture", "Desecration", "Ravager", "Torment", "Abyss",
-      "Fury", "Heresy", "Pyre", "Covenant", "Requiem", "Hunger", "Betrayal", "Scourge", "Carrion", "Apostasy",
-      "Anathema",
+    nouns: [
+      { v: "Stos", g: "m" }, { v: "Głód", g: "m" }, { v: "Sztylet", g: "m" }, { v: "Skowyt", g: "m" },
+      { v: "Grymuar", g: "m" }, { v: "Pakt", g: "m" }, { v: "Herold", g: "m" }, { v: "Odłamek", g: "m" },
+      { v: "Bicz", g: "m" }, { v: "Zwiastun", g: "m" }, { v: "Rekwiem", g: "n" },
+      { v: "Zguba", g: "f" }, { v: "Ruina", g: "f" }, { v: "Zaraza", g: "f" }, { v: "Złośliwość", g: "f" },
+      { v: "Klątwa", g: "f" }, { v: "Udręka", g: "f" }, { v: "Otchłań", g: "f" }, { v: "Furia", g: "f" },
+      { v: "Herezja", g: "f" }, { v: "Zdrada", g: "f" }, { v: "Apostazja", g: "f" }, { v: "Plaga", g: "f" },
+      { v: "Korona", g: "f" }, { v: "Rękawica", g: "f" }, { v: "Paszcza", g: "f" }, { v: "Anatema", g: "f" },
+      { v: "Potępienie", g: "n" }, { v: "Zbezczeszczenie", g: "n" }, { v: "Ścierwo", g: "n" }, { v: "Ostrze", g: "n" },
     ],
-    head: [
-      "Blade", "Dagger", "Crown", "Pyre", "Gauntlet", "Whisper", "Howl", "Shard", "Spear", "Grimoire", "Maw", "Hand",
-      "Oath", "Herald",
+    adjectives: [
+      ["Żarłoczny", "Żarłoczna", "Żarłoczne"], ["Bluźnierczy", "Bluźniercza", "Bluźniercze"],
+      ["Przeklęty", "Przeklęta", "Przeklęte"], ["Plugawy", "Plugawa", "Plugawe"], ["Krwawiący", "Krwawiąca", "Krwawiące"],
+      ["Wyjący", "Wyjąca", "Wyjące"], ["Płonący", "Płonąca", "Płonące"], ["Bezbożny", "Bezbożna", "Bezbożne"],
+      ["Nieskończony", "Nieskończona", "Nieskończone"], ["Wrzeszczący", "Wrzeszcząca", "Wrzeszczące"],
+      ["Zdradziecki", "Zdradziecka", "Zdradzieckie"], ["Czarny", "Czarna", "Czarne"],
+      ["Szkarłatny", "Szkarłatna", "Szkarłatne"], ["Porzucony", "Porzucona", "Porzucone"], ["Gnijący", "Gnijąca", "Gnijące"],
     ],
-    of: [
-      "Ruin", "the Warp", "the Dark Gods", "Blasphemy", "the Eye", "Despair", "Betrayal", "Ash", "Screams",
-      "Suffering", "Hate", "Treachery", "Damnation",
-    ],
-    pairA: [
-      "Bane", "Ruin", "Blight", "Malice", "Rapture", "Ravage", "Torment", "Abyss", "Fury", "Heresy", "Night", "Ash",
-      "Sorrow", "Hate", "Doom",
-    ],
-    pairB: [
-      "Oath", "Crown", "Dagger", "Pyre", "Gauntlet", "Whisper", "Howl", "Shard", "Spear", "Grimoire", "Requiem",
-      "Hunger", "Void", "Maw", "Harbinger",
+    genitives: [
+      "Ruiny", "Osnowy", "Mrocznych Bogów", "Bluźnierstwa", "Oka", "Rozpaczy", "Zdrady", "Popiołu", "Krzyku",
+      "Cierpienia", "Nienawiści", "Potępienia", "Chaosu",
     ],
   },
 };
@@ -1221,10 +1223,6 @@ const UNIT = {
 
 // --- Kryptonimy operacji: rzeczowniki w liczbie pojedynczej z rodzajem i przymiotniki w trzech rodzajach / Operation codenames: singular nouns with gender and adjectives in three genders ---
 const OPERATION = {
-  prefixes: [
-    { v: "Operacja", w: 6 }, { v: "Protokół", w: 2 }, { v: "Dyrektywa", w: 2 }, { v: "Plan", w: 1 },
-    { v: "Wariant", w: 1 },
-  ],
   patterns: [{ v: "adjNoun", w: 50 }, { v: "noun", w: 18 }, { v: "nounGen", w: 22 }, { v: "pair", w: 10 }],
   nouns: [
     { v: "Świt", g: "m" }, { v: "Zmierzch", g: "m" }, { v: "Horyzont", g: "m" }, { v: "Młot", g: "m" },
@@ -1425,10 +1423,10 @@ function genSororitas(rand) {
   });
 }
 
-// --- Astartes: styl zakonu losowany z wagami; bez stopni (Brat, Sierżant, Kapitan) / Astartes: chapter style picked by weight; no ranks (Brother, Sergeant, Captain) ---
-function genAstartes(rand) {
+// --- Astartes: styl zakonu podany przez podkategorię albo (dla „Ogólne”) losowany z wagami; bez stopni (Brat, Sierżant, Kapitan) / Astartes: chapter style given by the subcategory or (for "General") picked by weight; no ranks (Brother, Sergeant, Captain) ---
+function genAstartes(rand, forcedStyle) {
   return tryGenerate(() => {
-    const style = pickWeighted(ASTARTES.styles, rand);
+    const style = forcedStyle || pickWeighted(ASTARTES.styles, rand);
     const roll = rand();
 
     if (style === "angelic") {
@@ -1615,44 +1613,42 @@ function genChaos(rand, sub) {
    Generatory – maszyny, okręty, kryptonimy / Generators – machines, ships, codenames
    ======================= */
 
-// --- Maszyny bojowe: klasyfikator + nazwa własna (polska albo łacińska) w cudzysłowie „” / War machines: classifier + proper name (Polish or Latin) in „” quotes ---
+// --- Maszyny bojowe: sama nazwa własna (polska albo łacińska), bez typu maszyny i bez cudzysłowów / War machines: the proper name only (Polish or Latin), without the machine type or quotes ---
 function genWarMachine(rand, kind) {
   const data = WAR[kind] || WAR.air;
-  const classifier = pickWeighted(data.classifiers, rand);
-  const core = tryGenerate(
+  return tryGenerate(
     () => (chance(data.latinChance, rand) ? latinPhrase(rand) : polishPhrase(rand)),
     RESERVED_VESSEL_INDEX
   );
-  return formatNamedThing(classifier, core);
 }
 
-// --- Okręty: wzorzec losowany z wag frakcji (łacina, przymiotnik + rzeczownik, „X of Y”, dzierżawczy, pojedyncze słowo) / Ships: pattern picked from faction weights (Latin, adjective + noun, "X of Y", possessive, single word) ---
+// --- Polska fraza „przymiotnik + rzeczownik” z formą zgodną z rodzajem / Polish "adjective + noun" phrase with the gender-matching form ---
+function adjNounPhrase(pool, rand) {
+  const noun = pickItem(pool.nouns, rand);
+  return `${pick(pool.adjectives, rand)[genderIndex(noun.g)]} ${noun.v}`;
+}
+
+// --- Okręty: wzorzec losowany z wag frakcji; nazwy polskie, łacińskie zostają po łacinie / Ships: pattern picked from faction weights; Polish names, Latin ones stay in Latin ---
 function genShip(rand, faction) {
-  const key = faction === "eldar" ? "eldar" : faction;
-  const pool = SHIP[key];
+  const pool = SHIP[faction];
 
   return tryGenerate(() => {
     const pattern = pickWeighted(pool.patterns, rand);
+    const noun = pickItem(pool.nouns, rand);
 
     if (pattern === "latin") return latinPhrase(rand);
     if (pattern === "mechLatin") return latinPhrase(rand, pool.latinNouns, pool.latinGenitives);
-    if (pattern === "adjNoun") return `${pick(pool.adj, rand)} ${pick(pool.noun, rand)}`;
-    if (pattern === "nounOf") return `${pick(pool.head, rand)} of ${pick(pool.of, rand)}`;
-    if (pattern === "possessive") return `${pick(pool.owner, rand)} ${pick(pool.head || pool.noun, rand)}`;
     if (pattern === "single") return pick(pool.single, rand);
-    if (pattern === "compound") return compoundWord(pick(pool.compoundPre, rand), pick(pool.compoundSuf, rand));
-    if (pattern === "da") return `Da ${pick(pool.adj, rand)} ${pick(pool.noun, rand)}`;
-    if (pattern === "nounOfNecron") {
-      const target = chance(0.5, rand) ? syllableWord(NECRON, rand, 0.6) : pick(pool.of, rand);
-      return `${pick(pool.noun, rand)} of ${target}`;
+    if (pattern === "noun") return noun.v;
+    if (pattern === "nounGen") return `${noun.v} ${pickDifferentRoot(pool.genitives, noun.v, rand)}`;
+    // Poetycki szyk odwrócony: rzeczownik + przymiotnik („Pieśń Gwiezdna”) / Poetic inverted order: noun + adjective ("Pieśń Gwiezdna")
+    if (pattern === "nounAdj") return `${noun.v} ${pick(pool.adjectives, rand)[genderIndex(noun.g)]}`;
+    if (pattern === "adjNounGen") {
+      return `${pick(pool.adjectives, rand)[genderIndex(noun.g)]} ${noun.v} ${pickDifferentRoot(pool.genitives, noun.v, rand)}`;
     }
-    if (pattern === "necronPossessive") return `${syllableWord(NECRON, rand, 0.5)}'s ${pick(pool.noun, rand)}`;
-    if (pattern === "pair") {
-      const a = pick(pool.pairA, rand);
-      const b = pick(pool.pairB, rand);
-      return chance(0.55, rand) ? `${a} ${b}` : `${b} of ${a}`;
-    }
-    return `${pick(pool.adj, rand)} ${pick(pool.noun, rand)}`;
+    // Rzeczownik + imię Necrona w dopełniaczu (imiona kończą się spółgłoską, więc dopisujemy „a”: Nebkatekh → Nebkatekha) / Noun + Necron name in the genitive (names end with a consonant, so "a" is added)
+    if (pattern === "nounNecron") return `${noun.v} ${syllableWord(NECRON, rand, 0.5)}a`;
+    return adjNounPhrase(pool, rand);
   }, RESERVED_VESSEL_INDEX);
 }
 
@@ -1670,10 +1666,9 @@ function genUnitCodename(rand) {
   }, RESERVED_VESSEL_INDEX);
 }
 
-// --- Kryptonimy operacji: przedrostek + fraza z poprawnym rodzajem + opcjonalny znacznik / Operation codenames: prefix + gender-correct phrase + optional tag ---
+// --- Kryptonimy operacji: sama fraza z poprawnym rodzajem + opcjonalny znacznik, bez słowa „Operacja” / Operation codenames: gender-correct phrase + optional tag only, without the word "Operacja" ---
 function genOperationCodename(rand) {
   return tryGenerate(() => {
-    const prefix = pickWeighted(OPERATION.prefixes, rand);
     const pattern = pickWeighted(OPERATION.patterns, rand);
     const noun = pickItem(OPERATION.nouns, rand);
     let core;
@@ -1691,63 +1686,24 @@ function genOperationCodename(rand) {
     }
 
     const tag = pickWeighted(OPERATION.tags, rand);
-    return tag ? `${prefix} ${core} ${tag}` : `${prefix} ${core}`;
+    return tag ? `${core} ${tag}` : core;
   }, RESERVED_VESSEL_INDEX);
 }
 
 /* =======================
    Kategorie i opcje UI / UI categories and options
    ======================= */
-// Kolejność opcji decyduje o widoku domyślnym: pierwsza opcja pierwszej kategorii jest wybrana po otwarciu (Ludzie → Klasa Niższa)
-// Option order sets the default view: the first option of the first category is selected on open (Humans → Lower Class)
+// Kolejność kategorii i opcji to kolejność na listach; po otwarciu wybrana jest pierwsza opcja pierwszej kategorii (Ludzie → Klasa Niższa)
+// Category and option order is the list order; on open the first option of the first category is selected (Humans → Lower Class)
 const DATA = [
   {
     key: "humans",
-    name: "Imperium – Ludzie",
-    nameEn: "Imperium - Humans",
+    name: "Ludzie",
+    nameEn: "Humans",
     options: [
       { key: "lower", name: "Klasa Niższa", nameEn: "Lower Class", gen: (r) => genHumanLower(r) },
       { key: "upper", name: "Klasa Wyższa", nameEn: "Higher Class", gen: (r) => genHumanUpper(r) },
     ],
-  },
-  {
-    key: "aeldari",
-    name: "Aeldari",
-    nameEn: "Aeldari",
-    options: [
-      { key: "craft", name: "Craftworld (Asuryani)", nameEn: "Craftworld (Asuryani)", gen: (r) => genAeldariCraft(r) },
-      { key: "druk", name: "Drukhari", nameEn: "Drukhari", gen: (r) => genAeldariDrukhari(r) },
-      { key: "har", name: "Harlequins", nameEn: "Harlequins", gen: (r) => genAeldariHarlequin(r) },
-    ],
-  },
-  {
-    key: "necron",
-    name: "Necroni",
-    nameEn: "Necrons",
-    options: [
-      { key: "warrior", name: "Wojownicy", nameEn: "Warriors", gen: (r) => genNecronWarrior(r) },
-      { key: "lord", name: "Lordowie", nameEn: "Lords", gen: (r) => genNecronLord(r) },
-    ],
-  },
-  {
-    key: "orks",
-    name: "Orkowie",
-    nameEn: "Orks",
-    options: [
-      { key: "boy", name: "Orkowie", nameEn: "Orks", gen: (r) => genOrk(r) },
-    ],
-  },
-  {
-    key: "sororitas",
-    name: "Adepta Sororitas",
-    nameEn: "Adepta Sororitas",
-    options: [{ key: "sister", name: "Sororitas", nameEn: "Sororitas", gen: (r) => genSororitas(r) }],
-  },
-  {
-    key: "astartes",
-    name: "Astartes – imię i nazwisko bojowe",
-    nameEn: "Astartes - battle name and surname",
-    options: [{ key: "standard", name: "Astartes", nameEn: "Astartes", gen: (r) => genAstartes(r) }],
   },
   {
     key: "admech",
@@ -1757,6 +1713,27 @@ const DATA = [
       { key: "tp", name: "Tech-Kapłani", nameEn: "Tech-Priests", gen: (r) => genAdMechTech(r) },
       { key: "skit", name: "Skitarii", nameEn: "Skitarii", gen: (r) => genAdMechSkit(r) },
     ],
+  },
+  {
+    key: "astartes",
+    name: "Adeptus Astartes",
+    nameEn: "Adeptus Astartes",
+    // „Ogólne” miesza wszystkie style; pozostałe podkategorie wymuszają jeden styl zakonu / "General" mixes all styles; the other subcategories force one chapter style
+    options: [
+      { key: "standard", name: "Ogólne", nameEn: "General", gen: (r) => genAstartes(r) },
+      { key: "codex", name: "Kodeksowe (Ultramarines)", nameEn: "Codex (Ultramarines)", gen: (r) => genAstartes(r, "codex") },
+      { key: "nordic", name: "Nordyckie (Kosmiczne Wilki)", nameEn: "Nordic (Space Wolves)", gen: (r) => genAstartes(r, "nordic") },
+      { key: "angelic", name: "Anielskie (Mroczne i Krwawe Anioły)", nameEn: "Angelic (Dark and Blood Angels)", gen: (r) => genAstartes(r, "angelic") },
+      { key: "crusader", name: "Krzyżowcy (Czarni Templariusze)", nameEn: "Crusader (Black Templars)", gen: (r) => genAstartes(r, "crusader") },
+      { key: "salamander", name: "Nokturne (Salamandry)", nameEn: "Nocturne (Salamanders)", gen: (r) => genAstartes(r, "salamander") },
+      { key: "scars", name: "Czogoris (Białe Blizny)", nameEn: "Chogoris (White Scars)", gen: (r) => genAstartes(r, "scars") },
+    ],
+  },
+  {
+    key: "sororitas",
+    name: "Adepta Sororitas",
+    nameEn: "Adepta Sororitas",
+    options: [{ key: "sister", name: "Sororitas", nameEn: "Sororitas", gen: (r) => genSororitas(r) }],
   },
   {
     key: "chaos",
@@ -1771,8 +1748,50 @@ const DATA = [
     ],
   },
   {
+    key: "aeldari",
+    name: "Aeldari",
+    nameEn: "Aeldari",
+    options: [
+      { key: "craft", name: "Craftworld (Asuryani)", nameEn: "Craftworld (Asuryani)", gen: (r) => genAeldariCraft(r) },
+      { key: "druk", name: "Drukhari", nameEn: "Drukhari", gen: (r) => genAeldariDrukhari(r) },
+      { key: "har", name: "Harlequins", nameEn: "Harlequins", gen: (r) => genAeldariHarlequin(r) },
+    ],
+  },
+  {
+    key: "orks",
+    name: "Orkowie",
+    nameEn: "Orks",
+    options: [
+      { key: "boy", name: "Orkowie", nameEn: "Orks", gen: (r) => genOrk(r) },
+    ],
+  },
+  {
+    key: "necron",
+    name: "Nekroni",
+    nameEn: "Necrons",
+    options: [
+      { key: "warrior", name: "Wojownicy", nameEn: "Warriors", gen: (r) => genNecronWarrior(r) },
+      { key: "lord", name: "Lordowie", nameEn: "Lords", gen: (r) => genNecronLord(r) },
+    ],
+  },
+  {
+    key: "ships",
+    name: "Okręty Gwiezdne",
+    nameEn: "Starships",
+    options: [
+      { key: "imp", name: "Imperium (Navy)", nameEn: "Imperium (Navy)", gen: (r) => genShip(r, "imperial") },
+      { key: "ast", name: "Astartes", nameEn: "Astartes", gen: (r) => genShip(r, "astartes") },
+      { key: "mec", name: "Adeptus Mechanicus", nameEn: "Adeptus Mechanicus", gen: (r) => genShip(r, "mechanicus") },
+      { key: "eld", name: "Aeldari", nameEn: "Aeldari", gen: (r) => genShip(r, "eldar") },
+      { key: "drk", name: "Drukhari", nameEn: "Drukhari", gen: (r) => genShip(r, "drukhari") },
+      { key: "ork", name: "Orkowie", nameEn: "Orks", gen: (r) => genShip(r, "ork") },
+      { key: "nec", name: "Nekroni", nameEn: "Necrons", gen: (r) => genShip(r, "necron") },
+      { key: "cha", name: "Chaos", nameEn: "Chaos", gen: (r) => genShip(r, "chaos") },
+    ],
+  },
+  {
     key: "warmachines",
-    name: "Maszyny bojowe (Imperium)",
+    name: "Maszyny Bojowe (Imperium)",
     nameEn: "War machines (Imperium)",
     options: [
       { key: "tank", name: "Czołgi", nameEn: "Tanks", gen: (r) => genWarMachine(r, "tank") },
@@ -1782,23 +1801,8 @@ const DATA = [
     ],
   },
   {
-    key: "ships",
-    name: "Okręty gwiezdne",
-    nameEn: "Starships",
-    options: [
-      { key: "imp", name: "Imperium (Navy)", nameEn: "Imperium (Navy)", gen: (r) => genShip(r, "imperial") },
-      { key: "ast", name: "Astartes", nameEn: "Astartes", gen: (r) => genShip(r, "astartes") },
-      { key: "mec", name: "Adeptus Mechanicus", nameEn: "Adeptus Mechanicus", gen: (r) => genShip(r, "mechanicus") },
-      { key: "eld", name: "Aeldari", nameEn: "Aeldari", gen: (r) => genShip(r, "eldar") },
-      { key: "drk", name: "Drukhari", nameEn: "Drukhari", gen: (r) => genShip(r, "drukhari") },
-      { key: "ork", name: "Orkowie", nameEn: "Orks", gen: (r) => genShip(r, "ork") },
-      { key: "nec", name: "Necroni", nameEn: "Necrons", gen: (r) => genShip(r, "necron") },
-      { key: "cha", name: "Chaos", nameEn: "Chaos", gen: (r) => genShip(r, "chaos") },
-    ],
-  },
-  {
     key: "unitcodes",
-    name: "Kryptonimy oddziałów",
+    name: "Kryptonimy Oddziałów",
     nameEn: "Unit codenames",
     options: [
       { key: "standard", name: "Kryptonim oddziału", nameEn: "Unit codename", gen: (r) => genUnitCodename(r) },
@@ -1806,7 +1810,7 @@ const DATA = [
   },
   {
     key: "opcodes",
-    name: "Kryptonimy operacji",
+    name: "Kryptonimy Operacji",
     nameEn: "Operation codenames",
     options: [
       { key: "standard", name: "Kryptonim operacji", nameEn: "Operation codename", gen: (r) => genOperationCodename(r) },
