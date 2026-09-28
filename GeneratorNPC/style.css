@@ -27,6 +27,14 @@
   --glow: 0 0 25px rgba(22, 198, 12, 0.45);
   --glowH: 0 0 18px rgba(22, 198, 12, 0.35);
 
+  /* --- Barwa aktywnego filtru, ta sama co w DataVault / Active-filter colour, the same as in DataVault ---
+     PL: Niebieski oznacza wyłącznie "filtr jest założony" — na etykiecie listy, nad którą wpisano
+         frazę. Wartości są skopiowane z DataVault/style.css, żeby sygnał znaczył w obu modułach to samo.
+     EN: Blue means only "a filter is on" — on the label of the list whose filter holds a phrase. The
+         values are copied from DataVault/style.css so the signal means the same in both modules. */
+  --filter-on: #3D8FC4;
+  --filter-on-glow: rgba(61, 143, 196, 0.4);
+
   --header-row-height: 36px;
 }
 
@@ -287,6 +295,25 @@ textarea:focus {
   outline: none;
   border-color: var(--text);
   box-shadow: var(--glow);
+}
+
+/* --- Pola filtrów nazw nad listami wyboru / Name filter fields above the selection lists ---
+   PL: Wygląd bazowy pola daje reguła input[type="text"]. Tu tylko stan nieaktywny: przed
+       załadowaniem danych i przy zablokowanym pancerzu pole jest wyraźnie przygaszone.
+   EN: The base look comes from the input[type="text"] rule. Here only the disabled state: before
+       data loads and while armor is blocked, the field is clearly dimmed. */
+.list-filter:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* PL: Etykieta listy świeci na niebiesko, gdy wpisana fraza faktycznie zawęża listę — tak samo jak
+       etykieta FILTR GLOBALNY w DataVault (.fieldLabel--active).
+   EN: The list label glows blue when the typed phrase actually narrows the list — just like the
+       GLOBAL FILTER label in DataVault (.fieldLabel--active). */
+.list-filter-label--active {
+  color: var(--filter-on);
+  text-shadow: 0 0 10px var(--filter-on-glow);
 }
 
 .checkbox-list {

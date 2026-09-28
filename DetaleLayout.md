@@ -560,6 +560,8 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - `--hover`: `rgba(22, 198, 12, 0.08)`.
 - `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
 - `--glowH`: `0 0 18px rgba(22, 198, 12, 0.35)`.
+- `--filter-on`: `#3D8FC4` — barwa sygnału „filtr jest założony” (tekst etykiety listy z aktywnym filtrem nazw). Wartość jest ta sama co `--filter-on` w DataVault, więc niebieski znaczy w obu modułach to samo.
+- `--filter-on-glow`: `rgba(61, 143, 196, 0.4)` — poświata tej etykiety (`text-shadow: 0 0 10px`), również wspólna z DataVault.
 - Dodatkowe tła w panelach/sekcjach: `rgba(22, 198, 12, 0.03)`, `rgba(22, 198, 12, 0.04)`, `rgba(22, 198, 12, 0.05)`, `rgba(22, 198, 12, 0.06)`, `rgba(22, 198, 12, 0.08)`, `rgba(22, 198, 12, 0.14)`, `rgba(22, 198, 12, 0.18)`.
 - Akcenty UI w module: `rgba(111, 227, 140, 0.06)` i `rgba(111, 227, 140, 0.1)` (specjalne tła w sekcjach).
 
@@ -611,6 +613,10 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
   komponentu jest w rozdziale „Wspólny komponent — pasek komunikatu o nieudanym zapisie i znacznik
   trybu pracy”. Sticky `.topbar` ma `top: var(--wg-write-status-height, 0px)`, czyli przykleja się
   pod paskiem komunikatu, gdy ten jest widoczny, i pod górną krawędzią okna, gdy paska nie ma.
+- **Filtry nazw nad listami wyboru.** Nad każdą listą (Bestiariusz w „Wybór bazowy” oraz listy `Bronie`, `Pancerze`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, `Modlitwy`) stoi pole `input[type="text"].list-filter` z placeholderem „Wpisz fragment nazwy...”. Kolejność w `.field` (odstęp `gap: 6px`): etykieta listy (w modułach wiersz `.field-label-row` z etykietą i checkboxem opisu) → pole filtra → `<select>`. Pole ma pełną szerokość kolumny i wygląd zwykłego pola tekstowego modułu (reguła `input[type="text"]`: padding `10px 12px`, `border-radius: 4px`, obramowanie `1px solid var(--b2)`, tło `var(--bg)`, tekst `var(--text)`, fokus: obramowanie `var(--text)` + `box-shadow: var(--glow)`). Pole nie ma przycisku czyszczenia (celowo `type="text"`, a nie `type="search"`). Stan nieaktywny (`.list-filter:disabled` — przed załadowaniem danych i przy zablokowanym pancerzu): `opacity: 0.5`, `cursor: not-allowed`.
+- **Niebieska etykieta aktywnego filtra.** Gdy fraza w polu zawęża listę, etykieta tej listy (`label[for="<lista>"]`, np. „Bestiariusz · Nazwa”, „Bronie”) dostaje klasę `.list-filter-label--active`: `color: var(--filter-on)` / `#3D8FC4` oraz `text-shadow: 0 0 10px var(--filter-on-glow)`. To ten sam wygląd co `.fieldLabel--active` etykiety „FILTR GLOBALNY” w DataVault. W spoczynku etykieta ma zwykły kolor `label` (`var(--text2)` / `#4FAF4F`). Każda lista zapala tylko własną etykietę.
+- **Pusty wynik filtra.** Gdy żadna nazwa nie pasuje, lista pokazuje nieaktywną opcję „Brak wpisów pasujących do filtra” w domyślnym, przygaszonym stylu nieaktywnych opcji przeglądarki.
+- Etykieta pola notatki w „Wybór bazowy” brzmi „Notatka (będzie widoczna na karcie)” i ma zwykły styl `label` (`font-size: 0.85rem`, `var(--text2)`); na telefonie zawija się do dwóch linii.
 - Sekcja „Źródło danych” w panelu bocznym (`.panel-data-source`) ma celowo mniejszą typografię (`.data-source-text`: `font-size: 0.82rem`, `line-height: 1.55`) i wymuszone zawijanie długiego linku (`.data-source-link`: `overflow-wrap: anywhere`, `word-break: break-word`), aby URL `data.json` nie wychodził poza ramkę.
 
 ---

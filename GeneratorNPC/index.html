@@ -48,6 +48,8 @@
           <h2 data-i18n="baseSelectionTitle">Wybór bazowy</h2>
           <div class="field">
             <label for="bestiary" data-i18n="bestiaryLabel">Bestiariusz · Nazwa</label>
+            <!-- Filtr nazw zawęża opcje listy poniżej; etykieta nad nim zmienia barwę na niebieską, gdy filtr działa. Bez przycisku czyszczenia — tak jak Filtr Globalny w DataVault. / The name filter narrows the options of the list below; the label above it turns blue while the filter is active. No clear button — just like the Global Filter in DataVault. -->
+            <input type="text" id="bestiary-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="bestiary">
               <option value="" disabled selected data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -58,7 +60,7 @@
             </label>
           </div>
           <div class="field">
-            <label for="bestiary-notes" data-i18n="bestiaryNotesLabel">Uwagi do rekordu</label>
+            <label for="bestiary-notes" data-i18n="bestiaryNotesLabel">Notatka (będzie widoczna na karcie)</label>
             <textarea id="bestiary-notes" rows="3" placeholder="Opcjonalne notatki" data-i18n-placeholder="bestiaryNotesPlaceholder"></textarea>
           </div>
         </section>
@@ -150,6 +152,8 @@
                 <span data-i18n="weaponTraitToggle">Czy dodać opis Cech?</span>
               </label>
             </div>
+            <!-- Filtr nazw tej listy działa tak samo jak filtr Bestiariusza: zawęża opcje, a zaznaczone pozycje zostają widoczne. / This list's name filter works just like the Bestiary filter: it narrows the options, while selected items stay visible. -->
+            <input type="text" id="weapon-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="weapon" multiple size="15">
               <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -189,6 +193,7 @@
                 <span data-i18n="armorTraitToggle">Czy dodać opis Cech?</span>
               </label>
             </div>
+            <input type="text" id="armor-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="armor" multiple size="15">
               <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -224,6 +229,7 @@
                 <span data-i18n="augmentationsDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
+            <input type="text" id="augmentations-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="augmentations" multiple size="15">
               <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -255,6 +261,7 @@
                 <span data-i18n="equipmentDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
+            <input type="text" id="equipment-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="equipment" multiple size="15">
               <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -286,6 +293,7 @@
                 <span data-i18n="talentsDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
+            <input type="text" id="talents-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="talents" multiple size="15">
               <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -317,6 +325,7 @@
                 <span data-i18n="psionicsDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
+            <input type="text" id="psionics-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="psionics" multiple size="15">
               <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -354,6 +363,7 @@
                 <span data-i18n="prayersDetailsToggle">Czy dodać pełen opis?</span>
               </label>
             </div>
+            <input type="text" id="prayers-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
             <select id="prayers" multiple size="15">
               <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
             </select>
@@ -486,8 +496,12 @@ const translations = {
             baseSelectionTitle: "Wybór bazowy",
             bestiaryLabel: "Bestiariusz · Nazwa",
             bestiaryShowOldToggle: "Czy wyświetlić zdezaktualizowane wpisy?",
-            bestiaryNotesLabel: "Uwagi do rekordu",
+            bestiaryNotesLabel: "Notatka (będzie widoczna na karcie)",
             bestiaryNotesPlaceholder: "Opcjonalne notatki",
+            // Filtry list wyboru: podpowiedź w polu i opis pola dla czytników ekranu ({list} = nazwa listy).
+            // Selection list filters: in-field hint and the field description for screen readers ({list} = list name).
+            listFilterPlaceholder: "Wpisz fragment nazwy...",
+            listFilterAria: "Filtr listy: {list}",
             activeModulesTitle: "Moduły aktywne",
             moduleWeapon: "Broń — ustaw ataki i cechy.",
             moduleArmor: "Pancerz — nadpisz WP i cechy.",
@@ -632,6 +646,10 @@ const translations = {
             selectPrayers: "Wybierz modlitwy...",
             armorDisabledTitle: "Pancerz z WP '-' nie może być wybrany.",
             traitDescriptionUnavailable: "Opis cechy nie jest dostępny w _meta.traits.",
+            // Pusty wynik filtra listy i dymek na niebieskiej etykiecie ({text} = wpisana fraza).
+            // Empty list-filter result and the tooltip on the blue label ({text} = typed phrase).
+            listFilterNoMatches: "Brak wpisów pasujących do filtra",
+            listFilterActive: "Filtr jest aktywny — lista pokazuje tylko nazwy zawierające: {text}",
           },
         },
         en: {
@@ -650,8 +668,10 @@ const translations = {
             baseSelectionTitle: "Base selection",
             bestiaryLabel: "Bestiary · Name",
             bestiaryShowOldToggle: "Show outdated entries?",
-            bestiaryNotesLabel: "Record notes",
+            bestiaryNotesLabel: "Note (will be visible on the card)",
             bestiaryNotesPlaceholder: "Optional notes",
+            listFilterPlaceholder: "Type part of a name...",
+            listFilterAria: "List filter: {list}",
             activeModulesTitle: "Active modules",
             moduleWeapon: "Weapons — set attacks and traits.",
             moduleArmor: "Armor — override armor value and traits.",
@@ -796,6 +816,8 @@ const translations = {
             selectPrayers: "Select prayers...",
             armorDisabledTitle: "Armor with AV '-' cannot be selected.",
             traitDescriptionUnavailable: "Trait description is unavailable in _meta.traits.",
+            listFilterNoMatches: "No entries match the filter",
+            listFilterActive: "The filter is active — the list shows only names containing: {text}",
           },
         },
       };
@@ -844,6 +866,18 @@ const translations = {
         updatePlaceholder(talentsSelect, t.messages.selectTalents);
         updatePlaceholder(psionicsSelect, t.messages.selectPsionics);
         updatePlaceholder(prayersSelect, t.messages.selectPrayers);
+        // --- Filtry list w wybranym języku / List filters in the selected language ---
+        // PL: Opis pola dla czytników ekranu składa się z nazwy listy, żeby osiem pól filtra nie brzmiało
+        //     identycznie. Dymek na niebieskiej etykiecie i komunikat pustego wyniku też zmieniają język.
+        // EN: The screen-reader description includes the list name so the eight filter fields do not sound
+        //     identical. The tooltip on the blue label and the empty-result message switch language too.
+        Object.values(listFilters).forEach((list) => {
+          list.input.setAttribute("aria-label", formatText(t.labels.listFilterAria, { list: list.label.textContent }));
+          updateListFilterIndicator(list);
+        });
+        document.querySelectorAll("option[data-list-filter-empty]").forEach((option) => {
+          option.textContent = t.messages.listFilterNoMatches;
+        });
         if (favoritesStatus.querySelector("[data-i18n]")) {
           favoritesStatus.querySelector("[data-i18n]").textContent = t.labels.favoritesStatusConnecting;
         }
@@ -919,6 +953,9 @@ const translations = {
         expandedCells: new Set(),
         selectedBestiaryIndex: null,
         showOldBestiaryRecords: false,
+        // Czy wybrany rekord Bestiariusza blokuje pancerz (WP "-"); przebudowa listy pancerzy musi to zachować.
+        // Whether the selected Bestiary record blocks armor (AV "-"); rebuilding the armor list must keep it.
+        armorSelectionBlocked: false,
         bestiaryOverrides: {
           numeric: new Map(),
           skills: null,
@@ -1500,7 +1537,125 @@ const translations = {
         });
       };
 
-      const setSelectOptions = (select, items, placeholder, { disableOption, disabledTitle } = {}) => {
+      // --- Filtry nazw nad listami wyboru / Name filters above the selection lists ---
+      // PL: Każda lista (Bestiariusz i siedem list modułów) ma nad sobą pole tekstowe. Wpisana fraza
+      //     zawęża opcje listy do nazw, które ją zawierają. Mechanika odwzorowuje Filtr Globalny z
+      //     DataVault: bez przycisku czyszczenia, porównanie niewrażliwe na wielkość liter i polskie
+      //     znaki, a etykieta listy zmienia barwę na niebieską, gdy filtr faktycznie zawęża widok.
+      //     Opcje są przebudowywane (usuwane z listy), a nie ukrywane atrybutem hidden, bo Safari na
+      //     iPadzie i iPhonie ignoruje ukrywanie pojedynczych opcji w rozwijanym menu.
+      // EN: Every list (the Bestiary and the seven module lists) has a text field above it. The typed
+      //     phrase narrows the list options to names that contain it. The mechanics mirror DataVault's
+      //     Global Filter: no clear button, matching insensitive to letter case and Polish diacritics,
+      //     and the list label turns blue when the filter actually narrows the view. Options are
+      //     rebuilt (removed from the list) rather than hidden with the hidden attribute, because Safari
+      //     on iPad and iPhone ignores hiding individual options in a drop-down menu.
+      const createListFilter = (key, extra = {}) => ({
+        key,
+        select: document.querySelector(`#${key}`),
+        input: document.querySelector(`#${key}-filter`),
+        label: document.querySelector(`label[for="${key}"]`),
+        ...extra,
+      });
+
+      // PL: Konfiguracja list modułów: skąd brać rekordy, jaki tekst ma pierwsza opcja i które opcje
+      //     są nieaktywne. Bestiariusz ma własną funkcję przebudowy (refreshBestiaryOptions), bo łączy
+      //     filtr nazw z ukrywaniem zdezaktualizowanych wpisów.
+      // EN: Module list configuration: where records come from, what the first option says and which
+      //     options are disabled. The Bestiary has its own rebuild function (refreshBestiaryOptions),
+      //     because it combines the name filter with hiding outdated entries.
+      const listFilters = {
+        bestiary: createListFilter("bestiary"),
+        weapon: createListFilter("weapon", { getRecords: () => state.weapons, placeholderKey: "selectWeapon" }),
+        armor: createListFilter("armor", {
+          getRecords: () => state.armor,
+          placeholderKey: "selectArmor",
+          disableOption: isArmorBlocked,
+          disabledTitleKey: "armorDisabledTitle",
+          isBlocked: () => state.armorSelectionBlocked,
+        }),
+        augmentations: createListFilter("augmentations", {
+          getRecords: () => state.augmentations,
+          placeholderKey: "selectAugmentations",
+        }),
+        equipment: createListFilter("equipment", { getRecords: () => state.equipment, placeholderKey: "selectEquipment" }),
+        talents: createListFilter("talents", { getRecords: () => state.talents, placeholderKey: "selectTalents" }),
+        psionics: createListFilter("psionics", { getRecords: () => state.psionics, placeholderKey: "selectPsionics" }),
+        prayers: createListFilter("prayers", { getRecords: () => state.prayers, placeholderKey: "selectPrayers" }),
+      };
+      const MODULE_LIST_KEYS = ["weapon", "armor", "augmentations", "equipment", "talents", "psionics", "prayers"];
+
+      // PL: Sprowadza tekst do postaci porównywanej przez filtr — ta sama reguła co foldPolish() w
+      //     DataVault: małe litery, bez znaków diakrytycznych (NFD + usunięcie U+0300–U+036F) i "ł" → "l",
+      //     bo "ł" nie rozkłada się w Unicode. Dodatkowo zwija wielokrotne spacje i obcina brzegi.
+      //     Dzięki temu "ORK", "ork" i "oRk" dają ten sam wynik, a "lancuchowy" znajdzie "Łańcuchowy".
+      // EN: Reduces text to the form the filter compares — the same rule as foldPolish() in DataVault:
+      //     lower case, no diacritics (NFD + stripping U+0300–U+036F) and "ł" → "l", because "ł" does not
+      //     decompose in Unicode. It also collapses repeated spaces and trims the ends. Thanks to this
+      //     "ORK", "ork" and "oRk" give the same result, and "lancuchowy" finds "Łańcuchowy".
+      const foldSearchText = (value) =>
+        normalizeText(value)
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .toLowerCase()
+          .replace(/ł/g, "l");
+
+      // PL: Fraza w postaci porównywanej. Filtrowanie i sygnał na etykiecie czytają tę samą wartość,
+      //     więc sama spacja nie zapala etykiety i nie zawęża listy.
+      // EN: The phrase in its compared form. Filtering and the label signal read the same value, so a
+      //     lone space neither lights up the label nor narrows the list.
+      const getListFilterNeedle = (list) => foldSearchText(list.input.value);
+
+      // PL: Fraza jest szukana jako jeden ciąg w dowolnym miejscu nazwy — "ork boy" nie jest dzielone po spacjach.
+      // EN: The phrase is searched as one string anywhere in the name — "ork boy" is not split on spaces.
+      const matchesListFilter = (name, needle) => !needle || foldSearchText(name).includes(needle);
+
+      // PL: Niebieska etykieta to sygnał, że lista jest zawężona. Dymek powtarza wpisaną frazę, bo sama
+      //     barwa jest sygnałem słabym (ślepota barw, tryb wysokiego kontrastu).
+      // EN: The blue label signals that the list is narrowed. The tooltip repeats the typed phrase,
+      //     because colour alone is a weak signal (colour blindness, high-contrast mode).
+      const updateListFilterIndicator = (list) => {
+        const active = Boolean(getListFilterNeedle(list));
+        list.label.classList.toggle("list-filter-label--active", active);
+        list.label.title = active
+          ? formatText(translations[currentLanguage].messages.listFilterActive, { text: normalizeText(list.input.value) })
+          : "";
+      };
+
+      // PL: Pole filtra jest aktywne tylko wtedy, gdy są dane i sama lista jest aktywna (np. pancerz
+      //     zablokowany przez rekord z WP "-" wyłącza też swój filtr).
+      // EN: The filter field is enabled only when data is loaded and the list itself is enabled (e.g.
+      //     armor blocked by a record with AV "-" disables its filter too).
+      const syncListFilterAvailability = (list) => {
+        list.input.disabled = !state.data || list.select.disabled;
+      };
+
+      // PL: Nieaktywna opcja pokazywana, gdy żadna nazwa nie zawiera wpisanej frazy. Atrybut
+      //     data-list-filter-empty pozwala applyLanguage() przetłumaczyć ją bez przebudowy listy.
+      // EN: A disabled option shown when no name contains the typed phrase. The data-list-filter-empty
+      //     attribute lets applyLanguage() translate it without rebuilding the list.
+      const createListFilterEmptyOption = () => {
+        const option = document.createElement("option");
+        option.value = "";
+        option.disabled = true;
+        option.dataset.listFilterEmpty = "true";
+        option.textContent = translations[currentLanguage].messages.listFilterNoMatches;
+        return option;
+      };
+
+      // PL: Wypełnia listę opcjami. filterNeedle zawęża opcje do pasujących nazw, a selectedIndices to
+      //     pozycje zaznaczone — zostają na liście zawsze, nawet gdy nie pasują do filtra. Bez tego
+      //     wpisanie frazy po cichu odznaczyłoby wcześniejszy wybór i zniknąłby on z karty i z ulubionych.
+      // EN: Fills the list with options. filterNeedle narrows the options to matching names, while
+      //     selectedIndices are the selected items — they always stay on the list, even when they do not
+      //     match the filter. Without that, typing a phrase would silently deselect an earlier choice and
+      //     it would vanish from the card and from favourites.
+      const setSelectOptions = (
+        select,
+        items,
+        placeholder,
+        { disableOption, disabledTitle, filterNeedle = "", selectedIndices = [] } = {}
+      ) => {
         select.innerHTML = "";
         if (!items.length) {
           const option = document.createElement("option");
@@ -1526,22 +1681,72 @@ const translations = {
           option.disabled = true;
           select.append(option);
         }
+        const selectedSet = new Set(selectedIndices);
+        let visibleCount = 0;
         items.forEach((record, index) => {
+          const name = getRecordName(record, index);
+          const isSelected = selectedSet.has(index);
+          // Pomijamy tylko niezaznaczone pozycje, których nazwa nie zawiera frazy filtra.
+          // Skip only unselected items whose name does not contain the filter phrase.
+          if (!isSelected && !matchesListFilter(name, filterNeedle)) {
+            return;
+          }
           const option = document.createElement("option");
           option.value = String(index);
-          option.textContent = getRecordName(record, index);
+          option.textContent = name;
           if (disableOption?.(record, index)) {
             option.disabled = true;
             option.title = disabledTitle || "";
           }
+          option.selected = isSelected;
           select.append(option);
+          visibleCount += 1;
         });
+        if (!visibleCount) {
+          select.append(createListFilterEmptyOption());
+        }
         select.disabled = false;
       };
 
+      // --- Przebudowa listy modułu z bieżącym filtrem / Rebuild a module list with the current filter ---
+      // PL: Wywoływana przy wpisywaniu frazy, po załadowaniu danych, przy Resecie i przy wczytaniu
+      //     ulubionego. Bez selectedIndices zachowuje bieżące zaznaczenie listy; z selectedIndices
+      //     ustawia podany zestaw (np. zapisany w ulubionym) i pokazuje go mimo aktywnego filtra.
+      //     Blokada pancerza przez rekord Bestiariusza przeżywa przebudowę.
+      // EN: Called while typing a phrase, after data loads, on Reset and when loading a favourite.
+      //     Without selectedIndices it keeps the list's current selection; with selectedIndices it sets
+      //     the given set (e.g. one stored in a favourite) and shows it despite an active filter.
+      //     An armor block caused by the Bestiary record survives the rebuild.
+      const refreshModuleOptions = (key, { selectedIndices } = {}) => {
+        const list = listFilters[key];
+        if (!state.data) {
+          return;
+        }
+        const messages = translations[currentLanguage].messages;
+        setSelectOptions(list.select, list.getRecords(), messages[list.placeholderKey], {
+          disableOption: list.disableOption,
+          disabledTitle: list.disabledTitleKey ? messages[list.disabledTitleKey] : undefined,
+          filterNeedle: getListFilterNeedle(list),
+          selectedIndices: selectedIndices ?? getSelectedIndices(list.select),
+        });
+        if (list.isBlocked?.()) {
+          list.select.disabled = true;
+        }
+        syncListFilterAvailability(list);
+      };
+
       // --- Przebudowanie listy Bestiariusza bez modyfikowania state.bestiary / Rebuild Bestiary options without modifying state.bestiary ---
-      const refreshBestiaryOptions = () => {
-        const selectedValue = bestiarySelect.value;
+      // PL: Łączy dwa niezależne zawężenia: checkbox zdezaktualizowanych wpisów i filtr nazw. Wybrany
+      //     rekord omija filtr nazw (zostaje na liście), żeby wpisanie frazy nie kasowało wyboru ani
+      //     nadpisań w podglądzie bazowym. keepIndex pozwala wskazać rekord, który ma zostać na liście
+      //     mimo filtra — używa go wczytywanie ulubionego.
+      // EN: Combines two independent narrowings: the outdated-entries checkbox and the name filter. The
+      //     selected record bypasses the name filter (stays on the list), so typing a phrase does not
+      //     erase the choice or the base preview overrides. keepIndex names a record that must stay on
+      //     the list despite the filter — loading a favourite uses it.
+      const refreshBestiaryOptions = ({ keepIndex = null } = {}) => {
+        const selectedValue = keepIndex !== null ? String(keepIndex) : bestiarySelect.value;
+        const filterNeedle = getListFilterNeedle(listFilters.bestiary);
         bestiarySelect.innerHTML = "";
         const placeholder = document.createElement("option");
         placeholder.value = "";
@@ -1552,7 +1757,11 @@ const translations = {
 
         const visibleRecords = state.bestiary
           .map((record, index) => ({ record, index }))
-          .filter(({ record }) => state.showOldBestiaryRecords || !isOldBestiaryRecord(record));
+          .filter(({ record }) => state.showOldBestiaryRecords || !isOldBestiaryRecord(record))
+          .filter(
+            ({ record, index }) =>
+              String(index) === selectedValue || matchesListFilter(getRecordName(record, index), filterNeedle)
+          );
 
         visibleRecords.forEach(({ record, index }) => {
           const option = document.createElement("option");
@@ -1562,12 +1771,19 @@ const translations = {
           bestiarySelect.append(option);
         });
 
+        // Są rekordy, ale żaden nie pasuje do frazy — pokazujemy nieaktywny komunikat zamiast pustej listy.
+        // There are records, but none matches the phrase — show a disabled message instead of an empty list.
+        if (filterNeedle && state.bestiary.length && !visibleRecords.length) {
+          bestiarySelect.append(createListFilterEmptyOption());
+        }
+
         bestiarySelect.disabled = !state.bestiary.length;
         if (selectedValue && Array.from(bestiarySelect.options).some((option) => option.value === selectedValue)) {
           bestiarySelect.value = selectedValue;
         } else {
           bestiarySelect.value = "";
         }
+        syncListFilterAvailability(listFilters.bestiary);
       };
 
       // --- Aktualizacja koloru zamkniętego selecta Bestiariusza / Update closed Bestiary select color ---
@@ -1898,14 +2114,6 @@ const translations = {
           .map((option) => Number(option.value))
           .filter((index) => !Number.isNaN(index));
 
-      const setSelectedIndices = (select, indices) => {
-        const selectedSet = new Set(indices);
-        Array.from(select.options).forEach((option) => {
-          const value = Number(option.value);
-          option.selected = selectedSet.has(value);
-        });
-      };
-
       const renderWeaponTable = () => {
         const selected = getSelectedIndices(weaponSelect);
         renderOrderedTable({
@@ -1991,7 +2199,9 @@ const translations = {
       };
 
       const setArmorSelectionEnabled = (enabled) => {
+        state.armorSelectionBlocked = !enabled;
         armorSelect.disabled = !enabled;
+        syncListFilterAvailability(listFilters.armor);
         if (!enabled) {
           Array.from(armorSelect.options).forEach((option) => {
             option.selected = false;
@@ -2386,8 +2596,10 @@ const translations = {
         if (isOldBestiaryRecord(state.bestiary[index]) && !state.showOldBestiaryRecords) {
           bestiaryShowOldToggle.checked = true;
           state.showOldBestiaryRecords = true;
-          refreshBestiaryOptions();
         }
+        // Rekord z ulubionego musi być na liście także wtedy, gdy nie pasuje do wpisanego filtra.
+        // The favourite's record must be on the list even when it does not match the typed filter.
+        refreshBestiaryOptions({ keepIndex: index });
         bestiarySelect.value = String(index);
         updateBestiarySelection();
         state.bestiaryOverrides = deserializeBestiaryOverrides(payload.bestiaryOverrides);
@@ -2403,13 +2615,15 @@ const translations = {
         });
         updateModuleVisibility();
 
-        setSelectedIndices(weaponSelect, payload.modules?.weaponIds || []);
-        setSelectedIndices(armorSelect, payload.modules?.armorIds || []);
-        setSelectedIndices(augmentationsSelect, payload.modules?.augmentationsIds || []);
-        setSelectedIndices(equipmentSelect, payload.modules?.equipmentIds || []);
-        setSelectedIndices(talentsSelect, payload.modules?.talentsIds || []);
-        setSelectedIndices(psionicsSelect, payload.modules?.psionicsIds || []);
-        setSelectedIndices(prayersSelect, payload.modules?.prayersIds || []);
+        // Przebudowa list z zestawem z ulubionego: zapisane pozycje są zaznaczone i widoczne mimo filtrów.
+        // Rebuild the lists with the favourite's set: stored items are selected and visible despite filters.
+        refreshModuleOptions("weapon", { selectedIndices: payload.modules?.weaponIds || [] });
+        refreshModuleOptions("armor", { selectedIndices: payload.modules?.armorIds || [] });
+        refreshModuleOptions("augmentations", { selectedIndices: payload.modules?.augmentationsIds || [] });
+        refreshModuleOptions("equipment", { selectedIndices: payload.modules?.equipmentIds || [] });
+        refreshModuleOptions("talents", { selectedIndices: payload.modules?.talentsIds || [] });
+        refreshModuleOptions("psionics", { selectedIndices: payload.modules?.psionicsIds || [] });
+        refreshModuleOptions("prayers", { selectedIndices: payload.modules?.prayersIds || [] });
 
         weaponTraitDescriptionsToggle.checked = Boolean(toggles.traitDescriptions?.weapon);
         armorTraitDescriptionsToggle.checked = Boolean(toggles.traitDescriptions?.armor);
@@ -2961,6 +3175,18 @@ const translations = {
       };
 
       const attachListeners = () => {
+        // Każda zmiana tekstu w polu filtra od razu przebudowuje jego listę i odświeża sygnał na etykiecie.
+        // Every text change in a filter field immediately rebuilds its list and refreshes the label signal.
+        Object.values(listFilters).forEach((list) => {
+          list.input.addEventListener("input", () => {
+            updateListFilterIndicator(list);
+            if (list.key === "bestiary") {
+              refreshBestiaryOptions();
+            } else {
+              refreshModuleOptions(list.key);
+            }
+          });
+        });
         bestiarySelect.addEventListener("change", updateBestiarySelection);
         bestiaryShowOldToggle.addEventListener("change", updateBestiaryOldVisibility);
         armorSelect.addEventListener("change", renderArmorTable);
@@ -2974,6 +3200,12 @@ const translations = {
           toggle.addEventListener("change", updateModuleVisibility);
         });
         resetButton.addEventListener("click", () => {
+          // Reset czyści też wszystkie filtry nazw, więc listy wracają do pełnej zawartości.
+          // Reset also clears every name filter, so the lists return to their full content.
+          Object.values(listFilters).forEach((list) => {
+            list.input.value = "";
+            updateListFilterIndicator(list);
+          });
           bestiaryShowOldToggle.checked = false;
           state.showOldBestiaryRecords = false;
           refreshBestiaryOptions();
@@ -3001,6 +3233,9 @@ const translations = {
           Array.from(prayersSelect.options).forEach((option) => {
             option.selected = false;
           });
+          // Pełne listy bez filtra i bez zaznaczeń (przed załadowaniem danych funkcja nic nie robi).
+          // Full lists without a filter or selection (before data loads the function does nothing).
+          MODULE_LIST_KEYS.forEach((key) => refreshModuleOptions(key, { selectedIndices: [] }));
           moduleToggles.forEach((toggle) => {
             toggle.checked = toggle.defaultChecked;
           });
@@ -3160,13 +3395,9 @@ const translations = {
         state.psionics = sortByTypeThenName(getRequiredCollection(data, "Psionika"), { typeDescending: true });
         state.prayers = sortByName(getRequiredCollection(data, "Modlitwy"));
         refreshBestiaryOptions();
-        setSelectOptions(armorSelect, state.armor, translations[currentLanguage].messages.selectArmor, { disableOption: isArmorBlocked, disabledTitle: translations[currentLanguage].messages.armorDisabledTitle });
-        setSelectOptions(weaponSelect, state.weapons, translations[currentLanguage].messages.selectWeapon);
-        setSelectOptions(augmentationsSelect, state.augmentations, translations[currentLanguage].messages.selectAugmentations);
-        setSelectOptions(equipmentSelect, state.equipment, translations[currentLanguage].messages.selectEquipment);
-        setSelectOptions(talentsSelect, state.talents, translations[currentLanguage].messages.selectTalents);
-        setSelectOptions(psionicsSelect, state.psionics, translations[currentLanguage].messages.selectPsionics);
-        setSelectOptions(prayersSelect, state.prayers, translations[currentLanguage].messages.selectPrayers);
+        // Listy modułów budowane od zera: bez zaznaczeń, z filtrem wpisanym w polu (i odblokowaniem pól filtra).
+        // Module lists built from scratch: no selection, with the filter typed in the field (and filter fields enabled).
+        MODULE_LIST_KEYS.forEach((key) => refreshModuleOptions(key, { selectedIndices: [] }));
         renderBestiaryTable(null); renderArmorTable(); renderWeaponTable(); renderAugmentationsTable(); renderEquipmentTable(); renderTalentsTable(); renderPsionicsTable(); renderPrayersTable();
         setStatus(translations[currentLanguage].messages.statusPrivateDataOk);
       };

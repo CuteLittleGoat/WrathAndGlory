@@ -214,7 +214,7 @@ Każdy element tablicy `favorites` ma strukturę:
 | `selectedBestiaryIndex` | `number` | tak | Indeks wybranego rekordu Bestiariusza. |
 | `bestiaryName` | `string` | tak | Nazwa rekordu Bestiariusza w chwili zapisu. |
 | `bestiaryOverrides` | `object` | tak | Nadpisania wartości bazowych Bestiariusza. |
-| `notes` | `string` | tak | Notatki do rekordu. |
+| `notes` | `string` | tak | Treść pola „Notatka (będzie widoczna na karcie)”. |
 | `modules` | `object` | tak | Wybrane elementy modułów. |
 | `toggles` | `object` | tak | Stany przełączników UI. |
 
@@ -614,7 +614,7 @@ Each element of the `favorites` array has this structure:
 | `selectedBestiaryIndex` | `number` | yes | Selected Bestiary record index. |
 | `bestiaryName` | `string` | yes | Bestiary record name at save time. |
 | `bestiaryOverrides` | `object` | yes | Base Bestiary value overrides. |
-| `notes` | `string` | yes | Record notes. |
+| `notes` | `string` | yes | Content of the "Note (will be visible on the card)" field. |
 | `modules` | `object` | yes | Selected module entries. |
 | `toggles` | `object` | yes | UI toggle states. |
 

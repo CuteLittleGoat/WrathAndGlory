@@ -142,7 +142,7 @@ Po załadowaniu strony aplikacja wykonuje logicznie następujący przepływ:
 9. Jeżeli użytkownik nie jest zalogowany, pokazuje bramkę K.O.Z.A.
 10. Po poprawnym logowaniu ładuje dane przez `loadPrivateGeneratorData()`.
 11. Rozdziela dane na kolekcje modułu.
-12. Wypełnia listy wyboru.
+12. Wypełnia listy wyboru (`refreshBestiaryOptions()`, `refreshModuleOptions()`) i odblokowuje pola filtrów nazw.
 13. Renderuje puste lub domyślne tabele modułów.
 
 ## Bramka dostępu K.O.Z.A.
@@ -245,7 +245,7 @@ leżą poza nim.
 Sidebar zawiera cztery panele:
 
 1. `Źródło danych` — status ładowania danych z prywatnej bazy.
-2. `Wybór bazowy` — wybór rekordu Bestiariusza, checkbox starych wpisów i notatki.
+2. `Wybór bazowy` — pole filtra `#bestiary-filter`, wybór rekordu Bestiariusza, checkbox starych wpisów i pole `#bestiary-notes` z etykietą „Notatka (będzie widoczna na karcie)”; jego treść trafia do sekcji `Notatki` na karcie do druku.
 3. `Moduły aktywne` — checkboxy widoczności modułów.
 4. `Ulubione` — zapis, odczyt, odświeżanie, usuwanie i sortowanie ulubionych konfiguracji.
 
@@ -262,7 +262,7 @@ Workspace zawiera karty:
 - `Wybór Psioniki`,
 - `Wybór Modlitw`.
 
-Każda karta modułu ma listę wyboru i tabelę podglądu danych.
+Każda karta modułu ma pole filtra nazw, listę wyboru i tabelę podglądu danych.
 
 ## Moduły aktywne
 
@@ -365,6 +365,115 @@ Checkbox `bestiary-show-old` steruje wyłącznie widocznymi opcjami selecta Best
 
 Jeżeli ulubiony wpis wskazuje stary rekord, a checkbox jest wyłączony, `applyFavorite(...)` automatycznie włącza widoczność starych rekordów przed odtworzeniem wyboru.
 
+Lista Bestiariusza łączy ten checkbox z filtrem nazw — opis w rozdziale „Filtry nazw list wyboru”.
+
+## Filtry nazw list wyboru
+
+Każda lista wyboru ma nad sobą pole tekstowe, które zawęża jej opcje do nazw zawierających wpisaną
+frazę. Mechanika odwzorowuje Filtr Globalny z DataVault (`DataVault/app.js`: `foldPolish()`,
+`globalFilterNeedle()`, `updateGlobalFilterIndicator()`): brak przycisku czyszczenia, porównanie
+niewrażliwe na wielkość liter i polskie znaki, niebieska etykieta przy aktywnym filtrze. Różnica:
+w GeneratorNPC każda lista ma własny, niezależny filtr i przeszukiwana jest wyłącznie nazwa rekordu.
+
+### Struktura HTML
+
+Pole stoi w `.field` bezpośrednio przed `<select>`:
+
+- Bestiariusz: `label[for="bestiary"]` → `#bestiary-filter` → `#bestiary`,
+- moduły: `.field-label-row` (etykieta `label[for="<klucz>"]` + checkbox opisu) → `#<klucz>-filter` →
+  `select#<klucz>[multiple]`.
+
+Klucze: `bestiary`, `weapon`, `armor`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
+Id pola to zawsze `<klucz>-filter`, a id listy to sam klucz — na tej konwencji opiera się
+`createListFilter()`.
+
+Atrybuty pola:
+
+```html
+<input type="text" id="weapon-filter" class="list-filter" placeholder="Wpisz fragment nazwy..."
+       data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
+```
+
+`type="text"`, a nie `type="search"`, bo przeglądarki dokładają do pola `search` własny przycisk
+czyszczenia, którego moduł celowo nie ma. `disabled` w HTML blokuje pisanie przed załadowaniem
+danych — inaczej przebudowa listy zastąpiłaby opcję „Ładowanie danych...” komunikatem „Brak danych”.
+
+### Konfiguracja `listFilters`
+
+```js
+const createListFilter = (key, extra = {}) => ({
+  key,
+  select: document.querySelector(`#${key}`),
+  input: document.querySelector(`#${key}-filter`),
+  label: document.querySelector(`label[for="${key}"]`),
+  ...extra,
+});
+```
+
+Buduje obiekt listy z elementów DOM według konwencji id. `listFilters` trzyma osiem takich obiektów.
+Listy modułów dostają dodatkowo:
+
+| Pole | Rola |
+| --- | --- |
+| `getRecords()` | Zwraca kolekcję stanu (`state.weapons`, `state.armor` itd.). |
+| `placeholderKey` | Klucz `translations[lang].messages` dla pierwszej, nieaktywnej opcji (`selectWeapon`...). |
+| `disableOption` | Tylko pancerz: `isArmorBlocked` — pancerze z WP `-` są nieaktywne. |
+| `disabledTitleKey` | Tylko pancerz: `armorDisabledTitle` — dymek nieaktywnej opcji. |
+| `isBlocked()` | Tylko pancerz: zwraca `state.armorSelectionBlocked`. |
+
+`MODULE_LIST_KEYS` to tablica siedmiu kluczy modułów w kolejności kart.
+
+### Funkcje
+
+| Funkcja | Rola |
+| --- | --- |
+| `foldSearchText(value)` | `normalizeText()` (zwinięcie spacji, trim) → `normalize("NFD")` → usunięcie `U+0300–U+036F` → `toLowerCase()` → `ł` → `l`. Ta sama reguła co `foldPolish()` w DataVault; `ł` trzeba zamienić ręcznie, bo nie ma rozkładu kanonicznego w Unicode. |
+| `getListFilterNeedle(list)` | `foldSearchText(list.input.value)`. Filtrowanie i sygnał na etykiecie czytają tę samą wartość, więc same spacje nie zapalają etykiety. |
+| `matchesListFilter(name, needle)` | `true`, gdy `needle` jest pusty albo `foldSearchText(name).includes(needle)`. Fraza jest jednym ciągiem — nie jest dzielona po spacjach. |
+| `updateListFilterIndicator(list)` | Przełącza klasę `list-filter-label--active` na etykiecie i ustawia `title` z komunikatu `listFilterActive` (z frazą po `normalizeText`). Przy nieaktywnym filtrze czyści `title`. |
+| `syncListFilterAvailability(list)` | `input.disabled = !state.data \|\| select.disabled`. |
+| `createListFilterEmptyOption()` | Nieaktywna opcja `value=""` z `data-list-filter-empty="true"` i tekstem `listFilterNoMatches`. |
+| `setSelectOptions(select, items, placeholder, { disableOption, disabledTitle, filterNeedle, selectedIndices })` | Buduje listę modułu. Pomija tylko niezaznaczone rekordy niepasujące do `filterNeedle`; rekordy z `selectedIndices` są zawsze dodawane z `option.selected = true`. Kolejność opcji to zawsze kolejność sortowania kolekcji. Gdy nie dodano żadnego rekordu, dopina opcję pustego wyniku. `value` opcji to indeks rekordu w kolekcji — filtr go nie zmienia. |
+| `refreshModuleOptions(key, { selectedIndices })` | Przebudowuje listę modułu przez `setSelectOptions`. Bez `selectedIndices` bierze bieżące zaznaczenie (`getSelectedIndices(select)`). Po przebudowie przywraca `select.disabled = true`, jeżeli `isBlocked()` zwraca `true`, i wywołuje `syncListFilterAvailability`. Przed załadowaniem danych (`!state.data`) nic nie robi. |
+| `refreshBestiaryOptions({ keepIndex })` | Przebudowuje listę Bestiariusza. Filtry działają kolejno: najpierw widoczność starych wpisów (`state.showOldBestiaryRecords`), potem filtr nazw, który omija rekord o wartości równej bieżącej wartości selecta albo `keepIndex`. Gdy fraza jest aktywna i nic nie przeszło, dopina opcję pustego wyniku. Na końcu przywraca wartość selecta i synchronizuje pole filtra. |
+
+### Reguła „zaznaczone zostają widoczne”
+
+Opcje są usuwane z DOM, a nie ukrywane atrybutem `hidden`, bo Safari na iOS/iPadOS ignoruje
+ukrywanie pojedynczych `<option>` w rozwijanym menu. Skutek uboczny: opcja usunięta z DOM przestaje
+być zaznaczona, a cały moduł czyta wybór wprost z DOM (`getSelectedIndices()`, `bestiarySelect.value`
+w `buildFavoritePayload()`, przycisku `Generuj kartę` i renderach tabel). Dlatego zaznaczone rekordy
+zawsze omijają filtr — wpisanie frazy nie zmienia wyboru, nadpisań `state.bestiaryOverrides`, tabel,
+karty ani ulubionych.
+
+Zdarzenie `change` selecta nie przebudowuje listy. Odznaczony rekord niepasujący do frazy zostaje
+w DOM do następnej zmiany tekstu w polu filtra.
+
+### Przepływy
+
+| Zdarzenie | Zachowanie |
+| --- | --- |
+| `input` w polu filtra | `updateListFilterIndicator(list)`, potem `refreshBestiaryOptions()` albo `refreshModuleOptions(key)`. |
+| `loadPrivateGeneratorData()` | `refreshBestiaryOptions()` i `refreshModuleOptions(key, { selectedIndices: [] })` dla każdego klucza z `MODULE_LIST_KEYS`. Odblokowuje pola filtra (poprzez `syncListFilterAvailability`). |
+| Checkbox `bestiary-show-old` | `refreshBestiaryOptions()` uwzględnia bieżącą frazę. |
+| `setArmorSelectionEnabled(enabled)` | Ustawia `state.armorSelectionBlocked = !enabled`, `armorSelect.disabled` i dostępność `#armor-filter`. |
+| `applyFavorite(favorite)` | Włącza stare wpisy, jeżeli trzeba, woła `refreshBestiaryOptions({ keepIndex: index })`, a dla modułów `refreshModuleOptions(key, { selectedIndices: payload.modules.<klucz>Ids })`. Filtry nie są czyszczone; zapisane pozycje są widoczne i zaznaczone mimo nich. |
+| `Reset` | Czyści wartości wszystkich pól filtra i ich sygnały, potem przebudowuje Bestiariusz i wszystkie listy modułów z `selectedIndices: []`. |
+| `applyLanguage(lang)` | Ustawia `aria-label` pól z `listFilterAria` (`{list}` = tekst etykiety listy), odświeża `title` etykiet i tłumaczy opcje `option[data-list-filter-empty]`. |
+
+Fraza filtra nie jest zapisywana w ulubionych, `localStorage` ani w stanie sesji.
+
+### Style
+
+| Selektor | Wartości | Rola |
+| --- | --- | --- |
+| `:root` | `--filter-on: #3D8FC4`, `--filter-on-glow: rgba(61, 143, 196, 0.4)` | Barwa aktywnego filtru skopiowana z `DataVault/style.css`. |
+| `.list-filter-label--active` | `color: var(--filter-on)`, `text-shadow: 0 0 10px var(--filter-on-glow)` | Etykieta listy przy aktywnym filtrze; odpowiednik `.fieldLabel--active` z DataVault. |
+| `.list-filter:disabled` | `opacity: 0.5`, `cursor: not-allowed` | Pole przed załadowaniem danych i przy zablokowanym pancerzu. |
+
+Wygląd bazowy pola (padding `10px 12px`, `border-radius: 4px`, obramowanie `var(--b2)`, tło
+`var(--bg)`, fokus z `var(--glow)`) daje istniejąca reguła `input[type="text"]`.
+
 ## Moduł pancerza
 
 Pancerze z wartością WP równą `-` są blokowane w select.
@@ -376,7 +485,7 @@ Po wybraniu pancerza generator może:
 - przenieść cechy pancerza na kartę,
 - opcjonalnie dodać opisy cech pancerza.
 
-Jeżeli wybrany rekord Bestiariusza ma pancerz zablokowany, wybór pancerza jest wyłączany.
+Jeżeli wybrany rekord Bestiariusza ma pancerz zablokowany, wybór pancerza jest wyłączany razem z polem `#armor-filter`. Flaga `state.armorSelectionBlocked` (ustawiana w `setArmorSelectionEnabled()`) utrzymuje blokadę przy każdej przebudowie listy pancerzy.
 
 ## Moduł broni
 
@@ -418,7 +527,7 @@ Główne funkcje:
 | `addFavorite()` | Dodaje nowy ulubiony wpis. |
 | `removeFavorite()` | Usuwa wpis. |
 | `moveFavorite()` | Przesuwa wpis na liście. |
-| `applyFavorite()` | Odtwarza zapisany wybór i toggles. |
+| `applyFavorite()` | Odtwarza zapisany wybór i toggles. Listy przebudowuje przez `refreshBestiaryOptions({ keepIndex })` i `refreshModuleOptions(key, { selectedIndices })`, więc zapisane pozycje są widoczne mimo aktywnych filtrów. |
 
 ## Model Firestore ulubionych
 
@@ -451,7 +560,7 @@ Model pojedynczego ulubionego wpisu:
 | `selectedBestiaryIndex` | `number` | Indeks wybranego rekordu Bestiariusza. |
 | `bestiaryName` | `string` | Nazwa rekordu w chwili zapisu. |
 | `bestiaryOverrides` | `object` | Nadpisania bazowego rekordu. |
-| `notes` | `string` | Notatki użytkownika. |
+| `notes` | `string` | Treść pola „Notatka (będzie widoczna na karcie)”. |
 | `modules` | `object` | Indeksy wybranych elementów modułów. |
 | `toggles` | `object` | Stany przełączników UI. |
 
@@ -621,8 +730,16 @@ Karta do druku zawiera między innymi:
 - teksty z `data-i18n`,
 - placeholdery z `data-i18n-placeholder`,
 - placeholdery selectów,
+- `aria-label` pól filtrów (`listFilterAria`), dymki niebieskich etykiet (`listFilterActive`) i opcje pustego wyniku filtra (`listFilterNoMatches`),
 - statusy,
 - etykiety i komunikaty karty.
+
+Klucze filtrów nazw: `labels.listFilterPlaceholder` („Wpisz fragment nazwy...” / „Type part of a name...”),
+`labels.listFilterAria` („Filtr listy: {list}” / „List filter: {list}”), `messages.listFilterNoMatches`
+(„Brak wpisów pasujących do filtra” / „No entries match the filter”) oraz `messages.listFilterActive`
+(„Filtr jest aktywny — lista pokazuje tylko nazwy zawierające: {text}” / „The filter is active — the
+list shows only names containing: {text}”). Etykieta notatki to `labels.bestiaryNotesLabel`
+(„Notatka (będzie widoczna na karcie)” / „Note (will be visible on the card)”).
 
 Teksty komunikatów o awarii bazy są wyjątkiem: nie ma ich w `translations`. Trzyma je
 `shared/firebase-write-status.js` w obu językach, a `applyLanguage()` przekazuje do niego wybrany
@@ -648,6 +765,7 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Odmowa dostępu przy nasłuchu Firestore | Pasek pokazuje przyczynę i podpowiedź, moduł wczytuje ulubione z `localStorage`. |
 | Powrót dostępu przy zmianach lokalnych | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu. |
 | Brak opisu cechy | Popover pokazuje komunikat o braku opisu. |
+| Fraza filtra nie pasuje do żadnej nazwy | Lista pokazuje nieaktywną opcję „Brak wpisów pasujących do filtra”. |
 | Brak wybranego rekordu przy generowaniu | Pokazywany jest alert. |
 | Ulubiony wskazuje nieistniejący rekord | Pokazywany jest alert. |
 
@@ -661,7 +779,7 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 6. Otwórz `GeneratorNPC/index.html`.
 7. Przejdź bramkę K.O.Z.A.
 8. Sprawdź, czy status pokazuje załadowanie prywatnych danych.
-9. Sprawdź, czy select Bestiariusza i listy modułów są wypełnione.
+9. Sprawdź, czy select Bestiariusza i listy modułów są wypełnione, a pola filtrów nad nimi aktywne.
 10. Wybierz rekord Bestiariusza i kilka modułów.
 11. Wygeneruj kartę do druku.
 12. Dodaj konfigurację do ulubionych.
@@ -685,7 +803,14 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Ulubione Firestore | Dodaj ulubiony wpis. | Wpis pojawia się w Firestore `generatorNpc/favorites`. |
 | Ulubione localStorage | Usuń konfigurację Firestore ulubionych i dodaj wpis. | Wpis zapisuje się lokalnie w `generatorNpcFavorites`. |
 | Odtworzenie ulubionego | Kliknij `Wczytaj` przy ulubionym. | UI odtwarza rekord, moduły, notatki, nadpisania i toggles. |
-| Reset | Kliknij `Reset`. | Wybory i nadpisania wracają do stanu domyślnego. |
+| Reset | Kliknij `Reset`. | Wybory, nadpisania i pola filtrów wracają do stanu domyślnego. |
+| Filtr — wielkość liter | Wpisz `ORK`, `ork` i `oRk` nad Bestiariuszem. | Za każdym razem lista zawiera te same rekordy z „ork” w nazwie. |
+| Filtr — polskie znaki | Wpisz `lancuch` nad bronią. | Lista zawiera bronie z „łańcuch” w nazwie. |
+| Filtr — sygnał | Wpisz dowolną frazę, potem same spacje. | Etykieta listy jest niebieska (`#3D8FC4`) z frazą w dymku; przy samych spacjach wraca do zielonej, a lista jest pełna. |
+| Filtr — zaznaczone zostają | Zaznacz broń, potem wpisz frazę, która jej nie pasuje. | Zaznaczona broń zostaje na liście i w tabeli. |
+| Filtr — pusty wynik | Wpisz frazę, której nie ma w żadnej nazwie. | Lista pokazuje nieaktywną opcję „Brak wpisów pasujących do filtra”. |
+| Filtr — pancerz zablokowany | Wybierz rekord Bestiariusza z WP `-`. | Lista pancerzy i `#armor-filter` są nieaktywne. |
+| Filtr — ulubiony | Wpisz frazy w filtrach, potem kliknij `Wczytaj`. | Rekord i pozycje z ulubionego są wybrane i widoczne mimo filtrów. |
 | Nieudany zapis ulubionych | Zablokuj `firestore.googleapis.com` w narzędziach deweloperskich i dodaj ulubiony wpis. | U góry pojawia się pasek „Zapisano tylko na tym urządzeniu”, znacznik przy ulubionych zmienia się na „Tylko to urządzenie”, a wpis trafia do `generatorNpcFavorites`. |
 | Nieudany odczyt ulubionych | Zablokuj adres bazy przed otwarciem modułu. | Pasek pokazuje „Nie udało się wczytać danych z bazy” wraz z podpowiedzią o blokadzie reCAPTCHA. |
 | Ostrzeżenie o nadpisaniu | Po nieudanym zapisie odblokuj adres i otwórz moduł ponownie. | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu; znacznik wraca na „Dane wspólne”. |
@@ -836,7 +961,7 @@ After the page loads, the application logically performs this flow:
 9. If the user is not signed in, shows the K.O.Z.A. access gate.
 10. After successful sign-in, loads data through `loadPrivateGeneratorData()`.
 11. Splits data into module collections.
-12. Fills select lists.
+12. Fills select lists (`refreshBestiaryOptions()`, `refreshModuleOptions()`) and enables the name filter fields.
 13. Renders empty or default module tables.
 
 ## K.O.Z.A. access gate
@@ -939,7 +1064,7 @@ The class sits on the container, because the container holds only the select —
 The sidebar contains four panels:
 
 1. `Data source` — private database loading status.
-2. `Base selection` — Bestiary record selection, old records checkbox, and notes.
+2. `Base selection` — the `#bestiary-filter` filter field, Bestiary record selection, old records checkbox, and the `#bestiary-notes` field labelled "Notatka (będzie widoczna na karcie)" ("Note (will be visible on the card)"); its content goes to the `Notatki` section of the printable card.
 3. `Active modules` — module visibility checkboxes.
 4. `Favorites` — save, load, refresh, remove, and reorder favorite configurations.
 
@@ -956,7 +1081,7 @@ The workspace contains cards:
 - `Psionics selection`,
 - `Prayer selection`.
 
-Each module card has a select list and a data preview table.
+Each module card has a name filter field, a select list and a data preview table.
 
 ## Active modules
 
@@ -1060,6 +1185,116 @@ The `bestiary-show-old` checkbox controls only visible Bestiary select options. 
 
 If a favorite points to an old record and the checkbox is disabled, `applyFavorite(...)` automatically enables old record visibility before restoring the selection.
 
+The Bestiary list combines this checkbox with the name filter — see the "Selection list name filters" chapter.
+
+## Selection list name filters
+
+Every selection list has a text field above it that narrows its options to names containing the
+typed phrase. The mechanics mirror DataVault's Global Filter (`DataVault/app.js`: `foldPolish()`,
+`globalFilterNeedle()`, `updateGlobalFilterIndicator()`): no clear button, matching insensitive to
+letter case and Polish diacritics, a blue label while the filter is active. The difference: in
+GeneratorNPC every list has its own independent filter and only the record name is searched.
+
+### HTML structure
+
+The field sits in `.field` right before the `<select>`:
+
+- Bestiary: `label[for="bestiary"]` → `#bestiary-filter` → `#bestiary`,
+- modules: `.field-label-row` (label `label[for="<key>"]` + description checkbox) → `#<key>-filter` →
+  `select#<key>[multiple]`.
+
+Keys: `bestiary`, `weapon`, `armor`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
+The field id is always `<key>-filter` and the list id is the key itself — `createListFilter()`
+relies on this convention.
+
+Field attributes:
+
+```html
+<input type="text" id="weapon-filter" class="list-filter" placeholder="Wpisz fragment nazwy..."
+       data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
+```
+
+`type="text"` rather than `type="search"`, because browsers add their own clear button to a `search`
+field, and the module deliberately has none. `disabled` in HTML blocks typing before data loads —
+otherwise a list rebuild would replace the "Ładowanie danych..." option with "Brak danych".
+
+### The `listFilters` configuration
+
+```js
+const createListFilter = (key, extra = {}) => ({
+  key,
+  select: document.querySelector(`#${key}`),
+  input: document.querySelector(`#${key}-filter`),
+  label: document.querySelector(`label[for="${key}"]`),
+  ...extra,
+});
+```
+
+It builds a list object from DOM elements using the id convention. `listFilters` holds eight such
+objects. Module lists additionally get:
+
+| Field | Role |
+| --- | --- |
+| `getRecords()` | Returns the state collection (`state.weapons`, `state.armor`, etc.). |
+| `placeholderKey` | `translations[lang].messages` key for the first, disabled option (`selectWeapon`...). |
+| `disableOption` | Armor only: `isArmorBlocked` — armor with AV `-` is disabled. |
+| `disabledTitleKey` | Armor only: `armorDisabledTitle` — tooltip of the disabled option. |
+| `isBlocked()` | Armor only: returns `state.armorSelectionBlocked`. |
+
+`MODULE_LIST_KEYS` is the array of the seven module keys in card order.
+
+### Functions
+
+| Function | Role |
+| --- | --- |
+| `foldSearchText(value)` | `normalizeText()` (collapse spaces, trim) → `normalize("NFD")` → strip `U+0300–U+036F` → `toLowerCase()` → `ł` → `l`. The same rule as `foldPolish()` in DataVault; `ł` has to be replaced by hand, because it has no canonical decomposition in Unicode. |
+| `getListFilterNeedle(list)` | `foldSearchText(list.input.value)`. Filtering and the label signal read the same value, so spaces alone do not light up the label. |
+| `matchesListFilter(name, needle)` | `true` when `needle` is empty or `foldSearchText(name).includes(needle)`. The phrase is one string — it is not split on spaces. |
+| `updateListFilterIndicator(list)` | Toggles the `list-filter-label--active` class on the label and sets `title` from the `listFilterActive` message (with the phrase after `normalizeText`). With an inactive filter it clears `title`. |
+| `syncListFilterAvailability(list)` | `input.disabled = !state.data \|\| select.disabled`. |
+| `createListFilterEmptyOption()` | A disabled `value=""` option with `data-list-filter-empty="true"` and the `listFilterNoMatches` text. |
+| `setSelectOptions(select, items, placeholder, { disableOption, disabledTitle, filterNeedle, selectedIndices })` | Builds a module list. It skips only unselected records that do not match `filterNeedle`; records from `selectedIndices` are always added with `option.selected = true`. Option order is always the collection's sort order. When no record was added, it appends the empty-result option. The option `value` is the record index in the collection — the filter does not change it. |
+| `refreshModuleOptions(key, { selectedIndices })` | Rebuilds a module list through `setSelectOptions`. Without `selectedIndices` it takes the current selection (`getSelectedIndices(select)`). After the rebuild it restores `select.disabled = true` if `isBlocked()` returns `true`, then calls `syncListFilterAvailability`. Before data loads (`!state.data`) it does nothing. |
+| `refreshBestiaryOptions({ keepIndex })` | Rebuilds the Bestiary list. The filters run in order: first outdated-entry visibility (`state.showOldBestiaryRecords`), then the name filter, which is bypassed by the record whose value equals the select's current value or `keepIndex`. When the phrase is active and nothing passed, it appends the empty-result option. Finally it restores the select value and syncs the filter field. |
+
+### The "selected items stay visible" rule
+
+Options are removed from the DOM rather than hidden with the `hidden` attribute, because Safari on
+iOS/iPadOS ignores hiding individual `<option>` elements in a drop-down menu. Side effect: an option
+removed from the DOM is no longer selected, and the whole module reads the selection straight from
+the DOM (`getSelectedIndices()`, `bestiarySelect.value` in `buildFavoritePayload()`, the
+`Generuj kartę` button and the table renders). That is why selected records always bypass the filter
+— typing a phrase does not change the selection, the `state.bestiaryOverrides` overrides, the tables,
+the card, or the favorites.
+
+The select's `change` event does not rebuild the list. A deselected record that does not match the
+phrase stays in the DOM until the next text change in the filter field.
+
+### Flows
+
+| Event | Behaviour |
+| --- | --- |
+| `input` in a filter field | `updateListFilterIndicator(list)`, then `refreshBestiaryOptions()` or `refreshModuleOptions(key)`. |
+| `loadPrivateGeneratorData()` | `refreshBestiaryOptions()` and `refreshModuleOptions(key, { selectedIndices: [] })` for every key in `MODULE_LIST_KEYS`. Enables the filter fields (through `syncListFilterAvailability`). |
+| `bestiary-show-old` checkbox | `refreshBestiaryOptions()` takes the current phrase into account. |
+| `setArmorSelectionEnabled(enabled)` | Sets `state.armorSelectionBlocked = !enabled`, `armorSelect.disabled` and the availability of `#armor-filter`. |
+| `applyFavorite(favorite)` | Enables outdated entries if needed, calls `refreshBestiaryOptions({ keepIndex: index })`, and for the modules `refreshModuleOptions(key, { selectedIndices: payload.modules.<key>Ids })`. Filters are not cleared; the stored items are visible and selected despite them. |
+| `Reset` | Clears the values of every filter field and their signals, then rebuilds the Bestiary and every module list with `selectedIndices: []`. |
+| `applyLanguage(lang)` | Sets the fields' `aria-label` from `listFilterAria` (`{list}` = the list label text), refreshes the labels' `title` and translates `option[data-list-filter-empty]` options. |
+
+The filter phrase is not stored in favorites, `localStorage`, or session state.
+
+### Styles
+
+| Selector | Values | Role |
+| --- | --- | --- |
+| `:root` | `--filter-on: #3D8FC4`, `--filter-on-glow: rgba(61, 143, 196, 0.4)` | Active-filter colour copied from `DataVault/style.css`. |
+| `.list-filter-label--active` | `color: var(--filter-on)`, `text-shadow: 0 0 10px var(--filter-on-glow)` | The list label while the filter is active; the counterpart of DataVault's `.fieldLabel--active`. |
+| `.list-filter:disabled` | `opacity: 0.5`, `cursor: not-allowed` | The field before data loads and while armor is blocked. |
+
+The field's base look (padding `10px 12px`, `border-radius: 4px`, border `var(--b2)`, background
+`var(--bg)`, focus with `var(--glow)`) comes from the existing `input[type="text"]` rule.
+
 ## Armor module
 
 Armor records with WP value `-` are blocked in the select.
@@ -1071,7 +1306,7 @@ When armor is selected, the generator can:
 - move armor traits to the card,
 - optionally add armor trait descriptions.
 
-If the selected Bestiary record has blocked armor, armor selection is disabled.
+If the selected Bestiary record has blocked armor, armor selection is disabled together with the `#armor-filter` field. The `state.armorSelectionBlocked` flag (set in `setArmorSelectionEnabled()`) keeps the block through every rebuild of the armor list.
 
 ## Weapon module
 
@@ -1113,7 +1348,7 @@ Main functions:
 | `addFavorite()` | Adds a new favorite. |
 | `removeFavorite()` | Removes a favorite. |
 | `moveFavorite()` | Reorders a favorite. |
-| `applyFavorite()` | Restores saved selections and toggles. |
+| `applyFavorite()` | Restores saved selections and toggles. It rebuilds the lists through `refreshBestiaryOptions({ keepIndex })` and `refreshModuleOptions(key, { selectedIndices })`, so stored items are visible despite active filters. |
 
 ## Favorites Firestore model
 
@@ -1146,7 +1381,7 @@ Single favorite model:
 | `selectedBestiaryIndex` | `number` | Selected Bestiary record index. |
 | `bestiaryName` | `string` | Record name at save time. |
 | `bestiaryOverrides` | `object` | Base record overrides. |
-| `notes` | `string` | User notes. |
+| `notes` | `string` | Content of the "Note (will be visible on the card)" field. |
 | `modules` | `object` | Selected module item indices. |
 | `toggles` | `object` | UI toggle states. |
 
@@ -1315,8 +1550,16 @@ The printable card includes, among others:
 - `data-i18n` text,
 - `data-i18n-placeholder` placeholders,
 - select placeholders,
+- the filter fields' `aria-label` (`listFilterAria`), the blue labels' tooltips (`listFilterActive`) and the filter's empty-result options (`listFilterNoMatches`),
 - statuses,
 - labels and printable card messages.
+
+Name filter keys: `labels.listFilterPlaceholder` ("Wpisz fragment nazwy..." / "Type part of a name..."),
+`labels.listFilterAria` ("Filtr listy: {list}" / "List filter: {list}"), `messages.listFilterNoMatches`
+("Brak wpisów pasujących do filtra" / "No entries match the filter") and `messages.listFilterActive`
+("Filtr jest aktywny — lista pokazuje tylko nazwy zawierające: {text}" / "The filter is active — the
+list shows only names containing: {text}"). The note label is `labels.bestiaryNotesLabel`
+("Notatka (będzie widoczna na karcie)" / "Note (will be visible on the card)").
 
 Database failure messages are an exception: they are not part of `translations`. They live in
 `shared/firebase-write-status.js` in both languages, and `applyLanguage()` passes the selected
@@ -1342,6 +1585,7 @@ structure section explains how to reveal it.
 | Permission denied on the Firestore listener | The bar shows the cause and a hint, the module loads favorites from `localStorage`. |
 | Access restored with local changes pending | The bar warns that database data replaced the changes saved on this device. |
 | Missing trait description | Popover shows unavailable-description message. |
+| The filter phrase matches no name | The list shows the disabled "No entries match the filter" option. |
 | No selected record when generating | Alert is shown. |
 | Favorite points to missing record | Alert is shown. |
 
@@ -1355,7 +1599,7 @@ structure section explains how to reveal it.
 6. Open `GeneratorNPC/index.html`.
 7. Pass the K.O.Z.A. access gate.
 8. Check that the status shows private data loaded.
-9. Check that Bestiary select and module lists are filled.
+9. Check that Bestiary select and module lists are filled and the filter fields above them are enabled.
 10. Select a Bestiary record and several modules.
 11. Generate a printable card.
 12. Add the configuration to favorites.
@@ -1379,7 +1623,14 @@ structure section explains how to reveal it.
 | Firestore favorites | Add favorite. | Entry appears in Firestore `generatorNpc/favorites`. |
 | localStorage favorites | Remove favorites Firestore config and add entry. | Entry is saved locally in `generatorNpcFavorites`. |
 | Favorite restore | Click `Wczytaj` on a favorite. | UI restores record, modules, notes, overrides, and toggles. |
-| Reset | Click `Reset`. | Selections and overrides return to default state. |
+| Reset | Click `Reset`. | Selections, overrides and filter fields return to default state. |
+| Filter — letter case | Type `ORK`, `ork` and `oRk` above the Bestiary. | Each time the list holds the same records with "ork" in the name. |
+| Filter — Polish characters | Type `lancuch` above the weapons. | The list holds weapons with "łańcuch" in the name. |
+| Filter — signal | Type any phrase, then spaces only. | The list label is blue (`#3D8FC4`) with the phrase in the tooltip; with spaces only it returns to green and the list is full. |
+| Filter — selected items stay | Select a weapon, then type a phrase that does not match it. | The selected weapon stays on the list and in the table. |
+| Filter — empty result | Type a phrase found in no name. | The list shows the disabled "No entries match the filter" option. |
+| Filter — armor blocked | Select a Bestiary record with AV `-`. | The armor list and `#armor-filter` are disabled. |
+| Filter — favorite | Type phrases in the filters, then click `Wczytaj`. | The favorite's record and items are selected and visible despite the filters. |
 | Failed favorites write | Block `firestore.googleapis.com` in developer tools and add a favorite. | A "saved on this device only" bar appears at the top, the badge next to favorites switches to "This device only", and the entry lands in `generatorNpcFavorites`. |
 | Failed favorites read | Block the database address before opening the module. | The bar shows "Data could not be loaded from the database" together with the reCAPTCHA blocking hint. |
 | Overwrite warning | After a failed write, unblock the address and open the module again. | The bar warns that database data replaced the changes saved on this device; the badge returns to "Shared data". |

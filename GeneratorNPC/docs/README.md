@@ -77,13 +77,14 @@ W nagłówku znajdują się:
 Panel boczny zawiera:
 
 - `Źródło danych` — informację o stanie ładowania prywatnej bazy,
-- `Wybór bazowy` — wybór wpisu z Bestiariusza i notatki,
+- `Wybór bazowy` — pole wyszukiwania, wybór wpisu z Bestiariusza i notatka na kartę,
 - `Moduły aktywne` — przełączniki sekcji karty,
 - `Ulubione` — zapisane konfiguracje NPC.
 
 ### Obszar roboczy
 
-Obszar roboczy zawiera podgląd i tabele wyboru:
+Obszar roboczy zawiera podgląd i tabele wyboru. Każda sekcja wyboru ma nad listą pole wyszukiwania
+(opis w rozdziale „Wyszukiwanie na listach”):
 
 - `Podgląd bazowy Bestiariusza`,
 - `Wybór Broni`,
@@ -99,10 +100,10 @@ Obszar roboczy zawiera podgląd i tabele wyboru:
 1. Otwórz `GeneratorNPC/index.html`.
 2. Przejdź bramkę K.O.Z.A., jeżeli się pojawi.
 3. Poczekaj, aż panel `Źródło danych` potwierdzi załadowanie danych.
-4. W sekcji `Wybór bazowy` wybierz wpis z Bestiariusza.
+4. W sekcji `Wybór bazowy` wybierz wpis z Bestiariusza. Jeżeli lista jest długa, wpisz najpierw fragment nazwy w pole nad nią.
 5. Przejrzyj `Podgląd bazowy Bestiariusza`.
 6. Zmień statystyki, które chcesz dostosować.
-7. Dopisz notatki w polu uwag, jeżeli są potrzebne.
+7. Dopisz notatkę w polu `Notatka (będzie widoczna na karcie)`, jeżeli jest potrzebna.
 8. Włącz lub wyłącz moduły w sekcji `Moduły aktywne`.
 9. W aktywnych modułach wybierz konkretne elementy, np. broń, pancerz albo talent.
 10. Kliknij `Generuj kartę`.
@@ -116,6 +117,111 @@ Najpierw wybierz bazowego przeciwnika albo NPC z listy Bestiariusza.
 Po wyborze moduł pokazuje jego dane w podglądzie bazowym.
 
 Jeżeli lista jest pusta albo nieaktywna, sprawdź, czy dane z prywatnej bazy zostały załadowane.
+
+Nad listą Bestiariusza jest pole `Wpisz fragment nazwy...`. Pozwala szybko znaleźć przeciwnika bez
+przewijania całej listy — dokładny opis jest w następnym rozdziale.
+
+## Wyszukiwanie na listach
+
+### Gdzie jest pole wyszukiwania
+
+Nad każdą listą wyboru stoi pole tekstowe z szarym napisem `Wpisz fragment nazwy...`. Takie pole ma:
+
+- lista Bestiariusza w sekcji `Wybór bazowy`,
+- lista `Bronie`,
+- lista `Pancerze`,
+- lista `Augumentacje`,
+- lista `Ekwipunek`,
+- lista `Talenty`,
+- lista `Psionika`,
+- lista `Modlitwy`.
+
+Każda lista ma własne pole. Wpisanie tekstu nad bronią nie zmienia listy pancerzy ani Bestiariusza.
+
+### Jak z niego korzystać
+
+1. Kliknij w pole nad listą.
+2. Wpisz fragment nazwy, na przykład `ork`.
+3. Lista pod polem od razu pokazuje tylko te wpisy, których nazwa zawiera wpisany tekst.
+   Nie trzeba niczego klikać ani naciskać `Enter`.
+4. Wybierz wpis z zawężonej listy tak jak zwykle.
+
+Zasady wyszukiwania:
+
+- **Wielkość liter nie ma znaczenia.** `ORK`, `ork` i `oRk` dają dokładnie ten sam wynik.
+- **Polskie znaki nie mają znaczenia.** `lancuch` znajdzie `Łańcuchowy`, a `lowca` znajdzie `Łowca`.
+- **Tekst może być w dowolnym miejscu nazwy.** `bolt` znajdzie zarówno `Pistolet boltowy`, jak i
+  `Karabin boltowy`.
+- **Tekst jest szukany w całości.** `ork boy` szuka dokładnie takiego ciągu znaków (razem ze spacją),
+  a nie dwóch osobnych słów.
+- **Same spacje nic nie robią.** Pole wypełnione tylko spacjami działa jak puste.
+
+### Niebieska nazwa listy — znak, że filtr działa
+
+Gdy w polu jest tekst, który zawęża listę, nazwa tej listy (napis nad polem, na przykład
+`Bestiariusz · Nazwa` albo `Bronie`) zmienia kolor z zielonego na **niebieski**. To przypomnienie, że
+nie widzisz całej listy, tylko jej część.
+
+Po najechaniu myszą na niebieską nazwę pojawia się podpowiedź z tekstem, według którego lista jest
+zawężona.
+
+Gdy usuniesz tekst z pola, nazwa listy wraca do zwykłego koloru, a lista znów pokazuje wszystkie wpisy.
+
+### Jak wyczyścić wyszukiwanie
+
+Pole nie ma osobnego przycisku czyszczenia. Aby wrócić do pełnej listy:
+
+- usuń tekst z pola klawiszem `Backspace` albo `Delete` (możesz najpierw zaznaczyć cały tekst
+  skrótem `Ctrl + A`, będąc w polu),
+- albo kliknij `Reset` w nagłówku — czyści on wszystkie pola wyszukiwania naraz (razem z całą
+  konfiguracją NPC).
+
+### Wybrane pozycje nie znikają
+
+Jeżeli coś jest już wybrane — przeciwnik z Bestiariusza albo zaznaczone bronie, pancerze, talenty
+itd. — to zostaje na liście, nawet jeśli nie pasuje do wpisanego tekstu. Dzięki temu wpisanie
+nowego tekstu nigdy nie kasuje wcześniejszego wyboru, zmian w podglądzie bazowym ani pozycji na
+karcie.
+
+Przykład: masz zaznaczony `Pistolet boltowy` i wpisujesz `karabin`. Lista pokaże `Karabin boltowy`
+i nadal zaznaczony `Pistolet boltowy`.
+
+Pozycja, którą odznaczysz, a która nie pasuje do tekstu, zniknie z listy przy następnej zmianie
+tekstu w polu.
+
+Na komputerze, na listach wielokrotnego wyboru (bronie, pancerze i pozostałe moduły):
+
+- zwykłe kliknięcie wybiera tylko klikniętą pozycję i odznacza pozostałe,
+- `Ctrl` + kliknięcie (na Macu `Cmd` + kliknięcie) dodaje pozycję do już wybranych albo ją
+  odznacza.
+
+Jeżeli chcesz dodać coś do już wybranych pozycji, użyj `Ctrl` + kliknięcia.
+
+### Co wyszukiwanie zmienia, a czego nie
+
+Wyszukiwanie zmienia tylko to, co widać na liście. Nie zmienia danych w DataVault, nie zmienia
+karty NPC i nie jest zapisywane w ulubionych.
+
+Wczytanie ulubionego nie czyści pól wyszukiwania. Zapisane w ulubionym pozycje i tak pojawią się na
+listach jako zaznaczone, nawet jeśli nie pasują do wpisanego tekstu.
+
+### Wyszukiwanie i stare wpisy Bestiariusza
+
+Pole wyszukiwania Bestiariusza działa razem z checkboxem `Czy wyświetlić zdezaktualizowane wpisy?`.
+Stare wpisy pojawiają się w wynikach tylko wtedy, gdy ten checkbox jest zaznaczony.
+
+### Komunikat „Brak wpisów pasujących do filtra”
+
+Jeżeli żadna nazwa na liście nie zawiera wpisanego tekstu, lista pokazuje wyszarzony napis
+`Brak wpisów pasujących do filtra`. Nie da się go wybrać. Popraw tekst w polu albo go usuń.
+
+### Pole wyszukiwania jest wyszarzone
+
+Pole jest nieaktywne (wyszarzone), gdy:
+
+- dane z prywatnej bazy jeszcze się nie załadowały — poczekaj na komunikat w panelu `Źródło danych`,
+- przy pancerzu: wybrany przeciwnik nie może mieć pancerza, więc cała lista pancerzy jest
+  wyłączona. Wybierz innego przeciwnika, a pole znów będzie aktywne.
 
 ## Stare wpisy Bestiariusza
 
@@ -161,9 +267,15 @@ Typowy przebieg:
 
 Słowa kluczowe w podglądzie mogą być wyróżnione kolorem, żeby były łatwiejsze do odczytania.
 
-## Uwagi do rekordu
+## Notatka (będzie widoczna na karcie)
 
-Pole uwag pozwala dopisać własne informacje do NPC.
+Pole `Notatka (będzie widoczna na karcie)` w sekcji `Wybór bazowy` pozwala dopisać własne informacje
+do NPC. Szary napis `Opcjonalne notatki` w pustym polu oznacza, że wypełnienie go nie jest
+obowiązkowe.
+
+Tekst z tego pola trafia na wygenerowaną kartę — pojawia się na samym dole, w sekcji `Notatki`.
+Jeżeli pole jest puste, karta nie ma tej sekcji. Pamiętaj o tym przed pokazaniem albo wydrukowaniem
+karty dla graczy.
 
 Możesz tam wpisać na przykład:
 
@@ -173,7 +285,7 @@ Możesz tam wpisać na przykład:
 - zmiany fabularne,
 - notatki o wyposażeniu.
 
-Uwagi mogą zostać zapisane w ulubionych razem z konfiguracją NPC.
+Notatka jest zapisywana w ulubionych razem z konfiguracją NPC.
 
 ## Moduły aktywne
 
@@ -343,7 +455,8 @@ Przed drukiem sprawdź, czy wszystkie potrzebne moduły są widoczne i czy karta
 
 ## Reset
 
-Przycisk `Reset` czyści aktualną konfigurację i wraca do stanu początkowego.
+Przycisk `Reset` czyści aktualną konfigurację i wraca do stanu początkowego. Czyści też wszystkie
+pola wyszukiwania nad listami, więc listy znów pokazują wszystkie wpisy.
 
 Użyj go, gdy chcesz zacząć budować nowego NPC od zera.
 
@@ -377,6 +490,10 @@ informacja, że potwierdzenie zostało pominięte.
 | Dane nie ładują się | Moduł nie może pobrać danych DataVault. | Odśwież stronę. Jeżeli problem trwa, zgłoś adminowi technicznemu. |
 | Brak wymaganego arkusza | W prywatnej bazie brakuje jednej z tabel potrzebnych GeneratorNPC. | Dane DataVault trzeba odświeżyć albo naprawić import. |
 | Lista Bestiariusza jest pusta | Brak danych albo dane nie zostały załadowane. | Sprawdź panel `Źródło danych`. |
+| Lista pokazuje tylko napis `Brak wpisów pasujących do filtra` | Żadna nazwa nie zawiera tekstu wpisanego w pole nad listą. | Popraw tekst w polu albo go usuń. |
+| Nazwa listy jest niebieska, a na liście brakuje wpisów | Nad listą jest wpisany tekst, który ją zawęża. | Usuń tekst z pola nad listą albo kliknij `Reset`. |
+| Na liście jest pozycja, która nie pasuje do wpisanego tekstu | To pozycja wybrana wcześniej — wybrane pozycje zostają widoczne, żeby wybór się nie zgubił. | Nic nie trzeba robić. Jeżeli jej nie chcesz, odznacz ją. |
+| Pole wyszukiwania jest wyszarzone | Dane jeszcze się ładują albo (przy pancerzu) wybrany przeciwnik nie może mieć pancerza. | Poczekaj na załadowanie danych albo wybierz innego przeciwnika. |
 | Nie można wygenerować karty | Nie wybrano bazowego NPC. | Wybierz wpis z Bestiariusza. |
 | Ulubione nie synchronizują się między urządzeniami | Moduł używa lokalnego zapisu zamiast Firestore. | Sprawdź konfigurację ulubionych albo używaj tego samego urządzenia. |
 | Żółty pasek „Zapisano tylko na tym urządzeniu" | Baza odrzuciła zapis, więc ulubiony wpis został zapisany w tej przeglądarce. | Najczęstsza przyczyna to dodatek blokujący reklamy, który blokuje adres `google.com/recaptcha`. Wyłącz blokowanie dla tej strony i odśwież moduł. |
@@ -392,11 +509,11 @@ informacja, że potwierdzenie zostało pominięte.
 
 1. Otwórz `GeneratorNPC/index.html`.
 2. Przejdź bramkę K.O.Z.A., jeżeli się pojawi.
-3. Wybierz bazowego NPC z Bestiariusza.
+3. Wybierz bazowego NPC z Bestiariusza (wpisz fragment nazwy w pole nad listą, żeby szybciej go znaleźć).
 4. Zmień statystyki i teksty, jeżeli potrzeba.
 5. Włącz potrzebne moduły.
-6. Wybierz broń, pancerz i dodatki.
-7. Dopisz notatki prowadzącego.
+6. Wybierz broń, pancerz i dodatki (także tu możesz zawęzić listy polem wyszukiwania).
+7. Dopisz notatkę, która ma się znaleźć na karcie.
 8. Zapisz konfigurację w ulubionych, jeżeli będzie używana ponownie.
 9. Kliknij `Generuj kartę`.
 10. Sprawdź kartę i wydrukuj albo zostaw jako podgląd.
@@ -482,13 +599,14 @@ The header contains:
 The sidebar contains:
 
 - `Data source` — private database loading status,
-- `Base selection` — Bestiary entry selection and notes,
+- `Base selection` — search field, Bestiary entry selection and the note for the card,
 - `Active modules` — card section toggles,
 - `Favorites` — saved NPC configurations.
 
 ### Workspace
 
-The workspace contains preview and selection tables:
+The workspace contains preview and selection tables. Every selection section has a search field
+above its list (described in the "Searching the lists" chapter):
 
 - `Base preview — Bestiary`,
 - `Weapon selection`,
@@ -504,10 +622,10 @@ The workspace contains preview and selection tables:
 1. Open `GeneratorNPC/index.html`.
 2. Pass the K.O.Z.A. gate if it appears.
 3. Wait until `Data source` confirms that data is loaded.
-4. In `Base selection`, choose a Bestiary entry.
+4. In `Base selection`, choose a Bestiary entry. If the list is long, first type part of the name into the field above it.
 5. Review `Base preview — Bestiary`.
 6. Change statistics you want to adjust.
-7. Add notes if needed.
+7. Add a note in the `Notatka (będzie widoczna na karcie)` field if needed.
 8. Enable or disable modules in `Active modules`.
 9. In active modules, select specific items, such as weapon, armor, or talent.
 10. Click `Generate card`.
@@ -521,6 +639,113 @@ First choose a base enemy or NPC from the Bestiary list.
 After selection, the module shows its data in the base preview.
 
 If the list is empty or inactive, check whether private database data has loaded.
+
+Above the Bestiary list there is a `Wpisz fragment nazwy...` field. It lets you find an enemy quickly
+without scrolling through the whole list — the next chapter describes it in detail.
+
+## Searching the lists
+
+### Where the search field is
+
+Above every selection list there is a text field with the grey hint `Wpisz fragment nazwy...`
+("Type part of a name..."). Such a field exists for:
+
+- the Bestiary list in the `Base selection` section,
+- the `Weapons` list,
+- the `Armor` list,
+- the `Augmentations` list,
+- the `Equipment` list,
+- the `Talents` list,
+- the `Psionics` list,
+- the `Prayers` list.
+
+Every list has its own field. Typing above the weapons does not change the armor list or the
+Bestiary.
+
+### How to use it
+
+1. Click the field above the list.
+2. Type part of a name, for example `ork`.
+3. The list below the field immediately shows only the entries whose name contains the typed text.
+   There is nothing to click and no need to press `Enter`.
+4. Pick an entry from the narrowed list as usual.
+
+Search rules:
+
+- **Letter case does not matter.** `ORK`, `ork` and `oRk` give exactly the same result.
+- **Polish characters do not matter.** `lancuch` finds `Łańcuchowy`, and `lowca` finds `Łowca`.
+- **The text can be anywhere in the name.** `bolt` finds both `Pistolet boltowy` and
+  `Karabin boltowy`.
+- **The text is searched as a whole.** `ork boy` looks for exactly that string of characters
+  (including the space), not for two separate words.
+- **Spaces alone do nothing.** A field holding only spaces works like an empty one.
+
+### A blue list name — the sign that the filter is on
+
+When the field holds text that narrows the list, the name of that list (the caption above the field,
+for example `Bestiariusz · Nazwa` or `Bronie`) changes colour from green to **blue**. It reminds you
+that you are not seeing the whole list, only part of it.
+
+Hovering the mouse over the blue name shows a tooltip with the text the list is narrowed by.
+
+When you delete the text from the field, the list name returns to its normal colour and the list
+shows every entry again.
+
+### How to clear the search
+
+The field has no separate clear button. To get the full list back:
+
+- delete the text from the field with `Backspace` or `Delete` (you can first select the whole text
+  with `Ctrl + A` while in the field),
+- or click `Reset` in the header — it clears every search field at once (together with the whole NPC
+  configuration).
+
+### Selected items do not disappear
+
+If something is already selected — an enemy from the Bestiary, or ticked weapons, armor, talents
+and so on — it stays on the list even when it does not match the typed text. That way typing new
+text never erases an earlier choice, changes in the base preview, or items on the card.
+
+Example: `Pistolet boltowy` is selected and you type `karabin`. The list shows `Karabin boltowy`
+and the still selected `Pistolet boltowy`.
+
+An item you deselect that does not match the text disappears from the list at the next change of the
+text in the field.
+
+On a computer, on multi-choice lists (weapons, armor and the other modules):
+
+- a plain click selects only the clicked item and deselects the others,
+- `Ctrl` + click (`Cmd` + click on a Mac) adds the item to the ones already selected, or deselects
+  it.
+
+To add something to the items already selected, use `Ctrl` + click.
+
+### What searching changes and what it does not
+
+Searching changes only what the list shows. It does not change DataVault data, it does not change
+the NPC card and it is not saved in favorites.
+
+Loading a favorite does not clear the search fields. The items stored in the favorite still appear
+on the lists as selected, even when they do not match the typed text.
+
+### Searching and old Bestiary entries
+
+The Bestiary search field works together with the `Show outdated entries?` checkbox. Old entries
+appear in the results only when that checkbox is ticked.
+
+### The "No entries match the filter" message
+
+If no name on the list contains the typed text, the list shows the greyed-out caption
+`Brak wpisów pasujących do filtra` ("No entries match the filter"). It cannot be selected. Correct
+the text in the field or delete it.
+
+### The search field is greyed out
+
+The field is inactive (greyed out) when:
+
+- private database data has not loaded yet — wait for the message in the `Data source` panel,
+- for armor: the selected enemy cannot have armor, so the whole armor list is disabled. Pick another
+  enemy and the field becomes active again.
 
 ## Old Bestiary entries
 
@@ -566,9 +791,15 @@ Typical flow:
 
 Keywords in preview may be color-highlighted for readability.
 
-## Record notes
+## Note (will be visible on the card)
 
-The notes field lets you add your own NPC information.
+The `Notatka (będzie widoczna na karcie)` field ("Note (will be visible on the card)") in the
+`Base selection` section lets you add your own NPC information. The grey hint `Opcjonalne notatki`
+("Optional notes") in the empty field means filling it in is not required.
+
+The text from this field goes onto the generated card — it appears at the very bottom, in the
+`Notatki` ("Notes") section. If the field is empty, the card has no such section. Keep that in mind
+before showing or printing the card for the players.
 
 You can use it for:
 
@@ -578,7 +809,7 @@ You can use it for:
 - story changes,
 - equipment notes.
 
-Notes can be saved in favorites together with the NPC configuration.
+The note is saved in favorites together with the NPC configuration.
 
 ## Active modules
 
@@ -748,7 +979,8 @@ Before printing, check whether all needed modules are visible and whether the ca
 
 ## Reset
 
-`Reset` clears the current configuration and returns to the initial state.
+`Reset` clears the current configuration and returns to the initial state. It also clears every
+search field above the lists, so the lists show every entry again.
 
 Use it when you want to start building a new NPC from scratch.
 
@@ -782,6 +1014,10 @@ confirmation was skipped.
 | Data does not load | The module cannot fetch DataVault data. | Refresh the page. If the problem continues, contact technical admin. |
 | Required sheet is missing | The private database lacks a table required by GeneratorNPC. | DataVault data must be refreshed or import must be fixed. |
 | Bestiary list is empty | Data is missing or has not loaded. | Check the `Data source` panel. |
+| The list shows only the caption `Brak wpisów pasujących do filtra` | No name contains the text typed in the field above the list. | Correct the text in the field or delete it. |
+| The list name is blue and entries are missing from the list | Text typed above the list narrows it. | Delete the text from the field above the list or click `Reset`. |
+| The list holds an item that does not match the typed text | It is an item selected earlier — selected items stay visible so the choice is not lost. | Nothing to do. If you do not want it, deselect it. |
+| The search field is greyed out | Data is still loading, or (for armor) the selected enemy cannot have armor. | Wait for the data to load or pick another enemy. |
 | Card cannot be generated | No base NPC is selected. | Select a Bestiary entry. |
 | Favorites do not sync between devices | The module is using local storage instead of Firestore. | Check favorites configuration or use the same device. |
 | Amber bar "Saved on this device only" | The database refused the write, so the favorite was saved in this browser. | The most common cause is an ad blocker blocking the `google.com/recaptcha` address. Disable blocking for this page and reload the module. |
@@ -797,11 +1033,11 @@ confirmation was skipped.
 
 1. Open `GeneratorNPC/index.html`.
 2. Pass the K.O.Z.A. gate if it appears.
-3. Select a base NPC from Bestiary.
+3. Select a base NPC from Bestiary (type part of the name into the field above the list to find it faster).
 4. Change statistics and text if needed.
 5. Enable needed modules.
-6. Select weapons, armor, and extras.
-7. Add GM notes.
+6. Select weapons, armor, and extras (here too you can narrow the lists with the search field).
+7. Add the note that should appear on the card.
 8. Save the configuration as a favorite if it will be reused.
 9. Click `Generate card`.
 10. Check the card and print it or keep it as a reference.
