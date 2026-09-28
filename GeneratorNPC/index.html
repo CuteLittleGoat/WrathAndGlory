@@ -636,7 +636,7 @@ const translations = {
             statusLoadPrivateData: "Ładowanie danych z prywatnej bazy...",
             statusPrivateDataOk: "OK — załadowano dane z prywatnej bazy",
             statusPrivateDataError: "Duch Maszyny milczy: nie udało się załadować prywatnych danych.",
-            selectBestiary: "Wybierz nazwę...",
+            selectBestiary: "Lista Przeciwników",
             selectArmor: "Wybierz pancerze...",
             selectWeapon: "Wybierz bronie...",
             selectAugmentations: "Wybierz augumentacje...",
@@ -806,7 +806,7 @@ const translations = {
             statusLoadPrivateData: "Loading data from private database...",
             statusPrivateDataOk: "OK — loaded data from private database",
             statusPrivateDataError: "The Machine Spirit is silent: could not load private data.",
-            selectBestiary: "Select a name...",
+            selectBestiary: "Enemy list",
             selectArmor: "Select armor...",
             selectWeapon: "Select weapons...",
             selectAugmentations: "Select augmentations...",
@@ -2210,9 +2210,27 @@ const translations = {
         }
       };
 
+      // --- Indeks wybranego rekordu Bestiariusza / Index of the selected Bestiary record ---
+      // PL: Pusta wartość selecta (opcja "Lista Przeciwników" albo "Brak wpisów pasujących do filtra")
+      //     oznacza brak wyboru i daje null. Sprawdzenie pustego tekstu jest konieczne, bo Number("")
+      //     zwraca 0, a nie NaN — bez niego brak wyboru zostałby odczytany jako pierwszy rekord listy,
+      //     a "Generuj kartę" i "Dodaj do ulubionych" użyłyby przypadkowego potwora.
+      // EN: An empty select value (the "Lista Przeciwników" or "Brak wpisów pasujących do filtra" option)
+      //     means no choice and yields null. The empty-string check is required because Number("")
+      //     returns 0, not NaN — without it no choice would be read as the first record of the list,
+      //     and "Generate card" and "Add to favourites" would use an arbitrary monster.
+      const getSelectedBestiaryIndex = () => {
+        const value = bestiarySelect.value;
+        if (value === "") {
+          return null;
+        }
+        const index = Number(value);
+        return Number.isInteger(index) && state.bestiary[index] ? index : null;
+      };
+
       const updateBestiarySelection = () => {
-        const index = Number(bestiarySelect.value);
-        if (Number.isNaN(index)) {
+        const index = getSelectedBestiaryIndex();
+        if (index === null) {
           state.selectedBestiaryIndex = null;
           resetBestiaryOverrides();
           renderBestiaryTable(null);
@@ -2511,8 +2529,8 @@ const translations = {
       };
 
       const buildFavoritePayload = () => {
-        const selectedIndex = Number(bestiarySelect.value);
-        if (Number.isNaN(selectedIndex) || !state.bestiary[selectedIndex]) {
+        const selectedIndex = getSelectedBestiaryIndex();
+        if (selectedIndex === null) {
           return null;
         }
         return {
@@ -3309,8 +3327,8 @@ const translations = {
           }
         });
         generateButton.addEventListener("click", () => {
-          const index = Number(bestiarySelect.value);
-          if (Number.isNaN(index) || !state.bestiary[index]) {
+          const index = getSelectedBestiaryIndex();
+          if (index === null) {
             alert(translations[currentLanguage].messages.selectBestiaryAlert);
             return;
           }

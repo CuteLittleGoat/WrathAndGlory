@@ -688,6 +688,29 @@ Opisy są pobierane z `_meta.traits`. Nazwy cech są kanonizowane tak, aby waria
 
 Przycisk `Generuj kartę` wymaga wybranego rekordu Bestiariusza.
 
+Wybrany rekord odczytuje `getSelectedBestiaryIndex()`:
+
+```js
+const getSelectedBestiaryIndex = () => {
+  const value = bestiarySelect.value;
+  if (value === "") {
+    return null;
+  }
+  const index = Number(value);
+  return Number.isInteger(index) && state.bestiary[index] ? index : null;
+};
+```
+
+Zwraca indeks rekordu w `state.bestiary` albo `null`, gdy nic nie jest wybrane. Pusty tekst trzeba
+sprawdzić jawnie: pierwsza opcja selecta (`Lista Przeciwników`, klucz `messages.selectBestiary`) oraz
+opcja pustego wyniku filtra mają `value=""`, a `Number("")` zwraca `0`, nie `NaN` — samo
+`Number.isNaN()` odczytałoby brak wyboru jako pierwszy rekord listy. Funkcji używają:
+
+- przycisk `Generuj kartę` — przy `null` pokazuje alert `messages.selectBestiaryAlert` i nie otwiera karty,
+- `buildFavoritePayload()` — przy `null` zwraca `null`, a `addFavorite()` pokazuje alert
+  „Wybierz rekord bestiariusza przed dodaniem do ulubionych.” i nic nie zapisuje,
+- `updateBestiarySelection()` — przy `null` czyści podgląd bazowy, nadpisania i blokadę pancerza.
+
 Po kliknięciu kod:
 
 1. pobiera wybrany rekord Bestiariusza,
@@ -729,7 +752,7 @@ Karta do druku zawiera między innymi:
 - `document.documentElement.lang`,
 - teksty z `data-i18n`,
 - placeholdery z `data-i18n-placeholder`,
-- placeholdery selectów,
+- placeholdery selectów (dla Bestiariusza `messages.selectBestiary`: „Lista Przeciwników” / „Enemy list”),
 - `aria-label` pól filtrów (`listFilterAria`), dymki niebieskich etykiet (`listFilterActive`) i opcje pustego wyniku filtra (`listFilterNoMatches`),
 - statusy,
 - etykiety i komunikaty karty.
@@ -766,7 +789,8 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Powrót dostępu przy zmianach lokalnych | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu. |
 | Brak opisu cechy | Popover pokazuje komunikat o braku opisu. |
 | Fraza filtra nie pasuje do żadnej nazwy | Lista pokazuje nieaktywną opcję „Brak wpisów pasujących do filtra”. |
-| Brak wybranego rekordu przy generowaniu | Pokazywany jest alert. |
+| Brak wybranego rekordu przy generowaniu | `getSelectedBestiaryIndex()` zwraca `null`; pokazywany jest alert, karta się nie otwiera. |
+| Brak wybranego rekordu przy dodawaniu ulubionego | `buildFavoritePayload()` zwraca `null`; pokazywany jest alert, nic nie jest zapisywane. |
 | Ulubiony wskazuje nieistniejący rekord | Pokazywany jest alert. |
 
 ## Procedura odtworzenia modułu
@@ -804,6 +828,7 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Ulubione localStorage | Usuń konfigurację Firestore ulubionych i dodaj wpis. | Wpis zapisuje się lokalnie w `generatorNpcFavorites`. |
 | Odtworzenie ulubionego | Kliknij `Wczytaj` przy ulubionym. | UI odtwarza rekord, moduły, notatki, nadpisania i toggles. |
 | Reset | Kliknij `Reset`. | Wybory, nadpisania i pola filtrów wracają do stanu domyślnego. |
+| Brak wyboru | Bez wybranego rekordu (lista pokazuje „Lista Przeciwników”) kliknij `Generuj kartę`, potem `Dodaj do ulubionych`. | Oba przyciski pokazują alert; karta się nie otwiera, lista ulubionych się nie zmienia. |
 | Filtr — wielkość liter | Wpisz `ORK`, `ork` i `oRk` nad Bestiariuszem. | Za każdym razem lista zawiera te same rekordy z „ork” w nazwie. |
 | Filtr — polskie znaki | Wpisz `lancuch` nad bronią. | Lista zawiera bronie z „łańcuch” w nazwie. |
 | Filtr — sygnał | Wpisz dowolną frazę, potem same spacje. | Etykieta listy jest niebieska (`#3D8FC4`) z frazą w dymku; przy samych spacjach wraca do zielonej, a lista jest pełna. |
@@ -1508,6 +1533,30 @@ Descriptions are loaded from `_meta.traits`. Trait names are canonicalized so th
 
 `Generate card` requires a selected Bestiary record.
 
+The selected record is read by `getSelectedBestiaryIndex()`:
+
+```js
+const getSelectedBestiaryIndex = () => {
+  const value = bestiarySelect.value;
+  if (value === "") {
+    return null;
+  }
+  const index = Number(value);
+  return Number.isInteger(index) && state.bestiary[index] ? index : null;
+};
+```
+
+It returns the record index in `state.bestiary`, or `null` when nothing is selected. The empty string
+has to be checked explicitly: the select's first option (`Lista Przeciwników`, key
+`messages.selectBestiary`) and the filter's empty-result option have `value=""`, and `Number("")`
+returns `0`, not `NaN` — `Number.isNaN()` alone would read no choice as the first record of the list.
+The function is used by:
+
+- the `Generate card` button — on `null` it shows the `messages.selectBestiaryAlert` alert and opens no card,
+- `buildFavoritePayload()` — on `null` it returns `null`, and `addFavorite()` shows the
+  "Wybierz rekord bestiariusza przed dodaniem do ulubionych." alert and saves nothing,
+- `updateBestiarySelection()` — on `null` it clears the base preview, the overrides and the armor block.
+
 On click, the code:
 
 1. reads the selected Bestiary record,
@@ -1549,7 +1598,7 @@ The printable card includes, among others:
 - `document.documentElement.lang`,
 - `data-i18n` text,
 - `data-i18n-placeholder` placeholders,
-- select placeholders,
+- select placeholders (for the Bestiary `messages.selectBestiary`: "Lista Przeciwników" / "Enemy list"),
 - the filter fields' `aria-label` (`listFilterAria`), the blue labels' tooltips (`listFilterActive`) and the filter's empty-result options (`listFilterNoMatches`),
 - statuses,
 - labels and printable card messages.
@@ -1586,7 +1635,8 @@ structure section explains how to reveal it.
 | Access restored with local changes pending | The bar warns that database data replaced the changes saved on this device. |
 | Missing trait description | Popover shows unavailable-description message. |
 | The filter phrase matches no name | The list shows the disabled "No entries match the filter" option. |
-| No selected record when generating | Alert is shown. |
+| No selected record when generating | `getSelectedBestiaryIndex()` returns `null`; an alert is shown and no card opens. |
+| No selected record when adding a favorite | `buildFavoritePayload()` returns `null`; an alert is shown and nothing is saved. |
 | Favorite points to missing record | Alert is shown. |
 
 ## Module recreation procedure
@@ -1624,6 +1674,7 @@ structure section explains how to reveal it.
 | localStorage favorites | Remove favorites Firestore config and add entry. | Entry is saved locally in `generatorNpcFavorites`. |
 | Favorite restore | Click `Wczytaj` on a favorite. | UI restores record, modules, notes, overrides, and toggles. |
 | Reset | Click `Reset`. | Selections, overrides and filter fields return to default state. |
+| No selection | With no record selected (the list shows "Lista Przeciwników"), click `Generate card`, then `Add to favorites`. | Both buttons show an alert; no card opens and the favorites list does not change. |
 | Filter — letter case | Type `ORK`, `ork` and `oRk` above the Bestiary. | Each time the list holds the same records with "ork" in the name. |
 | Filter — Polish characters | Type `lancuch` above the weapons. | The list holds weapons with "łańcuch" in the name. |
 | Filter — signal | Type any phrase, then spaces only. | The list label is blue (`#3D8FC4`) with the phrase in the tooltip; with spaces only it returns to green and the list is full. |

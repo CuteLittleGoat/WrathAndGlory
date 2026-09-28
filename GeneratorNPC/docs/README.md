@@ -114,6 +114,9 @@ Obszar roboczy zawiera podgląd i tabele wyboru. Każda sekcja wyboru ma nad lis
 
 Najpierw wybierz bazowego przeciwnika albo NPC z listy Bestiariusza.
 
+Dopóki nic nie jest wybrane, zamknięta lista pokazuje wyszarzony napis `Lista Przeciwników`. To tylko
+podpowiedź — nie da się jej wybrać. Kliknij listę i wybierz konkretnego przeciwnika.
+
 Po wyborze moduł pokazuje jego dane w podglądzie bazowym.
 
 Jeżeli lista jest pusta albo nieaktywna, sprawdź, czy dane z prywatnej bazy zostały załadowane.
@@ -356,6 +359,10 @@ Aby dodać ulubionego:
 2. Opcjonalnie wpisz alias.
 3. Kliknij `Dodaj do ulubionych`.
 
+Jeżeli na liście Bestiariusza nie wybrano przeciwnika (widać napis `Lista Przeciwników`), pojawi się
+komunikat `Wybierz rekord bestiariusza przed dodaniem do ulubionych.` i nic nie zostanie zapisane.
+Zamknij komunikat, wybierz przeciwnika i kliknij przycisk ponownie.
+
 Zapisany wpis możesz później:
 
 - wczytać,
@@ -421,6 +428,10 @@ Jeżeli dane źródłowe DataVault zmieniły się od czasu zapisania ulubionego,
 Przycisk `Generuj kartę` tworzy finalny widok NPC.
 
 Przed kliknięciem upewnij się, że wybrano bazowy wpis Bestiariusza.
+
+Jeżeli na liście Bestiariusza nie wybrano przeciwnika (widać napis `Lista Przeciwników`), pojawi się
+komunikat `Wybierz rekord bestiariusza, aby wygenerować kartę.` i karta się nie otworzy. Zamknij
+komunikat, wybierz przeciwnika i kliknij `Generuj kartę` ponownie.
 
 Karta otwiera się w osobnym oknie albo osobnej karcie przeglądarki.
 
@@ -494,7 +505,8 @@ informacja, że potwierdzenie zostało pominięte.
 | Nazwa listy jest niebieska, a na liście brakuje wpisów | Nad listą jest wpisany tekst, który ją zawęża. | Usuń tekst z pola nad listą albo kliknij `Reset`. |
 | Na liście jest pozycja, która nie pasuje do wpisanego tekstu | To pozycja wybrana wcześniej — wybrane pozycje zostają widoczne, żeby wybór się nie zgubił. | Nic nie trzeba robić. Jeżeli jej nie chcesz, odznacz ją. |
 | Pole wyszukiwania jest wyszarzone | Dane jeszcze się ładują albo (przy pancerzu) wybrany przeciwnik nie może mieć pancerza. | Poczekaj na załadowanie danych albo wybierz innego przeciwnika. |
-| Nie można wygenerować karty | Nie wybrano bazowego NPC. | Wybierz wpis z Bestiariusza. |
+| Komunikat `Wybierz rekord bestiariusza, aby wygenerować kartę.` | Nie wybrano bazowego NPC — lista Bestiariusza pokazuje napis `Lista Przeciwników`. | Wybierz wpis z Bestiariusza i kliknij `Generuj kartę` ponownie. |
+| Komunikat `Wybierz rekord bestiariusza przed dodaniem do ulubionych.` | Nie wybrano bazowego NPC, więc nie ma czego zapisać. | Wybierz wpis z Bestiariusza i kliknij `Dodaj do ulubionych` ponownie. |
 | Ulubione nie synchronizują się między urządzeniami | Moduł używa lokalnego zapisu zamiast Firestore. | Sprawdź konfigurację ulubionych albo używaj tego samego urządzenia. |
 | Żółty pasek „Zapisano tylko na tym urządzeniu" | Baza odrzuciła zapis, więc ulubiony wpis został zapisany w tej przeglądarce. | Najczęstsza przyczyna to dodatek blokujący reklamy, który blokuje adres `google.com/recaptcha`. Wyłącz blokowanie dla tej strony i odśwież moduł. |
 | Czerwony pasek „Zmiana nie została zapisana" | Nie udało się zapisać nigdzie — ani w bazie, ani w przeglądarce. | Odśwież stronę i powtórz zmianę. Jeżeli to nie pomoże, zgłoś adminowi kod błędu z paska. |
@@ -635,6 +647,9 @@ above its list (described in the "Searching the lists" chapter):
 ## Base Bestiary selection
 
 First choose a base enemy or NPC from the Bestiary list.
+
+While nothing is selected, the closed list shows the greyed-out caption `Lista Przeciwników`
+("Enemy list"). It is only a hint — it cannot be selected. Click the list and pick a specific enemy.
 
 After selection, the module shows its data in the base preview.
 
@@ -879,6 +894,11 @@ To add a favorite:
 2. Optionally enter an alias.
 3. Click `Add to favorites`.
 
+If no enemy is selected on the Bestiary list (the list shows `Lista Przeciwników`), the message
+`Wybierz rekord bestiariusza przed dodaniem do ulubionych.` ("Select a Bestiary record before adding
+to favorites.") appears and nothing is saved. Close the message, select an enemy and click the button
+again.
+
 Later, a saved entry can be:
 
 - loaded,
@@ -945,6 +965,10 @@ If source DataVault data changed since the favorite was saved, an old favorite m
 `Generate card` creates the final NPC view.
 
 Before clicking, make sure a base Bestiary entry is selected.
+
+If no enemy is selected on the Bestiary list (the list shows `Lista Przeciwników`), the message
+`Wybierz rekord bestiariusza, aby wygenerować kartę.` ("Select a Bestiary record before generating a
+card.") appears and no card opens. Close the message, select an enemy and click `Generate card` again.
 
 The card opens in a separate browser window or tab.
 
@@ -1018,7 +1042,8 @@ confirmation was skipped.
 | The list name is blue and entries are missing from the list | Text typed above the list narrows it. | Delete the text from the field above the list or click `Reset`. |
 | The list holds an item that does not match the typed text | It is an item selected earlier — selected items stay visible so the choice is not lost. | Nothing to do. If you do not want it, deselect it. |
 | The search field is greyed out | Data is still loading, or (for armor) the selected enemy cannot have armor. | Wait for the data to load or pick another enemy. |
-| Card cannot be generated | No base NPC is selected. | Select a Bestiary entry. |
+| Message `Wybierz rekord bestiariusza, aby wygenerować kartę.` | No base NPC is selected — the Bestiary list shows `Lista Przeciwników`. | Select a Bestiary entry and click `Generate card` again. |
+| Message `Wybierz rekord bestiariusza przed dodaniem do ulubionych.` | No base NPC is selected, so there is nothing to save. | Select a Bestiary entry and click `Add to favorites` again. |
 | Favorites do not sync between devices | The module is using local storage instead of Firestore. | Check favorites configuration or use the same device. |
 | Amber bar "Saved on this device only" | The database refused the write, so the favorite was saved in this browser. | The most common cause is an ad blocker blocking the `google.com/recaptcha` address. Disable blocking for this page and reload the module. |
 | Red bar "The change was not saved" | Nothing was saved anywhere — neither in the database nor in the browser. | Reload the page and repeat the change. If that does not help, report the error code from the bar to the admin. |
