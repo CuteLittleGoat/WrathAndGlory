@@ -49,6 +49,9 @@ body{
   background:#010a03}
 #mapa{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
 #mapa.cog-ciagniemy{cursor:grabbing}
+/* Na czas szczypania napisy mapy znikają (G-D66, U-24): przy każdej nowej skali
+   przeglądarka układa tekst SVG od nowa, a to był główny koszt klatki. */
+#mapa.cog-szczypiemy text{display:none}
 
 /* ── mapa ─────────────────────────────────────────────────────────────── */
 .cog-siatka line{stroke:rgba(22,198,12,.07);stroke-width:1}
@@ -642,6 +645,11 @@ do żadnego z opisanych obszarów.</span>
   var SKALA_MIN=44/(2*34.0);
   var OGNISKO={x:570.0,y:470.0};
   var ZOOM_MAX=4;
+  /* Przybliżenie co najmniej 3× od widoku domyślnego, na każdym ekranie (G-D67,
+     decyzja D10 b). Granica „4× od całej mapy” wystarcza na komputerze i tablecie,
+     ale telefon otwiera mapę już przybliżoną (G-D23) i zostawało mu 1,29× —
+     szczypanie po chwili stawało, choć palce dalej się rozsuwały (U-24). */
+  var ZOOM_OD_DOMYSLNEGO=3;
 
   var svg=document.getElementById('mapa');
   var plansza=document.getElementById('plansza');
@@ -699,9 +707,16 @@ do żadnego z opisanych obszarów.</span>
      wtedy skala jest policzona ze starej szerokości kadru i nowej szerokości
      planszy, czyli zawyżona; każde kolejne otwarcie karty mnożyło błąd i po
      kilkunastu mapa dojeżdżała do maksymalnego przybliżenia. Przesuwanie
-     i dojazd do pozycji skali nie zmieniają, więc nie mają czego zapisywać. */
-  function zapamietajSkale(){
-    var r=wymiary();
+     i dojazd do pozycji skali nie zmieniają, więc nie mają czego zapisywać.
+
+     Pomiar planszy przychodzi z zewnątrz, zmierzony PRZED `zastosuj()` (U-24).
+     Pomiar po zapisie `viewBox` zmuszał przeglądarkę do ułożenia strony od razu,
+     w środku obsługi zdarzenia — a przy nowej skali oznacza to ułożenie od nowa
+     wszystkich napisów mapy. Przy szczypaniu działo się to dwa razy na klatkę
+     i to było główne źródło zacinania. Zapis kadru nie zmienia rozmiaru planszy,
+     więc wcześniejszy pomiar jest nadal prawdziwy. */
+  function zapamietajSkale(r){
+    r=r||wymiary();
     if(r&&poprawny(vb)) skala=vb.w/r.width;
   }
   function dopasowanie(r){
@@ -713,7 +728,7 @@ do żadnego z opisanych obszarów.</span>
   function ogranicz(){
     var r=wymiary(); if(!r) return;
     var maxW=Math.min(dopasowanie(r), r.width/SKALA_MIN);
-    var minW=SZER/ZOOM_MAX;
+    var minW=Math.min(SZER/ZOOM_MAX, maxW/ZOOM_OD_DOMYSLNEGO);
     vb.w=Math.max(minW,Math.min(maxW,vb.w));
     vb.h=vb.w*(r.height/r.width);
     /* Nie da się wypłynąć poza mapę — połowa kadru zapasu z każdej strony. */
@@ -735,7 +750,7 @@ do żadnego z opisanych obszarów.</span>
          Terminal nawigacyjny startuje od tego, co objęte jurysdykcją. */
       vb.x=OGNISKO.x-vb.w/2; vb.y=OGNISKO.y-vb.h/2;
     }
-    ogranicz(); zastosuj(); zapamietajSkale();
+    ogranicz(); zastosuj(); zapamietajSkale(r);
   }
   /* Zmiana kształtu planszy: obrót, dzielony ekran, animacja startu okna PWA —
      a także otwarcie i zamknięcie karty planety, których `resize` nie zgłasza
@@ -756,19 +771,20 @@ do żadnego z opisanych obszarów.</span>
     /* `ogranicz()` mogło skalę przyciąć — wtedy środek odtwarzamy jeszcze raz,
        już przy tej szerokości, która naprawdę wyszła. */
     vb.x=sx-vb.w/2; vb.y=sy-vb.h/2;
-    ogranicz(); zastosuj(); zapamietajSkale();
+    ogranicz(); zastosuj(); zapamietajSkale(r);
   }
   function naMape(kx,ky){
     var r=wymiary(); if(!r) return null;
     return {x:vb.x+(kx-r.left)/r.width*vb.w, y:vb.y+(ky-r.top)/r.height*vb.h};
   }
   function przyblizWokol(mnoznik,kx,ky){
+    var r=wymiary(); if(!r) return;
     var p=naMape(kx,ky); if(!p) return;
     var przed=vb.w;
     vb.w=vb.w*mnoznik; ogranicz();
     var k=vb.w/przed;
     vb.x=p.x-(p.x-vb.x)*k; vb.y=p.y-(p.y-vb.y)*k;
-    ogranicz(); zastosuj(); zapamietajSkale();
+    ogranicz(); zastosuj(); zapamietajSkale(r);
   }
   function pokazPunkt(x,y){
     /* Fokus na pozycji spoza kadru przesuwa mapę — bez tego tab prowadzi
@@ -848,6 +864,9 @@ do żadnego z opisanych obszarów.</span>
   /* ── przesuwanie i przybliżanie (G-D22) ──────────────────────────────── */
   var wskazniki={}, ciagniemy=false, ciagniete=false, ostatni=null, rozstaw=0;
   var start=null, przechwycony=null, PROG=4;
+  /* `srodek` — punkt między palcami przy ostatnio policzonej klatce szczypania.
+     `klatka` — zamówiona, jeszcze niepoliczona klatka gestu (U-24). */
+  var srodek=null, klatka=0;
   function liczbaWskaznikow(){var n=0;for(var k in wskazniki)n++;return n;}
   /* Rejestr palców czyszczony do zera. Gdy zakończenie gestu nie dotrze — bo
      Android przejął go gestem systemowym, bo aplikacja poszła w tło albo bo
@@ -858,9 +877,11 @@ do żadnego z opisanych obszarów.</span>
      stuknięciem w tło. Objaw identyczny jak przy uszkodzonym kadrze, ale bez
      jednego wpisu w konsoli (U-21, rozdz. 21.3). */
   function zerujGest(){
+    if(klatka){cancelAnimationFrame(klatka);klatka=0;}
     wskazniki={}; ciagniemy=false; ciagniete=false;
-    ostatni=null; start=null; rozstaw=0;
+    ostatni=null; start=null; rozstaw=0; srodek=null;
     svg.classList.remove('cog-ciagniemy');
+    svg.classList.remove('cog-szczypiemy');
     if(przechwycony!==null&&svg.releasePointerCapture){
       try{svg.releasePointerCapture(przechwycony);}catch(x){}
     }
@@ -872,6 +893,9 @@ do żadnego z opisanych obszarów.</span>
        maksimum, jakie ta mapa obsługuje. Zaczynamy gest od nowa, zamiast liczyć
        rozstaw względem punktu, którego na ekranie już nie ma. */
     if(liczbaWskaznikow()>=2 && !wskazniki[ev.pointerId]) zerujGest();
+    /* Każda zmiana liczby palców najpierw dolicza zaległą klatkę — tak samo
+       jak w `koniec()` — żeby szczypanie startowało z kadru, który widać. */
+    if(klatka){cancelAnimationFrame(klatka);klatka=0;klatkaGestu();}
     wskazniki[ev.pointerId]={x:ev.clientX,y:ev.clientY};
     if(liczbaWskaznikow()===1){
       /* Wskaźnika NIE przechwytujemy tutaj. Przechwycenie przekierowuje
@@ -884,20 +908,58 @@ do żadnego z opisanych obszarów.</span>
     }else if(liczbaWskaznikow()===2){
       var p=[];for(var k in wskazniki)p.push(wskazniki[k]);
       rozstaw=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);
+      srodek={x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2};
     }
   });
+  /* Kadr liczony najwyżej RAZ NA KLATKĘ obrazu, w `klatkaGestu()`, z bieżących
+     położeń wszystkich palców (G-D68, U-24). Przy szczypaniu `pointermove`
+     przychodzi osobno dla każdego palca, czyli dwa razy na klatkę; każde
+     przeliczało i zapisywało kadr, a za drugim razem przeglądarka musiała całą
+     mapę ułożyć jeszcze raz przed narysowaniem. W obsłudze zdarzenia zostaje
+     tylko to, co potrzebuje samego zdarzenia: rejestr palców, próg i przechwycenie. */
+  function zamowKlatke(){ if(!klatka) klatka=requestAnimationFrame(klatkaGestu); }
+  function klatkaGestu(){
+    klatka=0;
+    var n=liczbaWskaznikow(), r=wymiary(); if(!r) return;
+    if(n===2&&rozstaw>0){
+      var p=[];for(var k in wskazniki)p.push(wskazniki[k]);
+      var nowy=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);
+      if(nowy>0){
+        /* Szczypanie idzie za palcami (G-D65): punkt mapy spod poprzedniego
+           środka między palcami trafia pod nowy środek, w nowej skali. Dotąd
+           mapa tylko powiększała się wokół środka i nie jechała za nim, więc
+           przy niesymetrycznym ruchu palców odpływała spod nich (U-24). */
+        var m={x:(p[0].x+p[1].x)/2,y:(p[0].y+p[1].y)/2};
+        if(!srodek) srodek=m;
+        var P={x:vb.x+(srodek.x-r.left)/r.width*vb.w,
+               y:vb.y+(srodek.y-r.top)/r.height*vb.h};
+        vb.w=vb.w*(rozstaw/nowy); ogranicz();
+        vb.x=P.x-(m.x-r.left)/r.width*vb.w;
+        vb.y=P.y-(m.y-r.top)/r.height*vb.h;
+        ogranicz(); zastosuj(); zapamietajSkale(r);
+        rozstaw=nowy; srodek=m;
+      }
+      return;
+    }
+    if(n===1&&ciagniemy&&ciagniete){
+      var q;for(var k in wskazniki)q=wskazniki[k];
+      var dx=(q.x-ostatni.x)/r.width*vb.w;
+      var dy=(q.y-ostatni.y)/r.height*vb.h;
+      vb.x-=dx; vb.y-=dy; ostatni={x:q.x,y:q.y};
+      ogranicz(); zastosuj();
+    }
+  }
   svg.addEventListener('pointermove',function(ev){
     if(!wskazniki[ev.pointerId]) return;
     wskazniki[ev.pointerId]={x:ev.clientX,y:ev.clientY};
     var n=liczbaWskaznikow();
     if(n===2&&rozstaw>0){
-      var p=[];for(var k in wskazniki)p.push(wskazniki[k]);
-      var nowy=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);
-      if(nowy>0){
-        przyblizWokol(rozstaw/nowy,(p[0].x+p[1].x)/2,(p[0].y+p[1].y)/2);
-        rozstaw=nowy; ciagniete=true;
-      }
-      return;
+      /* Napisy mapy znikają na czas szczypania (G-D66, decyzja D9 b). Przy każdej
+         nowej skali przeglądarka układa tekst SVG od nowa — 22 napisy kosztowały
+         kilkakrotnie więcej niż cała reszta klatki (U-24). Klasa dopiero przy
+         ruchu, nie przy dotknięciu: samo stuknięcie dwoma palcami nie ma
+         migać napisami. Po zdjęciu palców wracają, już w nowej wielkości. */
+      ciagniete=true; svg.classList.add('cog-szczypiemy'); zamowKlatke(); return;
     }
     if(!ciagniemy||n!==1) return;
     if(!ciagniete){
@@ -906,18 +968,24 @@ do żadnego z opisanych obszarów.</span>
       svg.classList.add('cog-ciagniemy');
       if(svg.setPointerCapture){svg.setPointerCapture(ev.pointerId);przechwycony=ev.pointerId;}
     }
-    var r=plansza.getBoundingClientRect();
-    var dx=(ev.clientX-ostatni.x)/r.width*vb.w;
-    var dy=(ev.clientY-ostatni.y)/r.height*vb.h;
-    vb.x-=dx; vb.y-=dy; ostatni={x:ev.clientX,y:ev.clientY};
-    ogranicz(); zastosuj();
+    zamowKlatke();
   });
   function koniec(ev){
     /* Filtr po `pointerId`: nasłuch stoi na oknie, więc dochodzą tu również
        palce, które z mapą nie miały nic wspólnego. */
     if(!wskazniki[ev.pointerId]) return;
+    /* Zaległą klatkę liczymy, zanim palec zniknie z rejestru — inaczej ruch
+       sprzed oderwania palca przepadałby (U-24). */
+    if(klatka){cancelAnimationFrame(klatka);klatka=0;klatkaGestu();}
     delete wskazniki[ev.pointerId];
-    if(liczbaWskaznikow()<2) rozstaw=0;
+    if(liczbaWskaznikow()<2){
+      rozstaw=0; srodek=null; svg.classList.remove('cog-szczypiemy');
+    }
+    /* Po szczypaniu zostaje jeden palec. Jego ruch trzeba liczyć od miejsca,
+       w którym jest TERAZ: szczypanie nie aktualizuje `ostatni`, więc pierwszy
+       ruch pozostałego palca przesuwał mapę o cały rozstaw palców — od miejsca,
+       gdzie zaczął się gest, często od miejsca drugiego palca (U-23). */
+    if(liczbaWskaznikow()===1){ for(var k in wskazniki) ostatni={x:wskazniki[k].x,y:wskazniki[k].y}; }
     if(liczbaWskaznikow()===0){
       ciagniemy=false; svg.classList.remove('cog-ciagniemy');
       if(przechwycony!==null&&svg.releasePointerCapture){
