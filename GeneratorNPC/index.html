@@ -2988,6 +2988,22 @@ const translations = {
           { length: mentalCount },
           () => '<div class="tracker-cell" aria-hidden="true"></div>'
         ).join("");
+        // Wiersz „T” (Odporność Psychiczna) pomijamy w całości, gdy w polu jest "-": znika wtedy także kwadracik z literą
+        // The "T" (mental resistance) row is omitted entirely when the field holds "-": the letter box disappears too
+        const mentalTrackerRowHTML = mentalHasDash
+          ? ""
+          : `
+            <div class="tracker-row tracker-row--mental">
+              <label class="tracker-cell tracker-label" aria-label="${escapeHtml(
+                cardLabels.trackerMentalLabel
+              )}">${escapeHtml(cardLabels.trackerMentalShort)}</label>
+              <div class="tracker-squares">
+                ${mentalTrackerCells}
+              </div>
+            </div>
+          `;
+        // Sekcja kwadracików: wiersz „Ż” jest zawsze, wiersz „T” tylko gdy Odporność Psychiczna nie jest "-"
+        // Box section: the "Ż" row is always present, the "T" row only when mental resistance is not "-"
         const trackerHTML = `
           <div class="tracker-section" aria-label="${escapeHtml(cardLabels.trackerAriaLabel)}">
             <div class="tracker-row">
@@ -2998,14 +3014,7 @@ const translations = {
                 ${vitalityTrackerCells}
               </div>
             </div>
-            <div class="tracker-row tracker-row--mental">
-              <label class="tracker-cell tracker-label" aria-label="${escapeHtml(
-                cardLabels.trackerMentalLabel
-              )}">${escapeHtml(cardLabels.trackerMentalShort)}</label>
-              <div class="tracker-squares">
-                ${mentalTrackerCells}
-              </div>
-            </div>
+            ${mentalTrackerRowHTML}
           </div>
         `;
 
@@ -3105,7 +3114,11 @@ const translations = {
                 .tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
                 .tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
                 .tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
-                .tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); }
+                /* Kwadracik z literą „Ż”/„T”: czarne tło i biała litera; print-color-adjust wymusza czarne tło także na wydruku, inaczej biała litera byłaby niewidoczna */
+                /* "Ż"/"T" letter box: black background and white letter; print-color-adjust forces the black background in print too, otherwise the white letter would be invisible */
+                .tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #000; border-color: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                /* Puste kwadraciki „T” mają jasnoszare wypełnienie; puste kwadraciki „Ż” zostają białe (domyślne #fff z .tracker-cell) */
+                /* Empty "T" boxes get a light grey fill; empty "Ż" boxes stay white (default #fff from .tracker-cell) */
                 .tracker-row--mental { --tracker-fill: #e9e9e9; }
                 .resistance-wp { font-weight: 700; }
                 .armor-traits { text-align: left; }

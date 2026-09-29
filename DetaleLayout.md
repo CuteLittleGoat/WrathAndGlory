@@ -577,8 +577,10 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - Pasy wierszy: `#f1f1f1` (nagłówki), `#e9e9e9` (naprzemienne wpisy), `#d0d0d0` (separatory wpisów).
 - Sekcja kwadratów „Ż”/„T”:
   - tło siatki jest przezroczyste (bez czarnego wypełnienia po prawej stronie),
-  - każde pole ma obramowanie `1px solid #111`,
-  - pola „T” mają wypełnienie `#e9e9e9`, pola „Ż” pozostają białe (`#fff`).
+  - każde pole ma rozmiar `18px × 18px`, odstęp `1px` i obramowanie `1px solid #111`,
+  - kwadracik z literą (`.tracker-label`, „Ż”/„T”, w wersji EN „H”/„S”) ma czarne tło `#000`, czarną ramkę `#000` i białą pogrubioną literę `#fff`; `print-color-adjust: exact` (także `-webkit-`) wymusza czarne tło na wydruku bez grafiki tła,
+  - puste pola „T” mają wypełnienie `#e9e9e9`, puste pola „Ż” pozostają białe (`#fff`),
+  - gdy `Odporność Psychiczna` ma wartość `-`, cały wiersz „T” (kwadracik z literą i puste pola) nie jest renderowany; zostaje sam wiersz „Ż”.
 
 ### 3) Wyjątki formatowania i specjalne reguły tekstu
 - **Markery inline** w danych:

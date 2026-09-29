@@ -740,6 +740,67 @@ Karta do druku zawiera między innymi:
 - dodatkowe moduły,
 - notatki.
 
+### Kwadraciki „Ż” i „T” (trackery)
+
+Sekcja `.tracker-section` stoi na karcie bezpośrednio pod wierszem wartości `Obrona` / `Żywotność` /
+`Odporność psych.` i nad pierwszą sekcją tekstową. Buduje ją `buildPrintableCardHTML()`.
+
+Liczba pustych kwadracików:
+
+- `vitality` — wartość `Żywotność` (nadpisanie z `state.bestiaryOverrides.numeric` ma pierwszeństwo przed
+  rekordem),
+- `mental` — wartość `Odporność Psychiczna` (nadpisanie ma pierwszeństwo; rekord czytany przez
+  `getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])`),
+- `resolveTrackerCount(value)` wyciąga pierwszą liczbę całkowitą przez `parseStarNumber()` i zwraca
+  `Math.max(0, liczba)`; brak liczby daje `0`,
+- `mentalHasDash` jest `true`, gdy `normalizeText(mental) === "-"`; wtedy `mentalCount = 0`.
+
+Każdy pusty kwadracik to `<div class="tracker-cell" aria-hidden="true"></div>`.
+
+Wiersz „T” jest składany warunkowo:
+
+```js
+const mentalTrackerRowHTML = mentalHasDash
+  ? ""
+  : `
+    <div class="tracker-row tracker-row--mental">
+      <label class="tracker-cell tracker-label" aria-label="…trackerMentalLabel…">…trackerMentalShort…</label>
+      <div class="tracker-squares">${mentalTrackerCells}</div>
+    </div>
+  `;
+```
+
+Co robi: przy `Odporność Psychiczna` równej `-` nie wstawia do karty żadnego elementu wiersza „T” —
+znika zarówno kwadracik z literą, jak i puste kwadraciki. Gdzie: `trackerHTML` wstawia
+`${mentalTrackerRowHTML}` po wierszu „Ż”. Dlaczego: przeciwnik bez Odporności Psychicznej nie ma czego
+śledzić, więc sama litera byłaby mylącym, pustym polem. Wiersz „Ż” jest zawsze obecny. Gdy liczba
+pustych kwadracików w wierszu wynosi `0` (wartość `0` albo tekst bez liczby, np. puste pole wyświetlane
+jako `—`, które nie jest znakiem `-`), w wierszu zostaje sam kwadracik z literą.
+
+Litery pochodzą z `translations[lang].card`: `trackerVitalityShort` (`Ż` po polsku, `H` po angielsku)
+i `trackerMentalShort` (`T` po polsku, `S` po angielsku). `aria-label` kwadracika z literą to
+`trackerVitalityLabel` / `trackerMentalLabel`, a `aria-label` całej sekcji to `trackerAriaLabel`.
+
+Style (wewnątrz `<style>` generowanego HTML karty):
+
+```css
+.tracker-section { padding: 6px 8px; border-bottom: 1px solid #111; display: grid; gap: 6px; }
+.tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
+.tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
+.tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
+.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #000; border-color: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.tracker-row--mental { --tracker-fill: #e9e9e9; }
+```
+
+- Kwadracik z literą (`.tracker-label`) ma czarne tło `#000`, czarną ramkę i białą, pogrubioną literę
+  `#fff`. Reguła stoi po `.tracker-cell`, więc przy tej samej specyficzności nadpisuje tło z
+  `--tracker-fill`. `print-color-adjust: exact` (z prefiksem `-webkit-`) wymusza wydruk czarnego tła
+  nawet przy wyłączonej opcji drukowania grafiki tła — bez tego biała litera zniknęłaby na białym papierze.
+- Puste kwadraciki „Ż” mają tło `#fff` (domyślna wartość `var(--tracker-fill, #fff)`).
+- Puste kwadraciki „T” mają tło `#e9e9e9` z `--tracker-fill` ustawionego na `.tracker-row--mental`.
+- Wszystkie kwadraciki mają `18px × 18px`, odstęp `1px` i ramkę `1px`; puste kwadraciki zawijają się
+  do kolejnych linii, gdy nie mieszczą się w szerokości karty.
+
 ## i18n
 
 `translations` zawiera języki:
@@ -823,6 +884,9 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Pancerz | Wybierz pancerz i wygeneruj kartę. | WP, odporność i cechy pancerza są uwzględnione. |
 | Moduły dodatkowe | Wybierz augumentacje, ekwipunek, talenty, psionikę i modlitwy. | Karta zawiera odpowiednie sekcje. |
 | Opisy cech | Włącz opis cech broni lub pancerza. | Karta zawiera opisy cech. |
+| Kwadraciki „Ż”/„T” | Wybierz rekord z liczbową `Żywotność` i `Odporność Psychiczna`, wygeneruj kartę. | Kwadraciki z literami „Ż” i „T” są czarne z białą literą; pustych białych kwadracików przy „Ż” jest tyle, ile `Żywotność`, a jasnoszarych przy „T” tyle, ile `Odporność Psychiczna`. |
+| Kwadraciki — `Odporność Psychiczna` `-` | Wybierz rekord z `Odporność Psychiczna` równą `-`, wygeneruj kartę. | Na karcie jest tylko wiersz „Ż”; nie ma ani kwadracika z literą „T”, ani pustych kwadracików „T”. |
+| Kwadraciki — wydruk | Otwórz podgląd wydruku karty z wyłączoną opcją grafiki tła. | Kwadraciki z literami nadal są czarne z białą literą. |
 | Popover | Kliknij tag cechy. | Pokazuje się opis cechy. |
 | Ulubione Firestore | Dodaj ulubiony wpis. | Wpis pojawia się w Firestore `generatorNpc/favorites`. |
 | Ulubione localStorage | Usuń konfigurację Firestore ulubionych i dodaj wpis. | Wpis zapisuje się lokalnie w `generatorNpcFavorites`. |
@@ -1586,6 +1650,68 @@ The printable card includes, among others:
 - additional modules,
 - notes.
 
+### The "Ż" and "T" boxes (trackers)
+
+The `.tracker-section` block sits on the card directly below the `Obrona` / `Żywotność` /
+`Odporność psych.` value row and above the first text section. It is built by `buildPrintableCardHTML()`.
+
+Number of empty boxes:
+
+- `vitality` — the `Żywotność` value (an override from `state.bestiaryOverrides.numeric` takes precedence
+  over the record),
+- `mental` — the `Odporność Psychiczna` value (the override takes precedence; the record is read through
+  `getRecordValueByLabels(record, ["Odporność Psychiczna", "Odporność psychiczna"])`),
+- `resolveTrackerCount(value)` extracts the first integer through `parseStarNumber()` and returns
+  `Math.max(0, number)`; no number gives `0`,
+- `mentalHasDash` is `true` when `normalizeText(mental) === "-"`; then `mentalCount = 0`.
+
+Each empty box is `<div class="tracker-cell" aria-hidden="true"></div>`.
+
+The "T" row is assembled conditionally:
+
+```js
+const mentalTrackerRowHTML = mentalHasDash
+  ? ""
+  : `
+    <div class="tracker-row tracker-row--mental">
+      <label class="tracker-cell tracker-label" aria-label="…trackerMentalLabel…">…trackerMentalShort…</label>
+      <div class="tracker-squares">${mentalTrackerCells}</div>
+    </div>
+  `;
+```
+
+What it does: when `Odporność Psychiczna` equals `-`, no element of the "T" row is put on the card —
+both the letter box and the empty boxes disappear. Where: `trackerHTML` inserts `${mentalTrackerRowHTML}`
+after the "Ż" row. Why: an enemy without mental resistance has nothing to track, so the letter alone would
+be a misleading empty field. The "Ż" row is always present. When a row's empty box count is `0` (the
+value `0` or text without a number, e.g. an empty field shown as `—`, which is not the `-` character),
+only the letter box remains in that row.
+
+The letters come from `translations[lang].card`: `trackerVitalityShort` (`Ż` in Polish, `H` in English)
+and `trackerMentalShort` (`T` in Polish, `S` in English). The letter box `aria-label` is
+`trackerVitalityLabel` / `trackerMentalLabel`, and the whole section's `aria-label` is `trackerAriaLabel`.
+
+Styles (inside the `<style>` of the generated card HTML):
+
+```css
+.tracker-section { padding: 6px 8px; border-bottom: 1px solid #111; display: grid; gap: 6px; }
+.tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
+.tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
+.tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
+.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #000; border-color: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.tracker-row--mental { --tracker-fill: #e9e9e9; }
+```
+
+- The letter box (`.tracker-label`) has a black `#000` background, a black border and a white, bold
+  `#fff` letter. The rule comes after `.tracker-cell`, so at equal specificity it overrides the
+  `--tracker-fill` background. `print-color-adjust: exact` (with the `-webkit-` prefix) forces the black
+  background to print even when printing background graphics is turned off — without it the white letter
+  would vanish on white paper.
+- Empty "Ż" boxes have a `#fff` background (the default of `var(--tracker-fill, #fff)`).
+- Empty "T" boxes have a `#e9e9e9` background from `--tracker-fill` set on `.tracker-row--mental`.
+- All boxes are `18px × 18px` with a `1px` gap and a `1px` border; empty boxes wrap to further lines when
+  they do not fit the card width.
+
 ## i18n
 
 `translations` contains:
@@ -1669,6 +1795,9 @@ structure section explains how to reveal it.
 | Armor | Select armor and generate card. | WP, resilience, and armor traits are included. |
 | Extra modules | Select augmentations, equipment, talents, psionics, and prayers. | Card includes corresponding sections. |
 | Trait descriptions | Enable weapon or armor trait descriptions. | Card includes trait descriptions. |
+| "Ż"/"T" boxes | Select a record with numeric `Żywotność` and `Odporność Psychiczna`, generate the card. | The "Ż" and "T" letter boxes are black with a white letter; there are as many empty white "Ż" boxes as `Żywotność` and as many light grey "T" boxes as `Odporność Psychiczna`. |
+| Boxes — `Odporność Psychiczna` `-` | Select a record whose `Odporność Psychiczna` equals `-`, generate the card. | Only the "Ż" row is on the card; there is neither a "T" letter box nor empty "T" boxes. |
+| Boxes — print | Open the card's print preview with background graphics turned off. | The letter boxes stay black with a white letter. |
 | Popover | Click a trait tag. | Trait description appears. |
 | Firestore favorites | Add favorite. | Entry appears in Firestore `generatorNpc/favorites`. |
 | localStorage favorites | Remove favorites Firestore config and add entry. | Entry is saved locally in `generatorNpcFavorites`. |

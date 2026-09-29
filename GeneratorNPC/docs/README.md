@@ -450,6 +450,25 @@ Karta może zawierać:
 - dodatkowe moduły,
 - notatki.
 
+### Kwadraciki „Ż” i „T” na karcie
+
+Pod wierszem z wartościami `Obrona`, `Żywotność` i `Odporność psych.` karta ma rząd kwadracików do
+odhaczania obrażeń w trakcie walki (ołówkiem na wydruku).
+
+- Pierwszy kwadracik w rzędzie to czarne pole z białą literą. Litera mówi, czego dotyczy rząd:
+  - `Ż` — Żywotność,
+  - `T` — Odporność Psychiczna.
+- Za literą stoją puste kwadraciki do zaznaczania:
+  - przy `Ż` jest ich tyle, ile wynosi `Żywotność`; są białe, bez wypełnienia,
+  - przy `T` jest ich tyle, ile wynosi `Odporność Psychiczna`; są jasnoszare.
+- Jeżeli w podglądzie zmienisz `Żywotność` albo `Odporność Psychiczna`, liczba kwadracików na karcie
+  będzie odpowiadać zmienionej wartości.
+- Jeżeli w polu `Odporność Psychiczna` jest znak `-`, rząd `T` w ogóle się nie pojawia — nie ma ani
+  kwadracika z literą `T`, ani pustych kwadracików. Na karcie zostaje tylko rząd `Ż`.
+- Jeżeli wartość wynosi `0` albo pole nie zawiera liczby, w rzędzie widać tylko kwadracik z literą.
+- Gdy kwadracików jest dużo, przechodzą do kolejnej linii.
+- Po przełączeniu interfejsu na angielski litery na karcie to `H` (zamiast `Ż`) i `S` (zamiast `T`).
+
 ## Drukowanie karty
 
 Po wygenerowaniu karty użyj funkcji drukowania przeglądarki.
@@ -461,6 +480,10 @@ Ctrl + P
 ```
 
 albo opcja drukowania z menu przeglądarki.
+
+Czarne kwadraciki z literami `Ż` i `T` drukują się zawsze, nawet jeśli w oknie drukowania wyłączona jest
+opcja „Grafika tła” (albo podobnie nazwana). Jasnoszare wypełnienie pustych kwadracików `T`, szare paski
+i ciemne tło nagłówków karty drukują się tylko wtedy, gdy ta opcja jest włączona.
 
 Przed drukiem sprawdź, czy wszystkie potrzebne moduły są widoczne i czy karta nie zawiera tymczasowych notatek, których nie chcesz pokazywać graczom.
 
@@ -987,6 +1010,26 @@ The card may include:
 - additional modules,
 - notes.
 
+### The "Ż" and "T" boxes on the card
+
+Below the row with the `Obrona`, `Żywotność` and `Odporność psych.` values, the card has rows of boxes for
+ticking off damage during combat (with a pencil on the printout).
+
+- The first box in a row is a black field with a white letter. The letter tells you what the row is for:
+  - `Ż` — Vitality (`Żywotność`),
+  - `T` — Mental resistance (`Odporność Psychiczna`).
+- After the letter come empty boxes to tick:
+  - next to `Ż` there are as many as the `Żywotność` value; they are white, with no fill,
+  - next to `T` there are as many as the `Odporność Psychiczna` value; they are light grey.
+- If you change `Żywotność` or `Odporność Psychiczna` in the preview, the number of boxes on the card
+  matches the changed value.
+- If the `Odporność Psychiczna` field holds a `-` sign, the `T` row does not appear at all — there is
+  neither the `T` letter box nor any empty boxes. Only the `Ż` row stays on the card.
+- If the value is `0` or the field holds no number, the row shows only the letter box.
+- When there are many boxes, they continue on the next line.
+- With the interface switched to English, the letters on the card are `H` (instead of `Ż`) and `S`
+  (instead of `T`).
+
 ## Printing the card
 
 After generating the card, use your browser print function.
@@ -998,6 +1041,10 @@ Ctrl + P
 ```
 
 or the print option from the browser menu.
+
+The black `Ż` and `T` letter boxes always print, even when the "Background graphics" option (or a similarly
+named one) is turned off in the print window. The light grey fill of the empty `T` boxes, the grey stripes
+and the dark background of the card headers print only when that option is turned on.
 
 Before printing, check whether all needed modules are visible and whether the card contains temporary notes you do not want to show to players.
 
