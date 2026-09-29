@@ -4,6 +4,7 @@
 > **Temat:** przeniesienie aliasów dźwięków z poziomu globalnego na poziom pojedynczej listy, nowy projekt panelu admina (`?admin=1`) wygodny przy dużym manifeście, miejsce zmiany hasła, usunięcie z instrukcji użytkownika nazw z repozytorium chronionego hasłem
 > **Moduł:** `Audio` (w rozdziale o haśle także `DataVault` i `GeneratorNPC`)
 > **Charakter dokumentu:** analiza przedwdrożeniowa. Opisuje stan kodu z 29 września 2026 (commit `722b7e3`) i projekt stanu docelowego. **Żaden plik aplikacji ani dokumentacji modułu nie został zmieniony.**
+> **Stan na dziś:** użytkownik rozstrzygnął decyzje D1-D10 i postanowił, że obecne listy ulubionych i aliasy są danymi testowymi — **migracji nie będzie** (Część II, rozdz. 19-24). Tam, gdzie Część I opisuje migrację i projekcję zgodności, obowiązuje Część II. Kod modułu nadal nietknięty.
 
 ---
 
@@ -27,6 +28,15 @@
 16. [Znalezione przy okazji](#16-znalezione-przy-okazji)
 17. [Rekomendacje](#17-rekomendacje)
 18. [Następne kroki](#18-następne-kroki)
+
+**Część II — decyzje i projekt wdrożenia**
+
+19. [Decyzje użytkownika z 29 września 2026](#19-decyzje-użytkownika-z-29-września-2026)
+20. [Czysty start zamiast migracji — co się zmienia w projekcie](#20-czysty-start-zamiast-migracji--co-się-zmienia-w-projekcie)
+21. [Zaktualizowany zakres prac](#21-zaktualizowany-zakres-prac)
+22. [Zaktualizowany plan testów](#22-zaktualizowany-plan-testów)
+23. [Zaktualizowane ryzyka](#23-zaktualizowane-ryzyka)
+24. [Gotowość do wdrożenia i następne kroki](#24-gotowość-do-wdrożenia-i-następne-kroki)
 
 ---
 
@@ -201,6 +211,8 @@ Pilnuje ich jedna funkcja normalizująca, wywoływana przy każdym odczycie z ba
 
 ### 5.3 Migracja z wersji 1
 
+> **Nieaktualne po decyzji z 29 września 2026:** migracji nie będzie — obecne dane są testowe. Obowiązuje czysty start opisany w rozdz. 20.2. Treść poniżej zostaje jako zapis rozważanego wariantu.
+
 Migracja odbywa się przy odczycie, gdy dokument nie ma `schemaVersion: 2` albo pola `playlists` — zarówno dla Firestore, jak i dla `audio.settings` oraz starego klucza `audio.favorites`.
 
 | Wersja 1 | Wersja 2 |
@@ -247,6 +259,8 @@ const migrateV1ToV2 = (raw) => {
 ```
 
 ### 5.4 Zgodność ze starszą wersją strony w okresie przejściowym
+
+> **Nieaktualne po decyzji z 29 września 2026:** projekcja v1 odpada (rozdz. 20.3). Ryzyko nadpisania przez starą stronę zostaje i jest obsłużone kolejnością kroków po wdrożeniu (rozdz. 24).
 
 GitHub Pages i pamięć podręczna przeglądarek sprawiają, że przez jakiś czas na którymś urządzeniu może działać jeszcze stara strona. Jej `saveSettings()` nadpisuje cały dokument polami `favorites`, `mainView`, `aliases` — czyli skasowałaby `playlists`.
 
@@ -621,6 +635,8 @@ Wariant B (publiczny) w tabeli „Krok 2” zostaje: `Bolter Reload Fast`, `Bolt
 
 ## 12. Decyzje do podjęcia przed wdrożeniem
 
+> **Rozstrzygnięte 29 września 2026:** wszystkie decyzje — rozdz. 19.
+
 | # | Pytanie | Rekomendacja | Alternatywa |
 | --- | --- | --- | --- |
 | D1 | Jak wyświetlać alias? | Jak dziś: `Nazwa (alias)`, alias jaśniejszy. | Alias jako główny tytuł kafelka, nazwa z manifestu drobniej pod spodem. |
@@ -684,6 +700,8 @@ Etapy można wdrożyć w jednej gałęzi, ale kolejność ma znaczenie: etap 1 m
 | Język | Tymczasowo usuń `language-switcher--hidden`, przełącz na EN. | Wszystkie nowe teksty po angielsku; nazwa listy głównej przetłumaczona, nazwy pozostałych list bez zmian. Domyślnie PL. |
 
 ### 14.2 Migracja i zgodność
+
+> **Nieaktualne po decyzji z 29 września 2026:** tabelę zastępuje rozdz. 22.1.
 
 | Test | Oczekiwany wynik |
 | --- | --- |
@@ -749,9 +767,197 @@ Wszystkie te rozbieżności warto poprawić przy okazji przebudowy, bo i tak dot
 
 ## 18. Następne kroki
 
+> **Nieaktualne po decyzji z 29 września 2026:** aktualna lista kroków jest w rozdz. 24.
+
 1. Rozstrzygnąć decyzje D1-D10 (rozdz. 12) — wystarczą same numery i wybór.
 2. Przed wdrożeniem: zrobić kopię dokumentu `audio/favorites` (skopiować pola z konsoli Firebase albo, po wdrożeniu etapu 1, przyciskiem `Eksportuj ustawienia`).
 3. Zlecić wdrożenie etapami z rozdz. 13.2; etap 1 sprawdzić na kopii danych albo w trybie lokalnym, zanim nowa wersja zapisze dokument w bazie.
 4. Po wdrożeniu odświeżyć moduł z pominięciem pamięci podręcznej (`Ctrl+F5`) na każdym urządzeniu, które go używa.
 5. Jeżeli hasło ma się zmienić: postąpić według rozdz. 10 — w Audio rozważyć jednoczesną zmianę `SIGNING_KEY`, w DataVault nie usuwać konta technicznego.
 6. Poprawkę README z rozdz. 11 można zlecić od razu jako osobną, małą zmianę — nie zależy od przebudowy.
+
+---
+
+# CZĘŚĆ II — DECYZJE I PROJEKT WDROŻENIA
+
+## 19. Decyzje użytkownika z 29 września 2026
+
+### 19.1 Prompt z decyzjami (zachowany w całości)
+
+> Zaktualizuj analizę o jedną dodatkową uwagę - wszystkie obecnie zapisane listy ulubionych i ewentualnie aliasy traktujemy jako dane testowe - nie trzeba ich migrować. Mam porobione notatki (zapisane poza repo) jaki dźwięk był w jakiej liście ulubionych - po poprawie kodu je odtworze - przy okazji będzie to test poprawności działania. Problem dotyczący aktualnej treści instrukcji i prywatnej nazwy w analizie zignoruj. Problem ten sam się rozwiąże po realizacji naprawy.
+>
+> Moje decyzje:
+> D1 - zgodnie z rekomendacją.
+> D2 - zgodnie z rekomendacją.
+> D3 - zgodnie z rekomendacją.
+> D4 - zgodnie z rekomendacją.
+> D5 - nie robimy migracji, więc pytanie chyba nie jest zasadne?
+> D6 - nie robimy migracji, więc pytanie chyba nie jest zasadne?
+> D7 - zgodnie z rekomendacją.
+> D8 - zgodnie z rekomendacją.
+> D9 - zgodnie z rekomendacją.
+> D10 - zgodnie z rekomendacją.
+>
+> Nie zmieniaj jeszcze kodu. Dopisz to do analizy.
+
+### 19.2 Rozstrzygnięcia
+
+| # | Decyzja | Co to oznacza dla wdrożenia |
+| --- | --- | --- |
+| D1 | zgodnie z rekomendacją | Format `Nazwa (alias)` jak dziś; alias pochodzi z listy, na której stoi kafelek. Katalog pokazuje samą nazwę z manifestu, aliasy z list — w dymku. |
+| D2 | zgodnie z rekomendacją | Nazwę listy głównej można zmienić; pusta nazwa = „Widok główny” / „Main view”, tłumaczona przy zmianie języka. |
+| D3 | zgodnie z rekomendacją | Może nie być żadnej listy ulubionych. Lista główna istnieje zawsze. Usunięcie ostatniej listy ulubionych **nie** tworzy nowej. |
+| D4 | zgodnie z rekomendacją | Dźwięk występuje na danej liście najwyżej raz. |
+| D5 | **bezprzedmiotowa** | Słusznie — pytanie dotyczyło aliasów dźwięków spoza list w trakcie migracji. Bez migracji nie ma czego przechowywać, a pole `legacyV1` nie powstaje. |
+| D6 | **bezprzedmiotowa w pierwotnym brzmieniu** | Projekcja v1 (rozdz. 5.4) miała dwa zadania: wspierać migrację i chronić nowe dane przed zapisem ze starszej wersji strony, która została w pamięci podręcznej przeglądarki. Pierwsze zadanie znika. Drugie zostaje, ale rekomendacja brzmi: **zrezygnować z projekcji**, a ochronę zapewnić kolejnością kroków po wdrożeniu (rozdz. 24) — najpierw odświeżenie wszystkich urządzeń, dopiero potem odtwarzanie list. Listy i tak będą wpisywane od zera, a projekcja byłaby kodem przejściowym do późniejszego usunięcia. |
+| D7 | zgodnie z rekomendacją | SortableJS 1.15 z `cdn.jsdelivr.net`, ładowany na żądanie wyłącznie w panelu admina; strzałki ▲▼ ⤒⤓ jako zapas. |
+| D8 | zgodnie z rekomendacją | Stała `TAG_IGNORE_FRAGMENTS` zostaje w kodzie; jej wartości znikają z `README.md` i `Documentation.md`. |
+| D9 | zgodnie z rekomendacją | Podział modułu na `Audio/index.html`, `Audio/app.js`, `Audio/style.css`. |
+| D10 | zgodnie z rekomendacją | `Eksportuj ustawienia (JSON)` w menu `Narzędzia`. `Importuj` rekomendacja wskazywała jako opcjonalny — **nie wchodzi do pierwszego wdrożenia**; można go dodać osobno, jeżeli okaże się potrzebny. |
+
+### 19.3 Sprawy zamknięte bez działań
+
+- **Treść instrukcji z nazwami z repozytorium prywatnego** — nie jest poprawiana osobno. `README.md` zostanie i tak przepisane w etapie dokumentacji przebudowy; wtedy obowiązują zamienniki z rozdz. 11.2 i decyzja D8.
+- **Nazwy w cytacie promptu (rozdz. 1)** — zostają bez zmian.
+
+---
+
+## 20. Czysty start zamiast migracji — co się zmienia w projekcie
+
+### 20.1 Docelowy dokument `audio/favorites`
+
+```js
+// Dokument ustawień modułu Audio — jedyny format, jaki zna nowa wersja
+{
+  schemaVersion: 2,
+  playlists: [
+    { id: "main", kind: "main", name: "", entries: [] }   // lista główna, zawsze pierwsza
+    // kolejne listy: { id, kind: "list", name, entries: [ { itemId, alias } ] }
+  ],
+  updatedAt: serverTimestamp()
+}
+```
+
+W dokumencie nie ma już pól `favorites`, `mainView`, `aliases` ani `legacyV1`. Reguły modelu z rozdz. 5.2 obowiązują bez zmian. Nazwa pola `playlists` również zostaje — powód z rozdz. 5.1 (stara strona interpretuje pole `lists` jako swoje) jest nadal aktualny.
+
+### 20.2 Zachowanie nowej wersji wobec obecnych danych
+
+| Źródło | Stan | Zachowanie |
+| --- | --- | --- |
+| Firestore `audio/favorites` | dokument bez `schemaVersion: 2` (obecne dane testowe) | Traktowany jak pusty: lista główna bez wpisów, zero list ulubionych. **Sam odczyt niczego nie zapisuje.** Pierwsza zmiana w panelu admina zapisuje dokument w wersji 2; `setDoc` zastępuje cały dokument, więc stare pola znikają bez osobnego czyszczenia. |
+| Firestore `audio/favorites` | brak dokumentu | Jak dziś (`:2192-2198`): powstaje dokument domyślny — w wersji 2. |
+| `localStorage` `audio.settings` | stary format | Pomijany; pierwszy zapis lokalny zapisuje nowy format. Klucz zostaje ten sam, bo korzysta z niego wspólny pasek komunikatów (`scopeKey`). |
+| `localStorage` `audio.favorites` | najstarszy klucz | Nieczytany; nowa wersja usuwa go przy starcie. |
+
+Dlaczego sam odczyt nie zapisuje: widok użytkownika (np. telefon przy stole) nie powinien zmieniać bazy tylko dlatego, że go otwarto — zwłaszcza że ten sam dokument czyta jeszcze ewentualna stara wersja strony.
+
+Rekomendowany drobny dodatek: gdy panel admina odczyta dokument w starym formacie, pokazuje jednorazowo informację „Zapisane listy są w starym formacie i zostały pominięte. Pierwsza zmiana zapisze ustawienia w nowym formacie.” Bez niej puste listy na drugim urządzeniu łatwo wziąć za utratę danych albo awarię bazy. Widok użytkownika tej informacji nie pokazuje.
+
+W konsoli Firebase nie trzeba niczego robić. Ręczne usunięcie dokumentu przed wdrożeniem nie jest potrzebne, a przy otwartej jeszcze starej stronie byłoby wręcz niekorzystne — stara strona od razu utworzyłaby w jego miejscu dokument w starym formacie.
+
+### 20.3 Co wypada z projektu
+
+| Element z Części I | Los |
+| --- | --- |
+| rozdz. 5.3 — `migrateV1ToV2()`, komunikat z podsumowaniem migracji, pole `legacyV1` | usunięte |
+| rozdz. 5.4 — `toLegacyProjection()`, pola zgodności w dokumencie | usunięte (D6) |
+| obsługa klucza `audio.favorites` i najstarszego formatu z polem `lists` w dokumencie | usunięte |
+| obecne `normalizeFavorites`, `normalizeMainView`, `normalizeAliases`, `applyAliasesToItems`, `defaultFavorites`, `defaultMainView`, `defaultAliases` | zastąpione jedną funkcją `normalizeSettingsV2()` z tabelą z rozdz. 20.2 |
+| rozdz. 14.2 — testy migracji i zgodności | zastąpione rozdz. 22.1 |
+| rozdz. 18, krok 2 — kopia dokumentu przed wdrożeniem | niepotrzebna |
+| ryzyko „błąd migracji” (rozdz. 15) | znika |
+
+### 20.4 Co zostaje bez zmian
+
+- Model z rozdz. 5.1-5.2 (bez projekcji i kopii), wyświetlanie aliasu (5.5 + D1), jeden dokument bez zmiany reguł (5.6).
+- Cały projekt panelu admina, widoku użytkownika, języków i zmian technicznych (rozdz. 6-9), z decyzjami D2-D4 i D7-D10.
+- Reguła 5.2.6 — wpisy dźwięków nieobecnych w manifeście nie znikają przy zapisie. Przy czystym starcie ma znaczenie od pierwszego odtworzonego wpisu z archiwum.
+- Rozdz. 10 (hasła) i 11 (zamienniki w instrukcji).
+
+### 20.5 Odtworzenie list z notatek jako test akceptacyjny
+
+Odtwarzanie list po wdrożeniu przechodzi przez wszystkie wymagania z promptu, więc jest naturalnym testem akceptacyjnym. Proponowana kolejność:
+
+| Krok | Czynność | Co sprawdza |
+| --- | --- | --- |
+| 1 | Odblokuj archiwum w panelu admina. | Bez tego dźwięki z archiwum nie pojawią się w katalogu. |
+| 2 | Utwórz listy ulubionych z notatek i nadaj im nazwy; w razie potrzeby zmień nazwę listy głównej. | W6, W7, D2 |
+| 3 | Ułóż kolejność list przeciąganiem. | W9 — lista główna zostaje pierwsza |
+| 4 | Dodaj dźwięki do każdej listy: wyszukiwarka katalogu, drzewo folderów, `[+]`, zaznaczanie wielu pozycji. | W2, W3, W4, rozdz. 6.4 |
+| 5 | Ułóż kolejność dźwięków na listach. | W8 |
+| 6 | Nadaj aliasy; co najmniej raz odtwórz przypadek X / X2 / X3 — najwygodniej przez `Duplikuj listę`. | W1, D1 |
+| 7 | Porównaj z notatkami; sprawdź podgląd na dole strony w trybie `Telefon`, potem prawdziwy widok użytkownika na telefonie. | W5, rozdz. 7 |
+| 8 | `Narzędzia` → `Eksportuj ustawienia (JSON)`; plik zachowaj poza repozytorium. | D10, kopia zapasowa odtworzonych list |
+
+---
+
+## 21. Zaktualizowany zakres prac
+
+Tabela plików z rozdz. 13.1 obowiązuje bez zmian. Etapy z rozdz. 13.2 po korekcie:
+
+1. **Model danych** — dokument w wersji 2 z czystym startem (rozdz. 20), `normalizeSettingsV2()`, `escapeHtml`, odtwarzacze przypisane do stałych kluczy. Wymóg sprawdzania na kopii danych odpada — obecne dane są testowe.
+2. **Panel admina** — bez zmian względem rozdz. 13.2, plus jednorazowa informacja o pominiętym starym formacie (rozdz. 20.2) i menu `Narzędzia` z eksportem (D10).
+3. **Podgląd** — bez zmian.
+4. **Języki i dokumentacja** — jak w rozdz. 13.2, a w nim: zamienniki z rozdz. 11.2 w `README.md`, usunięcie wartości `TAG_IGNORE_FRAGMENTS` z `Documentation.md` (D8), placeholder w komentarzu `index.html:3032-3033`, poprawki z rozdz. 16. `Documentation.md` opisuje wyłącznie stan po wdrożeniu: dokument w innym formacie niż wersja 2 jest traktowany jak pusty — bez opisu historii zmian (`AGENTS.md`, rozdz. 4).
+5. **Testy** — rozdz. 22.
+
+---
+
+## 22. Zaktualizowany plan testów
+
+### 22.1 Czysty start (zastępuje rozdz. 14.2)
+
+| Test | Oczekiwany wynik |
+| --- | --- |
+| Otwarcie panelu admina przy obecnym dokumencie z danymi testowymi | Lista główna pusta, zero list ulubionych, jednorazowa informacja o starym formacie. Dokument w bazie niezmieniony do pierwszej zmiany. |
+| Pierwsza zmiana w panelu admina (np. nowa lista) | Dokument zawiera wyłącznie `schemaVersion`, `playlists` i `updatedAt`. |
+| Otwarcie widoku użytkownika przy obecnym dokumencie | Pusta lista główna, bez informacji o formacie, bez zapisu do bazy. |
+| Brak dokumentu w bazie | Powstaje dokument w wersji 2 z pustą listą główną. |
+| Tryb lokalny ze starym `audio.settings` i kluczem `audio.favorites` | Stare dane pominięte, `audio.favorites` usunięty, pierwszy zapis w nowym formacie. |
+| Stara wersja strony czyta dokument w wersji 2 | Pokazuje pustą listę „Ulubione” i pusty widok główny — zachowanie spodziewane; na takiej stronie nie wolno niczego zmieniać. |
+| Archiwum zablokowane w panelu admina, na listach są dźwięki z archiwum | Wpisy widoczne jako „(brak w manifeście)”; po dowolnej zmianie i zapisie nadal są w dokumencie razem z aliasami. |
+
+### 22.2 Testy wynikające z decyzji
+
+| Test | Oczekiwany wynik |
+| --- | --- |
+| D2 — zmiana nazwy listy głównej, potem wyczyszczenie nazwy | Własna nazwa widoczna w nawigacji; po wyczyszczeniu wraca „Widok główny”, a po przełączeniu na EN — „Main view”. |
+| D3 — usunięcie ostatniej listy ulubionych | Nie powstaje nowa lista; nawigacja użytkownika pokazuje „Brak list ulubionych.” |
+| D4 — próba dodania dźwięku, który już jest na liście | Przycisk w katalogu pokazuje `[✓]`; drugi wpis nie powstaje. |
+| D7 — zablokowany adres `cdn.jsdelivr.net` | Przeciąganie niedostępne, strzałki działają, panel bez błędów. |
+| D10 — eksport | Plik JSON zawiera `schemaVersion` i `playlists` ze wszystkimi listami, kolejnością i aliasami; nie zawiera tokenu sesji ani żadnych sekretów. |
+
+### 22.3 Test akceptacyjny
+
+Odtworzenie list z notatek według rozdz. 20.5. Wynik zgodny z notatkami, w widoku użytkownika na telefonie i w podglądzie.
+
+Scenariusze z rozdz. 14.1 i regresja z rozdz. 14.3 obowiązują bez zmian.
+
+---
+
+## 23. Zaktualizowane ryzyka
+
+| Ryzyko | Zmiana względem rozdz. 15 | Ograniczenie |
+| --- | --- | --- |
+| Błąd migracji | znika | — |
+| Utrata obecnych list i aliasów | nowe, **akceptowane** | Dane testowe; notatki poza repozytorium. |
+| Stara wersja strony nadpisuje dokument w wersji 2 | zostaje, a bez projekcji skutek jest poważniejszy: przepadają odtworzone listy, nie tylko rozróżnienie aliasów | Rozdz. 24, kroki 2-3: odświeżenie wszystkich urządzeń **przed** odtwarzaniem list; eksport JSON po odtworzeniu (rozdz. 20.5, krok 8). |
+| Puste listy na drugim urządzeniu wyglądają jak awaria | nowe | Informacja w panelu admina (rozdz. 20.2); w widoku użytkownika — kolejność kroków z rozdz. 24. |
+| Odtwarzanie list przy zablokowanym archiwum | nowe | Dźwięki z archiwum nie pojawiają się w katalogu — odtwarzać po odblokowaniu (rozdz. 20.5, krok 1). |
+
+Pozostałe ryzyka z rozdz. 15 obowiązują bez zmian.
+
+---
+
+## 24. Gotowość do wdrożenia i następne kroki
+
+**Stan:** wszystkie decyzje D1-D10 są rozstrzygnięte, otwartych pytań nie ma. Projekt jest gotowy do wdrożenia etapami z rozdz. 21. Kod modułu nadal nietknięty.
+
+Kolejność po zleceniu wdrożenia:
+
+1. Wdrożenie etapów 1-5 (rozdz. 21).
+2. **Zanim zaczniesz odtwarzać listy:** na każdym urządzeniu, które używa modułu Audio (komputer, telefon, tablet), zamknij stare karty modułu i otwórz go ponownie z pominięciem pamięci podręcznej (`Ctrl+F5` na komputerze; na telefonie zamknięcie karty i ponowne otwarcie, a gdy to nie pomoże — wyczyszczenie danych witryny).
+3. Sprawdzenie na każdym urządzeniu: jeżeli wciąż widać stare listy testowe albo panel admina ma stary układ, to działa stara wersja strony — powtórz krok 2. Nowa wersja przed pierwszą zmianą pokazuje pustą listę główną.
+4. Odtwórz listy z notatek według rozdz. 20.5 — to jednocześnie test akceptacyjny.
+5. Wyeksportuj ustawienia do pliku JSON i zachowaj go poza repozytorium.
+6. Zmiana hasła — według rozdz. 10, niezależnie od wdrożenia.
