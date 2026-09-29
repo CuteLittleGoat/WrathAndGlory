@@ -29,7 +29,7 @@ VISIBILITY CHANGE POINT`.
 | Kalkulator PD | `Kalkulator/KalkulatorXP.html` | `<div class="language-switcher language-switcher--hidden">` |
 | Prosty Kreator Postaci | `Kalkulator/TworzeniePostaci.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
 | Zaawansowany Kreator Postaci | `Kalkulator/TworzeniePostaci_v2.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
-| Audio | `Audio/index.html` | dwa kontenery `<div class="language-switcher language-switcher--hidden">` — panel użytkownika i panel admina; trzeba usunąć klasę w obu miejscach, jeśli oba przełączniki mają być widoczne |
+| Audio | `Audio/index.html` | `<div class="language-switcher language-switcher--hidden">` w wierszu `.page-top` — jeden kontener wspólny dla panelu admina i widoku użytkownika |
 | DiceRoller | `DiceRoller/index.html` | `<select id="languageSelect" class="language-switcher--hidden">` |
 | Infoczytnik — panel GM | `Infoczytnik/GM_test.html` | `<div class="language-switcher language-switcher--hidden">` w nagłówku `.pageHead` |
 
@@ -127,7 +127,7 @@ lokalnego.
 | Moduł | Kontener | Miejsce w układzie |
 | --- | --- | --- |
 | GeneratorNPC | `<div class="favorites-mode" id="favorites-mode">` | Panel „Ulubione”, osobny wiersz pod linią statusu i nad polem aliasu. `display: flex`, `margin-bottom: 12px`, reguła `:empty { display: none; }` nie zostawia dziury przed uruchomieniem skryptu. |
-| Audio | `<div class="write-status-slot" id="writeStatusMode">` | Pierwszy element `.page`, `display: flex`, `justify-content: flex-end`. Slot leży poza sekcjami `admin-only` i `user-only`, bo jedna z nich jest usuwana przy starcie, a plakietka ma być widoczna w obu trybach. |
+| Audio | `<div class="write-status-slot" id="writeStatusMode">` | Wewnątrz `.page-top` — pierwszego elementu `.page` (`display: flex`, `justify-content: flex-end`, `gap: 10px`), obok ukrytego przełącznika języka. Slot ma `display: flex; justify-content: flex-end`. `.page-top` leży poza sekcjami `admin-only` i `user-only`, bo jedna z nich jest usuwana przy starcie, a plakietka ma być widoczna w obu trybach. |
 
 ---
 
@@ -781,75 +781,149 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 
 ## Moduł — Audio
 
-### 1) Fonty i typografia
-#### 1.1 Fonty lokalne
-- **"Consolas", "Fira Code", "Source Code Pro", monospace**.
+Wszystkie style modułu są w `Audio/style.css` (jeden arkusz dla panelu admina, widoku użytkownika, podglądu i bramki). Widok użytkownika jest rysowany tą samą funkcją na własnej stronie i w podglądzie panelu admina, dlatego jego układ reaguje na szerokość kontenera (`@container uv`), a panel admina — na szerokość okna (`@media`).
 
-#### 1.2 Zasady użycia fontów
-- Tytuł `.title`: uppercase, `letter-spacing: 0.08em`, `font-size: clamp(22px, 3vw, 28px)`.
-- Podtytuł `.subtitle`: `font-size: 15px`, `opacity: 0.9`.
+### 1) Fonty i typografia
+- Font: **"Fira Code", "Consolas", "Source Code Pro", monospace**; Fira Code 400 i 600 z Google Fonts (`<link>` z `preconnect` w `<head>`).
+- Tytuł panelu admina (`.admin-header h1`): uppercase, `letter-spacing: 0.1em`, `font-size: clamp(20px, 2.6vw, 28px)`; podtytuł 13 px, `--muted`.
+- Tytuły kolumn (`.col-title`): 14 px, uppercase, `letter-spacing: 0.08em`.
+- Etykiety pól (`.field-label`): 11 px, uppercase, `letter-spacing: 0.1em`, `--muted`.
+- Tekst podstawowy 13 px; ścieżki i opisy 11–12 px.
+- Przyciski `.btn`: 13 px, uppercase, `letter-spacing: 0.06em`; `.btn-small`: 11 px.
+- Nazwa na kafelku (`.tile-title`): 15 px, `font-weight: 600`, `line-height: 1.3`; tag (`.tile-tag`): 12 px, `--muted`.
+- Znak marki w pasku widoku (`.uv-brand`): 13 px, 600, uppercase, `letter-spacing: 0.14em`, `--accent-strong`.
 
 ### 2) Kolory, tła, ramki, cienie
-#### 2.1 Zmienne CSS (identyczne jak w Main)
-- `--bg`: radialne gradienty + `#031605`:
-  - `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%)`
-  - `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%)`
-  - `#031605`
-- `--panel`: `#000`.
-- `--border`: `#16c60c`.
-- `--text`: `#9cf09c`.
-- `--accent`: `#16c60c`, `--accent-dark`: `#0d7a07`.
-- `--danger`: `#ff5f5f` (czerwony akcent).
-- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)`.
-- `--radius`: `10px`.
+#### 2.1 Zmienne CSS
+- `--bg`: `radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%)`, `radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%)`, `#031605`.
+- `--panel`: `#000`; `--panel-alt`: `#041b08` (kafelki).
+- `--border` / `--accent`: `#16c60c`; `--accent-dark`: `#0d7a07`; `--accent-strong`: `#1ee616`.
+- `--text`: `#9cf09c`; `--muted`: `rgba(156, 240, 156, 0.7)`.
+- `--danger`: `#ff5f5f` — odtwarzanie, aktywny Loop, błędy, licznik `(N)`.
+- `--glow`: `0 0 25px rgba(22, 198, 12, 0.45)` (nagłówek admina); `--shadow`: `0 8px 24px rgba(0, 0, 0, 0.45)` (kolumny, pasek widoku, menu).
+- `--radius`: `12px` (nagłówek, kolumny, podgląd, pasek widoku); mniejsze elementy: 8–10 px.
+- Niebieski sygnał aktywnego filtra, skopiowany z DataVault: `--filter-on: #3D8FC4`, `--filter-on-bright: #6FB3E0`, `--filter-on-border: rgba(61, 143, 196, 0.55)`, `--filter-on-glow: rgba(61, 143, 196, 0.40)`, `--filter-on-bg: rgba(61, 143, 196, 0.10)`, `--filter-on-bg-active: rgba(61, 143, 196, 0.20)`.
+- Szerokości kolumn warsztatu: `--folders-w: 260px`, `--lists-w: 400px` (≥1600 px: 280 / 420; 1280–1599 px: 240 / 380).
 
-### 3) Layout i elementy UI
-- Układ karty identyczny jak Main (`width: min(860px, 100%)`, centrowanie, box-shadow `--glow`).
-- Karty sampli w widoku użytkownika i w panelu „Główny widok” admina:
-  - nazwa i tag mają klasę `.sample-trigger` (kursor `pointer`),
-  - aktywne odtwarzanie dodaje `.is-playing`, co barwi `.sample-trigger` na `--danger`,
-  - suwak głośności to `.volume-slider` (`width: 100%`, `accent-color: --accent`).
-- Pierwszym elementem `.page` jest `.write-status-slot` (`display: flex`, `justify-content: flex-end`) — miejsce na plakietkę trybu pracy z danymi, opisaną w rozdziale „Wspólny komponent — pasek komunikatu o nieudanym zapisie i znacznik trybu pracy”. Slot jest pusty do czasu uruchomienia skryptu i nie ma własnej wysokości, więc nie zostawia dziury w układzie.
-- Przycisk `.loop-btn` znajduje się wyłącznie w zwykłym widoku użytkownika uruchomionym bez `?admin=1`; aktywny stan pętli ma klasę `.is-looping` i `aria-pressed="true"`, czerwone tło `rgba(255, 95, 95, 0.22)`, obramowanie `--danger`, tekst `#ffd6d6` oraz cień `0 0 12px rgba(255, 95, 95, 0.35)`.
+#### 2.2 Znaczenie kolorów
+- **Niebieski** oznacza wyłącznie „filtr jest założony”: etykieta pola z aktywną frazą (`.field-label--active`), tytuł „Foldery” i część „Foldery: X z Y” w podsumowaniu (`.is-filter-on`: `color: --filter-on`, `text-shadow: 0 0 10px --filter-on-glow`), kropki `.dot` (8 px, `--filter-on-bright`, poświata), wyróżnienie `<mark>` w drzewie i edytorze (tło `--filter-on-bg-active`, tekst `--filter-on-bright`, `border-radius: 3px`), podpowiedź o zablokowanej kolejności (`.editor__hint`, `--filter-on-bright`).
+- **Czerwony** oznacza odtwarzanie albo błąd.
+- **Zielony** jest kolorem stanu poprawnego i elementów aktywnych (wybrana lista, zakładka, przycisk `✓`).
 
-### 4) Zwijanie/rozwijanie > 9 linii
-- Brak clampowania treści w module Audio.
+#### 2.3 Elementy sterujące
+- `.btn`: tło `#031806`, ramka `1px solid --border`, `border-radius: 8px`, `padding: 8px 12px`; `:hover` tło `rgba(22, 198, 12, 0.15)` i cień `0 0 12px rgba(22, 198, 12, 0.25)`; `:disabled` `opacity: 0.5`.
+- `.btn.primary`: tło `--text`, tekst `#031605` (baza gradientu `--bg`), ramka `rgba(22, 198, 12, 0.35)`, `:hover` `filter: brightness(1.08)`.
+- `.icon-btn`: 28 × 28 px, ramka `rgba(22, 198, 12, 0.5)`, `border-radius: 6px`; wariant `--danger` z ramką `rgba(255, 95, 95, 0.6)` i tekstem `#ffd6d6`.
+- `.text-input`, `.select`: tło `#031806` / `#0b0b0b`, ramka `--border`, `border-radius: 8px`, 13 px; fokus `box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25)`.
+- Fokus klawiatury na wszystkich przyciskach: `outline: 2px solid --accent-strong`, `outline-offset: 2px`.
+- Checkboxy: 16 × 16 px, `accent-color: --accent`.
 
-### 5) Wyjątki i formatowanie specjalne
-- `.group-count`: czerwony licznik w nawiasie dla zgrupowanych plików audio (`color: var(--danger)`).
-- `.sample-alias`: alias w nawiasie ma jaśniejszy kolor `#D2FAD2`.
+### 3) Layout strony
+- `.page`: `max-width: 1280px`, `margin: 0 auto`, `padding: 20px 24px 40px`, kolumna flex z `gap: 16px`.
+- Panel admina (`body.admin-mode .page`): `max-width: 1760px`.
+- Widok użytkownika (`body.user-mode .page`): bez limitu szerokości, `padding: clamp(8px, 2vw, 24px)`, `gap: 10px`.
+- Pierwszy element `.page` to `.page-top` (`display: flex; justify-content: flex-end; gap: 10px`), w którym stoją ukryty przełącznik języka i slot `#writeStatusMode` plakietki trybu pracy. Ukryty przełącznik nie zostawia odstępu.
 
-### 6) Bramka dostępu do archiwum
-- Moduł korzysta ze wspólnego arkusza `shared/access-gate.css`, tego samego co `DataVault` i `GeneratorNPC` — podpiętego w `<head>` przez `<link rel="stylesheet" href="../shared/access-gate.css">`.
+### 4) Panel admina
+#### 4.1 Nagłówek
+- `.admin-header`: tło `--panel`, ramka `2px solid --border`, `--radius`, `padding: 16px 20px`, cień `--glow`.
+- Po prawej: „Odblokuj archiwum” (`.btn`, znika po odblokowaniu) i „Narzędzia ▾”.
+- Menu `.menu__list`: `position: absolute`, pod przyciskiem (`top: calc(100% + 6px)`), wyrównane do prawej (na telefonie do lewej), `min-width: 280px`, `max-width: min(360px, 92vw)`, tło `--panel`, ramka `rgba(22, 198, 12, 0.8)`, `border-radius: 10px`, `z-index: 50`. Pozycje `.menu__item` 13 px, `padding: 9px 10px`, `:hover` tło `rgba(22, 198, 12, 0.15)`; pozycja niszcząca (`--danger`) tekst `#ffd6d6`.
+- Pastylki `.status-pill`: `border-radius: 999px`, ramka `--border`, tło `rgba(22, 198, 12, 0.08)`, 12 px.
+- Komunikaty `.notice`: ramka `rgba(22, 198, 12, 0.6)`, tło `rgba(22, 198, 12, 0.08)`, `border-radius: 10px`, 13 px, przycisk ✕ po prawej.
+
+#### 4.2 Warsztat
+- `.workbench`: siatka `var(--folders-w) minmax(0, 1fr) var(--lists-w)`, `gap: 14px`, `height: calc(100dvh - 24px)`, `min-height: 640px`.
+- Kolumny `.wb-col`: tło `--panel`, ramka `rgba(22, 198, 12, 0.6)`, `--radius`, cień `--shadow`; nagłówek `.col-head` (`padding: 12px 14px`, dolna linia `rgba(22, 198, 12, 0.3)`) stoi w miejscu, treść `.col-body` przewija się osobno.
+- Zwinięty panel folderów (≥1280 px): kolumna 44 px z przyciskiem-szyną `.folders__rail` (pionowy napis „Foldery”, `writing-mode: vertical-rl`, `letter-spacing: 0.18em`, znak `»`, niebieska kropka przy aktywnym filtrze).
+
+#### 4.3 Drzewo folderów
+- Wiersz `.tree-row`: `min-height: 28px`, wcięcie `calc(var(--depth) * 14px)`, `:hover` tło `rgba(22, 198, 12, 0.06)`.
+- Przełącznik ▸/▾ 22 × 22 px w kolorze `--muted`; nazwa z wielokropkiem; licznik `(N)` lub `(X/N)` 11 px `--muted`.
+- Przycisk „tylko” (`.tree-only`): 10 px, ramka `rgba(22, 198, 12, 0.35)`, `border-radius: 5px`; przy myszy widoczny tylko po najechaniu na wiersz albo przy fokusie, na ekranie dotykowym zawsze.
+- Checkbox w stanie mieszanym używa natywnego wyglądu `indeterminate`.
+
+#### 4.4 Katalog
+- Wiersz `.cat-row`: siatka `auto auto minmax(0, 1fr) auto auto auto`, `gap: 8px`, `padding: 5px 6px`, `min-height: 36px`, dolna linia `rgba(22, 198, 12, 0.14)`; zaznaczony — tło `rgba(22, 198, 12, 0.12)`.
+- Nazwa `.cat-title`: 13 px, 600, jedna linia, nie kurczy się poniżej swojej szerokości aż do `max-width: 65%`; ścieżka i plik `.cat-meta`: 11 px, `--muted`, wielokropek.
+- Przycisk odsłuchu `.play-btn`: okrąg 28 px, ramka `rgba(22, 198, 12, 0.6)`, ikona `--accent-strong`; grający — ramka i ikona `--danger`, cień `0 0 10px rgba(255, 95, 95, 0.35)`; wczytywany — ramka przerywana.
+- Plakietki `.chip`: 10 px uppercase, `border-radius: 999px`; licznik list jest przyciskiem, wyróżnionym ramką `--accent-strong` i tekstem `#d2ffd2`, gdy dźwięk jest na liście docelowej.
+- Przycisk `.add-btn`: 30 × 28 px, `+`; stan „na liście” (`.is-on`, `✓`): tło `rgba(22, 198, 12, 0.25)`, ramka `--accent-strong`, tekst `#d2ffd2`.
+- Pasek zaznaczonych `.bulk-bar`: ostatni element kolumny, tło `#020d03`, górna linia `rgba(22, 198, 12, 0.5)`, przycisk „Dodaj do …” jako `.btn.primary`.
+
+#### 4.5 Listy i edytor
+- Wiersz listy `.list-row`: ramka `rgba(22, 198, 12, 0.35)`, tło `#031206`, `border-radius: 8px`; aktywny — ramka `--accent-strong`, tło `rgba(22, 198, 12, 0.25)`, poświata `0 0 12px rgba(22, 198, 12, 0.25)`.
+- Lista główna: pinezka 📌 zamiast uchwytu i plakietka „lista główna” (10 px uppercase, `--muted`).
+- Uchwyt `⠿` (`.drag-handle`): 15 px, `--muted`, kursor `grab`, `touch-action: none`; wyłączony — `opacity: 0.25`.
+- Przeciąganie: `.sortable-ghost` z `opacity: 0.4` i przerywaną ramką `rgba(22, 198, 12, 0.6)`, `.sortable-chosen` z poświatą `0 0 14px rgba(22, 198, 12, 0.35)`.
+- Tytuł edytora 15 px (dla listy głównej nad nim podpis 10 px uppercase „lista główna”).
+- Wpis `.entry`: przerywana ramka `rgba(22, 198, 12, 0.35)`, tło `rgba(0, 0, 0, 0.35)`, `border-radius: 8px`, `padding: 8px`; wpis spoza manifestu `opacity: 0.75`. Pole aliasu 12 px (`flex: 1 1 160px`), obok przyciski ⤒ ▲ ▼ ⤓ ✕ (`.icon-btn`). Linia „Na innych listach” 11 px `--muted`.
+
+#### 4.6 Podgląd
+- `.preview`: tło `--panel`, ramka `rgba(22, 198, 12, 0.6)`, `--radius`, `padding: 14px`.
+- Przełącznik szerokości `.seg` (przyciski 11 px uppercase, aktywny tło `rgba(22, 198, 12, 0.25)`, tekst `#d2ffd2`).
+- Ramka `.preview__frame`: przerywana `rgba(22, 198, 12, 0.35)`, tło `#020d03`, `border-radius: 10px`, `padding: 10px`, wyśrodkowana; `max-width` 820 px (Tablet) albo 390 px (Telefon).
+
+### 5) Widok użytkownika (także w podglądzie)
+- Pasek `.uv-bar`: tło `--panel`, ramka `rgba(22, 198, 12, 0.6)`, `--radius`, cień `--shadow`, `padding: 8px 10px`, `flex-wrap`. Na prawdziwej stronie przyklejony u góry (`position: sticky; top: var(--wg-write-status-height, 0px)`), w podglądzie nie.
+- Zakładka `.uv-tab`: ramka `--border`, tło `#031806`, `border-radius: 8px`, 12 px, `max-width: 260px` z wielokropkiem; aktywna — tło `rgba(22, 198, 12, 0.25)`, ramka `--accent-strong`, tekst `#d2ffd2`, poświata `0 0 16px rgba(22, 198, 12, 0.3)`. Czerwona kropka „tu coś gra”: 7 px, `--danger`, w prawym górnym rogu zakładki.
+- „Zatrzymaj wszystko (N)”: `.btn`; gdy coś gra (`.is-active`) — ramka `--danger`, tekst `#ffd6d6`, poświata; gdy nic — wyłączony.
+- Siatka `.uv-grid`: `repeat(auto-fill, minmax(min(100%, 250px), 1fr))`, `gap: 12px` — liczba kolumn wynika z szerokości, bez stałych progów.
+- Kafelek `.tile`: tło `--panel-alt`, ramka `rgba(22, 198, 12, 0.4)`, `border-radius: 10px`. Górna część to jeden przycisk `.tile-play` (siatka: ikona 18 px po lewej, obok nazwa, tag i status; `padding: 12px 12px 8px`, `min-height: 64px`, `:hover` tło `rgba(22, 198, 12, 0.06)`).
+- Dolna część dociśnięta do dołu (`margin-top: auto` paska postępu), więc w jednym rzędzie siatki suwaki i przyciski Loop stoją na tej samej wysokości: pasek postępu 4 px, potem suwak (`flex: 1 1 70px`, `min-width: 60px`, `accent-color: --accent`), wartość procentowa (12 px, `--muted`, `min-width: 3.6em`) i przycisk `⟳ Loop`.
+- Stany kafelka:
+  - `loading` — ramka przerywana w kolorze `--muted`, pulsująca ikona `…`, napis „wczytywanie…”,
+  - `playing` — ramka `--danger` z poświatą `0 0 14px rgba(255, 95, 95, 0.35)`, ikona ■ i nazwa w `--danger`, pasek postępu `--danger` na tle `rgba(255, 95, 95, 0.15)` (przy nieznanej długości — przesuwający się odcinek 30%),
+  - `missing` — `opacity: 0.6`, ikona 🔒, napis „(brak w manifeście)”, bez suwaka i Loop.
+- Aktywny Loop (`.loop-btn[aria-pressed="true"]`, `.is-looping`): tło `rgba(255, 95, 95, 0.22)`, ramka `--danger`, tekst `#ffd6d6`, cień `0 0 12px rgba(255, 95, 95, 0.35)`.
+- Pusta lista: `.uv-empty` z przerywaną ramką, wyśrodkowany tekst 13 px `--muted`.
+
+### 6) Responsywność
+#### 6.1 Panel admina (`@media`, szerokość okna)
+- ≥1600 px i 1280–1599 px: trzy kolumny o szerokościach z punktu 2.1.
+- ≤1279 px: panel folderów staje się szufladą z lewej (`position: fixed`, `top: var(--wg-write-status-height, 0px)`, `width: min(360px, 90vw)`, `z-index: 60`, wysuwanie `transform: translateX(-105%)` → `none`, 0,2 s) z przyciemnionym tłem `rgba(0, 0, 0, 0.6)` (`z-index: 55`); w nagłówku katalogu pojawia się przycisk „Foldery” (z niebieską kropką przy aktywnym filtrze); siatka `minmax(0, 1fr) minmax(320px, 380px)`.
+- ≤1023 px: zakładki `.admin-tabs` (sticky pod paskiem zapisu, przyciski 12 px uppercase, aktywna jak aktywna lista); widoczny jeden panel, cała strona przewija się zamiast kolumn; pasek zaznaczonych przyklejony do dołu ekranu.
+- ≤719 px: mniejsze marginesy strony (`padding: 12px 10px 32px`), wiersz katalogu w dwóch liniach (nazwa bez ucinania, pod nią ścieżka; licznik list w drugiej linii), bez plakietki warstwy; pole aliasu na całą szerokość; menu „Narzędzia” rozwija się od lewej.
+
+#### 6.2 Widok użytkownika (`@container uv`, szerokość widoku)
+- <1024 px: zakładki w osobnym, pełnym wierszu paska, w jednym rzędzie przewijanym w bok (`scroll-snap-type: x proximity`), przyciski w pierwszym wierszu obok nazwy „Audio”.
+- <560 px: „Zatrzymaj wszystko” i „Odblokuj archiwum” pokazują same ikony (■ z licznikiem, 🔒), mniejsze odstępy siatki (8 px) i kafelków.
+
+#### 6.3 Ekrany dotykowe (`@media (pointer: coarse)`)
+- Przyciski, zakładki: `min-height: 44px`; przyciski ikonowe, odsłuchu i dodawania: 40 × 40 px; wiersz drzewa 40 px, przełącznik ▸/▾ 34 px; checkboxy 20 px; pola i selecty `min-height: 40px`, 15 px; suwak 32 px z uchwytem 26 × 26 px; wartość głośności `min-height: 40px`.
+
+#### 6.4 Ograniczony ruch (`prefers-reduced-motion: reduce`)
+- Bez pulsowania ikony, bez animacji paska postępu i bez animacji wysuwania szuflady.
+
+### 7) Zwijanie treści
+- Nazwa na kafelku jest ucinana po **3 wierszach** (`line-clamp: 3`); pełna nazwa z aliasem i `(N)` jest w dymku (`title`).
+- Nazwy w katalogu, drzewie, na liście list i na zakładkach mieszczą się w jednej linii z wielokropkiem; w edytorze nazwy i ścieżki łamią się (`overflow-wrap: anywhere`).
+
+### 8) Wyjątki i formatowanie specjalne
+- Format nazwy: `Nazwa (alias) (N)`.
+- `.sample-alias`: alias w nawiasie w jaśniejszym kolorze `#d2fad2`, `font-weight: 400`.
+- `.group-count`: licznik wariantów w nawiasie w kolorze `--danger`, `font-weight: 400`; pokazywany tylko przy więcej niż jednym wariancie.
+- Atrybut `hidden` wygrywa z każdą regułą `display` (`[hidden] { display: none !important; }`).
+
+### 9) Bramka dostępu do archiwum
+- Moduł korzysta ze wspólnego arkusza `shared/access-gate.css`, tego samego co `DataVault` i `GeneratorNPC`, podpiętego w `<head>` przez `<link rel="stylesheet" href="../shared/access-gate.css">`.
 - Znaczniki bramki są zgodne ze wzorcem DataVault: `#accessGate` → `.accessGate__card` → `.accessGate__iconSlot` (ikona `../IkonaPowiadomien2.png`, 72×72) → nagłówek → opis → `#accessForm` z siatką `.accessGate__credentials` → `.accessGate__error`.
-- Widoczność sterowana atrybutem `hidden` (`.accessGate[hidden] { display: none; }`), a nie klasą.
-- Do arkusza modułu dodano klasę `.btn.primary`, której Audio wcześniej nie miało: `background: var(--text)`, `color: #031605`, `border-color: rgba(22, 198, 12, 0.35)`, `:hover` z `filter: brightness(1.08)`. Bez niej przycisk „Rozpocznij Rytuał” byłby obrysowany zamiast wypełnionego i odbiegałby od DataVault.
-- Kolor tekstu przycisku podany literalnie jako `#031605`, ponieważ `--bg` w tym module jest gradientem i nie nadaje się na wartość `color`. Wartość `#031605` to baza tego gradientu, ta sama, której DataVault używa w `--bg`.
-- Bramka pojawia się **automatycznie** po otwarciu modułu, gdy nie ma ważnej sesji. Jako nakładka `position: fixed` z `z-index: 9999` zasłania wtedy pasek narzędzi admina — zachowanie identyczne jak w `DataVault`.
-- Audio ma w bramce dodatkowy przycisk `#accessSkip` („Pomiń”), którego `DataVault` nie ma. Klasa `.accessGate__skip` jest zdefiniowana **w arkuszu modułu, nie w `shared/access-gate.css`**, właśnie dlatego, że tylko Audio ma bramkę możliwą do pominięcia.
-- Przycisk „Pomiń” używa zwykłej klasy `.btn` (obrys), w kontraście do wypełnionego `.btn.primary` przycisku zatwierdzenia — akcja podstawowa pozostaje wizualnie ważniejsza.
-- Rozmieszczenie w siatce `.accessGate__credentials`: „Pomiń” w `grid-column: 1; grid-row: 2; justify-self: start`, naprzeciwko `.accessGate__submit` w kolumnie 2. Poniżej `640px` (ten sam punkt łamania co w `shared/access-gate.css`, gdzie siatka zwija się do jednej kolumny) przycisk przechodzi na `grid-row: 4` pod przyciskiem zatwierdzenia i rozciąga się na całą szerokość. Użycie innego punktu łamania powodowałoby nachodzenie przycisków w zakresie 521–640 px.
+- Widoczność sterowana atrybutem `hidden`.
+- Przycisk „Rozpocznij Rytuał” używa `.btn.primary` z arkusza modułu (wypełniony, jak w DataVault).
+- Bramka pojawia się automatycznie po otwarciu modułu, gdy nie ma ważnej sesji. Jako nakładka `position: fixed` z `z-index: 9999` zasłania całą stronę — zachowanie identyczne jak w `DataVault`.
+- Audio ma w bramce dodatkowy przycisk `#accessSkip` („Pomiń”), którego `DataVault` nie ma. Klasa `.accessGate__skip` jest zdefiniowana w arkuszu modułu, nie w `shared/access-gate.css`, bo tylko Audio ma bramkę możliwą do pominięcia. „Pomiń” używa zwykłej klasy `.btn` (obrys), w kontraście do wypełnionego przycisku zatwierdzenia.
+- Rozmieszczenie w siatce `.accessGate__credentials`: „Pomiń” w `grid-column: 1; grid-row: 2; justify-self: start; align-self: center`, naprzeciwko `.accessGate__submit` w kolumnie 2. Poniżej `640px` (ten sam punkt łamania co w `shared/access-gate.css`) przycisk przechodzi na `grid-row: 4` i rozciąga się na całą szerokość.
 
-### 7) Status dostępu do archiwum
-- W pasku statusów admina doszedł `#libraryStatus` obok `#manifestStatus`, `#firebaseStatus` i `#favoritesStatus`.
-- **Zasada kolorystyczna: czerwień wyłącznie dla błędów.** Stan poprawny — zarówno „Archiwum: zablokowane”, jak i „Archiwum: odblokowane” — korzysta z domyślnego zielonego wyglądu `.status-pill`, bez klasy modyfikującej. Zablokowane archiwum jest stanem poprawnym, a nie awarią.
-- Jedyny stan wyróżniony to `.status-pill.is-error`, używany przy „Archiwum: błąd wczytywania”:
-  - `border-color: var(--danger)` (`#ff5f5f`),
-  - `color: #ffd6d6`,
-  - `background: rgba(255, 95, 95, 0.12)`.
-- Wszystkie trzy wartości pochodzą z palety modułu Audio udokumentowanej wyżej — tej samej, której używa aktywny `.loop-btn`. Do bramki nie wprowadzono żadnego koloru spoza tej palety.
-- Szczegół błędu trafia do atrybutu `title` pastylki, więc jest dostępny po najechaniu kursorem, bez zaśmiecania paska statusów.
-- Pastylka `#manifestStatus` również ma stan błędu: przy nieudanym pobraniu `AudioManifest.json` dostaje klasę `.status-pill.is-error` i tekst „Manifest: błąd listy publicznej”, a pełny komunikat trafia do atrybutu `title`. Zasada „czerwień wyłącznie dla błędów” jest zachowana — nieudane pobranie pliku jest awarią, a nie stanem poprawnym.
-- W pasku statusów admina jest też `#builderStatus` — stan generatora manifestów. Obowiązuje ta sama zasada kolorystyczna: zielono dla „gotowy”, „przetwarzanie pliku” i wyniku „N publicznych / M chronionych”, `.status-pill.is-error` wyłącznie dla stanu „Generator: błąd”. Pełna treść błędu trafia do atrybutu `title`.
-- Przycisk `#unlockLibrary` w toolbarze admina oraz `#unlockLibraryUser` w panelu nawigacji widoku użytkownika; oba używają standardowej klasy `.btn` i mają jedną, stałą etykietę „Odblokuj archiwum”.
-- **Przycisku blokowania nie ma.** Po odblokowaniu archiwum oba przyciski są ukrywane atrybutem `hidden`, zamiast zmieniać etykietę na „Zablokuj archiwum”. Odblokowane archiwum jest stanem docelowym, więc przycisk, który do niego prowadzi, przestaje być potrzebny.
-- Przycisk `#buildManifests` w toolbarze admina (generator manifestów z XLSX) używa standardowej klasy `.btn` i istnieje wyłącznie w widoku `?admin=1` — w widoku użytkownika jest usuwany razem z całą sekcją `admin-only`.
+### 10) Pastylki statusów w panelu admina
+- Pastylki: `#manifestStatus`, `#firebaseStatus`, `#listsStatus` („Listy: N”), `#libraryStatus`, `#builderStatus`.
+- **Zasada kolorystyczna: czerwień wyłącznie dla błędów.** Stan poprawny — także „Archiwum: zablokowane” — ma domyślny zielony wygląd `.status-pill`.
+- Stan błędu `.status-pill.is-error`: `border-color: var(--danger)`, `color: #ffd6d6`, `background: rgba(255, 95, 95, 0.12)`. Używany przy „Archiwum: błąd wczytywania”, „Manifest: błąd listy publicznej” i „Generator: błąd”. Szczegół błędu trafia do atrybutu `title`.
+- Przycisk „Odblokuj archiwum” istnieje w nagłówku admina (`#unlockLibrary`) i w pasku widoku użytkownika (`.unlock-btn` z ikoną 🔒). Po odblokowaniu znika w obu miejscach; przycisku blokowania nie ma.
 
-### 8) Podział języka komunikatów
-- Panel `?admin=1` jest narzędziem technicznym, dlatego statusy, etykiety przycisków i komunikaty diagnostyczne są napisane językiem zwykłym i konkretnym: „Archiwum: zablokowane”, „Odblokuj archiwum”, „Bramka nie znalazła manifestu archiwum (HTTP 404)…”.
-- Językiem lore Warhammera 40k pozostaje wyłącznie **okno bramki dostępu** — tytuł, opis, etykieta „Litania Dostępu”, przycisk „Rozpocznij Rytuał” oraz dwa komunikaty dotyczące samego hasła (nie wypowiedziano Litanii, Litania odrzucona). Jest to celowe: okno jest wspólne z modułem `DataVault` i ma wyglądać oraz brzmieć identycznie.
-- Komunikaty o awarii infrastruktury (brak manifestu, brak połączenia z bramką, wygaśnięcie sesji) są techniczne również w oknie bramki, ponieważ służą do diagnozy, a nie do budowania klimatu.
-- Do tej samej kategorii należą etykieta „Pomiń”, komunikat wyjaśniający otwarcie bramki po kliknięciu pozycji „(brak w manifeście)” oraz wszystkie komunikaty generatora manifestów (brak kolumn, duplikat kolumny, brak wierszy). Mówią wprost, co zrobić z plikiem, i nie używają języka lore.
+### 11) Podział języka komunikatów
+- Panel `?admin=1` jest narzędziem technicznym, dlatego statusy, etykiety przycisków i komunikaty diagnostyczne są napisane językiem zwykłym i konkretnym.
+- Językiem lore Warhammera 40k pozostaje wyłącznie **okno bramki dostępu** — tytuł, opis, etykieta „Litania Dostępu”, przycisk „Rozpocznij Rytuał” oraz dwa komunikaty o samym haśle (nie wypowiedziano Litanii, Litania odrzucona). Okno jest wspólne z modułem `DataVault` i ma wyglądać oraz brzmieć identycznie.
+- Komunikaty o awarii infrastruktury (brak manifestu, brak połączenia z bramką, wygaśnięcie sesji), etykieta „Pomiń”, komunikat o dźwięku spoza warstwy publicznej i wszystkie komunikaty generatora manifestów są techniczne, także w oknie bramki.
 
 ---
 

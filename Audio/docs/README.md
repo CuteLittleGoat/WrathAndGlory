@@ -4,18 +4,12 @@
 
 `Audio` to panel do szybkiego odtwarzania efektów dźwiękowych podczas sesji.
 
-Moduł pozwala:
+Moduł ma dwa widoki:
 
-- odtwarzać przygotowane dźwięki,
-- uruchamiać dźwięki w pętli,
-- regulować głośność pojedynczych kafelków,
-- korzystać z widoku głównego przygotowanego przez prowadzącego,
-- przełączać się między listami ulubionych,
-- odblokować archiwum dźwięków chronionych jedną Litanią Dostępu,
-- w trybie admina tworzyć listy dźwięków,
-- dodawać aliasy do dźwięków,
-- filtrować dźwięki po tagach,
-- zapisać ustawienia lokalnie albo przez Firebase, jeżeli synchronizacja jest skonfigurowana.
+- **widok użytkownika** — do grania dźwięków w trakcie sesji: zakładki z listami, kafelki dźwięków, pętla, głośność;
+- **panel admina** — do przygotowania list: wybieranie dźwięków z katalogu, nadawanie aliasów, ustawianie kolejności, podgląd widoku użytkownika.
+
+Oba widoki działają w pełni na komputerze, tablecie i telefonie. Listy najwygodniej przygotowuje się na komputerze, ale każdą czynność można też wykonać na telefonie.
 
 ## Jak otworzyć moduł
 
@@ -25,28 +19,22 @@ Widok użytkownika:
 Audio/index.html
 ```
 
-Widok admina:
+Panel admina:
 
 ```text
 Audio/index.html?admin=1
 ```
 
-Widok użytkownika służy do prostego odtwarzania gotowych list.
-
-Widok admina służy do przygotowania widoku głównego, list ulubionych, aliasów i kolejności dźwięków.
-
 ## Dwie warstwy biblioteki
 
-Biblioteka dźwięków składa się z dwóch części i widać je na jednej wspólnej liście:
+Biblioteka dźwięków składa się z dwóch części:
 
 | Warstwa | Co zawiera | Czy wymaga hasła |
 | --- | --- | --- |
 | Demo | Darmowe dźwięki dostępne publicznie. | Nie. Działa od razu po otwarciu modułu. |
 | Archiwum | Dźwięki chronione prawami autorskimi. | Tak. Jednorazowa Litania Dostępu. |
 
-Po odblokowaniu archiwum obie warstwy mieszają się w jedną alfabetyczną listę. Nie musisz pamiętać, który dźwięk skąd pochodzi — po prostu klikasz.
-
-Dopóki archiwum jest zablokowane, widzisz wyłącznie warstwę demo. Jeżeli masz listy ulubionych zawierające dźwięki z archiwum, ich pozycje będą oznaczone jako „(brak w manifeście)” do czasu odblokowania. Kliknięcie takiej pozycji otwiera okno hasła.
+Po odblokowaniu archiwum obie warstwy łączą się w jedną bibliotekę. Dopóki archiwum jest zablokowane, dźwięki z archiwum zapisane na listach są widoczne jako przygaszone kafelki z kłódką i dopiskiem „(brak w manifeście)”. Nic nie znika — po odblokowaniu archiwum te kafelki zaczynają grać.
 
 ## Odblokowanie archiwum
 
@@ -54,19 +42,17 @@ Okno „Dostęp do danych z klauzulą tajności K.O.Z.A.” **pojawia się samo 
 
 Masz dwie możliwości:
 
-1. **Wpisz Litanię Dostępu** (hasło grupy) i kliknij `Rozpocznij Rytuał`. Okno zniknie, a lista dźwięków uzupełni się o całe archiwum.
-2. **Kliknij `Pomiń`.** Okno zniknie, a moduł będzie działał na samej warstwie demo. Nic się nie psuje — po prostu nie widzisz dźwięków chronionych.
+1. **Wpisz Litanię Dostępu** (hasło grupy) i kliknij `Rozpocznij Rytuał`. Okno zniknie, a biblioteka uzupełni się o archiwum.
+2. **Kliknij `Pomiń`** (albo naciśnij `Esc`). Okno zniknie, a moduł będzie działał na samej warstwie demo.
 
-**Hasło podajesz tylko raz na danym urządzeniu i sesja nie wygasa.** Nie pojawia się przy każdym odtworzeniu dźwięku. Możesz zamknąć przeglądarkę i wrócić za miesiąc — archiwum nadal będzie odblokowane. Dostęp znika dopiero wtedy, gdy wyczyścisz dane przeglądarki.
+**Hasło podajesz tylko raz na danym urządzeniu i sesja nie wygasa.** Dostęp znika dopiero wtedy, gdy wyczyścisz dane przeglądarki albo gdy administrator techniczny zmieni klucz podpisu bramki.
 
-Jeżeli klikniesz `Pomiń`, bramka nie wróci aż do zamknięcia karty. Gdy zmienisz zdanie w trakcie sesji, kliknij `Odblokuj archiwum`:
+Jeżeli klikniesz `Pomiń`, okno nie wróci aż do zamknięcia karty. Gdy zmienisz zdanie, kliknij przycisk odblokowania:
 
-- w widoku użytkownika — pod nawigacją po prawej stronie,
-- w widoku admina — na pasku narzędzi u góry.
+- w widoku użytkownika — przycisk z kłódką 🔒 w pasku u góry (na telefonie jest to sama kłódka),
+- w panelu admina — `Odblokuj archiwum` w nagłówku.
 
-Przycisk `Odblokuj archiwum` znika, gdy archiwum jest już odblokowane — nie ma czego odblokowywać. Nie ma osobnego przycisku blokowania: żeby zamknąć dostęp na danym urządzeniu, wyczyść dane witryny w przeglądarce.
-
-Bramka otwiera się też sama, gdy klikniesz na liście pozycję opisaną jako „(brak w manifeście)”. Taki wpis to prawie zawsze dźwięk z archiwum, więc zamiast milczeć, moduł od razu pyta o hasło i wyjaśnia, dlaczego.
+Przycisk odblokowania znika, gdy archiwum jest odblokowane. Okno otwiera się też samo po dotknięciu kafelka z kłódką — taki kafelek to prawie zawsze dźwięk z archiwum.
 
 ### Komunikaty w oknie bramki
 
@@ -76,146 +62,276 @@ Bramka otwiera się też sama, gdy klikniesz na liście pozycję opisaną jako �
 | Rozgniewany Duch Maszyny odpowiada: Litania Dostępu została odrzucona. | Hasło jest nieprawidłowe. | Sprawdź pisownię i spróbuj ponownie. |
 | Brak połączenia z bramką dostępu. Sprawdź internet oraz adres bramki w stałej AUDIO\_GATE\_BASE. | Przeglądarka w ogóle nie dodzwoniła się do bramki. | Sprawdź internet. Jeżeli problem się powtarza, zgłoś adminowi technicznemu. |
 | Sesja wygasła. Podaj hasło ponownie. | Bramka odrzuciła zapisany dostęp — najczęściej dlatego, że admin techniczny zmienił klucz podpisu. | Wpisz hasło ponownie. |
-| Ten dźwięk nie należy do warstwy publicznej. Odblokuj archiwum, aby go wczytać. | Kliknięto pozycję opisaną jako „(brak w manifeście)” przy zablokowanym archiwum. | Wpisz hasło albo kliknij `Pomiń`, jeżeli nie masz dostępu do archiwum. |
-| Bramka nie znalazła manifestu archiwum (HTTP 404)… | Hasło było poprawne, ale bramka nie widzi pliku manifestu. | Sprawdź, czy `audio-manifest.json` leży w katalogu głównym prywatnego repozytorium `AudioRPG` i czy nazwa zgadza się co do znaku. |
-| Nie udało się wczytać listy publicznej (HTTP 404)… | Hasło było poprawne, ale nie udało się pobrać pliku `AudioManifest.json`. **Najczęstsza przyczyna: przeglądarka trzyma starą wersję strony**, która szuka pliku pod nieaktualną nazwą. | Odśwież stronę z pominięciem pamięci podręcznej: `Ctrl+F5` (Windows) albo `Cmd+Shift+R` (Mac). Jeżeli to nie pomoże, sprawdź, czy `AudioManifest.json` jest w folderze `Audio`. |
-| Bramka dostępu odpowiedziała nieoczekiwanym kodem HTTP … | Bramka działa i odpowiedziała, ale odrzuciła samo logowanie. | Zgłoś adminowi technicznemu razem z kodem HTTP z komunikatu. |
-| Bramka dostępu odpowiedziała kodem HTTP … przy pobieraniu manifestu archiwum | Logowanie się udało, ale pobranie listy archiwum zwróciło błąd. | Zgłoś adminowi technicznemu razem z kodem HTTP z komunikatu. |
+| Ten dźwięk nie należy do warstwy publicznej. Odblokuj archiwum, aby go wczytać. | Dotknięto kafelka z kłódką przy zablokowanym archiwum. | Wpisz hasło albo kliknij `Pomiń`. |
+| Bramka nie znalazła manifestu archiwum (HTTP 404)… | Hasło było poprawne, ale bramka nie widzi pliku listy archiwum. | Sprawdź, czy `audio-manifest.json` leży w katalogu głównym prywatnego repozytorium `AudioRPG`. |
+| Nie udało się wczytać listy publicznej (HTTP 404)… | Nie udało się pobrać pliku `AudioManifest.json`. Najczęstsza przyczyna: przeglądarka trzyma starą wersję strony. | Odśwież stronę z pominięciem pamięci podręcznej: `Ctrl+F5` (Windows) albo `Cmd+Shift+R` (Mac). |
+| Bramka dostępu odpowiedziała nieoczekiwanym kodem HTTP … | Bramka działa, ale odrzuciła samo logowanie. | Zgłoś adminowi technicznemu razem z kodem HTTP. |
+| Bramka dostępu odpowiedziała kodem HTTP … przy pobieraniu manifestu archiwum | Logowanie się udało, ale pobranie listy archiwum zwróciło błąd. | Zgłoś adminowi technicznemu razem z kodem HTTP. |
 
-Dwa pierwsze komunikaty dotyczą samego hasła i są napisane językiem lore, tak samo jak w module `DataVault`. Pozostałe to diagnostyka techniczna i mówią wprost, co sprawdzić.
+Dwa pierwsze komunikaty dotyczą samego hasła i są napisane językiem lore, tak samo jak w module `DataVault`. Pozostałe to diagnostyka techniczna.
 
-Komunikat „Brak połączenia z bramką dostępu” pojawia się **wyłącznie wtedy, gdy przeglądarka w ogóle nie dodzwoniła się do bramki**. Jeżeli bramka odpowiedziała, ale coś innego poszło nie tak, zobaczysz komunikat opisujący tę konkretną rzecz razem z kodem HTTP. Nie musisz więc zgadywać, czy problem jest w internecie, w bramce, czy w plikach.
+---
 
 ## Widok użytkownika
 
-W zwykłym widoku bez `?admin=1` zobaczysz:
+### Pasek u góry
 
-- panel z dźwiękami,
-- nawigację po prawej stronie,
-- przycisk `Widok główny`,
-- przyciski list ulubionych,
-- kafelki dźwięków,
-- suwaki głośności,
-- przyciski `Loop`.
+Pasek zostaje u góry ekranu także podczas przewijania. Zawiera:
 
-Widok użytkownika jest najlepszy do prowadzenia sesji na żywo, kiedy chcesz szybko odpalić przygotowane dźwięki.
+- **zakładki list** — pierwsza jest zawsze lista główna (domyślnie „Widok główny”), dalej listy ulubionych w kolejności ustalonej w panelu admina. Aktywna zakładka jest podświetlona. Na telefonie i tablecie zakładki stoją w osobnym wierszu, który przesuwa się palcem w bok;
+- **czerwoną kropkę na zakładce** — na tej liście gra dźwięk. Dźwięki nie zatrzymują się po przejściu na inną listę, a kropka pokazuje, dokąd wrócić;
+- **`■ Zatrzymaj wszystko (N)`** — zatrzymuje od razu wszystkie grające dźwięki na wszystkich listach, także pętle. Liczba w nawiasie mówi, ile dźwięków gra. Gdy nic nie gra, przycisk jest nieaktywny. Na telefonie widać sam symbol `■` i liczbę;
+- **przycisk z kłódką** — odblokowanie archiwum (tylko gdy archiwum jest zablokowane).
 
-## Nawigacja użytkownika
+### Kafelek dźwięku
 
-Po prawej stronie znajduje się panel nawigacji.
+Każdy kafelek pokazuje:
 
-Możesz przełączać się między:
+- **nazwę dźwięku**,
+- **alias w nawiasie**, jeżeli na tej liście nadano alias — na przykład `Meltagun Reload (przeładowanie)`,
+- **czerwony licznik w nawiasie** `(5)`, jeżeli pod jedną nazwą jest kilka plików (przy każdym odtworzeniu losowany jest jeden z nich),
+- **jeden tag** — nazwę kolekcji, z której pochodzi dźwięk,
+- **suwak głośności** z wartością w procentach,
+- **przycisk `⟳ Loop`**.
 
-- `Widokiem głównym`,
-- listami ulubionych przygotowanymi w trybie admina.
+Bardzo długie nazwy są ucinane po trzech wierszach — pełną nazwę pokazuje dymek po najechaniu kursorem.
 
-Kliknięcie pozycji w nawigacji zmienia zestaw kafelków widoczny po lewej stronie.
+### Odtwarzanie
 
-## Kafelek dźwięku
+Dotknij albo kliknij **górną część kafelka** (ikonę, nazwę, alias lub tag), żeby odtworzyć dźwięk. Ponowne dotknięcie grającego kafelka go zatrzymuje. Kilka dźwięków może grać jednocześnie.
 
-Kafelek dźwięku może zawierać:
+Po czym poznać, że dźwięk gra:
 
-- nazwę dźwięku,
-- alias w nawiasie, jeżeli został ustawiony,
-- tag lub nazwę grupy,
-- suwak głośności,
-- przycisk `Loop` w widoku użytkownika.
+| Sygnał | Znaczenie |
+| --- | --- |
+| Ikona `▶` | Dźwięk jest gotowy do odtworzenia. |
+| Ikona `…`, przerywana ramka, napis „wczytywanie…” | Dźwięk się wczytuje (dźwięki z archiwum potrzebują chwili na autoryzację). Ponowne dotknięcie anuluje start. |
+| Ikona `■`, czerwona ramka z poświatą, czerwona nazwa | Dźwięk gra. |
+| Czerwony pasek pod nazwą | Postęp odtwarzania pliku. |
+| Kłódka, przygaszony kafelek, „(brak w manifeście)” | Dźwięk z zablokowanego archiwum albo dźwięk, którego nie ma już w bibliotece. |
 
-Kliknięcie nazwy dźwięku uruchamia odtwarzanie. Ponowne kliknięcie aktywnego dźwięku zatrzymuje go.
+### Loop
 
-## Odtwarzanie dźwięku
+`⟳ Loop` odtwarza dźwięk w pętli:
 
-Aby odtworzyć dźwięk:
+- kliknięcie `Loop` uruchamia pętlę; przycisk robi się czerwony,
+- jeżeli dźwięk już gra, kliknięcie `Loop` zamienia go w pętlę bez przerywania,
+- ponowne kliknięcie aktywnego `Loop` albo dotknięcie kafelka zatrzymuje pętlę,
+- przy dźwięku z kilkoma plikami każde kolejne okrążenie losuje plik i unika powtórzenia tego samego pliku dwa razy z rzędu.
 
-1. Otwórz `Audio/index.html`.
-2. Wybierz `Widok główny` albo listę ulubionych.
-3. Kliknij nazwę dźwięku.
-4. Kliknij ponownie, jeżeli chcesz go zatrzymać.
+### Głośność
 
-Możesz odtwarzać kilka dźwięków jednocześnie.
+Każdy kafelek ma własny suwak. Wartość obok suwaka jest w procentach: środek to `100%`, lewy koniec `0%` (cisza), prawy koniec `200%` (głośniej niż oryginał).
 
-## Głośność
+- Zmiana działa od razu, także na grający dźwięk i na kolejne okrążenia pętli.
+- **Dwukrotne kliknięcie (dotknięcie) wartości w procentach** przywraca `100%`.
+- Ustawiona głośność zostaje, gdy przechodzisz między zakładkami, ale **po odświeżeniu strony każdy kafelek wraca do 100%**.
 
-Każdy kafelek ma własny suwak głośności.
+### Ekran nie gaśnie w trakcie grania
 
-Suwak wpływa tylko na dany kafelek.
+Dopóki gra choć jeden dźwięk, moduł prosi przeglądarkę, żeby nie wygaszała ekranu (przydatne na tablecie leżącym na stole). Gdy nic nie gra, ekran wygasa normalnie. Jeżeli przeglądarka nie zna tej funkcji, nic się nie dzieje — dźwięki grają tak samo.
 
-Jeżeli dźwięk gra w pętli, kolejne powtórzenia używają aktualnej wartości suwaka.
+### Na telefonie i tablecie
 
-## Loop
+- Kafelki same układają się w tyle kolumn, ile mieści ekran: jedna na telefonie w pionie, kilka na tablecie, więcej na komputerze.
+- Przesuwanie suwaka nigdy nie uruchamia dźwięku — możesz spokojnie ustawiać głośność palcem.
+- Pierwsze dotknięcie dźwięku po otwarciu strony „odblokowuje” dźwięk w przeglądarce — tak działają wszystkie przeglądarki mobilne.
 
-`Loop` uruchamia dźwięk w pętli.
+---
 
-Zachowanie:
+## Panel admina
 
-- kliknięcie `Loop` uruchamia pętlę,
-- aktywny przycisk `Loop` jest wyróżniony,
-- po zakończeniu pliku moduł uruchamia kolejne odtworzenie,
-- ponowne kliknięcie aktywnego `Loop` zatrzymuje pętlę,
-- jeżeli dźwięk ma kilka wariantów, kolejne odtworzenia są losowane.
+### Jak jest zbudowany
 
-Pętla jest dostępna w prawdziwym widoku użytkownika. W adminowym podglądzie użytkownika przycisk `Loop` nie jest pokazywany.
+Panel pracuje od lewej do prawej:
 
-## Warianty dźwięku
+1. **Foldery** — drzewo folderów, z których pochodzą dźwięki (to są tagi). Służy do zawężania katalogu.
+2. **Katalog dźwięków** — wszystkie dźwięki biblioteki, z wyszukiwarką. Stąd dodajesz dźwięki do list.
+3. **Listy** — lista główna i listy ulubionych, a pod nimi **edytor** wybranej listy: kolejność dźwięków i aliasy.
 
-Niektóre dźwięki mogą mieć kilka wariantów.
+Na samym dole strony jest **podgląd widoku użytkownika**.
 
-Wtedy moduł pokazuje licznik wariantów przy nazwie dźwięku.
+Na komputerze wszystkie trzy części stoją obok siebie, a każda przewija się osobno. Na węższym ekranie foldery chowają się w wysuwanej szufladzie (przycisk `Foldery` w nagłówku katalogu). Na tablecie i telefonie u góry pojawiają się zakładki **`Katalog` / `Listy` / `Podgląd`** — każda pokazuje jedną część panelu. Wszystkie funkcje działają na każdym urządzeniu.
 
-Podczas odtwarzania wybierany jest jeden wariant. W trybie pętli moduł próbuje unikać natychmiastowego powtórzenia tego samego pliku, jeśli ma inną możliwość.
+### Lista docelowa i lista edytowana
 
-## Widok admina
+Jedna lista jest zawsze **wybrana do edycji** — jest podświetlona w panelu list, a jej wpisy pokazuje edytor. Ta sama lista jest **listą docelową**: to do niej trafiają dźwięki dodawane w katalogu przyciskiem `+`. Listę docelową widać i można ją zmienić także w nagłówku katalogu (pole „Lista docelowa”) — na telefonie nie trzeba przechodzić do zakładki `Listy`.
 
-Otwórz:
+### Nagłówek i menu „Narzędzia”
 
-```text
-Audio/index.html?admin=1
-```
+W nagłówku są pastylki statusów, przycisk `Odblokuj archiwum` (gdy archiwum jest zablokowane) i menu `Narzędzia ▾`:
 
-W widoku admina możesz:
+| Pozycja menu | Co robi |
+| --- | --- |
+| `Wczytaj manifest ponownie` | Ponownie pobiera listę dźwięków (warstwę demo zawsze, archiwum — jeżeli jest odblokowane). |
+| `Zbuduj manifesty z XLSX` | Zamienia skoroszyt `AudioManifest.xlsx` na dwa pliki list dźwięków (opis niżej). |
+| `Eksportuj ustawienia (JSON)` | Zapisuje w katalogu pobierania plik `audio-ustawienia-RRRR-MM-DD.json` z wszystkimi listami, kolejnością i aliasami. Plik jest kopią zapasową — nie zawiera hasła ani żadnych danych logowania. |
+| `Wczytaj ponownie z pamięci urządzenia` | Widoczne tylko, gdy moduł pracuje bez bazy. Wczytuje ustawienia zapisane w tej przeglądarce. |
+| `Wyczyść aliasy we wszystkich listach` | Po potwierdzeniu usuwa aliasy ze wszystkich list. Same listy i dźwięki zostają. |
 
-- wczytać manifest dźwięków,
-- filtrować listę SFX,
-- tworzyć listy ulubionych,
-- zmieniać nazwy list,
-- usuwać listy,
-- zmieniać kolejność list,
-- dodawać dźwięki do list,
-- dodawać dźwięki do widoku głównego,
-- zmieniać kolejność dźwięków w widoku głównym,
-- usuwać dźwięki z widoku głównego,
-- nadawać aliasy,
-- czyścić aliasy.
+### Statusy
 
-## Wczytanie manifestu
+| Status | Znaczenie |
+| --- | --- |
+| Manifest | Ile dźwięków jest wczytanych. `błąd listy publicznej` — nie udało się pobrać `AudioManifest.json` (najedź kursorem, żeby zobaczyć szczegół). |
+| Firebase | `oczekiwanie` — start; `połączono` — ustawienia są wspólne; `lokalne ustawienia` — ustawienia zostają w tej przeglądarce; `brak konfiguracji` — ta kopia modułu nie ma bazy. |
+| Listy | Ile jest list razem z listą główną. |
+| Archiwum | `zablokowane` — widać tylko warstwę demo (to stan poprawny); `odblokowane` — widać całą bibliotekę; `błąd wczytywania` — coś nie zadziałało (szczegół w dymku). |
+| Generator | `gotowy`, `przetwarzanie pliku`, `N publicznych / M chronionych` albo `błąd` (szczegół w dymku). |
 
-Przycisk `Wczytaj manifest` ponownie ładuje bazę dźwięków.
+Pastylki są zielone, gdy wszystko jest w porządku. Czerwona pastylka oznacza wyłącznie błąd.
 
-Moduł pobiera wtedy dwie listy:
+### Komunikaty pod nagłówkiem
 
-- listę warstwy demo z pliku `AudioManifest.json` — zawsze,
-- listę archiwum z bramki dostępu — tylko jeżeli archiwum jest odblokowane.
+| Komunikat | Znaczenie |
+| --- | --- |
+| Archiwum zablokowane — dźwięki z archiwum są widoczne na listach jako „(brak w manifeście)”. Nie zostaną usunięte. | Możesz spokojnie edytować listy — wpisy z archiwum i ich aliasy zostaną zachowane. Żeby widzieć je w katalogu, odblokuj archiwum. |
+| Zapisane listy są w starym formacie i zostały pominięte. Pierwsza zmiana zapisze ustawienia w nowym formacie. | W bazie leżą listy z wcześniejszej wersji modułu. Moduł ich nie wczytuje — listy przygotowuje się od nowa. Pierwsza zmiana (np. nowa lista) zastąpi stare dane. |
 
-Po poprawnym wczytaniu status manifestu pokazuje łączną liczbę pozycji.
+Każdy komunikat zamkniesz krzyżykiem.
 
-Jeżeli manifestu nie uda się wczytać, panel pokaże komunikat błędu. Gdy zawiedzie samo archiwum, warstwa demo i tak się załaduje — moduł nigdy nie zostaje całkiem pusty z powodu problemów z bramką.
+### Foldery
+
+Drzewo pokazuje foldery biblioteki. Przy każdym folderze jest pole wyboru, nazwa, liczba dźwięków i przycisk `tylko`.
+
+- **Pole zaznaczone** — dźwięki z tego folderu i wszystkich podfolderów są widoczne w katalogu.
+- **Pole puste** — dźwięki z tego folderu i podfolderów są ukryte.
+- **Pole z kreską (stan częściowy)** — część podfolderów jest widoczna, a część ukryta.
+- Kliknięcie pola ustawia ten sam stan dla folderu i **wszystkich** jego podfolderów. Kliknięcie pola z kreską zaznacza całość.
+- Możesz odznaczyć cały folder, a potem rozwinąć go i zaznaczyć jeden podfolder — katalog pokaże wtedy tylko ten podfolder.
+- Strzałka `▸` / `▾` rozwija i zwija folder, niezależnie od zaznaczenia.
+- `tylko` — pokazuje w katalogu wyłącznie ten folder (na komputerze przycisk pojawia się po najechaniu na wiersz).
+- Liczba `(12)` to liczba dźwięków w folderze; `(3/12)` oznacza, że widocznych jest 3 z 12.
+- Przyciski `Zaznacz wszystko`, `Odznacz wszystko`, `Rozwiń wszystko`, `Zwiń wszystko` działają na całe drzewo.
+
+**Szukaj folderu.** Wpisz fragment nazwy folderu — wielkość liter i polskie znaki nie mają znaczenia (`melta` znajdzie `Meltagun`). Drzewo pokaże pasujące foldery razem z folderami nadrzędnymi, a pasujący fragment zostanie wyróżniony. Wyszukiwanie zawęża tylko drzewo, nie katalog. Przy aktywnym wyszukiwaniu pojawiają się przyciski `Zaznacz pasujące`, `Odznacz pasujące` i `Tylko pasujące`. Pole nie ma przycisku czyszczenia — żeby wyłączyć wyszukiwanie, skasuj wpisany tekst.
+
+**Ukrywanie panelu.** Na komputerze przycisk `«` zwija panel do wąskiego paska z napisem `FOLDERY`; kliknięcie paska rozwija go z powrotem. Moduł pamięta to na tym urządzeniu. Na węższym ekranie panel otwiera się przyciskiem `Foldery` i zamyka krzyżykiem, `Esc` albo dotknięciem obok.
+
+### Niebieskie podświetlenie — filtr jest założony
+
+Tak samo jak w modułach `DataVault` i `GeneratorNPC`, **niebieski kolor oznacza, że widok jest zawężony**:
+
+| Co świeci na niebiesko | Kiedy |
+| --- | --- |
+| etykieta `Szukaj folderu` | wpisana fraza zawęża drzewo |
+| nagłówek `Foldery`, kropka na zwiniętym panelu i na przycisku `Foldery` | co najmniej jeden folder jest odznaczony |
+| etykieta `Szukaj dźwięku` | wpisana fraza zawęża katalog |
+| etykieta `Szukaj na liście` | wpisana fraza zawęża wpisy listy |
+| napis `Foldery: N z M` nad katalogiem | co najmniej jeden folder jest odznaczony |
+
+Najedź kursorem na niebieską etykietę, żeby zobaczyć wpisaną frazę. Sama spacja niczego nie zapala.
+
+### Katalog dźwięków
+
+Każdy wiersz katalogu to jeden dźwięk:
+
+| Element | Znaczenie |
+| --- | --- |
+| pole wyboru | zaznaczenie do dodania kilku dźwięków naraz |
+| `▶` / `■` | odsłuch; drugie kliknięcie zatrzymuje |
+| nazwa i czerwone `(N)` | nazwa z biblioteki i liczba plików pod tą nazwą |
+| ścieżka i nazwa pliku | skąd pochodzi dźwięk (ta sama nazwa bywa w dwóch folderach) |
+| `DEMO` / `ARCHIWUM` | warstwa biblioteki |
+| liczba w kółku | na ilu listach jest ten dźwięk; kliknięcie pokazuje pod wierszem nazwy list i aliasy |
+| `+` / `✓` | `+` dodaje dźwięk na koniec listy docelowej; `✓` znaczy, że dźwięk już na niej jest — kliknięcie go usuwa (jeżeli ma alias, moduł najpierw zapyta) |
+
+Katalog nie pokazuje aliasów przy nazwach, bo alias należy do listy. Aliasy widać w dymku liczby list.
+
+**Szukaj dźwięku** — szuka w nazwie, nazwie pliku, ścieżce folderu i aliasach nadanych na listach; wielkość liter i polskie znaki nie mają znaczenia.
+
+**Pokaż** — `wszystkie`, `spoza listy docelowej` (wygodne przy dodawaniu), `z listy docelowej`.
+
+**Warstwa** — `wszystkie`, `demo`, `archiwum`.
+
+**Dodawanie wielu dźwięków naraz:** zaznacz pola wyboru. Na komputerze kliknięcie pola z wciśniętym `Shift` zaznacza wszystkie wiersze pomiędzy, a `Ctrl` + kliknięcie w nazwę przełącza pojedynczy wiersz. `Zaznacz wszystkie wyniki` zaznacza wszystko, co pokazuje katalog (powyżej 50 dźwięków moduł zapyta). Na dole katalogu pojawi się pasek `Zaznaczone: N` z przyciskami `Dodaj do „nazwa listy”` i `Odznacz`.
+
+Katalog pokazuje naraz 200 wierszy; przycisk `Pokaż kolejne 200` doładowuje resztę.
+
+### Listy
+
+- **Lista główna** jest zawsze pierwsza, ma pinezkę 📌 i dopisek „lista główna”. Nie da się jej usunąć ani przesunąć. Jej nazwę można zmienić; pusta nazwa oznacza „Widok główny” (albo „Main view” w wersji angielskiej).
+- **`+ Nowa lista`** — tworzy listę na końcu i od razu otwiera pole nazwy. Wpisz nazwę i naciśnij `Enter`.
+- **Wybór listy** — kliknij nazwę listy; lista staje się edytowana i docelowa.
+- **Kolejność list** — przeciągnij listę za uchwyt `⠿` (myszą albo palcem) albo użyj strzałek `▲` `▼`. Nic nie da się postawić przed listą główną.
+- Może nie być żadnej listy ulubionych — lista główna jest zawsze.
+
+### Edytor listy
+
+Nad wpisami są: nazwa listy, przyciski `✎` (zmień nazwę), `⧉` (duplikuj listę), `🗑` (usuń listę — nie ma go przy liście głównej), liczba dźwięków i `Wyczyść aliasy tej listy`.
+
+- **Zmiana nazwy** — `✎` albo dwuklik na nazwie listy w panelu list. `Enter` zapisuje, `Esc` anuluje. Pusta nazwa listy ulubionych przywraca poprzednią.
+- **Duplikuj listę** — tworzy kopię z tymi samymi dźwiękami i aliasami, z dopiskiem „(kopia)”, zaraz za oryginałem.
+- **Usuń listę** — moduł zapyta o potwierdzenie i poda, ile dźwięków i aliasów ma lista.
+
+Każdy wpis na liście ma:
+
+- uchwyt `⠿`, numer pozycji, przycisk odsłuchu `▶`, nazwę z biblioteki i ścieżkę folderu,
+- **pole aliasu** — alias tylko na tej liście,
+- przyciski `⤒` (na początek), `▲` (w górę), `▼` (w dół), `⤓` (na koniec), `✕` (usuń z listy),
+- linię **„Na innych listach: …”**, jeżeli ten sam dźwięk jest też na innych listach — z ich aliasami.
+
+**Kolejność dźwięków** zmieniasz, przeciągając wpis za uchwyt `⠿` (myszą albo palcem) albo strzałkami. Każda zmiana zapisuje się od razu.
+
+**Szukaj na liście** — zawęża wpisy do pasujących nazw lub aliasów. Przy aktywnym wyszukiwaniu kolejności nie można zmieniać (moduł wyświetli podpowiedź) — skasuj tekst, żeby przesuwać dźwięki.
+
+**Wpis „(brak w manifeście)”** — dźwięk z zablokowanego archiwum albo dźwięk usunięty z biblioteki. Wpis i jego alias zostają zachowane; możesz go przesunąć, zmienić alias albo usunąć.
+
+### Aliasy
+
+Alias to własna nazwa pomocnicza dźwięku, na przykład `alarm świątyni` albo `wybuch daleko`. **Alias należy do listy**: ten sam dźwięk może mieć na każdej liście inny alias albo nie mieć go wcale.
+
+Przykład: dźwięk `X` na liście `Playlista01` nie ma aliasu, na `Playlista02` ma alias `X2`, a na `Playlista03` — `X3`. W widoku użytkownika zobaczysz odpowiednio `X`, `X (X2)` i `X (X3)`.
+
+Jak nadać alias:
+
+1. Wybierz listę w panelu list.
+2. W edytorze wpisz alias w pole przy dźwięku.
+3. Naciśnij `Enter` albo kliknij poza polem — alias się zapisze. `Esc` przywraca poprzednią wartość.
+
+Pole podpowiada aliasy, które ten dźwięk ma na innych listach. Najszybsza droga do wariantów tej samej listy: przygotuj jedną listę, zduplikuj ją `⧉` i zmień tylko aliasy.
+
+Usunięcie dźwięku z listy usuwa też jego alias na tej liście. Przesunięcie wpisu przenosi alias razem z nim.
+
+### Podgląd widoku użytkownika
+
+Na dole panelu (na tablecie i telefonie — w zakładce `Podgląd`) widać widok użytkownika dokładnie takim, jaki zobaczą gracze: z zakładkami, kafelkami, suwakami, `Loop` i `Zatrzymaj wszystko`. Dźwięki w podglądzie naprawdę grają.
+
+- **podąża za edytowaną listą** — gdy pole jest zaznaczone, podgląd pokazuje listę wybraną w edytorze, a kliknięcie zakładki w podglądzie wybiera tę listę do edycji. Gdy pole jest puste, zakładki w podglądzie przełączają tylko podgląd.
+- `Komputer` / `Tablet` / `Telefon` — pokazuje, jak widok ułoży się na danej szerokości. Przyciski węższych szerokości znikają, gdy okno jest zbyt wąskie, żeby je pokazać.
+- `Otwórz prawdziwy widok ↗` — otwiera widok użytkownika w nowej karcie, na zapisanych danych.
+- `Zwiń podgląd` / `Rozwiń podgląd` — chowa i pokazuje podgląd; moduł pamięta to na tym urządzeniu.
+
+### Skróty klawiszowe na komputerze
+
+| Klawisz | Działanie |
+| --- | --- |
+| `/` | Kursor w wyszukiwarce katalogu (gdy kursor nie stoi w innym polu). |
+| `Enter` | W polu aliasu lub nazwy listy — zapis. |
+| `Esc` | W polu aliasu lub nazwy — anulowanie; poza polami — zamknięcie menu `Narzędzia` albo szuflady folderów; w oknie bramki — tak samo jak `Pomiń`. |
+
+### Co moduł pamięta na tym urządzeniu
+
+Panel pamięta w tej przeglądarce: zwinięcie panelu folderów, rozwinięte foldery, ostatnio edytowaną listę, ustawienia podglądu i wybraną zakładkę. Filtry (odznaczone foldery, wpisane frazy, `Pokaż`, `Warstwa`) zostają do zamknięcia karty. To tylko wygoda — nie trafia do bazy i nie wpływa na innych.
+
+---
 
 ## Budowanie manifestów z pliku XLSX
 
-Lista dźwięków powstaje ze skoroszytu Excela `AudioManifest.xlsx`. Przycisk `Zbuduj manifesty z XLSX` na pasku narzędzi admina zamienia ten skoroszyt na dwa gotowe pliki JSON. Przebieg jest taki sam jak aktualizacja danych w module `DataVault`.
+Lista dźwięków powstaje ze skoroszytu Excela `AudioManifest.xlsx`. Pozycja `Narzędzia` → `Zbuduj manifesty z XLSX` zamienia ten skoroszyt na dwa gotowe pliki JSON.
 
 ### Jak to zrobić krok po kroku
 
-1. Otwórz moduł w widoku admina (adres z dopiskiem `?admin=1`).
-2. Zamknij okno hasła przyciskiem `Pomiń` albo wpisz Litanię Dostępu — dopóki okno jest otwarte, zasłania pasek narzędzi.
-3. Kliknij `Zbuduj manifesty z XLSX`.
-4. Otworzy się zwykłe okno wyboru pliku. Wskaż swój plik `AudioManifest.xlsx`.
-5. Poczekaj chwilę. Przeglądarka zapisze **dwa pliki** w Twoim katalogu pobierania (zwykle `C:\Users\<Ty>\Downloads`):
+1. Otwórz panel admina (`?admin=1`).
+2. Zamknij okno hasła przyciskiem `Pomiń` albo wpisz Litanię Dostępu.
+3. Otwórz menu `Narzędzia` i wybierz `Zbuduj manifesty z XLSX`.
+4. Wskaż swój plik `AudioManifest.xlsx`.
+5. Przeglądarka zapisze **dwa pliki** w katalogu pobierania:
    - `AudioManifest.json` — lista warstwy demo,
    - `audio-manifest.json` — lista archiwum.
 6. Pojawi się okienko z podsumowaniem: ile pozycji trafiło do każdej z list.
 
-Nic nie jest nigdzie wysyłane. Cała zamiana odbywa się w Twojej przeglądarce, na Twoim komputerze.
+Nic nie jest nigdzie wysyłane. Cała zamiana odbywa się w Twojej przeglądarce.
 
 ### Co zrobić z tymi plikami
 
@@ -224,8 +340,6 @@ Nic nie jest nigdzie wysyłane. Cała zamiana odbywa się w Twojej przeglądarce
 | `AudioManifest.json` | Do folderu `Audio` w repozytorium `WrathAndGlory` (tam, gdzie leży `index.html`). |
 | `audio-manifest.json` | Do katalogu głównego prywatnego repozytorium `AudioRPG`. Nazwa musi się zgadzać co do znaku. |
 
-Po skopiowaniu i wysłaniu zmian moduł zobaczy nową listę dźwięków.
-
 ### Jak musi wyglądać arkusz
 
 Arkusz musi mieć w pierwszym wierszu trzy nagłówki kolumn:
@@ -233,88 +347,71 @@ Arkusz musi mieć w pierwszym wierszu trzy nagłówki kolumn:
 | Kolumna | Co zawiera |
 | --- | --- |
 | `NazwaSampla` | Nazwa dźwięku pokazywana w module. |
-| `NazwaPliku` | Nazwa pliku audio, na przykład `Age_of_Sail-beat_to_quarters.ogg`. |
+| `NazwaPliku` | Nazwa pliku audio, na przykład `MeltagunReload.ogg`. |
 | `LinkDoFolderu` | Adres folderu, w którym leży plik. |
 
 Zasady:
 
 - **Kolejność kolumn nie ma znaczenia.**
-- **Dodatkowe kolumny są ignorowane.** Możesz trzymać w arkuszu własne notatki, kolumny robocze i formuły — generator ich nie czyta.
-- **Każda z trzech wymaganych kolumn może wystąpić tylko raz.** Dwie kolumny `NazwaSampla` to błąd, bo generator nie wie, którą wziąć.
-- O tym, czy dźwięk trafi do warstwy demo, czy do archiwum, decyduje adres w kolumnie `LinkDoFolderu`: adresy zawierające `/AudioExample/` idą do warstwy demo, pozostałe do archiwum.
+- **Dodatkowe kolumny są ignorowane.**
+- **Każda z trzech wymaganych kolumn może wystąpić tylko raz.**
+- O warstwie decyduje adres w `LinkDoFolderu`: adresy zawierające `/AudioExample/` idą do warstwy demo, pozostałe do archiwum.
 
 ### Komunikaty generatora
 
 | Komunikat | Co oznacza | Co zrobić |
 | --- | --- | --- |
-| Brak wymaganych kolumn: … | W pierwszym wierszu arkusza brakuje którejś z trzech kolumn. | Sprawdź pisownię nagłówków. Muszą brzmieć dokładnie `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`. |
-| Kolumny występujące więcej niż raz: … | Wymagana kolumna pojawia się w arkuszu dwa razy lub więcej. | Usuń albo przemianuj nadmiarową kolumnę. |
+| Brak wymaganych kolumn: … | W pierwszym wierszu brakuje którejś z trzech kolumn. | Nagłówki muszą brzmieć dokładnie `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`. |
+| Kolumny występujące więcej niż raz: … | Wymagana kolumna pojawia się dwa razy lub więcej. | Usuń albo przemianuj nadmiarową kolumnę. |
 | Arkusz nie zawiera żadnego wiersza z danymi. | W arkuszu jest sam nagłówek. | Uzupełnij dane. |
-| Wariantów warstwy chronionej bez ścieżki w repozytorium AudioRPG: N | Adres w kolumnie `LinkDoFolderu` nie prowadzi do repozytorium `AudioRPG`. | Popraw adresy w arkuszu. Żaden plik nie został zapisany. |
-| Nie udało się odczytać pliku XLSX… | Wskazany plik nie jest poprawnym skoroszytem. | Otwórz plik w Excelu i zapisz go ponownie jako `.xlsx`. |
-| Nie udało się wczytać biblioteki JSZip z sieci CDN… | Generator potrzebuje jednorazowo pobrać z internetu bibliotekę do rozpakowania skoroszytu. | Sprawdź połączenie z internetem i kliknij przycisk ponownie. |
+| Wariantów warstwy chronionej bez ścieżki w repozytorium AudioRPG: N | Adres w `LinkDoFolderu` nie prowadzi do repozytorium `AudioRPG`. | Popraw adresy. Żaden plik nie został zapisany. |
+| Nie udało się odczytać pliku XLSX… | Plik nie jest poprawnym skoroszytem. | Otwórz go w Excelu i zapisz ponownie jako `.xlsx`. |
+| Nie udało się wczytać biblioteki JSZip z sieci CDN… | Generator potrzebuje pobrać z internetu bibliotekę do rozpakowania skoroszytu. | Sprawdź internet i spróbuj ponownie. |
 
-Gdy pojawi się którykolwiek z tych błędów, **żaden plik nie zostaje zapisany**. Nie ma ryzyka, że nadpiszesz dobrą listę uszkodzoną.
+Przy każdym z tych błędów **żaden plik nie zostaje zapisany**.
 
 ## Dodawanie nowego dźwięku
 
-Dodanie dźwięku to zawsze te same cztery kroki. Jedyna różnica między dźwiękiem chronionym a publicznym to miejsce, w które wgrywasz plik, i adres, który wpisujesz w kolumnie `LinkDoFolderu`.
-
 ### Dwie zasady, których złamanie boli
-
-Przeczytaj to zanim otworzysz arkusz.
 
 **1. Nowe wiersze dopisuj na samym końcu arkusza. Nigdy w środku.**
 
-Listy ulubionych, główny widok i aliasy zapisane w Firebase nie pamiętają nazw dźwięków, tylko ich identyfikatory. Gdy ta sama nazwa dźwięku powtarza się w różnych folderach, identyfikator jest rozróżniany numerem wiersza w arkuszu — w obecnej bibliotece dotyczy to **133 pozycji**. Wstawienie jednego wiersza w środku przesuwa numery wszystkich wierszy poniżej, a razem z nimi te identyfikatory.
-
-Sprawdzone na Twoim arkuszu: dopisanie wiersza na końcu zmienia **0** identyfikatorów, a wstawienie tego samego wiersza w środku zmienia **123**. Każdy z tych 123 dźwięków wypadłby z zapisanych list i pokazałby się jako „(brak w manifeście)”.
+Listy zapisane w bazie nie pamiętają nazw dźwięków, tylko ich identyfikatory. Gdy ta sama nazwa powtarza się w różnych folderach, identyfikator jest rozróżniany numerem wiersza w arkuszu — w obecnej bibliotece dotyczy to **133 pozycji**. Wstawienie wiersza w środku przesuwa numery wierszy poniżej, a razem z nimi te identyfikatory. Sprawdzone na Twoim arkuszu: dopisanie wiersza na końcu zmienia **0** identyfikatorów, a wstawienie tego samego wiersza w środku zmienia **123**. Każdy z nich wypadłby z list i pokazał się jako „(brak w manifeście)”.
 
 **2. Nie zmieniaj `NazwaSampla` istniejącego dźwięku.**
 
-Identyfikator powstaje z tej nazwy, więc jej zmiana odwiązuje dźwięk od zapisanych list dokładnie tak samo. Jeżeli chcesz, żeby dźwięk wyświetlał się pod inną nazwą, użyj **aliasu** w panelu admina — alias zmienia to, co widać, i nie rusza identyfikatora.
+Identyfikator powstaje z tej nazwy. Jeżeli chcesz, żeby dźwięk wyświetlał się pod inną nazwą, nadaj mu **alias na liście** w panelu admina — alias zmienia to, co widać, i nie rusza identyfikatora.
 
-Zmiana `NazwaPliku` albo `LinkDoFolderu` istniejącego wiersza jest bezpieczna dla identyfikatora (zmienia tylko to, skąd moduł bierze plik i jakie dostaje tagi).
+Zmiana `NazwaPliku` albo `LinkDoFolderu` istniejącego wiersza jest bezpieczna dla identyfikatora.
 
 ### Krok 1 — wgraj plik audio
 
-Format: **`.ogg` albo `.mp3`**. Innych bramka nie wyda — plik w innym formacie po prostu się nie odtworzy.
+Format: **`.ogg` albo `.mp3`**.
 
-#### Wariant A — dźwięk chroniony
+- **Wariant A — dźwięk chroniony:** wgraj plik do **prywatnego repozytorium `AudioRPG`**, do folderu tematycznego, na przykład `PrivateFolder/PrivateSubFolder/`.
+- **Wariant B — dźwięk publiczny:** wgraj plik do **publicznego repozytorium `AudioExample`**, na przykład do `WH40k_Boltgun/Boltgun/`.
 
-Wgraj plik do **prywatnego repozytorium `AudioRPG`**, do folderu tematycznego, na przykład `TabletopAudio/Alien Starship SoundPad/`.
-
-#### Wariant B — dźwięk publiczny
-
-Wgraj plik do **publicznego repozytorium `AudioExample`**, na przykład do `WH40k_Boltgun/Boltgun/`.
-
-> **Dźwięki publiczne muszą leżeć właśnie w `AudioExample`, a nie na dowolnej innej stronie.** Są ku temu dwa niezależne powody. Po pierwsze, generator rozpoznaje warstwę publiczną po fragmencie `/AudioExample/` w adresie — plik spod innego adresu zostanie uznany za chroniony i budowanie manifestów zakończy się błędem. Po drugie, `AudioExample` leży pod tą samą domeną co sama aplikacja (`cutelittlegoat.github.io`), a plik audio z obcej domeny odtwarzałby się **bezgłośnie**, bez żadnego komunikatu o błędzie — to znana pułapka przeglądarek opisana w dokumentacji technicznej. Jeżeli kiedyś będziesz chciał hostować dźwięki publiczne gdzie indziej, daj znać: wymaga to zmiany w kodzie, a nie tylko w arkuszu.
+> **Dźwięki publiczne muszą leżeć właśnie w `AudioExample`.** Generator rozpoznaje warstwę publiczną po fragmencie `/AudioExample/` w adresie, a plik audio z obcej domeny odtwarzałby się bezgłośnie. Hostowanie dźwięków publicznych gdzie indziej wymaga zmiany w kodzie.
 
 ### Krok 2 — dopisz wiersz do `AudioManifest.xlsx`
 
-Otwórz arkusz i dopisz **na samym końcu** jeden wiersz na każdy plik audio.
+Dopisz **na samym końcu** jeden wiersz na każdy plik audio.
 
 | Kolumna | Wariant A (chroniony) | Wariant B (publiczny) |
 | --- | --- | --- |
-| `NazwaSampla` | `Acid Attack` | `Bolter Reload Fast` |
-| `NazwaPliku` | `Alien_Starship-acid_attack.ogg` | `BolterReloadFast.ogg` |
-| `LinkDoFolderu` | `https://cutelittlegoat.github.io/AudioRPG/TabletopAudio/Alien Starship SoundPad` | `https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun` |
+| `NazwaSampla` | `Przykładowy dźwięk` | `Bolter Reload Fast` |
+| `NazwaPliku` | `PrivateSound.ogg` | `BolterReloadFast.ogg` |
+| `LinkDoFolderu` | `https://cutelittlegoat.github.io/AudioRPG/PrivateFolder/PrivateSubFolder` | `https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun` |
 
-Uwagi do kolumn:
-
-- `NazwaSampla` to nazwa, którą zobaczysz w module. Może zawierać spacje i polskie znaki.
+- `NazwaSampla` może zawierać spacje i polskie znaki.
 - `NazwaPliku` musi się zgadzać z nazwą pliku **co do znaku**, razem z rozszerzeniem i wielkością liter.
-- `LinkDoFolderu` to adres **folderu**, bez nazwy pliku na końcu. Bez ukośnika na końcu (choć nadmiarowy ukośnik nie zaszkodzi).
+- `LinkDoFolderu` to adres **folderu**, bez nazwy pliku na końcu.
 
-> Przy wariancie A adres z kolumny `LinkDoFolderu` nigdzie nie prowadzi — repozytorium `AudioRPG` jest prywatne i nie ma opublikowanej strony. Ten adres służy wyłącznie generatorowi: wycina z niego ścieżkę do pliku wewnątrz repozytorium i buduje tagi. Wpisujesz go w tej formie tylko dlatego, że tak wygląda cały arkusz.
-
-Kolumny nadmiarowe w arkuszu możesz zostawić — generator ich nie czyta.
+> Przy wariancie A adres z kolumny `LinkDoFolderu` nigdzie nie prowadzi — repozytorium `AudioRPG` jest prywatne. Generator wycina z niego ścieżkę do pliku i buduje tagi.
 
 ### Krok 3 — zbuduj manifesty
 
-Otwórz moduł w widoku admina, kliknij `Zbuduj manifesty z XLSX` i wskaż zapisany arkusz. Szczegóły opisuje sekcja [Budowanie manifestów z pliku XLSX](#budowanie-manifestów-z-pliku-xlsx).
-
-W okienku podsumowania sprawdź liczby: powinny wzrosnąć dokładnie o tyle pozycji, ile dodałeś.
+`Narzędzia` → `Zbuduj manifesty z XLSX` i wskaż zapisany arkusz. Liczby w podsumowaniu powinny wzrosnąć dokładnie o tyle pozycji, ile dodałeś.
 
 ### Krok 4 — skopiuj wygenerowane pliki
 
@@ -323,27 +420,25 @@ W okienku podsumowania sprawdź liczby: powinny wzrosnąć dokładnie o tyle poz
 | `AudioManifest.json` | do folderu `Audio` w repozytorium `WrathAndGlory` |
 | `audio-manifest.json` | do katalogu głównego prywatnego repozytorium `AudioRPG` |
 
-**Kopiuj zawsze oba pliki**, nawet jeżeli dodałeś dźwięk tylko do jednej warstwy. Generator za każdym razem buduje obie listy od zera z całego arkusza, więc podmiana tylko jednego pliku rozjechałaby je względem siebie.
+**Kopiuj zawsze oba pliki** — generator buduje obie listy od zera z całego arkusza.
 
-Po wysłaniu zmian odśwież moduł. Nowy dźwięk powinien być widoczny na liście.
+### Skąd się biorą tagi i foldery
 
-### Skąd się biorą tagi
+Tagów nie wpisujesz — powstają ze ścieżki folderu w `LinkDoFolderu`. Każdy fragment ścieżki to jeden poziom drzewa folderów w panelu admina.
 
-Tagów nie wpisujesz ręcznie — powstają automatycznie ze ścieżki folderu w kolumnie `LinkDoFolderu`. Każdy fragment ścieżki to jeden poziom drzewa tagów.
+Przykład wariantu B: `.../AudioExample/WH40k_Boltgun/Boltgun` daje foldery `AudioExample` → `WH40k Boltgun` → `Boltgun`.
 
-Przykład wariantu B: adres `.../AudioExample/WH40k_Boltgun/Boltgun` daje tagi `AudioExample` → `WH40k Boltgun` → `Boltgun`.
+Reguły:
 
-Trzy reguły przy zamianie ścieżki na tagi:
+- fragment `AudioRPG` jest pomijany — dźwięki chronione zaczynają drzewo od pierwszego folderu wewnątrz repozytorium (w przykładzie `PrivateFolder`),
+- z nazw folderów wycinane są niektóre dopiski techniczne (lista w stałej `TAG_IGNORE_FRAGMENTS` w kodzie); jeżeli tag jest krótszy niż nazwa folderu, działa właśnie ta reguła,
+- podkreślniki i myślniki zamieniają się w spacje (`WH40k_Boltgun` → `WH40k Boltgun`).
 
-- fragment `AudioRPG` jest pomijany — dlatego dźwięki chronione zaczynają drzewo od `TabletopAudio`, a nie od nazwy repozytorium,
-- z nazw folderów wycinane są słowa `SoundPad` i `Patreon` (stąd `Alien Starship SoundPad` daje tag `Alien Starship`),
-- podkreślniki i myślniki zamieniają się w spacje (stąd `WH40k_Boltgun` daje tag `WH40k Boltgun`).
-
-Praktyczny wniosek: **jeżeli chcesz, żeby nowy dźwięk trafił pod istniejący tag, wgraj go do folderu, który już istnieje.** Nowy folder to nowy tag.
+Tag pokazywany na kafelku w widoku użytkownika to **drugi poziom** ścieżki — nazwa kolekcji (w przykładzie `WH40k Boltgun`).
 
 ### Kilka plików jako jedna pozycja
 
-Jeżeli chcesz, żeby kilka plików było jednym dźwiękiem, z którego moduł losuje przy każdym odtworzeniu (na przykład pięć wersji uderzenia), nadaj im **tę samą nazwę zakończoną numerem** i umieść w **tym samym folderze**:
+Jeżeli kilka plików ma być jednym dźwiękiem losowanym przy każdym odtworzeniu, nadaj im **tę samą nazwę zakończoną numerem** i umieść w **tym samym folderze**:
 
 ```text
 Bolter Projectile Impact Rock 01
@@ -351,246 +446,85 @@ Bolter Projectile Impact Rock 02
 Bolter Projectile Impact Rock 03
 ```
 
-Generator złoży je w jedną pozycję `Bolter Projectile Impact Rock` z licznikiem `(3)`. Warunek: co najmniej dwa takie wiersze w tym samym folderze. Pojedynczy dźwięk z numerem na końcu nazwy zostanie osobną pozycją i zachowa numer w nazwie.
+Generator złoży je w jedną pozycję `Bolter Projectile Impact Rock` z licznikiem `(3)`. Warunek: co najmniej dwa takie wiersze w tym samym folderze.
 
 ### Sprawdzenie po dodaniu
 
-1. Odśwież moduł i kliknij `Wczytaj manifest` — status powinien pokazać większą liczbę pozycji.
-2. Znajdź nowy dźwięk wyszukiwarką i odtwórz go.
-3. Przy dźwięku chronionym: jeżeli nie gra, sprawdź, czy plik naprawdę leży w `AudioRPG` pod ścieżką wynikającą z `LinkDoFolderu` i `NazwaPliku`, i czy rozszerzenie to `.ogg` albo `.mp3`.
-4. Sprawdź, czy Twoje dotychczasowe listy ulubionych wyglądają normalnie. Gdyby pojawiło się w nich dużo pozycji „(brak w manifeście)”, to znak, że wiersz trafił w środek arkusza zamiast na koniec — cofnij zmianę w arkuszu, przenieś wiersz na koniec i zbuduj manifesty ponownie.
+1. Odśwież moduł albo wybierz `Narzędzia` → `Wczytaj manifest ponownie` — status powinien pokazać większą liczbę pozycji.
+2. Znajdź nowy dźwięk wyszukiwarką katalogu i odsłuchaj go przyciskiem `▶`.
+3. Jeżeli dźwięk chroniony nie gra, sprawdź, czy plik leży w `AudioRPG` pod ścieżką wynikającą z `LinkDoFolderu` i `NazwaPliku`.
+4. Jeżeli na listach pojawiło się dużo wpisów „(brak w manifeście)”, wiersz trafił w środek arkusza — cofnij zmianę, przenieś wiersz na koniec i zbuduj manifesty ponownie.
 
-## Lista SFX w adminie
-
-Po wczytaniu manifestu zobaczysz listę dźwięków.
-
-Każdy wpis może pokazywać:
-
-- nazwę dźwięku,
-- alias,
-- tag,
-- nazwę pliku,
-- przycisk odtwarzania,
-- pole aliasu,
-- przycisk czyszczenia aliasu,
-- wybór listy docelowej,
-- przycisk dodania do listy.
-
-## Wyszukiwanie SFX
-
-Pole wyszukiwania SFX filtruje listę po nazwie.
-
-Używaj go, gdy znasz fragment nazwy dźwięku albo aliasu.
-
-## Filtrowanie tagów
-
-Panel tagów pozwala zawęzić listę dźwięków po grupach wynikających z folderów.
-
-Możesz:
-
-- zaznaczać i odznaczać tagi,
-- zwinąć panel tagów,
-- otworzyć popup filtra,
-- wyszukiwać tagi w popupie,
-- zaznaczyć wszystkie tagi,
-- wyczyścić zaznaczenie tagów.
-
-Filtry tagów wpływają tylko na listę SFX w panelu admina. Nie zmieniają widoku użytkownika ani zapisanych list.
-
-## Widok główny
-
-`Widok główny` to podstawowa lista dźwięków widoczna dla użytkownika po wejściu do modułu.
-
-Aby dodać dźwięk do widoku głównego:
-
-1. Wczytaj manifest.
-2. Znajdź dźwięk na liście SFX.
-3. W polu wyboru listy wybierz `Widok główny`.
-4. Kliknij `Dodaj do listy`.
-
-W panelu widoku głównego możesz później:
-
-- zmienić kolejność dźwięków,
-- usunąć dźwięk,
-- odsłuchać dźwięk,
-- ustawić jego głośność.
-
-## Listy ulubionych
-
-Listy ulubionych pozwalają przygotować zestawy dźwięków na konkretne sceny, lokacje albo sytuacje.
-
-Przykłady:
-
-- walka,
-- horror,
-- miasto,
-- ruiny,
-- statek,
-- tło ambientowe.
-
-Aby utworzyć listę:
-
-1. Kliknij `Nowa lista ulubionych`.
-2. Wpisz nazwę listy.
-3. Dodaj dźwięki z listy SFX.
-
-Listy można przesuwać, zmieniać ich nazwy i usuwać.
-
-## Dodawanie dźwięku do listy
-
-1. Znajdź dźwięk na liście SFX.
-2. Wybierz listę docelową z menu przy kafelku.
-3. Kliknij `Dodaj do listy`.
-4. Sprawdź panel list ulubionych.
-
-Ten sam dźwięk może występować w różnych listach.
-
-## Alias dźwięku
-
-Alias to własna nazwa pomocnicza.
-
-Przydaje się, gdy oryginalna nazwa pliku albo sampla jest mało czytelna.
-
-Przykłady aliasów:
-
-- `alarm świątyni`,
-- `korytarz techniczny`,
-- `zombie blisko`,
-- `wybuch daleko`.
-
-Alias pojawia się przy nazwie dźwięku w nawiasie.
-
-## Czyszczenie aliasów
-
-Możesz wyczyścić:
-
-- pojedynczy alias przy danym dźwięku,
-- wszystkie aliasy jednocześnie.
-
-Przycisk `Wyczyść wszystkie aliasy` usuwa wszystkie aliasy w module Audio po potwierdzeniu.
+---
 
 ## Zapis ustawień
 
-Ustawienia obejmują:
+Ustawienia to listy (z listą główną), kolejność dźwięków i aliasy.
 
-- listy ulubionych,
-- widok główny,
-- aliasy.
+- Jeżeli Firebase jest skonfigurowany i działa, ustawienia są wspólne dla wszystkich urządzeń.
+- Jeżeli nie — zapisują się w tej przeglądarce i działają tylko na tym urządzeniu.
+- Każda zmiana zapisuje się od razu — nie ma przycisku „Zapisz”.
+- Moduł czyta wyłącznie ustawienia w aktualnym formacie. Listy zapisane przez wcześniejszą wersję modułu są pomijane (panel admina pokaże wtedy komunikat) — przygotowuje się je od nowa.
 
-Jeżeli Firebase jest skonfigurowany i działa, ustawienia są synchronizowane przez Firestore.
+### Po aktualizacji modułu
 
-Jeżeli Firebase nie jest skonfigurowany albo nie działa, ustawienia zapisują się lokalnie w przeglądarce.
-
-Zapis lokalny działa tylko na tym urządzeniu i w tej przeglądarce.
+Zanim zaczniesz przygotowywać listy po aktualizacji modułu, na każdym urządzeniu, które używa Audio, zamknij stare karty modułu i otwórz go ponownie z pominięciem pamięci podręcznej (`Ctrl+F5`; na telefonie — zamknij kartę i otwórz ponownie). Stara wersja strony zostawiona w otwartej karcie mogłaby nadpisać nowe listy.
 
 ## Skąd wiesz, gdzie trafiają Twoje ustawienia
 
-U góry strony, po prawej stronie, stoi mała plakietka z kropką. Mówi ona jedno: gdzie trafiają
-zmiany, które właśnie robisz. Plakietka jest widoczna zawsze — i w widoku użytkownika, i w panelu
-admina — także wtedy, gdy wszystko działa.
+U góry strony, po prawej, stoi plakietka z kropką. Jest widoczna zawsze — w widoku użytkownika i w panelu admina.
 
 | Plakietka | Kolor | Co oznacza |
 | --- | --- | --- |
-| `Dane wspólne` | zielona | Listy, widok główny i aliasy trafiają do wspólnej bazy. Zobaczysz je na telefonie, na drugim komputerze i zobaczą je inni, którzy używają tej samej bazy. |
-| `Tylko to urządzenie` | żółta | Ustawienia zostają w tej przeglądarce. Na innym urządzeniu ich nie będzie. |
-| `Sprawdzanie połączenia` | szara | Moduł dopiero sprawdza łączność z bazą. Stan przejściowy, trwa chwilę po otwarciu modułu. |
-
-Jeżeli plakietka pokazuje `Tylko to urządzenie`, nie znaczy to, że Twoja praca przepadła — znaczy, że
-została na tym komputerze i nie pojechała dalej.
+| `Dane wspólne` | zielona | Listy i aliasy trafiają do wspólnej bazy. Zobaczysz je na innych urządzeniach. |
+| `Tylko to urządzenie` | żółta | Ustawienia zostają w tej przeglądarce. |
+| `Sprawdzanie połączenia` | szara | Moduł sprawdza łączność z bazą — stan przejściowy po otwarciu modułu. |
 
 ## Pasek u góry ekranu
 
-Kiedy zapis do bazy się nie uda, u góry ekranu pojawia się szeroki pasek. Pasek nie znika sam:
-zamykasz go krzyżykiem albo znika, gdy zapis wreszcie się powiedzie. To jest celowe — pastylka
-`Firebase: …` w nagłówku jest widoczna wyłącznie w panelu admina i zbyt łatwo ją przeoczyć.
+Gdy zapis do bazy się nie uda, u góry ekranu pojawia się szeroki pasek. Zamykasz go krzyżykiem albo znika, gdy zapis się powiedzie.
 
-Pasek ma dwa kolory:
-
-- **żółty** — pracujesz dalej, ale nie wspólnie. Zmiany zostają na tym urządzeniu;
+- **żółty** — pracujesz dalej, ale zmiany zostają na tym urządzeniu;
 - **czerwony** — coś nie zostało zapisane albo nie udało się wczytać ustawień.
 
-Pasek zawsze mówi trzy rzeczy: co się stało z danymi, dlaczego i co z tym zrobić. Na dole jest kod
-błędu — przyda się, gdybyś zgłaszał problem.
-
-## Statusy
-
-W adminie widoczne są statusy:
-
-| Status | Znaczenie |
-| --- | --- |
-| Manifest | Informuje, ile pozycji zostało wczytanych. Wartość `błąd listy publicznej` oznacza, że nie udało się pobrać pliku `AudioManifest.json`; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
-| Firebase | Informuje, czy moduł używa synchronizacji, czy ustawień lokalnych. |
-| Ulubione | Pokazuje liczbę list ulubionych. |
-| Archiwum | `zablokowane` — widać tylko warstwę demo. `odblokowane` — widać całą bibliotekę. `błąd wczytywania` — coś nie zadziałało; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
-| Generator | `gotowy` — generator manifestów czeka na plik. `przetwarzanie pliku` — trwa czytanie skoroszytu. `N publicznych / M chronionych` — manifesty zostały zbudowane. `błąd` — coś było nie tak z plikiem; najedź kursorem na pastylkę, żeby zobaczyć szczegół. |
-
-Pastylki statusów są zielone, gdy wszystko jest w porządku. Czerwona pastylka oznacza wyłącznie błąd. Zablokowane archiwum **nie** jest błędem, więc pozostaje zielone.
-
-## Dobre praktyki podczas sesji
-
-- Przed sesją przygotuj `Widok główny` z najczęściej używanymi dźwiękami.
-- Przygotuj kilka list tematycznych zamiast jednej bardzo długiej listy.
-- Nadawaj aliasy dźwiękom o mało czytelnych nazwach.
-- Przetestuj głośność najważniejszych dźwięków przed sesją.
-- Długie tła ambientowe uruchamiaj przez `Loop`.
-- Krótkie efekty odpalaj pojedynczym kliknięciem nazwy.
-- Nie zostawiaj zbyt wielu aktywnych pętli naraz, jeśli gracze mają rozumieć dialog.
+Pasek mówi, co się stało z danymi, dlaczego i co zrobić. Na dole jest kod błędu — przyda się przy zgłaszaniu problemu.
 
 ## Język interfejsu
 
-Moduł jest po polsku. Przełącznik języka polski/angielski istnieje w kodzie, ale jest ukryty
-i zwykły użytkownik go nie widzi. Cała warstwa tłumaczeń pozostaje aktywna.
-
-Aby pokazać przełącznik, wystarczy usunąć klasę `language-switcher--hidden` z kontenera `<div class="language-switcher language-switcher--hidden">` w pliku `Audio/index.html`.
-Nad tym elementem stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`, żeby łatwo było
-trafić we właściwe miejsce. Nic więcej nie trzeba zmieniać.
-
-W module Audio są **dwa** takie kontenery: jeden w widoku użytkownika i jeden w panelu admina.
-Jeżeli oba przełączniki mają być widoczne, klasę trzeba usunąć w obu miejscach.
+Moduł jest po polsku. Wersja angielska istnieje i działa, ale przełącznik języka jest ukryty. Żeby go pokazać, usuń klasę `language-switcher--hidden` z jedynego kontenera `<div class="language-switcher language-switcher--hidden">` w pliku `Audio/index.html` (nad nim stoi komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`). Przełącznik pojawi się wtedy w obu widokach.
 
 ## Potwierdzanie, że dane otwiera Twoja aplikacja
 
-Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym programem
-podszywającym się pod nią. Korzysta do tego z mechanizmu Google o nazwie reCAPTCHA.
-
-Dla Ciebie oznacza to dokładnie nic do zrobienia: nie pojawiają się żadne obrazki, żadne pytania
-„czy jesteś robotem" i żaden dodatkowy przycisk. Potwierdzenie odbywa się bez Twojego udziału.
-
-Jeżeli to potwierdzenie z jakiegoś powodu nie dojdzie do skutku — na przykład dodatek blokujący
-reklamy zatrzyma połączenie z Google albo sieć go nie przepuści — **moduł działa dalej normalnie**,
-dokładnie tak jak wcześniej. Ślad zostaje wyłącznie w oknie narzędzi dla programistów, jako
-informacja, że potwierdzenie zostało pominięte.
+Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znasz, a nie obcym programem. Korzysta z mechanizmu Google reCAPTCHA. Nic nie musisz robić — nie ma obrazków ani pytań. Jeżeli potwierdzenie się nie uda (np. przez dodatek blokujący reklamy), moduł działa dalej normalnie.
 
 ## Typowe komunikaty i co zrobić
 
 | Komunikat lub sytuacja | Co oznacza | Co zrobić |
 | --- | --- | --- |
-| Manifest: brak danych | Manifest nie został jeszcze wczytany albo nie zawiera pozycji. | Kliknij `Wczytaj manifest`. |
+| Manifest: brak danych | Lista dźwięków jeszcze się nie wczytała. | Poczekaj chwilę albo wybierz `Narzędzia` → `Wczytaj manifest ponownie`. |
 | Manifest: błąd wczytywania | Nie udało się pobrać listy dźwięków. | Odśwież stronę. Jeżeli błąd wraca, zgłoś adminowi technicznemu. |
-| Firebase: lokalne ustawienia | Moduł działa bez synchronizacji Firestore. | To normalne w trybie lokalnym; ustawienia zostaną w tej przeglądarce. |
-| Firebase: brak konfiguracji | Brakuje konfiguracji Firebase. | Zgłoś adminowi technicznemu, jeżeli potrzebna jest synchronizacja. |
-| Żółty pasek „Zapisano tylko na tym urządzeniu" | Baza odrzuciła zapis, więc zmiana została zapisana w tej przeglądarce. | Najczęstsza przyczyna to dodatek blokujący reklamy, który blokuje adres `google.com/recaptcha`. Wyłącz blokowanie dla tej strony i odśwież moduł. |
-| Czerwony pasek „Zmiana nie została zapisana" | Nie udało się zapisać nigdzie — ani w bazie, ani w przeglądarce. | Odśwież stronę i powtórz zmianę. Jeżeli to nie pomoże, zgłoś adminowi kod błędu z paska. |
-| Czerwony pasek „Nie udało się wczytać danych z bazy" | Moduł nie dostał ustawień i pokazuje to, co ma zapisane w tej przeglądarce. Wcześniej w takiej sytuacji listy ulubionych po prostu znikały bez słowa. | Jak wyżej: sprawdź dodatek blokujący, potem odśwież stronę. |
-| Żółty pasek „Zmiany (...) zostały właśnie zastąpione danymi z bazy" | Wcześniej pracowałeś bez połączenia z bazą, a teraz baza wróciła i nadpisała ustawienia. | Sprawdź listy i aliasy. Czego brakuje, dodaj ponownie — moduł celowo nie scala takich zmian sam, żeby nie skasować pracy z drugiego urządzenia. |
-| Żółty pasek „Moduł pracuje na pamięci tego urządzenia" | Ta kopia modułu nie ma konfiguracji bazy. | To ustawienie, a nie awaria. Jeżeli ustawienia mają być wspólne, poproś admina o konfigurację. |
-| Brak linku do pliku audio | Manifest nie ma poprawnego linku do pliku. | Sprawdź dany wpis w manifeście. |
-| Brak wyników po filtrze | Filtry ukryły wszystkie dźwięki. | Wyczyść wyszukiwarkę albo zaznacz tagi ponownie. |
-| Dźwięk z listy jest oznaczony jako brakujący | Lista zawiera dźwięk, którego nie ma w aktualnie wczytanej bibliotece. | Najczęściej to dźwięk z archiwum przy zablokowanym dostępie — kliknij tę pozycję, a moduł sam otworzy okno hasła. Jeżeli archiwum jest odblokowane, usuń wpis z listy. |
-| Moduł działa, ale w narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, moduł działa. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
+| Firebase: lokalne ustawienia | Moduł działa bez wspólnej bazy. | Ustawienia zostaną w tej przeglądarce. |
+| Firebase: brak konfiguracji | Ta kopia modułu nie ma bazy. | Zgłoś adminowi technicznemu, jeżeli ustawienia mają być wspólne. |
+| Żółty pasek „Zapisano tylko na tym urządzeniu” | Baza odrzuciła zapis. | Najczęściej blokuje go dodatek blokujący reklamy (adres `google.com/recaptcha`). Wyłącz blokowanie dla tej strony i odśwież moduł. |
+| Czerwony pasek „Zmiana nie została zapisana” | Nie zapisano nic — ani w bazie, ani w przeglądarce. | Odśwież stronę i powtórz zmianę; jeżeli nie pomoże, zgłoś kod błędu. |
+| Czerwony pasek „Nie udało się wczytać danych z bazy” | Moduł pokazuje to, co ma zapisane w tej przeglądarce. | Sprawdź dodatek blokujący, odśwież stronę. |
+| Żółty pasek „Zmiany (...) zostały właśnie zastąpione danymi z bazy” | Pracowałeś bez połączenia, a baza wróciła i nadpisała ustawienia. | Sprawdź listy i aliasy, brakujące dodaj ponownie. |
+| Puste listy po aktualizacji modułu | Listy z wcześniejszej wersji modułu są pomijane. | Przygotuj listy od nowa (komunikat w panelu admina to potwierdza). |
+| Kafelek z kłódką i „(brak w manifeście)” | Dźwięk z zablokowanego archiwum albo usunięty z biblioteki. | Dotknij kafelka i odblokuj archiwum; jeżeli archiwum jest odblokowane, usuń wpis z listy w panelu admina. |
+| Brak wyników w katalogu | Filtry ukryły wszystkie dźwięki. | Sprawdź niebieskie etykiety — skasuj frazę albo kliknij `Zaznacz wszystko` w folderach. |
+| „Brak linku do pliku audio w manifeście.” | Pozycja listy dźwięków nie ma poprawnego linku. | Sprawdź ten wiersz w arkuszu i zbuduj manifesty ponownie. |
+| Nie da się przeciągać list ani dźwięków | Nie wczytała się biblioteka przeciągania (np. brak internetu). | Użyj strzałek `▲` `▼` `⤒` `⤓` — działają zawsze. |
 
 ## Krótki workflow — przygotowanie sesji
 
-1. Otwórz `Audio/index.html?admin=1`.
-2. Kliknij `Odblokuj archiwum` i wpisz hasło grupy.
-3. Znajdź najważniejsze dźwięki przez wyszukiwarkę i tagi.
-4. Dodaj najczęstsze dźwięki do `Widoku głównego`.
-5. Utwórz listy tematyczne.
-6. Dodaj dźwięki do list.
-7. Nadaj aliasy trudnym nazwom.
-8. Sprawdź głośność.
-9. Otwórz `Audio/index.html` do prowadzenia sesji.
-10. Używaj `Loop` dla tła i kliknięć jednorazowych dla efektów.
+1. Otwórz `Audio/index.html?admin=1` i odblokuj archiwum.
+2. Wybierz listę główną i dodaj do niej najczęściej używane dźwięki: wyszukiwarka katalogu → `+`.
+3. Utwórz listy tematyczne (`+ Nowa lista`) i ułóż ich kolejność.
+4. Dodaj dźwięki do list — pojedynczo `+` albo kilka naraz przez pola wyboru.
+5. Ułóż kolejność dźwięków na listach i nadaj aliasy trudnym nazwom.
+6. Sprawdź wszystko w podglądzie na dole strony, także w trybie `Telefon`.
+7. Wyeksportuj ustawienia (`Narzędzia` → `Eksportuj ustawienia (JSON)`) jako kopię zapasową.
+8. Do prowadzenia sesji otwórz `Audio/index.html`; tło uruchamiaj przez `Loop`, efekty — dotknięciem kafelka.
 
 ---
 
@@ -600,18 +534,12 @@ informacja, że potwierdzenie zostało pominięte.
 
 `Audio` is a panel for quickly playing sound effects during a session.
 
-The module lets you:
+The module has two views:
 
-- play prepared sounds,
-- loop sounds,
-- adjust volume per tile,
-- use the main view prepared by the GM,
-- switch between favorite lists,
-- unlock the protected sound archive with a single Litany of Access,
-- create sound lists in admin mode,
-- add aliases to sounds,
-- filter sounds by tags,
-- save settings locally or through Firebase when synchronization is configured.
+- **user view** — for playing sounds during a session: list tabs, sound tiles, loop, volume;
+- **admin panel** — for preparing lists: picking sounds from the catalogue, giving aliases, setting the order, previewing the user view.
+
+Both views work fully on a computer, a tablet and a phone. Lists are most comfortable to prepare on a computer, but every action can also be done on a phone.
 
 ## How to open the module
 
@@ -621,28 +549,22 @@ User view:
 Audio/index.html
 ```
 
-Admin view:
+Admin panel:
 
 ```text
 Audio/index.html?admin=1
 ```
 
-User view is for simple playback of prepared lists.
-
-Admin view is for preparing the main view, favorite lists, aliases, and sound order.
-
 ## Two library tiers
 
-The sound library has two parts and both appear in one shared list:
+The sound library has two parts:
 
 | Tier | Contents | Password required |
 | --- | --- | --- |
 | Demo | Free sounds available publicly. | No. Works as soon as the module opens. |
 | Archive | Copyright-protected sounds. | Yes. One Litany of Access. |
 
-Once the archive is unlocked, both tiers merge into a single alphabetical list. You do not have to remember which sound comes from where — you just click.
-
-While the archive stays locked, only the demo tier is visible. Favorite lists containing archive sounds will show those entries as "missing from the manifest" until you unlock it. Clicking such an entry opens the password window.
+Once the archive is unlocked, both tiers merge into one library. While the archive stays locked, archive sounds saved on lists appear as dimmed tiles with a padlock and "(missing in manifest)". Nothing disappears — once the archive is unlocked those tiles start playing.
 
 ## Unlocking the archive
 
@@ -650,168 +572,296 @@ The window titled "Access to data classified under the K.O.Z.A. seal" **appears 
 
 You have two options:
 
-1. **Enter the Litany of Access** (the group password) and click `Begin the Rite`. The window closes and the sound list fills up with the whole archive.
-2. **Click `Skip`.** The window closes and the module runs on the demo tier alone. Nothing breaks — you simply do not see the protected sounds.
+1. **Enter the Litany of Access** (the group password) and click `Begin the Rite`. The window closes and the library fills up with the archive.
+2. **Click `Skip`** (or press `Esc`). The window closes and the module runs on the demo tier alone.
 
-**You enter the password only once per device and the session never expires.** It never appears while playing sounds. You can close the browser and come back a month later — the archive stays unlocked. Access disappears only when you clear your browser data.
+**You enter the password only once per device and the session never expires.** Access disappears only when you clear your browser data or when the technical admin rotates the gateway signing key.
 
-If you click `Skip`, the gate will not come back until you close the tab. Should you change your mind during a session, click `Unlock archive`:
+If you click `Skip`, the window will not come back until you close the tab. Should you change your mind, click the unlock button:
 
-- in user view — below the navigation on the right,
-- in admin view — on the toolbar at the top.
+- in the user view — the padlock 🔒 button in the top bar (on a phone it is the padlock alone),
+- in the admin panel — `Unlock archive` in the header.
 
-The `Unlock archive` button disappears once the archive is unlocked — there is nothing left to unlock. There is no separate lock button: to close access on a device, clear the site data in your browser.
+The unlock button disappears once the archive is unlocked. The window also opens on its own when you touch a padlock tile — such a tile is almost always an archive sound.
 
-The gate also opens on its own when you click a list entry described as "missing from the manifest". Such an entry is almost always an archive sound, so instead of staying silent the module asks for the password straight away and explains why.
-
-### Messages in the Rite window
+### Messages in the gate window
 
 | Message | Meaning | What to do |
 | --- | --- | --- |
 | The angered Machine Spirit replies: the Litany of Access has not been recited. | The password field was empty. | Type the password. |
 | The angered Machine Spirit replies: the Litany of Access was rejected. | The password is wrong. | Check the spelling and try again. |
-| Cannot reach the access gateway. Check your connection and the gateway address in the AUDIO\_GATE\_BASE constant. | The gateway is not responding. | Check your internet connection. If it keeps happening, contact your technical admin. |
+| Cannot reach the access gateway. Check your connection and the gateway address in the AUDIO\_GATE\_BASE constant. | The browser did not reach the gateway at all. | Check your connection. If it keeps happening, contact the technical admin. |
 | Session expired. Enter the password again. | The gateway rejected the stored access — usually because the technical admin rotated the signing key. | Enter the password again. |
-| This sound is not part of the public tier. Unlock the archive to load it. | You clicked an entry marked "missing from the manifest" while the archive was locked. | Enter the password, or click `Skip` if you have no archive access. |
-| The gateway could not find the archive manifest (HTTP 404)… | The password was correct but the gateway cannot see the manifest file. | Check that `audio-manifest.json` sits in the root of the private `AudioRPG` repository under exactly that name. |
-| Could not load the public list (HTTP 404)… | The password was correct but `AudioManifest.json` could not be fetched. **The most common cause: the browser is holding an old version of the page** that looks for the file under its previous name. | Reload the page bypassing the cache: `Ctrl+F5` (Windows) or `Cmd+Shift+R` (Mac). If that does not help, check that `AudioManifest.json` is in the `Audio` folder. |
-| The access gateway answered with an unexpected HTTP … | The gateway is running and answered, but it rejected the login itself. | Report it to your technical admin together with the HTTP code from the message. |
-| The access gateway answered with HTTP … while fetching the archive manifest | The login succeeded but fetching the archive list returned an error. | Report it to your technical admin together with the HTTP code from the message. |
+| This sound is not part of the public tier. Unlock the archive to load it. | A padlock tile was touched while the archive was locked. | Enter the password, or click `Skip`. |
+| The gateway could not find the archive manifest (HTTP 404)… | The password was correct but the gateway cannot see the archive list file. | Check that `audio-manifest.json` sits in the root of the private `AudioRPG` repository. |
+| Could not load the public list (HTTP 404)… | `AudioManifest.json` could not be fetched. The most common cause: the browser holds an old version of the page. | Reload bypassing the cache: `Ctrl+F5` (Windows) or `Cmd+Shift+R` (Mac). |
+| The access gateway answered with an unexpected HTTP … | The gateway is running but rejected the login itself. | Report it to the technical admin with the HTTP code. |
+| The access gateway answered with HTTP … while fetching the archive manifest | The login succeeded but fetching the archive list returned an error. | Report it to the technical admin with the HTTP code. |
 
-The first two messages concern the password itself and keep the lore wording, exactly as in the `DataVault` module. The rest are technical diagnostics and say plainly what to check.
+The first two messages concern the password itself and keep the lore wording, exactly as in `DataVault`. The rest are technical diagnostics.
 
-The "Cannot reach the access gateway" message appears **only when the browser failed to reach the gateway at all**. If the gateway answered but something else went wrong, you get a message describing that specific thing together with its HTTP code. You never have to guess whether the problem is your connection, the gateway, or the files.
+---
 
 ## User view
 
-In normal view without `?admin=1`, you will see:
+### The top bar
 
-- sound panel,
-- navigation on the right,
-- `Main view` button,
-- favorite list buttons,
-- sound tiles,
-- volume sliders,
-- `Loop` buttons.
+The bar stays at the top of the screen while you scroll. It holds:
 
-User view is best for live play when you want to trigger prepared sounds quickly.
+- **list tabs** — the main list always comes first (by default "Main view"), then the favourite lists in the order set in the admin panel. The active tab is highlighted. On a phone and a tablet the tabs sit in their own row that you swipe sideways;
+- **a red dot on a tab** — a sound is playing on that list. Sounds do not stop when you switch to another list, and the dot shows where to go back;
+- **`■ Stop all (N)`** — stops every playing sound on every list at once, loops included. The number says how many sounds are playing. When nothing plays, the button is inactive. On a phone only the `■` symbol and the number are shown;
+- **the padlock button** — unlocks the archive (only while the archive is locked).
 
-## User navigation
+### Sound tile
 
-The navigation panel is on the right.
+Each tile shows:
 
-You can switch between:
+- **the sound name**,
+- **the alias in parentheses**, if an alias was given on this list — for example `Meltagun Reload (reload)`,
+- **a red counter in parentheses** `(5)`, if several files share one name (one of them is picked at random on every play),
+- **one tag** — the name of the collection the sound comes from,
+- **a volume slider** with a percentage value,
+- **the `⟳ Loop` button**.
 
-- `Main view`,
-- favorite lists prepared in admin mode.
+Very long names are cut after three lines — hover the tile to see the full name.
 
-Clicking a navigation item changes the tile set visible on the left.
+### Playback
 
-## Sound tile
+Touch or click **the upper part of the tile** (icon, name, alias or tag) to play a sound. Touching a playing tile again stops it. Several sounds can play at the same time.
 
-A sound tile can contain:
+How to tell that a sound is playing:
 
-- sound name,
-- alias in parentheses when set,
-- tag or group name,
-- volume slider,
-- `Loop` button in user view.
+| Signal | Meaning |
+| --- | --- |
+| `▶` icon | The sound is ready to play. |
+| `…` icon, dashed frame, "loading…" | The sound is loading (archive sounds need a moment for authorisation). Touching again cancels the start. |
+| `■` icon, red glowing frame, red name | The sound is playing. |
+| Red bar below the name | Playback progress of the file. |
+| Padlock, dimmed tile, "(missing in manifest)" | A sound from the locked archive, or a sound no longer in the library. |
 
-Clicking the sound name starts playback. Clicking the active sound again stops it.
+### Loop
 
-## Playing a sound
+`⟳ Loop` plays a sound in a loop:
 
-To play a sound:
+- clicking `Loop` starts the loop; the button turns red,
+- if the sound is already playing, clicking `Loop` turns it into a loop without interrupting it,
+- clicking the active `Loop` again, or touching the tile, stops the loop,
+- for a sound with several files each lap picks a file at random and avoids playing the same file twice in a row.
 
-1. Open `Audio/index.html`.
-2. Choose `Main view` or a favorite list.
-3. Click the sound name.
-4. Click again if you want to stop it.
+### Volume
 
-Several sounds can play at the same time.
+Every tile has its own slider. The value next to it is a percentage: the middle is `100%`, the left end `0%` (silence), the right end `200%` (louder than the original).
 
-## Volume
+- A change takes effect at once, also on a playing sound and on later loop laps.
+- **Clicking (tapping) the percentage value twice** restores `100%`.
+- The level you set stays while you switch tabs, but **after reloading the page every tile is back at 100%**.
 
-Each tile has its own volume slider.
+### The screen stays on while playing
 
-The slider affects only that tile.
+While at least one sound plays, the module asks the browser not to turn the screen off (useful with a tablet lying on the table). When nothing plays, the screen turns off as usual. If the browser does not know this feature, nothing happens — sounds play the same.
 
-If a sound is looping, later loop iterations use the current slider value.
+### On a phone and a tablet
 
-## Loop
+- Tiles arrange themselves in as many columns as the screen fits: one on a phone held upright, several on a tablet, more on a computer.
+- Moving a slider never starts a sound — you can adjust the volume with a finger safely.
+- The first touch of a sound after opening the page "unlocks" audio in the browser — every mobile browser works this way.
 
-`Loop` starts a sound in loop mode.
+---
 
-Behavior:
+## Admin panel
 
-- clicking `Loop` starts looping,
-- active `Loop` button is highlighted,
-- after the file ends, the module starts another playback,
-- clicking active `Loop` again stops the loop,
-- if the sound has several variants, later playbacks are randomized.
+### How it is laid out
 
-Loop is available in the real user view. It is not shown in the admin user-preview panel.
+The panel works from left to right:
 
-## Sound variants
+1. **Folders** — the tree of folders the sounds come from (these are the tags). It narrows the catalogue.
+2. **Sound catalogue** — every sound in the library, with a search box. This is where you add sounds to lists.
+3. **Lists** — the main list and the favourite lists, with the **editor** of the selected list below them: sound order and aliases.
 
-Some sounds can have several variants.
+At the very bottom of the page there is the **user view preview**.
 
-The module then shows a variant counter next to the sound name.
+On a computer all three parts sit side by side, each scrolling on its own. On a narrower screen the folders hide in a slide-out drawer (the `Folders` button in the catalogue header). On a tablet and a phone the **`Catalogue` / `Lists` / `Preview`** tabs appear at the top — each shows one part of the panel. Every function works on every device.
 
-During playback, one variant is selected. In loop mode, the module tries to avoid immediately repeating the same file when another option exists.
+### Target list and edited list
 
-## Admin view
+One list is always **selected for editing** — it is highlighted in the lists panel and the editor shows its entries. The same list is the **target list**: sounds added in the catalogue with the `+` button go there. The target list is also shown and can be changed in the catalogue header (the "Target list" field) — on a phone you do not have to switch to the `Lists` tab.
 
-Open:
+### Header and the "Tools" menu
 
-```text
-Audio/index.html?admin=1
-```
+The header holds the status pills, the `Unlock archive` button (while the archive is locked) and the `Tools ▾` menu:
 
-In admin view you can:
+| Menu item | What it does |
+| --- | --- |
+| `Reload manifest` | Fetches the sound list again (the demo tier always, the archive if unlocked). |
+| `Build manifests from XLSX` | Turns the `AudioManifest.xlsx` workbook into two sound list files (described below). |
+| `Export settings (JSON)` | Saves an `audio-settings-YYYY-MM-DD.json` file with every list, the order and the aliases into your downloads folder. The file is a backup — it holds no password or login data. |
+| `Reload from this device's storage` | Visible only when the module runs without the database. Loads the settings saved in this browser. |
+| `Clear aliases on all lists` | After confirmation removes the aliases from every list. The lists and sounds stay. |
 
-- load the sound manifest,
-- filter the SFX list,
-- create favorite lists,
-- rename lists,
-- remove lists,
-- reorder lists,
-- add sounds to lists,
-- add sounds to the main view,
-- reorder sounds in the main view,
-- remove sounds from the main view,
-- assign aliases,
-- clear aliases.
+### Statuses
 
-## Loading the manifest
+| Status | Meaning |
+| --- | --- |
+| Manifest | How many sounds are loaded. `public list error` — `AudioManifest.json` could not be fetched (hover for the detail). |
+| Firebase | `waiting` — start-up; `connected` — settings are shared; `local settings` — settings stay in this browser; `missing configuration` — this module copy has no database. |
+| Lists | How many lists there are, the main list included. |
+| Archive | `locked` — only the demo tier is visible (a healthy state); `unlocked` — the whole library is visible; `load error` — something failed (detail in the tooltip). |
+| Builder | `ready`, `processing file`, `N public / M protected` or `error` (detail in the tooltip). |
 
-`Load manifest` reloads the sound database.
+The pills are green when everything is fine. A red pill means an error and nothing else.
 
-The module then fetches two lists:
+### Notices below the header
 
-- the demo tier list from `AudioManifest.json` — always,
-- the archive list from the access gateway — only when the archive is unlocked.
+| Notice | Meaning |
+| --- | --- |
+| The archive is locked — archive sounds appear on lists as "(missing in manifest)". They will not be removed. | You can edit lists safely — archive entries and their aliases are kept. To see them in the catalogue, unlock the archive. |
+| The saved lists use the old format and were skipped. The first change will save the settings in the new format. | The database holds lists from an earlier module version. The module does not load them — lists are prepared from scratch. The first change (e.g. a new list) replaces the old data. |
 
-After successful loading, manifest status shows the total item count.
+Close any notice with the cross.
 
-If the manifest cannot be loaded, the panel shows an error message. When only the archive fails, the demo tier still loads — the module never goes completely empty because of gateway trouble.
+### Folders
+
+The tree shows the library folders. Each folder has a checkbox, a name, a sound count and an `only` button.
+
+- **Checked box** — sounds from this folder and all its subfolders are visible in the catalogue.
+- **Empty box** — sounds from this folder and its subfolders are hidden.
+- **Box with a dash (mixed state)** — some subfolders are visible and some hidden.
+- Clicking a box sets the same state for the folder and **all** its subfolders. Clicking a dashed box checks the whole folder.
+- You can clear a whole folder, then expand it and check one subfolder — the catalogue then shows that subfolder only.
+- The `▸` / `▾` arrow expands and collapses a folder, independently of the checkbox.
+- `only` — shows only this folder in the catalogue (on a computer the button appears when you hover the row).
+- `(12)` is the number of sounds in the folder; `(3/12)` means 3 of 12 are visible.
+- `Select all`, `Clear all`, `Expand all`, `Collapse all` act on the whole tree.
+
+**Search folders.** Type part of a folder name — letter case and Polish diacritics do not matter (`melta` finds `Meltagun`). The tree shows the matching folders together with their parent folders, and the matching fragment is highlighted. The search narrows only the tree, not the catalogue. While searching, the `Select matches`, `Clear matches` and `Matches only` buttons appear. The field has no clear button — delete the typed text to switch the search off.
+
+**Hiding the panel.** On a computer the `«` button collapses the panel into a narrow strip labelled `FOLDERS`; clicking the strip expands it again. The module remembers this on the device. On a narrower screen the panel opens with the `Folders` button and closes with the cross, `Esc`, or a touch outside it.
+
+### Blue highlight — a filter is on
+
+Just like in `DataVault` and `GeneratorNPC`, **blue means the view is narrowed**:
+
+| What glows blue | When |
+| --- | --- |
+| the `Search folders` label | the typed phrase narrows the tree |
+| the `Folders` title, the dot on the collapsed panel and on the `Folders` button | at least one folder is cleared |
+| the `Search sounds` label | the typed phrase narrows the catalogue |
+| the `Search this list` label | the typed phrase narrows the list entries |
+| the `Folders: N of M` text above the catalogue | at least one folder is cleared |
+
+Hover a blue label to see the typed phrase. A lone space lights nothing up.
+
+### Sound catalogue
+
+Each catalogue row is one sound:
+
+| Element | Meaning |
+| --- | --- |
+| checkbox | selection for adding several sounds at once |
+| `▶` / `■` | preview; a second click stops it |
+| name and red `(N)` | the library name and the number of files under that name |
+| path and file name | where the sound comes from (the same name can exist in two folders) |
+| `DEMO` / `ARCHIVE` | the library tier |
+| number in a circle | on how many lists the sound is; clicking it shows the list names and aliases below the row |
+| `+` / `✓` | `+` adds the sound to the end of the target list; `✓` means it is already there — clicking removes it (if it has an alias, the module asks first) |
+
+The catalogue does not show aliases next to names, because an alias belongs to a list. Aliases are shown in the list-count tooltip.
+
+**Search sounds** — searches the name, file name, folder path and aliases given on lists; letter case and Polish diacritics do not matter.
+
+**Show** — `all`, `not on the target list` (handy when adding), `on the target list`.
+
+**Tier** — `all`, `demo`, `archive`.
+
+**Adding several sounds at once:** tick the checkboxes. On a computer, clicking a checkbox with `Shift` held selects every row in between, and `Ctrl` + click on a name toggles a single row. `Select all results` selects everything the catalogue shows (above 50 sounds the module asks first). A `Selected: N` bar appears at the bottom of the catalogue with the `Add to "list name"` and `Clear selection` buttons.
+
+The catalogue shows 200 rows at a time; the `Show 200 more` button loads the rest.
+
+### Lists
+
+- **The main list** always comes first, has a pin 📌 and the "main list" label. It cannot be deleted or moved. It can be renamed; an empty name means "Main view" ("Widok główny" in Polish).
+- **`+ New list`** — creates a list at the end and opens the name field right away. Type a name and press `Enter`.
+- **Choosing a list** — click its name; it becomes the edited and target list.
+- **List order** — drag a list by the `⠿` handle (mouse or finger) or use the `▲` `▼` arrows. Nothing can be placed before the main list.
+- There may be no favourite lists at all — the main list always exists.
+
+### List editor
+
+Above the entries: the list name, the `✎` (rename), `⧉` (duplicate list) and `🗑` (delete list — not shown for the main list) buttons, the sound count and `Clear this list's aliases`.
+
+- **Rename** — `✎`, or double-click the list name in the lists panel. `Enter` saves, `Esc` cancels. An empty name for a favourite list restores the previous one.
+- **Duplicate list** — creates a copy with the same sounds and aliases, marked "(copy)", right after the original.
+- **Delete list** — the module asks for confirmation and says how many sounds and aliases the list has.
+
+Every list entry has:
+
+- the `⠿` handle, the position number, the `▶` preview button, the library name and the folder path,
+- **the alias field** — the alias on this list only,
+- the `⤒` (to top), `▲` (up), `▼` (down), `⤓` (to bottom) and `✕` (remove from list) buttons,
+- the **"On other lists: …"** line when the same sound is also on other lists — with their aliases.
+
+**Sound order** is changed by dragging an entry by its `⠿` handle (mouse or finger) or with the arrows. Every change is saved at once.
+
+**Search this list** — narrows the entries to matching names or aliases. While searching the order cannot be changed (the module shows a hint) — delete the text to move sounds.
+
+**A "(missing in manifest)" entry** — a sound from the locked archive or one removed from the library. The entry and its alias are kept; you can move it, change the alias or remove it.
+
+### Aliases
+
+An alias is your own helper name for a sound, for example `temple alarm` or `distant explosion`. **An alias belongs to a list**: the same sound can have a different alias on every list, or none at all.
+
+Example: sound `X` on the list `Playlista01` has no alias, on `Playlista02` it has the alias `X2`, and on `Playlista03` — `X3`. In the user view you will see `X`, `X (X2)` and `X (X3)` respectively.
+
+How to give an alias:
+
+1. Choose the list in the lists panel.
+2. In the editor type the alias into the field next to the sound.
+3. Press `Enter` or click outside the field — the alias is saved. `Esc` restores the previous value.
+
+The field suggests the aliases this sound has on other lists. The quickest way to variants of the same list: prepare one list, duplicate it with `⧉` and change only the aliases.
+
+Removing a sound from a list also removes its alias on that list. Moving an entry carries the alias along.
+
+### User view preview
+
+At the bottom of the panel (on a tablet and a phone — in the `Preview` tab) you see the user view exactly as players will: with tabs, tiles, sliders, `Loop` and `Stop all`. Sounds in the preview really play.
+
+- **follows the edited list** — when ticked, the preview shows the list selected in the editor, and clicking a tab in the preview selects that list for editing. When cleared, the preview tabs switch only the preview.
+- `Desktop` / `Tablet` / `Phone` — shows how the view lays out at that width. Narrower widths disappear when the window is too narrow to show them.
+- `Open the real view ↗` — opens the user view in a new tab, on the saved data.
+- `Collapse preview` / `Expand preview` — hides and shows the preview; the module remembers this on the device.
+
+### Keyboard shortcuts on a computer
+
+| Key | Action |
+| --- | --- |
+| `/` | Moves the cursor to the catalogue search (when the cursor is not in another field). |
+| `Enter` | In the alias or list name field — save. |
+| `Esc` | In the alias or name field — cancel; outside fields — close the `Tools` menu or the folder drawer; in the gate window — same as `Skip`. |
+
+### What the module remembers on this device
+
+The panel remembers in this browser: whether the folder panel is collapsed, the expanded folders, the last edited list, the preview settings and the selected tab. Filters (cleared folders, typed phrases, `Show`, `Tier`) stay until the tab is closed. This is a convenience only — it never reaches the database and does not affect anyone else.
+
+---
 
 ## Building the manifests from an XLSX file
 
-The sound list is produced from the `AudioManifest.xlsx` Excel workbook. The `Build manifests from XLSX` button on the admin toolbar turns that workbook into two ready JSON files. The flow matches the data update in the `DataVault` module.
+The sound list is produced from the `AudioManifest.xlsx` Excel workbook. `Tools` → `Build manifests from XLSX` turns that workbook into two ready JSON files.
 
 ### Step by step
 
-1. Open the module in admin view (the address with `?admin=1`).
-2. Close the password window with `Skip`, or enter the Litany of Access — while the window is open it covers the toolbar.
-3. Click `Build manifests from XLSX`.
-4. A normal file picker opens. Point it at your `AudioManifest.xlsx` file.
-5. Wait a moment. The browser saves **two files** into your downloads folder (usually `C:\Users\<You>\Downloads`):
+1. Open the admin panel (`?admin=1`).
+2. Close the password window with `Skip`, or enter the Litany of Access.
+3. Open the `Tools` menu and choose `Build manifests from XLSX`.
+4. Point it at your `AudioManifest.xlsx` file.
+5. The browser saves **two files** into your downloads folder:
    - `AudioManifest.json` — the demo tier list,
    - `audio-manifest.json` — the archive list.
-6. A summary box appears telling you how many items went into each list.
+6. A summary box shows how many items went into each list.
 
-Nothing is uploaded anywhere. The whole conversion happens in your browser, on your computer.
+Nothing is uploaded anywhere. The whole conversion happens in your browser.
 
 ### What to do with those files
 
@@ -820,97 +870,78 @@ Nothing is uploaded anywhere. The whole conversion happens in your browser, on y
 | `AudioManifest.json` | Into the `Audio` folder of the `WrathAndGlory` repository (next to `index.html`). |
 | `audio-manifest.json` | Into the root of the private `AudioRPG` repository, under exactly that name. |
 
-Once copied and pushed, the module will see the new sound list.
-
 ### What the sheet must look like
 
-The first row of the sheet must contain three column headers:
+The first row must contain three column headers:
 
 | Column | What it holds |
 | --- | --- |
 | `NazwaSampla` | The sound name shown in the module. |
-| `NazwaPliku` | The audio file name, for example `Age_of_Sail-beat_to_quarters.ogg`. |
+| `NazwaPliku` | The audio file name, for example `MeltagunReload.ogg`. |
 | `LinkDoFolderu` | The address of the folder holding the file. |
 
 Rules:
 
 - **Column order does not matter.**
-- **Extra columns are ignored.** You can keep your own notes, working columns and formulas in the sheet — the builder does not read them.
-- **Each of the three required columns may appear only once.** Two `NazwaSampla` columns is an error, because the builder cannot tell which one to use.
-- Whether a sound lands in the demo tier or the archive is decided by the address in `LinkDoFolderu`: addresses containing `/AudioExample/` go to the demo tier, everything else to the archive.
+- **Extra columns are ignored.**
+- **Each of the three required columns may appear only once.**
+- The tier is decided by the address in `LinkDoFolderu`: addresses containing `/AudioExample/` go to the demo tier, everything else to the archive.
 
 ### Builder messages
 
 | Message | Meaning | What to do |
 | --- | --- | --- |
-| Missing required columns: … | One of the three columns is absent from the sheet's first row. | Check the header spelling. They must read exactly `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`. |
+| Missing required columns: … | One of the three columns is absent from the first row. | The headers must read exactly `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu`. |
 | Columns present more than once: … | A required column appears twice or more. | Remove or rename the duplicate column. |
 | The sheet contains no data rows. | The sheet holds only a header. | Fill in the data. |
-| Protected tier variants without a path in the AudioRPG repository: N | An address in `LinkDoFolderu` does not point at the `AudioRPG` repository. | Fix the addresses in the sheet. No file was saved. |
-| Could not read the XLSX file… | The selected file is not a valid workbook. | Open it in Excel and save it again as `.xlsx`. |
-| Could not load the JSZip library from the CDN… | The builder needs a one-off download of the library that unpacks the workbook. | Check your internet connection and click the button again. |
+| Protected tier variants without a path in the AudioRPG repository: N | An address in `LinkDoFolderu` does not point at the `AudioRPG` repository. | Fix the addresses. No file was saved. |
+| Could not read the XLSX file… | The file is not a valid workbook. | Open it in Excel and save it again as `.xlsx`. |
+| Could not load the JSZip library from the CDN… | The builder needs to download the library that unpacks the workbook. | Check your connection and try again. |
 
-When any of these errors appears, **no file is saved**. There is no risk of overwriting a good list with a broken one.
+With any of these errors **no file is saved**.
 
 ## Adding a new sound
 
-Adding a sound is always the same four steps. The only difference between a protected and a public sound is where you upload the file and what you write in the `LinkDoFolderu` column.
-
 ### Two rules worth reading first
-
-Read these before you open the spreadsheet.
 
 **1. Add new rows at the very end of the sheet. Never in the middle.**
 
-Favorite lists, the main view and aliases saved in Firebase do not remember sound names, only their identifiers. When the same sound name repeats across different folders, the identifier is disambiguated by the row number in the spreadsheet — in the current library that affects **133 entries**. Inserting one row in the middle shifts the numbering of every row below it, and those identifiers along with it.
-
-Verified on your own spreadsheet: appending a row at the end changes **0** identifiers, while inserting the same row in the middle changes **123**. Each of those 123 sounds would drop out of saved lists and show up as "(missing in manifest)".
+Lists saved in the database do not remember sound names, only their identifiers. When the same name repeats across folders, the identifier is disambiguated by the row number — in the current library that affects **133 entries**. Inserting a row in the middle shifts the row numbers below it, and those identifiers along with them. Verified on your own spreadsheet: appending a row at the end changes **0** identifiers, inserting the same row in the middle changes **123**. Each of them would drop out of the lists and show up as "(missing in manifest)".
 
 **2. Do not change the `NazwaSampla` of an existing sound.**
 
-The identifier is derived from that name, so changing it unbinds the sound from saved lists in exactly the same way. If you want a sound displayed under a different name, use an **alias** in the admin panel — an alias changes what you see and leaves the identifier alone.
+The identifier is derived from that name. If you want a sound shown under a different name, give it an **alias on a list** in the admin panel — an alias changes what you see and leaves the identifier alone.
 
-Changing `NazwaPliku` or `LinkDoFolderu` on an existing row is safe for the identifier (it only changes where the module fetches the file from and which tags it gets).
+Changing `NazwaPliku` or `LinkDoFolderu` on an existing row is safe for the identifier.
 
 ### Step 1 — upload the audio file
 
-Format: **`.ogg` or `.mp3`**. The gateway serves nothing else — a file in another format simply will not play.
+Format: **`.ogg` or `.mp3`**.
 
-#### Option A — protected sound
+- **Option A — protected sound:** upload the file to the **private `AudioRPG` repository**, into a thematic folder, for example `PrivateFolder/PrivateSubFolder/`.
+- **Option B — public sound:** upload the file to the **public `AudioExample` repository**, for example into `WH40k_Boltgun/Boltgun/`.
 
-Upload the file to the **private `AudioRPG` repository**, into a thematic folder, for example `TabletopAudio/Alien Starship SoundPad/`.
-
-#### Option B — public sound
-
-Upload the file to the **public `AudioExample` repository**, for example into `WH40k_Boltgun/Boltgun/`.
-
-> **Public sounds must live in `AudioExample` and not on some other website.** There are two independent reasons. First, the builder recognises the public tier by the `/AudioExample/` fragment in the address — a file from any other address is treated as protected and the build fails with an error. Second, `AudioExample` sits on the same domain as the application itself (`cutelittlegoat.github.io`), and an audio file from a foreign domain would play **silently**, with no error message at all — a known browser trap described in the technical documentation. If you ever want to host public sounds elsewhere, say so: that needs a code change, not just a spreadsheet change.
+> **Public sounds must live in `AudioExample`.** The builder recognises the public tier by the `/AudioExample/` fragment in the address, and an audio file from a foreign domain would play silently. Hosting public sounds elsewhere needs a code change.
 
 ### Step 2 — add a row to `AudioManifest.xlsx`
 
-Open the spreadsheet and add **at the very end** one row per audio file.
+Add **at the very end** one row per audio file.
 
 | Column | Option A (protected) | Option B (public) |
 | --- | --- | --- |
-| `NazwaSampla` | `Acid Attack` | `Bolter Reload Fast` |
-| `NazwaPliku` | `Alien_Starship-acid_attack.ogg` | `BolterReloadFast.ogg` |
-| `LinkDoFolderu` | `https://cutelittlegoat.github.io/AudioRPG/TabletopAudio/Alien Starship SoundPad` | `https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun` |
+| `NazwaSampla` | `Example Sound` | `Bolter Reload Fast` |
+| `NazwaPliku` | `PrivateSound.ogg` | `BolterReloadFast.ogg` |
+| `LinkDoFolderu` | `https://cutelittlegoat.github.io/AudioRPG/PrivateFolder/PrivateSubFolder` | `https://cutelittlegoat.github.io/AudioExample/WH40k_Boltgun/Boltgun` |
 
-Notes on the columns:
-
-- `NazwaSampla` is the name you will see in the module. Spaces and non-ASCII characters are fine.
+- `NazwaSampla` may contain spaces and non-ASCII characters.
 - `NazwaPliku` must match the file name **character for character**, including the extension and letter case.
-- `LinkDoFolderu` is the address of the **folder**, without the file name at the end. No trailing slash (though a stray one does no harm).
+- `LinkDoFolderu` is the address of the **folder**, without the file name at the end.
 
-> With Option A the address in `LinkDoFolderu` leads nowhere — the `AudioRPG` repository is private and has no published site. That address serves the builder only: it cuts the in-repository file path out of it and builds the tags from it. You write it in this form purely because that is how the whole spreadsheet looks.
-
-You can leave any extra columns in the sheet — the builder does not read them.
+> With Option A the address in `LinkDoFolderu` leads nowhere — the `AudioRPG` repository is private. The builder cuts the file path out of it and builds the tags.
 
 ### Step 3 — build the manifests
 
-Open the module in admin view, click `Build manifests from XLSX` and select the saved spreadsheet. The details are in [Building the manifests from an XLSX file](#building-the-manifests-from-an-xlsx-file).
-
-Check the counts in the summary box: they should grow by exactly the number of entries you added.
+`Tools` → `Build manifests from XLSX` and select the saved spreadsheet. The counts in the summary should grow by exactly the number of entries you added.
 
 ### Step 4 — copy the generated files
 
@@ -919,27 +950,25 @@ Check the counts in the summary box: they should grow by exactly the number of e
 | `AudioManifest.json` | into the `Audio` folder of the `WrathAndGlory` repository |
 | `audio-manifest.json` | into the root of the private `AudioRPG` repository |
 
-**Always copy both files**, even when you added a sound to only one tier. The builder rebuilds both lists from scratch out of the whole spreadsheet every time, so replacing just one of them would leave the two out of step.
+**Always copy both files** — the builder rebuilds both lists from scratch out of the whole spreadsheet.
 
-After pushing the changes, refresh the module. The new sound should appear in the list.
+### Where tags and folders come from
 
-### Where the tags come from
+You never type tags — they come from the folder path in `LinkDoFolderu`. Each path segment is one level of the folder tree in the admin panel.
 
-You never type tags — they are derived automatically from the folder path in `LinkDoFolderu`. Each path segment becomes one level of the tag tree.
+Option B example: `.../AudioExample/WH40k_Boltgun/Boltgun` yields the folders `AudioExample` → `WH40k Boltgun` → `Boltgun`.
 
-Option B example: the address `.../AudioExample/WH40k_Boltgun/Boltgun` yields the tags `AudioExample` → `WH40k Boltgun` → `Boltgun`.
+Rules:
 
-Three rules apply when turning a path into tags:
+- the `AudioRPG` segment is dropped — protected sounds start their tree at the first folder inside the repository (`PrivateFolder` in the example),
+- some technical suffixes are stripped from folder names (the list lives in the `TAG_IGNORE_FRAGMENTS` constant in the code); if a tag is shorter than its folder name, this is the rule at work,
+- underscores and hyphens turn into spaces (`WH40k_Boltgun` → `WH40k Boltgun`).
 
-- the `AudioRPG` segment is dropped — which is why protected sounds start their tree at `TabletopAudio` rather than at the repository name,
-- the words `SoundPad` and `Patreon` are stripped from folder names (so `Alien Starship SoundPad` yields the tag `Alien Starship`),
-- underscores and hyphens turn into spaces (so `WH40k_Boltgun` yields the tag `WH40k Boltgun`).
-
-The practical consequence: **if you want a new sound to land under an existing tag, upload it into a folder that already exists.** A new folder means a new tag.
+The tag shown on a user view tile is the **second level** of the path — the collection name (`WH40k Boltgun` in the example).
 
 ### Several files as one entry
 
-If you want several files to act as a single sound the module picks from at random on each playback (five versions of an impact, say), give them **the same name ending in a number** and put them in **the same folder**:
+If several files should act as one sound picked at random on every play, give them **the same name ending in a number** and put them in **the same folder**:
 
 ```text
 Bolter Projectile Impact Rock 01
@@ -947,243 +976,82 @@ Bolter Projectile Impact Rock 02
 Bolter Projectile Impact Rock 03
 ```
 
-The builder folds them into one entry, `Bolter Projectile Impact Rock`, with a `(3)` counter. The condition is at least two such rows in the same folder. A single sound with a trailing number stays its own entry and keeps the number in its name.
+The builder folds them into one entry, `Bolter Projectile Impact Rock`, with a `(3)` counter. The condition is at least two such rows in the same folder.
 
 ### Checking your work
 
-1. Refresh the module and click `Load manifest` — the status should show a higher item count.
-2. Find the new sound with the search box and play it.
-3. For a protected sound: if it does not play, check that the file really sits in `AudioRPG` under the path implied by `LinkDoFolderu` and `NazwaPliku`, and that the extension is `.ogg` or `.mp3`.
-4. Check that your existing favorite lists still look normal. If a lot of "(missing in manifest)" entries appear in them, the row landed in the middle of the spreadsheet instead of at the end — undo the spreadsheet change, move the row to the end and build the manifests again.
+1. Reload the module or choose `Tools` → `Reload manifest` — the status should show a higher item count.
+2. Find the new sound with the catalogue search and preview it with `▶`.
+3. If a protected sound does not play, check that the file sits in `AudioRPG` under the path implied by `LinkDoFolderu` and `NazwaPliku`.
+4. If many "(missing in manifest)" entries appear on lists, the row landed in the middle of the spreadsheet — undo it, move the row to the end and build the manifests again.
 
-## Admin SFX list
-
-After loading the manifest, you will see the sound list.
-
-Each entry can show:
-
-- sound name,
-- alias,
-- tag,
-- filename,
-- play button,
-- alias field,
-- clear alias button,
-- target list selector,
-- add-to-list button.
-
-## Searching SFX
-
-The SFX search field filters the list by name.
-
-Use it when you know part of the sound name or alias.
-
-## Tag filtering
-
-The tag panel narrows sounds by folder-derived groups.
-
-You can:
-
-- check and uncheck tags,
-- collapse the tag panel,
-- open the filter popup,
-- search tags in the popup,
-- select all tags,
-- clear tag selection.
-
-Tag filters affect only the admin SFX list. They do not change user view or saved lists.
-
-## Main view
-
-`Main view` is the basic sound list visible to the user after opening the module.
-
-To add a sound to the main view:
-
-1. Load manifest.
-2. Find the sound in the SFX list.
-3. In the target list selector, choose `Main view`.
-4. Click `Add to list`.
-
-In the main view panel you can later:
-
-- reorder sounds,
-- remove sound,
-- preview sound,
-- set its volume.
-
-## Favorite lists
-
-Favorite lists let you prepare sound sets for specific scenes, locations, or situations.
-
-Examples:
-
-- combat,
-- horror,
-- city,
-- ruins,
-- ship,
-- ambient background.
-
-To create a list:
-
-1. Click `New favorites list`.
-2. Enter list name.
-3. Add sounds from the SFX list.
-
-Lists can be reordered, renamed, and removed.
-
-## Adding sound to a list
-
-1. Find a sound in the SFX list.
-2. Choose target list from the menu on the tile.
-3. Click `Add to list`.
-4. Check the favorite list panel.
-
-The same sound can appear in multiple lists.
-
-## Sound alias
-
-Alias is your own helper name.
-
-It is useful when the original file or sample name is hard to read.
-
-Alias examples:
-
-- `temple alarm`,
-- `technical corridor`,
-- `zombie nearby`,
-- `distant explosion`.
-
-Alias appears next to the sound name in parentheses.
-
-## Clearing aliases
-
-You can clear:
-
-- one alias for one sound,
-- all aliases at once.
-
-`Clear all aliases` removes all aliases in the Audio module after confirmation.
+---
 
 ## Saving settings
 
-Settings include:
+Settings are the lists (the main list included), the sound order and the aliases.
 
-- favorite lists,
-- main view,
-- aliases.
+- If Firebase is configured and works, the settings are shared across all devices.
+- If not, they are saved in this browser and work on this device only.
+- Every change is saved at once — there is no "Save" button.
+- The module reads settings in the current format only. Lists saved by an earlier module version are skipped (the admin panel then shows a notice) — they are prepared from scratch.
 
-If Firebase is configured and works, settings are synchronized through Firestore.
+### After a module update
 
-If Firebase is not configured or does not work, settings are saved locally in the browser.
-
-Local save works only on that device and in that browser.
+Before you start preparing lists after a module update, on every device that uses Audio close the old module tabs and open it again bypassing the cache (`Ctrl+F5`; on a phone — close the tab and open it again). An old page version left open in a tab could overwrite the new lists.
 
 ## How you know where your settings go
 
-At the top of the page, on the right, there is a small badge with a dot. It says one thing: where
-the changes you are making right now are going. The badge is always visible — both in the user view
-and in the admin panel — including when everything works.
+At the top of the page, on the right, there is a badge with a dot. It is always visible — in the user view and in the admin panel.
 
 | Badge | Colour | Meaning |
 | --- | --- | --- |
-| `Shared data` | green | Lists, main view, and aliases go to the shared database. You will see them on your phone, on a second computer, and so will everyone else using the same database. |
-| `This device only` | amber | Settings stay in this browser. They will not be on another device. |
-| `Checking connection` | grey | The module is still checking the database connection. A transient state lasting a moment after the module opens. |
-
-If the badge shows `This device only`, it does not mean your work is gone — it means it stayed on
-this computer and went no further.
+| `Shared data` | green | Lists and aliases go to the shared database. You will see them on other devices. |
+| `This device only` | amber | Settings stay in this browser. |
+| `Checking connection` | grey | The module is checking the database connection — a transient state after opening. |
 
 ## The bar at the top of the screen
 
-When a write to the database fails, a wide bar appears at the top of the screen. The bar never
-disappears on its own: you close it with the cross, or it disappears once a write finally succeeds.
-That is deliberate — the `Firebase: …` pill in the header is visible in the admin panel only and is
-far too easy to miss.
+When a write to the database fails, a wide bar appears at the top of the screen. Close it with the cross, or it disappears once a write succeeds.
 
-The bar comes in two colours:
-
-- **amber** — you can keep working, but not together. Changes stay on this device;
+- **amber** — you keep working, but changes stay on this device;
 - **red** — something was not saved, or settings could not be loaded.
 
-The bar always says three things: what happened to the data, why, and what to do about it. At the
-bottom there is an error code — useful if you report the problem.
-
-## Statuses
-
-Admin view shows statuses:
-
-| Status | Meaning |
-| --- | --- |
-| Manifest | How many items have been loaded. A `public list error` value means `AudioManifest.json` could not be fetched; hover the pill for the detail. |
-| Firebase | Whether the module uses synchronization or local settings. |
-| Favorites | Number of favorite lists. |
-| Archive | `locked` — only the demo tier is visible. `unlocked` — the whole library is visible. `load error` — something failed; hover the pill for the detail. |
-
-Status pills are green when everything is fine. A red pill means an error and nothing else. A locked archive is **not** an error, so it stays green.
-
-## Session best practices
-
-- Before the session, prepare `Main view` with the most commonly used sounds.
-- Prepare several thematic lists instead of one very long list.
-- Use aliases for sounds with unclear names.
-- Test key sound volumes before play starts.
-- Use `Loop` for long ambient backgrounds.
-- Use one-click playback for short effects.
-- Do not leave too many loops running if players need to hear dialogue.
+The bar says what happened to the data, why and what to do. At the bottom there is an error code — useful when reporting a problem.
 
 ## Interface language
 
-The module runs in Polish. A Polish/English language selector exists in the code but is hidden, so
-a regular user never sees it. The whole translation layer stays active.
-
-To reveal the selector, remove the `language-switcher--hidden` class from the `<div class="language-switcher language-switcher--hidden">` container in `Audio/index.html`.
-A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits right above that element, so the
-spot is easy to find. Nothing else needs to change.
-
-The Audio module has **two** such containers: one in the user view and one in the admin panel.
-If both selectors are to be visible, the class has to be removed in both places.
+The module runs in Polish. The English version exists and works, but the language switcher is hidden. To show it, remove the `language-switcher--hidden` class from the only `<div class="language-switcher language-switcher--hidden">` container in `Audio/index.html` (a `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` comment sits above it). The switcher then appears in both views.
 
 ## Confirming that your application is the one opening the data
 
-On start-up the module confirms in the background that it is the application you know and not a
-foreign program impersonating it. It uses a Google mechanism called reCAPTCHA for that.
-
-For you this means exactly nothing to do: no images appear, no "are you a robot" questions and no
-extra button. The confirmation happens without your involvement.
-
-If for some reason the confirmation does not go through — for example an ad blocker stops the
-connection to Google, or the network does not let it through — **the module keeps working
-normally**, exactly as before. The only trace is a note in the browser developer tools saying the
-confirmation was skipped.
+On start-up the module confirms in the background that it is the application you know and not a foreign program. It uses Google reCAPTCHA. You do not have to do anything — there are no images or questions. If the confirmation fails (for example because of an ad blocker), the module keeps working normally.
 
 ## Common messages and what to do
 
 | Message or situation | Meaning | What to do |
 | --- | --- | --- |
-| Manifest: no data | Manifest has not loaded yet or contains no entries. | Click `Load manifest`. |
-| Manifest: failed to load | The sound list could not be fetched. | Refresh the page. If the error persists, contact your technical admin. |
-| Firebase: local settings | Module works without Firestore synchronization. | This is normal in local mode; settings stay in this browser. |
-| Firebase: missing configuration | Firebase configuration is missing. | Contact technical admin if synchronization is needed. |
-| Amber bar "Saved on this device only" | The database refused the write, so the change was saved in this browser. | The most common cause is an ad blocker blocking the `google.com/recaptcha` address. Disable blocking for this page and reload the module. |
-| Red bar "The change was not saved" | Nothing was saved anywhere — neither in the database nor in the browser. | Reload the page and repeat the change. If that does not help, report the error code from the bar to the admin. |
-| Red bar "Data could not be loaded from the database" | The module did not receive its settings and shows what it has stored in this browser. Previously, in this situation, the favorite lists simply vanished without a word. | Same as above: check the ad blocker, then reload the page. |
-| Amber bar "Changes (...) have just been replaced by database data" | You were working without a database connection earlier, and now the database is back and has overwritten the settings. | Check the lists and aliases. Add back whatever is missing — the module deliberately does not merge such changes by itself, so it cannot erase work done on another device. |
-| Amber bar "The module runs on this device's storage" | This copy of the module has no database configuration. | That is a setting, not a failure. If settings are meant to be shared, ask the admin for the configuration. |
-| Missing audio file link | Manifest has no valid audio file link. | Check that manifest row. |
-| No results after filter | Filters hide all sounds. | Clear search or select tags again. |
-| Sound from list is marked missing | The list contains an ID that does not exist in the currently loaded library. | Usually an archive sound while access is locked — click that entry and the module opens the password window for you. If the archive is unlocked, remove the entry from the list. |
-| The module works but developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, the module works. To clear it, disable the ad blocker for this page. |
+| Manifest: no data | The sound list has not loaded yet. | Wait a moment, or choose `Tools` → `Reload manifest`. |
+| Manifest: failed to load | The sound list could not be fetched. | Reload the page. If it persists, contact the technical admin. |
+| Firebase: local settings | The module runs without the shared database. | Settings stay in this browser. |
+| Firebase: missing configuration | This module copy has no database. | Contact the technical admin if settings should be shared. |
+| Amber bar "Saved on this device only" | The database refused the write. | Usually an ad blocker blocking `google.com/recaptcha`. Disable blocking for this page and reload. |
+| Red bar "The change was not saved" | Nothing was saved — neither in the database nor in the browser. | Reload and repeat the change; if that fails, report the error code. |
+| Red bar "Data could not be loaded from the database" | The module shows what it has stored in this browser. | Check the ad blocker, reload the page. |
+| Amber bar "Changes (...) have just been replaced by database data" | You worked offline, and the database came back and overwrote the settings. | Check lists and aliases, add back what is missing. |
+| Empty lists after a module update | Lists from an earlier module version are skipped. | Prepare the lists from scratch (the notice in the admin panel confirms it). |
+| Padlock tile with "(missing in manifest)" | A sound from the locked archive, or removed from the library. | Touch the tile and unlock the archive; if the archive is unlocked, remove the entry in the admin panel. |
+| No results in the catalogue | Filters hide every sound. | Check the blue labels — delete the phrase or click `Select all` in the folders. |
+| "Missing audio file link in the manifest." | A sound list entry has no valid link. | Check that row in the spreadsheet and rebuild the manifests. |
+| Lists and sounds cannot be dragged | The drag library did not load (e.g. no internet). | Use the `▲` `▼` `⤒` `⤓` arrows — they always work. |
 
 ## Quick workflow — preparing a session
 
-1. Open `Audio/index.html?admin=1`.
-2. Click `Load manifest`.
-3. Find key sounds with search and tags.
-4. Add common sounds to `Main view`.
-5. Create thematic lists.
-6. Add sounds to lists.
-7. Assign aliases to unclear names.
-8. Check volume.
-9. Open `Audio/index.html` for live play.
-10. Use `Loop` for backgrounds and one-click playback for effects.
+1. Open `Audio/index.html?admin=1` and unlock the archive.
+2. Choose the main list and add the most used sounds to it: catalogue search → `+`.
+3. Create thematic lists (`+ New list`) and set their order.
+4. Add sounds to the lists — one by one with `+`, or several at once with the checkboxes.
+5. Set the sound order on the lists and give aliases to unclear names.
+6. Check everything in the preview at the bottom of the page, also in `Phone` mode.
+7. Export the settings (`Tools` → `Export settings (JSON)`) as a backup.
+8. To run the session, open `Audio/index.html`; start backgrounds with `Loop`, effects with a touch of the tile.

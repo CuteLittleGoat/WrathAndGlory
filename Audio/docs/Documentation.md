@@ -1,244 +1,135 @@
 # 🇵🇱 Dokumentacja techniczna — Audio (PL)
 
-## Cel modułu
+## 1. Cel modułu
 
-`Audio` jest przeglądarkowym panelem do odtwarzania efektów dźwiękowych i zarządzania listami dźwięków używanymi podczas gry.
+`Audio` jest przeglądarkowym odtwarzaczem efektów dźwiękowych na sesje gry oraz panelem do przygotowania tego, co widzą gracze.
 
-Moduł pozwala:
+Moduł:
 
-- wczytać manifest SFX z dwóch warstw: publicznej i chronionej za bramką dostępu,
-- pogrupować warianty tego samego dźwięku,
-- filtrować dźwięki po tagach wynikających ze ścieżki folderu,
-- dodawać dźwięki do widoku głównego,
-- tworzyć listy ulubionych,
-- nadawać aliasy SFX,
-- synchronizować konfigurację przez Firestore,
-- działać lokalnie przez `localStorage`, gdy Firebase nie jest skonfigurowany,
-- odtwarzać dźwięki jednorazowo albo w pętli w widoku użytkownika.
+- wczytuje katalog dźwięków z dwóch warstw: publicznej (demo) i chronionej hasłem (archiwum za bramką Cloudflare Worker),
+- grupuje warianty tego samego dźwięku i losuje wariant przy każdym odtworzeniu,
+- pozwala w panelu admina ułożyć **listę główną** i dowolną liczbę **nazwanych list**, ułożyć w nich dźwięki w dowolnej kolejności i nadać każdemu wpisowi **alias obowiązujący tylko na tej liście**,
+- filtruje katalog drzewem folderów (hierarchia tagów z zaznaczaniem grup i podgrup) oraz wyszukiwarką z niebieskim sygnałem aktywnego filtra,
+- pokazuje na dole panelu admina podgląd widoku użytkownika w trzech szerokościach,
+- zapisuje ustawienia w Firestore (dokument `audio/favorites`), a przy braku bazy w `localStorage`,
+- odtwarza dźwięki jednorazowo albo w pętli, z osobną głośnością każdego kafelka,
+- buduje oba manifesty z arkusza XLSX bezpośrednio w przeglądarce.
 
-Moduł jest pojedynczą stroną HTML z osadzonym CSS i JavaScriptem modułowym.
+Moduł składa się z trzech plików interfejsu: `index.html` (znaczniki), `style.css` (style) i `app.js` (logika jako moduł ES).
 
-## Punkty wejścia
+## 2. Punkty wejścia
 
-| Plik | Rola |
-| --- | --- |
-| `Audio/index.html` | Widok użytkownika. Pokazuje tylko przygotowany widok główny i listy ulubionych. |
-| `Audio/index.html?admin=1` | Widok admina. Pokazuje zarządzanie manifestem, filtrami, listami, aliasami i podgląd widoku użytkownika. |
+| Adres | Tryb | Zawartość |
+| --- | --- | --- |
+| `Audio/index.html` | widok użytkownika | Pasek z zakładkami list, przycisk „Zatrzymaj wszystko”, opcjonalnie „Odblokuj archiwum”, siatka kafelków. |
+| `Audio/index.html?admin=1` | panel admina | Nagłówek ze statusami, warsztat w trzech kolumnach (Foldery → Katalog → Listy z edytorem) i podgląd widoku użytkownika. |
 
-Tryb admina jest wykrywany przez parametr URL:
+Tryb jest wykrywany raz, przy starcie:
 
-```text
-?admin=1
+```js
+const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 ```
 
-## Struktura plików modułu
+`setModeVisibility()` dodaje do `<body>` klasę `admin-mode` albo `user-mode` i **usuwa z dokumentu** wszystkie elementy drugiego trybu (`.user-only` w panelu admina, `.admin-only` w widoku użytkownika). Referencje w obiekcie `dom` zostają, ale wskazują odłączone elementy, więc zapis do nich niczego nie psuje.
+
+Moduł `Main` linkuje do widoku użytkownika (`Main/index.html` → `../Audio/index.html`). Panel admina otwiera się ręcznie przez dopisanie `?admin=1`.
+
+## 3. Struktura plików
 
 | Plik lub katalog | Odpowiedzialność |
 | --- | --- |
-| `Audio/index.html` | Pełna aplikacja: HTML, CSS, JS, import konfiguracji Firebase i import modułów Firebase. |
-| `Audio/AudioManifest.json` | Manifest warstwy publicznej (demo). Zawiera gotowe adresy plików jawnie dostępnych. |
-| `Audio/worker/audio-gate.js` | Kod bramki dostępu (Cloudflare Worker) wydającej manifest warstwy chronionej i podpisane adresy plików. |
-| `Audio/config/firebase-config.js` | Konfiguracja Firebase dla ustawień Audio. |
-| `../shared/access-gate.css` | Wspólny arkusz bramki dostępu, ten sam co w `DataVault` i `GeneratorNPC`. |
-| `Audio/config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase modułu Audio. |
-| `../shared/appcheck-config.js` | Jedyne miejsce z kluczami witryny App Check (reCAPTCHA Enterprise) dla obu projektów Firebase. |
-| `../shared/firebase-app-check.js` | Wspólne uruchamianie App Check dla aplikacji Firebase w zapisie modularnym (SDK 12.6.0). |
-| `../shared/firebase-write-status.js` | Wspólny moduł komunikatów o nieudanym zapisie i odczycie Firestore. Rozpoznaje kod błędu, trzyma teksty PL/EN i rysuje pasek oraz znacznik trybu pracy. Ten sam plik obsługuje moduł GeneratorNPC. |
-| `../shared/firebase-write-status.css` | Wspólne style paska komunikatu i znacznika trybu pracy. |
+| `Audio/index.html` | Znaczniki obu trybów, bramki dostępu i podglądu. Teksty statyczne mają atrybuty `data-i18n*`. Brak osadzonego CSS i JS. |
+| `Audio/style.css` | Wszystkie style modułu (oba tryby, podgląd, bramka, responsywność). |
+| `Audio/app.js` | Cała logika (moduł ES, około 4300 wierszy z komentarzami PL/EN). |
+| `Audio/AudioManifest.json` | Manifest warstwy publicznej (demo) z gotowymi adresami plików. Generowany przez panel admina. |
+| `Audio/worker/audio-gate.js` | Kod bramki dostępu (Cloudflare Worker `audio-gate`). |
+| `Audio/config/firebase-config.js` | `window.firebaseConfig` projektu Firebase `audiorpg-2eb6f`. |
+| `Audio/config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase modułu. |
+| `Audio/Disclaimer.md` | Informacja o inspiracji (Grimdark Audio Mixer) i prywatnym, niekomercyjnym charakterze modułu. |
 | `Audio/docs/README.md` | Instrukcja użytkownika. |
 | `Audio/docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
+| `shared/access-gate.css` | Wspólny wygląd bramki dostępu (DataVault, GeneratorNPC, Audio). |
+| `shared/firebase-write-status.js` / `.css` | Wspólny pasek komunikatów o nieudanym zapisie/odczycie i plakietka trybu pracy (GeneratorNPC, Audio). |
+| `shared/appcheck-config.js` | Klucze witryny App Check (reCAPTCHA Enterprise) obu projektów Firebase. |
+| `shared/firebase-app-check.js` | Funkcja `activateAppCheck(app)` dla SDK w zapisie modularnym. |
+| `shared/firestore-audiorpg.rules` | Odwzorowanie reguł Firestore projektu `audiorpg-2eb6f` (GeneratorNPC i Audio). |
 
-## Zależności zewnętrzne
+Arkusz źródłowy `AudioManifest.xlsx` celowo **nie** leży w repozytorium (wpis w `.gitignore`), bo zawiera pełny katalog materiałów chronionych.
 
-`Audio/index.html` ładuje:
+## 4. Zależności
 
-- Google Fonts `Fira Code`,
-- `../shared/access-gate.css`,
-- `../shared/firebase-write-status.css`,
-- `config/firebase-config.js`,
-- `../shared/appcheck-config.js`,
-- `https://www.google.com/recaptcha/enterprise.js` ze znacznikiem `defer`,
-- Firebase modular SDK `12.6.0`:
-  - `firebase-app.js`,
-  - `firebase-firestore.js`,
-  - `firebase-app-check.js` (przez `../shared/firebase-app-check.js`).
+### 4.1 Zależności zewnętrzne
 
-## Tryby widoku
+| Zależność | Wersja | Kiedy ładowana | Po co |
+| --- | --- | --- | --- |
+| Google Fonts `Fira Code` (400, 600) | — | zawsze, `<link>` w `<head>` | font całego modułu |
+| Firebase `firebase-app.js`, `firebase-firestore.js` | 12.6.0 | zawsze, `import` w `app.js` | ustawienia list |
+| `https://www.google.com/recaptcha/enterprise.js` | — | zawsze, `<script defer>` | App Check |
+| SortableJS `sortablejs@1.15.2/Sortable.min.js` (jsDelivr) | 1.15.2 | tylko panel admina, w tle po starcie (`ensureSortable`) | przeciąganie list i wpisów |
+| JSZip `jszip@3.10.1/dist/jszip.min.js` (jsDelivr) | 3.10.1 | tylko przy pierwszym kliknięciu „Zbuduj manifesty z XLSX” (`ensureJSZip`) | rozpakowanie pliku XLSX |
 
-### Widok użytkownika
+Niedostępność SortableJS nie blokuje panelu — zostają przyciski strzałek. Niedostępność JSZip daje komunikat `builderErrorLibrary`.
 
-Widok bez `?admin=1`:
+### 4.2 Zależności między plikami
 
-- usuwa elementy `admin-only`,
-- pokazuje tylko interfejs użytkownika,
-- pokazuje nawigację po widoku głównym i listach ulubionych,
-- pozwala odtwarzać dźwięki z kart,
-- pokazuje suwaki głośności,
-- renderuje przycisk `Loop`.
+Kolejność skryptów w `index.html`: `config/firebase-config.js` → `../shared/appcheck-config.js` → `recaptcha/enterprise.js` (`defer`) → `app.js` (`type="module"`, więc wykonuje się po skryptach `defer`). `app.js` importuje `../shared/firebase-app-check.js` i `../shared/firebase-write-status.js`.
 
-### Widok admina
+### 4.3 Zależności między modułami
 
-Widok z `?admin=1`:
+- `shared/access-gate.css` i układ bramki są wspólne z DataVault i GeneratorNPC; tekst lore bramki jest taki sam jak w DataVault.
+- `shared/firebase-write-status.*` jest wspólny z GeneratorNPC; oba moduły korzystają z tego samego projektu Firebase `audiorpg-2eb6f` (dokumenty `generatorNpc/favorites` i `audio/favorites`).
+- Funkcja `foldPolish()` jest kopią reguły z `DataVault/app.js` (małe litery, bez diakrytyków, `ł` → `l`).
+- Zmienne `--filter-on*` są skopiowane z `DataVault/style.css`, żeby niebieski sygnał aktywnego filtra znaczył to samo we wszystkich modułach.
+- Hasło archiwum jest niezależne od hasła DataVault/GeneratorNPC (patrz rozdział 11.1).
 
-- usuwa elementy `user-only`,
-- pokazuje nagłówek, statusy i toolbar,
-- pokazuje panel filtrów tagów,
-- pokazuje listę wszystkich SFX z manifestu,
-- pozwala dodawać dźwięki do widoku głównego lub list ulubionych,
-- pozwala tworzyć, zmieniać nazwę, usuwać i porządkować listy ulubionych,
-- pozwala porządkować widok główny,
-- pokazuje podgląd widoku użytkownika,
-- nie renderuje przycisku `Loop` w adminowym podglądzie.
+## 5. Architektura `app.js`
 
-## Główne sekcje UI
+Plik ma stałą kolejność sekcji, oznaczonych nagłówkami komentarzy:
 
-### Nagłówek admina
+1. importy Firebase i modułów wspólnych,
+2. stałe,
+3. tłumaczenia (`translations.pl`, `translations.en`) i `t()`,
+4. narzędzia (`escapeHtml`, `foldPolish`, `highlightMatch`, `debounce`, pamięć przeglądarki, tytuły),
+5. odwołania do elementów (`dom`),
+6. stan (`state`) i instancja `writeStatus`,
+7. model ustawień (listy, wpisy, aliasy),
+8. zapis i odczyt ustawień, Firebase,
+9. bramka dostępu i sesja,
+10. odtwarzanie,
+11. tagi, identyfikatory i adresy (wspólne z generatorem),
+12. manifesty,
+13. drzewo folderów,
+14. pamięć interfejsu admina,
+15. rysowanie wspólne, panelu admina i widoku użytkownika,
+16. działania w panelu admina, przeciąganie,
+17. generator manifestów z XLSX,
+18. języki,
+19. obsługa zdarzeń,
+20. start modułu.
 
-Nagłówek admina zawiera:
+Zasady przepływu danych:
 
-- tytuł,
-- opis,
-- przełącznik języka `languageSelect`, ukryty klasą `language-switcher--hidden`,
-- status manifestu `manifestStatus`,
-- status Firebase `firebaseStatus`,
-- status ulubionych `favoritesStatus`.
+- Stan modułu jest jedynym źródłem prawdy. Funkcje `render*()` budują HTML ze stanu przez `innerHTML`; nie odczytują stanu z DOM.
+- **Każda zmiana ustawień** (lista, wpis, alias, kolejność, nazwa) najpierw zmienia `state.settings` funkcją modelu, a potem woła `persistAndRender()`, które odświeża indeks przynależności, rysuje widok i zapisuje dane.
+- Zdarzenia są obsługiwane przez delegację: jeden nasłuch na kontenerze (`#catalogList`, `#listsList`, `#editorEntries`, `#editorHead`, `#folderTree`, `#userView`, `#previewView`), a akcję rozpoznaje atrybut `data-action`.
+- Każdy tekst pochodzący z danych (nazwa dźwięku, alias, nazwa listy, plik, folder) przechodzi przez `escapeHtml()`. Dokument `audio/favorites` jest zapisywalny dla każdego (reguły `allow read, write: if true`), więc bez tego alias mógłby wstrzyknąć skrypt.
 
-### Toolbar admina
-
-Toolbar zawiera:
-
-- `reloadManifest` — ponowne wczytanie obu manifestów,
-- `unlockLibrary` — otwarcie bramki dostępu; przycisk jest ukrywany (`hidden`), gdy `state.libraryUnlocked` jest prawdziwe,
-- `buildManifests` — generator manifestów z arkusza XLSX (wyłącznie w widoku admina),
-- `addList` — utworzenie nowej listy ulubionych,
-- `refreshFavorites` — ręczne odświeżenie widoków ulubionych.
-
-### Panel filtrów tagów
-
-Panel tagów zawiera:
-
-- `toggleTagPanel` — zwija lub rozwija panel,
-- `tagSearchInput` — pole wyszukiwania tagów,
-- `tagFilterMenuButton` — otwiera popup filtra,
-- `tagFilter` — drzewo checkboxów tagów,
-- `tagFilterMenu` — popup z wyszukiwarką, checkboxami i akcjami zbiorczymi,
-- `tagMenuSelectAll` — zaznacza wszystkie widoczne tagi,
-- `tagMenuClearAll` — odznacza wszystkie widoczne tagi.
-
-Filtry tagów wpływają tylko na listę SFX w panelu admina. Nie zmieniają widoku głównego ani list ulubionych użytkownika.
-
-### Lista SFX admina
-
-Lista SFX używa `samplesGrid`.
-
-Każda karta pokazuje:
-
-- nazwę SFX,
-- alias w nawiasie, jeżeli istnieje,
-- liczbę zgrupowanych wariantów, jeżeli dźwięk ma wiele wariantów,
-- `tag2`, czyli drugi poziom tagów,
-- nazwę pliku albo nazwę pierwszego pliku i licznik wariantów,
-- pole aliasu,
-- przycisk czyszczenia aliasu,
-- przycisk odtwarzania,
-- select wyboru listy docelowej,
-- przycisk dodania do listy.
-
-### Panel ulubionych admina
-
-Panel `favoritesPanel` pokazuje listy ulubionych.
-
-Dla list można:
-
-- przenieść listę w górę lub dół,
-- zmienić nazwę listy,
-- usunąć listę,
-- odtworzyć dźwięk z listy,
-- przenieść pozycję w górę lub dół,
-- usunąć pozycję z listy.
-
-### Panel widoku głównego admina
-
-Panel `mainViewPanel` pokazuje kolejność dźwięków widoku głównego.
-
-Dla pozycji można:
-
-- odtworzyć dźwięk kliknięciem nazwy lub tagu,
-- ustawić głośność suwakiem,
-- przesunąć pozycję w górę lub dół,
-- usunąć pozycję z widoku głównego.
-
-### Widok użytkownika
-
-Widok użytkownika zawiera:
-
-- `userMainView` — aktualny widok główny,
-- `userFavoritesView` — aktywna lista ulubionych,
-- `userNav` — nawigacja między widokiem głównym i listami,
-- `languageSelectUser` — przełącznik języka, obecnie ukryty klasą `language-switcher--hidden`.
-
-## Stan aplikacji
-
-Główny obiekt `state` zawiera:
-
-| Pole | Typ | Opis |
-| --- | --- | --- |
-| `items` | `array` | Lista SFX po parsowaniu manifestu. |
-| `itemsById` | `Map` | Mapa SFX po `id`. |
-| `favorites` | `object` | Listy ulubionych. |
-| `mainView` | `object` | Lista ID widoku głównego. |
-| `aliases` | `object` | Alias per `itemId`. |
-| `firestore` | `object|null` | Instancja Firestore, jeżeli działa Firebase. |
-| `favoritesDoc` | `object|null` | Referencja dokumentu `audio/favorites`. |
-| `usingFirestore` | `boolean` | Czy aktywna jest synchronizacja Firestore. |
-| `manifestReady` | `boolean` | Czy manifest został poprawnie wczytany. |
-| `session` | `object\|null` | Token bramki. `exp` ma wartość `null` dla tokenu bezterminowego. |
-| `libraryUnlocked` | `boolean` | Czy warstwa chroniona jest wczytana. |
-| `libraryError` | `string\|null` | Powód, dla którego warstwa chroniona się nie wczytała. |
-| `publicError` | `string\|null` | Powód, dla którego warstwa publiczna się nie wczytała. |
-| `builder` | `object` | Stan generatora manifestów: `{ status, publicCount, protectedCount, message }`. `status` przyjmuje `idle`, `working`, `ready` albo `error`. |
-| `userView` | `string` | Aktualny widok użytkownika: `main` albo lista. |
-| `activeFavoritesListId` | `string|null` | Aktywna lista ulubionych w widoku użytkownika. |
-| `tagTree` | `array` | Drzewo tagów zbudowane z manifestu. |
-| `tagSelection` | `Map` | Zaznaczenia tagów. |
-| `tagPanelVisible` | `boolean` | Czy panel tagów jest rozwinięty. |
-| `tagMenuOpen` | `boolean` | Czy popup tagów jest otwarty. |
-| `tagMenuSearchTerm` | `string` | Fraza wyszukiwania tagów w popupie. |
-
-Aktywne odtwarzacze są przechowywane poza `state` w:
-
-```text
-activePlayers: Map
-```
-
-## Dwie warstwy biblioteki
-
-Biblioteka jest podzielona na dwie warstwy o różnym trybie dostępu. Podział wynika z tego, że część materiału jest darmowa i celowo publiczna, a reszta jest chroniona prawami autorskimi.
+## 6. Dwie warstwy biblioteki
 
 | Warstwa | `access` | Źródło manifestu | Źródło plików | Logowanie |
 | --- | --- | --- | --- | --- |
-| Publiczna (demo) | `"public"` | `AudioManifest.json` w tym repozytorium | publiczne repozytorium `AudioExample` na GitHub Pages | nie |
-| Chroniona (archiwum) | `"protected"` | endpoint `/manifest` bramki | prywatne repozytorium `AudioRPG` przez bramkę | tak |
+| Publiczna (demo) | `"public"` | `AudioManifest.json` w tym repozytorium | publiczne repozytorium `AudioExample` (GitHub Pages) | nie |
+| Chroniona (archiwum) | `"protected"` | endpoint `/manifest` bramki | prywatne repozytorium `AudioRPG`, pliki wydaje bramka | tak |
 
-Obie listy są łączone w `loadManifests()` i sortowane wspólnie po `label`, więc użytkownik widzi jedną listę.
+GitHub Pages zna tylko dwa stany: pliki dostępne dla każdego albo dla nikogo. Bramka dodaje stan trzeci — repozytorium `AudioRPG` zostaje prywatne, a jedyną drogą do plików jest Worker sprawdzający uprawnienie.
 
-### Dlaczego potrzebna jest bramka
+`loadManifests()` łączy obie warstwy w jedną listę, sortowaną po `label` (`localeCompare`).
 
-GitHub Pages zna wyłącznie dwa stany: repozytorium publiczne, czyli pliki dostępne dla każdego, albo prywatne, czyli brak opublikowanej strony i pliki niedostępne dla nikogo. Nie istnieje stan pośredni — także w planach płatnych, bo kontrola dostępu do Pages jest dostępna wyłącznie w GitHub Enterprise Cloud.
+## 7. Manifesty
 
-Bramka dodaje brakujący trzeci stan: repozytorium `AudioRPG` zostaje prywatne na stałe, a jedynym wejściem do plików jest Worker sprawdzający uprawnienie.
+### 7.1 Format
 
-## Manifesty
-
-### `AudioManifest.json`
-
-Manifest warstwy publicznej, wczytywany zawsze:
-
-```js
-fetch(PUBLIC_MANIFEST_URL, { cache: "no-store" })
-```
-
-Struktura:
+Manifest publiczny (`AudioManifest.json`, z wcięciami):
 
 ```text
 {
@@ -254,939 +145,912 @@ Struktura:
 }
 ```
 
-### Manifest warstwy chronionej
+Manifest chroniony (`audio-manifest.json` w katalogu głównym prywatnego repozytorium, bez wcięć) ma identyczną strukturę, ale `access: "protected"`, a warianty zamiast `url` mają `path` — ścieżkę względną w repozytorium `AudioRPG`. Adres do odtworzenia powstaje dopiero po podpisaniu przez bramkę.
 
-Wczytywany z bramki wyłącznie przy ważnej sesji:
+| Pole pozycji | Znaczenie |
+| --- | --- |
+| `id` | Stały identyfikator (slug). Listy w bazie wskazują dźwięki wyłącznie po `id`. |
+| `label` | Nazwa widoczna w interfejsie (dla grup — nazwa bazowa bez numeru). |
+| `groupCount` | Liczba wariantów w grupie; `0`, gdy pozycja nie jest grupą. Interfejs pokazuje `(N)` tylko dla `groupCount > 1`. |
+| `filename` | Nazwa pliku albo `pierwszy.ogg (+N)` dla grup. |
+| `tags` | Segmenty ścieżki folderu po oczyszczeniu. |
+| `tag2` | `tags[1]` — tag pokazywany na kafelku widoku użytkownika. |
+| `tagPaths` | Narastające ścieżki: `["A", "A / B", "A / B / C"]`. Budują drzewo folderów. |
+| `variants` | Warianty: `{ filename, url }` (public) albo `{ filename, path }` (protected). |
 
-```js
-fetch(`${AUDIO_GATE_BASE}/manifest`, {
-  headers: { Authorization: `Bearer ${state.session.token}` }
-})
-```
+### 7.2 Pola dopisywane po wczytaniu
 
-Struktura identyczna, z dwiema różnicami: `access` ma wartość `"protected"`, a warianty zamiast `url` mają `path` — ścieżkę względną w repozytorium `AudioRPG`. Gotowy adres powstaje dopiero po podpisaniu przez bramkę.
+`applyItems(items)` sortuje pozycje po `label` i dopisuje każdej:
 
-### Generowanie manifestów
+| Pole | Wartość | Użycie |
+| --- | --- | --- |
+| `folderPath` | ostatni element `tagPaths` albo `"__no_folder__"` (`NO_FOLDER_PATH`) | filtr folderów w katalogu |
+| `searchText` | `foldPolish([label, filename, ...tags].join(" \| "))` | wyszukiwarka katalogu (liczone raz) |
 
-Oba pliki powstają ze źródłowego arkusza `AudioManifest.xlsx`, który **nie znajduje się w tym repozytorium** — jego miejsce jest w repozytorium prywatnym, ponieważ zawiera pełny katalog materiałów chronionych. W `.gitignore` jest wpis blokujący jego przypadkowe dodanie.
+Następnie buduje `state.itemsById` (mapa `id → pozycja`) i `state.folderTree` (`buildFolderTree`). Jeżeli `state.expandedPaths` nie było odtworzone z pamięci, rozwinięte zostają wszystkie foldery najwyższego poziomu.
 
-Generator działa **w przeglądarce, w panelu admina**, przyciskiem `buildManifests`. Przebieg odpowiada aktualizacji danych w module `DataVault`: `<input type="file">` tworzony w locie, konwersja lokalna, dwa pobrania przez `Blob` i `URL.createObjectURL`.
+### 7.3 Pobieranie
 
-Kluczowa decyzja projektowa: generator nie jest osobnym skryptem, tylko fragmentem `index.html` i **używa tych samych funkcji `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` i `normalizeUrl`, których używa reszta modułu**. Identyfikator `id` powstaje ze slugu etykiety, a listy ulubionych, widok główny i aliasy w Firestore przechowują właśnie `id`. Wcześniejszy generator w Node (`Audio/tools/build-manifests.mjs`) trzymał kopie tych funkcji i mógł się z modułem rozjechać, co zerwałoby powiązanie zapisanych list z dźwiękami. Został usunięty właśnie dlatego — jedno źródło logiki identyfikatorów zamiast dwóch.
+- `fetchDemoManifest()` — `fetch("AudioManifest.json", { cache: "no-store" })`. Kod inny niż 2xx rzuca `Error("public_manifest_unavailable")` z polem `detail` = kod HTTP.
+- `fetchProtectedManifest()` — `fetch(AUDIO_GATE_BASE + "/manifest", { headers: { Authorization: "Bearer <token>" } })`. `401` czyści sesję i rzuca `gate_unauthorized`; odpowiedź `{ error: "manifest_unavailable", status }` rzuca `manifest_unavailable` z `detail`; inne błędy rzucają `gate_error` z `detail` = kod HTTP.
+- `loadManifests()` — obie warstwy w osobnych blokach `try`. Warstwa chroniona jest pobierana tylko przy ważnej sesji. Po sukcesie: `applyItems`, `state.manifestReady = true`, `signedUrlCache.clear()`, `renderAll()`. Gdy obie warstwy są puste, funkcja rzuca błąd z konkretnym powodem (`state.publicError` / `state.libraryError`) albo `manifestNoData`.
 
-Krok po kroku:
+## 8. Generator manifestów z XLSX
 
-1. `pickLocalWorkbookFile()` — tworzy ukryty `<input type="file" accept=".xlsx">` i zwraca `ArrayBuffer`. Zwraca `null`, gdy użytkownik zrezygnował (zdarzenia `change` bez pliku oraz `cancel`).
-2. `ensureJSZip()` — doładowuje JSZip z `cdn.jsdelivr.net` przy pierwszym użyciu. Biblioteka nie jest ładowana w widoku użytkownika. Nieudana próba zeruje `jsZipPromise`, żeby kolejne kliknięcie mogło spróbować ponownie.
-3. `readXlsxSheet()` — minimalny czytnik XLSX: rozpakowuje `xl/sharedStrings.xml`, `xl/workbook.xml`, `xl/_rels/workbook.xml.rels` i arkusz wskazany relacją pierwszego `<sheet>`. Obsługuje typy komórek `s` (shared string), `inlineStr` i wartości surowe. Zwraca `{ header, rows }` jako tablice pozycyjne, **bez sklejania kolumn po nazwie** — to warunek konieczny do wykrycia duplikatów nagłówka.
-4. `resolveRequiredColumns()` — walidacja nagłówka.
-5. `buildManifestItems()` — grupowanie wariantów, identyczne z logiką manifestu.
-6. `downloadJsonFile()` — zapis pliku; drugie pobranie jest opóźnione o 150 ms, bo część przeglądarek pomija dwa pobrania uruchomione w tej samej chwili.
+Przycisk `#buildManifests` (menu „Narzędzia”, tylko panel admina) wywołuje `handleBuildManifests()`. Nic nie jest wysyłane na serwer: plik jest czytany lokalnie, a wynik zapisywany przez `Blob` i `URL.createObjectURL`.
 
-#### Walidacja nagłówka
+Generator używa **tych samych** funkcji `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` i `normalizeUrl` co reszta modułu. To jedno źródło logiki identyfikatorów — zmiana którejkolwiek z nich zmienia `id` i zrywa powiązanie zapisanych list z dźwiękami. Przed każdą zmianą trzeba porównać wynik generatora na tym samym arkuszu (pliki muszą być identyczne bajt w bajt).
 
-Wymagane kolumny: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu` (stała `BUILDER_REQUIRED_COLUMNS`).
+Kroki:
+
+1. `pickLocalWorkbookFile()` — ukryty `<input type="file" accept=".xlsx">`; zwraca `{ buffer }` albo `null` przy rezygnacji (zdarzenie `cancel` lub `change` bez pliku).
+2. `ensureJSZip()` — doładowanie JSZip; nieudana próba zeruje obietnicę, więc kolejne kliknięcie próbuje ponownie.
+3. `readXlsxSheet(buffer)` — minimalny czytnik: `xl/sharedStrings.xml`, `xl/workbook.xml`, `xl/_rels/workbook.xml.rels` i arkusz pierwszego `<sheet>`. Obsługuje komórki `s`, `inlineStr` i wartości surowe; `columnRefToIndex()` zamienia `AB12` na indeks kolumny. Zwraca `{ header, rows }` jako tablice pozycyjne (bez sklejania kolumn po nazwie, co pozwala wykryć duplikaty nagłówka).
+4. `resolveRequiredColumns(header)` — walidacja nagłówka.
+5. `buildManifestItems(rows)` — grupowanie i identyfikatory; potem sortowanie po `label`.
+6. Podział na warstwy i sprawdzenie ścieżek.
+7. `downloadJsonFile()` — najpierw `AudioManifest.json` (z wcięciami), po 150 ms `audio-manifest.json` (bez wcięć), bo część przeglądarek pomija dwa pobrania w tej samej chwili.
+8. `setBuilderState("ready", { publicCount, protectedCount })` i `alert(builderDone)`.
+
+### 8.1 Walidacja
 
 | Sytuacja | Zachowanie |
 | --- | --- |
-| Brak którejkolwiek wymaganej kolumny | Błąd `builder_missing_columns`, lista brakujących nazw w komunikacie. Żaden plik nie powstaje. |
-| Wymagana kolumna występuje więcej niż raz | Błąd `builder_duplicate_columns`. Generator celowo nie zgaduje, którą kolumnę wziąć. |
-| Kolumny spoza listy wymaganych | Ignorowane. Czytane są wyłącznie trzy indeksy zwrócone przez `resolveRequiredColumns()`. |
-| Dowolna kolejność kolumn | Obsługiwana — wiązanie idzie po nazwie nagłówka, nie po pozycji. |
-| Arkusz zawiera sam nagłówek | Błąd `builder_no_rows`. |
-| Wariant chroniony bez ścieżki w `/AudioRPG/` | Błąd `builder_no_paths` z liczbą wariantów. Zapobiega wypuszczeniu manifestu z niegrywalnymi pozycjami. |
+| Brak kolumny `NazwaSampla`, `NazwaPliku` albo `LinkDoFolderu` | `builder_missing_columns` z listą brakujących. |
+| Wymagana kolumna występuje więcej niż raz | `builder_duplicate_columns`. |
+| Kolumny nadmiarowe, dowolna kolejność | Ignorowane / obsługiwana (wiązanie po nazwie). |
+| Sam nagłówek | `builder_no_rows`. |
+| Wariant chroniony bez fragmentu `/AudioRPG/` w adresie | `builder_no_paths` z liczbą wariantów. |
+| Plik nie jest poprawnym XLSX | `builderErrorRead`. |
 
-Każdy błąd ustawia `state.builder.status = "error"`, zapala pastylkę `builderStatus` na czerwono i pokazuje `alert()` z pełną treścią. **Przy błędzie nie powstaje żaden plik.**
+Każdy błąd ustawia `state.builder.status = "error"`, pastylkę `#builderStatus` na czerwono (pełna treść w `title`) i pokazuje `alert()`. Przy błędzie nie powstaje żaden plik.
 
-#### Podział na warstwy
+### 8.2 Podział na warstwy
 
-O przypisaniu decyduje adres w kolumnie `LinkDoFolderu`:
+- `LinkDoFolderu` zawiera `/AudioExample/` (`BUILDER_PUBLIC_PREFIX`) → `access: "public"`, wariant dostaje `url` = `normalizeUrl(folder, plik)`.
+- W przeciwnym razie → `access: "protected"`, wariant dostaje `path` = część adresu po `/AudioRPG/` (`BUILDER_PROTECTED_PREFIX`) po `decodeURIComponent` (`toProtectedRepoPath`). Przykład: `https://host/AudioRPG/PrivateFolder/PrivateSubFolder/PrivateSound.ogg` → `PrivateFolder/PrivateSubFolder/PrivateSound.ogg`.
 
-- zawiera `/AudioExample/` (stała `BUILDER_PUBLIC_PREFIX`) → `access: "public"`, wariant dostaje `url`,
-- w przeciwnym razie → `access: "protected"`, wariant dostaje `path` powstałe przez odcięcie wszystkiego do `/AudioRPG/` włącznie i `decodeURIComponent`.
+### 8.3 Grupowanie wariantów i identyfikatory
 
-Generator produkuje:
+`getGroupingBaseLabel(label)` odcina liczbę z końca nazwy (`Wybuch 2` → `Wybuch`). Wiersze są grupowane w jedną pozycję, gdy mają ten sam `LinkDoFolderu`, tę samą nazwę bazową, nazwa faktycznie kończyła się liczbą i takich wierszy jest więcej niż jeden. Pozycja grupowa dostaje `label` = nazwa bazowa, `groupCount` = liczba wariantów i `filename` = `pierwszy (+N-1)`.
 
-- `AudioManifest.json` (z wcięciami, czytelny w diffie) → do folderu `Audio` tego repozytorium,
-- `audio-manifest.json` (bez wcięć, mniejszy transfer przez bramkę) → do katalogu głównego repozytorium prywatnego `AudioRPG`.
+`id` = `slugify(nazwa)` — małe litery, każdy ciąg znaków innych niż litery i cyfry Unicode → `-`, obcięte `-` na brzegach; pusty wynik → `sample-<nrWiersza>`. Przy kolizji (ten sam slug w innym folderze) dopisywany jest numer wiersza arkusza: `<slug>-<nrWiersza>`.
 
-#### Stabilność identyfikatorów a kolejność wierszy
+Konsekwencja: **wstawienie wiersza w środku arkusza zmienia identyfikatory kolizyjne wszystkich wierszy poniżej**, a zapisane listy tracą te dźwięki. Pomiar na rzeczywistym arkuszu (1793 wiersze, 133 pozycje z sufiksem kolizyjnym): dopisanie wiersza na końcu zmienia 0 identyfikatorów, wstawienie tego samego wiersza w środku — 123. Dlatego instrukcja nakazuje dopisywać wiersze wyłącznie na końcu.
 
-`id` powstaje jako slug etykiety. Przy kolizji — ta sama etykieta w innym folderze — do slugu dopisywany jest **numer wiersza w arkuszu** (`${id}-${entry.rowIndex}`). W obecnym arkuszu dotyczy to 133 pozycji.
+### 8.4 Tagi
 
-Konsekwencja jest praktyczna i łatwa do przeoczenia: **wstawienie wiersza w środku arkusza przesuwa `rowIndex` wszystkich wierszy poniżej, a więc zmienia wszystkie identyfikatory kolizyjne poniżej punktu wstawienia.** Zapisane listy ulubionych, widok główny i aliasy przestają wtedy wskazywać te dźwięki.
+`extractTags(folderUrl)`:
 
-Pomiar na rzeczywistym arkuszu (1793 wiersze):
+1. zamienia `\` na `/`; adres z `://` zamienia na `new URL(...).pathname`,
+2. dzieli po `/`, odrzuca puste segmenty i segmenty z `TAG_IGNORE_SEGMENTS` (`AudioRPG`),
+3. każdy segment czyści `cleanTagSegment()`: `decodeURIComponent`, usunięcie (bez względu na wielkość liter) dopisków technicznych z listy `TAG_IGNORE_FRAGMENTS` w `app.js`, zamiana `_` i `-` na spacje, zwinięcie białych znaków,
+4. odrzuca segmenty puste po oczyszczeniu.
 
-| Operacja | Zmienione identyfikatory |
-| --- | --- |
-| Dopisanie wiersza na końcu | 0 |
-| Wstawienie tego samego wiersza w środku | 123 |
+Lista `TAG_IGNORE_FRAGMENTS` jest potrzebna wyłącznie generatorowi — moduł w czasie działania czyta gotowe `tags` i `tagPaths` z manifestu.
 
-Dlatego `README.md` instruuje, żeby nowe wiersze dopisywać wyłącznie na końcu arkusza. Gdyby kiedyś trzeba było znieść to ograniczenie, sufiks kolizyjny musiałby być wyznaczany z czegoś niezależnego od pozycji wiersza — na przykład ze ścieżki folderu.
+## 9. Bramka dostępu (Cloudflare Worker)
 
-## Bramka dostępu (Cloudflare Worker)
+Kod: `Audio/worker/audio-gate.js`. Wdrożenie: Worker `audio-gate` na koncie Cloudflare. Adres Workera jest wpisany w stałej `AUDIO_GATE_BASE` w `app.js` (komentarz `MIEJSCE ZMIANY ADRESU BRAMKI`).
 
-Kod: `Audio/worker/audio-gate.js`. Wdrożenie: Worker `audio-gate` na koncie Cloudflare.
-
-### Zmienne środowiskowe
+### 9.1 Zmienne środowiskowe Workera
 
 | Nazwa | Typ | Zawartość |
 | --- | --- | --- |
-| `GROUP_PASSWORD` | Secret | Hasło grupy, czyli Litania Dostępu. |
+| `GROUP_PASSWORD` | Secret | Hasło grupy (Litania Dostępu). |
 | `SIGNING_KEY` | Secret | Klucz HMAC do podpisywania tokenów sesji i adresów plików. |
-| `GITHUB_TOKEN` | Secret | Fine-grained PAT: tylko repozytorium `AudioRPG`, uprawnienie `Contents: Read-only`. |
-| `ALLOWED_ORIGIN` | Text | `https://cutelittlegoat.github.io` |
+| `GITHUB_TOKEN` | Secret | Fine-grained PAT: tylko repozytorium `AudioRPG`, `Contents: Read-only`. |
+| `ALLOWED_ORIGIN` | Text | Adres witryny, np. `https://cutelittlegoat.github.io`. |
 
-Sekrety nie mogą trafić do repozytorium. Ustawia się je w panelu Cloudflare albo komendą `npx wrangler secret put`.
+Wartości sekretów nie mogą trafić do repozytorium. Ustawia się je w Cloudflare: **Workers & Pages → `audio-gate` → Settings → Variables and Secrets** albo komendą `npx wrangler secret put <NAZWA>`.
 
-### Endpointy
+### 9.2 Endpointy
 
 | Endpoint | Metoda | Autoryzacja | Działanie |
 | --- | --- | --- | --- |
-| `/health` | GET | brak | Zwraca informację, które zmienne są ustawione. Do diagnostyki. |
-| `/login` | POST | brak | Przyjmuje `{ password }`, porównuje w czasie stałym, zwraca `{ token, exp }`. |
-| `/manifest` | GET | Bearer | Przekazuje `audio-manifest.json` z repozytorium prywatnego. |
-| `/sign` | GET | Bearer | Dla `?p=<ścieżka>` zwraca `{ url, exp }` — podpisany adres pliku. |
-| `/a` | GET | podpis w adresie | Weryfikuje podpis i wygaśnięcie, po czym wydaje plik z nagłówkami CORS. |
+| `/health` | GET | brak | Które zmienne są ustawione (bez wartości). |
+| `/login` | POST | brak | `{ password }` → porównanie w czasie stałym → `{ ok, token, exp: null }`; złe hasło → `401`. |
+| `/manifest` | GET | Bearer | Przekazuje `audio-manifest.json` z repozytorium prywatnego (bez parsowania, cache 5 min). |
+| `/sign` | GET | Bearer | `?p=<ścieżka>` → `{ ok, url, exp }` — podpisany adres pliku. |
+| `/a` | GET | podpis w adresie | Sprawdza podpis i wygaśnięcie, wydaje plik z nagłówkami CORS i obsługą `Range`. |
 
-### Token sesji
+### 9.3 Token sesji i podpisy
 
-Format: `base64url(JSON) + "." + base64url(HMAC-SHA256)`. Ładunek zawiera wyłącznie `iat` — znacznik czasu wydania, nieweryfikowany. Nie ma bazy danych; sam podpis wystarczy.
+- Token: `base64url(JSON) + "." + base64url(HMAC-SHA256)`, ładunek zawiera tylko `iat`. **Sesja jest bezterminowa** (`exp: null`). Starsze tokeny z polem `exp` są honorowane do swojej daty.
+- Jedyny sposób unieważnienia wszystkich sesji naraz: zmiana sekretu `SIGNING_KEY`.
+- Podpis adresu: `HMAC-SHA256(SIGNING_KEY, "<ścieżka>|<exp>")`, adres `/a?p=<ścieżka>&e=<exp>&s=<podpis>`.
+- `exp = (Math.floor(now / 3600) + 2) * 3600` — ważność 1–2 godziny, wyrównana do pełnej godziny, więc w obrębie godziny zegarowej powstaje ten sam adres i przeglądarka korzysta z pamięci podręcznej.
+- Autoryzacja jedzie w adresie, a nie w ciasteczku, bo element `<audio>` nie wysyła własnych nagłówków, a ciasteczka third-party są blokowane.
+- `isSafeAudioPath` odrzuca `..`, ścieżki absolutne, `\`, `//` i rozszerzenia inne niż `.ogg` / `.mp3`. Porównania sekretów używają `timingSafeEqual`.
 
-**Sesja jest bezterminowa**, tak samo jak w module `DataVault`. Token nie ma pola `exp`, a `/login` zwraca `exp: null`. Token trafia do `localStorage` pod kluczem `audio.session` i żyje do wyczyszczenia danych przeglądarki. Jedynym sposobem unieważnienia wszystkich sesji naraz jest zmiana sekretu `SIGNING_KEY` w Workerze.
-
-Zgodność wsteczna: tokeny wydane przed tą zmianą mają pole `exp` z ważnością 30 dni. `verifySessionToken()` nadal honoruje ich datę wygaśnięcia — stary token wygasa zgodnie z pierwotnym terminem, zamiast zostać po cichu przedłużony w nieskończoność. Po jego wygaśnięciu użytkownik podaje hasło raz i dostaje token bezterminowy.
-
-### Podpisywanie adresów
-
-Podpis to `HMAC-SHA256(SIGNING_KEY, "<ścieżka>|<exp>")` w base64url. Adres ma postać:
-
-```text
-/a?p=<ścieżka>&e=<exp>&s=<podpis>
-```
-
-Wygaśnięcie jest wyrównane do pełnej godziny:
-
-```js
-exp = (Math.floor(now / 3600) + 2) * 3600
-```
-
-Daje to ważność od 1 do 2 godzin, ale przede wszystkim sprawia, że w obrębie jednej godziny zegarowej powstaje **dokładnie ten sam adres**. Bez tego wyrównania każdy podpis tworzyłby nowy adres, a przeglądarka pobierałaby ten sam plik od nowa przy każdym odtworzeniu — kosztowne przy plikach rzędu kilkunastu megabajtów.
-
-### Dlaczego autoryzacja jest w adresie, a nie w ciasteczku
-
-Wcześniejsza próba oparta na Cloudflare Access pytała o hasło przy każdym odtworzeniu. Przyczyna: ciasteczko `CF_Authorization` przy żądaniach cross-origin jest ciasteczkiem third-party i przeglądarki je blokują, więc każde żądanie o plik kończyło się przekierowaniem na logowanie.
-
-Element `<audio>` nie pozwala dołożyć własnych nagłówków, dlatego autoryzacja pliku jedzie w query stringu podpisanego adresu. Nie ma ciasteczka, nie ma nagłówka `WWW-Authenticate`, nie ma czego blokować ani o co pytać.
-
-### Ograniczenia i zabezpieczenia
-
-- Ścieżki są walidowane przez `isSafeAudioPath`: odrzucane są `..`, ścieżki absolutne, `\\`, `//` oraz rozszerzenia inne niż `.ogg` i `.mp3`.
-- Porównania sekretów używają `timingSafeEqual`, żeby nie ujawniać wartości pomiarem czasu odpowiedzi.
-- Manifest jest przekazywany **bez parsowania**. Worker ma 10 ms czasu CPU na żądanie, a parsowanie pół megabajta JSON-a zjadłoby ten budżet.
-- Manifest i pliki są cache'owane w Cache API. Manifest na 5 minut, pliki na rok, bo adres i tak wygasa.
-- Obsługiwane są żądania `Range`, potrzebne przy przewijaniu dźwięku.
-
-## Sesja i bramka po stronie modułu
+## 10. Sesja i bramka po stronie modułu
 
 | Element | Rola |
 | --- | --- |
-| `AUDIO_GATE_BASE` | Adres bramki. Miejsce zmiany przy przenoszeniu Workera. |
-| `AUDIO_SESSION_STORAGE_KEY` | Klucz `audio.session` w `localStorage`. |
-| `AUDIO_GATE_SKIPPED_KEY` | Klucz `audio.gateSkipped` w `sessionStorage`. Pamięta kliknięcie `Pomiń` na czas jednej karty przeglądarki. |
-| `loadSession()` / `storeSession()` | Odczyt i zapis tokenu w `localStorage`. |
-| `isSessionUsable(session)` / `hasValidSession()` | Sesja jest ważna, gdy ma token oraz nie ma `exp` (token bezterminowy) albo `exp` jest w przyszłości (stary token 30-dniowy). |
-| `signedUrlCache` | Mapa `ścieżka → { url, exp }`. Ogranicza liczbę wywołań `/sign`. |
-| `requestSignedUrl(path)` | Pobiera podpis; przy `401` czyści sesję i rzuca `gate_unauthorized`. |
-| `resolveVariantUrl(item, variant)` | Zwraca gotowy adres: z manifestu dla `public`, z bramki dla `protected`. |
-| `showAccessGate()` / `hideAccessGate()` | Pokazanie i ukrycie nakładki `#accessGate` atrybutem `hidden`. |
-| `submitAccessLitany()` | Wymiana hasła na token, po czym przeładowanie manifestów. Ma **dwa rozłączne bloki `try`**: pierwszy obejmuje wyłącznie żądanie `/login`, drugi wyłącznie `loadManifests()`. Przy `state.libraryError` albo `state.publicError` nakładka zostaje otwarta z powodem błędu. |
-| `maybeShowAccessGate()` | Otwiera bramkę po starcie, gdy nie ma ważnej sesji i nie kliknięto `Pomiń`. Wywoływane w `.finally()` po `loadManifests()`. |
-| `isGateSkipped()` / `markGateSkipped()` / `skipAccessGate()` | Obsługa przycisku `Pomiń` i klawisza `Escape`. |
-| `handleUnlockClick(message)` | Kasuje znacznik pominięcia i otwiera bramkę, opcjonalnie z własnym komunikatem. |
+| `AUDIO_SESSION_STORAGE_KEY` = `audio.session` | Token w `localStorage` (`{ token, exp }`). |
+| `AUDIO_GATE_SKIPPED_KEY` = `audio.gateSkipped` | Znacznik „Pomiń” w `sessionStorage` (na czas karty). |
+| `isSessionUsable(session)` / `hasValidSession()` | Ważna, gdy jest token i `exp` jest puste albo w przyszłości. |
+| `loadSession()` / `storeSession(session)` | Odczyt i zapis sesji; nieważna sesja jest usuwana. |
+| `signedUrlCache` | Mapa `ścieżka → { url, exp }`; wpis używany, dopóki `exp` jest dalej niż 5 s. Czyszczona po każdym `loadManifests()`. |
+| `requestSignedUrl(path)` | `GET /sign`; `401` → `storeSession(null)`, `libraryUnlocked = false`, błąd `gate_unauthorized`. |
+| `resolveVariantUrl(item, variant)` | `public` → `variant.url`; `protected` → podpis z bramki. |
+| `showAccessGate(message)` / `hideAccessGate()` | Nakładka `#accessGate` przez atrybut `hidden`; fokus w polu hasła. |
+| `maybeShowAccessGate()` | Po starcie (w `.finally()` po `loadManifests()`) otwiera bramkę, gdy nie ma sesji i nie kliknięto „Pomiń”. |
+| `skipAccessGate()` | „Pomiń” i `Escape`: zapisuje znacznik i zamyka bramkę. |
+| `handleUnlockClick(message)` | Kasuje znacznik pominięcia i otwiera bramkę. |
+| `submitAccessLitany()` | Dwa rozłączne kroki: (1) `POST /login`, (2) `loadManifests()`. Przy problemie z wczytaniem okno zostaje otwarte z powodem. |
 
-Nie ma funkcji blokującej archiwum. Przycisk blokowania został usunięty jako zbędny: odblokowane archiwum jest stanem docelowym, a dostęp na urządzeniu kasuje się przez wyczyszczenie danych witryny.
+Przycisku blokowania nie ma: odblokowane archiwum jest stanem docelowym, a przycisk „Odblokuj archiwum” znika po odblokowaniu (`#unlockLibrary` w nagłówku admina ma `hidden`, a przycisk w pasku widoku użytkownika nie jest rysowany).
 
-### Zachowanie bramki
+### 10.1 Zachowanie bramki
 
 | Zdarzenie | Reakcja |
 | --- | --- |
-| Start modułu bez ważnej sesji, `Pomiń` niekliknięte | Bramka otwiera się sama po wczytaniu manifestów. |
-| Kliknięcie `Pomiń` lub `Escape` | Bramka znika, w `sessionStorage` zapisuje się `audio.gateSkipped=1`. |
-| Przeładowanie strony po `Pomiń` | Bramka nie wraca — `sessionStorage` przeżywa przeładowanie. |
-| Nowa karta przeglądarki | Bramka wraca — `sessionStorage` jest osobny dla każdej karty. |
-| Kliknięcie `Odblokuj archiwum` | Kasuje `audio.gateSkipped` i otwiera bramkę. |
-| Kliknięcie pozycji `(brak w manifeście)` przy zablokowanym archiwum | `togglePlayback()` otwiera bramkę z komunikatem `accessMissingItem`. |
-| Wygaśnięcie sesji w trakcie odtwarzania | `startPlayback()` otwiera bramkę z komunikatem `accessExpired`. |
+| Start bez ważnej sesji, „Pomiń” niekliknięte | Bramka otwiera się po wczytaniu manifestów. |
+| „Pomiń” albo `Escape` | Bramka znika; `audio.gateSkipped = "1"` w `sessionStorage`. |
+| Odświeżenie po „Pomiń” | Bramka nie wraca. Nowa karta — wraca. |
+| „Odblokuj archiwum” | Znacznik pominięcia jest kasowany, bramka się otwiera. |
+| Kliknięcie kafelka „(brak w manifeście)” przy zablokowanym archiwum | Bramka z komunikatem `accessMissingItem`. |
+| Wygaśnięcie sesji w trakcie odtwarzania | Bramka z komunikatem `accessExpired`. |
 
-Bramka jest nakładką `position: fixed` o `z-index: 9999`, więc dopóki jest otwarta, zasłania pasek narzędzi admina. To zachowanie celowe — dokładnie tak działa bramka w module `DataVault`.
+Nakładka ma `position: fixed` i `z-index: 9999`, więc zasłania wszystko, łącznie z paskiem komunikatu o zapisie (`z-index: 9000`).
 
-### Rozdział odpowiedzialności w komunikatach błędów
+### 10.2 Komunikaty błędów wskazują warstwę, która zawiodła
 
-Zasada: **komunikat musi wskazywać warstwę, która faktycznie zawiodła.** Wcześniej `submitAccessLitany()` miało jeden szeroki blok `try` obejmujący zarówno `fetch("/login")`, jak i `await loadManifests()`. Każdy wyjątek z wczytywania manifestów lądował w tej samej klauzuli `catch` i był raportowany jako `accessSilent`, czyli „brak połączenia z bramką dostępu, sprawdź adres w stałej AUDIO_GATE_BASE”. W efekcie awaria pliku `AudioManifest.json` kierowała diagnozę na bramkę, mimo że bramka odpowiadała bez zarzutu.
+| Co zawiodło | Klucz tłumaczenia |
+| --- | --- |
+| `fetch("/login")` rzucił wyjątek (sieć, CORS, zły adres) | `accessSilent` |
+| `/login` → `401` | `accessRejected` |
+| `/login` → inny kod niż 2xx i 401 | `accessLoginStatus` (z kodem) |
+| puste pole hasła | `accessEmpty` |
+| `/manifest` → `401` | `accessExpired` |
+| `/manifest` → `manifest_unavailable` | `accessManifestMissing` (z kodem) |
+| `/manifest` → inny błąd | `accessGateStatus` (z kodem) |
+| inny wyjątek przy pobieraniu archiwum | `accessSilent` |
+| `AudioManifest.json` nie dał się pobrać | `publicManifestMissing` (z kodem i nazwą pliku) |
 
-Obecny podział:
-
-| Co zawiodło | Komunikat | Etykieta |
-| --- | --- | --- |
-| `fetch("/login")` rzucił wyjątek (sieć, CORS, zły adres) | „Brak połączenia z bramką dostępu…” | `accessSilent` |
-| `/login` odpowiedziało `401` | „…Litania Dostępu została odrzucona.” | `accessRejected` |
-| `/login` odpowiedziało innym kodem niż 200 i 401 | „Bramka odpowiedziała nieoczekiwanym kodem HTTP {status}…” | `accessLoginStatus` |
-| `/manifest` odpowiedziało `401` | „Sesja wygasła…” | `accessExpired` |
-| `/manifest` zwróciło `502 manifest_unavailable` | „Bramka nie znalazła manifestu archiwum (HTTP {status})…” | `accessManifestMissing` |
-| `/manifest` zwróciło inny błąd | „Bramka odpowiedziała kodem HTTP {status} przy pobieraniu manifestu archiwum.” | `accessGateStatus` |
-| `AudioManifest.json` nie dał się pobrać | „Nie udało się wczytać listy publicznej (HTTP {status})…” | `publicManifestMissing` |
-
-Każdy błąd HTTP niesie swój kod aż do komunikatu (pole `detail` na obiekcie `Error`), bo to właśnie kod odróżnia „plik pod złą nazwą” od „bramka padła”.
-
-### Niezależność warstw
-
-`loadManifests()` opakowuje **obie** warstwy we własne bloki `try`. Awaria którejkolwiek nie przerywa wczytywania drugiej:
+### 10.3 Niezależność warstw
 
 | Stan | Wynik |
 | --- | --- |
-| Warstwa publiczna padła, chroniona działa | Widać archiwum, `state.publicError` opisuje awarię, pastylka manifestu jest czerwona. |
-| Warstwa chroniona padła, publiczna działa | Widać warstwę demo, `state.libraryError` opisuje awarię, pastylka archiwum jest czerwona. |
-| Obie padły | `loadManifests()` rzuca wyjątek z konkretnym powodem zamiast ogólnego „brak danych”. |
+| Warstwa publiczna padła, chroniona działa | Widać archiwum; `state.publicError`; pastylka manifestu czerwona („Manifest: błąd listy publicznej”). |
+| Warstwa chroniona padła, publiczna działa | Widać demo; `state.libraryError`; pastylka archiwum czerwona („Archiwum: błąd wczytywania”). |
+| Obie padły | `loadManifests()` rzuca błąd z konkretnym powodem. |
 
-Wcześniej `fetchDemoManifest()` był wywoływany bez `try`, więc jego awaria wyrzucała wyjątek z `loadManifests()` i zabierała ze sobą całą bibliotekę — łącznie z archiwum, które wczytałoby się bez problemu.
+## 11. Hasła
 
-## Model SFX po parsowaniu manifestu
+### 11.1 Hasło archiwum Audio
 
-Po parsowaniu każdy SFX ma strukturę logiczną:
+Hasło archiwum to sekret `GROUP_PASSWORD` Workera `audio-gate`. Zmiana: **Cloudflare → Workers & Pages → `audio-gate` → Settings → Variables and Secrets → `GROUP_PASSWORD` → Edit** (albo `npx wrangler secret put GROUP_PASSWORD` w katalogu z konfiguracją Workera), potem wdrożenie. Zmiana hasła nie wylogowuje urządzeń, które już mają token. Żeby wymusić ponowne logowanie wszędzie, trzeba zmienić też `SIGNING_KEY`.
 
-| Pole | Opis |
+### 11.2 Hasło DataVault i GeneratorNPC (dla porządku)
+
+DataVault i GeneratorNPC używają konta technicznego Firebase Auth w projekcie `wh40k-data-slate` (adres konta w `window.WG_DATA_ACCESS_EMAIL`). Hasło zmienia się w **Firebase Console → Authentication → Users → konto → Reset password** albo skryptem `firebase-admin` (`updateUser`). Konta nie wolno usuwać ani tworzyć od nowa, bo jego `uid` jest wpisany w reguły Realtime Database. To hasło nie ma związku z archiwum Audio.
+
+Żadne hasło nie jest zapisane w repozytorium.
+
+## 12. Firebase
+
+### 12.1 Konfiguracja
+
+`Audio/config/firebase-config.js` ustawia `window.firebaseConfig` (`apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`) projektu `audiorpg-2eb6f`. Brak obiektu albo `apiKey` oznacza pracę lokalną.
+
+`initFirebase()`:
+
+1. brak konfiguracji → `state.firebaseConfigMissing = true`, `writeStatus.reportLocalMode("no-config")`, `loadSettingsLocal()`, `renderAll()`;
+2. `initializeApp()` → `activateAppCheck(app)` → `getFirestore(app)`; wyjątek → `reportLocalMode("init-failed")` i praca lokalna;
+3. `state.favoritesDoc = doc(db, "audio", "favorites")`, `state.usingFirestore = true`;
+4. `onSnapshot(favoritesDoc, onData, onError)`:
+   - brak dokumentu → `applySettings(createEmptySettings())` i `persistAndRender()` (powstaje dokument w formacie v2),
+   - dane → `normalizeSettingsV2(snapshot.data())`, `applySettings()`, `writeStatus.warnLocalOverwritten()`, `renderAll()`,
+   - błąd nasłuchu → `state.usingFirestore = false`, `writeStatus.reportReadError(error)`, `loadSettingsLocal()`, `renderAll()`.
+
+Nasłuch działa na żywo: zmiana zapisana w panelu admina pojawia się w otwartych widokach użytkownika bez odświeżania.
+
+### 12.2 App Check
+
+`activateAppCheck(app)` z `shared/firebase-app-check.js` jest wywoływane po `initializeApp()`, a przed `getFirestore()`. Klucz witryny reCAPTCHA Enterprise projektu `audiorpg-2eb6f` jest w `shared/appcheck-config.js`. Bibliotekę reCAPTCHA wczytuje strona (`<script defer>`), a nie SDK, bo SDK dokłada znacznik bez obsługi błędu i przy zablokowanym adresie czeka bez końca, blokując Firestore. Gdy biblioteki brak, App Check jest pomijany z ostrzeżeniem w konsoli.
+
+### 12.3 Reguły
+
+Reguły projektu (odwzorowane w `shared/firestore-audiorpg.rules`) dopuszczają odczyt i zapis wyłącznie dokumentów `generatorNpc/favorites` i `audio/favorites`; wszystko inne jest zablokowane. Warunku `request.app != null` nie dopisujemy (opis w pliku reguł). Ochronę przed obcymi programami daje wymuszanie App Check w konsoli.
+
+## 13. Model ustawień (wersja 2)
+
+### 13.1 Dokument
+
+Dokument `audio/favorites` (i jego kopia w `localStorage` pod `audio.settings`):
+
+```text
+{
+  schemaVersion: 2,
+  playlists: [
+    { id: "main", kind: "main", name: "", entries: [ { itemId, alias } ] },
+    { id: "<uuid>", kind: "list", name: "Nazwa listy", entries: [ { itemId, alias } ] }
+  ],
+  updatedAt: <serverTimestamp>      // tylko w Firestore
+}
+```
+
+| Pole | Reguła |
 | --- | --- |
-| `id` | Stabilizowany slug z nazwy i indeksu wiersza. |
-| `label` | Nazwa dźwięku widoczna w UI. |
-| `groupCount` | Liczba wariantów, jeżeli zgrupowano kilka plików. |
-| `alias` | Alias z `state.aliases[item.id]`. |
-| `filename` | Nazwa pliku albo pierwszy plik z licznikiem `(+N)`. |
-| `folderUrl` | Źródłowa ścieżka folderu. |
-| `tags` | Lista tagów wyciągnięta ze ścieżki folderu. |
-| `tag2` | Drugi poziom tagów, używany jako krótki opis. |
-| `tagPaths` | Ścieżki tagów do filtrowania hierarchicznego. |
-| `access` | `"public"` albo `"protected"`. Decyduje, skąd bierze się adres pliku. |
-| `variants` | Lista wariantów: `{ filename, url }` dla warstwy publicznej, `{ filename, path }` dla chronionej. |
+| `schemaVersion` | Zawsze `2` (`SETTINGS_SCHEMA_VERSION`). |
+| `playlists` | Tablica list w kolejności wyświetlania. **Pozycja 0 to zawsze lista główna.** Pole nazywa się `playlists`, a nie `lists`, żeby żaden starszy kod nie rozpoznał dokumentu jako własnego. |
+| `id` | `"main"` dla listy głównej, `crypto.randomUUID()` dla pozostałych. Unikalne. |
+| `kind` | `"main"` albo `"list"`. Dokładnie jedna lista `main`. |
+| `name` | Do 60 znaków (`LIST_NAME_MAX_LENGTH`). Pusta nazwa listy głównej = nazwa domyślna „Widok główny” / „Main view” w bieżącym języku. Pozostałe listy muszą mieć nazwę. |
+| `entries` | Wpisy w kolejności wyświetlania. `itemId` unikalny w obrębie listy. |
+| `alias` | Do 80 znaków (`ALIAS_MAX_LENGTH`), pusty = brak aliasu. **Alias należy do wpisu, a więc do listy** — ten sam dźwięk może mieć różne aliasy na różnych listach. |
+| `updatedAt` | `serverTimestamp()` ustawiane przy każdym zapisie do Firestore. |
 
-## Grupowanie wariantów
+Nazwy list są danymi użytkownika i nie są tłumaczone. Eksport (`exportSettings`) zapisuje `serializeSettings()` z dodanym `exportedAt` (ISO 8601) — bez tokenu i sekretów.
 
-Jeżeli nazwa sampla kończy się numerem, np. `Explosion 1`, `Explosion 2`, kod próbuje wyznaczyć bazową nazwę przez `getGroupingBaseLabel(...)`.
+### 13.2 Czysty start i stary format
 
-Warianty są grupowane, jeżeli:
+Moduł zna wyłącznie format v2. `normalizeSettingsV2(raw)`:
 
-- mają ten sam folder,
-- mają tę samą nazwę bazową,
-- wykryto więcej niż jeden wariant.
+- dane bez `schemaVersion === 2` albo bez tablicy `playlists` → **puste ustawienia** (sama pusta lista główna) i `legacy = isLegacySettings(raw)`;
+- `isLegacySettings` rozpoznaje stary format po polach `favorites`, `mainView`, `aliases` albo tablicy `lists`; służy wyłącznie do pokazania komunikatu `noticeLegacy` w panelu admina;
+- odczyt starego dokumentu **niczego nie zapisuje**. Pierwsza zmiana w panelu admina nadpisuje dokument całością w formacie v2 (`setDoc` bez `merge`), co usuwa stare pola;
+- `loadSettingsLocal()` usuwa najstarszy klucz `audio.favorites` z `localStorage` przy każdym starcie.
 
-Dla grupowanego dźwięku `variants` zawiera wszystkie URL-e, a UI pokazuje nazwę bazową oraz licznik wariantów.
+Reguły normalizacji formatu v2:
 
-## Tagi
+- pierwsza lista z `kind === "main"` albo `id === "main"` staje się listą główną, kolejne takie są pomijane; brak listy głównej → dopisywana pusta;
+- pozostałe listy dostają `kind: "list"`; puste `id` → `list-<n>`; powtórzone `id` → dopisywany sufiks;
+- `normalizeEntries`: wpisy bez `itemId` i duplikaty są odrzucane (zostaje pierwszy), aliasy przycinane. **Wpisy spoza bieżącego manifestu nie są usuwane** — przy zablokowanym archiwum wszystkie dźwięki chronione są „nieobecne”, a ich wpisy i aliasy muszą przetrwać.
 
-Tagi są wyciągane z `LinkDoFolderu` przez `extractTags(...)`.
+### 13.3 Funkcje modelu
 
-Przetwarzanie tagów:
+| Funkcja | Działanie |
+| --- | --- |
+| `createMainList()` / `createEmptySettings()` | Pusta lista główna / ustawienia z samą listą główną. |
+| `serializeSettings()` | Postać do zapisu (bez `updatedAt`). |
+| `getLists()`, `getList(id)`, `getMainList()`, `getEditedList()` | Dostęp do list; `getEditedList()` spada na listę główną. |
+| `getListName(list)` | Nazwa do wyświetlenia (domyślna dla pustej nazwy). |
+| `buildMembershipIndex()` | Mapa `itemId → [{ listId, alias }]` — do licznika w katalogu, sekcji „Na innych listach”, podpowiedzi aliasów i wyszukiwania po aliasie. |
+| `createList()` | Nowa lista na końcu, nazwa „Nowa lista”; zwraca `id`. |
+| `duplicateList(id)` | Kopia z wpisami i aliasami, nazwa z dopiskiem „(kopia)”, wstawiona zaraz po oryginale (dla listy głównej — na pozycji 1). |
+| `moveListTo(id, index)` | Przesunięcie listy; lista główna się nie rusza, nic nie trafia na pozycję 0. |
+| `addEntries(listId, itemIds)` | Dopisanie na koniec bez duplikatów; zwraca liczbę dodanych. |
+| `removeEntry(listId, itemId)` | Usunięcie wpisu razem z aliasem. |
+| `moveEntry(listId, from, to)` | Przesunięcie wpisu (alias wędruje z nim). |
+| `setEntryAlias(listId, itemId, alias)` | Ustawienie aliasu; zwraca `false`, gdy nic się nie zmieniło. |
+| `onSettingsChanged()` | Przebudowa indeksu, zastosowanie `restoredEditedListId`, naprawa wskazań na nieistniejące listy (`editedListId`, `previewListId`, `userListId`, `renamingListId`), `pruneOrphanPlayers()`. |
+| `applySettings(settings, legacy)` | Podmiana ustawień i `onSettingsChanged()`. |
 
-- normalizuje separatory `/`,
-- obsługuje URL przez `new URL(...).pathname`,
-- ignoruje segmenty z `TAG_IGNORE_SEGMENTS`, np. `AudioRPG`,
-- usuwa fragmenty z `TAG_IGNORE_FRAGMENTS`, np. `SoundPad`, `_Siege_SoundPad`, `Patreon`,
-- zamienia `_` i `-` na spacje,
-- usuwa nadmiarowe białe znaki.
+## 14. Zapis i odczyt
 
-Z tagów budowane jest drzewo `tagTree`, a potem spłaszczona lista dla popupu filtra.
+| Funkcja | Działanie |
+| --- | --- |
+| `saveSettingsLocal()` | `localStorage["audio.settings"] = JSON(serializeSettings())`; zwraca `true`/`false`. |
+| `saveSettings()` | Przy aktywnej bazie `setDoc(favoritesDoc, { ...serializeSettings(), updatedAt: serverTimestamp() })`. Błąd → `usingFirestore = false`, zapis lokalny, `reportSaveError(error, { savedLocally })`. Bez bazy → zapis lokalny; przy skonfigurowanej bazie dodatkowo `noteLocalOnlyChange()`. Udany zapis kasuje komunikat o starym formacie (`markSettingsSaved`). **Nigdy nie odrzuca obietnicy.** |
+| `persistAndRender()` | `onSettingsChanged()` → `renderAll()` → `await saveSettings()`. Widok rysuje się **przed** zapisem, bo przy braku sieci obietnica `setDoc` może się nie rozstrzygnąć. |
+| `loadSettingsLocal()` | Usuwa `audio.favorites`, czyta `audio.settings`, normalizuje, `applySettings()`. |
 
-## Firebase i model ustawień
+Klucze pamięci przeglądarki:
 
-Konfiguracja Firebase znajduje się w:
-
-```text
-Audio/config/firebase-config.js
-```
-
-Plik musi ustawić:
-
-```js
-window.firebaseConfig = {
-  apiKey: "...",
-  authDomain: "...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
-};
-```
-
-Kod używa Firestore dokumentu:
-
-```text
-audio/favorites
-```
-
-### App Check
-
-`initFirebase()` wywołuje `activateAppCheck(app)` z `shared/firebase-app-check.js` bezpośrednio po
-`initializeApp()`, a przed `getFirestore()`. Dzięki temu każde zapytanie do dokumentu
-`audio/favorites` niesie znacznik App Check, czyli potwierdzenie, że przyszło z zarejestrowanej
-aplikacji WrathAndGlory.
-
-Klucz witryny reCAPTCHA Enterprise dla projektu `audiorpg-2eb6f` jest w `shared/appcheck-config.js`,
-razem z kluczem drugiego projektu. Moduł nie trzyma własnej kopii klucza.
-
-Bibliotekę reCAPTCHA Enterprise wczytuje sama strona znacznikiem `<script defer>`, a nie SDK
-Firebase — SDK dokłada własny znacznik bez obsługi błędu wczytania i przy zablokowanym adresie
-czeka bez końca, a razem z nim czeka Firestore. Sprawdzone uruchomieniem: bez tego zabezpieczenia
-moduł zostawał na ekranie wczytywania i po 10 sekundach przechodził w tryb bez połączenia.
-Gdy biblioteki nie ma, `activateAppCheck()` zapisuje ostrzeżenie w konsoli i pomija App Check, a
-moduł działa tak jak przed jego wprowadzeniem, łącznie z zapasem w `localStorage`.
-
-Model dokumentu:
-
-| Pole | Typ | Opis |
+| Klucz | Pamięć | Zawartość |
 | --- | --- | --- |
-| `favorites` | `object` | Obiekt list ulubionych. |
-| `mainView` | `object` | Obiekt widoku głównego. |
-| `aliases` | `object` | Mapa aliasów per `itemId`. |
-| `updatedAt` | `timestamp` | Firestore server timestamp ustawiany przy zapisie. |
+| `audio.settings` | `localStorage` | Ustawienia v2 (tryb lokalny i zapas po odmowie bazy). |
+| `wgLocalOnlyChange:audio.settings` | `localStorage` | Znacznik zmian zapisanych tylko lokalnie przy skonfigurowanej bazie (`{"at":"<ISO>"}`), zarządzany przez `shared/firebase-write-status.js`. |
+| `audio.session` | `localStorage` | Token bramki. |
+| `audio.gateSkipped` | `sessionStorage` | Znacznik „Pomiń”. |
+| `audio.admin.ui` | `localStorage` | Układ panelu admina (rozdział 16). |
+| `audio.admin.filters` | `sessionStorage` | Filtry panelu admina (rozdział 16). |
 
-## Komunikaty o nieudanym zapisie i odczycie
+Każdy dostęp do pamięci jest w `try/catch` (`getStorage`, `readStoredJson`, `writeStoredJson`) — okno prywatne albo zablokowane dane witryny nie zatrzymują modułu.
 
-Moduł nie ma własnych tekstów o awarii bazy. Obsługę przejmuje wspólny moduł
-`shared/firebase-write-status.js`, ten sam, którego używa GeneratorNPC. Instancja powstaje raz, przy
-starcie skryptu:
+### 14.1 Pasek komunikatów o zapisie
+
+Instancja powstaje raz przy wczytaniu skryptu:
 
 ```js
 const writeStatus = createFirebaseWriteStatus({
   mount: document.body,
-  modeMount: document.getElementById("writeStatusMode"),
+  modeMount: $("writeStatusMode"),
   language: currentLanguage,
   scopeKey: AUDIO_SETTINGS_STORAGE_KEY,
   moduleName: "Audio"
 });
 ```
 
-`modeMount` wskazuje slot `#writeStatusMode` — pusty `<div class="write-status-slot">` będący
-pierwszym elementem `.page`. Slot leży **poza** sekcjami `admin-only` i `user-only`, ponieważ
-`setModeVisibility()` usuwa jedną z nich przy starcie, a znacznik trybu ma być widoczny w obu
-trybach modułu. Pastylka `Firebase: …` w nagłówku jest widoczna wyłącznie w panelu admina i nie
-zastępuje znacznika.
+`#writeStatusMode` leży w `.page-top`, poza sekcjami `admin-only` / `user-only`, więc plakietka trybu jest widoczna w obu trybach.
 
-### Wywołania w module
-
-| Miejsce w kodzie | Wywołanie | Efekt |
+| Miejsce | Wywołanie | Efekt |
 | --- | --- | --- |
-| `saveSettings()` — udany `setDoc` | `reportSaveSuccess()` | Pasek znika, znacznik trybu wraca na „dane wspólne", znacznik zmian lokalnych jest kasowany. |
-| `saveSettings()` — odmowa `setDoc` | `reportSaveError(error, { savedLocally })` | Moduł schodzi na pamięć lokalną, pasek pokazuje „zapisano tylko na tym urządzeniu" albo „nie zapisano nic". |
-| `saveSettings()` — zapis lokalny przy skonfigurowanej bazie | `noteLocalOnlyChange()` | Zakłada znacznik zmian lokalnych bez pokazywania paska drugi raz. |
-| `onSnapshot` — trzeci argument | `reportReadError(error)` | Pasek pokazuje „nie udało się wczytać danych z bazy", moduł wczytuje `audio.settings`. |
-| `onSnapshot` — dane wczytane | `warnLocalOverwritten()` | Jeżeli istnieje znacznik zmian lokalnych, pasek ostrzega, że dane z bazy właśnie je zastąpiły. |
-| `initFirebase()` — brak konfiguracji | `reportLocalMode("no-config")` | Pasek w łagodnym tonie informuje o pracy bez bazy. |
-| `initFirebase()` — wyjątek z SDK | `reportLocalMode("init-failed")` | To samo, z inną przyczyną. |
-| `updateStatus()` | `setMode("shared")` albo `setMode("local")` | Znacznik trybu pracy jest odświeżany razem z pastylkami statusu. |
-| `applyLanguage(lang)` | `setLanguage(lang)` | Pasek i znacznik trybu przepisują się na wybrany język bez czekania na kolejny błąd. |
+| `saveSettings()` — udany `setDoc` | `reportSaveSuccess()` | Pasek znika, plakietka „Dane wspólne”, znacznik zmian lokalnych kasowany. |
+| `saveSettings()` — odmowa | `reportSaveError(error, { savedLocally })` | „Zapisano tylko na tym urządzeniu” albo „Nie zapisano nic”. |
+| `saveSettings()` — zapis lokalny przy skonfigurowanej bazie | `noteLocalOnlyChange()` | Znacznik zmian lokalnych. |
+| `onSnapshot` — błąd | `reportReadError(error)` | „Nie udało się wczytać danych z bazy”. |
+| `onSnapshot` — dane | `warnLocalOverwritten()` | Ostrzeżenie, jeżeli dane z bazy zastąpiły zmiany lokalne. |
+| `initFirebase()` | `reportLocalMode("no-config" \| "init-failed")` | Łagodna informacja o pracy bez bazy. |
+| `renderStatus()` | `setMode("shared" \| "local")` | Plakietka trybu. |
+| `applyLanguage()` | `setLanguage(lang)` | Teksty paska w wybranym języku. |
 
-### Sytuacje rozróżniane przez wspólny moduł
+Wspólny moduł rozróżnia sytuacje `nothing-saved`, `local-only`, `read-failed`, `local-mode`, `local-overwritten`, mapuje kody Firestore (`permission-denied`, `unauthenticated`, `unavailable`, `deadline-exceeded`, `resource-exhausted`, `failed-precondition`) na podpowiedzi i ustawia zmienną `--wg-write-status-height` na `<html>`, o którą przesuwa się `body`. Z tej zmiennej korzystają też: sticky `.uv-bar` widoku użytkownika, sticky `.admin-tabs` i szuflada folderów.
 
-| Sytuacja | Kiedy powstaje | Ton paska |
-| --- | --- | --- |
-| `nothing-saved` | Zapis nie powiódł się nigdzie — ani w bazie, ani w `localStorage`. | czerwony |
-| `local-only` | Zapis powiódł się wyłącznie w pamięci przeglądarki. | żółty |
-| `read-failed` | Nie udało się wczytać danych z bazy. | czerwony (żółty przy `unavailable`) |
-| `local-mode` | Moduł świadomie pracuje bez bazy: brak konfiguracji albo nieudany start SDK. | żółty |
-| `local-overwritten` | Dane z bazy zastąpiły zmiany zapisane wyłącznie na tym urządzeniu. | żółty |
+Moduł celowo nie odsyła do bazy zmian zapisanych lokalnie po odzyskaniu dostępu: zapis to jeden `setDoc` całego dokumentu, więc odesłanie starego stanu skasowałoby zmiany z innego urządzenia. Zamiast tego pokazuje ostrzeżenie `local-overwritten`.
 
-### Mapowanie kodów błędów Firestore
+## 15. Stan modułu (`state`)
 
-Przyczyna jest brana z pola `error.code`, po obcięciu prefiksu `firestore/`.
-
-| Kod | Treść podpowiedzi |
+| Pole | Znaczenie |
 | --- | --- |
-| `permission-denied` | Baza odrzuciła operację; najpierw podejrzewaj zablokowany adres `google.com/recaptcha` (dodatek blokujący reklamy, filtr sieci), potem uprawnienia bazy. |
-| `unauthenticated` | Sesja wygasła; odświeżyć stronę i zalogować się ponownie. |
-| `unavailable` | Brak połączenia z bazą; powtórzyć zmianę, gdy połączenie wróci. |
-| `deadline-exceeded` | Baza nie odpowiedziała na czas. |
-| `resource-exhausted` | Przekroczony limit zapytań do bazy. |
-| `failed-precondition` | Odmowa z powodu stanu dokumentu. |
-| pozostałe | Komunikat ogólny z kodem błędu do przekazania w zgłoszeniu. |
+| `items`, `itemsById` | Dźwięki z obu manifestów (po `applyItems`). |
+| `manifestReady`, `manifestAttempted` | Manifest wczytany / próba wczytania się odbyła. |
+| `settings` | `{ playlists }` — ustawienia v2. |
+| `membership` | Indeks z `buildMembershipIndex()`. |
+| `legacyDetected`, `legacyNoticeDismissed`, `archiveNoticeDismissed` | Komunikaty w panelu admina. |
+| `firestore`, `favoritesDoc`, `usingFirestore`, `firebaseConfigMissing`, `firebaseStarted` | Stan Firebase. |
+| `session`, `libraryUnlocked`, `libraryError`, `publicError` | Sesja i warstwy biblioteki. |
+| `builder` | `{ status: "idle" \| "working" \| "ready" \| "error", publicCount, protectedCount, message }`. |
+| `editedListId` | Lista edytowana w panelu admina = lista docelowa katalogu. |
+| `restoredEditedListId` | Lista edytowana z poprzedniej wizyty; czeka, aż dane z bazy ją przyniosą (ustawienia wczytują się po starcie). Kasowana przy świadomym wyborze listy. |
+| `renamingListId` | Lista, której nazwa jest właśnie edytowana. |
+| `folderTree` | `{ roots, index }` z `buildFolderTree()`. |
+| `excludedPaths` | Zbiór ścieżek folderów wykluczonych z katalogu. |
+| `expandedPaths` | Zbiór rozwiniętych folderów drzewa. |
+| `treeSearch`, `catalogSearch`, `catalogScope`, `catalogTier`, `editorSearch` | Filtry. |
+| `catalogLimit`, `catalogResults` | Paginacja katalogu (po 200) i ostatnie wyniki (do zaznaczania zakresem). |
+| `selectedItemIds`, `lastSelectedIndex` | Zaznaczenie w katalogu. |
+| `expandedMembers` | Pozycje katalogu z rozwiniętą linią „Na listach: …”. |
+| `foldersCollapsed`, `foldersOpen` | Szyna folderów (≥1280 px) / otwarta szuflada (<1280 px). |
+| `adminTab` | `catalog` \| `lists` \| `preview` (zakładki <1024 px). |
+| `previewDevice`, `previewFollow`, `previewCollapsed`, `previewListId` | Podgląd. |
+| `toolsMenuOpen` | Menu „Narzędzia”. |
+| `userListId` | Lista wyświetlana w widoku użytkownika (nie jest zapamiętywana między odświeżeniami). |
 
-Kody `unavailable` i `deadline-exceeded` dostają żółty ton nawet przy nieudanym zapisie. Chwilowy
-brak sieci zdarza się przy zwykłym korzystaniu i nie może wyglądać jak awaria bazy — inaczej
-użytkownik przestanie czytać paski.
+## 16. Pamięć interfejsu admina
 
-### Rezerwacja miejsca na pasek
+Zapis działa tylko w panelu admina.
 
-Pasek jest `position: fixed`, więc sam z siebie zasłaniałby pierwszy element strony. Wspólny moduł
-podaje jego wysokość do zmiennej CSS `--wg-write-status-height` na elemencie `<html>`, a arkusz
-`shared/firebase-write-status.css` przesuwa o tyle `body`. Przy schowanym pasku wysokość wynosi
-`0px` i układ jest dokładnie taki jak przed wprowadzeniem paska. Wysokość pilnuje `ResizeObserver`,
-bo komunikat zmienia liczbę wierszy przy obrocie telefonu.
-
-### Czego moduł celowo nie robi
-
-Ustawienia zapisane w pamięci przeglądarki nie są odsyłane do bazy po odzyskaniu dostępu. Moduł
-zapisuje cały dokument jednym `setDoc`, więc odesłanie stanu lokalnego skasowałoby zmiany zapisane
-w międzyczasie z drugiego urządzenia. Zamiast cichego scalania moduł pokazuje ostrzeżenie
-`local-overwritten`. Bezpieczne scalanie wymaga zmiany struktury danych na poziomie pojedynczych
-list i pozycji i jest osobnym zadaniem.
-
-## Model `favorites`
-
-```text
-{
-  lists: [
-    {
-      id: string,
-      name: string,
-      itemIds: string[]
-    }
-  ]
-}
-```
-
-Jeżeli lista ulubionych nie istnieje albo jest uszkodzona, `normalizeFavorites(...)` tworzy listę domyślną.
-
-## Model `mainView`
+`saveAdminUi()` → `localStorage["audio.admin.ui"]`:
 
 ```text
-{
-  itemIds: string[]
-}
+{ foldersCollapsed, expandedPaths: [..] | null, editedListId, previewDevice, previewFollow, previewCollapsed, adminTab }
 ```
 
-`itemIds` przechowuje kolejność dźwięków w widoku głównym użytkownika.
-
-## Model `aliases`
+`saveAdminFilters()` → `sessionStorage["audio.admin.filters"]` (tak jak Filtr Globalny w DataVault — filtry żyją do zamknięcia karty):
 
 ```text
-{
-  "item-id": "Alias"
-}
+{ excludedPaths: [..], treeSearch, catalogSearch, catalogScope, catalogTier }
 ```
 
-Alias jest przypisywany do SFX po wczytaniu ustawień przez `applyAliasesToItems()`.
+`restoreAdminState()` (przy starcie) odtwarza oba obiekty z walidacją wartości i wpisuje filtry do pól formularza. `editedListId` trafia do `restoredEditedListId` i jest stosowane w `onSettingsChanged()`, gdy lista pojawi się w danych.
 
-Przycisk `Wyczyść wszystkie aliasy` usuwa całą mapę `aliases`, także aliasy dźwięków niewidocznych przez obecny filtr.
+Głośność kafelków nie jest zapisywana nigdzie — po odświeżeniu każdy kafelek ma 100%.
 
-## LocalStorage fallback
+## 17. Odtwarzanie
 
-Jeżeli `window.firebaseConfig` albo `apiKey` nie są dostępne, moduł przechodzi w tryb lokalny.
+### 17.1 Klucze odtwarzaczy
 
-Klucz aktualny:
-
-```text
-audio.settings
-```
-
-Klucz legacy:
-
-```text
-audio.favorites
-```
-
-`loadSettingsLocal()` próbuje wczytać `audio.settings`. Jeżeli go nie ma, próbuje stary klucz `audio.favorites`. W razie błędu tworzy domyślne ustawienia.
-
-`saveSettingsLocal()` zapisuje `audio.settings` i zwraca `true` albo `false`. Wynik rozstrzyga treść
-komunikatu: `true` znaczy „zapisano tylko na tym urządzeniu", `false` — „nie zapisano nic".
-
-Trzeci klucz to znacznik zmian zapisanych wyłącznie lokalnie:
-
-```text
-wgLocalOnlyChange:audio.settings
-```
-
-Znacznik zakłada wspólny moduł komunikatów przy każdym zapisie, który trafił tylko do przeglądarki
-mimo skonfigurowanej bazy. Trzyma jedną wartość: `{"at":"<ISO 8601>"}`. Kasuje go pierwszy udany
-zapis do Firestore albo pokazanie ostrzeżenia o nadpisaniu.
-
-### `persistAndRender()`
-
-Wszystkie dwanaście funkcji obsługi zdarzeń zmieniających ustawienia — dodanie i usunięcie listy,
-dodanie, przesunięcie i usunięcie pozycji, zmiana nazwy listy, przesunięcie listy, dodanie,
-przesunięcie i usunięcie w widoku głównym, zmiana aliasu oraz wyczyszczenie wszystkich aliasów —
-kończą się jednym wywołaniem `await persistAndRender()` zamiast pary `await saveSettings()` i
-`renderAllViews()`.
-
-Funkcja rysuje widok **przed** zapisem:
+Odtwarzacze są przypisane do stałego klucza tekstowego, a nie do elementu strony:
 
 ```js
-const persistAndRender = async () => {
-  renderAllViews();
-  try {
-    return await saveSettings();
-  } catch (error) {
-    console.error("[Audio] Nieoczekiwany błąd zapisu ustawień / Unexpected settings save error:", error);
-    return { ok: false, target: "none", error };
-  }
-};
+const makeKey = (context, listId, itemId) => `${context}|${listId}|${itemId}`;
 ```
 
-Kolejność jest celowa. Stan modułu jest zmieniony przed wywołaniem, więc widok nie ma na co czekać,
-a czekanie na bazę miało dwa złe skutki:
+| Kontekst | Miejsce |
+| --- | --- |
+| `user` | prawdziwy widok użytkownika |
+| `prev` | podgląd w panelu admina |
+| `cat` | przycisk odsłuchu w katalogu (`listId` puste) |
+| `ed` | przycisk odsłuchu w edytorze listy |
 
-- odrzucenie zapisu przerywało funkcję obsługi zdarzenia **przed** `renderAllViews()`;
-- przy braku sieci obietnica z `setDoc` w ogóle się nie rozstrzyga, bo Firestore trzyma zapis
-  w kolejce do czasu potwierdzenia przez serwer.
+Dzięki temu przerysowanie (zmiana z bazy, zmiana zakładki, zmiana języka) nie gubi grającego dźwięku: nowy element z tym samym `data-key` od razu dostaje jego stan i da się go zatrzymać. Ten sam dźwięk na dwóch listach to dwa niezależne odtwarzacze z osobną głośnością.
 
-W obu przypadkach interfejs zostawał w stanie sprzed operacji, choć dane w module były już zmienione.
-Wynik zapisu zmienia wyłącznie pasek komunikatu i znacznik trybu pracy, a te wspólny moduł
-aktualizuje sam, niezależnie od `renderAllViews()`.
+| Mapa | Zawartość |
+| --- | --- |
+| `players` | `key → { item, audio, gainNode, loop, lastKey }` — grające dźwięki. |
+| `loadingKeys` | `key → { loop }` — dźwięki w trakcie startu (podpis, pobranie). |
+| `volumes` | `key → wartość suwaka -100..100` — tylko na czas sesji strony. |
+| `volumeClicks` | `key → czas ostatniego kliknięcia` wartości głośności. |
+| `playbackGeneration` | `key → licznik` — ochrona przed wyścigiem przy starcie asynchronicznym. |
 
-## Odtwarzanie audio
+### 17.2 Start, pętla i zatrzymanie
 
-Odtwarzanie jest zarządzane przez:
+`startPlayback(key, item, { loop, previousKey })`:
 
-- `activePlayers`,
-- `getAudioContext()`,
-- `pickRandomVariant(...)`,
-- `startPlayback(...)`,
-- `stopPlayback(...)`,
-- `togglePlayback(...)`,
-- `toggleLoop(...)`.
+1. `bumpGeneration(key)`; losowanie wariantu `pickRandomVariant(item, previousKey)`;
+2. jeżeli dźwięk nie grał: `loadingKeys.set(key, { loop })` → kafelek w stanie „wczytywanie”;
+3. `resolveVariantUrl()`; błąd `gate_unauthorized` → bramka z `accessExpired`; inny błąd → `alert(alertPlaybackFailed)`;
+4. jeżeli w międzyczasie zmieniło się pokolenie (kliknięto coś innego) — wynik jest porzucany;
+5. `new Audio()`; dla warstwy chronionej `audio.crossOrigin = "anonymous"` **przed** ustawieniem `src` (inaczej `createMediaElementSource` skazi graf Web Audio i dźwięk z bramki będzie cichy);
+6. `AudioContext` (wznawiany przy `suspended`) → `createMediaElementSource(audio)` → `GainNode` → `destination`;
+7. zapis w `players`, usunięcie z `loadingKeys`, `refreshKey(key)`;
+8. `timeupdate` → pasek postępu; `ended` → przy `loop` nowe `startPlayback` z kolejnym wariantem (bez stanu „wczytywanie”, żeby kafelek nie migał), inaczej `stopPlayback`; `error` / odrzucone `play()` → alert i zatrzymanie.
 
-Dźwięk jest odtwarzany przez obiekt `Audio`. Jeżeli przeglądarka obsługuje `AudioContext`, kod tworzy `MediaElementSource` i `GainNode`. Jeżeli nie, używa `audio.volume`.
+`pickRandomVariant(item, previousKey)` zwraca **obiekt wariantu**: przy jednym wariancie ten wariant; przy wielu losuje do 8 razy wariant, którego klucz (`getVariantKey` = `url` albo `path`) różni się od poprzedniego, a w ostateczności bierze pierwszy różny.
 
-### Kolejność ustawiania `crossOrigin` — pułapka dająca ciszę
+| Funkcja | Działanie |
+| --- | --- |
+| `togglePlayback(key, itemId)` | Grający / wczytywany → stop; pozycja spoza manifestu przy zablokowanym archiwum → bramka z `accessMissingItem`; inaczej start. |
+| `toggleLoop(key, itemId)` | Grający w pętli → stop; grający bez pętli → włącza pętlę bez restartu; wczytywany → przełącza flagę pętli; nieaktywny → start w pętli. |
+| `stopPlayback(key)` | Pauza, `currentTime = 0`, usunięcie z map, `bumpGeneration`, odświeżenie. |
+| `stopAllPlayback()` | Zatrzymuje wszystkie klucze z `players` i `loadingKeys` (wszystkie konteksty). |
+| `pruneOrphanPlayers()` | Zatrzymuje dźwięki (poza kontekstem `cat`), których lista albo wpis zniknęły. |
 
-Dla warstwy chronionej plik przychodzi z innej domeny niż aplikacja, a moduł podłącza go do grafu Web Audio przez `createMediaElementSource`. Specyfikacja wymaga, żeby takie media były pozyskane zgodnie z CORS. Element `<audio>` bez atrybutu `crossOrigin` zostaje „skażony” i węzeł emituje **ciszę** — bez żadnego błędu w konsoli, plik ładuje się poprawnie i pozornie gra.
+### 17.3 Głośność
 
-Dlatego kod nie używa konstruktora `new Audio(url)`, który przypisuje `src` natychmiast:
+- Suwak `-100..100`, krok 1, wartość domyślna `0`.
+- `volumeToGain(v) = (v + 100) / 100` → wzmocnienie `0..2` (0% … 200%); `volumeToPercent` pokazuje procent obok suwaka.
+- Głośność idzie przez `GainNode`, bo iPhone i iPad ignorują `audio.volume`; `audio.volume` (obcięte do 0..1) zostaje tylko dla przeglądarek bez `AudioContext`.
+- `handleVolumeValueClick(key)` — dwa kliknięcia w wartość procentową w ciągu 450 ms (`VOLUME_RESET_DOUBLE_CLICK_MS`) przywracają 100%. Własne wykrywanie zamiast `dblclick`, którego część ekranów dotykowych nie wysyła.
 
-```js
-const audio = new Audio();
-if (item?.access !== "public") {
-  audio.crossOrigin = "anonymous";
-}
-audio.src = fullUrl;
-```
+### 17.4 Wskaźniki i blokada ekranu
 
-Atrybut musi być ustawiony **przed** przypisaniem `src`. Po stronie bramki odpowiada temu nagłówek `Access-Control-Allow-Origin` z wartością `ALLOWED_ORIGIN`.
+`updatePlaybackIndicators()` po każdej zmianie:
 
-Warstwa demo leży na tym samym origin co aplikacja, więc nie potrzebuje ani atrybutu, ani nagłówka.
+- przyciski `.stop-all`: `disabled` przy zerze, klasa `is-active`, licznik `(N)` i `aria-label`,
+- zakładki `.uv-tab`: klasa `has-playing` (czerwona kropka), gdy gra którykolwiek klucz `kontekst|lista|…`; `title` = pełna nazwa listy, z dopiskiem `tabPlaying`, gdy coś gra,
+- `updateWakeLock()`: `navigator.wakeLock.request("screen")`, gdy gra co najmniej jeden dźwięk i karta jest widoczna; zwolnienie, gdy nic nie gra. `visibilitychange` wywołuje ponowne sprawdzenie (przeglądarka zwalnia blokadę przy ukryciu karty). Brak API — funkcja nic nie robi.
 
-### Asynchroniczny start i licznik pokoleń
+`syncPlaybackElement(element)` przenosi stan na element z `data-key`:
 
-Adres warstwy chronionej powstaje dopiero po zapytaniu bramki, więc `startPlayback` jest funkcją asynchroniczną. Między kliknięciem a startem mija chwila, w której użytkownik może kliknąć coś innego na tym samym kafelku.
+- kafelek `.tile`: `data-state` (`idle` / `loading` / `playing`; `missing` zostaje), ikona `▶` / `…` / `■`, `aria-pressed` i `aria-label` przycisku odtwarzania, stan Loop (`is-looping`, `aria-pressed`), pasek postępu, suwak i wartość głośności,
+- przycisk `.play-btn` w katalogu/edytorze: klasy `is-playing` / `is-loading`, ikona, `aria-pressed`, `title`.
 
-Mapa `playbackGeneration` przechowuje numer pokolenia per kafelek. Każdy start i każde `stopPlayback` numer zwiększa. Po powrocie z bramki kod porównuje swój numer z bieżącym i przerywa, jeżeli się różnią. Bez tego zabezpieczenia spóźnione żądanie mogłoby przejąć kafelek zajęty już przez inny dźwięk.
+## 18. Panel admina
 
-## Głośność
+### 18.1 Nagłówek i komunikaty
 
-Suwak głośności ma zakres:
+- `#unlockLibrary` — otwiera bramkę; ukryty po odblokowaniu.
+- Menu „Narzędzia” (`#toolsMenuButton`, `#toolsMenuList`, `aria-expanded`): `#reloadManifest` (ponowne `loadManifests()`), `#buildManifests`, `#exportSettings`, `#reloadLocal` (widoczny tylko w trybie lokalnym), `#clearAllAliases` (z potwierdzeniem). Zamykane kliknięciem poza menu, wyborem pozycji i `Escape`.
+- Pastylki `renderStatus()`: `#manifestStatus` (`Manifest: N pozycji` / błąd listy publicznej), `#firebaseStatus`, `#listsStatus` (`Listy: N`), `#libraryStatus` (zablokowane / odblokowane / błąd), `#builderStatus`. Czerwień (`.is-error`) wyłącznie dla błędów; szczegół w `title`.
+- `#adminNotices` (`renderNotices`): `noticeLegacy` (dane w starym formacie pominięte) i `noticeArchiveLocked` (archiwum zablokowane — wpisy chronione są widoczne jako „(brak w manifeście)” i nie zostaną usunięte). Każdy komunikat ma przycisk ✕; zamknięcie działa do odświeżenia strony.
+
+### 18.2 Warsztat i układ
+
+`#workbench` to siatka `var(--folders-w) minmax(0, 1fr) var(--lists-w)` o wysokości `calc(100dvh - 24px)` (min. 640 px); każda kolumna przewija się osobno (`.col-body`), nagłówki kolumn (`.col-head`) stoją w miejscu.
+
+`renderLayoutState()` ustawia: `body[data-admin-tab]`, aktywną zakładkę, klasę `is-folders-collapsed` (tylko ≥1280 px), `is-collapsed` / `is-drawer-open` panelu folderów, tło szuflady, dostępne szerokości podglądu (`getAvailableDevices()`: Tablet, gdy okno > 860 px; Telefon, gdy > 430 px), `data-device` ramki, zwinięcie podglądu i stan `#previewFollow`. Wywoływane także przy `resize` (debounce 120 ms).
+
+| Szerokość okna | Układ |
+| --- | --- |
+| ≥ 1600 px | 3 kolumny: foldery 280 px, katalog, listy 420 px. |
+| 1280–1599 px | 3 kolumny: 240 px, katalog, 380 px. |
+| 1024–1279 px | 2 kolumny: katalog i listy (`minmax(320px, 380px)`); foldery jako szuflada z lewej (`min(360px, 90vw)`) otwierana przyciskiem „Foldery” w nagłówku katalogu, zamykana ✕, tłem albo `Escape`. |
+| < 1024 px | Zakładki Katalog / Listy / Podgląd (sticky pod paskiem zapisu); widoczny jeden panel, strona przewija się w całości; pasek zaznaczonych przykleja się do dołu. |
+| < 720 px | Wiersz katalogu w dwóch liniach (nazwa na całą szerokość, pod nią licznik list), bez plakietki warstwy; pole aliasu w osobnej linii; menu „Narzędzia” rozwija się od lewej. |
+
+Przy szerokości ≥ 1280 px panel folderów można zwinąć przyciskiem `«` do szyny 44 px z pionowym napisem „Foldery”; kliknięcie szyny (`»`) rozwija go z powrotem. Stan zwinięcia jest zapamiętywany.
+
+### 18.3 Drzewo folderów
+
+Model:
+
+- `buildFolderTree(items)` tworzy węzeł dla każdej ścieżki z `tagPaths` (`{ path, name, depth, parent, children, ownCount, totalCount }`). `ownCount` — dźwięki leżące bezpośrednio w folderze (najgłębsza ścieżka), `totalCount` — w całym poddrzewie. Dźwięki bez folderu trafiają do węzła `__no_folder__` („(bez folderu)”), sortowanego na koniec; pozostałe węzły sortowane po nazwie.
+- Filtr to zbiór **wykluczonych** ścieżek `excludedPaths`. Dźwięk jest widoczny w katalogu, gdy jego `folderPath` nie jest wykluczony. Dzięki temu zaznaczenie podfolderu działa także przy odznaczonym rodzicu, a folder z własnymi dźwiękami i podfolderami jest obsłużony poprawnie.
+- `computeTreeStats()` liczy od liści w górę stan każdego węzła: `all` (folder i poddrzewo widoczne), `none`, `some` (mieszany) oraz liczbę widocznych dźwięków. Checkbox: `checked` dla `all`, `indeterminate` dla `some` (ustawiane właściwością po wstawieniu HTML).
+- Kliknięcie checkboxa: stan `all` → `setSubtreeIncluded(node, false)` (wyklucza całe poddrzewo), stan `none` albo `some` → włącza całe poddrzewo.
+- Licznik przy folderze: `(N)` albo `(widoczne/N)`, gdy część jest ukryta.
+- „tylko” (`tree-only`) → `excludeAllFolders()` + włączenie poddrzewa. Przy myszy przycisk pojawia się po najechaniu na wiersz albo przy fokusie; na ekranach dotykowych jest widoczny stale.
+- „Zaznacz wszystko” czyści `excludedPaths`; „Odznacz wszystko” wyklucza każdy folder z `ownCount > 0`; „Rozwiń/Zwiń wszystko” zmienia `expandedPaths`; ▸/▾ przełącza jeden folder.
+
+Wyszukiwanie (`getTreeSearch()`, debounce 150 ms):
+
+- fraza jest składana `toNeedle()` (`foldPolish` + `trim`); sama spacja nie jest filtrem,
+- pasują węzły, których nazwa zawiera frazę; widoczne są węzły pasujące, ich całe poddrzewa i przodkowie; przodkowie są wymuszenie rozwinięci (`forced`), pasujące węzły zachowują własny stan rozwinięcia,
+- dopasowanie jest wyróżnione `<mark>` (`highlightMatch`, poprawne także dla polskich znaków),
+- pod polem pojawiają się akcje „Zaznacz pasujące”, „Odznacz pasujące”, „Tylko pasujące” (działają na poddrzewa pasujących węzłów),
+- wyszukiwanie zmienia tylko to, co widać w drzewie — nie filtruje katalogu.
+
+Niebieskie sygnały: etykieta „Szukaj folderu” (`field-label--active`) przy aktywnej frazie; tytuł „Foldery” (`is-filter-on`) i niebieskie kropki (`#foldersTitleDot`, `#foldersRailDot` na szynie, `#openFoldersDot` na przycisku szuflady), gdy choć jeden folder z dźwiękami jest wykluczony. `title` podaje „Katalog pokazuje dźwięki z X z Y folderów”.
+
+`onFolderFilterChanged()` resetuje paginację, zapisuje filtry, rysuje drzewo i katalog.
+
+### 18.4 Katalog
+
+`getCatalogResults(targetIds)` stosuje filtry w kolejności: folder (`excludedPaths`) → warstwa (`catalogTier`: `all` / `public` / `protected`) → zakres (`catalogScope`: `all` / `outside` — spoza listy docelowej / `inside` — z listy docelowej) → fraza (w `searchText`, a gdy nie pasuje — w aliasach tego dźwięku ze wszystkich list).
+
+Lista docelowa (`#targetList`) jest zawsze tą samą listą co edytowana (`setEditedList`).
+
+Wiersz `.cat-row` (paginacja po 200, przycisk „Pokaż kolejne N”):
+
+| Element | Działanie |
+| --- | --- |
+| `.cat-check` | Zaznaczenie; z `Shift` — zakres od ostatnio klikniętego (`handleCatalogSelection`). `Ctrl`/`Cmd` + kliknięcie nazwy przełącza zaznaczenie. |
+| `.play-btn` (`cat|…`) | Odsłuch bez dodawania. |
+| `.cat-title` | Nazwa z `(N)`; nie kurczy się, dopóki nie zajmie 65% wiersza. |
+| `.cat-meta` | Ścieżka (`tags` od drugiego, łączone ` › `) i nazwa pliku; pełna ścieżka w `title`. |
+| `.chip--tier` | „demo” / „archiwum”. |
+| `.chip--members` | Liczba list z tym dźwiękiem; `title` z nazwami list i aliasami; kliknięcie rozwija linię `.cat-members`. Wyróżniona, gdy dźwięk jest na liście docelowej. |
+| `.add-btn` | `+` dodaje na koniec listy docelowej; `✓` usuwa (z potwierdzeniem, jeżeli wpis ma alias). |
+
+„Zaznacz wszystkie wyniki” pyta o potwierdzenie powyżej 50 wyników (`SELECT_ALL_CONFIRM_THRESHOLD`). Pasek `#bulkBar` (licznik, „Dodaj do „lista””, „Odznacz”) jest ostatnim elementem kolumny, więc zawsze widoczny; dodanie zbiorcze zachowuje kolejność katalogu i pomija dźwięki już obecne. Podsumowanie `#catalogSummary`: „Foldery: X z Y” (niebieskie przy aktywnym filtrze) · „Wyniki: N z M”. Etykieta „Szukaj dźwięku” świeci na niebiesko przy aktywnej frazie.
+
+Klawisz `/` (poza polami tekstowymi, przy zamkniętej bramce) przenosi fokus do wyszukiwarki katalogu, a na wąskim ekranie przełącza na zakładkę Katalog.
+
+### 18.5 Panel list
+
+`renderLists()` rysuje wiersz `.list-row` na każdą listę:
+
+- lista główna: pinezka 📌, plakietka „lista główna”, bez uchwytu i strzałek, zawsze pierwsza,
+- pozostałe: uchwyt `⠿` (`.drag-handle`, `touch-action: none`), nazwa (przycisk wyboru), licznik wpisów, ▲/▼ (▲ wyłączone na pozycji 1, ▼ na ostatniej),
+- aktywna lista ma klasę `is-active` (zielone tło i poświata),
+- dwuklik nazwy → wybór i zmiana nazwy.
+
+„+ Nowa lista” tworzy listę, wybiera ją i od razu otwiera pole nazwy. Na ekranie < 1024 px wybór listy przewija do edytora.
+
+### 18.6 Edytor listy
+
+Nagłówek (`#editorHead`): tytuł (dla listy głównej z podpisem „lista główna”), ✎ zmiana nazwy, ⧉ duplikat, 🗑 usunięcie (poza listą główną, z potwierdzeniem podającym liczbę wpisów i aliasów), licznik wpisów, „Wyczyść aliasy tej listy” (z potwierdzeniem, wyłączony bez aliasów).
+
+Zmiana nazwy (`startRename` / `commitRename` / `cancelRename`): pole z `maxlength = 60`, `Enter` lub opuszczenie pola zapisuje, `Esc` anuluje. Pusta nazwa listy ulubionych przywraca poprzednią; pusta nazwa listy głównej oznacza nazwę domyślną.
+
+Wpis `.entry`:
+
+| Element | Działanie |
+| --- | --- |
+| `⠿` | Uchwyt przeciągania (wyłączony przy aktywnym wyszukiwaniu). |
+| `N.` | Pozycja na liście. |
+| `.play-btn` (`ed|lista|dźwięk`) | Odsłuch. |
+| Tytuł | Nazwa z `(N)` i wyróżnieniem frazy; dla wpisu spoza manifestu „(brak w manifeście)” i `itemId` w `<code>`. |
+| Ścieżka | Foldery dźwięku. |
+| `.alias-input` | Alias na tej liście (`maxlength = 80`). Zapis na zdarzenie `change` (opuszczenie pola albo `Enter`); `Esc` przywraca wartość sprzed edycji. Podpowiedzi z `<datalist id="aliasSuggestions">` — aliasy tego dźwięku z innych list, budowane przy wejściu w pole. |
+| ⤒ ▲ ▼ ⤓ | Na początek / wyżej / niżej / na koniec. |
+| ✕ | Usunięcie wpisu (bez potwierdzenia). |
+| „Na innych listach: …” | Nazwy innych list z tym dźwiękiem i aliasy na nich („bez aliasu”, gdy brak). |
+
+Wyszukiwanie na liście (debounce 100 ms) zawęża wpisy po nazwie, aliasie i pliku (dla wpisu spoza manifestu po aliasie i `itemId`). Przy aktywnej frazie strzałki i przeciąganie są wyłączone, a etykieta świeci na niebiesko i pojawia się podpowiedź `editorReorderLocked` — kolejność zmienia się tylko na pełnej liście, bo indeksy wpisów muszą odpowiadać pozycjom.
+
+### 18.7 Przeciąganie (SortableJS)
+
+`initSortables()` po załadowaniu biblioteki tworzy dwie instancje:
+
+| Instancja | Kontener | Opcje | `onEnd` |
+| --- | --- | --- | --- |
+| `listsSortable` | `#listsList` | `handle: ".drag-handle"`, `draggable: ".list-row"`, `animation: 150`, `onMove` blokuje upuszczenie przed listą główną | `moveListTo(id, newIndex)` → `persistAndRender()`, inaczej `renderLists()` |
+| `entriesSortable` | `#editorEntries` | `handle: ".drag-handle"`, `draggable: ".entry"`, `animation: 150`, `disabled` przy aktywnym wyszukiwaniu | `moveEntry(edytowana, oldIndex, newIndex)` → `persistAndRender()`, inaczej `renderEditor()` |
+
+`renderEditor()` aktualizuje `entriesSortable.option("disabled", locked)`. Klasy `.sortable-ghost` (miejsce upuszczenia, przerywana ramka) i `.sortable-chosen` (poświata) są w `style.css`.
+
+### 18.8 Zachowanie fokusu
+
+`withPreservedFocus(container, render)` zapamiętuje element z fokusem (po atrybucie `data-focus-key`, np. `alias:<itemId>`, `entry-up:<itemId>`, `tree-check:<path>`), a dla pól tekstowych — wartość i zaznaczenie; po przerysowaniu przywraca fokus, wpisany tekst i kursor. Dzięki temu zmiana przychodząca z bazy w trakcie pisania aliasu nie kasuje tekstu, a przesuwanie wpisu strzałkami z klawiatury nie gubi fokusu.
+
+### 18.9 Podgląd
+
+- `renderPreview()` wywołuje `renderUserView(#previewView, "prev")` — tę samą funkcję co prawdziwy widok.
+- „podąża za edytowaną listą” (`previewFollow`, domyślnie włączone): podgląd pokazuje listę edytowaną, a kliknięcie zakładki w podglądzie zmienia listę edytowaną. Wyłączone — podgląd ma własną listę (`previewListId`).
+- Szerokość: Komputer (pełna), Tablet (820 px), Telefon (390 px) — `data-device` na `#previewFrame` ustawia `max-width`; widok w środku reaguje przez zapytania kontenerowe, więc wygląda jak na danym urządzeniu. Przyciski szerokości węższych od okna są ukrywane.
+- „Otwórz prawdziwy widok ↗” — link `index.html` w nowej karcie.
+- „Zwiń podgląd” / „Rozwiń podgląd” — zwinięty podgląd nie jest rysowany.
+- Odtwarzanie w podglądzie działa naprawdę (kontekst `prev`), niezależnie od katalogu i edytora.
+
+## 19. Widok użytkownika
+
+`renderUserView(root, context)` rysuje:
 
 ```text
--100 .. 100
+.uv[data-ctx]
+  .uv-bar
+    .uv-brand                     „Audio”
+    .uv-tabs[role=tablist]        .uv-tab na każdą listę (lista główna pierwsza)
+    .uv-actions
+      .stop-all                   ■ Zatrzymaj wszystko (N)
+      .unlock-btn                 🔒 Odblokuj archiwum (tylko context=user i zablokowane archiwum)
+  .uv-grid | .uv-empty            kafelki albo „Na tej liście nie ma jeszcze dźwięków.”
 ```
 
-`volumeToGain(value)` mapuje go na zakres:
+- Lista aktywna: `state.userListId` (widok) albo `getPreviewListId()` (podgląd); nieistniejąca → pierwsza lista. Po odświeżeniu strony widok zaczyna od listy głównej.
+- Przewijanie paska zakładek jest zachowywane między przerysowaniami, a aktywna zakładka jest doprowadzana do widoku tylko w poziomie (bez przewijania strony).
+- `selectViewList(context, listId)` — zmiana listy; w podglądzie przy `previewFollow` zmienia listę edytowaną.
+- Zmiana zakładki nie zatrzymuje dźwięków: grające dźwięki z innych list sygnalizuje czerwona kropka na zakładce.
+
+Kafelek (`renderTile`):
 
 ```text
-0 .. 2
+article.tile[data-key][data-item-id][data-state]
+  button.tile-play                  cała górna część kafelka; title = pełny napis
+    .tile-icon                      ▶ / … / ■ / 🔒
+    .tile-title                     Nazwa (alias) (N) — do 3 wierszy
+    .tile-tag                       tag2 (jeden tag)
+    .tile-status                    „wczytywanie…” / „(brak w manifeście)”
+  .tile-progress > span             pasek postępu
+  .tile-controls
+    input.volume-slider             -100..100
+    button.tile-volume              „100%” (dwuklik → 100%)
+    button.loop-btn                 ⟳ Loop
 ```
 
-W trybie WebAudio ta wartość trafia do `gainNode.gain.value`. Bez WebAudio wartość jest ograniczana do zakresu `0..1` i ustawiana jako `audio.volume`.
+Napis tytułu: `buildTitleText(label, alias, groupCount)` = `Nazwa (alias) (N)`; w HTML alias ma klasę `.sample-alias`, a `(N)` — `.group-count`. Przesunięcie suwaka nigdy nie uruchamia dźwięku (suwak leży poza przyciskiem odtwarzania).
 
-## Losowanie wariantów
+| `data-state` | Wygląd |
+| --- | --- |
+| `idle` | Zielona ramka, ikona ▶. |
+| `loading` | Przerywana ramka, pulsująca ikona …, napis „wczytywanie…”. |
+| `playing` | Czerwona ramka z poświatą, czerwone ikona ■ i nazwa, czerwony pasek postępu (przesuwający się, gdy długość nieznana). |
+| `missing` | Przygaszony kafelek, ikona 🔒, nazwa = alias albo `itemId`, napis „(brak w manifeście)”, bez suwaka i Loop. Kliknięcie przy zablokowanym archiwum otwiera bramkę. |
 
-`pickRandomVariant(item, previousUrl)` wybiera losowy URL z `item.variants`.
+`bindUserViewEvents(root, context)` obsługuje `uv-select`, `uv-stop-all`, `uv-unlock`, `uv-play`, `uv-loop`, `uv-volume-reset` (kliknięcia) i `uv-volume` (`input`). Ta sama funkcja jest podpięta do `#userView` (`user`) i `#previewView` (`prev`).
 
-Jeżeli dźwięk ma więcej niż jeden wariant, funkcja próbuje uniknąć natychmiastowego powtórzenia poprzedniego URL. Po kilku próbach używa fallbacku do dowolnego innego wariantu albo do ostatnio wylosowanej wartości.
+## 20. Style i layout
 
-## Loop
+### 20.1 Paleta (`:root` w `style.css`)
 
-Przycisk `Loop` jest renderowany tylko w prawdziwym widoku użytkownika bez `?admin=1`.
+| Zmienna | Wartość | Użycie |
+| --- | --- | --- |
+| `--bg` | 2 × `radial-gradient` zieleni + `#031605` | tło strony |
+| `--panel` | `#000` | nagłówek, kolumny, pasek widoku |
+| `--panel-alt` | `#041b08` | kafelki |
+| `--border` / `--accent` | `#16c60c` | ramki, akcent |
+| `--accent-dark` | `#0d7a07` | — |
+| `--accent-strong` | `#1ee616` | ikony, fokus, aktywne elementy |
+| `--text` | `#9cf09c` | tekst |
+| `--muted` | `rgba(156, 240, 156, 0.7)` | teksty pomocnicze |
+| `--danger` | `#ff5f5f` | odtwarzanie, Loop, błędy, `(N)` |
+| `--glow` | `0 0 25px rgba(22, 198, 12, 0.45)` | nagłówek admina |
+| `--shadow` | `0 8px 24px rgba(0, 0, 0, 0.45)` | kolumny, kafelki, menu |
+| `--radius` | `12px` | panele |
+| `--filter-on` | `#3D8FC4` | aktywny filtr (etykiety, tytuł) |
+| `--filter-on-bright` | `#6FB3E0` | kropki, `<mark>`, podpowiedź edytora |
+| `--filter-on-glow` | `rgba(61, 143, 196, 0.40)` | poświata |
+| `--filter-on-bg-active` | `rgba(61, 143, 196, 0.20)` | tło `<mark>` |
+| `--filter-on-border`, `--filter-on-bg` | `rgba(61,143,196,.55)`, `rgba(61,143,196,.10)` | zarezerwowane dla spójności z DataVault |
+| `--folders-w` / `--lists-w` | 260 / 400 px (1600+: 280 / 420; 1280–1599: 240 / 380) | kolumny warsztatu |
 
-Zachowanie:
+Niebieski oznacza w module wyłącznie „filtr jest założony”. Czerwień oznacza odtwarzanie albo błąd. Alias: `#d2fad2`.
 
-- kliknięcie `Loop` uruchamia dźwięk od razu w trybie pętli,
-- po zdarzeniu `ended` startuje kolejny losowy wariant,
-- ponowne kliknięcie aktywnego `Loop` zatrzymuje pętlę,
-- jeżeli trwa zwykłe odtwarzanie, kliknięcie `Loop` przełącza je w tryb pętli.
+### 20.2 Typografia
 
-Aktywny stan pętli jest oznaczany klasą `is-looping` i `aria-pressed="true"`.
+Font: `"Fira Code", "Consolas", "Source Code Pro", monospace` (Fira Code 400/600 z Google Fonts). Rozmiary: tytuł admina `clamp(20px, 2.6vw, 28px)` uppercase, `letter-spacing: 0.1em`; tytuły kolumn 14 px uppercase; tekst 13 px; meta 11–12 px; przyciski 13 px (`.btn-small` 11 px) uppercase z `letter-spacing: 0.06em`; nazwa na kafelku 15 px / 600, `line-clamp: 3`.
 
-## Renderowanie widoków
+### 20.3 Szerokość strony
 
-`renderAllViews()` odświeża:
+- `.page`: `max-width: 1280px`, `padding: 20px 24px 40px`, kolumna z `gap: 16px`,
+- panel admina: `max-width: 1760px`,
+- widok użytkownika: bez limitu, `padding: clamp(8px, 2vw, 24px)`, `gap: 10px`.
 
-- statusy,
-- panel filtrów tagów,
-- widoczność panelu tagów,
-- listę SFX admina,
-- listy ulubionych admina,
-- widok główny admina,
-- widok główny użytkownika,
-- listy ulubionych użytkownika,
-- nawigację użytkownika,
-- aktywne przyciski nawigacji,
-- popup tagów, jeżeli jest otwarty.
+### 20.4 Widok użytkownika — zapytania kontenerowe
 
-## i18n
+`.uv` ma `container-type: inline-size; container-name: uv`, więc widok reaguje na szerokość **swojego kontenera**, a nie okna — dzięki temu podgląd 390 px wygląda jak telefon.
 
-`translations` zawiera języki:
+| Warunek | Zmiana |
+| --- | --- |
+| zawsze | Siatka `repeat(auto-fill, minmax(min(100%, 250px), 1fr))`, `gap: 12px` — liczba kolumn wynika z szerokości. |
+| `@container uv (max-width: 1023px)` | Zakładki w osobnym, pełnym wierszu paska (`order: 3`), jeden rząd przewijany w bok ze `scroll-snap`. |
+| `@container uv (max-width: 559px)` | Przyciski „Zatrzymaj wszystko” i „Odblokuj archiwum” pokazują same ikony (nazwa w `aria-label` i `title`), mniejsze odstępy. |
+| `.uv[data-ctx="user"] .uv-bar` | Pasek przyklejony (`position: sticky; top: var(--wg-write-status-height, 0px)`) tylko w prawdziwym widoku. |
 
-- `pl`,
-- `en`.
+Zakładka: maks. 260 px z wielokropkiem; aktywna — tło `rgba(22,198,12,.25)`, ramka `--accent-strong`, tekst `#d2ffd2`. Kropka odtwarzania: 7 px, `--danger`, w prawym górnym rogu.
 
-`applyLanguage(lang)` aktualizuje:
+### 20.5 Ekrany dotykowe i ruch
 
-- `document.documentElement.lang`,
-- selecty języka admina i użytkownika,
-- tytuły,
-- opisy,
-- placeholdery,
-- przyciski,
-- statusy,
-- puste stany,
-- widoki renderowane dynamicznie.
+- `@media (pointer: coarse)`: przyciski, zakładki ≥ 44 px wysokości; przyciski ikonowe, odsłuchu i dodawania 40 × 40 px; wiersz drzewa 40 px; checkboxy 20 px; pola i selecty ≥ 40 px, 15 px tekstu (bez automatycznego powiększania na iOS); suwak 32 px z uchwytem 26 px.
+- `@media (hover: hover) and (pointer: fine)`: przycisk „tylko” w drzewie tylko po najechaniu/fokusie.
+- `@media (prefers-reduced-motion: reduce)`: bez pulsowania ikony, bez animacji paska i przejścia szuflady.
+- Fokus klawiatury: `outline: 2px solid var(--accent-strong)` z odstępem 2 px na wszystkich elementach sterujących.
+- `[hidden] { display: none !important; }` — atrybut `hidden` wygrywa z każdą regułą `display`.
 
-Teksty komunikatów o awarii bazy są wyjątkiem: nie ma ich w `translations`. Trzyma je
-`shared/firebase-write-status.js` w obu językach, a `applyLanguage()` przekazuje do niego wybrany
-język wywołaniem `writeStatus.setLanguage(lang)`. Dzięki temu ten sam komunikat nie powstaje drugi
-raz w słowniku modułu i nie rozjeżdża się z modułem GeneratorNPC.
+### 20.6 Bramka
 
-Oba przełączniki języka — użytkownika (`languageSelectUser`) i admina (`languageSelect`) — są
-ukryte klasą `language-switcher--hidden`. Reguła `.language-switcher--hidden { display: none
-!important; }` leży w bloku `<style>` pliku `Audio/index.html`. Warstwa tłumaczeń pozostaje aktywna,
-a domyślnym językiem jest polski.
+Wygląd pochodzi z `shared/access-gate.css`. Moduł dodaje `.accessGate__skip` (lewa kolumna drugiego wiersza siatki; poniżej 640 px — wiersz 4, pełna szerokość) oraz `.btn.primary` (tło `--text`, tekst `#031605`).
 
-Aby pokazać przełącznik, wystarczy usunąć klasę `language-switcher--hidden` z kontenera
-`<div class="language-switcher language-switcher--hidden">`. W `Audio/index.html` są **dwa** takie
-kontenery: jeden w widoku użytkownika i jeden w panelu admina — jeżeli oba przełączniki mają być
-widoczne, klasę trzeba usunąć w obu miejscach. Nad każdym z nich stoi komentarz
-`MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`.
+## 21. i18n
 
-## Fallbacki i błędy
+- `translations.pl` i `translations.en` — płaskie słowniki z tym samym zestawem kluczy; `t(key, vars)` wstawia `{zmienne}`, brakujący klucz spada na polski, a potem na sam klucz.
+- Teksty statyczne w HTML mają atrybuty `data-i18n` (tekst), `data-i18n-placeholder`, `data-i18n-title`, `data-i18n-aria-label`; `applyLanguage(lang)` przepisuje je wszystkie, ustawia `<html lang>`, przekazuje język do `writeStatus.setLanguage()` i woła `renderAll()`.
+- Językiem domyślnym jest polski (`currentLanguage = "pl"`); język nie jest zapamiętywany.
+- Jedyny przełącznik `#languageSelect` stoi w `.page-top` w kontenerze `<div class="language-switcher language-switcher--hidden">` (komentarz `MIEJSCE ZMIANY WIDOCZNOŚCI PRZEŁĄCZNIKA JĘZYKA`). Usunięcie klasy `language-switcher--hidden` pokazuje go w obu trybach.
+- Nazwy list i aliasy są danymi i nie są tłumaczone. Wyjątek: pusta nazwa listy głównej wyświetla się jako „Widok główny” / „Main view”.
+- Teksty paska o awarii bazy są w `shared/firebase-write-status.js`, nie w `translations`.
+- Język lore Warhammera 40k jest używany wyłącznie w oknie bramki (tytuł, opis, „Litania Dostępu”, „Rozpocznij Rytuał”, komunikaty o haśle). Panel admina i komunikaty diagnostyczne mówią językiem zwykłym.
+
+## 22. Fallbacki i błędy
 
 | Sytuacja | Zachowanie |
 | --- | --- |
-| Brak `window.firebaseConfig` albo `apiKey` | Moduł używa `localStorage`, pokazuje status lokalnych ustawień, a pasek w łagodnym tonie informuje o pracy bez bazy. |
-| Brak dokumentu Firestore | Kod tworzy domyślne ustawienia i zapisuje je przez `persistAndRender()`. |
-| Odmowa zapisu do Firestore | `saveSettings()` schodzi na `localStorage`, ustawia `state.usingFirestore = false` i pokazuje pasek „zapisano tylko na tym urządzeniu". Obietnica **nie** jest odrzucana, a `persistAndRender()` rysuje widok jeszcze przed zapisem, więc interfejs zawsze pokazuje aktualny stan. |
-| Nieudany zapis również lokalnie | Pasek w tonie błędu mówi, że nie zapisano nic. |
-| Odmowa dostępu przy nasłuchu Firestore | Trzeci argument `onSnapshot` przełącza moduł na ustawienia lokalne, pokazuje pasek z przyczyną i odświeża widoki. |
-| Powrót dostępu przy zmianach lokalnych | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu. |
-| Uszkodzone ustawienia Firestore/localStorage | Normalizatory tworzą bezpieczne wartości domyślne. |
-| Brak `AudioManifest.json` | `state.publicError` dostaje komunikat z kodem HTTP, pastylka manifestu przechodzi w stan błędu, a warstwa chroniona wczytuje się mimo to. |
-| Bramka niedostępna przy ważnej sesji | Warstwa demo ładuje się mimo to; archiwum pozostaje zablokowane. |
-| `401` z bramki | Sesja jest kasowana, pojawia się nakładka z komunikatem o nieukończonym Rytuale. |
-| Wyjątek z SDK Firebase | Moduł przechodzi na ustawienia lokalne i **kontynuuje** wczytywanie manifestów. |
-| Pusty manifest | Pokazywany jest błąd braku danych manifestu. |
-| Brak URL audio | Próba odtworzenia pokazuje alert o brakującym linku. |
-| Brak WebAudio | Moduł używa `audio.volume`. |
-| Brak wyników tagów | Pokazywany jest pusty stan filtra tagów. |
-| Brak wyników SFX | Pokazywany jest pusty stan listy SFX. |
-| Dźwięk z listy nie istnieje w manifeście | UI pokazuje tekst `(brak w manifeście)`. |
+| Brak `window.firebaseConfig` / `apiKey` | Praca na `localStorage`, pastylka „Firebase: brak konfiguracji”, plakietka „Tylko to urządzenie”, łagodny pasek. |
+| Wyjątek przy starcie SDK | Praca lokalna; manifesty wczytują się mimo to (start Firebase jest w osobnym `try`). |
+| Brak dokumentu `audio/favorites` | Powstaje dokument v2 z pustą listą główną. |
+| Dokument w starym formacie | Traktowany jak pusty, nic nie jest zapisywane przy odczycie, komunikat `noticeLegacy`. Pierwsza zmiana zapisuje v2. |
+| Odmowa zapisu do Firestore | Zapis lokalny, `usingFirestore = false`, pasek „zapisano tylko na tym urządzeniu”; interfejs pokazuje aktualny stan. |
+| Nieudany zapis również lokalnie | Pasek „nie zapisano nic”. |
+| Błąd nasłuchu Firestore | Ustawienia lokalne, pasek z przyczyną. |
+| Uszkodzone ustawienia | `normalizeSettingsV2` naprawia albo zwraca puste ustawienia. |
+| Wpis wskazuje dźwięk spoza manifestu | Wpis i alias zostają; edytor: „(brak w manifeście)” + `itemId`; kafelek w stanie `missing`. |
+| Brak `AudioManifest.json` | `publicError` z kodem HTTP, czerwona pastylka; archiwum wczytuje się mimo to. |
+| Bramka niedostępna przy ważnej sesji | Warstwa demo działa, `libraryError`, czerwona pastylka archiwum. |
+| `401` z bramki | Sesja kasowana; przy odtwarzaniu bramka z `accessExpired`. |
+| Obie warstwy puste | Katalog: „Manifest nie zawiera dźwięków.”, pastylka „Manifest: błąd wczytywania”. |
+| Brak adresu wariantu | `alert(alertMissingAudio)`. |
+| Błąd odtwarzania | `alert(alertPlaybackFailed)` i zatrzymanie kafelka. |
+| Brak Web Audio | Głośność przez `audio.volume` (maks. 100%). |
+| Brak Wake Lock API | Ekran może się wygaszać; odtwarzanie działa. |
+| SortableJS niedostępny | Kolejność tylko strzałkami. |
+| JSZip niedostępny | Komunikat `builderErrorLibrary`. |
+| Brak `localStorage` / `sessionStorage` | Moduł działa bez zapamiętywania. |
+| Pusty katalog po filtrach | „Brak wyników dla ustawionych filtrów.” |
+| Brak pasujących folderów | „Żaden folder nie zawiera wpisanej frazy.” |
+| Pusta lista | Edytor: „Lista jest pusta…”; widok: „Na tej liście nie ma jeszcze dźwięków.” |
 
-## Procedura odtworzenia modułu
+## 23. Procedura odtworzenia modułu 1:1
 
-1. Zachowaj `Audio/index.html`, `Audio/AudioManifest.json` oraz `Audio/worker/audio-gate.js`.
-2. Zachowaj `../shared/access-gate.css`, `../shared/firebase-write-status.js` i `../shared/firebase-write-status.css`.
-3. Zachowaj arkusz źródłowy `AudioManifest.xlsx` **poza tym repozytorium** i wygeneruj z niego oba manifesty przyciskiem `Zbuduj manifesty z XLSX` w widoku admina.
-4. Wgraj `audio-manifest.json` do katalogu głównego prywatnego repozytorium `AudioRPG`.
-5. Wdroż `Audio/worker/audio-gate.js` jako Worker `audio-gate` i ustaw cztery zmienne środowiskowe.
-6. Wpisz adres Workera do stałej `AUDIO_GATE_BASE` w `index.html`.
-7. Zachowaj `Audio/config/firebase-config.js`, jeżeli ustawienia mają synchronizować się przez Firebase.
-8. Skonfiguruj Firestore zgodnie z `Audio/config/FirebaseREADME.md`.
-9. Otwórz `Audio/index.html?admin=1`.
-10. Sprawdź wczytanie manifestu demo, a po Rytuale Dostępu — całej biblioteki.
-7. Dodaj kilka dźwięków do widoku głównego.
-8. Utwórz listę ulubionych i dodaj do niej dźwięki.
-9. Nadaj alias wybranemu SFX.
-10. Otwórz `Audio/index.html`.
-11. Sprawdź widok główny, nawigację, listy i odtwarzanie.
-12. Sprawdź tryb lokalny przez usunięcie albo wyłączenie konfiguracji Firebase.
+1. Odtwórz pliki `Audio/index.html`, `Audio/style.css` i `Audio/app.js` zgodnie z rozdziałami 2–21 (struktura znaczników z rozdziałów 18–19, style z rozdziału 20, logika z rozdziałów 5–19).
+2. Zapewnij pliki wspólne: `shared/access-gate.css`, `shared/firebase-write-status.js`, `shared/firebase-write-status.css`, `shared/appcheck-config.js`, `shared/firebase-app-check.js` oraz ikonę `IkonaPowiadomien2.png` w katalogu głównym repozytorium.
+3. Utwórz `Audio/config/firebase-config.js` z `window.firebaseConfig` projektu Firebase (instrukcja: `Audio/config/FirebaseREADME.md`) i ustaw reguły Firestore dopuszczające dokument `audio/favorites`.
+4. Wdróż `Audio/worker/audio-gate.js` jako Worker `audio-gate`, ustaw cztery zmienne środowiskowe (rozdział 9.1) i wpisz adres Workera w stałej `AUDIO_GATE_BASE`.
+5. Trzymaj arkusz `AudioManifest.xlsx` poza tym repozytorium. Otwórz `Audio/index.html?admin=1`, użyj „Narzędzia → Zbuduj manifesty z XLSX”, skopiuj `AudioManifest.json` do folderu `Audio`, a `audio-manifest.json` do katalogu głównego prywatnego repozytorium `AudioRPG`.
+6. Odśwież panel admina: pastylka manifestu pokazuje liczbę pozycji; po odblokowaniu archiwum — pełną liczbę.
+7. Odtwórz listy: nazwij listę główną (opcjonalnie), utwórz listy, dodaj dźwięki z katalogu, ułóż kolejność, nadaj aliasy.
+8. Wyeksportuj ustawienia („Narzędzia → Eksportuj ustawienia (JSON)”) jako kopię zapasową.
+9. Otwórz `Audio/index.html` i sprawdź zakładki, kafelki, odtwarzanie, Loop, głośność i „Zatrzymaj wszystko”.
+10. Sprawdź tryb lokalny: tymczasowo usuń `apiKey` z konfiguracji i potwierdź zapis w `audio.settings`.
 
-## Testy kontrolne
+## 24. Testy kontrolne
 
 | Test | Kroki | Oczekiwany wynik |
 | --- | --- | --- |
-| Start admina | Otwórz `Audio/index.html?admin=1`. | Widać nagłówek, statusy, toolbar, panel tagów, listę SFX, ulubione i widok główny. |
-| Start użytkownika | Otwórz `Audio/index.html`. | Widać tylko widok użytkownika i nawigację. |
-| Manifest | Kliknij `Wczytaj manifest`. | Status pokazuje liczbę pozycji z manifestu. |
-| Start bez logowania | Otwórz moduł bez ważnej sesji. | Bramka otwiera się sama, z przyciskami `Pomiń` i `Rozpocznij Rytuał`. |
-| Pominięcie bramki | Kliknij `Pomiń`. | Nakładka znika, widać wyłącznie warstwę demo, status: `Archiwum: zablokowane` (pastylka zielona). |
-| Trwałość pominięcia | Po `Pomiń` przeładuj stronę. | Bramka nie wraca. W nowej karcie przeglądarki wraca. |
-| Puste hasło | Kliknij `Rozpocznij Rytuał` z pustym polem. | Komunikat o niewypowiedzianej Litanii Dostępu. |
-| Złe hasło | Wpisz błędne hasło. | Komunikat o odrzuconej Litanii Dostępu. |
-| Poprawne hasło | Wpisz hasło grupy. | Nakładka znika, lista uzupełnia się o archiwum, status: `Archiwum: odblokowane`. |
-| Znikający przycisk | Odblokuj archiwum. | Przycisk `Odblokuj archiwum` znika. Nigdzie nie ma przycisku blokowania. |
-| Trwałość sesji | Przeładuj stronę po odblokowaniu. | Archiwum nadal odblokowane, bez pytania o hasło. Zapisana sesja nie ma pola `exp`. |
-| Kafelek spoza manifestu | Przy zablokowanym archiwum kliknij pozycję `(brak w manifeście)`. | Bramka otwiera się z komunikatem `Ten dźwięk nie należy do warstwy publicznej…`. |
-| Nieosiągalny manifest archiwum | Podaj poprawne hasło, gdy bramka nie widzi `audio-manifest.json`. | Nakładka zostaje otwarta z kodem HTTP, status: `Archiwum: błąd wczytywania` (pastylka czerwona). |
-| Nieosiągalna lista publiczna | Podaj poprawne hasło, gdy `AudioManifest.json` zwraca 404. | Komunikat mówi o **liście publicznej** i podpowiada `Ctrl+F5`; **nie** wspomina o bramce ani o `AUDIO_GATE_BASE`. Archiwum wczytuje się mimo to. |
-| Bramka odpowiada 500 przy logowaniu | Zasymuluj kod 500 na `/login`. | Komunikat podaje kod HTTP i mówi, że bramka działa, ale odrzuciła logowanie. |
-| Generator: poprawny arkusz | W adminie kliknij `Zbuduj manifesty z XLSX` i wskaż `AudioManifest.xlsx`. | Przeglądarka zapisuje `AudioManifest.json` i `audio-manifest.json`, pastylka pokazuje liczby pozycji. |
-| Generator: brak kolumny | Wskaż arkusz bez kolumny `LinkDoFolderu`. | Komunikat `Brak wymaganych kolumn: LinkDoFolderu`, żaden plik nie powstaje, pastylka czerwona. |
-| Generator: duplikat kolumny | Wskaż arkusz z dwiema kolumnami `NazwaSampla`. | Komunikat o kolumnie występującej więcej niż raz, żaden plik nie powstaje. |
-| Generator: kolumny nadmiarowe | Wskaż arkusz z dodatkowymi kolumnami i inną ich kolejnością. | Manifesty powstają poprawnie, kolumny nadmiarowe są pominięte. |
-| Generator: stabilność `id` | Zbuduj manifesty z niezmienionego arkusza. | Pliki są identyczne z tymi w repozytorium — zapisane listy ulubionych nadal wskazują te same dźwięki. |
-| Dźwięk chroniony | Odtwórz pozycję z archiwum. | Moduł pobiera podpis z `/sign`, dźwięk gra, suwak głośności działa. |
-| Awaria Firebase | Zablokuj dostęp do Firestore. | Moduł przechodzi na ustawienia lokalne, ale manifesty i tak się wczytują. |
-| Nieudany odczyt ustawień | Zablokuj `firestore.googleapis.com` przed otwarciem modułu. | U góry pojawia się pasek „Nie udało się wczytać danych z bazy" z podpowiedzią o blokadzie reCAPTCHA, znacznik trybu pokazuje „Tylko to urządzenie", a listy wczytują się z `audio.settings`. |
-| Nieudany zapis ustawień | Przy zablokowanej bazie dodaj listę ulubionych. | Pasek mówi „Zapisano tylko na tym urządzeniu", lista pojawia się w interfejsie, a dane trafiają do `audio.settings`. |
-| Dwanaście funkcji obsługi przy nieudanym zapisie | Przy zablokowanej bazie wykonaj po kolei: dodanie listy, dodanie pozycji, przesunięcie pozycji, usunięcie pozycji, zmianę nazwy listy, przesunięcie listy, usunięcie listy, dodanie do widoku głównego, przesunięcie i usunięcie w widoku głównym, zmianę aliasu oraz wyczyszczenie wszystkich aliasów. | Każda operacja odświeża widok i zapisuje stan w `audio.settings`; w konsoli nie ma nieobsłużonych odrzuceń obietnic. |
-| Zapis bez odpowiedzi bazy | Odetnij sieć (Offline w narzędziach deweloperskich) i dodaj listę ulubionych. | Lista pojawia się w interfejsie od razu, mimo że zapis czeka w kolejce Firestore i obietnica z `setDoc` nie jest rozstrzygnięta. |
-| Ostrzeżenie o nadpisaniu | Po nieudanym zapisie odblokuj bazę i otwórz moduł ponownie. | Pasek ostrzega, że dane z bazy zastąpiły zmiany zapisane na tym urządzeniu; znacznik trybu wraca na „Dane wspólne". |
-| Znacznik trybu w widoku użytkownika | Otwórz `Audio/index.html` bez `?admin=1` przy zablokowanej bazie. | Znacznik „Tylko to urządzenie" jest widoczny mimo usunięcia sekcji `admin-only` wraz z pastylkami statusu. |
-| Filtr SFX | Wpisz frazę w `searchInput`. | Lista SFX admina jest filtrowana. |
-| Filtr tagów | Odznacz tag. | Lista SFX admina ukrywa dźwięki z tym tagiem. |
-| Popup tagów | Kliknij `Filtruj ▾`. | Otwiera się popup z wyszukiwarką i checkboxami. |
-| Widok główny | Dodaj SFX do `Widok Główny`. | Pozycja pojawia się w panelu widoku głównego i w widoku użytkownika. |
-| Lista ulubionych | Utwórz listę i dodaj SFX. | Lista pojawia się w adminie i w nawigacji użytkownika. |
-| Alias | Wpisz alias i opuść pole. | Alias pojawia się przy nazwie SFX. |
-| Wyczyść alias | Kliknij `Wyczyść`. | Alias danego SFX znika. |
-| Wyczyść wszystkie aliasy | Kliknij `Wyczyść wszystkie aliasy` i potwierdź. | Cała mapa aliasów zostaje usunięta. |
-| Odtwarzanie | Kliknij nazwę albo `Odtwórz`. | Dźwięk startuje, a karta dostaje stan odtwarzania. |
-| Zatrzymanie | Kliknij ponownie aktywny dźwięk. | Dźwięk zostaje zatrzymany. |
-| Głośność | Przesuń suwak. | Zmienia się gain lub volume danego odtwarzacza. |
-| Loop | W widoku użytkownika kliknij `Loop`. | Dźwięk gra w pętli z losowaniem wariantów. |
-| Firestore | Skonfiguruj Firebase i zmień listy. | Dokument `audio/favorites` zapisuje `favorites`, `mainView` i `aliases`. |
-| LocalStorage | Usuń konfigurację Firebase i zmień listy. | Ustawienia zapisują się w `audio.settings`. |
+| Start admina | `Audio/index.html?admin=1` | Nagłówek z pastylkami, trzy kolumny (≥1280 px), podgląd na dole; brak błędów w konsoli. |
+| Start użytkownika | `Audio/index.html` | Tylko pasek z zakładkami i siatka kafelków. |
+| Nowa lista | „+ Nowa lista”, wpisz nazwę, `Enter` | Lista na końcu, nazwa zapisana, widoczna w zakładkach podglądu. |
+| Alias per lista | Dodaj dźwięk X do trzech list; na drugiej nadaj alias „X2”, na trzeciej „X3” | Pierwsza lista: `X`; druga: `X (X2)`; trzecia: `X (X3)`; „Na innych listach” pokazuje aliasy. |
+| Duplikat | ⧉ na liście z aliasami | Kopia zaraz po oryginale, z tymi samymi wpisami i aliasami. |
+| Kolejność list | ▲/▼ i przeciąganie | Lista główna zawsze pierwsza; nie da się nic upuścić przed nią. |
+| Kolejność wpisów | ⤒ ▲ ▼ ⤓ i przeciąganie | Kolejność zmienia się w edytorze, podglądzie i widoku użytkownika. |
+| Blokada kolejności | Wpisz frazę w „Szukaj na liście” | Strzałki i uchwyty wyłączone, etykieta niebieska, widoczna podpowiedź. |
+| Drzewo — grupa | Odznacz folder z podfolderami | Katalog ukrywa dźwięki całego poddrzewa; rodzic pokazuje stan wg dzieci; niebieski tytuł „Foldery” i kropki. |
+| Drzewo — podgrupa | Przy odznaczonym rodzicu zaznacz podfolder | Rodzic w stanie mieszanym; katalog pokazuje tylko dźwięki podfolderu. |
+| Wyszukiwanie folderów | Wpisz fragment nazwy (także wielkimi literami, bez polskich znaków) | Pasujące foldery z przodkami, `<mark>`, niebieska etykieta, akcje „… pasujące”. |
+| Wyszukiwanie w katalogu | Wpisz fragment aliasu | Katalog znajduje dźwięk po aliasie z dowolnej listy. |
+| Zaznaczanie zbiorcze | Zaznacz wiersz, `Shift` + kliknij inny, „Dodaj do …” | Cały zakres dodany na koniec listy docelowej bez duplikatów. |
+| Usunięcie z aliasem | `✓` przy wpisie z aliasem | Pytanie o potwierdzenie; po zgodzie wpis i alias znikają. |
+| Usunięcie listy | 🗑 | Potwierdzenie z liczbą wpisów i aliasów; edytor wraca do listy głównej. |
+| Nazwa listy głównej | Zmień nazwę, potem wyczyść pole | Własna nazwa w zakładce; po wyczyszczeniu „Widok główny”. |
+| Znaki specjalne | Alias `<b>x</b>` | Wyświetlany dosłownie, bez interpretacji HTML. |
+| Podgląd | Przełącz Komputer / Tablet / Telefon | Ramka 820 / 390 px, układ jak na urządzeniu; odtwarzanie działa. |
+| Odtwarzanie | Kliknij kafelek | Stan „wczytywanie” (dla archiwum), potem czerwona ramka, ■, pasek postępu; ponowne kliknięcie zatrzymuje. |
+| Loop | Kliknij Loop | Dźwięk gra w pętli z losowaniem wariantów; przycisk czerwony; ponowne kliknięcie zatrzymuje. |
+| Zmiana zakładki | Włącz dźwięk i przełącz listę | Dźwięk gra dalej; zakładka listy ma czerwoną kropkę; po powrocie kafelek pokazuje stan. |
+| Zatrzymaj wszystko | Włącz kilka dźwięków | Licznik `(N)`; kliknięcie zatrzymuje wszystkie. |
+| Głośność | Suwak na maksimum, dwuklik w wartość | 200%, potem 100%; po odświeżeniu 100%. |
+| Pozycja z archiwum przy blokadzie | Kliknij kafelek z 🔒 | Bramka z wyjaśnieniem; wpis nie znika z listy. |
+| Pominięcie bramki | „Pomiń”, odśwież | Bramka nie wraca; w nowej karcie wraca. |
+| Logowanie | Poprawne hasło | Bramka znika, „Archiwum: odblokowane”, przycisk „Odblokuj archiwum” znika. |
+| Stary format | Dokument z polami `favorites` / `mainView` / `aliases` | Puste listy, komunikat w panelu admina; brak zapisu przy odczycie; pierwsza zmiana zapisuje tylko `schemaVersion`, `playlists`, `updatedAt`. |
+| Na żywo | Zmień listę w panelu admina przy otwartym widoku użytkownika | Widok użytkownika odświeża się sam. |
+| Nieudany zapis | Zablokuj Firestore i dodaj listę | Pasek „Zapisano tylko na tym urządzeniu”, lista widoczna, dane w `audio.settings`. |
+| Eksport | „Eksportuj ustawienia (JSON)” | Plik `audio-ustawienia-RRRR-MM-DD.json` z `schemaVersion`, `playlists`, `exportedAt`. |
+| Generator: stabilność | Zbuduj manifesty z niezmienionego arkusza | Pliki identyczne z tymi w repozytoriach. |
+| Generator: błędy | Arkusz bez kolumny / z duplikatem kolumny | Komunikat z nazwą kolumny; żaden plik nie powstaje; czerwona pastylka. |
+| Telefon | Panel admina na ~390 px | Zakładki Katalog / Listy / Podgląd, szuflada folderów, wszystkie funkcje dostępne, brak przewijania w poziomie. |
+| Język | Tymczasowo pokaż przełącznik i wybierz English | Wszystkie teksty interfejsu po angielsku; nazwy list bez zmian. |
 
 ---
 
 # 🇬🇧 Technical documentation — Audio (EN)
 
-## Module purpose
+## 1. Module purpose
 
-`Audio` is a browser-based panel for playing sound effects and managing sound lists used during play.
+`Audio` is a browser sound-effects player for game sessions and a panel for preparing what the players see.
 
-The module allows the user to:
+The module:
 
-- load the SFX manifest from two tiers: public and gated behind the access gateway,
-- group variants of the same sound,
-- filter sounds by tags derived from folder paths,
-- add sounds to the main view,
-- create favorite lists,
-- assign SFX aliases,
-- synchronize configuration through Firestore,
-- work locally through `localStorage` when Firebase is not configured,
-- play sounds once or loop them in user view.
+- loads the sound catalogue from two tiers: public (demo) and password-protected (the archive behind a Cloudflare Worker gateway),
+- groups variants of the same sound and picks a random variant on every playback,
+- lets the admin panel arrange a **main list** and any number of **named lists**, order their sounds freely and give every entry an **alias that applies to that list only**,
+- filters the catalogue with a folder tree (a tag hierarchy with group and subgroup selection) and a search box with the blue "filter active" signal,
+- shows a preview of the user view at the bottom of the admin panel in three widths,
+- saves settings in Firestore (document `audio/favorites`), falling back to `localStorage` without a database,
+- plays sounds once or in a loop, with a separate volume for every tile,
+- builds both manifests from an XLSX sheet directly in the browser.
 
-The module is a single HTML page with embedded CSS and module JavaScript.
+The module consists of three interface files: `index.html` (markup), `style.css` (styles) and `app.js` (logic as an ES module).
 
-## Entry points
+## 2. Entry points
 
-| File | Role |
-| --- | --- |
-| `Audio/index.html` | User view. Shows only the prepared main view and favorite lists. |
-| `Audio/index.html?admin=1` | Admin view. Shows manifest management, filters, lists, aliases, and user-view preview. |
+| Address | Mode | Content |
+| --- | --- | --- |
+| `Audio/index.html` | user view | Bar with list tabs, a "Stop all" button, optionally "Unlock archive", and the tile grid. |
+| `Audio/index.html?admin=1` | admin panel | Header with status pills, a three-column workbench (Folders → Catalogue → Lists with the editor) and the user view preview. |
 
-Admin mode is detected through the URL parameter:
+The mode is detected once, at start-up:
 
-```text
-?admin=1
+```js
+const ADMIN_MODE = new URLSearchParams(location.search).get("admin") === "1";
 ```
 
-## Module file structure
+`setModeVisibility()` adds the class `admin-mode` or `user-mode` to `<body>` and **removes from the document** every element of the other mode (`.user-only` in the admin panel, `.admin-only` in the user view). References in the `dom` object remain, but they point at detached elements, so writing to them breaks nothing.
 
-| File or directory | Responsibility |
+The `Main` module links to the user view (`Main/index.html` → `../Audio/index.html`). The admin panel is opened manually by appending `?admin=1`.
+
+## 3. File structure
+
+| File or folder | Responsibility |
 | --- | --- |
-| `Audio/index.html` | Full application: HTML, CSS, JS, Firebase config import, and Firebase module imports. |
-| `Audio/AudioManifest.json` | Public (demo) tier manifest with ready URLs to intentionally public files. |
-| `Audio/worker/audio-gate.js` | Access gateway source (Cloudflare Worker) serving the protected manifest and signed file URLs. |
-| `Audio/config/firebase-config.js` | Firebase configuration for Audio settings. |
-| `../shared/access-gate.css` | Shared access-gate stylesheet, the same one used by `DataVault` and `GeneratorNPC`. |
-| `Audio/config/FirebaseREADME.md` | Firebase setup guide for Audio. |
-| `../shared/appcheck-config.js` | The only place holding App Check site keys (reCAPTCHA Enterprise) for both Firebase projects. |
-| `../shared/firebase-app-check.js` | Shared App Check activation for Firebase apps in modular form (SDK 12.6.0). |
-| `../shared/firebase-write-status.js` | Shared module for failed Firestore write and read messages. It recognises the error code, holds the PL/EN texts, and draws the bar and the working-mode badge. The same file serves the GeneratorNPC module. |
-| `../shared/firebase-write-status.css` | Shared styles for the message bar and the working-mode badge. |
+| `Audio/index.html` | Markup of both modes, the access gate and the preview. Static texts carry `data-i18n*` attributes. No embedded CSS or JS. |
+| `Audio/style.css` | Every module style (both modes, preview, gate, responsiveness). |
+| `Audio/app.js` | All logic (an ES module, about 4,300 lines with PL/EN comments). |
+| `Audio/AudioManifest.json` | Public (demo) tier manifest with ready file URLs. Generated by the admin panel. |
+| `Audio/worker/audio-gate.js` | Access gateway source (Cloudflare Worker `audio-gate`). |
+| `Audio/config/firebase-config.js` | `window.firebaseConfig` of the Firebase project `audiorpg-2eb6f`. |
+| `Audio/config/FirebaseREADME.md` | Firebase setup guide for the module. |
+| `Audio/Disclaimer.md` | Note on the inspiration (Grimdark Audio Mixer) and the module's private, non-commercial nature. |
 | `Audio/docs/README.md` | User guide. |
 | `Audio/docs/Documentation.md` | This technical documentation. |
+| `shared/access-gate.css` | Shared access gate look (DataVault, GeneratorNPC, Audio). |
+| `shared/firebase-write-status.js` / `.css` | Shared failed-write/read message bar and working-mode badge (GeneratorNPC, Audio). |
+| `shared/appcheck-config.js` | App Check (reCAPTCHA Enterprise) site keys of both Firebase projects. |
+| `shared/firebase-app-check.js` | The `activateAppCheck(app)` function for the modular SDK. |
+| `shared/firestore-audiorpg.rules` | Mirror of the Firestore rules of the `audiorpg-2eb6f` project (GeneratorNPC and Audio). |
 
-## External dependencies
+The source sheet `AudioManifest.xlsx` is deliberately **not** in the repository (a `.gitignore` entry), because it lists the whole protected catalogue.
 
-`Audio/index.html` loads:
+## 4. Dependencies
 
-- Google Fonts `Fira Code`,
-- `../shared/access-gate.css`,
-- `../shared/firebase-write-status.css`,
-- `config/firebase-config.js`,
-- `../shared/appcheck-config.js`,
-- `https://www.google.com/recaptcha/enterprise.js` with the `defer` attribute,
-- Firebase modular SDK `12.6.0`:
-  - `firebase-app.js`,
-  - `firebase-firestore.js`,
-  - `firebase-app-check.js` (through `../shared/firebase-app-check.js`).
+### 4.1 External dependencies
 
-## View modes
+| Dependency | Version | When loaded | Purpose |
+| --- | --- | --- | --- |
+| Google Fonts `Fira Code` (400, 600) | — | always, `<link>` in `<head>` | the module font |
+| Firebase `firebase-app.js`, `firebase-firestore.js` | 12.6.0 | always, `import` in `app.js` | list settings |
+| `https://www.google.com/recaptcha/enterprise.js` | — | always, `<script defer>` | App Check |
+| SortableJS `sortablejs@1.15.2/Sortable.min.js` (jsDelivr) | 1.15.2 | admin panel only, in the background after start-up (`ensureSortable`) | dragging lists and entries |
+| JSZip `jszip@3.10.1/dist/jszip.min.js` (jsDelivr) | 3.10.1 | only on the first "Build manifests from XLSX" click (`ensureJSZip`) | unpacking the XLSX file |
 
-### User view
+An unavailable SortableJS does not block the panel — the arrow buttons remain. An unavailable JSZip yields the `builderErrorLibrary` message.
 
-View without `?admin=1`:
+### 4.2 Dependencies between files
 
-- removes `admin-only` elements,
-- shows only the user interface,
-- shows navigation for main view and favorite lists,
-- allows playback from cards,
-- shows volume sliders,
-- renders the `Loop` button.
+Script order in `index.html`: `config/firebase-config.js` → `../shared/appcheck-config.js` → `recaptcha/enterprise.js` (`defer`) → `app.js` (`type="module"`, so it runs after the `defer` scripts). `app.js` imports `../shared/firebase-app-check.js` and `../shared/firebase-write-status.js`.
 
-### Admin view
+### 4.3 Dependencies between modules
 
-View with `?admin=1`:
+- `shared/access-gate.css` and the gate layout are shared with DataVault and GeneratorNPC; the gate's lore text matches DataVault.
+- `shared/firebase-write-status.*` is shared with GeneratorNPC; both modules use the same Firebase project `audiorpg-2eb6f` (documents `generatorNpc/favorites` and `audio/favorites`).
+- `foldPolish()` is a copy of the rule in `DataVault/app.js` (lower case, no diacritics, `ł` → `l`).
+- The `--filter-on*` variables are copied from `DataVault/style.css`, so the blue "filter active" signal means the same in every module.
+- The archive password is independent of the DataVault/GeneratorNPC password (see section 11.1).
 
-- removes `user-only` elements,
-- shows header, statuses, and toolbar,
-- shows tag filter panel,
-- shows all SFX from the manifest,
-- allows adding sounds to the main view or favorite lists,
-- allows creating, renaming, deleting, and reordering favorite lists,
-- allows reordering the main view,
-- shows user view preview,
-- does not render `Loop` in the admin preview.
+## 5. `app.js` architecture
 
-## Main UI sections
+The file has a fixed section order, marked with comment headers:
 
-### Admin header
+1. Firebase and shared module imports,
+2. constants,
+3. translations (`translations.pl`, `translations.en`) and `t()`,
+4. helpers (`escapeHtml`, `foldPolish`, `highlightMatch`, `debounce`, browser storage, titles),
+5. element references (`dom`),
+6. state (`state`) and the `writeStatus` instance,
+7. settings model (lists, entries, aliases),
+8. saving and loading settings, Firebase,
+9. access gate and session,
+10. playback,
+11. tags, ids and URLs (shared with the builder),
+12. manifests,
+13. folder tree,
+14. admin interface storage,
+15. shared, admin panel and user view drawing,
+16. admin panel actions, dragging,
+17. XLSX manifest builder,
+18. languages,
+19. event handling,
+20. module start-up.
 
-Admin header contains:
+Data flow rules:
 
-- title,
-- subtitle,
-- language switcher `languageSelect`, hidden with `language-switcher--hidden`,
-- manifest status `manifestStatus`,
-- Firebase status `firebaseStatus`,
-- favorites status `favoritesStatus`.
+- The module state is the single source of truth. The `render*()` functions build HTML from the state through `innerHTML`; they never read state back from the DOM.
+- **Every settings change** (list, entry, alias, order, name) first changes `state.settings` through a model function and then calls `persistAndRender()`, which refreshes the membership index, draws the view and saves the data.
+- Events are handled by delegation: one listener per container (`#catalogList`, `#listsList`, `#editorEntries`, `#editorHead`, `#folderTree`, `#userView`, `#previewView`), and the `data-action` attribute identifies the action.
+- Every text coming from data (sound name, alias, list name, file, folder) goes through `escapeHtml()`. The `audio/favorites` document is writable by anyone (rules `allow read, write: if true`), so without this an alias could inject a script.
 
-### Admin toolbar
-
-Toolbar contains:
-
-- `reloadManifest` — reloads both manifests,
-- `unlockLibrary` — opens the access gate; the button is hidden (`hidden`) once `state.libraryUnlocked` is true,
-- `buildManifests` — the XLSX manifest builder (admin view only),
-- `addList` — creates a new favorite list,
-- `refreshFavorites` — manually refreshes favorite views.
-
-### Tag filter panel
-
-Tag panel contains:
-
-- `toggleTagPanel` — collapses or expands the panel,
-- `tagSearchInput` — tag search field,
-- `tagFilterMenuButton` — opens filter popup,
-- `tagFilter` — checkbox tag tree,
-- `tagFilterMenu` — popup with search, checkboxes, and bulk actions,
-- `tagMenuSelectAll` — selects all visible tags,
-- `tagMenuClearAll` — clears all visible tags.
-
-Tag filters affect only the admin SFX list. They do not change the user main view or favorite lists.
-
-### Admin SFX list
-
-Admin SFX list uses `samplesGrid`.
-
-Each card shows:
-
-- SFX name,
-- alias in parentheses when present,
-- grouped variant count when the sound has multiple variants,
-- `tag2`, the second tag level,
-- filename or first filename with variant counter,
-- alias input,
-- clear alias button,
-- play button,
-- target list select,
-- add-to-list button.
-
-### Admin favorites panel
-
-`favoritesPanel` shows favorite lists.
-
-For lists, the admin can:
-
-- move the list up or down,
-- rename the list,
-- delete the list,
-- play a sound from the list,
-- move an item up or down,
-- remove an item from the list.
-
-### Admin main view panel
-
-`mainViewPanel` shows the order of sounds in the main view.
-
-For items, the admin can:
-
-- play sound by clicking name or tag,
-- set volume with a slider,
-- move item up or down,
-- remove item from the main view.
-
-### User view
-
-User view contains:
-
-- `userMainView` — current main view,
-- `userFavoritesView` — active favorite list,
-- `userNav` — navigation between main view and lists,
-- `languageSelectUser` — language switcher, currently hidden with `language-switcher--hidden`.
-
-## Application state
-
-Main `state` object contains:
-
-| Field | Type | Description |
-| --- | --- | --- |
-| `items` | `array` | SFX list after manifest parsing. |
-| `itemsById` | `Map` | SFX map by `id`. |
-| `favorites` | `object` | Favorite lists. |
-| `mainView` | `object` | Main view ID list. |
-| `aliases` | `object` | Alias per `itemId`. |
-| `firestore` | `object|null` | Firestore instance when Firebase works. |
-| `favoritesDoc` | `object|null` | Reference to `audio/favorites`. |
-| `usingFirestore` | `boolean` | Whether Firestore synchronization is active. |
-| `manifestReady` | `boolean` | Whether manifest loaded successfully. |
-| `session` | `object\|null` | Gateway token. `exp` is `null` for an unlimited token. |
-| `libraryUnlocked` | `boolean` | Whether the protected tier is loaded. |
-| `libraryError` | `string\|null` | Why the protected tier failed to load. |
-| `publicError` | `string\|null` | Why the public tier failed to load. |
-| `builder` | `object` | Manifest builder state: `{ status, publicCount, protectedCount, message }`. `status` is `idle`, `working`, `ready` or `error`. |
-| `userView` | `string` | Current user view: `main` or list. |
-| `activeFavoritesListId` | `string|null` | Active favorite list in user view. |
-| `tagTree` | `array` | Tag tree built from manifest. |
-| `tagSelection` | `Map` | Tag selections. |
-| `tagPanelVisible` | `boolean` | Whether tag panel is expanded. |
-| `tagMenuOpen` | `boolean` | Whether tag popup is open. |
-| `tagMenuSearchTerm` | `string` | Tag popup search phrase. |
-
-Active players are stored outside `state` in:
-
-```text
-activePlayers: Map
-```
-
-## Two library tiers
-
-The library is split into two tiers with different access modes. Part of the material is free and intentionally public; the rest is copyright-protected.
+## 6. Two library tiers
 
 | Tier | `access` | Manifest source | File source | Login |
 | --- | --- | --- | --- | --- |
-| Public (demo) | `"public"` | `AudioManifest.json` in this repository | public `AudioExample` repository on GitHub Pages | no |
-| Protected (archive) | `"protected"` | gateway `/manifest` endpoint | private `AudioRPG` repository through the gateway | yes |
+| Public (demo) | `"public"` | `AudioManifest.json` in this repository | public `AudioExample` repository (GitHub Pages) | no |
+| Protected (archive) | `"protected"` | the gateway's `/manifest` endpoint | private `AudioRPG` repository, files served by the gateway | yes |
 
-Both lists are merged in `loadManifests()` and sorted together by `label`, so the user sees a single list.
+GitHub Pages knows only two states: files readable by everyone or by no one. The gateway adds a third — the `AudioRPG` repository stays private, and the only way to its files is a Worker that checks authorisation.
 
-### Why a gateway is needed
+`loadManifests()` merges both tiers into one list sorted by `label` (`localeCompare`).
 
-GitHub Pages only knows two states: a public repository, meaning files readable by anyone, or a private one, meaning no published site and files readable by nobody. There is no state in between — not even on paid plans, because Pages access control exists only in GitHub Enterprise Cloud.
+## 7. Manifests
 
-The gateway adds the missing third state: the `AudioRPG` repository stays private permanently and the only way into the files is a Worker that checks authorisation.
+### 7.1 Format
 
-## Manifests
-
-### `AudioManifest.json`
-
-The public tier manifest, always loaded:
-
-```js
-fetch(PUBLIC_MANIFEST_URL, { cache: "no-store" })
-```
-
-Structure:
+Public manifest (`AudioManifest.json`, indented):
 
 ```text
 {
@@ -1202,690 +1066,774 @@ Structure:
 }
 ```
 
-### Protected tier manifest
+The protected manifest (`audio-manifest.json` in the root of the private repository, not indented) has the same structure, but `access: "protected"`, and its variants carry `path` — a path relative to the `AudioRPG` repository — instead of `url`. The playable URL only exists after the gateway signs it.
 
-Fetched from the gateway only with a valid session:
+| Item field | Meaning |
+| --- | --- |
+| `id` | Stable identifier (slug). Lists in the database point at sounds by `id` only. |
+| `label` | Name shown in the interface (for groups, the base name without the number). |
+| `groupCount` | Number of variants in the group; `0` when the item is not a group. The interface shows `(N)` only for `groupCount > 1`. |
+| `filename` | File name, or `first.ogg (+N)` for groups. |
+| `tags` | Folder path segments after cleaning. |
+| `tag2` | `tags[1]` — the tag shown on a user view tile. |
+| `tagPaths` | Cumulative paths: `["A", "A / B", "A / B / C"]`. They build the folder tree. |
+| `variants` | Variants: `{ filename, url }` (public) or `{ filename, path }` (protected). |
 
-```js
-fetch(`${AUDIO_GATE_BASE}/manifest`, {
-  headers: { Authorization: `Bearer ${state.session.token}` }
-})
-```
+### 7.2 Fields added after loading
 
-Same structure with two differences: `access` is `"protected"`, and variants carry `path` (a path relative to the `AudioRPG` repository) instead of `url`. The final URL is produced only after the gateway signs it.
+`applyItems(items)` sorts items by `label` and adds to each:
 
-### Generating the manifests
+| Field | Value | Used by |
+| --- | --- | --- |
+| `folderPath` | last element of `tagPaths`, or `"__no_folder__"` (`NO_FOLDER_PATH`) | the catalogue folder filter |
+| `searchText` | `foldPolish([label, filename, ...tags].join(" \| "))` | the catalogue search (computed once) |
 
-Both files are produced from the source spreadsheet `AudioManifest.xlsx`, which is **not part of this repository** — it belongs in the private repository because it lists the whole protected catalogue. A `.gitignore` entry blocks it from being added by accident.
+It then builds `state.itemsById` (map `id → item`) and `state.folderTree` (`buildFolderTree`). If `state.expandedPaths` was not restored from storage, every top-level folder starts expanded.
 
-The builder runs **in the browser, in the admin panel**, behind the `buildManifests` button. The flow matches the data update in the `DataVault` module: an `<input type="file">` created on the fly, a local conversion, and two downloads through `Blob` and `URL.createObjectURL`.
+### 7.3 Fetching
 
-The key design decision: the builder is not a separate script but part of `index.html`, and it **uses the very same `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` and `normalizeUrl` functions the rest of the module uses**. The `id` is a slug of the label, and favourite lists, the main view and aliases in Firestore all store `id`. The earlier Node generator (`Audio/tools/build-manifests.mjs`) held copies of those functions and could drift from the module, which would break the link between saved lists and their sounds. It was removed for exactly that reason — one source of id logic instead of two.
+- `fetchDemoManifest()` — `fetch("AudioManifest.json", { cache: "no-store" })`. A non-2xx status throws `Error("public_manifest_unavailable")` with `detail` = the HTTP status.
+- `fetchProtectedManifest()` — `fetch(AUDIO_GATE_BASE + "/manifest", { headers: { Authorization: "Bearer <token>" } })`. `401` clears the session and throws `gate_unauthorized`; a `{ error: "manifest_unavailable", status }` response throws `manifest_unavailable` with `detail`; any other error throws `gate_error` with `detail` = the HTTP status.
+- `loadManifests()` — each tier in its own `try` block. The protected tier is fetched only with a valid session. On success: `applyItems`, `state.manifestReady = true`, `signedUrlCache.clear()`, `renderAll()`. When both tiers are empty, it throws an error with the concrete reason (`state.publicError` / `state.libraryError`) or `manifestNoData`.
 
-Step by step:
+## 8. XLSX manifest builder
 
-1. `pickLocalWorkbookFile()` — creates a hidden `<input type="file" accept=".xlsx">` and returns an `ArrayBuffer`. Returns `null` when the user cancels (both a `change` with no file and the `cancel` event).
-2. `ensureJSZip()` — loads JSZip from `cdn.jsdelivr.net` on first use. The library never loads in the user view. A failed attempt resets `jsZipPromise` so a later click can retry.
-3. `readXlsxSheet()` — a minimal XLSX reader: it unpacks `xl/sharedStrings.xml`, `xl/workbook.xml`, `xl/_rels/workbook.xml.rels` and the sheet named by the first `<sheet>` relationship. It handles cell types `s` (shared string), `inlineStr` and raw values. It returns `{ header, rows }` as positional arrays, **without collapsing columns by name** — a prerequisite for detecting duplicate headers.
-4. `resolveRequiredColumns()` — header validation.
-5. `buildManifestItems()` — variant grouping, identical to the manifest logic.
-6. `downloadJsonFile()` — writes the file; the second download is delayed by 150 ms because some browsers drop two downloads started in the same instant.
+The `#buildManifests` button ("Tools" menu, admin panel only) calls `handleBuildManifests()`. Nothing is uploaded: the file is read locally and the result is saved through `Blob` and `URL.createObjectURL`.
 
-#### Header validation
+The builder uses **the same** `slugify`, `getGroupingBaseLabel`, `extractTags`, `cleanTagSegment` and `normalizeUrl` functions as the rest of the module. This is the single source of the id logic — changing any of them changes `id` values and breaks the link between saved lists and sounds. Before any change, compare the builder output on the same sheet (the files must be byte-identical).
 
-Required columns: `NazwaSampla`, `NazwaPliku`, `LinkDoFolderu` (the `BUILDER_REQUIRED_COLUMNS` constant).
+Steps:
+
+1. `pickLocalWorkbookFile()` — a hidden `<input type="file" accept=".xlsx">`; returns `{ buffer }`, or `null` when cancelled (the `cancel` event or `change` without a file).
+2. `ensureJSZip()` — loads JSZip; a failed attempt resets the promise, so the next click tries again.
+3. `readXlsxSheet(buffer)` — a minimal reader: `xl/sharedStrings.xml`, `xl/workbook.xml`, `xl/_rels/workbook.xml.rels` and the sheet of the first `<sheet>`. It handles `s`, `inlineStr` and raw cells; `columnRefToIndex()` turns `AB12` into a column index. It returns `{ header, rows }` as positional arrays (columns are not merged by name, which makes duplicate headers detectable).
+4. `resolveRequiredColumns(header)` — header validation.
+5. `buildManifestItems(rows)` — grouping and ids; then a sort by `label`.
+6. Tier split and path check.
+7. `downloadJsonFile()` — first `AudioManifest.json` (indented), 150 ms later `audio-manifest.json` (not indented), because some browsers drop two downloads started at the same instant.
+8. `setBuilderState("ready", { publicCount, protectedCount })` and `alert(builderDone)`.
+
+### 8.1 Validation
 
 | Situation | Behaviour |
 | --- | --- |
-| Any required column absent | Error `builder_missing_columns`, the message names the missing columns. No file is produced. |
-| A required column present more than once | Error `builder_duplicate_columns`. The builder deliberately refuses to guess which column to use. |
-| Columns outside the required list | Ignored. Only the three indices returned by `resolveRequiredColumns()` are read. |
-| Any column order | Supported — binding goes by header name, not position. |
-| Sheet holds only a header | Error `builder_no_rows`. |
-| Protected variant without a path under `/AudioRPG/` | Error `builder_no_paths` with the variant count. Prevents shipping a manifest with unplayable entries. |
+| Missing `NazwaSampla`, `NazwaPliku` or `LinkDoFolderu` column | `builder_missing_columns` listing the missing ones. |
+| A required column appears more than once | `builder_duplicate_columns`. |
+| Extra columns, any column order | Ignored / supported (binding by name). |
+| Header only | `builder_no_rows`. |
+| A protected variant without `/AudioRPG/` in its URL | `builder_no_paths` with the number of variants. |
+| The file is not a valid XLSX | `builderErrorRead`. |
 
-Every error sets `state.builder.status = "error"`, turns the `builderStatus` pill red and shows an `alert()` with the full text. **No file is written on error.**
+Every error sets `state.builder.status = "error"`, turns the `#builderStatus` pill red (full text in `title`) and shows an `alert()`. No file is produced on error.
 
-#### Tier split
+### 8.2 Tier split
 
-The address in the `LinkDoFolderu` column decides:
+- `LinkDoFolderu` contains `/AudioExample/` (`BUILDER_PUBLIC_PREFIX`) → `access: "public"`, the variant gets `url` = `normalizeUrl(folder, file)`.
+- Otherwise → `access: "protected"`, the variant gets `path` = the part of the URL after `/AudioRPG/` (`BUILDER_PROTECTED_PREFIX`) after `decodeURIComponent` (`toProtectedRepoPath`). Example: `https://host/AudioRPG/PrivateFolder/PrivateSubFolder/PrivateSound.ogg` → `PrivateFolder/PrivateSubFolder/PrivateSound.ogg`.
 
-- contains `/AudioExample/` (the `BUILDER_PUBLIC_PREFIX` constant) → `access: "public"`, the variant gets a `url`,
-- otherwise → `access: "protected"`, the variant gets a `path` produced by cutting everything up to and including `/AudioRPG/`, then `decodeURIComponent`.
+### 8.3 Variant grouping and ids
 
-The builder produces:
+`getGroupingBaseLabel(label)` strips a trailing number from the name (`Explosion 2` → `Explosion`). Rows are grouped into one item when they share `LinkDoFolderu` and the base name, the name really ended with a number, and there is more than one such row. A group item gets `label` = the base name, `groupCount` = the number of variants and `filename` = `first (+N-1)`.
 
-- `AudioManifest.json` (indented, readable in a diff) → into the `Audio` folder of this repository,
-- `audio-manifest.json` (unindented, smaller transfer through the gateway) → into the root of the private `AudioRPG` repository.
+`id` = `slugify(name)` — lower case, every run of characters other than Unicode letters and digits → `-`, leading/trailing `-` trimmed; an empty result → `sample-<rowNumber>`. On a collision (the same slug in another folder) the sheet row number is appended: `<slug>-<rowNumber>`.
 
-#### Id stability and row order
+Consequence: **inserting a row in the middle of the sheet changes the collision ids of every row below it**, and saved lists lose those sounds. Measured on the real sheet (1,793 rows, 133 items with a collision suffix): appending a row at the end changes 0 ids, inserting the same row in the middle changes 123. That is why the user guide says to append rows at the end only.
 
-An `id` is a slug of the label. On a collision — the same label in a different folder — the **spreadsheet row number** is appended to the slug (`${id}-${entry.rowIndex}`). In the current spreadsheet this affects 133 entries.
+### 8.4 Tags
 
-The consequence is practical and easy to miss: **inserting a row in the middle of the spreadsheet shifts the `rowIndex` of every row below it, and therefore changes every collision id below the insertion point.** Saved favourite lists, the main view and aliases then stop pointing at those sounds.
+`extractTags(folderUrl)`:
 
-Measured on the real spreadsheet (1793 rows):
+1. turns `\` into `/`; a URL containing `://` becomes `new URL(...).pathname`,
+2. splits on `/`, drops empty segments and segments listed in `TAG_IGNORE_SEGMENTS` (`AudioRPG`),
+3. cleans every segment with `cleanTagSegment()`: `decodeURIComponent`, case-insensitive removal of the technical suffixes listed in `TAG_IGNORE_FRAGMENTS` in `app.js`, `_` and `-` to spaces, whitespace collapsed,
+4. drops segments that are empty after cleaning.
 
-| Operation | Identifiers changed |
-| --- | --- |
-| Appending a row at the end | 0 |
-| Inserting the same row in the middle | 123 |
+The `TAG_IGNORE_FRAGMENTS` list is needed by the builder only — at run time the module reads the ready `tags` and `tagPaths` from the manifest.
 
-This is why `README.md` instructs the user to append new rows only at the end. Should this constraint ever need lifting, the collision suffix would have to be derived from something independent of row position — the folder path, for instance.
+## 9. Access gateway (Cloudflare Worker)
 
-## Access gateway (Cloudflare Worker)
+Source: `Audio/worker/audio-gate.js`. Deployment: the `audio-gate` Worker on the Cloudflare account. The Worker address is set in the `AUDIO_GATE_BASE` constant in `app.js` (comment `GATEWAY ADDRESS CHANGE POINT`).
 
-Source: `Audio/worker/audio-gate.js`. Deployment: Worker `audio-gate` on the Cloudflare account.
+### 9.1 Worker environment variables
 
-### Environment variables
-
-| Name | Type | Contents |
+| Name | Type | Content |
 | --- | --- | --- |
-| `GROUP_PASSWORD` | Secret | Group password, the Litany of Access. |
+| `GROUP_PASSWORD` | Secret | The group password (Litany of Access). |
 | `SIGNING_KEY` | Secret | HMAC key signing session tokens and file URLs. |
 | `GITHUB_TOKEN` | Secret | Fine-grained PAT: `AudioRPG` repository only, `Contents: Read-only`. |
-| `ALLOWED_ORIGIN` | Text | `https://cutelittlegoat.github.io` |
+| `ALLOWED_ORIGIN` | Text | Site address, e.g. `https://cutelittlegoat.github.io`. |
 
-Secrets must never enter the repository. Set them in the Cloudflare dashboard or with `npx wrangler secret put`.
+Secret values must never reach the repository. They are set in Cloudflare: **Workers & Pages → `audio-gate` → Settings → Variables and Secrets**, or with `npx wrangler secret put <NAME>`.
 
-### Endpoints
+### 9.2 Endpoints
 
-| Endpoint | Method | Authorisation | Behaviour |
+| Endpoint | Method | Authorisation | Action |
 | --- | --- | --- | --- |
-| `/health` | GET | none | Reports which variables are set. For diagnostics. |
-| `/login` | POST | none | Takes `{ password }`, compares in constant time, returns `{ token, exp }`. |
-| `/manifest` | GET | Bearer | Passes through `audio-manifest.json` from the private repository. |
-| `/sign` | GET | Bearer | For `?p=<path>` returns `{ url, exp }` — a signed file URL. |
-| `/a` | GET | URL signature | Verifies signature and expiry, then serves the file with CORS headers. |
+| `/health` | GET | none | Which variables are set (no values). |
+| `/login` | POST | none | `{ password }` → constant-time comparison → `{ ok, token, exp: null }`; wrong password → `401`. |
+| `/manifest` | GET | Bearer | Relays `audio-manifest.json` from the private repository (unparsed, cached for 5 min). |
+| `/sign` | GET | Bearer | `?p=<path>` → `{ ok, url, exp }` — a signed file URL. |
+| `/a` | GET | signature in the URL | Checks the signature and expiry, serves the file with CORS headers and `Range` support. |
 
-### Session token
+### 9.3 Session token and signatures
 
-Format: `base64url(JSON) + "." + base64url(HMAC-SHA256)`. The payload holds only `iat` — an issue-time marker that is never verified. No database is needed; the signature alone is enough.
+- Token: `base64url(JSON) + "." + base64url(HMAC-SHA256)`, the payload holds only `iat`. **The session never expires** (`exp: null`). Older tokens with an `exp` field are honoured until that date.
+- The only way to invalidate every session at once: change the `SIGNING_KEY` secret.
+- URL signature: `HMAC-SHA256(SIGNING_KEY, "<path>|<exp>")`, URL `/a?p=<path>&e=<exp>&s=<signature>`.
+- `exp = (Math.floor(now / 3600) + 2) * 3600` — valid for 1–2 hours, aligned to a full hour, so within one clock hour the same URL is produced and the browser uses its cache.
+- Authorisation travels in the URL rather than a cookie, because the `<audio>` element cannot send custom headers and third-party cookies are blocked.
+- `isSafeAudioPath` rejects `..`, absolute paths, `\`, `//` and extensions other than `.ogg` / `.mp3`. Secret comparisons use `timingSafeEqual`.
 
-**The session never expires**, exactly like in the `DataVault` module. The token carries no `exp` field and `/login` returns `exp: null`. The token is stored in `localStorage` under `audio.session` and lives until the browser data is cleared. The only way to invalidate every session at once is rotating the `SIGNING_KEY` secret in the Worker.
-
-Backwards compatibility: tokens issued before this change carry an `exp` field with a 30-day lifetime. `verifySessionToken()` still honours their expiry — an old token expires on its original schedule instead of being silently extended forever. Once it expires, the user enters the password once and receives an unlimited token.
-
-### URL signing
-
-The signature is `HMAC-SHA256(SIGNING_KEY, "<path>|<exp>")` in base64url. The URL has the form:
-
-```text
-/a?p=<path>&e=<exp>&s=<signature>
-```
-
-Expiry is aligned to a full hour:
-
-```js
-exp = (Math.floor(now / 3600) + 2) * 3600
-```
-
-This yields a lifetime of one to two hours, but more importantly it makes the URL **identical within a single clock hour**. Without the alignment every signature would create a new URL and the browser would re-download the same file on every playback — expensive for files in the tens of megabytes.
-
-### Why authorisation lives in the URL rather than a cookie
-
-An earlier attempt based on Cloudflare Access asked for the password on every playback. The cause: the `CF_Authorization` cookie is a third-party cookie on cross-origin requests and browsers block it, so every file request ended in a redirect to the login page.
-
-An `<audio>` element cannot carry custom headers, so file authorisation travels in the query string of a signed URL. There is no cookie, no `WWW-Authenticate` header, nothing for the browser to block or prompt about.
-
-### Constraints and safeguards
-
-- Paths are validated by `isSafeAudioPath`: `..`, absolute paths, `\\`, `//` and extensions other than `.ogg` and `.mp3` are rejected.
-- Secret comparisons use `timingSafeEqual` so response timing does not leak the value.
-- The manifest is passed through **without parsing**. The Worker has 10 ms of CPU per request and parsing half a megabyte of JSON would burn that budget.
-- The manifest and files are cached in the Cache API: the manifest for 5 minutes, files for a year, because the URL expires anyway.
-- `Range` requests are supported, which the player needs when seeking.
-
-## Session and gateway on the module side
+## 10. Session and gate on the module side
 
 | Element | Role |
 | --- | --- |
-| `AUDIO_GATE_BASE` | Gateway address. The place to change when the Worker moves. |
-| `AUDIO_SESSION_STORAGE_KEY` | The `audio.session` key in `localStorage`. |
-| `AUDIO_GATE_SKIPPED_KEY` | The `audio.gateSkipped` key in `sessionStorage`. Remembers a `Skip` click for the lifetime of one browser tab. |
-| `loadSession()` / `storeSession()` | Reading and writing the token in `localStorage`. |
-| `isSessionUsable(session)` / `hasValidSession()` | A session is valid when it has a token and either no `exp` (unlimited token) or an `exp` in the future (legacy 30-day token). |
-| `signedUrlCache` | Map of `path → { url, exp }`. Limits the number of `/sign` calls. |
-| `requestSignedUrl(path)` | Fetches a signature; on `401` clears the session and throws `gate_unauthorized`. |
-| `resolveVariantUrl(item, variant)` | Returns the final URL: from the manifest for `public`, from the gateway for `protected`. |
-| `showAccessGate()` / `hideAccessGate()` | Shows and hides the `#accessGate` overlay via the `hidden` attribute. |
-| `submitAccessLitany()` | Exchanges the password for a token, then reloads the manifests. It has **two disjoint `try` blocks**: the first covers only the `/login` request, the second only `loadManifests()`. On `state.libraryError` or `state.publicError` the overlay stays open showing the reason. |
-| `maybeShowAccessGate()` | Opens the gate after start-up when there is no valid session and `Skip` was not clicked. Called from `.finally()` after `loadManifests()`. |
-| `isGateSkipped()` / `markGateSkipped()` / `skipAccessGate()` | Handling of the `Skip` button and the `Escape` key. |
-| `handleUnlockClick(message)` | Clears the skip marker and opens the gate, optionally with a custom message. |
+| `AUDIO_SESSION_STORAGE_KEY` = `audio.session` | Token in `localStorage` (`{ token, exp }`). |
+| `AUDIO_GATE_SKIPPED_KEY` = `audio.gateSkipped` | "Skip" marker in `sessionStorage` (per tab). |
+| `isSessionUsable(session)` / `hasValidSession()` | Valid when there is a token and `exp` is empty or in the future. |
+| `loadSession()` / `storeSession(session)` | Reading and writing the session; an invalid session is removed. |
+| `signedUrlCache` | Map `path → { url, exp }`; an entry is reused while `exp` is more than 5 s away. Cleared after every `loadManifests()`. |
+| `requestSignedUrl(path)` | `GET /sign`; `401` → `storeSession(null)`, `libraryUnlocked = false`, error `gate_unauthorized`. |
+| `resolveVariantUrl(item, variant)` | `public` → `variant.url`; `protected` → a signature from the gateway. |
+| `showAccessGate(message)` / `hideAccessGate()` | The `#accessGate` overlay via the `hidden` attribute; focus goes to the password field. |
+| `maybeShowAccessGate()` | After start-up (in `.finally()` after `loadManifests()`) opens the gate when there is no session and "Skip" was not clicked. |
+| `skipAccessGate()` | "Skip" and `Escape`: stores the marker and closes the gate. |
+| `handleUnlockClick(message)` | Clears the skip marker and opens the gate. |
+| `submitAccessLitany()` | Two separate steps: (1) `POST /login`, (2) `loadManifests()`. On a load problem the window stays open with the reason. |
 
-There is no archive-locking function. The lock button was removed as redundant: an unlocked archive is the target state, and access on a device is cleared by clearing the site data.
+There is no lock button: an unlocked archive is the target state, and "Unlock archive" disappears once unlocked (`#unlockLibrary` in the admin header gets `hidden`, and the button in the user view bar is not drawn).
 
-### Gate behaviour
+### 10.1 Gate behaviour
 
 | Event | Reaction |
 | --- | --- |
-| Module start without a valid session, `Skip` not clicked | The gate opens by itself once the manifests have loaded. |
-| `Skip` clicked or `Escape` pressed | The gate closes and `audio.gateSkipped=1` is written to `sessionStorage`. |
-| Page reload after `Skip` | The gate does not return — `sessionStorage` survives a reload. |
-| New browser tab | The gate returns — `sessionStorage` is per-tab. |
-| `Unlock archive` clicked | Clears `audio.gateSkipped` and opens the gate. |
-| A `(missing in manifest)` entry clicked while the archive is locked | `togglePlayback()` opens the gate with the `accessMissingItem` message. |
-| Session dies during playback | `startPlayback()` opens the gate with the `accessExpired` message. |
+| Start without a valid session, "Skip" not clicked | The gate opens after the manifests load. |
+| "Skip" or `Escape` | The gate closes; `audio.gateSkipped = "1"` in `sessionStorage`. |
+| Reload after "Skip" | The gate does not return. A new tab — it returns. |
+| "Unlock archive" | The skip marker is cleared, the gate opens. |
+| Clicking a "(missing in manifest)" tile with the archive locked | The gate with the `accessMissingItem` message. |
+| Session expiry during playback | The gate with the `accessExpired` message. |
 
-The gate is a `position: fixed` overlay at `z-index: 9999`, so while it is open it covers the admin toolbar. That is deliberate — it is exactly how the gate behaves in the `DataVault` module.
+The overlay has `position: fixed` and `z-index: 9999`, so it covers everything, including the save-message bar (`z-index: 9000`).
 
-### Separation of concerns in error messages
+### 10.2 Error messages name the layer that failed
 
-The rule: **a message must name the layer that actually failed.** `submitAccessLitany()` used to have a single wide `try` block covering both `fetch("/login")` and `await loadManifests()`. Any exception from manifest loading landed in that same `catch` clause and was reported as `accessSilent` — "cannot reach the access gateway, check the AUDIO_GATE_BASE constant". A failure of `AudioManifest.json` therefore pointed the diagnosis at the gateway even though the gateway was answering perfectly.
+| What failed | Translation key |
+| --- | --- |
+| `fetch("/login")` threw (network, CORS, wrong address) | `accessSilent` |
+| `/login` → `401` | `accessRejected` |
+| `/login` → a status other than 2xx and 401 | `accessLoginStatus` (with the status) |
+| empty password field | `accessEmpty` |
+| `/manifest` → `401` | `accessExpired` |
+| `/manifest` → `manifest_unavailable` | `accessManifestMissing` (with the status) |
+| `/manifest` → another error | `accessGateStatus` (with the status) |
+| another exception while fetching the archive | `accessSilent` |
+| `AudioManifest.json` could not be fetched | `publicManifestMissing` (with the status and file name) |
 
-The current split:
-
-| What failed | Message | Label |
-| --- | --- | --- |
-| `fetch("/login")` threw (network, CORS, wrong address) | "Cannot reach the access gateway…" | `accessSilent` |
-| `/login` answered `401` | "…the Litany of Access was rejected." | `accessRejected` |
-| `/login` answered with a status other than 200 and 401 | "The gateway answered with an unexpected HTTP {status}…" | `accessLoginStatus` |
-| `/manifest` answered `401` | "Session expired…" | `accessExpired` |
-| `/manifest` returned `502 manifest_unavailable` | "The gateway could not find the archive manifest (HTTP {status})…" | `accessManifestMissing` |
-| `/manifest` returned another error | "The gateway answered with HTTP {status} while fetching the archive manifest." | `accessGateStatus` |
-| `AudioManifest.json` could not be fetched | "Could not load the public list (HTTP {status})…" | `publicManifestMissing` |
-
-Every HTTP error carries its status all the way into the message (the `detail` field on the `Error` object), because the status is precisely what separates "file under the wrong name" from "the gateway is down".
-
-### Tier independence
-
-`loadManifests()` wraps **both** tiers in their own `try` blocks. A failure of either does not interrupt loading the other:
+### 10.3 Tier independence
 
 | State | Result |
 | --- | --- |
-| Public tier failed, protected tier fine | The archive shows, `state.publicError` describes the failure, the manifest pill turns red. |
-| Protected tier failed, public tier fine | The demo tier shows, `state.libraryError` describes the failure, the archive pill turns red. |
-| Both failed | `loadManifests()` throws with the specific reason rather than a generic "no data". |
+| Public tier failed, protected works | The archive is visible; `state.publicError`; the manifest pill is red ("Manifest: public list error"). |
+| Protected tier failed, public works | The demo is visible; `state.libraryError`; the archive pill is red ("Archive: load error"). |
+| Both failed | `loadManifests()` throws with the concrete reason. |
 
-Previously `fetchDemoManifest()` was called without a `try`, so its failure threw out of `loadManifests()` and took the whole library down with it — including the archive, which would have loaded fine.
+## 11. Passwords
 
-## SFX model after manifest parsing
+### 11.1 Audio archive password
 
-After parsing, each SFX has this logical structure:
+The archive password is the `GROUP_PASSWORD` secret of the `audio-gate` Worker. To change it: **Cloudflare → Workers & Pages → `audio-gate` → Settings → Variables and Secrets → `GROUP_PASSWORD` → Edit** (or `npx wrangler secret put GROUP_PASSWORD` in the folder holding the Worker configuration), then deploy. Changing the password does not sign out devices that already hold a token. To force a new login everywhere, change `SIGNING_KEY` as well.
 
-| Field | Description |
+### 11.2 DataVault and GeneratorNPC password (for completeness)
+
+DataVault and GeneratorNPC use a technical Firebase Auth account in the `wh40k-data-slate` project (the account address is in `window.WG_DATA_ACCESS_EMAIL`). Its password is changed in **Firebase Console → Authentication → Users → the account → Reset password**, or with a `firebase-admin` script (`updateUser`). The account must never be deleted or recreated, because its `uid` is written into the Realtime Database rules. This password is unrelated to the Audio archive.
+
+No password is stored in the repository.
+
+## 12. Firebase
+
+### 12.1 Configuration
+
+`Audio/config/firebase-config.js` sets `window.firebaseConfig` (`apiKey`, `authDomain`, `projectId`, `storageBucket`, `messagingSenderId`, `appId`) of the `audiorpg-2eb6f` project. A missing object or `apiKey` means local mode.
+
+`initFirebase()`:
+
+1. no configuration → `state.firebaseConfigMissing = true`, `writeStatus.reportLocalMode("no-config")`, `loadSettingsLocal()`, `renderAll()`;
+2. `initializeApp()` → `activateAppCheck(app)` → `getFirestore(app)`; an exception → `reportLocalMode("init-failed")` and local mode;
+3. `state.favoritesDoc = doc(db, "audio", "favorites")`, `state.usingFirestore = true`;
+4. `onSnapshot(favoritesDoc, onData, onError)`:
+   - no document → `applySettings(createEmptySettings())` and `persistAndRender()` (a v2 document is created),
+   - data → `normalizeSettingsV2(snapshot.data())`, `applySettings()`, `writeStatus.warnLocalOverwritten()`, `renderAll()`,
+   - listener error → `state.usingFirestore = false`, `writeStatus.reportReadError(error)`, `loadSettingsLocal()`, `renderAll()`.
+
+The listener is live: a change saved in the admin panel appears in open user views without a reload.
+
+### 12.2 App Check
+
+`activateAppCheck(app)` from `shared/firebase-app-check.js` runs after `initializeApp()` and before `getFirestore()`. The reCAPTCHA Enterprise site key of `audiorpg-2eb6f` is in `shared/appcheck-config.js`. The page loads the reCAPTCHA library (`<script defer>`) instead of the SDK, because the SDK appends a tag without an error handler and, with the address blocked, waits forever and stalls Firestore. Without the library, App Check is skipped with a console warning.
+
+### 12.3 Rules
+
+The project rules (mirrored in `shared/firestore-audiorpg.rules`) allow reading and writing only the `generatorNpc/favorites` and `audio/favorites` documents; everything else is blocked. The `request.app != null` condition is not added (explained in the rules file). Protection against foreign programs comes from App Check enforcement in the console.
+
+## 13. Settings model (version 2)
+
+### 13.1 Document
+
+The `audio/favorites` document (and its `localStorage` copy under `audio.settings`):
+
+```text
+{
+  schemaVersion: 2,
+  playlists: [
+    { id: "main", kind: "main", name: "", entries: [ { itemId, alias } ] },
+    { id: "<uuid>", kind: "list", name: "List name", entries: [ { itemId, alias } ] }
+  ],
+  updatedAt: <serverTimestamp>      // Firestore only
+}
+```
+
+| Field | Rule |
 | --- | --- |
-| `id` | Stabilized slug from name and row index. |
-| `label` | Sound name visible in UI. |
-| `groupCount` | Variant count when several files were grouped. |
-| `alias` | Alias from `state.aliases[item.id]`. |
-| `filename` | Filename or first filename with `(+N)` counter. |
-| `folderUrl` | Source folder path. |
-| `tags` | Tag list extracted from folder path. |
-| `tag2` | Second tag level used as short description. |
-| `tagPaths` | Tag paths used for hierarchical filtering. |
-| `access` | `"public"` or `"protected"`. Decides where the file URL comes from. |
-| `variants` | Variant list: `{ filename, url }` for the public tier, `{ filename, path }` for the protected one. |
+| `schemaVersion` | Always `2` (`SETTINGS_SCHEMA_VERSION`). |
+| `playlists` | Lists in display order. **Position 0 is always the main list.** The field is named `playlists`, not `lists`, so no older code recognises the document as its own. |
+| `id` | `"main"` for the main list, `crypto.randomUUID()` for the others. Unique. |
+| `kind` | `"main"` or `"list"`. Exactly one `main` list. |
+| `name` | Up to 60 characters (`LIST_NAME_MAX_LENGTH`). An empty main list name = the default name "Widok główny" / "Main view" in the current language. Other lists must have a name. |
+| `entries` | Entries in display order. `itemId` is unique within a list. |
+| `alias` | Up to 80 characters (`ALIAS_MAX_LENGTH`), empty = no alias. **The alias belongs to the entry, and therefore to the list** — the same sound can have different aliases on different lists. |
+| `updatedAt` | `serverTimestamp()` set on every Firestore save. |
 
-## Variant grouping
+List names are user data and are not translated. The export (`exportSettings`) saves `serializeSettings()` plus `exportedAt` (ISO 8601) — without the token or any secrets.
 
-If sample name ends with a number, for example `Explosion 1`, `Explosion 2`, the code tries to get a base name through `getGroupingBaseLabel(...)`.
+### 13.2 Clean start and the old format
 
-Variants are grouped when:
+The module knows only the v2 format. `normalizeSettingsV2(raw)`:
 
-- they have the same folder,
-- they have the same base name,
-- more than one variant was detected.
+- data without `schemaVersion === 2` or without a `playlists` array → **empty settings** (just an empty main list) and `legacy = isLegacySettings(raw)`;
+- `isLegacySettings` recognises the old format by the `favorites`, `mainView`, `aliases` fields or a `lists` array; it only drives the `noticeLegacy` message in the admin panel;
+- reading an old document **writes nothing**. The first change in the admin panel overwrites the whole document in the v2 format (`setDoc` without `merge`), which removes the old fields;
+- `loadSettingsLocal()` removes the oldest `audio.favorites` key from `localStorage` on every start-up.
 
-For a grouped sound, `variants` stores all URLs and UI shows base name plus variant count.
+v2 normalisation rules:
 
-## Tags
+- the first list with `kind === "main"` or `id === "main"` becomes the main list, further ones are skipped; no main list → an empty one is added;
+- other lists get `kind: "list"`; an empty `id` → `list-<n>`; a repeated `id` → a suffix is appended;
+- `normalizeEntries`: entries without `itemId` and duplicates are dropped (the first one stays), aliases are trimmed. **Entries missing from the current manifest are not removed** — with the archive locked every protected sound is "missing", and its entries and aliases must survive.
 
-Tags are extracted from `LinkDoFolderu` by `extractTags(...)`.
+### 13.3 Model functions
 
-Tag processing:
+| Function | Action |
+| --- | --- |
+| `createMainList()` / `createEmptySettings()` | An empty main list / settings with only the main list. |
+| `serializeSettings()` | The saved form (without `updatedAt`). |
+| `getLists()`, `getList(id)`, `getMainList()`, `getEditedList()` | List access; `getEditedList()` falls back to the main list. |
+| `getListName(list)` | Display name (the default for an empty name). |
+| `buildMembershipIndex()` | Map `itemId → [{ listId, alias }]` — for the catalogue counter, the "On other lists" section, alias suggestions and searching by alias. |
+| `createList()` | A new list at the end, named "New list"; returns its `id`. |
+| `duplicateList(id)` | A copy with entries and aliases, name suffixed "(copy)", inserted right after the original (for the main list — at position 1). |
+| `moveListTo(id, index)` | Moves a list; the main list never moves and nothing lands at position 0. |
+| `addEntries(listId, itemIds)` | Appends without duplicates; returns the number added. |
+| `removeEntry(listId, itemId)` | Removes an entry together with its alias. |
+| `moveEntry(listId, from, to)` | Moves an entry (the alias travels with it). |
+| `setEntryAlias(listId, itemId, alias)` | Sets an alias; returns `false` when nothing changed. |
+| `onSettingsChanged()` | Rebuilds the index, applies `restoredEditedListId`, repairs pointers to missing lists (`editedListId`, `previewListId`, `userListId`, `renamingListId`), `pruneOrphanPlayers()`. |
+| `applySettings(settings, legacy)` | Replaces the settings and calls `onSettingsChanged()`. |
 
-- normalizes `/` separators,
-- supports URLs through `new URL(...).pathname`,
-- ignores segments from `TAG_IGNORE_SEGMENTS`, such as `AudioRPG`,
-- removes fragments from `TAG_IGNORE_FRAGMENTS`, such as `SoundPad`, `_Siege_SoundPad`, `Patreon`,
-- converts `_` and `-` to spaces,
-- removes extra whitespace.
+## 14. Saving and loading
 
-Tags are used to build `tagTree`, then a flattened list for the filter popup.
+| Function | Action |
+| --- | --- |
+| `saveSettingsLocal()` | `localStorage["audio.settings"] = JSON(serializeSettings())`; returns `true`/`false`. |
+| `saveSettings()` | With an active database `setDoc(favoritesDoc, { ...serializeSettings(), updatedAt: serverTimestamp() })`. An error → `usingFirestore = false`, local save, `reportSaveError(error, { savedLocally })`. Without a database → local save; with a configured database also `noteLocalOnlyChange()`. A successful save clears the old-format notice (`markSettingsSaved`). **It never rejects.** |
+| `persistAndRender()` | `onSettingsChanged()` → `renderAll()` → `await saveSettings()`. The view is drawn **before** saving, because with no network the `setDoc` promise may never settle. |
+| `loadSettingsLocal()` | Removes `audio.favorites`, reads `audio.settings`, normalises, `applySettings()`. |
 
-## Firebase and settings model
+Browser storage keys:
 
-Firebase configuration is stored in:
-
-```text
-Audio/config/firebase-config.js
-```
-
-The file must define:
-
-```js
-window.firebaseConfig = {
-  apiKey: "...",
-  authDomain: "...",
-  projectId: "...",
-  storageBucket: "...",
-  messagingSenderId: "...",
-  appId: "..."
-};
-```
-
-The code uses Firestore document:
-
-```text
-audio/favorites
-```
-
-### App Check
-
-`initFirebase()` calls `activateAppCheck(app)` from `shared/firebase-app-check.js` right after
-`initializeApp()` and before `getFirestore()`. Because of that every request to the
-`audio/favorites` document carries an App Check token, proving it came from the registered
-WrathAndGlory application.
-
-The reCAPTCHA Enterprise site key for the `audiorpg-2eb6f` project lives in
-`shared/appcheck-config.js` together with the other project's key. The module keeps no local copy.
-
-The reCAPTCHA Enterprise library is loaded by the page itself with a `<script defer>` tag rather
-than by the Firebase SDK — the SDK appends its own tag with no load-error handler and, with a
-blocked address, waits forever, and Firestore waits with it. Verified by running it: without this
-safeguard the module stayed on its loading screen and after 10 seconds fell back to offline mode.
-When the library is absent, `activateAppCheck()` logs a console warning and skips App Check, and the
-module works as it did before App Check existed, including the `localStorage` fallback.
-
-Document model:
-
-| Field | Type | Description |
+| Key | Storage | Content |
 | --- | --- | --- |
-| `favorites` | `object` | Favorite lists object. |
-| `mainView` | `object` | Main view object. |
-| `aliases` | `object` | Alias map per `itemId`. |
-| `updatedAt` | `timestamp` | Firestore server timestamp set on save. |
+| `audio.settings` | `localStorage` | v2 settings (local mode and the fallback after a database refusal). |
+| `wgLocalOnlyChange:audio.settings` | `localStorage` | Marker of changes saved only locally while a database is configured (`{"at":"<ISO>"}`), managed by `shared/firebase-write-status.js`. |
+| `audio.session` | `localStorage` | Gateway token. |
+| `audio.gateSkipped` | `sessionStorage` | "Skip" marker. |
+| `audio.admin.ui` | `localStorage` | Admin panel layout (section 16). |
+| `audio.admin.filters` | `sessionStorage` | Admin panel filters (section 16). |
 
-## Failed write and read messages
+Every storage access sits in `try/catch` (`getStorage`, `readStoredJson`, `writeStoredJson`) — a private window or blocked site data never stops the module.
 
-The module has no failure texts of its own. The shared module `shared/firebase-write-status.js`
-takes over — the same one GeneratorNPC uses. The instance is created once, at script start:
+### 14.1 Save-message bar
+
+The instance is created once when the script loads:
 
 ```js
 const writeStatus = createFirebaseWriteStatus({
   mount: document.body,
-  modeMount: document.getElementById("writeStatusMode"),
+  modeMount: $("writeStatusMode"),
   language: currentLanguage,
   scopeKey: AUDIO_SETTINGS_STORAGE_KEY,
   moduleName: "Audio"
 });
 ```
 
-`modeMount` points at the `#writeStatusMode` slot — an empty `<div class="write-status-slot">` that
-is the first element of `.page`. The slot sits **outside** the `admin-only` and `user-only`
-sections, because `setModeVisibility()` removes one of them at start-up while the mode badge must
-stay visible in both module modes. The `Firebase: …` pill in the header is visible in the admin
-panel only and does not replace the badge.
+`#writeStatusMode` sits in `.page-top`, outside the `admin-only` / `user-only` sections, so the mode badge is visible in both modes.
 
-### Calls made by the module
-
-| Place in the code | Call | Effect |
+| Place | Call | Effect |
 | --- | --- | --- |
-| `saveSettings()` — successful `setDoc` | `reportSaveSuccess()` | The bar disappears, the mode badge returns to "shared data", the local-change marker is cleared. |
-| `saveSettings()` — refused `setDoc` | `reportSaveError(error, { savedLocally })` | The module falls back to local storage, the bar shows "saved on this device only" or "nothing was saved". |
-| `saveSettings()` — local write with the database configured | `noteLocalOnlyChange()` | Sets the local-change marker without showing the bar a second time. |
-| `onSnapshot` — third argument | `reportReadError(error)` | The bar shows "data could not be loaded from the database", the module loads `audio.settings`. |
-| `onSnapshot` — data received | `warnLocalOverwritten()` | If a local-change marker exists, the bar warns that database data has just replaced it. |
-| `initFirebase()` — missing configuration | `reportLocalMode("no-config")` | The bar reports running without the database in a gentle tone. |
-| `initFirebase()` — SDK exception | `reportLocalMode("init-failed")` | The same, with a different cause. |
-| `updateStatus()` | `setMode("shared")` or `setMode("local")` | The working-mode badge is refreshed together with the status pills. |
-| `applyLanguage(lang)` | `setLanguage(lang)` | The bar and the mode badge rewrite themselves in the selected language without waiting for the next error. |
+| `saveSettings()` — successful `setDoc` | `reportSaveSuccess()` | The bar hides, the badge reads "Shared data", the local-change marker is cleared. |
+| `saveSettings()` — refusal | `reportSaveError(error, { savedLocally })` | "Saved on this device only" or "Nothing was saved". |
+| `saveSettings()` — local save with a configured database | `noteLocalOnlyChange()` | Local-change marker. |
+| `onSnapshot` — error | `reportReadError(error)` | "Could not load data from the database". |
+| `onSnapshot` — data | `warnLocalOverwritten()` | A warning if database data replaced local changes. |
+| `initFirebase()` | `reportLocalMode("no-config" \| "init-failed")` | A mild note about working without the database. |
+| `renderStatus()` | `setMode("shared" \| "local")` | The mode badge. |
+| `applyLanguage()` | `setLanguage(lang)` | Bar texts in the chosen language. |
 
-### Situations distinguished by the shared module
+The shared module distinguishes the `nothing-saved`, `local-only`, `read-failed`, `local-mode` and `local-overwritten` situations, maps Firestore codes (`permission-denied`, `unauthenticated`, `unavailable`, `deadline-exceeded`, `resource-exhausted`, `failed-precondition`) to hints, and sets the `--wg-write-status-height` variable on `<html>`, by which `body` is pushed down. The same variable is used by the user view's sticky `.uv-bar`, the sticky `.admin-tabs` and the folder drawer.
 
-| Situation | When it arises | Bar tone |
-| --- | --- | --- |
-| `nothing-saved` | The write failed everywhere — neither the database nor `localStorage`. | red |
-| `local-only` | The write succeeded in browser storage only. | amber |
-| `read-failed` | Data could not be loaded from the database. | red (amber for `unavailable`) |
-| `local-mode` | The module deliberately runs without the database: missing configuration or a failed SDK start. | amber |
-| `local-overwritten` | Database data replaced changes saved on this device only. | amber |
+The module deliberately does not push locally saved changes to the database once access returns: a save is one `setDoc` of the whole document, so pushing the old state would erase changes made on another device. It shows the `local-overwritten` warning instead.
 
-### Firestore error code mapping
+## 15. Module state (`state`)
 
-The cause is taken from the `error.code` field, after stripping the `firestore/` prefix.
-
-| Code | Hint content |
+| Field | Meaning |
 | --- | --- |
-| `permission-denied` | The database refused the operation; suspect a blocked `google.com/recaptcha` address first (ad blocker, network filter), then database permissions. |
-| `unauthenticated` | The session expired; reload the page and sign in again. |
-| `unavailable` | No connection to the database; repeat the change once it is back. |
-| `deadline-exceeded` | The database did not answer in time. |
-| `resource-exhausted` | The database request limit has been exceeded. |
-| `failed-precondition` | Refused because of the document state. |
-| other | A general message with the error code to quote in a report. |
+| `items`, `itemsById` | Sounds from both manifests (after `applyItems`). |
+| `manifestReady`, `manifestAttempted` | Manifest loaded / a load attempt has happened. |
+| `settings` | `{ playlists }` — v2 settings. |
+| `membership` | Index from `buildMembershipIndex()`. |
+| `legacyDetected`, `legacyNoticeDismissed`, `archiveNoticeDismissed` | Admin panel notices. |
+| `firestore`, `favoritesDoc`, `usingFirestore`, `firebaseConfigMissing`, `firebaseStarted` | Firebase state. |
+| `session`, `libraryUnlocked`, `libraryError`, `publicError` | Session and library tiers. |
+| `builder` | `{ status: "idle" \| "working" \| "ready" \| "error", publicCount, protectedCount, message }`. |
+| `editedListId` | The list edited in the admin panel = the catalogue target list. |
+| `restoredEditedListId` | The edited list from the previous visit; waits until database data brings it (settings load after start-up). Cleared by a deliberate list choice. |
+| `renamingListId` | The list whose name is being edited. |
+| `folderTree` | `{ roots, index }` from `buildFolderTree()`. |
+| `excludedPaths` | Set of folder paths excluded from the catalogue. |
+| `expandedPaths` | Set of expanded tree folders. |
+| `treeSearch`, `catalogSearch`, `catalogScope`, `catalogTier`, `editorSearch` | Filters. |
+| `catalogLimit`, `catalogResults` | Catalogue paging (200 at a time) and the latest results (for range selection). |
+| `selectedItemIds`, `lastSelectedIndex` | Catalogue selection. |
+| `expandedMembers` | Catalogue items with the "On lists: …" line expanded. |
+| `foldersCollapsed`, `foldersOpen` | Folder rail (≥1280 px) / open drawer (<1280 px). |
+| `adminTab` | `catalog` \| `lists` \| `preview` (tabs <1024 px). |
+| `previewDevice`, `previewFollow`, `previewCollapsed`, `previewListId` | Preview. |
+| `toolsMenuOpen` | The "Tools" menu. |
+| `userListId` | The list shown in the user view (not remembered between reloads). |
 
-The `unavailable` and `deadline-exceeded` codes get the amber tone even on a failed write. A brief
-network outage happens during normal use and must not look like a database failure — otherwise the
-user stops reading the bars.
+## 16. Admin interface storage
 
-### Reserving space for the bar
+Saving works in the admin panel only.
 
-The bar is `position: fixed`, so on its own it would cover the first element of the page. The shared
-module publishes its height into the `--wg-write-status-height` CSS variable on the `<html>` element,
-and `shared/firebase-write-status.css` pushes `body` down by that much. With the bar hidden the
-height is `0px` and the layout is exactly what it was before the bar existed. A `ResizeObserver`
-watches the height, because the message changes its number of lines on a phone rotation.
-
-### What the module deliberately does not do
-
-Settings stored in browser memory are not pushed back to the database once access returns. The module
-writes the whole document with one `setDoc`, so pushing the local state back would erase changes
-saved from another device in the meantime. Instead of silent merging, the module shows the
-`local-overwritten` warning. Safe merging requires changing the data structure at the level of
-individual lists and entries and is a separate task.
-
-## `favorites` model
-
-```text
-{
-  lists: [
-    {
-      id: string,
-      name: string,
-      itemIds: string[]
-    }
-  ]
-}
-```
-
-If favorite lists are missing or invalid, `normalizeFavorites(...)` creates a default list.
-
-## `mainView` model
+`saveAdminUi()` → `localStorage["audio.admin.ui"]`:
 
 ```text
-{
-  itemIds: string[]
-}
+{ foldersCollapsed, expandedPaths: [..] | null, editedListId, previewDevice, previewFollow, previewCollapsed, adminTab }
 ```
 
-`itemIds` stores order of sounds in the user main view.
-
-## `aliases` model
+`saveAdminFilters()` → `sessionStorage["audio.admin.filters"]` (like the Global Filter in DataVault — filters live until the tab closes):
 
 ```text
-{
-  "item-id": "Alias"
-}
+{ excludedPaths: [..], treeSearch, catalogSearch, catalogScope, catalogTier }
 ```
 
-Alias is assigned to SFX after settings load by `applyAliasesToItems()`.
+`restoreAdminState()` (at start-up) restores both objects with value validation and writes the filters into the form fields. `editedListId` goes into `restoredEditedListId` and is applied in `onSettingsChanged()` once the list appears in the data.
 
-`Clear all aliases` removes the whole `aliases` map, including aliases for sounds hidden by current filters.
+Tile volume is not stored anywhere — after a reload every tile is at 100%.
 
-## LocalStorage fallback
+## 17. Playback
 
-If `window.firebaseConfig` or `apiKey` are not available, the module switches to local mode.
+### 17.1 Player keys
 
-Current key:
-
-```text
-audio.settings
-```
-
-Legacy key:
-
-```text
-audio.favorites
-```
-
-`loadSettingsLocal()` tries `audio.settings`. If missing, it tries old key `audio.favorites`. On error it creates default settings.
-
-`saveSettingsLocal()` writes `audio.settings` and returns `true` or `false`. The result decides the
-message: `true` means "saved on this device only", `false` means "nothing was saved".
-
-The third key is the marker of changes saved locally only:
-
-```text
-wgLocalOnlyChange:audio.settings
-```
-
-The shared message module writes the marker on every save that reached the browser only despite a
-configured database. It holds a single value: `{"at":"<ISO 8601>"}`. It is cleared by the first
-successful Firestore write or by showing the overwrite warning.
-
-### `persistAndRender()`
-
-All twelve event handlers that change settings — add and remove list, add, move and remove entry,
-rename list, move list, add, move and remove in the main view, change alias, and clear all aliases —
-end with a single `await persistAndRender()` call instead of the `await saveSettings()` plus
-`renderAllViews()` pair.
-
-The function draws the view **before** the save:
+Players are bound to a stable text key rather than to a page element:
 
 ```js
-const persistAndRender = async () => {
-  renderAllViews();
-  try {
-    return await saveSettings();
-  } catch (error) {
-    console.error("[Audio] Nieoczekiwany błąd zapisu ustawień / Unexpected settings save error:", error);
-    return { ok: false, target: "none", error };
-  }
-};
+const makeKey = (context, listId, itemId) => `${context}|${listId}|${itemId}`;
 ```
 
-The order is deliberate. The module state is changed before the call, so the view has nothing to
-wait for, and waiting for the database had two bad effects:
-
-- a refused write aborted the event handler **before** `renderAllViews()`;
-- with no network the `setDoc` promise never settles at all, because Firestore keeps the write
-  queued until the server acknowledges it.
-
-In both cases the interface stayed in its pre-operation state even though the module data had
-already changed. The write outcome changes only the message bar and the working-mode badge, and the
-shared module updates those on its own, independently of `renderAllViews()`.
-
-## Audio playback
-
-Playback is managed by:
-
-- `activePlayers`,
-- `getAudioContext()`,
-- `pickRandomVariant(...)`,
-- `startPlayback(...)`,
-- `stopPlayback(...)`,
-- `togglePlayback(...)`,
-- `toggleLoop(...)`.
-
-Sound is played through an `Audio` object. If the browser supports `AudioContext`, the code creates `MediaElementSource` and `GainNode`. Otherwise it uses `audio.volume`.
-
-### `crossOrigin` ordering — the trap that produces silence
-
-For the protected tier the file arrives from a different origin than the application, and the module wires it into the Web Audio graph via `createMediaElementSource`. The specification requires such media to be CORS-obtained. An `<audio>` element without the `crossOrigin` attribute becomes tainted and the node emits **silence** — with no console error, the file loads fine and appears to play.
-
-That is why the code avoids the `new Audio(url)` constructor, which assigns `src` immediately:
-
-```js
-const audio = new Audio();
-if (item?.access !== "public") {
-  audio.crossOrigin = "anonymous";
-}
-audio.src = fullUrl;
-```
-
-The attribute must be set **before** `src` is assigned. On the gateway side this is matched by the `Access-Control-Allow-Origin` header carrying `ALLOWED_ORIGIN`.
-
-The demo tier sits on the same origin as the application, so it needs neither the attribute nor the header.
-
-### Asynchronous start and the generation counter
-
-A protected URL exists only after the gateway is asked, so `startPlayback` is asynchronous. A moment passes between the click and the start, during which the user may click something else on the same tile.
-
-The `playbackGeneration` map holds a generation number per tile. Every start and every `stopPlayback` increments it. After returning from the gateway the code compares its own number with the current one and bails out if they differ. Without this guard a late request could hijack a tile already taken by another sound.
-
-## Volume
-
-Volume slider range:
-
-```text
--100 .. 100
-```
-
-`volumeToGain(value)` maps it to:
-
-```text
-0 .. 2
-```
-
-In WebAudio mode this value is assigned to `gainNode.gain.value`. Without WebAudio, it is clamped to `0..1` and assigned as `audio.volume`.
-
-## Variant randomization
-
-`pickRandomVariant(item, previousUrl)` selects a random URL from `item.variants`.
-
-If a sound has more than one variant, the function tries to avoid immediately repeating the previous URL. After several attempts it falls back to any other variant or the last selected value.
-
-## Loop
-
-`Loop` button is rendered only in real user view without `?admin=1`.
-
-Behavior:
-
-- clicking `Loop` starts sound immediately in loop mode,
-- after `ended`, another random variant starts,
-- clicking active `Loop` again stops the loop,
-- if normal playback is active, clicking `Loop` converts it into loop mode.
-
-Active loop state is marked with class `is-looping` and `aria-pressed="true"`.
-
-## View rendering
-
-`renderAllViews()` refreshes:
-
-- statuses,
-- tag filter panel,
-- tag panel visibility,
-- admin SFX list,
-- admin favorites lists,
-- admin main view,
-- user main view,
-- user favorite lists,
-- user navigation,
-- active navigation buttons,
-- tag popup when open.
-
-## i18n
-
-`translations` contains languages:
-
-- `pl`,
-- `en`.
-
-`applyLanguage(lang)` updates:
-
-- `document.documentElement.lang`,
-- admin and user language selects,
-- titles,
-- subtitles,
-- placeholders,
-- buttons,
-- statuses,
-- empty states,
-- dynamically rendered views.
-
-Database failure messages are an exception: they are not part of `translations`. They live in
-`shared/firebase-write-status.js` in both languages, and `applyLanguage()` passes the selected
-language to it with `writeStatus.setLanguage(lang)`. This way the same message is not written a
-second time in the module dictionary and cannot drift apart from the GeneratorNPC module.
-
-Both language switchers — the user one (`languageSelectUser`) and the admin one
-(`languageSelect`) — are hidden with the `language-switcher--hidden` class. The rule
-`.language-switcher--hidden { display: none !important; }` lives in the `<style>` block of
-`Audio/index.html`. The translation layer stays active and Polish is the default language.
-
-To reveal a switcher, remove the `language-switcher--hidden` class from its
-`<div class="language-switcher language-switcher--hidden">` container. `Audio/index.html` has **two**
-such containers: one in the user view and one in the admin panel — if both switchers are to be
-visible, the class has to be removed in both places. A comment marked
-`LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above each of them.
-
-## Fallbacks and errors
-
-| Situation | Behavior |
+| Context | Place |
 | --- | --- |
-| Missing `window.firebaseConfig` or `apiKey` | Module uses `localStorage`, displays local settings status, and the bar reports running without the database in a gentle tone. |
-| Missing Firestore document | Code creates default settings and saves them through `persistAndRender()`. |
-| Firestore write refused | `saveSettings()` falls back to `localStorage`, sets `state.usingFirestore = false` and shows the "saved on this device only" bar. The promise does **not** reject, and `persistAndRender()` draws the view before the save, so the interface always shows the current state. |
-| Local write failed as well | The bar, in the error tone, says nothing was saved. |
-| Permission denied on the Firestore listener | The third `onSnapshot` argument switches the module to local settings, shows the bar with the cause, and refreshes the views. |
-| Access restored with local changes pending | The bar warns that database data replaced the changes saved on this device. |
-| Damaged Firestore/localStorage settings | Normalizers create safe defaults. |
-| Missing `AudioManifest.json` | `state.publicError` receives a message carrying the HTTP status, the manifest pill switches to its error state, and the protected tier still loads. |
-| Gateway unreachable with a valid session | The demo tier still loads; the archive stays locked. |
-| `401` from the gateway | The session is cleared and the overlay appears with the incomplete-Rite message. |
-| Exception from the Firebase SDK | The module falls back to local settings and **continues** loading the manifests. |
-| Empty manifest | No-data manifest error is shown. |
-| Missing audio URL | Playback attempt shows missing-link alert. |
-| No WebAudio | Module uses `audio.volume`. |
-| No tag results | Tag filter empty state is shown. |
-| No SFX results | SFX list empty state is shown. |
-| Sound from a list does not exist in manifest | UI displays `(missing in manifest)`. |
+| `user` | the real user view |
+| `prev` | the admin panel preview |
+| `cat` | the catalogue preview button (empty `listId`) |
+| `ed` | the list editor preview button |
 
-## Module recreation procedure
+A redraw (database change, tab change, language change) therefore never loses a playing sound: the new element with the same `data-key` gets its state right away and can be stopped. The same sound on two lists is two independent players with separate volumes.
 
-1. Preserve `Audio/index.html`, `Audio/AudioManifest.json` and `Audio/worker/audio-gate.js`.
-2. Preserve `../shared/access-gate.css`, `../shared/firebase-write-status.js`, and `../shared/firebase-write-status.css`.
-3. Keep the source spreadsheet `AudioManifest.xlsx` **outside this repository** and regenerate both manifests from it with the generator.
-4. Upload `audio-manifest.json` to the root of the private `AudioRPG` repository.
-5. Deploy `Audio/worker/audio-gate.js` as the `audio-gate` Worker and set the four environment variables.
-6. Put the Worker address into the `AUDIO_GATE_BASE` constant in `index.html`.
-7. Preserve `Audio/config/firebase-config.js` if settings should sync through Firebase.
-8. Configure Firestore according to `Audio/config/FirebaseREADME.md`.
-9. Open `Audio/index.html?admin=1`.
-10. Check that the demo manifest loads, and that the whole library loads after unlocking the archive.
-7. Add several sounds to the main view.
-8. Create a favorite list and add sounds to it.
-9. Assign an alias to selected SFX.
-10. Open `Audio/index.html`.
-11. Check main view, navigation, lists, and playback.
-12. Check local mode by removing or disabling Firebase configuration.
+| Map | Content |
+| --- | --- |
+| `players` | `key → { item, audio, gainNode, loop, lastKey }` — playing sounds. |
+| `loadingKeys` | `key → { loop }` — sounds being started (signature, download). |
+| `volumes` | `key → slider value -100..100` — for the page session only. |
+| `volumeClicks` | `key → time of the last click` on the volume value. |
+| `playbackGeneration` | `key → counter` — guards against races during asynchronous start. |
 
-## Control tests
+### 17.2 Start, loop and stop
+
+`startPlayback(key, item, { loop, previousKey })`:
+
+1. `bumpGeneration(key)`; variant pick `pickRandomVariant(item, previousKey)`;
+2. if the sound was not playing: `loadingKeys.set(key, { loop })` → the tile shows "loading";
+3. `resolveVariantUrl()`; a `gate_unauthorized` error → the gate with `accessExpired`; another error → `alert(alertPlaybackFailed)`;
+4. if the generation changed meanwhile (something else was clicked), the result is dropped;
+5. `new Audio()`; for the protected tier `audio.crossOrigin = "anonymous"` **before** setting `src` (otherwise `createMediaElementSource` taints the Web Audio graph and gateway audio plays silent);
+6. `AudioContext` (resumed when `suspended`) → `createMediaElementSource(audio)` → `GainNode` → `destination`;
+7. stored in `players`, removed from `loadingKeys`, `refreshKey(key)`;
+8. `timeupdate` → progress bar; `ended` → with `loop`, a new `startPlayback` with the next variant (without a "loading" state, so the tile does not flicker), otherwise `stopPlayback`; `error` / rejected `play()` → alert and stop.
+
+`pickRandomVariant(item, previousKey)` returns **a variant object**: with one variant, that variant; with several, it draws up to 8 times for a variant whose key (`getVariantKey` = `url` or `path`) differs from the previous one, and as a last resort takes the first different one.
+
+| Function | Action |
+| --- | --- |
+| `togglePlayback(key, itemId)` | Playing / loading → stop; an item missing from the manifest with the archive locked → the gate with `accessMissingItem`; otherwise start. |
+| `toggleLoop(key, itemId)` | Looping → stop; playing without a loop → turns the loop on without a restart; loading → toggles the loop flag; idle → start in a loop. |
+| `stopPlayback(key)` | Pause, `currentTime = 0`, removal from the maps, `bumpGeneration`, refresh. |
+| `stopAllPlayback()` | Stops every key in `players` and `loadingKeys` (all contexts). |
+| `pruneOrphanPlayers()` | Stops sounds (outside the `cat` context) whose list or entry disappeared. |
+
+### 17.3 Volume
+
+- Slider `-100..100`, step 1, default `0`.
+- `volumeToGain(v) = (v + 100) / 100` → gain `0..2` (0% … 200%); `volumeToPercent` shows the percentage next to the slider.
+- Volume goes through a `GainNode`, because iPhone and iPad ignore `audio.volume`; `audio.volume` (clamped to 0..1) remains only for browsers without `AudioContext`.
+- `handleVolumeValueClick(key)` — two clicks on the percentage within 450 ms (`VOLUME_RESET_DOUBLE_CLICK_MS`) restore 100%. Own detection instead of `dblclick`, which some touch screens never send.
+
+### 17.4 Indicators and screen wake lock
+
+`updatePlaybackIndicators()` after every change:
+
+- `.stop-all` buttons: `disabled` at zero, the `is-active` class, the `(N)` counter and `aria-label`,
+- `.uv-tab` tabs: the `has-playing` class (red dot) when any `context|list|…` key plays; `title` = the full list name, with the `tabPlaying` suffix when something plays,
+- `updateWakeLock()`: `navigator.wakeLock.request("screen")` while at least one sound plays and the tab is visible; released when nothing plays. `visibilitychange` triggers a re-check (the browser releases the lock when the tab is hidden). Without the API the function does nothing.
+
+`syncPlaybackElement(element)` applies the state to an element with `data-key`:
+
+- a `.tile`: `data-state` (`idle` / `loading` / `playing`; `missing` is kept), icon `▶` / `…` / `■`, `aria-pressed` and `aria-label` of the play button, Loop state (`is-looping`, `aria-pressed`), progress bar, volume slider and value,
+- a `.play-btn` in the catalogue/editor: `is-playing` / `is-loading` classes, icon, `aria-pressed`, `title`.
+
+## 18. Admin panel
+
+### 18.1 Header and notices
+
+- `#unlockLibrary` — opens the gate; hidden once unlocked.
+- "Tools" menu (`#toolsMenuButton`, `#toolsMenuList`, `aria-expanded`): `#reloadManifest` (another `loadManifests()`), `#buildManifests`, `#exportSettings`, `#reloadLocal` (visible in local mode only), `#clearAllAliases` (with confirmation). Closed by a click outside, choosing an item, or `Escape`.
+- `renderStatus()` pills: `#manifestStatus` (`Manifest: N items` / public list error), `#firebaseStatus`, `#listsStatus` (`Lists: N`), `#libraryStatus` (locked / unlocked / error), `#builderStatus`. Red (`.is-error`) for errors only; details in `title`.
+- `#adminNotices` (`renderNotices`): `noticeLegacy` (old-format data skipped) and `noticeArchiveLocked` (the archive is locked — protected entries appear as "(missing in manifest)" and will not be removed). Each notice has a ✕ button; closing lasts until a reload.
+
+### 18.2 Workbench and layout
+
+`#workbench` is a `var(--folders-w) minmax(0, 1fr) var(--lists-w)` grid with height `calc(100dvh - 24px)` (min. 640 px); each column scrolls on its own (`.col-body`), column headers (`.col-head`) stay in place.
+
+`renderLayoutState()` sets: `body[data-admin-tab]`, the active tab, the `is-folders-collapsed` class (≥1280 px only), `is-collapsed` / `is-drawer-open` on the folder panel, the drawer backdrop, the available preview widths (`getAvailableDevices()`: Tablet when the window is > 860 px; Phone when > 430 px), the frame's `data-device`, preview collapse and the `#previewFollow` state. It also runs on `resize` (120 ms debounce).
+
+| Window width | Layout |
+| --- | --- |
+| ≥ 1600 px | 3 columns: folders 280 px, catalogue, lists 420 px. |
+| 1280–1599 px | 3 columns: 240 px, catalogue, 380 px. |
+| 1024–1279 px | 2 columns: catalogue and lists (`minmax(320px, 380px)`); folders as a drawer from the left (`min(360px, 90vw)`) opened by the "Folders" button in the catalogue header, closed by ✕, the backdrop or `Escape`. |
+| < 1024 px | Catalogue / Lists / Preview tabs (sticky below the save bar); one panel visible, the whole page scrolls; the selection bar sticks to the bottom. |
+| < 720 px | A catalogue row spans two lines (the name gets the full width, the list counter below), no tier chip; the alias field on its own line; the "Tools" menu opens from the left. |
+
+At ≥ 1280 px the folder panel can be collapsed with `«` into a 44 px rail with a vertical "Folders" label; clicking the rail (`»`) expands it again. The collapsed state is remembered.
+
+### 18.3 Folder tree
+
+Model:
+
+- `buildFolderTree(items)` creates a node for every path in `tagPaths` (`{ path, name, depth, parent, children, ownCount, totalCount }`). `ownCount` — sounds lying directly in the folder (deepest path), `totalCount` — in the whole subtree. Sounds without a folder go to the `__no_folder__` node ("(no folder)"), sorted last; other nodes are sorted by name.
+- The filter is a set of **excluded** paths, `excludedPaths`. A sound is visible in the catalogue when its `folderPath` is not excluded. Selecting a subfolder therefore works even with the parent cleared, and a folder with both its own sounds and subfolders is handled correctly.
+- `computeTreeStats()` computes, from the leaves up, each node's state: `all` (folder and subtree visible), `none`, `some` (mixed), plus the number of visible sounds. Checkbox: `checked` for `all`, `indeterminate` for `some` (set through the property after the HTML is inserted).
+- Clicking a checkbox: state `all` → `setSubtreeIncluded(node, false)` (excludes the whole subtree); state `none` or `some` → includes the whole subtree.
+- Folder counter: `(N)`, or `(visible/N)` when part is hidden.
+- "only" (`tree-only`) → `excludeAllFolders()` + including the subtree. With a mouse, the button appears on row hover or focus; on touch screens it is always visible.
+- "Select all" clears `excludedPaths`; "Clear all" excludes every folder with `ownCount > 0`; "Expand/Collapse all" changes `expandedPaths`; ▸/▾ toggles one folder.
+
+Search (`getTreeSearch()`, 150 ms debounce):
+
+- the phrase is folded with `toNeedle()` (`foldPolish` + `trim`); a lone space is not a filter,
+- nodes whose name contains the phrase match; visible are the matching nodes, their whole subtrees and their ancestors; ancestors are forced open (`forced`), matching nodes keep their own expansion state,
+- the match is highlighted with `<mark>` (`highlightMatch`, correct for Polish diacritics too),
+- below the field the "Select matches", "Clear matches" and "Matches only" actions appear (acting on the matching nodes' subtrees),
+- the search changes only what the tree shows — it does not filter the catalogue.
+
+Blue signals: the "Search folders" label (`field-label--active`) with an active phrase; the "Folders" title (`is-filter-on`) and blue dots (`#foldersTitleDot`, `#foldersRailDot` on the rail, `#openFoldersDot` on the drawer button) when at least one folder with sounds is excluded. The `title` says "The catalogue shows sounds from X of Y folders".
+
+`onFolderFilterChanged()` resets paging, saves the filters, and draws the tree and the catalogue.
+
+### 18.4 Catalogue
+
+`getCatalogResults(targetIds)` applies the filters in order: folder (`excludedPaths`) → tier (`catalogTier`: `all` / `public` / `protected`) → scope (`catalogScope`: `all` / `outside` — not on the target list / `inside` — on the target list) → phrase (in `searchText`, and when that fails, in this sound's aliases from every list).
+
+The target list (`#targetList`) is always the same list as the edited one (`setEditedList`).
+
+A `.cat-row` (paged by 200, "Show N more" button):
+
+| Element | Action |
+| --- | --- |
+| `.cat-check` | Selection; with `Shift` — a range from the last clicked one (`handleCatalogSelection`). `Ctrl`/`Cmd` + click on the name toggles the selection. |
+| `.play-btn` (`cat|…`) | Preview without adding. |
+| `.cat-title` | Name with `(N)`; it does not shrink until it fills 65% of the row. |
+| `.cat-meta` | Path (`tags` from the second one, joined with ` › `) and file name; full path in `title`. |
+| `.chip--tier` | "demo" / "archive". |
+| `.chip--members` | Number of lists holding the sound; `title` lists names and aliases; clicking expands the `.cat-members` line. Highlighted when the sound is on the target list. |
+| `.add-btn` | `+` appends to the target list; `✓` removes (with confirmation when the entry has an alias). |
+
+"Select all results" asks for confirmation above 50 results (`SELECT_ALL_CONFIRM_THRESHOLD`). The `#bulkBar` (counter, "Add to "list"", "Clear selection") is the column's last element, so it is always visible; a bulk add keeps catalogue order and skips sounds already present. The `#catalogSummary` reads "Folders: X of Y" (blue with an active filter) · "Results: N of M". The "Search sounds" label glows blue with an active phrase.
+
+The `/` key (outside text fields, with the gate closed) moves focus to the catalogue search, and on a narrow screen switches to the Catalogue tab.
+
+### 18.5 Lists panel
+
+`renderLists()` draws a `.list-row` per list:
+
+- main list: a 📌 pin, the "main list" badge, no handle or arrows, always first,
+- others: a `⠿` handle (`.drag-handle`, `touch-action: none`), the name (selection button), the entry counter, ▲/▼ (▲ disabled at position 1, ▼ at the last),
+- the active list has the `is-active` class (green background and glow),
+- double-clicking a name → selection and rename.
+
+"+ New list" creates a list, selects it and opens the name field at once. On a screen < 1024 px choosing a list scrolls to the editor.
+
+### 18.6 List editor
+
+Header (`#editorHead`): the title (for the main list with the "main list" caption), ✎ rename, ⧉ duplicate, 🗑 delete (not for the main list; the confirmation states the number of entries and aliases), the entry counter, "Clear this list's aliases" (with confirmation, disabled without aliases).
+
+Renaming (`startRename` / `commitRename` / `cancelRename`): a field with `maxlength = 60`; `Enter` or leaving the field saves, `Esc` cancels. An empty favourites list name restores the previous one; an empty main list name means the default name.
+
+An `.entry`:
+
+| Element | Action |
+| --- | --- |
+| `⠿` | Drag handle (disabled while searching). |
+| `N.` | Position on the list. |
+| `.play-btn` (`ed|list|sound`) | Preview. |
+| Title | Name with `(N)` and the phrase highlighted; for an entry missing from the manifest "(missing in manifest)" and the `itemId` in `<code>`. |
+| Path | The sound's folders. |
+| `.alias-input` | Alias on this list (`maxlength = 80`). Saved on the `change` event (leaving the field or `Enter`); `Esc` restores the value from before editing. Suggestions from `<datalist id="aliasSuggestions">` — this sound's aliases from other lists, built when the field gets focus. |
+| ⤒ ▲ ▼ ⤓ | To top / up / down / to bottom. |
+| ✕ | Removes the entry (no confirmation). |
+| "On other lists: …" | Names of other lists holding the sound and the aliases there ("no alias" when empty). |
+
+The list search (100 ms debounce) narrows entries by name, alias and file (for an entry missing from the manifest, by alias and `itemId`). With an active phrase the arrows and dragging are disabled, the label glows blue and the `editorReorderLocked` hint appears — order changes only on the full list, because entry indexes must match positions.
+
+### 18.7 Dragging (SortableJS)
+
+`initSortables()` creates two instances once the library loads:
+
+| Instance | Container | Options | `onEnd` |
+| --- | --- | --- | --- |
+| `listsSortable` | `#listsList` | `handle: ".drag-handle"`, `draggable: ".list-row"`, `animation: 150`, `onMove` blocks drops before the main list | `moveListTo(id, newIndex)` → `persistAndRender()`, otherwise `renderLists()` |
+| `entriesSortable` | `#editorEntries` | `handle: ".drag-handle"`, `draggable: ".entry"`, `animation: 150`, `disabled` while searching | `moveEntry(edited, oldIndex, newIndex)` → `persistAndRender()`, otherwise `renderEditor()` |
+
+`renderEditor()` updates `entriesSortable.option("disabled", locked)`. The `.sortable-ghost` (drop spot, dashed frame) and `.sortable-chosen` (glow) classes live in `style.css`.
+
+### 18.8 Focus preservation
+
+`withPreservedFocus(container, render)` remembers the focused element (by its `data-focus-key` attribute, e.g. `alias:<itemId>`, `entry-up:<itemId>`, `tree-check:<path>`) and, for text fields, the value and selection; after the redraw it restores the focus, the typed text and the caret. A change arriving from the database while an alias is typed therefore never erases the text, and moving an entry with the keyboard arrows never loses focus.
+
+### 18.9 Preview
+
+- `renderPreview()` calls `renderUserView(#previewView, "prev")` — the same function as the real view.
+- "follows the edited list" (`previewFollow`, on by default): the preview shows the edited list, and clicking a tab in the preview changes the edited list. Off — the preview keeps its own list (`previewListId`).
+- Width: Desktop (full), Tablet (820 px), Phone (390 px) — `data-device` on `#previewFrame` sets `max-width`; the view inside reacts through container queries, so it looks as on that device. Width buttons narrower than the window are hidden.
+- "Open the real view ↗" — an `index.html` link in a new tab.
+- "Collapse preview" / "Expand preview" — a collapsed preview is not drawn.
+- Playback in the preview is real (context `prev`), independent of the catalogue and the editor.
+
+## 19. User view
+
+`renderUserView(root, context)` draws:
+
+```text
+.uv[data-ctx]
+  .uv-bar
+    .uv-brand                     "Audio"
+    .uv-tabs[role=tablist]        a .uv-tab per list (main list first)
+    .uv-actions
+      .stop-all                   ■ Stop all (N)
+      .unlock-btn                 🔒 Unlock archive (context=user and a locked archive only)
+  .uv-grid | .uv-empty            tiles or "There are no sounds on this list yet."
+```
+
+- Active list: `state.userListId` (view) or `getPreviewListId()` (preview); a missing one → the first list. After a page reload the view starts on the main list.
+- The tab bar's scroll position is kept across redraws, and the active tab is brought into view horizontally only (the page never scrolls).
+- `selectViewList(context, listId)` — list change; in the preview with `previewFollow` it changes the edited list.
+- Changing the tab does not stop sounds: sounds playing on other lists are signalled by a red dot on their tab.
+
+Tile (`renderTile`):
+
+```text
+article.tile[data-key][data-item-id][data-state]
+  button.tile-play                  the whole upper part of the tile; title = the full label
+    .tile-icon                      ▶ / … / ■ / 🔒
+    .tile-title                     Name (alias) (N) — up to 3 lines
+    .tile-tag                       tag2 (one tag)
+    .tile-status                    "loading…" / "(missing in manifest)"
+  .tile-progress > span             progress bar
+  .tile-controls
+    input.volume-slider             -100..100
+    button.tile-volume              "100%" (double click → 100%)
+    button.loop-btn                 ⟳ Loop
+```
+
+Title label: `buildTitleText(label, alias, groupCount)` = `Name (alias) (N)`; in the HTML the alias carries `.sample-alias` and `(N)` carries `.group-count`. Moving the slider never starts a sound (the slider sits outside the play button).
+
+| `data-state` | Look |
+| --- | --- |
+| `idle` | Green frame, ▶ icon. |
+| `loading` | Dashed frame, pulsing … icon, "loading…" text. |
+| `playing` | Red frame with glow, red ■ icon and name, red progress bar (sliding when the duration is unknown). |
+| `missing` | Dimmed tile, 🔒 icon, name = the alias or the `itemId`, "(missing in manifest)" text, no slider or Loop. A click with the archive locked opens the gate. |
+
+`bindUserViewEvents(root, context)` handles `uv-select`, `uv-stop-all`, `uv-unlock`, `uv-play`, `uv-loop`, `uv-volume-reset` (clicks) and `uv-volume` (`input`). The same function is bound to `#userView` (`user`) and `#previewView` (`prev`).
+
+## 20. Styles and layout
+
+### 20.1 Palette (`:root` in `style.css`)
+
+| Variable | Value | Use |
+| --- | --- | --- |
+| `--bg` | 2 × green `radial-gradient` + `#031605` | page background |
+| `--panel` | `#000` | header, columns, view bar |
+| `--panel-alt` | `#041b08` | tiles |
+| `--border` / `--accent` | `#16c60c` | frames, accent |
+| `--accent-dark` | `#0d7a07` | — |
+| `--accent-strong` | `#1ee616` | icons, focus, active elements |
+| `--text` | `#9cf09c` | text |
+| `--muted` | `rgba(156, 240, 156, 0.7)` | secondary text |
+| `--danger` | `#ff5f5f` | playback, Loop, errors, `(N)` |
+| `--glow` | `0 0 25px rgba(22, 198, 12, 0.45)` | admin header |
+| `--shadow` | `0 8px 24px rgba(0, 0, 0, 0.45)` | columns, tiles, menu |
+| `--radius` | `12px` | panels |
+| `--filter-on` | `#3D8FC4` | active filter (labels, title) |
+| `--filter-on-bright` | `#6FB3E0` | dots, `<mark>`, editor hint |
+| `--filter-on-glow` | `rgba(61, 143, 196, 0.40)` | glow |
+| `--filter-on-bg-active` | `rgba(61, 143, 196, 0.20)` | `<mark>` background |
+| `--filter-on-border`, `--filter-on-bg` | `rgba(61,143,196,.55)`, `rgba(61,143,196,.10)` | reserved for consistency with DataVault |
+| `--folders-w` / `--lists-w` | 260 / 400 px (1600+: 280 / 420; 1280–1599: 240 / 380) | workbench columns |
+
+In this module blue means only "a filter is on". Red means playback or an error. Alias: `#d2fad2`.
+
+### 20.2 Typography
+
+Font: `"Fira Code", "Consolas", "Source Code Pro", monospace` (Fira Code 400/600 from Google Fonts). Sizes: admin title `clamp(20px, 2.6vw, 28px)` uppercase, `letter-spacing: 0.1em`; column titles 14 px uppercase; text 13 px; meta 11–12 px; buttons 13 px (`.btn-small` 11 px) uppercase with `letter-spacing: 0.06em`; tile name 15 px / 600, `line-clamp: 3`.
+
+### 20.3 Page width
+
+- `.page`: `max-width: 1280px`, `padding: 20px 24px 40px`, a column with `gap: 16px`,
+- admin panel: `max-width: 1760px`,
+- user view: no limit, `padding: clamp(8px, 2vw, 24px)`, `gap: 10px`.
+
+### 20.4 User view — container queries
+
+`.uv` has `container-type: inline-size; container-name: uv`, so the view reacts to the width of **its container** rather than the window — that is why the 390 px preview looks like a phone.
+
+| Condition | Change |
+| --- | --- |
+| always | Grid `repeat(auto-fill, minmax(min(100%, 250px), 1fr))`, `gap: 12px` — the column count follows the width. |
+| `@container uv (max-width: 1023px)` | Tabs on their own full row of the bar (`order: 3`), a single row scrolling sideways with `scroll-snap`. |
+| `@container uv (max-width: 559px)` | "Stop all" and "Unlock archive" show icons only (name in `aria-label` and `title`), smaller spacing. |
+| `.uv[data-ctx="user"] .uv-bar` | Sticky bar (`position: sticky; top: var(--wg-write-status-height, 0px)`) in the real view only. |
+
+Tab: max 260 px with an ellipsis; active — background `rgba(22,198,12,.25)`, frame `--accent-strong`, text `#d2ffd2`. Playback dot: 7 px, `--danger`, in the top right corner.
+
+### 20.5 Touch screens and motion
+
+- `@media (pointer: coarse)`: buttons and tabs ≥ 44 px tall; icon, preview and add buttons 40 × 40 px; tree row 40 px; checkboxes 20 px; fields and selects ≥ 40 px with 15 px text (no automatic zoom on iOS); slider 32 px with a 26 px thumb.
+- `@media (hover: hover) and (pointer: fine)`: the tree's "only" button only on hover/focus.
+- `@media (prefers-reduced-motion: reduce)`: no icon pulsing, no bar animation, no drawer transition.
+- Keyboard focus: `outline: 2px solid var(--accent-strong)` with a 2 px offset on every control.
+- `[hidden] { display: none !important; }` — the `hidden` attribute wins over every `display` rule.
+
+### 20.6 Gate
+
+The look comes from `shared/access-gate.css`. The module adds `.accessGate__skip` (left cell of the grid's second row; below 640 px — row 4, full width) and `.btn.primary` (background `--text`, text `#031605`).
+
+## 21. i18n
+
+- `translations.pl` and `translations.en` — flat dictionaries with the same key set; `t(key, vars)` fills `{variables}`, a missing key falls back to Polish and then to the key itself.
+- Static HTML texts carry `data-i18n` (text), `data-i18n-placeholder`, `data-i18n-title` and `data-i18n-aria-label` attributes; `applyLanguage(lang)` rewrites them all, sets `<html lang>`, passes the language to `writeStatus.setLanguage()` and calls `renderAll()`.
+- The default language is Polish (`currentLanguage = "pl"`); the language is not remembered.
+- The only switcher, `#languageSelect`, sits in `.page-top` inside `<div class="language-switcher language-switcher--hidden">` (comment `LANGUAGE SWITCHER VISIBILITY CHANGE POINT`). Removing the `language-switcher--hidden` class shows it in both modes.
+- List names and aliases are data and are not translated. Exception: an empty main list name is shown as "Widok główny" / "Main view".
+- The database failure bar texts live in `shared/firebase-write-status.js`, not in `translations`.
+- Warhammer 40k lore language is used only in the gate window (title, description, "Litany of Access", "Begin the Rite", password messages). The admin panel and diagnostic messages use plain language.
+
+## 22. Fallbacks and errors
+
+| Situation | Behaviour |
+| --- | --- |
+| No `window.firebaseConfig` / `apiKey` | `localStorage` mode, the "Firebase: missing configuration" pill, the "This device only" badge, a mild bar. |
+| An exception while starting the SDK | Local mode; the manifests load anyway (Firebase start-up is in its own `try`). |
+| No `audio/favorites` document | A v2 document with an empty main list is created. |
+| A document in the old format | Treated as empty, nothing is written on read, the `noticeLegacy` message. The first change saves v2. |
+| Firestore refuses a save | Local save, `usingFirestore = false`, the "saved on this device only" bar; the interface shows the current state. |
+| The local save fails too | The "nothing was saved" bar. |
+| Firestore listener error | Local settings, a bar with the cause. |
+| Corrupted settings | `normalizeSettingsV2` repairs them or returns empty settings. |
+| An entry points at a sound missing from the manifest | Entry and alias stay; editor: "(missing in manifest)" + `itemId`; the tile in the `missing` state. |
+| No `AudioManifest.json` | `publicError` with the HTTP status, red pill; the archive loads anyway. |
+| Gateway unreachable with a valid session | The demo tier works, `libraryError`, red archive pill. |
+| `401` from the gateway | Session cleared; during playback the gate with `accessExpired`. |
+| Both tiers empty | Catalogue: "The manifest contains no sounds.", the "Manifest: failed to load" pill. |
+| No variant URL | `alert(alertMissingAudio)`. |
+| Playback error | `alert(alertPlaybackFailed)` and the tile stops. |
+| No Web Audio | Volume through `audio.volume` (max 100%). |
+| No Wake Lock API | The screen may dim; playback works. |
+| SortableJS unavailable | Order changes by arrows only. |
+| JSZip unavailable | The `builderErrorLibrary` message. |
+| No `localStorage` / `sessionStorage` | The module works without remembering anything. |
+| Empty catalogue after filters | "No results for the current filters." |
+| No matching folders | "No folder contains the typed phrase." |
+| Empty list | Editor: "The list is empty…"; view: "There are no sounds on this list yet." |
+
+## 23. 1:1 module recreation procedure
+
+1. Recreate `Audio/index.html`, `Audio/style.css` and `Audio/app.js` following sections 2–21 (markup structure from sections 18–19, styles from section 20, logic from sections 5–19).
+2. Provide the shared files: `shared/access-gate.css`, `shared/firebase-write-status.js`, `shared/firebase-write-status.css`, `shared/appcheck-config.js`, `shared/firebase-app-check.js` and the `IkonaPowiadomien2.png` icon in the repository root.
+3. Create `Audio/config/firebase-config.js` with the Firebase project's `window.firebaseConfig` (guide: `Audio/config/FirebaseREADME.md`) and set Firestore rules that allow the `audio/favorites` document.
+4. Deploy `Audio/worker/audio-gate.js` as the `audio-gate` Worker, set the four environment variables (section 9.1) and put the Worker address into the `AUDIO_GATE_BASE` constant.
+5. Keep the `AudioManifest.xlsx` sheet outside this repository. Open `Audio/index.html?admin=1`, use "Tools → Build manifests from XLSX", copy `AudioManifest.json` into the `Audio` folder and `audio-manifest.json` into the root of the private `AudioRPG` repository.
+6. Reload the admin panel: the manifest pill shows the item count; after unlocking the archive, the full count.
+7. Recreate the lists: name the main list (optional), create lists, add sounds from the catalogue, arrange the order, give aliases.
+8. Export the settings ("Tools → Export settings (JSON)") as a backup.
+9. Open `Audio/index.html` and check the tabs, tiles, playback, Loop, volume and "Stop all".
+10. Check local mode: temporarily remove `apiKey` from the configuration and confirm the save in `audio.settings`.
+
+## 24. Control tests
 
 | Test | Steps | Expected result |
 | --- | --- | --- |
-| Admin start | Open `Audio/index.html?admin=1`. | Header, statuses, toolbar, tag panel, SFX list, favorites, and main view are visible. |
-| User start | Open `Audio/index.html`. | Only user view and navigation are visible. |
-| Manifest | Click `Load manifest`. | Status shows manifest item count. |
-| Start without login | Open the module with no valid session. | The gate opens by itself, showing `Skip` and `Begin the Rite`. |
-| Skipping the gate | Click `Skip`. | The overlay closes, only the demo tier is visible, status: `Archive: locked` (green pill). |
-| Skip persistence | Reload the page after `Skip`. | The gate does not return. It does return in a new browser tab. |
-| Empty password | Click `Begin the Rite` with an empty field. | Message about the Litany of Access not being recited. |
-| Wrong password | Enter a wrong password. | Message about the Litany of Access being rejected. |
-| Correct password | Enter the group password. | Overlay closes, the list fills with the archive, status: `Archive: unlocked`. |
-| Disappearing button | Unlock the archive. | The `Unlock archive` button disappears. There is no lock button anywhere. |
-| Session persistence | Reload the page after unlocking. | The archive is still unlocked, with no password prompt. The stored session has no `exp` field. |
-| Entry outside the manifest | With the archive locked, click a `(missing in manifest)` entry. | The gate opens with the `This sound is not part of the public tier…` message. |
-| Archive manifest unreachable | Enter the correct password while the gateway cannot see `audio-manifest.json`. | The overlay stays open showing the HTTP code, status: `Archive: load error` (red pill). |
-| Public list unreachable | Enter the correct password while `AudioManifest.json` returns 404. | The message names the **public list** and suggests `Ctrl+F5`; it does **not** mention the gateway or `AUDIO_GATE_BASE`. The archive still loads. |
-| Gateway answers 500 on login | Simulate a 500 on `/login`. | The message carries the HTTP status and says the gateway is running but rejected the login. |
-| Builder: valid workbook | In admin view click `Build manifests from XLSX` and select `AudioManifest.xlsx`. | The browser saves `AudioManifest.json` and `audio-manifest.json`, the pill shows the item counts. |
-| Builder: missing column | Select a workbook without the `LinkDoFolderu` column. | Message `Missing required columns: LinkDoFolderu`, no file is produced, the pill turns red. |
-| Builder: duplicate column | Select a workbook with two `NazwaSampla` columns. | Message about a column present more than once, no file is produced. |
-| Builder: extra columns | Select a workbook with extra columns in a different order. | The manifests are built correctly and the extra columns are ignored. |
-| Builder: id stability | Build the manifests from an unchanged workbook. | The files are identical to the ones in the repository — saved favourite lists still point at the same sounds. |
-| Protected sound | Play an archive item. | The module fetches a signature from `/sign`, the sound plays, the volume slider works. |
-| Firebase failure | Block access to Firestore. | The module falls back to local settings but still loads the manifests. |
-| Failed settings read | Block `firestore.googleapis.com` before opening the module. | A "Data could not be loaded from the database" bar appears at the top with the reCAPTCHA blocking hint, the mode badge shows "This device only", and the lists load from `audio.settings`. |
-| Failed settings write | With the database blocked, add a favorites list. | The bar says "Saved on this device only", the list appears in the interface, and the data lands in `audio.settings`. |
-| Twelve event handlers under a failed write | With the database blocked, perform in turn: add list, add entry, move entry, remove entry, rename list, move list, remove list, add to main view, move and remove in main view, change alias, and clear all aliases. | Every operation refreshes the view and stores the state in `audio.settings`; the console shows no unhandled promise rejections. |
-| Write with no database answer | Cut the network (Offline in developer tools) and add a favorites list. | The list appears in the interface immediately, even though the write waits in the Firestore queue and the `setDoc` promise has not settled. |
-| Overwrite warning | After a failed write, unblock the database and open the module again. | The bar warns that database data replaced the changes saved on this device; the mode badge returns to "Shared data". |
-| Mode badge in the user view | Open `Audio/index.html` without `?admin=1` with the database blocked. | The "This device only" badge is visible despite the `admin-only` section, with its status pills, being removed. |
-| SFX filter | Type phrase in `searchInput`. | Admin SFX list is filtered. |
-| Tag filter | Uncheck a tag. | Admin SFX list hides sounds with that tag. |
-| Tag popup | Click `Filter ▾`. | Popup opens with search and checkboxes. |
-| Main view | Add SFX to `Main view`. | Item appears in admin main view and user view. |
-| Favorite list | Create list and add SFX. | List appears in admin and user navigation. |
-| Alias | Enter alias and leave field. | Alias appears next to SFX name. |
-| Clear alias | Click `Clear`. | Alias for that SFX disappears. |
-| Clear all aliases | Click `Clear all aliases` and confirm. | Whole alias map is removed. |
-| Playback | Click name or `Play`. | Sound starts and card enters playing state. |
-| Stop | Click active sound again. | Sound stops. |
-| Volume | Move slider. | Gain or volume changes for that player. |
-| Loop | In user view, click `Loop`. | Sound loops with randomized variants. |
-| Firestore | Configure Firebase and change lists. | `audio/favorites` saves `favorites`, `mainView`, and `aliases`. |
-| LocalStorage | Remove Firebase config and change lists. | Settings are saved in `audio.settings`. |
+| Admin start | `Audio/index.html?admin=1` | Header with pills, three columns (≥1280 px), preview at the bottom; no console errors. |
+| User start | `Audio/index.html` | Only the tab bar and the tile grid. |
+| New list | "+ New list", type a name, `Enter` | The list at the end, name saved, visible in the preview tabs. |
+| Per-list alias | Add sound X to three lists; give it alias "X2" on the second and "X3" on the third | First list: `X`; second: `X (X2)`; third: `X (X3)`; "On other lists" shows the aliases. |
+| Duplicate | ⧉ on a list with aliases | A copy right after the original, with the same entries and aliases. |
+| List order | ▲/▼ and dragging | The main list always first; nothing can be dropped before it. |
+| Entry order | ⤒ ▲ ▼ ⤓ and dragging | The order changes in the editor, the preview and the user view. |
+| Order lock | Type a phrase into "Search this list" | Arrows and handles disabled, blue label, hint visible. |
+| Tree — group | Clear a folder with subfolders | The catalogue hides the whole subtree; the parent shows the state derived from its children; blue "Folders" title and dots. |
+| Tree — subgroup | With the parent cleared, select a subfolder | The parent is mixed; the catalogue shows only the subfolder's sounds. |
+| Folder search | Type part of a name (also in capitals, without Polish diacritics) | Matching folders with ancestors, `<mark>`, blue label, "… matches" actions. |
+| Catalogue search | Type part of an alias | The catalogue finds the sound by an alias from any list. |
+| Bulk selection | Select a row, `Shift` + click another, "Add to …" | The whole range appended to the target list without duplicates. |
+| Removing with an alias | `✓` on an entry with an alias | A confirmation; after agreeing, the entry and the alias are gone. |
+| Deleting a list | 🗑 | A confirmation with the number of entries and aliases; the editor returns to the main list. |
+| Main list name | Rename it, then clear the field | The custom name in the tab; after clearing, "Widok główny". |
+| Special characters | Alias `<b>x</b>` | Shown literally, not interpreted as HTML. |
+| Preview | Switch Desktop / Tablet / Phone | An 820 / 390 px frame, a device-like layout; playback works. |
+| Playback | Click a tile | "Loading" (archive), then a red frame, ■, a progress bar; clicking again stops it. |
+| Loop | Click Loop | The sound loops with random variants; the button is red; clicking again stops it. |
+| Tab change | Start a sound and switch the list | The sound keeps playing; that list's tab has a red dot; coming back, the tile shows its state. |
+| Stop all | Start several sounds | The `(N)` counter; one click stops them all. |
+| Volume | Slider to the maximum, double-click the value | 200%, then 100%; after a reload, 100%. |
+| Archive item while locked | Click a tile with 🔒 | The gate with an explanation; the entry stays on the list. |
+| Skipping the gate | "Skip", reload | The gate does not return; in a new tab it does. |
+| Login | Correct password | The gate closes, "Archive: unlocked", the "Unlock archive" button disappears. |
+| Old format | A document with `favorites` / `mainView` / `aliases` fields | Empty lists, a notice in the admin panel; no write on read; the first change writes only `schemaVersion`, `playlists`, `updatedAt`. |
+| Live update | Change a list in the admin panel with the user view open | The user view refreshes on its own. |
+| Failed save | Block Firestore and add a list | The "Saved on this device only" bar, the list visible, data in `audio.settings`. |
+| Export | "Export settings (JSON)" | A `audio-settings-YYYY-MM-DD.json` file (Polish interface: `audio-ustawienia-…`) with `schemaVersion`, `playlists`, `exportedAt`. |
+| Builder: stability | Build manifests from an unchanged sheet | Files identical to those in the repositories. |
+| Builder: errors | A sheet without a column / with a duplicate column | A message naming the column; no file produced; red pill. |
+| Phone | Admin panel at ~390 px | Catalogue / Lists / Preview tabs, a folder drawer, every function available, no horizontal scrolling. |
+| Language | Temporarily show the switcher and choose English | Every interface text in English; list names unchanged. |

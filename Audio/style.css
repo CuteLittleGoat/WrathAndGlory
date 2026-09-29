@@ -1,0 +1,1804 @@
+/* ==========================================================================================
+   Arkusz stylów modułu Audio / Audio module stylesheet
+   ------------------------------------------------------------------------------------------
+   PL: Jeden arkusz dla obu trybów modułu: panelu admina (?admin=1) i widoku użytkownika.
+       Widok użytkownika jest rysowany tą samą funkcją w dwóch miejscach — na własnej stronie
+       i w podglądzie na dole panelu admina — dlatego jego układ opiera się na zapytaniach
+       kontenerowych (@container uv), a nie na szerokości okna. Panel admina korzysta ze
+       zwykłych zapytań @media, bo zawsze zajmuje całe okno.
+   EN: One stylesheet for both module modes: the admin panel (?admin=1) and the user view.
+       The user view is drawn by the same function in two places — on its own page and in the
+       preview at the bottom of the admin panel — so its layout relies on container queries
+       (@container uv) rather than on the window width. The admin panel uses plain @media
+       queries, because it always fills the whole window.
+   ========================================================================================== */
+
+/* --- Zmienne palety modułu / Module palette variables --- */
+:root {
+  --bg: radial-gradient(circle at 20% 20%, rgba(0, 255, 128, 0.06), transparent 25%),
+         radial-gradient(circle at 80% 0%, rgba(0, 255, 128, 0.08), transparent 35%),
+         #031605;
+  --panel: #000;
+  --panel-alt: #041b08;
+  --border: #16c60c;
+  --text: #9cf09c;
+  --accent: #16c60c;
+  --accent-dark: #0d7a07;
+  --accent-strong: #1ee616;
+  --muted: rgba(156, 240, 156, 0.7);
+  --danger: #ff5f5f;
+  --glow: 0 0 25px rgba(22, 198, 12, 0.45);
+  --radius: 12px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --font: "Fira Code", "Consolas", "Source Code Pro", monospace;
+
+  /* --- Barwa aktywnego filtra, ta sama co w DataVault / Active-filter colour, the same as in DataVault ---
+     PL: Niebieski oznacza w module wyłącznie „filtr jest założony”. Wartości są skopiowane
+         z DataVault/style.css, żeby sygnał znaczył to samo we wszystkich modułach.
+     EN: Blue means only "a filter is on" in this module. The values are copied from
+         DataVault/style.css so the signal means the same in every module. */
+  --filter-on: #3D8FC4;
+  --filter-on-bright: #6FB3E0;
+  --filter-on-border: rgba(61, 143, 196, 0.55);
+  --filter-on-glow: rgba(61, 143, 196, 0.40);
+  --filter-on-bg: rgba(61, 143, 196, 0.10);
+  --filter-on-bg-active: rgba(61, 143, 196, 0.20);
+
+  /* --- Szerokości kolumn panelu admina / Admin panel column widths --- */
+  --folders-w: 260px;
+  --lists-w: 400px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+}
+
+/* PL: Atrybut hidden ma wygrywać z każdą regułą display w tym arkuszu.
+   EN: The hidden attribute must win over every display rule in this stylesheet. */
+[hidden] {
+  display: none !important;
+}
+
+/* --- Kontener strony / Page container --- */
+.page {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 24px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* PL: Panel admina pracuje w trzech kolumnach, więc dostaje szerszą stronę; widok
+       użytkownika wypełnia całe okno, żeby na dużym monitorze zmieściło się więcej kafelków.
+   EN: The admin panel works in three columns, so it gets a wider page; the user view fills
+       the whole window so that a large monitor fits more tiles. */
+body.admin-mode .page {
+  max-width: 1760px;
+}
+
+body.user-mode .page {
+  max-width: none;
+  padding: clamp(8px, 2vw, 24px);
+  gap: 10px;
+}
+
+/* --- Górny wiersz: znacznik trybu pracy z danymi i przełącznik języka / Top row: data working-mode badge and language switcher --- */
+.page-top {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px;
+}
+
+.page-top:empty {
+  display: none;
+}
+
+/* PL: Slot jest pusty do czasu uruchomienia skryptu; sam znacznik ma styl w
+       shared/firebase-write-status.css.
+   EN: The slot stays empty until the script runs; the badge itself is styled in
+       shared/firebase-write-status.css. */
+.write-status-slot {
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --- Ukrycie przełącznika języka / Hiding the language switcher ---
+   PL: Przełącznik istnieje i działa, jest tylko niewidoczny. Warstwa tłumaczeń zostaje czynna,
+       a językiem domyślnym jest polski. Żeby go pokazać, usuń klasę language-switcher--hidden
+       z jedynego kontenera przełącznika w Audio/index.html.
+   EN: The switcher exists and works, it is merely invisible. The translation layer stays active
+       and the default language is Polish. To show it, remove the language-switcher--hidden class
+       from the only switcher container in Audio/index.html. */
+.language-switcher--hidden {
+  display: none !important;
+}
+
+.language-switcher select,
+.select {
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0b0b0b;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  max-width: 100%;
+}
+
+.language-switcher select:focus,
+.select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25);
+}
+
+/* --- Przyciski / Buttons --- */
+.btn {
+  border: 1px solid var(--border);
+  background: #031806;
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font);
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  touch-action: manipulation;
+}
+
+.btn:hover {
+  background: rgba(22, 198, 12, 0.15);
+  box-shadow: 0 0 12px rgba(22, 198, 12, 0.25);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.btn-small {
+  padding: 5px 9px;
+  font-size: 11px;
+}
+
+/* --- Przycisk podstawowy, zgodny z modułem DataVault / Primary button, matching the DataVault module --- */
+.btn.primary {
+  background: var(--text);
+  /* PL: Ciemny tekst na jasnej zieleni. --bg jest gradientem, więc kolor tekstu to jego baza #031605.
+     EN: Dark text on light green. --bg is a gradient, so the text colour is its base #031605. */
+  color: #031605;
+  border-color: rgba(22, 198, 12, 0.35);
+}
+
+.btn.primary:hover {
+  filter: brightness(1.08);
+  background: var(--text);
+}
+
+.btn-danger {
+  border-color: var(--danger);
+  color: #ffd6d6;
+}
+
+/* --- Mały przycisk z ikoną / Small icon button --- */
+.icon-btn {
+  border: 1px solid rgba(22, 198, 12, 0.5);
+  background: #031806;
+  color: var(--text);
+  border-radius: 6px;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  font-family: var(--font);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.icon-btn:hover {
+  background: rgba(22, 198, 12, 0.15);
+}
+
+.icon-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.icon-btn--danger {
+  border-color: rgba(255, 95, 95, 0.6);
+  color: #ffd6d6;
+}
+
+/* PL: Widoczny fokus klawiatury — ta sama zieleń we wszystkich elementach sterujących.
+   EN: A visible keyboard focus — the same green on every control. */
+.btn:focus-visible,
+.icon-btn:focus-visible,
+.play-btn:focus-visible,
+.add-btn:focus-visible,
+.chip:focus-visible,
+.list-name:focus-visible,
+.tree-toggle:focus-visible,
+.tile-play:focus-visible,
+.tile-volume:focus-visible,
+.admin-tab:focus-visible,
+.seg-btn:focus-visible,
+.uv-tab:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+/* --- Pola tekstowe / Text fields --- */
+.text-input {
+  width: 100%;
+  background: #031806;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 13px;
+}
+
+.text-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(22, 198, 12, 0.25);
+}
+
+.field-label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 4px;
+}
+
+/* PL: Etykieta świeci na niebiesko, gdy wpisana fraza faktycznie zawęża widok — ta sama reguła
+       co .fieldLabel--active w DataVault.
+   EN: The label glows blue when the typed phrase actually narrows the view — the same rule as
+       .fieldLabel--active in DataVault. */
+.field-label--active,
+.is-filter-on {
+  color: var(--filter-on);
+  text-shadow: 0 0 10px var(--filter-on-glow);
+}
+
+/* --- Niebieska kropka aktywnego filtra / Blue active-filter dot --- */
+.dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--filter-on-bright);
+  box-shadow: 0 0 8px var(--filter-on-glow);
+  vertical-align: middle;
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.check-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.check-line input,
+.cat-check,
+.tree-check {
+  accent-color: var(--accent);
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+.empty-state {
+  text-align: center;
+  font-size: 13px;
+  color: var(--muted);
+  padding: 20px 8px;
+  margin: 0;
+}
+
+/* --- Nazwa dźwięku: alias i licznik wariantów / Sound name: alias and variant counter --- */
+.sample-alias {
+  color: #d2fad2;
+  font-weight: 400;
+}
+
+.group-count {
+  color: var(--danger);
+  font-weight: 400;
+}
+
+/* ==========================================================================================
+   PANEL ADMINA / ADMIN PANEL
+   ========================================================================================== */
+
+/* --- Nagłówek admina / Admin header --- */
+.admin-header {
+  background: var(--panel);
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  box-shadow: var(--glow);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.admin-header h1 {
+  margin: 0;
+  font-size: clamp(20px, 2.6vw, 28px);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.admin-header p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.status-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.status-pill {
+  padding: 5px 11px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: rgba(22, 198, 12, 0.08);
+}
+
+/* --- Stan błędu pastylki: czerwień wyłącznie dla błędów / Pill error state: red for errors only ---
+   PL: Stan poprawny — także zablokowane archiwum — zostaje zielony. Kolory pochodzą z palety
+       modułu, tej samej co aktywny przycisk Loop.
+   EN: The healthy state — a locked archive included — stays green. The colours come from the
+       module palette, the same as the active Loop button. */
+.status-pill.is-error {
+  border-color: var(--danger);
+  color: #ffd6d6;
+  background: rgba(255, 95, 95, 0.12);
+}
+
+/* --- Menu „Narzędzia” / "Tools" menu --- */
+.menu {
+  position: relative;
+}
+
+.menu__list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 50;
+  min-width: 280px;
+  max-width: min(360px, 92vw);
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid rgba(22, 198, 12, 0.8);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+}
+
+.menu__item {
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  font-family: var(--font);
+  font-size: 13px;
+  padding: 9px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.menu__item:hover,
+.menu__item:focus-visible {
+  background: rgba(22, 198, 12, 0.15);
+  outline: none;
+}
+
+.menu__item--danger {
+  color: #ffd6d6;
+}
+
+/* --- Komunikaty pod nagłówkiem / Notices below the header --- */
+.notices {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.notices:empty {
+  display: none;
+}
+
+.notice {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(22, 198, 12, 0.6);
+  background: rgba(22, 198, 12, 0.08);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.notice p {
+  margin: 0;
+}
+
+/* --- Zakładki panelu admina na węższych ekranach / Admin panel tabs on narrower screens --- */
+.admin-tabs {
+  display: none;
+  gap: 6px;
+  position: sticky;
+  top: var(--wg-write-status-height, 0px);
+  z-index: 30;
+  padding: 6px;
+  background: var(--panel);
+  border: 1px solid rgba(22, 198, 12, 0.6);
+  border-radius: var(--radius);
+}
+
+.admin-tab {
+  flex: 1 1 0;
+  border: 1px solid rgba(22, 198, 12, 0.5);
+  background: #031806;
+  color: var(--text);
+  border-radius: 8px;
+  padding: 9px 8px;
+  font-family: var(--font);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.admin-tab.is-active {
+  background: rgba(22, 198, 12, 0.25);
+  border-color: var(--accent-strong);
+  color: #d2ffd2;
+}
+
+/* --- Warsztat w trzech kolumnach / Three-column workbench --- */
+.workbench {
+  display: grid;
+  grid-template-columns: var(--folders-w) minmax(0, 1fr) var(--lists-w);
+  gap: 14px;
+  height: calc(100dvh - 24px);
+  min-height: 640px;
+}
+
+.workbench.is-folders-collapsed {
+  --folders-w: 44px;
+}
+
+.wb-col {
+  background: var(--panel);
+  border: 1px solid rgba(22, 198, 12, 0.6);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.col-head {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(22, 198, 12, 0.3);
+  background: var(--panel);
+}
+
+.col-head__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.col-title {
+  margin: 0;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.col-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px 14px 14px;
+}
+
+/* --- Panel folderów / Folder panel --- */
+.folders__content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+/* PL: Zwinięty panel to wąska szyna z pionowym napisem — kliknięcie rozwija go z powrotem.
+   EN: A collapsed panel is a narrow rail with a vertical label — clicking expands it again. */
+.folders__rail {
+  display: none;
+  flex: 1 1 auto;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  cursor: pointer;
+  padding: 12px 0;
+  font-family: var(--font);
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.folders__rail-label {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.wb-folders.is-collapsed .folders__content {
+  display: none;
+}
+
+.wb-folders.is-collapsed .folders__rail {
+  display: flex;
+}
+
+.folders__close {
+  display: none;
+}
+
+.tree {
+  display: flex;
+  flex-direction: column;
+  font-size: 13px;
+}
+
+.tree-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0 3px calc(var(--depth, 0) * 14px);
+  min-height: 28px;
+  border-radius: 6px;
+}
+
+.tree-row:hover {
+  background: rgba(22, 198, 12, 0.06);
+}
+
+.tree-toggle {
+  flex: 0 0 22px;
+  height: 22px;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  touch-action: manipulation;
+}
+
+.tree-toggle--leaf {
+  cursor: default;
+}
+
+.tree-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  flex: 1 1 auto;
+  cursor: pointer;
+}
+
+.tree-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tree-name mark,
+.entry mark {
+  background: var(--filter-on-bg-active);
+  color: var(--filter-on-bright);
+  border-radius: 3px;
+  padding: 0 1px;
+}
+
+.tree-count {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.tree-only {
+  flex: 0 0 auto;
+  border: 1px solid rgba(22, 198, 12, 0.35);
+  background: transparent;
+  color: var(--muted);
+  border-radius: 5px;
+  font-family: var(--font);
+  font-size: 10px;
+  padding: 2px 5px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tree-only:hover {
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* PL: Przy myszy przycisk „tylko” pojawia się po najechaniu na wiersz albo przy fokusie, żeby nazwy
+       folderów miały więcej miejsca. Na ekranach dotykowych jest widoczny zawsze.
+   EN: With a mouse the "only" button appears on row hover or focus, so folder names get more room.
+       On touch screens it is always visible. */
+@media (hover: hover) and (pointer: fine) {
+  .tree-only {
+    display: none;
+  }
+  .tree-row:hover .tree-only,
+  .tree-row:focus-within .tree-only {
+    display: inline-block;
+  }
+}
+
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* --- Katalog dźwięków / Sound catalogue --- */
+.target-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.target-line .select {
+  flex: 1 1 180px;
+}
+
+.catalog__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.catalog__filters label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.catalog__summary {
+  margin: 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.btn-folders {
+  display: none;
+}
+
+.cat-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-row {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  min-height: 36px;
+  border-bottom: 1px solid rgba(22, 198, 12, 0.14);
+}
+
+.cat-row:hover {
+  background: rgba(22, 198, 12, 0.05);
+}
+
+.cat-row.is-selected {
+  background: rgba(22, 198, 12, 0.12);
+}
+
+.cat-main {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+/* PL: Nazwa dźwięku ma pierwszeństwo przed ścieżką: nie kurczy się, dopóki nie zajmie 65% wiersza.
+   EN: The sound name takes priority over the path: it does not shrink until it fills 65% of the row. */
+.cat-title {
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 0 0 auto;
+  max-width: 65%;
+}
+
+.cat-meta {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.cat-members {
+  grid-column: 1 / -1;
+  margin: 0 0 4px 52px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* --- Przycisk odsłuchu w katalogu i edytorze / Preview play button in the catalogue and editor --- */
+.play-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(22, 198, 12, 0.6);
+  background: #031806;
+  color: var(--accent-strong);
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: manipulation;
+}
+
+.play-btn.is-playing {
+  border-color: var(--danger);
+  color: var(--danger);
+  box-shadow: 0 0 10px rgba(255, 95, 95, 0.35);
+}
+
+.play-btn.is-loading {
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.chip {
+  font-family: var(--font);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(22, 198, 12, 0.45);
+  background: transparent;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.chip--archive {
+  border-color: rgba(156, 240, 156, 0.35);
+}
+
+button.chip {
+  cursor: pointer;
+  min-width: 26px;
+}
+
+button.chip:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.cat-row.is-member .chip--members {
+  border-color: var(--accent-strong);
+  color: #d2ffd2;
+}
+
+/* --- Przycisk dodania do listy docelowej / Add-to-target-list button --- */
+.add-btn {
+  width: 30px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: #031806;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.add-btn:hover {
+  background: rgba(22, 198, 12, 0.15);
+}
+
+.add-btn.is-on {
+  background: rgba(22, 198, 12, 0.25);
+  border-color: var(--accent-strong);
+  color: #d2ffd2;
+}
+
+.more-btn {
+  margin: 12px auto 0;
+  display: flex;
+}
+
+/* PL: Pasek zaznaczonych stoi pod listą katalogu jako ostatni element kolumny, więc jest zawsze
+       widoczny, nawet przy długim katalogu.
+   EN: The selection bar sits below the catalogue list as the column's last element, so it is
+       always visible, even with a long catalogue. */
+.bulk-bar {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid rgba(22, 198, 12, 0.5);
+  background: #020d03;
+  font-size: 12px;
+}
+
+/* --- Panel list / Lists panel --- */
+.lists-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  border: 1px solid rgba(22, 198, 12, 0.35);
+  border-radius: 8px;
+  background: #031206;
+}
+
+.list-row.is-active {
+  border-color: var(--accent-strong);
+  background: rgba(22, 198, 12, 0.25);
+  box-shadow: 0 0 12px rgba(22, 198, 12, 0.25);
+}
+
+.list-pin {
+  width: 22px;
+  text-align: center;
+  font-size: 12px;
+}
+
+.drag-handle {
+  width: 22px;
+  text-align: center;
+  color: var(--muted);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  font-size: 15px;
+}
+
+.drag-handle.is-disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.list-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 2px;
+}
+
+.list-badge {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.list-count {
+  font-size: 11px;
+  color: var(--muted);
+  min-width: 2ch;
+  text-align: right;
+}
+
+/* PL: Style biblioteki przeciągania: miejsce upuszczenia jako przerywana ramka.
+   EN: Drag library styles: the drop spot as a dashed frame. */
+.sortable-ghost {
+  opacity: 0.4;
+  border: 1px dashed rgba(22, 198, 12, 0.6) !important;
+}
+
+.sortable-chosen {
+  box-shadow: 0 0 14px rgba(22, 198, 12, 0.35);
+}
+
+/* --- Edytor listy / List editor --- */
+.editor {
+  border-top: 1px solid rgba(22, 198, 12, 0.3);
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.editor__title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.editor__title {
+  margin: 0;
+  font-size: 15px;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.editor__title small {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+
+.rename-input {
+  flex: 1 1 auto;
+}
+
+.editor__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.editor__hint {
+  margin: 4px 0 0;
+  font-size: 11px;
+  color: var(--filter-on-bright);
+}
+
+.entries {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px dashed rgba(22, 198, 12, 0.35);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.entry.is-missing {
+  opacity: 0.75;
+}
+
+.entry__top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.entry__pos {
+  font-size: 11px;
+  color: var(--muted);
+  min-width: 2.5ch;
+  text-align: right;
+}
+
+.entry__name {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.entry__title {
+  font-size: 13px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.entry__path {
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.entry__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.alias-input {
+  flex: 1 1 160px;
+  min-width: 0;
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.entry__actions {
+  display: flex;
+  gap: 4px;
+  flex: 0 0 auto;
+}
+
+.entry__others {
+  margin: 0;
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+/* --- Podgląd widoku użytkownika / User view preview --- */
+.preview {
+  background: var(--panel);
+  border: 1px solid rgba(22, 198, 12, 0.6);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.preview__head {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.preview__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid rgba(22, 198, 12, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.seg-btn {
+  border: 0;
+  border-right: 1px solid rgba(22, 198, 12, 0.35);
+  background: #031806;
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 6px 10px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.seg-btn:last-child {
+  border-right: 0;
+}
+
+.seg-btn.is-active {
+  background: rgba(22, 198, 12, 0.25);
+  color: #d2ffd2;
+}
+
+/* PL: Ramka podglądu przyjmuje szerokość wybranego urządzenia; widok w środku reaguje na nią
+       przez zapytania kontenerowe.
+   EN: The preview frame takes the width of the chosen device; the view inside reacts to it
+       through container queries. */
+.preview__frame {
+  width: 100%;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px dashed rgba(22, 198, 12, 0.35);
+  border-radius: 10px;
+  background: #020d03;
+}
+
+.preview__frame[data-device="tablet"] {
+  max-width: 820px;
+}
+
+.preview__frame[data-device="phone"] {
+  max-width: 390px;
+}
+
+/* ==========================================================================================
+   WIDOK UŻYTKOWNIKA (także w podglądzie) / USER VIEW (also in the preview)
+   ========================================================================================== */
+
+.uv {
+  container-type: inline-size;
+  container-name: uv;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- Pasek górny z zakładkami list / Top bar with list tabs --- */
+.uv-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid rgba(22, 198, 12, 0.6);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* PL: Na prawdziwej stronie pasek przykleja się do góry ekranu, tuż pod ewentualnym paskiem
+       komunikatu o zapisie. W podglądzie zostaje w miejscu, żeby nie zasłaniał panelu admina.
+   EN: On the real page the bar sticks to the top of the screen, just below the save-message
+       bar if one is shown. In the preview it stays in place so it does not cover the admin panel. */
+.uv[data-ctx="user"] .uv-bar {
+  position: sticky;
+  top: var(--wg-write-status-height, 0px);
+  z-index: 20;
+}
+
+.uv-brand {
+  flex: 0 0 auto;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+}
+
+.uv-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.uv-tab {
+  position: relative;
+  border: 1px solid var(--border);
+  background: #031806;
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  white-space: nowrap;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  touch-action: manipulation;
+}
+
+.uv-tab.is-active {
+  background: rgba(22, 198, 12, 0.25);
+  border-color: var(--accent-strong);
+  color: #d2ffd2;
+  box-shadow: 0 0 16px rgba(22, 198, 12, 0.3);
+}
+
+/* PL: Czerwona kropka — na tej liście coś gra, także gdy oglądasz inną listę.
+   EN: A red dot — something is playing on this list, even while another list is on screen. */
+.uv-tab.has-playing::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 6px rgba(255, 95, 95, 0.6);
+}
+
+.uv-actions {
+  flex: 0 0 auto;
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.stop-all.is-active {
+  border-color: var(--danger);
+  color: #ffd6d6;
+  box-shadow: 0 0 10px rgba(255, 95, 95, 0.3);
+}
+
+/* --- Płynna siatka kafelków / Fluid tile grid ---
+   PL: Liczba kolumn wynika wyłącznie z szerokości — bez sztywnych progów.
+   EN: The column count follows the width alone — no fixed breakpoints. */
+.uv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
+  gap: 12px;
+}
+
+.uv-empty {
+  margin: 0;
+  padding: 28px 12px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 13px;
+  border: 1px dashed rgba(22, 198, 12, 0.35);
+  border-radius: var(--radius);
+}
+
+/* --- Kafelek dźwięku / Sound tile --- */
+.tile {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-alt);
+  border: 1px solid rgba(22, 198, 12, 0.4);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* PL: Strefa odtwarzania to jeden przycisk na całą górną część kafelka — duży cel dotykowy.
+   EN: The play zone is one button covering the whole upper part of the tile — a large touch target. */
+.tile-play {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  padding: 12px 12px 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 10px;
+  row-gap: 3px;
+  align-items: start;
+  min-height: 64px;
+  touch-action: manipulation;
+}
+
+.tile-play:hover {
+  background: rgba(22, 198, 12, 0.06);
+}
+
+.tile-icon {
+  grid-row: 1 / span 3;
+  width: 1.3em;
+  font-size: 18px;
+  line-height: 1.2;
+  color: var(--accent-strong);
+  text-align: center;
+}
+
+/* PL: Nazwa ucinana po trzech wierszach; pełna nazwa z aliasem jest w dymku (atrybut title).
+   EN: The name is cut after three lines; the full name with the alias is in the tooltip (title attribute). */
+.tile-title {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tile-tag {
+  font-size: 12px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tile-status {
+  display: none;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* PL: margin-top: auto dociska pasek i sterowanie do dołu kafelka, więc w jednym rzędzie siatki
+       suwaki i przyciski Loop stoją na tej samej wysokości.
+   EN: margin-top: auto pushes the bar and controls to the bottom of the tile, so within one grid row
+       the sliders and Loop buttons line up at the same height. */
+.tile-progress {
+  height: 4px;
+  margin: auto 12px 0;
+  border-radius: 2px;
+  overflow: hidden;
+  background: transparent;
+}
+
+.tile-progress > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--danger);
+  transition: width 0.25s linear;
+}
+
+.tile-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 12px;
+}
+
+.volume-slider {
+  flex: 1 1 70px;
+  min-width: 60px;
+  height: 24px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.tile-volume {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 12px;
+  min-width: 3.6em;
+  text-align: right;
+  cursor: pointer;
+  padding: 4px 0;
+  touch-action: manipulation;
+}
+
+.loop-btn {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+}
+
+/* PL: Czerwony stan aktywnej pętli jest powiązany z aria-pressed, aby wygląd i dostępność mówiły to samo.
+   EN: The red active loop state is tied to aria-pressed so visuals and accessibility say the same thing. */
+.loop-btn.is-looping,
+.loop-btn[aria-pressed="true"] {
+  background: rgba(255, 95, 95, 0.22);
+  border-color: var(--danger);
+  color: #ffd6d6;
+  box-shadow: 0 0 12px rgba(255, 95, 95, 0.35);
+}
+
+/* --- Stany kafelka / Tile states --- */
+.tile[data-state="loading"] {
+  border-style: dashed;
+  border-color: var(--muted);
+}
+
+.tile[data-state="loading"] .tile-status {
+  display: block;
+}
+
+.tile[data-state="loading"] .tile-icon {
+  animation: tile-pulse 1s ease-in-out infinite;
+}
+
+.tile[data-state="playing"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 14px rgba(255, 95, 95, 0.35);
+}
+
+.tile[data-state="playing"] .tile-icon,
+.tile[data-state="playing"] .tile-title {
+  color: var(--danger);
+}
+
+.tile[data-state="playing"] .tile-progress {
+  background: rgba(255, 95, 95, 0.15);
+}
+
+.tile-progress.is-indeterminate > span {
+  width: 30%;
+  animation: progress-slide 1.2s linear infinite;
+}
+
+.tile[data-state="missing"] {
+  opacity: 0.6;
+}
+
+.tile[data-state="missing"] .tile-status {
+  display: block;
+}
+
+@keyframes tile-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+@keyframes progress-slide {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+/* PL: Przy ograniczonym ruchu znika pulsowanie; ikona i pasek nadal pokazują stan.
+   EN: With reduced motion the pulsing disappears; the icon and the bar still show the state. */
+@media (prefers-reduced-motion: reduce) {
+  .tile[data-state="loading"] .tile-icon,
+  .tile-progress.is-indeterminate > span {
+    animation: none;
+  }
+  .tile-progress > span {
+    transition: none;
+  }
+}
+
+/* --- Widok użytkownika na węższych kontenerach / User view in narrower containers ---
+   PL: Poniżej 1024 px szerokości widoku zakładki stoją w jednym wierszu przewijanym w bok.
+   EN: Below a 1024 px view width the tabs sit in one row that scrolls sideways. */
+@container uv (max-width: 1023px) {
+  /* PL: Zakładki dostają cały drugi wiersz paska, przyciski zostają w pierwszym.
+     EN: The tabs get the whole second row of the bar, the buttons stay in the first. */
+  .uv-tabs {
+    order: 3;
+    flex: 1 1 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: thin;
+    padding-bottom: 2px;
+  }
+  .uv-tab {
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+  }
+}
+
+@container uv (max-width: 559px) {
+  .uv-bar {
+    padding: 6px;
+    gap: 6px;
+  }
+  /* PL: Na telefonie przyciski pokazują same ikony; pełna nazwa zostaje w aria-label i dymku.
+     EN: On a phone the buttons show icons only; the full name stays in aria-label and the tooltip. */
+  .stop-all__label,
+  .unlock-btn__label {
+    display: none;
+  }
+  .uv-grid {
+    gap: 8px;
+  }
+  .tile-play {
+    padding: 10px 10px 6px;
+  }
+  .tile-controls {
+    padding: 6px 10px 10px;
+  }
+}
+
+/* ==========================================================================================
+   BRAMKA DOSTĘPU / ACCESS GATE
+   ========================================================================================== */
+
+/* PL: Przycisk „Pomiń” zajmuje lewą kolumnę drugiego wiersza siatki bramki, naprzeciwko
+       przycisku zatwierdzenia. Reguła stoi w module, bo tylko Audio ma bramkę możliwą do pominięcia.
+   EN: The "Skip" button takes the left cell of the gate grid's second row, opposite the submit
+       button. The rule lives in the module because only Audio has a gate that may be skipped. */
+.accessGate__skip {
+  grid-column: 1;
+  grid-row: 2;
+  justify-self: start;
+  align-self: center;
+}
+
+/* PL: Mobilnie bramka zwija się do jednej kolumny, więc „Pomiń” dostaje wiersz 4. Punkt łamania
+       musi być ten sam co w shared/access-gate.css.
+   EN: On mobile the gate collapses to one column, so "Skip" takes row 4. The breakpoint must
+       match shared/access-gate.css. */
+@media (max-width: 640px) {
+  .accessGate__skip {
+    grid-column: 1;
+    grid-row: 4;
+    justify-self: stretch;
+  }
+}
+
+/* ==========================================================================================
+   RESPONSYWNOŚĆ PANELU ADMINA / ADMIN PANEL RESPONSIVENESS
+   ========================================================================================== */
+
+@media (min-width: 1600px) {
+  :root {
+    --folders-w: 280px;
+    --lists-w: 420px;
+  }
+}
+
+@media (min-width: 1280px) and (max-width: 1599px) {
+  :root {
+    --folders-w: 240px;
+    --lists-w: 380px;
+  }
+}
+
+/* PL: Poniżej 1280 px panel folderów staje się szufladą wysuwaną z lewej strony.
+   EN: Below 1280 px the folder panel becomes a drawer sliding in from the left. */
+@media (max-width: 1279px) {
+  /* PL: Szuflada zaczyna się pod ewentualnym paskiem komunikatu o zapisie, żeby jej nagłówek
+         z przyciskiem zamknięcia był zawsze widoczny.
+     EN: The drawer starts below the save-message bar, if one is shown, so its header with the
+         close button is always visible. */
+  .wb-folders {
+    position: fixed;
+    top: var(--wg-write-status-height, 0px);
+    bottom: 0;
+    left: 0;
+    z-index: 60;
+    width: min(360px, 90vw);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    transform: translateX(-105%);
+    transition: transform 0.2s ease;
+  }
+  .wb-folders.is-drawer-open {
+    transform: none;
+  }
+  .wb-folders.is-collapsed .folders__content {
+    display: flex;
+  }
+  .wb-folders .folders__rail,
+  .folders__collapse {
+    display: none !important;
+  }
+  .folders__close,
+  .btn-folders {
+    display: inline-flex;
+  }
+  .workbench,
+  .workbench.is-folders-collapsed {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wb-folders {
+    transition: none;
+  }
+}
+
+/* PL: Poniżej 1024 px panel pracuje w zakładkach Katalog / Listy / Podgląd, a strona przewija się
+       w całości zamiast kolumn.
+   EN: Below 1024 px the panel works in Catalogue / Lists / Preview tabs, and the whole page
+       scrolls instead of the columns. */
+@media (max-width: 1023px) {
+  .admin-tabs {
+    display: flex;
+  }
+  .workbench,
+  .workbench.is-folders-collapsed {
+    display: block;
+    height: auto;
+    min-height: 0;
+  }
+  .wb-catalog,
+  .wb-lists,
+  .preview {
+    display: none;
+  }
+  body[data-admin-tab="catalog"] .wb-catalog,
+  body[data-admin-tab="lists"] .wb-lists {
+    display: flex;
+    overflow: visible;
+  }
+  body[data-admin-tab="preview"] .preview {
+    display: flex;
+  }
+  .wb-catalog .col-body,
+  .wb-lists .col-body {
+    overflow: visible;
+  }
+  .bulk-bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+    border-radius: 0 0 var(--radius) var(--radius);
+  }
+}
+
+/* PL: Na telefonie wiersze katalogu dzielą się na dwie linie, żeby nazwa miała całą szerokość.
+   EN: On a phone the catalogue rows split into two lines so the name gets the full width. */
+@media (max-width: 719px) {
+  .page {
+    padding: 12px 10px 32px;
+  }
+  .admin-header {
+    padding: 12px 14px;
+  }
+  .cat-row {
+    grid-template-columns: auto auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "check play main add"
+      "check play meta add";
+  }
+  .cat-check { grid-area: check; }
+  .cat-row .play-btn { grid-area: play; }
+  .cat-main {
+    grid-area: main;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 2px;
+  }
+  .cat-title {
+    white-space: normal;
+    max-width: none;
+  }
+  .cat-row .chip--tier { display: none; }
+  .cat-row .chip--members { grid-area: meta; justify-self: start; }
+  .cat-row .add-btn { grid-area: add; }
+  .cat-members { margin-left: 0; }
+  .alias-input {
+    flex-basis: 100%;
+  }
+  .menu__list {
+    right: auto;
+    left: 0;
+  }
+}
+
+/* PL: Na ekranach dotykowych elementy sterujące rosną do wygodnych rozmiarów palca.
+   EN: On touch screens the controls grow to comfortable finger sizes. */
+@media (pointer: coarse) {
+  .btn,
+  .uv-tab,
+  .admin-tab {
+    min-height: 44px;
+  }
+  .icon-btn,
+  .play-btn,
+  .add-btn {
+    min-width: 40px;
+    height: 40px;
+  }
+  .tree-row {
+    min-height: 40px;
+  }
+  .tree-toggle {
+    flex-basis: 34px;
+    height: 34px;
+  }
+  .check-line input,
+  .cat-check,
+  .tree-check {
+    width: 20px;
+    height: 20px;
+  }
+  .text-input,
+  .select {
+    min-height: 40px;
+    font-size: 15px;
+  }
+  .volume-slider {
+    height: 32px;
+  }
+  .volume-slider::-webkit-slider-thumb {
+    width: 26px;
+    height: 26px;
+  }
+  .volume-slider::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+  }
+  .tile-volume {
+    min-height: 40px;
+  }
+}

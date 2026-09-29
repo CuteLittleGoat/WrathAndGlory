@@ -2,8 +2,8 @@
 
 > **Data:** 29 września 2026
 > **Moduł:** `Audio` (w rozdziale o hasłach także `DataVault` i `GeneratorNPC`)
-> **Charakter dokumentu:** analiza przedwdrożeniowa i plan prac. Opisuje stan kodu z commitu `722b7e3` (od tego czasu kod modułu się nie zmienił) oraz ustalony projekt docelowy. **Żaden plik aplikacji nie został zmieniony.**
-> **Stan:** wszystkie decyzje są rozstrzygnięte (rozdz. 5). Projekt jest gotowy do wdrożenia etapami z rozdz. 13.
+> **Charakter dokumentu:** analiza przedwdrożeniowa i plan prac. Rozdział 3 opisuje stan kodu sprzed wdrożenia (commit `722b7e3`), pozostałe rozdziały — ustalony projekt docelowy.
+> **Stan:** wszystkie decyzje są rozstrzygnięte (rozdz. 5). **Projekt został wdrożony 29 września 2026** (prompt 1.7): moduł ma nowe pliki `Audio/index.html`, `Audio/style.css` i `Audio/app.js`, a dokumentacja modułu (`Audio/docs/README.md`, `Audio/docs/Documentation.md`, `Audio/config/FirebaseREADME.md`) i `DetaleLayout.md` opisują stan po wdrożeniu. Aktualnym źródłem wiedzy o działaniu modułu jest `Audio/docs/Documentation.md`. Kroki do wykonania po wdrożeniu — rozdz. 17.
 
 ---
 
@@ -108,6 +108,10 @@
 > Wierzę, że będziesz umiał to samodzielnie zrobić na zadowalającym poziomie.
 >
 > Zaktualizuj analizę. Usuń jakieś stare i nieaktualne zapiski (np. dotyczące migracji). Niech analiza zawiera teraz tylko najbardziej aktualne dane, ustalenia i plan prac.
+
+### 1.7 Polecenie wdrożenia
+
+> Wprowadź zmiany w kodzie. Zmiany wprowadź na Main.
 
 ---
 
