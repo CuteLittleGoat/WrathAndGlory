@@ -455,7 +455,7 @@ Karta może zawierać:
 Pod wierszem z wartościami `Obrona`, `Żywotność` i `Odporność psych.` karta ma rząd kwadracików do
 odhaczania obrażeń w trakcie walki (ołówkiem na wydruku).
 
-- Pierwszy kwadracik w rzędzie to ciemnoszare pole z białą literą. Litera mówi, czego dotyczy rząd:
+- Pierwszy kwadracik w rzędzie to szare pole z białą literą (jaśniejsze niż pasek z nazwą NPC, ciemniejsze niż tło napisów `Obrona`, `Żywotność`, `Odporność psych.`). Litera mówi, czego dotyczy rząd:
   - `Ż` — Żywotność,
   - `T` — Odporność Psychiczna.
 - Za literą stoją puste kwadraciki do zaznaczania:
@@ -481,7 +481,7 @@ Ctrl + P
 
 albo opcja drukowania z menu przeglądarki.
 
-Ciemnoszare kwadraciki z literami `Ż` i `T` drukują się zawsze, nawet jeśli w oknie drukowania wyłączona jest
+Szare kwadraciki z literami `Ż` i `T` drukują się zawsze, nawet jeśli w oknie drukowania wyłączona jest
 opcja „Grafika tła” (albo podobnie nazwana). Jasnoszare wypełnienie pustych kwadracików `T`, szare paski
 i ciemne tło nagłówków karty drukują się tylko wtedy, gdy ta opcja jest włączona.
 
@@ -1015,7 +1015,7 @@ The card may include:
 Below the row with the `Obrona`, `Żywotność` and `Odporność psych.` values, the card has rows of boxes for
 ticking off damage during combat (with a pencil on the printout).
 
-- The first box in a row is a dark grey field with a white letter. The letter tells you what the row is for:
+- The first box in a row is a grey field with a white letter (lighter than the NPC name bar, darker than the background of the `Obrona`, `Żywotność`, `Odporność psych.` labels). The letter tells you what the row is for:
   - `Ż` — Vitality (`Żywotność`),
   - `T` — Mental resistance (`Odporność Psychiczna`).
 - After the letter come empty boxes to tick:
@@ -1042,7 +1042,7 @@ Ctrl + P
 
 or the print option from the browser menu.
 
-The dark grey `Ż` and `T` letter boxes always print, even when the "Background graphics" option (or a similarly
+The grey `Ż` and `T` letter boxes always print, even when the "Background graphics" option (or a similarly
 named one) is turned off in the print window. The light grey fill of the empty `T` boxes, the grey stripes
 and the dark background of the card headers print only when that option is turned on.
 

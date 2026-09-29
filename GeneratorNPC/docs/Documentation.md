@@ -788,14 +788,16 @@ Style (wewnątrz `<style>` generowanego HTML karty):
 .tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
 .tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
 .tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
-.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #2c2c2c; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #888; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .tracker-row--mental { --tracker-fill: #e9e9e9; }
 ```
 
-- Kwadracik z literą (`.tracker-label`) ma ciemnoszare tło `#2c2c2c` (ten sam odcień co `.title` i
-  `.section-header` karty), ramkę `1px solid #111` odziedziczoną z `.tracker-cell` i białą, pogrubioną
-  literę `#fff`. Reguła stoi po `.tracker-cell`, więc przy tej samej specyficzności nadpisuje tło z
-  `--tracker-fill`. `print-color-adjust: exact` (z prefiksem `-webkit-`) wymusza wydruk ciemnoszarego tła
+- Kwadracik z literą (`.tracker-label`) ma szare tło `#888` (`#888888`), ramkę `1px solid #111`
+  odziedziczoną z `.tracker-cell` i białą, pogrubioną literę `#fff`. `#888` to odcień pośrodku (w jasności
+  postrzeganej, CIE L* ≈ 57) między tłem paska z nazwą NPC i nagłówków sekcji (`.title`,
+  `.section-header`: `#2c2c2c`, L* ≈ 18) a tłem wiersza etykiet `Obrona` / `Żywotność` /
+  `Odporność psych.` (`.triple.labels .cell`: `#f1f1f1`, L* ≈ 95). Reguła stoi po `.tracker-cell`, więc przy tej samej specyficzności nadpisuje tło z
+  `--tracker-fill`. `print-color-adjust: exact` (z prefiksem `-webkit-`) wymusza wydruk szarego tła
   nawet przy wyłączonej opcji drukowania grafiki tła — bez tego biała litera zniknęłaby na białym papierze.
 - Puste kwadraciki „Ż” mają tło `#fff` (domyślna wartość `var(--tracker-fill, #fff)`).
 - Puste kwadraciki „T” mają tło `#e9e9e9` z `--tracker-fill` ustawionego na `.tracker-row--mental`.
@@ -885,9 +887,9 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Pancerz | Wybierz pancerz i wygeneruj kartę. | WP, odporność i cechy pancerza są uwzględnione. |
 | Moduły dodatkowe | Wybierz augumentacje, ekwipunek, talenty, psionikę i modlitwy. | Karta zawiera odpowiednie sekcje. |
 | Opisy cech | Włącz opis cech broni lub pancerza. | Karta zawiera opisy cech. |
-| Kwadraciki „Ż”/„T” | Wybierz rekord z liczbową `Żywotność` i `Odporność Psychiczna`, wygeneruj kartę. | Kwadraciki z literami „Ż” i „T” są ciemnoszare (`#2c2c2c`) z białą literą; pustych białych kwadracików przy „Ż” jest tyle, ile `Żywotność`, a jasnoszarych przy „T” tyle, ile `Odporność Psychiczna`. |
+| Kwadraciki „Ż”/„T” | Wybierz rekord z liczbową `Żywotność` i `Odporność Psychiczna`, wygeneruj kartę. | Kwadraciki z literami „Ż” i „T” są szare (`#888`) z białą literą; pustych białych kwadracików przy „Ż” jest tyle, ile `Żywotność`, a jasnoszarych przy „T” tyle, ile `Odporność Psychiczna`. |
 | Kwadraciki — `Odporność Psychiczna` `-` | Wybierz rekord z `Odporność Psychiczna` równą `-`, wygeneruj kartę. | Na karcie jest tylko wiersz „Ż”; nie ma ani kwadracika z literą „T”, ani pustych kwadracików „T”. |
-| Kwadraciki — wydruk | Otwórz podgląd wydruku karty z wyłączoną opcją grafiki tła. | Kwadraciki z literami nadal są ciemnoszare z białą literą. |
+| Kwadraciki — wydruk | Otwórz podgląd wydruku karty z wyłączoną opcją grafiki tła. | Kwadraciki z literami nadal są szare (`#888`) z białą literą. |
 | Popover | Kliknij tag cechy. | Pokazuje się opis cechy. |
 | Ulubione Firestore | Dodaj ulubiony wpis. | Wpis pojawia się w Firestore `generatorNpc/favorites`. |
 | Ulubione localStorage | Usuń konfigurację Firestore ulubionych i dodaj wpis. | Wpis zapisuje się lokalnie w `generatorNpcFavorites`. |
@@ -1699,14 +1701,16 @@ Styles (inside the `<style>` of the generated card HTML):
 .tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
 .tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
 .tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
-.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #2c2c2c; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #888; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .tracker-row--mental { --tracker-fill: #e9e9e9; }
 ```
 
-- The letter box (`.tracker-label`) has a dark grey `#2c2c2c` background (the same shade as the card's
-  `.title` and `.section-header`), the `1px solid #111` border inherited from `.tracker-cell` and a white,
-  bold `#fff` letter. The rule comes after `.tracker-cell`, so at equal specificity it overrides the
-  `--tracker-fill` background. `print-color-adjust: exact` (with the `-webkit-` prefix) forces the dark grey
+- The letter box (`.tracker-label`) has a grey `#888` (`#888888`) background, the `1px solid #111` border
+  inherited from `.tracker-cell` and a white, bold `#fff` letter. `#888` is the shade halfway (in perceived
+  lightness, CIE L* ≈ 57) between the background of the NPC name bar and section headers (`.title`,
+  `.section-header`: `#2c2c2c`, L* ≈ 18) and the background of the `Obrona` / `Żywotność` /
+  `Odporność psych.` label row (`.triple.labels .cell`: `#f1f1f1`, L* ≈ 95). The rule comes after `.tracker-cell`, so at equal specificity it overrides the
+  `--tracker-fill` background. `print-color-adjust: exact` (with the `-webkit-` prefix) forces the grey
   background to print even when printing background graphics is turned off — without it the white letter
   would vanish on white paper.
 - Empty "Ż" boxes have a `#fff` background (the default of `var(--tracker-fill, #fff)`).
@@ -1797,9 +1801,9 @@ structure section explains how to reveal it.
 | Armor | Select armor and generate card. | WP, resilience, and armor traits are included. |
 | Extra modules | Select augmentations, equipment, talents, psionics, and prayers. | Card includes corresponding sections. |
 | Trait descriptions | Enable weapon or armor trait descriptions. | Card includes trait descriptions. |
-| "Ż"/"T" boxes | Select a record with numeric `Żywotność` and `Odporność Psychiczna`, generate the card. | The "Ż" and "T" letter boxes are dark grey (`#2c2c2c`) with a white letter; there are as many empty white "Ż" boxes as `Żywotność` and as many light grey "T" boxes as `Odporność Psychiczna`. |
+| "Ż"/"T" boxes | Select a record with numeric `Żywotność` and `Odporność Psychiczna`, generate the card. | The "Ż" and "T" letter boxes are grey (`#888`) with a white letter; there are as many empty white "Ż" boxes as `Żywotność` and as many light grey "T" boxes as `Odporność Psychiczna`. |
 | Boxes — `Odporność Psychiczna` `-` | Select a record whose `Odporność Psychiczna` equals `-`, generate the card. | Only the "Ż" row is on the card; there is neither a "T" letter box nor empty "T" boxes. |
-| Boxes — print | Open the card's print preview with background graphics turned off. | The letter boxes stay dark grey with a white letter. |
+| Boxes — print | Open the card's print preview with background graphics turned off. | The letter boxes stay grey (`#888`) with a white letter. |
 | Popover | Click a trait tag. | Trait description appears. |
 | Firestore favorites | Add favorite. | Entry appears in Firestore `generatorNpc/favorites`. |
 | localStorage favorites | Remove favorites Firestore config and add entry. | Entry is saved locally in `generatorNpcFavorites`. |

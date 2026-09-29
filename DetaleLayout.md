@@ -578,7 +578,7 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - Sekcja kwadratów „Ż”/„T”:
   - tło siatki jest przezroczyste (bez czarnego wypełnienia po prawej stronie),
   - każde pole ma rozmiar `18px × 18px`, odstęp `1px` i obramowanie `1px solid #111`,
-  - kwadracik z literą (`.tracker-label`, „Ż”/„T”, w wersji EN „H”/„S”) ma ciemnoszare tło `#2c2c2c` (ten sam odcień co belki nagłówków karty), ramkę `1px solid #111` i białą pogrubioną literę `#fff`; `print-color-adjust: exact` (także `-webkit-`) wymusza to tło na wydruku bez grafiki tła,
+  - kwadracik z literą (`.tracker-label`, „Ż”/„T”, w wersji EN „H”/„S”) ma szare tło `#888` (odcień pośrodku między belką nazwy/nagłówków `#2c2c2c` a tłem wiersza etykiet `#f1f1f1`), ramkę `1px solid #111` i białą pogrubioną literę `#fff`; `print-color-adjust: exact` (także `-webkit-`) wymusza to tło na wydruku bez grafiki tła,
   - puste pola „T” mają wypełnienie `#e9e9e9`, puste pola „Ż” pozostają białe (`#fff`),
   - gdy `Odporność Psychiczna` ma wartość `-`, cały wiersz „T” (kwadracik z literą i puste pola) nie jest renderowany; zostaje sam wiersz „Ż”.
 
