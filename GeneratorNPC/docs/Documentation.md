@@ -788,16 +788,17 @@ Style (wewnątrz `<style>` generowanego HTML karty):
 .tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
 .tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
 .tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
-.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #888; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #a0a0a0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .tracker-row--mental { --tracker-fill: #e9e9e9; }
 ```
 
-- Kwadracik z literą (`.tracker-label`) ma szare tło `#888` (`#888888`), ramkę `1px solid #111`
-  i standardowy czarny kolor litery `#111` — oba z `.tracker-cell` — oraz pogrubioną literę. `#888` to odcień pośrodku (w jasności
-  postrzeganej, CIE L* ≈ 57) między tłem paska z nazwą NPC i nagłówków sekcji (`.title`,
-  `.section-header`: `#2c2c2c`, L* ≈ 18) a tłem wiersza etykiet `Obrona` / `Żywotność` /
-  `Odporność psych.` (`.triple.labels .cell`: `#f1f1f1`, L* ≈ 95). Reguła stoi po `.tracker-cell`, więc przy tej samej specyficzności nadpisuje tło z
-  `--tracker-fill`. `print-color-adjust: exact` (z prefiksem `-webkit-`) wymusza wydruk szarego tła
+- Kwadracik z literą (`.tracker-label`) ma średnioszare tło `#a0a0a0`, ramkę `1px solid #111`
+  i standardowy czarny kolor litery `#111` — oba z `.tracker-cell` — oraz pogrubioną literę. Jasność
+  postrzegana `#a0a0a0` to CIE L* ≈ 66: wyraźnie jaśniej niż tło paska z nazwą NPC i nagłówków sekcji
+  (`.title`, `.section-header`: `#2c2c2c`, L* ≈ 18) i wyraźnie ciemniej niż tło wiersza etykiet `Obrona` /
+  `Żywotność` / `Odporność psych.` (`.triple.labels .cell`: `#f1f1f1`, L* ≈ 95) oraz puste kwadraciki „T”
+  (`#e9e9e9`, L* ≈ 92), więc kwadracik z literą odróżnia się od pustych kwadracików obok. Reguła stoi po
+  `.tracker-cell`, więc przy tej samej specyficzności nadpisuje tło z `--tracker-fill`. `print-color-adjust: exact` (z prefiksem `-webkit-`) wymusza wydruk szarego tła
   nawet przy wyłączonej opcji drukowania grafiki tła — bez tego kwadracik z literą nie odróżniałby się na
   wydruku od pustych kwadracików.
 - Puste kwadraciki „Ż” mają tło `#fff` (domyślna wartość `var(--tracker-fill, #fff)`).
@@ -888,9 +889,9 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Pancerz | Wybierz pancerz i wygeneruj kartę. | WP, odporność i cechy pancerza są uwzględnione. |
 | Moduły dodatkowe | Wybierz augumentacje, ekwipunek, talenty, psionikę i modlitwy. | Karta zawiera odpowiednie sekcje. |
 | Opisy cech | Włącz opis cech broni lub pancerza. | Karta zawiera opisy cech. |
-| Kwadraciki „Ż”/„T” | Wybierz rekord z liczbową `Żywotność` i `Odporność Psychiczna`, wygeneruj kartę. | Kwadraciki z literami „Ż” i „T” są szare (`#888`) z czarną literą (`#111`); pustych białych kwadracików przy „Ż” jest tyle, ile `Żywotność`, a jasnoszarych przy „T” tyle, ile `Odporność Psychiczna`. |
+| Kwadraciki „Ż”/„T” | Wybierz rekord z liczbową `Żywotność` i `Odporność Psychiczna`, wygeneruj kartę. | Kwadraciki z literami „Ż” i „T” są szare (`#a0a0a0`) z czarną literą (`#111`); pustych białych kwadracików przy „Ż” jest tyle, ile `Żywotność`, a jasnoszarych przy „T” tyle, ile `Odporność Psychiczna`. |
 | Kwadraciki — `Odporność Psychiczna` `-` | Wybierz rekord z `Odporność Psychiczna` równą `-`, wygeneruj kartę. | Na karcie jest tylko wiersz „Ż”; nie ma ani kwadracika z literą „T”, ani pustych kwadracików „T”. |
-| Kwadraciki — wydruk | Otwórz podgląd wydruku karty z wyłączoną opcją grafiki tła. | Kwadraciki z literami nadal są szare (`#888`) z czarną literą. |
+| Kwadraciki — wydruk | Otwórz podgląd wydruku karty z wyłączoną opcją grafiki tła. | Kwadraciki z literami nadal są szare (`#a0a0a0`) z czarną literą. |
 | Popover | Kliknij tag cechy. | Pokazuje się opis cechy. |
 | Ulubione Firestore | Dodaj ulubiony wpis. | Wpis pojawia się w Firestore `generatorNpc/favorites`. |
 | Ulubione localStorage | Usuń konfigurację Firestore ulubionych i dodaj wpis. | Wpis zapisuje się lokalnie w `generatorNpcFavorites`. |
@@ -1702,16 +1703,17 @@ Styles (inside the `<style>` of the generated card HTML):
 .tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
 .tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
 .tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
-.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #888; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #a0a0a0; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .tracker-row--mental { --tracker-fill: #e9e9e9; }
 ```
 
-- The letter box (`.tracker-label`) has a grey `#888` (`#888888`) background, the `1px solid #111` border
-  and the standard black `#111` letter colour — both from `.tracker-cell` — and a bold letter. `#888` is the shade halfway (in perceived
-  lightness, CIE L* ≈ 57) between the background of the NPC name bar and section headers (`.title`,
-  `.section-header`: `#2c2c2c`, L* ≈ 18) and the background of the `Obrona` / `Żywotność` /
-  `Odporność psych.` label row (`.triple.labels .cell`: `#f1f1f1`, L* ≈ 95). The rule comes after `.tracker-cell`, so at equal specificity it overrides the
-  `--tracker-fill` background. `print-color-adjust: exact` (with the `-webkit-` prefix) forces the grey
+- The letter box (`.tracker-label`) has a medium grey `#a0a0a0` background, the `1px solid #111` border
+  and the standard black `#111` letter colour — both from `.tracker-cell` — and a bold letter. The perceived
+  lightness of `#a0a0a0` is CIE L* ≈ 66: clearly lighter than the background of the NPC name bar and section
+  headers (`.title`, `.section-header`: `#2c2c2c`, L* ≈ 18) and clearly darker than the background of the
+  `Obrona` / `Żywotność` / `Odporność psych.` label row (`.triple.labels .cell`: `#f1f1f1`, L* ≈ 95) and the
+  empty "T" boxes (`#e9e9e9`, L* ≈ 92), so the letter box stands out from the empty boxes next to it. The
+  rule comes after `.tracker-cell`, so at equal specificity it overrides the `--tracker-fill` background. `print-color-adjust: exact` (with the `-webkit-` prefix) forces the grey
   background to print even when printing background graphics is turned off — without it the letter box would
   not stand out from the empty boxes on the printout.
 - Empty "Ż" boxes have a `#fff` background (the default of `var(--tracker-fill, #fff)`).
@@ -1802,9 +1804,9 @@ structure section explains how to reveal it.
 | Armor | Select armor and generate card. | WP, resilience, and armor traits are included. |
 | Extra modules | Select augmentations, equipment, talents, psionics, and prayers. | Card includes corresponding sections. |
 | Trait descriptions | Enable weapon or armor trait descriptions. | Card includes trait descriptions. |
-| "Ż"/"T" boxes | Select a record with numeric `Żywotność` and `Odporność Psychiczna`, generate the card. | The "Ż" and "T" letter boxes are grey (`#888`) with a black letter (`#111`); there are as many empty white "Ż" boxes as `Żywotność` and as many light grey "T" boxes as `Odporność Psychiczna`. |
+| "Ż"/"T" boxes | Select a record with numeric `Żywotność` and `Odporność Psychiczna`, generate the card. | The "Ż" and "T" letter boxes are grey (`#a0a0a0`) with a black letter (`#111`); there are as many empty white "Ż" boxes as `Żywotność` and as many light grey "T" boxes as `Odporność Psychiczna`. |
 | Boxes — `Odporność Psychiczna` `-` | Select a record whose `Odporność Psychiczna` equals `-`, generate the card. | Only the "Ż" row is on the card; there is neither a "T" letter box nor empty "T" boxes. |
-| Boxes — print | Open the card's print preview with background graphics turned off. | The letter boxes stay grey (`#888`) with a black letter. |
+| Boxes — print | Open the card's print preview with background graphics turned off. | The letter boxes stay grey (`#a0a0a0`) with a black letter. |
 | Popover | Click a trait tag. | Trait description appears. |
 | Firestore favorites | Add favorite. | Entry appears in Firestore `generatorNpc/favorites`. |
 | localStorage favorites | Remove favorites Firestore config and add entry. | Entry is saved locally in `generatorNpcFavorites`. |

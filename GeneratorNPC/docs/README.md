@@ -455,7 +455,7 @@ Karta może zawierać:
 Pod wierszem z wartościami `Obrona`, `Żywotność` i `Odporność psych.` karta ma rząd kwadracików do
 odhaczania obrażeń w trakcie walki (ołówkiem na wydruku).
 
-- Pierwszy kwadracik w rzędzie to szare pole z czarną literą (jaśniejsze niż pasek z nazwą NPC, ciemniejsze niż tło napisów `Obrona`, `Żywotność`, `Odporność psych.`). Litera mówi, czego dotyczy rząd:
+- Pierwszy kwadracik w rzędzie to szare pole z czarną literą (wyraźnie jaśniejsze niż pasek z nazwą NPC, ale ciemniejsze niż tło napisów `Obrona`, `Żywotność`, `Odporność psych.` i niż jasnoszare puste kwadraciki `T`). Litera mówi, czego dotyczy rząd:
   - `Ż` — Żywotność,
   - `T` — Odporność Psychiczna.
 - Za literą stoją puste kwadraciki do zaznaczania:
@@ -1015,7 +1015,7 @@ The card may include:
 Below the row with the `Obrona`, `Żywotność` and `Odporność psych.` values, the card has rows of boxes for
 ticking off damage during combat (with a pencil on the printout).
 
-- The first box in a row is a grey field with a black letter (lighter than the NPC name bar, darker than the background of the `Obrona`, `Żywotność`, `Odporność psych.` labels). The letter tells you what the row is for:
+- The first box in a row is a grey field with a black letter (clearly lighter than the NPC name bar, but darker than the background of the `Obrona`, `Żywotność`, `Odporność psych.` labels and than the light grey empty `T` boxes). The letter tells you what the row is for:
   - `Ż` — Vitality (`Żywotność`),
   - `T` — Mental resistance (`Odporność Psychiczna`).
 - After the letter come empty boxes to tick:
