@@ -3114,9 +3114,9 @@ const translations = {
                 .tracker-row { --tracker-size: 18px; --tracker-gap: 1px; display: grid; grid-template-columns: var(--tracker-size) 1fr; column-gap: var(--tracker-gap); align-items: start; }
                 .tracker-squares { display: grid; grid-template-columns: repeat(auto-fit, var(--tracker-size)); grid-auto-rows: var(--tracker-size); gap: var(--tracker-gap); width: 100%; justify-content: start; }
                 .tracker-cell { background: var(--tracker-fill, #fff); border: 1px solid #111; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; color: #111; }
-                /* Kwadracik z literą „Ż”/„T”: szare tło #888 (odcień pośrodku między belką nazwy #2c2c2c a tłem etykiet #f1f1f1) i biała litera; print-color-adjust wymusza to tło także na wydruku, inaczej biała litera byłaby niewidoczna */
-                /* "Ż"/"T" letter box: grey background #888 (the shade halfway between the name bar #2c2c2c and the label background #f1f1f1) and white letter; print-color-adjust forces this background in print too, otherwise the white letter would be invisible */
-                .tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #888; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+                /* Kwadracik z literą „Ż”/„T”: szare tło #888 (odcień pośrodku między belką nazwy #2c2c2c a tłem etykiet #f1f1f1) i standardowa czarna litera #111 z .tracker-cell; print-color-adjust wymusza szare tło także na wydruku, żeby kwadracik z literą odróżniał się od pustych kwadracików */
+                /* "Ż"/"T" letter box: grey background #888 (the shade halfway between the name bar #2c2c2c and the label background #f1f1f1) and the standard black #111 letter from .tracker-cell; print-color-adjust forces the grey background in print too, so the letter box stands out from the empty boxes */
+                .tracker-label { font-weight: 700; width: var(--tracker-size); height: var(--tracker-size); background: #888; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
                 /* Puste kwadraciki „T” mają jasnoszare wypełnienie; puste kwadraciki „Ż” zostają białe (domyślne #fff z .tracker-cell) */
                 /* Empty "T" boxes get a light grey fill; empty "Ż" boxes stay white (default #fff from .tracker-cell) */
                 .tracker-row--mental { --tracker-fill: #e9e9e9; }
