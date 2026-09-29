@@ -4,7 +4,7 @@
 > **Temat:** przeniesienie aliasów dźwięków z poziomu globalnego na poziom pojedynczej listy, nowy projekt panelu admina (`?admin=1`) wygodny przy dużym manifeście, miejsce zmiany hasła, usunięcie z instrukcji użytkownika nazw z repozytorium chronionego hasłem
 > **Moduł:** `Audio` (w rozdziale o haśle także `DataVault` i `GeneratorNPC`)
 > **Charakter dokumentu:** analiza przedwdrożeniowa. Opisuje stan kodu z 29 września 2026 (commit `722b7e3`) i projekt stanu docelowego. **Żaden plik aplikacji ani dokumentacji modułu nie został zmieniony.**
-> **Stan na dziś:** użytkownik rozstrzygnął decyzje D1-D10 i postanowił, że obecne listy ulubionych i aliasy są danymi testowymi — **migracji nie będzie** (Część II, rozdz. 19-24). Tam, gdzie Część I opisuje migrację i projekcję zgodności, obowiązuje Część II. Kod modułu nadal nietknięty.
+> **Stan na dziś:** użytkownik rozstrzygnął decyzje D1-D10 i postanowił, że obecne listy ulubionych i aliasy są danymi testowymi — **migracji nie będzie** (Część II, rozdz. 19-24). Tam, gdzie Część I opisuje migrację i projekcję zgodności, obowiązuje Część II. Część III (rozdz. 25-30) stawia w panelu admina główny nacisk na komputer (przy zachowaniu responsywności) i projektuje nowy widok użytkownika; otwarte są w niej cztery decyzje D11-D14. Kod modułu nadal nietknięty.
 
 ---
 
@@ -37,6 +37,15 @@
 22. [Zaktualizowany plan testów](#22-zaktualizowany-plan-testów)
 23. [Zaktualizowane ryzyka](#23-zaktualizowane-ryzyka)
 24. [Gotowość do wdrożenia i następne kroki](#24-gotowość-do-wdrożenia-i-następne-kroki)
+
+**Część III — responsywność i nowy widok użytkownika**
+
+25. [Uwagi użytkownika z 29 września 2026 — responsywność i widok użytkownika](#25-uwagi-użytkownika-z-29-września-2026--responsywność-i-widok-użytkownika)
+26. [Panel admina — projekt pod komputer](#26-panel-admina--projekt-pod-komputer)
+27. [Widok użytkownika — nowy układ](#27-widok-użytkownika--nowy-układ)
+28. [Nowe decyzje D11-D14](#28-nowe-decyzje-d11-d14)
+29. [Uzupełnienie zakresu prac, testów i ryzyk](#29-uzupełnienie-zakresu-prac-testów-i-ryzyk)
+30. [Zaktualizowana gotowość do wdrożenia](#30-zaktualizowana-gotowość-do-wdrożenia)
 
 ---
 
@@ -461,6 +470,8 @@ Wiersz wpisu:
 
 ### 6.8 Responsywność
 
+> **Doprecyzowane 29 września 2026:** główny nacisk na wygodę pracy przy komputerze, przy zachowaniu responsywnego wyświetlania na innych urządzeniach — obowiązuje rozdz. 26, który przejmuje i porządkuje poniższą tabelę.
+
 | Szerokość | Układ panelu admina |
 | --- | --- |
 | ≥ 1280 px | trzy kolumny: foldery ok. 260 px, katalog elastyczny, listy ok. 400 px; strona w trybie admina szersza niż dziś (np. `max-width: 1600px`), widok użytkownika bez zmian |
@@ -478,6 +489,8 @@ Wiersz wpisu:
 ---
 
 ## 7. Widok użytkownika po zmianie
+
+> **Rozszerzone 29 września 2026:** nowy układ widoku użytkownika opisuje rozdz. 27; poniższe punkty obowiązują nadal.
 
 - Nawigacja: najpierw lista główna (jej nazwa), potem listy ulubionych w ustalonej kolejności.
 - Kafelek: `Nazwa (alias z tej listy) (N)`; ten sam dźwięk na innej liście pokazuje swój alias.
@@ -951,6 +964,8 @@ Pozostałe ryzyka z rozdz. 15 obowiązują bez zmian.
 
 ## 24. Gotowość do wdrożenia i następne kroki
 
+> **Uzupełnione 29 września 2026:** Część III dodaje decyzje D11-D14 — aktualny stan gotowości w rozdz. 30.
+
 **Stan:** wszystkie decyzje D1-D10 są rozstrzygnięte, otwartych pytań nie ma. Projekt jest gotowy do wdrożenia etapami z rozdz. 21. Kod modułu nadal nietknięty.
 
 Kolejność po zleceniu wdrożenia:
@@ -961,3 +976,300 @@ Kolejność po zleceniu wdrożenia:
 4. Odtwórz listy z notatek według rozdz. 20.5 — to jednocześnie test akceptacyjny.
 5. Wyeksportuj ustawienia do pliku JSON i zachowaj go poza repozytorium.
 6. Zmiana hasła — według rozdz. 10, niezależnie od wdrożenia.
+
+---
+
+# CZĘŚĆ III — RESPONSYWNOŚĆ I NOWY WIDOK UŻYTKOWNIKA
+
+## 25. Uwagi użytkownika z 29 września 2026 — responsywność i widok użytkownika
+
+### 25.1 Prompty (zachowane w całości)
+
+Pierwszy prompt:
+
+> Jeżeli chodzi o responsywność to panel admina będzie używany głównie na PC. Na tym się skup. Możesz też zmodyfikować wygląd bez dopisku admin=1 (tam gdzie tylko odtwarza się dźwięki) jeżeli uznasz, że możesz zrobić lepszy i wygodniejszy układ. Ważne, żeby był przycisk do "loop", poziom głośności, feedback kiedy plik jest odtwarzany, numer w nawiasie (jeżeli jest kilka plików podpiętych pod jedną nazwę), nazwa, alias i jeden tag.
+> Ten widok powinien być wygodny do używania na wielu rodzajach urządzeń.
+>
+> Dopisz to do analizy. Analizę wypchnij na main.
+
+Doprecyzowanie wysłane w trakcie pracy:
+
+> "panel admina projektowany pod komputer" - ma się też responsywnie wyświetlać na innych urządzeniach, ale główny nacisk na komfort użytkowania stawiamy na PC.
+
+### 25.2 Co z tego wynika
+
+| Obszar | Priorytet | Rozdział |
+| --- | --- | --- |
+| Panel admina (`?admin=1`) | Wygoda pracy na komputerze (mysz, klawiatura, szeroki ekran). Na tablecie i telefonie panel wyświetla się responsywnie i ma wszystkie funkcje, ale bez dodatkowego szlifu pod dotyk. | 26 |
+| Widok użytkownika (bez `?admin=1`) | Wygoda na **każdym** urządzeniu: telefon, tablet, laptop, duży monitor. Nowy układ zamiast obecnego. | 27 |
+| Elementy obowiązkowe kafelka | `Loop`, głośność, sygnał odtwarzania, `(N)`, nazwa, alias, jeden tag. | 27.1 |
+
+---
+
+## 26. Panel admina — projekt pod komputer
+
+### 26.1 Ekrany docelowe
+
+Projekt jest dopracowywany pod ekrany komputerowe: **1920×1080** (główny), **1366×768** i **1440×900** (laptopy). Wszystkie wymiary kolumn, gęstość wierszy i skróty klawiszowe są dobierane pod te rozdzielczości. Pozostałe urządzenia dostają układ responsywny z pełnym zestawem funkcji.
+
+### 26.2 Układ w zależności od szerokości
+
+| Szerokość okna | Układ | Priorytet dopracowania |
+| --- | --- | --- |
+| ≥ 1600 px | trzy kolumny: foldery ok. 280 px, katalog elastyczny, listy ok. 420 px; strona w trybie admina do ok. 1760 px szerokości | **najwyższy** |
+| 1280-1599 px | trzy kolumny: foldery ok. 240 px, listy ok. 380 px | **najwyższy** |
+| 1024-1279 px | foldery domyślnie zwinięte do szyny i wysuwane jako szuflada; katalog i listy obok siebie | wysoki |
+| 720-1023 px (tablet) | zakładki `Katalog` / `Listy` / `Podgląd`; foldery jako szuflada | responsywny, bez dodatkowego szlifu |
+| < 720 px (telefon) | jak tablet, wiersze katalogu i wpisów w dwóch liniach, przyciski nie mniejsze niż 40 px | responsywny, bez dodatkowego szlifu |
+
+„Bez dodatkowego szlifu” oznacza: układ się nie rozsypuje, nic nie wychodzi poza ekran, każda funkcja jest dostępna i da się jej użyć palcem — ale nie ma osobnych gestów, osobnych wariantów komponentów ani optymalizacji ergonomii dotyku poza tym minimum.
+
+### 26.3 Udogodnienia komputerowe
+
+| Udogodnienie | Działanie |
+| --- | --- |
+| Niezależne przewijanie kolumn | Każda kolumna ma wysokość okna minus nagłówek (z dolną granicą ok. 640 px) i własny pasek przewijania; nagłówki kolumn i pasek zaznaczonych są przyklejone. Podgląd jest pod kolumnami — do niego przewija się całą stronę. |
+| Gęstość wierszy | Wiersz katalogu ok. 36 px — przy 1080 px wysokości widać około 20 wierszy naraz. |
+| Zaznaczanie zakresu | `Shift` + kliknięcie zaznacza w katalogu wszystkie wiersze między dwoma kliknięciami; `Ctrl` + kliknięcie dodaje lub usuwa pojedynczy wiersz. |
+| Skróty klawiszowe | `/` — kursor w wyszukiwarce katalogu; `Enter` w polu aliasu — zapis; `Esc` w polu aliasu lub nazwy — anulowanie; `Esc` przy otwartej szufladzie — zamknięcie. Skróty nie działają, gdy kursor stoi w polu tekstowym (poza wymienionymi). |
+| Dymki | Przynależność dźwięku do list i aliasy z innych list — po najechaniu kursorem; na urządzeniach dotykowych ta sama treść jest dostępna po dotknięciu znacznika `[2]`. |
+| Przeciąganie myszą | SortableJS (D7) z uchwytem `⠿`; na dotyku działa przy okazji, bo biblioteka to obsługuje. |
+| Edycja nazwy | Dwuklik na nazwie listy albo `✎`. |
+
+### 26.4 Co zostaje z rozdz. 6.8
+
+Podział na przedziały szerokości i zakładki na węższych ekranach zostają. Zmienia się rozłożenie wysiłku: dopracowanie wizualne i ergonomiczne dotyczy przede wszystkim przedziałów ≥ 1280 px, a węższe przedziały mają działać poprawnie. Przełącznik `Komputer` / `Tablet` / `Telefon` w podglądzie zostaje i zyskuje na znaczeniu — służy do sprawdzania **widoku użytkownika**, który ma być wygodny wszędzie.
+
+---
+
+## 27. Widok użytkownika — nowy układ
+
+### 27.1 Elementy obowiązkowe
+
+| Wymaganie | Realizacja |
+| --- | --- |
+| Przycisk `Loop` | W każdym kafelku, `⟳ Loop`; aktywny stan czerwony i `aria-pressed="true"` jak dziś. |
+| Poziom głośności | Suwak w każdym kafelku z wartością w procentach (rozdz. 27.5). |
+| Sygnał odtwarzania | Cztery niezależne sygnały: ikona w kafelku, obramowanie z poświatą, pasek postępu, kropka na zakładce listy i licznik w `Zatrzymaj wszystko` (rozdz. 27.4, 27.6). |
+| Numer w nawiasie | `(N)` w kolorze `--danger`, gdy pod nazwą jest kilka plików — jak dziś. |
+| Nazwa | Pogrubiona, do trzech wierszy; pełna nazwa w dymku. |
+| Alias | `(alias)` bezpośrednio po nazwie, kolor `#d2fad2` (D1). |
+| Jeden tag | Drugi poziom folderu (`tag2`, nazwa kolekcji dźwięków), jak dziś (D12). |
+
+### 27.2 Problemy obecnego widoku
+
+| # | Problem | Gdzie | Skutek |
+| --- | --- | --- | --- |
+| U1 | Nawigacja stoi w prawej kolumnie; poniżej 980 px spada **pod wszystkie kafelki**. | `:553-557`, `:599-606`, kolejność w DOM `:728-749` | Na telefonie zmiana listy wymaga przewinięcia całej bieżącej listy. |
+| U2 | Dźwięk uruchamia tylko kliknięcie w tekst nazwy albo tagu (`.sample-trigger`). | `:3408-3426`, `:3443-3461` | Mały cel dotykowy; reszta kafelka nie reaguje. |
+| U3 | Jedynym sygnałem odtwarzania jest czerwony kolor tekstu; brak postępu i stanu wczytywania. | `:430-433`, `startPlayback` `:1781-1815` | Przy dźwięku z archiwum mija chwila na podpis bramki i nic się nie dzieje — łatwo kliknąć drugi raz. |
+| U4 | Suwak bez widocznej wartości i bez etykiety dla czytników ekranu; głośność wraca do 100% przy każdym przerysowaniu i odświeżeniu. | `:2394`, `:2431` | Ustawiony poziom ginie w trakcie sesji. |
+| U5 | Przełączenie listy ulubionych przerysowuje jej kafelki. | `:3494-3499` | Dźwięk grający na liście, z której się wyszło, po powrocie jest „osierocony” (P12): kafelek pokazuje spoczynek, a dźwięku nie da się zatrzymać. Zmiana z bazy albo języka robi to samo ze wszystkimi listami. |
+| U6 | Brak zatrzymania wszystkich dźwięków naraz. | — | Kilka pętli trzeba gasić po kolei, a pętli „osieroconej” nie da się zgasić wcale. |
+| U7 | Sztywne progi 4 / 2 / 1 kolumny. | `:397-401`, `:608-616` | Na dużym monitorze cztery bardzo szerokie kafelki, na telefonie w poziomie jedna lub dwie kolumny. |
+
+### 27.3 Układ strony
+
+- **Pasek górny przyklejony do góry ekranu:**
+  - zakładki list — lista główna zawsze pierwsza, potem listy ulubionych w ustalonej kolejności; aktywna zakładka wyróżniona jak dziś `.user-nav .btn.is-active`; kropka `•` przy każdej liście, na której coś gra;
+  - po prawej `■ Zatrzymaj wszystko (N)` — nieaktywny, gdy nic nie gra (D11);
+  - przycisk z kłódką `Odblokuj archiwum` — tylko przy zablokowanym archiwum (dziś stoi pod nawigacją);
+  - ukryty przełącznik języka (rozdz. 8);
+  - plakietka trybu pracy z danymi — na szerokim ekranie w pasku, na wąskim nad nim.
+- **Zakładki:** od 1024 px zawijają się w kolejne wiersze; węziej — jeden wiersz przewijany w bok z przyciąganiem, a aktywna zakładka sama przewija się do widoku.
+- **Siatka kafelków płynna:** `grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr))`. Liczba kolumn wynika z szerokości, bez sztywnych progów: telefon pionowo — 1, telefon poziomo — 2-3, tablet — 3-4, laptop — 5, monitor 1920 px — 7-8. Kolejność kafelków = kolejność na liście (od lewej do prawej, z góry na dół).
+- **Pusty stan:** „Na tej liście nie ma jeszcze dźwięków.”; brak list ulubionych — sama zakładka listy głównej.
+
+Szerokość komputerowa:
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ AUDIO   [Widok główny] [Walka •] [Horror] [Statek] [Ruiny]      [■ Zatrzymaj wszystko (2)]                  │
+├─────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ ┌────────────────────────┐ ┌────────────────────────┐ ┌────────────────────────┐ ┌────────────────────────┐ │
+│ │ ■ Boltgun Reload Full  │ │ ▶ Meltagun Charge      │ │ ■ Bolter Projectile    │ │ … Przykładowy dźwięk   │ │
+│ │   (przeładowanie)      │ │                        │ │   Impact Rock (5)      │ │   (alarm)              │ │
+│ │   WH40k Boltgun        │ │   WH40k Boltgun        │ │   WH40k Boltgun        │ │   PrivateSubFolder     │ │
+│ │ ▓▓▓▓▓▓▓░░░░░░░░░░░     │ │                        │ │ ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░░░     │ │   wczytywanie…         │ │
+│ │ Gł. ━━━●━━ 100%        │ │ Gł. ━━━━●━ 140%        │ │ Gł. ━━●━━━  80%        │ │ Gł. ━━━●━━ 100%        │ │
+│ │         [⟳ Loop]       │ │         [⟳ Loop]       │ │    [⟳ Loop aktywny]    │ │         [⟳ Loop]       │ │
+│ └────────────────────────┘ └────────────────────────┘ └────────────────────────┘ └────────────────────────┘ │
+└─────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+Telefon w pionie:
+
+```text
+┌──────────────────────────────────┐
+│ [Widok główny][Walka •][H› [■ 2] │
+├──────────────────────────────────┤
+│ ┌──────────────────────────────┐ │
+│ │ ■ Bolter Projectile Impact   │ │
+│ │   Rock (szybki) (5)          │ │
+│ │   WH40k Boltgun              │ │
+│ │ ▓▓▓▓▓▓▓▓▓▓░░░░░░░░░░░░░      │ │
+│ │ Gł. ━━━━●━━━━ 100% [⟳ Loop]  │ │
+│ └──────────────────────────────┘ │
+│ ┌──────────────────────────────┐ │
+│ │ ▶ Meltagun Charge            │ │
+│ │   WH40k Boltgun              │ │
+│ │ Gł. ━━━━●━━━━ 100% [⟳ Loop]  │ │
+│ └──────────────────────────────┘ │
+└──────────────────────────────────┘
+```
+
+Legenda: `▶` — gotowy do odtworzenia; `■` — gra (kliknięcie zatrzymuje); `…` — wczytywanie; `▓░` — pasek postępu; `•` na zakładce — na tej liście coś gra; `[■ 2]` — `Zatrzymaj wszystko` z liczbą grających dźwięków. Nazwy dźwięku z archiwum w szkicu są placeholderami.
+
+### 27.4 Kafelek
+
+Każdy kafelek ma dwie strefy:
+
+1. **Strefa odtwarzania** — jeden przycisk obejmujący ikonę, nazwę, alias, `(N)` i tag. Duży cel dotykowy, obsługa klawiatury bez dodatkowego kodu.
+2. **Strefa sterowania** — suwak głośności z wartością i `Loop`. Oddzielona od strefy odtwarzania, więc przesuwanie suwaka nigdy nie uruchamia dźwięku.
+
+Szkic znaczników:
+
+```html
+<!-- Kafelek dźwięku w widoku użytkownika / Sound tile in the user view -->
+<article class="tile" data-key="main|bolter-projectile-impact-rock" data-state="idle">
+  <button class="tile-play" type="button" aria-pressed="false">
+    <span class="tile-icon" aria-hidden="true">▶</span>
+    <span class="tile-title">Bolter Projectile Impact Rock <span class="sample-alias">(szybki)</span> <span class="group-count">(5)</span></span>
+    <span class="tile-tag">WH40k Boltgun</span>
+  </button>
+  <div class="tile-progress" aria-hidden="true"><span></span></div>
+  <div class="tile-controls">
+    <input class="volume-slider" type="range" min="-100" max="100" value="0" aria-label="Głośność: Bolter Projectile Impact Rock">
+    <output class="tile-volume">100%</output>
+    <button class="btn loop-btn" type="button" aria-pressed="false">⟳ Loop</button>
+  </div>
+</article>
+```
+
+Stany kafelka (atrybut `data-state`, odtwarzany po każdym przerysowaniu z mapy odtwarzaczy przypisanych do stałych kluczy — rozdz. 9.5):
+
+| Stan | Ikona | Wygląd | Kiedy |
+| --- | --- | --- | --- |
+| `idle` | ▶ | zwykłe obramowanie | nic nie gra |
+| `loading` | … (pulsuje) | przerywane obramowanie, napis „wczytywanie…” | od kliknięcia do startu dźwięku (podpis bramki, pobranie pliku); drugie kliknięcie anuluje |
+| `playing` | ■ | obramowanie `--danger`, poświata, pasek postępu | dźwięk gra |
+| `playing` + pętla | ■ | jak wyżej, `Loop` czerwony | dźwięk gra w pętli; pasek postępu zaczyna od nowa przy każdym okrążeniu |
+| `missing` | kłódka | przygaszony, „(brak w manifeście)” | dźwięk spoza wczytanego manifestu; kliknięcie otwiera bramkę jak dziś |
+
+Pasek postępu liczony ze zdarzenia `timeupdate` (`currentTime / duration`); gdy czas trwania jest nieznany — pasek pulsuje. Przy `prefers-reduced-motion` pulsowanie jest wyłączone, zostaje stały pasek. Kolor nie jest jedynym sygnałem: zmienia się też ikona i pojawia się pasek.
+
+Nazwa jest ucinana po trzech wierszach (`line-clamp: 3`), pełna nazwa z aliasem jest w dymku. To zmiana wobec `DetaleLayout.md`, który dziś zapisuje „brak clampowania treści w module Audio”.
+
+Zachowania bez zmian: kliknięcie grającego kafelka zatrzymuje dźwięk; `Loop` przy trwającym odtworzeniu przełącza je w pętlę; warianty są losowane z ochroną przed natychmiastową powtórką.
+
+### 27.5 Głośność
+
+- Zakres suwaka bez zmian: `-100..100`, przeliczany na wzmocnienie `0..2`. Kafelek pokazuje wartość w procentach: 0-200%, środek = 100%.
+- Dwuklik (dwutap) na wartości przywraca 100%.
+- Zmiana działa od razu na grający dźwięk i na kolejne okrążenia pętli — jak dziś.
+- **Pamięć głośności na urządzeniu (D13):** `localStorage` `audio.user.volumes`, klucz `listId|itemId`. Poziom jest pamiętany osobno na każdym urządzeniu, bo każde ma inne głośniki; nie trafia do bazy.
+- iPhone i iPad ignorują `audio.volume`, dlatego głośność musi iść przez `GainNode` Web Audio — tak jak dziś. Zapasowa ścieżka `audio.volume` zostaje tylko dla przeglądarek bez `AudioContext`.
+
+### 27.6 Sterowanie całym widokiem
+
+- **`Zatrzymaj wszystko` (D11)** — zatrzymuje wszystkie grające dźwięki na wszystkich listach, także pętle i te „w tle” na innych zakładkach. Ten sam przycisk jest w podglądzie w panelu admina.
+- **Ekran nie gaśnie w trakcie grania (D14)** — `navigator.wakeLock.request("screen")`, gdy gra co najmniej jeden dźwięk; zwolnienie, gdy nic nie gra; ponowne pobranie po powrocie do karty (`visibilitychange`). Przeglądarka bez tego mechanizmu po prostu go pomija.
+- Przełączanie zakładek nie zatrzymuje dźwięków — grają dalej, a kropka na zakładce pokazuje, gdzie wrócić, żeby je zatrzymać.
+
+### 27.7 Urządzenia dotykowe
+
+- Żadna funkcja nie wymaga najechania kursorem.
+- `touch-action: manipulation` na strefie odtwarzania i przyciskach — bez opóźnienia i przybliżania przy szybkim podwójnym dotknięciu.
+- Uchwyt suwaka powiększony do co najmniej 24 px (`::-webkit-slider-thumb`, `::-moz-range-thumb`); przyciski i strefa odtwarzania co najmniej 44×44 px.
+- Pierwsze dotknięcie odblokowuje dźwięk w przeglądarce (`AudioContext.resume()` — jak dziś).
+- Do sprawdzenia w testach: czy przełącznik wyciszenia w iPhonie wycisza dźwięk modułu. Jeżeli tak — dopisać to do README jako podpowiedź „nic nie słychać na iPhonie”.
+
+### 27.8 Klawiatura i dostępność
+
+- Tabulator przechodzi po kafelkach; `Enter` / spacja na strefie odtwarzania przełącza dźwięk (natywny przycisk).
+- Strefa odtwarzania: `aria-pressed` i etykieta „Odtwórz: {nazwa} ({alias})” / „Zatrzymaj: …”.
+- Suwak: `aria-label` z nazwą dźwięku i `aria-valuetext` w procentach.
+- Wyraźne obramowanie fokusu w kolorze `--accent-strong`.
+
+### 27.9 Wygląd
+
+- Paleta modułu bez zmian. Czerwień `--danger` nadal oznacza w kafelkach „gra” (jak dziś tekst i aktywny `Loop`), w pastylkach statusu — wyłącznie błąd.
+- Kafelek: tło `--panel-alt` (`#041b08`), obramowanie `rgba(22, 198, 12, 0.4)`, promień 10 px; stan `playing`: obramowanie `--danger`, poświata `0 0 14px rgba(255, 95, 95, 0.35)`, pasek postępu `--danger` na tle `rgba(255, 95, 95, 0.15)`; stan `loading`: obramowanie przerywane w kolorze `--muted`.
+- Typografia: nazwa 15 px / 600, tag 12 px `--muted`, wartość głośności 12 px.
+- Pasek górny: tło `--panel`, dolna krawędź `rgba(22, 198, 12, 0.6)`.
+- Style widoku użytkownika oparte na zapytaniach kontenerowych (rozdz. 6.7), dzięki czemu podgląd w panelu admina pokazuje dokładnie ten układ przy szerokości tabletu i telefonu.
+- Wszystkie te ustalenia trafiają do `DetaleLayout.md`.
+
+---
+
+## 28. Nowe decyzje D11-D14
+
+| # | Pytanie | Rekomendacja | Alternatywa |
+| --- | --- | --- | --- |
+| D11 | Przycisk `Zatrzymaj wszystko` w widoku użytkownika i w podglądzie? | Tak. | Bez przycisku — zatrzymywanie po jednym kafelku. |
+| D12 | Który tag pokazywać w kafelku? | Drugi poziom folderu (`tag2`, nazwa kolekcji) — jak dziś. | Najgłębszy folder (bardziej szczegółowy, ale w warstwie demo często powtarza nazwę dźwięku). |
+| D13 | Czy pamiętać głośność kafelków? | Tak, osobno na każdym urządzeniu (`localStorage`). | Bez pamięci — 100% po każdym odświeżeniu, jak dziś. |
+| D14 | Czy blokować wygaszanie ekranu? | Tak, automatycznie tylko wtedy, gdy coś gra. | Przełącznik w pasku górnym albo bez blokady. |
+
+---
+
+## 29. Uzupełnienie zakresu prac, testów i ryzyk
+
+### 29.1 Zakres prac
+
+| Etap (rozdz. 21) | Uzupełnienie |
+| --- | --- |
+| 2 — Panel admina | Układ według rozdz. 26: dopracowanie przedziałów ≥ 1280 px, udogodnienia z rozdz. 26.3, poprawne wyświetlanie węższych przedziałów. |
+| 3 — Podgląd | Rozszerzony do **„Widok użytkownika i podgląd”**: nowy układ z rozdz. 27 (pasek górny, zakładki, płynna siatka, kafelek ze stanami, pasek postępu, pamięć głośności, `Zatrzymaj wszystko`, blokada wygaszania ekranu) — ta sama funkcja rysuje prawdziwy widok i podgląd. |
+| 4 — Dokumentacja | `README.md`: nowe opisy widoku użytkownika (zakładki, kafelek, stany, głośność w procentach i jej pamięć, `Zatrzymaj wszystko`, ekran nie gaśnie, podpowiedź o iPhonie, jeżeli test ją potwierdzi). `Documentation.md`: struktura kafelka, stany, klucze odtwarzaczy, pasek postępu, `audio.user.volumes`, wake lock, zapytania kontenerowe. `DetaleLayout.md`: pasek górny, siatka, kafelek, stany, ucinanie nazwy. |
+
+### 29.2 Testy
+
+**Macierz urządzeń dla widoku użytkownika** — na każdym: zmiana listy, odtworzenie i zatrzymanie, `Loop`, suwak, `Zatrzymaj wszystko`, wszystkie sygnały odtwarzania.
+
+| Urządzenie | Rozdzielczość / przeglądarka |
+| --- | --- |
+| Telefon pionowo | 360×800 i 390×844, Chrome na Androidzie, Safari na iPhonie |
+| Telefon poziomo | 800×360 |
+| Tablet | 768×1024 i 1024×768, Safari na iPadzie, Chrome na Androidzie |
+| Laptop | 1366×768 |
+| Monitor | 1920×1080 i 2560×1440 |
+
+**Testy szczegółowe:**
+
+| Test | Oczekiwany wynik |
+| --- | --- |
+| U1 — telefon, długa lista | Zakładki list zawsze u góry ekranu; zmiana listy bez przewijania. |
+| U2 — dotknięcie dowolnego miejsca strefy odtwarzania | Dźwięk startuje; przesunięcie suwaka nie uruchamia dźwięku. |
+| U3 — dźwięk z archiwum | Stan `loading` od razu po dotknięciu, potem `playing` z paskiem postępu; drugie dotknięcie w trakcie wczytywania anuluje start. |
+| U4 / D13 — głośność | Wartość w procentach; po odświeżeniu strony ten sam poziom na tym samym urządzeniu; na innym urządzeniu — 100%. Dwutap na wartości → 100%. |
+| U5 — pętla na liście A, przejście na B i powrót na A | Na zakładce A kropka, po powrocie kafelek w stanie `playing`, jedno dotknięcie zatrzymuje pętlę. |
+| U5 — zmiana listy z drugiego urządzenia w trakcie pętli | Pętla gra dalej i daje się zatrzymać. |
+| U6 / D11 — trzy dźwięki, w tym dwie pętle na różnych listach | `Zatrzymaj wszystko (3)` zatrzymuje wszystkie; przycisk staje się nieaktywny. |
+| U7 — zmiana szerokości okna od 360 do 2560 px | Liczba kolumn rośnie płynnie, kafelki nie są węższe niż ok. 230 px (poza jedną kolumną na telefonie). |
+| D14 — tablet, pętla przez 5 minut | Ekran nie gaśnie; po zatrzymaniu wszystkich dźwięków wygasza się normalnie. |
+| iPhone — suwak głośności | Głośność się zmienia (ścieżka `GainNode`). |
+| iPhone — przełącznik wyciszenia | Wynik zapisany; ewentualna podpowiedź w README. |
+| Ograniczony ruch (`prefers-reduced-motion`) | Brak pulsowania; pasek postępu i ikona nadal pokazują stan. |
+| Czytnik ekranu | Strefa odtwarzania, suwak i `Loop` mają zrozumiałe etykiety i stany. |
+| Podgląd w panelu admina, tryby `Tablet` i `Telefon` | Układ identyczny z prawdziwym widokiem na tych szerokościach. |
+
+**Panel admina:** pełny zestaw testów z rozdz. 14 i 22 na 1920×1080 i 1366×768. Na tablecie i telefonie: każda funkcja dostępna, nic nie wychodzi poza ekran, zakładki `Katalog` / `Listy` / `Podgląd` działają. Test skrótów klawiszowych i zaznaczania zakresu `Shift` + kliknięcie.
+
+### 29.3 Ryzyka
+
+| Ryzyko | Ograniczenie |
+| --- | --- |
+| Blokada wygaszania zużywa baterię | Aktywna tylko wtedy, gdy coś gra (D14); zwalniana od razu po zatrzymaniu. |
+| Zapamiętana cicha głośność zaskoczy na następnej sesji | Wartość w procentach widoczna na kafelku; dwutap przywraca 100%. |
+| Pasek postępu obciąża słabsze urządzenia | `timeupdate` przychodzi kilka razy na sekundę, a zmiana szerokości paska jest tania; bez pętli `requestAnimationFrame` dla każdego kafelka. |
+| Większy zakres prac przez nowy widok użytkownika | Płynna siatka zastępuje sztywne progi, a prawdziwy widok i podgląd korzystają z jednej funkcji — nowy widok nie podwaja pracy. |
+| Na tablecie i telefonie panel admina jest mniej wygodny niż na komputerze | Świadomy wybór (rozdz. 25.2); wszystkie funkcje pozostają dostępne. |
+
+---
+
+## 30. Zaktualizowana gotowość do wdrożenia
+
+**Stan:** decyzje D1-D10 rozstrzygnięte (rozdz. 19). Otwarte są **D11-D14** (rozdz. 28) — każda ma rekomendację; wystarczy odpowiedź „zgodnie z rekomendacją” albo wybór alternatywy. Kod modułu nadal nietknięty.
+
+Po rozstrzygnięciu D11-D14 obowiązuje kolejność z rozdz. 24, z jednym uzupełnieniem: w kroku 4 (odtworzenie list z notatek) sprawdź widok użytkownika co najmniej na jednym telefonie i jednym tablecie według macierzy z rozdz. 29.2.
