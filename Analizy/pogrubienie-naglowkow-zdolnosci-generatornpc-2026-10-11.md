@@ -34,7 +34,7 @@ Do polecenia dołączone były cztery zrzuty ekranu:
 - Skala zjawiska w archiwalnych danych oraz inne miejsca, w których ten sam błąd jest widoczny.
 - Warianty naprawy (bez wdrażania).
 
-**Ograniczenie:** aktualny `Repozytorium.xlsx` ani aktualne dane z Firebase (`/datavault/live`) nie są dostępne z poziomu repozytorium — baza wymaga logowania i App Check. Wpisu LP 180 nie dało się więc obejrzeć bezpośrednio. Wniosek opiera się na: dokładnym dopasowaniu objawów, odtworzeniu mechanizmu na prawdziwym kodzie oraz identycznych przypadkach w archiwalnym pliku XLSX. Rozdział 10 opisuje, jak potwierdzić go na aktualnych danych w minutę.
+**Ograniczenie:** aktualny `Repozytorium.xlsx` ani aktualne dane z Firebase (`/datavault/live`) nie są dostępne z poziomu repozytorium — baza wymaga logowania i App Check. Wpisu LP 180 nie dało się więc obejrzeć bezpośrednio. Wniosek opiera się na: dokładnym dopasowaniu objawów, odtworzeniu mechanizmu na prawdziwym kodzie oraz identycznych przypadkach w archiwalnym pliku XLSX. Jedyną alternatywą, której nie da się wykluczyć bez dostępu do danych, jest nieaktualny import w Firebase — daje on na karcie identyczny obraz. Rozdział 10 opisuje, jak w kilka minut rozstrzygnąć to na aktualnych danych.
 
 ---
 
@@ -62,7 +62,9 @@ W komórce „Rozdzieracz” enter przed „ANIHILACJA” nie jest pogrubiony, w
 
 To nie jest jednorazowy przypadek: ten sam układ występuje w archiwalnym pliku XLSX przy wpisach **Genokrad (LP 43)** i **Karzełkowiec (LP 34)**, a w styczniu 2026 występował przy **Termagancie** — tam usunięto go samą poprawką formatowania w Excelu (rozdz. 7.4).
 
-**Szybka naprawa danych (bez zmian w kodzie):** w Excelu zdjąć pogrubienie z entera przed „ANIHILACJA”, wygenerować dane w DataVault i zaimportować je do Firebase (rozdz. 11). **Trwała naprawa:** uodpornić kod, żeby taki układ nie psuł karty (rozdz. 12).
+Jedyna alternatywa, której nie da się wykluczyć bez wglądu w aktualne dane — nieaktualny import w Firebase (nagłówek pogrubiony w Excelu dopiero po ostatnim imporcie) — daje na karcie dokładnie ten sam obraz. Rozstrzyga ją jedno sprawdzenie z rozdz. 10.
+
+**Szybka naprawa danych (bez zmian w kodzie):** w Excelu zdjąć pogrubienie z entera przed „ANIHILACJA”, wygenerować dane w DataVault i zaimportować je do Firebase (rozdz. 11). **Trwała naprawa:** uodpornić wyświetlanie w GeneratorNPC i DataVault, żeby taki układ nie psuł karty ani tabel (rozdz. 12, wariant B).
 
 ---
 
@@ -228,18 +230,20 @@ W historii `data.json`:
 
 Commit `383907c` zmienił wyłącznie `DataVault/data.json` i dokumentację, bez kodu. Układ poprawiono więc samym przeformatowaniem komórki w Excelu — to potwierdza, że przyczyna leży w formatowaniu komórki i że da się ją usunąć po stronie danych.
 
-### 7.5. Dlaczego problem pojawia się dopiero od kwietnia 2026 w tej postaci
+### 7.5. Zależność od sposobu generowania danych
 
-Do 10 kwietnia 2026 DataVault generował dane starszym mechanizmem (HTML komórek z biblioteki SheetJS), który wstawiał nowe linie **poza** znacznikami. Commit `9398266` (10 kwietnia 2026, „switch UI generation to canonical in-browser XLSX parser”) przełączył generowanie na obecny parser, który owija cały fragment razem z enterami. Wpis Genokrad przed tą zmianą miał postać `…Szarży.\n\n{{B}}DETERMINACJA: Błyskawiczny refleks{{/B}}`, a po niej `…Szarży.\n{{B}}\nDETERMINACJA…`. Ta informacja historyczna wyjaśnia, dlaczego w części starszych notatek przypadki tego typu mogły nie być widoczne; nie zmienia wniosku.
+Wadliwy układ jest w danych od dawna — np. Genokrad ma postać `…Szarży.\n{{B}}\nDETERMINACJA…` we wszystkich zachowanych wersjach `data.json` od 21 stycznia 2026 do 27 kwietnia 2026. Jedyny wyjątek to dwie wersje z 10 kwietnia 2026 (commity `7016010` i `f686eae`), wygenerowane starszym mechanizmem w przeglądarce, który budował znaczniki z HTML komórek (biblioteka SheetJS) i wstawiał nowe linie **poza** znacznikami: tam Genokrad ma postać `…Szarży.\n\n{{B}}DETERMINACJA…`. Commit `9398266` z tego samego dnia („switch UI generation to canonical in-browser XLSX parser”) przełączył generowanie w przeglądarce na obecny parser, który działa tak samo jak `build_json.py` — owija cały fragment razem z enterami.
+
+Wniosek: problem nie jest nowy i nie zależy od tego, którą drogą (przeglądarka czy `build_json.py`) generuje się dziś dane — obie dają ten sam wynik.
 
 ---
 
-## 8. Rozważone i wykluczone hipotezy
+## 8. Rozważone hipotezy
 
 | Hipoteza | Ocena | Uzasadnienie |
 |---|---|---|
 | **Pogrubiony enter przed nagłówkiem w komórce XLSX** | **przyczyna** | Odtwarza dokładnie objaw (ZGUBA pogrubiona, ANIHILACJA nie, na tej samej karcie); ten sam układ potwierdzony w archiwalnym XLSX (Genokrad, Karzełkowiec, wcześniej Termagant) |
-| Nieaktualne dane w Firebase (XLSX poprawiony, ale nie zaimportowany ponownie) | mało prawdopodobna, do wykluczenia jednym spojrzeniem | Daje ten sam objaw tylko wtedy, gdy przy ostatnim imporcie nagłówek był niepogrubiony. Przeglądarka nie przechowuje kopii danych — `loadDataVaultLive` pobiera `/datavault/live` przy każdym wczytaniu, GeneratorNPC trzyma w `localStorage` wyłącznie ulubione. Sposób rozróżnienia: rozdz. 10, krok 2 |
+| Nieaktualne dane w Firebase (nagłówek pogrubiony w XLSX dopiero po ostatnim imporcie) | mniej prawdopodobna, ale **niewykluczalna bez wglądu w dane** | Daje na karcie i w obu tabelach **identyczny** obraz, więc samym wyglądem nie da się jej odróżnić. Mniej prawdopodobna, bo opisany układ formatowania ma w tym skoroszycie potwierdzone wystąpienia (Genokrad, Karzełkowiec, wcześniej Sukkub i Termagant). Przeglądarka nie przechowuje kopii danych — `loadDataVaultLive` pobiera `/datavault/live` przy każdym wczytaniu, GeneratorNPC trzyma w `localStorage` wyłącznie ulubione — więc nieaktualność mogłaby dotyczyć tylko samej bazy. Rozstrzyga surowy tekst wpisu: rozdz. 10, krok 1 i 2 |
 | Karta otwarta z „ulubionych” ze starą kopią tekstu | wykluczona | Ulubione przechowują indeks rekordu, nazwę, nadpisania liczb / Umiejętności / Słów kluczowych, notatki i moduły (`buildFavoritePayload`, `GeneratorNPC/index.html:2531-2566`). „Zdolności” są zawsze czytane z bieżącego rekordu (3024) |
 | Pogrubienie zapisane inaczej niż `<b/>` (np. `<b val="1"/>`, pogrubienie całej komórki w stylu, czcionka typu „Arial Black”) | wykluczona w praktyce | `<b val="1"/>` i `<b val="true"/>` są obsługiwane poprawnie. Pogrubienie całej komórki przy mieszanym formatowaniu nie występuje w plikach zapisanych przez Excel (w archiwalnym pliku: 0 przypadków). Ciężka czcionka bez `<b/>` oznaczałaby wyłączony przycisk „B” w Excelu |
 | Wyrażenie `entryStartRegex` (limit 40 znaków, dwukropek, twarda spacja) | wykluczona | „ANIHILACJA: ” pasuje do wzorca. Gdyby nie pasowało, nagłówek trafiłby do paska ZGUBA razem z `{{B}}` i byłby **pogrubiony** — taka usterka mogłaby problem ukryć, nie wywołać |
@@ -273,7 +277,7 @@ Przeskanowano wszystkie pola tekstowe wszystkich arkuszy prawdziwym kodem render
 
 ### 9.2. Aktualne dane
 
-Aktualny Bestiariusz ma co najmniej 185 wpisów (archiwalny: 66), więc przypadków jest prawdopodobnie więcej niż dwa. W historii archiwalnych wersji błąd dotyczył 2–4 wpisów Bestiariusza na 62–70, co przy obecnej liczbie wpisów daje szacunkowo kilka–kilkanaście wpisów (szacunek orientacyjny). Dokładną listę da skan aktualnego `data.json` (rozdz. 13).
+Aktualny Bestiariusz ma co najmniej 185 wpisów (archiwalny: 66), więc przypadków jest prawdopodobnie więcej niż dwa. W historii archiwalnych wersji błąd dotyczył 2–4 wpisów Bestiariusza na 62–70, co przy obecnej liczbie wpisów daje szacunkowo kilka–kilkanaście wpisów (szacunek orientacyjny). Dokładną listę daje polecenie z rozdz. 10, krok 4.
 
 ### 9.3. Gdzie ten sam błąd jest widoczny
 
@@ -284,96 +288,119 @@ Znaczniki czytają tylko dwa moduły: **GeneratorNPC** i **DataVault**.
 - **DataVault — tabela i widoki szczegółów** (`formatTextHTML`, linia po linii).
 - **Nie dotyczy:** Słowa kluczowe, cechy pancerza i opisy cech pancerza na karcie (formatowane jako jeden napis) oraz pola bez interpretacji znaczników.
 
-Wniosek praktyczny: jeśli hipoteza jest prawdziwa, nagłówek „ANIHILACJA: Protokoły ożywienia” Kanopteka jest **zwykłą czcionką także w tabeli „Podgląd bazowy” w GeneratorNPC i w tabeli Bestiariusza w DataVault**.
+Przy pogrubionym enterze nagłówek „ANIHILACJA: Protokoły ożywienia” Kanopteka jest zwykłą czcionką także w tabeli „Podgląd bazowy” w GeneratorNPC (długa komórka jest zwinięta — trzeba ją rozwinąć napisem „Kliknij aby rozwinąć”) i w tabeli Bestiariusza w DataVault. Ten objaw jest **oczekiwany**, ale sam w sobie niczego nie dowodzi: przy tych samych danych tabela pokazuje nagłówek zwykłą czcionką zawsze wtedy, gdy robi to karta — także wtedy, gdy przyczyną byłby nieaktualny import w Firebase (rozdz. 8 i 10).
+
+Wyjątek, o którym warto wiedzieć: jeśli linia z nagłówkiem **nie** zaczyna nowego paska (np. dwukropek pogrubiony razem ze słowem: `{{B}}\nDETERMINACJA:{{/B}} Wydaj…`), na karcie zostaje doklejona do poprzedniego paska razem z samotnym `{{B}}` i wychodzi **pogrubiona**, a w tabelach — zwykła. Nagłówek „ANIHILACJA: ” zaczyna nowy pasek, więc Kanoptek tego wyjątku nie dotyczy.
 
 ---
 
 ## 10. Jak potwierdzić przyczynę na aktualnych danych
 
-Każdy z poniższych kroków wystarcza osobno.
+**Ważne:** nieaktualne dane w Firebase dają na karcie i w obu tabelach dokładnie ten sam obraz co pogrubiony enter. Dlatego wygląd tabeli „Podgląd bazowy” w GeneratorNPC ani tabeli w DataVault **nie rozstrzyga** przyczyny. Rozstrzyga wyłącznie surowy tekst wpisu — sprawdzany w kroku 1 albo 2.
 
-1. **Tabela podglądu.** W GeneratorNPC wybrać „Kanoptek Skarabeusz” i obejrzeć wiersz „Zdolności” w tabeli „Podgląd bazowy” (kolumny „Klucz” / „Wartość”) albo ten sam wpis w DataVault. Jeśli „ANIHILACJA: Protokoły ożywienia” jest tam również niepogrubiona — przyczyna potwierdzona. Jeśli jest pogrubiona — przyczyna jest inna i analizę trzeba wznowić.
-2. **Plik `data.json`.** W DataVault (tryb admina) kliknąć „Generuj pliki danych”, wskazać aktualny `Repozytorium.xlsx`, otworzyć pobrany `data.json` w edytorze tekstu i wyszukać „Protokoły ożywienia” we wpisie Kanopteka:
-   - `{{B}}\nANIHILACJA` albo `+1.{{B}}\n\nANIHILACJA` — przyczyna potwierdzona (pogrubiony enter);
-   - `\n\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` — dane w XLSX są poprawne, czyli w Firebase są nieaktualne dane i wystarczy ponowny import;
+### Krok 1 — dane, z których korzysta GeneratorNPC (to, co jest dziś w Firebase)
+
+1. Otworzyć DataVault, zalogować się i poczekać, aż dane wczytają się z Firebase. **Nie** klikać „Generuj pliki danych”.
+2. Nacisnąć F12 (narzędzia deweloperskie) i przejść do zakładki „Console”.
+3. Wkleić poniższą linię i nacisnąć Enter:
+
+   ```js
+   JSON.stringify(DB.sheets["Bestiariusz"].find(r => String(r.LP) === "180")["Zdolności"])
+   ```
+
+4. Odczytać znaki tuż przed słowem „ANIHILACJA”:
+   - `{{B}}\nANIHILACJA` albo `+1.{{B}}\n\nANIHILACJA` — **przyczyna potwierdzona**: w danych pogrubienie obejmuje enter;
+   - przed „ANIHILACJA” nie ma `{{B}}` — w Firebase nagłówek nie jest pogrubiony, czyli dane są nieaktualne (albo pogrubienie w Excelu nie jest zwykłym pogrubieniem); przejść do kroku 2;
+   - `\n\n{{B}}ANIHILACJA` — wynik sprzeczny z odtworzeniem (karta byłaby pogrubiona); analizę trzeba wznowić.
+
+   Jeśli polecenie zwróci błąd (np. inna nazwa arkusza lub kolumny), wystarczy krok 2.
+
+### Krok 2 — aktualny plik XLSX (czy wystarczy ponowny import)
+
+1. W DataVault (tryb admina) kliknąć „Generuj pliki danych” i wskazać aktualny `Repozytorium.xlsx`.
+2. Otworzyć pobrany `data.json` w edytorze tekstu i wyszukać „Protokoły ożywienia” we wpisie Kanopteka:
+   - `{{B}}\nANIHILACJA` albo `+1.{{B}}\n\nANIHILACJA` — pogrubiony enter jest w samej komórce Excela; **sam ponowny import nie pomoże**, trzeba poprawić komórkę (rozdz. 11) albo kod (rozdz. 12);
+   - `\n\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` — komórka jest poprawna, a Firebase ma nieaktualne dane; **wystarczy zaimportować** nowy `firebase-import.json`;
    - brak `{{B}}` przy nagłówku — pogrubienie w Excelu nie jest zwykłym pogrubieniem (bardzo mało prawdopodobne).
 
-   W `firebase-import.json` ten sam tekst jest zapisany z podwójnym ukośnikiem: `{{B}}\\nANIHILACJA`.
-3. **Excel.** Wejść w edycję komórki (F2), ustawić kursor tuż przed literą „A” w „ANIHILACJA” i nacisnąć Shift+Strzałka w lewo (zaznacza się enter). Jeśli przycisk „Pogrubienie” (B) na wstążce jest podświetlony — enter jest pogrubiony.
+   W `firebase-import.json` ten sam tekst ma podwójne ukośniki: `{{B}}\\nANIHILACJA`.
+
+Szybsza odmiana bez otwierania pliku: zaraz po „Generuj pliki danych”, **przed** odświeżeniem strony, DataVault pokazuje dane świeżo wygenerowane z pliku. Jeśli w tym momencie „ANIHILACJA” w Bestiariuszu (LP 180) jest zwykłą czcionką — enter jest pogrubiony w Excelu; jeśli jest pogrubiona — Firebase ma nieaktualne dane. Po odświeżeniu DataVault znów pokazuje dane z Firebase.
+
+### Krok 3 — Excel (opcjonalnie)
+
+Wejść w edycję komórki (F2), ustawić kursor tuż przed literą „A” w „ANIHILACJA” i nacisnąć Shift+Strzałka w lewo (zaznacza się enter). Jeśli przycisk „Pogrubienie” (B) na wstążce jest podświetlony — enter jest pogrubiony. (Tego kroku nie dało się sprawdzić w trakcie analizy — brak Excela.)
+
+### Krok 4 — lista wszystkich wpisów z tym samym problemem
+
+W DataVault po wczytaniu danych (jak w kroku 1) wkleić w konsoli:
+
+```js
+(() => { const re = /\{\{(?:RED|B|I|S)\}\}(?:[ \t]*\r?\n)+/; const hits = []; for (const [sheet, rows] of Object.entries(DB.sheets)) rows.forEach((r) => { for (const [kolumna, v] of Object.entries(r)) if (typeof v === "string" && re.test(v)) hits.push({ sheet, LP: r.LP, Nazwa: r.Nazwa, kolumna }); }); console.table(hits); })();
+```
+
+Polecenie tylko czyta dane i wypisuje tabelę: arkusz, LP, nazwa, kolumna — dla każdego pola, w którym znacznik otwierający stoi tuż przed enterem. Na archiwalnych danych zwraca 5 pozycji: Karzełkowiec, Genokrad, „Słowa Kluczowe Frakcji” LP 11 (Opis, Efekt) oraz „Specjalne Bonusy Frakcji” LP 15 Kamuflaż (ten ostatni jest nieszkodliwy — pogrubiony jest sam enter, bez tekstu). Nie wyłapuje przypadku, w którym pogrubiony tekst ciągnie się przez dwie linie (Talenty LP 45).
 
 ---
 
 ## 11. Naprawa danych bez zmian w kodzie (do wykonania od razu)
 
-1. Otworzyć `Repozytorium.xlsx`, arkusz „Bestiariusz”, komórkę „Zdolności” wpisu „Kanoptek Skarabeusz”.
-2. Wejść w edycję komórki (F2 albo dwuklik).
-3. Zaznaczyć **tylko** pustą linię nad „ANIHILACJA” razem z enterami (np. kursor na końcu linii „…o +1.”, potem Shift+Strzałka w prawo dwa razy) i zdjąć pogrubienie (Ctrl+B — tak, by przycisk B zgasł).
-4. Upewnić się, że sam nagłówek „ANIHILACJA: Protokoły ożywienia” nadal jest pogrubiony.
-5. Zapisać plik. W DataVault kliknąć „Generuj pliki danych”, wskazać zapisany plik, a pobrany `firebase-import.json` zaimportować do Firebase Realtime Database (tak samo jak przy każdej aktualizacji).
-6. Odświeżyć GeneratorNPC i wygenerować kartę ponownie.
+1. Otworzyć `Repozytorium.xlsx`, arkusz „Bestiariusz”, komórkę „Zdolności” (kolumna U) wpisu „Kanoptek Skarabeusz”.
+2. Wejść w edycję komórki (F2 albo dwuklik; pasek formuły można rozwinąć Ctrl+Shift+U).
+3. Ustawić kursor zaraz za kropką w „…Cechę Wybuchowa o +1.” i nacisnąć Shift+Strzałka w prawo tyle razy, ile jest enterów przed „ANIHILACJA” (zwykle 2), tak aby zaznaczone były **tylko** entery, bez litery „A”.
+4. Zdjąć pogrubienie z zaznaczenia (przycisk B albo Ctrl+B — tak, by przycisk B zgasł).
+5. Sprawdzić, że sam nagłówek „ANIHILACJA: Protokoły ożywienia” nadal jest pogrubiony. Dla porządku można tak samo zdjąć pogrubienie z entera tuż za „Protokoły ożywienia” (on akurat nie szkodzi).
+6. Zatwierdzić Enterem i zapisać plik. W DataVault kliknąć „Generuj pliki danych”, wskazać zapisany plik, a pobrany `firebase-import.json` zaimportować do Firebase Realtime Database (tak samo jak przy każdej aktualizacji).
+7. Odświeżyć GeneratorNPC, wybrać Kanopteka z listy i wygenerować kartę ponownie.
 
-Tak samo należy poprawić Genokrada (LP 43) i Karzełkowca (LP 34), jeśli w aktualnym pliku nadal mają ten układ, oraz pozostałe wpisy wskazane przez skan (rozdz. 13).
+Tak samo należy poprawić pozostałe wpisy wskazane w rozdz. 10, krok 4 (w archiwalnych danych: Genokrad LP 43, Karzełkowiec LP 34, Aeldari w „Słowach Kluczowych Frakcji” LP 11).
 
-Wada tej drogi: Excel nie pokazuje problemu, więc przy kolejnych edycjach układ może pojawić się ponownie. Dlatego rekomendowana jest też poprawka w kodzie (rozdz. 12).
+Wada tej drogi: Excel nie pokazuje problemu i nie umie wyszukiwać formatowania pojedynczych znaków, więc przy kolejnych edycjach układ może pojawić się ponownie. Dlatego rekomendowana jest też poprawka w kodzie (rozdz. 12).
 
 ---
 
 ## 12. Warianty trwałej naprawy w kodzie
 
-Żaden z wariantów nie został wdrożony. Prototypy sprawdzono wyłącznie poza repozytorium.
+Żaden z wariantów nie został wdrożony. Prototypy sprawdzono wyłącznie poza repozytorium, na prawdziwych funkcjach wyciętych ze źródeł i na archiwalnym skoroszycie.
 
 ### Wariant A — tylko dane (Excel)
 
-Opisany w rozdz. 11. Nie wymaga zmian w kodzie, ale nie chroni przed ponownym wystąpieniem problemu: Excel go nie pokazuje, więc ten sam układ może powstać przy każdej edycji.
+Opisany w rozdz. 11. Nie wymaga zmian w kodzie, ale nie chroni przed ponownym wystąpieniem problemu.
 
-### Wariant B — wyrównanie znaczników przy wyświetlaniu (GeneratorNPC i DataVault) — **rekomendowany**
+### Wariant B — przeniesienie enterów poza znaczniki przy wyświetlaniu (GeneratorNPC i DataVault) — **rekomendowany**
 
-**Idea:** przed podziałem tekstu na linie / paski przejść przez cały napis, śledząc otwarte znaczniki, i przy każdym znaku nowej linii zamknąć wszystkie otwarte style, a po nim otworzyć je ponownie. Każda linia staje się samowystarczalna, więc dzielenie na linie i paski przestaje gubić formatowanie.
-
-Przykład działania:
+**Idea:** zanim tekst zostanie podzielony na linie lub paski, przesunąć znacznik otwierający **za** entery stojące tuż po nim, a znacznik zamykający **przed** entery stojące tuż przed nim. Styl nigdy nie zostaje rozszerzony na nowy tekst — zmienia się tylko to, po której stronie entera stoi znacznik.
 
 ```
 przed: …o +1.\n{{B}}\nANIHILACJA: Protokoły ożywienia{{/B}}\nKiedy…
-po:    …o +1.\n{{B}}{{/B}}\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}\nKiedy…
+po:    …o +1.\n\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}\nKiedy…
 ```
 
-Linia `{{B}}{{/B}}` nie zawiera tekstu, więc nic nie wyświetla. Linia z nagłówkiem ma pełną parę znaczników i zaczyna nowy pasek jak dotąd.
+To dokładnie ten tekst, który powstałby z poprawnie sformatowanej komórki (jak u Rozdzieracza).
 
-**Szkic funkcji pomocniczej** (do wstawienia osobno w `GeneratorNPC/index.html` i `DataVault/app.js`, zgodnie z obecnym podejściem, w którym każdy moduł ma własną kopię funkcji formatujących):
+**Szkic funkcji** (osobna kopia w `GeneratorNPC/index.html` i w `DataVault/app.js` — tak jak dziś każdy z modułów ma własne `formatInlineHTML` / `formatTextHTML`):
 
 ```js
-// --- Wyrównanie znaczników na granicach linii / Rebalance markers at line breaks ---
-// PL: Zamyka style otwarte przed każdym "\n" i otwiera je ponownie po nim, żeby każda linia miała
-//     komplet znaczników. Chroni przed pogrubieniem obejmującym enter (np. "{{B}}\nNAGŁÓWEK{{/B}}"),
-//     które przy formatowaniu linia po linii gubiło styl nagłówka.
-// EN: Closes styles still open before every "\n" and re-opens them after it, so every line carries
-//     a complete marker set. Protects against bold spanning a line break (e.g. "{{B}}\nHEADER{{/B}}"),
-//     which made per-line formatting drop the header style.
-const balanceMarkersPerLine = (raw) => {
-  const s = String(raw ?? "");
-  const re = /{{(\/?)(RED|B|I|S)}}|\r?\n/g;
-  const stack = [];
-  let out = "";
-  let cursor = 0;
-  let m;
-  while ((m = re.exec(s))) {
-    out += s.slice(cursor, m.index);
-    cursor = re.lastIndex;
-    if (m[0].endsWith("\n")) {
-      const closers = [...stack].reverse().map((n) => `{{/${n}}}`).join("");
-      const openers = stack.map((n) => `{{${n}}}`).join("");
-      out += closers + m[0] + openers;
-      continue;
-    }
-    if (m[1]) {
-      const i = stack.lastIndexOf(m[2]);
-      if (i !== -1) stack.splice(i, 1);
-    } else {
-      stack.push(m[2]);
-    }
-    out += m[0];
-  }
-  return out + s.slice(cursor);
+// --- Przeniesienie enterów poza znaczniki stylu / Move line breaks out of style markers ---
+// PL: Przesuwa znaczniki otwierające za entery stojące tuż po nich, a zamykające przed entery stojące
+//     tuż przed nimi. Dzięki temu pogrubienie obejmujące w XLSX enter przed nagłówkiem
+//     ("{{B}}\nNAGŁÓWEK{{/B}}") nie gubi się przy formatowaniu linia po linii. Styl nigdy nie
+//     obejmuje nowego tekstu, więc nie ma ryzyka „rozlania” pogrubienia.
+// EN: Moves opening markers past the line breaks right after them and closing markers before the line
+//     breaks right before them. Bold that in the XLSX includes the line break before a header
+//     ("{{B}}\nHEADER{{/B}}") is therefore no longer lost by per-line formatting. A style never
+//     covers new text, so bold cannot leak.
+const moveLineBreaksOutOfMarkers = (raw) => {
+  let s = String(raw ?? "");
+  if (!s.includes("{{")) return s;
+  const openersBeforeBreak = /((?:\{\{(?:RED|B|I|S)\}\})+)((?:[ \t]*\r?\n)+)/g;
+  const closersAfterBreak = /((?:\r?\n[ \t]*)+)((?:\{\{\/(?:RED|B|I|S)\}\})+)/g;
+  let previous;
+  do {
+    previous = s;
+    s = s.replace(openersBeforeBreak, "$2$1").replace(closersAfterBreak, "$2$1");
+  } while (s !== previous);
+  return s;
 };
 ```
 
@@ -381,46 +408,91 @@ const balanceMarkersPerLine = (raw) => {
 
 | Moduł | Funkcja | Zmiana |
 |---|---|---|
-| GeneratorNPC | `splitEntries` (`index.html:2269`) | `const value = balanceMarkersPerLine(String(raw ?? ""));` zamiast `String(raw ?? "")` — naprawia paski karty (Premie, Zdolności, Atak, Zdolności Hordy, Opcje Hordy, moduły) |
-| GeneratorNPC | `formatTextHTML` (`index.html:1171`) | podział `balanceMarkersPerLine(s).split(/\r?\n/)` — naprawia „Podgląd bazowy”, tabele modułów i sekcję Umiejętności na karcie |
-| DataVault | `formatTextHTML` (`app.js:908`) | jak wyżej — naprawia tabelę, okienko opisu cechy i widok porównania (wszystkie korzystają z `formatTextHTML`) |
-| DataVault | `formatFactionKeywordHTML` (`app.js:970`) | jak wyżej — ten sam podział linia po linii w arkuszu „Słowa Kluczowe Frakcji” |
+| GeneratorNPC | `splitEntries` (`index.html:2269`) | `const value = moveLineBreaksOutOfMarkers(raw);` zamiast `String(raw ?? "")` — paski karty (Premie, Zdolności, Atak, Zdolności Hordy, Opcje Hordy, moduły) |
+| GeneratorNPC | `formatTextHTML` (`index.html:1171`) | `const s = moveLineBreaksOutOfMarkers(raw);` — „Podgląd bazowy”, tabele modułów, sekcja Umiejętności na karcie |
+| DataVault | `formatTextHTML` (`app.js:908`) | jak wyżej — tabela, okienko opisu cechy, widok porównania (wszystkie korzystają z `formatTextHTML`) |
+| DataVault | `formatFactionKeywordHTML` (`app.js:970`) | jak wyżej — arkusz „Słowa Kluczowe Frakcji” |
 
-**Sprawdzenie prototypu na archiwalnych danych (1245 pól ze znacznikami):**
+**Sprawdzenie na archiwalnych danych (1245 pól ze znacznikami):**
 
-- formatowanie linia po linii (`formatTextHTML`): HTML zmienia się w **dokładnie 5 polach** — tych z wadą z rozdz. 9.1 — i w każdym z nich odzyskuje utracone pogrubienie lub kursywę;
-- karta GeneratorNPC: wygląd widocznych znaków zmienia się w **dokładnie 2 polach** (Karzełkowiec, Genokrad — odzyskane pogrubienie nagłówków); w pozostałych 50 polach z parą obejmującą enter zmienia się wyłącznie styl spacji (niewidoczny), a liczba pasków pozostaje taka sama;
-- warianty Kanopteka z pogrubionym enterem przed nagłówkiem dają po zmianie pogrubiony nagłówek; warianty poprawne (Rozdzieracz) pozostają bez zmian.
+- warianty Kanopteka z pogrubionym enterem przed nagłówkiem (jednym lub dwoma) dają pogrubiony nagłówek; wariant poprawny (Rozdzieracz) pozostaje bez zmian;
+- karta GeneratorNPC: wygląd widocznych znaków zmienia się w **dokładnie 2 polach** (Karzełkowiec, Genokrad — odzyskane pogrubienie); liczba pasków nie zmienia się w żadnym polu;
+- formatowanie linia po linii: zmiana w **dokładnie 4 polach** (Karzełkowiec, Genokrad, „Słowa Kluczowe Frakcji” LP 11 Opis i Efekt — odzyskane pogrubienie i kursywa);
+- funkcja jest idempotentna (drugie wywołanie nic nie zmienia), a na danych już poprawionych w Excelu lub parserze nic nie zmienia;
+- wynik wyświetlania jest identyczny z wynikiem poprawki w parserach (wariant D) — 0 różnic na archiwalnych danych.
 
-**Zalety:** naprawia wyświetlanie od razu, także dla danych już zaimportowanych do Firebase — bez ponownego generowania i importu. Nie dotyka parserów DataVault ani struktury danych, czyli obszaru szczególnie chronionego przez AGENTS.md (punkt 14). Chroni również przed przyszłymi przypadkami.
+**Zalety:** działa od razu, także na danych już zaimportowanych do Firebase — bez ponownego generowania i importu. Nie dotyka parserów DataVault ani struktury danych (obszar szczególnie chroniony przez AGENTS.md, punkt 14). Nie może rozszerzyć stylu na tekst, który nie był sformatowany.
 
-**Wady:** dwie kopie tej samej funkcji (GeneratorNPC i DataVault) trzeba utrzymywać zgodnie. W danych nadal zostaje „nieestetyczny” układ znaczników — nie ma to skutków widocznych.
+**Ograniczenia:**
 
-### Wariant C — normalizacja w parserach DataVault
+- nie poprawia przypadku, w którym pogrubiony fragment ma tekst w dwóch liniach (Talenty LP 45: druga linia traci pogrubienie w tabelach) — to robi dopiero wariant C;
+- jeśli pogrubienie obejmowałoby enter przed linią przypisu `*[n] …`, po poprawce linia zaczynałaby się od `{{B}}` i nie byłaby rozpoznana jako przypis (to samo ograniczenie dotyczy dziś poprawnie pogrubionych linii `{{B}}*[n]…`; w archiwalnych danych brak takich przypadków);
+- dwie kopie funkcji w dwóch modułach trzeba utrzymywać zgodnie.
 
-**Idea:** w `wrapWithMarkers` (`xlsxCanonicalParser.js:57`) i `_wrap_with_markers` (`build_json.py:82`) nie obejmować znakami `{{…}}` znaków nowej linii — zamykać i otwierać znaczniki wokół każdego `\n` wewnątrz fragmentu albo wynosić początkowe i końcowe białe znaki poza znaczniki.
+### Wariant C — pełne wyrównanie znaczników w każdej linii (rozszerzenie wariantu B)
 
-**Zalety:** czyste dane dla każdego odbiorcy, także przyszłego.
+**Idea:** przy każdym enterze zamknąć wszystkie style otwarte, a po nim otworzyć je ponownie. Każda linia dostaje komplet znaczników, więc poprawny jest także przypadek z tekstem w dwóch liniach (Talenty LP 45).
 
-**Wady i ryzyka:**
+**Sprawdzenie (prosta wersja jednoprzebiegowa):** formatowanie linia po linii zmienia się w dokładnie 5 polach (4 z wariantu B + Talenty LP 45), karta — w tych samych 2 polach co w wariancie B.
 
-- zmiana w plikach chronionych przez AGENTS.md (punkt 14): obie implementacje muszą dawać bajtowo identyczny wynik, a wynik trzeba porównać na całym skoroszycie;
-- zmienia surową treść wielu pól (w archiwalnych danych co najmniej 52 pola z parą obejmującą enter; przy wynoszeniu białych znaków — więcej), także tam, gdzie dziś nic nie jest zepsute;
-- działa dopiero po ponownym wygenerowaniu danych i imporcie do Firebase;
-- sam w sobie nie poprawia już zaimportowanych danych.
+**Ryzyko:** w prostej wersji niedomknięty znacznik (wpisany ręcznie w XLSX) rozlałby styl na wszystkie kolejne linie — dziś działa tylko do końca linii. Wersja dwuprzebiegowa (przenosi do następnej linii tylko style, które zostaną dalej zamknięte) usuwa to ryzyko; jej prototyp dał wynik identyczny z parserem dzielącym fragmenty na linie. Więcej kodu w czterech funkcjach; potrzebne tylko wtedy, gdy wieloliniowe formatowanie ma być odwzorowane linia po linii.
 
-### Dodatkowa, niezależna decyzja — `entryStartRegex` ignorujący znaczniki
+### Wariant D — normalizacja w parserach DataVault
 
-Sprawdzanie początku paska na tekście bez znaczników (`entryStartRegex.test(line.replace(/{{\/?(?:RED|B|I|S)}}/g, ""))`) usunęłoby usterkę z rozdz. 14 pkt 1 (pogrubiony dwukropek skleja paski). To **zmiana widoczna** — część kart dostałaby więcej pasków — więc wymaga osobnej decyzji i nie jest potrzebna do naprawy pogrubienia.
+**Idea:** w `richTextToString` (`xlsxCanonicalParser.js:69-87`) i `_rich_text_to_string` (`build_json.py:94-111`) przed owinięciem fragmentu znacznikami wynieść poza znaczniki entery z początku i końca fragmentu (razem ze stykającymi się z nimi spacjami i tabulatorami), a fragmentów złożonych z samych białych znaków nie owijać wcale.
+
+Prototyp funkcji dla przeglądarki (Python — ta sama logika jako `_split_run_edges`):
+
+```js
+// --- Podział fragmentu na brzegowe entery i treść / Split a run into edge line breaks and content ---
+function splitRunEdges(text){
+  const isWs = (ch)=>ch === " " || ch === "\t" || ch === "\r" || ch === "\n";
+  const isBreak = (ch)=>ch === "\r" || ch === "\n";
+  let headEnd = 0;
+  while (headEnd < text.length && isWs(text[headEnd])) headEnd += 1;
+  if (headEnd === text.length) return null;
+  let leadEnd = 0;
+  for (let i = 0; i < headEnd; i += 1){ if (isBreak(text[i])) leadEnd = i + 1; }
+  let tailStart = text.length;
+  while (tailStart > 0 && isWs(text[tailStart - 1])) tailStart -= 1;
+  let trailStart = text.length;
+  for (let i = tailStart; i < text.length; i += 1){ if (isBreak(text[i])){ trailStart = i; break; } }
+  return {lead: text.slice(0, leadEnd), core: text.slice(leadEnd, trailStart), trail: text.slice(trailStart)};
+}
+// W richTextToString zamiast parts.push(wrapWithMarkers(text, {...})):
+//   const edges = splitRunEdges(text);
+//   if (!edges){ parts.push(text); continue; }
+//   parts.push(`${edges.lead}${wrapWithMarkers(edges.core, {red, bold, italic, strike})}${edges.trail}`);
+```
+
+**Wyniki prototypu:**
+
+- na archiwalnym skoroszycie zmienia się 51 pól (Premie Frakcji 40, Słowa Kluczowe Frakcji 8, Bestiariusz 2, Specjalne Bonusy Frakcji 1); widoczny tekst jest identyczny we wszystkich, `_meta` bez zmian;
+- wersja przeglądarkowa i `build_json.py` dają bajtowo identyczny wynik na archiwalnym skoroszycie, na dwóch skoroszytach z przypadkami brzegowymi i na 30 000 losowych napisów;
+- wszystkie widoczne zmiany wyświetlania to naprawy (Genokrad, Karzełkowiec, Aeldari) — bez regresji.
+
+**Warunki i ryzyka:**
+
+- zmianę trzeba wprowadzić **tylko** dla fragmentów rich text, a nie we wspólnej funkcji `wrapWithMarkers` — ta obsługuje też czerwone komórki bez fragmentów; zmiana tam zamieniłaby czerwoną komórkę z samą spacją w pusty tekst i zmieniła czerwone komórki zaczynające się lub kończące enterem;
+- odrzucone odmiany: wynoszenie samych `\n` (nie łapie ` \n\nANIHILACJA`), wynoszenie wszystkich białych znaków (zmienia podział na paski, np. `{{B}}bagnet: {{/B}}5 + 2 DK` → `{{B}}bagnet:{{/B}} 5 + 2 DK` w kolumnie Atak), samo pomijanie fragmentów z białych znaków (nie naprawia błędu);
+- fragment złożony z samej spacji traci styl — czerwona lub przekreślona spacja między słowami przestałaby być czerwona / przekreślona (w archiwalnych danych brak);
+- nazwy cech i stanów w `_meta` mogłyby się zmienić, gdyby komórka „Nazwa” zaczynała się lub kończyła sformatowanym enterem (w archiwalnych danych brak — sprawdzić na aktualnym pliku);
+- działa dopiero po „Generuj pliki danych” i imporcie do Firebase;
+- dotyczy plików chronionych przez AGENTS.md (punkt 14): przed wdrożeniem trzeba uruchomić obie wersje na aktualnym `Repozytorium.xlsx`, porównać pliki `data.json` bajt w bajt i porównać pole po polu stary i nowy `data.json` (oczekiwane: wyłącznie przesunięcia znaczników).
 
 ### Rekomendacja
 
-1. **Wariant B** jako trwała poprawka w GeneratorNPC i DataVault.
-2. **Wariant A** dla Kanopteka (i pozostałych wpisów ze skanu), jeśli poprawka w kodzie ma poczekać — albo po prostu dla porządku w danych.
-3. Wariant C nie jest potrzebny, jeśli wdrożony zostanie wariant B.
-4. Niezależnie od wybranego wariantu dopisać w `DataVault/docs/ZasadyFormatowania.md` (tabela „Typowe błędy w danych źródłowych”) wiersz o pogrubionym enterze przed nagłówkiem.
+1. **Wariant B** w GeneratorNPC i DataVault jako trwała poprawka: działa od razu na istniejących danych, nie wymaga importu, nie dotyka parserów i nie może rozlać stylu.
+2. **Wariant A** dla Kanopteka i pozostałych wpisów z listy z rozdz. 10, krok 4 — dla porządku w danych źródłowych (po wdrożeniu B nie jest konieczny).
+3. **Wariant D** jest poprawną alternatywą „u źródła” (czyste dane dla każdego przyszłego odbiorcy), ale wymaga pełnego porównania wyników obu parserów i ponownego importu. Jeśli zostanie wdrożony później, wariant B pozostaje nieszkodliwy (na poprawionych danych nic nie zmienia).
+4. **Wariant C** tylko wtedy, gdy wieloliniowe formatowanie (jak Talenty LP 45) ma być odwzorowane linia po linii — i wtedy w wersji dwuprzebiegowej.
+5. Niezależnie od wyboru dopisać w `DataVault/docs/ZasadyFormatowania.md` (tabela „Typowe błędy w danych źródłowych”) wiersz: pogrubiony enter przed nagłówkiem → nagłówek traci pogrubienie na karcie i w tabelach → zdjąć pogrubienie z entera.
 
-Przy wdrożeniu wariantu B należy — zgodnie z AGENTS.md — zaktualizować `GeneratorNPC/docs/Documentation.md`, `GeneratorNPC/docs/README.md`, `DataVault/docs/Documentation.md`, `DataVault/docs/README.md` oraz w `DataVault/docs/ZasadyFormatowania.md` rozdział „Zachowanie podziałów linii”. `DetaleLayout.md` nie wymaga zmian: style (kolory, fonty, odstępy) się nie zmieniają, zmienia się tylko to, czy klasa `.inline-bold` trafia na właściwy tekst.
+Dokumentacja do aktualizacji przy wdrożeniu (zgodnie z AGENTS.md):
+
+- wariant B lub C: `GeneratorNPC/docs/Documentation.md`, `GeneratorNPC/docs/README.md`, `DataVault/docs/Documentation.md`, `DataVault/docs/README.md`, `DataVault/docs/ZasadyFormatowania.md` (rozdział „Zachowanie podziałów linii”);
+- wariant D: `DataVault/docs/Documentation.md` (parser, zgodność JS/Python), `DataVault/docs/README.md`, `DataVault/docs/ZasadyFormatowania.md` (rozdział „Rich text z XLSX”);
+- `DetaleLayout.md` nie wymaga zmian w żadnym wariancie: kolory, fonty, odstępy i klasy CSS pozostają te same.
 
 ---
 
@@ -428,19 +500,20 @@ Przy wdrożeniu wariantu B należy — zgodnie z AGENTS.md — zaktualizować `G
 
 | Ryzyko | Ocena | Ograniczenie |
 |---|---|---|
-| Wniosek oparty na danych archiwalnych, nie na aktualnym wpisie LP 180 | niskie — mechanizm odtworzony 1:1, objaw identyczny | potwierdzenie w minutę według rozdz. 10 |
-| Nieaktualne dane w Firebase jako druga, nakładająca się przyczyna | niskie | rozdz. 10 krok 2 rozróżnia oba przypadki |
-| Naprawa tylko w Excelu wróci przy kolejnych edycjach | średnie | wariant B w kodzie |
-| Wariant B: rozbieżność kopii funkcji w dwóch modułach | niskie | ta sama funkcja i te same testy w obu modułach; opis w `Documentation.md` obu modułów |
-| Wariant B: celowo niedomknięty znacznik wpisany ręcznie w XLSX rozleje się na kolejne linie (dziś działa tylko do końca linii) | niskie — w archiwalnych danych 0 niedomkniętych znaczników | zalecenie z `ZasadyFormatowania.md`: domykać znaczniki |
-| Wariant C: zmiana generowanych danych i konieczność importu | średnie | nie wdrażać, jeśli wdrożony jest wariant B; w przeciwnym razie pełne porównanie wyników obu parserów |
+| Wniosek oparty na danych archiwalnych, nie na aktualnym wpisie LP 180 | niskie — mechanizm odtworzony 1:1 na prawdziwym kodzie, objaw identyczny | rozstrzyga rozdz. 10, krok 1 lub 2 |
+| Nieaktualny import w Firebase jako przyczyna albo druga, nakładająca się przyczyna | niskie, ale niewykluczalne bez dostępu do danych | rozdz. 10, krok 1 i 2 rozróżniają oba przypadki; przy nieaktualnych danych wystarczy ponowny import |
+| Naprawa tylko w Excelu wróci przy kolejnych edycjach | średnie | wariant B |
+| Wariant B: rozbieżność kopii funkcji w dwóch modułach | niskie | ta sama funkcja i te same przypadki testowe w obu modułach; opis w `Documentation.md` obu modułów |
+| Wariant B: linia przypisu `*[n]` poprzedzona pogrubionym enterem przestaje być rozpoznawana jako przypis | bardzo niskie (brak przypadków w archiwalnych danych) | wariant A dla takiej komórki |
+| Wariant C (wersja prosta): niedomknięty, ręcznie wpisany znacznik rozlewa styl na kolejne linie | niskie (0 niedomkniętych znaczników w archiwalnych danych) | wersja dwuprzebiegowa |
+| Wariant D: zmiana generowanych danych, konieczność importu, zmiana plików chronionych | średnie | pełne porównanie wyników obu parserów przed wdrożeniem; nie jest potrzebny, jeśli wdrożony zostanie wariant B |
 
 ---
 
 ## 14. Obserwacje poboczne (niezwiązane bezpośrednio z pogrubieniem ANIHILACJI)
 
-1. **Dwukropek wewnątrz pogrubienia skleja paski.** `entryStartRegex` (`GeneratorNPC/index.html:2274-2275`) nie pomija znaczników. Linia `{{B}}DETERMINACJA:{{/B}} Wydaj…` (dwukropek pogrubiony razem ze słowem) nie zaczyna nowego paska, bo po dwukropku stoi `{{`, a nie spacja — trafia do poprzedniego paska. Pogrubienie działa, ale podział na paski jest błędny. Na kartach ze zrzutów ekranu ten przypadek nie występuje (DETERMINACJA ma osobny pasek), więc w aktualnych danych dwukropek przy DETERMINACJI najpewniej nie jest pogrubiony.
-2. **Opis cechy w okienku podpowiedzi pokazuje surowe znaczniki.** `popoverDescription.textContent = resolveTraitDescription(traitName)` (`GeneratorNPC/index.html:3469`) wstawia opis cechy bez interpretacji znaczników, więc np. „[{{B}}Podręcznik Główny{{/B}} (str. 189)]” byłoby widoczne dosłownie (wniosek z kodu, nie sprawdzono w przeglądarce).
+1. **Dwukropek wewnątrz pogrubienia skleja paski.** `entryStartRegex` (`GeneratorNPC/index.html:2274-2275`) nie pomija znaczników. Linia `{{B}}DETERMINACJA:{{/B}} Wydaj…` (dwukropek pogrubiony razem ze słowem) nie zaczyna nowego paska, bo po dwukropku stoi `{{`, a nie spacja — trafia do poprzedniego paska. Pogrubienie działa, ale podział na paski jest błędny. To samo dotyczy linii typu `{{B}}Monstrualne tnące pazury{{/B}}: 15 + 4 DK` (dwukropek poza pogrubieniem, ale tuż za znacznikiem). Na kartach ze zrzutów ekranu DETERMINACJA ma osobny pasek, więc w aktualnych danych tych wpisów ten przypadek nie dotyczy. Sprawdzanie początku paska na tekście bez znaczników usunęłoby usterkę, ale to **zmiana widoczna**: w archiwalnych danych inaczej podzieliłoby się 6 pól (Bestiariusz: Zwiadowca Skitarii LP 51, Karnifeks LP 65, Psychneuein LP 66; Hordy LP 3; Słowa Kluczowe LP 55 i 64), więc wymaga osobnej decyzji i nie jest potrzebne do naprawy pogrubienia.
+2. **Opis cechy w okienku podpowiedzi pokazuje surowe znaczniki.** `popoverDescription.textContent = resolveTraitDescription(traitName)` (`GeneratorNPC/index.html:3469`) wstawia opis cechy bez interpretacji znaczników, więc np. „[{{B}}Podręcznik Główny{{/B}} (str. 189)]” byłoby widoczne dosłownie. W archiwalnych danych znaczniki zawiera 7 z 32 opisów cech (wniosek z kodu i danych; nie oglądano tego w przeglądarce).
 3. **Wielowierszowa czerwona komórka bez formatowania mieszanego.** Gdy cała komórka ma czerwony styl i nie ma fragmentów, parser owija cały tekst jedną parą `{{RED}}…{{/RED}}` (`xlsxCanonicalParser.js:163-179`). Przy kilku liniach widoki „linia po linii” zgubiłyby czerwień od drugiej linii. W archiwalnych danych nie wystąpiło.
 4. **Bezwzględne ścieżki w pliku XLSX.** Oba parsery budują ścieżkę arkusza jako `xl/` + `Target` (`build_json.py:284`, `xlsxCanonicalParser.js:217`), więc nie odczytają pliku z bezwzględnymi ścieżkami (zapisuje je np. openpyxl). Excel zapisuje ścieżki względne, więc dla `Repozytorium.xlsx` nie ma to znaczenia.
 
@@ -448,7 +521,7 @@ Przy wdrożeniu wariantu B należy — zgodnie z AGENTS.md — zaktualizować `G
 
 ## 15. Następne kroki
 
-1. **Potwierdzenie (użytkownik, ok. 1 minuty):** rozdz. 10 — najprościej obejrzeć „Zdolności” Kanopteka w tabeli „Podgląd bazowy” GeneratorNPC albo wyszukać `{{B}}\nANIHILACJA` w świeżo wygenerowanym `data.json`.
+1. **Potwierdzenie (użytkownik, kilka minut):** rozdz. 10 — krok 1 (polecenie w konsoli DataVault na danych z Firebase) albo krok 2 (wyszukanie `{{B}}\nANIHILACJA` w świeżo wygenerowanym `data.json`). Wygląd tabel nie rozstrzyga przyczyny.
 2. **Decyzja o wariancie naprawy:** rekomendowany wariant B (rozdz. 12), opcjonalnie wraz z poprawką danych w Excelu (wariant A).
-3. **Skan aktualnych danych:** po wygenerowaniu aktualnego `data.json` przeskanować wszystkie pola pod kątem par znaczników obejmujących enter, żeby uzyskać pełną listę wpisów z tym samym problemem (w archiwalnych danych: Karzełkowiec, Genokrad, Aeldari w „Słowach Kluczowych Frakcji”, Talent „Operator broni specjalnej”).
+3. **Lista wszystkich wpisów z tym samym problemem:** polecenie z rozdz. 10, krok 4 (w archiwalnych danych: Karzełkowiec, Genokrad, Aeldari w „Słowach Kluczowych Frakcji”; osobno Talent „Operator broni specjalnej” z pogrubieniem przez dwie linie).
 4. **Osobne decyzje (niezwiązane z pogrubieniem):** sklejanie pasków przy pogrubionym dwukropku (rozdz. 14 pkt 1) i surowe znaczniki w okienku opisu cechy (rozdz. 14 pkt 2).
