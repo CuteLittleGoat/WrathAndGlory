@@ -4,6 +4,7 @@
 > **Temat:** dlaczego na karcie „Kanoptek Skarabeusz” (LP 180) nagłówek „ANIHILACJA: Protokoły ożywienia” wychodzi zwykłą czcionką, choć w `Repozytorium.xlsx` jest pogrubiony, a na karcie „Rozdzieracz” (LP 185) ten sam nagłówek wygląda prawidłowo
 > **Charakter dokumentu:** analiza przyczyny. Kod nie został zmieniony — zgodnie z poleceniem użytkownika
 > **Moduły, których dotyczy:** GeneratorNPC (karta i tabela podglądu), DataVault (generator danych i tabela)
+> **Stan na dziś:** przyczyna **potwierdzona na oryginalnych plikach** użytkownika (`Repozytorium.xlsx` i `firebase-import.json`). Użytkownik wybrał poprawkę **generatora danych** w DataVault; jej projekt i wyniki testów na prawdziwym pliku — **część II (rozdz. 16 i dalsze)**. Rozdziały 1–15 to pierwotna analiza wykonana bez dostępu do aktualnych danych
 
 ---
 
@@ -525,3 +526,117 @@ Dokumentacja do aktualizacji przy wdrożeniu (zgodnie z AGENTS.md):
 2. **Decyzja o wariancie naprawy:** rekomendowany wariant B (rozdz. 12), opcjonalnie wraz z poprawką danych w Excelu (wariant A).
 3. **Lista wszystkich wpisów z tym samym problemem:** polecenie z rozdz. 10, krok 4 (w archiwalnych danych: Karzełkowiec, Genokrad, Aeldari w „Słowach Kluczowych Frakcji”; osobno Talent „Operator broni specjalnej” z pogrubieniem przez dwie linie).
 4. **Osobne decyzje (niezwiązane z pogrubieniem):** sklejanie pasków przy pogrubionym dwukropku (rozdz. 14 pkt 1) i surowe znaczniki w okienku opisu cechy (rozdz. 14 pkt 2).
+
+---
+---
+
+# Część II — analiza na oryginalnych plikach i projekt poprawki generatora
+
+## 16. Prompt użytkownika do części II (zachowany w całości)
+
+Pierwsza wiadomość, z dwoma załącznikami: `Repozytorium.xlsx` (oryginalne dane) i `firebase-import.json` (plik wygenerowany z tego XLSX i zaimportowany do Firebase):
+
+> Załączam plik xlsx z oryginalnymi danymi oraz plik json, który został z niego wygenerowany i wrzucony do Firebase.
+> Popraw sposób generowania pliku json, żeby zabezpieczyć się przed tego typu problemem w przyszłości.
+> Jak poprawisz mechanizm, to wygeneruję nowe pliki json.
+> Jeszcze nie zmieniaj nic w kodzie. Rozbuduj tylko analizę mając do dyspozycji oryginalne pliki.
+
+Druga wiadomość (doprecyzowanie wymagania):
+
+> Po poprawce pogrubienie musi działać zarówno jeżeli pogrubienie w xlsx zaczyna się od entera oraz jak zaczyna się od litery. Czyli oba przypadki muszą być obsłużone.
+
+Oba pliki zostały użyte wyłącznie do analizy. Nie trafiły do repozytorium (DataVault celowo nie przechowuje w nim danych).
+
+---
+
+## 17. Potwierdzenie przyczyny na oryginalnych plikach
+
+### 17.1. Dane w Firebase
+
+`firebase-import.json`: `schemaVersion` = `datavault-firebase-import-v1`, `createdAt` = `2026-10-08T10:26:41.502Z`, 38 arkuszy, Bestiariusz — 217 wpisów. Pole „Zdolności”:
+
+- **LP 180 Kanoptek Skarabeusz:** `…zwiększa DK i Cechę Wybuchowa o +1.\n{{B}}\nANIHILACJA: Protokoły ożywienia{{/B}}\nKiedy t…` — dokładnie układ przewidziany w rozdz. 5.2 (pogrubiony enter przed nagłówkiem);
+- **LP 185 Rozdzieracz:** `…musi wykonać Test Strachu o ST 3.\n\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}\nKiedy t…` — układ poprawny.
+
+### 17.2. Komórka w pliku XLSX
+
+Fragment `xl/sharedStrings.xml` komórki Kanopteka:
+
+```xml
+…K i Cechę Wybuchowa o +1.
+</t></r><r><rPr><b/><sz val="8"/><color theme="1"/><rFont val="Calibri"/>…</rPr><t xml:space="preserve">
+ANIHILACJA: Protokoły ożywienia</t></r><r><rPr><sz val="8"/>…
+```
+
+Pogrubiony fragment (`<b/>`) zaczyna się od znaku nowej linii — zgodnie z rozdz. 5.1.
+
+### 17.3. Dane w Firebase nie są nieaktualne
+
+Obecny `DataVault/build_json.py` uruchomiony na załączonym `Repozytorium.xlsx` daje dane **identyczne** z zawartością `firebase-import.json` (wszystkie arkusze i `_meta`). Firebase zawiera więc dokładnie to, co generator robi dziś z aktualnego pliku. Hipoteza o nieaktualnym imporcie (rozdz. 8) jest **obalona**; jedyną przyczyną jest opisany w rozdz. 3–5 sposób zamiany formatowania na znaczniki.
+
+Ten wynik jest też punktem odniesienia dla poprawki: wszystkie porównania w kolejnych rozdziałach liczone są względem danych, które są dziś w Firebase.
+
+---
+
+## 18. Wszystkie wpisy z tym samym problemem w aktualnych danych
+
+Skan wszystkich pól tekstowych prawdziwym kodem wyświetlającym (karta GeneratorNPC, tabela GeneratorNPC, tabela DataVault):
+
+- 2265 pól zawiera znaczniki formatowania;
+- w 63 polach co najmniej jedna para znaczników obejmuje znak nowej linii (122 pary) — w większości nieszkodliwie (np. `{{I}}lub\n{{/I}}` w „Premiach Frakcji”);
+- **widoczna utrata formatowania** występuje w poniższych polach.
+
+### 18.1. Karta GeneratorNPC (i obie tabele) — 13 wpisów Bestiariusza
+
+| LP | Nazwa | Kolumna | Nagłówek, który traci pogrubienie |
+|---|---|---|---|
+| 34 | Karzełkowiec | Zdolności | „Rozmiar ma znaczenie:” |
+| 43 | Genokrad | Zdolności | „DETERMINACJA: Błyskawiczny refleks” |
+| 77 | Wyjąca Banshee | Atak | „Ostrze banshee” |
+| 78 | Wyjąca Banshee Egzarcha | Atak | „Kat” |
+| 98 | Agent Losu | Premie | „Peleryna maskująca” |
+| 127 | Burszuj | Zdolności | „REAKCJA: Niepokonany! Jak ork!” |
+| 132 | Komandoz | Opcje Hordy | „Duża szczelba” |
+| 147 | Morkanauta | Premie | „Wielki i miażdżący” |
+| 176 | Chronomanta | Zdolności | „REAKCJA: Chronomacki” |
+| 178 | Nekron Wojownik | Zdolności | „ANIHILACJA: Protokoły ożywienia” |
+| **180** | **Kanoptek Skarabeusz** | **Zdolności** | **„ANIHILACJA: Protokoły ożywienia”** |
+| 184 | Gwardzista-Licz | Zdolności | „REAKCJA: Protokoły strażnicze” |
+| 196 | Shas'ui w Maskującym Kombinezonie bojowym XV25 | Zdolności | „ZGUBA: Skok odrzutowy” |
+
+We wszystkich 13 przypadkach mechanizm jest ten sam: pogrubiony fragment w XLSX zaczyna się od entera.
+
+### 18.2. Tylko tabele (arkusze, których GeneratorNPC nie pokazuje na karcie)
+
+| Arkusz | LP | Kolumna | Co traci formatowanie | Przyczyna |
+|---|---|---|---|---|
+| Słowa Kluczowe Frakcji | 11 (Aeldari, Koteria) | Opis | pogrubienie „Sunblitz Brotherhood” | fragment zaczyna się od entera |
+| Słowa Kluczowe Frakcji | 11 (Aeldari, Koteria) | Efekt | pogrubienie „Sunblitz Brotherhood”, kursywa „[dane utajnione]” (5×) | fragmenty zaczynają się od entera |
+| Talenty | 45 (Operator broni specjalnej) | Efekt | pogrubienie drugiej linii pogrubionego fragmentu | pogrubiony fragment ma tekst w dwóch liniach |
+
+---
+
+## 19. Wymaganie użytkownika i zestaw testów akceptacyjnych
+
+**Wymaganie:** po poprawce formatowanie musi działać tak samo, gdy pogrubienie w XLSX zaczyna się **od litery** i gdy zaczyna się **od entera** — na karcie GeneratorNPC, w tabeli GeneratorNPC i w tabeli DataVault.
+
+Do sprawdzenia tego wymagania przygotowano skoroszyt testowy (zapisany jak przez Excel — z tabelą wspólnych tekstów i znacznikiem `<b/>`). Każdy wiersz ma ten sam widoczny tekst, różni się tylko tym, gdzie zaczyna się i kończy formatowanie:
+
+| Wiersz | Przypadek | Obecny generator: karta / tabela GeneratorNPC / tabela DataVault |
+|---|---|---|
+| R1 | pogrubienie od litery (jak Rozdzieracz) | OK / OK / OK |
+| R2 | pogrubienie od 1 entera (jak Kanoptek) | **źle / źle / źle** |
+| R3 | pogrubienie od 2 enterów | **źle / źle / źle** |
+| R4 | pogrubienie od spacji i 2 enterów | **źle / źle / źle** |
+| R5 | enter po nagłówku w pogrubieniu | OK / OK / OK |
+| R6 | entery w pogrubieniu z obu stron nagłówka | **źle / źle / źle** |
+| R7 | pogrubienie od kropki kończącej poprzednią linię | **źle / źle / źle** |
+| R8 | pogrubiony tekst w dwóch liniach | OK / **źle / źle** |
+| R9 | kursywa od entera | **źle / źle / źle** |
+| R10 | czerwony kolor od entera | **źle / źle / źle** |
+| R11 | pogrubienie z kursywą od entera | **źle / źle / źle** |
+| R12 | pierwszy fragment komórki zaczyna się od entera | **źle / źle / źle** |
+
+Wynik „OK” oznacza, że każdy widoczny znak ma na ekranie dokładnie ten styl, jaki ma w Excelu. Przeglądarkowy parser i `build_json.py` dają na tym skoroszycie identyczny wynik.
+
+**Kryterium akceptacji poprawki:** wszystkie 12 wierszy „OK” we wszystkich trzech widokach, w obu generatorach (przeglądarka i `build_json.py`), przy bajtowo identycznym wyniku obu generatorów.
