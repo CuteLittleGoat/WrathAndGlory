@@ -79,7 +79,54 @@ def _is_enabled(tag) -> bool:
   return val is None or str(val).lower() not in {"0", "false"}
 
 
+# Złamanie linii dla owijania markerami: CRLF, samotne LF albo samotne CR (najdłuższe dopasowanie
+# pierwsze). Parsery XML (ElementTree i DOMParser) zamieniają dosłowne CRLF/CR z pliku na LF, więc CR
+# może tu trafić tylko z odwołania &#13;. Celowo NIE używamy str.splitlines(), bo ta dzieli też na
+# U+2028, U+2029, \x0b, \x0c, \x1c-\x1e i \x85, a renderery i xlsxCanonicalParser.js tego nie robią.
+# Line break used for marker wrapping: CRLF, a lone LF or a lone CR (longest match first). The XML
+# parsers (ElementTree and DOMParser) turn literal CRLF/CR from the file into LF, so a CR can only arrive
+# here from a &#13; reference. str.splitlines() is deliberately NOT used: it also splits on U+2028, U+2029,
+# \x0b, \x0c, \x1c-\x1e and \x85, which the renderers and xlsxCanonicalParser.js do not do.
+_LINE_BREAK_RE = re.compile(r"(\r\n|\r|\n)")
+
+
 def _wrap_with_markers(text: str, *, red=False, bold=False, italic=False, strike=False) -> str:
+  """Owija tekst markerami tak, aby żadna para markerów nie zawierała złamania linii.
+
+  Renderery DataVault (formatTextHTML, formatFactionKeywordHTML) i GeneratorNPC (formatTextHTML,
+  splitEntries + formatSectionEntries) formatują każdą linię albo pasek osobno, z pustym stosem stylów.
+  Para markerów przechodząca przez złamanie linii gubi więc styl na kolejnych liniach, np. run
+  "\\nANIHILACJA: ..." dawał "{{B}}\\nANIHILACJA: ...{{/B}}" i nagłówek był zwykłym tekstem.
+  Zasady (identyczne jak wrapWithMarkers w DataVault/xlsxCanonicalParser.js):
+  1. Brak stylu -> tekst bez zmian.
+  2. Tekst bez złamania linii -> cały tekst w jednej parze markerów (także pusty i z samych spacji),
+     dokładnie jak dotąd, więc pola jednolinijkowe i puste czerwone komórki się nie zmieniają.
+  3. Tekst ze złamaniami linii -> dzielimy go na linie; spacje i tabulatory dotykające złamania linii
+     zostają poza markerami, niepusta reszta linii dostaje własną parę markerów, linia z samych
+     spacji/tabulatorów zostaje bez markerów. Spacji, które nie dotykają złamania linii, nie ruszamy,
+     bo od nich zależy podział na paski w splitEntries (np. "{{B}}bagnet: {{/B}}5").
+  4. Tekst złożony wyłącznie ze spacji, tabulatorów i złamań linii -> jedna pusta para markerów przed
+     tekstem. Wynik pozostaje niepusty po trim() tak samo jak dotąd, więc rows_to_records nie pomija
+     wiersza, a pole nie staje się puste; pusta para nie renderuje żadnego elementu.
+
+  Wraps text in markers so that no marker pair contains a line break.
+
+  The DataVault renderers (formatTextHTML, formatFactionKeywordHTML) and the GeneratorNPC renderers
+  (formatTextHTML, splitEntries + formatSectionEntries) format every line or stripe separately, with an
+  empty style stack. A marker pair that crosses a line break therefore loses its style on the following
+  lines, e.g. the run "\\nANIHILACJA: ..." produced "{{B}}\\nANIHILACJA: ...{{/B}}" and the header was
+  rendered as plain text. Rules (identical to wrapWithMarkers in DataVault/xlsxCanonicalParser.js):
+  1. No style -> the text is returned unchanged.
+  2. Text without a line break -> the whole text in one marker pair (also empty and space-only text),
+     exactly as before, so single-line fields and empty red cells do not change.
+  3. Text with line breaks -> it is split into lines; spaces and tabs touching a line break stay outside
+     the markers, the non-empty rest of each line gets its own marker pair, a line made only of spaces/tabs
+     stays unmarked. Spaces that do not touch a line break are left alone, because splitEntries stripe
+     splitting depends on them (e.g. "{{B}}bagnet: {{/B}}5").
+  4. Text made only of spaces, tabs and line breaks -> one empty marker pair before the text. The result
+     stays non-blank after trim() exactly as before, so rows_to_records does not skip the row and the field
+     does not become empty; an empty pair renders no element.
+  """
   markers = [
     ("{{RED}}", "{{/RED}}", red),
     ("{{B}}", "{{/B}}", bold),
@@ -88,7 +135,45 @@ def _wrap_with_markers(text: str, *, red=False, bold=False, italic=False, strike
   ]
   start = "".join(op for op,_,use in markers if use)
   end = "".join(cl for _,cl,use in reversed(markers) if use)
-  return f"{start}{text}{end}"
+  # Reguła 1: bez stylu nie dodajemy markerów / Rule 1: no style, no markers
+  if not start:
+    return text
+  # Reguła 2: tekst jednolinijkowy owijamy w całości, jak dotąd / Rule 2: single-line text is wrapped whole, as before
+  if "\n" not in text and "\r" not in text:
+    return f"{start}{text}{end}"
+  # Reguła 3: na pozycjach parzystych są linie, na nieparzystych złamania linii
+  # Rule 3: even positions hold lines, odd positions hold the line breaks
+  parts = _LINE_BREAK_RE.split(text)
+  last = len(parts) - 1
+  out = []
+  wrapped = False
+  for i, part in enumerate(parts):
+    if i % 2 == 1:
+      out.append(part)
+      continue
+    lo, hi = 0, len(part)
+    # Spacje/tabulatory tuż za złamaniem linii zostają przed markerem otwierającym
+    # Spaces/tabs right after a line break stay before the opening marker
+    if i > 0:
+      while lo < hi and part[lo] in " \t":
+        lo += 1
+    # Spacje/tabulatory tuż przed złamaniem linii zostają za markerem zamykającym
+    # Spaces/tabs right before a line break stay after the closing marker
+    if i < last:
+      while hi > lo and part[hi - 1] in " \t":
+        hi -= 1
+    if hi > lo:
+      out.append(f"{part[:lo]}{start}{part[lo:hi]}{end}{part[hi:]}")
+      wrapped = True
+    else:
+      # Linia pusta albo z samych spacji/tabulatorów zostaje bez markerów
+      # An empty or spaces/tabs-only line stays unmarked
+      out.append(part)
+  # Reguła 4: nic nie zostało owinięte -> pusta para markerów przed tekstem (bez złamania linii w środku)
+  # Rule 4: nothing was wrapped -> an empty marker pair before the text (no line break inside it)
+  if not wrapped:
+    return f"{start}{end}{text}"
+  return "".join(out)
 
 
 def _rich_text_to_string(el, ns):

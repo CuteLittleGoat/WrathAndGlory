@@ -33,6 +33,7 @@ Nie ma osobnego pliku HTML dla admina. Tryb admina jest wykrywany przez parametr
 | `DataVault/app.js` | Główna logika modułu: i18n, Firebase flow, stan UI, normalizacja danych, filtry, sortowanie, render tabel, porównanie, import XLSX. |
 | `DataVault/style.css` | Style widoku: layout, topbar, panel narzędzi, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym zakładki `Obrzędy` i arkuszy pojazdowych. |
 | `DataVault/xlsxCanonicalParser.js` | Kanoniczny parser XLSX w przeglądarce oparty o JSZip i pliki XML pakietu XLSX. |
+| `DataVault/build_json.py` | Generator `data.json` z wiersza poleceń (Python, bez zależności zewnętrznych); musi dawać wynik bajtowo identyczny z generowaniem w przeglądarce. |
 | `DataVault/config/FirebaseREADME.md` | Modułowa instrukcja konfiguracji Firebase dla DataVault. |
 | `DataVault/docs/README.md` | Instrukcja użytkownika. |
 | `DataVault/docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
@@ -464,7 +465,7 @@ i przez aplikację w przeglądarce (`xlsxCanonicalParser.js` + `buildDataJsonFro
 z `AGENTS.md` §14 obie muszą dawać ten sam wynik, a trzecią ścieżką jest struktura importowana do
 Firebase.
 
-Dwie rzeczy muszą być pilnowane ręcznie, bo język nie wymusi ich sam:
+Trzy rzeczy muszą być pilnowane ręcznie, bo język nie wymusi ich sam:
 
 **Kolejność scalania kolumn.** Dla arkuszy `Bronie` i `Bronie Pojazdów` scalane są dwie grupy kolumn:
 `Zasięg 1..3` → `Zasięg` oraz `Cecha 1..N` → `Cechy`. Obie operacje usuwają swoje kolumny źródłowe
@@ -478,7 +479,17 @@ kolejności: zamiana polskich cudzysłowów, scalenie białych znaków, przycię
 klucze słowników `_meta.traits` i `_meta.states`, więc rozjazd oznaczałby, że kliknięcie tagu cechy
 przestaje odnajdywać jej opis — i to tylko dla niektórych nazw, czyli po cichu.
 
-Dzięki tym dwóm rzeczom sprawdzenie zgodności jest zwykłym porównaniem plików:
+**Owijanie tekstu znacznikami formatowania.** Funkcja owijająca tekst znacznikami istnieje w dwóch
+plikach: `wrapWithMarkers()` w `xlsxCanonicalParser.js` i `_wrap_with_markers()` w `build_json.py`.
+Obie stosują te same cztery reguły (rozdział „Kanoniczny parser XLSX” → „Owijanie tekstu
+znacznikami”) i tę samą definicję złamania linii: `\r\n`, `\n` albo samotne `\r`, dopasowywane od
+najdłuższego. W Pythonie celowo nie jest używane `str.splitlines()`, bo dzieli ono także na `U+2028`,
+`U+2029`, `\x0b`, `\x0c`, `\x1c`–`\x1e` i `\x85`, czego nie robią ani renderery, ani wersja JS.
+Rozjazd tych dwóch funkcji dałby różne pliki `data.json` z obu ścieżek, a w danych z jednej z nich
+pary znaczników przechodzące przez enter, czyli utratę formatowania w tabelach i na kartach
+GeneratorNPC.
+
+Dzięki tym trzem rzeczom sprawdzenie zgodności jest zwykłym porównaniem plików:
 
 ```text
 python DataVault/build_json.py Repozytorium.xlsx data-python.json
@@ -507,6 +518,99 @@ Parser:
 - scala logicznie kolumny `Zasięg 1`, `Zasięg 2`, itd. do `Zasięg`,
 - scala logicznie `Cecha 1`, `Cecha 2`, itd. do `Cechy`,
 - zwraca `sheets`, `sheetOrder`, `columnOrder`.
+
+### Owijanie tekstu znacznikami (`wrapWithMarkers` / `_wrap_with_markers`)
+
+Znaczniki formatowania zapisuje jedna funkcja: `wrapWithMarkers(text, {red, bold, italic, strike})`
+w `xlsxCanonicalParser.js` oraz jej odpowiednik `_wrap_with_markers(text, *, red, bold, italic, strike)`
+w `build_json.py`. Jest wywoływana w dwóch miejscach (w obu plikach tak samo):
+
+| Wywołanie | Kiedy | Style |
+| --- | --- | --- |
+| `richTextToString()` / `_rich_text_to_string()` | dla każdego niepustego fragmentu rich text (`<r>`) komórki | z `<rPr>` fragmentu: czerwony kolor, `<b/>`, `<i/>`, `<strike/>` |
+| `loadRowsFromXml()` / `_load_rows_from_xml()` | dla komórki bez fragmentów rich text, której styl komórki ma czerwony font, a wartość nie zawiera jeszcze `{{RED}}` | tylko `red` |
+
+Kolejność znaczników jest stała: otwierające `{{RED}}{{B}}{{I}}{{S}}`, zamykające w odwrotnej
+kolejności `{{/S}}{{/I}}{{/B}}{{/RED}}` (tylko włączone style).
+
+**Dlaczego reguły są potrzebne.** Wszystkie renderery formatują każdą linię albo pasek osobno, z pustym
+stosem stylów: w DataVault `formatTextHTML()` i `formatFactionKeywordHTML()` (podział po `\r?\n`),
+w GeneratorNPC `formatTextHTML()` (tabela) oraz `splitEntries()` + `formatSectionEntries()` (paski
+karty). Para znaczników przechodząca przez złamanie linii gubiłaby styl na kolejnych liniach — np.
+pogrubiony fragment `⏎ANIHILACJA: Protokoły ożywienia` dałby `{{B}}\nANIHILACJA: …{{/B}}` i nagłówek
+byłby zwykłym tekstem. Dlatego funkcja gwarantuje: **żadna para znaczników w wygenerowanych danych nie
+zawiera złamania linii.**
+
+**Złamanie linii** to `\r\n`, `\n` albo samotne `\r` (wyrażenie `/(\r\n|\r|\n)/`, najdłuższe dopasowanie
+pierwsze). Parsery XML (DOMParser, ElementTree) zamieniają dosłowne CRLF/CR z pliku na LF, więc `\r` może
+dotrzeć do funkcji tylko z odwołania `&#13;`. `U+2028`, `U+2029` i inne znaki nie są złamaniem linii.
+
+**Reguły:**
+
+1. **Brak stylu** → tekst bez zmian.
+2. **Tekst bez złamania linii** → cały tekst w jednej parze znaczników, także tekst pusty i złożony
+   z samych spacji (np. `{{B}}bagnet: {{/B}}`).
+3. **Tekst ze złamaniami linii** → tekst jest dzielony na linie; w każdej linii spacje i tabulatory
+   **stykające się ze złamaniem linii** zostają poza znacznikami, niepusta reszta linii dostaje własną
+   parę znaczników, a linia pusta albo z samych spacji/tabulatorów zostaje bez znaczników. Spacje, które
+   nie stykają się ze złamaniem linii (początek pierwszej linii, koniec ostatniej), zostają wewnątrz
+   znaczników, bo od nich zależy podział karty GeneratorNPC na paski (`splitEntries` rozpoznaje początek
+   wpisu po wzorcu `…:\s`).
+4. **Tekst złożony wyłącznie ze spacji, tabulatorów i złamań linii** → jedna pusta para znaczników przed
+   tekstem (np. `{{B}}{{/B}}\n`). Wartość pozostaje niepusta po przycięciu, więc `rowsToRecords()` /
+   `rows_to_records()` nie pomija wiersza, a pusta para nie renderuje żadnego elementu.
+
+Przykłady (fragment rich text → zapis w danych):
+
+| Fragment w XLSX | Styl | Zapis |
+| --- | --- | --- |
+| `ANIHILACJA: Protokoły ożywienia` | pogrubienie | `{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
+| `⏎ANIHILACJA: Protokoły ożywienia` | pogrubienie | `\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
+| `ANIHILACJA: Protokoły ożywienia⏎` | pogrubienie | `{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}\n` |
+| `⏎[dane utajnione]⏎⏎` | kursywa | `\n{{I}}[dane utajnione]{{/I}}\n\n` |
+| `lub⏎` | kursywa | `{{I}}lub{{/I}}\n` |
+| ` (str. 217)].⏎* Miotacz ognia` | pogrubienie | `{{B}} (str. 217)].{{/B}}\n{{B}}* Miotacz ognia{{/B}}` |
+| `.  ⏎⏎Nagłówek` | pogrubienie | `{{B}}.{{/B}}  \n\n{{B}}Nagłówek{{/B}}` |
+| `⏎` | pogrubienie | `{{B}}{{/B}}\n` |
+
+Skutki:
+
+- pogrubienie (kursywa, kolor, przekreślenie) zaczynające się w Excelu od litery i od entera daje
+  **znak w znak ten sam zapis**; to samo dotyczy entera na końcu formatowania;
+- formatowanie obejmujące kilka linii jest zapisywane jako osobna para znaczników w każdej linii, więc
+  każda linia wyświetla się z właściwym stylem także w widokach formatujących linie osobno;
+- widoczny tekst (wartość po usunięciu znaczników) jest zawsze identyczny z tekstem komórki;
+- znaczniki wpisane ręcznie jako zwykły tekst komórki nie przechodzą przez tę funkcję i nie są
+  poprawiane.
+
+Rdzeń algorytmu (wersja JS; wersja Python jest identyczna: `_LINE_BREAK_RE = re.compile(r"(\r\n|\r|\n)")`,
+`_LINE_BREAK_RE.split(text)` i test `part[lo] in " \t"`). Fragment pokazuje, jak po podziale
+z grupą przechwytującą na pozycjach parzystych są linie, a na nieparzystych złamania linii:
+
+```js
+// start/end: sklejone znaczniki otwierające i zamykające włączonych stylów
+if (!start) return value;                                                  // reguła 1
+if (!value.includes("\n") && !value.includes("\r")) return `${start}${value}${end}`; // reguła 2
+const parts = value.split(/(\r\n|\r|\n)/);                                 // reguła 3
+const last = parts.length - 1;
+let out = "";
+let wrapped = false;
+for (let i = 0; i < parts.length; i += 1){
+  const part = parts[i];
+  if (i % 2 === 1){ out += part; continue; }                               // złamanie linii bez zmian
+  let lo = 0;
+  let hi = part.length;
+  if (i > 0) while (lo < hi && (part[lo] === " " || part[lo] === "\t")) lo += 1;          // za złamaniem
+  if (i < last) while (hi > lo && (part[hi - 1] === " " || part[hi - 1] === "\t")) hi -= 1; // przed złamaniem
+  if (hi > lo){
+    out += `${part.slice(0, lo)}${start}${part.slice(lo, hi)}${end}${part.slice(hi)}`;
+    wrapped = true;
+  } else {
+    out += part;                                                           // linia pusta / z samych spacji
+  }
+}
+return wrapped ? out : `${start}${end}${value}`;                           // reguła 4
+```
 
 ## Budowanie `data.json`
 
@@ -745,6 +849,14 @@ Dodatkowo:
 - HTML jest escapowany przed renderem,
 - formatowanie inline zachowuje zagnieżdżenie markerów.
 
+Renderowanie działa linia po linii: `formatTextHTML()` dzieli wartość po `\r?\n`, każdą linię przetwarza
+`formatInlineHTML()` z pustym stosem stylów (`parseInlineSegments()`), a linie łączy przez `<br>`;
+`formatFactionKeywordHTML()` działa tak samo. Styl nie przechodzi więc z jednej linii do następnej.
+Dane z generatora mają w każdej linii komplet znaczników (rozdział „Kanoniczny parser XLSX” → „Owijanie
+tekstu znacznikami”), więc formatowanie z Excela wyświetla się poprawnie niezależnie od tego, czy
+zaczynało się od litery, czy od entera. Znaczniki wpisane ręcznie w komórce i obejmujące enter
+(np. `{{B}}` w jednej linii i `{{/B}}` w następnej) dają styl tylko w linii ze znacznikiem otwierającym.
+
 Szczegółowe reguły formatowania danych powinny być utrzymywane w `DataVault/docs/ZasadyFormatowania.md`.
 
 ## Ukrywanie danych
@@ -862,6 +974,9 @@ poza nim i ukrycie przełącznika ich nie dotyczy.
 | Dane runtime | Po logowaniu sprawdź zakładki. | Widoczne są zakładki dozwolone dla trybu użytkownika. |
 | Tryb admina | Otwórz `DataVault/index.html?admin=1`. | Widoczny jest przycisk generowania danych i zakładki admin-only. |
 | Generowanie importu | W adminie wybierz lokalny `Repozytorium.xlsx`. | Pobierane są `data.json` i `firebase-import.json`. |
+| Zgodność generatorów | Wygeneruj `data.json` przyciskiem w adminie i przez `python DataVault/build_json.py Repozytorium.xlsx data-python.json`. | Oba pliki są identyczne co do bajtu. |
+| Pogrubienie od entera | W XLSX pogrub fragment zaczynający się od entera (`⏎NAGŁÓWEK: opis`) i wygeneruj dane. | W danych zapis `\n{{B}}NAGŁÓWEK: opis{{/B}}` — taki sam jak przy pogrubieniu od litery; nagłówek jest pogrubiony w tabeli DataVault oraz w tabeli i na karcie GeneratorNPC. |
+| Brak par znaczników przez enter | Po wygenerowaniu danych (przed odświeżeniem strony) uruchom w konsoli polecenie kontrolne z `DataVault/docs/README.md` („Co sprawdzić po wygenerowaniu danych”). | Polecenie wypisuje pustą tabelę. |
 | Import Firebase | Zaimportuj `firebase-import.json` w root RTDB. | Dane trafiają pod `datavault/live`. |
 | Widok domyślny | Kliknij `Widok Domyślny`. | Zostają zastosowane domyślne filtry i ukrycia. |
 | Pełen widok | Kliknij `Pełen Widok`. | Filtry i ukrycia widoku domyślnego są zdjęte. |
@@ -911,6 +1026,7 @@ There is no separate admin HTML file. Admin mode is detected through the `admin=
 | `DataVault/app.js` | Main module logic: i18n, Firebase flow, UI state, data normalization, filters, sorting, table rendering, comparison, XLSX import. |
 | `DataVault/style.css` | View styles: layout, topbar, tools panel, table, tabs, modal, popover, filter menu, colors, responsiveness, and sheet column configuration, including the `Obrzędy` tab. |
 | `DataVault/xlsxCanonicalParser.js` | Browser-side canonical XLSX parser based on JSZip and XLSX package XML files. |
+| `DataVault/build_json.py` | Command-line `data.json` generator (Python, no external dependencies); its output must be byte-identical to generation in the browser. |
 | `DataVault/config/FirebaseREADME.md` | Module Firebase setup guide for DataVault. |
 | `DataVault/docs/README.md` | User guide. |
 | `DataVault/docs/Documentation.md` | This technical documentation. |
@@ -1342,7 +1458,7 @@ application in the browser (`xlsxCanonicalParser.js` + `buildDataJsonFromSheets(
 `AGENTS.md` §14 both must produce the same result, and the third path is the structure imported into
 Firebase.
 
-Two things have to be watched by hand, because the language will not enforce them:
+Three things have to be watched by hand, because the language will not enforce them:
 
 **The column merge order.** For the `Bronie` and `Bronie Pojazdów` sheets two column groups are
 merged: `Zasięg 1..3` → `Zasięg` and `Cecha 1..N` → `Cechy`. Both operations remove their source
@@ -1356,7 +1472,16 @@ replace Polish quotes, collapse whitespace, trim. It produces the keys of the `_
 `_meta.states` dictionaries, so drift would mean that clicking a trait tag stops finding its
 description — and only for some names, that is, silently.
 
-Because of those two things, checking consistency is a plain file comparison:
+**Wrapping text in formatting markers.** The function that wraps text in markers exists in two files:
+`wrapWithMarkers()` in `xlsxCanonicalParser.js` and `_wrap_with_markers()` in `build_json.py`. Both
+apply the same four rules (section "Canonical XLSX parser" → "Wrapping text in markers") and the same
+line break definition: `\r\n`, `\n` or a lone `\r`, matched longest first. Python deliberately does not
+use `str.splitlines()`, because it also splits on `U+2028`, `U+2029`, `\x0b`, `\x0c`, `\x1c`–`\x1e`
+and `\x85`, which neither the renderers nor the JS version do. If the two functions drifted apart, the
+two paths would produce different `data.json` files, and the data from one of them would contain marker
+pairs crossing a line break, that is, lost formatting in the tables and on the GeneratorNPC cards.
+
+Because of those three things, checking consistency is a plain file comparison:
 
 ```text
 python DataVault/build_json.py Repozytorium.xlsx data-python.json
@@ -1385,6 +1510,97 @@ The parser:
 - merges logical `Zasięg 1`, `Zasięg 2`, etc. into `Zasięg`,
 - merges logical `Cecha 1`, `Cecha 2`, etc. into `Cechy`,
 - returns `sheets`, `sheetOrder`, and `columnOrder`.
+
+### Wrapping text in markers (`wrapWithMarkers` / `_wrap_with_markers`)
+
+Formatting markers are written by one function: `wrapWithMarkers(text, {red, bold, italic, strike})`
+in `xlsxCanonicalParser.js` and its counterpart `_wrap_with_markers(text, *, red, bold, italic, strike)`
+in `build_json.py`. It is called in two places (the same in both files):
+
+| Call | When | Styles |
+| --- | --- | --- |
+| `richTextToString()` / `_rich_text_to_string()` | for every non-empty rich text run (`<r>`) of a cell | from the run's `<rPr>`: red colour, `<b/>`, `<i/>`, `<strike/>` |
+| `loadRowsFromXml()` / `_load_rows_from_xml()` | for a cell without rich text runs whose cell style has a red font and whose value does not contain `{{RED}}` yet | `red` only |
+
+The marker order is fixed: opening `{{RED}}{{B}}{{I}}{{S}}`, closing in reverse order
+`{{/S}}{{/I}}{{/B}}{{/RED}}` (enabled styles only).
+
+**Why the rules are needed.** Every renderer formats each line or stripe separately, with an empty style
+stack: in DataVault `formatTextHTML()` and `formatFactionKeywordHTML()` (split on `\r?\n`), in
+GeneratorNPC `formatTextHTML()` (table) and `splitEntries()` + `formatSectionEntries()` (card stripes).
+A marker pair crossing a line break would lose its style on the following lines — e.g. the bold run
+`⏎ANIHILACJA: Protokoły ożywienia` would give `{{B}}\nANIHILACJA: …{{/B}}` and the header would be
+plain text. The function therefore guarantees: **no marker pair in the generated data contains a line
+break.**
+
+**A line break** is `\r\n`, `\n` or a lone `\r` (expression `/(\r\n|\r|\n)/`, longest match first). The
+XML parsers (DOMParser, ElementTree) turn literal CRLF/CR from the file into LF, so `\r` can only reach
+the function from a `&#13;` reference. `U+2028`, `U+2029` and other characters are not line breaks.
+
+**Rules:**
+
+1. **No style** → the text is returned unchanged.
+2. **Text without a line break** → the whole text in one marker pair, including empty text and text made
+   only of spaces (e.g. `{{B}}bagnet: {{/B}}`).
+3. **Text with line breaks** → the text is split into lines; in every line, spaces and tabs **touching a
+   line break** stay outside the markers, the non-empty rest of the line gets its own marker pair, and an
+   empty or spaces/tabs-only line stays unmarked. Spaces that do not touch a line break (the start of the
+   first line, the end of the last one) stay inside the markers, because the GeneratorNPC card stripe
+   split depends on them (`splitEntries` recognises an entry start by the `…:\s` pattern).
+4. **Text made only of spaces, tabs and line breaks** → one empty marker pair before the text (e.g.
+   `{{B}}{{/B}}\n`). The value stays non-blank after trimming, so `rowsToRecords()` / `rows_to_records()`
+   does not skip the row, and the empty pair renders no element.
+
+Examples (rich text run → stored value):
+
+| Run in XLSX | Style | Stored value |
+| --- | --- | --- |
+| `ANIHILACJA: Protokoły ożywienia` | bold | `{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
+| `⏎ANIHILACJA: Protokoły ożywienia` | bold | `\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
+| `ANIHILACJA: Protokoły ożywienia⏎` | bold | `{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}\n` |
+| `⏎[dane utajnione]⏎⏎` | italic | `\n{{I}}[dane utajnione]{{/I}}\n\n` |
+| `lub⏎` | italic | `{{I}}lub{{/I}}\n` |
+| ` (str. 217)].⏎* Miotacz ognia` | bold | `{{B}} (str. 217)].{{/B}}\n{{B}}* Miotacz ognia{{/B}}` |
+| `.  ⏎⏎Nagłówek` | bold | `{{B}}.{{/B}}  \n\n{{B}}Nagłówek{{/B}}` |
+| `⏎` | bold | `{{B}}{{/B}}\n` |
+
+Consequences:
+
+- bold (italic, colour, strikethrough) that starts in Excel with a letter or with an Enter produces
+  **exactly the same stored value**; the same holds for an Enter at the end of the formatting;
+- formatting that spans several lines is stored as a separate marker pair on every line, so each line is
+  displayed with the right style also in views that format lines separately;
+- the visible text (the value with the markers removed) is always identical to the cell text;
+- markers typed by hand as plain cell text do not pass through this function and are not corrected.
+
+Core of the algorithm (JS version; the Python version is identical: `_LINE_BREAK_RE = re.compile(r"(\r\n|\r|\n)")`,
+`_LINE_BREAK_RE.split(text)` and the test `part[lo] in " \t"`). The fragment shows how, after splitting
+with a capturing group, even positions hold lines and odd positions hold the line breaks:
+
+```js
+// start/end: the joined opening and closing markers of the enabled styles
+if (!start) return value;                                                  // rule 1
+if (!value.includes("\n") && !value.includes("\r")) return `${start}${value}${end}`; // rule 2
+const parts = value.split(/(\r\n|\r|\n)/);                                 // rule 3
+const last = parts.length - 1;
+let out = "";
+let wrapped = false;
+for (let i = 0; i < parts.length; i += 1){
+  const part = parts[i];
+  if (i % 2 === 1){ out += part; continue; }                               // line break kept as is
+  let lo = 0;
+  let hi = part.length;
+  if (i > 0) while (lo < hi && (part[lo] === " " || part[lo] === "\t")) lo += 1;          // after a break
+  if (i < last) while (hi > lo && (part[hi - 1] === " " || part[hi - 1] === "\t")) hi -= 1; // before a break
+  if (hi > lo){
+    out += `${part.slice(0, lo)}${start}${part.slice(lo, hi)}${end}${part.slice(hi)}`;
+    wrapped = true;
+  } else {
+    out += part;                                                           // empty / spaces-only line
+  }
+}
+return wrapped ? out : `${start}${end}${value}`;                           // rule 4
+```
 
 ## Building `data.json`
 
@@ -1621,6 +1837,14 @@ Additionally:
 - HTML is escaped before rendering,
 - inline formatting preserves nested markers.
 
+Rendering works line by line: `formatTextHTML()` splits the value on `\r?\n`, processes each line with
+`formatInlineHTML()` using an empty style stack (`parseInlineSegments()`), and joins the lines with `<br>`;
+`formatFactionKeywordHTML()` works the same way. A style therefore never carries over from one line to the
+next. Data from the generator has a complete set of markers on every line (section "Canonical XLSX parser"
+→ "Wrapping text in markers"), so formatting from Excel is displayed correctly whether it started with a
+letter or with an Enter. Markers typed by hand in a cell that span an Enter (e.g. `{{B}}` on one line and
+`{{/B}}` on the next) style only the line with the opening marker.
+
 Detailed data formatting rules should be maintained in `DataVault/docs/ZasadyFormatowania.md`.
 
 ## Data hiding
@@ -1739,6 +1963,9 @@ buttons live outside it, so hiding the selector does not affect them.
 | Runtime data | Check tabs after login. | Tabs allowed for user mode are visible. |
 | Admin mode | Open `DataVault/index.html?admin=1`. | Data generation button and admin-only tabs are visible. |
 | Import generation | In admin mode, choose local `Repozytorium.xlsx`. | `data.json` and `firebase-import.json` are downloaded. |
+| Generator consistency | Generate `data.json` with the admin button and with `python DataVault/build_json.py Repozytorium.xlsx data-python.json`. | Both files are byte-identical. |
+| Bold starting with an Enter | In XLSX, make bold a run that starts with an Enter (`⏎HEADER: text`) and generate the data. | The data contains `\n{{B}}HEADER: text{{/B}}` — the same as bold starting with a letter; the header is bold in the DataVault table and in the GeneratorNPC table and card. |
+| No marker pairs across an Enter | After generating the data (before refreshing the page), run the console check command from `DataVault/docs/README.md` ("What to check after generating the data"). | The command prints an empty table. |
 | Firebase import | Import `firebase-import.json` at RTDB root. | Data is placed under `datavault/live`. |
 | Default view | Click `Default View`. | Default filters and hiding are applied. |
 | Full view | Click `Full View`. | Default filters and hiding are removed. |

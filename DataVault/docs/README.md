@@ -415,6 +415,38 @@ Po kliknięciu:
 
 `firebase-import.json` jest plikiem przeznaczonym do importu w Firebase Realtime Database.
 
+### Jak generator przenosi formatowanie z Excela
+
+Pogrubienie, kursywa, czerwony kolor i przekreślenie z Excela wyglądają po wygenerowaniu tak samo w DataVault (tabela) i w GeneratorNPC (tabela i karta postaci). Nie ma znaczenia:
+
+- czy zaznaczenie w Excelu zaczyna się od litery, czy od entera (np. gdy razem z nagłówkiem zdolności pogrubiony jest też enter przed nim),
+- czy zaznaczenie kończy się enterem,
+- czy obejmuje kilka linii.
+
+Takich komórek nie trzeba poprawiać w Excelu — wynik jest zawsze taki, jak widać w Excelu.
+
+### Co sprawdzić po wygenerowaniu danych
+
+Po kliknięciu `Generuj pliki danych` DataVault od razu pokazuje nowe dane z wybranego pliku — **do momentu odświeżenia strony**. Po odświeżeniu strona wczytuje z powrotem dane z Firebase. Dlatego sprawdzenia wykonaj **przed odświeżeniem strony**:
+
+1. **Szybka kontrola wzrokowa.** Otwórz wpis, w którym w Excelu pogrubiony jest nagłówek w nowej linii — na przykład zakładka `Bestiariusz`, wpis `Kanoptek Skarabeusz` (LP 180), kolumna `Zdolności`. Nagłówek `ANIHILACJA: Protokoły ożywienia` powinien być pogrubiony.
+2. **Dokładniejsza kontrola (opcjonalna).** Sprawdza wszystkie arkusze naraz:
+   1. Naciśnij `F12` — otworzą się narzędzia przeglądarki. Wybierz kartę `Console` (`Konsola`).
+   2. Wklej poniższe polecenie i naciśnij `Enter`.
+   3. Jeżeli przeglądarka ostrzeże przed wklejaniem, wpisz w konsoli tekst podany w ostrzeżeniu (w Chrome np. `allow pasting`), naciśnij `Enter` i wklej polecenie jeszcze raz.
+
+   ```js
+   (() => { const tok = /\{\{(\/?)(RED|B|I|S)\}\}/g; const hits = []; for (const [sheet, rows] of Object.entries(DB.sheets)) rows.forEach((r) => { for (const [kolumna, v] of Object.entries(r)) { if (typeof v !== "string" || !v.includes("\n")) continue; const open = []; let m; tok.lastIndex = 0; while ((m = tok.exec(v))) { if (!m[1]) { open.push({ name: m[2], end: tok.lastIndex }); continue; } let i = open.length - 1; while (i >= 0 && open[i].name !== m[2]) i--; if (i < 0) continue; const o = open.splice(i, 1)[0]; const inner = v.slice(o.end, m.index).replace(/\{\{\/?(?:RED|B|I|S)\}\}/g, ""); const nl = inner.indexOf("\n"); if (nl >= 0 && /\S/.test(inner.slice(nl + 1))) hits.push({ sheet, LP: r.LP, Nazwa: r.Nazwa ?? r.Frakcja, kolumna, styl: m[2], fragment: inner.slice(0, 60) }); } } }); console.table(hits); })();
+   ```
+
+   Jak czytać wynik:
+
+   - **pusta tabela** (bez żadnego wiersza) — wszystko w porządku, żadne formatowanie nie zostanie zgubione;
+   - **tabela z wierszami** — każdy wiersz to pole, w którym część formatowania nie wyświetli się (arkusz, LP, nazwa, kolumna, styl i początek tekstu). W danych z generatora nie powinno się to zdarzyć; najczęstszą przyczyną są znaczniki w rodzaju `{{B}}` wpisane w komórce Excela ręcznie. Zamień je na zwykłe formatowanie w Excelu i wygeneruj pliki ponownie.
+
+   To samo polecenie uruchomione po odświeżeniu strony sprawdza dane, które są aktualnie w Firebase.
+3. Jeżeli wszystko się zgadza, zaimportuj `firebase-import.json` (rozdział „Import danych do Firebase”), odśwież GeneratorNPC i wygeneruj kartę tego samego wpisu — nagłówki zdolności powinny być pogrubione tak jak w Excelu.
+
 ## Import danych do Firebase — tylko admin techniczny
 
 Po wygenerowaniu `firebase-import.json` zaimportuj go w Firebase Console na poziomie root Realtime Database, czyli `/`.
@@ -894,6 +926,38 @@ After clicking it:
 `data.json` is a local backup and helper file.
 
 `firebase-import.json` is meant for import into Firebase Realtime Database.
+
+### How the generator carries formatting over from Excel
+
+After generation, bold, italic, red colour and strikethrough from Excel look the same in DataVault (table) and in GeneratorNPC (table and character card). It does not matter:
+
+- whether the selection in Excel starts with a letter or with an Enter (e.g. when the Enter before an ability header is bold together with the header),
+- whether the selection ends with an Enter,
+- whether it spans several lines.
+
+Such cells do not need fixing in Excel — the result always matches what you see in Excel.
+
+### What to check after generating the data
+
+After you click `Generate data files`, DataVault immediately shows the new data from the selected file — **until the page is refreshed**. After a refresh, the page loads the data from Firebase again. So do the checks **before refreshing the page**:
+
+1. **Quick visual check.** Open an entry in which a header on a new line is bold in Excel — for example the `Bestiariusz` tab, entry `Kanoptek Skarabeusz` (LP 180), column `Zdolności`. The header `ANIHILACJA: Protokoły ożywienia` should be bold.
+2. **Thorough check (optional).** It checks all sheets at once:
+   1. Press `F12` — the browser tools open. Choose the `Console` tab.
+   2. Paste the command below and press `Enter`.
+   3. If the browser warns about pasting, type in the console the text given in the warning (in Chrome e.g. `allow pasting`), press `Enter` and paste the command again.
+
+   ```js
+   (() => { const tok = /\{\{(\/?)(RED|B|I|S)\}\}/g; const hits = []; for (const [sheet, rows] of Object.entries(DB.sheets)) rows.forEach((r) => { for (const [kolumna, v] of Object.entries(r)) { if (typeof v !== "string" || !v.includes("\n")) continue; const open = []; let m; tok.lastIndex = 0; while ((m = tok.exec(v))) { if (!m[1]) { open.push({ name: m[2], end: tok.lastIndex }); continue; } let i = open.length - 1; while (i >= 0 && open[i].name !== m[2]) i--; if (i < 0) continue; const o = open.splice(i, 1)[0]; const inner = v.slice(o.end, m.index).replace(/\{\{\/?(?:RED|B|I|S)\}\}/g, ""); const nl = inner.indexOf("\n"); if (nl >= 0 && /\S/.test(inner.slice(nl + 1))) hits.push({ sheet, LP: r.LP, Nazwa: r.Nazwa ?? r.Frakcja, kolumna, styl: m[2], fragment: inner.slice(0, 60) }); } } }); console.table(hits); })();
+   ```
+
+   How to read the result:
+
+   - **an empty table** (no rows at all) — everything is fine, no formatting will be lost;
+   - **a table with rows** — each row is a field in which part of the formatting will not be displayed (sheet, LP, name, column, style and the start of the text). This should not happen with data from the generator; the most common cause is markers such as `{{B}}` typed into an Excel cell by hand. Replace them with normal Excel formatting and generate the files again.
+
+   The same command run after refreshing the page checks the data currently stored in Firebase.
+3. If everything is fine, import `firebase-import.json` (section "Importing data into Firebase"), refresh GeneratorNPC and generate the card of the same entry — the ability headers should be bold just as in Excel.
 
 ## Importing data into Firebase — technical admin only
 
