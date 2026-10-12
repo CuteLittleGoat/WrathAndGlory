@@ -362,6 +362,8 @@ Wada tej drogi: Excel nie pokazuje problemu i nie umie wyszukiwać formatowania 
 
 ## 12. Warianty trwałej naprawy w kodzie
 
+> **Uwaga:** po analizie oryginalnych plików użytkownik wybrał poprawkę **generatora danych** (wariant D w rozwiniętej postaci). Aktualna rekomendacja, kod i wyniki testów — rozdz. 20–24. Poniższe warianty pozostają jako tło decyzji.
+
 Żaden z wariantów nie został wdrożony. Prototypy sprawdzono wyłącznie poza repozytorium, na prawdziwych funkcjach wyciętych ze źródeł i na archiwalnym skoroszycie.
 
 ### Wariant A — tylko dane (Excel)
@@ -522,6 +524,8 @@ Dokumentacja do aktualizacji przy wdrożeniu (zgodnie z AGENTS.md):
 
 ## 15. Następne kroki
 
+> **Uwaga:** kroki z tego rozdziału zostały zastąpione przez rozdz. 24 i 25 (część II).
+
 1. **Potwierdzenie (użytkownik, kilka minut):** rozdz. 10 — krok 1 (polecenie w konsoli DataVault na danych z Firebase) albo krok 2 (wyszukanie `{{B}}\nANIHILACJA` w świeżo wygenerowanym `data.json`). Wygląd tabel nie rozstrzyga przyczyny.
 2. **Decyzja o wariancie naprawy:** rekomendowany wariant B (rozdz. 12), opcjonalnie wraz z poprawką danych w Excelu (wariant A).
 3. **Lista wszystkich wpisów z tym samym problemem:** polecenie z rozdz. 10, krok 4 (w archiwalnych danych: Karzełkowiec, Genokrad, Aeldari w „Słowach Kluczowych Frakcji”; osobno Talent „Operator broni specjalnej” z pogrubieniem przez dwie linie).
@@ -640,3 +644,352 @@ Do sprawdzenia tego wymagania przygotowano skoroszyt testowy (zapisany jak przez
 Wynik „OK” oznacza, że każdy widoczny znak ma na ekranie dokładnie ten styl, jaki ma w Excelu. Przeglądarkowy parser i `build_json.py` dają na tym skoroszycie identyczny wynik.
 
 **Kryterium akceptacji poprawki:** wszystkie 12 wierszy „OK” we wszystkich trzech widokach, w obu generatorach (przeglądarka i `build_json.py`), przy bajtowo identycznym wyniku obu generatorów.
+
+---
+
+## 20. Projekty poprawki generatora i ich porównanie
+
+Zasada, którą poprawka ma zagwarantować: **żadna para znaczników (`{{B}}…{{/B}}`, `{{I}}…{{/I}}`, `{{RED}}…{{/RED}}`, `{{S}}…{{/S}}`) w wygenerowanych danych nie obejmuje znaku nowej linii.** Wtedy każda linia ma komplet znaczników, a sposób wyświetlania w GeneratorNPC i DataVault (każda linia lub pasek formatowany osobno) przestaje gubić formatowanie — bez względu na to, czy pogrubienie w Excelu zaczyna się od litery, od entera, czy obejmuje kilka linii.
+
+Zmiana dotyczy wyłącznie dwóch generatorów, które muszą dawać identyczny wynik (AGENTS.md, punkt 14): `DataVault/xlsxCanonicalParser.js` (przycisk „Generuj pliki danych”) i `DataVault/build_json.py`. Wyświetlanie w GeneratorNPC i DataVault pozostaje bez zmian.
+
+Rozważono dwa projekty, oba sprawdzone na oryginalnym `Repozytorium.xlsx` w obu językach:
+
+| | **E — „krawędziowy”** | **L — „liniowy”** (rekomendowany) |
+|---|---|---|
+| Idea | entery z **brzegów** każdego fragmentu wychodzą poza znaczniki | tekst z enterami jest dzielony na linie i **każda linia** dostaje własną parę znaczników |
+| Gdzie w kodzie | tylko obsługa fragmentów rich text (`richTextToString` / `_rich_text_to_string`) | wspólna funkcja owijania (`wrapWithMarkers` / `_wrap_with_markers`) — obejmuje też komórki czerwone w całości |
+| Zestaw R1–R12 (rozdz. 19) | 10 / 12 — **nie przechodzą R7 i R8** | **12 / 12** |
+| 13 kart Bestiariusza | naprawione | naprawione |
+| Aeldari (Słowa Kluczowe Frakcji LP 11) | naprawione | naprawione |
+| Talenty LP 45 (pogrubienie przez dwie linie) | **nie naprawione** | naprawione |
+| Pola z parą znaczników przez enter po poprawce | 1 | **0** |
+| Zmienione pola na prawdziwym pliku | 62 | 63 |
+| Zmiana widocznego tekstu / `_meta` / podziału kart na paski | brak / brak / brak | brak / brak / brak |
+| Pogorszenia wyświetlania | 0 | 0 |
+| Zgodność przeglądarka = `build_json.py` | bajtowo identyczne | bajtowo identyczne |
+
+Projekt E spełnia samo wymaganie „od litery = od entera” dla typowych przypadków, ale zostawia luki (pogrubienie zaczynające się od ostatniego znaku poprzedniej linii, pogrubiony tekst w kilku liniach). Projekt L zamyka je wszystkie jedną regułą, więc to on jest rekomendowany jako zabezpieczenie „na przyszłość”.
+
+---
+
+## 21. Rekomendowana poprawka — projekt L
+
+### 21.1. Reguły
+
+Funkcja owijająca tekst znacznikami (ta sama w obu generatorach) działa tak:
+
+1. **Brak stylu** → tekst bez zmian.
+2. **Tekst bez entera** → cały tekst w jednej parze znaczników — **dokładnie jak dziś**. Dzięki temu pola jednoliniowe, w tym pogrubienie zaczynające się od litery (R1), nie zmieniają się ani o znak.
+3. **Tekst z enterami** → dzielony na linie (enter = `\r\n`, `\n` albo samotne `\r`). W każdej linii spacje i tabulatory **stykające się z enterem** zostają poza znacznikami, niepusta reszta linii dostaje własną parę znaczników, a linia pusta (albo z samych spacji) zostaje bez znaczników. Spacji, które nie stykają się z enterem, funkcja nie rusza — od nich zależy podział karty na paski (np. `{{B}}bagnet: {{/B}}5 + 2 DK`).
+4. **Tekst złożony tylko z enterów, spacji i tabulatorów** → pusta para znaczników przed tekstem (np. `{{B}}{{/B}}\n`). Pusta para nic nie wyświetla, a pole nie staje się puste po przycięciu, więc żaden wiersz nie znika z danych.
+
+Ponieważ reguły działają we wspólnej funkcji owijającej, obejmują zarówno fragmenty rich text, jak i komórki czerwone w całości (dziś w pliku nie ma wieloliniowych komórek tego typu, ale po poprawce nie mogą już sprawić kłopotu).
+
+### 21.2. Jak zmienia się zapis (przykłady z prawdziwego pliku)
+
+| Pole | Dziś | Po poprawce |
+|---|---|---|
+| Bestiariusz LP 180, Zdolności | `…o +1.\n{{B}}\nANIHILACJA: Protokoły ożywienia{{/B}}` | `…o +1.\n\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
+| Bestiariusz LP 34, Zdolności | `…ataku.\n{{B}}\nRozmiar ma znaczenie: {{/B}}Horda` | `…ataku.\n\n{{B}}Rozmiar ma znaczenie: {{/B}}Horda` |
+| Premie z Przeszłości Frakcji LP 1, Premia 1 | `Odwaga {{I}}lub\n{{/I}}Determinacja` | `Odwaga {{I}}lub{{/I}}\nDeterminacja` |
+| Słowa Kluczowe Frakcji LP 11, Efekt | `{{I}}\n[dane utajnione]\n\n{{/I}}` | `\n{{I}}[dane utajnione]{{/I}}\n\n` |
+| Talenty LP 45, Efekt | `{{B}} (str. 217)].\n* Miotacz ognia [Podręcznik Główny{{/B}}` | `{{B}} (str. 217)].{{/B}}\n{{B}}* Miotacz ognia [Podręcznik Główny{{/B}}` |
+| Specjalne Bonusy Frakcji LP 15, Opis | `…wyglądu\n{{B}}\n{{/B}}Zyskujesz` | `…wyglądu\n{{B}}{{/B}}\nZyskujesz` |
+
+Zapis dla Kanopteka po poprawce jest **znak w znak taki sam** jak zapis Rozdzieracza, czyli jak pogrubienie zaczynające się od litery.
+
+### 21.3. Kod — `DataVault/build_json.py`
+
+Zastępuje obecną funkcję `_wrap_with_markers` (linie 82–91). Moduł już importuje `re`.
+
+```python
+# Złamanie linii dla owijania markerami: CRLF, samotne LF albo samotne CR (najdłuższe dopasowanie
+# pierwsze). Parsery XML (ElementTree i DOMParser) zamieniają dosłowne CRLF/CR z pliku na LF, więc CR
+# może tu trafić tylko z odwołania &#13;. Celowo NIE używamy str.splitlines(), bo ta dzieli też na
+# U+2028, U+2029, \x0b, \x0c, \x1c-\x1e i \x85, a renderery i xlsxCanonicalParser.js tego nie robią.
+# Line break used for marker wrapping: CRLF, a lone LF or a lone CR (longest match first). The XML
+# parsers (ElementTree and DOMParser) turn literal CRLF/CR from the file into LF, so a CR can only arrive
+# here from a &#13; reference. str.splitlines() is deliberately NOT used: it also splits on U+2028, U+2029,
+# \x0b, \x0c, \x1c-\x1e and \x85, which the renderers and xlsxCanonicalParser.js do not do.
+_LINE_BREAK_RE = re.compile(r"(\r\n|\r|\n)")
+
+
+def _wrap_with_markers(text: str, *, red=False, bold=False, italic=False, strike=False) -> str:
+  """Owija tekst markerami tak, aby żadna para markerów nie zawierała złamania linii.
+
+  Renderery DataVault (formatTextHTML, formatFactionKeywordHTML) i GeneratorNPC (formatTextHTML,
+  splitEntries + formatSectionEntries) formatują każdą linię albo pasek osobno, z pustym stosem stylów.
+  Para markerów przechodząca przez złamanie linii gubi więc styl na kolejnych liniach, np. run
+  "\\nANIHILACJA: ..." dawał "{{B}}\\nANIHILACJA: ...{{/B}}" i nagłówek był zwykłym tekstem.
+  Zasady (identyczne jak wrapWithMarkers w DataVault/xlsxCanonicalParser.js):
+  1. Brak stylu -> tekst bez zmian.
+  2. Tekst bez złamania linii -> cały tekst w jednej parze markerów (także pusty i z samych spacji),
+     dokładnie jak dotąd, więc pola jednolinijkowe i puste czerwone komórki się nie zmieniają.
+  3. Tekst ze złamaniami linii -> dzielimy go na linie; spacje i tabulatory dotykające złamania linii
+     zostają poza markerami, niepusta reszta linii dostaje własną parę markerów, linia z samych
+     spacji/tabulatorów zostaje bez markerów. Spacji, które nie dotykają złamania linii, nie ruszamy,
+     bo od nich zależy podział na paski w splitEntries (np. "{{B}}bagnet: {{/B}}5").
+  4. Tekst złożony wyłącznie ze spacji, tabulatorów i złamań linii -> jedna pusta para markerów przed
+     tekstem. Wynik pozostaje niepusty po trim() tak samo jak dotąd, więc rows_to_records nie pomija
+     wiersza, a pole nie staje się puste; pusta para nie renderuje żadnego elementu.
+
+  Wraps text in markers so that no marker pair contains a line break.
+
+  The DataVault renderers (formatTextHTML, formatFactionKeywordHTML) and the GeneratorNPC renderers
+  (formatTextHTML, splitEntries + formatSectionEntries) format every line or stripe separately, with an
+  empty style stack. A marker pair that crosses a line break therefore loses its style on the following
+  lines, e.g. the run "\\nANIHILACJA: ..." produced "{{B}}\\nANIHILACJA: ...{{/B}}" and the header was
+  rendered as plain text. Rules (identical to wrapWithMarkers in DataVault/xlsxCanonicalParser.js):
+  1. No style -> the text is returned unchanged.
+  2. Text without a line break -> the whole text in one marker pair (also empty and space-only text),
+     exactly as before, so single-line fields and empty red cells do not change.
+  3. Text with line breaks -> it is split into lines; spaces and tabs touching a line break stay outside
+     the markers, the non-empty rest of each line gets its own marker pair, a line made only of spaces/tabs
+     stays unmarked. Spaces that do not touch a line break are left alone, because splitEntries stripe
+     splitting depends on them (e.g. "{{B}}bagnet: {{/B}}5").
+  4. Text made only of spaces, tabs and line breaks -> one empty marker pair before the text. The result
+     stays non-blank after trim() exactly as before, so rows_to_records does not skip the row and the field
+     does not become empty; an empty pair renders no element.
+  """
+  markers = [
+    ("{{RED}}", "{{/RED}}", red),
+    ("{{B}}", "{{/B}}", bold),
+    ("{{I}}", "{{/I}}", italic),
+    ("{{S}}", "{{/S}}", strike),
+  ]
+  start = "".join(op for op,_,use in markers if use)
+  end = "".join(cl for _,cl,use in reversed(markers) if use)
+  # Reguła 1: bez stylu nie dodajemy markerów / Rule 1: no style, no markers
+  if not start:
+    return text
+  # Reguła 2: tekst jednolinijkowy owijamy w całości, jak dotąd / Rule 2: single-line text is wrapped whole, as before
+  if "\n" not in text and "\r" not in text:
+    return f"{start}{text}{end}"
+  # Reguła 3: na pozycjach parzystych są linie, na nieparzystych złamania linii
+  # Rule 3: even positions hold lines, odd positions hold the line breaks
+  parts = _LINE_BREAK_RE.split(text)
+  last = len(parts) - 1
+  out = []
+  wrapped = False
+  for i, part in enumerate(parts):
+    if i % 2 == 1:
+      out.append(part)
+      continue
+    lo, hi = 0, len(part)
+    # Spacje/tabulatory tuż za złamaniem linii zostają przed markerem otwierającym
+    # Spaces/tabs right after a line break stay before the opening marker
+    if i > 0:
+      while lo < hi and part[lo] in " \t":
+        lo += 1
+    # Spacje/tabulatory tuż przed złamaniem linii zostają za markerem zamykającym
+    # Spaces/tabs right before a line break stay after the closing marker
+    if i < last:
+      while hi > lo and part[hi - 1] in " \t":
+        hi -= 1
+    if hi > lo:
+      out.append(f"{part[:lo]}{start}{part[lo:hi]}{end}{part[hi:]}")
+      wrapped = True
+    else:
+      # Linia pusta albo z samych spacji/tabulatorów zostaje bez markerów
+      # An empty or spaces/tabs-only line stays unmarked
+      out.append(part)
+  # Reguła 4: nic nie zostało owinięte -> pusta para markerów przed tekstem (bez złamania linii w środku)
+  # Rule 4: nothing was wrapped -> an empty marker pair before the text (no line break inside it)
+  if not wrapped:
+    return f"{start}{end}{text}"
+  return "".join(out)
+```
+
+### 21.4. Kod — `DataVault/xlsxCanonicalParser.js`
+
+Zastępuje obecną funkcję `wrapWithMarkers` (linie 57–67), wewnątrz bloku `(function(global){ … })(window);`.
+
+```js
+// --- Owijanie tekstu markerami bez pary markerów przechodzącej przez złamanie linii / Wrapping text in markers so that no marker pair crosses a line break ---
+// Renderery DataVault (formatTextHTML, formatFactionKeywordHTML) i GeneratorNPC (formatTextHTML,
+// splitEntries + formatSectionEntries) formatują każdą linię albo pasek osobno, z pustym stosem stylów.
+// Para markerów przechodząca przez złamanie linii gubi więc styl na kolejnych liniach, np. run
+// "\nANIHILACJA: ..." dawał "{{B}}\nANIHILACJA: ...{{/B}}" i nagłówek był zwykłym tekstem.
+// Zasady (identyczne jak _wrap_with_markers w DataVault/build_json.py):
+// 1. Brak stylu -> tekst bez zmian.
+// 2. Tekst bez złamania linii -> cały tekst w jednej parze markerów (także pusty i z samych spacji),
+//    dokładnie jak dotąd, więc pola jednolinijkowe i puste czerwone komórki się nie zmieniają.
+// 3. Tekst ze złamaniami linii (CRLF, LF albo samotne CR) -> dzielimy go na linie; spacje i tabulatory
+//    dotykające złamania linii zostają poza markerami, niepusta reszta linii dostaje własną parę markerów,
+//    linia z samych spacji/tabulatorów zostaje bez markerów. Spacji, które nie dotykają złamania linii,
+//    nie ruszamy, bo od nich zależy podział na paski w splitEntries (np. "{{B}}bagnet: {{/B}}5").
+// 4. Tekst złożony wyłącznie ze spacji, tabulatorów i złamań linii -> jedna pusta para markerów przed
+//    tekstem. Wynik pozostaje niepusty po trim() tak samo jak dotąd, więc rowsToRecords nie pomija
+//    wiersza, a pole nie staje się puste; pusta para nie renderuje żadnego elementu.
+// The DataVault renderers (formatTextHTML, formatFactionKeywordHTML) and the GeneratorNPC renderers
+// (formatTextHTML, splitEntries + formatSectionEntries) format every line or stripe separately, with an
+// empty style stack. A marker pair that crosses a line break therefore loses its style on the following
+// lines, e.g. the run "\nANIHILACJA: ..." produced "{{B}}\nANIHILACJA: ...{{/B}}" and the header was
+// rendered as plain text. Rules (identical to _wrap_with_markers in DataVault/build_json.py):
+// 1. No style -> the text is returned unchanged.
+// 2. Text without a line break -> the whole text in one marker pair (also empty and space-only text),
+//    exactly as before, so single-line fields and empty red cells do not change.
+// 3. Text with line breaks (CRLF, LF or a lone CR) -> it is split into lines; spaces and tabs touching a
+//    line break stay outside the markers, the non-empty rest of each line gets its own marker pair, a line
+//    made only of spaces/tabs stays unmarked. Spaces that do not touch a line break are left alone,
+//    because splitEntries stripe splitting depends on them (e.g. "{{B}}bagnet: {{/B}}5").
+// 4. Text made only of spaces, tabs and line breaks -> one empty marker pair before the text. The result
+//    stays non-blank after trim() exactly as before, so rowsToRecords does not skip the row and the field
+//    does not become empty; an empty pair renders no element.
+function wrapWithMarkers(text, {red=false, bold=false, italic=false, strike=false} = {}){
+  const markers = [
+    ["{{RED}}", "{{/RED}}", red],
+    ["{{B}}", "{{/B}}", bold],
+    ["{{I}}", "{{/I}}", italic],
+    ["{{S}}", "{{/S}}", strike],
+  ];
+  const start = markers.filter((m)=>m[2]).map((m)=>m[0]).join("");
+  const end = markers.slice().reverse().filter((m)=>m[2]).map((m)=>m[1]).join("");
+  const value = `${text}`;
+  // Reguła 1: bez stylu nie dodajemy markerów / Rule 1: no style, no markers
+  if (!start) return value;
+  // Reguła 2: tekst jednolinijkowy owijamy w całości, jak dotąd / Rule 2: single-line text is wrapped whole, as before
+  if (!value.includes("\n") && !value.includes("\r")) return `${start}${value}${end}`;
+  // Reguła 3: na pozycjach parzystych są linie, na nieparzystych złamania linii (najdłuższe dopasowanie
+  // pierwsze; U+2028/U+2029 nie są złamaniem linii, tak jak w rendererach i w build_json.py)
+  // Rule 3: even positions hold lines, odd positions hold the line breaks (longest match first;
+  // U+2028/U+2029 are not line breaks, as in the renderers and in build_json.py)
+  const parts = value.split(/(\r\n|\r|\n)/);
+  const last = parts.length - 1;
+  const isSpaceOrTab = (ch)=>ch === " " || ch === "\t";
+  let out = "";
+  let wrapped = false;
+  for (let i = 0; i < parts.length; i += 1){
+    const part = parts[i];
+    if (i % 2 === 1){
+      out += part;
+      continue;
+    }
+    let lo = 0;
+    let hi = part.length;
+    // Spacje/tabulatory tuż za złamaniem linii zostają przed markerem otwierającym
+    // Spaces/tabs right after a line break stay before the opening marker
+    if (i > 0){
+      while (lo < hi && isSpaceOrTab(part[lo])) lo += 1;
+    }
+    // Spacje/tabulatory tuż przed złamaniem linii zostają za markerem zamykającym
+    // Spaces/tabs right before a line break stay after the closing marker
+    if (i < last){
+      while (hi > lo && isSpaceOrTab(part[hi - 1])) hi -= 1;
+    }
+    if (hi > lo){
+      out += `${part.slice(0, lo)}${start}${part.slice(lo, hi)}${end}${part.slice(hi)}`;
+      wrapped = true;
+    } else {
+      // Linia pusta albo z samych spacji/tabulatorów zostaje bez markerów
+      // An empty or spaces/tabs-only line stays unmarked
+      out += part;
+    }
+  }
+  // Reguła 4: nic nie zostało owinięte -> pusta para markerów przed tekstem (bez złamania linii w środku)
+  // Rule 4: nothing was wrapped -> an empty marker pair before the text (no line break inside it)
+  return wrapped ? out : `${start}${end}${value}`;
+}
+```
+
+Wywołania (`richTextToString` / `_rich_text_to_string` oraz obsługa komórek czerwonych w całości) **nie wymagają zmian** — korzystają z poprawionej funkcji.
+
+---
+
+## 22. Wyniki projektu L na oryginalnych plikach
+
+Wszystkie porównania liczone względem danych, które są dziś w Firebase (rozdz. 17.3).
+
+| Sprawdzenie | Wynik |
+|---|---|
+| Przeglądarka (prawdziwy `xlsxCanonicalParser.js` + `buildDataJsonFromSheets` w Chromium) vs `build_json.py` | **bajtowo identyczne** pliki `data.json` |
+| Walidacja `firebase-import.json` (`validateFirebaseImportObject`) | przechodzi |
+| Zmienione pola | **63** (Bestiariusz 13, Premie z Przeszłości Frakcji 40, Słowa Kluczowe Frakcji 8, Specjalne Bonusy Frakcji 1, Talenty 1) |
+| Widoczny tekst (po usunięciu znaczników) | identyczny we wszystkich 63 polach |
+| `_meta` (cechy, stany, kolejność arkuszy i kolumn) | identyczne |
+| Pola z parą znaczników przez enter | 63 → **0** |
+| Karta GeneratorNPC | naprawione **13 z 13**, pogorszenia 0 |
+| Tabela GeneratorNPC i tabela DataVault | naprawione wszystkie pola z wadą (13 Bestiariusza, Aeldari ×2, Talenty LP 45), pogorszenia 0 |
+| Kolumna „Słowo Kluczowe” w „Słowach Kluczowych Frakcji” (osobny sposób wyświetlania w DataVault) | 5 zmienionych pól, wygląd identyczny |
+| Liczba pasków na kartach | bez zmian we wszystkich polach |
+| Prawdziwa strona GeneratorNPC w przeglądarce (13 wpisów z rozdz. 18.1) | dziś: grubość czcionki nagłówka 400 w tabeli i na karcie (13 / 13); po poprawce: **700** (13 / 13); liczba pasków identyczna; 0 błędów strony |
+| Zestaw R1–R12 | **12 / 12 OK** w obu generatorach; R2, R3, R5, R6 dają zapis bajtowo identyczny z R1 |
+| Losowe napisy (60 000 przypadków: spacje, tabulatory, `\r`, `\n`, `\r\n`, twarde spacje, U+2028, emoji, polskie litery) | 0 różnic JS / Python, 0 zmian widocznego tekstu, 0 par przez enter |
+
+**Co zobaczysz po ponownym imporcie:** pogrubione nagłówki na kartach i w tabelach 13 wpisów z rozdz. 18.1, poprawione pogrubienie i kursywę w „Słowach Kluczowych Frakcji” LP 11 (DataVault) oraz pogrubienie w Talentach LP 45 dokładnie tak, jak w Excelu. Uwaga do Talentów LP 45 (komórka `Talenty!G46`): w Excelu pogrubiony jest tam fragment „ (str. 217)].” i cała linia „* Miotacz ognia [Podręcznik Główny”, podczas gdy w pozostałych liniach tej komórki pogrubione jest tylko „Podręcznik Główny”. To wygląda na przypadkowe formatowanie w Excelu — po poprawce będzie ono widoczne, bo generator odda je wiernie. Warto tę komórkę poprawić w Excelu.
+
+Żadne inne pole nie zmieni wyglądu.
+
+---
+
+## 23. Dodatkowe zabezpieczenia — ocena
+
+### 23.1. Kontrola po wygenerowaniu danych — opcjonalna, zalecana
+
+Po zbudowaniu `data.json` oba generatory mogłyby sprawdzić każde pole tekstowe (arkusze i `_meta`): czy znaczniki są domknięte i poprawnie zagnieżdżone oraz czy żadna para nie obejmuje entera. Prototyp takiej kontroli (JS i Python, identyczne raporty) zgłasza na dzisiejszych danych 63 pola (122 pary, 16 pól z widocznym skutkiem), a na danych po poprawce L — **0**.
+
+Rekomendacja: kontrola **tylko ostrzega** (wpis w dzienniku DataVault i komunikat w konsoli `build_json.py`), a pliki są generowane normalnie. Po poprawce L ostrzeżenie może się pojawić wyłącznie przy błędzie w kodzie generatora albo przy znacznikach wpisanych ręcznie w Excelu — w obu przypadkach dane nadal da się wczytać, a ostrzeżenie mówi, co sprawdzić. Blokowanie generowania utrudniłoby pracę bez realnej korzyści.
+
+Przykładowy komunikat (na dzisiejszych danych): „UWAGA: kontrola formatowania — pola z problemami: 63, z widocznym skutkiem: 16. Plik data.json został zapisany.” z listą pól (arkusz, LP, nazwa, kolumna, fragment).
+
+### 23.2. Raport „wskazówek formatowania” dla Excela — niezalecany
+
+Lista komórek, w których formatowanie zaczyna się lub kończy enterem, byłaby głównie szumem (104 kursywy `lub⏎` w „Premiach z Przeszłości Frakcji”), a po poprawce L takie formatowanie nie ma już żadnego skutku. Wyjątek wart ręcznego przejrzenia: Talenty LP 45 (rozdz. 22).
+
+### 23.3. Zabezpieczenie po stronie wyświetlania (GeneratorNPC, DataVault) — niepotrzebne
+
+Wszystkie dane trafiają do GeneratorNPC i DataVault przez generator, więc po poprawce L i ponownym imporcie wyświetlanie dostaje wyłącznie poprawny zapis. Ulubione w GeneratorNPC przechowują nadpisania tylko dla Umiejętności i Słów kluczowych — w tych kolumnach nie ma dziś żadnej pary znaczników przez enter, więc zapisane ulubione nie wymagają poprawek. Wariant B z rozdz. 12 pozostaje możliwy jako niezależne, dodatkowe zabezpieczenie, ale nie jest potrzebny do rozwiązania problemu.
+
+---
+
+## 24. Plan wdrożenia i procedura dla użytkownika
+
+### 24.1. Zmiany w kodzie (do wykonania po akceptacji)
+
+1. `DataVault/build_json.py` — nowa funkcja `_wrap_with_markers` z rozdz. 21.3.
+2. `DataVault/xlsxCanonicalParser.js` — nowa funkcja `wrapWithMarkers` z rozdz. 21.4.
+3. Opcjonalnie: kontrola po wygenerowaniu danych (rozdz. 23.1) w `DataVault/app.js` (`loadXlsxFromRepo`) i w `build_json.py` (`main`).
+4. Porównanie wymagane przez AGENTS.md (punkt 14), na aktualnym `Repozytorium.xlsx`:
+   - `build_json.py` i przycisk „Generuj pliki danych” muszą dać bajtowo identyczny `data.json`;
+   - porównanie pole po polu z danymi z Firebase: oczekiwane dokładnie 63 zmienione pola, identyczny widoczny tekst, identyczne `_meta`, 0 par znaczników przez enter;
+   - zestaw R1–R12: 12 / 12.
+5. Dokumentacja (AGENTS.md, punkty 1–4 i 15; obie wersje językowe):
+   - `DataVault/docs/Documentation.md` — rozdziały „Kanoniczny parser XLSX” / „Canonical XLSX parser” (reguły owijania znacznikami, zgodność JS / Python), „Zgodność trzech ścieżek generowania danych” i „Formatowanie tekstu” / „Text formatting”;
+   - `DataVault/docs/ZasadyFormatowania.md` — „Rich text z XLSX” / „XLSX rich text” (entery nigdy nie trafiają między znaczniki), „Zachowanie podziałów linii” / „Line break behavior”, „Typowe błędy w danych źródłowych” / „Common source data errors” (pogrubiony enter nie jest już błędem);
+   - `DataVault/docs/README.md` — „Generowanie plików danych — tylko admin” / „Generating data files — admin only” (co sprawdzić po wygenerowaniu; komunikat kontroli, jeśli zostanie dodana);
+   - `GeneratorNPC/docs/*` i `DetaleLayout.md` — bez zmian (kod GeneratorNPC i wygląd się nie zmieniają).
+
+### 24.2. Kroki użytkownika po wdrożeniu
+
+1. Otworzyć DataVault w trybie admina, kliknąć „Generuj pliki danych” i wskazać aktualny `Repozytorium.xlsx`. Pobiorą się `data.json` i `firebase-import.json`.
+2. **Przed odświeżeniem strony** DataVault pokazuje świeżo wygenerowane dane. Szybka kontrola: w Bestiariuszu wpis LP 180 „Kanoptek Skarabeusz” — nagłówek „ANIHILACJA: Protokoły ożywienia” ma być pogrubiony.
+3. Dokładniejsza kontrola (opcjonalnie): F12 → „Console”, wkleić poniższe polecenie i nacisnąć Enter. Wynik powinien być **pustą tabelą** (dziś: 16 pozycji).
+
+   ```js
+   (() => { const tok = /\{\{(\/?)(RED|B|I|S)\}\}/g; const hits = []; for (const [sheet, rows] of Object.entries(DB.sheets)) rows.forEach((r) => { for (const [kolumna, v] of Object.entries(r)) { if (typeof v !== "string" || !v.includes("\n")) continue; const open = []; let m; tok.lastIndex = 0; while ((m = tok.exec(v))) { if (!m[1]) { open.push({ name: m[2], end: tok.lastIndex }); continue; } let i = open.length - 1; while (i >= 0 && open[i].name !== m[2]) i--; if (i < 0) continue; const o = open.splice(i, 1)[0]; const inner = v.slice(o.end, m.index).replace(/\{\{\/?(?:RED|B|I|S)\}\}/g, ""); const nl = inner.indexOf("\n"); if (nl >= 0 && /\S/.test(inner.slice(nl + 1))) hits.push({ sheet, LP: r.LP, Nazwa: r.Nazwa ?? r.Frakcja, kolumna, styl: m[2], fragment: inner.slice(0, 60) }); } } }); console.table(hits); })();
+   ```
+
+4. Zaimportować `firebase-import.json` do Firebase Realtime Database (jak przy każdej aktualizacji).
+5. Odświeżyć GeneratorNPC, wybrać Kanopteka z listy i wygenerować kartę — wszystkie nagłówki zdolności powinny być pogrubione. Tak samo pozostałe wpisy z rozdz. 18.1.
+
+Poprawiać komórek w Excelu nie trzeba — po poprawce generatora pogrubienie zaczynające się od entera i od litery daje ten sam wynik. Jedyna komórka warta przejrzenia to Talenty LP 45 (rozdz. 22).
+
+---
+
+## 25. Ryzyka i następne kroki (część II)
+
+| Ryzyko | Ocena | Ograniczenie |
+|---|---|---|
+| Rozbieżność generatora przeglądarkowego i `build_json.py` | niskie | identyczne reguły w obu językach; bajtowa zgodność na prawdziwym pliku, zestawie R1–R12 i 60 000 losowych napisów; porównanie z punktu 14 AGENTS.md przed wdrożeniem |
+| Zmiana wyglądu pól, które dziś wyglądają dobrze | bardzo niskie | na prawdziwym pliku 0 pogorszeń w karcie, obu tabelach i widoku słów kluczowych frakcji; 0 zmian liczby pasków |
+| Talenty LP 45 zacznie pokazywać pogrubienie, które w Excelu wygląda na przypadkowe | pewne, ale wierne Excelowi | poprawić komórkę `Talenty!G46` w Excelu |
+| Linia przypisu `*[n]` poprzedzona pogrubionym enterem nie zostanie rozpoznana jako przypis | teoretyczne (0 przypadków w pliku) | to samo dzieje się dziś przy pogrubieniu zaczynającym się od `*`; ograniczenie wyświetlania, nie generatora |
+| Poprawka nie zadziała bez ponownego wygenerowania i importu danych | pewne | kroki z rozdz. 24.2 |
+
+**Następne kroki:**
+
+1. Akceptacja projektu L (rozdz. 21) i decyzja, czy dodać kontrolę po wygenerowaniu danych (rozdz. 23.1).
+2. Wdrożenie zmian w kodzie i dokumentacji według rozdz. 24.1 wraz z porównaniem z punktu 14 AGENTS.md.
+3. Wygenerowanie i import nowych plików przez użytkownika według rozdz. 24.2.
+4. Opcjonalnie: poprawa komórki `Talenty!G46` w Excelu.
