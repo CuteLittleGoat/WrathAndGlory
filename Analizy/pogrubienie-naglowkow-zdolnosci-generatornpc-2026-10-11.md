@@ -925,7 +925,9 @@ Wszystkie porównania liczone względem danych, które są dziś w Firebase (roz
 
 ## 23. Dodatkowe zabezpieczenia — ocena
 
-### 23.1. Kontrola po wygenerowaniu danych — opcjonalna, zalecana
+### 23.1. Kontrola po wygenerowaniu danych — **odrzucona przez użytkownika**
+
+> **Decyzja użytkownika:** generator **nie** ma wyświetlać żadnego ostrzeżenia. Kontroli opisanej poniżej nie wdrażamy; opis zostaje wyłącznie jako tło decyzji.
 
 Po zbudowaniu `data.json` oba generatory mogłyby sprawdzić każde pole tekstowe (arkusze i `_meta`): czy znaczniki są domknięte i poprawnie zagnieżdżone oraz czy żadna para nie obejmuje entera. Prototyp takiej kontroli (JS i Python, identyczne raporty) zgłasza na dzisiejszych danych 63 pola (122 pary, 16 pól z widocznym skutkiem), a na danych po poprawce L — **0**.
 
@@ -949,7 +951,7 @@ Wszystkie dane trafiają do GeneratorNPC i DataVault przez generator, więc po p
 
 1. `DataVault/build_json.py` — nowa funkcja `_wrap_with_markers` z rozdz. 21.3.
 2. `DataVault/xlsxCanonicalParser.js` — nowa funkcja `wrapWithMarkers` z rozdz. 21.4.
-3. Opcjonalnie: kontrola po wygenerowaniu danych (rozdz. 23.1) w `DataVault/app.js` (`loadXlsxFromRepo`) i w `build_json.py` (`main`).
+3. **Bez** kontroli i ostrzeżeń po wygenerowaniu danych — decyzja użytkownika (rozdz. 23.1). `DataVault/app.js` i funkcja `main` w `build_json.py` pozostają bez zmian.
 4. Porównanie wymagane przez AGENTS.md (punkt 14), na aktualnym `Repozytorium.xlsx`:
    - `build_json.py` i przycisk „Generuj pliki danych” muszą dać bajtowo identyczny `data.json`;
    - porównanie pole po polu z danymi z Firebase: oczekiwane dokładnie 63 zmienione pola, identyczny widoczny tekst, identyczne `_meta`, 0 par znaczników przez enter;
@@ -957,7 +959,7 @@ Wszystkie dane trafiają do GeneratorNPC i DataVault przez generator, więc po p
 5. Dokumentacja (AGENTS.md, punkty 1–4 i 15; obie wersje językowe):
    - `DataVault/docs/Documentation.md` — rozdziały „Kanoniczny parser XLSX” / „Canonical XLSX parser” (reguły owijania znacznikami, zgodność JS / Python), „Zgodność trzech ścieżek generowania danych” i „Formatowanie tekstu” / „Text formatting”;
    - `DataVault/docs/ZasadyFormatowania.md` — „Rich text z XLSX” / „XLSX rich text” (entery nigdy nie trafiają między znaczniki), „Zachowanie podziałów linii” / „Line break behavior”, „Typowe błędy w danych źródłowych” / „Common source data errors” (pogrubiony enter nie jest już błędem);
-   - `DataVault/docs/README.md` — „Generowanie plików danych — tylko admin” / „Generating data files — admin only” (co sprawdzić po wygenerowaniu; komunikat kontroli, jeśli zostanie dodana);
+   - `DataVault/docs/README.md` — „Generowanie plików danych — tylko admin” / „Generating data files — admin only” (co sprawdzić po wygenerowaniu danych);
    - `GeneratorNPC/docs/*` i `DetaleLayout.md` — bez zmian (kod GeneratorNPC i wygląd się nie zmieniają).
 
 ### 24.2. Kroki użytkownika po wdrożeniu
@@ -989,7 +991,7 @@ Poprawiać komórek w Excelu nie trzeba — po poprawce generatora pogrubienie z
 
 **Następne kroki:**
 
-1. Akceptacja projektu L (rozdz. 21) i decyzja, czy dodać kontrolę po wygenerowaniu danych (rozdz. 23.1).
+1. Projekt L (rozdz. 21) zaakceptowany; kontrola po wygenerowaniu danych odrzucona (rozdz. 23.1).
 2. Wdrożenie zmian w kodzie i dokumentacji według rozdz. 24.1 wraz z porównaniem z punktu 14 AGENTS.md.
 3. Wygenerowanie i import nowych plików przez użytkownika według rozdz. 24.2.
 4. Opcjonalnie: poprawa komórki `Talenty!G46` w Excelu.
