@@ -142,9 +142,9 @@ Generator danych (`xlsxCanonicalParser.js` w przeglądarce i `build_json.py`, ob
 - linia pusta albo z samych spacji zostaje bez znaczników;
 - fragment złożony wyłącznie z enterów i spacji dostaje pustą parę znaczników przed tekstem (np. `{{B}}{{/B}}\n`), która niczego nie wyświetla.
 
-Przykłady (⏎ oznacza enter w komórce):
+Przykłady (⏎ oznacza enter w komórce; kolumna „Zapis fragmentu” pokazuje fragment stojący w środku komórki — cała wartość komórki jest potem przycinana, więc entery na samym początku albo końcu komórki znikają tak samo jak w zwykłym tekście):
 
-| Fragment w Excelu | Styl | Zapis w danych |
+| Fragment w Excelu | Styl | Zapis fragmentu |
 | --- | --- | --- |
 | `ANIHILACJA: Protokoły ożywienia` | pogrubienie | `{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
 | `⏎ANIHILACJA: Protokoły ożywienia` | pogrubienie | `\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
@@ -157,7 +157,7 @@ Dzięki temu:
 
 - formatowanie zaczynające się w Excelu **od litery** i **od entera** daje dokładnie ten sam zapis i ten sam wygląd (np. pogrubiony nagłówek zdolności w nowej linii);
 - formatowanie obejmujące kilka linii wyświetla się w każdej z nich — w tabeli DataVault, w tabeli GeneratorNPC i na karcie GeneratorNPC;
-- widoczny tekst jest zawsze dokładnie taki jak w komórce Excela — zmienia się tylko położenie znaczników.
+- owijanie znacznikami nie zmienia widocznego tekstu — zmienia się tylko położenie znaczników (zwykła normalizacja wartości, czyli przycięcie i zamiana cudzysłowów, działa tak samo jak dla tekstu bez formatowania, zob. „Normalizacja tekstu z XLSX”).
 
 Szczegóły techniczne reguł: `DataVault/docs/Documentation.md`, rozdział „Kanoniczny parser XLSX” → „Owijanie tekstu znacznikami”.
 
@@ -220,11 +220,12 @@ Zasady:
 
 - gwiazdka i numer pozostają widoczne,
 - reguła działa osobno dla każdej linii,
-- linia otrzymuje jaśniejszy albo pomocniczy styl zależny od CSS.
+- linia otrzymuje jaśniejszy albo pomocniczy styl zależny od CSS,
+- wzorzec musi zaczynać linię: jeżeli formatowanie (pogrubienie, kursywa, kolor) obejmuje już pierwszy znak `*`, przed gwiazdką stoi znacznik i linia nie jest rozpoznawana jako `*[n]`; dotyczy to także kolejnych linii jednego zaznaczenia obejmującego kilka linii, bo każda z nich zaczyna się od własnego znacznika — nie formatuj początku linii `*[n]`.
 
 ## Zachowanie podziałów linii
 
-`formatTextHTML` dzieli tekst po `\n`.
+`formatTextHTML` dzieli tekst po `\r?\n` (enter, także w zapisie Windows `\r\n`).
 
 Każda linia jest formatowana osobno, a następnie łączona przez:
 
@@ -234,9 +235,9 @@ Każda linia jest formatowana osobno, a następnie łączona przez:
 
 Dzięki temu wieloliniowe komórki zachowują czytelny układ w tabeli.
 
-Każda linia jest formatowana od zera: styl otwarty w jednej linii nie przechodzi do następnej. Tak samo działa `formatFactionKeywordHTML` w arkuszu `Słowa Kluczowe Frakcji` oraz GeneratorNPC (tabela i paski karty, które powstają z połączonych linii). Formatowanie z Excela wyświetla się mimo to poprawnie, bo generator danych zapisuje w każdej linii komplet znaczników (zob. „Entery nigdy nie trafiają między znaczniki”).
+Każda linia jest formatowana od zera: styl otwarty w jednej linii nie przechodzi do następnej. Tak samo działa `formatFactionKeywordHTML` w arkuszu `Słowa Kluczowe Frakcji` oraz tabela GeneratorNPC. Na karcie GeneratorNPC od zera formatowany jest każdy pasek (pasek powstaje z jednej albo kilku połączonych linii), więc styl nie przechodzi z jednego paska do następnego. Formatowanie z Excela wyświetla się poprawnie we wszystkich tych widokach, bo generator danych zapisuje w każdej linii komplet znaczników (zob. „Entery nigdy nie trafiają między znaczniki”).
 
-Wyjątek stanowią znaczniki wpisane w komórce ręcznie jako zwykły tekst: jeżeli `{{B}}` stoi w jednej linii, a `{{/B}}` w następnej, pogrubiona będzie tylko linia ze znacznikiem otwierającym.
+Wyjątek stanowią znaczniki wpisane w komórce ręcznie jako zwykły tekst: jeżeli `{{B}}` stoi w jednej linii, a `{{/B}}` w następnej, w tabelach pogrubiona będzie tylko linia ze znacznikiem otwierającym, a na karcie GeneratorNPC — tylko wtedy obie, gdy trafią do tego samego paska.
 
 ## Formatowanie słów kluczowych — arkusz `Słowa Kluczowe`
 
@@ -436,7 +437,9 @@ Dzięki temu połączenie czerwonego tekstu i przekreślenia pozostaje czerwone 
 | `Cecha N` z wartością `-` | Wartość zostanie pominięta przy scalaniu. | To poprawne; używaj `-` tylko jako świadomego pustego wpisu. |
 | Puste `Zasięg N` | W scalonym zasięgu pojawi się `-`. | Uzupełnij wartość albo zaakceptuj placeholder. |
 | Założenie automatycznej czerwieni w `Pakiety Wyniesienia` | Tekst może pozostać neutralny. | Nadaj czerwony styl bezpośrednio w XLSX. |
-| Ręcznie wpisane markery, między którymi jest enter | Styl obejmuje tylko linię ze znacznikiem otwierającym. | Użyj rich text w XLSX albo domknij marker w tej samej linii. |
+| Ręcznie wpisane markery, między którymi jest enter | W tabelach styl obejmuje tylko linię ze znacznikiem otwierającym. | Użyj rich text w XLSX albo domknij marker w tej samej linii. |
+| Pogrubienie, kursywa albo przekreślenie nadane całej komórce zamiast zaznaczonemu tekstowi | Styl nie trafia do danych (dla całej komórki przenoszony jest tylko czerwony kolor czcionki, i to w komórce bez formatowania fragmentów). | Zaznacz tekst w trybie edycji komórki i dopiero wtedy nadaj styl. |
+| Formatowanie obejmujące początek linii `*[n]` | Linia nie jest rozpoznawana jako `*[n]`. | Zaczynaj formatowanie za numerem przypisu. |
 
 Formatowanie w Excelu, które zaczyna się lub kończy enterem albo obejmuje kilka linii (np. pogrubiony enter przed nagłówkiem zdolności), **nie jest błędem** i nie wymaga poprawiania komórki — generator zapisuje je tak samo jak formatowanie zaczynające się od litery.
 
@@ -447,7 +450,7 @@ Formatowanie w Excelu, które zaczyna się lub kończy enterem albo obejmuje kil
 | Czerwony rich text | Ustaw fragment tekstu na czerwono w XLSX i wygeneruj dane. | Fragment w DataVault ma klasę `.inline-red`. |
 | Pogrubienie i kursywa | Ustaw fragment jako pogrubiony i kursywę. | Fragment otrzymuje klasy `.inline-bold` i `.inline-italic`. |
 | Przekreślenie | Ustaw fragment jako przekreślony. | Fragment otrzymuje `.inline-strike`. |
-| Pogrubienie od entera | Pogrub fragment zaczynający się od entera, np. `⏎NAGŁÓWEK: opis`, i wygeneruj dane. | W danych `\n{{B}}NAGŁÓWEK: opis{{/B}}`; nagłówek jest pogrubiony tak samo jak przy pogrubieniu zaczynającym się od litery. |
+| Pogrubienie od entera | Za innym tekstem w komórce pogrub fragment zaczynający się od entera, np. `⏎NAGŁÓWEK: opis`, i wygeneruj dane. | Dane zawierają `\n{{B}}NAGŁÓWEK: opis{{/B}}`; nagłówek jest pogrubiony tak samo jak przy pogrubieniu zaczynającym się od litery. |
 | Pogrubienie w kilku liniach | Pogrub dwie linie tekstu jednym zaznaczeniem i wygeneruj dane. | Każda linia ma własną parę `{{B}}…{{/B}}` i obie są pogrubione w tabeli. |
 | Referencja strony | Wpisz `(str. 45)`. | Nawias otrzymuje `.ref`. |
 | Linia specjalna | Wpisz `*[1] opis`. | Linia otrzymuje `.caretref`. |
@@ -602,9 +605,9 @@ The data generator (`xlsxCanonicalParser.js` in the browser and `build_json.py`,
 - an empty or spaces-only line stays unmarked;
 - a run made only of Enters and spaces gets an empty marker pair before the text (e.g. `{{B}}{{/B}}\n`), which displays nothing.
 
-Examples (⏎ marks an Enter in the cell):
+Examples (⏎ marks an Enter in the cell; the "Stored run" column shows a run in the middle of a cell — the whole cell value is trimmed afterwards, so Enters at the very start or end of the cell disappear just as in plain text):
 
-| Run in Excel | Style | Stored value |
+| Run in Excel | Style | Stored run |
 | --- | --- | --- |
 | `ANIHILACJA: Protokoły ożywienia` | bold | `{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
 | `⏎ANIHILACJA: Protokoły ożywienia` | bold | `\n{{B}}ANIHILACJA: Protokoły ożywienia{{/B}}` |
@@ -617,7 +620,7 @@ As a result:
 
 - formatting that starts in Excel **with a letter** or **with an Enter** produces exactly the same stored value and the same look (e.g. a bold ability header on a new line);
 - formatting that spans several lines is displayed on each of them — in the DataVault table, in the GeneratorNPC table and on the GeneratorNPC card;
-- the visible text is always exactly as in the Excel cell — only the marker positions change.
+- wrapping in markers never changes the visible text — only the marker positions change (the usual value normalisation, i.e. trimming and quote replacement, works exactly as for unformatted text, see "Text normalization from XLSX").
 
 Technical details of the rules: `DataVault/docs/Documentation.md`, section "Canonical XLSX parser" → "Wrapping text in markers".
 
@@ -680,11 +683,12 @@ Rules:
 
 - the asterisk and number remain visible,
 - the rule is applied separately per line,
-- the line receives a lighter or helper style depending on CSS.
+- the line receives a lighter or helper style depending on CSS,
+- the pattern must start the line: if formatting (bold, italic, colour) already covers the first `*` character, a marker stands before the asterisk and the line is not recognised as `*[n]`; this also applies to the following lines of one selection that spans several lines, because each of them starts with its own marker — do not format the start of a `*[n]` line.
 
 ## Line break behavior
 
-`formatTextHTML` splits text by `\n`.
+`formatTextHTML` splits text by `\r?\n` (an Enter, including the Windows form `\r\n`).
 
 Each line is formatted separately and then joined with:
 
@@ -694,9 +698,9 @@ Each line is formatted separately and then joined with:
 
 This keeps multiline cells readable in the table.
 
-Every line is formatted from scratch: a style opened on one line does not carry over to the next. `formatFactionKeywordHTML` in the `Słowa Kluczowe Frakcji` sheet and GeneratorNPC (the table and the card stripes, which are built from joined lines) work the same way. Formatting from Excel is still displayed correctly, because the data generator writes a complete set of markers on every line (see "Enters never end up between markers").
+Every line is formatted from scratch: a style opened on one line does not carry over to the next. `formatFactionKeywordHTML` in the `Słowa Kluczowe Frakcji` sheet and the GeneratorNPC table work the same way. On the GeneratorNPC card every stripe is formatted from scratch (a stripe is built from one or several joined lines), so a style does not carry over from one stripe to the next. Formatting from Excel is displayed correctly in all these views, because the data generator writes a complete set of markers on every line (see "Enters never end up between markers").
 
-The exception is markers typed by hand in a cell as plain text: if `{{B}}` is on one line and `{{/B}}` on the next, only the line with the opening marker is bold.
+The exception is markers typed by hand in a cell as plain text: if `{{B}}` is on one line and `{{/B}}` on the next, in the tables only the line with the opening marker is bold, and on the GeneratorNPC card both lines are bold only when they end up in the same stripe.
 
 ## Keyword formatting — `Słowa Kluczowe` sheet
 
@@ -896,7 +900,9 @@ This keeps combined red and strikethrough text red even inside archived rows.
 | `Cecha N` with value `-` | Value is skipped during merge. | This is correct; use `-` only as an intentional empty entry. |
 | Empty `Zasięg N` | The merged range receives `-`. | Fill the value or accept the placeholder. |
 | Assuming automatic red in `Pakiety Wyniesienia` | Text may stay neutral. | Apply red directly in XLSX. |
-| Hand-typed markers with an Enter between them | The style covers only the line with the opening marker. | Use rich text in XLSX or close the marker on the same line. |
+| Hand-typed markers with an Enter between them | In the tables the style covers only the line with the opening marker. | Use rich text in XLSX or close the marker on the same line. |
+| Bold, italic or strikethrough applied to the whole cell instead of the selected text | The style does not reach the data (for a whole cell only the red font colour is carried over, and only in a cell without formatted runs). | Select the text in cell edit mode and only then apply the style. |
+| Formatting that covers the start of a `*[n]` line | The line is not recognised as `*[n]`. | Start the formatting after the footnote number. |
 
 Formatting in Excel that starts or ends with an Enter or spans several lines (e.g. a bold Enter before an ability header) **is not an error** and the cell does not need fixing — the generator stores it exactly like formatting that starts with a letter.
 
@@ -907,7 +913,7 @@ Formatting in Excel that starts or ends with an Enter or spans several lines (e.
 | Red rich text | Set part of text red in XLSX and generate data. | The fragment in DataVault has `.inline-red`. |
 | Bold and italic | Set part of text as bold and italic. | The fragment receives `.inline-bold` and `.inline-italic`. |
 | Strikethrough | Set part of text as strikethrough. | The fragment receives `.inline-strike`. |
-| Bold starting with an Enter | Make bold a run that starts with an Enter, e.g. `⏎HEADER: text`, and generate the data. | The data contains `\n{{B}}HEADER: text{{/B}}`; the header is bold exactly as with bold starting with a letter. |
+| Bold starting with an Enter | After other text in the cell, make bold a run that starts with an Enter, e.g. `⏎HEADER: text`, and generate the data. | The data contains `\n{{B}}HEADER: text{{/B}}`; the header is bold exactly as with bold starting with a letter. |
 | Bold across several lines | Make two lines of text bold with one selection and generate the data. | Each line has its own `{{B}}…{{/B}}` pair and both are bold in the table. |
 | Page reference | Enter `(str. 45)`. | The parenthesized fragment receives `.ref`. |
 | Special line | Enter `*[1] description`. | The line receives `.caretref`. |
