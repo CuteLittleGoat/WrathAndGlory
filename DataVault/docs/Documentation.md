@@ -550,8 +550,8 @@ dotrzeć do funkcji tylko z odwołania znakowego (np. `&#13;` albo `&#xD;`). `U+
 1. **Brak stylu** → tekst bez zmian.
 2. **Tekst bez złamania linii** → cały tekst w jednej parze znaczników, razem ze spacjami na brzegach
    (np. `{{B}}bagnet: {{/B}}`), także tekst złożony z samych spacji i tekst pusty (komórka `t="s"` albo
-   `t="inlineStr"` z pustym tekstem i czerwonym stylem → `{{RED}}{{/RED}}`; komórka bez wartości nie
-   trafia do tej funkcji i zostaje pusta).
+   `t="inlineStr"` z pustym tekstem i czerwonym stylem → `{{RED}}{{/RED}}`; komórka bez wartości i bez
+   typu tekstowego, np. `<c r="B2" s="1"/>`, nie trafia do tej funkcji i zostaje pusta).
 3. **Tekst ze złamaniami linii** → tekst jest dzielony na linie; w każdej linii spacje i tabulatory
    **stykające się ze złamaniem linii** zostają poza znacznikami, niepusta reszta linii dostaje własną
    parę znaczników, a linia pusta albo z samych spacji/tabulatorów zostaje bez znaczników. Spacje, które
@@ -587,9 +587,10 @@ Skutki:
 - złamania linii oraz spacje i tabulatory przy nich na brzegach komórki leżą poza znacznikami, więc
   przycięcie wartości w `rowsToRecords()` / `rows_to_records()` usuwa je tak samo jak w tekście bez
   formatowania (np. komórka złożona tylko z pogrubionego `⏎Nagłówek` daje `{{B}}Nagłówek{{/B}}`);
-  wyjątki, przed którymi stoi już znacznik: fragment z reguły 4 na początku komórki (pogrubiony `⏎`,
-  a po nim zwykłe `X` daje `{{B}}{{/B}}\nX`, więc enter zostaje) oraz spacje na brzegu komórki wewnątrz
-  jednolinijkowego fragmentu z reguły 2 (pogrubione ` X`, a po nim zwykłe ` y` daje `{{B}} X{{/B}} y`);
+  wyjątek: przycięcie zatrzymuje się na pierwszym i ostatnim znaczniku, więc entery i spacje, które od
+  brzegu komórki oddziela znacznik (także pusta para z reguły 4), zostają — np. pogrubiony `⏎`, a po nim
+  zwykłe `X` daje `{{B}}{{/B}}\nX`, pogrubione ` X`, a po nim zwykłe ` y` daje `{{B}} X{{/B}} y`, a zwykłe
+  `X⏎`, a po nim pogrubiona spacja daje `X\n{{B}} {{/B}}`;
 - znaczniki wpisane ręcznie jako zwykły tekst komórki są traktowane jak zwykły tekst i nie są
   poprawiane;
 - kolejne linie zaznaczenia obejmującego kilka linii zaczynają się od znacznika otwierającego, tak samo
@@ -1560,8 +1561,8 @@ the function from a character reference (e.g. `&#13;` or `&#xD;`). `U+2028`, `U+
 1. **No style** → the text is returned unchanged.
 2. **Text without a line break** → the whole text in one marker pair, together with spaces at its edges
    (e.g. `{{B}}bagnet: {{/B}}`), including text made only of spaces and empty text (a `t="s"` or
-   `t="inlineStr"` cell with empty text and a red style → `{{RED}}{{/RED}}`; a cell without a value never
-   reaches this function and stays empty).
+   `t="inlineStr"` cell with empty text and a red style → `{{RED}}{{/RED}}`; a cell without a value and
+   without a text type, e.g. `<c r="B2" s="1"/>`, never reaches this function and stays empty).
 3. **Text with line breaks** → the text is split into lines; in every line, spaces and tabs **touching a
    line break** stay outside the markers, the non-empty rest of the line gets its own marker pair, and an
    empty or spaces/tabs-only line stays unmarked. Spaces that do not touch a line break (the start of the
@@ -1595,10 +1596,11 @@ Consequences:
   the run text;
 - line breaks, and the spaces and tabs next to them, at the edges of a cell lie outside the markers, so
   trimming the value in `rowsToRecords()` / `rows_to_records()` removes them exactly as in unformatted
-  text (e.g. a cell made only of a bold `⏎Header` gives `{{B}}Header{{/B}}`); the exceptions, where a
-  marker already stands in front: a rule-4 run at the start of a cell (a bold `⏎` followed by a plain `X`
-  gives `{{B}}{{/B}}\nX`, so the Enter stays) and spaces at the cell edge inside a single-line rule-2 run
-  (a bold ` X` followed by a plain ` y` gives `{{B}} X{{/B}} y`);
+  text (e.g. a cell made only of a bold `⏎Header` gives `{{B}}Header{{/B}}`); the exception: trimming
+  stops at the first and the last marker, so Enters and spaces separated from the cell edge by a marker
+  (including an empty rule-4 pair) stay — e.g. a bold `⏎` followed by a plain `X` gives `{{B}}{{/B}}\nX`,
+  a bold ` X` followed by a plain ` y` gives `{{B}} X{{/B}} y`, and a plain `X⏎` followed by a bold space
+  gives `X\n{{B}} {{/B}}`;
 - markers typed by hand as plain cell text are treated as plain text and are not corrected;
 - the following lines of a selection that spans several lines start with an opening marker, exactly like
   a line whose formatting starts at its first character. The renderer patterns that recognise a line start

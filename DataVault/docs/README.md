@@ -430,7 +430,7 @@ Dotyczy to formatowania nadanego **zaznaczonemu tekstowi** w komórce (kliknij k
 Dwie sytuacje, w których łatwo się pomylić:
 
 - jeżeli w trybie edycji zaznaczysz **cały** tekst komórki, Excel może zapisać to jako formatowanie całej komórki — wtedy styl też nie zostanie przeniesiony;
-- jeżeli cała komórka jest pogrubiona, a część tekstu odpogrubiono, pozostała pogrubiona część również nie zostanie przeniesiona — usuń pogrubienie całej komórki i pogrub tylko wybrany fragment tekstu.
+- jeżeli cała komórka jest pogrubiona, a część tekstu odpogrubiono, Excel może zapisać część pogrubionego tekstu (zwykle fragment na początku komórki) bez osobnego formatowania — taki fragment nie będzie pogrubiony w danych, choć w Excelu wygląda na pogrubiony. Usuń pogrubienie całej komórki i pogrub tylko wybrane fragmenty tekstu.
 
 ### Co sprawdzić po wygenerowaniu danych
 
@@ -438,7 +438,7 @@ Po kliknięciu `Generuj pliki danych` DataVault od razu pokazuje nowe dane z wyb
 
 1. **Szybka kontrola wzrokowa.** Otwórz wpis, w którym w Excelu pogrubiony jest nagłówek w nowej linii — na przykład zakładka `Bestiariusz`, wpis `Kanoptek Skarabeusz` (LP 180), kolumna `Zdolności`. Nagłówek `ANIHILACJA: Protokoły ożywienia` powinien być pogrubiony.
 2. **Dokładniejsza kontrola (opcjonalna).** Sprawdza wszystkie arkusze naraz:
-   1. Naciśnij `F12` — otworzą się narzędzia przeglądarki. Wybierz kartę `Console` (`Konsola`).
+   1. Naciśnij `F12` (na Macu `Cmd` + `Option` + `J`) — otworzą się narzędzia przeglądarki. Wybierz kartę `Console` (`Konsola`).
    2. Wklej poniższe polecenie i naciśnij `Enter`.
    3. Jeżeli przeglądarka ostrzeże przed wklejaniem, wpisz w konsoli tekst podany w ostrzeżeniu (w Chrome np. `allow pasting`), naciśnij `Enter` i wklej polecenie jeszcze raz.
 
@@ -451,12 +451,12 @@ Po kliknięciu `Generuj pliki danych` DataVault od razu pokazuje nowe dane z wyb
    - **pusta tabela** (bez żadnego wiersza) — wszystko w porządku, żadne formatowanie nie zostanie zgubione;
    - **tabela z wierszami** — każdy wiersz to jedno miejsce, w którym część formatowania nie wyświetli się (arkusz, LP, nazwa, kolumna, styl i początek tekstu); to samo pole może pojawić się w kilku wierszach. Co zrobić:
      - jeżeli sprawdzasz po odświeżeniu strony, a nie zaraz po wygenerowaniu plików — polecenie sprawdziło dane z Firebase, w których może być jeszcze wcześniejsza wersja: kliknij ponownie `Generuj pliki danych`, wybierz `Repozytorium.xlsx` i — bez odświeżania strony — wklej polecenie jeszcze raz;
-     - jeżeli sprawdzasz zaraz po wygenerowaniu plików — przeglądarka mogła użyć starszej, zapamiętanej wersji strony: odśwież stronę z pominięciem pamięci podręcznej (`Ctrl` + `F5`, na Macu `Cmd` + `Shift` + `R`), wygeneruj pliki jeszcze raz i powtórz sprawdzenie;
+     - jeżeli sprawdzasz zaraz po wygenerowaniu plików — przeglądarka mogła użyć starszej, zapamiętanej wersji strony: odśwież stronę z pominięciem pamięci podręcznej (`Ctrl` + `F5`; na Macu w Chrome, Edge i Firefox `Cmd` + `Shift` + `R`, w Safari `Cmd` + `Option` + `R`), wygeneruj pliki jeszcze raz i powtórz sprawdzenie;
      - jeżeli wiersze nadal się pojawiają — najczęstszą przyczyną są znaczniki w rodzaju `{{B}}` wpisane w komórce Excela ręcznie. Zamień je na zwykłe formatowanie w Excelu i wygeneruj pliki ponownie;
-   - **czerwony komunikat o błędzie** (np. `Cannot read properties of null`) — DataVault nie ma jeszcze wczytanych danych. Wpisz hasło w polu `Litania Dostępu` na ekranie K.O.Z.A. albo najpierw wygeneruj pliki, a potem wklej polecenie ponownie.
+   - **czerwony komunikat o błędzie** (np. `Cannot read properties of null`) — DataVault nie ma jeszcze wczytanych danych. Wpisz hasło w polu `Litania Dostępu` na ekranie K.O.Z.A., kliknij `Rozpocznij Rytuał`, poczekaj, aż pojawi się tabela, i wklej polecenie ponownie.
 
    To samo polecenie uruchomione po odświeżeniu strony sprawdza dane, które są aktualnie w Firebase.
-3. Jeżeli wszystko się zgadza, zaimportuj `firebase-import.json` (rozdział „Import danych do Firebase”). Potem odśwież DataVault (`F5`) — strona wczyta dane z Firebase; możesz wtedy jeszcze raz uruchomić polecenie, a pusta tabela potwierdzi, że w Firebase są już nowe dane. Na koniec odśwież GeneratorNPC i wygeneruj kartę tego samego wpisu — nagłówki zdolności powinny być pogrubione tak jak w Excelu.
+3. Jeżeli wszystko się zgadza, zaimportuj `firebase-import.json` (rozdział „Import danych do Firebase”). Potem odśwież DataVault (`F5`) — strona wczyta dane z Firebase. Otwórz wpis sprawdzany w punkcie 1 (albo inny wpis zmieniony w Excelu) i sprawdź, czy wygląda tak samo jak przed odświeżeniem — to potwierdza, że w Firebase są już nowe dane. Możesz też jeszcze raz uruchomić polecenie: pusta tabela potwierdzi, że w danych z Firebase formatowanie nie zostanie zgubione. Na koniec odśwież GeneratorNPC i wygeneruj kartę tego samego wpisu — nagłówki zdolności powinny być pogrubione tak jak w Excelu.
 
 ## Import danych do Firebase — tylko admin techniczny
 
@@ -567,8 +567,8 @@ The screen contains:
 
 - K.O.Z.A. data access title,
 - Rite of Authentication description,
-- `Litany of Access` password field,
-- ritual start button.
+- `Litania Dostępu` password field,
+- `Rozpocznij Rytuał` button (this screen is always shown in Polish).
 
 Enter the password and confirm. After successful login, the gate closes and DataVault loads data from the private database.
 
@@ -953,7 +953,7 @@ This applies to formatting given to **selected text** in a cell (double-click th
 Two situations that are easy to get wrong:
 
 - if you select **all** of the cell text in edit mode, Excel may save it as whole-cell formatting — then the style is not carried over either;
-- if the whole cell is bold and part of the text was un-bolded, the remaining bold part is not carried over either — remove the whole-cell bold and make only the chosen part of the text bold.
+- if the whole cell is bold and part of the text was un-bolded, Excel may save some of the bold text (usually the part at the start of the cell) without its own formatting — that part is not bold in the data, although it looks bold in Excel. Remove the whole-cell bold and make only the chosen parts of the text bold.
 
 ### What to check after generating the data
 
@@ -961,7 +961,7 @@ After you click `Generate data files`, DataVault immediately shows the new data 
 
 1. **Quick visual check.** Open an entry in which a header on a new line is bold in Excel — for example the `Bestiariusz` tab, entry `Kanoptek Skarabeusz` (LP 180), column `Zdolności`. The header `ANIHILACJA: Protokoły ożywienia` should be bold.
 2. **Thorough check (optional).** It checks all sheets at once:
-   1. Press `F12` — the browser tools open. Choose the `Console` tab.
+   1. Press `F12` (on a Mac `Cmd` + `Option` + `J`) — the browser tools open. Choose the `Console` tab.
    2. Paste the command below and press `Enter`.
    3. If the browser warns about pasting, type in the console the text given in the warning (in Chrome e.g. `allow pasting`), press `Enter` and paste the command again.
 
@@ -974,12 +974,12 @@ After you click `Generate data files`, DataVault immediately shows the new data 
    - **an empty table** (no rows at all) — everything is fine, no formatting will be lost;
    - **a table with rows** — each row is one place in which part of the formatting will not be displayed (sheet, LP, name, column, style and the start of the text); the same field may appear in several rows. What to do:
      - if you are checking after refreshing the page rather than right after generating the files — the command checked the data in Firebase, which may still be an earlier version: click `Generate data files` again, choose `Repozytorium.xlsx` and — without refreshing the page — paste the command again;
-     - if you are checking right after generating the files — the browser may have used an older, cached version of the page: refresh the page bypassing the cache (`Ctrl` + `F5`, on a Mac `Cmd` + `Shift` + `R`), generate the files again and repeat the check;
+     - if you are checking right after generating the files — the browser may have used an older, cached version of the page: refresh the page bypassing the cache (`Ctrl` + `F5`; on a Mac in Chrome, Edge and Firefox `Cmd` + `Shift` + `R`, in Safari `Cmd` + `Option` + `R`), generate the files again and repeat the check;
      - if rows still appear — the most common cause is markers such as `{{B}}` typed into an Excel cell by hand. Replace them with normal Excel formatting and generate the files again;
-   - **a red error message** (e.g. `Cannot read properties of null`) — DataVault has no data loaded yet. Enter the password in the `Litany of Access` field on the K.O.Z.A. screen or generate the files first, then paste the command again.
+   - **a red error message** (e.g. `Cannot read properties of null`) — DataVault has no data loaded yet. Enter the password in the `Litania Dostępu` field on the K.O.Z.A. screen, click `Rozpocznij Rytuał`, wait until the table appears and paste the command again.
 
    The same command run after refreshing the page checks the data currently stored in Firebase.
-3. If everything is fine, import `firebase-import.json` (section "Importing data into Firebase"). Then refresh DataVault (`F5`) — the page loads the data from Firebase; you can run the command once more, and an empty table confirms that Firebase now holds the new data. Finally refresh GeneratorNPC and generate the card of the same entry — the ability headers should be bold just as in Excel.
+3. If everything is fine, import `firebase-import.json` (section "Importing data into Firebase"). Then refresh DataVault (`F5`) — the page loads the data from Firebase. Open the entry checked in step 1 (or another entry changed in Excel) and check that it looks the same as before the refresh — this confirms that Firebase holds the new data. You can also run the command once more: an empty table confirms that no formatting will be lost in the Firebase data. Finally refresh GeneratorNPC and generate the card of the same entry — the ability headers should be bold just as in Excel.
 
 ## Importing data into Firebase — technical admin only
 
