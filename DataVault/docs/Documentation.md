@@ -528,7 +528,7 @@ w `build_json.py`. Jest wywoływana w dwóch miejscach (w obu plikach tak samo):
 | Wywołanie | Kiedy | Style |
 | --- | --- | --- |
 | `richTextToString()` / `_rich_text_to_string()` | dla każdego niepustego fragmentu rich text (`<r>`) komórki | z `<rPr>` fragmentu: czerwony kolor, `<b/>`, `<i/>`, `<strike/>` |
-| `loadRowsFromXml()` / `_load_rows_from_xml()` | dla komórki bez fragmentów rich text, której styl komórki ma czerwony font, a wartość nie zawiera jeszcze `{{RED}}` (komórki logiczne `t="b"` nie są owijane, a wartości inne niż tekst — tylko gdy są niepuste) | tylko `red` |
+| `loadRowsFromXml()` / `_load_rows_from_xml()` | dla komórki bez fragmentów rich text, której styl komórki ma czerwony font, a wartość nie zawiera jeszcze `{{RED}}` (komórki `t="s"` i `t="inlineStr"` są owijane także z pustym tekstem, komórki logiczne `t="b"` nigdy, a pozostałe — liczby, wyniki formuł `t="str"`, błędy i komórki bez wartości — tylko gdy wartość jest niepusta) | tylko `red` |
 
 Kolejność znaczników jest stała: otwierające `{{RED}}{{B}}{{I}}{{S}}`, zamykające w odwrotnej
 kolejności `{{/S}}{{/I}}{{/B}}{{/RED}}` (tylko włączone style).
@@ -543,14 +543,15 @@ zawiera złamania linii.**
 
 **Złamanie linii** to `\r\n`, `\n` albo samotne `\r` (wyrażenie `/(\r\n|\r|\n)/`, najdłuższe dopasowanie
 pierwsze). Parsery XML (DOMParser, ElementTree) zamieniają dosłowne CRLF/CR z pliku na LF, więc `\r` może
-dotrzeć do funkcji tylko z odwołania znakowego (`&#13;` albo `&#xD;`). `U+2028`, `U+2029` i inne znaki nie są złamaniem linii.
+dotrzeć do funkcji tylko z odwołania znakowego (np. `&#13;` albo `&#xD;`). `U+2028`, `U+2029` i inne znaki nie są złamaniem linii.
 
 **Reguły:**
 
 1. **Brak stylu** → tekst bez zmian.
 2. **Tekst bez złamania linii** → cały tekst w jednej parze znaczników, razem ze spacjami na brzegach
-   (np. `{{B}}bagnet: {{/B}}`), także tekst pusty (pusta komórka o czerwonym stylu → `{{RED}}{{/RED}}`)
-   i złożony z samych spacji.
+   (np. `{{B}}bagnet: {{/B}}`), także tekst złożony z samych spacji i tekst pusty (komórka `t="s"` albo
+   `t="inlineStr"` z pustym tekstem i czerwonym stylem → `{{RED}}{{/RED}}`; komórka bez wartości nie
+   trafia do tej funkcji i zostaje pusta).
 3. **Tekst ze złamaniami linii** → tekst jest dzielony na linie; w każdej linii spacje i tabulatory
    **stykające się ze złamaniem linii** zostają poza znacznikami, niepusta reszta linii dostaje własną
    parę znaczników, a linia pusta albo z samych spacji/tabulatorów zostaje bez znaczników. Spacje, które
@@ -586,13 +587,16 @@ Skutki:
 - złamania linii oraz spacje i tabulatory przy nich na brzegach komórki leżą poza znacznikami, więc
   przycięcie wartości w `rowsToRecords()` / `rows_to_records()` usuwa je tak samo jak w tekście bez
   formatowania (np. komórka złożona tylko z pogrubionego `⏎Nagłówek` daje `{{B}}Nagłówek{{/B}}`);
+  wyjątki, przed którymi stoi już znacznik: fragment z reguły 4 na początku komórki (pogrubiony `⏎`,
+  a po nim zwykłe `X` daje `{{B}}{{/B}}\nX`, więc enter zostaje) oraz spacje na brzegu komórki wewnątrz
+  jednolinijkowego fragmentu z reguły 2 (pogrubione ` X`, a po nim zwykłe ` y` daje `{{B}} X{{/B}} y`);
 - znaczniki wpisane ręcznie jako zwykły tekst komórki są traktowane jak zwykły tekst i nie są
   poprawiane;
 - kolejne linie zaznaczenia obejmującego kilka linii zaczynają się od znacznika otwierającego, tak samo
   jak linia, której formatowanie zaczyna się od pierwszego znaku. Wzorce rendererów rozpoznające początek
   linii nie pomijają znaczników: taka linia `*[n]` nie dostaje klasy `caretref`, wzorce `*[n]` i `[n]`
   nie rozpoczynają paska w `splitEntries`, a we wzorcach `Nagłówek: ` (do 40 znaków przed dwukropkiem)
-  i `Nazwa —` (do 60 znaków przed pauzą `—`) znaki znaczników liczą się do tych limitów.
+  i `Nazwa —` (do 60 znaków i znak odstępu przed pauzą `—`) znaki znaczników liczą się do tych limitów.
 
 Rdzeń algorytmu (wersja JS; wersja Python jest identyczna: `_LINE_BREAK_RE = re.compile(r"(\r\n|\r|\n)")`,
 `_LINE_BREAK_RE.split(text)` i test `part[lo] in " \t"`). Fragment pokazuje, jak po podziale
@@ -868,7 +872,7 @@ tekstu znacznikami”), więc formatowanie z Excela wyświetla się poprawnie ni
 zaczynało się od litery, czy od entera. Znaczniki wpisane ręcznie w komórce i obejmujące enter
 (np. `{{B}}` w jednej linii i `{{/B}}` w następnej) dają w tabeli styl tylko w linii ze znacznikiem
 otwierającym. Wzorzec `*[n]` jest rozpoznawany tylko na samym początku linii — znacznik stylu przed `*`
-blokuje klasę `caretref`.
+albo wewnątrz `*[n]` blokuje klasę `caretref`.
 
 Szczegółowe reguły formatowania danych powinny być utrzymywane w `DataVault/docs/ZasadyFormatowania.md`.
 
@@ -1533,7 +1537,7 @@ in `build_json.py`. It is called in two places (the same in both files):
 | Call | When | Styles |
 | --- | --- | --- |
 | `richTextToString()` / `_rich_text_to_string()` | for every non-empty rich text run (`<r>`) of a cell | from the run's `<rPr>`: red colour, `<b/>`, `<i/>`, `<strike/>` |
-| `loadRowsFromXml()` / `_load_rows_from_xml()` | for a cell without rich text runs whose cell style has a red font and whose value does not contain `{{RED}}` yet (boolean `t="b"` cells are never wrapped, and non-text values only when non-empty) | `red` only |
+| `loadRowsFromXml()` / `_load_rows_from_xml()` | for a cell without rich text runs whose cell style has a red font and whose value does not contain `{{RED}}` yet (`t="s"` and `t="inlineStr"` cells are wrapped even with empty text, boolean `t="b"` cells never, and all others — numbers, `t="str"` formula results, errors and cells without a value — only when the value is non-empty) | `red` only |
 
 The marker order is fixed: opening `{{RED}}{{B}}{{I}}{{S}}`, closing in reverse order
 `{{/S}}{{/I}}{{/B}}{{/RED}}` (enabled styles only).
@@ -1549,14 +1553,15 @@ break.**
 
 **A line break** is `\r\n`, `\n` or a lone `\r` (expression `/(\r\n|\r|\n)/`, longest match first). The
 XML parsers (DOMParser, ElementTree) turn literal CRLF/CR from the file into LF, so `\r` can only reach
-the function from a character reference (`&#13;` or `&#xD;`). `U+2028`, `U+2029` and other characters are not line breaks.
+the function from a character reference (e.g. `&#13;` or `&#xD;`). `U+2028`, `U+2029` and other characters are not line breaks.
 
 **Rules:**
 
 1. **No style** → the text is returned unchanged.
 2. **Text without a line break** → the whole text in one marker pair, together with spaces at its edges
-   (e.g. `{{B}}bagnet: {{/B}}`), including empty text (an empty red-styled cell → `{{RED}}{{/RED}}`) and
-   text made only of spaces.
+   (e.g. `{{B}}bagnet: {{/B}}`), including text made only of spaces and empty text (a `t="s"` or
+   `t="inlineStr"` cell with empty text and a red style → `{{RED}}{{/RED}}`; a cell without a value never
+   reaches this function and stays empty).
 3. **Text with line breaks** → the text is split into lines; in every line, spaces and tabs **touching a
    line break** stay outside the markers, the non-empty rest of the line gets its own marker pair, and an
    empty or spaces/tabs-only line stays unmarked. Spaces that do not touch a line break (the start of the
@@ -1590,13 +1595,16 @@ Consequences:
   the run text;
 - line breaks, and the spaces and tabs next to them, at the edges of a cell lie outside the markers, so
   trimming the value in `rowsToRecords()` / `rows_to_records()` removes them exactly as in unformatted
-  text (e.g. a cell made only of a bold `⏎Header` gives `{{B}}Header{{/B}}`);
+  text (e.g. a cell made only of a bold `⏎Header` gives `{{B}}Header{{/B}}`); the exceptions, where a
+  marker already stands in front: a rule-4 run at the start of a cell (a bold `⏎` followed by a plain `X`
+  gives `{{B}}{{/B}}\nX`, so the Enter stays) and spaces at the cell edge inside a single-line rule-2 run
+  (a bold ` X` followed by a plain ` y` gives `{{B}} X{{/B}} y`);
 - markers typed by hand as plain cell text are treated as plain text and are not corrected;
 - the following lines of a selection that spans several lines start with an opening marker, exactly like
   a line whose formatting starts at its first character. The renderer patterns that recognise a line start
   do not skip markers: such a `*[n]` line does not get the `caretref` class, the `*[n]` and `[n]` patterns
   do not start a stripe in `splitEntries`, and in the `Header: ` (up to 40 characters before the colon) and
-  `Name —` (up to 60 characters before the em dash `—`) patterns the marker characters count towards those
+  `Name —` (up to 60 characters and a whitespace character before the em dash `—`) patterns the marker characters count towards those
   limits.
 
 Core of the algorithm (JS version; the Python version is identical: `_LINE_BREAK_RE = re.compile(r"(\r\n|\r|\n)")`,
@@ -1870,7 +1878,8 @@ next. Data from the generator has a complete set of markers on every line (secti
 → "Wrapping text in markers"), so formatting from Excel is displayed correctly whether it started with a
 letter or with an Enter. Markers typed by hand in a cell that span an Enter (e.g. `{{B}}` on one line and
 `{{/B}}` on the next) style only the line with the opening marker in the table. The `*[n]` pattern is
-recognised only at the very start of a line — a style marker before `*` blocks the `caretref` class.
+recognised only at the very start of a line — a style marker before `*` or inside `*[n]` blocks the
+`caretref` class.
 
 Detailed data formatting rules should be maintained in `DataVault/docs/ZasadyFormatowania.md`.
 

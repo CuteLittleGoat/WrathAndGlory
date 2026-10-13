@@ -427,6 +427,11 @@ Takich komórek nie trzeba poprawiać w Excelu — wynik jest taki, jak widać w
 
 Dotyczy to formatowania nadanego **zaznaczonemu tekstowi** w komórce (kliknij komórkę dwukrotnie, zaznacz tekst i dopiero wtedy kliknij np. pogrubienie). Pogrubienie, kursywa i przekreślenie ustawione dla całej komórki (gdy zaznaczona jest sama komórka, a nie tekst w niej) nie są przenoszone. Dla całej komórki przenoszony jest tylko czerwony kolor czcionki, i to wyłącznie wtedy, gdy żaden fragment tekstu w tej komórce nie ma osobnego formatowania.
 
+Dwie sytuacje, w których łatwo się pomylić:
+
+- jeżeli w trybie edycji zaznaczysz **cały** tekst komórki, Excel może zapisać to jako formatowanie całej komórki — wtedy styl też nie zostanie przeniesiony;
+- jeżeli cała komórka jest pogrubiona, a część tekstu odpogrubiono, pozostała pogrubiona część również nie zostanie przeniesiona — usuń pogrubienie całej komórki i pogrub tylko wybrany fragment tekstu.
+
 ### Co sprawdzić po wygenerowaniu danych
 
 Po kliknięciu `Generuj pliki danych` DataVault od razu pokazuje nowe dane z wybranego pliku — **do momentu odświeżenia strony**. Po odświeżeniu strona wczytuje z powrotem dane z Firebase. Dlatego sprawdzenia wykonaj **przed odświeżeniem strony**:
@@ -445,13 +450,13 @@ Po kliknięciu `Generuj pliki danych` DataVault od razu pokazuje nowe dane z wyb
 
    - **pusta tabela** (bez żadnego wiersza) — wszystko w porządku, żadne formatowanie nie zostanie zgubione;
    - **tabela z wierszami** — każdy wiersz to jedno miejsce, w którym część formatowania nie wyświetli się (arkusz, LP, nazwa, kolumna, styl i początek tekstu); to samo pole może pojawić się w kilku wierszach. Co zrobić:
-     - jeżeli sprawdzasz po odświeżeniu strony, a nie zaraz po wygenerowaniu plików — w Firebase są jeszcze dane z wcześniejszego pliku: zaimportuj nowy `firebase-import.json` i sprawdź ponownie;
-     - jeżeli sprawdzasz zaraz po wygenerowaniu plików — przeglądarka mogła użyć starszej, zapamiętanej wersji strony: odśwież stronę z pominięciem pamięci podręcznej (`Ctrl` + `F5`), wygeneruj pliki jeszcze raz i powtórz sprawdzenie;
+     - jeżeli sprawdzasz po odświeżeniu strony, a nie zaraz po wygenerowaniu plików — polecenie sprawdziło dane z Firebase, w których może być jeszcze wcześniejsza wersja: kliknij ponownie `Generuj pliki danych`, wybierz `Repozytorium.xlsx` i — bez odświeżania strony — wklej polecenie jeszcze raz;
+     - jeżeli sprawdzasz zaraz po wygenerowaniu plików — przeglądarka mogła użyć starszej, zapamiętanej wersji strony: odśwież stronę z pominięciem pamięci podręcznej (`Ctrl` + `F5`, na Macu `Cmd` + `Shift` + `R`), wygeneruj pliki jeszcze raz i powtórz sprawdzenie;
      - jeżeli wiersze nadal się pojawiają — najczęstszą przyczyną są znaczniki w rodzaju `{{B}}` wpisane w komórce Excela ręcznie. Zamień je na zwykłe formatowanie w Excelu i wygeneruj pliki ponownie;
-   - **czerwony komunikat o błędzie** (np. `Cannot read properties of null`) — DataVault nie ma jeszcze wczytanych danych. Zaloguj się albo najpierw wygeneruj pliki, a potem wklej polecenie ponownie.
+   - **czerwony komunikat o błędzie** (np. `Cannot read properties of null`) — DataVault nie ma jeszcze wczytanych danych. Wpisz hasło w polu `Litania Dostępu` na ekranie K.O.Z.A. albo najpierw wygeneruj pliki, a potem wklej polecenie ponownie.
 
    To samo polecenie uruchomione po odświeżeniu strony sprawdza dane, które są aktualnie w Firebase.
-3. Jeżeli wszystko się zgadza, zaimportuj `firebase-import.json` (rozdział „Import danych do Firebase”), odśwież GeneratorNPC i wygeneruj kartę tego samego wpisu — nagłówki zdolności powinny być pogrubione tak jak w Excelu.
+3. Jeżeli wszystko się zgadza, zaimportuj `firebase-import.json` (rozdział „Import danych do Firebase”). Potem odśwież DataVault (`F5`) — strona wczyta dane z Firebase; możesz wtedy jeszcze raz uruchomić polecenie, a pusta tabela potwierdzi, że w Firebase są już nowe dane. Na koniec odśwież GeneratorNPC i wygeneruj kartę tego samego wpisu — nagłówki zdolności powinny być pogrubione tak jak w Excelu.
 
 ## Import danych do Firebase — tylko admin techniczny
 
@@ -945,6 +950,11 @@ Such cells do not need fixing in Excel — the result matches what you see in Ex
 
 This applies to formatting given to **selected text** in a cell (double-click the cell, select the text and only then click e.g. bold). Bold, italic and strikethrough set for the whole cell (when the cell itself is selected, not the text in it) are not carried over. For a whole cell only the red font colour is carried over, and only when no part of the text in that cell has its own formatting.
 
+Two situations that are easy to get wrong:
+
+- if you select **all** of the cell text in edit mode, Excel may save it as whole-cell formatting — then the style is not carried over either;
+- if the whole cell is bold and part of the text was un-bolded, the remaining bold part is not carried over either — remove the whole-cell bold and make only the chosen part of the text bold.
+
 ### What to check after generating the data
 
 After you click `Generate data files`, DataVault immediately shows the new data from the selected file — **until the page is refreshed**. After a refresh, the page loads the data from Firebase again. So do the checks **before refreshing the page**:
@@ -963,13 +973,13 @@ After you click `Generate data files`, DataVault immediately shows the new data 
 
    - **an empty table** (no rows at all) — everything is fine, no formatting will be lost;
    - **a table with rows** — each row is one place in which part of the formatting will not be displayed (sheet, LP, name, column, style and the start of the text); the same field may appear in several rows. What to do:
-     - if you are checking after refreshing the page rather than right after generating the files — Firebase still holds the data from an earlier file: import the new `firebase-import.json` and check again;
-     - if you are checking right after generating the files — the browser may have used an older, cached version of the page: refresh the page bypassing the cache (`Ctrl` + `F5`), generate the files again and repeat the check;
+     - if you are checking after refreshing the page rather than right after generating the files — the command checked the data in Firebase, which may still be an earlier version: click `Generate data files` again, choose `Repozytorium.xlsx` and — without refreshing the page — paste the command again;
+     - if you are checking right after generating the files — the browser may have used an older, cached version of the page: refresh the page bypassing the cache (`Ctrl` + `F5`, on a Mac `Cmd` + `Shift` + `R`), generate the files again and repeat the check;
      - if rows still appear — the most common cause is markers such as `{{B}}` typed into an Excel cell by hand. Replace them with normal Excel formatting and generate the files again;
-   - **a red error message** (e.g. `Cannot read properties of null`) — DataVault has no data loaded yet. Log in or generate the files first, then paste the command again.
+   - **a red error message** (e.g. `Cannot read properties of null`) — DataVault has no data loaded yet. Enter the password in the `Litany of Access` field on the K.O.Z.A. screen or generate the files first, then paste the command again.
 
    The same command run after refreshing the page checks the data currently stored in Firebase.
-3. If everything is fine, import `firebase-import.json` (section "Importing data into Firebase"), refresh GeneratorNPC and generate the card of the same entry — the ability headers should be bold just as in Excel.
+3. If everything is fine, import `firebase-import.json` (section "Importing data into Firebase"). Then refresh DataVault (`F5`) — the page loads the data from Firebase; you can run the command once more, and an empty table confirms that Firebase now holds the new data. Finally refresh GeneratorNPC and generate the card of the same entry — the ability headers should be bold just as in Excel.
 
 ## Importing data into Firebase — technical admin only
 
