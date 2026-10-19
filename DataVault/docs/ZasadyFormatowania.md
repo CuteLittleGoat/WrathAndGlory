@@ -684,7 +684,7 @@ Rules:
 - the asterisk and number remain visible,
 - the rule is applied separately per line,
 - the line receives a lighter or helper style depending on CSS,
-- the pattern must start the line: if any formatting (bold, italic, strikethrough, color) covers any character of `*[n]`, a marker stands in that part and the line is not recognised as `*[n]`; this also applies to the following lines of one selection that spans several lines, because each of them starts with its own marker — do not format the start of a `*[n]` line.
+- the pattern must start the line: if any formatting (bold, italic, strikethrough, color) covers any character of `*[n]`, a marker stands in that part and the line is not recognized as `*[n]`; this also applies to the following lines of one selection that spans several lines, because each of them starts with its own marker — do not format the start of a `*[n]` line.
 
 ## Line break behavior
 
@@ -902,7 +902,7 @@ This keeps combined red and strikethrough text red even inside archived rows.
 | Assuming automatic red in `Pakiety Wyniesienia` | Text may stay neutral. | Apply red directly in XLSX. |
 | Hand-typed markers with an Enter between them | In the tables the style covers only the line with the opening marker. | Use rich text in XLSX or close the marker on the same line. |
 | Bold, italic or strikethrough applied to the whole cell instead of the selected text | The style does not reach the data (for a whole cell only the red font color is carried over, and only in a cell without formatted runs). | Select part of the text in cell edit mode and only then apply the style. Excel may save a selection of the whole cell text as whole-cell formatting. If the whole cell is bold and part of the text was un-bolded, parts that are bold only through the cell style (Excel usually stores the part at the start of the cell this way) do not reach the data as bold — remove the whole-cell bold and make only the chosen parts bold. |
-| Formatting that covers the start of a `*[n]` line | The line is not recognised as `*[n]`. | Start the formatting after the footnote number. |
+| Formatting that covers the start of a `*[n]` line | The line is not recognized as `*[n]`. | Start the formatting after the footnote number. |
 
 Formatting in Excel that starts or ends with an Enter or spans several lines (e.g. a bold Enter before an ability header) **is not an error** and the cell does not need fixing — the generator stores it exactly like formatting that starts with a letter.
 

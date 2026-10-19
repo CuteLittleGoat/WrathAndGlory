@@ -536,8 +536,8 @@ kolejności `{{/S}}{{/I}}{{/B}}{{/RED}}` (tylko włączone style).
 **Dlaczego reguły są potrzebne.** Wszystkie renderery formatują każdą linię albo pasek osobno, z pustym
 stosem stylów: w DataVault `formatTextHTML()` i `formatFactionKeywordHTML()` (podział po `\r?\n`),
 w GeneratorNPC `formatTextHTML()` (tabela i sekcje karty bez pasków) oraz `splitEntries()` +
-`formatSectionEntries()` (paski karty). Para znaczników przechodząca przez złamanie linii gubiłaby styl na kolejnych liniach — np.
-pogrubiony fragment `⏎ANIHILACJA: Protokoły ożywienia` dałby `{{B}}\nANIHILACJA: …{{/B}}` i nagłówek
+`formatSectionEntries()` (paski karty). Para znaczników przechodząca przez złamanie linii gubiłaby styl
+na kolejnych liniach — np. pogrubiony fragment `⏎ANIHILACJA: Protokoły ożywienia` dałby `{{B}}\nANIHILACJA: …{{/B}}` i nagłówek
 byłby zwykłym tekstem. Dlatego funkcja gwarantuje: **żadna para znaczników w wygenerowanych danych nie
 zawiera złamania linii.**
 
@@ -1546,9 +1546,8 @@ The marker order is fixed: opening `{{RED}}{{B}}{{I}}{{S}}`, closing in reverse 
 **Why the rules are needed.** Every renderer formats each line or stripe separately, with an empty style
 stack: in DataVault `formatTextHTML()` and `formatFactionKeywordHTML()` (split on `\r?\n`), in
 GeneratorNPC `formatTextHTML()` (table and non-striped card sections) and `splitEntries()` +
-`formatSectionEntries()` (card stripes).
-A marker pair crossing a line break would lose its style on the following lines — e.g. the bold run
-`⏎ANIHILACJA: Protokoły ożywienia` would give `{{B}}\nANIHILACJA: …{{/B}}` and the header would be
+`formatSectionEntries()` (card stripes). A marker pair crossing a line break would lose its style on the
+following lines — e.g. the bold run `⏎ANIHILACJA: Protokoły ożywienia` would give `{{B}}\nANIHILACJA: …{{/B}}` and the header would be
 plain text. The function therefore guarantees: **no marker pair in the generated data contains a line
 break.**
 
