@@ -395,7 +395,7 @@ To dokładnie ten tekst, który powstałby z poprawnie sformatowanej komórki (j
 //     covers new text, so bold cannot leak.
 const moveLineBreaksOutOfMarkers = (raw) => {
   let s = String(raw ?? "");
-  if (!s.includes("{{")) return s;
+  if (!/\{\{/.test(s)) return s;
   const openersBeforeBreak = /((?:\{\{(?:RED|B|I|S)\}\})+)((?:[ \t]*\r?\n)+)/g;
   const closersAfterBreak = /((?:\r?\n[ \t]*)+)((?:\{\{\/(?:RED|B|I|S)\}\})+)/g;
   let previous;
