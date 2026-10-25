@@ -3,7 +3,8 @@
 > **Data:** 25 października 2026
 > **Moduł:** `Audio` (panel admina `Audio/index.html?admin=1` i widok użytkownika `Audio/index.html`)
 > **Stan kodu:** commit `a667dd7` (gałąź `main`)
-> **Charakter dokumentu:** analiza działania i propozycje naprawy. **Kod aplikacji nie został zmieniony.** Dane w aplikacji (listy ulubionych i aliasy w Firestore) nie były odczytywane, zmieniane ani usuwane — testy odbyły się na lokalnej kopii strony z odłączonym Firebase (rozdz. 4.2).
+> **Charakter dokumentu:** analiza działania i propozycje naprawy. Rozdziały 4–12 opisują stan kodu sprzed wdrożenia (commit `a667dd7`) i proponowane zmiany. Dane w aplikacji (listy ulubionych i aliasy w Firestore) nie były odczytywane, zmieniane ani usuwane — testy odbyły się na lokalnej kopii strony z odłączonym Firebase (rozdz. 4.2).
+> **Stan:** decyzje D1–D9 rozstrzygnięte zgodnie z rekomendacjami (prompt 1.3). **Zmiany zostały wdrożone 25 października 2026** — rozdz. 15. Aktualnym źródłem wiedzy o działaniu modułu jest `Audio/docs/Documentation.md`.
 
 ---
 
@@ -23,6 +24,7 @@
 12. [Ryzyka](#12-ryzyka)
 13. [Znalezione przy okazji](#13-znalezione-przy-okazji)
 14. [Następne kroki](#14-następne-kroki)
+15. [Wdrożenie](#15-wdrożenie)
 
 ---
 
@@ -70,6 +72,10 @@ Do promptu dołączone były dwa zrzuty ekranu: (1) pojedynczy kafelek „Text O
 > Kontynuuj pracę.
 
 > Analizę wrzuć na Main.
+
+### 1.3 Polecenie wdrożenia
+
+> W zakresie D1-D9 wprowadź wszystko zgodnie z rekomendacją.
 
 ---
 
@@ -455,7 +461,46 @@ Obecny opis w `Audio/docs/README.md` (sekcja „Podgląd widoku użytkownika”)
 
 ## 14. Następne kroki
 
-1. Rozstrzygnięcie decyzji D1–D9 (rozdz. 9) — domyślnie zgodnie z rekomendacjami.
-2. Wdrożenie zmian z rozdz. 10 (kod, dokumentacja PL/EN, `DetaleLayout.md`).
-3. Testy z rozdz. 11, w tym test T18 potwierdzający, że listy i aliasy pozostały nienaruszone.
-4. Do czasu wdrożenia: grające w tle dźwięki z katalogu można zatrzymać przyciskiem `■ Zatrzymaj wszystko` w rozwiniętym podglądzie widoku użytkownika.
+1. ~~Rozstrzygnięcie decyzji D1–D9~~ — wszystkie zgodnie z rekomendacjami (prompt 1.3).
+2. ~~Wdrożenie zmian z rozdz. 10~~ — wykonane, rozdz. 15.
+3. Po publikacji na stronie: odświeżenie modułu z pominięciem pamięci podręcznej (`Ctrl+F5`) i sprawdzenie na prawdziwych danych testu T18 — listy i aliasy mają być takie same jak przed wdrożeniem.
+
+---
+
+## 15. Wdrożenie
+
+**Data:** 25 października 2026. **Zmienione pliki:** `Audio/app.js`, `Audio/index.html`, `Audio/style.css`, `Audio/docs/README.md` (PL i EN), `Audio/docs/Documentation.md` (PL i EN), `DetaleLayout.md` (sekcja „Moduł — Audio”). Dane w Firestore, format ustawień, reguły Firebase, manifesty i bramka — bez zmian.
+
+### 15.1 Co wdrożono
+
+| Decyzja | Realizacja |
+| --- | --- |
+| D1 | Zmiana frazy „Szukaj dźwięku” (po normalizacji — `hasNeedleChanged`), pola wyboru i przyciski folderów (`onFolderFilterChanged`), „Pokaż” i „Warstwa” zatrzymują odsłuch z katalogu; siatka bezpieczeństwa `stopDetachedAuditions("cat")` na końcu `renderCatalog()`. |
+| D2 | Zmiana frazy „Szukaj na liście” zatrzymuje odsłuch z edytora; zmiana listy edytowanej — siatka bezpieczeństwa `stopDetachedAuditions("ed")` na końcu `renderEditor()`. |
+| D3 | Pływający `#stopAllFloat` (`■ Zatrzymaj wszystko (N)`), widoczny tylko, gdy coś gra; na telefonie sama ikona z licznikiem. |
+| D4 | Zmiana zakładki na tablecie i telefonie nie zatrzymuje dźwięków. |
+| D5 | Zaznaczanie wierszy katalogu nie zatrzymuje dźwięków. |
+| D6 | Alias 12 px przez wspólną zmienną `--tile-meta-size` (tag i alias); licznik `(N)` bez zmian. |
+| D7 | `previewCollapsed: true` na starcie, bez odczytu i zapisu w `localStorage`; `#previewFrame` z atrybutem `hidden`. |
+| D8 | Kliknięcie zakładki `Podgląd` rozwija podgląd. |
+| D9 | `Zwiń podgląd` zatrzymuje dźwięki kontekstu `prev`. |
+
+### 15.2 Różnice względem projektu z rozdz. 5.3 i 7
+
+- **Funkcje pomocnicze:** zamiast trzech osobnych funkcji (`stopCatalogAuditions`, `stopEditorAuditions`, `stopPreviewPlayback`) jest jedna `stopContextPlayback(context)`; `stopDetachedAuditions(context)` przyjmuje kontekst, bo jest wywoływana osobno dla katalogu i edytora.
+- **Zmiana listy edytowanej (D2):** zamiast osobnego wywołania w `setEditedList()` zatrzymanie realizuje siatka bezpieczeństwa w `renderEditor()`. Obejmuje to wszystkie drogi zmiany listy — także nową listę, duplikat i usunięcie listy, które nie przechodzą przez `setEditedList()`.
+- **Położenie pływającego przycisku na węższych ekranach (D3):** pomiar wykazał, że pasek „Zaznaczone” ma od 48 px (komputer, 560–1023 px) do 117 px (telefon dotykowy 360–390 px), a jego wysokość zależy też od długości nazwy listy. Zamiast stałego odstępu przycisk dostaje rzeczywistą wysokość paska przez zmienną `--bulk-bar-h` (`updateStopAllFloatOffset()`).
+- **Rozszerzenie D8:** gdy panel otwiera się na telefonie lub tablecie z zapamiętaną zakładką `Podgląd`, podgląd startuje rozwinięty — z tego samego powodu, dla którego rozwija go kliknięcie tej zakładki.
+
+### 15.3 Weryfikacja
+
+Test automatyczny w Chromium (Playwright), w trybie lokalnym jak w rozdz. 4.2 — Firebase odcięty, dane testowe wyłącznie w jednorazowej przeglądarce. Pliki dźwiękowe zastąpiono 30-sekundową ciszą, żeby odróżnić „zatrzymany” od „sam się skończył”. Wynik: **33 z 33 sprawdzeń poprawnych**, m.in.:
+
+- T1–T5: fraza, foldery (pole wyboru, `Odznacz wszystko`, `Zaznacz wszystko`, `tylko`), „Pokaż”, „Warstwa” i znikający wiersz zatrzymują odsłuch; dopisanie spacji nie zatrzymuje;
+- T6: zaznaczanie wierszy i „Szukaj folderu” nie zatrzymują;
+- T7: zmiana listy edytowanej i frazy w edytorze zatrzymują odsłuch z edytora; filtr katalogu go nie rusza;
+- T8–T9: zwinięcie podglądu zatrzymuje jego dźwięki; zmiana zakładki w podglądzie nie (kropka na zakładce), a przy odznaczonym „podąża za edytowaną listą” edytor zostaje na swojej liście;
+- T12–T13: alias i tag 12 px, nazwa 15 px, kolor aliasu `#d2fad2`, licznik `(N)` 15 px;
+- D7: podgląd zwinięty mimo zapamiętanego wcześniej stanu „rozwinięty” i znów zwinięty po odświeżeniu;
+- telefon 390 px z emulacją dotyku: pływający przycisk nie nachodzi na pasek „Zaznaczone”, zmiana zakładki nie zatrzymuje dźwięku, zakładka `Podgląd` rozwija podgląd (także po odświeżeniu);
+- T17: widok użytkownika bez pływającego przycisku, zmiana zakładki nie zatrzymuje dźwięku.

@@ -201,10 +201,15 @@
           <button class="btn btn-small" type="button" id="previewToggle"></button>
         </div>
       </div>
-      <div class="preview__frame" id="previewFrame" data-device="desktop">
+      <!-- Ramka jest ukryta od startu: podgląd zaczyna każdą wizytę zwinięty / The frame is hidden from the start: the preview begins every visit collapsed -->
+      <div class="preview__frame" id="previewFrame" data-device="desktop" hidden>
         <div id="previewView"></div>
       </div>
     </section>
+
+    <!-- Pływający przycisk zatrzymania wszystkich dźwięków panelu admina (katalog, edytor, podgląd); widoczny tylko wtedy, gdy coś gra -->
+    <!-- Floating button that stops every admin panel sound (catalogue, editor, preview); visible only while something plays -->
+    <button class="btn stop-all stop-all-float admin-only" type="button" id="stopAllFloat" data-i18n-title="stopAll" title="Zatrzymaj wszystko" disabled><span aria-hidden="true">■</span><span class="stop-all__label" data-i18n="stopAll">Zatrzymaj wszystko</span><span class="stop-all__count">(0)</span></button>
 
     <!-- ============================ WIDOK UŻYTKOWNIKA / USER VIEW ============================ -->
     <!-- Treść rysuje app.js (renderUserView) / Content is drawn by app.js (renderUserView) -->

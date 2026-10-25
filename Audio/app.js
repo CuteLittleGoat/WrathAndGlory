@@ -660,6 +660,7 @@ const dom = {
   previewToggle: $("previewToggle"),
   previewFrame: $("previewFrame"),
   previewView: $("previewView"),
+  stopAllFloat: $("stopAllFloat"),
   userView: $("userView"),
   aliasSuggestions: $("aliasSuggestions"),
   accessGate: $("accessGate"),
@@ -733,7 +734,9 @@ const state = {
   adminTab: "catalog",
   previewDevice: "desktop",
   previewFollow: true,
-  previewCollapsed: false,
+  // PL: Podgląd zaczyna każdą wizytę zwinięty; stan nie jest zapamiętywany między odświeżeniami.
+  // EN: The preview starts every visit collapsed; the state is not kept between reloads.
+  previewCollapsed: true,
   previewListId: MAIN_LIST_ID,
   toolsMenuOpen: false,
   // --- Widok użytkownika / User view ---
@@ -1665,6 +1668,10 @@ const updateWakeLock = () => {
 };
 
 // --- Wskaźniki zbiorcze: „Zatrzymaj wszystko”, kropki na zakładkach, blokada ekranu / Summary indicators: "Stop all", tab dots, wake lock ---
+// PL: Obsługuje każdy przycisk z klasą .stop-all: w pasku widoku użytkownika, w podglądzie i pływający
+//     przycisk panelu admina (#stopAllFloat), który style chowają, gdy przycisk jest nieaktywny.
+// EN: Handles every button with the .stop-all class: in the user view bar, in the preview and the
+//     admin panel floating button (#stopAllFloat), which styles hide while the button is disabled.
 const updatePlaybackIndicators = () => {
   const activeKeys = [...players.keys(), ...loadingKeys.keys()];
   const count = activeKeys.length;
@@ -1720,7 +1727,53 @@ const stopAllPlayback = () => {
   [...players.keys(), ...loadingKeys.keys()].forEach((key) => stopPlayback(key));
 };
 
+// --- Zatrzymanie dźwięków spełniających warunek / Stopping the sounds that match a condition ---
+// PL: Wspólna podstawa dla zatrzymywania odsłuchu po zmianie filtrów i przy zwinięciu podglądu.
+//     Obejmuje także dźwięki w stanie „wczytywanie…” — stopPlayback() anuluje ich start.
+// EN: Shared basis for stopping auditions after a filter change and when the preview is collapsed.
+//     Also covers sounds in the "loading…" state — stopPlayback() cancels their start.
+const stopPlaybackWhere = (test) => {
+  [...players.keys(), ...loadingKeys.keys()].forEach((key) => {
+    if (test(key)) {
+      stopPlayback(key);
+    }
+  });
+};
+
+// --- Zatrzymanie wszystkich dźwięków jednego kontekstu / Stopping every sound of one context ---
+// PL: Konteksty: cat (odsłuch w katalogu), ed (odsłuch w edytorze listy), prev (podgląd widoku użytkownika).
+// EN: Contexts: cat (catalogue audition), ed (list editor audition), prev (user view preview).
+const stopContextPlayback = (context) => stopPlaybackWhere((key) => key.startsWith(`${context}|`));
+
+// --- Odsłuch bez przycisku na stronie jest zatrzymywany / An audition without a button on the page is stopped ---
+// PL: Wywoływane po przerysowaniu katalogu (context = "cat") i edytora listy (context = "ed"). Obejmuje
+//     przypadki, których nie da się przewidzieć z góry: wiersz znika po dodaniu do listy przy filtrze
+//     „spoza listy docelowej”, edytor pokazuje inną listę, zmiana przychodzi z bazy, manifest zostaje
+//     wczytany ponownie. Wiersz ukryty tylko stylem (zakładki na węższych ekranach) nadal jest na
+//     stronie, więc jego dźwięk gra dalej. Podgląd nie korzysta z tej reguły, bo dźwięki z innych
+//     zakładek mają grać dalej (kropka na zakładce), tak jak w prawdziwym widoku użytkownika.
+// EN: Called after the catalogue (context = "cat") and the list editor (context = "ed") are redrawn. It
+//     covers cases that cannot be foreseen: a row disappears after being added under the "outside the
+//     target list" filter, the editor shows another list, a change arrives from the database, the
+//     manifest is reloaded. A row hidden by styles only (tabs on narrower screens) is still on the page,
+//     so its sound keeps playing. The preview does not use this rule, because sounds from other tabs
+//     must keep playing (tab dot), just like in the real user view.
+const stopDetachedAuditions = (context) => {
+  stopPlaybackWhere((key) => key.startsWith(`${context}|`) && !findKeyElements(key).length);
+};
+
+// --- Czy fraza wyszukiwania zmieniła wyniki / Whether a search phrase change affects the results ---
+// PL: Porównanie po normalizacji (toNeedle): dopisanie spacji albo zmiana wielkości liter niczego
+//     nie zawęża, więc nie zatrzymuje odsłuchu.
+// EN: Compared after normalisation (toNeedle): adding a space or changing letter case narrows nothing,
+//     so it does not stop the audition.
+const hasNeedleChanged = (previous, next) => toNeedle(previous) !== toNeedle(next);
+
 // --- Zatrzymanie dźwięków, których wpis albo lista zniknęły / Stopping sounds whose entry or list disappeared ---
+// PL: Odsłuch z katalogu nie należy do żadnej listy, dlatego jest tu pomijany — zatrzymują go reguły
+//     katalogu (zmiana filtrów i stopDetachedAuditions).
+// EN: A catalogue audition belongs to no list, so it is skipped here — the catalogue rules stop it
+//     (filter changes and stopDetachedAuditions).
 const pruneOrphanPlayers = () => {
   [...players.keys(), ...loadingKeys.keys()].forEach((key) => {
     const [context, listId, itemId] = key.split("|");
@@ -2308,7 +2361,12 @@ const excludeAllFolders = () => {
 };
 
 // --- Zmiana filtra folderów: drzewo, katalog i zapis stanu / A folder filter change: tree, catalogue and stored state ---
+// PL: Wspólne zakończenie dla pól wyboru folderów i przycisków zaznaczania (wszystko, nic, tylko ten
+//     folder, pasujące). Zmiana tego, co pokazuje katalog, zatrzymuje odsłuch z katalogu.
+// EN: Shared ending for the folder checkboxes and selection buttons (all, none, only this folder,
+//     matches). Changing what the catalogue shows stops the catalogue audition.
 const onFolderFilterChanged = () => {
+  stopContextPlayback("cat");
   state.catalogLimit = CATALOG_PAGE_SIZE;
   saveAdminFilters();
   renderTree();
@@ -2318,12 +2376,14 @@ const onFolderFilterChanged = () => {
 // ==========================================================================================
 // --- Stan interfejsu admina w pamięci przeglądarki / Admin interface state in browser storage ---
 // ==========================================================================================
-// PL: Układ (zwinięcie paneli, rozwinięte foldery, lista edytowana, podgląd, zakładka) zostaje na
-//     tym urządzeniu w localStorage; filtry — w sessionStorage, jak Filtr Globalny w DataVault.
-//     Głośność kafelków nie jest zapisywana nigdzie (decyzja D13).
-// EN: The layout (collapsed panels, expanded folders, edited list, preview, tab) stays on this
-//     device in localStorage; filters go to sessionStorage, like the Global Filter in DataVault.
-//     Tile volume is not stored anywhere (decision D13).
+// PL: Układ (zwinięcie panelu folderów, rozwinięte foldery, lista edytowana, szerokość podglądu,
+//     „podąża za edytowaną listą”, zakładka) zostaje na tym urządzeniu w localStorage; filtry —
+//     w sessionStorage, jak Filtr Globalny w DataVault. Zwinięcie podglądu nie jest zapisywane:
+//     podgląd zaczyna każdą wizytę zwinięty. Głośność kafelków nie jest zapisywana nigdzie (decyzja D13).
+// EN: The layout (folder panel collapse, expanded folders, edited list, preview width, "follows the
+//     edited list", tab) stays on this device in localStorage; filters go to sessionStorage, like the
+//     Global Filter in DataVault. The preview collapse is not stored: the preview starts every visit
+//     collapsed. Tile volume is not stored anywhere (decision D13).
 
 const saveAdminUi = () => {
   if (!ADMIN_MODE) {
@@ -2335,7 +2395,6 @@ const saveAdminUi = () => {
     editedListId: state.restoredEditedListId || state.editedListId,
     previewDevice: state.previewDevice,
     previewFollow: state.previewFollow,
-    previewCollapsed: state.previewCollapsed,
     adminTab: state.adminTab
   });
 };
@@ -2363,8 +2422,14 @@ const restoreAdminState = () => {
   state.restoredEditedListId = typeof ui.editedListId === "string" ? ui.editedListId : null;
   state.previewDevice = PREVIEW_DEVICE_WIDTHS[ui.previewDevice] !== undefined ? ui.previewDevice : "desktop";
   state.previewFollow = ui.previewFollow !== false;
-  state.previewCollapsed = Boolean(ui.previewCollapsed);
   state.adminTab = ["catalog", "lists", "preview"].includes(ui.adminTab) ? ui.adminTab : "catalog";
+  // PL: Zapamiętane zwinięcie podglądu (także stare previewCollapsed) jest ignorowane — podgląd startuje
+  //     zwinięty. Wyjątek: na węższym ekranie z otwartą zakładką „Podgląd” jest od razu rozwinięty, bo
+  //     ta zakładka służy wyłącznie do oglądania podglądu.
+  // EN: A stored preview collapse (including the old previewCollapsed) is ignored — the preview starts
+  //     collapsed. Exception: on a narrower screen with the "Preview" tab open it starts expanded,
+  //     because that tab exists only to show the preview.
+  state.previewCollapsed = !(state.adminTab === "preview" && window.matchMedia("(max-width: 1023px)").matches);
   const filters = readStoredJson("session", ADMIN_FILTERS_STORAGE_KEY) || {};
   state.excludedPaths = new Set(Array.isArray(filters.excludedPaths) ? filters.excludedPaths : []);
   state.treeSearch = String(filters.treeSearch || "");
@@ -2534,6 +2599,21 @@ const getAvailableDevices = () => ({
   phone: window.innerWidth > PREVIEW_DEVICE_WIDTHS.phone + 40
 });
 
+// --- Odstęp pływającego „Zatrzymaj wszystko” od paska „Zaznaczone” / Floating "Stop all" offset above the "Selected" bar ---
+// PL: Na węższych ekranach pasek zaznaczonych przykleja się do dołu, a jego wysokość zależy od
+//     szerokości, ekranu dotykowego i długości nazwy listy. Zmienna --bulk-bar-h podaje style
+//     rzeczywistą wysokość, więc przycisk zawsze stoi nad paskiem. Ukryty pasek ma wysokość 0.
+// EN: On narrower screens the selection bar sticks to the bottom, and its height depends on the width,
+//     the touch screen and the length of the list name. The --bulk-bar-h variable hands the real height
+//     to the styles, so the button always sits above the bar. A hidden bar has a height of 0.
+const updateStopAllFloatOffset = () => {
+  if (!ADMIN_MODE || !dom.bulkBar) {
+    return;
+  }
+  const height = dom.bulkBar.hidden ? 0 : dom.bulkBar.offsetHeight;
+  document.body.style.setProperty("--bulk-bar-h", `${height}px`);
+};
+
 // --- Układ panelu: zakładki, szuflada, szyna, podgląd / Panel layout: tabs, drawer, rail, preview ---
 const renderLayoutState = () => {
   if (!ADMIN_MODE) {
@@ -2569,6 +2649,9 @@ const renderLayoutState = () => {
   dom.previewToggle.textContent = t(state.previewCollapsed ? "previewShow" : "previewHide");
   dom.previewToggle.setAttribute("aria-expanded", String(!state.previewCollapsed));
   dom.previewFollow.checked = state.previewFollow;
+  // PL: Zmiana zakładki albo szerokości okna zmienia widoczność i wysokość paska zaznaczonych.
+  // EN: A tab or window width change alters the selection bar's visibility and height.
+  updateStopAllFloatOffset();
 };
 
 // --- Drzewo folderów / Folder tree ---
@@ -2755,6 +2838,9 @@ const renderCatalog = () => {
     dom.catalogList.innerHTML = html;
   });
   syncPlaybackIn(dom.catalogList);
+  // PL: Dźwięk, którego wiersza nie ma już w katalogu, nie może grać dalej bez możliwości zatrzymania.
+  // EN: A sound whose row is no longer in the catalogue must not keep playing with no way to stop it.
+  stopDetachedAuditions("cat");
 
   const remaining = results.length - Math.min(results.length, state.catalogLimit);
   dom.catalogMore.hidden = remaining <= 0;
@@ -2762,6 +2848,7 @@ const renderCatalog = () => {
 
   const selectedCount = state.selectedItemIds.size;
   dom.bulkBar.hidden = selectedCount === 0;
+  updateStopAllFloatOffset();
   dom.bulkCount.textContent = t("bulkCount", { count: selectedCount });
   dom.bulkAdd.textContent = t("bulkAdd", { name: targetName });
   dom.selectAllResults.disabled = !results.length;
@@ -2898,6 +2985,9 @@ const renderEditor = () => {
     dom.editorEntries.innerHTML = html;
   });
   syncPlaybackIn(dom.editorEntries);
+  // PL: Odsłuch wpisu ukrytego frazą albo z listy, której edytor już nie pokazuje, jest zatrzymywany.
+  // EN: The audition of an entry hidden by the phrase or from a list the editor no longer shows is stopped.
+  stopDetachedAuditions("ed");
   if (entriesSortable) {
     entriesSortable.option("disabled", locked);
   }
@@ -3868,8 +3958,18 @@ const bindAdminEvents = () => {
       return;
     }
     state.adminTab = tab.dataset.tab;
+    // PL: Zakładka „Podgląd” służy wyłącznie do oglądania podglądu, więc rozwija go od razu.
+    // EN: The "Preview" tab exists only to show the preview, so it expands it straight away.
+    const expandPreview = state.adminTab === "preview" && state.previewCollapsed;
+    if (expandPreview) {
+      state.previewCollapsed = false;
+    }
     saveAdminUi();
     renderLayoutState();
+    if (expandPreview) {
+      renderPreview();
+      updatePlaybackIndicators();
+    }
   });
 
   // Panel folderów / Folder panel
@@ -3965,19 +4065,28 @@ const bindAdminEvents = () => {
 
   // Katalog / Catalogue
   dom.targetList.addEventListener("change", () => setEditedList(dom.targetList.value));
+  // PL: Każda zmiana tego, co pokazuje katalog (fraza, „Pokaż”, „Warstwa”), zatrzymuje odsłuch z katalogu —
+  //     także wtedy, gdy grający dźwięk nadal spełnia filtr, bo na długiej liście nie da się go odnaleźć.
+  // EN: Every change of what the catalogue shows (phrase, "Show", "Tier") stops the catalogue audition —
+  //     even when the playing sound still matches, because it cannot be found on a long list.
   dom.catalogSearch.addEventListener("input", debounce(() => {
+    if (hasNeedleChanged(state.catalogSearch, dom.catalogSearch.value)) {
+      stopContextPlayback("cat");
+    }
     state.catalogSearch = dom.catalogSearch.value;
     state.catalogLimit = CATALOG_PAGE_SIZE;
     saveAdminFilters();
     renderCatalog();
   }, SEARCH_DEBOUNCE_MS));
   dom.catalogScope.addEventListener("change", () => {
+    stopContextPlayback("cat");
     state.catalogScope = dom.catalogScope.value;
     state.catalogLimit = CATALOG_PAGE_SIZE;
     saveAdminFilters();
     renderCatalog();
   });
   dom.catalogTier.addEventListener("change", () => {
+    stopContextPlayback("cat");
     state.catalogTier = dom.catalogTier.value;
     state.catalogLimit = CATALOG_PAGE_SIZE;
     saveAdminFilters();
@@ -4133,7 +4242,12 @@ const bindAdminEvents = () => {
   });
 
   // Edytor: wpisy / Editor: entries
+  // PL: Zmiana frazy „Szukaj na liście” zatrzymuje odsłuch z edytora, tak jak fraza w katalogu.
+  // EN: Changing the "Search the list" phrase stops the editor audition, just like the catalogue phrase.
   dom.editorSearch.addEventListener("input", debounce(() => {
+    if (hasNeedleChanged(state.editorSearch, dom.editorSearch.value)) {
+      stopContextPlayback("ed");
+    }
     state.editorSearch = dom.editorSearch.value;
     renderEditor();
   }, 100));
@@ -4222,13 +4336,21 @@ const bindAdminEvents = () => {
     renderPreview();
     updatePlaybackIndicators();
   });
+  // PL: Zwinięty podgląd nie ma kafelków ani własnego „Zatrzymaj wszystko”, więc jego dźwięki milkną.
+  // EN: A collapsed preview has no tiles and no "Stop all" of its own, so its sounds are stopped.
   dom.previewToggle.addEventListener("click", () => {
     state.previewCollapsed = !state.previewCollapsed;
+    if (state.previewCollapsed) {
+      stopContextPlayback("prev");
+    }
     saveAdminUi();
     renderLayoutState();
     renderPreview();
     updatePlaybackIndicators();
   });
+
+  // Pływający przycisk „Zatrzymaj wszystko” / Floating "Stop all" button
+  dom.stopAllFloat.addEventListener("click", stopAllPlayback);
 
   // PL: Zmiana szerokości okna przełącza szufladę, szynę i dostępne szerokości podglądu.
   // EN: A window width change switches the drawer, the rail and the available preview widths.

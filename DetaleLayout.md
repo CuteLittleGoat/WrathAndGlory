@@ -792,7 +792,7 @@ Wszystkie style modułu są w `Audio/style.css` (jeden arkusz dla panelu admina,
 - Etykiety pól (`.field-label`): 11 px, uppercase, `letter-spacing: 0.1em`, `--muted`.
 - Tekst podstawowy 13 px; ścieżki i opisy 11–12 px.
 - Przyciski `.btn`: 13 px, uppercase, `letter-spacing: 0.06em`; `.btn-small`: 11 px.
-- Nazwa na kafelku (`.tile-title`): 15 px, `font-weight: 600`, `line-height: 1.3`; tag (`.tile-tag`): 12 px, `--muted`.
+- Nazwa na kafelku (`.tile-title`): 15 px, `font-weight: 600`, `line-height: 1.3`; tag (`.tile-tag`): 12 px (`--tile-meta-size`), `--muted`; alias (`.sample-alias`): 12 px (`--tile-meta-size`, ten sam rozmiar co tag), `font-weight: 400`, `#d2fad2`; licznik `(N)` (`.group-count`) w rozmiarze nazwy.
 - Znak marki w pasku widoku (`.uv-brand`): 13 px, 600, uppercase, `letter-spacing: 0.14em`, `--accent-strong`.
 
 ### 2) Kolory, tła, ramki, cienie
@@ -806,6 +806,7 @@ Wszystkie style modułu są w `Audio/style.css` (jeden arkusz dla panelu admina,
 - `--radius`: `12px` (nagłówek, kolumny, podgląd, pasek widoku); mniejsze elementy: 8–10 px.
 - Niebieski sygnał aktywnego filtra, skopiowany z DataVault: `--filter-on: #3D8FC4`, `--filter-on-bright: #6FB3E0`, `--filter-on-border: rgba(61, 143, 196, 0.55)`, `--filter-on-glow: rgba(61, 143, 196, 0.40)`, `--filter-on-bg: rgba(61, 143, 196, 0.10)`, `--filter-on-bg-active: rgba(61, 143, 196, 0.20)`.
 - Szerokości kolumn warsztatu: `--folders-w: 260px`, `--lists-w: 400px` (≥1600 px: 280 / 420; 1280–1599 px: 240 / 380).
+- `--tile-meta-size: 12px` — wspólny rozmiar tagu i aliasu na kafelku.
 
 #### 2.2 Znaczenie kolorów
 - **Niebieski** oznacza wyłącznie „filtr jest założony”: etykieta pola z aktywną frazą (`.field-label--active`), tytuł „Foldery” i część „Foldery: X z Y” w podsumowaniu (`.is-filter-on`: `color: --filter-on`, `text-shadow: 0 0 10px --filter-on-glow`), kropki `.dot` (8 px, `--filter-on-bright`, poświata), wyróżnienie `<mark>` w drzewie i edytorze (tło `--filter-on-bg-active`, tekst `--filter-on-bright`, `border-radius: 3px`), podpowiedź o zablokowanej kolejności (`.editor__hint`, `--filter-on-bright`).
@@ -865,6 +866,14 @@ Wszystkie style modułu są w `Audio/style.css` (jeden arkusz dla panelu admina,
 - `.preview`: tło `--panel`, ramka `rgba(22, 198, 12, 0.6)`, `--radius`, `padding: 14px`.
 - Przełącznik szerokości `.seg` (przyciski 11 px uppercase, aktywny tło `rgba(22, 198, 12, 0.25)`, tekst `#d2ffd2`).
 - Ramka `.preview__frame`: przerywana `rgba(22, 198, 12, 0.35)`, tło `#020d03`, `border-radius: 10px`, `padding: 10px`, wyśrodkowana; `max-width` 820 px (Tablet) albo 390 px (Telefon).
+- Po wejściu na stronę podgląd jest zwinięty: widać tylko nagłówek `.preview__head` z przyciskami, a ramka ma atrybut `hidden`. Na ekranie ≤1023 px zakładka „Podgląd” pokazuje podgląd od razu rozwinięty.
+
+#### 4.7 Pływający przycisk „Zatrzymaj wszystko”
+- `#stopAllFloat` (`.btn.stop-all.stop-all-float`): `position: fixed`, `right: 16px`, `bottom: calc(16px + env(safe-area-inset-bottom, 0px))`, `z-index: 50` (pod szufladą folderów 55, paskiem zapisu 9000 i bramką 9999).
+- Widoczny tylko wtedy, gdy w panelu coś gra; wyłączony przycisk ma `display: none`.
+- Wygląd: jak aktywny „Zatrzymaj wszystko” (ramka `--danger`, tekst `#ffd6d6`), tło `#120404`, cień `0 0 14px rgba(255, 95, 95, 0.35), var(--shadow)`; treść `■ Zatrzymaj wszystko (N)`.
+- ≤1023 px: `bottom: calc(12px + var(--bulk-bar-h, 0px) + env(safe-area-inset-bottom, 0px))` — przycisk stoi nad przyklejonym paskiem zaznaczonych; `--bulk-bar-h` to rzeczywista wysokość paska (0 px, gdy jest ukryty).
+- ≤559 px: `right: 10px`, sama ikona ■ z licznikiem (napis ukryty).
 
 ### 5) Widok użytkownika (także w podglądzie)
 - Pasek `.uv-bar`: tło `--panel`, ramka `rgba(22, 198, 12, 0.6)`, `--radius`, cień `--shadow`, `padding: 8px 10px`, `flex-wrap`. Na prawdziwej stronie przyklejony u góry (`position: sticky; top: var(--wg-write-status-height, 0px)`), w podglądzie nie.
@@ -903,7 +912,7 @@ Wszystkie style modułu są w `Audio/style.css` (jeden arkusz dla panelu admina,
 
 ### 8) Wyjątki i formatowanie specjalne
 - Format nazwy: `Nazwa (alias) (N)`.
-- `.sample-alias`: alias w nawiasie w jaśniejszym kolorze `#d2fad2`, `font-weight: 400`.
+- `.sample-alias`: alias w nawiasie w jaśniejszym kolorze `#d2fad2`, `font-weight: 400`, `font-size: var(--tile-meta-size)` (12 px — tyle co tag); linia z samym aliasem zachowuje wysokość linii nazwy (15 px × 1,3).
 - `.group-count`: licznik wariantów w nawiasie w kolorze `--danger`, `font-weight: 400`; pokazywany tylko przy więcej niż jednym wariancie.
 - Atrybut `hidden` wygrywa z każdą regułą `display` (`[hidden] { display: none !important; }`).
 

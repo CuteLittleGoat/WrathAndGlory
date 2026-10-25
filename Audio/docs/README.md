@@ -88,7 +88,7 @@ Pasek zostaje u góry ekranu także podczas przewijania. Zawiera:
 Każdy kafelek pokazuje:
 
 - **nazwę dźwięku**,
-- **alias w nawiasie**, jeżeli na tej liście nadano alias — na przykład `Meltagun Reload (przeładowanie)`,
+- **alias w nawiasie**, jeżeli na tej liście nadano alias — na przykład `Meltagun Reload (przeładowanie)`; alias jest zapisany jaśniejszą i mniejszą czcionką, tej samej wielkości co tag,
 - **czerwony licznik w nawiasie** `(5)`, jeżeli pod jedną nazwą jest kilka plików (przy każdym odtworzeniu losowany jest jeden z nich),
 - **jeden tag** — nazwę kolekcji, z której pochodzi dźwięk,
 - **suwak głośności** z wartością w procentach,
@@ -149,7 +149,7 @@ Panel pracuje od lewej do prawej:
 2. **Katalog dźwięków** — wszystkie dźwięki biblioteki, z wyszukiwarką. Stąd dodajesz dźwięki do list.
 3. **Listy** — lista główna i listy ulubionych, a pod nimi **edytor** wybranej listy: kolejność dźwięków i aliasy.
 
-Na samym dole strony jest **podgląd widoku użytkownika**.
+Na samym dole strony jest **podgląd widoku użytkownika** — po wejściu na stronę jest zwinięty.
 
 Na komputerze wszystkie trzy części stoją obok siebie, a każda przewija się osobno. Na węższym ekranie foldery chowają się w wysuwanej szufladzie (przycisk `Foldery` w nagłówku katalogu). Na tablecie i telefonie u góry pojawiają się zakładki **`Katalog` / `Listy` / `Podgląd`** — każda pokazuje jedną część panelu. Wszystkie funkcje działają na każdym urządzeniu.
 
@@ -248,6 +248,15 @@ Katalog nie pokazuje aliasów przy nazwach, bo alias należy do listy. Aliasy wi
 
 Katalog pokazuje naraz 200 wierszy; przycisk `Pokaż kolejne 200` doładowuje resztę.
 
+**Odsłuch a filtry:** odsłuch `▶` dotyczy tego, co katalog pokazuje w danej chwili. Gdy zmienisz to, co jest pokazane, dźwięk sam się zatrzyma:
+
+- wpiszesz, zmienisz albo skasujesz frazę w `Szukaj dźwięku` (dopisanie samej spacji niczego nie zmienia),
+- zaznaczysz lub odznaczysz folder albo użyjesz przycisków `Zaznacz wszystko`, `Odznacz wszystko`, `tylko` (przy folderze), `Zaznacz pasujące`, `Odznacz pasujące`, `Tylko pasujące`,
+- zmienisz `Pokaż` albo `Warstwa`,
+- wiersz grającego dźwięku zniknie z katalogu (np. po kliknięciu `+` przy włączonym `Pokaż: spoza listy docelowej`).
+
+Dźwięk gra dalej, gdy zaznaczasz wiersze do dodania, wpisujesz frazę w `Szukaj folderu` (zawęża tylko drzewo folderów) albo doładowujesz kolejne wiersze.
+
 ### Listy
 
 - **Lista główna** jest zawsze pierwsza, ma pinezkę 📌 i dopisek „lista główna”. Nie da się jej usunąć ani przesunąć. Jej nazwę można zmienić; pusta nazwa oznacza „Widok główny” (albo „Main view” w wersji angielskiej).
@@ -275,6 +284,8 @@ Każdy wpis na liście ma:
 
 **Szukaj na liście** — zawęża wpisy do pasujących nazw lub aliasów. Przy aktywnym wyszukiwaniu kolejności nie można zmieniać (moduł wyświetli podpowiedź) — skasuj tekst, żeby przesuwać dźwięki.
 
+**Odsłuch w edytorze** zatrzymuje się, gdy zmienisz frazę w `Szukaj na liście` albo wybierzesz do edycji inną listę (w panelu list, w polu „Lista docelowa”, zakładką w podglądzie, tworząc nową listę albo duplikat).
+
 **Wpis „(brak w manifeście)”** — dźwięk z zablokowanego archiwum albo dźwięk usunięty z biblioteki. Wpis i jego alias zostają zachowane; możesz go przesunąć, zmienić alias albo usunąć.
 
 ### Aliasy
@@ -297,10 +308,22 @@ Usunięcie dźwięku z listy usuwa też jego alias na tej liście. Przesunięcie
 
 Na dole panelu (na tablecie i telefonie — w zakładce `Podgląd`) widać widok użytkownika dokładnie takim, jaki zobaczą gracze: z zakładkami, kafelkami, suwakami, `Loop` i `Zatrzymaj wszystko`. Dźwięki w podglądzie naprawdę grają.
 
-- **podąża za edytowaną listą** — gdy pole jest zaznaczone, podgląd pokazuje listę wybraną w edytorze, a kliknięcie zakładki w podglądzie wybiera tę listę do edycji. Gdy pole jest puste, zakładki w podglądzie przełączają tylko podgląd.
+Po wejściu na stronę podgląd jest **zwinięty** — widać tylko jego nagłówek z przyciskami. Kliknij `Rozwiń podgląd`, żeby go zobaczyć. Na tablecie i telefonie wybranie zakładki `Podgląd` od razu go rozwija.
+
+- `Zwiń podgląd` / `Rozwiń podgląd` — chowa i pokazuje podgląd. Zwinięcie zatrzymuje dźwięki grające w podglądzie. Moduł tego nie pamięta: po odświeżeniu strony podgląd znów jest zwinięty.
 - `Komputer` / `Tablet` / `Telefon` — pokazuje, jak widok ułoży się na danej szerokości. Przyciski węższych szerokości znikają, gdy okno jest zbyt wąskie, żeby je pokazać.
 - `Otwórz prawdziwy widok ↗` — otwiera widok użytkownika w nowej karcie, na zapisanych danych.
-- `Zwiń podgląd` / `Rozwiń podgląd` — chowa i pokazuje podgląd; moduł pamięta to na tym urządzeniu.
+- **podąża za edytowaną listą** — decyduje, którą listę pokazuje podgląd i co robi kliknięcie zakładki w podglądzie. Nie zmienia żadnych danych i nie wpływa na prawdziwy widok użytkownika; moduł pamięta to ustawienie na tym urządzeniu. Domyślnie jest zaznaczone.
+  - **Zaznaczone** — podgląd zawsze pokazuje listę wybraną do edycji: wybór innej listy w panelu list albo w „Lista docelowa” przełącza też podgląd. Kliknięcie zakładki w podglądzie **wybiera tę listę do edycji** — edytor pokazuje ją, a `+` w katalogu zaczyna dodawać dźwięki właśnie do niej. Wygodne przy układaniu jednej listy: od razu widać, jak zobaczą ją gracze. Uważaj: przez kliknięcie zakładki w podglądzie łatwo zmienić listę docelową; aktualną zawsze pokazuje pole „Lista docelowa” nad katalogiem.
+  - **Odznaczone** — podgląd zostaje na liście, która była edytowana w chwili odznaczenia. Zmiana listy w edytorze nie zmienia podglądu, a zakładki w podglądzie przełączają tylko podgląd. Wygodne do porównania dwóch list (edytujesz jedną, oglądasz drugą), do przeglądania wszystkich list bez zmiany listy docelowej i do odsłuchiwania jednej listy podczas przygotowywania innej. Ponowne zaznaczenie przenosi podgląd na listę edytowaną.
+
+Przełączanie zakładek w podglądzie nie zatrzymuje dźwięków — tak jak w prawdziwym widoku kropka `•` na zakładce pokazuje, gdzie coś gra.
+
+### Zatrzymanie wszystkich dźwięków w panelu
+
+Gdy w panelu admina gra jakikolwiek dźwięk (odsłuch z katalogu, z edytora albo z podglądu), w prawym dolnym rogu ekranu pojawia się czerwony przycisk `■ Zatrzymaj wszystko (N)`. Liczba w nawiasie mówi, ile dźwięków gra. Kliknięcie zatrzymuje wszystkie, a przycisk znika. Przycisk jest widoczny niezależnie od przewinięcia strony, zwiniętego podglądu i wybranej zakładki — na tablecie i telefonie stoi nad paskiem `Zaznaczone: N`, a na telefonie pokazuje samą ikonę `■` z liczbą.
+
+Na tablecie i telefonie przełączenie zakładki `Katalog` / `Listy` / `Podgląd` nie zatrzymuje dźwięku — możesz na przykład odsłuchać dźwięk w katalogu i przejść do listy, żeby nadać mu alias. Do zatrzymania służy wtedy ten przycisk.
 
 ### Skróty klawiszowe na komputerze
 
@@ -312,7 +335,7 @@ Na dole panelu (na tablecie i telefonie — w zakładce `Podgląd`) widać widok
 
 ### Co moduł pamięta na tym urządzeniu
 
-Panel pamięta w tej przeglądarce: zwinięcie panelu folderów, rozwinięte foldery, ostatnio edytowaną listę, ustawienia podglądu i wybraną zakładkę. Filtry (odznaczone foldery, wpisane frazy, `Pokaż`, `Warstwa`) zostają do zamknięcia karty. To tylko wygoda — nie trafia do bazy i nie wpływa na innych.
+Panel pamięta w tej przeglądarce: zwinięcie panelu folderów, rozwinięte foldery, ostatnio edytowaną listę, szerokość podglądu, ustawienie „podąża za edytowaną listą” i wybraną zakładkę. Zwinięcia podglądu nie pamięta — podgląd zawsze startuje zwinięty (na tablecie i telefonie z otwartą zakładką `Podgląd` — rozwinięty). Filtry (odznaczone foldery, wpisane frazy, `Pokaż`, `Warstwa`) zostają do zamknięcia karty. To tylko wygoda — nie trafia do bazy i nie wpływa na innych.
 
 ---
 
@@ -512,6 +535,9 @@ Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znas
 | Puste listy po aktualizacji modułu | Listy z wcześniejszej wersji modułu są pomijane. | Przygotuj listy od nowa (komunikat w panelu admina to potwierdza). |
 | Kafelek z kłódką i „(brak w manifeście)” | Dźwięk z zablokowanego archiwum albo usunięty z biblioteki. | Dotknij kafelka i odblokuj archiwum; jeżeli archiwum jest odblokowane, usuń wpis z listy w panelu admina. |
 | Brak wyników w katalogu | Filtry ukryły wszystkie dźwięki. | Sprawdź niebieskie etykiety — skasuj frazę albo kliknij `Zaznacz wszystko` w folderach. |
+| Odsłuch w katalogu ucichł po zmianie filtra | Zmiana filtrów zatrzymuje odsłuch z katalogu. | To zamierzone. Kliknij `▶` ponownie przy dźwięku na nowej liście wyników. |
+| W panelu admina coś gra, a nie widać skąd | Dźwięk gra w ukrytej zakładce albo jego przycisk jest przewinięty poza ekran. | Kliknij czerwony `■ Zatrzymaj wszystko (N)` w prawym dolnym rogu. |
+| Nie widać podglądu na dole strony | Podgląd startuje zwinięty. | Kliknij `Rozwiń podgląd` w nagłówku sekcji. |
 | „Brak linku do pliku audio w manifeście.” | Pozycja listy dźwięków nie ma poprawnego linku. | Sprawdź ten wiersz w arkuszu i zbuduj manifesty ponownie. |
 | Nie da się przeciągać list ani dźwięków | Nie wczytała się biblioteka przeciągania (np. brak internetu). | Użyj strzałek `▲` `▼` `⤒` `⤓` — działają zawsze. |
 
@@ -522,7 +548,7 @@ Moduł przy uruchomieniu potwierdza w tle, że jest tą aplikacją, którą znas
 3. Utwórz listy tematyczne (`+ Nowa lista`) i ułóż ich kolejność.
 4. Dodaj dźwięki do list — pojedynczo `+` albo kilka naraz przez pola wyboru.
 5. Ułóż kolejność dźwięków na listach i nadaj aliasy trudnym nazwom.
-6. Sprawdź wszystko w podglądzie na dole strony, także w trybie `Telefon`.
+6. Rozwiń podgląd na dole strony (`Rozwiń podgląd`) i sprawdź w nim wszystko, także w trybie `Telefon`.
 7. Wyeksportuj ustawienia (`Narzędzia` → `Eksportuj ustawienia (JSON)`) jako kopię zapasową.
 8. Do prowadzenia sesji otwórz `Audio/index.html`; tło uruchamiaj przez `Loop`, efekty — dotknięciem kafelka.
 
@@ -618,7 +644,7 @@ The bar stays at the top of the screen while you scroll. It holds:
 Each tile shows:
 
 - **the sound name**,
-- **the alias in parentheses**, if an alias was given on this list — for example `Meltagun Reload (reload)`,
+- **the alias in parentheses**, if an alias was given on this list — for example `Meltagun Reload (reload)`; the alias uses a lighter, smaller font, the same size as the tag,
 - **a red counter in parentheses** `(5)`, if several files share one name (one of them is picked at random on every play),
 - **one tag** — the name of the collection the sound comes from,
 - **a volume slider** with a percentage value,
@@ -679,7 +705,7 @@ The panel works from left to right:
 2. **Sound catalogue** — every sound in the library, with a search box. This is where you add sounds to lists.
 3. **Lists** — the main list and the favourite lists, with the **editor** of the selected list below them: sound order and aliases.
 
-At the very bottom of the page there is the **user view preview**.
+At the very bottom of the page there is the **user view preview** — it is collapsed when the page opens.
 
 On a computer all three parts sit side by side, each scrolling on its own. On a narrower screen the folders hide in a slide-out drawer (the `Folders` button in the catalogue header). On a tablet and a phone the **`Catalogue` / `Lists` / `Preview`** tabs appear at the top — each shows one part of the panel. Every function works on every device.
 
@@ -778,6 +804,15 @@ The catalogue does not show aliases next to names, because an alias belongs to a
 
 The catalogue shows 200 rows at a time; the `Show 200 more` button loads the rest.
 
+**Previews and filters:** the `▶` preview concerns what the catalogue shows at that moment. When you change what is shown, the sound stops by itself:
+
+- you type, change or delete the phrase in `Search sounds` (adding only a space changes nothing),
+- you tick or clear a folder, or use the `Select all`, `Clear all`, `only` (next to a folder), `Select matches`, `Clear matches`, `Matches only` buttons,
+- you change `Show` or `Tier`,
+- the playing sound's row disappears from the catalogue (e.g. after clicking `+` with `Show: not on the target list` on).
+
+The sound keeps playing while you tick rows for adding, type in `Search folders` (it narrows only the folder tree) or load more rows.
+
 ### Lists
 
 - **The main list** always comes first, has a pin 📌 and the "main list" label. It cannot be deleted or moved. It can be renamed; an empty name means "Main view" ("Widok główny" in Polish).
@@ -805,6 +840,8 @@ Every list entry has:
 
 **Search this list** — narrows the entries to matching names or aliases. While searching the order cannot be changed (the module shows a hint) — delete the text to move sounds.
 
+**An editor preview** stops when you change the phrase in `Search this list` or select another list for editing (in the lists panel, in the "Target list" field, with a tab in the preview, by creating a new list or a duplicate).
+
 **A "(missing in manifest)" entry** — a sound from the locked archive or one removed from the library. The entry and its alias are kept; you can move it, change the alias or remove it.
 
 ### Aliases
@@ -827,10 +864,22 @@ Removing a sound from a list also removes its alias on that list. Moving an entr
 
 At the bottom of the panel (on a tablet and a phone — in the `Preview` tab) you see the user view exactly as players will: with tabs, tiles, sliders, `Loop` and `Stop all`. Sounds in the preview really play.
 
-- **follows the edited list** — when ticked, the preview shows the list selected in the editor, and clicking a tab in the preview selects that list for editing. When cleared, the preview tabs switch only the preview.
+When the page opens, the preview is **collapsed** — only its header with the buttons is visible. Click `Expand preview` to see it. On a tablet and a phone choosing the `Preview` tab expands it straight away.
+
+- `Collapse preview` / `Expand preview` — hides and shows the preview. Collapsing stops the sounds playing in the preview. The module does not remember it: after a page reload the preview is collapsed again.
 - `Desktop` / `Tablet` / `Phone` — shows how the view lays out at that width. Narrower widths disappear when the window is too narrow to show them.
 - `Open the real view ↗` — opens the user view in a new tab, on the saved data.
-- `Collapse preview` / `Expand preview` — hides and shows the preview; the module remembers this on the device.
+- **follows the edited list** — decides which list the preview shows and what a click on a preview tab does. It changes no data and does not affect the real user view; the module remembers this setting on the device. It is ticked by default.
+  - **Ticked** — the preview always shows the list selected for editing: choosing another list in the lists panel or in "Target list" switches the preview too. Clicking a tab in the preview **selects that list for editing** — the editor shows it and `+` in the catalogue starts adding sounds to it. Handy while arranging one list: you see at once how players will see it. Careful: a click on a preview tab easily changes the target list; the current one is always shown in the "Target list" field above the catalogue.
+  - **Cleared** — the preview stays on the list that was being edited when you cleared the box. Changing the list in the editor does not change the preview, and the preview tabs switch only the preview. Handy for comparing two lists (edit one, view the other), for browsing every list without changing the target list, and for listening to one list while preparing another. Ticking it again moves the preview to the edited list.
+
+Switching tabs in the preview does not stop sounds — just like in the real view, the `•` dot on a tab shows where something is playing.
+
+### Stopping every sound in the panel
+
+Whenever any sound plays in the admin panel (a catalogue, editor or preview sound), a red `■ Stop all (N)` button appears in the bottom right corner of the screen. The number in parentheses says how many sounds are playing. Clicking it stops them all and the button disappears. The button is visible regardless of page scroll, a collapsed preview or the selected tab — on a tablet and a phone it sits above the `Selected: N` bar, and on a phone it shows only the `■` icon with the number.
+
+On a tablet and a phone switching the `Catalogue` / `Lists` / `Preview` tabs does not stop the sound — for example you can preview a sound in the catalogue and go to the list to give it an alias. Use this button to stop it then.
 
 ### Keyboard shortcuts on a computer
 
@@ -842,7 +891,7 @@ At the bottom of the panel (on a tablet and a phone — in the `Preview` tab) yo
 
 ### What the module remembers on this device
 
-The panel remembers in this browser: whether the folder panel is collapsed, the expanded folders, the last edited list, the preview settings and the selected tab. Filters (cleared folders, typed phrases, `Show`, `Tier`) stay until the tab is closed. This is a convenience only — it never reaches the database and does not affect anyone else.
+The panel remembers in this browser: whether the folder panel is collapsed, the expanded folders, the last edited list, the preview width, the "follows the edited list" setting and the selected tab. It does not remember the preview collapse — the preview always starts collapsed (expanded on a tablet and a phone with the `Preview` tab open). Filters (cleared folders, typed phrases, `Show`, `Tier`) stay until the tab is closed. This is a convenience only — it never reaches the database and does not affect anyone else.
 
 ---
 
@@ -1042,6 +1091,9 @@ On start-up the module confirms in the background that it is the application you
 | Empty lists after a module update | Lists from an earlier module version are skipped. | Prepare the lists from scratch (the notice in the admin panel confirms it). |
 | Padlock tile with "(missing in manifest)" | A sound from the locked archive, or removed from the library. | Touch the tile and unlock the archive; if the archive is unlocked, remove the entry in the admin panel. |
 | No results in the catalogue | Filters hide every sound. | Check the blue labels — delete the phrase or click `Select all` in the folders. |
+| A catalogue preview went silent after a filter change | Changing the filters stops the catalogue preview. | This is intended. Click `▶` again next to the sound in the new result list. |
+| Something plays in the admin panel and you cannot see where | The sound plays in a hidden tab or its button is scrolled off screen. | Click the red `■ Stop all (N)` in the bottom right corner. |
+| The preview at the bottom of the page is not visible | The preview starts collapsed. | Click `Expand preview` in the section header. |
 | "Missing audio file link in the manifest." | A sound list entry has no valid link. | Check that row in the spreadsheet and rebuild the manifests. |
 | Lists and sounds cannot be dragged | The drag library did not load (e.g. no internet). | Use the `▲` `▼` `⤒` `⤓` arrows — they always work. |
 
@@ -1052,6 +1104,6 @@ On start-up the module confirms in the background that it is the application you
 3. Create thematic lists (`+ New list`) and set their order.
 4. Add sounds to the lists — one by one with `+`, or several at once with the checkboxes.
 5. Set the sound order on the lists and give aliases to unclear names.
-6. Check everything in the preview at the bottom of the page, also in `Phone` mode.
+6. Expand the preview at the bottom of the page (`Expand preview`) and check everything in it, also in `Phone` mode.
 7. Export the settings (`Tools` → `Export settings (JSON)`) as a backup.
 8. To run the session, open `Audio/index.html`; start backgrounds with `Loop`, effects with a touch of the tile.

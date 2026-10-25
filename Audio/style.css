@@ -47,6 +47,11 @@
   /* --- Szerokości kolumn panelu admina / Admin panel column widths --- */
   --folders-w: 260px;
   --lists-w: 400px;
+
+  /* --- Rozmiar drobnych napisów kafelka: tag i alias / Size of small tile texts: tag and alias ---
+     PL: Jedna zmienna dla tagu i aliasu, żeby oba napisy zawsze miały ten sam rozmiar.
+     EN: One variable for the tag and the alias, so both texts always share the same size. */
+  --tile-meta-size: 12px;
 }
 
 * {
@@ -329,10 +334,15 @@ body.user-mode .page {
   margin: 0;
 }
 
-/* --- Nazwa dźwięku: alias i licznik wariantów / Sound name: alias and variant counter --- */
+/* --- Nazwa dźwięku: alias i licznik wariantów / Sound name: alias and variant counter ---
+   PL: Alias stoi zaraz po nazwie, w jaśniejszym kolorze i w rozmiarze tagu (--tile-meta-size);
+       licznik wariantów (N) zostaje w rozmiarze nazwy.
+   EN: The alias follows the name, in a lighter colour and at the tag size (--tile-meta-size);
+       the variant counter (N) keeps the name size. */
 .sample-alias {
   color: #d2fad2;
   font-weight: 400;
+  font-size: var(--tile-meta-size);
 }
 
 .group-count {
@@ -1222,6 +1232,54 @@ button.chip:disabled {
   max-width: 390px;
 }
 
+/* --- Pływający przycisk „Zatrzymaj wszystko” panelu admina / Admin panel floating "Stop all" button ---
+   PL: Zawsze w zasięgu ręki, niezależnie od przewinięcia strony, zwiniętego podglądu i zakładki na
+       węższym ekranie. Widoczny tylko wtedy, gdy coś gra: updatePlaybackIndicators() wyłącza go przy
+       zerze grających dźwięków, a wyłączony przycisk jest chowany. Warstwa 50 leży pod szufladą
+       folderów (55), paskiem komunikatów zapisu (9000) i bramką dostępu (9999).
+   EN: Always within reach, regardless of page scroll, a collapsed preview or the tab on a narrower
+       screen. Visible only while something plays: updatePlaybackIndicators() disables it when nothing
+       plays, and a disabled button is hidden. Layer 50 sits below the folder drawer (55), the write
+       status bar (9000) and the access gate (9999). */
+.stop-all-float {
+  position: fixed;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  z-index: 50;
+  background: #120404;
+}
+
+/* PL: Cień oddziela przycisk od treści pod nim; selektor jest mocniejszy od .stop-all.is-active.
+   EN: The shadow separates the button from the content below; the selector outranks .stop-all.is-active. */
+.btn.stop-all-float.is-active {
+  box-shadow: 0 0 14px rgba(255, 95, 95, 0.35), var(--shadow);
+}
+
+.stop-all-float:disabled {
+  display: none;
+}
+
+/* PL: Na węższych ekranach przycisk stoi nad przyklejonym do dołu paskiem „Zaznaczone”; jego wysokość
+       podaje zmienna --bulk-bar-h ustawiana w app.js (updateStopAllFloatOffset), 0 px przy ukrytym pasku.
+   EN: On narrower screens the button sits above the "Selected" bar stuck to the bottom; its height comes
+       from the --bulk-bar-h variable set in app.js (updateStopAllFloatOffset), 0 px when the bar is hidden. */
+@media (max-width: 1023px) {
+  .stop-all-float {
+    bottom: calc(12px + var(--bulk-bar-h, 0px) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* PL: Na telefonie sama ikona i licznik; pełna nazwa zostaje w aria-label i dymku.
+   EN: On a phone only the icon and the counter; the full name stays in aria-label and the tooltip. */
+@media (max-width: 559px) {
+  .stop-all-float {
+    right: 10px;
+  }
+  .stop-all-float .stop-all__label {
+    display: none;
+  }
+}
+
 /* ==========================================================================================
    WIDOK UŻYTKOWNIKA (także w podglądzie) / USER VIEW (also in the preview)
    ========================================================================================== */
@@ -1404,7 +1462,7 @@ button.chip:disabled {
 }
 
 .tile-tag {
-  font-size: 12px;
+  font-size: var(--tile-meta-size);
   color: var(--muted);
   overflow: hidden;
   text-overflow: ellipsis;

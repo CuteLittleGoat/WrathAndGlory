@@ -496,7 +496,7 @@ Moduł celowo nie odsyła do bazy zmian zapisanych lokalnie po odzyskaniu dostę
 | `expandedMembers` | Pozycje katalogu z rozwiniętą linią „Na listach: …”. |
 | `foldersCollapsed`, `foldersOpen` | Szyna folderów (≥1280 px) / otwarta szuflada (<1280 px). |
 | `adminTab` | `catalog` \| `lists` \| `preview` (zakładki <1024 px). |
-| `previewDevice`, `previewFollow`, `previewCollapsed`, `previewListId` | Podgląd. |
+| `previewDevice`, `previewFollow`, `previewCollapsed`, `previewListId` | Podgląd. `previewCollapsed` startuje jako `true` i nie jest zapamiętywane (wyjątek: zakładka `preview` na ekranie < 1024 px — rozdz. 16). |
 | `toolsMenuOpen` | Menu „Narzędzia”. |
 | `userListId` | Lista wyświetlana w widoku użytkownika (nie jest zapamiętywana między odświeżeniami). |
 
@@ -507,8 +507,10 @@ Zapis działa tylko w panelu admina.
 `saveAdminUi()` → `localStorage["audio.admin.ui"]`:
 
 ```text
-{ foldersCollapsed, expandedPaths: [..] | null, editedListId, previewDevice, previewFollow, previewCollapsed, adminTab }
+{ foldersCollapsed, expandedPaths: [..] | null, editedListId, previewDevice, previewFollow, adminTab }
 ```
+
+Zwinięcie podglądu nie jest zapisywane: podgląd zaczyna każdą wizytę zwinięty (`previewCollapsed: true`). Wartość `previewCollapsed` zapisana przez wcześniejsze wersje modułu jest ignorowana przy odczycie i znika przy najbliższym `saveAdminUi()`. Wyjątek: jeżeli odtworzona zakładka to `preview`, a okno ma < 1024 px (`matchMedia("(max-width: 1023px)")`), podgląd startuje rozwinięty, bo ta zakładka służy wyłącznie do jego oglądania.
 
 `saveAdminFilters()` → `sessionStorage["audio.admin.filters"]` (tak jak Filtr Globalny w DataVault — filtry żyją do zamknięcia karty):
 
@@ -568,7 +570,11 @@ Dzięki temu przerysowanie (zmiana z bazy, zmiana zakładki, zmiana języka) nie
 | `toggleLoop(key, itemId)` | Grający w pętli → stop; grający bez pętli → włącza pętlę bez restartu; wczytywany → przełącza flagę pętli; nieaktywny → start w pętli. |
 | `stopPlayback(key)` | Pauza, `currentTime = 0`, usunięcie z map, `bumpGeneration`, odświeżenie. |
 | `stopAllPlayback()` | Zatrzymuje wszystkie klucze z `players` i `loadingKeys` (wszystkie konteksty). |
-| `pruneOrphanPlayers()` | Zatrzymuje dźwięki (poza kontekstem `cat`), których lista albo wpis zniknęły. |
+| `stopPlaybackWhere(test)` | Zatrzymuje klucze z `players` i `loadingKeys` spełniające warunek. |
+| `stopContextPlayback(context)` | Zatrzymuje wszystkie klucze jednego kontekstu (`cat`, `ed`, `prev`). |
+| `stopDetachedAuditions(context)` | Zatrzymuje klucze kontekstu, dla których na stronie nie ma elementu z tym `data-key` (`findKeyElements(key).length === 0`). |
+| `hasNeedleChanged(previous, next)` | `true`, gdy fraza po `toNeedle()` się zmieniła (spacje na brzegach i wielkość liter nie mają znaczenia). |
+| `pruneOrphanPlayers()` | Zatrzymuje dźwięki (poza kontekstem `cat`), których lista albo wpis zniknęły. Odsłuch z katalogu nie należy do listy — zatrzymują go reguły z rozdz. 17.5. |
 
 ### 17.3 Głośność
 
@@ -581,7 +587,7 @@ Dzięki temu przerysowanie (zmiana z bazy, zmiana zakładki, zmiana języka) nie
 
 `updatePlaybackIndicators()` po każdej zmianie:
 
-- przyciski `.stop-all`: `disabled` przy zerze, klasa `is-active`, licznik `(N)` i `aria-label`,
+- przyciski `.stop-all` (pasek widoku użytkownika, podgląd i pływający `#stopAllFloat` w panelu admina): `disabled` przy zerze, klasa `is-active`, licznik `(N)` i `aria-label`,
 - zakładki `.uv-tab`: klasa `has-playing` (czerwona kropka), gdy gra którykolwiek klucz `kontekst|lista|…`; `title` = pełna nazwa listy, z dopiskiem `tabPlaying`, gdy coś gra,
 - `updateWakeLock()`: `navigator.wakeLock.request("screen")`, gdy gra co najmniej jeden dźwięk i karta jest widoczna; zwolnienie, gdy nic nie gra. `visibilitychange` wywołuje ponowne sprawdzenie (przeglądarka zwalnia blokadę przy ukryciu karty). Brak API — funkcja nic nie robi.
 
@@ -589,6 +595,31 @@ Dzięki temu przerysowanie (zmiana z bazy, zmiana zakładki, zmiana języka) nie
 
 - kafelek `.tile`: `data-state` (`idle` / `loading` / `playing`; `missing` zostaje), ikona `▶` / `…` / `■`, `aria-pressed` i `aria-label` przycisku odtwarzania, stan Loop (`is-looping`, `aria-pressed`), pasek postępu, suwak i wartość głośności,
 - przycisk `.play-btn` w katalogu/edytorze: klasy `is-playing` / `is-loading`, ikona, `aria-pressed`, `title`.
+
+### 17.5 Zatrzymywanie odsłuchu w panelu admina
+
+Zasada: odsłuch w katalogu (`cat`) i edytorze (`ed`) dotyczy tego, co panel pokazuje w danej chwili. Zmiana tego, co jest pokazane, zatrzymuje dźwięk, żeby nie grał w tle bez widocznego przycisku.
+
+| Zdarzenie | Kontekst | Gdzie w kodzie |
+| --- | --- | --- |
+| Zmiana frazy „Szukaj dźwięku” (`hasNeedleChanged`) | `cat` | obsługa `input` `#catalogSearch` (debounce 150 ms) — `stopContextPlayback("cat")` przed `renderCatalog()` |
+| Pole wyboru folderu, „Zaznacz wszystko”, „Odznacz wszystko”, `tylko`, „Zaznacz / Odznacz / Tylko pasujące” | `cat` | `onFolderFilterChanged()` — `stopContextPlayback("cat")` |
+| Zmiana „Pokaż” (`#catalogScope`) albo „Warstwa” (`#catalogTier`) | `cat` | obsługa `change` — `stopContextPlayback("cat")` |
+| Wiersz zniknął z katalogu (np. `+` przy „spoza listy docelowej”, zmiana z bazy, ponowne wczytanie manifestu) | `cat` | koniec `renderCatalog()` — `stopDetachedAuditions("cat")` |
+| Zmiana frazy „Szukaj na liście” (`hasNeedleChanged`) | `ed` | obsługa `input` `#editorSearch` (debounce 100 ms) — `stopContextPlayback("ed")` |
+| Edytor pokazuje inną listę (`setEditedList`, nowa lista, duplikat, usunięcie) albo wpis ukryty frazą | `ed` | koniec `renderEditor()` — `stopDetachedAuditions("ed")` (klucz zawiera `listId`, więc wpisy poprzedniej listy nie mają elementów) |
+| „Zwiń podgląd” | `prev` | obsługa `click` `#previewToggle` — `stopContextPlayback("prev")` przed `renderPreview()` |
+
+Bez zatrzymania (celowo):
+
+- zaznaczanie wierszy katalogu (`.cat-check`, `Shift`/`Ctrl` + kliknięcie, „Zaznacz wszystkie wyniki”) — niczego nie ukrywa;
+- „Szukaj folderu” — zawęża tylko drzewo; „Pokaż kolejne N” — tylko dokłada wiersze;
+- zmiana zakładki listy w podglądzie — jak w prawdziwym widoku (kropka `has-playing` na zakładce); podgląd nie korzysta z `stopDetachedAuditions`;
+- zmiana zakładki `Katalog` / `Listy` / `Podgląd` (< 1024 px) — panele są ukrywane stylem (`display: none`), elementy zostają w DOM; do zatrzymania służy pływający przycisk.
+
+`stopPlayback()` anuluje także start czekający na podpis bramki (`bumpGeneration`), więc reguły działają również w stanie „wczytywanie…”.
+
+**Pływający przycisk `#stopAllFloat`** (`button.btn.stop-all.stop-all-float.admin-only` w `index.html`, poza `.uv`): ma klasę `stop-all`, więc `updatePlaybackIndicators()` ustawia mu `disabled`, `is-active`, licznik `(N)` i `aria-label`; style chowają go przy `:disabled`, czyli gdy nic nie gra. Kliknięcie → `stopAllPlayback()` (wszystkie konteksty). Na ekranach < 1024 px przycisk stoi nad przyklejonym paskiem `#bulkBar`: `updateStopAllFloatOffset()` (wywoływane w `renderCatalog()` i `renderLayoutState()`) wpisuje do `body` zmienną `--bulk-bar-h` z `offsetHeight` paska (0 przy ukrytym), bo wysokość paska zależy od szerokości, ekranu dotykowego i długości nazwy listy.
 
 ## 18. Panel admina
 
@@ -603,7 +634,9 @@ Dzięki temu przerysowanie (zmiana z bazy, zmiana zakładki, zmiana języka) nie
 
 `#workbench` to siatka `var(--folders-w) minmax(0, 1fr) var(--lists-w)` o wysokości `calc(100dvh - 24px)` (min. 640 px); każda kolumna przewija się osobno (`.col-body`), nagłówki kolumn (`.col-head`) stoją w miejscu.
 
-`renderLayoutState()` ustawia: `body[data-admin-tab]`, aktywną zakładkę, klasę `is-folders-collapsed` (tylko ≥1280 px), `is-collapsed` / `is-drawer-open` panelu folderów, tło szuflady, dostępne szerokości podglądu (`getAvailableDevices()`: Tablet, gdy okno > 860 px; Telefon, gdy > 430 px), `data-device` ramki, zwinięcie podglądu i stan `#previewFollow`. Wywoływane także przy `resize` (debounce 120 ms).
+`renderLayoutState()` ustawia: `body[data-admin-tab]`, aktywną zakładkę, klasę `is-folders-collapsed` (tylko ≥1280 px), `is-collapsed` / `is-drawer-open` panelu folderów, tło szuflady, dostępne szerokości podglądu (`getAvailableDevices()`: Tablet, gdy okno > 860 px; Telefon, gdy > 430 px), `data-device` ramki, zwinięcie podglądu, stan `#previewFollow` i odstęp pływającego przycisku (`updateStopAllFloatOffset()`). Wywoływane także przy `resize` (debounce 120 ms).
+
+Kliknięcie zakładki `preview` przy zwiniętym podglądzie rozwija go (`previewCollapsed = false`, `renderPreview()`, `updatePlaybackIndicators()`), bo ta zakładka służy wyłącznie do oglądania podglądu.
 
 | Szerokość okna | Układ |
 | --- | --- |
@@ -637,7 +670,7 @@ Wyszukiwanie (`getTreeSearch()`, debounce 150 ms):
 
 Niebieskie sygnały: etykieta „Szukaj folderu” (`field-label--active`) przy aktywnej frazie; tytuł „Foldery” (`is-filter-on`) i niebieskie kropki (`#foldersTitleDot`, `#foldersRailDot` na szynie, `#openFoldersDot` na przycisku szuflady), gdy choć jeden folder z dźwiękami jest wykluczony. `title` podaje „Katalog pokazuje dźwięki z X z Y folderów”.
 
-`onFolderFilterChanged()` resetuje paginację, zapisuje filtry, rysuje drzewo i katalog.
+`onFolderFilterChanged()` zatrzymuje odsłuch z katalogu (`stopContextPlayback("cat")`, rozdz. 17.5), resetuje paginację, zapisuje filtry, rysuje drzewo i katalog.
 
 ### 18.4 Katalog
 
@@ -650,7 +683,7 @@ Wiersz `.cat-row` (paginacja po 200, przycisk „Pokaż kolejne N”):
 | Element | Działanie |
 | --- | --- |
 | `.cat-check` | Zaznaczenie; z `Shift` — zakres od ostatnio klikniętego (`handleCatalogSelection`). `Ctrl`/`Cmd` + kliknięcie nazwy przełącza zaznaczenie. |
-| `.play-btn` (`cat|…`) | Odsłuch bez dodawania. |
+| `.play-btn` (`cat|…`) | Odsłuch bez dodawania. Zatrzymywany przy każdej zmianie filtrów katalogu i gdy wiersz zniknie (rozdz. 17.5). |
 | `.cat-title` | Nazwa z `(N)`; nie kurczy się, dopóki nie zajmie 65% wiersza. |
 | `.cat-meta` | Ścieżka (`tags` od drugiego, łączone ` › `) i nazwa pliku; pełna ścieżka w `title`. |
 | `.chip--tier` | „demo” / „archiwum”. |
@@ -684,7 +717,7 @@ Wpis `.entry`:
 | --- | --- |
 | `⠿` | Uchwyt przeciągania (wyłączony przy aktywnym wyszukiwaniu). |
 | `N.` | Pozycja na liście. |
-| `.play-btn` (`ed|lista|dźwięk`) | Odsłuch. |
+| `.play-btn` (`ed|lista|dźwięk`) | Odsłuch. Zatrzymywany przy zmianie frazy „Szukaj na liście”, zmianie listy edytowanej i ukryciu wpisu (rozdz. 17.5). |
 | Tytuł | Nazwa z `(N)` i wyróżnieniem frazy; dla wpisu spoza manifestu „(brak w manifeście)” i `itemId` w `<code>`. |
 | Ścieżka | Foldery dźwięku. |
 | `.alias-input` | Alias na tej liście (`maxlength = 80`). Zapis na zdarzenie `change` (opuszczenie pola albo `Enter`); `Esc` przywraca wartość sprzed edycji. Podpowiedzi z `<datalist id="aliasSuggestions">` — aliasy tego dźwięku z innych list, budowane przy wejściu w pole. |
@@ -715,8 +748,20 @@ Wyszukiwanie na liście (debounce 100 ms) zawęża wpisy po nazwie, aliasie i pl
 - „podąża za edytowaną listą” (`previewFollow`, domyślnie włączone): podgląd pokazuje listę edytowaną, a kliknięcie zakładki w podglądzie zmienia listę edytowaną. Wyłączone — podgląd ma własną listę (`previewListId`).
 - Szerokość: Komputer (pełna), Tablet (820 px), Telefon (390 px) — `data-device` na `#previewFrame` ustawia `max-width`; widok w środku reaguje przez zapytania kontenerowe, więc wygląda jak na danym urządzeniu. Przyciski szerokości węższych od okna są ukrywane.
 - „Otwórz prawdziwy widok ↗” — link `index.html` w nowej karcie.
-- „Zwiń podgląd” / „Rozwiń podgląd” — zwinięty podgląd nie jest rysowany.
+- „Zwiń podgląd” / „Rozwiń podgląd” — zwinięty podgląd nie jest rysowany (`#previewView` pusty, `#previewFrame[hidden]`). Zwinięcie zatrzymuje dźwięki kontekstu `prev`.
+- Podgląd zaczyna każdą wizytę zwinięty: `previewCollapsed: true` w stanie początkowym, `#previewFrame` ma w `index.html` atrybut `hidden` (bez mignięcia przed startem skryptu), stan nie jest zapamiętywany (rozdz. 16). Na ekranie < 1024 px zakładka `Podgląd` rozwija go automatycznie (rozdz. 18.2).
 - Odtwarzanie w podglądzie działa naprawdę (kontekst `prev`), niezależnie od katalogu i edytora.
+
+Szczegóły „podąża za edytowaną listą”:
+
+| Element | Działanie |
+| --- | --- |
+| `getPreviewListId()` | Włączone → `getEditedList().id`; wyłączone → `state.previewListId`. |
+| `selectViewList("prev", listId)` | Włączone → `setEditedList(listId)` (zmienia też listę docelową katalogu i edytor); wyłączone → `previewListId = listId`, `renderPreview()`. |
+| zmiana `#previewFollow` | Przy wyłączeniu `previewListId` = bieżąca lista edytowana (podgląd zostaje na miejscu); zapis `saveAdminUi()`. |
+| `onSettingsChanged()` | Usunięta lista w `previewListId` → lista główna. |
+
+Ustawienie dotyczy wyłącznie panelu admina: nie zmienia danych w Firestore i nie wpływa na prawdziwy widok użytkownika.
 
 ## 19. Widok użytkownika
 
@@ -754,7 +799,7 @@ article.tile[data-key][data-item-id][data-state]
     button.loop-btn                 ⟳ Loop
 ```
 
-Napis tytułu: `buildTitleText(label, alias, groupCount)` = `Nazwa (alias) (N)`; w HTML alias ma klasę `.sample-alias`, a `(N)` — `.group-count`. Przesunięcie suwaka nigdy nie uruchamia dźwięku (suwak leży poza przyciskiem odtwarzania).
+Napis tytułu: `buildTitleText(label, alias, groupCount)` = `Nazwa (alias) (N)`; w HTML alias ma klasę `.sample-alias` (12 px, jak tag), a `(N)` — `.group-count` (rozmiar nazwy). Przesunięcie suwaka nigdy nie uruchamia dźwięku (suwak leży poza przyciskiem odtwarzania).
 
 | `data-state` | Wygląd |
 | --- | --- |
@@ -789,12 +834,13 @@ Napis tytułu: `buildTitleText(label, alias, groupCount)` = `Nazwa (alias) (N)`;
 | `--filter-on-bg-active` | `rgba(61, 143, 196, 0.20)` | tło `<mark>` |
 | `--filter-on-border`, `--filter-on-bg` | `rgba(61,143,196,.55)`, `rgba(61,143,196,.10)` | zarezerwowane dla spójności z DataVault |
 | `--folders-w` / `--lists-w` | 260 / 400 px (1600+: 280 / 420; 1280–1599: 240 / 380) | kolumny warsztatu |
+| `--tile-meta-size` | `12px` | rozmiar tagu (`.tile-tag`) i aliasu (`.sample-alias`) na kafelku — jedna zmienna, żeby oba zawsze były równe |
 
 Niebieski oznacza w module wyłącznie „filtr jest założony”. Czerwień oznacza odtwarzanie albo błąd. Alias: `#d2fad2`.
 
 ### 20.2 Typografia
 
-Font: `"Fira Code", "Consolas", "Source Code Pro", monospace` (Fira Code 400/600 z Google Fonts). Rozmiary: tytuł admina `clamp(20px, 2.6vw, 28px)` uppercase, `letter-spacing: 0.1em`; tytuły kolumn 14 px uppercase; tekst 13 px; meta 11–12 px; przyciski 13 px (`.btn-small` 11 px) uppercase z `letter-spacing: 0.06em`; nazwa na kafelku 15 px / 600, `line-clamp: 3`.
+Font: `"Fira Code", "Consolas", "Source Code Pro", monospace` (Fira Code 400/600 z Google Fonts). Rozmiary: tytuł admina `clamp(20px, 2.6vw, 28px)` uppercase, `letter-spacing: 0.1em`; tytuły kolumn 14 px uppercase; tekst 13 px; meta 11–12 px; przyciski 13 px (`.btn-small` 11 px) uppercase z `letter-spacing: 0.06em`; nazwa na kafelku 15 px / 600, `line-clamp: 3`; alias na kafelku `var(--tile-meta-size)` = 12 px / 400, kolor `#d2fad2` (wewnątrz `.tile-title`, więc wysokość linii wyznacza nazwa: 15 px × 1,3); tag 12 px `--muted`; licznik `(N)` w rozmiarze nazwy.
 
 ### 20.3 Szerokość strony
 
@@ -882,7 +928,7 @@ Wygląd pochodzi z `shared/access-gate.css`. Moduł dodaje `.accessGate__skip` (
 
 | Test | Kroki | Oczekiwany wynik |
 | --- | --- | --- |
-| Start admina | `Audio/index.html?admin=1` | Nagłówek z pastylkami, trzy kolumny (≥1280 px), podgląd na dole; brak błędów w konsoli. |
+| Start admina | `Audio/index.html?admin=1` | Nagłówek z pastylkami, trzy kolumny (≥1280 px), zwinięty podgląd na dole; brak błędów w konsoli. |
 | Start użytkownika | `Audio/index.html` | Tylko pasek z zakładkami i siatka kafelków. |
 | Nowa lista | „+ Nowa lista”, wpisz nazwę, `Enter` | Lista na końcu, nazwa zapisana, widoczna w zakładkach podglądu. |
 | Alias per lista | Dodaj dźwięk X do trzech list; na drugiej nadaj alias „X2”, na trzeciej „X3” | Pierwsza lista: `X`; druga: `X (X2)`; trzecia: `X (X3)`; „Na innych listach” pokazuje aliasy. |
@@ -904,6 +950,16 @@ Wygląd pochodzi z `shared/access-gate.css`. Moduł dodaje `.accessGate__skip` (
 | Loop | Kliknij Loop | Dźwięk gra w pętli z losowaniem wariantów; przycisk czerwony; ponowne kliknięcie zatrzymuje. |
 | Zmiana zakładki | Włącz dźwięk i przełącz listę | Dźwięk gra dalej; zakładka listy ma czerwoną kropkę; po powrocie kafelek pokazuje stan. |
 | Zatrzymaj wszystko | Włącz kilka dźwięków | Licznik `(N)`; kliknięcie zatrzymuje wszystkie. |
+| Odsłuch a fraza katalogu | Wpisz frazę, `▶` w katalogu, skasuj frazę | Dźwięk milknie; dopisanie samej spacji go nie zatrzymuje. |
+| Odsłuch a foldery | `▶` w katalogu, odznacz folder / „Odznacz wszystko” / `tylko` | Dźwięk milknie. |
+| Odsłuch a „Pokaż” / „Warstwa” | `▶` w katalogu, zmień wybór | Dźwięk milknie. |
+| Odsłuch a znikający wiersz | „Pokaż: spoza listy docelowej”, `▶`, `+` w tym wierszu | Wiersz znika, dźwięk milknie. |
+| Odsłuch a zaznaczanie | `▶` w katalogu, zaznacz wiersze, wpisz frazę w „Szukaj folderu” | Dźwięk gra dalej. |
+| Odsłuch w edytorze | `▶` w edytorze, zmień frazę „Szukaj na liście” albo listę edytowaną | Dźwięk milknie. |
+| Zwinięcie podglądu | Kafelek w podglądzie, „Zwiń podgląd” | Dźwięk milknie. |
+| Pływający przycisk | Włącz dźwięk w katalogu; na telefonie zaznacz wiersz | Przycisk `■ Zatrzymaj wszystko (N)` w prawym dolnym rogu, nad paskiem „Zaznaczone”; kliknięcie zatrzymuje wszystko i chowa przycisk; brak przycisku w widoku użytkownika. |
+| Podgląd zwinięty | Rozwiń podgląd, odśwież stronę | Podgląd znów zwinięty; na telefonie zakładka „Podgląd” rozwija go od razu. |
+| Font aliasu | Kafelek z aliasem i `(N)` | Alias 12 px (jak tag), kolor `#d2fad2`; nazwa 15 px / 600; `(N)` 15 px. |
 | Głośność | Suwak na maksimum, dwuklik w wartość | 200%, potem 100%; po odświeżeniu 100%. |
 | Pozycja z archiwum przy blokadzie | Kliknij kafelek z 🔒 | Bramka z wyjaśnieniem; wpis nie znika z listy. |
 | Pominięcie bramki | „Pomiń”, odśwież | Bramka nie wraca; w nowej karcie wraca. |
@@ -1417,7 +1473,7 @@ The module deliberately does not push locally saved changes to the database once
 | `expandedMembers` | Catalogue items with the "On lists: …" line expanded. |
 | `foldersCollapsed`, `foldersOpen` | Folder rail (≥1280 px) / open drawer (<1280 px). |
 | `adminTab` | `catalog` \| `lists` \| `preview` (tabs <1024 px). |
-| `previewDevice`, `previewFollow`, `previewCollapsed`, `previewListId` | Preview. |
+| `previewDevice`, `previewFollow`, `previewCollapsed`, `previewListId` | Preview. `previewCollapsed` starts as `true` and is not stored (exception: the `preview` tab on a screen < 1024 px — section 16). |
 | `toolsMenuOpen` | The "Tools" menu. |
 | `userListId` | The list shown in the user view (not remembered between reloads). |
 
@@ -1428,8 +1484,10 @@ Saving works in the admin panel only.
 `saveAdminUi()` → `localStorage["audio.admin.ui"]`:
 
 ```text
-{ foldersCollapsed, expandedPaths: [..] | null, editedListId, previewDevice, previewFollow, previewCollapsed, adminTab }
+{ foldersCollapsed, expandedPaths: [..] | null, editedListId, previewDevice, previewFollow, adminTab }
 ```
+
+The preview collapse is not stored: the preview starts every visit collapsed (`previewCollapsed: true`). A `previewCollapsed` value stored by earlier module versions is ignored on read and disappears at the next `saveAdminUi()`. Exception: when the restored tab is `preview` and the window is < 1024 px (`matchMedia("(max-width: 1023px)")`), the preview starts expanded, because that tab exists only to show it.
 
 `saveAdminFilters()` → `sessionStorage["audio.admin.filters"]` (like the Global Filter in DataVault — filters live until the tab closes):
 
@@ -1489,7 +1547,11 @@ A redraw (database change, tab change, language change) therefore never loses a 
 | `toggleLoop(key, itemId)` | Looping → stop; playing without a loop → turns the loop on without a restart; loading → toggles the loop flag; idle → start in a loop. |
 | `stopPlayback(key)` | Pause, `currentTime = 0`, removal from the maps, `bumpGeneration`, refresh. |
 | `stopAllPlayback()` | Stops every key in `players` and `loadingKeys` (all contexts). |
-| `pruneOrphanPlayers()` | Stops sounds (outside the `cat` context) whose list or entry disappeared. |
+| `stopPlaybackWhere(test)` | Stops the keys in `players` and `loadingKeys` that match a condition. |
+| `stopContextPlayback(context)` | Stops every key of one context (`cat`, `ed`, `prev`). |
+| `stopDetachedAuditions(context)` | Stops the context's keys that have no element with that `data-key` on the page (`findKeyElements(key).length === 0`). |
+| `hasNeedleChanged(previous, next)` | `true` when the phrase changed after `toNeedle()` (edge spaces and letter case do not count). |
+| `pruneOrphanPlayers()` | Stops sounds (outside the `cat` context) whose list or entry disappeared. A catalogue audition belongs to no list — the rules of section 17.5 stop it. |
 
 ### 17.3 Volume
 
@@ -1502,7 +1564,7 @@ A redraw (database change, tab change, language change) therefore never loses a 
 
 `updatePlaybackIndicators()` after every change:
 
-- `.stop-all` buttons: `disabled` at zero, the `is-active` class, the `(N)` counter and `aria-label`,
+- `.stop-all` buttons (the user view bar, the preview and the admin panel's floating `#stopAllFloat`): `disabled` at zero, the `is-active` class, the `(N)` counter and `aria-label`,
 - `.uv-tab` tabs: the `has-playing` class (red dot) when any `context|list|…` key plays; `title` = the full list name, with the `tabPlaying` suffix when something plays,
 - `updateWakeLock()`: `navigator.wakeLock.request("screen")` while at least one sound plays and the tab is visible; released when nothing plays. `visibilitychange` triggers a re-check (the browser releases the lock when the tab is hidden). Without the API the function does nothing.
 
@@ -1510,6 +1572,31 @@ A redraw (database change, tab change, language change) therefore never loses a 
 
 - a `.tile`: `data-state` (`idle` / `loading` / `playing`; `missing` is kept), icon `▶` / `…` / `■`, `aria-pressed` and `aria-label` of the play button, Loop state (`is-looping`, `aria-pressed`), progress bar, volume slider and value,
 - a `.play-btn` in the catalogue/editor: `is-playing` / `is-loading` classes, icon, `aria-pressed`, `title`.
+
+### 17.5 Stopping auditions in the admin panel
+
+Rule: an audition in the catalogue (`cat`) and the editor (`ed`) concerns what the panel shows at that moment. Changing what is shown stops the sound, so it never plays in the background without a visible button.
+
+| Event | Context | Where in the code |
+| --- | --- | --- |
+| "Search sounds" phrase change (`hasNeedleChanged`) | `cat` | `#catalogSearch` `input` handler (150 ms debounce) — `stopContextPlayback("cat")` before `renderCatalog()` |
+| Folder checkbox, "Select all", "Clear all", `only`, "Select / Clear matches", "Matches only" | `cat` | `onFolderFilterChanged()` — `stopContextPlayback("cat")` |
+| "Show" (`#catalogScope`) or "Tier" (`#catalogTier`) change | `cat` | `change` handler — `stopContextPlayback("cat")` |
+| The row left the catalogue (e.g. `+` with "not on the target list", a database change, a manifest reload) | `cat` | end of `renderCatalog()` — `stopDetachedAuditions("cat")` |
+| "Search this list" phrase change (`hasNeedleChanged`) | `ed` | `#editorSearch` `input` handler (100 ms debounce) — `stopContextPlayback("ed")` |
+| The editor shows another list (`setEditedList`, a new list, a duplicate, a deletion) or an entry is hidden by the phrase | `ed` | end of `renderEditor()` — `stopDetachedAuditions("ed")` (the key holds the `listId`, so the previous list's entries have no elements) |
+| "Collapse preview" | `prev` | `#previewToggle` `click` handler — `stopContextPlayback("prev")` before `renderPreview()` |
+
+Not stopped (on purpose):
+
+- selecting catalogue rows (`.cat-check`, `Shift`/`Ctrl` + click, "Select all results") — it hides nothing;
+- "Search folders" — narrows only the tree; "Show N more" — only adds rows;
+- switching a list tab in the preview — like in the real view (the `has-playing` dot on the tab); the preview does not use `stopDetachedAuditions`;
+- switching the `Catalogue` / `Lists` / `Preview` tabs (< 1024 px) — panels are hidden by styles (`display: none`), elements stay in the DOM; the floating button stops them.
+
+`stopPlayback()` also cancels a start still waiting for the gateway signature (`bumpGeneration`), so the rules work in the "loading…" state too.
+
+**The `#stopAllFloat` floating button** (`button.btn.stop-all.stop-all-float.admin-only` in `index.html`, outside `.uv`): it has the `stop-all` class, so `updatePlaybackIndicators()` sets its `disabled`, `is-active`, `(N)` counter and `aria-label`; styles hide it while `:disabled`, i.e. when nothing plays. A click → `stopAllPlayback()` (all contexts). On screens < 1024 px the button sits above the sticky `#bulkBar`: `updateStopAllFloatOffset()` (called in `renderCatalog()` and `renderLayoutState()`) writes the `--bulk-bar-h` variable on `body` from the bar's `offsetHeight` (0 when hidden), because the bar height depends on the width, the touch screen and the length of the list name.
 
 ## 18. Admin panel
 
@@ -1524,7 +1611,9 @@ A redraw (database change, tab change, language change) therefore never loses a 
 
 `#workbench` is a `var(--folders-w) minmax(0, 1fr) var(--lists-w)` grid with height `calc(100dvh - 24px)` (min. 640 px); each column scrolls on its own (`.col-body`), column headers (`.col-head`) stay in place.
 
-`renderLayoutState()` sets: `body[data-admin-tab]`, the active tab, the `is-folders-collapsed` class (≥1280 px only), `is-collapsed` / `is-drawer-open` on the folder panel, the drawer backdrop, the available preview widths (`getAvailableDevices()`: Tablet when the window is > 860 px; Phone when > 430 px), the frame's `data-device`, preview collapse and the `#previewFollow` state. It also runs on `resize` (120 ms debounce).
+`renderLayoutState()` sets: `body[data-admin-tab]`, the active tab, the `is-folders-collapsed` class (≥1280 px only), `is-collapsed` / `is-drawer-open` on the folder panel, the drawer backdrop, the available preview widths (`getAvailableDevices()`: Tablet when the window is > 860 px; Phone when > 430 px), the frame's `data-device`, preview collapse, the `#previewFollow` state and the floating button offset (`updateStopAllFloatOffset()`). It also runs on `resize` (120 ms debounce).
+
+Clicking the `preview` tab while the preview is collapsed expands it (`previewCollapsed = false`, `renderPreview()`, `updatePlaybackIndicators()`), because that tab exists only to show the preview.
 
 | Window width | Layout |
 | --- | --- |
@@ -1558,7 +1647,7 @@ Search (`getTreeSearch()`, 150 ms debounce):
 
 Blue signals: the "Search folders" label (`field-label--active`) with an active phrase; the "Folders" title (`is-filter-on`) and blue dots (`#foldersTitleDot`, `#foldersRailDot` on the rail, `#openFoldersDot` on the drawer button) when at least one folder with sounds is excluded. The `title` says "The catalogue shows sounds from X of Y folders".
 
-`onFolderFilterChanged()` resets paging, saves the filters, and draws the tree and the catalogue.
+`onFolderFilterChanged()` stops the catalogue audition (`stopContextPlayback("cat")`, section 17.5), resets paging, saves the filters, and draws the tree and the catalogue.
 
 ### 18.4 Catalogue
 
@@ -1571,7 +1660,7 @@ A `.cat-row` (paged by 200, "Show N more" button):
 | Element | Action |
 | --- | --- |
 | `.cat-check` | Selection; with `Shift` — a range from the last clicked one (`handleCatalogSelection`). `Ctrl`/`Cmd` + click on the name toggles the selection. |
-| `.play-btn` (`cat|…`) | Preview without adding. |
+| `.play-btn` (`cat|…`) | Preview without adding. Stopped on every catalogue filter change and when the row disappears (section 17.5). |
 | `.cat-title` | Name with `(N)`; it does not shrink until it fills 65% of the row. |
 | `.cat-meta` | Path (`tags` from the second one, joined with ` › `) and file name; full path in `title`. |
 | `.chip--tier` | "demo" / "archive". |
@@ -1605,7 +1694,7 @@ An `.entry`:
 | --- | --- |
 | `⠿` | Drag handle (disabled while searching). |
 | `N.` | Position on the list. |
-| `.play-btn` (`ed|list|sound`) | Preview. |
+| `.play-btn` (`ed|list|sound`) | Preview. Stopped on a "Search this list" phrase change, an edited list change and when the entry is hidden (section 17.5). |
 | Title | Name with `(N)` and the phrase highlighted; for an entry missing from the manifest "(missing in manifest)" and the `itemId` in `<code>`. |
 | Path | The sound's folders. |
 | `.alias-input` | Alias on this list (`maxlength = 80`). Saved on the `change` event (leaving the field or `Enter`); `Esc` restores the value from before editing. Suggestions from `<datalist id="aliasSuggestions">` — this sound's aliases from other lists, built when the field gets focus. |
@@ -1636,8 +1725,20 @@ The list search (100 ms debounce) narrows entries by name, alias and file (for a
 - "follows the edited list" (`previewFollow`, on by default): the preview shows the edited list, and clicking a tab in the preview changes the edited list. Off — the preview keeps its own list (`previewListId`).
 - Width: Desktop (full), Tablet (820 px), Phone (390 px) — `data-device` on `#previewFrame` sets `max-width`; the view inside reacts through container queries, so it looks as on that device. Width buttons narrower than the window are hidden.
 - "Open the real view ↗" — an `index.html` link in a new tab.
-- "Collapse preview" / "Expand preview" — a collapsed preview is not drawn.
+- "Collapse preview" / "Expand preview" — a collapsed preview is not drawn (`#previewView` empty, `#previewFrame[hidden]`). Collapsing stops the `prev` context sounds.
+- The preview starts every visit collapsed: `previewCollapsed: true` in the initial state, `#previewFrame` carries the `hidden` attribute in `index.html` (no flash before the script starts), the state is not stored (section 16). On a screen < 1024 px the `Preview` tab expands it automatically (section 18.2).
 - Playback in the preview is real (context `prev`), independent of the catalogue and the editor.
+
+"Follows the edited list" details:
+
+| Element | Action |
+| --- | --- |
+| `getPreviewListId()` | On → `getEditedList().id`; off → `state.previewListId`. |
+| `selectViewList("prev", listId)` | On → `setEditedList(listId)` (also changes the catalogue target list and the editor); off → `previewListId = listId`, `renderPreview()`. |
+| `#previewFollow` change | When turned off, `previewListId` = the current edited list (the preview stays put); saved with `saveAdminUi()`. |
+| `onSettingsChanged()` | A deleted list in `previewListId` → the main list. |
+
+The setting concerns the admin panel only: it changes no Firestore data and does not affect the real user view.
 
 ## 19. User view
 
@@ -1675,7 +1776,7 @@ article.tile[data-key][data-item-id][data-state]
     button.loop-btn                 ⟳ Loop
 ```
 
-Title label: `buildTitleText(label, alias, groupCount)` = `Name (alias) (N)`; in the HTML the alias carries `.sample-alias` and `(N)` carries `.group-count`. Moving the slider never starts a sound (the slider sits outside the play button).
+Title label: `buildTitleText(label, alias, groupCount)` = `Name (alias) (N)`; in the HTML the alias carries `.sample-alias` (12 px, like the tag) and `(N)` carries `.group-count` (the name size). Moving the slider never starts a sound (the slider sits outside the play button).
 
 | `data-state` | Look |
 | --- | --- |
@@ -1710,12 +1811,13 @@ Title label: `buildTitleText(label, alias, groupCount)` = `Name (alias) (N)`; in
 | `--filter-on-bg-active` | `rgba(61, 143, 196, 0.20)` | `<mark>` background |
 | `--filter-on-border`, `--filter-on-bg` | `rgba(61,143,196,.55)`, `rgba(61,143,196,.10)` | reserved for consistency with DataVault |
 | `--folders-w` / `--lists-w` | 260 / 400 px (1600+: 280 / 420; 1280–1599: 240 / 380) | workbench columns |
+| `--tile-meta-size` | `12px` | size of the tile tag (`.tile-tag`) and alias (`.sample-alias`) — one variable, so both are always equal |
 
 In this module blue means only "a filter is on". Red means playback or an error. Alias: `#d2fad2`.
 
 ### 20.2 Typography
 
-Font: `"Fira Code", "Consolas", "Source Code Pro", monospace` (Fira Code 400/600 from Google Fonts). Sizes: admin title `clamp(20px, 2.6vw, 28px)` uppercase, `letter-spacing: 0.1em`; column titles 14 px uppercase; text 13 px; meta 11–12 px; buttons 13 px (`.btn-small` 11 px) uppercase with `letter-spacing: 0.06em`; tile name 15 px / 600, `line-clamp: 3`.
+Font: `"Fira Code", "Consolas", "Source Code Pro", monospace` (Fira Code 400/600 from Google Fonts). Sizes: admin title `clamp(20px, 2.6vw, 28px)` uppercase, `letter-spacing: 0.1em`; column titles 14 px uppercase; text 13 px; meta 11–12 px; buttons 13 px (`.btn-small` 11 px) uppercase with `letter-spacing: 0.06em`; tile name 15 px / 600, `line-clamp: 3`; tile alias `var(--tile-meta-size)` = 12 px / 400, colour `#d2fad2` (inside `.tile-title`, so the name sets the line height: 15 px × 1.3); tag 12 px `--muted`; the `(N)` counter at the name size.
 
 ### 20.3 Page width
 
@@ -1803,7 +1905,7 @@ The look comes from `shared/access-gate.css`. The module adds `.accessGate__skip
 
 | Test | Steps | Expected result |
 | --- | --- | --- |
-| Admin start | `Audio/index.html?admin=1` | Header with pills, three columns (≥1280 px), preview at the bottom; no console errors. |
+| Admin start | `Audio/index.html?admin=1` | Header with pills, three columns (≥1280 px), collapsed preview at the bottom; no console errors. |
 | User start | `Audio/index.html` | Only the tab bar and the tile grid. |
 | New list | "+ New list", type a name, `Enter` | The list at the end, name saved, visible in the preview tabs. |
 | Per-list alias | Add sound X to three lists; give it alias "X2" on the second and "X3" on the third | First list: `X`; second: `X (X2)`; third: `X (X3)`; "On other lists" shows the aliases. |
@@ -1825,6 +1927,16 @@ The look comes from `shared/access-gate.css`. The module adds `.accessGate__skip
 | Loop | Click Loop | The sound loops with random variants; the button is red; clicking again stops it. |
 | Tab change | Start a sound and switch the list | The sound keeps playing; that list's tab has a red dot; coming back, the tile shows its state. |
 | Stop all | Start several sounds | The `(N)` counter; one click stops them all. |
+| Audition and the catalogue phrase | Type a phrase, `▶` in the catalogue, delete the phrase | The sound stops; adding only a space does not stop it. |
+| Audition and folders | `▶` in the catalogue, clear a folder / "Clear all" / `only` | The sound stops. |
+| Audition and "Show" / "Tier" | `▶` in the catalogue, change the choice | The sound stops. |
+| Audition and a disappearing row | "Show: not on the target list", `▶`, `+` on that row | The row disappears, the sound stops. |
+| Audition and selection | `▶` in the catalogue, select rows, type in "Search folders" | The sound keeps playing. |
+| Editor audition | `▶` in the editor, change the "Search this list" phrase or the edited list | The sound stops. |
+| Preview collapse | A preview tile, "Collapse preview" | The sound stops. |
+| Floating button | Start a catalogue sound; on a phone select a row | A `■ Stop all (N)` button in the bottom right corner, above the "Selected" bar; a click stops everything and hides the button; no button in the user view. |
+| Collapsed preview | Expand the preview, reload the page | The preview is collapsed again; on a phone the "Preview" tab expands it at once. |
+| Alias font | A tile with an alias and `(N)` | Alias 12 px (like the tag), colour `#d2fad2`; name 15 px / 600; `(N)` 15 px. |
 | Volume | Slider to the maximum, double-click the value | 200%, then 100%; after a reload, 100%. |
 | Archive item while locked | Click a tile with 🔒 | The gate with an explanation; the entry stays on the list. |
 | Skipping the gate | "Skip", reload | The gate does not return; in a new tab it does. |
