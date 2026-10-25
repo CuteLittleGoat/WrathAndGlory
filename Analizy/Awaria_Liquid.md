@@ -3,7 +3,7 @@
 - **Data analizy:** 2026-10-20
 - **Temat:** dlaczego po wdrożeniu poprawki generatora DataVault (projekt L) nagłówki zdolności nadal nie były pogrubione
 - **Dotyczy:** publikacji całej strony https://cutelittlegoat.github.io/WrathAndGlory/ (wszystkie moduły); widoczny skutek: generator danych w DataVault, a przez dane — karty GeneratorNPC
-- **Stan:** przyczyna usunięta (commit `34fc5be`), strona opublikowana 2026-10-20 06:25:37 UTC; zabezpieczenie przed powtórką wdrożone 2026-10-25 — pusty plik `.nojekyll` w katalogu głównym repozytorium (rozdz. 14), działający od pierwszej publikacji z `main`, która zawiera ten plik
+- **Stan:** przyczyna usunięta (commit `34fc5be`), strona opublikowana 2026-10-20 06:25:37 UTC; zabezpieczenie przed powtórką wdrożone 2026-10-25 — pusty plik `.nojekyll` w katalogu głównym repozytorium (rozdz. 14), na `main` od commitu `dd1574d`; strona opublikowana bez Jekylla 2026-10-25 08:59:35 UTC i sprawdzona (rozdz. 14.5)
 - **Aktualizacja:** 2026-10-25 — wybór zabezpieczenia (rozdz. 13.1), jego wdrożenie i weryfikacja (rozdz. 14)
 
 > Uwaga redakcyjna: plik powstał, gdy GitHub Pages przepuszczał każdy plik `.md` przez silnik szablonów Liquid (rozdz. 6). Dlatego każda para klamer otwierających jest w nim zapisana encją HTML `&#123;` (GitHub wyświetla ją jako zwykłą klamrę), a w kodzie i komunikatach z taką parą użyto znaczników `<code>` / `<pre>` zamiast odwrotnych apostrofów. Od wdrożenia `.nojekyll` (rozdz. 14) strona publikuje ten plik bez przetwarzania, jako surowy tekst, w którym encje widać dosłownie. Zapis zostaje bez zmian, bo dzięki niemu plik pozostaje bezpieczny także po ewentualnym ponownym włączeniu Jekylla.
@@ -316,7 +316,7 @@ Wnioski:
 - Nowy pusty plik `.nojekyll` (0 bajtów) w katalogu głównym repozytorium, obok `manifest.webmanifest`. Liczą się tylko nazwa i położenie pliku, treść nie ma znaczenia.
 - Dokumentacja modułu Main opisuje publikację strony i rolę pliku: `Main/docs/Documentation.md` (rozdział „Publikacja w GitHub Pages i plik `.nojekyll`”, tabela struktury plików, procedura odtworzenia, testy kontrolne) oraz `Main/docs/README.md` (rozdział „Jak zmiany trafiają na stronę” i wiersz w tabeli typowych problemów).
 - Żaden plik aplikacji nie został zmieniony. W repozytorium nie powstały `_config.yml` ani `.github/workflows`.
-- Zmiana jest na gałęzi `claude/dazzling-ride-k8wqjw`; zacznie działać po scaleniu z `main`.
+- Zmiana trafiła na `main` w commicie `dd1574d` (2026-10-25 08:59 UTC), bezpośrednio po commicie `ed42f5b` (zmiany modułu Audio, bez wspólnych plików z tą zmianą).
 
 ### 14.2. Jak działa
 
@@ -352,12 +352,26 @@ Porównanie wykonane lokalnie na stanie `2642b0b` (gem `github-pages` 232, czyli
 | Analizy | publikowane jako `.md` i `.html` | publikowane jako `.md` |
 | Dokumentacja w repozytorium na GitHubie | wyświetlana normalnie | wyświetlana normalnie (GitHub nie używa Liquid) |
 
-### 14.5. Kontrola po scaleniu z `main`
+### 14.5. Kontrola po wypchnięciu na `main`
+
+Procedura kontrolna:
 
 1. Zakładka **Actions** → najnowszy przebieg **pages build and deployment** dla commitu ze zmianą kończy się sukcesem.
 2. `Main/index.html` na stronie: przyciski „Mapa” i „Obrazki” mają adresy z `Main/ZmienneHiperlacza.md`; nagłówek `last-modified` pliku odpowiada czasowi publikacji.
 3. Adres `AGENTS.html` na stronie zwraca 404 — potwierdzenie, że Jekyll nie przetwarza plików.
 4. Pliki aplikacji pobrane ze strony (np. `DataVault/xlsxCanonicalParser.js`) są identyczne z repozytorium.
+
+Wynik kontroli dla commitu `dd1574d` (2026-10-25):
+
+| Sprawdzenie | Wynik |
+|---|---|
+| Przebieg **pages build and deployment** nr 1633 | **sukces**; zadanie `build` miało tylko kroki **Checkout** i **Upload artifact** — kroku **Build with Jekyll** nie było, co potwierdza, że GitHub honoruje `.nojekyll` |
+| `last-modified` serwowanego `Main/index.html` | `Sun, 25 Oct 2026 08:59:35 GMT` |
+| Pliki pobrane z żywej strony a repozytorium | bajtowo identyczne: `Main/index.html`, `Main/ZmienneHiperlacza.md`, `DataVault/xlsxCanonicalParser.js`, `DataVault/app.js`, `DataVault/index.html`, `GeneratorNPC/index.html`, `shared/firebase-data-loader.js`, `Audio/app.js`, `Audio/style.css`, `manifest.webmanifest`, `Analizy/Awaria_Liquid.md`, `DataVault/docs/ZasadyFormatowania.md` |
+| Adresy folderów `Kalkulator/`, `GeneratorNPC/`, `Infoczytnik/` | 200 |
+| `AGENTS.html`, `DataVault/docs/`, `DataVault/docs/ZasadyFormatowania.html`, `assets/css/style.css` | 404 — strony generowane przez Jekylla już nie powstają |
+| `.nojekyll` | 200 — plik jest publikowany (pusty, bez znaczenia dla działania strony) |
+| Prawdziwa strona `Main/index.html` w Chromium | przyciski „Mapa” i „Obrazki” mają adresy z `Main/ZmienneHiperlacza.md` |
 
 ### 14.6. Jak cofnąć
 
@@ -373,11 +387,11 @@ Usunięcie pliku `.nojekyll` z `main`. Następna publikacja znów użyje Jekylla
 
 | Ryzyko | Ocena | Uwagi |
 |---|---|---|
-| Powtórka: kolejny plik `.md` z niedomkniętą parą klamer (albo klamrą z procentem) zatrzyma publikację bez widocznego komunikatu | wyeliminowane po scaleniu `.nojekyll` z `main`, dopóki plik leży w katalogu głównym | do czasu scalenia ryzyko pozostaje realne; wraca po usunięciu `.nojekyll` albo po przejściu na publikację z Jekyllem (np. własny workflow) |
+| Powtórka: kolejny plik `.md` z niedomkniętą parą klamer (albo klamrą z procentem) zatrzyma publikację bez widocznego komunikatu | wyeliminowane, dopóki `.nojekyll` leży w katalogu głównym `main` | wraca po usunięciu `.nojekyll` albo po przejściu na publikację z Jekyllem (np. własny workflow) |
 | Usunięcie `.nojekyll` przy porządkowaniu repozytorium | niskie | plik jest pusty, a jego nazwa zaczyna się od kropki, więc łatwo go uznać za zbędny; jego rola jest opisana w dokumentacji technicznej i instrukcji modułu Main |
 | Nieudana publikacja z przyczyn niezwiązanych z treścią plików | niskie | rozdz. 14.7; strona zostaje wtedy w poprzedniej wersji bez komunikatu |
 | Pamięć podręczna po publikacji | niskie | pliki strony mają `max-age=600`; przez ok. 10 minut po publikacji przeglądarka może używać starej wersji — pomaga twarde odświeżenie (`Ctrl` + `F5`, na Macu `Cmd` + `Shift` + `R`) |
-| Zniekształcone wersje HTML dokumentacji na stronie | nie dotyczy po scaleniu `.nojekyll` | rozdz. 6.4 i 14.4; te strony przestają powstawać |
+| Zniekształcone wersje HTML dokumentacji na stronie | nie dotyczy | rozdz. 6.4 i 14.4; od wdrożenia `.nojekyll` te strony nie powstają |
 | Ten plik analizy | sprawdzone | zapisany bez dwóch klamer obok siebie; sprawdzony parserem Liquid i pełnym lokalnym budowaniem strony |
 
 ---
@@ -390,5 +404,5 @@ Usunięcie pliku `.nojekyll` z `main`. Następna publikacja znów użyje Jekylla
    3. **przed odświeżeniem strony** sprawdzić Bestiariusz LP 180 „Kanoptek Skarabeusz” — nagłówek „ANIHILACJA: Protokoły ożywienia” ma być pogrubiony (opcjonalnie: polecenie kontrolne z `DataVault/docs/README.md`, wynik — pusta tabela);
    4. zaimportować nowy `firebase-import.json` do Firebase Realtime Database na poziomie głównym `/`;
    5. odświeżyć GeneratorNPC i wygenerować kartę Kanopteka.
-2. **Zabezpieczenie:** scalić gałąź `claude/dazzling-ride-k8wqjw` (plik `.nojekyll`) z `main` i wykonać kontrolę z rozdz. 14.5.
-3. **Po scaleniu:** przy ważnych zmianach nadal sprawdzać status publikacji (rozdz. 12, pkt 1–2), bo `.nojekyll` nie chroni przed awariami po stronie GitHuba (rozdz. 14.7).
+2. **Zabezpieczenie:** wykonane — `.nojekyll` jest na `main`, strona opublikowana i sprawdzona (rozdz. 14.5). Pliku nie usuwać.
+3. **Na co dzień:** przy ważnych zmianach nadal sprawdzać status publikacji (rozdz. 12, pkt 1–2), bo `.nojekyll` nie chroni przed awariami po stronie GitHuba (rozdz. 14.7).
