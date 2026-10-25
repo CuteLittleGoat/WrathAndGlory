@@ -86,7 +86,7 @@ Element `languageSelect` nadal istnieje w DOM, ale ma klasę `language-switcher-
 (reguła `display:none!important` w bloku `<style>` tego pliku), `aria-hidden="true"`
 oraz `tabindex="-1"`.
 
-Opcje `Polski` i `English` są zachowane technicznie, a domyślnie wybrana jest `Polski` (`pl`). `initialize()` wywołuje `updateLanguage(lang)` raz z bieżącą wartością pola, a każde zdarzenie `change` na `languageSelect` wywołuje ją ponownie. Funkcja tłumaczy wyłącznie nagłówek sekcji talentów (`#talentsHeader`, opis w sekcji `Talenty i inne zdolności`). Pozostałe teksty interfejsu, instrukcja i eksport PDF są polskie. Wybrany język nie jest zapisywany w Firestore.
+Opcje `Polski` i `English` są zachowane technicznie, lecz aktualna wersja v2 nie przełącza języka. Instrukcja i eksport są polskie.
 
 Aby przełącznik był widoczny, wystarczy usunąć klasę `language-switcher--hidden` z elementu
 `<select id="languageSelect">` w `Kalkulator/TworzeniePostaci_v2.html`; regułę CSS można zostawić.
@@ -110,7 +110,7 @@ Strona zawiera trzy główne tabele:
 
 1. `attributesTable` — atrybuty;
 2. `skillsTable` — umiejętności;
-3. `talentsTable` — talenty i inne ręczne wydatki PD; nad tabelą stoi nagłówek `<h2 class="section-title" id="talentsHeader">` z tekstem `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.`.
+3. `talentsTable` — talenty i inne ręczne wydatki PD; nad tabelą stoi nagłówek `<h2 class="section-title">` ze stałym polskim tekstem `Inne: Talenty, Wiara, Psionika, Koszty Archetypu, Pakiety Wyniesienia, Majątek, Języki itd.`.
 
 Tabele są początkowo puste w HTML i są generowane przez `TworzeniePostaci_v2-core.js`.
 
@@ -240,7 +240,6 @@ Modal ma maksymalną wysokość `88vh` i własne przewijanie.
 | `escapeHtml(value)` | Escapuje dane umieszczane w dynamicznym HTML. |
 | `optionHtml(items,current)` | Generuje opcje elementu `select`. |
 | `formatSigned(value)` | Dodaje znak `+` wyłącznie do wartości dodatnich. Zero pozostaje `0`, wartości ujemne zachowują `-`. |
-| `updateLanguage(lang)` | Wpisuje do `#talentsHeader` tekst `TALENTS_HEADER_TEXT[lang]`; nieznany kod języka daje tekst `pl`. |
 
 ## Atrybuty
 
@@ -328,17 +327,6 @@ wartość umiejętności + przypisany atrybut
 | `intimidation` | Zastraszanie | SW | `Zastraszanie` | `ZastraszanieSuma` |
 
 ## Talenty i inne zdolności
-
-Nagłówek sekcji (`#talentsHeader`) ma tekst zależny od języka. Teksty są zapisane w stałej
-`TALENTS_HEADER_TEXT` w `TworzeniePostaci_v2-core.js`, a ustawia je `updateLanguage(lang)`:
-
-| Język | Tekst nagłówka |
-| --- | --- |
-| `pl` (domyślny) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.` |
-| `en` | `Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.` |
-
-Polski tekst jest wpisany także bezpośrednio w HTML nagłówka, więc jest widoczny jeszcze przed
-uruchomieniem skryptu.
 
 Każdy wpis ma:
 
@@ -1055,7 +1043,7 @@ Bez sieci:
 4. Gatunek i tabela maksimów nie ograniczają automatycznie wartości atrybutów.
 5. Vespidzi wymagają ręcznego zastosowania przypisu dotyczącego Szybkości 14 i kosztu PD.
 6. Szybkość jest technicznie ograniczana do 12 przez wspólny zakres atrybutów, mimo referencyjnej wartości Vespidów 14*.
-7. Pole języka jest ukryte i domyślnie ustawione na `pl`; wersję angielską ma tylko nagłówek sekcji talentów, a reszta interfejsu v2, instrukcja i eksport są polskie.
+7. Pole języka jest ukryte; interfejs v2, instrukcja i eksport są polskie.
 8. Eksport PDF wymaga zewnętrznych CDN.
 9. Długie treści w ręcznie rysowanych obszarach mogą zostać obcięte z ostrzeżeniem.
 10. Piąty checkbox poziomu Spaczenia (`Check Box 30`) nie jest zaznaczany przez aktualne ograniczenie `levelMarks` do 4.
@@ -1076,7 +1064,6 @@ Bez sieci:
 | Instrukcja | Kliknij `Instrukcja`. | Otwiera się `HowToUse/pl.pdf`. |
 | Modal cech | Kliknij `Cechy i zasady specjalne`. | Modal otwiera się i można go zamknąć przyciskiem, tłem i Escape. |
 | Maksima | Kliknij `Maksymalne wartości atrybutów`. | Otwiera się tabela referencyjna z przypisem Vespidów. |
-| Nagłówek talentów | Otwórz stronę, a następnie w konsoli ustaw `languageSelect` na `en` i wyślij zdarzenie `change`; potem wróć do `pl`. | Na starcie widać `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.`; po `en` — `Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.`; po `pl` wraca tekst polski. |
 
 ### PD i walidacja
 
@@ -1410,19 +1397,6 @@ The `languageSelect` element carries the `language-switcher--hidden` class
 `<select id="languageSelect">` in `Kalkulator/TworzeniePostaci_v2.html` makes it visible again.
 A comment marked `LANGUAGE SWITCHER VISIBILITY CHANGE POINT` sits above the element.
 
-The selector defaults to `Polski` (`pl`). `initialize()` calls `updateLanguage(lang)` in the core once
-with the selector's current value, and every `change` event on `languageSelect` calls it again. The
-function only sets the talents section heading (`#talentsHeader`) from the `TALENTS_HEADER_TEXT`
-constant; an unknown language code falls back to `pl`:
-
-| Language | Heading text |
-| --- | --- |
-| `pl` (default) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.` |
-| `en` | `Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.` |
-
-The Polish text is also written directly in the heading's HTML. The rest of the UI, the manual and the
-PDF export stay Polish, and the chosen language is not saved to Firestore.
-
 The `.footer` credit uses `font-size:1px`, `line-height:1` and `text-size-adjust:none` on purpose:
 the text stays in the page content and can be selected and copied, but it is unreadable on screen.
 
@@ -1436,7 +1410,7 @@ the text stays in the page content and can be selected and copied, but it is unr
 - PDF export depends on external CDNs;
 - very long PDF text can be truncated;
 - the fifth Corruption-level checkbox is not reached by the current `0–4` clamp;
-- the language selector is hidden and defaults to `pl`; only the talents section heading has an English version;
+- the language selector is hidden and v2 is currently Polish-only;
 - no complete modal focus trap;
 - empty talent names may still consume XP when a cost is entered.
 

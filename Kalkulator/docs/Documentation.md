@@ -218,7 +218,7 @@ Nagłówek sekcji to `<h2 class="section-title" id="talentsHeader">`. Jego tekst
 
 | Język | Tekst nagłówka |
 | --- | --- |
-| `pl` (domyślny) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.` |
+| `pl` (domyślny) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypu, Pakiety Wyniesienia, Majątek, Języki itd.` |
 | `en` | `Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.` |
 
 Polski tekst jest wpisany także bezpośrednio w HTML nagłówka, więc jest widoczny jeszcze przed pierwszym wywołaniem `updateLanguage(lang)`.
@@ -761,7 +761,7 @@ The section heading is `<h2 class="section-title" id="talentsHeader">`. Its text
 
 | Language | Heading text |
 | --- | --- |
-| `pl` (default) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.` |
+| `pl` (default) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypu, Pakiety Wyniesienia, Majątek, Języki itd.` |
 | `en` | `Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.` |
 
 The Polish text is also written directly in the heading's HTML, so it is visible even before the first `updateLanguage(lang)` call.
