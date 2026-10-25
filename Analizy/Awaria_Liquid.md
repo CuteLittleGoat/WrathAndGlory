@@ -3,9 +3,10 @@
 - **Data analizy:** 2026-10-20
 - **Temat:** dlaczego po wdrożeniu poprawki generatora DataVault (projekt L) nagłówki zdolności nadal nie były pogrubione
 - **Dotyczy:** publikacji całej strony https://cutelittlegoat.github.io/WrathAndGlory/ (wszystkie moduły); widoczny skutek: generator danych w DataVault, a przez dane — karty GeneratorNPC
-- **Stan:** przyczyna usunięta (commit `34fc5be`), strona opublikowana 2026-10-20 06:25:37 UTC; zabezpieczenie przed powtórką — osobne zadanie
+- **Stan:** przyczyna usunięta (commit `34fc5be`), strona opublikowana 2026-10-20 06:25:37 UTC; zabezpieczenie przed powtórką wdrożone 2026-10-25 — pusty plik `.nojekyll` w katalogu głównym repozytorium (rozdz. 14), działający od pierwszej publikacji z `main`, która zawiera ten plik
+- **Aktualizacja:** 2026-10-25 — wybór zabezpieczenia (rozdz. 13.1), jego wdrożenie i weryfikacja (rozdz. 14)
 
-> Uwaga redakcyjna: ten plik też jest publikowany przez GitHub Pages i przechodzi przez silnik szablonów Liquid (rozdz. 6). Dlatego każda para klamer otwierających jest w nim zapisana encją HTML `&#123;` (GitHub i strona wyświetlają ją jako zwykłą klamrę), a w kodzie i komunikatach z taką parą użyto znaczników `<code>` / `<pre>` zamiast odwrotnych apostrofów.
+> Uwaga redakcyjna: plik powstał, gdy GitHub Pages przepuszczał każdy plik `.md` przez silnik szablonów Liquid (rozdz. 6). Dlatego każda para klamer otwierających jest w nim zapisana encją HTML `&#123;` (GitHub wyświetla ją jako zwykłą klamrę), a w kodzie i komunikatach z taką parą użyto znaczników `<code>` / `<pre>` zamiast odwrotnych apostrofów. Od wdrożenia `.nojekyll` (rozdz. 14) strona publikuje ten plik bez przetwarzania, jako surowy tekst, w którym encje widać dosłownie. Zapis zostaje bez zmian, bo dzięki niemu plik pozostaje bezpieczny także po ewentualnym ponownym włączeniu Jekylla.
 
 ---
 
@@ -23,6 +24,14 @@ Polecenie przygotowania tej analizy:
 
 Oba załączniki zostały użyte wyłącznie do diagnozy i nie trafiły do repozytorium.
 
+Pytanie o zabezpieczenia (2026-10-25, odpowiedź udzielona w czacie; jej wnioski i dane są w rozdz. 13.1):
+
+> Przeczytaj analizę Analizy/Awaria_Liquid.md a następnie w chacie wytłumacz mi (jak osobie nie znającej zagadnień informatycznych) jakie rozwiązania problemu proponujesz i z czym to się wiąże. O ile dobrze rozumiem problem to skłaniam się ku wyłączeniu folderu "Analizy" z budowania strony, ale czy to w pełni rozwiąże problem?
+
+Polecenie wdrożenia zabezpieczenia (2026-10-25):
+
+> Wprowadź rekomendowane rozwiązanie .nojekyll i zaktualizuj analizę Analizy/Awaria_Liquid.md o sposób naprawy.
+
 ---
 
 ## 2. Zakres analizy
@@ -32,9 +41,11 @@ Oba załączniki zostały użyte wyłącznie do diagnozy i nie trafiły do repoz
 - wykonana naprawa i jej weryfikacja;
 - dlaczego problem nie został wykryty wcześniej;
 - procedura rozpoznania tego samego problemu w przyszłości;
-- możliwe zabezpieczenia — wyłącznie jako materiał do osobnego zadania, bez wdrażania.
+- możliwe zabezpieczenia (2026-10-20 — zestawienie opcji bez wyboru);
+- (2026-10-25) porównanie zabezpieczeń, w tym odpowiedź, czy wyłączenie folderu `Analizy` z budowania strony w pełni usuwa ryzyko;
+- (2026-10-25) wdrożenie wybranego zabezpieczenia — pliku `.nojekyll` — i jego weryfikacja.
 
-Poza zakresem: wdrożenie zabezpieczeń, jakiekolwiek zmiany w kodzie modułów.
+Poza zakresem: jakiekolwiek zmiany w kodzie modułów (zabezpieczenie nie zmienia żadnego pliku aplikacji; zmieniona jest tylko dokumentacja modułu Main, która opisuje publikację strony).
 
 ---
 
@@ -46,6 +57,7 @@ Poza zakresem: wdrożenie zabezpieczeń, jakiekolwiek zmiany w kodzie modułów.
 4. **Plik wygenerowany przez użytkownika 2026-10-20 06:11 UTC był bajt w bajt wynikiem starego generatora** — przeglądarka dostała ze strony stary `DataVault/xlsxCanonicalParser.js`.
 5. **Naprawa:** commit `34fc5be` (2026-10-20 06:24 UTC) zapisuje ten sam warunek bez dwóch klamer obok siebie: `/\{\{/.test(s)`. Budowanie przeszło, strona została opublikowana o 06:25:37 UTC, a generator uruchomiony z plików pobranych z żywej strony daje wynik bajtowo identyczny z nowym `build_json.py`.
 6. **Dane nie zostały uszkodzone.** W Firebase jest zapis starego generatora — taki sam jak przed wdrożeniem. Po ponownym wygenerowaniu i imporcie zostanie zastąpiony poprawnym.
+7. **Zabezpieczenie przed powtórką (2026-10-25):** w katalogu głównym repozytorium jest pusty plik `.nojekyll`. GitHub Pages przestaje uruchamiać Jekylla, więc pliki `.md` nie przechodzą przez Liquid i żadna ich treść nie może już zatrzymać publikacji. Samo wyłączenie folderu `Analizy` by nie wystarczyło: dokumentacja modułów zawiera 273 podwójne klamry otwierające, a jedna dopisana linia kodu wystarcza, żeby odtworzyć awarię (rozdz. 13.1). Pliki aplikacji publikowane są bez zmian; znikają tylko automatycznie generowane wersje HTML dokumentów, z których żaden moduł nie korzysta (rozdz. 14).
 
 ---
 
@@ -116,7 +128,9 @@ Budowanie zostało odtworzone lokalnie dokładnie tą samą wersją narzędzi (g
 
 ## 6. Mechanizm
 
-### 6.1. Jak GitHub Pages publikuje to repozytorium
+### 6.1. Jak GitHub Pages publikował to repozytorium (do wdrożenia `.nojekyll`)
+
+Opis w rozdz. 6 dotyczy stanu sprzed wdrożenia zabezpieczenia. Od pierwszej publikacji z plikiem `.nojekyll` GitHub Pages nie uruchamia Jekylla ani Liquid (rozdz. 14).
 
 - Pliki HTML, JS, CSS, obrazy i inne pliki bez nagłówka front matter są kopiowane na stronę bez zmian — stąd moduły działają jako zwykłe pliki statyczne.
 - Każdy plik `.md` (dzięki wtyczce `jekyll-optional-front-matter` — także bez front matter) jest traktowany jako strona: przechodzi przez **Liquid**, potem przez konwerter Markdown, i powstaje jego wersja `.html` (np. `AGENTS.html`, `DataVault/docs/ZasadyFormatowania.html`, a katalog z `README.md` i bez `index.html` dostaje stronę główną z README). Surowy plik `.md` też jest publikowany bez zmian — z tego korzysta strona główna, która w trakcie działania pobiera `Main/ZmienneHiperlacza.md`.
@@ -141,7 +155,7 @@ Dlatego setki poprawnych znaczników w analizach i dokumentacji nie przeszkadza�
 
 ### 6.4. Skutek uboczny bez znaczenia dla aplikacji: zniekształcone wersje HTML dokumentacji
 
-Wersje `.html` plików Markdown publikowane przez Jekyll nie zawierają znaczników formatowania, bo Liquid zamienia je na pusty tekst. Przykład z żywej strony: `DataVault/docs/ZasadyFormatowania.md` zawiera 30 wystąpień <code>&#123;&#123;B}}</code> (i jest identyczny z repozytorium), a `DataVault/docs/ZasadyFormatowania.html` — 0. Moduły nie korzystają z tych stron; dokumentację czyta się w repozytorium na GitHubie, gdzie Markdown jest wyświetlany bez Liquid.
+Wersje `.html` plików Markdown publikowane przez Jekyll nie zawierają znaczników formatowania, bo Liquid zamienia je na pusty tekst. Przykład z żywej strony: `DataVault/docs/ZasadyFormatowania.md` zawiera 30 wystąpień <code>&#123;&#123;B}}</code> (i jest identyczny z repozytorium), a `DataVault/docs/ZasadyFormatowania.html` — 0. Moduły nie korzystają z tych stron; dokumentację czyta się w repozytorium na GitHubie, gdzie Markdown jest wyświetlany bez Liquid. Od wdrożenia `.nojekyll` te wersje `.html` w ogóle nie powstają (rozdz. 14.4).
 
 ---
 
@@ -215,6 +229,8 @@ Najnowszy plik ma 81 zmienionych pól zamiast 63 z poprzedniej analizy, bo jego 
 
 ## 12. Jak rozpoznać ten problem
 
+Przy obecnym pliku `.nojekyll` (rozdz. 14) kroki 3–4 mają znaczenie tylko wtedy, gdy plik zostanie usunięty albo Jekyll zostanie włączony ponownie. Kroki 1–2 warto wykonywać zawsze przy ważnych zmianach, bo publikacja może się nie udać także z przyczyn niezwiązanych z treścią plików (rozdz. 14.7).
+
 1. **Status publikacji:** repozytorium → zakładka **Actions** → workflow **pages build and deployment**. Ostatni przebieg dla `main` powinien mieć status sukcesu. Przy błędzie: zadanie `build` → krok **Build with Jekyll** → wiersz `Liquid Exception: … in` z nazwą pliku i numerem linii.
 2. **Wersja pliku na stronie:** nagłówek `last-modified` dowolnego pliku strony (np. `DataVault/xlsxCanonicalParser.js`) powinien odpowiadać czasowi ostatniej publikacji; można też porównać treść pliku ze strony z plikiem w repozytorium.
 3. **Odtworzenie lokalne:** Ruby i gem `github-pages` w tej samej wersji co na GitHubie (dziennik budowania podaje wersję). Jekyll zatrzymuje się na pierwszym błędzie, więc żeby znaleźć wszystkie, warto sprawdzić każdy plik `.md` osobno samym parserem Liquid.
@@ -258,9 +274,9 @@ Najnowszy plik ma 81 zmienionych pól zamiast 63 z poprzedniej analizy, bo jego 
 
 ---
 
-## 13. Możliwe zabezpieczenia — materiał do osobnego zadania
+## 13. Możliwe zabezpieczenia i wybór
 
-Zgodnie z poleceniem użytkownika zabezpieczenie projektu jest osobnym zadaniem. Poniżej wyłącznie zestawienie opcji, bez rekomendacji wyboru:
+Zestawienie opcji przygotowane w ramach diagnozy (2026-10-20), wtedy bez rekomendacji wyboru. Wybór — rozdz. 13.1, wdrożenie — rozdz. 14.
 
 | Opcja | Co daje | Skutki uboczne / ograniczenia |
 |---|---|---|
@@ -270,20 +286,103 @@ Zgodnie z poleceniem użytkownika zabezpieczenie projektu jest osobnym zadaniem.
 | kontrola po każdym wypchnięciu na `main` | sprawdzenie statusu w Actions albo `last-modified` na stronie (rozdz. 12) | wykrywa problem, ale mu nie zapobiega |
 | kontrola Liquid przed commitem | skrypt z rozdz. 12 | wymaga Ruby i gemów w środowisku pracy |
 
+### 13.1. Wybór zabezpieczenia (2026-10-25)
+
+Użytkownik rozważał wyłączenie folderu `Analizy` z budowania strony i zapytał, czy to w pełni rozwiąże problem. Odpowiedź: **nie w pełni** — wyłączenie usuwa najbardziej ryzykowne źródło, ale nie całe ryzyko. Sprawdzenie na stanie `2642b0b`, przed wdrożeniem zabezpieczenia:
+
+| Sprawdzenie | Wynik |
+|---|---|
+| Pliki `.md` poza `Analizy/` zawierające dwie klamry otwierające obok siebie | 5 plików, 273 wystąpienia: `DataVault/docs/Documentation.md` 122, `DataVault/docs/ZasadyFormatowania.md` 110, `DetaleLayout.md` 23, `GeneratorNPC/docs/Documentation.md` 16, `DataVault/docs/README.md` 2; klamry z procentem — 0 |
+| Pliki `.md` w `Analizy/` zawierające dwie klamry otwierające obok siebie | 0 (cztery obecne analizy) |
+| Parser Liquid 4.0.4 na każdym pliku `.md` (skrypt z rozdz. 12) | 0 błędów krytycznych; 125 ostrzeżeń w 4 plikach — wszystkie poza `Analizy/` |
+| Pełne lokalne budowanie `github-pages` 232 | sukces, 125 ostrzeżeń — strona publikowała się poprawnie |
+| Symulacja: do **kopii** `DataVault/docs/Documentation.md` dopisana jedna linia kodu takiego jak w awarii (warunek z dwiema klamrami w cudzysłowie, a w następnej linii wyrażenie regularne z pojedynczą klamrą zamykającą) | błąd krytyczny „Variable … was not properly terminated” — ten sam, który zatrzymał stronę |
+
+Wnioski:
+
+- Dokumentacja DataVault z natury opisuje znaczniki formatowania z dwiema klamrami, a zasady repozytorium wymagają jej aktualizacji przy każdej zmianie kodu modułu. Po wyłączeniu samego folderu `Analizy` ta dokumentacja nadal przechodziłaby przez Liquid i mogłaby zatrzymać publikację tak samo jak analiza z 11 października.
+- Wyłączanie kolejnych folderów wymagałoby pamiętania o każdym nowym miejscu z plikami `.md` i nie mogłoby obejmować `Main/ZmienneHiperlacza.md`, który strona główna pobiera w trakcie działania.
+- Plik `.nojekyll` usuwa przyczynę dla wszystkich plików naraz, nie wymaga dyscypliny przy pisaniu, a jego skutki uboczne nie dotyczą działania modułów (rozdz. 14.4).
+- Opcji `.nojekyll` i `_config.yml` nie da się połączyć: przy `.nojekyll` Jekyll nie działa, więc `_config.yml` nie jest czytany. Ukrycie analiz na stronie nie jest celem tego zabezpieczenia — analizy są dalej publikowane jako surowe pliki `.md`, tak jak przed zmianą.
+
+**Wybrane zabezpieczenie: plik `.nojekyll`** (polecenie użytkownika z 2026-10-25, rozdz. 1).
+
 ---
 
-## 14. Ryzyka
+## 14. Wdrożone zabezpieczenie: plik `.nojekyll` (2026-10-25)
+
+### 14.1. Zmiana
+
+- Nowy pusty plik `.nojekyll` (0 bajtów) w katalogu głównym repozytorium, obok `manifest.webmanifest`. Liczą się tylko nazwa i położenie pliku, treść nie ma znaczenia.
+- Dokumentacja modułu Main opisuje publikację strony i rolę pliku: `Main/docs/Documentation.md` (rozdział „Publikacja w GitHub Pages i plik `.nojekyll`”, tabela struktury plików, procedura odtworzenia, testy kontrolne) oraz `Main/docs/README.md` (rozdział „Jak zmiany trafiają na stronę” i wiersz w tabeli typowych problemów).
+- Żaden plik aplikacji nie został zmieniony. W repozytorium nie powstały `_config.yml` ani `.github/workflows`.
+- Zmiana jest na gałęzi `claude/dazzling-ride-k8wqjw`; zacznie działać po scaleniu z `main`.
+
+### 14.2. Jak działa
+
+- GitHub Pages publikujący „z gałęzi” sprawdza, czy w katalogu źródłowym jest plik `.nojekyll`. Jeśli jest, pomija Jekylla i publikuje pliki repozytorium bez przetwarzania (mechanizm opisany w dokumentacji GitHub Pages, w części o Jekyllu i generatorach stron statycznych).
+- Skutek: Liquid w ogóle nie czyta plików `.md`. Podwójne klamry, znaczniki formatowania i fragmenty kodu w analizach, instrukcjach i dokumentacji nie mają wpływu na publikację — ani teraz, ani w przyszłych plikach.
+- Workflow **pages build and deployment** nadal uruchamia się po każdym wypchnięciu na `main`; zmienia się tylko to, że strona nie jest budowana Jekyllem.
+
+### 14.3. Weryfikacja przed wdrożeniem
+
+Porównanie wykonane lokalnie na stanie `2642b0b` (gem `github-pages` 232, czyli Jekyll 3.10.0 i Liquid 4.0.4 — ta sama wersja co na GitHubie):
+
+| Sprawdzenie | Wynik |
+|---|---|
+| Strona zbudowana dotychczasowym sposobem (Jekyll) | sukces, 125 ostrzeżeń, 223 pliki wynikowe |
+| Pliki repozytorium, czyli to, co GitHub publikuje przy `.nojekyll` | 184 pliki (plus sam `.nojekyll`) |
+| Pliki obecne w obu zestawach | 180, wszystkie **bajtowo identyczne** — Jekyll i tak kopiował je bez zmian; dotyczy to wszystkich plików HTML, JS, CSS, JSON i obrazów modułów oraz surowych plików `.md`, w tym `Main/ZmienneHiperlacza.md` |
+| Pliki, które znikają ze strony | 43, wyłącznie generowane przez Jekylla: 34 wersje `.html` plików `.md`, 8 stron folderów `*/docs/index.html` tworzonych z `README.md` i arkusz stylów motywu `assets/css/style.css` |
+| Pliki, które mogą dojść | pliki zaczynające się od kropki, które Jekyll pomijał: `.gitignore` i trzy puste pliki `.gitkeep` (`Analizy/`, `Infoczytnik/assets/`, `Kalkulator/vendor/`); bez danych wrażliwych |
+| Odwołania modułów do znikających plików | brak — przeszukanie plików HTML, JS, CSS, JSON i `manifest.webmanifest`: jedynym plikiem `.md` używanym przez aplikacje jest `Main/ZmienneHiperlacza.md`, pobierany w surowej postaci; nic nie prowadzi do wersji `.html` dokumentów ani do stron `docs/` |
+| Adresy folderów używane w linkach (`Kalkulator/`, `GeneratorNPC/`, `Infoczytnik/`) | każdy folder ma własny `index.html`, więc działa bez Jekylla |
+| Katalog główny strony | nie ma `index.html` ani `README.md` — adres główny strony zwraca 404 tak samo przed zmianą, jak po niej; punktem wejścia jest `Main/index.html` (także w `manifest.webmanifest`) |
+| Pliki, które Jekyll by pominął (nazwy zaczynające się od `_`, `#`, kończące się `~`), dowiązania symboliczne, pliki `.scss` / `.sass` / `.coffee`, pliki HTML z front matter | brak w repozytorium |
+
+### 14.4. Skutki uboczne
+
+| Element strony | Przed (Jekyll) | Po (`.nojekyll`) |
+|---|---|---|
+| Pliki aplikacji (HTML, JS, CSS, JSON, obrazy) | kopiowane bez zmian | kopiowane bez zmian |
+| Surowe pliki `.md` (np. `Main/ZmienneHiperlacza.md`) | publikowane | publikowane bez zmian |
+| Wersje `.html` plików `.md` (np. `AGENTS.html`, `DataVault/docs/ZasadyFormatowania.html`) | publikowane, zniekształcone — bez znaczników formatowania (rozdz. 6.4) | nie powstają, adres zwraca 404 |
+| Strony folderów z `README.md` (np. `DataVault/docs/`) | publikowane | nie powstają, adres zwraca 404 |
+| `assets/css/style.css` (styl motywu `jekyll-theme-primer` dla powyższych stron) | publikowany | nie powstaje |
+| Analizy | publikowane jako `.md` i `.html` | publikowane jako `.md` |
+| Dokumentacja w repozytorium na GitHubie | wyświetlana normalnie | wyświetlana normalnie (GitHub nie używa Liquid) |
+
+### 14.5. Kontrola po scaleniu z `main`
+
+1. Zakładka **Actions** → najnowszy przebieg **pages build and deployment** dla commitu ze zmianą kończy się sukcesem.
+2. `Main/index.html` na stronie: przyciski „Mapa” i „Obrazki” mają adresy z `Main/ZmienneHiperlacza.md`; nagłówek `last-modified` pliku odpowiada czasowi publikacji.
+3. Adres `AGENTS.html` na stronie zwraca 404 — potwierdzenie, że Jekyll nie przetwarza plików.
+4. Pliki aplikacji pobrane ze strony (np. `DataVault/xlsxCanonicalParser.js`) są identyczne z repozytorium.
+
+### 14.6. Jak cofnąć
+
+Usunięcie pliku `.nojekyll` z `main`. Następna publikacja znów użyje Jekylla — wracają wtedy wersje `.html` dokumentów, ale też ryzyko opisane w rozdz. 6.
+
+### 14.7. Ograniczenia
+
+`.nojekyll` usuwa przyczyny związane z Jekyllem: składnię Liquid, front matter i przetwarzanie Markdown. Publikacja może nadal się nie udać z przyczyn po stronie GitHuba (np. awaria usługi albo przekroczenie limitów GitHub Pages). Wtedy strona też zostaje w poprzedniej wersji bez komunikatu, dlatego przy ważnych zmianach warto sprawdzić status publikacji (rozdz. 12, pkt 1–2).
+
+---
+
+## 15. Ryzyka
 
 | Ryzyko | Ocena | Uwagi |
 |---|---|---|
-| Powtórka: kolejny plik `.md` z niedomkniętą parą klamer (albo klamrą z procentem) zatrzyma publikację bez widocznego komunikatu | realne, dopóki nie zostanie wybrane zabezpieczenie | dotyczy zwłaszcza analiz i dokumentacji opisujących znaczniki formatowania |
+| Powtórka: kolejny plik `.md` z niedomkniętą parą klamer (albo klamrą z procentem) zatrzyma publikację bez widocznego komunikatu | wyeliminowane po scaleniu `.nojekyll` z `main`, dopóki plik leży w katalogu głównym | do czasu scalenia ryzyko pozostaje realne; wraca po usunięciu `.nojekyll` albo po przejściu na publikację z Jekyllem (np. własny workflow) |
+| Usunięcie `.nojekyll` przy porządkowaniu repozytorium | niskie | plik jest pusty, a jego nazwa zaczyna się od kropki, więc łatwo go uznać za zbędny; jego rola jest opisana w dokumentacji technicznej i instrukcji modułu Main |
+| Nieudana publikacja z przyczyn niezwiązanych z treścią plików | niskie | rozdz. 14.7; strona zostaje wtedy w poprzedniej wersji bez komunikatu |
 | Pamięć podręczna po publikacji | niskie | pliki strony mają `max-age=600`; przez ok. 10 minut po publikacji przeglądarka może używać starej wersji — pomaga twarde odświeżenie (`Ctrl` + `F5`, na Macu `Cmd` + `Shift` + `R`) |
-| Zniekształcone wersje HTML dokumentacji na stronie | kosmetyczne | rozdz. 6.4; nie dotyczy działania modułów |
+| Zniekształcone wersje HTML dokumentacji na stronie | nie dotyczy po scaleniu `.nojekyll` | rozdz. 6.4 i 14.4; te strony przestają powstawać |
 | Ten plik analizy | sprawdzone | zapisany bez dwóch klamer obok siebie; sprawdzony parserem Liquid i pełnym lokalnym budowaniem strony |
 
 ---
 
-## 15. Następne kroki
+## 16. Następne kroki
 
 1. **Użytkownik — ponowne wygenerowanie danych:**
    1. otworzyć `DataVault/index.html?admin=1` i odświeżyć stronę z pominięciem pamięci podręcznej (`Ctrl` + `F5`, na Macu `Cmd` + `Shift` + `R`);
@@ -291,5 +390,5 @@ Zgodnie z poleceniem użytkownika zabezpieczenie projektu jest osobnym zadaniem.
    3. **przed odświeżeniem strony** sprawdzić Bestiariusz LP 180 „Kanoptek Skarabeusz” — nagłówek „ANIHILACJA: Protokoły ożywienia” ma być pogrubiony (opcjonalnie: polecenie kontrolne z `DataVault/docs/README.md`, wynik — pusta tabela);
    4. zaimportować nowy `firebase-import.json` do Firebase Realtime Database na poziomie głównym `/`;
    5. odświeżyć GeneratorNPC i wygenerować kartę Kanopteka.
-2. **Osobne zadanie:** wybór i wdrożenie zabezpieczenia przed powtórką (rozdz. 13).
-3. **Do czasu wdrożenia zabezpieczenia:** po każdym wypchnięciu na `main` sprawdzać status publikacji (rozdz. 12, pkt 1–2).
+2. **Zabezpieczenie:** scalić gałąź `claude/dazzling-ride-k8wqjw` (plik `.nojekyll`) z `main` i wykonać kontrolę z rozdz. 14.5.
+3. **Po scaleniu:** przy ważnych zmianach nadal sprawdzać status publikacji (rozdz. 12, pkt 1–2), bo `.nojekyll` nie chroni przed awariami po stronie GitHuba (rozdz. 14.7).

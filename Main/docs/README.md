@@ -189,6 +189,19 @@ Ctrl + F5
 
 albo wyczyść dane strony w przeglądarce.
 
+## Jak zmiany trafiają na stronę
+
+Ta część jest dla osoby, która wprowadza zmiany w repozytorium, na przykład poprawia adresy w `Main/ZmienneHiperlacza.md`.
+
+1. Gdy zmiana trafi do głównej gałęzi repozytorium (`main`), GitHub sam publikuje nową wersję strony. Zwykle trwa to kilka minut.
+2. Przez około 10 minut po publikacji przeglądarka może jeszcze pokazywać poprzednią wersję. Wtedy pomaga `Ctrl + F5` (na Macu `Cmd + Shift + R`).
+3. Jeżeli po kilkunastu minutach i odświeżeniu nadal widzisz starą wersję, sprawdź publikację. Na stronie repozytorium na GitHubie otwórz zakładkę **Actions** i znajdź najnowszy wpis **pages build and deployment**:
+   - zielony znaczek — strona została opublikowana;
+   - żółty lub kręcące się kółko — publikacja jeszcze trwa, poczekaj;
+   - czerwony znaczek — publikacja się nie udała i strona została w poprzedniej wersji. Moduły działają dalej, ale bez ostatnich zmian. Przekaż to osobie technicznej.
+
+W głównym folderze repozytorium leży pusty plik o nazwie `.nojekyll`. **Nie usuwaj go i nie zmieniaj mu nazwy.** Dzięki niemu GitHub publikuje pliki dokładnie takie, jakie są w repozytorium, a treść instrukcji, dokumentacji i analiz nie może zablokować publikacji strony.
+
 ## Na telefonie
 
 Moduł mieści się na szerokość ekranu telefonu — nie trzeba przesuwać strony w bok.
@@ -200,6 +213,7 @@ Moduł mieści się na szerokość ekranu telefonu — nie trzeba przesuwać str
 | Nie widać `Generator Nazw`, `Generator NPC` albo `Audio` | Otwarty jest widok standardowy. | Dopisz do adresu `?admin=1`. |
 | `Mapa` albo `Obrazki` nie otwierają poprawnej strony | Brak albo błędna konfiguracja w `ZmienneHiperlacza.md`. | Zgłoś adminowi albo popraw konfigurację linków. |
 | Przycisk prowadzi do starej wersji modułu | Przeglądarka trzyma cache. | Odśwież przez `Ctrl + F5`. |
+| Po zmianie w repozytorium strona nadal pokazuje starą wersję, także po `Ctrl + F5` i po kilkunastu minutach | Publikacja jeszcze trwa albo się nie udała. | Sprawdź zakładkę **Actions** na GitHubie — patrz „Jak zmiany trafiają na stronę”. |
 | Infoczytnik otwiera inny ekran niż oczekiwano | Tryb standardowy i admin prowadzą do innych punktów Infoczytnika. | Użyj `Main/index.html?admin=1`, jeśli potrzebujesz wyboru GM/test/produkcja. |
 | Skarbiec Danych nie pokazuje panelu admina | Otwarty jest zwykły link DataVault. | Otwórz Main w trybie admina albo dopisz `?admin=1` w DataVault. |
 | `Gilead` nie otwiera nowej karty | Przeglądarka blokuje otwieranie nowych kart. | Zezwól na wyskakujące okna dla strony albo otwórz link ręcznie w nowej karcie. |
@@ -406,6 +420,19 @@ Ctrl + F5
 
 or clear site data in the browser.
 
+## How changes reach the site
+
+This part is for the person who makes changes in the repository, for example fixes the addresses in `Main/ZmienneHiperlacza.md`.
+
+1. When a change reaches the repository's main branch (`main`), GitHub publishes the new version of the site by itself. It usually takes a few minutes.
+2. For about 10 minutes after publishing, the browser may still show the previous version. A `Ctrl + F5` refresh helps (on a Mac `Cmd + Shift + R`).
+3. If you still see the old version after a dozen minutes and a refresh, check the publication. On the repository page on GitHub, open the **Actions** tab and find the latest **pages build and deployment** entry:
+   - green mark — the site has been published;
+   - yellow mark or spinning circle — publishing is still in progress, wait;
+   - red mark — publishing failed and the site stayed at the previous version. The modules keep working, but without the latest changes. Pass this on to a technical person.
+
+The repository's main folder contains an empty file named `.nojekyll`. **Do not delete or rename it.** Thanks to it, GitHub publishes the files exactly as they are in the repository, and the content of guides, documentation, and analyses cannot block publishing the site.
+
 ## On a phone
 
 The module fits the width of a phone screen — there is no need to drag the page sideways.
@@ -417,6 +444,7 @@ The module fits the width of a phone screen — there is no need to drag the pag
 | `Name Generator`, `NPC Generator`, or `Audio` are not visible | Standard view is open. | Add `?admin=1` to the URL. |
 | `Map` or `Images` opens the wrong page | Missing or wrong configuration in `ZmienneHiperlacza.md`. | Contact admin or fix link configuration. |
 | A button opens an old module version | Browser cache is stale. | Refresh with `Ctrl + F5`. |
+| After a change in the repository the site still shows the old version, even after `Ctrl + F5` and a dozen minutes | Publishing is still in progress or has failed. | Check the **Actions** tab on GitHub — see “How changes reach the site”. |
 | Infoczytnik opens a different screen than expected | Standard and admin modes link to different Infoczytnik entry points. | Use `Main/index.html?admin=1` if you need GM/test/production selection. |
 | DataVault does not show admin panel | Normal DataVault link is open. | Open Main in admin mode or add `?admin=1` in DataVault. |
 | `Gilead` does not open a new tab | Browser blocks new tabs. | Allow pop-ups for the page or open the link manually in a new tab. |

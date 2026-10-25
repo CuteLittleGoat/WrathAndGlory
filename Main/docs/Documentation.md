@@ -49,6 +49,7 @@ Tryb admina jest wykrywany po parametrze `admin=1` w query stringu.
 | `Main/docs/README.md` | Instrukcja użytkownika. |
 | `Main/docs/Documentation.md` | Niniejsza dokumentacja techniczna. |
 | `manifest.webmanifest` | Wspólny manifest aplikacji w katalogu nadrzędnym. |
+| `.nojekyll` | Pusty plik w katalogu głównym repozytorium; wyłącza generator Jekyll w GitHub Pages, więc cała strona jest publikowana bez przetwarzania. Patrz „Publikacja w GitHub Pages i plik `.nojekyll`”. |
 
 ## Zależności zewnętrzne
 
@@ -396,6 +397,25 @@ Main tylko prowadzi do tych modułów.
 | Brak wpisu `Obrazki:` | Link `Obrazki` nie zostanie podmieniony. |
 | Stary Service Worker | Strona próbuje wyrejestrować wszystkie rejestracje SW. |
 
+## Publikacja w GitHub Pages i plik `.nojekyll`
+
+Main i pozostałe moduły są publikowane przez GitHub Pages z katalogu głównego gałęzi `main`. Każde wypchnięcie na `main` uruchamia automatyczny workflow GitHuba **pages build and deployment**, który kopiuje pliki repozytorium na stronę `https://cutelittlegoat.github.io/WrathAndGlory/`. Repozytorium nie ma własnych workflow (`.github/workflows`) ani pliku `_config.yml`. Punktem wejścia strony jest `Main/index.html` (tak samo jak `start_url` w `manifest.webmanifest`); katalog główny nie ma `index.html`.
+
+W katalogu głównym repozytorium, obok `manifest.webmanifest`, leży pusty plik `.nojekyll` (0 bajtów). Liczą się wyłącznie jego nazwa i położenie. Jego obecność sprawia, że GitHub Pages pomija generator Jekyll i publikuje pliki dokładnie takie, jakie są w repozytorium:
+
+| Element | Zachowanie przy obecnym `.nojekyll` |
+| --- | --- |
+| Pliki HTML, JS, CSS, JSON, obrazy, `manifest.webmanifest` | Publikowane bajt w bajt jak w repozytorium. |
+| Pliki `.md` | Publikowane jako zwykłe pliki tekstowe, bez przetwarzania. Nie powstają ich wersje `.html` ani strony folderów generowane z `README.md`. |
+| `Main/ZmienneHiperlacza.md` | Publikowany bez zmian, więc `fetch(linkConfigPath)` w `Main/index.html` dostaje tę samą treść co w repozytorium. |
+| Dwie klamry otwierające obok siebie w plikach `.md` (np. znaczniki formatowania DataVault w dokumentacji) | Nie są interpretowane przez silnik szablonów Liquid, więc żadna treść pliku `.md` nie może przerwać publikacji. |
+| Adresy folderów używane w linkach (`../Kalkulator/`, `../GeneratorNPC/`) | GitHub Pages otwiera `index.html` z danego folderu, dlatego każdy folder używany jako cel linku musi mieć własny `index.html`. |
+| Pliki zaczynające się od `.` lub `_` | Nie są pomijane przez Jekylla. W repozytorium są tylko `.gitignore`, `.nojekyll` i puste pliki `.gitkeep`. |
+
+Dlaczego plik jest potrzebny: bez `.nojekyll` GitHub przepuszcza każdy plik `.md` przez Jekyll i Liquid. Para dwóch klamer otwierających bez poprawnego zamknięcia w dowolnym pliku `.md` (dokumentacji, instrukcji lub analizie) kończy budowanie błędem krytycznym. Wtedy nic nie jest publikowane, a strona bez żadnego komunikatu zostaje w ostatniej udanej wersji. Dlatego pliku `.nojekyll` nie wolno usuwać, przenosić ani zmieniać mu nazwy.
+
+Kontrola publikacji: zakładka **Actions** repozytorium → najnowszy przebieg **pages build and deployment** dla danego commitu ma status sukcesu, a nagłówek `last-modified` pliku pobranego ze strony (np. `Main/index.html`) odpowiada czasowi tej publikacji. Pliki strony mają `cache-control: max-age=600`, więc przeglądarka może przez około 10 minut pokazywać poprzednią wersję; pomaga twarde odświeżenie.
+
 ## Pochodzenie pliku `Main/Gilead.html`
 
 `Main/Gilead.html` jest **kopią wydania**. Nie powstaje w tym repozytorium i nie jest tutaj edytowany.
@@ -434,7 +454,8 @@ Wewnętrzna budowa rejestru — mapa SVG, kadrowanie, obsługa gestów i karty r
 11. Dodaj przełączanie `Infoczytnik` i `DataVault` zależnie od `?admin=1`.
 12. Dodaj skrypt usuwający stare Service Workery.
 13. Wstaw `Main/Gilead.html`, kopiując bieżące wydanie z repozytorium `Scenariusze` — tego pliku nie odtwarza się ręcznie; patrz „Pochodzenie pliku `Main/Gilead.html`”.
-14. Sprawdź tryb standardowy i admin.
+14. Upewnij się, że w katalogu głównym repozytorium istnieje pusty plik `.nojekyll`; jeśli go nie ma, utwórz go. Patrz „Publikacja w GitHub Pages i plik `.nojekyll`”.
+15. Sprawdź tryb standardowy i admin.
 
 ## Testy kontrolne
 
@@ -454,6 +475,8 @@ Wewnętrzna budowa rejestru — mapa SVG, kadrowanie, obsługa gestów i karty r
 | Widoczność `Gilead` | Otwórz Main w trybie standardowym i w trybie admina. | Przycisk `Gilead` jest widoczny w obu trybach. |
 | Widoczność `Galaktyka` | Otwórz Main w trybie standardowym i w trybie admina. | Przycisk `Galaktyka` jest widoczny w obu trybach. |
 | Układ paska CTA | Porównaj położenie obu przycisków. | `Galaktyka` przylega do lewej, a `Gilead` do prawej krawędzi panelu, oba w tej samej linii. |
+| Publikacja strony | Wypchnij zmianę na `main` i otwórz zakładkę **Actions** → **pages build and deployment**. | Przebieg dla tego commitu kończy się sukcesem; po kilku minutach `Main/ZmienneHiperlacza.md` pobrany ze strony jest identyczny z repozytorium, a `Mapa` i `Obrazki` mają poprawne adresy. |
+| Jekyll wyłączony | Otwórz na stronie adres `AGENTS.html`. | Strona zwraca 404 — wersje `.html` plików `.md` nie powstają, więc Jekyll nie przetwarza plików. |
 
 ---
 
@@ -508,6 +531,7 @@ Admin mode is detected by `admin=1` query string parameter.
 | `Main/docs/README.md` | User guide. |
 | `Main/docs/Documentation.md` | This technical documentation. |
 | `manifest.webmanifest` | Shared application manifest in the parent directory. |
+| `.nojekyll` | Empty file in the repository root; it disables the Jekyll generator in GitHub Pages, so the whole site is published without processing. See “GitHub Pages publishing and the `.nojekyll` file”. |
 
 ## External dependencies
 
@@ -855,6 +879,25 @@ Main only links to those modules.
 | Missing `Obrazki:` entry | `Images` link is not replaced. |
 | Old Service Worker | Page tries to unregister all SW registrations. |
 
+## GitHub Pages publishing and the `.nojekyll` file
+
+Main and the other modules are published by GitHub Pages from the root of the `main` branch. Every push to `main` starts GitHub's automatic **pages build and deployment** workflow, which copies the repository files to `https://cutelittlegoat.github.io/WrathAndGlory/`. The repository has no workflows of its own (`.github/workflows`) and no `_config.yml` file. The site's entry point is `Main/index.html` (the same as `start_url` in `manifest.webmanifest`); the root directory has no `index.html`.
+
+The repository root, next to `manifest.webmanifest`, contains an empty `.nojekyll` file (0 bytes). Only its name and location matter. Its presence makes GitHub Pages skip the Jekyll generator and publish the files exactly as they are in the repository:
+
+| Item | Behavior while `.nojekyll` is present |
+| --- | --- |
+| HTML, JS, CSS, JSON, image files, `manifest.webmanifest` | Published byte for byte as in the repository. |
+| `.md` files | Published as plain text files, without processing. No `.html` versions and no folder pages generated from `README.md` are created. |
+| `Main/ZmienneHiperlacza.md` | Published unchanged, so `fetch(linkConfigPath)` in `Main/index.html` receives the same content as in the repository. |
+| Two adjacent opening braces in `.md` files (e.g. DataVault formatting markers in the documentation) | Not interpreted by the Liquid template engine, so no `.md` file content can stop publishing. |
+| Folder URLs used in links (`../Kalkulator/`, `../GeneratorNPC/`) | GitHub Pages opens the folder's `index.html`, so every folder used as a link target must have its own `index.html`. |
+| Files starting with `.` or `_` | Not skipped by Jekyll. The repository only has `.gitignore`, `.nojekyll`, and empty `.gitkeep` files. |
+
+Why the file is needed: without `.nojekyll`, GitHub runs every `.md` file through Jekyll and Liquid. A pair of two opening braces without a valid closing in any `.md` file (documentation, user guide, or analysis) ends the build with a fatal error. Nothing is published then, and the site silently stays at the last successful version. That is why the `.nojekyll` file must not be deleted, moved, or renamed.
+
+Publishing check: the repository's **Actions** tab → the latest **pages build and deployment** run for the commit has a success status, and the `last-modified` header of a file downloaded from the site (e.g. `Main/index.html`) matches the time of that publication. Site files have `cache-control: max-age=600`, so the browser may show the previous version for about 10 minutes; a hard refresh helps.
+
 ## Where `Main/Gilead.html` comes from
 
 `Main/Gilead.html` is a **release copy**. It is not produced in this repository and is not edited here.
@@ -893,7 +936,8 @@ The registry internals — the SVG map, view framing, gesture handling, and regi
 11. Add Infoczytnik and DataVault switching by `?admin=1`.
 12. Add script removing old Service Workers.
 13. Put `Main/Gilead.html` in place by copying the current release from the `Scenariusze` repository — this file is never recreated by hand; see “Where `Main/Gilead.html` comes from”.
-14. Test standard and admin modes.
+14. Make sure an empty `.nojekyll` file exists in the repository root; create it if it is missing. See “GitHub Pages publishing and the `.nojekyll` file”.
+15. Test standard and admin modes.
 
 ## Control tests
 
@@ -913,3 +957,5 @@ The registry internals — the SVG map, view framing, gesture handling, and regi
 | `Gilead` visibility | Open Main in standard and admin mode. | The `Gilead` button is visible in both modes. |
 | `Galaktyka` visibility | Open Main in standard and admin mode. | The `Galaktyka` button is visible in both modes. |
 | CTA bar layout | Compare the position of both buttons. | `Galaktyka` sits at the left and `Gilead` at the right panel edge, both on the same line. |
+| Site publishing | Push a change to `main` and open the **Actions** tab → **pages build and deployment**. | The run for that commit succeeds; a few minutes later `Main/ZmienneHiperlacza.md` downloaded from the site is identical to the repository, and `Map` and `Images` have correct URLs. |
+| Jekyll disabled | Open `AGENTS.html` on the site. | The site returns 404 — no `.html` versions of `.md` files are created, so Jekyll does not process the files. |
