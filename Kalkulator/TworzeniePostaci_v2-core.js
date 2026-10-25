@@ -57,6 +57,11 @@
     ['conviction','Odwaga'],['influence','Wpływy'],['wealth','Majątek'],['corruption','Spaczenie'],['speed','Szybkość']
   ];
   const SIZE_DEFENCE_BONUS = {Malutki:2,Mały:1,Średni:0,Duży:0,Ogromny:0,Monstrualny:0};
+  // Teksty nagłówka sekcji talentów dla obsługiwanych języków / Talents section heading texts for supported languages
+  const TALENTS_HEADER_TEXT = {
+    pl:'Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.',
+    en:'Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.'
+  };
   let talentCount = 2;
 
   const byId = id => document.getElementById(id);
@@ -330,6 +335,13 @@
     byId('speciesMaxTable').innerHTML=`<thead><tr>${headers.map(text=>`<th>${text}</th>`).join('')}</tr></thead><tbody>${SPECIES_MAX.map(row=>`<tr>${row.map(value=>`<td>${value}</td>`).join('')}</tr>`).join('')}</tbody>`;
   }
 
+  // --- Funkcja aktualizująca teksty w wybranym języku / Function to update texts in the selected language ---
+  // Nieznany kod języka wraca do wersji polskiej / An unknown language code falls back to Polish
+  function updateLanguage(lang) {
+    const header=byId('talentsHeader');
+    if(header)header.textContent=TALENTS_HEADER_TEXT[lang]||TALENTS_HEADER_TEXT.pl;
+  }
+
   function initialize() {
     renderAttributes();
     renderSkills();
@@ -356,6 +368,10 @@
     byId('manualButton').addEventListener('click',()=>{window.open('HowToUse/pl.pdf','_blank','noopener');});
     document.querySelectorAll('.modal').forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal&&modal.id!=='confirmModal')toggleModal(modal.id,false);}));
     document.addEventListener('keydown',event=>{if(event.key==='Escape')['characterRulesModal','speciesMaxModal'].forEach(id=>toggleModal(id,false));});
+    // Zmiana wyboru w (ukrytym) languageSelect podmienia teksty; start używa bieżącej wartości pola
+    // Changing the (hidden) languageSelect swaps the texts; startup uses the field's current value
+    const languageSelect=byId('languageSelect');
+    if(languageSelect){languageSelect.addEventListener('change',event=>updateLanguage(event.target.value));updateLanguage(languageSelect.value);}
     recalcXP();
   }
 

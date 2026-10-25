@@ -44,7 +44,8 @@
     <div class="section-heading-row"><h2 class="section-title">Atrybuty</h2><div class="section-heading-actions"><button type="button" id="openCharacterRulesModalButton">Cechy i zasady specjalne</button><button type="button" id="exportCharacterPdfButton">Eksportuj PDF</button></div></div>
     <div class="table-wrap"><table class="table attributes-table" id="attributesTable"></table></div>
     <h2 class="section-title">Umiejętności</h2><div class="table-wrap"><table class="table skills-table" id="skillsTable"></table></div>
-    <h2 class="section-title">Talenty, wiara, moce psioniczne, archetypy, pakiety wyniesienia i inne</h2><div class="table-wrap"><table class="table talents-table" id="talentsTable"></table></div><div class="data-actions"><button type="button" id="addTalentRowButton">Dodaj pola talentów</button><button type="button" id="removeTalentRowButton">Usuń pola talentów</button></div>
+    <!-- Nagłówek sekcji talentów; tekst PL/EN podmienia updateLanguage() w TworzeniePostaci_v2-core.js / Talents section heading; updateLanguage() in TworzeniePostaci_v2-core.js swaps the PL/EN text -->
+    <h2 class="section-title" id="talentsHeader">Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.</h2><div class="table-wrap"><table class="table talents-table" id="talentsTable"></table></div><div class="data-actions"><button type="button" id="addTalentRowButton">Dodaj pola talentów</button><button type="button" id="removeTalentRowButton">Usuń pola talentów</button></div>
     <section class="technical-hidden" aria-labelledby="pdfLogTitle"><h2 class="section-title" id="pdfLogTitle">PDF Export Log</h2><div id="pdfLogMessage" class="pdf-log-message">No PDF messages.</div></section>
     <div class="footer">Wykonane przez Spaczoną Inteligencję</div>
   </main>

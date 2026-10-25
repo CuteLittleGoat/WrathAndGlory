@@ -165,7 +165,8 @@ Moduł automatycznie dolicza koszt każdej umiejętności do całkowitego wydatk
 
 ## Talenty i inne wydatki
 
-Sekcja talentów ma 20 pól.
+Sekcja talentów nosi nagłówek **Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.** i ma 20 pól. Ten sam nagłówek ma sekcja talentów
+w Zaawansowanym Kreatorze Postaci.
 
 Każdy wpis ma:
 
@@ -515,7 +516,9 @@ The module automatically adds each skill cost to total XP spent.
 
 ## Talents and other spending
 
-The talents section has 20 fields.
+The talents section has 20 fields. Because the creators run in Polish, its heading on screen reads
+**Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.**; its English text is **Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.** The Advanced Character Creator uses the same heading for its
+talents section.
 
 Each entry has:
 

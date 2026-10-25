@@ -214,6 +214,15 @@ Angielski układ nazw jest zdefiniowany osobno w `translations.en.skillsColumn1`
 
 Sekcja talentów ma 20 wpisów.
 
+Nagłówek sekcji to `<h2 class="section-title" id="talentsHeader">`. Jego tekst pochodzi z `translations.<lang>.labels.talentsHeader` i jest ustawiany przez `updateLanguage(lang)`:
+
+| Język | Tekst nagłówka |
+| --- | --- |
+| `pl` (domyślny) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.` |
+| `en` | `Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.` |
+
+Polski tekst jest wpisany także bezpośrednio w HTML nagłówka, więc jest widoczny jeszcze przed pierwszym wywołaniem `updateLanguage(lang)`.
+
 Każdy wpis składa się z:
 
 ```text
@@ -747,6 +756,15 @@ English skill layout is defined separately in `translations.en.skillsColumn1` an
 ## Talents and other costs
 
 The talents section has 20 entries.
+
+The section heading is `<h2 class="section-title" id="talentsHeader">`. Its text comes from `translations.<lang>.labels.talentsHeader` and is set by `updateLanguage(lang)`:
+
+| Language | Heading text |
+| --- | --- |
+| `pl` (default) | `Inne: Talenty, Wiara, Psionika, Koszty Archetypy, Pakiety Wyniesienia, Majątek, Języki itd.` |
+| `en` | `Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.` |
+
+The Polish text is also written directly in the heading's HTML, so it is visible even before the first `updateLanguage(lang)` call.
 
 Each entry consists of:
 
