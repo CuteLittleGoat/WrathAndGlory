@@ -3,8 +3,9 @@
 > **Data:** 1 listopada 2026 (prompt otwierający: 29 października 2026; uzupełnienie o zrzuty ekranu po sesji: 1 listopada 2026; rozbudowa o rozdz. 10 — token GitHuba wyjaśniony prostym językiem: 1 listopada 2026)
 > **Moduł:** `Audio` — bramka dostępowa `audio-gate` (Cloudflare Worker, kod w `Audio/worker/audio-gate.js`) oraz porzucony Worker `wrathandglory-push-api` (archiwum w `WebView_FCM_Cloudflare_Worker/`)
 > **Stan kodu:** commit `b935527` (gałąź `main`)
-> **Charakter dokumentu:** analiza bez zmian w kodzie, konfiguracji i danych. Pomiary pochodzą ze zrzutów ekranu panelu Cloudflare przesłanych przez użytkownika, limity — z oficjalnej dokumentacji Cloudflare, GitHuba i Google (stan na 1 listopada 2026, rozdz. 15).
+> **Charakter dokumentu:** analiza bez zmian w kodzie, konfiguracji i danych. Pomiary pochodzą ze zrzutów ekranu panelu Cloudflare przesłanych przez użytkownika, limity — z oficjalnej dokumentacji Cloudflare, GitHuba i Google (stan na 1 listopada 2026, rozdz. 16).
 > **Odpowiedź w jednym zdaniu:** **tak, zmieścisz się** — najcięższy zarejestrowany dzień zużył ok. 0,4% dziennego limitu żądań Workerów i odpowiadałby ok. 0,5% nowego dziennego limitu logów, a na planie darmowym nie da się dostać rachunku.
+> **Stan po działaniach użytkownika (1 listopada 2026):** token GitHuba wymieniony na nowy, bez daty ważności; stary token i Worker `wrathandglory-push-api` usunięte; dźwięki z archiwum grają — rozdz. 15.
 
 ---
 
@@ -24,7 +25,8 @@
 12. [Rekomendacje](#12-rekomendacje)
 13. [Możliwe usprawnienia na przyszłość (obecnie niepotrzebne)](#13-możliwe-usprawnienia-na-przyszłość-obecnie-niepotrzebne)
 14. [Następne kroki](#14-następne-kroki)
-15. [Źródła](#15-źródła)
+15. [Stan po działaniach użytkownika (1 listopada 2026)](#15-stan-po-działaniach-użytkownika-1-listopada-2026)
+16. [Źródła](#16-źródła)
 
 ---
 
@@ -62,6 +64,21 @@ Treść słowna promptów jest przepisana bez skrótów. Znaczniki załączonych
 
 Odpowiedź na to pytanie zawiera rozdz. 10.
 
+### 1.6 Relacja z wykonanych kroków (1 listopada 2026)
+
+> Wklejam screeny z kroków jakie wykonałem. Przygotowałem nowy token (bez daty).
+> Usunąłem starego workera.
+> W GITHUB_TOKEN wkleiłem nowy sekret.
+> Uruchomiłem moduł Audio i uruchomiłem dźwięki - działa.
+> [zrzuty ekranu nr 6–10]
+
+### 1.7 Uzupełnienie relacji (1 listopada 2026)
+
+> Usunąłem stary token.
+> [zrzut ekranu nr 11]
+
+Opis zrzutów nr 6–11 i stan po tych krokach zawiera rozdz. 15.
+
 ---
 
 ## 2. Zakres
@@ -95,6 +112,8 @@ W ramach tej analizy niczego nie zmieniono w kodzie, w konfiguracji Cloudflare, 
 8. **Dwie sprawy warte uwagi, niezwiązane z limitami Cloudflare:**
    - token `GITHUB_TOKEN` bramki — jeżeli został utworzony 2 września 2026 z ważnością 90 dni (tak zalecała instrukcja konfiguracji), **wygaśnie około 1 grudnia 2026** i wtedy wszystkie chronione dźwięki przestaną grać naraz. Ponowne wpisanie hasła nie pomoże. Naprawa nie wymaga zmian w kodzie, zajmuje ok. 5 minut, a przy odnowieniu można wybrać ważność do roku albo bez daty wygaśnięcia (rozdz. 10);
    - porzucony Worker `wrathandglory-push-api` nie zużywa limitów w odczuwalny sposób, ale przechowuje klucz konta serwisowego Firebase i być może niezrotowany `TRIGGER_TOKEN` — warto go usunąć ze względów bezpieczeństwa (rozdz. 6).
+
+**Stan na koniec 1 listopada 2026:** obie sprawy z punktu 8 są załatwione — token wymieniony na nowy, bez daty ważności, a stary Worker usunięty (rozdz. 15).
 
 ### 3.1 Zmierzone zużycie a limity — tabela zbiorcza
 
@@ -529,10 +548,10 @@ W konfiguracji modułu Audio token GitHuba jest **jedynym** elementem, który tr
 
 | Ryzyko | Prawdopodobieństwo | Skutek | Ograniczenie |
 | --- | --- | --- | --- |
-| Wygaśnięcie `GITHUB_TOKEN` (ok. 1 grudnia 2026, jeśli 90 dni od 2 września) | wysokie, jeżeli tak ustawiono | Wszystkie dźwięki chronione przestają grać naraz; ponowne wpisanie hasła nie pomaga. | Sprawdzić datę teraz i odnowić token przed kolejną sesją (rozdz. 10.6); przy odnowieniu wybrać ważność ok. roku (rozdz. 10.4). |
+| Wygaśnięcie `GITHUB_TOKEN` (ok. 1 grudnia 2026, jeśli 90 dni od 2 września) — **zamknięte 1 listopada 2026: nowy token bez daty ważności (rozdz. 15)** | wysokie, jeżeli tak ustawiono | Wszystkie dźwięki chronione przestają grać naraz; ponowne wpisanie hasła nie pomaga. | Sprawdzić datę teraz i odnowić token przed kolejną sesją (rozdz. 10.6); przy odnowieniu wybrać ważność ok. roku (rozdz. 10.4). |
 | Celowe zalanie adresu któregoś Workera żądaniami | niskie | Bramka milczy do 00:00 UTC. Bez opłat. | Usunięcie zbędnego Workera push zmniejsza liczbę celów. Na `workers.dev` nie ma darmowych reguł ograniczania ruchu. |
 | Pętle krótkich dźwięków pobierane od nowa przy każdym okrążeniu | niskie (dane tego nie pokazują) | Przekroczenie limitu API GitHuba → błędy odtwarzania do końca godziny. | Test z rozdz. 8.5; ewentualnie usprawnienie z rozdz. 13. |
-| Niezrotowany `TRIGGER_TOKEN` i klucz konta serwisowego w porzuconym Workerze | nieznane | Możliwość wysyłania powiadomień do 2 starych subskrypcji; dostęp administracyjny do projektu `WH40k-Data-Slate`, gdyby klucz kiedykolwiek wyciekł. | Usunąć Workera i wygenerowany dla niego klucz (rozdz. 12, pkt 5). |
+| Niezrotowany `TRIGGER_TOKEN` i klucz konta serwisowego w porzuconym Workerze — **Worker usunięty 1 listopada 2026; zostało opcjonalne usunięcie klucza konta serwisowego (rozdz. 15.4)** | nieznane | Możliwość wysyłania powiadomień do 2 starych subskrypcji; dostęp administracyjny do projektu `WH40k-Data-Slate`, gdyby klucz kiedykolwiek wyciekł. | Usunąć Workera i wygenerowany dla niego klucz (rozdz. 12, pkt 5). |
 | Przypadkowe przejście na plan płatny | niskie | Od tej chwili nadwyżki byłyby rozliczane. | Nie klikać „Upgrade”, nie podawać danych karty. |
 | Bardzo duże pliki w `AudioRPG` (powyżej ok. 30–40 MB) | niskie | Przy żądaniach zakresów bramka trzyma w pamięci cały plik i jego wycinek; przy kilku takich żądaniach naraz grozi przekroczenie 128 MB → błąd 1102. | Długie ścieżki trzymać w rozsądnym rozmiarze (np. 10-minutowy OGG to ok. 5–10 MB). |
 | Wyczerpanie miesięcznego limitu App Check (karty otwarte całymi dniami) | niskie | Zależnie od wymuszania App Check (rozdz. 9.2). | Zamykać karty po sesji; ewentualnie wydłużyć ważność znacznika App Check w konsoli Firebase. |
@@ -572,8 +591,8 @@ Przy obecnym zużyciu żadne z nich nie daje odczuwalnej korzyści dla limitów.
 
 **Po stronie użytkownika:**
 
-1. Sprawdzić datę ważności `GITHUB_TOKEN` (rozdz. 10.6, krok 1) i odnowić token przed tą datą, wybierając ważność ok. roku (rozdz. 10.4).
-2. Zdecydować o usunięciu Workera `wrathandglory-push-api`, jego przestrzeni KV i klucza konta serwisowego (rozdz. 12, pkt 5).
+1. ✅ *Wykonane 1 listopada 2026 (rozdz. 15).* Sprawdzić datę ważności `GITHUB_TOKEN` (rozdz. 10.6, krok 1) i odnowić token przed tą datą, wybierając ważność ok. roku (rozdz. 10.4). Użytkownik wybrał token bez daty ważności.
+2. *Częściowo wykonane 1 listopada 2026 (rozdz. 15):* Worker `wrathandglory-push-api` usunięty; zostały jego przestrzenie KV i klucz konta serwisowego (rozdz. 15.4).
 3. Przed 1 grudnia nic więcej nie trzeba robić.
 
 **Opcjonalna weryfikacja po 1 grudnia 2026** — do uzupełnienia tej analizy wystarczą zrzuty ekranu:
@@ -586,7 +605,57 @@ Przy obecnym zużyciu żadne z nich nie daje odczuwalnej korzyści dla limitów.
 
 ---
 
-## 15. Źródła
+## 15. Stan po działaniach użytkownika (1 listopada 2026)
+
+Po rozbudowie analizy użytkownik wymienił token i posprzątał konto Cloudflare (prompty 1.6 i 1.7, zrzuty ekranu nr 6–11).
+
+### 15.1 Co zostało zrobione
+
+| Działanie | Wynik | Podstawa |
+| --- | --- | --- |
+| Utworzenie nowego tokenu GitHuba `audio-gate-no-expiration` | ✅ Ustawienia zgodne z rozdz. 10.6: właściciel `CuteLittleGoat`, dostęp tylko do `CuteLittleGoat/AudioRPG`, uprawnienia `Contents: Read-only` i wymagane `Metadata: Read-only`, ważność **bez daty** („No expiration”). | zrzuty nr 6–8 |
+| Wklejenie nowego tokenu jako sekretu `GITHUB_TOKEN` Workera `audio-gate` | ✅ | relacja użytkownika |
+| Test w module Audio | ✅ Dźwięki z archiwum grają — nowy token działa. | relacja użytkownika |
+| Usunięcie starego tokenu `audio-gate` | ✅ Na liście tokenów został wyłącznie nowy token (uwaga w rozdz. 15.3, pkt 1). | zrzuty nr 9 i 11 |
+| Usunięcie Workera `wrathandglory-push-api` | ✅ | zrzut nr 10 i relacja użytkownika |
+
+Zrzut nr 9 potwierdził datę ważności starego tokenu: „Expires on Tue, Dec 1 2026” — dokładnie tak, jak wynikało z wyliczenia w rozdz. 10.1.
+
+| Nr | Co pokazuje |
+| --- | --- |
+| 6 | Tworzenie tokenu: nazwa `audio-gate-no-expiration`, właściciel `CuteLittleGoat`, ważność „No expiration” z ostrzeżeniem GitHuba o braku daty ważności. |
+| 7 | Dostęp do repozytoriów: „Only select repositories” — wyłącznie `CuteLittleGoat/AudioRPG`. |
+| 8 | Uprawnienia: `Contents` — „Read-only”, `Metadata` — „Read-only” (wymagane); przycisk „Generate token”. |
+| 9 | Lista tokenów fine-grained: nowy `audio-gate-no-expiration` („Never used”, bez daty ważności) i stary `audio-gate` („Never used”, „Expires on Tue, Dec 1 2026”). |
+| 10 | Panel Cloudflare: okno potwierdzenia usunięcia Workera `wrathandglory-push-api`. |
+| 11 | Lista tokenów po usunięciu starego: tylko `audio-gate-no-expiration`; u góry komunikat „Your token was unable to be deleted”. |
+
+### 15.2 Co to oznacza w praktyce
+
+- **Problem 1 grudnia zniknął.** Nowy token nie ma daty ważności, więc nie trzeba go odnawiać ani co 90 dni, ani raz w roku. Nie trzeba było zmieniać kodu ani hasła, a gracze nie musieli logować się ponownie.
+- **Kiedy token mimo to przestanie działać:** tylko gdy (1) nikt nie skorzysta z archiwum przez rok — GitHub sam usunie wtedy nieużywany token, (2) token trafi do publicznego repozytorium — GitHub od razu go unieważni, albo (3) sam go usuniesz. Objawy i naprawa: rozdz. 10.3 oraz kroki 2–4 z rozdz. 10.6.
+- **Ostrzeżenie GitHuba** („GitHub strongly recommends that you set an expiration date for your token…”) to ogólne zalecenie. Przy tym tokenie — tylko odczyt jednego repozytorium, wartość zapisana wyłącznie w ustawieniach bramki — brak daty ważności jest do przyjęcia (rozdz. 10.4). Przy jakimkolwiek podejrzeniu wycieku: usunąć token na GitHubie i utworzyć nowy.
+- **Cloudflare:** na koncie został jeden Worker (`audio-gate`). Razem ze starym Workerem zniknęły jego sekrety: `TRIGGER_TOKEN`, klucze VAPID i kopia klucza konta serwisowego Firebase. Sprawa `TRIGGER_TOKEN` opisana w `WebView_FCM_Cloudflare_Worker/RotacjaTRIGGER_TOKEN.md` jest zamknięta, bo endpoint, który ten token chronił, już nie istnieje. Żądania botów pod stary adres nie uruchamiają już żadnego Workera, więc nie liczą się do limitu.
+- **Limity:** wnioski z rozdz. 3 i 8 się nie zmieniają — stary Worker dawał ok. 1 żądanie dziennie.
+
+### 15.3 Uwagi do zrzutów ekranu
+
+1. **„Your token was unable to be deleted” (zrzut nr 11).** Komunikat pojawił się, choć stary token zniknął z listy. Najbardziej prawdopodobne wyjaśnienie: drugie kliknięcie „Delete” po skutecznym pierwszym — przy drugim token już nie istniał. Sprawdzenie: odśwież stronę z listą tokenów. Jeżeli stary token nie wróci, jest usunięty. Gdyby jednak nadal istniał, nic złego się nie stanie: bramka go już nie używa, a 1 grudnia 2026 wygaśnie sam.
+2. **„Never used” przy tokenach (zrzuty nr 9 i 11).** Napis był widoczny przy starym tokenie (który według instrukcji z września miał trafić do bramki) i przy nowym tokenie także po udanym teście. Wskaźnik ostatniego użycia na GitHubie najwyraźniej nie aktualizuje się od razu; możliwe też, że część plików bramka podała z pamięci podręcznej Cloudflare, bez pytania GitHuba. Dowodem, że token działa, jest to, że dźwięki z archiwum grają — nie ten napis.
+3. **Na wszelki wypadek** warto zajrzeć na listę **Tokens (classic)** (to samo menu po lewej, pod „Fine-grained tokens”). Jeżeli jest tam token założony we wrześniu dla bramki, można go usunąć — bramka używa już nowego tokenu. Tokenów używanych do innych celów nie usuwać.
+
+### 15.4 Co jeszcze zostało (opcjonalnie, bez pośpiechu)
+
+| Zadanie | Gdzie | Dlaczego | Pilność |
+| --- | --- | --- | --- |
+| Usunąć dwie przestrzenie KV: `PUSH_SUBSCRIPTIONS` i `FCM_TOKENS` | panel Cloudflare, sekcja magazynu KV (zwykle **Storage & Databases** → **Workers KV**) | Usunięcie Workera nie kasuje jego przestrzeni KV. Leżą w nich 2 stare subskrypcje powiadomień. | niska — nic nie kosztują i nic nie zużywają |
+| Usunąć klucz konta serwisowego Firebase wygenerowany dla Workera push | Google Cloud Console projektu `WH40k-Data-Slate` → **IAM & Admin** → **Service Accounts** → konto `firebase-adminsdk…` → **Keys** | Kopia w Cloudflare zniknęła razem z Workerem, ale sam klucz nadal działa (np. jako plik JSON pobrany wtedy na dysk). | niska. **Nie usuwać**, jeżeli ten sam plik JSON służy do skryptów importu danych opisanych w `FirebaseREADME.md`. W razie potrzeby nowy klucz można wygenerować w każdej chwili. |
+| Sprawdzić listę **Tokens (classic)** | GitHub → **Settings** → **Developer settings** → **Personal access tokens** | rozdz. 15.3, pkt 3 | niska |
+| Dopisać do instrukcji modułu (`Audio/docs/README.md`) wyjaśnienie komunikatu z „HTTP 401” | repozytorium | Instrukcja opisuje dziś tylko wariant „HTTP 404” tego komunikatu. | opcjonalnie, na życzenie |
+
+---
+
+## 16. Źródła
 
 Stan na 1 listopada 2026.
 
