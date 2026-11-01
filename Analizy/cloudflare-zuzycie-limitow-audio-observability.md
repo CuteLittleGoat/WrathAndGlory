@@ -1,9 +1,9 @@
 # Cloudflare — zużycie darmowych limitów przez moduł Audio i zmiana cennika Observability od 1 grudnia 2026 — analiza
 
-> **Data:** 1 listopada 2026 (prompt otwierający: 29 października 2026; uzupełnienie o zrzuty ekranu po sesji: 1 listopada 2026)
+> **Data:** 1 listopada 2026 (prompt otwierający: 29 października 2026; uzupełnienie o zrzuty ekranu po sesji: 1 listopada 2026; rozbudowa o rozdz. 10 — token GitHuba wyjaśniony prostym językiem: 1 listopada 2026)
 > **Moduł:** `Audio` — bramka dostępowa `audio-gate` (Cloudflare Worker, kod w `Audio/worker/audio-gate.js`) oraz porzucony Worker `wrathandglory-push-api` (archiwum w `WebView_FCM_Cloudflare_Worker/`)
 > **Stan kodu:** commit `b935527` (gałąź `main`)
-> **Charakter dokumentu:** analiza bez zmian w kodzie, konfiguracji i danych. Pomiary pochodzą ze zrzutów ekranu panelu Cloudflare przesłanych przez użytkownika, limity — z oficjalnej dokumentacji Cloudflare, GitHuba i Google (stan na 1 listopada 2026, rozdz. 14).
+> **Charakter dokumentu:** analiza bez zmian w kodzie, konfiguracji i danych. Pomiary pochodzą ze zrzutów ekranu panelu Cloudflare przesłanych przez użytkownika, limity — z oficjalnej dokumentacji Cloudflare, GitHuba i Google (stan na 1 listopada 2026, rozdz. 15).
 > **Odpowiedź w jednym zdaniu:** **tak, zmieścisz się** — najcięższy zarejestrowany dzień zużył ok. 0,4% dziennego limitu żądań Workerów i odpowiadałby ok. 0,5% nowego dziennego limitu logów, a na planie darmowym nie da się dostać rachunku.
 
 ---
@@ -19,11 +19,12 @@
 7. [Dane z panelu Cloudflare (zrzuty 1–5)](#7-dane-z-panelu-cloudflare-zrzuty-15)
 8. [Szacunek zużycia](#8-szacunek-zużycia)
 9. [GitHub i Firebase w module Audio](#9-github-i-firebase-w-module-audio)
-10. [Ryzyka](#10-ryzyka)
-11. [Rekomendacje](#11-rekomendacje)
-12. [Możliwe usprawnienia na przyszłość (obecnie niepotrzebne)](#12-możliwe-usprawnienia-na-przyszłość-obecnie-niepotrzebne)
-13. [Następne kroki](#13-następne-kroki)
-14. [Źródła](#14-źródła)
+10. [Token GitHuba — wyjaśnienie prostym językiem](#10-token-githuba--wyjaśnienie-prostym-językiem)
+11. [Ryzyka](#11-ryzyka)
+12. [Rekomendacje](#12-rekomendacje)
+13. [Możliwe usprawnienia na przyszłość (obecnie niepotrzebne)](#13-możliwe-usprawnienia-na-przyszłość-obecnie-niepotrzebne)
+14. [Następne kroki](#14-następne-kroki)
+15. [Źródła](#15-źródła)
 
 ---
 
@@ -50,6 +51,16 @@ Treść słowna promptów jest przepisana bez skrótów. Znaczniki załączonych
 ### 1.3 Polecenie wysłane w trakcie pracy
 
 > Kontynuuj pracę. Przeprowadź analizę i oszacuj czy zmieszczę się w darmowym limicie.
+
+### 1.4 Polecenie publikacji analizy (1 listopada 2026)
+
+> Wrzuć na main
+
+### 1.5 Prośba o rozbudowę o kwestię tokenu (1 listopada 2026)
+
+> Rozbuduj (na Main) analizę o kwestie tokena. Czy jego wygaśnięcie spowoduje tylko, się muszę ponownie wpisać hasło (takie działanie jest akceptowalne) czy wszystko przestanie działać i zawsze co 90dni będę musiał powtarzać operację (i czy muszę coś aktualizować w kodzie aplikacji?). Ten rozdział napisz jak dla osoby bez wiedzy informatycznej - prostym językiem.
+
+Odpowiedź na to pytanie zawiera rozdz. 10.
 
 ---
 
@@ -82,7 +93,7 @@ W ramach tej analizy niczego nie zmieniono w kodzie, w konfiguracji Cloudflare, 
 6. **Rachunek jest niemożliwy.** Plan darmowy nie ma dopłat za nadwyżki: po przekroczeniu limitu usługa zatrzymuje się do północy UTC, a konto nie ma podpiętej płatności.
 7. **GitHub i Firebase** w części używanej przez moduł Audio też mają duży zapas (rozdz. 9).
 8. **Dwie sprawy warte uwagi, niezwiązane z limitami Cloudflare:**
-   - token `GITHUB_TOKEN` bramki — jeżeli został utworzony 2 września 2026 z ważnością 90 dni (tak zalecała instrukcja konfiguracji), **wygaśnie około 1 grudnia 2026** i wtedy wszystkie chronione dźwięki przestaną grać naraz (rozdz. 9.1);
+   - token `GITHUB_TOKEN` bramki — jeżeli został utworzony 2 września 2026 z ważnością 90 dni (tak zalecała instrukcja konfiguracji), **wygaśnie około 1 grudnia 2026** i wtedy wszystkie chronione dźwięki przestaną grać naraz. Ponowne wpisanie hasła nie pomoże. Naprawa nie wymaga zmian w kodzie, zajmuje ok. 5 minut, a przy odnowieniu można wybrać ważność do roku albo bez daty wygaśnięcia (rozdz. 10);
    - porzucony Worker `wrathandglory-push-api` nie zużywa limitów w odczuwalny sposób, ale przechowuje klucz konta serwisowego Firebase i być może niezrotowany `TRIGGER_TOKEN` — warto go usunąć ze względów bezpieczeństwa (rozdz. 6).
 
 ### 3.1 Zmierzone zużycie a limity — tabela zbiorcza
@@ -311,7 +322,7 @@ Dane z sesji nie wskazują, żeby tak się działo: na zrzucie nr 5 widać krót
 2. W module Audio włącz „Loop” na krótkim dźwięku chronionym (z jednym wariantem).
 3. Obserwuj listę zdarzeń przez minutę:
    - jeden wpis `GET …/a?p=…` na początku, a potem cisza — przeglądarka korzysta z pamięci i wszystko jest w porządku;
-   - nowy wpis `GET …/a?p=…` przy każdym okrążeniu — przeglądarka pobiera plik od nowa; nadal mieści się to w limitach, ale warto wtedy rozważyć usprawnienie z rozdz. 12.
+   - nowy wpis `GET …/a?p=…` przy każdym okrążeniu — przeglądarka pobiera plik od nowa; nadal mieści się to w limitach, ale warto wtedy rozważyć usprawnienie z rozdz. 13.
 
 ---
 
@@ -325,14 +336,15 @@ Dane z sesji nie wskazują, żeby tak się działo: na zrzucie nr 5 widać krót
 | Pobranie pliku przez Contents API (typ raw) | do 100 MB na plik | biblioteka: średnio ok. 230 kB na plik | ✅ |
 | Rozmiar repozytorium `AudioRPG` | zalecane poniżej 1 GB (mocno zalecane poniżej 5 GB); pojedynczy plik do 100 MiB | ok. 358 MB (wrzesień 2026) | ✅ (zapowiadane docelowe 5 GB przekroczy zalecenie 1 GB — wtedy potrzebna osobna analiza) |
 | GitHub Pages (aplikacja i demo `AudioExample`) | strona do 1 GB, miękki limit transferu 100 GB / miesiąc, 10 publikacji / godzinę (miękki) | manifest demo 121 kB, pliki demo 7,5–302 kB | ✅ |
-| **Ważność tokenu `GITHUB_TOKEN`** | instrukcja z 2 września 2026 zalecała 90 dni | — | ⚠️ **jeśli utworzony 2 września na 90 dni — wygasa ok. 1 grudnia 2026** |
+| **Ważność tokenu `GITHUB_TOKEN`** | instrukcja z 2 września 2026 zalecała 90 dni | — | ⚠️ **jeśli utworzony 2 września na 90 dni — wygasa ok. 1 grudnia 2026** (rozdz. 10) |
 
-**Wygaśnięcie tokenu — objawy i naprawa.**
+**Wygaśnięcie tokenu — skrót techniczny.** Pełne wyjaśnienie prostym językiem i instrukcja krok po kroku są w rozdz. 10.
 
-- Objaw po wejściu do modułu: „Bramka nie znalazła manifestu archiwum (HTTP 401). Sprawdź, czy plik audio-manifest.json leży w katalogu głównym prywatnego repozytorium AudioRPG.” Kod **HTTP 401** w tym komunikacie oznacza problem z tokenem, a nie brak pliku.
-- Objaw przy odtwarzaniu: „Nie udało się odtworzyć dźwięku. Bramka nie wydała pliku.”
-- Gdzie sprawdzić datę: GitHub → **Settings** → **Developer settings** → **Personal access tokens** → **Fine-grained tokens** → token `audio-gate`. GitHub wysyła też przypomnienie mailem przed wygaśnięciem.
-- Naprawa: wygenerować nowy token o tych samych ustawieniach (tylko repozytorium `AudioRPG`, uprawnienie `Contents: Read-only`), w panelu Cloudflare otworzyć Workera **audio-gate** → **Settings** → **Variables and Secrets**, podmienić wartość sekretu **`GITHUB_TOKEN`** i kliknąć **Deploy**. Hasło grupy i zalogowane urządzenia pozostają bez zmian.
+- Po wygaśnięciu GitHub odpowiada bramce kodem `401`. Endpointy `/login` i `/sign` działają dalej (nie korzystają z GitHuba), ale `/manifest` zwraca `502` z treścią `{"ok":false,"error":"manifest_unavailable","status":401}`, a `/a` — `502 Upstream error`.
+- Moduł pokazuje wtedy „Bramka nie znalazła manifestu archiwum (HTTP 401). Sprawdź, czy plik audio-manifest.json leży w katalogu głównym prywatnego repozytorium AudioRPG.”, a dźwięki z archiwum zamieniają się w kafelki z kłódką i napisem „(brak w manifeście)”. Kod **HTTP 401** w tym komunikacie oznacza wygasły lub unieważniony token, a nie brak pliku.
+- Sesje urządzeń (podpisane kluczem `SIGNING_KEY`) i hasło grupy (`GROUP_PASSWORD`) pozostają ważne — ponowne logowanie niczego nie naprawia.
+- Naprawa: nowy token (tylko repozytorium `AudioRPG`, uprawnienie `Contents: Read-only`) wklejony jako sekret `GITHUB_TOKEN` Workera `audio-gate`, potem **Deploy**. Kod modułu i bramki odwołuje się wyłącznie do nazwy `env.GITHUB_TOKEN`, więc nie wymaga zmian.
+- Ważność tokenu fine-grained na koncie osobistym: do roku (366 dni) albo bez daty wygaśnięcia. GitHub unieważnia token automatycznie po roku nieużywania oraz po wykryciu go w publicznym repozytorium. Wygasłego tokenu nie da się przywrócić — trzeba utworzyć nowy.
 
 ### 9.2 Firebase (projekt `audiorpg-2eb6f`, plan Spark)
 
@@ -353,14 +365,174 @@ Uwagi:
 
 ---
 
-## 10. Ryzyka
+## 10. Token GitHuba — wyjaśnienie prostym językiem
+
+Ten rozdział jest napisany dla osoby bez wiedzy informatycznej. Odpowiada na pytania z prośby 1.5: czy po wygaśnięciu tokenu wystarczy ponownie wpisać hasło, czy trzeba to będzie powtarzać co 90 dni i czy trzeba zmieniać kod aplikacji.
+
+### 10.1 Krótkie odpowiedzi
+
+| Pytanie | Odpowiedź |
+| --- | --- |
+| Czy po wygaśnięciu tokenu wystarczy ponownie wpisać hasło? | **Nie.** Hasło nadal będzie przyjmowane, ale dźwięki z archiwum i tak nie zagrają — u nikogo — dopóki nie wymienisz tokenu na nowy. |
+| Czy wszystko przestanie działać? | **Nie wszystko.** Przestaną grać tylko dźwięki z archiwum (chronione). Dźwięki demo, listy, aliasy i ustawienia działają dalej i nic nie zostanie usunięte. |
+| Czy co 90 dni trzeba będzie to powtarzać? | **Nie musi tak być.** 90 dni to była tylko ostrożna propozycja z instrukcji. Przy tworzeniu nowego tokenu możesz wybrać ważność do roku albo token bez daty ważności. |
+| Czy trzeba coś zmieniać w kodzie aplikacji? | **Nie.** Token nie jest zapisany w kodzie. Wymiana to dwie czynności na stronach internetowych: utworzenie nowego tokenu na GitHubie i wklejenie go w ustawieniach bramki w Cloudflare. Zajmuje to ok. 5 minut. |
+| Kiedy wygaśnie mój token? | Nie mam dostępu do Twojego konta, więc nie widzę daty. Jeżeli 2 września wybrałeś 90 dni (tak podpowiadała instrukcja), wypada to **około 1 grudnia 2026**. Datę sprawdzisz w kroku 1 z rozdz. 10.6. |
+
+1 grudnia to także dzień zmiany cennika logów Cloudflare (rozdz. 4). To przypadek — te dwie sprawy nie mają ze sobą nic wspólnego.
+
+### 10.2 Dwa różne klucze: hasło grupy i token
+
+Najprościej wyobrazić to sobie tak:
+
+- **Bramka** (`audio-gate`) to portier, który stoi między graczami a magazynem z nagraniami.
+- **Hasło grupy** („Litania Dostępu”) to przepustka, którą gracze pokazują portierowi. Podaje się ją raz na urządzeniu.
+- **Magazyn** to Twoje prywatne repozytorium `AudioRPG` na GitHubie, w którym leżą nagrania.
+- **Token GitHuba** to klucz portiera do magazynu. Gracze nigdy go nie widzą i nie wpisują. To Ty wkleiłeś go we wrześniu w ustawieniach bramki w Cloudflare.
+
+Gdy **klucz portiera traci ważność**, portier nadal sprawdza przepustki i wpuszcza graczy — hasło działa. Nie ma jednak czym otworzyć magazynu, więc nie przyniesie żadnego nagrania. Ponowne pokazywanie przepustki niczego nie zmieni. Trzeba dorobić portierowi nowy klucz.
+
+| | Hasło grupy | Token GitHuba |
+| --- | --- | --- |
+| Kto go używa | gracze, raz na urządzeniu | tylko bramka, automatycznie |
+| Gdzie jest zapisany | w ustawieniach bramki w Cloudflare (`GROUP_PASSWORD`) | w ustawieniach bramki w Cloudflare (`GITHUB_TOKEN`) |
+| Czy ma datę ważności | nie | **tak** — taką, jaką wybrałeś przy tworzeniu |
+| Co się dzieje, gdy się zmieni albo straci ważność | po zmianie gracze muszą poznać i wpisać nowe hasło | dźwięki z archiwum przestają grać u wszystkich, dopóki nie wkleisz nowego tokenu |
+
+### 10.3 Co dokładnie zobaczysz, gdy token wygaśnie
+
+Wszystko dzieje się **u wszystkich jednocześnie** — na każdym urządzeniu i u każdego gracza.
+
+1. Dźwięki z archiwum na listach zamienią się w kafelki z kłódką 🔒 i napisem **„(brak w manifeście)”**. Pojawi się też przycisk **„🔒 Odblokuj archiwum”**.
+2. Kliknięcie takiego kafelka otworzy okno z hasłem („Dostęp do danych z klauzulą tajności K.O.Z.A.”) i napisem: „Ten dźwięk nie należy do warstwy publicznej. Odblokuj archiwum, aby go wczytać.” **Wygląda to tak, jakby wystarczyło podać hasło — ale to złudzenie.**
+3. Po wpisaniu hasła i kliknięciu **„Rozpocznij Rytuał”** okno nie zniknie, tylko pokaże komunikat:
+
+   > Bramka nie znalazła manifestu archiwum (HTTP 401). Sprawdź, czy plik audio-manifest.json leży w katalogu głównym prywatnego repozytorium AudioRPG.
+
+   Ten komunikat jest mylący. Plik jest na swoim miejscu — nie szukaj go. Ważne jest **„HTTP 401”**: oznacza, że GitHub nie wpuścił bramki, czyli w praktyce **wygasł token**.
+4. Jeżeli moduł był otwarty jeszcze przed wygaśnięciem, kliknięcie dźwięku z archiwum pokaże: **„Nie udało się odtworzyć dźwięku. Bramka nie wydała pliku.”** Czasem dźwięk, który grał przed chwilą, zagra jeszcze raz, bo przeglądarka pamięta go przez jakiś czas. To nie znaczy, że problem minął.
+
+**Co działa dalej:**
+
+- dźwięki demo (warstwa publiczna, np. odgłosy z Boltguna),
+- listy, aliasy i wszystkie ustawienia — **nic nie zostanie usunięte**; po wymianie tokenu dźwięki z archiwum wrócą na swoje miejsca na listach,
+- hasło grupy i zalogowanie na urządzeniach — bez zmian; po wymianie tokenu **nikt nie musi wpisywać hasła ponownie**.
+
+### 10.4 Czy trzeba to powtarzać co 90 dni?
+
+**Nie musi być co 90 dni.** Długość ważności wybierasz sam przy tworzeniu tokenu. We wrześniu instrukcja proponowała 90 dni, bo krótszy termin to mniejsze ryzyko, gdyby token kiedyś wyciekł. Nie jest to wymóg GitHuba ani aplikacji.
+
+Na koncie prywatnym GitHub pozwala wybrać:
+
+| Wybór | Jak często wymieniasz | Plusy | Minusy |
+| --- | --- | --- | --- |
+| 90 dni (jak teraz) | co 3 miesiące | najmniejsze ryzyko | łatwo zapomnieć; 4 razy w roku |
+| **ok. roku** (najdłuższa data, jaką GitHub pozwala ustawić — do 366 dni) | raz w roku | rozsądny kompromis | trzeba pamiętać raz w roku |
+| bez daty ważności („No expiration”) | dopiero wtedy, gdy token przestanie działać z innego powodu | zero pilnowania | token działa, dopóki sam go nie usuniesz; GitHub i tak usunie go po roku nieużywania |
+
+**Rekomendacja: ok. roku** i przypomnienie w kalendarzu na tydzień przed datą ważności. Wtedy wymiana wypada raz w roku i zajmuje ok. 5 minut.
+
+Opcja bez daty ważności jest dozwolona i przy tym tokenie do przyjęcia, bo token potrafi wyłącznie **czytać** nagrania z jednego repozytorium (`AudioRPG`): nie może niczego zmienić, usunąć ani zajrzeć do innych repozytoriów, a jego wartość leży tylko w ustawieniach bramki w Cloudflare. Gdyby kiedyś wyciekł, najgorsze, co ktoś mógłby zrobić, to pobrać nagrania z archiwum. Token możesz w każdej chwili usunąć na GitHubie.
+
+Dwie rzeczy, o których warto wiedzieć niezależnie od wyboru:
+
+- **GitHub sam usuwa token, którego nikt nie użył przez rok.** Jeżeli przez cały rok nikt nie skorzysta z archiwum, po takiej przerwie trzeba będzie utworzyć nowy token.
+- **GitHub sam unieważnia token, który trafi do publicznego repozytorium** (a `WrathAndGlory` jest publiczne). Wklejenie tokenu do kodu aplikacji nie tylko nie jest potrzebne, ale od razu by go zepsuło.
+
+### 10.5 Czy trzeba coś zmieniać w kodzie aplikacji?
+
+**Nie.** Token nie jest zapisany w żadnym pliku aplikacji:
+
+- strona modułu Audio (to, co otwierają gracze) w ogóle nie zna tokenu,
+- kod bramki zna tylko jego nazwę (`GITHUB_TOKEN`), a samą wartość bierze z ustawień w Cloudflare.
+
+Przy wymianie tokenu **nic się nie zmienia** w kodzie, w repozytorium `WrathAndGlory`, w adresie strony, w haśle grupy, w Firebase ani na urządzeniach graczy. Wymiana to dwie czynności na stronach internetowych:
+
+1. na GitHubie — utworzenie nowego tokenu,
+2. w Cloudflare — wklejenie go w ustawieniach bramki.
+
+### 10.6 Instrukcja krok po kroku
+
+Najlepiej zrobić to **przed** datą ważności, w spokojnej chwili — wtedy nikt nie zauważy żadnej przerwy. Potrzebujesz dostępu do kont GitHub i Cloudflare. Wystarczy komputer albo telefon.
+
+**Krok 1 — sprawdź, kiedy token wygasa (GitHub)**
+
+1. Wejdź na **https://github.com** i zaloguj się.
+2. Kliknij swoje zdjęcie (ikonę) w prawym górnym rogu → **Settings**.
+3. W menu po lewej zjedź na sam dół → **Developer settings**.
+4. **Personal access tokens** → **Fine-grained tokens**.
+5. Znajdź token **`audio-gate`**. Przy nim powinna być data ważności (np. „Expires on …”). Jeżeli jej nie widać, kliknij nazwę tokenu.
+6. Wpisz tę datę do kalendarza z przypomnieniem tydzień wcześniej.
+
+**Krok 2 — utwórz nowy token (GitHub)**
+
+1. Na tej samej stronie (**Fine-grained tokens**) kliknij **Generate new token**.
+2. **Token name:** wpisz nazwę z datą, np. `audio-gate-2026-12` (GitHub może nie przyjąć nazwy, która już istnieje).
+3. **Expiration:** wybierz ważność — zgodnie z rekomendacją z rozdz. 10.4 najdłuższy dostępny okres albo własną datę (zwykle opcja **Custom**) mniej więcej rok do przodu; ewentualnie **No expiration**.
+4. **Resource owner:** zostaw swoje konto.
+5. **Repository access:** zaznacz **Only select repositories** i wybierz z listy **AudioRPG**. Nie wybieraj „All repositories”.
+6. **Permissions:** w uprawnieniach repozytorium znajdź (albo dodaj) **Contents** i ustaw **Read-only**. GitHub sam doda **Metadata: Read-only** — tak ma być. Innych uprawnień nie dodawaj.
+7. Kliknij **Generate token** i potwierdź.
+8. GitHub pokaże token zaczynający się od `github_pat_…`. **Skopiuj go od razu — zobaczysz go tylko raz.**
+
+Jeżeli na stronie starego, jeszcze ważnego tokenu zobaczysz przycisk **Regenerate token**, możesz z niego skorzystać zamiast punktów 1–7 (zachowuje ustawienia i pozwala wybrać nową ważność). Tokenu, który już wygasł, nie da się przywrócić — wtedy zawsze tworzysz nowy według punktów 1–8.
+
+**Krok 3 — wklej nowy token do bramki (Cloudflare)**
+
+1. Wejdź na **https://dash.cloudflare.com** i zaloguj się.
+2. W menu po lewej wybierz **Workers & Pages** (w grupie **Compute**) i kliknij **audio-gate**.
+3. Zakładka **Settings** → sekcja **Variables and Secrets**.
+4. Przy pozycji **`GITHUB_TOKEN`** (typ **Secret**) kliknij edycję (ikona ołówka albo **Edit**).
+5. Wklej nowy token w miejsce starego. **Nie zmieniaj** pozostałych pozycji (`GROUP_PASSWORD`, `SIGNING_KEY`, `ALLOWED_ORIGIN`).
+6. Kliknij **Deploy** (albo **Save and deploy**).
+
+Dlaczego tylko ta jedna pozycja: zmiana `SIGNING_KEY` wylogowałaby wszystkie urządzenia, a zmiana `GROUP_PASSWORD` oznaczałaby nowe hasło dla graczy. Przy wymianie tokenu żadna z tych zmian nie jest potrzebna.
+
+**Krok 4 — sprawdź, czy działa**
+
+1. Otwórz moduł Audio i odśwież stronę.
+2. Dźwięki z archiwum powinny znowu mieć zwykłe kafelki i grać. Nikt nie musi wpisywać hasła.
+3. Gracze, którzy mieli moduł otwarty, muszą tylko odświeżyć stronę.
+
+**Krok 5 — posprzątaj**
+
+1. Na GitHubie, na liście **Fine-grained tokens**, usuń stary token (**Delete**). Jeżeli wymieniasz token przed wygaśnięciem, usuń stary dopiero po udanym kroku 4.
+2. Usuń token z notatek i schowka, jeżeli go gdzieś wkleiłeś po drodze.
+3. Wpisz do kalendarza datę ważności nowego tokenu z przypomnieniem tydzień wcześniej.
+
+GitHub zwykle przypomina mailem o zbliżającym się wygaśnięciu tokenu, ale obecna dokumentacja tego nie gwarantuje — przypomnienie w kalendarzu jest pewniejsze.
+
+**Czego nie robić z tokenem:** nie wklejaj go do kodu, do repozytorium, do czatu (także do rozmowy ze mną), na Discorda ani na zrzuty ekranu. Jedynym miejscem na token są ustawienia bramki w Cloudflare.
+
+### 10.7 Co zrobić, jeśli token wygaśnie w trakcie sesji
+
+1. Nie wpisuj hasła ponownie i nie zmieniaj hasła grupy — to nie pomoże.
+2. Do czasu naprawy korzystaj z dźwięków demo; listy i aliasy są bezpieczne.
+3. Na telefonie albo komputerze wykonaj kroki 2–4 z rozdz. 10.6 (ok. 5 minut).
+4. Odśwież stronę modułu — dźwięki z archiwum wrócą.
+
+### 10.8 Czy coś jeszcze ma datę ważności?
+
+W konfiguracji modułu Audio token GitHuba jest **jedynym** elementem, który trzeba ręcznie odnawiać.
+
+| Element | Czy wygasa | Uwagi |
+| --- | --- | --- |
+| Hasło grupy | nie | Zmienia się tylko wtedy, gdy sam je zmienisz. |
+| Zalogowanie na urządzeniu | nie | Znika tylko po wyczyszczeniu danych przeglądarki albo po zmianie `SIGNING_KEY`. |
+| Klucz podpisu (`SIGNING_KEY`) | nie | Zmieniasz go tylko wtedy, gdy chcesz wylogować wszystkie urządzenia naraz. |
+| Adresy pojedynczych plików wydawane przez bramkę | tak, po 1–2 godzinach | Odnawiają się same, bez Twojego udziału. |
+| **Token GitHuba (`GITHUB_TOKEN`)** | **tak** | Według ważności wybranej przy tworzeniu; dodatkowo GitHub usuwa token nieużywany przez rok. |
+
+---
+
+## 11. Ryzyka
 
 | Ryzyko | Prawdopodobieństwo | Skutek | Ograniczenie |
 | --- | --- | --- | --- |
-| Wygaśnięcie `GITHUB_TOKEN` (ok. 1 grudnia 2026, jeśli 90 dni od 2 września) | wysokie, jeżeli tak ustawiono | Wszystkie dźwięki chronione przestają grać naraz. | Sprawdzić datę teraz i odnowić token przed kolejną sesją (rozdz. 9.1). |
+| Wygaśnięcie `GITHUB_TOKEN` (ok. 1 grudnia 2026, jeśli 90 dni od 2 września) | wysokie, jeżeli tak ustawiono | Wszystkie dźwięki chronione przestają grać naraz; ponowne wpisanie hasła nie pomaga. | Sprawdzić datę teraz i odnowić token przed kolejną sesją (rozdz. 10.6); przy odnowieniu wybrać ważność ok. roku (rozdz. 10.4). |
 | Celowe zalanie adresu któregoś Workera żądaniami | niskie | Bramka milczy do 00:00 UTC. Bez opłat. | Usunięcie zbędnego Workera push zmniejsza liczbę celów. Na `workers.dev` nie ma darmowych reguł ograniczania ruchu. |
-| Pętle krótkich dźwięków pobierane od nowa przy każdym okrążeniu | niskie (dane tego nie pokazują) | Przekroczenie limitu API GitHuba → błędy odtwarzania do końca godziny. | Test z rozdz. 8.5; ewentualnie usprawnienie z rozdz. 12. |
-| Niezrotowany `TRIGGER_TOKEN` i klucz konta serwisowego w porzuconym Workerze | nieznane | Możliwość wysyłania powiadomień do 2 starych subskrypcji; dostęp administracyjny do projektu `WH40k-Data-Slate`, gdyby klucz kiedykolwiek wyciekł. | Usunąć Workera i wygenerowany dla niego klucz (rozdz. 11, pkt 5). |
+| Pętle krótkich dźwięków pobierane od nowa przy każdym okrążeniu | niskie (dane tego nie pokazują) | Przekroczenie limitu API GitHuba → błędy odtwarzania do końca godziny. | Test z rozdz. 8.5; ewentualnie usprawnienie z rozdz. 13. |
+| Niezrotowany `TRIGGER_TOKEN` i klucz konta serwisowego w porzuconym Workerze | nieznane | Możliwość wysyłania powiadomień do 2 starych subskrypcji; dostęp administracyjny do projektu `WH40k-Data-Slate`, gdyby klucz kiedykolwiek wyciekł. | Usunąć Workera i wygenerowany dla niego klucz (rozdz. 12, pkt 5). |
 | Przypadkowe przejście na plan płatny | niskie | Od tej chwili nadwyżki byłyby rozliczane. | Nie klikać „Upgrade”, nie podawać danych karty. |
 | Bardzo duże pliki w `AudioRPG` (powyżej ok. 30–40 MB) | niskie | Przy żądaniach zakresów bramka trzyma w pamięci cały plik i jego wycinek; przy kilku takich żądaniach naraz grozi przekroczenie 128 MB → błąd 1102. | Długie ścieżki trzymać w rozsądnym rozmiarze (np. 10-minutowy OGG to ok. 5–10 MB). |
 | Wyczerpanie miesięcznego limitu App Check (karty otwarte całymi dniami) | niskie | Zależnie od wymuszania App Check (rozdz. 9.2). | Zamykać karty po sesji; ewentualnie wydłużyć ważność znacznika App Check w konsoli Firebase. |
@@ -368,12 +540,12 @@ Uwagi:
 
 ---
 
-## 11. Rekomendacje
+## 12. Rekomendacje
 
 1. **Niczego nie zmieniać w kodzie ani w konfiguracji Cloudflare.** Do pozostania na planach darmowych nie jest to potrzebne.
 2. **Nie klikać „Upgrade”** i nie dodawać metody płatności; nie aktywować płatnych usług (Workers Paid, R2). Funkcja „Add Budget Alert” dotyczy wyłącznie płatnego użycia, więc jest zbędna.
 3. **Zostawić logi włączone.** Są darmowe i pozwalają zdiagnozować problem z bramką podczas sesji. Nie włączać Workers Traces. Próbkowanie logów (`head_sampling_rate`) ani wyłączanie logów wywołań (`invocation_logs = false`) nie jest potrzebne.
-4. ⚠️ **Sprawdzić datę ważności tokenu `GITHUB_TOKEN`** i — jeżeli wypada ok. 1 grudnia — odnowić go przed kolejną sesją (procedura w rozdz. 9.1).
+4. ⚠️ **Sprawdzić datę ważności tokenu `GITHUB_TOKEN`** i — jeżeli wypada ok. 1 grudnia — odnowić go przed kolejną sesją (instrukcja krok po kroku w rozdz. 10.6). Przy odnowieniu wybrać ważność ok. roku (rozdz. 10.4), żeby wymiana wypadała raz w roku zamiast co 90 dni. Zmiany w kodzie nie są potrzebne.
 5. **Rozważyć usunięcie porzuconego Workera** `wrathandglory-push-api`:
    - w panelu Cloudflare: **Workers & Pages** → `wrathandglory-push-api` → **Settings** → na dole strony usunięcie Workera;
    - następnie dwie przestrzenie KV: `PUSH_SUBSCRIPTIONS` i `FCM_TOKENS` (sekcja magazynu KV w menu po lewej, zwykle **Storage & Databases** → **Workers KV**);
@@ -384,7 +556,7 @@ Uwagi:
 
 ---
 
-## 12. Możliwe usprawnienia na przyszłość (obecnie niepotrzebne)
+## 13. Możliwe usprawnienia na przyszłość (obecnie niepotrzebne)
 
 Przy obecnym zużyciu żadne z nich nie daje odczuwalnej korzyści dla limitów. Każde wymagałoby osobnej decyzji i wdrożenia.
 
@@ -396,12 +568,12 @@ Przy obecnym zużyciu żadne z nich nie daje odczuwalnej korzyści dla limitów.
 
 ---
 
-## 13. Następne kroki
+## 14. Następne kroki
 
 **Po stronie użytkownika:**
 
-1. Sprawdzić datę ważności `GITHUB_TOKEN` (rozdz. 9.1).
-2. Zdecydować o usunięciu Workera `wrathandglory-push-api`, jego przestrzeni KV i klucza konta serwisowego (rozdz. 11, pkt 5).
+1. Sprawdzić datę ważności `GITHUB_TOKEN` (rozdz. 10.6, krok 1) i odnowić token przed tą datą, wybierając ważność ok. roku (rozdz. 10.4).
+2. Zdecydować o usunięciu Workera `wrathandglory-push-api`, jego przestrzeni KV i klucza konta serwisowego (rozdz. 12, pkt 5).
 3. Przed 1 grudnia nic więcej nie trzeba robić.
 
 **Opcjonalna weryfikacja po 1 grudnia 2026** — do uzupełnienia tej analizy wystarczą zrzuty ekranu:
@@ -414,7 +586,7 @@ Przy obecnym zużyciu żadne z nich nie daje odczuwalnej korzyści dla limitów.
 
 ---
 
-## 14. Źródła
+## 15. Źródła
 
 Stan na 1 listopada 2026.
 
@@ -434,6 +606,9 @@ Stan na 1 listopada 2026.
 - [Rate limits for the REST API](https://docs.github.com/en/rest/using-the-rest-api/rate-limits-for-the-rest-api) — 5 000 żądań / godzinę dla tokenów osobistych, limity dodatkowe.
 - [REST API — Repository contents](https://docs.github.com/en/rest/repos/contents) oraz [changelog z 3.05.2022](https://github.blog/changelog/2022-05-03-increased-file-size-limit-when-retrieving-file-contents-via-rest-api) — pliki do 100 MB w typie raw.
 - [GitHub Pages limits](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits) — 1 GB, 100 GB / miesiąc, 10 publikacji / godzinę.
+- [Managing your personal access tokens](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens) — ścieżka do listy tokenów (Settings → Developer settings → Personal access tokens → Fine-grained tokens), ważność tokenu fine-grained („Infinite lifetimes are allowed but may be blocked by a maximum lifetime policy set by your organization or enterprise owner”), usuwanie tokenów nieużywanych przez rok.
+- [GitHub credential types](https://docs.github.com/en/organizations/managing-programmatic-access-to-your-organization/github-credential-types) — token fine-grained: „Configurable (up to 1 year, or no expiration)”; „Revoked automatically if pushed to a public repository or gist, or if unused for one year”.
+- [Token expiration and revocation](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/token-expiration-and-revocation) — „It is not possible to restore an expired or revoked token, you or the application will need to create a new token.”
 
 **Google / Firebase**
 
