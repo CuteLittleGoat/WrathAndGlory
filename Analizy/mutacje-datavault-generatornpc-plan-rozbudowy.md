@@ -1,6 +1,6 @@
 # Zakładka „Mutacje” — DataVault i GeneratorNPC: analiza rozbudowy i plan pracy
 
-> **Data analizy:** 2 listopada 2026 (wersja 1: analiza i pytania; wersja 2: decyzje użytkownika, nowe ustalenia i plan w etapach; wersja 3: odpowiedzi na P1/P2 z korektą wyrównania `Strona` i stan realizacji Etapów 1–2 — rozdz. 4.1)
+> **Data analizy:** 2 listopada 2026 (wersja 1: analiza i pytania; wersja 2: decyzje użytkownika, nowe ustalenia i plan w etapach; wersja 3: odpowiedzi na P1/P2 z korektą wyrównania `Strona` i stan realizacji Etapów 1–2; wersja 4: Etap 3 zrealizowany, wszystko na `main` — rozdz. 4.1)
 > **Moduły:** `DataVault` (generator danych, wyświetlanie zakładki, porządki w CSS), `GeneratorNPC` (nowy moduł aktywny, błąd wyłączonych modułów, domyślne checkboxy), dokumentacja wspólna (`DetaleLayout.md`, `Kolumny.md`, instrukcje Firebase)
 > **Stan kodu:** commit `0eacdc5` (gałąź `main`; kod modułów bez zmian od `4295ed5`)
 > **Plik wejściowy:** załączony `Repozytorium.xlsx` — 10 038 088 B, SHA-256 `e3ebb94b446eac953fffba5660c143dee64fc0520e4bb6d1fc7a6b52357290e3`, 39 arkuszy
@@ -10,7 +10,7 @@
 > - **Mutacje:** generator danych obsługuje nową zakładkę bez zmian w kodzie (Python i przeglądarka dają bajtowo identyczny `data.json`), po oczyszczeniu pliku XLSX z miliona pustych wierszy. W DataVault: jedna linia w `app.js`, blok CSS i grupowanie kart na telefonie. W GeneratorNPC: nowy moduł według wzorca „Modlitw”, wszystkie 34 rekordy.
 > - **Pilny błąd GeneratorNPC:** odznaczenie modułu tylko chowa jego kartę — wybór zostaje i trafia na kartę NPC. Dotyczy wszystkich modułów, także Broni i Pancerza. Plan: odznaczenie czyści moduł, generowanie pomija moduły wyłączone, ulubione nie przenoszą ukrytego wyboru, wszystkie moduły domyślnie wyłączone.
 > - **Porządki:** 49 linii martwych lub zdublowanych reguł CSS w DataVault da się usunąć bez zmiany wyglądu ani o piksel (zmierzone). `Kolumny.md` ma 132 rozbieżności z faktycznym wyglądem, `DetaleLayout.md` §5 — 57 na 86 wpisów; oba pliki do przepisania na podstawie audytu (załącznik B).
-> - **Stan:** Etap 1 (błąd GeneratorNPC, domyślne checkboxy) i Etap 2 (porządki CSS — z korektą: `Strona` wyśrodkowana we wszystkich zakładkach — oraz `Kolumny.md`, `DetaleLayout.md` z wpisami „Aktualizacja”) są zrobione na gałęzi `claude/sharp-ritchie-rku06e`; Etap 3 („Mutacje”) czeka na oczyszczony XLSX i import danych — rozdz. 4.1.
+> - **Stan:** Etapy 1–3 zrealizowane i wypchnięte na `main` (błąd GeneratorNPC i domyślne checkboxy; porządki CSS z `Strona` wyśrodkowaną we wszystkich zakładkach DataVault, `Kolumny.md`, `DetaleLayout.md`; zakładka „Mutacje” w DataVault i moduł „Mutacje” w GeneratorNPC na danych zaimportowanych przez użytkownika). Pozostaje Etap 4 (parser) — rozdz. 4.1.
 
 ---
 
@@ -118,6 +118,20 @@ Polecenie po restarcie sesji:
 
 > kontynuuj pracę.
 
+### 1.4 Odpowiedzi i dane do Etapu 3 (2 listopada 2026)
+
+Wiadomość z załącznikami `data.json`, `Repozytorium.xlsx` i `firebase-import.json`:
+
+> notatnik
+> 1. Zmiany na main
+> 2. Tak, wyśrodkowanie tylko w DataVault. W GeneratorNPC do lewej.
+>
+> 3. Oczyściłem XLSX, wygenerowałem JSONy i zaimportowałem dane do Firebase. Załączam plik XLSX i JSONy.
+
+Wiadomość przesłana w trakcie pracy (ze zrzutem ekranu paska zakładek DataVault):
+
+> Kolor zakładki jest standardowy a nie taki sam jak pozostałe z grupy (np. "Implanty Astartes"). Popraw to.
+
 ---
 
 ## 2. Zakres analizy
@@ -192,14 +206,16 @@ Poza zakresem: zmiany w kodzie, import do Firebase, folder `WebView_FCM_Cloudfla
 
 ### 4.1 Stan realizacji
 
-Zmiany są na gałęzi `claude/sharp-ritchie-rku06e` (osobne commity); na `main` trafią po akceptacji.
+Wszystkie zmiany są na `main` (osobne commity, także na gałęzi `claude/sharp-ritchie-rku06e`).
 
 | Etap | Commit | Co zrobiono | Weryfikacja |
 | --- | --- | --- | --- |
 | 1 — GeneratorNPC | `40f93e2` | `MODULE_CONTROLS`, `isModuleActive()`, `clearModule()`, `getActiveModuleRecords()`; odznaczenie modułu kasuje wybór, filtr i checkbox opisu; karta tylko z modułów włączonych (także Broń i Pancerz); ulubione zapisują i odtwarzają wybór tylko modułów włączonych; przełącznik „Broń” bez `checked`; README i Documentation (PL/EN). | Prawdziwa strona w Chromium z podstawionymi danymi: scenariusz A–I (H — karta bez „Psioniki”, I — pusta lista), Broń wyłączona → ataki z Bestiariusza, czyszczenie filtra i opisu, stary ulubiony z ukrytym wyborem → bez sekcji, nowy ulubiony → odtworzony z pełnym opisem, Reset → wszystko wyłączone; brak błędów JS. Ten sam test przed poprawką odtworzył błąd 1:1. |
 | 2 — porządki DataVault | `e3791fb` | Usunięte martwe i zdublowane reguły (rozdz. 8.2), `Podręcznik`/`Strona` wyłącznie w bloku globalnym z komentarzem PL/EN, `Strona` wyśrodkowana wszędzie; `Kolumny.md` przepisany z audytu (38 zakładek); `DetaleLayout.md` DataVault §2, §3, §5, §6, §7 i szerokości podglądu GeneratorNPC; dokumentacja DataVault (PL/EN). | Audyt obliczonych stylów przed/po: przy 1920 px jedyna zmiana to wyśrodkowanie `Strona` w 13 zakładkach, które miały ją do lewej (21 zakładek z tą kolumną ma teraz środek); przy 400 px — bez zmian w kartach; zakładki „tworzenia postaci” identyczne. `Kolumny.md` = audyt. |
 | 17.2 — `DetaleLayout.md` | `f20aa78` | Każdy wpis „Aktualizacja …” sprawdzony z kodem; aktualne informacje przeniesione do sekcji Main, DataVault, GeneratorNPC, Kalkulator i Infoczytnik, nieaktualne usunięte (m.in. przycisk „Włącz powiadomienia”, układy „pismo”, stare wartości domyślne Infoczytnika, błędny opis przycisku Kalkulatora w sekcji Main). | Wartości porównane z `Main/index.html`, `Kalkulator/index.html`, `Kalkulator/TworzeniePostaci*.html`, `Infoczytnik/GM_test.html`, `Infoczytnik/Infoczytnik_test.html`, `DataVault/style.css`, `GeneratorNPC/style.css`. |
-| 3 — „Mutacje” | — | Czeka na oczyszczony `Repozytorium.xlsx` i import danych (rozdz. 13). | — |
+| 3.0 — dane (użytkownik) | — | Oczyszczony `Repozytorium.xlsx` (arkusz „Mutacje”: 13 KB XML zamiast 108 MB, plik 0,67 MB), poprawione literówki i puste wiersze `Specjalne Bonusy Wrogów`; `data.json` i `firebase-import.json` wygenerowane i zaimportowane. | `data.json` użytkownika bajtowo identyczny z `build_json.py` na tym samym XLSX (1,0 s, 39 MB); `firebase-import.json`: tylko `datavault/live`, `schemaVersion` poprawny, `JSON.parse(dataJson)` = `data.json`; 39 arkuszy, „Mutacje” = 34 rekordy na 12. pozycji. |
+| 3 — DataVault | `7759ebb` | `"Mutacje"` w `CHARACTER_CREATION_SHEETS`, blok CSS kolumn, `GROUPING_COLUMN_OVERRIDES`; dokumentacja PL/EN (w tym kontrola Ctrl + End), `Kolumny.md`, `DetaleLayout.md`. | Prawdziwa strona z danymi użytkownika: zakładka ukryta bez checkboxa, po zaznaczeniu między „Specjalne Bonusy Frakcji” a „Implanty Astartes” z kolorem grupy (tekst, tło i obwódka identyczne jak „Implanty Astartes”); 34 wiersze w kolejności LP; szerokości jak w 7.3, `Strona` wyśrodkowana; telefon — 3 grupy (9 + 8 + 17); brak błędów JS. Zgłoszony przez użytkownika „standardowy kolor” zakładki wynikał z okresu przejściowego (nowe dane w Firebase, stary kod na `main` — rozdz. 10.7) i zniknął po wypchnięciu tego commitu. |
+| 3 — GeneratorNPC | `7c54329` | Moduł `mutations` według wzorca Modlitw (rozdz. 10.2), wpis w `MODULE_CONTROLS`, CSS 28ch/54ch; dokumentacja PL/EN, `FirebaseREADME.md` (GeneratorNPC i `shared`), `DetaleLayout.md`. | Prawdziwa strona z danymi użytkownika: przełącznik i karta pod Modlitwami, domyślnie wyłączone; lista 34 pozycji w kolejności LP (z odsyłaczami); filtr `skora` → 2 pozycje; podgląd `Nazwa`/`Efekt`; karta — sekcja „Mutacje” pod „Modlitwami”, same nazwy / `Nazwa — Efekt: …` z czerwonym `CHAOS`; odznaczenie kasuje wybór; ulubione (zapis, Reset, wczytanie, stary wpis bez `mutationsIds`); wersja EN; dane bez arkusza → komunikat o brakującym arkuszu; regresja Etapu 1 bez zmian. |
 | 4 — parser XLSX | — | Osobne zadanie (`Analizy/datavault-parser-xlsx-puste-wiersze-wydajnosc.md`). | — |
 
 ---
@@ -898,11 +914,8 @@ Według `Analizy/datavault-parser-xlsx-puste-wiersze-wydajnosc.md`.
 
 ## 16. Pytania otwarte
 
-P1 i P2 rozstrzygnięte (rozdz. 4). Pozostaje:
-
-| # | Pytanie | Uwagi |
-| --- | --- | --- |
-| P3 | Czy kolumna `Strona` ma być wyśrodkowana także w tabelach podglądu **GeneratorNPC** (`Wybór Broni`, `Wybór Pancerzy`)? | Dziś wszystkie kolumny tych tabel są do lewej (`.data-table th, td { text-align: left }`). Korekta dotyczyła zakładek DataVault; zmiana w GeneratorNPC to jedna reguła dla `.min-col-strona`. |
+Brak. P1 i P2 — rozdz. 4; P3 (`Strona` w tabelach podglądu GeneratorNPC): **zostaje do lewej** —
+wyśrodkowanie dotyczy wyłącznie DataVault.
 
 ## 17. Pozostałe obserwacje
 
@@ -914,10 +927,9 @@ P1 i P2 rozstrzygnięte (rozdz. 4). Pozostaje:
 
 ## 18. Następne kroki
 
-1. Przegląd i akceptacja Etapów 1–2 i 17.2 (gałąź `claude/sharp-ritchie-rku06e`), potem przeniesienie na `main`.
-2. Odpowiedź na P3.
-3. Krok 3.0 — oczyszczenie arkusza „Mutacje” w `Repozytorium.xlsx` (rozdz. 6.4); potem Etap 3: kod DataVault, generowanie i import danych, kod GeneratorNPC (moduł `mutations` jako kolejny wpis w `MODULE_CONTROLS`), sekcja `Mutacje` w `Kolumny.md` i `DetaleLayout.md`.
-4. Etap 4 — osobne zadanie (parser).
+1. Etap 4 — osobne zadanie: poprawa parsera XLSX według `Analizy/datavault-parser-xlsx-puste-wiersze-wydajnosc.md`.
+2. Przy kolejnych zmianach w `Repozytorium.xlsx`: kontrola Ctrl + End w każdej zakładce przed generowaniem.
+3. Opcjonalnie: pełny przegląd sekcji Infoczytnika w `DetaleLayout.md` z kodem (rozdz. 17).
 
 ---
 
