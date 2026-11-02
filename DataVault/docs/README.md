@@ -130,6 +130,10 @@ Tabela pokazuje rekordy z aktywnej zakładki. Możesz:
 - rozwijać długie komórki,
 - zaznaczać wiersze do porównania.
 
+W zakładkach, które mają źródło zasady, ostatnie dwie kolumny to `Podręcznik` (nazwa podręcznika)
+i `Strona` (numer strony, wyśrodkowany i wyróżniony jasnozielonym kolorem). Obie wyglądają tak samo
+we wszystkich zakładkach.
+
 ### Kolumna `Koszt IM`
 
 W części zakładek, zwłaszcza przy przedmiotach, ekwipunku, pojazdach albo podobnych elementach użytkowych, może pojawić się kolumna `Koszt IM`.
@@ -652,6 +656,9 @@ The table shows records from the active tab. You can:
 - filter by value lists,
 - expand long cells,
 - select rows for comparison.
+
+In tabs that show where a rule comes from, the last two columns are `Podręcznik` (rulebook name) and
+`Strona` (page number, centred and highlighted in light green). Both look the same in every tab.
 
 ### `Koszt IM` column
 

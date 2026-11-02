@@ -713,6 +713,29 @@ Dla aktywnego arkusza `selectSheet(name)`:
 - input tekstowy filtra per kolumna,
 - przycisk menu listowego filtra per kolumna.
 
+### Szerokości i wyrównanie kolumn
+
+Szerokości minimalne, wyrównanie i łamanie kolumn ustawiają reguły w `DataVault/style.css` (sekcja
+„Column tweaks”) z selektorem `.tableWrap table[data-sheet="<zakładka>"] th|td[data-col="<kolumna>"]`.
+Atrybuty `data-sheet` i `data-col` nadają `buildTableSkeleton()` i `renderRow()`, więc reguła działa
+tylko dla dokładnej nazwy zakładki i kolumny z danych. Pełna lista wartości wszystkich zakładek jest
+w `Kolumny.md` w katalogu głównym repozytorium (i w `DetaleLayout.md`).
+
+Zasady:
+
+- kolumna zaznaczania `✓` ma we wszystkich zakładkach stałe 5ch i jest wyśrodkowana;
+- kolumny `Podręcznik` (17ch, do lewej) i `Strona` (6ch, **wyśrodkowana**, kolor `var(--code)`) ustawia
+  wyłącznie blok globalny `.tableWrap table[data-sheet] th|td[data-col="Podręcznik"|"Strona"]`, wspólny
+  dla wszystkich zakładek, także przyszłych. Reguły pojedynczych zakładek ich nie powtarzają: mają tę
+  samą szczegółowość, więc reguła stojąca w pliku wyżej byłaby przez blok globalny po cichu nadpisana.
+  Ewentualny wyjątek musi stać poniżej bloku globalnego;
+- reguła danej kolumny ma być w pliku jedna — dwie reguły o tej samej szczegółowości oznaczają, że
+  działa tylko późniejsza;
+- wartości opisywane w dokumentacji pochodzą z obliczonych stylów w przeglądarce (`getComputedStyle`),
+  a nie z lektury pliku CSS, bo kaskada potrafi unieważnić regułę bez żadnego błędu.
+
+W układzie kart na telefonie szerokości kolumn nie obowiązują — opisuje to rozdział „Układ kart na telefonie”.
+
 ### Przyklejone nagłówki na komputerze i tablecie
 
 Oba wiersze nagłówka — nazwy kolumn i pola filtrów — zostają na wierzchu przy przewijaniu tabeli.
@@ -932,7 +955,7 @@ Język wpływa na:
 - puste stany.
 
 Nagłówek kolumny z aktywnym filtrem (`thead tr:first-child th.filter-active`) ustawia osobno
-`background-color: var(--panel)` i `background-image` z czerwonym gradientem. Skrót `background`
+`background-color: var(--panel)` i `background-image` z błękitnym gradientem (`var(--filter-on-bg-active)` → `var(--filter-on-bg)`). Skrót `background`
 kasuje wszystkie składowe, których nie wymienia, więc zdejmowałby nieprzezroczysty kolor bazowy
 z reguły `thead th` — a sam gradient jest półprzezroczysty i przez przyklejony nagłówek
 prześwitywałaby treść przewijanych wierszy.
@@ -1722,6 +1745,29 @@ For the active sheet, `selectSheet(name)`:
 - text filter input per column,
 - list-filter menu button per column.
 
+### Column widths and alignment
+
+Minimum widths, alignment and wrapping of columns are set by rules in `DataVault/style.css` (the
+"Column tweaks" section) with the selector `.tableWrap table[data-sheet="<tab>"] th|td[data-col="<column>"]`.
+The `data-sheet` and `data-col` attributes are set by `buildTableSkeleton()` and `renderRow()`, so a rule
+applies only to the exact tab and column name from the data. The full list of values for every tab is
+in `Kolumny.md` in the repository root (and in `DetaleLayout.md`).
+
+Rules:
+
+- the `✓` selection column has a fixed 5ch in every tab and is centred;
+- the `Podręcznik` (17ch, left) and `Strona` (6ch, **centred**, `var(--code)` colour) columns are set
+  only by the global block `.tableWrap table[data-sheet] th|td[data-col="Podręcznik"|"Strona"]`, shared
+  by every tab, including future ones. Single-tab rules do not repeat them: they have the same
+  specificity, so a rule placed higher in the file would be silently overridden by the global block.
+  Any exception must sit below the global block;
+- there should be one rule per column in the file — two rules with the same specificity mean that only
+  the later one applies;
+- values given in the documentation come from computed styles in the browser (`getComputedStyle`), not
+  from reading the CSS file, because the cascade can void a rule without any error.
+
+In the phone card layout column widths do not apply — see the "Card layout on a phone" chapter.
+
 ### Sticky headers on computer and tablet
 
 Both header rows — the column names and the filter fields — stay on top while the table scrolls. This
@@ -1940,7 +1986,7 @@ Language affects:
 - empty states.
 
 A header of a column with an active filter (`thead tr:first-child th.filter-active`) sets
-`background-color: var(--panel)` and the red gradient `background-image` separately. The `background`
+`background-color: var(--panel)` and the blue gradient `background-image` (`var(--filter-on-bg-active)` → `var(--filter-on-bg)`) separately. The `background`
 shorthand resets every component it does not name, so it would strip the opaque base colour coming
 from the `thead th` rule — and the gradient alone is semi-transparent, which let the scrolling row
 content show through the sticky header.

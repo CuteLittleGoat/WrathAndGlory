@@ -1,283 +1,339 @@
-# Kolumny — szerokości, wyrównania i łamanie linii
+# Kolumny — szerokości, wyrównania i łamanie linii (DataVault)
 
-Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`, `style.css`) oraz aktualnego `data.json`.
+Dokument opisuje **aktualny wygląd** kolumn wszystkich zakładek modułu `DataVault`. Wartości są odczytane z obliczonych stylów w przeglądarce (`getComputedStyle`) dla `DataVault/style.css` przy szerokości okna 1920 px — nie z lektury pliku CSS, bo kaskada potrafi po cichu unieważnić regułę.
 
-- Kolejność zakładek pochodzi z `_meta.sheetOrder` w `data.json`.
-- Kolejność kolumn pochodzi z `_meta.columnOrder` (z fallbackiem do realnych kluczy rekordów).
-- Kolumny techniczne `LP` i `Stan` są ukrywane w UI i nie występują w tabelach poniżej.
-- Kolumna wyboru (`✓`) ma stałe `min-width/max-width/width = 8ch` dla wszystkich zakładek.
-- Domyślnie tekst jest wyrównany do lewej i zawijany (`white-space: normal` dla komórki + `pre-wrap` w `.celltext`).
+## Zasady wspólne
 
+- Kolejność zakładek pochodzi z `_meta.sheetOrder` w danych (czyli z kolejności arkuszy w `Repozytorium.xlsx`), a kolejność kolumn — z `_meta.columnOrder`.
+- Kolumny techniczne `LP` i `Stan` są ukrywane (`HIDDEN_COLUMNS`) i nie występują w tabelach poniżej.
+- Kolumna zaznaczania `✓` ma we wszystkich zakładkach stałe `min-width` = `max-width` = `width` = `5ch` i jest wyśrodkowana.
+- Kolumny `Podręcznik` (17ch, do lewej) i `Strona` (6ch, wyśrodkowana, kolor `var(--code)`) ustawia wyłącznie jeden blok globalny w `style.css`, wspólny dla wszystkich zakładek. Reguły pojedynczych zakładek ich nie powtarzają; ewentualny wyjątek musiałby stać w pliku poniżej bloku globalnego.
+- Nagłówek kolumny ma zawsze tę samą szerokość minimalną, wyrównanie i łamanie co komórki tej kolumny.
+- „auto” oznacza brak reguły szerokości — kolumna dostaje szerokość wynikającą z treści i z miejsca w tabeli; „brak” w kolumnie Max-width oznacza `max-width: none`.
+- Łamanie „standard”: komórka ma `white-space: normal`, a treść w `.celltext` — `pre-wrap` (zachowuje entery z danych). „Bez łamania” to `white-space: nowrap`.
+- Komórki z treścią dłuższą niż 9 linii są zwijane i rozwijane kliknięciem.
+- Na telefonie (szerokość okna do 720 px) tabela zamienia się w karty i szerokości kolumn nie obowiązują.
+- Zakładki oznaczone „tylko admin” są widoczne wyłącznie w trybie `?admin=1`.
 
-## Notatki
+## Notatki (tylko admin)
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Nazwa | 26ch | auto | lewo | standard |
-| Opis | 56ch | auto | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
 | Podręcznik | 17ch | brak | lewo | standard |
-| Strona | 6ch | auto | środek | standard |
+| Strona | 6ch | brak | środek | standard |
 
-## Bestiariusz
+## Bestiariusz (tylko admin)
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Nazwa | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
 | Zagrożenie | 5ch | brak | środek | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
-| S | 3ch | brak | lewo | standard |
-| Wt | 3ch | brak | lewo | standard |
-| Zr | 3ch | brak | lewo | standard |
-| I | 3ch | brak | lewo | standard |
-| SW | 3ch | brak | lewo | standard |
-| Int | 3ch | brak | lewo | standard |
-| Ogd | 3ch | brak | lewo | standard |
-| Odporność (w tym WP) | 3ch | brak | lewo | standard |
-| Wartość Pancerza | 3ch | brak | lewo | standard |
-| Obrona | 3ch | brak | lewo | standard |
-| Żywotność | 3ch | brak | lewo | standard |
-| Odporność Psychiczna | 3ch | brak | lewo | standard |
-| Umiejętności | auto | brak | lewo | standard |
-| Premie | auto | brak | lewo | standard |
-| Zdolności | auto | brak | lewo | standard |
-| Atak | auto | brak | lewo | standard |
-| Zdolności Hordy | auto | brak | lewo | standard |
-| Opcje Hordy | auto | brak | lewo | standard |
-| Upór | 3ch | brak | lewo | standard |
-| Odwaga | 3ch | brak | lewo | standard |
-| Szybkość | 3ch | brak | lewo | standard |
-| Rozmiar | 3ch | brak | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | 6ch | brak | lewo | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
+| S | 3ch | brak | środek | standard |
+| Wt | 3ch | brak | środek | standard |
+| Zr | 3ch | brak | środek | standard |
+| I | 3ch | brak | środek | standard |
+| SW | 3ch | brak | środek | standard |
+| Int | 3ch | brak | środek | standard |
+| Ogd | 3ch | brak | środek | standard |
+| Odporność (w tym WP) | 3ch | brak | środek | standard |
+| Wartość Pancerza | 3ch | brak | środek | standard |
+| Obrona | 3ch | brak | środek | standard |
+| Żywotność | 3ch | brak | środek | standard |
+| Odporność Psychiczna | 3ch | brak | środek | standard |
+| Umiejętności | 28ch | brak | lewo | standard |
+| Premie | 60ch | brak | lewo | standard |
+| Zdolności | 60ch | brak | lewo | standard |
+| Atak | 50ch | brak | lewo | standard |
+| Zdolności Hordy | 60ch | brak | lewo | standard |
+| Opcje Hordy | 60ch | brak | lewo | standard |
+| Upór | 3ch | brak | środek | standard |
+| Odwaga | 3ch | brak | środek | standard |
+| Szybkość | 3ch | brak | środek | standard |
+| Rozmiar | 7ch | brak | środek | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
-## Specjalne Bonusy Wrogów
-| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- | --- |
-| Frakcja | auto | brak | lewo | standard |
-| Rodzaj | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
+- Kolumny `LP` i `Stan` są w danych, ale ukrywa je `HIDDEN_COLUMNS`; wpisy ze `Stan` = `old` są ukryte, dopóki admin nie zaznaczy „Czy wyświetlić zdezaktualizowane wpisy?”.
 
-## Hordy
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
+
+## Hordy (tylko admin)
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Nazwa zasady | 26ch | brak | lewo | standard |
 | Opis zasady | 60ch | brak | lewo | standard |
 | Przykład | 60ch | brak | lewo | standard |
 
-## Tabela Rozmiarów
+## Specjalne Bonusy Wrogów (tylko admin)
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Rozmiar | auto | brak | lewo | standard |
+| Frakcja | 26ch | brak | lewo | standard |
+| Rodzaj | 26ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Efekt | 26ch | brak | lewo | standard |
+
+## Tabela Rozmiarów
+
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Rozmiar | 8ch | brak | lewo | standard |
 | Modyfikator Testu Ataku | 26ch | brak | środek | standard |
 | Zmniejszenie Poziomu Ukrycia | 26ch | brak | środek | standard |
 | Przykłady | 85ch | brak | lewo | standard |
 
 ## Gatunki
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Gatunek | auto | brak | lewo | standard |
+| Gatunek | 26ch | brak | lewo | standard |
 | Koszt PD | 4ch | brak | środek | standard |
-| Atrybuty | auto | brak | lewo | standard |
-| Umiejętności | auto | brak | lewo | standard |
+| Atrybuty | 26ch | brak | lewo | standard |
+| Umiejętności | 26ch | brak | lewo | standard |
 | Szybkość | 4ch | brak | środek | standard |
 | Rozmiar | 10ch | brak | środek | standard |
-| Zdolności gatunkowe | auto | brak | lewo | standard |
+| Zdolności gatunkowe | 46ch | brak | lewo | standard |
 
 ## Archetypy
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Poziom | 2ch | brak | środek | standard |
-| Frakcja | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
+| Frakcja | 26ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
 | Gatunek | 26ch | brak | lewo | standard |
 | Koszt PD | 4ch | brak | środek | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
-| Atrybuty Archetypu | auto | brak | lewo | standard |
-| Umiejętności Archetypu | auto | brak | lewo | standard |
-| Zdolność Archetypu | auto | brak | lewo | standard |
-| Ekwipunek | auto | brak | lewo | standard |
-| Inne | auto | brak | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | 6ch | brak | lewo | standard |
+| Słowa Kluczowe | 26ch | brak | lewo | standard |
+| Atrybuty Archetypu | 26ch | brak | lewo | standard |
+| Umiejętności Archetypu | 26ch | brak | lewo | standard |
+| Zdolność Archetypu | 46ch | brak | lewo | standard |
+| Ekwipunek | 46ch | brak | lewo | standard |
+| Inne | 10ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
 
 ## Pakiety Wyniesienia
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Nazwa | 26ch | brak | lewo | standard |
 | Opis | 56ch | brak | lewo | standard |
 | Koszt PD | 26ch | brak | lewo | standard |
-| Wymagania | auto | brak | lewo | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
+| Wymagania | 26ch | brak | lewo | standard |
+| Słowa Kluczowe | 26ch | brak | lewo | standard |
 | Premia Wpływu | 26ch | brak | lewo | standard |
-| Pamiętna historia | auto | brak | lewo | standard |
+| Pamiętna historia | 46ch | brak | lewo | standard |
 | Ekwipunek | 46ch | brak | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | 6ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
-## Premie Frakcji
+- Kolumna `Słowa Kluczowe` jest formatowana jak zwykły tekst (znaczniki z Excela), bez automatycznego czerwonego koloru.
+
+## Premie z Przeszłości Frakcji
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Frakcja | auto | brak | lewo | standard |
-| Premia 1 | auto | brak | lewo | standard |
-| Premia 2 | auto | brak | lewo | standard |
-| Premia 3 | auto | brak | lewo | standard |
+| Frakcja | 26ch | brak | lewo | standard |
+| Premia 1 | 56ch | brak | lewo | standard |
+| Premia 2 | 56ch | brak | lewo | standard |
+| Premia 3 | 56ch | brak | lewo | standard |
 
 ## Słowa Kluczowe Frakcji
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Frakcja | auto | brak | lewo | standard |
-| Słowo Kluczowe | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
+| Frakcja | 28ch | brak | lewo | standard |
+| Słowo Kluczowe | 28ch | brak | lewo | standard |
+| Opis | 26ch | brak | lewo | standard |
+| Efekt | 56ch | brak | lewo | standard |
+
+- Kolumna `Słowo Kluczowe` jest formatowana osobno (`formatFactionKeywordHTML`).
 
 ## Specjalne Bonusy Frakcji
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Frakcja | auto | brak | lewo | standard |
-| Rodzaj | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
+| Frakcja | 26ch | brak | lewo | standard |
+| Rodzaj | 26ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Efekt | 26ch | brak | lewo | standard |
 
 ## Implanty Astartes
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Numer | 4ch | brak | środek | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 26ch | brak | lewo | standard |
 
 ## Zakony Pierwszego Powołania
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
-| Zaleta | auto | brak | lewo | standard |
-| Wada | auto | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Zaleta | 26ch | brak | lewo | standard |
+| Wada | 26ch | brak | lewo | standard |
 
 ## Cechy
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
 
 ## Stany
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
 
 ## Słowa Kluczowe
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+
+- Wartości kolumny `Nazwa` są czerwone.
 
 ## Talenty
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Koszt PD | 4ch | brak | lewo | standard |
-| Wymagania | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Koszt PD | 4ch | brak | środek | standard |
+| Wymagania | 26ch | brak | lewo | standard |
+| Opis | 26ch | brak | lewo | standard |
+| Efekt | 56ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
 ## Modlitwy
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Koszt PD | 4ch | brak | lewo | standard |
-| Wymagania | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Koszt PD | 4ch | brak | środek | standard |
+| Wymagania | 26ch | brak | lewo | standard |
+| Efekt | 56ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
 ## Psionika
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
 | Koszt PD | 4ch | brak | środek | standard |
 | ST | 10ch | brak | środek | standard |
-| Aktywacja | auto | brak | lewo | standard |
-| Czas Trwania | auto | brak | lewo | standard |
+| Aktywacja | 10ch | brak | lewo | standard |
+| Czas Trwania | 15ch | brak | lewo | standard |
 | Zasięg | 8ch | brak | środek | standard |
 | Wiele Celów | 4ch | brak | środek | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
-| Wzmocnienie | auto | brak | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | auto | brak | lewo | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
+| Efekt | 56ch | brak | lewo | standard |
+| Wzmocnienie | 26ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
 
 ## Augumentacje
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Efekt | 26ch | brak | lewo | standard |
 | Koszt | 3ch | brak | środek | standard |
 | Dostępność | 3ch | brak | środek | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
 | Koszt IM | 8ch | brak | środek | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | auto | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
 
 ## Ekwipunek
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
-| Opis | auto | brak | lewo | standard |
-| Efekt | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Efekt | 26ch | brak | lewo | standard |
 | Koszt | 3ch | brak | środek | standard |
 | Dostępność | 3ch | brak | środek | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
 | Koszt IM | 8ch | brak | środek | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | auto | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
 
 ## Pancerze
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
 | WP | 4ch | brak | środek | standard |
-| Cechy | auto | brak | lewo | standard |
+| Cechy | 32ch | brak | lewo | standard |
 | Koszt | 4ch | brak | środek | standard |
 | Dostępność | 4ch | brak | środek | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
 | Koszt IM | 8ch | brak | środek | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | 6ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- `Cechy` powstaje ze scalenia kolumn `Cecha 1`…`Cecha N` z XLSX (separator `; `); cechy są klikalnymi tagami z opisem w dymku.
+
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
 
 ## Bronie
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Rodzaj | auto | brak | lewo | standard |
-| Typ | auto | brak | lewo | standard |
-| Nazwa | auto | brak | lewo | standard |
+| Rodzaj | 14ch | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
 | Obrażenia | auto | brak | środek | standard |
 | DK | auto | brak | środek | standard |
 | PP | auto | brak | środek | standard |
-| Zasięg | 18ch | brak | środek | brak łamania (`white-space: nowrap`) |
+| Zasięg | 18ch | brak | środek | bez łamania |
 | Szybkostrzelność | 8ch | brak | środek | standard |
-| Cechy | auto | brak | lewo | standard |
+| Cechy | 32ch | brak | lewo | standard |
 | Koszt | 4ch | brak | środek | standard |
 | Dostępność | 4ch | brak | środek | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
 | Koszt IM | 8ch | brak | środek | standard |
-| Słowa Kluczowe | auto | brak | lewo | standard |
-| Podręcznik | auto | brak | lewo | standard |
-| Strona | 6ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- `Zasięg` powstaje ze scalenia `Zasięg 1`…`Zasięg 3` w formacie `krótki / średni / daleki`; `Cechy` — ze scalenia `Cecha 1`…`Cecha N` (separator `; `), jako klikalne tagi.
+
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
 
 ## Obrzędy
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Rodzaj | 14ch | brak | lewo | standard |
@@ -291,140 +347,167 @@ Dokument został zaktualizowany na podstawie kodu modułu `DataVault` (`app.js`,
 | Podręcznik | 17ch | brak | lewo | standard |
 | Strona | 6ch | brak | środek | standard |
 
-## Trafienia Krytyczne
+## Trafienia Krytyczne (tylko admin)
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Rzut k66 | 6ch | brak | środek | standard |
+| Rzut k66 | 6ch | brak | środek | bez łamania |
 | Opis | 56ch | brak | lewo | standard |
 | Efekt | 26ch | brak | lewo | standard |
 | Chwała | 26ch | brak | lewo | standard |
 
-## Groza Osnowy
+## Groza Osnowy (tylko admin)
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
-| Rzut k66 | 6ch | brak | środek | standard |
+| Rzut k66 | 6ch | brak | środek | bez łamania |
 | Efekt | 56ch | brak | lewo | standard |
 
 ## Skrót Zasad
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Typ | 32ch | brak | lewo | standard |
 | Nazwa | 20ch | brak | lewo | standard |
 | Opis | 56ch | brak | lewo | standard |
-| Strona | 11ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
 ## Tryby Ognia
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Nazwa | 20ch | brak | lewo | standard |
 | Opis | 56ch | brak | lewo | standard |
 
 ## Kary do ST
+
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
 | --- | --- | --- | --- | --- |
 | Ile celów/akcji | 20ch | 20ch | środek | standard |
 | Kara do ST | 20ch | 20ch | środek | standard |
 
-## Aktualizacja 2026-04-17
-- W zakładce **Bestiariusz** dodano regułę kolumny `Typ` zgodną z `Bronie/Typ`:
-  - `min-width: 14ch`
-  - wyrównanie: `left`
-  - standardowe zawijanie (`white-space: normal` + `pre-wrap` w `.celltext`).
-- Kolumny techniczne `LP` i `Stan` są ukrywane przez logikę aplikacji (`HIDDEN_COLUMNS`) i nie biorą udziału w renderingu tabeli.
+- Tabela ma `table-layout: fixed` i szerokość `max-content`, a obie kolumny także `width: 20ch`.
 
-## Aktualizacja 2026-04-20
-- Dodano brakujące sekcje `Notatki` i `Pakiety Wyniesienia` zgodnie z aktualnym `data.json` i regułami CSS.
-- Uzupełniono kolumnę `Gatunek` w `Archetypy`.
-- Skorygowano wyrównania do wartości z `DataVault/style.css` (m.in. `Zagrożenie`, `Koszt PD`, `ST`, `Zasięg`, `Wiele Celów`, kolumny numeryczne i `Kary do ST`).
-- W `Pancerze` poprawiono kolejność `Słowa Kluczowe` / `Koszt IM`, aby odpowiadała `_meta.columnOrder`.
+## Uszkodzenia Pojazdów (tylko admin)
 
-## Zakładki pojazdów — aktualna konfiguracja kolumn
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Rzut k66 | 6ch | brak | środek | bez łamania |
+| Efekt | 56ch | brak | lewo | standard |
 
-Kolumna `LP` pozostaje w danych jako kolejność techniczna, ale nie jest renderowana w tabelach, porównaniu, Widoku Domyślnym ani Pełnym Widoku.
+- Zakładka tylko dla admina.
 
-### `Role W Pojeździe`
-- `Rola`: min. `14ch`, tekst do lewej.
-- `Akcje Pojazdu`: min. `60ch`, tekst do lewej.
-- `Podręcznik`: standard globalny, tekst do lewej.
-- `Strona`: standard globalny, tekst wyśrodkowany.
+## Eksplozje Pojazdów (tylko admin)
 
-### `Akcje Pojazdu`
-- `Nazwa`: min. `26ch`, tekst do lewej.
-- `Opis`, `Przykład`: min. `56ch`, tekst do lewej.
-- `Podręcznik`: standard globalny, tekst do lewej.
-- `Strona`: standard globalny, tekst wyśrodkowany.
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Rozmiar Pojazdu | 20ch | 20ch | lewo | standard |
+| Zasięg Rażenia | 14ch | 14ch | środek | standard |
+| Obrażenia | 14ch | 14ch | środek | standard |
 
-### `Stany Pojazdów`
-- `Nazwa`: min. `26ch`, tekst do lewej.
-- `Opis`: min. `56ch`, tekst do lewej.
-- `Podręcznik`: standard globalny, tekst do lewej.
-- `Strona`: standard globalny, tekst wyśrodkowany.
+- Zakładka tylko dla admina. Tabela ma `table-layout: fixed` i szerokość `max-content`, a kolumny także `width` równe szerokości minimalnej.
 
-### `Cechy Pojazdów`
-- `Typ`: min. `22ch`, tekst do lewej.
-- `Nazwa`: min. `26ch`, tekst do lewej.
-- `Opis`: min. `56ch`, tekst do lewej.
-- `Podręcznik`: standard globalny, tekst do lewej.
-- `Strona`: standard globalny, tekst wyśrodkowany.
+## Role W Pojeździe
 
-### `Pojazdy`
-- `Typ`: min. `14ch`, tekst do lewej.
-- `Nazwa`: min. `30ch`, tekst do lewej.
-- `Koszt`, `Dostępność`, `Szybkość`, `Manewrowość`, `Odporność`, `Żywotność`, `Rozmiar`: min. `10ch`, tekst wyśrodkowany.
-- `Słowa Kluczowe`: min. `28ch`, tekst do lewej, słowa czerwone z neutralnymi przecinkami.
-- `Skład Załogi`: min. `22ch`, tekst do lewej.
-- `Cechy`: min. `32ch`, tekst do lewej, wartości z `Cecha N` scalone separatorem `; `.
-- `Uzbrojenie`: min. `36ch`, tekst do lewej.
-- `Wyposażenie`: min. `32ch`, tekst do lewej.
-- `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
-- `Podręcznik`: standard globalny, tekst do lewej.
-- `Strona`: standard globalny, tekst wyśrodkowany.
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Rola | 14ch | brak | lewo | standard |
+| Akcje Pojazdu | 60ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
-### `Bronie Pojazdów`
-- `Rodzaj`, `Typ`: min. `14ch`, tekst do lewej.
-- `Nazwa`: min. `26ch`, tekst do lewej.
-- `Obrażenia`, `DK`, `PP`, `Szybkostrzelność`, `Koszt`, `Dostępność`, `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
-- `Zasięg`: min. `18ch`, tekst wyśrodkowany, bez zawijania, wartości `Zasięg N` scalone formatem `krótki / średni / daleki`.
-- `Cechy`: min. `32ch`, tekst do lewej, wartości z `Cecha N` scalone separatorem `; `.
-- `Słowa Kluczowe`: min. `28ch`, tekst do lewej, słowa czerwone z neutralnymi przecinkami.
-- `Podręcznik`: standard globalny, tekst do lewej.
-- `Strona`: standard globalny, tekst wyśrodkowany.
+## Akcje Pojazdu
 
-### `Ekwipunek Pojazdów`
-- `Typ`: min. `14ch`, tekst do lewej.
-- `Nazwa`: min. `26ch`, tekst do lewej.
-- `Opis`: min. `48ch`, tekst do lewej.
-- `Efekt`: min. `56ch`, tekst do lewej.
-- `Słowa Kluczowe`: min. `28ch`, tekst do lewej, słowa czerwone z neutralnymi przecinkami.
-- `Koszt`, `Dostępność`, `Koszt IM`: min. `8ch`, tekst wyśrodkowany.
-- `Podręcznik`: standard globalny, tekst do lewej.
-- `Strona`: standard globalny, tekst wyśrodkowany.
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Przykład | 56ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
+## Stany Pojazdów
 
-### `Uszkodzenia Pojazdów`
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
-| Kolumna | Min-width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- |
-| `Rzut k66` | `6ch` | środek | brak zawijania |
-| `Efekt` | `56ch` | lewo | standard |
+## Cechy Pojazdów
 
-Układ odpowiada zakładce `Groza Osnowy`.
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Typ | 22ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
-### `Eksplozje Pojazdów`
+## Pojazdy
 
-| Kolumna | Min-width | Max-width | Width | Wyrównanie | Łamanie |
-| --- | --- | --- | --- | --- | --- |
-| `Rozmiar Pojazdu` | `20ch` | `20ch` | `20ch` | lewo | standard |
-| `Zasięg Rażenia` | `14ch` | `14ch` | `14ch` | środek | standard |
-| `Obrażenia` | `14ch` | `14ch` | `14ch` | środek | standard |
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 30ch | brak | lewo | standard |
+| Koszt | 10ch | brak | środek | standard |
+| Dostępność | 10ch | brak | środek | standard |
+| Szybkość | 10ch | brak | środek | standard |
+| Manewrowość | 10ch | brak | środek | standard |
+| Odporność | 10ch | brak | środek | standard |
+| Żywotność | 10ch | brak | środek | standard |
+| Rozmiar | 10ch | brak | środek | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
+| Skład Załogi | 22ch | brak | lewo | standard |
+| Cechy | 32ch | brak | lewo | standard |
+| Uzbrojenie | 36ch | brak | lewo | standard |
+| Wyposażenie | 32ch | brak | lewo | standard |
+| Koszt IM | 8ch | brak | środek | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
 
-Tabela ma stały układ: `table-layout: fixed` oraz `width: max-content`.
+- `Cechy` powstaje ze scalenia `Cecha 1`…`Cecha N` (separator `; `).
 
-## Aktualizacja 2026-06-17
-- W zakładce `Eksplozje Pojazdów` aktualna konfiguracja kolumn jest zgodna z `DataVault/style.css`: `Rozmiar Pojazdu` ma `min-width`, `max-width` i `width` po `20ch`, a `Zasięg Rażenia` oraz `Obrażenia` mają `min-width`, `max-width` i `width` po `14ch`.
-- Tabela `Eksplozje Pojazdów` ma stały układ (`table-layout: fixed`) oraz szerokość wynikającą z kolumn (`width: max-content`).
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
 
-## Aktualizacja 2026-07-01
-- Dodano konfigurację kolumn zakładki `Obrzędy` zgodną z arkuszem `Repozytorium.xlsx`.
-- `LP` pozostaje kolumną techniczną ukrywaną przez DataVault i służy do domyślnego sortowania wpisów.
-- Konfiguracja kolumn zakładki `Obrzędy` jest utrzymywana w `DataVault/style.css` razem z pozostałymi regułami kolumn.
+## Bronie Pojazdów
+
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Rodzaj | 14ch | brak | lewo | standard |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Obrażenia | 8ch | brak | środek | standard |
+| DK | 8ch | brak | środek | standard |
+| PP | 8ch | brak | środek | standard |
+| Zasięg | 18ch | brak | środek | bez łamania |
+| Szybkostrzelność | 8ch | brak | środek | standard |
+| Cechy | 32ch | brak | lewo | standard |
+| Koszt | 8ch | brak | środek | standard |
+| Dostępność | 8ch | brak | środek | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
+| Koszt IM | 8ch | brak | środek | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- `Zasięg` powstaje ze scalenia `Zasięg 1`…`Zasięg 3` w formacie `krótki / średni / daleki`; `Cechy` — ze scalenia `Cecha 1`…`Cecha N` (separator `; `).
+
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.
+
+## Ekwipunek Pojazdów
+
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Typ | 14ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 48ch | brak | lewo | standard |
+| Efekt | 56ch | brak | lewo | standard |
+| Koszt | 8ch | brak | środek | standard |
+| Dostępność | 8ch | brak | środek | standard |
+| Słowa Kluczowe | 28ch | brak | lewo | standard |
+| Koszt IM | 8ch | brak | środek | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- Słowa w kolumnie `Słowa Kluczowe` są czerwone, przecinki — w kolorze zwykłego tekstu.

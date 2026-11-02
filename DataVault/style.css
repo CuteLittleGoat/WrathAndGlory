@@ -321,13 +321,6 @@ code{color:var(--code)}
   letter-spacing:.12em;
   text-transform:uppercase;
 }
-.tab.tab--character{
-  color:var(--code);
-  opacity:.9;
-}
-.tab.tab--character.active{
-  color:var(--code);
-}
 .tab.tab--combat{
   color:var(--red);
 }
@@ -662,7 +655,6 @@ td.center{text-align:center}
      freely downwards and still scrolls sideways as before. */
 }
 
-
 /* --- Pole wyboru wiersza do porównania / Row-selection checkbox ---
    PL: Rysujemy je sami, bo `accent-color` steruje wyłącznie wypełnieniem pola, a barwę znacznika
    dobiera wtedy przeglądarka — stąd domyślny niebieski, obcy palecie modułu. Po zmianie pole
@@ -786,9 +778,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Odwaga"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Odwaga"],
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Szybkość"],
-.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Szybkość"],
-.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Rozmiar"],
-.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Rozmiar"]{min-width:3ch; text-align:center}
+.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Szybkość"]{min-width:3ch; text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Umiejętności"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Umiejętności"]{min-width:28ch}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Premie"],
@@ -803,10 +793,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Atak"]{min-width:50ch}
 .tableWrap table[data-sheet="Bestiariusz"] th[data-col="Rozmiar"],
 .tableWrap table[data-sheet="Bestiariusz"] td[data-col="Rozmiar"]{min-width:7ch}
-.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Podręcznik"],
-.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Podręcznik"]{min-width:17ch}
-.tableWrap table[data-sheet="Bestiariusz"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Bestiariusz"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 
 /* Tabela Rozmiarow */
 .tableWrap table[data-sheet="Tabela Rozmiarów"] th[data-col="Rozmiar"],
@@ -827,8 +813,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Nazwa"],
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Gatunek"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Gatunek"]{min-width:26ch}
-.tableWrap table[data-sheet="Archetypy"] th[data-col="Koszt XP"],
-.tableWrap table[data-sheet="Archetypy"] td[data-col="Koszt XP"],
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Koszt PD"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Koszt PD"]{min-width:4ch; text-align:center}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Słowa Kluczowe"],
@@ -843,10 +827,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Ekwipunek"]{min-width:46ch}
 .tableWrap table[data-sheet="Archetypy"] th[data-col="Inne"],
 .tableWrap table[data-sheet="Archetypy"] td[data-col="Inne"]{min-width:10ch}
-.tableWrap table[data-sheet="Archetypy"] th[data-col="Podręcznik"],
-.tableWrap table[data-sheet="Archetypy"] td[data-col="Podręcznik"]{min-width:17ch}
-.tableWrap table[data-sheet="Archetypy"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Archetypy"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 
 /* Pakiety Wyniesienia */
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Nazwa"],
@@ -865,10 +845,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Pamiętna historia"],
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Ekwipunek"],
 .tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Ekwipunek"]{min-width:46ch}
-.tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Podręcznik"],
-.tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Podręcznik"]{min-width:17ch}
-.tableWrap table[data-sheet="Pakiety Wyniesienia"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Pakiety Wyniesienia"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 
 /* Premie z Przeszłości Frakcji */
 .tableWrap table[data-sheet="Premie z Przeszłości Frakcji"] th[data-col="Frakcja"],
@@ -1020,8 +996,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Psionika"] td[data-col="Słowa Kluczowe"]{min-width:28ch}
 .tableWrap table[data-sheet="Psionika"] th[data-col="Efekt"],
 .tableWrap table[data-sheet="Psionika"] td[data-col="Efekt"]{min-width:56ch}
-.tableWrap table[data-sheet="Psionika"] th[data-col="Opis"],
-.tableWrap table[data-sheet="Psionika"] td[data-col="Opis"],
 .tableWrap table[data-sheet="Psionika"] th[data-col="Wzmocnienie"],
 .tableWrap table[data-sheet="Psionika"] td[data-col="Wzmocnienie"]{min-width:26ch}
 
@@ -1036,7 +1010,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Modlitwy"] td[data-col="Wymagania"]{min-width:26ch}
 .tableWrap table[data-sheet="Modlitwy"] th[data-col="Efekt"],
 .tableWrap table[data-sheet="Modlitwy"] td[data-col="Efekt"]{min-width:56ch}
-
 
 /* Obrzędy — szerokości i wyrównania kolumn zakładki / Rites — tab column widths and alignments */
 .tableWrap table[data-sheet="Obrzędy"] th[data-col="Rodzaj"],
@@ -1083,18 +1056,6 @@ td.center{text-align:center}
   text-align:center;
 }
 
-.tableWrap table[data-sheet="Obrzędy"] th[data-col="Podręcznik"],
-.tableWrap table[data-sheet="Obrzędy"] td[data-col="Podręcznik"]{
-  min-width:17ch;
-  text-align:left;
-}
-
-.tableWrap table[data-sheet="Obrzędy"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Obrzędy"] td[data-col="Strona"]{
-  min-width:6ch;
-  text-align:center;
-}
-
 /* Talenty */
 .tableWrap table[data-sheet="Talenty"] th[data-col="Typ"],
 .tableWrap table[data-sheet="Talenty"] td[data-col="Typ"]{min-width:14ch}
@@ -1124,10 +1085,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bronie"] td[data-col="Obrażenia"]{text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Szybkostrzelność"],
 .tableWrap table[data-sheet="Bronie"] td[data-col="Szybkostrzelność"]{min-width:8ch; text-align:center}
-.tableWrap table[data-sheet="Bronie"] th[data-col="Podręcznik"],
-.tableWrap table[data-sheet="Bronie"] td[data-col="Podręcznik"]{min-width:17ch}
-.tableWrap table[data-sheet="Bronie"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Bronie"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Zasięg"],
 .tableWrap table[data-sheet="Bronie"] td[data-col="Zasięg"]{min-width:18ch; white-space:nowrap; text-align:center}
 .tableWrap table[data-sheet="Bronie"] th[data-col="Dostępność"],
@@ -1158,10 +1115,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Pancerze"] td[data-col="Słowa Kluczowe"]{min-width:28ch}
 .tableWrap table[data-sheet="Pancerze"] th[data-col="Koszt IM"],
 .tableWrap table[data-sheet="Pancerze"] td[data-col="Koszt IM"]{min-width:8ch; text-align:center}
-.tableWrap table[data-sheet="Pancerze"] th[data-col="Podręcznik"],
-.tableWrap table[data-sheet="Pancerze"] td[data-col="Podręcznik"]{min-width:17ch}
-.tableWrap table[data-sheet="Pancerze"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Pancerze"] td[data-col="Strona"]{min-width:6ch; text-align:center}
 .tableWrap table[data-sheet="Trafienia Krytyczne"] th[data-col="Rzut k66"],
 .tableWrap table[data-sheet="Trafienia Krytyczne"] td[data-col="Rzut k66"]{min-width:6ch; text-align:center; white-space:nowrap}
 .tableWrap table[data-sheet="Trafienia Krytyczne"] th[data-col="Opis"],
@@ -1180,8 +1133,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Nazwa"]{min-width:20ch; text-align:left}
 .tableWrap table[data-sheet="Skrót Zasad"] th[data-col="Opis"],
 .tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Opis"]{min-width:56ch; text-align:left}
-.tableWrap table[data-sheet="Skrót Zasad"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Skrót Zasad"] td[data-col="Strona"]{min-width:11ch; text-align:center; white-space:nowrap}
 .tableWrap table[data-sheet="Tryby Ognia"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Tryby Ognia"] td[data-col="Nazwa"]{min-width:20ch; text-align:left}
 .tableWrap table[data-sheet="Tryby Ognia"] th[data-col="Opis"],
@@ -1200,7 +1151,18 @@ td.center{text-align:center}
   table-layout:fixed;
   width:max-content;
 }
-/* Globalne wymuszenie szerokości i stylu kolumn źródłowych dla wszystkich zakładek */
+/* --- Kolumny źródłowe Podręcznik i Strona we wszystkich zakładkach / Source columns Podręcznik and Strona in every tab ---
+   PL: Ten blok jest JEDYNYM miejscem ustawiającym szerokość, wyrównanie i łamanie kolumn Podręcznik
+       (17ch, do lewej) i Strona (6ch, wyśrodkowana) — dla wszystkich zakładek, także tych, które
+       dopiero powstaną. Reguły pojedynczych zakładek nie powinny tych kolumn powtarzać: mają tę samą
+       szczegółowość, więc reguła postawiona wyżej w pliku zostaje po cichu nadpisana przez ten blok.
+       Gdyby któraś zakładka naprawdę potrzebowała wyjątku, reguła musi stać PONIŻEJ tego bloku
+       i trzeba ją opisać w DetaleLayout.md oraz Kolumny.md.
+   EN: This block is the ONLY place that sets the width, alignment and wrapping of the Podręcznik
+       (17ch, left) and Strona (6ch, centred) columns — for every tab, including future ones. Rules of
+       single tabs should not repeat these columns: they have the same specificity, so a rule placed
+       higher in the file is silently overridden by this block. Should a tab really need an exception,
+       its rule must sit BELOW this block and be described in DetaleLayout.md and Kolumny.md. */
 .tableWrap table[data-sheet] th[data-col="Podręcznik"],
 .tableWrap table[data-sheet] td[data-col="Podręcznik"]{
   min-width:17ch;
@@ -1211,8 +1173,7 @@ td.center{text-align:center}
 .tableWrap table[data-sheet] th[data-col="Strona"],
 .tableWrap table[data-sheet] td[data-col="Strona"]{
   min-width:6ch;
-  max-width:auto;
-  text-align:left;
+  text-align:center;
   white-space:normal;
 }
 .tableWrap table[data-sheet] td[data-col="Strona"]{
@@ -1223,29 +1184,13 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Notatki"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Notatki"] td[data-col="Nazwa"]{
   min-width:26ch;
-  max-width:auto;
   text-align:left;
   white-space:normal;
 }
 .tableWrap table[data-sheet="Notatki"] th[data-col="Opis"],
 .tableWrap table[data-sheet="Notatki"] td[data-col="Opis"]{
   min-width:56ch;
-  max-width:auto;
   text-align:left;
-  white-space:normal;
-}
-.tableWrap table[data-sheet="Notatki"] th[data-col="Podręcznik"],
-.tableWrap table[data-sheet="Notatki"] td[data-col="Podręcznik"]{
-  min-width:17ch;
-  max-width:none;
-  text-align:left;
-  white-space:normal;
-}
-.tableWrap table[data-sheet="Notatki"] th[data-col="Strona"],
-.tableWrap table[data-sheet="Notatki"] td[data-col="Strona"]{
-  min-width:6ch;
-  max-width:auto;
-  text-align:center;
   white-space:normal;
 }
 .slash{color:var(--code)}
@@ -1382,7 +1327,6 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Bronie Pojazdów"] th[data-col="Zasięg"], .tableWrap table[data-sheet="Bronie Pojazdów"] td[data-col="Zasięg"]{min-width:18ch;text-align:center;white-space:nowrap}
 .tableWrap table[data-sheet="Ekwipunek Pojazdów"] th[data-col="Opis"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] td[data-col="Opis"]{min-width:48ch;text-align:left}
 .tableWrap table[data-sheet="Ekwipunek Pojazdów"] th[data-col="Efekt"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] td[data-col="Efekt"]{min-width:56ch;text-align:left}
-.tableWrap table[data-sheet="Role W Pojeździe"] th[data-col="Strona"], .tableWrap table[data-sheet="Role W Pojeździe"] td[data-col="Strona"], .tableWrap table[data-sheet="Akcje Pojazdu"] th[data-col="Strona"], .tableWrap table[data-sheet="Akcje Pojazdu"] td[data-col="Strona"], .tableWrap table[data-sheet="Stany Pojazdów"] th[data-col="Strona"], .tableWrap table[data-sheet="Stany Pojazdów"] td[data-col="Strona"], .tableWrap table[data-sheet="Cechy Pojazdów"] th[data-col="Strona"], .tableWrap table[data-sheet="Cechy Pojazdów"] td[data-col="Strona"], .tableWrap table[data-sheet="Pojazdy"] th[data-col="Strona"], .tableWrap table[data-sheet="Pojazdy"] td[data-col="Strona"], .tableWrap table[data-sheet="Bronie Pojazdów"] th[data-col="Strona"], .tableWrap table[data-sheet="Bronie Pojazdów"] td[data-col="Strona"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] th[data-col="Strona"], .tableWrap table[data-sheet="Ekwipunek Pojazdów"] td[data-col="Strona"]{min-width:6ch;text-align:center}
 /* Dodatkowe arkusze pojazdów dostępne tylko dla admina / Additional vehicle sheets available only to admins */
 .tableWrap table[data-sheet="Uszkodzenia Pojazdów"] th[data-col="Rzut k66"],
 .tableWrap table[data-sheet="Uszkodzenia Pojazdów"] td[data-col="Rzut k66"]{min-width:6ch;text-align:center;white-space:nowrap}

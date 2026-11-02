@@ -283,8 +283,7 @@ lokalnego.
   - `--filter-on-bg-active`: `rgba(61,143,196,.20)` — tło mocniejsze (na czerni `#0C1D27`).
 
   Uzasadnienie doboru: błękit to jedyny obszar koła barw wolny od znaczeń już przypisanych — czerwień
-  należy do zasad walki, zieleń jest barwą wiodącą modułu, bursztyn `#E6B35C` oznacza różnice w oknie
-  porównania. Odcień sąsiaduje ze stalowym `--steel` (H213), ale stalowy ma nasycenie 14 % i czyta się
+  należy do zasad walki, a zieleń jest barwą wiodącą modułu. Odcień sąsiaduje ze stalowym `--steel` (H213), ale stalowy ma nasycenie 14 % i czyta się
   jako szarość, a `--filter-on` ma 53 % i czyta się jako błękit; pracują też w rozłącznych miejscach
   interfejsu (stalowy na zakładkach pojazdów, błękit na etykiecie filtru i nagłówkach kolumn).
   Kontrast `--filter-on` na `--panel` wynosi 5,92 : 1, czyli powyżej progu WCAG AA. Ciemne odcienie
@@ -307,7 +306,6 @@ lokalnego.
 - `rgba(207,245,220,.7)` — kolor `.sortMark` (znacznik sortowania).
 - `rgba(207,245,220,.92)` — kolor treści `.popoverBody`.
 - `rgba(0,0,0,.55)` — tło overlay w modalach.
-- `#E6B35C` — kolor `.compareDiff` (wyróżnienia w porównaniach).
 - Aktywny przycisk filtra kolumny (`.filterBtn.filter-active`) używa:
   - tła `var(--filter-on-bg-active)`,
   - poświaty `0 0 10px var(--filter-on-glow)` + obwódki `0 0 0 1px var(--filter-on-border)`,
@@ -326,7 +324,7 @@ lokalnego.
   barwę wiersza, na którym leży (pasy zebry oraz podświetlenie wiersza zaznaczonego), zamiast
   odcinać się prostokątem o stałym odcieniu. `accent-color` nie wystarcza, bo steruje wyłącznie
   wypełnieniem pola, a barwę znacznika dobiera przeglądarka.
-- Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” mają tekst w kolorze `#D2FAD2` (`--code`) z `opacity: .9`, aby były jaśniejsze niż standardowe zakładki, i są widoczne tylko po zaznaczeniu tego checkboxa. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
+- Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (klasa `.tab--character`) są widoczne tylko po zaznaczeniu tego checkboxa i są jaśniejsze niż standardowe zakładki: tekst `var(--code)` (`#D2FAD2`), tło `var(--character-bg)` (`rgba(210,250,210,.05)`), obwódka `rgba(210,250,210,.20)`, pełna nieprzezroczystość (`opacity: 1`); po najechaniu lub fokusie obwódka `rgba(210,250,210,.45)` i pierścień `0 0 0 2px rgba(210,250,210,.10)`; aktywna — tło `var(--character-bg-active)` (`rgba(210,250,210,.12)`), obwódka `var(--character-border)` (`rgba(210,250,210,.55)`) i poświata `0 0 0 2px rgba(210,250,210,.16), 0 0 18px var(--character-glow)`. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie z Przeszłości Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
 - Kontrolka DataVault „Czy wyświetlić zdezaktualizowane wpisy?” dla starych wpisów Bestiariusza używa koloru archiwalnego `var(--text-old)` / `#7f9b7f`: kontener i etykieta mają pełną nieprzezroczystość (`opacity: 1`), a zaznaczony checkbox używa `accent-color: var(--text-old)`.
 
@@ -336,8 +334,7 @@ lokalnego.
 - Znacznik `<img>` zawiera jawne `width` i `height`, a stały rozmiar slotu ogranicza skoki interfejsu podczas ładowania zasobu.
 
 ### 3) Zasady formatowania tekstu i wyjątki
-- We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` mają globalnie wymuszone parametry: `Podręcznik` (min 17ch, lewo, standardowe łamanie), `Strona` (min 6ch, lewo, standardowe łamanie, brak max-width).
-- Zakładka DataVault `Notatki` ma własne szerokości kolumn: `Nazwa` min 26ch, `Opis` min 56ch, `Podręcznik` min 17ch oraz `Strona` min 6ch z wyrównaniem do środka; długie wartości w tych kolumnach mogą zawijać się do kolejnych linii.
+- We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` ustawia jeden blok globalny w `style.css`: `Podręcznik` (min 17ch, do lewej, standardowe łamanie), `Strona` (min 6ch, **wyśrodkowana**, standardowe łamanie). Reguły pojedynczych zakładek tych kolumn nie powtarzają — reguła stojąca w pliku wyżej niż blok globalny zostałaby przez niego nadpisana. Wyjątek musiałby stać poniżej bloku globalnego.
 - Wartości kolumny `Strona` mają kolor `--code` (`#D2FAD2`), taki sam jak referencje `(str.)` (`.ref`).
 #### 3.1 Zwykły tekst i łamanie linii
 - Komórki używają `.celltext`:
@@ -350,11 +347,13 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 - `{{RED}}...{{/RED}}` → czerwony tekst (`.inline-red`, `color: var(--red)`).
 - `{{B}}...{{/B}}` → pogrubienie (`.inline-bold`).
 - `{{I}}...{{/I}}` → kursywa (`.inline-italic`).
+- `{{S}}...{{/S}}` → przekreślenie (`.inline-strike`).
 
 #### 3.3 Wyjątki na czerwony kolor (reguły logiczne)
 - **Słowa kluczowe** mają kolor czerwony (`.keyword-red`):
-  - Dotyczy kolumny `Słowa Kluczowe` w arkuszach: `Bestiariusz`, `Archetypy`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`, `Pakiety Wyniesienia`.
-  - Dotyczy kolumny `Nazwa` w arkuszu `Slowa_Kluczowe`.
+  - Dotyczy kolumny `Słowa Kluczowe` w arkuszach z `KEYWORD_SHEETS_COMMA_NEUTRAL`: `Bestiariusz`, `Archetypy`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie`, `Pojazdy`, `Bronie Pojazdów`, `Ekwipunek Pojazdów`.
+  - Dotyczy kolumny `Nazwa` w arkuszu `Słowa Kluczowe` (cała wartość na czerwono, także przecinki).
+  - Wyjątek: kolumna `Słowa Kluczowe` w `Pakiety Wyniesienia` jest formatowana jak zwykły tekst (kolor wyłącznie ze znaczników z Excela), mimo że arkusz figuruje w `KEYWORD_SHEETS_COMMA_NEUTRAL`.
 - **Ręczne markery** `{{RED}}` w danych wymuszają czerwony kolor niezależnie od kolumny.
 
 #### 3.4 Wyjątki na przecinki
@@ -385,7 +384,7 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
     (`var(--filter-on-bg-active)` → `var(--filter-on-bg)`),
   - aktywny stan przycisku filtra (`.filterBtn.filter-active`) z kropką `●`.
 - Nagłówek z aktywnym filtrem ustawia **osobno** `background-color: var(--panel)` i
-  `background-image` z czerwonym gradientem. Skrót `background` kasowałby nieprzezroczysty kolor
+  `background-image` z błękitnym gradientem (`var(--filter-on-bg-active)` → `var(--filter-on-bg)`). Skrót `background` kasowałby nieprzezroczysty kolor
   bazowy z reguły `thead th`, a sam gradient jest półprzezroczysty — przez przyklejony nagłówek
   prześwitywałaby wtedy treść przewijanych wierszy.
 - W drugim wierszu nagłówka komórka odpowiadająca kolumnie wyboru `✓` (`th.noFilterCell`) jest celowo pusta — usunięto placeholder „filtr...”, bo ta kolumna nie posiada filtra.
@@ -418,115 +417,79 @@ Dla komórki `.clampable`:
 
 ### 5) Wymagania szerokości kolumn (min-width)
 
-Wszystkie wymogi szerokości kolumn są ustawiane w `style.css` przy pomocy selektorów:
-`table[data-sheet="..."] th[data-col="..."]` i `td[data-col="..."]`.
-Poniżej pełna lista **1:1**.
+Szerokości, wyrównanie i łamanie kolumn ustawiają reguły w `style.css` (sekcja „Column tweaks”)
+z selektorami `.tableWrap table[data-sheet="..."] th[data-col="..."]` i `td[data-col="..."]`. Nagłówek
+kolumny ma zawsze te same wartości co jej komórki. Poniżej pełna lista **1:1** — wartości odczytane
+z obliczonych stylów w przeglądarce przy szerokości okna 1920 px; ten sam stan opisuje `Kolumny.md`.
 
-#### 5.1 Archetypy
-- `Nazwa`: **28ch**
-- `Frakcja`: **24ch**
-- `Poziom`: **6ch** (wycentrowane)
-- `Podręcznik`: **14ch**
-- `Strona`: **7ch** (wycentrowane)
+Zasady wspólne:
 
-#### 5.2 Bestiariusz
-- `Umiejętności`: **28ch**
-- `Atak`: **50ch**
-- `Premie`: **60ch**
-- `Zdolności`: **60ch**
-- `Zdolności Hordy`: **60ch**
-- `Opcje Hordy`: **60ch**
+- kolumna zaznaczania `✓`: `min-width` = `max-width` = `width` = **5ch**, wyśrodkowana;
+- `Podręcznik`: **17ch**, do lewej; `Strona`: **6ch**, **wyśrodkowana**, kolor `var(--code)` — oba
+  ustawia wyłącznie blok globalny `.tableWrap table[data-sheet] th|td[data-col="Podręcznik"|"Strona"]`,
+  wspólny dla wszystkich zakładek;
+- `Kary do ST` i `Eksplozje Pojazdów` mają `table-layout: fixed` i szerokość tabeli `max-content`.
 
-#### 5.3 Cechy / Stany / Slowa_Kluczowe
-- `Nazwa`: **26ch**
-- `Typ`: **14ch**
-- `Opis`: **56ch**
+Oznaczenia: `L` — do lewej, `Ś` — wyśrodkowane, `nw` — bez łamania (`white-space: nowrap`),
+`max` — `max-width`; `auto` — brak reguły szerokości.
 
-#### 5.4 Augumentacje / Ekwipunek
-- `Nazwa`: **28ch**
-- `Typ`: **16ch**
-- `Dostępność`: **14ch**
-- `Koszt`: **12ch**
-- `Koszt IM`: **12ch**
-- `Efekt`: **48ch**
-- `Opis`: **48ch**
-- `Słowa Kluczowe`: **28ch**
-
-#### 5.5 Psionika
-- `Nazwa`: **26ch**
-- `Typ`: **18ch**
-- `ST`: **9ch** (wycentrowane)
-- `Koszt PD`: **9ch** (wycentrowane)
-- `Zasięg`: **14ch**
-- `Aktywacja`: **20ch**
-- `Czas Trwania`: **20ch**
-- `Wiele Celów`: **26ch**
-- `Wzmocnienie`: **26ch**
-- `Słowa Kluczowe`: **26ch**
-- `Efekt`: **48ch**
-
-#### 5.6 Modlitwy
-- `Nazwa`: **28ch**
-- `Koszt PD`: **9ch** (wycentrowane)
-- `Wymagania`: **26ch**
-- `Efekt`: **54ch**
-
-#### 5.7 Talenty
-- `Nazwa`: **28ch**
-- `Koszt PD`: **9ch** (wycentrowane)
-- `Wymagania`: **32ch**
-- `Opis`: **36ch**
-- `Efekt`: **46ch**
-
-#### 5.8 Bronie
-- `Nazwa`: **30ch**
-- `Typ`: **16ch**
-- `Rodzaj`: **16ch**
-- `DK`: **8ch**
-- `PP`: **8ch**
-- `Obrażenia`: **8ch**
-- `Szybkostrzelność`: **8ch**
-- `Podręcznik`: **8ch**
-- `Strona`: **8ch** (wycentrowane)
-- `Zasięg`: **18ch** (bez zawijania, `white-space: nowrap`)
-- `Dostępność`: **14ch**
-- `Koszt`: **12ch**
-- `Koszt IM`: **12ch**
-- `Słowa Kluczowe`: **28ch**
-- `Cechy`: **32ch**
-
-#### 5.9 Pancerze
-- `Nazwa`: **30ch**
-- `Typ`: **14ch**
-- `Podręcznik`: **14ch**
-- `Strona`: **8ch** (wycentrowane)
-- `WP`: **8ch** (wycentrowane)
-- `Dostępność`: **14ch**
-- `Koszt`: **12ch**
-- `Koszt IM`: **12ch**
-- `Słowa Kluczowe`: **26ch**
-- `Cechy`: **32ch**
-
-#### 5.10 Hordy
-- `Nazwa zasady`: **26ch**
-- `Opis zasady`: **60ch**
-- `Przykład`: **60ch**
-
-#### 5.11 Kary do ST
-- `Ile celów/akcji`: **20ch** (wycentrowane)
-- `Kara do ST`: **20ch** (wycentrowane)
+| Zakładka | Kolumny (min-width / wyrównanie) |
+| --- | --- |
+| Notatki | Nazwa 26ch/L; Opis 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Bestiariusz | Typ 14ch/L; Nazwa 26ch/L; Zagrożenie 5ch/Ś; Słowa Kluczowe 28ch/L; S 3ch/Ś; Wt 3ch/Ś; Zr 3ch/Ś; I 3ch/Ś; SW 3ch/Ś; Int 3ch/Ś; Ogd 3ch/Ś; Odporność (w tym WP) 3ch/Ś; Wartość Pancerza 3ch/Ś; Obrona 3ch/Ś; Żywotność 3ch/Ś; Odporność Psychiczna 3ch/Ś; Umiejętności 28ch/L; Premie 60ch/L; Zdolności 60ch/L; Atak 50ch/L; Zdolności Hordy 60ch/L; Opcje Hordy 60ch/L; Upór 3ch/Ś; Odwaga 3ch/Ś; Szybkość 3ch/Ś; Rozmiar 7ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Hordy | Nazwa zasady 26ch/L; Opis zasady 60ch/L; Przykład 60ch/L |
+| Specjalne Bonusy Wrogów | Frakcja 26ch/L; Rodzaj 26ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L |
+| Tabela Rozmiarów | Rozmiar 8ch/L; Modyfikator Testu Ataku 26ch/Ś; Zmniejszenie Poziomu Ukrycia 26ch/Ś; Przykłady 85ch/L |
+| Gatunki | Gatunek 26ch/L; Koszt PD 4ch/Ś; Atrybuty 26ch/L; Umiejętności 26ch/L; Szybkość 4ch/Ś; Rozmiar 10ch/Ś; Zdolności gatunkowe 46ch/L |
+| Archetypy | Poziom 2ch/Ś; Frakcja 26ch/L; Nazwa 26ch/L; Gatunek 26ch/L; Koszt PD 4ch/Ś; Słowa Kluczowe 26ch/L; Atrybuty Archetypu 26ch/L; Umiejętności Archetypu 26ch/L; Zdolność Archetypu 46ch/L; Ekwipunek 46ch/L; Inne 10ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Pakiety Wyniesienia | Nazwa 26ch/L; Opis 56ch/L; Koszt PD 26ch/L; Wymagania 26ch/L; Słowa Kluczowe 26ch/L; Premia Wpływu 26ch/L; Pamiętna historia 46ch/L; Ekwipunek 46ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Premie z Przeszłości Frakcji | Frakcja 26ch/L; Premia 1 56ch/L; Premia 2 56ch/L; Premia 3 56ch/L |
+| Słowa Kluczowe Frakcji | Frakcja 28ch/L; Słowo Kluczowe 28ch/L; Opis 26ch/L; Efekt 56ch/L |
+| Specjalne Bonusy Frakcji | Frakcja 26ch/L; Rodzaj 26ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L |
+| Implanty Astartes | Numer 4ch/Ś; Nazwa 26ch/L; Opis 26ch/L |
+| Zakony Pierwszego Powołania | Nazwa 26ch/L; Opis 56ch/L; Zaleta 26ch/L; Wada 26ch/L |
+| Cechy | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L |
+| Stany | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L |
+| Słowa Kluczowe | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L |
+| Talenty | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; Wymagania 26ch/L; Opis 26ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Modlitwy | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; Wymagania 26ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Psionika | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; ST 10ch/Ś; Aktywacja 10ch/L; Czas Trwania 15ch/L; Zasięg 8ch/Ś; Wiele Celów 4ch/Ś; Słowa Kluczowe 28ch/L; Efekt 56ch/L; Wzmocnienie 26ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Augumentacje | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L; Koszt 3ch/Ś; Dostępność 3ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Ekwipunek | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L; Koszt 3ch/Ś; Dostępność 3ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Pancerze | Typ 14ch/L; Nazwa 26ch/L; WP 4ch/Ś; Cechy 32ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Bronie | Rodzaj 14ch/L; Typ 14ch/L; Nazwa 26ch/L; Obrażenia auto/Ś; DK auto/Ś; PP auto/Ś; Zasięg 18ch/Ś nw; Szybkostrzelność 8ch/Ś; Cechy 32ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Obrzędy | Rodzaj 14ch/L; Typ 18ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 56ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Trafienia Krytyczne | Rzut k66 6ch/Ś nw; Opis 56ch/L; Efekt 26ch/L; Chwała 26ch/L |
+| Groza Osnowy | Rzut k66 6ch/Ś nw; Efekt 56ch/L |
+| Skrót Zasad | Typ 32ch/L; Nazwa 20ch/L; Opis 56ch/L; Strona 6ch/Ś |
+| Tryby Ognia | Nazwa 20ch/L; Opis 56ch/L |
+| Kary do ST | Ile celów/akcji 20ch/Ś max 20ch; Kara do ST 20ch/Ś max 20ch |
+| Uszkodzenia Pojazdów | Rzut k66 6ch/Ś nw; Efekt 56ch/L |
+| Eksplozje Pojazdów | Rozmiar Pojazdu 20ch/L max 20ch; Zasięg Rażenia 14ch/Ś max 14ch; Obrażenia 14ch/Ś max 14ch |
+| Role W Pojeździe | Rola 14ch/L; Akcje Pojazdu 60ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Akcje Pojazdu | Nazwa 26ch/L; Opis 56ch/L; Przykład 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Stany Pojazdów | Nazwa 26ch/L; Opis 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Cechy Pojazdów | Typ 22ch/L; Nazwa 26ch/L; Opis 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Pojazdy | Typ 14ch/L; Nazwa 30ch/L; Koszt 10ch/Ś; Dostępność 10ch/Ś; Szybkość 10ch/Ś; Manewrowość 10ch/Ś; Odporność 10ch/Ś; Żywotność 10ch/Ś; Rozmiar 10ch/Ś; Słowa Kluczowe 28ch/L; Skład Załogi 22ch/L; Cechy 32ch/L; Uzbrojenie 36ch/L; Wyposażenie 32ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Bronie Pojazdów | Rodzaj 14ch/L; Typ 14ch/L; Nazwa 26ch/L; Obrażenia 8ch/Ś; DK 8ch/Ś; PP 8ch/Ś; Zasięg 18ch/Ś nw; Szybkostrzelność 8ch/Ś; Cechy 32ch/L; Koszt 8ch/Ś; Dostępność 8ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Ekwipunek Pojazdów | Typ 14ch/L; Nazwa 26ch/L; Opis 48ch/L; Efekt 56ch/L; Koszt 8ch/Ś; Dostępność 8ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
 
 ### 6) Wymagania układu (layout)
-- **Siatka główna**: `main` jest gridem z kolumnami `360px` (panel filtrów) i `1fr` (workspace).
+- **Siatka główna**: `main` jest gridem z kolumnami `180px` (panel narzędzi) i `1fr` (workspace), z odstępem `12px` i marginesem wewnętrznym `12px`.
 - **Responsywność**: poniżej `980px` layout przechodzi na jedną kolumnę (panel nad tabelą).
 - **Sticky nagłówki**: przykleja się cały `<thead>` (`position: sticky; top: 0`), a nie każdy wiersz nagłówka z osobna — komórki mają `position: static`. Wymaga to `border-top: 0` na `.dataTable`, inaczej scalone obramowanie górnej krawędzi przesuwa nagłówek o pół piksela.
 - **Checkbox w panelu filtrów**: `.checkboxRow` ma uppercase i kolor bazowy `--text2`, natomiast opis `.checkboxLabel` jest jaśniejszy (`color: var(--code)`, `opacity: .9`). Wariant `.checkboxRow--combat` wymusza czerwony tekst `--red` i czerwony akcent (`accent-color: var(--red)`).
 
 ### 7) Stosowanie tych zasad w innych zakładkach
 Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następujące:
-1. **Najpierw zdefiniuj min-width** w `style.css` (sekcja „Column tweaks”).
-2. **Dopasuj formatowanie danych** w `app.js` (np. wyjątki na czerwony kolor, przecinki, zakresy).
-3. Upewnij się, że nowe kolumny respektują **reguły clampowania** (>9 linii).
+1. **Najpierw zdefiniuj min-width** w `style.css` (sekcja „Column tweaks”) — jedna reguła na kolumnę;
+   dwie reguły o tej samej szczegółowości oznaczają, że działa tylko późniejsza.
+2. **Nie definiuj `Podręcznik` ani `Strona`** w regule zakładki — obie kolumny ustawia blok globalny
+   (17ch do lewej / 6ch wyśrodkowana). Wyjątek musi stać w pliku poniżej bloku globalnego.
+3. **Dopasuj formatowanie danych** w `app.js` (np. wyjątki na czerwony kolor, przecinki, zakresy).
+4. Upewnij się, że nowe kolumny respektują **reguły clampowania** (>9 linii).
+5. Wartości w tym pliku i w `Kolumny.md` wpisuj na podstawie obliczonych stylów w przeglądarce
+   (`getComputedStyle`), a nie lektury CSS — kaskada potrafi unieważnić regułę bez żadnego błędu.
 
 
 ## Moduł — GeneratorNPC
@@ -624,6 +587,26 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
 - **Pusty wynik filtra.** Gdy żadna nazwa nie pasuje, lista pokazuje nieaktywną opcję „Brak wpisów pasujących do filtra” w domyślnym, przygaszonym stylu nieaktywnych opcji przeglądarki.
 - Etykieta pola notatki w „Wybór bazowy” brzmi „Notatka (będzie widoczna na karcie)” i ma zwykły styl `label` (`font-size: 0.85rem`, `var(--text2)`); na telefonie zawija się do dwóch linii.
 - Sekcja „Źródło danych” w panelu bocznym (`.panel-data-source`) ma celowo mniejszą typografię (`.data-source-text`: `font-size: 0.82rem`, `line-height: 1.55`) i wymuszone zawijanie długiego linku (`.data-source-link`: `overflow-wrap: anywhere`, `word-break: break-word`), aby URL `data.json` nie wychodził poza ramkę.
+
+
+### 6) Szerokości kolumn tabel podglądu
+
+Tabele podglądu pod listami wyboru mają w `GeneratorNPC/style.css` własne szerokości minimalne
+(klasy `min-col-*` nadawane przez `renderOrderedTable()`; nazwa klasy powstaje z etykiety kolumny).
+Wartości są niezależne od DataVault. Wszystkie kolumny są wyrównane do lewej.
+
+| Tabela (`data-sheet`) | Kolumny (min-width) |
+| --- | --- |
+| `Bestiariusz` (podgląd bazowy) | kolumna klucza: `width` = `min-width` = `max-width` = 25ch; kolumna wartości: `width: auto`; tabela `width: 100%`, `min-width: 0` |
+| `Bronie` | `Nazwa` 30ch; `Obrażenia`, `DK`, `PP`, `Szybkostrzelność`, `Podręcznik`, `Strona` 8ch; `Zasięg` 18ch; `Cechy` 32ch |
+| `Pancerze` | `Nazwa` 30ch; `Podręcznik` 14ch; `Strona`, `WP` 8ch; `Cechy` 32ch |
+| `Augumentacje`, `Ekwipunek` | `Nazwa` 28ch; `Efekt` 48ch |
+| `Talenty` | `Nazwa` 28ch; `Efekt` 46ch |
+| `Psionika` | `Nazwa` 26ch; `ST` 9ch; `Zasięg` 14ch; `Aktywacja`, `Czas trwania` 20ch; `Wiele Celów`, `Wzmocnienie` 26ch; `Efekt` 48ch |
+| `Modlitwy` | `Nazwa` 28ch; `Efekt` 54ch |
+
+Kolumny bez reguły (np. `Słowa Kluczowe` w `Bronie` i `Pancerze`) mają szerokość wynikającą z treści.
+Tabele wielokolumnowe zachowują `min-width: max-content` i przewijają się w bok wewnątrz swojej karty.
 
 ---
 
