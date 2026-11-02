@@ -31,7 +31,7 @@ Nie ma osobnego pliku HTML dla admina. Tryb admina jest wykrywany przez parametr
 | --- | --- |
 | `DataVault/index.html` | Szkielet UI: bramka dostępu, topbar, panel filtrów, workspace, zakładki, tabela, popover, modal i import skryptów. |
 | `DataVault/app.js` | Główna logika modułu: i18n, Firebase flow, stan UI, normalizacja danych, filtry, sortowanie, render tabel, porównanie, import XLSX. |
-| `DataVault/style.css` | Style widoku: layout, topbar, panel narzędzi, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym zakładki `Obrzędy` i arkuszy pojazdowych. |
+| `DataVault/style.css` | Style widoku: layout, topbar, panel narzędzi, tabela, zakładki, modal, popover, menu filtrów, kolory, responsywność i konfiguracja kolumn arkuszy, w tym zakładek `Obrzędy`, `Mutacje` i arkuszy pojazdowych. |
 | `DataVault/xlsxCanonicalParser.js` | Kanoniczny parser XLSX w przeglądarce oparty o JSZip i pliki XML pakietu XLSX. |
 | `DataVault/build_json.py` | Generator `data.json` z wiersza poleceń (Python, bez zależności zewnętrznych); musi dawać wynik bajtowo identyczny z generowaniem w przeglądarce. |
 | `DataVault/config/FirebaseREADME.md` | Modułowa instrukcja konfiguracji Firebase dla DataVault. |
@@ -327,6 +327,7 @@ Kod dzieli arkusze na grupy logiczne.
 - `Słowa Kluczowe Frakcji`,
 - `Pakiety Wyniesienia`,
 - `Specjalne Bonusy Frakcji`,
+- `Mutacje`,
 - `Implanty Astartes`,
 - `Zakony Pierwszego Powołania`.
 
@@ -457,6 +458,12 @@ Przepływ:
 9. Przeglądarka pobiera `data.json`.
 10. Po krótkim opóźnieniu pobiera `firebase-import.json`.
 11. Widok roboczy jest aktualizowany na podstawie nowych danych.
+
+Oba parsery czytają **każdy** element `<row>` arkusza, także pusty, a puste wiersze odrzucają dopiero
+przy budowie rekordów. Arkusz, w którym Excel zapisał setki tysięcy pustych, sformatowanych wierszy
+(np. po sformatowaniu całych kolumn), daje poprawne dane, ale generowanie w przeglądarce trwa wtedy
+około minuty i blokuje stronę. Dlatego przed generowaniem należy sprawdzić każdy arkusz skrótem
+`Ctrl + End` w Excelu i usunąć puste wiersze pod danymi (procedura w `DataVault/docs/README.md`).
 
 ## Zgodność trzech ścieżek generowania danych
 
@@ -815,7 +822,8 @@ zwinięta grupa nie generuje żadnych węzłów DOM.
 | Funkcja / stała | Rola |
 | --- | --- |
 | `isCardLayout()` | Sprawdza `matchMedia("(max-width: 720px)")`. |
-| `groupingColumnFor(sheetName, cols)` | Kolumna grupująca: najpierw kolumna z `DEFAULT_VIEW_CONFIG` dla arkusza, potem `Typ`, potem `Rodzaj`, w ostateczności `null`. |
+| `groupingColumnFor(sheetName, cols)` | Kolumna grupująca: najpierw kolumna z `DEFAULT_VIEW_CONFIG` dla arkusza, potem kolumna z `GROUPING_COLUMN_OVERRIDES`, potem `Typ`, potem `Rodzaj`, w ostateczności `null`. |
+| `GROUPING_COLUMN_OVERRIDES` | Mapa „zakładka → kolumna grupująca” dla zakładek bez wpisu w `DEFAULT_VIEW_CONFIG` i bez kolumn `Typ`/`Rodzaj`. Obecnie `{ "Mutacje": "Stopień Nasilenia Mutacji" }` — karty „Mutacji” są grupowane na Subtelne, Pomniejsze i Ciężkie mutacje (kolejność grup idzie za sortowaniem po `LP`). Mapa nie zmienia widoku domyślnego ani filtrów i nie zawiera listy wartości, więc nowe wartości kolumny tworzą nowe grupy same. |
 | `buildRenderPlan(filtered, cols)` | Buduje plan renderowania; grupy powstają po filtrowaniu i sortowaniu, więc kolejność grup idzie za sortowaniem. |
 | `renderGroupHeader(group, cols)` | Wiersz `tr.groupRow` z przyciskiem `.groupHead`, nazwą, licznikiem pozycji i znacznikiem zaznaczenia. |
 | `expandedGroupsFor(sheetName)` | Zbiór rozwiniętych grup arkusza; **nie** trafia do `sessionStorage`, więc po odświeżeniu lista startuje zwinięta. |
@@ -1029,6 +1037,9 @@ poza nim i ukrycie przełącznika ich nie dotyczy.
 | Sortowanie | Kliknij nagłówek kolumny. | Tabela sortuje dane po tej kolumnie. |
 | Porównanie | Zaznacz 2+ wiersze i kliknij porównanie. | Otwiera się modal porównania. |
 | Bestiariusz old | W adminie włącz checkbox starych wpisów. | Rekordy `stan=old` w Bestiariuszu stają się widoczne. |
+| Mutacje — widoczność | Odznacz, potem zaznacz checkbox zakładek tworzenia postaci. | Zakładka `MUTACJE` jest ukryta, potem widoczna w kolorze grupy, między `SPECJALNE BONUSY FRAKCJI` a `IMPLANTY ASTARTES`. |
+| Mutacje — tabela | Otwórz zakładkę `Mutacje` na szerokim ekranie. | 7 kolumn (`Rzut k66` wyśrodkowany bez łamania, `Stopień Nasilenia Mutacji` 22ch, `Nazwa` 26ch, `Opis` i `Efekt` 56ch, `Podręcznik`, `Strona` wyśrodkowana); wiersze w kolejności `LP`; słowa `CHAOS` na czerwono. |
+| Mutacje — telefon | Otwórz zakładkę na ekranie węższym niż 720 px. | Trzy zwinięte grupy: `Subtelne mutacje`, `Pomniejsze mutacje`, `Ciężkie mutacje`. |
 
 ---
 
@@ -1065,7 +1076,7 @@ There is no separate admin HTML file. Admin mode is detected through the `admin=
 | --- | --- |
 | `DataVault/index.html` | UI skeleton: access gate, topbar, filter panel, workspace, tabs, table, popover, modal, and script imports. |
 | `DataVault/app.js` | Main module logic: i18n, Firebase flow, UI state, data normalization, filters, sorting, table rendering, comparison, XLSX import. |
-| `DataVault/style.css` | View styles: layout, topbar, tools panel, table, tabs, modal, popover, filter menu, colors, responsiveness, and sheet column configuration, including the `Obrzędy` tab. |
+| `DataVault/style.css` | View styles: layout, topbar, tools panel, table, tabs, modal, popover, filter menu, colors, responsiveness, and sheet column configuration, including the `Obrzędy` and `Mutacje` tabs and the vehicle sheets. |
 | `DataVault/xlsxCanonicalParser.js` | Browser-side canonical XLSX parser based on JSZip and XLSX package XML files. |
 | `DataVault/build_json.py` | Command-line `data.json` generator (Python, no external dependencies); its output must be byte-identical to generation in the browser. |
 | `DataVault/config/FirebaseREADME.md` | Module Firebase setup guide for DataVault. |
@@ -1361,6 +1372,7 @@ The code divides sheets into logical groups.
 - `Słowa Kluczowe Frakcji`,
 - `Pakiety Wyniesienia`,
 - `Specjalne Bonusy Frakcji`,
+- `Mutacje`,
 - `Implanty Astartes`,
 - `Zakony Pierwszego Powołania`.
 
@@ -1491,6 +1503,12 @@ Flow:
 9. The browser downloads `data.json`.
 10. After a short delay, the browser downloads `firebase-import.json`.
 11. The working view is updated from the new data.
+
+Both parsers read **every** `<row>` element of a sheet, empty ones included, and drop empty rows only
+while building records. A sheet in which Excel stored hundreds of thousands of empty, formatted rows
+(e.g. after formatting whole columns) yields correct data, but browser generation then takes about a
+minute and blocks the page. Therefore each sheet should be checked with `Ctrl + End` in Excel before
+generating, and the empty rows below the data deleted (procedure in `DataVault/docs/README.md`).
 
 ## Consistency of the three data-generation paths
 
@@ -1846,7 +1864,8 @@ so a collapsed group produces no DOM nodes at all.
 | Function / constant | Role |
 | --- | --- |
 | `isCardLayout()` | Checks `matchMedia("(max-width: 720px)")`. |
-| `groupingColumnFor(sheetName, cols)` | The grouping column: first the column from `DEFAULT_VIEW_CONFIG` for the sheet, then `Typ`, then `Rodzaj`, otherwise `null`. |
+| `groupingColumnFor(sheetName, cols)` | The grouping column: first the column from `DEFAULT_VIEW_CONFIG` for the sheet, then the column from `GROUPING_COLUMN_OVERRIDES`, then `Typ`, then `Rodzaj`, otherwise `null`. |
+| `GROUPING_COLUMN_OVERRIDES` | A "sheet → grouping column" map for sheets with no `DEFAULT_VIEW_CONFIG` entry and no `Typ`/`Rodzaj` columns. Currently `{ "Mutacje": "Stopień Nasilenia Mutacji" }` — the `Mutacje` cards are grouped into subtle, minor and major mutations (the group order follows the `LP` sort). The map changes neither the default view nor the filters and holds no list of values, so new column values form new groups on their own. |
 | `buildRenderPlan(filtered, cols)` | Builds the render plan; groups are formed after filtering and sorting, so their order follows the sorting. |
 | `renderGroupHeader(group, cols)` | A `tr.groupRow` row with a `.groupHead` button, the name, the item count and a selection mark. |
 | `expandedGroupsFor(sheetName)` | The set of expanded groups of a sheet; **not** persisted to `sessionStorage`, so the list starts collapsed after a refresh. |
@@ -2060,3 +2079,6 @@ buttons live outside it, so hiding the selector does not affect them.
 | Sorting | Click a column header. | Table sorts by that column. |
 | Comparison | Select 2+ rows and click comparison. | Comparison modal opens. |
 | Bestiary old records | In admin mode, enable old entries checkbox. | `stan=old` Bestiary records become visible. |
+| Mutacje — visibility | Untick, then tick the character creation tabs checkbox. | The `MUTACJE` tab is hidden, then visible in the group colour, between `SPECJALNE BONUSY FRAKCJI` and `IMPLANTY ASTARTES`. |
+| Mutacje — table | Open the `Mutacje` tab on a wide screen. | 7 columns (`Rzut k66` centred without wrapping, `Stopień Nasilenia Mutacji` 22ch, `Nazwa` 26ch, `Opis` and `Efekt` 56ch, `Podręcznik`, `Strona` centred); rows in `LP` order; `CHAOS` words in red. |
+| Mutacje — phone | Open the tab on a screen narrower than 720 px. | Three collapsed groups: `Subtelne mutacje`, `Pomniejsze mutacje`, `Ciężkie mutacje`. |

@@ -921,6 +921,26 @@ td.center{text-align:center}
 .tableWrap table[data-sheet="Specjalne Bonusy Wrogów"] th[data-col="Opis"],
 .tableWrap table[data-sheet="Specjalne Bonusy Wrogów"] td[data-col="Opis"]{min-width:56ch}
 
+/* Mutacje — szerokości i wyrównania kolumn zakładki / Mutations — tab column widths and alignments */
+/* Rzut k66: wąska, wyśrodkowana, bez łamania — jak w Trafieniach Krytycznych i Grozie Osnowy
+   k66 roll: narrow, centred, no wrapping — as in Critical Hits and Perils of the Warp */
+.tableWrap table[data-sheet="Mutacje"] th[data-col="Rzut k66"],
+.tableWrap table[data-sheet="Mutacje"] td[data-col="Rzut k66"]{min-width:6ch; text-align:center; white-space:nowrap}
+/* Stopień: 22ch mieści „Pomniejsze mutacje” w jednej linii, a nagłówek w dwóch
+   Severity: 22ch fits "Pomniejsze mutacje" on one line and the header on two */
+.tableWrap table[data-sheet="Mutacje"] th[data-col="Stopień Nasilenia Mutacji"],
+.tableWrap table[data-sheet="Mutacje"] td[data-col="Stopień Nasilenia Mutacji"]{min-width:22ch; text-align:left}
+.tableWrap table[data-sheet="Mutacje"] th[data-col="Nazwa"],
+.tableWrap table[data-sheet="Mutacje"] td[data-col="Nazwa"]{min-width:26ch; text-align:left}
+/* Opis i Efekt: standardowa szerokość długich opisów, jak w zakładce Obrzędy
+   Description and Effect: the standard width for long texts, as in the Rites tab */
+.tableWrap table[data-sheet="Mutacje"] th[data-col="Opis"],
+.tableWrap table[data-sheet="Mutacje"] td[data-col="Opis"],
+.tableWrap table[data-sheet="Mutacje"] th[data-col="Efekt"],
+.tableWrap table[data-sheet="Mutacje"] td[data-col="Efekt"]{min-width:56ch; text-align:left}
+/* Podręcznik i Strona nie mają tu reguł: działa blok globalny (17ch do lewej / 6ch wyśrodkowana)
+   Podręcznik and Strona have no rules here: the global block applies (17ch left / 6ch centred) */
+
 /* Cechy / Stany / Słowa kluczowe */
 .tableWrap table[data-sheet="Cechy"] th[data-col="Nazwa"],
 .tableWrap table[data-sheet="Cechy"] td[data-col="Nazwa"],

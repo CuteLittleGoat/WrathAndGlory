@@ -167,6 +167,20 @@ Dokument opisuje **aktualny wygląd** kolumn wszystkich zakładek modułu `DataV
 | Opis | 56ch | brak | lewo | standard |
 | Efekt | 26ch | brak | lewo | standard |
 
+## Mutacje
+
+| Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |
+| --- | --- | --- | --- | --- |
+| Rzut k66 | 6ch | brak | środek | bez łamania |
+| Stopień Nasilenia Mutacji | 22ch | brak | lewo | standard |
+| Nazwa | 26ch | brak | lewo | standard |
+| Opis | 56ch | brak | lewo | standard |
+| Efekt | 56ch | brak | lewo | standard |
+| Podręcznik | 17ch | brak | lewo | standard |
+| Strona | 6ch | brak | środek | standard |
+
+- Zakładka z grupy tworzenia postaci. Na telefonie karty są grupowane według kolumny `Stopień Nasilenia Mutacji` (`GROUPING_COLUMN_OVERRIDES`).
+
 ## Implanty Astartes
 
 | Kolumna | Min-width | Max-width | Wyrównanie | Łamanie |

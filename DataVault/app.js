@@ -328,6 +328,13 @@ const applyLanguage = (lang) => {
 const KEYWORD_SHEETS_COMMA_NEUTRAL = new Set(["Bestiariusz", "Archetypy", "Psionika", "Augumentacje", "Ekwipunek", "Pancerze", "Bronie", "Pakiety Wyniesienia", "Pojazdy", "Bronie Pojazdów", "Ekwipunek Pojazdów"]);
 const KEYWORD_SHEET_ALL_RED = "Słowa Kluczowe";
 const ADMIN_ONLY_SHEETS = new Set(["Bestiariusz", "Trafienia Krytyczne", "Groza Osnowy", "Hordy", "Specjalne Bonusy Wrogów", "Notatki", "Uszkodzenia Pojazdów", "Eksplozje Pojazdów"]);
+// --- Zakładki grupy „tworzenie postaci” / Character-creation tab group ---
+// PL: Zakładki z tego zbioru są widoczne tylko po zaznaczeniu checkboxa toggleCharacterTabs
+//     i dostają klasę tab--character (jasnozielony kolor). Kolejność na pasku zakładek pochodzi
+//     z _meta.sheetOrder, czyli z kolejności arkuszy w Repozytorium.xlsx.
+// EN: Tabs in this set are shown only when the toggleCharacterTabs checkbox is ticked and get the
+//     tab--character class (light green colour). Their order on the tab bar comes from
+//     _meta.sheetOrder, i.e. the sheet order in Repozytorium.xlsx.
 const CHARACTER_CREATION_SHEETS = new Set([
   "Tabela Rozmiarów",
   "Gatunki",
@@ -336,6 +343,7 @@ const CHARACTER_CREATION_SHEETS = new Set([
   "Słowa Kluczowe Frakcji",
   "Pakiety Wyniesienia",
   "Specjalne Bonusy Frakcji",
+  "Mutacje",
   "Implanty Astartes",
   "Zakony Pierwszego Powołania",
 ]);
@@ -2315,11 +2323,27 @@ function formatMessage(template, values){
 // The grouping column needs no separate configuration: DEFAULT_VIEW_CONFIG already designates one
 // column per sheet — the one the default view filters on, i.e. the one splitting the data into
 // categories. Sheets with no entry fall back to "Typ" or "Rodzaj" when they have such a column.
+
+// --- Kolumny grupujące dla zakładek bez kolumny „Typ” i „Rodzaj” / Grouping columns for sheets without a "Typ" or "Rodzaj" column ---
+// PL: Wskazuje kolumnę, po której układ kart na telefonie grupuje wiersze, gdy zakładka nie ma wpisu
+//     w DEFAULT_VIEW_CONFIG ani kolumny Typ/Rodzaj. Nie zmienia widoku domyślnego ani filtrów i nie
+//     zawiera listy wartości, więc nowe wartości kolumny (np. nowy stopień mutacji) tworzą nowe grupy same.
+// EN: Names the column the phone card layout groups rows by when a sheet has no DEFAULT_VIEW_CONFIG
+//     entry and no Typ/Rodzaj column. It changes neither the default view nor the filters and holds no
+//     list of values, so new column values (e.g. a new mutation severity) form new groups on their own.
+const GROUPING_COLUMN_OVERRIDES = { "Mutacje": "Stopień Nasilenia Mutacji" };
+
 function groupingColumnFor(sheetName, cols){
   const config = getDefaultConfigForSheet(sheetName);
   if (config){
     const configured = cols.find(col => canonKey(col) in config);
     if (configured) return configured;
+  }
+  const override = Object.entries(GROUPING_COLUMN_OVERRIDES)
+    .find(([sheet]) => canonKey(sheet) === canonKey(sheetName))?.[1];
+  if (override){
+    const overrideCol = cols.find(col => canonKey(col) === canonKey(override));
+    if (overrideCol) return overrideCol;
   }
   return cols.find(col => canonKey(col) === canonKey("Typ"))
       || cols.find(col => canonKey(col) === canonKey("Rodzaj"))

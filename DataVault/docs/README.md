@@ -173,7 +173,8 @@ w kategorię rozwija ją i pokazuje karty; kolejne stuknięcie zwija ją z powro
 
 Dzięki temu cała zakładka mieści się na dwóch–trzech ekranach zamiast na kilkudziesięciu, a od razu
 widać, jak dane są rozłożone. Kategorie biorą się z kolumny, która dla danej zakładki dzieli dane na
-grupy — zwykle jest to `Typ` albo `Rodzaj`.
+grupy — zwykle jest to `Typ` albo `Rodzaj`. W zakładce `Mutacje` kategorie to stopnie nasilenia:
+`Subtelne mutacje`, `Pomniejsze mutacje` i `Ciężkie mutacje`.
 
 Grupowanie włącza się tylko wtedy, gdy ma sens: potrzeba przynajmniej kilkunastu wpisów i co najmniej
 dwóch kategorii. Krótkie zakładki zostają zwykłą listą kart.
@@ -363,6 +364,21 @@ Panel narzędzi może zawierać przełączniki grup zakładek, np.:
 
 Odznaczenie grupy ukrywa jej zakładki. Zaznaczenie pokazuje je ponownie.
 
+Zakładki każdej grupy mają własny kolor, żeby od razu było widać, do której grupy należą:
+
+- **tworzenie postaci** (checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?”) — jaśniejsza
+  zieleń: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Pakiety Wyniesienia`, `Premie z Przeszłości
+  Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`, `Mutacje`, `Implanty Astartes`,
+  `Zakony Pierwszego Powołania`;
+- **zasady walki** — czerwień;
+- **pojazdy** — stalowa szarość.
+
+Zakładka `Mutacje` to tabela mutacji z podręcznika: `Rzut k66` (zakres wyniku rzutu), `Stopień
+Nasilenia Mutacji` (subtelne, pomniejsze albo ciężkie), `Nazwa`, `Opis`, `Efekt` oraz `Podręcznik`
+i `Strona`. Wiersze są ułożone tak jak w podręczniku: najpierw subtelne, potem pomniejsze, na końcu
+ciężkie mutacje, każda grupa od najniższego wyniku rzutu. Wiersze „Rzut na tabeli … mutacji” odsyłają
+do kolejnej tabeli, dlatego nie mają opisu ani efektu.
+
 To nie usuwa danych, tylko zmienia widoczność zakładek w interfejsie.
 
 ## Tryb użytkownika i tryb admina
@@ -418,6 +434,14 @@ Po kliknięciu:
 `data.json` jest lokalnym backupem i plikiem pomocniczym.
 
 `firebase-import.json` jest plikiem przeznaczonym do importu w Firebase Realtime Database.
+
+**Zanim klikniesz — sprawdź puste wiersze w Excelu.** W każdej zakładce `Repozytorium.xlsx` naciśnij
+`Ctrl + End`. Kursor powinien stanąć w ostatniej komórce z danymi. Jeżeli ląduje setki tysięcy wierszy
+niżej, arkusz ma pod danymi puste, ale sformatowane wiersze (zdarza się po sformatowaniu całych kolumn).
+Generator i tak je pominie, ale ich wczytanie może trwać około minuty, a przeglądarka może w tym czasie
+pytać o „niereagującą stronę”. Usuń je: kliknij numer pierwszego pustego wiersza, naciśnij
+`Ctrl + Shift + Strzałka w dół`, kliknij prawym przyciskiem → `Usuń` (nie „Wyczyść zawartość”) i zapisz
+plik. Formatowanie nakładaj na zakres z danymi, a nie na całe kolumny.
 
 ### Jak generator przenosi formatowanie z Excela
 
@@ -699,7 +723,8 @@ expands it and shows the cards; tapping again collapses it.
 
 This makes a whole sheet fit into two or three screens instead of dozens, and the spread of the data is
 visible at a glance. The categories come from the column that splits the data for a given sheet —
-usually `Typ` or `Rodzaj`.
+usually `Typ` or `Rodzaj`. In the `Mutacje` sheet the categories are the severity levels: `Subtelne
+mutacje`, `Pomniejsze mutacje` and `Ciężkie mutacje`.
 
 Grouping only kicks in where it helps: at least a dozen entries and at least two categories are needed.
 Short sheets stay a plain list of cards.
@@ -889,6 +914,21 @@ The tools panel may contain sheet group toggles, for example:
 
 Disabling a group hides its tabs. Enabling it shows them again.
 
+The tabs of each group have their own colour, so it is clear at a glance which group they belong to:
+
+- **character creation** (checkbox „Czy wyświetlić zakładki dotyczące tworzenia postaci?” — "Show the
+  character creation tabs?") — lighter green: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Pakiety
+  Wyniesienia`, `Premie z Przeszłości Frakcji`, `Słowa Kluczowe Frakcji`, `Specjalne Bonusy Frakcji`,
+  `Mutacje`, `Implanty Astartes`, `Zakony Pierwszego Powołania`;
+- **combat rules** — red;
+- **vehicles** — steel grey.
+
+The `Mutacje` (Mutations) tab is the rulebook mutation table: `Rzut k66` (the d66 roll range), `Stopień
+Nasilenia Mutacji` (severity: subtle, minor or major), `Nazwa`, `Opis`, `Efekt`, plus `Podręcznik` and
+`Strona`. Rows follow the rulebook order: subtle first, then minor, then major mutations, each group
+from the lowest roll. The "Rzut na tabeli … mutacji" rows point to the next table, so they have no
+description or effect.
+
 This does not delete data; it only changes tab visibility in the interface.
 
 ## User mode and admin mode
@@ -944,6 +984,14 @@ After clicking it:
 `data.json` is a local backup and helper file.
 
 `firebase-import.json` is meant for import into Firebase Realtime Database.
+
+**Before you click — check for empty rows in Excel.** In every tab of `Repozytorium.xlsx` press
+`Ctrl + End`. The cursor should land in the last cell with data. If it lands hundreds of thousands of rows
+lower, the sheet has empty but formatted rows below the data (this happens after formatting whole
+columns). The generator skips them anyway, but reading them can take about a minute and the browser may
+meanwhile ask about an "unresponsive page". Delete them: click the number of the first empty row, press
+`Ctrl + Shift + Down Arrow`, right-click → `Delete` (not "Clear contents") and save the file. Apply
+formatting to the data range, not to whole columns.
 
 ### How the generator carries formatting over from Excel
 

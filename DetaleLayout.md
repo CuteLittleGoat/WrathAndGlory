@@ -316,7 +316,7 @@ lokalnego.
   barwę wiersza, na którym leży (pasy zebry oraz podświetlenie wiersza zaznaczonego), zamiast
   odcinać się prostokątem o stałym odcieniu. `accent-color` nie wystarcza, bo steruje wyłącznie
   wypełnieniem pola, a barwę znacznika dobiera przeglądarka.
-- Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (klasa `.tab--character`) są widoczne tylko po zaznaczeniu tego checkboxa i są jaśniejsze niż standardowe zakładki: tekst `var(--code)` (`#D2FAD2`), tło `var(--character-bg)` (`rgba(210,250,210,.05)`), obwódka `rgba(210,250,210,.20)`, pełna nieprzezroczystość (`opacity: 1`); po najechaniu lub fokusie obwódka `rgba(210,250,210,.45)` i pierścień `0 0 0 2px rgba(210,250,210,.10)`; aktywna — tło `var(--character-bg-active)` (`rgba(210,250,210,.12)`), obwódka `var(--character-border)` (`rgba(210,250,210,.55)`) i poświata `0 0 0 2px rgba(210,250,210,.16), 0 0 18px var(--character-glow)`. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie z Przeszłości Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
+- Zakładki powiązane z checkboxem „Czy wyświetlić zakładki dotyczące tworzenia postaci?” (klasa `.tab--character`) są widoczne tylko po zaznaczeniu tego checkboxa i są jaśniejsze niż standardowe zakładki: tekst `var(--code)` (`#D2FAD2`), tło `var(--character-bg)` (`rgba(210,250,210,.05)`), obwódka `rgba(210,250,210,.20)`, pełna nieprzezroczystość (`opacity: 1`); po najechaniu lub fokusie obwódka `rgba(210,250,210,.45)` i pierścień `0 0 0 2px rgba(210,250,210,.10)`; aktywna — tło `var(--character-bg-active)` (`rgba(210,250,210,.12)`), obwódka `var(--character-border)` (`rgba(210,250,210,.55)`) i poświata `0 0 0 2px rgba(210,250,210,.16), 0 0 18px var(--character-glow)`. Dotyczy: `Tabela Rozmiarów`, `Gatunki`, `Archetypy`, `Premie z Przeszłości Frakcji`, `Słowa Kluczowe Frakcji`, `Pakiety Wyniesienia`, `Specjalne Bonusy Frakcji`, `Mutacje`, `Implanty Astartes`, `Zakony Pierwszego Powołania`.
 - Checkbox „Czy wyświetlić zakładki dotyczące zasad walki?” oraz zakładki `Trafienia Krytyczne`, `Groza Osnowy`, `Skrót Zasad`, `Tryby Ognia`, `Kary do ST` mają tekst w kolorze `#d74b4b` (`--red`).
 - Kontrolka DataVault „Czy wyświetlić zdezaktualizowane wpisy?” dla starych wpisów Bestiariusza używa koloru archiwalnego `var(--text-old)` / `#7f9b7f`: kontener i etykieta mają pełną nieprzezroczystość (`opacity: 1`), a zaznaczony checkbox używa `accent-color: var(--text-old)`.
 
@@ -440,6 +440,7 @@ Oznaczenia: `L` — do lewej, `Ś` — wyśrodkowane, `nw` — bez łamania (`wh
 | Premie z Przeszłości Frakcji | Frakcja 26ch/L; Premia 1 56ch/L; Premia 2 56ch/L; Premia 3 56ch/L |
 | Słowa Kluczowe Frakcji | Frakcja 28ch/L; Słowo Kluczowe 28ch/L; Opis 26ch/L; Efekt 56ch/L |
 | Specjalne Bonusy Frakcji | Frakcja 26ch/L; Rodzaj 26ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L |
+| Mutacje | Rzut k66 6ch/Ś nw; Stopień Nasilenia Mutacji 22ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
 | Implanty Astartes | Numer 4ch/Ś; Nazwa 26ch/L; Opis 26ch/L |
 | Zakony Pierwszego Powołania | Nazwa 26ch/L; Opis 56ch/L; Zaleta 26ch/L; Wada 26ch/L |
 | Cechy | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L |
