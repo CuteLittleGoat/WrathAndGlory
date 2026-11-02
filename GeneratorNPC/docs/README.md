@@ -104,9 +104,9 @@ Obszar roboczy zawiera podgląd i tabele wyboru. Każda sekcja wyboru ma nad lis
 5. Przejrzyj `Podgląd bazowy Bestiariusza`.
 6. Zmień statystyki, które chcesz dostosować.
 7. Dopisz notatkę w polu `Notatka (będzie widoczna na karcie)`, jeżeli jest potrzebna.
-8. Włącz lub wyłącz moduły w sekcji `Moduły aktywne`.
+8. W sekcji `Moduły aktywne` zaznacz moduły, których potrzebujesz. Po otwarciu modułu wszystkie są wyłączone.
 9. W aktywnych modułach wybierz konkretne elementy, np. broń, pancerz albo talent.
-10. Kliknij `Generuj kartę`.
+10. Kliknij `Generuj kartę`. Na kartę trafiają tylko moduły, które są w tej chwili zaznaczone.
 11. Sprawdź kartę w nowym oknie lub nowej karcie przeglądarki.
 12. Wydrukuj kartę albo użyj jej jako podglądu podczas sesji.
 
@@ -306,7 +306,25 @@ Dostępne moduły:
 | Psionika | Dodaje moce psioniczne. |
 | Modlitwy | Dodaje modlitwy. |
 
-Wyłączony moduł znika z obszaru roboczego i nie jest brany pod uwagę przy generowaniu karty.
+Po otwarciu modułu i po kliknięciu `Reset` **wszystkie moduły są wyłączone** — na ekranie jest tylko
+podgląd bazowy Bestiariusza, a karta pokazuje przeciwnika dokładnie tak, jak jest zapisany
+w Bestiariuszu (z jego atakami, WP i cechami).
+
+Co się dzieje po kliknięciu przełącznika:
+
+- **Zaznaczenie** — pod podglądem bazowym pojawia się sekcja wyboru tego modułu (lista, pole
+  wyszukiwania, tabela i ewentualny przełącznik opisu). Wybrane w niej pozycje trafią na kartę.
+- **Odznaczenie** — sekcja znika, a moduł **zapomina wybór**: odznacza wszystkie pozycje na liście,
+  czyści pole wyszukiwania nad nią i wyłącza jego przełącznik opisu (`Czy dodać pełen opis?` albo
+  opisy cech). Wyłączony moduł nie trafia na kartę ani do ulubionych.
+- **Ponowne zaznaczenie** — sekcja wraca pusta. Jeżeli chcesz z niej znów skorzystać, wybierz pozycje
+  od nowa.
+
+Przykład: zaznaczasz `Psionika`, wybierasz dwie moce i generujesz kartę — na końcu karty jest sekcja
+`Psionika`. Odznaczasz `Psionika` i generujesz kartę jeszcze raz — sekcji `Psionika` już nie ma.
+
+Przy module `Broń` wyłączenie oznacza powrót do ataków z Bestiariusza, a przy module `Pancerz` —
+powrót do WP i cech z Bestiariusza.
 
 ## Broń
 
@@ -421,6 +439,11 @@ Może zostać odtworzone:
 - wybrane moduły dodatkowe,
 - ustawienia przełączników.
 
+Ulubiony wpis zapamiętuje wybór tylko z modułów, które przy zapisie były zaznaczone. Po wczytaniu
+moduły zaznaczone w tym wpisie dostają swoje pozycje i ustawienia opisu, a moduły odznaczone są
+czyste — tak jakby zostały właśnie wyłączone. Dotyczy to także wpisów zapisanych dawniej: jeżeli
+moduł był w nich wyłączony, jego wybór nie wraca.
+
 Jeżeli dane źródłowe DataVault zmieniły się od czasu zapisania ulubionego, stary wpis może nie odtworzyć się idealnie.
 
 ## Generowanie karty
@@ -434,6 +457,10 @@ komunikat `Wybierz rekord bestiariusza, aby wygenerować kartę.` i karta się n
 komunikat, wybierz przeciwnika i kliknij `Generuj kartę` ponownie.
 
 Karta otwiera się w osobnym oknie albo osobnej karcie przeglądarki.
+
+Na kartę trafiają wyłącznie moduły zaznaczone w sekcji `Moduły aktywne`. Gdy żaden moduł nie jest
+zaznaczony, karta pokazuje przeciwnika tak, jak jest zapisany w Bestiariuszu (z uwzględnieniem
+statystyk zmienionych w podglądzie bazowym i notatki).
 
 Karta może zawierać:
 
@@ -489,8 +516,9 @@ Przed drukiem sprawdź, czy wszystkie potrzebne moduły są widoczne i czy karta
 
 ## Reset
 
-Przycisk `Reset` czyści aktualną konfigurację i wraca do stanu początkowego. Czyści też wszystkie
-pola wyszukiwania nad listami, więc listy znów pokazują wszystkie wpisy.
+Przycisk `Reset` czyści aktualną konfigurację i wraca do stanu początkowego: żaden przeciwnik nie jest
+wybrany, wszystkie moduły w `Moduły aktywne` są wyłączone, a wszystkie przełączniki opisów —
+odznaczone. Czyści też wszystkie pola wyszukiwania nad listami, więc listy znów pokazują wszystkie wpisy.
 
 Użyj go, gdy chcesz zacząć budować nowego NPC od zera.
 
@@ -537,6 +565,8 @@ informacja, że potwierdzenie zostało pominięte.
 | Żółty pasek „Zmiany (...) zostały właśnie zastąpione danymi z bazy" | Wcześniej pracowałeś bez połączenia z bazą, a teraz baza wróciła i nadpisała stan modułu. | Sprawdź listę ulubionych. Czego brakuje, dodaj ponownie — moduł celowo nie scala takich zmian sam, żeby nie skasować pracy z drugiego urządzenia. |
 | Żółty pasek „Moduł pracuje na pamięci tego urządzenia" | Ta kopia modułu nie ma konfiguracji bazy. | To ustawienie, a nie awaria. Jeżeli ulubione mają być wspólne, poproś admina o konfigurację. |
 | Ulubiony wpis wczytuje inne elementy niż wcześniej | Dane DataVault zmieniły kolejność albo zawartość. | Sprawdź konfigurację ręcznie i zapisz nowy ulubiony wpis. |
+| Po ponownym zaznaczeniu modułu jego lista jest pusta | Odznaczenie modułu kasuje jego wybór — tak ma być. | Wybierz pozycje ponownie. |
+| Na karcie brakuje sekcji, choć wcześniej wybrałeś w niej pozycje | Moduł jest odznaczony w `Moduły aktywne`, więc nie trafia na kartę. | Zaznacz moduł, wybierz pozycje i wygeneruj kartę ponownie. |
 | Brak opisu cechy | W danych nie ma opisu dla tej cechy. | Możesz nadal używać karty; brakuje tylko podpowiedzi. |
 | Moduł działa, ale w narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, moduł działa. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
 
@@ -546,8 +576,8 @@ informacja, że potwierdzenie zostało pominięte.
 2. Przejdź bramkę K.O.Z.A., jeżeli się pojawi.
 3. Wybierz bazowego NPC z Bestiariusza (wpisz fragment nazwy w pole nad listą, żeby szybciej go znaleźć).
 4. Zmień statystyki i teksty, jeżeli potrzeba.
-5. Włącz potrzebne moduły.
-6. Wybierz broń, pancerz i dodatki (także tu możesz zawęzić listy polem wyszukiwania).
+5. Włącz potrzebne moduły (na starcie wszystkie są wyłączone).
+6. Wybierz broń, pancerz i dodatki (także tu możesz zawęzić listy polem wyszukiwania). Pamiętaj, że odznaczenie modułu kasuje jego wybór.
 7. Dopisz notatkę, która ma się znaleźć na karcie.
 8. Zapisz konfigurację w ulubionych, jeżeli będzie używana ponownie.
 9. Kliknij `Generuj kartę`.
@@ -661,9 +691,9 @@ above its list (described in the "Searching the lists" chapter):
 5. Review `Base preview — Bestiary`.
 6. Change statistics you want to adjust.
 7. Add a note in the `Notatka (będzie widoczna na karcie)` field if needed.
-8. Enable or disable modules in `Active modules`.
+8. In `Active modules`, tick the modules you need. When the module opens, all of them are off.
 9. In active modules, select specific items, such as weapon, armor, or talent.
-10. Click `Generate card`.
+10. Click `Generate card`. Only the modules ticked at that moment reach the card.
 11. Check the card in the new browser window or tab.
 12. Print the card or use it as a session reference.
 
@@ -865,7 +895,25 @@ Available modules:
 | Psionics | Adds psychic powers. |
 | Prayers | Adds prayers. |
 
-A disabled module disappears from the workspace and is not included when generating the card.
+When the module opens and after clicking `Reset`, **all modules are off** — the screen shows only the
+base Bestiary preview, and the card shows the enemy exactly as stored in the Bestiary (with its
+attacks, AR and traits).
+
+What happens when you click a toggle:
+
+- **Ticking** — the module's selection section appears below the base preview (list, search field,
+  table and, if present, the description toggle). Items selected there reach the card.
+- **Unticking** — the section disappears and the module **forgets its selection**: it deselects every
+  item on the list, clears the search field above it and switches off its description toggle
+  (`Czy dodać pełen opis?` / "Include full description?" or the trait descriptions). A disabled module
+  reaches neither the card nor favorites.
+- **Ticking again** — the section comes back empty. To use it again, select the items anew.
+
+Example: you tick `Psionics`, select two powers and generate the card — the card ends with a
+`Psionika` section. You untick `Psionics` and generate the card again — the `Psionika` section is gone.
+
+For the `Weapons` module, switching it off means going back to the Bestiary attacks; for the `Armor`
+module — going back to the Bestiary AR and traits.
 
 ## Weapons
 
@@ -981,6 +1029,11 @@ It can restore:
 - selected additional modules,
 - toggle settings.
 
+A favorite stores the selection only from modules that were ticked when it was saved. After loading,
+the modules ticked in that favorite get their items and description settings, while the unticked
+modules are clean — as if they had just been switched off. This also applies to older favorites: if
+a module was off in them, its selection does not come back.
+
 If source DataVault data changed since the favorite was saved, an old favorite may not restore perfectly.
 
 ## Generating the card
@@ -994,6 +1047,9 @@ If no enemy is selected on the Bestiary list (the list shows `Lista Przeciwnikó
 card.") appears and no card opens. Close the message, select an enemy and click `Generate card` again.
 
 The card opens in a separate browser window or tab.
+
+Only the modules ticked in `Active modules` reach the card. When no module is ticked, the card shows
+the enemy as stored in the Bestiary (including the statistics changed in the base preview and the note).
 
 The card may include:
 
@@ -1050,7 +1106,8 @@ Before printing, check whether all needed modules are visible and whether the ca
 
 ## Reset
 
-`Reset` clears the current configuration and returns to the initial state. It also clears every
+`Reset` clears the current configuration and returns to the initial state: no enemy is selected,
+every module in `Active modules` is off and every description toggle is unticked. It also clears every
 search field above the lists, so the lists show every entry again.
 
 Use it when you want to start building a new NPC from scratch.
@@ -1098,6 +1155,8 @@ confirmation was skipped.
 | Amber bar "Changes (...) have just been replaced by database data" | You were working without a database connection earlier, and now the database is back and has overwritten the module state. | Check the favorites list. Add back whatever is missing — the module deliberately does not merge such changes by itself, so it cannot erase work done on another device. |
 | Amber bar "The module runs on this device's storage" | This copy of the module has no database configuration. | That is a setting, not a failure. If favorites are meant to be shared, ask the admin for the configuration. |
 | Favorite loads different elements than before | DataVault order or content changed. | Check configuration manually and save a new favorite. |
+| After ticking a module again, its list is empty | Unticking a module erases its selection — this is intended. | Select the items again. |
+| A section is missing from the card although you selected items in it earlier | The module is unticked in `Active modules`, so it does not reach the card. | Tick the module, select the items and generate the card again. |
 | Trait description is missing | The data has no description for that trait. | You can still use the card; only the hint is missing. |
 | The module works but developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, the module works. To clear it, disable the ad blocker for this page. |
 
@@ -1107,8 +1166,8 @@ confirmation was skipped.
 2. Pass the K.O.Z.A. gate if it appears.
 3. Select a base NPC from Bestiary (type part of the name into the field above the list to find it faster).
 4. Change statistics and text if needed.
-5. Enable needed modules.
-6. Select weapons, armor, and extras (here too you can narrow the lists with the search field).
+5. Enable needed modules (all of them are off at the start).
+6. Select weapons, armor, and extras (here too you can narrow the lists with the search field). Remember that unticking a module erases its selection.
 7. Add the note that should appear on the card.
 8. Save the configuration as a favorite if it will be reused.
 9. Click `Generate card`.

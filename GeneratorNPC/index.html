@@ -67,9 +67,13 @@
 
         <section class="panel">
           <h2 data-i18n="activeModulesTitle">Moduły aktywne</h2>
+          <!-- Wszystkie moduły są domyślnie wyłączone; Reset przywraca ten stan, bo czyta defaultChecked.
+               Odznaczenie modułu kasuje jego wybór (patrz clearModule w skrypcie). / All modules are
+               disabled by default; Reset restores this state because it reads defaultChecked. Unticking a
+               module erases its selection (see clearModule in the script). -->
           <div class="checkbox-list">
             <label class="checkbox">
-              <input type="checkbox" checked data-module-toggle="weapon" />
+              <input type="checkbox" data-module-toggle="weapon" />
               <span data-i18n="moduleWeapon">Broń — ustaw ataki i cechy.</span>
             </label>
             <label class="checkbox">
@@ -2198,6 +2202,64 @@ const translations = {
         });
       };
 
+      // --- Kontrolki modułów aktywnych w jednym miejscu / Active-module controls in one place ---
+      // PL: Dla każdego modułu: lista wyboru, checkbox opisu („opisy cech” albo „pełen opis”), grupa,
+      //     pod którą stan tego checkboxa trafia do ulubionych, i funkcja rysująca tabelę podglądu.
+      //     Z mapy korzystają odznaczenie modułu, generowanie karty i wczytywanie ulubionych — dzięki
+      //     temu żaden moduł nie zostanie pominięty, a nowy moduł dopisuje się w jednym miejscu.
+      // EN: For every module: its selection list, its description checkbox ("trait descriptions" or
+      //     "full description"), the group under which that checkbox is stored in favourites, and its
+      //     preview-table renderer. Used by module unticking, card generation and favourite loading —
+      //     so no module can be skipped, and a new module is added in one place.
+      const MODULE_CONTROLS = {
+        weapon: { select: weaponSelect, detailsToggle: weaponTraitDescriptionsToggle, detailsGroup: "traitDescriptions", render: renderWeaponTable },
+        armor: { select: armorSelect, detailsToggle: armorTraitDescriptionsToggle, detailsGroup: "traitDescriptions", render: renderArmorTable },
+        augmentations: { select: augmentationsSelect, detailsToggle: augmentationsFullDetailsToggle, detailsGroup: "fullDetails", render: renderAugmentationsTable },
+        equipment: { select: equipmentSelect, detailsToggle: equipmentFullDetailsToggle, detailsGroup: "fullDetails", render: renderEquipmentTable },
+        talents: { select: talentsSelect, detailsToggle: talentsFullDetailsToggle, detailsGroup: "fullDetails", render: renderTalentsTable },
+        psionics: { select: psionicsSelect, detailsToggle: psionicsFullDetailsToggle, detailsGroup: "fullDetails", render: renderPsionicsTable },
+        prayers: { select: prayersSelect, detailsToggle: prayersFullDetailsToggle, detailsGroup: "fullDetails", render: renderPrayersTable },
+      };
+
+      // --- Czy moduł jest włączony w „Moduły aktywne” / Whether a module is ticked in "Active modules" ---
+      const isModuleActive = (key) =>
+        moduleToggles.some((toggle) => toggle.dataset.moduleToggle === key && toggle.checked);
+
+      // --- Wyczyszczenie modułu do stanu jak po Resecie / Clearing a module to its post-Reset state ---
+      // PL: Wywoływane przy odznaczeniu modułu i przy wczytaniu ulubionego, w którym moduł był wyłączony.
+      //     Wyłączony moduł nie może trzymać ukrytego wyboru, bo ten trafiałby na kartę i do ulubionych,
+      //     choć użytkownik go nie widzi. Czyścimy listę, pole filtra (z niebieską etykietą) i checkbox
+      //     opisu. Przed załadowaniem danych lista i tabela nie są przebudowywane, żeby nie zasłonić
+      //     komunikatu „Ładowanie danych...”.
+      // EN: Called when a module is unticked and when loading a favourite in which the module was disabled.
+      //     A disabled module must not keep a hidden selection, because it would reach the card and
+      //     favourites even though the user cannot see it. We clear the list, the filter field (with its
+      //     blue label) and the description checkbox. Before data loads the list and the table are not
+      //     rebuilt, so the "Loading data..." message is not covered.
+      const clearModule = (key) => {
+        const controls = MODULE_CONTROLS[key];
+        const list = listFilters[key];
+        if (!controls || !list) {
+          return;
+        }
+        list.input.value = "";
+        updateListFilterIndicator(list);
+        controls.detailsToggle.checked = controls.detailsToggle.defaultChecked;
+        if (!state.data) {
+          return;
+        }
+        refreshModuleOptions(key, { selectedIndices: [] });
+        controls.render();
+      };
+
+      // --- Wybrane rekordy tylko z modułów włączonych / Selected records only from enabled modules ---
+      // PL: Bezpiecznik generowania karty: moduł wyłączony działa jak moduł bez wyboru. Wyłączona Broń
+      //     zostawia ataki z Bestiariusza, a wyłączony Pancerz — WP i cechy z Bestiariusza.
+      // EN: Card-generation safety net: a disabled module behaves like a module with no selection. A
+      //     disabled Weapon module keeps the Bestiary attacks, a disabled Armor module — the Bestiary AV and traits.
+      const getActiveModuleRecords = (key, records) =>
+        isModuleActive(key) ? getSelectedRecords(records, getSelectedIndices(MODULE_CONTROLS[key].select)) : [];
+
       const setArmorSelectionEnabled = (enabled) => {
         state.armorSelectionBlocked = !enabled;
         armorSelect.disabled = !enabled;
@@ -2538,15 +2600,16 @@ const translations = {
           bestiaryName: getRecordName(state.bestiary[selectedIndex], selectedIndex),
           bestiaryOverrides: serializeBestiaryOverrides(state.bestiaryOverrides),
           notes: bestiaryNotes.value,
-          modules: {
-            weaponIds: getSelectedIndices(weaponSelect),
-            armorIds: getSelectedIndices(armorSelect),
-            augmentationsIds: getSelectedIndices(augmentationsSelect),
-            equipmentIds: getSelectedIndices(equipmentSelect),
-            talentsIds: getSelectedIndices(talentsSelect),
-            psionicsIds: getSelectedIndices(psionicsSelect),
-            prayersIds: getSelectedIndices(prayersSelect),
-          },
+          // PL: Wybór zapisujemy tylko z modułów włączonych — wyłączony moduł ma pustą listę <klucz>Ids.
+          //     Nazwy pól (weaponIds, armorIds, …) są stałe, więc stare i nowe wpisy mają ten sam format.
+          // EN: The selection is stored only for enabled modules — a disabled module gets an empty <key>Ids.
+          //     The field names (weaponIds, armorIds, …) are fixed, so old and new entries share one format.
+          modules: Object.fromEntries(
+            Object.entries(MODULE_CONTROLS).map(([key, controls]) => [
+              `${key}Ids`,
+              isModuleActive(key) ? getSelectedIndices(controls.select) : [],
+            ])
+          ),
           toggles: {
             moduleVisibility: Object.fromEntries(
               moduleToggles.map((toggle) => [toggle.dataset.moduleToggle, toggle.checked])
@@ -2633,31 +2696,21 @@ const translations = {
         });
         updateModuleVisibility();
 
-        // Przebudowa list z zestawem z ulubionego: zapisane pozycje są zaznaczone i widoczne mimo filtrów.
-        // Rebuild the lists with the favourite's set: stored items are selected and visible despite filters.
-        refreshModuleOptions("weapon", { selectedIndices: payload.modules?.weaponIds || [] });
-        refreshModuleOptions("armor", { selectedIndices: payload.modules?.armorIds || [] });
-        refreshModuleOptions("augmentations", { selectedIndices: payload.modules?.augmentationsIds || [] });
-        refreshModuleOptions("equipment", { selectedIndices: payload.modules?.equipmentIds || [] });
-        refreshModuleOptions("talents", { selectedIndices: payload.modules?.talentsIds || [] });
-        refreshModuleOptions("psionics", { selectedIndices: payload.modules?.psionicsIds || [] });
-        refreshModuleOptions("prayers", { selectedIndices: payload.modules?.prayersIds || [] });
-
-        weaponTraitDescriptionsToggle.checked = Boolean(toggles.traitDescriptions?.weapon);
-        armorTraitDescriptionsToggle.checked = Boolean(toggles.traitDescriptions?.armor);
-        augmentationsFullDetailsToggle.checked = Boolean(toggles.fullDetails?.augmentations);
-        equipmentFullDetailsToggle.checked = Boolean(toggles.fullDetails?.equipment);
-        talentsFullDetailsToggle.checked = Boolean(toggles.fullDetails?.talents);
-        psionicsFullDetailsToggle.checked = Boolean(toggles.fullDetails?.psionics);
-        prayersFullDetailsToggle.checked = Boolean(toggles.fullDetails?.prayers);
-
-        renderArmorTable();
-        renderWeaponTable();
-        renderAugmentationsTable();
-        renderEquipmentTable();
-        renderTalentsTable();
-        renderPsionicsTable();
-        renderPrayersTable();
+        // PL: Moduł włączony w ulubionym dostaje zapisany wybór i stan checkboxa opisu; pozycje są
+        //     zaznaczone i widoczne mimo wpisanych filtrów. Moduł wyłączony jest czyszczony do stanu jak
+        //     po Resecie — także wtedy, gdy wpis zapisany przed tą regułą zawiera dla niego wybór.
+        // EN: A module enabled in the favourite gets the stored selection and description checkbox; the
+        //     items are selected and visible despite typed filters. A disabled module is cleared to its
+        //     post-Reset state — also when an entry saved before this rule holds a selection for it.
+        Object.entries(MODULE_CONTROLS).forEach(([key, controls]) => {
+          if (!isModuleActive(key)) {
+            clearModule(key);
+            return;
+          }
+          refreshModuleOptions(key, { selectedIndices: payload.modules?.[`${key}Ids`] || [] });
+          controls.detailsToggle.checked = Boolean(toggles[controls.detailsGroup]?.[key]);
+          controls.render();
+        });
       };
 
       const getTraitNamesFromRecords = (records) => {
@@ -3227,8 +3280,18 @@ const translations = {
         talentsSelect.addEventListener("change", renderTalentsTable);
         psionicsSelect.addEventListener("change", renderPsionicsTable);
         prayersSelect.addEventListener("change", renderPrayersTable);
+        // PL: Odznaczenie modułu kasuje jego wybór, filtr i checkbox opisu, a dopiero potem chowa kartę —
+        //     wyłączony moduł nie trafia na kartę NPC ani do ulubionych. Zaznaczenie tylko pokazuje kartę.
+        // EN: Unticking a module erases its selection, filter and description checkbox, and only then
+        //     hides its card — a disabled module reaches neither the NPC card nor favourites. Ticking
+        //     only shows the card.
         moduleToggles.forEach((toggle) => {
-          toggle.addEventListener("change", updateModuleVisibility);
+          toggle.addEventListener("change", () => {
+            if (!toggle.checked) {
+              clearModule(toggle.dataset.moduleToggle);
+            }
+            updateModuleVisibility();
+          });
         });
         resetButton.addEventListener("click", () => {
           // Reset czyści też wszystkie filtry nazw, więc listy wracają do pełnej zawartości.
@@ -3345,13 +3408,14 @@ const translations = {
             alert(translations[currentLanguage].messages.selectBestiaryAlert);
             return;
           }
-          const selectedWeapons = getSelectedRecords(state.weapons, getSelectedIndices(weaponSelect));
-          const selectedArmor = getSelectedRecords(state.armor, getSelectedIndices(armorSelect));
-          const selectedAugmentations = getSelectedRecords(state.augmentations, getSelectedIndices(augmentationsSelect));
-          const selectedEquipment = getSelectedRecords(state.equipment, getSelectedIndices(equipmentSelect));
-          const selectedTalents = getSelectedRecords(state.talents, getSelectedIndices(talentsSelect));
-          const selectedPsionics = getSelectedRecords(state.psionics, getSelectedIndices(psionicsSelect));
-          const selectedPrayers = getSelectedRecords(state.prayers, getSelectedIndices(prayersSelect));
+          // Na kartę trafiają wyłącznie moduły włączone w „Moduły aktywne” / Only modules ticked in "Active modules" reach the card
+          const selectedWeapons = getActiveModuleRecords("weapon", state.weapons);
+          const selectedArmor = getActiveModuleRecords("armor", state.armor);
+          const selectedAugmentations = getActiveModuleRecords("augmentations", state.augmentations);
+          const selectedEquipment = getActiveModuleRecords("equipment", state.equipment);
+          const selectedTalents = getActiveModuleRecords("talents", state.talents);
+          const selectedPsionics = getActiveModuleRecords("psionics", state.psionics);
+          const selectedPrayers = getActiveModuleRecords("prayers", state.prayers);
           const weaponOverride = buildWeaponOverride(selectedWeapons, {
             includeTraitDescriptions: weaponTraitDescriptionsToggle.checked,
           });

@@ -133,7 +133,7 @@ Po załadowaniu strony aplikacja wykonuje logicznie następujący przepływ:
 
 1. Ustawia domyślny język `pl`.
 2. Podpina event listenery do elementów UI.
-3. Aktualizuje widoczność modułów według checkboxów `data-module-toggle`.
+3. Aktualizuje widoczność modułów według checkboxów `data-module-toggle` (wszystkie są domyślnie odznaczone, więc widać tylko podgląd bazowy).
 4. Inicjalizuje magazyn ulubionych przez `initFavoritesStore()`, który tworzy aplikację `generator-npc-favorites` i uruchamia dla niej App Check.
 5. Uruchamia `startPrivateDataFlow()`.
 6. Czeka na `window.DataVaultFirebaseReady` albo event `datavault-firebase-loader-ready`.
@@ -279,6 +279,58 @@ Widocznością modułów sterują checkboxy z atrybutem `data-module-toggle`.
 | `prayers` | Modlitwy | Dodaje modlitwy jako dodatkową sekcję karty. |
 
 `updateModuleVisibility()` ukrywa albo pokazuje elementy z `data-module-section`.
+
+Wszystkie checkboxy `data-module-toggle` są w HTML **bez atrybutu `checked`**, więc po otwarciu modułu
+żaden moduł nie jest włączony. Reset przywraca `toggle.checked = toggle.defaultChecked`, czyli ten sam
+stan.
+
+### Mapa `MODULE_CONTROLS`
+
+Jedno miejsce opisujące każdy moduł. Stoi zaraz po funkcjach `render…Table()`, bo się do nich odwołuje.
+
+| Klucz | `select` | `detailsToggle` | `detailsGroup` | `render` |
+| --- | --- | --- | --- | --- |
+| `weapon` | `#weapon` | `#weapon-trait-descriptions` | `traitDescriptions` | `renderWeaponTable` |
+| `armor` | `#armor` | `#armor-trait-descriptions` | `traitDescriptions` | `renderArmorTable` |
+| `augmentations` | `#augmentations` | `#augmentations-full-details` | `fullDetails` | `renderAugmentationsTable` |
+| `equipment` | `#equipment` | `#equipment-full-details` | `fullDetails` | `renderEquipmentTable` |
+| `talents` | `#talents` | `#talents-full-details` | `fullDetails` | `renderTalentsTable` |
+| `psionics` | `#psionics` | `#psionics-full-details` | `fullDetails` | `renderPsionicsTable` |
+| `prayers` | `#prayers` | `#prayers-full-details` | `fullDetails` | `renderPrayersTable` |
+
+`detailsGroup` to nazwa obiektu w `payload.toggles`, pod którą stan checkboxa opisu trafia do ulubionych.
+Klucze mapy są tymi samymi kluczami co `data-module-toggle`, `listFilters` i pola `payload.modules.<klucz>Ids`.
+
+### Funkcje
+
+| Funkcja | Rola |
+| --- | --- |
+| `isModuleActive(key)` | `true`, gdy checkbox `data-module-toggle="<key>"` jest zaznaczony. |
+| `clearModule(key)` | Czyści moduł do stanu jak po Resecie: pole filtra (`value = ""` i `updateListFilterIndicator`), checkbox opisu (`defaultChecked`), lista (`refreshModuleOptions(key, { selectedIndices: [] })`) i tabela podglądu (`render`). Przed załadowaniem danych (`!state.data`) czyści tylko filtr i checkbox opisu, żeby nie zasłonić komunikatu „Ładowanie danych...”. |
+| `getActiveModuleRecords(key, records)` | Zaznaczone rekordy modułu, jeżeli moduł jest włączony; w przeciwnym razie `[]`. |
+
+### Zachowanie przełącznika
+
+```js
+moduleToggles.forEach((toggle) => {
+  toggle.addEventListener("change", () => {
+    if (!toggle.checked) {
+      clearModule(toggle.dataset.moduleToggle);
+    }
+    updateModuleVisibility();
+  });
+});
+```
+
+Co robi: odznaczenie modułu najpierw kasuje jego wybór, filtr i checkbox opisu, a dopiero potem chowa
+kartę; zaznaczenie tylko pokazuje kartę (pustą). Gdzie: `attachListeners()`. Dlaczego: wyłączony moduł
+nie może trzymać ukrytego wyboru — inaczej trafiałby na kartę NPC i do ulubionych, choć użytkownik go
+nie widzi. Ponowne zaznaczenie modułu pokazuje pustą listę.
+
+Generowanie karty dodatkowo bierze rekordy przez `getActiveModuleRecords()` (bezpiecznik): moduł
+wyłączony działa jak moduł bez wyboru. Dla Broni oznacza to brak nadpisania ataków
+(`buildWeaponOverride([])` zwraca `null`), dla Pancerza — brak nadpisania WP i cech
+(`getArmorOverrides([])` zwraca `null`).
 
 ## Podgląd bazowy Bestiariusza
 
@@ -457,8 +509,9 @@ w DOM do następnej zmiany tekstu w polu filtra.
 | `loadPrivateGeneratorData()` | `refreshBestiaryOptions()` i `refreshModuleOptions(key, { selectedIndices: [] })` dla każdego klucza z `MODULE_LIST_KEYS`. Odblokowuje pola filtra (poprzez `syncListFilterAvailability`). |
 | Checkbox `bestiary-show-old` | `refreshBestiaryOptions()` uwzględnia bieżącą frazę. |
 | `setArmorSelectionEnabled(enabled)` | Ustawia `state.armorSelectionBlocked = !enabled`, `armorSelect.disabled` i dostępność `#armor-filter`. |
-| `applyFavorite(favorite)` | Włącza stare wpisy, jeżeli trzeba, woła `refreshBestiaryOptions({ keepIndex: index })`, a dla modułów `refreshModuleOptions(key, { selectedIndices: payload.modules.<klucz>Ids })`. Filtry nie są czyszczone; zapisane pozycje są widoczne i zaznaczone mimo nich. |
-| `Reset` | Czyści wartości wszystkich pól filtra i ich sygnały, potem przebudowuje Bestiariusz i wszystkie listy modułów z `selectedIndices: []`. |
+| `applyFavorite(favorite)` | Włącza stare wpisy, jeżeli trzeba, woła `refreshBestiaryOptions({ keepIndex: index })`, ustawia checkboxy modułów z ulubionego, a potem dla każdego klucza `MODULE_CONTROLS`: moduł włączony → `refreshModuleOptions(key, { selectedIndices: payload.modules.<klucz>Ids })`; moduł wyłączony → `clearModule(key)` (czyści także jego filtr). Filtry modułów włączonych nie są czyszczone; zapisane pozycje są widoczne i zaznaczone mimo nich. |
+| `Reset` | Czyści wartości wszystkich pól filtra i ich sygnały, potem przebudowuje Bestiariusz i wszystkie listy modułów z `selectedIndices: []` i przywraca checkboxy modułów do `defaultChecked` (wszystkie odznaczone). |
+| Odznaczenie modułu | `clearModule(key)` — pole filtra tego modułu jest czyszczone, sygnał gaśnie, lista jest przebudowana bez zaznaczeń. |
 | `applyLanguage(lang)` | Ustawia `aria-label` pól z `listFilterAria` (`{list}` = tekst etykiety listy), odświeża `title` etykiet i tłumaczy opcje `option[data-list-filter-empty]`. |
 
 Fraza filtra nie jest zapisywana w ulubionych, `localStorage` ani w stanie sesji.
@@ -523,11 +576,11 @@ Główne funkcje:
 | `saveFavorites()` | Zapisuje ulubione do Firestore, a przy odmowie przełącza moduł na localStorage i pokazuje pasek komunikatu. |
 | `loadFavoritesFromLocal()` | Wczytuje lokalny fallback. |
 | `saveFavoritesToLocal()` | Zapisuje lokalny fallback. Zwraca `true` albo `false` — wynik rozstrzyga, czy pasek powie „zapisano tylko tutaj”, czy „nie zapisano nic”. |
-| `buildFavoritePayload()` | Serializuje aktualną konfigurację NPC. |
+| `buildFavoritePayload()` | Serializuje aktualną konfigurację NPC. `modules.<klucz>Ids` zawiera wybór tylko dla modułów włączonych (`isModuleActive`); moduł wyłączony dostaje `[]`. |
 | `addFavorite()` | Dodaje nowy ulubiony wpis. |
 | `removeFavorite()` | Usuwa wpis. |
 | `moveFavorite()` | Przesuwa wpis na liście. |
-| `applyFavorite()` | Odtwarza zapisany wybór i toggles. Listy przebudowuje przez `refreshBestiaryOptions({ keepIndex })` i `refreshModuleOptions(key, { selectedIndices })`, więc zapisane pozycje są widoczne mimo aktywnych filtrów. |
+| `applyFavorite()` | Odtwarza zapisany wybór i toggles. Listy przebudowuje przez `refreshBestiaryOptions({ keepIndex })` i `refreshModuleOptions(key, { selectedIndices })`, więc zapisane pozycje są widoczne mimo aktywnych filtrów. Wybór i checkbox opisu (`toggles[detailsGroup][klucz]`) dostają tylko moduły włączone w ulubionym; pozostałe przechodzą przez `clearModule()` — także wtedy, gdy starszy wpis zawiera dla nich wybór. |
 
 ## Model Firestore ulubionych
 
@@ -561,8 +614,11 @@ Model pojedynczego ulubionego wpisu:
 | `bestiaryName` | `string` | Nazwa rekordu w chwili zapisu. |
 | `bestiaryOverrides` | `object` | Nadpisania bazowego rekordu. |
 | `notes` | `string` | Treść pola „Notatka (będzie widoczna na karcie)”. |
-| `modules` | `object` | Indeksy wybranych elementów modułów. |
-| `toggles` | `object` | Stany przełączników UI. |
+| `modules` | `object` | Indeksy wybranych elementów modułów: `weaponIds`, `armorIds`, `augmentationsIds`, `equipmentIds`, `talentsIds`, `psionicsIds`, `prayersIds` (zawsze wszystkie pola; moduł wyłączony ma `[]`). |
+| `toggles` | `object` | Stany przełączników UI: `moduleVisibility` (klucz → `boolean`), `traitDescriptions` (`weapon`, `armor`), `fullDetails` (`augmentations`, `equipment`, `talents`, `psionics`, `prayers`). |
+
+Wpisy zapisane przed regułą „wyłączony moduł nie ma wyboru” mogą zawierać indeksy dla modułów
+wyłączonych. `applyFavorite()` je pomija, więc taki wpis wczytuje się poprawnie i bez ukrytego wyboru.
 
 `modules` przechowuje indeksy, a nie stabilne ID rekordów. Zmiana kolejności lub zawartości danych DataVault może sprawić, że stary ulubiony wpis nie odtworzy dokładnie tego samego zestawu.
 
@@ -714,9 +770,9 @@ opcja pustego wyniku filtra mają `value=""`, a `Number("")` zwraca `0`, nie `Na
 Po kliknięciu kod:
 
 1. pobiera wybrany rekord Bestiariusza,
-2. zbiera wybrane bronie,
-3. zbiera wybrane pancerze,
-4. zbiera wybrane augumentacje, ekwipunek, talenty, psionikę i modlitwy,
+2. zbiera wybrane bronie — tylko gdy moduł Broń jest włączony (`getActiveModuleRecords`),
+3. zbiera wybrane pancerze — tylko gdy moduł Pancerz jest włączony,
+4. zbiera wybrane augumentacje, ekwipunek, talenty, psionikę i modlitwy — z każdego modułu tylko wtedy, gdy jest włączony,
 5. buduje nadpisanie broni,
 6. buduje nadpisanie pancerza,
 7. buduje dodatkowe sekcje modułów,
@@ -896,7 +952,12 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Ulubione Firestore | Dodaj ulubiony wpis. | Wpis pojawia się w Firestore `generatorNpc/favorites`. |
 | Ulubione localStorage | Usuń konfigurację Firestore ulubionych i dodaj wpis. | Wpis zapisuje się lokalnie w `generatorNpcFavorites`. |
 | Odtworzenie ulubionego | Kliknij `Wczytaj` przy ulubionym. | UI odtwarza rekord, moduły, notatki, nadpisania i toggles. |
-| Reset | Kliknij `Reset`. | Wybory, nadpisania i pola filtrów wracają do stanu domyślnego. |
+| Reset | Kliknij `Reset`. | Wybory, nadpisania i pola filtrów wracają do stanu domyślnego; wszystkie moduły odznaczone. |
+| Domyślne moduły | Otwórz moduł. | Wszystkie checkboxy `Moduły aktywne` odznaczone; widać tylko podgląd bazowy. |
+| Wyłączenie modułu | Wybierz przeciwnika (np. `Mutant`), zaznacz `Psionika`, wybierz moce, wygeneruj kartę; odznacz `Psionika`, wygeneruj ponownie; zaznacz `Psionika`. | Pierwsza karta ma sekcję `Psionika`, druga — nie; po ponownym zaznaczeniu lista Psioniki jest pusta. |
+| Wyłączenie Broni / Pancerza | Zaznacz moduł, wybierz pozycję, odznacz moduł, wygeneruj kartę. | Ataki / WP i cechy z Bestiariusza. |
+| Wyłączenie a filtr i opis | Wpisz frazę w filtrze modułu, zaznacz jego checkbox opisu, odznacz i zaznacz moduł. | Pole filtra puste, etykieta zielona, checkbox opisu odznaczony. |
+| Ulubiony z modułem wyłączonym | Wczytaj wpis, w którym moduł był wyłączony, a `modules.<klucz>Ids` zawiera indeksy. | Moduł wyłączony, bez wyboru; karta bez jego sekcji. |
 | Brak wyboru | Bez wybranego rekordu (lista pokazuje „Lista Przeciwników”) kliknij `Generuj kartę`, potem `Dodaj do ulubionych`. | Oba przyciski pokazują alert; karta się nie otwiera, lista ulubionych się nie zmienia. |
 | Filtr — wielkość liter | Wpisz `ORK`, `ork` i `oRk` nad Bestiariuszem. | Za każdym razem lista zawiera te same rekordy z „ork” w nazwie. |
 | Filtr — polskie znaki | Wpisz `lancuch` nad bronią. | Lista zawiera bronie z „łańcuch” w nazwie. |
@@ -1046,7 +1107,7 @@ After the page loads, the application logically performs this flow:
 
 1. Sets default language `pl`.
 2. Attaches event listeners to UI elements.
-3. Updates module visibility based on `data-module-toggle` checkboxes.
+3. Updates module visibility based on `data-module-toggle` checkboxes (all of them are unticked by default, so only the base preview is visible).
 4. Initializes favorites storage through `initFavoritesStore()`, which creates the `generator-npc-favorites` app and activates App Check for it.
 5. Starts `startPrivateDataFlow()`.
 6. Waits for `window.DataVaultFirebaseReady` or event `datavault-firebase-loader-ready`.
@@ -1192,6 +1253,60 @@ Module visibility is controlled by checkboxes with `data-module-toggle`.
 | `prayers` | Prayers | Adds prayers as an extra card section. |
 
 `updateModuleVisibility()` hides or shows elements with `data-module-section`.
+
+Every `data-module-toggle` checkbox is in the HTML **without the `checked` attribute**, so no module is
+enabled when the module opens. Reset restores `toggle.checked = toggle.defaultChecked`, i.e. the same
+state.
+
+### The `MODULE_CONTROLS` map
+
+One place describing every module. It sits right after the `render…Table()` functions, because it
+refers to them.
+
+| Key | `select` | `detailsToggle` | `detailsGroup` | `render` |
+| --- | --- | --- | --- | --- |
+| `weapon` | `#weapon` | `#weapon-trait-descriptions` | `traitDescriptions` | `renderWeaponTable` |
+| `armor` | `#armor` | `#armor-trait-descriptions` | `traitDescriptions` | `renderArmorTable` |
+| `augmentations` | `#augmentations` | `#augmentations-full-details` | `fullDetails` | `renderAugmentationsTable` |
+| `equipment` | `#equipment` | `#equipment-full-details` | `fullDetails` | `renderEquipmentTable` |
+| `talents` | `#talents` | `#talents-full-details` | `fullDetails` | `renderTalentsTable` |
+| `psionics` | `#psionics` | `#psionics-full-details` | `fullDetails` | `renderPsionicsTable` |
+| `prayers` | `#prayers` | `#prayers-full-details` | `fullDetails` | `renderPrayersTable` |
+
+`detailsGroup` is the name of the `payload.toggles` object under which the description checkbox state is
+stored in favorites. The map keys are the same keys as `data-module-toggle`, `listFilters` and the
+`payload.modules.<key>Ids` fields.
+
+### Functions
+
+| Function | Role |
+| --- | --- |
+| `isModuleActive(key)` | `true` when the `data-module-toggle="<key>"` checkbox is ticked. |
+| `clearModule(key)` | Clears the module to its post-Reset state: the filter field (`value = ""` and `updateListFilterIndicator`), the description checkbox (`defaultChecked`), the list (`refreshModuleOptions(key, { selectedIndices: [] })`) and the preview table (`render`). Before data loads (`!state.data`) it clears only the filter and the description checkbox, so the "Loading data..." message is not covered. |
+| `getActiveModuleRecords(key, records)` | The module's selected records when the module is enabled; otherwise `[]`. |
+
+### Toggle behavior
+
+```js
+moduleToggles.forEach((toggle) => {
+  toggle.addEventListener("change", () => {
+    if (!toggle.checked) {
+      clearModule(toggle.dataset.moduleToggle);
+    }
+    updateModuleVisibility();
+  });
+});
+```
+
+What it does: unticking a module first erases its selection, filter and description checkbox, and only
+then hides the card; ticking only shows the (empty) card. Where: `attachListeners()`. Why: a disabled
+module must not keep a hidden selection — otherwise it would reach the NPC card and favorites even
+though the user cannot see it. Ticking the module again shows an empty list.
+
+Card generation additionally takes records through `getActiveModuleRecords()` (a safety net): a
+disabled module behaves like a module with no selection. For Weapons this means no attack override
+(`buildWeaponOverride([])` returns `null`), for Armor — no AV and trait override (`getArmorOverrides([])`
+returns `null`).
 
 ## Base Bestiary preview
 
@@ -1372,8 +1487,9 @@ phrase stays in the DOM until the next text change in the filter field.
 | `loadPrivateGeneratorData()` | `refreshBestiaryOptions()` and `refreshModuleOptions(key, { selectedIndices: [] })` for every key in `MODULE_LIST_KEYS`. Enables the filter fields (through `syncListFilterAvailability`). |
 | `bestiary-show-old` checkbox | `refreshBestiaryOptions()` takes the current phrase into account. |
 | `setArmorSelectionEnabled(enabled)` | Sets `state.armorSelectionBlocked = !enabled`, `armorSelect.disabled` and the availability of `#armor-filter`. |
-| `applyFavorite(favorite)` | Enables outdated entries if needed, calls `refreshBestiaryOptions({ keepIndex: index })`, and for the modules `refreshModuleOptions(key, { selectedIndices: payload.modules.<key>Ids })`. Filters are not cleared; the stored items are visible and selected despite them. |
-| `Reset` | Clears the values of every filter field and their signals, then rebuilds the Bestiary and every module list with `selectedIndices: []`. |
+| `applyFavorite(favorite)` | Enables outdated entries if needed, calls `refreshBestiaryOptions({ keepIndex: index })`, sets the module checkboxes from the favorite and then, for every `MODULE_CONTROLS` key: enabled module → `refreshModuleOptions(key, { selectedIndices: payload.modules.<key>Ids })`; disabled module → `clearModule(key)` (which also clears its filter). Filters of enabled modules are not cleared; the stored items are visible and selected despite them. |
+| `Reset` | Clears the values of every filter field and their signals, then rebuilds the Bestiary and every module list with `selectedIndices: []` and restores the module checkboxes to `defaultChecked` (all unticked). |
+| Unticking a module | `clearModule(key)` — that module's filter field is cleared, its signal goes off, and the list is rebuilt without a selection. |
 | `applyLanguage(lang)` | Sets the fields' `aria-label` from `listFilterAria` (`{list}` = the list label text), refreshes the labels' `title` and translates `option[data-list-filter-empty]` options. |
 
 The filter phrase is not stored in favorites, `localStorage`, or session state.
@@ -1438,11 +1554,11 @@ Main functions:
 | `saveFavorites()` | Saves favorites to Firestore; when the write is refused it switches the module to localStorage and shows the message bar. |
 | `loadFavoritesFromLocal()` | Loads local fallback. |
 | `saveFavoritesToLocal()` | Saves local fallback. Returns `true` or `false` — the result decides whether the bar says "saved here only" or "nothing was saved". |
-| `buildFavoritePayload()` | Serializes current NPC configuration. |
+| `buildFavoritePayload()` | Serializes current NPC configuration. `modules.<key>Ids` holds the selection only for enabled modules (`isModuleActive`); a disabled module gets `[]`. |
 | `addFavorite()` | Adds a new favorite. |
 | `removeFavorite()` | Removes a favorite. |
 | `moveFavorite()` | Reorders a favorite. |
-| `applyFavorite()` | Restores saved selections and toggles. It rebuilds the lists through `refreshBestiaryOptions({ keepIndex })` and `refreshModuleOptions(key, { selectedIndices })`, so stored items are visible despite active filters. |
+| `applyFavorite()` | Restores saved selections and toggles. It rebuilds the lists through `refreshBestiaryOptions({ keepIndex })` and `refreshModuleOptions(key, { selectedIndices })`, so stored items are visible despite active filters. Only modules enabled in the favorite get the selection and the description checkbox (`toggles[detailsGroup][key]`); the others go through `clearModule()` — also when an older entry holds a selection for them. |
 
 ## Favorites Firestore model
 
@@ -1476,8 +1592,11 @@ Single favorite model:
 | `bestiaryName` | `string` | Record name at save time. |
 | `bestiaryOverrides` | `object` | Base record overrides. |
 | `notes` | `string` | Content of the "Note (will be visible on the card)" field. |
-| `modules` | `object` | Selected module item indices. |
-| `toggles` | `object` | UI toggle states. |
+| `modules` | `object` | Selected module item indices: `weaponIds`, `armorIds`, `augmentationsIds`, `equipmentIds`, `talentsIds`, `psionicsIds`, `prayersIds` (always all fields; a disabled module has `[]`). |
+| `toggles` | `object` | UI toggle states: `moduleVisibility` (key → `boolean`), `traitDescriptions` (`weapon`, `armor`), `fullDetails` (`augmentations`, `equipment`, `talents`, `psionics`, `prayers`). |
+
+Entries saved before the "a disabled module has no selection" rule may hold indices for disabled
+modules. `applyFavorite()` skips them, so such an entry loads correctly and without a hidden selection.
 
 `modules` stores indices, not stable record IDs. Changes to DataVault data order or content can prevent old favorites from restoring the exact same set.
 
@@ -1629,9 +1748,9 @@ The function is used by:
 On click, the code:
 
 1. reads the selected Bestiary record,
-2. collects selected weapons,
-3. collects selected armor,
-4. collects selected augmentations, equipment, talents, psionics, and prayers,
+2. collects selected weapons — only when the Weapons module is enabled (`getActiveModuleRecords`),
+3. collects selected armor — only when the Armor module is enabled,
+4. collects selected augmentations, equipment, talents, psionics, and prayers — from each module only when it is enabled,
 5. builds weapon override,
 6. builds armor override,
 7. builds extra module sections,
@@ -1811,7 +1930,12 @@ structure section explains how to reveal it.
 | Firestore favorites | Add favorite. | Entry appears in Firestore `generatorNpc/favorites`. |
 | localStorage favorites | Remove favorites Firestore config and add entry. | Entry is saved locally in `generatorNpcFavorites`. |
 | Favorite restore | Click `Wczytaj` on a favorite. | UI restores record, modules, notes, overrides, and toggles. |
-| Reset | Click `Reset`. | Selections, overrides and filter fields return to default state. |
+| Reset | Click `Reset`. | Selections, overrides and filter fields return to default state; all modules unticked. |
+| Default modules | Open the module. | All `Active modules` checkboxes unticked; only the base preview is visible. |
+| Disabling a module | Select an enemy (e.g. `Mutant`), tick `Psionics`, select powers, generate the card; untick `Psionics`, generate again; tick `Psionics`. | The first card has a `Psionika` section, the second does not; after ticking again the Psionics list is empty. |
+| Disabling Weapons / Armor | Tick the module, select an item, untick the module, generate the card. | Bestiary attacks / AV and traits. |
+| Disabling vs filter and description | Type a phrase in the module filter, tick its description checkbox, untick and tick the module. | Filter field empty, label green, description checkbox unticked. |
+| Favorite with a disabled module | Load an entry in which the module was disabled but `modules.<key>Ids` holds indices. | Module disabled, no selection; card without its section. |
 | No selection | With no record selected (the list shows "Lista Przeciwników"), click `Generate card`, then `Add to favorites`. | Both buttons show an alert; no card opens and the favorites list does not change. |
 | Filter — letter case | Type `ORK`, `ork` and `oRk` above the Bestiary. | Each time the list holds the same records with "ork" in the name. |
 | Filter — Polish characters | Type `lancuch` above the weapons. | The list holds weapons with "łańcuch" in the name. |
