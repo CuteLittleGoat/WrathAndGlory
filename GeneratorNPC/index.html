@@ -100,6 +100,10 @@
               <input type="checkbox" data-module-toggle="prayers" />
               <span data-i18n="modulePrayers">Modlitwy — lista zaklęć.</span>
             </label>
+            <label class="checkbox">
+              <input type="checkbox" data-module-toggle="mutations" />
+              <span data-i18n="moduleMutations">Mutacje — lista mutacji.</span>
+            </label>
           </div>
         </section>
 
@@ -387,6 +391,40 @@
           </table>
         </div>
 
+        <!-- Moduł „Mutacje” — dane z arkusza DataVault „Mutacje”; pełny opis na karcie to kolumna Efekt.
+             / The "Mutations" module — data from the DataVault "Mutacje" sheet; the full card description is the Efekt column. -->
+        <div class="card" data-module-section="mutations">
+          <div class="card-header">
+            <h3 data-i18n="mutationsSectionTitle">Wybór Mutacji</h3>
+          </div>
+          <div class="field">
+            <div class="field-label-row">
+              <label for="mutations" data-i18n="mutationsLabel">Mutacje (wielokrotny wybór)</label>
+              <label class="checkbox checkbox-inline">
+                <input type="checkbox" id="mutations-full-details" />
+                <span data-i18n="mutationsDetailsToggle">Czy dodać pełen opis?</span>
+              </label>
+            </div>
+            <input type="text" id="mutations-filter" class="list-filter" placeholder="Wpisz fragment nazwy..." data-i18n-placeholder="listFilterPlaceholder" autocomplete="off" spellcheck="false" disabled />
+            <select id="mutations" multiple size="15">
+              <option value="" disabled data-i18n="dataStatusLoading">Ładowanie danych...</option>
+            </select>
+          </div>
+          <table class="data-table" data-sheet="Mutacje">
+            <thead>
+              <tr>
+                <th class="min-col-nazwa" data-i18n="mutationsHeaderName">Nazwa</th>
+                <th class="min-col-efekt" data-i18n="mutationsHeaderEffect">Efekt</th>
+              </tr>
+            </thead>
+            <tbody id="mutations-table-body">
+              <tr>
+                <td colspan="2" class="text-muted" data-i18n="dataStatusLoading">Ładowanie danych...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
       </section>
     </main>
 
@@ -448,6 +486,7 @@
       const talentsSelect = document.querySelector("#talents");
       const psionicsSelect = document.querySelector("#psionics");
       const prayersSelect = document.querySelector("#prayers");
+      const mutationsSelect = document.querySelector("#mutations");
       const bestiaryTableBody = document.querySelector("#bestiary-table-body");
       const armorTableBody = document.querySelector("#armor-table-body");
       const weaponTableBody = document.querySelector("#weapon-table-body");
@@ -456,6 +495,7 @@
       const talentsTableBody = document.querySelector("#talents-table-body");
       const psionicsTableBody = document.querySelector("#psionics-table-body");
       const prayersTableBody = document.querySelector("#prayers-table-body");
+      const mutationsTableBody = document.querySelector("#mutations-table-body");
       const dataStatus = document.querySelector("#data-status");
       const bestiaryNotes = document.querySelector("#bestiary-notes");
       const generateButton = document.querySelector("#generate-card");
@@ -475,6 +515,7 @@
       const talentsFullDetailsToggle = document.querySelector("#talents-full-details");
       const psionicsFullDetailsToggle = document.querySelector("#psionics-full-details");
       const prayersFullDetailsToggle = document.querySelector("#prayers-full-details");
+      const mutationsFullDetailsToggle = document.querySelector("#mutations-full-details");
 
       const popover = document.querySelector("#trait-popover");
       const popoverTitle = document.querySelector("#trait-title");
@@ -514,6 +555,7 @@ const translations = {
             moduleTalents: "Talenty — lista umiejętności.",
             modulePsionics: "Psionika — lista zdolności.",
             modulePrayers: "Modlitwy — lista zaklęć.",
+            moduleMutations: "Mutacje — lista mutacji.",
             favoritesTitle: "Ulubione",
             favoritesStatusConnecting: "Łączenie z listą ulubionych...",
             favoritesAliasLabel: "Alias (opcjonalny)",
@@ -579,6 +621,11 @@ const translations = {
             prayersDetailsToggle: "Czy dodać pełen opis?",
             prayersHeaderName: "Nazwa",
             prayersHeaderEffect: "Efekt",
+            mutationsSectionTitle: "Wybór Mutacji",
+            mutationsLabel: "Mutacje (wielokrotny wybór)",
+            mutationsDetailsToggle: "Czy dodać pełen opis?",
+            mutationsHeaderName: "Nazwa",
+            mutationsHeaderEffect: "Efekt",
             traitPopoverTitle: "Opis cechy",
             traitPopoverClose: "Zamknij opis cechy",
             traitPopoverDescription: "Kliknij tag, aby zobaczyć opis cechy.",
@@ -618,6 +665,7 @@ const translations = {
             talents: "Talenty",
             psionics: "Psionika",
             prayers: "Modlitwy",
+            mutations: "Mutacje",
           },
           messages: {
             noDataOption: "Brak danych",
@@ -631,7 +679,7 @@ const translations = {
             selectBestiaryAlert: "Wybierz rekord bestiariusza, aby wygenerować kartę.",
             noDataDisplay: "Brak danych do wyświetlenia.",
             loadSummary:
-              "Załadowano: Bestiariusz ({bestiary}), Pancerze ({armor}), Bronie ({weapons}), Augumentacje ({augmentations}), Ekwipunek ({equipment}), Talenty ({talents}), Psionika ({psionics}), Modlitwy ({prayers}).",
+              "Załadowano: Bestiariusz ({bestiary}), Pancerze ({armor}), Bronie ({weapons}), Augumentacje ({augmentations}), Ekwipunek ({equipment}), Talenty ({talents}), Psionika ({psionics}), Modlitwy ({prayers}), Mutacje ({mutations}).",
             loadError: "Nie udało się pobrać danych. Sprawdź dostępność prywatnej bazy.",
             requiredSheetsMissingContainer: "Dane DataVault nie zawierają listy arkuszy wymaganej przez GeneratorNPC.",
             requiredSheetMissing: "W danych DataVault brakuje wymaganego arkusza GeneratorNPC: {sheet}.",
@@ -648,6 +696,7 @@ const translations = {
             selectTalents: "Wybierz talenty...",
             selectPsionics: "Wybierz psionikę...",
             selectPrayers: "Wybierz modlitwy...",
+            selectMutations: "Wybierz mutacje...",
             armorDisabledTitle: "Pancerz z WP '-' nie może być wybrany.",
             traitDescriptionUnavailable: "Opis cechy nie jest dostępny w _meta.traits.",
             // Pusty wynik filtra listy i dymek na niebieskiej etykiecie ({text} = wpisana fraza).
@@ -684,6 +733,7 @@ const translations = {
             moduleTalents: "Talents — skill list.",
             modulePsionics: "Psionics — ability list.",
             modulePrayers: "Prayers — spell list.",
+            moduleMutations: "Mutations — mutation list.",
             favoritesTitle: "Favorites",
             favoritesStatusConnecting: "Connecting to favorites list...",
             favoritesAliasLabel: "Alias (optional)",
@@ -749,6 +799,11 @@ const translations = {
             prayersDetailsToggle: "Include full description?",
             prayersHeaderName: "Name",
             prayersHeaderEffect: "Effect",
+            mutationsSectionTitle: "Mutation selection",
+            mutationsLabel: "Mutations (multi-select)",
+            mutationsDetailsToggle: "Include full description?",
+            mutationsHeaderName: "Name",
+            mutationsHeaderEffect: "Effect",
             traitPopoverTitle: "Trait description",
             traitPopoverClose: "Close trait description",
             traitPopoverDescription: "Click a tag to see its trait description.",
@@ -788,6 +843,7 @@ const translations = {
             talents: "Talents",
             psionics: "Psionics",
             prayers: "Prayers",
+            mutations: "Mutations",
           },
           messages: {
             noDataOption: "No data",
@@ -801,7 +857,7 @@ const translations = {
             selectBestiaryAlert: "Select a bestiary record before generating a card.",
             noDataDisplay: "No data to display.",
             loadSummary:
-              "Loaded: Bestiary ({bestiary}), Armor ({armor}), Weapons ({weapons}), Augmentations ({augmentations}), Equipment ({equipment}), Talents ({talents}), Psionics ({psionics}), Prayers ({prayers}).",
+              "Loaded: Bestiary ({bestiary}), Armor ({armor}), Weapons ({weapons}), Augmentations ({augmentations}), Equipment ({equipment}), Talents ({talents}), Psionics ({psionics}), Prayers ({prayers}), Mutations ({mutations}).",
             loadError: "Could not load data. Check private database availability.",
             requiredSheetsMissingContainer: "DataVault data does not contain the sheet list required by GeneratorNPC.",
             requiredSheetMissing: "DataVault data is missing a required GeneratorNPC sheet: {sheet}.",
@@ -818,6 +874,7 @@ const translations = {
             selectTalents: "Select talents...",
             selectPsionics: "Select psionics...",
             selectPrayers: "Select prayers...",
+            selectMutations: "Select mutations...",
             armorDisabledTitle: "Armor with AV '-' cannot be selected.",
             traitDescriptionUnavailable: "Trait description is unavailable in _meta.traits.",
             listFilterNoMatches: "No entries match the filter",
@@ -870,10 +927,11 @@ const translations = {
         updatePlaceholder(talentsSelect, t.messages.selectTalents);
         updatePlaceholder(psionicsSelect, t.messages.selectPsionics);
         updatePlaceholder(prayersSelect, t.messages.selectPrayers);
+        updatePlaceholder(mutationsSelect, t.messages.selectMutations);
         // --- Filtry list w wybranym języku / List filters in the selected language ---
-        // PL: Opis pola dla czytników ekranu składa się z nazwy listy, żeby osiem pól filtra nie brzmiało
+        // PL: Opis pola dla czytników ekranu składa się z nazwy listy, żeby dziewięć pól filtra nie brzmiało
         //     identycznie. Dymek na niebieskiej etykiecie i komunikat pustego wyniku też zmieniają język.
-        // EN: The screen-reader description includes the list name so the eight filter fields do not sound
+        // EN: The screen-reader description includes the list name so the nine filter fields do not sound
         //     identical. The tooltip on the blue label and the empty-result message switch language too.
         Object.values(listFilters).forEach((list) => {
           list.input.setAttribute("aria-label", formatText(t.labels.listFilterAria, { list: list.label.textContent }));
@@ -901,6 +959,7 @@ const translations = {
               talents: state.talents.length,
               psionics: state.psionics.length,
               prayers: state.prayers.length,
+              mutations: state.mutations.length,
             })
           );
         } else {
@@ -975,6 +1034,7 @@ const translations = {
         talents: [],
         psionics: [],
         prayers: [],
+        mutations: [],
         favorites: [],
         firestore: null,
         favoritesDoc: null,
@@ -1542,13 +1602,13 @@ const translations = {
       };
 
       // --- Filtry nazw nad listami wyboru / Name filters above the selection lists ---
-      // PL: Każda lista (Bestiariusz i siedem list modułów) ma nad sobą pole tekstowe. Wpisana fraza
+      // PL: Każda lista (Bestiariusz i osiem list modułów) ma nad sobą pole tekstowe. Wpisana fraza
       //     zawęża opcje listy do nazw, które ją zawierają. Mechanika odwzorowuje Filtr Globalny z
       //     DataVault: bez przycisku czyszczenia, porównanie niewrażliwe na wielkość liter i polskie
       //     znaki, a etykieta listy zmienia barwę na niebieską, gdy filtr faktycznie zawęża widok.
       //     Opcje są przebudowywane (usuwane z listy), a nie ukrywane atrybutem hidden, bo Safari na
       //     iPadzie i iPhonie ignoruje ukrywanie pojedynczych opcji w rozwijanym menu.
-      // EN: Every list (the Bestiary and the seven module lists) has a text field above it. The typed
+      // EN: Every list (the Bestiary and the eight module lists) has a text field above it. The typed
       //     phrase narrows the list options to names that contain it. The mechanics mirror DataVault's
       //     Global Filter: no clear button, matching insensitive to letter case and Polish diacritics,
       //     and the list label turns blue when the filter actually narrows the view. Options are
@@ -1586,8 +1646,9 @@ const translations = {
         talents: createListFilter("talents", { getRecords: () => state.talents, placeholderKey: "selectTalents" }),
         psionics: createListFilter("psionics", { getRecords: () => state.psionics, placeholderKey: "selectPsionics" }),
         prayers: createListFilter("prayers", { getRecords: () => state.prayers, placeholderKey: "selectPrayers" }),
+        mutations: createListFilter("mutations", { getRecords: () => state.mutations, placeholderKey: "selectMutations" }),
       };
-      const MODULE_LIST_KEYS = ["weapon", "armor", "augmentations", "equipment", "talents", "psionics", "prayers"];
+      const MODULE_LIST_KEYS = ["weapon", "armor", "augmentations", "equipment", "talents", "psionics", "prayers", "mutations"];
 
       // PL: Sprowadza tekst do postaci porównywanej przez filtr — ta sama reguła co foldPolish() w
       //     DataVault: małe litery, bez znaków diakrytycznych (NFD + usunięcie U+0300–U+036F) i "ł" → "l",
@@ -2112,6 +2173,8 @@ const translations = {
         "Wzmocnienie",
       ];
       const prayersColumns = ["Nazwa", "Efekt"];
+      // Mutacje: tabela podglądu i pełny opis na karcie pokazują kolumnę Efekt / Mutations: the preview table and the full card description show the Efekt column
+      const mutationsColumns = ["Nazwa", "Efekt"];
 
       const getSelectedIndices = (select) =>
         Array.from(select.selectedOptions)
@@ -2202,6 +2265,19 @@ const translations = {
         });
       };
 
+      // --- Tabela podglądu wybranych mutacji / Preview table of the selected mutations ---
+      const renderMutationsTable = () => {
+        const selected = getSelectedIndices(mutationsSelect);
+        renderOrderedTable({
+          tableBody: mutationsTableBody,
+          records: state.mutations,
+          selectedIndices: selected,
+          columns: mutationsColumns,
+          sheetName: "Mutacje",
+          emptyMessage: "Wybierz mutację, aby zobaczyć parametry.",
+        });
+      };
+
       // --- Kontrolki modułów aktywnych w jednym miejscu / Active-module controls in one place ---
       // PL: Dla każdego modułu: lista wyboru, checkbox opisu („opisy cech” albo „pełen opis”), grupa,
       //     pod którą stan tego checkboxa trafia do ulubionych, i funkcja rysująca tabelę podglądu.
@@ -2219,6 +2295,7 @@ const translations = {
         talents: { select: talentsSelect, detailsToggle: talentsFullDetailsToggle, detailsGroup: "fullDetails", render: renderTalentsTable },
         psionics: { select: psionicsSelect, detailsToggle: psionicsFullDetailsToggle, detailsGroup: "fullDetails", render: renderPsionicsTable },
         prayers: { select: prayersSelect, detailsToggle: prayersFullDetailsToggle, detailsGroup: "fullDetails", render: renderPrayersTable },
+        mutations: { select: mutationsSelect, detailsToggle: mutationsFullDetailsToggle, detailsGroup: "fullDetails", render: renderMutationsTable },
       };
 
       // --- Czy moduł jest włączony w „Moduły aktywne” / Whether a module is ticked in "Active modules" ---
@@ -2624,6 +2701,7 @@ const translations = {
               talents: talentsFullDetailsToggle.checked,
               psionics: psionicsFullDetailsToggle.checked,
               prayers: prayersFullDetailsToggle.checked,
+              mutations: mutationsFullDetailsToggle.checked,
             },
           },
         };
@@ -3280,6 +3358,7 @@ const translations = {
         talentsSelect.addEventListener("change", renderTalentsTable);
         psionicsSelect.addEventListener("change", renderPsionicsTable);
         prayersSelect.addEventListener("change", renderPrayersTable);
+        mutationsSelect.addEventListener("change", renderMutationsTable);
         // PL: Odznaczenie modułu kasuje jego wybór, filtr i checkbox opisu, a dopiero potem chowa kartę —
         //     wyłączony moduł nie trafia na kartę NPC ani do ulubionych. Zaznaczenie tylko pokazuje kartę.
         // EN: Unticking a module erases its selection, filter and description checkbox, and only then
@@ -3327,6 +3406,9 @@ const translations = {
           Array.from(prayersSelect.options).forEach((option) => {
             option.selected = false;
           });
+          Array.from(mutationsSelect.options).forEach((option) => {
+            option.selected = false;
+          });
           // Pełne listy bez filtra i bez zaznaczeń (przed załadowaniem danych funkcja nic nie robi).
           // Full lists without a filter or selection (before data loads the function does nothing).
           MODULE_LIST_KEYS.forEach((key) => refreshModuleOptions(key, { selectedIndices: [] }));
@@ -3342,6 +3424,7 @@ const translations = {
           talentsFullDetailsToggle.checked = talentsFullDetailsToggle.defaultChecked;
           psionicsFullDetailsToggle.checked = psionicsFullDetailsToggle.defaultChecked;
           prayersFullDetailsToggle.checked = prayersFullDetailsToggle.defaultChecked;
+          mutationsFullDetailsToggle.checked = mutationsFullDetailsToggle.defaultChecked;
           popover.classList.remove("active");
           state.expandedCells.clear();
           renderBestiaryTable(null);
@@ -3353,6 +3436,7 @@ const translations = {
           renderTalentsTable();
           renderPsionicsTable();
           renderPrayersTable();
+          renderMutationsTable();
           updateModuleVisibility();
         });
         favoritesAddButton.addEventListener("click", addFavorite);
@@ -3416,6 +3500,7 @@ const translations = {
           const selectedTalents = getActiveModuleRecords("talents", state.talents);
           const selectedPsionics = getActiveModuleRecords("psionics", state.psionics);
           const selectedPrayers = getActiveModuleRecords("prayers", state.prayers);
+          const selectedMutations = getActiveModuleRecords("mutations", state.mutations);
           const weaponOverride = buildWeaponOverride(selectedWeapons, {
             includeTraitDescriptions: weaponTraitDescriptionsToggle.checked,
           });
@@ -3455,6 +3540,14 @@ const translations = {
                 includeFull: prayersFullDetailsToggle.checked,
               }),
             },
+            // Sekcja „Mutacje” pod „Modlitwami”: same nazwy albo „Nazwa — Efekt: …” przy pełnym opisie
+            // The "Mutations" section below "Prayers": names only, or "Name — Efekt: …" with the full description
+            {
+              label: sectionLabels.mutations,
+              value: buildModuleEntries(selectedMutations, mutationsColumns, {
+                includeFull: mutationsFullDetailsToggle.checked,
+              }),
+            },
           ];
           openPrintableCard(state.bestiary[index], bestiaryNotes.value, {
             weaponOverride,
@@ -3489,11 +3582,14 @@ const translations = {
         state.talents = sortByName(getRequiredCollection(data, "Talenty"));
         state.psionics = sortByTypeThenName(getRequiredCollection(data, "Psionika"), { typeDescending: true });
         state.prayers = sortByName(getRequiredCollection(data, "Modlitwy"));
+        // Mutacje: wymagany arkusz, wszystkie rekordy, kolejność jak w tabeli z podręcznika (sortRecords najpierw porównuje LP)
+        // Mutations: a required sheet, all records, order as in the rulebook table (sortRecords compares LP first)
+        state.mutations = sortByName(getRequiredCollection(data, "Mutacje"));
         refreshBestiaryOptions();
         // Listy modułów budowane od zera: bez zaznaczeń, z filtrem wpisanym w polu (i odblokowaniem pól filtra).
         // Module lists built from scratch: no selection, with the filter typed in the field (and filter fields enabled).
         MODULE_LIST_KEYS.forEach((key) => refreshModuleOptions(key, { selectedIndices: [] }));
-        renderBestiaryTable(null); renderArmorTable(); renderWeaponTable(); renderAugmentationsTable(); renderEquipmentTable(); renderTalentsTable(); renderPsionicsTable(); renderPrayersTable();
+        renderBestiaryTable(null); renderArmorTable(); renderWeaponTable(); renderAugmentationsTable(); renderEquipmentTable(); renderTalentsTable(); renderPsionicsTable(); renderPrayersTable(); renderMutationsTable();
         setStatus(translations[currentLanguage].messages.statusPrivateDataOk);
       };
 

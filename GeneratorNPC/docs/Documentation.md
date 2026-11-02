@@ -9,7 +9,7 @@ Moduł pozwala:
 - odblokować prywatne dane przez bramkę K.O.Z.A.,
 - pobrać dane runtime z DataVault przez wspólny loader Firebase,
 - wybrać bazowy rekord z `Bestiariusz`,
-- dodać broń, pancerz, augumentacje, ekwipunek, talenty, psionikę i modlitwy,
+- dodać broń, pancerz, augumentacje, ekwipunek, talenty, psionikę, modlitwy i mutacje,
 - tymczasowo nadpisać wybrane wartości rekordu Bestiariusza,
 - zapisać konfigurację NPC jako ulubioną,
 - odtworzyć ulubioną konfigurację,
@@ -188,7 +188,8 @@ Wymagane arkusze:
 - `Ekwipunek`,
 - `Talenty`,
 - `Psionika`,
-- `Modlitwy`.
+- `Modlitwy`,
+- `Mutacje`.
 
 Dodatkowo moduł korzysta z:
 
@@ -214,6 +215,7 @@ Po załadowaniu danych `loadPrivateGeneratorData()` ustawia:
 | `state.talents` | `Talenty` | Po nazwie. |
 | `state.psionics` | `Psionika` | Po typie malejąco, potem po nazwie. |
 | `state.prayers` | `Modlitwy` | Po nazwie. |
+| `state.mutations` | `Mutacje` | Po nazwie — w praktyce po `LP`, czyli w kolejności z podręcznika (subtelne, pomniejsze, ciężkie). Wszystkie rekordy, także odsyłacze „Rzut na tabeli …”. |
 
 Sortowanie uwzględnia `LP`, jeżeli rekordy mają taką wartość.
 
@@ -260,7 +262,8 @@ Workspace zawiera karty:
 - `Wybór Ekwipunku`,
 - `Wybór Talentów`,
 - `Wybór Psioniki`,
-- `Wybór Modlitw`.
+- `Wybór Modlitw`,
+- `Wybór Mutacji`.
 
 Każda karta modułu ma pole filtra nazw, listę wyboru i tabelę podglądu danych.
 
@@ -277,6 +280,7 @@ Widocznością modułów sterują checkboxy z atrybutem `data-module-toggle`.
 | `talents` | Talenty | Dodaje talenty jako dodatkową sekcję karty. |
 | `psionics` | Psionika | Dodaje psionikę jako dodatkową sekcję karty. |
 | `prayers` | Modlitwy | Dodaje modlitwy jako dodatkową sekcję karty. |
+| `mutations` | Mutacje | Dodaje mutacje jako dodatkową sekcję karty (pod `Modlitwy`). |
 
 `updateModuleVisibility()` ukrywa albo pokazuje elementy z `data-module-section`.
 
@@ -297,6 +301,7 @@ Jedno miejsce opisujące każdy moduł. Stoi zaraz po funkcjach `render…Table(
 | `talents` | `#talents` | `#talents-full-details` | `fullDetails` | `renderTalentsTable` |
 | `psionics` | `#psionics` | `#psionics-full-details` | `fullDetails` | `renderPsionicsTable` |
 | `prayers` | `#prayers` | `#prayers-full-details` | `fullDetails` | `renderPrayersTable` |
+| `mutations` | `#mutations` | `#mutations-full-details` | `fullDetails` | `renderMutationsTable` |
 
 `detailsGroup` to nazwa obiektu w `payload.toggles`, pod którą stan checkboxa opisu trafia do ulubionych.
 Klucze mapy są tymi samymi kluczami co `data-module-toggle`, `listFilters` i pola `payload.modules.<klucz>Ids`.
@@ -435,7 +440,7 @@ Pole stoi w `.field` bezpośrednio przed `<select>`:
 - moduły: `.field-label-row` (etykieta `label[for="<klucz>"]` + checkbox opisu) → `#<klucz>-filter` →
   `select#<klucz>[multiple]`.
 
-Klucze: `bestiary`, `weapon`, `armor`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
+Klucze: `bestiary`, `weapon`, `armor`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`, `mutations`.
 Id pola to zawsze `<klucz>-filter`, a id listy to sam klucz — na tej konwencji opiera się
 `createListFilter()`.
 
@@ -462,7 +467,7 @@ const createListFilter = (key, extra = {}) => ({
 });
 ```
 
-Buduje obiekt listy z elementów DOM według konwencji id. `listFilters` trzyma osiem takich obiektów.
+Buduje obiekt listy z elementów DOM według konwencji id. `listFilters` trzyma dziewięć takich obiektów.
 Listy modułów dostają dodatkowo:
 
 | Pole | Rola |
@@ -473,7 +478,7 @@ Listy modułów dostają dodatkowo:
 | `disabledTitleKey` | Tylko pancerz: `armorDisabledTitle` — dymek nieaktywnej opcji. |
 | `isBlocked()` | Tylko pancerz: zwraca `state.armorSelectionBlocked`. |
 
-`MODULE_LIST_KEYS` to tablica siedmiu kluczy modułów w kolejności kart.
+`MODULE_LIST_KEYS` to tablica ośmiu kluczy modułów w kolejności kart.
 
 ### Funkcje
 
@@ -558,9 +563,24 @@ Opcjonalnie można dołączyć opisy cech broni.
 
 ## Moduły dodatkowe
 
-Augumentacje, ekwipunek, talenty, psionika i modlitwy mogą być dodawane jako dodatkowe sekcje na karcie.
+Augumentacje, ekwipunek, talenty, psionika, modlitwy i mutacje mogą być dodawane jako dodatkowe sekcje na karcie (w tej kolejności, przed `Notatki`).
 
 Każdy z tych modułów ma toggle `Czy dodać pełen opis?`. Jeżeli toggle jest wyłączony, karta pokazuje głównie nazwy. Jeżeli jest włączony, karta dodaje szczegóły wybranych kolumn.
+
+| Moduł | Kolumny podglądu i pełnego opisu (`<moduł>Columns`) |
+| --- | --- |
+| Augumentacje, Ekwipunek, Talenty, Modlitwy | `Nazwa`, `Efekt` |
+| Psionika | `Nazwa`, `ST`, `Aktywacja`, `Czas trwania`, `Zasięg`, `Wiele Celów`, `Efekt`, `Wzmocnienie` |
+| Mutacje | `Nazwa`, `Efekt` |
+
+Moduł `mutations` (arkusz `Mutacje`) jest zbudowany według wzorca `prayers`: karta `data-module-section="mutations"`
+pod kartą Modlitw (`#mutations-full-details`, `#mutations-filter`, `select#mutations[multiple]`,
+`table.data-table[data-sheet="Mutacje"]` z `tbody#mutations-table-body`), `state.mutations`,
+`listFilters.mutations` (`placeholderKey: "selectMutations"`), `mutationsColumns`, `renderMutationsTable()`,
+wpis `mutations` w `MODULE_CONTROLS` i wpis w `moduleEntries` po Modlitwach. Szerokości kolumn podglądu:
+`.data-table[data-sheet="Mutacje"] .min-col-nazwa` 28ch i `.min-col-efekt` 54ch (jak w Modlitwach). Przy
+pełnym opisie wpis karty ma postać `Nazwa — Efekt: <Efekt>`; podtabele w kolumnie `Efekt` są dzielone na
+paski przez `splitEntries()` tak samo jak w innych modułach.
 
 Dla psioniki kolumna `Wzmocnienie` jest normalizowana przy budowaniu wpisów modułu.
 
@@ -614,8 +634,8 @@ Model pojedynczego ulubionego wpisu:
 | `bestiaryName` | `string` | Nazwa rekordu w chwili zapisu. |
 | `bestiaryOverrides` | `object` | Nadpisania bazowego rekordu. |
 | `notes` | `string` | Treść pola „Notatka (będzie widoczna na karcie)”. |
-| `modules` | `object` | Indeksy wybranych elementów modułów: `weaponIds`, `armorIds`, `augmentationsIds`, `equipmentIds`, `talentsIds`, `psionicsIds`, `prayersIds` (zawsze wszystkie pola; moduł wyłączony ma `[]`). |
-| `toggles` | `object` | Stany przełączników UI: `moduleVisibility` (klucz → `boolean`), `traitDescriptions` (`weapon`, `armor`), `fullDetails` (`augmentations`, `equipment`, `talents`, `psionics`, `prayers`). |
+| `modules` | `object` | Indeksy wybranych elementów modułów: `weaponIds`, `armorIds`, `augmentationsIds`, `equipmentIds`, `talentsIds`, `psionicsIds`, `prayersIds`, `mutationsIds` (zawsze wszystkie pola; moduł wyłączony ma `[]`; wpisy zapisane przed dodaniem modułu Mutacje nie mają `mutationsIds` — `applyFavorite()` traktuje to jak `[]`). |
+| `toggles` | `object` | Stany przełączników UI: `moduleVisibility` (klucz → `boolean`), `traitDescriptions` (`weapon`, `armor`), `fullDetails` (`augmentations`, `equipment`, `talents`, `psionics`, `prayers`, `mutations`). |
 
 Wpisy zapisane przed regułą „wyłączony moduł nie ma wyboru” mogą zawierać indeksy dla modułów
 wyłączonych. `applyFavorite()` je pomija, więc taki wpis wczytuje się poprawnie i bez ukrytego wyboru.
@@ -772,7 +792,7 @@ Po kliknięciu kod:
 1. pobiera wybrany rekord Bestiariusza,
 2. zbiera wybrane bronie — tylko gdy moduł Broń jest włączony (`getActiveModuleRecords`),
 3. zbiera wybrane pancerze — tylko gdy moduł Pancerz jest włączony,
-4. zbiera wybrane augumentacje, ekwipunek, talenty, psionikę i modlitwy — z każdego modułu tylko wtedy, gdy jest włączony,
+4. zbiera wybrane augumentacje, ekwipunek, talenty, psionikę, modlitwy i mutacje — z każdego modułu tylko wtedy, gdy jest włączony,
 5. buduje nadpisanie broni,
 6. buduje nadpisanie pancerza,
 7. buduje dodatkowe sekcje modułów,
@@ -943,7 +963,9 @@ odkrycia opisuje sekcja o strukturze HTML nagłówka.
 | Nadpisanie umiejętności | Edytuj `Umiejętności`. | Podgląd i karta używają zapisanego tekstu. |
 | Broń | Wybierz broń i wygeneruj kartę. | Ataki na karcie zawierają dane broni. |
 | Pancerz | Wybierz pancerz i wygeneruj kartę. | WP, odporność i cechy pancerza są uwzględnione. |
-| Moduły dodatkowe | Wybierz augumentacje, ekwipunek, talenty, psionikę i modlitwy. | Karta zawiera odpowiednie sekcje. |
+| Moduły dodatkowe | Wybierz augumentacje, ekwipunek, talenty, psionikę, modlitwy i mutacje. | Karta zawiera odpowiednie sekcje; `Mutacje` jest ostatnią sekcją przed `Notatki`. |
+| Mutacje | Zaznacz `Mutacje`, wybierz `Złotousty` i `Dodatkowe kończyny`, wygeneruj kartę bez i z pełnym opisem. | Lista ma wszystkie rekordy arkusza w kolejności `LP`; tabela podglądu `Nazwa`/`Efekt`; karta: same nazwy, potem `Nazwa — Efekt: …` z `CHAOS` na czerwono. Status: `…, Mutacje (N).` |
+| Brak arkusza Mutacje | Dane bez arkusza `Mutacje`. | Komunikat „W danych DataVault brakuje wymaganego arkusza GeneratorNPC: Mutacje.” |
 | Opisy cech | Włącz opis cech broni lub pancerza. | Karta zawiera opisy cech. |
 | Kwadraciki „Ż”/„T” | Wybierz rekord z liczbową `Żywotność` i `Odporność Psychiczna`, wygeneruj kartę. | Kwadraciki z literami „Ż” i „T” są szare (`#a0a0a0`) z czarną literą (`#111`); pustych białych kwadracików przy „Ż” jest tyle, ile `Żywotność`, a jasnoszarych przy „T” tyle, ile `Odporność Psychiczna`. |
 | Kwadraciki — `Odporność Psychiczna` `-` | Wybierz rekord z `Odporność Psychiczna` równą `-`, wygeneruj kartę. | Na karcie jest tylko wiersz „Ż”; nie ma ani kwadracika z literą „T”, ani pustych kwadracików „T”. |
@@ -983,7 +1005,7 @@ The module allows the user to:
 - unlock private data through the K.O.Z.A. access gate,
 - load runtime data from DataVault through the shared Firebase loader,
 - select a base record from `Bestiariusz`,
-- add weapons, armor, augmentations, equipment, talents, psionics, and prayers,
+- add weapons, armor, augmentations, equipment, talents, psionics, prayers, and mutations,
 - temporarily override selected Bestiary record values,
 - save an NPC configuration as a favorite,
 - restore a favorite configuration,
@@ -1162,7 +1184,8 @@ Required sheets:
 - `Ekwipunek`,
 - `Talenty`,
 - `Psionika`,
-- `Modlitwy`.
+- `Modlitwy`,
+- `Mutacje`.
 
 The module also uses:
 
@@ -1188,6 +1211,7 @@ After loading data, `loadPrivateGeneratorData()` sets:
 | `state.talents` | `Talenty` | By name. |
 | `state.psionics` | `Psionika` | By type descending, then by name. |
 | `state.prayers` | `Modlitwy` | By name. |
+| `state.mutations` | `Mutacje` | By name — in practice by `LP`, i.e. in rulebook order (subtle, minor, major). All records, including the "Rzut na tabeli …" redirects. |
 
 Sorting respects `LP` when records contain that value.
 
@@ -1234,7 +1258,8 @@ The workspace contains cards:
 - `Equipment selection`,
 - `Talent selection`,
 - `Psionics selection`,
-- `Prayer selection`.
+- `Prayer selection`,
+- `Mutation selection`.
 
 Each module card has a name filter field, a select list and a data preview table.
 
@@ -1251,6 +1276,7 @@ Module visibility is controlled by checkboxes with `data-module-toggle`.
 | `talents` | Talents | Adds talents as an extra card section. |
 | `psionics` | Psionics | Adds psionics as an extra card section. |
 | `prayers` | Prayers | Adds prayers as an extra card section. |
+| `mutations` | Mutations | Adds mutations as an extra card section (below `Prayers`). |
 
 `updateModuleVisibility()` hides or shows elements with `data-module-section`.
 
@@ -1272,6 +1298,7 @@ refers to them.
 | `talents` | `#talents` | `#talents-full-details` | `fullDetails` | `renderTalentsTable` |
 | `psionics` | `#psionics` | `#psionics-full-details` | `fullDetails` | `renderPsionicsTable` |
 | `prayers` | `#prayers` | `#prayers-full-details` | `fullDetails` | `renderPrayersTable` |
+| `mutations` | `#mutations` | `#mutations-full-details` | `fullDetails` | `renderMutationsTable` |
 
 `detailsGroup` is the name of the `payload.toggles` object under which the description checkbox state is
 stored in favorites. The map keys are the same keys as `data-module-toggle`, `listFilters` and the
@@ -1412,7 +1439,7 @@ The field sits in `.field` right before the `<select>`:
 - modules: `.field-label-row` (label `label[for="<key>"]` + description checkbox) → `#<key>-filter` →
   `select#<key>[multiple]`.
 
-Keys: `bestiary`, `weapon`, `armor`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`.
+Keys: `bestiary`, `weapon`, `armor`, `augmentations`, `equipment`, `talents`, `psionics`, `prayers`, `mutations`.
 The field id is always `<key>-filter` and the list id is the key itself — `createListFilter()`
 relies on this convention.
 
@@ -1439,7 +1466,7 @@ const createListFilter = (key, extra = {}) => ({
 });
 ```
 
-It builds a list object from DOM elements using the id convention. `listFilters` holds eight such
+It builds a list object from DOM elements using the id convention. `listFilters` holds nine such
 objects. Module lists additionally get:
 
 | Field | Role |
@@ -1450,7 +1477,7 @@ objects. Module lists additionally get:
 | `disabledTitleKey` | Armor only: `armorDisabledTitle` — tooltip of the disabled option. |
 | `isBlocked()` | Armor only: returns `state.armorSelectionBlocked`. |
 
-`MODULE_LIST_KEYS` is the array of the seven module keys in card order.
+`MODULE_LIST_KEYS` is the array of the eight module keys in card order.
 
 ### Functions
 
@@ -1536,9 +1563,24 @@ Weapon trait descriptions can optionally be included.
 
 ## Additional modules
 
-Augmentations, equipment, talents, psionics, and prayers can be added as extra sections on the card.
+Augmentations, equipment, talents, psionics, prayers, and mutations can be added as extra sections on the card (in this order, before `Notatki`).
 
 Each of these modules has a `Full details` toggle. If disabled, the card mostly shows names. If enabled, the card includes details from selected columns.
+
+| Module | Preview and full-description columns (`<module>Columns`) |
+| --- | --- |
+| Augmentations, Equipment, Talents, Prayers | `Nazwa`, `Efekt` |
+| Psionics | `Nazwa`, `ST`, `Aktywacja`, `Czas trwania`, `Zasięg`, `Wiele Celów`, `Efekt`, `Wzmocnienie` |
+| Mutations | `Nazwa`, `Efekt` |
+
+The `mutations` module (sheet `Mutacje`) follows the `prayers` pattern: the `data-module-section="mutations"`
+card below the Prayers card (`#mutations-full-details`, `#mutations-filter`, `select#mutations[multiple]`,
+`table.data-table[data-sheet="Mutacje"]` with `tbody#mutations-table-body`), `state.mutations`,
+`listFilters.mutations` (`placeholderKey: "selectMutations"`), `mutationsColumns`, `renderMutationsTable()`,
+the `mutations` entry in `MODULE_CONTROLS` and an entry in `moduleEntries` after Prayers. Preview column widths:
+`.data-table[data-sheet="Mutacje"] .min-col-nazwa` 28ch and `.min-col-efekt` 54ch (as for Prayers). With the
+full description a card entry reads `Name — Efekt: <Efekt>`; sub-tables in the `Efekt` column are split into
+stripes by `splitEntries()` just like in other modules.
 
 For psionics, the `Wzmocnienie` column is normalized while building module entries.
 
@@ -1592,8 +1634,8 @@ Single favorite model:
 | `bestiaryName` | `string` | Record name at save time. |
 | `bestiaryOverrides` | `object` | Base record overrides. |
 | `notes` | `string` | Content of the "Note (will be visible on the card)" field. |
-| `modules` | `object` | Selected module item indices: `weaponIds`, `armorIds`, `augmentationsIds`, `equipmentIds`, `talentsIds`, `psionicsIds`, `prayersIds` (always all fields; a disabled module has `[]`). |
-| `toggles` | `object` | UI toggle states: `moduleVisibility` (key → `boolean`), `traitDescriptions` (`weapon`, `armor`), `fullDetails` (`augmentations`, `equipment`, `talents`, `psionics`, `prayers`). |
+| `modules` | `object` | Selected module item indices: `weaponIds`, `armorIds`, `augmentationsIds`, `equipmentIds`, `talentsIds`, `psionicsIds`, `prayersIds`, `mutationsIds` (always all fields; a disabled module has `[]`; entries saved before the Mutations module existed have no `mutationsIds` — `applyFavorite()` treats this as `[]`). |
+| `toggles` | `object` | UI toggle states: `moduleVisibility` (key → `boolean`), `traitDescriptions` (`weapon`, `armor`), `fullDetails` (`augmentations`, `equipment`, `talents`, `psionics`, `prayers`, `mutations`). |
 
 Entries saved before the "a disabled module has no selection" rule may hold indices for disabled
 modules. `applyFavorite()` skips them, so such an entry loads correctly and without a hidden selection.
@@ -1750,7 +1792,7 @@ On click, the code:
 1. reads the selected Bestiary record,
 2. collects selected weapons — only when the Weapons module is enabled (`getActiveModuleRecords`),
 3. collects selected armor — only when the Armor module is enabled,
-4. collects selected augmentations, equipment, talents, psionics, and prayers — from each module only when it is enabled,
+4. collects selected augmentations, equipment, talents, psionics, prayers, and mutations — from each module only when it is enabled,
 5. builds weapon override,
 6. builds armor override,
 7. builds extra module sections,
@@ -1921,7 +1963,9 @@ structure section explains how to reveal it.
 | Skills override | Edit `Umiejętności`. | Preview and card use the saved text. |
 | Weapon | Select weapon and generate card. | Card attacks include weapon data. |
 | Armor | Select armor and generate card. | WP, resilience, and armor traits are included. |
-| Extra modules | Select augmentations, equipment, talents, psionics, and prayers. | Card includes corresponding sections. |
+| Extra modules | Select augmentations, equipment, talents, psionics, prayers, and mutations. | Card includes corresponding sections; `Mutacje` is the last section before `Notatki`. |
+| Mutations | Tick `Mutations`, select `Złotousty` and `Dodatkowe kończyny`, generate the card without and with the full description. | The list holds every sheet record in `LP` order; preview table `Nazwa`/`Efekt`; card: names only, then `Name — Efekt: …` with `CHAOS` in red. Status: `…, Mutations (N).` |
+| Missing Mutacje sheet | Data without the `Mutacje` sheet. | Message "W danych DataVault brakuje wymaganego arkusza GeneratorNPC: Mutacje." ("DataVault data is missing a sheet required by GeneratorNPC: Mutacje.") |
 | Trait descriptions | Enable weapon or armor trait descriptions. | Card includes trait descriptions. |
 | "Ż"/"T" boxes | Select a record with numeric `Żywotność` and `Odporność Psychiczna`, generate the card. | The "Ż" and "T" letter boxes are grey (`#a0a0a0`) with a black letter (`#111`); there are as many empty white "Ż" boxes as `Żywotność` and as many light grey "T" boxes as `Odporność Psychiczna`. |
 | Boxes — `Odporność Psychiczna` `-` | Select a record whose `Odporność Psychiczna` equals `-`, generate the card. | Only the "Ż" row is on the card; there is neither a "T" letter box nor empty "T" boxes. |

@@ -609,6 +609,15 @@ textarea:focus {
   min-width: 54ch;
 }
 
+/* Mutacje — szerokości kolumn podglądu, takie same jak w Modlitwach / Mutations — preview column widths, the same as Prayers */
+.data-table[data-sheet="Mutacje"] .min-col-nazwa {
+  min-width: 28ch;
+}
+
+.data-table[data-sheet="Mutacje"] .min-col-efekt {
+  min-width: 54ch;
+}
+
 .data-table[data-sheet="Talenty"] .min-col-nazwa {
   min-width: 28ch;
 }

@@ -58,7 +58,8 @@ W `data.sheets` muszą istnieć arkusze:
 - `Ekwipunek`,
 - `Talenty`,
 - `Psionika`,
-- `Modlitwy`.
+- `Modlitwy`,
+- `Mutacje`.
 
 Dodatkowo moduł korzysta z metadanych cech, jeżeli są dostępne:
 
@@ -368,7 +369,7 @@ Reguły Realtime Database dla prywatnych danych DataVault powinny być opisane i
 3. Jeżeli pojawi się ekran K.O.Z.A., wpisz Litanię Dostępu.
 4. Sprawdź, czy status zmieni się na komunikat o załadowaniu danych z prywatnej bazy.
 5. Sprawdź, czy lista Bestiariusza została wypełniona.
-6. Sprawdź, czy dostępne są Pancerze, Bronie, Augumentacje, Ekwipunek, Talenty, Psionika i Modlitwy.
+6. Sprawdź, czy dostępne są Pancerze, Bronie, Augumentacje, Ekwipunek, Talenty, Psionika, Modlitwy i Mutacje.
 
 ## Test ulubionych NPC w Firestore
 
@@ -458,7 +459,8 @@ data.sheets
 - `Ekwipunek`,
 - `Talenty`,
 - `Psionika`,
-- `Modlitwy`.
+- `Modlitwy`,
+- `Mutacje`.
 
 The module also uses trait metadata when available:
 
@@ -768,7 +770,7 @@ Realtime Database rules for private DataVault data should be documented and main
 3. If the K.O.Z.A. access gate appears, enter the Litany of Access.
 4. Check that the status changes to the private data loaded message.
 5. Check that the Bestiary list is populated.
-6. Check that Armor, Weapons, Augmentations, Equipment, Talents, Psionics, and Prayers are available.
+6. Check that Armor, Weapons, Augmentations, Equipment, Talents, Psionics, Prayers, and Mutations are available.
 
 ## NPC favorites Firestore test
 

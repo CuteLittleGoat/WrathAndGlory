@@ -226,7 +226,7 @@ Po rozpakowaniu moduły oczekują struktury:
 }
 ```
 
-`DataVault` korzysta z wielu arkuszy i metadanych. `GeneratorNPC` wymaga konkretnych arkuszy, między innymi `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, `Modlitwy`.
+`DataVault` korzysta z wielu arkuszy i metadanych. `GeneratorNPC` wymaga konkretnych arkuszy, między innymi `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, `Modlitwy`, `Mutacje`.
 
 ## Import `firebase-import.json` z DataVault
 
@@ -687,7 +687,7 @@ After unwrapping, modules expect this structure:
 }
 ```
 
-`DataVault` uses many sheets and metadata. `GeneratorNPC` requires specific sheets, including `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, and `Modlitwy`.
+`DataVault` uses many sheets and metadata. `GeneratorNPC` requires specific sheets, including `Bestiariusz`, `Pancerze`, `Bronie`, `Augumentacje`, `Ekwipunek`, `Talenty`, `Psionika`, `Modlitwy`, and `Mutacje`.
 
 ## Importing DataVault `firebase-import.json`
 

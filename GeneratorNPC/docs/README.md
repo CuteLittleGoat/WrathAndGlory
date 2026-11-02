@@ -16,6 +16,7 @@ W module możesz:
 - dodać talenty,
 - dodać psionikę,
 - dodać modlitwy,
+- dodać mutacje,
 - zapisać często używaną konfigurację jako ulubioną,
 - wygenerować kartę NPC do podglądu lub wydruku.
 
@@ -57,7 +58,8 @@ W praktyce oznacza to, że listy w module pochodzą z arkuszy takich jak:
 - `Ekwipunek`,
 - `Talenty`,
 - `Psionika`,
-- `Modlitwy`.
+- `Modlitwy`,
+- `Mutacje`.
 
 Jeżeli dane nie zostały załadowane, moduł nie będzie miał z czego zbudować karty NPC.
 
@@ -93,7 +95,8 @@ Obszar roboczy zawiera podgląd i tabele wyboru. Każda sekcja wyboru ma nad lis
 - `Wybór Ekwipunku`,
 - `Wybór Talentów`,
 - `Wybór Psioniki`,
-- `Wybór Modlitw`.
+- `Wybór Modlitw`,
+- `Wybór Mutacji`.
 
 ## Tworzenie NPC krok po kroku
 
@@ -137,7 +140,8 @@ Nad każdą listą wyboru stoi pole tekstowe z szarym napisem `Wpisz fragment na
 - lista `Ekwipunek`,
 - lista `Talenty`,
 - lista `Psionika`,
-- lista `Modlitwy`.
+- lista `Modlitwy`,
+- lista `Mutacje`.
 
 Każda lista ma własne pole. Wpisanie tekstu nad bronią nie zmienia listy pancerzy ani Bestiariusza.
 
@@ -305,6 +309,7 @@ Dostępne moduły:
 | Talenty | Dodaje wybrane talenty. |
 | Psionika | Dodaje moce psioniczne. |
 | Modlitwy | Dodaje modlitwy. |
+| Mutacje | Dodaje mutacje (lista z zakładki `Mutacje` w DataVault). |
 
 Po otwarciu modułu i po kliknięciu `Reset` **wszystkie moduły są wyłączone** — na ekranie jest tylko
 podgląd bazowy Bestiariusza, a karta pokazuje przeciwnika dokładnie tak, jak jest zapisany
@@ -347,11 +352,33 @@ Pancerz może wpłynąć na:
 
 Niektóre rekordy mogą blokować wybór pancerza, jeżeli bazowy przeciwnik nie powinien korzystać z tej sekcji.
 
-## Augumentacje, ekwipunek, talenty, psionika i modlitwy
+## Augumentacje, ekwipunek, talenty, psionika, modlitwy i mutacje
 
-Te moduły dodają dodatkowe sekcje do karty.
+Te moduły dodają dodatkowe sekcje do karty, w tej kolejności: `Augumentacje`, `Ekwipunek`,
+`Talenty`, `Psionika`, `Modlitwy`, `Mutacje` (pod nimi są jeszcze `Notatki`). Sekcja pojawia się na
+karcie tylko wtedy, gdy moduł jest zaznaczony i wybrano w nim co najmniej jedną pozycję.
 
 Dla części modułów dostępny jest przełącznik pełnego opisu. Gdy jest wyłączony, karta pokazuje krótszą wersję. Gdy jest włączony, karta zawiera więcej szczegółów.
+
+### Mutacje
+
+1. Zaznacz `Mutacje` w sekcji `Moduły aktywne` (przełącznik stoi pod `Modlitwy`).
+2. Pod sekcją `Wybór Modlitw` pojawi się `Wybór Mutacji`. Lista zawiera wszystkie mutacje z zakładki
+   `Mutacje` w DataVault, w kolejności z podręcznika: najpierw subtelne, potem pomniejsze, na końcu
+   ciężkie. Możesz wybrać kilka pozycji (Ctrl albo Shift przy kliknięciu) i zawęzić listę polem
+   wyszukiwania nad nią.
+3. Tabela pod listą pokazuje nazwę i efekt każdej wybranej mutacji. Długi efekt jest zwinięty —
+   kliknij komórkę, aby go rozwinąć.
+4. `Czy dodać pełen opis?`:
+   - **wyłączone** — sekcja `Mutacje` na karcie zawiera same nazwy mutacji;
+   - **włączone** — przy każdej nazwie jest jej efekt: `Nazwa — Efekt: …` (z kolorami i pogrubieniami
+     z danych).
+
+Pozycje `Rzut na tabeli pomniejszych mutacji` i `Rzut na tabeli ciężkich mutacji` są odsyłaczami
+z tabeli w podręczniku. Na karcie pojawi się wtedy tylko ich nazwa, bo nie mają efektu.
+
+Jeżeli efekt mutacji zawiera podtabelę (np. `Dodatkowe kończyny`, `Aberracja`), przy pełnym opisie jej
+kolejne pozycje są pokazane na karcie jako osobne paski — tak samo jak długie opisy w innych modułach.
 
 ## Opisy cech
 
@@ -603,6 +630,7 @@ In this module you can:
 - add talents,
 - add psionics,
 - add prayers,
+- add mutations,
 - save a frequently used configuration as a favorite,
 - generate an NPC card for preview or print.
 
@@ -644,7 +672,8 @@ In practice, module lists come from sheets such as:
 - `Ekwipunek`,
 - `Talenty`,
 - `Psionika`,
-- `Modlitwy`.
+- `Modlitwy`,
+- `Mutacje`.
 
 If data is not loaded, the module has no source data for building an NPC card.
 
@@ -680,7 +709,8 @@ above its list (described in the "Searching the lists" chapter):
 - `Equipment selection`,
 - `Talent selection`,
 - `Psionics selection`,
-- `Prayer selection`.
+- `Prayer selection`,
+- `Mutation selection`.
 
 ## Creating an NPC step by step
 
@@ -725,7 +755,8 @@ Above every selection list there is a text field with the grey hint `Wpisz fragm
 - the `Equipment` list,
 - the `Talents` list,
 - the `Psionics` list,
-- the `Prayers` list.
+- the `Prayers` list,
+- the `Mutations` list.
 
 Every list has its own field. Typing above the weapons does not change the armor list or the
 Bestiary.
@@ -894,6 +925,7 @@ Available modules:
 | Talents | Adds selected talents. |
 | Psionics | Adds psychic powers. |
 | Prayers | Adds prayers. |
+| Mutations | Adds mutations (the list from the DataVault `Mutacje` tab). |
 
 When the module opens and after clicking `Reset`, **all modules are off** — the screen shows only the
 base Bestiary preview, and the card shows the enemy exactly as stored in the Bestiary (with its
@@ -936,11 +968,32 @@ Armor may affect:
 
 Some records may block armor selection if the base enemy should not use this section.
 
-## Augmentations, equipment, talents, psionics, and prayers
+## Augmentations, equipment, talents, psionics, prayers, and mutations
 
-These modules add extra card sections.
+These modules add extra card sections, in this order: `Augumentacje`, `Ekwipunek`, `Talenty`,
+`Psionika`, `Modlitwy`, `Mutacje` (followed by `Notatki`). A section appears on the card only when the
+module is ticked and at least one item is selected in it.
 
 Some modules have a full-description toggle. When disabled, the card shows a shorter version. When enabled, the card includes more details.
+
+### Mutations
+
+1. Tick `Mutations` in `Active modules` (the toggle sits below `Prayers`).
+2. `Mutation selection` appears below `Prayer selection`. The list holds every mutation from the
+   DataVault `Mutacje` tab, in rulebook order: subtle first, then minor, then major. You can select
+   several items (Ctrl or Shift while clicking) and narrow the list with the search field above it.
+3. The table below the list shows the name and effect of every selected mutation. A long effect is
+   collapsed — click the cell to expand it.
+4. `Czy dodać pełen opis?` ("Include full description?"):
+   - **off** — the `Mutacje` section on the card holds only the mutation names;
+   - **on** — each name is followed by its effect: `Name — Efekt: …` (with colours and bold text from
+     the data).
+
+The `Rzut na tabeli pomniejszych mutacji` and `Rzut na tabeli ciężkich mutacji` items are redirects
+from the rulebook table. Only their name appears on the card, because they have no effect.
+
+If a mutation's effect contains a sub-table (e.g. `Dodatkowe kończyny`, `Aberracja`), with the full
+description its entries are shown on the card as separate stripes — just like long descriptions in other modules.
 
 ## Trait descriptions
 
