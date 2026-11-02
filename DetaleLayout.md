@@ -168,7 +168,9 @@ lokalnego.
   - poświata: `0 0 14px rgba(255, 59, 48, 0.35)` (normal), `0 0 16px rgba(255, 59, 48, 0.45)` (hover).
 
 ### 3) Layout i elementy UI
-- `body`: flex, centrowanie w pionie i poziomie, padding `24px`.
+- `html, body`: tło bazowe `#031605` (pod gradientem `--bg`), `margin: 0`, `min-height: 100%`.
+- Ustawienia dla aplikacji uruchamianej jako PWA (Android, tablety): viewport `width=device-width, initial-scale=1.0, viewport-fit=cover`, trzy znaczniki `theme-color` o wartości `#031605` (domyślny oraz warianty `prefers-color-scheme: light` i `dark`) i `color-scheme: dark` — dzięki temu paski systemowe pozostają ciemne.
+- `body`: flex, centrowanie w pionie i poziomie, padding `24px`, a dolny padding `calc(24px + env(safe-area-inset-bottom, 0px))` (odstęp od systemowego paska nawigacji).
 - `main`: karta o szerokości `min(860px, 100%)`, tło `--panel`, ramka `2px` `--border`, cień `--glow`, zaokrąglenia `--radius`, padding `32px 32px 28px`.
 - `.actions`: grid z kolumnami `repeat(auto-fit, minmax(220px, 1fr))` i odstępem `18px 20px`.
 - `.btn`: blokowy przycisk z animacją `transform` i `background` przy hover/active.
@@ -180,16 +182,6 @@ lokalnego.
 
 ### 5) Wyjątki i formatowanie specjalne
 - W `Main/index.html` przyciski `Galaktyka` i `Gilead` (`.btn.secretCta`) są wyjątkiem kolorystycznym: używają czerwonej palety CTA zamiast zielonej palety nawigacyjnej. Są jedynymi elementami wyrównanymi do bocznych krawędzi karty pod siatką modułów — `Galaktyka` do lewej, `Gilead` do prawej — i tworzą układ lustrzany o identycznym wyglądzie.
-- W `Kalkulator/index.html` dodano wyjątek kolorystyczny:
-  - przycisk `.btn.secret` celowo używa czerwonej palety, aby odróżniał się od zielonych przycisków nawigacyjnych.
-  - wartości kolorów:
-    - obramowanie: `#ff5a5a`,
-    - tło: `rgba(255, 90, 90, 0.12)` (normal), `rgba(255, 90, 90, 0.20)` (hover), `rgba(255, 90, 90, 0.28)` (active),
-    - tekst: `#ffd8d8`.
-- Dla funkcji „tajnego przycisku” zastosowano overlay pełnoekranowy:
-  - tło: `rgba(0, 0, 0, 0.8)`,
-  - warstwa: `position: fixed; inset: 0; z-index: 1000`,
-  - dialog zachowuje standard modułu Main (`--border`, `--glow`, tło `#000`).
 
 ---
 
@@ -336,6 +328,7 @@ lokalnego.
 ### 3) Zasady formatowania tekstu i wyjątki
 - We wszystkich zakładkach DataVault kolumny `Podręcznik` i `Strona` ustawia jeden blok globalny w `style.css`: `Podręcznik` (min 17ch, do lewej, standardowe łamanie), `Strona` (min 6ch, **wyśrodkowana**, standardowe łamanie). Reguły pojedynczych zakładek tych kolumn nie powtarzają — reguła stojąca w pliku wyżej niż blok globalny zostałaby przez niego nadpisana. Wyjątek musiałby stać poniżej bloku globalnego.
 - Wartości kolumny `Strona` mają kolor `--code` (`#D2FAD2`), taki sam jak referencje `(str.)` (`.ref`).
+- Wpisy ze `Stan` = `old` (`tr.row-old`): poza Bestiariuszem cały wiersz ma kolor archiwalny `var(--text-old)` (`#7f9b7f`), także przecinki słów kluczowych, odnośniki, `*[n]` i ukośniki `Zasięgu`; w Bestiariuszu kolor archiwalny dostają wyłącznie komórki `Nazwa` i `Typ` (`td.bestiary-old-identity`). Czerwień ze znaczników `{{RED}}` pozostaje czerwona.
 #### 3.1 Zwykły tekst i łamanie linii
 - Komórki używają `.celltext`:
   - `white-space: pre-wrap` (zachowanie nowych linii z danych).
@@ -347,7 +340,8 @@ Aplikacja obsługuje specjalne markery formatowania w danych (`app.js` → `form
 - `{{RED}}...{{/RED}}` → czerwony tekst (`.inline-red`, `color: var(--red)`).
 - `{{B}}...{{/B}}` → pogrubienie (`.inline-bold`).
 - `{{I}}...{{/I}}` → kursywa (`.inline-italic`).
-- `{{S}}...{{/S}}` → przekreślenie (`.inline-strike`).
+- `{{S}}...{{/S}}` → przekreślenie (`.inline-strike`) w kolorze archiwalnym `var(--text-old)`.
+- Czerwień ma pierwszeństwo: tekst jednocześnie czerwony i przekreślony (`.inline-strike.inline-red`, np. `{{RED}}{{S}}...{{/S}}{{/RED}}`) pozostaje czerwony i jest przekreślony.
 
 #### 3.3 Wyjątki na czerwony kolor (reguły logiczne)
 - **Słowa kluczowe** mają kolor czerwony (`.keyword-red`):
@@ -550,6 +544,8 @@ Jeżeli w przyszłości dodasz nową zakładkę lub kolumny, zasady są następu
   - `{{RED}}...{{/RED}}` → `.inline-red` (czerwony tekst, UI główne: `var(--red)`, karta: `#111`).
   - `{{B}}...{{/B}}` → `.inline-bold`.
   - `{{I}}...{{/I}}` → `.inline-italic`.
+  - `{{S}}...{{/S}}` → `.inline-strike` (przekreślenie w kolorze `var(--text-old)`); tekst jednocześnie czerwony i przekreślony (`.inline-strike.inline-red`) pozostaje czerwony.
+- **Stare wpisy Bestiariusza** w podglądzie bazowym: klucze i wartości `LP`, `Nazwa` i `Typ` mają kolor archiwalny `var(--text-old)` (`.bestiary-old-key`).
 - **Słowa kluczowe** (`.keyword-red`) — kolumny z `Słowa Kluczowe` są na czerwono.
 - **Wyjątki na przecinki**: w arkuszach `Bestiariusz`, `Psionika`, `Augumentacje`, `Ekwipunek`, `Pancerze`, `Bronie` przecinki w kolumnie `Słowa Kluczowe` dostają klasę `.keyword-comma` z kolorem bazowym.
 - **`*[n]` na początku linii** → `.caretref` (jasny kolor).
@@ -692,6 +688,23 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
     prawej krawędzi treści wynosi `0 px` w obu plikach.
   - Pozostałe właściwości stopki są w obu kreatorach identyczne: kolor `var(--muted)`,
     `letter-spacing: .08em` i kursywa (`font-style: italic`).
+
+
+### 6) Tajny przycisk i modal potwierdzenia
+- `Kalkulator/index.html` — przycisk **Tajny przycisk!** (`.btn.secretCta`) stoi w osobnym kontenerze
+  `.secretCtaWrap` pod główną siatką `.actions` (`width: 100%`, `display: flex`,
+  `justify-content: flex-end`, `margin-top: 4px`), czyli przy prawej krawędzi karty. Wygląd — ten sam
+  czerwony wariant „pill” co `Galaktyka` i `Gilead` w Main: obramowanie `#ff3b30`, tło
+  `rgba(255, 59, 48, 0.2)` (hover `0.28`, active `0.36`), tekst `#ffe5e3`, poświata
+  `0 0 14px rgba(255, 59, 48, 0.35)` (hover `0 0 16px rgba(255, 59, 48, 0.45)`), `width: auto`,
+  `border-radius: 999px`, `padding: 6px 10px`, `font-size: 11px`, `line-height: 1.1`,
+  `font-weight: 700`, `letter-spacing: 0.2px`. Ten sam styl ma przycisk `Zamknij` w oknie tajnego przycisku.
+- Okno tajnego przycisku to nakładka pełnoekranowa: tło `rgba(0, 0, 0, 0.8)`, `position: fixed`,
+  `inset: 0`, `z-index: 1000`; okno dialogowe ma styl modułu (ramka `--border`, poświata `--glow`, tło `#000`).
+- Kreatory postaci (`Kalkulator/TworzeniePostaci.html` i `Kalkulator/TworzeniePostaci_v2.html`) —
+  modal potwierdzenia ma grafikę `Kalkulator/Modal_Icon.png`, ciemne tło i zieloną ramkę modułu,
+  a przycisk potwierdzający (`Tak` / `Yes`) — czerwony wariant: obramowanie `rgba(190,40,40,.75)`,
+  tło `rgba(110,20,20,.7)` (hover `rgba(150,28,28,.8)`), tekst `#ffdada`.
 
 ---
 
@@ -923,22 +936,6 @@ Wszystkie style modułu są w `Audio/style.css` (jeden arkusz dla panelu admina,
 
 ## Moduł — Infoczytnik
 
-## 2026-04-23 — Infoczytnik (test): etykiety fontów + preload
-- `Infoczytnik/GM_test.html`: dropdown **Font** używa teraz etykiet tekstowych `ID. Frakcja - Nazwa fontu` i renderuje je jednolitym fontem UI (bez stylowania fragmentów opcji).
-- `Infoczytnik/GM_test.html` i `Infoczytnik/Infoczytnik_test.html`: rozszerzono import Google Fonts o brakujące rodziny: `IBM Plex Serif`, `Open Sans`, `Noto Serif`, `DM Serif Display`, `IBM Plex Sans Condensed`, `Exo 2`.
-- Dodano preload webfontów przez `document.fonts.load(...)` (manifestowe fonty w GM + lista stała na ekranie gracza), aby przełączenie fontu i pierwszy render były natychmiastowe optycznie.
-
-## 2026-03-31 — Infoczytnik (domyślny preset GM)
-- Zmieniono domyślny preset formularza w `GM_test.html` (`DEFAULT_FORM_STATE`) na konfigurację startową sesji:
-  - tło `7. Litannie Zaginionych`,
-  - logo `1. Mechanicus`,
-  - filler set `1. Mechanicus`,
-  - audio wiadomości `1. Text-On-Screen`,
-  - checkboxy: `Logo=OFF`, `Prostokąt cienia=OFF`, `Flicker=OFF`, `Audio=ON`,
-  - `Ilość linii fillerów=3`, `Wysokość Prefix/Suffix=2`,
-  - typografia i kolory domyślne: treść `#00ff66 / 20px`, prefix+suffix `#ffffff / 12px`.
-
-
 Moduł składa się z dwóch stron oraz strony startowej:
 - **Infoczytnik.html** — ekran graczy (Data-Slate),
 - **GM.html** — panel prowadzącego,
@@ -946,18 +943,31 @@ Moduł składa się z dwóch stron oraz strony startowej:
 
 ### 1) Fonty i typografia
 #### 1.1 Fonty zewnętrzne (Google Fonts)
-Załadowane fonty (używane zależnie od frakcji):
+Panel GM i ekran gracza ładują ten sam zestaw (jeden link Google Fonts), więc wybór fontu w podglądzie GM
+i na ekranie gracza wygląda tak samo:
 - Share Tech Mono
 - Cinzel (400/700)
 - Rajdhani (400/600)
+- IBM Plex Serif (400/700)
+- Open Sans (400/600/700)
+- Noto Serif (400/700)
+- DM Serif Display
+- IBM Plex Sans Condensed (400/600/700)
+- Exo 2 (400/600/700)
 - Black Ops One
 - Staatliches
 - Orbitron (400/700)
 - Questrial
 - Russo One
+- Caveat (400/700)
+- Great Vibes
+
+Fonty z manifestu są wstępnie ładowane przez `document.fonts.load(...)` w obu plikach, więc pierwsze
+wyświetlenie i przełączenie fontu nie migają fontem zastępczym.
 
 #### 1.2 Fonty lokalne i fallbacki
-- Domyślny stos: **Calibri, Arial, sans-serif** (`--font`).
+- Domyślny stos ekranu gracza: **"Share Tech Mono", Calibri, Arial, sans-serif** (`--font`).
+- Do każdego fontu wybranego w panelu GM dopisywany jest ten sam fallback `, Calibri, Arial, sans-serif` (`FONT_FALLBACK`, w obu plikach).
 - Fallback w panelu GM: **Arial, sans-serif**.
 - Teksty techniczne i podgląd: **Consolas, "Courier New", monospace**.
 
@@ -1025,124 +1035,21 @@ Załadowane fonty (używane zależnie od frakcji):
 
 ### 5) Wyjątki i formatowanie specjalne
 - Brak wyjątków formatowania tekstu (poza dynamicznym doborem fontów i kolorów przez GM).
-- Kolor treści, prefixu i suffixu może być zmieniany przez GM (w tym wartości typu `#RRGGBB` i `rgba(...)`).
+- Kolory treści, prefixu/suffixu i logo GM ustawia wyłącznie w formacie HEX (`#RGB` albo `#RRGGBB`).
+
+#### 5.1 Panel GM — elementy formularza
+- Lista **Font** pokazuje etykiety `ID. Nazwa - Font` (np. `1. … - Share Tech Mono`) wyświetlane jednolitym fontem interfejsu (opcje nie są stylowane fontem, który opisują).
+- Sekcje kolorów (treść, prefix+suffix, logo): para pól `.pair` (`grid-template-columns: minmax(0,1fr) minmax(0,1fr)`, odstęp `10px`) — pole tekstowe HEX i próbnik koloru w jednym rzędzie, pod spodem szybkie kolory `.chip` (pigułki: `padding: 8px 10px`, `border-radius: 999px`, ramka `rgba(255,255,255,.14)`, tło `rgba(0,0,0,.18)`, `font-size: 13px`, tekst `#eaeaea`, kółko `.swatch` w kolorze próbki).
+- Szybkie kolory treści i prefix+suffix: **Zielony** `#00ff66`, **Czerwony** `#ff3333`, **Złoty** `#d4af37`, **Biały** `#ffffff`.
+- **Kolor logo** stoi bezpośrednio pod listą **Logo**: domyślnie `#d4af37`; szybkie kolory **Biały** `#ffffff`, **Zielony** `#00ff66`, **Czarny** `#000000`, **Złoty** `#d4af37`. Gdy checkbox **Logo** jest wyłączony, panel koloru logo jest wyszarzony (`opacity: .5`) i nieklikalny (`pointer-events: none`).
+- Logo w podglądzie GM i na ekranie gracza jest rysowane jako maska PNG (`mask-image` z pliku logo, `mask-size: contain`, `mask-position: center`, bez powtarzania) wypełniona jednolitym kolorem (`--logoColor`), bez gradientu.
+- Tekst podglądu (`.previewText`) ma `white-space: pre-line`, więc entery w prefixie i suffixie są widoczne w podglądzie.
+- Domyślny stan formularza (`DEFAULT_FORM_STATE`): tło o ID 10, logo o ID 3, zestaw fillerów o ID 1, font o ID 1, dźwięk o ID 1; checkboxy Logo, ruchoma nakładka i Flicker wyłączone, fillery i dźwięk włączone; 3 linie fillerów, wysokość pasm prefix/suffix 2; kolory: treść `#00ff66`, prefix+suffix `#ffffff`, logo `#d4af37`; rozmiary fontu: treść 20, prefix/suffix 12; podgląd w trybie treści.
 
 ---
 
 ## Uwaga końcowa
 Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym pliku, aby zachować spójne, kompletne źródło prawdy dla stylów całej aplikacji.
-
-## Aktualizacja 2026-03-13 — Main: wyróżniony przycisk Web Push
-
-- W `Main/index.html` dodano czerwony wariant przycisku CTA (`.pushCta`) dla akcji **Włącz powiadomienia**.
-- Parametry wizualne nowego wariantu:
-  - obramowanie: `#ff3b30`
-  - tło: `rgba(255, 59, 48, 0.2)`
-  - tekst: `#ffe5e3`
-  - poświata: `0 0 18px rgba(255, 59, 48, 0.45)`
-- W stanie `:hover` i `:active` rośnie intensywność czerwonego tła oraz poświaty, aby CTA odróżniało się od standardowych zielonych przycisków modułów.
-
-## Aktualizacja 2026-03-13 — korekta CTA push i spacingu fillerów
-
-- `Main/index.html`: przycisk **Włącz powiadomienia** (`.pushCta`) zmieniono na kompaktowy, "pill" i przypięto do prawego dolnego rogu (`position: fixed; right:14px; bottom:14px`).
-- `Infoczytnik/GM_test.html`: podgląd `livePreview` dla prefix/suffix renderuje nowe linie przez `white-space: pre-line`.
-- `Infoczytnik/Infoczytnik_test.html`: układ odstępów fillerów oparto o dwa równe gapy (`--gap-prefix-to-msg`, `--gap-msg-to-suffix`) oraz odseparowano wpływ logo na wysokość sekcji prefixu (logo pozycjonowane absolutnie).
-
-## Aktualizacja 2026-03-28 — nowe layouty pisma (Infoczytnik)
-
-- Dodano dwa nowe layouty w module **Infoczytnik**:
-  - `pismo_odreczne` z fontem **Caveat** (`assets/layouts/Pismo_odreczne/Pergamin.jpg`),
-  - `pismo_ozdobne` z fontem **Great Vibes** (`assets/layouts/Pismo_ozdobne/Pergamin.jpg`).
-- Dla obu layoutów wprowadzono tryb ograniczony:
-  - prefix i suffix są wyłączone (brak losowania, brak fallbacków),
-  - logo jest wymuszone jako wyłączone,
-  - efekt flicker jest wymuszony jako wyłączony,
-  - dźwięk `Message.mp3` nie jest odtwarzany.
-- Zachowano aktywne opcje stylu tekstu:
-  - kolor fontu wiadomości,
-  - rozmiar fontu wiadomości i prefix/suffix (w praktyce dla tych layoutów dotyczy wizualnie treści wiadomości).
-- Dźwięk **Ping** pozostaje aktywny także dla layoutów pisma.
-
-## Aktualizacja layoutu PWA — 2026-03-29 (Main)
-
-- W `Main/index.html` viewport został rozszerzony do `viewport-fit=cover` dla poprawnej współpracy z obszarami systemowymi Androida.
-- Dodano komplet meta `theme-color` (domyślny + wariant `light` i `dark`) oraz `color-scheme: dark`, aby stabilizować ciemny wygląd elementów systemowych.
-- Dodano bazowe ciemne tło na `html, body` (`#031605`) oraz dolny `safe-area` padding: `calc(24px + env(safe-area-inset-bottom, 0px))`.
-- Celem zmiany jest ograniczenie przypadków jasnego paska systemowego przy uruchamianiu aplikacji jako PWA na Androidzie/tabletach.
-
-## Aktualizacja 2026-03-30 — Infoczytnik (test)
-- `GM_test.html` i `Infoczytnik_test.html` przeszły na model niezależnych dropdownów.
-- Zachowano spójny fallback fontów: `Calibri, Arial, sans-serif` dla każdego wyboru `Font`.
-- Podgląd GM renderuje tło + logo + treść na jednym komponencie preview.
-- Kolor głównej treści i kolor Prefix+Suffix są niezależne (oddzielne pola i walidacja).
-
-## Aktualizacja 2026-03-31 — Infoczytnik (test, kolory/fonty/fillery)
-- `GM_test.html`:
-  - sekcje kolorów (treść i fillery) mają układ `HEX + Picker` w jednym rzędzie, pod spodem szybkie kolory i dalej pole rozmiaru fontu;
-  - dodano szybkie kolory: **Zielony** `#00ff66`, **Czerwony** `#ff3333`, **Złoty** `#d4af37`, **Biały** `#ffffff`;
-  - kolory działają w trybie **HEX-only** (`#RGB` i `#RRGGBB`), usunięto domyślne RGBA dla Prefix/Suffix;
-  - pickery kolorów aktualizują pola tekstowe na eventach `input` i `change`;
-  - `fillerLineCount` rerolluje fillery natychmiast po zmianie wartości (bez konieczności zmiany zestawu);
-  - usunięto komunikat „Flicker aktywny (opcjonalny)” — hint pokazuje tylko ostrzeżenie przy wyłączonym prostokącie cienia.
-- Kontrakt GM → Infoczytnik:
-  - `msgFontSize`, `prefixFontSize`, `suffixFontSize` są przekazywane jako **number** (bez `px`).
-- `Infoczytnik_test.html`:
-  - doładowuje ten sam zestaw Google Fonts co panel GM, więc wybór fontu jest zgodny między preview i ekranem gracza;
-  - domyślny kolor Prefix/Suffix ustawiony na `#ffffff`.
-
-## Aktualizacja 2026-04-17 — Status `old` i przekreślenia
-
-### Nowy token koloru (DataVault + GeneratorNPC)
-- Dodano kolor archiwalny: `--text-old: #7f9b7f`.
-- Zastosowanie:
-  - rekordy oznaczone `Status=old` w DataVault (kolor bazowy wiersza),
-  - pola `LP`, `Nazwa`, `Typ` w podglądzie bazowym GeneratorNPC,
-  - kontrolka „Czy wyświetlić zdezaktualizowane wpisy?” w GeneratorNPC i DataVault (`var(--text-old)` / `#7f9b7f`, `opacity: 1`, `accent-color: var(--text-old)` dla zaznaczonego checkboxa),
-  - teksty przekreślone (`{{S}}...{{/S}}`) jako kolor domyślny przekreślenia.
-
-### Priorytet kolorów
-- Czerwony (`{{RED}}`) ma wyższy priorytet niż styl archiwalny i przekreślenie.
-- Segment `{{RED}}{{S}}...{{/S}}{{/RED}}` pozostaje czerwony, ale jest przekreślony.
-
-### Szerokość kolumny „Klucz” (GeneratorNPC)
-- W tabeli `data-sheet="Bestiariusz"` ustawiono `table-layout: auto`, aby Firefox nie rozdmuchiwał lokalnego przewijania tabeli Bestiariusza do nienaturalnych szerokości.
-- Pierwsza kolumna (`Klucz`) ma stabilną szerokość: `25ch` (`width/min-width/max-width`).
-- Druga kolumna (`Wartość`) pozostaje elastyczna i dopasowuje się do treści oraz dostępnej przestrzeni karty.
-
-## Aktualizacja 2026-04-20 — korekta DataVault (kolumny i layout)
-- Zaktualizowano opis zakładek tworzenia postaci o `Pakiety Wyniesienia`.
-- Poprawiono globalny opis kolumny `Strona`: wyrównanie jest `left` (nie `center`).
-- Uzupełniono listę arkuszy z neutralnym przecinkiem w `Słowa Kluczowe` o `Archetypy` i `Pakiety Wyniesienia`.
-- Urealniono opis clampa do aktualnej implementacji opartej wyłącznie o pomiar renderu (`ResizeObserver`).
-
-## Aktualizacja 2026-04-23 — Kalkulator: styl i pozycja „Tajny przycisk!”
-- W `Kalkulator/index.html` przycisk **Tajny przycisk!** otrzymał ten sam wariant CTA co `Main/index.html` (**Włącz powiadomienia**):
-  - obramowanie: `#ff3b30`,
-  - tło: `rgba(255, 59, 48, 0.2)`,
-  - tekst: `#ffe5e3`,
-  - poświata: `0 0 14px rgba(255, 59, 48, 0.35)`.
-- Zmieniono geometrię przycisku na kompaktowy „pill”:
-  - `border-radius: 999px`,
-  - `width: auto`,
-  - `padding: 6px 10px`,
-  - `font-size: 11px`, `line-height: 1.1`.
-- Zmieniono położenie przycisku:
-  - przeniesienie z prawej kolumny siatki `.actions` do osobnego kontenera `.secretCtaWrap`,
-  - wyrównanie do prawej (`justify-content: flex-end`) pod główną siatką nawigacji.
-
-## Aktualizacja 2026-04-27 – modal potwierdzenia (Kalkulator/TworzeniePostaci)
-- Zmieniono asset grafiki modala na `/Kalkulator/Modal_Icon.png`.
-- Dla przycisku potwierdzającego (`Tak` / `Yes`) ustawiono czerwony wariant kolorystyczny:
-  - obramowanie: `rgba(190,40,40,.75)`
-  - tło: `rgba(110,20,20,.7)`
-  - hover: `rgba(150,28,28,.8)`
-  - tekst: `#ffdada`
-- Utrzymano ciemne tło modala i zielony motyw ramki, aby zachować spójność stylistyczną modułu.
-
-
-## Aktualizacja 2026-05-12 — usunięcie CTA powiadomień z Main
-- `Main/index.html`: usunięto czerwony przycisk `Włącz powiadomienia` oraz jego dedykowane style `.pushCta*`.
-- Układ ekranu głównego pozostał oparty o siatkę kart modułów bez dodatkowego elementu CTA pod listą modułów.
 
 ## 🇵🇱 Okno hasła — Litania Dostępu
 - Wspólny overlay hasła (`shared/access-gate.css`) używa siatki 2-kolumnowej.
@@ -1161,12 +1068,6 @@ Każda modyfikacja stylu w dowolnym module **musi** być odzwierciedlona w tym p
 - Mobile breakpoint: `max-width: 640px`, single-column layout.
 - The “Litany of Access” label is intentionally darker than the message body text: `var(--muted, #4a8b4a)`.
 - `Audio` module exception: its gate carries an extra “Skip” button (`.accessGate__skip`) in the left cell of the second row, opposite the submit button. The class is defined in the `Audio` module stylesheet rather than the shared one, because only there may the gate be skipped. On mobile the button moves to the grid's fourth row, at the same `640px` breakpoint.
-
-## Moduł — Infoczytnik (aktualizacja 2026-05-28)
-- W panelu GM (`Infoczytnik/GM_test.html`) dodano blok **Kolor logo** pomiędzy polami **Logo** i **Zestaw fillerów**.
-- Domyślna barwa logo: `#ffffff`.
-- W stanie wyłączonego checkboxa **Logo** panel koloru logo przechodzi do stanu nieaktywnego (wyszarzenie + blokada kliknięcia).
-- Podgląd GM i ekran odbiorcy renderują logo jako maskę PNG, a kolor jest kontrolowany przez jednolity fill (bez gradientu).
 
 ## DataVault — aktualny wygląd zakładek pojazdów i zasad walki
 
