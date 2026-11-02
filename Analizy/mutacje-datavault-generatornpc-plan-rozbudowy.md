@@ -1,6 +1,6 @@
 # Zakładka „Mutacje” — DataVault i GeneratorNPC: analiza rozbudowy i plan pracy
 
-> **Data analizy:** 2 listopada 2026 (wersja 1: analiza i pytania; wersja 2 tego samego dnia: dopisane decyzje użytkownika, nowe ustalenia i plan w etapach)
+> **Data analizy:** 2 listopada 2026 (wersja 1: analiza i pytania; wersja 2: decyzje użytkownika, nowe ustalenia i plan w etapach; wersja 3: odpowiedzi na P1/P2 z korektą wyrównania `Strona` i stan realizacji Etapów 1–2 — rozdz. 4.1)
 > **Moduły:** `DataVault` (generator danych, wyświetlanie zakładki, porządki w CSS), `GeneratorNPC` (nowy moduł aktywny, błąd wyłączonych modułów, domyślne checkboxy), dokumentacja wspólna (`DetaleLayout.md`, `Kolumny.md`, instrukcje Firebase)
 > **Stan kodu:** commit `0eacdc5` (gałąź `main`; kod modułów bez zmian od `4295ed5`)
 > **Plik wejściowy:** załączony `Repozytorium.xlsx` — 10 038 088 B, SHA-256 `e3ebb94b446eac953fffba5660c143dee64fc0520e4bb6d1fc7a6b52357290e3`, 39 arkuszy
@@ -10,7 +10,7 @@
 > - **Mutacje:** generator danych obsługuje nową zakładkę bez zmian w kodzie (Python i przeglądarka dają bajtowo identyczny `data.json`), po oczyszczeniu pliku XLSX z miliona pustych wierszy. W DataVault: jedna linia w `app.js`, blok CSS i grupowanie kart na telefonie. W GeneratorNPC: nowy moduł według wzorca „Modlitw”, wszystkie 34 rekordy.
 > - **Pilny błąd GeneratorNPC:** odznaczenie modułu tylko chowa jego kartę — wybór zostaje i trafia na kartę NPC. Dotyczy wszystkich modułów, także Broni i Pancerza. Plan: odznaczenie czyści moduł, generowanie pomija moduły wyłączone, ulubione nie przenoszą ukrytego wyboru, wszystkie moduły domyślnie wyłączone.
 > - **Porządki:** 49 linii martwych lub zdublowanych reguł CSS w DataVault da się usunąć bez zmiany wyglądu ani o piksel (zmierzone). `Kolumny.md` ma 132 rozbieżności z faktycznym wyglądem, `DetaleLayout.md` §5 — 57 na 86 wpisów; oba pliki do przepisania na podstawie audytu (załącznik B).
-> - **Dwa pytania otwarte** — rozdz. 16.
+> - **Stan:** Etap 1 (błąd GeneratorNPC, domyślne checkboxy) i Etap 2 (porządki CSS — z korektą: `Strona` wyśrodkowana we wszystkich zakładkach — oraz `Kolumny.md`, `DetaleLayout.md` z wpisami „Aktualizacja”) są zrobione na gałęzi `claude/sharp-ritchie-rku06e`; Etap 3 („Mutacje”) czeka na oczyszczony XLSX i import danych — rozdz. 4.1.
 
 ---
 
@@ -100,6 +100,24 @@
 >
 > Zaktualizuj analizę. Masz jeszcze jakieś pytania?
 
+### 1.3 Odpowiedzi na pytania z wersji 2 i polecenie rozpoczęcia prac (2 listopada 2026)
+
+> P1 - Tak. Ma kasować.
+> P2 - Zgodnie z rekomendacją w celu spójności aplikacji.
+>
+> 17.1 Puste rekordy w Specjalne Bonusy Wrogów - poprawiłem w excelu.
+> 17.2 DetaleLayout.md ma także sekcje „Aktualizacja" - popraw jak już znalazłeś błąd.
+>
+> Jeżeli wszystko uzgodnione to zacznij prace nad naprawą.
+
+Korekta przesłana w trakcie pracy:
+
+> Korekta - wszędzie zakładka "Strona" ma być wyśrodkowana do środka.
+
+Polecenie po restarcie sesji:
+
+> kontynuuj pracę.
+
 ---
 
 ## 2. Zakres analizy
@@ -133,13 +151,13 @@ Poza zakresem: zmiany w kodzie, import do Firebase, folder `WebView_FCM_Cloudfla
 | 2 | Generator danych jest uniwersalny; Python i przeglądarka dają **identyczny** `data.json` (SHA-256 `846efd69…cdcdd3`). | Brak zmian w generatorze. |
 | 3 | ⚠️ Arkusz „Mutacje” ma w XML **1 048 535 wierszy** (34 z danymi). | Użytkownik czyści plik (D1); poprawa parsera — osobna analiza. |
 | 4 | Widoczność pod checkboxem „tworzenia postaci” i kolor zakładki daje jeden zbiór `CHARACTER_CREATION_SHEETS`. | Dopisać `"Mutacje"`. |
-| 5 | Szerokości „Mutacji” ustalone i zmierzone na makiecie: k66 6ch/środek/bez łamania, `Stopień` 22ch, `Nazwa` 26ch, `Opis` i `Efekt` 56ch, `Podręcznik`/`Strona` z reguły globalnej (do lewej, D5). | Blok CSS. |
+| 5 | Szerokości „Mutacji” ustalone i zmierzone na makiecie: k66 6ch/środek/bez łamania, `Stopień` 22ch, `Nazwa` 26ch, `Opis` i `Efekt` 56ch, `Podręcznik` (do lewej) i `Strona` (wyśrodkowana — korekta D5) z reguły globalnej. | Blok CSS. |
 | 6 | Na telefonie karty „Mutacji” będą pogrupowane według stopnia nasilenia (D3). | `GROUPING_COLUMN_OVERRIDES`. |
 | 7 | „Mutacje” w GeneratorNPC jako kopia wzorca „Modlitw”; wszystkie 34 rekordy, bez wyjątków (D2); arkusz wymagany (D4). | ok. 17 miejsc w `index.html` + 2 reguły CSS; import danych przed wdrożeniem kodu GeneratorNPC. |
 | 8 | **Błąd (pilny):** przełącznik modułu tylko chowa kartę modułu; generowanie bierze zaznaczenia ze wszystkich list. Dotyczy 7 modułów, także Broni (ukryta broń nadpisuje ataki) i Pancerza (ukryty pancerz nadpisuje WP). Ulubione zapisują i odtwarzają ukryty wybór. | Odznaczenie czyści moduł, generowanie pomija wyłączone moduły, ulubione bez ukrytego wyboru (rozdz. 11). |
 | 9 | Domyślnie zaznaczony jest tylko przełącznik „Broń”. | Usunąć `checked` — wszystkie moduły domyślnie wyłączone; Reset przywraca ten stan. |
 | 10 | W DataVault 10 reguł/deklaracji kolumn nie działa (nadpisane albo dla nieistniejących kolumn), 4 deklaracje `max-width:auto` są niepoprawne, 7 reguł `Podręcznik` dubluje regułę globalną, 2 reguły zakładek „tworzenia postaci” są nadpisane. | Usunięcie 49 + 7 linii; zero zmian w wyglądzie (zmierzone). |
-| 11 | `Strona` jest wyśrodkowana tylko w `Notatki` i 7 zakładkach pojazdów, wszędzie indziej — do lewej. | Pytanie P2 (spójność). |
+| 11 | `Strona` była wyśrodkowana tylko w `Notatki` i 7 zakładkach pojazdów, wszędzie indziej — do lewej. | Korekta użytkownika: `Strona` **wyśrodkowana we wszystkich zakładkach** jedną regułą globalną (zrobione w Etapie 2). |
 | 12 | `Kolumny.md`: 132 rozbieżności, brak 4 zakładek, nazwa „Premie Frakcji”, sekcje w stylu changelogu, błędna szerokość kolumny `✓`. `DetaleLayout.md` §5 (DataVault): 57 z 86 wpisów błędnych, część wartości pochodzi z GeneratorNPC. | Przepisać oba na podstawie audytu (załącznik B). |
 | 13 | Paski na karcie: zachowanie bez zmian, wspólne dla wszystkich modułów (decyzja użytkownika, pkt 6). | Brak zmian w `splitEntries()`. |
 
@@ -153,7 +171,7 @@ Poza zakresem: zmiany w kodzie, import do Firebase, folder `WebView_FCM_Cloudfla
 | D2 | Ukryć w GeneratorNPC odsyłacze „Rzut na tabeli … mutacji”? | **Zostawić** — tabela będzie rozbudowywana, wyjątki sprawiałyby problemy. | Wszystkie 34 rekordy, bez filtra (rozdz. 10). |
 | D3 | Grupować karty „Mutacji” na telefonie? | Tak, zgodnie z rekomendacją (spójność). | `GROUPING_COLUMN_OVERRIDES` (rozdz. 7.5). |
 | D4 | „Mutacje” jako arkusz wymagany w GeneratorNPC? | Tak, zgodnie z rekomendacją. | Kolejność wdrożenia: import danych → kod GeneratorNPC (rozdz. 10.7). |
-| D5 | Wyrównanie `Strona` w „Mutacjach”? | Do lewej, zgodnie z rekomendacją (spójność). | Bez własnej reguły — reguła globalna. |
+| D5 | Wyrównanie `Strona` w „Mutacjach”? | Pierwotnie do lewej; **korekta: wyśrodkowana, jak we wszystkich zakładkach**. | Bez własnej reguły — reguła globalna (`text-align: center`). |
 
 | # | Obserwacja z wersji 1 | Decyzja | Rozdział |
 | --- | --- | --- | --- |
@@ -164,6 +182,25 @@ Poza zakresem: zmiany w kodzie, import do Firebase, folder `WebView_FCM_Cloudfla
 | 5 | Wyłączone moduły na karcie GeneratorNPC | Błąd do pilnej poprawy (scenariusz A–I). | 11 (+ pytanie P1) |
 | 6 | Paski na karcie | Zachować spójny wygląd — bez zmian. | 10.5 |
 | — | Domyślne checkboxy GeneratorNPC | Wszystkie domyślnie wyłączone. | 11.5 |
+
+| # | Pytanie z wersji 2 | Decyzja | Rozdział |
+| --- | --- | --- | --- |
+| P1 | Czy odznaczenie modułu ma kasować jego wybór? | **Tak, kasować.** | 11 |
+| P2 | `Strona` w `Notatki` i zakładkach pojazdów | Zgodnie z rekomendacją — jednolicie; **korekta: wyśrodkowana we wszystkich zakładkach** (także w „Mutacjach”). | 8.4 |
+| 17.1 | Puste rekordy w `Specjalne Bonusy Wrogów` | Poprawione przez użytkownika w Excelu. | 17 |
+| 17.2 | Wpisy „Aktualizacja” w `DetaleLayout.md` | Poprawić. | 9.3, 4.1 |
+
+### 4.1 Stan realizacji
+
+Zmiany są na gałęzi `claude/sharp-ritchie-rku06e` (osobne commity); na `main` trafią po akceptacji.
+
+| Etap | Commit | Co zrobiono | Weryfikacja |
+| --- | --- | --- | --- |
+| 1 — GeneratorNPC | `40f93e2` | `MODULE_CONTROLS`, `isModuleActive()`, `clearModule()`, `getActiveModuleRecords()`; odznaczenie modułu kasuje wybór, filtr i checkbox opisu; karta tylko z modułów włączonych (także Broń i Pancerz); ulubione zapisują i odtwarzają wybór tylko modułów włączonych; przełącznik „Broń” bez `checked`; README i Documentation (PL/EN). | Prawdziwa strona w Chromium z podstawionymi danymi: scenariusz A–I (H — karta bez „Psioniki”, I — pusta lista), Broń wyłączona → ataki z Bestiariusza, czyszczenie filtra i opisu, stary ulubiony z ukrytym wyborem → bez sekcji, nowy ulubiony → odtworzony z pełnym opisem, Reset → wszystko wyłączone; brak błędów JS. Ten sam test przed poprawką odtworzył błąd 1:1. |
+| 2 — porządki DataVault | `e3791fb` | Usunięte martwe i zdublowane reguły (rozdz. 8.2), `Podręcznik`/`Strona` wyłącznie w bloku globalnym z komentarzem PL/EN, `Strona` wyśrodkowana wszędzie; `Kolumny.md` przepisany z audytu (38 zakładek); `DetaleLayout.md` DataVault §2, §3, §5, §6, §7 i szerokości podglądu GeneratorNPC; dokumentacja DataVault (PL/EN). | Audyt obliczonych stylów przed/po: przy 1920 px jedyna zmiana to wyśrodkowanie `Strona` w 13 zakładkach, które miały ją do lewej (21 zakładek z tą kolumną ma teraz środek); przy 400 px — bez zmian w kartach; zakładki „tworzenia postaci” identyczne. `Kolumny.md` = audyt. |
+| 17.2 — `DetaleLayout.md` | `f20aa78` | Każdy wpis „Aktualizacja …” sprawdzony z kodem; aktualne informacje przeniesione do sekcji Main, DataVault, GeneratorNPC, Kalkulator i Infoczytnik, nieaktualne usunięte (m.in. przycisk „Włącz powiadomienia”, układy „pismo”, stare wartości domyślne Infoczytnika, błędny opis przycisku Kalkulatora w sekcji Main). | Wartości porównane z `Main/index.html`, `Kalkulator/index.html`, `Kalkulator/TworzeniePostaci*.html`, `Infoczytnik/GM_test.html`, `Infoczytnik/Infoczytnik_test.html`, `DataVault/style.css`, `GeneratorNPC/style.css`. |
+| 3 — „Mutacje” | — | Czeka na oczyszczony `Repozytorium.xlsx` i import danych (rozdz. 13). | — |
+| 4 — parser XLSX | — | Osobne zadanie (`Analizy/datavault-parser-xlsx-puste-wiersze-wydajnosc.md`). | — |
 
 ---
 
@@ -282,7 +319,7 @@ Zakładka nie trafia do `ADMIN_ONLY_SHEETS` — jest dostępna także w trybie u
 | `Opis` | 56ch | lewo | standard | jak `Obrzędy` |
 | `Efekt` | 56ch | lewo | standard | najdłuższa kolumna (śr. 456, maks. 2776 znaków); zwijanie powyżej 9 linii |
 | `Podręcznik` | 17ch | lewo | standard | reguła globalna (bez własnej reguły) |
-| `Strona` | 6ch | lewo | standard | reguła globalna (D5) |
+| `Strona` | 6ch | środek | standard | reguła globalna (D5 po korekcie — jak we wszystkich zakładkach) |
 
 Pomiar na makiecie: przy 1920 × 1080 tabela ma 1694 px przy 1702 px miejsca — bez przewijania w bok; przy 1366 × 768 — ok. 1586 px wobec 1148 px, z przewijaniem jak w `Specjalne Bonusy Frakcji`, `Obrzędy`, `Archetypy`.
 
@@ -306,8 +343,8 @@ Blok CSS — w `DataVault/style.css` po bloku `/* Specjalne Bonusy Frakcji */`, 
 .tableWrap table[data-sheet="Mutacje"] td[data-col="Opis"],
 .tableWrap table[data-sheet="Mutacje"] th[data-col="Efekt"],
 .tableWrap table[data-sheet="Mutacje"] td[data-col="Efekt"]{min-width:56ch; text-align:left}
-/* Podręcznik i Strona nie mają tu reguł: działa globalne wymuszenie (17ch / 6ch, do lewej)
-   Podręcznik and Strona have no rules here: the global override applies (17ch / 6ch, left) */
+/* Podręcznik i Strona nie mają tu reguł: działa blok globalny (17ch do lewej / 6ch wyśrodkowana)
+   Podręcznik and Strona have no rules here: the global block applies (17ch left / 6ch centred) */
 ```
 
 ### 7.4 Co zadziała samo
@@ -388,12 +425,14 @@ Na kopiach `style.css` zbudowano warianty i porównano obliczone style wszystkic
 
 Usunięcie 56 linii nie zmienia więc wyglądu ani o piksel.
 
-### 8.4 Spójność: `Strona` w `Notatki` i zakładkach pojazdów (pytanie P2)
+### 8.4 Spójność: `Strona` we wszystkich zakładkach (P2 — rozstrzygnięte)
 
-Po porządkach `Strona` jest do lewej we wszystkich zakładkach **oprócz** `Notatki` i siedmiu zakładek pojazdów (`Role W Pojeździe`, `Akcje Pojazdu`, `Stany Pojazdów`, `Cechy Pojazdów`, `Pojazdy`, `Bronie Pojazdów`, `Ekwipunek Pojazdów`) — tam reguły stoją za blokiem globalnym i wyśrodkowanie działa.
-
-- **Wariant B (rekomendowany, spójność z D5):** usunąć również te dwie reguły → `Strona` do lewej w całej aplikacji, jedna reguła globalna. Zmierzone: zmienia się wyłącznie wyrównanie `Strona` (nagłówek i komórka) w tych 8 zakładkach — 16 różnic, nic poza tym.
-- **Wariant A+:** zostawić wyśrodkowanie w tych 8 zakładkach (stan dzisiejszy, bez zmian w wyglądzie).
+Przed zmianą `Strona` była do lewej we wszystkich zakładkach **oprócz** `Notatki` i siedmiu zakładek
+pojazdów. Decyzja użytkownika (z korektą): **`Strona` wyśrodkowana we wszystkich zakładkach**.
+Zrealizowano to jedną zmianą w bloku globalnym (`text-align: center`) i usunięciem reguł `Strona`
+z pojedynczych zakładek (także `Notatki` i pojazdów, które przestały być potrzebne). Zmierzone: przy
+1920 px zmienia się wyłącznie wyrównanie `Strona` (nagłówek i komórka) w 13 zakładkach, które miały ją
+do lewej; na telefonie układ kart bez zmian.
 
 ### 8.5 Zabezpieczenie przed powrotem problemu
 
@@ -438,7 +477,7 @@ Plan:
    - `Psionika`: `Nazwa` 26ch; `ST` 9ch; `Zasięg` 14ch; `Aktywacja`, `Czas trwania` 20ch; `Wiele Celów`, `Wzmocnienie` 26ch; `Efekt` 48ch;
    - `Modlitwy` i (nowe) `Mutacje`: `Nazwa` 28ch; `Efekt` 54ch.
 3. **DataVault §2** (linia 329) — lista zakładek tworzenia postaci: `Premie z Przeszłości Frakcji` zamiast „Premie Frakcji”, dopisać `Mutacje`; opis wyglądu zgodny z faktycznym: tekst `var(--code)`, tło `var(--character-bg)` (`rgba(210,250,210,.05)`), ramka `rgba(210,250,210,.20)`, **`opacity: 1`** (nie `.9`); aktywna — tło `var(--character-bg-active)`, ramka `var(--character-border)`, poświata `0 0 0 2px rgba(210,250,210,.16), 0 0 18px var(--character-glow)`.
-4. **DataVault §3** (linie 339–340) — opis reguły globalnej `Podręcznik`/`Strona` i wyjątków po decyzji P2.
+4. **DataVault §3** (linie 339–340) — opis reguły globalnej `Podręcznik`/`Strona` (`Strona` wyśrodkowana wszędzie, bez wyjątków).
 5. **DataVault §6** — „Siatka główna: … `360px` (panel filtrów)”: w `DataVault/style.css` panel ma **180px** (`grid-template-columns:180px 1fr`).
 6. **DataVault §7** — dopisać zasadę z rozdz. 8.5 (wyjątki `Podręcznik`/`Strona` tylko pod blokiem globalnym) i zasadę „wartości w dokumentacji z audytu obliczonych stylów”.
 7. Sekcja „Aktualizacja 2026-04-20 — korekta DataVault (kolumny i layout)” — to wpis w stylu historii zmian; jej treść jest już w sekcjach głównych → usunąć (`AGENTS.md` §8: plik opisuje aktualny wygląd).
@@ -729,7 +768,7 @@ Zgodnie z `AGENTS.md` §1–§8 i §15 (pełne wersje PL i EN, opis stanu po zmi
 | Plik | Co zmienić |
 | --- | --- |
 | `DataVault/style.css` | rozdz. 8 (kod; komentarze PL/EN przy bloku globalnym) |
-| `DataVault/docs/Documentation.md` (PL i EN) | opis reguły globalnej `Podręcznik`/`Strona` jako jedynego źródła tych kolumn (rozdział o tabeli i renderowaniu / stylach) i wyjątków po P2 |
+| `DataVault/docs/Documentation.md` (PL i EN) | opis reguły globalnej `Podręcznik`/`Strona` jako jedynego źródła tych kolumn (rozdział o tabeli i renderowaniu / stylach); `Strona` wyśrodkowana wszędzie |
 | `Kolumny.md` | przepisać całość (9.2) |
 | `DetaleLayout.md` | DataVault §2, §3, §5, §6, §7, usunięcie sekcji „Aktualizacja 2026-04-20”; GeneratorNPC — szerokości tabel podglądu (9.3) |
 
@@ -771,8 +810,8 @@ Nie zależy od danych — można wdrożyć od razu.
 
 | Krok | Czynność | Pliki |
 | --- | --- | --- |
-| 2.1 | Usunięcie 56 linii z rozdz. 8.2 (+ reguły `Notatki`/pojazdów, jeśli P2 = wariant B), komentarz z 8.5. | `DataVault/style.css` |
-| 2.2 | Audyt obliczonych stylów przed i po (metoda z załącznika A): 0 różnic (albo tylko 16 różnic `Strona` przy wariancie B). | — |
+| 2.1 | Usunięcie 56 linii z rozdz. 8.2 oraz reguł `Strona` w `Notatki` i pojazdach; `Strona` wyśrodkowana w bloku globalnym; komentarz z 8.5. **Zrobione (`e3791fb`).** | `DataVault/style.css` |
+| 2.2 | Audyt obliczonych stylów przed i po (metoda z załącznika A): jedyna zmiana — wyśrodkowanie `Strona` tam, gdzie była do lewej. **Zrobione.** | — |
 | 2.3 | Przepisanie `Kolumny.md` i fragmentów `DetaleLayout.md` z 9.2–9.4. | `Kolumny.md`, `DetaleLayout.md` |
 | 2.4 | Dokumentacja z 12.2. | `DataVault/docs/Documentation.md` |
 
@@ -813,7 +852,7 @@ Według `Analizy/datavault-parser-xlsx-puste-wiersze-wydajnosc.md`.
 
 | Test | Kroki | Oczekiwany wynik |
 | --- | --- | --- |
-| Wygląd bez zmian | Audyt obliczonych stylów 39 zakładek przy 1920 px i 400 px przed i po. | 0 różnic (wariant A+) albo tylko `Strona` w 8 zakładkach (wariant B). |
+| Wygląd bez zmian | Audyt obliczonych stylów 39 zakładek przy 1920 px i 400 px przed i po. | Jedyna zmiana: `Strona` wyśrodkowana w zakładkach, które miały ją do lewej. **Spełnione.** |
 | Zakładki grupy | Zaznacz checkbox tworzenia postaci. | Kolor, tło i poświata zakładek bez zmian. |
 | Dokumenty | Porównanie `Kolumny.md` i `DetaleLayout.md` §5 z audytem. | 0 rozbieżności; brak „Premie Frakcji”; brak sekcji historycznych. |
 
@@ -859,28 +898,26 @@ Według `Analizy/datavault-parser-xlsx-puste-wiersze-wydajnosc.md`.
 
 ## 16. Pytania otwarte
 
-| # | Pytanie | Rekomendacja |
-| --- | --- | --- |
-| P1 | Czy **odznaczenie modułu ma kasować jego wybór** (oraz filtr i checkbox opisu)? Alternatywa: wybór zostaje ukryty i wraca po ponownym zaznaczeniu, ale nie trafia na kartę, dopóki moduł jest wyłączony. | **Tak, kasować** — to, co widać, jest dokładnie tym, co trafia na kartę i do ulubionych; zgodne z krokiem I scenariusza. |
-| P2 | Czy `Strona` w `Notatki` i 7 zakładkach pojazdów ma być — jak wszędzie — **do lewej** (wariant B), czy zostać wyśrodkowana? | **Do lewej** — jedna reguła w całej aplikacji, zgodnie z D5. |
+P1 i P2 rozstrzygnięte (rozdz. 4). Pozostaje:
 
----
+| # | Pytanie | Uwagi |
+| --- | --- | --- |
+| P3 | Czy kolumna `Strona` ma być wyśrodkowana także w tabelach podglądu **GeneratorNPC** (`Wybór Broni`, `Wybór Pancerzy`)? | Dziś wszystkie kolumny tych tabel są do lewej (`.data-table th, td { text-align: left }`). Korekta dotyczyła zakładek DataVault; zmiana w GeneratorNPC to jedna reguła dla `.min-col-strona`. |
 
 ## 17. Pozostałe obserwacje
 
-1. **Puste rekordy w `Specjalne Bonusy Wrogów`:** wiersze LP 8–11 mają wpisany tylko numer `LP`, pozostałe kolumny są puste. Parser słusznie traktuje je jako rekordy, więc w tej zakładce (tylko tryb admina) widać 4 puste wiersze. Do poprawy w Excelu (usunąć numery albo uzupełnić dane).
-2. **`DetaleLayout.md`** ma także sekcje „Aktualizacja …” dla innych modułów (Main, Infoczytnik, Kalkulator); `AGENTS.md` §8 wymaga opisu stanu bieżącego. Poza zakresem tego zadania.
+1. **Puste rekordy w `Specjalne Bonusy Wrogów`** (wiersze LP 8–11 z samym numerem `LP`) — poprawione przez użytkownika w Excelu (17.1).
+2. **`DetaleLayout.md` — wpisy „Aktualizacja …”** dla wszystkich modułów — zlikwidowane (17.2, rozdz. 4.1). Przy weryfikacji widać, że sekcja Infoczytnika jako całość (m.in. opis plików `Infoczytnik.html`/`GM.html`, kolory panelu GM) nie była dawno przeglądana z kodem; poprawiono tylko to, czego dotyczyły wpisy datowane. Pełny przegląd tej sekcji można zrobić osobno.
 3. **Parser XLSX** — „rekordy-widma” z samego formatowania, pusty pierwszy wiersz, brak widocznego postępu generowania (`setStatus()` pisze tylko do konsoli) — opisane w `Analizy/datavault-parser-xlsx-puste-wiersze-wydajnosc.md`, rozdz. 10 i 12.
 
 ---
 
 ## 18. Następne kroki
 
-1. Odpowiedzieć na P1 i P2.
-2. Etap 1 (pilny) — implementacja i wdrożenie.
-3. Etap 2 — porządki CSS i dokumentów.
-4. Krok 3.0 — oczyszczenie `Repozytorium.xlsx`; potem Etap 3 z importem danych przed kodem GeneratorNPC.
-5. Etap 4 — osobne zadanie (parser).
+1. Przegląd i akceptacja Etapów 1–2 i 17.2 (gałąź `claude/sharp-ritchie-rku06e`), potem przeniesienie na `main`.
+2. Odpowiedź na P3.
+3. Krok 3.0 — oczyszczenie arkusza „Mutacje” w `Repozytorium.xlsx` (rozdz. 6.4); potem Etap 3: kod DataVault, generowanie i import danych, kod GeneratorNPC (moduł `mutations` jako kolejny wpis w `MODULE_CONTROLS`), sekcja `Mutacje` w `Kolumny.md` i `DetaleLayout.md`.
+4. Etap 4 — osobne zadanie (parser).
 
 ---
 
@@ -906,40 +943,40 @@ Czasy zmierzono w kontenerze chmurowym (Linux); na komputerze użytkownika warto
 
 ## 20. Załącznik B — wzorcowa tabela kolumn DataVault
 
-Stan docelowy po Etapach 2 i 3, odczytany audytem z `style.css` po usunięciu martwych reguł i dodaniu bloku „Mutacji”. Kolumna `✓` (zaznaczanie) ma we wszystkich zakładkach 5ch (min = max = szerokość), wyśrodkowana. `Strona` w `Notatki` i zakładkach pojazdów — według odpowiedzi na P2 (poniżej stan dzisiejszy: środek). Kolejność zakładek jak w `_meta.sheetOrder`.
+Stan docelowy po Etapach 2 i 3, odczytany audytem z `style.css` po usunięciu martwych reguł i dodaniu bloku „Mutacji”. Kolumna `✓` (zaznaczanie) ma we wszystkich zakładkach 5ch (min = max = szerokość), wyśrodkowana. `Strona` jest wyśrodkowana we wszystkich zakładkach (decyzja P2 z korektą). Kolejność zakładek jak w `_meta.sheetOrder`. Stan po Etapie 2 (bez „Mutacji”) opisuje `Kolumny.md`.
 
 Oznaczenia: `L` — do lewej, `Ś` — do środka, `nw` — bez łamania (`white-space: nowrap`), `max` — `max-width`; `auto` — brak reguły szerokości.
 
 | Zakładka | Kolumny (min-width / wyrównanie) |
 | --- | --- |
 | Notatki | Nazwa 26ch/L; Opis 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
-| Bestiariusz | Typ 14ch/L; Nazwa 26ch/L; Zagrożenie 5ch/Ś; Słowa Kluczowe 28ch/L; S 3ch/Ś; Wt 3ch/Ś; Zr 3ch/Ś; I 3ch/Ś; SW 3ch/Ś; Int 3ch/Ś; Ogd 3ch/Ś; Odporność (w tym WP) 3ch/Ś; Wartość Pancerza 3ch/Ś; Obrona 3ch/Ś; Żywotność 3ch/Ś; Odporność Psychiczna 3ch/Ś; Umiejętności 28ch/L; Premie 60ch/L; Zdolności 60ch/L; Atak 50ch/L; Zdolności Hordy 60ch/L; Opcje Hordy 60ch/L; Upór 3ch/Ś; Odwaga 3ch/Ś; Szybkość 3ch/Ś; Rozmiar 7ch/Ś; Podręcznik 17ch/L; Strona 6ch/L |
+| Bestiariusz | Typ 14ch/L; Nazwa 26ch/L; Zagrożenie 5ch/Ś; Słowa Kluczowe 28ch/L; S 3ch/Ś; Wt 3ch/Ś; Zr 3ch/Ś; I 3ch/Ś; SW 3ch/Ś; Int 3ch/Ś; Ogd 3ch/Ś; Odporność (w tym WP) 3ch/Ś; Wartość Pancerza 3ch/Ś; Obrona 3ch/Ś; Żywotność 3ch/Ś; Odporność Psychiczna 3ch/Ś; Umiejętności 28ch/L; Premie 60ch/L; Zdolności 60ch/L; Atak 50ch/L; Zdolności Hordy 60ch/L; Opcje Hordy 60ch/L; Upór 3ch/Ś; Odwaga 3ch/Ś; Szybkość 3ch/Ś; Rozmiar 7ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
 | Hordy | Nazwa zasady 26ch/L; Opis zasady 60ch/L; Przykład 60ch/L |
 | Specjalne Bonusy Wrogów | Frakcja 26ch/L; Rodzaj 26ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L |
 | Tabela Rozmiarów | Rozmiar 8ch/L; Modyfikator Testu Ataku 26ch/Ś; Zmniejszenie Poziomu Ukrycia 26ch/Ś; Przykłady 85ch/L |
 | Gatunki | Gatunek 26ch/L; Koszt PD 4ch/Ś; Atrybuty 26ch/L; Umiejętności 26ch/L; Szybkość 4ch/Ś; Rozmiar 10ch/Ś; Zdolności gatunkowe 46ch/L |
-| Archetypy | Poziom 2ch/Ś; Frakcja 26ch/L; Nazwa 26ch/L; Gatunek 26ch/L; Koszt PD 4ch/Ś; Słowa Kluczowe 26ch/L; Atrybuty Archetypu 26ch/L; Umiejętności Archetypu 26ch/L; Zdolność Archetypu 46ch/L; Ekwipunek 46ch/L; Inne 10ch/L; Podręcznik 17ch/L; Strona 6ch/L |
-| Pakiety Wyniesienia | Nazwa 26ch/L; Opis 56ch/L; Koszt PD 26ch/L; Wymagania 26ch/L; Słowa Kluczowe 26ch/L; Premia Wpływu 26ch/L; Pamiętna historia 46ch/L; Ekwipunek 46ch/L; Podręcznik 17ch/L; Strona 6ch/L |
+| Archetypy | Poziom 2ch/Ś; Frakcja 26ch/L; Nazwa 26ch/L; Gatunek 26ch/L; Koszt PD 4ch/Ś; Słowa Kluczowe 26ch/L; Atrybuty Archetypu 26ch/L; Umiejętności Archetypu 26ch/L; Zdolność Archetypu 46ch/L; Ekwipunek 46ch/L; Inne 10ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Pakiety Wyniesienia | Nazwa 26ch/L; Opis 56ch/L; Koszt PD 26ch/L; Wymagania 26ch/L; Słowa Kluczowe 26ch/L; Premia Wpływu 26ch/L; Pamiętna historia 46ch/L; Ekwipunek 46ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
 | Premie z Przeszłości Frakcji | Frakcja 26ch/L; Premia 1 56ch/L; Premia 2 56ch/L; Premia 3 56ch/L |
 | Słowa Kluczowe Frakcji | Frakcja 28ch/L; Słowo Kluczowe 28ch/L; Opis 26ch/L; Efekt 56ch/L |
 | Specjalne Bonusy Frakcji | Frakcja 26ch/L; Rodzaj 26ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L |
-| Mutacje | Rzut k66 6ch/Ś nw; Stopień Nasilenia Mutacji 22ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/L |
+| Mutacje | Rzut k66 6ch/Ś nw; Stopień Nasilenia Mutacji 22ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
 | Implanty Astartes | Numer 4ch/Ś; Nazwa 26ch/L; Opis 26ch/L |
 | Zakony Pierwszego Powołania | Nazwa 26ch/L; Opis 56ch/L; Zaleta 26ch/L; Wada 26ch/L |
 | Cechy | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L |
 | Stany | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L |
 | Słowa Kluczowe | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L |
-| Talenty | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; Wymagania 26ch/L; Opis 26ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/L |
-| Modlitwy | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; Wymagania 26ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/L |
-| Psionika | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; ST 10ch/Ś; Aktywacja 10ch/L; Czas Trwania 15ch/L; Zasięg 8ch/Ś; Wiele Celów 4ch/Ś; Słowa Kluczowe 28ch/L; Efekt 56ch/L; Wzmocnienie 26ch/L; Podręcznik 17ch/L; Strona 6ch/L |
-| Augumentacje | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L; Koszt 3ch/Ś; Dostępność 3ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/L |
-| Ekwipunek | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L; Koszt 3ch/Ś; Dostępność 3ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/L |
-| Pancerze | Typ 14ch/L; Nazwa 26ch/L; WP 4ch/Ś; Cechy 32ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/L |
-| Bronie | Rodzaj 14ch/L; Typ 14ch/L; Nazwa 26ch/L; Obrażenia auto/Ś; DK auto/Ś; PP auto/Ś; Zasięg 18ch/Ś nw; Szybkostrzelność 8ch/Ś; Cechy 32ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/L |
-| Obrzędy | Rodzaj 14ch/L; Typ 18ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 56ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/L |
+| Talenty | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; Wymagania 26ch/L; Opis 26ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Modlitwy | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; Wymagania 26ch/L; Efekt 56ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Psionika | Typ 14ch/L; Nazwa 26ch/L; Koszt PD 4ch/Ś; ST 10ch/Ś; Aktywacja 10ch/L; Czas Trwania 15ch/L; Zasięg 8ch/Ś; Wiele Celów 4ch/Ś; Słowa Kluczowe 28ch/L; Efekt 56ch/L; Wzmocnienie 26ch/L; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Augumentacje | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L; Koszt 3ch/Ś; Dostępność 3ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Ekwipunek | Typ 14ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 26ch/L; Koszt 3ch/Ś; Dostępność 3ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Pancerze | Typ 14ch/L; Nazwa 26ch/L; WP 4ch/Ś; Cechy 32ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Bronie | Rodzaj 14ch/L; Typ 14ch/L; Nazwa 26ch/L; Obrażenia auto/Ś; DK auto/Ś; PP auto/Ś; Zasięg 18ch/Ś nw; Szybkostrzelność 8ch/Ś; Cechy 32ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Słowa Kluczowe 28ch/L; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
+| Obrzędy | Rodzaj 14ch/L; Typ 18ch/L; Nazwa 26ch/L; Opis 56ch/L; Efekt 56ch/L; Koszt 4ch/Ś; Dostępność 4ch/Ś; Koszt IM 8ch/Ś; Podręcznik 17ch/L; Strona 6ch/Ś |
 | Trafienia Krytyczne | Rzut k66 6ch/Ś nw; Opis 56ch/L; Efekt 26ch/L; Chwała 26ch/L |
 | Groza Osnowy | Rzut k66 6ch/Ś nw; Efekt 56ch/L |
-| Skrót Zasad | Typ 32ch/L; Nazwa 20ch/L; Opis 56ch/L; Strona 6ch/L |
+| Skrót Zasad | Typ 32ch/L; Nazwa 20ch/L; Opis 56ch/L; Strona 6ch/Ś |
 | Tryby Ognia | Nazwa 20ch/L; Opis 56ch/L |
 | Kary do ST | Ile celów/akcji 20ch/Ś max 20ch; Kara do ST 20ch/Ś max 20ch (tabela `table-layout: fixed`, szerokość `max-content`) |
 | Uszkodzenia Pojazdów | Rzut k66 6ch/Ś nw; Efekt 56ch/L |
