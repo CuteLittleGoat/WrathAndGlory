@@ -11,7 +11,9 @@ Moduł składa się ze strony startowej oraz narzędzi otwieranych przyciskami:
 - prostego kreatora postaci `TworzeniePostaci.html`,
 - zaawansowanego kreatora postaci `TworzeniePostaci_v2.html`.
 
-Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.html` używa Firebase Firestore do zapisu i wczytywania aktualnego stanu postaci.
+Większość logiki działa lokalnie w przeglądarce. Firebase Firestore służy do zapisu i wczytywania stanu postaci w obu kreatorach: `TworzeniePostaci.html` używa dokumentu `character_builder/current`, a `TworzeniePostaci_v2.html` dokumentu `character_builder/v2`.
+
+Zaawansowany kreator ma osobną, pełną dokumentację techniczną w `docs/Documentation_v2.md`. Ten plik opisuje stronę startową, Kalkulator PD, Prosty Kreator Postaci oraz to, co oba kreatory mają wspólne.
 
 ## Punkty wejścia
 
@@ -20,7 +22,7 @@ Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.ht
 | `Kalkulator/index.html` | Strona startowa `Kozie Liczydła`. Prowadzi do kalkulatora PD, prostego kreatora postaci i zaawansowanego kreatora postaci. |
 | `Kalkulator/KalkulatorXP.html` | Prosty kalkulator kosztów rozwoju atrybutów i umiejętności. |
 | `Kalkulator/TworzeniePostaci.html` | Prosty kreator postaci z pulą PD, atrybutami, umiejętnościami, talentami, walidacją i zapisem Firebase. |
-| `Kalkulator/TworzeniePostaci_v2.html` | Docelowy zaawansowany kreator postaci otwierany z landingu; plik może zostać uzupełniony później. |
+| `Kalkulator/TworzeniePostaci_v2.html` | Zaawansowany kreator postaci: pula PD, atrybuty, umiejętności, talenty z dodawanymi wierszami, zasady specjalne, cechy pochodne, eksport PDF i zapis Firebase. Szczegóły w `docs/Documentation_v2.md`. |
 
 ## Struktura plików modułu
 
@@ -29,7 +31,12 @@ Większość logiki działa lokalnie w przeglądarce. Tylko `TworzeniePostaci.ht
 | `index.html` | Landing modułu, logo, linki do narzędzi i sekretny overlay z GIF-em. |
 | `KalkulatorXP.html` | Kalkulator kosztów PD dla aktualnych i docelowych wartości. |
 | `TworzeniePostaci.html` | Prosty kreator postaci i zapis/wczytanie stanu z Firestore. |
-| `TworzeniePostaci_v2.html` | Ścieżka zaawansowanego kreatora postaci wskazana przez landing. |
+| `TworzeniePostaci_v2.html` | Widok zaawansowanego kreatora postaci: struktura strony, modale i style lokalne. |
+| `TworzeniePostaci_v2-core.js` | Rdzeń zaawansowanego kreatora: tabele, koszty PD, Drzewo Nauki, cechy pochodne, API `window.WNGCreatorV2`. |
+| `TworzeniePostaci_v2-firebase.js` | Zapis i odczyt zaawansowanego kreatora w `character_builder/v2`. |
+| `TworzeniePostaci_v2-pdf.js` | Eksport karty postaci do PDF. |
+| `pdf/pl.pdf` | Szablon polskiej karty postaci dla eksportu PDF. |
+| `docs/Documentation_v2.md` | Dokumentacja techniczna zaawansowanego kreatora. |
 | `kalkulatorxp.css` | Wspólny styl używany przez `KalkulatorXP.html` oraz bazowo przez `TworzeniePostaci.html`. |
 | `config/firebase-config.js` | Konfiguracja Firebase dla `TworzeniePostaci.html`. |
 | `config/FirebaseREADME.md` | Instrukcja konfiguracji Firebase dla zapisu postaci. |
@@ -232,9 +239,34 @@ talent_cost_N
 
 gdzie `N` to liczba od `1` do `20`.
 
-`talent_name_N` jest polem tekstowym `textarea`, a `talent_cost_N` jest liczbą nieujemną. Koszty talentów są dodawane bez tabeli progowej, czyli bezpośrednio jako wpisane wartości.
+`talent_name_N` jest polem tekstowym `textarea` z klasą `talent-name`, a `talent_cost_N` jest liczbą nieujemną. Koszty talentów są dodawane bez tabeli progowej, czyli bezpośrednio jako wpisane wartości.
 
-`adjustTalentFontSize(...)` zmniejsza font w polach nazw talentów, jeżeli tekst nie mieści się w polu.
+Pole nazwy ma `height: 46px`, `resize: none` i `text-align: left`. Rozmiaru fontu ani interlinii nie
+ustawia żaden styl, więc świeże pole ma domyślny font pola przeglądarki (w Chromium 13,33 px, interlinia
+`normal`).
+
+`adjustTalentFontSize(el)` jest podpięta pod zdarzenie `input` każdego pola `textarea.talent-name`:
+
+```js
+function adjustTalentFontSize(el) {
+  el.style.fontSize = '16px';
+  let fontSize = 16;
+  while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > 10) {
+    fontSize -= 1;
+    el.style.fontSize = `${fontSize}px`;
+  }
+}
+```
+
+Funkcja ustawia font 16 px i zmniejsza go co 1 px, dopóki tekst wystaje poza pole, ale nie schodzi
+poniżej 10 px. Gdy tekst nie mieści się nawet przy 10 px, pole pokazuje pionowy pasek i przewija się.
+Funkcja nie jest wywoływana po wczytaniu zapisu, więc wczytany tekst ma font, jaki pole miało wcześniej.
+
+Tabela talentów ma układ automatyczny, a szerokość pola `textarea` wynikająca z fontu wpływa na
+szerokość kolumny. Dopóki tekst ma 16 px, jego kolumna jest szersza (przy oknie 1280 px w Chromium:
+`302 / 248 / 255 / 248 px` zamiast `267 / 259 / 267 / 260 px` przy pustych polach).
+
+Zaawansowany kreator używa kopii tej funkcji i tej samej wysokości pola — opis w `docs/Documentation_v2.md`.
 
 ## Obliczanie PD w `TworzeniePostaci.html`
 
@@ -253,14 +285,40 @@ gdzie `N` to liczba od `1` do `20`.
 
 ## Drzewo Nauki
 
-`checkSkillTree()` sprawdza uproszczoną zasadę Drzewa Nauki.
+Zasada z podręcznika (str. 26): żeby podnieść Umiejętność do nowej wartości, postać musi najpierw
+posiadać łączną liczbę Umiejętności równą tej nowej wartości — Atletyka 4 wymaga punktów w co najmniej
+trzech innych Umiejętnościach.
+
+`checkSkillTree()` sprawdza tę zasadę dla stanu końcowego arkusza.
 
 Logika:
 
-1. Zlicza aktywne umiejętności, czyli takie z wartością większą od `0`.
+1. Zlicza aktywne umiejętności, czyli takie z wartością większą od `0` (wliczając najwyższą).
 2. Dla każdej umiejętności sprawdza, czy jej poziom jest większy niż `1`.
 3. Jeżeli poziom jest większy niż `1`, a liczba aktywnych umiejętności jest mniejsza niż ten poziom, zasada jest naruszona.
-4. Błąd Drzewa Nauki jest pokazywany tylko wtedy, gdy pula PD nie jest przekroczona.
+4. Błąd Drzewa Nauki jest pokazywany tylko wtedy, gdy pula PD nie jest przekroczona. Przy przekroczonej puli widoczny jest wyłącznie błąd PD, a błąd Drzewa Nauki pojawia się dopiero po powrocie PD do normy.
+
+Sprawdzanie stanu końcowego jest równoważne zasadzie zakupu: układ spełniający warunek da się kupić
+(najpierw wszystkie umiejętności na 1, potem podnoszenie), a układu, który go nie spełnia, nie da się
+kupić w żadnej kolejności. Potwierdza to przeszukanie wszystkich kolejności zakupu dla 3888 układów.
+
+Komunikat jest liczony od nowa przy każdym przeliczeniu (`input` i `change` każdego pola liczbowego,
+reset, wczytanie zapisu), więc pojawia się przy pierwszej zmianie łamiącej zasadę i znika przy pierwszej
+zmianie, która ją przywraca.
+
+## Zgodność obu kreatorów — PD i Drzewo Nauki
+
+Zaawansowany kreator (`TworzeniePostaci_v2-core.js`) stosuje te same tabele kosztów i tę samą regułę
+Drzewa Nauki (`isLearningTreeValid`). Test różnicowy 3000 losowych postaci wpisanych do obu kreatorów
+dał identyczne pozostałe PD i identyczną ocenę Drzewa Nauki. Różnice dotyczą wyłącznie obsługi
+nietypowych wpisów i sposobu pokazywania błędów:
+
+| Sytuacja | Prosty Kreator | Zaawansowany Kreator |
+| --- | --- | --- |
+| Przekroczona pula PD i złamane Drzewo Nauki | tylko błąd PD | oba błędy, w osobnych wierszach |
+| Puste pole `Szybkość` | wartość `1`, koszt `0` | wartość `6`, koszt `55` |
+| Koszt talentu `-3`, `2.7` | pole przepisane na `0`, `2` | pole bez zmian, do PD trafia `0`, `2` |
+| Puste pole puli PD po opuszczeniu | wraca do `155` | zostaje puste, pula `0` |
 
 ## Reset i domyślne wartości
 
@@ -556,7 +614,9 @@ The module consists of a start page and tools opened from buttons:
 - simple character creator `TworzeniePostaci.html`,
 - advanced character creator `TworzeniePostaci_v2.html`.
 
-Most logic runs locally in the browser. Only `TworzeniePostaci.html` uses Firebase Firestore to save and load the current character state.
+Most logic runs locally in the browser. Firebase Firestore saves and loads the character state in both creators: `TworzeniePostaci.html` uses the `character_builder/current` document and `TworzeniePostaci_v2.html` the `character_builder/v2` document.
+
+The advanced creator has its own complete technical documentation in `docs/Documentation_v2.md`. This file covers the start page, the XP Calculator, the Simple Character Creator and what both creators share.
 
 ## Entry points
 
@@ -565,6 +625,7 @@ Most logic runs locally in the browser. Only `TworzeniePostaci.html` uses Fireba
 | `Kalkulator/index.html` | `Kozie Liczydła` start page. Links to the XP calculator and character creation. |
 | `Kalkulator/KalkulatorXP.html` | Simple advancement cost calculator for attributes and skills. |
 | `Kalkulator/TworzeniePostaci.html` | Fuller character creation sheet with XP pool, attributes, skills, talents, validation, and Firebase save/load. |
+| `Kalkulator/TworzeniePostaci_v2.html` | Advanced character creator: XP pool, attributes, skills, talents with addable rows, special rules, derived traits, PDF export and Firebase save. Details in `docs/Documentation_v2.md`. |
 
 ## Module file structure
 
@@ -573,6 +634,12 @@ Most logic runs locally in the browser. Only `TworzeniePostaci.html` uses Fireba
 | `index.html` | Module landing page, logo, tool links, and secret GIF overlay. |
 | `KalkulatorXP.html` | XP cost calculator for current and target values. |
 | `TworzeniePostaci.html` | Character creation sheet and Firestore state save/load. |
+| `TworzeniePostaci_v2.html` | Advanced character creator view: page structure, modals and local styles. |
+| `TworzeniePostaci_v2-core.js` | Advanced creator core: tables, XP costs, Tree of Learning, derived traits, `window.WNGCreatorV2` API. |
+| `TworzeniePostaci_v2-firebase.js` | Advanced creator save and load at `character_builder/v2`. |
+| `TworzeniePostaci_v2-pdf.js` | Character sheet PDF export. |
+| `pdf/pl.pdf` | Polish character sheet template for the PDF export. |
+| `docs/Documentation_v2.md` | Advanced creator technical documentation. |
 | `kalkulatorxp.css` | Shared style used by `KalkulatorXP.html` and as base style by `TworzeniePostaci.html`. |
 | `config/firebase-config.js` | Firebase configuration for `TworzeniePostaci.html`. |
 | `config/FirebaseREADME.md` | Firebase setup guide for character save. |
@@ -775,9 +842,34 @@ talent_cost_N
 
 where `N` is a number from `1` to `20`.
 
-`talent_name_N` is a `textarea`, and `talent_cost_N` is a non-negative number. Talent costs are added directly, without a cost progression table.
+`talent_name_N` is a `textarea` with the `talent-name` class, and `talent_cost_N` is a non-negative number. Talent costs are added directly, without a cost progression table.
 
-`adjustTalentFontSize(...)` decreases font size in talent name fields when text does not fit.
+The name field has `height: 46px`, `resize: none` and `text-align: left`. No style sets its font size or
+line height, so a fresh field uses the browser's default field font (13.33px in Chromium, `normal` line
+height).
+
+`adjustTalentFontSize(el)` is bound to the `input` event of every `textarea.talent-name` field:
+
+```js
+function adjustTalentFontSize(el) {
+  el.style.fontSize = '16px';
+  let fontSize = 16;
+  while ((el.scrollWidth > el.clientWidth || el.scrollHeight > el.clientHeight) && fontSize > 10) {
+    fontSize -= 1;
+    el.style.fontSize = `${fontSize}px`;
+  }
+}
+```
+
+The function sets a 16px font and shrinks it by 1px while the text overflows the field, never below
+10px. When the text does not fit even at 10px, the field shows a vertical scrollbar and scrolls. The
+function is not called after loading a save, so loaded text keeps whatever font the field had before.
+
+The talents table uses the automatic layout, and the field width that follows from its font affects the
+column width. While the text is at 16px its column is wider (at a 1280px window in Chromium:
+`302 / 248 / 255 / 248 px` instead of `267 / 259 / 267 / 260 px` with empty fields).
+
+The advanced creator uses a copy of this function and the same field height — see `docs/Documentation_v2.md`.
 
 ## XP calculation in `TworzeniePostaci.html`
 
@@ -796,14 +888,39 @@ where `N` is a number from `1` to `20`.
 
 ## Tree of Learning
 
-`checkSkillTree()` checks a simplified Tree of Learning rule.
+Rulebook rule (p. 26): to raise a Skill to a new rating, the character must first have a total number of
+Skills equal to that new rating — Athletics 4 requires points in at least three other Skills.
+
+`checkSkillTree()` checks this rule against the final state of the sheet.
 
 Logic:
 
-1. Counts active skills, meaning skills with value greater than `0`.
+1. Counts active skills, meaning skills with value greater than `0` (including the highest one).
 2. Checks each skill with level greater than `1`.
 3. If level is greater than `1` and the number of active skills is smaller than that level, the rule is broken.
-4. Tree of Learning error is shown only when XP pool is not exceeded.
+4. Tree of Learning error is shown only when XP pool is not exceeded. While the pool is exceeded, only the XP error is visible, and the Tree of Learning error appears once XP is back in range.
+
+Checking the final state is equivalent to the purchase rule: a layout meeting the condition can be bought
+(every skill to 1 first, then raising), and a layout failing it cannot be bought in any order. A search
+over every purchase order for 3888 layouts confirms this.
+
+The message is recomputed on every recalculation (`input` and `change` of every number field, reset,
+loading a save), so it appears on the first change breaking the rule and disappears on the first change
+restoring it.
+
+## Both creators — XP and Tree of Learning compatibility
+
+The advanced creator (`TworzeniePostaci_v2-core.js`) uses the same cost tables and the same Tree of
+Learning rule (`isLearningTreeValid`). A differential test of 3000 random characters entered into both
+creators gave identical remaining XP and identical Tree of Learning results. The differences concern
+only unusual entries and how errors are shown:
+
+| Situation | Simple Creator | Advanced Creator |
+| --- | --- | --- |
+| XP pool exceeded and Tree of Learning broken | XP error only | both errors, on separate lines |
+| Empty `Szybkość` field | value `1`, cost `0` | value `6`, cost `55` |
+| Talent cost `-3`, `2.7` | field rewritten to `0`, `2` | field unchanged, `0`, `2` counted |
+| Empty XP pool field after leaving it | returns to `155` | stays empty, pool `0` |
 
 ## Reset and default values
 

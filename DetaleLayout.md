@@ -614,7 +614,7 @@ Moduł składa się ze strony startowej oraz narzędzi otwieranych z przycisków
 - `KalkulatorXP.html` (kalkulator XP),
 - `TworzeniePostaci.html` (prosty kreator postaci),
 - `TworzeniePostaci_v2.html` (zaawansowany kreator postaci wskazywany przez landing).
-Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są w `index.html` i `TworzeniePostaci.html`.
+Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są w `index.html`, `TworzeniePostaci.html` i `TworzeniePostaci_v2.html`.
 
 ### 1) Fonty i typografia
 #### 1.1 Fonty lokalne
@@ -661,12 +661,47 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - `.main`: grid `360px` + `1fr`.
   - `.panel`, `.workspace`: ramki `1px solid var(--b)` + `box-shadow` z inset.
   - `.dataTable`: `font-size: 13px`, zebra i hover z `--zebra`/`--hover`.
-- `TworzeniePostaci.html`:
+- `TworzeniePostaci.html` — **wzór wyglądu sekcji „Umiejętności” i „Inne” dla obu kreatorów**:
   - `.wrapper`: max szerokość `1100px`, panel z `border-radius: 10px`.
-  - `.table`: gradient w nagłówkach i zebra w wierszach.
-  - `textarea` bez możliwości zmiany rozmiaru (`resize: none`).
+  - `.table`: gradient w nagłówkach i zebra w wierszach; bez `table-layout`, czyli układ automatyczny.
+    Wszystkie komórki wyśrodkowane (`text-align: center`, `padding: 9px 8px`).
+  - Tabela umiejętności: kolumny nazw szerokie (dopasowane do najdłuższych nazw, w jednym wierszu),
+    kolumny `Wartość` wąskie. Zmierzone w Chromium przy oknie 1280 px: `421 / 119 / 394 / 119 px`.
+    Wiersz nagłówka leży w tym samym `tbody` co dane, więc tło `--zebra` mają nieparzyste wiersze danych
+    (Analiza, Czujność, Intuicja, Medycyna, Oszukiwanie).
+  - Tabela „Inne”: przy pustych polach cztery kolumny po około 25% (`267 / 259 / 267 / 260 px` przy
+    1280 px). Kolumna z tekstem o foncie 16 px chwilowo się poszerza, bo szerokość pola wynikająca z fontu
+    wpływa na układ automatyczny.
+  - `textarea` (pole nazwy w „Inne”): `height: 46px`, `resize: none`, `text-align: left`,
+    `padding: 9px 10px`, ramka `1px solid var(--b)`, `border-radius: 6px`, tło `var(--bg)`. Font
+    startowy pochodzi z przeglądarki (Chromium: 13,33 px, interlinia `normal`); podczas pisania
+    `adjustTalentFontSize` ustawia 16 px i zmniejsza co 1 px do 10 px, a gdy tekst dalej się nie mieści,
+    pole przewija się z pionowym paskiem.
   - `.language-switcher`: prawy górny panel akcji ustawiony absolutnie; zawiera przyciski instrukcji, powrotu i tabeli maksimów. Select języka w tym panelu jest ukryty (`display: none`) oraz wyłączony z kolejności klawiatury, więc nie zajmuje miejsca w layoucie.
   - `.species-max-footnotes`: subtelny przypis pod tabelą maksymalnych wartości atrybutów, `margin-top: 8px`, `color: var(--text2)`, `font-size: .9rem`, `line-height: 1.4`; element nie zmienia układu modalu poza dodaniem krótkiego tekstu pod tabelą.
+  - Telefon (`max-width: 760px`): tabele mają `min-width` — atrybuty 560 px, umiejętności i „Inne”
+    po 520 px — i przewijają się w bok wewnątrz `.table-wrap`.
+- `TworzeniePostaci_v2.html` — sekcje „Umiejętności” i „Inne” wyglądają jak w `TworzeniePostaci.html`:
+  - `.wrapper`: `min(1100px, 96vw)`; `.table`: `table-layout: fixed`, komórki wyśrodkowane.
+  - `.skills-table`: `table-layout: auto` — te same szerokości kolumn co wzór (przy 1280 px
+    `421 / 119 / 394 / 119 px`, zrzut tabeli różni się od wzoru o 20 pikseli wygładzania krawędzi),
+    nazwy wyśrodkowane, długie nazwy w jednym wierszu. W przedziale 761–1145 px cała tabela jest do
+    14 px węższa niż we wzorze przez inną szerokość `.wrapper`; proporcje kolumn są takie same.
+  - `.talents-table`: zostaje przy `table-layout: fixed` (cztery kolumny po 25%, przy 1280 px
+    `263 px`), co odpowiada szerokościom wzoru przy pustych polach (±4 px) i nie zmienia się podczas
+    pisania.
+  - Zebra jak we wzorze: `tbody tr:nth-child(odd)` dostaje `var(--zebra)`, `even` — `transparent`,
+    a `tbody tr:hover` przywraca `var(--hover)` ponad zebrą (nagłówek tabel v2 jest w `thead`).
+  - `.talents-table textarea`: `height: 46px`, `min-height: 0`, `max-height: none` oraz `revert` dla
+    `font-size`, `line-height`, `word-break` i `overflow-wrap` — ten sam font startowy, interlinia
+    i łamanie wyrazów co we wzorze. `adjustTalentFontSize` (16 → 10 px, potem przewijanie) działa przy
+    pisaniu oraz po przebudowie tabeli dla pól z tekstem. Zmierzone rozmiary fontu dla tych samych
+    tekstów są w obu kreatorach identyczne.
+  - Ogólna reguła `textarea` strony (78 px, `font-size: 1rem`, `line-height: 1.25`,
+    `overflow-wrap: anywhere`) nie obejmuje już żadnego widocznego pola: pola „Inne” mają 46 px,
+    a pola modalu `Cechy i zasady specjalne` — 54 px z reguły `#characterRulesModal textarea`.
+  - Telefon (`max-width: 760px`): umiejętności i „Inne” po 520 px jak we wzorze, atrybuty 720 px,
+    dane postaci 900 px, cechy obliczalne 760 px.
 
 ### 4) Zwijanie/rozwijanie > 9 linii
 - Brak clampowania treści w module Kalkulator.

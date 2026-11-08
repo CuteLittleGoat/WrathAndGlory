@@ -75,15 +75,41 @@
     byId('skillsTable').innerHTML = `<thead><tr><th>Umiejętność</th><th>Wartość</th><th>Umiejętność</th><th>Wartość</th></tr></thead><tbody>${left.map((skill,index)=>`<tr><td>${skill.label}</td><td><input type="number" id="skill_${skill.key}" value="0" min="0" max="8"></td><td>${right[index].label}</td><td><input type="number" id="skill_${right[index].key}" value="0" min="0" max="8"></td></tr>`).join('')}</tbody>`;
   }
 
+  // --- Dopasowanie fontu w polu nazwy sekcji „Inne” / Fitting the font in the "Other" section name field ---
+  // PL: Kopia funkcji adjustTalentFontSize z Prostego Kreatora Postaci, który jest wzorem dla tej sekcji.
+  //     Font startuje od 16 px i maleje co 1 px, dopóki tekst wystaje poza pole, ale nie schodzi poniżej
+  //     10 px. Jeżeli przy 10 px tekst nadal się nie mieści, pole pokazuje pasek i przewija się.
+  // EN: A copy of the adjustTalentFontSize function from the Simple Character Creator, which is the model
+  //     for this section. The font starts at 16 px and shrinks by 1 px while the text sticks out of the
+  //     field, but never below 10 px. If the text still does not fit at 10 px, the field shows a scrollbar
+  //     and scrolls.
+  function adjustTalentFontSize(element) {
+    element.style.fontSize='16px';
+    let fontSize=16;
+    while((element.scrollWidth>element.clientWidth||element.scrollHeight>element.clientHeight)&&fontSize>10){
+      fontSize-=1;
+      element.style.fontSize=`${fontSize}px`;
+    }
+  }
+
   function renderTalents(existing=[]) {
     talentCount=clamp(Math.max(2,Math.ceil((existing.length||talentCount)/2)*2),2,100);
     const rows=[];
+    // Klasa talent-name oznacza pola nazw, w których działa dopasowanie fontu (jak we wzorze)
+    // The talent-name class marks the name fields where font fitting works (as in the model)
     for(let index=0;index<talentCount;index+=2){
       const a=existing[index]||{}, b=existing[index+1]||{};
-      rows.push(`<tr><td><textarea id="talent_name_${index+1}">${escapeHtml(a.name||'')}</textarea></td><td><input type="number" id="talent_cost_${index+1}" value="${Math.max(0,toInt(a.cost,0))}" min="0"></td><td><textarea id="talent_name_${index+2}">${escapeHtml(b.name||'')}</textarea></td><td><input type="number" id="talent_cost_${index+2}" value="${Math.max(0,toInt(b.cost,0))}" min="0"></td></tr>`);
+      rows.push(`<tr><td><textarea id="talent_name_${index+1}" class="talent-name">${escapeHtml(a.name||'')}</textarea></td><td><input type="number" id="talent_cost_${index+1}" value="${Math.max(0,toInt(a.cost,0))}" min="0"></td><td><textarea id="talent_name_${index+2}" class="talent-name">${escapeHtml(b.name||'')}</textarea></td><td><input type="number" id="talent_cost_${index+2}" value="${Math.max(0,toInt(b.cost,0))}" min="0"></td></tr>`);
     }
     byId('talentsTable').innerHTML=`<thead><tr><th>Nazwa</th><th>Koszt</th><th>Nazwa</th><th>Koszt</th></tr></thead><tbody>${rows.join('')}</tbody>`;
     byId('removeTalentRowButton').hidden=talentCount<=2;
+    // PL: Tabela jest budowana od nowa przy dodaniu i usunięciu wierszy oraz przy wczytaniu zapisu, więc
+    //     pola tracą wcześniej dobrany font. Pola z tekstem dostają go z powrotem od razu, a puste zostają
+    //     przy domyślnym foncie przeglądarki — tak jak świeże pola w Prostym Kreatorze.
+    // EN: The table is rebuilt when rows are added or removed and when a save is loaded, so the fields lose
+    //     the font picked earlier. Fields holding text get it back at once, while empty ones keep the
+    //     browser's default font — just like fresh fields in the Simple Creator.
+    byId('talentsTable').querySelectorAll('textarea.talent-name').forEach(textarea=>{if(textarea.value)adjustTalentFontSize(textarea);});
   }
 
   function collectTalents() {
@@ -239,13 +265,23 @@
     byId('derivedWarnings').textContent=warnings.join('\n');
   }
 
+  // --- Zasada Drzewa Nauki (podręcznik, str. 26) / Tree of Learning rule (rulebook, p. 26) ---
+  // PL: Żeby mieć Umiejętność na poziomie N (N ≥ 2), postać musi znać łącznie co najmniej N Umiejętności,
+  //     czyli mieć co najmniej N Umiejętności z wartością 1 lub wyższą — wliczając tę podnoszoną.
+  //     Przykład z podręcznika: Atletyka 4 wymaga punktów w co najmniej trzech innych Umiejętnościach.
+  //     Kreator widzi tylko stan końcowy, a nie kolejność zakupów. Każdy układ spełniający ten warunek da się
+  //     kupić zgodnie z zasadą (najpierw wszystkie Umiejętności na 1, potem podnoszenie), a układu, który go
+  //     nie spełnia, nie da się kupić w żadnej kolejności. Tę samą regułę stosuje Prosty Kreator Postaci
+  //     (funkcja checkSkillTree w TworzeniePostaci.html).
+  // EN: To have a Skill at rating N (N ≥ 2), the character must know at least N Skills in total, i.e. have at
+  //     least N Skills rated 1 or higher — including the one being raised. Rulebook example: Athletics 4
+  //     requires points in at least three other Skills. The creator only sees the final state, not the
+  //     purchase order. Any layout meeting this condition can be bought within the rule (every Skill to 1
+  //     first, then raising), and a layout failing it cannot be bought in any order. The Simple Character
+  //     Creator applies the same rule (the checkSkillTree function in TworzeniePostaci.html).
   function isLearningTreeValid(values) {
-    for(let rating=2;rating<=8;rating++){
-      const atRatingOrHigher=values.filter(value=>value>=rating).length;
-      const supports=values.filter(value=>value>=rating-1).length;
-      if(atRatingOrHigher>0&&supports<atRatingOrHigher*2)return false;
-    }
-    return true;
+    const knownSkills=values.filter(value=>value>=1).length;
+    return values.every(value=>value<=1||value<=knownSkills);
   }
 
   function recalcXP() {
@@ -338,7 +374,12 @@
     renderSpecialRules();
     renderSpeciesMax();
 
-    document.addEventListener('input',event=>{if(event.target.matches('input,textarea,select'))recalcXP();});
+    // Wpis w polu nazwy sekcji „Inne” dopasowuje font tego pola, a każdy wpis przelicza PD i błędy
+    // Typing in an "Other" section name field fits that field's font, and every entry recalculates XP and errors
+    document.addEventListener('input',event=>{
+      if(event.target.matches('#talentsTable textarea.talent-name'))adjustTalentFontSize(event.target);
+      if(event.target.matches('input,textarea,select'))recalcXP();
+    });
     document.addEventListener('change',event=>{
       if(event.target.id.startsWith('rule_type_'))updateRulePlaceholders();
       if(event.target.id.startsWith('rule_target_'))updateRuleValueState(event.target.id.slice('rule_target_'.length));

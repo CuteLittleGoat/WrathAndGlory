@@ -2,7 +2,7 @@
 
 **Punkt wejścia:** `Kalkulator/TworzeniePostaci_v2.html`  
 **Dokument:** `Kalkulator/docs/Documentation_v2.md`  
-**Stan opisany na dzień:** 2026-06-23  
+**Stan opisany na dzień:** 2026-11-08  
 **Schemat zapisu Firestore:** `3`  
 **Dokument Firestore:** `character_builder/v2`
 
@@ -179,11 +179,44 @@ Consolas, Fira Code, Source Code Pro, monospace
 ### Kontener i tabele
 
 - główny kontener ma szerokość `min(1100px, 96vw)`;
-- tabele używają `table-layout: fixed`;
+- tabele używają `table-layout: fixed` z reguły `.table`, z wyjątkiem tabeli umiejętności (opis niżej);
 - opakowanie `.table-wrap` zapewnia poziome przewijanie;
 - nagłówki są pisane wielkimi literami z rozstrzelonym tekstem;
-- parzyste wiersze mają delikatne zielone tło;
-- najechanie podświetla wiersz.
+- tekst w komórkach jest wyśrodkowany (`.table th, .table td { text-align:center }`);
+- parzyste wiersze mają delikatne zielone tło `--zebra`, z wyjątkiem tabel umiejętności i „Inne” (opis niżej);
+- najechanie podświetla wiersz kolorem `--hover`.
+
+### Sekcje „Umiejętności” i „Inne” — wzorem jest Prosty Kreator Postaci
+
+Obie sekcje mają wyglądać i działać tak samo jak w `TworzeniePostaci.html`. Odpowiada za to blok stylów
+opisany komentarzem `Sekcje „Umiejętności” i „Inne” w układzie Prostego Kreatora` w `<style>` pliku
+`TworzeniePostaci_v2.html`:
+
+```css
+.skills-table{table-layout:auto}
+.skills-table tbody tr:nth-child(odd),.talents-table tbody tr:nth-child(odd){background:var(--zebra)}
+.skills-table tbody tr:nth-child(even),.talents-table tbody tr:nth-child(even){background:transparent}
+.skills-table tbody tr:hover,.talents-table tbody tr:hover{background:var(--hover)}
+.talents-table textarea{height:46px;min-height:0;max-height:none;font-size:revert;line-height:revert;word-break:revert;overflow-wrap:revert}
+```
+
+| Reguła | Co robi i dlaczego |
+| --- | --- |
+| `.skills-table{table-layout:auto}` | Automatyczny układ kolumn jak we wzorze: kolumny nazw są szerokie, kolumny `Wartość` wąskie, długie nazwy (`Korzystanie z technologii (Int)`, `Mistrzostwo psioniczne (SW)`, `Umiejętności strzeleckie (Zr)`) mieszczą się w jednym wierszu. Stały układ z `.table` dzieliłby tabelę na 4 × 25% i zawijał te nazwy. Nazwy umiejętności są wyśrodkowane. |
+| `.talents-table` bez nadpisania układu | Tabela „Inne” zostaje przy `table-layout: fixed` (4 × 25%). We wzorze, z pustymi polami, kolumny mają właśnie po około 25%. Sekcja v2 startuje z jednym wierszem; w układzie automatycznym szerokość kolumny zależałaby od fontu jedynego pola i zmniejszanie fontu zwężałoby kolumnę. |
+| zebra `odd` / `even` | We wzorze wiersz nagłówka leży w tym samym `tbody` co dane, więc tło `--zebra` mają nieparzyste wiersze danych (1., 3., 5.…). W v2 nagłówek jest w `thead`, dlatego reguła jest odwrócona. |
+| `tr:hover` | Przywraca podświetlenie `--hover` ponad zebrą (ta sama specyficzność, późniejsza reguła wygrywa). |
+| `.talents-table textarea` | Pole nazwy ma 46 px wysokości jak we wzorze. `revert` cofa ogólną regułę `textarea` tego pliku (78 px, `font-size:1rem`, `line-height:1.25`, `word-break:break-word`, `overflow-wrap:anywhere`) do ustawień przeglądarki, z których korzysta wzór: domyślny font pola (w Chromium 13,33 px), interlinia `normal`, łamanie tylko zbyt długich wyrazów. |
+
+Zmierzone w Chromium (font zastępczy w miejscu Consolas) przy oknie 1280 px: kolumny tabeli umiejętności
+`421 / 119 / 394 / 119 px` w obu kreatorach, zrzut tabeli różni się od wzoru o 20 pikseli
+wygładzania krawędzi na 558 620. Przy szerokości do 760 px obie tabele mają minimum 520 px i takie same
+kolumny jak wzór (`166 / 95 / 163 / 95 px`). W przedziale 761–1145 px cała tabela jest do 14 px węższa
+niż we wzorze, bo kontener v2 ma `min(1100px, 96vw)`, a wzór `min(1100px, 100%)`; proporcje kolumn
+pozostają takie same.
+
+Pozostałe pola `textarea` strony (dane postaci i zasady specjalne w modalu `characterRulesModal`) mają
+54 px wysokości z reguły `#characterRulesModal textarea` i nie zmieniają fontu podczas pisania.
 
 ### Tabela cech obliczalnych
 
@@ -222,7 +255,7 @@ Przy szerokości do `760px`:
 - zestawy przycisków mogą zajmować całą szerokość;
 - tabela danych postaci otrzymuje minimum `900px`;
 - tabela atrybutów minimum `720px`;
-- tabele umiejętności i talentów minimum `700px`;
+- tabele umiejętności i talentów minimum `520px` — tyle samo co w Prostym Kreatorze;
 - tabela cech obliczalnych minimum `760px`;
 - przewijanie odbywa się w `.table-wrap`.
 
@@ -345,7 +378,42 @@ Zasady renderowania:
 - ujemny koszt jest normalizowany do `0`;
 - każdy koszt jest dodawany do wydanych PD;
 - puste nazwy nadal mogą mieć koszt i taki koszt będzie uwzględniony;
-- do PDF trafiają tylko niepuste nazwy.
+- do PDF trafiają tylko niepuste nazwy;
+- pole kosztu nie jest przepisywane po przeliczeniu: wpis `-3` pozostaje widoczny w polu, ale do PD trafia `0`, a wpis `2.7` — `2` (`Math.max(0, toInt(...))`).
+
+### Pole nazwy i dopasowanie fontu
+
+Każde pole nazwy to `<textarea id="talent_name_N" class="talent-name">`. Klasa `talent-name` oznacza
+pola, w których działa dopasowanie fontu — tak samo jak w Prostym Kreatorze. Wygląd pola (46 px
+wysokości, domyślny font przeglądarki) opisuje podrozdział o sekcjach „Umiejętności” i „Inne”
+w rozdziale „Style i układ”.
+
+`adjustTalentFontSize(element)` jest kopią funkcji o tej samej nazwie z `TworzeniePostaci.html`:
+
+```js
+function adjustTalentFontSize(element) {
+  element.style.fontSize='16px';
+  let fontSize=16;
+  while((element.scrollWidth>element.clientWidth||element.scrollHeight>element.clientHeight)&&fontSize>10){
+    fontSize-=1;
+    element.style.fontSize=`${fontSize}px`;
+  }
+}
+```
+
+Funkcja ustawia font 16 px i zmniejsza go co 1 px, dopóki tekst wystaje poza pole, ale nie schodzi
+poniżej 10 px. Gdy tekst nie mieści się nawet przy 10 px, pole pokazuje pionowy pasek i przewija się.
+
+Wywołania:
+
+| Miejsce | Kiedy | Po co |
+| --- | --- | --- |
+| globalny `input` w `initialize()` | wpis w polu `#talentsTable textarea.talent-name` | dopasowanie fontu podczas pisania, jak we wzorze |
+| koniec `renderTalents()` | dla każdego pola z niepustą wartością | tabela jest budowana od nowa przy `Dodaj pola talentów`, `Usuń pola talentów` i przy wczytaniu zapisu, więc pola traciłyby dobrany font; puste pola zostają przy domyślnym foncie przeglądarki, jak świeże pola we wzorze |
+
+Zmierzone w Chromium przy oknie 1280 px dla tych samych tekstów w obu kreatorach: 2 i 13 znaków —
+16 px, 34 znaki — 11 px, 71 znaków — 10 px bez paska, 153 znaki — 10 px z przewijaniem. Przy oknie
+360 px: 2 znaki — 16 px, 13 znaków — 11 px, od 34 znaków — 10 px z przewijaniem.
 
 ## Dane postaci do obliczeń i eksportu
 
@@ -557,30 +625,62 @@ Przekroczono dostępną pulę PD!
 
 ## Drzewo Nauki
 
-Walidacja sprawdza poziomy od `2` do `8`.
+Zasada z podręcznika (str. 26): żeby podnieść Umiejętność do nowej wartości, postać musi najpierw
+posiadać łączną liczbę Umiejętności równą tej nowej wartości. Atletyka 4 wymaga więc punktów w co
+najmniej trzech innych Umiejętnościach.
 
-Dla każdego poziomu `rating` kod liczy:
-
-- `atRatingOrHigher` — liczbę umiejętności o wartości co najmniej `rating`;
-- `supports` — liczbę umiejętności o wartości co najmniej `rating - 1`.
-
-Warunek poprawności:
+Kreator widzi stan końcowy, a nie kolejność zakupów, dlatego sprawdza warunek równoważny:
 
 ```text
-supports >= atRatingOrHigher × 2
+dla każdej Umiejętności: wartość ≤ 1  albo  wartość ≤ liczba Umiejętności z wartością ≥ 1
 ```
 
-Jeżeli warunek nie jest spełniony dla dowolnego poziomu, wyświetlany jest komunikat:
+```js
+function isLearningTreeValid(values) {
+  const knownSkills=values.filter(value=>value>=1).length;
+  return values.every(value=>value<=1||value<=knownSkills);
+}
+```
+
+- `values` — 18 wartości umiejętności po ograniczeniu do `0–8`, zebrane w `recalcXP()`;
+- `knownSkills` — liczba umiejętności z wartością co najmniej 1, wliczając tę najwyższą;
+- warunek jest równoważny z zasadą zakupu: układ, który go spełnia, można kupić (najpierw wszystkie
+  umiejętności na 1, potem podnoszenie), a układu, który go nie spełnia, nie da się kupić w żadnej
+  kolejności, bo liczba znanych umiejętności nigdy nie przekracza końcowej.
+
+Ta sama reguła działa w Prostym Kreatorze (`checkSkillTree()` w `TworzeniePostaci.html`). Obie
+implementacje dają ten sam wynik dla każdego układu — sprawdzone na 306 561 układach, w tym na wszystkich
+kombinacjach czterech umiejętności o wartościach `0–8`.
+
+Przykłady:
+
+| Umiejętności (wartości > 0) | Wynik |
+| --- | --- |
+| Analiza 2 | błąd — 1 znana umiejętność < 2 |
+| Analiza 4, Atletyka 1, Czujność 1, Dowodzenie 1 | poprawnie — 4 znane umiejętności = 4 |
+| Atletyka 4, Umiejętności strzeleckie 4, Czujność 1, Ukrywanie się 1 | poprawnie — przykład z podręcznika |
+| Umiejętności strzeleckie 5 przy 4 znanych | błąd |
+
+Jeżeli warunek nie jest spełniony, wyświetlany jest komunikat:
 
 ```text
 Niezgodność z zasadą Drzewa Nauki (str. 26)
 ```
 
+Komunikat jest liczony od nowa przy każdym przeliczeniu, więc pojawia się przy pierwszej zmianie, która
+łamie zasadę, i znika przy pierwszej zmianie, która ją przywraca (dodanie innej umiejętności, obniżenie
+najwyższej, wczytanie zapisu).
+
 Oba błędy — przekroczenie PD i Drzewo Nauki — mogą być wyświetlone jednocześnie, w oddzielnych wierszach.
+To jedyna różnica względem Prostego Kreatora, który przy przekroczonej puli pokazuje wyłącznie błąd PD,
+a błąd Drzewa Nauki dopiero po powrocie PD do normy.
 
 ## Przeliczanie reaktywne
 
-Globalne nasłuchiwanie `input` uruchamia `recalcXP()` dla każdego `input`, `textarea` i `select`.
+Globalne nasłuchiwanie `input`:
+
+- dla pola nazwy sekcji „Inne” (`#talentsTable textarea.talent-name`) najpierw wywołuje `adjustTalentFontSize()`;
+- następnie uruchamia `recalcXP()` dla każdego `input`, `textarea` i `select`.
 
 Globalne nasłuchiwanie `change`:
 
@@ -1074,7 +1174,13 @@ Bez sieci:
 | Koszt talentu | Wpisz koszt 15. | Pozostałe PD maleje o 15. |
 | Clamp | Wpisz atrybut 99 i wywołaj przeliczenie. | Pole zostaje skorygowane do 12. |
 | Przekroczenie puli | Ustaw koszty ponad pulę. | Pojawia się błąd przekroczenia PD. |
-| Drzewo Nauki | Ustaw wysoką umiejętność bez wymaganej podstawy. | Pojawia się błąd Drzewa Nauki. |
+| Drzewo Nauki — błąd | Ustaw Analizę 2 przy wszystkich innych umiejętnościach na 0. | Pojawia się błąd Drzewa Nauki. |
+| Drzewo Nauki — naprawa | Ustaw Analizę 4, potem kolejno Atletykę, Czujność i Dowodzenie na 1. | Błąd jest widoczny do Czujności włącznie i znika po ustawieniu Dowodzenia. |
+| Drzewo Nauki — przykład z podręcznika | Atletyka 4, Umiejętności strzeleckie 4, Czujność 1, Ukrywanie się 1. | Brak błędu; Umiejętności strzeleckie 5 wywołują błąd. |
+| Oba błędy naraz | Przekrocz pulę PD i złam Drzewo Nauki. | Widoczne są dwa komunikaty w osobnych wierszach. |
+| Pole nazwy w „Inne” | Wpisz długi tekst w polu nazwy. | Font maleje od 16 px do 10 px, potem pojawia się pasek przewijania. |
+| Font po dodaniu wierszy | Wpisz długi tekst i kliknij `Dodaj pola talentów`. | Tekst zachowuje zmniejszony font; nowe pola są puste. |
+| Wygląd jak we wzorze | Porównaj sekcje `Umiejętności` i `Inne` z Prostym Kreatorem przy oknie 1280 px. | Kolumny umiejętności i wysokość pól nazw są takie same. |
 
 ### Zasady i cechy pochodne
 
@@ -1212,13 +1318,30 @@ Remaining XP equals the XP pool minus all attribute costs, all skill costs and a
 
 ## Learning Tree validation
 
-For every rating from 2 through 8:
+Rulebook rule (p. 26): to raise a Skill to a new rating, the character must first have a total number of
+Skills equal to that new rating, so Athletics 4 needs points in at least three other Skills. The creator
+sees the final state, not the purchase order, and checks the equivalent condition:
 
 ```text
-count(skills >= rating - 1) >= 2 × count(skills >= rating)
+for every skill: rating <= 1  or  rating <= count(skills with rating >= 1)
 ```
 
-Failure displays the Polish learning-tree error. A negative remaining XP displays a separate error.
+```js
+function isLearningTreeValid(values) {
+  const knownSkills=values.filter(value=>value>=1).length;
+  return values.every(value=>value<=1||value<=knownSkills);
+}
+```
+
+A layout meeting the condition can be bought within the rule (every skill to 1 first, then raising); a
+layout failing it cannot be bought in any order. The Simple Creator's `checkSkillTree()` applies the same
+rule, and both give identical results (checked on 306,561 layouts, including every combination of four
+skills rated `0–8`).
+
+Failure displays the Polish learning-tree error. The message is recomputed on every recalculation, so it
+appears on the first change breaking the rule and disappears on the first change restoring it. A negative
+remaining XP displays a separate error; both can be shown at once, on separate lines. The Simple Creator
+instead shows only the XP error while the pool is exceeded.
 
 ## Skill totals
 
@@ -1390,7 +1513,17 @@ The page uses the shared monospace stack and a black/green terminal aesthetic. I
 
 The computed-stat table uses `25% / 47% / 14% / 14%` columns. Bonus and Result are equally wide and centered.
 
-At widths up to 760px, large tables retain minimum widths and scroll horizontally inside their wrappers.
+At widths up to 760px, large tables retain minimum widths and scroll horizontally inside their wrappers. The skills and "Other" tables use a 520px minimum, the same as the Simple Creator.
+
+The Skills and "Other" sections follow the Simple Creator (`TworzeniePostaci.html`) as their model:
+
+- `.skills-table{table-layout:auto}` — automatic column layout: wide, centred name columns and narrow value columns, so long skill names stay on one line;
+- the "Other" table keeps the fixed `.table` layout (four 25% columns), which matches the model's empty-field widths and does not depend on the font of the single starting row;
+- zebra stripes land on odd data rows (as in the model, whose header row shares the `tbody`), with the hover highlight kept above them;
+- `.talents-table textarea` is 46px tall and uses `revert` for `font-size`, `line-height`, `word-break` and `overflow-wrap`, returning to the browser defaults the model relies on;
+- `adjustTalentFontSize(element)` (a copy of the model's function) runs on `input` in `textarea.talent-name` and after every `renderTalents()` for non-empty fields: the font starts at 16px and shrinks by 1px down to 10px while the text overflows; beyond that the field scrolls.
+
+Measured in Chromium at a 1280px window, the skills columns are `421 / 119 / 394 / 119 px` in both creators. Between 761px and 1145px the whole table is up to 14px narrower than in the model because the v2 container is `min(1100px, 96vw)` while the model uses `min(1100px, 100%)`; column proportions stay the same.
 
 The `languageSelect` element carries the `language-switcher--hidden` class
 (`display:none!important`), so the selector is hidden; removing that class from
@@ -1419,7 +1552,7 @@ the text stays in the page content and can be selected and copied, but it is unr
 After changing the module, verify:
 
 1. attribute and skill clamping and XP costs;
-2. learning-tree validation;
+2. learning-tree validation against the rulebook example (Athletics 4 with three other skills at 1 is valid; a rating above the number of known skills is not);
 3. derived formulas and minimum values;
 4. Defence size bonus aggregation;
 5. disabled zero value for descriptive rules;
@@ -1427,4 +1560,5 @@ After changing the module, verify:
 7. Polish characters and all PDF field mappings;
 8. keyword two-line behavior and long-text overflow warnings;
 9. modal closing by button, overlay and Escape;
-10. responsive horizontal scrolling.
+10. responsive horizontal scrolling;
+11. the Skills and "Other" sections side by side with the Simple Creator: skills column widths, 46px name fields, font shrinking from 16px to 10px and scrolling, font kept after adding rows or loading a save.

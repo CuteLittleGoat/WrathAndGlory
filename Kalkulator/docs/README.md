@@ -11,7 +11,7 @@ Moduł zawiera stronę startową oraz narzędzia dostępne z przycisków:
 - `Prosty Kreator Postaci`,
 - `Zaawansowany Kreator Postaci`.
 
-Strona startowa pozwala wybrać narzędzie. `Kalkulator PD` służy do szybkiego liczenia kosztu podniesienia atrybutów i umiejętności. `Prosty Kreator Postaci` służy do planowania całej postaci z pulą PD, talentami, walidacją i opcjonalnym zapisem. `Zaawansowany Kreator Postaci` prowadzi do osobnej strony `Kalkulator/TworzeniePostaci_v2.html`, która może zostać przygotowana jako rozbudowany kreator.
+Strona startowa pozwala wybrać narzędzie. `Kalkulator PD` służy do szybkiego liczenia kosztu podniesienia atrybutów i umiejętności. `Prosty Kreator Postaci` służy do planowania całej postaci z pulą PD, talentami, walidacją i opcjonalnym zapisem. `Zaawansowany Kreator Postaci` to rozbudowana wersja kreatora na osobnej stronie `Kalkulator/TworzeniePostaci_v2.html`: liczy PD i sprawdza Drzewo Nauki tak samo jak prosty kreator, a dodatkowo ma cechy i zasady specjalne, obliczanie cech pochodnych oraz eksport karty postaci do PDF.
 
 ## Jak otworzyć moduł
 
@@ -41,7 +41,7 @@ Bezpośrednio Zaawansowany Kreator Postaci:
 Kalkulator/TworzeniePostaci_v2.html
 ```
 
-Przycisk zaawansowanego kreatora prowadzi do tej ścieżki, nawet jeżeli plik zostanie uzupełniony później.
+Przycisk `Zaawansowany Kreator Postaci` na stronie startowej prowadzi właśnie do tej strony.
 
 ## Strona startowa
 
@@ -130,6 +130,12 @@ Domyślna wartość to:
 155
 ```
 
+Kreator liczy koszt `Szybkości` tak samo jak koszt pozostałych atrybutów, a startowa `Szybkość 6`
+kosztuje 55 PD. Dlatego zaraz po otwarciu arkusza pole `Pozostało PD` pokazuje `100`
+(155 − 55), czyli podstawową pulę postaci na pierwszym poziomie gry. Jeżeli Twoja postać ma inną
+startową Szybkość albo gracie z inną pulą, popraw liczbę w polu `Pula PD do wydania` tak, żeby
+`Pozostało PD` pokazywało właściwą wartość.
+
 Jeżeli wydasz więcej punktów, niż masz w puli, moduł pokaże błąd przekroczenia PD.
 
 ## Atrybuty
@@ -165,7 +171,7 @@ Moduł automatycznie dolicza koszt każdej umiejętności do całkowitego wydatk
 
 ## Talenty i inne wydatki
 
-Sekcja talentów nosi nagłówek **Inne: Talenty, Wiara, Psionika, Koszty Archetypu, Pakiety Wyniesienia, Majątek, Języki itd.** i ma 20 pól. Ten sam nagłówek ma sekcja talentów
+Sekcja talentów nosi nagłówek **Inne: Talenty, Wiara, Psionika, Koszty Archetypu, Pakiety Wyniesienia, Majątek, Języki itd.** W `Prostym Kreatorze Postaci` ma 20 pól. Ten sam nagłówek ma sekcja talentów
 w Zaawansowanym Kreatorze Postaci.
 
 Każdy wpis ma:
@@ -176,6 +182,22 @@ Każdy wpis ma:
 Możesz używać tej sekcji nie tylko do talentów, ale też do innych kosztów, które chcesz ręcznie doliczyć do postaci.
 
 Koszt wpisany w polu kosztu jest dodawany bezpośrednio do wydanych PD.
+
+W `Zaawansowanym Kreatorze Postaci` sekcja startuje z dwoma polami. Przycisk `Dodaj pola talentów`
+dodaje dwa kolejne pola, a `Usuń pola talentów` usuwa dwa ostatnie (przycisk usuwania znika, gdy
+zostają tylko dwa pola).
+
+### Jak zachowuje się pole nazwy
+
+Pole nazwy jest niskie i mieści jedną linię tekstu. W obu kreatorach działa tak samo:
+
+1. Krótka nazwa jest wyświetlana w pełnym rozmiarze.
+2. Gdy tekst przestaje się mieścić, litery same się zmniejszają, a tekst może zająć dwie linie.
+3. Gdy tekst nie mieści się nawet przy najmniejszych literach, w polu pojawia się pasek przewijania.
+   Całą treść zobaczysz, przewijając pole kółkiem myszy, palcem albo strzałkami na klawiaturze.
+
+W `Zaawansowanym Kreatorze Postaci` zmniejszone litery zostają także po kliknięciu `Dodaj pola
+talentów` / `Usuń pola talentów` i po wczytaniu zapisanej postaci.
 
 ## Pozostałe PD i komunikaty błędów
 
@@ -189,18 +211,40 @@ Najważniejsze komunikaty:
 
 | Komunikat | Znaczenie |
 | --- | --- |
-| Przekroczenie puli PD | Wydano więcej punktów, niż jest dostępne w puli. |
-| Drzewo Nauki / Tree of Learning | Układ poziomów umiejętności narusza zasadę wymaganą przez arkusz. |
+| Przekroczono dostępną pulę PD! | Wydano więcej punktów, niż jest dostępne w puli. |
+| Niezgodność z zasadą Drzewa Nauki (str. 26) | Któraś umiejętność ma wyższą wartość, niż pozwala zasada Drzewa Nauki (opis niżej). |
 
-Błąd Drzewa Nauki jest pokazywany tylko wtedy, gdy pula PD nie jest przekroczona.
+Gdy oba problemy występują naraz, kreatory pokazują je różnie:
+
+- `Prosty Kreator Postaci` pokazuje wtedy tylko komunikat o przekroczonej puli PD. Komunikat Drzewa
+  Nauki pojawi się dopiero wtedy, gdy PD wrócą do normy — nawet jeśli w tym czasie nie zmieniasz
+  umiejętności.
+- `Zaawansowany Kreator Postaci` pokazuje oba komunikaty naraz, jeden pod drugim.
 
 ## Drzewo Nauki
 
-Arkusz sprawdza uproszczoną zasadę Drzewa Nauki.
+Zasada z podręcznika (str. 26): żeby podnieść umiejętność do jakiejś wartości, postać musi znać co
+najmniej tyle umiejętności, ile wynosi ta wartość. Umiejętność „znana” to taka, która ma co najmniej
+1 punkt — liczy się też ta, którą podnosisz.
 
-W praktyce oznacza to, że bardzo wysoki poziom pojedynczej umiejętności wymaga odpowiedniej liczby aktywnych umiejętności.
+Przykłady:
 
-Jeżeli zobaczysz błąd Drzewa Nauki, obniż poziom najwyższej umiejętności albo dodaj poziomy w innych umiejętnościach.
+- `Analiza 2` wymaga jeszcze jednej innej umiejętności z co najmniej 1 punktem.
+- `Atletyka 4` wymaga co najmniej trzech innych umiejętności z co najmniej 1 punktem.
+- Gdy postać zna 4 umiejętności, każdą z nich może podnieść najwyżej do 4.
+
+Oba kreatory sprawdzają tę zasadę dokładnie tak samo.
+
+Kiedy pojawia się i znika komunikat:
+
+- pojawia się od razu po zmianie, która łamie zasadę — na przykład po podniesieniu `Analizy` z 1 na 2,
+  gdy żadna inna umiejętność nie ma punktów;
+- znika od razu po zmianie, która ją przywraca — gdy dodasz punkt w kolejnej umiejętności albo obniżysz
+  zbyt wysoką umiejętność;
+- wraca, jeżeli zabierzesz punkty umiejętności, która była potrzebna.
+
+Jeżeli zobaczysz ten komunikat, dodaj po 1 punkcie w innych umiejętnościach albo obniż najwyższą
+umiejętność. Komunikat nie blokuje dalszej pracy z arkuszem.
 
 ## Tabela maksymalnych wartości atrybutów
 
@@ -316,7 +360,9 @@ nachodziły na sąsiednie kolumny.
 | Komunikat lub sytuacja | Co oznacza | Co zrobić |
 | --- | --- | --- |
 | Pozostałe PD jest ujemne | Wydano za dużo PD. | Zmniejsz wartości albo zwiększ pulę PD. |
-| Błąd Drzewa Nauki | Układ umiejętności narusza regułę arkusza. | Dodaj inne aktywne umiejętności albo obniż najwyższy poziom. |
+| Błąd Drzewa Nauki | Najwyższa umiejętność ma wartość większą niż liczba umiejętności z co najmniej 1 punktem. | Dodaj po 1 punkcie w innych umiejętnościach albo obniż najwyższą umiejętność. |
+| Błąd Drzewa Nauki pojawił się po zmianie puli PD | W `Prostym Kreatorze` ten błąd jest ukryty, dopóki pula PD jest przekroczona. | Popraw umiejętności jak wyżej. |
+| Tekst w polu nazwy jest bardzo mały albo pojawił się pasek | Tekst nie mieścił się w polu, więc litery zostały zmniejszone. | To prawidłowe. Przewiń pole, żeby zobaczyć całość, albo skróć wpis. |
 | Pole wraca do wartości domyślnej | Wpis był pusty albo nieprawidłowy. | Wpisz liczbę z dozwolonego zakresu. |
 | Nie działa zapis | Firebase nie jest skonfigurowany albo jest niedostępny. | Zgłoś adminowi technicznemu. |
 | Nie działa wczytanie | Brak zapisanego dokumentu albo Firebase jest niedostępny. | Najpierw zapisz postać albo zgłoś adminowi. |
@@ -358,7 +404,7 @@ The module contains a start page and tools available from buttons:
 - `Simple Character Creator`,
 - `Advanced Character Creator`.
 
-The start page lets you choose a tool. `XP Calculator` quickly calculates the cost of raising attributes and skills. `Simple Character Creator` is used to plan a whole character with XP pool, talents, validation, and optional save. `Advanced Character Creator` opens a separate `Kalkulator/TworzeniePostaci_v2.html` page that can be prepared as an expanded creator.
+The start page lets you choose a tool. `XP Calculator` quickly calculates the cost of raising attributes and skills. `Simple Character Creator` is used to plan a whole character with XP pool, talents, validation, and optional save. `Advanced Character Creator` is the expanded creator on a separate `Kalkulator/TworzeniePostaci_v2.html` page: it calculates XP and checks the Tree of Learning exactly like the simple creator, and adds special traits and rules, derived-trait calculation and a character-sheet PDF export.
 
 ## How to open the module
 
@@ -388,7 +434,7 @@ Directly open Advanced Character Creator:
 Kalkulator/TworzeniePostaci_v2.html
 ```
 
-The advanced creator button points to this path even if the file is completed later.
+The `Advanced Character Creator` button on the start page leads to this page.
 
 ## Start page
 
@@ -481,6 +527,12 @@ Default value:
 155
 ```
 
+The creator charges `Speed` the same way as the other attributes, and the starting `Speed 6` costs
+55 XP. That is why right after opening the sheet the remaining XP field shows `100` (155 − 55), the
+basic pool of a first-tier character. If your character has a different starting Speed or you play
+with a different pool, adjust the number in the XP pool field until the remaining XP shows the right
+value.
+
 If you spend more points than available, the module shows an XP overflow error.
 
 ## Attributes
@@ -516,7 +568,7 @@ The module automatically adds each skill cost to total XP spent.
 
 ## Talents and other spending
 
-The talents section has 20 fields. Because the creators run in Polish, its heading on screen reads
+In the `Simple Character Creator` the talents section has 20 fields. Because the creators run in Polish, its heading on screen reads
 **Inne: Talenty, Wiara, Psionika, Koszty Archetypu, Pakiety Wyniesienia, Majątek, Języki itd.**; in the Simple Character Creator's English translation it reads **Other: Talents, Faith, Psionic Powers, Archetype Cost, Ascension Packages, Wealth, Languages etc.** The Advanced
 Character Creator uses the same Polish heading for its talents section and has no English version.
 
@@ -528,6 +580,22 @@ Each entry has:
 You can use this section not only for talents, but also for other manually added costs.
 
 The entered cost is added directly to spent XP.
+
+In the `Advanced Character Creator` the section starts with two fields. The `Dodaj pola talentów`
+button adds two more fields and `Usuń pola talentów` removes the last two (the remove button
+disappears when only two fields are left).
+
+### How the name field behaves
+
+The name field is low and holds one line of text. It works the same in both creators:
+
+1. A short name is shown at full size.
+2. When the text stops fitting, the letters shrink on their own and the text may take two lines.
+3. When the text does not fit even with the smallest letters, a scrollbar appears in the field. To see
+   the whole entry, scroll the field with the mouse wheel, a finger or the arrow keys.
+
+In the `Advanced Character Creator` the shrunk letters also stay after clicking `Dodaj pola talentów` /
+`Usuń pola talentów` and after loading a saved character.
 
 ## Remaining XP and errors
 
@@ -541,18 +609,38 @@ Main messages:
 
 | Message | Meaning |
 | --- | --- |
-| XP pool exceeded | More points were spent than available. |
-| Tree of Learning | Skill level layout breaks the rule checked by the sheet. |
+| `Przekroczono dostępną pulę PD!` (XP pool exceeded) | More points were spent than available. |
+| `Niezgodność z zasadą Drzewa Nauki (str. 26)` (Tree of Learning rule broken) | A skill has a higher rating than the Tree of Learning rule allows (see below). |
 
-Tree of Learning error is shown only when XP pool is not exceeded.
+When both problems happen at once, the creators show them differently:
+
+- the `Simple Character Creator` then shows only the XP pool message. The Tree of Learning message
+  appears once XP is back in range — even if you do not touch any skill in the meantime;
+- the `Advanced Character Creator` shows both messages at once, one below the other.
 
 ## Tree of Learning
 
-The sheet checks a simplified Tree of Learning rule.
+Rulebook rule (p. 26): to raise a skill to a given rating, the character must know at least as many
+skills as that rating. A "known" skill is one with at least 1 point — the skill being raised counts too.
 
-In practice, a very high level in one skill requires a suitable number of active skills.
+Examples:
 
-If you see Tree of Learning error, lower the highest skill level or add levels in other skills.
+- `Analiza` (Investigation) at 2 needs one more skill with at least 1 point.
+- `Atletyka` (Athletics) at 4 needs at least three other skills with at least 1 point.
+- A character who knows 4 skills can raise any of them up to 4.
+
+Both creators check this rule in exactly the same way.
+
+When the message appears and disappears:
+
+- it appears right after a change that breaks the rule — for example raising `Analiza` (Investigation)
+  from 1 to 2 while no other skill has points;
+- it disappears right after a change that restores the rule — adding a point in another skill or
+  lowering the skill that is too high;
+- it comes back if you remove the points of a skill that was needed.
+
+If you see this message, add 1 point in other skills or lower the highest skill. The message does not
+block further work with the sheet.
 
 ## Maximum attribute values table
 
@@ -665,7 +753,9 @@ to run into the neighbouring columns.
 | Message or situation | Meaning | What to do |
 | --- | --- | --- |
 | Remaining XP is negative | Too much XP was spent. | Reduce values or increase XP pool. |
-| Tree of Learning error | Skill layout breaks the sheet rule. | Add other active skills or lower the highest level. |
+| Tree of Learning error | The highest skill is rated above the number of skills with at least 1 point. | Add 1 point in other skills or lower the highest skill. |
+| Tree of Learning error appeared after changing the XP pool | In the `Simple Character Creator` this error stays hidden while the XP pool is exceeded. | Fix the skills as above. |
+| Text in the name field is very small or a scrollbar appeared | The text did not fit, so the letters were shrunk. | This is expected. Scroll the field to see everything, or shorten the entry. |
 | Field returns to default value | The entry was empty or invalid. | Enter a number in the allowed range. |
 | Save does not work | Firebase is not configured or unavailable. | Contact technical admin. |
 | Load does not work | No saved document exists or Firebase is unavailable. | Save character first or contact admin. |
