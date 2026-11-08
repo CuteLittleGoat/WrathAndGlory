@@ -879,17 +879,49 @@ const translations = {
         recalcXP();
       }
 
+      // --- Wartości domyślne pól liczbowych / Default values of the number fields ---
+      // PL: Te same wartości ustawia reset i wpisuje opuszczenie pustego pola (attachDefaultOnBlur). W trakcie
+      //     pisania puste pole liczy się jako swoja wartość domyślna. Umiejętności i koszty talentów mają 0.
+      // EN: Reset sets the same values and leaving an empty field writes them in (attachDefaultOnBlur). While
+      //     typing, an empty field counts as its default value. Skills and talent costs default to 0.
+      const DEFAULT_XP_POOL = 155;
+      const DEFAULT_SPEED = 6;
+      const DEFAULT_ATTRIBUTE = 1;
+
+      // --- Odczyt pola liczbowego bez przeszkadzania w pisaniu / Reading a number field without disturbing typing ---
+      // PL: Puste pole (np. tuż po skasowaniu liczby klawiszem Backspace) liczy się jako wartość domyślna, ale nie
+      //     jest nadpisywane. Dzięki temu wpisywana cyfra nie dokleja się do wstawionej wartości: Backspace i „3”
+      //     w polu atrybutu dają 3, a nie 13 poprawione na 12. Liczba spoza zakresu albo ułamek są poprawiane
+      //     w polu od razu, więc pole zawsze pokazuje to, co trafia do PD. Ten sam odczyt ma Zaawansowany
+      //     Kreator (readNumberInput w TworzeniePostaci_v2-core.js).
+      // EN: An empty field (e.g. right after deleting the number with Backspace) counts as its default value but
+      //     is not overwritten. This way a typed digit is not appended to an inserted value: Backspace and "3" in
+      //     an attribute field give 3, not 13 corrected to 12. A number out of range or a fraction is corrected in
+      //     the field at once, so the field always shows what goes into XP. The Advanced Creator reads fields the
+      //     same way (readNumberInput in TworzeniePostaci_v2-core.js).
+      function readNumberField(input, fallback, min, max) {
+        if (input.value === '') return fallback;
+        const parsed = parseInt(input.value, 10);
+        if (Number.isNaN(parsed)) return fallback;
+        const value = Math.min(Math.max(parsed, min), max);
+        if (input.value !== String(value)) input.value = value;
+        return value;
+      }
+
       // --- Funkcja przeliczająca zużycie XP / Function to recalculate XP usage ---
       function recalcXP() {
-        let xpPool = parseInt(document.getElementById('xpPool').value) || 0;
+        const t = translations[currentLanguage];
+        // Pusta pula w trakcie pisania liczy się jako 155; pula nie jest ograniczana ani przepisywana
+        // An empty pool counts as 155 while typing; the pool is neither limited nor rewritten
+        const poolValue = parseInt(document.getElementById('xpPool').value, 10);
+        const xpPool = Number.isNaN(poolValue) ? DEFAULT_XP_POOL : poolValue;
         let totalAttrCost = 0;
         const attrIds = ['attr_S', 'attr_Wt', 'attr_Zr', 'attr_I', 'attr_SW', 'attr_Int', 'attr_Ogd', 'attr_Speed'];
         attrIds.forEach(id => {
-          let inp = document.getElementById(id);
-          let val = parseInt(inp.value) || 1;
-          if (val < 1) val = 1;
-          if (val > 12) val = 12;
-          inp.value = val;
+          const inp = document.getElementById(id);
+          // Szybkość ma wartość domyślną 6, pozostałe atrybuty 1; zakres 1–12
+          // Speed defaults to 6, the other attributes to 1; range 1–12
+          const val = readNumberField(inp, id === 'attr_Speed' ? DEFAULT_SPEED : DEFAULT_ATTRIBUTE, 1, 12);
           totalAttrCost += attributeCosts[val];
           inp.classList.toggle('attribute-high', val > 8);
         });
@@ -901,34 +933,28 @@ const translations = {
           skillIds.push(`skill_Column2Row${i}`);
         }
         skillIds.forEach(id => {
-          let inp = document.getElementById(id);
-          let val = parseInt(inp.value) || 0;
-          if (val < 0) val = 0;
-          if (val > 8) val = 8;
-          inp.value = val;
+          const val = readNumberField(document.getElementById(id), 0, 0, 8);
           totalSkillCost += skillCosts[val];
         });
 
+        // Koszt talentu nie może być ujemny i nie ma górnej granicy / A talent cost cannot be negative and has no upper limit
         let totalTalentCost = 0;
         for (let i = 1; i <= TALENT_COUNT; i++) {
-          let inp = document.getElementById(`talent_cost_${i}`);
-          let val = parseInt(inp.value) || 0;
-          if (val < 0) val = 0;
-          inp.value = val;
-          totalTalentCost += val;
+          totalTalentCost += readNumberField(document.getElementById(`talent_cost_${i}`), 0, 0, Infinity);
         }
 
         let xpSpent = totalAttrCost + totalSkillCost + totalTalentCost;
         let xpRemaining = xpPool - xpSpent;
         document.getElementById('xpRemaining').innerText = xpRemaining;
 
-        // Sprawdzenie przekroczenia puli XP / Check for exceeding XP pool
-        if (xpRemaining < 0) {
-          displayError(translations[currentLanguage].errors.tooMuchXP);
-        } else {
-          // Jeśli XP jest w normie, sprawdzamy "Drzewo Nauki" / If XP is fine, check "Tree of Learning"
-          checkSkillTree();
-        }
+        // PL: Przekroczenie puli PD i Drzewo Nauki są sprawdzane niezależnie. Gdy oba występują naraz, widoczne są
+        //     oba komunikaty, każdy w osobnym wierszu — tak samo jak w Zaawansowanym Kreatorze.
+        // EN: The exceeded XP pool and the Tree of Learning are checked independently. When both happen at once,
+        //     both messages are visible, each on its own line — just like in the Advanced Creator.
+        const errors = [];
+        if (xpRemaining < 0) errors.push(t.errors.tooMuchXP);
+        if (!checkSkillTree()) errors.push(t.errors.treeOfLearning);
+        displayError(errors.join('\n'));
       }
 
       function initializeFirebaseContext() {
@@ -955,7 +981,9 @@ const translations = {
       function collectCurrentState() {
         const attributes = {};
         ['S', 'Wt', 'Zr', 'I', 'SW', 'Int', 'Ogd', 'Speed'].forEach((key) => {
-          attributes[key] = parseInt(document.getElementById(`attr_${key}`).value, 10) || 1;
+          // Puste pole zapisuje się jako wartość domyślna: Szybkość 6, pozostałe atrybuty 1
+          // An empty field is saved as its default value: Speed 6, the other attributes 1
+          attributes[key] = parseInt(document.getElementById(`attr_${key}`).value, 10) || (key === 'Speed' ? DEFAULT_SPEED : DEFAULT_ATTRIBUTE);
         });
 
         const skills = {};
@@ -979,8 +1007,14 @@ const translations = {
           }
         });
 
-        const errorMessage = document.getElementById('errorMessage').innerText.trim();
-        const xpPool = parseInt(document.getElementById('xpPool').value, 10) || 0;
+        // Każdy widoczny komunikat trafia do zapisu jako osobna pozycja — naraz mogą być dwa (PD i Drzewo Nauki)
+        // Each visible message is saved as a separate entry — there can be two at once (XP and Tree of Learning)
+        const validationMessages = document.getElementById('errorMessage').innerText
+          .split('\n')
+          .map(line => line.trim())
+          .filter(Boolean);
+        const poolValue = parseInt(document.getElementById('xpPool').value, 10);
+        const xpPool = Number.isNaN(poolValue) ? DEFAULT_XP_POOL : poolValue;
         const xpAvailable = parseInt(document.getElementById('xpRemaining').innerText, 10) || 0;
         const xpTotal = xpPool;
         const xpSpent = xpTotal - xpAvailable;
@@ -995,8 +1029,8 @@ const translations = {
           xpTotal,
           xpSpent,
           xpAvailable,
-          hasValidationErrors: errorMessage.length > 0,
-          validationMessages: errorMessage ? [errorMessage] : [],
+          hasValidationErrors: validationMessages.length > 0,
+          validationMessages,
           attributes,
           skills,
           talents,
@@ -1017,6 +1051,16 @@ const translations = {
           document.getElementById('languageSelect').value = data.lang;
           updateLanguage(data.lang);
         }
+
+        // PL: Pola nazw w sekcji „Inne” wracają do fontu przeglądarki, a te z tekstem dostają font dopasowany do
+        //     wczytanej treści — tak, jakby użytkownik wpisał ją na świeżej stronie (Zaawansowany Kreator robi to
+        //     samo po przebudowie tabeli).
+        // EN: Name fields in the "Other" section return to the browser font, and those holding text get a font
+        //     fitted to the loaded content — as if the user had typed it on a fresh page (the Advanced Creator
+        //     does the same after rebuilding its table).
+        const talentNameFields = document.querySelectorAll('textarea.talent-name');
+        talentNameFields.forEach(textarea => { textarea.style.fontSize = ''; });
+        talentNameFields.forEach(textarea => { if (textarea.value) adjustTalentFontSize(textarea); });
 
         recalcXP();
       }
@@ -1210,11 +1254,19 @@ const translations = {
       }
 
       // --- Funkcja wyświetlająca komunikaty o błędach / Function to display error messages ---
+      // Znak nowej linii w msg staje się osobnym wierszem (innerText zamienia go na <br>); pusty tekst czyści obszar
+      // A newline in msg becomes a separate line (innerText turns it into <br>); an empty text clears the area
       function displayError(msg) {
         document.getElementById('errorMessage').innerText = msg;
       }
 
       // --- Funkcja sprawdzająca zasadę "Drzewa Nauki" / Function to check the "Tree of Learning" rule ---
+      // PL: Zasada z podręcznika (str. 26): umiejętność o wartości N ≥ 2 wymaga łącznie co najmniej N umiejętności
+      //     z wartością 1 lub wyższą, wliczając ją samą. Funkcja zwraca true, gdy układ jest poprawny; komunikat
+      //     pokazuje recalcXP(). Tę samą regułę ma Zaawansowany Kreator (isLearningTreeValid).
+      // EN: Rulebook rule (p. 26): a skill rated N ≥ 2 requires at least N skills in total rated 1 or higher,
+      //     itself included. The function returns true when the layout is valid; recalcXP() shows the message.
+      //     The Advanced Creator has the same rule (isLearningTreeValid).
       function checkSkillTree() {
         const skillIds = [];
         for (let i = 1; i <= 9; i++) {
@@ -1222,33 +1274,22 @@ const translations = {
           skillIds.push(`skill_Column2Row${i}`);
         }
 
-        // Liczenie aktywnych umiejętności / Counting active skills
+        // Liczenie aktywnych umiejętności; puste pole liczy się jako 0 / Counting active skills; an empty field counts as 0
         let totalActiveSkills = 0;
         skillIds.forEach(id => {
           let val = parseInt(document.getElementById(id).value) || 0;
           if (val > 0) totalActiveSkills++;
         });
 
-        // Sprawdzanie zasady "Drzewa Nauki" / Checking the "Tree of Learning" rule
-        let valid = true;
+        // Żadna umiejętność powyżej 1 nie może przekraczać liczby aktywnych umiejętności
+        // No skill above 1 may exceed the number of active skills
         for (let id of skillIds) {
           let level = parseInt(document.getElementById(id).value) || 0;
           if (level > 1 && totalActiveSkills < level) {
-            valid = false;
-            break;
+            return false;
           }
         }
-
-        // Jeśli XP jest w normie, pokazujemy błąd "Drzewa Nauki" tylko jeśli zasada nie jest spełniona
-        // If XP is fine, show "Tree of Learning" error only if the rule is broken
-        let xpRemaining = parseInt(document.getElementById('xpRemaining').innerText) || 0;
-        if (xpRemaining >= 0) {
-          if (!valid) {
-            displayError(translations[currentLanguage].errors.treeOfLearning);
-          } else {
-            displayError(""); // Kasowanie komunikatu, jeśli wszystko jest poprawne / Clear message if everything is correct
-          }
-        }
+        return true;
       }
 
       // --- Funkcja ustawiająca domyślne wartości po utracie fokusu / Function to set default values on blur ---
@@ -1347,8 +1388,11 @@ const translations = {
       });
 
       // --- Inicjalizacja domyślnych wartości / Initialization of default values ---
-      attachDefaultOnBlur('#xpPool', 155);
-      attachDefaultOnBlur("input[id^='attr_']", 1);
+      // Opuszczenie pustego pola wpisuje wartość domyślną: pula 155, Szybkość 6, atrybuty 1, umiejętności i koszty 0
+      // Leaving an empty field writes the default: pool 155, Speed 6, attributes 1, skills and costs 0
+      attachDefaultOnBlur('#xpPool', DEFAULT_XP_POOL);
+      attachDefaultOnBlur("input[id^='attr_']:not(#attr_Speed)", DEFAULT_ATTRIBUTE);
+      attachDefaultOnBlur('#attr_Speed', DEFAULT_SPEED);
       attachDefaultOnBlur("input[id^='skill_Column']", 0);
       attachDefaultOnBlur("input[id^='talent_cost_']", 0);
 

@@ -136,6 +136,8 @@ kosztuje 55 PD. Dlatego zaraz po otwarciu arkusza pole `Pozostało PD` pokazuje 
 startową Szybkość albo gracie z inną pulą, popraw liczbę w polu `Pula PD do wydania` tak, żeby
 `Pozostało PD` pokazywało właściwą wartość.
 
+Jeżeli skasujesz liczbę w tym polu i klikniesz poza nie, wróci `155`.
+
 Jeżeli wydasz więcej punktów, niż masz w puli, moduł pokaże błąd przekroczenia PD.
 
 ## Atrybuty
@@ -153,9 +155,24 @@ W arkuszu tworzenia postaci dostępne są atrybuty:
 
 Większość atrybutów domyślnie zaczyna od `1`.
 
-`Szybkość` domyślnie zaczyna od `6`.
+`Szybkość` domyślnie zaczyna od `6`. Szybkość można podnosić za PD tak samo jak pozostałe atrybuty —
+koszt idzie ze wspólnej puli.
 
 Dopuszczalny zakres atrybutów to `1..12`.
+
+## Jak wpisywać liczby
+
+Oba kreatory obsługują pola z liczbami tak samo:
+
+- Możesz zaznaczyć liczbę w polu i od razu wpisać nową.
+- Możesz też skasować liczbę (np. klawiszem Backspace) i dopiero potem wpisać nową. Pole zostaje wtedy
+  puste do czasu, aż coś wpiszesz — kreator nie wstawia do niego niczego w trakcie pisania. Przez tę
+  chwilę liczy pole tak, jakby miało wartość startową.
+- Jeżeli zostawisz pole puste i klikniesz gdzie indziej, wróci wartość startowa: pula `155`, Szybkość
+  `6`, pozostałe atrybuty `1`, umiejętności i koszty `0`.
+- Liczba spoza zakresu jest poprawiana od razu: atrybut powyżej 12 zmienia się na 12, umiejętność
+  powyżej 8 na 8, a liczba ujemna na najmniejszą dozwoloną wartość. Część ułamkowa jest ucinana
+  (`2,7` → `2`). Pole zawsze pokazuje to, co kreator liczy.
 
 ## Umiejętności
 
@@ -181,7 +198,8 @@ Każdy wpis ma:
 
 Możesz używać tej sekcji nie tylko do talentów, ale też do innych kosztów, które chcesz ręcznie doliczyć do postaci.
 
-Koszt wpisany w polu kosztu jest dodawany bezpośrednio do wydanych PD.
+Koszt wpisany w polu kosztu jest dodawany bezpośrednio do wydanych PD. Koszt nie może być ujemny — wpis
+`-3` zmieni się na `0`.
 
 W `Zaawansowanym Kreatorze Postaci` sekcja startuje z dwoma polami. Przycisk `Dodaj pola talentów`
 dodaje dwa kolejne pola, a `Usuń pola talentów` usuwa dwa ostatnie (przycisk usuwania znika, gdy
@@ -196,8 +214,9 @@ Pole nazwy jest niskie i mieści jedną linię tekstu. W obu kreatorach działa 
 3. Gdy tekst nie mieści się nawet przy najmniejszych literach, w polu pojawia się pasek przewijania.
    Całą treść zobaczysz, przewijając pole kółkiem myszy, palcem albo strzałkami na klawiaturze.
 
-W `Zaawansowanym Kreatorze Postaci` zmniejszone litery zostają także po kliknięciu `Dodaj pola
-talentów` / `Usuń pola talentów` i po wczytaniu zapisanej postaci.
+W obu kreatorach litery dopasowują się także po wczytaniu zapisanej postaci. W `Zaawansowanym
+Kreatorze Postaci` zmniejszone litery zostają również po kliknięciu `Dodaj pola talentów` / `Usuń pola
+talentów`.
 
 ## Pozostałe PD i komunikaty błędów
 
@@ -214,12 +233,8 @@ Najważniejsze komunikaty:
 | Przekroczono dostępną pulę PD! | Wydano więcej punktów, niż jest dostępne w puli. |
 | Niezgodność z zasadą Drzewa Nauki (str. 26) | Któraś umiejętność ma wyższą wartość, niż pozwala zasada Drzewa Nauki (opis niżej). |
 
-Gdy oba problemy występują naraz, kreatory pokazują je różnie:
-
-- `Prosty Kreator Postaci` pokazuje wtedy tylko komunikat o przekroczonej puli PD. Komunikat Drzewa
-  Nauki pojawi się dopiero wtedy, gdy PD wrócą do normy — nawet jeśli w tym czasie nie zmieniasz
-  umiejętności.
-- `Zaawansowany Kreator Postaci` pokazuje oba komunikaty naraz, jeden pod drugim.
+Gdy oba problemy występują naraz, oba kreatory pokazują oba komunikaty, jeden pod drugim. Każdy
+komunikat znika od razu, gdy jego przyczyna zostanie usunięta.
 
 ## Drzewo Nauki
 
@@ -361,9 +376,9 @@ nachodziły na sąsiednie kolumny.
 | --- | --- | --- |
 | Pozostałe PD jest ujemne | Wydano za dużo PD. | Zmniejsz wartości albo zwiększ pulę PD. |
 | Błąd Drzewa Nauki | Najwyższa umiejętność ma wartość większą niż liczba umiejętności z co najmniej 1 punktem. | Dodaj po 1 punkcie w innych umiejętnościach albo obniż najwyższą umiejętność. |
-| Błąd Drzewa Nauki pojawił się po zmianie puli PD | W `Prostym Kreatorze` ten błąd jest ukryty, dopóki pula PD jest przekroczona. | Popraw umiejętności jak wyżej. |
 | Tekst w polu nazwy jest bardzo mały albo pojawił się pasek | Tekst nie mieścił się w polu, więc litery zostały zmniejszone. | To prawidłowe. Przewiń pole, żeby zobaczyć całość, albo skróć wpis. |
-| Pole wraca do wartości domyślnej | Wpis był pusty albo nieprawidłowy. | Wpisz liczbę z dozwolonego zakresu. |
+| Pole wróciło do wartości startowej | Pole zostało puste po kliknięciu poza nie. | Wpisz liczbę z dozwolonego zakresu. |
+| Wpisana liczba zmieniła się na inną | Była spoza zakresu albo ułamkowa (np. `13` → `12`, `-3` → `0`). | Wpisz liczbę z dozwolonego zakresu. |
 | Nie działa zapis | Firebase nie jest skonfigurowany albo jest niedostępny. | Zgłoś adminowi technicznemu. |
 | Nie działa wczytanie | Brak zapisanego dokumentu albo Firebase jest niedostępny. | Najpierw zapisz postać albo zgłoś adminowi. |
 | W narzędziach dla programistów widać „App Check pominięty" | Przeglądarka nie pobrała składnika Google służącego do potwierdzania aplikacji. | Nic nie trzeba robić, zapis i wczytanie działają. Jeżeli chcesz to usunąć, wyłącz na tej stronie dodatek blokujący reklamy. |
@@ -533,6 +548,8 @@ basic pool of a first-tier character. If your character has a different starting
 with a different pool, adjust the number in the XP pool field until the remaining XP shows the right
 value.
 
+If you delete the number in this field and click elsewhere, `155` comes back.
+
 If you spend more points than available, the module shows an XP overflow error.
 
 ## Attributes
@@ -550,9 +567,24 @@ Character creation includes attributes:
 
 Most attributes start at `1`.
 
-`Speed` starts at `6`.
+`Speed` starts at `6`. Speed can be raised with XP like the other attributes — the cost comes from the
+shared pool.
 
 Allowed attribute range is `1..12`.
+
+## How to type numbers
+
+Both creators handle number fields the same way:
+
+- You can select the number in a field and type the new one straight away.
+- You can also delete the number (e.g. with Backspace) and only then type the new one. The field then
+  stays empty until you type something — the creator does not insert anything while you type. For that
+  moment it counts the field as if it held its starting value.
+- If you leave the field empty and click elsewhere, the starting value comes back: pool `155`, Speed `6`,
+  other attributes `1`, skills and costs `0`.
+- A number out of range is corrected at once: an attribute above 12 becomes 12, a skill above 8 becomes
+  8, and a negative number becomes the lowest allowed value. The fractional part is cut off (`2.7` →
+  `2`). The field always shows what the creator counts.
 
 ## Skills
 
@@ -579,7 +611,8 @@ Each entry has:
 
 You can use this section not only for talents, but also for other manually added costs.
 
-The entered cost is added directly to spent XP.
+The entered cost is added directly to spent XP. A cost cannot be negative — an entry of `-3` turns into
+`0`.
 
 In the `Advanced Character Creator` the section starts with two fields. The `Dodaj pola talentów`
 button adds two more fields and `Usuń pola talentów` removes the last two (the remove button
@@ -594,8 +627,9 @@ The name field is low and holds one line of text. It works the same in both crea
 3. When the text does not fit even with the smallest letters, a scrollbar appears in the field. To see
    the whole entry, scroll the field with the mouse wheel, a finger or the arrow keys.
 
-In the `Advanced Character Creator` the shrunk letters also stay after clicking `Dodaj pola talentów` /
-`Usuń pola talentów` and after loading a saved character.
+In both creators the letters are also fitted after loading a saved character. In the `Advanced
+Character Creator` the shrunk letters also stay after clicking `Dodaj pola talentów` / `Usuń pola
+talentów`.
 
 ## Remaining XP and errors
 
@@ -612,11 +646,8 @@ Main messages:
 | `Przekroczono dostępną pulę PD!` (XP pool exceeded) | More points were spent than available. |
 | `Niezgodność z zasadą Drzewa Nauki (str. 26)` (Tree of Learning rule broken) | A skill has a higher rating than the Tree of Learning rule allows (see below). |
 
-When both problems happen at once, the creators show them differently:
-
-- the `Simple Character Creator` then shows only the XP pool message. The Tree of Learning message
-  appears once XP is back in range — even if you do not touch any skill in the meantime;
-- the `Advanced Character Creator` shows both messages at once, one below the other.
+When both problems happen at once, both creators show both messages, one below the other. Each message
+disappears as soon as its cause is removed.
 
 ## Tree of Learning
 
@@ -754,9 +785,9 @@ to run into the neighbouring columns.
 | --- | --- | --- |
 | Remaining XP is negative | Too much XP was spent. | Reduce values or increase XP pool. |
 | Tree of Learning error | The highest skill is rated above the number of skills with at least 1 point. | Add 1 point in other skills or lower the highest skill. |
-| Tree of Learning error appeared after changing the XP pool | In the `Simple Character Creator` this error stays hidden while the XP pool is exceeded. | Fix the skills as above. |
 | Text in the name field is very small or a scrollbar appeared | The text did not fit, so the letters were shrunk. | This is expected. Scroll the field to see everything, or shorten the entry. |
-| Field returns to default value | The entry was empty or invalid. | Enter a number in the allowed range. |
+| A field went back to its starting value | The field was left empty when you clicked elsewhere. | Enter a number in the allowed range. |
+| The typed number changed into another one | It was out of range or fractional (e.g. `13` → `12`, `-3` → `0`). | Enter a number in the allowed range. |
 | Save does not work | Firebase is not configured or unavailable. | Contact technical admin. |
 | Load does not work | No saved document exists or Firebase is unavailable. | Save character first or contact admin. |
 | Developer tools show "App Check skipped" | The browser did not download the Google component used to confirm the application. | Nothing to do, saving and loading work. To clear it, disable the ad blocker for this page. |

@@ -178,7 +178,7 @@ Consolas, Fira Code, Source Code Pro, monospace
 
 ### Kontener i tabele
 
-- główny kontener ma szerokość `min(1100px, 96vw)`;
+- główny kontener `.wrapper` ma szerokość `min(1100px, 100%)`, tak jak w Prostym Kreatorze: `100%` odnosi się do miejsca w `body` po odjęciu jego marginesu wewnętrznego, więc na wąskim telefonie kontener nie wchodzi w prawy margines strony (przy 320 px oba marginesy mają po 8 px);
 - tabele używają `table-layout: fixed` z reguły `.table`, z wyjątkiem tabeli umiejętności (opis niżej);
 - opakowanie `.table-wrap` zapewnia poziome przewijanie;
 - nagłówki są pisane wielkimi literami z rozstrzelonym tekstem;
@@ -211,9 +211,9 @@ opisany komentarzem `Sekcje „Umiejętności” i „Inne” w układzie Proste
 Zmierzone w Chromium (font zastępczy w miejscu Consolas) przy oknie 1280 px: kolumny tabeli umiejętności
 `421 / 119 / 394 / 119 px` w obu kreatorach, zrzut tabeli różni się od wzoru o 20 pikseli
 wygładzania krawędzi na 558 620. Przy szerokości do 760 px obie tabele mają minimum 520 px i takie same
-kolumny jak wzór (`166 / 95 / 163 / 95 px`). W przedziale 761–1145 px cała tabela jest do 14 px węższa
-niż we wzorze, bo kontener v2 ma `min(1100px, 96vw)`, a wzór `min(1100px, 100%)`; proporcje kolumn
-pozostają takie same.
+kolumny jak wzór (`166 / 95 / 163 / 95 px`). Dzięki tej samej szerokości kontenera tabela umiejętności
+ma identyczną szerokość i kolumny jak we wzorze przy każdej badanej szerokości okna (320, 360, 400, 760,
+800, 1000 i 1280 px).
 
 Pozostałe pola `textarea` strony (dane postaci i zasady specjalne w modalu `characterRulesModal`) mają
 54 px wysokości z reguły `#characterRulesModal textarea` i nie zmieniają fontu podczas pisania.
@@ -273,6 +273,8 @@ Modal ma maksymalną wysokość `88vh` i własne przewijanie.
 | `escapeHtml(value)` | Escapuje dane umieszczane w dynamicznym HTML. |
 | `optionHtml(items,current)` | Generuje opcje elementu `select`. |
 | `formatSigned(value)` | Dodaje znak `+` wyłącznie do wartości dodatnich. Zero pozostaje `0`, wartości ujemne zachowują `-`. |
+| `defaultFieldValue(id)` | Wartość domyślna pola liczbowego związanego z PD: `xpPool` → `155` (`DEFAULT_XP_POOL`), `attr_Speed` → `6`, pozostałe `attr_*` → `1`, `skill_*` i `talent_cost_*` → `0`; inne pola → `null`. |
+| `readNumberInput(input,fallback,min,max)` | Odczyt pola liczbowego bez przeszkadzania w pisaniu — opis w rozdziale „Obliczanie PD”. |
 
 ## Atrybuty
 
@@ -379,7 +381,7 @@ Zasady renderowania:
 - każdy koszt jest dodawany do wydanych PD;
 - puste nazwy nadal mogą mieć koszt i taki koszt będzie uwzględniony;
 - do PDF trafiają tylko niepuste nazwy;
-- pole kosztu nie jest przepisywane po przeliczeniu: wpis `-3` pozostaje widoczny w polu, ale do PD trafia `0`, a wpis `2.7` — `2` (`Math.max(0, toInt(...))`).
+- pole kosztu jest poprawiane przy przeliczeniu (`readNumberInput`): wpis `-3` zmienia się na `0`, a `2.7` na `2`, więc pole pokazuje to, co trafia do PD; puste pole po opuszczeniu dostaje `0`.
 
 ### Pole nazwy i dopasowanie fontu
 
@@ -613,7 +615,40 @@ Pozostałe PD:
 Pula PD - wydane PD
 ```
 
-Wartość `xpPool` podczas obliczeń jest parsowana jako liczba całkowita. W zapisie stanu jest dodatkowo ograniczana do minimum `0`.
+Wartość `xpPool` podczas obliczeń jest parsowana jako liczba całkowita (puste pole = `155`), bez
+ograniczania i bez przepisywania pola. W zapisie stanu jest dodatkowo ograniczana do minimum `0`.
+
+### Odczyt pól liczbowych
+
+Atrybuty, umiejętności i koszty talentów są odczytywane przez `readNumberInput` — tak samo jak
+`readNumberField` w Prostym Kreatorze:
+
+```js
+function readNumberInput(input,fallback,min,max) {
+  if(!input||input.value==='')return fallback;
+  const parsed=parseInt(input.value,10);
+  if(!Number.isFinite(parsed))return fallback;
+  const value=clamp(parsed,min,max);
+  if(input.value!==String(value))input.value=value;
+  return value;
+}
+```
+
+- **puste pole** (np. tuż po skasowaniu liczby klawiszem Backspace) liczy się jako wartość domyślna z
+  `defaultFieldValue`, ale **nie jest nadpisywane** — wpisywana cyfra nie dokleja się do wstawionej wartości
+  (Backspace i „3” w polu atrybutu dają 3);
+- **liczba spoza zakresu albo ułamek** są poprawiane w polu od razu (`13` → `12`, koszt `-3` → `0`,
+  `2.7` → `2`), więc pole zawsze pokazuje to, co trafia do PD;
+- **opuszczenie pustego pola** (zdarzenie `focusout`) wpisuje wartość domyślną — opis w rozdziale
+  „Przeliczanie reaktywne”.
+
+| Pole | Zakres | Wartość domyślna |
+| --- | --- | --- |
+| `xpPool` | bez ograniczeń, bez przepisywania | `155` |
+| `attr_Speed` | `1–12` | `6` |
+| pozostałe `attr_*` | `1–12` | `1` |
+| `skill_*` | `0–8` | `0` |
+| `talent_cost_*` | od `0` w górę | `0` |
 
 ### Błąd przekroczenia puli
 
@@ -672,8 +707,7 @@ Komunikat jest liczony od nowa przy każdym przeliczeniu, więc pojawia się prz
 najwyższej, wczytanie zapisu).
 
 Oba błędy — przekroczenie PD i Drzewo Nauki — mogą być wyświetlone jednocześnie, w oddzielnych wierszach.
-To jedyna różnica względem Prostego Kreatora, który przy przekroczonej puli pokazuje wyłącznie błąd PD,
-a błąd Drzewa Nauki dopiero po powrocie PD do normy.
+Prosty Kreator pokazuje je tak samo.
 
 ## Przeliczanie reaktywne
 
@@ -687,6 +721,14 @@ Globalne nasłuchiwanie `change`:
 - aktualizuje placeholder po zmianie `rule_type_*`;
 - aktywuje lub wyłącza wartość po zmianie `rule_target_*`;
 - uruchamia ponowne przeliczenie.
+
+Globalne nasłuchiwanie `focusout` (odpowiednik `attachDefaultOnBlur` z Prostego Kreatora):
+
+- działa tylko dla pustych pól `input[type="number"]`, dla których `defaultFieldValue(id)` zwraca liczbę
+  (pula, atrybuty, umiejętności, koszty talentów);
+- wpisuje do pola wartość domyślną i uruchamia `recalcXP()`;
+- `focusout` zachodzi także przed kliknięciem przycisku, więc zapis i eksport nigdy nie dostają pustego
+  pola. Pola modalu `Cechy i zasady specjalne` nie są uzupełniane.
 
 Każde przeliczenie aktualizuje:
 
@@ -1178,6 +1220,9 @@ Bez sieci:
 | Drzewo Nauki — naprawa | Ustaw Analizę 4, potem kolejno Atletykę, Czujność i Dowodzenie na 1. | Błąd jest widoczny do Czujności włącznie i znika po ustawieniu Dowodzenia. |
 | Drzewo Nauki — przykład z podręcznika | Atletyka 4, Umiejętności strzeleckie 4, Czujność 1, Ukrywanie się 1. | Brak błędu; Umiejętności strzeleckie 5 wywołują błąd. |
 | Oba błędy naraz | Przekrocz pulę PD i złam Drzewo Nauki. | Widoczne są dwa komunikaty w osobnych wierszach. |
+| Edycja z klawiatury | W polu atrybutu zaznacz liczbę, naciśnij Backspace i wpisz `3`. | Pole pokazuje `3`, a nie `12`. |
+| Puste pole | Skasuj liczbę w polu Szybkości i kliknij poza pole. | Wraca `6`; w polu puli wraca `155`, w polu atrybutu `1`, umiejętności i kosztu `0`. |
+| Koszt ujemny | Wpisz koszt talentu `-3`. | Pole pokazuje `0`, pozostałe PD bez zmian. |
 | Pole nazwy w „Inne” | Wpisz długi tekst w polu nazwy. | Font maleje od 16 px do 10 px, potem pojawia się pasek przewijania. |
 | Font po dodaniu wierszy | Wpisz długi tekst i kliknij `Dodaj pola talentów`. | Tekst zachowuje zmniejszony font; nowe pola są puste. |
 | Wygląd jak we wzorze | Porównaj sekcje `Umiejętności` i `Inne` z Prostym Kreatorem przy oknie 1280 px. | Kolumny umiejętności i wysokość pól nazw są takie same. |
@@ -1316,6 +1361,8 @@ Firebase and PDF depend on this object.
 
 Remaining XP equals the XP pool minus all attribute costs, all skill costs and all manual talent costs. Special rules have no XP cost.
 
+Number fields are read by `readNumberInput(input,fallback,min,max)`, the same way as `readNumberField` in the Simple Creator: an empty field (e.g. right after Backspace) counts as its default from `defaultFieldValue(id)` (pool `155`, Speed `6`, other attributes `1`, skills and talent costs `0`) but is not overwritten, so a typed digit is not appended to an inserted value; a number out of range or a fraction is corrected in the field at once (`13` → `12`, cost `-3` → `0`, `2.7` → `2`). A `focusout` listener writes the default value into an empty pool, attribute, skill or talent-cost field when it is left.
+
 ## Learning Tree validation
 
 Rulebook rule (p. 26): to raise a Skill to a new rating, the character must first have a total number of
@@ -1340,8 +1387,8 @@ skills rated `0–8`).
 
 Failure displays the Polish learning-tree error. The message is recomputed on every recalculation, so it
 appears on the first change breaking the rule and disappears on the first change restoring it. A negative
-remaining XP displays a separate error; both can be shown at once, on separate lines. The Simple Creator
-instead shows only the XP error while the pool is exceeded.
+remaining XP displays a separate error; both can be shown at once, on separate lines, exactly as in the
+Simple Creator.
 
 ## Skill totals
 
@@ -1523,7 +1570,7 @@ The Skills and "Other" sections follow the Simple Creator (`TworzeniePostaci.htm
 - `.talents-table textarea` is 46px tall and uses `revert` for `font-size`, `line-height`, `word-break` and `overflow-wrap`, returning to the browser defaults the model relies on;
 - `adjustTalentFontSize(element)` (a copy of the model's function) runs on `input` in `textarea.talent-name` and after every `renderTalents()` for non-empty fields: the font starts at 16px and shrinks by 1px down to 10px while the text overflows; beyond that the field scrolls.
 
-Measured in Chromium at a 1280px window, the skills columns are `421 / 119 / 394 / 119 px` in both creators. Between 761px and 1145px the whole table is up to 14px narrower than in the model because the v2 container is `min(1100px, 96vw)` while the model uses `min(1100px, 100%)`; column proportions stay the same.
+The page container `.wrapper` is `min(1100px, 100%)`, the same as in the model, so the skills table has identical width and columns at every measured window width (320–1280px; e.g. `421 / 119 / 394 / 119 px` at 1280px) and the container keeps symmetric 8px margins on a 320px phone.
 
 The `languageSelect` element carries the `language-switcher--hidden` class
 (`display:none!important`), so the selector is hidden; removing that class from
@@ -1562,3 +1609,4 @@ After changing the module, verify:
 9. modal closing by button, overlay and Escape;
 10. responsive horizontal scrolling;
 11. the Skills and "Other" sections side by side with the Simple Creator: skills column widths, 46px name fields, font shrinking from 16px to 10px and scrolling, font kept after adding rows or loading a save.
+12. number-field editing: Backspace then a digit keeps the typed digit; leaving an empty field restores its default (pool 155, Speed 6, attribute 1, skill and cost 0).

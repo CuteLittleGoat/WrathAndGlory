@@ -139,7 +139,7 @@ Jeżeli dokument istnieje, jego dane są przekazywane do `applySavedState(...)`.
 | `xpSpent` | `number` | tak | Wydane PD, obliczone jako `xpTotal - xpAvailable`. |
 | `xpAvailable` | `number` | tak | Pozostałe PD z pola `xpRemaining`. |
 | `hasValidationErrors` | `boolean` | tak | Czy aktualnie widoczny jest komunikat błędu. |
-| `validationMessages` | `array<string>` | tak | Lista komunikatów walidacji. Pusta, jeżeli nie ma błędu. |
+| `validationMessages` | `array<string>` | tak | Lista widocznych komunikatów walidacji, każdy jako osobna pozycja: najwyżej dwa naraz (przekroczenie puli PD i Drzewo Nauki). Pusta, jeżeli nie ma błędu. |
 | `attributes` | `map` | tak | Mapa atrybutów postaci. |
 | `skills` | `map` | tak | Mapa umiejętności. |
 | `talents` | `array<object>` | tak | Lista 20 wpisów talentów/innych kosztów. |
@@ -530,7 +530,7 @@ If the document exists, its data is passed to `applySavedState(...)`.
 | `xpSpent` | `number` | yes | Spent XP, calculated as `xpTotal - xpAvailable`. |
 | `xpAvailable` | `number` | yes | Remaining XP from `xpRemaining`. |
 | `hasValidationErrors` | `boolean` | yes | Whether an error message is currently visible. |
-| `validationMessages` | `array<string>` | yes | Validation message list. Empty when there is no error. |
+| `validationMessages` | `array<string>` | yes | List of the visible validation messages, each as a separate entry: at most two at once (exceeded XP pool and Tree of Learning). Empty when there is no error. |
 | `attributes` | `map` | yes | Character attributes map. |
 | `skills` | `map` | yes | Skills map. |
 | `talents` | `array<object>` | yes | List of 20 talent/other cost entries. |

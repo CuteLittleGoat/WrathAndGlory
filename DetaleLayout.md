@@ -682,11 +682,12 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
   - Telefon (`max-width: 760px`): tabele mają `min-width` — atrybuty 560 px, umiejętności i „Inne”
     po 520 px — i przewijają się w bok wewnątrz `.table-wrap`.
 - `TworzeniePostaci_v2.html` — sekcje „Umiejętności” i „Inne” wyglądają jak w `TworzeniePostaci.html`:
-  - `.wrapper`: `min(1100px, 96vw)`; `.table`: `table-layout: fixed`, komórki wyśrodkowane.
+  - `.wrapper`: `min(1100px, 100%)` — jak we wzorze; przy 320 px oba marginesy kontenera mają po 8 px.
+    `.table`: `table-layout: fixed`, komórki wyśrodkowane.
   - `.skills-table`: `table-layout: auto` — te same szerokości kolumn co wzór (przy 1280 px
     `421 / 119 / 394 / 119 px`, zrzut tabeli różni się od wzoru o 20 pikseli wygładzania krawędzi),
-    nazwy wyśrodkowane, długie nazwy w jednym wierszu. W przedziale 761–1145 px cała tabela jest do
-    14 px węższa niż we wzorze przez inną szerokość `.wrapper`; proporcje kolumn są takie same.
+    nazwy wyśrodkowane, długie nazwy w jednym wierszu. Dzięki tej samej szerokości `.wrapper` tabela ma
+    identyczną szerokość i kolumny jak wzór przy każdej szerokości okna (sprawdzone 320–1280 px).
   - `.talents-table`: zostaje przy `table-layout: fixed` (cztery kolumny po 25%, przy 1280 px
     `263 px`), co odpowiada szerokościom wzoru przy pustych polach (±4 px) i nie zmienia się podczas
     pisania.
@@ -707,7 +708,9 @@ Wspólny styl bazowy pochodzi z `kalkulatorxp.css`, a dodatkowe style inline są
 - Brak clampowania treści w module Kalkulator.
 
 ### 5) Wyjątki i formatowanie specjalne
-- `.error-message` w `TworzeniePostaci.html` używa koloru `var(--red)`.
+- `.error-message` w obu kreatorach używa koloru `var(--red)`. Gdy pula PD jest przekroczona i jednocześnie
+  złamane jest Drzewo Nauki, obszar ma dwa wiersze (najpierw PD, potem Drzewo Nauki) — w Prostym Kreatorze
+  przez `<br>` z `innerText`, w Zaawansowanym przez `white-space: pre-line`.
 - **Podpis autora w stopce obu kreatorów to celowy easter egg.** Reguła `.footer`
   w `Kalkulator/TworzeniePostaci.html` i `Kalkulator/TworzeniePostaci_v2.html` ma
   `font-size: 1px`, `line-height: 1` oraz `-webkit-text-size-adjust: none` i `text-size-adjust: none`.

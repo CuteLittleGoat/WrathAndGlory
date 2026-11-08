@@ -197,7 +197,7 @@ Pola atrybutów:
 | `attr_Ogd` | Ogd | Fell | `1` | `1..12` |
 | `attr_Speed` | Szybkość | Speed | `6` | `1..12` |
 
-`recalcXP()` ogranicza atrybuty do zakresu `1..12`, oblicza koszt według `attributeCosts` i dodaje klasę `attribute-high`, gdy wartość jest większa niż `8`.
+`recalcXP()` odczytuje atrybuty przez `readNumberField(...)` (zakres `1..12`, puste pole liczone jako `1`, a Szybkość jako `6`), oblicza koszt według `attributeCosts` i dodaje klasę `attribute-high`, gdy wartość jest większa niż `8`. Szybkość ma koszt jak każdy atrybut, bo gracz może ją podnosić za PD ze wspólnej puli.
 
 ## Umiejętności w `TworzeniePostaci.html`
 
@@ -260,7 +260,10 @@ function adjustTalentFontSize(el) {
 
 Funkcja ustawia font 16 px i zmniejsza go co 1 px, dopóki tekst wystaje poza pole, ale nie schodzi
 poniżej 10 px. Gdy tekst nie mieści się nawet przy 10 px, pole pokazuje pionowy pasek i przewija się.
-Funkcja nie jest wywoływana po wczytaniu zapisu, więc wczytany tekst ma font, jaki pole miało wcześniej.
+
+Po wczytaniu zapisu `applySavedState(data)` najpierw usuwa ręcznie ustawiony font ze wszystkich pól
+nazw (`style.fontSize = ''`), a potem wywołuje `adjustTalentFontSize` dla pól z tekstem — wynik jest
+taki, jakby użytkownik wpisał wczytane nazwy na świeżej stronie. Puste pola mają font przeglądarki.
 
 Tabela talentów ma układ automatyczny, a szerokość pola `textarea` wynikająca z fontu wpływa na
 szerokość kolumny. Dopóki tekst ma 16 px, jego kolumna jest szersza (przy oknie 1280 px w Chromium:
@@ -270,18 +273,53 @@ Zaawansowany kreator używa kopii tej funkcji i tej samej wysokości pola — op
 
 ## Obliczanie PD w `TworzeniePostaci.html`
 
+### Wartości domyślne i odczyt pól liczbowych
+
+```js
+const DEFAULT_XP_POOL = 155;
+const DEFAULT_SPEED = 6;
+const DEFAULT_ATTRIBUTE = 1;
+
+function readNumberField(input, fallback, min, max) {
+  if (input.value === '') return fallback;
+  const parsed = parseInt(input.value, 10);
+  if (Number.isNaN(parsed)) return fallback;
+  const value = Math.min(Math.max(parsed, min), max);
+  if (input.value !== String(value)) input.value = value;
+  return value;
+}
+```
+
+`readNumberField` odczytuje atrybuty, umiejętności i koszty talentów:
+
+- **puste pole** (np. tuż po skasowaniu liczby klawiszem Backspace) liczy się jako wartość domyślna, ale
+  **nie jest nadpisywane** — dzięki temu wpisywana cyfra nie dokleja się do wstawionej wartości
+  (Backspace i „3” w polu atrybutu dają 3);
+- **liczba spoza zakresu albo ułamek** są poprawiane w polu od razu (`13` → `12`, `-3` → `0` / `1`,
+  `2.7` → `2`), więc pole zawsze pokazuje to, co trafia do PD;
+- **opuszczenie pustego pola** wpisuje wartość domyślną (`attachDefaultOnBlur`, opis niżej).
+
+| Pole | Zakres | Wartość domyślna |
+| --- | --- | --- |
+| `xpPool` | bez ograniczeń, bez przepisywania | `155` |
+| `attr_Speed` | `1..12` | `6` |
+| pozostałe `attr_*` | `1..12` | `1` |
+| `skill_Column*` | `0..8` | `0` |
+| `talent_cost_*` | od `0` w górę | `0` |
+
+### Kolejność obliczeń
+
 `recalcXP()` wykonuje:
 
-1. Odczyt `xpPool`.
-2. Ograniczenie atrybutów do `1..12`.
-3. Dodanie kosztu każdego atrybutu według `attributeCosts`.
-4. Ograniczenie umiejętności do `0..8`.
-5. Dodanie kosztu każdej umiejętności według `skillCosts`.
-6. Ograniczenie kosztów talentów do wartości nieujemnych.
-7. Dodanie kosztów talentów bezpośrednio.
-8. Obliczenie `xpRemaining = xpPool - xpSpent`.
-9. Aktualizację pola `xpRemaining`.
-10. Pokazanie błędu przekroczenia puli albo sprawdzenie Drzewa Nauki.
+1. Odczyt `xpPool` (puste pole = `155`, liczba ucinana przez `parseInt`, bez przepisywania pola).
+2. Odczyt atrybutów przez `readNumberField` i dodanie kosztu każdego według `attributeCosts`.
+3. Odczyt umiejętności przez `readNumberField` i dodanie kosztu każdej według `skillCosts`.
+4. Odczyt kosztów talentów przez `readNumberField` i dodanie ich bezpośrednio.
+5. Obliczenie `xpRemaining = xpPool - xpSpent` i aktualizację pola `xpRemaining`.
+6. Zebranie błędów: przekroczenie puli (`xpRemaining < 0`) i Drzewo Nauki (`!checkSkillTree()`), niezależnie
+   od siebie.
+7. `displayError(errors.join('\n'))` — oba komunikaty mogą być widoczne naraz, każdy w osobnym wierszu
+   (`innerText` zamienia znak nowej linii na `<br>`); pusta lista czyści obszar komunikatów.
 
 ## Drzewo Nauki
 
@@ -289,14 +327,15 @@ Zasada z podręcznika (str. 26): żeby podnieść Umiejętność do nowej warto�
 posiadać łączną liczbę Umiejętności równą tej nowej wartości — Atletyka 4 wymaga punktów w co najmniej
 trzech innych Umiejętnościach.
 
-`checkSkillTree()` sprawdza tę zasadę dla stanu końcowego arkusza.
+`checkSkillTree()` sprawdza tę zasadę dla stanu końcowego arkusza i zwraca `true` (układ poprawny) albo
+`false`. Komunikat pokazuje `recalcXP()`.
 
 Logika:
 
-1. Zlicza aktywne umiejętności, czyli takie z wartością większą od `0` (wliczając najwyższą).
+1. Zlicza aktywne umiejętności, czyli takie z wartością większą od `0` (wliczając najwyższą; puste pole liczy się jako `0`).
 2. Dla każdej umiejętności sprawdza, czy jej poziom jest większy niż `1`.
-3. Jeżeli poziom jest większy niż `1`, a liczba aktywnych umiejętności jest mniejsza niż ten poziom, zasada jest naruszona.
-4. Błąd Drzewa Nauki jest pokazywany tylko wtedy, gdy pula PD nie jest przekroczona. Przy przekroczonej puli widoczny jest wyłącznie błąd PD, a błąd Drzewa Nauki pojawia się dopiero po powrocie PD do normy.
+3. Jeżeli poziom jest większy niż `1`, a liczba aktywnych umiejętności jest mniejsza niż ten poziom, funkcja zwraca `false`.
+4. Wynik nie zależy od puli PD: przy przekroczonej puli i złamanym Drzewie Nauki widoczne są oba komunikaty.
 
 Sprawdzanie stanu końcowego jest równoważne zasadzie zakupu: układ spełniający warunek da się kupić
 (najpierw wszystkie umiejętności na 1, potem podnoszenie), a układu, który go nie spełnia, nie da się
@@ -308,17 +347,20 @@ zmianie, która ją przywraca.
 
 ## Zgodność obu kreatorów — PD i Drzewo Nauki
 
-Zaawansowany kreator (`TworzeniePostaci_v2-core.js`) stosuje te same tabele kosztów i tę samą regułę
-Drzewa Nauki (`isLearningTreeValid`). Test różnicowy 3000 losowych postaci wpisanych do obu kreatorów
-dał identyczne pozostałe PD i identyczną ocenę Drzewa Nauki. Różnice dotyczą wyłącznie obsługi
-nietypowych wpisów i sposobu pokazywania błędów:
+Zaawansowany kreator (`TworzeniePostaci_v2-core.js`) liczy PD i pokazuje komunikaty dokładnie tak samo:
 
-| Sytuacja | Prosty Kreator | Zaawansowany Kreator |
+| Element | Prosty Kreator | Zaawansowany Kreator |
 | --- | --- | --- |
-| Przekroczona pula PD i złamane Drzewo Nauki | tylko błąd PD | oba błędy, w osobnych wierszach |
-| Puste pole `Szybkość` | wartość `1`, koszt `0` | wartość `6`, koszt `55` |
-| Koszt talentu `-3`, `2.7` | pole przepisane na `0`, `2` | pole bez zmian, do PD trafia `0`, `2` |
-| Puste pole puli PD po opuszczeniu | wraca do `155` | zostaje puste, pula `0` |
+| Tabele kosztów | `attributeCosts`, `skillCosts` | `ATTRIBUTE_COSTS`, `SKILL_COSTS` (te same wartości) |
+| Drzewo Nauki | `checkSkillTree()` | `isLearningTreeValid()` (ta sama reguła) |
+| Odczyt pól liczbowych | `readNumberField()` | `readNumberInput()` (te same zasady) |
+| Wartości domyślne pustych pól | `DEFAULT_XP_POOL`, `DEFAULT_SPEED`, `DEFAULT_ATTRIBUTE`, `attachDefaultOnBlur` | `DEFAULT_XP_POOL`, `defaultFieldValue()`, nasłuch `focusout` |
+| Dwa błędy naraz | oba komunikaty, w osobnych wierszach | oba komunikaty, w osobnych wierszach |
+
+Sprawdzone w przeglądarce: 3000 losowych postaci wpisanych do obu kreatorów dało identyczne pozostałe PD
+i identyczną treść komunikatów, a nietypowe wpisy (puste pole, `0`, `-3`, `2.7`, `13`, `1e1` w polach
+puli, atrybutu, Szybkości, umiejętności i kosztu) oraz edycja z klawiatury dają w obu ten sam wynik.
+Jedyny wspólny wyjątek: zapis wykładniczy `1e1` (= 10) jest czytany przez `parseInt` jako `1`.
 
 ## Reset i domyślne wartości
 
@@ -331,7 +373,17 @@ nietypowych wpisów i sposobu pokazywania błędów:
 - wszystkie nazwy talentów na pusty tekst,
 - wszystkie koszty talentów na `0`.
 
-`attachDefaultOnBlur(...)` przywraca wartości domyślne po utracie fokusu, jeżeli pole jest puste albo nie jest liczbą.
+`attachDefaultOnBlur(selector, defaultValue)` przywraca wartość domyślną po utracie fokusu, jeżeli pole jest puste albo nie jest liczbą:
+
+```js
+attachDefaultOnBlur('#xpPool', DEFAULT_XP_POOL);
+attachDefaultOnBlur("input[id^='attr_']:not(#attr_Speed)", DEFAULT_ATTRIBUTE);
+attachDefaultOnBlur('#attr_Speed', DEFAULT_SPEED);
+attachDefaultOnBlur("input[id^='skill_Column']", 0);
+attachDefaultOnBlur("input[id^='talent_cost_']", 0);
+```
+
+Szybkość ma osobne wywołanie, bo jej wartością domyślną jest `6`, a nie `1`.
 
 ## Zmiana języka
 
@@ -533,13 +585,13 @@ Szczegółowy model Firebase jest opisany w `Kalkulator/config/FirebaseREADME.md
 | `xpSpent` | `number` | Wydane PD. |
 | `xpAvailable` | `number` | Pozostałe PD. |
 | `hasValidationErrors` | `boolean` | Czy widoczny jest błąd walidacji. |
-| `validationMessages` | `array<string>` | Lista komunikatów walidacji. |
+| `validationMessages` | `array<string>` | Lista widocznych komunikatów walidacji, każdy jako osobna pozycja — najwyżej dwa naraz (przekroczenie puli PD i Drzewo Nauki). |
 | `attributes` | `object` | Wartości atrybutów. |
 | `skills` | `object` | Wartości umiejętności. |
 | `talents` | `array<object>` | 20 wpisów talentów. |
 | `formSnapshot` | `object` | Snapshot wszystkich `input`, `textarea` i `select` z ID. |
 
-Przy wczytywaniu `applySavedState(data)` odtwarza wartości z `formSnapshot`, ustawia język z `data.lang`, jeżeli jest obsługiwany, i uruchamia `recalcXP()`.
+Przy wczytywaniu `applySavedState(data)` odtwarza wartości z `formSnapshot`, ustawia język z `data.lang`, jeżeli jest obsługiwany, dopasowuje font pól nazw w sekcji „Inne” i uruchamia `recalcXP()`.
 
 ## i18n
 
@@ -558,15 +610,18 @@ W obu widokach `languageSelect` jest ukryty klasą `language-switcher--hidden` i
 
 | Sytuacja | Zachowanie |
 | --- | --- |
+| Puste pole w trakcie pisania | Nie jest nadpisywane; do obliczeń trafia wartość domyślna (pula `155`, Szybkość `6`, atrybut `1`, umiejętność i koszt `0`). |
 | Puste lub błędne pole `xpPool` | Po blur wraca do `155`. |
-| Puste lub błędne pole atrybutu | Po blur wraca do `1`. |
+| Puste lub błędne pole Szybkości | Po blur wraca do `6`. |
+| Puste lub błędne pole pozostałych atrybutów | Po blur wraca do `1`. |
 | Puste lub błędne pole umiejętności | Po blur wraca do `0`. |
 | Puste lub błędne pole kosztu talentu | Po blur wraca do `0`. |
 | Atrybut poza zakresem | `recalcXP()` ogranicza do `1..12`. |
 | Umiejętność poza zakresem | `recalcXP()` ogranicza do `0..8`. |
 | Koszt talentu poniżej zera | `recalcXP()` ustawia `0`. |
+| Ułamek w atrybucie, umiejętności lub koszcie | `recalcXP()` ucina do liczby całkowitej i przepisuje pole. |
 | Wydane PD przekracza pulę | Pokazywany jest błąd `tooMuchXP`. |
-| Naruszone Drzewo Nauki | Pokazywany jest błąd `treeOfLearning`, o ile pula PD nie jest przekroczona. |
+| Naruszone Drzewo Nauki | Pokazywany jest błąd `treeOfLearning` — także razem z błędem `tooMuchXP`, w osobnym wierszu. |
 | Brak Firebase | Zapis i wczytanie pokazują błąd w modalu. |
 | Brak dokumentu Firestore | Wczytanie pokazuje błąd w modalu. |
 
@@ -593,6 +648,9 @@ W obu widokach `languageSelect` jest ukryty klasą `language-switcher--hidden` i
 | Tworzenie postaci — PD | Zmień atrybuty, umiejętności i talenty. | `xpRemaining` przelicza się automatycznie. |
 | Przekroczenie PD | Wydaj więcej PD niż pula. | Pojawia się błąd przekroczenia puli. |
 | Drzewo Nauki | Ustaw niezgodne poziomy umiejętności. | Pojawia się błąd Drzewa Nauki. |
+| Oba błędy naraz | Przekrocz pulę PD i złam Drzewo Nauki. | Widoczne są oba komunikaty, jeden pod drugim. |
+| Edycja z klawiatury | W polu atrybutu zaznacz liczbę, naciśnij Backspace i wpisz `3`. | Pole pokazuje `3`; po opuszczeniu pustego pola wraca wartość domyślna (Szybkość `6`). |
+| Font po wczytaniu | Wczytaj zapis z długą nazwą w sekcji „Inne”. | Font nazwy jest zmniejszony jak po wpisaniu; puste pola mają font przeglądarki. |
 | Modal maksimów | Kliknij `Maksymalne wartości atrybutów`. | Otwiera się tabela maksimów rasowych z przypisem Vespidów. |
 | Instrukcja | Kliknij `Instrukcja` / `Manual`. | Otwiera się PDF dla aktualnego języka. |
 | Język arkusza | Otwórz `TworzeniePostaci.html`. | Arkusz używa domyślnego języka; rozwijane menu zmiany języka nie jest widoczne dla użytkownika. |
@@ -800,7 +858,7 @@ Attribute fields:
 | `attr_Ogd` | Ogd | Fell | `1` | `1..12` |
 | `attr_Speed` | Szybkość | Speed | `6` | `1..12` |
 
-`recalcXP()` clamps attributes to `1..12`, calculates cost using `attributeCosts`, and adds class `attribute-high` when value is greater than `8`.
+`recalcXP()` reads attributes through `readNumberField(...)` (range `1..12`, an empty field counted as `1`, and Speed as `6`), calculates cost using `attributeCosts`, and adds class `attribute-high` when value is greater than `8`. Speed costs XP like any attribute, because the player can raise it with XP from the shared pool.
 
 ## Skills in `TworzeniePostaci.html`
 
@@ -862,8 +920,11 @@ function adjustTalentFontSize(el) {
 ```
 
 The function sets a 16px font and shrinks it by 1px while the text overflows the field, never below
-10px. When the text does not fit even at 10px, the field shows a vertical scrollbar and scrolls. The
-function is not called after loading a save, so loaded text keeps whatever font the field had before.
+10px. When the text does not fit even at 10px, the field shows a vertical scrollbar and scrolls.
+
+After loading a save, `applySavedState(data)` first removes the manually set font from every name field
+(`style.fontSize = ''`) and then calls `adjustTalentFontSize` for the fields holding text — the result
+is as if the user had typed the loaded names on a fresh page. Empty fields keep the browser font.
 
 The talents table uses the automatic layout, and the field width that follows from its font affects the
 column width. While the text is at 16px its column is wider (at a 1280px window in Chromium:
@@ -873,32 +934,68 @@ The advanced creator uses a copy of this function and the same field height — 
 
 ## XP calculation in `TworzeniePostaci.html`
 
+### Default values and reading number fields
+
+```js
+const DEFAULT_XP_POOL = 155;
+const DEFAULT_SPEED = 6;
+const DEFAULT_ATTRIBUTE = 1;
+
+function readNumberField(input, fallback, min, max) {
+  if (input.value === '') return fallback;
+  const parsed = parseInt(input.value, 10);
+  if (Number.isNaN(parsed)) return fallback;
+  const value = Math.min(Math.max(parsed, min), max);
+  if (input.value !== String(value)) input.value = value;
+  return value;
+}
+```
+
+`readNumberField` reads attributes, skills and talent costs:
+
+- an **empty field** (e.g. right after deleting the number with Backspace) counts as its default value but
+  is **not overwritten** — so a typed digit is not appended to an inserted value (Backspace and "3" in an
+  attribute field give 3);
+- a **number out of range or a fraction** is corrected in the field at once (`13` → `12`, `-3` → `0` / `1`,
+  `2.7` → `2`), so the field always shows what goes into XP;
+- **leaving an empty field** writes the default value (`attachDefaultOnBlur`, see below).
+
+| Field | Range | Default value |
+| --- | --- | --- |
+| `xpPool` | unlimited, not rewritten | `155` |
+| `attr_Speed` | `1..12` | `6` |
+| other `attr_*` | `1..12` | `1` |
+| `skill_Column*` | `0..8` | `0` |
+| `talent_cost_*` | `0` and up | `0` |
+
+### Calculation order
+
 `recalcXP()` performs:
 
-1. Reads `xpPool`.
-2. Clamps attributes to `1..12`.
-3. Adds each attribute cost using `attributeCosts`.
-4. Clamps skills to `0..8`.
-5. Adds each skill cost using `skillCosts`.
-6. Clamps talent costs to non-negative values.
-7. Adds talent costs directly.
-8. Calculates `xpRemaining = xpPool - xpSpent`.
-9. Updates `xpRemaining` field.
-10. Shows XP overflow error or checks Tree of Learning.
+1. Reads `xpPool` (empty field = `155`, number truncated by `parseInt`, field not rewritten).
+2. Reads attributes through `readNumberField` and adds each cost using `attributeCosts`.
+3. Reads skills through `readNumberField` and adds each cost using `skillCosts`.
+4. Reads talent costs through `readNumberField` and adds them directly.
+5. Calculates `xpRemaining = xpPool - xpSpent` and updates the `xpRemaining` field.
+6. Collects errors: exceeded pool (`xpRemaining < 0`) and Tree of Learning (`!checkSkillTree()`), independently
+   of each other.
+7. `displayError(errors.join('\n'))` — both messages can be visible at once, each on its own line
+   (`innerText` turns the newline into `<br>`); an empty list clears the message area.
 
 ## Tree of Learning
 
 Rulebook rule (p. 26): to raise a Skill to a new rating, the character must first have a total number of
 Skills equal to that new rating — Athletics 4 requires points in at least three other Skills.
 
-`checkSkillTree()` checks this rule against the final state of the sheet.
+`checkSkillTree()` checks this rule against the final state of the sheet and returns `true` (valid layout)
+or `false`. `recalcXP()` shows the message.
 
 Logic:
 
-1. Counts active skills, meaning skills with value greater than `0` (including the highest one).
+1. Counts active skills, meaning skills with value greater than `0` (including the highest one; an empty field counts as `0`).
 2. Checks each skill with level greater than `1`.
-3. If level is greater than `1` and the number of active skills is smaller than that level, the rule is broken.
-4. Tree of Learning error is shown only when XP pool is not exceeded. While the pool is exceeded, only the XP error is visible, and the Tree of Learning error appears once XP is back in range.
+3. If level is greater than `1` and the number of active skills is smaller than that level, the function returns `false`.
+4. The result does not depend on the XP pool: with an exceeded pool and a broken Tree of Learning, both messages are visible.
 
 Checking the final state is equivalent to the purchase rule: a layout meeting the condition can be bought
 (every skill to 1 first, then raising), and a layout failing it cannot be bought in any order. A search
@@ -910,17 +1007,20 @@ restoring it.
 
 ## Both creators — XP and Tree of Learning compatibility
 
-The advanced creator (`TworzeniePostaci_v2-core.js`) uses the same cost tables and the same Tree of
-Learning rule (`isLearningTreeValid`). A differential test of 3000 random characters entered into both
-creators gave identical remaining XP and identical Tree of Learning results. The differences concern
-only unusual entries and how errors are shown:
+The advanced creator (`TworzeniePostaci_v2-core.js`) calculates XP and shows messages in exactly the same way:
 
-| Situation | Simple Creator | Advanced Creator |
+| Element | Simple Creator | Advanced Creator |
 | --- | --- | --- |
-| XP pool exceeded and Tree of Learning broken | XP error only | both errors, on separate lines |
-| Empty `Szybkość` field | value `1`, cost `0` | value `6`, cost `55` |
-| Talent cost `-3`, `2.7` | field rewritten to `0`, `2` | field unchanged, `0`, `2` counted |
-| Empty XP pool field after leaving it | returns to `155` | stays empty, pool `0` |
+| Cost tables | `attributeCosts`, `skillCosts` | `ATTRIBUTE_COSTS`, `SKILL_COSTS` (same values) |
+| Tree of Learning | `checkSkillTree()` | `isLearningTreeValid()` (same rule) |
+| Reading number fields | `readNumberField()` | `readNumberInput()` (same rules) |
+| Defaults of empty fields | `DEFAULT_XP_POOL`, `DEFAULT_SPEED`, `DEFAULT_ATTRIBUTE`, `attachDefaultOnBlur` | `DEFAULT_XP_POOL`, `defaultFieldValue()`, `focusout` listener |
+| Two errors at once | both messages, on separate lines | both messages, on separate lines |
+
+Checked in the browser: 3000 random characters entered into both creators gave identical remaining XP
+and identical message text, and unusual entries (empty field, `0`, `-3`, `2.7`, `13`, `1e1` in the pool,
+attribute, Speed, skill and cost fields) as well as keyboard editing give the same result in both. The
+one shared exception: exponent notation `1e1` (= 10) is read by `parseInt` as `1`.
 
 ## Reset and default values
 
@@ -933,7 +1033,17 @@ only unusual entries and how errors are shown:
 - all talent names to empty text,
 - all talent costs to `0`.
 
-`attachDefaultOnBlur(...)` restores default values on blur when a field is empty or not numeric.
+`attachDefaultOnBlur(selector, defaultValue)` restores the default value on blur when a field is empty or not numeric:
+
+```js
+attachDefaultOnBlur('#xpPool', DEFAULT_XP_POOL);
+attachDefaultOnBlur("input[id^='attr_']:not(#attr_Speed)", DEFAULT_ATTRIBUTE);
+attachDefaultOnBlur('#attr_Speed', DEFAULT_SPEED);
+attachDefaultOnBlur("input[id^='skill_Column']", 0);
+attachDefaultOnBlur("input[id^='talent_cost_']", 0);
+```
+
+Speed has its own call, because its default value is `6`, not `1`.
 
 ## Language change
 
@@ -1135,13 +1245,13 @@ The detailed Firebase model is documented in `Kalkulator/config/FirebaseREADME.m
 | `xpSpent` | `number` | Spent XP. |
 | `xpAvailable` | `number` | Remaining XP. |
 | `hasValidationErrors` | `boolean` | Whether a validation error is visible. |
-| `validationMessages` | `array<string>` | Validation message list. |
+| `validationMessages` | `array<string>` | List of the visible validation messages, each as a separate entry — at most two at once (exceeded XP pool and Tree of Learning). |
 | `attributes` | `object` | Attribute values. |
 | `skills` | `object` | Skill values. |
 | `talents` | `array<object>` | 20 talent entries. |
 | `formSnapshot` | `object` | Snapshot of all `input`, `textarea`, and `select` elements with IDs. |
 
-On load, `applySavedState(data)` restores values from `formSnapshot`, sets language from `data.lang` when supported, and runs `recalcXP()`.
+On load, `applySavedState(data)` restores values from `formSnapshot`, sets language from `data.lang` when supported, fits the font of the name fields in the "Other" section, and runs `recalcXP()`.
 
 ## i18n
 
@@ -1160,15 +1270,18 @@ In both views `languageSelect` is hidden with the `language-switcher--hidden` cl
 
 | Situation | Behavior |
 | --- | --- |
+| Empty field while typing | Not overwritten; the calculation uses the default value (pool `155`, Speed `6`, attribute `1`, skill and cost `0`). |
 | Empty or invalid `xpPool` | On blur, returns to `155`. |
-| Empty or invalid attribute field | On blur, returns to `1`. |
+| Empty or invalid Speed field | On blur, returns to `6`. |
+| Empty or invalid field of the other attributes | On blur, returns to `1`. |
 | Empty or invalid skill field | On blur, returns to `0`. |
 | Empty or invalid talent cost field | On blur, returns to `0`. |
 | Attribute outside range | `recalcXP()` clamps to `1..12`. |
 | Skill outside range | `recalcXP()` clamps to `0..8`. |
 | Talent cost below zero | `recalcXP()` sets `0`. |
+| Fraction in an attribute, skill or cost | `recalcXP()` truncates it to an integer and rewrites the field. |
 | Spent XP exceeds pool | `tooMuchXP` error is shown. |
-| Tree of Learning is broken | `treeOfLearning` error is shown unless XP pool is exceeded. |
+| Tree of Learning is broken | `treeOfLearning` error is shown — also together with the `tooMuchXP` error, on a separate line. |
 | Missing Firebase | Save and load show an error modal. |
 | Missing Firestore document | Load shows an error modal. |
 
@@ -1195,6 +1308,9 @@ In both views `languageSelect` is hidden with the `language-switcher--hidden` cl
 | Character creation XP | Change attributes, skills, and talents. | `xpRemaining` recalculates automatically. |
 | XP overflow | Spend more XP than pool. | XP overflow error appears. |
 | Tree of Learning | Set invalid skill levels. | Tree of Learning error appears. |
+| Both errors at once | Exceed the XP pool and break the Tree of Learning. | Both messages are visible, one below the other. |
+| Keyboard editing | In an attribute field select the number, press Backspace and type `3`. | The field shows `3`; leaving an empty field restores the default (Speed `6`). |
+| Font after loading | Load a save with a long name in the "Other" section. | The name font is shrunk as after typing; empty fields use the browser font. |
 | Maximum values modal | Click `Maximum attribute values`. | Species maximum table opens with Vespid footnote. |
 | Manual | Click `Instrukcja` / `Manual`. | PDF for current language opens. |
 | Sheet language | Open `TworzeniePostaci.html`. | The sheet uses the default language; the language dropdown is not visible to the user. |

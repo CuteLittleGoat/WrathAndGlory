@@ -57,6 +57,8 @@
     ['conviction','Odwaga'],['influence','Wpływy'],['wealth','Majątek'],['corruption','Spaczenie'],['speed','Szybkość']
   ];
   const SIZE_DEFENCE_BONUS = {Malutki:2,Mały:1,Średni:0,Duży:0,Ogromny:0,Monstrualny:0};
+  // Wartość startowa puli PD — ta sama co w Prostym Kreatorze / Starting XP pool — the same as in the Simple Creator
+  const DEFAULT_XP_POOL = 155;
   let talentCount = 2;
 
   const byId = id => document.getElementById(id);
@@ -284,22 +286,55 @@
     return values.every(value=>value<=1||value<=knownSkills);
   }
 
+  // --- Wartość domyślna pola liczbowego związanego z PD / Default value of an XP-related number field ---
+  // PL: Pula 155, Szybkość 6, pozostałe atrybuty 1, umiejętności i koszty talentów 0 — jak w Prostym Kreatorze.
+  //     Inne pola liczbowe (np. w modalu cech) zwracają null i nie są uzupełniane.
+  // EN: Pool 155, Speed 6, other attributes 1, skills and talent costs 0 — as in the Simple Creator.
+  //     Other number fields (e.g. in the traits modal) return null and are not filled in.
+  function defaultFieldValue(id) {
+    if(id==='xpPool')return DEFAULT_XP_POOL;
+    if(id==='attr_Speed')return 6;
+    if(id.startsWith('attr_'))return 1;
+    if(id.startsWith('skill_')||id.startsWith('talent_cost_'))return 0;
+    return null;
+  }
+
+  // --- Odczyt pola liczbowego bez przeszkadzania w pisaniu / Reading a number field without disturbing typing ---
+  // PL: Puste pole (np. tuż po skasowaniu liczby klawiszem Backspace) liczy się jako wartość domyślna, ale nie jest
+  //     nadpisywane. Dzięki temu wpisywana cyfra nie dokleja się do wstawionej wartości: Backspace i „3” w polu
+  //     atrybutu dają 3, a nie 13 poprawione na 12. Liczba spoza zakresu albo ułamek są poprawiane w polu od razu,
+  //     więc pole zawsze pokazuje to, co trafia do PD. Ten sam odczyt ma Prosty Kreator (readNumberField).
+  // EN: An empty field (e.g. right after deleting the number with Backspace) counts as its default value but is not
+  //     overwritten. This way a typed digit is not appended to an inserted value: Backspace and "3" in an attribute
+  //     field give 3, not 13 corrected to 12. A number out of range or a fraction is corrected in the field at once,
+  //     so the field always shows what goes into XP. The Simple Creator reads fields the same way (readNumberField).
+  function readNumberInput(input,fallback,min,max) {
+    if(!input||input.value==='')return fallback;
+    const parsed=parseInt(input.value,10);
+    if(!Number.isFinite(parsed))return fallback;
+    const value=clamp(parsed,min,max);
+    if(input.value!==String(value))input.value=value;
+    return value;
+  }
+
   function recalcXP() {
     let total=0;
     ATTRIBUTES.forEach(item=>{
-      const input=byId(`attr_${item.key}`), value=clamp(toInt(input?.value,item.key==='Speed'?6:1),1,12);
-      if(input)input.value=value;
+      const value=readNumberInput(byId(`attr_${item.key}`),item.key==='Speed'?6:1,1,12);
       total+=ATTRIBUTE_COSTS[value];
     });
     const skillValues=[];
     SKILLS.forEach(item=>{
-      const input=byId(`skill_${item.key}`), value=clamp(toInt(input?.value,0),0,8);
-      if(input)input.value=value;
+      const value=readNumberInput(byId(`skill_${item.key}`),0,0,8);
       skillValues.push(value);
       total+=SKILL_COSTS[value];
     });
-    collectTalents().forEach(talent=>total+=talent.cost);
-    const remaining=toInt(byId('xpPool')?.value,0)-total;
+    // Koszt talentu nie może być ujemny i nie ma górnej granicy; pole pokazuje liczoną wartość
+    // A talent cost cannot be negative and has no upper limit; the field shows the counted value
+    for(let index=1;index<=talentCount;index++)total+=readNumberInput(byId(`talent_cost_${index}`),0,0,Infinity);
+    // Pusta pula w trakcie pisania liczy się jako 155; pula nie jest ograniczana ani przepisywana
+    // An empty pool counts as 155 while typing; the pool is neither limited nor rewritten
+    const remaining=toInt(byId('xpPool')?.value,DEFAULT_XP_POOL)-total;
     byId('xpRemaining').textContent=String(remaining);
     const errors=[];
     if(remaining<0)errors.push('Przekroczono dostępną pulę PD!');
@@ -310,7 +345,7 @@
 
   function getState() {
     const data=computeData();
-    return {xpPool:Math.max(0,toInt(byId('xpPool')?.value,0)),talentCount,data};
+    return {xpPool:Math.max(0,toInt(byId('xpPool')?.value,DEFAULT_XP_POOL)),talentCount,data};
   }
 
   function applyState(payload) {
@@ -383,6 +418,20 @@
     document.addEventListener('change',event=>{
       if(event.target.id.startsWith('rule_type_'))updateRulePlaceholders();
       if(event.target.id.startsWith('rule_target_'))updateRuleValueState(event.target.id.slice('rule_target_'.length));
+      recalcXP();
+    });
+    // PL: Opuszczenie pustego pola puli, atrybutu, umiejętności albo kosztu talentu wpisuje do niego wartość domyślną
+    //     (jak attachDefaultOnBlur w Prostym Kreatorze). focusout zachodzi także przed kliknięciem przycisku, więc
+    //     zapis nigdy nie dostaje pustego pola.
+    // EN: Leaving an empty pool, attribute, skill or talent-cost field writes its default value into it (like
+    //     attachDefaultOnBlur in the Simple Creator). focusout also happens before a button click, so a save never
+    //     gets an empty field.
+    document.addEventListener('focusout',event=>{
+      const input=event.target;
+      if(!(input instanceof HTMLInputElement)||input.type!=='number'||input.value!=='')return;
+      const fallback=defaultFieldValue(input.id);
+      if(fallback===null)return;
+      input.value=fallback;
       recalcXP();
     });
     byId('addTalentRowButton').addEventListener('click',()=>{const current=collectTalents();current.push({name:'',cost:0},{name:'',cost:0});renderTalents(current);recalcXP();});
