@@ -1,12 +1,12 @@
 # Kalkulator — audyt Drzewa Nauki, kosztów PD i wyglądu sekcji „Umiejętności” oraz „Inne”
 
-> **Data analizy:** 8 listopada 2026 (prompt główny: 3 listopada 2026, uzupełnienie: 8 listopada 2026)
+> **Data analizy:** 8 listopada 2026 (prompt główny: 3 listopada 2026, uzupełnienie i decyzje użytkownika: 8 listopada 2026)
 > **Moduł:** `Kalkulator` — Prosty Kreator Postaci, Zaawansowany Kreator Postaci, Kalkulator PD
 > **Pliki objęte analizą:** `Kalkulator/TworzeniePostaci.html`, `Kalkulator/TworzeniePostaci_v2.html`, `Kalkulator/TworzeniePostaci_v2-core.js`, `Kalkulator/KalkulatorXP.html` (pomocniczo `TworzeniePostaci_v2-firebase.js`, `TworzeniePostaci_v2-pdf.js`, `kalkulatorxp.css`, `HowToUse/pl.pdf`)
 > **Stan kodu przed zmianami:** commit `883ca16` (gałąź `main`)
-> **Poprawki w kodzie:** commit `f179d82` na gałęzi `claude/cool-maxwell-5l0irv`; do czasu jej scalenia gałąź `main` ma kod sprzed poprawek
-> **Charakter dokumentu:** audyt z pomiarami w przeglądarce oraz opis wprowadzonych poprawek. Zmieniony został wyłącznie Zaawansowany Kreator Postaci (Drzewo Nauki, wygląd sekcji „Umiejętności” i „Inne”). Prosty Kreator Postaci i Kalkulator PD są bez zmian.
-> **Odpowiedź w skrócie:** Prosty Kreator liczy Drzewo Nauki **poprawnie**, zgodnie z podręcznikiem. Zaawansowany Kreator stosował **inną, „piramidową” regułę**, której nie ma w podręczniku: była dużo surowsza (Analiza 4 wymagała 8 umiejętności zamiast 4), a umiejętności na poziomie 6–8 zawsze dawały błąd. Reguła została zastąpiona regułą z podręcznika i teraz oba kreatory dają identyczny wynik dla każdego układu. Obliczanie PD jest w obu kreatorach **identyczne i zgodne z tabelami z podręcznika** (3000 losowych postaci bez jednej rozbieżności); różnią się tylko obsługą nietypowych wpisów i sposobem pokazywania dwóch błędów naraz. `KalkulatorXP.html` liczy **poprawnie** wszystkie 250 możliwych par wartości. Sekcje „Umiejętności” i „Inne” w Zaawansowanym Kreatorze wyglądają i działają teraz jak w Prostym.
+> **Poprawki w kodzie:** commit `f179d82` (Drzewo Nauki i wygląd sekcji w Zaawansowanym Kreatorze) oraz commit `8759f22` (decyzje R1–R9) — oba na gałęzi `main`
+> **Charakter dokumentu:** audyt z pomiarami w przeglądarce, decyzje użytkownika i opis wprowadzonych poprawek. Po audycie zmieniony został Zaawansowany Kreator (Drzewo Nauki, wygląd sekcji „Umiejętności” i „Inne”); po decyzjach R1–R9 — oba kreatory (komunikaty, wpisywanie liczb, szerokość strony, font po wczytaniu, §16). Kalkulator PD jest bez zmian.
+> **Odpowiedź w skrócie:** Prosty Kreator liczy Drzewo Nauki **poprawnie**, zgodnie z podręcznikiem. Zaawansowany Kreator stosował **inną, „piramidową” regułę**, której nie ma w podręczniku: była dużo surowsza (Analiza 4 wymagała 8 umiejętności zamiast 4), a umiejętności na poziomie 6–8 zawsze dawały błąd. Reguła została zastąpiona regułą z podręcznika i teraz oba kreatory dają identyczny wynik dla każdego układu. Obliczanie PD jest w obu kreatorach **identyczne i zgodne z tabelami z podręcznika** (3000 losowych postaci bez jednej rozbieżności); różniły się tylko obsługą nietypowych wpisów i sposobem pokazywania dwóch błędów naraz — po decyzjach użytkownika obie różnice zostały usunięte (§16). `KalkulatorXP.html` liczy **poprawnie** wszystkie 250 możliwych par wartości. Sekcje „Umiejętności” i „Inne” w Zaawansowanym Kreatorze wyglądają i działają teraz jak w Prostym.
 
 ---
 
@@ -26,9 +26,10 @@
 12. [Sekcja „Inne” w Zaawansowanym Kreatorze](#12-sekcja-inne-w-zaawansowanym-kreatorze)
 13. [Zmienione pliki](#13-zmienione-pliki)
 14. [Ryzyka](#14-ryzyka)
-15. [Rekomendacje i decyzje do podjęcia](#15-rekomendacje-i-decyzje-do-podjęcia)
-16. [Następne kroki](#16-następne-kroki)
-17. [Załącznik — metoda testów](#17-załącznik--metoda-testów)
+15. [Rekomendacje przedstawione do decyzji](#15-rekomendacje-przedstawione-do-decyzji)
+16. [Decyzje użytkownika i wprowadzone poprawki](#16-decyzje-użytkownika-i-wprowadzone-poprawki)
+17. [Następne kroki](#17-następne-kroki)
+18. [Załącznik — metoda testów](#18-załącznik--metoda-testów)
 
 ---
 
@@ -138,6 +139,28 @@ dodaniem bonusów nie może nigdy przekroczyć wartości podanej w Tabeli.”
 
 > Sprawdź też poprawność obliczeń w pliku Kalkulator/KalkulatorXP.html
 
+### 1.4 Publikacja analizy (8 listopada 2026)
+
+> Analizę wypchnij na Main
+
+### 1.5 Odpowiedzi użytkownika na rekomendacje R1–R9 (8 listopada 2026)
+
+> Moje odpowiedzi na pytania Analizy/kalkulator-drzewo-nauki-koszty-pd-uklad-sekcji.md
+>
+> R1 - w prostym kreatorze mają pokazywać się oba błędy (ujednolicamy tak jak w zaawansowanym).
+> R2 - nie rozumiem pytania. Zarówno w prostym jak i zaawansowanym przy atrybucie "Szybkość" wartość domyślna to "6". Taka się pojawia jak otwieram stronę i tak ma być.
+> R3 - nie rozumiem pytania. Jak dodaję jakąś wartość w polu "Koszt" w sekcji z talentami to aktualizuje się wartość "Pozostało PD:" i tak to ma działać.
+> R4 - "Pula PD do wydania:" i wartość 155 to wartość początkowa po uruchomieniu strony. Tak ma zostać.
+> R5 - nie rozumiem pytania. Zdaję się na Ciebie. Zrób tak, żeby było dobrze.
+> R6 - Gracz ma możliwość zwiększania atrybutu Szybkość za PD. Dlatego idzie to ze wspólnej puli.
+> R7 - nie rozumiem pytania. Zdaję się na Ciebie. Zrób tak, żeby było dobrze.
+> R8 - nie ruszamy tego.
+> R9 - zgoda.
+
+### 1.6 Publikacja poprawek i uzupełnienie analizy (8 listopada 2026)
+
+> poprawki kodu wrzuć na main, Potem dopisz do analizy co poprawiłeś.
+
 ---
 
 ## 2. Zakres
@@ -161,14 +184,16 @@ Poza zakresem: eksport PDF, zapis Firebase, cechy pochodne i zasady specjalne Za
 | W1 | Drzewo Nauki — Prosty Kreator | Reguła zgodna z podręcznikiem; przykład A i przykład Jordana dają oczekiwany wynik. | — | bez zmian |
 | W2 | Drzewo Nauki — Zaawansowany Kreator | Reguła „piramidowa”, której nie ma w podręczniku. Błędna ocena w 877 z 3000 losowych postaci (29%), zawsze zbyt surowa. Umiejętność 6–8 zawsze dawała błąd. | **wysoka** | **naprawione** |
 | W3 | Moment komunikatu | W obu kreatorach komunikat pojawia się przy pierwszej zmianie łamiącej zasadę i znika przy pierwszej zmianie, która ją przywraca. | — | potwierdzone |
-| W4 | Dwa błędy naraz | Prosty Kreator przy przekroczonej puli PD ukrywa błąd Drzewa Nauki (pokaże go dopiero po powrocie PD do normy); Zaawansowany pokazuje oba. | niska | do decyzji (R1) |
+| W4 | Dwa błędy naraz | Prosty Kreator przy przekroczonej puli PD ukrywał błąd Drzewa Nauki (pokazywał go dopiero po powrocie PD do normy); Zaawansowany pokazywał oba. | niska | **naprawione** (R1, §16) |
 | W5 | Koszty PD w obu kreatorach | Tabele zgodne z podręcznikiem, algorytm identyczny, 0 rozbieżności w 3000 losowych postaciach. | — | potwierdzone |
-| W6 | Nietypowe wpisy | Różnice: puste pole `Szybkość`, wyświetlanie kosztu talentu, puste pole puli PD. | niska | do decyzji (R2–R4) |
-| W7 | Edycja atrybutu klawiaturą | W obu kreatorach: zaznaczenie, Backspace i wpisanie `3` daje `12` zamiast `3`. | średnia | do decyzji (R5) |
-| W8 | Szybkość w kosztach PD | W obu kreatorach Szybkość 6 kosztuje 55 PD, a domyślna pula 155 to 100 + 55. Działa celowo, ale zależy od interpretacji zasad. | informacyjna | do weryfikacji (R6) |
+| W6 | Nietypowe wpisy | Różnice: puste pole `Szybkość`, wyświetlanie kosztu talentu, puste pole puli PD. | niska | **ujednolicone** (R2–R4, §16) |
+| W7 | Edycja atrybutu klawiaturą | W obu kreatorach: zaznaczenie, Backspace i wpisanie `3` dawało `12` zamiast `3`. | średnia | **naprawione** (R5, §16) |
+| W8 | Szybkość w kosztach PD | W obu kreatorach Szybkość 6 kosztuje 55 PD, a domyślna pula 155 to 100 + 55. Gracz może podnosić Szybkość za PD, więc liczenie jest poprawne. | informacyjna | potwierdzone przez użytkownika (R6) |
 | W9 | `KalkulatorXP.html` | Wszystkie 250 par (aktualna, docelowa) zgodne z kolumną „Narastający koszt w PD”; przykłady z podręcznika, suma i reset poprawne. | — | potwierdzone |
 | W10 | Sekcja „Umiejętności” v2 | Cztery równe kolumny po 25%, długie nazwy w dwóch wierszach, nazwy do lewej, inna zebra. | średnia | **naprawione** |
 | W11 | Sekcja „Inne” v2 | Pole 78 px zamiast 46 px, brak zmniejszania fontu. | średnia | **naprawione** |
+| W12 | Szerokość strony v2 | Kontener `min(1100px, 96vw)` zamiast `min(1100px, 100%)`: przy 761–1145 px tabele do 14 px węższe niż we wzorze, przy 320 px nierówne marginesy. | niska | **naprawione** (R7, §16) |
+| W13 | Font pól „Inne” po wczytaniu (Prosty) | Wczytany długi tekst nie był zmniejszany. | niska | **naprawione** (R9, §16) |
 
 ---
 
@@ -366,6 +391,10 @@ Wnioski:
   umiejętności. W teście różnicowym takich postaci było 313–315 na 3000. Zachowanie jest opisane
   w instrukcji, więc jest zamierzone, ale różni oba kreatory (R1).
 
+> **Stan po decyzji R1:** Prosty Kreator pokazuje oba komunikaty naraz. W kroku „Analiza 5 przy
+> przekroczonej puli” oba kreatory pokazują teraz „PD + DRZEWO”, a cała sekwencja daje w obu identyczne
+> komunikaty (§16.3).
+
 ---
 
 ## 9. Obliczanie PD — porównanie obu kreatorów
@@ -426,6 +455,10 @@ komunikat przekroczenia puli zawsze poprawny w obu.
 | Liczba `2.7` | `2` | `2` | taki sam |
 | Zapis wykładniczy `1e1` (= 10) | czytany jako `1` | czytany jako `1` | taki sam (oba błędnie, w praktyce nieużywane) |
 
+> **Stan po decyzjach R2–R5:** wszystkie wpisy z tej tabeli dają teraz w obu kreatorach ten sam wynik —
+> puste pole Szybkości liczy się jako `6` i po opuszczeniu wraca `6`, koszt talentu jest poprawiany
+> w polu, a puste pole puli wraca do `155` (§16.2). `1e1` nadal jest czytane jako `1` w obu.
+
 ### 9.5 Edycja atrybutu z klawiatury (oba kreatory)
 
 Kreatory poprawiają wartość pola przy **każdym** naciśnięciu klawisza. Gdy użytkownik zaznaczy liczbę
@@ -442,6 +475,9 @@ pole `Szybkość` — `6`), a wpisana potem cyfra dopisuje się za nią:
 Wpisanie liczby od razu na zaznaczoną wartość (bez Backspace) działa poprawnie. Problem nie zmienia
 wzorów, ale łatwo przez niego wpisać inną wartość, niż się chciało (R5).
 
+> **Stan po decyzji R5:** puste pole nie jest nadpisywane w trakcie pisania. Backspace i „3” w polu
+> atrybutu dają `3`, a w polu Szybkości Backspace i „8” dają `8` — w obu kreatorach (§16.3).
+
 ### 9.6 Szybkość w kosztach PD
 
 Oba kreatory liczą Szybkość według tabeli atrybutów. Startowa Szybkość 6 kosztuje 55 PD, dlatego
@@ -455,6 +491,9 @@ Zrzuty z podręcznika dołączone do promptu nie mówią, czy Szybkość kupuje 
 Szybkość wynika wyłącznie z gatunku, obecny sposób jest poprawny tylko dla gatunków ze startową
 Szybkością 6 — dla innych trzeba ręcznie poprawić pulę (R6). Na obliczenia w obu kreatorach wpływa to
 identycznie.
+
+> **Decyzja R6:** gracz może podnosić Szybkość za PD, więc jej koszt ze wspólnej puli jest poprawny. Kod
+> bez zmian; README opisuje to jako zasadę.
 
 ---
 
@@ -534,6 +573,10 @@ Kolory zebry i podświetlenia — identyczne. W przedziale 761–1145 px cała t
 bo kontener v2 ma szerokość `min(1100px, 96vw)`, a wzór `min(1100px, 100%)` — proporcje kolumn są
 takie same (R7).
 
+> **Stan po decyzji R7:** kontener v2 ma `min(1100px, 100%)`. Tabela umiejętności ma identyczną
+> szerokość i kolumny jak we wzorze przy każdej badanej szerokości okna, np. przy 1000 px 926 px
+> w obu (§16.3).
+
 ---
 
 ## 12. Sekcja „Inne” w Zaawansowanym Kreatorze
@@ -585,7 +628,7 @@ Drobna różnica na korzyść v2: we wzorze kolumna z tekstem o foncie 16 px chw
 
 ---
 
-## 13. Zmienione pliki
+## 13. Zmienione pliki — poprawki z audytu (commit `f179d82`)
 
 | Plik | Zmiana |
 | --- | --- |
@@ -596,7 +639,7 @@ Drobna różnica na korzyść v2: we wzorze kolumna z tekstem o foncie 16 px chw
 | `Kalkulator/docs/README.md` | Zasada Drzewa Nauki prostym językiem, kiedy komunikat się pojawia i znika, dwa błędy naraz, pole nazwy w „Inne”, pula 155 a Szybkość, aktualny opis zaawansowanego kreatora (PL i EN). |
 | `DetaleLayout.md` | Wygląd sekcji „Umiejętności” i „Inne” w obu kreatorach. |
 
-`Kalkulator/TworzeniePostaci.html` i `Kalkulator/KalkulatorXP.html` — bez zmian.
+W tym commicie `Kalkulator/TworzeniePostaci.html` i `Kalkulator/KalkulatorXP.html` były bez zmian. Zmiany po decyzjach R1–R9 (także w Prostym Kreatorze) opisuje §16.4.
 
 ---
 
@@ -610,11 +653,18 @@ Drobna różnica na korzyść v2: we wzorze kolumna z tekstem o foncie 16 px chw
 3. **Pomiary w pikselach** wykonano w Chromium z fontem zastępczym (w kontenerze nie ma Consolasa).
    Na Windowsie liczby będą trochę inne, ale oba kreatory używają teraz tych samych reguł dla tych
    sekcji, więc pozostaną sobie równe.
-4. **Pozostałe różnice** opisane w §8 i §9.4–9.5 nie zostały zmienione — wymagają decyzji (§15).
+4. **Różnice** opisane w §8 i §9.4–9.5 zostały usunięte po decyzjach użytkownika (§16).
+5. **Puste pole liczy się jako wartość domyślna** — np. przez chwilę między skasowaniem puli a wpisaniem
+   nowej liczby „Pozostało PD” liczy pulę 155. To zamierzone: dzięki temu w trakcie pisania nie miga
+   błąd przekroczenia PD.
+6. **Zapis Prostego Kreatora** — `validationMessages` może mieć teraz dwie pozycje. Żaden moduł nie
+   odczytuje tego pola (sprawdzone w repozytorium), a wczytanie zapisu i tak przelicza komunikaty od nowa.
 
 ---
 
-## 15. Rekomendacje i decyzje do podjęcia
+## 15. Rekomendacje przedstawione do decyzji
+
+Decyzje użytkownika i ich realizację opisuje §16.
 
 | # | Rekomendacja | Pliki | Do decyzji |
 | --- | --- | --- | --- |
@@ -630,17 +680,79 @@ Drobna różnica na korzyść v2: we wzorze kolumna z tekstem o foncie 16 px chw
 
 ---
 
-## 16. Następne kroki
+## 16. Decyzje użytkownika i wprowadzone poprawki
 
-1. Sprawdzić oba kreatory na docelowym komputerze (Windows, font Consolas): przykłady A i B, sekcje
-   „Umiejętności” i „Inne” obok siebie.
-2. Podjąć decyzje R1–R9; wybrane punkty to małe zmiany, które można wykonać w jednym zadaniu.
-3. Przy R6 — jeżeli Szybkość ma zostać wyłączona z kosztów — zaplanować osobno, bo zmienia domyślną pulę,
-   instrukcję PDF i zapisane postacie.
+Pełna treść odpowiedzi jest w §1.5. Poprawki są w commicie `8759f22` na gałęzi `main`.
+
+### 16.1 Decyzje i ich realizacja
+
+| # | Decyzja użytkownika (skrót) | Co zostało zrobione | Stan |
+| --- | --- | --- | --- |
+| R1 | W Prostym Kreatorze mają się pokazywać oba błędy, jak w Zaawansowanym. | `checkSkillTree()` zwraca wynik zamiast samodzielnie wypisywać komunikat; `recalcXP()` sprawdza przekroczenie puli i Drzewo Nauki niezależnie od siebie i pokazuje oba komunikaty w osobnych wierszach. W zapisie Firebase `validationMessages` ma każdy komunikat jako osobną pozycję. | zrobione |
+| R2 | Szybkość ma domyślnie 6 — tak ma być. | Start strony z `6` — bez zmian. Pytanie dotyczyło chwili, gdy liczba w polu Szybkości zostanie skasowana: Prosty Kreator wstawiał wtedy `1` (koszt 0, czyli 55 PD „za darmo”). Teraz w obu kreatorach puste pole liczy się jako `6`, a po opuszczeniu pola wraca `6`. | zrobione w ramach R5 |
+| R3 | Wpisany koszt ma aktualizować „Pozostało PD” — tak ma działać. | Działa jak dotąd. Pytanie dotyczyło wpisów typu `-3` albo `2,7`: Zaawansowany Kreator zostawiał je w polu, choć liczył `0` i `2`. Teraz oba kreatory poprawiają pole (`-3` → `0`, `2,7` → `2`), więc pole pokazuje to, co trafia do PD. | zrobione w ramach R5 |
+| R4 | Pula 155 na starcie strony — tak ma zostać. | Start z `155` — bez zmian. Pytanie dotyczyło skasowania liczby w polu puli: Zaawansowany Kreator zostawiał puste pole (pula 0 i błąd PD). Teraz w obu puste pole liczy się jako `155`, a po opuszczeniu pola wraca `155`. | zrobione w ramach R5 |
+| R5 | Zdaję się na Ciebie. | Wspólne zasady pól liczbowych w obu kreatorach (§16.2): puste pole nie jest nadpisywane w trakcie pisania, więc Backspace i „3” w polu atrybutu dają `3`, a nie `12`. | zrobione |
+| R6 | Szybkość można podnosić za PD — koszt idzie ze wspólnej puli. | Kod bez zmian, bo obecne liczenie jest poprawne. README i dokumentacja techniczna opisują to jako zasadę. | potwierdzone |
+| R7 | Zdaję się na Ciebie. | Kontener Zaawansowanego Kreatora ma `min(1100px, 100%)`, jak w Prostym. Tabele mają identyczną szerokość przy każdej szerokości okna, a na telefonie oba marginesy strony są równe. | zrobione |
+| R8 | Nie ruszamy. | Bez zmian (`KalkulatorXP.html` pokazuje Szybkość Vespidów jako `14`). | — |
+| R9 | Zgoda. | Po wczytaniu zapisu Prosty Kreator przywraca font przeglądarki we wszystkich polach nazw sekcji „Inne”, a w polach z tekstem dopasowuje font (`adjustTalentFontSize`) — tak, jakby nazwy zostały wpisane na świeżej stronie. | zrobione |
+
+### 16.2 Wspólne zasady pól liczbowych (R2–R5)
+
+Prosty Kreator odczytuje pola funkcją `readNumberField`, a Zaawansowany — `readNumberInput`. Obie działają
+tak samo:
+
+| Sytuacja | Zachowanie w obu kreatorach |
+| --- | --- |
+| Liczba skasowana w trakcie pisania | Pole zostaje puste — nic nie jest do niego wstawiane. Do obliczeń trafia wartość domyślna. |
+| Opuszczenie pustego pola | Wraca wartość domyślna: pula `155`, Szybkość `6`, pozostałe atrybuty `1`, umiejętność `0`, koszt `0` (Prosty: `attachDefaultOnBlur`, Zaawansowany: nasłuch `focusout`). |
+| Liczba spoza zakresu | Poprawiana w polu od razu: atrybut `1–12`, umiejętność `0–8`, koszt od `0`. |
+| Ułamek | Ucinany i przepisywany w polu (`2.7` → `2`). |
+| Pula PD | Bez ograniczeń i bez przepisywania (jak dotąd); puste pole liczy się jako `155`. |
+
+### 16.3 Weryfikacja
+
+| Test | Wynik |
+| --- | --- |
+| Przykłady A i B, przykład Jordana | Identyczne w obu kreatorach i zgodne z podręcznikiem. |
+| Sekwencja z §8 | W każdym kroku identyczne komunikaty; „Analiza 5 przy przekroczonej puli” → w obu „PD + DRZEWO”. |
+| Test różnicowy, 3000 losowych postaci | 0 rozbieżności PD; 0 błędnych ocen Drzewa Nauki w obu kreatorach, także przy przekroczonej puli; 0 różnic w treści komunikatów. |
+| Nietypowe wpisy (6 wartości × 5 pól) i edycja z klawiatury (4 pola) | 34 / 34 scenariusze identyczne w obu kreatorach. Backspace i „3” w atrybucie → `3` (PD 90), Backspace i „8” w Szybkości → `8` (PD 45). |
+| Szerokość tabel (R7) | Identyczna szerokość i kolumny tabeli umiejętności przy 320, 360, 400, 760, 800, 1000 i 1280 px (przy 1000 px: 926 px w obu, wcześniej 914 px w v2). Przy 320 px marginesy kontenera v2: 8 / 8 px (wcześniej 8 / 4,8 px). |
+| Wczytanie zapisu w Prostym Kreatorze (R9, atrapa Firebase) | Nazwa o długości 104 znaków → 10 px z paskiem; krótka nazwa → 16 px; pole wyczyszczone przy wczytaniu → font przeglądarki. |
+| Zapis w Prostym Kreatorze (R1, atrapa Firebase) | Przy obu błędach `validationMessages` ma 2 osobne pozycje, `hasValidationErrors` = `true`. |
+| Regresja | Pola „Inne” w v2 (font, dodawanie i usuwanie wierszy, wczytanie), zebra, cechy pochodne, błędy konsoli — bez zmian. |
+
+### 16.4 Zmienione pliki (commit `8759f22`)
+
+| Plik | Zmiana |
+| --- | --- |
+| `Kalkulator/TworzeniePostaci.html` | R1 (oba komunikaty, `checkSkillTree()` zwraca wynik, komunikaty w zapisie), R2–R5 (`DEFAULT_XP_POOL`, `DEFAULT_SPEED`, `DEFAULT_ATTRIBUTE`, `readNumberField`, osobne `attachDefaultOnBlur` dla Szybkości), R9 (font po wczytaniu); komentarze PL/EN. |
+| `Kalkulator/TworzeniePostaci_v2-core.js` | R2–R5 (`DEFAULT_XP_POOL`, `defaultFieldValue`, `readNumberInput`, nasłuch `focusout`, koszt talentu poprawiany w polu); komentarze PL/EN. |
+| `Kalkulator/TworzeniePostaci_v2.html` | R7 (szerokość `.wrapper`); komentarz PL/EN. |
+| `Kalkulator/docs/README.md` | Rozdział „Jak wpisywać liczby”, oba błędy naraz, Szybkość kupowana za PD, powrót puli 155, font po wczytaniu, komunikaty (PL i EN). |
+| `Kalkulator/docs/Documentation.md` | Odczyt pól i wartości domyślne, kolejność obliczeń, Drzewo Nauki, zgodność kreatorów, fallbacki, `validationMessages`, testy (PL i EN). |
+| `Kalkulator/docs/Documentation_v2.md` | Kontener, odczyt pól, `focusout`, koszt talentu, testy (PL i EN). |
+| `Kalkulator/config/FirebaseREADME.md` | Opis `validationMessages` (PL i EN). |
+| `DetaleLayout.md` | Kontener v2, dwa wiersze komunikatów. |
+
+Publikacja: gałąź `main` została przewinięta (fast-forward) do gałęzi `claude/cool-maxwell-5l0irv` — zawiera
+oba commity z poprawkami (`f179d82`, `8759f22`) i tę analizę.
 
 ---
 
-## 17. Załącznik — metoda testów
+## 17. Następne kroki
+
+1. Sprawdzić oba kreatory na docelowym komputerze (Windows, font Consolas): przykłady A i B, sekcje
+   „Umiejętności” i „Inne” obok siebie, wpisywanie liczb z klawiatury.
+2. Decyzje R1–R9 są zamknięte — nic nie czeka na realizację.
+3. Do rozważenia osobno: `README.md` nie ma pełnej instrukcji Zaawansowanego Kreatora (cechy i zasady
+   specjalne, cechy pochodne, eksport PDF) — opisuje tylko to, co oba kreatory mają wspólne.
+
+---
+
+## 18. Załącznik — metoda testów
 
 Wszystkie testy wykonano na lokalnym serwerze HTTP (katalog repozytorium) w Chromium sterowanym przez
 Playwright, z zablokowanymi skryptami zewnętrznymi (Firebase, reCAPTCHA), które nie biorą udziału
@@ -658,3 +770,4 @@ w obliczeniach. Skrypty testowe powstały w katalogu tymczasowym sesji i nie są
 | KalkulatorXP | Wszystkie 250 par (aktualna, docelowa), przykłady z podręcznika, suma wielu wierszy, reset, wpisy brzegowe, klawiatura. |
 | Układ | Pomiar szerokości kolumn, wysokości pól i stylów obliczonych przy oknach 320–1280 px; zrzuty tabel i porównanie pikselowe; kolory zebry i podświetlenia. |
 | Pole nazwy | Wpisywanie tekstów o długości 2, 13, 34, 71 i 153 znaków; odczyt fontu, przewijania i kolumn; dodanie i usunięcie wierszy; `applyState` z długimi nazwami. |
+| Po decyzjach R1–R9 | Powtórzone: przykłady, sekwencja komunikatów, test różnicowy (z oceną Drzewa Nauki także przy przekroczonej puli i porównaniem treści komunikatów), układ 320–1280 px. Nowe: nietypowe wpisy z prawdziwą zmianą fokusu (kliknięcie poza pole), edycja z klawiatury czterech pól, marginesy kontenera, zapis i wczytanie Prostego Kreatora z atrapą Firebase podstawioną przed skryptami strony. |
